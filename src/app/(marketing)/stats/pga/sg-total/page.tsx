@@ -5,7 +5,7 @@
  * ISR 1 time.
  */
 
-import "./../../pga.css";
+import "./../pga.css";
 import "./../_shared/kategori.css";
 
 import type { Metadata } from "next";

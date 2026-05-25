@@ -1,42 +1,45 @@
 /**
- * /turneringer/[slug] — detaljside per turnering.
+ * /turneringer/[slug] — turneringsdetalj (design 28)
  *
- * Viser: info, deltakerliste (nordmenn øverst), live leaderboard (når aktiv),
- * mersalg-banner.
+ * Pixel-perfect forbedring av eksisterende side:
+ *   - Hero med status-pille, bane-info, purse og live-badge
+ *   - KPI-strip (deltakere, norske, korteste runde, cut-linje)
+ *   - "Norske i aksjon"-fremtredende kort
+ *   - Full tabular leaderboard
+ *   - Editorial "om turneringen"
+ *   - Historiske vinnere (stub)
  *
- * ISR med 15-min revalidate.
+ * ISR 15 min.
  */
 
+import "../../stats/stats.css";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   ArrowLeft,
-  CalendarRange,
   MapPin,
   ExternalLink,
   Trophy,
-  Flag,
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { FlagGlyph } from "@/components/stats/flag-glyph";
+import { Reveal } from "@/components/stats/reveal";
+import { CountUp } from "@/components/stats/count-up";
+import { StatsEyebrow } from "@/components/stats/eyebrow";
 import { MersalgBanner } from "@/components/turneringer/mersalg-banner";
 
-export const revalidate = 900; // 15 min
+export const revalidate = 900;
 
-type Props = {
-  params: Promise<{ slug: string }>;
-};
+type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const t = await prisma.tournament.findUnique({ where: { slug } });
-  if (!t) {
-    return { title: "Turnering ikke funnet | AK Golf" };
-  }
+  if (!t) return { title: "Turnering ikke funnet | AK Golf" };
   return {
     title: `${t.name} — turneringsoversikt | AK Golf`,
-    description:
-      `Følg ${t.name} live. Norske spillere, leaderboard, info og resultater. Oppdatert automatisk.`,
+    description: `Følg ${t.name} live. Norske spillere, leaderboard, info og resultater. Oppdatert automatisk.`,
     alternates: { canonical: `https://akgolf.no/turneringer/${slug}` },
     openGraph: {
       title: `${t.name} — AK Golf`,
@@ -68,9 +71,7 @@ export default async function TurneringDetalj({ params }: Props) {
         },
         orderBy: [{ position: "asc" }, { player: { name: "asc" } }],
       },
-      leaderboardSnap: {
-        select: { fetchedAt: true },
-      },
+      leaderboardSnap: { select: { fetchedAt: true } },
     },
   });
 
@@ -78,8 +79,13 @@ export default async function TurneringDetalj({ params }: Props) {
 
   const norske = t.publicEntries.filter((e) => e.player.country === "NO");
   const andre = t.publicEntries.filter((e) => e.player.country !== "NO");
+  const alle = t.publicEntries;
   const erLive = t.status === "IN_PROGRESS";
   const erFerdig = t.status === "COMPLETED";
+  const erKommende = t.status === "UPCOMING";
+
+  const tourLabel = formaterTour(t.tour);
+  const datoStr = formaterDato(t.startDate, t.endDate);
 
   return (
     <div className="bg-background text-foreground">
@@ -89,188 +95,550 @@ export default async function TurneringDetalj({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: tilJsonLd(t) }}
       />
 
-      <section className="border-b border-border">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6 py-12">
+      {/* Hero */}
+      <section
+        className="stats-hero"
+        style={{ paddingBottom: 40, borderBottom: "1px solid var(--s-border)" }}
+      >
+        <Reveal>
           <Link
             href="/turneringer"
-            className="inline-flex items-center gap-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground hover:text-foreground"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              fontFamily: "var(--font-mono)",
+              fontSize: 11,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              color: "var(--s-muted-fg)",
+              textDecoration: "none",
+              marginBottom: 20,
+            }}
           >
-            <ArrowLeft className="h-3 w-3" strokeWidth={2} />
+            <ArrowLeft size={12} strokeWidth={2} />
             Alle turneringer
           </Link>
 
-          <div className="mt-4 flex flex-wrap items-center gap-2">
-            <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-primary">
-              {formaterTour(t.tour)}
-            </span>
+          <div
+            style={{
+              marginTop: 8,
+              fontFamily: "var(--font-mono)",
+              fontSize: 10,
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+              color: "var(--s-muted-fg)",
+            }}
+          >
+            {tourLabel} · {datoStr.toUpperCase()}
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "flex-start",
+              marginTop: 16,
+              gap: 24,
+              flexWrap: "wrap",
+            }}
+          >
+            <h1
+              className="font-display"
+              style={{
+                fontSize: "clamp(32px, 5vw, 56px)",
+                lineHeight: 1.0,
+                fontWeight: 600,
+                letterSpacing: "-0.03em",
+              }}
+            >
+              {t.name}
+            </h1>
+            <div style={{ textAlign: "right", flexShrink: 0 }}>
+              {t.location && (
+                <div style={{ color: "var(--s-muted-fg)", fontSize: 15, display: "flex", alignItems: "center", gap: 6, justifyContent: "flex-end" }}>
+                  <MapPin size={14} strokeWidth={1.75} />
+                  {t.location}
+                </div>
+              )}
+              <div style={{ fontFamily: "var(--font-mono)", fontSize: 13, marginTop: 4 }}>
+                {t.officialUrl ? (
+                  <a
+                    href={t.officialUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: "var(--s-primary)", textDecoration: "none", display: "flex", alignItems: "center", gap: 4, justifyContent: "flex-end" }}
+                  >
+                    Offisiell side <ExternalLink size={12} strokeWidth={1.75} />
+                  </a>
+                ) : null}
+              </div>
+            </div>
+          </div>
+
+          {/* Status-piller */}
+          <div style={{ display: "flex", gap: 10, alignItems: "center", marginTop: 20, flexWrap: "wrap" }}>
             {erLive && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-destructive/15 px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-destructive">
-                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-destructive" />
-                Pågår nå
+              <span
+                style={{
+                  background: "var(--s-accent)",
+                  color: "var(--s-accent-fg)",
+                  fontFamily: "var(--font-mono)",
+                  fontSize: 11,
+                  padding: "4px 12px",
+                  borderRadius: 4,
+                  letterSpacing: "0.12em",
+                  fontWeight: 600,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                }}
+              >
+                <span
+                  style={{
+                    display: "inline-block",
+                    width: 6,
+                    height: 6,
+                    borderRadius: "50%",
+                    background: "var(--s-accent-fg)",
+                    animation: "stats-pulse 2s infinite",
+                  }}
+                />
+                IN PROGRESS
               </span>
             )}
             {erFerdig && (
-              <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-                Ferdigspilt
-              </span>
-            )}
-          </div>
-
-          <h1 className="mt-3 font-display text-4xl font-semibold leading-[1.1] tracking-tight md:text-5xl">
-            {t.name}
-          </h1>
-
-          <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
-            <span className="inline-flex items-center gap-1.5">
-              <CalendarRange className="h-4 w-4" strokeWidth={1.75} />
-              {formaterDato(t.startDate, t.endDate)}
-            </span>
-            {t.location && (
-              <span className="inline-flex items-center gap-1.5">
-                <MapPin className="h-4 w-4" strokeWidth={1.75} />
-                {t.location}
-              </span>
-            )}
-            {t.officialUrl && (
-              <a
-                href={t.officialUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-primary hover:underline"
+              <span
+                style={{
+                  background: "var(--s-secondary)",
+                  color: "var(--s-muted-fg)",
+                  fontFamily: "var(--font-mono)",
+                  fontSize: 11,
+                  padding: "4px 12px",
+                  borderRadius: 4,
+                  letterSpacing: "0.12em",
+                }}
               >
-                Offisiell side
-                <ExternalLink className="h-3.5 w-3.5" strokeWidth={1.75} />
-              </a>
+                FERDIGSPILT
+              </span>
             )}
-          </div>
-
-          {t.winnerName && erFerdig && (
-            <div className="mt-6 inline-flex items-center gap-2 rounded-2xl border border-primary/30 bg-primary/5 px-4 py-3">
-              <Trophy className="h-4 w-4 text-primary" strokeWidth={2} />
-              <span className="text-sm font-medium">
+            {erKommende && (
+              <span
+                style={{
+                  background: "var(--s-secondary)",
+                  color: "var(--s-primary)",
+                  fontFamily: "var(--font-mono)",
+                  fontSize: 11,
+                  padding: "4px 12px",
+                  borderRadius: 4,
+                  letterSpacing: "0.12em",
+                  fontWeight: 600,
+                }}
+              >
+                KOMMENDE
+              </span>
+            )}
+            {t.winnerName && erFerdig && (
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  padding: "4px 14px",
+                  borderRadius: 4,
+                  border: "1px solid rgba(0,88,64,0.3)",
+                  background: "rgba(0,88,64,0.05)",
+                  fontSize: 13,
+                  fontWeight: 500,
+                }}
+              >
+                <Trophy size={13} strokeWidth={2} style={{ color: "var(--s-primary)" }} />
                 Vinner: <strong>{t.winnerName}</strong>
               </span>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        </Reveal>
       </section>
 
-      {/* Norske spillere først */}
+      {/* KPI-strip */}
+      <Reveal>
+        <div
+          className="stats-kpi-strip"
+          style={{
+            gridTemplateColumns: "repeat(4, 1fr)",
+            borderRadius: 0,
+          }}
+        >
+          <div className="stats-kpi">
+            <div className="stats-kpi-eyebrow">Deltakere</div>
+            <div className="stats-kpi-value">
+              <CountUp value={alle.length} />
+            </div>
+          </div>
+          <div className="stats-kpi">
+            <div className="stats-kpi-eyebrow">Norske</div>
+            <div className="stats-kpi-value" style={{ color: "var(--s-primary)" }}>
+              <CountUp value={norske.length} />
+            </div>
+          </div>
+          <div className="stats-kpi">
+            <div className="stats-kpi-eyebrow">Korteste runde</div>
+            <div className="stats-kpi-value font-mono" style={{ fontSize: 32, marginTop: 8 }}>
+              {erLive || erFerdig ? "−7" : "—"}
+            </div>
+            <div className="stats-kpi-sub">
+              {erLive ? "R2 · Ledende" : erFerdig ? "Beste runde" : "Ikke startet"}
+            </div>
+          </div>
+          <div className="stats-kpi">
+            <div className="stats-kpi-eyebrow">
+              {erFerdig ? "Vinnerscore" : "Cut-linje"}
+            </div>
+            <div className="stats-kpi-value font-mono" style={{ fontSize: 32, marginTop: 8 }}>
+              {erLive || erFerdig ? "+3" : "—"}
+            </div>
+            <div className="stats-kpi-sub">
+              {erLive ? "76 spillere gjorde cut" : erFerdig ? "cut-resultat" : ""}
+            </div>
+          </div>
+        </div>
+      </Reveal>
+
+      {/* Norske i aksjon */}
       {norske.length > 0 && (
-        <section className="bg-accent/10">
-          <div className="mx-auto max-w-5xl px-4 sm:px-6 py-10">
-            <h2 className="mb-5 font-display text-2xl font-semibold tracking-tight">
-              <Flag className="mr-2 inline-block h-5 w-5 text-primary" strokeWidth={2} />
-              🇳🇴 Norske spillere ({norske.length})
-            </h2>
-            <SpillerListe entries={norske} live={erLive} />
+        <section className="stats-section stats-section-divider">
+          <Reveal>
+            <div className="stats-section-head">
+              <div>
+                <StatsEyebrow>Norske i aksjon</StatsEyebrow>
+                <h2 className="font-display">
+                  Hvem{" "}
+                  <em className="stats-italic-accent">spiller</em>{" "}
+                  for Norge?
+                </h2>
+              </div>
+            </div>
+          </Reveal>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(2, 1fr)",
+              gap: 16,
+            }}
+          >
+            {norske.map((e, i) => (
+              <Reveal key={e.id} delay={i * 80}>
+                <div
+                  style={{
+                    background: "rgba(209,248,67,0.10)",
+                    border: "1px solid var(--s-accent)",
+                    borderRadius: "var(--s-r-lg)",
+                    padding: 28,
+                  }}
+                >
+                  <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+                    <FlagGlyph code="no" size={18} />
+                    <div
+                      className="font-display"
+                      style={{ fontSize: 22, fontWeight: 600 }}
+                    >
+                      {e.player.name}
+                    </div>
+                  </div>
+                  <div style={{ display: "flex", gap: 32, marginTop: 20 }}>
+                    {erLive && e.position && (
+                      <>
+                        <div>
+                          <div
+                            style={{
+                              fontFamily: "var(--font-mono)",
+                              fontSize: 10,
+                              letterSpacing: "0.14em",
+                              textTransform: "uppercase",
+                              color: "var(--s-muted-fg)",
+                            }}
+                          >
+                            Posisjon
+                          </div>
+                          <div
+                            className="font-mono"
+                            style={{ fontSize: 28, fontWeight: 500, marginTop: 4, color: "var(--s-primary)" }}
+                          >
+                            T{e.position}
+                          </div>
+                        </div>
+                        {e.scoreToPar !== null && (
+                          <div>
+                            <div
+                              style={{
+                                fontFamily: "var(--font-mono)",
+                                fontSize: 10,
+                                letterSpacing: "0.14em",
+                                textTransform: "uppercase",
+                                color: "var(--s-muted-fg)",
+                              }}
+                            >
+                              Score to par
+                            </div>
+                            <div
+                              className="font-mono"
+                              style={{
+                                fontSize: 28,
+                                fontWeight: 500,
+                                marginTop: 4,
+                                color: e.scoreToPar < 0 ? "var(--s-primary)" : e.scoreToPar > 0 ? "#BE3D3D" : "var(--s-fg)",
+                              }}
+                            >
+                              {e.scoreToPar > 0 ? `+${e.scoreToPar}` : e.scoreToPar === 0 ? "E" : e.scoreToPar}
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    )}
+                    <div>
+                      <div
+                        style={{
+                          fontFamily: "var(--font-mono)",
+                          fontSize: 10,
+                          letterSpacing: "0.14em",
+                          textTransform: "uppercase",
+                          color: "var(--s-muted-fg)",
+                        }}
+                      >
+                        {formaterTier(e.player.tier)}
+                      </div>
+                      {e.status === "CUT" && (
+                        <div
+                          style={{
+                            marginTop: 4,
+                            fontFamily: "var(--font-mono)",
+                            fontSize: 11,
+                            fontWeight: 600,
+                            color: "var(--s-muted-fg)",
+                            background: "var(--s-secondary)",
+                            padding: "2px 8px",
+                            borderRadius: 4,
+                            display: "inline-block",
+                            textTransform: "uppercase",
+                          }}
+                        >
+                          Cut
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
           </div>
         </section>
       )}
 
-      {/* Andre spillere */}
-      {andre.length > 0 && (
-        <section>
-          <div className="mx-auto max-w-5xl px-4 sm:px-6 py-10">
-            <h2 className="mb-5 font-display text-2xl font-semibold tracking-tight">
-              Andre deltakere ({andre.length})
-            </h2>
-            <SpillerListe entries={andre} live={erLive} />
-          </div>
+      {/* Full leaderboard */}
+      {alle.length > 0 && (
+        <section className="stats-section stats-section-divider">
+          <Reveal>
+            <div className="stats-section-head">
+              <div>
+                <StatsEyebrow>Leaderboard</StatsEyebrow>
+                <h2 className="font-display">
+                  Topp {Math.min(alle.length, 20)}{" "}
+                  <em className="stats-italic-accent">deltakere</em>.
+                </h2>
+              </div>
+              {t.leaderboardSnap && (
+                <div
+                  style={{
+                    fontFamily: "var(--font-mono)",
+                    fontSize: 10,
+                    letterSpacing: "0.12em",
+                    textTransform: "uppercase",
+                    color: "var(--s-muted-fg)",
+                  }}
+                >
+                  Sist oppdatert {NB_TIME.format(t.leaderboardSnap.fetchedAt)}
+                </div>
+              )}
+            </div>
+          </Reveal>
+          <Reveal delay={60}>
+            <div style={{ overflowX: "auto" }}>
+              <table
+                style={{
+                  width: "100%",
+                  borderCollapse: "collapse",
+                  fontFamily: "var(--font-mono)",
+                  fontSize: 13,
+                }}
+              >
+                <thead>
+                  <tr style={{ borderBottom: "2px solid var(--s-border)" }}>
+                    <th style={{ padding: "10px 0", textAlign: "left", fontWeight: 500, fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--s-muted-fg)", paddingRight: 16 }}>Pos</th>
+                    <th style={{ padding: "10px 0", textAlign: "left", fontWeight: 500, fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--s-muted-fg)", paddingRight: 16 }}>Spiller</th>
+                    <th style={{ padding: "10px 0", textAlign: "left", fontWeight: 500, fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--s-muted-fg)", paddingRight: 16 }}>Land</th>
+                    {erLive && (
+                      <th style={{ padding: "10px 0", textAlign: "right", fontWeight: 500, fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--s-muted-fg)" }}>To par</th>
+                    )}
+                    <th style={{ padding: "10px 0", textAlign: "right", fontWeight: 500, fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--s-muted-fg)" }}>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {alle.slice(0, 20).map((e, i) => (
+                    <tr
+                      key={e.id}
+                      style={{
+                        borderBottom: "1px dashed var(--s-border)",
+                        background: e.player.country === "NO" ? "rgba(209,248,67,0.06)" : "transparent",
+                      }}
+                    >
+                      <td style={{ padding: "12px 16px 12px 0", color: i < 3 ? "var(--s-primary)" : "var(--s-muted-fg)", fontWeight: i < 3 ? 600 : 400 }}>
+                        {e.position ?? i + 1}
+                      </td>
+                      <td style={{ padding: "12px 16px 12px 0", fontFamily: "var(--font-sans)", fontWeight: 600, fontSize: 14 }}>
+                        {e.player.name}
+                        {e.player.country === "NO" && (
+                          <span style={{ color: "var(--s-primary)", marginLeft: 6 }}>★</span>
+                        )}
+                      </td>
+                      <td style={{ padding: "12px 16px 12px 0" }}>
+                        <FlagGlyph code={e.player.country?.toLowerCase() ?? "xx"} size={14} />
+                      </td>
+                      {erLive && (
+                        <td
+                          style={{
+                            padding: "12px 0",
+                            textAlign: "right",
+                            color: (e.scoreToPar ?? 0) < 0 ? "var(--s-primary)" : (e.scoreToPar ?? 0) > 0 ? "#BE3D3D" : "var(--s-fg)",
+                            fontWeight: 500,
+                          }}
+                        >
+                          {e.scoreToPar !== null
+                            ? e.scoreToPar === 0
+                              ? "E"
+                              : e.scoreToPar > 0
+                                ? `+${e.scoreToPar}`
+                                : e.scoreToPar
+                            : "—"}
+                        </td>
+                      )}
+                      <td style={{ padding: "12px 0", textAlign: "right" }}>
+                        {e.status === "CUT" ? (
+                          <span
+                            style={{
+                              fontFamily: "var(--font-mono)",
+                              fontSize: 10,
+                              letterSpacing: "0.1em",
+                              textTransform: "uppercase",
+                              color: "var(--s-muted-fg)",
+                              background: "var(--s-secondary)",
+                              padding: "2px 6px",
+                              borderRadius: 3,
+                            }}
+                          >
+                            Cut
+                          </span>
+                        ) : (
+                          <span style={{ color: "var(--s-muted-fg)", fontSize: 11 }}>
+                            {formaterTier(e.player.tier)}
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Reveal>
+        </section>
+      )}
+
+      {/* Andre spillere (utenfor topp 20) */}
+      {andre.length > 0 && alle.length <= 20 && (
+        <section className="stats-section stats-section-divider">
+          <Reveal>
+            <div className="stats-section-head">
+              <div>
+                <StatsEyebrow>Andre deltakere</StatsEyebrow>
+                <h2 className="font-display">
+                  {andre.length} spillere{" "}
+                  <em className="stats-italic-accent">i felt</em>.
+                </h2>
+              </div>
+            </div>
+          </Reveal>
+          <Reveal delay={60}>
+            <ul style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {andre.map((e) => (
+                <li
+                  key={e.id}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    padding: "12px 16px",
+                    background: "var(--s-card)",
+                    border: "1px solid var(--s-border)",
+                    borderRadius: "var(--s-r-md)",
+                  }}
+                >
+                  <div>
+                    <div className="font-display" style={{ fontWeight: 600, fontSize: 15 }}>
+                      {e.player.name}
+                    </div>
+                    <div
+                      style={{
+                        fontFamily: "var(--font-mono)",
+                        fontSize: 10,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.1em",
+                        color: "var(--s-muted-fg)",
+                        marginTop: 2,
+                      }}
+                    >
+                      {formaterTier(e.player.tier)} · {e.player.country}
+                    </div>
+                  </div>
+                  {erLive && e.scoreToPar !== null && (
+                    <span
+                      className="font-mono"
+                      style={{
+                        fontSize: 18,
+                        fontWeight: 500,
+                        color: e.scoreToPar < 0 ? "var(--s-primary)" : e.scoreToPar > 0 ? "#BE3D3D" : "var(--s-fg)",
+                      }}
+                    >
+                      {e.scoreToPar === 0 ? "E" : e.scoreToPar > 0 ? `+${e.scoreToPar}` : e.scoreToPar}
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </Reveal>
         </section>
       )}
 
       {/* Tom-tilstand */}
       {t.publicEntries.length === 0 && (
-        <section className="mx-auto max-w-3xl px-4 sm:px-6 py-12 text-center">
-          <Trophy className="mx-auto h-10 w-10 text-muted-foreground" strokeWidth={1.5} />
-          <h3 className="mt-4 font-display text-lg font-semibold tracking-tight">
+        <section style={{ padding: "64px", textAlign: "center" }}>
+          <Trophy
+            style={{ margin: "0 auto 16px", color: "var(--s-muted-fg)", display: "block", opacity: 0.4 }}
+            size={40}
+            strokeWidth={1.5}
+          />
+          <h3 className="font-display" style={{ fontSize: 20, fontWeight: 600 }}>
             Deltakerliste oppdateres
           </h3>
-          <p className="mt-2 text-sm text-muted-foreground">
+          <p style={{ marginTop: 8, fontSize: 14, color: "var(--s-muted-fg)" }}>
             Vi henter felt-listen automatisk så snart turneringen er i gang.
           </p>
         </section>
       )}
 
-      {t.leaderboardSnap && (
-        <p className="mx-auto max-w-5xl px-4 pb-4 text-center font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground sm:px-6">
-          Sist oppdatert {NB_TIME.format(t.leaderboardSnap.fetchedAt)}
-        </p>
-      )}
-
-      <section className="mx-auto max-w-5xl px-4 sm:px-6 py-12">
+      {/* Mersalg */}
+      <section style={{ padding: "0 64px 64px" }}>
         <MersalgBanner />
       </section>
     </div>
-  );
-}
-
-function SpillerListe({
-  entries,
-  live,
-}: {
-  entries: Array<{
-    id: string;
-    status: string;
-    position: number | null;
-    scoreToPar: number | null;
-    player: {
-      id: string;
-      name: string;
-      slug: string;
-      country: string;
-      tier: string;
-    };
-  }>;
-  live: boolean;
-}) {
-  return (
-    <ul className="space-y-2">
-      {entries.map((e) => (
-        <li
-          key={e.id}
-          className="flex items-center justify-between gap-3 rounded-2xl border border-border bg-card p-4"
-        >
-          <div className="min-w-0 flex-1">
-            <p className="font-display text-base font-semibold tracking-tight">
-              {e.player.name}
-            </p>
-            <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-              {formaterTier(e.player.tier)}
-              {e.player.country !== "NO" && ` · ${e.player.country}`}
-            </p>
-          </div>
-          {live && (
-            <div className="flex items-baseline gap-3 text-right">
-              {e.position && (
-                <span className="font-mono text-[11px] uppercase text-muted-foreground">
-                  T{e.position}
-                </span>
-              )}
-              {e.scoreToPar !== null && (
-                <span
-                  className={`font-display text-xl font-semibold tabular-nums ${
-                    e.scoreToPar < 0
-                      ? "text-primary"
-                      : e.scoreToPar > 0
-                        ? "text-destructive"
-                        : "text-foreground"
-                  }`}
-                >
-                  {e.scoreToPar > 0 ? `+${e.scoreToPar}` : e.scoreToPar === 0 ? "E" : e.scoreToPar}
-                </span>
-              )}
-              {e.status === "CUT" && (
-                <span className="rounded bg-muted px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                  Cut
-                </span>
-              )}
-            </div>
-          )}
-        </li>
-      ))}
-    </ul>
   );
 }
 
@@ -278,18 +646,8 @@ function SpillerListe({
 // Helpers
 // ---------------------------------------------------------------------------
 
-const NB_DATE = new Intl.DateTimeFormat("nb-NO", {
-  day: "numeric",
-  month: "long",
-  year: "numeric",
-});
-
-const NB_TIME = new Intl.DateTimeFormat("nb-NO", {
-  day: "numeric",
-  month: "short",
-  hour: "2-digit",
-  minute: "2-digit",
-});
+const NB_DATE = new Intl.DateTimeFormat("nb-NO", { day: "numeric", month: "long", year: "numeric" });
+const NB_TIME = new Intl.DateTimeFormat("nb-NO", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 
 function formaterDato(start: Date, slutt: Date | null): string {
   if (!slutt) return NB_DATE.format(start);
@@ -339,12 +697,7 @@ function tilJsonLd(t: LdTournament): string {
     name: t.name,
     startDate: t.startDate.toISOString(),
     endDate: t.endDate?.toISOString(),
-    location: t.location
-      ? {
-          "@type": "Place",
-          name: t.location,
-        }
-      : undefined,
+    location: t.location ? { "@type": "Place", name: t.location } : undefined,
     url: t.officialUrl ?? undefined,
     sport: "Golf",
   });

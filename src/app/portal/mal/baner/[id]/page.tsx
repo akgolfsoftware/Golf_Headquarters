@@ -5,7 +5,7 @@
  * Detalj-side per bane med hero, KPI-strip, tabs (hull/tidslinje/strategi/foto).
  */
 import Link from "next/link";
-import { MapPin, Plus, Share2, User, Flag, BarChart3, NotebookPen, Camera } from "lucide-react";
+import { MapPin, Plus, Share2, User } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
@@ -143,8 +143,6 @@ export default async function BaneDetailPage({
     </div>
   );
 }
-
-export const BANE_TAB_ICONS = { Flag, BarChart3, NotebookPen, Camera };
 
 function MetaItem({ k, v }: { k: string; v: string }) {
   return (
