@@ -3,6 +3,53 @@
  * All numbers and dates relative to 2026-05-25.
  */
 
+// ── LegalPattern fixture ──────────────────────────────────────────
+import type { LegalSection } from "@/components/v2/patterns/legal";
+
+export const DEMO_LEGAL_SECTIONS: LegalSection[] = [
+  {
+    id: "intro",
+    number: "1",
+    title: "Innsamlede opplysninger",
+    content:
+      "AK Golf Academy samler inn folgende kategorier av personopplysninger om deg:\n\n- Identitet (navn, e-post, telefon, fodselsdato)\n- Idrettsdata (HCP, treningshistorikk, statistikk)\n- Brukerdata (sider du besoker, klikk, tid brukt)\n\nVi samler kun inn det vi trenger for a levere tjenesten.",
+  },
+  {
+    id: "behandling",
+    number: "2",
+    title: "Hvordan vi behandler dataene",
+    content:
+      "Vi behandler dine opplysninger basert pa samtykke (GDPR Art. 6 nr. 1 bokstav a) eller berettiget interesse (Art. 6 nr. 1 bokstav f).\n\nLagring skjer i Supabase EU-region (Frankfurt). Vi deler ikke data med tredjeparter utenfor EU/EOS.",
+  },
+  {
+    id: "rettigheter",
+    number: "3",
+    title: "Dine rettigheter",
+    content:
+      "Du har rett til:\n\n- Innsyn i hvilke data vi har om deg\n- Retting av feilaktige opplysninger\n- Sletting (\"retten til a bli glemt\")\n- Dataportabilitet (eksportere data)\n- Trekke tilbake samtykke nar som helst\n\nDu kan utove disse rettighetene ved a kontakte personvern@akgolf.no.",
+  },
+];
+
+// ── EmailTemplateEditorPattern fixture ────────────────────────────
+import type { EmailTemplate } from "@/components/v2/patterns/email-template-editor";
+
+export const DEMO_EMAIL_TEMPLATE: EmailTemplate = {
+  id: "t1",
+  name: "Velkomst — ny spiller",
+  status: "PUBLISHED",
+  subject: "Velkommen til AK Golf Academy, {{spiller_navn}}!",
+  from: "velkommen@akgolf.no",
+  toRule: "spiller",
+  body: `Hei {{spiller_navn}},\n\nVelkommen til AK Golf Academy. Vi gleder oss til å jobbe med deg.\n\nDin første økt er booket {{første_økt_dato}} kl {{første_økt_tid}} med {{coach_navn}}.\n\nMvh,\nAK Golf Academy`,
+  variables: [
+    { key: "spiller_navn", example: "Øyvind Rohjan" },
+    { key: "første_økt_dato", example: "fredag 30. mai" },
+    { key: "første_økt_tid", example: "10:00" },
+    { key: "coach_navn", example: "Anders Kristiansen" },
+  ],
+  lastEdited: "2026-05-22 14:15",
+};
+
 // ──────────────────────────────────────────────────────────────
 // Types
 // ──────────────────────────────────────────────────────────────
@@ -175,6 +222,21 @@ export type CoachThread = {
   body: string;
   date: string;
   unread: boolean;
+};
+
+export type GoalAxis = "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";
+export type GoalStatus = "ACTIVE" | "ACHIEVED" | "OVERDUE";
+
+export type Goal = {
+  id: string;
+  title: string;
+  axis: GoalAxis;
+  progress: number; // 0-100
+  deadline: string; // formatted display string
+  daysLeft: number;
+  milestonesDone: number;
+  milestonesTotal: number;
+  status: GoalStatus;
 };
 
 // ──────────────────────────────────────────────────────────────
@@ -482,6 +544,116 @@ export const RECENT_ROUNDS: Round[] = [
   { id: "rd5", date: "28. apr", course: "Kristiansand GK", score: 70, par: 72, sg: 1.6 },
 ];
 
+export const DEMO_GOALS: Goal[] = [
+  {
+    id: "g1",
+    title: "Senk HCP til -3.0",
+    axis: "TEK",
+    progress: 65,
+    deadline: "31. desember 2026",
+    daysLeft: 220,
+    milestonesDone: 5,
+    milestonesTotal: 8,
+    status: "ACTIVE",
+  },
+  {
+    id: "g2",
+    title: "Putting-statistikk < 1.7",
+    axis: "SLAG",
+    progress: 40,
+    deadline: "1. august 2026",
+    daysLeft: 68,
+    milestonesDone: 2,
+    milestonesTotal: 5,
+    status: "ACTIVE",
+  },
+  {
+    id: "g3",
+    title: "Spil 12 turneringer",
+    axis: "TURN",
+    progress: 50,
+    deadline: "31. oktober 2026",
+    daysLeft: 159,
+    milestonesDone: 6,
+    milestonesTotal: 12,
+    status: "ACTIVE",
+  },
+  {
+    id: "g4",
+    title: "FYS-screening pass",
+    axis: "FYS",
+    progress: 100,
+    deadline: "5. mai 2026",
+    daysLeft: -20,
+    milestonesDone: 4,
+    milestonesTotal: 4,
+    status: "ACHIEVED",
+  },
+  {
+    id: "g5",
+    title: "Bane-recon Sorlandsapent",
+    axis: "SPILL",
+    progress: 25,
+    deadline: "21. mai 2026",
+    daysLeft: -4,
+    milestonesDone: 1,
+    milestonesTotal: 4,
+    status: "OVERDUE",
+  },
+];
+
+// ──────────────────────────────────────────────────────────────
+// Import pattern fixtures
+// ──────────────────────────────────────────────────────────────
+
+import type { ImportColumn, ImportRow } from "@/components/v2/patterns/import";
+
+export const DEMO_IMPORT_COLUMNS: ImportColumn[] = [
+  { key: "name", label: "Fullt navn", required: true },
+  { key: "email", label: "E-post", required: true },
+  { key: "hcp", label: "HCP", required: false },
+  { key: "homeClub", label: "Hjemmeklubb", required: false },
+];
+
+export const DEMO_IMPORT_ROWS: ImportRow[] = [
+  {
+    __row: 1,
+    __status: "OK",
+    __errors: [],
+    name: "Øyvind Rohjan",
+    email: "oyvind@example.com",
+    hcp: -2.1,
+    homeClub: "GFGK",
+  },
+  {
+    __row: 2,
+    __status: "OK",
+    __errors: [],
+    name: "Markus R.P.",
+    email: "markus@example.com",
+    hcp: 3.5,
+    homeClub: "GFGK",
+  },
+  {
+    __row: 3,
+    __status: "WARNING",
+    __errors: ["HCP mangler"],
+    name: "Sofie Larsen",
+    email: "sofie@example.com",
+    hcp: null,
+    homeClub: "GFGK",
+  },
+  {
+    __row: 4,
+    __status: "ERROR",
+    __errors: ["Ugyldig e-post-format"],
+    name: "Test Person",
+    email: "ugyldig-email",
+    hcp: 12.0,
+    homeClub: "",
+  },
+];
+
 export const COACH_THREADS: CoachThread[] = [
   {
     id: "t1",
@@ -509,5 +681,240 @@ export const COACH_THREADS: CoachThread[] = [
     body: "CMJ-tall fra mandag ser bra ut — power-output er opp 6%. Vi kjører neste batterie 2. juni.",
     date: "21. mai · 11:02",
     unread: false,
+  },
+];
+
+// ──────────────────────────────────────────────────────────────
+// Notification center fixtures (NotificationCenterPattern)
+// ──────────────────────────────────────────────────────────────
+
+import type { Notification } from "@/components/v2/patterns/notification-center";
+
+export const DEMO_NOTIFICATIONS: Notification[] = [
+  {
+    id: "n1",
+    type: "COACH",
+    title: "Ny melding fra Anders K",
+    body: "Bra jobba med putting i går. Hold rytmen...",
+    time: "2026-05-25T08:38:00Z",
+    timeLabel: "for 12 min siden",
+    href: "/portal/coach/melding/n1",
+    unread: true,
+  },
+  {
+    id: "n2",
+    type: "BOOKING",
+    title: "Booking bekreftet — onsdag 14:00",
+    body: "TrackMan-økt med Anders K · Performance Studio",
+    time: "2026-05-25T07:15:00Z",
+    timeLabel: "for 2t siden",
+    href: "/portal/booking/b1",
+    unread: true,
+  },
+  {
+    id: "n3",
+    type: "MILESTONE",
+    title: "Mål oppnådd: FYS-screening",
+    body: "Du fullførte alle 4 milepæler...",
+    time: "2026-05-24T16:00:00Z",
+    timeLabel: "i går 16:00",
+    href: "/portal/mal/goal/g4",
+    unread: false,
+  },
+  {
+    id: "n4",
+    type: "ALERT",
+    title: "Test forfalt: CMJ vertical jump",
+    body: "Skulle vært gjennomført 22. mai. Reservér ny tid...",
+    time: "2026-05-24T08:00:00Z",
+    timeLabel: "i går 08:00",
+    href: "/portal/tren/tester/cmj",
+    unread: true,
+  },
+  {
+    id: "n5",
+    type: "SYSTEM",
+    title: "Ny app-versjon tilgjengelig",
+    body: "v2.0 inneholder forbedret kalender og itinerary...",
+    time: "2026-05-22T10:00:00Z",
+    timeLabel: "for 3 dager siden",
+    href: "/portal/meg/innstillinger",
+    unread: false,
+  },
+];
+
+// ──────────────────────────────────────────────────────────────
+// Audit log fixtures (AuditLogPattern)
+// ──────────────────────────────────────────────────────────────
+
+import type { AuditEvent } from "@/components/v2/patterns/audit-log";
+
+export const DEMO_AUDIT_EVENTS: AuditEvent[] = [
+  {
+    id: "a1",
+    timestamp: "2026-05-25T14:32:00Z",
+    timeLabel: "i dag 14:32",
+    actor: { id: "ak", name: "Anders Kristiansen", initials: "AK", role: "Head Coach" },
+    action: "CREATE",
+    actionLabel: "opprettet plan",
+    target: { type: "plan", id: "p1", label: "Spesialiseringsplan vår 2026", href: "/admin/plans/p1" },
+  },
+  {
+    id: "a2",
+    timestamp: "2026-05-25T13:15:00Z",
+    timeLabel: "i dag 13:15",
+    actor: { id: "or", name: "Øyvind Rohjan", initials: "ØR", role: "Spiller" },
+    action: "LOGIN",
+    actionLabel: "logget inn",
+    target: { type: "session", id: "s", label: "PlayerHQ" },
+    ipAddress: "84.215.32.18",
+  },
+  {
+    id: "a3",
+    timestamp: "2026-05-25T11:48:00Z",
+    timeLabel: "i dag 11:48",
+    actor: { id: "ak", name: "Anders Kristiansen", initials: "AK", role: "Head Coach" },
+    action: "APPROVE",
+    actionLabel: "godkjente",
+    target: { type: "drill", id: "d1", label: "Putting-drill 1.5m gate", href: "/admin/drills/d1" },
+  },
+  {
+    id: "a4",
+    timestamp: "2026-05-24T16:22:00Z",
+    timeLabel: "i går 16:22",
+    actor: { id: "system", name: "System", initials: "SY", role: "Automat" },
+    action: "UPDATE",
+    actionLabel: "synkroniserte WAGR-data",
+    target: { type: "import", id: "wagr-2026-05-24", label: "WAGR weekly sync" },
+    details: "Importerte 1247 nye rangeringer. 12 endringer for AK-spillere.",
+  },
+  {
+    id: "a5",
+    timestamp: "2026-05-24T09:01:00Z",
+    timeLabel: "i går 09:01",
+    actor: { id: "ak", name: "Anders Kristiansen", initials: "AK", role: "Head Coach" },
+    action: "DELETE",
+    actionLabel: "slettet booking",
+    target: { type: "booking", id: "b99", label: "Markus R.P. — 25. mai 10:00" },
+  },
+];
+
+// ── ConsentPattern fixture ────────────────────────────────────────
+import type { ConsentItem } from "@/components/v2/patterns/consent";
+
+export const DEMO_CONSENT_ITEMS: ConsentItem[] = [
+  {
+    id: "c1",
+    title: "Vilkår for bruk",
+    body: "Jeg har lest og godtar AK Golf Academy sine brukervilkår.",
+    required: true,
+    accepted: false,
+  },
+  {
+    id: "c2",
+    title: "Personvern (GDPR)",
+    body: "Jeg samtykker til at AK Golf Academy lagrer og behandler personopplysninger som beskrevet i personvernerklæringen.",
+    subItems: [
+      "Navn, e-post, HCP, treningsdata",
+      "Lagret i Norge (Supabase EU-region)",
+      "Slettes ved oppsigelse",
+    ],
+    required: true,
+    accepted: false,
+  },
+  {
+    id: "c3",
+    title: "Foreldresamtykke (under 18)",
+    body: "Som foresatt godkjenner jeg at min datter/sønn bruker AK Golf Academy-plattformen.",
+    required: true,
+    accepted: false,
+  },
+  {
+    id: "c4",
+    title: "Marketing-kommunikasjon",
+    body: "Jeg ønsker å motta nyhetsbrev og tilbud fra AK Golf Academy.",
+    required: false,
+    accepted: false,
+  },
+];
+
+// ──────────────────────────────────────────────────────────────
+// Timeline — milepæl-typer og demo-data
+// ──────────────────────────────────────────────────────────────
+
+export type MilestoneType =
+  | "GOAL_ACHIEVED"
+  | "PLAN_COMPLETED"
+  | "TOURNAMENT_RESULT"
+  | "PR_NEW"
+  | "TEST_PASSED"
+  | "MILESTONE_OTHER";
+
+export type MilestoneAxis = "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";
+
+export type Milestone = {
+  id: string;
+  date: string; // ISO
+  dateLabel: { day: string; month: string; year?: string };
+  type: MilestoneType;
+  axis?: MilestoneAxis;
+  title: string;
+  body?: string;
+  photo?: string;
+  metric?: { label: string; value: string; tone?: "accent" | "default" };
+  href?: string;
+};
+
+export const DEMO_MILESTONES: Milestone[] = [
+  {
+    id: "m1",
+    date: "2026-05-20",
+    dateLabel: { day: "20", month: "MAI" },
+    type: "PR_NEW",
+    axis: "TEK",
+    title: "Personlig rekord — sving-tempo 3.0:1",
+    body: "Trackman-logget over 10 svinger. Konsistens pa 92%.",
+    metric: { label: "tempo-konsistens", value: "+12% vs forrige mnd", tone: "accent" },
+  },
+  {
+    id: "m2",
+    date: "2026-05-15",
+    dateLabel: { day: "15", month: "MAI" },
+    type: "PLAN_COMPLETED",
+    axis: "FYS",
+    title: "Fullfort: FYS-fase 2 — styrke-blokk",
+    body: "8 ukers FYS-plan med fokus pa kjernemuskulatur og rotasjon.",
+    photo: "/images/akgolf/AK-Golf-Academy-9.webp",
+  },
+  {
+    id: "m3",
+    date: "2026-05-08",
+    dateLabel: { day: "8", month: "MAI" },
+    type: "TOURNAMENT_RESULT",
+    axis: "TURN",
+    title: "Larviksapent — 4. plass",
+    body: "67 + 69 + 71 = 207. Beste av kategorien.",
+    metric: { label: "vinnermargin", value: "-3 slag fra topp", tone: "default" },
+    href: "/portal/turneringer/larvik-2026",
+  },
+  {
+    id: "m4",
+    date: "2026-04-22",
+    dateLabel: { day: "22", month: "APR" },
+    type: "GOAL_ACHIEVED",
+    axis: "SLAG",
+    title: "Mal oppnadd: Putting < 1.8",
+    body: "Snitt 1.76 over siste 10 runder.",
+    metric: { label: "putting-snitt", value: "1.76", tone: "accent" },
+    href: "/portal/mal/goal/g-putting",
+  },
+  {
+    id: "m5",
+    date: "2026-03-15",
+    dateLabel: { day: "15", month: "MAR", year: "2026" },
+    type: "TEST_PASSED",
+    axis: "FYS",
+    title: "CMJ vertical jump — 64 cm",
+    body: "Pass A-niva for U18. Forbedring fra 58 cm i januar.",
   },
 ];

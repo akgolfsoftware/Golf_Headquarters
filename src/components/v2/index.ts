@@ -56,3 +56,63 @@ export { default as GhostNumber, type GhostNumberProps } from "./editorial/ghost
 
 // ── Modals ─────────────────────────────────────────────────────
 export { default as StubModal, type StubModalProps } from "./modals/stub-modal";
+
+// ── Patterns (page-level layout patterns) ─────────────────────
+export {
+  default as GoalsHubPattern,
+  type Goal,
+  type GoalsHubPatternProps,
+} from "./patterns/goals-hub";
+
+export {
+  default as NotificationCenterPattern,
+  type Notification,
+  type NotificationType,
+  type NotificationCenterPatternProps,
+} from "./patterns/notification-center";
+
+export {
+  default as AuditLogPattern,
+  type AuditEvent,
+  type AuditLogPatternProps,
+} from "./patterns/audit-log";
+
+export {
+  default as EmailTemplateEditorPattern,
+  type EmailTemplate,
+  type EmailTemplateEditorPatternProps,
+} from "./patterns/email-template-editor";
+
+export {
+  default as ImportPattern,
+  type ImportColumn,
+  type ImportRow,
+  type ImportPatternProps,
+} from "./patterns/import";
+
+export {
+  default as LiveSessionPattern,
+  type LiveSessionAxis,
+  type LiveSessionPhase,
+  type LiveSessionPatternProps,
+} from "./patterns/live-session";
+
+export {
+  TimelinePattern,
+  type Milestone,
+  type MilestoneType,
+  type MilestoneAxis,
+  type TimelinePatternProps,
+} from "./patterns/timeline";
+
+export {
+  ConsentPattern,
+  type ConsentItem,
+  type ConsentPatternProps,
+} from "./patterns/consent";
+
+export {
+  default as LegalPattern,
+  type LegalSection,
+  type LegalPatternProps,
+} from "./patterns/legal";
