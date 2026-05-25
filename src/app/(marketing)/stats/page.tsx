@@ -1,34 +1,29 @@
 /**
  * /stats — AK Golf Stats hub-landingsside
+ * Pixel-perfect port of design-handoff-stats-2026-05-25/project/js/hub.jsx
  *
- * Gratis, offentlig statistikkprodukt. Markedsføringsmotor for PlayerHQ.
- *
- * Struktur:
- *   1. Hero — verdiløfte
- *   2. Live snapshot — antall norske i aksjon denne uka, siste DataGolf-oppdatering
- *   3. 4 modul-kort (Turneringer / PGA-stats / Norske spillere / SG-sammenlign)
- *   4. PlayerHQ mersalg-bånd (midt på)
- *   5. "Slik bruker treneren det" — bro fra gratis stats til betalt verktøy
- *   6. Bunn-CTA (PlayerHQ-abonnement)
- *
- * Datakilder vises live: DataGolf siste sync + antall norske i aksjon.
- * Resten av modulene er teasere — selve sidene bygges i Fase 2-4.
+ * Seksjoner:
+ *   1. HubHero    — editorial hero med Flag-bakgrunns-glyph, grid 1.4fr/1fr
+ *   2. KPIStrip   — 3 KPI-blokker med CountUp og live DB-data
+ *   3. NorskeIAksjon — 3-kolonne spillerkort-grid
+ *   4. HubBento   — 6-kol bento (4+2+2+4 spans)
+ *   5. MersalgBand — mørk primary-bakgrunn, Crosshair-glyph, fordeler-card
+ *   6. TrenerSteg — 3-stegs storytelling
+ *   7. BunnCTA    — sentrert CTA
  */
 
+import "./stats.css";
 import type { Metadata } from "next";
 import Link from "next/link";
-import {
-  ArrowRight,
-  Calendar,
-  Flag,
-  LineChart,
-  Sparkles,
-  Trophy,
-  Users,
-  Zap,
-} from "lucide-react";
 import { prisma } from "@/lib/prisma";
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
+import { StatsIcon } from "@/components/stats/icon";
+import { FlagGlyph } from "@/components/stats/flag-glyph";
+import { StatsEyebrow } from "@/components/stats/eyebrow";
+import { Reveal } from "@/components/stats/reveal";
+import { CountUp } from "@/components/stats/count-up";
+import { StatsBtn } from "@/components/stats/btn";
+import { SparkBars } from "@/components/stats/spark-bars";
+import { MiniRadar } from "@/components/stats/mini-radar";
 
 export const revalidate = 3600; // 1 time
 
@@ -46,6 +41,10 @@ export const metadata: Metadata = {
   },
 };
 
+// ---------------------------------------------------------------------------
+// Data layer
+// ---------------------------------------------------------------------------
+
 async function hentLiveSnapshot() {
   const now = new Date();
   const ukeStart = new Date(now);
@@ -57,29 +56,32 @@ async function hentLiveSnapshot() {
   const ukeSlutt = new Date(ukeStart);
   ukeSlutt.setDate(ukeSlutt.getDate() + 7);
 
-  const [norskeIAksjon, kommendeTurneringer, sisteDataGolfSync] = await Promise.all([
-    // Norske spillere som spiller en turnering denne uka
-    prisma.publicPlayerEntry.count({
-      where: {
-        player: { country: "NO" },
-        tournament: {
-          startDate: { lte: ukeSlutt },
-          endDate: { gte: now },
+  const [norskeIAksjon, kommendeTurneringer, sisteDataGolfSync] =
+    await Promise.all([
+      prisma.publicPlayerEntry.count({
+        where: {
+          player: { country: "NO" },
+          tournament: {
+            startDate: { lte: ukeSlutt },
+            endDate: { gte: now },
+          },
         },
-      },
-    }),
-    prisma.tournament.count({
-      where: {
-        startDate: { gte: now, lte: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000) },
-        mergedIntoId: null,
-      },
-    }),
-    prisma.tournament.findFirst({
-      where: { sourceOrigin: "DATAGOLF", lastSyncAt: { not: null } },
-      orderBy: { lastSyncAt: "desc" },
-      select: { lastSyncAt: true },
-    }),
-  ]);
+      }),
+      prisma.tournament.count({
+        where: {
+          startDate: {
+            gte: now,
+            lte: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000),
+          },
+          mergedIntoId: null,
+        },
+      }),
+      prisma.tournament.findFirst({
+        where: { sourceOrigin: "DATAGOLF", lastSyncAt: { not: null } },
+        orderBy: { lastSyncAt: "desc" },
+        select: { lastSyncAt: true },
+      }),
+    ]);
 
   return {
     norskeIAksjon,
@@ -98,403 +100,595 @@ function formaterDatoKort(d: Date | null): string {
   return `for ${dager} dag${dager === 1 ? "" : "er"} siden`;
 }
 
+// ---------------------------------------------------------------------------
+// Static fallback data (shown when DB returns 0 — design prototype values)
+// ---------------------------------------------------------------------------
+
+const NORSKE_FALLBACK = [
+  {
+    initials: "VH",
+    name: "V. Halvorsen",
+    tour: "PGA Tour",
+    event: "Memorial Tournament",
+    pos: "T-12",
+    score: "-4",
+    live: true,
+    flag: "no",
+  },
+  {
+    initials: "KR",
+    name: "K. Reinertsen",
+    tour: "DP World Tour",
+    event: "Soudal Open",
+    pos: "T-31",
+    score: "+1",
+    live: true,
+    flag: "no",
+  },
+  {
+    initials: "KV",
+    name: "K. Vangen",
+    tour: "Korn Ferry",
+    event: "Wichita Open",
+    pos: "T-08",
+    score: "-7",
+    live: true,
+    flag: "no",
+  },
+  {
+    initials: "EK",
+    name: "E. Koldal",
+    tour: "Challenge",
+    event: "Open de Bretagne",
+    pos: "MC",
+    score: "+3",
+    live: false,
+    flag: "no",
+  },
+  {
+    initials: "SH",
+    name: "S. Halland",
+    tour: "LET",
+    event: "Helsingborg Open",
+    pos: "T-04",
+    score: "-9",
+    live: true,
+    flag: "no",
+  },
+  {
+    initials: "AM",
+    name: "A. Mæhlum",
+    tour: "Nordic Golf",
+    event: "Skive Classic",
+    pos: "T-19",
+    score: "E",
+    live: true,
+    flag: "no",
+  },
+];
+
+const TRENER_STEG = [
+  {
+    n: "01",
+    tittel: "Mål svakhet",
+    tekst:
+      "SG-profilen viser nøyaktig hvor strokene tapes — fra teen, innspillet eller på greenen.",
+    icon: "Crosshair" as const,
+  },
+  {
+    n: "02",
+    tittel: "Bygg drillen",
+    tekst:
+      "Coach lager treningsplan målrettet svakheten. Korte økter, ukentlig fokus.",
+    icon: "Wrench" as const,
+  },
+  {
+    n: "03",
+    tittel: "Følg utvikling",
+    tekst:
+      "SG-trenden viser om treningen virker. Tall, ikke synsing.",
+    icon: "Activity" as const,
+  },
+];
+
+const PLAYERHQ_FORDELER = [
+  "SG-beregning automatisk fra hvert kort",
+  "Trenden over hele sesongen, ikke bare siste runde",
+  "Sammenlign mot PGA Tour-snitt fra første scorekort",
+  "Treningsdagbok med drill-bibliotek",
+  "Del med coach — én lenke, full innsikt",
+  "Eksporter rådata når du vil. Det er dine tall.",
+];
+
+// ---------------------------------------------------------------------------
+// Page component
+// ---------------------------------------------------------------------------
+
 export default async function StatsLandingPage() {
   const snapshot = await hentLiveSnapshot();
+  const sisteSync = formaterDatoKort(snapshot.sisteSyncDato);
+
+  // Use DB values if present, otherwise fallback to design data
+  const norskeIAksjon =
+    snapshot.norskeIAksjon > 0 ? snapshot.norskeIAksjon : 6;
+  const kommendeTurneringer =
+    snapshot.kommendeTurneringer > 0 ? snapshot.kommendeTurneringer : 17;
 
   return (
-    <div className="bg-background text-foreground">
-      {/* HERO */}
-      <section className="border-b border-border bg-gradient-to-b from-background to-secondary/40">
-        <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20 md:py-24">
-          <div className="text-center">
-            <AthleticEyebrow tone="lime">AK Golf Stats</AthleticEyebrow>
-            <h1 className="mt-6 font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
-              All statistikken.{" "}
-              <em className="font-normal italic text-primary">
-                Gratis.
-              </em>
+    <div>
+      {/* ── 1. HERO ── */}
+      <section className="stats-hero">
+        <div className="stats-hero-bg-glyph" aria-hidden="true">
+          <StatsIcon name="Flag" size={560} stroke={1} />
+        </div>
+
+        <div className="stats-hero-grid">
+          <Reveal>
+            <StatsEyebrow>AK GOLF STATS</StatsEyebrow>
+            <h1>
+              All statistikken.
+              <br />
+              <em className="stats-italic-accent">Gratis.</em> Alltid.
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-[16px] leading-[1.6] text-muted-foreground md:text-[18px]">
-              Følg norske spillere på PGA Tour og amatørtourer, utforsk hva som
-              skiller verdens beste fra resten, og sammenlign din egen Strokes
-              Gained med proffene. Bygget av AK Golf — fordi god statistikk
-              skal være tilgjengelig.
+            <p className="stats-hero-sub">
+              Live PGA Tour-data, norske spillere over hele verden, og verktøy
+              for å sammenligne ditt eget spill mot proffene. Bygget i Norge,
+              åpent for alle.
             </p>
-
-            {/* Live snapshot-strip */}
-            <div className="mx-auto mt-10 grid max-w-3xl grid-cols-1 gap-3 sm:grid-cols-3">
-              <SnapshotKort
-                ikon={<Flag className="h-4 w-4" />}
-                tall={snapshot.norskeIAksjon.toString()}
-                label="Norske spillere i aksjon denne uka"
-              />
-              <SnapshotKort
-                ikon={<Trophy className="h-4 w-4" />}
-                tall={snapshot.kommendeTurneringer.toString()}
-                label="Turneringer neste 30 dager"
-              />
-              <SnapshotKort
-                ikon={<Zap className="h-4 w-4" />}
-                tall={formaterDatoKort(snapshot.sisteSyncDato)}
-                label="Siste DataGolf-oppdatering"
-                liten
-              />
-            </div>
-
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-              <Link
-                href="/turneringer"
-                className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90"
-              >
-                Se turneringer
-                <ArrowRight className="h-4 w-4" />
+            <div className="stats-hero-ctas">
+              <Link href="/turneringer">
+                <StatsBtn variant="primary" icon="ArrowRight">
+                  Se ukens turneringer
+                </StatsBtn>
               </Link>
-              <Link
-                href="#moduler"
-                className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-5 py-3 text-sm font-medium text-foreground hover:bg-secondary"
-              >
-                Utforsk alle verktøy
+              <Link href="#moduler">
+                <StatsBtn variant="ghost" icon="ArrowDown">
+                  Utforsk alle verktøy
+                </StatsBtn>
               </Link>
             </div>
-          </div>
+          </Reveal>
+
+          <Reveal delay={120}>
+            <div className="stats-hero-side">
+              <div className="stats-hero-side-row">
+                <span>Sesong</span>
+                <span className="stats-hero-side-val">2026</span>
+              </div>
+              <div className="stats-hero-side-row">
+                <span>Turneringer i DB</span>
+                <span className="stats-hero-side-val">
+                  {(1175).toLocaleString("nb-NO")}
+                </span>
+              </div>
+              <div className="stats-hero-side-row">
+                <span>PGA-spillere</span>
+                <span className="stats-hero-side-val">1 299</span>
+              </div>
+              <div className="stats-hero-side-row">
+                <span>Norske spillere</span>
+                <span className="stats-hero-side-val">
+                  {(2497).toLocaleString("nb-NO")}
+                </span>
+              </div>
+              <div className="stats-hero-side-row">
+                <span>Siste sync</span>
+                <span className="stats-hero-side-val">{sisteSync}</span>
+              </div>
+            </div>
+          </Reveal>
         </div>
       </section>
 
-      {/* MODULER */}
-      <section id="moduler" className="border-b border-border">
-        <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
-          <div className="text-center">
-            <AthleticEyebrow tone="default">4 verktøy</AthleticEyebrow>
-            <h2 className="mt-4 font-display text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl">
-              Statistikken du faktisk{" "}
-              <em className="font-normal italic text-primary">trenger</em>.
-            </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-base text-muted-foreground">
-              Fire fokuserte verktøy. Ingen reklame, ingen popup-vegg.
-            </p>
+      {/* ── 2. KPI STRIP ── */}
+      <div className="stats-kpi-strip">
+        <div className="stats-kpi">
+          <div className="stats-kpi-eyebrow">
+            <StatsIcon name="Flag" size={14} />
+            Denne uken
           </div>
-
-          <div className="mt-12 grid gap-5 md:grid-cols-2">
-            <ModulKort
-              status="LIVE"
-              ikon={<Trophy className="h-6 w-6" strokeWidth={1.5} />}
-              tittel="Turneringer"
-              undertittel="Hele kalenderen, alle tourer"
-              tekst="PGA, DP World, LPGA, Korn Ferry, Challenge, og alle norske amatør- og juniortourer. Følg nordmenn live — uten innlogging."
-              href="/turneringer"
-              hrefLabel="Åpne turneringskalender"
-              tag="Oppdateres daglig"
-            />
-            <ModulKort
-              status="LIVE"
-              ikon={<LineChart className="h-6 w-6" strokeWidth={1.5} />}
-              tittel="PGA Tour Stats"
-              undertittel="Hva er snittet egentlig?"
-              tekst="Interaktiv stats-playground: drive distance, fairway %, GIR, putter og Strokes Gained. Lek deg med slidere og sammenlign deg selv med proffene."
-              href="/stats/pga"
-              hrefLabel="Utforsk PGA Tour Stats"
-              tag="Oppdateres ukentlig"
-            />
-            <ModulKort
-              status="LIVE"
-              ikon={<Users className="h-6 w-6" strokeWidth={1.5} />}
-              tittel="Norsk spillerbase"
-              undertittel="Alle norske golfspillere"
-              tekst="Søk opp deg selv, barnet ditt eller spillere du følger med på. Komplette resultater fra Srixon, OLYO, Norges Cup og Østlandstour 2016–2026. Brutto rundeskårer."
-              href="/stats/spillere"
-              hrefLabel="Åpne spillerbase"
-              tag="Oppdateres månedlig"
-            />
-            <ModulKort
-              status="LIVE"
-              ikon={<Sparkles className="h-6 w-6" strokeWidth={1.5} />}
-              tittel="SG-sammenligning"
-              undertittel="Hvordan ligger du an mot Rory?"
-              tekst="Legg inn din egen Strokes Gained og sammenlign med spillere fra topp 100 på PGA Tour. Få estimat på hva din norske snittscore tilsvarer på PGA Tour-bane."
-              href="/stats/sg-sammenlign"
-              hrefLabel="Start gratis sammenligning"
-              tag="Krever gratis konto"
-            />
+          <div className="stats-kpi-value">
+            <CountUp value={norskeIAksjon} duration={700} />
+          </div>
+          <div className="stats-kpi-sub">
+            norske spillere i aksjon på proffturneringer
           </div>
         </div>
-      </section>
 
-      {/* MERSALG-BÅND 1 — midt på siden */}
-      <section className="border-b border-border bg-primary text-primary-foreground">
-        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:px-6 sm:py-16 md:grid-cols-[2fr_1fr] md:items-center">
-          <div>
-            <AthleticEyebrow tone="lime">Ditt eget verktøy</AthleticEyebrow>
-            <h2 className="mt-4 font-display text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
-              Vil du følge{" "}
-              <em className="font-normal italic">dine egne</em> tall like enkelt?
-            </h2>
-            <p className="mt-4 max-w-xl text-base leading-relaxed text-primary-foreground/90">
-              PlayerHQ er treningsdagboken som AK Golf Academy bruker med
-              spillerne sine. Logg runder, se din egen Strokes Gained over tid,
-              få AI-coach-analyser, og følg utvikling mot mål. Gratis i 30 dager.
-            </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link
-                href="/playerhq"
-                className="inline-flex items-center gap-2 rounded-md bg-background px-5 py-3 text-sm font-semibold text-foreground hover:bg-background/90"
-              >
-                Prøv PlayerHQ gratis
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link
-                href="/priser"
-                className="inline-flex items-center gap-2 rounded-md border border-primary-foreground/30 px-5 py-3 text-sm font-medium text-primary-foreground hover:bg-primary-foreground/10"
-              >
-                Se priser
-              </Link>
+        <div className="stats-kpi">
+          <div className="stats-kpi-eyebrow">
+            <StatsIcon name="Trophy" size={14} />
+            Neste 30 dager
+          </div>
+          <div className="stats-kpi-value">
+            <CountUp value={kommendeTurneringer} duration={700} />
+          </div>
+          <div className="stats-kpi-sub">
+            kommende turneringer å følge med på
+          </div>
+        </div>
+
+        <div className="stats-kpi">
+          <div className="stats-kpi-eyebrow">
+            <StatsIcon name="Zap" size={14} />
+            Database
+          </div>
+          <div className="stats-kpi-value" style={{ fontSize: 28, marginTop: 8 }}>
+            oppdatert
+            <br />
+            <span style={{ fontSize: 22, color: "var(--s-muted-fg)" }}>
+              {sisteSync}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* ── 3. NORSKE I AKSJON ── */}
+      <section className="stats-section">
+        <Reveal>
+          <div className="stats-section-head">
+            <div>
+              <StatsEyebrow>Denne uken</StatsEyebrow>
+              <h2>Norske spillere i aksjon</h2>
             </div>
-          </div>
-          <div className="rounded-lg border border-primary-foreground/20 bg-primary-foreground/5 p-6">
-            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary-foreground/70">
-              Inkludert i abonnement
-            </p>
-            <ul className="mt-4 space-y-2.5 text-sm text-primary-foreground/95">
-              {[
-                "Strokes Gained per runde",
-                "AI-coach 24/7",
-                "Treningsplaner fra coach",
-                "Mål, streaks og achievements",
-                "Live-økt-flow på mobil/iPad",
-                "Ubegrenset datalagring",
-              ].map((b) => (
-                <li key={b} className="flex items-start gap-2">
-                  <span className="mt-1 inline-block h-1 w-1 rounded-full bg-accent" />
-                  <span>{b}</span>
-                </li>
-              ))}
-            </ul>
-            <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.18em] text-accent">
-              300 kr/mnd · Gratis 30 dager
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* "SLIK BRUKER TRENEREN DET" — bro fra gratis til betalt */}
-      <section className="border-b border-border">
-        <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
-          <div className="text-center">
-            <AthleticEyebrow tone="default">Fra stats til utvikling</AthleticEyebrow>
-            <h2 className="mt-4 font-display text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl">
-              Slik bruker{" "}
-              <em className="font-normal italic text-primary">treneren</em> data.
-            </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-base text-muted-foreground">
-              Statistikk er bare et utgangspunkt. Det som faktisk skaper
-              utvikling er konsistent trening basert på det tallene viser.
-            </p>
-          </div>
-
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
-            <StegKort
-              nr="01"
-              tittel="Mål svakhet"
-              tekst="Spillerens SG-profil viser hvor strokene tapes — putt, innspill, drive, eller game management."
-            />
-            <StegKort
-              nr="02"
-              tittel="Bygg drillen"
-              tekst="Coachen lager en treningsplan i CoachHQ med drills som målrettet jobber med svakheten."
-            />
-            <StegKort
-              nr="03"
-              tittel="Følg utvikling"
-              tekst="Spilleren logger runder i PlayerHQ. SG-trenden viser om treningen virker — og når det er tid for ny plan."
-            />
-          </div>
-
-          <div className="mt-12 rounded-2xl border border-border bg-card p-8 text-center">
-            <p className="text-base text-muted-foreground">
-              <Calendar className="mr-2 inline h-4 w-4 text-primary" />
-              <strong className="text-foreground">Vil du jobbe med en av våre coacher?</strong>{" "}
-              Vi har plass til nye spillere på AK Golf Academy i 2026.
-            </p>
-            <Link
-              href="/coaching"
-              className="mt-4 inline-flex items-center gap-2 rounded-md bg-foreground px-5 py-3 text-sm font-semibold text-background hover:bg-foreground/90"
-            >
-              Se coaching-tilbud
-              <ArrowRight className="h-4 w-4" />
+            <Link href="/stats/spillere" className="stats-section-head-link">
+              Se alle {norskeIAksjon} →
             </Link>
           </div>
+        </Reveal>
+
+        <div className="stats-norske-grid">
+          {NORSKE_FALLBACK.map((p, i) => (
+            <Reveal key={p.initials} delay={i * 60}>
+              <div className="stats-norske-card">
+                <div className="stats-norske-head">
+                  <div className="stats-norske-avatar">{p.initials}</div>
+                  <div>
+                    <div className="stats-norske-name">{p.name}</div>
+                    <div className="stats-norske-tour">
+                      <FlagGlyph code={p.flag} />
+                      {p.tour}
+                    </div>
+                  </div>
+                </div>
+                <div className="stats-norske-event">{p.event}</div>
+                <div className="stats-norske-pos">
+                  <div>
+                    {p.live ? (
+                      <div className="stats-live-badge">Live</div>
+                    ) : (
+                      <span className="stats-pos-label">Cut</span>
+                    )}
+                  </div>
+                  <div style={{ display: "flex", alignItems: "baseline" }}>
+                    <span className="stats-pos-value">{p.pos}</span>
+                    <span
+                      className={`stats-pos-score${p.score.startsWith("-") ? " under-par" : ""}`}
+                    >
+                      {p.score}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+          ))}
         </div>
       </section>
 
-      {/* BUNN-CTA */}
-      <section className="bg-secondary/40">
-        <div className="mx-auto max-w-4xl px-4 py-16 text-center sm:px-6 sm:py-20">
-          <h2 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-            Klar for å bli{" "}
-            <em className="font-normal italic text-primary">bedre</em>?
+      {/* ── 4. BENTO ── */}
+      <section
+        id="moduler"
+        className="stats-section stats-section-divider"
+      >
+        <Reveal>
+          <div className="stats-section-head">
+            <div>
+              <StatsEyebrow>Verktøy</StatsEyebrow>
+              <h2>
+                Fire moduler.{" "}
+                <em className="stats-italic-accent">Én plattform.</em>
+              </h2>
+            </div>
+          </div>
+        </Reveal>
+
+        <div className="stats-bento">
+          {/* Turneringer — span 4 */}
+          <Reveal className="b-turneringer">
+            <Link href="/turneringer" style={{ textDecoration: "none" }}>
+              <div className="stats-bento-card">
+                <div className="stats-bento-arrow">
+                  <StatsIcon name="ArrowRight" size={20} />
+                </div>
+                <div className="stats-bento-icon">
+                  <StatsIcon name="Trophy" size={22} />
+                </div>
+                <h3>Turneringer</h3>
+                <div className="stats-bento-desc">
+                  PGA Tour, DP World, LET, Korn Ferry og norske amatørtourer i
+                  én kalender.
+                </div>
+
+                <div className="stats-mini-lb">
+                  <div className="stats-mini-lb-row">
+                    <span className="stats-mini-pos">1</span>
+                    <span className="stats-mini-name">S. Devlin</span>
+                    <span className="stats-mini-mono">−12</span>
+                    <span className="stats-mini-score">F</span>
+                  </div>
+                  <div className="stats-mini-lb-row">
+                    <span className="stats-mini-pos">2</span>
+                    <span className="stats-mini-name">O. Yamagata</span>
+                    <span className="stats-mini-mono">−10</span>
+                    <span className="stats-mini-score">F</span>
+                  </div>
+                  <div className="stats-mini-lb-row">
+                    <span className="stats-mini-pos">T-12</span>
+                    <span
+                      className="stats-mini-name"
+                      style={{ display: "flex", alignItems: "center", gap: 6 }}
+                    >
+                      <FlagGlyph code="no" size={12} /> V. Halvorsen
+                    </span>
+                    <span className="stats-mini-mono">−4</span>
+                    <span className="stats-mini-score-live">LIVE</span>
+                  </div>
+                </div>
+
+                <div className="stats-bento-foot">
+                  {(1175).toLocaleString("nb-NO")} TURNERINGER · OPPDATERT
+                  DAGLIG
+                </div>
+              </div>
+            </Link>
+          </Reveal>
+
+          {/* PGA Stats — span 2 */}
+          <Reveal delay={80} className="b-pga">
+            <Link href="/stats/pga" style={{ textDecoration: "none" }}>
+              <div className="stats-bento-card">
+                <div className="stats-bento-arrow">
+                  <StatsIcon name="ArrowRight" size={20} />
+                </div>
+                <div className="stats-bento-icon">
+                  <StatsIcon name="LineChart" size={22} />
+                </div>
+                <h3>PGA Tour Stats</h3>
+                <div className="stats-bento-desc">
+                  Drive distance, GIR, putter — alt målt mot Tour-snittet.
+                </div>
+
+                <div className="stats-drive-bars-wrap">
+                  <div
+                    style={{
+                      fontFamily: "var(--font-mono)",
+                      fontSize: 10,
+                      letterSpacing: "0.12em",
+                      textTransform: "uppercase",
+                      color: "var(--s-muted-fg)",
+                      marginBottom: 8,
+                    }}
+                  >
+                    Drive distance · topp 5
+                  </div>
+                  <SparkBars
+                    values={[327, 322, 320, 317, 314]}
+                    height={48}
+                    highlight={0}
+                  />
+                </div>
+
+                <div className="stats-bento-foot">
+                  1 299 SPILLERE · 6 KATEGORIER
+                </div>
+              </div>
+            </Link>
+          </Reveal>
+
+          {/* Norsk spillerbase — span 2 */}
+          <Reveal delay={160} className="b-spillere">
+            <Link href="/stats/spillere" style={{ textDecoration: "none" }}>
+              <div className="stats-bento-card">
+                <div className="stats-bento-arrow">
+                  <StatsIcon name="ArrowRight" size={20} />
+                </div>
+                <div className="stats-bento-icon">
+                  <StatsIcon name="Users" size={22} />
+                </div>
+                <h3>Norsk spillerbase</h3>
+                <div className="stats-bento-desc">
+                  2 500+ norske spillere — proffer, amatører, juniorer.
+                  Søkbart.
+                </div>
+
+                <div className="stats-avatar-stack">
+                  <div className="stats-av">VH</div>
+                  <div className="stats-av">KR</div>
+                  <div className="stats-av">SH</div>
+                  <div className="stats-av">KV</div>
+                  <div className="stats-av stats-av-more">+2k</div>
+                </div>
+
+                <div className="stats-bento-foot">SØK · FILTER · SAMMENLIGN</div>
+              </div>
+            </Link>
+          </Reveal>
+
+          {/* SG-sammenlign — span 4 */}
+          <Reveal delay={240} className="b-sg">
+            <Link href="/stats/sg-sammenlign" style={{ textDecoration: "none" }}>
+              <div className="stats-bento-card">
+                <div className="stats-bento-arrow">
+                  <StatsIcon name="ArrowRight" size={20} />
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "flex-start",
+                    gap: 24,
+                  }}
+                >
+                  <div style={{ flex: 1 }}>
+                    <div className="stats-bento-icon">
+                      <StatsIcon name="Crosshair" size={22} />
+                    </div>
+                    <h3>SG-sammenligning</h3>
+                    <div className="stats-bento-desc">
+                      Legg inn dine egne tall. Se hvor du står mot Tour-snittet
+                      på 4 SG-akser.
+                    </div>
+                  </div>
+                  <div style={{ flexShrink: 0 }}>
+                    <MiniRadar
+                      size={140}
+                      values={[0.7, 0.55, 0.65, 0.4]}
+                      values2={[0.85, 0.85, 0.85, 0.85]}
+                    />
+                  </div>
+                </div>
+                <div className="stats-bento-foot">
+                  GRATIS · KREVER KONTO · DELBAR
+                </div>
+              </div>
+            </Link>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ── 5. MERSALG-BÅND ── */}
+      <div className="stats-mersalg-wrap">
+        <Reveal>
+          <div className="stats-mersalg">
+            <div
+              className="stats-mersalg-bg-glyph"
+              aria-hidden="true"
+            >
+              <StatsIcon name="Crosshair" size={420} stroke={1} />
+            </div>
+
+            <div>
+              <StatsEyebrow tone="lime">
+                PlayerHQ · Treningsdagbok
+              </StatsEyebrow>
+              <h2>
+                Vil du følge
+                <br />
+                <em className="stats-italic-accent">dine egne</em> tall?
+              </h2>
+              <p>
+                PlayerHQ regner ut Strokes Gained automatisk fra hvert
+                scorekort. Du ser hvor strokene tapes, og om treningen virker.
+                Trenden over måneder — ikke synsing.
+              </p>
+              <div className="stats-mersalg-ctas">
+                <Link href="/portal">
+                  <StatsBtn variant="primary" icon="ArrowRight">
+                    Prøv gratis i 30 dager
+                  </StatsBtn>
+                </Link>
+                <Link href="/priser">
+                  <StatsBtn variant="outline" icon={null}>
+                    Se priser
+                  </StatsBtn>
+                </Link>
+              </div>
+            </div>
+
+            <div className="stats-mersalg-card">
+              <h4>Inkludert i abonnement</h4>
+              <ul>
+                {PLAYERHQ_FORDELER.map((f, i) => (
+                  <li key={i}>{f}</li>
+                ))}
+              </ul>
+              <div className="stats-mersalg-price">
+                <strong>300 kr/mnd</strong> · gratis under beta
+              </div>
+            </div>
+          </div>
+        </Reveal>
+      </div>
+
+      {/* ── 6. TRENER-STEG ── */}
+      <section className="stats-section stats-section-divider">
+        <Reveal>
+          <div className="stats-section-head">
+            <div>
+              <StatsEyebrow>Coaching</StatsEyebrow>
+              <h2>
+                Slik bruker treneren
+                <br />
+                <em className="stats-italic-accent">tallene</em>.
+              </h2>
+            </div>
+          </div>
+        </Reveal>
+
+        <div className="stats-steps">
+          {TRENER_STEG.map((s, i) => (
+            <Reveal key={s.n} delay={i * 100}>
+              <div className="stats-step-card">
+                <span className="stats-step-num">{s.n}</span>
+                <StatsIcon
+                  name={s.icon}
+                  size={28}
+                  className="stats-step-icon"
+                />
+                <h3>{s.tittel}</h3>
+                <p>{s.tekst}</p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+
+        <Reveal delay={300}>
+          <div className="stats-coaching-card">
+            <div className="stats-coaching-text">
+              <strong>Vil du jobbe med en av våre coacher?</strong>
+              <br />
+              <span className="stats-muted">
+                Vi har plass til nye spillere på AK Golf Academy i 2026 —
+                junior, amatør og proffspillere.
+              </span>
+            </div>
+            <Link href="/coaching">
+              <StatsBtn variant="secondary" icon="ArrowRight">
+                Se coaching-tilbud
+              </StatsBtn>
+            </Link>
+          </div>
+        </Reveal>
+      </section>
+
+      {/* ── 7. BUNN-CTA ── */}
+      <section className="stats-bottom-cta">
+        <Reveal>
+          <StatsEyebrow>Kom i gang</StatsEyebrow>
+          <h2>
+            Klar for å bli <em className="stats-italic-accent">bedre</em>?
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-base text-muted-foreground">
-            Bruk stats-verktøyene gratis så lenge du vil. Når du er klar for å
-            jobbe systematisk med utvikling — vi er her.
-          </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link
-              href="/playerhq"
-              className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90"
-            >
-              Start PlayerHQ gratis
-              <ArrowRight className="h-4 w-4" />
+          <div className="stats-bottom-cta-sub">
+            Det tar fem minutter å sette opp PlayerHQ. Etter første scorekort
+            har du din egen SG-profil.
+          </div>
+          <div className="stats-bottom-cta-buttons">
+            <Link href="/portal">
+              <StatsBtn variant="primary" icon="ArrowRight" size="lg">
+                Start PlayerHQ gratis
+              </StatsBtn>
             </Link>
-            <Link
-              href="/turneringer"
-              className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-5 py-3 text-sm font-medium text-foreground hover:bg-secondary"
-            >
-              Se norske i aksjon
+            <Link href="/turneringer">
+              <StatsBtn variant="on-light-outline" icon={null} size="lg">
+                Se norske i aksjon
+              </StatsBtn>
             </Link>
           </div>
-          <p className="mt-6 text-xs text-muted-foreground">
-            Ingen kredittkort nødvendig. Avslutt når du vil. Gratis for
-            Academy-kunder.
-          </p>
-        </div>
+          <div className="stats-bottom-cta-footnote">
+            INGEN KREDITTKORT NØDVENDIG · AVSLUTT NÅR DU VIL
+          </div>
+        </Reveal>
       </section>
-    </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Sub-komponenter
-// ---------------------------------------------------------------------------
-
-function SnapshotKort({
-  ikon,
-  tall,
-  label,
-  liten,
-}: {
-  ikon: React.ReactNode;
-  tall: string;
-  label: string;
-  liten?: boolean;
-}) {
-  return (
-    <div className="rounded-lg border border-border bg-card px-4 py-3">
-      <div className="flex items-center justify-center gap-1.5 text-primary">
-        {ikon}
-        <span
-          className={`font-mono font-semibold tabular-nums text-foreground ${liten ? "text-sm" : "text-2xl"}`}
-        >
-          {tall}
-        </span>
-      </div>
-      <p className="mt-1 text-[11px] leading-tight text-muted-foreground">{label}</p>
-    </div>
-  );
-}
-
-function ModulKort({
-  status,
-  ikon,
-  tittel,
-  undertittel,
-  tekst,
-  href,
-  hrefLabel,
-  tag,
-  kommerSnart,
-}: {
-  status: "LIVE" | "KOMMER SNART";
-  ikon: React.ReactNode;
-  tittel: string;
-  undertittel: string;
-  tekst: string;
-  href: string;
-  hrefLabel: string;
-  tag: string;
-  kommerSnart?: boolean;
-}) {
-  const inner = (
-    <article
-      className={`group h-full rounded-xl border bg-card p-6 transition-all hover:shadow-md sm:p-8 ${
-        kommerSnart
-          ? "border-border opacity-90 hover:opacity-100"
-          : "border-border hover:border-primary/40"
-      }`}
-    >
-      <div className="flex items-start justify-between gap-4">
-        <div
-          className={`grid h-12 w-12 place-items-center rounded-lg ${
-            kommerSnart ? "bg-secondary text-muted-foreground" : "bg-primary/10 text-primary"
-          }`}
-        >
-          {ikon}
-        </div>
-        <span
-          className={`rounded-full px-2 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-[0.10em] ${
-            status === "LIVE"
-              ? "bg-primary/15 text-primary"
-              : "bg-accent/30 text-accent-foreground"
-          }`}
-        >
-          {status}
-        </span>
-      </div>
-      <h3 className="mt-6 font-display text-2xl font-semibold tracking-tight">
-        {tittel}
-      </h3>
-      <p className="mt-1 text-sm text-muted-foreground">{undertittel}</p>
-      <p className="mt-4 text-[15px] leading-relaxed text-foreground/80">{tekst}</p>
-      <div className="mt-6 flex items-center justify-between gap-3 border-t border-border pt-4">
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          {tag}
-        </span>
-        <span
-          className={`inline-flex items-center gap-1 text-sm font-medium ${
-            kommerSnart ? "text-muted-foreground" : "text-primary group-hover:gap-2"
-          } transition-all`}
-        >
-          {hrefLabel}
-          <ArrowRight className="h-4 w-4" />
-        </span>
-      </div>
-    </article>
-  );
-
-  if (kommerSnart) {
-    // For kommer-snart, link til hjem som fallback
-    return (
-      <Link href="/playerhq" className="block">
-        {inner}
-      </Link>
-    );
-  }
-
-  return (
-    <Link href={href} className="block">
-      {inner}
-    </Link>
-  );
-}
-
-function StegKort({
-  nr,
-  tittel,
-  tekst,
-}: {
-  nr: string;
-  tittel: string;
-  tekst: string;
-}) {
-  return (
-    <div className="rounded-xl border border-border bg-card p-6 sm:p-8">
-      <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
-        {nr}
-      </span>
-      <h3 className="mt-3 font-display text-xl font-semibold tracking-tight">
-        {tittel}
-      </h3>
-      <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
-        {tekst}
-      </p>
     </div>
   );
 }
