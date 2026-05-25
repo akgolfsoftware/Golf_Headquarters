@@ -146,6 +146,44 @@ async function ensurePlayer(
   return created.id;
 }
 
+/**
+ * Beriker en eksisterende PublicPlayer med ekstra info (university, division
+ * for college; score_by_age for WAGR). Brukes etter ensurePlayer for å
+ * legge til kilde-spesifikk metadata.
+ */
+async function enrichPlayer(
+  playerId: string,
+  updates: {
+    tier?: string;
+    bio?: string;
+    extraBio?: string; // appendes til eksisterende bio
+  },
+): Promise<void> {
+  const current = await prisma.publicPlayer.findUnique({
+    where: { id: playerId },
+    select: { bio: true, tier: true },
+  });
+  if (!current) return;
+
+  const data: { tier?: string; bio?: string } = {};
+  if (updates.tier) data.tier = updates.tier;
+
+  if (updates.bio) {
+    data.bio = updates.bio;
+  } else if (updates.extraBio) {
+    const existing = current.bio?.trim() ?? "";
+    if (existing.includes(updates.extraBio)) {
+      // Allerede der — skip
+    } else {
+      data.bio = existing ? `${existing} · ${updates.extraBio}` : updates.extraBio;
+    }
+  }
+
+  if (Object.keys(data).length > 0) {
+    await prisma.publicPlayer.update({ where: { id: playerId }, data });
+  }
+}
+
 // ---------------------------------------------------------------------------
 // SRIXON TOUR
 // ---------------------------------------------------------------------------
@@ -666,6 +704,187 @@ async function importOstlandsTour(): Promise<{ tournaments: number; entries: num
 }
 
 // ---------------------------------------------------------------------------
+// NCAA COLLEGE — norske spillere på amerikanske college-lag
+//
+// Filformat: college_pipeline_0b47d7f2.json med
+//   { total_players, by_division, by_gender, universities,
+//     players: [{ name, university, division (D1/D2/D3), gender (M/F), srixon_match }] }
+//
+// Importerer som PublicPlayer med tier="college" og bio = "University X · D1 · F"
+// Beriker eksisterende rader (hvis spilleren allerede er importert fra Srixon).
+// ---------------------------------------------------------------------------
+
+type CollegePlayer = {
+  name: string;
+  university: string;
+  division: string; // "D1" | "D2" | "D3" | "NAIA"
+  gender: string;   // "M" | "F"
+  srixon_match?: string;
+};
+
+type CollegePipeline = {
+  total_players?: number;
+  by_division?: Record<string, number>;
+  by_gender?: Record<string, number>;
+  universities?: string[];
+  players: CollegePlayer[];
+};
+
+async function importNcaaCollege(): Promise<{ players: number; enriched: number; created: number }> {
+  const file = path.join(DRIVE_BASE, "college_pipeline_0b47d7f2.json");
+  if (!fs.existsSync(file)) {
+    console.warn(`[ncaa] Hopper over — fant ikke ${file}`);
+    return { players: 0, enriched: 0, created: 0 };
+  }
+
+  const raw = fs.readFileSync(file, "utf-8");
+  const data = JSON.parse(raw) as CollegePipeline;
+  const players = data.players ?? [];
+
+  let created = 0;
+  let enriched = 0;
+
+  for (const p of players) {
+    // Splitt navn — anta "Fornavn Mellomnavn Etternavn" der etternavn er siste ord
+    const parts = p.name.trim().split(/\s+/);
+    if (parts.length < 2) continue;
+    const ln = parts[parts.length - 1];
+    const fn = parts.slice(0, -1).join(" ");
+
+    // Sjekk om vi har spilleren allerede (uten fødselsår — college kan være 18-23)
+    const baseSlug = slugify(`${fn} ${ln}`);
+
+    // Først: prøv å matche eksisterende spillere uten fødselsår
+    const existing = await prisma.publicPlayer.findFirst({
+      where: {
+        OR: [
+          { slug: baseSlug },
+          { slug: { startsWith: `${baseSlug}-` } },
+        ],
+      },
+      select: { id: true, bio: true },
+      orderBy: { birthYear: "desc" }, // ta nyligste hvis flere
+    });
+
+    let playerId: string;
+    const collegeBio = `${p.university} · ${p.division} · ${p.gender}`;
+
+    if (existing) {
+      playerId = existing.id;
+      enriched++;
+    } else {
+      // Opprett ny — sett ngfId=college_srixon_match for kobling, antatt junior-college-alder
+      const created2 = await prisma.publicPlayer.create({
+        data: {
+          slug: baseSlug,
+          name: p.name.trim(),
+          country: "NO",
+          birthYear: null,
+          tier: "college",
+          bio: collegeBio,
+        },
+        select: { id: true },
+      });
+      playerId = created2.id;
+      created++;
+    }
+
+    await enrichPlayer(playerId, {
+      tier: "college",
+      extraBio: collegeBio,
+    });
+  }
+
+  return { players: players.length, enriched, created };
+}
+
+// ---------------------------------------------------------------------------
+// WAGR — norske amatører med score-by-age benchmarks
+//
+// Filformat: wagr_data_94409d23.json med
+//   { age_benchmarks: { "14": ..., "15": ... },
+//     wagr_players: { "navn nedstilt": { name, birth_year, score_by_age: { "15": 72.5, ... } } } }
+//
+// Importerer som PublicPlayer med tier="amateur"|"junior" basert på alder.
+// Lagrer score_by_age som JSON i ngfId-feltet (TODO: egen tabell senere).
+// ---------------------------------------------------------------------------
+
+type WagrPlayer = {
+  name: string;
+  birth_year?: number;
+  score_by_age?: Record<string, number>;
+};
+
+type WagrData = {
+  age_benchmarks?: Record<string, unknown>;
+  wagr_players?: Record<string, WagrPlayer>;
+};
+
+async function importWagr(): Promise<{ players: number; enriched: number; created: number }> {
+  const file = path.join(DRIVE_BASE, "wagr_data_94409d23.json");
+  if (!fs.existsSync(file)) {
+    console.warn(`[wagr] Hopper over — fant ikke ${file}`);
+    return { players: 0, enriched: 0, created: 0 };
+  }
+
+  const raw = fs.readFileSync(file, "utf-8");
+  const data = JSON.parse(raw) as WagrData;
+  const playersMap = data.wagr_players ?? {};
+  const players = Object.values(playersMap);
+
+  let created = 0;
+  let enriched = 0;
+
+  for (const p of players) {
+    if (!p.name) continue;
+
+    const parts = p.name.trim().split(/\s+/);
+    if (parts.length < 2) continue;
+    const ln = parts[parts.length - 1];
+    const fn = parts.slice(0, -1).join(" ");
+    const birthYear = p.birth_year ?? null;
+
+    const baseSlug = slugify(`${fn} ${ln}`);
+    const slug = birthYear ? `${baseSlug}-${birthYear}` : baseSlug;
+
+    const existing = await prisma.publicPlayer.findUnique({
+      where: { slug },
+      select: { id: true },
+    });
+
+    let playerId: string;
+    if (existing) {
+      playerId = existing.id;
+      enriched++;
+    } else {
+      const newRow = await prisma.publicPlayer.create({
+        data: {
+          slug,
+          name: p.name.trim(),
+          country: "NO",
+          birthYear,
+          tier: inferPlayerTier(birthYear),
+          bio: null,
+        },
+        select: { id: true },
+      });
+      playerId = newRow.id;
+      created++;
+    }
+
+    // Berik med score_by_age og WAGR-tag
+    const scoreSummary = p.score_by_age
+      ? `WAGR snittscore: ${Object.entries(p.score_by_age)
+          .map(([age, s]) => `${age}å=${s}`)
+          .join(", ")}`
+      : "WAGR-spiller";
+    await enrichPlayer(playerId, { extraBio: scoreSummary });
+  }
+
+  return { players: players.length, enriched, created };
+}
+
+// ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
 
@@ -694,6 +913,18 @@ async function main() {
   console.log("=== ØSTLANDSTOUR ===");
   const ostlands = await importOstlandsTour();
   console.log(`  ${ostlands.tournaments} turneringer, ${ostlands.entries} deltaker-rader\n`);
+
+  console.log("=== NCAA COLLEGE (roster) ===");
+  const ncaa = await importNcaaCollege();
+  console.log(
+    `  ${ncaa.players} spillere (${ncaa.created} nye, ${ncaa.enriched} beriket — har ikke turneringsdata ennå)\n`,
+  );
+
+  console.log("=== WAGR (norske amatører + score_by_age) ===");
+  const wagr = await importWagr();
+  console.log(
+    `  ${wagr.players} spillere (${wagr.created} nye, ${wagr.enriched} beriket — har ikke per-runde data ennå)\n`,
+  );
 
   // Oppdater norskeAntall denormalisert for alle NGF-turneringer
   console.log("=== OPPDATER norskeAntall-cache ===");
