@@ -26,7 +26,9 @@ export type StatsIconName =
   | "Search"
   | "Menu"
   | "Sun"
-  | "Play";
+  | "Play"
+  | "BarChart2"
+  | "TrendingUp";
 
 interface StatsIconProps {
   name: StatsIconName;
@@ -214,6 +216,21 @@ export function StatsIcon({
       return (
         <svg {...common}>
           <path d="M6 4v16l14-8Z" />
+        </svg>
+      );
+    case "BarChart2":
+      return (
+        <svg {...common}>
+          <rect x="18" y="3" width="4" height="18" />
+          <rect x="10" y="8" width="4" height="13" />
+          <rect x="2" y="13" width="4" height="8" />
+        </svg>
+      );
+    case "TrendingUp":
+      return (
+        <svg {...common}>
+          <path d="m22 7-8.5 8.5-5-5L2 17" />
+          <path d="M16 7h6v6" />
         </svg>
       );
     default:

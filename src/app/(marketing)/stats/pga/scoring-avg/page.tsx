@@ -1,196 +1,89 @@
 /**
- * /stats/pga/scoring-avg — interaktiv toppliste + slider
+ * /stats/pga/scoring-avg — pixel-perfect PGA kategori-detalj (design 03)
  *
- * Viser PGA Tour-spillere rangert på scoring average (lavere = bedre), med:
- * - Topp 20-liste (lavest scoring)
- * - Distribusjonsgraf
- * - Interaktiv slider: "hva scorer DU?" → ser percentile + nærmeste proff
- * - Konverteringsbanner mot PlayerHQ
- *
- * ISR med 1 times revalidate.
+ * Bruker PgaKategoriDetaljPage-template med scoring-avg config.
+ * Reverse = true (lavere = bedre).
+ * ISR 1 time.
  */
 
+import "./../../pga.css";
+import "./../_shared/kategori.css";
+
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ChevronLeft, LineChart } from "lucide-react";
-import { prisma } from "@/lib/prisma";
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
-import { ScoringAvgExplorer } from "./explorer";
+import { getPgaTopN, getPgaTourAverage } from "@/lib/stats/pga-sync";
+import { PgaKategoriDetaljPage } from "@/components/stats/pga-kategori-page";
+import type { RelatertKategori } from "@/components/stats/pga-kategori-page";
 
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Scoring Average — PGA Tour 2026 | AK Golf Stats",
   description:
-    "Hvem scorer lavest på PGA Tour? Topp 20-liste, fordeling og interaktiv sammenligning. Sjekk ditt scoring average mot proffene.",
+    "Hvem scorer lavest per runde på PGA Tour? Interaktiv slider, percentile-analyse og topp 20. Se hva som skiller de beste fra resten.",
+  alternates: { canonical: "https://akgolf.no/stats/pga/scoring-avg" },
   openGraph: {
     title: "Scoring Average — PGA Tour 2026 | AK Golf Stats",
-    description:
-      "Interaktiv sammenligning av scoring average mot PGA Tour-spillere.",
+    description: "Interaktiv scoring average-sammenligning mot PGA Tour-spillere.",
     url: "https://akgolf.no/stats/pga/scoring-avg",
     siteName: "AK Golf Stats",
     locale: "nb_NO",
     type: "website",
   },
-  alternates: { canonical: "https://akgolf.no/stats/pga/scoring-avg" },
 };
 
-const TOUR = "pga";
-const YEAR = new Date().getUTCFullYear();
-const MIN_ROUNDS = 20;
-
-async function hentScoringAvg() {
-  const rows = await prisma.pgaPlayerSeason.findMany({
-    where: {
-      tour: TOUR,
-      year: YEAR,
-      rounds: { gte: MIN_ROUNDS },
-      avgScore: { not: null },
-    },
-    orderBy: { avgScore: "asc" }, // lavere er bedre
-    select: {
-      dgPlayerId: true,
-      playerName: true,
-      country: true,
-      rounds: true,
-      avgScore: true,
-    },
-  });
-  return rows;
-}
+const RELATERTE: RelatertKategori[] = [
+  { slug: "drive-distance", navn: "Drive Distance", icon: "Zap", enhet: "yds", snitt: null },
+  { slug: "fairway-pct", navn: "Fairway-treff", icon: "Target", enhet: "%", snitt: null },
+  { slug: "gir-pct", navn: "Greens in Regulation", icon: "Flag", enhet: "%", snitt: null },
+  { slug: "putts-per-round", navn: "Putter per runde", icon: "Circle", enhet: "", snitt: null },
+  { slug: "sg-total", navn: "SG Total", icon: "TrendingUp", enhet: "", snitt: null },
+];
 
 export default async function ScoringAvgPage() {
-  const players = await hentScoringAvg();
+  const [topp, snittData] = await Promise.all([
+    getPgaTopN("avgScore", { limit: 100 }),
+    getPgaTourAverage("avgScore"),
+  ]);
 
-  const datapunkter = players
-    .filter((p) => p.avgScore !== null)
-    .map((p) => ({
-      navn: p.playerName,
-      land: p.country,
-      verdi: p.avgScore as number,
-    }));
-
-  const harData = datapunkter.length > 0;
-  const tourSnitt = harData
-    ? datapunkter.reduce((sum, p) => sum + p.verdi, 0) / datapunkter.length
-    : null;
-  const tourBest = harData ? Math.min(...datapunkter.map((p) => p.verdi)) : null;
+  const alleSpillere = topp.map((p) => ({
+    navn: p.playerName,
+    land: p.country,
+    verdi: p.avgScore as number,
+  }));
 
   return (
-    <div className="bg-background text-foreground">
-      <div className="border-b border-border bg-secondary/20">
-        <div className="mx-auto max-w-6xl px-4 py-3 sm:px-6">
-          <Link
-            href="/stats/pga"
-            className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-          >
-            <ChevronLeft className="h-4 w-4" />
-            Tilbake til PGA Tour Stats
-          </Link>
-        </div>
-      </div>
-
-      <section className="border-b border-border bg-gradient-to-b from-background to-secondary/40">
-        <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
-          <div className="text-center">
-            <AthleticEyebrow tone="lime">
-              <LineChart className="mr-1.5 inline h-3 w-3" />
-              PGA Tour · Scoring Average
-            </AthleticEyebrow>
-            <h1 className="mt-5 font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl">
-              Hvem scorer{" "}
-              <em className="font-normal italic text-primary">lavest</em>?
-            </h1>
-            <p className="mx-auto mt-5 max-w-2xl text-base leading-[1.6] text-muted-foreground md:text-[18px]">
-              Scoring average er det ultimate målet i golf — alt annet er
-              hjelpemidler. Se hvem som konsekvent scorer lavest på Tour.
-            </p>
-
-            {harData && tourSnitt && tourBest && (
-              <div className="mx-auto mt-8 grid max-w-2xl grid-cols-3 gap-3">
-                <Stat
-                  label="Tour-snitt"
-                  value={tourSnitt.toFixed(2)}
-                  enhet=""
-                />
-                <Stat
-                  label="Beste proff"
-                  value={tourBest.toFixed(2)}
-                  enhet=""
-                />
-                <Stat
-                  label="Antall spillere"
-                  value={datapunkter.length.toString()}
-                  enhet=""
-                />
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {!harData ? (
-        <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 text-center">
-          <div className="rounded-xl border border-dashed border-border bg-card/40 px-8 py-16">
-            <h2 className="font-display text-2xl font-semibold tracking-tight">
-              Data er på vei
-            </h2>
-            <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-              Ukentlig sync fra DataGolf starter snart. Snart kan du
-              sammenligne deg med PGA Tour-spillere.
-            </p>
-          </div>
-        </section>
-      ) : (
-        <ScoringAvgExplorer datapunkter={datapunkter} />
-      )}
-
-      {/* PLAYERHQ MERSALG */}
-      <section className="border-t border-border bg-primary text-primary-foreground">
-        <div className="mx-auto max-w-4xl px-4 py-12 text-center sm:px-6 sm:py-16">
-          <AthleticEyebrow tone="lime">Følg din egen scoring</AthleticEyebrow>
-          <h2 className="mt-3 font-display text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
-            Vil du se scoring-trenden{" "}
-            <em className="font-normal italic">over sesongen</em>?
-          </h2>
-          <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-primary-foreground/90">
-            Logg runder i PlayerHQ. Se scoring average over tid, sammenlign
-            med PGA Tour-benchmark, og få AI-coach-tips for å score lavere.
-          </p>
-          <div className="mt-6">
-            <Link
-              href="/playerhq"
-              className="inline-flex items-center gap-2 rounded-md bg-background px-5 py-3 text-sm font-semibold text-foreground hover:bg-background/90"
-            >
-              Prøv PlayerHQ gratis i 30 dager
-            </Link>
-          </div>
-        </div>
-      </section>
-    </div>
-  );
-}
-
-function Stat({
-  label,
-  value,
-  enhet,
-}: {
-  label: string;
-  value: string;
-  enhet: string;
-}) {
-  return (
-    <div className="rounded-lg border border-border bg-card px-4 py-3">
-      <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-        {label}
-      </p>
-      <p className="mt-1 font-mono text-2xl font-semibold tabular-nums text-foreground">
-        {value}
-        {enhet && (
-          <span className="ml-1 text-sm text-muted-foreground">{enhet}</span>
-        )}
-      </p>
+    <div className="pga-page bg-background text-foreground">
+      <PgaKategoriDetaljPage
+        config={{
+          slug: "scoring-avg",
+          noun: "Scoring average",
+          icon: "BarChart2",
+          enhet: "",
+          reverse: true,
+          sliderMin: 65,
+          sliderMax: 85,
+          sliderDefault: 78,
+          sliderStep: 0.1,
+          heroHeadline: (
+            <>
+              Hvem scorer <em className="italic-accent">lavest</em> per runde?
+            </>
+          ),
+          heroSub:
+            "Snittscoren på PGA Tour er tettere enn du tror — de beste scorer bare 2–3 slag under de dårligste. Men de 2 slagene er alt. Se hvor du er.",
+          mersalgTekst:
+            "Snittscoren din viser ikke hvor du taper strokes. PlayerHQ med SG-analyse gjør — og viser deg nøyaktig hva som må jobbes med.",
+          mersalgKort: [
+            "Logger score per hull og runde",
+            "Beregner SG mot referansespiller",
+            "Identifiserer hull du taper mest på",
+          ],
+          relaterte: RELATERTE,
+        }}
+        spillere={alleSpillere}
+        tourSnitt={snittData.average}
+        antallSpillere={snittData.count}
+      />
     </div>
   );
 }

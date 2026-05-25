@@ -1,0 +1,448 @@
+/* /stats/pga/putt-explorer/putt.css
+   Pixel-perfect port of design bundle (04 — Putt Explorer)
+*/
+
+/* ─── Hero ─── */
+.putt-hero {
+  position: relative;
+  padding: 72px 64px 40px;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+}
+.putt-hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 5.5vw, 84px);
+  line-height: 0.96;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  margin: 28px 0 0;
+  max-width: 940px;
+  text-wrap: balance;
+}
+.putt-hero h1 em.italic-accent { font-style: italic; font-weight: 400; color: var(--primary); }
+.putt-hero .hero-sub {
+  font-size: 19px;
+  line-height: 1.5;
+  color: var(--muted-foreground);
+  margin-top: 24px;
+  max-width: 640px;
+  text-wrap: pretty;
+}
+.putt-breadcrumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.putt-breadcrumb:hover { color: var(--primary); }
+
+/* ─── Section ─── */
+.putt-section {
+  padding: 96px 64px;
+  border-top: 1px solid var(--border);
+}
+.putt-section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 36px;
+  gap: 24px;
+}
+.putt-section-head h2 {
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  margin-top: 12px;
+  line-height: 1.05;
+  text-wrap: balance;
+}
+.putt-section-head h2 em.italic-accent { font-style: italic; font-weight: 400; color: var(--primary); }
+
+/* ─── Big block (interactive hero) ─── */
+.putt-big-block {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 24px;
+  padding: 48px 32px;
+  background: var(--secondary);
+  border-radius: 20px;
+  text-align: center;
+}
+.putt-big-pct {
+  font-family: var(--font-mono);
+  font-size: 96px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.04em;
+  color: var(--primary);
+  line-height: 0.9;
+  transition: all 0.25s ease;
+}
+.putt-big-x {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-style: italic;
+  color: var(--accent-foreground);
+  background: var(--accent);
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+.putt-big-dist {
+  font-family: var(--font-mono);
+  font-size: 56px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  color: var(--foreground);
+  transition: all 0.25s ease;
+}
+
+/* ─── Slider: golf-green styled ─── */
+.putt-slider-wrap {
+  max-width: 760px;
+  margin: 40px auto 0;
+}
+.putt-slider-labels {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted-foreground);
+  margin-bottom: 8px;
+}
+.putt-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+  background: linear-gradient(to right, var(--primary), var(--accent));
+  accent-color: var(--primary);
+}
+.putt-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--primary);
+  cursor: pointer;
+  border: 3px solid var(--background);
+  box-shadow: 0 0 0 1px var(--primary), 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+.putt-range::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--primary);
+  cursor: pointer;
+  border: 3px solid var(--background);
+}
+.putt-narrative {
+  margin: 24px auto 0;
+  max-width: 520px;
+  text-align: center;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 18px;
+  color: var(--muted-foreground);
+  line-height: 1.5;
+  transition: opacity 0.25s ease;
+}
+
+/* ─── 4-bar comparison grid ─── */
+.putt-bars-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.putt-bar-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+}
+.putt-bar-card .putt-bar-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  font-weight: 500;
+}
+.putt-bar-card .putt-bar-pct {
+  font-family: var(--font-mono);
+  font-size: 48px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  margin: 12px 0;
+  transition: all 0.4s ease;
+}
+.putt-bar-card .putt-bar-track {
+  height: 6px;
+  background: var(--secondary);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.putt-bar-card .putt-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+/* ─── Insight cards (3-meteren etc.) ─── */
+.putt-step-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.putt-step-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px 28px;
+  position: relative;
+  overflow: hidden;
+}
+.putt-step-card .putt-step-dist {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+.putt-step-card .putt-step-diff {
+  font-family: var(--font-mono);
+  font-size: 40px;
+  color: var(--primary);
+  font-weight: 500;
+  margin-top: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.putt-step-card h3 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  margin-top: 16px;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.putt-step-card p {
+  font-size: 14px;
+  color: var(--muted-foreground);
+  line-height: 1.5;
+  margin: 12px 0 0;
+}
+
+/* ─── Heatmap ─── */
+.putt-heatmap-outer {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.putt-heatmap {
+  display: grid;
+  gap: 2px;
+  background: var(--border);
+  padding: 2px;
+  border-radius: 12px;
+  font-family: var(--font-mono);
+  min-width: 640px;
+}
+.putt-heatmap-corner { background: var(--card); }
+.putt-heatmap-col-h,
+.putt-heatmap-row-h {
+  background: var(--card);
+  padding: 8px 10px;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  font-weight: 500;
+  text-align: center;
+}
+.putt-heatmap-row-h {
+  text-align: left;
+  padding: 10px 12px;
+  white-space: nowrap;
+}
+.putt-heatmap-cell {
+  padding: 12px 6px;
+  text-align: center;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  border-radius: 2px;
+  transition: transform 0.15s;
+  cursor: default;
+  position: relative;
+}
+.putt-heatmap-cell:hover {
+  transform: scale(1.06);
+  z-index: 1;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+/* ─── Pull quote ─── */
+.putt-pull-quote {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 28px;
+  line-height: 1.4;
+  text-align: center;
+  max-width: 760px;
+  margin: 32px auto;
+  color: var(--foreground);
+  text-wrap: balance;
+  padding: 32px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.putt-pull-quote-credit {
+  font-family: var(--font-mono);
+  font-style: normal;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  font-weight: 500;
+  margin-top: 18px;
+  text-align: center;
+}
+
+/* ─── Mersalg ─── */
+.putt-mersalg {
+  background: var(--primary);
+  color: #FAFAF7;
+  border-radius: 24px;
+  padding: 56px;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 56px;
+  align-items: start;
+  position: relative;
+  overflow: hidden;
+}
+.putt-mersalg h2 {
+  font-family: var(--font-display);
+  font-size: 40px;
+  line-height: 1.05;
+  font-weight: 600;
+  color: #FAFAF7;
+  margin: 16px 0 0;
+  text-wrap: balance;
+}
+.putt-mersalg h2 em { font-style: italic; font-weight: 400; color: var(--accent); }
+.putt-mersalg p {
+  color: rgba(250, 250, 247, 0.78);
+  font-size: 16px;
+  line-height: 1.55;
+  margin: 20px 0 28px;
+}
+.putt-mersalg-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(209, 248, 67, 0.18);
+  border-radius: 16px;
+  padding: 28px;
+}
+.putt-mersalg-card h4 {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 18px;
+  font-weight: 500;
+}
+.putt-mersalg-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.putt-mersalg-card li {
+  display: flex;
+  gap: 10px;
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: rgba(250, 250, 247, 0.85);
+}
+.putt-mersalg-card li::before {
+  content: '';
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-top: 7px;
+}
+
+/* ─── Footer crossref ─── */
+.putt-crossref {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 32px;
+}
+.putt-crossref-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--secondary);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--primary);
+  text-decoration: none;
+  transition: all 0.15s;
+}
+.putt-crossref-link:hover {
+  border-color: var(--primary);
+  background: var(--card);
+  transform: translateY(-1px);
+}
+
+/* ─── Mini mono ─── */
+.putt-mini-mono {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted-foreground);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 1024px) {
+  .putt-hero { padding: 56px 32px 32px; }
+  .putt-section { padding: 64px 32px; }
+  .putt-mersalg { padding: 40px; gap: 40px; }
+  .putt-bars-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .putt-hero { padding: 56px 20px 32px; }
+  .putt-hero h1 { font-size: 44px; line-height: 1.02; }
+  .putt-hero .hero-sub { font-size: 16px; margin-top: 18px; }
+  .putt-section { padding: 48px 20px; }
+  .putt-section-head h2 { font-size: 28px; }
+  .putt-big-block { grid-template-columns: 1fr; padding: 32px 20px; }
+  .putt-big-pct { font-size: 72px; }
+  .putt-big-dist { font-size: 40px; }
+  .putt-bars-grid { grid-template-columns: 1fr; }
+  .putt-step-grid { grid-template-columns: 1fr; }
+  .putt-mersalg { grid-template-columns: 1fr; gap: 32px; padding: 32px 20px; border-radius: 20px; }
+  .putt-mersalg h2 { font-size: 28px; }
+  .putt-pull-quote { font-size: 20px; }
+}

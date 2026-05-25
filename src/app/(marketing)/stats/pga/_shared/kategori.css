@@ -1,0 +1,583 @@
+/* /stats/pga/_shared/kategori.css
+   Pixel-perfect port of design bundle (03 — PGA kategori-detalj)
+   Imported by each of the 6 category pages via their page.tsx
+*/
+
+/* ─── Breadcrumb ─── */
+.kat-breadcrumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.kat-breadcrumb:hover { color: var(--primary); }
+
+/* ─── Hero ─── */
+.kat-hero {
+  position: relative;
+  padding: 72px 64px 40px;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+}
+.kat-hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 5.5vw, 84px);
+  line-height: 0.96;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  margin: 28px 0 0;
+  max-width: 920px;
+  text-wrap: balance;
+}
+.kat-hero .hero-sub {
+  font-size: 19px;
+  line-height: 1.5;
+  color: var(--muted-foreground);
+  margin-top: 24px;
+  max-width: 620px;
+  text-wrap: pretty;
+}
+.kat-hero em.italic-accent { font-style: italic; font-weight: 400; color: var(--primary); }
+
+/* ─── Hero KPI row ─── */
+.kat-hero-kpis {
+  display: flex;
+  gap: 32px;
+  margin-top: 36px;
+  flex-wrap: wrap;
+}
+.kat-kpi-main .kat-kpi-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  font-weight: 500;
+}
+.kat-kpi-main .kat-kpi-big {
+  font-family: var(--font-mono);
+  font-size: 64px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin-top: 4px;
+}
+.kat-kpi-main .kat-kpi-big .unit {
+  font-size: 20px;
+  color: var(--muted-foreground);
+  margin-left: 6px;
+  font-weight: 400;
+}
+.kat-kpi-side {
+  border-left: 1px solid var(--border);
+  padding-left: 24px;
+}
+.kat-kpi-side .kat-kpi-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  font-weight: 500;
+}
+.kat-kpi-side .kat-kpi-med {
+  font-family: var(--font-mono);
+  font-size: 36px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin-top: 4px;
+}
+.kat-kpi-side .kat-kpi-med .unit { font-size: 14px; color: var(--muted-foreground); margin-left: 4px; }
+.kat-kpi-side .kat-kpi-name {
+  font-size: 13px;
+  color: var(--muted-foreground);
+  margin-top: 4px;
+}
+
+/* ─── Section wrappers ─── */
+.kat-section {
+  padding: 96px 64px;
+  border-top: 1px solid var(--border);
+}
+.kat-section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 36px;
+  gap: 24px;
+}
+.kat-section-head h2 {
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  margin-top: 12px;
+  line-height: 1.05;
+  text-wrap: balance;
+}
+.kat-section-head h2 em.italic-accent { font-style: italic; font-weight: 400; color: var(--primary); }
+.kat-section-head-link {
+  font-size: 13px;
+  color: var(--primary);
+  font-weight: 500;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.kat-section-head-link:hover { text-decoration: underline; }
+
+/* ─── Interactive card ─── */
+.kat-interactive {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 48px;
+  box-shadow: 0 2px 8px rgba(10, 31, 23, 0.06), 0 1px 2px rgba(10, 31, 23, 0.04);
+}
+.kat-bignum-q {
+  font-size: 18px;
+  color: var(--muted-foreground);
+  margin-bottom: 8px;
+  text-align: center;
+}
+.kat-bignum {
+  font-family: var(--font-mono);
+  font-size: 80px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  text-align: center;
+}
+.kat-bignum .unit {
+  font-size: 24px;
+  color: var(--muted-foreground);
+  margin-left: 8px;
+}
+
+/* ─── Slider ─── */
+.kat-slider-wrap { max-width: 720px; margin: 32px auto 0; }
+.kat-slider-labels {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted-foreground);
+  margin-top: 8px;
+}
+.kat-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  background: var(--secondary);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  accent-color: var(--primary);
+}
+.kat-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--primary);
+  cursor: pointer;
+  border: 3px solid var(--background);
+  box-shadow: 0 0 0 1px var(--primary), 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+.kat-range::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--primary);
+  cursor: pointer;
+  border: 3px solid var(--background);
+}
+/* Pulserende lime-prikk-hint når slider ikke er rørte */
+@keyframes kat-pulse {
+  0%, 100% { box-shadow: 0 0 0 1px var(--primary), 0 2px 6px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(209, 248, 67, 0.5); }
+  50% { box-shadow: 0 0 0 1px var(--primary), 0 2px 6px rgba(0, 0, 0, 0.15), 0 0 0 6px rgba(209, 248, 67, 0); }
+}
+.kat-range.kat-hint::-webkit-slider-thumb { animation: kat-pulse 2s infinite; }
+
+/* ─── Percentile + nearest grid ─── */
+.kat-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 40px;
+}
+.kat-percentile-card {
+  background: var(--primary);
+  color: var(--background);
+  border-radius: 12px;
+  padding: 22px 26px;
+}
+.kat-pe-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 500;
+}
+.kat-pe-big {
+  font-family: var(--font-mono);
+  font-size: 56px;
+  font-weight: 500;
+  line-height: 1;
+  margin-top: 8px;
+  transition: all 0.2s ease;
+}
+.kat-pe-sub {
+  font-size: 13px;
+  color: rgba(250, 250, 247, 0.75);
+  margin-top: 8px;
+  line-height: 1.4;
+  transition: opacity 0.2s ease;
+}
+.kat-nearest-card {
+  background: var(--secondary);
+  border-radius: 12px;
+  padding: 22px 26px;
+}
+.kat-ne-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  font-weight: 500;
+}
+.kat-ne-name {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+.kat-ne-val {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  color: var(--primary);
+  margin-top: 6px;
+  transition: all 0.2s ease;
+}
+.kat-ne-diff {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  margin-top: 6px;
+  transition: opacity 0.2s ease;
+}
+
+/* ─── Histogram ─── */
+.kat-histogram-wrap { margin-top: 40px; }
+.kat-histogram-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted-foreground);
+  letter-spacing: 0.04em;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+.kat-histogram {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 160px;
+}
+.kat-hist-bar {
+  flex: 1;
+  border-radius: 3px 3px 0 0;
+  min-height: 4px;
+  background: var(--secondary);
+  transition: background 0.2s ease, height 0.3s ease;
+  cursor: pointer;
+  position: relative;
+}
+.kat-hist-bar.highlighted { background: var(--primary); }
+.kat-hist-bar:hover { background: var(--primary); opacity: 0.8; }
+.kat-hist-tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--foreground);
+  color: var(--background);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 10;
+}
+.kat-hist-bar:hover .kat-hist-tooltip { opacity: 1; }
+.kat-hist-labels {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--muted-foreground);
+  margin-top: 6px;
+  letter-spacing: 0.04em;
+}
+
+/* ─── Narrativ analyse ─── */
+.kat-narrative-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.kat-narrative-grid h2 {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin-top: 12px;
+  text-wrap: balance;
+}
+.kat-narrative-grid h2 em.italic-accent { font-style: italic; font-weight: 400; color: var(--primary); }
+.kat-narrative-text {
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--muted-foreground);
+  margin-top: 20px;
+  transition: opacity 0.25s ease;
+}
+.kat-methodology-card {
+  background: var(--secondary);
+  border-radius: 16px;
+  padding: 32px;
+}
+.kat-methodology-card ul {
+  margin-top: 20px;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.kat-methodology-card li { font-size: 14px; line-height: 1.5; }
+
+/* ─── Leaderboard table ─── */
+.kat-dtable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.kat-dtable th,
+.kat-dtable td {
+  text-align: left;
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--border);
+}
+.kat-dtable th {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  font-weight: 600;
+  background: var(--secondary);
+  position: sticky;
+  top: 0;
+}
+.kat-dtable td.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.kat-dtable td.num {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.kat-dtable tr:hover td { background: rgba(0, 88, 64, 0.03); }
+.kat-dtable a { color: var(--primary); text-decoration: none; }
+.kat-dtable a:hover { text-decoration: underline; }
+.kat-dtable-footnote {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted-foreground);
+  margin-top: 14px;
+  letter-spacing: 0.04em;
+}
+
+/* ─── Mersalg-bånd (kategori-variant) ─── */
+.kat-mersalg {
+  background: var(--primary);
+  color: #FAFAF7;
+  border-radius: 24px;
+  padding: 56px;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 56px;
+  align-items: start;
+  position: relative;
+  overflow: hidden;
+}
+.kat-mersalg h2 {
+  font-family: var(--font-display);
+  font-size: 40px;
+  line-height: 1.05;
+  font-weight: 600;
+  color: #FAFAF7;
+  margin: 16px 0 0;
+  text-wrap: balance;
+}
+.kat-mersalg h2 em.italic-accent { color: var(--accent); font-style: italic; font-weight: 400; }
+.kat-mersalg p {
+  color: rgba(250, 250, 247, 0.78);
+  font-size: 16px;
+  line-height: 1.55;
+  margin: 20px 0 28px;
+}
+.kat-mersalg-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(209, 248, 67, 0.18);
+  border-radius: 16px;
+  padding: 28px;
+}
+.kat-mersalg-card h4 {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 18px;
+  font-weight: 500;
+}
+.kat-mersalg-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.kat-mersalg-card li {
+  display: flex;
+  gap: 10px;
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: rgba(250, 250, 247, 0.85);
+}
+.kat-mersalg-card li::before {
+  content: '';
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-top: 7px;
+}
+
+/* ─── Lignende kategorier strip ─── */
+.kat-strip {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+}
+.kat-strip::-webkit-scrollbar { display: none; }
+.kat-strip-card {
+  flex: 0 0 180px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 18px;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all 0.2s;
+}
+.kat-strip-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 88, 64, 0.1);
+}
+.kat-strip-card .kat-strip-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--secondary);
+  color: var(--primary);
+  display: grid;
+  place-items: center;
+  transition: background 0.2s;
+}
+.kat-strip-card:hover .kat-strip-icon { background: var(--accent); }
+.kat-strip-card .kat-strip-name {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--foreground);
+  line-height: 1.2;
+}
+.kat-strip-card .kat-strip-val {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: var(--primary);
+}
+.kat-strip-card .kat-strip-cta {
+  font-size: 12px;
+  color: var(--primary);
+  font-weight: 500;
+}
+
+/* ─── Mini-mono helper ─── */
+.kat-mini-mono {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted-foreground);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 1024px) {
+  .kat-hero { padding: 56px 32px 32px; }
+  .kat-section { padding: 64px 32px; }
+  .kat-interactive { padding: 32px; }
+  .kat-mersalg { padding: 40px; gap: 40px; }
+}
+@media (max-width: 768px) {
+  .kat-hero { padding: 56px 20px 32px; }
+  .kat-hero h1 { font-size: 44px; line-height: 1.02; }
+  .kat-hero .hero-sub { font-size: 16px; margin-top: 18px; }
+  .kat-hero-kpis { gap: 20px; }
+  .kat-kpi-main .kat-kpi-big { font-size: 48px; }
+  .kat-kpi-side .kat-kpi-med { font-size: 28px; }
+  .kat-section { padding: 48px 20px; }
+  .kat-interactive { padding: 24px 16px; }
+  .kat-bignum { font-size: 56px; }
+  .kat-pe-big { font-size: 40px; }
+  .kat-cards-grid { grid-template-columns: 1fr; }
+  .kat-narrative-grid { grid-template-columns: 1fr; }
+  .kat-section-head h2 { font-size: 28px; }
+  .kat-mersalg { grid-template-columns: 1fr; gap: 32px; padding: 32px 20px; border-radius: 20px; }
+  .kat-mersalg h2 { font-size: 28px; }
+}
