@@ -83,6 +83,7 @@ const KATEGORIER: KategoriConfig[] = [
     stat: "fairwayPct",
     format: (v) => v.toFixed(1),
     enhet: "%",
+    live: true,
   },
   {
     slug: "gir-pct",
@@ -92,6 +93,7 @@ const KATEGORIER: KategoriConfig[] = [
     stat: "girPct",
     format: (v) => v.toFixed(1),
     enhet: "%",
+    live: true,
   },
   {
     slug: "putts-per-round",
@@ -102,6 +104,7 @@ const KATEGORIER: KategoriConfig[] = [
     format: (v) => v.toFixed(2),
     enhet: "",
     reverse: true,
+    live: true,
   },
   {
     slug: "scoring-avg",
@@ -112,6 +115,7 @@ const KATEGORIER: KategoriConfig[] = [
     format: (v) => v.toFixed(2),
     enhet: "",
     reverse: true,
+    live: true,
   },
   {
     slug: "sg-total",
@@ -120,6 +124,7 @@ const KATEGORIER: KategoriConfig[] = [
     ikon: <Gauge className="h-5 w-5" strokeWidth={1.5} />,
     stat: "sgTotal",
     format: (v) => (v >= 0 ? `+${v.toFixed(2)}` : v.toFixed(2)),
+    live: true,
     enhet: "",
   },
 ];

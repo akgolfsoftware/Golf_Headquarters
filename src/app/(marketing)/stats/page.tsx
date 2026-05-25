@@ -196,15 +196,14 @@ export default async function StatsLandingPage() {
               tag="Oppdateres ukentlig"
             />
             <ModulKort
-              status="KOMMER SNART"
+              status="LIVE"
               ikon={<Users className="h-6 w-6" strokeWidth={1.5} />}
               tittel="Norsk spillerbase"
               undertittel="Alle norske golfspillere"
-              tekst="Søk opp deg selv, barnet ditt eller spillere du følger med på. Komplette resultater fra Srixon, Olyo, Norges Cup, Regionstour, NCAA og WAGR. Brutto runde-scores."
+              tekst="Søk opp deg selv, barnet ditt eller spillere du følger med på. Komplette resultater fra Srixon, OLYO, Norges Cup og Østlandstour 2016–2026. Brutto rundeskårer."
               href="/stats/spillere"
-              hrefLabel="Få varsel når den åpner"
-              tag="Stor lansering høst 2026"
-              kommerSnart
+              hrefLabel="Åpne spillerbase"
+              tag="Oppdateres månedlig"
             />
             <ModulKort
               status="KOMMER SNART"
