@@ -148,6 +148,14 @@
   --color-pyr-spill: #B8852A;
   --color-pyr-turn: #5E5C57;
 
+  /* V2 Pyramide-tokens (funksjonsbaserte for WCAG-kontrast) — brukes av v2-komponenter
+   * Mapping: FYS=primary, TEK=warning, SLAG=info, SPILL=accent, TURN=destructive */
+  --pyr-fys: #005840;
+  --pyr-tek: #B8852A;
+  --pyr-slag: #2563EB;
+  --pyr-spill: #D1F843;
+  --pyr-turn: #A32D2D;
+
   /* Pyramide-track (lette versjoner for bg) */
   --color-pyr-fys-track: rgba(0, 88, 64, 0.10);
   --color-pyr-tek-track: rgba(26, 125, 86, 0.12);
@@ -333,3 +341,8 @@ body {
  * Bruk: p-2 (8), p-4 (16), p-6 (24), p-8 (32), p-10 (40), p-12 (48), p-16 (64)
  * Unngå: p-1 (4), p-3 (12), p-5 (20), p-7 (28), p-9 (36)
  */
+/* ---------- V2 patterns (atletisk editorial · LIVING-app) ----------
+ * Importerer pattern-klasser + animations brukt av v2-komponenter.
+ * Definert i src/styles/v2/patterns.css.
+ */
+@import "../styles/v2/patterns.css";

@@ -1,0 +1,142 @@
+/* AK Golf v2 — CSS patterns + animations
+ * Designet for å komplementere globals.css (Tailwind v4 @theme inline tokens).
+ * Brukes av komponenter i src/components/v2/*.
+ *
+ * Tokens (--background, --foreground, --primary, --accent, etc.) defineres
+ * i globals.css. Vi referer dem her via hsl(var(--token)).
+ *
+ * --pyr-fys, --pyr-tek, --pyr-slag, --pyr-spill, --pyr-turn er definert
+ * som direct hex i globals.css under :root.
+ */
+
+/* ──────────────────── Editorial primitives ──────────────────── */
+.v2-eyebrow {
+  font-family: var(--font-jetbrains-mono);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: hsl(var(--muted-foreground));
+}
+.v2-eyebrow-accent { color: hsl(var(--accent)); }
+.v2-eyebrow-w-strek {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.v2-eyebrow-w-strek::before {
+  content: "";
+  display: inline-block;
+  width: 32px;
+  height: 1px;
+  background: hsl(var(--accent));
+}
+
+/* Pyramide-pill colors (funksjonsbaserte for kontrast) */
+.pill-fys   { background: color-mix(in oklab, hsl(var(--primary)) 12%, transparent); color: hsl(var(--primary)); }
+.pill-tek   { background: color-mix(in oklab, var(--color-warning, #B8852A) 14%, transparent); color: var(--color-warning, #B8852A); }
+.pill-slag  { background: color-mix(in oklab, var(--color-info, #2563EB) 12%, transparent); color: var(--color-info, #2563EB); }
+.pill-spill { background: color-mix(in oklab, hsl(var(--accent)) 35%, transparent); color: hsl(var(--accent-foreground)); }
+.pill-turn  { background: color-mix(in oklab, hsl(var(--destructive)) 12%, transparent); color: hsl(var(--destructive)); }
+
+/* ──────────────────── Living animations ──────────────────── */
+@keyframes itinPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.55; transform: scale(0.82); }
+}
+@keyframes nowPulse {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(192,57,43,0.20); }
+  50%      { box-shadow: 0 0 0 10px rgba(192,57,43,0.06); }
+}
+@keyframes liveBarDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.4; transform: scale(0.7); }
+}
+@keyframes hcpTrendPulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.10); }
+}
+@keyframes criticalPulse {
+  0%, 100% { background: color-mix(in oklab, hsl(var(--destructive)) 8%, hsl(var(--card))); }
+  50%      { background: color-mix(in oklab, hsl(var(--destructive)) 20%, hsl(var(--card))); }
+}
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.live-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: hsl(var(--accent));
+  animation: liveBarDot 1.4s ease-in-out infinite;
+  box-shadow: 0 0 0 3px color-mix(in oklab, hsl(var(--accent)) 40%, transparent);
+}
+.itin-pulse {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: hsl(var(--accent));
+  animation: itinPulse 1.2s ease-in-out infinite;
+}
+.now-dot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: hsl(var(--destructive));
+  animation: nowPulse 1.4s ease-in-out infinite;
+}
+.hcp-pulse {
+  animation: hcpTrendPulse 2s ease-in-out infinite;
+  display: inline-flex;
+}
+
+/* Grain overlay for hero photo */
+.grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Itinerary axis-tinted cards (pyramide-aksene som bg-fill) */
+.itin-card {
+  border-left: 5px solid var(--axis-color, hsl(var(--border)));
+}
+.axis-FYS   { --axis-color: var(--pyr-fys, #005840);   background: color-mix(in oklab, var(--pyr-fys, #005840) 8%, hsl(var(--card))); }
+.axis-TEK   { --axis-color: var(--pyr-tek, #B8852A);   background: color-mix(in oklab, var(--pyr-tek, #B8852A) 10%, hsl(var(--card))); }
+.axis-SLAG  { --axis-color: var(--pyr-slag, #2563EB);  background: color-mix(in oklab, var(--pyr-slag, #2563EB) 10%, hsl(var(--card))); }
+.axis-SPILL { --axis-color: var(--pyr-spill, #D1F843); background: color-mix(in oklab, var(--pyr-spill, #D1F843) 18%, hsl(var(--card))); }
+.axis-TURN  { --axis-color: var(--pyr-turn, #A32D2D);  background: color-mix(in oklab, var(--pyr-turn, #A32D2D) 10%, hsl(var(--card))); }
+
+.itin-card.is-active {
+  box-shadow: 0 0 0 3px color-mix(in oklab, hsl(var(--accent)) 35%, transparent),
+              0 12px 28px -8px rgba(10,31,23,0.18);
+  border-color: var(--axis-color, hsl(var(--accent)));
+}
+
+/* Pyramide progress-bar fyll */
+.pyr-bar-fill {
+  transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Hover-lifts */
+.lift {
+  transition: transform 200ms cubic-bezier(0.2,0.8,0.2,1),
+              box-shadow 200ms cubic-bezier(0.2,0.8,0.2,1),
+              border-color 200ms;
+}
+.lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -8px rgba(10,31,23,0.10),
+              0 2px 4px rgba(10,31,23,0.04);
+}
+
+/* Reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .live-dot, .itin-pulse, .now-dot, .hcp-pulse,
+  .pyr-bar-fill, .grain {
+    animation: none !important;
+    transition: none !important;
+  }
+}

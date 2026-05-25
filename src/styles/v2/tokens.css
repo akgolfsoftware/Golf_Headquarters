@@ -1,0 +1,229 @@
+/* AK Golf — design tokens (athletic editorial, LIVING)
+ * Source: 02-DESIGN-SYSTEM.md + 13-ATHLETIC-EDITORIAL.md
+ * All values driven by CSS custom properties so the Tweaks panel
+ * can swap accents/themes without a re-render. */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Hovedpalette (lys) */
+  --background: #FAFAF7;
+  --foreground: #0A1F17;
+  --card: #FFFFFF;
+  --card-fg: #0A1F17;
+  --popover: #FFFFFF;
+  --popover-fg: #0A1F17;
+  --primary: #005840;
+  --primary-fg: #D1F843;
+  --secondary: #F1EEE5;
+  --secondary-fg: #0A1F17;
+  --muted: #F1EEE5;
+  --muted-fg: #5E5C57;
+  --accent: #D1F843;
+  --accent-fg: #005840;
+  --destructive: #A32D2D;
+  --destructive-fg: #FAFAF7;
+  --border: #E5E3DD;
+  --input: #E0DDD6;
+  --ring: #005840;
+
+  /* Status */
+  --success: #1A7D56;
+  --warning: #B8852A;
+  --info: #2563EB;
+
+  /* Pyramide-akser (bg-fill only — text bruker funksjonsbaserte) */
+  --pyr-fys: #005840;
+  --pyr-tek: #B8852A;
+  --pyr-slag: #2563EB;
+  --pyr-spill: #D1F843;
+  --pyr-turn: #A32D2D;
+
+  /* Typografi */
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-display: 'Inter Tight', 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* Living-app vars (driven by JS) */
+  --hero-scale: 1;
+  --hero-translate: 0px;
+
+  color-scheme: light;
+}
+
+/* Accent color tweak — applies live */
+[data-accent="lime"] {
+  --accent: #D1F843;
+  --accent-fg: #005840;
+  --pyr-spill: #D1F843;
+  --primary-fg: #D1F843;
+}
+[data-accent="amber"] {
+  --accent: #F5B945;
+  --accent-fg: #2C1810;
+  --pyr-spill: #F5B945;
+  --primary-fg: #F5B945;
+}
+[data-accent="forest"] {
+  --accent: #1F8A5B;
+  --accent-fg: #FAFAF7;
+  --pyr-spill: #1F8A5B;
+  --primary-fg: #FAFAF7;
+}
+
+/* ───────────────────────── Base ───────────────────────── */
+* { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+html, body {
+  margin: 0; padding: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+  text-rendering: optimizeLegibility;
+}
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; }
+img, svg { display: block; max-width: 100%; }
+::selection { background: var(--accent); color: var(--accent-fg); }
+
+.font-display { font-family: var(--font-display); }
+.font-mono { font-family: var(--font-mono); font-feature-settings: "tnum","ss01"; }
+.tabular { font-variant-numeric: tabular-nums; }
+
+/* ──────────────────── Editorial primitives ──────────────────── */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--muted-fg);
+}
+.eyebrow-accent { color: var(--accent); }
+.eyebrow-w-strek { display: inline-flex; align-items: center; gap: 10px; }
+.eyebrow-w-strek::before {
+  content: ""; display: inline-block;
+  width: 32px; height: 1px; background: var(--accent);
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+.card-2xl { border-radius: 20px; }
+
+.pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+}
+
+/* Pyramide-pill colors */
+.pill-fys   { background: color-mix(in oklab, var(--primary) 12%, transparent); color: var(--primary); }
+.pill-tek   { background: color-mix(in oklab, var(--warning) 14%, transparent); color: var(--warning); }
+.pill-slag  { background: color-mix(in oklab, var(--info) 12%, transparent); color: var(--info); }
+.pill-spill { background: color-mix(in oklab, var(--accent) 35%, transparent); color: var(--accent-fg); }
+.pill-turn  { background: color-mix(in oklab, var(--destructive) 12%, transparent); color: var(--destructive); }
+
+/* ──────────────────── Living animations ──────────────────── */
+@keyframes itinPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.55; transform: scale(0.82); }
+}
+@keyframes nowPulse {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(192,57,43,0.20); }
+  50%      { box-shadow: 0 0 0 10px rgba(192,57,43,0.06); }
+}
+@keyframes liveBarDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.4; transform: scale(0.7); }
+}
+@keyframes hcpTrendPulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.10); }
+}
+@keyframes criticalPulse {
+  0%, 100% { background: color-mix(in oklab, var(--destructive) 8%, var(--card)); }
+  50%      { background: color-mix(in oklab, var(--destructive) 20%, var(--card)); }
+}
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.live-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: liveBarDot 1.4s ease-in-out infinite;
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 40%, transparent);
+}
+.itin-pulse {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: itinPulse 1.2s ease-in-out infinite;
+}
+.now-dot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--destructive);
+  animation: nowPulse 1.4s ease-in-out infinite;
+}
+.hcp-pulse { animation: hcpTrendPulse 2s ease-in-out infinite; display: inline-flex; }
+
+/* Grain overlay for hero photo */
+.grain {
+  position: absolute; inset: 0; pointer-events: none;
+  opacity: 0.05; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Itinerary axis-tinted cards */
+.itin-card { border-left: 5px solid var(--axis-color, var(--border)); }
+.axis-FYS   { --axis-color: var(--pyr-fys);   background: color-mix(in oklab, var(--pyr-fys) 8%, var(--card)); }
+.axis-TEK   { --axis-color: var(--pyr-tek);   background: color-mix(in oklab, var(--pyr-tek) 10%, var(--card)); }
+.axis-SLAG  { --axis-color: var(--pyr-slag);  background: color-mix(in oklab, var(--pyr-slag) 10%, var(--card)); }
+.axis-SPILL { --axis-color: var(--pyr-spill); background: color-mix(in oklab, var(--pyr-spill) 18%, var(--card)); }
+.axis-TURN  { --axis-color: var(--pyr-turn);  background: color-mix(in oklab, var(--pyr-turn) 10%, var(--card)); }
+
+.itin-card.is-active {
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 35%, transparent),
+              0 12px 28px -8px rgba(10,31,23,0.18);
+  border-color: var(--axis-color, var(--accent));
+}
+
+/* Pyramide progress-bar */
+.pyr-bar-fill { transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1); }
+
+/* Scrollbar — subtle */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(10,31,23,0.12); border-radius: 999px; border: 2px solid transparent; background-clip: content-box; }
+::-webkit-scrollbar-thumb:hover { background: rgba(10,31,23,0.22); border: 2px solid transparent; background-clip: content-box; }
+
+/* Hover lifts */
+.lift { transition: transform 200ms cubic-bezier(0.2,0.8,0.2,1), box-shadow 200ms cubic-bezier(0.2,0.8,0.2,1), border-color 200ms; }
+.lift:hover { transform: translateY(-2px); box-shadow: 0 12px 28px -8px rgba(10,31,23,0.10), 0 2px 4px rgba(10,31,23,0.04); }
+
+/* Focus ring */
+:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; border-radius: 4px; }
+
+/* Hide scrollbars in horizontal scrollers */
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
