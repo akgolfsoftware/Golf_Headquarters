@@ -1,6 +1,6 @@
 # AK Golf HQ — Komplett Design Hand-off
 
-**Versjon:** 2026-05-25 (v2 — athletic editorial)
+**Versjon:** 2026-05-25 (v3 — living athletic editorial)
 **Eier:** Anders Kristiansen, AK Golf Group AS
 
 Denne mappen inneholder ALT som trengs for å lage:
@@ -8,6 +8,28 @@ Denne mappen inneholder ALT som trengs for å lage:
 2. En 100% interaktiv prototype med alle skjermer i PlayerHQ og CoachHQ
 
 ---
+
+## ⚡ Endringer siden v2 (samme dag — etter Claude Design iterasjon v3→v5)
+
+**Pivot fra "athletic editorial" → "LIVING athletic editorial":**
+
+Etter 5 iterasjoner med Claude Design landet vi på en visuell retning som
+kombinerer **Linear** (typografi + mikro-detaljer), **Whoop** (athletic
+data-drama) og **Notion** (rolig editorial-rytme + clean cards). Resultatet
+er ikke bare en pen statisk skjerm — den må PULSE og LEVE:
+
+- **Tall teller opp** ved scroll-inn (useCountUp via scroll/resize listeners — IntersectionObserver er upålitelig i sandboxed iframes)
+- **Progress-barer fyller seg** med stagger (FYS først, så TEK, osv)
+- **Hero har parallax** (1.0 → 1.05 skala ved scroll) + grain-overlay
+- **LiveBar tikker** med klokke (oppdaterer hvert sekund) + neste økt-countdown
+- **Pulse-animasjoner** på live-prikker (NÅ-markør, "Pågår nå", LiveBar dot)
+- **Itinerary-stil Calendar** (vertikal magasin-agenda i stedet for horisontal Gantt)
+- **Color-mix tinted backgrounds** med `color-mix(in oklab, ...)` for perseptuelt riktige farger
+- **Editorial photo-dividers** mellom seksjoner (full-bleed AK-foto med stamp + line)
+- **Asymmetriske grids** — 1 stor + flere mindre, ikke alle like
+- **Data-storytelling** — hvert tall får context-linje ("+1 vs forrige uke")
+- **Section ghost-tall** (01, 02, 03) som subtil editorial-bakgrunn
+- **MASSIVE display-tall** (220-280px countdown, 80-120px hilsen, 80-96px hero-stats)
 
 ## ⚡ Endringer siden v1 (2026-05-25)
 

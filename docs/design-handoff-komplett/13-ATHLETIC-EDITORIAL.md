@@ -240,6 +240,175 @@ Hvorfor primary/warning/info/accent/destructive (ikke pyr-*-tokens):
 
 ---
 
+---
+
+## 🎬 LIVING APP — bevegelse og data-storytelling (v3 tillegg)
+
+Den tekniske spec'en (5 grunnpilarer ovenfor) er ikke nok alene. Etter
+iterasjon mot Linear + Whoop + Notion lærte vi at en skjerm må også
+PULSE og LEVE for å føles premium athletic. Disse 7 lagene er
+forskjellen mellom "et dashboard" og "en app som lever":
+
+### 1. Count-up på tall
+
+Alle numeriske KPI teller opp fra 0 til verdi når de scroller inn i viewport:
+
+```ts
+function useCountUp(target, { duration = 800, decimals = 0 } = {}) {
+  const ref = useRef(null);
+  const [val, setVal] = useState(0);
+
+  useEffect(() => {
+    if (!ref.current) return;
+
+    // Respekter prefers-reduced-motion
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) { setVal(target); return; }
+
+    let raf = 0, started = false, t0 = 0;
+    const ease = (t) => 1 - Math.pow(1 - t, 3);
+
+    function tick(now) {
+      if (!t0) t0 = now;
+      const p = Math.min(1, (now - t0) / duration);
+      setVal(target * ease(p));
+      if (p < 1) raf = requestAnimationFrame(tick);
+    }
+
+    // Bruk scroll-listener, ikke IntersectionObserver (upålitelig i iframes)
+    function check() {
+      if (started || !ref.current) return;
+      const r = ref.current.getBoundingClientRect();
+      const vh = window.innerHeight;
+      if (r.top < vh * 0.95 && r.bottom > 0) {
+        started = true;
+        raf = requestAnimationFrame(tick);
+      }
+    }
+    check();
+    window.addEventListener("scroll", check, { passive: true, capture: true });
+    window.addEventListener("resize", check, { passive: true });
+    return () => { cancelAnimationFrame(raf); /* + remove listeners */ };
+  }, [target, duration]);
+
+  return [decimals === 0 ? Math.round(val) : val.toFixed(decimals), ref];
+}
+```
+
+**Brukes på:** HCP, økter, drills, runder, tester, SG-tall, dager-igjen
+**Brukes IKKE på:** countdown-tall (skal være ferdig fra start), tournament-countdown (signaturmoment)
+
+### 2. Progress-bar stagger fill
+
+I WeekProgressCard fyller pyramide-barene seg fra 0% til verdi:
+- Stagger 80ms per akse (FYS → TEK → SLAG → SPILL → TURN)
+- Duration 1200ms per bar
+- Ease-out cubic
+- Trigget av scroll-listener (samme prinsipp som useCountUp)
+
+### 3. Hero parallax + grain
+
+```css
+/* Hero img scaler 1.0 → 1.05 ved scroll */
+.hero-img {
+  transform: scale(var(--hero-scale, 1));
+  transition: transform 0.1s linear;
+}
+
+/* Grain-overlay for taktil premium */
+.hero-grain {
+  background-image: url("data:image/svg+xml,...noise-pattern...");
+  opacity: 0.03;
+  mix-blend-mode: overlay;
+}
+```
+
+### 4. Pulse-animasjoner
+
+```css
+@keyframes itinPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.5; transform: scale(0.85); }
+}
+
+@keyframes nowPulse {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(192,57,43,0.18); }
+  50%      { box-shadow: 0 0 0 8px rgba(192,57,43,0.08); }
+}
+
+@keyframes hcpTrendPulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.08); }
+}
+```
+
+**Brukes på:**
+- `.itin-pulse` — "Pågår nå"-pill i itinerary
+- `.itin-now-dot` — NÅ-markør i timeline
+- `.live-bar-dot` — Live-indikator i LiveBar
+- `.hero-trend-pulse` — HCP-trend-pil i hero
+
+### 5. Color-mix tinted backgrounds
+
+Moderne CSS som gir perseptuelt riktig fargeblanding (mye bedre enn rgba):
+
+```css
+.itin-card.axis-FYS {
+  background: color-mix(in oklab, var(--pyr-fys) 16%, var(--card));
+  border-left: 5px solid var(--pyr-fys);
+}
+
+.itin-card.axis-SPILL {
+  background: color-mix(in oklab, var(--pyr-spill) 20%, var(--card));
+}
+```
+
+`color-mix(in oklab, ...)` er oklab-fargerommet — perseptuelt uniform,
+gir konsistent kontrast på tvers av forskjellige farger.
+
+### 6. Data-storytelling (kontekst-linjer)
+
+Hvert tall får en context-linje under seg i 11px lime mono:
+
+```tsx
+<StatTile
+  hero
+  label="Økter denne uka"
+  value={4}
+  unit="/ 6t"
+  context="+1 vs forrige uke"
+  contextTone="accent"
+/>
+
+<StatTile compact label="Runder" value={2} context="2 over mål" />
+<StatTile compact label="Drills" value={12} context="beste på 3 mnd" />
+<StatTile compact label="Tester" value={3} context="3 forfaller" contextTone="critical" />
+```
+
+Kontekst-linjer er det som skiller athletic-app fra SaaS-dashboard.
+Aldri vis et tall uten kontekst.
+
+### 7. Live elements (LiveBar)
+
+En tynn bar mellom topbar og hero som SKJER nå:
+- Tickende klokke (`Nå 09:42:23` oppdaterer hvert sekund)
+- Neste økt-countdown (`Neste · TEK-økt · om 1t 18min`)
+- Vær (`GFGK 14°C sol`)
+- Pulserende grønn dot (lime)
+- Hvis økt starter <30 min: hele bar blir rød med ekstra pulse + klikkbar
+
+```tsx
+<LiveBar
+  currentTime={9.7}          // 09:42 som decimal hours
+  nextSession={{ start: 11, title: "TEK-økt", id: "s3" }}
+  weather={{ club: "GFGK", tempC: 14, summary: "sol" }}
+  critical={false}
+  onAlertClick={() => openStubModal("live")}
+/>
+```
+
+---
+
 ## Hvordan stilen kommer fram per page-arketype
 
 ### Hjem/dashboard (workbench)

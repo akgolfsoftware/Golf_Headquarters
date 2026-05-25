@@ -38,27 +38,79 @@ Dette er **den autoritative implementeringen** av athletic editorial. Alle nye s
 - Tournament-countdown: `text-accent` på tall
 - HCP-trend: ChevronUp/Down/Minus med fargekode (accent positiv / destructive negativ)
 
-### 2. Section: I dag (Calendar)
+### 2. Section: I dag (Itinerary Timeline) — OPPDATERT v3
+
+**v5-refaktor (2026-05-25):** Horizontal Gantt-stil erstattet med vertikal magasin-agenda.
 
 ```
 ─ PROGRAMMET I DAG ──────────────────────────────────  [Full kalender →]
 I dag
-5 økter planlagt — tidslinje fra 05:00 til 24:00.
+5 økter planlagt — vertikal agenda med live "NÅ"-indikator.
 
-┌──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┐
-│05│06│07│08│09│10│11│12│13│14│15│16│17│18│19│20│21│22│23│
-├──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┤
-│   ▌07:00            NÅ 09:42                              │
-│   ▌FYS-økt          ▌                                     │
-│       ▌08:30        ▌                                     │
-│       ▌TEK-trening  ▌    ▌11:00  Putting-fokus            │
-└────────────────────────────────────────────────────────────┘
+07:00 ─●─ ┌─────────────────────────────────────┐
+08:20 │   │ FYS · Fullført ✓                    │
+      │   │ Morgentrening                       │
+      │   │ ▣ Performance Studio · 3 drills     │
+      │   └─────────────────────────────────────┘
+      │
+08:30 ─●─ ┌─────────────────────────────────────┐
+10:00 │   │ TEK · PÅGÅR NÅ ●(pulse)             │   ← active: lime ring
+      │   │ Sving-mekanikk                      │
+      │   │ ▣ Driving range · 5 drills          │
+      │   └─────────────────────────────────────┘
+      │
+─ ─ ─ ─ ●─ NÅ · 09:42 ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─    ← stiplet rød linje
+      │
+11:00 ─●─ ┌─────────────────────────────────────┐
+12:30 │   │ SLAG · PLANLAGT                     │
+      │   │ Avstandskontroll                    │
+      │   │ ▣ Grønt-felt · 4 drills             │
+      │   └─────────────────────────────────────┘
 ```
 
 **Spec:** Se `src/components/portal/workbench/calendar-widget.tsx`
-- Pyramide-fargede øktblokker med 4px venstre-stripe
-- "NÅ"-markør med destructive (rød) farge
-- Hover-popover med detaljer + actions
+
+**Grid-struktur:**
+```css
+.itin-row {
+  display: grid;
+  grid-template-columns: 76px 26px 1fr;  /* time | rail | card */
+  gap: 12px;
+  min-height: 96px;
+}
+```
+
+**Hvert kort:**
+- 5px venstre-stripe i pyramide-akse-farge
+- Tinted bg via `color-mix(in oklab, var(--pyr-fys) 16%, var(--card))`
+- Tittel: `font-display 19px font-bold tracking-tight`
+- Meta: mono 11.5px med location + drill count
+
+**State-pills (uppercase mono 10px):**
+- `FULLFØRT` — gray + check-ikon
+- `PÅGÅR NÅ` — lime accent-bg + pulse-dot
+- `PLANLAGT` — muted
+
+**Active-state får accent ring:**
+```css
+.itin-row.is-active .itin-card {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(209, 248, 67, 0.25);
+}
+```
+
+**NÅ-markør:**
+- Stiplet rød horisontal linje mellom kort
+- 12px rød dot med pulse-animasjon (`@keyframes nowPulse`)
+- Label "NÅ · 09:42" i mono uppercase
+
+**Hover:** kortet løftes -2px med shadow-md, 180ms cubic-bezier(0.2,0.8,0.2,1)
+
+**Hvorfor itinerary > horisontal Gantt:**
+- Mer plass for detaljer (location, drill count, state)
+- Mobile-native (vertikal scroll i stedet for horisontal)
+- Bedre rytme — føles som magasin-agenda, ikke teknisk diagram
+- "NÅ"-linje er tydeligere som horisontal separator
 
 ### 3. Section: AI-Innsikt (3-grid)
 

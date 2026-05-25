@@ -571,10 +571,97 @@ Floating Action Button — kun på mobile.
 - Esc + click-outside lukker
 - Primary green (#005840)
 
+### LiveBar (NY i v3)
+**Fil:** `src/components/portal/workbench/live-bar.tsx`
+
+Tynn bar mellom topbar og hero med tickende klokke + neste økt + vær.
+
+```tsx
+<LiveBar
+  currentTime={9.7}
+  nextSession={{ start: 11, title: "TEK · Sving-mekanikk", id: "s3" }}
+  weather={{ club: "GFGK", tempC: 14, summary: "sol" }}
+  critical={false}
+  onAlertClick={() => openLiveModal()}
+/>
+```
+
+- 32-40px høy, sticky
+- bg-foreground + text-background + mono 11px tracking-[0.10em]
+- Pulserende lime-prikk (1.4s loop)
+- Klokke ticker hvert sekund (setInterval)
+- Critical-state: bg-destructive + ekstra pulse hvis økt starter <30 min
+
+### EditorialDivider (NY i v3)
+**Fil:** `src/components/portal/workbench/editorial-divider.tsx`
+
+Full-bleed photo-strip mellom seksjoner med stamp + line.
+
+```tsx
+<EditorialDivider
+  image="/images/akgolf/AK-Golf-Academy-22.webp"
+  stamp="Dag 147 · Uke 21 av 52"
+  line={<>Sørlandsk vind. <span className="accent">14°C</span>. Sol fra vest fram til 17:00.</>}
+/>
+```
+
+- 200-280px høyt, full container-bredde
+- Bilde object-cover med 30% dark overlay
+- Stamp: mono uppercase 12px lime
+- Line: Inter Tight italic 28-36px white
+
+### CoachMessagePreview (NY i v3)
+**Fil:** `src/components/portal/workbench/coach-message-preview.tsx`
+
+Mini-seksjon med siste melding fra coach.
+
+```tsx
+<CoachMessagePreview
+  coach={{ name: "Anders Kristiansen", initials: "AK" }}
+  message="Bra jobba med putting i går. Hold rytmen på wedge-økten i dag."
+  time="for 12 min siden"
+  onOpen={() => navigate("/portal/coach/melding")}
+/>
+```
+
+- 48px avatar + navn + sitert melding
+- bg-card rounded-2xl border-border
+- Hover: -translate-y-1 + shadow-md
+
+### useCountUp (NY hook i v3)
+**Fil:** `src/components/portal/workbench/use-count-up.ts`
+
+Animation-hook som teller fra 0 til target ved scroll-inn.
+
+```tsx
+const [display, ref] = useCountUp(47, { duration: 800 });
+return <span ref={ref}>{display}</span>;
+```
+
+- Scroll/resize-listener basert (mer pålitelig enn IntersectionObserver i iframes)
+- Trigger ved 95% av viewport
+- Ease-out cubic
+- Respekterer prefers-reduced-motion
+- Trigger kun én gang
+
+### useParallax (NY hook i v3)
+**Fil:** `src/components/portal/workbench/use-parallax.ts`
+
+Skalerer hero-img 1.0 → 1.05 ved scroll.
+
+```tsx
+const heroRef = useParallax({ maxScale: 1.05 });
+return <div ref={heroRef}><img className="hero-img" .../></div>;
+```
+
+- CSS-variabel-basert (transform: scale(var(--hero-scale)))
+- Passive scroll-listener
+- Respekterer prefers-reduced-motion
+
 ### SectionHeader
 **Fil:** `src/components/portal/workbench/section-header.tsx`
 
-Editorial section divider med lime accent-strek.
+Editorial section divider med lime accent-strek + valgfri ghost-tall.
 
 ```tsx
 <SectionHeader
@@ -603,7 +690,8 @@ Editorial section divider med lime accent-strek.
 | Domene-spesifikke | 17 |
 | Templates | 5 |
 | **Workbench-v2 (athletic editorial)** | **10** |
-| **TOTALT** | **81 komponenter** |
+| **Workbench-v3 (living app)** | **5 nye** (LiveBar, EditorialDivider, CoachMessagePreview, useCountUp, useParallax) |
+| **TOTALT** | **86 komponenter** |
 
 Alle bygd på samme designsystem-tokens. Hvis ny side trenger ny komponent: lag den her først, så bruk på sidene.
 
