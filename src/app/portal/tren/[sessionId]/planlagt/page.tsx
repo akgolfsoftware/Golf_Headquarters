@@ -12,11 +12,14 @@ import {
   Pencil,
   Play,
   Target,
+  Users,
   X,
 } from "lucide-react";
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { InviteFriendTrigger } from "@/components/portal/workbench/invite-friend-trigger";
+import { ParticipantsList } from "@/components/portal/workbench/participants-list";
 
 function formatTime(d: Date): string {
   return d.toLocaleTimeString("nb-NO", {
@@ -51,15 +54,25 @@ export default async function OktPlanlagtPage({
       drills: {
         orderBy: { sortOrder: "asc" },
       },
+      participants: {
+        include: {
+          user: {
+            select: { id: true, name: true, avatarUrl: true },
+          },
+        },
+      },
     },
   });
 
   if (!session) notFound();
 
-  // Tilgangs-sjekk: spilleren selv, gruppen, eller coach/admin
+  // Tilgangs-sjekk: spilleren selv, gruppen, coach/admin, eller invitert deltaker
+  const erDeltaker = session.participants.some((p) => p.userId === user.id);
   const harTilgang =
     session.studentId === user.id ||
     session.coachId === user.id ||
+    session.hostId === user.id ||
+    erDeltaker ||
     user.role === "ADMIN" ||
     user.role === "COACH";
   if (!harTilgang) notFound();
@@ -69,6 +82,51 @@ export default async function OktPlanlagtPage({
     (sum, d) => sum + (d.durationMinutes ?? 0),
     0,
   );
+
+  // Trene sammen-data: er denne brukeren host og kan invitere?
+  const erHost = session.hostId === user.id;
+  const kanInvitere =
+    erHost &&
+    session.isShared &&
+    (session.maxParticipants == null ||
+      session.participants.length < session.maxParticipants);
+
+  // Hent potensielle spillere å invitere (kun hvis host og delt økt)
+  type Inviterbar = {
+    id: string;
+    name: string;
+    avatarUrl: string | undefined;
+    hcp: number | null;
+    gruppe: string | undefined;
+  };
+  let inviterbareSpillere: Inviterbar[] = [];
+  if (kanInvitere) {
+    const inviterte = new Set(session.participants.map((p) => p.userId));
+    inviterte.add(user.id); // host kan ikke invitere seg selv
+    const kandidater = await prisma.user.findMany({
+      where: {
+        role: "PLAYER",
+        deletedAt: null,
+        id: { notIn: Array.from(inviterte) },
+      },
+      select: {
+        id: true,
+        name: true,
+        avatarUrl: true,
+        hcp: true,
+        homeClub: true,
+      },
+      orderBy: { name: "asc" },
+      take: 50,
+    });
+    inviterbareSpillere = kandidater.map((k) => ({
+      id: k.id,
+      name: k.name,
+      avatarUrl: k.avatarUrl ?? undefined,
+      hcp: k.hcp,
+      gruppe: k.homeClub ?? undefined,
+    }));
+  }
 
   return (
     <div className="space-y-8 pb-32">
@@ -115,6 +173,53 @@ export default async function OktPlanlagtPage({
               &ldquo;{session.notes}&rdquo;
             </p>
           </div>
+        </section>
+      )}
+
+      {/* Trene sammen — kun for delte økter */}
+      {session.isShared && (
+        <section>
+          <div className="mb-3 flex items-center justify-between gap-2">
+            <h2 className="font-display text-xl font-semibold tracking-tight">
+              Trene sammen{" "}
+              <span className="font-mono text-sm font-normal text-muted-foreground">
+                ·{" "}
+                {session.participants.length}
+                {session.maxParticipants != null
+                  ? ` av ${session.maxParticipants}`
+                  : ""}
+              </span>
+            </h2>
+            {kanInvitere && (
+              <InviteFriendTrigger
+                sessionId={session.id}
+                hostId={user.id}
+                maxParticipants={session.maxParticipants ?? 8}
+                currentParticipants={session.participants.length}
+                spillere={inviterbareSpillere}
+                label="Inviter kompis"
+              />
+            )}
+          </div>
+          {session.participants.length === 0 ? (
+            <div className="flex items-center gap-3 rounded-md border border-dashed border-border bg-card/40 p-6 text-sm text-muted-foreground">
+              <Users size={16} strokeWidth={1.5} aria-hidden />
+              Ingen er invitert ennå.
+              {erHost && " Trykk «Inviter kompis» for å invitere noen."}
+            </div>
+          ) : (
+            <ParticipantsList
+              participants={session.participants.map((p) => ({
+                participantId: p.id,
+                user: {
+                  id: p.user.id,
+                  name: p.user.name,
+                  avatarUrl: p.user.avatarUrl,
+                },
+                status: p.status,
+              }))}
+            />
+          )}
         </section>
       )}
 
