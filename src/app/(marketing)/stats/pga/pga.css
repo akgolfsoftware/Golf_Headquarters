@@ -1,0 +1,613 @@
+/* /stats/pga — pixel-perfect port of Claude Design bundle styles */
+/* Scoped to pga-page to avoid global leaks */
+
+/* ─── Typography helpers ─── */
+.pga-page em.italic-accent,
+.pga-page .italic-accent {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--primary);
+}
+.pga-page .putt-teaser em.italic-accent,
+.pga-page .putt-teaser .italic-accent {
+  color: var(--accent);
+}
+.pga-page .mersalg em.italic-accent,
+.pga-page .mersalg .italic-accent {
+  color: var(--accent);
+}
+
+.pga-page .mini-mono {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted-foreground);
+  letter-spacing: 0.04em;
+}
+
+/* ─── Stats eyebrow ─── */
+.stats-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.stats-eyebrow-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 2px;
+}
+
+/* ─── Stats buttons ─── */
+.stats-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-weight: 500;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+}
+.stats-btn-md { padding: 12px 22px; font-size: 14px; }
+.stats-btn-lg { padding: 14px 26px; font-size: 15px; }
+.stats-btn-sm { padding: 8px 14px; font-size: 12.5px; }
+.stats-btn .stats-btn-icon { transition: transform 0.25s ease; }
+.stats-btn:hover .stats-btn-icon { transform: translateX(4px); }
+.stats-btn-primary {
+  background: var(--primary);
+  color: var(--accent);
+}
+.stats-btn-primary:hover { background: #003D2C; }
+.stats-btn-outline {
+  background: transparent;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.stats-btn-outline:hover { background: rgba(209, 248, 67, 0.1); }
+
+/* ─── Section wrappers ─── */
+.pga-section {
+  padding: 96px 64px;
+}
+.pga-section-sm {
+  padding: 48px 64px;
+}
+.pga-section-divider {
+  border-top: 1px solid var(--border);
+}
+@media (max-width: 768px) {
+  .pga-section { padding: 56px 20px; }
+  .pga-section-sm { padding: 32px 20px; }
+}
+
+/* ─── Hero ─── */
+.pga-hero {
+  position: relative;
+  padding: 72px 64px 40px;
+  overflow: hidden;
+}
+.pga-hero .breadcrumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--muted-foreground);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.pga-hero .breadcrumb:hover { color: var(--foreground); }
+.pga-hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 5.5vw, 84px);
+  line-height: 0.96;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  margin: 28px 0 0;
+  max-width: 940px;
+  text-wrap: balance;
+}
+.pga-hero .hero-sub {
+  font-size: 19px;
+  line-height: 1.5;
+  color: var(--muted-foreground);
+  margin-top: 24px;
+  max-width: 620px;
+  text-wrap: pretty;
+}
+@media (max-width: 768px) {
+  .pga-hero { padding: 56px 20px 32px; }
+  .pga-hero h1 { font-size: 44px; line-height: 1.02; }
+  .pga-hero .hero-sub { font-size: 16px; margin-top: 18px; }
+}
+
+/* ─── KPI strip ─── */
+.pga-kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+}
+.pga-kpi {
+  padding: 28px 32px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.pga-kpi:last-child { border-right: none; }
+.pga-kpi-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+.pga-kpi-value {
+  font-family: var(--font-mono);
+  font-size: 42px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--foreground);
+}
+.pga-kpi-value .unit {
+  font-size: 18px;
+  color: var(--muted-foreground);
+  margin-left: 6px;
+  font-weight: 400;
+}
+.pga-kpi-sub { font-size: 13px; color: var(--muted-foreground); margin-top: 6px; }
+@media (max-width: 768px) {
+  .pga-kpi-strip { grid-template-columns: 1fr 1fr; }
+  .pga-kpi { padding: 20px; }
+  .pga-kpi-value { font-size: 32px; }
+  .pga-kpi:nth-child(2n) { border-right: none; }
+  .pga-kpi:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
+}
+
+/* ─── Section head ─── */
+.pga-section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 36px;
+  gap: 24px;
+}
+.pga-section-head h2 {
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  margin-top: 12px;
+  line-height: 1.05;
+  text-wrap: balance;
+}
+@media (max-width: 768px) {
+  .pga-section-head h2 { font-size: 28px; }
+}
+
+/* ─── Bento grid (PGA 6-col) ─── */
+.bento.pga {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
+}
+.bento.pga > .b-drive   { grid-column: span 4; min-height: 320px; }
+.bento.pga > .b-fairway { grid-column: span 2; }
+.bento.pga > .b-gir     { grid-column: span 2; }
+.bento.pga > .b-putter  { grid-column: span 2; }
+.bento.pga > .b-scoring { grid-column: span 2; }
+.bento.pga > .b-sgtotal { grid-column: span 6; min-height: auto; }
+@media (max-width: 1024px) {
+  .bento.pga > .b-drive   { grid-column: span 6; }
+  .bento.pga > .b-fairway { grid-column: span 3; }
+  .bento.pga > .b-gir     { grid-column: span 3; }
+  .bento.pga > .b-putter  { grid-column: span 3; }
+  .bento.pga > .b-scoring { grid-column: span 3; }
+}
+@media (max-width: 640px) {
+  .bento.pga { grid-template-columns: 1fr; }
+  .bento.pga > * { grid-column: span 1 !important; min-height: 200px; }
+}
+
+/* ─── Bento card ─── */
+.bento-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 28px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 260px;
+  height: 100%;
+}
+.bento-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 88, 64, 0.12);
+}
+.bento-card:hover .bento-arrow { transform: translate(4px, -4px); color: var(--primary); }
+.bento-card:hover .bento-icon { background: var(--accent); }
+.bento-card .bento-arrow {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  color: var(--muted-foreground);
+  transition: all 0.25s;
+}
+.bento-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background: var(--secondary);
+  color: var(--primary);
+  display: grid;
+  place-items: center;
+  transition: all 0.25s;
+  margin-bottom: 20px;
+}
+.bento-card h3 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin: 0;
+}
+.bento-card .bento-desc {
+  font-size: 14px;
+  color: var(--muted-foreground);
+  line-height: 1.5;
+  margin-top: 8px;
+  max-width: 80%;
+}
+
+/* ─── Big / med numbers ─── */
+.bento-big-number {
+  font-family: var(--font-mono);
+  font-size: 84px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.04em;
+  line-height: 0.9;
+  margin-top: 16px;
+}
+.bento-big-number .unit { font-size: 24px; color: var(--muted-foreground); margin-left: 8px; }
+.bento-med-number {
+  font-family: var(--font-mono);
+  font-size: 52px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+  line-height: 0.9;
+  margin-top: 12px;
+}
+.bento-med-number .unit { font-size: 18px; color: var(--muted-foreground); margin-left: 6px; }
+@media (max-width: 768px) {
+  .bento-big-number { font-size: 56px; }
+  .bento-med-number { font-size: 36px; }
+}
+
+/* ─── Topp3 list ─── */
+.topp3 {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 18px;
+}
+.topp3-row {
+  display: grid;
+  grid-template-columns: 16px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 12.5px;
+  border-bottom: 1px dashed var(--border);
+}
+.topp3-row:last-child { border-bottom: none; }
+.topp3-rank {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted-foreground);
+}
+.topp3-name { display: flex; align-items: center; gap: 8px; }
+.topp3-val {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─── SG Total Leaderboard ─── */
+.lb {
+  display: grid;
+  gap: 0;
+  margin-top: 20px;
+}
+.lb-row {
+  display: grid;
+  grid-template-columns: 28px 32px 1fr 80px 64px 64px 64px;
+  align-items: center;
+  padding: 12px 4px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  transition: background 0.15s;
+}
+.lb-row:hover { background: var(--secondary); }
+.lb-row.lb-head {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  border-bottom: 1px solid hsl(var(--border));
+  padding: 8px 4px;
+}
+.lb-rank {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted-foreground);
+}
+.lb-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+}
+.lb-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #F1EEE5, #E5E3DD);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 10px;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+.lb-val {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.lb-val.pos { color: var(--primary); }
+.lb-chip {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--accent);
+  color: var(--accent-foreground);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 12px;
+  text-align: center;
+}
+@media (max-width: 768px) {
+  .lb-row { grid-template-columns: 24px 28px 1fr 70px; }
+  .lb-row > :nth-child(n+5) { display: none; }
+}
+
+/* ─── Putt Explorer Teaser ─── */
+.putt-teaser {
+  background: linear-gradient(135deg, #0A1F17 0%, #005840 100%);
+  border-radius: 20px;
+  padding: 48px;
+  color: #FAFAF7;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+.putt-teaser h2 {
+  font-family: var(--font-display);
+  font-size: 40px;
+  line-height: 1.05;
+  font-weight: 600;
+  color: #FAFAF7;
+  margin: 16px 0 0;
+  text-wrap: balance;
+}
+.putt-teaser p {
+  color: rgba(250, 250, 247, 0.7);
+  line-height: 1.5;
+  margin: 20px 0 28px;
+  font-size: 15px;
+}
+.putt-preview {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 16px;
+  border: 1px solid rgba(209, 248, 67, 0.15);
+}
+.putt-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.putt-bar-stack {
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  position: relative;
+}
+.putt-bar {
+  flex: 1;
+  border-radius: 3px 3px 0 0;
+  transition: height 1s cubic-bezier(0.3, 0.7, 0.3, 1);
+  min-height: 4px;
+}
+.putt-bar-tour { background: var(--accent); }
+.putt-bar-am   { background: rgba(209, 248, 67, 0.25); }
+.putt-col-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: rgba(250, 250, 247, 0.5);
+  letter-spacing: 0.08em;
+}
+.putt-legend {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: rgba(250, 250, 247, 0.65);
+}
+.putt-legend-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+@media (max-width: 768px) {
+  .putt-teaser { grid-template-columns: 1fr; padding: 32px; gap: 32px; }
+  .putt-teaser h2 { font-size: 28px; }
+}
+
+/* ─── Mersalg band ─── */
+.pga-mersalg {
+  background: var(--primary);
+  color: #FAFAF7;
+  border-radius: 24px;
+  padding: 56px;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 56px;
+  align-items: start;
+  position: relative;
+  overflow: hidden;
+}
+.pga-mersalg h2 {
+  font-family: var(--font-display);
+  font-size: 48px;
+  line-height: 1.0;
+  font-weight: 600;
+  color: #FAFAF7;
+  margin: 18px 0 0;
+  text-wrap: balance;
+}
+.pga-mersalg p {
+  color: rgba(250, 250, 247, 0.78);
+  font-size: 16px;
+  line-height: 1.55;
+  max-width: 480px;
+  margin: 24px 0 36px;
+}
+.pga-mersalg .mersalg-bg-glyph {
+  position: absolute;
+  right: -100px;
+  top: -60px;
+  color: var(--accent);
+  opacity: 0.04;
+  pointer-events: none;
+}
+.mersalg-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(209, 248, 67, 0.18);
+  border-radius: 16px;
+  padding: 28px;
+  backdrop-filter: blur(8px);
+}
+.mersalg-card h4 {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 18px;
+  font-weight: 500;
+}
+.mersalg-price {
+  border-top: 1px solid rgba(209, 248, 67, 0.18);
+  margin-top: 22px;
+  padding-top: 16px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+}
+.mersalg-price strong { color: #FAFAF7; font-weight: 500; }
+@media (max-width: 768px) {
+  .pga-mersalg { grid-template-columns: 1fr; gap: 32px; padding: 36px; border-radius: 20px; }
+  .pga-mersalg h2 { font-size: 32px; }
+}
+
+/* ─── Du vs Tour viz ─── */
+.du-vs-tour {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 8px;
+}
+.du-vs-row-label {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  margin-bottom: 6px;
+}
+.du-vs-track {
+  position: relative;
+  height: 6px;
+  background: rgba(209, 248, 67, 0.12);
+  border-radius: 3px;
+}
+.du-vs-center {
+  position: absolute;
+  left: 50%;
+  top: -3px;
+  bottom: -3px;
+  width: 1px;
+  background: rgba(209, 248, 67, 0.4);
+}
+.du-vs-bar {
+  position: absolute;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--accent);
+}
+.du-vs-dot {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background: #FAFAF7;
+  border: 2px solid var(--accent);
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* ─── Footer nudge ─── */
+.pga-footer-nudge {
+  border-top: 1px solid var(--border);
+  padding: 48px 64px;
+  text-align: center;
+}
+@media (max-width: 768px) {
+  .pga-footer-nudge { padding: 32px 20px; }
+}
