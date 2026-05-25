@@ -358,45 +358,310 @@ async function importOlyoSchedules(): Promise<{ tournaments: number }> {
 
 // ---------------------------------------------------------------------------
 // NORGES CUP (Garmin)
+//
+// Filformat: CSV med kolonner
+//   source, year, tournament, date (YYYY-MM-DD), class, pos, first_name,
+//   last_name, club, nationality, birth_year, handicap, total, to_par,
+//   r1, r2, r3, r4
+//
+// NB: norgescup_srixon_filtered.csv er filtrert til kun Srixon-spillere —
+// dvs. det er ikke komplett NGC, men det er det vi har. Full komplett NGC
+// må komme fra senere pipeline.
 // ---------------------------------------------------------------------------
 
-async function importNorgesCup(): Promise<{ tournaments: number }> {
+type NgcRow = {
+  source: string;
+  year: string;
+  tournament: string;
+  date: string;
+  class: string;
+  pos: string;
+  first_name: string;
+  last_name: string;
+  club: string;
+  nationality: string;
+  birth_year: string;
+  handicap: string;
+  total: string;
+  to_par: string;
+  r1: string;
+  r2: string;
+  r3: string;
+  r4: string;
+};
+
+function parseCsv(text: string): NgcRow[] {
+  const lines = text.trim().split("\n");
+  if (lines.length < 2) return [];
+  const headers = lines[0].split(",").map((h) => h.trim());
+  const rows: NgcRow[] = [];
+
+  for (let i = 1; i < lines.length; i++) {
+    const cells = splitCsvLine(lines[i]);
+    if (cells.length !== headers.length) continue;
+    const obj = Object.fromEntries(
+      headers.map((h, idx) => [h, cells[idx] ?? ""]),
+    ) as unknown as NgcRow;
+    rows.push(obj);
+  }
+  return rows;
+}
+
+function splitCsvLine(line: string): string[] {
+  // Enkel CSV-parser som håndterer komma inni "..."-felter (typisk for klubbnavn).
+  // NGC-CSV-en bruker ikke quotes, så split på komma er trygt — men vi håndterer
+  // det for robusthet.
+  const result: string[] = [];
+  let current = "";
+  let inQuotes = false;
+  for (const ch of line) {
+    if (ch === '"') {
+      inQuotes = !inQuotes;
+    } else if (ch === "," && !inQuotes) {
+      result.push(current);
+      current = "";
+    } else {
+      current += ch;
+    }
+  }
+  result.push(current);
+  return result.map((s) => s.trim());
+}
+
+async function importNorgesCup(): Promise<{ tournaments: number; entries: number }> {
   const file = path.join(DRIVE_BASE, "norgescup_srixon_filtered.csv");
   if (!fs.existsSync(file)) {
     console.warn(`[ngc] Hopper over — fant ikke ${file}`);
-    return { tournaments: 0 };
+    return { tournaments: 0, entries: 0 };
   }
 
-  // CSV-format: ukjent — leser bare for å logge antall linjer
-  const lines = fs.readFileSync(file, "utf-8").trim().split("\n");
-  console.log(`[ngc] CSV har ${lines.length} linjer — krever parser-spesifikasjon`);
+  const text = fs.readFileSync(file, "utf-8");
+  const rows = parseCsv(text);
 
-  // TODO: implementer parser når CSV-strukturen er bekreftet
-  return { tournaments: 0 };
+  // Grupper per turnering (year + tournament + date)
+  const turnMap = new Map<string, { name: string; date: Date; rows: NgcRow[] }>();
+  for (const r of rows) {
+    const year = Number(r.year);
+    if (isNaN(year) || year < MIN_YEAR) continue;
+
+    const date = new Date(r.date);
+    if (isNaN(date.getTime())) continue;
+
+    const key = `${r.year}|${r.tournament}|${r.date}`;
+    const existing = turnMap.get(key);
+    if (existing) {
+      existing.rows.push(r);
+    } else {
+      turnMap.set(key, { name: r.tournament, date, rows: [r] });
+    }
+  }
+
+  let tournamentCount = 0;
+  let entryCount = 0;
+
+  for (const [key, t] of turnMap.entries()) {
+    const slug = `ngc-${slugify(t.name)}-${t.date.getUTCFullYear()}`;
+    const weekStart = getWeekStart(t.date);
+
+    const turnering = await prisma.tournament.upsert({
+      where: { slug },
+      create: {
+        name: t.name,
+        slug,
+        startDate: t.date,
+        endDate: t.date,
+        format: "STROKE",
+        sourceOrigin: "NGF",
+        sourceId: `ngc-${key}`,
+        tour: "amateur-no",
+        country: "NO",
+        status: "COMPLETED",
+        tier: 3, // Norges Cup = profesjonell norsk tour
+        weekStart,
+        notes: JSON.stringify({ tour: "garmin", externalKey: key }),
+        lastSyncAt: new Date(),
+      },
+      update: {
+        lastSyncAt: new Date(),
+        tier: 3,
+        weekStart,
+      },
+      select: { id: true },
+    });
+    tournamentCount++;
+
+    for (const r of t.rows) {
+      const fn = r.first_name.replace(/\s*\(a\)\s*$/i, "").trim();
+      const ln = r.last_name.replace(/\s*\(a\)\s*$/i, "").trim();
+      const by = r.birth_year ? Number(r.birth_year) : null;
+      const playerId = await ensurePlayer(fn, ln, r.club || null, by);
+
+      const rounds = [
+        { n: 1, score: r.r1 ? Number(r.r1) : null, par: null },
+        { n: 2, score: r.r2 ? Number(r.r2) : null, par: null },
+        { n: 3, score: r.r3 ? Number(r.r3) : null, par: null },
+        { n: 4, score: r.r4 ? Number(r.r4) : null, par: null },
+      ].filter((rnd) => rnd.score !== null && !isNaN(rnd.score));
+
+      const totalScore = r.total ? Number(r.total) : null;
+      const pos = r.pos ? Number(r.pos) : null;
+
+      await prisma.publicPlayerEntry.upsert({
+        where: {
+          playerId_tournamentId: { playerId, tournamentId: turnering.id },
+        },
+        create: {
+          playerId,
+          tournamentId: turnering.id,
+          status: "FINISHED",
+          position: pos,
+          totalScore: totalScore && !isNaN(totalScore) ? totalScore : null,
+          rounds,
+        },
+        update: {
+          position: pos,
+          totalScore: totalScore && !isNaN(totalScore) ? totalScore : null,
+          rounds,
+          status: "FINISHED",
+        },
+      });
+      entryCount++;
+    }
+  }
+
+  // Oppdater norskeAntall denormalisert for NGC også (kjøres samlet i main)
+  return { tournaments: tournamentCount, entries: entryCount };
 }
 
 // ---------------------------------------------------------------------------
 // ØSTLANDSTOUR
+//
+// Filformat: JSON-array av turneringer med samme struktur som Srixon:
+//   { comp_id, name, year, start_date (YYYYMMDDTHHMMSS), classes: [
+//     { class_name, players: [{ pos, fn, ln, club, nat, by, hcp, total,
+//       topar, rounds: [{ n, score, par }] }] }
+//   ]}
 // ---------------------------------------------------------------------------
 
-async function importOstlandsTour(): Promise<{ tournaments: number }> {
+type OstlandsRound = { n: number; score: string; par: string };
+type OstlandsPlayer = {
+  pos: number;
+  fn: string;
+  ln: string;
+  club: string;
+  nat?: string;
+  by?: number;
+  hcp?: string;
+  total: string;
+  topar?: string;
+  rounds: OstlandsRound[];
+};
+type OstlandsClass = { class_name: string; players: OstlandsPlayer[] };
+type OstlandsTournament = {
+  comp_id: number;
+  name: string;
+  year: number;
+  start_date: string;
+  classes: OstlandsClass[];
+};
+
+async function importOstlandsTour(): Promise<{ tournaments: number; entries: number }> {
   const file = path.join(DRIVE_BASE, "ostlandstour_results.json");
   if (!fs.existsSync(file)) {
     console.warn(`[ostlands] Hopper over — fant ikke ${file}`);
-    return { tournaments: 0 };
+    return { tournaments: 0, entries: 0 };
   }
 
   const raw = fs.readFileSync(file, "utf-8");
-  const data = JSON.parse(raw) as unknown;
+  const data = JSON.parse(raw) as OstlandsTournament[];
 
   if (!Array.isArray(data)) {
     console.warn(`[ostlands] Forventet array, fikk ${typeof data}`);
-    return { tournaments: 0 };
+    return { tournaments: 0, entries: 0 };
   }
 
-  console.log(`[ostlands] ${data.length} entries i JSON — krever parser-spesifikasjon`);
-  // TODO: implementer parser når struktur er bekreftet
-  return { tournaments: 0 };
+  let tournamentCount = 0;
+  let entryCount = 0;
+
+  for (const t of data) {
+    if (t.year < MIN_YEAR) continue;
+    const startDate = parseOlyoDate(t.start_date); // Samme format som OLYO
+    if (!startDate) continue;
+
+    const slug = `ostlands-${slugify(t.name)}-${t.year}`;
+    const weekStart = getWeekStart(startDate);
+
+    const turnering = await prisma.tournament.upsert({
+      where: { slug },
+      create: {
+        name: t.name.trim(),
+        slug,
+        startDate,
+        endDate: startDate, // Østlandstour er 2-dagers — endDate beregnes fra rundes
+        format: "STROKE",
+        sourceOrigin: "NGF",
+        sourceId: `ostlands-${t.comp_id}`,
+        tour: "amateur-no",
+        country: "NO",
+        status: "COMPLETED",
+        tier: 4, // amatør-juniortour
+        weekStart,
+        notes: JSON.stringify({ tour: "ostlandstour", externalId: t.comp_id }),
+        lastSyncAt: new Date(),
+      },
+      update: {
+        lastSyncAt: new Date(),
+        weekStart,
+        tier: 4,
+      },
+      select: { id: true },
+    });
+    tournamentCount++;
+
+    for (const cls of t.classes) {
+      for (const p of cls.players) {
+        // Hopp over ikke-norske spillere fra Østlandstour (de kommer fra andre tour-databaser)
+        if (p.nat && p.nat !== "NO") continue;
+
+        const playerId = await ensurePlayer(
+          p.fn,
+          p.ln,
+          p.club || null,
+          p.by ?? null,
+        );
+
+        const rounds = p.rounds.map((r) => ({
+          n: r.n,
+          score: Number(r.score),
+          par: r.par,
+        }));
+        const totalScore = Number(p.total) || null;
+
+        await prisma.publicPlayerEntry.upsert({
+          where: {
+            playerId_tournamentId: { playerId, tournamentId: turnering.id },
+          },
+          create: {
+            playerId,
+            tournamentId: turnering.id,
+            status: "FINISHED",
+            position: p.pos,
+            totalScore: totalScore && !isNaN(totalScore) ? totalScore : null,
+            rounds,
+          },
+          update: {
+            position: p.pos,
+            totalScore: totalScore && !isNaN(totalScore) ? totalScore : null,
+            rounds,
+            status: "FINISHED",
+          },
+        });
+        entryCount++;
+      }
+    }
+  }
+
+  return { tournaments: tournamentCount, entries: entryCount };
 }
 
 // ---------------------------------------------------------------------------
@@ -419,18 +684,35 @@ async function main() {
 
   console.log("=== OLYO TOUR (alle regioner) ===");
   const olyo = await importOlyoSchedules();
-  console.log(`  ${olyo.tournaments} turneringer\n`);
+  console.log(`  ${olyo.tournaments} turneringer (kun schedules, ingen resultater)\n`);
 
-  console.log("=== NORGES CUP ===");
+  console.log("=== NORGES CUP (Garmin) ===");
   const ngc = await importNorgesCup();
-  console.log(`  ${ngc.tournaments} turneringer\n`);
+  console.log(`  ${ngc.tournaments} turneringer, ${ngc.entries} deltaker-rader\n`);
 
   console.log("=== ØSTLANDSTOUR ===");
   const ostlands = await importOstlandsTour();
-  console.log(`  ${ostlands.tournaments} turneringer\n`);
+  console.log(`  ${ostlands.tournaments} turneringer, ${ostlands.entries} deltaker-rader\n`);
 
-  const totalT = srixon.tournaments + olyo.tournaments + ngc.tournaments + ostlands.tournaments;
-  console.log(`✓ Ferdig — totalt ${totalT} turneringer + ${srixon.entries} deltaker-rader importert`);
+  // Oppdater norskeAntall denormalisert for alle NGF-turneringer
+  console.log("=== OPPDATER norskeAntall-cache ===");
+  await prisma.$executeRaw`
+    UPDATE tournaments t
+    SET "norskeAntall" = (
+      SELECT COUNT(*) FROM public_player_entries pe
+      JOIN public_players pp ON pp.id = pe."playerId"
+      WHERE pe."tournamentId" = t.id AND pp.country = 'NO'
+    )
+    WHERE "sourceOrigin" = 'NGF'
+  `;
+  console.log("  Cache oppdatert\n");
+
+  const totalT =
+    srixon.tournaments + olyo.tournaments + ngc.tournaments + ostlands.tournaments;
+  const totalE = srixon.entries + ngc.entries + ostlands.entries;
+  console.log(
+    `✓ Ferdig — totalt ${totalT} turneringer + ${totalE} deltaker-rader importert`,
+  );
   console.log(`  Unike spillere lagt til denne kjøringen: ${playerCache.size}`);
 
   await prisma.$disconnect();
