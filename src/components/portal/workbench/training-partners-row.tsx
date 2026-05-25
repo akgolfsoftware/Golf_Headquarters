@@ -4,6 +4,8 @@
  * Bruk i Player Workbench (PlayerHQ Hjem). Lister opp planlagte økter
  * der spilleren har felles økt med andre spillere (eller har fått invitasjon).
  *
+ * Athletic editorial: større avatarer, dramatisk meta-rad, prominent CTA.
+ *
  * TODO: når SessionParticipant-modellen er på plass i Prisma, hentes data
  * via prisma.trainingSessionParticipant.findMany({...}). Inntil videre tar
  * komponenten ferdigformaterte props fra siden.
@@ -11,7 +13,7 @@
  * Referanse: Spor C i Sprint 1 (Player Workbench v2).
  */
 import Link from "next/link";
-import { ArrowRight, UserPlus } from "lucide-react";
+import { ArrowRight, UserPlus, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { avatarBg, initialsFromName } from "@/lib/avatar-colors";
 
@@ -44,20 +46,20 @@ export type TrainingPartnersRowProps = {
 // ---------- Helpers ----------
 
 const PYRAMID_LABEL: Record<TrainingPartnerPyramid, string> = {
-  FYS: "FYS-økt",
-  TEK: "TEK-økt",
-  SLAG: "SLAG-økt",
-  SPILL: "SPILL-økt",
-  TURN: "TURN-økt",
+  FYS: "FYS",
+  TEK: "TEK",
+  SLAG: "SLAG",
+  SPILL: "SPILL",
+  TURN: "TURN",
 };
 
-function isSameDay(a: Date, b: Date): boolean {
-  return (
-    a.getFullYear() === b.getFullYear() &&
-    a.getMonth() === b.getMonth() &&
-    a.getDate() === b.getDate()
-  );
-}
+const PYRAMID_STYLE: Record<TrainingPartnerPyramid, string> = {
+  FYS: "bg-primary/10 text-primary",
+  TEK: "bg-warning/10 text-warning",
+  SLAG: "bg-info/10 text-info",
+  SPILL: "bg-accent/30 text-accent-foreground",
+  TURN: "bg-destructive/10 text-destructive",
+};
 
 function relativeDayLabel(date: Date, now: Date): string {
   const today = new Date(now);
@@ -86,12 +88,12 @@ function formatTime(date: Date): string {
 function statusPillStyle(status: TrainingPartnerStatus): string {
   switch (status) {
     case "JOINED":
-      return "bg-primary/10 text-primary border-primary/20";
+      return "bg-primary/10 text-primary";
     case "INVITED":
-      return "bg-accent/30 text-accent-foreground border-accent/40";
+      return "bg-accent text-accent-foreground";
     case "PENDING":
     default:
-      return "bg-secondary text-secondary-foreground border-border";
+      return "bg-secondary text-muted-foreground";
   }
 }
 
@@ -103,7 +105,7 @@ function statusLabel(status: TrainingPartnerStatus): string {
       return "Invitert";
     case "PENDING":
     default:
-      return "Ingen bekreftelse";
+      return "Avventer";
   }
 }
 
@@ -119,31 +121,47 @@ export function TrainingPartnersRow({
   return (
     <section
       className={cn(
-        "rounded-lg border border-border bg-card p-4 sm:p-6",
-        className
+        "rounded-2xl border border-border bg-card p-6 sm:p-7",
+        className,
       )}
       aria-labelledby="training-partners-heading"
     >
-      <div className="mb-4 flex items-center justify-between gap-2">
-        <h2
-          id="training-partners-heading"
-          className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground"
+      {/* Header */}
+      <div className="mb-5 flex items-end justify-between gap-3">
+        <div>
+          <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+            Tren sammen
+          </p>
+          <h2
+            id="training-partners-heading"
+            className="mt-1 font-display text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+          >
+            Treningskompiser
+          </h2>
+        </div>
+        <Link
+          href={inviteHref}
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-foreground transition hover:border-foreground/20 hover:bg-secondary"
         >
-          Treningskompiser
-        </h2>
+          <UserPlus className="size-3" strokeWidth={2} aria-hidden />
+          Inviter
+        </Link>
       </div>
 
       {partners.length === 0 ? (
-        <div className="rounded-md border border-dashed border-border bg-secondary/40 p-6 text-center">
-          <p className="text-sm text-muted-foreground">
-            Ingen felles økter denne uka
+        <div className="rounded-xl border border-dashed border-border bg-secondary/30 p-8 text-center">
+          <span className="mx-auto mb-3 grid size-12 place-items-center rounded-full bg-foreground/5 text-foreground/60">
+            <Users className="size-6" strokeWidth={1.5} aria-hidden="true" />
+          </span>
+          <p className="mx-auto max-w-xs text-sm text-muted-foreground">
+            Ingen felles økter denne uka. Inviter en kompis og tren sammen.
           </p>
           <Link
             href={inviteHref}
-            className="mt-3 inline-flex min-h-[44px] items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+            className="mt-5 inline-flex min-h-[44px] items-center gap-1.5 rounded-full bg-foreground px-5 py-2 font-mono text-[11px] font-bold uppercase tracking-[0.10em] text-background transition hover:bg-foreground/90"
           >
-            <UserPlus className="h-4 w-4" aria-hidden="true" />
-            Inviter en kompis
+            <UserPlus className="size-3.5" strokeWidth={2} aria-hidden="true" />
+            Inviter kompis
           </Link>
         </div>
       ) : (
@@ -151,12 +169,12 @@ export function TrainingPartnersRow({
           {partners.map((partner) => (
             <li
               key={`${partner.userId}-${partner.okt.id}`}
-              className="flex flex-col gap-3 rounded-md border border-border bg-background p-3 sm:flex-row sm:items-center sm:gap-4 sm:p-4"
+              className="group flex flex-col gap-3 rounded-xl border border-border bg-background/50 p-4 transition hover:border-foreground/20 sm:flex-row sm:items-center sm:gap-4"
             >
               {/* Avatar + info */}
               <div className="flex items-start gap-3 sm:items-center sm:gap-4">
                 <div
-                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white sm:h-12 sm:w-12"
+                  className="grid size-12 shrink-0 place-items-center rounded-full font-display text-sm font-bold text-white shadow-sm sm:size-14"
                   style={{ background: avatarBg(partner.name) }}
                   aria-hidden="true"
                 >
@@ -164,22 +182,29 @@ export function TrainingPartnersRow({
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-                    <span className="text-sm font-semibold text-foreground">
+                    <span className="font-display text-base font-bold text-foreground">
                       {partner.name}
                     </span>
-                    <span className="font-mono text-[11px] text-muted-foreground tabular-nums">
-                      {relativeDayLabel(partner.okt.startAt, now)}{" "}
-                      {formatTime(partner.okt.startAt)}
+                    <span
+                      className={cn(
+                        "rounded-full px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.10em]",
+                        PYRAMID_STYLE[partner.okt.pyramid],
+                      )}
+                    >
+                      {PYRAMID_LABEL[partner.okt.pyramid]}
                     </span>
                   </div>
-                  <p className="mt-0.5 text-xs text-muted-foreground">
-                    {PYRAMID_LABEL[partner.okt.pyramid]}
-                    {partner.okt.location ? ` på ${partner.okt.location}` : ""}
+                  <p className="mt-0.5 font-mono text-[11px] tabular-nums text-muted-foreground">
+                    <span className="font-bold uppercase tracking-[0.06em] text-foreground/80">
+                      {relativeDayLabel(partner.okt.startAt, now)}
+                    </span>{" "}
+                    {formatTime(partner.okt.startAt)}
+                    {partner.okt.location ? ` · ${partner.okt.location}` : ""}
                   </p>
                   <span
                     className={cn(
-                      "mt-1.5 inline-flex items-center rounded-full border px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.08em]",
-                      statusPillStyle(partner.okt.status)
+                      "mt-1.5 inline-flex items-center rounded-full px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.10em]",
+                      statusPillStyle(partner.okt.status),
                     )}
                   >
                     {statusLabel(partner.okt.status)}
@@ -192,18 +217,26 @@ export function TrainingPartnersRow({
                 {partner.okt.status === "INVITED" ? (
                   <Link
                     href={`/portal/tren/${partner.okt.id}`}
-                    className="inline-flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 sm:w-auto"
+                    className="inline-flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-full bg-foreground px-5 py-2 font-mono text-[11px] font-bold uppercase tracking-[0.10em] text-background transition hover:bg-foreground/90 sm:w-auto"
                   >
                     Bli med
-                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                    <ArrowRight
+                      className="size-3.5 transition-transform group-hover:translate-x-0.5"
+                      strokeWidth={2}
+                      aria-hidden="true"
+                    />
                   </Link>
                 ) : (
                   <Link
                     href={`/portal/tren/${partner.okt.id}`}
-                    className="inline-flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-md border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition hover:bg-secondary sm:w-auto"
+                    className="inline-flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-full border border-border bg-card px-5 py-2 font-mono text-[11px] font-bold uppercase tracking-[0.10em] text-foreground transition hover:bg-secondary sm:w-auto"
                   >
                     Se økt
-                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                    <ArrowRight
+                      className="size-3.5 transition-transform group-hover:translate-x-0.5"
+                      strokeWidth={2}
+                      aria-hidden="true"
+                    />
                   </Link>
                 )}
               </div>
@@ -211,18 +244,6 @@ export function TrainingPartnersRow({
           ))}
         </ul>
       )}
-
-      {partners.length > 0 ? (
-        <div className="mt-4 flex justify-end">
-          <Link
-            href={inviteHref}
-            className="inline-flex items-center gap-1.5 font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-primary transition hover:underline"
-          >
-            <UserPlus className="h-3.5 w-3.5" aria-hidden="true" />
-            Inviter en kompis
-          </Link>
-        </div>
-      ) : null}
     </section>
   );
 }

@@ -1,8 +1,11 @@
 /**
  * PlayerHQ Workbench v2 — sprint 1-leveranse.
  *
- * Bruker 8 nye komponenter fra src/components/portal/workbench/.
+ * Bruker 9 nye komponenter fra src/components/portal/workbench/.
  * Lever side-om-side med eksisterende /portal som forhåndsvisning.
+ *
+ * Athletic editorial: hero med AK Golf Academy-bilde, dark moment-cards,
+ * editorial section headers med lime accent, og store display-tall.
  *
  * Når godkjent: erstatter /portal/page.tsx (eller flagges som default).
  */
@@ -25,6 +28,7 @@ import {
   DEFAULT_QUICK_ACTIONS,
 } from "@/components/portal/workbench/quick-actions";
 import { FabButton } from "@/components/portal/workbench/fab-button";
+import { SectionHeader } from "@/components/portal/workbench/section-header";
 import { getWeekProgress } from "@/components/portal/workbench/get-week-progress";
 import { getCaddieInsights } from "@/lib/ai/get-workbench-insights";
 
@@ -141,8 +145,8 @@ export default async function WorkbenchV2() {
   const wellnessData = null;
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6 px-4 py-6 md:px-6 lg:px-8">
-      {/* Hero med AK Golf Academy-bilde */}
+    <div className="mx-auto max-w-7xl space-y-10 px-4 py-6 sm:py-8 md:px-6 lg:space-y-12 lg:px-8">
+      {/* HERO — AK Golf Academy-bilde med dark gradient */}
       <PlayerHeroImage
         user={userData}
         neste_turnering={
@@ -153,31 +157,42 @@ export default async function WorkbenchV2() {
         imageId={1}
       />
 
-      {/* I dag — horisontal kalender */}
-      <section>
-        <header className="mb-3 flex items-center justify-between">
-          <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-            I dag
-          </span>
-        </header>
+      {/* SEKSJON: I DAG */}
+      <section aria-labelledby="i-dag-heading">
+        <SectionHeader
+          eyebrow="Programmet i dag"
+          title="I dag"
+          description={
+            calendarSessions.length > 0
+              ? `${calendarSessions.length} økt${calendarSessions.length === 1 ? "" : "er"} planlagt — tidslinje fra 05:00 til 24:00.`
+              : "Ingen økter planlagt. Bruk snarveiene under til å starte en økt eller booke en time."
+          }
+          cta={{ label: "Full kalender", href: "/portal/kalender" }}
+        />
         <CalendarWidget sessions={calendarSessions} currentTime={now} />
       </section>
 
-      {/* AI-Innsikt */}
+      {/* SEKSJON: AI-INNSIKT */}
       {insights.length > 0 && (
-        <section>
-          <header className="mb-3">
-            <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-              AI-innsikt
-            </span>
-          </header>
+        <section aria-labelledby="innsikt-heading">
+          <SectionHeader
+            eyebrow="Fra Caddie"
+            title="AI-innsikt"
+            description="Tre observasjoner basert på siste 30 dager. Klikk en handling for å sette i gang."
+          />
           <AiInsightsRow insights={insights} />
         </section>
       )}
 
-      {/* Ukens progresjon */}
+      {/* SEKSJON: UKAS PROGRESJON */}
       {ukens && (
-        <section>
+        <section aria-labelledby="ukens-heading">
+          <SectionHeader
+            eyebrow="Status siste 7 dager"
+            title="Ukas progresjon"
+            description="Hvordan tida er fordelt mellom pyramide-aksene + summering av aktivitet."
+            cta={{ label: "Se analyse", href: "/portal/analysere" }}
+          />
           <WeekProgressCard
             fordeling={ukens.fordeling}
             anbefaling={ukens.anbefaling}
@@ -186,37 +201,49 @@ export default async function WorkbenchV2() {
         </section>
       )}
 
-      {/* Snarveier */}
-      <section>
-        <header className="mb-3">
-          <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-            Snarveier
-          </span>
-        </header>
+      {/* SEKSJON: SNARVEIER */}
+      <section aria-labelledby="snarveier-heading">
+        <SectionHeader
+          eyebrow="Kom raskt i gang"
+          title="Snarveier"
+          description="Hyppigste handlinger ett klikk unna. Hovedhandling i mørk farge."
+        />
         <QuickActions actions={DEFAULT_QUICK_ACTIONS} />
       </section>
 
-      {/* Treningskompiser */}
+      {/* SEKSJON: TRENINGSKOMPISER */}
       {partners.length > 0 && (
-        <section>
+        <section aria-labelledby="kompiser-heading">
+          <SectionHeader
+            eyebrow="Sosial trening"
+            title="Tren sammen"
+            description="Spillere du har felles økter med denne uka."
+          />
           <TrainingPartnersRow partners={partners} />
         </section>
       )}
 
-      {/* 2-kol: Turnering + Wellness */}
-      <section className="grid gap-4 md:grid-cols-2">
-        {nesteTurnering && (
-          <NextTournamentCountdown
-            turnering={nesteTurnering}
-            forberedelse={{
-              planOppdatert: true,
-              reiseBooket: false,
-              baneRecon: false,
-              mentalForberedelse: false,
-            }}
-          />
-        )}
-        <WellnessIndicators data={wellnessData} />
+      {/* SEKSJON: TURNERING + VELVÆRE — 2-kolonne */}
+      <section aria-labelledby="moment-heading">
+        <SectionHeader
+          eyebrow="Hva som teller mest"
+          title="Turnering + velvære"
+          description="Nedtelling til neste konkurranse og daglig kropp-status fra wearable."
+        />
+        <div className="grid gap-5 md:grid-cols-2">
+          {nesteTurnering && (
+            <NextTournamentCountdown
+              turnering={nesteTurnering}
+              forberedelse={{
+                planOppdatert: true,
+                reiseBooket: false,
+                baneRecon: false,
+                mentalForberedelse: false,
+              }}
+            />
+          )}
+          <WellnessIndicators data={wellnessData} />
+        </div>
       </section>
 
       {/* FAB — mobile-only floating action button */}

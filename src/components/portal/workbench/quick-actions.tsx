@@ -5,6 +5,9 @@
  * Hver action har Lucide-ikon, label og href. `highlight: true` gir
  * primary-tonet styling for hoved-CTAen.
  *
+ * Athletic editorial: større ikon-bokser, subtile hover-løft og mer
+ * dramatisk typografi for label. Highlight-action får dark moment.
+ *
  * Referanse: Spor C i Sprint 1 (Player Workbench v2).
  */
 import Link from "next/link";
@@ -70,7 +73,7 @@ export const DEFAULT_QUICK_ACTIONS: QuickAction[] = [
     icon: <MessageSquare className="h-5 w-5" aria-hidden="true" />,
   },
   {
-    label: "Se kalender",
+    label: "Kalender",
     href: "/portal/kalender",
     icon: <Calendar className="h-5 w-5" aria-hidden="true" />,
   },
@@ -88,49 +91,40 @@ export function QuickActions({
   className,
 }: QuickActionsProps) {
   return (
-    <section
-      className={cn(
-        "rounded-lg border border-border bg-card p-4 sm:p-6",
-        className
-      )}
-      aria-labelledby="quick-actions-heading"
-    >
-      <h2
-        id="quick-actions-heading"
-        className="mb-4 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground"
-      >
-        Snarveier
-      </h2>
-
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
-        {actions.map((action) => (
-          <Link
-            key={`${action.label}-${action.href}`}
-            href={action.href}
+    <div className={cn("grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4", className)}>
+      {actions.map((action) => (
+        <Link
+          key={`${action.label}-${action.href}`}
+          href={action.href}
+          className={cn(
+            "group flex min-h-[100px] flex-col items-center justify-center gap-2.5 rounded-2xl border p-4 text-center transition-all duration-200",
+            "hover:-translate-y-0.5 hover:shadow-md",
+            action.highlight
+              ? "border-foreground/15 bg-foreground text-background shadow-md hover:bg-foreground/95"
+              : "border-border bg-card text-foreground hover:border-foreground/20",
+          )}
+        >
+          <span
             className={cn(
-              "flex min-h-[80px] flex-col items-center justify-center gap-2 rounded-lg border p-4 text-center transition",
+              "grid h-10 w-10 place-items-center rounded-full transition-transform group-hover:scale-110",
               action.highlight
-                ? "border-primary/30 bg-primary/5 text-primary hover:bg-primary/10"
-                : "border-border bg-card text-foreground hover:border-primary hover:bg-secondary/50"
+                ? "bg-accent text-accent-foreground"
+                : "bg-secondary text-foreground group-hover:bg-foreground group-hover:text-background",
+            )}
+            aria-hidden="true"
+          >
+            {action.icon}
+          </span>
+          <span
+            className={cn(
+              "font-mono text-[10px] font-bold uppercase tracking-[0.10em] leading-tight",
+              action.highlight ? "text-background" : "text-foreground",
             )}
           >
-            <span
-              className={cn(
-                "flex h-8 w-8 items-center justify-center rounded-full",
-                action.highlight
-                  ? "bg-primary/15 text-primary"
-                  : "bg-secondary text-muted-foreground"
-              )}
-              aria-hidden="true"
-            >
-              {action.icon}
-            </span>
-            <span className="text-xs font-medium leading-tight">
-              {action.label}
-            </span>
-          </Link>
-        ))}
-      </div>
-    </section>
+            {action.label}
+          </span>
+        </Link>
+      ))}
+    </div>
   );
 }
