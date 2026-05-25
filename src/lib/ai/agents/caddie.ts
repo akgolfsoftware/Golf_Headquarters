@@ -54,6 +54,9 @@ export type ChatCaddieOpts = {
   // Maks antall tool-iterasjoner per kall (sikrer at vi ikke looper i evig
   // tool_use → tool_result → tool_use-syklus).
   maxToolIterations?: number;
+  // Valgfri ekstra system-prompt som appendes etter standard CADDIE_SYSTEM_PROMPT.
+  // Brukes til å injisere ekstra kontekst (eks. valgt spiller-ID i workbench).
+  systemPrefix?: string;
 };
 
 export type ChatCaddieResult =
@@ -68,11 +71,21 @@ export type ToolCallLog = {
 
 /**
  * Bygger system-prompt med bruker-spesifikk minne-kontekst injisert.
+ * Optional `extraPrefix` appendes på slutten (eks. valgt spiller-ID).
  */
-async function bygSystemPrompt(userId?: string): Promise<string> {
-  if (!userId) return CADDIE_SYSTEM_PROMPT;
-  const memory = await recallMemory(userId);
-  return CADDIE_SYSTEM_PROMPT + formatMemoryForPrompt(memory);
+async function bygSystemPrompt(
+  userId?: string,
+  extraPrefix?: string,
+): Promise<string> {
+  let prompt = CADDIE_SYSTEM_PROMPT;
+  if (userId) {
+    const memory = await recallMemory(userId);
+    prompt += formatMemoryForPrompt(memory);
+  }
+  if (extraPrefix && extraPrefix.trim().length > 0) {
+    prompt += "\n\n" + extraPrefix.trim();
+  }
+  return prompt;
 }
 
 /**
@@ -89,7 +102,7 @@ export async function chatCaddie(
     return { ok: false, error: "AI ikke aktivert (mangler ANTHROPIC_API_KEY)" };
   }
 
-  const systemPrompt = await bygSystemPrompt(opts.userId);
+  const systemPrompt = await bygSystemPrompt(opts.userId, opts.systemPrefix);
   const maxIter = opts.maxToolIterations ?? 5;
   const conversation: MessageParam[] = [...opts.messages];
   const toolCalls: ToolCallLog[] = [];
