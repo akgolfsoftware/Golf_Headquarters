@@ -441,10 +441,31 @@ model User {
   // Notion-sync (v1.1) — per-user OAuth-tilkobling til Notion
   notionConnection NotionConnection?
 
+  // Web Push-subscriptions — én rad per enhet/browser.
+  pushSubscriptions PushSubscription[]
+
   // Performance: hot path — filtrere aktive spillere/coacher
   // (PlayerHQ-lister, CoachHQ-portefølje, talent-tracking).
   @@index([role, deletedAt])
   @@map("users")
+}
+
+// Web Push-abonnement per enhet/browser. Én bruker kan ha flere
+// (laptop, telefon, ulike browsere). Slettes når subscription returnerer
+// 410 Gone fra push-service (gammel/avregistrert).
+model PushSubscription {
+  id         String    @id @default(cuid())
+  userId     String
+  endpoint   String    @unique
+  p256dh     String
+  auth       String
+  userAgent  String?
+  createdAt  DateTime  @default(now())
+  lastUsedAt DateTime?
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("push_subscriptions")
 }
 
 // Talent-tracking for spillere i akademiets talent-program.
