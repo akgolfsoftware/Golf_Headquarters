@@ -172,14 +172,16 @@ const ACTIONS: Action[] = [
     icon: UserCog,
     kind: { type: "navigate", href: "/portal/meg" },
   },
-  {
-    id: "toggle-theme",
-    label: "Bytt tema",
-    description: "Bytt mellom lyst og mørkt tema",
-    keywords: ["tema", "dark", "light", "mørkt", "lyst", "theme", "mode"],
-    icon: Moon,
-    kind: { type: "toggle-theme" },
-  },
+  // Tema-toggle deaktivert i første runde — kun light tema.
+  // Beholder dark-tokens i globals.css for senere bruk.
+  // {
+  //   id: "toggle-theme",
+  //   label: "Bytt tema",
+  //   description: "Bytt mellom lyst og mørkt tema",
+  //   keywords: ["tema", "dark", "light", "mørkt", "lyst", "theme", "mode"],
+  //   icon: Moon,
+  //   kind: { type: "toggle-theme" },
+  // },
   {
     id: "view-mode-coach",
     label: "Bytt til Coach-view",

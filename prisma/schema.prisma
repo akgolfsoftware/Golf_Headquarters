@@ -410,6 +410,10 @@ model User {
   // Manuelt-opprettede turneringer (Stats Fase 1)
   createdTournaments Tournament[] @relation("ManualTournamentCreator")
 
+  // Stats Fase 4 — SG-sammenligning
+  sgInputs          BrukerSgInput[]
+  sgSammenligninger BrukerSammenligning[]
+
   // Coaching-videoer (Sprint M11b)
   videosAsPlayer SessionVideo[] @relation("VideoPlayer")
   videosAsCoach  SessionVideo[] @relation("VideoCoach")
@@ -2653,6 +2657,66 @@ model PgaApproachDistance {
 
   @@unique([year, yardageBucket])
   @@map("pga_approach_distance")
+}
+
+// ---------- Stats Fase 4 — SG-sammenligning + estimater ----------
+// Brukerens egne SG-innskudd (manuell, TrackMan eller import).
+// Brukes til /stats/sg-sammenlign for å sammenligne mot proffer
+// og estimere PGA Tour-ekvivalent score.
+model BrukerSgInput {
+  id            String   @id @default(cuid())
+  userId        String
+  // Periode-info
+  dato          DateTime @default(now())
+  periodeFra    DateTime?
+  periodeTil    DateTime?
+  // Strokes Gained per kategori (per runde, kan være negative)
+  sgOtt         Float?
+  sgApp         Float?
+  sgArg         Float?
+  sgPutt        Float?
+  sgTotal       Float?
+  // Konteksttall
+  snittScore    Float?    // gjennomsnittlig brutto-score per runde i perioden
+  antallRunder  Int?
+  // Kilde: MANUELL | TRACKMAN | NLB | PLAYERHQ
+  kilde         String    @default("MANUELL")
+  kommentar     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user         User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sammenligninger BrukerSammenligning[]
+
+  @@index([userId, dato])
+  @@map("bruker_sg_inputs")
+}
+
+// Lagret sammenligning mot en referansespiller (DataGolf-spiller).
+// Snapshot av estimat ved tidspunktet — brukes som "din utvikling over tid".
+model BrukerSammenligning {
+  id                String   @id @default(cuid())
+  userId            String
+  sgInputId         String
+  // Hvem brukeren sammenlignet seg med (fra PgaPlayerSeason)
+  refDgPlayerId     Int
+  refPlayerName     String
+  refTour           String   @default("pga")
+  refYear           Int
+  // Snapshot av estimering-engine ved tidspunkt
+  estPgaTourScore   Float?   // estimert PGA Tour-score gitt brukerens norske snitt
+  estHcp            Float?
+  sgDiffTotal       Float?   // ref.sgTotal − bruker.sgTotal (positiv = ref er bedre)
+  kommentar         String?
+
+  createdAt DateTime @default(now())
+
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sgInput   BrukerSgInput  @relation(fields: [sgInputId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@map("bruker_sammenligninger")
 }
 
 // AI-genererte innsikter per spiller — oppdateres daglig via cron kl 04:00.

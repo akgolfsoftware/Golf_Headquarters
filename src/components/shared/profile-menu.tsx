@@ -11,10 +11,8 @@ import {
   HelpCircle,
   LifeBuoy,
   LogOut,
-  Moon,
   Settings,
   Sparkles,
-  Sun,
   User as UserIcon,
 } from "lucide-react";
 import { logout } from "@/lib/auth/logout";
@@ -28,10 +26,6 @@ type Props = {
 
 export function ProfileMenu({ name, email, avatarUrl, hcp }: Props) {
   const [open, setOpen] = useState(false);
-  const [theme, setTheme] = useState<"lys" | "mork">(() => {
-    if (typeof document === "undefined") return "lys";
-    return document.documentElement.classList.contains("dark") ? "mork" : "lys";
-  });
   const ref = useRef<HTMLDivElement>(null);
   const initial = name.trim().charAt(0).toUpperCase() || "?";
 
@@ -51,13 +45,8 @@ export function ProfileMenu({ name, email, avatarUrl, hcp }: Props) {
     };
   }, [open]);
 
-  function toggleTheme() {
-    const next = theme === "lys" ? "mork" : "lys";
-    setTheme(next);
-    if (typeof document !== "undefined") {
-      document.documentElement.classList.toggle("dark", next === "mork");
-    }
-  }
+  // Dark-mode-toggle deaktivert i første runde — kun light tema.
+  // Tokens i globals.css beholdes for senere gjenaktivering.
 
   return (
     <div className="relative" ref={ref}>
@@ -140,25 +129,8 @@ export function ProfileMenu({ name, email, avatarUrl, hcp }: Props) {
               Innstillinger
             </MenuLink>
 
-            <div className="my-1 h-px bg-border" />
-
-            <button
-              type="button"
-              onClick={toggleTheme}
-              className="flex min-h-11 w-full items-center justify-between rounded-md px-3 py-2.5 text-left text-sm text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <span className="flex items-center gap-3">
-                {theme === "lys" ? (
-                  <Moon width={16} height={16} strokeWidth={1.75} aria-hidden />
-                ) : (
-                  <Sun width={16} height={16} strokeWidth={1.75} aria-hidden />
-                )}
-                Bytt tema
-              </span>
-              <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
-                {theme === "lys" ? "Lys" : "Mørk"}
-              </span>
-            </button>
+            {/* Tema-toggle deaktivert i første runde — kun light tema.
+                Beholder logikk + tokens for senere bruk. */}
 
             <MenuLink
               href="/portal/meg/help"

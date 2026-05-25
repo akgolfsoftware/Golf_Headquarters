@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, Edit3, Bell, Lock, Link2, Globe, Shield, Monitor, Trash2, ChevronRight, MapPin } from "lucide-react";
 import { ProfilRedigerModal, type ProfilRedigerModalProps } from "./profil-rediger-modal";
@@ -152,8 +153,14 @@ export function InnstillingerShell({
         <section className="meg-account-card">
           <div className="av">
             {user.avatarUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={user.avatarUrl} alt={user.name} />
+              <Image
+                src={user.avatarUrl}
+                alt={user.name}
+                width={64}
+                height={64}
+                sizes="64px"
+                priority
+              />
             ) : (
               user.initials
             )}

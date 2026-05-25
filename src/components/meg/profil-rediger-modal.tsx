@@ -9,6 +9,7 @@
  */
 
 import { useState, useTransition, type FormEvent } from "react";
+import Image from "next/image";
 import { X, Check, Camera, Info } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { oppdaterProfil } from "@/app/portal/meg/actions";
@@ -130,8 +131,13 @@ export function ProfilRedigerModal({ open, onClose, initial }: ProfilRedigerModa
           <div className="meg-photo-row">
             <div className="meg-photo">
               {initial.avatarUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={initial.avatarUrl} alt={initial.name} />
+                <Image
+                  src={initial.avatarUrl}
+                  alt={initial.name}
+                  width={96}
+                  height={96}
+                  sizes="96px"
+                />
               ) : (
                 initial.initials
               )}
