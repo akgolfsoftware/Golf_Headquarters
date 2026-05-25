@@ -1,0 +1,413 @@
+/* klubber.css — scoped styles for /stats/klubber og /stats/klubber/[slug] */
+
+.klubber-page em.italic-accent,
+.klubber-page .italic-accent {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--primary);
+}
+
+/* ─── Hero ─── */
+.klubber-hero {
+  padding: 72px 64px 40px;
+  position: relative;
+  overflow: hidden;
+}
+.klubber-hero .breadcrumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--muted-foreground);
+  text-decoration: none;
+  margin-bottom: 24px;
+}
+.klubber-hero .breadcrumb:hover { color: var(--foreground); }
+.klubber-hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(44px, 5vw, 80px);
+  line-height: 0.96;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  margin: 16px 0 0;
+  text-wrap: balance;
+}
+.klubber-hero-sub {
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--muted-foreground);
+  margin-top: 20px;
+  max-width: 580px;
+}
+
+/* ─── KPI Strip ─── */
+.klubber-kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+}
+.klubber-kpi-strip.cols-4 { grid-template-columns: repeat(4, 1fr); }
+.klubber-kpi {
+  padding: 28px 32px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.klubber-kpi:last-child { border-right: none; }
+.klubber-kpi-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+.klubber-kpi-value {
+  font-family: var(--font-mono);
+  font-size: 42px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--foreground);
+}
+.klubber-kpi-sub {
+  font-size: 13px;
+  color: var(--muted-foreground);
+  margin-top: 6px;
+}
+
+/* ─── Section ─── */
+.klubber-section {
+  padding: 96px 64px;
+}
+.klubber-section-sm {
+  padding: 48px 64px;
+}
+.klubber-section-divider {
+  border-top: 1px solid var(--border);
+}
+.klubber-section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 36px;
+  gap: 24px;
+}
+.klubber-section-head h2 {
+  font-size: 36px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  margin-top: 12px;
+  line-height: 1.05;
+  font-family: var(--font-display);
+  text-wrap: balance;
+}
+
+/* ─── Featured cards (3-col) ─── */
+.klubber-featured-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 56px;
+}
+.klubber-featured-card {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border-radius: var(--radius);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.klubber-featured-card .eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 500;
+}
+.klubber-featured-card h3 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.1;
+  margin: 0;
+}
+.klubber-featured-card .big {
+  font-family: var(--font-mono);
+  font-size: 56px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: var(--accent);
+}
+.klubber-featured-card .sub {
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+/* ─── Search + filter ─── */
+.klubber-search-row {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 760px;
+  margin: 0 auto 32px;
+}
+.klubber-searchbox {
+  width: 100%;
+  padding: 14px 20px;
+  border-radius: 999px;
+  border: 1.5px solid var(--border);
+  background: var(--background);
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--foreground);
+  outline: none;
+  transition: border-color 0.18s;
+}
+.klubber-searchbox:focus { border-color: var(--primary); }
+.klubber-searchbox::placeholder { color: var(--muted-foreground); }
+.klubber-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.klubber-chip-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  margin-right: 4px;
+}
+.klubber-chip {
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--background);
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--foreground);
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.klubber-chip:hover { border-color: var(--primary); }
+.klubber-chip.active {
+  background: var(--primary);
+  color: var(--accent);
+  border-color: var(--primary);
+  font-weight: 500;
+}
+
+/* ─── Klubb-card ─── */
+.klubber-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: all 0.2s;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+.klubber-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 88, 64, 0.12);
+}
+.klubber-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.klubber-card-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--secondary);
+  border: 1px solid var(--border);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+.klubber-card-region {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--secondary);
+}
+.klubber-card-name {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.klubber-card-meta {
+  font-size: 13px;
+  color: var(--muted-foreground);
+}
+.klubber-card-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border);
+}
+.klubber-card-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.klubber-card-stat-lbl {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+.klubber-card-stat-val {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--foreground);
+}
+
+/* ─── Grid ─── */
+.klubber-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.klubber-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+/* ─── Table ─── */
+.klubber-dtable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.klubber-dtable thead tr { border-bottom: 1.5px solid var(--border); }
+.klubber-dtable th {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  font-weight: 500;
+  padding: 8px 12px;
+  text-align: left;
+}
+.klubber-dtable th.num { text-align: right; }
+.klubber-dtable td {
+  padding: 10px 12px;
+  border-bottom: 1px dashed var(--border);
+  vertical-align: middle;
+}
+.klubber-dtable td.num {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.klubber-dtable td.mono { font-family: var(--font-mono); }
+.klubber-dtable tbody tr:hover { background: var(--secondary); }
+.klubber-dtable tbody tr:last-child td { border-bottom: none; }
+.klubber-dtable a { color: var(--foreground); text-decoration: none; font-weight: 500; }
+.klubber-dtable a:hover { color: var(--primary); text-decoration: underline; }
+
+/* ─── Donut-legend ─── */
+.klubber-donut-wrap {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+}
+.klubber-donut-legend {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.klubber-donut-legend-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  padding: 4px 0;
+  border-bottom: 1px dashed var(--border);
+}
+.klubber-donut-swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+/* ─── Mersalg ─── */
+.klubber-mersalg {
+  padding: 80px 64px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  text-align: center;
+}
+.klubber-mersalg h2 {
+  font-family: var(--font-display);
+  font-size: 40px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  margin: 12px 0 0;
+}
+.klubber-mersalg p {
+  font-size: 17px;
+  opacity: 0.75;
+  max-width: 520px;
+  margin: 16px auto 0;
+  line-height: 1.5;
+}
+.klubber-mersalg-ctas {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 1024px) {
+  .klubber-grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .klubber-featured-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .klubber-hero { padding: 48px 20px 32px; }
+  .klubber-section { padding: 56px 20px; }
+  .klubber-section-sm { padding: 32px 20px; }
+  .klubber-kpi-strip { grid-template-columns: repeat(2, 1fr); }
+  .klubber-grid-3 { grid-template-columns: 1fr; }
+  .klubber-grid-2 { grid-template-columns: 1fr; }
+}

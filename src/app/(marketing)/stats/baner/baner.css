@@ -1,0 +1,429 @@
+/* baner.css — scoped styles for /stats/baner og /stats/baner/[slug] */
+
+/* ─── Shared typography ─── */
+.baner-page em.italic-accent,
+.baner-page .italic-accent {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--primary);
+}
+
+/* ─── Hero (compact) ─── */
+.baner-hero {
+  padding: 72px 64px 40px;
+  position: relative;
+  overflow: hidden;
+}
+.baner-hero .breadcrumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--muted-foreground);
+  text-decoration: none;
+  margin-bottom: 24px;
+}
+.baner-hero .breadcrumb:hover { color: var(--foreground); }
+.baner-hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(44px, 5vw, 80px);
+  line-height: 0.96;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  margin: 16px 0 0;
+  text-wrap: balance;
+}
+.baner-hero-sub {
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--muted-foreground);
+  margin-top: 20px;
+  max-width: 580px;
+}
+
+/* ─── Hero image (detalj) ─── */
+.baner-hero-img {
+  background: var(--secondary);
+  border-radius: var(--radius);
+  aspect-ratio: 32/9;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--muted-foreground);
+  letter-spacing: 0.06em;
+  border: 1px solid var(--border);
+  margin-top: 32px;
+}
+
+/* ─── KPI Strip ─── */
+.baner-kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+}
+.baner-kpi-strip.cols-4 { grid-template-columns: repeat(4, 1fr); }
+.baner-kpi-strip.cols-5 { grid-template-columns: repeat(5, 1fr); }
+.baner-kpi {
+  padding: 28px 32px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.baner-kpi:last-child { border-right: none; }
+.baner-kpi-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+.baner-kpi-value {
+  font-family: var(--font-mono);
+  font-size: 42px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--foreground);
+}
+.baner-kpi-sub {
+  font-size: 13px;
+  color: var(--muted-foreground);
+  margin-top: 6px;
+}
+
+/* ─── Section ─── */
+.baner-section {
+  padding: 96px 64px;
+}
+.baner-section-sm {
+  padding: 48px 64px;
+}
+.baner-section-divider {
+  border-top: 1px solid var(--border);
+}
+.baner-section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 36px;
+  gap: 24px;
+}
+.baner-section-head h2 {
+  font-size: 36px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  margin-top: 12px;
+  line-height: 1.05;
+  font-family: var(--font-display);
+  text-wrap: balance;
+}
+
+/* ─── Search + filter row ─── */
+.baner-search-row {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 760px;
+  margin: 0 auto 32px;
+}
+.baner-searchbox {
+  width: 100%;
+  padding: 14px 20px;
+  border-radius: 999px;
+  border: 1.5px solid var(--border);
+  background: var(--background);
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--foreground);
+  outline: none;
+  transition: border-color 0.18s;
+}
+.baner-searchbox:focus { border-color: var(--primary); }
+.baner-searchbox::placeholder { color: var(--muted-foreground); }
+
+/* ─── Chip group ─── */
+.baner-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.baner-chip-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  margin-right: 4px;
+}
+.baner-chip {
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--background);
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--foreground);
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.baner-chip:hover { border-color: var(--primary); }
+.baner-chip.active {
+  background: var(--primary);
+  color: var(--accent);
+  border-color: var(--primary);
+  font-weight: 500;
+}
+
+/* ─── Bane card (media-card style) ─── */
+.baner-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+.baner-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 88, 64, 0.12);
+}
+.baner-card-img {
+  aspect-ratio: 16/9;
+  background: var(--secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted-foreground);
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid var(--border);
+}
+.baner-card-body {
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.baner-card-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  display: flex;
+  justify-content: space-between;
+}
+.baner-card-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  margin: 0;
+}
+.baner-card-stats {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.baner-stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.baner-stat-label {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+.baner-stat-val {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--foreground);
+}
+.baner-card-foot {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ─── Grid layouts ─── */
+.baner-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.baner-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+/* ─── Leaderboard / dtable ─── */
+.baner-dtable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.baner-dtable thead tr {
+  border-bottom: 1.5px solid var(--border);
+}
+.baner-dtable th {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  font-weight: 500;
+  padding: 8px 12px;
+  text-align: left;
+}
+.baner-dtable th.num { text-align: right; }
+.baner-dtable td {
+  padding: 10px 12px;
+  border-bottom: 1px dashed var(--border);
+  vertical-align: middle;
+}
+.baner-dtable td.num {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.baner-dtable td.mono { font-family: var(--font-mono); }
+.baner-dtable tbody tr:hover { background: var(--secondary); }
+.baner-dtable tbody tr:last-child td { border-bottom: none; }
+.baner-dtable a {
+  color: var(--foreground);
+  text-decoration: none;
+  font-weight: 500;
+}
+.baner-dtable a:hover { color: var(--primary); text-decoration: underline; }
+
+/* ─── Mersalg ─── */
+.baner-mersalg {
+  padding: 80px 64px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  text-align: center;
+}
+.baner-mersalg h2 {
+  font-family: var(--font-display);
+  font-size: 40px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  margin: 12px 0 0;
+}
+.baner-mersalg p {
+  font-size: 17px;
+  opacity: 0.75;
+  max-width: 520px;
+  margin: 16px auto 0;
+  line-height: 1.5;
+}
+.baner-mersalg-ctas {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+
+/* ─── Histogram inline ─── */
+.baner-histogram {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 120px;
+}
+.baner-hist-bar {
+  flex: 1;
+  background: var(--secondary);
+  border-radius: 4px 4px 0 0;
+  border: 1px solid var(--border);
+  border-bottom: none;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+.baner-hist-bar:hover { background: var(--accent); }
+.baner-hist-bar.highlighted { background: var(--primary); opacity: 0.75; }
+
+/* ─── Tee-tabell ─── */
+.baner-tee-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.baner-tee-table thead tr { border-bottom: 1.5px solid var(--border); }
+.baner-tee-table th {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  font-weight: 500;
+  padding: 8px 10px;
+  text-align: left;
+}
+.baner-tee-table th.num { text-align: right; }
+.baner-tee-table td {
+  padding: 10px 10px;
+  border-bottom: 1px dashed var(--border);
+}
+.baner-tee-table td.num {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.baner-tee-swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 1024px) {
+  .baner-grid-3 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .baner-hero { padding: 48px 20px 32px; }
+  .baner-section { padding: 56px 20px; }
+  .baner-section-sm { padding: 32px 20px; }
+  .baner-kpi-strip { grid-template-columns: repeat(2, 1fr); }
+  .baner-kpi-strip.cols-4 { grid-template-columns: repeat(2, 1fr); }
+  .baner-kpi-strip.cols-5 { grid-template-columns: repeat(2, 1fr); }
+  .baner-grid-3 { grid-template-columns: 1fr; }
+  .baner-grid-2 { grid-template-columns: 1fr; }
+}
