@@ -444,6 +444,17 @@ model User {
   // Web Push-subscriptions — én rad per enhet/browser.
   pushSubscriptions PushSubscription[]
 
+  // Trene sammen-feature — delte økter med spiller-kompiser
+  hostedSessions        TrainingSessionV2[]  @relation("SessionHost")
+  sessionParticipations SessionParticipant[]
+
+  // Coach-notater — privat notat-system om spillere
+  coachNotesAuthored CoachNote[] @relation("CoachNoteCoach")
+  coachNotesAbout    CoachNote[] @relation("CoachNotePlayer")
+
+  // Egen-test — TestDefinition opprettet av spiller
+  customTests TestDefinition[] @relation("TestCreator")
+
   // Performance: hot path — filtrere aktive spillere/coacher
   // (PlayerHQ-lister, CoachHQ-portefølje, talent-tracking).
   @@index([role, deletedAt])
@@ -1123,10 +1134,28 @@ model TestDefinition {
   protocol    Json?
   createdAt   DateTime    @default(now())
 
+  // Egen-test-feature: spillere kan lage egne tester
+  createdById     String?
+  createdBy       User?           @relation("TestCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  isCustom        Boolean         @default(false)
+  visibility      TestVisibility  @default(PRIVATE)
+  isCoachApproved Boolean         @default(false)
+  approvedAt      DateTime?
+  updatedAt       DateTime        @default(now()) @updatedAt
+
   results  TestResult[]
   sessions TestSession[]
 
+  @@index([createdById, isCustom])
+  @@index([visibility, isCustom])
   @@map("test_definitions")
+}
+
+enum TestVisibility {
+  PRIVATE   // kun for skaperen
+  COACH     // delt med min coach
+  GROUP     // delt med min gruppe
+  ACADEMY   // delt med hele akademi
 }
 
 model TestResult {
@@ -2159,6 +2188,13 @@ model TrainingSessionV2 {
   trengerOppmerksomhet Boolean                @default(false)
   drillLoggInterval    Int                    @default(1)
   completedSummary     Json?
+  // Trene sammen-feature: delte økter
+  isShared             Boolean                @default(false)
+  hostId               String?
+  host                 User?                  @relation("SessionHost", fields: [hostId], references: [id])
+  maxParticipants      Int?
+  isPublic             Boolean                @default(false)
+  participants         SessionParticipant[]
   drills               TrainingDrillV2[]
   drillInstances       SessionDrillInstance[]
   createdAt            DateTime               @default(now())
@@ -2166,7 +2202,59 @@ model TrainingSessionV2 {
 
   @@index([studentId, startTime])
   @@index([coachId, startTime])
+  @@index([hostId])
   @@map("training_sessions_v2")
+}
+
+// SessionParticipant: spillere invitert til en delt treningsøkt.
+// Aktiverer "trene sammen"-feature for kompis-koordinering.
+model SessionParticipant {
+  id              String                @id @default(cuid())
+  sessionId       String
+  userId          String
+  status          ParticipationStatus   @default(INVITED)
+  joinedAt        DateTime?
+  respondedAt     DateTime?
+  individualNotes String?
+  createdAt       DateTime              @default(now())
+
+  session         TrainingSessionV2     @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user            User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, userId])
+  @@index([userId, status])
+  @@index([sessionId])
+  @@map("session_participants")
+}
+
+enum ParticipationStatus {
+  INVITED
+  ACCEPTED
+  DECLINED
+  MAYBE
+  ATTENDED
+  NO_SHOW
+}
+
+// CoachNote: privat notat coach skriver om spiller.
+// Persistens for Coach Workbench → Notater-tab.
+model CoachNote {
+  id        String   @id @default(cuid())
+  coachId   String
+  playerId  String
+  title     String?
+  content   String
+  tags      String[] @default([])
+  isPrivate Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  coach     User     @relation("CoachNoteCoach", fields: [coachId], references: [id], onDelete: Cascade)
+  player    User     @relation("CoachNotePlayer", fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@index([coachId, playerId, createdAt])
+  @@index([playerId])
+  @@map("coach_notes")
 }
 
 model TrainingDrillV2 {
