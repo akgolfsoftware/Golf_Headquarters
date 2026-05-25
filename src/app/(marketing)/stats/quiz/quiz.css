@@ -1,0 +1,176 @@
+/* /stats/quiz — Buzzfeed-stil golf quiz styles */
+
+.stats-quiz-wrap {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+.stats-quiz-center {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 48px 24px 80px;
+}
+
+/* ─── Intro ─── */
+.stats-quiz-intro {
+  max-width: 560px;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+.stats-quiz-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--s-primary);
+  margin-bottom: 16px;
+}
+.stats-quiz-intro-headline {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 5vw, 60px);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin-bottom: 20px;
+}
+.stats-quiz-intro-meta {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--s-muted-fg);
+  margin-bottom: 32px;
+}
+.stats-quiz-intro-dots {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 36px;
+}
+
+/* ─── Spørsmål ─── */
+.stats-quiz-sporsmal-wrap {
+  max-width: 600px;
+  width: 100%;
+}
+.stats-quiz-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.stats-quiz-progress-label,
+.stats-quiz-score-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--s-muted-fg);
+}
+
+/* ─── Resultat ─── */
+.stats-quiz-resultat {
+  max-width: 560px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.stats-quiz-big-score {
+  font-family: var(--font-mono);
+  font-size: clamp(80px, 16vw, 120px);
+  font-weight: 500;
+  line-height: 1;
+  color: var(--s-primary);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 8px;
+}
+.stats-quiz-big-score-denom {
+  font-size: 0.5em;
+  color: var(--s-muted-fg);
+}
+.stats-quiz-percentile {
+  font-size: 16px;
+  color: var(--s-muted-fg);
+  text-align: center;
+  margin-bottom: 32px;
+  line-height: 1.5;
+}
+.stats-quiz-kategorier {
+  background: var(--s-secondary);
+  border-radius: var(--s-r-lg);
+  padding: 28px 32px;
+  margin-bottom: 28px;
+}
+.stats-quiz-kategori-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--s-border);
+  flex-wrap: wrap;
+}
+.stats-quiz-kategori-row:last-child { border-bottom: none; }
+
+.stats-quiz-ctas {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 36px;
+}
+
+.stats-quiz-mersalg {
+  background: var(--s-secondary);
+  border-radius: var(--s-r-lg);
+  padding: 28px 32px;
+  border: 1px solid var(--s-border);
+  margin-bottom: 24px;
+}
+.stats-quiz-relatert {
+  text-align: center;
+}
+
+/* ─── Del-modal ─── */
+.stats-quiz-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 31, 23, 0.6);
+  display: grid;
+  place-items: center;
+  z-index: 100;
+  padding: 24px;
+}
+.stats-quiz-modal {
+  background: var(--s-card);
+  border-radius: var(--s-r-xl);
+  padding: 40px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: var(--s-shadow-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ─── Feedback animation ─── */
+@keyframes stats-quiz-fadein {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Mobile ─── */
+@media (max-width: 600px) {
+  .stats-quiz-center { padding: 32px 16px 60px; }
+  .stats-quiz-modal { padding: 28px 24px; }
+}
