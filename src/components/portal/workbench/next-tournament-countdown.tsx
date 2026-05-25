@@ -154,24 +154,25 @@ export function NextTournamentCountdown({
   return (
     <section
       className={cn(
-        "rounded-lg border border-border bg-card p-4 sm:p-6",
+        // DARK MOMENT: athletic editorial moment-card
+        "rounded-2xl bg-foreground p-6 text-background shadow-xl sm:p-8",
         className
       )}
       aria-labelledby="next-tournament-heading"
     >
       <h2
         id="next-tournament-heading"
-        className="mb-4 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground"
+        className="mb-4 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-accent"
       >
         Neste turnering
       </h2>
 
       {/* Turnering-info */}
-      <div className="mb-4">
-        <h3 className="font-display text-xl font-semibold leading-tight text-foreground">
+      <div className="mb-6">
+        <h3 className="font-display text-2xl font-bold leading-tight text-background sm:text-3xl">
           {turnering.navn}
         </h3>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="mt-2 text-sm text-background/70">
           {formatDateRange(turnering.startDato, turnering.sluttDato)}
           {" · "}
           {turnering.sted}
@@ -179,63 +180,62 @@ export function NextTournamentCountdown({
         </p>
       </div>
 
-      {/* Stort countdown-tall */}
+      {/* Stort countdown-tall — dramatic */}
       <div
         className={cn(
-          "mb-6 flex items-baseline gap-3 border-y border-border py-4",
-          cd.tone === "warning" && "border-destructive/30",
+          "mb-6 flex items-end gap-4 border-y border-background/15 py-6",
+          cd.tone === "warning" && "border-destructive/40",
           cd.tone === "past" && "opacity-60"
         )}
       >
         <span
           className={cn(
-            "font-display text-5xl font-bold leading-none tabular-nums tracking-tight",
+            "font-display font-bold leading-[0.85] tabular-nums tracking-tighter",
+            "text-[80px] sm:text-[120px]",
             cd.tone === "warning" && "text-destructive",
-            cd.tone === "default" && "text-foreground",
-            cd.tone === "past" && "text-muted-foreground"
+            cd.tone === "default" && "text-accent",
+            cd.tone === "past" && "text-background/40"
           )}
         >
           {cd.big}
         </span>
-        <span className="font-mono text-xs uppercase tracking-[0.08em] text-muted-foreground">
+        <span className="mb-3 font-mono text-xs uppercase tracking-[0.12em] text-background/60">
           {cd.small}
         </span>
       </div>
 
       {/* Forberedelse-sjekkliste */}
-      <div className="mb-4">
-        <p className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+      <div className="mb-6">
+        <p className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-background/60">
           Forberedelse
         </p>
-        <ul className="space-y-1.5">
+        <ul className="space-y-2">
           {checklist.map((item) => {
             const done = forberedelse[item.key];
             return (
               <li
                 key={item.key}
-                className="flex items-center gap-2 text-sm"
+                className="flex items-center gap-2.5 text-sm"
               >
                 {done ? (
-                  <Check
-                    className="h-4 w-4 shrink-0 text-primary"
-                    aria-label="Ferdig"
-                  />
+                  <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-accent text-accent-foreground">
+                    <Check className="h-3 w-3" strokeWidth={3} aria-label="Ferdig" />
+                  </span>
                 ) : (
                   <Circle
-                    className="h-4 w-4 shrink-0 text-muted-foreground"
+                    className="h-5 w-5 shrink-0 text-background/30"
                     aria-label="Ikke ferdig"
                   />
                 )}
                 <span
                   className={cn(
-                    "text-foreground",
-                    !done && "text-muted-foreground"
+                    done ? "text-background" : "text-background/60"
                   )}
                 >
                   {item.label}
                 </span>
                 {item.hint ? (
-                  <span className="font-mono text-[10px] text-muted-foreground">
+                  <span className="font-mono text-[10px] text-background/40">
                     ({item.hint})
                   </span>
                 ) : null}
@@ -245,10 +245,10 @@ export function NextTournamentCountdown({
         </ul>
       </div>
 
-      {/* CTA */}
+      {/* CTA — lime accent */}
       <Link
         href={`/portal/tren/turneringer/${turnering.id}`}
-        className="inline-flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 sm:w-auto"
+        className="inline-flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-full bg-accent px-6 py-2.5 text-sm font-bold uppercase tracking-[0.08em] text-accent-foreground transition hover:bg-accent/90 sm:w-auto"
       >
         Se turnering
         <ArrowRight className="h-4 w-4" aria-hidden="true" />

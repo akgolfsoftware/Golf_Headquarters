@@ -62,8 +62,8 @@ export function PlayerHeroImage({
   return (
     <div
       className={cn(
-        "relative overflow-hidden rounded-2xl shadow-lg",
-        "min-h-[280px] md:min-h-[360px]",
+        "relative overflow-hidden rounded-2xl shadow-xl",
+        "min-h-[340px] md:min-h-[440px]",
         className,
       )}
     >
@@ -77,17 +77,22 @@ export function PlayerHeroImage({
         className="object-cover"
       />
 
-      {/* Gradient overlay — forest grønn fade for lesbarhet */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/95 via-primary/75 to-primary/40" />
+      {/* Dark gradient overlay — mer dramatic, athletic editorial */}
+      <div className="absolute inset-0 bg-gradient-to-br from-black/85 via-black/55 to-black/20" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
       {/* Innhold */}
-      <div className="relative flex h-full min-h-[280px] flex-col justify-between p-6 md:min-h-[360px] md:p-10">
-        {/* Top-rad: PRO-pill + meta */}
+      <div className="relative flex h-full min-h-[340px] flex-col justify-between p-6 md:min-h-[440px] md:p-12">
+        {/* Top-rad: PRO-pill + Avatar */}
         <div className="flex items-start justify-between gap-3">
-          <span className="rounded-full bg-accent px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-accent-foreground">
-            {user.tier === "PRO" ? "PRO" : user.tier === "ELITE" ? "ELITE" : "GRATIS"}
-          </span>
-          {/* Avatar */}
+          <div className="flex items-center gap-2">
+            <span className="rounded-full bg-accent px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-accent-foreground">
+              {user.tier === "PRO" ? "PRO" : user.tier === "ELITE" ? "ELITE" : "GRATIS"}
+            </span>
+            <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-white/70">
+              PLAYERHQ · SESONG 2026
+            </span>
+          </div>
           {user.avatarUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -97,7 +102,7 @@ export function PlayerHeroImage({
             />
           ) : (
             <div
-              className="grid h-14 w-14 place-items-center rounded-full border-2 border-accent font-display text-xl font-bold text-accent-foreground md:h-16 md:w-16"
+              className="grid h-14 w-14 place-items-center rounded-full border-2 border-accent font-display text-xl font-bold text-white md:h-16 md:w-16"
               style={{ background: avatarBgColor }}
             >
               {initials}
@@ -106,23 +111,30 @@ export function PlayerHeroImage({
         </div>
 
         {/* Hilsen + meta */}
-        <div className="space-y-3">
-          <h1 className="font-display text-3xl font-bold leading-tight text-accent md:text-5xl">
-            Hei, <em className="italic">{fornavn}</em>.
+        <div className="space-y-4">
+          <h1 className="font-display text-4xl font-bold leading-[0.95] tracking-tight text-white md:text-6xl">
+            Hei, <em className="italic text-accent">{fornavn}</em>.
           </h1>
 
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] uppercase tracking-[0.10em] text-accent/85 md:text-xs">
-            {user.nivaa && <span>{user.nivaa}</span>}
-            {user.nivaa && <span className="text-accent/40">·</span>}
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 font-mono text-[11px] uppercase tracking-[0.10em] text-white/80 md:text-xs">
+            {user.nivaa && (
+              <>
+                <span className="font-semibold text-white">{user.nivaa}</span>
+                <span className="text-white/30">·</span>
+              </>
+            )}
             <span className="flex items-center gap-1.5">
-              HCP <strong className="font-bold text-accent">{formaterHcp(user.hcp)}</strong>
+              HCP{" "}
+              <strong className="font-mono text-base font-bold tabular-nums text-white md:text-lg">
+                {formaterHcp(user.hcp)}
+              </strong>
               {user.hcpTrend != null && (
                 <span
                   className={cn(
                     "inline-flex items-center font-bold",
                     user.hcpTrend > 0.1 && "text-accent",
-                    user.hcpTrend < -0.1 && "text-destructive-foreground/80",
-                    Math.abs(user.hcpTrend) <= 0.1 && "text-accent/60",
+                    user.hcpTrend < -0.1 && "text-destructive-foreground",
+                    Math.abs(user.hcpTrend) <= 0.1 && "text-white/60",
                   )}
                 >
                   {user.hcpTrend > 0.1 ? (
@@ -140,9 +152,11 @@ export function PlayerHeroImage({
             </span>
             {dagerTilTurnering != null && dagerTilTurnering >= 0 && neste_turnering && (
               <>
-                <span className="text-accent/40">·</span>
+                <span className="text-white/30">·</span>
                 <span className="flex items-center gap-1.5">
-                  <strong className="font-bold text-accent">{dagerTilTurnering}</strong>
+                  <strong className="font-mono text-base font-bold tabular-nums text-accent md:text-lg">
+                    {dagerTilTurnering}
+                  </strong>
                   <span>dager til {neste_turnering.navn}</span>
                 </span>
               </>
