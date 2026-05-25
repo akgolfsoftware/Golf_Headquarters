@@ -1,15 +1,19 @@
 /**
  * NGF/Golfbox-scraper — turneringskalender for norske amatør-turneringer.
  *
- * STATUS: STUB — krever videre research av Golfbox sin offentlig URL-struktur.
- * Golfbox er kompleks å scrape (JS-rendret, cookie-basert, ingen offentlig API).
+ * STATUS: Live-scraping er STUB. Cron-baserte sync er erstattet av manuell
+ * import via `scripts/import-norske-turneringer.ts` som leser ferdige
+ * JSON-eksporter fra `~/My Drive/AK Golf Group/Data/` (Srixon, OLYO,
+ * Norges Cup, Østlandstour).
  *
- * Planlagt strategi når aktivert:
- * 1. Bruk Playwright (ikke cheerio) for JS-rendret innhold
- * 2. Cache aggressivt — DOM-strukturen kan endres
- * 3. Fallback til e-postvarsel hvis parse feiler
+ * For å oppdatere norsk turneringsdata i DB:
+ *   npx tsx scripts/import-norske-turneringer.ts
  *
- * Inntil videre: returner tom liste. MVP bruker kun DataGolf-data.
+ * Senere migrering: når akgolf-pipelines-repo er klart, byttes til
+ * cron-pipeline med Playwright + automatisk Drive/Storage-sync.
+ *
+ * Golfbox er kompleks å scrape live (JS-rendret, cookie-basert, ingen
+ * offentlig API), så manuell import er pragmatisk inntil pipeline-repo finnes.
  */
 
 export type NgfTournament = {
@@ -23,9 +27,9 @@ export type NgfTournament = {
 };
 
 export async function scrapeNgfSchedule(): Promise<NgfTournament[]> {
-  // TODO: implementer når Golfbox sin URL-struktur er kartlagt.
-  // Forventet kilde: https://www.golfforbundet.no/turneringer/ eller
-  // golfbox-iframe på samme side. Krever Playwright pga JS-rendering.
-  console.warn("[ngf-scraper] STUB — returnerer tom liste");
+  // Live-scraping er ikke aktivert. Bruk import-scriptet for full norsk import.
+  console.info(
+    "[ngf-scraper] Live-scraping ikke aktivert — bruk `npx tsx scripts/import-norske-turneringer.ts`",
+  );
   return [];
 }

@@ -56,3 +56,43 @@ Sett i `.env.local`:
 - `tier=PRO` hardkodet (gratis under beta)
 - `homeClub=GFGK` hardkodet
 - Hvis du trenger andre tiers eller klubber, bruk `scripts/import-players.ts` istedenfor
+
+---
+
+## Norske turneringer (`import-norske-turneringer.ts`)
+
+Importerer Srixon Tour, OLYO Tour (alle 6 regioner), Norges Cup og Østlandstour fra ferdige JSON-eksporter i `~/My Drive/AK Golf Group/Data/`.
+
+Erstatter NGF-scraping stubben fra Stats Fase 1. Inntil `akgolf-pipelines`-repoet er klart bygges norsk turneringsdata via manuell kjøring av dette scriptet.
+
+### Bruk
+
+```bash
+# Kjør lokalt — leser fra Google Drive-mounten
+npx tsx scripts/import-norske-turneringer.ts
+```
+
+### Hva som importeres
+
+| Kilde | Tabell | Volum (siste 3 år) |
+|---|---|---|
+| Srixon Tour | `Tournament` + `PublicPlayer` + `PublicPlayerEntry` (med rounds-JSON) | ~21 turneringer, ~1 800 deltaker-rader |
+| OLYO Tour (alle regioner) | `Tournament` med JSON-meta (`krets`, `externalId`) | ~350 turneringer |
+| Norges Cup | TODO — krever CSV-parser-spesifikasjon | 0 |
+| Østlandstour | TODO — krever JSON-struktur-spesifikasjon | 0 |
+
+### Idempotent
+
+Kan kjøres flere ganger. Tournament-rader upsert-es på `slug`. PublicPlayer dedup-eres på `slug` (navn + fødselsår). PublicPlayerEntry upsert-es på `(playerId, tournamentId)`.
+
+### Krav
+
+- `~/My Drive/AK Golf Group/Data/` må være montert (Google Drive Mirror)
+- `DATABASE_URL` i `.env.local` peker mot riktig Supabase
+- Migrasjon `20260526000000_tournament_stats_fields` må være kjørt (`prisma migrate deploy`)
+
+### Begrensninger
+
+- Hardkodet `MIN_YEAR = 2024` for å unngå overload
+- Norges Cup + Østlandstour er TODO — krever inspeksjon av disse JSON-/CSV-strukturene
+- Kjøring lokalt mot prod-DB — verifiser `.env.local` peker mot riktig miljø før kjøring
