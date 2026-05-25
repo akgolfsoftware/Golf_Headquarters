@@ -22,7 +22,7 @@ import { CoachCaddieChat } from "@/components/coachhq/workbench/caddie-chat";
 import { IdagPanel } from "@/components/coachhq/workbench/panels/idag-panel";
 import { PlanPanel } from "@/components/coachhq/workbench/panels/plan-panel";
 import { AnalysePanel } from "@/components/coachhq/workbench/panels/analyse-panel";
-import { NotaterPanel } from "@/components/coachhq/workbench/panels/notater-panel";
+import { NotaterPanelContainer } from "@/components/coachhq/workbench/panels/notater-panel-container";
 import { KommunikasjonPanel } from "@/components/coachhq/workbench/panels/kommunikasjon-panel";
 
 export const dynamic = "force-dynamic";
@@ -155,6 +155,22 @@ export default async function CoachWorkbenchPage({
     .count({ where: { userId: spillerId } })
     .catch(() => 0);
 
+  // Hent coach-notater for valgt spiller (kun coachens egne)
+  const coachNotater = await prisma.coachNote
+    .findMany({
+      where: { coachId: coach.id, playerId: spillerId },
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        tags: true,
+        isPrivate: true,
+        createdAt: true,
+      },
+    })
+    .catch(() => []);
+
   return (
     <CoachWorkbenchShell
       topBar={
@@ -208,7 +224,7 @@ export default async function CoachWorkbenchPage({
         <CoachTabs
           active={activeTab}
           spillerId={spiller.id}
-          counts={{ kommunikasjon: 0, notater: 0 }}
+          counts={{ kommunikasjon: 0, notater: coachNotater.length }}
         />
       }
       tabContent={
@@ -236,7 +252,11 @@ export default async function CoachWorkbenchPage({
             />
           )}
           {activeTab === "notater" && (
-            <NotaterPanel spillerId={spiller.id} notater={[]} />
+            <NotaterPanelContainer
+              spillerId={spiller.id}
+              spillerName={spiller.name}
+              initialNotater={coachNotater}
+            />
           )}
           {activeTab === "kommunikasjon" && (
             <KommunikasjonPanel spillerId={spiller.id} meldinger={[]} />
