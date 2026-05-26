@@ -17,6 +17,7 @@ import { BookingShortcuts } from "@/components/marketing/booking-shortcuts";
 import { NorskeDenneUkaTeaser } from "@/components/turneringer/norske-denne-uka-teaser";
 import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 import { AthleticBadge } from "@/components/athletic/badge";
+import { KpiCard, KpiStrip } from "@/components/athletic";
 
 export const metadata: Metadata = {
   title: "AK Golf Academy | Personlig coaching, bygd på data",
@@ -91,14 +92,14 @@ export default function Hjem() {
           <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-2 sm:gap-4">
             <Link
               href="/booking"
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-primary px-6 text-[15px] font-bold text-accent transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              className="font-display inline-flex h-11 items-center justify-center gap-1.5 rounded-full bg-accent px-5 text-sm font-bold tracking-[-0.005em] text-primary shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               Book gratis kartleggings-økt
               <ArrowRight className="h-4 w-4" strokeWidth={2} />
             </Link>
             <Link
               href="/coaching"
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-border bg-card px-6 text-[15px] font-semibold text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              className="font-display inline-flex h-11 items-center justify-center gap-1.5 rounded-md border border-primary bg-transparent px-5 text-sm font-bold tracking-[-0.005em] text-primary transition hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               Se tjenestene
             </Link>
@@ -118,11 +119,13 @@ export default function Hjem() {
           </div>
 
           {/* Stats-strip — sosial proof */}
-          <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-6">
-            <Stat value="38" label="Aktive spillere" />
-            <Stat value="12" label="År erfaring" />
-            <Stat value="4" label="Treningsanlegg" />
-            <Stat value="2 200+" label="Timer coaching i 2025" />
+          <div className="mt-12">
+            <KpiStrip cols={4}>
+              <KpiCard label="Aktive spillere" value="38" size="lg" />
+              <KpiCard label="År erfaring" value="12" size="lg" />
+              <KpiCard label="Treningsanlegg" value="4" size="lg" />
+              <KpiCard label="Timer coaching i 2025" value="2 200+" size="lg" />
+            </KpiStrip>
           </div>
 
         </div>
@@ -437,13 +440,3 @@ function Partner({ label, logoSrc }: { label: string; logoSrc?: string }) {
   );
 }
 
-function Stat({ value, label }: { value: string; label: string }) {
-  return (
-    <div className="text-center sm:text-left">
-      <div className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl tabular-nums">
-        {value}
-      </div>
-      <AthleticEyebrow className="mt-1">{label}</AthleticEyebrow>
-    </div>
-  );
-}

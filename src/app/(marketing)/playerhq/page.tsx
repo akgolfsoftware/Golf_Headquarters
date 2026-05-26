@@ -54,9 +54,9 @@ export default function PlayerHQ() {
       <section className="bg-gradient-to-b from-background to-secondary/40 px-4 sm:px-6 py-12 sm:py-20">
         <div className="mx-auto max-w-4xl">
           <div className="rounded-2xl border border-primary/30 bg-primary/5 p-4 text-center">
-            <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
+            <AthleticEyebrow tone="lime">
               BETA · Gratis frem til 1. juni 2026
-            </span>
+            </AthleticEyebrow>
             <p className="mt-2 text-sm text-muted-foreground">
               PlayerHQ er i beta — bugs kan forekomme. Academy-kunder beholder
               gratis tilgang også etter beta-perioden.

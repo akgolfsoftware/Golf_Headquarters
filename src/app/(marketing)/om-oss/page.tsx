@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 
 export const metadata: Metadata = {
   title: "Om oss | AK Golf Academy",
@@ -13,9 +14,7 @@ export default function OmOss() {
     <div className="px-6 py-16">
       <div className="mx-auto max-w-3xl">
         <header className="text-center">
-          <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
-            Om oss
-          </span>
+          <AthleticEyebrow tone="lime">Om oss</AthleticEyebrow>
           <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl">
             <em className="font-normal italic text-primary">Personlig</em>{" "}
             coaching, bygd på data
@@ -72,7 +71,7 @@ export default function OmOss() {
         <div className="mt-16 text-center">
           <Link
             href="/booking"
-            className="inline-block rounded-md bg-primary px-6 py-4 text-base font-semibold text-primary-foreground"
+            className="font-display inline-flex h-11 items-center justify-center gap-1.5 rounded-full bg-accent px-5 text-sm font-bold tracking-[-0.005em] text-primary shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             Book første time →
           </Link>

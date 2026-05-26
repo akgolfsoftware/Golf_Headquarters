@@ -139,10 +139,10 @@ export default function Coaching() {
               <div className="mt-auto pt-8">
                 <SubscribeButton
                   plan={p.plan}
-                  className={`w-full rounded-md px-6 py-4 text-center text-sm font-semibold transition-opacity disabled:opacity-60 ${
+                  className={`font-display inline-flex h-11 w-full items-center justify-center gap-1.5 px-5 text-sm font-bold tracking-[-0.005em] transition disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
                     p.fremhevet
-                      ? "bg-primary text-primary-foreground hover:opacity-90"
-                      : "border border-input bg-background text-foreground hover:border-border"
+                      ? "rounded-full bg-accent text-primary shadow-[0_6px_14px_rgba(209,248,67,0.25)] hover:brightness-105"
+                      : "rounded-md border border-primary bg-transparent text-primary hover:bg-primary/5"
                   }`}
                 >
                   {p.cta}
@@ -190,7 +190,7 @@ export default function Coaching() {
           </p>
           <Link
             href="/booking"
-            className="mt-6 inline-block rounded-md border border-input bg-card px-6 py-4 text-sm font-medium text-foreground hover:border-border"
+            className="font-display mt-6 inline-flex h-11 items-center justify-center gap-1.5 rounded-md border border-primary bg-transparent px-5 text-sm font-bold tracking-[-0.005em] text-primary transition hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             Se ledige tider →
           </Link>
