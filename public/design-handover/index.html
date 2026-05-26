@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AK Golf HQ — Skjerm-index</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="workbench-v2.css">
+<style>
+  body {
+    background: #f0eee9;
+    min-height: 100vh;
+    padding: 0;
+  }
+  .page {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 56px 40px 96px;
+  }
+
+  /* HERO */
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 32px;
+    align-items: end;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+  .hero .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: 56px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.0;
+    color: var(--fg);
+    margin: 0;
+  }
+  .hero h1 em {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--primary);
+  }
+  .hero .sub {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 19px;
+    color: var(--muted);
+    margin-top: 14px;
+    max-width: 640px;
+  }
+  .hero-stats {
+    display: flex;
+    gap: 28px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .hero-stats .num {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 38px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--fg);
+    text-transform: none;
+    margin-bottom: 2px;
+    line-height: 1;
+  }
+
+  /* SECTIONS */
+  .section {
+    margin-bottom: 56px;
+  }
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .section-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--fg);
+  }
+  .section-desc {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 15px;
+    color: var(--muted);
+    margin-left: auto;
+  }
+  .section-count {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+
+  /* GRID */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 8px;
+  }
+  .card {
+    display: block;
+    padding: 14px 16px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color .15s, transform .15s, box-shadow .15s;
+    position: relative;
+  }
+  .card:hover {
+    border-color: var(--primary);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(0, 88, 64, 0.08);
+  }
+  /* KONTROLL — review-flagged */
+  .card.kontroll {
+    background: #FFF8E5;
+    border-color: #E8C160;
+    border-style: dashed;
+  }
+  .card.kontroll:hover {
+    border-color: #B8852A;
+    box-shadow: 0 4px 14px rgba(184, 133, 42, 0.18);
+  }
+  .card.kontroll .file { color: #8B6B1F; }
+  .card.kontroll .badge {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.10em;
+    color: #FFF;
+    background: #B8852A;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+  .card .file {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--muted-soft);
+    margin-bottom: 4px;
+    text-transform: lowercase;
+  }
+  .card .name {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    color: var(--fg);
+    line-height: 1.25;
+  }
+
+  /* Quick-jump bar */
+  .jumpbar {
+    position: sticky;
+    top: 0;
+    background: #f0eee9;
+    padding: 16px 0;
+    margin: 0 0 16px;
+    border-bottom: 1px solid var(--border-soft);
+    z-index: 10;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .jumpbar a {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: #fff;
+    transition: all .15s;
+  }
+  .jumpbar a:hover { color: var(--primary); border-color: var(--primary); }
+  .jumpbar a .c {
+    font-weight: 500;
+    color: var(--muted-soft);
+    margin-left: 4px;
+  }
+</style>
+</head>
+<body data-screen-label="Master Index">
+
+<div class="page">
+
+  <header class="hero">
+    <div>
+      <div class="eyebrow">AK Golf HQ · Prototype-bibliotek</div>
+      <h1>Alle <em>skjermer</em>, organisert.</h1>
+      <p class="sub">Hver fil i sin riktige mappe. Klikk for å åpne — eller bruk hurtigknappene under for å hoppe rett til en seksjon. <strong style="color:#B8852A;">Gul-stiplede kort er flagget for manuell kontroll</strong> — gå gjennom dem og bestem om de skal beholdes eller slettes.</p>
+    </div>
+    <div class="hero-stats">
+      <div><span class="num" id="total">—</span>skjermer totalt</div>
+      <div><span class="num" id="sections">10</span>seksjoner</div>
+      <div><span class="num" id="kontroll-num" style="color:#B8852A;">—</span>til kontroll</div>
+    </div>
+  </header>
+
+  <!-- v3 LIVING PROTOTYPE LAUNCHER -->
+  <section class="proto-launch" style="margin: 0 0 48px; padding: 0; border: 0; background: transparent;">
+    <div style="display:flex; align-items:baseline; gap:16px; margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--border-soft);">
+      <span style="font-family:var(--font-mono); font-size:13px; font-weight:700; color:var(--accent, #d1f843); background:var(--fg); padding:4px 10px; border-radius:6px; letter-spacing:0.08em; text-transform:uppercase;">v3 Living</span>
+      <span style="font-family:var(--font-display); font-size:24px; font-weight:600; color:var(--fg); letter-spacing:-0.01em;">Interaktive prototyper</span>
+      <span style="font-family:var(--font-serif); font-style:italic; font-size:15px; color:var(--muted); margin-left:auto;">Athletic editorial · Linear × Whoop × Notion</span>
+    </div>
+    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:14px;">
+      <a href="auth/login.html" style="display:flex; flex-direction:column; gap:10px; padding:22px 24px; background:var(--fg); color:var(--bg, #f4f2ec); border-radius:14px; text-decoration:none; transition:transform .15s, box-shadow .15s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 32px rgba(0,0,0,0.18)';" onmouseout="this.style.transform=''; this.style.boxShadow='';">
+        <span style="font-family:var(--font-mono); font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent, #d1f843);">Start</span>
+        <span style="font-family:var(--font-display); font-size:22px; font-weight:600; letter-spacing:-0.01em;">Login</span>
+        <span style="font-family:var(--font-serif); font-style:italic; font-size:14px; opacity:0.7;">Velg rolle — PlayerHQ eller CoachHQ</span>
+        <span style="font-family:var(--font-mono); font-size:11px; font-weight:600; letter-spacing:0.10em; text-transform:uppercase; color:var(--accent, #d1f843); margin-top:auto;">auth/login.html →</span>
+      </a>
+      <a href="workbench-v2/index.html" style="display:flex; flex-direction:column; gap:10px; padding:22px 24px; background:#fff; color:var(--fg); border:1px solid var(--border); border-radius:14px; text-decoration:none; transition:transform .15s, box-shadow .15s, border-color .15s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 32px rgba(0,0,0,0.08)'; this.style.borderColor='var(--primary, #005840)';" onmouseout="this.style.transform=''; this.style.boxShadow=''; this.style.borderColor='var(--border)';">
+        <span style="font-family:var(--font-mono); font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted);">PlayerHQ</span>
+        <span style="font-family:var(--font-display); font-size:22px; font-weight:600; letter-spacing:-0.01em;">Workbench — Øyvind</span>
+        <span style="font-family:var(--font-serif); font-style:italic; font-size:14px; color:var(--muted);">Hero + itinerary + AI-innsikt + tournament countdown</span>
+        <span style="font-family:var(--font-mono); font-size:11px; font-weight:600; letter-spacing:0.10em; text-transform:uppercase; color:var(--primary, #005840); margin-top:auto;">workbench-v2/index.html →</span>
+      </a>
+      <a href="workbench-v2/coach.html" style="display:flex; flex-direction:column; gap:10px; padding:22px 24px; background:#fff; color:var(--fg); border:1px solid var(--border); border-radius:14px; text-decoration:none; transition:transform .15s, box-shadow .15s, border-color .15s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 32px rgba(0,0,0,0.08)'; this.style.borderColor='var(--primary, #005840)';" onmouseout="this.style.transform=''; this.style.boxShadow=''; this.style.borderColor='var(--border)';">
+        <span style="font-family:var(--font-mono); font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted);">CoachHQ</span>
+        <span style="font-family:var(--font-display); font-size:22px; font-weight:600; letter-spacing:-0.01em;">Workbench — Anders</span>
+        <span style="font-family:var(--font-serif); font-style:italic; font-size:14px; color:var(--muted);">Stall-KPI + coaching-itinerary + godkjenninger</span>
+        <span style="font-family:var(--font-mono); font-size:11px; font-weight:600; letter-spacing:0.10em; text-transform:uppercase; color:var(--primary, #005840); margin-top:auto;">workbench-v2/coach.html →</span>
+      </a>
+    </div>
+  </section>
+
+  <nav class="jumpbar">
+    <a href="#playerhq">PlayerHQ <span class="c" data-count-for="playerhq"></span></a>
+    <a href="#coachhq">CoachHQ <span class="c" data-count-for="coachhq"></span></a>
+    <a href="#modaler">Modaler <span class="c" data-count-for="modaler"></span></a>
+    <a href="#flyter">Flyter <span class="c" data-count-for="flyter"></span></a>
+    <a href="#felles">Felles <span class="c" data-count-for="felles"></span></a>
+    <a href="#planlegge">Planlegge <span class="c" data-count-for="planlegge"></span></a>
+    <a href="#test-modul">Test-modul <span class="c" data-count-for="test-modul"></span></a>
+    <a href="#coachhq-stubs">CoachHQ-stubs <span class="c" data-count-for="coachhq-stubs"></span></a>
+    <a href="#oversikt">Oversikt-kanvaser <span class="c" data-count-for="oversikt"></span></a>
+    <a href="#workspace-ai">Workspace + AI <span class="c" data-count-for="workspace-ai"></span></a>
+  </nav>
+
+  <!-- PlayerHQ -->
+  <section class="section" id="playerhq">
+    <div class="section-head">
+      <span class="section-num">01</span>
+      <span class="section-title">PlayerHQ</span>
+      <span class="section-desc">Spillerens app — desktop og mobile screens for spilleren.</span>
+    </div>
+    <div class="grid" id="grid-playerhq"></div>
+  </section>
+
+  <!-- CoachHQ -->
+  <section class="section" id="coachhq">
+    <div class="section-head">
+      <span class="section-num">02</span>
+      <span class="section-title">CoachHQ</span>
+      <span class="section-desc">Coach- og admin-grensesnittet — desktop dashboards.</span>
+    </div>
+    <div class="grid" id="grid-coachhq"></div>
+  </section>
+
+  <!-- Modaler -->
+  <section class="section" id="modaler">
+    <div class="section-head">
+      <span class="section-num">03</span>
+      <span class="section-title">Modaler</span>
+      <span class="section-desc">Enkeltskjerm-overlays og bekreftelser.</span>
+    </div>
+    <div class="grid" id="grid-modaler"></div>
+  </section>
+
+  <!-- Flyter -->
+  <section class="section" id="flyter">
+    <div class="section-head">
+      <span class="section-num">04</span>
+      <span class="section-title">Flyter</span>
+      <span class="section-desc">Multi-step flows — booking, onboarding, oppgradering.</span>
+    </div>
+    <div class="grid" id="grid-flyter"></div>
+  </section>
+
+  <!-- Felles -->
+  <section class="section" id="felles">
+    <div class="section-head">
+      <span class="section-num">05</span>
+      <span class="section-title">Felles</span>
+      <span class="section-desc">Innstillinger, hjelp, support, markedsføring — surface-agnostic.</span>
+    </div>
+    <div class="grid" id="grid-felles"></div>
+  </section>
+
+  <!-- Planlegge -->
+  <section class="section" id="planlegge">
+    <div class="section-head">
+      <span class="section-num">06</span>
+      <span class="section-title">Planlegge</span>
+      <span class="section-desc">Planlegg-modulen + AI-foreslå-modaler.</span>
+    </div>
+    <div class="grid" id="grid-planlegge"></div>
+  </section>
+
+  <!-- Test-modul -->
+  <section class="section" id="test-modul">
+    <div class="section-head">
+      <span class="section-num">07</span>
+      <span class="section-title">Test-modul</span>
+      <span class="section-desc">Tester-modulen — fra dashbord til live-logging.</span>
+    </div>
+    <div class="grid" id="grid-test-modul"></div>
+  </section>
+
+  <!-- CoachHQ-stubs -->
+  <section class="section" id="coachhq-stubs">
+    <div class="section-head">
+      <span class="section-num">08</span>
+      <span class="section-title">CoachHQ-stubs</span>
+      <span class="section-desc">Batch D — flat-stubs for arbeidsflyt-baserte sider.</span>
+    </div>
+    <div class="grid" id="grid-coachhq-stubs"></div>
+  </section>
+
+  <!-- Oversikt-kanvaser -->
+  <section class="section" id="oversikt">
+    <div class="section-head">
+      <span class="section-num">09</span>
+      <span class="section-title">Oversikt-kanvaser</span>
+      <span class="section-desc">Designkanvas-utforskinger — flere skjermer per fil.</span>
+    </div>
+    <div class="grid" id="grid-oversikt"></div>
+  </section>
+
+  <!-- Workspace + AI -->
+  <section class="section" id="workspace-ai">
+    <div class="section-head">
+      <span class="section-num">10</span>
+      <span class="section-title">Workspace + AI-trening</span>
+      <span class="section-desc">Workspace-prototype og AI-trening-prototype.</span>
+    </div>
+    <div class="grid" id="grid-workspace-ai"></div>
+  </section>
+
+</div>
+
+<script>
+  // Display name = filename without ext, kebab→Title with smart casing.
+  function prettify(name) {
+    return name.replace(/^KONTROLL-/, '')
+      .replace(/\.html$/, '')
+      .replace(/-/g, ' ')
+      .replace(/\b\w/g, c => c.toUpperCase())
+      .replace(/\bAi\b/g, 'AI')
+      .replace(/\bCmj\b/g, 'CMJ')
+      .replace(/\bFys\b/g, 'FYS')
+      .replace(/\bPr\b/g, 'PR')
+      .replace(/\bPlayerhq\b/g, 'PlayerHQ')
+      .replace(/\bCoachhq\b/g, 'CoachHQ')
+      .replace(/\bWagr\b/g, 'WAGR')
+      .replace(/\bGfgk\b/g, 'GFGK')
+      .replace(/\bSorlandsapent\b/g, 'Sørlandsåpent')
+      .replace(/\bArsplan\b/g, 'Årsplan')
+      .replace(/\bOkt\b/g, 'Økt')
+      .replace(/\bMal\b/g, 'Mål')
+      .replace(/\bSok\b/g, 'Søk')
+      .replace(/\bOvelses\b/g, 'Øvelses')
+      .replace(/\bOnske\b/g, 'Ønske')
+      .replace(/\bForesporsler\b/g, 'Forespørsler')
+      .replace(/\bOppfolging\b/g, 'Oppfølging')
+      .replace(/\bManed\b/g, 'Måned');
+  }
+
+  // (folder, [files])  - explicit lists keep order predictable
+  const SECTIONS = {
+    'playerhq': [
+      'workbench-v2.html',
+      'KONTROLL-workbench-a.html', 'KONTROLL-workbench-b.html', 'KONTROLL-workbench-c.html',
+      'foreldre-portal.html', 'turneringsplanlegger.html', 'tournament-sorlandsapent.html',
+      'varsel-senter.html', 'global-sok.html',
+      'plan-builder.html', 'plan-liste.html', 'spiller-plan-detalj.html',
+      'okt-detalj-planlagt.html', 'ny-okt-wizard.html',
+      'drill-bibliotek.html', 'ovelses-bibliotek.html',
+      'fys-analyse.html', 'fys-plan-builder.html', 'fys-plan-liste.html',
+      'test-detalj.html',
+      'bane-detalj.html', 'legg-til-runde.html', 'runde-detalj.html',
+      'sammenlign-statistikk.html', 'statistikk-drill-down.html',
+      'meldingstrad-detalj.html', 'coach-svar-sporsmal.html', 'coach-profil-hub.html',
+      'faktura-detalj.html',
+    ],
+    'coachhq': [
+      'stall-oversikt.html', 'spiller-detalj.html', 'spiller-profil.html',
+      'spiller-sammenligning.html', 'ny-spiller.html', 'rediger-spiller.html',
+      'ai-caddie-spiller.html', 'caddie-aktivitet.html',
+      'gruppe-detalj.html', 'ny-gruppe-modal.html',
+      'plan-bygger.html', 'plan-mal-bibliotek.html', 'teknisk-plan.html',
+      'arsplan-periode-rediger.html',
+      'okt-detalj.html', 'live-okt-brief.html', 'live-okt-summary.html',
+      'kalender-uke.html', 'kalender-maned.html', 'tilgjengelighet.html', 'kapasitet.html',
+      'bookinger.html', 'ny-booking.html', 'foresporsler.html', 'oppfolging.html',
+      'godkjenninger.html', 'godkjenning-detalj.html',
+      'innboks-trad.html',
+      'anlegg.html', 'anlegg-detalj.html', 'anlegg-gfgk.html',
+      'tester.html', 'analyse-stall.html',
+      'talent-radar.html', 'talent-kohort.html',
+      'team.html', 'team-inviter.html',
+      'wagr-import.html',
+    ],
+    'modaler': [
+      'oppgave-modal.html', 'profil-rediger.html', 'app-feedback.html',
+      'ny-melding.html', 'meldingstrad-vedlegg-galleri.html',
+      'del-runde.html', 'eksporter-runder.html',
+      'legg-til-betalingskort.html', 'oppgrader-til-pro.html', 'avbestill-pro-bekreft.html',
+      'fys-logg.html', 'legg-til-symptom.html', 'onske-bekreftet.html',
+    ],
+    'flyter': [
+      'onboarding-flyt.html', 'booking-flyt-landing.html',
+      'book-direkte-med-coach.html', 'oppgrader-pro-flyt.html',
+    ],
+    'felles': [
+      'innstillinger.html', 'integrasjoner.html',
+      'hjelp-artikkel.html', 'kontakt-support.html',
+      'marketing-klubbsider.html', 'epost-mal.html',
+    ],
+    'planlegge': [
+      'index.html',
+      'planlegge-arsplan.html', 'planlegge-treningsplan.html',
+      'planlegge-mal.html', 'planlegge-turneringer.html',
+      'ai-foresla-drill.html', 'ai-foresla-turnering.html', 'ai-mal-bygger.html',
+    ],
+    'test-modul': [
+      'index.html',
+      'tester-dashboard.html', 'tester-detalj.html',
+      'tester-live-step1.html', 'tester-live-step2.html', 'tester-live-step-final.html',
+      'tester-summary-pr.html', 'tester-summary-progress.html',
+      'tildel-test-modal.html',
+      'coach-tester-stall.html', 'coach-spiller-tester-tab.html',
+    ],
+    'coachhq-stubs': [
+      'index.html',
+      'workspace-tildelt-meg.html',
+      'notion-prosjekter.html', 'audit-log.html',
+      'KONTROLL-bookinger.html', 'KONTROLL-godkjenninger.html', 'KONTROLL-wagr-import.html',
+      'KONTROLL-plan-templates.html', 'KONTROLL-settings.html',
+    ],
+    'oversikt': [
+      'KONTROLL-01-spiller-detalj.html', 'KONTROLL-02-foreldre-portal.html',
+      'KONTROLL-03-booking-flyt-playerhq.html', 'KONTROLL-04-stall-caddie-lag-snitt.html',
+      'KONTROLL-05-tester-modul.html', 'KONTROLL-06-talent-modul.html',
+      'KONTROLL-07-coach-meldinger-flyt.html', 'KONTROLL-08-bane-drill-notion.html',
+      'KONTROLL-09-onboarding-flyt.html', 'KONTROLL-10-reach-statistikk-recording.html',
+      'KONTROLL-sesjon-1-hjem-og-spiller.html', 'KONTROLL-pr1-hjem-sider.html',
+      'KONTROLL-batch-3.html', 'KONTROLL-8-manglende-skjermer.html',
+      'KONTROLL-manglende-hubs.html',
+    ],
+  };
+
+  // Workspace + AI-trening are not single HTML files — but they have index files
+  const SPECIAL = [
+    { folder: 'ai-trening', file: 'index.html', label: 'AI-trening · canvas' },
+  ];
+
+  function pretty(name, folder) {
+    if (name === 'index.html') {
+      const titles = {
+        'planlegge': 'Planlegge — Index',
+        'test-modul': 'Test-modul — Index',
+        'coachhq-stubs': 'CoachHQ-stubs — Index',
+      };
+      return titles[folder] || 'Index';
+    }
+    return prettify(name);
+  }
+
+  let total = 0, kontrollCount = 0;
+  for (const [folder, files] of Object.entries(SECTIONS)) {
+    const grid = document.getElementById('grid-' + folder);
+    if (!grid) continue;
+    for (const f of files) {
+      const isKontroll = f.startsWith('KONTROLL-');
+      const a = document.createElement('a');
+      a.className = isKontroll ? 'card kontroll' : 'card';
+      a.href = folder + '/' + f;
+      a.innerHTML =
+        (isKontroll ? '<div class="badge">Kontroll</div>' : '') +
+        '<div class="file">' + folder + '/' + f + '</div>' +
+        '<div class="name">' + pretty(f, folder) + '</div>';
+      grid.appendChild(a);
+      total++;
+      if (isKontroll) kontrollCount++;
+    }
+    const counter = document.querySelector('[data-count-for="' + folder + '"]');
+    if (counter) counter.textContent = files.length;
+  }
+
+  // Workspace+AI
+  const wgrid = document.getElementById('grid-workspace-ai');
+  for (const s of SPECIAL) {
+    const a = document.createElement('a');
+    a.className = 'card';
+    a.href = s.folder + '/' + s.file;
+    a.innerHTML =
+      '<div class="file">' + s.folder + '/' + s.file + '</div>' +
+      '<div class="name">' + s.label + '</div>';
+    wgrid.appendChild(a);
+    total++;
+  }
+  const wc = document.querySelector('[data-count-for="workspace-ai"]');
+  if (wc) wc.textContent = SPECIAL.length;
+
+  document.getElementById('total').textContent = total;
+  document.getElementById('kontroll-num').textContent = kontrollCount;
+</script>
+
+</body>
+</html>

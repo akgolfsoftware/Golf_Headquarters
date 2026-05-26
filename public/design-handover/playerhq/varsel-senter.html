@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Varsler — AK Golf PlayerHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../workbench-v2.css">
+<style>
+  body { padding-bottom: 64px; background: var(--bg); }
+
+  .topnav {
+    display: flex; align-items: center; padding: 14px 32px;
+    border-bottom: 1px solid var(--border);
+    background: #fff; gap: 16px;
+    position: sticky; top: 0; z-index: 30;
+  }
+  .topnav .back {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.06em;
+    text-transform: uppercase; font-weight: 600; text-decoration: none;
+  }
+  .topnav .back:hover { color: var(--fg); }
+  .topnav .back svg { width: 12px; height: 12px; }
+  .topnav .brand { font-family: var(--font-display); font-size: 13px; font-weight: 700; color: var(--primary); }
+  .topnav .crumb {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .topnav .crumb .current { color: var(--fg); font-weight: 600; }
+
+  /* Header */
+  .header-wrap {
+    position: sticky; top: 56px;
+    background: #fff; z-index: 20;
+    border-bottom: 1px solid var(--border);
+    padding: 24px 40px 0;
+  }
+  .header-row {
+    display: grid; grid-template-columns: 1fr auto;
+    gap: 24px; align-items: end; max-width: 1080px;
+    padding-bottom: 16px;
+  }
+  .header-row h1 {
+    font-family: var(--font-display); font-size: 32px;
+    font-weight: 700; letter-spacing: -0.02em; line-height: 1.05;
+  }
+  .header-row h1 em {
+    font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--primary);
+  }
+  .header-row .stats {
+    margin-top: 6px;
+    font-family: var(--font-mono); font-size: 12px;
+    color: var(--muted); letter-spacing: 0.04em;
+    display: flex; align-items: center; gap: 10px;
+    font-variant-numeric: tabular-nums;
+  }
+  .header-row .stats .unread { color: var(--primary); font-weight: 700; }
+  .header-row .stats .pip { width: 4px; height: 4px; border-radius: 50%; background: var(--muted-soft); }
+  .header-row .actions { display: flex; gap: 8px; }
+  .btn-pill {
+    border: 0; border-radius: 999px;
+    padding: 9px 16px; font-size: 12.5px; font-weight: 600;
+    cursor: pointer; font-family: var(--font-body);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-pill svg { width: 13px; height: 13px; }
+  .btn-pill.forest { background: var(--primary); color: var(--accent); }
+  .btn-pill.outline { background: #fff; color: var(--fg); border: 1px solid var(--border); }
+  .btn-pill.outline:hover { background: var(--bg); }
+  .btn-pill.forest:hover { background: var(--primary-dark); }
+
+  /* Filter bar */
+  .filter-row {
+    max-width: 1080px;
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    padding: 0 0 14px;
+  }
+  .fpill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px; border-radius: 999px;
+    background: #fff; border: 1px solid var(--border);
+    font-family: var(--font-body); font-size: 12.5px; font-weight: 500;
+    color: var(--fg); cursor: pointer; line-height: 1;
+  }
+  .fpill .ct {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .fpill:hover { background: var(--bg); }
+  .fpill.active { background: var(--accent); border-color: var(--accent); color: var(--fg); }
+  .fpill.active .ct { color: rgba(10,31,23,0.65); }
+  .fpill .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--primary);
+  }
+  .filter-row .search-mini {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 8px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 10px; padding: 7px 12px; width: 240px;
+  }
+  .filter-row .search-mini svg { width: 13px; height: 13px; color: var(--muted-soft); }
+  .filter-row .search-mini input {
+    flex: 1; background: transparent; border: 0; outline: none;
+    font: inherit; font-size: 12.5px; color: var(--fg);
+  }
+  .filter-row .search-mini input::placeholder { color: var(--muted-soft); }
+
+  /* Content */
+  .page-wrap {
+    max-width: 1080px; margin: 0 auto;
+    padding: 26px 40px 40px;
+    display: flex; flex-direction: column; gap: 28px;
+  }
+
+  /* Day group */
+  .day-group { display: flex; flex-direction: column; gap: 10px; }
+  .day-header {
+    display: flex; align-items: baseline; justify-content: space-between;
+    padding-bottom: 4px;
+  }
+  .day-header h2 {
+    font-family: var(--font-display); font-size: 17px; font-weight: 600;
+    letter-spacing: -0.005em;
+  }
+  .day-header h2 em {
+    font-family: var(--font-serif); font-style: italic; font-weight: 400;
+    color: var(--primary);
+  }
+  .day-header .meta {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.06em;
+    text-transform: uppercase; font-weight: 600;
+  }
+
+  /* Notification rows */
+  .notif {
+    display: grid;
+    grid-template-columns: 4px 40px 1fr auto;
+    gap: 14px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 18px 14px 0;
+    cursor: pointer;
+    transition: background 120ms ease, border-color 120ms ease;
+    align-items: center;
+  }
+  .notif:hover { background: #FBFAF5; border-color: var(--muted-soft); }
+  .notif .unread-dot {
+    width: 4px; align-self: stretch;
+    background: transparent;
+    border-radius: 14px 0 0 14px;
+  }
+  .notif.unread .unread-dot { background: var(--accent); }
+  .notif .avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 13px; font-weight: 700;
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+    background: #DCE7E1; color: var(--primary);
+    margin-left: 14px;
+  }
+  .notif .avatar.ai { background: var(--primary); color: var(--accent); position: relative; }
+  .notif .avatar.ai::after {
+    content: '✦'; position: absolute;
+    right: -2px; bottom: -2px;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--accent); color: var(--primary);
+    font-size: 8.5px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    border: 1.5px solid var(--card);
+  }
+  .notif .avatar.system { background: var(--bg); color: var(--muted); border: 1px dashed var(--border-strong); }
+  .notif .avatar.booking { background: rgba(0,88,64,0.10); color: var(--primary); }
+  .notif .avatar.pay { background: rgba(184,133,42,0.16); color: var(--warning); }
+  .notif .body { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+  .notif .top-row {
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted-soft); letter-spacing: 0.06em;
+  }
+  .notif .time {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+    color: var(--muted); letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 2px 7px; border-radius: 999px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    letter-spacing: 0.10em; text-transform: uppercase;
+    background: var(--bg); color: var(--fg);
+    border: 1px solid var(--border-soft);
+  }
+  .badge.coach   { background: rgba(0,88,64,0.10); color: var(--primary); border-color: rgba(0,88,64,0.25); }
+  .badge.ai      { background: rgba(209,248,67,0.30); color: #3B4310; border-color: rgba(209,248,67,0.45); }
+  .badge.booking { background: rgba(44,125,82,0.14); color: var(--slag); border-color: rgba(44,125,82,0.25); }
+  .badge.system  { background: var(--bg); color: var(--muted-soft); }
+  .badge.pay     { background: rgba(184,133,42,0.15); color: var(--warning); border-color: rgba(184,133,42,0.30); }
+  .notif .title {
+    font-family: var(--font-display); font-size: 14px; font-weight: 600;
+    color: var(--fg); line-height: 1.35;
+  }
+  .notif.read .title { color: var(--muted); font-weight: 500; }
+  .notif .sub {
+    font-family: var(--font-body); font-size: 12.5px;
+    color: var(--muted); line-height: 1.45;
+    display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .notif .more-btn {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: transparent; border: 0; cursor: pointer;
+    color: var(--muted-soft);
+    display: inline-flex; align-items: center; justify-content: center;
+    margin-right: 4px;
+  }
+  .notif .more-btn:hover { background: var(--bg); color: var(--fg); }
+  .notif .more-btn svg { width: 14px; height: 14px; }
+
+  /* Collapsed group row */
+  .collapsed-row {
+    display: flex; align-items: center; gap: 14px;
+    background: var(--card); border: 1px dashed var(--border);
+    border-radius: 14px;
+    padding: 14px 20px;
+    cursor: pointer;
+    transition: background 140ms ease;
+  }
+  .collapsed-row:hover { background: #FBFAF5; }
+  .collapsed-row .label {
+    font-family: var(--font-display); font-size: 13.5px; font-weight: 600;
+    color: var(--fg);
+  }
+  .collapsed-row .label em {
+    font-family: var(--font-serif); font-style: italic; color: var(--primary);
+  }
+  .collapsed-row .meta {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.06em;
+  }
+  .collapsed-row .right {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--primary); letter-spacing: 0.06em;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .collapsed-row .right svg { width: 12px; height: 12px; }
+  .collapsed-row .avs { display: flex; }
+  .collapsed-row .avs .av {
+    width: 24px; height: 24px; border-radius: 50%;
+    margin-right: -6px; border: 1.5px solid var(--card);
+    background: #DCE7E1; color: var(--primary);
+    font-family: var(--font-display); font-size: 9px; font-weight: 700;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .collapsed-row .avs .av.lime { background: var(--accent); color: var(--fg); }
+  .collapsed-row .avs .av.ai { background: var(--primary); color: var(--accent); }
+
+  /* Empty state */
+  .empty {
+    margin-top: 40px;
+    display: none;
+    flex-direction: column; align-items: center;
+    gap: 12px; padding: 60px 20px;
+    text-align: center;
+  }
+  .empty svg.illu {
+    width: 160px; height: 100px;
+  }
+  .empty h3 {
+    font-family: var(--font-display); font-size: 18px; font-weight: 600;
+    color: var(--fg); letter-spacing: -0.01em;
+  }
+  .empty h3 em {
+    font-family: var(--font-serif); font-style: italic; color: var(--primary);
+  }
+  .empty p {
+    font-family: var(--font-body); font-size: 13px;
+    color: var(--muted); max-width: 320px; line-height: 1.5;
+  }
+
+  body.empty-mode .day-group, body.empty-mode .collapsed-row { display: none; }
+  body.empty-mode .empty { display: flex; }
+</style>
+</head>
+<body data-screen-label="PlayerHQ Varselsenter">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ic-chev-l" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></symbol>
+    <symbol id="ic-chev-r" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></symbol>
+    <symbol id="ic-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+    <symbol id="ic-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+    <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+    <symbol id="ic-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></symbol>
+  </defs>
+</svg>
+
+<header class="topnav">
+  <a href="../playerhq/workbench-v2.html" class="back">
+    <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-chev-l"/></svg>
+    Workbench
+  </a>
+  <div class="brand">AK GOLF</div>
+  <div class="crumb">PlayerHQ &nbsp;/&nbsp; <span class="current">Varsler</span></div>
+</header>
+
+<div class="header-wrap">
+  <div class="header-row" style="margin: 0 auto;">
+    <div>
+      <h1>Var<em>sler</em></h1>
+      <div class="stats">
+        <span class="unread">12 uleste</span>
+        <span class="pip"></span>
+        <span>84 totalt</span>
+        <span class="pip"></span>
+        <span>SISTE 30 DAGER</span>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn-pill outline">
+        <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-settings"/></svg>
+        Innstillinger
+      </button>
+      <button class="btn-pill forest" id="mark-all">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-check"/></svg>
+        Marker alle som lest
+      </button>
+    </div>
+  </div>
+  <div class="filter-row" style="margin: 0 auto;">
+    <button class="fpill active">Alle <span class="ct">84</span></button>
+    <button class="fpill"><span class="dot" style="background:var(--primary);"></span>Coach <span class="ct">3</span></button>
+    <button class="fpill"><span class="dot" style="background:var(--slag);"></span>Bookinger <span class="ct">2</span></button>
+    <button class="fpill"><span class="dot" style="background:var(--accent);"></span>AI <span class="ct">1</span></button>
+    <button class="fpill"><span class="dot" style="background:var(--warning);"></span>Betaling <span class="ct">1</span></button>
+    <button class="fpill"><span class="dot" style="background:var(--muted-soft);"></span>System <span class="ct">5</span></button>
+    <div class="search-mini">
+      <svg fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-search"/></svg>
+      <input placeholder="Søk varsler …" />
+    </div>
+  </div>
+</div>
+
+<main class="page-wrap">
+
+  <!-- I dag -->
+  <section class="day-group">
+    <div class="day-header">
+      <h2><em>I dag</em> · torsdag 20. mai</h2>
+      <span class="meta">3 HENDELSER</span>
+    </div>
+
+    <article class="notif unread" data-cat="coach">
+      <span class="unread-dot"></span>
+      <span class="avatar">AK</span>
+      <div class="body">
+        <div class="top-row">
+          <span class="badge coach">COACH</span>
+          <span class="time">09:14</span>
+        </div>
+        <div class="title">Anders sendte ny økt for tirsdag</div>
+        <div class="sub">«Wedge 50–80m og putt 4×8 — vi jobber videre med tempo. Husk metronom-appen.»</div>
+      </div>
+      <button class="more-btn" aria-label="Mer"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-more"/></svg></button>
+    </article>
+
+    <article class="notif unread" data-cat="ai">
+      <span class="unread-dot"></span>
+      <span class="avatar ai">✦</span>
+      <div class="body">
+        <div class="top-row">
+          <span class="badge ai">AI-CADDIE</span>
+          <span class="time">08:30</span>
+        </div>
+        <div class="title">Foreslår ny drill — chipping low-flight</div>
+        <div class="sub">Basert på 0,4 SG-tap fra 15–25m siste 6 runder. Forventet effekt +0,2 SG over 4 uker.</div>
+      </div>
+      <button class="more-btn" aria-label="Mer"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-more"/></svg></button>
+    </article>
+
+    <article class="notif unread" data-cat="system">
+      <span class="unread-dot"></span>
+      <span class="avatar system">SY</span>
+      <div class="body">
+        <div class="top-row">
+          <span class="badge system">SYSTEM</span>
+          <span class="time">07:45</span>
+        </div>
+        <div class="title">Onboarding fullført — velkommen til PlayerHQ</div>
+        <div class="sub">Profil, coach og første mål er på plass. Du kan starte logge runder nå.</div>
+      </div>
+      <button class="more-btn" aria-label="Mer"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-more"/></svg></button>
+    </article>
+  </section>
+
+  <!-- I går -->
+  <section class="day-group">
+    <div class="day-header">
+      <h2><em>I går</em> · onsdag 19. mai</h2>
+      <span class="meta">4 HENDELSER</span>
+    </div>
+
+    <article class="notif unread" data-cat="booking">
+      <span class="unread-dot"></span>
+      <span class="avatar booking">PS</span>
+      <div class="body">
+        <div class="top-row">
+          <span class="badge booking">BOOKING</span>
+          <span class="time">18:22</span>
+        </div>
+        <div class="title">Performance Studio · Bay 2 bekreftet</div>
+        <div class="sub">Tirsdag 25. mai · 14:00–15:00 · Anders K.</div>
+      </div>
+      <button class="more-btn"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-more"/></svg></button>
+    </article>
+
+    <article class="notif unread" data-cat="coach">
+      <span class="unread-dot"></span>
+      <span class="avatar">AK</span>
+      <div class="body">
+        <div class="top-row">
+          <span class="badge coach">COACH</span>
+          <span class="time">14:05</span>
+        </div>
+        <div class="title">Anders svarte på spørsmål om jernspill</div>
+        <div class="sub">«Prøv å starte med en lavere ball-posisjon på 7-jernet — vi snakket om det forrige uke …»</div>
+      </div>
+      <button class="more-btn"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-more"/></svg></button>
+    </article>
+
+    <article class="notif unread" data-cat="pay">
+      <span class="unread-dot"></span>
+      <span class="avatar pay">FA</span>
+      <div class="body">
+        <div class="top-row">
+          <span class="badge pay">BETALING</span>
+          <span class="time">11:12</span>
+        </div>
+        <div class="title">Faktura for april er klar</div>
+        <div class="sub">2 400 kr · forfaller 1. juni · AK Golf Academy</div>
+      </div>
+      <button class="more-btn"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-more"/></svg></button>
+    </article>
+
+    <article class="notif read" data-cat="system">
+      <span class="unread-dot"></span>
+      <span class="avatar system">TM</span>
+      <div class="body">
+        <div class="top-row">
+          <span class="badge system">SYSTEM</span>
+          <span class="time">08:08</span>
+        </div>
+        <div class="title">Trackman-sync fullført</div>
+        <div class="sub">142 økter hentet siste 24 timer. Se i workbench.</div>
+      </div>
+      <button class="more-btn"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-more"/></svg></button>
+    </article>
+  </section>
+
+  <!-- Denne uka — collapsed -->
+  <section class="day-group">
+    <div class="day-header">
+      <h2><em>Denne uka</em></h2>
+      <span class="meta">12 HENDELSER</span>
+    </div>
+
+    <article class="notif read" data-cat="coach">
+      <span class="unread-dot"></span>
+      <span class="avatar">AK</span>
+      <div class="body">
+        <div class="top-row">
+          <span class="badge coach">COACH</span>
+          <span class="time">TIR 11:40</span>
+        </div>
+        <div class="title">Plan oppdatert — 4 uker mot Sørlandsåpent</div>
+        <div class="sub">Anders har lagt til 4 nye økter og endret intensiteten i uke 23. Se planen.</div>
+      </div>
+      <button class="more-btn"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-more"/></svg></button>
+    </article>
+
+    <div class="collapsed-row">
+      <div class="avs">
+        <span class="av">AK</span>
+        <span class="av lime">PS</span>
+        <span class="av ai">✦</span>
+        <span class="av" style="background:#F2E7D8;color:#B8852A;">FA</span>
+      </div>
+      <span class="label"><em>Mandag</em> 17. mai · 4 hendelser</span>
+      <span class="meta">2 COACH · 1 BOOKING · 1 BETALING</span>
+      <span class="right">UTVID <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-chev-r"/></svg></span>
+    </div>
+
+    <div class="collapsed-row">
+      <div class="avs">
+        <span class="av ai">✦</span>
+        <span class="av">AK</span>
+        <span class="av lime">PS</span>
+      </div>
+      <span class="label"><em>Søndag</em> 16. mai · 3 hendelser</span>
+      <span class="meta">2 AI · 1 BOOKING</span>
+      <span class="right">UTVID <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-chev-r"/></svg></span>
+    </div>
+  </section>
+
+  <!-- Tidligere -->
+  <section class="day-group">
+    <div class="day-header">
+      <h2><em>Tidligere</em></h2>
+      <span class="meta">65 HENDELSER</span>
+    </div>
+    <div class="collapsed-row">
+      <div class="avs">
+        <span class="av">AK</span>
+        <span class="av ai">✦</span>
+        <span class="av lime">PS</span>
+        <span class="av" style="background:#F2E7D8;color:#B8852A;">FA</span>
+        <span class="av" style="background:var(--bg);color:var(--muted);">+8</span>
+      </div>
+      <span class="label">Forrige uke · 11 hendelser</span>
+      <span class="meta">10. — 16. MAI</span>
+      <span class="right">UTVID <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-chev-r"/></svg></span>
+    </div>
+    <div class="collapsed-row">
+      <div class="avs">
+        <span class="av">AK</span>
+        <span class="av lime">PS</span>
+        <span class="av ai">✦</span>
+        <span class="av" style="background:var(--bg);color:var(--muted);">+15</span>
+      </div>
+      <span class="label">April · 18 hendelser</span>
+      <span class="meta">01. — 30. APR</span>
+      <span class="right">UTVID <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-chev-r"/></svg></span>
+    </div>
+    <div class="collapsed-row">
+      <div class="avs">
+        <span class="av">AK</span>
+        <span class="av lime">PS</span>
+        <span class="av ai">✦</span>
+        <span class="av" style="background:var(--bg);color:var(--muted);">+33</span>
+      </div>
+      <span class="label">Mars · 36 hendelser</span>
+      <span class="meta">01. — 31. MAR</span>
+      <span class="right">UTVID <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-chev-r"/></svg></span>
+    </div>
+  </section>
+
+  <!-- Empty state -->
+  <section class="empty">
+    <svg class="illu" viewBox="0 0 200 120" fill="none">
+      <ellipse cx="100" cy="100" rx="80" ry="6" fill="rgba(0,88,64,0.06)"/>
+      <path d="M50 70 Q 100 30, 150 70" stroke="#005840" stroke-width="2" stroke-linecap="round" fill="none"/>
+      <circle cx="100" cy="50" r="14" fill="#D1F843" stroke="#005840" stroke-width="2"/>
+      <path d="M94 50 L99 55 L107 47" stroke="#005840" stroke-width="2" stroke-linecap="round" fill="none"/>
+      <line x1="40" y1="80" x2="55" y2="80" stroke="#5E5C57" stroke-width="1.5" opacity="0.4"/>
+      <line x1="60" y1="80" x2="75" y2="80" stroke="#5E5C57" stroke-width="1.5" opacity="0.4"/>
+      <line x1="125" y1="80" x2="140" y2="80" stroke="#5E5C57" stroke-width="1.5" opacity="0.4"/>
+      <line x1="145" y1="80" x2="160" y2="80" stroke="#5E5C57" stroke-width="1.5" opacity="0.4"/>
+    </svg>
+    <h3>Ingen varsler her — du er <em>à jour</em></h3>
+    <p>Alt nytt kommer her: meldinger fra coach, AI-forslag, bookinger og fakturaer.</p>
+  </section>
+
+</main>
+
+<script>
+  // Mark all as read
+  document.getElementById('mark-all').addEventListener('click', () => {
+    document.querySelectorAll('.notif.unread').forEach(n => {
+      n.classList.remove('unread');
+      n.classList.add('read');
+    });
+    document.querySelector('.stats .unread').textContent = '0 uleste';
+  });
+
+  // Filter pills
+  document.querySelectorAll('.fpill').forEach(p => {
+    p.addEventListener('click', () => {
+      document.querySelectorAll('.fpill').forEach(x => x.classList.remove('active'));
+      p.classList.add('active');
+    });
+  });
+
+  // Hover row → swipe affordance (no functional impl, just visual)
+  document.querySelectorAll('.notif').forEach(n => {
+    n.addEventListener('click', (e) => {
+      if (e.target.closest('.more-btn')) return;
+      if (n.classList.contains('unread')) {
+        n.classList.remove('unread');
+        n.classList.add('read');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

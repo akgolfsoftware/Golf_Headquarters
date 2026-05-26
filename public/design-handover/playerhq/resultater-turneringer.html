@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Resultater · Turneringer — AK Golf PlayerHQ</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../workbench-v2.css">
+<style>
+  body { background: var(--bg); margin: 0; padding-bottom: 96px; }
+
+  /* Topnav (shared) */
+  .topnav {
+    display: flex; align-items: center; gap: 16px;
+    padding: 18px 32px; border-bottom: 1px solid var(--border);
+    background: #fff; position: sticky; top: 0; z-index: 30;
+  }
+  .topnav .back-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.10em;
+    text-transform: uppercase; font-weight: 600; text-decoration: none;
+  }
+  .topnav .back-link:hover { color: var(--fg); }
+  .topnav .back-link svg { width: 14px; height: 14px; }
+  .topnav .name {
+    font-family: var(--font-display); font-size: 13px; font-weight: 700;
+    color: var(--primary); letter-spacing: 0.02em;
+  }
+  .topnav .crumbs {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .topnav .crumbs .current { color: var(--fg); font-weight: 600; }
+  .topnav .crumbs .sep { color: var(--border); margin: 0 6px; }
+
+  .page-wrap {
+    max-width: 1180px; margin: 0 auto;
+    padding: 48px 24px;
+    display: flex; flex-direction: column; gap: 32px;
+  }
+
+  /* Hero (same as Stats) */
+  .hero {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 32px; flex-wrap: wrap;
+    padding-bottom: 24px; border-bottom: 1px solid var(--border);
+  }
+  .hero .eyebrow {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted); font-weight: 700; margin-bottom: 16px;
+  }
+  .hero h1 {
+    font-family: var(--font-display); font-size: 44px;
+    font-weight: 600; letter-spacing: -0.025em; line-height: 1.04;
+  }
+  .hero h1 em {
+    font-family: var(--font-serif); font-style: italic;
+    font-weight: 400; color: var(--primary);
+  }
+  .hero .lede {
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 17px; color: var(--muted); line-height: 1.5;
+    max-width: 540px; margin-top: 8px;
+  }
+  .hero-right { display: flex; flex-direction: column; gap: 12px; align-items: flex-end; }
+  .nav-tabs { display: flex; gap: 4px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 4px; }
+  .nav-tab {
+    padding: 8px 16px; border: 0; background: transparent;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--muted); cursor: pointer; border-radius: 8px;
+    letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none;
+  }
+  .nav-tab.active { background: var(--fg); color: var(--accent); }
+  .nav-tab:not(.active):hover { color: var(--fg); }
+  .updated {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted-soft); letter-spacing: 0.06em;
+  }
+
+  /* Stats strip (4 cards) */
+  .stat-strip {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+  .stat-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 22px;
+    display: flex; flex-direction: column; gap: 10px;
+    transition: transform 180ms ease, box-shadow 180ms ease;
+    position: relative; overflow: hidden;
+  }
+  .stat-card:hover { transform: scale(1.01); box-shadow: 0 12px 28px rgba(10,31,23,0.08); }
+  .stat-card .lbl {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.12em;
+    text-transform: uppercase; font-weight: 700;
+  }
+  .stat-card .val {
+    font-family: var(--font-mono); font-size: 32px; font-weight: 700;
+    color: var(--fg); font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em; line-height: 1;
+  }
+  .stat-card .val .unit { font-size: 14px; color: var(--muted); margin-left: 4px; font-weight: 500; }
+  .stat-card .sub {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .stat-card.featured {
+    background: linear-gradient(160deg, #006C50 0%, #003A2A 100%);
+    color: #fff; border-color: transparent;
+  }
+  .stat-card.featured::before {
+    content: ''; position: absolute; top: -40%; right: -10%;
+    width: 280px; height: 280px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(209,248,67,0.12), transparent 65%);
+    pointer-events: none;
+  }
+  .stat-card.featured .lbl { color: rgba(209,248,67,0.65); }
+  .stat-card.featured .val { color: #fff; font-size: 42px; letter-spacing: -0.03em; }
+  .stat-card.featured .sub { color: rgba(255,255,255,0.6); }
+
+  /* Filter bar */
+  .filter-bar {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 14px 18px;
+    display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
+  }
+  .filter-bar .grp { display: flex; align-items: center; gap: 10px; }
+  .filter-bar .lbl {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.10em; text-transform: uppercase;
+    font-weight: 700;
+  }
+  .pills-row {
+    display: inline-flex; gap: 2px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 10px; padding: 3px;
+  }
+  .pillbtn {
+    padding: 7px 12px; border: 0; background: transparent;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--muted); cursor: pointer; border-radius: 7px;
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .pillbtn:hover { color: var(--fg); }
+  .pillbtn.active { background: var(--fg); color: var(--accent); }
+  .filter-bar .count {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .filter-bar .count strong { color: var(--fg); font-weight: 700; }
+
+  /* Tournament cards */
+  .tour-list { display: flex; flex-direction: column; gap: 12px; }
+  .tour-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 18px; overflow: hidden;
+    transition: transform 180ms ease, box-shadow 180ms ease;
+  }
+  .tour-card:hover { transform: scale(1.005); box-shadow: 0 12px 28px rgba(10,31,23,0.08); }
+
+  .tour-head {
+    display: grid;
+    grid-template-columns: 1.5fr 90px 130px 1fr 36px;
+    align-items: center; gap: 20px;
+    padding: 18px 22px;
+  }
+  .tour-id { display: flex; flex-direction: column; gap: 6px; }
+  .tour-id .nm {
+    font-family: var(--font-display); font-size: 17px; font-weight: 600;
+    letter-spacing: -0.01em; line-height: 1.2;
+  }
+  .tour-id .nm em {
+    font-family: var(--font-serif); font-style: italic;
+    font-weight: 400; color: var(--primary);
+  }
+  .tour-id .meta {
+    display: flex; gap: 10px; align-items: center;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+    flex-wrap: wrap;
+  }
+  .tour-id .meta strong { color: var(--fg); font-weight: 700; }
+  .tour-id .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 9px; border-radius: 999px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .badge-ngf { background: rgba(0,88,64,0.12); color: var(--primary); }
+  .badge-gjgt { background: rgba(209,248,67,0.30); color: #4A5418; }
+  .badge-local { background: rgba(94,92,87,0.14); color: var(--muted); }
+
+  .tour-score {
+    text-align: right;
+    font-family: var(--font-mono); font-weight: 700;
+    line-height: 1; font-variant-numeric: tabular-nums;
+  }
+  .tour-score .score {
+    font-size: 32px; letter-spacing: -0.02em;
+  }
+  .tour-score .score.under { color: var(--success); }
+  .tour-score .score.over { color: var(--danger); }
+  .tour-score .score.par { color: var(--fg); }
+  .tour-score .place {
+    font-size: 11px; color: var(--muted); font-weight: 700;
+    letter-spacing: 0.06em; margin-top: 8px; text-transform: uppercase;
+  }
+  .tour-hcp {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+  }
+  .tour-hcp .lbl {
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--muted); letter-spacing: 0.10em; text-transform: uppercase;
+    font-weight: 700;
+  }
+  .tour-hcp .v {
+    font-family: var(--font-mono); font-size: 14px; font-weight: 700;
+    color: var(--fg); font-variant-numeric: tabular-nums;
+    background: var(--bg); border-radius: 6px; padding: 4px 8px;
+    border: 1px solid var(--border);
+  }
+
+  /* SG bars */
+  .sg-mini { display: flex; flex-direction: column; gap: 5px; }
+  .sg-mini .lbl-row {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px;
+    font-family: var(--font-mono); font-size: 9px; color: var(--muted);
+    letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700;
+    text-align: center;
+  }
+  .sg-mini .bar-row {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px;
+  }
+  .sg-mini .bar-row .b {
+    position: relative; height: 18px;
+    background: var(--bg); border-radius: 4px; overflow: hidden;
+  }
+  .sg-mini .bar-row .b::before {
+    content: ''; position: absolute; left: 50%; top: 0; bottom: 0;
+    width: 1px; background: var(--border);
+  }
+  .sg-mini .bar-row .b .f { position: absolute; top: 3px; bottom: 3px; border-radius: 3px; }
+  .sg-mini .bar-row .b .f.pos { background: var(--success); left: 50%; }
+  .sg-mini .bar-row .b .f.neg { background: var(--danger); right: 50%; }
+  .sg-mini .val-row {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    text-align: center; font-variant-numeric: tabular-nums;
+  }
+  .sg-mini .val-row .pos { color: var(--success); }
+  .sg-mini .val-row .neg { color: var(--danger); }
+
+  .tour-expand {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: var(--bg); border: 1px solid var(--border);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted); cursor: pointer;
+    transition: transform 180ms ease;
+  }
+  .tour-card.open .tour-expand { transform: rotate(180deg); color: var(--fg); }
+  .tour-expand svg { width: 14px; height: 14px; }
+
+  /* expand content */
+  .tour-body {
+    border-top: 1px solid var(--border-soft);
+    padding: 20px 22px;
+    background: var(--bg);
+    display: none;
+  }
+  .tour-card.open .tour-body { display: block; }
+
+  .scorecard {
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  .scorecard table {
+    width: 100%; border-collapse: collapse; min-width: 720px;
+  }
+  .scorecard th {
+    padding: 10px 6px;
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--muted); letter-spacing: 0.10em;
+    text-transform: uppercase; font-weight: 700;
+    border-bottom: 1px solid var(--border-soft);
+    text-align: center; background: var(--bg);
+  }
+  .scorecard th:first-child { text-align: left; padding-left: 16px; width: 60px; }
+  .scorecard td {
+    padding: 9px 6px;
+    font-family: var(--font-mono); font-size: 12.5px;
+    color: var(--fg); font-variant-numeric: tabular-nums;
+    text-align: center; border-bottom: 1px solid var(--border-soft);
+  }
+  .scorecard td:first-child {
+    text-align: left; padding-left: 16px;
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--muted); letter-spacing: 0.10em;
+    text-transform: uppercase; font-weight: 700;
+  }
+  .scorecard tr:last-child td { border-bottom: 0; }
+  .scorecard tr.total td { background: var(--bg); font-weight: 700; font-size: 13px; }
+  .scorecard tr.total td:first-child { color: var(--fg); }
+  .sc-cell {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 24px; height: 24px; border-radius: 5px;
+    font-weight: 700;
+  }
+  .sc-cell.eagle { background: var(--accent); color: var(--fg); }
+  .sc-cell.birdie { background: rgba(209,248,67,0.30); color: var(--fg); }
+  .sc-cell.par { background: transparent; color: var(--fg); }
+  .sc-cell.bogey { background: transparent; color: var(--muted); }
+  .sc-cell.dbl {
+    background: transparent; color: var(--danger);
+    box-shadow: 0 0 0 1.5px var(--danger) inset; border-radius: 50%;
+  }
+
+  /* SG-trend section */
+  .sg-trend-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 18px; padding: 26px 28px;
+    display: flex; flex-direction: column; gap: 18px;
+  }
+  .sg-trend-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    gap: 16px; flex-wrap: wrap;
+  }
+  .sg-trend-head h3 {
+    font-family: var(--font-display); font-size: 22px;
+    font-weight: 600; letter-spacing: -0.015em;
+  }
+  .sg-trend-head .sub {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.06em; margin-top: 4px;
+  }
+  .legend {
+    display: flex; gap: 14px; flex-wrap: wrap;
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .legend .item { display: inline-flex; align-items: center; gap: 6px; }
+  .legend .sw { width: 14px; height: 3px; border-radius: 2px; }
+
+  .sgt-chart {
+    position: relative; height: 280px;
+    margin-left: 50px; margin-right: 4px;
+    border-left: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .sgt-yax {
+    position: absolute; left: -50px; top: 0; bottom: 0; width: 46px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted-soft); text-align: right; padding-right: 4px;
+    font-variant-numeric: tabular-nums;
+  }
+  .sgt-grid { position: absolute; inset: 0;
+    display: flex; flex-direction: column; justify-content: space-between; }
+  .sgt-grid div { border-top: 1px dashed var(--border-soft); }
+  .sgt-zero {
+    position: absolute; left: 0; right: 0; top: 50%;
+    border-top: 1.5px solid var(--fg); opacity: 0.5;
+  }
+  .sgt-chart svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .sgt-xax {
+    margin-left: 50px;
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted-soft); letter-spacing: 0.04em;
+    text-align: center; margin-top: 6px;
+  }
+
+  @media (max-width: 900px) {
+    .stat-strip { grid-template-columns: 1fr 1fr; }
+    .tour-head { grid-template-columns: 1fr 100px; row-gap: 14px; }
+    .tour-head .tour-hcp { grid-column: 1 / 2; }
+    .tour-head .tour-score { grid-column: 2 / 3; }
+    .tour-head .sg-mini { grid-column: 1 / -1; }
+    .tour-head .tour-expand { display: none; }
+    .hero h1 { font-size: 34px; }
+  }
+</style>
+</head>
+<body data-screen-label="Resultater — Turneringer">
+
+<nav class="topnav">
+  <a href="workbench-v2.html" class="back-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    Tilbake til portal
+  </a>
+  <span class="name">AK GOLF · PLAYERHQ</span>
+  <span class="crumbs">Resultater <span class="sep">/</span><span class="current">Turneringer</span></span>
+</nav>
+
+<main class="page-wrap">
+
+  <header class="hero">
+    <div>
+      <div class="eyebrow">PLAYERHQ · RESULTATER · TURNERINGER</div>
+      <h1>Konkurranse-<em>cv'en din</em></h1>
+      <p class="lede">Hver runde, hvert SG-svar, hver plassering — slik utvikler du deg under press. 7 turneringer i 2026, 18 totalt.</p>
+    </div>
+    <div class="hero-right">
+      <div class="nav-tabs">
+        <a href="resultater-stats.html" class="nav-tab">Stats</a>
+        <a href="resultater-tester.html" class="nav-tab">Tester</a>
+        <button class="nav-tab active">Turneringer</button>
+      </div>
+      <div class="updated">Siste 18.05 · Sørlandsåpent</div>
+    </div>
+  </header>
+
+  <!-- 4-stat strip -->
+  <section data-screen-label="Top stats">
+    <div class="stat-strip">
+      <div class="stat-card featured">
+        <div class="lbl">Turneringer spilt</div>
+        <div class="val">18</div>
+        <div class="sub">7 i 2026 · 11 i 2025</div>
+      </div>
+      <div class="stat-card">
+        <div class="lbl">Snitt vs par</div>
+        <div class="val">+3,2</div>
+        <div class="sub">Siste 10 runder · turnering</div>
+      </div>
+      <div class="stat-card">
+        <div class="lbl">Beste runde</div>
+        <div class="val" style="font-size:24px;">−4 <span class="unit" style="margin-left:2px;font-size:11px;">på Larvik GK</span></div>
+        <div class="sub">28.07.2025 · 67 slag (par 71)</div>
+      </div>
+      <div class="stat-card">
+        <div class="lbl">NGF-poeng</div>
+        <div class="val">128<span class="unit">pts</span></div>
+        <div class="sub">+24 siste 90 dager · D-rangering</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filter bar -->
+  <div class="filter-bar">
+    <div class="grp">
+      <span class="lbl">Sesong</span>
+      <div class="pills-row">
+        <button class="pillbtn">2024</button>
+        <button class="pillbtn">2025</button>
+        <button class="pillbtn active">2026</button>
+        <button class="pillbtn">ALLE</button>
+      </div>
+    </div>
+    <div class="grp">
+      <span class="lbl">Type</span>
+      <div class="pills-row">
+        <button class="pillbtn active">Alle</button>
+        <button class="pillbtn">NGF</button>
+        <button class="pillbtn">GJGT</button>
+        <button class="pillbtn">Local</button>
+      </div>
+    </div>
+    <div class="count">Viser <strong>7</strong> turneringer · sortert nyeste først</div>
+  </div>
+
+  <!-- Tournament list -->
+  <section class="tour-list" data-screen-label="Turneringer">
+
+    <article class="tour-card open">
+      <header class="tour-head">
+        <div class="tour-id">
+          <div class="nm">Sørlands<em>åpent</em></div>
+          <div class="meta">
+            <span class="badge badge-ngf">NGF</span>
+            <span><strong>Bjaavann GK</strong></span>
+            <span>·</span>
+            <span>15.–17. mai 2026</span>
+            <span>·</span>
+            <span>54 hull</span>
+          </div>
+        </div>
+        <div class="tour-hcp">
+          <span class="lbl">HCP</span>
+          <span class="v">8,6</span>
+        </div>
+        <div class="sg-mini">
+          <div class="lbl-row"><span>OTT</span><span>APP</span><span>ATG</span><span>PUTT</span></div>
+          <div class="bar-row">
+            <span class="b"><span class="f pos" style="width: 36%;"></span></span>
+            <span class="b"><span class="f neg" style="width: 18%; right: 50%;"></span></span>
+            <span class="b"><span class="f pos" style="width: 24%;"></span></span>
+            <span class="b"><span class="f neg" style="width: 42%; right: 50%;"></span></span>
+          </div>
+          <div class="val-row"><span class="pos">+0,7</span><span class="neg">−0,4</span><span class="pos">+0,5</span><span class="neg">−0,9</span></div>
+        </div>
+        <div class="tour-score">
+          <div class="score over">+3</div>
+          <div class="place">T18 av 64</div>
+        </div>
+        <button class="tour-expand" onclick="this.closest('.tour-card').classList.toggle('open')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+      </header>
+      <div class="tour-body">
+        <div class="scorecard">
+          <table>
+            <thead>
+              <tr>
+                <th>HULL</th>
+                <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th>
+                <th>UT</th>
+                <th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th><th>17</th><th>18</th>
+                <th>INN</th><th>SUM</th>
+              </tr>
+              <tr>
+                <th>PAR</th>
+                <th>4</th><th>4</th><th>5</th><th>3</th><th>4</th><th>4</th><th>3</th><th>5</th><th>4</th>
+                <th>36</th>
+                <th>4</th><th>3</th><th>4</th><th>4</th><th>5</th><th>3</th><th>4</th><th>4</th><th>5</th>
+                <th>36</th><th>72</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>R1</td>
+                <td><span class="sc-cell par">4</span></td><td><span class="sc-cell birdie">3</span></td><td><span class="sc-cell par">5</span></td><td><span class="sc-cell par">3</span></td>
+                <td><span class="sc-cell bogey">5</span></td><td><span class="sc-cell par">4</span></td><td><span class="sc-cell par">3</span></td><td><span class="sc-cell par">5</span></td><td><span class="sc-cell bogey">5</span></td>
+                <td>37</td>
+                <td><span class="sc-cell par">4</span></td><td><span class="sc-cell par">3</span></td><td><span class="sc-cell birdie">3</span></td><td><span class="sc-cell par">4</span></td>
+                <td><span class="sc-cell par">5</span></td><td><span class="sc-cell par">3</span></td><td><span class="sc-cell dbl">6</span></td><td><span class="sc-cell par">4</span></td><td><span class="sc-cell birdie">4</span></td>
+                <td>36</td><td><strong>73 (+1)</strong></td>
+              </tr>
+              <tr>
+                <td>R2</td>
+                <td><span class="sc-cell par">4</span></td><td><span class="sc-cell par">4</span></td><td><span class="sc-cell par">5</span></td><td><span class="sc-cell bogey">4</span></td>
+                <td><span class="sc-cell par">4</span></td><td><span class="sc-cell par">4</span></td><td><span class="sc-cell bogey">4</span></td><td><span class="sc-cell par">5</span></td><td><span class="sc-cell par">4</span></td>
+                <td>38</td>
+                <td><span class="sc-cell par">4</span></td><td><span class="sc-cell par">3</span></td><td><span class="sc-cell par">4</span></td><td><span class="sc-cell bogey">5</span></td>
+                <td><span class="sc-cell par">5</span></td><td><span class="sc-cell par">3</span></td><td><span class="sc-cell par">4</span></td><td><span class="sc-cell par">4</span></td><td><span class="sc-cell par">5</span></td>
+                <td>37</td><td><strong>75 (+3)</strong></td>
+              </tr>
+              <tr class="total">
+                <td>SUM</td>
+                <td colspan="9"></td>
+                <td>75</td>
+                <td colspan="9"></td>
+                <td>73</td><td>148 (+4)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </article>
+
+    <article class="tour-card">
+      <header class="tour-head">
+        <div class="tour-id">
+          <div class="nm">GJGT Vår-cup 3</div>
+          <div class="meta">
+            <span class="badge badge-gjgt">GJGT</span>
+            <span><strong>Miklagard GK</strong></span>
+            <span>·</span>
+            <span>03. mai 2026</span>
+            <span>·</span>
+            <span>36 hull</span>
+          </div>
+        </div>
+        <div class="tour-hcp">
+          <span class="lbl">HCP</span>
+          <span class="v">8,9</span>
+        </div>
+        <div class="sg-mini">
+          <div class="lbl-row"><span>OTT</span><span>APP</span><span>ATG</span><span>PUTT</span></div>
+          <div class="bar-row">
+            <span class="b"><span class="f pos" style="width: 28%;"></span></span>
+            <span class="b"><span class="f pos" style="width: 14%;"></span></span>
+            <span class="b"><span class="f pos" style="width: 38%;"></span></span>
+            <span class="b"><span class="f neg" style="width: 30%; right: 50%;"></span></span>
+          </div>
+          <div class="val-row"><span class="pos">+0,5</span><span class="pos">+0,2</span><span class="pos">+0,8</span><span class="neg">−0,6</span></div>
+        </div>
+        <div class="tour-score">
+          <div class="score under">−1</div>
+          <div class="place">T8 av 48</div>
+        </div>
+        <button class="tour-expand" onclick="this.closest('.tour-card').classList.toggle('open')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+      </header>
+    </article>
+
+    <article class="tour-card">
+      <header class="tour-head">
+        <div class="tour-id">
+          <div class="nm">Klubbmesterskap GFGK</div>
+          <div class="meta">
+            <span class="badge badge-local">Local</span>
+            <span><strong>Grenland & Fjellgyl GK</strong></span>
+            <span>·</span>
+            <span>26. april 2026</span>
+            <span>·</span>
+            <span>18 hull</span>
+          </div>
+        </div>
+        <div class="tour-hcp">
+          <span class="lbl">HCP</span>
+          <span class="v">9,1</span>
+        </div>
+        <div class="sg-mini">
+          <div class="lbl-row"><span>OTT</span><span>APP</span><span>ATG</span><span>PUTT</span></div>
+          <div class="bar-row">
+            <span class="b"><span class="f pos" style="width: 22%;"></span></span>
+            <span class="b"><span class="f pos" style="width: 32%;"></span></span>
+            <span class="b"><span class="f pos" style="width: 18%;"></span></span>
+            <span class="b"><span class="f neg" style="width: 12%; right: 50%;"></span></span>
+          </div>
+          <div class="val-row"><span class="pos">+0,3</span><span class="pos">+0,7</span><span class="pos">+0,4</span><span class="neg">−0,2</span></div>
+        </div>
+        <div class="tour-score">
+          <div class="score under">−2</div>
+          <div class="place">1. plass · vinner</div>
+        </div>
+        <button class="tour-expand" onclick="this.closest('.tour-card').classList.toggle('open')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+      </header>
+    </article>
+
+    <article class="tour-card">
+      <header class="tour-head">
+        <div class="tour-id">
+          <div class="nm">NGF Junior Tour · Tonsenhagen</div>
+          <div class="meta">
+            <span class="badge badge-ngf">NGF</span>
+            <span><strong>Oslo GK</strong></span>
+            <span>·</span>
+            <span>11.–12. april 2026</span>
+            <span>·</span>
+            <span>36 hull</span>
+          </div>
+        </div>
+        <div class="tour-hcp">
+          <span class="lbl">HCP</span>
+          <span class="v">9,4</span>
+        </div>
+        <div class="sg-mini">
+          <div class="lbl-row"><span>OTT</span><span>APP</span><span>ATG</span><span>PUTT</span></div>
+          <div class="bar-row">
+            <span class="b"><span class="f neg" style="width: 18%; right: 50%;"></span></span>
+            <span class="b"><span class="f neg" style="width: 14%; right: 50%;"></span></span>
+            <span class="b"><span class="f pos" style="width: 16%;"></span></span>
+            <span class="b"><span class="f neg" style="width: 32%; right: 50%;"></span></span>
+          </div>
+          <div class="val-row"><span class="neg">−0,4</span><span class="neg">−0,3</span><span class="pos">+0,4</span><span class="neg">−0,7</span></div>
+        </div>
+        <div class="tour-score">
+          <div class="score over">+8</div>
+          <div class="place">T34 av 56</div>
+        </div>
+        <button class="tour-expand" onclick="this.closest('.tour-card').classList.toggle('open')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+      </header>
+    </article>
+
+    <article class="tour-card">
+      <header class="tour-head">
+        <div class="tour-id">
+          <div class="nm">GJGT Vår-cup 2</div>
+          <div class="meta">
+            <span class="badge badge-gjgt">GJGT</span>
+            <span><strong>Larvik GK</strong></span>
+            <span>·</span>
+            <span>22. mars 2026</span>
+            <span>·</span>
+            <span>18 hull</span>
+          </div>
+        </div>
+        <div class="tour-hcp">
+          <span class="lbl">HCP</span>
+          <span class="v">9,6</span>
+        </div>
+        <div class="sg-mini">
+          <div class="lbl-row"><span>OTT</span><span>APP</span><span>ATG</span><span>PUTT</span></div>
+          <div class="bar-row">
+            <span class="b"><span class="f pos" style="width: 12%;"></span></span>
+            <span class="b"><span class="f neg" style="width: 6%; right: 50%;"></span></span>
+            <span class="b"><span class="f pos" style="width: 8%;"></span></span>
+            <span class="b"><span class="f neg" style="width: 16%; right: 50%;"></span></span>
+          </div>
+          <div class="val-row"><span class="pos">+0,2</span><span class="neg">−0,1</span><span class="pos">+0,1</span><span class="neg">−0,4</span></div>
+        </div>
+        <div class="tour-score">
+          <div class="score over">+4</div>
+          <div class="place">T22 av 40</div>
+        </div>
+        <button class="tour-expand" onclick="this.closest('.tour-card').classList.toggle('open')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+      </header>
+    </article>
+
+    <article class="tour-card">
+      <header class="tour-head">
+        <div class="tour-id">
+          <div class="nm">GJGT Vår-cup 1</div>
+          <div class="meta">
+            <span class="badge badge-gjgt">GJGT</span>
+            <span><strong>Atlungstad GK</strong></span>
+            <span>·</span>
+            <span>08. mars 2026</span>
+            <span>·</span>
+            <span>18 hull</span>
+          </div>
+        </div>
+        <div class="tour-hcp">
+          <span class="lbl">HCP</span>
+          <span class="v">9,8</span>
+        </div>
+        <div class="sg-mini">
+          <div class="lbl-row"><span>OTT</span><span>APP</span><span>ATG</span><span>PUTT</span></div>
+          <div class="bar-row">
+            <span class="b"><span class="f neg" style="width: 24%; right: 50%;"></span></span>
+            <span class="b"><span class="f neg" style="width: 18%; right: 50%;"></span></span>
+            <span class="b"><span class="f pos" style="width: 6%;"></span></span>
+            <span class="b"><span class="f neg" style="width: 22%; right: 50%;"></span></span>
+          </div>
+          <div class="val-row"><span class="neg">−0,5</span><span class="neg">−0,3</span><span class="pos">+0,1</span><span class="neg">−0,5</span></div>
+        </div>
+        <div class="tour-score">
+          <div class="score over">+6</div>
+          <div class="place">T28 av 42</div>
+        </div>
+        <button class="tour-expand" onclick="this.closest('.tour-card').classList.toggle('open')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+      </header>
+    </article>
+
+    <article class="tour-card">
+      <header class="tour-head">
+        <div class="tour-id">
+          <div class="nm">Vinter Tour Indoor</div>
+          <div class="meta">
+            <span class="badge badge-local">Local</span>
+            <span><strong>GFGK Indoor</strong></span>
+            <span>·</span>
+            <span>15. februar 2026</span>
+            <span>·</span>
+            <span>simulator · 18 hull</span>
+          </div>
+        </div>
+        <div class="tour-hcp">
+          <span class="lbl">HCP</span>
+          <span class="v">10,1</span>
+        </div>
+        <div class="sg-mini">
+          <div class="lbl-row"><span>OTT</span><span>APP</span><span>ATG</span><span>PUTT</span></div>
+          <div class="bar-row">
+            <span class="b"><span class="f pos" style="width: 18%;"></span></span>
+            <span class="b"><span class="f pos" style="width: 22%;"></span></span>
+            <span class="b"><span class="f neg" style="width: 4%; right: 50%;"></span></span>
+            <span class="b"><span class="f neg" style="width: 8%; right: 50%;"></span></span>
+          </div>
+          <div class="val-row"><span class="pos">+0,4</span><span class="pos">+0,5</span><span class="neg">−0,1</span><span class="neg">−0,2</span></div>
+        </div>
+        <div class="tour-score">
+          <div class="score par">E</div>
+          <div class="place">T5 av 24</div>
+        </div>
+        <button class="tour-expand" onclick="this.closest('.tour-card').classList.toggle('open')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+      </header>
+    </article>
+
+  </section>
+
+  <!-- SG-trend over season -->
+  <section class="sg-trend-card" data-screen-label="SG-trend sesong">
+    <div class="sg-trend-head">
+      <div>
+        <h3>SG Total · konkurranse-trend</h3>
+        <div class="sub">7 TURNERINGER 2026 · LIME = BEST · NULLINJE = NGF-D BENCHMARK</div>
+      </div>
+      <div class="legend">
+        <span class="item"><span class="sw" style="background: var(--primary);"></span>SG Total</span>
+        <span class="item"><span class="sw" style="background: var(--accent);"></span>3-runders snitt</span>
+      </div>
+    </div>
+
+    <div style="position:relative;">
+      <div class="sgt-chart">
+        <div class="sgt-yax">
+          <span>+2,0</span><span>+1,0</span><span>0,0</span><span>−1,0</span><span>−2,0</span>
+        </div>
+        <div class="sgt-grid">
+          <div></div><div></div><div></div><div></div>
+        </div>
+        <div class="sgt-zero"></div>
+        <svg viewBox="0 0 1080 280" preserveAspectRatio="none">
+          <!-- bars: positive go above zero (y=140), negative below -->
+          <!-- 7 tournaments, x positions ~ 60, 220, 380, 540, 700, 860, 1020 -->
+          <!-- Vinter Indoor +0.6 -->
+          <rect x="40" y="100" width="40" height="40" fill="#88B45A" rx="3"/>
+          <!-- Vår-cup 1: -1.2 -->
+          <rect x="200" y="140" width="40" height="74" fill="#A32D2D" rx="3"/>
+          <!-- Vår-cup 2: -0.4 -->
+          <rect x="360" y="140" width="40" height="28" fill="#A32D2D" rx="3"/>
+          <!-- NGF Tonsen: -1.0 -->
+          <rect x="520" y="140" width="40" height="60" fill="#A32D2D" rx="3"/>
+          <!-- KM GFGK: +1.2 -->
+          <rect x="680" y="64" width="40" height="76" fill="#2C7D52" rx="3"/>
+          <!-- GJGT 3: +0.9 -->
+          <rect x="840" y="80" width="40" height="60" fill="#2C7D52" rx="3"/>
+          <!-- Sørlands +0.7 -->
+          <rect x="1000" y="92" width="40" height="48" fill="#88B45A" rx="3"/>
+          <!-- trend line (3-game rolling) -->
+          <path d="M 60 110 C 200 180, 380 180, 540 180, 700 90, 860 105 1020 100"
+                fill="none" stroke="#D1F843" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.95"/>
+          <circle cx="60" cy="110" r="4" fill="#D1F843" stroke="#005840" stroke-width="1.5"/>
+          <circle cx="220" cy="170" r="4" fill="#D1F843" stroke="#005840" stroke-width="1.5"/>
+          <circle cx="380" cy="180" r="4" fill="#D1F843" stroke="#005840" stroke-width="1.5"/>
+          <circle cx="540" cy="170" r="4" fill="#D1F843" stroke="#005840" stroke-width="1.5"/>
+          <circle cx="700" cy="100" r="4" fill="#D1F843" stroke="#005840" stroke-width="1.5"/>
+          <circle cx="860" cy="100" r="4" fill="#D1F843" stroke="#005840" stroke-width="1.5"/>
+          <circle cx="1020" cy="105" r="4" fill="#D1F843" stroke="#005840" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div class="sgt-xax">
+        <span>VINTER<br><span style="font-size:9px;">Indoor</span></span>
+        <span>VÅR-1<br><span style="font-size:9px;">Atlungstad</span></span>
+        <span>VÅR-2<br><span style="font-size:9px;">Larvik</span></span>
+        <span>NGF<br><span style="font-size:9px;">Tonsen</span></span>
+        <span>KM<br><span style="font-size:9px;">GFGK</span></span>
+        <span>VÅR-3<br><span style="font-size:9px;">Miklagard</span></span>
+        <span>SØRLAND<br><span style="font-size:9px;">Bjaavann</span></span>
+      </div>
+    </div>
+
+    <p style="font-family: var(--font-serif); font-style: italic; font-size: 15px; color: var(--muted); line-height: 1.6; padding-top: 12px; border-top: 1px solid var(--border-soft);">
+      Klubbmesterskapet på GFGK markerte vendepunktet. Etter to under-snitt-turneringer har du holdt deg over null i tre på rad — det er konkurranseform.
+    </p>
+  </section>
+
+</main>
+
+</body>
+</html>

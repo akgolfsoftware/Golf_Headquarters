@@ -139,7 +139,10 @@ const nextConfig: NextConfig = {
       {
         source: "/:path*",
         headers: [
-          { key: "X-Frame-Options", value: "DENY" },
+          // SAMEORIGIN tillater iframe fra samme domene (kreves av
+          // /admin/godkjenn-portal for å vise live portal-sider i iframe).
+          // Eksternt iframe-bruk blokkeres fortsatt av frame-ancestors i CSP.
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           {

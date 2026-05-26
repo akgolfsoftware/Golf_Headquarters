@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Trackman · Snitt &amp; Køller — AK Golf PlayerHQ</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../workbench-v2.css">
+<style>
+  body { background: var(--bg); margin: 0; padding-bottom: 96px; }
+
+  /* Topnav */
+  .topnav {
+    display: flex; align-items: center; gap: 16px;
+    padding: 18px 32px; border-bottom: 1px solid var(--border);
+    background: #fff; position: sticky; top: 0; z-index: 30;
+  }
+  .topnav .back-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.10em;
+    text-transform: uppercase; font-weight: 600; text-decoration: none;
+  }
+  .topnav .back-link:hover { color: var(--fg); }
+  .topnav .back-link svg { width: 14px; height: 14px; }
+  .topnav .name {
+    font-family: var(--font-display); font-size: 13px; font-weight: 700;
+    color: var(--primary); letter-spacing: 0.02em;
+  }
+  .topnav .crumbs {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .topnav .crumbs .current { color: var(--fg); font-weight: 600; }
+  .topnav .crumbs .sep { color: var(--border); margin: 0 6px; }
+
+  .page-wrap {
+    max-width: 1200px; margin: 0 auto;
+    padding: 48px 24px;
+    display: flex; flex-direction: column; gap: 32px;
+  }
+
+  /* Hero */
+  .hero {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 32px; flex-wrap: wrap;
+    padding-bottom: 24px; border-bottom: 1px solid var(--border);
+  }
+  .hero-left { flex: 1; min-width: 280px; }
+  .hero .eyebrow {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted); font-weight: 700; margin-bottom: 16px;
+  }
+  .hero h1 {
+    font-family: var(--font-display); font-size: 44px;
+    font-weight: 600; letter-spacing: -0.025em; line-height: 1.04;
+  }
+  .hero h1 em {
+    font-family: var(--font-serif); font-style: italic;
+    font-weight: 400; color: var(--primary);
+  }
+  .hero .sub {
+    font-family: var(--font-mono); font-size: 12px;
+    color: var(--muted); letter-spacing: 0.06em;
+    margin-top: 14px;
+  }
+  .hero .sub strong { color: var(--fg); font-weight: 700; }
+  .hero-actions { display: flex; flex-direction: column; gap: 12px; align-items: flex-end; }
+  .nav-tabs-wrap { display: flex; gap: 4px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 4px; }
+  .nav-tab {
+    padding: 8px 16px; border: 0; background: transparent;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--muted); cursor: pointer; border-radius: 8px;
+    letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none;
+  }
+  .nav-tab.active { background: var(--fg); color: var(--accent); }
+  .btn-import {
+    background: var(--accent); color: var(--fg); border: 0;
+    padding: 11px 16px; border-radius: 999px;
+    font-family: var(--font-body); font-size: 13px; font-weight: 700;
+    display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+    box-shadow: 0 6px 18px rgba(209,248,67,0.30);
+  }
+  .btn-import svg { width: 14px; height: 14px; }
+
+  /* Controls bar */
+  .controls {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 14px 20px;
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 18px; flex-wrap: wrap;
+  }
+  .controls .group { display: flex; align-items: center; gap: 12px; }
+  .controls .grouplbl {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.10em; text-transform: uppercase;
+    font-weight: 700;
+  }
+  .seg {
+    display: inline-flex; gap: 2px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 10px; padding: 3px;
+  }
+  .seg button {
+    padding: 8px 14px; border: 0; background: transparent;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--muted); cursor: pointer; border-radius: 7px;
+    letter-spacing: 0.04em;
+  }
+  .seg button:hover { color: var(--fg); }
+  .seg button.active { background: var(--fg); color: var(--accent); }
+  .toggle-2 { display: inline-flex; gap: 0; border-radius: 10px; overflow: hidden;
+    background: var(--bg); border: 1px solid var(--border); padding: 3px; gap: 2px;
+  }
+  .toggle-2 button {
+    padding: 8px 14px; border: 0; background: transparent;
+    font-family: var(--font-display); font-size: 13px; font-weight: 600;
+    color: var(--muted); cursor: pointer; border-radius: 7px;
+  }
+  .toggle-2 button.active { background: var(--fg); color: var(--accent); }
+
+  /* =========================
+     GAPPING CHART (hero)
+     ========================= */
+  .gapping-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 22px; padding: 28px 32px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .gap-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 12px; gap: 16px;
+  }
+  .gap-head h2 {
+    font-family: var(--font-display); font-size: 22px;
+    font-weight: 600; letter-spacing: -0.015em;
+  }
+  .gap-head h2 em {
+    font-family: var(--font-serif); font-style: italic; font-weight: 400;
+    color: var(--primary);
+  }
+  .gap-head .meta {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .gap-legend {
+    display: flex; gap: 14px; align-items: center;
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .gap-legend .item { display: inline-flex; align-items: center; gap: 6px; }
+  .gap-legend .sw { width: 16px; height: 8px; border-radius: 3px; }
+
+  .gap-grid {
+    display: grid; grid-template-columns: 80px 1fr 100px;
+    align-items: center; column-gap: 16px;
+    margin-top: 12px;
+  }
+  .gap-row {
+    display: contents;
+  }
+  .gap-row > .club-name {
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    color: var(--fg); letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 10px 0;
+    cursor: pointer; transition: color 140ms ease;
+  }
+  .gap-row.selected > .club-name { color: var(--primary); }
+  .gap-row > .bar-wrap {
+    position: relative; height: 36px; cursor: pointer;
+  }
+  .gap-row > .distance {
+    font-family: var(--font-mono); font-size: 20px; font-weight: 700;
+    color: var(--fg); font-variant-numeric: tabular-nums;
+    text-align: left; letter-spacing: -0.01em;
+  }
+  .gap-row > .distance .unit {
+    font-size: 11px; color: var(--muted); margin-left: 2px; font-weight: 500;
+  }
+  .gbar {
+    position: absolute; left: 0; top: 6px; bottom: 6px;
+    border-radius: 7px;
+    display: flex; align-items: center; padding-right: 10px;
+    justify-content: flex-end;
+    color: var(--fg);
+    transition: transform 140ms ease, box-shadow 140ms ease;
+  }
+  .gap-row:hover .gbar, .gap-row.selected .gbar {
+    transform: scaleY(1.05);
+    box-shadow: 0 4px 14px rgba(10,31,23,0.10);
+  }
+  .gap-row.selected .gbar {
+    box-shadow: 0 0 0 2px var(--accent), 0 6px 18px rgba(0,88,64,0.20);
+  }
+  /* color classes per club tier */
+  .gbar.t-driver  { background: linear-gradient(90deg, #C2E835, #D1F843); }
+  .gbar.t-wood    { background: linear-gradient(90deg, #A5D63A, #C2E835); }
+  .gbar.t-hybrid  { background: #5BA7A1; color: #fff; }
+  .gbar.t-iron-l  { background: #6B9FCB; color: #fff; }
+  .gbar.t-iron-m  { background: #88B45A; color: var(--fg); }
+  .gbar.t-iron-s  { background: #D7A86E; color: var(--fg); }
+  .gbar.t-wedge   { background: #C77F47; color: #fff; }
+  .gbar .ball-count {
+    font-family: var(--font-mono); font-size: 10.5px;
+    font-weight: 700; letter-spacing: 0.06em; opacity: 0.85;
+  }
+
+  /* gap label between rows */
+  .gap-spacer {
+    display: contents;
+  }
+  .gap-spacer > .gap-name { grid-column: 1; }
+  .gap-spacer > .gap-info {
+    grid-column: 2; padding: 0; position: relative; height: 22px;
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    color: var(--muted); letter-spacing: 0.06em;
+  }
+  .gap-info::before {
+    content: ''; width: 16px; height: 1px;
+    border-top: 1px dashed var(--border); margin-left: 0;
+  }
+  .gap-info .pill {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px; border-radius: 999px;
+    background: var(--bg); border: 1px solid var(--border-soft);
+    color: var(--fg); font-weight: 700;
+  }
+  .gap-info .pill.warn {
+    background: rgba(184,133,42,0.10); border-color: rgba(184,133,42,0.30);
+    color: var(--warning);
+  }
+  .gap-info .pill.ok {
+    background: rgba(44,125,82,0.10); border-color: rgba(44,125,82,0.30);
+    color: var(--success);
+  }
+  .gap-info .pill svg { width: 10px; height: 10px; }
+  .gap-spacer > .gap-empty { grid-column: 3; }
+
+  /* =========================
+     CLUB DETAIL CARDS
+     ========================= */
+  .club-detail {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 22px; padding: 28px 32px;
+    display: flex; flex-direction: column; gap: 24px;
+  }
+  .detail-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    gap: 16px; flex-wrap: wrap;
+  }
+  .detail-head h3 {
+    font-family: var(--font-display); font-size: 22px;
+    font-weight: 600; letter-spacing: -0.015em;
+  }
+  .detail-head h3 .club-tag {
+    display: inline-flex; align-items: baseline;
+    background: var(--accent); color: var(--fg);
+    padding: 4px 12px; border-radius: 999px;
+    font-family: var(--font-mono); font-size: 14px; font-weight: 700;
+    letter-spacing: 0.06em; margin-left: 10px;
+    vertical-align: middle;
+  }
+  .detail-head .meta {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.06em; margin-top: 6px;
+  }
+
+  .detail-stat-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+  }
+  .dstat {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 14px; padding: 20px 22px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .dstat.featured {
+    background: linear-gradient(160deg, #006C50 0%, #003A2A 100%);
+    color: #fff; border-color: transparent;
+    position: relative; overflow: hidden;
+  }
+  .dstat.featured::before {
+    content: ''; position: absolute; top: -40%; right: -10%;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(209,248,67,0.10), transparent 65%);
+    pointer-events: none;
+  }
+  .dstat .lbl {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase;
+    font-weight: 700;
+  }
+  .dstat.featured .lbl { color: rgba(209,248,67,0.65); }
+  .dstat .v {
+    font-family: var(--font-mono); font-size: 38px; font-weight: 700;
+    color: var(--fg); font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em; line-height: 1;
+  }
+  .dstat.featured .v { color: var(--accent); font-size: 48px; }
+  .dstat .v .unit {
+    font-size: 13px; color: var(--muted); margin-left: 4px; font-weight: 500;
+  }
+  .dstat.featured .v .unit { color: rgba(255,255,255,0.6); }
+  .dstat .qual {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 999px;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.04em;
+    align-self: flex-start;
+  }
+  .qual.good { background: rgba(44,125,82,0.14); color: var(--success); }
+  .qual.warn { background: rgba(184,133,42,0.14); color: var(--warning); }
+  .qual.bad  { background: rgba(163,45,45,0.10); color: var(--danger); }
+  .dstat .ctx {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .dstat.featured .ctx { color: rgba(255,255,255,0.6); }
+
+  /* mini trend chart */
+  .mini-trend-card {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 14px; padding: 20px 24px;
+  }
+  .mini-trend-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 14px;
+  }
+  .mini-trend-head h4 {
+    font-family: var(--font-display); font-size: 13px;
+    font-weight: 600; color: var(--muted);
+    letter-spacing: 0.10em; text-transform: uppercase;
+  }
+  .mini-trend-head .meta {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .mt-wrap {
+    position: relative; height: 130px;
+    margin-left: 32px;
+    border-left: 1px solid var(--border-soft);
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .mt-yax {
+    position: absolute; left: -32px; top: 0; bottom: 0; width: 28px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--muted-soft); text-align: right; padding-right: 4px;
+    font-variant-numeric: tabular-nums;
+  }
+  .mt-wrap svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .mt-xax {
+    margin-left: 32px; margin-top: 4px;
+    display: grid; grid-template-columns: repeat(10, 1fr);
+    font-family: var(--font-mono); font-size: 9px;
+    color: var(--muted-soft); letter-spacing: 0.04em; text-align: center;
+  }
+
+  /* =========================
+     COMPARISON SECTION
+     ========================= */
+  .compare {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 22px; padding: 28px 32px;
+    display: flex; flex-direction: column; gap: 20px;
+  }
+  .compare h3 {
+    font-family: var(--font-display); font-size: 22px;
+    font-weight: 600; letter-spacing: -0.015em;
+  }
+  .compare h3 em {
+    font-family: var(--font-serif); font-style: italic; font-weight: 400;
+    color: var(--primary);
+  }
+  .compare-pickers {
+    display: grid; grid-template-columns: 1fr 60px 1fr; gap: 14px;
+    align-items: stretch;
+  }
+  .club-pick {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 14px; padding: 14px 18px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .club-pick .lbl {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.10em; text-transform: uppercase;
+    font-weight: 700;
+  }
+  .club-pick select {
+    background: transparent; border: 0; outline: none;
+    color: var(--fg); font-family: var(--font-display);
+    font-size: 22px; font-weight: 700; padding: 0; cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235E5C57' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat: no-repeat; background-position: right 0 center; padding-right: 22px;
+  }
+  .vs-glyph {
+    background: var(--fg); color: var(--accent);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 18px; font-weight: 700;
+    letter-spacing: 0.06em;
+  }
+
+  .vs-table {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 1px;
+    background: var(--border-soft);
+    border: 1px solid var(--border);
+    border-radius: 14px; overflow: hidden;
+  }
+  .vs-cell {
+    background: var(--card); padding: 16px 20px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .vs-cell.head {
+    background: var(--bg); padding: 12px 20px;
+    flex-direction: row; justify-content: space-between; align-items: center;
+  }
+  .vs-cell.head .ttl {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.10em; text-transform: uppercase;
+    font-weight: 700;
+  }
+  .vs-cell .lbl {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.10em; text-transform: uppercase;
+    font-weight: 700;
+  }
+  .vs-cell .v {
+    font-family: var(--font-mono); font-size: 22px; font-weight: 700;
+    color: var(--fg); font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em; line-height: 1;
+  }
+  .vs-cell .v .unit { font-size: 11px; color: var(--muted); margin-left: 3px; font-weight: 500; }
+  .vs-cell.winner { background: rgba(209,248,67,0.15); }
+  .vs-cell.winner .v { color: var(--primary); }
+  .vs-cell.winner::before {
+    content: 'BEST'; position: absolute; top: 12px; right: 16px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    letter-spacing: 0.10em; color: #4A5418;
+    background: var(--accent); padding: 2px 8px; border-radius: 999px;
+  }
+  .vs-cell.winner { position: relative; }
+
+  /* =========================
+     IMPORT MODAL
+     ========================= */
+  .modal-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(10,31,23,0.50);
+    backdrop-filter: blur(3px);
+    display: none; align-items: center; justify-content: center;
+    z-index: 200; padding: 24px;
+  }
+  .modal-backdrop.open { display: flex; }
+  .imodal {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 22px;
+    width: 560px; max-width: 100%;
+    max-height: calc(100vh - 48px);
+    display: flex; flex-direction: column; overflow: hidden;
+    box-shadow: 0 24px 60px rgba(10,31,23,0.30);
+    animation: mIn 200ms ease-out;
+  }
+  @keyframes mIn {
+    from { opacity: 0; transform: translateY(8px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .imodal-head {
+    padding: 22px 28px 20px;
+    border-bottom: 1px solid var(--border-soft);
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 16px;
+  }
+  .imodal-head h3 {
+    font-family: var(--font-display); font-size: 20px;
+    font-weight: 600; letter-spacing: -0.01em;
+  }
+  .imodal-head .step-lbl {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.10em; text-transform: uppercase;
+    margin-top: 6px;
+  }
+  .imodal-close {
+    width: 32px; height: 32px; border-radius: 8px; border: 0;
+    background: transparent; color: var(--muted);
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  .imodal-close:hover { background: var(--bg); color: var(--fg); }
+  .imodal-close svg { width: 16px; height: 16px; }
+
+  .stepper {
+    display: flex; align-items: center; gap: 12px;
+    padding: 16px 28px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .step {
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.06em;
+  }
+  .step .num {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--border); color: var(--muted);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+  }
+  .step.active .num { background: var(--accent); color: var(--fg); }
+  .step.active { color: var(--fg); font-weight: 700; }
+  .step.done .num { background: var(--primary); color: var(--accent); }
+  .stepper .step-sep { flex: 1; height: 1px; background: var(--border); }
+
+  .imodal-body { padding: 24px 28px; display: flex; flex-direction: column; gap: 16px; }
+  .upload-area {
+    border: 2px dashed var(--border); border-radius: 14px;
+    padding: 40px 24px; text-align: center;
+    background: var(--bg);
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+    cursor: pointer;
+    transition: border-color 140ms ease, background 140ms ease;
+  }
+  .upload-area:hover { border-color: var(--primary); background: rgba(0,88,64,0.03); }
+  .upload-area svg { width: 36px; height: 36px; color: var(--primary); }
+  .upload-area .title {
+    font-family: var(--font-display); font-size: 16px; font-weight: 600;
+  }
+  .upload-area .hint {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .upload-formats { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+  .upload-formats .chip {
+    padding: 4px 10px; border-radius: 999px;
+    background: var(--card); border: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted); letter-spacing: 0.08em;
+  }
+  .imodal-foot {
+    padding: 18px 28px;
+    border-top: 1px solid var(--border-soft);
+    background: #fff;
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 8px;
+  }
+  .imodal-foot .left {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.06em;
+  }
+  .btn-import-cta {
+    background: var(--accent); color: var(--fg); border: 0;
+    padding: 11px 18px; border-radius: 999px;
+    font-family: var(--font-body); font-size: 13.5px; font-weight: 700;
+    display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+  }
+  .btn-import-cta svg { width: 13px; height: 13px; }
+  .btn-ghost {
+    background: transparent; color: var(--muted); border: 0;
+    padding: 11px 14px; border-radius: 999px;
+    font-family: var(--font-body); font-size: 13px; font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-ghost:hover { color: var(--fg); background: var(--bg); }
+
+  @media (max-width: 900px) {
+    .detail-stat-grid { grid-template-columns: 1fr 1fr; }
+    .vs-table { grid-template-columns: 1fr; }
+    .compare-pickers { grid-template-columns: 1fr; }
+    .vs-glyph { padding: 8px; }
+    .gap-grid { grid-template-columns: 64px 1fr 84px; column-gap: 10px; }
+    .hero h1 { font-size: 32px; }
+  }
+</style>
+</head>
+<body data-screen-label="Trackman — Snitt &amp; Køller">
+
+<nav class="topnav">
+  <a href="workbench-v2.html" class="back-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    Tilbake til portal
+  </a>
+  <span class="name">AK GOLF · PLAYERHQ</span>
+  <span class="crumbs">Trackman <span class="sep">/</span><span class="current">Snitt &amp; Køller</span></span>
+</nav>
+
+<main class="page-wrap">
+
+  <header class="hero">
+    <div class="hero-left">
+      <div class="eyebrow">PLAYERHQ · TRACKMAN · KØLLEDISTANSER</div>
+      <h1>Hvor langt slår du <em>egentlig</em></h1>
+      <div class="sub">Basert på <strong>847 slag</strong> · siste 90 dager · senest oppdatert 18.05.2026</div>
+    </div>
+    <div class="hero-actions">
+      <div class="nav-tabs-wrap">
+        <a href="trackman-okter.html" class="nav-tab">Økter</a>
+        <button class="nav-tab active">Snitt &amp; Køller</button>
+      </div>
+      <button class="btn-import" onclick="document.getElementById('imodal').classList.add('open')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Importer økt
+      </button>
+    </div>
+  </header>
+
+  <!-- Controls -->
+  <div class="controls">
+    <div class="group">
+      <span class="grouplbl">Periode</span>
+      <div class="seg">
+        <button>30 D</button>
+        <button class="active">90 D</button>
+        <button>6 MND</button>
+        <button>SESONG</button>
+        <button>ALL TID</button>
+      </div>
+    </div>
+    <div class="group">
+      <span class="grouplbl">Distanse</span>
+      <div class="toggle-2">
+        <button class="active">Carry</button>
+        <button>Total</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAPPING CHART -->
+  <section class="gapping-card" data-screen-label="Gapping-graf">
+    <div class="gap-head">
+      <div>
+        <h2>Kølle-<em>gapping</em></h2>
+        <div class="meta" style="margin-top: 6px;">Lengste til korteste · 12 køller · gap mellom rader i meter</div>
+      </div>
+      <div class="gap-legend">
+        <span class="item"><span class="sw" style="background: var(--accent);"></span>Driver/wood</span>
+        <span class="item"><span class="sw" style="background: #5BA7A1;"></span>Hybrid</span>
+        <span class="item"><span class="sw" style="background: #6B9FCB;"></span>Lange jern</span>
+        <span class="item"><span class="sw" style="background: #88B45A;"></span>Mid-jern</span>
+        <span class="item"><span class="sw" style="background: #D7A86E;"></span>Korte jern</span>
+        <span class="item"><span class="sw" style="background: #C77F47;"></span>Wedger</span>
+      </div>
+    </div>
+
+    <div class="gap-grid">
+      <!-- Driver: 218m, scale 0-260 -->
+      <div class="gap-row">
+        <div class="club-name">Driver</div>
+        <div class="bar-wrap"><div class="gbar t-driver" style="width: 84%;"><span class="ball-count">142 slag</span></div></div>
+        <div class="distance">218<span class="unit">m</span></div>
+      </div>
+      <div class="gap-spacer">
+        <div class="gap-name"></div>
+        <div class="gap-info">
+          <span class="pill warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>22 m gap</span>
+          <span>til 3-wood — vurder hybrid</span>
+        </div>
+        <div class="gap-empty"></div>
+      </div>
+
+      <div class="gap-row">
+        <div class="club-name">3-wood</div>
+        <div class="bar-wrap"><div class="gbar t-wood" style="width: 75%;"><span class="ball-count">38 slag</span></div></div>
+        <div class="distance">196<span class="unit">m</span></div>
+      </div>
+      <div class="gap-spacer">
+        <div class="gap-name"></div>
+        <div class="gap-info">
+          <span class="pill ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>13 m gap</span>
+          <span>til 5-wood</span>
+        </div>
+        <div class="gap-empty"></div>
+      </div>
+
+      <div class="gap-row">
+        <div class="club-name">5-wood</div>
+        <div class="bar-wrap"><div class="gbar t-wood" style="width: 70%;"><span class="ball-count">24 slag</span></div></div>
+        <div class="distance">183<span class="unit">m</span></div>
+      </div>
+      <div class="gap-spacer">
+        <div class="gap-name"></div>
+        <div class="gap-info">
+          <span class="pill ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>11 m gap</span>
+          <span>til 4-hybrid</span>
+        </div>
+        <div class="gap-empty"></div>
+      </div>
+
+      <div class="gap-row">
+        <div class="club-name">4-hybrid</div>
+        <div class="bar-wrap"><div class="gbar t-hybrid" style="width: 66%;"><span class="ball-count">28 slag</span></div></div>
+        <div class="distance">172<span class="unit">m</span></div>
+      </div>
+      <div class="gap-spacer">
+        <div class="gap-name"></div>
+        <div class="gap-info">
+          <span class="pill ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>14 m gap</span>
+          <span>til 5-jern</span>
+        </div>
+        <div class="gap-empty"></div>
+      </div>
+
+      <div class="gap-row">
+        <div class="club-name">5-jern</div>
+        <div class="bar-wrap"><div class="gbar t-iron-l" style="width: 61%;"><span class="ball-count">62 slag</span></div></div>
+        <div class="distance">158<span class="unit">m</span></div>
+      </div>
+      <div class="gap-spacer">
+        <div class="gap-name"></div>
+        <div class="gap-info">
+          <span class="pill ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>12 m gap</span>
+          <span>til 6-jern</span>
+        </div>
+        <div class="gap-empty"></div>
+      </div>
+
+      <div class="gap-row">
+        <div class="club-name">6-jern</div>
+        <div class="bar-wrap"><div class="gbar t-iron-m" style="width: 56%;"><span class="ball-count">58 slag</span></div></div>
+        <div class="distance">146<span class="unit">m</span></div>
+      </div>
+      <div class="gap-spacer">
+        <div class="gap-name"></div>
+        <div class="gap-info">
+          <span class="pill ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>13 m gap</span>
+          <span>til 7-jern</span>
+        </div>
+        <div class="gap-empty"></div>
+      </div>
+
+      <div class="gap-row selected">
+        <div class="club-name">7-jern</div>
+        <div class="bar-wrap"><div class="gbar t-iron-m" style="width: 51%;"><span class="ball-count">128 slag · valgt</span></div></div>
+        <div class="distance">133<span class="unit">m</span></div>
+      </div>
+      <div class="gap-spacer">
+        <div class="gap-name"></div>
+        <div class="gap-info">
+          <span class="pill ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>12 m gap</span>
+          <span>til 8-jern</span>
+        </div>
+        <div class="gap-empty"></div>
+      </div>
+
+      <div class="gap-row">
+        <div class="club-name">8-jern</div>
+        <div class="bar-wrap"><div class="gbar t-iron-s" style="width: 47%;"><span class="ball-count">86 slag</span></div></div>
+        <div class="distance">121<span class="unit">m</span></div>
+      </div>
+      <div class="gap-spacer">
+        <div class="gap-name"></div>
+        <div class="gap-info">
+          <span class="pill ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>13 m gap</span>
+          <span>til 9-jern</span>
+        </div>
+        <div class="gap-empty"></div>
+      </div>
+
+      <div class="gap-row">
+        <div class="club-name">9-jern</div>
+        <div class="bar-wrap"><div class="gbar t-iron-s" style="width: 42%;"><span class="ball-count">74 slag</span></div></div>
+        <div class="distance">108<span class="unit">m</span></div>
+      </div>
+      <div class="gap-spacer">
+        <div class="gap-name"></div>
+        <div class="gap-info">
+          <span class="pill ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>14 m gap</span>
+          <span>til PW</span>
+        </div>
+        <div class="gap-empty"></div>
+      </div>
+
+      <div class="gap-row">
+        <div class="club-name">PW</div>
+        <div class="bar-wrap"><div class="gbar t-wedge" style="width: 37%;"><span class="ball-count">68 slag</span></div></div>
+        <div class="distance">94<span class="unit">m</span></div>
+      </div>
+      <div class="gap-spacer">
+        <div class="gap-name"></div>
+        <div class="gap-info">
+          <span class="pill ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>16 m gap</span>
+          <span>til SW</span>
+        </div>
+        <div class="gap-empty"></div>
+      </div>
+
+      <div class="gap-row">
+        <div class="club-name">SW</div>
+        <div class="bar-wrap"><div class="gbar t-wedge" style="width: 30%;"><span class="ball-count">82 slag</span></div></div>
+        <div class="distance">78<span class="unit">m</span></div>
+      </div>
+      <div class="gap-spacer">
+        <div class="gap-name"></div>
+        <div class="gap-info">
+          <span class="pill ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>14 m gap</span>
+          <span>til LW</span>
+        </div>
+        <div class="gap-empty"></div>
+      </div>
+
+      <div class="gap-row">
+        <div class="club-name">LW</div>
+        <div class="bar-wrap"><div class="gbar t-wedge" style="width: 24%;"><span class="ball-count">56 slag</span></div></div>
+        <div class="distance">64<span class="unit">m</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLUB DETAIL CARDS for selected club (7-jern) -->
+  <section class="club-detail" data-screen-label="Kølle-detalj">
+    <div class="detail-head">
+      <div>
+        <h3>Detaljer for<span class="club-tag">7-jern</span></h3>
+        <div class="meta">128 slag · 11 økter · siste 90 dager · bytt kølle ved å klikke en rad over</div>
+      </div>
+    </div>
+
+    <div class="detail-stat-grid">
+      <div class="dstat featured">
+        <span class="lbl">Carry (snitt)</span>
+        <span class="v">133<span class="unit">m</span></span>
+        <span class="ctx">PB 156 m · SD ±4,2 m</span>
+      </div>
+      <div class="dstat">
+        <span class="lbl">Total (snitt)</span>
+        <span class="v">141<span class="unit">m</span></span>
+        <span class="ctx">+8 m roll · tørr underlag</span>
+      </div>
+      <div class="dstat">
+        <span class="lbl">Ball speed (snitt)</span>
+        <span class="v">117<span class="unit">mph</span></span>
+        <span class="ctx">PB 122 mph · CHS 88</span>
+      </div>
+      <div class="dstat">
+        <span class="lbl">Smash factor</span>
+        <span class="v">1,46</span>
+        <span class="qual good">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Bra · 1,40–1,48
+        </span>
+      </div>
+    </div>
+
+    <div class="mini-trend-card">
+      <div class="mini-trend-head">
+        <h4>Carry · siste 10 økter</h4>
+        <div class="meta">Konsistent ±4 m · stigende</div>
+      </div>
+      <div style="position: relative;">
+        <div class="mt-wrap">
+          <div class="mt-yax">
+            <span>140</span><span>135</span><span>130</span><span>125</span>
+          </div>
+          <svg viewBox="0 0 1080 130" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="g7" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#005840" stop-opacity="0.22"/>
+                <stop offset="100%" stop-color="#005840" stop-opacity="0.02"/>
+              </linearGradient>
+            </defs>
+            <path d="M 50 100 L 162 96 L 274 88 L 386 92 L 498 80 L 610 84 L 722 72 L 834 68 L 946 60 L 1040 48 L 1040 130 L 50 130 Z"
+                  fill="url(#g7)"/>
+            <path d="M 50 100 L 162 96 L 274 88 L 386 92 L 498 80 L 610 84 L 722 72 L 834 68 L 946 60 L 1040 48"
+                  fill="none" stroke="#005840" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="50" cy="100" r="4" fill="#fff" stroke="#005840" stroke-width="2"/>
+            <circle cx="162" cy="96" r="4" fill="#fff" stroke="#005840" stroke-width="2"/>
+            <circle cx="274" cy="88" r="4" fill="#fff" stroke="#005840" stroke-width="2"/>
+            <circle cx="386" cy="92" r="4" fill="#fff" stroke="#005840" stroke-width="2"/>
+            <circle cx="498" cy="80" r="4" fill="#fff" stroke="#005840" stroke-width="2"/>
+            <circle cx="610" cy="84" r="4" fill="#fff" stroke="#005840" stroke-width="2"/>
+            <circle cx="722" cy="72" r="4" fill="#fff" stroke="#005840" stroke-width="2"/>
+            <circle cx="834" cy="68" r="4" fill="#fff" stroke="#005840" stroke-width="2"/>
+            <circle cx="946" cy="60" r="4" fill="#fff" stroke="#005840" stroke-width="2"/>
+            <circle cx="1040" cy="48" r="7" fill="#D1F843" stroke="#005840" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="mt-xax">
+          <span>Ø-38</span><span>Ø-39</span><span>Ø-40</span><span>Ø-41</span><span>Ø-42</span>
+          <span>Ø-43</span><span>Ø-44</span><span>Ø-45</span><span>Ø-46</span><span>Ø-47</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARE TWO CLUBS -->
+  <section class="compare" data-screen-label="Sammenlign">
+    <div>
+      <h3>Sammenlign <em>to køller</em></h3>
+      <div class="meta" style="font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: 0.04em; margin-top: 6px;">
+        Velg to køller for å se hvor du tjener distanse, ball speed eller treff
+      </div>
+    </div>
+
+    <div class="compare-pickers">
+      <div class="club-pick">
+        <span class="lbl">Side A</span>
+        <select>
+          <option>6-jern</option>
+          <option selected>7-jern</option>
+          <option>8-jern</option>
+          <option>PW</option>
+        </select>
+      </div>
+      <div class="vs-glyph">VS</div>
+      <div class="club-pick">
+        <span class="lbl">Side B</span>
+        <select>
+          <option>6-jern</option>
+          <option>7-jern</option>
+          <option selected>8-jern</option>
+          <option>PW</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="vs-table">
+      <div class="vs-cell head"><span class="ttl">Metrikk</span></div>
+      <div class="vs-cell head" style="justify-content: center;"><span class="ttl">7-jern · A</span></div>
+      <div class="vs-cell head" style="justify-content: center;"><span class="ttl">8-jern · B</span></div>
+
+      <div class="vs-cell"><span class="lbl">Carry (snitt)</span></div>
+      <div class="vs-cell winner"><span class="v">133<span class="unit">m</span></span></div>
+      <div class="vs-cell"><span class="v">121<span class="unit">m</span></span></div>
+
+      <div class="vs-cell"><span class="lbl">Ball speed</span></div>
+      <div class="vs-cell winner"><span class="v">117<span class="unit">mph</span></span></div>
+      <div class="vs-cell"><span class="v">112<span class="unit">mph</span></span></div>
+
+      <div class="vs-cell"><span class="lbl">Smash factor</span></div>
+      <div class="vs-cell winner"><span class="v">1,46</span></div>
+      <div class="vs-cell"><span class="v">1,44</span></div>
+
+      <div class="vs-cell"><span class="lbl">Launch (snitt)</span></div>
+      <div class="vs-cell"><span class="v">16,4<span class="unit">°</span></span></div>
+      <div class="vs-cell winner"><span class="v">19,2<span class="unit">°</span></span></div>
+
+      <div class="vs-cell"><span class="lbl">Spin (snitt)</span></div>
+      <div class="vs-cell"><span class="v">6 840<span class="unit">rpm</span></span></div>
+      <div class="vs-cell winner"><span class="v">7 620<span class="unit">rpm</span></span></div>
+
+      <div class="vs-cell"><span class="lbl">Spredning (SD carry)</span></div>
+      <div class="vs-cell winner"><span class="v">4,2<span class="unit">m</span></span></div>
+      <div class="vs-cell"><span class="v">5,1<span class="unit">m</span></span></div>
+
+      <div class="vs-cell"><span class="lbl">Gap til neste kølle</span></div>
+      <div class="vs-cell"><span class="v">12<span class="unit">m</span></span></div>
+      <div class="vs-cell"><span class="v">13<span class="unit">m</span></span></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ========== IMPORT MODAL ========== -->
+<div class="modal-backdrop" id="imodal" onclick="if(event.target.id==='imodal') this.classList.remove('open')">
+  <div class="imodal">
+    <header class="imodal-head">
+      <div>
+        <h3>Importer Trackman-rapport</h3>
+        <div class="step-lbl">STEG 1 AV 3 · LAST OPP FIL</div>
+      </div>
+      <button class="imodal-close" onclick="document.getElementById('imodal').classList.remove('open')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </header>
+
+    <div class="stepper">
+      <span class="step active">
+        <span class="num">1</span>
+        Last opp
+      </span>
+      <span class="step-sep"></span>
+      <span class="step">
+        <span class="num">2</span>
+        Forhåndsvis
+      </span>
+      <span class="step-sep"></span>
+      <span class="step">
+        <span class="num">3</span>
+        Bekreft
+      </span>
+    </div>
+
+    <div class="imodal-body">
+      <div class="upload-area">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <div class="title">Last opp Trackman-rapport</div>
+        <div class="hint">Dra og slipp fil hit, eller klikk for å velge</div>
+        <div class="upload-formats">
+          <span class="chip">CSV</span>
+          <span class="chip">XLSX</span>
+          <span class="chip">PDF</span>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px; align-items: flex-start; padding: 14px; background: rgba(209,248,67,0.12); border-radius: 12px; border-left: 3px solid var(--accent);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;color:var(--primary);flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <div style="font-size: 12.5px; color: var(--fg); line-height: 1.5;">
+          Vi støtter alle Trackman-eksport-formater. Maks 50 MB per fil. Trenger du hjelp? <strong>Se import-guiden</strong>.
+        </div>
+      </div>
+    </div>
+
+    <footer class="imodal-foot">
+      <span class="left">Vi importerer ikke private data — kun slag-metrikk.</span>
+      <div style="display: flex; gap: 8px;">
+        <button class="btn-ghost" onclick="document.getElementById('imodal').classList.remove('open')">Avbryt</button>
+        <button class="btn-import-cta">
+          Neste · Forhåndsvis
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </footer>
+  </div>
+</div>
+
+</body>
+</html>

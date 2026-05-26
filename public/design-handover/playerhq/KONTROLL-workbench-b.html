@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>PlayerHQ Workbench — Variant B · Editorial luxury — AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../workbench-a/workbench-b.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #f0eee9; }
+</style>
+</head>
+<body data-screen-label="PlayerHQ Workbench B — Editorial luxury">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+    <symbol id="ic-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+    <symbol id="ic-arrow-right" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+    <symbol id="ic-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+    <symbol id="ic-flag" viewBox="0 0 24 24"><path d="M4 22V4"/><path d="M4 4h11l-2 4 2 4H4"/></symbol>
+    <symbol id="ic-play" viewBox="0 0 24 24"><polygon points="6 4 20 12 6 20 6 4"/></symbol>
+    <symbol id="ic-cal-plus" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="12" y1="14" x2="12" y2="19"/><line x1="9.5" y1="16.5" x2="14.5" y2="16.5"/></symbol>
+    <symbol id="ic-msg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+  </defs>
+</svg>
+
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="../design-canvas.jsx"></script>
+<script type="text/babel" src="../workbench-a/workbench-b.jsx"></script>
+
+<script type="text/babel" data-presets="react">
+function App() {
+  return (
+    <DesignCanvas>
+      <DCSection
+        id="meta"
+        title="PlayerHQ Workbench · Variant B"
+        subtitle="Editorial luxury · Kinfolk-magasin-følelse · solid #FAFAF7 bakgrunn, ingen kort-rammer — bare hvitt rom og tynne sektions-skiller. Massiv typografi (96 px italic-hilsen), prose-stil AI som essay i stedet for kort, og 192-px italic-countdown."
+      >
+        <DCPostIt rotate={-2}>
+          Hero 96px Inter Tight italic
+          {'\n'}Center-aligned, primary green
+          {'\n'}Solid #FAFAF7, ingen kort
+          {'\n'}AI som prose, max 65ch
+        </DCPostIt>
+      </DCSection>
+
+      <DCSection
+        id="ipad"
+        title="iPad portrait · 810w — primær"
+        subtitle="Editorial-formatet jobber best på iPad portrait — typografien får plass uten å bli aggressive. Hero 50vh, 88px hilsen, generøst whitespace."
+      >
+        <DCArtboard id="wbb-ipad" label="iPad portrait · 810w" width={810} height={3520}>
+          <WBB_Workbench vp="ipad"/>
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="desktop"
+        title="Desktop · 1280w"
+        subtitle="Skalerer opp — hero 56vh m/ 112px italic, 'Neste' blir 2-kol. Snarveier-grid blir tre kolonner i footer."
+      >
+        <DCArtboard id="wbb-desktop" label="Desktop · 1280w" width={1280} height={3260}>
+          <WBB_Workbench vp="desktop"/>
+        </DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+
+</body>
+</html>

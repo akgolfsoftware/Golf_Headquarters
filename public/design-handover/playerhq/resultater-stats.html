@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Resultater · Stats — AK Golf PlayerHQ</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../workbench-v2.css">
+<style>
+  body { background: var(--bg); margin: 0; padding-bottom: 96px; }
+
+  /* Topnav */
+  .topnav {
+    display: flex; align-items: center; gap: 16px;
+    padding: 18px 32px; border-bottom: 1px solid var(--border);
+    background: #fff; position: sticky; top: 0; z-index: 30;
+  }
+  .topnav .back-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.10em;
+    text-transform: uppercase; font-weight: 600; text-decoration: none;
+  }
+  .topnav .back-link:hover { color: var(--fg); }
+  .topnav .back-link svg { width: 14px; height: 14px; }
+  .topnav .name {
+    font-family: var(--font-display); font-size: 13px; font-weight: 700;
+    color: var(--primary); letter-spacing: 0.02em;
+  }
+  .topnav .crumbs {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .topnav .crumbs .current { color: var(--fg); font-weight: 600; }
+  .topnav .crumbs .sep { color: var(--border); margin: 0 6px; }
+
+  .page-wrap {
+    max-width: 1180px; margin: 0 auto;
+    padding: 48px 24px;
+    display: flex; flex-direction: column; gap: 40px;
+  }
+
+  /* Hero */
+  .hero {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 32px; flex-wrap: wrap;
+    padding-bottom: 24px; border-bottom: 1px solid var(--border);
+  }
+  .hero .eyebrow {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted); font-weight: 700; margin-bottom: 16px;
+  }
+  .hero h1 {
+    font-family: var(--font-display); font-size: 44px;
+    font-weight: 600; letter-spacing: -0.025em; line-height: 1.04;
+  }
+  .hero h1 em {
+    font-family: var(--font-serif); font-style: italic;
+    font-weight: 400; color: var(--primary);
+  }
+  .hero .lede {
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 17px; color: var(--muted); line-height: 1.5;
+    max-width: 540px; margin-top: 8px;
+  }
+  .hero-right { display: flex; flex-direction: column; gap: 12px; align-items: flex-end; }
+  .nav-tabs { display: flex; gap: 4px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 4px; }
+  .nav-tab {
+    padding: 8px 16px; border: 0; background: transparent;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--muted); cursor: pointer; border-radius: 8px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .nav-tab.active { background: var(--fg); color: var(--accent); }
+  .nav-tab:not(.active):hover { color: var(--fg); }
+  .updated {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted-soft); letter-spacing: 0.06em;
+  }
+
+  /* SECTION HEAD */
+  .sec-h {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 16px; margin-bottom: 16px;
+  }
+  .sec-h h2 {
+    font-family: var(--font-display); font-size: 22px;
+    font-weight: 600; letter-spacing: -0.015em;
+  }
+  .sec-h .sub {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.06em; margin-top: 4px;
+  }
+
+  /* SECTION A: hero stat strip */
+  .stat-strip {
+    display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr;
+    gap: 14px;
+  }
+  .stat-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 22px;
+    display: flex; flex-direction: column; gap: 10px;
+    transition: transform 180ms ease, box-shadow 180ms ease;
+    position: relative; overflow: hidden;
+  }
+  .stat-card:hover { transform: scale(1.01); box-shadow: 0 12px 28px rgba(10,31,23,0.08); }
+  .stat-card .lbl {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.12em;
+    text-transform: uppercase; font-weight: 700;
+  }
+  .stat-card .val {
+    font-family: var(--font-mono); font-size: 32px; font-weight: 700;
+    color: var(--fg); font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em; line-height: 1;
+  }
+  .stat-card .val .unit {
+    font-size: 14px; color: var(--muted); margin-left: 4px;
+    font-weight: 500; letter-spacing: 0;
+  }
+  .stat-card .delta {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-family: var(--font-mono); font-size: 11px;
+    font-weight: 600; letter-spacing: 0.04em;
+  }
+  .stat-card .delta svg { width: 11px; height: 11px; }
+  .stat-card .delta.up { color: var(--success); }
+  .stat-card .delta.dn { color: var(--danger); }
+  .stat-card .delta.flat { color: var(--muted); }
+  .stat-card .sub-meta {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted-soft); letter-spacing: 0.04em; margin-top: 2px;
+  }
+  .stat-card.featured {
+    background: linear-gradient(160deg, #006C50 0%, #003A2A 100%);
+    color: #fff; border-color: transparent;
+  }
+  .stat-card.featured::before {
+    content: ''; position: absolute; top: -40%; right: -10%;
+    width: 280px; height: 280px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(209,248,67,0.12), transparent 65%);
+    pointer-events: none;
+  }
+  .stat-card.featured .lbl { color: rgba(209,248,67,0.65); }
+  .stat-card.featured .val { color: #fff; font-size: 56px; letter-spacing: -0.03em; }
+  .stat-card.featured .delta.up { color: var(--accent); }
+  .stat-card.featured .sub-meta { color: rgba(255,255,255,0.5); }
+
+  /* SECTION B: SG analyse */
+  .sg-wrap {
+    display: grid; grid-template-columns: 1.4fr 1fr;
+    gap: 18px;
+  }
+  .radar-card, .sg-summary {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 18px; padding: 26px 28px;
+  }
+  .radar-card {
+    display: flex; flex-direction: column; gap: 18px;
+  }
+  .radar-svg-wrap {
+    display: flex; justify-content: center; align-items: center;
+    padding: 12px 0;
+  }
+  .radar-svg { width: 100%; max-width: 460px; height: auto; }
+  .radar-legend {
+    display: flex; gap: 18px; justify-content: center; flex-wrap: wrap;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .radar-legend .item { display: inline-flex; align-items: center; gap: 8px; }
+  .radar-legend .sw { width: 14px; height: 14px; border-radius: 4px; }
+  .radar-legend .sw.player {
+    background: rgba(209,248,67,0.40);
+    border: 1.5px solid #98C520;
+  }
+  .radar-legend .sw.bench {
+    background: transparent;
+    border: 1.5px dashed var(--muted);
+  }
+  .radar-summary {
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 16px; color: var(--fg); line-height: 1.5;
+    padding: 14px 18px;
+    background: rgba(209,248,67,0.10);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+  }
+  .radar-summary strong {
+    font-family: var(--font-display); font-style: normal; font-weight: 700;
+    color: var(--primary);
+  }
+
+  .sg-summary { display: flex; flex-direction: column; gap: 14px; padding: 22px 24px; }
+  .sg-summary h3 {
+    font-family: var(--font-display); font-size: 14px; font-weight: 600;
+    color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .sg-row {
+    display: grid; grid-template-columns: 1fr 130px 60px;
+    align-items: center; gap: 12px;
+    padding: 12px 0; border-bottom: 1px solid var(--border-soft);
+  }
+  .sg-row:last-child { border-bottom: 0; }
+  .sg-row .name {
+    font-family: var(--font-display); font-size: 13.5px; font-weight: 600;
+  }
+  .sg-row .name .sub {
+    display: block; font-family: var(--font-mono);
+    font-size: 9.5px; color: var(--muted); letter-spacing: 0.06em;
+    margin-top: 2px; font-weight: 400; text-transform: uppercase;
+  }
+  .sg-bar {
+    position: relative; height: 14px;
+    background: var(--bg); border-radius: 5px; overflow: hidden;
+  }
+  .sg-bar .center {
+    position: absolute; left: 50%; top: 0; bottom: 0;
+    width: 1px; background: var(--border);
+  }
+  .sg-bar .fill {
+    position: absolute; top: 2px; bottom: 2px;
+    border-radius: 3px;
+  }
+  .sg-bar .fill.pos { background: var(--success); right: auto; left: 50%; }
+  .sg-bar .fill.neg { background: var(--danger); right: 50%; }
+  .sg-row .val {
+    font-family: var(--font-mono); font-size: 13px; font-weight: 700;
+    text-align: right; font-variant-numeric: tabular-nums;
+  }
+  .sg-row .val.pos { color: var(--success); }
+  .sg-row .val.neg { color: var(--danger); }
+
+  /* SECTION C: Trend chart */
+  .trend-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 18px; padding: 26px 28px;
+    display: flex; flex-direction: column; gap: 18px;
+  }
+  .trend-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .trend-legend {
+    display: flex; gap: 14px;
+    font-family: var(--font-mono); font-size: 11px; color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+  .trend-legend .item { display: inline-flex; align-items: center; gap: 6px; }
+  .trend-legend .sw { width: 16px; height: 3px; border-radius: 2px; }
+  .trend-legend .sw.hcp { background: var(--primary); }
+  .trend-legend .sw.scoring { background: var(--accent); }
+  .period-pills {
+    display: inline-flex; gap: 2px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 10px; padding: 3px;
+  }
+  .period-pill {
+    padding: 7px 12px; border: 0; background: transparent;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--muted); cursor: pointer; border-radius: 7px;
+    letter-spacing: 0.04em;
+  }
+  .period-pill:hover { color: var(--fg); }
+  .period-pill.active { background: var(--fg); color: var(--accent); }
+
+  .chart-area {
+    position: relative; height: 280px;
+    margin-left: 44px; margin-right: 4px;
+    border-left: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .yaxis {
+    position: absolute; left: -44px; top: 0; bottom: 28px; width: 40px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted-soft); text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .yaxis .label {
+    font-family: var(--font-mono); font-size: 8.5px;
+    color: var(--muted-soft); letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .gridlines {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .gridline { border-top: 1px dashed var(--border-soft); }
+  .chart-svg {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+  }
+  .xaxis {
+    position: absolute; left: 44px; right: 4px; bottom: 0;
+    height: 28px;
+    display: grid; grid-template-columns: repeat(12, 1fr);
+    align-items: center;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted-soft); letter-spacing: 0.04em;
+    text-align: center;
+  }
+  .pb-tag {
+    position: absolute; transform: translate(-50%, -100%);
+    background: var(--accent); color: var(--fg);
+    padding: 4px 8px; border-radius: 6px;
+    font-family: var(--font-mono); font-size: 10px;
+    font-weight: 700; white-space: nowrap;
+    letter-spacing: 0.04em;
+    margin-top: -8px;
+  }
+  .pb-tag::after {
+    content: ''; position: absolute; left: 50%; bottom: -4px;
+    transform: translateX(-50%);
+    border: 4px solid transparent; border-top-color: var(--accent);
+  }
+
+  /* SECTION D: category breakdown */
+  .cat-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+  }
+  .cat-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 22px;
+    display: flex; flex-direction: column; gap: 14px;
+    transition: transform 180ms ease, box-shadow 180ms ease;
+  }
+  .cat-card:hover { transform: scale(1.01); box-shadow: 0 12px 28px rgba(10,31,23,0.08); }
+  .cat-card.full { grid-column: 1 / -1; }
+  .cat-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; padding-bottom: 14px; border-bottom: 1px solid var(--border-soft);
+  }
+  .cat-title {
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  .cat-chip {
+    width: 36px; height: 36px; border-radius: 10px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: #fff;
+  }
+  .cat-chip svg { width: 16px; height: 16px; }
+  .cat-chip.fys { background: var(--fys); }
+  .cat-chip.tek { background: var(--tek); }
+  .cat-chip.slag { background: var(--slag); }
+  .cat-chip.spill { background: var(--spill); color: var(--fg); }
+  .cat-chip.turn { background: var(--accent); color: var(--fg); }
+  .cat-title .name {
+    font-family: var(--font-display); font-size: 17px; font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .cat-title .sub {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.10em; text-transform: uppercase;
+    font-weight: 600; margin-top: 2px;
+  }
+  .cat-head .score {
+    text-align: right;
+  }
+  .cat-head .score .v {
+    font-family: var(--font-mono); font-size: 22px; font-weight: 700;
+    color: var(--fg); font-variant-numeric: tabular-nums; line-height: 1;
+    letter-spacing: -0.01em;
+  }
+  .cat-head .score .lab {
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--muted); letter-spacing: 0.10em; text-transform: uppercase;
+    margin-top: 4px;
+  }
+  .cat-metrics {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  .metric-row {
+    display: grid; grid-template-columns: 1fr 80px 60px;
+    align-items: center; gap: 8px;
+    padding: 8px 0;
+  }
+  .metric-row .nm {
+    font-family: var(--font-body); font-size: 12.5px; font-weight: 500;
+    color: var(--fg);
+  }
+  .metric-row .nm .unit {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted-soft); margin-left: 4px;
+  }
+  .metric-row svg.spark {
+    width: 80px; height: 24px; display: block;
+  }
+  .metric-row .v {
+    font-family: var(--font-mono); font-size: 13px; font-weight: 700;
+    text-align: right; color: var(--fg); font-variant-numeric: tabular-nums;
+  }
+
+  /* mobile */
+  @media (max-width: 900px) {
+    .stat-strip { grid-template-columns: 1fr 1fr; }
+    .sg-wrap { grid-template-columns: 1fr; }
+    .cat-grid { grid-template-columns: 1fr; }
+    .cat-metrics { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 34px; }
+  }
+</style>
+</head>
+<body data-screen-label="Resultater — Stats">
+
+<nav class="topnav">
+  <a href="workbench-v2.html" class="back-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    Tilbake til portal
+  </a>
+  <span class="name">AK GOLF · PLAYERHQ</span>
+  <span class="crumbs">Resultater <span class="sep">/</span><span class="current">Stats</span></span>
+</nav>
+
+<main class="page-wrap">
+
+  <header class="hero">
+    <div>
+      <div class="eyebrow">PLAYERHQ · RESULTATER · STATS</div>
+      <h1>Dette er hvor du <em>står</em></h1>
+      <p class="lede">12 måneders trend, fordeling per kategori og hvor du tjener — eller mister — slag. Tall fra registrerte runder og NGF-data.</p>
+    </div>
+    <div class="hero-right">
+      <div class="nav-tabs">
+        <button class="nav-tab active">Stats</button>
+        <a href="resultater-tester.html" class="nav-tab" style="text-decoration:none;">Tester</a>
+        <a href="resultater-turneringer.html" class="nav-tab" style="text-decoration:none;">Turneringer</a>
+      </div>
+      <div class="updated">Oppdatert i dag · 10 siste runder</div>
+    </div>
+  </header>
+
+  <!-- SECTION A: hero stat strip -->
+  <section data-screen-label="Hero stats">
+    <div class="sec-h">
+      <div>
+        <h2>Nøkkeltall</h2>
+        <div class="sub">SISTE 30 DAGER · 10 RUNDER · 1 TURNERING</div>
+      </div>
+    </div>
+    <div class="stat-strip">
+      <div class="stat-card featured">
+        <div class="lbl">HCP-indeks</div>
+        <div class="val">8,4</div>
+        <div class="delta up">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9" style="transform: rotate(180deg); transform-origin: center;"></polyline></svg>
+          −0,6 siste 30 dager
+        </div>
+        <div class="sub-meta">Lavest i år · oppgang 21.05</div>
+      </div>
+      <div class="stat-card">
+        <div class="lbl">Snittscore</div>
+        <div class="val">75,2</div>
+        <div class="delta up">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+          −1,4 slag
+        </div>
+        <div class="sub-meta">Siste 10 18-hulls-runder</div>
+      </div>
+      <div class="stat-card">
+        <div class="lbl">SG Total</div>
+        <div class="val">+1,9</div>
+        <div class="delta up">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+          +0,4 vs forrige mnd
+        </div>
+        <div class="sub-meta">Mot NGF-kat. D</div>
+      </div>
+      <div class="stat-card">
+        <div class="lbl">GIR</div>
+        <div class="val">52<span class="unit">%</span></div>
+        <div class="delta flat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          uendret
+        </div>
+        <div class="sub-meta">9,4 av 18 greener</div>
+      </div>
+      <div class="stat-card">
+        <div class="lbl">Putt / runde</div>
+        <div class="val">31,2</div>
+        <div class="delta dn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          +0,4 putts
+        </div>
+        <div class="sub-meta">1,73 putt per GIR</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION B: SG radar -->
+  <section data-screen-label="SG-radar">
+    <div class="sec-h">
+      <div>
+        <h2>Strokes Gained · fordeling</h2>
+        <div class="sub">DEG VS NGF-KATEGORI D · 10 SISTE RUNDER</div>
+      </div>
+      <a href="statistikk-drill-down.html" style="font-family: var(--font-mono); font-size:11px; color: var(--primary); letter-spacing:0.06em; font-weight:600;">Se SG-detalj →</a>
+    </div>
+
+    <div class="sg-wrap">
+      <div class="radar-card">
+        <div class="radar-svg-wrap">
+          <svg class="radar-svg" viewBox="-260 -240 520 480" xmlns="http://www.w3.org/2000/svg">
+            <!-- background hex rings -->
+            <g fill="none" stroke="#EFEDE6" stroke-width="1">
+              <polygon points="180,0 90,-156 -90,-156 -180,0 -90,156 90,156"/>
+              <polygon points="135,0 67.5,-117 -67.5,-117 -135,0 -67.5,117 67.5,117"/>
+              <polygon points="90,0 45,-78 -45,-78 -90,0 -45,78 45,78"/>
+              <polygon points="45,0 22.5,-39 -22.5,-39 -45,0 -22.5,39 22.5,39"/>
+            </g>
+            <!-- axes -->
+            <g stroke="#EFEDE6" stroke-width="1">
+              <line x1="0" y1="0" x2="180" y2="0"/>
+              <line x1="0" y1="0" x2="90" y2="-156"/>
+              <line x1="0" y1="0" x2="-90" y2="-156"/>
+              <line x1="0" y1="0" x2="-180" y2="0"/>
+              <line x1="0" y1="0" x2="-90" y2="156"/>
+              <line x1="0" y1="0" x2="90" y2="156"/>
+            </g>
+
+            <!-- NGF benchmark (dashed) -->
+            <polygon points="108,0 54,-93.6 -54,-93.6 -108,0 -54,93.6 54,93.6"
+                     fill="none" stroke="#5E5C57" stroke-width="1.5" stroke-dasharray="5 4"/>
+
+            <!-- player (lime fill) -->
+            <polygon points="135,0 81,-140 -45,-78 -108,0 -54,93.6 99,171.6"
+                     fill="rgba(209,248,67,0.42)" stroke="#98C520" stroke-width="2"
+                     stroke-linejoin="round"/>
+
+            <!-- dots at vertices -->
+            <g fill="#5E5C57">
+              <circle cx="135" cy="0" r="4"/>
+              <circle cx="81" cy="-140" r="4"/>
+              <circle cx="-45" cy="-78" r="4"/>
+              <circle cx="-108" cy="0" r="4"/>
+              <circle cx="-54" cy="93.6" r="4"/>
+              <circle cx="99" cy="171.6" r="4"/>
+            </g>
+
+            <!-- labels -->
+            <g font-family="JetBrains Mono" font-size="11" font-weight="700"
+               fill="#0A1F17" letter-spacing="0.06em" text-anchor="middle">
+              <text x="222" y="4" text-anchor="start">SG: TOTAL</text>
+              <text x="100" y="-186">OFF THE TEE</text>
+              <text x="-100" y="-186">APPROACH</text>
+              <text x="-222" y="4" text-anchor="end">AROUND</text>
+              <text x="-100" y="200">PUTTING</text>
+              <text x="120" y="200">KORTSPILL</text>
+            </g>
+            <g font-family="JetBrains Mono" font-size="10" fill="#5E5C57"
+               letter-spacing="0.04em" text-anchor="middle">
+              <text x="222" y="22" text-anchor="start">+1,9</text>
+              <text x="100" y="-170">+0,6</text>
+              <text x="-100" y="-170">−0,3</text>
+              <text x="-222" y="22" text-anchor="end">+0,8</text>
+              <text x="-100" y="216" fill="#A32D2D">−1,1</text>
+              <text x="120" y="216">+0,4</text>
+            </g>
+          </svg>
+        </div>
+        <div class="radar-legend">
+          <span class="item"><span class="sw player"></span>Din kategori (snitt 10 runder)</span>
+          <span class="item"><span class="sw bench"></span>NGF-kategori D · benchmark</span>
+        </div>
+        <div class="radar-summary">
+          Din styrke er <strong>innspill</strong> (+0,6 SG). Største gap: <strong>putting</strong> (−1,1 vs benchmark) — det er der mest tid bør gå.
+        </div>
+      </div>
+
+      <div class="sg-summary">
+        <h3>SG-tabell</h3>
+        <div class="sg-row">
+          <div class="name">SG: Total<span class="sub">vs benchmark</span></div>
+          <div class="sg-bar"><span class="center"></span><span class="fill pos" style="width: 38%;"></span></div>
+          <div class="val pos">+1,9</div>
+        </div>
+        <div class="sg-row">
+          <div class="name">SG: Off the Tee<span class="sub">tee · driver/3-wd</span></div>
+          <div class="sg-bar"><span class="center"></span><span class="fill pos" style="width: 14%;"></span></div>
+          <div class="val pos">+0,6</div>
+        </div>
+        <div class="sg-row">
+          <div class="name">SG: Approach<span class="sub">100–200 m</span></div>
+          <div class="sg-bar"><span class="center"></span><span class="fill neg" style="width: 8%; left: 42%;"></span></div>
+          <div class="val neg">−0,3</div>
+        </div>
+        <div class="sg-row">
+          <div class="name">SG: Around the Green<span class="sub">&lt; 30 m</span></div>
+          <div class="sg-bar"><span class="center"></span><span class="fill pos" style="width: 20%;"></span></div>
+          <div class="val pos">+0,8</div>
+        </div>
+        <div class="sg-row">
+          <div class="name">SG: Putting<span class="sub">på green</span></div>
+          <div class="sg-bar"><span class="center"></span><span class="fill neg" style="width: 26%; left: 24%;"></span></div>
+          <div class="val neg">−1,1</div>
+        </div>
+        <div class="sg-row">
+          <div class="name">SG: Kortspill<span class="sub">pitch · chip</span></div>
+          <div class="sg-bar"><span class="center"></span><span class="fill pos" style="width: 10%;"></span></div>
+          <div class="val pos">+0,4</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION C: trend chart -->
+  <section data-screen-label="Trend HCP">
+    <div class="sec-h">
+      <div>
+        <h2>HCP + scoring · 12 mnd</h2>
+        <div class="sub">PERSONLIG BESTE 8,4 · LAVERE = BEDRE</div>
+      </div>
+    </div>
+    <div class="trend-card">
+      <div class="trend-head">
+        <div class="trend-legend">
+          <span class="item"><span class="sw hcp"></span>HCP-indeks</span>
+          <span class="item"><span class="sw scoring"></span>Snittscore (skalert)</span>
+        </div>
+        <div class="period-pills">
+          <button class="period-pill">3 MND</button>
+          <button class="period-pill">6 MND</button>
+          <button class="period-pill active">12 MND</button>
+          <button class="period-pill">ALL TID</button>
+        </div>
+      </div>
+
+      <div style="position: relative;">
+        <div class="chart-area">
+          <div class="yaxis">
+            <span>8,0</span><span>9,0</span><span>10,0</span><span>11,0</span><span>12,0</span>
+          </div>
+          <div class="gridlines">
+            <div class="gridline"></div><div class="gridline"></div>
+            <div class="gridline"></div><div class="gridline"></div>
+            <div class="gridline"></div>
+          </div>
+          <svg class="chart-svg" viewBox="0 0 1080 280" preserveAspectRatio="none">
+            <!-- HCP area -->
+            <defs>
+              <linearGradient id="hcpGrad" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#005840" stop-opacity="0.22"/>
+                <stop offset="100%" stop-color="#005840" stop-opacity="0.02"/>
+              </linearGradient>
+            </defs>
+            <path d="M 0 40 L 90 60 L 180 70 L 270 90 L 360 130 L 450 110 L 540 145 L 630 160 L 720 180 L 810 200 L 900 220 L 990 230 L 1080 240 L 1080 280 L 0 280 Z"
+                  fill="url(#hcpGrad)"/>
+            <!-- HCP line -->
+            <path d="M 0 40 L 90 60 L 180 70 L 270 90 L 360 130 L 450 110 L 540 145 L 630 160 L 720 180 L 810 200 L 900 220 L 990 230 L 1080 240"
+                  fill="none" stroke="#005840" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- scoring (dashed lime) -->
+            <path d="M 0 70 L 90 80 L 180 95 L 270 110 L 360 140 L 450 130 L 540 155 L 630 165 L 720 190 L 810 210 L 900 220 L 990 235 L 1080 248"
+                  fill="none" stroke="#C2E835" stroke-width="2" stroke-dasharray="6 4" stroke-linecap="round"/>
+            <!-- PB dot -->
+            <circle cx="1080" cy="240" r="6" fill="#D1F843" stroke="#005840" stroke-width="2"/>
+            <circle cx="1080" cy="240" r="2" fill="#005840"/>
+          </svg>
+          <div class="pb-tag" style="left: 100%; top: 86%;">PB · 8,4</div>
+        </div>
+        <div class="xaxis">
+          <span>JUN</span><span>JUL</span><span>AUG</span><span>SEP</span>
+          <span>OKT</span><span>NOV</span><span>DES</span><span>JAN</span>
+          <span>FEB</span><span>MAR</span><span>APR</span><span>MAI</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION D: category breakdown -->
+  <section data-screen-label="Kategorier">
+    <div class="sec-h">
+      <div>
+        <h2>Kategorier · pyramide</h2>
+        <div class="sub">SISTE 30 DAGER · SCORE PR. PYRAMIDEDEL</div>
+      </div>
+    </div>
+    <div class="cat-grid">
+
+      <div class="cat-card">
+        <div class="cat-head">
+          <div class="cat-title">
+            <span class="cat-chip slag">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="9"/></svg>
+            </span>
+            <div>
+              <div class="name">SLAG</div>
+              <div class="sub">Ballflukt · trackman</div>
+            </div>
+          </div>
+          <div class="score"><div class="v">78</div><div class="lab">av 100</div></div>
+        </div>
+        <div class="cat-metrics">
+          <div class="metric-row">
+            <div class="nm">Snitt CHS<span class="unit">mph</span></div>
+            <svg class="spark" viewBox="0 0 80 24" preserveAspectRatio="none">
+              <path d="M 0 14 L 13 12 L 27 13 L 40 10 L 53 8 L 67 6 L 80 4" fill="none" stroke="#2C7D52" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="80" cy="4" r="2.5" fill="#D1F843"/>
+            </svg>
+            <div class="v">102</div>
+          </div>
+          <div class="metric-row">
+            <div class="nm">Snitt smash</div>
+            <svg class="spark" viewBox="0 0 80 24" preserveAspectRatio="none">
+              <path d="M 0 12 L 13 11 L 27 11 L 40 10 L 53 9 L 67 9 L 80 8" fill="none" stroke="#2C7D52" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="80" cy="8" r="2.5" fill="#D1F843"/>
+            </svg>
+            <div class="v">1,44</div>
+          </div>
+          <div class="metric-row">
+            <div class="nm">Carry driver<span class="unit">m</span></div>
+            <svg class="spark" viewBox="0 0 80 24" preserveAspectRatio="none">
+              <path d="M 0 14 L 13 13 L 27 11 L 40 10 L 53 8 L 67 7 L 80 6" fill="none" stroke="#2C7D52" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="80" cy="6" r="2.5" fill="#D1F843"/>
+            </svg>
+            <div class="v">218</div>
+          </div>
+          <div class="metric-row">
+            <div class="nm">Spinn 7-jern<span class="unit">rpm</span></div>
+            <svg class="spark" viewBox="0 0 80 24" preserveAspectRatio="none">
+              <path d="M 0 8 L 13 9 L 27 8 L 40 10 L 53 11 L 67 12 L 80 13" fill="none" stroke="#A32D2D" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="80" cy="13" r="2.5" fill="#A32D2D"/>
+            </svg>
+            <div class="v">6840</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cat-card">
+        <div class="cat-head">
+          <div class="cat-title">
+            <span class="cat-chip tek">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/></svg>
+            </span>
+            <div>
+              <div class="name">TEK</div>
+              <div class="sub">Teknikk · sving</div>
+            </div>
+          </div>
+          <div class="score"><div class="v">71</div><div class="lab">av 100</div></div>
+        </div>
+        <div class="cat-metrics">
+          <div class="metric-row">
+            <div class="nm">Attack angle DR</div>
+            <svg class="spark" viewBox="0 0 80 24" preserveAspectRatio="none">
+              <path d="M 0 16 L 13 14 L 27 12 L 40 10 L 53 9 L 67 8 L 80 7" fill="none" stroke="#2C7D52" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="80" cy="7" r="2.5" fill="#D1F843"/>
+            </svg>
+            <div class="v">+2,1°</div>
+          </div>
+          <div class="metric-row">
+            <div class="nm">Face-to-path</div>
+            <svg class="spark" viewBox="0 0 80 24" preserveAspectRatio="none">
+              <path d="M 0 6 L 13 8 L 27 7 L 40 10 L 53 12 L 67 11 L 80 10" fill="none" stroke="#5E5C57" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="80" cy="10" r="2.5" fill="#5E5C57"/>
+            </svg>
+            <div class="v">−0,8°</div>
+          </div>
+          <div class="metric-row">
+            <div class="nm">Tempo 3:1<span class="unit">%</span></div>
+            <svg class="spark" viewBox="0 0 80 24" preserveAspectRatio="none">
+              <path d="M 0 12 L 13 11 L 27 10 L 40 10 L 53 9 L 67 8 L 80 8" fill="none" stroke="#2C7D52" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="80" cy="8" r="2.5" fill="#D1F843"/>
+            </svg>
+            <div class="v">88%</div>
+          </div>
+          <div class="metric-row">
+            <div class="nm">P6-vinkel</div>
+            <svg class="spark" viewBox="0 0 80 24" preserveAspectRatio="none">
+              <path d="M 0 10 L 13 10 L 27 11 L 40 10 L 53 10 L 67 9 L 80 9" fill="none" stroke="#2C7D52" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="80" cy="9" r="2.5" fill="#D1F843"/>
+            </svg>
+            <div class="v">142°</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cat-card">
+        <div class="cat-head">
+          <div class="cat-title">
+            <span class="cat-chip fys">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2v6h12V2M6 22v-6h12v6M3 12h18"/></svg>
+            </span>
+            <div>
+              <div class="name">FYS</div>
+              <div class="sub">Fysisk kapasitet</div>
+            </div>
+          </div>
+          <div class="score"><div class="v">82</div><div class="lab">av 100</div></div>
+        </div>
+        <div class="cat-metrics">
+          <div class="metric-row">
+            <div class="nm">CMJ<span class="unit">cm</span></div>
+            <svg class="spark" viewBox="0 0 80 24" preserveAspectRatio="none">
+              <path d="M 0 16 L 13 14 L 27 12 L 40 10 L 53 8 L 67 6 L 80 5" fill="none" stroke="#2C7D52" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="80" cy="5" r="2.5" fill="#D1F843"/>
+            </svg>
+            <div class="v">42</div>
+          </div>
+          <div class="metric-row">
+            <div class="nm">Rotasjon-MVT<span class="unit">°</span></div>
+            <svg class="spark" viewBox="0 0 80 24" preserveAspectRatio="none">
+              <path d="M 0 12 L 13 11 L 27 10 L 40 11 L 53 10 L 67 10 L 80 9" fill="none" stroke="#2C7D52" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="80" cy="9" r="2.5" fill="#D1F843"/>
+            </svg>
+            <div class="v">62</div>
+          </div>
+          <div class="metric-row">
+            <div class="nm">Knebøy 1RM<span class="unit">kg</span></div>
+            <svg class="spark" viewBox="0 0 80 24" preserveAspectRatio="none">
+              <path d="M 0 16 L 13 15 L 27 13 L 40 12 L 53 11 L 67 10 L 80 9" fill="none" stroke="#2C7D52" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="80" cy="9" r="2.5" fill="#D1F843"/>
+            </svg>
+            <div class="v">95</div>
+          </div>
+          <div class="metric-row">
+            <div class="nm">Y-balance</div>
+            <svg class="spark" viewBox="0 0 80 24" preserveAspectRatio="none">
+              <path d="M 0 10 L 13 10 L 27 10 L 40 10 L 53 10 L 67 10 L 80 10" fill="none" stroke="#5E5C57" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="80" cy="10" r="2.5" fill="#5E5C57"/>
+            </svg>
+            <div class="v">96%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cat-card">
+        <div class="cat-head">
+          <div class="cat-title">
+            <span class="cat-chip spill">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8a4 4 0 1 0 4 4"/><path d="M12 3v5l4-4"/></svg>
+            </span>
+            <div>
+              <div class="name">SPILL</div>
+              <div class="sub">På banen · scoring</div>
+            </div>
+          </div>
+          <div class="score"><div class="v">74</div><div class="lab">av 100</div></div>
+        </div>
+        <div class="cat-metrics">
+          <div class="metric-row">
+            <div class="nm">Fairway %</div>
+            <svg class="spark" viewBox="0 0 80 24" preserveAspectRatio="none">
+              <path d="M 0 12 L 13 11 L 27 12 L 40 10 L 53 10 L 67 9 L 80 8" fill="none" stroke="#2C7D52" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="80" cy="8" r="2.5" fill="#D1F843"/>
+            </svg>
+            <div class="v">61%</div>
+          </div>
+          <div class="metric-row">
+            <div class="nm">GIR %</div>
+            <svg class="spark" viewBox="0 0 80 24" preserveAspectRatio="none">
+              <path d="M 0 10 L 13 11 L 27 10 L 40 10 L 53 10 L 67 11 L 80 10" fill="none" stroke="#5E5C57" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="80" cy="10" r="2.5" fill="#5E5C57"/>
+            </svg>
+            <div class="v">52%</div>
+          </div>
+          <div class="metric-row">
+            <div class="nm">Scrambling %</div>
+            <svg class="spark" viewBox="0 0 80 24" preserveAspectRatio="none">
+              <path d="M 0 14 L 13 13 L 27 11 L 40 10 L 53 9 L 67 8 L 80 7" fill="none" stroke="#2C7D52" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="80" cy="7" r="2.5" fill="#D1F843"/>
+            </svg>
+            <div class="v">48%</div>
+          </div>
+          <div class="metric-row">
+            <div class="nm">Putt / GIR</div>
+            <svg class="spark" viewBox="0 0 80 24" preserveAspectRatio="none">
+              <path d="M 0 8 L 13 9 L 27 8 L 40 10 L 53 11 L 67 12 L 80 13" fill="none" stroke="#A32D2D" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="80" cy="13" r="2.5" fill="#A32D2D"/>
+            </svg>
+            <div class="v">1,73</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cat-card full">
+        <div class="cat-head">
+          <div class="cat-title">
+            <span class="cat-chip turn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22V4l8 4 8-4v18l-8-4-8 4z"/></svg>
+            </span>
+            <div>
+              <div class="name">TURN</div>
+              <div class="sub">Turneringer · konkurranseform</div>
+            </div>
+          </div>
+          <div class="score"><div class="v">69</div><div class="lab">av 100</div></div>
+        </div>
+        <div class="cat-metrics" style="grid-template-columns: repeat(4, 1fr);">
+          <div class="metric-row">
+            <div class="nm">Turneringer YTD</div>
+            <svg class="spark" viewBox="0 0 80 24" preserveAspectRatio="none">
+              <path d="M 0 16 L 13 16 L 27 14 L 40 12 L 53 10 L 67 8 L 80 6" fill="none" stroke="#2C7D52" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="80" cy="6" r="2.5" fill="#D1F843"/>
+            </svg>
+            <div class="v">7</div>
+          </div>
+          <div class="metric-row">
+            <div class="nm">Snitt vs par</div>
+            <svg class="spark" viewBox="0 0 80 24" preserveAspectRatio="none">
+              <path d="M 0 6 L 13 8 L 27 7 L 40 9 L 53 10 L 67 11 L 80 12" fill="none" stroke="#A32D2D" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="80" cy="12" r="2.5" fill="#A32D2D"/>
+            </svg>
+            <div class="v">+3,2</div>
+          </div>
+          <div class="metric-row">
+            <div class="nm">Beste plassering</div>
+            <svg class="spark" viewBox="0 0 80 24" preserveAspectRatio="none">
+              <path d="M 0 14 L 13 12 L 27 11 L 40 9 L 53 8 L 67 7 L 80 5" fill="none" stroke="#2C7D52" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="80" cy="5" r="2.5" fill="#D1F843"/>
+            </svg>
+            <div class="v">T4</div>
+          </div>
+          <div class="metric-row">
+            <div class="nm">NGF-poeng</div>
+            <svg class="spark" viewBox="0 0 80 24" preserveAspectRatio="none">
+              <path d="M 0 14 L 13 13 L 27 11 L 40 10 L 53 8 L 67 7 L 80 5" fill="none" stroke="#2C7D52" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="80" cy="5" r="2.5" fill="#D1F843"/>
+            </svg>
+            <div class="v">128</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+</body>
+</html>

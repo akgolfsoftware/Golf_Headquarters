@@ -34,10 +34,10 @@ function buildCsp(nonce: string): string {
     "font-src 'self'",
     // Fetch / WebSocket: Supabase Realtime, Stripe API, Vercel
     "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com https://vitals.vercel-insights.com",
-    // Stripe embedded UI
-    "frame-src https://js.stripe.com https://hooks.stripe.com",
-    // Klikkaperting-vern (supplement til X-Frame-Options)
-    "frame-ancestors 'none'",
+    // Stripe embedded UI + same-origin (kreves av /admin/godkjenn-portal iframe)
+    "frame-src 'self' https://js.stripe.com https://hooks.stripe.com",
+    // Klikkaperting-vern: tillat iframe fra samme domene (kreves av godkjenn-portal)
+    "frame-ancestors 'self'",
     // Forhindre base-tag-injection
     "base-uri 'self'",
     // Forhindre skjema-kapring

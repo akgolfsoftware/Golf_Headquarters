@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Meldingstråd — Hans Brennum — AK Golf PlayerHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../workbench-v2.css">
+<style>
+  body { background: var(--bg); margin: 0; padding-bottom: 0; }
+
+  .topnav {
+    display: flex; align-items: center;
+    padding: 18px 32px;
+    border-bottom: 1px solid var(--border);
+    background: #fff; gap: 16px;
+  }
+  .topnav .back-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+    text-transform: uppercase; font-weight: 600;
+    text-decoration: none;
+  }
+  .topnav .back-link:hover { color: var(--fg); }
+  .topnav .back-link svg { width: 14px; height: 14px; }
+  .topnav .name {
+    font-family: var(--font-display); font-size: 13px;
+    font-weight: 700; color: var(--primary); letter-spacing: 0.02em;
+  }
+  .topnav .crumbs {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .topnav .crumbs .current { color: var(--fg); font-weight: 600; }
+
+  /* Thread header */
+  .thread-hd {
+    background: #fff; border-bottom: 1px solid var(--border);
+    padding: 16px 32px; display: flex; align-items: center; gap: 14px;
+    position: sticky; top: 0; z-index: 20;
+  }
+  .thread-hd .avwrap { position: relative; flex-shrink: 0; }
+  .thread-hd .av {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--primary); color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 14px; font-weight: 700;
+  }
+  .thread-hd .status {
+    position: absolute; bottom: -1px; right: -1px;
+    width: 11px; height: 11px; border-radius: 50%;
+    background: var(--success); border: 2px solid #fff;
+  }
+  .thread-hd .who { display: flex; flex-direction: column; gap: 2px; }
+  .thread-hd .nm { font-family: var(--font-display); font-size: 16px; font-weight: 600; letter-spacing: -0.005em; }
+  .thread-hd .meta {
+    font-family: var(--font-mono); font-size: 10.5px; color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+  .thread-hd .meta .dot { color: var(--success); margin-right: 4px; }
+  .thread-hd .subject {
+    margin-left: 24px; padding-left: 24px;
+    border-left: 1px solid var(--border);
+    flex: 1; min-width: 0;
+  }
+  .thread-hd .subject .lbl {
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--muted); letter-spacing: 0.10em; text-transform: uppercase;
+  }
+  .thread-hd .subject .txt {
+    font-family: var(--font-display); font-size: 14px; font-weight: 600;
+    margin-top: 2px; line-height: 1.3;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .thread-hd .actions { display: flex; gap: 6px; align-items: center; }
+  .icon-btn {
+    width: 34px; height: 34px; border-radius: 8px;
+    border: 1px solid var(--border); background: #fff;
+    color: var(--muted); cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .icon-btn:hover { background: var(--bg); color: var(--fg); }
+  .icon-btn svg { width: 15px; height: 15px; }
+
+  .menu-wrap { position: relative; }
+  .menu-pop {
+    position: absolute; top: 42px; right: 0; z-index: 40;
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 12px; padding: 6px; min-width: 220px;
+    box-shadow: 0 12px 32px rgba(10,31,23,0.12);
+    display: none;
+  }
+  .menu-pop.open { display: block; }
+  .menu-pop button {
+    display: flex; align-items: center; gap: 10px;
+    width: 100%; background: transparent; border: 0;
+    padding: 9px 12px; border-radius: 8px;
+    font-size: 13px; color: var(--fg); cursor: pointer; text-align: left;
+  }
+  .menu-pop button:hover { background: var(--bg); }
+  .menu-pop button svg { width: 14px; height: 14px; color: var(--muted); }
+  .menu-pop .sep { height: 1px; background: var(--border-soft); margin: 4px 8px; }
+  .menu-pop .danger { color: var(--danger); }
+  .menu-pop .danger svg { color: var(--danger); }
+
+  /* Thread body */
+  .thread {
+    max-width: 880px; margin: 0 auto;
+    padding: 32px 32px 200px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .date-sep {
+    display: flex; align-items: center; gap: 14px;
+    margin: 16px 0 8px;
+  }
+  .date-sep::before, .date-sep::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+  .date-sep .lbl {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted); letter-spacing: 0.14em;
+    text-transform: uppercase; font-weight: 600;
+  }
+
+  .msg-row {
+    display: flex; gap: 10px; align-items: flex-end;
+    max-width: 70%;
+  }
+  .msg-row.me { align-self: flex-end; flex-direction: row-reverse; }
+  .msg-av {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--primary); color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 10px; font-weight: 700;
+    flex-shrink: 0; margin-bottom: 6px;
+  }
+  .msg-row.coach .msg-av { background: var(--fys); color: var(--accent); }
+  .msg-bubble {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 12px 16px;
+    box-shadow: 0 1px 2px rgba(10,31,23,0.03);
+    position: relative;
+  }
+  .msg-row.coach .msg-bubble { border-bottom-left-radius: 6px; }
+  .msg-row.me   .msg-bubble {
+    background: var(--primary); color: #F4F6EE;
+    border-color: var(--primary);
+    border-bottom-right-radius: 6px;
+  }
+  .msg-meta {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 4px;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.06em;
+  }
+  .msg-row.coach .msg-meta { color: var(--muted); }
+  .msg-row.me .msg-meta { color: rgba(244,246,238,0.65); justify-content: flex-end; }
+  .msg-meta .nm { font-family: var(--font-display); font-size: 11px; font-weight: 600; letter-spacing: 0; }
+  .msg-row.coach .msg-meta .nm { color: var(--fg); }
+  .msg-row.me .msg-meta .nm { color: #fff; }
+  .msg-body { font-size: 14px; line-height: 1.5; }
+  .msg-body strong { font-family: var(--font-display); font-weight: 700; }
+  .msg-body em { font-style: italic; }
+  .msg-row.me .msg-body { color: #F4F6EE; }
+
+  .read-tick {
+    display: inline-flex; align-items: center; gap: 3px;
+    margin-left: 4px;
+  }
+  .read-tick svg { width: 11px; height: 11px; }
+  .msg-row.coach .msg-bubble .read-tick svg { color: var(--success); }
+  .msg-row.me .read-tick svg { color: var(--accent); }
+
+  /* Attachment thumbs inside bubble */
+  .att-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .att-tile {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px 8px 8px;
+    background: rgba(255,255,255,0.92); color: var(--fg);
+    border: 1px solid var(--border-soft);
+    border-radius: 10px;
+    text-decoration: none;
+  }
+  .msg-row.coach .att-tile { background: var(--bg); }
+  .att-tile .pic {
+    width: 36px; height: 36px; border-radius: 7px;
+    background: linear-gradient(135deg, #d4d2c8, #b8b6ab);
+    background-image: repeating-linear-gradient(135deg, rgba(255,255,255,0.18) 0 4px, transparent 4px 8px);
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(0,0,0,0.45); flex-shrink: 0;
+  }
+  .att-tile .pic.vid { background: linear-gradient(135deg, #0A1F17, #1A4D2E); color: var(--accent); }
+  .att-tile .pic svg { width: 14px; height: 14px; }
+  .att-tile .nm { font-family: var(--font-mono); font-size: 11px; font-weight: 600; }
+  .att-tile .sz { font-family: var(--font-mono); font-size: 9.5px; color: var(--muted); margin-top: 2px; letter-spacing: 0.04em; }
+
+  .att-img {
+    width: 220px; height: 130px; border-radius: 10px;
+    background: linear-gradient(135deg, #b8c4a8 0%, #6e8a5a 100%);
+    background-image: repeating-linear-gradient(135deg, rgba(255,255,255,0.15) 0 6px, transparent 6px 12px);
+    display: flex; align-items: flex-end; padding: 10px;
+    position: relative; overflow: hidden;
+    border: 1px solid var(--border-soft);
+  }
+  .att-img .meta-pill {
+    font-family: var(--font-mono); font-size: 9.5px;
+    background: rgba(0,0,0,0.55); color: #fff;
+    padding: 3px 7px; border-radius: 4px;
+    letter-spacing: 0.06em; font-weight: 600;
+  }
+
+  .typing {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 4px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .typing-dots {
+    display: inline-flex; gap: 3px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 999px; padding: 6px 10px;
+  }
+  .typing-dots span {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--muted);
+    animation: blink 1.4s ease-in-out infinite;
+  }
+  .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes blink { 0%, 80%, 100% { opacity: 0.3; } 40% { opacity: 1; } }
+
+  /* Compose */
+  .compose {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: #fff; border-top: 1px solid var(--border);
+    padding: 12px 32px 16px;
+    z-index: 25;
+  }
+  .quick-rep {
+    display: flex; gap: 6px; padding-bottom: 10px;
+    overflow-x: auto;
+  }
+  .quick-rep .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 999px;
+    background: var(--bg); border: 1px solid var(--border);
+    font-family: var(--font-body); font-size: 12px; font-weight: 500;
+    color: var(--fg); cursor: pointer; white-space: nowrap;
+  }
+  .quick-rep .chip:hover { background: #fff; border-color: var(--muted-soft); }
+  .quick-rep .chip svg { width: 11px; height: 11px; color: var(--primary); }
+
+  .compose-row {
+    display: flex; align-items: flex-end; gap: 10px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 18px; padding: 8px 8px 8px 14px;
+    max-width: 880px; margin: 0 auto;
+  }
+  .compose-row:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,88,64,0.08); }
+  .compose-row .clip {
+    width: 34px; height: 34px; border-radius: 50%;
+    border: 0; background: transparent; color: var(--muted);
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0; cursor: pointer; align-self: center;
+  }
+  .compose-row .clip:hover { background: #fff; color: var(--fg); }
+  .compose-row .clip svg { width: 16px; height: 16px; }
+  .compose-row textarea {
+    flex: 1; border: 0; background: transparent; outline: none;
+    font-family: var(--font-body); font-size: 14px; line-height: 1.5;
+    color: var(--fg); resize: none; padding: 8px 0;
+    min-height: 24px; max-height: 120px;
+  }
+  .compose-row textarea::placeholder { color: var(--muted-soft); }
+  .compose-row .send {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: var(--accent); color: var(--fg); border: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; flex-shrink: 0;
+  }
+  .compose-row .send svg { width: 15px; height: 15px; }
+  .compose-row .send:hover { background: #C5ED32; }
+
+  .compose-hint {
+    max-width: 880px; margin: 6px auto 0;
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--muted-soft); letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 0 4px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .compose-hint kbd {
+    font-family: var(--font-mono); font-size: 9px;
+    background: var(--bg); border: 1px solid var(--border);
+    padding: 1px 5px; border-radius: 3px; color: var(--muted);
+  }
+
+  @media (max-width: 720px) {
+    .thread { padding: 20px 14px 200px; }
+    .msg-row { max-width: 88%; }
+    .thread-hd .subject { display: none; }
+  }
+</style>
+</head>
+<body data-screen-label="Meldingstråd detalj">
+
+<nav class="topnav">
+  <a href="#" class="back-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    Meldinger
+  </a>
+  <span class="name">AK GOLF · PlayerHQ</span>
+  <span class="crumbs">/portal / coach / melding / <span class="current">msg_47291</span></span>
+</nav>
+
+<!-- Thread header -->
+<header class="thread-hd">
+  <div class="avwrap">
+    <div class="av">HB</div>
+    <div class="status" title="Pålogget"></div>
+  </div>
+  <div class="who">
+    <div class="nm">Hans Brennum</div>
+    <div class="meta"><span class="dot">●</span> Pålogget · HOVEDCOACH · GFGK</div>
+  </div>
+  <div class="subject">
+    <div class="lbl">Emne</div>
+    <div class="txt">Spørsmål om gårsdagens videoanalyse</div>
+  </div>
+  <div class="actions">
+    <button class="icon-btn" title="Se alle vedlegg">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05 12.25 20.24a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+    </button>
+    <button class="icon-btn" title="Søk">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
+    <div class="menu-wrap">
+      <button class="icon-btn" id="menu-btn" title="Mer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+      </button>
+      <div class="menu-pop" id="menu-pop">
+        <button>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>
+          Rediger tråd-emne
+        </button>
+        <button>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+          Arkiver tråd
+        </button>
+        <button>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          Pause varsler (24 t)
+        </button>
+        <div class="sep"></div>
+        <button>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+          Se vedlegg-galleri
+        </button>
+        <div class="sep"></div>
+        <button class="danger">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          Slett tråd
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Thread -->
+<main class="thread" aria-live="polite">
+
+  <div class="date-sep"><span class="lbl">Mandag · 18. mai</span></div>
+
+  <!-- Markus 19:24 -->
+  <div class="msg-row me">
+    <div class="msg-av">MR</div>
+    <div class="msg-bubble">
+      <div class="msg-meta">
+        <span>18.05 · 19:24</span>
+        <span class="read-tick" title="Lest 21:01">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 6 7 17 2 12"/><polyline points="22 10 13 19"/></svg>
+        </span>
+        <span class="nm">Markus</span>
+      </div>
+      <div class="msg-body">Hei Hans, jeg så på videoen fra i går og lurer på posisjonen ved <strong>P3</strong> — det ser ut som hoftene roterer tidligere enn vi snakket om sist uke. Lagt ved en screenshot fra TrackMan.</div>
+      <div class="att-row">
+        <div class="att-img">
+          <span class="meta-pill">trackman-1422.png · 240 KB</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hans 21:02 -->
+  <div class="msg-row coach">
+    <div class="msg-av">HB</div>
+    <div class="msg-bubble">
+      <div class="msg-meta">
+        <span class="nm">Hans</span>
+        <span>18.05 · 21:02</span>
+      </div>
+      <div class="msg-body">God observasjon, Markus. Se på P2–P3: hoftene roterer ca. 0,06 s tidligere enn referansen. Det kan komme av at du har drevet skuldrene for sent inn i transition — vi så samme tendens 9. mai.<br><br>Prøv <em>"door-jam drill"</em> 3×8 før neste økt, og film fra DTL.</div>
+      <div class="att-row">
+        <a class="att-tile" href="#">
+          <span class="pic vid">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </span>
+          <div>
+            <div class="nm">door-jam-demo.mp4</div>
+            <div class="sz">0:31 · VIDEO</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="date-sep"><span class="lbl">Tirsdag · 19. mai · I dag</span></div>
+
+  <!-- Markus 08:14 -->
+  <div class="msg-row me">
+    <div class="msg-av">MR</div>
+    <div class="msg-bubble">
+      <div class="msg-meta">
+        <span>08:14</span>
+        <span class="read-tick" title="Lest 08:28">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 6 7 17 2 12"/><polyline points="22 10 13 19"/></svg>
+        </span>
+        <span class="nm">Markus</span>
+      </div>
+      <div class="msg-body">Aha — da skjønner jeg. Jeg har faktisk kjent litt det samme i transition de siste øktene. Skal jeg legge inn drillen før vi skal til Sørlandsåpent, eller venter vi til etter?</div>
+    </div>
+  </div>
+
+  <!-- Hans 08:30 -->
+  <div class="msg-row coach">
+    <div class="msg-av">HB</div>
+    <div class="msg-bubble">
+      <div class="msg-meta">
+        <span class="nm">Hans</span>
+        <span>08:30</span>
+      </div>
+      <div class="msg-body">Legg den inn nå — den er liten nok til at den ikke forstyrrer turneringsklargjøringen. Prøv <em>20 swings i morgen</em> med fokus kun på dette. Film, så ser jeg på det fredag.</div>
+    </div>
+  </div>
+
+  <!-- Markus 08:33 short -->
+  <div class="msg-row me">
+    <div class="msg-av">MR</div>
+    <div class="msg-bubble">
+      <div class="msg-meta">
+        <span>08:33</span>
+        <span class="read-tick">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 6 7 17 2 12"/><polyline points="22 10 13 19"/></svg>
+        </span>
+        <span class="nm">Markus</span>
+      </div>
+      <div class="msg-body">Skjønner. Får tilbake til deg fredag morgen.</div>
+    </div>
+  </div>
+
+  <!-- Typing indicator -->
+  <div class="typing">
+    <div class="msg-av" style="background:var(--fys);color:var(--accent);">HB</div>
+    <div class="typing-dots"><span></span><span></span><span></span></div>
+    <span>Hans skriver…</span>
+  </div>
+
+</main>
+
+<!-- Compose -->
+<div class="compose">
+  <div class="quick-rep">
+    <button class="chip">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      Mottatt
+    </button>
+    <button class="chip">Takk!</button>
+    <button class="chip">Sees i morgen</button>
+    <button class="chip">Får tilbake til deg</button>
+    <button class="chip">Når passer det?</button>
+    <button class="chip">Skal teste i kveld</button>
+  </div>
+  <div class="compose-row">
+    <button class="clip" title="Vedlegg">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05 12.25 20.24a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+    </button>
+    <textarea id="ta" placeholder="Skriv et svar til Hans..." rows="1"></textarea>
+    <button class="send" id="send" title="Send">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+  <div class="compose-hint">
+    <span>↵ Send · ⇧↵ Ny linje</span>
+    <span style="margin-left:auto;">END-TO-END KRYPTERT</span>
+  </div>
+</div>
+
+<script>
+(function(){
+  const ta = document.getElementById('ta');
+  ta.addEventListener('input', () => {
+    ta.style.height = 'auto';
+    ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
+  });
+
+  // Quick reply
+  document.querySelectorAll('.quick-rep .chip').forEach(c => {
+    c.addEventListener('click', () => {
+      ta.value = c.textContent.trim();
+      ta.focus();
+      ta.dispatchEvent(new Event('input'));
+    });
+  });
+
+  // Menu toggle
+  const menuBtn = document.getElementById('menu-btn');
+  const menuPop = document.getElementById('menu-pop');
+  menuBtn.addEventListener('click', e => { e.stopPropagation(); menuPop.classList.toggle('open'); });
+  document.addEventListener('click', () => menuPop.classList.remove('open'));
+
+  // Scroll to bottom on load
+  window.scrollTo(0, document.body.scrollHeight);
+})();
+</script>
+
+</body>
+</html>

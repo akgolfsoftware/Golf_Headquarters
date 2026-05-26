@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Fysiske planer · AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --brand-primary:#005840; --brand-primary-dark:#003A2A;
+    --brand-accent:#D1F843; --brand-accent-deep:#BFE933;
+    --brand-primary-soft:#E8F0EC; --brand-accent-soft:#F4FBC9;
+    --surface:#FAFAF7; --surface-card:#FFFFFF; --surface-tint:#F4F2EC;
+    --ink:#0A1F17; --ink-muted:#5E5C57; --ink-subtle:#9C9990;
+    --line:#E5E3DD; --line-soft:#EFEDE6;
+    --ok:#1A7D56; --warn:#B8852A; --danger:#A32D2D;
+    --r-card:16px; --r-btn:12px; --r-tag:8px;
+    --font-display:'Inter Tight',sans-serif;
+    --font-body:'Inter',sans-serif;
+    --font-mono:'JetBrains Mono',monospace;
+    --font-serif:'Instrument Serif',serif;
+    --sb-w:256px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--surface);color:var(--ink);font-family:var(--font-body);font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased;min-height:100vh}
+  button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+  a{color:inherit;text-decoration:none}
+
+  .app{display:grid;grid-template-columns:var(--sb-w) 1fr;min-height:100vh}
+
+  /* ===== SIDEBAR ===== */
+  .sidebar{background:var(--brand-primary);color:#fff;padding:18px 16px;display:flex;flex-direction:column;gap:22px;position:sticky;top:0;height:100vh;overflow-y:auto}
+  .sb-brand{display:flex;align-items:center;gap:10px;padding:0 4px}
+  .sb-logo{width:32px;height:32px;border-radius:8px;background:var(--brand-accent);color:var(--brand-primary);display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:800;font-size:13px;letter-spacing:-.02em}
+  .sb-brand .name{font-family:var(--font-display);font-size:14px;font-weight:700;letter-spacing:.02em}
+  .sb-brand .meta{font-family:var(--font-mono);font-size:9.5px;color:rgba(209,248,67,.7);letter-spacing:.12em;text-transform:uppercase;display:block;margin-top:2px}
+
+  .sb-player{display:flex;align-items:center;gap:10px;padding:10px;background:rgba(255,255,255,.05);border:1px solid rgba(209,248,67,.16);border-radius:12px}
+  .sb-player .av{width:34px;height:34px;border-radius:50%;background:var(--brand-accent);color:var(--brand-primary);display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:12px;font-weight:800}
+  .sb-player .nm{font-family:var(--font-display);font-size:13px;font-weight:600;line-height:1.1}
+  .sb-player .meta{font-family:var(--font-mono);font-size:10px;color:rgba(255,255,255,.55);letter-spacing:.04em;margin-top:2px}
+
+  .nav-group{display:flex;flex-direction:column;gap:1px}
+  .nav-eyebrow{font-family:var(--font-mono);font-size:9.5px;color:rgba(209,248,67,.55);letter-spacing:.14em;text-transform:uppercase;padding:6px 10px 4px}
+  .nav-item{display:grid;grid-template-columns:18px 1fr auto;gap:10px;align-items:center;padding:8px 10px;border-radius:8px;color:rgba(255,255,255,.78);font-size:13px;cursor:pointer}
+  .nav-item svg{width:15px;height:15px;color:rgba(209,248,67,.55)}
+  .nav-item:hover{background:rgba(255,255,255,.05);color:#fff}
+  .nav-item .badge{font-family:var(--font-mono);font-size:9.5px;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(209,248,67,.15);color:var(--brand-accent);letter-spacing:.04em}
+  .nav-item.active{background:var(--brand-accent);color:var(--brand-primary-dark);font-weight:600}
+  .nav-item.active svg{color:var(--brand-primary)}
+  .nav-item.active .badge{background:var(--brand-primary);color:var(--brand-accent)}
+
+  .sb-foot{margin-top:auto;padding:10px;border-top:1px solid rgba(255,255,255,.10);display:flex;align-items:center;gap:8px}
+  .sb-foot .av{width:28px;height:28px;border-radius:50%;background:rgba(209,248,67,.18);color:var(--brand-accent);font-family:var(--font-display);font-size:11px;font-weight:800;display:inline-flex;align-items:center;justify-content:center}
+  .sb-foot .label{font-size:12px;font-weight:600}
+  .sb-foot .role{font-family:var(--font-mono);font-size:9.5px;color:rgba(209,248,67,.55);letter-spacing:.06em;text-transform:uppercase}
+
+  /* ===== MAIN ===== */
+  main{min-width:0;padding:0 0 80px}
+  .topbar{background:#fff;border-bottom:1px solid var(--line);padding:14px 32px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:30}
+  .crumb{font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);letter-spacing:.04em;display:flex;align-items:center;gap:6px}
+  .crumb b{color:var(--ink);font-weight:700}
+  .crumb .sep{color:var(--ink-subtle)}
+  .topbar .right{margin-left:auto;display:flex;align-items:center;gap:10px}
+  .top-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border:1px solid var(--line);border-radius:999px;background:var(--surface);font-family:var(--font-mono);font-size:10.5px;color:var(--ink-muted);letter-spacing:.04em}
+  .top-pill .dot{width:6px;height:6px;border-radius:50%;background:var(--ok)}
+
+  /* ===== PAGE HEAD ===== */
+  .page-head{background:#fff;border-bottom:1px solid var(--line);padding:30px 32px 26px}
+  .page-head-row{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end}
+  .eyebrow{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-muted);letter-spacing:.14em;text-transform:uppercase;font-weight:700;margin-bottom:10px}
+  .eyebrow b{color:var(--ink)}
+  h1{font-family:var(--font-display);font-size:38px;font-weight:700;letter-spacing:-.024em;line-height:1.02}
+  h1 em{font-family:var(--font-serif);font-style:italic;font-weight:400;color:var(--brand-primary)}
+  .sub{margin-top:10px;font-size:14px;color:var(--ink-muted);line-height:1.55;max-width:640px}
+
+  .head-actions{display:flex;gap:8px}
+  .btn{border-radius:999px;padding:10px 16px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:7px;line-height:1.1;cursor:pointer;font-family:var(--font-body);border:1px solid transparent}
+  .btn svg{width:13px;height:13px}
+  .btn.primary{background:var(--brand-primary);color:var(--brand-accent);box-shadow:0 6px 14px rgba(0,88,64,.18)}
+  .btn.primary:hover{background:var(--brand-primary-dark)}
+  .btn.outline{background:#fff;color:var(--ink);border-color:var(--line)}
+  .btn.outline:hover{background:var(--surface)}
+  .btn.ghost{background:transparent;color:var(--ink-muted)}
+  .btn.ghost:hover{color:var(--ink);background:var(--surface)}
+
+  .stats-strip{margin-top:22px;display:flex;align-items:center;gap:0;padding:14px 0 0;border-top:1px solid var(--line-soft);flex-wrap:wrap}
+  .stat{display:flex;align-items:baseline;gap:8px;padding-right:26px;margin-right:26px;border-right:1px solid var(--line-soft)}
+  .stat:last-child{border-right:0}
+  .stat .v{font-family:var(--font-mono);font-size:18px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+  .stat .k{font-family:var(--font-mono);font-size:10px;color:var(--ink-muted);letter-spacing:.10em;text-transform:uppercase;font-weight:600}
+  .stat.muted .v{color:var(--ink-muted)}
+
+  /* ===== LAYOUT ===== */
+  .wrap{display:grid;grid-template-columns:1fr 320px;gap:28px;padding:28px 32px 60px;max-width:1600px}
+  @media (max-width:1180px){.wrap{grid-template-columns:1fr}}
+
+  /* ===== SECTION ===== */
+  .sec{margin-bottom:36px}
+  .sec-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:14px;border-bottom:1px solid var(--line);margin-bottom:20px}
+  .sec-eyebrow{font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);letter-spacing:.14em;text-transform:uppercase;font-weight:700}
+  .sec-eyebrow b{color:var(--ink)}
+  .sec-pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-family:var(--font-mono);font-size:9.5px;font-weight:700;letter-spacing:.10em;text-transform:uppercase;background:var(--brand-accent-soft);color:var(--brand-primary-dark)}
+  .sec-pill.muted{background:var(--surface);color:var(--ink-muted);border:1px solid var(--line)}
+  .sec-meta{margin-left:auto;font-family:var(--font-mono);font-size:10.5px;color:var(--ink-muted);letter-spacing:.04em}
+
+  /* ===== PLAN GRID ===== */
+  .plan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media (max-width:1500px){.plan-grid{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:880px){.plan-grid{grid-template-columns:1fr}}
+
+  .plan-card{background:var(--surface-card);border:1px solid var(--line);border-radius:var(--r-card);padding:20px;display:flex;flex-direction:column;gap:14px;position:relative;transition:box-shadow 160ms,border-color 160ms;cursor:pointer}
+  .plan-card:hover{box-shadow:0 8px 24px rgba(10,31,24,.07);border-color:rgba(0,88,64,.22)}
+  .plan-card.featured{border-left:4px solid var(--brand-primary);padding-left:18px;box-shadow:0 8px 30px rgba(0,88,64,.10),0 0 0 1px rgba(0,88,64,.05)}
+  .plan-card.featured::before{content:"";position:absolute;inset:0;border-radius:var(--r-card);background:radial-gradient(380px 80px at top left,rgba(209,248,67,.10),transparent 60%);pointer-events:none}
+  .plan-card.archived{background:#F7F6F1;opacity:.92}
+  .plan-card.archived:hover{opacity:1}
+
+  .pc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+  .pc-icon{width:42px;height:42px;border-radius:12px;background:var(--brand-primary-soft);color:var(--brand-primary);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+  .pc-icon svg{width:22px;height:22px}
+  .archived .pc-icon{background:var(--surface);color:var(--ink-muted)}
+
+  .pc-status{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-family:var(--font-mono);font-size:9.5px;font-weight:700;letter-spacing:.10em;text-transform:uppercase;white-space:nowrap}
+  .pc-status.active{background:rgba(26,125,86,.12);color:var(--ok)}
+  .pc-status.active .dot{width:6px;height:6px;border-radius:50%;background:var(--ok);animation:pulse 1.8s infinite}
+  .pc-status.draft{background:rgba(184,133,42,.14);color:var(--warn)}
+  .pc-status.draft .dot{width:6px;height:6px;border-radius:50%;background:var(--warn)}
+  .pc-status.archived{background:var(--surface);color:var(--ink-muted);border:1px solid var(--line)}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+
+  .pc-body{display:flex;flex-direction:column;gap:8px}
+  .pc-period{font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--brand-primary);letter-spacing:.16em;text-transform:uppercase}
+  .archived .pc-period{color:var(--ink-muted)}
+  .pc-title{font-family:var(--font-display);font-size:19px;font-weight:600;letter-spacing:-.018em;line-height:1.2;color:var(--ink);text-wrap:balance}
+  .pc-title em{font-family:var(--font-serif);font-style:italic;font-weight:400;color:var(--brand-primary)}
+
+  .pc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;padding:12px 0;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft)}
+  .pc-stat{display:flex;flex-direction:column;gap:2px;padding-right:6px;border-right:1px solid var(--line-soft)}
+  .pc-stat:last-child{border-right:0}
+  .pc-stat .k{font-family:var(--font-mono);font-size:9px;color:var(--ink-muted);letter-spacing:.12em;text-transform:uppercase;font-weight:700}
+  .pc-stat .v{font-family:var(--font-mono);font-size:17px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.01em;line-height:1.1}
+  .pc-stat .v .unit{color:var(--ink-subtle);font-weight:500;font-size:11px;margin-left:2px}
+
+  .pc-prog{display:flex;flex-direction:column;gap:6px}
+  .pc-prog-row{display:flex;align-items:baseline;justify-content:space-between}
+  .pc-prog-k{font-family:var(--font-mono);font-size:10px;color:var(--ink-muted);letter-spacing:.10em;text-transform:uppercase;font-weight:700}
+  .pc-prog-v{font-family:var(--font-mono);font-size:12px;color:var(--ink);font-weight:700;font-variant-numeric:tabular-nums}
+  .pc-prog-v b{color:var(--brand-primary)}
+  .pc-bar{height:7px;background:var(--line-soft);border-radius:999px;overflow:hidden}
+  .pc-bar>div{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--brand-accent) 0%,var(--brand-primary) 100%)}
+  .pc-bar.empty>div{background:var(--ink-subtle);opacity:.25}
+
+  .pc-foot{display:flex;align-items:center;gap:8px;padding-top:2px}
+  .pc-date{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-muted);letter-spacing:.04em}
+  .pc-date b{color:var(--ink)}
+  .pc-arrow{margin-left:auto;width:32px;height:32px;border-radius:50%;background:var(--surface);color:var(--brand-primary);display:inline-flex;align-items:center;justify-content:center;transition:background 160ms,transform 160ms}
+  .pc-arrow svg{width:14px;height:14px}
+  .plan-card:hover .pc-arrow{background:var(--brand-primary);color:var(--brand-accent);transform:translateX(2px)}
+
+  /* archived */
+  .plan-card.archived .pc-title{color:var(--ink-muted)}
+  .plan-card.archived .pc-bar>div{background:var(--ink-subtle);opacity:.45}
+
+  /* ===== RIGHT RAIL ===== */
+  .rail{display:flex;flex-direction:column;gap:14px;position:sticky;top:96px;align-self:start}
+  .rail-card{background:#fff;border:1px solid var(--line);border-radius:var(--r-card);padding:18px}
+  .rail-card.tint{background:var(--brand-primary);color:#fff;border-color:var(--brand-primary)}
+  .rail-card.accent{background:var(--brand-accent-soft);border-color:rgba(0,88,64,.10)}
+
+  .rail-eyebrow{font-family:var(--font-mono);font-size:10px;color:var(--ink-muted);letter-spacing:.14em;text-transform:uppercase;font-weight:700;margin-bottom:12px}
+  .rail-card.tint .rail-eyebrow{color:rgba(209,248,67,.65)}
+  .rail-title{font-family:var(--font-display);font-size:15px;font-weight:600;letter-spacing:-.01em;margin-bottom:14px}
+
+  .rail-stats{display:flex;flex-direction:column;gap:0}
+  .rail-stat{display:grid;grid-template-columns:1fr auto;align-items:baseline;gap:10px;padding:10px 0;border-bottom:1px solid var(--line-soft)}
+  .rail-stat:last-child{border-bottom:0}
+  .rail-card.tint .rail-stat{border-bottom-color:rgba(255,255,255,.10)}
+  .rail-stat .k{font-family:var(--font-body);font-size:12px;color:var(--ink-muted)}
+  .rail-card.tint .rail-stat .k{color:rgba(255,255,255,.65)}
+  .rail-stat .v{font-family:var(--font-mono);font-size:14px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+  .rail-stat .v .unit{color:var(--ink-subtle);font-weight:500;font-size:10.5px;margin-left:2px}
+  .rail-card.tint .rail-stat .v .unit{color:rgba(255,255,255,.45)}
+  .rail-stat .v.up{color:var(--ok)}
+  .rail-stat .delta{font-family:var(--font-mono);font-size:10px;color:var(--ok);font-weight:700;letter-spacing:.04em;margin-left:6px}
+
+  .rail-ai{display:flex;flex-direction:column;gap:10px}
+  .rail-ai .badge{display:inline-flex;align-items:center;gap:6px;padding:3px 8px;border-radius:999px;background:#fff;color:var(--brand-primary);font-family:var(--font-mono);font-size:9.5px;font-weight:700;letter-spacing:.10em;text-transform:uppercase;width:fit-content;border:1px solid rgba(0,88,64,.18)}
+  .rail-ai .badge svg{width:10px;height:10px}
+  .rail-ai .msg{font-family:var(--font-body);font-size:13px;line-height:1.5;color:var(--ink)}
+  .rail-ai .msg b{font-weight:600}
+  .rail-ai .msg em{font-family:var(--font-serif);font-style:italic;color:var(--brand-primary);font-weight:400}
+  .rail-ai-actions{display:flex;gap:6px;margin-top:4px}
+  .rail-ai-actions .btn{padding:7px 12px;font-size:11.5px}
+  .rail-ai-actions .btn.primary{background:var(--brand-primary);color:var(--brand-accent);box-shadow:none}
+
+  .rail-trend{display:flex;align-items:flex-end;gap:3px;height:48px;margin-top:8px}
+  .rail-trend .bar{flex:1;background:rgba(209,248,67,.30);border-radius:2px 2px 0 0;min-height:2px}
+  .rail-trend .bar.live{background:var(--brand-accent)}
+
+  .rail-link{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--brand-primary);letter-spacing:.06em;text-transform:uppercase;margin-top:10px}
+  .rail-link svg{width:11px;height:11px}
+
+  /* legend */
+  .legend{display:flex;gap:14px;font-family:var(--font-mono);font-size:10px;color:var(--ink-muted);letter-spacing:.06em;margin-top:8px}
+  .legend .d{display:inline-flex;align-items:center;gap:5px}
+  .legend .d::before{content:"";width:8px;height:8px;border-radius:2px;background:var(--brand-primary)}
+  .legend .d.acc::before{background:var(--brand-accent)}
+  .legend .d.gh::before{background:var(--ink-subtle);opacity:.5}
+</style>
+</head>
+<body>
+
+<svg style="display:none">
+  <defs>
+    <symbol id="i-dumbbell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5l11 11"/><path d="M21 21l-1-1"/><path d="M3 3l1 1"/><path d="M18 22l4-4"/><path d="M2 6l4-4"/><path d="M3 10l7-7"/><path d="M14 21l7-7"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+    <symbol id="i-template" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></symbol>
+    <symbol id="i-arrow-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></symbol>
+    <symbol id="i-message" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.07a2 2 0 0 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.56V21a2 2 0 0 1-4 0v-.1A1.7 1.7 0 0 0 8.97 19.3a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.56-1.03H3a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 4.7 8.97a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34h.05a1.7 1.7 0 0 0 1-1.56V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87v.05a1.7 1.7 0 0 0 1.56 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.56 1z"/></symbol>
+    <symbol id="i-archive" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="5" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></symbol>
+    <symbol id="i-sparkle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6z"/><path d="M5 17l.7 1.8L7.5 19.5l-1.8.7L5 22l-.7-1.8L2.5 19.5l1.8-.7z"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  </defs>
+</svg>
+
+<div class="app">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="sb-brand">
+      <div class="sb-logo">AK</div>
+      <div>
+        <div class="name">AK Golf HQ</div>
+        <span class="meta">PlayerHQ</span>
+      </div>
+    </div>
+
+    <div class="sb-player">
+      <div class="av">AK</div>
+      <div>
+        <div class="nm">Anders Kristiansen</div>
+        <div class="meta">HCP +1.4 · 17 år</div>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-eyebrow">Spille</div>
+      <div class="nav-item"><svg><use href="#i-home"/></svg><span>Hjem</span></div>
+      <div class="nav-item"><svg><use href="#i-flag"/></svg><span>Runder</span></div>
+      <div class="nav-item"><svg><use href="#i-target"/></svg><span>Innsikt</span></div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-eyebrow">Tren</div>
+      <div class="nav-item"><svg><use href="#i-template"/></svg><span>Tekniske planer</span><span class="badge">2</span></div>
+      <div class="nav-item active"><svg><use href="#i-dumbbell"/></svg><span>Fysiske planer</span><span class="badge">3</span></div>
+      <div class="nav-item"><svg><use href="#i-calendar"/></svg><span>Kalender</span></div>
+      <div class="nav-item"><svg><use href="#i-chart"/></svg><span>Tester</span></div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-eyebrow">Coach</div>
+      <div class="nav-item"><svg><use href="#i-message"/></svg><span>Meldinger</span></div>
+      <div class="nav-item"><svg><use href="#i-users"/></svg><span>Mitt team</span></div>
+    </div>
+
+    <div class="sb-foot">
+      <div class="av">AK</div>
+      <div>
+        <div class="label">Anders K.</div>
+        <div class="role">Spiller</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main>
+    <header class="topbar">
+      <div class="crumb">
+        PlayerHQ <span class="sep">›</span>
+        Tren <span class="sep">›</span>
+        <b>Fysiske planer</b>
+      </div>
+      <div class="right">
+        <span class="top-pill"><span class="dot"></span>Sist endret 22. mai</span>
+        <button class="btn ghost"><svg><use href="#i-settings"/></svg></button>
+      </div>
+    </header>
+
+    <section class="page-head">
+      <div class="page-head-row">
+        <div>
+          <div class="eyebrow">PLAYERHQ · TREN · <b>FYSISK</b></div>
+          <h1>Fysiske <em>planer</em></h1>
+          <p class="sub">Strukturerte styrke- og kondisjonsprogram. Planlegg sett, reps, hvile, belastning og RIR per øvelse — og logg faktisk volum etter hver økt.</p>
+        </div>
+        <div class="head-actions">
+          <button class="btn outline"><svg><use href="#i-template"/></svg> Importer mal</button>
+          <button class="btn primary"><svg><use href="#i-plus"/></svg> Ny plan</button>
+        </div>
+      </div>
+
+      <div class="stats-strip">
+        <div class="stat"><span class="v">3</span><span class="k">aktive planer</span></div>
+        <div class="stat"><span class="v">12</span><span class="k">økter pågående</span></div>
+        <div class="stat"><span class="v">22. mai</span><span class="k">sist endret</span></div>
+        <div class="stat"><span class="v">2</span><span class="k">spillere koblet</span></div>
+        <div class="stat muted"><span class="v">96</span><span class="k">øvelser totalt</span></div>
+      </div>
+    </section>
+
+    <div class="wrap">
+      <div>
+
+        <!-- ===== AKTIVE ===== -->
+        <section class="sec">
+          <header class="sec-head">
+            <span class="sec-eyebrow">SEKSJON · <b>Aktive og utkast</b></span>
+            <span class="sec-pill"><span style="width:6px;height:6px;border-radius:50%;background:var(--brand-primary)"></span>3 planer</span>
+            <span class="sec-meta">Sortert · nyligst endret</span>
+          </header>
+
+          <div class="plan-grid">
+
+            <!-- Card 1 - featured -->
+            <article class="plan-card featured">
+              <div class="pc-top">
+                <div class="pc-icon"><svg><use href="#i-dumbbell"/></svg></div>
+                <span class="pc-status active"><span class="dot"></span>Aktiv</span>
+              </div>
+              <div class="pc-body">
+                <span class="pc-period">VINTER 2026 · UKE 47–02</span>
+                <h3 class="pc-title">Vinter-grunntrening <em>· 2026</em></h3>
+              </div>
+              <div class="pc-stats">
+                <div class="pc-stat"><span class="k">Uker</span><span class="v">8</span></div>
+                <div class="pc-stat"><span class="k">Økter</span><span class="v">24</span></div>
+                <div class="pc-stat"><span class="k">Sett</span><span class="v">96</span></div>
+              </div>
+              <div class="pc-prog">
+                <div class="pc-prog-row">
+                  <span class="pc-prog-k">Logg-fremgang</span>
+                  <span class="pc-prog-v"><b>67%</b> · 16 / 24 økter</span>
+                </div>
+                <div class="pc-bar"><div style="width:67%"></div></div>
+              </div>
+              <div class="pc-foot">
+                <span class="pc-date">Sist øvd <b>22. mai</b> · Anders K.</span>
+                <span class="pc-arrow"><svg><use href="#i-arrow-r"/></svg></span>
+              </div>
+            </article>
+
+            <!-- Card 2 -->
+            <article class="plan-card">
+              <div class="pc-top">
+                <div class="pc-icon"><svg><use href="#i-dumbbell"/></svg></div>
+                <span class="pc-status active"><span class="dot"></span>Aktiv</span>
+              </div>
+              <div class="pc-body">
+                <span class="pc-period">VÅR 2026 · UKE 14–22</span>
+                <h3 class="pc-title">Spesialisering <em>· vår</em></h3>
+              </div>
+              <div class="pc-stats">
+                <div class="pc-stat"><span class="k">Uker</span><span class="v">9</span></div>
+                <div class="pc-stat"><span class="k">Økter</span><span class="v">27</span></div>
+                <div class="pc-stat"><span class="k">Sett</span><span class="v">108</span></div>
+              </div>
+              <div class="pc-prog">
+                <div class="pc-prog-row">
+                  <span class="pc-prog-k">Logg-fremgang</span>
+                  <span class="pc-prog-v"><b>45%</b> · 12 / 27 økter</span>
+                </div>
+                <div class="pc-bar"><div style="width:45%"></div></div>
+              </div>
+              <div class="pc-foot">
+                <span class="pc-date">Sist øvd <b>20. mai</b> · Fys-team</span>
+                <span class="pc-arrow"><svg><use href="#i-arrow-r"/></svg></span>
+              </div>
+            </article>
+
+            <!-- Card 3 - draft -->
+            <article class="plan-card">
+              <div class="pc-top">
+                <div class="pc-icon"><svg><use href="#i-dumbbell"/></svg></div>
+                <span class="pc-status draft"><span class="dot"></span>Utkast</span>
+              </div>
+              <div class="pc-body">
+                <span class="pc-period">SOMMER 2026 · UKE 23–34</span>
+                <h3 class="pc-title">Sommer-vedlikehold</h3>
+              </div>
+              <div class="pc-stats">
+                <div class="pc-stat"><span class="k">Uker</span><span class="v">12</span></div>
+                <div class="pc-stat"><span class="k">Økter</span><span class="v">24</span></div>
+                <div class="pc-stat"><span class="k">Sett</span><span class="v">72</span></div>
+              </div>
+              <div class="pc-prog">
+                <div class="pc-prog-row">
+                  <span class="pc-prog-k">Logg-fremgang</span>
+                  <span class="pc-prog-v">Ikke startet</span>
+                </div>
+                <div class="pc-bar empty"><div style="width:2%"></div></div>
+              </div>
+              <div class="pc-foot">
+                <span class="pc-date">Opprettet <b>i går</b> · Anders K.</span>
+                <span class="pc-arrow"><svg><use href="#i-arrow-r"/></svg></span>
+              </div>
+            </article>
+
+          </div>
+        </section>
+
+        <!-- ===== ARKIVERTE ===== -->
+        <section class="sec">
+          <header class="sec-head">
+            <span class="sec-eyebrow">SEKSJON · <b>Arkiverte</b></span>
+            <span class="sec-pill muted">Avsluttet</span>
+            <span class="sec-meta">2 planer · 2024/25</span>
+          </header>
+
+          <div class="plan-grid">
+
+            <article class="plan-card archived">
+              <div class="pc-top">
+                <div class="pc-icon"><svg><use href="#i-archive"/></svg></div>
+                <span class="pc-status archived"><svg style="width:10px;height:10px"><use href="#i-check"/></svg> Arkivert</span>
+              </div>
+              <div class="pc-body">
+                <span class="pc-period">VINTER 2025 · 8 UKER</span>
+                <h3 class="pc-title">Grunnstyrke <em>· vinter 2025</em></h3>
+              </div>
+              <div class="pc-stats">
+                <div class="pc-stat"><span class="k">Uker</span><span class="v">8</span></div>
+                <div class="pc-stat"><span class="k">Økter</span><span class="v">24</span></div>
+                <div class="pc-stat"><span class="k">Sett</span><span class="v">88</span></div>
+              </div>
+              <div class="pc-prog">
+                <div class="pc-prog-row">
+                  <span class="pc-prog-k">Sluttsum</span>
+                  <span class="pc-prog-v"><b>92%</b> · 22 / 24 økter</span>
+                </div>
+                <div class="pc-bar"><div style="width:92%"></div></div>
+              </div>
+              <div class="pc-foot">
+                <span class="pc-date">Avsluttet <b>31. mars</b></span>
+                <span class="pc-arrow"><svg><use href="#i-arrow-r"/></svg></span>
+              </div>
+            </article>
+
+            <article class="plan-card archived">
+              <div class="pc-top">
+                <div class="pc-icon"><svg><use href="#i-archive"/></svg></div>
+                <span class="pc-status archived"><svg style="width:10px;height:10px"><use href="#i-check"/></svg> Arkivert</span>
+              </div>
+              <div class="pc-body">
+                <span class="pc-period">HØST 2025 · 12 UKER</span>
+                <h3 class="pc-title">Hypertrofi-blokk <em>· høst</em></h3>
+              </div>
+              <div class="pc-stats">
+                <div class="pc-stat"><span class="k">Uker</span><span class="v">12</span></div>
+                <div class="pc-stat"><span class="k">Økter</span><span class="v">36</span></div>
+                <div class="pc-stat"><span class="k">Sett</span><span class="v">144</span></div>
+              </div>
+              <div class="pc-prog">
+                <div class="pc-prog-row">
+                  <span class="pc-prog-k">Sluttsum</span>
+                  <span class="pc-prog-v"><b>83%</b> · 30 / 36 økter</span>
+                </div>
+                <div class="pc-bar"><div style="width:83%"></div></div>
+              </div>
+              <div class="pc-foot">
+                <span class="pc-date">Avsluttet <b>15. nov</b></span>
+                <span class="pc-arrow"><svg><use href="#i-arrow-r"/></svg></span>
+              </div>
+            </article>
+
+          </div>
+        </section>
+
+      </div>
+
+      <!-- ============ RIGHT RAIL ============ -->
+      <aside class="rail">
+
+        <div class="rail-card">
+          <div class="rail-eyebrow">DENNE UKA · UKE 21</div>
+          <div class="rail-title">Hurtigstatistikk</div>
+          <div class="rail-stats">
+            <div class="rail-stat">
+              <span class="k">Loggede økter</span>
+              <span class="v up">4<span class="unit">/ 4</span><span class="delta">+1</span></span>
+            </div>
+            <div class="rail-stat">
+              <span class="k">Total volum</span>
+              <span class="v">12 800<span class="unit">kg</span></span>
+            </div>
+            <div class="rail-stat">
+              <span class="k">Snitt RIR</span>
+              <span class="v">2.1</span>
+            </div>
+            <div class="rail-stat">
+              <span class="k">Snitt RPE</span>
+              <span class="v">7.4</span>
+            </div>
+            <div class="rail-stat">
+              <span class="k">Tid i sal</span>
+              <span class="v">4t 35<span class="unit">min</span></span>
+            </div>
+          </div>
+
+          <div class="rail-trend">
+            <div class="bar" style="height:34%"></div>
+            <div class="bar" style="height:48%"></div>
+            <div class="bar" style="height:42%"></div>
+            <div class="bar" style="height:60%"></div>
+            <div class="bar" style="height:55%"></div>
+            <div class="bar" style="height:72%"></div>
+            <div class="bar" style="height:64%"></div>
+            <div class="bar live" style="height:88%"></div>
+          </div>
+          <div class="legend">
+            <span class="d">Uke 21</span>
+            <span class="d gh">Forrige uker</span>
+          </div>
+        </div>
+
+        <div class="rail-card accent">
+          <div class="rail-ai">
+            <span class="badge"><svg><use href="#i-sparkle"/></svg> Coach-foreslår</span>
+            <p class="msg">Du har hatt <b>RIR 3+ i 3 squat-økter</b> på rad. Vurder å øke belastning med <em>5% fra uke 23</em>, ellers risikerer du å understimulere.</p>
+            <div class="rail-ai-actions">
+              <button class="btn primary">Endre plan</button>
+              <button class="btn outline">Avvis</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="rail-card tint">
+          <div class="rail-eyebrow">NESTE ØKT</div>
+          <div class="rail-title" style="margin-bottom:10px">Underkropp + core</div>
+          <div style="font-family:var(--font-mono);font-size:11px;color:rgba(209,248,67,.7);letter-spacing:.10em;text-transform:uppercase">MAN 26. MAI · 07:00 · 70 MIN</div>
+          <div style="margin-top:14px;display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;align-items:center;gap:8px;font-size:12.5px"><span style="width:22px;height:22px;border-radius:6px;background:rgba(209,248,67,.15);color:var(--brand-accent);display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;font-weight:700">1</span>Knebøy m/ stang · 4×8-10</div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:12.5px"><span style="width:22px;height:22px;border-radius:6px;background:rgba(209,248,67,.15);color:var(--brand-accent);display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;font-weight:700">2</span>Rumensk markløft · 3×10</div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:12.5px"><span style="width:22px;height:22px;border-radius:6px;background:rgba(209,248,67,.15);color:var(--brand-accent);display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;font-weight:700">3</span>Utfall · 3×12 / side</div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:12.5px"><span style="width:22px;height:22px;border-radius:6px;background:rgba(209,248,67,.15);color:var(--brand-accent);display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;font-weight:700">4</span>Plank-rotasjon · 3×30s</div>
+          </div>
+          <a class="rail-link" style="color:var(--brand-accent);margin-top:14px">Åpne plan-builder <svg><use href="#i-arrow-r"/></svg></a>
+        </div>
+
+      </aside>
+    </div>
+
+  </main>
+</div>
+
+</body>
+</html>

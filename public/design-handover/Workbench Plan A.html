@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Workbench Plan — Variant A · Pyramide-baner — AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:ital,wght@0,500;0,600;0,700;1,500;1,600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="workbench-plan/plan-chrome.css">
+<link rel="stylesheet" href="workbench-plan/plan-a-canvas.css">
+<link rel="stylesheet" href="workbench-plan/plan-inspector.css">
+<link rel="stylesheet" href="workbench-plan/plan-pyramid.css">
+<link rel="stylesheet" href="workbench-plan/plan-modals.css">
+<link rel="stylesheet" href="workbench-plan/plan-session-detail.css">
+<link rel="stylesheet" href="workbench-plan/plan-zoom-week.css">
+<link rel="stylesheet" href="workbench-plan/plan-zoom-year-day.css">
+<link rel="stylesheet" href="workbench-plan/plan-tests.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #f0eee9; }
+</style>
+</head>
+<body data-screen-label="Workbench Plan A — Pyramide-baner · INTERAKTIV">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+    <symbol id="ic-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+    <symbol id="ic-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+    <symbol id="ic-history" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><polyline points="3 4 3 10 9 10"/><polyline points="12 7 12 12 16 14"/></symbol>
+    <symbol id="ic-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></symbol>
+    <symbol id="ic-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+    <symbol id="ic-chevdown" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></symbol>
+    <symbol id="ic-chevright" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></symbol>
+    <symbol id="ic-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+    <symbol id="ic-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+    <symbol id="ic-sparkles" viewBox="0 0 24 24"><path d="M12 3l1.9 5.7L19.6 10.6 13.9 12.5 12 18.2 10.1 12.5 4.4 10.6 10.1 8.7Z"/><path d="M19 14l.8 2.2L22 17l-2.2.8L19 20l-.8-2.2L16 17l2.2-.8z"/></symbol>
+    <symbol id="ic-trending" viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></symbol>
+    <symbol id="ic-shuffle" viewBox="0 0 24 24"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></symbol>
+    <symbol id="ic-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+    <symbol id="ic-arrow-right" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+    <symbol id="ic-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+    <symbol id="ic-calendar-plus" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="12" y1="14" x2="12" y2="19"/><line x1="9.5" y1="16.5" x2="14.5" y2="16.5"/></symbol>
+    <symbol id="ic-pin" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+    <symbol id="ic-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol>
+    <symbol id="ic-leaf" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19.2 2.5c1 1.5 2 4.5 2 8.5a10 10 0 0 1-10.2 9z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></symbol>
+    <symbol id="ic-flame" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></symbol>
+    <symbol id="ic-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></symbol>
+    <symbol id="ic-anchor" viewBox="0 0 24 24"><circle cx="12" cy="5" r="3"/><line x1="12" y1="22" x2="12" y2="8"/><path d="M5 12H2a10 10 0 0 0 20 0h-3"/></symbol>
+    <symbol id="ic-trophy" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></symbol>
+    <symbol id="ic-flag" viewBox="0 0 24 24"><path d="M4 22V4"/><path d="M4 4h11l-2 4 2 4H4"/></symbol>
+    <symbol id="ic-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+    <symbol id="ic-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="ic-bar" viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></symbol>
+    <symbol id="ic-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+    <symbol id="ic-beaker" viewBox="0 0 24 24"><path d="M4.5 3h15"/><path d="M6 3v6.5L3 17a2 2 0 0 0 1.8 2.9h14.4A2 2 0 0 0 21 17l-3-7.5V3"/><line x1="6" y1="14" x2="18" y2="14"/></symbol>
+    <symbol id="ic-video" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></symbol>
+  </defs>
+</svg>
+
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="workbench-plan/plan-data.jsx"></script>
+<script type="text/babel" src="workbench-plan/plan-pyramid.jsx"></script>
+<script type="text/babel" src="workbench-plan/plan-modals.jsx"></script>
+<script type="text/babel" src="workbench-plan/plan-session-detail.jsx"></script>
+<script type="text/babel" src="workbench-plan/plan-tests.jsx"></script>
+<script type="text/babel" src="workbench-plan/plan-chrome.jsx"></script>
+<script type="text/babel" src="workbench-plan/plan-inspector.jsx"></script>
+<script type="text/babel" src="workbench-plan/plan-a-canvas.jsx"></script>
+<script type="text/babel" src="workbench-plan/plan-zoom-week.jsx"></script>
+<script type="text/babel" src="workbench-plan/plan-zoom-year-day.jsx"></script>
+
+<script type="text/babel" data-presets="react">
+
+/* Canvas router — picks the right view based on zoom level */
+function WBP_CanvasRouter() {
+  const { zoom } = useContext(PlanContext);
+  if (zoom === 'ar')      return <WBP_CanvasYear/>;
+  if (zoom === 'uke')     return <WBP_CanvasWeek/>;
+  if (zoom === 'dag')     return <WBP_CanvasDay/>;
+  /* 'periode' (default) and 'maned' both use the lane canvas */
+  return <WBP_Canvas/>;
+}
+
+function PlanWorkbench() {
+  const [modal, setModal] = useState(null);
+  const [zoom, setZoom] = useState('periode');
+  const [activeSession, setActiveSession] = useState(null);
+  const [toast, setToast] = useState(null);
+  const [facilities, setFacilities] = useState(WBP_INITIAL_FAC);
+  const [wizardOpen, setWizardOpen] = useState(true);
+
+  // Esc closes everything
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') {
+        setActiveSession(null);
+        setModal(null);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
+  return (
+    <PlanContext.Provider value={{
+      modal, setModal,
+      zoom, setZoom,
+      activeSession, setActiveSession,
+      toast, setToast,
+      facilities, setFacilities,
+      wizardOpen, setWizardOpen,
+    }}>
+      <div className="wbp">
+        <div className="app" style={{
+          gridTemplateRows: wizardOpen
+            ? 'var(--topbar-h) 36px var(--zoombar-h) var(--aibar-h) 1fr'
+            : 'var(--topbar-h) var(--zoombar-h) var(--aibar-h) 1fr'
+        }}>
+          <WBP_Topbar />
+          {wizardOpen && <WBP_WizardBanner />}
+          <WBP_Zoombar />
+          <WBP_AIBar />
+          <div className="body">
+            <WBP_Sidebar />
+            <WBP_CanvasRouter />
+            <WBP_Inspector />
+          </div>
+        </div>
+
+        {/* Modals */}
+        {modal === 'period'     && <WBP_ModalPeriod      onClose={() => setModal(null)} />}
+        {modal === 'camp'       && <WBP_ModalCamp        onClose={() => setModal(null)} />}
+        {modal === 'freq'       && <WBP_ModalFreq        onClose={() => setModal(null)} />}
+        {modal === 'facilities' && <WBP_ModalFacilities  onClose={() => setModal(null)} />}
+        {modal === 'testpicker' && (
+          <WBP_ModalTestPicker
+            onClose={() => setModal(null)}
+            onAdded={(testId) => setToast({ test: WBP_TESTS.find(t => t.id === testId) })}
+          />
+        )}
+
+        {/* Session detail drawer */}
+        <WBP_SessionDetail session={activeSession} onClose={() => setActiveSession(null)} />
+
+        {/* Toast for test added */}
+        {toast && (
+          <WBP_Toast
+            test={toast.test}
+            onUndo={() => setToast(null)}
+            onClose={() => setToast(null)}
+          />
+        )}
+      </div>
+    </PlanContext.Provider>
+  );
+}
+
+function App() {
+  return (
+    <DesignCanvas>
+      <DCSection
+        id="meta"
+        title="Workbench · plan-kommandosenter — Variant A · INTERAKTIV"
+        subtitle="Klikkbar demo. 5 zoom-nivåer (År/Periode/Måned/Uke/Dag) byttbare via tabs eller ⌘+/−. Klikk på en økt åpner kontekstuell detalj-drawer med slag-data (kun for full-sving). Snarveier-seksjon for tester i inspector — ett klikk legger til linket test."
+      >
+        <DCPostIt rotate={-2}>
+          NYTT:
+          {'\n'}
+          {'\n'}• 5 zoom-nivåer fungerer
+          {'\n'}• Klikk økt = detalj-drawer
+          {'\n'}• Slag-data BARE for sving
+          {'\n'}• Test-snarveier i inspector
+          {'\n'}• Test-velger m/ slot-picker
+          {'\n'}• 5 periode-typer (oppdatert)
+          {'\n'}• WANG Toppidrett (ikke Vang)
+        </DCPostIt>
+      </DCSection>
+
+      <DCSection
+        id="desktop"
+        title="Desktop · 1680×1000 — klikkbar demo"
+        subtitle="Bytt mellom År/Periode/Måned/Uke/Dag via tabs. Klikk en SLAG-økt for å se kølle-hastighet + spinn-data. Klikk en putt-økt — slag-data skjules siden det er irrelevant. Test-chips i inspector legger til ett klikk."
+      >
+        <DCArtboard id="wbp-a-desktop" label="Desktop · 1680w" width={1680} height={1100}>
+          <PlanWorkbench />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="zoom-views"
+        title="Zoom-nivåer (År / Uke / Dag) — fokus-bilder"
+        subtitle="Hver visning er klikkbar individuelt. Klikk artboard-tittelen for fullscreen-fokus."
+      >
+        <DCArtboard id="wbp-zoom-year" label="År · 12 måneder · 5 akser" width={1680} height={760}>
+          <PlanContext.Provider value={{ modal: null, setModal: () => {}, zoom: 'ar', setZoom: () => {}, activeSession: null, setActiveSession: () => {}, toast: null, setToast: () => {}, facilities: WBP_INITIAL_FAC, setFacilities: () => {}, wizardOpen: false, setWizardOpen: () => {} }}>
+            <div className="wbp"><div className="app" style={{ gridTemplateRows: '0 0 0 1fr' }}><div></div><div></div><div></div><div className="body"><div></div><WBP_CanvasYear/><div></div></div></div></div>
+          </PlanContext.Provider>
+        </DCArtboard>
+        <DCArtboard id="wbp-zoom-week" label="Uke · 7 dager × timer" width={1380} height={920}>
+          <PlanContext.Provider value={{ modal: null, setModal: () => {}, zoom: 'uke', setZoom: () => {}, activeSession: null, setActiveSession: () => {}, toast: null, setToast: () => {}, facilities: WBP_INITIAL_FAC, setFacilities: () => {}, wizardOpen: false, setWizardOpen: () => {} }}>
+            <div className="wbp"><div className="app" style={{ gridTemplateRows: '0 0 0 1fr' }}><div></div><div></div><div></div><div className="body"><div></div><WBP_CanvasWeek/><div></div></div></div></div>
+          </PlanContext.Provider>
+        </DCArtboard>
+        <DCArtboard id="wbp-zoom-day" label="Dag · enkelt-fokus tirsdag" width={1100} height={920}>
+          <PlanContext.Provider value={{ modal: null, setModal: () => {}, zoom: 'dag', setZoom: () => {}, activeSession: null, setActiveSession: () => {}, toast: null, setToast: () => {}, facilities: WBP_INITIAL_FAC, setFacilities: () => {}, wizardOpen: false, setWizardOpen: () => {} }}>
+            <div className="wbp"><div className="app" style={{ gridTemplateRows: '0 0 0 1fr' }}><div></div><div></div><div></div><div className="body"><div></div><WBP_CanvasDay/><div></div></div></div></div>
+          </PlanContext.Provider>
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="session-detail"
+        title="Kontekstuell øktdetalj — slag-data vises BARE for full-sving"
+        subtitle="SLAG-økt på full sving (wedge 40–80m) viser kølle-hastighet, ball-hastighet, spinn, launch-vinkel, miljø. PUTT/CHIP/FYS får aldri disse feltene — de er irrelevante."
+      >
+        <DCArtboard id="wbp-sd-slag" label="SLAG · Wedge-spinn (slag-data SYNLIG)" width={560} height={1000}>
+          <PlanContext.Provider value={{ modal: null, setModal: () => {}, zoom: 'periode', setZoom: () => {}, activeSession: { id: 's21c', axis: 'slag', title: 'Wedge-spinn 40–80m', meta: '90m · TM bay 3', week: 21, day: 1 }, setActiveSession: () => {}, toast: null, setToast: () => {}, facilities: WBP_INITIAL_FAC, setFacilities: () => {}, wizardOpen: false, setWizardOpen: () => {} }}>
+            <div className="wbp" style={{ position: 'relative', height: '100%' }}>
+              <WBP_SessionDetail
+                session={{ id: 's21c', axis: 'slag', title: 'Wedge-spinn 40–80m', meta: '90m · TM bay 3', week: 21, day: 1 }}
+                onClose={() => {}}
+              />
+            </div>
+          </PlanContext.Provider>
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="modals"
+        title="Modaler — også åpnbare direkte"
+        subtitle="Steg-for-steg i wizard-flyten."
+      >
+        <DCArtboard id="wbp-modal-fac" label="Modal: Fasiliteter (Steg 1)" width={820} height={780}>
+          <div className="wbp" style={{ position: 'relative', height: '100%' }}>
+            <PlanContext.Provider value={{ modal: 'facilities', setModal: () => {}, facilities: WBP_INITIAL_FAC, setFacilities: () => {} }}>
+              <WBP_ModalFacilities onClose={() => {}} />
+            </PlanContext.Provider>
+          </div>
+        </DCArtboard>
+        <DCArtboard id="wbp-modal-period" label="Modal: Ny periode (Steg 2)" width={640} height={820}>
+          <div className="wbp" style={{ position: 'relative', height: '100%' }}>
+            <PlanContext.Provider value={{ modal: 'period', setModal: () => {}, facilities: WBP_INITIAL_FAC, setFacilities: () => {} }}>
+              <WBP_ModalPeriod onClose={() => {}} />
+            </PlanContext.Provider>
+          </div>
+        </DCArtboard>
+        <DCArtboard id="wbp-modal-camp" label="Modal: Treningssamling — WANG Toppidrett" width={640} height={820}>
+          <div className="wbp" style={{ position: 'relative', height: '100%' }}>
+            <PlanContext.Provider value={{ modal: 'camp', setModal: () => {}, facilities: WBP_INITIAL_FAC, setFacilities: () => {} }}>
+              <WBP_ModalCamp onClose={() => {}} />
+            </PlanContext.Provider>
+          </div>
+        </DCArtboard>
+        <DCArtboard id="wbp-modal-freq" label="Modal: Ukentlig frekvens (Steg 5)" width={820} height={680}>
+          <div className="wbp" style={{ position: 'relative', height: '100%' }}>
+            <PlanContext.Provider value={{ modal: 'freq', setModal: () => {}, facilities: WBP_INITIAL_FAC, setFacilities: () => {} }}>
+              <WBP_ModalFreq onClose={() => {}} />
+            </PlanContext.Provider>
+          </div>
+        </DCArtboard>
+        <DCArtboard id="wbp-modal-tests" label="Modal: Test-velger med slot-picker" width={820} height={920}>
+          <div className="wbp" style={{ position: 'relative', height: '100%' }}>
+            <PlanContext.Provider value={{ modal: 'testpicker', setModal: () => {}, facilities: WBP_INITIAL_FAC, setFacilities: () => {} }}>
+              <WBP_ModalTestPicker onClose={() => {}} initialTestId="cmj" onAdded={() => {}} />
+            </PlanContext.Provider>
+          </div>
+        </DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+
+</body>
+</html>

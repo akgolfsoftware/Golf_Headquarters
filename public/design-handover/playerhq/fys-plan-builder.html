@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Vinter-grunntrening 2026 · FYS Plan-builder · AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --brand-primary:#005840; --brand-primary-dark:#003A2A;
+    --brand-accent:#D1F843; --brand-accent-deep:#BFE933;
+    --brand-primary-soft:#E8F0EC; --brand-accent-soft:#F4FBC9;
+    --brand-accent-tint:#FAFFE0;
+    --surface:#FAFAF7; --surface-card:#FFFFFF; --surface-tint:#F4F2EC;
+    --ink:#0A1F17; --ink-muted:#5E5C57; --ink-subtle:#9C9990;
+    --line:#E5E3DD; --line-soft:#EFEDE6;
+    --ok:#1A7D56; --warn:#B8852A; --danger:#A32D2D;
+    --r-card:16px; --r-btn:12px; --r-tag:8px;
+    --font-display:'Inter Tight',sans-serif;
+    --font-body:'Inter',sans-serif;
+    --font-mono:'JetBrains Mono',monospace;
+    --font-serif:'Instrument Serif',serif;
+    --sb-w:256px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--surface);color:var(--ink);font-family:var(--font-body);font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased;min-height:100vh}
+  button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+  a{color:inherit;text-decoration:none}
+  input{font:inherit}
+
+  .app{display:grid;grid-template-columns:var(--sb-w) 1fr;min-height:100vh}
+
+  /* ===== SIDEBAR ===== */
+  .sidebar{background:var(--brand-primary);color:#fff;padding:18px 16px;display:flex;flex-direction:column;gap:22px;position:sticky;top:0;height:100vh;overflow-y:auto}
+  .sb-brand{display:flex;align-items:center;gap:10px;padding:0 4px}
+  .sb-logo{width:32px;height:32px;border-radius:8px;background:var(--brand-accent);color:var(--brand-primary);display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:800;font-size:13px;letter-spacing:-.02em}
+  .sb-brand .name{font-family:var(--font-display);font-size:14px;font-weight:700;letter-spacing:.02em}
+  .sb-brand .meta{font-family:var(--font-mono);font-size:9.5px;color:rgba(209,248,67,.7);letter-spacing:.12em;text-transform:uppercase;display:block;margin-top:2px}
+  .sb-player{display:flex;align-items:center;gap:10px;padding:10px;background:rgba(255,255,255,.05);border:1px solid rgba(209,248,67,.16);border-radius:12px}
+  .sb-player .av{width:34px;height:34px;border-radius:50%;background:var(--brand-accent);color:var(--brand-primary);display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:12px;font-weight:800}
+  .sb-player .nm{font-family:var(--font-display);font-size:13px;font-weight:600;line-height:1.1}
+  .sb-player .meta{font-family:var(--font-mono);font-size:10px;color:rgba(255,255,255,.55);letter-spacing:.04em;margin-top:2px}
+  .nav-group{display:flex;flex-direction:column;gap:1px}
+  .nav-eyebrow{font-family:var(--font-mono);font-size:9.5px;color:rgba(209,248,67,.55);letter-spacing:.14em;text-transform:uppercase;padding:6px 10px 4px}
+  .nav-item{display:grid;grid-template-columns:18px 1fr auto;gap:10px;align-items:center;padding:8px 10px;border-radius:8px;color:rgba(255,255,255,.78);font-size:13px;cursor:pointer}
+  .nav-item svg{width:15px;height:15px;color:rgba(209,248,67,.55)}
+  .nav-item:hover{background:rgba(255,255,255,.05);color:#fff}
+  .nav-item .badge{font-family:var(--font-mono);font-size:9.5px;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(209,248,67,.15);color:var(--brand-accent);letter-spacing:.04em}
+  .nav-item.active{background:var(--brand-accent);color:var(--brand-primary-dark);font-weight:600}
+  .nav-item.active svg{color:var(--brand-primary)}
+  .nav-item.active .badge{background:var(--brand-primary);color:var(--brand-accent)}
+  .sb-foot{margin-top:auto;padding:10px;border-top:1px solid rgba(255,255,255,.10);display:flex;align-items:center;gap:8px}
+  .sb-foot .av{width:28px;height:28px;border-radius:50%;background:rgba(209,248,67,.18);color:var(--brand-accent);font-family:var(--font-display);font-size:11px;font-weight:800;display:inline-flex;align-items:center;justify-content:center}
+  .sb-foot .label{font-size:12px;font-weight:600}
+  .sb-foot .role{font-family:var(--font-mono);font-size:9.5px;color:rgba(209,248,67,.55);letter-spacing:.06em;text-transform:uppercase}
+
+  /* ===== MAIN ===== */
+  main{min-width:0;padding:0 0 80px}
+  .topbar{background:#fff;border-bottom:1px solid var(--line);padding:12px 32px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:30}
+  .crumb{font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);letter-spacing:.04em;display:flex;align-items:center;gap:6px}
+  .crumb b{color:var(--ink);font-weight:700}
+  .crumb .sep{color:var(--ink-subtle)}
+  .crumb a{color:var(--ink-muted)}
+  .crumb a:hover{color:var(--ink)}
+  .topbar .right{margin-left:auto;display:flex;align-items:center;gap:8px}
+
+  /* ===== PAGE HEAD ===== */
+  .page-head{background:#fff;border-bottom:1px solid var(--line);padding:24px 32px 22px}
+  .ph-row{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end}
+  .ph-status-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .eyebrow{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-muted);letter-spacing:.14em;text-transform:uppercase;font-weight:700}
+  .eyebrow b{color:var(--ink)}
+  .badge-pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-family:var(--font-mono);font-size:9.5px;font-weight:700;letter-spacing:.10em;text-transform:uppercase}
+  .badge-pill.active{background:rgba(26,125,86,.12);color:var(--ok)}
+  .badge-pill.active .dot{width:6px;height:6px;border-radius:50%;background:var(--ok);animation:pulse 1.8s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+  h1{font-family:var(--font-display);font-size:32px;font-weight:700;letter-spacing:-.022em;line-height:1.05;text-wrap:balance}
+  h1 em{font-family:var(--font-serif);font-style:italic;font-weight:400;color:var(--brand-primary)}
+  .ph-sub{margin-top:8px;font-family:var(--font-mono);font-size:11.5px;color:var(--ink-muted);letter-spacing:.06em}
+  .ph-sub b{color:var(--ink);font-weight:700;font-variant-numeric:tabular-nums}
+  .ph-sub .sep{margin:0 8px;color:var(--ink-subtle)}
+
+  .head-actions{display:flex;gap:8px;align-items:center}
+  .btn{border-radius:999px;padding:9px 14px;font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;gap:6px;line-height:1.1;cursor:pointer;font-family:var(--font-body);border:1px solid transparent}
+  .btn svg{width:13px;height:13px}
+  .btn.primary{background:var(--brand-primary);color:var(--brand-accent);box-shadow:0 6px 14px rgba(0,88,64,.18)}
+  .btn.primary:hover{background:var(--brand-primary-dark)}
+  .btn.lime{background:var(--brand-accent);color:var(--ink)}
+  .btn.lime:hover{background:var(--brand-accent-deep)}
+  .btn.outline{background:#fff;color:var(--ink);border-color:var(--line)}
+  .btn.outline:hover{background:var(--surface)}
+  .btn.ghost{background:transparent;color:var(--ink-muted)}
+  .btn.ghost:hover{color:var(--ink);background:var(--surface)}
+  .btn.sm{padding:6px 10px;font-size:11.5px}
+
+  /* ===== LAYOUT ===== */
+  .wrap{padding:24px 32px 60px;max-width:1620px;display:flex;flex-direction:column;gap:24px}
+
+  /* ===== SUMMARY STRIP (above weeks) ===== */
+  .summary-strip{display:grid;grid-template-columns:1.05fr 1fr 1.45fr 1.25fr;gap:14px}
+  @media (max-width:1320px){.summary-strip{grid-template-columns:1fr 1fr;}}
+  @media (max-width:760px){.summary-strip{grid-template-columns:1fr}}
+  .summary-strip .rail-card{margin:0}
+  .summary-strip .rc-progress{padding:2px 0}
+  .summary-strip .rc-progress .big{font-size:44px}
+  .summary-strip .rc-rows .rc-row{padding:6px 0}
+  .summary-strip .rc-title{margin-bottom:8px}
+  .summary-strip .rail-card{padding:16px}
+
+  /* weeks-section heading */
+  .weeks-head{display:flex;align-items:center;gap:12px;padding-bottom:4px}
+  .weeks-head .eyb{font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);letter-spacing:.14em;text-transform:uppercase;font-weight:700}
+  .weeks-head .eyb b{color:var(--ink)}
+  .weeks-head .count-pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-family:var(--font-mono);font-size:9.5px;font-weight:700;letter-spacing:.10em;text-transform:uppercase;background:var(--brand-accent-soft);color:var(--brand-primary-dark)}
+  .weeks-head .right{margin-left:auto;display:flex;gap:6px;align-items:center;font-family:var(--font-mono);font-size:10.5px;color:var(--ink-muted);letter-spacing:.06em}
+
+  /* ===== WEEK ACCORDION ===== */
+  .week{background:#fff;border:1px solid var(--line);border-radius:var(--r-card);margin-bottom:14px;overflow:hidden;transition:box-shadow 160ms,border-color 160ms}
+  .week.open{box-shadow:0 4px 16px rgba(0,88,64,.06);border-color:rgba(0,88,64,.18)}
+  .week-head{display:grid;grid-template-columns:auto 1fr auto auto auto;gap:18px;align-items:center;padding:18px 22px;cursor:pointer;user-select:none}
+  .week.open .week-head{border-bottom:1px solid var(--line-soft)}
+  .wh-num{display:flex;flex-direction:column;gap:2px;min-width:90px}
+  .wh-num .eyb{font-family:var(--font-mono);font-size:9.5px;font-weight:700;color:var(--ink-muted);letter-spacing:.16em;text-transform:uppercase}
+  .wh-num .v{font-family:var(--font-display);font-size:22px;font-weight:700;letter-spacing:-.02em;line-height:1}
+  .wh-num .v em{font-family:var(--font-serif);font-style:italic;font-weight:400;color:var(--brand-primary)}
+  .wh-title{display:flex;flex-direction:column;gap:3px;min-width:0}
+  .wh-title .phase{font-family:var(--font-mono);font-size:10px;color:var(--brand-primary);font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+  .wh-title .name{font-family:var(--font-display);font-size:17px;font-weight:600;letter-spacing:-.01em;line-height:1.2}
+  .wh-title .name em{font-family:var(--font-serif);font-style:italic;font-weight:400;color:var(--brand-primary)}
+  .wh-meta{display:flex;gap:18px;font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);letter-spacing:.04em;font-variant-numeric:tabular-nums;border-left:1px solid var(--line-soft);padding-left:18px}
+  .wh-meta .m{display:flex;flex-direction:column;gap:1px}
+  .wh-meta .m b{color:var(--ink);font-weight:700;font-size:13px;letter-spacing:-.01em}
+
+  .wh-prog{display:flex;align-items:center;gap:10px;min-width:140px}
+  .wh-prog-bar{flex:1;height:6px;background:var(--line-soft);border-radius:999px;overflow:hidden}
+  .wh-prog-bar>div{height:100%;background:linear-gradient(90deg,var(--brand-accent),var(--brand-primary));border-radius:999px}
+  .wh-prog .pct{font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;min-width:30px;text-align:right}
+
+  .wh-chev{width:30px;height:30px;border-radius:50%;background:var(--surface);color:var(--ink-muted);display:inline-flex;align-items:center;justify-content:center;transition:transform 200ms,background 160ms,color 160ms}
+  .wh-chev svg{width:14px;height:14px}
+  .week.open .wh-chev{background:var(--brand-primary);color:var(--brand-accent);transform:rotate(90deg)}
+
+  .week-body{display:none;padding:18px 22px 22px;background:#FBFAF5;display:flex;flex-direction:column;gap:14px}
+  .week.collapsed .week-body{display:none}
+  .week.open .week-body{display:flex}
+
+  /* ===== SESSION CARD ===== */
+  .session{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .s-head{display:grid;grid-template-columns:auto auto 1fr auto auto;gap:12px;align-items:center;padding:12px 16px;background:var(--surface-tint);border-bottom:1px solid var(--line-soft)}
+  .day-chip{display:inline-flex;align-items:center;justify-content:center;padding:5px 10px;border-radius:8px;background:var(--brand-primary);color:var(--brand-accent);font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;min-width:46px}
+  .day-chip.rest{background:var(--surface-card);color:var(--ink-muted);border:1px dashed var(--line)}
+  .s-label{font-family:var(--font-mono);font-size:9.5px;font-weight:700;color:var(--ink-muted);letter-spacing:.14em;text-transform:uppercase}
+  .s-title{font-family:var(--font-display);font-size:15px;font-weight:600;letter-spacing:-.01em;line-height:1.2}
+  .s-title em{font-family:var(--font-serif);font-style:italic;font-weight:400;color:var(--brand-primary)}
+  .s-meta{font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);letter-spacing:.04em;font-variant-numeric:tabular-nums;display:flex;align-items:center;gap:10px}
+  .s-meta b{color:var(--ink);font-weight:700}
+
+  /* ===== EXERCISE TABLE ===== */
+  table.ex{width:100%;border-collapse:collapse;font-family:var(--font-body)}
+  table.ex thead th{font-family:var(--font-mono);font-size:9.5px;color:var(--ink-muted);letter-spacing:.12em;text-transform:uppercase;font-weight:700;text-align:left;padding:10px 12px;border-bottom:1px solid var(--line-soft);background:#fff}
+  table.ex thead th.r{text-align:right}
+  table.ex thead th.c{text-align:center}
+  table.ex tbody td{padding:12px;border-bottom:1px solid var(--line-soft);vertical-align:middle}
+  table.ex tbody tr:last-child td{border-bottom:0}
+  table.ex tbody tr:hover{background:#FAFAF7}
+
+  .ex-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:var(--surface-tint);color:var(--ink);font-family:var(--font-mono);font-size:11px;font-weight:700;font-variant-numeric:tabular-nums}
+  .ex-name{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .ex-name .nm{font-family:var(--font-display);font-size:14px;font-weight:600;letter-spacing:-.005em;color:var(--ink);line-height:1.2}
+  .ex-name .muscle{font-family:var(--font-mono);font-size:9.5px;color:var(--ink-muted);letter-spacing:.10em;text-transform:uppercase;font-weight:600}
+
+  .pill{display:inline-flex;align-items:center;justify-content:center;padding:5px 10px;border-radius:8px;font-family:var(--font-mono);font-size:12px;font-weight:700;letter-spacing:.02em;font-variant-numeric:tabular-nums;background:var(--surface);color:var(--ink);min-width:48px;border:1px solid var(--line-soft);text-align:center}
+  .pill.primary{background:var(--brand-primary-soft);color:var(--brand-primary);border-color:rgba(0,88,64,.16)}
+  .pill.accent{background:var(--brand-accent-tint);color:#3B4310;border-color:rgba(184,206,30,.30)}
+  .pill.ghost{background:transparent;color:var(--ink-muted);border-color:var(--line)}
+
+  .log-cell{display:flex;flex-direction:column;gap:3px;min-width:0}
+  .log-cell.empty{color:var(--ink-subtle);font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;font-style:italic}
+  .log-cell .v{font-family:var(--font-mono);font-size:12.5px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.005em}
+  .log-cell .v b{color:var(--brand-primary)}
+  .log-cell .v .sep{color:var(--ink-subtle);margin:0 5px}
+  .log-cell .reps{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-muted);letter-spacing:.04em;font-variant-numeric:tabular-nums}
+  .log-cell .reps b{color:var(--ink)}
+  .log-trigger{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:8px;border:1px dashed var(--line);background:transparent;color:var(--ink-muted);font-family:var(--font-mono);font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+  .log-trigger:hover{border-color:var(--brand-primary);color:var(--brand-primary);background:var(--brand-primary-soft)}
+  .log-trigger svg{width:11px;height:11px}
+
+  .ex-actions{display:flex;gap:4px;justify-content:flex-end}
+  .ex-actions .ico{width:28px;height:28px;border-radius:6px;color:var(--ink-subtle);display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+  .ex-actions .ico:hover{background:var(--surface);color:var(--ink)}
+  .ex-actions .ico svg{width:14px;height:14px}
+
+  /* ===== RIGHT RAIL ===== */
+  .rail{display:flex;flex-direction:column;gap:14px;position:sticky;top:80px;align-self:start}
+  .rail-card{background:#fff;border:1px solid var(--line);border-radius:var(--r-card);padding:18px}
+  .rail-card.tint{background:var(--brand-primary);color:#fff;border-color:var(--brand-primary)}
+  .rail-card.accent{background:var(--brand-accent-tint);border-color:rgba(184,206,30,.30)}
+
+  .rc-eyebrow{font-family:var(--font-mono);font-size:10px;color:var(--ink-muted);letter-spacing:.14em;text-transform:uppercase;font-weight:700;margin-bottom:8px}
+  .rail-card.tint .rc-eyebrow{color:rgba(209,248,67,.65)}
+  .rc-title{font-family:var(--font-display);font-size:16px;font-weight:600;letter-spacing:-.01em;margin-bottom:12px}
+  .rc-title em{font-family:var(--font-serif);font-style:italic;font-weight:400;color:var(--brand-primary)}
+
+  .rc-rows{display:flex;flex-direction:column}
+  .rc-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--line-soft)}
+  .rc-row:last-child{border-bottom:0}
+  .rail-card.tint .rc-row{border-bottom-color:rgba(255,255,255,.10)}
+  .rc-row .k{font-size:12px;color:var(--ink-muted)}
+  .rail-card.tint .rc-row .k{color:rgba(255,255,255,.65)}
+  .rc-row .v{font-family:var(--font-mono);font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.005em;color:var(--ink)}
+  .rail-card.tint .rc-row .v{color:#fff}
+  .rc-row .v .unit{color:var(--ink-subtle);font-weight:500;font-size:10.5px;margin-left:3px}
+  .rail-card.tint .rc-row .v .unit{color:rgba(255,255,255,.45)}
+
+  .rc-progress{display:flex;flex-direction:column;align-items:center;gap:8px;padding:8px 0 6px}
+  .rc-progress .big{font-family:var(--font-display);font-size:56px;font-weight:700;letter-spacing:-.03em;line-height:1;color:var(--brand-primary)}
+  .rc-progress .big em{font-family:var(--font-serif);font-style:italic;font-weight:400;color:var(--brand-primary)}
+  .rc-progress .lbl{font-family:var(--font-mono);font-size:10px;color:var(--ink-muted);letter-spacing:.14em;text-transform:uppercase;font-weight:700}
+  .rc-bar{height:8px;width:100%;background:var(--line-soft);border-radius:999px;overflow:hidden;margin-top:6px}
+  .rc-bar>div{height:100%;background:linear-gradient(90deg,var(--brand-accent),var(--brand-primary));border-radius:999px}
+  .rc-hint{margin-top:10px;font-family:var(--font-body);font-size:12px;color:var(--ink-muted);line-height:1.55}
+  .rc-hint b{color:var(--ink);font-weight:600}
+
+  .rc-ai{display:flex;flex-direction:column;gap:10px}
+  .rc-ai .badge{display:inline-flex;align-items:center;gap:6px;padding:3px 8px;border-radius:999px;background:#fff;color:var(--brand-primary);font-family:var(--font-mono);font-size:9.5px;font-weight:700;letter-spacing:.10em;text-transform:uppercase;width:fit-content;border:1px solid rgba(0,88,64,.20)}
+  .rc-ai .badge svg{width:10px;height:10px}
+  .rc-ai .msg{font-family:var(--font-body);font-size:13px;line-height:1.55;color:var(--ink)}
+  .rc-ai .msg b{font-weight:700}
+  .rc-ai .msg em{font-family:var(--font-serif);font-style:italic;color:var(--brand-primary);font-weight:400}
+  .rc-ai-actions{display:flex;gap:6px;margin-top:4px}
+
+  /* status stamp on featured row */
+  .ex-row-active td{background:rgba(209,248,67,.08)}
+</style>
+</head>
+<body>
+
+<svg style="display:none">
+  <defs>
+    <symbol id="i-dumbbell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5l11 11"/><path d="M21 21l-1-1"/><path d="M3 3l1 1"/><path d="M18 22l4-4"/><path d="M2 6l4-4"/><path d="M3 10l7-7"/><path d="M14 21l7-7"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+    <symbol id="i-arrow-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+    <symbol id="i-arrow-l" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></symbol>
+    <symbol id="i-chev-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></symbol>
+    <symbol id="i-template" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></symbol>
+    <symbol id="i-message" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></symbol>
+    <symbol id="i-sparkle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6z"/></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></symbol>
+    <symbol id="i-drag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></symbol>
+  </defs>
+</svg>
+
+<div class="app">
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="sb-brand">
+      <div class="sb-logo">AK</div>
+      <div>
+        <div class="name">AK Golf HQ</div>
+        <span class="meta">PlayerHQ</span>
+      </div>
+    </div>
+    <div class="sb-player">
+      <div class="av">AK</div>
+      <div>
+        <div class="nm">Anders Kristiansen</div>
+        <div class="meta">HCP +1.4 · 17 år</div>
+      </div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-eyebrow">Spille</div>
+      <div class="nav-item"><svg><use href="#i-home"/></svg><span>Hjem</span></div>
+      <div class="nav-item"><svg><use href="#i-flag"/></svg><span>Runder</span></div>
+      <div class="nav-item"><svg><use href="#i-target"/></svg><span>Innsikt</span></div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-eyebrow">Tren</div>
+      <div class="nav-item"><svg><use href="#i-template"/></svg><span>Tekniske planer</span><span class="badge">2</span></div>
+      <div class="nav-item active"><svg><use href="#i-dumbbell"/></svg><span>Fysiske planer</span><span class="badge">3</span></div>
+      <div class="nav-item"><svg><use href="#i-calendar"/></svg><span>Kalender</span></div>
+      <div class="nav-item"><svg><use href="#i-chart"/></svg><span>Tester</span></div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-eyebrow">Coach</div>
+      <div class="nav-item"><svg><use href="#i-message"/></svg><span>Meldinger</span></div>
+      <div class="nav-item"><svg><use href="#i-users"/></svg><span>Mitt team</span></div>
+    </div>
+    <div class="sb-foot">
+      <div class="av">AK</div>
+      <div>
+        <div class="label">Anders K.</div>
+        <div class="role">Spiller</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main>
+    <header class="topbar">
+      <button class="btn ghost sm"><svg><use href="#i-arrow-l"/></svg> Tilbake</button>
+      <div class="crumb">
+        <a>Tren</a> <span class="sep">›</span>
+        <a>Fysiske planer</a> <span class="sep">›</span>
+        <b>Vinter-grunntrening 2026</b>
+      </div>
+      <div class="right">
+        <button class="btn outline sm"><svg><use href="#i-share"/></svg> Del med coach</button>
+        <button class="btn outline sm"><svg><use href="#i-template"/></svg> Lagre som mal</button>
+        <button class="btn ghost sm"><svg><use href="#i-more"/></svg></button>
+      </div>
+    </header>
+
+    <section class="page-head">
+      <div class="ph-row">
+        <div>
+          <div class="ph-status-row">
+            <span class="eyebrow">FYS-PLAN · <b>VINTER 2026</b></span>
+            <span class="badge-pill active"><span class="dot"></span>Aktiv</span>
+            <span class="eyebrow" style="color:var(--ink-subtle)">Synker · 22. mai 14:32</span>
+          </div>
+          <h1>Vinter-grunntrening 2026 <em>· vinter</em></h1>
+          <div class="ph-sub">
+            <b>8 uker</b> <span class="sep">·</span>
+            <b>24 økter</b> <span class="sep">·</span>
+            <b>96 øvelser</b> <span class="sep">·</span>
+            <b>288 totale sett</b> <span class="sep">·</span>
+            17. nov → 12. jan
+          </div>
+        </div>
+        <div class="head-actions">
+          <button class="btn outline"><svg><use href="#i-plus"/></svg> Ny uke</button>
+          <button class="btn primary"><svg><use href="#i-check"/></svg> Publiser endringer</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="wrap">
+
+      <!-- ============ SUMMARY STRIP (above weeks) ============ -->
+      <section class="summary-strip">
+
+        <div class="rail-card">
+          <div class="rc-eyebrow">PLAN-SAMMENDRAG</div>
+          <div class="rc-title">Vinter-grunntrening <em>· 2026</em></div>
+          <div class="rc-rows">
+            <div class="rc-row"><span class="k">Periode</span><span class="v">17. nov – 12. jan</span></div>
+            <div class="rc-row"><span class="k">Uker · økter</span><span class="v">8 <span class="unit">·</span> 24</span></div>
+            <div class="rc-row"><span class="k">Øvelser · sett</span><span class="v">96 <span class="unit">·</span> 288</span></div>
+            <div class="rc-row"><span class="k">Snitt RIR</span><span class="v">2.3</span></div>
+          </div>
+        </div>
+
+        <div class="rail-card">
+          <div class="rc-eyebrow">LOGG-FREMGANG</div>
+          <div class="rc-progress">
+            <div class="big">67<em>%</em></div>
+            <div class="lbl">økter logget · 16 / 24</div>
+            <div class="rc-bar"><div style="width:67%"></div></div>
+          </div>
+          <p class="rc-hint" style="margin-top:8px">Logg etter hver økt for å spore <b>faktisk volum, RPE og belastning</b>.</p>
+        </div>
+
+        <div class="rail-card accent">
+          <div class="rc-ai">
+            <span class="badge"><svg><use href="#i-sparkle"/></svg> Coach-anbefaling</span>
+            <p class="msg"><b>Anders,</b> øk belastning på <em>knebøy</em> med <b>+5%</b> neste uke. Du har hatt <b>RIR 3+</b> i 3 økter på rad — kroppen er klar for tyngre.</p>
+            <div class="rc-ai-actions">
+              <button class="btn primary sm">Bruk endring</button>
+              <button class="btn outline sm">Senere</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="rail-card tint">
+          <div class="rc-eyebrow">VOLUM PER UKE</div>
+          <div class="rc-title" style="color:#fff;margin-bottom:14px;display:flex;align-items:baseline;gap:8px">12 800 kg <span style="font-family:var(--font-mono);font-size:11px;color:rgba(209,248,67,.65);letter-spacing:.06em;font-weight:500">+8% vs forrige</span></div>
+          <div style="display:flex;align-items:flex-end;gap:5px;height:54px">
+            <div style="flex:1;background:rgba(209,248,67,.20);border-radius:3px 3px 0 0;height:42%"></div>
+            <div style="flex:1;background:rgba(209,248,67,.20);border-radius:3px 3px 0 0;height:55%"></div>
+            <div style="flex:1;background:rgba(209,248,67,.20);border-radius:3px 3px 0 0;height:48%"></div>
+            <div style="flex:1;background:rgba(209,248,67,.20);border-radius:3px 3px 0 0;height:68%"></div>
+            <div style="flex:1;background:rgba(209,248,67,.20);border-radius:3px 3px 0 0;height:60%"></div>
+            <div style="flex:1;background:rgba(209,248,67,.20);border-radius:3px 3px 0 0;height:78%"></div>
+            <div style="flex:1;background:rgba(209,248,67,.20);border-radius:3px 3px 0 0;height:72%"></div>
+            <div style="flex:1;background:var(--brand-accent);border-radius:3px 3px 0 0;height:94%"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:8px;font-family:var(--font-mono);font-size:9.5px;color:rgba(209,248,67,.45);letter-spacing:.06em"><span>U14</span><span>U18</span><span>U21 (nå)</span></div>
+        </div>
+
+      </section>
+
+      <!-- ============ WEEKS SECTION ============ -->
+      <header class="weeks-head">
+        <span class="eyb">UKE-PLAN · <b>8 uker</b></span>
+        <span class="count-pill"><span style="width:6px;height:6px;border-radius:50%;background:var(--brand-primary)"></span>3/8 logget</span>
+        <span class="right">Klikk på en uke for å åpne</span>
+      </header>
+
+        <!-- ============ WEEK 1 — OPEN ============ -->
+        <article class="week open">
+          <header class="week-head">
+            <div class="wh-num">
+              <span class="eyb">UKE 21 · MAI</span>
+              <span class="v">Uke <em>3</em>/8</span>
+            </div>
+            <div class="wh-title">
+              <span class="phase">FASE · AKKUMULERING</span>
+              <span class="name">Volum-blokk <em>· hypertrofi</em></span>
+            </div>
+            <div class="wh-meta">
+              <div class="m"><b>3</b><span>økter</span></div>
+              <div class="m"><b>12</b><span>øvelser</span></div>
+              <div class="m"><b>36</b><span>sett</span></div>
+            </div>
+            <div class="wh-prog">
+              <div class="wh-prog-bar"><div style="width:67%"></div></div>
+              <span class="pct">67%</span>
+            </div>
+            <div class="wh-chev"><svg><use href="#i-chev-r"/></svg></div>
+          </header>
+
+          <div class="week-body">
+
+            <!-- SESSION A -->
+            <section class="session">
+              <header class="s-head">
+                <span class="day-chip">MAN</span>
+                <span class="s-label">ØKT A</span>
+                <div>
+                  <div class="s-title">Underkropp + core <em>· tung</em></div>
+                </div>
+                <span class="s-meta"><b>70</b> min <span style="color:var(--ink-subtle)">·</span> <b>4</b> øvelser</span>
+                <button class="btn outline sm"><svg><use href="#i-plus"/></svg> Øvelse</button>
+              </header>
+
+              <table class="ex">
+                <thead>
+                  <tr>
+                    <th style="width:46px">#</th>
+                    <th>Øvelse</th>
+                    <th class="c" style="width:60px">Sett</th>
+                    <th class="c" style="width:70px">Reps</th>
+                    <th class="c" style="width:70px">Hvile</th>
+                    <th class="c" style="width:74px">% 1RM</th>
+                    <th class="c" style="width:74px">RIR</th>
+                    <th style="width:200px">Logg</th>
+                    <th style="width:60px"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="ex-num">1</span></td>
+                    <td><div class="ex-name"><span class="nm">Knebøy m/ stang</span><span class="muscle">QUADRICEPS · GLUTES</span></div></td>
+                    <td class="c"><span class="pill">4</span></td>
+                    <td class="c"><span class="pill">8–10</span></td>
+                    <td class="c"><span class="pill">90s</span></td>
+                    <td class="c"><span class="pill primary">75%</span></td>
+                    <td class="c"><span class="pill accent">RIR 2</span></td>
+                    <td><div class="log-cell"><span class="v">4 sett <span class="sep">·</span> <b>80 kg</b></span><span class="reps">reps: <b>10 · 9 · 9 · 8</b></span></div></td>
+                    <td class="ex-actions"><span class="ico"><svg><use href="#i-edit"/></svg></span><span class="ico"><svg><use href="#i-drag"/></svg></span></td>
+                  </tr>
+                  <tr class="ex-row-active">
+                    <td><span class="ex-num">2</span></td>
+                    <td><div class="ex-name"><span class="nm">Rumensk markløft</span><span class="muscle">HAMSTRINGS · LOWER BACK</span></div></td>
+                    <td class="c"><span class="pill">3</span></td>
+                    <td class="c"><span class="pill">10</span></td>
+                    <td class="c"><span class="pill">75s</span></td>
+                    <td class="c"><span class="pill primary">70%</span></td>
+                    <td class="c"><span class="pill accent">RIR 2</span></td>
+                    <td><button class="log-trigger"><svg><use href="#i-plus"/></svg> Logg sett</button></td>
+                    <td class="ex-actions"><span class="ico"><svg><use href="#i-edit"/></svg></span><span class="ico"><svg><use href="#i-drag"/></svg></span></td>
+                  </tr>
+                  <tr>
+                    <td><span class="ex-num">3</span></td>
+                    <td><div class="ex-name"><span class="nm">Utfall m/ manualer</span><span class="muscle">GLUTES · QUADRICEPS · STABILITET</span></div></td>
+                    <td class="c"><span class="pill">3</span></td>
+                    <td class="c"><span class="pill">12/side</span></td>
+                    <td class="c"><span class="pill">60s</span></td>
+                    <td class="c"><span class="pill ghost">—</span></td>
+                    <td class="c"><span class="pill accent">RIR 3</span></td>
+                    <td><div class="log-cell empty">Ikke logget</div></td>
+                    <td class="ex-actions"><span class="ico"><svg><use href="#i-edit"/></svg></span><span class="ico"><svg><use href="#i-drag"/></svg></span></td>
+                  </tr>
+                  <tr>
+                    <td><span class="ex-num">4</span></td>
+                    <td><div class="ex-name"><span class="nm">Plank-rotasjon</span><span class="muscle">CORE · OBLIQUES · GOLF-ROTASJON</span></div></td>
+                    <td class="c"><span class="pill">3</span></td>
+                    <td class="c"><span class="pill">30s</span></td>
+                    <td class="c"><span class="pill">45s</span></td>
+                    <td class="c"><span class="pill ghost">—</span></td>
+                    <td class="c"><span class="pill accent">RIR 2</span></td>
+                    <td><div class="log-cell empty">Ikke logget</div></td>
+                    <td class="ex-actions"><span class="ico"><svg><use href="#i-edit"/></svg></span><span class="ico"><svg><use href="#i-drag"/></svg></span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
+
+            <!-- SESSION B -->
+            <section class="session">
+              <header class="s-head">
+                <span class="day-chip">ONS</span>
+                <span class="s-label">ØKT B</span>
+                <div><div class="s-title">Overkropp + rotasjon</div></div>
+                <span class="s-meta"><b>60</b> min <span style="color:var(--ink-subtle)">·</span> <b>4</b> øvelser</span>
+                <button class="btn outline sm"><svg><use href="#i-plus"/></svg> Øvelse</button>
+              </header>
+
+              <table class="ex">
+                <thead>
+                  <tr>
+                    <th style="width:46px">#</th>
+                    <th>Øvelse</th>
+                    <th class="c" style="width:60px">Sett</th>
+                    <th class="c" style="width:70px">Reps</th>
+                    <th class="c" style="width:70px">Hvile</th>
+                    <th class="c" style="width:74px">% 1RM</th>
+                    <th class="c" style="width:74px">RIR</th>
+                    <th style="width:200px">Logg</th>
+                    <th style="width:60px"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="ex-num">1</span></td>
+                    <td><div class="ex-name"><span class="nm">Benkpress</span><span class="muscle">CHEST · TRICEPS</span></div></td>
+                    <td class="c"><span class="pill">4</span></td>
+                    <td class="c"><span class="pill">6–8</span></td>
+                    <td class="c"><span class="pill">90s</span></td>
+                    <td class="c"><span class="pill primary">80%</span></td>
+                    <td class="c"><span class="pill accent">RIR 2</span></td>
+                    <td><div class="log-cell"><span class="v">4 sett <span class="sep">·</span> <b>70 kg</b></span><span class="reps">reps: <b>8 · 7 · 7 · 6</b></span></div></td>
+                    <td class="ex-actions"><span class="ico"><svg><use href="#i-edit"/></svg></span><span class="ico"><svg><use href="#i-drag"/></svg></span></td>
+                  </tr>
+                  <tr>
+                    <td><span class="ex-num">2</span></td>
+                    <td><div class="ex-name"><span class="nm">Pull-up m/ tilleggsvekt</span><span class="muscle">LATS · BICEPS · GRIP</span></div></td>
+                    <td class="c"><span class="pill">4</span></td>
+                    <td class="c"><span class="pill">6</span></td>
+                    <td class="c"><span class="pill">120s</span></td>
+                    <td class="c"><span class="pill primary">85%</span></td>
+                    <td class="c"><span class="pill accent">RIR 1</span></td>
+                    <td><div class="log-cell"><span class="v">4 sett <span class="sep">·</span> <b>+10 kg</b></span><span class="reps">reps: <b>6 · 6 · 5 · 5</b></span></div></td>
+                    <td class="ex-actions"><span class="ico"><svg><use href="#i-edit"/></svg></span><span class="ico"><svg><use href="#i-drag"/></svg></span></td>
+                  </tr>
+                  <tr>
+                    <td><span class="ex-num">3</span></td>
+                    <td><div class="ex-name"><span class="nm">Kabel-rotasjon (Pallof)</span><span class="muscle">CORE · OBLIQUES · ANTI-ROTASJON</span></div></td>
+                    <td class="c"><span class="pill">3</span></td>
+                    <td class="c"><span class="pill">10/side</span></td>
+                    <td class="c"><span class="pill">60s</span></td>
+                    <td class="c"><span class="pill ghost">—</span></td>
+                    <td class="c"><span class="pill accent">RIR 2</span></td>
+                    <td><div class="log-cell empty">Ikke logget</div></td>
+                    <td class="ex-actions"><span class="ico"><svg><use href="#i-edit"/></svg></span><span class="ico"><svg><use href="#i-drag"/></svg></span></td>
+                  </tr>
+                  <tr>
+                    <td><span class="ex-num">4</span></td>
+                    <td><div class="ex-name"><span class="nm">Skulder Y-T-W</span><span class="muscle">REAR DELTS · TRAPS</span></div></td>
+                    <td class="c"><span class="pill">3</span></td>
+                    <td class="c"><span class="pill">12</span></td>
+                    <td class="c"><span class="pill">45s</span></td>
+                    <td class="c"><span class="pill ghost">—</span></td>
+                    <td class="c"><span class="pill accent">RIR 3</span></td>
+                    <td><div class="log-cell empty">Ikke logget</div></td>
+                    <td class="ex-actions"><span class="ico"><svg><use href="#i-edit"/></svg></span><span class="ico"><svg><use href="#i-drag"/></svg></span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
+
+            <!-- SESSION C -->
+            <section class="session">
+              <header class="s-head">
+                <span class="day-chip">FRE</span>
+                <span class="s-label">ØKT C</span>
+                <div><div class="s-title">Power + speed <em>· eksplosivitet</em></div></div>
+                <span class="s-meta"><b>55</b> min <span style="color:var(--ink-subtle)">·</span> <b>4</b> øvelser</span>
+                <button class="btn outline sm"><svg><use href="#i-plus"/></svg> Øvelse</button>
+              </header>
+
+              <table class="ex">
+                <thead>
+                  <tr>
+                    <th style="width:46px">#</th>
+                    <th>Øvelse</th>
+                    <th class="c" style="width:60px">Sett</th>
+                    <th class="c" style="width:70px">Reps</th>
+                    <th class="c" style="width:70px">Hvile</th>
+                    <th class="c" style="width:74px">% 1RM</th>
+                    <th class="c" style="width:74px">RIR</th>
+                    <th style="width:200px">Logg</th>
+                    <th style="width:60px"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="ex-num">1</span></td>
+                    <td><div class="ex-name"><span class="nm">Hekke-hopp</span><span class="muscle">EKSPLOSIV KRAFT · ANKLES</span></div></td>
+                    <td class="c"><span class="pill">5</span></td>
+                    <td class="c"><span class="pill">5</span></td>
+                    <td class="c"><span class="pill">120s</span></td>
+                    <td class="c"><span class="pill ghost">—</span></td>
+                    <td class="c"><span class="pill accent">RIR 4</span></td>
+                    <td><div class="log-cell empty">Ikke logget · planlagt fredag</div></td>
+                    <td class="ex-actions"><span class="ico"><svg><use href="#i-edit"/></svg></span><span class="ico"><svg><use href="#i-drag"/></svg></span></td>
+                  </tr>
+                  <tr>
+                    <td><span class="ex-num">2</span></td>
+                    <td><div class="ex-name"><span class="nm">Medisinball-kast (rotasjon)</span><span class="muscle">CORE · POWER · GOLF-SVING</span></div></td>
+                    <td class="c"><span class="pill">4</span></td>
+                    <td class="c"><span class="pill">6/side</span></td>
+                    <td class="c"><span class="pill">90s</span></td>
+                    <td class="c"><span class="pill ghost">—</span></td>
+                    <td class="c"><span class="pill accent">RIR 3</span></td>
+                    <td><div class="log-cell empty">Ikke logget · planlagt fredag</div></td>
+                    <td class="ex-actions"><span class="ico"><svg><use href="#i-edit"/></svg></span><span class="ico"><svg><use href="#i-drag"/></svg></span></td>
+                  </tr>
+                  <tr>
+                    <td><span class="ex-num">3</span></td>
+                    <td><div class="ex-name"><span class="nm">Kettlebell swings</span><span class="muscle">POSTERIOR CHAIN · POWER</span></div></td>
+                    <td class="c"><span class="pill">4</span></td>
+                    <td class="c"><span class="pill">12</span></td>
+                    <td class="c"><span class="pill">60s</span></td>
+                    <td class="c"><span class="pill ghost">—</span></td>
+                    <td class="c"><span class="pill accent">RIR 2</span></td>
+                    <td><div class="log-cell empty">Ikke logget · planlagt fredag</div></td>
+                    <td class="ex-actions"><span class="ico"><svg><use href="#i-edit"/></svg></span><span class="ico"><svg><use href="#i-drag"/></svg></span></td>
+                  </tr>
+                  <tr>
+                    <td><span class="ex-num">4</span></td>
+                    <td><div class="ex-name"><span class="nm">Dead bug + cable</span><span class="muscle">CORE · STABILITET</span></div></td>
+                    <td class="c"><span class="pill">3</span></td>
+                    <td class="c"><span class="pill">8/side</span></td>
+                    <td class="c"><span class="pill">45s</span></td>
+                    <td class="c"><span class="pill ghost">—</span></td>
+                    <td class="c"><span class="pill accent">RIR 3</span></td>
+                    <td><div class="log-cell empty">Ikke logget · planlagt fredag</div></td>
+                    <td class="ex-actions"><span class="ico"><svg><use href="#i-edit"/></svg></span><span class="ico"><svg><use href="#i-drag"/></svg></span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
+
+          </div>
+        </article>
+
+        <!-- ============ WEEK 2 — COLLAPSED ============ -->
+        <article class="week collapsed">
+          <header class="week-head">
+            <div class="wh-num">
+              <span class="eyb">UKE 22 · MAI/JUN</span>
+              <span class="v">Uke <em>4</em>/8</span>
+            </div>
+            <div class="wh-title">
+              <span class="phase">FASE · AKKUMULERING</span>
+              <span class="name">Volum-blokk <em>· hypertrofi (uke 2)</em></span>
+            </div>
+            <div class="wh-meta">
+              <div class="m"><b>3</b><span>økter</span></div>
+              <div class="m"><b>12</b><span>øvelser</span></div>
+              <div class="m"><b>36</b><span>sett</span></div>
+            </div>
+            <div class="wh-prog">
+              <div class="wh-prog-bar"><div style="width:0%"></div></div>
+              <span class="pct">0%</span>
+            </div>
+            <div class="wh-chev"><svg><use href="#i-chev-r"/></svg></div>
+          </header>
+        </article>
+
+        <!-- ============ WEEK 3 — COLLAPSED ============ -->
+        <article class="week collapsed">
+          <header class="week-head">
+            <div class="wh-num">
+              <span class="eyb">UKE 23 · JUN</span>
+              <span class="v">Uke <em>5</em>/8</span>
+            </div>
+            <div class="wh-title">
+              <span class="phase">FASE · INTENSIFISERING</span>
+              <span class="name">Styrke-blokk <em>· tung</em></span>
+            </div>
+            <div class="wh-meta">
+              <div class="m"><b>3</b><span>økter</span></div>
+              <div class="m"><b>12</b><span>øvelser</span></div>
+              <div class="m"><b>36</b><span>sett</span></div>
+            </div>
+            <div class="wh-prog">
+              <div class="wh-prog-bar"><div style="width:0%"></div></div>
+              <span class="pct">0%</span>
+            </div>
+            <div class="wh-chev"><svg><use href="#i-chev-r"/></svg></div>
+          </header>
+        </article>
+
+        <!-- ============ WEEK 4 — COLLAPSED, DELOAD ============ -->
+        <article class="week collapsed">
+          <header class="week-head">
+            <div class="wh-num">
+              <span class="eyb">UKE 24 · JUN</span>
+              <span class="v">Uke <em>6</em>/8</span>
+            </div>
+            <div class="wh-title">
+              <span class="phase" style="color:var(--warn)">FASE · DELOAD</span>
+              <span class="name">Aktiv hvile <em>· redusert volum</em></span>
+            </div>
+            <div class="wh-meta">
+              <div class="m"><b>2</b><span>økter</span></div>
+              <div class="m"><b>8</b><span>øvelser</span></div>
+              <div class="m"><b>20</b><span>sett</span></div>
+            </div>
+            <div class="wh-prog">
+              <div class="wh-prog-bar"><div style="width:0%"></div></div>
+              <span class="pct">0%</span>
+            </div>
+            <div class="wh-chev"><svg><use href="#i-chev-r"/></svg></div>
+          </header>
+        </article>
+
+        <button class="btn outline" style="margin-top:4px;align-self:flex-start"><svg><use href="#i-plus"/></svg> Legg til ny uke</button>
+
+    </div>
+  </main>
+</div>
+
+<script>
+  document.querySelectorAll('.week').forEach(w => {
+    w.querySelector('.week-head').addEventListener('click', () => {
+      w.classList.toggle('open');
+      w.classList.toggle('collapsed');
+    });
+  });
+</script>
+
+</body>
+</html>
