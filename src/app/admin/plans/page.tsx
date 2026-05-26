@@ -206,7 +206,7 @@ export default async function AdminPlansList({
             name="q"
             defaultValue={params.q ?? ""}
             placeholder="Søk plan eller spiller"
-            className="flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
+            className="flex-1 bg-transparent outline-none placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
           />
         </label>
         <FilterChip label="Coach" />

@@ -227,7 +227,7 @@ async function Oversikt() {
           <input
             type="search"
             placeholder="Søk lokasjon eller adresse"
-            className="flex-1 bg-transparent text-foreground outline-none placeholder:text-muted-foreground"
+            className="flex-1 bg-transparent text-foreground outline-none placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
           />
         </label>
         <Chip>Indoor</Chip>

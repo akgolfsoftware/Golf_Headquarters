@@ -69,7 +69,7 @@ export function MessagesInbox({
             value={søk}
             onChange={(e) => setSøk(e.target.value)}
             placeholder="Søk navn, tråd …"
-            className="flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
+            className="flex-1 bg-transparent outline-none placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
           />
         </div>
       </div>

@@ -303,7 +303,7 @@ export function Conversation({
             onChange={(e) => setTekst(e.target.value)}
             placeholder="Skriv et svar …"
             rows={2}
-            className="w-full resize-none bg-transparent text-[14px] leading-relaxed outline-none placeholder:text-muted-foreground"
+            className="w-full resize-none bg-transparent text-[14px] leading-relaxed outline-none placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
             disabled={isPending}
           />
           <div className="mt-2 flex items-center gap-1.5">

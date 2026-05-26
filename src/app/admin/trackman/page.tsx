@@ -135,7 +135,7 @@ export default async function TrackmanPage() {
           <input
             type="search"
             placeholder="Søk spiller"
-            className="w-full bg-transparent outline-none placeholder:text-muted-foreground"
+            className="w-full bg-transparent outline-none placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
             aria-label="Søk spiller"
           />
         </div>
