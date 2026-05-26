@@ -1,11 +1,12 @@
 "use client";
 
 /**
- * Workbench Plan A — root shell.
- * Komponerer chrome + canvas + drawer + modaler.
+ * Workbench Plan A — root shell (Sprint 2).
+ * Komponerer chrome + canvas-router + inspector + drawer + modaler.
  */
 
 import "./workbench.css";
+import "./workbench-extra.css";
 import { WBP_CanvasPeriode } from "./canvas-periode";
 import {
   WBP_AIBar,
@@ -15,37 +16,29 @@ import {
   WBP_WizardBanner,
   WBP_Zoombar,
 } from "./chrome";
+import { WBP_Inspector } from "./inspector";
 import { WBP_ModalFacilities } from "./modal-facilities";
 import {
   WBP_ModalCamp,
   WBP_ModalFreq,
   WBP_ModalPeriod,
   WBP_ModalTestPicker,
-} from "./modal-stubs";
+} from "./modals";
 import { PlanProvider, usePlanContext } from "./plan-context";
 import { WBP_SessionDetail } from "./session-detail";
-
-function ZoomPlaceholder({ label }: { label: string }) {
-  return (
-    <div className="canvas-placeholder">
-      <p className="cp-eyebrow">Zoom · {label}</p>
-      <h2 className="cp-title">
-        {label}-visning <em>kommer i Sprint 2</em>
-      </h2>
-      <p className="cp-sub">
-        Bytt til <strong>Periode</strong> for å se den fungerende
-        pyramide-baner-visningen.
-      </p>
-    </div>
-  );
-}
+import {
+  WBP_CanvasDay,
+  WBP_CanvasMonth,
+  WBP_CanvasWeek,
+  WBP_CanvasYear,
+} from "./zoom-views";
 
 function CanvasRouter() {
   const { zoom } = usePlanContext();
-  if (zoom === "ar") return <ZoomPlaceholder label="År" />;
-  if (zoom === "maned") return <ZoomPlaceholder label="Måned" />;
-  if (zoom === "uke") return <ZoomPlaceholder label="Uke" />;
-  if (zoom === "dag") return <ZoomPlaceholder label="Dag" />;
+  if (zoom === "ar") return <WBP_CanvasYear />;
+  if (zoom === "maned") return <WBP_CanvasMonth />;
+  if (zoom === "uke") return <WBP_CanvasWeek />;
+  if (zoom === "dag") return <WBP_CanvasDay />;
   return <WBP_CanvasPeriode />;
 }
 
@@ -68,6 +61,7 @@ function WorkbenchInner() {
         <div className="body">
           <WBP_Sidebar />
           <CanvasRouter />
+          <WBP_Inspector />
         </div>
       </div>
 
