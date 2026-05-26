@@ -15,7 +15,7 @@
 | `error.tsx` på admin/portal-sider | 2 av ~250 ruter | 🟡 VIKTIG |
 | `not-found.tsx` på admin/portal-sider | 0 | 🟢 NICE-TO-HAVE |
 | `outline-none` uten focus-erstatning (V5: de 5 listede) | 5 → 0 | ✅ Lukket (commit 345a9f2) |
-| `outline-none` uten focus-erstatning (V5b: resten) | 30 callsites | 🟡 VIKTIG (a11y) |
+| `outline-none` uten focus-erstatning (V5b: resten) | 45 → 0 + 1 false positive | ✅ Lukket (commit 6d276a1) |
 | Mock-data i hub-overview-sider | 19 hardkoda tall | 🟡 VIKTIG |
 | `/admin/talent` 404 (audit gammel) | **IKKE 404** — fungerer | ✅ Lukket |
 | Kapasitet-progressring (audit gammel) | Fortsatt åpent | 🟡 VIKTIG |
@@ -110,7 +110,21 @@ Design-skill-en favoriserer ÉN pattern. Inkonsistensen er synlig: sidebar-bredd
 
 Tilført `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1` (offset-1 for konsistens med eksisterende shadcn-primitives).
 
-### V5b. `outline-none` uten focus-erstatning — 30 gjenværende (a11y)
+### V5b. `outline-none` uten focus-erstatning — 30 gjenværende (a11y) — ✅ LUKKET
+
+V5b ble fikset i commit [`6d276a1`](https://github.com/akgolfgroup-netizen/akgolf-hq/commit/6d276a1). Faktisk antall var **46** (V5b telte også feil — bare admin/portal under `src/app/`, ikke marketing/auth/lokasjoner-demo/v2-preview/components). 45 av 46 er fikset.
+
+#### Falsk positiv (1 callsite, bevisst skippet)
+
+[src/components/admin/caddie/caddie-approval-modal.tsx:87](src/components/admin/caddie/caddie-approval-modal.tsx:87) — `<div>` med `tabIndex={-1}`, brukt som dialog-wrapper med programmatisk ref-fokus.
+
+**Rationale:** `:focus-visible` aktiveres aldri på programmatisk fokus. Tilføyelse av `focus-visible:`-klasser ville være død markup. WCAG 2.4.7 krever fokus-indikator på keyboard-tabbable elementer; `tabIndex={-1}` fjerner elementet fra tab-rekkefølgen, så regelen gjelder ikke her.
+
+**Status etter V5 + V5b:** 0 reelle WCAG 2.4.7-brudd igjen i `src/`.
+
+---
+
+### V5b (original liste — bevart for historikk)
 
 Audit-rapport-2026-05-26 V5 telte feil — den oppga 5 callsites mens faktisk antall er **35**. De 5 spesifikke fra V5 er nå fikset, men 30 til gjenstår med samme WCAG 2.4.7-brudd.
 
@@ -257,7 +271,7 @@ Fordeling:
 |---|---|---|---|---|
 | 1 | K1: Fjern Instrument Serif | 🔴 KRITISK | 15 min | ✅ Lukket ([f8b5fcf](https://github.com/akgolfgroup-netizen/akgolf-hq/commit/f8b5fcf)) |
 | 2 | V5: Fix `outline-none` (de 5 listede) | 🟡 VIKTIG | 30 min | ✅ Lukket ([345a9f2](https://github.com/akgolfgroup-netizen/akgolf-hq/commit/345a9f2)) |
-| 3 | V5b: Fix resten av `outline-none` (30 callsites) | 🟡 VIKTIG (a11y) | ~1 t | Åpent |
+| 3 | V5b: Fix resten av `outline-none` (45 callsites + 1 FP skipped) | 🟡 VIKTIG (a11y) | ~1 t | ✅ Lukket ([6d276a1](https://github.com/akgolfgroup-netizen/akgolf-hq/commit/6d276a1)) |
 | 4 | V7: Tilføy error.tsx + not-found.tsx | 🟡 VIKTIG | 1 t | Åpent |
 | 5 | V8: Kapasitet progress-ring | 🟡 VIKTIG | 1 t | Åpent |
 | 6 | V3: Erstatt Unicode-symboler med Lucide | 🟡 VIKTIG | 1-2 t | Åpent |
