@@ -17,8 +17,8 @@ export default function GlobalError() {
             justifyContent: "center",
             padding: "2rem",
             fontFamily: "system-ui, sans-serif",
-            background: "#FAFAF7",
-            color: "#0A1F17",
+            background: "hsl(var(--background))",
+            color: "hsl(var(--foreground))",
           }}
         >
           <div style={{ maxWidth: 480, textAlign: "center" }}>
@@ -28,7 +28,7 @@ export default function GlobalError() {
                 fontSize: 11,
                 letterSpacing: "0.18em",
                 textTransform: "uppercase",
-                color: "#5E5C57",
+                color: "hsl(var(--muted-foreground))",
               }}
             >
               Feil
@@ -43,7 +43,7 @@ export default function GlobalError() {
             >
               Noe gikk galt
             </h1>
-            <p style={{ marginTop: 16, fontSize: 16, color: "#5E5C57" }}>
+            <p style={{ marginTop: 16, fontSize: 16, color: "hsl(var(--muted-foreground))" }}>
               Vi har blitt varslet og ser på det. Last inn siden på nytt eller
               gå tilbake til forsiden.
             </p>
@@ -53,8 +53,8 @@ export default function GlobalError() {
                 display: "inline-block",
                 marginTop: 24,
                 padding: "10px 20px",
-                background: "#005840",
-                color: "#D1F843",
+                background: "hsl(var(--primary))",
+                color: "hsl(var(--accent))",
                 borderRadius: 8,
                 fontSize: 14,
                 fontWeight: 600,

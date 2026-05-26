@@ -713,8 +713,8 @@ function TrendChart({
         >
           <defs>
             <linearGradient id="trend-grad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#005840" stopOpacity="0.35" />
-              <stop offset="100%" stopColor="#005840" stopOpacity="0.02" />
+              <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.35" />
+              <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.02" />
             </linearGradient>
           </defs>
           {kind === "sg" && (

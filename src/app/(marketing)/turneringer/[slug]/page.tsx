@@ -387,7 +387,7 @@ export default async function TurneringDetalj({ params }: Props) {
                                 fontSize: 28,
                                 fontWeight: 500,
                                 marginTop: 4,
-                                color: e.scoreToPar < 0 ? "var(--s-primary)" : e.scoreToPar > 0 ? "#BE3D3D" : "var(--s-fg)",
+                                color: e.scoreToPar < 0 ? "var(--s-primary)" : e.scoreToPar > 0 ? "hsl(var(--destructive))" : "var(--s-fg)",
                               }}
                             >
                               {e.scoreToPar > 0 ? `+${e.scoreToPar}` : e.scoreToPar === 0 ? "E" : e.scoreToPar}
@@ -514,7 +514,7 @@ export default async function TurneringDetalj({ params }: Props) {
                           style={{
                             padding: "12px 0",
                             textAlign: "right",
-                            color: (e.scoreToPar ?? 0) < 0 ? "var(--s-primary)" : (e.scoreToPar ?? 0) > 0 ? "#BE3D3D" : "var(--s-fg)",
+                            color: (e.scoreToPar ?? 0) < 0 ? "var(--s-primary)" : (e.scoreToPar ?? 0) > 0 ? "hsl(var(--destructive))" : "var(--s-fg)",
                             fontWeight: 500,
                           }}
                         >
@@ -610,7 +610,7 @@ export default async function TurneringDetalj({ params }: Props) {
                       style={{
                         fontSize: 18,
                         fontWeight: 500,
-                        color: e.scoreToPar < 0 ? "var(--s-primary)" : e.scoreToPar > 0 ? "#BE3D3D" : "var(--s-fg)",
+                        color: e.scoreToPar < 0 ? "var(--s-primary)" : e.scoreToPar > 0 ? "hsl(var(--destructive))" : "var(--s-fg)",
                       }}
                     >
                       {e.scoreToPar === 0 ? "E" : e.scoreToPar > 0 ? `+${e.scoreToPar}` : e.scoreToPar}

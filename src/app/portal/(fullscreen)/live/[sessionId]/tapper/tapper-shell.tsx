@@ -239,7 +239,7 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs }: Props) {
           type="button"
           onClick={handleTap}
           disabled={paused}
-          className="flex h-[120px] w-full flex-col items-center justify-center gap-1 rounded-[20px] text-[#0A1F18] transition-transform active:scale-[0.985] disabled:opacity-50"
+          className="flex h-[120px] w-full flex-col items-center justify-center gap-1 rounded-[20px] text-foreground transition-transform active:scale-[0.985] disabled:opacity-50"
           style={{
             background: "linear-gradient(180deg, #D1F843 0%, #C2EE2F 100%)",
             boxShadow:

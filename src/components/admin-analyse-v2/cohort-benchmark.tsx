@@ -116,11 +116,11 @@ function BenchRadar({ akser }: { akser: BenchAkse[] }) {
       </svg>
       <div className="flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-sm" style={{ background: "#005840" }} />
+          <span className="h-2.5 w-2.5 rounded-sm" style={{ background: "hsl(var(--primary))" }} />
           Cohort
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-sm" style={{ background: "#B8852A" }} />
+          <span className="h-2.5 w-2.5 rounded-sm" style={{ background: "hsl(var(--warning))" }} />
           PGA Top 40
         </span>
       </div>
@@ -183,7 +183,7 @@ export function CohortBenchmark() {
                     <td className="py-2.5 text-right font-mono tabular-nums text-muted-foreground">
                       {a.pga}{a.enhet}
                     </td>
-                    <td className={`py-2.5 text-right font-mono tabular-nums ${positiv ? "text-[#2C7D52]" : "text-[#A32D2D]"}`}>
+                    <td className={`py-2.5 text-right font-mono tabular-nums ${positiv ? "text-success" : "text-destructive"}`}>
                       {diff > 0 ? "+" : ""}{diff.toFixed(1)}
                     </td>
                   </tr>

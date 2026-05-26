@@ -635,9 +635,9 @@ const TOP_PLAYERS = [
 const DRILL_DISTRIBUTION = [
   { label: "Putting", pct: 36, color: "#A8C82E" },
   { label: "Iron", pct: 24, color: "var(--primary)" },
-  { label: "Pitch & chip", pct: 18, color: "#88B45A" },
+  { label: "Pitch & chip", pct: 18, color: "hsl(var(--accent))" },
   { label: "Mental", pct: 14, color: "#7B4FB4" },
-  { label: "Fysisk", pct: 8, color: "#B8852A" },
+  { label: "Fysisk", pct: 8, color: "hsl(var(--warning))" },
 ];
 
 const AI_ERRORS = [

@@ -424,7 +424,7 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
             <div className="ob-field" style={{ gridColumn: "1 / -1" }}>
               <label htmlFor="ob-dob" className="ob-label">
                 Fødselsdato{" "}
-                <span style={{ fontWeight: 400, color: "#9C9990" }}>
+                <span style={{ fontWeight: 400, color: "hsl(var(--muted-foreground))" }}>
                   — brukes for GDPR-samtykke (under 16 år)
                 </span>
               </label>
@@ -445,7 +445,7 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
             </div>
             {dobIsMinor && (
               <div className="ob-field" style={{ gridColumn: "1 / -1" }}>
-                <label htmlFor="ob-guardian-email" className="ob-label" style={{ color: "#B8852A" }}>
+                <label htmlFor="ob-guardian-email" className="ob-label" style={{ color: "hsl(var(--warning))" }}>
                   E-post til foresatt (påkrevd)
                 </label>
                 <input
@@ -457,7 +457,7 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
                   placeholder="forelder@example.com"
                   autoComplete="email"
                 />
-                <p style={{ marginTop: 4, fontSize: 12, color: "#B8852A" }}>
+                <p style={{ marginTop: 4, fontSize: 12, color: "hsl(var(--warning))" }}>
                   Vi sender en forespørsel om foreldresamtykke iht. GDPR art. 8.
                 </p>
               </div>
@@ -555,8 +555,8 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
                       fontSize: 13,
                       border: "none",
                       cursor: "pointer",
-                      background: sessionFrequency === n ? "#005840" : "transparent",
-                      color: sessionFrequency === n ? "#D1F843" : "#5E5C57",
+                      background: sessionFrequency === n ? "hsl(var(--primary))" : "transparent",
+                      color: sessionFrequency === n ? "hsl(var(--accent))" : "hsl(var(--muted-foreground))",
                     }}
                   >
                     {n}
@@ -624,7 +624,7 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
                 GolfBox
               </span>
             </div>
-            <p style={{ fontSize: 14, color: "#5E5C57", maxWidth: 380, textAlign: "center" }}>
+            <p style={{ fontSize: 14, color: "hsl(var(--muted-foreground))", maxWidth: 380, textAlign: "center" }}>
               Vi henter HCP, runder spilt siste 24 mnd, og turneringshistorikk.
             </p>
             <button
@@ -696,7 +696,7 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
                 TrackMan
               </span>
             </div>
-            <p style={{ fontSize: 14, color: "#5E5C57", maxWidth: 380, textAlign: "center" }}>
+            <p style={{ fontSize: 14, color: "hsl(var(--muted-foreground))", maxWidth: 380, textAlign: "center" }}>
               Vi henter swing-data, ball-flight og distance-data fra alle dine
               økter.
             </p>
@@ -779,8 +779,8 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
                         letterSpacing: "0.10em",
                         padding: "2px 6px",
                         borderRadius: 4,
-                        background: "#D1F843",
-                        color: "#0A1F17",
+                        background: "hsl(var(--accent))",
+                        color: "hsl(var(--foreground))",
                       }}
                     >
                       VALGT
@@ -800,14 +800,14 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
                     style={{
                       fontFamily: "var(--font-jetbrains-mono)",
                       fontSize: 9,
-                      color: "#5E5C57",
+                      color: "hsl(var(--muted-foreground))",
                       letterSpacing: "0.10em",
                       textTransform: "uppercase",
                     }}
                   >
                     {coach.rolle}
                   </div>
-                  <div style={{ fontSize: 11, color: "#5E5C57", lineHeight: 1.4 }}>
+                  <div style={{ fontSize: 11, color: "hsl(var(--muted-foreground))", lineHeight: 1.4 }}>
                     {coach.meta}
                   </div>
                 </button>
@@ -834,7 +834,7 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
                     fontSize: 11,
                     fontWeight: 800,
                     letterSpacing: "0.14em",
-                    color: selectedTier === "GRATIS" ? "#005840" : "#5E5C57",
+                    color: selectedTier === "GRATIS" ? "hsl(var(--primary))" : "hsl(var(--muted-foreground))",
                   }}
                 >
                   GRATIS
@@ -844,18 +844,18 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
                     fontFamily: "var(--font-jetbrains-mono)",
                     fontSize: 24,
                     fontWeight: 800,
-                    color: "#0A1F17",
+                    color: "hsl(var(--foreground))",
                   }}
                 >
                   0 kr
-                  <span style={{ fontSize: 13, color: "#5E5C57", fontWeight: 500 }}>
+                  <span style={{ fontSize: 13, color: "hsl(var(--muted-foreground))", fontWeight: 500 }}>
                     /mnd
                   </span>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 5, fontSize: 12, color: "#5E5C57" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 5, fontSize: 12, color: "hsl(var(--muted-foreground))" }}>
                   {["PlayerHQ-profil", "1 økt-logg per uke", "Turneringskalender", "HCP-tracking"].map((f) => (
                     <div key={f} style={{ display: "flex", gap: 6, alignItems: "flex-start" }}>
-                      <Check size={12} style={{ color: "#2C7D52", marginTop: 1, flexShrink: 0 }} />
+                      <Check size={12} style={{ color: "hsl(var(--success))", marginTop: 1, flexShrink: 0 }} />
                       {f}
                     </div>
                   ))}
@@ -879,8 +879,8 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
                       letterSpacing: "0.10em",
                       padding: "2px 7px",
                       borderRadius: 4,
-                      background: "#D1F843",
-                      color: "#0A1F17",
+                      background: "hsl(var(--accent))",
+                      color: "hsl(var(--foreground))",
                     }}
                   >
                     ANBEFALT
@@ -892,7 +892,7 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
                     fontSize: 11,
                     fontWeight: 800,
                     letterSpacing: "0.14em",
-                    color: selectedTier === "PRO" ? "#005840" : "#5E5C57",
+                    color: selectedTier === "PRO" ? "hsl(var(--primary))" : "hsl(var(--muted-foreground))",
                   }}
                 >
                   PRO
@@ -902,15 +902,15 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
                     fontFamily: "var(--font-jetbrains-mono)",
                     fontSize: 24,
                     fontWeight: 800,
-                    color: "#0A1F17",
+                    color: "hsl(var(--foreground))",
                   }}
                 >
                   300 kr
-                  <span style={{ fontSize: 13, color: "#5E5C57", fontWeight: 500 }}>
+                  <span style={{ fontSize: 13, color: "hsl(var(--muted-foreground))", fontWeight: 500 }}>
                     /mnd
                   </span>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 5, fontSize: 12, color: "#5E5C57" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 5, fontSize: 12, color: "hsl(var(--muted-foreground))" }}>
                   {[
                     "Alt i GRATIS",
                     "Booking av økter og turneringer",
@@ -919,11 +919,11 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
                     "Bane-strategier · Foreldre-portal",
                   ].map((f) => (
                     <div key={f} style={{ display: "flex", gap: 6, alignItems: "flex-start" }}>
-                      <Check size={12} style={{ color: "#2C7D52", marginTop: 1, flexShrink: 0 }} />
+                      <Check size={12} style={{ color: "hsl(var(--success))", marginTop: 1, flexShrink: 0 }} />
                       {f}
                     </div>
                   ))}
-                  <div style={{ fontFamily: "var(--font-jetbrains-mono)", fontSize: 10, color: "#5E5C57", marginTop: 4 }}>
+                  <div style={{ fontFamily: "var(--font-jetbrains-mono)", fontSize: 10, color: "hsl(var(--muted-foreground))", marginTop: 4 }}>
                     Avsluttes når som helst
                   </div>
                 </div>
@@ -961,7 +961,7 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
                 fontSize: 10,
                 fontWeight: 700,
                 letterSpacing: "0.12em",
-                color: "#5E5C57",
+                color: "hsl(var(--muted-foreground))",
                 textTransform: "uppercase",
                 display: "block",
                 marginBottom: 10,
@@ -1022,7 +1022,7 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
                 >
                   Jeg har lest og godtar AK Golf Academy sine vilkår
                 </div>
-                <div style={{ fontSize: 12, color: "#5E5C57", marginTop: 2 }}>
+                <div style={{ fontSize: 12, color: "hsl(var(--muted-foreground))", marginTop: 2 }}>
                   Inkluderer personvernerklæring og treningsfilosofi.
                 </div>
               </div>
@@ -1045,7 +1045,7 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
                 >
                   Jeg samtykker til datadeling mellom coach og meg
                 </div>
-                <div style={{ fontSize: 12, color: "#5E5C57", marginTop: 2 }}>
+                <div style={{ fontSize: 12, color: "hsl(var(--muted-foreground))", marginTop: 2 }}>
                   Trenings- og helsedata. Du kan trekke tilbake samtykket når
                   som helst.
                 </div>

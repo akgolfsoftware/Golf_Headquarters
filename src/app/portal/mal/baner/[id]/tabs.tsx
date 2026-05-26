@@ -284,7 +284,7 @@ function TimelinePane() {
           const cx = 10 + i * 20;
           const cy = 100 + (Math.sin(i) * 30 - i * 1.2);
           const color =
-            cy < 95 ? "#005840" : cy > 105 ? "#A32D2D" : "#5E5C57";
+            cy < 95 ? "hsl(var(--primary))" : cy > 105 ? "hsl(var(--destructive))" : "hsl(var(--muted-foreground))";
           return <circle key={i} cx={cx} cy={cy} r="4" fill={color} />;
         })}
         <circle cx="290" cy="40" r="6" fill="#D1F843" stroke="#005840" strokeWidth="2" />

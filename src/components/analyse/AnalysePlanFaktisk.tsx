@@ -9,9 +9,9 @@
 import type { PlanVsActual } from "@/app/admin/analyse/actions";
 
 const PYRAMID_FARGER: Record<string, string> = {
-  FYS: "#A32D2D",
-  TEK: "#005840",
-  SLAG: "#D1F843",
+  FYS: "hsl(var(--destructive))",
+  TEK: "hsl(var(--primary))",
+  SLAG: "hsl(var(--accent))",
   SPILL: "#0A5C8A",
   TURN: "#7F4F00",
 };
@@ -81,7 +81,7 @@ export function AnalysePlanFaktisk({ data }: { data: PlanVsActual[] }) {
               {data.sort((a, b) => b.planlagtMin - a.planlagtMin).map((rad) => {
                 const hopp = Math.max(0, rad.planlagtMin - rad.faktiskMin);
                 const pct = Math.round(rad.adherence * 100);
-                const farge = PYRAMID_FARGER[rad.pyramide] ?? "#5E5C57";
+                const farge = PYRAMID_FARGER[rad.pyramide] ?? "hsl(var(--muted-foreground))";
                 return (
                   <tr key={rad.pyramide} className="border-b border-border/50 last:border-0">
                     <td className="py-2">

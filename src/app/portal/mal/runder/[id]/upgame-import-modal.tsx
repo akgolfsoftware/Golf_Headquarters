@@ -334,8 +334,8 @@ export function UpGameImportModal({ roundId }: { roundId: string }) {
 
                   {advarsel && (
                     <div className="flex items-start gap-2 rounded-lg border border-[rgba(184,133,42,0.4)] bg-[rgba(184,133,42,0.08)] px-4 py-3">
-                      <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-[#B8852A]" />
-                      <p className="font-mono text-[11px] text-[#B8852A]">{advarsel}</p>
+                      <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-warning" />
+                      <p className="font-mono text-[11px] text-warning">{advarsel}</p>
                     </div>
                   )}
 
@@ -382,7 +382,7 @@ export function UpGameImportModal({ roundId }: { roundId: string }) {
                     </p>
                   </div>
                   {advarsel && (
-                    <p className="font-mono text-[11px] text-[#B8852A]">{advarsel}</p>
+                    <p className="font-mono text-[11px] text-warning">{advarsel}</p>
                   )}
                 </div>
               )}

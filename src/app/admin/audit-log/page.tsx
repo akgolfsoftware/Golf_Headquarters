@@ -131,7 +131,7 @@ export default async function AuditLogPage() {
                     height: 36,
                     borderRadius: 10,
                     background: "rgba(0, 88, 64, 0.08)",
-                    color: "#005840",
+                    color: "hsl(var(--primary))",
                     display: "inline-flex",
                     alignItems: "center",
                     justifyContent: "center",

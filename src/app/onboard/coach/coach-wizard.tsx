@@ -235,7 +235,7 @@ export function CoachWizard({
                 className="ob-input"
                 value={initialEmail}
                 disabled
-                style={{ background: "#F1EEE5", color: "#5E5C57" }}
+                style={{ background: "hsl(var(--secondary))", color: "hsl(var(--muted-foreground))" }}
               />
             </div>
           </div>
@@ -258,7 +258,7 @@ export function CoachWizard({
               >
                 Jeg aksepterer invitasjonen som coach
               </div>
-              <div style={{ fontSize: 12, color: "#5E5C57", marginTop: 2 }}>
+              <div style={{ fontSize: 12, color: "hsl(var(--muted-foreground))", marginTop: 2 }}>
                 Jeg har lest coach-vilkårene og forplikter meg til å følge
                 AK Golf sin treningsfilosofi og personvernsregler.
               </div>
@@ -520,7 +520,7 @@ export function CoachWizard({
             <p
               style={{
                 fontSize: 14,
-                color: "#5E5C57",
+                color: "hsl(var(--muted-foreground))",
                 maxWidth: 380,
                 textAlign: "center",
               }}

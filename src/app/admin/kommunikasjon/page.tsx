@@ -45,7 +45,7 @@ export default async function KommunikasjonPage({ searchParams }: Props) {
               style={{
                 fontFamily: "'Inter Tight', sans-serif",
                 fontStyle: "italic",
-                color: "#005840",
+                color: "hsl(var(--primary))",
               }}
             >
               kontakt

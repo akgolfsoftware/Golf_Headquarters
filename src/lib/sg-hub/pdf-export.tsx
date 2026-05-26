@@ -13,14 +13,14 @@ import type { YardageRow } from "./yardage-calc";
 import { formatM } from "./format";
 
 const COLOR = {
-  primary: "#005840",
-  accent: "#D1F843",
-  foreground: "#0A1F17",
-  muted: "#5E5C57",
-  border: "#E5E3DD",
+  primary: "hsl(var(--primary))",
+  accent: "hsl(var(--accent))",
+  foreground: "hsl(var(--foreground))",
+  muted: "hsl(var(--muted-foreground))",
+  border: "hsl(var(--border))",
   card: "#FFFFFF",
-  secondary: "#F1EEE5",
-  background: "#FAFAF7",
+  secondary: "hsl(var(--secondary))",
+  background: "hsl(var(--background))",
 } as const;
 
 const styles = StyleSheet.create({

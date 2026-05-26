@@ -133,7 +133,7 @@ export function LoggerClient({
             style={{
               fontFamily: "'Inter Tight', sans-serif",
               fontStyle: "italic",
-              color: "#D1F843",
+              color: "hsl(var(--accent))",
             }}
           >
             {drill.titleItalic}

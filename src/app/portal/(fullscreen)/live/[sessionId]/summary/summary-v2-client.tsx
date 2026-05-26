@@ -41,11 +41,11 @@ export type SummaryV2Data = {
 };
 
 const PYR_TONE: Record<Pyr, { bg: string; text: string; tile: string }> = {
-  FYS: { bg: "bg-[rgba(0,88,64,0.13)]", text: "text-[#005840]", tile: "bg-[#005840]" },
-  TEK: { bg: "bg-[rgba(26,125,86,0.13)]", text: "text-[#1A7D56]", tile: "bg-[#1A7D56]" },
-  SLAG: { bg: "bg-[rgba(209,248,67,0.55)]", text: "text-[#0A1F17]", tile: "bg-[#D1F843] text-[#0A1F17]" },
-  SPILL: { bg: "bg-[rgba(184,133,42,0.13)]", text: "text-[#B8852A]", tile: "bg-[#B8852A]" },
-  TURN: { bg: "bg-[rgba(94,92,87,0.13)]", text: "text-[#5E5C57]", tile: "bg-[#5E5C57]" },
+  FYS: { bg: "bg-[rgba(0,88,64,0.13)]", text: "text-primary", tile: "bg-primary" },
+  TEK: { bg: "bg-[rgba(26,125,86,0.13)]", text: "text-success", tile: "bg-success" },
+  SLAG: { bg: "bg-[rgba(209,248,67,0.55)]", text: "text-foreground", tile: "bg-accent text-foreground" },
+  SPILL: { bg: "bg-[rgba(184,133,42,0.13)]", text: "text-warning", tile: "bg-warning" },
+  TURN: { bg: "bg-[rgba(94,92,87,0.13)]", text: "text-muted-foreground", tile: "bg-muted-foreground" },
 };
 
 export function SummaryV2Client({ data }: { data: SummaryV2Data }) {
@@ -339,7 +339,7 @@ export function SummaryV2Client({ data }: { data: SummaryV2Data }) {
                   aria-label={`${n} stjerner`}
                 >
                   <Star
-                    className={`h-9 w-9 ${filled ? "fill-[#D1F843] text-[#0A1F17]" : "text-muted-foreground/40"}`}
+                    className={`h-9 w-9 ${filled ? "fill-[#D1F843] text-foreground" : "text-muted-foreground/40"}`}
                     strokeWidth={1.5}
                   />
                 </button>

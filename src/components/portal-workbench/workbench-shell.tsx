@@ -21,11 +21,11 @@ import {
 import { avatarBg, initialsFromName } from "@/lib/avatar-colors";
 
 const PYR_COLOR: Record<string, string> = {
-  FYS: "#005840",
-  TEK: "#1A7D56",
-  SLAG: "#D1F843",
-  SPILL: "#B8852A",
-  TURN: "#5E5C57",
+  FYS: "hsl(var(--primary))",
+  TEK: "hsl(var(--success))",
+  SLAG: "hsl(var(--accent))",
+  SPILL: "hsl(var(--warning))",
+  TURN: "hsl(var(--muted-foreground))",
 };
 
 export type WorkbenchProps = {
@@ -63,9 +63,9 @@ export type WorkbenchProps = {
 };
 
 function tierPillStyle(t: string): string {
-  if (t === "PRO") return "bg-[#005840] text-[#D1F843]";
-  if (t === "ELITE") return "bg-[#D1F843] text-[#005840]";
-  return "bg-[#F1EEE5] text-[#0A1F17]";
+  if (t === "PRO") return "bg-primary text-accent";
+  if (t === "ELITE") return "bg-accent text-primary";
+  return "bg-secondary text-foreground";
 }
 
 function tierLabel(t: string): string {
@@ -81,7 +81,7 @@ export function WorkbenchShell(props: WorkbenchProps) {
   return (
     <div className="space-y-6">
       {/* HERO */}
-      <header className="rounded-2xl border border-[#E5E3DD] bg-card p-6 sm:p-8">
+      <header className="rounded-2xl border border-border bg-card p-6 sm:p-8">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-4 sm:gap-6">
             <Link
@@ -94,11 +94,11 @@ export function WorkbenchShell(props: WorkbenchProps) {
                 <img
                   src={props.playerAvatarUrl}
                   alt=""
-                  className="h-20 w-20 rounded-full object-cover ring-2 ring-[#D1F843]/40 sm:h-24 sm:w-24"
+                  className="h-20 w-20 rounded-full object-cover ring-2 ring-accent/40 sm:h-24 sm:w-24"
                 />
               ) : (
                 <div
-                  className="grid h-20 w-20 place-items-center rounded-full font-display text-2xl font-semibold text-white ring-2 ring-[#D1F843]/40 sm:h-24 sm:w-24 sm:text-3xl"
+                  className="grid h-20 w-20 place-items-center rounded-full font-display text-2xl font-semibold text-white ring-2 ring-accent/40 sm:h-24 sm:w-24 sm:text-3xl"
                   style={{ background: avatarBg(props.playerName) }}
                 >
                   {initialsFromName(props.playerName)}
@@ -106,21 +106,21 @@ export function WorkbenchShell(props: WorkbenchProps) {
               )}
             </Link>
             <div className="min-w-0">
-              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
+              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                 PLAYERHQ ·{" "}
                 {new Date().toLocaleDateString("nb-NO", {
                   day: "numeric",
                   month: "long",
                 })}
               </div>
-              <h1 className="mt-1 font-display text-3xl font-semibold leading-tight tracking-tight text-[#0A1F17] sm:text-4xl">
+              <h1 className="mt-1 font-display text-3xl font-semibold leading-tight tracking-tight text-foreground sm:text-4xl">
                 God morgen,{" "}
                 <em
                   className="font-normal not-italic"
                   style={{
                     fontFamily: "'Inter Tight', sans-serif",
                     fontStyle: "italic",
-                    color: "#005840",
+                    color: "hsl(var(--primary))",
                   }}
                 >
                   {fornavn}
@@ -128,7 +128,7 @@ export function WorkbenchShell(props: WorkbenchProps) {
                 {etternavn !== fornavn ? " " : ""}
               </h1>
               <div className="mt-3 flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center rounded-full bg-[#F1EEE5] px-3 py-1 font-mono text-[11px] font-semibold tabular-nums text-[#0A1F17]">
+                <span className="inline-flex items-center rounded-full bg-secondary px-3 py-1 font-mono text-[11px] font-semibold tabular-nums text-foreground">
                   HCP {props.hcpString}
                 </span>
                 <span
@@ -138,7 +138,7 @@ export function WorkbenchShell(props: WorkbenchProps) {
                 >
                   {tierLabel(props.tier)}
                 </span>
-                <span className="inline-flex items-center rounded-full bg-[#005840]/8 px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-[#005840]">
+                <span className="inline-flex items-center rounded-full bg-primary/8 px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-primary">
                   Fokus: {props.weekFocus}
                 </span>
               </div>
@@ -149,21 +149,21 @@ export function WorkbenchShell(props: WorkbenchProps) {
             <div
               className={`inline-flex shrink-0 items-center gap-2 rounded-full border px-4 py-2 ${
                 props.weather.outdoorToday
-                  ? "border-[#D1F843] bg-[#D1F843]/15"
-                  : "border-[#E5E3DD] bg-[#FAFAF7]"
+                  ? "border-accent bg-accent/15"
+                  : "border-border bg-background"
               }`}
             >
               {props.weather.outdoorToday && (
                 <span className="relative inline-flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#D1F843] opacity-75" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-[#005840]" />
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
                 </span>
               )}
-              <CloudSun size={16} strokeWidth={1.75} className="text-[#005840]" />
-              <span className="font-mono text-[12px] font-semibold tabular-nums text-[#0A1F17]">
+              <CloudSun size={16} strokeWidth={1.75} className="text-primary" />
+              <span className="font-mono text-[12px] font-semibold tabular-nums text-foreground">
                 {props.weather.tempC}°C
               </span>
-              <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-[#5E5C57]">
+              <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
                 {props.weather.cond}
               </span>
             </div>
@@ -184,12 +184,12 @@ export function WorkbenchShell(props: WorkbenchProps) {
           <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-white/70">
             Snittscore
           </div>
-          <div className="mt-2 font-mono text-[38px] font-semibold leading-none tabular-nums text-[#D1F843]">
+          <div className="mt-2 font-mono text-[38px] font-semibold leading-none tabular-nums text-accent">
             {props.snittScore != null
               ? props.snittScore.toFixed(1).replace(".", ",")
               : "—"}
           </div>
-          <div className="mt-2 font-mono text-[10px] uppercase tracking-[0.08em] text-[#D1F843]/80">
+          <div className="mt-2 font-mono text-[10px] uppercase tracking-[0.08em] text-accent/80">
             {props.snittScoreDelta ?? "siste 10 runder"}
           </div>
         </div>
@@ -229,27 +229,27 @@ export function WorkbenchShell(props: WorkbenchProps) {
 
       {/* Dagens fokus-card (lime accent venstre) */}
       <section
-        className="relative overflow-hidden rounded-2xl border border-[#E5E3DD] bg-card p-5 sm:p-6"
+        className="relative overflow-hidden rounded-2xl border border-border bg-card p-5 sm:p-6"
       >
         <div
           aria-hidden="true"
           className="absolute left-0 top-0 h-full w-1.5"
-          style={{ background: "#D1F843" }}
+          style={{ background: "hsl(var(--accent))" }}
         />
         <div className="pl-3">
           <div className="flex items-baseline justify-between">
             <div>
-              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
+              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                 Dagens fokus
               </div>
-              <h2 className="mt-1 font-display text-xl font-semibold leading-snug text-[#0A1F17]">
+              <h2 className="mt-1 font-display text-xl font-semibold leading-snug text-foreground">
                 Du har{" "}
                 <em
                   className="font-normal not-italic"
                   style={{
                     fontFamily: "'Inter Tight', sans-serif",
                     fontStyle: "italic",
-                    color: "#005840",
+                    color: "hsl(var(--primary))",
                   }}
                 >
                   {props.todaysFocus.length}
@@ -260,7 +260,7 @@ export function WorkbenchShell(props: WorkbenchProps) {
           </div>
 
           {props.todaysFocus.length === 0 ? (
-            <p className="mt-4 rounded-md border border-dashed border-[#E5E3DD] bg-[#FAFAF7] p-4 text-sm text-[#5E5C57]">
+            <p className="mt-4 rounded-md border border-dashed border-border bg-background p-4 text-sm text-muted-foreground">
               Ingenting planlagt i dag. Bra dag for å logge en runde.
             </p>
           ) : (
@@ -270,14 +270,14 @@ export function WorkbenchShell(props: WorkbenchProps) {
                   key={idx}
                   className="flex items-center gap-4 py-3 first:pt-0 last:pb-0"
                 >
-                  <div className="w-14 shrink-0 font-mono text-sm font-semibold tabular-nums text-[#0A1F17]">
+                  <div className="w-14 shrink-0 font-mono text-sm font-semibold tabular-nums text-foreground">
                     {item.time}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="truncate text-sm font-semibold text-[#0A1F17]">
+                    <div className="truncate text-sm font-semibold text-foreground">
                       {item.title}
                     </div>
-                    <div className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.08em] text-[#5E5C57]">
+                    <div className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
                       {item.durMin} min · {item.location}
                     </div>
                   </div>
@@ -289,19 +289,19 @@ export function WorkbenchShell(props: WorkbenchProps) {
       </section>
 
       {/* Pyramide-uke-strip */}
-      <section className="rounded-2xl border border-[#E5E3DD] bg-card p-5 sm:p-6">
+      <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
         <div className="mb-4 flex items-baseline justify-between">
           <div>
-            <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
+            <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
               Pyramide · denne uka
             </div>
-            <h2 className="mt-1 font-display text-base font-semibold text-[#0A1F17]">
+            <h2 className="mt-1 font-display text-base font-semibold text-foreground">
               Drill-fordeling per dag
             </h2>
           </div>
           <Link
             href="/portal/planlegge"
-            className="font-mono text-[10px] uppercase tracking-[0.08em] text-[#005840] hover:underline"
+            className="font-mono text-[10px] uppercase tracking-[0.08em] text-primary hover:underline"
           >
             Hele uka →
           </Link>
@@ -312,11 +312,11 @@ export function WorkbenchShell(props: WorkbenchProps) {
               key={i}
               className={`flex flex-col items-center gap-2 rounded-xl border p-2 sm:p-3 ${
                 d.isToday
-                  ? "border-[#D1F843] bg-[#D1F843]/10"
-                  : "border-[#E5E3DD] bg-[#FAFAF7]"
+                  ? "border-accent bg-accent/10"
+                  : "border-border bg-background"
               }`}
             >
-              <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-[#5E5C57]">
+              <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
                 {d.day}
               </span>
               <div className="flex h-12 items-end gap-0.5">
@@ -329,7 +329,7 @@ export function WorkbenchShell(props: WorkbenchProps) {
                       className="w-1.5 rounded-full"
                       style={{
                         height: `${Math.min(48, 8 + dr.count * 8)}px`,
-                        background: PYR_COLOR[dr.area] ?? "#5E5C57",
+                        background: PYR_COLOR[dr.area] ?? "hsl(var(--muted-foreground))",
                       }}
                       title={`${dr.area} · ${dr.count}`}
                     />
@@ -339,7 +339,7 @@ export function WorkbenchShell(props: WorkbenchProps) {
             </div>
           ))}
         </div>
-        <div className="mt-3 flex flex-wrap items-center gap-3 font-mono text-[10px] uppercase tracking-[0.08em] text-[#5E5C57]">
+        <div className="mt-3 flex flex-wrap items-center gap-3 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
           {(["FYS", "TEK", "SLAG", "SPILL", "TURN"] as const).map((a) => (
             <span key={a} className="inline-flex items-center gap-1.5">
               <span
@@ -355,23 +355,23 @@ export function WorkbenchShell(props: WorkbenchProps) {
       {/* Coach-ping-banner (kun hvis ulest melding) */}
       {props.coachPing && (
         <section
-          className="relative overflow-hidden rounded-2xl border border-[#D1F843] bg-[#D1F843]/15 p-5"
+          className="relative overflow-hidden rounded-2xl border border-accent bg-accent/15 p-5"
         >
           <div className="flex items-center gap-4">
-            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#005840] text-[#D1F843]">
+            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary text-accent">
               <MessageSquare size={18} strokeWidth={1.75} />
             </div>
             <div className="min-w-0 flex-1">
-              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#005840]">
+              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-primary">
                 {props.coachPing.coachName} skrev
               </div>
-              <p className="mt-1 truncate text-sm font-medium text-[#0A1F17]">
+              <p className="mt-1 truncate text-sm font-medium text-foreground">
                 &laquo;{props.coachPing.text}&raquo;
               </p>
             </div>
             <Link
               href={props.coachPing.href}
-              className="inline-flex shrink-0 items-center gap-1 rounded-full bg-[#005840] px-4 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-[#D1F843] hover:opacity-90"
+              className="inline-flex shrink-0 items-center gap-1 rounded-full bg-primary px-4 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-accent hover:opacity-90"
             >
               Svar
               <ArrowRight size={12} strokeWidth={2} />
@@ -385,34 +385,34 @@ export function WorkbenchShell(props: WorkbenchProps) {
         {/* Venstre kol */}
         <div className="space-y-4">
           {/* Aktiv plan */}
-          <section className="rounded-2xl border border-[#E5E3DD] bg-card p-5 sm:p-6">
+          <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
             <div className="flex items-baseline justify-between">
-              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
+              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                 Aktiv plan
               </div>
               <Link
                 href={props.activePlan?.href ?? "/portal/planlegge"}
-                className="font-mono text-[10px] uppercase tracking-[0.08em] text-[#005840] hover:underline"
+                className="font-mono text-[10px] uppercase tracking-[0.08em] text-primary hover:underline"
               >
                 Åpne plan →
               </Link>
             </div>
             {props.activePlan ? (
               <>
-                <h3 className="mt-2 font-display text-xl font-semibold leading-tight text-[#0A1F17]">
+                <h3 className="mt-2 font-display text-xl font-semibold leading-tight text-foreground">
                   <em
                     className="font-normal not-italic"
                     style={{
                       fontFamily: "'Inter Tight', sans-serif",
                       fontStyle: "italic",
-                      color: "#005840",
+                      color: "hsl(var(--primary))",
                     }}
                   >
                     {props.activePlan.name}
                   </em>
                 </h3>
                 <div className="mt-4">
-                  <div className="mb-1.5 flex justify-between font-mono text-[10px] uppercase tracking-[0.08em] text-[#5E5C57]">
+                  <div className="mb-1.5 flex justify-between font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
                     <span>
                       {props.activePlan.done}/{props.activePlan.total} økter
                     </span>
@@ -425,7 +425,7 @@ export function WorkbenchShell(props: WorkbenchProps) {
                       %
                     </span>
                   </div>
-                  <div className="h-2 overflow-hidden rounded-full bg-[#F1EEE5]">
+                  <div className="h-2 overflow-hidden rounded-full bg-secondary">
                     <div
                       className="h-full rounded-full transition-all"
                       style={{
@@ -442,31 +442,31 @@ export function WorkbenchShell(props: WorkbenchProps) {
                 </div>
               </>
             ) : (
-              <p className="mt-3 rounded-md border border-dashed border-[#E5E3DD] p-4 text-sm text-[#5E5C57]">
+              <p className="mt-3 rounded-md border border-dashed border-border p-4 text-sm text-muted-foreground">
                 Ingen aktiv plan. Be coach om å sette en.
               </p>
             )}
           </section>
 
           {/* Neste milepæl */}
-          <section className="rounded-2xl border border-[#E5E3DD] bg-card p-5 sm:p-6">
+          <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
             <div className="flex items-baseline justify-between">
-              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
+              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                 Neste milepæl
               </div>
-              <Trophy size={14} strokeWidth={1.5} className="text-[#5E5C57]" />
+              <Trophy size={14} strokeWidth={1.5} className="text-muted-foreground" />
             </div>
             {props.nextMilestone ? (
               <>
-                <h3 className="mt-2 font-display text-xl font-semibold leading-tight text-[#0A1F17]">
+                <h3 className="mt-2 font-display text-xl font-semibold leading-tight text-foreground">
                   {props.nextMilestone.title}
                 </h3>
                 <div className="mt-4 flex items-end justify-between gap-4">
                   <div>
-                    <div className="font-mono text-[44px] font-semibold leading-none tabular-nums text-[#005840]">
+                    <div className="font-mono text-[44px] font-semibold leading-none tabular-nums text-primary">
                       {props.nextMilestone.daysLeft}
                     </div>
-                    <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.08em] text-[#5E5C57]">
+                    <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
                       dager igjen
                     </div>
                   </div>
@@ -474,7 +474,7 @@ export function WorkbenchShell(props: WorkbenchProps) {
                 </div>
               </>
             ) : (
-              <p className="mt-3 rounded-md border border-dashed border-[#E5E3DD] p-4 text-sm text-[#5E5C57]">
+              <p className="mt-3 rounded-md border border-dashed border-border p-4 text-sm text-muted-foreground">
                 Ingen aktiv milepæl satt.
               </p>
             )}
@@ -482,15 +482,15 @@ export function WorkbenchShell(props: WorkbenchProps) {
         </div>
 
         {/* Høyre kol — aktivitet-feed */}
-        <aside className="rounded-2xl border border-[#E5E3DD] bg-card p-5 sm:p-6">
-          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
+        <aside className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
             Aktivitet
           </div>
-          <h3 className="mt-1 font-display text-base font-semibold text-[#0A1F17]">
+          <h3 className="mt-1 font-display text-base font-semibold text-foreground">
             Siste hendelser
           </h3>
           {props.activityFeed.length === 0 ? (
-            <p className="mt-4 text-sm text-[#5E5C57]">
+            <p className="mt-4 text-sm text-muted-foreground">
               Ingen aktivitet ennå.
             </p>
           ) : (
@@ -498,26 +498,26 @@ export function WorkbenchShell(props: WorkbenchProps) {
               {props.activityFeed.slice(0, 5).map((ev) => (
                 <li
                   key={ev.id}
-                  className="flex items-start gap-3 border-b border-[#E5E3DD] pb-3 last:border-b-0 last:pb-0"
+                  className="flex items-start gap-3 border-b border-border pb-3 last:border-b-0 last:pb-0"
                 >
                   <span
                     className="mt-1 h-2 w-2 shrink-0 rounded-full"
                     style={{
                       background:
                         ev.type === "okt"
-                          ? "#005840"
+                          ? "hsl(var(--primary))"
                           : ev.type === "test"
-                            ? "#D1F843"
+                            ? "hsl(var(--accent))"
                             : ev.type === "runde"
-                              ? "#B8852A"
-                              : "#5E5C57",
+                              ? "hsl(var(--warning))"
+                              : "hsl(var(--muted-foreground))",
                     }}
                   />
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm text-[#0A1F17]">
+                    <p className="truncate text-sm text-foreground">
                       {ev.title}
                     </p>
-                    <p className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.08em] text-[#5E5C57]">
+                    <p className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
                       {ev.timeAgo}
                     </p>
                   </div>
@@ -532,14 +532,14 @@ export function WorkbenchShell(props: WorkbenchProps) {
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_auto]">
         <Link
           href="/portal/gjennomfore?tab=idag"
-          className="inline-flex items-center justify-center gap-2 rounded-full bg-[#D1F843] px-6 py-4 font-display text-base font-semibold text-[#0A1F17] transition-colors hover:bg-[#BFE933]"
+          className="inline-flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-4 font-display text-base font-semibold text-foreground transition-colors hover:bg-[#BFE933]"
         >
           <Play size={18} strokeWidth={2} />
           Start dagens økt
         </Link>
         <Link
           href="/portal/ny-okt"
-          className="inline-flex items-center justify-center gap-2 rounded-full border border-[#005840] bg-transparent px-6 py-4 font-medium text-[#005840] transition-colors hover:bg-[#005840] hover:text-white"
+          className="inline-flex items-center justify-center gap-2 rounded-full border border-primary bg-transparent px-6 py-4 font-medium text-primary transition-colors hover:bg-primary hover:text-white"
         >
           <PlusCircle size={16} strokeWidth={1.75} />
           Ny økt fra plan
@@ -563,23 +563,23 @@ function KpiTile({
   accent?: boolean;
 }) {
   return (
-    <div className="rounded-2xl border border-[#E5E3DD] bg-card p-5">
+    <div className="rounded-2xl border border-border bg-card p-5">
       <div className="flex items-start justify-between gap-2">
-        <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
+        <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
           {eyebrow}
         </span>
         {Icon && (
-          <Icon size={14} strokeWidth={1.75} className="text-[#5E5C57]" />
+          <Icon size={14} strokeWidth={1.75} className="text-muted-foreground" />
         )}
       </div>
       <div
         className={`mt-2 font-mono text-[28px] font-semibold leading-none tabular-nums ${
-          accent ? "text-[#005840]" : "text-[#0A1F17]"
+          accent ? "text-primary" : "text-foreground"
         }`}
       >
         {value}
       </div>
-      <div className="mt-2 font-mono text-[10px] uppercase tracking-[0.08em] text-[#5E5C57]">
+      <div className="mt-2 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
         {sub}
       </div>
     </div>

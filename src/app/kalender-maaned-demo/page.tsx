@@ -558,7 +558,7 @@ function DayCell({ day }: { day: Day }) {
   const base =
     "flex cursor-pointer flex-col gap-1 overflow-hidden border-b border-r border-border px-2 py-2 pl-2.5 relative";
   const tone = day.outside
-    ? "bg-[#FAFAF7] text-muted-foreground"
+    ? "bg-background text-muted-foreground"
     : day.today
       ? "bg-accent/30"
       : day.weekend
@@ -603,7 +603,7 @@ function DayCell({ day }: { day: Day }) {
                 s === "on"
                   ? "bg-primary"
                   : s === "warn"
-                    ? "bg-[#B8852A]"
+                    ? "bg-warning"
                     : "bg-border"
               }`}
             />
@@ -621,7 +621,7 @@ function UtilBadge({ value }: { value: number }) {
       : value >= 65
         ? "bg-primary text-primary-foreground"
         : value >= 30
-          ? "bg-accent/40 text-[#005840]"
+          ? "bg-accent/40 text-primary"
           : "bg-black/[0.04] text-muted-foreground";
   return (
     <span
@@ -639,7 +639,7 @@ function Pill({ time, label, tone }: DayEvent) {
       : tone === "others"
         ? "bg-secondary text-muted-foreground border-l-2 border-muted-foreground"
         : tone === "group"
-          ? "bg-[rgba(209,248,67,0.30)] text-[#005840] border-l-2 border-accent"
+          ? "bg-[rgba(209,248,67,0.30)] text-primary border-l-2 border-accent"
           : "bg-[repeating-linear-gradient(135deg,_var(--color-card)_0_3px,_var(--color-secondary)_3px_6px)] text-muted-foreground";
   return (
     <div
@@ -698,9 +698,9 @@ function MiniStat({
 }) {
   const toneClass =
     tone === "up"
-      ? "text-[#1A7D56]"
+      ? "text-success"
       : tone === "warn"
-        ? "text-[#B8852A]"
+        ? "text-warning"
         : "text-foreground";
   return (
     <div className="flex items-baseline justify-between border-t border-border/60 py-2 first:border-t-0">

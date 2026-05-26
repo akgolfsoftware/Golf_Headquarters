@@ -112,7 +112,7 @@ export default async function TalentProfil({
             style={{
               fontFamily: "'Inter Tight', sans-serif",
               fontStyle: "italic",
-              color: "#005840",
+              color: "hsl(var(--primary))",
             }}
           >
             {t.user.name?.split(" ")[0] ?? "Talent"}

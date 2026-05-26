@@ -640,7 +640,7 @@ function BigTrend({
       <path
         d={path}
         fill="none"
-        stroke={small ? "#005840" : "#D1F843"}
+        stroke={small ? "hsl(var(--primary))" : "hsl(var(--accent))"}
         strokeWidth={small ? "2" : "1.8"}
         vectorEffect="non-scaling-stroke"
       />

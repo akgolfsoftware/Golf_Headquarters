@@ -249,7 +249,7 @@ function StepTwo() {
       </div>
 
       <div className="mt-4 flex items-center gap-3 rounded-xl border-[1.5px] border-[rgba(22,163,74,0.45)] bg-card px-4 py-3.5">
-        <div className="grid h-10 w-10 flex-shrink-0 place-items-center rounded-md bg-[rgba(22,163,74,0.12)] text-[#16A34A]">
+        <div className="grid h-10 w-10 flex-shrink-0 place-items-center rounded-md bg-[rgba(22,163,74,0.12)] text-success">
           <FileText className="h-5 w-5" strokeWidth={1.75} />
         </div>
         <div className="flex-1 min-w-0">

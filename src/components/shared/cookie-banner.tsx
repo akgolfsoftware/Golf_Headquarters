@@ -101,13 +101,13 @@ export function CookieBanner() {
         {/* Header */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <Cookie size={18} style={{ color: "#005840" }} strokeWidth={1.75} />
+            <Cookie size={18} style={{ color: "hsl(var(--primary))" }} strokeWidth={1.75} />
             <span
               style={{
                 fontFamily: "var(--font-inter-tight)",
                 fontSize: 15,
                 fontWeight: 700,
-                color: "#0A1F17",
+                color: "hsl(var(--foreground))",
                 letterSpacing: "-0.01em",
               }}
             >
@@ -124,7 +124,7 @@ export function CookieBanner() {
               cursor: "pointer",
               width: 44,
               height: 44,
-              color: "#9C9990",
+              color: "hsl(var(--muted-foreground))",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -139,7 +139,7 @@ export function CookieBanner() {
         <p
           style={{
             fontSize: 13,
-            color: "#5E5C57",
+            color: "hsl(var(--muted-foreground))",
             lineHeight: 1.5,
             margin: 0,
           }}
@@ -149,7 +149,7 @@ export function CookieBanner() {
           personopplysninger deles med tredjeparter.{" "}
           <Link
             href="/cookies"
-            style={{ color: "#005840", textDecoration: "underline" }}
+            style={{ color: "hsl(var(--primary))", textDecoration: "underline" }}
           >
             Les mer
           </Link>
@@ -166,8 +166,8 @@ export function CookieBanner() {
               minWidth: 140,
               height: 44,
               borderRadius: 999,
-              background: "#005840",
-              color: "#D1F843",
+              background: "hsl(var(--primary))",
+              color: "hsl(var(--accent))",
               border: "none",
               fontSize: 13,
               fontWeight: 700,
@@ -186,7 +186,7 @@ export function CookieBanner() {
               height: 44,
               borderRadius: 999,
               background: "transparent",
-              color: "#5E5C57",
+              color: "hsl(var(--muted-foreground))",
               border: "1px solid #E5E3DD",
               fontSize: 13,
               fontWeight: 600,

@@ -45,17 +45,17 @@ const ICONS: Record<keyof PeriodVolumes, React.ElementType> = {
 };
 
 const FARGER: Record<keyof PeriodVolumes, string> = {
-  FYS: "#2C7D52",
-  TEK: "#005840",
-  SLAG: "#D1F843",
+  FYS: "hsl(var(--success))",
+  TEK: "hsl(var(--primary))",
+  SLAG: "hsl(var(--accent))",
   SPILL: "#6FA686",
-  TURN: "#A32D2D",
+  TURN: "hsl(var(--destructive))",
 };
 
 const FARGE_FG: Record<keyof PeriodVolumes, string> = {
   FYS: "#fff",
-  TEK: "#D1F843",
-  SLAG: "#0A1F17",
+  TEK: "hsl(var(--accent))",
+  SLAG: "hsl(var(--foreground))",
   SPILL: "#fff",
   TURN: "#fff",
 };

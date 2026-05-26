@@ -22,11 +22,11 @@ export type ManedOkt = {
 };
 
 const PYRAMIDE_FARGER: Record<ManedOkt["pyramide"], string> = {
-  FYS: "#005840",
-  TEK: "#1A7D56",
-  SLAG: "#BFE933",
-  SPILL: "#B8852A",
-  TURN: "#5E5C57",
+  FYS: "hsl(var(--primary))",
+  TEK: "hsl(var(--success))",
+  SLAG: "hsl(var(--accent))",
+  SPILL: "hsl(var(--warning))",
+  TURN: "hsl(var(--muted-foreground))",
 };
 
 const DAGER = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];

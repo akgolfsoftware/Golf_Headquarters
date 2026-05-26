@@ -8,8 +8,8 @@ export default function manifest(): MetadataRoute.Manifest {
     start_url: "/portal",
     display: "standalone",
     orientation: "portrait",
-    background_color: "#FAFAF7",
-    theme_color: "#005840",
+    background_color: "hsl(var(--background))",
+    theme_color: "hsl(var(--primary))",
     lang: "nb",
     categories: ["sports", "lifestyle", "productivity"],
     icons: [

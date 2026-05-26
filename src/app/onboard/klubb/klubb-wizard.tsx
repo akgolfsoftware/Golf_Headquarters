@@ -271,7 +271,7 @@ export function KlubbWizard({
             <p
               style={{
                 fontSize: 13,
-                color: "#5E5C57",
+                color: "hsl(var(--muted-foreground))",
                 maxWidth: 380,
                 textAlign: "center",
               }}
@@ -467,7 +467,7 @@ export function KlubbWizard({
             >
               <Check
                 size={18}
-                style={{ color: importValg === "ASSISTERT" ? "#005840" : "#E5E3DD" }}
+                style={{ color: importValg === "ASSISTERT" ? "hsl(var(--primary))" : "hsl(var(--border))" }}
               />
               <div>
                 <div
@@ -479,7 +479,7 @@ export function KlubbWizard({
                 >
                   Vi importerer for dere (anbefalt)
                 </div>
-                <div style={{ fontSize: 12, color: "#5E5C57" }}>
+                <div style={{ fontSize: 12, color: "hsl(var(--muted-foreground))" }}>
                   Send oss en liste i e-post, så håndterer vi resten i løpet
                   av 1–2 virkedager.
                 </div>
@@ -493,7 +493,7 @@ export function KlubbWizard({
             >
               <Check
                 size={18}
-                style={{ color: importValg === "CSV" ? "#005840" : "#E5E3DD" }}
+                style={{ color: importValg === "CSV" ? "hsl(var(--primary))" : "hsl(var(--border))" }}
               />
               <div>
                 <div
@@ -505,7 +505,7 @@ export function KlubbWizard({
                 >
                   Last opp CSV selv
                 </div>
-                <div style={{ fontSize: 12, color: "#5E5C57" }}>
+                <div style={{ fontSize: 12, color: "hsl(var(--muted-foreground))" }}>
                   Følg malen vår med kolonner for navn, e-post, fødselsdato
                   og hcp.
                 </div>
@@ -519,7 +519,7 @@ export function KlubbWizard({
             >
               <Check
                 size={18}
-                style={{ color: importValg === "SENERE" ? "#005840" : "#E5E3DD" }}
+                style={{ color: importValg === "SENERE" ? "hsl(var(--primary))" : "hsl(var(--border))" }}
               />
               <div>
                 <div
@@ -531,7 +531,7 @@ export function KlubbWizard({
                 >
                   Senere
                 </div>
-                <div style={{ fontSize: 12, color: "#5E5C57" }}>
+                <div style={{ fontSize: 12, color: "hsl(var(--muted-foreground))" }}>
                   Vi setter opp tilgang for dere først, så kan dere invitere
                   spillere manuelt.
                 </div>
@@ -660,7 +660,7 @@ export function KlubbWizard({
             <p
               style={{
                 fontSize: 14,
-                color: "#5E5C57",
+                color: "hsl(var(--muted-foreground))",
                 maxWidth: 380,
                 textAlign: "center",
               }}
@@ -780,7 +780,7 @@ export function KlubbWizard({
               >
                 Google Calendar
               </div>
-              <div style={{ fontSize: 12, color: "#5E5C57", marginTop: 2 }}>
+              <div style={{ fontSize: 12, color: "hsl(var(--muted-foreground))", marginTop: 2 }}>
                 Hver coach kan koble egen kalender. Vi viser kun ledig/opptatt.
               </div>
             </div>
@@ -804,7 +804,7 @@ export function KlubbWizard({
               >
                 Notion (rapporter og dokumentasjon)
               </div>
-              <div style={{ fontSize: 12, color: "#5E5C57", marginTop: 2 }}>
+              <div style={{ fontSize: 12, color: "hsl(var(--muted-foreground))", marginTop: 2 }}>
                 Synk ukentlige rapporter og treningsplaner til Notion-databaser.
               </div>
             </div>

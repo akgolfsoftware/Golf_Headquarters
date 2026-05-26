@@ -21,22 +21,22 @@ import {
 
 // ── Designsystem-farger (matcher tokens i globals.css) ────────────
 const COLOR = {
-  primary: "#005840",
-  accent: "#D1F843",
-  foreground: "#0A1F17",
-  muted: "#5E5C57",
-  border: "#E5E3DD",
+  primary: "hsl(var(--primary))",
+  accent: "hsl(var(--accent))",
+  foreground: "hsl(var(--foreground))",
+  muted: "hsl(var(--muted-foreground))",
+  border: "hsl(var(--border))",
   card: "#FFFFFF",
-  secondary: "#F1EEE5",
-  background: "#FAFAF7",
+  secondary: "hsl(var(--secondary))",
+  background: "hsl(var(--background))",
 } as const;
 
 const PYR_COLOR: Record<PyramidArea, string> = {
-  FYS: "#005840",
-  TEK: "#1A7D56",
-  SLAG: "#D1F843",
-  SPILL: "#B8852A",
-  TURN: "#5E5C57",
+  FYS: "hsl(var(--primary))",
+  TEK: "hsl(var(--success))",
+  SLAG: "hsl(var(--accent))",
+  SPILL: "hsl(var(--warning))",
+  TURN: "hsl(var(--muted-foreground))",
 };
 
 const styles = StyleSheet.create({

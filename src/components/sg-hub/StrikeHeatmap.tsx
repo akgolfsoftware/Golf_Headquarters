@@ -56,7 +56,7 @@ export function StrikeHeatmap({ result, advanced = false }: Props) {
           Array.from({ length: COLS }, (_, col) => {
             const key = `${col}-${row}`;
             const count = density.get(key) ?? 0;
-            const color = cellZone.get(key) ?? "#005840";
+            const color = cellZone.get(key) ?? "hsl(var(--primary))";
             const opacity = count === 0 ? 0 : 0.1 + 0.7 * (count / maxDensity);
 
             return (

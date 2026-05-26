@@ -52,8 +52,8 @@ export function HcpTrend({
           <AreaChart data={points} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
             <defs>
               <linearGradient id="hcpFill" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#005840" stopOpacity={0.25} />
-                <stop offset="100%" stopColor="#005840" stopOpacity={0.02} />
+                <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.25} />
+                <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.02} />
               </linearGradient>
             </defs>
             <CartesianGrid stroke="rgba(0,0,0,0.05)" vertical={false} />
@@ -87,8 +87,8 @@ export function HcpTrend({
               stroke="#005840"
               strokeWidth={2}
               fill="url(#hcpFill)"
-              dot={{ r: 3, fill: "#005840" }}
-              activeDot={{ r: 5, fill: "#D1F843", stroke: "#005840", strokeWidth: 2 }}
+              dot={{ r: 3, fill: "hsl(var(--primary))" }}
+              activeDot={{ r: 5, fill: "hsl(var(--accent))", stroke: "hsl(var(--primary))", strokeWidth: 2 }}
             />
           </AreaChart>
         </ResponsiveContainer>

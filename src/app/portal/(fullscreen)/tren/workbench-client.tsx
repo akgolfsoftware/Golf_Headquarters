@@ -1634,11 +1634,11 @@ export function WorkbenchClient() {
                       Approach
                     </span>
                     <span>
-                      <i style={{ background: "#1A7D56" }} />
+                      <i style={{ background: "hsl(var(--success))" }} />
                       Around-green
                     </span>
                     <span>
-                      <i style={{ background: "#BFE933" }} />
+                      <i style={{ background: "hsl(var(--accent))" }} />
                       Putting
                     </span>
                   </div>
@@ -1792,7 +1792,7 @@ export function WorkbenchClient() {
                     metric: "112",
                     unit: "mph club-speed",
                     line: "0,22 14,18 28,20 42,14 56,12 70,8 84,10 100,6",
-                    stroke: "#005840",
+                    stroke: "hsl(var(--primary))",
                   },
                   {
                     date: "10. MAI · MAN",
@@ -1800,7 +1800,7 @@ export function WorkbenchClient() {
                     metric: "1,48",
                     unit: "smash-faktor",
                     line: "0,16 14,20 28,14 42,18 56,12 70,16 84,10 100,12",
-                    stroke: "#1A7D56",
+                    stroke: "hsl(var(--success))",
                   },
                   {
                     date: "6. MAI · TOR",
@@ -1808,7 +1808,7 @@ export function WorkbenchClient() {
                     metric: "68",
                     unit: "m carry · spred 4m",
                     line: "0,20 14,16 28,18 42,12 56,14 70,10 84,12 100,8",
-                    stroke: "#BFE933",
+                    stroke: "hsl(var(--accent))",
                   },
                   {
                     date: "3. MAI · MAN",
@@ -1816,7 +1816,7 @@ export function WorkbenchClient() {
                     metric: "220",
                     unit: "m carry",
                     line: "0,18 14,14 28,16 42,10 56,12 70,8 84,6 100,4",
-                    stroke: "#005840",
+                    stroke: "hsl(var(--primary))",
                   },
                   {
                     date: "28. APR · SØN",
@@ -1824,7 +1824,7 @@ export function WorkbenchClient() {
                     metric: "9 100",
                     unit: "rpm spin",
                     line: "0,14 14,18 28,12 42,16 56,10 70,14 84,8 100,12",
-                    stroke: "#B8852A",
+                    stroke: "hsl(var(--warning))",
                   },
                 ].map((c, i) => (
                   <button

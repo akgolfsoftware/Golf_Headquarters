@@ -106,8 +106,9 @@ export function TourOverlay({
 
   const storageKey = `ak-tour-completed:${tourId}`;
 
-  // Mount-check (unngå SSR-hydration mismatch)
+  // Mount-check (unngå SSR-hydration mismatch — bevisst setState ved mount)
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
     if (!autoStart) return;
     try {
@@ -140,6 +141,7 @@ export function TourOverlay({
   // Mål-element kan endre seg ved scroll/resize
   useEffect(() => {
     if (!active) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     measureTarget();
     window.addEventListener("resize", measureTarget);
     window.addEventListener("scroll", measureTarget, true);
@@ -428,7 +430,7 @@ const stepCounterStyle: React.CSSProperties = {
   fontSize: 10,
   fontWeight: 700,
   letterSpacing: "0.12em",
-  color: "#005840",
+  color: "hsl(var(--primary))",
   textTransform: "uppercase",
 };
 
@@ -436,7 +438,7 @@ const closeButtonStyle: React.CSSProperties = {
   background: "transparent",
   border: 0,
   cursor: "pointer",
-  color: "#5E5C57",
+  color: "hsl(var(--muted-foreground))",
   padding: 4,
   borderRadius: 6,
   display: "inline-flex",
@@ -449,7 +451,7 @@ const titleStyle: React.CSSProperties = {
   fontSize: 19,
   fontWeight: 700,
   letterSpacing: "-0.02em",
-  color: "#0A1F17",
+  color: "hsl(var(--foreground))",
   margin: 0,
   lineHeight: 1.25,
 };
@@ -457,7 +459,7 @@ const titleStyle: React.CSSProperties = {
 const bodyStyle: React.CSSProperties = {
   fontSize: 14,
   lineHeight: 1.5,
-  color: "#5E5C57",
+  color: "hsl(var(--muted-foreground))",
   margin: 0,
 };
 
@@ -475,8 +477,8 @@ const primaryButtonStyle: React.CSSProperties = {
   gap: 4,
   padding: "9px 18px",
   borderRadius: 999,
-  background: "#D1F843",
-  color: "#0A1F17",
+  background: "hsl(var(--accent))",
+  color: "hsl(var(--foreground))",
   fontSize: 13,
   fontWeight: 700,
   border: 0,
@@ -490,7 +492,7 @@ const secondaryButtonStyle: React.CSSProperties = {
   padding: "9px 14px",
   borderRadius: 999,
   background: "#FFFFFF",
-  color: "#0A1F17",
+  color: "hsl(var(--foreground))",
   fontSize: 13,
   fontWeight: 600,
   border: "1px solid #E5E3DD",
@@ -502,7 +504,7 @@ const skipButtonStyle: React.CSSProperties = {
   border: 0,
   fontFamily: "var(--font-jetbrains-mono, 'JetBrains Mono', monospace)",
   fontSize: 11,
-  color: "#5E5C57",
+  color: "hsl(var(--muted-foreground))",
   textDecoration: "underline",
   cursor: "pointer",
   padding: 0,
@@ -515,8 +517,8 @@ const helpButtonStyle: React.CSSProperties = {
   width: 44,
   height: 44,
   borderRadius: "50%",
-  background: "#005840",
-  color: "#D1F843",
+  background: "hsl(var(--primary))",
+  color: "hsl(var(--accent))",
   border: 0,
   cursor: "pointer",
   boxShadow: "0 8px 24px rgba(0, 88, 64, 0.30)",

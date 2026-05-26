@@ -23,11 +23,11 @@ export type UkeOkt = {
 };
 
 const PYRAMIDE_FARGER: Record<UkeOkt["pyramide"], { bg: string; border: string; fg: string }> = {
-  FYS: { bg: "#005840", border: "#003A2A", fg: "#D1F843" },
-  TEK: { bg: "#1A7D56", border: "#005840", fg: "#FFFFFF" },
-  SLAG: { bg: "rgba(209,248,67,0.55)", border: "#BFE933", fg: "#0A1F17" },
-  SPILL: { bg: "rgba(184,133,42,0.30)", border: "#B8852A", fg: "#0A1F17" },
-  TURN: { bg: "rgba(94,92,87,0.20)", border: "#5E5C57", fg: "#0A1F17" },
+  FYS: { bg: "hsl(var(--primary))", border: "hsl(var(--primary))", fg: "hsl(var(--accent))" },
+  TEK: { bg: "hsl(var(--success))", border: "hsl(var(--primary))", fg: "#FFFFFF" },
+  SLAG: { bg: "rgba(209,248,67,0.55)", border: "hsl(var(--accent))", fg: "hsl(var(--foreground))" },
+  SPILL: { bg: "rgba(184,133,42,0.30)", border: "hsl(var(--warning))", fg: "hsl(var(--foreground))" },
+  TURN: { bg: "rgba(94,92,87,0.20)", border: "hsl(var(--muted-foreground))", fg: "hsl(var(--foreground))" },
 };
 
 const DAGER = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];

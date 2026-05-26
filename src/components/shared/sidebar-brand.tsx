@@ -76,7 +76,7 @@ export function SidebarBrand({
           fontSize: 10.5,
           fontWeight: 700,
           letterSpacing: "0.14em",
-          color: "#D1F843",
+          color: "hsl(var(--accent))",
           textAlign: "center",
           lineHeight: 1.2,
         }}

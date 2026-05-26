@@ -179,7 +179,7 @@ export default async function WrappedPage({ params }: Props) {
     <main
       style={{
         minHeight: "100svh",
-        background: "#0A1F17",
+        background: "hsl(var(--foreground))",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",

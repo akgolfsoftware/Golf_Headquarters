@@ -369,7 +369,7 @@ function CohortScatter() {
 function colorFor(d: Dot, mode: ColorBy): string {
   if (mode === "score") {
     if (d.score10 >= 85) return "var(--color-pyr-fys, #005840)";
-    if (d.score10 >= 70) return "#1A7D56";
+    if (d.score10 >= 70) return "hsl(var(--success))";
     if (d.score10 >= 50) return "var(--color-pyr-slag, #D1F843)";
     if (d.score10 >= 30) return "var(--color-pyr-spill, #B8852A)";
     return "var(--color-pyr-turn, #5E5C57)";
@@ -377,7 +377,7 @@ function colorFor(d: Dot, mode: ColorBy): string {
   if (mode === "region") {
     return {
       Øst: "var(--color-pyr-fys, #005840)",
-      Vest: "#1A7D56",
+      Vest: "hsl(var(--success))",
       Sør: "var(--color-pyr-slag, #D1F843)",
       Nord: "var(--color-pyr-spill, #B8852A)",
       Midt: "var(--color-pyr-turn, #5E5C57)",
@@ -395,7 +395,7 @@ function colorFor(d: Dot, mode: ColorBy): string {
   }
   // improvement
   if (d.improvement >= 80) return "var(--color-pyr-fys, #005840)";
-  if (d.improvement >= 60) return "#1A7D56";
+  if (d.improvement >= 60) return "hsl(var(--success))";
   if (d.improvement >= 40) return "var(--color-pyr-slag, #D1F843)";
   return "var(--color-pyr-turn, #5E5C57)";
 }
@@ -425,9 +425,9 @@ function ActionItem({
     tone === "info"
       ? "bg-primary/8 text-primary"
       : tone === "warn"
-        ? "bg-[#FFF0D6] text-[#B8852A]"
+        ? "bg-[#FFF0D6] text-warning"
         : tone === "success"
-          ? "bg-[#E5F1EA] text-[#1A7D56]"
+          ? "bg-primary/10 text-success"
           : "bg-secondary text-muted-foreground";
   return (
     <span

@@ -245,7 +245,7 @@ export default async function PuttExplorerPage() {
                   alignItems: "center",
                   gap: 8,
                   background: "var(--accent)",
-                  color: "#0A1F17",
+                  color: "hsl(var(--foreground))",
                   padding: "12px 24px",
                   borderRadius: 999,
                   fontSize: 14,

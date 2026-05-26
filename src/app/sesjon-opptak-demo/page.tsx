@@ -63,10 +63,10 @@ export default function SesjonOpptakDemo() {
         {/* Topbar */}
         <div className="flex items-center justify-between border-b border-border bg-[var(--surface-alt,#F1EEE5)] px-4 py-3">
           <div className="flex items-center gap-3">
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#A32D2D]/30 bg-[#A32D2D]/8 px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-[#A32D2D]">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#A32D2D]/30 bg-destructive/8 px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-destructive">
               <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#A32D2D] opacity-75" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#A32D2D]" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-destructive opacity-75" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-destructive" />
               </span>
               REC 12:34
             </span>

@@ -197,12 +197,12 @@ export function ForelderWizard() {
                   height: 10,
                   borderRadius: "50%",
                   border: "1.5px solid",
-                  borderColor: done || active ? "#005840" : "#E5E3DD",
+                  borderColor: done || active ? "hsl(var(--primary))" : "hsl(var(--border))",
                   background: done
-                    ? "#005840"
+                    ? "hsl(var(--primary))"
                     : active
-                    ? "#D1F843"
-                    : "#E5E3DD",
+                    ? "hsl(var(--accent))"
+                    : "hsl(var(--border))",
                   transform: active ? "scale(1.3)" : "scale(1)",
                   transition: "all 0.2s",
                 }}
@@ -213,7 +213,7 @@ export function ForelderWizard() {
                     display: "block",
                     width: 24,
                     height: 2,
-                    background: done ? "#005840" : "#E5E3DD",
+                    background: done ? "hsl(var(--primary))" : "hsl(var(--border))",
                     transition: "background 0.2s",
                   }}
                 />
@@ -227,7 +227,7 @@ export function ForelderWizard() {
             fontSize: 10,
             fontWeight: 700,
             letterSpacing: "0.10em",
-            color: "#005840",
+            color: "hsl(var(--primary))",
             marginLeft: 10,
             textTransform: "uppercase",
           }}
@@ -345,7 +345,7 @@ export function ForelderWizard() {
                       fontFamily: "var(--font-inter-tight)",
                       fontSize: 13,
                       fontWeight: 600,
-                      color: "#0A1F17",
+                      color: "hsl(var(--foreground))",
                     }}
                   >
                     {rel === "MOR" ? "Mor" : rel === "FAR" ? "Far" : "Foresatt"}
@@ -402,7 +402,7 @@ export function ForelderWizard() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  color: "#005840",
+                  color: "hsl(var(--primary))",
                 }}
               >
                 <FileText size={15} />
@@ -411,7 +411,7 @@ export function ForelderWizard() {
                 <div style={{ fontFamily: "var(--font-inter-tight)", fontSize: 13.5, fontWeight: 700 }}>
                   AK Golf Academy Treningsavtale
                 </div>
-                <div style={{ fontSize: 12, color: "#5E5C57", marginTop: 2 }}>
+                <div style={{ fontSize: 12, color: "hsl(var(--muted-foreground))", marginTop: 2 }}>
                   Beskriver hva spilleren får tilgang til, frekvens og
                   forventninger.
                 </div>
@@ -436,7 +436,7 @@ export function ForelderWizard() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  color: "#005840",
+                  color: "hsl(var(--primary))",
                 }}
               >
                 <Shield size={15} />
@@ -445,7 +445,7 @@ export function ForelderWizard() {
                 <div style={{ fontFamily: "var(--font-inter-tight)", fontSize: 13.5, fontWeight: 700 }}>
                   Personvernerklæring og datadeling
                 </div>
-                <div style={{ fontSize: 12, color: "#5E5C57", marginTop: 2 }}>
+                <div style={{ fontSize: 12, color: "hsl(var(--muted-foreground))", marginTop: 2 }}>
                   Hvilke data vi samler, hvordan vi bruker dem, og dine
                   rettigheter.
                 </div>
@@ -470,7 +470,7 @@ export function ForelderWizard() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  color: "#005840",
+                  color: "hsl(var(--primary))",
                 }}
               >
                 <CreditCard size={15} />
@@ -479,7 +479,7 @@ export function ForelderWizard() {
                 <div style={{ fontFamily: "var(--font-inter-tight)", fontSize: 13.5, fontWeight: 700 }}>
                   Betaling og oppsigelse
                 </div>
-                <div style={{ fontSize: 12, color: "#5E5C57", marginTop: 2 }}>
+                <div style={{ fontSize: 12, color: "hsl(var(--muted-foreground))", marginTop: 2 }}>
                   Faktura månedlig. Avsluttes når som helst med 30 dagers
                   oppsigelse.
                 </div>
@@ -585,8 +585,8 @@ export function ForelderWizard() {
                         position: "absolute",
                         top: -8,
                         right: 8,
-                        background: "#D1F843",
-                        color: "#0A1F17",
+                        background: "hsl(var(--accent))",
+                        color: "hsl(var(--foreground))",
                         fontFamily: "var(--font-jetbrains-mono)",
                         fontSize: 8,
                         fontWeight: 800,
@@ -607,7 +607,7 @@ export function ForelderWizard() {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      color: "#005840",
+                      color: "hsl(var(--primary))",
                     }}
                   >
                     <Icon size={20} />
@@ -625,7 +625,7 @@ export function ForelderWizard() {
                     style={{
                       fontFamily: "var(--font-jetbrains-mono)",
                       fontSize: 9,
-                      color: "#5E5C57",
+                      color: "hsl(var(--muted-foreground))",
                       letterSpacing: "0.06em",
                     }}
                   >

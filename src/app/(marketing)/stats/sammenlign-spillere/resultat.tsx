@@ -63,13 +63,13 @@ function initials(name: string) {
 
 function tierBadge(tier: string) {
   const map: Record<string, string> = {
-    "pro-pga": "#005840",
-    pro: "#005840",
-    college: "#B8852A",
-    amateur: "#9D9C95",
-    junior: "#5E5C57",
+    "pro-pga": "hsl(var(--primary))",
+    pro: "hsl(var(--primary))",
+    college: "hsl(var(--warning))",
+    amateur: "hsl(var(--muted-foreground))",
+    junior: "hsl(var(--muted-foreground))",
   };
-  return map[tier] ?? "#9D9C95";
+  return map[tier] ?? "hsl(var(--muted-foreground))";
 }
 
 export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) {
@@ -83,9 +83,9 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
           textAlign: "center",
         }}
       >
-        <p style={{ color: "#9D9C95", fontSize: 15 }}>
+        <p style={{ color: "hsl(var(--muted-foreground))", fontSize: 15 }}>
           En eller begge spillere ble ikke funnet.{" "}
-          <Link href="/stats/sammenlign-spillere" style={{ color: "#005840" }}>
+          <Link href="/stats/sammenlign-spillere" style={{ color: "hsl(var(--primary))" }}>
             Prøv et annet søk.
           </Link>
         </p>
@@ -191,8 +191,8 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                 width: 40,
                 height: 40,
                 borderRadius: "50%",
-                background: "#005840",
-                color: "#D1F843",
+                background: "hsl(var(--primary))",
+                color: "hsl(var(--accent))",
                 display: "grid",
                 placeItems: "center",
                 fontFamily: "var(--font-mono)",
@@ -215,7 +215,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
               <div
                 style={{
                   fontSize: 12,
-                  color: "#9D9C95",
+                  color: "hsl(var(--muted-foreground))",
                   fontFamily: "var(--font-mono)",
                 }}
               >
@@ -235,7 +235,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
               href={`/stats/sammenlign-spillere?a=&b=${slugB}`}
               style={{
                 fontSize: 11,
-                color: "#005840",
+                color: "hsl(var(--primary))",
                 marginLeft: 8,
                 textDecoration: "none",
                 fontWeight: 500,
@@ -251,7 +251,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
               fontFamily: "var(--font-display)",
               fontSize: 22,
               fontStyle: "italic",
-              color: "#005840",
+              color: "hsl(var(--primary))",
               textAlign: "center",
             }}
           >
@@ -273,8 +273,8 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                 width: 40,
                 height: 40,
                 borderRadius: "50%",
-                background: "#D1F843",
-                color: "#005840",
+                background: "hsl(var(--accent))",
+                color: "hsl(var(--primary))",
                 display: "grid",
                 placeItems: "center",
                 fontFamily: "var(--font-mono)",
@@ -297,7 +297,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
               <div
                 style={{
                   fontSize: 12,
-                  color: "#9D9C95",
+                  color: "hsl(var(--muted-foreground))",
                   fontFamily: "var(--font-mono)",
                 }}
               >
@@ -317,7 +317,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
               href={`/stats/sammenlign-spillere?a=${slugA}&b=`}
               style={{
                 fontSize: 11,
-                color: "#005840",
+                color: "hsl(var(--primary))",
                 marginRight: 8,
                 textDecoration: "none",
                 fontWeight: 500,
@@ -363,7 +363,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                     fontSize: 10,
                     letterSpacing: "0.18em",
                     textTransform: "uppercase",
-                    color: "#9D9C95",
+                    color: "hsl(var(--muted-foreground))",
                     marginBottom: 12,
                   }}
                 >
@@ -375,7 +375,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                       style={{
                         fontFamily: "var(--font-mono)",
                         fontSize: 11,
-                        color: "#9D9C95",
+                        color: "hsl(var(--muted-foreground))",
                         letterSpacing: "0.1em",
                       }}
                     >
@@ -386,7 +386,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                         fontFamily: "var(--font-mono)",
                         fontSize: 22,
                         fontWeight: 600,
-                        color: aWins ? "#005840" : "#0A1F17",
+                        color: aWins ? "hsl(var(--primary))" : "hsl(var(--foreground))",
                       }}
                     >
                       {k.a ?? "—"}
@@ -397,7 +397,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                       style={{
                         fontFamily: "var(--font-mono)",
                         fontSize: 11,
-                        color: "#9D9C95",
+                        color: "hsl(var(--muted-foreground))",
                         letterSpacing: "0.1em",
                       }}
                     >
@@ -408,7 +408,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                         fontFamily: "var(--font-mono)",
                         fontSize: 22,
                         fontWeight: 600,
-                        color: bWins ? "#005840" : "#0A1F17",
+                        color: bWins ? "hsl(var(--primary))" : "hsl(var(--foreground))",
                       }}
                     >
                       {k.b ?? "—"}
@@ -441,7 +441,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                   }}
                 >
                   Hvem har{" "}
-                  <em style={{ fontStyle: "italic", fontWeight: 400, color: "#005840" }}>
+                  <em style={{ fontStyle: "italic", fontWeight: 400, color: "hsl(var(--primary))" }}>
                     utviklet seg mest
                   </em>
                   ?
@@ -453,7 +453,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                   fontSize: 10,
                   letterSpacing: "0.14em",
                   textTransform: "uppercase",
-                  color: "#9D9C95",
+                  color: "hsl(var(--muted-foreground))",
                 }}
               >
                 LAVERE = BEDRE
@@ -464,7 +464,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
           <Reveal delay={80}>
             <div
               style={{
-                background: "#FAFAF7",
+                background: "hsl(var(--background))",
                 border: "1px solid #E5E3DD",
                 borderRadius: 16,
                 padding: 32,
@@ -479,18 +479,18 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                   <XAxis
                     dataKey="year"
                     tick={{
-                      fill: "#9D9C95",
+                      fill: "hsl(var(--muted-foreground))",
                       fontSize: 12,
                       fontFamily: "var(--font-mono)",
                     }}
-                    axisLine={{ stroke: "#E5E3DD" }}
+                    axisLine={{ stroke: "hsl(var(--border))" }}
                     tickLine={false}
                   />
                   <YAxis
                     reversed
                     domain={["auto", "auto"]}
                     tick={{
-                      fill: "#9D9C95",
+                      fill: "hsl(var(--muted-foreground))",
                       fontSize: 11,
                       fontFamily: "var(--font-mono)",
                     }}
@@ -519,7 +519,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                     dataKey={navnA}
                     stroke="#005840"
                     strokeWidth={2.5}
-                    dot={{ fill: "#005840", r: 4 }}
+                    dot={{ fill: "hsl(var(--primary))", r: 4 }}
                     connectNulls={false}
                   />
                   <Line
@@ -528,7 +528,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                     stroke="#D1F843"
                     strokeWidth={2.5}
                     strokeDasharray="5 3"
-                    dot={{ fill: "#D1F843", r: 4 }}
+                    dot={{ fill: "hsl(var(--accent))", r: 4 }}
                     connectNulls={false}
                   />
                 </LineChart>
@@ -555,7 +555,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                   }}
                 >
                   Topp 5{" "}
-                  <em style={{ fontStyle: "italic", fontWeight: 400, color: "#005840" }}>
+                  <em style={{ fontStyle: "italic", fontWeight: 400, color: "hsl(var(--primary))" }}>
                     per spiller
                   </em>
                   .
@@ -580,13 +580,13 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                     fontSize: 16,
                     fontWeight: 600,
                     marginBottom: 12,
-                    color: "#005840",
+                    color: "hsl(var(--primary))",
                   }}
                 >
                   {spillerA.name}
                 </div>
                 {topp5A.length === 0 ? (
-                  <p style={{ color: "#9D9C95", fontSize: 13 }}>
+                  <p style={{ color: "hsl(var(--muted-foreground))", fontSize: 13 }}>
                     Ingen avsluttede resultater
                   </p>
                 ) : (
@@ -606,7 +606,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                             fontFamily: "var(--font-mono)",
                             fontSize: 9,
                             letterSpacing: "0.14em",
-                            color: "#9D9C95",
+                            color: "hsl(var(--muted-foreground))",
                             borderBottom: "1px solid #F1EEE5",
                           }}
                         >
@@ -619,7 +619,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                             fontFamily: "var(--font-mono)",
                             fontSize: 9,
                             letterSpacing: "0.14em",
-                            color: "#9D9C95",
+                            color: "hsl(var(--muted-foreground))",
                             borderBottom: "1px solid #F1EEE5",
                           }}
                         >
@@ -632,7 +632,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                             fontFamily: "var(--font-mono)",
                             fontSize: 9,
                             letterSpacing: "0.14em",
-                            color: "#9D9C95",
+                            color: "hsl(var(--muted-foreground))",
                             borderBottom: "1px solid #F1EEE5",
                           }}
                         >
@@ -643,7 +643,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                     <tbody>
                       {topp5A.map((e, i) => (
                         <tr key={e.id} style={{ borderBottom: "1px solid #F1EEE5" }}>
-                          <td style={{ padding: "8px 8px", color: "#0A1F17" }}>
+                          <td style={{ padding: "8px 8px", color: "hsl(var(--foreground))" }}>
                             <div
                               style={{
                                 fontFamily: "var(--font-display)",
@@ -657,7 +657,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                               style={{
                                 fontFamily: "var(--font-mono)",
                                 fontSize: 10,
-                                color: "#9D9C95",
+                                color: "hsl(var(--muted-foreground))",
                                 marginTop: 2,
                               }}
                             >
@@ -671,7 +671,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                               fontSize: 16,
                               fontWeight: 600,
                               padding: "8px 8px",
-                              color: i === 0 ? "#005840" : "#0A1F17",
+                              color: i === 0 ? "hsl(var(--primary))" : "hsl(var(--foreground))",
                             }}
                           >
                             T{e.position}
@@ -682,7 +682,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                               fontFamily: "var(--font-mono)",
                               fontSize: 13,
                               padding: "8px 8px",
-                              color: "#5E5C57",
+                              color: "hsl(var(--muted-foreground))",
                             }}
                           >
                             {e.totalScore ?? "—"}
@@ -702,13 +702,13 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                     fontSize: 16,
                     fontWeight: 600,
                     marginBottom: 12,
-                    color: "#005840",
+                    color: "hsl(var(--primary))",
                   }}
                 >
                   {spillerB.name}
                 </div>
                 {topp5B.length === 0 ? (
-                  <p style={{ color: "#9D9C95", fontSize: 13 }}>
+                  <p style={{ color: "hsl(var(--muted-foreground))", fontSize: 13 }}>
                     Ingen avsluttede resultater
                   </p>
                 ) : (
@@ -728,7 +728,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                             fontFamily: "var(--font-mono)",
                             fontSize: 9,
                             letterSpacing: "0.14em",
-                            color: "#9D9C95",
+                            color: "hsl(var(--muted-foreground))",
                             borderBottom: "1px solid #F1EEE5",
                           }}
                         >
@@ -741,7 +741,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                             fontFamily: "var(--font-mono)",
                             fontSize: 9,
                             letterSpacing: "0.14em",
-                            color: "#9D9C95",
+                            color: "hsl(var(--muted-foreground))",
                             borderBottom: "1px solid #F1EEE5",
                           }}
                         >
@@ -754,7 +754,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                             fontFamily: "var(--font-mono)",
                             fontSize: 9,
                             letterSpacing: "0.14em",
-                            color: "#9D9C95",
+                            color: "hsl(var(--muted-foreground))",
                             borderBottom: "1px solid #F1EEE5",
                           }}
                         >
@@ -765,7 +765,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                     <tbody>
                       {topp5B.map((e, i) => (
                         <tr key={e.id} style={{ borderBottom: "1px solid #F1EEE5" }}>
-                          <td style={{ padding: "8px 8px", color: "#0A1F17" }}>
+                          <td style={{ padding: "8px 8px", color: "hsl(var(--foreground))" }}>
                             <div
                               style={{
                                 fontFamily: "var(--font-display)",
@@ -779,7 +779,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                               style={{
                                 fontFamily: "var(--font-mono)",
                                 fontSize: 10,
-                                color: "#9D9C95",
+                                color: "hsl(var(--muted-foreground))",
                                 marginTop: 2,
                               }}
                             >
@@ -793,7 +793,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                               fontSize: 16,
                               fontWeight: 600,
                               padding: "8px 8px",
-                              color: i === 0 ? "#005840" : "#0A1F17",
+                              color: i === 0 ? "hsl(var(--primary))" : "hsl(var(--foreground))",
                             }}
                           >
                             T{e.position}
@@ -804,7 +804,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                               fontFamily: "var(--font-mono)",
                               fontSize: 13,
                               padding: "8px 8px",
-                              color: "#5E5C57",
+                              color: "hsl(var(--muted-foreground))",
                             }}
                           >
                             {e.totalScore ?? "—"}
@@ -824,7 +824,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
       {summary && (
         <section
           className="stats-section stats-section-divider"
-          style={{ background: "#F1EEE5" }}
+          style={{ background: "hsl(var(--secondary))" }}
         >
           <div style={{ maxWidth: 900, margin: "0 auto" }}>
             <Reveal>
@@ -837,7 +837,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                   fontSize: 20,
                   lineHeight: 1.55,
                   fontStyle: "italic",
-                  color: "#0A1F17",
+                  color: "hsl(var(--foreground))",
                 }}
                 dangerouslySetInnerHTML={{ __html: summary }}
               />
@@ -847,7 +847,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                   fontSize: 10,
                   letterSpacing: "0.14em",
                   textTransform: "uppercase",
-                  color: "#9D9C95",
+                  color: "hsl(var(--muted-foreground))",
                   marginTop: 16,
                   paddingLeft: 24,
                 }}
@@ -867,7 +867,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
             <p
               style={{
                 fontSize: 15,
-                color: "#5E5C57",
+                color: "hsl(var(--muted-foreground))",
                 marginTop: 12,
                 marginBottom: 24,
               }}
@@ -888,8 +888,8 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                   alignItems: "center",
                   gap: 8,
                   padding: "10px 18px",
-                  background: "#0A1F17",
-                  color: "#FAFAF7",
+                  background: "hsl(var(--foreground))",
+                  color: "hsl(var(--background))",
                   borderRadius: 999,
                   textDecoration: "none",
                   fontSize: 13,
@@ -905,8 +905,8 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                   alignItems: "center",
                   gap: 8,
                   padding: "10px 18px",
-                  background: "#F1EEE5",
-                  color: "#005840",
+                  background: "hsl(var(--secondary))",
+                  color: "hsl(var(--primary))",
                   border: "1px solid #E5E3DD",
                   borderRadius: 999,
                   textDecoration: "none",

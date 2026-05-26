@@ -411,7 +411,7 @@ export default async function MinProgresjonPage() {
                           fontFamily: "var(--font-mono)",
                           fontSize: 11,
                           fontWeight: 600,
-                          color: bedre ? "var(--s-primary)" : "#BE3D3D",
+                          color: bedre ? "var(--s-primary)" : "hsl(var(--destructive))",
                           display: "flex",
                           alignItems: "center",
                           gap: 4,

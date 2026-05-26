@@ -145,7 +145,7 @@ export default async function AnleggDetailPage({
             style={{
               fontFamily: "'Inter Tight', sans-serif",
               fontStyle: "italic",
-              color: "#005840",
+              color: "hsl(var(--primary))",
             }}
           >
             anlegg

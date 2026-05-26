@@ -141,8 +141,8 @@ export default function TalentSammenlignToDemo() {
                   key={d.label}
                   className={`rounded-md px-3 py-2 ${
                     d.tone === "pos"
-                      ? "bg-[#E5F1EA] text-[#1A7D56]"
-                      : "bg-[#FBE4E4] text-[#A32D2D]"
+                      ? "bg-primary/10 text-success"
+                      : "bg-[#FBE4E4] text-destructive"
                   }`}
                 >
                   <div className="font-mono text-[14px] font-semibold tabular-nums leading-none">
@@ -463,9 +463,9 @@ function Pill({
 }) {
   const styles: Record<string, string> = {
     info: "bg-[#E2EEF6] text-[#114B70]",
-    success: "bg-[#E5F1EA] text-[#1A7D56]",
-    danger: "bg-[#FBE4E4] text-[#A32D2D]",
-    warning: "bg-[#FFF0D6] text-[#B8852A]",
+    success: "bg-primary/10 text-success",
+    danger: "bg-[#FBE4E4] text-destructive",
+    warning: "bg-[#FFF0D6] text-warning",
     muted: "bg-secondary text-muted-foreground",
   };
   return (

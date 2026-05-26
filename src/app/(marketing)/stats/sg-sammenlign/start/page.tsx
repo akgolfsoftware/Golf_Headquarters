@@ -70,7 +70,7 @@ export default async function SgStartPage({ searchParams }: Props) {
             alignItems: "center",
             gap: 6,
             fontSize: 13,
-            color: "#9D9C95",
+            color: "hsl(var(--muted-foreground))",
             textDecoration: "none",
             fontWeight: 500,
           }}
@@ -84,7 +84,7 @@ export default async function SgStartPage({ searchParams }: Props) {
             fontSize: 10,
             letterSpacing: "0.14em",
             textTransform: "uppercase",
-            color: "#9D9C95",
+            color: "hsl(var(--muted-foreground))",
           }}
         >
           AK GOLF STATS · SG-SAMMENLIGNING
@@ -108,7 +108,7 @@ export default async function SgStartPage({ searchParams }: Props) {
               borderRadius: 16,
             }}
           >
-            <p style={{ color: "#9D9C95", fontSize: 15 }}>
+            <p style={{ color: "hsl(var(--muted-foreground))", fontSize: 15 }}>
               PGA Tour-data er ikke synket ennå. Prøv igjen om litt.
             </p>
           </div>

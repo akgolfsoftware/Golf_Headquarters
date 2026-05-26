@@ -124,7 +124,7 @@ export default function TalentSpiller360Demo() {
             <span className="mt-1 font-mono text-[44px] font-medium tabular-nums leading-none">
               70,1
             </span>
-            <span className="mt-1 font-mono text-[10px] font-medium text-[#1A7D56]">
+            <span className="mt-1 font-mono text-[10px] font-medium text-success">
               −0,8 vs i fjor
             </span>
           </div>
@@ -164,7 +164,7 @@ export default function TalentSpiller360Demo() {
               <span className="text-[20px] text-muted-foreground">.</span>
             </div>
             <DensityCurve highlight={94} />
-            <div className="mt-2 font-mono text-[10px] text-[#1A7D56]">
+            <div className="mt-2 font-mono text-[10px] text-success">
               {KPI.percentileDelta}
             </div>
           </div>
@@ -189,10 +189,10 @@ export default function TalentSpiller360Demo() {
               Form
             </span>
             <div className="mt-3 flex items-baseline gap-2">
-              <span className="font-mono text-[36px] font-medium tabular-nums leading-none text-[#1A7D56]">
+              <span className="font-mono text-[36px] font-medium tabular-nums leading-none text-success">
                 {KPI.formPct}
               </span>
-              <TrendingUp className="h-4 w-4 text-[#1A7D56]" strokeWidth={1.5} />
+              <TrendingUp className="h-4 w-4 text-success" strokeWidth={1.5} />
             </div>
             <Sparkline values={KPI.formTrend} />
             <div className="mt-2 font-mono text-[10px] text-muted-foreground">
@@ -370,7 +370,7 @@ export default function TalentSpiller360Demo() {
                   Hvor i banen taper han slag?
                 </h3>
               </div>
-              <span className="inline-flex items-center gap-1 rounded-full bg-[#FBE4E4] px-2 py-0.5 text-[10px] font-medium text-[#A32D2D]">
+              <span className="inline-flex items-center gap-1 rounded-full bg-[#FBE4E4] px-2 py-0.5 text-[10px] font-medium text-destructive">
                 <AlertTriangle className="h-3 w-3" strokeWidth={1.5} />
                 100–125y svakest
               </span>
@@ -694,8 +694,8 @@ function Pill({
 }) {
   const styles: Record<string, string> = {
     info: "bg-primary/10 text-primary",
-    success: "bg-[#E5F1EA] text-[#1A7D56]",
-    warning: "bg-[#FFF0D6] text-[#B8852A]",
+    success: "bg-primary/10 text-success",
+    warning: "bg-[#FFF0D6] text-warning",
     muted: "bg-secondary text-muted-foreground",
   };
   return (

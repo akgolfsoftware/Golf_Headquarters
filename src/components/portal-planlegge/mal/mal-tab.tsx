@@ -404,8 +404,8 @@ function Sparkline({ kind }: { kind: "g1" | "g2" | "g3" }) {
       <svg className="side-spark" viewBox="0 0 200 80" preserveAspectRatio="none">
         <defs>
           <linearGradient id="mt-g1-fill" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="#D1F843" stopOpacity="0.45" />
-            <stop offset="100%" stopColor="#D1F843" stopOpacity="0" />
+            <stop offset="0%" stopColor="hsl(var(--accent))" stopOpacity="0.45" />
+            <stop offset="100%" stopColor="hsl(var(--accent))" stopOpacity="0" />
           </linearGradient>
         </defs>
         <path
@@ -436,8 +436,8 @@ function Sparkline({ kind }: { kind: "g1" | "g2" | "g3" }) {
       <svg className="side-spark" viewBox="0 0 200 80" preserveAspectRatio="none">
         <defs>
           <linearGradient id="mt-g2-fill" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="#D1F843" stopOpacity="0.45" />
-            <stop offset="100%" stopColor="#D1F843" stopOpacity="0" />
+            <stop offset="0%" stopColor="hsl(var(--accent))" stopOpacity="0.45" />
+            <stop offset="100%" stopColor="hsl(var(--accent))" stopOpacity="0" />
           </linearGradient>
         </defs>
         <path
@@ -467,8 +467,8 @@ function Sparkline({ kind }: { kind: "g1" | "g2" | "g3" }) {
     <svg className="side-spark" viewBox="0 0 200 80" preserveAspectRatio="none">
       <defs>
         <linearGradient id="mt-g3-fill" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stopColor="#B8852A" stopOpacity="0.35" />
-          <stop offset="100%" stopColor="#B8852A" stopOpacity="0" />
+          <stop offset="0%" stopColor="hsl(var(--warning))" stopOpacity="0.35" />
+          <stop offset="100%" stopColor="hsl(var(--warning))" stopOpacity="0" />
         </linearGradient>
       </defs>
       <path d="M 4 60 L 50 58 L 100 56 L 150 54 L 196 52 L 196 80 L 4 80 Z" fill="url(#mt-g3-fill)" />

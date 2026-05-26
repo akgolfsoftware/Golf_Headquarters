@@ -187,7 +187,7 @@ export function ModeringClient({
               {count !== undefined && count > 0 && (
                 <span
                   style={{
-                    background: t.id === "slett" ? "#BE3D3D" : "var(--s-primary)",
+                    background: t.id === "slett" ? "hsl(var(--destructive))" : "var(--s-primary)",
                     color: t.id === "slett" ? "#FFF" : "var(--s-primary-fg)",
                     borderRadius: 999,
                     padding: "1px 7px",
@@ -249,7 +249,7 @@ export function ModeringClient({
                         style={{
                           fontSize: 11,
                           fontFamily: "var(--font-mono)",
-                          color: t.flagg >= 3 ? "#BE3D3D" : "#B57317",
+                          color: t.flagg >= 3 ? "hsl(var(--destructive))" : "#B57317",
                           fontWeight: 600,
                           background:
                             t.flagg >= 3 ? "rgba(190,61,61,0.1)" : "rgba(181,115,23,0.1)",
@@ -296,7 +296,7 @@ export function ModeringClient({
                       borderRadius: 6,
                       width: 36,
                       height: 36,
-                      color: "#BE3D3D",
+                      color: "hsl(var(--destructive))",
                       cursor: "pointer",
                       display: "grid",
                       placeItems: "center",
@@ -327,7 +327,7 @@ export function ModeringClient({
                 fontSize: 10,
                 letterSpacing: "0.14em",
                 textTransform: "uppercase",
-                color: "#BE3D3D",
+                color: "hsl(var(--destructive))",
                 marginBottom: 12,
               }}
             >
@@ -370,7 +370,7 @@ export function ModeringClient({
                   fontSize: 10,
                   letterSpacing: "0.14em",
                   textTransform: "uppercase",
-                  color: "#BE3D3D",
+                  color: "hsl(var(--destructive))",
                   marginBottom: 10,
                 }}
               >
@@ -399,7 +399,7 @@ export function ModeringClient({
                 style={{
                   padding: "12px 22px",
                   borderRadius: 999,
-                  background: "#BE3D3D",
+                  background: "hsl(var(--destructive))",
                   color: "#FFF",
                   border: "none",
                   cursor: "pointer",

@@ -166,7 +166,7 @@ export async function AnalyserOverview({ userId }: { userId: string }) {
               style={{
                 fontFamily: "'Inter Tight', sans-serif",
                 fontStyle: "italic",
-                color: "#005840",
+                color: "hsl(var(--primary))",
               }}
             >
               spillet ditt

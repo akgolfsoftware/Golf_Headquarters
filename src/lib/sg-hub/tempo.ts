@@ -28,9 +28,9 @@ export type TempoResult = {
 };
 
 export const TEMPO_ZONE_COLORS: Record<TempoZone, string> = {
-  GREEN: "#005840",
-  YELLOW: "#D1F843",
-  RED: "#A32D2D",
+  GREEN: "hsl(var(--primary))",
+  YELLOW: "hsl(var(--accent))",
+  RED: "hsl(var(--destructive))",
 };
 
 export const TEMPO_OPTIMAL_RATIO = 3.0;

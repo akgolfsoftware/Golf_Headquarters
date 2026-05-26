@@ -142,7 +142,7 @@ function ExpiredCard({ email }: { email: string }) {
       <AlertTriangle
         className="mx-auto h-8 w-8 text-warn"
         strokeWidth={1.75}
-        style={{ color: "#B8852A" }}
+        style={{ color: "hsl(var(--warning))" }}
       />
       <h2 className="font-display mt-3 text-lg font-semibold">
         Invitasjonen er utløpt

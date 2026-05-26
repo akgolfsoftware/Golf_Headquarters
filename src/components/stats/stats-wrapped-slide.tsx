@@ -113,19 +113,19 @@ export type WrappedSlideData =
 const BG_STYLES: Record<string, React.CSSProperties> = {
   forest: {
     background: "linear-gradient(160deg, #005840 0%, #003D2C 100%)",
-    color: "#FAFAF7",
+    color: "hsl(var(--background))",
   },
   "forest-dark": {
     background: "linear-gradient(160deg, #002A1A 0%, #001510 100%)",
-    color: "#FAFAF7",
+    color: "hsl(var(--background))",
   },
   lime: {
     background: "linear-gradient(160deg, #D1F843 0%, #B8E020 100%)",
-    color: "#0A1F17",
+    color: "hsl(var(--foreground))",
   },
   offwhite: {
     background: "linear-gradient(160deg, #FAFAF7 0%, #F1EEE5 100%)",
-    color: "#0A1F17",
+    color: "hsl(var(--foreground))",
   },
 };
 
@@ -137,7 +137,7 @@ interface StatsWrappedSlideProps {
 
 export function StatsWrappedSlide({ slide, isActive, delLenke }: StatsWrappedSlideProps) {
   const bgStyle = BG_STYLES[slide.bgVariant] ?? BG_STYLES.forest;
-  const accentColor = slide.bgVariant === "lime" ? "#005840" : "#D1F843";
+  const accentColor = slide.bgVariant === "lime" ? "hsl(var(--primary))" : "hsl(var(--accent))";
   const mutedColor =
     slide.bgVariant === "lime"
       ? "rgba(10,31,23,0.6)"
@@ -449,7 +449,7 @@ function SlideSammenligning({ slide, accentColor, mutedColor }: { slide: Sammenl
         width: 96, height: 96,
         borderRadius: "50%",
         background: accentColor,
-        color: slide.bgVariant === "lime" ? "#005840" : "#0A1F17",
+        color: slide.bgVariant === "lime" ? "hsl(var(--primary))" : "hsl(var(--foreground))",
         display: "grid",
         placeItems: "center",
         fontFamily: "var(--font-mono)",
@@ -499,7 +499,7 @@ function SlideAvslutning({ slide, accentColor, mutedColor, delLenke }: { slide: 
             padding: "14px 28px",
             borderRadius: 999,
             background: accentColor,
-            color: slide.bgVariant === "lime" ? "#005840" : "#0A1F17",
+            color: slide.bgVariant === "lime" ? "hsl(var(--primary))" : "hsl(var(--foreground))",
             fontWeight: 600,
             fontSize: 15,
             fontFamily: "inherit",

@@ -35,28 +35,28 @@ const PYR_TONE: Record<PyramidArea, { bg: string; text: string; tile: string }> 
   {
     FYS: {
       bg: "bg-[rgba(0,88,64,0.13)]",
-      text: "text-[#005840]",
-      tile: "bg-[#005840]",
+      text: "text-primary",
+      tile: "bg-primary",
     },
     TEK: {
       bg: "bg-[rgba(26,125,86,0.13)]",
-      text: "text-[#1A7D56]",
-      tile: "bg-[#1A7D56]",
+      text: "text-success",
+      tile: "bg-success",
     },
     SLAG: {
       bg: "bg-[rgba(209,248,67,0.45)]",
-      text: "text-[#0A1F17]",
-      tile: "bg-[#D1F843]",
+      text: "text-foreground",
+      tile: "bg-accent",
     },
     SPILL: {
       bg: "bg-[rgba(184,133,42,0.13)]",
-      text: "text-[#B8852A]",
-      tile: "bg-[#B8852A]",
+      text: "text-warning",
+      tile: "bg-warning",
     },
     TURN: {
       bg: "bg-[rgba(94,92,87,0.13)]",
-      text: "text-[#5E5C57]",
-      tile: "bg-[#5E5C57]",
+      text: "text-muted-foreground",
+      tile: "bg-muted-foreground",
     },
   };
 
@@ -282,7 +282,7 @@ export default async function LiveBriefPage({
             <div className="flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-border bg-card px-6 py-5 font-sans text-[14px] text-muted-foreground">
               {session.status === "COMPLETED" ? (
                 <>
-                  <CheckCircle2 className="h-4 w-4 text-[#2C7D52]" strokeWidth={2} />
+                  <CheckCircle2 className="h-4 w-4 text-success" strokeWidth={2} />
                   Økten er fullført
                 </>
               ) : (

@@ -385,7 +385,7 @@ export default async function PortalStatsPage() {
                 <>
                   <span
                     style={{
-                      color: stats.diffForrigeUke < 0 ? "var(--s-primary)" : "#BE3D3D",
+                      color: stats.diffForrigeUke < 0 ? "var(--s-primary)" : "hsl(var(--destructive))",
                       fontWeight: 600,
                       fontFamily: "var(--font-mono)",
                       fontSize: 11,

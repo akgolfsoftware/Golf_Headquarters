@@ -182,11 +182,11 @@ export default async function ArtikkelPage({
 
           <div className="my-6 space-y-2 rounded-xl border border-border bg-card p-5">
             {[
-              { label: "TURN", pct: 8, target: 10, color: "#D1F843" },
-              { label: "SPILL", pct: 17, target: 15, color: "#88B45A" },
-              { label: "SLAG", pct: 32, target: 30, color: "#2C7D52" },
-              { label: "TEK", pct: 28, target: 30, color: "#005840" },
-              { label: "FYS", pct: 15, target: 15, color: "#1A4D2E" },
+              { label: "TURN", pct: 8, target: 10, color: "hsl(var(--accent))" },
+              { label: "SPILL", pct: 17, target: 15, color: "hsl(var(--accent))" },
+              { label: "SLAG", pct: 32, target: 30, color: "hsl(var(--success))" },
+              { label: "TEK", pct: 28, target: 30, color: "hsl(var(--primary))" },
+              { label: "FYS", pct: 15, target: 15, color: "hsl(var(--primary))" },
             ].map((p) => (
               <div key={p.label} className="grid grid-cols-[60px_1fr_80px] items-center gap-3">
                 <span className="font-mono text-[10.5px] font-bold uppercase tracking-[0.06em] text-muted-foreground">

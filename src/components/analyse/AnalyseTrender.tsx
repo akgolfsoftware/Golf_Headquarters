@@ -21,9 +21,9 @@ import type { Dimensjon, TrendPunkt } from "@/app/admin/analyse/actions";
 import { getTrendData } from "@/app/admin/analyse/actions";
 
 const PYRAMID_FARGER: Record<string, string> = {
-  FYS: "#A32D2D",
-  TEK: "#005840",
-  SLAG: "#D1F843",
+  FYS: "hsl(var(--destructive))",
+  TEK: "hsl(var(--primary))",
+  SLAG: "hsl(var(--accent))",
   SPILL: "#0A5C8A",
   TURN: "#7F4F00",
 };
@@ -49,7 +49,7 @@ function parsePeriode(s: string): { from: Date; to: Date } {
 
 function fargeFor(serie: string, idx: number): string {
   if (PYRAMID_FARGER[serie]) return PYRAMID_FARGER[serie];
-  const palette = ["#005840", "#D1F843", "#0A5C8A", "#A32D2D", "#7F4F00", "#5E5C57"];
+  const palette = ["hsl(var(--primary))", "hsl(var(--accent))", "#0A5C8A", "hsl(var(--destructive))", "#7F4F00", "hsl(var(--muted-foreground))"];
   return palette[idx % palette.length];
 }
 

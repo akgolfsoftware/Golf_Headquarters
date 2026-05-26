@@ -7,11 +7,11 @@
  */
 
 export const PYRAMID_COLORS = {
-  FYS: { dot: "#1A4D2E", bg: "#E8F3EC", tag: "#1A4D2E" },
-  TEK: { dot: "#005840", bg: "#E8F0EC", tag: "#005840" },
-  SLAG: { dot: "#2C7D52", bg: "#EAF2EC", tag: "#2C7D52" },
-  SPILL: { dot: "#88B45A", bg: "#F0F5E8", tag: "#5E7A36" },
-  TURN: { dot: "#D1F843", bg: "#F4FBE0", tag: "#6E7E1F" },
+  FYS: { dot: "hsl(var(--primary))", bg: "#E8F3EC", tag: "hsl(var(--primary))" },
+  TEK: { dot: "hsl(var(--primary))", bg: "#E8F0EC", tag: "hsl(var(--primary))" },
+  SLAG: { dot: "hsl(var(--success))", bg: "#EAF2EC", tag: "hsl(var(--success))" },
+  SPILL: { dot: "hsl(var(--accent))", bg: "#F0F5E8", tag: "#5E7A36" },
+  TURN: { dot: "hsl(var(--accent))", bg: "#F4FBE0", tag: "#6E7E1F" },
 } as const;
 
 export type PyramidArea = keyof typeof PYRAMID_COLORS;

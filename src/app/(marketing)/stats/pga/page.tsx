@@ -726,7 +726,7 @@ function DuVsTour() {
           <div key={r.label}>
             <div className="du-vs-row-label">
               <span style={{ color: "var(--accent)" }}>{r.label}</span>
-              <span style={{ color: "#FAFAF7" }}>{r.du.toFixed(2)}</span>
+              <span style={{ color: "hsl(var(--background))" }}>{r.du.toFixed(2)}</span>
             </div>
             <div className="du-vs-track">
               <div className="du-vs-center" />

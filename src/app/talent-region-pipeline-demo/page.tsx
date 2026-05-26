@@ -208,7 +208,7 @@ function NorgesMap() {
               fontFamily="var(--font-geist)"
               fontSize={isSelected ? 13 : 11}
               fontWeight={600}
-              fill={isSelected ? "#D1F843" : "var(--color-foreground, #0A1F17)"}
+              fill={isSelected ? "hsl(var(--accent))" : "var(--color-foreground, #0A1F17)"}
             >
               {r.label}
             </text>
@@ -250,9 +250,9 @@ function Kpi({
 }) {
   const deltaStyle =
     deltaTone === "up"
-      ? "bg-[#E5F1EA] text-[#1A7D56]"
+      ? "bg-primary/10 text-success"
       : deltaTone === "down"
-        ? "bg-[#FBE5E5] text-[#A32D2D]"
+        ? "bg-[#FBE5E5] text-destructive"
         : "bg-secondary text-muted-foreground";
   return (
     <div className="rounded-lg border border-border bg-card p-5">
@@ -278,13 +278,13 @@ function DarkKpi() {
       className="col-span-2 rounded-lg p-5 text-[color:#F5F4EE]"
       style={{ background: "var(--color-pyr-fys, #005840)" }}
     >
-      <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#D1F843]">
+      <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-accent">
         Pipeline-helse
       </div>
       <div className="mt-2 font-display text-[36px] font-medium italic leading-none">
         Sterk
       </div>
-      <div className="mt-3 max-w-[560px] text-[13px] leading-[1.5] text-[#D1F843]/85">
+      <div className="mt-3 max-w-[560px] text-[13px] leading-[1.5] text-accent/85">
         Diversitet i klubber · 8 klubber leverer ≥ 10 spillere · ny-rekruttering &gt; avgang i &gt; 3 år.
       </div>
     </div>
@@ -354,9 +354,9 @@ function ActionItem({
     tone === "info"
       ? "bg-primary/8 text-primary"
       : tone === "warn"
-        ? "bg-[#FFF0D6] text-[#B8852A]"
+        ? "bg-[#FFF0D6] text-warning"
         : tone === "success"
-          ? "bg-[#E5F1EA] text-[#1A7D56]"
+          ? "bg-primary/10 text-success"
           : "bg-secondary text-muted-foreground";
   return (
     <span

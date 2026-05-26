@@ -274,21 +274,21 @@ export default async function BookingLandingsside() {
               tittel: "Wedge-presisjon 50–80m",
               coach: "Med Anders · 60 min",
               tag: "TEK · L3",
-              tagBg: "bg-[rgba(26,125,86,0.13)] text-[#1A7D56]",
+              tagBg: "bg-[rgba(26,125,86,0.13)] text-success",
               tider: "I morgen 14:00 · 16:00",
             },
             {
               tittel: "TrackMan diagnose iron",
               coach: "Med Anders · 45 min",
               tag: "TEST",
-              tagBg: "bg-[rgba(184,133,42,0.13)] text-[#B8852A]",
+              tagBg: "bg-[rgba(184,133,42,0.13)] text-warning",
               tider: "Torsdag 09:30",
             },
             {
               tittel: "Putt-trening 4–8 fot",
               coach: "Med Markus · 60 min",
               tag: "SLAG",
-              tagBg: "bg-[rgba(209,248,67,0.55)] text-[#0A1F17]",
+              tagBg: "bg-[rgba(209,248,67,0.55)] text-foreground",
               tider: "Fredag 17:00",
             },
           ].map((rec) => (
@@ -377,7 +377,7 @@ export default async function BookingLandingsside() {
                 <div>
                   <div className="flex items-center justify-center gap-0.5 font-mono text-[13px] font-semibold text-foreground tabular-nums">
                     <Star
-                      className="h-3 w-3 fill-current text-[#B8852A]"
+                      className="h-3 w-3 fill-current text-warning"
                       strokeWidth={0}
                     />
                     {c.rating}

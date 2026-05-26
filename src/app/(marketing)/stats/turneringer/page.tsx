@@ -377,7 +377,7 @@ export default async function TurneringerPage({ searchParams }: Props) {
             alignItems: "center",
             gap: 6,
             fontSize: 13,
-            color: "#9D9C95",
+            color: "hsl(var(--muted-foreground))",
             textDecoration: "none",
             fontWeight: 500,
           }}
@@ -391,7 +391,7 @@ export default async function TurneringerPage({ searchParams }: Props) {
             fontSize: 10,
             letterSpacing: "0.14em",
             textTransform: "uppercase",
-            color: "#9D9C95",
+            color: "hsl(var(--muted-foreground))",
           }}
         >
           AK GOLF STATS · TURNERINGER

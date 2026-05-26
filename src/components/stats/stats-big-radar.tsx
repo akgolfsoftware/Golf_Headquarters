@@ -68,12 +68,12 @@ function RadarTooltip({
           fontWeight: 600,
           letterSpacing: "0.08em",
           marginBottom: 6,
-          color: "#0A1F17",
+          color: "hsl(var(--foreground))",
         }}
       >
         {label}
       </div>
-      <div style={{ color: "#005840" }}>
+      <div style={{ color: "hsl(var(--primary))" }}>
         {youLabel}:{" "}
         {duRaw !== undefined
           ? (duRaw >= 0 ? "+" : "") + duRaw.toFixed(2)
@@ -115,7 +115,7 @@ export function StatsBigRadar({
           <PolarAngleAxis
             dataKey="kategori"
             tick={{
-              fill: "#5E5C57",
+              fill: "hsl(var(--muted-foreground))",
               fontSize: 13,
               fontFamily: "var(--font-display)",
               fontWeight: 600,

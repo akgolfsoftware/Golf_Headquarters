@@ -108,7 +108,7 @@ export function LiveIntroModal({
       {/* Center */}
       <div className="relative z-0 flex flex-col items-center justify-center px-6 text-center">
         <div className="inline-flex items-center gap-2.5 font-sans text-[12px] font-semibold uppercase tracking-[0.10em] text-white/60">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#1A7D56]" />
+          <span className="h-1.5 w-1.5 rounded-full bg-success" />
           {eyebrow}
         </div>
         <h1 className="mt-7 font-display text-[44px] font-bold leading-[0.95] -tracking-[0.035em] text-white sm:text-[64px] md:text-[88px]">

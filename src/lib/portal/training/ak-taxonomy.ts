@@ -14,7 +14,6 @@
 
 import { z } from "zod";
 import type {
-  PyramidArea,
   PeriodeType,
   PracticeType,
   LFase,
@@ -92,10 +91,10 @@ export type PeriodeFarge = {
 
 export const PERIODE_FARGER: Record<PeriodeType, PeriodeFarge> = {
   GRUNN: { bg: "#003B2A", text: "#FFFFFF", pattern: "solid" },
-  SPESIALISERING: { bg: "#005840", text: "#FFFFFF", pattern: "solid" },
-  TURNERING: { bg: "#D1F843", text: "#0A1F18", pattern: "solid" },
-  EVALUERING: { bg: "#5E5C57", text: "#FFFFFF", pattern: "solid" },
-  FERIE: { bg: "#F1EEE5", text: "#5E5C57", pattern: "diagonal-stripe" },
+  SPESIALISERING: { bg: "hsl(var(--primary))", text: "#FFFFFF", pattern: "solid" },
+  TURNERING: { bg: "hsl(var(--accent))", text: "hsl(var(--foreground))", pattern: "solid" },
+  EVALUERING: { bg: "hsl(var(--muted-foreground))", text: "#FFFFFF", pattern: "solid" },
+  FERIE: { bg: "hsl(var(--secondary))", text: "hsl(var(--muted-foreground))", pattern: "diagonal-stripe" },
 };
 
 export const PERIODE_LABELS: Record<PeriodeType, string> = {

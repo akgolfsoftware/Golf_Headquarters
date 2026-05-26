@@ -23,20 +23,20 @@ type PyramideKol = {
 };
 
 const KOLONNER: PyramideKol[] = [
-  { key: "FYS", label: "FYS", color: "#005840" },
-  { key: "TEK", label: "TEK", color: "#1A7D56" },
-  { key: "SLAG", label: "SLAG", color: "#D1F843" },
-  { key: "SPILL", label: "SPILL", color: "#B8852A" },
-  { key: "TURN", label: "TURN", color: "#5E5C57" },
+  { key: "FYS", label: "FYS", color: "hsl(var(--primary))" },
+  { key: "TEK", label: "TEK", color: "hsl(var(--success))" },
+  { key: "SLAG", label: "SLAG", color: "hsl(var(--accent))" },
+  { key: "SPILL", label: "SPILL", color: "hsl(var(--warning))" },
+  { key: "TURN", label: "TURN", color: "hsl(var(--muted-foreground))" },
 ];
 
 // hit-rate 0..1 → bakgrunn + tekst-farge
 function hitRateColor(rate: number): { bg: string; fg: string } {
-  if (rate >= 0.85) return { bg: "#005840", fg: "#D1F843" };
-  if (rate >= 0.70) return { bg: "#2C7D52", fg: "#FFFFFF" };
-  if (rate >= 0.55) return { bg: "rgba(209,248,67,0.45)", fg: "#0A1F17" };
-  if (rate >= 0.40) return { bg: "rgba(184,133,42,0.30)", fg: "#0A1F17" };
-  return { bg: "#F5E8E4", fg: "#A32D2D" };
+  if (rate >= 0.85) return { bg: "hsl(var(--primary))", fg: "hsl(var(--accent))" };
+  if (rate >= 0.70) return { bg: "hsl(var(--success))", fg: "#FFFFFF" };
+  if (rate >= 0.55) return { bg: "rgba(209,248,67,0.45)", fg: "hsl(var(--foreground))" };
+  if (rate >= 0.40) return { bg: "rgba(184,133,42,0.30)", fg: "hsl(var(--foreground))" };
+  return { bg: "#F5E8E4", fg: "hsl(var(--destructive))" };
 }
 
 // Deterministisk hit-rate per (spiller × pyramide)
@@ -192,7 +192,7 @@ export function StallHeatmap({ spillere }: { spillere: Spiller[] }) {
               </div>
               <Link
                 href={`/admin/analyse?studentId=${valgtCelle.spiller.id}&view=oversikt`}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition hover:bg-[#003A2A]"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition hover:bg-primary"
               >
                 Åpne spillerprofil
               </Link>
@@ -244,11 +244,11 @@ function FilterPills({
 
 function Legend() {
   const tiers = [
-    { label: "≥85%", color: "#005840", fg: "#D1F843" },
-    { label: "70-85", color: "#2C7D52", fg: "#fff" },
-    { label: "55-70", color: "rgba(209,248,67,0.45)", fg: "#0A1F17" },
-    { label: "40-55", color: "rgba(184,133,42,0.30)", fg: "#0A1F17" },
-    { label: "<40%", color: "#F5E8E4", fg: "#A32D2D" },
+    { label: "≥85%", color: "hsl(var(--primary))", fg: "hsl(var(--accent))" },
+    { label: "70-85", color: "hsl(var(--success))", fg: "#fff" },
+    { label: "55-70", color: "rgba(209,248,67,0.45)", fg: "hsl(var(--foreground))" },
+    { label: "40-55", color: "rgba(184,133,42,0.30)", fg: "hsl(var(--foreground))" },
+    { label: "<40%", color: "#F5E8E4", fg: "hsl(var(--destructive))" },
   ];
   return (
     <div className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.08em] text-muted-foreground">

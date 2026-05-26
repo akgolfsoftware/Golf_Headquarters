@@ -59,7 +59,7 @@ const REGIONER: RegionPath[] = [
 ];
 
 const REGION_COLORS: Record<RegionSlug, { base: string; hover: string; active: string }> = {
-  ost:  { base: "rgba(0, 88, 64, 0.18)",   hover: "rgba(0, 88, 64, 0.35)",   active: "#005840" },
+  ost:  { base: "rgba(0, 88, 64, 0.18)",   hover: "rgba(0, 88, 64, 0.35)",   active: "hsl(var(--primary))" },
   vest: { base: "rgba(209, 248, 67, 0.30)", hover: "rgba(209, 248, 67, 0.55)", active: "#8CA015" },
   midt: { base: "rgba(30, 100, 200, 0.15)", hover: "rgba(30, 100, 200, 0.30)", active: "#1E64C8" },
   nord: { base: "rgba(120, 60, 180, 0.15)", hover: "rgba(120, 60, 180, 0.30)", active: "#783CB4" },
@@ -134,7 +134,7 @@ export function StatsNorgeskart({
               fontFamily="var(--font-mono)"
               fontSize={11}
               fontWeight={isAktiv || isHovered ? 700 : 500}
-              fill={isAktiv ? "#FAFAF7" : "var(--s-fg)"}
+              fill={isAktiv ? "hsl(var(--background))" : "var(--s-fg)"}
               style={{ transition: "fill .15s, font-weight .1s", userSelect: "none" }}
             >
               {r.label}

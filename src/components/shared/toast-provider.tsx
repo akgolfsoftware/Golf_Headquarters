@@ -129,17 +129,17 @@ function ToastPill({
 
   const palette =
     item.kind === "success"
-      ? "border-[#D1F843]/70 bg-[#F4FBE0] text-[#0A1F17]"
+      ? "border-accent/70 bg-[#F4FBE0] text-foreground"
       : item.kind === "error"
         ? "border-destructive/40 bg-destructive text-destructive-foreground"
         : "border-border bg-card text-foreground";
 
   const iconColor =
     item.kind === "success"
-      ? "text-[#005840]"
+      ? "text-primary"
       : item.kind === "error"
         ? "text-destructive-foreground"
-        : "text-[#005840]";
+        : "text-primary";
 
   const KindIcon =
     item.kind === "success" ? Check : item.kind === "error" ? AlertCircle : Info;

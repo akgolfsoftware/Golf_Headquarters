@@ -87,7 +87,7 @@ const SPILLERE_PER_KLUBB: Record<
 // Distribusjon-data (statisk illustrasjon)
 // ---------------------------------------------------------------------------
 
-const DONUT_COLORS = ["#005840", "#D1F843", "#F1EEE5", "#5E5C57"];
+const DONUT_COLORS = ["hsl(var(--primary))", "hsl(var(--accent))", "hsl(var(--secondary))", "hsl(var(--muted-foreground))"];
 
 // ---------------------------------------------------------------------------
 // Page

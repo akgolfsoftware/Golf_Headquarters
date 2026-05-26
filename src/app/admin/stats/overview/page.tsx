@@ -162,7 +162,7 @@ function formaterTidSiden(dato: Date | null | undefined): string {
 const SYNC_CFG = {
   ok: { bg: "#2EA66B15", col: "#2EA66B", icon: "+" },
   warning: { bg: "#B5731715", col: "#B57317", icon: "!" },
-  error: { bg: "#BE3D3D15", col: "#BE3D3D", icon: "x" },
+  error: { bg: "#BE3D3D15", col: "hsl(var(--destructive))", icon: "x" },
   stale: { bg: "#B5731715", col: "#B57317", icon: "!" },
 } as const;
 
@@ -529,7 +529,7 @@ export default async function AdminStatsOverviewPage() {
                     fontSize: 10,
                     letterSpacing: "0.14em",
                     textTransform: "uppercase",
-                    color: m.haster ? "#BE3D3D" : "var(--s-muted-fg)",
+                    color: m.haster ? "hsl(var(--destructive))" : "var(--s-muted-fg)",
                     marginBottom: 8,
                   }}
                 >
@@ -537,7 +537,7 @@ export default async function AdminStatsOverviewPage() {
                 </div>
                 <div
                   className="font-mono"
-                  style={{ fontSize: 40, color: m.haster ? "#BE3D3D" : "var(--s-fg)", fontWeight: 500 }}
+                  style={{ fontSize: 40, color: m.haster ? "hsl(var(--destructive))" : "var(--s-fg)", fontWeight: 500 }}
                 >
                   {m.n.toLocaleString("nb-NO")}
                 </div>

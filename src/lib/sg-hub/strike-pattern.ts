@@ -16,9 +16,9 @@ export type StrikeResult = {
 };
 
 export const STRIKE_COLORS: Record<StrikeZone, string> = {
-  SWEET: "#005840",
-  THIN: "#A32D2D",
-  ROLLED: "#D1F843",
+  SWEET: "hsl(var(--primary))",
+  THIN: "hsl(var(--destructive))",
+  ROLLED: "hsl(var(--accent))",
   FAT: "#0A5C8A",
 };
 

@@ -58,9 +58,9 @@ export type CoachHomeProps = {
 };
 
 const STATUS_COLOR: Record<CoachHomeProps["stallOverview"][number]["status"], string> = {
-  aktiv: "#2C7D52",
-  skadet: "#A32D2D",
-  permisjon: "#B8852A",
+  aktiv: "hsl(var(--success))",
+  skadet: "hsl(var(--destructive))",
+  permisjon: "hsl(var(--warning))",
 };
 
 function timeStr(d: Date): string {
@@ -78,25 +78,25 @@ export function CoachHome(props: CoachHomeProps) {
     <div className="space-y-6">
       {/* HERO */}
       <header>
-        <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
+        <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
           {props.isoDateLabel}
         </div>
-        <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight text-[#0A1F17] sm:text-4xl">
+        <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight text-foreground sm:text-4xl">
           God morgen,{" "}
           <em
             className="font-normal not-italic"
             style={{
               fontFamily: "'Inter Tight', sans-serif",
               fontStyle: "italic",
-              color: "#005840",
+              color: "hsl(var(--primary))",
             }}
           >
             {fornavn}
           </em>
         </h1>
-        <p className="mt-2 max-w-2xl text-base text-[#5E5C57]">
-          Du har <span className="font-semibold text-[#0A1F17]">{props.todaysSessionCount} økter</span> i dag og{" "}
-          <span className="font-semibold text-[#A32D2D]">{props.burningTaskCount} ting som brenner</span>.
+        <p className="mt-2 max-w-2xl text-base text-muted-foreground">
+          Du har <span className="font-semibold text-foreground">{props.todaysSessionCount} økter</span> i dag og{" "}
+          <span className="font-semibold text-destructive">{props.burningTaskCount} ting som brenner</span>.
         </p>
       </header>
 
@@ -112,10 +112,10 @@ export function CoachHome(props: CoachHomeProps) {
           <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-white/70">
             Aktive økter i dag
           </div>
-          <div className="mt-2 font-mono text-[38px] font-semibold leading-none tabular-nums text-[#D1F843]">
+          <div className="mt-2 font-mono text-[38px] font-semibold leading-none tabular-nums text-accent">
             {props.todaysSessionCount}
           </div>
-          <div className="mt-2 font-mono text-[10px] uppercase tracking-[0.08em] text-[#D1F843]/80">
+          <div className="mt-2 font-mono text-[10px] uppercase tracking-[0.08em] text-accent/80">
             sortert kronologisk
           </div>
         </div>
@@ -144,19 +144,19 @@ export function CoachHome(props: CoachHomeProps) {
       {/* I dag-tidslinje + Brennende oppgaver */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[2fr_1fr]">
         {/* Tidslinje */}
-        <section className="rounded-2xl border border-[#E5E3DD] bg-card p-5 sm:p-6">
+        <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
           <div className="mb-5 flex items-baseline justify-between">
             <div>
-              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
+              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                 I dag
               </div>
-              <h2 className="mt-1 font-display text-lg font-semibold text-[#0A1F17]">
+              <h2 className="mt-1 font-display text-lg font-semibold text-foreground">
                 <em
                   className="font-normal not-italic"
                   style={{
                     fontFamily: "'Inter Tight', sans-serif",
                     fontStyle: "italic",
-                    color: "#005840",
+                    color: "hsl(var(--primary))",
                   }}
                 >
                   Tidslinje
@@ -166,7 +166,7 @@ export function CoachHome(props: CoachHomeProps) {
             </div>
             <Link
               href="/admin/kalender"
-              className="font-mono text-[10px] uppercase tracking-[0.08em] text-[#005840] hover:underline"
+              className="font-mono text-[10px] uppercase tracking-[0.08em] text-primary hover:underline"
             >
               Full kalender →
             </Link>
@@ -181,10 +181,10 @@ export function CoachHome(props: CoachHomeProps) {
               ).map((h) => (
                 <div
                   key={h}
-                  className="relative flex items-start gap-3 border-t border-[#E5E3DD] first:border-t-0"
+                  className="relative flex items-start gap-3 border-t border-border first:border-t-0"
                   style={{ height: HOUR_HEIGHT }}
                 >
-                  <div className="w-12 shrink-0 pt-1 font-mono text-[10px] tabular-nums text-[#9C9990]">
+                  <div className="w-12 shrink-0 pt-1 font-mono text-[10px] tabular-nums text-muted-foreground">
                     {String(h).padStart(2, "0")}:00
                   </div>
                   <div className="flex-1" />
@@ -210,16 +210,16 @@ export function CoachHome(props: CoachHomeProps) {
                   <Link
                     key={ev.id}
                     href={`/admin/kalender#${ev.id}`}
-                    className="pointer-events-auto absolute left-3 right-2 overflow-hidden rounded-xl border border-[#005840]/20 bg-[#005840]/8 px-3 py-2 transition-colors hover:bg-[#005840]/15"
+                    className="pointer-events-auto absolute left-3 right-2 overflow-hidden rounded-xl border border-primary/20 bg-primary/8 px-3 py-2 transition-colors hover:bg-primary/15"
                     style={{ top, height }}
                   >
-                    <div className="font-mono text-[10px] font-semibold tabular-nums text-[#005840]">
+                    <div className="font-mono text-[10px] font-semibold tabular-nums text-primary">
                       {timeStr(ev.startTime)} – {timeStr(ev.endTime)}
                     </div>
-                    <div className="mt-0.5 truncate text-sm font-semibold text-[#0A1F17]">
+                    <div className="mt-0.5 truncate text-sm font-semibold text-foreground">
                       {ev.playerName} · {ev.serviceName}
                     </div>
-                    <div className="mt-0.5 truncate font-mono text-[10px] uppercase tracking-[0.08em] text-[#5E5C57]">
+                    <div className="mt-0.5 truncate font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
                       {ev.locationName}
                     </div>
                   </Link>
@@ -229,10 +229,10 @@ export function CoachHome(props: CoachHomeProps) {
           </div>
 
           {/* Quick-add */}
-          <div className="mt-4 border-t border-dashed border-[#E5E3DD] pt-4">
+          <div className="mt-4 border-t border-dashed border-border pt-4">
             <Link
               href="/admin/kalender?action=ny-okt"
-              className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.08em] text-[#5E5C57] hover:text-[#005840]"
+              className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground hover:text-primary"
             >
               <Plus size={12} strokeWidth={2} />
               Quick-add økt
@@ -242,29 +242,29 @@ export function CoachHome(props: CoachHomeProps) {
 
         {/* Brennende oppgaver */}
         <section
-          className="relative overflow-hidden rounded-2xl border border-[#E5E3DD] bg-card p-5"
+          className="relative overflow-hidden rounded-2xl border border-border bg-card p-5"
         >
           <div
             aria-hidden="true"
             className="absolute left-0 top-0 h-full w-1.5"
-            style={{ background: "#A32D2D" }}
+            style={{ background: "hsl(var(--destructive))" }}
           />
           <div className="pl-3">
             <div className="flex items-center gap-2">
               <AlertOctagon
                 size={16}
                 strokeWidth={1.75}
-                className="text-[#A32D2D]"
+                className="text-destructive"
               />
-              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#A32D2D]">
+              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-destructive">
                 Brennende
               </div>
             </div>
-            <h2 className="mt-1 font-display text-lg font-semibold leading-snug text-[#0A1F17]">
+            <h2 className="mt-1 font-display text-lg font-semibold leading-snug text-foreground">
               Krever handling
             </h2>
             {props.burningTasks.length === 0 ? (
-              <p className="mt-4 text-sm text-[#5E5C57]">
+              <p className="mt-4 text-sm text-muted-foreground">
                 Ingen brennende oppgaver. Pust ut.
               </p>
             ) : (
@@ -272,16 +272,16 @@ export function CoachHome(props: CoachHomeProps) {
                 {props.burningTasks.map((t) => (
                   <li
                     key={t.id}
-                    className="rounded-xl border border-[#A32D2D]/15 bg-[#A32D2D]/5 p-3"
+                    className="rounded-xl border border-[#A32D2D]/15 bg-destructive/5 p-3"
                   >
                     <Link
                       href={t.href}
                       className="group block"
                     >
-                      <div className="text-sm font-semibold text-[#0A1F17] group-hover:text-[#A32D2D]">
+                      <div className="text-sm font-semibold text-foreground group-hover:text-destructive">
                         {t.title}
                       </div>
-                      <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.08em] text-[#A32D2D]">
+                      <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.08em] text-destructive">
                         {t.deadline}
                       </div>
                     </Link>
@@ -294,25 +294,25 @@ export function CoachHome(props: CoachHomeProps) {
       </div>
 
       {/* Stall-overview-strip */}
-      <section className="rounded-2xl border border-[#E5E3DD] bg-card p-5 sm:p-6">
+      <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
         <div className="mb-4 flex items-baseline justify-between">
           <div>
-            <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
+            <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
               Stallen
             </div>
-            <h2 className="mt-1 font-display text-lg font-semibold text-[#0A1F17]">
+            <h2 className="mt-1 font-display text-lg font-semibold text-foreground">
               Mine spillere
             </h2>
           </div>
           <Link
             href="/admin/spillere"
-            className="font-mono text-[10px] uppercase tracking-[0.08em] text-[#005840] hover:underline"
+            className="font-mono text-[10px] uppercase tracking-[0.08em] text-primary hover:underline"
           >
             Hele stallen →
           </Link>
         </div>
         {props.stallOverview.length === 0 ? (
-          <p className="text-sm text-[#5E5C57]">
+          <p className="text-sm text-muted-foreground">
             Ingen aktive spillere ennå.
           </p>
         ) : (
@@ -321,7 +321,7 @@ export function CoachHome(props: CoachHomeProps) {
               <Link
                 key={p.id}
                 href={`/admin/spillere/${p.id}`}
-                className="group flex flex-col items-center gap-2 rounded-xl border border-[#E5E3DD] bg-[#FAFAF7] p-4 transition-colors hover:border-[#005840]"
+                className="group flex flex-col items-center gap-2 rounded-xl border border-border bg-background p-4 transition-colors hover:border-primary"
               >
                 <div className="relative">
                   {p.avatarUrl ? (
@@ -345,10 +345,10 @@ export function CoachHome(props: CoachHomeProps) {
                   />
                 </div>
                 <div className="min-w-0 text-center">
-                  <div className="truncate text-xs font-semibold text-[#0A1F17] group-hover:text-[#005840]">
+                  <div className="truncate text-xs font-semibold text-foreground group-hover:text-primary">
                     {p.name.split(" ")[0]}
                   </div>
-                  <div className="font-mono text-[9px] uppercase tracking-[0.08em] text-[#5E5C57]">
+                  <div className="font-mono text-[9px] uppercase tracking-[0.08em] text-muted-foreground">
                     {p.status}
                   </div>
                 </div>
@@ -360,31 +360,31 @@ export function CoachHome(props: CoachHomeProps) {
 
       {/* Workspace-quick-strip */}
       <section
-        className="relative overflow-hidden rounded-2xl border border-[#E5E3DD] bg-card p-5"
+        className="relative overflow-hidden rounded-2xl border border-border bg-card p-5"
       >
         <div
           aria-hidden="true"
           className="absolute left-0 top-0 h-full w-1.5"
-          style={{ background: "#D1F843" }}
+          style={{ background: "hsl(var(--accent))" }}
         />
         <div className="pl-3">
           <div className="flex items-baseline justify-between">
             <div className="flex items-center gap-2">
-              <Sparkles size={14} strokeWidth={1.75} className="text-[#005840]" />
-              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#005840]">
+              <Sparkles size={14} strokeWidth={1.75} className="text-primary" />
+              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-primary">
                 Workspace
               </div>
             </div>
             <Link
               href="/admin/workspace/tildelt-meg"
-              className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.08em] text-[#005840] hover:underline"
+              className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.08em] text-primary hover:underline"
             >
               Åpne workspace
               <ArrowRight size={12} strokeWidth={2} />
             </Link>
           </div>
           {props.workspaceTasks.length === 0 ? (
-            <p className="mt-3 text-sm text-[#5E5C57]">
+            <p className="mt-3 text-sm text-muted-foreground">
               Ingen oppgaver tildelt akkurat nå.
             </p>
           ) : (
@@ -393,7 +393,7 @@ export function CoachHome(props: CoachHomeProps) {
                 <li key={t.id}>
                   <Link
                     href={t.href}
-                    className="block rounded-xl border border-[#D1F843]/40 bg-[#D1F843]/8 p-3 text-sm text-[#0A1F17] transition-colors hover:bg-[#D1F843]/20"
+                    className="block rounded-xl border border-accent/40 bg-accent/8 p-3 text-sm text-foreground transition-colors hover:bg-accent/20"
                   >
                     {t.title}
                   </Link>
@@ -406,28 +406,28 @@ export function CoachHome(props: CoachHomeProps) {
 
       {/* Aktivitet-strøm 2-kol */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <section className="rounded-2xl border border-[#E5E3DD] bg-card p-5 sm:p-6">
-          <div className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
+        <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+          <div className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
             Siste meldinger
           </div>
           {props.recentMessages.length === 0 ? (
-            <p className="text-sm text-[#5E5C57]">Innboksen er rolig.</p>
+            <p className="text-sm text-muted-foreground">Innboksen er rolig.</p>
           ) : (
             <ul className="space-y-3">
               {props.recentMessages.slice(0, 4).map((m) => (
                 <li
                   key={m.id}
-                  className="border-b border-[#E5E3DD] pb-3 last:border-b-0 last:pb-0"
+                  className="border-b border-border pb-3 last:border-b-0 last:pb-0"
                 >
                   <div className="flex items-baseline justify-between gap-2">
-                    <span className="truncate text-sm font-semibold text-[#0A1F17]">
+                    <span className="truncate text-sm font-semibold text-foreground">
                       {m.from}
                     </span>
-                    <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.08em] text-[#5E5C57]">
+                    <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
                       {m.timeAgo}
                     </span>
                   </div>
-                  <p className="mt-1 line-clamp-2 text-sm text-[#5E5C57]">
+                  <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
                     {m.preview}
                   </p>
                 </li>
@@ -436,32 +436,32 @@ export function CoachHome(props: CoachHomeProps) {
           )}
         </section>
 
-        <section className="rounded-2xl border border-[#E5E3DD] bg-card p-5 sm:p-6">
+        <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
           <div className="mb-3 flex items-center gap-2">
             <CalendarClock
               size={14}
               strokeWidth={1.75}
-              className="text-[#5E5C57]"
+              className="text-muted-foreground"
             />
-            <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
+            <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
               Siste godkjenninger
             </div>
           </div>
           {props.recentApprovals.length === 0 ? (
-            <p className="text-sm text-[#5E5C57]">Alt godkjent.</p>
+            <p className="text-sm text-muted-foreground">Alt godkjent.</p>
           ) : (
             <ul className="space-y-3">
               {props.recentApprovals.slice(0, 4).map((a) => (
                 <li
                   key={a.id}
-                  className="flex items-start justify-between gap-3 border-b border-[#E5E3DD] pb-3 last:border-b-0 last:pb-0"
+                  className="flex items-start justify-between gap-3 border-b border-border pb-3 last:border-b-0 last:pb-0"
                 >
                   <div className="min-w-0">
-                    <p className="truncate text-sm text-[#0A1F17]">
+                    <p className="truncate text-sm text-foreground">
                       {a.title}
                     </p>
                   </div>
-                  <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.08em] text-[#5E5C57]">
+                  <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
                     {a.timeAgo}
                   </span>
                 </li>
@@ -488,21 +488,21 @@ function Kpi({
   tone?: "good" | "danger";
 }) {
   const valueColor =
-    tone === "danger" ? "text-[#A32D2D]" : "text-[#0A1F17]";
+    tone === "danger" ? "text-destructive" : "text-foreground";
   return (
-    <div className="rounded-2xl border border-[#E5E3DD] bg-card p-5">
+    <div className="rounded-2xl border border-border bg-card p-5">
       <div className="flex items-start justify-between gap-2">
-        <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[#5E5C57]">
+        <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
           {eyebrow}
         </span>
-        <Icon size={14} strokeWidth={1.75} className="text-[#5E5C57]" />
+        <Icon size={14} strokeWidth={1.75} className="text-muted-foreground" />
       </div>
       <div
         className={`mt-2 font-mono text-[28px] font-semibold leading-none tabular-nums ${valueColor}`}
       >
         {value}
       </div>
-      <div className="mt-2 font-mono text-[10px] uppercase tracking-[0.08em] text-[#5E5C57]">
+      <div className="mt-2 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
         {sub}
       </div>
     </div>

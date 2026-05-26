@@ -24,9 +24,9 @@ const DESCRIPTIONS: Record<LPhaseSlice["phase"], string> = {
 };
 
 const COLORS: Record<LPhaseSlice["phase"], string> = {
-  GRUNN: "#1A7D56",
-  SPESIAL: "#005840",
-  TURNERING: "#D1F843",
+  GRUNN: "hsl(var(--success))",
+  SPESIAL: "hsl(var(--primary))",
+  TURNERING: "hsl(var(--accent))",
 };
 
 export function LPhaseDistribution({

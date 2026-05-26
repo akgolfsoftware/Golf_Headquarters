@@ -1715,23 +1715,23 @@ function AchievementBanner({ bestStreak }: { bestStreak: number }) {
 
 // Statisk konfetti-lag — ingen animasjon (vi unngår CSS-keyframes for nå).
 const CONFETTI_DOTS = [
-  { left: "8%", top: "20%", bg: "#D1F843", rot: 540 },
-  { left: "14%", top: "20%", bg: "#16A34A", rot: -420 },
-  { left: "22%", top: "20%", bg: "#D1F843", rot: -380 },
+  { left: "8%", top: "20%", bg: "hsl(var(--accent))", rot: 540 },
+  { left: "14%", top: "20%", bg: "hsl(var(--success))", rot: -420 },
+  { left: "22%", top: "20%", bg: "hsl(var(--accent))", rot: -380 },
   { left: "28%", top: "20%", bg: "#F4C430", rot: 480 },
-  { left: "34%", top: "20%", bg: "#D1F843", rot: -520 },
+  { left: "34%", top: "20%", bg: "hsl(var(--accent))", rot: -520 },
   { left: "40%", top: "20%", bg: "#FFFFFF", rot: 240 },
-  { left: "52%", top: "20%", bg: "#D1F843", rot: 600 },
+  { left: "52%", top: "20%", bg: "hsl(var(--accent))", rot: 600 },
   { left: "62%", top: "20%", bg: "#F4C430", rot: 280 },
-  { left: "68%", top: "20%", bg: "#16A34A", rot: -420 },
+  { left: "68%", top: "20%", bg: "hsl(var(--success))", rot: -420 },
   { left: "78%", top: "20%", bg: "#FFFFFF", rot: -300 },
-  { left: "84%", top: "20%", bg: "#D1F843", rot: 480 },
-  { left: "94%", top: "20%", bg: "#D1F843", rot: 360 },
-  { left: "12%", top: "10%", bg: "#D1F843", rot: 520 },
+  { left: "84%", top: "20%", bg: "hsl(var(--accent))", rot: 480 },
+  { left: "94%", top: "20%", bg: "hsl(var(--accent))", rot: 360 },
+  { left: "12%", top: "10%", bg: "hsl(var(--accent))", rot: 520 },
   { left: "30%", top: "12%", bg: "#FFFFFF", rot: -380 },
   { left: "50%", top: "14%", bg: "#F4C430", rot: 320 },
-  { left: "70%", top: "12%", bg: "#16A34A", rot: -460 },
-  { left: "88%", top: "8%", bg: "#D1F843", rot: 540 },
+  { left: "70%", top: "12%", bg: "hsl(var(--success))", rot: -460 },
+  { left: "88%", top: "8%", bg: "hsl(var(--accent))", rot: 540 },
 ];
 
 function ConfettiLayer() {

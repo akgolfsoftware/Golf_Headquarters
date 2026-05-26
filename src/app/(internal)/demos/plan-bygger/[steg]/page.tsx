@@ -305,21 +305,21 @@ function Step1() {
       <div className="mb-6 grid grid-cols-3 gap-3">
         <PlayerPickCard initial="M" name="Markus R. Pedersen" pill="Kat A" sub="HCP +2,4" selected />
         <PlayerPickCard initial="H" name="Henrik Nilsen" pill="Pro" sub="HCP 8,7" />
-        <PlayerPickCard initial="A" name="Anna Karlsen" pill="Free" sub="HCP 16,8" bg="#B8852A" />
+        <PlayerPickCard initial="A" name="Anna Karlsen" pill="Free" sub="HCP 16,8" bg="hsl(var(--warning))" />
       </div>
 
       <div className="mb-2.5 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
         Alle elever — kategori A og B
       </div>
       <div className="grid grid-cols-3 gap-3">
-        <PlayerPickCard initial="M" name="Mads Rønning" pill="Pro" sub="HCP 9,4" bg="#1A7D56" />
-        <PlayerPickCard initial="L" name="Lise Sandberg" pill="Free" sub="HCP 19,5" bg="#5E5C57" />
+        <PlayerPickCard initial="M" name="Mads Rønning" pill="Pro" sub="HCP 9,4" bg="hsl(var(--success))" />
+        <PlayerPickCard initial="L" name="Lise Sandberg" pill="Free" sub="HCP 19,5" bg="hsl(var(--muted-foreground))" />
         <PlayerPickCard
           initial="J"
           name="Joachim Tangen"
           pill="Skadet"
           sub="HCP 14,2"
-          bg="#A32D2D"
+          bg="hsl(var(--destructive))"
           dimmed
         />
       </div>
@@ -342,7 +342,7 @@ function PlayerPickCard({
   pill,
   sub,
   selected = false,
-  bg = "#005840",
+  bg = "hsl(var(--primary))",
   dimmed = false,
 }: {
   initial: string;
@@ -835,7 +835,7 @@ function Step4() {
           </div>
 
           <SliderBlock
-            color="#1A7D56"
+            color="hsl(var(--success))"
             code="FYS"
             label="fysisk fundament"
             value={10}
@@ -844,7 +844,7 @@ function Step4() {
             historyLabel="Faktisk siste 4 u: 18 %"
           />
           <SliderBlock
-            color="#005840"
+            color="hsl(var(--primary))"
             code="TEK"
             label="teknikk"
             value={15}
@@ -853,7 +853,7 @@ function Step4() {
             historyLabel="Faktisk siste 4 u: 32 %"
           />
           <SliderBlock
-            color="#D1F843"
+            color="hsl(var(--accent))"
             code="SLAG"
             label="slagprogresjon"
             value={35}
@@ -862,7 +862,7 @@ function Step4() {
             historyLabel="Faktisk siste 4 u: 24 % · agent foreslår løft"
           />
           <SliderBlock
-            color="#B8852A"
+            color="hsl(var(--warning))"
             code="SPILL"
             label="banespill"
             value={30}
@@ -871,7 +871,7 @@ function Step4() {
             historyLabel="Faktisk siste 4 u: 14 %"
           />
           <SliderBlock
-            color="#5E5C57"
+            color="hsl(var(--muted-foreground))"
             code="TURN"
             label="turnering"
             value={10}

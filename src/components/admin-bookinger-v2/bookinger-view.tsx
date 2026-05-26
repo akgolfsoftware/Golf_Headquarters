@@ -31,9 +31,9 @@ export type BookingerViewProps = {
 type SortKey = "dato" | "spiller" | "type" | "coach" | "betaling";
 
 const STATUS_PILL: Record<BookingRow["status"], { bg: string; fg: string; label: string }> = {
-  PENDING: { bg: "rgba(184,133,42,0.20)", fg: "#B8852A", label: "Venter" },
-  CONFIRMED: { bg: "rgba(44,125,82,0.20)", fg: "#2C7D52", label: "Bekreftet" },
-  CANCELLED: { bg: "rgba(163,45,45,0.18)", fg: "#A32D2D", label: "Avlyst" },
+  PENDING: { bg: "rgba(184,133,42,0.20)", fg: "hsl(var(--warning))", label: "Venter" },
+  CONFIRMED: { bg: "rgba(44,125,82,0.20)", fg: "hsl(var(--success))", label: "Bekreftet" },
+  CANCELLED: { bg: "rgba(163,45,45,0.18)", fg: "hsl(var(--destructive))", label: "Avlyst" },
 };
 
 export function BookingerView({ bookinger, coachListe }: BookingerViewProps) {
@@ -217,7 +217,7 @@ export function BookingerView({ bookinger, coachListe }: BookingerViewProps) {
                 </div>
                 <div className="font-mono text-xs tabular-nums">
                   {b.prisOre != null ? (
-                    <span className={b.betalt ? "text-foreground" : "text-[#B8852A]"}>
+                    <span className={b.betalt ? "text-foreground" : "text-warning"}>
                       {(b.prisOre / 100).toLocaleString("nb-NO")} kr
                       {!b.betalt && <span className="ml-1 text-[10px]">(venter)</span>}
                     </span>
@@ -278,9 +278,9 @@ function StatKort({
         >
           {label}
         </span>
-        <Icon size={16} className={featured ? "text-primary-foreground/60" : warn ? "text-[#B8852A]" : "text-muted-foreground"} />
+        <Icon size={16} className={featured ? "text-primary-foreground/60" : warn ? "text-warning" : "text-muted-foreground"} />
       </div>
-      <div className={`mt-2 font-display text-3xl font-semibold tabular-nums ${warn ? "text-[#B8852A]" : ""}`}>
+      <div className={`mt-2 font-display text-3xl font-semibold tabular-nums ${warn ? "text-warning" : ""}`}>
         {val}
       </div>
       <div

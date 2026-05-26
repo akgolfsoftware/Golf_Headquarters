@@ -748,11 +748,11 @@ function Statistikk({ label, verdi }: { label: string; verdi: string }) {
 }
 
 const DISCIPLIN_FARGER: Record<string, string> = {
-  FYS: "#005840",
+  FYS: "hsl(var(--primary))",
   TEK: "#3B7A66",
   SLAG: "#5E9C82",
   SPILL: "#A8D896",
-  TURN: "#D1F843",
+  TURN: "hsl(var(--accent))",
 };
 
 const DISCIPLIN_NAVN: Record<string, string> = {

@@ -52,7 +52,7 @@ const RESULTS: Result[] = [
         <em>Spillet på Bogstad ligner Sørlandsåpent — bygger momentum to uker etterpå.</em>
       </>
     ),
-    ring: { color: "#005840", offset: 35, pct: 62, rankLabel: "topp-10" },
+    ring: { color: "hsl(var(--primary))", offset: 35, pct: 62, rankLabel: "topp-10" },
     cta: { variant: "primary", label: "Se forberedelse →" },
     showDetails: true,
     top: true,
@@ -80,7 +80,7 @@ const RESULTS: Result[] = [
         <em>God lavterskel ranking-poeng-mulighet (38 p kunne sikre Olyo Tour Finalen).</em>
       </>
     ),
-    ring: { color: "#1A7D56", offset: 20, pct: 78, rankLabel: "topp-10" },
+    ring: { color: "hsl(var(--success))", offset: 20, pct: 78, rankLabel: "topp-10" },
     cta: { variant: "lime", label: "Meld på" },
     showDetails: true,
   },
@@ -107,7 +107,7 @@ const RESULTS: Result[] = [
         <em>Vurder bare hvis Sørlandsåpent gir solide poeng først.</em>
       </>
     ),
-    ring: { color: "#B8852A", offset: 60, pct: 34, rankLabel: "topp-10" },
+    ring: { color: "hsl(var(--warning))", offset: 60, pct: 34, rankLabel: "topp-10" },
     cta: { variant: "outline", label: "Meld på" },
     showDetails: true,
   },
@@ -129,7 +129,7 @@ const RESULTS: Result[] = [
         <em>Lav stress, høy seier-sannsynlighet. God recovery-turnering etter NM jr.</em>
       </>
     ),
-    ring: { color: "#005840", offset: 5, pct: 95, rankLabel: "topp-3" },
+    ring: { color: "hsl(var(--primary))", offset: 5, pct: 95, rankLabel: "topp-3" },
     cta: { variant: "primary", label: "Se detaljer →" },
   },
 ];

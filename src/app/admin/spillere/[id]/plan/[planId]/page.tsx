@@ -86,7 +86,7 @@ export default async function SpillerPlanDetaljPage({
                 style={{
                   fontFamily: "'Inter Tight', sans-serif",
                   fontStyle: "italic",
-                  color: "#005840",
+                  color: "hsl(var(--primary))",
                 }}
               >
                 {plan.navn.split(" ").slice(-1)[0]}

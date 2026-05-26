@@ -16,11 +16,11 @@ type ShotMapProps = {
 };
 
 const typeColor: Record<NonNullable<ShotMapPoint["shotType"]>, string> = {
-  DRIVE: "#005840",
-  APPROACH: "#1A7D56",
-  CHIP: "#B8852A",
-  PITCH: "#D1F843",
-  PUTT: "#0A1F17",
+  DRIVE: "hsl(var(--primary))",
+  APPROACH: "hsl(var(--success))",
+  CHIP: "hsl(var(--warning))",
+  PITCH: "hsl(var(--accent))",
+  PUTT: "hsl(var(--foreground))",
   BUNKER: "#9CA3AF",
 };
 

@@ -15,11 +15,11 @@ type PyramidDistributionProps = {
 };
 
 const COLORS: Record<PyramidSlice["area"], string> = {
-  FYS: "#1A7D56",
-  TEK: "#005840",
+  FYS: "hsl(var(--success))",
+  TEK: "hsl(var(--primary))",
   SLAG: "#003D2C",
-  SPILL: "#B8852A",
-  TURN: "#D1F843",
+  SPILL: "hsl(var(--warning))",
+  TURN: "hsl(var(--accent))",
 };
 
 const LABELS: Record<PyramidSlice["area"], string> = {

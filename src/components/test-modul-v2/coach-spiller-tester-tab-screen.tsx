@@ -5,6 +5,7 @@
  * Player header + 10-tab nav + KPI + radar-chart vs A1-snitt + AI-forslag + coach-action-cards
  */
 
+import Link from "next/link";
 import "../planlegge-v2/styles.css";
 import { PlanleggeSprite } from "../planlegge-v2/icons";
 
@@ -18,7 +19,7 @@ export function CoachSpillerTesterTabScreen({
 
       <main className="main">
         <header className="topbar">
-          <a
+          <Link
             className="back"
             href="/admin/spillere"
             style={{
@@ -35,7 +36,7 @@ export function CoachSpillerTesterTabScreen({
           >
             <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.75"><use href="#i-arrow-left" /></svg>
             Stall
-          </a>
+          </Link>
           <div style={{ fontFamily: "var(--font-mono)", fontSize: "11px", color: "var(--muted)", letterSpacing: "0.04em" }}>
             CoachHQ &nbsp;/&nbsp; Stall &nbsp;/&nbsp; <span style={{ color: "var(--ink)", fontWeight: 700 }}>{playerName}</span>
           </div>
@@ -201,11 +202,11 @@ export function CoachSpillerTesterTabScreen({
 
               <div className="radar-legend">
                 <span className="sw">
-                  <span className="box" style={{ background: "#005840" }} />
+                  <span className="box" style={{ background: "hsl(var(--primary))" }} />
                   Markus (siste 30 d)
                 </span>
                 <span className="sw">
-                  <span className="box" style={{ background: "#5E5C57" }} />
+                  <span className="box" style={{ background: "hsl(var(--muted-foreground))" }} />
                   A1-snitt (n=12)
                 </span>
                 <span className="sw" style={{ marginLeft: "auto", color: "var(--ink)" }}>

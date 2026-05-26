@@ -282,8 +282,8 @@ export function TesterDetaljScreen({
             <svg className="hist-svg" viewBox="0 0 800 240" preserveAspectRatio="none">
               <defs>
                 <linearGradient id="histfill" x1="0" x2="0" y1="0" y2="1">
-                  <stop offset="0%" stopColor="#D1F843" stopOpacity="0.45" />
-                  <stop offset="100%" stopColor="#D1F843" stopOpacity="0" />
+                  <stop offset="0%" stopColor="hsl(var(--accent))" stopOpacity="0.45" />
+                  <stop offset="100%" stopColor="hsl(var(--accent))" stopOpacity="0" />
                 </linearGradient>
               </defs>
               <line x1="40" y1="40" x2="780" y2="40" stroke="#EFEDE6" />

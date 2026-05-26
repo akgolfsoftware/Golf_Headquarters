@@ -44,10 +44,10 @@ export function HubProgress({ done, total, tone = "ok" }: { done: number; total:
 
 export function PyramidMini() {
   const bars = [
-    { lbl: "Fys", pct: 18, c: "#1A4D2E" },
-    { lbl: "Tek", pct: 32, c: "#005840" },
-    { lbl: "Slag", pct: 28, c: "#2C7D52" },
-    { lbl: "Spill", pct: 14, c: "#88B45A" },
+    { lbl: "Fys", pct: 18, c: "hsl(var(--primary))" },
+    { lbl: "Tek", pct: 32, c: "hsl(var(--primary))" },
+    { lbl: "Slag", pct: 28, c: "hsl(var(--success))" },
+    { lbl: "Spill", pct: 14, c: "hsl(var(--accent))" },
     { lbl: "Turn", pct: 8, c: "#C8B72A" },
   ];
   return (

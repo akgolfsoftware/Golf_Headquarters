@@ -20,11 +20,11 @@ type SgTrendLineProps = {
 };
 
 const COLORS = {
-  sgOtt: "#005840",
-  sgApp: "#1A7D56",
-  sgArg: "#B8852A",
-  sgPutt: "#D1F843",
-  sgTotal: "#0A1F17",
+  sgOtt: "hsl(var(--primary))",
+  sgApp: "hsl(var(--success))",
+  sgArg: "hsl(var(--warning))",
+  sgPutt: "hsl(var(--accent))",
+  sgTotal: "hsl(var(--foreground))",
 };
 
 const LABELS = {

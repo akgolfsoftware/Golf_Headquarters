@@ -7,8 +7,6 @@ import {
   ArrowRight,
   Check,
   CheckCircle2,
-  Circle,
-  Dot,
   FileText,
   HelpCircle,
   Pause,
@@ -33,11 +31,11 @@ export type LiveDrillV2 = {
 type RepKind = "dry" | "lav" | "full";
 
 const PYR_TONE: Record<Pyr, { bg: string; text: string; tile: string }> = {
-  FYS: { bg: "bg-[rgba(0,88,64,0.13)]", text: "text-[#005840]", tile: "bg-[#005840]" },
-  TEK: { bg: "bg-[rgba(26,125,86,0.13)]", text: "text-[#1A7D56]", tile: "bg-[#1A7D56]" },
-  SLAG: { bg: "bg-[rgba(209,248,67,0.55)]", text: "text-[#0A1F17]", tile: "bg-[#D1F843] text-[#0A1F17]" },
-  SPILL: { bg: "bg-[rgba(184,133,42,0.13)]", text: "text-[#B8852A]", tile: "bg-[#B8852A]" },
-  TURN: { bg: "bg-[rgba(94,92,87,0.13)]", text: "text-[#5E5C57]", tile: "bg-[#5E5C57]" },
+  FYS: { bg: "bg-[rgba(0,88,64,0.13)]", text: "text-primary", tile: "bg-primary" },
+  TEK: { bg: "bg-[rgba(26,125,86,0.13)]", text: "text-success", tile: "bg-success" },
+  SLAG: { bg: "bg-[rgba(209,248,67,0.55)]", text: "text-foreground", tile: "bg-accent text-foreground" },
+  SPILL: { bg: "bg-[rgba(184,133,42,0.13)]", text: "text-warning", tile: "bg-warning" },
+  TURN: { bg: "bg-[rgba(94,92,87,0.13)]", text: "text-muted-foreground", tile: "bg-muted-foreground" },
 };
 
 function vibrate(pattern: number | number[]) {
@@ -130,7 +128,7 @@ export function LiveActiveV2Client({
     return (
       <div className="min-h-screen bg-background">
         <div className="mx-auto max-w-[640px] space-y-6 px-4 py-12 text-center">
-          <CheckCircle2 className="mx-auto h-12 w-12 text-[#2C7D52]" strokeWidth={1.5} />
+          <CheckCircle2 className="mx-auto h-12 w-12 text-success" strokeWidth={1.5} />
           <h1 className="font-display text-[28px] font-medium -tracking-[0.02em] text-foreground">
             Alle drills er ferdige
           </h1>
@@ -150,10 +148,6 @@ export function LiveActiveV2Client({
   }
 
   const tone = PYR_TONE[active.pyramidArea];
-  const activeTarget = active.target[activeKind];
-  const activeCount = active.counts[activeKind];
-  const activePct =
-    activeTarget > 0 ? Math.min(100, (activeCount / activeTarget) * 100) : 0;
 
   return (
     <div className="min-h-screen bg-background pb-[120px]">

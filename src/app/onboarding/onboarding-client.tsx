@@ -264,7 +264,7 @@ export function OnboardingClient({ defaultName }: { defaultName: string }) {
                     </div>
                   </button>
                 </div>
-                <div className="mt-2 inline-flex items-center gap-1.5 font-mono text-[10.5px] text-[#005840]">
+                <div className="mt-2 inline-flex items-center gap-1.5 font-mono text-[10.5px] text-primary">
                   <Check className="h-3 w-3" strokeWidth={2.5} />
                   HCP synker automatisk når nye runder registreres
                 </div>

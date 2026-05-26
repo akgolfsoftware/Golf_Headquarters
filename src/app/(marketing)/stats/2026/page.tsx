@@ -443,10 +443,10 @@ export default async function Sesong2026Page() {
       )}
 
       {/* Mersalg */}
-      <section className="stats-section stats-section-divider stats-mersalg" style={{ background: "var(--s-primary)", color: "#FAFAF7" }}>
+      <section className="stats-section stats-section-divider stats-mersalg" style={{ background: "var(--s-primary)", color: "hsl(var(--background))" }}>
         <div style={{ textAlign: "center" }}>
           <StatsEyebrow tone="lime">Vær med i neste års oversikt</StatsEyebrow>
-          <h2 style={{ fontFamily: "var(--font-display)", fontSize: 40, fontWeight: 600, color: "#FAFAF7", marginTop: 16, marginBottom: 16 }}>
+          <h2 style={{ fontFamily: "var(--font-display)", fontSize: 40, fontWeight: 600, color: "hsl(var(--background))", marginTop: 16, marginBottom: 16 }}>
             Logg dine egne runder i {AAR}.
           </h2>
           <p style={{ fontSize: 16, color: "rgba(250,250,247,0.7)", maxWidth: 480, margin: "0 auto 32px", lineHeight: 1.6 }}>

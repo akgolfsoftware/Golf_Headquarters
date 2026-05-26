@@ -76,9 +76,9 @@ export const DPLANE_LABELS: Record<DPlaneClassification, string> = {
 };
 
 export const DPLANE_COLORS: Record<DPlaneClassification, string> = {
-  PULL_HOOK: "#A32D2D",
+  PULL_HOOK: "hsl(var(--destructive))",
   PULL_FADE: "#0A5C8A",
-  PUSH_DRAW: "#005840",
-  PUSH_FADE: "#D1F843",
-  STRAIGHT: "#9D9C95",
+  PUSH_DRAW: "hsl(var(--primary))",
+  PUSH_FADE: "hsl(var(--accent))",
+  STRAIGHT: "hsl(var(--muted-foreground))",
 };

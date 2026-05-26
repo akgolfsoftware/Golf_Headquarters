@@ -26,10 +26,10 @@ const DESCRIPTIONS: Record<PracticeSlice["type"], string> = {
 };
 
 const COLORS: Record<PracticeSlice["type"], string> = {
-  BLOKK: "#1A4D2E",
-  RANDOM: "#005840",
-  KONKURRANSE: "#B8852A",
-  SPILL_TEST: "#D1F843",
+  BLOKK: "hsl(var(--primary))",
+  RANDOM: "hsl(var(--primary))",
+  KONKURRANSE: "hsl(var(--warning))",
+  SPILL_TEST: "hsl(var(--accent))",
 };
 
 export function PracticeTypeDistribution({

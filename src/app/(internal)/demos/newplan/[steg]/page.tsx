@@ -278,11 +278,11 @@ function Steg1() {
         </div>
 
         <div className="flex flex-col gap-2">
-          <PyrRow code="FYS" color="#16A34A" value={15} />
-          <PyrRow code="TEK" color="#005840" value={40} />
-          <PyrRow code="SLAG" color="#D1F843" value={25} />
+          <PyrRow code="FYS" color="hsl(var(--success))" value={15} />
+          <PyrRow code="TEK" color="hsl(var(--primary))" value={40} />
+          <PyrRow code="SLAG" color="hsl(var(--accent))" value={25} />
           <PyrRow code="SPILL" color="#F4C430" value={15} />
-          <PyrRow code="TURN" color="#5E5C57" value={5} />
+          <PyrRow code="TURN" color="hsl(var(--muted-foreground))" value={5} />
         </div>
 
         <p className="mt-2 text-[11px] text-muted-foreground">
@@ -592,10 +592,10 @@ function ExerciseRow({
   dragging?: boolean;
 }) {
   const catStyles: Record<CatKind, string> = {
-    fys: "bg-[rgba(22,163,74,0.12)] text-[#16A34A]",
+    fys: "bg-[rgba(22,163,74,0.12)] text-success",
     tek: "bg-[var(--brand-primary-soft,rgba(0,88,64,0.08))] text-primary",
     slag: "bg-[rgba(209,248,67,0.20)] text-[var(--brand-accent-on,#005840)] border border-[rgba(184,200,46,0.4)]",
-    spill: "bg-[rgba(244,196,48,0.14)] text-[#B8852A]",
+    spill: "bg-[rgba(244,196,48,0.14)] text-warning",
     turn: "bg-[var(--surface-alt,#F1EEE5)] text-muted-foreground",
   };
   return (
@@ -695,11 +695,11 @@ function Steg4() {
         <div className="flex flex-col items-center gap-3">
           <PyrDonut />
           <div className="grid grid-cols-2 gap-x-3 gap-y-1 font-mono text-[11px]">
-            <DonutLegend swatch="#005840" label="TEK" pct="40%" />
-            <DonutLegend swatch="#D1F843" label="SLAG" pct="25%" />
-            <DonutLegend swatch="#16A34A" label="FYS" pct="15%" />
+            <DonutLegend swatch="hsl(var(--primary))" label="TEK" pct="40%" />
+            <DonutLegend swatch="hsl(var(--accent))" label="SLAG" pct="25%" />
+            <DonutLegend swatch="hsl(var(--success))" label="FYS" pct="15%" />
             <DonutLegend swatch="#F4C430" label="SPILL" pct="15%" />
-            <DonutLegend swatch="#5E5C57" label="TURN" pct="5%" />
+            <DonutLegend swatch="hsl(var(--muted-foreground))" label="TURN" pct="5%" />
           </div>
         </div>
       </div>

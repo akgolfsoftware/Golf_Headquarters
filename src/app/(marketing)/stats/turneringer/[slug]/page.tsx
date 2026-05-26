@@ -175,7 +175,7 @@ export default async function StatsTurneringDetalj({ params }: Props) {
             alignItems: "center",
             gap: 6,
             fontSize: 13,
-            color: "#9D9C95",
+            color: "hsl(var(--muted-foreground))",
             textDecoration: "none",
             fontWeight: 500,
           }}
@@ -189,7 +189,7 @@ export default async function StatsTurneringDetalj({ params }: Props) {
             fontSize: 10,
             letterSpacing: "0.14em",
             textTransform: "uppercase",
-            color: "#9D9C95",
+            color: "hsl(var(--muted-foreground))",
           }}
         >
           AK GOLF STATS · {t.name.toUpperCase()}
@@ -312,7 +312,7 @@ export default async function StatsTurneringDetalj({ params }: Props) {
           {erFerdig && (
             <span
               style={{
-                background: "#E5E3DD",
+                background: "hsl(var(--border))",
                 color: "var(--s-muted-fg)",
                 fontFamily: "var(--font-mono)",
                 fontSize: 11,
@@ -328,7 +328,7 @@ export default async function StatsTurneringDetalj({ params }: Props) {
           {erKommende && (
             <span
               style={{
-                background: "#F1EEE5",
+                background: "hsl(var(--secondary))",
                 color: "var(--s-fg)",
                 fontFamily: "var(--font-mono)",
                 fontSize: 11,
@@ -581,7 +581,7 @@ export default async function StatsTurneringDetalj({ params }: Props) {
                               e.scoreToPar < 0
                                 ? "var(--s-primary)"
                                 : e.scoreToPar > 0
-                                  ? "#BE3D3D"
+                                  ? "hsl(var(--destructive))"
                                   : "var(--s-fg)",
                           }}
                         >
@@ -843,7 +843,7 @@ export default async function StatsTurneringDetalj({ params }: Props) {
                               : e.scoreToPar < 0
                                 ? "var(--s-primary)"
                                 : e.scoreToPar > 0
-                                  ? "#BE3D3D"
+                                  ? "hsl(var(--destructive))"
                                   : "var(--s-fg)",
                           whiteSpace: "nowrap",
                         }}
@@ -1029,7 +1029,7 @@ export default async function StatsTurneringDetalj({ params }: Props) {
                           background:
                             r.status === "IN_PROGRESS"
                               ? "var(--s-accent)"
-                              : "#E5E3DD",
+                              : "hsl(var(--border))",
                           color:
                             r.status === "IN_PROGRESS"
                               ? "var(--s-accent-fg)"

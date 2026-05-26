@@ -18,12 +18,12 @@ import {
 import type { FysProgresjonRad } from "@/app/admin/analyse/actions";
 
 const MUSKEL_FARGER = [
-  "#005840",
-  "#D1F843",
+  "hsl(var(--primary))",
+  "hsl(var(--accent))",
   "#0A5C8A",
-  "#A32D2D",
+  "hsl(var(--destructive))",
   "#7F4F00",
-  "#5E5C57",
+  "hsl(var(--muted-foreground))",
   "#8DC498",
   "#003B2A",
 ];

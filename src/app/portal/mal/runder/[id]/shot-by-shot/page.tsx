@@ -311,7 +311,7 @@ export default async function RundeShotByShotPage({
                         width="16"
                         height={h}
                         rx="2"
-                        fill={v === 3 ? "#A32D2D" : "#005840"}
+                        fill={v === 3 ? "hsl(var(--destructive))" : "hsl(var(--primary))"}
                       />
                     );
                   },

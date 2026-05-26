@@ -1445,7 +1445,7 @@ function BaneKartModal({
             >
               <defs>
                 <linearGradient id="tdc-fairway" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#88B45A" />
+                  <stop offset="0%" stopColor="hsl(var(--accent))" />
                   <stop offset="100%" stopColor="#3A8B6C" />
                 </linearGradient>
               </defs>

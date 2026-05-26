@@ -49,7 +49,7 @@ export function GuardianConsentBanner({ pendingInvitationEmail }: Props) {
           <AlertCircle
             className="h-5 w-5 shrink-0"
             strokeWidth={1.75}
-            style={{ color: "#B8852A", marginTop: "2px" }}
+            style={{ color: "hsl(var(--warning))", marginTop: "2px" }}
           />
           <div className="min-w-0">
             <div className="font-display text-sm font-semibold text-foreground">

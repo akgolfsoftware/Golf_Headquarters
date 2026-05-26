@@ -24,10 +24,10 @@ type Kategori = {
 };
 
 const KATEGORIER: Kategori[] = [
-  { navn: "OTT", kode: "sgOtt", beskrivelse: "Off the tee — utslag.", farge: "#005840" },
+  { navn: "OTT", kode: "sgOtt", beskrivelse: "Off the tee — utslag.", farge: "hsl(var(--primary))" },
   { navn: "APP", kode: "sgApp", beskrivelse: "Tilnærming inn på greenen.", farge: "#0A5C8A" },
   { navn: "ARG", kode: "sgArg", beskrivelse: "Around the green — chip/pitch/bunker.", farge: "#7F4F00" },
-  { navn: "PUTT", kode: "sgPutt", beskrivelse: "Putting på green.", farge: "#A32D2D" },
+  { navn: "PUTT", kode: "sgPutt", beskrivelse: "Putting på green.", farge: "hsl(var(--destructive))" },
 ];
 
 function snitt(verdier: number[]): number {

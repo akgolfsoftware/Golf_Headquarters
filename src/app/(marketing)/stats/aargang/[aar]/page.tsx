@@ -221,7 +221,7 @@ export default async function AargangDetalj({
   const kohortLinjer = [
     {
       label: `${aarNum}-kohorten`,
-      color: "#005840",
+      color: "hsl(var(--primary))",
       data: [14, 15, 16, 17].map((alder) => ({
         alder,
         snitt: 78.5 - (alder - 14) * 1.2 - (aarNum - 2007) * 0.3,
@@ -229,7 +229,7 @@ export default async function AargangDetalj({
     },
     {
       label: `${aarNum - 1}-kohorten`,
-      color: "#D1F843",
+      color: "hsl(var(--accent))",
       dashed: true,
       data: [14, 15, 16, 17].map((alder) => ({
         alder,
@@ -238,7 +238,7 @@ export default async function AargangDetalj({
     },
     {
       label: `${aarNum - 2}-kohorten`,
-      color: "#5E5C57",
+      color: "hsl(var(--muted-foreground))",
       dashed: true,
       data: [14, 15, 16, 17].map((alder) => ({
         alder,

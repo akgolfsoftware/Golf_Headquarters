@@ -7,15 +7,15 @@ import { Clock, Layers, ListChecks, MapPin, Target } from "lucide-react";
 import type { OversiktData, DrillUsage } from "@/app/admin/analyse/actions";
 
 const PYRAMID_FARGER: Record<string, string> = {
-  FYS: "#A32D2D",
-  TEK: "#005840",
-  SLAG: "#D1F843",
+  FYS: "hsl(var(--destructive))",
+  TEK: "hsl(var(--primary))",
+  SLAG: "hsl(var(--accent))",
   SPILL: "#0A5C8A",
   TURN: "#7F4F00",
 };
 
 const MILJO_FARGER: Record<string, string> = {
-  M0: "#E5E3DD",
+  M0: "hsl(var(--border))",
   M1: "#CFE5C7",
   M2: "#8DC498",
   M3: "#4FA470",
@@ -152,7 +152,7 @@ export function AnalyseOversikt({
                 label={kode}
                 verdi={min}
                 total={totalPyr}
-                farge={PYRAMID_FARGER[kode] ?? "#5E5C57"}
+                farge={PYRAMID_FARGER[kode] ?? "hsl(var(--muted-foreground))"}
               />
             ))}
         </div>
@@ -176,7 +176,7 @@ export function AnalyseOversikt({
                 label={navn}
                 verdi={min}
                 total={totalOmr}
-                farge="#005840"
+                farge="hsl(var(--primary))"
               />
             ))}
         </div>
@@ -196,7 +196,7 @@ export function AnalyseOversikt({
                 label={m}
                 verdi={data.miljoFordeling[m] ?? 0}
                 total={totalMiljo}
-                farge={MILJO_FARGER[m] ?? "#5E5C57"}
+                farge={MILJO_FARGER[m] ?? "hsl(var(--muted-foreground))"}
               />
             ))}
           </div>
@@ -217,7 +217,7 @@ export function AnalyseOversikt({
                   label={kode}
                   verdi={min}
                   total={totalPraks}
-                  farge="#005840"
+                  farge="hsl(var(--primary))"
                 />
               ))}
           </div>
@@ -256,8 +256,8 @@ export function AnalyseOversikt({
                     <span
                       className="inline-flex items-center rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.05em]"
                       style={{
-                        backgroundColor: `${PYRAMID_FARGER[d.pyramide] ?? "#5E5C57"}22`,
-                        color: PYRAMID_FARGER[d.pyramide] ?? "#5E5C57",
+                        backgroundColor: `${PYRAMID_FARGER[d.pyramide] ?? "hsl(var(--muted-foreground))"}22`,
+                        color: PYRAMID_FARGER[d.pyramide] ?? "hsl(var(--muted-foreground))",
                       }}
                     >
                       {d.pyramide}

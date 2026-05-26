@@ -151,8 +151,8 @@ function SgRadar({ akser }: { akser: Akse[] }) {
         })}
       </svg>
       <div className="in-radar-legend">
-        <span><i style={{ background: "#005840" }} />Du</span>
-        <span><i style={{ background: "#BFE933" }} />Cohort A2</span>
+        <span><i style={{ background: "hsl(var(--primary))" }} />Du</span>
+        <span><i style={{ background: "hsl(var(--accent))" }} />Cohort A2</span>
       </div>
     </div>
   );

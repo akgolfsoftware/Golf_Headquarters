@@ -102,7 +102,7 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
                 style={{
                   fontStyle: "italic",
                   fontWeight: 400,
-                  color: "#005840",
+                  color: "hsl(var(--primary))",
                 }}
               >
                 to
@@ -112,7 +112,7 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
             <p
               style={{
                 fontSize: 18,
-                color: "#5E5C57",
+                color: "hsl(var(--muted-foreground))",
                 marginTop: 20,
                 maxWidth: 560,
                 lineHeight: 1.5,
@@ -162,8 +162,8 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
                       fontFamily: "var(--font-display)",
                       fontSize: 48,
                       fontStyle: "italic",
-                      color: "#D1F843",
-                      background: "#005840",
+                      color: "hsl(var(--accent))",
+                      background: "hsl(var(--primary))",
                       width: 72,
                       height: 72,
                       display: "grid",
@@ -196,8 +196,8 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
                       alignItems: "center",
                       gap: 8,
                       padding: "14px 32px",
-                      background: "#005840",
-                      color: "#D1F843",
+                      background: "hsl(var(--primary))",
+                      color: "hsl(var(--accent))",
                       border: "none",
                       borderRadius: 999,
                       fontSize: 15,
@@ -227,7 +227,7 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
       {/* ── MERSALG ──────────────────────────────────────────────── */}
       <section
         className="stats-section stats-section-divider"
-        style={{ background: "#005840", color: "#FAFAF7" }}
+        style={{ background: "hsl(var(--primary))", color: "hsl(var(--background))" }}
       >
         <div
           style={{
@@ -248,13 +248,13 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
                 fontWeight: 600,
                 letterSpacing: "-0.025em",
                 marginTop: 12,
-                color: "#FAFAF7",
+                color: "hsl(var(--background))",
                 lineHeight: 1.1,
               }}
             >
               Vil du{" "}
               <em
-                style={{ fontStyle: "italic", fontWeight: 400, color: "#D1F843" }}
+                style={{ fontStyle: "italic", fontWeight: 400, color: "hsl(var(--accent))" }}
               >
                 også
               </em>{" "}
@@ -310,7 +310,7 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
                     width: 5,
                     height: 5,
                     borderRadius: "50%",
-                    background: "#D1F843",
+                    background: "hsl(var(--accent))",
                     marginTop: 6,
                     flexShrink: 0,
                   }}
@@ -344,7 +344,7 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
                       style={{
                         fontStyle: "italic",
                         fontWeight: 400,
-                        color: "#005840",
+                        color: "hsl(var(--primary))",
                       }}
                     >
                       sammenligner
@@ -387,7 +387,7 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
                         borderRadius: 12,
                         textDecoration: "none",
                         transition: "all 0.18s",
-                        color: "#0A1F17",
+                        color: "hsl(var(--foreground))",
                       }}
                     >
                       <span
@@ -403,7 +403,7 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
                         style={{
                           fontFamily: "var(--font-display)",
                           fontStyle: "italic",
-                          color: "#005840",
+                          color: "hsl(var(--primary))",
                           fontSize: 13,
                         }}
                       >
@@ -420,7 +420,7 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
                       </span>
                       <ArrowRight
                         size={12}
-                        color="#9D9C95"
+                        color="hsl(var(--muted-foreground))"
                         style={{ marginLeft: "auto" }}
                       />
                     </Link>
@@ -462,7 +462,7 @@ function SpillerSok({
           fontSize: 10,
           letterSpacing: "0.18em",
           textTransform: "uppercase",
-          color: "#9D9C95",
+          color: "hsl(var(--muted-foreground))",
           marginBottom: 14,
         }}
       >
@@ -481,8 +481,8 @@ function SpillerSok({
           padding: "10px 14px",
           fontSize: 14,
           fontFamily: "var(--font-sans)",
-          background: "#FAFAF7",
-          color: "#0A1F17",
+          background: "hsl(var(--background))",
+          color: "hsl(var(--foreground))",
           outline: "none",
           boxSizing: "border-box",
         }}
@@ -531,13 +531,13 @@ function SpillerSok({
                 width: 30,
                 height: 30,
                 borderRadius: "50%",
-                background: "#F1EEE5",
+                background: "hsl(var(--secondary))",
                 display: "grid",
                 placeItems: "center",
                 fontFamily: "var(--font-mono)",
                 fontSize: 10,
                 fontWeight: 700,
-                color: "#005840",
+                color: "hsl(var(--primary))",
                 flexShrink: 0,
               }}
             >
@@ -554,7 +554,7 @@ function SpillerSok({
                   fontFamily: "var(--font-display)",
                   fontSize: 13,
                   fontWeight: 600,
-                  color: "#0A1F17",
+                  color: "hsl(var(--foreground))",
                 }}
               >
                 {s.name}
@@ -562,7 +562,7 @@ function SpillerSok({
               <div
                 style={{
                   fontSize: 11,
-                  color: "#9D9C95",
+                  color: "hsl(var(--muted-foreground))",
                   fontFamily: "var(--font-mono)",
                 }}
               >

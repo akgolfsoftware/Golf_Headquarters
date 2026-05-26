@@ -31,17 +31,17 @@ type Location = {
 };
 
 const TYPE_STYLE: Record<LocType, { bg: string; fg: string; label: string }> = {
-  indoor: { bg: "rgba(0,88,64,0.10)", fg: "#005840", label: "Indoor" },
-  hybrid: { bg: "rgba(209,248,67,0.20)", fg: "#0A1F18", label: "Hybrid" },
-  bane: { bg: "rgba(94,92,87,0.10)", fg: "#5E5C57", label: "Bane" },
-  range: { bg: "rgba(184,133,42,0.10)", fg: "#B8852A", label: "Range" },
+  indoor: { bg: "rgba(0,88,64,0.10)", fg: "hsl(var(--primary))", label: "Indoor" },
+  hybrid: { bg: "rgba(209,248,67,0.20)", fg: "hsl(var(--foreground))", label: "Hybrid" },
+  bane: { bg: "rgba(94,92,87,0.10)", fg: "hsl(var(--muted-foreground))", label: "Bane" },
+  range: { bg: "rgba(184,133,42,0.10)", fg: "hsl(var(--warning))", label: "Range" },
 };
 
 const FAC_STYLE: Record<Facility["kind"], { bg: string; fg: string }> = {
-  ind: { bg: "rgba(0,88,64,0.08)", fg: "#005840" },
-  range: { bg: "rgba(184,133,42,0.10)", fg: "#B8852A" },
-  bane: { bg: "rgba(26,125,86,0.10)", fg: "#1A7D56" },
-  put: { bg: "rgba(94,92,87,0.10)", fg: "#5E5C57" },
+  ind: { bg: "rgba(0,88,64,0.08)", fg: "hsl(var(--primary))" },
+  range: { bg: "rgba(184,133,42,0.10)", fg: "hsl(var(--warning))" },
+  bane: { bg: "rgba(26,125,86,0.10)", fg: "hsl(var(--success))" },
+  put: { bg: "rgba(94,92,87,0.10)", fg: "hsl(var(--muted-foreground))" },
 };
 
 const LOCATIONS: Location[] = [
@@ -216,7 +216,7 @@ function Kpi({
         {value}
       </div>
       <div
-        className={`mt-2 font-mono text-[12px] ${deltaGood ? "text-[#1A7D56]" : "text-muted-foreground"}`}
+        className={`mt-2 font-mono text-[12px] ${deltaGood ? "text-success" : "text-muted-foreground"}`}
       >
         {delta}
       </div>

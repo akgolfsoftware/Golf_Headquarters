@@ -38,7 +38,7 @@ export function PlayerHQMockup() {
         </div>
 
         {/* App shell */}
-        <div className="flex h-[500px] overflow-hidden bg-[#FAFAF7]">
+        <div className="flex h-[500px] overflow-hidden bg-background">
           {/* Sidebar */}
           <aside className="flex w-48 flex-shrink-0 flex-col bg-[#061210] text-white">
             <div className="px-5 py-6">
@@ -71,7 +71,7 @@ export function PlayerHQMockup() {
 
             <div className="border-t border-white/10 px-4 py-4">
               <div className="flex items-center gap-2.5">
-                <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-[#D1F843] font-mono text-[10px] font-bold text-[#061210]">
+                <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-accent font-mono text-[10px] font-bold text-[#061210]">
                   M
                 </div>
                 <div>
@@ -87,18 +87,18 @@ export function PlayerHQMockup() {
             {/* Greeting */}
             <div className="flex items-start justify-between">
               <div>
-                <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-[#5E5C57]">
+                <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
                   Torsdag 15. mai 2026
                 </p>
-                <h2 className="mt-0.5 font-[var(--font-instrument-serif)] text-[22px] font-semibold text-[#0A1F17]">
+                <h2 className="mt-0.5 font-[var(--font-instrument-serif)] text-[22px] font-semibold text-foreground">
                   God morgen,{" "}
-                  <em className="italic text-[#005840]">Markus</em>
+                  <em className="italic text-primary">Markus</em>
                 </h2>
-                <p className="mt-0.5 text-[11px] text-[#5E5C57]">
+                <p className="mt-0.5 text-[11px] text-muted-foreground">
                   Neste økt: fredag 16. mai · 14:00 · Golfhuset Fredrikstad
                 </p>
               </div>
-              <span className="flex-shrink-0 rounded-full bg-[#D1F843] px-3 py-1 font-mono text-[10px] font-bold text-[#061210]">
+              <span className="flex-shrink-0 rounded-full bg-accent px-3 py-1 font-mono text-[10px] font-bold text-[#061210]">
                 HCP −2,4
               </span>
             </div>
@@ -112,15 +112,15 @@ export function PlayerHQMockup() {
               ].map((s) => (
                 <div
                   key={s.label}
-                  className="rounded-lg border border-[#E5E3DD] bg-white p-3"
+                  className="rounded-lg border border-border bg-white p-3"
                 >
-                  <p className="font-mono text-[9px] uppercase tracking-[0.10em] text-[#5E5C57]">
+                  <p className="font-mono text-[9px] uppercase tracking-[0.10em] text-muted-foreground">
                     {s.label}
                   </p>
-                  <p className="mt-1 font-mono text-[18px] font-semibold tabular-nums text-[#0A1F17]">
+                  <p className="mt-1 font-mono text-[18px] font-semibold tabular-nums text-foreground">
                     {s.verdi}
                   </p>
-                  <p className="text-[10px] text-[#9D9C95]">{s.sub}</p>
+                  <p className="text-[10px] text-muted-foreground">{s.sub}</p>
                 </div>
               ))}
             </div>
@@ -128,12 +128,12 @@ export function PlayerHQMockup() {
             {/* Bottom row: plan + SG */}
             <div className="grid flex-1 grid-cols-2 gap-3 overflow-hidden">
               {/* Plan */}
-              <div className="flex flex-col rounded-lg border border-[#E5E3DD] bg-white p-4">
+              <div className="flex flex-col rounded-lg border border-border bg-white p-4">
                 <div className="flex items-center justify-between">
-                  <p className="font-mono text-[9px] uppercase tracking-[0.10em] text-[#5E5C57]">
+                  <p className="font-mono text-[9px] uppercase tracking-[0.10em] text-muted-foreground">
                     Denne uken
                   </p>
-                  <span className="rounded-full bg-[#005840]/10 px-2 py-0.5 font-mono text-[9px] text-[#005840]">
+                  <span className="rounded-full bg-primary/10 px-2 py-0.5 font-mono text-[9px] text-primary">
                     2 / 3
                   </span>
                 </div>
@@ -143,8 +143,8 @@ export function PlayerHQMockup() {
                       <div
                         className={`flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full border-2 ${
                           d.ferdig
-                            ? "border-[#005840] bg-[#005840]"
-                            : "border-[#E5E3DD]"
+                            ? "border-primary bg-primary"
+                            : "border-border"
                         }`}
                       >
                         {d.ferdig && (
@@ -154,8 +154,8 @@ export function PlayerHQMockup() {
                       <span
                         className={`text-[11px] ${
                           d.ferdig
-                            ? "text-[#9D9C95] line-through"
-                            : "text-[#0A1F17]"
+                            ? "text-muted-foreground line-through"
+                            : "text-foreground"
                         }`}
                       >
                         {d.tekst}
@@ -166,14 +166,14 @@ export function PlayerHQMockup() {
               </div>
 
               {/* SG chart */}
-              <div className="flex flex-col rounded-lg border border-[#E5E3DD] bg-white p-4">
-                <p className="font-mono text-[9px] uppercase tracking-[0.10em] text-[#5E5C57]">
+              <div className="flex flex-col rounded-lg border border-border bg-white p-4">
+                <p className="font-mono text-[9px] uppercase tracking-[0.10em] text-muted-foreground">
                   Strokes Gained
                 </p>
                 <div className="mt-3 flex flex-1 items-end gap-2">
                   {sg.map((b) => {
                     const høyde = Math.round(Math.abs(b.verdi) * 80 + 12);
-                    const farge = b.positiv ? "#005840" : "#A32D2D";
+                    const farge = b.positiv ? "hsl(var(--primary))" : "hsl(var(--destructive))";
                     return (
                       <div
                         key={b.label}
@@ -202,7 +202,7 @@ export function PlayerHQMockup() {
                             }}
                           />
                         </div>
-                        <span className="font-mono text-[9px] text-[#9D9C95]">
+                        <span className="font-mono text-[9px] text-muted-foreground">
                           {b.label}
                         </span>
                       </div>

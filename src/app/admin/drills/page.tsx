@@ -213,9 +213,9 @@ export default async function CoachDrillsPage() {
               type="button"
               className="drill-filter-pill active"
               style={{
-                background: "#005840",
-                color: "#D1F843",
-                borderColor: "#005840",
+                background: "hsl(var(--primary))",
+                color: "hsl(var(--accent))",
+                borderColor: "hsl(var(--primary))",
               }}
             >
               <Plus size={12} strokeWidth={2} aria-hidden /> Ny drill

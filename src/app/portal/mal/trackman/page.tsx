@@ -43,9 +43,9 @@ const CLUBS: Club[] = [
 
 const CATEGORY_COLOR: Record<ClubCategory, string> = {
   wood:   "#003B2A",
-  iron:   "#1A7D56",
-  wedge:  "#B8852A",
-  putter: "#5E5C57",
+  iron:   "hsl(var(--success))",
+  wedge:  "hsl(var(--warning))",
+  putter: "hsl(var(--muted-foreground))",
 };
 
 // ---------------------------------------------------------------------------
@@ -226,7 +226,7 @@ export default async function TrackManPage() {
             </div>
             <div className="ml-auto flex gap-3.5 font-mono text-[10px] font-semibold uppercase tracking-[0.05em] text-muted-foreground">
               {(["Wood", "Jern", "Wedge", "Putt"] as const).map((label, i) => {
-                const colors = ["#003B2A", "#1A7D56", "#B8852A", "#5E5C57"];
+                const colors = ["#003B2A", "hsl(var(--success))", "hsl(var(--warning))", "hsl(var(--muted-foreground))"];
                 return (
                   <span key={label} className="inline-flex items-center gap-1.5">
                     <i className="inline-block h-2 w-2 rounded-full" style={{ background: colors[i] }} />
@@ -371,11 +371,11 @@ export default async function TrackManPage() {
 
               {/* Legend */}
               <div className="mt-3 flex flex-wrap gap-x-3.5 gap-y-1.5 font-mono text-[11px] text-muted-foreground">
-                <LegendDot color="#16A34A" label="Innenfor 5 % · grønn" />
-                <LegendDot color="#B8852A" label="Akseptabelt · gull" />
+                <LegendDot color="hsl(var(--success))" label="Innenfor 5 % · grønn" />
+                <LegendDot color="hsl(var(--warning))" label="Akseptabelt · gull" />
                 <LegendDot color="hsl(var(--destructive))" label="Utenfor · rød" />
-                <LegendLine color="#16A34A" label="5 % mål-radius" />
-                <LegendLine color="#B8852A" label="10 % grense" />
+                <LegendLine color="hsl(var(--success))" label="5 % mål-radius" />
+                <LegendLine color="hsl(var(--warning))" label="10 % grense" />
                 <LegendLine color="hsl(var(--primary))" label="1σ konfidens-ellipse" />
                 <span className="ml-auto text-[10px] text-muted-foreground/70">
                   5 % standard = 5 % av snitt carry (162 m × 5 % = 8,1 m)
@@ -396,7 +396,7 @@ export default async function TrackManPage() {
               <div className="space-y-4">
                 <CompareRow label="Mot din baseline"          val="+6 m"        valClass="text-green-600"  pct={100} barColor="bg-green-500"      sub="Sesongstart 156 m → nå 162 m" />
                 <CompareRow label="Mot HCP-jevngamle (A2)"    val="82. percentil" valClass="text-primary"  pct={82}  barColor="bg-primary"         sub="A2-snitt 154 m · 82 % under deg" />
-                <CompareRow label="Mot pro-benchmark"         val="−12 m"       valClass="text-[#B8852A]"  pct={93}  barColor="bg-[#B8852A]"       sub="PGA tour-snitt 174 m · gap 12 m" />
+                <CompareRow label="Mot pro-benchmark"         val="−12 m"       valClass="text-warning"  pct={93}  barColor="bg-warning"       sub="PGA tour-snitt 174 m · gap 12 m" />
               </div>
               <div className="mt-4 rounded-[10px] bg-secondary px-4 py-3 text-[12px] leading-relaxed">
                 For din alder (16) er gapet til pro <b className="font-semibold">mindre enn snitt</b> — du henger med i utviklingen.
@@ -564,7 +564,7 @@ export default async function TrackManPage() {
                 Wedge — spin-variasjon
               </div>
               <div className="rounded-lg border-l-[3px] bg-[rgba(184,133,42,0.06)] px-3.5 py-3 text-[12px] leading-relaxed"
-                style={{ borderLeftColor: "#B8852A" }}>
+                style={{ borderLeftColor: "hsl(var(--warning))" }}>
                 <b className="font-semibold text-[#6F4F18]">Spin varierer ±1 200 rpm</b> mellom slag. Coach foreslår: prøv en annen ball-type for bedre konsistens.
               </div>
             </div>
@@ -653,7 +653,7 @@ function BagClub({ club }: { club: Club }) {
       {/* Category stripe */}
       <span
         className="absolute left-2.5 right-2.5 top-0 h-[3px] rounded-b-sm"
-        style={{ background: isActive ? "#D1F843" : stripe, height: isActive ? "4px" : "3px" }}
+        style={{ background: isActive ? "hsl(var(--accent))" : stripe, height: isActive ? "4px" : "3px" }}
       />
       <span className={`font-display text-[12px] font-semibold leading-none tracking-[-0.005em] ${isActive ? "text-accent" : "text-foreground"}`}>
         {club.name}
@@ -703,7 +703,7 @@ function KpiCard({
 
   const sparkEndY = sparkUp ? 5 : sparkDown ? 18 : 14;
 
-  const sparkColor = deltaTone === "info" ? "#3B82F6" : deltaTone === "flat" ? "#7A7666" : "#005840";
+  const sparkColor = deltaTone === "info" ? "#3B82F6" : deltaTone === "flat" ? "#7A7666" : "hsl(var(--primary))";
 
   return (
     <article className="rounded-[14px] border border-border bg-card px-[18px] py-4">
@@ -723,7 +723,7 @@ function KpiCard({
       <svg viewBox="0 0 100 28" preserveAspectRatio="none" className="block h-7 w-full">
         <polyline points={sparkFill} fill={`${sparkColor}1A`} stroke="none" />
         <polyline points={sparkPoints} fill="none" stroke={sparkColor} strokeWidth={1.5} strokeLinecap="round" />
-        <circle cx={100} cy={sparkEndY} r={2.5} fill={deltaTone === "success" ? "#D1F843" : sparkColor} stroke={sparkColor} strokeWidth={1.5} />
+        <circle cx={100} cy={sparkEndY} r={2.5} fill={deltaTone === "success" ? "hsl(var(--accent))" : sparkColor} stroke={sparkColor} strokeWidth={1.5} />
       </svg>
     </article>
   );
@@ -771,7 +771,7 @@ function Td({ children }: { children: React.ReactNode }) {
 }
 
 function PctCell({ pct, tone }: { pct: number; tone: "good" | "ok" | "bad" }) {
-  const barColor = tone === "good" ? "bg-green-500" : tone === "ok" ? "bg-[#B8852A]" : "bg-destructive/80";
+  const barColor = tone === "good" ? "bg-green-500" : tone === "ok" ? "bg-warning" : "bg-destructive/80";
   return (
     <span className="inline-grid items-center gap-2" style={{ gridTemplateColumns: "32px 56px" }}>
       <span className="text-right text-[11.5px] font-semibold tabular-nums">{pct} %</span>

@@ -59,7 +59,7 @@ export default async function WorkspaceNotionPage({
             style={{
               fontFamily: "'Inter Tight', sans-serif",
               fontStyle: "italic",
-              color: "#005840",
+              color: "hsl(var(--primary))",
             }}
           >
             tilkobling
@@ -192,7 +192,7 @@ function EmptyState({
                 style={{
                   fontFamily: "'Inter Tight', sans-serif",
                   fontStyle: "italic",
-                  color: "#005840",
+                  color: "hsl(var(--primary))",
                 }}
               >
                 NOTION_INTERNAL_TOKEN

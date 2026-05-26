@@ -52,7 +52,7 @@ export function AnleggGrid({ anlegg }: { anlegg: AnleggKort[] }) {
               {TYPE_LABEL[a.type]}
             </div>
             {!a.aktiv && (
-              <div className="absolute right-4 top-4 rounded-full bg-[#A32D2D] px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.10em] text-white">
+              <div className="absolute right-4 top-4 rounded-full bg-destructive px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.10em] text-white">
                 Inaktiv
               </div>
             )}

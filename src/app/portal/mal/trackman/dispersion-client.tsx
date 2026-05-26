@@ -144,7 +144,7 @@ export function DispersionClient() {
                 s.cls === "good"
                   ? "hsl(var(--primary))"
                   : s.cls === "acceptable"
-                  ? "#B8852A"
+                  ? "hsl(var(--warning))"
                   : "hsl(var(--destructive))"
               }
               opacity={s.cls === "miss" ? 0.85 : 1}

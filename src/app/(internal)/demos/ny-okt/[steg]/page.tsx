@@ -320,9 +320,9 @@ function Chip({
     spill: "rgba(184,133,42,0.15)",
   };
   const toneColor: Record<string, string> = {
-    tek: "#005840",
+    tek: "hsl(var(--primary))",
     slag: "#5C6B0E",
-    spill: "#B8852A",
+    spill: "hsl(var(--warning))",
   };
   if (active) {
     return (
@@ -816,7 +816,7 @@ function ExerciseLine({
         style={
           added
             ? { background: "rgba(209,248,67,0.32)", color: "#5C6B0E" }
-            : { background: "rgba(0,88,64,0.12)", color: "#005840" }
+            : { background: "rgba(0,88,64,0.12)", color: "hsl(var(--primary))" }
         }
       >
         {pill}

@@ -105,8 +105,8 @@ export function ClubMetricTrendChart({
               dataKey={metric}
               stroke="#005840"
               strokeWidth={2}
-              dot={{ r: 3, fill: "#005840" }}
-              activeDot={{ r: 5, fill: "#D1F843" }}
+              dot={{ r: 3, fill: "hsl(var(--primary))" }}
+              activeDot={{ r: 5, fill: "hsl(var(--accent))" }}
             />
           </LineChart>
         </ResponsiveContainer>

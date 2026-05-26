@@ -69,7 +69,7 @@ const TYPE_TIL_KATEGORI: Record<string, Kategori> = {
 
 const KATEGORI_BADGE_STIL: Record<Kategori, string> = {
   coach: "bg-primary/10 text-primary border-primary/25",
-  booking: "bg-[#2C7D52]/15 text-[#2C7D52] border-[#2C7D52]/25",
+  booking: "bg-[#2C7D52]/15 text-success border-[#2C7D52]/25",
   ai: "bg-accent/30 text-[#3B4310] border-accent/45",
   betaling: "bg-amber-100 text-amber-700 border-amber-300/50",
   system: "bg-muted text-muted-foreground border-transparent",

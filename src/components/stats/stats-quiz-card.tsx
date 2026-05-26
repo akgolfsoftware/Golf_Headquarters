@@ -50,14 +50,14 @@ export function StatsQuizCard({ sporsmal, onSvar }: StatsQuizCardProps) {
       }}>
         {sporsmal.valg.map((v, i) => {
           let bg = "#FFFFFF";
-          let border = "#E5E3DD";
-          let color = "#0A1F17";
+          let border = "hsl(var(--border))";
+          let color = "hsl(var(--foreground))";
 
           if (besvart && i === valgt) {
-            if (v.korrekt) { bg = "#D1F843"; border = "#B8E020"; color = "#0A1F17"; }
+            if (v.korrekt) { bg = "hsl(var(--accent))"; border = "#B8E020"; color = "hsl(var(--foreground))"; }
             else { bg = "#FEE2E2"; border = "#F87171"; color = "#7F1D1D"; }
           } else if (besvart && v.korrekt) {
-            bg = "#D1F843"; border = "#B8E020"; color = "#0A1F17";
+            bg = "hsl(var(--accent))"; border = "#B8E020"; color = "hsl(var(--foreground))";
           }
 
           return (
@@ -93,9 +93,9 @@ export function StatsQuizCard({ sporsmal, onSvar }: StatsQuizCardProps) {
         <div style={{
           padding: "20px 24px",
           borderRadius: 12,
-          background: sporsmal.valg[valgt]?.korrekt ? "#D1F843" : "#FEE2E2",
+          background: sporsmal.valg[valgt]?.korrekt ? "hsl(var(--accent))" : "#FEE2E2",
           border: `1px solid ${sporsmal.valg[valgt]?.korrekt ? "#B8E020" : "#F87171"}`,
-          color: sporsmal.valg[valgt]?.korrekt ? "#0A1F17" : "#7F1D1D",
+          color: sporsmal.valg[valgt]?.korrekt ? "hsl(var(--foreground))" : "#7F1D1D",
           animation: "stats-quiz-fadein 0.3s ease",
         }}>
           <div style={{
