@@ -74,16 +74,42 @@ function normaliserNavn(navn: string): string {
     .trim();
 }
 
+// Beregn Dice-koeffisient mellom to strenger (karakter-bigram overlapp)
+function diceKoeffisient(a: string, b: string): number {
+  if (a.length < 2 || b.length < 2) return a === b ? 1.0 : 0.0;
+  const bigramA = new Set<string>();
+  for (let i = 0; i < a.length - 1; i++) bigramA.add(a.slice(i, i + 2));
+  const bigramB: string[] = [];
+  for (let i = 0; i < b.length - 1; i++) bigramB.push(b.slice(i, i + 2));
+  const felles = bigramB.filter((g) => bigramA.has(g)).length;
+  return (2 * felles) / (bigramA.size + bigramB.length);
+}
+
 function navnLikhet(a: string, b: string): number {
   const na = normaliserNavn(a);
   const nb = normaliserNavn(b);
   if (na === nb) return 1.0;
-  // Del opp og sjekk om deler overlapper (for lange navn med mellomnavn)
+
   const partsA = na.split(" ");
   const partsB = nb.split(" ");
+
+  // Første navn (fornavn) MÅ ha minst 60% karakter-likhet for å gi match.
+  // Dette forhindrer "Frithjof" → "Alex" via felles etternavn "Rasmussen".
+  const fornavnA = partsA[0];
+  const fornavnB = partsB[0];
+  const fornavnLikhet = diceKoeffisient(fornavnA, fornavnB);
+
+  if (fornavnLikhet < 0.60) {
+    // Fornavn matcher ikke — returnér 0 uansett etternavn
+    return 0.0;
+  }
+
+  // Fornavn godkjent — beregn samlet overlapp på ord-nivå (for mellomnavn)
   const felles = partsA.filter((p) => partsB.includes(p)).length;
   const maxLen = Math.max(partsA.length, partsB.length);
-  return felles / maxLen;
+  // Vektet: 70% ord-overlapp + 30% fornavn-likhet
+  const ordScore = felles / maxLen;
+  return 0.7 * ordScore + 0.3 * fornavnLikhet;
 }
 
 async function fetchJson<T>(url: string): Promise<T | null> {
@@ -185,23 +211,38 @@ async function finnClippdPlayerId(
     spillere = result.data;
   }
 
-  if (spillere.length === 0) {
-    // Prøv med bare etternavn
-    const deler = navn.trim().split(/\s+/);
-    const etternavn = deler[deler.length - 1];
-    if (etternavn.length < 4) return null;
+  // Hjelpefunksjon: parse ClippdPlayerSearchResult
+  function parseSpillere(r: ClippdPlayerSearchResult | ClippdPlayer[] | null): ClippdPlayer[] {
+    if (!r) return [];
+    if (Array.isArray(r)) return r;
+    if ("players" in r && Array.isArray(r.players)) return r.players;
+    if ("results" in r && Array.isArray(r.results)) return r.results;
+    if ("data" in r && Array.isArray(r.data)) return r.data;
+    return [];
+  }
 
-    const url2 = `${CLIPPD_BASE}/api/search/players?query=${encodeURIComponent(etternavn)}&limit=36&offset=0`;
-    await sleep(500);
-    const result2 = await fetchJson<ClippdPlayerSearchResult | ClippdPlayer[]>(url2);
-    if (Array.isArray(result2)) {
-      spillere = result2;
-    } else if (result2 && "players" in result2 && Array.isArray(result2.players)) {
-      spillere = result2.players;
-    } else if (result2 && "results" in result2 && Array.isArray(result2.results)) {
-      spillere = result2.results;
-    } else if (result2 && "data" in result2 && Array.isArray(result2.data)) {
-      spillere = result2.data;
+  if (spillere.length === 0) {
+    const deler = navn.trim().split(/\s+/);
+
+    // Prøv fornavn + etternavn (dropp mellomnavn) for 3+-ords navn
+    if (deler.length >= 3) {
+      const fornavnEtternavn = `${deler[0]} ${deler[deler.length - 1]}`;
+      await sleep(500);
+      const r = await fetchJson<ClippdPlayerSearchResult | ClippdPlayer[]>(
+        `${CLIPPD_BASE}/api/search/players?query=${encodeURIComponent(fornavnEtternavn)}&limit=36&offset=0`
+      );
+      spillere = parseSpillere(r);
+    }
+
+    // Prøv bare etternavn som fallback
+    if (spillere.length === 0) {
+      const etternavn = deler[deler.length - 1];
+      if (etternavn.length < 4) return null;
+      await sleep(500);
+      const r = await fetchJson<ClippdPlayerSearchResult | ClippdPlayer[]>(
+        `${CLIPPD_BASE}/api/search/players?query=${encodeURIComponent(etternavn)}&limit=36&offset=0`
+      );
+      spillere = parseSpillere(r);
     }
   }
 
