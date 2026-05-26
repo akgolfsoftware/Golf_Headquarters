@@ -1,8 +1,5 @@
 /**
  * /admin/settings — CoachHQ Innstillinger (sub-hub for Admin-seksjonen)
- *
- * Fjernet bruk av forbudt CoachhqStubsShell (memory-regel: ALDRI "AK GOLF"-tekst).
- * Bruker HubFrame-pattern fra Manglende hubs hand-off.
  */
 
 import {

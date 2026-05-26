@@ -1,7 +1,6 @@
 /**
  * /admin/talent/wagr-import — WAGR-import-side
  *
- * Fjernet bruk av forbudt CoachhqStubsShell.
  * Enkel oppsummering + import-knapp for WAGR (World Amateur Golf Ranking).
  */
 

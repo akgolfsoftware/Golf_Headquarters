@@ -346,3 +346,84 @@ body {
  * Definert i src/styles/v2/patterns.css.
  */
 @import "../styles/v2/patterns.css";
+
+/* ---------- AK Golf type helpers ----------
+ * Speilet fra .claude/skills/ak-golf-hq-design/colors_and_type.css.
+ * Tilpasset prosjektets HSL-trippel-konvensjon (hsl(var(--token))).
+ * Brukes for hero/KPI/eyebrow-typografi på tvers av PlayerHQ + CoachHQ + Marketing.
+ */
+.h-display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(40px, 6vw, 72px);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  color: hsl(var(--foreground));
+  text-wrap: balance;
+}
+.h-display em,
+em.editorial {
+  font-style: italic;
+  font-weight: 400;
+  color: hsl(var(--primary));
+}
+.h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+}
+.h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+}
+.h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+.body    { font-size: 14px; line-height: 1.55; }
+.body-lg { font-size: 16px; line-height: 1.55; }
+.caption {
+  font-size: 13px;
+  line-height: 1.5;
+  color: hsl(var(--muted-foreground));
+}
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: hsl(var(--muted-foreground));
+}
+.eyebrow--light {
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+.eyebrow--lime {
+  color: hsl(var(--accent));
+}
+.kpi-value {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  color: hsl(var(--foreground));
+  font-feature-settings: "tnum", "zero";
+}
+.kpi-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: hsl(var(--muted-foreground));
+}

@@ -6,6 +6,7 @@ export { AthleticAvatar } from "./avatar";
 export { AthleticHero } from "./hero";
 export { AthleticGreeting } from "./greeting";
 export { KpiCard, KpiStrip } from "./kpi";
+export { Sparkline } from "./sparkline";
 export { FeaturedCard } from "./featured-card";
 export { AthleticCard } from "./card";
 export { PyramidProgress, type PyramidRow } from "./pyramid-progress";

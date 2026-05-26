@@ -57,17 +57,20 @@ export function KpiCard({ label, value, unit, trend, size = "md", className }: K
 
 type KpiStripProps = {
   children: React.ReactNode;
+  /** Antall kolonner på desktop. `cols` overstyrer `columns` hvis begge er satt. */
   columns?: 2 | 3 | 4 | 5;
+  cols?: 2 | 3 | 4;
   className?: string;
 };
 
-const colMap: Record<NonNullable<KpiStripProps["columns"]>, string> = {
-  2: "grid-cols-2",
-  3: "grid-cols-3",
-  4: "grid-cols-2 md:grid-cols-4",
-  5: "grid-cols-2 md:grid-cols-5",
+const colMap: Record<2 | 3 | 4 | 5, string> = {
+  2: "grid-cols-1 sm:grid-cols-2",
+  3: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
+  4: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4",
+  5: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-5",
 };
 
-export function KpiStrip({ children, columns = 4, className }: KpiStripProps) {
-  return <div className={cn("grid gap-2 md:gap-3", colMap[columns], className)}>{children}</div>;
+export function KpiStrip({ children, columns, cols, className }: KpiStripProps) {
+  const resolved: 2 | 3 | 4 | 5 = cols ?? columns ?? 3;
+  return <div className={cn("grid gap-4", colMap[resolved], className)}>{children}</div>;
 }

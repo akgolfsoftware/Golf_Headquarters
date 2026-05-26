@@ -1,7 +1,6 @@
 /**
  * /admin/audit-log — CoachHQ Audit log
  *
- * Fjernet bruk av forbudt CoachhqStubsShell.
  * Enkel hendelse-liste med filter-pills.
  */
 

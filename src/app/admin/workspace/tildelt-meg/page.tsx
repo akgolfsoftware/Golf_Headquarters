@@ -1,7 +1,6 @@
 /**
  * /admin/workspace/tildelt-meg — CoachHQ "Tildelt meg"
  *
- * Fjernet bruk av forbudt CoachhqStubsShell (memory-regel).
  * Enkel innboks-stil med kort over oppgaver tildelt deg.
  */
 
