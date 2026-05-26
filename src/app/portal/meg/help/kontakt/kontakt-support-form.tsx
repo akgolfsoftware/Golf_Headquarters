@@ -258,11 +258,14 @@ Skjedde på iPhone 15 Pro, iOS 18.4. App-versjon 0.9.4. Wifi tilkoblet hjemme.`,
 
       <div className="sticky bottom-0 -mx-6 flex items-center gap-2 border-t border-border bg-card/95 px-6 py-4 backdrop-blur">
         <div className="text-xs text-muted-foreground">
-          Eller{" "}
-          <a href="#" className="font-semibold text-foreground underline underline-offset-2 hover:text-primary">
-            åpne live-chat
+          Eller send e-post til{" "}
+          <a
+            href="mailto:post@akgolf.no"
+            className="font-semibold text-foreground underline underline-offset-2 hover:text-primary"
+          >
+            post@akgolf.no
           </a>{" "}
-          — vanligvis svar innen 2 min
+          — svar innen 1 virkedag
         </div>
         <button
           type="button"

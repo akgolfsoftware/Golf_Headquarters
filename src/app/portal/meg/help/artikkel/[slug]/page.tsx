@@ -251,37 +251,6 @@ export default async function ArtikkelPage({
           </div>
         </section>
 
-        {/* Related */}
-        <section className="space-y-2">
-          <h3 className="font-mono text-[10.5px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
-            Les videre
-          </h3>
-          <div className="grid gap-2 sm:grid-cols-3">
-            {[
-              { tag: "Kom i gang", tittel: "Slik logger du din første økt", min: 3 },
-              { tag: "Trening", tittel: "Hva betyr TEK?", min: 2 },
-              { tag: "Trening", tittel: "Forskjellen TEK og SLAG", min: 4 },
-            ].map((r) => (
-              <a
-                key={r.tittel}
-                href="#"
-                className="flex flex-col gap-2 rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary/40"
-              >
-                <span className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
-                  {r.tag}
-                </span>
-                <span className="font-display text-sm font-semibold text-foreground">
-                  {r.tittel}
-                </span>
-                <span className="mt-auto inline-flex items-center gap-1 font-mono text-[10px] text-muted-foreground">
-                  <Clock className="h-3 w-3" strokeWidth={2} />
-                  {r.min} MIN
-                </span>
-              </a>
-            ))}
-          </div>
-        </section>
-
         {/* Coach CTA */}
         <section className="relative grid gap-4 overflow-hidden rounded-2xl bg-primary p-6 text-accent">
           <div>

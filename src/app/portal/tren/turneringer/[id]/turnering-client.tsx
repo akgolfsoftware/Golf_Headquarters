@@ -9,6 +9,7 @@
  */
 
 import { useEffect, useState, useTransition } from "react";
+import Link from "next/link";
 import { useToast } from "@/components/shared/toast-provider";
 import {
   AlertTriangle,
@@ -339,14 +340,14 @@ export function TurneringDetaljClient({
               </div>
             </div>
 
-            <a href="#" className="tdc-goal-link">
+            <Link href="/portal/mal" className="tdc-goal-link">
               <Target size={20} strokeWidth={1.75} className="tdc-goal-icon" aria-hidden />
               <div className="tdc-goal-body">
                 <div className="tdc-goal-ttl">Hovedmål: Top 10</div>
                 <div className="tdc-goal-meta">PRIO 1 · RESULTATMÅL · 38% sannsynlig</div>
               </div>
               <span className="tdc-pill tdc-pill-turn">PRIO 1</span>
-            </a>
+            </Link>
           </div>
         </section>
 
