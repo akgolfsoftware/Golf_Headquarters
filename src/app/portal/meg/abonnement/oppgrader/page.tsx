@@ -1,4 +1,3 @@
-import Link from "next/link";
 import {
   Sparkles,
   Crosshair,
@@ -135,13 +134,16 @@ export default async function OppgraderPage() {
           <div className="mt-2 text-sm text-accent/80">
             3 600 kr / år · ingen skjulte gebyrer
           </div>
-          <Link
-            href="/portal/meg/abonnement/oppgrader/flyt"
+          <a
+            href="mailto:post@akgolf.no?subject=Oppgrader%20til%20Pro&body=Hei!%20Jeg%20%C3%B8nsker%20%C3%A5%20oppgradere%20til%20Pro."
             className="mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-2 text-sm font-bold text-foreground transition-transform hover:-translate-y-0.5"
           >
-            Start oppgradering
+            Oppgrader via e-post
             <ArrowRight className="h-4 w-4" strokeWidth={2.2} />
-          </Link>
+          </a>
+          <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.10em] text-accent/70">
+            Stripe-flyt åpnes post-BETA
+          </p>
         </div>
       </section>
     </div>

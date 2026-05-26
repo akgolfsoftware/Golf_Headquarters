@@ -191,12 +191,19 @@ export default function JuniorSide() {
 
           <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 md:p-10">
             <h3 className="font-display text-2xl font-semibold tracking-tight">
-              Interessen-skjema
+              Meld interesse på e-post
             </h3>
             <p className="mt-2 text-[14px] leading-[1.6] text-muted-foreground">
-              Vi tar kontakt innen 1 virkedag.
+              Send oss en e-post med navn på junior, alder og kontaktinfo —
+              vi tar kontakt innen 1 virkedag.
             </p>
-            <PameldingForm />
+            <a
+              href="mailto:post@akgolf.no?subject=Junior-p%C3%A5melding&body=Hei!%0A%0ANavn%20p%C3%A5%20junior%3A%20%0AAlder%3A%20%0AE-post%20foresatte%3A%20%0ATelefon%3A%20%0A%0AHilsen"
+              className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-4 text-[15px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+            >
+              Send e-post til post@akgolf.no
+              <ArrowRight className="h-4 w-4" strokeWidth={2} />
+            </a>
           </div>
         </div>
       </section>
@@ -284,77 +291,3 @@ function InfoRad({ label, verdi }: { label: string; verdi: string }) {
   );
 }
 
-async function sendPamelding(formData: FormData) {
-  "use server";
-  const navn = formData.get("navn");
-  const alder = formData.get("alder");
-  const epost = formData.get("epost");
-  console.log("[Junior påmelding]", { navn, alder, epost });
-}
-
-function PameldingForm() {
-  return (
-    <form action={sendPamelding} className="mt-8 space-y-6">
-      <div className="flex flex-col gap-2">
-        <label
-          htmlFor="navn"
-          className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground"
-        >
-          Navn på junior
-        </label>
-        <input
-          id="navn"
-          name="navn"
-          type="text"
-          required
-          placeholder="Fornavn Etternavn"
-          className="rounded-md border border-input bg-background px-4 py-2 text-[14px] text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/20"
-        />
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <label
-          htmlFor="alder"
-          className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground"
-        >
-          Alder
-        </label>
-        <input
-          id="alder"
-          name="alder"
-          type="number"
-          required
-          min={5}
-          max={18}
-          placeholder="F.eks. 12"
-          className="rounded-md border border-input bg-background px-4 py-2 text-[14px] text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/20"
-        />
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <label
-          htmlFor="epost"
-          className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground"
-        >
-          E-post (foresatte)
-        </label>
-        <input
-          id="epost"
-          name="epost"
-          type="email"
-          required
-          placeholder="din@epost.no"
-          className="rounded-md border border-input bg-background px-4 py-2 text-[14px] text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/20"
-        />
-      </div>
-
-      <button
-        type="submit"
-        className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-4 text-[15px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
-      >
-        Send påmelding
-        <ArrowRight className="h-4 w-4" strokeWidth={2} />
-      </button>
-    </form>
-  );
-}
