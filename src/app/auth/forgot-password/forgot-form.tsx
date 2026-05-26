@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { AthleticButton } from "@/components/athletic/button";
+import { AthleticBadge } from "@/components/athletic/badge";
 
 export function ForgotForm() {
   const supabase = createClient();
@@ -30,15 +32,18 @@ export function ForgotForm() {
   if (sent) {
     return (
       <div className="space-y-4 text-center">
+        <div className="flex justify-center">
+          <AthleticBadge variant="ok">E-POST SENDT</AthleticBadge>
+        </div>
         <p className="font-display text-xl font-semibold leading-tight">
-          <em className="font-normal text-primary md:italic">Sjekk</em> innboksen
+          <em className="font-normal italic text-primary">Sjekk</em> innboksen
         </p>
         <p className="text-sm text-muted-foreground">
           Vi har sendt en lenke til {email}. Klikk på den for å sette nytt passord.
         </p>
         <Link
           href="/auth/login"
-          className="font-display mt-2 inline-flex h-11 items-center justify-center gap-1.5 rounded-md border border-primary bg-transparent px-5 text-sm font-bold tracking-[-0.005em] text-primary transition hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="font-display mt-2 inline-flex h-11 items-center justify-center gap-1.5 rounded-md bg-transparent px-5 text-sm font-bold tracking-[-0.005em] text-foreground transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           Tilbake til innlogging
         </Link>
@@ -64,19 +69,22 @@ export function ForgotForm() {
       {error && (
         <div
           role="alert"
-          className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive"
+          className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2"
         >
-          {error}
+          <AthleticBadge variant="urgent">Feil</AthleticBadge>
+          <span className="text-sm text-destructive">{error}</span>
         </div>
       )}
 
-      <button
+      <AthleticButton
         type="submit"
+        variant="primary"
+        size="md"
         disabled={pending}
-        className="font-display inline-flex h-11 w-full items-center justify-center gap-1.5 rounded-full bg-accent px-5 text-sm font-bold tracking-[-0.005em] text-primary shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition hover:brightness-105 disabled:opacity-60 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        className="w-full"
       >
         {pending ? "Sender…" : "Send reset-lenke"}
-      </button>
+      </AthleticButton>
 
       <p className="pt-2 text-center text-sm text-muted-foreground">
         Husket passordet?{" "}

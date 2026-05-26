@@ -3,8 +3,11 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { Eye, EyeOff } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { safeRedirectPath } from "@/lib/security/safe-redirect-client";
+import { AthleticButton } from "@/components/athletic/button";
+import { AthleticBadge } from "@/components/athletic/badge";
 
 export function LoginForm() {
   const router = useRouter();
@@ -12,6 +15,7 @@ export function LoginForm() {
   const supabase = createClient();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -111,19 +115,34 @@ export function LoginForm() {
         >
           Passord
         </label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          autoComplete="current-password"
-          required
-          aria-required="true"
-          aria-invalid={error ? true : undefined}
-          aria-describedby={error ? errorId : undefined}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full rounded-md border border-input bg-card px-4 py-4 text-base sm:text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30 focus-visible:ring-2 focus-visible:ring-ring"
-        />
+        <div className="relative">
+          <input
+            id="password"
+            name="password"
+            type={showPassword ? "text" : "password"}
+            autoComplete="current-password"
+            required
+            aria-required="true"
+            aria-invalid={error ? true : undefined}
+            aria-describedby={error ? errorId : undefined}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full rounded-md border border-input bg-card px-4 py-4 pr-12 text-base sm:text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30 focus-visible:ring-2 focus-visible:ring-ring"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((v) => !v)}
+            aria-label={showPassword ? "Skjul passord" : "Vis passord"}
+            aria-pressed={showPassword}
+            className="absolute right-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+          >
+            {showPassword ? (
+              <EyeOff className="h-4 w-4" strokeWidth={1.75} aria-hidden />
+            ) : (
+              <Eye className="h-4 w-4" strokeWidth={1.75} aria-hidden />
+            )}
+          </button>
+        </div>
       </div>
 
       <div className="flex items-center justify-between pt-2 text-xs">
@@ -146,20 +165,23 @@ export function LoginForm() {
 
       <div role="alert" aria-live="polite" aria-atomic="true" id={errorId}>
         {error && (
-          <div className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-4 text-sm text-destructive">
-            {error}
+          <div className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-4">
+            <AthleticBadge variant="urgent">Feil</AthleticBadge>
+            <span className="text-sm text-destructive">{error}</span>
           </div>
         )}
       </div>
 
-      <button
+      <AthleticButton
         type="submit"
+        variant="primary"
+        size="md"
         disabled={loading}
         aria-busy={loading || undefined}
-        className="font-display inline-flex h-11 w-full items-center justify-center gap-1.5 rounded-full bg-accent px-5 text-sm font-bold tracking-[-0.005em] text-primary shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition hover:brightness-105 disabled:opacity-60 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        className="w-full"
       >
         {loading ? "Logger inn…" : "Logg inn"}
-      </button>
+      </AthleticButton>
 
       <div className="relative pt-2">
         <div aria-hidden="true" className="absolute inset-0 flex items-center">
