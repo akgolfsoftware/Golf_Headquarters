@@ -10,9 +10,9 @@ const variantClasses: Record<NonNullable<AthleticBadgeProps["variant"]>, string>
   primary: "bg-primary text-accent",
   lime: "bg-accent text-primary",
   neutral: "bg-secondary text-secondary-foreground",
-  warn: "bg-amber-100 text-amber-900",
-  urgent: "bg-red-100 text-red-800",
-  ok: "bg-emerald-100 text-emerald-800",
+  warn: "bg-warning/15 text-warning",
+  urgent: "bg-destructive/15 text-destructive",
+  ok: "bg-success/15 text-success",
 };
 
 export function AthleticBadge({

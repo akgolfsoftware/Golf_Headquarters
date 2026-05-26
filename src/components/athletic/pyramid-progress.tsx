@@ -1,10 +1,20 @@
 import { cn } from "@/lib/utils";
 
+export type PyramidTone =
+  | "primary"
+  | "accent"
+  | "neutral"
+  | "pyr-fys"
+  | "pyr-tek"
+  | "pyr-slag"
+  | "pyr-spill"
+  | "pyr-turn";
+
 export type PyramidRow = {
   label: string;
   fillPercent: number;
   value: string;
-  tone?: "primary" | "accent" | "neutral";
+  tone?: PyramidTone;
 };
 
 type PyramidProgressProps = {
@@ -12,10 +22,15 @@ type PyramidProgressProps = {
   className?: string;
 };
 
-const toneClass: Record<NonNullable<PyramidRow["tone"]>, string> = {
+const toneClass: Record<PyramidTone, string> = {
   primary: "bg-primary",
   accent: "bg-accent",
   neutral: "bg-muted-foreground",
+  "pyr-fys": "bg-[var(--pyr-fys)]",
+  "pyr-tek": "bg-[var(--pyr-tek)]",
+  "pyr-slag": "bg-[var(--pyr-slag)]",
+  "pyr-spill": "bg-[var(--pyr-spill)]",
+  "pyr-turn": "bg-[var(--pyr-turn)]",
 };
 
 export function PyramidProgress({ rows, className }: PyramidProgressProps) {

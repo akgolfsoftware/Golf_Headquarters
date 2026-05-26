@@ -22,7 +22,7 @@ export function AthleticCard({
   return (
     <div
       className={cn(
-        "rounded-2xl border border-border bg-card p-4 md:p-5",
+        "rounded-lg border border-border bg-card p-4 md:p-6",
         className,
       )}
     >

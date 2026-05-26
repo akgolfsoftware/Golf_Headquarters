@@ -31,7 +31,7 @@ export function FeaturedCard({
   return (
     <div
       className={cn(
-        "relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-primary to-emerald-900 p-5 text-white",
+        "relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-primary to-emerald-900 p-6 text-white",
         className,
       )}
       style={{ minHeight }}

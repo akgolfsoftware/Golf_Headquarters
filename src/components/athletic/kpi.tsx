@@ -1,10 +1,13 @@
+import { Minus, TrendingDown, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+type TrendTone = "positive" | "negative" | "neutral";
 
 type KpiCardProps = {
   label: string;
   value: React.ReactNode;
   unit?: string;
-  trend?: { value: string; tone?: "positive" | "negative" | "neutral" };
+  trend?: { value: string; tone?: TrendTone };
   size?: "sm" | "md" | "lg";
   className?: string;
 };
@@ -15,21 +18,29 @@ const valueSize: Record<NonNullable<KpiCardProps["size"]>, string> = {
   lg: "text-3xl",
 };
 
-const trendTone: Record<NonNullable<NonNullable<KpiCardProps["trend"]>["tone"]>, string> = {
+const trendTone: Record<TrendTone, string> = {
   positive: "text-primary",
   negative: "text-destructive",
   neutral: "text-muted-foreground",
 };
 
+const trendIcon: Record<TrendTone, React.ComponentType<{ className?: string; strokeWidth?: number }>> = {
+  positive: TrendingUp,
+  negative: TrendingDown,
+  neutral: Minus,
+};
+
 export function KpiCard({ label, value, unit, trend, size = "md", className }: KpiCardProps) {
+  const TrendIcon = trend ? trendIcon[trend.tone ?? "positive"] : null;
+
   return (
     <div
       className={cn(
-        "rounded-xl border border-border bg-card p-3 md:p-4",
+        "rounded-lg border border-border bg-card p-4",
         className,
       )}
     >
-      <div className="font-mono text-[9px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
+      <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
         {label}
       </div>
       <div
@@ -41,13 +52,14 @@ export function KpiCard({ label, value, unit, trend, size = "md", className }: K
         {value}
         {unit && <span className="ml-1 text-xs font-normal text-muted-foreground">{unit}</span>}
       </div>
-      {trend && (
+      {trend && TrendIcon && (
         <div
           className={cn(
-            "mt-1.5 font-mono text-[10px] font-medium",
+            "mt-1.5 inline-flex items-center gap-1 font-mono text-[10px] font-medium",
             trendTone[trend.tone ?? "positive"],
           )}
         >
+          <TrendIcon className="h-3 w-3" strokeWidth={2} aria-hidden />
           {trend.value}
         </div>
       )}
