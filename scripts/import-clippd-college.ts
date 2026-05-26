@@ -65,6 +65,10 @@ function normaliserNavn(navn: string): string {
   return navn
     .toLowerCase()
     .replace(/[åä]/g, "a")
+    // Clippd bruker gammel norsk translitterasjon: å → aa, ø → oe, æ → ae
+    // Normaliser dette til enkelt bokstav slik at "Baard" → "bard" matcher "Bård" → "bard"
+    .replace(/aa/g, "a")
+    .replace(/oe/g, "o")
     .replace(/[øö]/g, "o")
     .replace(/[æ]/g, "ae")
     .replace(/[éèê]/g, "e")
