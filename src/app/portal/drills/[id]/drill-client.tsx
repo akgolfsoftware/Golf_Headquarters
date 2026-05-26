@@ -56,13 +56,13 @@ export function DrillDetailClient({ drillId, drillTitle }: Props) {
   return (
     <section
       aria-label="Drill-handlinger"
-      className="flex flex-wrap items-stretch gap-3 border-t border-border pt-8"
+      className="flex flex-wrap items-stretch gap-2 border-t border-border pt-8"
     >
       <button
         type="button"
         onClick={startOkt}
         disabled={pending}
-        className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-accent-foreground transition-opacity hover:opacity-90 disabled:opacity-60 sm:flex-initial"
+        className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-full bg-accent px-6 py-2 text-sm font-semibold text-accent-foreground transition-opacity hover:opacity-90 disabled:opacity-60 sm:flex-initial"
       >
         {pending ? (
           <Loader2 className="h-4 w-4 animate-spin" strokeWidth={1.75} />

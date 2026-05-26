@@ -110,7 +110,7 @@ export default function PhotoHero({
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center">
             <span
-              className="inline-flex items-center gap-[6px] px-3 py-[6px] rounded-full font-mono text-[10px] font-bold uppercase tracking-[0.12em]"
+              className="inline-flex items-center gap-[6px] px-4 py-[6px] rounded-full font-mono text-[10px] font-bold uppercase tracking-[0.12em]"
               style={{
                 background:
                   "color-mix(in oklab, var(--accent) 28%, rgba(0,0,0,0.4))",

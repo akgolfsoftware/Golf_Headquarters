@@ -28,8 +28,8 @@ export function FatigueChart({ result, advanced = false }: Props) {
   const hasData = result.points.length > 0;
 
   return (
-    <div className="w-full space-y-3">
-      <div className="flex flex-wrap items-center gap-3 text-xs">
+    <div className="w-full space-y-2">
+      <div className="flex flex-wrap items-center gap-2 text-xs">
         <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
           <Activity className="h-3 w-3" />
           {result.shotCount} slag
@@ -93,7 +93,7 @@ export function FatigueChart({ result, advanced = false }: Props) {
                 rolling: number;
               };
               return (
-                <div className="rounded-lg border border-border bg-card px-3 py-2 text-xs shadow-md">
+                <div className="rounded-lg border border-border bg-card px-4 py-2 text-xs shadow-md">
                   <p className="font-semibold">Slag {d.shotNumber}</p>
                   <p className="text-muted-foreground">
                     Hastighet: {numberFmt.format(d.clubSpeed)} mph

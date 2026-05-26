@@ -598,7 +598,7 @@ function StepCommit({
     <div className="flex flex-col gap-8">
       {/* Summary */}
       <div
-        className="rounded-[16px] border flex flex-col gap-2 px-6 py-5"
+        className="rounded-[16px] border flex flex-col gap-2 px-6 py-6"
         style={{
           borderColor:
             "color-mix(in oklab, hsl(var(--primary)) 20%, transparent)",
@@ -1069,7 +1069,7 @@ export default function ImportPattern({
     >
       {/* Header */}
       <div
-        className="flex flex-col gap-4 px-6 pt-6 pb-5 border-b"
+        className="flex flex-col gap-4 px-6 pt-6 pb-6 border-b"
         style={{ borderColor: "hsl(var(--border))" }}
       >
         <div className="flex flex-col gap-[2px]">

@@ -36,7 +36,7 @@ export function OktKort({
       type="button"
       onClick={onClick}
       className={cn(
-        "flex flex-col gap-3 rounded-md border border-border bg-card p-4 text-left transition-all",
+        "flex flex-col gap-2 rounded-md border border-border bg-card p-4 text-left transition-all",
         "hover:border-primary hover:bg-card/80 hover:shadow-sm",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
       )}

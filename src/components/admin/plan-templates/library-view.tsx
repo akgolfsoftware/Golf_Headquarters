@@ -143,7 +143,7 @@ export function LibraryView({ templates }: Props) {
     <section className="flex flex-col gap-6">
       {/* Filter-bar */}
       <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4 sm:p-6">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">
             <Filter className="h-3.5 w-3.5" strokeWidth={1.75} />
             Filter
@@ -152,7 +152,7 @@ export function LibraryView({ templates }: Props) {
             <button
               type="button"
               onClick={() => setViewMode("grid")}
-              className={`flex h-9 items-center gap-1.5 rounded-md border px-3 text-xs font-medium transition ${
+              className={`flex h-9 items-center gap-1.5 rounded-md border px-4 text-xs font-medium transition ${
                 viewMode === "grid"
                   ? "border-primary bg-primary text-primary-foreground"
                   : "border-border bg-card text-foreground hover:bg-secondary"
@@ -164,7 +164,7 @@ export function LibraryView({ templates }: Props) {
             <button
               type="button"
               onClick={() => setViewMode("list")}
-              className={`flex h-9 items-center gap-1.5 rounded-md border px-3 text-xs font-medium transition ${
+              className={`flex h-9 items-center gap-1.5 rounded-md border px-4 text-xs font-medium transition ${
                 viewMode === "list"
                   ? "border-primary bg-primary text-primary-foreground"
                   : "border-border bg-card text-foreground hover:bg-secondary"
@@ -176,7 +176,7 @@ export function LibraryView({ templates }: Props) {
           </div>
         </div>
 
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2">
           <div>
             <div className="mb-2 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">
               Nivå
@@ -190,7 +190,7 @@ export function LibraryView({ templates }: Props) {
                     type="button"
                     onClick={() => toggleKategori(k)}
                     title={KATEGORI_LABEL[k]}
-                    className={`flex h-8 min-w-[36px] items-center justify-center rounded-full border px-3 font-mono text-xs font-semibold transition ${
+                    className={`flex h-8 min-w-[36px] items-center justify-center rounded-full border px-4 font-mono text-xs font-semibold transition ${
                       aktiv
                         ? "border-primary bg-primary text-primary-foreground"
                         : "border-border bg-card text-foreground hover:bg-secondary"
@@ -240,7 +240,7 @@ export function LibraryView({ templates }: Props) {
             Vis kun special-templates
           </label>
 
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-2">
             <div className="relative">
               <Search
                 className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground"
@@ -251,13 +251,13 @@ export function LibraryView({ templates }: Props) {
                 value={sok}
                 onChange={(e) => setSok(e.target.value)}
                 placeholder="Søk i navn eller beskrivelse"
-                className="h-9 w-full rounded-md border border-input bg-card pl-8 pr-3 text-xs placeholder:text-muted-foreground focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 sm:w-64"
+                className="h-9 w-full rounded-md border border-input bg-card pl-8 pr-4 text-xs placeholder:text-muted-foreground focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 sm:w-64"
               />
             </div>
             <select
               value={sortKey}
               onChange={(e) => setSortKey(e.target.value as SortKey)}
-              className="h-9 rounded-md border border-input bg-card px-3 text-xs"
+              className="h-9 rounded-md border border-input bg-card px-4 text-xs"
             >
               <option value="nivaa">Sortér: Nivå (default)</option>
               <option value="effekt">Sortér: Effekt</option>
@@ -301,7 +301,7 @@ function GridView({
             {FASE_ALLE.map((f) => (
               <div
                 key={f}
-                className="rounded-md bg-secondary px-3 py-2 text-center font-mono text-[10px] uppercase tracking-[0.1em] text-secondary-foreground"
+                className="rounded-md bg-secondary px-4 py-2 text-center font-mono text-[10px] uppercase tracking-[0.1em] text-secondary-foreground"
               >
                 {FASE_LABEL[f]}
               </div>
@@ -343,7 +343,7 @@ function GridView({
 
       {specials.length > 0 && (
         <div className="rounded-2xl border border-border bg-card p-4 sm:p-6">
-          <div className="mb-3 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">
+          <div className="mb-2 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">
             <Sparkles className="h-3.5 w-3.5" strokeWidth={1.75} />
             Special-templates
           </div>
@@ -362,7 +362,7 @@ function GridCard({ template }: { template: TemplateRow }) {
   return (
     <Link
       href={`/admin/plan-templates/${template.id}`}
-      className="group flex min-h-[80px] flex-col justify-between rounded-lg border border-border bg-card p-3 transition hover:border-primary hover:shadow-sm"
+      className="group flex min-h-[80px] flex-col justify-between rounded-lg border border-border bg-card p-4 transition hover:border-primary hover:shadow-sm"
       title={template.description ?? template.name}
     >
       <div className="flex items-start gap-2">
@@ -400,14 +400,14 @@ function ListView({ rows }: { rows: TemplateRow[] }) {
       <table className="w-full min-w-[820px] text-sm">
         <thead>
           <tr className="border-b border-border bg-secondary text-left font-mono text-[10px] uppercase tracking-[0.1em] text-secondary-foreground">
-            <th className="px-4 py-3">Navn</th>
-            <th className="px-3 py-3">Nivå</th>
-            <th className="px-3 py-3">Fase</th>
-            <th className="px-3 py-3 text-right">Uker</th>
-            <th className="px-3 py-3 text-right">Økt/uke</th>
-            <th className="px-3 py-3 text-right">Brukt</th>
-            <th className="px-3 py-3 text-right">Effekt</th>
-            <th className="px-3 py-3">Sist endret</th>
+            <th className="px-4 py-2">Navn</th>
+            <th className="px-4 py-2">Nivå</th>
+            <th className="px-4 py-2">Fase</th>
+            <th className="px-4 py-2 text-right">Uker</th>
+            <th className="px-4 py-2 text-right">Økt/uke</th>
+            <th className="px-4 py-2 text-right">Brukt</th>
+            <th className="px-4 py-2 text-right">Effekt</th>
+            <th className="px-4 py-2">Sist endret</th>
           </tr>
         </thead>
         <tbody>
@@ -416,7 +416,7 @@ function ListView({ rows }: { rows: TemplateRow[] }) {
               key={t.id}
               className="border-b border-border last:border-0 hover:bg-secondary/30"
             >
-              <td className="px-4 py-3">
+              <td className="px-4 py-2">
                 <Link
                   href={`/admin/plan-templates/${t.id}`}
                   className="font-medium text-foreground hover:text-primary"
@@ -429,17 +429,17 @@ function ListView({ rows }: { rows: TemplateRow[] }) {
                   </span>
                 )}
               </td>
-              <td className="px-3 py-3 font-mono text-xs">{t.kategori}</td>
-              <td className="px-3 py-3 text-xs">{FASE_LABEL[t.lPhase]}</td>
-              <td className="px-3 py-3 text-right font-mono text-xs">{t.varighetUker}</td>
-              <td className="px-3 py-3 text-right font-mono text-xs">{t.ukentligOktAntall}</td>
-              <td className="px-3 py-3 text-right font-mono text-xs">{t.usageCount}</td>
-              <td className="px-3 py-3 text-right font-mono text-xs">
+              <td className="px-4 py-2 font-mono text-xs">{t.kategori}</td>
+              <td className="px-4 py-2 text-xs">{FASE_LABEL[t.lPhase]}</td>
+              <td className="px-4 py-2 text-right font-mono text-xs">{t.varighetUker}</td>
+              <td className="px-4 py-2 text-right font-mono text-xs">{t.ukentligOktAntall}</td>
+              <td className="px-4 py-2 text-right font-mono text-xs">{t.usageCount}</td>
+              <td className="px-4 py-2 text-right font-mono text-xs">
                 {t.effectivenessAvg != null
                   ? `${t.effectivenessAvg >= 0 ? "+" : ""}${t.effectivenessAvg.toFixed(2)}`
                   : "—"}
               </td>
-              <td className="px-3 py-3 text-xs text-muted-foreground">
+              <td className="px-4 py-2 text-xs text-muted-foreground">
                 {new Date(t.updatedAt).toLocaleDateString("nb-NO", {
                   day: "2-digit",
                   month: "short",

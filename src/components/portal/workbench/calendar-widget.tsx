@@ -253,7 +253,7 @@ export function CalendarWidget({
                       </div>
 
                       {session.drills && session.drills.length > 0 ? (
-                        <div className="mt-3">
+                        <div className="mt-2">
                           <p className="mb-1 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
                             Drills
                           </p>
@@ -268,7 +268,7 @@ export function CalendarWidget({
                       ) : null}
 
                       {session.tags && session.tags.length > 0 ? (
-                        <div className="mt-3 flex flex-wrap gap-1">
+                        <div className="mt-2 flex flex-wrap gap-1">
                           {session.tags.map((tag, i) => (
                             <span
                               key={i}
@@ -280,7 +280,7 @@ export function CalendarWidget({
                         </div>
                       ) : null}
 
-                      <div className="mt-4 flex gap-2 border-t border-border pt-3">
+                      <div className="mt-4 flex gap-2 border-t border-border pt-2">
                         <Link
                           href={`/portal/tren/${session.id}/planlagt`}
                           className="flex-1 rounded-sm bg-primary px-2 py-1.5 text-center text-xs font-medium text-primary-foreground hover:opacity-90"

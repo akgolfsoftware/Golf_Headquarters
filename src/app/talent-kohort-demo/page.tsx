@@ -83,7 +83,7 @@ export default function TalentKohortDemo() {
   return (
     <div className="min-h-screen bg-[var(--color-card,#FFFFFF)] text-foreground">
       {/* Header */}
-      <header className="grid grid-cols-[1fr_auto] items-end gap-6 border-b border-border pb-5 pt-1 mb-5">
+      <header className="grid grid-cols-[1fr_auto] items-end gap-6 border-b border-border pb-6 pt-1 mb-5">
         <div>
           <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             Scout · Kohort-explorer
@@ -104,13 +104,13 @@ export default function TalentKohortDemo() {
           <input
             type="search"
             placeholder="Søk i 487 spillere…"
-            className="w-full rounded-md border border-input bg-card pl-9 pr-3 py-2.5 text-[13px] placeholder:text-muted-foreground focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
+            className="w-full rounded-md border border-input bg-card pl-8 pr-4 py-2.5 text-[13px] placeholder:text-muted-foreground focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
           />
         </div>
       </header>
 
       {/* Action-strip */}
-      <div className="mb-5 flex flex-wrap items-center gap-2.5 rounded-lg border border-border bg-card px-3 py-2.5">
+      <div className="mb-5 flex flex-wrap items-center gap-2.5 rounded-lg border border-border bg-card px-4 py-2.5">
         <span className="mr-1 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           I visning
         </span>
@@ -123,18 +123,18 @@ export default function TalentKohortDemo() {
         <ActionItem>
           gjennomsnitt-percentil <b>P57</b>
         </ActionItem>
-        <button className="ml-auto inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90">
+        <button className="ml-auto inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90">
           <Layers className="h-4 w-4" strokeWidth={1.5} />
           Lasso-velg gruppe
         </button>
       </div>
 
       {/* Filter row 1: kjønn + klasse + ncaa */}
-      <div className="mb-3 flex flex-wrap items-center gap-2">
+      <div className="mb-2 flex flex-wrap items-center gap-2">
         {FILTERS_1.map((f, i) => (
           <button
             key={f}
-            className={`rounded-full px-3.5 py-1.5 text-[12px] font-medium transition-colors ${
+            className={`rounded-full px-4 py-1.5 text-[12px] font-medium transition-colors ${
               i === 0 || i === 3
                 ? "bg-primary text-primary-foreground"
                 : "border border-border bg-card text-foreground hover:bg-secondary"
@@ -153,7 +153,7 @@ export default function TalentKohortDemo() {
         {FILTERS_2.map((f) => (
           <button
             key={f.key}
-            className={`rounded-full px-3.5 py-1.5 text-[12px] font-medium transition-colors ${
+            className={`rounded-full px-4 py-1.5 text-[12px] font-medium transition-colors ${
               f.key === ACTIVE_COLOR_BY
                 ? "bg-primary text-primary-foreground"
                 : "border border-border bg-card text-foreground hover:bg-secondary"
@@ -171,7 +171,7 @@ export default function TalentKohortDemo() {
       <section className="rounded-lg border border-border bg-card p-6">
         <CohortScatter />
         {/* Footer-totals */}
-        <div className="mt-5 grid grid-cols-5 gap-3 border-t border-[var(--line-soft,#EFEDE6)] pt-4">
+        <div className="mt-5 grid grid-cols-5 gap-2 border-t border-[var(--line-soft,#EFEDE6)] pt-4">
           <FooterStat label="Totalt" value="118" sub="spillere" />
           <FooterStat label="Topp 10 %" value="12" sub="over p90" />
           <FooterStat label="Median alder" value="16,2" sub="år" />

@@ -106,7 +106,7 @@ export function ConditionalRulesPanel({ regler, onChange }: Props) {
   }
 
   return (
-    <section className="flex flex-col gap-3 rounded-lg border border-border bg-card p-4">
+    <section className="flex flex-col gap-2 rounded-lg border border-border bg-card p-4">
       <header className="flex items-center justify-between">
         <h3 className="text-sm font-semibold text-foreground">Betingede regler</h3>
         <span className="font-mono text-xs tabular-nums text-muted-foreground">
@@ -196,7 +196,7 @@ export function ConditionalRulesPanel({ regler, onChange }: Props) {
         <button
           type="button"
           onClick={leggTil}
-          className="inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-3 text-xs font-medium text-primary-foreground hover:bg-primary/90"
+          className="inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-4 text-xs font-medium text-primary-foreground hover:bg-primary/90"
         >
           <Plus size={14} strokeWidth={1.5} />
           Legg til

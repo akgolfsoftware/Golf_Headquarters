@@ -50,7 +50,7 @@ export default async function WorkspaceNotionPage({
 
   return (
     <div className="space-y-6">
-      <header className="-mx-4 -mt-4 border-b border-border bg-gradient-to-b from-[#FBFAF5] to-background px-4 py-7 md:-mx-8 md:-mt-8 md:px-8">
+      <header className="-mx-4 -mt-4 border-b border-border bg-gradient-to-b from-[#FBFAF5] to-background px-4 py-8 md:-mx-8 md:-mt-8 md:px-8">
         <AthleticEyebrow>CoachHQ · Workspace · Notion</AthleticEyebrow>
         <h1 className="font-display mt-2 text-3xl font-bold leading-tight tracking-tight md:text-4xl">
           Notion-{" "}
@@ -93,7 +93,7 @@ export default async function WorkspaceNotionPage({
 
       {/* Notion-tilkobling kan kun konfigureres av ADMIN */}
       {!isAdmin && state === "empty" ? (
-        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-900">
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-6 text-sm text-amber-900">
           Bare hovedcoach (ADMIN) kan koble til Notion. Snakk med Anders hvis du vil at
           en database skal synkes.
         </div>
@@ -152,8 +152,8 @@ function EmptyState({
   // For ikke-ADMIN: vis kort hint.
   if (!isAdmin) {
     return (
-      <div className="mx-auto max-w-3xl space-y-5">
-        <div className="grid items-center gap-7 rounded-2xl border border-border bg-card p-9 md:grid-cols-[160px_1fr]">
+      <div className="mx-auto max-w-3xl space-y-6">
+        <div className="grid items-center gap-8 rounded-2xl border border-border bg-card p-8 md:grid-cols-[160px_1fr]">
           <div className="flex justify-center">
             <NotionLogo />
           </div>
@@ -164,7 +164,7 @@ function EmptyState({
             <h2 className="font-display text-2xl font-bold leading-tight tracking-tight">
               Kun ADMIN kan koble til Notion
             </h2>
-            <p className="mt-3 text-[13.5px] leading-relaxed text-muted-foreground">
+            <p className="mt-2 text-[13.5px] leading-relaxed text-muted-foreground">
               Snakk med Anders hvis du vil at en database skal synkes til CoachHQ.
             </p>
           </div>
@@ -176,8 +176,8 @@ function EmptyState({
   // ADMIN uten env-var: forklar hva som må gjøres i Vercel.
   if (!hasInternalToken) {
     return (
-      <div className="mx-auto max-w-3xl space-y-7">
-        <div className="grid items-center gap-7 rounded-2xl border border-border bg-card p-9 md:grid-cols-[160px_1fr]">
+      <div className="mx-auto max-w-3xl space-y-8">
+        <div className="grid items-center gap-8 rounded-2xl border border-border bg-card p-8 md:grid-cols-[160px_1fr]">
           <div className="flex justify-center">
             <NotionLogo />
           </div>
@@ -199,7 +199,7 @@ function EmptyState({
               </em>{" "}
               i Vercel for å koble til
             </h2>
-            <p className="mt-3 text-[13.5px] leading-relaxed text-muted-foreground">
+            <p className="mt-2 text-[13.5px] leading-relaxed text-muted-foreground">
               CoachHQ bruker en Notion Internal Integration. Tokenet ligger som
               env-var i Vercel — ingen OAuth-flyt nødvendig.
             </p>
@@ -207,10 +207,10 @@ function EmptyState({
         </div>
 
         <section>
-          <div className="font-mono mb-3 text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
+          <div className="font-mono mb-2 text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
             SLIK SETTER DU OPP
           </div>
-          <div className="grid gap-3 md:grid-cols-3">
+          <div className="grid gap-2 md:grid-cols-3">
             {[
               {
                 n: "1",
@@ -230,7 +230,7 @@ function EmptyState({
             ].map((s) => (
               <div
                 key={s.n}
-                className="flex flex-col gap-2.5 rounded-2xl border border-border bg-card p-5"
+                className="flex flex-col gap-2.5 rounded-2xl border border-border bg-card p-6"
               >
                 <span className="font-display inline-flex h-9 w-9 items-center justify-center rounded-full bg-primary text-base font-bold text-accent">
                   {s.n}
@@ -244,7 +244,7 @@ function EmptyState({
           </div>
         </section>
 
-        <div className="grid items-center gap-5 rounded-2xl bg-foreground p-6 text-white md:grid-cols-[1fr_auto]">
+        <div className="grid items-center gap-6 rounded-2xl bg-foreground p-6 text-white md:grid-cols-[1fr_auto]">
           <div>
             <div className="font-display text-lg font-semibold">Ferdig med oppsett?</div>
             <div className="mt-1.5 text-[13px] leading-relaxed text-white/65">
@@ -256,13 +256,13 @@ function EmptyState({
             href="https://www.notion.so/my-integrations"
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-3 font-display text-sm font-semibold text-primary hover:opacity-90"
+            className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-2 font-display text-sm font-semibold text-primary hover:opacity-90"
           >
             <ExternalLink className="h-4 w-4" /> Åpne Notion-integrasjoner
           </a>
         </div>
 
-        <div className="flex items-start gap-2.5 rounded-xl border border-primary/20 bg-primary/[0.04] px-4 py-3.5">
+        <div className="flex items-start gap-2.5 rounded-xl border border-primary/20 bg-primary/[0.04] px-4 py-4">
           <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
           <p className="text-[12.5px] leading-relaxed">
             <strong>Tokenet krypteres i databasen.</strong> Internal Integration-tokens
@@ -276,8 +276,8 @@ function EmptyState({
 
   // ADMIN med env-var men ingen connection — race condition (bootstrap kjører).
   return (
-    <div className="mx-auto max-w-3xl space-y-5">
-      <div className="grid items-center gap-7 rounded-2xl border border-border bg-card p-9 md:grid-cols-[160px_1fr]">
+    <div className="mx-auto max-w-3xl space-y-6">
+      <div className="grid items-center gap-8 rounded-2xl border border-border bg-card p-8 md:grid-cols-[160px_1fr]">
         <div className="flex justify-center">
           <NotionLogo />
         </div>
@@ -288,7 +288,7 @@ function EmptyState({
           <h2 className="font-display text-2xl font-bold leading-tight tracking-tight">
             Kobler til Notion automatisk
           </h2>
-          <p className="mt-3 text-[13.5px] leading-relaxed text-muted-foreground">
+          <p className="mt-2 text-[13.5px] leading-relaxed text-muted-foreground">
             Vi oppretter tilkoblingen nå. Last siden på nytt om noen sekunder.
           </p>
         </div>
@@ -330,7 +330,7 @@ function ConnectedState({
   return (
     <div className="space-y-6">
       {/* Status-card */}
-      <div className="grid items-center gap-4 rounded-2xl border border-border bg-card p-5 md:grid-cols-[48px_1fr_auto]">
+      <div className="grid items-center gap-4 rounded-2xl border border-border bg-card p-6 md:grid-cols-[48px_1fr_auto]">
         <NotionLogo size={48} />
         <div>
           <div className="mb-1 flex flex-wrap items-center gap-2">
@@ -363,7 +363,7 @@ function ConnectedState({
 
       {/* Synkede databaser */}
       <section>
-        <header className="mb-3 flex items-baseline justify-between">
+        <header className="mb-2 flex items-baseline justify-between">
           <div className="font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
             SYNKEDE DATABASER · {databases.length}
           </div>
@@ -381,7 +381,7 @@ function ConnectedState({
             databases.map((db, i, arr) => (
               <div
                 key={db.id}
-                className={`grid grid-cols-[32px_1fr_100px_100px_100px] items-center gap-3.5 px-5 py-3.5 ${
+                className={`grid grid-cols-[32px_1fr_100px_100px_100px] items-center gap-4 px-6 py-4 ${
                   i < arr.length - 1 ? "border-b border-border" : ""
                 }`}
               >
@@ -408,7 +408,7 @@ function ConnectedState({
                 </div>
                 <button
                   type="button"
-                  className="font-mono justify-self-end rounded-full border border-border bg-card px-3 py-1 text-[10px] font-bold uppercase tracking-[0.06em] opacity-40"
+                  className="font-mono justify-self-end rounded-full border border-border bg-card px-4 py-1 text-[10px] font-bold uppercase tracking-[0.06em] opacity-40"
                   disabled
                 >
                   v1.2
@@ -421,14 +421,14 @@ function ConnectedState({
 
       {/* Feltkartlegging */}
       <section>
-        <div className="font-mono mb-3 text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
+        <div className="font-mono mb-2 text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
           FELTKARTLEGGING · Tasks · 2026{" "}
           <span className="text-muted-foreground/60 normal-case">
             (klikk for å bytte database)
           </span>
         </div>
-        <div className="rounded-2xl border border-border bg-card p-5">
-          <div className="font-mono grid grid-cols-[180px_1fr_110px] gap-3.5 border-b border-border pb-2 text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
+        <div className="rounded-2xl border border-border bg-card p-6">
+          <div className="font-mono grid grid-cols-[180px_1fr_110px] gap-4 border-b border-border pb-2 text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
             <div>CoachHQ-felt</div>
             <div>Notion-property</div>
             <div>Type</div>
@@ -446,7 +446,7 @@ function ConnectedState({
           ).map(([ours, notion, type, status]) => (
             <div
               key={ours}
-              className="grid grid-cols-[180px_1fr_110px] items-center gap-3.5 border-b border-border py-3 last:border-b-0"
+              className="grid grid-cols-[180px_1fr_110px] items-center gap-4 border-b border-border py-2 last:border-b-0"
             >
               <div className="font-display text-[13.5px] font-semibold">{ours}</div>
               <div>
@@ -458,7 +458,7 @@ function ConnectedState({
                 ) : (
                   <button
                     type="button"
-                    className="font-mono rounded-full border border-border bg-card px-3 py-1 text-[10px] font-bold uppercase tracking-[0.06em]"
+                    className="font-mono rounded-full border border-border bg-card px-4 py-1 text-[10px] font-bold uppercase tracking-[0.06em]"
                   >
                     + Velg property
                   </button>
@@ -478,10 +478,10 @@ function ConnectedState({
 
       {/* Default synlighet */}
       <section>
-        <div className="font-mono mb-3 text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
+        <div className="font-mono mb-2 text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
           DEFAULT SYNLIGHET FOR NYE OPPGAVER FRA NOTION
         </div>
-        <div className="rounded-2xl border border-border bg-card p-5">
+        <div className="rounded-2xl border border-border bg-card p-6">
           <p className="mb-4 text-[13px] leading-relaxed text-muted-foreground">
             Hvis en oppgave kommer inn fra Notion uten Synlighet-feltet satt, settes den
             til denne verdien. <strong>Tildelt-feltet overstyrer alltid Synlighet</strong>{" "}
@@ -503,11 +503,11 @@ function ConnectedState({
 
       {/* Sync-historikk */}
       <section>
-        <div className="font-mono mb-3 text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
+        <div className="font-mono mb-2 text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
           SYNC-HISTORIKK · SISTE 24 TIMER
         </div>
         <div className="overflow-hidden rounded-2xl border border-border bg-card">
-          <div className="font-mono grid grid-cols-[140px_1fr_100px_100px] gap-3 border-b border-border bg-muted/30 px-4 py-2 text-[9.5px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
+          <div className="font-mono grid grid-cols-[140px_1fr_100px_100px] gap-2 border-b border-border bg-muted/30 px-4 py-2 text-[9.5px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
             <div>TIDSPUNKT</div>
             <div>ENDRINGER</div>
             <div>STATUS</div>
@@ -521,7 +521,7 @@ function ConnectedState({
           ].map((row, i) => (
             <div
               key={i}
-              className="grid grid-cols-[140px_1fr_100px_100px] items-center gap-3 px-4 py-2.5"
+              className="grid grid-cols-[140px_1fr_100px_100px] items-center gap-2 px-4 py-2.5"
             >
               <div className="font-mono text-[11px] tabular-nums">{row.time}</div>
               <div className="text-[12.5px]">{row.changes}</div>
@@ -543,7 +543,7 @@ function ConnectedState({
       </section>
 
       {/* AI-foreslag info */}
-      <div className="flex items-start gap-2.5 rounded-xl border border-accent/40 bg-accent/[0.08] px-4 py-3.5">
+      <div className="flex items-start gap-2.5 rounded-xl border border-accent/40 bg-accent/[0.08] px-4 py-4">
         <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
         <p className="text-[12.5px] leading-relaxed">
           <strong>Hint:</strong> Vi har detektert at databasen{" "}

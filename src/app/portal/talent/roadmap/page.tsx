@@ -121,7 +121,7 @@ export default async function RoadmapPage() {
       </div>
 
       {/* KPI-bobler */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 gap-2">
         {[
           { lbl: "Mål neste 12 mnd", v: "Nivå-opp", sub: "Neste kategori" },
           { lbl: "Faser", v: "4", sub: "Grunntrening → Konkurranse" },
@@ -136,7 +136,7 @@ export default async function RoadmapPage() {
       </div>
 
       {/* Roadmap SVG */}
-      <div className="overflow-hidden rounded-xl border border-border bg-card p-5">
+      <div className="overflow-hidden rounded-xl border border-border bg-card p-6">
         <div className="w-full overflow-x-auto">
           <svg viewBox="0 0 1200 360" className="h-auto w-full min-w-[640px]" preserveAspectRatio="none" aria-label="12-måneders roadmap">
             {/* Måned-headers */}
@@ -209,7 +209,7 @@ export default async function RoadmapPage() {
       {/* Phase-cards */}
       {DEMO_FASER.map((fase, i) => (
         <div key={i} className={`ta-phase-card${fase.status === "aktiv" ? " active" : ""}`}>
-          <div className="mb-3 flex flex-wrap items-center gap-3">
+          <div className="mb-2 flex flex-wrap items-center gap-2">
             <div className="font-display text-base font-semibold">{fase.tittel}</div>
             <span className={`rounded-full px-2.5 py-0.5 font-mono text-[10px] font-semibold ${
               fase.status === "aktiv"
@@ -220,7 +220,7 @@ export default async function RoadmapPage() {
             </span>
             <span className="ml-auto font-mono text-[11px] text-muted-foreground">{fase.periode}</span>
           </div>
-          <p className="mb-3 font-serif italic text-sm text-muted-foreground">{fase.fokus}</p>
+          <p className="mb-2 font-serif italic text-sm text-muted-foreground">{fase.fokus}</p>
           {fase.mal.map((m, j) => (
             <div key={j} className="ta-goal-row">
               <span className={`${DISC_CLASS_SMALL[m.disiplin] ?? "te-badge"} text-[9px]`}>
@@ -242,11 +242,11 @@ export default async function RoadmapPage() {
 
       {/* Milepæler fra DB */}
       {milepaeler.length > 0 && (
-        <section className="rounded-xl border border-border bg-card p-5">
+        <section className="rounded-xl border border-border bg-card p-6">
           <h3 className="mb-4 font-display text-base font-semibold">Personlige milepæler</h3>
-          <ul className="space-y-3">
+          <ul className="space-y-2">
             {milepaeler.map((m, i) => (
-              <li key={i} className="flex items-start gap-3 text-sm">
+              <li key={i} className="flex items-start gap-2 text-sm">
                 {m.oppnadd ? (
                   <CheckCircle2 size={18} strokeWidth={1.5} className="mt-0.5 shrink-0 text-primary" />
                 ) : (
@@ -264,14 +264,14 @@ export default async function RoadmapPage() {
       )}
 
       {/* AI-strip */}
-      <div className="rounded-xl border border-l-4 border-accent/55 border-l-accent bg-accent/10 p-5">
+      <div className="rounded-xl border border-l-4 border-accent/55 border-l-accent bg-accent/10 p-6">
         <div className="flex items-start gap-4">
           <div className="flex-1">
             <p className="text-[13.5px] leading-relaxed">
               <strong className="font-display font-bold">Planen din er godt balansert.</strong>{" "}
               Oktober–januar er kritisk for progresjon. Vil du legge inn ekstra treningsøkter i en av fasene?
             </p>
-            <div className="mt-3 flex flex-wrap gap-2">
+            <div className="mt-2 flex flex-wrap gap-2">
               <button type="button" className="inline-flex items-center gap-1.5 rounded-full bg-accent px-4 py-1.5 text-xs font-semibold text-accent-foreground">
                 Endre plan
               </button>

@@ -97,11 +97,11 @@ export default function TalentSammenlignToDemo() {
             </h1>
           </div>
           <div className="flex items-center gap-2">
-            <button className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3.5 py-2 text-[13px] font-medium text-foreground hover:bg-secondary">
+            <button className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground hover:bg-secondary">
               <ChevronLeft className="h-4 w-4" strokeWidth={1.5} />
               Tilbake
             </button>
-            <button className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-[13px] font-medium text-primary-foreground">
+            <button className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground">
               <Download className="h-4 w-4" strokeWidth={1.5} />
               Eksporter rapport
             </button>
@@ -115,7 +115,7 @@ export default function TalentSammenlignToDemo() {
             vs
           </span>
           <PickerInput value="Anders Nedrum" />
-          <button className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-dashed border-border bg-background px-3.5 py-2 text-[12px] font-medium text-muted-foreground hover:bg-secondary">
+          <button className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-dashed border-border bg-background px-4 py-2 text-[12px] font-medium text-muted-foreground hover:bg-secondary">
             <Plus className="h-3.5 w-3.5" strokeWidth={1.5} />
             Tredje spiller
           </button>
@@ -126,7 +126,7 @@ export default function TalentSammenlignToDemo() {
           <PlayerCard player={MARKUS} />
 
           {/* DiffCenter */}
-          <section className="rounded-lg border border-border bg-secondary/40 p-5">
+          <section className="rounded-lg border border-border bg-secondary/40 p-6">
             <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               Diff · Markus minus Anders
             </div>
@@ -139,7 +139,7 @@ export default function TalentSammenlignToDemo() {
               {DIFFS.map((d) => (
                 <li
                   key={d.label}
-                  className={`rounded-md px-3 py-2 ${
+                  className={`rounded-md px-4 py-2 ${
                     d.tone === "pos"
                       ? "bg-primary/10 text-success"
                       : "bg-[#FBE4E4] text-destructive"
@@ -201,7 +201,7 @@ export default function TalentSammenlignToDemo() {
 
 function PickerInput({ value }: { value: string }) {
   return (
-    <div className="flex flex-1 items-center gap-2 rounded-md border border-input bg-background px-3 py-2 text-[13px]">
+    <div className="flex flex-1 items-center gap-2 rounded-md border border-input bg-background px-4 py-2 text-[13px]">
       <Search className="h-4 w-4 text-muted-foreground" strokeWidth={1.5} />
       <span className="text-foreground">{value}</span>
       <ArrowRight className="ml-auto h-4 w-4 text-muted-foreground" strokeWidth={1.5} />

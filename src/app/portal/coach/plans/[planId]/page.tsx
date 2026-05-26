@@ -224,7 +224,7 @@ export default async function CoachPlanDetalj({
         ) : undefined
       }
       kpiRow={
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           <KPICard
             eyebrow="Ferdige økter"
             value={`${fullført} / ${total}`}
@@ -421,7 +421,7 @@ export default async function CoachPlanDetalj({
               {kommende.map((s, i) => (
                 <li
                   key={s.id}
-                  className="grid grid-cols-[80px_1fr_auto] items-center gap-3 px-3 py-4 transition-colors hover:bg-secondary/60 sm:grid-cols-[120px_1fr_auto_auto] sm:gap-4 sm:px-4"
+                  className="grid grid-cols-[80px_1fr_auto] items-center gap-2 px-4 py-4 transition-colors hover:bg-secondary/60 sm:grid-cols-[120px_1fr_auto_auto] sm:gap-4 sm:px-4"
                 >
                   <span
                     className={`font-mono text-[11px] uppercase tracking-[0.08em] ${

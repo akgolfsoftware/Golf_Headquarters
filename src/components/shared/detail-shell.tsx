@@ -54,7 +54,7 @@ export function DetailShell({
 
       <header className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div className="space-y-2">
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2">
             <h1 className="font-display text-2xl font-bold leading-tight md:text-3xl">
               {title}
             </h1>
@@ -79,7 +79,7 @@ export function DetailShell({
 
       {stickyActions && (
         <div className="sticky bottom-0 -mx-4 mt-8 border-t border-border bg-background/80 px-4 py-4 pb-safe backdrop-blur md:-mx-6 md:px-6">
-          <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             {stickyActions}
           </div>
         </div>

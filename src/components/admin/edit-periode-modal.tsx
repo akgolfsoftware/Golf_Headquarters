@@ -136,14 +136,14 @@ export function EditPeriodeModal({
           </button>
         </header>
 
-        <div className="flex-1 space-y-6 overflow-y-auto px-6 py-5">
+        <div className="flex-1 space-y-6 overflow-y-auto px-6 py-6">
           <section className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Field label="Start">
               <input
                 type="date"
                 value={form.startDate}
                 onChange={(e) => update({ startDate: e.target.value })}
-                className="w-full rounded-md border border-border bg-card px-3 py-2 font-mono text-[12.5px] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
+                className="w-full rounded-md border border-border bg-card px-4 py-2 font-mono text-[12.5px] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
               />
             </Field>
             <Field label="Slutt">
@@ -151,7 +151,7 @@ export function EditPeriodeModal({
                 type="date"
                 value={form.endDate}
                 onChange={(e) => update({ endDate: e.target.value })}
-                className="w-full rounded-md border border-border bg-card px-3 py-2 font-mono text-[12.5px] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
+                className="w-full rounded-md border border-border bg-card px-4 py-2 font-mono text-[12.5px] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
               />
             </Field>
           </section>
@@ -161,13 +161,13 @@ export function EditPeriodeModal({
               rows={2}
               value={form.goal}
               onChange={(e) => update({ goal: e.target.value })}
-              className="w-full resize-y rounded-md border border-border bg-card px-3 py-2 text-[13px] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
+              className="w-full resize-y rounded-md border border-border bg-card px-4 py-2 text-[13px] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
               placeholder="Hva skal spilleren oppnå i denne perioden?"
             />
           </Field>
 
           <section>
-            <div className="mb-3 flex items-center justify-between">
+            <div className="mb-2 flex items-center justify-between">
               <div className="font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
                 Fokusfordeling
               </div>
@@ -187,7 +187,7 @@ export function EditPeriodeModal({
               {(Object.keys(FOKUS_LABELS) as FokusKey[]).map((k) => (
                 <div
                   key={k}
-                  className="grid grid-cols-[60px_1fr_56px] items-center gap-3"
+                  className="grid grid-cols-[60px_1fr_56px] items-center gap-2"
                 >
                   <div className="flex items-center gap-1.5">
                     <Target className="h-3 w-3 text-muted-foreground" />
@@ -223,7 +223,7 @@ export function EditPeriodeModal({
               rows={3}
               value={form.notes}
               onChange={(e) => update({ notes: e.target.value })}
-              className="w-full resize-y rounded-md border border-border bg-card px-3 py-2 text-[13px] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
+              className="w-full resize-y rounded-md border border-border bg-card px-4 py-2 text-[13px] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
               placeholder="Tilleggsnotater til perioden …"
             />
           </Field>
@@ -234,7 +234,7 @@ export function EditPeriodeModal({
             type="button"
             onClick={handle("delete")}
             disabled={!onDelete || busy !== null}
-            className="inline-flex items-center gap-2 rounded-md border border-destructive/40 px-3 py-2 text-[12.5px] font-medium text-destructive transition-colors hover:bg-destructive/10 disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-md border border-destructive/40 px-4 py-2 text-[12.5px] font-medium text-destructive transition-colors hover:bg-destructive/10 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Trash2 className="h-3.5 w-3.5" />
             Slett periode
@@ -244,7 +244,7 @@ export function EditPeriodeModal({
               type="button"
               onClick={onClose}
               disabled={busy !== null}
-              className="rounded-md px-3 py-2 text-[12.5px] font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-md px-4 py-2 text-[12.5px] font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
             >
               Avbryt
             </button>

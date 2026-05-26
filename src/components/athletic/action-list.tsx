@@ -22,7 +22,7 @@ export function ActionList({ items, variant = "on-dark", className }: ActionList
         <li
           key={item.key}
           className={cn(
-            "flex items-center gap-3 py-2",
+            "flex items-center gap-2 py-2",
             idx < items.length - 1 && (onDark ? "border-b border-white/10" : "border-b border-border"),
           )}
         >

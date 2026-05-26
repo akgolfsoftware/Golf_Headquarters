@@ -46,10 +46,10 @@ export function PyramidComparison({
   const ordered: PyramidValue["area"][] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
 
   return (
-    <div className={cn("rounded-2xl border border-border bg-card p-4 md:p-5", className)}>
-      <div className="mb-4 flex items-baseline justify-between gap-3">
+    <div className={cn("rounded-2xl border border-border bg-card p-4 md:p-6", className)}>
+      <div className="mb-4 flex items-baseline justify-between gap-2">
         <h3 className="font-display text-xl font-bold tracking-[-0.015em]">{title}</h3>
-        <div className="flex items-baseline gap-3 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
+        <div className="flex items-baseline gap-2 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
           <span>
             {labelA} <b className="text-foreground">{totalA}{unit}</b>
           </span>
@@ -60,7 +60,7 @@ export function PyramidComparison({
         </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2">
         {ordered.map((area) => {
           const va = valuesA.find((v) => v.area === area)?.value ?? 0;
           const vb = valuesB.find((v) => v.area === area)?.value ?? 0;
@@ -69,7 +69,7 @@ export function PyramidComparison({
           const delta = pctA - pctB;
           return (
             <div key={area} className="space-y-1">
-              <div className="flex items-baseline justify-between gap-3 text-[12px]">
+              <div className="flex items-baseline justify-between gap-2 text-[12px]">
                 <div className="flex items-center gap-2">
                   <span className="h-3 w-3 rounded-sm" style={{ backgroundColor: COLORS[area] }} />
                   <span className="font-display font-bold uppercase tracking-[0.04em]">

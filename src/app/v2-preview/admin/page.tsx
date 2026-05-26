@@ -105,7 +105,7 @@ function CoachSidebar() {
 
   return (
     <aside
-      className="sticky top-0 h-screen border-r border-border flex flex-col gap-2 px-4 py-5"
+      className="sticky top-0 h-screen border-r border-border flex flex-col gap-2 px-4 py-6"
       style={{
         background: "color-mix(in oklab, var(--background) 70%, var(--card))",
       }}
@@ -131,7 +131,7 @@ function CoachSidebar() {
       {/* Nav groups */}
       {COACH_NAV.map((group) => (
         <div key={group.group} className="flex flex-col gap-[2px] mt-1">
-          <div className="font-mono text-[10px] font-bold tracking-[0.14em] text-muted-foreground uppercase px-[10px] py-3">
+          <div className="font-mono text-[10px] font-bold tracking-[0.14em] text-muted-foreground uppercase px-[10px] py-2">
             {group.group}
           </div>
           {group.items.map((item) => {
@@ -224,7 +224,7 @@ function CoachHero() {
         {/* Top row */}
         <div className="flex items-center justify-between gap-2">
           <span
-            className="inline-flex items-center gap-[6px] px-3 py-[6px] rounded-full font-mono text-[10px] font-bold uppercase tracking-[0.12em]"
+            className="inline-flex items-center gap-[6px] px-4 py-[6px] rounded-full font-mono text-[10px] font-bold uppercase tracking-[0.12em]"
             style={{
               background: "color-mix(in oklab, var(--accent) 28%, rgba(0,0,0,0.4))",
               color: "var(--accent)",
@@ -503,7 +503,7 @@ export default function AdminHomeSamplePage() {
             WebkitBackdropFilter: "blur(12px)",
           }}
         >
-          <div className="flex items-center gap-2 px-6 py-3">
+          <div className="flex items-center gap-2 px-6 py-2">
             <div
               className="flex-1 flex items-center gap-[10px] px-[14px] py-2 rounded-[10px] text-muted-foreground text-[13px] border border-border max-w-[420px]"
               style={{ background: "var(--card)" }}
@@ -675,7 +675,7 @@ export default function AdminHomeSamplePage() {
               description="Elementer som krever din godkjenning eller handling."
               ghostNum="05"
             />
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2">
               {PENDING_ACTIONS.map((action) => {
                 const toneStyle =
                   action.tone === "critical"
@@ -745,7 +745,7 @@ export default function AdminHomeSamplePage() {
                     </div>
 
                     {/* Badge + arrow */}
-                    <div className="flex items-center gap-3 flex-shrink-0">
+                    <div className="flex items-center gap-2 flex-shrink-0">
                       <span
                         className="font-mono text-[11px] font-bold tabular rounded-full px-[10px] py-[4px]"
                         style={{

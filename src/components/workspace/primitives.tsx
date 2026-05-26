@@ -388,7 +388,7 @@ export function TaskRow({
         task.brenner
           ? "border-destructive/25 bg-destructive/[0.04]"
           : "border-border bg-card hover:bg-muted/30"
-      } ${dense ? "px-2.5 py-1.5" : "px-3 py-2.5"} ${task.done ? "opacity-55" : ""}`}
+      } ${dense ? "px-2.5 py-1.5" : "px-4 py-2.5"} ${task.done ? "opacity-55" : ""}`}
     >
       <TaskCheck done={task.done} onClick={onToggleDone} />
       <div
@@ -432,7 +432,7 @@ export function WorkspaceHero({
   }>;
 }) {
   return (
-    <header className="-mx-4 -mt-4 border-b border-border bg-gradient-to-b from-[#FBFAF5] to-background px-4 py-7 md:-mx-8 md:-mt-8 md:px-8">
+    <header className="-mx-4 -mt-4 border-b border-border bg-gradient-to-b from-[#FBFAF5] to-background px-4 py-8 md:-mx-8 md:-mt-8 md:px-8">
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
           <div className="font-mono text-[10.5px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
@@ -463,7 +463,7 @@ export function WorkspaceHero({
       </div>
       {kpis && kpis.length > 0 ? (
         <div
-          className="mt-6 grid gap-5 border-t border-border pt-5"
+          className="mt-6 grid gap-6 border-t border-border pt-6"
           style={{ gridTemplateColumns: `repeat(${kpis.length}, minmax(0, 1fr))` }}
         >
           {kpis.map((k, i) => (
@@ -507,7 +507,7 @@ export function WorkspaceTabs({
             href={t.href}
             role="tab"
             aria-selected={isActive}
-            className={`font-display -mb-px inline-flex items-center gap-2 border-b-[3px] px-4 py-3.5 text-[13px] font-semibold transition ${
+            className={`font-display -mb-px inline-flex items-center gap-2 border-b-[3px] px-4 py-4 text-[13px] font-semibold transition ${
               isActive
                 ? "border-accent text-foreground"
                 : "border-transparent text-muted-foreground hover:text-foreground"

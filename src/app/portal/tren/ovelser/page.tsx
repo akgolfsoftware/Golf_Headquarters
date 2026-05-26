@@ -68,7 +68,7 @@ export default async function OvelserPage({
           Trening
         </Link>
 
-        <div className="mx-3 rounded-[18px] bg-primary px-5 py-4">
+        <div className="mx-2 rounded-[18px] bg-primary px-6 py-4">
           <p className="font-mono text-[9.5px] font-semibold uppercase tracking-[0.16em] text-primary-foreground/65">
             PlayerHQ · Trening
           </p>
@@ -79,12 +79,12 @@ export default async function OvelserPage({
       </div>
 
       {/* Søkefelt */}
-      <div className="relative mx-3 mb-4">
+      <div className="relative mx-2 mb-4">
         <Search
           size={14}
           className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
         />
-        <div className="flex min-h-11 w-full items-center rounded-xl bg-secondary/70 pl-9 pr-4 text-[13px] text-muted-foreground">
+        <div className="flex min-h-11 w-full items-center rounded-xl bg-secondary/70 pl-8 pr-4 text-[13px] text-muted-foreground">
           Søk i øvelser...
         </div>
       </div>
@@ -100,7 +100,7 @@ export default async function OvelserPage({
             <Link
               key={t.value}
               href={href}
-              className={`flex min-h-11 flex-1 items-center justify-center py-3 text-center text-[13px] font-medium transition-colors ${
+              className={`flex min-h-11 flex-1 items-center justify-center py-2 text-center text-[13px] font-medium transition-colors ${
                 aktiv
                   ? "border-b-2 border-primary font-bold text-primary"
                   : "text-muted-foreground hover:text-foreground"
@@ -235,7 +235,7 @@ function OvelseKort({
             : "border-border bg-card"
       }`}
     >
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
           <p className="truncate text-[14px] font-semibold text-foreground">
             {exercise.name}

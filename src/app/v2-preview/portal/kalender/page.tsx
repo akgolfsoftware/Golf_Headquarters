@@ -97,7 +97,7 @@ function DayHeader({ day, sessionCount }: { day: string; sessionCount: number })
   const color = DAY_TONE[day] ?? "var(--foreground)";
   return (
     <div
-      className="flex items-baseline gap-3 pb-3 mb-3"
+      className="flex items-baseline gap-2 pb-2 mb-2"
       style={{ borderBottom: "1px solid var(--border)" }}
     >
       <span
@@ -322,7 +322,7 @@ export default function KalenderSamplePage() {
 
             {/* Uke 23-agenda-rader */}
             <div>
-              <span className="eyebrow eyebrow-w-strek mb-3 block">Planlagte økter uke 23</span>
+              <span className="eyebrow eyebrow-w-strek mb-2 block">Planlagte økter uke 23</span>
               <div className="flex flex-col gap-2">
                 {[
                   { day: "Tir 02.6", axis: "FYS", title: "Restitusjon + mobilitet" },
@@ -334,7 +334,7 @@ export default function KalenderSamplePage() {
                 ].map((item) => (
                   <div
                     key={item.day}
-                    className="flex items-center gap-4 rounded-xl border border-border px-4 py-3"
+                    className="flex items-center gap-4 rounded-xl border border-border px-4 py-2"
                     style={{ background: "var(--card)" }}
                   >
                     <span
@@ -365,7 +365,7 @@ export default function KalenderSamplePage() {
 
             {/* Check: bekreftet av coach */}
             <div
-              className="flex items-center gap-3 rounded-xl px-4 py-3"
+              className="flex items-center gap-2 rounded-xl px-4 py-2"
               style={{
                 background: "color-mix(in oklab, var(--primary) 10%, transparent)",
                 border: "1px solid color-mix(in oklab, var(--primary) 25%, transparent)",
@@ -390,7 +390,7 @@ export default function KalenderSamplePage() {
           <span className="font-mono text-[11px] text-muted-foreground uppercase tracking-[0.10em] sm:mr-4">
             Planlegg ny økt eller se hele måneden
           </span>
-          <div className="flex gap-3 flex-wrap justify-center">
+          <div className="flex gap-2 flex-wrap justify-center">
             <Link
               href="/v2-preview/portal/gjennomfore"
               className="inline-flex items-center gap-2 rounded-full font-mono text-[12px] font-bold uppercase tracking-[0.10em] no-underline"

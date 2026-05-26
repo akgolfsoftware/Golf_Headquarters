@@ -51,7 +51,7 @@ export async function PlanSplitView({
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-[320px_1fr]">
       {/* Sidebar */}
-      <aside className="flex flex-col gap-2.5 rounded-2xl border border-border bg-background p-3.5">
+      <aside className="flex flex-col gap-2.5 rounded-2xl border border-border bg-background p-4">
         <header className="flex items-center justify-between border-b border-border pb-2">
           <h3 className="font-display text-sm font-semibold text-foreground">
             Alle planer
@@ -193,7 +193,7 @@ function SplitDetail({ plan }: { plan: DetailPlan }) {
             {faser.map((f, idx) => (
               <li
                 key={f.key}
-                className={`flex items-center gap-3 rounded-md border border-border p-3 ${
+                className={`flex items-center gap-2 rounded-md border border-border p-4 ${
                   f.status === "current" ? "bg-secondary" : "bg-card"
                 }`}
               >
@@ -246,7 +246,7 @@ function SplitDetail({ plan }: { plan: DetailPlan }) {
                 return (
                   <li
                     key={s.id}
-                    className="flex items-center gap-3 px-3 py-2.5"
+                    className="flex items-center gap-2 px-4 py-2.5"
                   >
                     <span className="w-16 font-mono text-[11px] text-muted-foreground">
                       {NB_SHORT.format(s.scheduledAt)}
@@ -280,7 +280,7 @@ function MiniKpi({
   sub?: string;
 }) {
   return (
-    <div className="flex flex-col gap-1 rounded-md border border-border bg-background p-3">
+    <div className="flex flex-col gap-1 rounded-md border border-border bg-background p-4">
       <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
         {label}
       </div>

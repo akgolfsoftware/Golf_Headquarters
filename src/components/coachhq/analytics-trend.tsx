@@ -322,7 +322,7 @@ function StackedArea({ weeks }: { weeks: TrendWeek[] }) {
 
 function Legend() {
   return (
-    <div className="mt-3 flex flex-wrap items-center gap-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+    <div className="mt-2 flex flex-wrap items-center gap-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
       {AREA_KEYS.map((k) => (
         <span key={k} className="inline-flex items-center gap-1.5">
           <span

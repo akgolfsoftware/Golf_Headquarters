@@ -147,7 +147,7 @@ export function AnalyseKrysstabell({
   return (
     <div className="space-y-4">
       {/* Kontroller */}
-      <section className="rounded-lg border border-border bg-card p-5">
+      <section className="rounded-lg border border-border bg-card p-6">
         <h2 className="font-display text-lg font-semibold">
           Krysstabuler dimensjoner
         </h2>
@@ -164,7 +164,7 @@ export function AnalyseKrysstabell({
                 type="button"
                 onClick={() => oppdater(p.dim1, p.dim2)}
                 disabled={pending}
-                className={`rounded-full border px-3 py-1.5 text-xs transition ${
+                className={`rounded-full border px-4 py-1.5 text-xs transition ${
                   aktiv
                     ? "border-primary bg-primary text-primary-foreground"
                     : "border-border bg-background text-foreground hover:border-primary/40"
@@ -176,7 +176,7 @@ export function AnalyseKrysstabell({
           })}
         </div>
 
-        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
+        <div className="mt-4 grid grid-cols-1 gap-2 md:grid-cols-2">
           <label className="text-sm">
             <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">
               Rader
@@ -185,7 +185,7 @@ export function AnalyseKrysstabell({
               value={dim1}
               onChange={(e) => oppdater(e.target.value as Dimensjon, dim2)}
               disabled={pending}
-              className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+              className="mt-1 w-full rounded-md border border-input bg-background px-4 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
             >
               {Object.entries(DIM_LABELS).map(([k, l]) => (
                 <option key={k} value={k}>
@@ -202,7 +202,7 @@ export function AnalyseKrysstabell({
               value={dim2}
               onChange={(e) => oppdater(dim1, e.target.value as Dimensjon)}
               disabled={pending}
-              className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+              className="mt-1 w-full rounded-md border border-input bg-background px-4 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
             >
               {Object.entries(DIM_LABELS).map(([k, l]) => (
                 <option key={k} value={k}>
@@ -215,18 +215,18 @@ export function AnalyseKrysstabell({
       </section>
 
       {/* Tabell */}
-      <section className="rounded-lg border border-border bg-card p-5">
+      <section className="rounded-lg border border-border bg-card p-6">
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-sm">
             <thead>
               <tr>
-                <th className="border-b border-border bg-muted px-3 py-2 text-left font-mono text-[10px] uppercase tracking-[0.05em] text-muted-foreground">
+                <th className="border-b border-border bg-muted px-4 py-2 text-left font-mono text-[10px] uppercase tracking-[0.05em] text-muted-foreground">
                   Rad \ Kolonne
                 </th>
                 {data.kolonner.map((k) => (
                   <th
                     key={k}
-                    className="border-b border-border bg-muted px-3 py-2 text-right font-mono text-[10px] uppercase tracking-[0.05em] text-muted-foreground"
+                    className="border-b border-border bg-muted px-4 py-2 text-right font-mono text-[10px] uppercase tracking-[0.05em] text-muted-foreground"
                   >
                     {k}
                   </th>
@@ -238,7 +238,7 @@ export function AnalyseKrysstabell({
                 <tr key={r}>
                   <th
                     scope="row"
-                    className="border-b border-border px-3 py-2 text-left text-sm text-foreground"
+                    className="border-b border-border px-4 py-2 text-left text-sm text-foreground"
                   >
                     {r}
                   </th>
@@ -255,7 +255,7 @@ export function AnalyseKrysstabell({
                           type="button"
                           onClick={() => min > 0 && klikkCelle(r, k)}
                           disabled={min === 0}
-                          className={`block w-full px-3 py-2 text-right font-mono text-sm tabular-nums transition ${
+                          className={`block w-full px-4 py-2 text-right font-mono text-sm tabular-nums transition ${
                             min === 0
                               ? "text-muted-foreground/40"
                               : "text-foreground hover:bg-foreground/5"
@@ -271,7 +271,7 @@ export function AnalyseKrysstabell({
             </tbody>
           </table>
         </div>
-        <p className="mt-3 text-xs text-muted-foreground">
+        <p className="mt-2 text-xs text-muted-foreground">
           Total: {data.totalMinutter} min. Klikk en celle for å se hvilke økter
           som ligger bak.
         </p>
@@ -284,7 +284,7 @@ export function AnalyseKrysstabell({
           aria-modal="true"
           className="fixed inset-y-0 right-0 z-50 w-full max-w-md overflow-y-auto border-l border-border bg-background shadow-2xl"
         >
-          <div className="flex items-center justify-between border-b border-border px-5 py-4">
+          <div className="flex items-center justify-between border-b border-border px-6 py-4">
             <div>
               <div className="font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">
                 Krysscelle
@@ -302,7 +302,7 @@ export function AnalyseKrysstabell({
               <X className="h-5 w-5" strokeWidth={1.5} />
             </button>
           </div>
-          <div className="px-5 py-4">
+          <div className="px-6 py-4">
             {lasterCelle ? (
               <p className="text-sm text-muted-foreground">Henter økter ...</p>
             ) : celleSesjoner.length === 0 ? (
@@ -314,7 +314,7 @@ export function AnalyseKrysstabell({
                 {celleSesjoner.map((s) => (
                   <li
                     key={s.id}
-                    className="rounded-md border border-border bg-card p-3"
+                    className="rounded-md border border-border bg-card p-4"
                   >
                     <div className="text-sm font-medium text-foreground">
                       {s.title}

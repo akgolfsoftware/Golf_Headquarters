@@ -33,7 +33,7 @@ export async function AdminShell({
       <div className="flex min-w-0 flex-1 flex-col">
         <header
           role="banner"
-          className="sticky top-0 z-30 flex h-14 items-center justify-between gap-2 border-b border-border bg-card px-3 sm:h-auto sm:gap-4 sm:px-8 sm:py-4"
+          className="sticky top-0 z-30 flex h-14 items-center justify-between gap-2 border-b border-border bg-card px-4 sm:h-auto sm:gap-4 sm:px-8 sm:py-4"
         >
           <div className="flex min-w-0 items-center gap-2 sm:gap-4">
             <AdminMobileDrawer />

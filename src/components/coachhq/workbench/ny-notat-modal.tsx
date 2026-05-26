@@ -266,7 +266,7 @@ export function NyNotatModal({
         </Felt>
 
         <Felt label="Tags" hint={`${tags.length}/${MAX_TAGS}`}>
-          <div className="rounded-md border border-input bg-card px-3 py-2">
+          <div className="rounded-md border border-input bg-card px-4 py-2">
             <div className="flex flex-wrap items-center gap-1.5">
               {tags.map((tag) => (
                 <span
@@ -307,7 +307,7 @@ export function NyNotatModal({
         </Felt>
 
         <Felt label="Synlighet">
-          <div className="flex items-center justify-between rounded-md border border-input bg-card px-3 py-3">
+          <div className="flex items-center justify-between rounded-md border border-input bg-card px-4 py-2">
             <div className="min-w-0">
               <div className="text-sm font-medium text-foreground">
                 {isPrivate ? "Privat" : "Synlig for spiller"}
@@ -330,7 +330,7 @@ export function NyNotatModal({
         {feil && (
           <div
             role="alert"
-            className="rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive"
+            className="rounded-md border border-destructive/30 bg-destructive/5 px-4 py-2 text-sm text-destructive"
           >
             {feil}
           </div>

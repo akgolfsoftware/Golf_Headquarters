@@ -48,7 +48,7 @@ export function TestDetailClient({
 
       {/* Coach-notater */}
       <section className="overflow-hidden rounded-lg border border-border bg-card">
-        <header className="flex items-center justify-between border-b border-border bg-secondary/40 px-4 py-3">
+        <header className="flex items-center justify-between border-b border-border bg-secondary/40 px-4 py-2">
           <div>
             <h2 className="font-display text-base font-semibold tracking-tight">
               Coach-notater
@@ -61,7 +61,7 @@ export function TestDetailClient({
             <button
               type="button"
               onClick={() => setRedigerer(true)}
-              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-[12px] font-medium text-foreground transition-colors hover:border-primary hover:text-primary"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-1.5 text-[12px] font-medium text-foreground transition-colors hover:border-primary hover:text-primary"
             >
               <Pencil size={12} strokeWidth={1.75} />
               Rediger
@@ -74,7 +74,7 @@ export function TestDetailClient({
                   setRedigerer(false);
                   setNotater(coachNotes ?? "");
                 }}
-                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-[12px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-1.5 text-[12px] font-medium text-muted-foreground transition-colors hover:text-foreground"
               >
                 <X size={12} strokeWidth={1.75} />
                 Avbryt
@@ -82,7 +82,7 @@ export function TestDetailClient({
               <button
                 type="button"
                 onClick={() => setRedigerer(false)}
-                className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-[12px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
+                className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-[12px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
               >
                 <Save size={12} strokeWidth={1.75} />
                 Lagre
@@ -97,7 +97,7 @@ export function TestDetailClient({
               onChange={(e) => setNotater(e.target.value)}
               rows={4}
               placeholder="Skriv en kort observasjon — fokus-områder, protokoll-avvik, neste steg…"
-              className="w-full resize-none rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground focus:border-primary"
+              className="w-full resize-none rounded-md border border-border bg-background px-4 py-2 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground focus:border-primary"
             />
           ) : (
             <p className="text-sm text-muted-foreground">
@@ -159,7 +159,7 @@ function TrendChart({
 
   return (
     <section className="overflow-hidden rounded-lg border border-border bg-card">
-      <header className="flex items-baseline justify-between border-b border-border bg-secondary/40 px-4 py-3">
+      <header className="flex items-baseline justify-between border-b border-border bg-secondary/40 px-4 py-2">
         <div>
           <h2 className="font-display text-base font-semibold tracking-tight">
             Trend · {points.length} målinger
@@ -168,7 +168,7 @@ function TrendChart({
             Mørk linje = spiller · stiplet = kategori-snitt + elite
           </p>
         </div>
-        <div className="flex flex-wrap gap-3 font-mono text-[10px] uppercase tracking-[0.04em] text-muted-foreground">
+        <div className="flex flex-wrap gap-2 font-mono text-[10px] uppercase tracking-[0.04em] text-muted-foreground">
           <span className="flex items-center gap-1.5">
             <span className="h-0.5 w-4 bg-primary" />
             Måling
@@ -376,7 +376,7 @@ function BenchmarkScale({
           <Pin value={current.score} label="Spiller" pct={pct(current.score)} highlight />
           <Pin value={benchmark.elite} label="Elite" pct={pct(benchmark.elite)} />
         </div>
-        <div className="mt-3 flex justify-between font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
+        <div className="mt-2 flex justify-between font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
           <span>{minScale.toFixed(0)}</span>
           <span>{maxScale.toFixed(0)}</span>
         </div>
@@ -433,7 +433,7 @@ function Historikk({ points }: { points: TestPoint[] }) {
 
   return (
     <section className="overflow-hidden rounded-lg border border-border bg-card">
-      <header className="flex items-baseline justify-between border-b border-border bg-secondary/40 px-4 py-3">
+      <header className="flex items-baseline justify-between border-b border-border bg-secondary/40 px-4 py-2">
         <h2 className="font-display text-base font-semibold tracking-tight">
           Historikk · alle målinger
         </h2>
@@ -448,7 +448,7 @@ function Historikk({ points }: { points: TestPoint[] }) {
           return (
             <li
               key={p.id}
-              className={`grid grid-cols-[110px_100px_100px_1fr] items-center gap-4 px-4 py-3 ${
+              className={`grid grid-cols-[110px_100px_100px_1fr] items-center gap-4 px-4 py-2 ${
                 p.isCurrent ? "bg-accent/10" : ""
               }`}
             >

@@ -217,7 +217,7 @@ export function TemplateEditor({
           type="button"
           onClick={onSaveSettings}
           disabled={isPending}
-          className="inline-flex h-11 items-center gap-2 rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
+          className="inline-flex h-11 items-center gap-2 rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
         >
           <Save className="h-4 w-4" strokeWidth={1.75} />
           Lagre innstillinger
@@ -227,10 +227,10 @@ export function TemplateEditor({
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr_280px]">
         {/* Venstre: drill-bibliotek */}
         <aside className="order-2 rounded-2xl border border-border bg-card p-4 lg:order-1">
-          <div className="mb-3 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">
+          <div className="mb-2 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">
             Drill-bibliotek ({drillOptions.length})
           </div>
-          <div className="relative mb-3">
+          <div className="relative mb-2">
             <Search
               className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground"
               strokeWidth={1.75}
@@ -241,7 +241,7 @@ export function TemplateEditor({
               onChange={(e) => setDrillSok(e.target.value)}
               placeholder="Søk drill"
               aria-label="Søk drill"
-              className="h-9 w-full rounded-md border border-input bg-card pl-8 pr-3 text-xs focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+              className="h-9 w-full rounded-md border border-input bg-card pl-8 pr-4 text-xs focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
             />
           </div>
           <p className="mb-2 text-[10px] text-muted-foreground">
@@ -346,10 +346,10 @@ export function TemplateEditor({
 
         {/* Høyre: innstillinger */}
         <aside className="order-3 rounded-2xl border border-border bg-card p-4">
-          <div className="mb-3 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">
+          <div className="mb-2 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">
             Innstillinger
           </div>
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2">
             <FieldText label="Navn" value={name} onChange={setName} />
             <FieldTextarea
               label="Beskrivelse"
@@ -516,7 +516,7 @@ function FieldText({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="h-9 rounded-md border border-input bg-card px-3 text-xs focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+        className="h-9 rounded-md border border-input bg-card px-4 text-xs focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
       />
     </label>
   );
@@ -542,7 +542,7 @@ function FieldTextarea({
         rows={rows}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="rounded-md border border-input bg-card px-3 py-2 text-xs focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+        className="rounded-md border border-input bg-card px-4 py-2 text-xs focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
       />
     </label>
   );
@@ -572,7 +572,7 @@ function FieldNumber({
         min={min}
         max={max}
         onChange={(e) => onChange(parseInt(e.target.value || "0", 10))}
-        className="h-9 rounded-md border border-input bg-card px-3 text-xs focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+        className="h-9 rounded-md border border-input bg-card px-4 text-xs focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
       />
     </label>
   );
@@ -735,7 +735,7 @@ function SessionEditModal({
           </button>
         </div>
 
-        <div className="mt-4 grid grid-cols-2 gap-3">
+        <div className="mt-4 grid grid-cols-2 gap-2">
           <FieldNumber
             label="Uke"
             value={ukeNr}
@@ -754,11 +754,11 @@ function SessionEditModal({
           />
         </div>
 
-        <div className="mt-3">
+        <div className="mt-2">
           <FieldText label="Tittel" value={title} onChange={setTitle} />
         </div>
 
-        <div className="mt-3 grid grid-cols-2 gap-3">
+        <div className="mt-2 grid grid-cols-2 gap-2">
           <FieldNumber
             label="Varighet (min)"
             value={varighetMin}
@@ -774,7 +774,7 @@ function SessionEditModal({
           />
         </div>
 
-        <div className="mt-3 grid grid-cols-2 gap-3">
+        <div className="mt-2 grid grid-cols-2 gap-2">
           <FieldSelect
             label="Skill-area"
             value={skillArea}
@@ -792,11 +792,11 @@ function SessionEditModal({
           />
         </div>
 
-        <div className="mt-3">
+        <div className="mt-2">
           <FieldText label="Fokus" value={focus} onChange={setFocus} />
         </div>
 
-        <div className="mt-3">
+        <div className="mt-2">
           <FieldTextarea
             label="Notater"
             value={notes}
@@ -880,7 +880,7 @@ function SessionEditModal({
           </ul>
 
           {/* Drill-picker */}
-          <div className="mt-3 rounded-md border border-border bg-background/30 p-2">
+          <div className="mt-2 rounded-md border border-border bg-background/30 p-2">
             <div className="relative mb-2">
               <Search
                 className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground"
@@ -892,7 +892,7 @@ function SessionEditModal({
                 onChange={(e) => setDrillSok(e.target.value)}
                 placeholder="Søk drill å legge til"
                 aria-label="Søk drill å legge til"
-                className="h-9 w-full rounded-md border border-input bg-card pl-8 pr-3 text-xs"
+                className="h-9 w-full rounded-md border border-input bg-card pl-8 pr-4 text-xs"
               />
             </div>
             <ul className="max-h-40 space-y-1 overflow-y-auto">

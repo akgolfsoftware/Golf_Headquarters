@@ -93,7 +93,7 @@ export function CoachKeyMetrics({
   return (
     <div
       className={cn(
-        "grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4",
+        "grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-4",
         className,
       )}
     >
@@ -188,7 +188,7 @@ function MetricCard({
     <Link
       href={href}
       className={cn(
-        "group rounded-2xl border border-border bg-card p-4 transition-all md:p-5",
+        "group rounded-2xl border border-border bg-card p-4 transition-all md:p-6",
         "hover:border-foreground/20 hover:shadow-sm",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
       )}

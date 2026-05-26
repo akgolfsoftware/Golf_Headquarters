@@ -91,7 +91,7 @@ export function EnrollmentPanel({
   return (
     <section className="mb-4 rounded-lg border border-border bg-card">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-border px-4 py-3">
+      <div className="flex items-center justify-between border-b border-border px-4 py-2">
         <div>
           <h2 className="font-display text-[14px] font-semibold text-foreground">
             Program-tilhørighet
@@ -102,7 +102,7 @@ export function EnrollmentPanel({
         </div>
         <button
           onClick={() => setShowForm((v) => !v)}
-          className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 font-mono text-[11px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+          className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 font-mono text-[11px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
         >
           <Plus size={12} strokeWidth={2} />
           Legg til
@@ -112,7 +112,7 @@ export function EnrollmentPanel({
       {/* Legg-til-skjema */}
       {showForm && (
         <div className="border-b border-border bg-secondary/30 px-4 py-4">
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
             <div>
               <label className="mb-1 block font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
                 Program
@@ -120,7 +120,7 @@ export function EnrollmentPanel({
               <select
                 value={selectedProgram}
                 onChange={(e) => setSelectedProgram(e.target.value as PlayerProgram)}
-                className="w-full rounded-md border border-border bg-card px-3 py-2 text-[13px] text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+                className="w-full rounded-md border border-border bg-card px-4 py-2 text-[13px] text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
               >
                 {ALL_PROGRAMS.map((p) => (
                   <option key={p} value={p}>
@@ -138,7 +138,7 @@ export function EnrollmentPanel({
                 <select
                   value={selectedCoach}
                   onChange={(e) => setSelectedCoach(e.target.value)}
-                  className="w-full rounded-md border border-border bg-card px-3 py-2 text-[13px] text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+                  className="w-full rounded-md border border-border bg-card px-4 py-2 text-[13px] text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
                 >
                   {coaches.map((c) => (
                     <option key={c.id} value={c.id}>
@@ -158,12 +158,12 @@ export function EnrollmentPanel({
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="f.eks. Høst 2026"
-                className="w-full rounded-md border border-border bg-card px-3 py-2 text-[13px] text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground"
+                className="w-full rounded-md border border-border bg-card px-4 py-2 text-[13px] text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground"
               />
             </div>
           </div>
 
-          <div className="mt-3 flex gap-2">
+          <div className="mt-2 flex gap-2">
             <button
               onClick={handleAdd}
               disabled={isPending}
@@ -189,8 +189,8 @@ export function EnrollmentPanel({
       ) : (
         <ul className="divide-y divide-border">
           {active.map((e) => (
-            <li key={e.id} className="flex items-center justify-between gap-4 px-4 py-3">
-              <div className="flex items-center gap-3">
+            <li key={e.id} className="flex items-center justify-between gap-4 px-4 py-2">
+              <div className="flex items-center gap-2">
                 <span className="h-2 w-2 rounded-full bg-primary" aria-label="Aktiv" />
                 <div>
                   <div className="font-medium text-[13px] text-foreground">
@@ -225,7 +225,7 @@ export function EnrollmentPanel({
           </summary>
           <ul className="divide-y divide-border">
             {historical.map((e) => (
-              <li key={e.id} className="flex items-center gap-3 px-4 py-3 opacity-60">
+              <li key={e.id} className="flex items-center gap-2 px-4 py-2 opacity-60">
                 <span className="h-2 w-2 rounded-full bg-muted-foreground" aria-label="Avsluttet" />
                 <div>
                   <div className="font-medium text-[13px] text-foreground">

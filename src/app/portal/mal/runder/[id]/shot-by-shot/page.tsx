@@ -139,10 +139,10 @@ export default async function RundeShotByShotPage({
             <WeatherPill Icon={Wind} label="Vind 4 m/s" />
           </div>
           <div className="flex gap-2">
-            <span className="rounded-full bg-secondary px-3 py-1 text-xs font-medium">
+            <span className="rounded-full bg-secondary px-4 py-1 text-xs font-medium">
               Tim
             </span>
-            <span className="rounded-full bg-secondary px-3 py-1 text-xs font-medium">
+            <span className="rounded-full bg-secondary px-4 py-1 text-xs font-medium">
               Espen
             </span>
           </div>
@@ -164,7 +164,7 @@ export default async function RundeShotByShotPage({
           <table className="min-w-full font-mono text-xs">
             <thead className="bg-muted/40">
               <tr>
-                <th className="px-3 py-2 text-left font-semibold uppercase tracking-[0.06em] text-muted-foreground">
+                <th className="px-4 py-2 text-left font-semibold uppercase tracking-[0.06em] text-muted-foreground">
                   Hull
                 </th>
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((h) => (
@@ -172,7 +172,7 @@ export default async function RundeShotByShotPage({
                     {h}
                   </th>
                 ))}
-                <th className="px-3 py-2 text-center font-semibold text-muted-foreground">
+                <th className="px-4 py-2 text-center font-semibold text-muted-foreground">
                   Ut
                 </th>
               </tr>
@@ -184,13 +184,13 @@ export default async function RundeShotByShotPage({
               <RowYN label="GIR" values={FRONT_GIR} sumLabel="8/9" />
               <RowBasic label="Putts" values={FRONT_PUTTS} sum={15} />
               <tr className="bg-muted/30">
-                <td colSpan={11} className="px-3 py-2 text-center font-semibold">
+                <td colSpan={11} className="px-4 py-2 text-center font-semibold">
                   Front 9 — Score <strong>33</strong> · Par 36 ·{" "}
                   <strong className="text-primary">−3</strong>
                 </td>
               </tr>
               <tr>
-                <td className="px-3 py-2 text-left font-semibold uppercase tracking-[0.06em] text-muted-foreground">
+                <td className="px-4 py-2 text-left font-semibold uppercase tracking-[0.06em] text-muted-foreground">
                   Hull
                 </td>
                 {[10, 11, 12, 13, 14, 15, 16, 17, 18].map((h) => (
@@ -198,7 +198,7 @@ export default async function RundeShotByShotPage({
                     {h}
                   </td>
                 ))}
-                <td className="px-3 py-2 text-center font-semibold text-muted-foreground">
+                <td className="px-4 py-2 text-center font-semibold text-muted-foreground">
                   Inn
                 </td>
               </tr>
@@ -208,7 +208,7 @@ export default async function RundeShotByShotPage({
               <RowYN label="GIR" values={BACK_GIR} sumLabel="6/9" />
               <RowBasic label="Putts" values={BACK_PUTTS} sum={15} />
               <tr className="bg-muted/30">
-                <td colSpan={11} className="px-3 py-3 text-center font-semibold">
+                <td colSpan={11} className="px-4 py-2 text-center font-semibold">
                   Total — Score <strong>{round.score}</strong> · Par{" "}
                   {round.course.par} ·{" "}
                   <strong className="text-primary">
@@ -224,7 +224,7 @@ export default async function RundeShotByShotPage({
 
       {/* Charts */}
       <section>
-        <div className="mb-3">
+        <div className="mb-2">
           <h2 className="font-display text-xl font-semibold tracking-tight">
             Trend gjennom runden
           </h2>
@@ -342,7 +342,7 @@ export default async function RundeShotByShotPage({
       {/* Compare link */}
       <Link
         href={`/portal/mal/runder?bane=${round.courseId}`}
-        className="flex items-center gap-4 rounded-2xl border border-border bg-card p-5 transition-colors hover:bg-muted/30"
+        className="flex items-center gap-4 rounded-2xl border border-border bg-card p-6 transition-colors hover:bg-muted/30"
       >
         <div className="flex h-11 w-11 items-center justify-center rounded-md bg-primary/10 text-primary">
           <BarChart3 size={18} strokeWidth={1.75} />
@@ -433,7 +433,7 @@ function WeatherPill({
   label: string;
 }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground">
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-1 text-xs text-muted-foreground">
       <Icon size={11} strokeWidth={1.75} />
       {label}
     </span>
@@ -451,7 +451,7 @@ function RowBasic({
 }) {
   return (
     <tr>
-      <td className="px-3 py-2 text-left font-semibold uppercase tracking-[0.06em] text-muted-foreground">
+      <td className="px-4 py-2 text-left font-semibold uppercase tracking-[0.06em] text-muted-foreground">
         {label}
       </td>
       {values.map((v, i) => (
@@ -459,7 +459,7 @@ function RowBasic({
           {v}
         </td>
       ))}
-      <td className="px-3 py-2 text-center font-bold tabular-nums">{sum}</td>
+      <td className="px-4 py-2 text-center font-bold tabular-nums">{sum}</td>
     </tr>
   );
 }
@@ -477,7 +477,7 @@ function RowScore({
 }) {
   return (
     <tr>
-      <td className="px-3 py-2 text-left font-semibold uppercase tracking-[0.06em] text-muted-foreground">
+      <td className="px-4 py-2 text-left font-semibold uppercase tracking-[0.06em] text-muted-foreground">
         {label}
       </td>
       {scores.map((s, i) => {
@@ -500,7 +500,7 @@ function RowScore({
           </td>
         );
       })}
-      <td className="px-3 py-2 text-center font-bold tabular-nums">{sum}</td>
+      <td className="px-4 py-2 text-center font-bold tabular-nums">{sum}</td>
     </tr>
   );
 }
@@ -516,7 +516,7 @@ function RowYN({
 }) {
   return (
     <tr>
-      <td className="px-3 py-2 text-left font-semibold uppercase tracking-[0.06em] text-muted-foreground">
+      <td className="px-4 py-2 text-left font-semibold uppercase tracking-[0.06em] text-muted-foreground">
         {label}
       </td>
       {values.map((v, i) => (
@@ -526,7 +526,7 @@ function RowYN({
           {v === "—" && <Minus className="mx-auto h-4 w-4 text-muted-foreground" strokeWidth={2} aria-hidden />}
         </td>
       ))}
-      <td className="px-3 py-2 text-center font-bold tabular-nums">{sumLabel}</td>
+      <td className="px-4 py-2 text-center font-bold tabular-nums">{sumLabel}</td>
     </tr>
   );
 }
@@ -568,11 +568,11 @@ function NoteCard({
 }) {
   return (
     <div
-      className={`rounded-2xl border p-5 ${
+      className={`rounded-2xl border p-6 ${
         coach ? "border-primary/30 bg-primary/[0.04]" : "border-border bg-card"
       }`}
     >
-      <div className="mb-3 flex items-center gap-3">
+      <div className="mb-2 flex items-center gap-2">
         <div
           className={`flex h-9 w-9 items-center justify-center rounded-full font-mono text-xs font-bold ${
             coach

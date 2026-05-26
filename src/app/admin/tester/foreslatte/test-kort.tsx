@@ -122,10 +122,10 @@ export function ForeslattTestKort({ test }: { test: Test }) {
       </div>
 
       {test.description && (
-        <p className="mt-3 text-sm text-muted-foreground">{test.description}</p>
+        <p className="mt-2 text-sm text-muted-foreground">{test.description}</p>
       )}
 
-      <dl className="mt-4 space-y-3 text-sm">
+      <dl className="mt-4 space-y-2 text-sm">
         <div>
           <dt className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             Scoring

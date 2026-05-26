@@ -69,7 +69,7 @@ export function AnleggGrid({ anlegg }: { anlegg: AnleggKort[] }) {
           </div>
 
           {/* Body */}
-          <div className="space-y-4 p-5">
+          <div className="space-y-4 p-6">
             <div>
               <div className="mb-1.5 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                 Fasiliteter ({a.fasiliteter.length})
@@ -91,7 +91,7 @@ export function AnleggGrid({ anlegg }: { anlegg: AnleggKort[] }) {
               </div>
             </div>
 
-            <div className="border-t border-border pt-3">
+            <div className="border-t border-border pt-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                   <Activity size={10} />
@@ -123,9 +123,9 @@ export function AnleggGrid({ anlegg }: { anlegg: AnleggKort[] }) {
       {/* + Nytt anlegg-CTA */}
       <Link
         href="/admin/locations"
-        className="flex min-h-[320px] flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border bg-card/40 text-muted-foreground transition hover:border-primary/50 hover:bg-card hover:text-foreground"
+        className="flex min-h-[320px] flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-border bg-card/40 text-muted-foreground transition hover:border-primary/50 hover:bg-card hover:text-foreground"
       >
-        <span className="rounded-full bg-primary p-3 text-primary-foreground">
+        <span className="rounded-full bg-primary p-4 text-primary-foreground">
           <Plus size={20} />
         </span>
         <span className="font-display text-base font-semibold">Nytt anlegg</span>

@@ -13,14 +13,12 @@ import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import {
   ArrowLeft,
-  Calendar,
   ChevronRight,
   Clock,
   CreditCard,
   MapPin,
   Shield,
   Star,
-  Users,
   Zap,
 } from "lucide-react";
 
@@ -174,7 +172,7 @@ export default async function BookingCoachPage({ params }: Props) {
       </Link>
 
       {/* HERO */}
-      <section className="rounded-2xl border border-border bg-card p-5 sm:p-7">
+      <section className="rounded-2xl border border-border bg-card p-6 sm:p-8">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[auto_1fr_auto] lg:items-start">
           <div className="grid h-20 w-20 place-items-center rounded-full bg-primary font-display text-[26px] font-semibold text-primary-foreground sm:h-24 sm:w-24 sm:text-[30px]">
             {coach.initialer}
@@ -243,7 +241,7 @@ export default async function BookingCoachPage({ params }: Props) {
         <div className="space-y-6">
           {/* SERVICE-LISTE */}
           <section>
-            <h2 className="mb-3 font-display text-[18px] font-semibold -tracking-[0.01em] text-foreground">
+            <h2 className="mb-2 font-display text-[18px] font-semibold -tracking-[0.01em] text-foreground">
               Velg type økt
             </h2>
             <div className="flex flex-col gap-2.5">
@@ -296,7 +294,7 @@ export default async function BookingCoachPage({ params }: Props) {
 
           {/* DATE-PICKER */}
           <section>
-            <div className="mb-3 flex items-baseline justify-between">
+            <div className="mb-2 flex items-baseline justify-between">
               <h2 className="font-display text-[18px] font-semibold -tracking-[0.01em] text-foreground">
                 Velg dato
               </h2>
@@ -342,7 +340,7 @@ export default async function BookingCoachPage({ params }: Props) {
 
           {/* TIDER */}
           <section>
-            <h2 className="mb-3 font-display text-[18px] font-semibold -tracking-[0.01em] text-foreground">
+            <h2 className="mb-2 font-display text-[18px] font-semibold -tracking-[0.01em] text-foreground">
               Ledige tider · i morgen
             </h2>
             <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-7">
@@ -364,8 +362,8 @@ export default async function BookingCoachPage({ params }: Props) {
 
         {/* HØYRE: oppsummering / sticky */}
         <aside className="space-y-4 lg:sticky lg:top-6 lg:self-start">
-          <div className="rounded-2xl border border-border bg-card p-5">
-            <div className="mb-3 font-mono text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+          <div className="rounded-2xl border border-border bg-card p-6">
+            <div className="mb-2 font-mono text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
               Din booking
             </div>
             <div className="space-y-2.5">
@@ -386,7 +384,7 @@ export default async function BookingCoachPage({ params }: Props) {
             </div>
 
             {harProAbonnement ? (
-              <div className="mt-4 rounded-xl bg-accent/40 p-3">
+              <div className="mt-4 rounded-xl bg-accent/40 p-4">
                 <div className="flex items-start gap-2">
                   <Zap
                     className="mt-0.5 h-4 w-4 flex-shrink-0 text-accent-foreground"
@@ -401,7 +399,7 @@ export default async function BookingCoachPage({ params }: Props) {
                     </div>
                   </div>
                 </div>
-                <button className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-3 font-sans text-[14px] font-semibold text-primary-foreground hover:opacity-90">
+                <button className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 font-sans text-[14px] font-semibold text-primary-foreground hover:opacity-90">
                   Bekreft med 2 credits
                   <ChevronRight className="h-4 w-4" strokeWidth={2} />
                 </button>
@@ -411,7 +409,7 @@ export default async function BookingCoachPage({ params }: Props) {
               </div>
             ) : (
               <>
-                <button className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-3 font-sans text-[14px] font-semibold text-primary-foreground hover:opacity-90">
+                <button className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 font-sans text-[14px] font-semibold text-primary-foreground hover:opacity-90">
                   <CreditCard className="h-4 w-4" strokeWidth={2} />
                   Betal med Stripe
                 </button>
@@ -431,7 +429,7 @@ export default async function BookingCoachPage({ params }: Props) {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-border bg-card p-5">
+          <div className="rounded-2xl border border-border bg-card p-6">
             <div className="mb-2 font-mono text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
               Anlegg
             </div>
@@ -458,7 +456,7 @@ export default async function BookingCoachPage({ params }: Props) {
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-baseline justify-between gap-3">
+    <div className="flex items-baseline justify-between gap-2">
       <span className="font-mono text-[11px] text-muted-foreground">{label}</span>
       <span className="font-sans text-[13px] font-medium text-foreground text-right">
         {value}

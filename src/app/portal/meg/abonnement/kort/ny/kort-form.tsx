@@ -66,7 +66,7 @@ export function KortForm({
                 key={s}
                 type="button"
                 onClick={() => setState(s)}
-                className={`font-mono rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] transition ${
+                className={`font-mono rounded-full px-4 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] transition ${
                   state === s
                     ? "bg-primary text-accent"
                     : "text-muted-foreground hover:text-foreground"
@@ -79,11 +79,11 @@ export function KortForm({
         </div>
       ) : null}
 
-      <div className="grid gap-7 lg:grid-cols-[1.4fr_1fr]">
+      <div className="grid gap-8 lg:grid-cols-[1.4fr_1fr]">
         {/* FORM */}
         <form
           onSubmit={handleSubmit}
-          className="rounded-2xl border border-border bg-card p-7"
+          className="rounded-2xl border border-border bg-card p-8"
         >
           {state !== "IDLE" ? (
             <div className="mb-4">
@@ -120,7 +120,7 @@ export function KortForm({
                   type="text"
                   inputMode="numeric"
                   pattern="[0-9]{4}"
-                  className="h-11 rounded-md border border-input bg-card px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="h-11 rounded-md border border-input bg-card px-4 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   defaultValue={state !== "IDLE" ? "0264" : ""}
                   placeholder="0000"
                 />
@@ -128,7 +128,7 @@ export function KortForm({
               <FieldStack label="Land">
                 <select
                   defaultValue="NO"
-                  className="h-11 rounded-md border border-input bg-card px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="h-11 rounded-md border border-input bg-card px-4 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <option value="NO">Norge</option>
                   <option value="SE">Sverige</option>
@@ -140,13 +140,13 @@ export function KortForm({
             <FieldStack label="Navn på kortet">
               <input
                 type="text"
-                className="h-11 rounded-md border border-input bg-card px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="h-11 rounded-md border border-input bg-card px-4 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 defaultValue={state !== "IDLE" ? defaultNavn : ""}
                 placeholder="Som det står på kortet"
               />
             </FieldStack>
 
-            <label className="flex cursor-pointer items-start gap-3 pt-1">
+            <label className="flex cursor-pointer items-start gap-2 pt-1">
               <button
                 type="button"
                 onClick={() => setHovedkort((v) => !v)}
@@ -168,7 +168,7 @@ export function KortForm({
               </div>
             </label>
 
-            <div className="mt-2 flex items-start gap-3 rounded-md border border-border bg-muted/40 p-3">
+            <div className="mt-2 flex items-start gap-2 rounded-md border border-border bg-muted/40 p-4">
               <Lock className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
               <div className="text-xs leading-relaxed text-muted-foreground">
                 <strong className="text-foreground">Vi lagrer aldri kortdata.</strong>{" "}
@@ -178,7 +178,7 @@ export function KortForm({
             </div>
           </div>
 
-          <div className="mt-7 flex items-center justify-end gap-2 border-t border-border pt-5">
+          <div className="mt-7 flex items-center justify-end gap-2 border-t border-border pt-6">
             <AthleticButton
               type="button"
               variant="ghost-light"
@@ -206,11 +206,11 @@ export function KortForm({
         <div className="flex flex-col gap-4">
           <CardPreview navn={defaultNavn || "Kortholder"} />
 
-          <div className="rounded-2xl border border-border bg-card p-5">
+          <div className="rounded-2xl border border-border bg-card p-6">
             <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
               NESTE BELASTNING
             </div>
-            <div className="mt-3 flex items-baseline justify-between">
+            <div className="mt-2 flex items-baseline justify-between">
               <div className="font-display text-2xl font-bold tracking-tight">
                 kr 249,–
               </div>
@@ -224,7 +224,7 @@ export function KortForm({
             </div>
           </div>
 
-          <div className="rounded-2xl border border-border bg-card p-5">
+          <div className="rounded-2xl border border-border bg-card p-6">
             <div className="font-mono mb-2 text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
               SIKKERHET
             </div>
@@ -286,7 +286,7 @@ function StripeField({
   return (
     <FieldStack label={label}>
       <div
-        className={`flex h-11 items-center justify-between rounded-md border bg-card px-3 text-sm transition ${
+        className={`flex h-11 items-center justify-between rounded-md border bg-card px-4 text-sm transition ${
           focused ? "border-primary ring-2 ring-primary/15" : "border-input"
         } ${error ? "border-destructive ring-2 ring-destructive/15" : ""}`}
       >
@@ -325,7 +325,7 @@ function CardBrand({ label, colorClass }: { label: string; colorClass: string })
 function StateBanner({ state }: { state: State }) {
   if (state === "LOADING") {
     return (
-      <div className="flex items-center gap-3 rounded-md border border-primary/20 bg-primary/5 p-3">
+      <div className="flex items-center gap-2 rounded-md border border-primary/20 bg-primary/5 p-4">
         <span className="h-3.5 w-3.5 animate-pulse rounded-full bg-primary/40" />
         <span className="font-mono text-xs uppercase tracking-[0.04em] text-primary">
           Sender til Stripe · venter på autorisasjon …
@@ -335,7 +335,7 @@ function StateBanner({ state }: { state: State }) {
   }
   if (state === "ERROR") {
     return (
-      <div className="flex items-start gap-3 rounded-md border border-destructive/25 border-l-[3px] border-l-destructive bg-destructive/10 p-3">
+      <div className="flex items-start gap-2 rounded-md border border-destructive/25 border-l-[3px] border-l-destructive bg-destructive/10 p-4">
         <span className="font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-destructive">
           Avvist:
         </span>
@@ -349,7 +349,7 @@ function StateBanner({ state }: { state: State }) {
   }
   if (state === "SUCCESS") {
     return (
-      <div className="flex items-center gap-3 rounded-md border border-accent/55 bg-accent/30 p-3">
+      <div className="flex items-center gap-2 rounded-md border border-accent/55 bg-accent/30 p-4">
         <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-accent">
           <Check className="h-3 w-3" strokeWidth={3} />
         </span>
@@ -365,7 +365,7 @@ function StateBanner({ state }: { state: State }) {
 function CardPreview({ navn }: { navn: string }) {
   return (
     <div
-      className="relative overflow-hidden rounded-2xl p-5 text-white shadow-lg"
+      className="relative overflow-hidden rounded-2xl p-6 text-white shadow-lg"
       style={{
         background:
           "linear-gradient(135deg, #003A2A 0%, #005840 60%, #007054 100%)",

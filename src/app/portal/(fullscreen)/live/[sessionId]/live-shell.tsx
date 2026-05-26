@@ -516,7 +516,7 @@ export function LiveShell({
             {drills.map((d, i) => (
               <li
                 key={d.id}
-                className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3.5 sm:gap-4 sm:px-6"
+                className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-4 sm:gap-4 sm:px-6"
               >
                 <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/55 tabular-nums">
                   {String(i + 1).padStart(2, "0")}
@@ -548,7 +548,7 @@ export function LiveShell({
             type="button"
             onClick={handleStart}
             disabled={pending}
-            className="inline-flex h-[64px] sm:h-[72px] flex-1 items-center justify-center gap-3 sm:gap-4 rounded-xl bg-accent text-[17px] sm:text-[18px] font-semibold tracking-[-0.01em] text-accent-foreground transition-transform hover:bg-accent/90 active:scale-[0.99] disabled:opacity-60"
+            className="inline-flex h-[64px] sm:h-[72px] flex-1 items-center justify-center gap-2 sm:gap-4 rounded-xl bg-accent text-[17px] sm:text-[18px] font-semibold tracking-[-0.01em] text-accent-foreground transition-transform hover:bg-accent/90 active:scale-[0.99] disabled:opacity-60"
             style={{
               boxShadow:
                 "0 0 0 1px rgba(209,248,67,0.5), 0 8px 24px rgba(209,248,67,0.18)",
@@ -1445,7 +1445,7 @@ function BottomBar({
 }) {
   return (
     <div
-      className={`relative z-10 grid grid-cols-1 ${cols} items-center gap-3 border-t border-white/[0.06] px-4 py-3 sm:gap-4 sm:px-6 sm:py-4`}
+      className={`relative z-10 grid grid-cols-1 ${cols} items-center gap-2 border-t border-white/[0.06] px-4 py-2 sm:gap-4 sm:px-6 sm:py-4`}
       style={{ paddingBottom: "max(env(safe-area-inset-bottom), 0.75rem)" }}
     >
       {children}

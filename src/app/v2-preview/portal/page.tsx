@@ -98,13 +98,13 @@ export default function PortalSamplePage() {
 
         {/* ── Achievement / Streak strip ───────────────────────── */}
         <div className="-mx-4 px-4 overflow-x-auto">
-          <div className="flex gap-3 pb-2 w-max min-w-full">
+          <div className="flex gap-2 pb-2 w-max min-w-full">
             {ACHIEVEMENTS.map((a) => {
               const Icon = a.icon;
               return (
                 <div
                   key={a.id}
-                  className="flex items-center gap-3 px-4 py-3 rounded-[14px] border border-border flex-shrink-0"
+                  className="flex items-center gap-2 px-4 py-2 rounded-[14px] border border-border flex-shrink-0"
                   style={{
                     background:
                       a.tone === "accent"
@@ -191,7 +191,7 @@ export default function PortalSamplePage() {
                 background: "color-mix(in oklab, var(--primary) 8%, var(--card))",
               }}
             >
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 {/* Coach avatar */}
                 <div
                   className="w-9 h-9 rounded-full grid place-items-center font-display font-bold text-[12px] flex-shrink-0"
@@ -234,7 +234,7 @@ export default function PortalSamplePage() {
             </div>
 
             {/* Footer CTA */}
-            <div className="px-6 py-3 border-t border-border flex items-center justify-between">
+            <div className="px-6 py-2 border-t border-border flex items-center justify-between">
               <span className="text-[12px] text-muted-foreground">
                 Sendt {COACH_THREADS[0].date}
               </span>
@@ -283,7 +283,7 @@ export default function PortalSamplePage() {
               </div>
               {/* Context paragraph */}
               <div
-                className="rounded-[14px] border border-border px-5 py-4"
+                className="rounded-[14px] border border-border px-6 py-4"
                 style={{ background: "var(--card)" }}
               >
                 <p className="m-0 text-[13px] text-muted-foreground leading-[1.65]">
@@ -312,7 +312,7 @@ export default function PortalSamplePage() {
             title="Hurtighandlinger"
             ghostNum="04"
           />
-          <div className="grid gap-3 grid-cols-2 sm:grid-cols-4 lg:grid-cols-4">
+          <div className="grid gap-2 grid-cols-2 sm:grid-cols-4 lg:grid-cols-4">
             {QUICK_ACTIONS_LIST.map((action) => (
               <QuickAction key={action.id} action={action} />
             ))}

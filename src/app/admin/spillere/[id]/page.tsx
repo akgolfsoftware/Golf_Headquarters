@@ -230,7 +230,7 @@ export default async function SpillerCoachView({
       ]}
       backHref="/admin/stall"
       title={
-        <span className="flex items-center gap-5">
+        <span className="flex items-center gap-6">
           {player.avatarUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -295,7 +295,7 @@ export default async function SpillerCoachView({
         </>
       }
       kpiRow={
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
           <KPICard
             eyebrow="HCP-trend"
             value={formatHcp(player.hcp)}
@@ -498,7 +498,7 @@ function ProfilTab({
       {/* Hoved-innhold */}
       <div className="space-y-4">
         {/* Personalia */}
-        <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+        <section className="rounded-2xl border border-border bg-card p-6 sm:p-6">
           <div className="mb-4 flex items-baseline justify-between">
             <div>
               <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
@@ -537,7 +537,7 @@ function ProfilTab({
 
         {/* Forelder/verge */}
         {parents.length > 0 && (
-          <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+          <section className="rounded-2xl border border-border bg-card p-6 sm:p-6">
             <div className="mb-4 flex items-baseline justify-between">
               <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                 Forelder / verge
@@ -546,11 +546,11 @@ function ProfilTab({
                 {parents.length}
               </span>
             </div>
-            <ul className="space-y-3">
+            <ul className="space-y-2">
               {parents.map((p) => (
                 <li
                   key={p.id}
-                  className="flex items-center gap-3 rounded-xl border border-border bg-background p-3"
+                  className="flex items-center gap-2 rounded-xl border border-border bg-background p-4"
                 >
                   {p.avatarUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
@@ -585,7 +585,7 @@ function ProfilTab({
         )}
 
         {/* Aktivitet-tidslinje (siste 30 dager) */}
-        <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+        <section className="rounded-2xl border border-border bg-card p-6 sm:p-6">
           <div className="mb-4 flex items-baseline justify-between">
             <div>
               <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
@@ -596,7 +596,7 @@ function ProfilTab({
               </h2>
             </div>
           </div>
-          <ul className="space-y-3">
+          <ul className="space-y-2">
             {/* Sample event-stream — full impl bygges når data finnes */}
             <TimelineEvent
               dot="primary"
@@ -624,8 +624,8 @@ function ProfilTab({
 
       {/* Sidekol — Coach-notater */}
       <aside className="space-y-4 lg:sticky lg:top-6 lg:self-start">
-        <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
-          <div className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+        <section className="rounded-2xl border border-border bg-card p-6 sm:p-6">
+          <div className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
             Coach-notater
           </div>
           {coachNotater.length === 0 ? (
@@ -635,7 +635,7 @@ function ProfilTab({
               {coachNotater.map((n) => (
                 <li
                   key={n.id}
-                  className="border-l-2 border-accent pl-3"
+                  className="border-l-2 border-accent pl-4"
                 >
                   <div className="flex items-baseline justify-between gap-2">
                     <span className="truncate text-sm font-semibold text-foreground">
@@ -684,7 +684,7 @@ function PlanTab({
   const pct = total > 0 ? Math.round((done / total) * 100) : 0;
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-      <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+      <section className="rounded-2xl border border-border bg-card p-6 sm:p-6">
         <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
           Aktiv treningsplan
         </div>
@@ -711,13 +711,13 @@ function PlanTab({
             </div>
           </>
         ) : (
-          <p className="mt-3 rounded-md border border-dashed border-border p-4 text-sm text-muted-foreground">
+          <p className="mt-2 rounded-md border border-dashed border-border p-4 text-sm text-muted-foreground">
             Ingen aktiv plan.
           </p>
         )}
       </section>
 
-      <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+      <section className="rounded-2xl border border-border bg-card p-6 sm:p-6">
         <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
           Neste turnering
         </div>
@@ -733,7 +733,7 @@ function PlanTab({
             )}
           </>
         ) : (
-          <p className="mt-3 rounded-md border border-dashed border-border p-4 text-sm text-muted-foreground">
+          <p className="mt-2 rounded-md border border-dashed border-border p-4 text-sm text-muted-foreground">
             Ingen påmeldt.
           </p>
         )}
@@ -761,7 +761,7 @@ function TesterTab({
   total: number;
 }) {
   return (
-    <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+    <section className="rounded-2xl border border-border bg-card p-6 sm:p-6">
       <div className="mb-4 flex items-baseline justify-between">
         <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
           Tester · {tester.length}/{total}
@@ -776,7 +776,7 @@ function TesterTab({
           {tester.map((t) => (
             <li
               key={t.id}
-              className="grid grid-cols-[1fr_auto] items-center gap-4 py-3"
+              className="grid grid-cols-[1fr_auto] items-center gap-4 py-2"
             >
               <div className="min-w-0">
                 <div className="truncate text-sm font-semibold text-foreground">
@@ -820,11 +820,11 @@ function NotaterTab({
     );
   }
   return (
-    <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+    <section className="rounded-2xl border border-border bg-card p-6 sm:p-6">
       <ul className="space-y-4">
         {notater.map((n) => (
           <li key={n.id} className="border-l-2 border-accent pl-4">
-            <div className="flex items-baseline justify-between gap-3">
+            <div className="flex items-baseline justify-between gap-2">
               <span className="truncate text-sm font-semibold text-foreground">
                 {n.title} · {n.area}
               </span>
@@ -889,7 +889,7 @@ function TimelineEvent({
     muted: "bg-muted-foreground",
   };
   return (
-    <li className="flex items-start gap-3">
+    <li className="flex items-start gap-2">
       <span
         className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${dotClass[dot]}`}
       />

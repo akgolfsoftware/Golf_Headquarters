@@ -108,7 +108,7 @@ export function QuickAddPopover({
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="f.eks. Putting + nedslagslinje"
-          className="h-10 rounded-md border border-input bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
+          className="h-10 rounded-md border border-input bg-card px-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
         />
       </div>
 
@@ -168,7 +168,7 @@ export function QuickAddPopover({
             type="time"
             value={tid}
             onChange={(e) => setTid(e.target.value)}
-            className="h-10 rounded-md border border-input bg-card px-3 text-sm tabular-nums text-foreground"
+            className="h-10 rounded-md border border-input bg-card px-4 text-sm tabular-nums text-foreground"
           />
         </div>
         <div className="flex flex-1 flex-col gap-1">
@@ -180,7 +180,7 @@ export function QuickAddPopover({
             step={5}
             value={varighet}
             onChange={(e) => setVarighet(Number(e.target.value))}
-            className="h-10 rounded-md border border-input bg-card px-3 text-sm tabular-nums text-foreground"
+            className="h-10 rounded-md border border-input bg-card px-4 text-sm tabular-nums text-foreground"
           />
         </div>
       </div>
@@ -192,7 +192,7 @@ export function QuickAddPopover({
           onChange={(e) => setNotater(e.target.value)}
           rows={2}
           placeholder="Valgfritt"
-          className="rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
+          className="rounded-md border border-input bg-card px-4 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
         />
       </div>
 

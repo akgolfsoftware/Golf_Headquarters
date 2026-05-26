@@ -32,7 +32,7 @@ export default async function OkterPage() {
       </header>
 
       {/* Sikkerhets-info */}
-      <div className="flex items-start gap-3 rounded-md border border-primary/30 bg-primary/5 p-4 text-sm">
+      <div className="flex items-start gap-2 rounded-md border border-primary/30 bg-primary/5 p-4 text-sm">
         <ShieldCheck size={16} strokeWidth={1.5} className="mt-0.5 text-primary" />
         <div>
           <p className="font-semibold text-foreground">Sikker tilgang</p>

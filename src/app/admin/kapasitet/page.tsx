@@ -236,8 +236,8 @@ export default async function KapasitetPage() {
 
         {/* Right rail */}
         <aside className="space-y-4">
-          <div className="rounded-lg border border-border bg-card p-5 shadow-sm">
-            <div className="mb-3.5 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+          <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+            <div className="mb-2.5 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
               Topp 3 mest brukte tider
             </div>
             {[...rader]
@@ -286,7 +286,7 @@ export default async function KapasitetPage() {
             <div className="flex gap-2">
               <Link
                 href="/admin/services"
-                className="inline-flex items-center justify-center rounded-md bg-primary px-3 py-1.5 text-[12px] font-medium text-primary-foreground hover:opacity-90"
+                className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-1.5 text-[12px] font-medium text-primary-foreground hover:opacity-90"
               >
                 Til tjenester
               </Link>

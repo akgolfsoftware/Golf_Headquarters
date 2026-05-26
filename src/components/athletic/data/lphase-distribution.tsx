@@ -38,22 +38,22 @@ export function LPhaseDistribution({
   const ordered: LPhaseSlice["phase"][] = ["GRUNN", "SPESIAL", "TURNERING"];
 
   return (
-    <div className={cn("rounded-2xl border border-border bg-card p-4 md:p-5", className)}>
-      <div className="mb-4 flex items-baseline justify-between gap-3">
+    <div className={cn("rounded-2xl border border-border bg-card p-4 md:p-6", className)}>
+      <div className="mb-4 flex items-baseline justify-between gap-2">
         <h3 className="font-display text-xl font-bold tracking-[-0.015em]">{title}</h3>
         <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
           {total} min totalt
         </span>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2">
         {ordered.map((phase) => {
           const slice = slices.find((s) => s.phase === phase);
           const min = slice?.minutes ?? 0;
           const pct = total > 0 ? Math.round((min / total) * 100) : 0;
           return (
             <div key={phase}>
-              <div className="mb-1.5 flex items-baseline justify-between gap-3">
+              <div className="mb-1.5 flex items-baseline justify-between gap-2">
                 <div className="flex items-center gap-2">
                   <span
                     className="h-3 w-3 rounded-sm"

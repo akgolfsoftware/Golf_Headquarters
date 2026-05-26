@@ -56,7 +56,7 @@ export default function TalentRegionPipelineDemo() {
   return (
     <div className="min-h-screen bg-[var(--color-card,#FFFFFF)] text-foreground">
       {/* Header */}
-      <header className="grid grid-cols-[1fr_auto] items-end gap-6 border-b border-border pb-5 pt-1 mb-5">
+      <header className="grid grid-cols-[1fr_auto] items-end gap-6 border-b border-border pb-6 pt-1 mb-5">
         <div>
           <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             Scout · Regional pipeline
@@ -68,14 +68,14 @@ export default function TalentRegionPipelineDemo() {
             Hvor sterk er pipelinen i regionen? Klubber, retention, topp-talenter.
           </p>
         </div>
-        <button className="inline-flex items-center gap-1.5 rounded-md border border-border bg-transparent px-3.5 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary">
+        <button className="inline-flex items-center gap-1.5 rounded-md border border-border bg-transparent px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary">
           <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
           Tilbake
         </button>
       </header>
 
       {/* Action-strip */}
-      <div className="mb-5 flex flex-wrap items-center gap-2.5 rounded-lg border border-border bg-card px-3 py-2.5">
+      <div className="mb-5 flex flex-wrap items-center gap-2.5 rounded-lg border border-border bg-card px-4 py-2.5">
         <span className="mr-1 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           Sammendrag
         </span>
@@ -88,7 +88,7 @@ export default function TalentRegionPipelineDemo() {
         <ActionItem>
           Retention 5-år: <b>68 %</b>
         </ActionItem>
-        <button className="ml-auto inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90">
+        <button className="ml-auto inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90">
           Sammenlign regioner
           <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
         </button>
@@ -99,7 +99,7 @@ export default function TalentRegionPipelineDemo() {
         {REGIONS.map((r) => (
           <button
             key={r.id}
-            className={`rounded-full px-3.5 py-1.5 text-[12px] font-medium transition-colors ${
+            className={`rounded-full px-4 py-1.5 text-[12px] font-medium transition-colors ${
               r.id === SELECTED
                 ? "bg-primary text-primary-foreground"
                 : "border border-border bg-card text-foreground hover:bg-secondary"
@@ -116,7 +116,7 @@ export default function TalentRegionPipelineDemo() {
           <NorgesMap />
         </Card>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-2">
           <Kpi label="Aktive talenter" value="186" delta="+12" deltaTone="up" sub="i Region Øst" />
           <Kpi label="Topp-100 fra region" value="38" delta="+4" deltaTone="up" sub="andel: 38 %" />
           <Kpi label="Retention 5-år" value="68 %" delta="+3 %" deltaTone="up" sub="snitt nasjonalt: 54 %" />
@@ -136,12 +136,12 @@ export default function TalentRegionPipelineDemo() {
         </Card>
 
         <Card eyebrow={`Spillere fra ${SELECTED_LABEL}`} title="Topp 12">
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-4 gap-2">
             {SPILLERE.map((s) => (
               <PlayerCard key={s.name} {...s} />
             ))}
           </div>
-          <button className="mt-4 inline-flex items-center gap-1.5 self-end rounded-full border border-border bg-transparent px-3.5 py-1.5 text-[12px] font-medium text-foreground transition-colors hover:bg-secondary">
+          <button className="mt-4 inline-flex items-center gap-1.5 self-end rounded-full border border-border bg-transparent px-4 py-1.5 text-[12px] font-medium text-foreground transition-colors hover:bg-secondary">
             Vis alle 186 spillere
             <ArrowRight className="h-3.5 w-3.5" strokeWidth={1.5} />
           </button>
@@ -255,7 +255,7 @@ function Kpi({
         ? "bg-[#FBE5E5] text-destructive"
         : "bg-secondary text-muted-foreground";
   return (
-    <div className="rounded-lg border border-border bg-card p-5">
+    <div className="rounded-lg border border-border bg-card p-6">
       <div className="flex items-center justify-between">
         <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
           {label}
@@ -264,7 +264,7 @@ function Kpi({
           {delta}
         </span>
       </div>
-      <div className="mt-3.5 mb-1.5 font-mono text-[28px] font-medium tabular-nums leading-none -tracking-tight">
+      <div className="mt-2.5 mb-1.5 font-mono text-[28px] font-medium tabular-nums leading-none -tracking-tight">
         {value}
       </div>
       <div className="text-[12px] leading-[1.4] text-muted-foreground">{sub}</div>
@@ -275,7 +275,7 @@ function Kpi({
 function DarkKpi() {
   return (
     <div
-      className="col-span-2 rounded-lg p-5 text-[color:#F5F4EE]"
+      className="col-span-2 rounded-lg p-6 text-[color:#F5F4EE]"
       style={{ background: "var(--color-pyr-fys, #005840)" }}
     >
       <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-accent">
@@ -284,7 +284,7 @@ function DarkKpi() {
       <div className="mt-2 font-display text-[36px] font-medium italic leading-none">
         Sterk
       </div>
-      <div className="mt-3 max-w-[560px] text-[13px] leading-[1.5] text-accent/85">
+      <div className="mt-2 max-w-[560px] text-[13px] leading-[1.5] text-accent/85">
         Diversitet i klubber · 8 klubber leverer ≥ 10 spillere · ny-rekruttering &gt; avgang i &gt; 3 år.
       </div>
     </div>
@@ -294,7 +294,7 @@ function DarkKpi() {
 function KlubbBar({ name, count, max }: { name: string; count: number; max: number }) {
   const pct = Math.round((count / max) * 100);
   return (
-    <div className="grid grid-cols-[140px_1fr_36px] items-center gap-3">
+    <div className="grid grid-cols-[140px_1fr_36px] items-center gap-2">
       <div className="text-[13px] font-semibold leading-none">{name}</div>
       <div className="relative h-3 rounded-full bg-[var(--surface-alt,#F1EEE5)]">
         <div
@@ -326,7 +326,7 @@ function PlayerCard({
   primary?: boolean;
 }) {
   return (
-    <div className="flex flex-col items-center gap-2 rounded-md border border-[var(--line-soft,#EFEDE6)] bg-[var(--surface-alt,#F1EEE5)]/50 px-2 py-3 text-center">
+    <div className="flex flex-col items-center gap-2 rounded-md border border-[var(--line-soft,#EFEDE6)] bg-[var(--surface-alt,#F1EEE5)]/50 px-2 py-2 text-center">
       <div
         className={`grid h-12 w-12 place-items-center rounded-full font-display text-[15px] font-semibold ${
           primary ? "bg-primary text-primary-foreground" : "bg-secondary text-foreground"

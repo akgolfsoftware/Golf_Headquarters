@@ -162,7 +162,7 @@ export default async function SammenligningPage({
         <form
           action="/portal/talent/sammenligning"
           method="get"
-          className="flex flex-col gap-3 md:flex-row md:items-end"
+          className="flex flex-col gap-2 md:flex-row md:items-end"
         >
           <div className="flex-1">
             <label
@@ -209,7 +209,7 @@ export default async function SammenligningPage({
           </div>
           <button
             type="submit"
-            className="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+            className="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
           >
             <ArrowLeftRight size={16} strokeWidth={1.5} aria-hidden />
             Sammenlign
@@ -261,7 +261,7 @@ export default async function SammenligningPage({
               />
             </div>
             <div className="flex flex-col justify-center gap-4">
-              <div className="flex items-baseline justify-between gap-3">
+              <div className="flex items-baseline justify-between gap-2">
                 <h2 className="font-display text-2xl font-medium tracking-tight">
                   {mittNavn}
                 </h2>
@@ -269,7 +269,7 @@ export default async function SammenligningPage({
                   {mineData.klubb ?? "—"}
                 </span>
               </div>
-              <div className="flex items-baseline justify-between gap-3">
+              <div className="flex items-baseline justify-between gap-2">
                 <h2 className="font-display text-2xl font-medium tracking-tight text-muted-foreground">
                   {annenNavn}
                 </h2>
@@ -311,7 +311,7 @@ export default async function SammenligningPage({
 
           {/* HCP og SG delta over valgt periode */}
           <section aria-label="Fremgang over tid" className="mt-8">
-            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
               <h2 className="font-display text-2xl font-medium tracking-tight">
                 Din fremgang
               </h2>
@@ -329,7 +329,7 @@ export default async function SammenligningPage({
       {/* Alltid vis fremgang-seksjon for innlogget spiller */}
       {!valgt && (
         <section aria-label="Fremgang over tid" className="mt-8">
-          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
             <h2 className="font-display text-2xl font-medium tracking-tight">
               Din fremgang
             </h2>
@@ -371,7 +371,7 @@ function PeriodePicker({
           <a
             key={p.key}
             href={`/portal/talent/sammenligning?${params.toString()}`}
-            className={`rounded px-3 py-1 text-xs font-medium transition-colors ${
+            className={`rounded px-4 py-1 text-xs font-medium transition-colors ${
               p.key === aktiv
                 ? "bg-primary text-primary-foreground"
                 : "text-muted-foreground hover:text-foreground"
@@ -437,7 +437,7 @@ function CompareAxis({
   return (
     <div className="rounded-lg border border-border bg-card p-6">
       <h3 className="font-display text-lg font-medium leading-snug">{label}</h3>
-      <div className="mt-4 space-y-3">
+      <div className="mt-4 space-y-2">
         <Row
           label={youLabel}
           value={youValue}

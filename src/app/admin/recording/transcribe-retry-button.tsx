@@ -46,7 +46,7 @@ export function TranscribeRetryButton({ recordingId }: Props) {
         type="button"
         onClick={trigger}
         disabled={laster}
-        className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-foreground transition-colors hover:bg-secondary disabled:opacity-60"
+        className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-foreground transition-colors hover:bg-secondary disabled:opacity-60"
       >
         {laster ? (
           <Loader2 className="h-3 w-3 animate-spin" strokeWidth={1.75} />

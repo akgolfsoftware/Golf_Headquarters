@@ -262,7 +262,7 @@ export default async function SessionDetalj({
           <div className="mb-4 font-mono text-[11px] font-bold uppercase tracking-[0.06em] text-muted-foreground">
             Resultat
           </div>
-          <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             <KpiCard
               label="Faktiske reps"
               value={String(kpiData.fakRepsTotalt)}
@@ -483,7 +483,7 @@ function DrillBlock({
 }) {
   return (
     <div className="overflow-hidden rounded-xl border border-border bg-card">
-      <div className="grid grid-cols-[auto_auto_1fr_auto] items-center gap-3.5 border-b border-border bg-secondary px-4 py-4">
+      <div className="grid grid-cols-[auto_auto_1fr_auto] items-center gap-4 border-b border-border bg-secondary px-4 py-4">
         <span className="font-mono text-[11px] font-semibold tabular-nums text-muted-foreground">
           {String(index).padStart(2, "0")}
         </span>

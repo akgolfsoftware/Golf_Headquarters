@@ -33,14 +33,14 @@ export default async function NyMal() {
         cta={
           <Link
             href="/admin/plans/templates"
-            className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
           >
             Bruk eksisterende mal i stedet
           </Link>
         }
       />
 
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap gap-2">
         <Link
           href="/admin/plans"
           className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"

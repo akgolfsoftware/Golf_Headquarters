@@ -65,11 +65,11 @@ export function NyMeldingClient({ mottakere }: { mottakere: Mottaker[] }) {
   return (
     <>
       {/* Mottaker */}
-      <section className="space-y-3">
+      <section className="space-y-2">
         <div className="font-mono text-[10.5px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
           Mottaker <span className="text-destructive">*</span>
         </div>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           {mottakere.map((m) => (
             <button
               key={m.id}
@@ -106,7 +106,7 @@ export function NyMeldingClient({ mottakere }: { mottakere: Mottaker[] }) {
       </section>
 
       {/* Hurtig-emner */}
-      <section className="mt-8 space-y-3">
+      <section className="mt-8 space-y-2">
         <div className="font-mono text-[10.5px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
           Hurtig-emner{" "}
           <span className="font-normal normal-case text-muted-foreground/60">
@@ -119,7 +119,7 @@ export function NyMeldingClient({ mottakere }: { mottakere: Mottaker[] }) {
               key={text}
               type="button"
               onClick={() => setSubject(text)}
-              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-[12.5px] font-semibold text-foreground hover:border-primary hover:text-primary"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-1.5 text-[12.5px] font-semibold text-foreground hover:border-primary hover:text-primary"
             >
               <Icon className="h-3.5 w-3.5" strokeWidth={1.75} />
               {text}
@@ -129,7 +129,7 @@ export function NyMeldingClient({ mottakere }: { mottakere: Mottaker[] }) {
       </section>
 
       {/* Emne */}
-      <section className="mt-8 space-y-3">
+      <section className="mt-8 space-y-2">
         <div className="font-mono text-[10.5px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
           Emne <span className="text-destructive">*</span>
         </div>
@@ -139,7 +139,7 @@ export function NyMeldingClient({ mottakere }: { mottakere: Mottaker[] }) {
             value={subject}
             onChange={(e) => setSubject(e.target.value.slice(0, 100))}
             placeholder="Hva gjelder det?"
-            className="w-full rounded-md border border-input bg-card px-4 py-3 pr-20 text-[14.5px] focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+            className="w-full rounded-md border border-input bg-card px-4 py-2 pr-20 text-[14.5px] focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
           />
           <span
             className={`absolute right-3 top-1/2 -translate-y-1/2 font-mono text-[10.5px] tabular-nums ${
@@ -152,12 +152,12 @@ export function NyMeldingClient({ mottakere }: { mottakere: Mottaker[] }) {
       </section>
 
       {/* Body */}
-      <section className="mt-8 space-y-3">
+      <section className="mt-8 space-y-2">
         <div className="font-mono text-[10.5px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
           Melding <span className="text-destructive">*</span>
         </div>
         <div className="overflow-hidden rounded-xl border border-input bg-card">
-          <div className="flex items-center gap-1 border-b border-border bg-secondary/30 px-3 py-2">
+          <div className="flex items-center gap-1 border-b border-border bg-secondary/30 px-4 py-2">
             <ToolbarBtn icon={<Bold className="h-4 w-4" strokeWidth={1.75} />} title="Fet" />
             <ToolbarBtn icon={<Italic className="h-4 w-4" strokeWidth={1.75} />} title="Kursiv" />
             <span className="mx-1 h-4 w-px bg-border" />
@@ -181,14 +181,14 @@ export function NyMeldingClient({ mottakere }: { mottakere: Mottaker[] }) {
       </section>
 
       {/* Vedlegg */}
-      <section className="mt-8 space-y-3">
+      <section className="mt-8 space-y-2">
         <div className="font-mono text-[10.5px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
           Vedlegg{" "}
           <span className="font-normal normal-case text-muted-foreground/60">
             — maks 5 filer, 25 MB per fil
           </span>
         </div>
-        <div className="grid grid-cols-[44px_minmax(0,1fr)_auto] items-center gap-4 rounded-xl border border-dashed border-input bg-card px-5 py-4">
+        <div className="grid grid-cols-[44px_minmax(0,1fr)_auto] items-center gap-4 rounded-xl border border-dashed border-input bg-card px-6 py-4">
           <span className="grid h-11 w-11 place-items-center rounded-full bg-secondary text-primary">
             <Paperclip className="h-5 w-5" strokeWidth={1.75} />
           </span>
@@ -201,14 +201,14 @@ export function NyMeldingClient({ mottakere }: { mottakere: Mottaker[] }) {
           <div className="flex gap-2">
             <button
               type="button"
-              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-transparent px-3 py-1.5 text-[12px] font-semibold text-foreground hover:border-primary"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-transparent px-4 py-1.5 text-[12px] font-semibold text-foreground hover:border-primary"
             >
               <ImageIcon className="h-3.5 w-3.5" strokeWidth={1.75} />
               Galleri
             </button>
             <button
               type="button"
-              className="rounded-full bg-primary px-3 py-1.5 text-[12px] font-bold text-primary-foreground hover:opacity-90"
+              className="rounded-full bg-primary px-4 py-1.5 text-[12px] font-bold text-primary-foreground hover:opacity-90"
             >
               Velg filer
             </button>
@@ -219,7 +219,7 @@ export function NyMeldingClient({ mottakere }: { mottakere: Mottaker[] }) {
             {attachments.map((a, i) => (
               <div
                 key={i}
-                className="grid grid-cols-[40px_minmax(0,1fr)_28px] items-center gap-3 rounded-lg border border-border bg-card px-3 py-2"
+                className="grid grid-cols-[40px_minmax(0,1fr)_28px] items-center gap-2 rounded-lg border border-border bg-card px-4 py-2"
               >
                 <span className="grid h-10 w-10 place-items-center rounded-md bg-secondary text-primary">
                   <ImageIcon className="h-4 w-4" strokeWidth={1.75} />
@@ -245,14 +245,14 @@ export function NyMeldingClient({ mottakere }: { mottakere: Mottaker[] }) {
       </section>
 
       {error && (
-        <div className="rounded-md border border-destructive bg-destructive/10 px-4 py-3 text-[13px] text-destructive">
+        <div className="rounded-md border border-destructive bg-destructive/10 px-4 py-2 text-[13px] text-destructive">
           {error}
         </div>
       )}
 
       {/* Sticky send bar */}
       <div className="fixed inset-x-0 bottom-0 z-10 border-t border-border bg-card/95 backdrop-blur">
-        <div className="mx-auto flex max-w-[880px] flex-wrap items-center gap-3 px-6 py-3">
+        <div className="mx-auto flex max-w-[880px] flex-wrap items-center gap-2 px-6 py-2">
           <span className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.06em] text-muted-foreground">
             <span className="h-2 w-2 animate-pulse rounded-full bg-[#22C55E]" />
             Utkast lagret{" "}
@@ -270,13 +270,13 @@ export function NyMeldingClient({ mottakere }: { mottakere: Mottaker[] }) {
           <div className="ml-auto flex gap-2">
             <button
               type="button"
-              className="rounded-full border-0 bg-transparent px-3 py-2 text-[13px] font-semibold text-muted-foreground hover:text-foreground"
+              className="rounded-full border-0 bg-transparent px-4 py-2 text-[13px] font-semibold text-muted-foreground hover:text-foreground"
             >
               Avbryt
             </button>
             <button
               type="button"
-              className="rounded-full border border-border bg-transparent px-3 py-2 text-[13px] font-semibold text-foreground hover:border-primary"
+              className="rounded-full border border-border bg-transparent px-4 py-2 text-[13px] font-semibold text-foreground hover:border-primary"
             >
               Forhåndsvis
             </button>

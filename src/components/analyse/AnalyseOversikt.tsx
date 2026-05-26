@@ -36,7 +36,7 @@ function FordelingsLinje({
 }) {
   const pct = total === 0 ? 0 : Math.round((verdi / total) * 100);
   return (
-    <div className="flex items-center gap-3 text-sm">
+    <div className="flex items-center gap-2 text-sm">
       <span className="w-32 shrink-0 text-foreground">{label}</span>
       <div className="relative h-2 flex-1 overflow-hidden rounded-full bg-muted">
         <div
@@ -111,7 +111,7 @@ export function AnalyseOversikt({
       {/* KPI-strip */}
       <section
         aria-label="Nøkkeltall"
-        className="grid grid-cols-2 gap-3 md:grid-cols-5"
+        className="grid grid-cols-2 gap-2 md:grid-cols-5"
       >
         <Kpi
           label="Total tid"
@@ -136,7 +136,7 @@ export function AnalyseOversikt({
       </section>
 
       {/* Pyramide-fordeling */}
-      <section className="rounded-lg border border-border bg-card p-5">
+      <section className="rounded-lg border border-border bg-card p-6">
         <h2 className="font-display text-lg font-semibold">
           Pyramide-fordeling
         </h2>
@@ -159,7 +159,7 @@ export function AnalyseOversikt({
       </section>
 
       {/* Område-fordeling */}
-      <section className="rounded-lg border border-border bg-card p-5">
+      <section className="rounded-lg border border-border bg-card p-6">
         <h2 className="font-display text-lg font-semibold">
           Område-fordeling
         </h2>
@@ -184,7 +184,7 @@ export function AnalyseOversikt({
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Miljø */}
-        <section className="rounded-lg border border-border bg-card p-5">
+        <section className="rounded-lg border border-border bg-card p-6">
           <h2 className="font-display text-lg font-semibold">Miljø (M0–M5)</h2>
           <p className="mt-1 text-sm text-muted-foreground">
             Fra ro-trening (M0) til turnering (M5).
@@ -203,7 +203,7 @@ export function AnalyseOversikt({
         </section>
 
         {/* Praksistype */}
-        <section className="rounded-lg border border-border bg-card p-5">
+        <section className="rounded-lg border border-border bg-card p-6">
           <h2 className="font-display text-lg font-semibold">Praksistype</h2>
           <p className="mt-1 text-sm text-muted-foreground">
             Blokk / Random / Konkurranse / Spill-test.
@@ -225,7 +225,7 @@ export function AnalyseOversikt({
       </div>
 
       {/* Topp 10 drills */}
-      <section className="rounded-lg border border-border bg-card p-5">
+      <section className="rounded-lg border border-border bg-card p-6">
         <h2 className="font-display text-lg font-semibold">Mest brukte drills</h2>
         <p className="mt-1 text-sm text-muted-foreground">
           Topp 10 fra perioden, sortert på antall ganger gjort.

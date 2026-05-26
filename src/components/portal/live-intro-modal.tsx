@@ -114,11 +114,11 @@ export function LiveIntroModal({
         <h1 className="mt-7 font-display text-[44px] font-bold leading-[0.95] -tracking-[0.035em] text-white sm:text-[64px] md:text-[88px]">
           {title}
         </h1>
-        <div className="mt-3.5 font-sans text-[16px] leading-tight text-white/75 sm:text-[20px] md:text-[24px]">
+        <div className="mt-2.5 font-sans text-[16px] leading-tight text-white/75 sm:text-[20px] md:text-[24px]">
           {subtitle}
         </div>
 
-        <div className="mt-8 inline-flex items-center gap-7 rounded-full border border-white/10 bg-white/[0.04] px-6 py-3.5">
+        <div className="mt-8 inline-flex items-center gap-8 rounded-full border border-white/10 bg-white/[0.04] px-6 py-4">
           <div className="inline-flex items-baseline gap-2 font-sans text-[16px] text-white/65">
             ~
             <b className="font-mono text-[18px] font-semibold text-white tabular-nums">
@@ -135,7 +135,7 @@ export function LiveIntroModal({
         </div>
 
         {coachTip && (
-          <div className="mt-10 grid w-full max-w-[480px] grid-cols-[36px_1fr] gap-3.5 rounded-2xl border border-white/10 bg-white/[0.05] p-5 text-left">
+          <div className="mt-10 grid w-full max-w-[480px] grid-cols-[36px_1fr] gap-4 rounded-2xl border border-white/10 bg-white/[0.05] p-6 text-left">
             <div className="grid h-9 w-9 place-items-center rounded-full bg-accent font-sans text-[13px] font-bold text-accent-foreground">
               {coachTip.initials}
             </div>
@@ -158,7 +158,7 @@ export function LiveIntroModal({
       <div className="relative z-10 flex items-center justify-center px-4 pb-safe pt-4 sm:px-6 sm:pb-8">
         <Link
           href={href}
-          className="inline-flex h-16 w-full max-w-[320px] items-center justify-center gap-3 rounded-2xl bg-accent font-sans text-[18px] font-semibold text-accent-foreground transition-transform hover:opacity-95 active:scale-[0.98]"
+          className="inline-flex h-16 w-full max-w-[320px] items-center justify-center gap-2 rounded-2xl bg-accent font-sans text-[18px] font-semibold text-accent-foreground transition-transform hover:opacity-95 active:scale-[0.98]"
           style={{
             boxShadow:
               "0 0 0 1px rgba(209,248,67,0.5), 0 16px 32px rgba(209,248,67,0.18)",

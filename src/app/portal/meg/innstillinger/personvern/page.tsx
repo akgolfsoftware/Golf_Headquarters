@@ -25,7 +25,7 @@ export default async function PersonvernPage() {
       />
 
       <section className="space-y-4">
-        <div className="rounded-2xl border border-border bg-card p-5">
+        <div className="rounded-2xl border border-border bg-card p-6">
           <div className="flex items-start gap-4">
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-accent">
               <Download className="h-5 w-5" strokeWidth={1.75} />
@@ -44,7 +44,7 @@ export default async function PersonvernPage() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-5">
+        <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-6">
           <div className="flex items-start gap-4">
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-destructive text-destructive-foreground">
               <Trash2 className="h-5 w-5" strokeWidth={1.75} />
@@ -65,14 +65,14 @@ export default async function PersonvernPage() {
         </div>
       </section>
 
-      <section className="rounded-2xl border border-border bg-card p-5">
+      <section className="rounded-2xl border border-border bg-card p-6">
         <div className="flex items-center gap-2">
           <Shield className="h-4 w-4 text-primary" strokeWidth={1.75} />
           <h3 className="font-display text-sm font-semibold">
             Hvordan vi behandler dine data
           </h3>
         </div>
-        <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+        <ul className="mt-2 space-y-2 text-sm text-muted-foreground">
           <li className="flex items-start gap-2">
             <Lock className="h-4 w-4 shrink-0 text-primary mt-0.5" strokeWidth={1.75} />
             <span>

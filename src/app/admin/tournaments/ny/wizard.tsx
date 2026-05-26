@@ -249,14 +249,14 @@ export function NyTurneringWizard({ courses }: { courses: Course[] }) {
         {error && (
           <div
             role="alert"
-            className="mt-6 rounded-md border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+            className="mt-6 rounded-md border border-destructive/40 bg-destructive/10 px-4 py-2 text-sm text-destructive"
           >
             {error}
           </div>
         )}
       </div>
 
-      <div className="sticky bottom-4 z-10 flex flex-wrap items-center justify-between gap-3 rounded-2xl sm:rounded-full border border-border bg-card/95 px-3 sm:px-4 py-3 shadow-lg backdrop-blur">
+      <div className="sticky bottom-4 z-10 flex flex-wrap items-center justify-between gap-2 rounded-2xl sm:rounded-full border border-border bg-card/95 px-4 sm:px-4 py-2 shadow-lg backdrop-blur">
         <Link
           href="/admin/tournaments"
           className="inline-flex h-11 items-center gap-2 rounded-full border border-input bg-card px-4 text-xs font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
@@ -282,7 +282,7 @@ export function NyTurneringWizard({ courses }: { courses: Course[] }) {
               type="button"
               onClick={neste}
               disabled={pending || !!stepError}
-              className="inline-flex h-11 items-center gap-2 rounded-full bg-primary px-5 text-xs font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
+              className="inline-flex h-11 items-center gap-2 rounded-full bg-primary px-6 text-xs font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
             >
               Neste
               <ArrowRight className="h-4 w-4" strokeWidth={ICON_STROKE} aria-hidden />
@@ -292,7 +292,7 @@ export function NyTurneringWizard({ courses }: { courses: Course[] }) {
               type="button"
               onClick={submit}
               disabled={pending}
-              className="inline-flex h-11 items-center gap-2 rounded-full bg-primary px-5 text-xs font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
+              className="inline-flex h-11 items-center gap-2 rounded-full bg-primary px-6 text-xs font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
             >
               <Check className="h-4 w-4" strokeWidth={ICON_STROKE} aria-hidden />
               {pending ? "Oppretter…" : "Opprett turnering"}
@@ -413,7 +413,7 @@ function TypeKort({
       onClick={onClick}
       aria-pressed={aktiv}
       className={[
-        "flex flex-col gap-3 rounded-xl border p-6 text-left transition-colors",
+        "flex flex-col gap-2 rounded-xl border p-6 text-left transition-colors",
         aktiv
           ? "border-primary bg-primary/5 ring-2 ring-primary/30"
           : "border-border bg-card hover:bg-secondary/40",
@@ -452,7 +452,7 @@ function StegDetaljer({
         title="Detaljer"
         sub="Navn, datoer og hvor turneringen spilles. Du kan velge bane fra listen eller skrive inn manuelt for eksterne event."
       />
-      <div className="grid gap-5 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2">
         <Felt label="Navn på turnering" required>
           <input
             type="text"
@@ -597,7 +597,7 @@ function StegFormat({
         </div>
       </Felt>
 
-      <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-border bg-secondary/30 p-4">
+      <label className="flex cursor-pointer items-center gap-2 rounded-xl border border-border bg-secondary/30 p-4">
         <input
           type="checkbox"
           checked={state.hasCut}
@@ -632,7 +632,7 @@ function StegPaamelding({
         title="Påmelding"
         sub="Frist, kapasitet og pris. Du kan invitere spillere fra stallen senere."
       />
-      <div className="grid gap-5 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2">
         <Felt label="Påmeldingsfrist">
           <input
             type="date"
@@ -683,7 +683,7 @@ function StegPaamelding({
         </Felt>
       </div>
 
-      <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-border bg-secondary/30 p-4">
+      <label className="flex cursor-pointer items-center gap-2 rounded-xl border border-border bg-secondary/30 p-4">
         <input
           type="checkbox"
           checked={state.sendInvitations}
@@ -773,7 +773,7 @@ function StegBekreft({
         </div>
       )}
 
-      <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-border bg-secondary/30 p-4">
+      <label className="flex cursor-pointer items-center gap-2 rounded-xl border border-border bg-secondary/30 p-4">
         <input
           type="checkbox"
           checked={state.sendInvitations}

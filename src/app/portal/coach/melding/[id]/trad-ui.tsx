@@ -75,7 +75,7 @@ export function TradUi({
           return (
             <div key={m.id}>
               {showDate && (
-                <div className="my-4 flex items-center gap-3">
+                <div className="my-4 flex items-center gap-2">
                   <span className="h-px flex-1 bg-border" />
                   <span className="font-mono text-[10.5px] uppercase tracking-[0.10em] text-muted-foreground">
                     {new Date(m.ts).toLocaleDateString("nb-NO", {
@@ -97,7 +97,7 @@ export function TradUi({
           );
         })}
 
-        <div className="flex items-center gap-3 pl-2 pt-2 text-[11px] text-muted-foreground">
+        <div className="flex items-center gap-2 pl-2 pt-2 text-[11px] text-muted-foreground">
           <div className="grid h-7 w-7 place-items-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground">
             {coachInitials}
           </div>
@@ -111,7 +111,7 @@ export function TradUi({
       </main>
 
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card/95 backdrop-blur">
-        <div className="mx-auto max-w-[880px] px-4 py-3 sm:px-6">
+        <div className="mx-auto max-w-[880px] px-4 py-2 sm:px-6">
           <div className="mb-2 flex flex-wrap gap-2">
             {QUICK_REPLIES.map((r) => (
               <button
@@ -151,7 +151,7 @@ export function TradUi({
               <Send className="h-4 w-4" strokeWidth={1.75} />
             </button>
           </div>
-          <div className="mt-1.5 flex items-center gap-3 px-1 font-mono text-[9.5px] uppercase tracking-[0.08em] text-muted-foreground/70">
+          <div className="mt-1.5 flex items-center gap-2 px-1 font-mono text-[9.5px] uppercase tracking-[0.08em] text-muted-foreground/70">
             <span>↵ Send · ⇧↵ Ny linje</span>
             <span className="ml-auto">End-to-end kryptert</span>
           </div>
@@ -179,7 +179,7 @@ function Bubble({
   });
 
   return (
-    <div className={`flex gap-3 ${isMe ? "justify-end" : ""}`}>
+    <div className={`flex gap-2 ${isMe ? "justify-end" : ""}`}>
       {!isMe && (
         <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary text-[11px] font-semibold text-primary-foreground">
           {coachInitials}
@@ -198,7 +198,7 @@ function Bubble({
           {isMe && <CheckCheck className="h-3 w-3 text-primary" strokeWidth={2} />}
         </div>
         <div
-          className={`whitespace-pre-line rounded-2xl px-4 py-3 text-[14px] leading-relaxed ${
+          className={`whitespace-pre-line rounded-2xl px-4 py-2 text-[14px] leading-relaxed ${
             isMe
               ? "rounded-tr-md bg-primary text-primary-foreground"
               : "rounded-tl-md border border-border bg-card text-foreground"

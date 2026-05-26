@@ -217,7 +217,7 @@ export function SubscriptionsForm({ rows }: { rows: SubscriptionRow[] }) {
           {rows.map((rad) => (
             <li
               key={rad.id}
-              className="flex items-center gap-4 px-6 py-3 hover:bg-muted/30"
+              className="flex items-center gap-4 px-6 py-2 hover:bg-muted/30"
             >
               <input
                 type="radio"
@@ -230,7 +230,7 @@ export function SubscriptionsForm({ rows }: { rows: SubscriptionRow[] }) {
               />
               <label
                 htmlFor={`push-${rad.id}`}
-                className={`flex flex-1 cursor-pointer items-center gap-3 ${
+                className={`flex flex-1 cursor-pointer items-center gap-2 ${
                   rad.lastError ? "cursor-not-allowed opacity-50" : ""
                 }`}
               >
@@ -277,7 +277,7 @@ export function SubscriptionsForm({ rows }: { rows: SubscriptionRow[] }) {
           {rows.map((rad) => (
             <li
               key={rad.id}
-              className="flex items-center gap-4 px-6 py-3 hover:bg-muted/30"
+              className="flex items-center gap-4 px-6 py-2 hover:bg-muted/30"
             >
               <input
                 type="checkbox"
@@ -289,7 +289,7 @@ export function SubscriptionsForm({ rows }: { rows: SubscriptionRow[] }) {
               />
               <label
                 htmlFor={`pull-${rad.id}`}
-                className={`flex flex-1 cursor-pointer items-center gap-3 ${
+                className={`flex flex-1 cursor-pointer items-center gap-2 ${
                   rad.lastError ? "cursor-not-allowed opacity-50" : ""
                 }`}
               >

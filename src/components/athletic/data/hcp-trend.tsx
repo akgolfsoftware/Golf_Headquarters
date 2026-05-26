@@ -25,8 +25,8 @@ export function HcpTrend({
   const delta = latest != null && first != null ? latest - first : 0;
 
   return (
-    <div className={cn("rounded-2xl border border-border bg-card p-4 md:p-5", className)}>
-      <div className="mb-4 flex items-baseline justify-between gap-3">
+    <div className={cn("rounded-2xl border border-border bg-card p-4 md:p-6", className)}>
+      <div className="mb-4 flex items-baseline justify-between gap-2">
         <h3 className="font-display text-xl font-bold tracking-[-0.015em]">{title}</h3>
         <div className="flex items-baseline gap-4 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
           <span>
@@ -95,7 +95,7 @@ export function HcpTrend({
       </div>
 
       {(startHcp != null || goalHcp != null) && (
-        <div className="mt-3 flex items-center justify-between font-mono text-[9px] uppercase tracking-[0.08em] text-muted-foreground">
+        <div className="mt-2 flex items-center justify-between font-mono text-[9px] uppercase tracking-[0.08em] text-muted-foreground">
           {startHcp != null && <span>Start: {startHcp.toFixed(1)}</span>}
           {goalHcp != null && <span>Mål: {goalHcp.toFixed(1)}</span>}
         </div>

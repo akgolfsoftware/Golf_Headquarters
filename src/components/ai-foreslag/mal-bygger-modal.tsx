@@ -189,13 +189,13 @@ export function AIMalByggerModal({
       <Stepper step={step} />
 
       {step === 1 ? (
-        <div className="mt-5 space-y-5">
+        <div className="mt-5 space-y-6">
           <Field label="Hva vil du oppnå?">
             <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
               rows={3}
-              className="w-full rounded-md border border-input bg-card p-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="w-full rounded-md border border-input bg-card p-4 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               placeholder="F.eks. «Bli scratch innen sommeren» eller «Topp-10 på Olyo Tour i juni»"
             />
           </Field>
@@ -209,7 +209,7 @@ export function AIMalByggerModal({
                     key={t}
                     type="button"
                     onClick={() => toggleType(t)}
-                    className={`font-mono rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.06em] transition ${
+                    className={`font-mono rounded-full border px-4 py-1 text-[11px] font-semibold uppercase tracking-[0.06em] transition ${
                       active
                         ? "border-primary bg-primary text-accent"
                         : "border-border bg-card text-muted-foreground"
@@ -241,7 +241,7 @@ export function AIMalByggerModal({
             </div>
           </Field>
 
-          <div className="flex items-start gap-3 rounded-xl border border-accent/50 bg-accent/10 p-4">
+          <div className="flex items-start gap-2 rounded-xl border border-accent/50 bg-accent/10 p-4">
             <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
             <div className="text-sm leading-relaxed">
               <strong>AI vil bruke:</strong> dine SG-tall siste 90 dg, planlagte
@@ -269,8 +269,8 @@ export function AIMalByggerModal({
       ) : null}
 
       {step === 3 ? (
-        <div className="mt-5 space-y-3">
-          <div className="flex items-start gap-3 rounded-xl border border-accent/50 bg-accent/10 p-4">
+        <div className="mt-5 space-y-2">
+          <div className="flex items-start gap-2 rounded-xl border border-accent/50 bg-accent/10 p-4">
             <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
             <div className="text-sm leading-relaxed">
               <strong>5 mål basert på {timeline} input.</strong> Velg de du vil committe
@@ -359,7 +359,7 @@ function GoalRow({
     <button
       type="button"
       onClick={onToggle}
-      className={`flex w-full items-start gap-3.5 rounded-xl border p-4 text-left transition ${
+      className={`flex w-full items-start gap-4 rounded-xl border p-4 text-left transition ${
         picked
           ? "border-primary bg-primary/[0.04]"
           : "border-border bg-card hover:bg-muted/40"

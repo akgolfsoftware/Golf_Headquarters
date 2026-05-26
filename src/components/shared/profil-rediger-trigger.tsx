@@ -46,8 +46,8 @@ export function ProfilRedigerTrigger({
     primary:
       "rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90",
     ghost:
-      "rounded-md border border-border bg-card px-3 py-1.5 text-sm font-medium text-foreground hover:bg-secondary",
-    pill: "rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground hover:bg-secondary hover:text-foreground",
+      "rounded-md border border-border bg-card px-4 py-1.5 text-sm font-medium text-foreground hover:bg-secondary",
+    pill: "rounded-full border border-border bg-card px-4 py-1 text-xs font-medium text-muted-foreground hover:bg-secondary hover:text-foreground",
     icon: "grid h-9 w-9 place-items-center rounded-full border border-border bg-card text-muted-foreground hover:bg-secondary hover:text-foreground",
   };
 

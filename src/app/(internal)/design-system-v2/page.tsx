@@ -95,7 +95,7 @@ function ComponentShowcase({
         </code>
       </div>
       {variantLabel && (
-        <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+        <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           {variantLabel}
         </p>
       )}
@@ -164,7 +164,7 @@ export default function DesignSystemV2Page() {
       {/* ── Sticky ToC sidebar (desktop) ──────────────────────────── */}
       <div className="hidden xl:block fixed left-0 top-12 bottom-0 w-48 border-r border-border bg-card/50 overflow-y-auto z-10">
         <nav className="p-4 flex flex-col gap-1">
-          <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground mb-3">
+          <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground mb-2">
             Innhold
           </p>
           {TOC_ITEMS.map((item) => (
@@ -189,7 +189,7 @@ export default function DesignSystemV2Page() {
 
       {/* ── Mobile ToC (accordion) ────────────────────────────────── */}
       <details className="xl:hidden border-b border-border bg-card">
-        <summary className="cursor-pointer px-4 py-3 font-mono text-[11px] uppercase tracking-[0.10em] text-muted-foreground list-none flex items-center justify-between">
+        <summary className="cursor-pointer px-4 py-2 font-mono text-[11px] uppercase tracking-[0.10em] text-muted-foreground list-none flex items-center justify-between">
           Innhold
           <span className="text-xs">▼</span>
         </summary>
@@ -229,7 +229,7 @@ export default function DesignSystemV2Page() {
                 <a
                   key={item.id}
                   href={`#${item.id}`}
-                  className="inline-flex items-center px-3 py-1 rounded-full border border-border font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors duration-150"
+                  className="inline-flex items-center px-4 py-1 rounded-full border border-border font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors duration-150"
                 >
                   {item.label}
                 </a>
@@ -817,7 +817,7 @@ export default function DesignSystemV2Page() {
             >
               <div className="grid sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground mb-3">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground mb-2">
                     List-items (CoachMessage)
                   </p>
                   <div className="rounded-xl border border-border divide-y divide-border overflow-hidden">
@@ -832,7 +832,7 @@ export default function DesignSystemV2Page() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground mb-3">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground mb-2">
                     Detalj (CoachMessageDetail)
                   </p>
                   <div className="rounded-xl border border-border p-4">
@@ -947,7 +947,7 @@ export default function DesignSystemV2Page() {
                 <button
                   type="button"
                   onClick={() => setModalOpen(true)}
-                  className="inline-flex items-center gap-2 px-5 py-[10px] rounded-full font-mono text-[11px] font-bold uppercase tracking-[0.10em] border border-border text-foreground transition-colors duration-150 hover:bg-foreground hover:text-background"
+                  className="inline-flex items-center gap-2 px-6 py-[10px] rounded-full font-mono text-[11px] font-bold uppercase tracking-[0.10em] border border-border text-foreground transition-colors duration-150 hover:bg-foreground hover:text-background"
                   style={{ background: "var(--card)" }}
                 >
                   Apne StubModal

@@ -282,7 +282,7 @@ export function TemplateEditor({ initial }: { initial: EditorInitialData }) {
       {(serverFeil || serverOk) && (
         <div
           role="alert"
-          className={`rounded-md border px-4 py-3 text-sm ${
+          className={`rounded-md border px-4 py-2 text-sm ${
             serverFeil
               ? "border-destructive/40 bg-destructive/5 text-destructive"
               : "border-primary/40 bg-primary/5 text-primary"
@@ -343,7 +343,7 @@ export function TemplateEditor({ initial }: { initial: EditorInitialData }) {
           {PLAN_FASER.map((f, i) => (
             <div
               key={f.key}
-              className="rounded-lg border border-border bg-background p-3"
+              className="rounded-lg border border-border bg-background p-4"
             >
               <div className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
                 Fase {i + 1}
@@ -357,7 +357,7 @@ export function TemplateEditor({ initial }: { initial: EditorInitialData }) {
             </div>
           ))}
         </div>
-        <p className="mt-3 text-xs text-muted-foreground">
+        <p className="mt-2 text-xs text-muted-foreground">
           Selve fase-utvalget gjøres av coach i plan-bygger-wizard når malen
           brukes — malen styrer kun allokering og uke-skjema.
         </p>
@@ -375,7 +375,7 @@ export function TemplateEditor({ initial }: { initial: EditorInitialData }) {
             return (
               <div
                 key={key}
-                className="border-b border-border py-3 last:border-b-0"
+                className="border-b border-border py-2 last:border-b-0"
               >
                 <div className="grid grid-cols-[100px_1fr_60px] items-center gap-4">
                   <div>
@@ -452,7 +452,7 @@ export function TemplateEditor({ initial }: { initial: EditorInitialData }) {
             step={15}
           />
         </div>
-        <div className="mt-4 rounded-md border border-border bg-secondary/40 px-4 py-3 text-sm">
+        <div className="mt-4 rounded-md border border-border bg-secondary/40 px-4 py-2 text-sm">
           Estimert volum:{" "}
           <span className="font-mono font-semibold tabular-nums">
             {ukeSkjema.okterPerUke * weeks}
@@ -504,7 +504,7 @@ export function TemplateEditor({ initial }: { initial: EditorInitialData }) {
             placeholder="F.eks. fungerer best for B1-spillere i tapering-fase…"
           />
         </label>
-        <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-lg border border-border bg-card p-4 transition-colors hover:bg-secondary/40">
+        <label className="mt-4 flex cursor-pointer items-start gap-2 rounded-lg border border-border bg-card p-4 transition-colors hover:bg-secondary/40">
           <input
             type="checkbox"
             checked={isDefault}
@@ -525,7 +525,7 @@ export function TemplateEditor({ initial }: { initial: EditorInitialData }) {
       </Seksjon>
 
       {/* Versjon + slett */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-card px-4 py-3">
+      <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border bg-card px-4 py-2">
         <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           Opprettet{" "}
           {new Date(initial.createdAt).toLocaleDateString("nb-NO")} · Sist

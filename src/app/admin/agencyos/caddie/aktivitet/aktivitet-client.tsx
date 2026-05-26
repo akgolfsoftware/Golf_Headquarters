@@ -119,7 +119,7 @@ export function CaddieAktivitetClient({
         titleItalic="aktivitet"
         sub={`I dag · ${stats.total} hendelser · ${stats.ok} godkjent · ${stats.rej} avvist · ${stats.wait} venter · snitt-konfidens ${(stats.conf * 100).toFixed(0)} %`}
         actions={
-          <span className="inline-flex items-center gap-2 rounded-full bg-accent/40 px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-accent-foreground">
+          <span className="inline-flex items-center gap-2 rounded-full bg-accent/40 px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-accent-foreground">
             <span className="relative flex h-1.5 w-1.5">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60" />
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
@@ -193,7 +193,7 @@ export function CaddieAktivitetClient({
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1.5fr_1fr]">
         {/* Live-feed tidslinje */}
         <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
-          <div className="flex items-center gap-3 border-b border-border px-5 py-4">
+          <div className="flex items-center gap-2 border-b border-border px-6 py-4">
             <h2 className="font-display text-base font-semibold tracking-tight">
               Live-feed{" "}
               <em className="font-normal italic text-primary">siste 24 timer</em>
@@ -203,7 +203,7 @@ export function CaddieAktivitetClient({
             </span>
           </div>
 
-          <div className="max-h-[760px] overflow-y-auto px-2 pb-3">
+          <div className="max-h-[760px] overflow-y-auto px-2 pb-2">
             {grouped.length === 0 ? (
               <div className="px-6 py-16 text-center text-sm text-muted-foreground">
                 Ingen hendelser matcher filtrene.
@@ -211,7 +211,7 @@ export function CaddieAktivitetClient({
             ) : (
               grouped.map((g) => (
                 <section key={g.key}>
-                  <div className="sticky top-0 z-10 bg-card px-4 pt-3 pb-2 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+                  <div className="sticky top-0 z-10 bg-card px-4 pt-2 pb-2 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
                     {g.label}
                     <span className="ml-2 font-semibold text-foreground">
                       {g.events.length} hendelser
@@ -228,7 +228,7 @@ export function CaddieAktivitetClient({
                             onClick={() =>
                               setExpandedId(open ? null : ev.id)
                             }
-                            className={`grid w-full grid-cols-[60px_auto_1fr_auto] items-center gap-3 rounded-md px-3 py-3 text-left transition-colors hover:bg-secondary/50 ${
+                            className={`grid w-full grid-cols-[60px_auto_1fr_auto] items-center gap-2 rounded-md px-4 py-2 text-left transition-colors hover:bg-secondary/50 ${
                               isFresh(ev.at, nowMs) ? "bg-accent/10" : ""
                             }`}
                           >
@@ -267,7 +267,7 @@ export function CaddieAktivitetClient({
                           </button>
 
                           {open && (
-                            <div className="ml-[68px] mr-3 mb-3 rounded-md border border-border bg-background p-4">
+                            <div className="ml-[68px] mr-2 mb-2 rounded-md border border-border bg-background p-4">
                               <h4 className="font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
                                 Full samtale-kontekst
                               </h4>
@@ -277,7 +277,7 @@ export function CaddieAktivitetClient({
                                 Bruk knappene for å markere oppfølging — coach-
                                 handlingen logges på saken.
                               </p>
-                              <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                              <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
                                 <Meta k="Konfidens" v={ev.confidence.toFixed(2)} />
                                 <Meta k="Agent" v="AI-Caddie" />
                                 <Meta
@@ -293,7 +293,7 @@ export function CaddieAktivitetClient({
                                     e.stopPropagation();
                                     toggleFollowup(ev.id, "followed");
                                   }}
-                                  className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+                                  className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-xs font-medium transition-colors ${
                                     fu === "followed"
                                       ? "border-primary bg-primary text-primary-foreground"
                                       : "border-border bg-card text-foreground hover:border-primary hover:text-primary"
@@ -308,7 +308,7 @@ export function CaddieAktivitetClient({
                                     e.stopPropagation();
                                     toggleFollowup(ev.id, "ignored");
                                   }}
-                                  className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+                                  className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-xs font-medium transition-colors ${
                                     fu === "ignored"
                                       ? "border-destructive bg-destructive text-destructive-foreground"
                                       : "border-border bg-card text-foreground hover:border-destructive hover:text-destructive"
@@ -342,7 +342,7 @@ export function CaddieAktivitetClient({
             <span className="font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-accent/70">
               I dag · nøkkeltall
             </span>
-            <div className="mt-3 space-y-0">
+            <div className="mt-2 space-y-0">
               <KpiRow k="Forslag totalt" v={String(stats.total)} />
               <KpiRow
                 k="Godkjenningsrate"
@@ -354,18 +354,18 @@ export function CaddieAktivitetClient({
           </div>
 
           {/* Mest aktive spillere */}
-          <div className="rounded-lg border border-border bg-card p-5">
+          <div className="rounded-lg border border-border bg-card p-6">
             <h3 className="font-display text-sm font-semibold tracking-tight">
               Mest aktive spillere · 7d
             </h3>
             <p className="mt-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
               Flest AI-interaksjoner
             </p>
-            <ul className="mt-3 divide-y divide-border">
+            <ul className="mt-2 divide-y divide-border">
               {TOP_PLAYERS.map((p, i) => (
                 <li
                   key={p.name}
-                  className="grid grid-cols-[24px_28px_1fr_auto] items-center gap-3 py-2"
+                  className="grid grid-cols-[24px_28px_1fr_auto] items-center gap-2 py-2"
                 >
                   <span className="font-mono text-[11px] font-bold text-muted-foreground">
                     {i + 1}
@@ -389,7 +389,7 @@ export function CaddieAktivitetClient({
           </div>
 
           {/* Drill-typer */}
-          <div className="rounded-lg border border-border bg-card p-5">
+          <div className="rounded-lg border border-border bg-card p-6">
             <h3 className="font-display text-sm font-semibold tracking-tight">
               Mest brukte drill-typer · 30d
             </h3>
@@ -420,18 +420,18 @@ export function CaddieAktivitetClient({
           </div>
 
           {/* AI-feil */}
-          <div className="rounded-lg border border-border bg-card p-5">
+          <div className="rounded-lg border border-border bg-card p-6">
             <h3 className="font-display text-sm font-semibold tracking-tight">
               AI-feil · siste 7 dager
             </h3>
             <p className="mt-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
               2 rapporterte tilfeller
             </p>
-            <ul className="mt-3 space-y-2">
+            <ul className="mt-2 space-y-2">
               {AI_ERRORS.map((er) => (
                 <li
                   key={er.title}
-                  className="grid grid-cols-[28px_1fr_auto] items-center gap-3 rounded-md border border-destructive/25 bg-destructive/5 p-3"
+                  className="grid grid-cols-[28px_1fr_auto] items-center gap-2 rounded-md border border-destructive/25 bg-destructive/5 p-4"
                 >
                   <span className="grid h-7 w-7 place-items-center rounded-md bg-destructive/15 text-destructive">
                     <AlertTriangle size={13} strokeWidth={2} />
@@ -611,7 +611,7 @@ function KpiRow({ k, v }: { k: string; v: string }) {
 
 function Meta({ k, v }: { k: string; v: string }) {
   return (
-    <div className="rounded-md bg-card px-3 py-2">
+    <div className="rounded-md bg-card px-4 py-2">
       <span className="block font-mono text-[9.5px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
         {k}
       </span>

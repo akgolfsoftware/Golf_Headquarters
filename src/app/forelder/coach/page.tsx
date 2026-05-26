@@ -31,7 +31,7 @@ export default async function ForelderCoach() {
         cta={
           <a
             href="mailto:support@akgolf.no?subject=Spørsmål%20fra%20foreldre"
-            className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-[13px] font-semibold text-primary-foreground hover:opacity-90"
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2 text-[13px] font-semibold text-primary-foreground hover:opacity-90"
           >
             <Users size={14} strokeWidth={1.5} />
             Kontakt support i mellomtiden

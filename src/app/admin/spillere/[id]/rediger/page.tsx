@@ -67,8 +67,8 @@ export default async function RedigerSpiller({
   return (
     <div className="space-y-6">
       {/* Sub-hero + sticky save-bar */}
-      <div className="sticky top-0 z-20 -mx-4 border-b border-border bg-background/95 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6">
-        <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="sticky top-0 z-20 -mx-4 border-b border-border bg-background/95 px-4 py-2 backdrop-blur sm:-mx-6 sm:px-6">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="min-w-0">
             <Link
               href={`/admin/spillere/${id}`}
@@ -94,7 +94,7 @@ export default async function RedigerSpiller({
             <button
               type="submit"
               form="rediger-form"
-              className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-accent-foreground hover:opacity-90"
+              className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-2 text-sm font-semibold text-accent-foreground hover:opacity-90"
             >
               Lagre
             </button>
@@ -112,7 +112,7 @@ export default async function RedigerSpiller({
         {/* Venstre kol — form */}
         <div className="space-y-6">
           {/* Personalia */}
-          <fieldset className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+          <fieldset className="rounded-2xl border border-border bg-card p-6 sm:p-6">
             <legend className="px-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
               Personalia
             </legend>
@@ -139,7 +139,7 @@ export default async function RedigerSpiller({
           </fieldset>
 
           {/* Coaching */}
-          <fieldset className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+          <fieldset className="rounded-2xl border border-border bg-card p-6 sm:p-6">
             <legend className="px-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
               Coaching
             </legend>
@@ -160,7 +160,7 @@ export default async function RedigerSpiller({
           </fieldset>
 
           {/* Forelder quick-edit */}
-          <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+          <section className="rounded-2xl border border-border bg-card p-6 sm:p-6">
             <div className="mb-4 flex items-baseline justify-between">
               <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                 Foresatte
@@ -178,7 +178,7 @@ export default async function RedigerSpiller({
                 {parents.map((pr) => (
                   <li
                     key={pr.id}
-                    className="flex items-center justify-between gap-3 rounded-xl border border-border bg-background p-3"
+                    className="flex items-center justify-between gap-2 rounded-xl border border-border bg-background p-4"
                   >
                     <div className="min-w-0">
                       <div className="truncate text-sm font-semibold text-foreground">
@@ -203,8 +203,8 @@ export default async function RedigerSpiller({
 
         {/* Høyre kol — endrings-historikk (sticky) */}
         <aside className="space-y-6 lg:sticky lg:top-32 lg:self-start">
-          <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
-            <div className="mb-3 flex items-baseline justify-between">
+          <section className="rounded-2xl border border-border bg-card p-6 sm:p-6">
+            <div className="mb-2 flex items-baseline justify-between">
               <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                 Endrings-historikk
               </div>
@@ -213,15 +213,15 @@ export default async function RedigerSpiller({
               </span>
             </div>
             {history.length === 0 ? (
-              <p className="rounded-md border border-dashed border-border bg-background p-3 text-xs text-muted-foreground">
+              <p className="rounded-md border border-dashed border-border bg-background p-4 text-xs text-muted-foreground">
                 Ingen endringer ennå.
               </p>
             ) : (
-              <ul className="space-y-3">
+              <ul className="space-y-2">
                 {history.map((h) => (
                   <li
                     key={h.id}
-                    className="border-l-2 border-border pl-3"
+                    className="border-l-2 border-border pl-4"
                   >
                     <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
                       {NB_DT.format(h.createdAt)}
@@ -243,8 +243,8 @@ export default async function RedigerSpiller({
       </form>
 
       {/* Sticky bunn-bar */}
-      <div className="sticky bottom-0 z-20 -mx-4 border-t border-border bg-background/95 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6">
-        <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="sticky bottom-0 z-20 -mx-4 border-t border-border bg-background/95 px-4 py-2 backdrop-blur sm:-mx-6 sm:px-6">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <button
             type="button"
             className="inline-flex items-center gap-2 rounded-full border border-destructive/40 bg-transparent px-4 py-2 text-sm font-medium text-destructive hover:bg-destructive/10"
@@ -262,7 +262,7 @@ export default async function RedigerSpiller({
             <button
               type="submit"
               form="rediger-form"
-              className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
             >
               Lagre endringer
             </button>
@@ -301,7 +301,7 @@ function Field({
         name={name}
         defaultValue={defaultValue}
         required={required}
-        className="mt-1.5 block w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-accent"
+        className="mt-1.5 block w-full rounded-md border border-input bg-card px-4 py-2 text-sm text-foreground focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-accent"
       />
       {hint && (
         <span className="mt-1 block font-mono text-[10px] text-muted-foreground">
@@ -332,7 +332,7 @@ function FieldArea({
         name={name}
         defaultValue={defaultValue}
         rows={4}
-        className="mt-1.5 block w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-accent"
+        className="mt-1.5 block w-full rounded-md border border-input bg-card px-4 py-2 text-sm text-foreground focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-accent"
       />
       {hint && (
         <span className="mt-1 block font-mono text-[10px] text-muted-foreground">

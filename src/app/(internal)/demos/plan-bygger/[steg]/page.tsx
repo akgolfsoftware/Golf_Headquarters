@@ -142,7 +142,7 @@ function PageHead({ current }: { current: StegId }) {
 function StepStripe({ current }: { current: StegId }) {
   const currentIdx = STEPS.findIndex((s) => s.num === current);
   return (
-    <div className="mb-6 grid grid-cols-6 gap-3">
+    <div className="mb-6 grid grid-cols-6 gap-2">
       {STEPS.map((s, idx) => {
         const state: "done" | "current" | "todo" =
           idx < currentIdx ? "done" : idx === currentIdx ? "current" : "todo";
@@ -168,7 +168,7 @@ function StepCard({
   const isDone = state === "done";
   return (
     <div
-      className={`relative rounded-[14px] bg-card px-4 py-3.5 ${
+      className={`relative rounded-[14px] bg-card px-4 py-4 ${
         isCurrent ? "border-2 border-accent" : "border border-border"
       }`}
     >
@@ -295,14 +295,14 @@ function Step1() {
         />
         <input
           placeholder="Søk på navn …"
-          className="w-full rounded-md border border-input bg-background px-4 py-3 pl-10 text-[14px] leading-none"
+          className="w-full rounded-md border border-input bg-background px-4 py-2 pl-10 text-[14px] leading-none"
         />
       </div>
 
       <div className="mb-2.5 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
         Foreslått — mangler aktiv plan
       </div>
-      <div className="mb-6 grid grid-cols-3 gap-3">
+      <div className="mb-6 grid grid-cols-3 gap-2">
         <PlayerPickCard initial="M" name="Markus R. Pedersen" pill="Kat A" sub="HCP +2,4" selected />
         <PlayerPickCard initial="H" name="Henrik Nilsen" pill="Pro" sub="HCP 8,7" />
         <PlayerPickCard initial="A" name="Anna Karlsen" pill="Free" sub="HCP 16,8" bg="hsl(var(--warning))" />
@@ -311,7 +311,7 @@ function Step1() {
       <div className="mb-2.5 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
         Alle elever — kategori A og B
       </div>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 gap-2">
         <PlayerPickCard initial="M" name="Mads Rønning" pill="Pro" sub="HCP 9,4" bg="hsl(var(--success))" />
         <PlayerPickCard initial="L" name="Lise Sandberg" pill="Free" sub="HCP 19,5" bg="hsl(var(--muted-foreground))" />
         <PlayerPickCard
@@ -329,7 +329,7 @@ function Step1() {
 
 function FilterChip({ label, count }: { label: string; count: number }) {
   return (
-    <button className="inline-flex items-center gap-1.5 rounded-md border border-border bg-transparent px-3 py-1.5 text-[12px] font-medium text-foreground transition-colors hover:bg-secondary">
+    <button className="inline-flex items-center gap-1.5 rounded-md border border-border bg-transparent px-4 py-1.5 text-[12px] font-medium text-foreground transition-colors hover:bg-secondary">
       {label}
       <span className="text-muted-foreground">{count}</span>
     </button>
@@ -355,7 +355,7 @@ function PlayerPickCard({
 }) {
   return (
     <div
-      className={`flex items-center gap-3 rounded-xl bg-card p-3.5 ${
+      className={`flex items-center gap-2 rounded-xl bg-card p-4 ${
         selected
           ? "border-2 border-accent bg-[rgba(209,248,67,0.08)]"
           : "border border-border hover:bg-secondary/40"
@@ -407,7 +407,7 @@ function Step2() {
         }
       />
 
-      <div className="grid grid-cols-[1fr_360px] gap-5">
+      <div className="grid grid-cols-[1fr_360px] gap-6">
         <section className="rounded-2xl border border-border bg-card px-6 py-6">
           <div className="mb-5">
             <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
@@ -422,7 +422,7 @@ function Step2() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-3.5">
+          <div className="grid grid-cols-2 gap-4">
             <MiniCal title="Mai 2026" weeks="u 18–22" month="mai" />
             <MiniCal title="Juni 2026" weeks="u 23–27" month="jun" />
           </div>
@@ -535,7 +535,7 @@ function MiniCal({ title, weeks, month }: { title: string; weeks: string; month:
 
   return (
     <div className="rounded-xl border border-border bg-card p-4">
-      <div className="mb-3 flex items-center justify-between">
+      <div className="mb-2 flex items-center justify-between">
         <h4 className="font-display text-[14px] font-semibold leading-none">{title}</h4>
         <span className="font-mono text-[11px] text-muted-foreground">{weeks}</span>
       </div>
@@ -574,7 +574,7 @@ function MiniCal({ title, weeks, month }: { title: string; weeks: string; month:
 function Preset({ label, sub, active = false }: { label: string; sub: string; active?: boolean }) {
   return (
     <button
-      className={`rounded-md border px-3 py-2.5 text-center transition-colors ${
+      className={`rounded-md border px-4 py-2.5 text-center transition-colors ${
         active
           ? "border-[var(--brand-primary,#005840)] bg-[var(--brand-primary,#005840)] text-white"
           : "border-border bg-background hover:bg-secondary"
@@ -619,10 +619,10 @@ function Step3() {
             </p>
           </div>
           <div className="flex gap-2">
-            <button className="inline-flex items-center rounded-md border border-border bg-transparent px-3 py-1.5 text-[12px] font-medium hover:bg-secondary">
+            <button className="inline-flex items-center rounded-md border border-border bg-transparent px-4 py-1.5 text-[12px] font-medium hover:bg-secondary">
               + Legg til fase
             </button>
-            <button className="inline-flex items-center rounded-md border border-border bg-transparent px-3 py-1.5 text-[12px] font-medium hover:bg-secondary">
+            <button className="inline-flex items-center rounded-md border border-border bg-transparent px-4 py-1.5 text-[12px] font-medium hover:bg-secondary">
               Tilbakestill
             </button>
           </div>
@@ -664,7 +664,7 @@ function Step3() {
           </div>
         </div>
 
-        <div className="grid grid-cols-5 gap-3">
+        <div className="grid grid-cols-5 gap-2">
           <PhDetailCard
             num="01"
             name="Base"
@@ -786,7 +786,7 @@ function Step4() {
   return (
     <>
       <div
-        className="mb-5 flex items-center gap-3.5 rounded-lg border border-[rgba(0,88,64,0.18)] border-l-4 border-l-[var(--brand-primary,#005840)] px-4 py-3.5"
+        className="mb-5 flex items-center gap-4 rounded-lg border border-[rgba(0,88,64,0.18)] border-l-4 border-l-[var(--brand-primary,#005840)] px-4 py-4"
         style={{
           backgroundImage:
             "linear-gradient(135deg, rgba(0,88,64,0.06) 0%, rgba(209,248,67,0.10) 100%)",
@@ -805,15 +805,15 @@ function Step4() {
             10 % og TEK til 15 % for å gi rom.
           </p>
         </div>
-        <button className="inline-flex items-center rounded-md border border-border bg-transparent px-3.5 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary">
+        <button className="inline-flex items-center rounded-md border border-border bg-transparent px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary">
           Avvis
         </button>
-        <button className="inline-flex items-center rounded-md bg-accent px-3.5 py-2 text-[13px] font-semibold text-[var(--brand-accent-on,#005840)] transition-opacity hover:opacity-90">
+        <button className="inline-flex items-center rounded-md bg-accent px-4 py-2 text-[13px] font-semibold text-[var(--brand-accent-on,#005840)] transition-opacity hover:opacity-90">
           Bruk forslag
         </button>
       </div>
 
-      <div className="grid grid-cols-[1fr_360px] gap-5">
+      <div className="grid grid-cols-[1fr_360px] gap-6">
         <section className="rounded-2xl border border-border bg-card px-6 py-6">
           <div className="mb-4 flex items-start justify-between">
             <div>
@@ -828,7 +828,7 @@ function Step4() {
                 siste 4 uker — for kontekst.
               </p>
             </div>
-            <button className="inline-flex items-center gap-1.5 rounded-md border border-border bg-transparent px-3.5 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary">
+            <button className="inline-flex items-center gap-1.5 rounded-md border border-border bg-transparent px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary">
               <Sparkles className="h-4 w-4" strokeWidth={1.5} />
               AI-forslag
             </button>
@@ -889,7 +889,7 @@ function Step4() {
                 100 %
               </div>
             </div>
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-[var(--status-success-bg,#E5F1EA)] px-3 py-1.5 text-[12px] font-medium text-[var(--status-success,#1A7D56)]">
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-[var(--status-success-bg,#E5F1EA)] px-4 py-1.5 text-[12px] font-medium text-[var(--status-success,#1A7D56)]">
               <Check className="h-3.5 w-3.5" strokeWidth={2.5} />
               Klar for neste steg
             </div>
@@ -935,8 +935,8 @@ function SliderBlock({
   historyLabel: string;
 }) {
   return (
-    <div className="border-b border-[var(--line-soft,#EFEDE6)] py-3.5 last:border-b-0">
-      <div className="grid grid-cols-[100px_1fr_70px] items-center gap-3.5">
+    <div className="border-b border-[var(--line-soft,#EFEDE6)] py-4 last:border-b-0">
+      <div className="grid grid-cols-[100px_1fr_70px] items-center gap-4">
         <div className="flex items-center gap-2">
           <span className="h-3 w-3 rounded-sm" style={{ background: color }} />
           <div>
@@ -1133,16 +1133,16 @@ function Step5() {
             </h3>
           </div>
           <div className="flex gap-2">
-            <button className="inline-flex items-center rounded-md border border-border bg-transparent px-3 py-1.5 text-[12px] font-medium hover:bg-secondary">
+            <button className="inline-flex items-center rounded-md border border-border bg-transparent px-4 py-1.5 text-[12px] font-medium hover:bg-secondary">
               Filter: alle
             </button>
-            <button className="inline-flex items-center rounded-md border border-border bg-transparent px-3 py-1.5 text-[12px] font-medium hover:bg-secondary">
+            <button className="inline-flex items-center rounded-md border border-border bg-transparent px-4 py-1.5 text-[12px] font-medium hover:bg-secondary">
               + Legg til økt
             </button>
           </div>
         </div>
 
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2">
           {weeks.map((w) => (
             <WeekRow key={w.name} {...w} />
           ))}
@@ -1166,7 +1166,7 @@ type WeekProps = {
 function WeekRow({ name, range, phase, phaseColor, phaseBg, days }: WeekProps) {
   return (
     <div className="rounded-xl border border-border bg-card p-4">
-      <div className="mb-3 flex items-center justify-between">
+      <div className="mb-2 flex items-center justify-between">
         <div className="text-[13px] font-semibold leading-none">
           <b className="mr-2 font-mono">{name}</b>
           <span className="font-normal text-muted-foreground">{range}</span>
@@ -1227,7 +1227,7 @@ function Step6() {
   return (
     <>
       <div
-        className="mb-5 rounded-2xl px-9 py-8 text-white"
+        className="mb-5 rounded-2xl px-8 py-8 text-white"
         style={{
           background: "linear-gradient(135deg, #005840 0%, #006B4F 100%)",
         }}
@@ -1285,7 +1285,7 @@ function Step6() {
         <div className="mb-2.5 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
           Varselforhåndsvisning — det Markus vil se
         </div>
-        <div className="rounded-xl border border-border bg-card p-5">
+        <div className="rounded-xl border border-border bg-card p-6">
           <div className="mb-2 text-[11px] leading-none text-muted-foreground">
             Fra Anders K. · i kveld kl 21:30
           </div>
@@ -1314,8 +1314,8 @@ function SumBlock({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-5">
-      <h4 className="mb-3.5 flex items-center justify-between font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+    <div className="rounded-xl border border-border bg-card p-6">
+      <h4 className="mb-2.5 flex items-center justify-between font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
         <span>{title}</span>
         {editHref && (
           <Link
@@ -1361,7 +1361,7 @@ function SumRow({
 function AgentStrip({ label, body }: { label: string; body: React.ReactNode }) {
   return (
     <div
-      className="mb-5 flex items-center gap-3.5 rounded-lg border border-[rgba(0,88,64,0.18)] border-l-4 border-l-[var(--brand-primary,#005840)] px-4 py-3.5"
+      className="mb-5 flex items-center gap-4 rounded-lg border border-[rgba(0,88,64,0.18)] border-l-4 border-l-[var(--brand-primary,#005840)] px-4 py-4"
       style={{
         backgroundImage:
           "linear-gradient(135deg, rgba(0,88,64,0.06) 0%, rgba(209,248,67,0.10) 100%)",
@@ -1376,7 +1376,7 @@ function AgentStrip({ label, body }: { label: string; body: React.ReactNode }) {
         </div>
         <p className="mt-1 max-w-[720px] text-[13px] leading-[1.5] text-foreground">{body}</p>
       </div>
-      <button className="inline-flex items-center rounded-md bg-accent px-3.5 py-2 text-[13px] font-semibold text-[var(--brand-accent-on,#005840)] transition-opacity hover:opacity-90">
+      <button className="inline-flex items-center rounded-md bg-accent px-4 py-2 text-[13px] font-semibold text-[var(--brand-accent-on,#005840)] transition-opacity hover:opacity-90">
         Bruk forslag
       </button>
     </div>
@@ -1385,8 +1385,8 @@ function AgentStrip({ label, body }: { label: string; body: React.ReactNode }) {
 
 function SideCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-2xl border border-border bg-card px-5 py-5">
-      <h4 className="mb-3 font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+    <div className="rounded-2xl border border-border bg-card px-6 py-6">
+      <h4 className="mb-2 font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
         {title}
       </h4>
       {children}
@@ -1396,7 +1396,7 @@ function SideCard({ title, children }: { title: string; children: React.ReactNod
 
 function PlayerMini() {
   return (
-    <div className="mb-4 grid grid-cols-[48px_1fr] items-center gap-3">
+    <div className="mb-4 grid grid-cols-[48px_1fr] items-center gap-2">
       <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--brand-primary,#005840)] font-display text-[16px] font-semibold text-white">
         M
       </div>

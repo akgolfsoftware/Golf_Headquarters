@@ -242,7 +242,7 @@ export default async function AdminPlansList({
           }
         />
       ) : activeView === "kanban" ? (
-        <div className="grid grid-cols-1 gap-3.5 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_0.5fr]">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_0.5fr]">
           <Column status="aktiv" count={aktivPlans.length} plans={aktivPlans} />
           <Column
             status="pause"
@@ -317,7 +317,7 @@ function Column({
 }) {
   return (
     <section
-      className={`flex flex-col gap-2.5 rounded-2xl border border-border p-3.5 ${
+      className={`flex flex-col gap-2.5 rounded-2xl border border-border p-4 ${
         tone === "pause" ? "bg-secondary" : "bg-background"
       } ${collapsed ? "min-h-[64px]" : "min-h-[520px]"}`}
     >

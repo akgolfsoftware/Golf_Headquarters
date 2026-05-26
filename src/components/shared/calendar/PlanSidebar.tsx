@@ -117,7 +117,7 @@ export function PlanSidebar({
         <select
           value={valgtSpillerId ?? ""}
           onChange={(e) => onValgSpiller(e.target.value)}
-          className="h-10 rounded-md border border-input bg-card px-3 text-sm text-foreground focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
+          className="h-10 rounded-md border border-input bg-card px-4 text-sm text-foreground focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
         >
           <option value="" disabled>
             Velg spiller
@@ -133,7 +133,7 @@ export function PlanSidebar({
 
       {/* Periode-status */}
       {periode && (
-        <section className="flex flex-col gap-2 rounded-lg border border-border p-3">
+        <section className="flex flex-col gap-2 rounded-lg border border-border p-4">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-muted-foreground">Aktiv periode</span>
             {planNavn && (
@@ -171,7 +171,7 @@ export function PlanSidebar({
       )}
 
       {/* Stats */}
-      <section className="flex flex-col gap-2 rounded-lg border border-border p-3">
+      <section className="flex flex-col gap-2 rounded-lg border border-border p-4">
         <span className="text-xs font-medium text-muted-foreground">Stats</span>
         <dl className="grid grid-cols-2 gap-2 text-xs">
           <div>
@@ -200,7 +200,7 @@ export function PlanSidebar({
       </section>
 
       {/* Filter */}
-      <section className="flex flex-col gap-2 rounded-lg border border-border p-3">
+      <section className="flex flex-col gap-2 rounded-lg border border-border p-4">
         <button
           type="button"
           onClick={() => setFilterApent((v) => !v)}
@@ -214,7 +214,7 @@ export function PlanSidebar({
         </button>
 
         {filterApent && (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2">
             <div className="flex flex-col gap-1.5">
               <span className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
                 Pyramide

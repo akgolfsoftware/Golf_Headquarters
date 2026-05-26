@@ -60,7 +60,7 @@ export function PeriodVolumeRecipeEditor({ rader, onChange }: Props) {
   const totalMin = rader.reduce((s, r) => s + r.antallPerUke * r.varighetMin, 0);
 
   return (
-    <section className="flex flex-col gap-3 rounded-lg border border-border bg-card p-4">
+    <section className="flex flex-col gap-2 rounded-lg border border-border bg-card p-4">
       <header className="flex items-center justify-between">
         <h3 className="text-sm font-semibold text-foreground">Ukesvolum-resept</h3>
         <span className="font-mono text-xs tabular-nums text-muted-foreground">
@@ -153,7 +153,7 @@ export function PeriodVolumeRecipeEditor({ rader, onChange }: Props) {
           </div>
         ))}
         {rader.length === 0 && (
-          <p className="rounded-md bg-secondary/40 p-3 text-center text-xs text-muted-foreground">
+          <p className="rounded-md bg-secondary/40 p-4 text-center text-xs text-muted-foreground">
             Ingen rader. Legg til første rad nedenfor.
           </p>
         )}
@@ -175,7 +175,7 @@ export function PeriodVolumeRecipeEditor({ rader, onChange }: Props) {
           type="button"
           onClick={leggTilRad}
           className={cn(
-            "inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-3 text-xs font-medium text-primary-foreground hover:bg-primary/90",
+            "inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-4 text-xs font-medium text-primary-foreground hover:bg-primary/90",
           )}
         >
           <Plus size={14} strokeWidth={1.5} />

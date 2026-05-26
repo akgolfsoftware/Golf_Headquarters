@@ -31,8 +31,8 @@ export default async function KommunikasjonPage({ searchParams }: Props) {
     : "innboks";
 
   return (
-    <div className="space-y-5 px-4 py-6 md:px-8 md:py-8 lg:px-12">
-      <section className="flex items-center gap-3">
+    <div className="space-y-6 px-4 py-6 md:px-8 md:py-8 lg:px-12">
+      <section className="flex items-center gap-2">
         <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-accent">
           <Mail className="h-6 w-6" strokeWidth={1.75} />
         </span>
@@ -111,8 +111,8 @@ type CardSpec = {
 
 function SummaryCard({ eyebrow, title, description, href, icon: Icon }: CardSpec) {
   return (
-    <div className="rounded-2xl border border-border bg-card p-5">
-      <div className="flex flex-wrap items-start justify-between gap-3">
+    <div className="rounded-2xl border border-border bg-card p-6">
+      <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
           <AthleticEyebrow>{eyebrow}</AthleticEyebrow>
           <h2 className="font-display mt-1 text-xl font-semibold tracking-tight">

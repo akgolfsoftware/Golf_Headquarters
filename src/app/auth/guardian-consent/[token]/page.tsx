@@ -65,7 +65,7 @@ export default async function GuardianConsentPage({ params }: Props) {
             samtykke
           </em>
         </h1>
-        <p className="mt-3 text-sm text-muted-foreground">
+        <p className="mt-2 text-sm text-muted-foreground">
           For at <strong className="text-foreground">{invitation.player.name}</strong>{" "}
           {playerAge !== null ? `(${playerAge} år)` : ""} skal kunne bruke AK Golf
         </p>
@@ -87,7 +87,7 @@ export default async function GuardianConsentPage({ params }: Props) {
       )}
 
       {/* Info */}
-      <section className="mt-10 rounded-2xl border border-border bg-card p-5 text-sm text-muted-foreground">
+      <section className="mt-10 rounded-2xl border border-border bg-card p-6 text-sm text-muted-foreground">
         <h2 className="font-display mb-2 text-sm font-semibold text-foreground">
           Hva betyr dette samtykket?
         </h2>
@@ -144,7 +144,7 @@ function ExpiredCard({ email }: { email: string }) {
         strokeWidth={1.75}
         style={{ color: "hsl(var(--warning))" }}
       />
-      <h2 className="font-display mt-3 text-lg font-semibold">
+      <h2 className="font-display mt-2 text-lg font-semibold">
         Invitasjonen er utløpt
       </h2>
       <p className="mt-2 text-sm text-muted-foreground">
@@ -159,7 +159,7 @@ function SuccessCard({ playerName }: { playerName: string }) {
   return (
     <div className="rounded-2xl border border-primary/30 bg-primary/5 p-6 text-center">
       <Check className="mx-auto h-8 w-8 text-primary" strokeWidth={1.75} />
-      <h2 className="font-display mt-3 text-lg font-semibold">
+      <h2 className="font-display mt-2 text-lg font-semibold">
         Samtykke allerede gitt
       </h2>
       <p className="mt-2 text-sm text-muted-foreground">

@@ -42,8 +42,8 @@ export function ShotMap({ shots, title = "Shot dispersion", targetLabel = "Mål"
       : 0;
 
   return (
-    <div className={cn("rounded-2xl border border-border bg-card p-4 md:p-5", className)}>
-      <div className="mb-4 flex items-baseline justify-between gap-3">
+    <div className={cn("rounded-2xl border border-border bg-card p-4 md:p-6", className)}>
+      <div className="mb-4 flex items-baseline justify-between gap-2">
         <h3 className="font-display text-xl font-bold tracking-[-0.015em]">{title}</h3>
         <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
           {total} slag · σ lat {stdLateral.toFixed(1)}y
@@ -97,8 +97,8 @@ export function ShotMap({ shots, title = "Shot dispersion", targetLabel = "Mål"
         </span>
       </div>
 
-      <div className="mt-3 flex flex-wrap items-center justify-between gap-3 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
-        <div className="flex flex-wrap items-center gap-3">
+      <div className="mt-2 flex flex-wrap items-center justify-between gap-2 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
+        <div className="flex flex-wrap items-center gap-2">
           {(Object.keys(typeColor) as Array<keyof typeof typeColor>).map((t) => {
             const used = shots.some((s) => s.shotType === t);
             if (!used) return null;

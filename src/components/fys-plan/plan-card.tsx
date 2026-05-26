@@ -37,12 +37,12 @@ export function FysPlanCard({
     <Link
       href={`/portal/tren/fys-plan/${id}`}
       className={cn(
-        "group flex flex-col gap-4 rounded-xl border border-border bg-card p-5 transition-all",
+        "group flex flex-col gap-4 rounded-xl border border-border bg-card p-6 transition-all",
         "hover:border-primary hover:shadow-sm",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
       )}
     >
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex items-start justify-between gap-2">
         <div className="grid h-10 w-10 place-items-center rounded-md bg-secondary text-foreground">
           <Dumbbell size={18} strokeWidth={1.5} aria-hidden />
         </div>
@@ -58,7 +58,7 @@ export function FysPlanCard({
         </p>
       </div>
 
-      <div className="mt-auto flex items-end justify-between gap-3">
+      <div className="mt-auto flex items-end justify-between gap-2">
         <div className="flex gap-4 text-sm">
           <Stat label="Uker" value={ukerCount} />
           <Stat label="Økter" value={okterCount} />

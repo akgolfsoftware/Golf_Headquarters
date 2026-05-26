@@ -170,7 +170,7 @@ export function TournamentEnrollModal({
         }}
         className={
           triggerClass ??
-          "inline-flex h-8 items-center gap-1.5 rounded-md bg-primary px-3 text-xs font-semibold text-primary-foreground hover:opacity-90"
+          "inline-flex h-8 items-center gap-1.5 rounded-md bg-primary px-4 text-xs font-semibold text-primary-foreground hover:opacity-90"
         }
       >
         <UserPlus size={13} strokeWidth={1.75} />
@@ -204,14 +204,14 @@ export function TournamentEnrollModal({
         <div className="max-h-[70vh] overflow-y-auto px-6 py-4">
           {existing.length > 0 && (
             <section className="mb-6">
-              <h3 className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+              <h3 className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                 Påmeldte spillere ({existing.length})
               </h3>
               <ul className="space-y-2">
                 {existing.map((e) => (
                   <li
                     key={e.entryId}
-                    className="flex items-center gap-3 rounded-md border border-border bg-background px-3 py-2"
+                    className="flex items-center gap-2 rounded-md border border-border bg-background px-4 py-2"
                   >
                     <Avatar name={e.name} />
                     <div className="min-w-0 flex-1">
@@ -248,10 +248,10 @@ export function TournamentEnrollModal({
           )}
 
           <section>
-            <h3 className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+            <h3 className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
               Legg til spillere
             </h3>
-            <div className="mb-3 flex items-center gap-2 rounded-md border border-border bg-background px-3 py-2 text-sm">
+            <div className="mb-2 flex items-center gap-2 rounded-md border border-border bg-background px-4 py-2 text-sm">
               <Search size={14} strokeWidth={1.75} className="text-muted-foreground" aria-hidden />
               <input
                 value={query}
@@ -275,7 +275,7 @@ export function TournamentEnrollModal({
                   return (
                     <li
                       key={p.id}
-                      className={`flex items-center gap-3 rounded-md border px-3 py-2 transition-colors ${
+                      className={`flex items-center gap-2 rounded-md border px-4 py-2 transition-colors ${
                         valgtAv
                           ? "border-primary bg-primary/5"
                           : "border-border bg-background"

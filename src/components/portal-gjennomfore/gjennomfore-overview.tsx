@@ -140,7 +140,7 @@ export async function GjennomforeOverview({ userId }: { userId: string }) {
 
   return (
     <div className="space-y-6 px-4 py-6 md:px-8 md:py-8 lg:px-12">
-      <section className="flex items-center gap-3">
+      <section className="flex items-center gap-2">
         <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-accent">
           <Play className="h-6 w-6" strokeWidth={1.75} />
         </span>
@@ -202,7 +202,7 @@ function OversiktKort({
       <h3 className="mt-1 font-display text-xl font-semibold tracking-tight">
         {titel}
       </h3>
-      <div className="mt-4 border-t border-border/50 pt-3">
+      <div className="mt-4 border-t border-border/50 pt-2">
         <p className="text-[14px] font-medium text-foreground">{primaryLine}</p>
         <p className="mt-1 text-[12px] text-muted-foreground">
           {secondaryLine}

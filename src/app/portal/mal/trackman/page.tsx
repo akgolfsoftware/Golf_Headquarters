@@ -127,13 +127,13 @@ export default async function TrackManPage() {
           titleTrail="importert ennå"
           sub="Importer din første økt for å se trajectory, KPI-trender og dispersion-pattern per kølle."
           cta={
-            <div className="space-y-3">
+            <div className="space-y-2">
               <div className="flex flex-wrap gap-2">
                 <TrackmanImportModal variant="primary" label="Importer TrackMan" />
                 <CsvImportModal />
                 <HtmlImportModal />
               </div>
-              <p className="rounded-md bg-secondary px-4 py-3 text-left font-mono text-[11px] leading-relaxed text-muted-foreground">
+              <p className="rounded-md bg-secondary px-4 py-2 text-left font-mono text-[11px] leading-relaxed text-muted-foreground">
                 <strong className="text-foreground">Eksporter fra TrackMan:</strong><br />
                 CSV: Sessions → velg økt → Export → CSV<br />
                 HTML: Åpne Multi Group Report i nettleseren → Lagre som HTML
@@ -191,7 +191,7 @@ export default async function TrackManPage() {
         </div>
 
         {/* ── Action strip ── */}
-        <div className="flex flex-wrap items-center gap-2 rounded-[14px] border border-border bg-card px-4 py-3.5">
+        <div className="flex flex-wrap items-center gap-2 rounded-[14px] border border-border bg-card px-4 py-4">
           <span className="mr-1 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
             Sving-status
           </span>
@@ -203,9 +203,9 @@ export default async function TrackManPage() {
         </div>
 
         {/* ── Bag picker ── */}
-        <section className="rounded-[14px] border border-border bg-card px-[18px] pb-4 pt-3.5">
+        <section className="rounded-[14px] border border-border bg-card px-[18px] pb-4 pt-4">
           {/* Header */}
-          <div className="mb-3 flex items-center gap-3 border-b border-border/60 pb-2.5">
+          <div className="mb-2 flex items-center gap-2 border-b border-border/60 pb-2.5">
             <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} className="h-[18px] w-[18px]">
                 <path d="M14 6a4 4 0 0 0-8 0c0 1 0 2 1 3l-1 12h8l-1-12c1-1 1-2 1-3z"/>
@@ -224,7 +224,7 @@ export default async function TrackManPage() {
                   : "ingen økt ennå"}
               </span>
             </div>
-            <div className="ml-auto flex gap-3.5 font-mono text-[10px] font-semibold uppercase tracking-[0.05em] text-muted-foreground">
+            <div className="ml-auto flex gap-4 font-mono text-[10px] font-semibold uppercase tracking-[0.05em] text-muted-foreground">
               {(["Wood", "Jern", "Wedge", "Putt"] as const).map((label, i) => {
                 const colors = ["#003B2A", "hsl(var(--success))", "hsl(var(--warning))", "hsl(var(--muted-foreground))"];
                 return (
@@ -246,7 +246,7 @@ export default async function TrackManPage() {
         </section>
 
         {/* ── Main 2-column layout ── */}
-        <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1fr_340px]">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_340px]">
 
           {/* Left column */}
           <div className="space-y-4">
@@ -316,14 +316,14 @@ export default async function TrackManPage() {
                 </text>
               </svg>
 
-              <p className="mt-4 border-t border-border pt-3.5 text-[13px] leading-relaxed text-muted-foreground">
+              <p className="mt-4 border-t border-border pt-4 text-[13px] leading-relaxed text-muted-foreground">
                 <b className="text-foreground">Hva endret seg:</b> Apex har sunket fra 24 m til 18 m (lavere ball-flight) og carry har økt fra ca. 152 m til 162 m.
                 Det er bra — du får mer rull og mindre vind-eksponering. Pro-coach Anders K. bekreftet retningen 12. mai.
               </p>
             </section>
 
             {/* KPI strip */}
-            <section className="grid grid-cols-2 gap-3 lg:grid-cols-5">
+            <section className="grid grid-cols-2 gap-2 lg:grid-cols-5">
               <KpiCard label="Snitt carry"  value="162" unit=" m"   delta="+6 m"   deltaTone="success" sub="8 økter"          sparkUp />
               <KpiCard label="Launch"       value="17,4" unit="°"   delta="−1,2°"  deltaTone="info"    sub="target 17–18°"   sparkDown />
               <KpiCard label="Spin"         value="7 280" unit=" rpm" delta="stabilt" deltaTone="flat"  sub="i target" />
@@ -370,7 +370,7 @@ export default async function TrackManPage() {
               <DispersionClient />
 
               {/* Legend */}
-              <div className="mt-3 flex flex-wrap gap-x-3.5 gap-y-1.5 font-mono text-[11px] text-muted-foreground">
+              <div className="mt-2 flex flex-wrap gap-x-3.5 gap-y-1.5 font-mono text-[11px] text-muted-foreground">
                 <LegendDot color="hsl(var(--success))" label="Innenfor 5 % · grønn" />
                 <LegendDot color="hsl(var(--warning))" label="Akseptabelt · gull" />
                 <LegendDot color="hsl(var(--destructive))" label="Utenfor · rød" />
@@ -398,14 +398,14 @@ export default async function TrackManPage() {
                 <CompareRow label="Mot HCP-jevngamle (A2)"    val="82. percentil" valClass="text-primary"  pct={82}  barColor="bg-primary"         sub="A2-snitt 154 m · 82 % under deg" />
                 <CompareRow label="Mot pro-benchmark"         val="−12 m"       valClass="text-warning"  pct={93}  barColor="bg-warning"       sub="PGA tour-snitt 174 m · gap 12 m" />
               </div>
-              <div className="mt-4 rounded-[10px] bg-secondary px-4 py-3 text-[12px] leading-relaxed">
+              <div className="mt-4 rounded-[10px] bg-secondary px-4 py-2 text-[12px] leading-relaxed">
                 For din alder (16) er gapet til pro <b className="font-semibold">mindre enn snitt</b> — du henger med i utviklingen.
               </div>
             </section>
 
             {/* Full session table */}
             <section className="overflow-hidden rounded-lg border border-border bg-card">
-              <div className="space-y-2 border-b border-border px-4 py-4 sm:flex sm:flex-wrap sm:items-start sm:justify-between sm:gap-4 sm:space-y-0 sm:px-6 sm:py-5">
+              <div className="space-y-2 border-b border-border px-4 py-4 sm:flex sm:flex-wrap sm:items-start sm:justify-between sm:gap-4 sm:space-y-0 sm:px-6 sm:py-6">
                 <div>
                   <div className="font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
                     Økt-data · 10. mai 2026 · 19:42 · 52 min · 696 slag
@@ -429,7 +429,7 @@ export default async function TrackManPage() {
                   <button
                     type="button"
                     disabled
-                    className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-1.5 font-mono text-[11px] opacity-60"
+                    className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-4 py-1.5 font-mono text-[11px] opacity-60"
                   >
                     <Download className="h-3.5 w-3.5" />
                     Eksport CSV
@@ -462,7 +462,7 @@ export default async function TrackManPage() {
                         key={row.name}
                         className={`group ${row.highlight ? "bg-primary/[0.04]" : "hover:bg-secondary/50"}`}
                       >
-                        <td className={`whitespace-nowrap px-3 py-2.5 text-left ${row.highlight ? "shadow-[inset_3px_0_0_hsl(var(--primary))] pl-4" : ""}`}>
+                        <td className={`whitespace-nowrap px-4 py-2.5 text-left ${row.highlight ? "shadow-[inset_3px_0_0_hsl(var(--primary))] pl-4" : ""}`}>
                           <div className="flex items-center gap-2">
                             <span className="inline-block h-2 w-2 shrink-0 rounded-full" style={{ background: CATEGORY_COLOR[row.category] }} />
                             <strong className="font-display text-[13px] font-semibold leading-none tracking-[-0.005em] text-foreground">
@@ -480,17 +480,17 @@ export default async function TrackManPage() {
                         <Td>{row.apex}</Td>
                         <Td>{row.sideS}</Td>
                         <Td>{row.totalS}</Td>
-                        <td className="whitespace-nowrap px-3 py-2.5 text-right">
+                        <td className="whitespace-nowrap px-4 py-2.5 text-right">
                           <PctCell pct={row.pct} tone={row.pctTone} />
                         </td>
-                        <td className="whitespace-nowrap px-3 py-2.5 text-right">
+                        <td className="whitespace-nowrap px-4 py-2.5 text-right">
                           <DeltaChip delta={row.delta} tone={row.deltaTone} />
                         </td>
                       </tr>
                     ))}
                     {/* Totals row */}
                     <tr className="border-t-[1.5px] border-border bg-secondary font-semibold">
-                      <td className="px-3 py-2.5 text-left text-[13px]">Totalt / snitt</td>
+                      <td className="px-4 py-2.5 text-left text-[13px]">Totalt / snitt</td>
                       <Td>696</Td>
                       <Td>146 <small className="text-[10px] font-normal text-muted-foreground">m</small></Td>
                       <Td>152 <small className="text-[10px] font-normal text-muted-foreground">m</small></Td>
@@ -501,16 +501,16 @@ export default async function TrackManPage() {
                       <Td>20</Td>
                       <Td>±5,0</Td>
                       <Td>±4,2</Td>
-                      <td className="whitespace-nowrap px-3 py-2.5 text-right"><PctCell pct={80} tone="good" /></td>
-                      <td className="whitespace-nowrap px-3 py-2.5 text-right"><DeltaChip delta="+3 m snitt" tone="up" /></td>
+                      <td className="whitespace-nowrap px-4 py-2.5 text-right"><PctCell pct={80} tone="good" /></td>
+                      <td className="whitespace-nowrap px-4 py-2.5 text-right"><DeltaChip delta="+3 m snitt" tone="up" /></td>
                     </tr>
                   </tbody>
                 </table>
               </div>
 
-              <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border/60 px-6 py-3 font-mono text-[11px] text-muted-foreground">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border/60 px-6 py-2 font-mono text-[11px] text-muted-foreground">
                 <span>Datakilde · TrackMan Performance Studio · CSV importert 10.05 19:48</span>
-                <span className="flex gap-3.5">
+                <span className="flex gap-4">
                   <span>5 % standard = snitt carry × 5 %</span>
                   <span>σ = standard avvik over alle slag</span>
                 </span>
@@ -545,7 +545,7 @@ export default async function TrackManPage() {
               <div className="mb-2 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
                 Driver — launch-justering
               </div>
-              <div className="rounded-lg border-l-[3px] border-l-primary bg-secondary px-3.5 py-3 text-[12px] leading-relaxed">
+              <div className="rounded-lg border-l-[3px] border-l-primary bg-secondary px-4 py-2 text-[12px] leading-relaxed">
                 <b className="font-semibold text-primary">Driver launch nedjustert til 12,8°</b> — innenfor target (12–14°). Carry +9 m siste 30d. Hold setup som det er.
               </div>
             </div>
@@ -554,7 +554,7 @@ export default async function TrackManPage() {
               <div className="mb-2 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
                 7-jern — apex-trend
               </div>
-              <div className="rounded-lg border-l-[3px] border-l-primary bg-secondary px-3.5 py-3 text-[12px] leading-relaxed">
+              <div className="rounded-lg border-l-[3px] border-l-primary bg-secondary px-4 py-2 text-[12px] leading-relaxed">
                 Apex sunket fra 24 m til 18 m. Bedre vind-tolerant slag. <b className="font-semibold text-primary">Smash 1,38</b> — i target.
               </div>
             </div>
@@ -563,7 +563,7 @@ export default async function TrackManPage() {
               <div className="mb-2 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
                 Wedge — spin-variasjon
               </div>
-              <div className="rounded-lg border-l-[3px] bg-[rgba(184,133,42,0.06)] px-3.5 py-3 text-[12px] leading-relaxed"
+              <div className="rounded-lg border-l-[3px] bg-[rgba(184,133,42,0.06)] px-4 py-2 text-[12px] leading-relaxed"
                 style={{ borderLeftColor: "hsl(var(--warning))" }}>
                 <b className="font-semibold text-[#6F4F18]">Spin varierer ±1 200 rpm</b> mellom slag. Coach foreslår: prøv en annen ball-type for bedre konsistens.
               </div>
@@ -573,7 +573,7 @@ export default async function TrackManPage() {
               <div className="mb-2 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
                 Coach-anbefaling
               </div>
-              <blockquote className="rounded-[10px] bg-secondary px-4 py-3 text-[12px] italic leading-relaxed text-muted-foreground">
+              <blockquote className="rounded-[10px] bg-secondary px-4 py-2 text-[12px] italic leading-relaxed text-muted-foreground">
                 «Behold setup på driver. Prøv ny ball-type (Pro V1x) for spin-kontroll på 7-jern og wedge — vi ser på data igjen om 2 uker.»
                 <footer className="mt-2 font-mono text-[10px] not-italic text-muted-foreground/70">
                   — Anders K., Pro-coach
@@ -644,7 +644,7 @@ function BagClub({ club }: { club: Club }) {
   const isActive = club.active;
   return (
     <div
-      className={`relative flex shrink-0 w-16 sm:w-auto cursor-pointer flex-col items-center gap-0.5 rounded-[9px] border px-1 pb-2 pt-3 text-center transition-all ${
+      className={`relative flex shrink-0 w-16 sm:w-auto cursor-pointer flex-col items-center gap-0.5 rounded-[9px] border px-1 pb-2 pt-2 text-center transition-all ${
         isActive
           ? "border-primary bg-primary shadow-lg shadow-primary/20"
           : "border-border bg-secondary hover:-translate-y-0.5 hover:border-muted-foreground/40 hover:shadow-md"
@@ -755,7 +755,7 @@ function CompareRow({
 
 function Th({ children, left, sub }: { children: React.ReactNode; left?: boolean; sub?: string }) {
   return (
-    <th className={`sticky top-0 whitespace-nowrap border-b-[1.5px] border-border bg-secondary px-3 py-2.5 text-[9.5px] font-bold uppercase tracking-[0.08em] text-muted-foreground ${left ? "text-left" : "text-right"}`}>
+    <th className={`sticky top-0 whitespace-nowrap border-b-[1.5px] border-border bg-secondary px-4 py-2.5 text-[9.5px] font-bold uppercase tracking-[0.08em] text-muted-foreground ${left ? "text-left" : "text-right"}`}>
       {children}
       {sub && <small className="mt-0.5 block text-[9px] font-medium normal-case tracking-normal text-muted-foreground/60">{sub}</small>}
     </th>
@@ -764,7 +764,7 @@ function Th({ children, left, sub }: { children: React.ReactNode; left?: boolean
 
 function Td({ children }: { children: React.ReactNode }) {
   return (
-    <td className="whitespace-nowrap border-b border-border/60 px-3 py-2.5 text-right text-foreground">
+    <td className="whitespace-nowrap border-b border-border/60 px-4 py-2.5 text-right text-foreground">
       {children}
     </td>
   );

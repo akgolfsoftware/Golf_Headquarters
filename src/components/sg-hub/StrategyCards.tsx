@@ -64,7 +64,7 @@ export function StrategyCards({
               step={5}
               value={targetM}
               onChange={(e) => setTargetM(Number(e.target.value))}
-              className="mt-3 h-2 w-full cursor-pointer accent-primary"
+              className="mt-2 h-2 w-full cursor-pointer accent-primary"
             />
             <div className="mt-2 flex justify-between font-mono text-[10px] text-muted-foreground">
               <span>20 m</span>
@@ -82,7 +82,7 @@ export function StrategyCards({
                   key={t}
                   type="button"
                   onClick={() => setTolerance(t)}
-                  className={`rounded-full px-3 py-1 font-mono text-xs tabular-nums transition-colors ${
+                  className={`rounded-full px-4 py-1 font-mono text-xs tabular-nums transition-colors ${
                     tolerance === t
                       ? "bg-primary text-primary-foreground"
                       : "text-muted-foreground hover:text-foreground"
@@ -99,7 +99,7 @@ export function StrategyCards({
       {options.length === 0 ? (
         <div className="rounded-xl border border-dashed border-border bg-card/50 p-8 text-center">
           <Target className="mx-auto h-6 w-6 text-muted-foreground/50" />
-          <p className="mt-3 text-sm text-muted-foreground">
+          <p className="mt-2 text-sm text-muted-foreground">
             Ingen køller innenfor ±{tolerance} m fra {formatNumber(targetM, 0)} m.
             Øk toleransen eller importér flere TrackMan-økter.
           </p>
@@ -121,7 +121,7 @@ function OptionCard({ option }: { option: StrategyOption }) {
 
   return (
     <article
-      className={`relative flex flex-col gap-4 rounded-xl border p-5 transition-shadow ${
+      className={`relative flex flex-col gap-4 rounded-xl border p-6 transition-shadow ${
         recommended
           ? "border-primary bg-card shadow-sm ring-1 ring-primary/20"
           : "border-border bg-card"
@@ -148,7 +148,7 @@ function OptionCard({ option }: { option: StrategyOption }) {
         </span>
       </header>
 
-      <div className="grid grid-cols-2 gap-3 text-sm">
+      <div className="grid grid-cols-2 gap-2 text-sm">
         <Stat
           label="Forventet"
           value={`${formatNumber(option.expectedDistance, 0)} m`}
@@ -171,7 +171,7 @@ function OptionCard({ option }: { option: StrategyOption }) {
       </div>
 
       {option.expectedStrokes != null && (
-        <footer className="border-t border-border pt-3">
+        <footer className="border-t border-border pt-2">
           <div className="flex items-center justify-between">
             <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               PGA exp. strokes

@@ -75,7 +75,7 @@ export function ParticipantsList({
     return (
       <div
         className={cn(
-          "rounded-md border border-dashed border-border bg-card/40 px-5 py-6 text-center text-sm text-muted-foreground",
+          "rounded-md border border-dashed border-border bg-card/40 px-6 py-6 text-center text-sm text-muted-foreground",
           className,
         )}
       >
@@ -89,7 +89,7 @@ export function ParticipantsList({
       {participants.map((p) => (
         <li
           key={p.participantId}
-          className="flex items-center gap-3 rounded-md border border-border bg-card px-3 py-2.5"
+          className="flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2.5"
         >
           <div
             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white"

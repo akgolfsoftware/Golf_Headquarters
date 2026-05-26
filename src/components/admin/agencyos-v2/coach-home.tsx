@@ -101,10 +101,10 @@ export function CoachHome(props: CoachHomeProps) {
       </header>
 
       {/* KPI-strip */}
-      <section className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <section className="grid grid-cols-2 gap-2 md:grid-cols-4">
         {/* Featured: Aktive økter */}
         <div
-          className="rounded-2xl p-5 text-white"
+          className="rounded-2xl p-6 text-white"
           style={{
             background: "linear-gradient(135deg, #005840 0%, #003A2A 100%)",
           }}
@@ -144,7 +144,7 @@ export function CoachHome(props: CoachHomeProps) {
       {/* I dag-tidslinje + Brennende oppgaver */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[2fr_1fr]">
         {/* Tidslinje */}
-        <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+        <section className="rounded-2xl border border-border bg-card p-6 sm:p-6">
           <div className="mb-5 flex items-baseline justify-between">
             <div>
               <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
@@ -181,7 +181,7 @@ export function CoachHome(props: CoachHomeProps) {
               ).map((h) => (
                 <div
                   key={h}
-                  className="relative flex items-start gap-3 border-t border-border first:border-t-0"
+                  className="relative flex items-start gap-2 border-t border-border first:border-t-0"
                   style={{ height: HOUR_HEIGHT }}
                 >
                   <div className="w-12 shrink-0 pt-1 font-mono text-[10px] tabular-nums text-muted-foreground">
@@ -210,7 +210,7 @@ export function CoachHome(props: CoachHomeProps) {
                   <Link
                     key={ev.id}
                     href={`/admin/kalender#${ev.id}`}
-                    className="pointer-events-auto absolute left-3 right-2 overflow-hidden rounded-xl border border-primary/20 bg-primary/8 px-3 py-2 transition-colors hover:bg-primary/15"
+                    className="pointer-events-auto absolute left-3 right-2 overflow-hidden rounded-xl border border-primary/20 bg-primary/8 px-4 py-2 transition-colors hover:bg-primary/15"
                     style={{ top, height }}
                   >
                     <div className="font-mono text-[10px] font-semibold tabular-nums text-primary">
@@ -242,14 +242,14 @@ export function CoachHome(props: CoachHomeProps) {
 
         {/* Brennende oppgaver */}
         <section
-          className="relative overflow-hidden rounded-2xl border border-border bg-card p-5"
+          className="relative overflow-hidden rounded-2xl border border-border bg-card p-6"
         >
           <div
             aria-hidden="true"
             className="absolute left-0 top-0 h-full w-1.5"
             style={{ background: "hsl(var(--destructive))" }}
           />
-          <div className="pl-3">
+          <div className="pl-4">
             <div className="flex items-center gap-2">
               <AlertOctagon
                 size={16}
@@ -268,11 +268,11 @@ export function CoachHome(props: CoachHomeProps) {
                 Ingen brennende oppgaver. Pust ut.
               </p>
             ) : (
-              <ul className="mt-4 space-y-3">
+              <ul className="mt-4 space-y-2">
                 {props.burningTasks.map((t) => (
                   <li
                     key={t.id}
-                    className="rounded-xl border border-[#A32D2D]/15 bg-destructive/5 p-3"
+                    className="rounded-xl border border-[#A32D2D]/15 bg-destructive/5 p-4"
                   >
                     <Link
                       href={t.href}
@@ -294,7 +294,7 @@ export function CoachHome(props: CoachHomeProps) {
       </div>
 
       {/* Stall-overview-strip */}
-      <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+      <section className="rounded-2xl border border-border bg-card p-6 sm:p-6">
         <div className="mb-4 flex items-baseline justify-between">
           <div>
             <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
@@ -316,7 +316,7 @@ export function CoachHome(props: CoachHomeProps) {
             Ingen aktive spillere ennå.
           </p>
         ) : (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
             {props.stallOverview.slice(0, 6).map((p) => (
               <Link
                 key={p.id}
@@ -360,14 +360,14 @@ export function CoachHome(props: CoachHomeProps) {
 
       {/* Workspace-quick-strip */}
       <section
-        className="relative overflow-hidden rounded-2xl border border-border bg-card p-5"
+        className="relative overflow-hidden rounded-2xl border border-border bg-card p-6"
       >
         <div
           aria-hidden="true"
           className="absolute left-0 top-0 h-full w-1.5"
           style={{ background: "hsl(var(--accent))" }}
         />
-        <div className="pl-3">
+        <div className="pl-4">
           <div className="flex items-baseline justify-between">
             <div className="flex items-center gap-2">
               <Sparkles size={14} strokeWidth={1.75} className="text-primary" />
@@ -384,16 +384,16 @@ export function CoachHome(props: CoachHomeProps) {
             </Link>
           </div>
           {props.workspaceTasks.length === 0 ? (
-            <p className="mt-3 text-sm text-muted-foreground">
+            <p className="mt-2 text-sm text-muted-foreground">
               Ingen oppgaver tildelt akkurat nå.
             </p>
           ) : (
-            <ul className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-3">
+            <ul className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-3">
               {props.workspaceTasks.slice(0, 3).map((t) => (
                 <li key={t.id}>
                   <Link
                     href={t.href}
-                    className="block rounded-xl border border-accent/40 bg-accent/8 p-3 text-sm text-foreground transition-colors hover:bg-accent/20"
+                    className="block rounded-xl border border-accent/40 bg-accent/8 p-4 text-sm text-foreground transition-colors hover:bg-accent/20"
                   >
                     {t.title}
                   </Link>
@@ -406,18 +406,18 @@ export function CoachHome(props: CoachHomeProps) {
 
       {/* Aktivitet-strøm 2-kol */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
-          <div className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+        <section className="rounded-2xl border border-border bg-card p-6 sm:p-6">
+          <div className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
             Siste meldinger
           </div>
           {props.recentMessages.length === 0 ? (
             <p className="text-sm text-muted-foreground">Innboksen er rolig.</p>
           ) : (
-            <ul className="space-y-3">
+            <ul className="space-y-2">
               {props.recentMessages.slice(0, 4).map((m) => (
                 <li
                   key={m.id}
-                  className="border-b border-border pb-3 last:border-b-0 last:pb-0"
+                  className="border-b border-border pb-2 last:border-b-0 last:pb-0"
                 >
                   <div className="flex items-baseline justify-between gap-2">
                     <span className="truncate text-sm font-semibold text-foreground">
@@ -436,8 +436,8 @@ export function CoachHome(props: CoachHomeProps) {
           )}
         </section>
 
-        <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
-          <div className="mb-3 flex items-center gap-2">
+        <section className="rounded-2xl border border-border bg-card p-6 sm:p-6">
+          <div className="mb-2 flex items-center gap-2">
             <CalendarClock
               size={14}
               strokeWidth={1.75}
@@ -450,11 +450,11 @@ export function CoachHome(props: CoachHomeProps) {
           {props.recentApprovals.length === 0 ? (
             <p className="text-sm text-muted-foreground">Alt godkjent.</p>
           ) : (
-            <ul className="space-y-3">
+            <ul className="space-y-2">
               {props.recentApprovals.slice(0, 4).map((a) => (
                 <li
                   key={a.id}
-                  className="flex items-start justify-between gap-3 border-b border-border pb-3 last:border-b-0 last:pb-0"
+                  className="flex items-start justify-between gap-2 border-b border-border pb-2 last:border-b-0 last:pb-0"
                 >
                   <div className="min-w-0">
                     <p className="truncate text-sm text-foreground">
@@ -490,7 +490,7 @@ function Kpi({
   const valueColor =
     tone === "danger" ? "text-destructive" : "text-foreground";
   return (
-    <div className="rounded-2xl border border-border bg-card p-5">
+    <div className="rounded-2xl border border-border bg-card p-6">
       <div className="flex items-start justify-between gap-2">
         <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
           {eyebrow}

@@ -89,7 +89,7 @@ function DublettKort({ kandidat }: { kandidat: MergeKandidat }) {
   return (
     <article className="overflow-hidden rounded-lg border border-border bg-card">
       {/* Manuell turnering — header */}
-      <header className="border-b border-border bg-secondary/50 px-5 py-4">
+      <header className="border-b border-border bg-secondary/50 px-6 py-4">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
             <div className="flex items-center gap-2">
@@ -125,14 +125,14 @@ function DublettKort({ kandidat }: { kandidat: MergeKandidat }) {
       {/* Forslag */}
       <div className="divide-y divide-border">
         {kandidat.forslag.length === 0 ? (
-          <div className="px-5 py-6 text-sm text-muted-foreground">
+          <div className="px-6 py-6 text-sm text-muted-foreground">
             Ingen automatiske match-forslag. Du kan velge fra full liste i CoachHQ.
           </div>
         ) : (
           kandidat.forslag.map((f) => (
             <div
               key={f.id}
-              className="grid grid-cols-[1fr_auto] items-center gap-3 px-5 py-3 hover:bg-secondary/30"
+              className="grid grid-cols-[1fr_auto] items-center gap-2 px-6 py-2 hover:bg-secondary/30"
             >
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
@@ -161,7 +161,7 @@ function DublettKort({ kandidat }: { kandidat: MergeKandidat }) {
                 type="button"
                 onClick={() => handleMerge(f.id, f.name)}
                 disabled={isPending}
-                className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-primary/30 bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary hover:text-primary-foreground disabled:opacity-50"
+                className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs font-medium text-primary hover:bg-primary hover:text-primary-foreground disabled:opacity-50"
               >
                 {isPending ? (
                   <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -177,13 +177,13 @@ function DublettKort({ kandidat }: { kandidat: MergeKandidat }) {
 
       {/* Feedback */}
       {feedback && (
-        <div className="flex items-start gap-2 border-t border-primary/20 bg-primary/5 px-5 py-3 text-sm text-foreground">
+        <div className="flex items-start gap-2 border-t border-primary/20 bg-primary/5 px-6 py-2 text-sm text-foreground">
           <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
           <span>{feedback}</span>
         </div>
       )}
       {feil && (
-        <div className="border-t border-destructive/20 bg-destructive/5 px-5 py-3 text-sm text-destructive-foreground">
+        <div className="border-t border-destructive/20 bg-destructive/5 px-6 py-2 text-sm text-destructive-foreground">
           {feil}
         </div>
       )}

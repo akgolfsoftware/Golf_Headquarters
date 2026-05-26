@@ -121,13 +121,13 @@ export function TrainingPartnersRow({
   return (
     <section
       className={cn(
-        "rounded-2xl border border-border bg-card p-6 sm:p-7",
+        "rounded-2xl border border-border bg-card p-6 sm:p-8",
         className,
       )}
       aria-labelledby="training-partners-heading"
     >
       {/* Header */}
-      <div className="mb-5 flex items-end justify-between gap-3">
+      <div className="mb-5 flex items-end justify-between gap-2">
         <div>
           <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
             Tren sammen
@@ -141,7 +141,7 @@ export function TrainingPartnersRow({
         </div>
         <Link
           href={inviteHref}
-          className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-foreground transition hover:border-foreground/20 hover:bg-secondary"
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-border bg-card px-4 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-foreground transition hover:border-foreground/20 hover:bg-secondary"
         >
           <UserPlus className="size-3" strokeWidth={2} aria-hidden />
           Inviter
@@ -150,7 +150,7 @@ export function TrainingPartnersRow({
 
       {partners.length === 0 ? (
         <div className="rounded-xl border border-dashed border-border bg-secondary/30 p-8 text-center">
-          <span className="mx-auto mb-3 grid size-12 place-items-center rounded-full bg-foreground/5 text-foreground/60">
+          <span className="mx-auto mb-2 grid size-12 place-items-center rounded-full bg-foreground/5 text-foreground/60">
             <Users className="size-6" strokeWidth={1.5} aria-hidden="true" />
           </span>
           <p className="mx-auto max-w-xs text-sm text-muted-foreground">
@@ -158,21 +158,21 @@ export function TrainingPartnersRow({
           </p>
           <Link
             href={inviteHref}
-            className="mt-5 inline-flex min-h-[44px] items-center gap-1.5 rounded-full bg-foreground px-5 py-2 font-mono text-[11px] font-bold uppercase tracking-[0.10em] text-background transition hover:bg-foreground/90"
+            className="mt-5 inline-flex min-h-[44px] items-center gap-1.5 rounded-full bg-foreground px-6 py-2 font-mono text-[11px] font-bold uppercase tracking-[0.10em] text-background transition hover:bg-foreground/90"
           >
             <UserPlus className="size-3.5" strokeWidth={2} aria-hidden="true" />
             Inviter kompis
           </Link>
         </div>
       ) : (
-        <ul className="space-y-3">
+        <ul className="space-y-2">
           {partners.map((partner) => (
             <li
               key={`${partner.userId}-${partner.okt.id}`}
-              className="group flex flex-col gap-3 rounded-xl border border-border bg-background/50 p-4 transition hover:border-foreground/20 sm:flex-row sm:items-center sm:gap-4"
+              className="group flex flex-col gap-2 rounded-xl border border-border bg-background/50 p-4 transition hover:border-foreground/20 sm:flex-row sm:items-center sm:gap-4"
             >
               {/* Avatar + info */}
-              <div className="flex items-start gap-3 sm:items-center sm:gap-4">
+              <div className="flex items-start gap-2 sm:items-center sm:gap-4">
                 <div
                   className="grid size-12 shrink-0 place-items-center rounded-full font-display text-sm font-bold text-white shadow-sm sm:size-14"
                   style={{ background: avatarBg(partner.name) }}
@@ -217,7 +217,7 @@ export function TrainingPartnersRow({
                 {partner.okt.status === "INVITED" ? (
                   <Link
                     href={`/portal/tren/${partner.okt.id}`}
-                    className="inline-flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-full bg-foreground px-5 py-2 font-mono text-[11px] font-bold uppercase tracking-[0.10em] text-background transition hover:bg-foreground/90 sm:w-auto"
+                    className="inline-flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-full bg-foreground px-6 py-2 font-mono text-[11px] font-bold uppercase tracking-[0.10em] text-background transition hover:bg-foreground/90 sm:w-auto"
                   >
                     Bli med
                     <ArrowRight
@@ -229,7 +229,7 @@ export function TrainingPartnersRow({
                 ) : (
                   <Link
                     href={`/portal/tren/${partner.okt.id}`}
-                    className="inline-flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-full border border-border bg-card px-5 py-2 font-mono text-[11px] font-bold uppercase tracking-[0.10em] text-foreground transition hover:bg-secondary sm:w-auto"
+                    className="inline-flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-full border border-border bg-card px-6 py-2 font-mono text-[11px] font-bold uppercase tracking-[0.10em] text-foreground transition hover:bg-secondary sm:w-auto"
                   >
                     Se økt
                     <ArrowRight

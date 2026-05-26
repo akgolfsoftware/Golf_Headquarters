@@ -81,7 +81,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               role="status"
               aria-live="polite"
               className={cn(
-                "pointer-events-auto flex items-start gap-3 rounded-xl border p-4 shadow-lg",
+                "pointer-events-auto flex items-start gap-2 rounded-xl border p-4 shadow-lg",
                 "animate-in slide-in-from-right fade-in duration-200",
                 config.bgClass,
               )}

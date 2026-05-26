@@ -120,7 +120,7 @@ export function OnboardingClient({ defaultName }: { defaultName: string }) {
 
       <main className="mx-auto max-w-[640px] px-4 sm:px-6 py-6 sm:py-10">
         <div
-          className="space-y-6 rounded-[20px] border border-border bg-card p-5 sm:p-8 md:p-10"
+          className="space-y-6 rounded-[20px] border border-border bg-card p-6 sm:p-8 md:p-10"
           role="dialog"
           aria-modal="true"
         >
@@ -130,7 +130,7 @@ export function OnboardingClient({ defaultName }: { defaultName: string }) {
               <div className="mx-auto grid h-20 w-20 place-items-center rounded-2xl bg-accent text-primary">
                 <Flag className="h-10 w-10" strokeWidth={1.5} />
               </div>
-              <div className="space-y-3 text-center">
+              <div className="space-y-2 text-center">
                 <span className="font-mono text-[11px] uppercase tracking-[0.10em] text-muted-foreground">
                   Onboarding · steg 01
                 </span>
@@ -143,14 +143,14 @@ export function OnboardingClient({ defaultName }: { defaultName: string }) {
                   senere.
                 </p>
               </div>
-              <div className="flex items-center justify-between border-t border-border pt-5">
+              <div className="flex items-center justify-between border-t border-border pt-6">
                 <span className="font-mono text-[10.5px] uppercase tracking-[0.06em] text-muted-foreground">
                   Bygd for elite-juniorer · Norsk bokmål
                 </span>
                 <button
                   type="button"
                   onClick={next}
-                  className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-3 text-[13px] font-bold text-foreground shadow-[0_4px_14px_rgba(209,248,67,0.3)] hover:bg-[#C4E933]"
+                  className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-2 text-[13px] font-bold text-foreground shadow-[0_4px_14px_rgba(209,248,67,0.3)] hover:bg-[#C4E933]"
                 >
                   Kom i gang
                   <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.5} />
@@ -174,7 +174,7 @@ export function OnboardingClient({ defaultName }: { defaultName: string }) {
                   type="text"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="w-full rounded-md border border-input bg-background px-4 py-3 text-[14px] focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+                  className="w-full rounded-md border border-input bg-background px-4 py-2 text-[14px] focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
                 />
               </Field>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -183,14 +183,14 @@ export function OnboardingClient({ defaultName }: { defaultName: string }) {
                     type="text"
                     value={birthDate}
                     onChange={(e) => setBirthDate(e.target.value)}
-                    className="w-full rounded-md border border-input bg-background px-4 py-3 font-mono text-[14px] tabular-nums focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+                    className="w-full rounded-md border border-input bg-background px-4 py-2 font-mono text-[14px] tabular-nums focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
                   />
                 </Field>
                 <Field label="Kjønn">
                   <select
                     value={gender}
                     onChange={(e) => setGender(e.target.value)}
-                    className="w-full rounded-md border border-input bg-background px-4 py-3 text-[14px] focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+                    className="w-full rounded-md border border-input bg-background px-4 py-2 text-[14px] focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
                   >
                     <option>Gutt</option>
                     <option>Jente</option>
@@ -203,7 +203,7 @@ export function OnboardingClient({ defaultName }: { defaultName: string }) {
                 <select
                   value={homeClub}
                   onChange={(e) => setHomeClub(e.target.value)}
-                  className="w-full rounded-md border border-input bg-background px-4 py-3 text-[14px] focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+                  className="w-full rounded-md border border-input bg-background px-4 py-2 text-[14px] focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
                 >
                   <option>Gamle Fredrikstad GK</option>
                   <option>Borre GK</option>
@@ -226,7 +226,7 @@ export function OnboardingClient({ defaultName }: { defaultName: string }) {
                 sub="Vi tilpasser drills og forventninger til der du er nå."
               />
               <Field label="Handicap">
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                   <button
                     type="button"
                     onClick={() => setHcpSource("golfbox")}
@@ -321,7 +321,7 @@ export function OnboardingClient({ defaultName }: { defaultName: string }) {
                   value={goalText}
                   onChange={(e) => setGoalText(e.target.value)}
                   rows={3}
-                  className="w-full rounded-md border border-input bg-background px-4 py-3 text-[14px] focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+                  className="w-full rounded-md border border-input bg-background px-4 py-2 text-[14px] focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
                 />
               </Field>
               <StepFooter onPrev={prev} onNext={next} pending={pending} />
@@ -344,13 +344,13 @@ export function OnboardingClient({ defaultName }: { defaultName: string }) {
                   type="text"
                   defaultValue="Hans Brennum"
                   placeholder="Søk etter coach …"
-                  className="w-full rounded-md border border-input bg-background py-3 pl-10 pr-4 text-[14px] focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+                  className="w-full rounded-md border border-input bg-background py-2 pl-10 pr-4 text-[14px] focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
                 />
               </div>
               <button
                 type="button"
                 onClick={() => setCoachSelected(true)}
-                className={`grid w-full grid-cols-[44px_minmax(0,1fr)_24px] items-center gap-4 rounded-xl border px-4 py-3 text-left transition-colors ${
+                className={`grid w-full grid-cols-[44px_minmax(0,1fr)_24px] items-center gap-4 rounded-xl border px-4 py-2 text-left transition-colors ${
                   coachSelected
                     ? "border-primary bg-primary/5"
                     : "border-border bg-background"
@@ -400,7 +400,7 @@ export function OnboardingClient({ defaultName }: { defaultName: string }) {
                 titleTrail="?"
                 sub="Du kan endre dette når som helst i innstillingene."
               />
-              <div className="space-y-3">
+              <div className="space-y-2">
                 <Toggle
                   icon={<Bell className="h-5 w-5" strokeWidth={1.75} />}
                   title="Push på telefon"
@@ -525,7 +525,7 @@ function Toggle({
   onChange: (v: boolean) => void;
 }) {
   return (
-    <div className="grid grid-cols-[44px_minmax(0,1fr)_48px] items-center gap-4 rounded-xl border border-border bg-background px-4 py-3">
+    <div className="grid grid-cols-[44px_minmax(0,1fr)_48px] items-center gap-4 rounded-xl border border-border bg-background px-4 py-2">
       <span className="grid h-10 w-10 place-items-center rounded-full bg-secondary text-primary">
         {icon}
       </span>
@@ -565,7 +565,7 @@ function StepFooter({
   nextDark?: boolean;
 }) {
   return (
-    <div className="ml-auto flex justify-end gap-2.5 border-t border-border pt-5">
+    <div className="ml-auto flex justify-end gap-2.5 border-t border-border pt-6">
       <button
         type="button"
         onClick={onPrev}
@@ -577,7 +577,7 @@ function StepFooter({
         type="button"
         onClick={onNext}
         disabled={pending}
-        className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-[13px] font-bold disabled:opacity-50 ${
+        className={`inline-flex items-center gap-2 rounded-full px-6 py-2 text-[13px] font-bold disabled:opacity-50 ${
           nextDark
             ? "bg-primary text-accent hover:opacity-90"
             : "bg-accent text-foreground shadow-[0_4px_14px_rgba(209,248,67,0.3)] hover:bg-[#C4E933]"

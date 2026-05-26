@@ -46,7 +46,7 @@ export function AthleticGreeting({
         </p>
       )}
       {metaItems && metaItems.length > 0 && (
-        <ul className="mt-3 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+        <ul className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
           {metaItems.map((item, i) => (
             <li key={i} className="flex items-center gap-2">
               {i > 0 && <span className="h-[3px] w-[3px] rounded-full bg-muted-foreground/60" />}
@@ -64,7 +64,7 @@ export function AthleticGreeting({
 
   if (align === "stack") {
     return (
-      <div className={cn("flex flex-col items-start gap-3", className)}>
+      <div className={cn("flex flex-col items-start gap-2", className)}>
         <AthleticAvatar
           src={avatar.src}
           alt={avatar.alt}

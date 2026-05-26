@@ -38,6 +38,7 @@ type Props = {
 };
 
 // ISO-uke nummer (1..53)
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function isoUkeNr(d: Date): number {
   const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
   const dayNum = date.getUTCDay() || 7;
@@ -82,7 +83,7 @@ export function AarsplanView({
           className="sticky top-0 z-20 grid border-b border-border bg-card"
           style={{ gridTemplateColumns: "160px repeat(52, minmax(18px, 1fr))" }}
         >
-          <div className="border-r border-border px-3 py-2 text-xs font-medium text-muted-foreground">
+          <div className="border-r border-border px-4 py-2 text-xs font-medium text-muted-foreground">
             Spiller
           </div>
           {Array.from({ length: 12 }, (_, i) => {
@@ -130,7 +131,7 @@ export function AarsplanView({
                 height: `${radHoyde}px`,
               }}
             >
-              <div className="flex items-center border-r border-border bg-card px-3 text-sm font-medium text-foreground">
+              <div className="flex items-center border-r border-border bg-card px-4 text-sm font-medium text-foreground">
                 <span className="truncate">{sp.navn}</span>
               </div>
 

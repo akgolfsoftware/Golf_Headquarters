@@ -47,7 +47,7 @@ export function SmashCurvePlot({ result, advanced = false }: Props) {
               if (!active || !payload?.[0]) return null;
               const d = payload[0].payload as { clubSpeed: number; smashFactor: number };
               return (
-                <div className="rounded-lg border border-border bg-card px-3 py-2 text-xs shadow-md">
+                <div className="rounded-lg border border-border bg-card px-4 py-2 text-xs shadow-md">
                   <p className="text-muted-foreground">Speed: {d.clubSpeed} mph</p>
                   <p className="font-semibold">Smash: {d.smashFactor}</p>
                 </div>

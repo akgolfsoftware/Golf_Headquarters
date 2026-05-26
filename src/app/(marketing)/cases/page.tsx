@@ -78,7 +78,7 @@ export default function CasesSide() {
       {/* CTA */}
       <section className="border-t border-border bg-card">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-16 md:py-24">
-          <div className="relative overflow-hidden rounded-2xl bg-primary px-5 py-10 sm:px-8 sm:py-16 text-primary-foreground md:px-16 md:py-20">
+          <div className="relative overflow-hidden rounded-2xl bg-primary px-6 py-10 sm:px-8 sm:py-16 text-primary-foreground md:px-16 md:py-20">
             <div
               aria-hidden
               className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full"
@@ -146,12 +146,12 @@ function CaseKort({ case_: c }: { case_: Case }) {
 
       {/* Innhold */}
       <div className="flex flex-1 flex-col gap-4 p-8">
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2">
           <span className="font-semibold text-foreground">{c.navn}</span>
           <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
             {c.alder} år
           </span>
-          <span className="rounded-full bg-secondary px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+          <span className="rounded-full bg-secondary px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
             {c.tid}
           </span>
         </div>

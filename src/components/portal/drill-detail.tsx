@@ -56,7 +56,7 @@ function parseParams(json: unknown): DrillParameters | null {
 
 function Chip({ children }: { children: React.ReactNode }) {
   return (
-    <span className="rounded-full bg-secondary px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+    <span className="rounded-full bg-secondary px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
       {children}
     </span>
   );
@@ -83,7 +83,7 @@ export function DrillDetail({ exercise }: { exercise: DrillData }) {
     <div className="space-y-6">
       {/* Badges */}
       <div className="flex flex-wrap gap-2">
-        <span className={`rounded-full px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] ${PYR_BG[exercise.pyramidArea]}`}>
+        <span className={`rounded-full px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] ${PYR_BG[exercise.pyramidArea]}`}>
           {PYR_LABEL[exercise.pyramidArea]}
         </span>
         {exercise.lPhase && <Chip>{LPHASE_LABEL[exercise.lPhase]}</Chip>}
@@ -143,7 +143,7 @@ export function DrillDetail({ exercise }: { exercise: DrillData }) {
           href={safeUrl(exercise.videoUrl)!}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90"
+          className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90"
         >
           <Play className="h-4 w-4" strokeWidth={2} />
           Se video
@@ -162,7 +162,7 @@ function FactPanel({
 }) {
   return (
     <div className="rounded-xl border border-border bg-card p-4">
-      <div className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+      <div className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
         {title}
       </div>
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
@@ -192,7 +192,7 @@ function FysSection({ params }: { params: { modus: "FYS"; fysType: string; muske
 
       {fysTypeInfo && (
         <div className="flex items-center gap-2">
-          <span className="rounded-full bg-pyr-fys/15 px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-pyr-fys">
+          <span className="rounded-full bg-pyr-fys/15 px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-pyr-fys">
             {fysTypeInfo.label}
           </span>
         </div>
@@ -207,7 +207,7 @@ function FysSection({ params }: { params: { modus: "FYS"; fysType: string; muske
             {params.muskelgrupper.map((kode) => {
               const mg = FYS_MUSKELGRUPPER.find((m) => m.kode === kode);
               return (
-                <span key={kode} className="rounded-full bg-secondary px-3 py-1 text-xs text-foreground">
+                <span key={kode} className="rounded-full bg-secondary px-4 py-1 text-xs text-foreground">
                   {mg?.label ?? kode}
                 </span>
               );
@@ -254,7 +254,7 @@ function GolfSection({
   const miljoInfo = miljo ? M_MILJO.find((m) => m.kode === miljo) : null;
 
   return (
-    <div className="space-y-5 rounded-xl border border-border bg-card p-5">
+    <div className="space-y-6 rounded-xl border border-border bg-card p-6">
       <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
         Golf-parametre
       </div>
@@ -262,26 +262,26 @@ function GolfSection({
       {/* Chips: treningsområde + l-fase + miljø */}
       <div className="flex flex-wrap gap-1.5">
         {omr ? (
-          <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+          <span className="rounded-full bg-primary/10 px-4 py-1 text-xs font-medium text-primary">
             {omr.label}
             {omr.sgKategori && <span className="ml-1 opacity-60">· SG {omr.sgKategori}</span>}
           </span>
         ) : (
-          <span className="rounded-full border border-dashed border-border bg-card px-3 py-1 text-xs text-muted-foreground">
+          <span className="rounded-full border border-dashed border-border bg-card px-4 py-1 text-xs text-muted-foreground">
             Treningsområde — ikke satt
           </span>
         )}
         {lFase ? (
-          <span className="rounded-full bg-secondary px-3 py-1 text-xs text-foreground">
+          <span className="rounded-full bg-secondary px-4 py-1 text-xs text-foreground">
             {lFase.label}
           </span>
         ) : (
-          <span className="rounded-full border border-dashed border-border bg-card px-3 py-1 text-xs text-muted-foreground">
+          <span className="rounded-full border border-dashed border-border bg-card px-4 py-1 text-xs text-muted-foreground">
             L-fase — ikke satt
           </span>
         )}
         {miljoInfo && (
-          <span className="rounded-full bg-secondary px-3 py-1 text-xs text-foreground">
+          <span className="rounded-full bg-secondary px-4 py-1 text-xs text-foreground">
             {miljoInfo.label}
           </span>
         )}
@@ -310,7 +310,7 @@ function GolfSection({
 
       {/* L-fase beskrivelse */}
       {lFase && (
-        <div className="rounded-lg bg-secondary/50 px-3 py-2 text-xs text-muted-foreground">
+        <div className="rounded-lg bg-secondary/50 px-4 py-2 text-xs text-muted-foreground">
           <strong className="text-foreground">{lFase.label}:</strong>{" "}
           {lFase.beskrivelse}
           {" — "}

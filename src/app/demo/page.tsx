@@ -422,7 +422,7 @@ export default function DemoIndex() {
           <div className="font-mono text-xs uppercase tracking-[0.12em] text-muted-foreground">
             AK Golf Group · Plattform + akgolf.no · Komplett pilot-dekning
           </div>
-          <h1 className="mt-3 font-display text-5xl italic leading-tight">
+          <h1 className="mt-2 font-display text-5xl italic leading-tight">
             {total} produksjonsklare skjermer
           </h1>
           <p className="mt-4 max-w-2xl text-muted-foreground">
@@ -449,7 +449,7 @@ export default function DemoIndex() {
                   <Link
                     key={p.url}
                     href={p.url}
-                    className="group flex items-center justify-between rounded-md border border-border bg-card px-3 py-2 text-sm transition hover:border-primary hover:bg-primary/5"
+                    className="group flex items-center justify-between rounded-md border border-border bg-card px-4 py-2 text-sm transition hover:border-primary hover:bg-primary/5"
                   >
                     <span className="truncate">{p.title}</span>
                     <span className="font-mono text-[10px] text-muted-foreground group-hover:text-primary">

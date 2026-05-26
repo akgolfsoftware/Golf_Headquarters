@@ -239,7 +239,7 @@ export default async function CoachPlanleggerPage() {
         weather={{ label: `${activePlans.length} AKTIVE PLANER · ${pendingApprovals} VENTER`, pulse: true }}
         height="md"
       >
-        <div className="px-5 pb-5">
+        <div className="px-6 pb-6">
           <Link
             href="/design"
             className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.12em] text-white/85 hover:text-white"
@@ -249,8 +249,8 @@ export default async function CoachPlanleggerPage() {
         </div>
       </AthleticHero>
 
-      <main className="mx-auto -mt-12 max-w-6xl space-y-6 px-5 pb-12 relative z-10">
-        <div className="rounded-2xl border border-border bg-card p-5 shadow-lg">
+      <main className="mx-auto -mt-12 max-w-6xl space-y-6 px-6 pb-12 relative z-10">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-lg">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <AthleticGreeting
               avatar={{ initials: "AK", status: "online" }}
@@ -326,7 +326,7 @@ export default async function CoachPlanleggerPage() {
         </section>
 
         <section>
-          <div className="mb-3 flex items-center gap-2">
+          <div className="mb-2 flex items-center gap-2">
             <Sparkles className="h-4 w-4 text-primary" strokeWidth={1.75} />
             <AthleticEyebrow>Fokus: {focusPlan?.user.name ?? "—"}</AthleticEyebrow>
           </div>

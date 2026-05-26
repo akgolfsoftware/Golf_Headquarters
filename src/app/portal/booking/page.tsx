@@ -171,7 +171,7 @@ export default async function BookingLandingsside() {
     <div className="mx-auto max-w-[1240px] space-y-10 px-4 py-8 sm:px-6 sm:py-10">
       {/* HERO */}
       <section className="rounded-2xl border border-border bg-card p-6 sm:p-10">
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2">
           <div className="inline-flex items-center gap-2 font-mono text-[10.5px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
             <span
               className="h-1.5 w-1.5 rounded-full bg-primary"
@@ -191,7 +191,7 @@ export default async function BookingLandingsside() {
           </p>
 
           {nesteBooking && (
-            <div className="mt-2 inline-flex w-fit items-center gap-3 rounded-full border border-border bg-secondary px-3.5 py-1.5">
+            <div className="mt-2 inline-flex w-fit items-center gap-2 rounded-full border border-border bg-secondary px-4 py-1.5">
               <span className="font-mono text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
                 Neste økt
               </span>
@@ -209,8 +209,8 @@ export default async function BookingLandingsside() {
       </section>
 
       {/* FILTER-STRIP */}
-      <section className="rounded-2xl border border-border bg-card p-4 sm:p-5">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <section className="rounded-2xl border border-border bg-card p-4 sm:p-6">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1.5 font-mono text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
               <Filter className="h-3 w-3" strokeWidth={2} />
@@ -219,7 +219,7 @@ export default async function BookingLandingsside() {
             {COACHING_TYPER.map((t, i) => (
               <button
                 key={t.id}
-                className={`rounded-full border px-3 py-1.5 font-sans text-[12px] font-medium transition-colors ${
+                className={`rounded-full border px-4 py-1.5 font-sans text-[12px] font-medium transition-colors ${
                   i === 0
                     ? "border-primary bg-primary text-primary-foreground"
                     : "border-border bg-background text-foreground hover:border-foreground/30"
@@ -230,11 +230,11 @@ export default async function BookingLandingsside() {
             ))}
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <button className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1.5 font-sans text-[12px] font-medium text-foreground hover:border-foreground/30">
+            <button className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-4 py-1.5 font-sans text-[12px] font-medium text-foreground hover:border-foreground/30">
               <Calendar className="h-3.5 w-3.5" strokeWidth={2} />
               Velg dato
             </button>
-            <button className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1.5 font-sans text-[12px] font-medium text-foreground hover:border-foreground/30">
+            <button className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-4 py-1.5 font-sans text-[12px] font-medium text-foreground hover:border-foreground/30">
               <Users className="h-3.5 w-3.5" strokeWidth={2} />
               Alle coacher
             </button>
@@ -243,7 +243,7 @@ export default async function BookingLandingsside() {
               <input
                 type="search"
                 placeholder="Søk…"
-                className="h-8 w-44 rounded-full border border-border bg-background pl-7.5 pr-3 font-sans text-[12px] text-foreground placeholder:text-muted-foreground/70 focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
+                className="h-8 w-44 rounded-full border border-border bg-background pl-8.5 pr-4 font-sans text-[12px] text-foreground placeholder:text-muted-foreground/70 focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
               />
             </div>
           </div>
@@ -252,7 +252,7 @@ export default async function BookingLandingsside() {
 
       {/* ANBEFALT FOR DEG */}
       <section>
-        <div className="mb-3 flex items-baseline justify-between">
+        <div className="mb-2 flex items-baseline justify-between">
           <div className="flex items-center gap-2">
             <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-accent">
               <Sparkles
@@ -268,7 +268,7 @@ export default async function BookingLandingsside() {
             AI · BASERT PÅ AKTIV PLAN
           </div>
         </div>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
           {[
             {
               tittel: "Wedge-presisjon 50–80m",
@@ -324,7 +324,7 @@ export default async function BookingLandingsside() {
 
       {/* COACH-GRID */}
       <section>
-        <div className="mb-3 flex items-baseline justify-between">
+        <div className="mb-2 flex items-baseline justify-between">
           <h2 className="font-display text-[20px] font-semibold -tracking-[0.01em] text-foreground">
             Book direkte med coach
           </h2>
@@ -340,14 +340,14 @@ export default async function BookingLandingsside() {
             <Link
               key={c.id}
               href={`/portal/booking/coach/${c.id}`}
-              className="group relative flex flex-col gap-3.5 rounded-2xl border border-border bg-card p-5 transition-all hover:-translate-y-0.5 hover:border-foreground/30 hover:shadow-lg"
+              className="group relative flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 transition-all hover:-translate-y-0.5 hover:border-foreground/30 hover:shadow-lg"
             >
               {c.ribbon && (
                 <span className="absolute right-4 top-4 rounded-full bg-accent px-2 py-0.5 font-mono text-[10px] font-bold tracking-[0.06em] text-accent-foreground">
                   {c.ribbon}
                 </span>
               )}
-              <div className="flex items-start gap-3">
+              <div className="flex items-start gap-2">
                 <div className="grid h-14 w-14 flex-shrink-0 place-items-center rounded-full bg-primary font-display text-[18px] font-semibold text-primary-foreground">
                   {c.initialer}
                 </div>
@@ -373,7 +373,7 @@ export default async function BookingLandingsside() {
                   </span>
                 ))}
               </div>
-              <div className="grid grid-cols-3 gap-2 border-t border-border pt-3 text-center">
+              <div className="grid grid-cols-3 gap-2 border-t border-border pt-2 text-center">
                 <div>
                   <div className="flex items-center justify-center gap-0.5 font-mono text-[13px] font-semibold text-foreground tabular-nums">
                     <Star
@@ -403,7 +403,7 @@ export default async function BookingLandingsside() {
                   </div>
                 </div>
               </div>
-              <div className="flex items-center justify-between rounded-md bg-secondary px-3 py-2">
+              <div className="flex items-center justify-between rounded-md bg-secondary px-4 py-2">
                 <span className="font-mono text-[11px] text-muted-foreground">
                   Neste ledig
                 </span>
@@ -418,7 +418,7 @@ export default async function BookingLandingsside() {
 
       {/* BANE-GRID */}
       <section>
-        <div className="mb-3 flex items-baseline justify-between">
+        <div className="mb-2 flex items-baseline justify-between">
           <h2 className="font-display text-[20px] font-semibold -tracking-[0.01em] text-foreground">
             Anlegg & baner
           </h2>

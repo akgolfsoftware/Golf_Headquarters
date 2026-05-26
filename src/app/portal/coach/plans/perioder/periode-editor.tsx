@@ -99,7 +99,7 @@ function Tidslinje({ plan, blocks }: { plan: PlanData; blocks: PeriodBlockData[]
       </div>
 
       {blocks.length > 0 && (
-        <div className="mt-2 flex flex-wrap gap-3">
+        <div className="mt-2 flex flex-wrap gap-2">
           {LPHASE_ORDER.filter((p) => blocks.some((b) => b.lPhase === p)).map((p) => {
             const meta = LPHASE_META[p];
             return (
@@ -172,7 +172,7 @@ function NyPeriodeSkjema({
               key={p}
               type="button"
               onClick={() => setLPhase(p)}
-              className={`rounded-full px-3 py-1 font-mono text-[11px] font-semibold transition-all ${
+              className={`rounded-full px-4 py-1 font-mono text-[11px] font-semibold transition-all ${
                 lPhase === p
                   ? `${meta.color} text-white`
                   : "border border-border bg-card text-muted-foreground hover:border-foreground/20"
@@ -194,7 +194,7 @@ function NyPeriodeSkjema({
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+            className="mt-1 w-full rounded-md border border-input bg-background px-4 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
           />
         </label>
         <label className="block">
@@ -203,7 +203,7 @@ function NyPeriodeSkjema({
             type="date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-            className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+            className="mt-1 w-full rounded-md border border-input bg-background px-4 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
           />
         </label>
       </div>
@@ -215,7 +215,7 @@ function NyPeriodeSkjema({
           value={focus}
           onChange={(e) => setFocus(e.target.value)}
           placeholder={`f.eks. "${LPHASE_META[lPhase].desc}"`}
-          className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+          className="mt-1 w-full rounded-md border border-input bg-background px-4 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
         />
       </label>
 
@@ -230,7 +230,7 @@ function NyPeriodeSkjema({
             onChange={(e) => setVolMin(e.target.value)}
             placeholder="60"
             min={0}
-            className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm tabular-nums focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+            className="mt-1 w-full rounded-md border border-input bg-background px-4 py-2 text-sm tabular-nums focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
           />
         </label>
         <label className="block">
@@ -249,7 +249,7 @@ function NyPeriodeSkjema({
             placeholder={constraints.maxVolumMin?.toString() ?? ""}
             min={0}
             max={constraints.maxVolumMin ?? undefined}
-            className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm tabular-nums focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+            className="mt-1 w-full rounded-md border border-input bg-background px-4 py-2 text-sm tabular-nums focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
           />
         </label>
       </div>
@@ -295,8 +295,8 @@ function PeriodRad({
     new Date(d).toLocaleDateString("nb-NO", { day: "numeric", month: "short" });
 
   return (
-    <div className="rounded-lg border border-border bg-card px-4 py-3 space-y-2">
-      <div className="flex items-center gap-3">
+    <div className="rounded-lg border border-border bg-card px-4 py-2 space-y-2">
+      <div className="flex items-center gap-2">
         <div className={`h-3 w-3 flex-none rounded-sm ${meta.color}`} />
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">

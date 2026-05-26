@@ -45,7 +45,7 @@ export function RecordingTriggerButton({ bookingId, size = "sm" }: Props) {
     }
   }
 
-  const padding = size === "sm" ? "px-3 py-1.5 text-[12px]" : "px-4 py-2 text-[13px]";
+  const padding = size === "sm" ? "px-4 py-1.5 text-[12px]" : "px-4 py-2 text-[13px]";
 
   return (
     <div className="inline-flex flex-col items-end gap-1">

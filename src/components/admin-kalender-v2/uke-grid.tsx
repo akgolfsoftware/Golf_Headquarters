@@ -82,7 +82,7 @@ export function UkeGrid({ okter, currentUserId }: { okter: UkeOkt[]; currentUser
           <button
             type="button"
             onClick={() => setUkeOffset(0)}
-            className="rounded-full border border-border px-3 py-1 font-mono text-[10px] uppercase tracking-[0.10em] text-foreground hover:bg-secondary"
+            className="rounded-full border border-border px-4 py-1 font-mono text-[10px] uppercase tracking-[0.10em] text-foreground hover:bg-secondary"
           >
             I dag
           </button>
@@ -110,7 +110,7 @@ export function UkeGrid({ okter, currentUserId }: { okter: UkeOkt[]; currentUser
                 key={f}
                 type="button"
                 onClick={() => setFilter(f)}
-                className={`rounded-full px-3 py-1 text-xs font-medium transition ${
+                className={`rounded-full px-4 py-1 text-xs font-medium transition ${
                   filter === f ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -120,7 +120,7 @@ export function UkeGrid({ okter, currentUserId }: { okter: UkeOkt[]; currentUser
           </div>
           <Link
             href="/admin/kalender/maned"
-            className="ml-2 rounded-full border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
+            className="ml-2 rounded-full border border-border px-4 py-1.5 text-xs font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
           >
             Måned →
           </Link>
@@ -138,7 +138,7 @@ export function UkeGrid({ okter, currentUserId }: { okter: UkeOkt[]; currentUser
             return (
               <div
                 key={d}
-                className={`border-b border-border pb-3 text-center ${
+                className={`border-b border-border pb-2 text-center ${
                   erIdag ? "text-foreground" : "text-muted-foreground"
                 }`}
               >

@@ -226,19 +226,19 @@ export function MestringsLoggClient({
             <table className="w-full text-left text-sm">
               <thead className="border-b border-border bg-muted/30">
                 <tr>
-                  <th className="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                  <th className="px-4 py-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                     Dato
                   </th>
-                  <th className="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                  <th className="px-4 py-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                     CS-score
                   </th>
-                  <th className="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                  <th className="px-4 py-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                     Mestret
                   </th>
-                  <th className="hidden px-4 py-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground sm:table-cell">
+                  <th className="hidden px-4 py-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground sm:table-cell">
                     Coach
                   </th>
-                  <th className="hidden px-4 py-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground md:table-cell">
+                  <th className="hidden px-4 py-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground md:table-cell">
                     Kommentar
                   </th>
                 </tr>
@@ -246,10 +246,10 @@ export function MestringsLoggClient({
               <tbody className="divide-y divide-border">
                 {mestringsLogg.map((rad) => (
                   <tr key={rad.id} className={rad.mestret ? "bg-primary/5" : ""}>
-                    <td className="px-4 py-3 font-mono text-xs tabular-nums text-muted-foreground">
+                    <td className="px-4 py-2 font-mono text-xs tabular-nums text-muted-foreground">
                       {datoFormat(rad.dato)}
                     </td>
-                    <td className="px-4 py-3 font-mono text-sm tabular-nums font-medium">
+                    <td className="px-4 py-2 font-mono text-sm tabular-nums font-medium">
                       {rad.csScore !== null ? (
                         <span
                           className={
@@ -264,7 +264,7 @@ export function MestringsLoggClient({
                         <span className="text-muted-foreground">—</span>
                       )}
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-2">
                       {rad.mestret ? (
                         <CheckCircle2
                           className="h-4 w-4 text-primary"
@@ -274,14 +274,14 @@ export function MestringsLoggClient({
                         <span className="h-4 w-4 text-muted-foreground">—</span>
                       )}
                     </td>
-                    <td className="hidden px-4 py-3 sm:table-cell">
+                    <td className="hidden px-4 py-2 sm:table-cell">
                       {rad.coachVurdering !== null ? (
                         <CoachStjerner antall={rad.coachVurdering} />
                       ) : (
                         <span className="text-xs text-muted-foreground">—</span>
                       )}
                     </td>
-                    <td className="hidden max-w-xs truncate px-4 py-3 text-sm text-muted-foreground md:table-cell">
+                    <td className="hidden max-w-xs truncate px-4 py-2 text-sm text-muted-foreground md:table-cell">
                       {rad.kommentar ?? "—"}
                     </td>
                   </tr>
@@ -336,7 +336,7 @@ export function MestringsLoggClient({
                 setCsInput(e.target.value);
                 if (registrerStatus !== "idle") setRegistrerStatus("idle");
               }}
-              className="h-11 w-32 rounded-md border border-input bg-background px-3 font-mono text-sm tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+              className="h-11 w-32 rounded-md border border-input bg-background px-4 font-mono text-sm tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
             />
           </div>
 
@@ -353,7 +353,7 @@ export function MestringsLoggClient({
               placeholder="Hva gikk bra? Hva kan bli bedre?"
               value={kommentarInput}
               onChange={(e) => setKommentarInput(e.target.value)}
-              className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+              className="h-11 w-full rounded-md border border-input bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
             />
           </div>
 
@@ -373,7 +373,7 @@ export function MestringsLoggClient({
         </div>
 
         {registrerStatus === "ok" && (
-          <div className="mt-4 flex items-center gap-2 rounded-md border border-primary/30 bg-primary/5 px-4 py-3 text-sm text-primary">
+          <div className="mt-4 flex items-center gap-2 rounded-md border border-primary/30 bg-primary/5 px-4 py-2 text-sm text-primary">
             <CheckCircle2 className="h-4 w-4 shrink-0" strokeWidth={1.75} />
             Okten er registrert.
             <button
@@ -388,7 +388,7 @@ export function MestringsLoggClient({
         )}
 
         {registrerStatus === "mestret" && (
-          <div className="mt-4 flex items-center gap-2 rounded-md border border-accent/60 bg-accent/20 px-4 py-3 text-sm text-accent-foreground">
+          <div className="mt-4 flex items-center gap-2 rounded-md border border-accent/60 bg-accent/20 px-4 py-2 text-sm text-accent-foreground">
             <Zap className="h-4 w-4 shrink-0 text-accent-foreground" strokeWidth={1.75} />
             <span className="font-semibold">Drill mestret!</span> Veldig bra
             — du har nådd CS-target. Neste steg i progresjonsseria er klar.
@@ -404,7 +404,7 @@ export function MestringsLoggClient({
         )}
 
         {registrerStatus === "feil" && (
-          <div className="mt-4 rounded-md border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+          <div className="mt-4 rounded-md border border-destructive/40 bg-destructive/10 px-4 py-2 text-sm text-destructive">
             Noe gikk galt. Prøv igjen.
           </div>
         )}
@@ -465,13 +465,13 @@ export function MestringsLoggClient({
         </div>
 
         {ratingStatus === "ok" && (
-          <p className="mt-3 flex items-center gap-1.5 text-sm text-primary">
+          <p className="mt-2 flex items-center gap-1.5 text-sm text-primary">
             <CheckCircle2 className="h-4 w-4" strokeWidth={1.75} />
             Takk for tilbakemeldingen!
           </p>
         )}
         {ratingStatus === "feil" && (
-          <p className="mt-3 text-sm text-destructive">
+          <p className="mt-2 text-sm text-destructive">
             Noe gikk galt. Prøv igjen.
           </p>
         )}

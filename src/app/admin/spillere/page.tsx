@@ -821,7 +821,7 @@ function SpillerKort({ player }: { player: EnrichedPlayer }) {
         className={`absolute right-4 top-4 inline-block h-2 w-2 rounded-full ${statusInfo.dot}`}
       />
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
         <Avatar src={p.avatarUrl} name={p.name} />
         <div className="min-w-0 flex-1 pr-4">
           <div className="truncate font-display text-[15px] font-semibold leading-snug text-foreground group-hover:text-primary">
@@ -846,7 +846,7 @@ function SpillerKort({ player }: { player: EnrichedPlayer }) {
         </div>
       </div>
 
-      <div className="flex items-end justify-between gap-3 border-t border-border pt-3.5">
+      <div className="flex items-end justify-between gap-2 border-t border-border pt-4">
         <div>
           <div className="font-mono text-[9px] uppercase tracking-[0.08em] text-muted-foreground">
             HCP

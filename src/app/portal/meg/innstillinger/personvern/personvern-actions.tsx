@@ -50,7 +50,7 @@ function ExportAction() {
   }
 
   return (
-    <div className="mt-4 flex flex-wrap items-center gap-3">
+    <div className="mt-4 flex flex-wrap items-center gap-2">
       <AthleticButton
         variant="lime"
         size="md"
@@ -127,19 +127,19 @@ function DeleteAction() {
         placeholder="SLETT"
         autoComplete="off"
         autoCapitalize="characters"
-        className="mt-3 w-full max-w-[200px] rounded-md border border-border bg-card px-3 py-2 text-sm tracking-[0.10em] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive"
+        className="mt-2 w-full max-w-[200px] rounded-md border border-border bg-card px-4 py-2 text-sm tracking-[0.10em] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive"
       />
       {error ? (
         <p className="font-mono mt-2 text-[11px] tracking-[0.06em] text-destructive">
           {error}
         </p>
       ) : null}
-      <div className="mt-3 flex flex-wrap gap-2">
+      <div className="mt-2 flex flex-wrap gap-2">
         <button
           type="button"
           onClick={onDelete}
           disabled={isPending || confirmText !== "SLETT"}
-          className="font-display inline-flex h-10 items-center justify-center gap-1.5 rounded-full bg-destructive px-5 text-sm font-bold text-destructive-foreground transition disabled:opacity-50"
+          className="font-display inline-flex h-10 items-center justify-center gap-1.5 rounded-full bg-destructive px-6 text-sm font-bold text-destructive-foreground transition disabled:opacity-50"
         >
           {isPending ? "Sletter…" : "Bekreft sletting"}
         </button>
@@ -151,7 +151,7 @@ function DeleteAction() {
             setError(null);
           }}
           disabled={isPending}
-          className="font-display inline-flex h-10 items-center justify-center gap-1.5 rounded-full border border-border bg-card px-5 text-sm font-semibold text-foreground transition hover:bg-secondary"
+          className="font-display inline-flex h-10 items-center justify-center gap-1.5 rounded-full border border-border bg-card px-6 text-sm font-semibold text-foreground transition hover:bg-secondary"
         >
           Avbryt
         </button>

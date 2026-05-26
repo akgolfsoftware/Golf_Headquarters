@@ -97,7 +97,7 @@ export function ReachClient({ data }: { data: ReachData }) {
           </p>
         </div>
         {data.isDummy && (
-          <div className="inline-flex items-center gap-2 rounded-full border border-amber-500/40 bg-amber-500/10 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.10em] text-amber-700 dark:text-amber-300">
+          <div className="inline-flex items-center gap-2 rounded-full border border-amber-500/40 bg-amber-500/10 px-4 py-1.5 font-mono text-[10px] uppercase tracking-[0.10em] text-amber-700 dark:text-amber-300">
             <Sparkles size={12} strokeWidth={1.75} />
             Eksempeldata
           </div>
@@ -185,11 +185,11 @@ export function ReachClient({ data }: { data: ReachData }) {
               <em className="font-normal italic text-primary">engasjerte</em>
             </h3>
           </div>
-          <ul className="space-y-3">
+          <ul className="space-y-2">
             {data.topEngaged.map((p, i) => (
               <li
                 key={p.id}
-                className="flex items-center gap-3 rounded-lg border border-border/60 bg-background/40 p-3 transition-colors hover:bg-secondary/40"
+                className="flex items-center gap-2 rounded-lg border border-border/60 bg-background/40 p-4 transition-colors hover:bg-secondary/40"
               >
                 <span className="font-mono text-[10px] font-semibold tabular-nums text-muted-foreground">
                   #{i + 1}
@@ -202,7 +202,7 @@ export function ReachClient({ data }: { data: ReachData }) {
                   >
                     {p.name}
                   </Link>
-                  <div className="mt-1 flex items-center gap-3 font-mono text-[10px] tabular-nums text-muted-foreground">
+                  <div className="mt-1 flex items-center gap-2 font-mono text-[10px] tabular-nums text-muted-foreground">
                     <span>{p.compliancePct}% compliance</span>
                     <span>·</span>
                     <span>{p.readRatePct}% lest</span>
@@ -230,13 +230,13 @@ export function ReachClient({ data }: { data: ReachData }) {
               </em>
             </h3>
           </div>
-          <ul className="space-y-3">
+          <ul className="space-y-2">
             {data.needsFollowup.map((p) => {
               const dager = p.lastSeen ? daysSince(p.lastSeen) : null;
               return (
                 <li
                   key={p.id}
-                  className="flex items-center gap-3 rounded-lg border border-border/60 bg-background/40 p-3"
+                  className="flex items-center gap-2 rounded-lg border border-border/60 bg-background/40 p-4"
                 >
                   <Avatar name={p.name} avatarUrl={p.avatarUrl} />
                   <div className="min-w-0 flex-1">
@@ -246,7 +246,7 @@ export function ReachClient({ data }: { data: ReachData }) {
                     >
                       {p.name}
                     </Link>
-                    <div className="mt-1 flex items-center gap-3 font-mono text-[10px] tabular-nums text-muted-foreground">
+                    <div className="mt-1 flex items-center gap-2 font-mono text-[10px] tabular-nums text-muted-foreground">
                       <span className="text-destructive">
                         {p.compliancePct}% compliance
                       </span>
@@ -262,7 +262,7 @@ export function ReachClient({ data }: { data: ReachData }) {
                   </div>
                   <Link
                     href={`/admin/innboks?ny=${p.id}`}
-                    className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-primary-foreground transition-colors hover:bg-primary/90"
+                    className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-primary-foreground transition-colors hover:bg-primary/90"
                   >
                     <Send size={12} strokeWidth={1.75} />
                     Send
@@ -292,7 +292,7 @@ export function ReachClient({ data }: { data: ReachData }) {
                 key={f}
                 type="button"
                 onClick={() => setFilter(f)}
-                className={`rounded-full px-3 py-1 font-mono text-[10px] uppercase tracking-[0.06em] transition-colors ${
+                className={`rounded-full px-4 py-1 font-mono text-[10px] uppercase tracking-[0.06em] transition-colors ${
                   filter === f
                     ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:text-foreground"
@@ -334,7 +334,7 @@ export function ReachClient({ data }: { data: ReachData }) {
                     className="border-b border-border/60 last:border-0 hover:bg-secondary/30"
                   >
                     <Td>
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2">
                         <Avatar
                           name={p.name}
                           avatarUrl={p.avatarUrl}
@@ -534,7 +534,7 @@ function Th({
   return (
     <th
       {...rest}
-      className="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
+      className="px-4 py-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
     >
       {children}
     </th>
@@ -548,7 +548,7 @@ function Td({
   children?: React.ReactNode;
   className?: string;
 }) {
-  return <td className={`px-4 py-3 ${className}`}>{children}</td>;
+  return <td className={`px-4 py-2 ${className}`}>{children}</td>;
 }
 
 function complianceBarColor(pct: number): string {
@@ -719,7 +719,7 @@ function FeatureBarChart({
           ? Math.round((feat.count / totalPlayers) * 100)
           : 0;
         return (
-          <li key={feat.label} className="grid grid-cols-[100px_1fr_60px] items-center gap-3 sm:grid-cols-[160px_1fr_80px] sm:gap-4">
+          <li key={feat.label} className="grid grid-cols-[100px_1fr_60px] items-center gap-2 sm:grid-cols-[160px_1fr_80px] sm:gap-4">
             <span className="font-mono text-xs text-foreground">
               {feat.label}
             </span>

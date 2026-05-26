@@ -206,7 +206,7 @@ export function ServicesListe({ services }: { services: ServiceListItem[] }) {
                       key={s.id}
                       className="border-b border-border/60 last:border-0 hover:bg-secondary/30"
                     >
-                      <td className="px-4 py-3.5">
+                      <td className="px-4 py-4">
                         <div className="font-semibold text-foreground">
                           {s.name}
                         </div>
@@ -216,13 +216,13 @@ export function ServicesListe({ services }: { services: ServiceListItem[] }) {
                           </div>
                         )}
                       </td>
-                      <td className="px-4 py-3.5 font-mono font-semibold tabular-nums text-foreground">
+                      <td className="px-4 py-4 font-mono font-semibold tabular-nums text-foreground">
                         {s.durationMin} min
                       </td>
-                      <td className="px-4 py-3.5 text-right font-mono font-semibold tabular-nums text-foreground">
+                      <td className="px-4 py-4 text-right font-mono font-semibold tabular-nums text-foreground">
                         {(s.priceOre / 100).toLocaleString("nb-NO")} kr
                       </td>
-                      <td className="px-4 py-3.5">
+                      <td className="px-4 py-4">
                         <span
                           className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${catStyle.bg}`}
                         >
@@ -232,7 +232,7 @@ export function ServicesListe({ services }: { services: ServiceListItem[] }) {
                           {CATEGORY_LABEL[cat]}
                         </span>
                       </td>
-                      <td className="px-4 py-3.5">
+                      <td className="px-4 py-4">
                         <div className="flex items-center gap-2">
                           <span className="font-mono font-semibold tabular-nums text-foreground">
                             {s._count.bookings}
@@ -240,10 +240,10 @@ export function ServicesListe({ services }: { services: ServiceListItem[] }) {
                           <Sparkline />
                         </div>
                       </td>
-                      <td className="px-4 py-3.5">
+                      <td className="px-4 py-4">
                         <ToggleVisual on={s.active} />
                       </td>
-                      <td className="px-4 py-3.5 text-right">
+                      <td className="px-4 py-4 text-right">
                         <ServiceForm
                           initial={{
                             id: s.id,
@@ -280,7 +280,7 @@ function SelectChip<T extends string>({
   options: { value: T; label: string }[];
 }) {
   return (
-    <label className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-[12px] text-muted-foreground">
+    <label className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-1.5 text-[12px] text-muted-foreground">
       <span className="font-mono text-[10px] uppercase tracking-[0.06em]">
         {label}:
       </span>

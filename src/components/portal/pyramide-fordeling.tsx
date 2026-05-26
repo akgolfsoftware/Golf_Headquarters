@@ -43,7 +43,7 @@ export function PyramideFordeling({
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       {!compact && (
         <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
           Pyramide-fordeling

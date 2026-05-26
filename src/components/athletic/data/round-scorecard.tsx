@@ -52,8 +52,8 @@ export function RoundScorecard({
   const totalPar = frontPar + backPar;
 
   return (
-    <div className={cn("rounded-2xl border border-border bg-card p-4 md:p-5", className)}>
-      <div className="mb-4 flex items-baseline justify-between gap-3">
+    <div className={cn("rounded-2xl border border-border bg-card p-4 md:p-6", className)}>
+      <div className="mb-4 flex items-baseline justify-between gap-2">
         <div>
           <h3 className="font-display text-xl font-bold tracking-[-0.015em]">
             {courseName ?? "Scorecard"}
@@ -79,7 +79,7 @@ export function RoundScorecard({
         </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2">
         <NineHoleRow label="UT" holes={front} totalScore={frontScore} totalPar={frontPar} />
         <NineHoleRow label="INN" holes={back} totalScore={backScore} totalPar={backPar} />
       </div>

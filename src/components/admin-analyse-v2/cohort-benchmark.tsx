@@ -135,7 +135,7 @@ export function CohortBenchmark() {
   return (
     <section className="rounded-lg border border-border bg-card p-6 shadow-sm">
       {/* Cohort-velger */}
-      <div className="mb-6 flex flex-wrap items-center gap-3">
+      <div className="mb-6 flex flex-wrap items-center gap-2">
         <div className="font-display text-lg font-semibold tracking-tight">Cohort-benchmark vs PGA Top 40</div>
         <div className="ml-auto inline-flex gap-1 rounded-full bg-secondary p-1">
           {COHORTS.map((c) => (

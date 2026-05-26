@@ -17,7 +17,7 @@ export function MersalgBanner() {
         style={{ background: "rgba(209,248,67,0.18)" }}
       />
       <div className="relative max-w-3xl">
-        <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/15 px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-accent">
+        <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/15 px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-accent">
           <Sparkles className="h-3 w-3" strokeWidth={2} />
           PlayerHQ
         </div>
@@ -51,7 +51,7 @@ export function MersalgBanner() {
           />
         </div>
 
-        <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
+        <div className="mt-10 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
           <Link
             href="/auth/signup"
             data-event="cta-click-turneringer-til-playerhq"
@@ -87,7 +87,7 @@ function Feature({
       <span className="grid h-9 w-9 place-items-center rounded-full bg-accent text-accent-foreground">
         <Icon className="h-4 w-4" strokeWidth={1.75} />
       </span>
-      <h3 className="mt-3 font-display text-base font-semibold tracking-tight">
+      <h3 className="mt-2 font-display text-base font-semibold tracking-tight">
         {tittel}
       </h3>
       <p className="mt-1 text-[13px] leading-[1.5] opacity-80">{tekst}</p>

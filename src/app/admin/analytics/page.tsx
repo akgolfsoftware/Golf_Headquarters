@@ -703,7 +703,7 @@ export default async function Analytics({
           )}
 
           {pendingApprovals > 0 && (
-            <div className="flex items-center gap-3 rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3">
+            <div className="flex items-center gap-2 rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-2">
               <AlertCircle
                 size={16}
                 strokeWidth={1.75}

@@ -44,7 +44,7 @@ function Filter() {
               key={chip.key}
               type="button"
               onClick={() => setActive(chip.key)}
-              className={`rounded-full px-3 py-1 font-mono text-[10px] uppercase tracking-[0.10em] transition-colors ${
+              className={`rounded-full px-4 py-1 font-mono text-[10px] uppercase tracking-[0.10em] transition-colors ${
                 isActive
                   ? "bg-primary text-primary-foreground"
                   : "bg-secondary text-secondary-foreground hover:bg-muted"
@@ -96,7 +96,7 @@ function Actions({
   return (
     <section
       aria-label="Økt-handlinger"
-      className="flex flex-wrap items-center gap-3 border-t border-border pt-8"
+      className="flex flex-wrap items-center gap-2 border-t border-border pt-8"
     >
       <AthleticButton
         type="button"

@@ -150,7 +150,7 @@ function NoPinnedState({
 }) {
   return (
     <div className="rounded-xl border border-border bg-card p-6">
-      <div className="flex items-start gap-3">
+      <div className="flex items-start gap-2">
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
           <Pin className="h-4 w-4" />
         </div>
@@ -201,7 +201,7 @@ function Comparison({
   );
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <SessionPinControl
         currentSessionId={current.id}
         isCurrentPinned={isCurrentPinned}
@@ -249,7 +249,7 @@ function SessionColumn({
 }) {
   return (
     <article
-      className={`rounded-xl border bg-card p-5 ${
+      className={`rounded-xl border bg-card p-6 ${
         accent ? "border-primary/30" : "border-border"
       }`}
     >
@@ -268,7 +268,7 @@ function SessionColumn({
           {shotCount} slag
         </p>
       </header>
-      <dl className="space-y-3">
+      <dl className="space-y-2">
         {metrics.map((m, i) => {
           const diff = diffs?.[i];
           return (
@@ -294,7 +294,7 @@ function MetricRow({
   const fmt = numberFmt(metric.decimals);
 
   return (
-    <div className="flex items-baseline justify-between gap-3 border-b border-border/40 pb-2 last:border-b-0 last:pb-0">
+    <div className="flex items-baseline justify-between gap-2 border-b border-border/40 pb-2 last:border-b-0 last:pb-0">
       <dt className="text-xs text-muted-foreground">{metric.label}</dt>
       <dd className="flex items-baseline gap-2">
         <span className="font-mono text-sm font-semibold tabular-nums">
@@ -351,8 +351,8 @@ function SessionPicker({
   activeId: string;
 }) {
   return (
-    <section className="rounded-xl border border-border bg-card p-5">
-      <h3 className="mb-3 text-sm font-semibold">Velg dagens økt</h3>
+    <section className="rounded-xl border border-border bg-card p-6">
+      <h3 className="mb-2 text-sm font-semibold">Velg dagens økt</h3>
       <div className="flex flex-wrap gap-2">
         {sessions.map((s) => {
           const aktiv = s.id === activeId;
@@ -360,7 +360,7 @@ function SessionPicker({
             <Link
               key={s.id}
               href={`/portal/mal/sg-hub/best-vs-now?session=${encodeURIComponent(s.id)}`}
-              className={`rounded-full border px-3 py-1.5 font-mono text-[11px] tabular-nums transition-colors ${
+              className={`rounded-full border px-4 py-1.5 font-mono text-[11px] tabular-nums transition-colors ${
                 aktiv
                   ? "border-primary bg-primary text-primary-foreground"
                   : "border-border bg-card text-foreground hover:border-primary hover:text-primary"

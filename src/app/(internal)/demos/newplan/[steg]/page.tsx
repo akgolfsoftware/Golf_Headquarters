@@ -106,11 +106,11 @@ function ModalShell({
         </header>
 
         {/* Stepper */}
-        <div className="flex items-center gap-2 border-b border-border bg-[var(--surface-alt,#F1EEE5)] px-8 py-3">
+        <div className="flex items-center gap-2 border-b border-border bg-[var(--surface-alt,#F1EEE5)] px-8 py-2">
           <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
             Steg {current} av 4
           </span>
-          <div className="ml-3 flex flex-1 items-center gap-1.5">
+          <div className="ml-2 flex flex-1 items-center gap-1.5">
             {[1, 2, 3, 4].map((n) => {
               const state: "done" | "active" | "todo" =
                 n < idx ? "done" : n === idx ? "active" : "todo";
@@ -141,7 +141,7 @@ function ModalShell({
         </div>
 
         {/* Body */}
-        <div className="flex max-h-[calc(100vh-280px)] flex-col gap-5 overflow-y-auto px-8 py-6">
+        <div className="flex max-h-[calc(100vh-280px)] flex-col gap-6 overflow-y-auto px-8 py-6">
           {children}
         </div>
 
@@ -164,10 +164,10 @@ function ModalFooter({ current }: { current: StegId }) {
   };
 
   return (
-    <footer className="flex items-center justify-between gap-3 border-t border-border bg-[var(--surface-alt,#F1EEE5)] px-8 py-4">
+    <footer className="flex items-center justify-between gap-2 border-t border-border bg-[var(--surface-alt,#F1EEE5)] px-8 py-4">
       <Link
         href="/"
-        className="rounded-md px-3 py-2 text-[13px] font-medium text-muted-foreground transition-colors hover:bg-card hover:text-foreground"
+        className="rounded-md px-4 py-2 text-[13px] font-medium text-muted-foreground transition-colors hover:bg-card hover:text-foreground"
       >
         Avbryt
       </Link>
@@ -215,7 +215,7 @@ function Steg1() {
     <>
       <section>
         <FieldLabel required>Spiller</FieldLabel>
-        <div className="flex items-center gap-3 rounded-lg border border-border bg-[var(--surface,#FAFAF7)] px-4 py-3">
+        <div className="flex items-center gap-2 rounded-lg border border-border bg-[var(--surface,#FAFAF7)] px-4 py-2">
           <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-primary font-display text-[14px] font-semibold text-primary-foreground">
             MP
           </div>
@@ -252,14 +252,14 @@ function Steg1() {
             </div>
             <DateField value="9. mai 2026" />
           </div>
-          <ArrowRight className="mb-3 h-4 w-4 text-muted-foreground" strokeWidth={1.75} />
+          <ArrowRight className="mb-2 h-4 w-4 text-muted-foreground" strokeWidth={1.75} />
           <div>
             <div className="mb-1.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
               Til
             </div>
             <DateField value="30. juni 2026" />
           </div>
-          <div className="mb-3 text-right font-mono text-[12px] leading-[1.4] text-muted-foreground">
+          <div className="mb-2 text-right font-mono text-[12px] leading-[1.4] text-muted-foreground">
             <b className="font-semibold text-primary">8 uker · 53 dager</b>
             <br />~ 32 økter
           </div>
@@ -270,7 +270,7 @@ function Steg1() {
       </section>
 
       <section>
-        <div className="mb-3 flex items-baseline justify-between">
+        <div className="mb-2 flex items-baseline justify-between">
           <FieldLabel required>Pyramide-fokus</FieldLabel>
           <span className="rounded-md bg-[var(--status-success-bg,#E5F1EA)] px-2.5 py-1 font-mono text-[12px] font-semibold tabular-nums text-[var(--status-success,#1A7D56)]">
             Sum 100 %
@@ -307,7 +307,7 @@ function DateField({ value }: { value: string }) {
 
 function PyrRow({ code, color, value }: { code: string; color: string; value: number }) {
   return (
-    <div className="grid grid-cols-[90px_1fr_60px] items-center gap-3.5 py-1">
+    <div className="grid grid-cols-[90px_1fr_60px] items-center gap-4 py-1">
       <div className="flex items-center gap-2 text-[12px] font-semibold text-foreground">
         <span className="h-2.5 w-2.5 rounded-sm" style={{ background: color }} />
         {code}
@@ -337,7 +337,7 @@ function Steg2() {
   return (
     <>
       {/* Selected summary */}
-      <div className="grid grid-cols-[auto_1fr_auto] items-center gap-3 rounded-xl bg-[var(--brand-primary-soft,rgba(0,88,64,0.08))] px-4 py-3">
+      <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2 rounded-xl bg-[var(--brand-primary-soft,rgba(0,88,64,0.08))] px-4 py-2">
         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary font-display text-[12px] font-semibold text-primary-foreground">
           MP
         </div>
@@ -361,7 +361,7 @@ function Steg2() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-3 gap-3.5">
+      <div className="grid grid-cols-3 gap-4">
         <ChoiceCard
           icon={<Grid3x3 className="h-5 w-5" strokeWidth={1.75} />}
           badge="14 maler"
@@ -420,7 +420,7 @@ function ChoiceCard({
 }) {
   return (
     <div
-      className={`relative flex min-h-[260px] flex-col overflow-hidden rounded-xl border-2 p-5 transition-all ${
+      className={`relative flex min-h-[260px] flex-col overflow-hidden rounded-xl border-2 p-6 transition-all ${
         highlighted
           ? "border-accent bg-[linear-gradient(180deg,rgba(209,248,67,0.10),transparent_55%)]"
           : "border-border bg-card hover:border-primary hover:-translate-y-0.5"
@@ -455,13 +455,13 @@ function ChoiceCard({
         {title}
       </h3>
       <p className="flex-1 text-[13px] leading-[1.5] text-muted-foreground">{desc}</p>
-      <div className="mt-3 flex flex-col gap-1 font-mono text-[11px] text-muted-foreground">
+      <div className="mt-2 flex flex-col gap-1 font-mono text-[11px] text-muted-foreground">
         {feats.map((f) => (
           <span key={f}>→ {f}</span>
         ))}
       </div>
       <div
-        className={`mt-3.5 inline-flex items-center gap-1.5 font-display text-[12px] font-semibold ${
+        className={`mt-2.5 inline-flex items-center gap-1.5 font-display text-[12px] font-semibold ${
           highlighted
             ? "text-[var(--brand-accent-on,#005840)]"
             : muted
@@ -484,7 +484,7 @@ function Steg3() {
   return (
     <>
       {/* Summary row */}
-      <div className="grid grid-cols-4 gap-3 rounded-xl bg-[var(--surface-alt,#F1EEE5)] px-5 py-4">
+      <div className="grid grid-cols-4 gap-2 rounded-xl bg-[var(--surface-alt,#F1EEE5)] px-6 py-4">
         <SummaryStat label="Antall økter" value="12" />
         <SummaryStat label="Total varighet" value="14 t 20m" />
         <SummaryStat label="Pyramide" value="40/25/15/15/5" tone="primary" />
@@ -519,7 +519,7 @@ function Steg3() {
         <ExerciseRow num="12" name="Hastighet — driver swing speed" sub="SuperSpeed · 3 sets" cat="fys" dur="30 min" />
       </ExerciseSection>
 
-      <button className="inline-flex w-fit items-center gap-2 rounded-lg border-2 border-dashed border-border bg-transparent px-3.5 py-2.5 text-[13px] font-semibold text-primary transition-colors hover:border-primary hover:bg-[var(--brand-primary-soft,rgba(0,88,64,0.08))]">
+      <button className="inline-flex w-fit items-center gap-2 rounded-lg border-2 border-dashed border-border bg-transparent px-4 py-2.5 text-[13px] font-semibold text-primary transition-colors hover:border-primary hover:bg-[var(--brand-primary-soft,rgba(0,88,64,0.08))]">
         <span className="text-base leading-none">+</span>
         Legg til øvelse
       </button>
@@ -600,7 +600,7 @@ function ExerciseRow({
   };
   return (
     <div
-      className={`grid grid-cols-[20px_36px_1fr_auto_auto_28px] items-center gap-3 rounded-lg px-3 py-2.5 transition-all ${
+      className={`grid grid-cols-[20px_36px_1fr_auto_auto_28px] items-center gap-2 rounded-lg px-4 py-2.5 transition-all ${
         dragging
           ? "border-2 border-primary bg-[var(--brand-primary-soft,rgba(0,88,64,0.08))] shadow-md"
           : "border border-border bg-[var(--surface,#FAFAF7)] hover:border-muted-foreground"
@@ -648,7 +648,7 @@ function ExerciseRow({
 function Steg4() {
   return (
     <>
-      <div className="grid grid-cols-[1fr_200px] gap-6 rounded-2xl border border-border bg-[var(--surface,#FAFAF7)] p-5">
+      <div className="grid grid-cols-[1fr_200px] gap-6 rounded-2xl border border-border bg-[var(--surface,#FAFAF7)] p-6">
         <div>
           <h3 className="font-display text-[22px] font-medium italic tracking-tight text-foreground">
             Sommer-toppform 2026
@@ -692,7 +692,7 @@ function Steg4() {
           </div>
         </div>
 
-        <div className="flex flex-col items-center gap-3">
+        <div className="flex flex-col items-center gap-2">
           <PyrDonut />
           <div className="grid grid-cols-2 gap-x-3 gap-y-1 font-mono text-[11px]">
             <DonutLegend swatch="hsl(var(--primary))" label="TEK" pct="40%" />
@@ -785,7 +785,7 @@ function CheckRow({
   sub: string;
 }) {
   return (
-    <label className="grid cursor-pointer grid-cols-[22px_1fr] items-start gap-3">
+    <label className="grid cursor-pointer grid-cols-[22px_1fr] items-start gap-2">
       <span
         className={`mt-0.5 flex h-5 w-5 items-center justify-center rounded-md ${
           checked

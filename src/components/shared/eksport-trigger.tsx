@@ -47,7 +47,7 @@ export function EksportTrigger(props: Props) {
 
   const cls =
     props.className ??
-    "inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3.5 py-2 text-[13px] font-medium text-foreground hover:bg-secondary";
+    "inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground hover:bg-secondary";
 
   return (
     <>

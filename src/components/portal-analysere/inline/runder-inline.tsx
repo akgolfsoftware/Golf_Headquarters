@@ -93,7 +93,7 @@ function TomTilstand() {
   return (
     <div className="rounded-2xl border border-dashed border-border bg-card p-8 text-center">
       <Flag className="mx-auto h-8 w-8 text-muted-foreground" strokeWidth={1.5} />
-      <h3 className="mt-3 font-display text-lg font-semibold tracking-tight">
+      <h3 className="mt-2 font-display text-lg font-semibold tracking-tight">
         Ingen runder loggført
       </h3>
       <p className="mt-2 text-sm text-muted-foreground">
@@ -101,7 +101,7 @@ function TomTilstand() {
       </p>
       <Link
         href="/portal/ny-okt?type=runde"
-        className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
+        className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
       >
         Logg første runde
         <ArrowUpRight className="h-4 w-4" strokeWidth={1.75} />

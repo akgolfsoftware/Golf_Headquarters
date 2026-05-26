@@ -71,7 +71,7 @@ export function PyramideTimerStatus({
 
   return (
     <section className="relative overflow-hidden rounded-2xl border border-border bg-card p-4 shadow-sm md:p-8">
-      <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <header className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <h3 className="font-display text-xl font-semibold tracking-tight text-foreground">
           Pyramide-status
           <span className="ml-2 font-sans text-sm font-normal italic text-muted-foreground">
@@ -88,7 +88,7 @@ export function PyramideTimerStatus({
                   key={p}
                   type="button"
                   onClick={() => setPeriode(p)}
-                  className={`rounded-sm px-3 py-1 font-mono text-[10px] uppercase tracking-[0.06em] transition-colors ${
+                  className={`rounded-sm px-4 py-1 font-mono text-[10px] uppercase tracking-[0.06em] transition-colors ${
                     aktiv
                       ? "bg-primary text-primary-foreground"
                       : "text-muted-foreground hover:text-foreground"

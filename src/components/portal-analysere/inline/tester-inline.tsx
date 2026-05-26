@@ -30,7 +30,7 @@ export async function TesterInline({ userId }: { userId: string }) {
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
         <Kpi label="Totalt antall tester" verdi={total.toString()} />
         <Kpi
           label="Siste test"
@@ -39,7 +39,7 @@ export async function TesterInline({ userId }: { userId: string }) {
       </div>
 
       <section>
-        <div className="mb-3 flex items-center justify-between">
+        <div className="mb-2 flex items-center justify-between">
           <h3 className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
             Siste {siste.length} tester
           </h3>
@@ -107,7 +107,7 @@ function TomTilstand() {
   return (
     <div className="rounded-2xl border border-dashed border-border bg-card p-8 text-center">
       <TestTube className="mx-auto h-8 w-8 text-muted-foreground" strokeWidth={1.5} />
-      <h3 className="mt-3 font-display text-lg font-semibold tracking-tight">
+      <h3 className="mt-2 font-display text-lg font-semibold tracking-tight">
         Ingen tester registrert
       </h3>
       <p className="mt-2 text-sm text-muted-foreground">
@@ -115,7 +115,7 @@ function TomTilstand() {
       </p>
       <Link
         href="/portal/tren/tester"
-        className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
+        className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
       >
         Start test
         <ArrowUpRight className="h-4 w-4" strokeWidth={1.75} />

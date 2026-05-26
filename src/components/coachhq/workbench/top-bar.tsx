@@ -107,16 +107,16 @@ export function CoachWorkbenchTopBar({
   return (
     <div
       className={cn(
-        "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between",
+        "flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between",
         className,
       )}
     >
       {/* Venstre: Tilbake + velger */}
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-wrap items-center gap-2">
         <Link
           href="/admin/agencyos"
           className={cn(
-            "inline-flex h-9 items-center gap-1.5 rounded-full border border-border bg-card px-3 text-sm font-medium",
+            "inline-flex h-9 items-center gap-1.5 rounded-full border border-border bg-card px-4 text-sm font-medium",
             "text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
           )}
@@ -212,7 +212,7 @@ function SpillerCombobox({ spillere, valgtId, onSelect }: SpillerComboboxProps) 
         aria-haspopup="listbox"
         aria-expanded={open}
         className={cn(
-          "inline-flex h-9 max-w-[260px] items-center gap-2 rounded-full border border-border bg-card pl-2 pr-3 text-sm font-medium",
+          "inline-flex h-9 max-w-[260px] items-center gap-2 rounded-full border border-border bg-card pl-2 pr-4 text-sm font-medium",
           "transition-colors hover:bg-secondary",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         )}
@@ -242,7 +242,7 @@ function SpillerCombobox({ spillere, valgtId, onSelect }: SpillerComboboxProps) 
           )}
         >
           {/* Søkefelt */}
-          <div className="flex items-center gap-2 border-b border-border px-3 py-2">
+          <div className="flex items-center gap-2 border-b border-border px-4 py-2">
             <Search
               className="h-4 w-4 shrink-0 text-muted-foreground"
               strokeWidth={1.75}
@@ -261,7 +261,7 @@ function SpillerCombobox({ spillere, valgtId, onSelect }: SpillerComboboxProps) 
           {/* Liste */}
           <ul className="max-h-72 overflow-y-auto py-1" role="presentation">
             {filtrert.length === 0 ? (
-              <li className="px-3 py-2 text-sm text-muted-foreground">
+              <li className="px-4 py-2 text-sm text-muted-foreground">
                 Ingen treff
               </li>
             ) : (
@@ -278,7 +278,7 @@ function SpillerCombobox({ spillere, valgtId, onSelect }: SpillerComboboxProps) 
                         setOpen(false);
                       }}
                       className={cn(
-                        "flex w-full items-center gap-2 px-3 py-2 text-left text-sm",
+                        "flex w-full items-center gap-2 px-4 py-2 text-left text-sm",
                         "transition-colors hover:bg-secondary",
                         active ? "bg-secondary text-foreground" : "text-foreground",
                       )}
@@ -367,7 +367,7 @@ function GruppeCombobox({ grupper, valgtId, onSelect }: GruppeComboboxProps) {
         aria-haspopup="listbox"
         aria-expanded={open}
         className={cn(
-          "inline-flex h-9 max-w-[260px] items-center gap-2 rounded-full border border-border bg-card px-3 text-sm font-medium",
+          "inline-flex h-9 max-w-[260px] items-center gap-2 rounded-full border border-border bg-card px-4 text-sm font-medium",
           "transition-colors hover:bg-secondary",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         )}
@@ -390,7 +390,7 @@ function GruppeCombobox({ grupper, valgtId, onSelect }: GruppeComboboxProps) {
           role="listbox"
           className="absolute left-0 top-full z-50 mt-2 w-[280px] rounded-lg border border-border bg-popover shadow-lg"
         >
-          <div className="flex items-center gap-2 border-b border-border px-3 py-2">
+          <div className="flex items-center gap-2 border-b border-border px-4 py-2">
             <Search
               className="h-4 w-4 shrink-0 text-muted-foreground"
               strokeWidth={1.75}
@@ -408,7 +408,7 @@ function GruppeCombobox({ grupper, valgtId, onSelect }: GruppeComboboxProps) {
 
           <ul className="max-h-72 overflow-y-auto py-1" role="presentation">
             {filtrert.length === 0 ? (
-              <li className="px-3 py-2 text-sm text-muted-foreground">
+              <li className="px-4 py-2 text-sm text-muted-foreground">
                 Ingen treff
               </li>
             ) : (
@@ -425,7 +425,7 @@ function GruppeCombobox({ grupper, valgtId, onSelect }: GruppeComboboxProps) {
                         setOpen(false);
                       }}
                       className={cn(
-                        "flex w-full items-center gap-2 px-3 py-2 text-left text-sm",
+                        "flex w-full items-center gap-2 px-4 py-2 text-left text-sm",
                         "transition-colors hover:bg-secondary",
                         active ? "bg-secondary text-foreground" : "text-foreground",
                       )}
@@ -503,7 +503,7 @@ function ModusButton({
       aria-selected={active}
       onClick={onClick}
       className={cn(
-        "inline-flex h-8 items-center gap-1.5 rounded-full px-3 text-xs font-semibold tracking-tight transition-colors",
+        "inline-flex h-8 items-center gap-1.5 rounded-full px-4 text-xs font-semibold tracking-tight transition-colors",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         active
           ? "bg-primary text-primary-foreground"

@@ -130,7 +130,7 @@ export default function PriserSide() {
 
       {/* CTA */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 pb-16 sm:pb-24">
-        <div className="relative overflow-hidden rounded-2xl bg-primary px-5 py-10 sm:px-8 sm:py-16 text-primary-foreground md:px-16 md:py-20 text-center">
+        <div className="relative overflow-hidden rounded-2xl bg-primary px-6 py-10 sm:px-8 sm:py-16 text-primary-foreground md:px-16 md:py-20 text-center">
           <div
             aria-hidden
             className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full"
@@ -144,7 +144,7 @@ export default function PriserSide() {
             <p className="mt-6 text-[16px] leading-[1.6] opacity-90">
               Start med GRATIS-kontoen i dag. Ingen kredittkort nødvendig.
             </p>
-            <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-center gap-3 sm:gap-4">
+            <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-center gap-2 sm:gap-4">
               <Link
                 href="/registrer"
                 className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-accent px-6 text-[15px] font-bold text-accent-foreground shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition-opacity hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
@@ -168,12 +168,12 @@ export default function PriserSide() {
 function TierCard({ tier }: { tier: Tier }) {
   return (
     <div
-      className={`relative flex flex-col rounded-2xl border bg-card p-5 sm:p-8 ${
+      className={`relative flex flex-col rounded-2xl border bg-card p-6 sm:p-8 ${
         tier.anbefalt ? "ring-2 ring-primary border-primary/40" : "border-border"
       }`}
     >
       {tier.anbefalt && (
-        <span className="absolute -top-3 left-8 inline-flex items-center gap-1 rounded-full bg-accent px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-accent-foreground">
+        <span className="absolute -top-3 left-8 inline-flex items-center gap-1 rounded-full bg-accent px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-accent-foreground">
           Anbefalt
         </span>
       )}
@@ -189,7 +189,7 @@ function TierCard({ tier }: { tier: Tier }) {
         {tier.beskrivelse}
       </p>
 
-      <ul className="mt-6 space-y-3 flex-1">
+      <ul className="mt-6 space-y-2 flex-1">
         {tier.funksjoner.map((f) => (
           <li key={f} className="flex items-center gap-2 text-sm">
             <Check className="h-4 w-4 text-primary shrink-0" strokeWidth={2} />
@@ -200,7 +200,7 @@ function TierCard({ tier }: { tier: Tier }) {
 
       <Link
         href={tier.ctaHref}
-        className={`mt-8 block rounded-full px-6 py-3 text-center text-sm font-medium transition-opacity hover:opacity-90 ${
+        className={`mt-8 block rounded-full px-6 py-2 text-center text-sm font-medium transition-opacity hover:opacity-90 ${
           tier.anbefalt
             ? "bg-primary text-primary-foreground"
             : "border border-border bg-background text-foreground hover:bg-secondary"
@@ -218,7 +218,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
       <h3 className="font-display text-lg font-semibold tracking-tight">
         {q}
       </h3>
-      <p className="mt-3 text-sm text-muted-foreground">{a}</p>
+      <p className="mt-2 text-sm text-muted-foreground">{a}</p>
     </div>
   );
 }

@@ -141,7 +141,7 @@ export default async function TalentRadarPage() {
       />
 
       {/* Kvartil-plots per akse */}
-      <section className="rounded-xl border border-border bg-card p-5">
+      <section className="rounded-xl border border-border bg-card p-6">
         <h3 className="mb-4 font-display text-base font-semibold">Distribusjon per akse</h3>
         <div className="space-y-4">
           {RADAR_AKSER.map(({ key, label }) => {
@@ -172,7 +172,7 @@ export default async function TalentRadarPage() {
       {/* Spillerliste med mini-radar */}
       <section>
         <h3 className="mb-4 font-display text-base font-semibold">Alle spillere</h3>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {spillere.map((s) => {
             const vals = [s.fysisk, s.teknikk, s.taktikk, s.mental, s.motivasjon];
             const snittVal = (() => {

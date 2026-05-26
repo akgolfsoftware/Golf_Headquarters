@@ -88,7 +88,7 @@ export default function Hjem() {
             for spillere som vil mer enn å bare slå baller.
           </p>
 
-          <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3 sm:gap-4">
+          <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-2 sm:gap-4">
             <Link
               href="/booking"
               className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-primary px-6 text-[15px] font-bold text-accent transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
@@ -158,7 +158,7 @@ export default function Hjem() {
 
       {/* PlayerHQ-strip */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 py-16 sm:py-24">
-        <div className="grid grid-cols-1 gap-8 rounded-2xl border border-primary/20 bg-primary/5 p-5 sm:p-8 md:p-12 md:grid-cols-[1fr_1.2fr] md:items-center">
+        <div className="grid grid-cols-1 gap-8 rounded-2xl border border-primary/20 bg-primary/5 p-6 sm:p-8 md:p-12 md:grid-cols-[1fr_1.2fr] md:items-center">
           <div>
             <div className="flex flex-wrap items-center gap-2">
               <AthleticBadge variant="primary">Inkludert</AthleticBadge>
@@ -250,7 +250,7 @@ export default function Hjem() {
 
       {/* Final CTA */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 pb-16 sm:pb-24">
-        <div className="relative overflow-hidden rounded-2xl bg-primary px-5 py-10 sm:px-8 sm:py-16 text-primary-foreground md:px-16 md:py-20">
+        <div className="relative overflow-hidden rounded-2xl bg-primary px-6 py-10 sm:px-8 sm:py-16 text-primary-foreground md:px-16 md:py-20">
           <div
             aria-hidden
             className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full"
@@ -269,7 +269,7 @@ export default function Hjem() {
               Vi har plass til 20 nye spillere i 2026-sesongen. Book en gratis
               30-minutters kartleggings-økt så finner vi ut om vi er rett match.
             </p>
-            <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3 sm:gap-4">
+            <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-2 sm:gap-4">
               <Link
                 href="/booking"
                 className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-accent px-6 text-[15px] font-bold text-accent-foreground shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition-opacity hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"

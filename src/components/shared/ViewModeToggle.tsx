@@ -72,7 +72,7 @@ export function ViewModeToggle({
                 : `Bytt til ${label}`
             }
             className={cn(
-              "inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-medium transition-colors",
+              "inline-flex items-center gap-1.5 rounded-full px-4 py-1 font-medium transition-colors",
               aktiv
                 ? "bg-primary text-primary-foreground"
                 : "text-muted-foreground hover:text-foreground",

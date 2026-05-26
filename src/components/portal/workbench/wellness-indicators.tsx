@@ -164,7 +164,7 @@ export function WellnessIndicators({
     return (
       <section
         className={cn(
-          "rounded-2xl border border-border bg-card p-6 sm:p-7",
+          "rounded-2xl border border-border bg-card p-6 sm:p-8",
           className,
         )}
         aria-labelledby="wellness-heading"
@@ -180,7 +180,7 @@ export function WellnessIndicators({
         </h2>
 
         <div className="mt-6 rounded-xl border border-dashed border-border bg-secondary/30 p-8 text-center">
-          <span className="mx-auto mb-3 grid size-12 place-items-center rounded-full bg-foreground/5 text-foreground/60">
+          <span className="mx-auto mb-2 grid size-12 place-items-center rounded-full bg-foreground/5 text-foreground/60">
             <Watch className="size-6" strokeWidth={1.5} aria-hidden="true" />
           </span>
           <p className="mx-auto max-w-xs text-sm text-muted-foreground">
@@ -189,7 +189,7 @@ export function WellnessIndicators({
           </p>
           <Link
             href={connectHref}
-            className="mt-5 inline-flex min-h-[44px] items-center gap-1.5 rounded-full bg-foreground px-5 py-2 font-mono text-[11px] font-bold uppercase tracking-[0.10em] text-background transition hover:bg-foreground/90"
+            className="mt-5 inline-flex min-h-[44px] items-center gap-1.5 rounded-full bg-foreground px-6 py-2 font-mono text-[11px] font-bold uppercase tracking-[0.10em] text-background transition hover:bg-foreground/90"
           >
             Koble enhet
             <ArrowRight className="size-3.5" strokeWidth={2} aria-hidden="true" />
@@ -204,13 +204,13 @@ export function WellnessIndicators({
   return (
     <section
       className={cn(
-        "rounded-2xl border border-border bg-card p-6 sm:p-7",
+        "rounded-2xl border border-border bg-card p-6 sm:p-8",
         className,
       )}
       aria-labelledby="wellness-heading"
     >
       {/* Header */}
-      <div className="mb-5 flex items-end justify-between gap-3">
+      <div className="mb-5 flex items-end justify-between gap-2">
         <div>
           <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
             Velvære
@@ -230,7 +230,7 @@ export function WellnessIndicators({
       </div>
 
       {/* 2x2 grid med store stat-tiles */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-2">
         {/* Energi */}
         <StatTile
           icon={<Activity className="size-4" strokeWidth={1.5} />}

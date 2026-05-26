@@ -321,9 +321,9 @@ const SG_TABS: { key: SgTab; label: string }[] = [
 
 function Filters({ tab, sgTab }: { tab: Tab; sgTab: SgTab }) {
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       {/* SG-kategori-tabs */}
-      <div className="flex flex-wrap items-center gap-2 border-b border-border pb-3">
+      <div className="flex flex-wrap items-center gap-2 border-b border-border pb-2">
         <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
           Kategori
         </span>

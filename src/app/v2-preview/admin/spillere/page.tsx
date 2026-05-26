@@ -442,7 +442,7 @@ function CoachSidebar() {
 
   return (
     <aside
-      className="sticky top-0 h-screen border-r border-border flex flex-col gap-2 px-4 py-5"
+      className="sticky top-0 h-screen border-r border-border flex flex-col gap-2 px-4 py-6"
       style={{
         background: "color-mix(in oklab, var(--background) 70%, var(--card))",
       }}
@@ -468,7 +468,7 @@ function CoachSidebar() {
       {/* Nav groups */}
       {COACH_NAV.map((group) => (
         <div key={group.group} className="flex flex-col gap-[2px] mt-1">
-          <div className="font-mono text-[10px] font-bold tracking-[0.14em] text-muted-foreground uppercase px-[10px] py-3">
+          <div className="font-mono text-[10px] font-bold tracking-[0.14em] text-muted-foreground uppercase px-[10px] py-2">
             {group.group}
           </div>
           {group.items.map((item) => {
@@ -611,13 +611,13 @@ function SpillerKort({ spiller }: { spiller: Spiller }) {
     >
       {/* Toppfelt: avatar + tier-pill */}
       <div
-        className="flex items-start justify-between gap-2 px-5 pt-5 pb-4"
+        className="flex items-start justify-between gap-2 px-6 pt-6 pb-4"
         style={{
           borderBottom:
             "1px solid color-mix(in oklab, var(--border) 60%, transparent)",
         }}
       >
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           {/* Avatar */}
           <div
             className="w-11 h-11 rounded-full grid place-items-center flex-shrink-0 font-display font-bold text-[14px] ring-2 ring-offset-2 transition-all duration-200 group-hover:ring-[color-mix(in_oklab,var(--accent)_50%,transparent)]"
@@ -656,7 +656,7 @@ function SpillerKort({ spiller }: { spiller: Spiller }) {
       </div>
 
       {/* Midtseksjon: HCP + nivå-pill */}
-      <div className="flex items-center justify-between gap-2 px-5 py-4">
+      <div className="flex items-center justify-between gap-2 px-6 py-4">
         {/* HCP */}
         <div className="flex flex-col gap-[3px]">
           <span className="font-mono text-[9px] text-muted-foreground uppercase tracking-[0.10em]">
@@ -688,7 +688,7 @@ function SpillerKort({ spiller }: { spiller: Spiller }) {
 
       {/* Bunnfelt: sist aktiv + plan-bar */}
       <div
-        className="flex flex-col gap-3 px-5 pb-5 pt-3"
+        className="flex flex-col gap-2 px-6 pb-6 pt-2"
         style={{
           borderTop:
             "1px solid color-mix(in oklab, var(--border) 60%, transparent)",
@@ -742,7 +742,7 @@ function FilterBar({
 }: FilterBarProps) {
   return (
     <div
-      className="sticky z-20 flex flex-wrap items-center gap-3 mb-8 -mx-8 px-8 py-4 border-b border-border"
+      className="sticky z-20 flex flex-wrap items-center gap-2 mb-8 -mx-8 px-8 py-4 border-b border-border"
       style={{
         top: 57,
         background:
@@ -1028,7 +1028,7 @@ export default function StallSamplePage() {
             WebkitBackdropFilter: "blur(12px)",
           }}
         >
-          <div className="flex items-center gap-2 px-6 py-3">
+          <div className="flex items-center gap-2 px-6 py-2">
             <div
               className="flex-1 flex items-center gap-[10px] px-[14px] py-2 rounded-[10px] text-muted-foreground text-[13px] border border-border max-w-[420px]"
               style={{ background: "var(--card)" }}

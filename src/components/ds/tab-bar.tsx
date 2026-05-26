@@ -40,7 +40,7 @@ export function TabBar({
       role="tablist"
       aria-label="Seksjons-tabs"
       className={cn(
-        "flex flex-wrap items-center gap-2 rounded-2xl border border-border bg-card px-3 py-2.5",
+        "flex flex-wrap items-center gap-2 rounded-2xl border border-border bg-card px-4 py-2.5",
         className,
       )}
     >
@@ -54,7 +54,7 @@ export function TabBar({
             role="tab"
             aria-selected={isActive}
             className={cn(
-              "inline-flex items-center gap-1.5 rounded-lg border px-3.5 py-2 font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
+              "inline-flex items-center gap-1.5 rounded-lg border px-4 py-2 font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
               "text-xs",
               isActive
                 ? "border-2 border-[var(--color-accent-deep)] bg-[var(--color-tab-active-bg)] px-[13px] py-[7px] text-[var(--color-tab-active-text)]"

@@ -66,20 +66,20 @@ export default function TalentSpiller360Demo() {
             <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               Talent · Spiller-360
             </span>
-            <h1 className="mt-1.5 flex items-center gap-3 font-display text-[36px] font-bold leading-[1.1] tracking-tight">
+            <h1 className="mt-1.5 flex items-center gap-2 font-display text-[36px] font-bold leading-[1.1] tracking-tight">
               <em className="font-medium italic">Markus</em> Roinås Pedersen
             </h1>
           </div>
           <div className="flex items-center gap-2">
-            <button className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3.5 py-2 text-[13px] font-medium text-foreground hover:bg-secondary">
+            <button className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground hover:bg-secondary">
               <ChevronLeft className="h-4 w-4" strokeWidth={1.5} />
               Tilbake
             </button>
-            <button className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3.5 py-2 text-[13px] font-medium text-foreground hover:bg-secondary">
+            <button className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground hover:bg-secondary">
               <StickyNote className="h-4 w-4" strokeWidth={1.5} />
               Notater
             </button>
-            <button className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-[13px] font-medium text-primary-foreground">
+            <button className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground">
               <CalendarCheck className="h-4 w-4" strokeWidth={1.5} />
               Planlegg test
             </button>
@@ -111,7 +111,7 @@ export default function TalentSpiller360Demo() {
               ligner mest på <em className="font-medium italic">Kris Ventura</em>{" "}
               ved samme alder.
             </h2>
-            <div className="mt-3 flex flex-wrap gap-1.5">
+            <div className="mt-2 flex flex-wrap gap-1.5">
               <Pill tone="success">Form +8 %</Pill>
               <Pill tone="info">Talent 94</Pill>
               <Pill tone="muted">Kategori A1</Pill>
@@ -155,11 +155,11 @@ export default function TalentSpiller360Demo() {
         {/* Du er her — 4 KPI */}
         <div className="mb-6 grid grid-cols-4 gap-4">
           {/* Percentil */}
-          <div className="rounded-lg border border-border bg-card p-5">
+          <div className="rounded-lg border border-border bg-card p-6">
             <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
               Percentil
             </span>
-            <div className="mt-3 font-mono text-[36px] font-medium tabular-nums leading-none">
+            <div className="mt-2 font-mono text-[36px] font-medium tabular-nums leading-none">
               {KPI.percentile}
               <span className="text-[20px] text-muted-foreground">.</span>
             </div>
@@ -170,11 +170,11 @@ export default function TalentSpiller360Demo() {
           </div>
 
           {/* NGF-klasse */}
-          <div className="rounded-lg border border-border bg-card p-5">
+          <div className="rounded-lg border border-border bg-card p-6">
             <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
               NGF-klasse
             </span>
-            <div className="mt-3 font-display text-[24px] font-semibold leading-tight">
+            <div className="mt-2 font-display text-[24px] font-semibold leading-tight">
               Klasse A
             </div>
             <LadderMeter steps={5} current={KPI.ngfNivaa} />
@@ -184,11 +184,11 @@ export default function TalentSpiller360Demo() {
           </div>
 
           {/* Form */}
-          <div className="rounded-lg border border-border bg-card p-5">
+          <div className="rounded-lg border border-border bg-card p-6">
             <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
               Form
             </span>
-            <div className="mt-3 flex items-baseline gap-2">
+            <div className="mt-2 flex items-baseline gap-2">
               <span className="font-mono text-[36px] font-medium tabular-nums leading-none text-success">
                 {KPI.formPct}
               </span>
@@ -202,7 +202,7 @@ export default function TalentSpiller360Demo() {
 
           {/* Talent-score — mørkt kort */}
           <div
-            className="rounded-lg p-5 text-[#F5F4EE]"
+            className="rounded-lg p-6 text-[#F5F4EE]"
             style={{
               background:
                 "linear-gradient(135deg, hsl(159 100% 10%) 0%, hsl(159 100% 17%) 100%)",
@@ -211,10 +211,10 @@ export default function TalentSpiller360Demo() {
             <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-accent">
               Talent-score
             </span>
-            <div className="mt-3 font-mono text-[44px] font-medium tabular-nums leading-none text-accent">
+            <div className="mt-2 font-mono text-[44px] font-medium tabular-nums leading-none text-accent">
               {KPI.talentScore}
             </div>
-            <div className="mt-3 font-mono text-[11px] font-semibold text-accent">
+            <div className="mt-2 font-mono text-[11px] font-semibold text-accent">
               {KPI.talentDelta} siste 6 mnd
             </div>
             <div className="mt-1 font-mono text-[10px] opacity-70">
@@ -241,7 +241,7 @@ export default function TalentSpiller360Demo() {
             <div className="mt-4 grid place-items-center">
               <SGRadar />
             </div>
-            <div className="mt-4 flex items-center justify-center gap-5 text-[11px] text-muted-foreground">
+            <div className="mt-4 flex items-center justify-center gap-6 text-[11px] text-muted-foreground">
               <span className="inline-flex items-center gap-1.5">
                 <span className="inline-block h-2 w-2 rounded-full bg-primary" />
                 Markus
@@ -294,17 +294,17 @@ export default function TalentSpiller360Demo() {
             <h3 className="mt-1 font-display text-[18px] font-semibold leading-snug">
               Hvem ligner Markus mest på?
             </h3>
-            <ul className="mt-3 space-y-2">
+            <ul className="mt-2 space-y-2">
               {PRO_MATCHES.map((p) => (
                 <li
                   key={p.initials}
-                  className={`flex items-center justify-between rounded-md px-3 py-2.5 ${
+                  className={`flex items-center justify-between rounded-md px-4 py-2.5 ${
                     p.primary
                       ? "bg-primary text-primary-foreground"
                       : "bg-secondary text-foreground"
                   }`}
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
                     <div
                       className={`grid h-9 w-9 place-items-center rounded-full text-[11px] font-semibold ${
                         p.primary
@@ -335,7 +335,7 @@ export default function TalentSpiller360Demo() {
               D-I vei
             </h3>
             <LadderMeter steps={NCAA_STEPS.length} current={NCAA_CURRENT} labels={NCAA_STEPS} />
-            <div className="mt-3 text-[12px] leading-snug text-muted-foreground">
+            <div className="mt-2 text-[12px] leading-snug text-muted-foreground">
               Score-equiv NCAA{" "}
               <b className="font-semibold tabular-nums text-foreground">73,4</b>{" "}
               · D-I cutoff{" "}
@@ -352,7 +352,7 @@ export default function TalentSpiller360Demo() {
               Steg 5 av 6
             </h3>
             <LadderMeter steps={6} current={4} />
-            <div className="mt-3 text-[12px] leading-snug text-muted-foreground">
+            <div className="mt-2 text-[12px] leading-snug text-muted-foreground">
               Spesifikk fase · klar for konkurranse-trening
             </div>
           </section>
@@ -385,7 +385,7 @@ export default function TalentSpiller360Demo() {
                 return (
                   <div
                     key={b.yds}
-                    className="rounded-md p-3 text-center"
+                    className="rounded-md p-4 text-center"
                     style={{ background: bg }}
                   >
                     <div className="font-mono text-[10px] text-foreground/80">
@@ -412,7 +412,7 @@ export default function TalentSpiller360Demo() {
               19 runder, volatilitet lav
             </h3>
             <RoundDistribution rounds={ROUNDS} />
-            <div className="mt-3 flex items-center justify-between text-[11px] text-muted-foreground">
+            <div className="mt-2 flex items-center justify-between text-[11px] text-muted-foreground">
               <span>Volatilitet</span>
               <Pill tone="success">σ 1,4 · stabil</Pill>
             </div>
@@ -510,7 +510,7 @@ function DensityCurve({ highlight }: { highlight: number }) {
     ` L ${w} ${h} L 0 ${h} Z`;
   const hx = (highlight / 100) * w;
   return (
-    <svg width={w} height={h} className="mt-3 block" viewBox={`0 0 ${w} ${h}`}>
+    <svg width={w} height={h} className="mt-2 block" viewBox={`0 0 ${w} ${h}`}>
       <path d={d} fill="hsl(60 8% 90%)" />
       <line x1={hx} y1={2} x2={hx} y2={h} stroke="hsl(159 100% 17%)" strokeWidth={2} />
     </svg>
@@ -527,7 +527,7 @@ function LadderMeter({
   labels?: string[];
 }) {
   return (
-    <div className="mt-3">
+    <div className="mt-2">
       <div className="flex gap-1">
         {Array.from({ length: steps }).map((_, i) => (
           <div
@@ -570,7 +570,7 @@ function Sparkline({ values }: { values: number[] }) {
       width={w}
       height={h}
       viewBox={`0 0 ${w} ${h}`}
-      className="mt-3 block w-full"
+      className="mt-2 block w-full"
       preserveAspectRatio="none"
     >
       <path d={d} fill="none" stroke="hsl(159 100% 17%)" strokeWidth={2} />
@@ -600,7 +600,7 @@ function TrajectoryChart({
     arr.map((v, i) => `${scaleX(i, arr.length)} ${scaleY(v)}`).join(" L ");
 
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} className="mt-3 w-full">
+    <svg viewBox={`0 0 ${w} ${h}`} className="mt-2 w-full">
       {/* gridlines */}
       {[0.25, 0.5, 0.75].map((g) => (
         <line
@@ -662,7 +662,7 @@ function RoundDistribution({
           />
         ))}
       </div>
-      <div className="mt-3 space-y-1.5">
+      <div className="mt-2 space-y-1.5">
         {segs.map((s) => (
           <div
             key={s.label}

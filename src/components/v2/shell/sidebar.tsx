@@ -61,7 +61,7 @@ export default function Sidebar({ player }: SidebarProps) {
 
   return (
     <aside
-      className="sticky top-0 h-screen border-r border-border flex flex-col gap-2 px-4 py-5"
+      className="sticky top-0 h-screen border-r border-border flex flex-col gap-2 px-4 py-6"
       style={{
         background: "color-mix(in oklab, var(--background) 70%, var(--card))",
       }}
@@ -87,7 +87,7 @@ export default function Sidebar({ player }: SidebarProps) {
       {/* Nav groups */}
       {SIDEBAR_NAV.map((group) => (
         <div key={group.group} className="flex flex-col gap-[2px] mt-1">
-          <div className="font-mono text-[10px] font-bold tracking-[0.14em] text-muted-foreground uppercase px-[10px] py-3">
+          <div className="font-mono text-[10px] font-bold tracking-[0.14em] text-muted-foreground uppercase px-[10px] py-2">
             {group.group}
           </div>
           {group.items.map((item) => {

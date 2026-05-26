@@ -185,8 +185,8 @@ export default async function TalentOversikt({
         const yTicks2 = [2, 4, 6, 8, 10];
 
         return (
-          <section className="overflow-hidden rounded-xl border border-border bg-card p-5">
-            <div className="mb-1 flex flex-wrap items-center justify-between gap-3">
+          <section className="overflow-hidden rounded-xl border border-border bg-card p-6">
+            <div className="mb-1 flex flex-wrap items-center justify-between gap-2">
               <div>
                 <h3 className="font-display text-base font-semibold">
                   Stall-<em className="font-serif italic font-normal text-primary">talent</em> — 2D-kart
@@ -196,10 +196,10 @@ export default async function TalentOversikt({
                 </p>
               </div>
               <div className="flex gap-2">
-                <Link href="/admin/talent/kohort" className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:border-primary hover:text-primary">
+                <Link href="/admin/talent/kohort" className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-1.5 text-xs font-semibold text-muted-foreground hover:border-primary hover:text-primary">
                   Kohort
                 </Link>
-                <Link href="/admin/talent/radar" className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-90">
+                <Link href="/admin/talent/radar" className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-90">
                   Radar
                 </Link>
               </div>
@@ -413,7 +413,7 @@ function KpiKort({
         <Icon className="h-3 w-3" strokeWidth={1.5} />
         {label}
       </div>
-      <div className="mt-3 font-mono text-[24px] font-semibold tabular-nums leading-none">
+      <div className="mt-2 font-mono text-[24px] font-semibold tabular-nums leading-none">
         {verdi}
       </div>
       <div className="mt-2 text-[11px] text-muted-foreground">{sub}</div>

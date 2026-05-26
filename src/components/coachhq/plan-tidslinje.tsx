@@ -161,7 +161,7 @@ export function PlanTidslinje({
             style={{ gridTemplateColumns: "180px 1fr" }}
           >
             {/* Spiller-celle */}
-            <div className="flex items-center gap-2 border-r border-border px-4 py-3">
+            <div className="flex items-center gap-2 border-r border-border px-4 py-2">
               <span
                 className="grid h-7 w-7 shrink-0 place-items-center rounded-full font-mono text-[10px] font-semibold text-white"
                 style={{ background: avatarBg(spiller.userName) }}

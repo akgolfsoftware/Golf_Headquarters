@@ -41,8 +41,8 @@ export function PlanCardMini({
       aria-current={active ? "true" : undefined}
       className={
         active
-          ? "flex flex-col gap-2 rounded-md border border-border border-l-[3px] border-l-primary bg-secondary p-3 shadow-sm"
-          : "flex flex-col gap-2 rounded-md border border-transparent p-3 transition-colors hover:bg-secondary/60"
+          ? "flex flex-col gap-2 rounded-md border border-border border-l-[3px] border-l-primary bg-secondary p-4 shadow-sm"
+          : "flex flex-col gap-2 rounded-md border border-transparent p-4 transition-colors hover:bg-secondary/60"
       }
     >
       <div className="flex items-center gap-2">

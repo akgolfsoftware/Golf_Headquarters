@@ -79,7 +79,7 @@ export function GoalDetailClient({ goalId, isDummy = false, initial }: Props) {
     <>
       <section
         aria-label="Mål-handlinger"
-        className="flex flex-wrap items-center gap-3 border-t border-border pt-8"
+        className="flex flex-wrap items-center gap-2 border-t border-border pt-8"
       >
         <button
           type="button"
@@ -173,7 +173,7 @@ function ModalShell({
       }}
     >
       <div className="w-full max-w-md overflow-hidden rounded-2xl border border-border bg-card shadow-2xl">
-        <header className="flex items-start justify-between border-b border-border px-6 py-5">
+        <header className="flex items-start justify-between border-b border-border px-6 py-6">
           <div>
             <span className="font-mono text-[10.5px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
               {eyebrow}
@@ -249,7 +249,7 @@ function EndreModal({
       title="Endre mål"
       onClose={onClose}
     >
-      <div className="space-y-4 px-6 py-5">
+      <div className="space-y-4 px-6 py-6">
         <ModalField label="Tittel" required>
           <input
             className={modalInput}
@@ -270,7 +270,7 @@ function EndreModal({
             ))}
           </select>
         </ModalField>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-2">
           <ModalField label="Målverdi">
             <input
               type="number"
@@ -291,7 +291,7 @@ function EndreModal({
         </div>
       </div>
 
-      <footer className="flex items-center justify-end gap-3 border-t border-border px-6 py-4">
+      <footer className="flex items-center justify-end gap-2 border-t border-border px-6 py-4">
         <button
           type="button"
           onClick={onClose}
@@ -303,7 +303,7 @@ function EndreModal({
           type="button"
           disabled={!dirty || pending || !title.trim()}
           onClick={submit}
-          className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-50"
         >
           {pending ? (
             <Loader2 className="h-4 w-4 animate-spin" strokeWidth={1.75} />
@@ -351,13 +351,13 @@ function FeireModal({
           <p className="mt-2 font-display text-[22px] font-semibold leading-tight">
             <em className="not-italic text-primary">«{title}»</em>
           </p>
-          <p className="mt-3 text-sm text-muted-foreground">
+          <p className="mt-2 text-sm text-muted-foreground">
             Målet flyttes til arkivet og coach blir varslet. Du kan se det
             igjen under «Oppnådde mål».
           </p>
         </div>
       </div>
-      <footer className="flex items-center justify-end gap-3 border-t border-border px-6 py-4">
+      <footer className="flex items-center justify-end gap-2 border-t border-border px-6 py-4">
         <button
           type="button"
           onClick={onClose}
@@ -370,7 +370,7 @@ function FeireModal({
           type="button"
           onClick={onConfirm}
           disabled={pending}
-          className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60"
+          className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60"
         >
           {pending ? (
             <Loader2 className="h-4 w-4 animate-spin" strokeWidth={1.75} />
@@ -412,7 +412,7 @@ function AvbrytModal({
 
   return (
     <ModalShell eyebrow="MÅL · AVBRYT" title="Avbryt mål" onClose={onClose}>
-      <div className="space-y-4 px-6 py-5">
+      <div className="space-y-4 px-6 py-6">
         <p className="text-sm text-muted-foreground">
           Er du sikker på at du vil avbryte{" "}
           <em className="font-medium not-italic text-foreground">
@@ -427,7 +427,7 @@ function AvbrytModal({
                 key={g}
                 type="button"
                 onClick={() => setGrunn(g)}
-                className={`rounded-md border px-3 py-2 text-left text-sm transition-colors ${
+                className={`rounded-md border px-4 py-2 text-left text-sm transition-colors ${
                   grunn === g
                     ? "border-primary bg-primary/10 text-primary"
                     : "border-border bg-card text-foreground hover:bg-secondary"
@@ -450,7 +450,7 @@ function AvbrytModal({
           </ModalField>
         )}
       </div>
-      <footer className="flex items-center justify-end gap-3 border-t border-border px-6 py-4">
+      <footer className="flex items-center justify-end gap-2 border-t border-border px-6 py-4">
         <button
           type="button"
           onClick={onClose}
@@ -463,7 +463,7 @@ function AvbrytModal({
           type="button"
           onClick={() => onConfirm(samletGrunn)}
           disabled={pending || !kanAvbryte}
-          className="inline-flex items-center gap-2 rounded-full border border-destructive/30 bg-destructive/10 px-5 py-2 text-sm font-semibold text-destructive hover:bg-destructive/20 disabled:opacity-60"
+          className="inline-flex items-center gap-2 rounded-full border border-destructive/30 bg-destructive/10 px-6 py-2 text-sm font-semibold text-destructive hover:bg-destructive/20 disabled:opacity-60"
         >
           {pending ? (
             <Loader2 className="h-4 w-4 animate-spin" strokeWidth={1.75} />
@@ -480,7 +480,7 @@ function AvbrytModal({
 /* -------- Subs -------- */
 
 const modalInput =
-  "w-full rounded-md border border-input bg-card px-3 py-2.5 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30";
+  "w-full rounded-md border border-input bg-card px-4 py-2.5 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30";
 
 function ModalField({
   label,

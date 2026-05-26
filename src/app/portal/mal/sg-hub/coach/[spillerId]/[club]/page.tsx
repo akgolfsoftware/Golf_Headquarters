@@ -56,7 +56,7 @@ export default async function CoachClubDetailPage({
           <h2 className="mt-2 font-display text-2xl font-semibold">
             Ingen data funnet
           </h2>
-          <p className="mt-3 text-sm text-muted-foreground max-w-sm mx-auto">
+          <p className="mt-2 text-sm text-muted-foreground max-w-sm mx-auto">
             Ingen TrackMan-slag registrert for {decoded} hos {player.name}.
           </p>
         </div>
@@ -78,7 +78,7 @@ export default async function CoachClubDetailPage({
         Tilbake til {player.name}
       </Link>
 
-      <div className="rounded-md border border-primary/30 bg-primary/5 px-3 py-2">
+      <div className="rounded-md border border-primary/30 bg-primary/5 px-4 py-2">
         <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-primary">
           Coach-modus · {player.name}
         </p>
@@ -176,7 +176,7 @@ export default async function CoachClubDetailPage({
       {advanced && (
         <section className="rounded-xl border border-border bg-card p-6">
           <h2 className="mb-4 font-semibold">Slag-statistikk</h2>
-          <p className="mb-3 text-xs text-muted-foreground">
+          <p className="mb-2 text-xs text-muted-foreground">
             Shot-annotasjoner aktiveres når komponenten kobles inn fra
             ShotAnnotationPopover.tsx.
           </p>
@@ -246,7 +246,7 @@ function SummaryCard({
   sub: string;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-5">
+    <div className="rounded-xl border border-border bg-card p-6">
       <div className="mb-2 flex items-center gap-2">
         <Icon className="h-3.5 w-3.5 text-muted-foreground" />
         <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">

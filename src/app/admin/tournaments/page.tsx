@@ -240,7 +240,7 @@ export default async function Turneringer({
             <TournamentForm courses={courses} triggerLabel="Hurtigopprett" />
             <Link
               href="/admin/tournaments/dubletter"
-              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-2 text-sm font-medium text-foreground hover:bg-secondary"
+              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-4 py-2 text-sm font-medium text-foreground hover:bg-secondary"
               title="Vurder manuelle turneringer for merge med kjente kilder"
             >
               Dubletter
@@ -279,7 +279,7 @@ export default async function Turneringer({
       </div>
 
       {/* Filter-row (med GET-form for å bevare server-rendering) */}
-      <form className="space-y-3" method="GET">
+      <form className="space-y-2" method="GET">
         <div className="flex flex-wrap items-center gap-2">
           <div className="flex min-w-[260px] flex-1 items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-sm sm:flex-initial">
             <Search size={14} strokeWidth={1.75} className="text-muted-foreground" />
@@ -300,7 +300,7 @@ export default async function Turneringer({
             <select
               name="krets"
               defaultValue={valgtKrets}
-              className="h-9 rounded-md border border-border bg-card px-3 text-xs"
+              className="h-9 rounded-md border border-border bg-card px-4 text-xs"
               aria-label="Filter krets"
             >
               <option value="">Alle kretser</option>
@@ -373,7 +373,7 @@ export default async function Turneringer({
               return (
                 <li key={t.id} className="border-b border-border/60 last:border-0">
                   <div
-                    className="grid grid-cols-[44px_1fr] items-center gap-3 px-4 py-4 text-sm transition-colors hover:bg-muted/30 sm:grid-cols-[44px_110px_1fr_180px_110px_110px_140px] sm:gap-4 sm:px-6"
+                    className="grid grid-cols-[44px_1fr] items-center gap-2 px-4 py-4 text-sm transition-colors hover:bg-muted/30 sm:grid-cols-[44px_110px_1fr_180px_110px_110px_140px] sm:gap-4 sm:px-6"
                   >
                     <TourBadge tour={tour} />
                     <span className="font-mono text-xs font-medium tabular-nums text-foreground">
@@ -483,7 +483,7 @@ function PeriodePills({ aktiv }: { aktiv: Periode }) {
       {valg.map((v) => (
         <label
           key={v.key}
-          className={`inline-flex cursor-pointer items-center rounded-sm px-3 py-1.5 text-xs font-medium ${
+          className={`inline-flex cursor-pointer items-center rounded-sm px-4 py-1.5 text-xs font-medium ${
             aktiv === v.key
               ? "bg-foreground text-background"
               : "text-muted-foreground hover:text-foreground"

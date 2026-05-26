@@ -178,22 +178,22 @@ export default function KalenderDemo() {
           </p>
         </div>
         <div className="flex gap-2">
-          <button className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3.5 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary">
+          <button className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary">
             <Download className="h-4 w-4" /> Eksporter
           </button>
-          <button className="inline-flex items-center gap-1.5 rounded-md bg-accent px-3.5 py-2 text-[13px] font-medium text-accent-foreground transition-opacity hover:opacity-90">
+          <button className="inline-flex items-center gap-1.5 rounded-md bg-accent px-4 py-2 text-[13px] font-medium text-accent-foreground transition-opacity hover:opacity-90">
             <Plus className="h-4 w-4" /> Ny økt
           </button>
         </div>
       </header>
 
       {/* KPI strip */}
-      <section className="mb-4 grid gap-3" style={{ gridTemplateColumns: "1.3fr 1fr 1fr 1fr" }}>
+      <section className="mb-4 grid gap-2" style={{ gridTemplateColumns: "1.3fr 1fr 1fr 1fr" }}>
         <div className="rounded-lg bg-foreground p-4 text-[var(--surface,#FAFAF7)]">
           <div className="font-mono text-[10px] uppercase tracking-[0.10em]" style={{ color: "rgba(255,255,255,0.6)" }}>
             I dag · mandag 19. mai
           </div>
-          <div className="mt-2 flex items-baseline gap-3">
+          <div className="mt-2 flex items-baseline gap-2">
             <div className="font-mono text-[28px] font-medium tabular-nums leading-none">
               6 <small className="text-[14px]" style={{ color: "rgba(255,255,255,0.7)" }}>events</small>
             </div>
@@ -210,12 +210,12 @@ export default function KalenderDemo() {
       </section>
 
       {/* Calendar toolbar */}
-      <div className="mb-4 flex items-center gap-4 rounded-xl border border-border bg-card px-4.5 py-3.5">
+      <div className="mb-4 flex items-center gap-4 rounded-xl border border-border bg-card px-4.5 py-4">
         <div className="inline-flex items-center gap-1 rounded-[10px] border border-border bg-secondary p-[3px]">
           <button className="grid h-7 w-[30px] place-items-center rounded-[7px] text-muted-foreground transition-colors hover:bg-card hover:text-foreground" aria-label="Forrige uke">
             <ChevronLeft className="h-4 w-4" />
           </button>
-          <button className="rounded-[7px] px-3 text-[12px] font-medium text-foreground transition-colors hover:bg-card">
+          <button className="rounded-[7px] px-4 text-[12px] font-medium text-foreground transition-colors hover:bg-card">
             I dag
           </button>
           <button className="grid h-7 w-[30px] place-items-center rounded-[7px] text-muted-foreground transition-colors hover:bg-card hover:text-foreground" aria-label="Neste uke">
@@ -277,11 +277,11 @@ export default function KalenderDemo() {
             style={{ gridTemplateColumns: "64px repeat(7, 1fr)" }}
           >
             {/* Header row */}
-            <div className="sticky top-0 z-[4] border-b border-border bg-card px-3 pt-3.5 pb-3" style={{ borderRight: "1px solid var(--color-line-soft, var(--border))" }} />
+            <div className="sticky top-0 z-[4] border-b border-border bg-card px-4 pt-4 pb-2" style={{ borderRight: "1px solid var(--color-line-soft, var(--border))" }} />
             {DAYS.map((d, i) => (
               <div
                 key={d.dow}
-                className={`sticky top-0 z-[4] flex flex-col gap-0.5 border-b border-border px-3 pt-3.5 pb-3 ${
+                className={`sticky top-0 z-[4] flex flex-col gap-0.5 border-b border-border px-4 pt-4 pb-2 ${
                   d.today ? "bg-accent" : d.weekend ? "bg-secondary" : "bg-card"
                 }`}
                 style={{ borderRight: i < 6 ? "1px solid var(--color-line-soft, var(--border))" : undefined }}
@@ -394,7 +394,7 @@ function Chip({
 }: { children: React.ReactNode; active?: boolean; closeable?: boolean }) {
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[12px] font-medium transition-colors ${
+      className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-1 text-[12px] font-medium transition-colors ${
         active
           ? "border-foreground bg-foreground text-[var(--surface,#FAFAF7)]"
           : "border-border bg-card text-foreground hover:bg-secondary"
@@ -540,7 +540,7 @@ function EventCard({ ev }: { ev: EventItem }) {
 
   return (
     <div
-      className="absolute left-1.5 right-1.5 flex flex-col gap-0.5 overflow-hidden rounded-[10px] py-2 pl-3.5 pr-2.5 transition-shadow hover:shadow-md"
+      className="absolute left-1.5 right-1.5 flex flex-col gap-0.5 overflow-hidden rounded-[10px] py-2 pl-4 pr-2.5 transition-shadow hover:shadow-md"
       style={{
         top: ev.top,
         height: ev.height,
@@ -705,7 +705,7 @@ function CalendarTogglesCard() {
   ];
   return (
     <div className="rounded-2xl border border-border bg-card p-4.5 shadow-sm">
-      <div className="mb-3 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+      <div className="mb-2 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
         Vis kalendere
       </div>
       <div>
@@ -753,7 +753,7 @@ function SyncCard() {
         Sist synket · 14:28
       </div>
       <div className="mt-1.5 mb-0.5 font-display text-[15px] font-semibold">Google Calendar</div>
-      <div className="mb-3 text-[12px] text-muted-foreground">3 eksterne events synket · 0 konflikter</div>
+      <div className="mb-2 text-[12px] text-muted-foreground">3 eksterne events synket · 0 konflikter</div>
       <button className="inline-flex w-full items-center justify-center gap-1.5 rounded-md border border-border bg-card px-2.5 py-1.5 text-[12px] font-medium text-foreground transition-colors hover:bg-secondary">
         <RefreshCw className="h-3.5 w-3.5" /> Synk nå
       </button>
@@ -771,7 +771,7 @@ function PyramideLegendCard() {
   ];
   return (
     <div className="rounded-2xl border border-border bg-card p-4.5 shadow-sm">
-      <div className="mb-3 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+      <div className="mb-2 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
         Pyramide-stripe
       </div>
       <div className="grid grid-cols-2 gap-x-3 gap-y-2">

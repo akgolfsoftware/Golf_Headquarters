@@ -70,7 +70,7 @@ export default async function PortalPlanleggerPage() {
 
   if (!player) {
     return (
-      <div className="mx-auto max-w-2xl px-5 py-12 text-center">
+      <div className="mx-auto max-w-2xl px-6 py-12 text-center">
         <p className="text-sm text-muted-foreground">Spiller-profil mangler.</p>
       </div>
     );
@@ -234,7 +234,7 @@ export default async function PortalPlanleggerPage() {
         weather={{ label: `${progressPct}% FULLFØRT`, pulse: true }}
         height="md"
       >
-        <div className="px-5 pb-5">
+        <div className="px-6 pb-6">
           <Link
             href="/portal-preview"
             className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.12em] text-white/85 hover:text-white"
@@ -244,8 +244,8 @@ export default async function PortalPlanleggerPage() {
         </div>
       </AthleticHero>
 
-      <main className="mx-auto -mt-12 max-w-5xl space-y-6 px-5 pb-12 relative z-10">
-        <div className="rounded-2xl border border-border bg-card p-5 shadow-lg">
+      <main className="mx-auto -mt-12 max-w-5xl space-y-6 px-6 pb-12 relative z-10">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-lg">
           <AthleticGreeting
             avatar={{ initials: "AK", status: "online" }}
             italicEyebrow="Min treningsplan"
@@ -286,11 +286,11 @@ export default async function PortalPlanleggerPage() {
 
         {insights.length > 0 && (
           <section>
-            <div className="mb-3 flex items-center gap-2">
+            <div className="mb-2 flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-primary" strokeWidth={1.75} />
               <AthleticEyebrow>AI-coach signaler om treningsplanen</AthleticEyebrow>
             </div>
-            <div className="grid gap-3 md:grid-cols-2">
+            <div className="grid gap-2 md:grid-cols-2">
               {insights.map((i) => (
                 <SgInsightCard key={i.id} insight={i} />
               ))}

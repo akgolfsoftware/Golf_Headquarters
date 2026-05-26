@@ -80,8 +80,8 @@ function NotatKort({ notat, onRediger }: NotatKortProps) {
       : notat.innhold;
 
   return (
-    <div className="rounded-2xl border border-border bg-card p-4 md:p-5">
-      <div className="mb-2 flex items-start justify-between gap-3">
+    <div className="rounded-2xl border border-border bg-card p-4 md:p-6">
+      <div className="mb-2 flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <span className="font-mono uppercase tracking-[0.05em]">
@@ -129,7 +129,7 @@ function NotatKort({ notat, onRediger }: NotatKortProps) {
       )}
 
       {notat.tags.length > 0 && (
-        <div className="mt-3 flex flex-wrap items-center gap-1.5">
+        <div className="mt-2 flex flex-wrap items-center gap-1.5">
           <Tag
             size={12}
             strokeWidth={1.75}
@@ -148,7 +148,6 @@ function NotatKort({ notat, onRediger }: NotatKortProps) {
 }
 
 export function NotaterPanel({
-  spillerId: _spillerId,
   notater,
   onNyNotat,
   onRedigerNotat,
@@ -196,7 +195,7 @@ export function NotaterPanel({
               value={sok}
               onChange={(e) => setSok(e.target.value)}
               placeholder="Søk i notater, tags eller innhold"
-              className="pl-9"
+              className="pl-8"
               aria-label="Søk i notater"
             />
           </div>
@@ -205,7 +204,7 @@ export function NotaterPanel({
 
       {harNotater ? (
         filtrert.length > 0 ? (
-          <div className="space-y-3">
+          <div className="space-y-2">
             {filtrert.map((notat) => (
               <NotatKort
                 key={notat.id}

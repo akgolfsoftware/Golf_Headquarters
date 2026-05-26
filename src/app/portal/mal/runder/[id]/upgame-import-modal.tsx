@@ -295,8 +295,8 @@ export function UpGameImportModal({ roundId }: { roundId: string }) {
               )}
 
               {steg === "kartlegg" && (
-                <div className="space-y-5">
-                  <div className="rounded-lg border border-border bg-secondary/40 px-4 py-3">
+                <div className="space-y-6">
+                  <div className="rounded-lg border border-border bg-secondary/40 px-4 py-2">
                     <p className="font-mono text-[11px] text-muted-foreground">
                       Filen inneholder <strong className="text-foreground">{rader.length} rader</strong> og{" "}
                       <strong className="text-foreground">{headers.length} kolonner</strong>.
@@ -304,7 +304,7 @@ export function UpGameImportModal({ roundId }: { roundId: string }) {
                     </p>
                   </div>
 
-                  <div className="space-y-3">
+                  <div className="space-y-2">
                     {(Object.keys(nøkkelLabels) as KolonneNøkkel[]).map((nøkkel) => (
                       <div key={nøkkel} className="flex items-center gap-4">
                         <div className="w-44 shrink-0 font-mono text-[11px] text-foreground">
@@ -318,7 +318,7 @@ export function UpGameImportModal({ roundId }: { roundId: string }) {
                               [nøkkel]: e.target.value || null,
                             }))
                           }
-                          className="flex-1 rounded-lg border border-border bg-card px-3 py-2 font-mono text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-primary"
+                          className="flex-1 rounded-lg border border-border bg-card px-4 py-2 font-mono text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-primary"
                         >
                           <option value="">— ikke tilgjengelig —</option>
                           {headers.map((h) => (
@@ -333,7 +333,7 @@ export function UpGameImportModal({ roundId }: { roundId: string }) {
                   </div>
 
                   {advarsel && (
-                    <div className="flex items-start gap-2 rounded-lg border border-[rgba(184,133,42,0.4)] bg-[rgba(184,133,42,0.08)] px-4 py-3">
+                    <div className="flex items-start gap-2 rounded-lg border border-[rgba(184,133,42,0.4)] bg-[rgba(184,133,42,0.08)] px-4 py-2">
                       <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-warning" />
                       <p className="font-mono text-[11px] text-warning">{advarsel}</p>
                     </div>
@@ -389,7 +389,7 @@ export function UpGameImportModal({ roundId }: { roundId: string }) {
             </div>
 
             {/* Footer */}
-            <div className="flex items-center justify-end gap-3 border-t border-border px-6 py-4">
+            <div className="flex items-center justify-end gap-2 border-t border-border px-6 py-4">
               <button
                 type="button"
                 onClick={lukkModal}
@@ -402,7 +402,7 @@ export function UpGameImportModal({ roundId }: { roundId: string }) {
                   type="button"
                   onClick={importer}
                   disabled={isPending || !kolMapping.hullNr || !kolMapping.score}
-                  className="inline-flex h-9 items-center gap-2 rounded-lg bg-primary px-5 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60"
+                  className="inline-flex h-9 items-center gap-2 rounded-lg bg-primary px-6 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60"
                 >
                   {isPending ? "Importerer…" : `Importer ${rader.length} hull`}
                 </button>

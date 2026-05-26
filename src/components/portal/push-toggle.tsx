@@ -64,7 +64,7 @@ export function PushToggle() {
 
   if (status === "unsupported") {
     return (
-      <div className="rounded-md border border-border bg-muted/40 p-3 text-xs text-muted-foreground">
+      <div className="rounded-md border border-border bg-muted/40 p-4 text-xs text-muted-foreground">
         Push-varsler støttes ikke i denne browseren. Prøv en moderne versjon
         av Safari, Chrome eller Firefox.
       </div>
@@ -73,7 +73,7 @@ export function PushToggle() {
 
   if (!VAPID_PUBLIC_KEY) {
     return (
-      <div className="rounded-md border border-border bg-muted/40 p-3 text-xs text-muted-foreground">
+      <div className="rounded-md border border-border bg-muted/40 p-4 text-xs text-muted-foreground">
         Push-varsler er midlertidig deaktivert. (VAPID-keys ikke konfigurert.)
       </div>
     );
@@ -81,7 +81,7 @@ export function PushToggle() {
 
   if (status === "blocked") {
     return (
-      <div className="rounded-md border border-destructive/30 bg-destructive/5 p-3 text-xs text-destructive-foreground">
+      <div className="rounded-md border border-destructive/30 bg-destructive/5 p-4 text-xs text-destructive-foreground">
         Du har blokkert varsler for dette nettstedet. Tillat varsler i
         browser-innstillinger for å aktivere push.
       </div>

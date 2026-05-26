@@ -30,7 +30,7 @@ export function RescheduleBookingModal({ open, onClose, currentDate }: Props) {
         className="absolute inset-0 bg-background/80 backdrop-blur-sm"
         onClick={handleLukk}
       />
-      <div className="relative z-10 w-full max-h-[95vh] overflow-y-auto rounded-t-2xl border border-border bg-card p-5 shadow-xl sm:max-w-md sm:rounded-xl sm:p-6">
+      <div className="relative z-10 w-full max-h-[95vh] overflow-y-auto rounded-t-2xl border border-border bg-card p-6 shadow-xl sm:max-w-md sm:rounded-xl sm:p-6">
         <button
           type="button"
           onClick={handleLukk}
@@ -48,7 +48,7 @@ export function RescheduleBookingModal({ open, onClose, currentDate }: Props) {
         </div>
         <h2 className="mb-6 text-xl font-semibold">Endre tidspunkt</h2>
 
-        <div className="mb-6 rounded-md bg-secondary px-4 py-3 text-sm">
+        <div className="mb-6 rounded-md bg-secondary px-4 py-2 text-sm">
           <p className="text-xs text-muted-foreground">Nåværende</p>
           <p className="mt-0.5 font-medium">{currentDate}</p>
         </div>
@@ -72,7 +72,7 @@ export function RescheduleBookingModal({ open, onClose, currentDate }: Props) {
           </div>
 
           <div>
-            <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               Nytt tidspunkt
             </p>
             <div className="grid grid-cols-4 gap-2">
@@ -81,7 +81,7 @@ export function RescheduleBookingModal({ open, onClose, currentDate }: Props) {
                   key={t}
                   type="button"
                   onClick={() => setNyTid(t)}
-                  className={`rounded-md border px-3 py-2 font-mono text-sm font-medium transition-colors ${
+                  className={`rounded-md border px-4 py-2 font-mono text-sm font-medium transition-colors ${
                     nyTid === t
                       ? "border-primary bg-primary text-primary-foreground"
                       : "border-border bg-card text-foreground hover:bg-secondary"
@@ -93,7 +93,7 @@ export function RescheduleBookingModal({ open, onClose, currentDate }: Props) {
             </div>
           </div>
 
-          <div className="flex items-start gap-2 rounded-md border border-border bg-muted/30 px-4 py-3">
+          <div className="flex items-start gap-2 rounded-md border border-border bg-muted/30 px-4 py-2">
             <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />
             <p className="text-xs text-muted-foreground">
               Gratis endring inntil 24 timer før. Etter det brukes én kredit.
@@ -101,7 +101,7 @@ export function RescheduleBookingModal({ open, onClose, currentDate }: Props) {
           </div>
         </div>
 
-        <div className="mt-6 flex gap-3">
+        <div className="mt-6 flex gap-2">
           <button
             type="button"
             onClick={handleLukk}

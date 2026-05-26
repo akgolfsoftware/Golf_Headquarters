@@ -174,7 +174,7 @@ export function FeedbackModal({
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="rounded-md border border-border bg-transparent px-3.5 py-1.5 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
+                className="rounded-md border border-border bg-transparent px-4 py-1.5 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
               >
                 Avbryt
               </button>
@@ -182,7 +182,7 @@ export function FeedbackModal({
                 type="button"
                 onClick={handleSubmit}
                 disabled={pending || text.trim().length < 2}
-                className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-1.5 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-1.5 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
               >
                 <Check className="h-3.5 w-3.5" strokeWidth={2.5} />
                 {pending ? "Sender…" : harTidligere ? "Oppdater" : "Send"}

@@ -53,7 +53,7 @@ export function BookSessionModal({ open, onClose }: Props) {
         className="absolute inset-0 bg-background/80 backdrop-blur-sm"
         onClick={handleLukk}
       />
-      <div className="relative z-10 w-full max-h-[95vh] overflow-y-auto rounded-t-2xl border border-border bg-card p-5 shadow-xl sm:max-w-md sm:rounded-xl sm:p-6">
+      <div className="relative z-10 w-full max-h-[95vh] overflow-y-auto rounded-t-2xl border border-border bg-card p-6 shadow-xl sm:max-w-md sm:rounded-xl sm:p-6">
         <button
           type="button"
           onClick={handleLukk}
@@ -72,7 +72,7 @@ export function BookSessionModal({ open, onClose }: Props) {
         <h2 className="mb-6 text-xl font-semibold">Book økt</h2>
 
         {steg === 1 && (
-          <div className="space-y-3">
+          <div className="space-y-2">
             <p className="text-sm text-muted-foreground">Velg type økt</p>
             {SESSION_TYPER.map((type) => (
               <label
@@ -135,7 +135,7 @@ export function BookSessionModal({ open, onClose }: Props) {
                 className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
               />
             </div>
-            <div className="flex gap-3">
+            <div className="flex gap-2">
               <button
                 type="button"
                 onClick={forrigeSteg}
@@ -166,7 +166,7 @@ export function BookSessionModal({ open, onClose }: Props) {
               </div>
             )}
             <div>
-              <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+              <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                 Velg tidspunkt
               </p>
               <div className="grid grid-cols-4 gap-2">
@@ -175,7 +175,7 @@ export function BookSessionModal({ open, onClose }: Props) {
                     key={t}
                     type="button"
                     onClick={() => setTid(t)}
-                    className={`rounded-md border px-3 py-2 font-mono text-sm font-medium transition-colors ${
+                    className={`rounded-md border px-4 py-2 font-mono text-sm font-medium transition-colors ${
                       tid === t
                         ? "border-primary bg-primary text-primary-foreground"
                         : "border-border bg-card text-foreground hover:bg-secondary"
@@ -186,7 +186,7 @@ export function BookSessionModal({ open, onClose }: Props) {
                 ))}
               </div>
             </div>
-            <div className="flex gap-3">
+            <div className="flex gap-2">
               <button
                 type="button"
                 onClick={forrigeSteg}

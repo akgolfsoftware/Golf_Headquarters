@@ -164,7 +164,7 @@ function ToggleRad({
   disabled?: boolean;
 }) {
   return (
-    <label className="flex cursor-pointer items-center justify-between border-b border-border py-3 last:border-b-0">
+    <label className="flex cursor-pointer items-center justify-between border-b border-border py-2 last:border-b-0">
       <div className="min-w-0 flex-1">
         <p className="text-sm font-medium text-foreground">{label}</p>
         <p className="text-xs text-muted-foreground">{beskrivelse}</p>

@@ -275,7 +275,7 @@ export default async function ReachPage() {
             </span>
           </div>
 
-          <ul className="space-y-3">
+          <ul className="space-y-2">
             {CONNECTIONS.map((c) => {
               const Ikon = ikonForConnection(c.rolle);
               return (
@@ -311,13 +311,13 @@ export default async function ReachPage() {
                     <div className="flex gap-2">
                       <button
                         type="button"
-                        className="rounded-full bg-primary px-3 py-1.5 text-[11px] font-semibold text-primary-foreground hover:opacity-90"
+                        className="rounded-full bg-primary px-4 py-1.5 text-[11px] font-semibold text-primary-foreground hover:opacity-90"
                       >
                         Godta
                       </button>
                       <button
                         type="button"
-                        className="rounded-full border border-border px-3 py-1.5 text-[11px] font-medium text-foreground hover:bg-secondary"
+                        className="rounded-full border border-border px-4 py-1.5 text-[11px] font-medium text-foreground hover:bg-secondary"
                       >
                         Avslå
                       </button>
@@ -365,7 +365,7 @@ export default async function ReachPage() {
             return (
               <li
                 key={a.id}
-                className="flex items-center gap-4 rounded-md px-4 py-3 transition-colors hover:bg-secondary/40"
+                className="flex items-center gap-4 rounded-md px-4 py-2 transition-colors hover:bg-secondary/40"
               >
                 <div className="relative">
                   <div className="grid h-9 w-9 place-items-center rounded-full bg-secondary font-mono text-[11px] font-semibold text-foreground">

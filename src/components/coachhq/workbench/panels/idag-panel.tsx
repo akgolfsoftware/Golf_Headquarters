@@ -70,7 +70,7 @@ function formatDrill(drill: IdagOkt["drills"][number]): string {
  *
  * Pure presentational. Data-fetching gjøres i koordinator-komponent.
  */
-export function IdagPanel({ spillerId: _spillerId, spillerNavn, okter }: IdagPanelProps) {
+export function IdagPanel({ spillerNavn, okter }: IdagPanelProps) {
   if (okter.length === 0) {
     return (
       <EmptyState
@@ -87,7 +87,7 @@ export function IdagPanel({ spillerId: _spillerId, spillerNavn, okter }: IdagPan
 
   return (
     <div className="space-y-4">
-      <div className="flex items-baseline justify-between gap-3">
+      <div className="flex items-baseline justify-between gap-2">
         <h2 className="font-display text-lg font-bold tracking-[-0.015em]">
           Dagens økter
           {spillerNavn ? ` for ${spillerNavn}` : ""}
@@ -97,7 +97,7 @@ export function IdagPanel({ spillerId: _spillerId, spillerNavn, okter }: IdagPan
         </span>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2">
         {okter.map((okt) => (
           <OktKort key={okt.id} okt={okt} />
         ))}
@@ -111,10 +111,10 @@ function OktKort({ okt }: { okt: IdagOkt }) {
 
   return (
     <AthleticCard className={isCancelled ? "opacity-60" : undefined}>
-      <div className="space-y-3">
+      <div className="space-y-2">
         {/* Header: tid + pyramid-area */}
-        <div className="flex items-baseline justify-between gap-3">
-          <div className="flex items-baseline gap-3">
+        <div className="flex items-baseline justify-between gap-2">
+          <div className="flex items-baseline gap-2">
             <span className="font-mono text-sm font-bold tabular-nums">
               {formatTid(okt.startAt)} – {formatTid(okt.endAt)}
             </span>
@@ -163,7 +163,7 @@ function OktKort({ okt }: { okt: IdagOkt }) {
 
         {/* Notater */}
         {okt.notes && (
-          <div className="rounded-md border-l-2 border-accent bg-muted/40 px-3 py-2 text-sm italic text-foreground">
+          <div className="rounded-md border-l-2 border-accent bg-muted/40 px-4 py-2 text-sm italic text-foreground">
             &ldquo;{okt.notes}&rdquo;
           </div>
         )}

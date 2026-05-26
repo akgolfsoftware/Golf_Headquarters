@@ -590,7 +590,7 @@ export function PortalGlobalSearchModal({
       <div className="fixed inset-0 bg-foreground/55 backdrop-blur-sm" aria-hidden />
 
       <div className="relative w-full max-w-xl overflow-hidden rounded-2xl border border-border bg-card shadow-2xl">
-        <header className="flex items-center gap-3 border-b border-border px-4 py-3">
+        <header className="flex items-center gap-2 border-b border-border px-4 py-2">
           <Search className="h-4 w-4 text-muted-foreground" strokeWidth={ICON_STROKE} aria-hidden />
           <input
             ref={inputRef}
@@ -629,7 +629,7 @@ export function PortalGlobalSearchModal({
                   key={tab.id}
                   type="button"
                   onClick={() => { setAktifTab(tab.id); setHighlight(0); }}
-                  className={`inline-flex flex-shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-[12.5px] font-semibold leading-none transition-colors ${
+                  className={`inline-flex flex-shrink-0 items-center gap-1.5 rounded-full px-4 py-1.5 text-[12.5px] font-semibold leading-none transition-colors ${
                     aktifTab === tab.id
                       ? "bg-accent text-foreground"
                       : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -665,7 +665,7 @@ export function PortalGlobalSearchModal({
         </div>
 
         <footer className="flex items-center justify-between gap-4 border-t border-border bg-secondary/40 px-4 py-2.5 text-[11px] text-muted-foreground">
-          <span className="inline-flex items-center gap-3">
+          <span className="inline-flex items-center gap-2">
             <Kbd>↑↓</Kbd> navigér
             <Kbd>
               <CornerDownLeft className="h-3 w-3" strokeWidth={ICON_STROKE} />
@@ -720,7 +720,7 @@ function Results({ items, highlight, onHover, onSelect }: ResultsProps) {
             {visKategoriHeader ? (
               <li
                 role="presentation"
-                className="px-4 pt-3 pb-1 font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground"
+                className="px-4 pt-2 pb-1 font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground"
               >
                 {kategoriLabel(item.category)}
               </li>
@@ -731,7 +731,7 @@ function Results({ items, highlight, onHover, onSelect }: ResultsProps) {
               onMouseEnter={() => onHover(idx)}
               onClick={() => onSelect(item)}
               className={
-                "mx-2 flex cursor-pointer items-center gap-3 rounded-md px-3 py-2 text-sm transition" +
+                "mx-2 flex cursor-pointer items-center gap-2 rounded-md px-4 py-2 text-sm transition" +
                 (highlight === idx
                   ? " bg-secondary text-foreground"
                   : " text-foreground hover:bg-secondary/60")

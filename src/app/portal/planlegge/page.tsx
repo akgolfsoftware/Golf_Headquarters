@@ -101,6 +101,7 @@ export default async function PlanleggePage({ searchParams }: Props) {
 // Tab-innhold (placeholders for natt-økt — kobles til eksisterende sider)
 // ============================================================================
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function ArsplanTab({ userId }: { userId: string }) {
   const seasonPlan = await prisma.seasonPlan
     .findFirst({
@@ -112,8 +113,8 @@ async function ArsplanTab({ userId }: { userId: string }) {
 
   return (
     <div className="space-y-4">
-      <div className="rounded-2xl border border-border bg-card p-5">
-        <div className="flex flex-wrap items-start justify-between gap-3">
+      <div className="rounded-2xl border border-border bg-card p-6">
+        <div className="flex flex-wrap items-start justify-between gap-2">
           <div>
             <AthleticEyebrow>SESONG {new Date().getFullYear()}</AthleticEyebrow>
             <h2 className="font-display mt-1 text-xl font-semibold tracking-tight">
@@ -137,7 +138,7 @@ async function ArsplanTab({ userId }: { userId: string }) {
       </div>
 
       {seasonPlan ? (
-        <div className="rounded-2xl border border-dashed border-border bg-card/50 p-5 text-sm text-muted-foreground">
+        <div className="rounded-2xl border border-dashed border-border bg-card/50 p-6 text-sm text-muted-foreground">
           Full gantt-visning med drag-resize, tournament-flagg og I-dag-linje
           åpnes via knappen over. Bygges direkte i denne tab-en i neste runde.
         </div>
@@ -146,6 +147,7 @@ async function ArsplanTab({ userId }: { userId: string }) {
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function TreningsplanTab({ userId }: { userId: string }) {
   const activePlan = await prisma.technicalPlan
     .findFirst({
@@ -159,8 +161,8 @@ async function TreningsplanTab({ userId }: { userId: string }) {
 
   return (
     <div className="space-y-4">
-      <div className="rounded-2xl border border-border bg-card p-5">
-        <div className="flex flex-wrap items-start justify-between gap-3">
+      <div className="rounded-2xl border border-border bg-card p-6">
+        <div className="flex flex-wrap items-start justify-between gap-2">
           <div>
             <AthleticEyebrow>AKTIV TEKNISK PLAN</AthleticEyebrow>
             <h2 className="font-display mt-1 text-xl font-semibold tracking-tight">
@@ -184,6 +186,7 @@ async function TreningsplanTab({ userId }: { userId: string }) {
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function MalTab({ userId }: { userId: string }) {
   const goals = await prisma.goal
     .findMany({
@@ -209,14 +212,14 @@ async function MalTab({ userId }: { userId: string }) {
           <p className="text-sm text-muted-foreground">
             Ingen aktive mål. Sett et mål for å komme i gang.
           </p>
-          <Link href="/portal/mal" className="mt-3 inline-block">
+          <Link href="/portal/mal" className="mt-2 inline-block">
             <AthleticButton variant="lime" size="sm">
               Opprett mål
             </AthleticButton>
           </Link>
         </div>
       ) : (
-        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
           {goals.map((g) => (
             <div key={g.id} className="rounded-2xl border border-border bg-card p-4">
               <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
@@ -238,6 +241,7 @@ async function MalTab({ userId }: { userId: string }) {
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function TurneringerTab({ userId }: { userId: string }) {
   const entries = await prisma.tournamentEntry
     .findMany({
@@ -306,10 +310,11 @@ async function TurneringerTab({ userId }: { userId: string }) {
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function DrillsTab() {
   return (
-    <div className="rounded-2xl border border-border bg-card p-5">
-      <div className="flex flex-wrap items-start justify-between gap-3">
+    <div className="rounded-2xl border border-border bg-card p-6">
+      <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
           <AthleticEyebrow>DRILL-BIBLIOTEK</AthleticEyebrow>
           <h2 className="font-display mt-1 text-xl font-semibold tracking-tight">

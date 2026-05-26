@@ -75,7 +75,7 @@ export default function SuksessSide() {
           {CASES.map((c) => (
             <article
               key={c.navn}
-              className="grid gap-8 rounded-2xl border border-border bg-card p-5 sm:p-8 md:p-12 lg:grid-cols-[1fr_2fr]"
+              className="grid gap-8 rounded-2xl border border-border bg-card p-6 sm:p-8 md:p-12 lg:grid-cols-[1fr_2fr]"
             >
               <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
                 <div className="flex h-24 w-24 items-center justify-center rounded-full bg-secondary text-2xl font-semibold text-primary">

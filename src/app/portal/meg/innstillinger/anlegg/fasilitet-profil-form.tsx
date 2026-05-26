@@ -190,13 +190,13 @@ export function FasilitetProfilForm({
     <div className="space-y-6">
       {/* Status-banner */}
       {status === "lagret" && (
-        <div className="flex items-center gap-2 rounded-lg bg-accent/20 border border-accent/40 px-4 py-3 text-sm text-accent-foreground">
+        <div className="flex items-center gap-2 rounded-lg bg-accent/20 border border-accent/40 px-4 py-2 text-sm text-accent-foreground">
           <CheckCircle2 className="h-4 w-4 shrink-0" />
           Lagret! Drill-biblioteket oppdateres med dine anlegg.
         </div>
       )}
       {status === "feil" && (
-        <div className="rounded-lg bg-destructive/10 border border-destructive/30 px-4 py-3 text-sm text-destructive">
+        <div className="rounded-lg bg-destructive/10 border border-destructive/30 px-4 py-2 text-sm text-destructive">
           Noe gikk galt. Prøv igjen.
         </div>
       )}
@@ -234,7 +234,7 @@ export function FasilitetProfilForm({
                     key={item.kode}
                     type="button"
                     onClick={() => toggle(item.kode)}
-                    className={`flex w-full items-start gap-3 px-4 py-3.5 text-left transition-colors
+                    className={`flex w-full items-start gap-2 px-4 py-4 text-left transition-colors
                       ${erValgt
                         ? "bg-accent/10 hover:bg-accent/15"
                         : "bg-card hover:bg-muted/50"
@@ -279,7 +279,7 @@ export function FasilitetProfilForm({
           type="button"
           onClick={handleLagre}
           disabled={pending}
-          className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50 transition-colors"
+          className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50 transition-colors"
         >
           {pending ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -291,7 +291,7 @@ export function FasilitetProfilForm({
       </div>
 
       {/* Info-boks */}
-      <div className="rounded-lg bg-muted/50 border border-border px-4 py-3 text-xs text-muted-foreground leading-relaxed space-y-1">
+      <div className="rounded-lg bg-muted/50 border border-border px-4 py-2 text-xs text-muted-foreground leading-relaxed space-y-1">
         <p className="font-semibold text-foreground text-xs">Slik virker dette:</p>
         <p>
           Drills med krav om spesiell fasilitet (f.eks. bunker, radar, lang

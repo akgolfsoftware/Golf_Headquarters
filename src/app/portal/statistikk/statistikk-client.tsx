@@ -147,7 +147,7 @@ function Hero({ data }: { data: StatistikkData }) {
             <em className="font-normal italic text-primary">statistikk</em>
             <span className="text-muted-foreground">.</span>
           </h1>
-          <p className="mt-3 max-w-2xl text-base text-muted-foreground">
+          <p className="mt-2 max-w-2xl text-base text-muted-foreground">
             {data.spiller.fornavn}, du har snittet{" "}
             <strong className="font-mono tabular-nums text-foreground">
               {data.snittScore.toFixed(1).replace(".", ",")}
@@ -160,7 +160,7 @@ function Hero({ data }: { data: StatistikkData }) {
             {data.spiller.homeClub ? ` · ${data.spiller.homeClub}` : ""}.
           </p>
           {data.spiller.dummy && (
-            <p className="mt-2 inline-flex items-center gap-2 rounded-full bg-secondary px-3 py-1 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
+            <p className="mt-2 inline-flex items-center gap-2 rounded-full bg-secondary px-4 py-1 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
               Demo-data · spiller har ikke nok historikk
             </p>
           )}
@@ -231,7 +231,7 @@ function HcpTrendCard({
               HCP-trend · siste 12 mnd
             </span>
           </div>
-          <h2 className="mt-3 font-display text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
+          <h2 className="mt-2 font-display text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
             {hcp != null ? formatHcp(hcp) : "—"}{" "}
             <span className="font-normal italic text-muted-foreground">
               i dag
@@ -247,7 +247,7 @@ function HcpTrendCard({
             </p>
           )}
         </div>
-        <span className="rounded-full bg-accent px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-accent-foreground">
+        <span className="rounded-full bg-accent px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-accent-foreground">
           Pro
         </span>
       </header>
@@ -354,7 +354,7 @@ function PyramideRingerCard({ verdier }: { verdier: PyramidVerdi[] }) {
           Pyramide-balanse · siste uke
         </span>
       </header>
-      <h2 className="mt-3 font-display text-2xl font-semibold tracking-tight text-foreground">
+      <h2 className="mt-2 font-display text-2xl font-semibold tracking-tight text-foreground">
         Snitt{" "}
         <em className="font-normal italic text-primary">
           {Math.round(sum / verdier.length)}%
@@ -449,12 +449,12 @@ function SgTrendCard({ punkter }: { punkter: SgTrendPunkt[] }) {
               SG-trend · siste 90 dager
             </span>
           </div>
-          <h2 className="mt-3 font-display text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
+          <h2 className="mt-2 font-display text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
             Strokes Gained pr.{" "}
             <em className="font-normal italic text-primary">disipplin</em>
           </h2>
         </div>
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2">
           {SG_KATEGORIER.map((k) => (
             <span
               key={k.key}
@@ -567,7 +567,7 @@ function BenchmarkCard({ rader }: { rader: BenchmarkRad[] }) {
           Benchmark · vs kategori A1
         </span>
       </header>
-      <h2 className="mt-3 font-display text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
+      <h2 className="mt-2 font-display text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
         Hvor du{" "}
         <em className="font-normal italic text-primary">slår</em> snittet
       </h2>
@@ -647,7 +647,7 @@ function StreakCard({ streak }: { streak: boolean[] }) {
           Treningsstreak
         </span>
       </header>
-      <h2 className="mt-3 font-display text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
+      <h2 className="mt-2 font-display text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
         <em className="font-normal italic text-primary">{aktiv}</em>{" "}
         {aktiv === 1 ? "dag" : "dager"} på rad
       </h2>
@@ -683,7 +683,7 @@ function StreakCard({ streak }: { streak: boolean[] }) {
           );
         })}
       </div>
-      <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
+      <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
         Siste 14 dager · ramme = i dag
       </p>
     </article>
@@ -736,7 +736,7 @@ function RekordKort({ rekord }: { rekord: PersonligRekord }) {
   const Ikon = REKORD_ICON[rekord.ikon];
 
   return (
-    <article className="flex items-center gap-4 rounded-2xl border border-border bg-card p-5 transition-colors hover:border-primary">
+    <article className="flex items-center gap-4 rounded-2xl border border-border bg-card p-6 transition-colors hover:border-primary">
       <span className="grid h-12 w-12 shrink-0 place-items-center rounded-md bg-accent text-accent-foreground">
         <Ikon className="h-5 w-5" strokeWidth={1.75} />
       </span>

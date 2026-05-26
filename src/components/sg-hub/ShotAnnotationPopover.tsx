@@ -87,7 +87,7 @@ export function ShotAnnotationPopover({
 
       {open && (
         <div className="absolute right-0 top-8 z-20 w-80 rounded-xl border border-border bg-popover p-4 shadow-lg">
-          <div className="mb-3 flex items-center justify-between">
+          <div className="mb-2 flex items-center justify-between">
             <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               Slag {shotNumber} · {clubId}
             </p>
@@ -101,7 +101,7 @@ export function ShotAnnotationPopover({
             </button>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-2">
             {annotations.map((a) => (
               <AnnotationRow
                 key={a.id}
@@ -170,7 +170,7 @@ function AnnotationRow({
 
   if (editing) {
     return (
-      <div className="rounded-md border border-border bg-card p-3">
+      <div className="rounded-md border border-border bg-card p-4">
         <textarea
           value={body}
           onChange={(e) => setBody(e.target.value)}
@@ -192,7 +192,7 @@ function AnnotationRow({
             type="button"
             onClick={handleSave}
             disabled={pending}
-            className="inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground disabled:opacity-50"
+            className="inline-flex items-center gap-1 rounded-full bg-primary px-4 py-1 text-xs font-medium text-primary-foreground disabled:opacity-50"
           >
             {pending && <Loader2 className="h-3 w-3 animate-spin" />}
             Lagre
@@ -200,7 +200,7 @@ function AnnotationRow({
           <button
             type="button"
             onClick={() => setEditing(false)}
-            className="rounded-full bg-secondary px-3 py-1 text-xs"
+            className="rounded-full bg-secondary px-4 py-1 text-xs"
           >
             Avbryt
           </button>
@@ -210,7 +210,7 @@ function AnnotationRow({
   }
 
   return (
-    <div className="rounded-md border border-border bg-card p-3">
+    <div className="rounded-md border border-border bg-card p-4">
       <p className="text-sm">{annotation.body}</p>
       {safeUrl(annotation.videoUrl) && (
         <a
@@ -294,7 +294,7 @@ function AddAnnotationForm({
   }
 
   return (
-    <div className="rounded-md border border-dashed border-border p-3">
+    <div className="rounded-md border border-dashed border-border p-4">
       <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
         Legg til notat
       </p>
@@ -319,7 +319,7 @@ function AddAnnotationForm({
         type="button"
         onClick={handleAdd}
         disabled={pending || !body.trim()}
-        className="mt-2 inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground disabled:opacity-50"
+        className="mt-2 inline-flex items-center gap-1 rounded-full bg-primary px-4 py-1 text-xs font-medium text-primary-foreground disabled:opacity-50"
       >
         {pending && <Loader2 className="h-3 w-3 animate-spin" />}
         Lagre notat

@@ -26,7 +26,7 @@ export function PlayerHQMockup() {
         style={{ transform: "rotateX(4deg) rotateY(-5deg)" }}
       >
         {/* Browser chrome */}
-        <div className="flex items-center gap-1.5 bg-[#1c1c1e] px-4 py-3">
+        <div className="flex items-center gap-1.5 bg-[#1c1c1e] px-4 py-2">
           <span className="h-3 w-3 rounded-full bg-[#FF5F57]" aria-hidden="true" />
           <span className="h-3 w-3 rounded-full bg-[#FEBC2E]" aria-hidden="true" />
           <span className="h-3 w-3 rounded-full bg-[#28C840]" aria-hidden="true" />
@@ -41,14 +41,14 @@ export function PlayerHQMockup() {
         <div className="flex h-[500px] overflow-hidden bg-background">
           {/* Sidebar */}
           <aside className="flex w-48 flex-shrink-0 flex-col bg-[#061210] text-white">
-            <div className="px-5 py-6">
+            <div className="px-6 py-6">
               <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/30">
                 AK Golf
               </span>
               <p className="mt-0.5 text-sm font-bold text-white">PlayerHQ</p>
             </div>
 
-            <nav className="flex-1 space-y-0.5 px-3">
+            <nav className="flex-1 space-y-0.5 px-4">
               {[
                 { label: "Hjem", aktiv: true },
                 { label: "Tren" },
@@ -58,7 +58,7 @@ export function PlayerHQMockup() {
               ].map((item) => (
                 <div
                   key={item.label}
-                  className={`rounded-md px-3 py-2 text-[12px] ${
+                  className={`rounded-md px-4 py-2 text-[12px] ${
                     item.aktiv
                       ? "bg-white/10 font-semibold text-white"
                       : "text-white/50"
@@ -83,7 +83,7 @@ export function PlayerHQMockup() {
           </aside>
 
           {/* Main */}
-          <main className="flex flex-1 flex-col gap-4 overflow-hidden p-5">
+          <main className="flex flex-1 flex-col gap-4 overflow-hidden p-6">
             {/* Greeting */}
             <div className="flex items-start justify-between">
               <div>
@@ -98,13 +98,13 @@ export function PlayerHQMockup() {
                   Neste økt: fredag 16. mai · 14:00 · Golfhuset Fredrikstad
                 </p>
               </div>
-              <span className="flex-shrink-0 rounded-full bg-accent px-3 py-1 font-mono text-[10px] font-bold text-[#061210]">
+              <span className="flex-shrink-0 rounded-full bg-accent px-4 py-1 font-mono text-[10px] font-bold text-[#061210]">
                 HCP −2,4
               </span>
             </div>
 
             {/* Stats row */}
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-3 gap-2">
               {[
                 { label: "Credits igjen", verdi: "3", sub: "av 4 denne mnd" },
                 { label: "Streak", verdi: "12", sub: "dager på rad" },
@@ -112,7 +112,7 @@ export function PlayerHQMockup() {
               ].map((s) => (
                 <div
                   key={s.label}
-                  className="rounded-lg border border-border bg-white p-3"
+                  className="rounded-lg border border-border bg-white p-4"
                 >
                   <p className="font-mono text-[9px] uppercase tracking-[0.10em] text-muted-foreground">
                     {s.label}
@@ -126,7 +126,7 @@ export function PlayerHQMockup() {
             </div>
 
             {/* Bottom row: plan + SG */}
-            <div className="grid flex-1 grid-cols-2 gap-3 overflow-hidden">
+            <div className="grid flex-1 grid-cols-2 gap-2 overflow-hidden">
               {/* Plan */}
               <div className="flex flex-col rounded-lg border border-border bg-white p-4">
                 <div className="flex items-center justify-between">
@@ -137,7 +137,7 @@ export function PlayerHQMockup() {
                     2 / 3
                   </span>
                 </div>
-                <div className="mt-3 flex-1 space-y-2.5">
+                <div className="mt-2 flex-1 space-y-2.5">
                   {drills.map((d) => (
                     <div key={d.tekst} className="flex items-center gap-2">
                       <div
@@ -170,7 +170,7 @@ export function PlayerHQMockup() {
                 <p className="font-mono text-[9px] uppercase tracking-[0.10em] text-muted-foreground">
                   Strokes Gained
                 </p>
-                <div className="mt-3 flex flex-1 items-end gap-2">
+                <div className="mt-2 flex flex-1 items-end gap-2">
                   {sg.map((b) => {
                     const høyde = Math.round(Math.abs(b.verdi) * 80 + 12);
                     const farge = b.positiv ? "hsl(var(--primary))" : "hsl(var(--destructive))";

@@ -91,7 +91,7 @@ export function Sheet({
           className,
         )}
       >
-        <header className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-border bg-card px-5 py-4 shrink-0">
+        <header className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-border bg-card px-6 py-4 shrink-0">
             <div className="space-y-1 min-w-0">
               {title && (
                 <h2
@@ -112,10 +112,10 @@ export function Sheet({
             </button>
           </header>
 
-        <div className="flex-1 overflow-y-auto px-5 py-4">{children}</div>
+        <div className="flex-1 overflow-y-auto px-6 py-4">{children}</div>
 
         {footer && (
-          <footer className="sticky bottom-0 border-t border-border bg-card px-5 py-4 pb-safe shrink-0">
+          <footer className="sticky bottom-0 border-t border-border bg-card px-6 py-4 pb-safe shrink-0">
             {footer}
           </footer>
         )}

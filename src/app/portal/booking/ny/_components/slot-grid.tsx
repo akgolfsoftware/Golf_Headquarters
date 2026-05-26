@@ -53,7 +53,7 @@ export function SlotGrid({ slots, serviceSlug }: Props) {
                   href={`/portal/booking/ny/bekreft?service=${serviceSlug}&start=${encodeURIComponent(
                     iso,
                   )}&coach=${coachId}`}
-                  className="flex min-h-11 items-center justify-center rounded-md border border-border bg-card px-4 py-3 text-center font-mono text-sm tabular-nums text-foreground transition-colors hover:border-primary hover:bg-primary/5"
+                  className="flex min-h-11 items-center justify-center rounded-md border border-border bg-card px-4 py-2 text-center font-mono text-sm tabular-nums text-foreground transition-colors hover:border-primary hover:bg-primary/5"
                 >
                   {klokke}
                 </Link>

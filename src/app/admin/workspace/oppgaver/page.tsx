@@ -58,7 +58,7 @@ export default async function WorkspaceOppgaverPage({
 
   return (
     <div className="space-y-6">
-      <header className="-mx-4 -mt-4 border-b border-border bg-gradient-to-b from-[#FBFAF5] to-background px-4 py-7 md:-mx-8 md:-mt-8 md:px-8">
+      <header className="-mx-4 -mt-4 border-b border-border bg-gradient-to-b from-[#FBFAF5] to-background px-4 py-8 md:-mx-8 md:-mt-8 md:px-8">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
             <AthleticEyebrow>CoachHQ · Workspace · Oppgaver</AthleticEyebrow>
@@ -79,7 +79,7 @@ export default async function WorkspaceOppgaverPage({
               23 OPPGAVER · 5 DELT MED COACHES · 7 PROSJEKTER
             </div>
           </div>
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2">
             <ViewToggle current={view} />
             <AthleticButton variant="lime" size="sm">
               <Plus className="h-3.5 w-3.5" /> Ny oppgave
@@ -118,7 +118,7 @@ function ViewToggle({ current }: { current: View }) {
           <a
             key={v.id}
             href={`?view=${v.id}`}
-            className={`font-display inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition ${
+            className={`font-display inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold transition ${
               isActive
                 ? "bg-card text-foreground shadow-sm"
                 : "text-muted-foreground hover:text-foreground"
@@ -141,8 +141,8 @@ function FilterBar({
   counts: { todo: number; doing: number; done: number; blokkert: number };
 }) {
   return (
-    <div className="sticky top-0 z-10 -mx-4 flex flex-wrap items-center gap-2 border-b border-border bg-card px-4 py-3 md:-mx-8 md:px-8">
-      <label className="flex min-w-[240px] items-center gap-2 rounded-md border border-input bg-muted/30 px-3 py-1.5">
+    <div className="sticky top-0 z-10 -mx-4 flex flex-wrap items-center gap-2 border-b border-border bg-card px-4 py-2 md:-mx-8 md:px-8">
+      <label className="flex min-w-[240px] items-center gap-2 rounded-md border border-input bg-muted/30 px-4 py-1.5">
         <Search className="h-3.5 w-3.5 text-muted-foreground" />
         <input
           type="search"
@@ -224,7 +224,7 @@ function ListView({ tasks }: { tasks: SampleTask[] }) {
         if (tasks.length === 0) return null;
         return (
           <section key={status}>
-            <div className="mb-3 flex items-center gap-2.5">
+            <div className="mb-2 flex items-center gap-2.5">
               <StatusPill kind={status} />
               <span className="font-mono text-[11px] tracking-[0.04em] text-muted-foreground">
                 {tasks.length}
@@ -234,7 +234,7 @@ function ListView({ tasks }: { tasks: SampleTask[] }) {
             <div className="overflow-x-auto">
               <div className="min-w-[760px]">
             {/* Column headers */}
-            <div className="font-mono grid grid-cols-[20px_1fr_140px_88px_80px_100px_80px_60px] items-center gap-3 rounded-lg bg-muted/40 px-3.5 py-2 text-[9.5px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
+            <div className="font-mono grid grid-cols-[20px_1fr_140px_88px_80px_100px_80px_60px] items-center gap-2 rounded-lg bg-muted/40 px-4 py-2 text-[9.5px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
               <div />
               <div>Oppgave</div>
               <div>Prosjekt</div>
@@ -249,7 +249,7 @@ function ListView({ tasks }: { tasks: SampleTask[] }) {
               {tasks.map((t) => (
                 <li
                   key={t.id}
-                  className={`grid grid-cols-[20px_1fr_140px_88px_80px_100px_80px_60px] items-center gap-3 border-b border-border px-3.5 py-3 ${
+                  className={`grid grid-cols-[20px_1fr_140px_88px_80px_100px_80px_60px] items-center gap-2 border-b border-border px-4 py-2 ${
                     t.done ? "opacity-55" : ""
                   }`}
                 >
@@ -300,7 +300,7 @@ function ListView({ tasks }: { tasks: SampleTask[] }) {
 function KanbanView({ tasks }: { tasks: SampleTask[] }) {
   return (
     <div className="px-1">
-      <div className="grid grid-cols-1 gap-3.5 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <KanbanCol status="TODO" tasks={tasks} />
         <KanbanCol status="DOING" tasks={tasks} accent />
         <KanbanCol status="DONE" tasks={tasks} />
@@ -324,7 +324,7 @@ function KanbanCol({
       : allTasks.filter((t) => t.status === status && !t.done);
 
   return (
-    <div className="flex min-h-[540px] flex-col gap-2.5 rounded-2xl bg-muted/30 p-3">
+    <div className="flex min-h-[540px] flex-col gap-2.5 rounded-2xl bg-muted/30 p-4">
       <div
         className={`flex items-center gap-2.5 border-b px-1 pb-2 ${
           accent ? "border-b-[2px] border-accent" : "border-border"
@@ -346,7 +346,7 @@ function KanbanCol({
       ))}
       <button
         type="button"
-        className="font-mono rounded-xl border border-dashed border-border px-3 py-3 text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground hover:bg-muted/40"
+        className="font-mono rounded-xl border border-dashed border-border px-4 py-2 text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground hover:bg-muted/40"
       >
         + NY
       </button>
@@ -357,7 +357,7 @@ function KanbanCol({
 function KanbanCard({ task: t }: { task: SampleTask }) {
   return (
     <article
-      className={`flex flex-col gap-2 rounded-xl border bg-card p-3 shadow-sm ${
+      className={`flex flex-col gap-2 rounded-xl border bg-card p-4 shadow-sm ${
         t.brenner ? "border-l-[3px] border-l-destructive" : "border-border"
       }`}
     >
@@ -410,7 +410,7 @@ function CalView({ tasks }: { tasks: SampleTask[] }) {
           {days.map((d, i) => (
             <div
               key={d}
-              className={`flex items-baseline gap-2 px-4 py-3 ${
+              className={`flex items-baseline gap-2 px-4 py-2 ${
                 i < 6 ? "border-r border-border" : ""
               }`}
             >

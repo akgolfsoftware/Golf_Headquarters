@@ -183,7 +183,7 @@ export function MalByggerWizard({ kontekst }: { kontekst: ByggerKontekst }) {
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-0">
       {/* Topbar */}
-      <nav className="flex flex-wrap items-center gap-3 border-b border-border bg-card px-4 py-3 sm:gap-4 sm:px-8 sm:py-[18px]">
+      <nav className="flex flex-wrap items-center gap-2 border-b border-border bg-card px-4 py-2 sm:gap-4 sm:px-8 sm:py-[18px]">
         <Link
           href="/portal/mal"
           className="inline-flex h-11 items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.04em] text-muted-foreground hover:text-foreground"
@@ -205,7 +205,7 @@ export function MalByggerWizard({ kontekst }: { kontekst: ByggerKontekst }) {
         <button
           type="button"
           onClick={nullstill}
-          className="inline-flex h-11 items-center gap-1.5 rounded-full border border-border bg-transparent px-3 font-mono text-[10.5px] font-semibold uppercase tracking-[0.08em] text-muted-foreground hover:border-muted-foreground hover:text-foreground"
+          className="inline-flex h-11 items-center gap-1.5 rounded-full border border-border bg-transparent px-4 font-mono text-[10.5px] font-semibold uppercase tracking-[0.08em] text-muted-foreground hover:border-muted-foreground hover:text-foreground"
         >
           Start på nytt
         </button>
@@ -223,7 +223,7 @@ export function MalByggerWizard({ kontekst }: { kontekst: ByggerKontekst }) {
               mal-bygger
             </em>
           </h1>
-          <p className="mt-3 max-w-[560px] text-[15px] leading-relaxed text-muted-foreground">
+          <p className="mt-2 max-w-[560px] text-[15px] leading-relaxed text-muted-foreground">
             Vi bruker plan-templates kodifisert fra Anders&apos; coach-arbeid og
             tilpasser dem til din SG-data, mål og periodiseringsfase.
           </p>
@@ -302,11 +302,11 @@ function ProgressBar({ steg }: { steg: Step }) {
   const steg_array: Step[] = [1, 2, 3, 4, 5];
   return (
     <div className="border-b border-border bg-background/90 px-4 py-4 sm:px-8">
-      <div className="mx-auto flex max-w-[1200px] items-center gap-2 overflow-x-auto sm:gap-3">
+      <div className="mx-auto flex max-w-[1200px] items-center gap-2 overflow-x-auto sm:gap-2">
         {steg_array.map((n, i) => (
-          <div key={n} className="flex items-center gap-2 sm:gap-3">
+          <div key={n} className="flex items-center gap-2 sm:gap-2">
             <div
-              className={`flex shrink-0 items-center gap-2 rounded-full border px-3 py-1.5 text-[11px] font-mono font-semibold uppercase tracking-[0.06em] ${
+              className={`flex shrink-0 items-center gap-2 rounded-full border px-4 py-1.5 text-[11px] font-mono font-semibold uppercase tracking-[0.06em] ${
                 n === steg
                   ? "border-primary bg-primary text-primary-foreground"
                   : n < steg
@@ -374,7 +374,7 @@ function Steg1VelgMal(props: {
         tekst={`Hva vil du oppnå med neste treningsplan, ${kontekst.spiller.fornavn}?`}
       />
 
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
         <MalKort
           icon={Trophy}
           tittel="Forberedelse til turnering"
@@ -414,12 +414,12 @@ function Steg1VelgMal(props: {
       </div>
 
       {maltype === "TURNERING" && (
-        <div className="rounded-lg border border-border bg-card p-5">
+        <div className="rounded-lg border border-border bg-card p-6">
           <div className="font-mono text-[10.5px] uppercase tracking-[0.10em] text-muted-foreground">
             Velg turnering
           </div>
           {kontekst.kommendeTurneringer.length === 0 ? (
-            <p className="mt-3 text-[13.5px] text-muted-foreground">
+            <p className="mt-2 text-[13.5px] text-muted-foreground">
               Du har ingen planlagte turneringer. Legg til en under{" "}
               <Link
                 href="/portal/tren/turneringer"
@@ -430,7 +430,7 @@ function Steg1VelgMal(props: {
               .
             </p>
           ) : (
-            <div className="mt-3 grid gap-2">
+            <div className="mt-2 grid gap-2">
               {kontekst.kommendeTurneringer.map((t) => (
                 <button
                   key={t.id}
@@ -463,7 +463,7 @@ function Steg1VelgMal(props: {
       )}
 
       {maltype === "EGENDEFINERT" && (
-        <div className="rounded-lg border border-border bg-card p-5">
+        <div className="rounded-lg border border-border bg-card p-6">
           <label
             htmlFor="egendefinert"
             className="font-mono text-[10.5px] uppercase tracking-[0.10em] text-muted-foreground"
@@ -476,12 +476,12 @@ function Steg1VelgMal(props: {
             onChange={(e) => setEgendefinertTekst(e.target.value)}
             rows={4}
             placeholder="F.eks. Wedge-spill 50-100m, blokk-treninger først, deretter random …"
-            className="mt-2 w-full rounded-md border border-input bg-background px-3 py-2 text-base text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30 sm:text-sm"
+            className="mt-2 w-full rounded-md border border-input bg-background px-4 py-2 text-base text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30 sm:text-sm"
           />
         </div>
       )}
 
-      <div className="flex items-center justify-end gap-3 pt-2">
+      <div className="flex items-center justify-end gap-2 pt-2">
         <button
           type="button"
           onClick={onNeste}
@@ -517,7 +517,7 @@ function MalKort(props: {
     <button
       type="button"
       onClick={props.onClick}
-      className={`flex items-start gap-4 rounded-xl border-2 p-5 text-left transition-all ${
+      className={`flex items-start gap-4 rounded-xl border-2 p-6 text-left transition-all ${
         props.valgt
           ? "border-primary bg-primary/5 shadow-sm"
           : "border-border bg-card hover:border-muted-foreground"
@@ -579,11 +579,11 @@ function Steg2Anbefaling(props: {
           Vi fant ingen plan-template som matcher din kategori og fase. Du kan
           fortsatt la AI-en lage en plan fra scratch.
         </p>
-        <div className="mt-5 flex gap-3">
+        <div className="mt-5 flex gap-2">
           <button
             type="button"
             onClick={onTilbake}
-            className="h-11 rounded-full border border-border bg-transparent px-5 text-[12.5px] font-semibold text-foreground hover:border-muted-foreground"
+            className="h-11 rounded-full border border-border bg-transparent px-6 text-[12.5px] font-semibold text-foreground hover:border-muted-foreground"
           >
             Tilbake
           </button>
@@ -616,7 +616,7 @@ function Steg2Anbefaling(props: {
       )}
 
       {visAlternativer && alternativer.length > 0 && (
-        <div className="space-y-3">
+        <div className="space-y-2">
           <div className="font-mono text-[10.5px] uppercase tracking-[0.10em] text-muted-foreground">
             Andre alternativer ({alternativer.length})
           </div>
@@ -631,12 +631,12 @@ function Steg2Anbefaling(props: {
         </div>
       )}
 
-      <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-        <div className="flex gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-2 pt-2">
+        <div className="flex gap-2">
           <button
             type="button"
             onClick={onTilbake}
-            className="h-11 rounded-full border border-border bg-transparent px-5 text-[12.5px] font-semibold text-foreground hover:border-muted-foreground"
+            className="h-11 rounded-full border border-border bg-transparent px-6 text-[12.5px] font-semibold text-foreground hover:border-muted-foreground"
           >
             <ArrowLeft className="mr-1.5 inline h-4 w-4" strokeWidth={1.75} />
             Tilbake
@@ -645,7 +645,7 @@ function Steg2Anbefaling(props: {
             <button
               type="button"
               onClick={() => setVisAlternativer(true)}
-              className="h-11 rounded-full border border-border bg-transparent px-5 text-[12.5px] font-semibold text-foreground hover:border-muted-foreground"
+              className="h-11 rounded-full border border-border bg-transparent px-6 text-[12.5px] font-semibold text-foreground hover:border-muted-foreground"
             >
               Vis andre alternativer ({alternativer.length})
             </button>
@@ -682,7 +682,7 @@ function MalKortStor(props: {
           : "border-border bg-card hover:border-muted-foreground"
       }`}
     >
-      <div className="flex flex-wrap items-start justify-between gap-3">
+      <div className="flex flex-wrap items-start justify-between gap-2">
         <div className="min-w-0">
           {erAnbefalt && (
             <div className="inline-flex items-center gap-1.5 rounded-full bg-accent px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-foreground">
@@ -699,7 +699,7 @@ function MalKortStor(props: {
             </p>
           )}
         </div>
-        <div className="flex shrink-0 gap-3">
+        <div className="flex shrink-0 gap-2">
           <Statistikk label="Varighet" verdi={`${mal.varighetUker} uker`} />
           <Statistikk
             label="Økter/uke"
@@ -853,11 +853,11 @@ function Steg3AiTilpasser(props: {
                   {feil}
                 </p>
               </div>
-              <div className="flex gap-3">
+              <div className="flex gap-2">
                 <button
                   type="button"
                   onClick={onTilbake}
-                  className="h-11 rounded-full border border-border bg-transparent px-5 text-[12.5px] font-semibold text-foreground hover:border-muted-foreground"
+                  className="h-11 rounded-full border border-border bg-transparent px-6 text-[12.5px] font-semibold text-foreground hover:border-muted-foreground"
                 >
                   Tilbake
                 </button>
@@ -897,7 +897,7 @@ function Steg3AiTilpasser(props: {
                 {bullets.map((b, i) => (
                   <li
                     key={i}
-                    className="flex items-start gap-3 rounded-md border border-border bg-background px-3.5 py-2.5"
+                    className="flex items-start gap-2 rounded-md border border-border bg-background px-4 py-2.5"
                   >
                     <CheckCircle2
                       className="mt-0.5 h-4 w-4 shrink-0 text-primary"
@@ -965,8 +965,8 @@ function Steg4Forhåndsvis(props: {
     <section className="space-y-6">
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[360px_1fr]">
         {/* Venstre — Plan-oversikt */}
-        <aside className="space-y-5 lg:sticky lg:top-6 lg:self-start">
-          <div className="rounded-xl border border-border bg-card p-5">
+        <aside className="space-y-6 lg:sticky lg:top-6 lg:self-start">
+          <div className="rounded-xl border border-border bg-card p-6">
             <label
               htmlFor="plannavn"
               className="font-mono text-[10.5px] uppercase tracking-[0.10em] text-muted-foreground"
@@ -978,18 +978,18 @@ function Steg4Forhåndsvis(props: {
               type="text"
               value={forslag.navn}
               onChange={(e) => oppdaterNavn(e.target.value)}
-              className="mt-1.5 w-full rounded-md border border-input bg-background px-3 py-2 text-base font-display font-semibold text-foreground focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30 sm:text-[18px]"
+              className="mt-1.5 w-full rounded-md border border-input bg-background px-4 py-2 text-base font-display font-semibold text-foreground focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30 sm:text-[18px]"
             />
-            <p className="mt-3 text-[13px] leading-relaxed text-muted-foreground">
+            <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground">
               {forslag.beskrivelse}
             </p>
           </div>
 
-          <div className="rounded-xl border border-border bg-card p-5">
+          <div className="rounded-xl border border-border bg-card p-6">
             <div className="font-mono text-[10.5px] uppercase tracking-[0.10em] text-muted-foreground">
               Nøkkeltall
             </div>
-            <dl className="mt-3 space-y-2.5">
+            <dl className="mt-2 space-y-2.5">
               <Nokkel
                 label="Varighet"
                 verdi={`${forslag.periodeUker} uker`}
@@ -1007,11 +1007,11 @@ function Steg4Forhåndsvis(props: {
             </dl>
           </div>
 
-          <div className="rounded-xl border border-border bg-card p-5">
+          <div className="rounded-xl border border-border bg-card p-6">
             <div className="font-mono text-[10.5px] uppercase tracking-[0.10em] text-muted-foreground">
               Fokus-områder
             </div>
-            <ul className="mt-3 flex flex-wrap gap-1.5">
+            <ul className="mt-2 flex flex-wrap gap-1.5">
               {forslag.fokusOmrader.map((f) => (
                 <li
                   key={f}
@@ -1023,11 +1023,11 @@ function Steg4Forhåndsvis(props: {
             </ul>
           </div>
 
-          <div className="rounded-xl border border-border bg-card p-5">
+          <div className="rounded-xl border border-border bg-card p-6">
             <div className="font-mono text-[10.5px] uppercase tracking-[0.10em] text-muted-foreground">
               Disciplin-fordeling
             </div>
-            <div className="mt-3">
+            <div className="mt-2">
               <DisciplinFordelingBar fordeling={disciplinFordeling} />
             </div>
           </div>
@@ -1063,13 +1063,13 @@ function Steg4Forhåndsvis(props: {
       </div>
 
       {feil && (
-        <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3 text-[13px] text-destructive">
+        <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-2 text-[13px] text-destructive">
           {feil}
         </div>
       )}
 
       {erGratis && (
-        <div className="flex items-start gap-3 rounded-lg border border-accent/40 bg-accent/10 px-4 py-3.5">
+        <div className="flex items-start gap-2 rounded-lg border border-accent/40 bg-accent/10 px-4 py-4">
           <Lock className="mt-0.5 h-4 w-4 shrink-0 text-foreground" strokeWidth={1.75} />
           <div className="text-[13px] leading-relaxed text-foreground">
             <strong className="font-semibold">GRATIS-konto:</strong> Du kan se
@@ -1086,7 +1086,7 @@ function Steg4Forhåndsvis(props: {
       )}
 
       {/* Bunn-rad */}
-      <div className="sticky bottom-0 -mx-4 flex flex-wrap items-center justify-between gap-3 border-t border-border bg-card/95 px-4 py-4 backdrop-blur sm:-mx-8 sm:px-8">
+      <div className="sticky bottom-0 -mx-4 flex flex-wrap items-center justify-between gap-2 border-t border-border bg-card/95 px-4 py-4 backdrop-blur sm:-mx-8 sm:px-8">
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
@@ -1109,7 +1109,7 @@ function Steg4Forhåndsvis(props: {
             type="button"
             onClick={onLagreUtkast}
             disabled={pending || erGratis}
-            className="inline-flex h-11 items-center gap-2 rounded-full bg-primary px-5 text-[13px] font-bold text-primary-foreground hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+            className="inline-flex h-11 items-center gap-2 rounded-full bg-primary px-6 text-[13px] font-bold text-primary-foreground hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
           >
             <ClipboardList className="h-4 w-4" strokeWidth={1.75} />
             Lagre som utkast
@@ -1159,7 +1159,7 @@ function UkeRad(props: {
 
   return (
     <div className="rounded-xl border border-border bg-card p-4">
-      <div className="mb-3 flex items-center justify-between">
+      <div className="mb-2 flex items-center justify-between">
         <div className="font-mono text-[10.5px] uppercase tracking-[0.10em] text-muted-foreground">
           Uke {ukeNr}
         </div>
@@ -1313,13 +1313,13 @@ function Steg5Bekreftelse(props: {
           <h2 className="font-display text-[32px] font-semibold leading-tight -tracking-[0.02em]">
             {sendtTilGodkjenning ? "Sendt til Anders!" : "Lagret som utkast"}
           </h2>
-          <p className="mt-3 text-[14px] leading-relaxed text-muted-foreground">
+          <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">
             {sendtTilGodkjenning
               ? "Anders svarer vanligvis innen 24 timer. Du får varsel når planen er godkjent."
               : "Planen ligger nå som utkast under Mål-fanen. Du kan redigere eller sende den til godkjenning når du vil."}
           </p>
         </div>
-        <div className="flex flex-wrap justify-center gap-3">
+        <div className="flex flex-wrap justify-center gap-2">
           <Link
             href="/portal/mal"
             className="inline-flex h-11 items-center gap-2 rounded-full bg-primary px-6 text-[13px] font-bold text-primary-foreground hover:opacity-90"
@@ -1345,7 +1345,7 @@ function Steg5Bekreftelse(props: {
 
 function AgentStrip({ tekst }: { tekst: string }) {
   return (
-    <div className="flex items-start gap-3 rounded-xl border border-accent/30 bg-accent/10 px-4 py-3.5">
+    <div className="flex items-start gap-2 rounded-xl border border-accent/30 bg-accent/10 px-4 py-4">
       <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-accent text-foreground">
         <Sparkles className="h-4 w-4" strokeWidth={1.75} />
       </span>

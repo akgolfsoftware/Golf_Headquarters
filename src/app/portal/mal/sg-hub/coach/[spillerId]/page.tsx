@@ -60,7 +60,7 @@ export default async function CoachHubPage({
         Tilbake til SG Hub
       </Link>
 
-      <div className="rounded-xl border border-primary/30 bg-primary/5 p-5">
+      <div className="rounded-xl border border-primary/30 bg-primary/5 p-6">
         <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-primary">
           Coach-modus
         </p>
@@ -90,7 +90,7 @@ export default async function CoachHubPage({
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+          <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
             {clubs.map((club) => (
               <Link
                 key={club}
@@ -111,9 +111,9 @@ export default async function CoachHubPage({
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <Link
             href={`${base}/equipment`}
-            className="group rounded-xl border border-border bg-card p-5 transition-colors hover:border-primary"
+            className="group rounded-xl border border-border bg-card p-6 transition-colors hover:border-primary"
           >
-            <Package className="mb-3 h-4 w-4 text-muted-foreground transition-colors group-hover:text-primary" />
+            <Package className="mb-2 h-4 w-4 text-muted-foreground transition-colors group-hover:text-primary" />
             <h4 className="text-sm font-semibold">Equipment Fit</h4>
             <p className="mt-1 text-xs text-muted-foreground">
               Per-kølle helsesjekk på launch, spin og smash.
@@ -135,7 +135,7 @@ function StatCard({
   isText?: boolean;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-5">
+    <div className="rounded-xl border border-border bg-card p-6">
       <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
         {label}
       </p>

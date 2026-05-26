@@ -93,7 +93,7 @@ export function GuardianConsentForm({
           onChange={(e) => setGuardianName(e.target.value)}
           autoComplete="name"
           placeholder="F.eks. Anne Hansen"
-          className="mt-1.5 w-full rounded-md border border-border bg-card px-3 py-2.5 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="mt-1.5 w-full rounded-md border border-border bg-card px-4 py-2.5 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         />
         <p className="font-mono mt-1 text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
           REGISTRERT E-POST: {guardianEmail}
@@ -101,8 +101,8 @@ export function GuardianConsentForm({
       </div>
 
       {/* Consent checkboxes */}
-      <div className="mt-5 space-y-3">
-        <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-border bg-card p-3.5 hover:bg-secondary/30">
+      <div className="mt-5 space-y-2">
+        <label className="flex cursor-pointer items-start gap-2 rounded-xl border border-border bg-card p-4 hover:bg-secondary/30">
           <input
             type="checkbox"
             checked={agreeDataProcessing}
@@ -119,7 +119,7 @@ export function GuardianConsentForm({
           </span>
         </label>
 
-        <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-border bg-card p-3.5 hover:bg-secondary/30">
+        <label className="flex cursor-pointer items-start gap-2 rounded-xl border border-border bg-card p-4 hover:bg-secondary/30">
           <input
             type="checkbox"
             checked={agreeTerms}
@@ -142,7 +142,7 @@ export function GuardianConsentForm({
       ) : null}
 
       {/* Submit */}
-      <div className="mt-6 flex flex-wrap items-center gap-3">
+      <div className="mt-6 flex flex-wrap items-center gap-2">
         <AthleticButton
           type="submit"
           variant="lime"

@@ -138,7 +138,7 @@ export function StallClient({ snapshot }: { snapshot: StallSnapshot }) {
               key={k}
               type="button"
               onClick={() => setKatFilter(k)}
-              className={`rounded-sm px-3 py-1 font-mono text-[11px] font-semibold uppercase tracking-[0.04em] transition-colors ${
+              className={`rounded-sm px-4 py-1 font-mono text-[11px] font-semibold uppercase tracking-[0.04em] transition-colors ${
                 katFilter === k
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground"
@@ -155,7 +155,7 @@ export function StallClient({ snapshot }: { snapshot: StallSnapshot }) {
               key={s}
               type="button"
               onClick={() => setStatusFilter(s)}
-              className={`rounded-sm px-3 py-1 font-mono text-[11px] font-semibold uppercase tracking-[0.04em] transition-colors ${
+              className={`rounded-sm px-4 py-1 font-mono text-[11px] font-semibold uppercase tracking-[0.04em] transition-colors ${
                 statusFilter === s
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground"
@@ -231,7 +231,7 @@ function Heatmap({ players }: { players: StallPlayer[] }) {
       aria-label="Aktivitet siste 30 dager"
       className="overflow-hidden rounded-lg border border-border bg-card"
     >
-      <header className="flex items-baseline justify-between border-b border-border bg-secondary/40 px-4 py-3">
+      <header className="flex items-baseline justify-between border-b border-border bg-secondary/40 px-4 py-2">
         <div>
           <h2 className="font-display text-base font-semibold tracking-tight">
             Aktivitet siste 30 dager
@@ -311,7 +311,7 @@ function Heatmap({ players }: { players: StallPlayer[] }) {
 
       <footer className="flex items-center justify-between border-t border-border bg-secondary/40 px-4 py-2 font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
         <span>30 dager siden — i dag</span>
-        <span className="flex items-center gap-3">
+        <span className="flex items-center gap-2">
           <span className="flex items-center gap-1.5">
             <span className="h-2.5 w-2.5 rounded-sm bg-secondary" />
             Ingen aktivitet
@@ -342,7 +342,7 @@ function Fremgang({ players }: { players: StallPlayer[] }) {
       aria-label="Fremgang per spiller"
       className="overflow-hidden rounded-lg border border-border bg-card"
     >
-      <header className="flex items-baseline justify-between border-b border-border bg-secondary/40 px-4 py-3">
+      <header className="flex items-baseline justify-between border-b border-border bg-secondary/40 px-4 py-2">
         <h2 className="font-display text-base font-semibold tracking-tight">
           Fremgang · SG-snitt og 30-dagers aktivitet
         </h2>
@@ -351,13 +351,13 @@ function Fremgang({ players }: { players: StallPlayer[] }) {
         </span>
       </header>
 
-      <div className="grid grid-cols-1 gap-3 p-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-2 p-4 sm:grid-cols-2 lg:grid-cols-3">
         {players.map((p) => (
           <article
             key={p.id}
-            className="flex flex-col gap-3 rounded-md border border-border bg-card p-4"
+            className="flex flex-col gap-2 rounded-md border border-border bg-card p-4"
           >
-            <header className="flex items-center justify-between gap-3">
+            <header className="flex items-center justify-between gap-2">
               <Link
                 href={`/admin/spillere/${p.id}`}
                 className="flex min-w-0 items-center gap-2 hover:text-primary"
@@ -384,7 +384,7 @@ function Fremgang({ players }: { players: StallPlayer[] }) {
               </span>
             </header>
 
-            <div className="flex items-end justify-between gap-3 border-t border-border pt-3">
+            <div className="flex items-end justify-between gap-2 border-t border-border pt-2">
               <div>
                 <div className="font-mono text-[9px] uppercase tracking-[0.08em] text-muted-foreground">
                   SG snitt
@@ -438,7 +438,7 @@ function Risiko({ players }: { players: StallPlayer[] }) {
           strokeWidth={1.5}
           aria-hidden="true"
         />
-        <p className="mt-3 font-display text-base font-semibold text-foreground">
+        <p className="mt-2 font-display text-base font-semibold text-foreground">
           Alt under kontroll
         </p>
         <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.06em] text-muted-foreground">
@@ -453,7 +453,7 @@ function Risiko({ players }: { players: StallPlayer[] }) {
       aria-label="Spillere som krever oppmerksomhet"
       className="overflow-hidden rounded-lg border border-border bg-card"
     >
-      <header className="flex items-baseline justify-between border-b border-border bg-secondary/40 px-4 py-3">
+      <header className="flex items-baseline justify-between border-b border-border bg-secondary/40 px-4 py-2">
         <div>
           <h2 className="font-display text-base font-semibold tracking-tight">
             Krever oppmerksomhet
@@ -477,7 +477,7 @@ function Risiko({ players }: { players: StallPlayer[] }) {
             <li key={p.id}>
               <Link
                 href={`/admin/spillere/${p.id}`}
-                className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-secondary/30"
+                className="flex items-center gap-2 px-4 py-2 transition-colors hover:bg-secondary/30"
               >
                 <div
                   className="grid h-9 w-9 shrink-0 place-items-center rounded-full font-mono text-[11px] font-semibold text-white"

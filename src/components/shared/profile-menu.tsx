@@ -56,7 +56,7 @@ export function ProfileMenu({ name, email, avatarUrl, hcp }: Props) {
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label="Åpne profil-meny"
-        className="flex h-11 items-center gap-3 rounded-full border border-border bg-card px-1 pr-2 text-sm transition-colors hover:border-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:pr-3"
+        className="flex h-11 items-center gap-2 rounded-full border border-border bg-card px-1 pr-2 text-sm transition-colors hover:border-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:pr-4"
       >
         <span className="grid h-8 w-8 place-items-center overflow-hidden rounded-full bg-primary text-xs font-semibold text-primary-foreground">
           {avatarUrl ? (
@@ -79,7 +79,7 @@ export function ProfileMenu({ name, email, avatarUrl, hcp }: Props) {
           role="menu"
           className="absolute right-0 z-50 mt-2 w-[calc(100vw-2rem)] max-w-72 overflow-hidden rounded-2xl border border-border bg-card shadow-xl sm:w-72"
         >
-          <div className="flex items-center gap-3 border-b border-border bg-secondary/40 px-4 py-4">
+          <div className="flex items-center gap-2 border-b border-border bg-secondary/40 px-4 py-4">
             <span className="grid h-10 w-10 place-items-center overflow-hidden rounded-full bg-primary text-sm font-semibold text-primary-foreground">
               {avatarUrl ? (
                 <Image
@@ -147,7 +147,7 @@ export function ProfileMenu({ name, email, avatarUrl, hcp }: Props) {
             <form action={logout}>
               <button
                 type="submit"
-                className="flex min-h-11 w-full items-center gap-3 rounded-md px-3 py-2.5 text-left text-sm text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="flex min-h-11 w-full items-center gap-2 rounded-md px-4 py-2.5 text-left text-sm text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <LogOut width={16} height={16} strokeWidth={1.75} aria-hidden />
                 Logg ut
@@ -176,7 +176,7 @@ function MenuLink({
       href={href}
       onClick={onClick}
       role="menuitem"
-      className="flex min-h-11 w-full items-center gap-3 rounded-md px-3 py-2.5 text-left text-sm text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="flex min-h-11 w-full items-center gap-2 rounded-md px-4 py-2.5 text-left text-sm text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
       <span className="text-muted-foreground">{icon}</span>
       {children}

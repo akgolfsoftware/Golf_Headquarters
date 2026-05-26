@@ -22,7 +22,7 @@ export function AvbestillButtons() {
         type="button"
         onClick={() => router.push("/portal/meg/abonnement")}
         autoFocus
-        className="inline-flex items-center justify-center gap-1.5 rounded-full bg-accent px-4 py-3 text-[13.5px] font-semibold text-foreground transition-transform hover:-translate-y-px"
+        className="inline-flex items-center justify-center gap-1.5 rounded-full bg-accent px-4 py-2 text-[13.5px] font-semibold text-foreground transition-transform hover:-translate-y-px"
         style={{
           borderColor: "var(--accent)",
           boxShadow: "0 4px 14px rgba(209,248,67,0.40)",
@@ -37,7 +37,7 @@ export function AvbestillButtons() {
         type="button"
         onClick={avbestill}
         disabled={pending}
-        className="rounded-full border-[1.5px] border-destructive/30 bg-card px-4 py-3 text-[13.5px] font-semibold text-destructive transition-colors hover:border-destructive hover:bg-destructive/[0.04] disabled:opacity-50"
+        className="rounded-full border-[1.5px] border-destructive/30 bg-card px-4 py-2 text-[13.5px] font-semibold text-destructive transition-colors hover:border-destructive hover:bg-destructive/[0.04] disabled:opacity-50"
       >
         {pending ? "Avbestiller …" : "Ja, avbestill"}
       </button>

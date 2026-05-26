@@ -122,7 +122,7 @@ export default async function AgentsAdmin() {
                   return (
                     <tr key={slug} className="border-b border-border/60 last:border-0 hover:bg-secondary/30">
                       <Td>
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2">
                           <span className="grid h-8 w-8 shrink-0 place-items-center rounded-md bg-secondary text-primary">
                             <Bot size={16} strokeWidth={1.5} />
                           </span>
@@ -248,7 +248,7 @@ function StatKort({
 }) {
   return (
     <div
-      className={`flex flex-col gap-2 rounded-lg border p-5 ${
+      className={`flex flex-col gap-2 rounded-lg border p-6 ${
         highlight
           ? "border-primary/30 bg-primary/5"
           : "border-border bg-card"

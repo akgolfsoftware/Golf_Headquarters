@@ -79,7 +79,7 @@ export function CalendarDayView({
             {TIMES.map((t) => (
               <div
                 key={t}
-                className="border-b border-border/60 px-3 py-1.5 text-right font-mono text-[11px] text-muted-foreground"
+                className="border-b border-border/60 px-4 py-1.5 text-right font-mono text-[11px] text-muted-foreground"
                 style={{ height: SLOT_PX }}
               >
                 {t}:00

@@ -131,8 +131,8 @@ export default async function OktPlanlagtPage({
   return (
     <div className="space-y-8 pb-32">
       {/* Hero */}
-      <section className="space-y-3">
-        <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-primary">
+      <section className="space-y-2">
+        <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-primary">
           <span className="relative flex h-2 w-2">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
@@ -144,7 +144,7 @@ export default async function OktPlanlagtPage({
           <em className="italic text-primary">{session.title}</em>
         </h1>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
-          <span className="inline-flex items-center rounded-full bg-foreground px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-accent">
+          <span className="inline-flex items-center rounded-full bg-foreground px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-accent">
             {session.practiceType}
           </span>
           <span className="inline-flex items-center gap-1.5">
@@ -165,10 +165,10 @@ export default async function OktPlanlagtPage({
       {/* Notater fra coach */}
       {session.notes && (
         <section>
-          <h2 className="mb-3 font-display text-xl font-semibold tracking-tight">
+          <h2 className="mb-2 font-display text-xl font-semibold tracking-tight">
             Notater
           </h2>
-          <div className="rounded-lg border border-border border-l-[3px] border-l-primary bg-card p-5">
+          <div className="rounded-lg border border-border border-l-[3px] border-l-primary bg-card p-6">
             <p className="whitespace-pre-wrap italic text-foreground">
               &ldquo;{session.notes}&rdquo;
             </p>
@@ -179,7 +179,7 @@ export default async function OktPlanlagtPage({
       {/* Trene sammen — kun for delte økter */}
       {session.isShared && (
         <section>
-          <div className="mb-3 flex items-center justify-between gap-2">
+          <div className="mb-2 flex items-center justify-between gap-2">
             <h2 className="font-display text-xl font-semibold tracking-tight">
               Trene sammen{" "}
               <span className="font-mono text-sm font-normal text-muted-foreground">
@@ -202,7 +202,7 @@ export default async function OktPlanlagtPage({
             )}
           </div>
           {session.participants.length === 0 ? (
-            <div className="flex items-center gap-3 rounded-md border border-dashed border-border bg-card/40 p-6 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2 rounded-md border border-dashed border-border bg-card/40 p-6 text-sm text-muted-foreground">
               <Users size={16} strokeWidth={1.5} aria-hidden />
               Ingen er invitert ennå.
               {erHost && " Trykk «Inviter kompis» for å invitere noen."}
@@ -225,7 +225,7 @@ export default async function OktPlanlagtPage({
 
       {/* Drills */}
       <section>
-        <h2 className="mb-3 font-display text-xl font-semibold tracking-tight">
+        <h2 className="mb-2 font-display text-xl font-semibold tracking-tight">
           Øvelser{" "}
           {session.drills.length > 0 && (
             <span className="font-mono text-sm font-normal text-muted-foreground">
@@ -234,7 +234,7 @@ export default async function OktPlanlagtPage({
           )}
         </h2>
         {session.drills.length === 0 ? (
-          <div className="flex items-center gap-3 rounded-md border border-dashed border-border bg-card/40 p-6 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2 rounded-md border border-dashed border-border bg-card/40 p-6 text-sm text-muted-foreground">
             <Target size={16} strokeWidth={1.5} />
             Ingen drills er lagt til denne økten ennå.
           </div>
@@ -246,7 +246,7 @@ export default async function OktPlanlagtPage({
                 open={idx === 0}
                 className="group rounded-lg border border-border bg-card"
               >
-                <summary className="flex cursor-pointer items-center gap-3 px-4 py-3 [&::-webkit-details-marker]:hidden">
+                <summary className="flex cursor-pointer items-center gap-2 px-4 py-2 [&::-webkit-details-marker]:hidden">
                   <span className="font-mono text-[10px] font-semibold text-muted-foreground">
                     {String(idx + 1).padStart(2, "0")}
                   </span>
@@ -279,10 +279,10 @@ export default async function OktPlanlagtPage({
 
       {/* Action bar */}
       <footer
-        className="fixed bottom-0 left-0 right-0 z-10 border-t border-border bg-card px-4 py-3 sm:px-6"
+        className="fixed bottom-0 left-0 right-0 z-10 border-t border-border bg-card px-4 py-2 sm:px-6"
         style={{ paddingBottom: "max(env(safe-area-inset-bottom), 0.75rem)" }}
       >
-        <div className="mx-auto flex max-w-4xl flex-col items-stretch gap-3 sm:flex-row sm:items-center">
+        <div className="mx-auto flex max-w-4xl flex-col items-stretch gap-2 sm:flex-row sm:items-center">
           <span className="hidden font-mono text-[11px] uppercase tracking-[0.06em] text-muted-foreground sm:inline">
             Starter{" "}
             <strong className="text-foreground">
@@ -293,20 +293,20 @@ export default async function OktPlanlagtPage({
             <button
               type="button"
               disabled
-              className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-border bg-card px-3 py-2 text-xs font-semibold text-muted-foreground opacity-60"
+              className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-xs font-semibold text-muted-foreground opacity-60"
             >
               <Pencil size={12} strokeWidth={1.75} /> Endre tid
             </button>
             <button
               type="button"
               disabled
-              className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-destructive/30 bg-card px-3 py-2 text-xs font-semibold text-destructive opacity-60"
+              className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-destructive/30 bg-card px-4 py-2 text-xs font-semibold text-destructive opacity-60"
             >
               <X size={12} strokeWidth={1.75} /> Avlys
             </button>
             <Link
               href={`/portal/tren/${sessionId}`}
-              className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-semibold text-accent-foreground hover:opacity-90 sm:flex-initial"
+              className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-full bg-accent px-6 py-2 text-sm font-semibold text-accent-foreground hover:opacity-90 sm:flex-initial"
             >
               <Play size={14} strokeWidth={2} /> Start økt
             </Link>

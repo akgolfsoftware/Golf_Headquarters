@@ -146,7 +146,7 @@ function HcpUtviklingKort({ points }: { points: HcpPoint[] }) {
 
   return (
     <AthleticCard label="HCP-utvikling (12 mnd)">
-      <div className="space-y-3">
+      <div className="space-y-2">
         <div className="flex items-baseline gap-4 font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground">
           {first && (
             <span className="tabular-nums">
@@ -244,7 +244,7 @@ function StrokesGainedKort({ sg }: { sg: StrokesGained }) {
 
   return (
     <AthleticCard label="Strokes Gained (siste 5 runder)">
-      <div className="space-y-3">
+      <div className="space-y-2">
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           {kolonner.map((kol) => (
             <SgKolonneKort
@@ -276,7 +276,7 @@ function SgKolonneKort({
   const isNegative = verdi != null && verdi < 0;
 
   return (
-    <div className="rounded-md border border-border bg-background/50 p-3 text-center">
+    <div className="rounded-md border border-border bg-background/50 p-4 text-center">
       <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
         {label}
       </p>
@@ -342,7 +342,7 @@ function PyramideKort({ pyramide }: { pyramide: PyramideFordeling }) {
         {PYRAMIDE_ROWS.map((row) => {
           const pct = pyramide[row.key];
           return (
-            <div key={row.key} className="flex items-center gap-3 text-xs">
+            <div key={row.key} className="flex items-center gap-2 text-xs">
               <span className="w-12 shrink-0 font-mono font-semibold uppercase tracking-[0.06em] text-muted-foreground">
                 {row.label}
               </span>
@@ -382,7 +382,7 @@ function SisteTesterKort({ tester }: { tester: SisteTest[] }) {
         {tester.map((t) => (
           <li
             key={t.id}
-            className="flex items-center justify-between gap-3 py-2.5 first:pt-0 last:pb-0"
+            className="flex items-center justify-between gap-2 py-2.5 first:pt-0 last:pb-0"
           >
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-medium text-foreground">

@@ -64,7 +64,7 @@ export function MarketingFooter() {
                 Prestasjonsgolf-coaching for ambisiøse spillere. Bygd på data,
                 drevet av relasjon.
               </p>
-              <div className="mt-6 flex items-center gap-3">
+              <div className="mt-6 flex items-center gap-2">
                 <a
                   href="https://instagram.com/akgolfacademy"
                   target="_blank"
@@ -90,7 +90,7 @@ export function MarketingFooter() {
           </div>
 
           <div className="grid gap-6 border-b border-white/10 py-10 md:grid-cols-2">
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-2">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10">
                 <Mail className="h-4 w-4 text-accent" strokeWidth={1.75} />
               </span>
@@ -109,7 +109,7 @@ export function MarketingFooter() {
                 </div>
               </div>
             </div>
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-2">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10">
                 <MapPin className="h-4 w-4 text-accent" strokeWidth={1.75} />
               </span>
@@ -134,7 +134,7 @@ export function MarketingFooter() {
             <span>
               © {new Date().getFullYear()} AK Golf Group AS · Org.nr 927 248 581
             </span>
-            <div className="flex gap-5">
+            <div className="flex gap-6">
               <Link
                 href="/personvern"
                 className="hover:text-accent focus-visible:underline focus-visible:outline-none"

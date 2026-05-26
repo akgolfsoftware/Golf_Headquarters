@@ -251,7 +251,7 @@ export function Conversation({
               AI-utkast — basert på din skrivestil
               {aiLaster && <Loader2 size={12} className="animate-spin" />}
             </div>
-            <div className="whitespace-pre-wrap rounded-md border border-border bg-card px-3.5 py-4 text-[13px] leading-relaxed">
+            <div className="whitespace-pre-wrap rounded-md border border-border bg-card px-4 py-4 text-[13px] leading-relaxed">
               {aiUtkast || (aiLaster ? "Genererer …" : "")}
             </div>
             <div className="mt-4 flex items-center gap-2">
@@ -295,7 +295,7 @@ export function Conversation({
         action={(fd) => startTransition(() => void håndterSend(fd))}
         className="border-t border-border bg-card px-6 py-4"
       >
-        <div className="rounded-2xl border border-border bg-background px-3.5 py-4">
+        <div className="rounded-2xl border border-border bg-background px-4 py-4">
           <textarea
             ref={textareaRef}
             name="body"

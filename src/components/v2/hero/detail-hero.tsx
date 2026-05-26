@@ -91,7 +91,7 @@ export default function DetailHero({
 
         {/* Bottom content */}
         <div>
-          <div className="flex gap-[10px] mb-3">
+          <div className="flex gap-[10px] mb-2">
             <span
               className={`pill pill-${axis.toLowerCase()}`}
               style={{
@@ -103,7 +103,7 @@ export default function DetailHero({
               {axis}
             </span>
             <span
-              className="inline-flex items-center gap-1 px-3 py-[6px] rounded-full font-mono text-[10px] font-bold uppercase tracking-[0.10em]"
+              className="inline-flex items-center gap-1 px-4 py-[6px] rounded-full font-mono text-[10px] font-bold uppercase tracking-[0.10em]"
               style={{
                 background:
                   "color-mix(in oklab, #fff 14%, rgba(0,0,0,0.4))",

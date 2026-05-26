@@ -16,7 +16,7 @@ import { useMemo, useState, useTransition } from "react";
 import { Check, Search, UserPlus, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { avatarBg, initialsFromName } from "@/lib/avatar-colors";
-import { Tabs, TabList, Tab, TabPanel } from "@/components/ui/tabs";
+import { Tabs, TabList, Tab } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { inviterSpiller } from "./invite-actions";
 
@@ -137,7 +137,7 @@ export function InviteFriendModal({
         </div>
 
         {/* Header */}
-        <div className="flex shrink-0 items-center justify-between border-b border-border px-5 py-4">
+        <div className="flex shrink-0 items-center justify-between border-b border-border px-6 py-4">
           <div>
             <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
               Trene sammen
@@ -157,7 +157,7 @@ export function InviteFriendModal({
         </div>
 
         {/* Counter */}
-        <div className="shrink-0 border-b border-border bg-secondary/30 px-5 py-2.5">
+        <div className="shrink-0 border-b border-border bg-secondary/30 px-6 py-2.5">
           <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
             <span className="tabular-nums text-foreground">
               {currentParticipants + inviterteIdag}
@@ -172,7 +172,7 @@ export function InviteFriendModal({
         </div>
 
         {/* Tabs */}
-        <div className="shrink-0 border-b border-border px-3 py-2">
+        <div className="shrink-0 border-b border-border px-4 py-2">
           <Tabs
             value={tab}
             onValueChange={(v) => setTab(v as typeof tab)}
@@ -187,7 +187,7 @@ export function InviteFriendModal({
         </div>
 
         {/* Søk-input */}
-        <div className="shrink-0 border-b border-border px-5 py-3">
+        <div className="shrink-0 border-b border-border px-6 py-2">
           <div className="relative">
             <Search
               size={16}
@@ -210,9 +210,9 @@ export function InviteFriendModal({
         </div>
 
         {/* Spiller-liste */}
-        <div className="flex-1 overflow-y-auto px-3 py-2">
+        <div className="flex-1 overflow-y-auto px-4 py-2">
           {filtered.length === 0 ? (
-            <div className="flex flex-col items-center gap-2 px-5 py-12 text-center">
+            <div className="flex flex-col items-center gap-2 px-6 py-12 text-center">
               <p className="text-sm text-muted-foreground">
                 {tab === "sok" && query.length === 0
                   ? "Skriv inn et navn for å søke."
@@ -227,7 +227,7 @@ export function InviteFriendModal({
                 return (
                   <li
                     key={spiller.id}
-                    className="flex items-center gap-3 rounded-md px-2 py-2 transition-colors hover:bg-secondary/60"
+                    className="flex items-center gap-2 rounded-md px-2 py-2 transition-colors hover:bg-secondary/60"
                   >
                     {/* Avatar */}
                     <div
@@ -256,7 +256,7 @@ export function InviteFriendModal({
                       disabled={erInvitert || (erFull && !erInvitert)}
                       aria-pressed={erInvitert}
                       className={cn(
-                        "inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors",
+                        "inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold transition-colors",
                         erInvitert
                           ? "bg-primary/10 text-primary"
                           : state === "error"
@@ -286,7 +286,7 @@ export function InviteFriendModal({
         </div>
 
         {/* Footer */}
-        <div className="flex shrink-0 items-center justify-between border-t border-border bg-card px-5 py-4">
+        <div className="flex shrink-0 items-center justify-between border-t border-border bg-card px-6 py-4">
           <p className="font-mono text-[10.5px] text-muted-foreground tracking-wide">
             {inviterteIdag > 0
               ? `${inviterteIdag} invitert${inviterteIdag === 1 ? "" : "e"} nå`
@@ -295,7 +295,7 @@ export function InviteFriendModal({
           <button
             type="button"
             onClick={onClose}
-            className="inline-flex min-h-9 items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+            className="inline-flex min-h-9 items-center gap-2 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
           >
             Ferdig
           </button>

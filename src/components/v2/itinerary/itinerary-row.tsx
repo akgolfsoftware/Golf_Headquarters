@@ -70,7 +70,7 @@ export default function ItineraryRow({
     >
       {/* Time column */}
       <div
-        className="flex flex-col gap-[2px] pt-3 font-mono text-[13px] font-bold tracking-[0.02em] text-foreground"
+        className="flex flex-col gap-[2px] pt-2 font-mono text-[13px] font-bold tracking-[0.02em] text-foreground"
       >
         <span>{session.time}</span>
         <span className="text-muted-foreground font-normal text-[11px]">

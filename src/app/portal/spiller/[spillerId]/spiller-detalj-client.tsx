@@ -145,17 +145,17 @@ export function SpillerDetaljClient({ data }: { data: SpillerData }) {
 
             {/* Status-piller */}
             <div className="mt-2.5 flex flex-wrap gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-foreground">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-accent px-4 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-foreground">
                 <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
                 Aktiv spiller
               </span>
               {data.aktivPlan && (
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-primary-foreground">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-primary-foreground">
                   <ClipboardList className="h-3 w-3" strokeWidth={2} />
                   {data.aktivPlan.name}
                 </span>
               )}
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
                 Siden {formatKortDato(data.memberSince)}
               </span>
             </div>
@@ -182,7 +182,7 @@ export function SpillerDetaljClient({ data }: { data: SpillerData }) {
       </div>
 
       {/* KPI-rad */}
-      <div className="grid grid-cols-2 gap-3 px-4 pb-4 md:grid-cols-4 md:px-8">
+      <div className="grid grid-cols-2 gap-2 px-4 pb-4 md:grid-cols-4 md:px-8">
         <KpiKort
           label="Runder"
           verdi={data.stats.antallRunder > 0 ? String(data.stats.antallRunder) : "–"}
@@ -217,7 +217,7 @@ export function SpillerDetaljClient({ data }: { data: SpillerData }) {
               key={tab.id}
               type="button"
               onClick={() => setAktifTab(tab.id)}
-              className={`-mb-px whitespace-nowrap border-b-[3px] px-3.5 py-3 font-display text-[13.5px] font-semibold transition-colors ${
+              className={`-mb-px whitespace-nowrap border-b-[3px] px-4 py-2 font-display text-[13.5px] font-semibold transition-colors ${
                 aktifTab === tab.id
                   ? "border-accent text-foreground"
                   : "border-transparent text-muted-foreground hover:text-foreground"
@@ -304,7 +304,7 @@ function OversiktTab({ data }: { data: SpillerData }) {
     <div className="grid gap-4 md:grid-cols-3">
       {/* Profil-info */}
       <div className="rounded-2xl border border-border bg-card p-4">
-        <h3 className="mb-3 font-display text-sm font-semibold tracking-tight">
+        <h3 className="mb-2 font-display text-sm font-semibold tracking-tight">
           Profil
         </h3>
         <div className="space-y-0">
@@ -334,7 +334,7 @@ function OversiktTab({ data }: { data: SpillerData }) {
 
       {/* Siste runder */}
       <div className="rounded-2xl border border-border bg-card p-4">
-        <h3 className="mb-3 font-display text-sm font-semibold tracking-tight">
+        <h3 className="mb-2 font-display text-sm font-semibold tracking-tight">
           Siste runder
         </h3>
         {data.runder.length === 0 ? (
@@ -375,13 +375,13 @@ function OversiktTab({ data }: { data: SpillerData }) {
 
       {/* Mål */}
       <div className="rounded-2xl border border-border bg-card p-4">
-        <h3 className="mb-3 font-display text-sm font-semibold tracking-tight">
+        <h3 className="mb-2 font-display text-sm font-semibold tracking-tight">
           Aktive mål
         </h3>
         {data.mal.length === 0 ? (
           <p className="text-sm text-muted-foreground">Ingen aktive mål.</p>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-2">
             {data.mal.map((m) => {
               const progresjon =
                 m.currentValue !== null &&
@@ -430,7 +430,7 @@ function OversiktTab({ data }: { data: SpillerData }) {
 function PlanTab({ data }: { data: SpillerData }) {
   if (!data.aktivPlan) {
     return (
-      <div className="flex flex-col items-center gap-3 py-16 text-center">
+      <div className="flex flex-col items-center gap-2 py-16 text-center">
         <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
           <ClipboardList className="h-7 w-7" strokeWidth={1.5} />
         </div>
@@ -518,7 +518,7 @@ function StatistikkTab({ data }: { data: SpillerData }) {
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
         <KpiKort
           label="Runder totalt"
           verdi={String(data.stats.antallRunder)}
@@ -551,9 +551,9 @@ function StatistikkTab({ data }: { data: SpillerData }) {
           <h3 className="mb-4 font-display text-sm font-semibold tracking-tight">
             SG-fordeling (snitt)
           </h3>
-          <div className="space-y-3">
+          <div className="space-y-2">
             {sgKategorier.filter((k) => k.v !== null).map((k) => (
-              <div key={k.label} className="flex items-center gap-3">
+              <div key={k.label} className="flex items-center gap-2">
                 <span className="w-20 flex-shrink-0 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
                   {k.label}
                 </span>
@@ -588,7 +588,7 @@ function StatistikkTab({ data }: { data: SpillerData }) {
 function RunderTab({ data }: { data: SpillerData }) {
   if (data.runder.length === 0) {
     return (
-      <div className="flex flex-col items-center gap-3 py-16 text-center">
+      <div className="flex flex-col items-center gap-2 py-16 text-center">
         <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
           <Flag className="h-7 w-7" strokeWidth={1.5} />
         </div>
@@ -609,7 +609,7 @@ function RunderTab({ data }: { data: SpillerData }) {
               (h) => (
                 <th
                   key={h}
-                  className="border-b border-border/60 px-4 py-3 text-left font-mono text-[9.5px] font-bold uppercase tracking-[0.10em] text-muted-foreground"
+                  className="border-b border-border/60 px-4 py-2 text-left font-mono text-[9.5px] font-bold uppercase tracking-[0.10em] text-muted-foreground"
                 >
                   {h}
                 </th>
@@ -623,29 +623,29 @@ function RunderTab({ data }: { data: SpillerData }) {
               key={r.id}
               className="border-b border-border/60 last:border-0 hover:bg-accent/5"
             >
-              <td className="px-4 py-3 font-display text-sm font-semibold">
+              <td className="px-4 py-2 font-display text-sm font-semibold">
                 {r.kursNavn}
               </td>
-              <td className="px-4 py-3 font-mono text-[11.5px] text-muted-foreground">
+              <td className="px-4 py-2 font-mono text-[11.5px] text-muted-foreground">
                 {formatKortDato(r.playedAt)}
               </td>
-              <td className="px-4 py-3 font-mono text-[11.5px] font-bold tabular-nums">
+              <td className="px-4 py-2 font-mono text-[11.5px] font-bold tabular-nums">
                 {r.score}
               </td>
               <td
-                className={`px-4 py-3 font-mono text-[11.5px] font-bold tabular-nums ${
+                className={`px-4 py-2 font-mono text-[11.5px] font-bold tabular-nums ${
                   r.relativ <= 0 ? "text-primary" : "text-muted-foreground"
                 }`}
               >
                 {relativStr(r.relativ)}
               </td>
-              <td className="px-4 py-3 font-mono text-[11.5px] tabular-nums">
+              <td className="px-4 py-2 font-mono text-[11.5px] tabular-nums">
                 {sgFmt(r.sgTotal)}
               </td>
-              <td className="px-4 py-3 font-mono text-[11.5px] tabular-nums">
+              <td className="px-4 py-2 font-mono text-[11.5px] tabular-nums">
                 {sgFmt(r.sgPutt)}
               </td>
-              <td className="px-4 py-3">
+              <td className="px-4 py-2">
                 <Link
                   href={`/portal/statistikk/runder/${r.id}/del`}
                   className="font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-primary hover:underline"
@@ -664,7 +664,7 @@ function RunderTab({ data }: { data: SpillerData }) {
 function CoachingTab({ data }: { data: SpillerData }) {
   if (data.coachingHistorikk.length === 0) {
     return (
-      <div className="flex flex-col items-center gap-3 py-16 text-center">
+      <div className="flex flex-col items-center gap-2 py-16 text-center">
         <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
           <Calendar className="h-7 w-7" strokeWidth={1.5} />
         </div>
@@ -677,13 +677,13 @@ function CoachingTab({ data }: { data: SpillerData }) {
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       {data.coachingHistorikk.map((okt) => (
         <div
           key={okt.id}
           className="rounded-2xl border border-border bg-card p-4"
         >
-          <div className="flex items-start justify-between gap-3">
+          <div className="flex items-start justify-between gap-2">
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-mono text-[11px] font-bold text-foreground">

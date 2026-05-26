@@ -33,12 +33,12 @@ export function TreneSammenToggle({
   className,
 }: TreneSammenToggleProps) {
   return (
-    <div className={cn("space-y-3", className)}>
+    <div className={cn("space-y-2", className)}>
       <p className="font-mono text-[10.5px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
         Hvem trener du med?
       </p>
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
         <ToggleCard
           icon={Lock}
           tittel="Trene alene"
@@ -79,7 +79,7 @@ export function TreneSammenToggle({
                   }
                   aria-pressed={value.maxParticipants === n}
                   className={cn(
-                    "inline-flex min-h-9 items-center rounded-full px-3.5 py-1.5 text-sm font-semibold transition-colors",
+                    "inline-flex min-h-9 items-center rounded-full px-4 py-1.5 text-sm font-semibold transition-colors",
                     value.maxParticipants === n
                       ? "bg-primary text-primary-foreground"
                       : "bg-card text-foreground border border-border hover:bg-muted",
@@ -90,7 +90,7 @@ export function TreneSammenToggle({
               ))}
             </div>
           </label>
-          <p className="mt-3 text-xs text-muted-foreground">
+          <p className="mt-2 text-xs text-muted-foreground">
             Etter at økten er opprettet kan du invitere spillere fra
             sesjons-siden.
           </p>
@@ -119,7 +119,7 @@ function ToggleCard({
       onClick={onClick}
       aria-pressed={selected}
       className={cn(
-        "flex items-start gap-3 rounded-lg border-2 p-4 text-left transition-colors",
+        "flex items-start gap-2 rounded-lg border-2 p-4 text-left transition-colors",
         selected
           ? "border-primary bg-primary/5"
           : "border-border bg-card hover:bg-secondary/40",

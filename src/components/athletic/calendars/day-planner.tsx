@@ -54,8 +54,8 @@ export function DayPlanner({
   });
 
   return (
-    <div className={cn("rounded-2xl border border-border bg-card p-4 md:p-5", className)}>
-      <div className="mb-4 flex items-baseline justify-between gap-3">
+    <div className={cn("rounded-2xl border border-border bg-card p-4 md:p-6", className)}>
+      <div className="mb-4 flex items-baseline justify-between gap-2">
         <div>
           <AthleticEyebrow>I dag</AthleticEyebrow>
           <h3 className="font-display mt-1 text-xl font-bold tracking-[-0.015em] capitalize">
@@ -90,7 +90,7 @@ export function DayPlanner({
             <div
               key={s.key}
               className={cn(
-                "absolute left-[60px] right-2 flex gap-3 rounded-lg border-l-[3px] border-l-primary p-3 shadow-sm",
+                "absolute left-[60px] right-2 flex gap-2 rounded-lg border-l-[3px] border-l-primary p-4 shadow-sm",
                 statusBg[s.status ?? "planned"],
               )}
               style={{ top: top + 2, minHeight: height }}

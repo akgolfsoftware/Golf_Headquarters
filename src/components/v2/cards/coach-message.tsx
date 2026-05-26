@@ -18,7 +18,7 @@ export default function CoachMessage({
     <button
       type="button"
       onClick={onClick}
-      className="w-full text-left px-[14px] py-3 rounded-[10px] border-0 cursor-pointer flex flex-col gap-1 transition-colors duration-[160ms]"
+      className="w-full text-left px-[14px] py-2 rounded-[10px] border-0 cursor-pointer flex flex-col gap-1 transition-colors duration-[160ms]"
       style={{
         background: isActive
           ? "color-mix(in oklab, var(--accent) 20%, transparent)"

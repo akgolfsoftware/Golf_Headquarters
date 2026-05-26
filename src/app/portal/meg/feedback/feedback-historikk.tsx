@@ -227,7 +227,7 @@ export function FeedbackHistorikk() {
               key={f.id}
               type="button"
               onClick={() => setFilter(f.id)}
-              className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-[12px] font-medium transition-colors ${
+              className={`inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-[12px] font-medium transition-colors ${
                 aktiv
                   ? "border-primary bg-primary text-primary-foreground"
                   : "border-border bg-card text-foreground hover:border-primary/40"
@@ -351,7 +351,7 @@ export function FeedbackHistorikk() {
 
             <div className="space-y-6 p-4 md:p-6">
               {/* Din melding */}
-              <div className="flex gap-3">
+              <div className="flex gap-2">
                 <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-secondary font-mono text-[11px] font-semibold text-foreground">
                   DU
                 </div>
@@ -364,7 +364,7 @@ export function FeedbackHistorikk() {
                       {formatDatoTid(apent.dato)}
                     </span>
                   </div>
-                  <p className="mt-2 rounded-md bg-secondary/40 px-4 py-3 text-[13px] leading-relaxed text-foreground">
+                  <p className="mt-2 rounded-md bg-secondary/40 px-4 py-2 text-[13px] leading-relaxed text-foreground">
                     {apent.tekst}
                   </p>
                 </div>
@@ -372,7 +372,7 @@ export function FeedbackHistorikk() {
 
               {/* Coach-svar */}
               {apent.svar && (
-                <div className="flex gap-3">
+                <div className="flex gap-2">
                   <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-primary font-mono text-[11px] font-semibold text-primary-foreground">
                     {apent.svar.initialer}
                   </div>
@@ -388,7 +388,7 @@ export function FeedbackHistorikk() {
                     <div className="mt-1 font-mono text-[10px] text-muted-foreground">
                       {formatDatoTid(apent.svar.dato)}
                     </div>
-                    <p className="mt-2 rounded-md bg-primary/5 px-4 py-3 text-[13px] leading-relaxed text-foreground">
+                    <p className="mt-2 rounded-md bg-primary/5 px-4 py-2 text-[13px] leading-relaxed text-foreground">
                       {apent.svar.tekst}
                     </p>
                   </div>

@@ -117,7 +117,7 @@ export function DrillFilterBar({ initial }: { initial: InitialFilters }) {
 
   return (
     <div className="rounded-2xl border border-border bg-card p-4 sm:p-6">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -167,7 +167,7 @@ export function DrillFilterBar({ initial }: { initial: InitialFilters }) {
             <button
               type="button"
               onClick={reset}
-              className="h-11 rounded-md px-3 text-xs text-muted-foreground hover:text-foreground sm:h-9"
+              className="h-11 rounded-md px-4 text-xs text-muted-foreground hover:text-foreground sm:h-9"
             >
               Tilbakestill
             </button>
@@ -229,7 +229,7 @@ export function DrillFilterBar({ initial }: { initial: InitialFilters }) {
                       : undefined,
                   })
                 }
-                className="h-11 rounded-md border border-input bg-card px-3 text-base sm:h-9 sm:text-sm"
+                className="h-11 rounded-md border border-input bg-card px-4 text-base sm:h-9 sm:text-sm"
               >
                 <option value="">Fra (A)</option>
                 {NGF.map((k) => (
@@ -248,7 +248,7 @@ export function DrillFilterBar({ initial }: { initial: InitialFilters }) {
                       : undefined,
                   })
                 }
-                className="h-11 rounded-md border border-input bg-card px-3 text-base sm:h-9 sm:text-sm"
+                className="h-11 rounded-md border border-input bg-card px-4 text-base sm:h-9 sm:text-sm"
               >
                 <option value="">Til (L)</option>
                 {NGF.map((k) => (
@@ -283,7 +283,7 @@ function Group({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-2">
       <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground sm:min-w-[100px]">
         {label}
       </span>
@@ -305,7 +305,7 @@ function Pill({
     <button
       type="button"
       onClick={onClick}
-      className={`h-9 rounded-full border px-3 font-mono text-[11px] font-semibold uppercase tracking-[0.04em] transition-colors ${
+      className={`h-9 rounded-full border px-4 font-mono text-[11px] font-semibold uppercase tracking-[0.04em] transition-colors ${
         active
           ? "border-primary bg-primary text-primary-foreground"
           : "border-border bg-card text-muted-foreground hover:border-foreground hover:text-foreground"

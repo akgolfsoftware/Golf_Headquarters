@@ -96,7 +96,7 @@ export function KlubbInnstillingerClient({ klubber }: Props) {
             <button
               type="button"
               onClick={() => setAddOpen(true)}
-              className="group flex min-h-[260px] flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border bg-card/40 p-6 text-muted-foreground transition-colors hover:border-primary hover:bg-card hover:text-primary"
+              className="group flex min-h-[260px] flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-border bg-card/40 p-6 text-muted-foreground transition-colors hover:border-primary hover:bg-card hover:text-primary"
             >
               <div className="grid h-12 w-12 place-items-center rounded-full bg-secondary group-hover:bg-primary/10">
                 <Plus size={20} strokeWidth={1.75} />
@@ -181,7 +181,7 @@ function KlubbKort({
         </span>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 border-t border-border pt-4">
+      <div className="grid grid-cols-2 gap-2 border-t border-border pt-4">
         <Stat
           icon={Users}
           label="Spillere"
@@ -204,7 +204,7 @@ function KlubbKort({
         />
       </div>
 
-      <div className="rounded-md border border-border bg-background/60 px-4 py-3">
+      <div className="rounded-md border border-border bg-background/60 px-4 py-2">
         <div className="flex items-center gap-2">
           <Star size={12} strokeWidth={1.75} className="text-primary" />
           <span className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
@@ -216,7 +216,7 @@ function KlubbKort({
         </p>
       </div>
 
-      <div className="rounded-md border border-border bg-background/60 px-4 py-3">
+      <div className="rounded-md border border-border bg-background/60 px-4 py-2">
         <div className="flex items-center gap-2">
           <UserCog size={12} strokeWidth={1.75} className="text-primary" />
           <span className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">

@@ -63,7 +63,7 @@ export function DispersionClient() {
   const meanYPx = CY - (-0.8 * SCALE);
 
   return (
-    <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-stretch">
+    <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-stretch">
       {/* SVG plot */}
       <div
         className="relative flex-1 overflow-hidden rounded-xl border border-border"
@@ -214,7 +214,7 @@ export function DispersionClient() {
       {/* Stats panel */}
       <div className="flex flex-col gap-2 sm:w-44">
         {/* Innenfor 5% */}
-        <div className="rounded-xl border p-3" style={{ background: "rgba(22,163,74,0.07)", borderColor: "rgba(22,163,74,0.30)" }}>
+        <div className="rounded-xl border p-4" style={{ background: "rgba(22,163,74,0.07)", borderColor: "rgba(22,163,74,0.30)" }}>
           <div className="font-mono text-[9.5px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
             Innenfor 5 % mål
           </div>
@@ -227,7 +227,7 @@ export function DispersionClient() {
         </div>
 
         {/* Akseptabelt */}
-        <div className="rounded-xl border border-border bg-card p-3">
+        <div className="rounded-xl border border-border bg-card p-4">
           <div className="font-mono text-[9.5px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
             Akseptabelt (5–10 %)
           </div>
@@ -240,7 +240,7 @@ export function DispersionClient() {
         </div>
 
         {/* Utenfor */}
-        <div className="rounded-xl border p-3" style={{ background: "rgba(184,133,42,0.07)", borderColor: "rgba(184,133,42,0.30)" }}>
+        <div className="rounded-xl border p-4" style={{ background: "rgba(184,133,42,0.07)", borderColor: "rgba(184,133,42,0.30)" }}>
           <div className="font-mono text-[9.5px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
             Utenfor mål
           </div>
@@ -253,7 +253,7 @@ export function DispersionClient() {
         </div>
 
         {/* Snitt-bom */}
-        <div className="rounded-xl border border-border bg-card p-3">
+        <div className="rounded-xl border border-border bg-card p-4">
           <div className="font-mono text-[9.5px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
             Snitt-bom
           </div>

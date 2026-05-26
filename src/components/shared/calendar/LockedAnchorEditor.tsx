@@ -116,11 +116,11 @@ export function LockedAnchorEditor({ apen, studentId, initial, onLukk, onLagre }
               value={navn}
               onChange={(e) => setNavn(e.target.value)}
               placeholder="f.eks. WANG Toppidrett"
-              className="h-10 w-full rounded-md border border-input bg-card px-3 text-sm focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
+              className="h-10 w-full rounded-md border border-input bg-card px-4 text-sm focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
             />
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-2">
             <div>
               <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-muted-foreground">
                 Område
@@ -159,7 +159,7 @@ export function LockedAnchorEditor({ apen, studentId, initial, onLukk, onLagre }
               </label>
               <div
                 className={cn(
-                  "flex h-10 items-center rounded-md border bg-secondary px-3 font-mono text-sm tabular-nums",
+                  "flex h-10 items-center rounded-md border bg-secondary px-4 font-mono text-sm tabular-nums",
                   minutter > 0 ? "border-border" : "border-destructive text-destructive",
                 )}
               >
@@ -168,7 +168,7 @@ export function LockedAnchorEditor({ apen, studentId, initial, onLukk, onLagre }
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2">
             <div>
               <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-muted-foreground">
                 Start-tid
@@ -177,7 +177,7 @@ export function LockedAnchorEditor({ apen, studentId, initial, onLukk, onLagre }
                 type="time"
                 value={startTid}
                 onChange={(e) => setStartTid(e.target.value)}
-                className="h-10 w-full rounded-md border border-input bg-card px-3 font-mono text-sm tabular-nums focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+                className="h-10 w-full rounded-md border border-input bg-card px-4 font-mono text-sm tabular-nums focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
               />
             </div>
             <div>
@@ -188,12 +188,12 @@ export function LockedAnchorEditor({ apen, studentId, initial, onLukk, onLagre }
                 type="time"
                 value={sluttTid}
                 onChange={(e) => setSluttTid(e.target.value)}
-                className="h-10 w-full rounded-md border border-input bg-card px-3 font-mono text-sm tabular-nums focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+                className="h-10 w-full rounded-md border border-input bg-card px-4 font-mono text-sm tabular-nums focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2">
             <div>
               <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-muted-foreground">
                 Gjelder fra
@@ -209,7 +209,7 @@ export function LockedAnchorEditor({ apen, studentId, initial, onLukk, onLagre }
           </div>
 
           {pyramide === "FYS" && (
-            <div className="grid grid-cols-2 gap-3 rounded-lg border border-border bg-secondary/30 p-3">
+            <div className="grid grid-cols-2 gap-2 rounded-lg border border-border bg-secondary/30 p-4">
               <div>
                 <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-muted-foreground">
                   Muskelgruppe
@@ -219,7 +219,7 @@ export function LockedAnchorEditor({ apen, studentId, initial, onLukk, onLagre }
                   value={fysMuskelgruppe}
                   onChange={(e) => setFysMuskelgruppe(e.target.value)}
                   placeholder="f.eks. ben"
-                  className="h-9 w-full rounded-md border border-input bg-card px-3 text-sm focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+                  className="h-9 w-full rounded-md border border-input bg-card px-4 text-sm focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
                 />
               </div>
               <div>
@@ -231,7 +231,7 @@ export function LockedAnchorEditor({ apen, studentId, initial, onLukk, onLagre }
                   value={fysTreningstype}
                   onChange={(e) => setFysTreningstype(e.target.value)}
                   placeholder="f.eks. styrke"
-                  className="h-9 w-full rounded-md border border-input bg-card px-3 text-sm focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+                  className="h-9 w-full rounded-md border border-input bg-card px-4 text-sm focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
                 />
               </div>
             </div>
@@ -245,12 +245,12 @@ export function LockedAnchorEditor({ apen, studentId, initial, onLukk, onLagre }
               value={beskrivelse}
               onChange={(e) => setBeskrivelse(e.target.value)}
               rows={2}
-              className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
+              className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
             />
           </div>
         </div>
 
-        <footer className="flex items-center justify-end gap-2 border-t border-border bg-card px-6 py-3">
+        <footer className="flex items-center justify-end gap-2 border-t border-border bg-card px-6 py-2">
           <button
             type="button"
             onClick={onLukk}

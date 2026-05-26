@@ -26,7 +26,7 @@ export default async function PeriodeRedigerPage({
 
   if (!periode) {
     return (
-      <div className="space-y-7 pb-32">
+      <div className="space-y-8 pb-32">
         <PageHeader
           eyebrow="PlayerHQ · Tren · Årsplan"
           titleLead="Rediger"
@@ -43,13 +43,13 @@ export default async function PeriodeRedigerPage({
   }
 
   return (
-    <div className="space-y-7 pb-32">
+    <div className="space-y-8 pb-32">
       <PageHeader
         eyebrow="PlayerHQ · Tren · Årsplan"
         titleLead="Rediger"
         titleItalic="periode"
         actions={
-          <span className="rounded-full bg-secondary px-3 py-1 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
+          <span className="rounded-full bg-secondary px-4 py-1 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
             Periode-ID <strong className="text-foreground">{id.slice(0, 12)}</strong>
           </span>
         }

@@ -230,7 +230,7 @@ export default async function WorkbenchV2() {
           title="Turnering + velvære"
           description="Nedtelling til neste konkurranse og daglig kropp-status fra wearable."
         />
-        <div className="grid gap-5 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2">
           {nesteTurnering && (
             <NextTournamentCountdown
               turnering={nesteTurnering}

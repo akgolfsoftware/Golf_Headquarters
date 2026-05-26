@@ -132,7 +132,7 @@ export function SpillerFasilitetPanel({
                       type="button"
                       onClick={() => toggleFasilitet(f.kode)}
                       aria-pressed={aktiv}
-                      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition-colors ${
+                      className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-xs transition-colors ${
                         aktiv
                           ? "border-primary/40 bg-primary/10 font-medium text-primary"
                           : "border-border bg-secondary text-secondary-foreground hover:border-border hover:bg-muted"
@@ -150,7 +150,7 @@ export function SpillerFasilitetPanel({
       </div>
 
       {/* Lagre */}
-      <div className="mt-4 flex items-center gap-3 border-t border-border pt-4">
+      <div className="mt-4 flex items-center gap-2 border-t border-border pt-4">
         <button
           type="button"
           onClick={handleLagre}

@@ -263,11 +263,11 @@ export default async function SgHubPage() {
             <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] opacity-80">
               SG Total · 90 d
             </span>
-            <span className="rounded-full bg-accent/20 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.10em] text-accent">
+            <span className="rounded-full bg-accent/20 px-4 py-1 font-mono text-[10px] uppercase tracking-[0.10em] text-accent">
               {sessions.length} TrackMan-økter
             </span>
           </div>
-          <div className="mt-6 flex items-end gap-3">
+          <div className="mt-6 flex items-end gap-2">
             <span className="font-display text-5xl font-semibold tabular-nums leading-none md:text-6xl">
               {sg.total == null ? "—" : formatSg(sg.total)}
             </span>
@@ -292,7 +292,7 @@ export default async function SgHubPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-2">
           <KpiTile
             label="TrackMan-økter"
             value={String(sessions.length)}
@@ -356,7 +356,7 @@ export default async function SgHubPage() {
             3 runder.
           </p>
         ) : (
-          <ol className="space-y-3">
+          <ol className="space-y-2">
             {prioriteringer.map((p, idx) => (
               <li
                 key={p.key}
@@ -393,7 +393,7 @@ export default async function SgHubPage() {
 
       {/* Siste TrackMan-økt */}
       <section className="rounded-2xl border border-border bg-card p-4 md:p-6">
-        <div className="mb-3 flex items-center gap-2">
+        <div className="mb-2 flex items-center gap-2">
           <Activity size={14} strokeWidth={1.75} className="text-muted-foreground" />
           <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
             Sist TrackMan-økt
@@ -440,11 +440,11 @@ export default async function SgHubPage() {
               Aktive innsikter ({insightCount})
             </span>
           </div>
-          <ul className="space-y-3">
+          <ul className="space-y-2">
             {insights.map((ins) => (
               <li
                 key={ins.id}
-                className="flex items-start gap-3 rounded-lg border border-border bg-background p-4"
+                className="flex items-start gap-2 rounded-lg border border-border bg-background p-4"
               >
                 <SeverityIcon severity={ins.severity} />
                 <div className="min-w-0 flex-1">
@@ -485,7 +485,7 @@ export default async function SgHubPage() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-6">
             {clubs.map((club) => (
               <Link
                 key={club}
@@ -540,7 +540,7 @@ function DisciplineLargeCard({
   return (
     <Link
       href={`/portal/statistikk/${d.slug}`}
-      className="group flex flex-col gap-3 rounded-2xl border border-border bg-card p-5 transition-colors hover:border-primary"
+      className="group flex flex-col gap-2 rounded-2xl border border-border bg-card p-6 transition-colors hover:border-primary"
     >
       <div className="flex items-baseline justify-between">
         <div>
@@ -695,9 +695,9 @@ function FeatureLiveCard({
   return (
     <Link
       href={href}
-      className="group flex flex-col rounded-xl border border-border bg-card p-5 transition-colors hover:border-primary"
+      className="group flex flex-col rounded-xl border border-border bg-card p-6 transition-colors hover:border-primary"
     >
-      <div className="mb-3 flex items-start justify-between gap-2">
+      <div className="mb-2 flex items-start justify-between gap-2">
         <Icon className="mt-0.5 h-4 w-4 text-primary" strokeWidth={1.75} />
         <span className="rounded-full bg-accent/30 px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.08em] text-accent-foreground">
           {fase}
@@ -707,7 +707,7 @@ function FeatureLiveCard({
       {advanced && (
         <p className="mt-1 text-xs text-muted-foreground">{description}</p>
       )}
-      <div className="mt-3 flex items-center gap-1 text-xs text-primary">
+      <div className="mt-2 flex items-center gap-1 text-xs text-primary">
         <span>Åpne</span>
         <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" strokeWidth={1.75} />
         <Zap className="ml-auto h-3 w-3 text-accent" strokeWidth={1.75} />

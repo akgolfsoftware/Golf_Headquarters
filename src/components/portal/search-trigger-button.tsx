@@ -17,7 +17,7 @@ export function PortalSearchTriggerButton() {
       type="button"
       onClick={open}
       aria-label="Åpne globalt søk (Cmd+K)"
-      className="inline-flex h-11 items-center gap-2 rounded-md border border-border bg-background px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:h-9"
+      className="inline-flex h-11 items-center gap-2 rounded-md border border-border bg-background px-4 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:h-9"
     >
       <Search className="h-4 w-4" strokeWidth={ICON_STROKE} aria-hidden />
       <span className="hidden sm:inline">Søk</span>

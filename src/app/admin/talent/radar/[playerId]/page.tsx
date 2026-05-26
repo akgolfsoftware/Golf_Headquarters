@@ -110,7 +110,7 @@ export default async function TalentRadarSpiller({
         </Link>
       }
       kpiRow={
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           <KPICard
             eyebrow="Sum radar"
             value={spillerSum > 0 ? `${spillerSum}/50` : "—"}
@@ -185,14 +185,14 @@ export default async function TalentRadarSpiller({
           </div>
 
           {/* Per-akse-sammenligning */}
-          <div className="mt-8 space-y-3">
+          <div className="mt-8 space-y-2">
             {AXIS_KEYS.map((k) => {
               const v = spillerVerdier[k];
               const p = peerSnitt[k];
               return (
                 <div
                   key={k}
-                  className="flex items-center justify-between gap-4 border-b border-border pb-3 last:border-b-0 last:pb-0"
+                  className="flex items-center justify-between gap-4 border-b border-border pb-2 last:border-b-0 last:pb-0"
                 >
                   <span className="font-mono text-[11px] uppercase tracking-[0.10em] text-muted-foreground">
                     {AXIS_LABELS[k]}

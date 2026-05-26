@@ -213,7 +213,7 @@ export function SpillerOnboardingWizard() {
               <select
                 value={program}
                 onChange={(e) => setProgram(e.target.value as PlayerProgram)}
-                className="w-full rounded-md border border-border bg-card px-3 py-2 text-[13px] text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+                className="w-full rounded-md border border-border bg-card px-4 py-2 text-[13px] text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
               >
                 {ALL_PROGRAMS.map((p) => (
                   <option key={p} value={p}>
@@ -451,7 +451,7 @@ function Steg1Identitet({
                 <span className="text-foreground">{alder}</span>
                 <span className="ml-1 text-muted-foreground">år</span>
                 {alder < 18 && (
-                  <span className="ml-3 inline-flex items-center rounded-full bg-accent/30 px-2 py-0.5 font-mono text-[10px] font-semibold text-accent-foreground">
+                  <span className="ml-2 inline-flex items-center rounded-full bg-accent/30 px-2 py-0.5 font-mono text-[10px] font-semibold text-accent-foreground">
                     Foreldre påkrevd
                   </span>
                 )}
@@ -622,7 +622,7 @@ function Steg3TierForeldre({
       </div>
 
       {erUnder18 ? (
-        <div className="space-y-3 rounded-lg border border-accent/50 bg-accent/10 p-4">
+        <div className="space-y-2 rounded-lg border border-accent/50 bg-accent/10 p-4">
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center rounded-full bg-accent px-2 py-0.5 font-mono text-[10px] font-semibold text-accent-foreground">
               Under 18
@@ -659,7 +659,7 @@ function Steg3TierForeldre({
           </div>
         </div>
       ) : (
-        <p className="rounded-md border border-border bg-secondary/40 px-4 py-3 text-sm text-muted-foreground">
+        <p className="rounded-md border border-border bg-secondary/40 px-4 py-2 text-sm text-muted-foreground">
           Spilleren er myndig — ingen foreldre-info nødvendig.
         </p>
       )}
@@ -721,7 +721,7 @@ function Steg4Velkomst({
           value={velkomstMelding}
           onChange={(e) => setVelkomstMelding(e.target.value)}
           rows={5}
-          className="w-full resize-y rounded-md border border-input bg-background px-4 py-3 text-base sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+          className="w-full resize-y rounded-md border border-input bg-background px-4 py-2 text-base sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
           placeholder="Hei og velkommen…"
         />
         <p className="text-xs text-muted-foreground">
@@ -729,7 +729,7 @@ function Steg4Velkomst({
         </p>
       </div>
 
-      <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-border bg-card p-4 transition-colors hover:bg-secondary/40">
+      <label className="flex cursor-pointer items-start gap-2 rounded-lg border border-border bg-card p-4 transition-colors hover:bg-secondary/40">
         <input
           type="checkbox"
           checked={sendInvitasjon}

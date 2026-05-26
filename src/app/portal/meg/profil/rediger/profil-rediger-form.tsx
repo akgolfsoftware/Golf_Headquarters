@@ -269,7 +269,7 @@ export function ProfilRedigerForm({ initial }: { initial: Initial }) {
                     key={h}
                     type="button"
                     onClick={() => setDominant(h)}
-                    className={`rounded-md px-3 py-2 text-sm font-semibold transition-colors ${
+                    className={`rounded-md px-4 py-2 text-sm font-semibold transition-colors ${
                       dominant === h
                         ? "bg-card text-foreground shadow-sm"
                         : "bg-transparent text-muted-foreground"
@@ -297,7 +297,7 @@ export function ProfilRedigerForm({ initial }: { initial: Initial }) {
         </Section>
 
         {/* Sticky save-bar */}
-        <div className="sticky bottom-4 z-10 flex items-center gap-4 rounded-full border border-border bg-card/95 px-6 py-3 shadow-lg backdrop-blur">
+        <div className="sticky bottom-4 z-10 flex items-center gap-4 rounded-full border border-border bg-card/95 px-6 py-2 shadow-lg backdrop-blur">
           {dirty ? (
             <span className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.06em] text-[color:rgb(217_119_6)]">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[color:rgb(217_119_6)]" />

@@ -32,7 +32,7 @@ export function StrikeHeatmap({ result, advanced = false }: Props) {
   }
 
   return (
-    <div className="flex flex-col items-center gap-3">
+    <div className="flex flex-col items-center gap-2">
       <svg
         width={SVG_W}
         height={SVG_H}
@@ -100,7 +100,7 @@ export function StrikeHeatmap({ result, advanced = false }: Props) {
       </svg>
 
       {/* Farge-legende */}
-      <div className="flex flex-wrap justify-center gap-3">
+      <div className="flex flex-wrap justify-center gap-2">
         {(["SWEET", "THIN", "ROLLED", "FAT"] as const).map((zone) => (
           <div key={zone} className="flex items-center gap-1.5">
             <span

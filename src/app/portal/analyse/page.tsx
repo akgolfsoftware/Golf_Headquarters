@@ -170,7 +170,7 @@ export default async function PortalAnalysePage({
   return (
     <ViewModeProvider initialMode="standard">
       <div className="space-y-6">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <PageHeader
             eyebrow={`PlayerHQ · analyse · ${periode.label}`}
             titleLead="Hva har du"

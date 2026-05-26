@@ -132,7 +132,7 @@ export async function EquipmentView({
 
 function ClubFitCard({ report }: { report: ClubFitReport }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-5">
+    <div className="rounded-xl border border-border bg-card p-6">
       <div className="mb-4 flex items-center justify-between gap-2">
         <div>
           <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
@@ -152,7 +152,7 @@ function ClubFitCard({ report }: { report: ClubFitReport }) {
           report.metrics.map((m, i) => (
             <div
               key={i}
-              className="flex items-center justify-between gap-2 rounded-md bg-muted/40 px-3 py-2"
+              className="flex items-center justify-between gap-2 rounded-md bg-muted/40 px-4 py-2"
             >
               <div className="flex items-center gap-2">
                 <StatusBadge status={m.status} />

@@ -170,7 +170,7 @@ function Tidslinje({
 
       {/* Legend */}
       {blocks.length > 0 && (
-        <div className="mt-3 flex flex-wrap gap-3">
+        <div className="mt-2 flex flex-wrap gap-2">
           {LPHASE_ORDER.filter((p) => blocks.some((b) => b.lPhase === p)).map((p) => {
             const meta = LPHASE_META[p];
             return (
@@ -211,7 +211,7 @@ export function OpprettSesonPlanSkjema({ year }: { year: number }) {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-[14px] font-semibold text-primary-foreground hover:opacity-90"
+        className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2 text-[14px] font-semibold text-primary-foreground hover:opacity-90"
       >
         <Plus className="h-4 w-4" strokeWidth={2} />
         Opprett sesongplan for {year}
@@ -234,18 +234,18 @@ export function OpprettSesonPlanSkjema({ year }: { year: number }) {
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+          className="mt-1 w-full rounded-md border border-input bg-background px-4 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
         />
       </label>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-2">
         <label className="block">
           <span className="text-xs font-medium text-muted-foreground">Startdato</span>
           <input
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+            className="mt-1 w-full rounded-md border border-input bg-background px-4 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
           />
         </label>
         <label className="block">
@@ -254,14 +254,14 @@ export function OpprettSesonPlanSkjema({ year }: { year: number }) {
             type="date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-            className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+            className="mt-1 w-full rounded-md border border-input bg-background px-4 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
           />
         </label>
       </div>
 
       {feil && <p className="text-sm text-destructive">{feil}</p>}
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
         <button
           type="submit"
           disabled={isPending}
@@ -322,7 +322,7 @@ function PeriodSkjema({
   }
 
   return (
-    <form onSubmit={submit} className="rounded-xl border border-border bg-secondary/50 p-4 space-y-3">
+    <form onSubmit={submit} className="rounded-xl border border-border bg-secondary/50 p-4 space-y-2">
       <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
         Ny periode
       </div>
@@ -336,7 +336,7 @@ function PeriodSkjema({
               key={p}
               type="button"
               onClick={() => setLPhase(p)}
-              className={`rounded-full px-3 py-1 font-mono text-[11px] font-semibold transition-all ${
+              className={`rounded-full px-4 py-1 font-mono text-[11px] font-semibold transition-all ${
                 lPhase === p
                   ? `${meta.color} text-white`
                   : "border border-border bg-card text-muted-foreground hover:border-foreground/20"
@@ -348,14 +348,14 @@ function PeriodSkjema({
         })}
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-2">
         <label className="block">
           <span className="text-xs font-medium text-muted-foreground">Fra</span>
           <input
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            className="mt-1 w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+            className="mt-1 w-full rounded-md border border-input bg-background px-4 py-1.5 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
           />
         </label>
         <label className="block">
@@ -364,7 +364,7 @@ function PeriodSkjema({
             type="date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-            className="mt-1 w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+            className="mt-1 w-full rounded-md border border-input bg-background px-4 py-1.5 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
           />
         </label>
       </div>
@@ -376,11 +376,11 @@ function PeriodSkjema({
           value={focus}
           onChange={(e) => setFocus(e.target.value)}
           placeholder={`f.eks. "${LPHASE_META[lPhase].desc}"`}
-          className="mt-1 w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+          className="mt-1 w-full rounded-md border border-input bg-background px-4 py-1.5 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
         />
       </label>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-2">
         <label className="block">
           <span className="text-xs font-medium text-muted-foreground">Min. min/uke</span>
           <input
@@ -389,7 +389,7 @@ function PeriodSkjema({
             onChange={(e) => setVolMin(e.target.value)}
             placeholder="60"
             min={0}
-            className="mt-1 w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm tabular-nums focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+            className="mt-1 w-full rounded-md border border-input bg-background px-4 py-1.5 text-sm tabular-nums focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
           />
         </label>
         <label className="block">
@@ -400,14 +400,14 @@ function PeriodSkjema({
             onChange={(e) => setVolMax(e.target.value)}
             placeholder="120"
             min={0}
-            className="mt-1 w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm tabular-nums focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+            className="mt-1 w-full rounded-md border border-input bg-background px-4 py-1.5 text-sm tabular-nums focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
           />
         </label>
       </div>
 
       {feil && <p className="text-sm text-destructive">{feil}</p>}
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
         <button
           type="submit"
           disabled={isPending}
@@ -462,7 +462,7 @@ function PeriodListe({
         return (
           <div
             key={b.id}
-            className="flex items-center gap-3 rounded-lg border border-border bg-card px-4 py-3"
+            className="flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2"
           >
             <div className={`h-3 w-3 flex-none rounded-sm ${meta.color}`} />
             <div className="min-w-0 flex-1">
@@ -529,7 +529,7 @@ export function AarsplanInteraktiv({
             {!visSkjema && (
               <button
                 onClick={() => setVisSkjema(true)}
-                className="inline-flex items-center gap-1 rounded-full border border-border bg-secondary px-3 py-1 text-xs font-medium hover:border-foreground/20"
+                className="inline-flex items-center gap-1 rounded-full border border-border bg-secondary px-4 py-1 text-xs font-medium hover:border-foreground/20"
               >
                 <Plus className="h-3 w-3" strokeWidth={2} />
                 Legg til periode

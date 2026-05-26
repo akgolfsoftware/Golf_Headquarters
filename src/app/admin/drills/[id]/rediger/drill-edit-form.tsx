@@ -308,7 +308,7 @@ export function DrillEditForm({ drill, andreDrills }: Props) {
           </select>
         </Field>
 
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           <Field label="Min NGF-kategori">
             <select
               value={minKategori}
@@ -521,7 +521,7 @@ export function DrillEditForm({ drill, andreDrills }: Props) {
       </Section>
 
       <Section title="Intensitet og varighet">
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
           <Field label="Varighet (min)">
             <input
               type="number"
@@ -554,7 +554,7 @@ export function DrillEditForm({ drill, andreDrills }: Props) {
         </div>
 
         <Field label={`Intensitet ${intensitetActive ? `(${intensitet}/10)` : "(ikke satt)"}`}>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <label className="flex items-center gap-2 text-sm">
               <input
                 type="checkbox"
@@ -579,7 +579,7 @@ export function DrillEditForm({ drill, andreDrills }: Props) {
       </Section>
 
       <Section title="Default sets/reps">
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           <Field label="Default sets">
             <input
               type="number"
@@ -642,7 +642,7 @@ export function DrillEditForm({ drill, andreDrills }: Props) {
       {error && (
         <div
           role="alert"
-          className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+          className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive"
         >
           {error}
         </div>
@@ -721,7 +721,7 @@ function Pill({
     <button
       type="button"
       onClick={onClick}
-      className={`h-9 rounded-full border px-3 font-mono text-[11px] font-semibold uppercase tracking-[0.04em] transition-colors ${
+      className={`h-9 rounded-full border px-4 font-mono text-[11px] font-semibold uppercase tracking-[0.04em] transition-colors ${
         active
           ? "border-primary bg-primary text-primary-foreground"
           : "border-border bg-card text-muted-foreground hover:border-foreground hover:text-foreground"
@@ -755,7 +755,7 @@ function Chip({
 }
 
 const inputCls =
-  "w-full h-11 rounded-md border border-input bg-background px-3 text-base outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30 sm:h-9 sm:text-sm";
+  "w-full h-11 rounded-md border border-input bg-background px-4 text-base outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30 sm:h-9 sm:text-sm";
 
 const textareaCls =
-  "w-full rounded-md border border-input bg-background px-3 py-2 text-base outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30 sm:text-sm";
+  "w-full rounded-md border border-input bg-background px-4 py-2 text-base outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30 sm:text-sm";

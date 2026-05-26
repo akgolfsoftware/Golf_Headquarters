@@ -151,7 +151,7 @@ export function EksporterRunderModal() {
           </button>
         </header>
 
-        <div className="space-y-6 px-6 py-5 max-h-[70vh] overflow-y-auto">
+        <div className="space-y-6 px-6 py-6 max-h-[70vh] overflow-y-auto">
           {/* Format */}
           <div>
             <Label>Format *</Label>
@@ -182,7 +182,7 @@ export function EksporterRunderModal() {
                   key={p.id}
                   type="button"
                   onClick={() => setPeriode(p.id)}
-                  className={`flex items-center gap-3 rounded-md border px-4 py-3 text-left text-sm ${
+                  className={`flex items-center gap-2 rounded-md border px-4 py-2 text-left text-sm ${
                     periode === p.id
                       ? "border-primary bg-primary/5"
                       : "border-border bg-card"
@@ -205,7 +205,7 @@ export function EksporterRunderModal() {
               ))}
             </div>
             {periode === "custom" && (
-              <div className="mt-3 grid grid-cols-2 gap-3">
+              <div className="mt-2 grid grid-cols-2 gap-2">
                 <label className="block">
                   <span className="mb-1 block font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
                     Fra
@@ -214,7 +214,7 @@ export function EksporterRunderModal() {
                     type="date"
                     value={fromDate}
                     onChange={(e) => setFromDate(e.target.value)}
-                    className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm"
+                    className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm"
                   />
                 </label>
                 <label className="block">
@@ -225,7 +225,7 @@ export function EksporterRunderModal() {
                     type="date"
                     value={toDate}
                     onChange={(e) => setToDate(e.target.value)}
-                    className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm"
+                    className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm"
                   />
                 </label>
               </div>
@@ -244,7 +244,7 @@ export function EksporterRunderModal() {
                       key={c}
                       type="button"
                       onClick={() => toggleCol(c)}
-                      className={`flex items-center gap-2 rounded-md border px-3 py-2 text-left text-xs ${
+                      className={`flex items-center gap-2 rounded-md border px-4 py-2 text-left text-xs ${
                         on
                           ? "border-primary bg-primary/5"
                           : "border-border bg-card text-muted-foreground"
@@ -281,7 +281,7 @@ export function EksporterRunderModal() {
                     key={s.id}
                     type="button"
                     onClick={() => setPdfStyle(s.id)}
-                    className={`rounded-md border p-3 text-center ${
+                    className={`rounded-md border p-4 text-center ${
                       pdfStyle === s.id
                         ? "border-primary bg-primary/5"
                         : "border-border bg-card"
@@ -301,7 +301,7 @@ export function EksporterRunderModal() {
           )}
 
           {/* Preview block */}
-          <div className="flex items-center gap-3 rounded-lg bg-primary px-4 py-3 text-primary-foreground">
+          <div className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-primary-foreground">
             <span className="flex h-9 w-9 items-center justify-center rounded-md bg-accent text-accent-foreground">
               <FileText size={14} strokeWidth={1.75} />
             </span>
@@ -341,7 +341,7 @@ export function EksporterRunderModal() {
             type="button"
             onClick={lastNed}
             disabled={pending}
-            className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-accent-foreground hover:opacity-90 disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-2 text-sm font-semibold text-accent-foreground hover:opacity-90 disabled:opacity-60"
           >
             <Download size={13} strokeWidth={2} />
             {pending ? "Genererer…" : "Last ned"}
@@ -377,7 +377,7 @@ function FormatCard({
     <button
       type="button"
       onClick={onClick}
-      className={`relative flex items-start gap-3 rounded-lg border p-4 text-left ${
+      className={`relative flex items-start gap-2 rounded-lg border p-4 text-left ${
         active ? "border-primary bg-primary/5" : "border-border bg-card"
       }`}
     >

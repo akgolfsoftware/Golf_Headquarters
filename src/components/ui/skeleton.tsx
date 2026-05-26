@@ -41,11 +41,11 @@ export function SkeletonCard({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "rounded-2xl border border-border bg-card p-4 md:p-5",
+        "rounded-2xl border border-border bg-card p-4 md:p-6",
         className,
       )}
     >
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
         <Skeleton className="h-10 w-10 rounded-xl" />
         <div className="flex-1 space-y-2">
           <Skeleton className="h-3 w-1/2" />

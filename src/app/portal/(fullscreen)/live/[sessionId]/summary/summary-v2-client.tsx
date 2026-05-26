@@ -83,7 +83,7 @@ export function SummaryV2Client({ data }: { data: SummaryV2Data }) {
             <span className="h-1.5 w-1.5 rounded-full bg-[#2C7D52]" />
             ØKT FULLFØRT · OPPSUMMERING
           </div>
-          <h1 className="mt-3 font-display text-[28px] font-medium leading-[1.05] -tracking-[0.02em] text-foreground sm:text-[36px]">
+          <h1 className="mt-2 font-display text-[28px] font-medium leading-[1.05] -tracking-[0.02em] text-foreground sm:text-[36px]">
             {data.title}
           </h1>
           <p className="mt-2 font-mono text-[11.5px] text-muted-foreground">
@@ -93,7 +93,7 @@ export function SummaryV2Client({ data }: { data: SummaryV2Data }) {
         </section>
 
         {/* TOTALER */}
-        <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <section className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           <Kpi
             label="VARIGHET"
             value={String(data.durationMin)}
@@ -119,8 +119,8 @@ export function SummaryV2Client({ data }: { data: SummaryV2Data }) {
         </section>
 
         {/* REPS PER KATEGORI */}
-        <section className="rounded-2xl border border-border bg-card p-5">
-          <div className="mb-3 flex items-baseline justify-between">
+        <section className="rounded-2xl border border-border bg-card p-6">
+          <div className="mb-2 flex items-baseline justify-between">
             <h2 className="font-display text-[15px] font-semibold -tracking-[0.005em] text-foreground">
               Reps per kategori
             </h2>
@@ -137,7 +137,7 @@ export function SummaryV2Client({ data }: { data: SummaryV2Data }) {
               return (
                 <div
                   key={k}
-                  className="rounded-xl border border-border bg-secondary/30 p-3"
+                  className="rounded-xl border border-border bg-secondary/30 p-4"
                 >
                   <div className="font-mono text-[9.5px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
                     {label}
@@ -174,7 +174,7 @@ export function SummaryV2Client({ data }: { data: SummaryV2Data }) {
                 return (
                   <div
                     key={p.area}
-                    className={`flex items-center justify-between rounded-md px-3 py-2 ${t.bg}`}
+                    className={`flex items-center justify-between rounded-md px-4 py-2 ${t.bg}`}
                   >
                     <span className={`font-mono text-[11px] font-bold ${t.text}`}>
                       {p.area}
@@ -191,7 +191,7 @@ export function SummaryV2Client({ data }: { data: SummaryV2Data }) {
 
         {/* PER-DRILL ACCORDION */}
         <section>
-          <h2 className="mb-3 font-display text-[16px] font-semibold -tracking-[0.01em] text-foreground">
+          <h2 className="mb-2 font-display text-[16px] font-semibold -tracking-[0.01em] text-foreground">
             Per drill
           </h2>
           <div className="flex flex-col gap-2">
@@ -211,7 +211,7 @@ export function SummaryV2Client({ data }: { data: SummaryV2Data }) {
                 >
                   <button
                     onClick={() => setOpen(isOpen ? null : d.id)}
-                    className="flex w-full items-center gap-3 px-4 py-3.5 text-left transition-colors hover:bg-secondary/30"
+                    className="flex w-full items-center gap-2 px-4 py-4 text-left transition-colors hover:bg-secondary/30"
                   >
                     <div
                       className={`grid h-8 w-8 flex-shrink-0 place-items-center rounded-md font-mono text-[11px] font-bold text-white ${tone.tile}`}
@@ -238,7 +238,7 @@ export function SummaryV2Client({ data }: { data: SummaryV2Data }) {
                     )}
                   </button>
                   {isOpen && (
-                    <div className="space-y-3 border-t border-border bg-secondary/20 p-4">
+                    <div className="space-y-2 border-t border-border bg-secondary/20 p-4">
                       {/* Faktisk vs mål */}
                       <div className="grid grid-cols-3 gap-2">
                         {(["dry", "lav", "full"] as const).map((k) => {
@@ -266,7 +266,7 @@ export function SummaryV2Client({ data }: { data: SummaryV2Data }) {
 
                       {/* TM-data */}
                       {d.tm && (
-                        <div className="rounded-md bg-card p-3">
+                        <div className="rounded-md bg-card p-4">
                           <div className="mb-1.5 font-mono text-[9.5px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
                             TrackMan-snitt
                           </div>
@@ -280,7 +280,7 @@ export function SummaryV2Client({ data }: { data: SummaryV2Data }) {
 
                       {/* Notater */}
                       {d.notes && (
-                        <div className="rounded-md bg-card p-3">
+                        <div className="rounded-md bg-card p-4">
                           <div className="mb-1 flex items-center gap-1.5 font-mono text-[9.5px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
                             <FileText className="h-3 w-3" strokeWidth={2} />
                             Notat
@@ -293,7 +293,7 @@ export function SummaryV2Client({ data }: { data: SummaryV2Data }) {
 
                       {/* Video-thumbs */}
                       {d.videoCount > 0 && (
-                        <div className="rounded-md bg-card p-3">
+                        <div className="rounded-md bg-card p-4">
                           <div className="mb-2 flex items-center gap-1.5 font-mono text-[9.5px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
                             <Video className="h-3 w-3" strokeWidth={2} />
                             {d.videoCount} video{d.videoCount === 1 ? "" : "er"}
@@ -322,7 +322,7 @@ export function SummaryV2Client({ data }: { data: SummaryV2Data }) {
         </section>
 
         {/* SELVEVALUERING */}
-        <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+        <section className="rounded-2xl border border-border bg-card p-6 sm:p-6">
           <div className="font-mono text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
             Hvordan føltes økten?
           </div>
@@ -354,7 +354,7 @@ export function SummaryV2Client({ data }: { data: SummaryV2Data }) {
             onChange={(e) => setComment(e.target.value)}
             placeholder="Kommentar til Anders (frivillig)…"
             rows={3}
-            className="mt-3 w-full rounded-md border border-border bg-background p-3 font-sans text-[13.5px] text-foreground placeholder:text-muted-foreground/70 focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
+            className="mt-2 w-full rounded-md border border-border bg-background p-4 font-sans text-[13.5px] text-foreground placeholder:text-muted-foreground/70 focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
           />
         </section>
       </div>
@@ -364,12 +364,12 @@ export function SummaryV2Client({ data }: { data: SummaryV2Data }) {
         className="fixed bottom-0 left-0 right-0 z-20 border-t border-border bg-background/95 backdrop-blur"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
-        <div className="mx-auto flex max-w-[920px] items-center gap-2 px-4 py-3 sm:gap-3">
-          <button className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-md border border-border bg-card px-4 py-3 font-sans text-[13px] font-semibold text-foreground hover:border-foreground/30">
+        <div className="mx-auto flex max-w-[920px] items-center gap-2 px-4 py-2 sm:gap-2">
+          <button className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-md border border-border bg-card px-4 py-2 font-sans text-[13px] font-semibold text-foreground hover:border-foreground/30">
             <Save className="h-4 w-4" strokeWidth={2} />
             Lagre uten å sende
           </button>
-          <button className="inline-flex min-h-11 flex-[1.4] items-center justify-center gap-2 rounded-md bg-accent px-4 py-3 font-display text-[14px] font-semibold text-accent-foreground hover:opacity-90">
+          <button className="inline-flex min-h-11 flex-[1.4] items-center justify-center gap-2 rounded-md bg-accent px-4 py-2 font-display text-[14px] font-semibold text-accent-foreground hover:opacity-90">
             <Send className="h-4 w-4" strokeWidth={2} />
             Send til {data.coachName.split(" ")[0]}
           </button>

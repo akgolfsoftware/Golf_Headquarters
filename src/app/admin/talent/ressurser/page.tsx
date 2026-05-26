@@ -98,7 +98,7 @@ export default async function TalentRessurser({
       />
 
       {/* Filter-chips */}
-      <section className="space-y-3 rounded-lg border border-border bg-card p-6">
+      <section className="space-y-2 rounded-lg border border-border bg-card p-6">
         <FilterRow label="Kategori">
           <ChipLink
             href={chipHref({ kategori: "" })}
@@ -155,7 +155,7 @@ export default async function TalentRessurser({
           </div>
           <form
             action={leggTilRessurs}
-            className="grid gap-3 sm:grid-cols-2"
+            className="grid gap-2 sm:grid-cols-2"
           >
             <input
               type="text"
@@ -164,20 +164,20 @@ export default async function TalentRessurser({
               required
               minLength={2}
               maxLength={200}
-              className="rounded-md border border-input bg-background px-3 py-2 text-[13px] focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
+              className="rounded-md border border-input bg-background px-4 py-2 text-[13px] focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
             />
             <input
               type="url"
               name="url"
               placeholder="https://…"
               required
-              className="rounded-md border border-input bg-background px-3 py-2 text-[13px] focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
+              className="rounded-md border border-input bg-background px-4 py-2 text-[13px] focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
             />
             <select
               name="kategori"
               required
               defaultValue="video"
-              className="rounded-md border border-input bg-background px-3 py-2 text-[13px] focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
+              className="rounded-md border border-input bg-background px-4 py-2 text-[13px] focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
             >
               {KATEGORIER.map((k) => (
                 <option key={k} value={k}>
@@ -188,7 +188,7 @@ export default async function TalentRessurser({
             <select
               name="niva"
               defaultValue=""
-              className="rounded-md border border-input bg-background px-3 py-2 text-[13px] focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
+              className="rounded-md border border-input bg-background px-4 py-2 text-[13px] focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
             >
               <option value="">Nivå (valgfri)</option>
               {NIVAER.map((n) => (
@@ -200,7 +200,7 @@ export default async function TalentRessurser({
             <select
               name="fokus"
               defaultValue=""
-              className="rounded-md border border-input bg-background px-3 py-2 text-[13px] focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
+              className="rounded-md border border-input bg-background px-4 py-2 text-[13px] focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
             >
               <option value="">Fokus (valgfri)</option>
               {FOKUS.map((f) => (
@@ -214,7 +214,7 @@ export default async function TalentRessurser({
               name="beskrivelse"
               placeholder="Beskrivelse (valgfri)"
               maxLength={1000}
-              className="rounded-md border border-input bg-background px-3 py-2 text-[13px] focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30 sm:col-span-2"
+              className="rounded-md border border-input bg-background px-4 py-2 text-[13px] focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30 sm:col-span-2"
             />
             <button
               type="submit"
@@ -248,7 +248,7 @@ export default async function TalentRessurser({
                 key={r.id}
                 className="flex flex-col rounded-lg border border-border bg-card p-6 transition-colors hover:border-primary/40"
               >
-                <div className="mb-3 flex items-center gap-2">
+                <div className="mb-2 flex items-center gap-2">
                   <span className="inline-flex items-center gap-1 rounded-full bg-primary px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.10em] text-primary-foreground">
                     <Ikon className="h-3 w-3" strokeWidth={1.5} />
                     {r.kategori}
@@ -276,7 +276,7 @@ export default async function TalentRessurser({
                   href={r.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-4 inline-flex items-center gap-1.5 self-start rounded-full bg-secondary px-3 py-1.5 text-[12px] font-semibold transition-colors hover:bg-primary hover:text-primary-foreground"
+                  className="mt-4 inline-flex items-center gap-1.5 self-start rounded-full bg-secondary px-4 py-1.5 text-[12px] font-semibold transition-colors hover:bg-primary hover:text-primary-foreground"
                 >
                   Åpne
                   <ExternalLink className="h-3.5 w-3.5" strokeWidth={1.5} />

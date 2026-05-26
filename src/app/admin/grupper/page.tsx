@@ -84,7 +84,7 @@ export default async function GrupperPage() {
         actions={
           <Link
             href="/admin/grupper"
-            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
           >
             <Plus className="h-3.5 w-3.5" strokeWidth={1.75} />
             Ny gruppe
@@ -142,7 +142,7 @@ export default async function GrupperPage() {
 
       {/* Filter-rad */}
       <div className="flex flex-wrap items-center gap-2">
-        <div className="flex min-w-[260px] flex-1 items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-[13px]">
+        <div className="flex min-w-[260px] flex-1 items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px]">
           <Search className="h-3.5 w-3.5 text-muted-foreground" strokeWidth={1.75} />
           <input
             type="search"
@@ -153,19 +153,19 @@ export default async function GrupperPage() {
         </div>
         <button
           type="button"
-          className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+          className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-1.5 text-xs text-muted-foreground transition-colors hover:border-primary hover:text-primary"
         >
           Type <ChevronDown className="h-3 w-3" strokeWidth={1.75} />
         </button>
         <button
           type="button"
-          className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+          className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-1.5 text-xs text-muted-foreground transition-colors hover:border-primary hover:text-primary"
         >
           Coach <ChevronDown className="h-3 w-3" strokeWidth={1.75} />
         </button>
         <button
           type="button"
-          className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+          className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-1.5 text-xs text-muted-foreground transition-colors hover:border-primary hover:text-primary"
         >
           Status <ChevronDown className="h-3 w-3" strokeWidth={1.75} />
         </button>
@@ -183,7 +183,7 @@ export default async function GrupperPage() {
           cta={
             <Link
               href="/admin/grupper"
-              className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+              className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
             >
               <Plus className="h-3.5 w-3.5" strokeWidth={1.75} />
               Ny gruppe
@@ -191,7 +191,7 @@ export default async function GrupperPage() {
           }
         />
       ) : (
-        <ul className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {groups.map((g, i) => {
             const gradient = HERO_GRADIENTS[i % HERO_GRADIENTS.length];
             const initial = g.level ?? g.name.charAt(0).toUpperCase();
@@ -219,7 +219,7 @@ export default async function GrupperPage() {
                 </div>
 
                 {/* Body */}
-                <div className="flex flex-1 flex-col gap-3 p-4">
+                <div className="flex flex-1 flex-col gap-2 p-4">
                   <div>
                     <h3 className="font-display text-xl font-normal italic leading-tight tracking-tight">
                       {g.name}
@@ -231,7 +231,7 @@ export default async function GrupperPage() {
                   </div>
 
                   {/* Stats */}
-                  <div className="grid grid-cols-2 gap-2 border-y border-border/60 py-3">
+                  <div className="grid grid-cols-2 gap-2 border-y border-border/60 py-2">
                     <div className="flex flex-col gap-0.5">
                       <span className="font-mono text-[9px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
                         Medlemmer
@@ -290,13 +290,13 @@ export default async function GrupperPage() {
                   <div className="mt-auto flex gap-2 pt-1">
                     <Link
                       href={`/admin/grupper/${g.id}`}
-                      className="flex-1 rounded-md bg-primary px-3 py-2 text-center text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+                      className="flex-1 rounded-md bg-primary px-4 py-2 text-center text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
                     >
                       Åpne →
                     </Link>
                     <Link
                       href={`/admin/bookings/ny?groupId=${g.id}`}
-                      className="flex-1 rounded-md border border-border bg-card px-3 py-2 text-center text-[13px] font-medium text-foreground transition-colors hover:border-primary"
+                      className="flex-1 rounded-md border border-border bg-card px-4 py-2 text-center text-[13px] font-medium text-foreground transition-colors hover:border-primary"
                     >
                       Planlegg
                     </Link>

@@ -98,7 +98,7 @@ export default async function MinPlanPage() {
 
       {/* KPI-kort 5 akser */}
       <section aria-label="Mine fem utviklingsakser" className="mb-12">
-        <div className="mb-6 flex items-center gap-3">
+        <div className="mb-6 flex items-center gap-2">
           <TrendingUp size={20} strokeWidth={1.5} className="text-primary" aria-hidden />
           <h2 className="font-display text-2xl font-medium tracking-tight">
             Mine fem akser
@@ -133,12 +133,12 @@ export default async function MinPlanPage() {
                   {nesteMal.tittel}
                 </h3>
                 {nesteMal.beskrivelse ? (
-                  <p className="mt-3 max-w-prose text-sm leading-relaxed text-muted-foreground">
+                  <p className="mt-2 max-w-prose text-sm leading-relaxed text-muted-foreground">
                     {nesteMal.beskrivelse}
                   </p>
                 ) : null}
                 {nesteMal.dato ? (
-                  <p className="mt-3 font-mono text-xs text-muted-foreground">
+                  <p className="mt-2 font-mono text-xs text-muted-foreground">
                     Frist {formatDato(nesteMal.dato)}
                   </p>
                 ) : null}
@@ -148,7 +148,7 @@ export default async function MinPlanPage() {
                 <h3 className="mt-2 font-display text-2xl font-medium leading-tight tracking-tight">
                   Ingen aktive milepæler
                 </h3>
-                <p className="mt-3 max-w-prose text-sm leading-relaxed text-muted-foreground">
+                <p className="mt-2 max-w-prose text-sm leading-relaxed text-muted-foreground">
                   Coachen din legger inn neste milepæl etter neste evaluering. I
                   mellomtiden: hold tråden i ukeplanen.
                 </p>
@@ -160,7 +160,7 @@ export default async function MinPlanPage() {
 
       {/* Milepæler-timeline */}
       <section aria-label="Milepæler" className="mb-8">
-        <div className="mb-6 flex items-center gap-3">
+        <div className="mb-6 flex items-center gap-2">
           <BookOpen size={20} strokeWidth={1.5} className="text-primary" aria-hidden />
           <h2 className="font-display text-2xl font-medium tracking-tight">
             Milepæler
@@ -244,7 +244,7 @@ function AxisCard({ label, value }: { label: string; value: number | null }) {
         <span className="font-mono text-xs text-muted-foreground">/ 10</span>
       </div>
       <div
-        className="mt-3 h-2 w-full overflow-hidden rounded-full bg-secondary"
+        className="mt-2 h-2 w-full overflow-hidden rounded-full bg-secondary"
         role="presentation"
       >
         <div

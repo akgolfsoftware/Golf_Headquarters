@@ -68,13 +68,13 @@ export function SgInsightCard({ insight, onAcknowledge, onResolve, className }: 
   return (
     <div
       className={cn(
-        "relative overflow-hidden rounded-2xl border bg-card p-4 md:p-5",
+        "relative overflow-hidden rounded-2xl border bg-card p-4 md:p-6",
         insight.severity >= 4 ? "border-destructive/50" : "border-border",
         isResolved && "opacity-60",
         className,
       )}
     >
-      <div className="flex items-start gap-3">
+      <div className="flex items-start gap-2">
         <span
           className={cn(
             "flex h-10 w-10 shrink-0 items-center justify-center rounded-full",
@@ -96,7 +96,7 @@ export function SgInsightCard({ insight, onAcknowledge, onResolve, className }: 
           <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">{insight.body}</p>
 
           {(onAcknowledge || onResolve) && !isResolved && (
-            <div className="mt-3 flex items-center gap-3 font-mono text-[11px]">
+            <div className="mt-2 flex items-center gap-2 font-mono text-[11px]">
               {onAcknowledge && !isAcked && (
                 <button
                   type="button"

@@ -160,7 +160,7 @@ export default async function ForespørslerPage() {
         <div className="space-y-8">
           {/* Ubehandlede */}
           {pending.length > 0 && (
-            <section className="space-y-3">
+            <section className="space-y-2">
               <div className="flex items-baseline justify-between">
                 <h2 className="font-display text-lg font-semibold tracking-tight">
                   Ubehandlede
@@ -170,13 +170,13 @@ export default async function ForespørslerPage() {
                 </span>
               </div>
 
-              <ul className="flex flex-col gap-3">
+              <ul className="flex flex-col gap-2">
                 {pending.map((req) => (
                   <li
                     key={req.id}
                     className="rounded-xl border border-border bg-card"
                   >
-                    <div className="flex flex-wrap items-start gap-4 p-5">
+                    <div className="flex flex-wrap items-start gap-4 p-6">
                       {/* Avatar */}
                       <div
                         className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-sm font-semibold text-white"
@@ -233,15 +233,15 @@ export default async function ForespørslerPage() {
                     </div>
 
                     {/* Book-snarvei */}
-                    <div className="border-t border-border px-5 py-3">
+                    <div className="border-t border-border px-6 py-2">
                       <Link
                         href={`/admin/bookings/ny?spillerId=${req.user.id}&note=${encodeURIComponent(req.reason ?? "")}`}
-                        className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-1.5 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+                        className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-1.5 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
                       >
                         <Calendar className="h-3.5 w-3.5" strokeWidth={1.75} />
                         Book time nå
                       </Link>
-                      <span className="ml-3 text-xs text-muted-foreground">
+                      <span className="ml-2 text-xs text-muted-foreground">
                         Merker forespørselen som planlagt
                       </span>
                     </div>
@@ -253,7 +253,7 @@ export default async function ForespørslerPage() {
 
           {/* Behandlede */}
           {behandlet.length > 0 && (
-            <section className="space-y-3">
+            <section className="space-y-2">
               <h2 className="font-display text-lg font-semibold tracking-tight text-muted-foreground">
                 Behandlede
               </h2>
@@ -262,7 +262,7 @@ export default async function ForespørslerPage() {
                 {behandlet.map((req) => (
                   <li
                     key={req.id}
-                    className="flex flex-wrap items-center gap-4 rounded-lg border border-border bg-card/60 px-4 py-3 opacity-70"
+                    className="flex flex-wrap items-center gap-4 rounded-lg border border-border bg-card/60 px-4 py-2 opacity-70"
                   >
                     <div
                       className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-xs font-semibold text-white"

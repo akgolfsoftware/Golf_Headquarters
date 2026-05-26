@@ -153,11 +153,11 @@ export function RecurringPatternEditor({ apen, studentId, initial, onLukk, onLag
               value={navn}
               onChange={(e) => setNavn(e.target.value)}
               placeholder="f.eks. Putting-rutine"
-              className="h-10 w-full rounded-md border border-input bg-card px-3 text-sm focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
+              className="h-10 w-full rounded-md border border-input bg-card px-4 text-sm focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
             />
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-2">
             <div>
               <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-muted-foreground">
                 Område
@@ -200,7 +200,7 @@ export function RecurringPatternEditor({ apen, studentId, initial, onLukk, onLag
                 max={12}
                 value={intervall}
                 onChange={(e) => setIntervall(Math.max(1, Number(e.target.value) || 1))}
-                className="h-10 w-full rounded-md border border-input bg-card px-3 font-mono text-sm tabular-nums focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+                className="h-10 w-full rounded-md border border-input bg-card px-4 font-mono text-sm tabular-nums focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
               />
             </div>
           </div>
@@ -230,7 +230,7 @@ export function RecurringPatternEditor({ apen, studentId, initial, onLukk, onLag
             </div>
           )}
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2">
             <div>
               <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-muted-foreground">
                 Start
@@ -245,7 +245,7 @@ export function RecurringPatternEditor({ apen, studentId, initial, onLukk, onLag
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2">
             <div>
               <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-muted-foreground">
                 Tidspunkt
@@ -254,7 +254,7 @@ export function RecurringPatternEditor({ apen, studentId, initial, onLukk, onLag
                 type="time"
                 value={startTid}
                 onChange={(e) => setStartTid(e.target.value)}
-                className="h-10 w-full rounded-md border border-input bg-card px-3 font-mono text-sm tabular-nums focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+                className="h-10 w-full rounded-md border border-input bg-card px-4 font-mono text-sm tabular-nums focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
               />
             </div>
             <div>
@@ -268,7 +268,7 @@ export function RecurringPatternEditor({ apen, studentId, initial, onLukk, onLag
                 step={15}
                 value={varighetMin}
                 onChange={(e) => setVarighetMin(Math.max(15, Number(e.target.value) || 15))}
-                className="h-10 w-full rounded-md border border-input bg-card px-3 font-mono text-sm tabular-nums focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+                className="h-10 w-full rounded-md border border-input bg-card px-4 font-mono text-sm tabular-nums focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
               />
             </div>
           </div>
@@ -281,11 +281,11 @@ export function RecurringPatternEditor({ apen, studentId, initial, onLukk, onLag
               value={beskrivelse}
               onChange={(e) => setBeskrivelse(e.target.value)}
               rows={2}
-              className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
+              className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
             />
           </div>
 
-          <div className="rounded-md bg-secondary/40 p-3">
+          <div className="rounded-md bg-secondary/40 p-4">
             <span className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
               Generert rrule
             </span>
@@ -295,7 +295,7 @@ export function RecurringPatternEditor({ apen, studentId, initial, onLukk, onLag
           </div>
         </div>
 
-        <footer className="flex items-center justify-end gap-2 border-t border-border bg-card px-6 py-3">
+        <footer className="flex items-center justify-end gap-2 border-t border-border bg-card px-6 py-2">
           <button
             type="button"
             onClick={onLukk}

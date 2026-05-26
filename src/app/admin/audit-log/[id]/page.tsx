@@ -289,7 +289,7 @@ export default async function AuditLogDetailPage({
         {/* Rail — relaterte events */}
         <aside className="space-y-4">
           <div className="rounded-2xl border border-border bg-card p-6">
-            <h2 className="mb-3 font-display text-sm font-semibold tracking-tight">
+            <h2 className="mb-2 font-display text-sm font-semibold tracking-tight">
               Relaterte hendelser
             </h2>
             <p className="mb-4 text-xs text-muted-foreground">
@@ -298,7 +298,7 @@ export default async function AuditLogDetailPage({
                 : "Alle hendelser innenfor ±15 minutter."}
             </p>
             {relaterteAlle.length === 0 ? (
-              <p className="rounded-md border border-dashed border-border bg-background px-4 py-3 text-center text-xs text-muted-foreground">
+              <p className="rounded-md border border-dashed border-border bg-background px-4 py-2 text-center text-xs text-muted-foreground">
                 Ingen relaterte hendelser.
               </p>
             ) : (
@@ -309,7 +309,7 @@ export default async function AuditLogDetailPage({
                     <li key={r.id}>
                       <Link
                         href={`/admin/audit-log/${r.id}`}
-                        className="flex items-start gap-3 rounded-md border border-border bg-background p-3 transition-colors hover:border-primary hover:bg-secondary"
+                        className="flex items-start gap-2 rounded-md border border-border bg-background p-4 transition-colors hover:border-primary hover:bg-secondary"
                       >
                         <span
                           className={`mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${TYPE_PILL[t]}`}
@@ -342,10 +342,10 @@ export default async function AuditLogDetailPage({
           </div>
 
           <div className="rounded-2xl border border-border bg-card p-6">
-            <h2 className="mb-3 font-display text-sm font-semibold tracking-tight">
+            <h2 className="mb-2 font-display text-sm font-semibold tracking-tight">
               Eksport
             </h2>
-            <p className="mb-3 text-xs text-muted-foreground">
+            <p className="mb-2 text-xs text-muted-foreground">
               Last ned hele hendelsen som JSON. Brukes ved GDPR-eksport eller
               tvistehåndtering.
             </p>

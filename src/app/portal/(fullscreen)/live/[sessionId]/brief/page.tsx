@@ -129,7 +129,7 @@ export default async function LiveBriefPage({
 
         {/* HERO med coach-quote */}
         <section
-          className="relative overflow-hidden rounded-2xl border border-border p-6 sm:p-9"
+          className="relative overflow-hidden rounded-2xl border border-border p-6 sm:p-8"
           style={{
             background:
               "linear-gradient(135deg, #FAFAF7 0%, #FFFFFF 60%, rgba(209,248,67,0.16) 100%)",
@@ -142,7 +142,7 @@ export default async function LiveBriefPage({
             />
             LIVE-ØKT · BRIEF · {datoStr.toUpperCase()}
           </div>
-          <h1 className="mt-3 font-display text-[28px] font-medium leading-[1.05] -tracking-[0.02em] text-foreground sm:text-[40px]">
+          <h1 className="mt-2 font-display text-[28px] font-medium leading-[1.05] -tracking-[0.02em] text-foreground sm:text-[40px]">
             {PYR_LABEL[session.pyramidArea]}-økt{" "}
             <em
               className="font-normal italic text-muted-foreground"
@@ -152,7 +152,7 @@ export default async function LiveBriefPage({
             </em>
           </h1>
 
-          <blockquote className="mt-5 border-l-2 border-accent pl-4 sm:pl-5">
+          <blockquote className="mt-5 border-l-2 border-accent pl-4 sm:pl-6">
             <p
               className="font-display text-[16px] italic leading-[1.5] text-foreground sm:text-[18px]"
               style={{ fontFamily: "var(--font-instrument-serif, serif)" }}
@@ -173,7 +173,7 @@ export default async function LiveBriefPage({
         </section>
 
         {/* KPI-STRIP */}
-        <section className="grid grid-cols-3 gap-2.5 sm:gap-3">
+        <section className="grid grid-cols-3 gap-2.5 sm:gap-2">
           <Kpi
             label="TOTAL TID"
             value={String(session.durationMin)}
@@ -198,7 +198,7 @@ export default async function LiveBriefPage({
 
         {/* DRILL-LISTE READ-ONLY */}
         <section>
-          <div className="mb-3 flex items-baseline justify-between">
+          <div className="mb-2 flex items-baseline justify-between">
             <h2 className="font-display text-[16px] font-semibold -tracking-[0.01em] text-foreground">
               Drill-plan
             </h2>
@@ -219,7 +219,7 @@ export default async function LiveBriefPage({
                 return (
                   <li
                     key={d.id}
-                    className="flex items-center gap-3 rounded-xl border border-border bg-card p-3 sm:p-4"
+                    className="flex items-center gap-2 rounded-xl border border-border bg-card p-4 sm:p-4"
                   >
                     <div
                       className={`grid h-8 w-8 flex-shrink-0 place-items-center rounded-md font-mono text-[11px] font-bold text-white ${tone.tile}`}
@@ -273,13 +273,13 @@ export default async function LiveBriefPage({
           {kanStarte ? (
             <Link
               href={`/portal/live/${session.id}/active`}
-              className="flex w-full items-center justify-center gap-3 rounded-2xl bg-accent px-6 py-5 font-display text-[20px] font-semibold -tracking-[0.01em] text-accent-foreground shadow-lg shadow-accent/30 transition-transform hover:scale-[1.01]"
+              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-accent px-6 py-6 font-display text-[20px] font-semibold -tracking-[0.01em] text-accent-foreground shadow-lg shadow-accent/30 transition-transform hover:scale-[1.01]"
             >
               <Play className="h-5 w-5 fill-current" strokeWidth={2.5} />
               Start økt nå
             </Link>
           ) : (
-            <div className="flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-border bg-card px-6 py-5 font-sans text-[14px] text-muted-foreground">
+            <div className="flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-border bg-card px-6 py-6 font-sans text-[14px] text-muted-foreground">
               {session.status === "COMPLETED" ? (
                 <>
                   <CheckCircle2 className="h-4 w-4 text-success" strokeWidth={2} />

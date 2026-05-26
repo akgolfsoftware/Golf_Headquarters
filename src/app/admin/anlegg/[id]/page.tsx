@@ -165,14 +165,14 @@ export default async function AnleggDetailPage({
       actions={
         <Link
           href={`/admin/bookings/ny?locationId=${location.id}`}
-          className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-accent hover:brightness-110"
+          className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-accent hover:brightness-110"
         >
           <Building2 size={14} strokeWidth={1.75} aria-hidden />
           Ny booking
         </Link>
       }
       kpiRow={
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           <KPICard
             eyebrow="Fasiliteter"
             value={String(viewData.stats.total)}

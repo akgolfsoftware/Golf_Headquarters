@@ -91,7 +91,7 @@ export function QuickActions({
   className,
 }: QuickActionsProps) {
   return (
-    <div className={cn("grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4", className)}>
+    <div className={cn("grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-4", className)}>
       {actions.map((action) => (
         <Link
           key={`${action.label}-${action.href}`}

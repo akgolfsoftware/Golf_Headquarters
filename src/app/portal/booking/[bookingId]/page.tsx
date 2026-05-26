@@ -169,7 +169,7 @@ export default async function OktDetalj({ params }: Props) {
         </div>
 
         {/* ── Mål for økten ── */}
-        <section className="flex flex-col gap-3">
+        <section className="flex flex-col gap-2">
           <h2 className="font-display text-lg font-semibold tracking-tight">
             Mål for økten
           </h2>
@@ -177,7 +177,7 @@ export default async function OktDetalj({ params }: Props) {
             {MAL.map((m, i) => (
               <div
                 key={i}
-                className="flex items-center gap-3 rounded-xl border border-border bg-card p-4"
+                className="flex items-center gap-2 rounded-xl border border-border bg-card p-4"
               >
                 <div className="flex h-[22px] w-[22px] items-center justify-center rounded-full border border-border/60 text-muted-foreground">
                   <Target className="h-[11px] w-[11px]" strokeWidth={1.75} />
@@ -189,7 +189,7 @@ export default async function OktDetalj({ params }: Props) {
         </section>
 
         {/* ── Tidslinje ── */}
-        <section className="flex flex-col gap-3">
+        <section className="flex flex-col gap-2">
           <h2 className="font-display text-lg font-semibold tracking-tight">
             Øktens struktur
           </h2>
@@ -211,7 +211,7 @@ export default async function OktDetalj({ params }: Props) {
         </section>
 
         {/* ── Utstyr ── */}
-        <section className="flex flex-col gap-3">
+        <section className="flex flex-col gap-2">
           <h2 className="font-display text-lg font-semibold tracking-tight">
             Ta med
           </h2>
@@ -219,7 +219,7 @@ export default async function OktDetalj({ params }: Props) {
             {UTSTYR.map((u) => (
               <div
                 key={u}
-                className="flex items-center gap-2 rounded-xl border border-border bg-card p-3"
+                className="flex items-center gap-2 rounded-xl border border-border bg-card p-4"
               >
                 <Package
                   className="h-3.5 w-3.5 shrink-0 text-primary"
@@ -233,8 +233,8 @@ export default async function OktDetalj({ params }: Props) {
 
         {/* ── Notat fra coach ── */}
         {booking.notes && (
-          <section className="rounded-2xl border border-border bg-card p-5">
-            <h2 className="mb-3 font-display text-lg font-semibold tracking-tight">
+          <section className="rounded-2xl border border-border bg-card p-6">
+            <h2 className="mb-2 font-display text-lg font-semibold tracking-tight">
               Notat
             </h2>
             <p className="border-l-2 border-primary/40 pl-4 font-serif italic text-sm leading-relaxed text-foreground">
@@ -244,7 +244,7 @@ export default async function OktDetalj({ params }: Props) {
         )}
 
         {/* ── Actions ── */}
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-2">
           <Link
             href="/portal/booking/bekreftet"
             className="bk-btn-lime"

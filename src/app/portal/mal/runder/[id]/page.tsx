@@ -99,7 +99,7 @@ export default async function RundeDetalj({
 
       {/* KPI-strip */}
       {antallHullMedSlag > 0 && (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           <KpiKort label="Slag" verdi={String(totaltAntallSlag)} sub={`${antallHullMedSlag} hull`} />
           <KpiKort label="Putter" verdi={String(totaltPutter)} sub={`snitt ${(totaltPutter / antallHullMedSlag).toFixed(1)} / hull`} />
           <KpiKort
@@ -116,7 +116,7 @@ export default async function RundeDetalj({
       )}
 
       {/* Import-knapp */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
           Slag-for-slag registrering
         </h2>

@@ -37,7 +37,7 @@ export function AgentFeedbackModal({ open, onClose, agentAction }: Props) {
         className="absolute inset-0 bg-background/80 backdrop-blur-sm"
         onClick={handleLukk}
       />
-      <div className="relative z-10 w-full max-h-[95vh] overflow-y-auto rounded-t-2xl border border-border bg-card p-5 shadow-xl sm:max-w-md sm:rounded-xl sm:p-6">
+      <div className="relative z-10 w-full max-h-[95vh] overflow-y-auto rounded-t-2xl border border-border bg-card p-6 shadow-xl sm:max-w-md sm:rounded-xl sm:p-6">
         <button
           type="button"
           onClick={handleLukk}
@@ -56,13 +56,13 @@ export function AgentFeedbackModal({ open, onClose, agentAction }: Props) {
         <h2 className="mb-6 text-xl font-semibold">Tilbakemelding på AI-forslag</h2>
 
         {agentAction && (
-          <div className="mb-6 rounded-md bg-secondary p-3 text-sm text-foreground">
+          <div className="mb-6 rounded-md bg-secondary p-4 text-sm text-foreground">
             {agentAction}
           </div>
         )}
 
         <div className="mb-6">
-          <p className="mb-3 text-sm text-muted-foreground">Var dette forslaget nyttig?</p>
+          <p className="mb-2 text-sm text-muted-foreground">Var dette forslaget nyttig?</p>
           <div className="flex gap-2">
             {STJERNER.map((stjerne) => (
               <button
@@ -116,7 +116,7 @@ export function AgentFeedbackModal({ open, onClose, agentAction }: Props) {
           />
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex gap-2">
           <button
             type="button"
             onClick={handleLukk}

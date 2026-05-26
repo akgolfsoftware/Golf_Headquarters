@@ -66,7 +66,7 @@ export function NyManuellTurneringForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {feil && (
-        <div className="flex items-start gap-2 rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive-foreground">
+        <div className="flex items-start gap-2 rounded-md border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive-foreground">
           <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
           <span>{feil}</span>
         </div>
@@ -82,7 +82,7 @@ export function NyManuellTurneringForm() {
             placeholder="F.eks. GFGK Klubbmesterskap 2026"
             maxLength={200}
             required
-            className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm shadow-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+            className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm shadow-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
           />
         </Field>
 
@@ -95,7 +95,7 @@ export function NyManuellTurneringForm() {
             placeholder="F.eks. Gamle Fredrikstad Golfklubb"
             maxLength={200}
             required
-            className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm shadow-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+            className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm shadow-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
           />
         </Field>
 
@@ -107,7 +107,7 @@ export function NyManuellTurneringForm() {
               value={startDato}
               onChange={(e) => setStartDato(e.target.value)}
               required
-              className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm shadow-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+              className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm shadow-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
             />
           </Field>
           <Field label="Sluttdato" htmlFor="sluttDato">
@@ -117,7 +117,7 @@ export function NyManuellTurneringForm() {
               value={sluttDato}
               onChange={(e) => setSluttDato(e.target.value)}
               min={startDato || undefined}
-              className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm shadow-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+              className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm shadow-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
             />
           </Field>
         </div>
@@ -127,7 +127,7 @@ export function NyManuellTurneringForm() {
             id="tour"
             value={tour}
             onChange={(e) => setTour(e.target.value as TurType)}
-            className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm shadow-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+            className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm shadow-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
           >
             {(Object.keys(TUR_LABEL) as TurType[]).map((t) => (
               <option key={t} value={t}>
@@ -142,7 +142,7 @@ export function NyManuellTurneringForm() {
             id="format"
             value={format}
             onChange={(e) => setFormat(e.target.value as TurFormat)}
-            className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm shadow-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+            className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm shadow-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
           >
             {(Object.keys(FORMAT_LABEL) as TurFormat[]).map((f) => (
               <option key={f} value={f}>
@@ -160,7 +160,7 @@ export function NyManuellTurneringForm() {
             onChange={(e) => setLand(e.target.value)}
             placeholder="NO"
             maxLength={2}
-            className="w-24 rounded-md border border-input bg-card px-3 py-2 text-sm uppercase shadow-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+            className="w-24 rounded-md border border-input bg-card px-4 py-2 text-sm uppercase shadow-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
           />
         </Field>
 
@@ -172,12 +172,12 @@ export function NyManuellTurneringForm() {
             placeholder="Valgfritt — kontekst, format-detaljer, antall runder ..."
             maxLength={1000}
             rows={3}
-            className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm shadow-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+            className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm shadow-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
           />
         </Field>
       </div>
 
-      <div className="flex items-center justify-end gap-3 border-t border-border pt-4">
+      <div className="flex items-center justify-end gap-2 border-t border-border pt-4">
         <button
           type="button"
           onClick={() => router.back()}
@@ -201,7 +201,7 @@ export function NyManuellTurneringForm() {
         </button>
       </div>
 
-      <p className="rounded-md bg-muted/50 px-4 py-3 text-xs text-muted-foreground">
+      <p className="rounded-md bg-muted/50 px-4 py-2 text-xs text-muted-foreground">
         Turneringen blir umiddelbart synlig på{" "}
         <code className="font-mono">/turneringer</code> og i CoachHQ. Den merkes som
         manuelt opprettet av deg, og coachen kan senere koble den til en kjent

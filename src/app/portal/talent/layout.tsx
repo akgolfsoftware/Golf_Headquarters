@@ -54,7 +54,7 @@ export default async function TalentLayout({
         </p>
         <Link
           href="/portal"
-          className="mt-2 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+          className="mt-2 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
         >
           Tilbake til PlayerHQ
         </Link>

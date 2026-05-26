@@ -53,7 +53,7 @@ export default async function ClubDetailPage({
           <h2 className="mt-2 font-display text-2xl font-semibold">
             Ingen data funnet
           </h2>
-          <p className="mt-3 text-sm text-muted-foreground max-w-sm mx-auto">
+          <p className="mt-2 text-sm text-muted-foreground max-w-sm mx-auto">
             Ingen TrackMan-slag registrert for {decoded}. Importer en
             TrackMan-økt som inkluderer denne køllen.
           </p>
@@ -238,7 +238,7 @@ export default async function ClubDetailPage({
           <h2 className="font-semibold">Fatigue Curve · Club Speed over tid</h2>
         </div>
         {!advanced && (
-          <p className="mb-3 text-sm text-muted-foreground">
+          <p className="mb-2 text-sm text-muted-foreground">
             {fatigue.fatigueDetected
               ? `Trøtthet oppdaget — drop ${fatigue.dropPer10} mph / 10 slag`
               : "Stabil Club Speed — ingen trøtthet detektert"}
@@ -336,7 +336,7 @@ export default async function ClubDetailPage({
               <summary className="cursor-pointer text-xs text-muted-foreground hover:text-foreground">
                 Alle slag ({allShots.length} totalt, {sessions.length} økter)
               </summary>
-              <div className="mt-3 overflow-x-auto">
+              <div className="mt-2 overflow-x-auto">
                 <table className="w-full font-mono text-xs">
                   <thead>
                     <tr className="border-b border-border">
@@ -410,7 +410,7 @@ function SummaryCard({
   sub: string;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-5">
+    <div className="rounded-xl border border-border bg-card p-6">
       <div className="mb-2 flex items-center gap-2">
         <Icon className="h-3.5 w-3.5 text-muted-foreground" />
         <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">

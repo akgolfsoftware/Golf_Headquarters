@@ -45,7 +45,7 @@ export function VideoUploadModal({ open, onClose, shotId }: Props) {
         className="absolute inset-0 bg-background/80 backdrop-blur-sm"
         onClick={handleLukk}
       />
-      <div className="relative z-10 w-full max-h-[95vh] overflow-y-auto rounded-t-2xl border border-border bg-card p-5 shadow-xl sm:max-w-lg sm:rounded-xl sm:p-6">
+      <div className="relative z-10 w-full max-h-[95vh] overflow-y-auto rounded-t-2xl border border-border bg-card p-6 shadow-xl sm:max-w-lg sm:rounded-xl sm:p-6">
         <button
           type="button"
           onClick={handleLukk}
@@ -68,7 +68,7 @@ export function VideoUploadModal({ open, onClose, shotId }: Props) {
           onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
           onDragLeave={() => setDragOver(false)}
           onDrop={handleDrop}
-          className={`flex flex-col items-center gap-3 rounded-xl border-2 border-dashed p-8 cursor-pointer transition-colors ${
+          className={`flex flex-col items-center gap-2 rounded-xl border-2 border-dashed p-8 cursor-pointer transition-colors ${
             dragOver
               ? "border-primary bg-primary/5"
               : valgtFil
@@ -142,7 +142,7 @@ export function VideoUploadModal({ open, onClose, shotId }: Props) {
           </div>
         )}
 
-        <div className="mt-6 flex gap-3">
+        <div className="mt-6 flex gap-2">
           <button
             type="button"
             onClick={handleLukk}

@@ -65,7 +65,7 @@ export function NorskeDenneUkaWidget({ entries }: { entries: Entry[] }) {
           </span>
         </div>
 
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
           {Array.from(perTurnering.entries()).map(([turId, ents]) => {
             const tur = ents[0].tournament;
             return (
@@ -90,7 +90,7 @@ export function NorskeDenneUkaWidget({ entries }: { entries: Entry[] }) {
                     {tur.location}
                   </p>
                 )}
-                <ul className="mt-3 space-y-1.5 border-t border-border/50 pt-3">
+                <ul className="mt-2 space-y-1.5 border-t border-border/50 pt-2">
                   {ents.slice(0, 4).map((e) => (
                     <li
                       key={e.id}
@@ -127,7 +127,7 @@ export function NorskeDenneUkaWidget({ entries }: { entries: Entry[] }) {
                     </li>
                   )}
                 </ul>
-                <div className="mt-3 inline-flex items-center gap-1 text-[12px] font-semibold text-primary group-hover:gap-2">
+                <div className="mt-2 inline-flex items-center gap-1 text-[12px] font-semibold text-primary group-hover:gap-2">
                   Se turnering
                   <ArrowRight className="h-3.5 w-3.5" strokeWidth={2} />
                 </div>

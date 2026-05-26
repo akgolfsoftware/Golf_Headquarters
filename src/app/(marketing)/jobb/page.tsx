@@ -152,7 +152,7 @@ function StillingsKort({ stilling: s }: { stilling: Stilling }) {
     <article className="overflow-hidden rounded-2xl border border-border bg-card">
       <div className="flex flex-col gap-6 p-8 md:flex-row md:items-start md:justify-between">
         <div className="flex-1">
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="grid h-10 w-10 place-items-center rounded-full bg-secondary text-foreground">
               <Briefcase className="h-5 w-5" strokeWidth={1.5} />
             </span>
@@ -160,12 +160,12 @@ function StillingsKort({ stilling: s }: { stilling: Stilling }) {
               <h3 className="font-display text-2xl font-semibold tracking-tight">
                 {s.tittel}
               </h3>
-              <div className="mt-1 flex flex-wrap items-center gap-3">
+              <div className="mt-1 flex flex-wrap items-center gap-2">
                 <span className="inline-flex items-center gap-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                   <MapPin className="h-3 w-3" strokeWidth={2} />
                   {s.sted}
                 </span>
-                <span className="rounded-full bg-secondary px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+                <span className="rounded-full bg-secondary px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                   {s.type}
                 </span>
               </div>

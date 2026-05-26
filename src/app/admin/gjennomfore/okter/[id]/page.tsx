@@ -159,11 +159,11 @@ export default async function OktDetaljPage({
       >
       <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
         {/* Venstre: live-status + drills + notater */}
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-6">
           {status === "AKTIV NÅ" ? <LiveProgressStrip drills={SESSION_DRILLS} /> : null}
 
           {/* Planlagt innhold */}
-          <section className="rounded-2xl border border-border bg-card p-5">
+          <section className="rounded-2xl border border-border bg-card p-6">
             <header className="mb-4 flex items-baseline justify-between">
               <h2 className="font-display text-base font-semibold">Planlagt innhold</h2>
               <span className="font-mono text-[11px] uppercase tracking-[0.04em] text-muted-foreground">
@@ -176,7 +176,7 @@ export default async function OktDetaljPage({
                 return (
                   <li
                     key={d.name}
-                    className={`grid grid-cols-[20px_1fr_auto] items-center gap-3 rounded-xl border px-3 py-3 ${
+                    className={`grid grid-cols-[20px_1fr_auto] items-center gap-2 rounded-xl border px-4 py-2 ${
                       isActive
                         ? "border-primary bg-accent/10"
                         : "border-border bg-muted/30"
@@ -218,7 +218,7 @@ export default async function OktDetaljPage({
           </section>
 
           {/* Notater */}
-          <section className="rounded-2xl border border-border bg-card p-5">
+          <section className="rounded-2xl border border-border bg-card p-6">
             <h2 className="font-display mb-4 text-base font-semibold">Notater</h2>
             <div className="grid gap-4 md:grid-cols-2">
               <div>
@@ -251,9 +251,9 @@ export default async function OktDetaljPage({
 
           {/* Etter økt */}
           {status === "GJENNOMFØRT" ? (
-            <section className="rounded-2xl border border-border bg-card p-5">
+            <section className="rounded-2xl border border-border bg-card p-6">
               <h2 className="font-display mb-4 text-base font-semibold">Etter økt</h2>
-              <div className="grid grid-cols-[auto_1fr_auto] items-center gap-4 border-b border-border py-3">
+              <div className="grid grid-cols-[auto_1fr_auto] items-center gap-4 border-b border-border py-2">
                 <div className="font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
                   RATING
                 </div>
@@ -269,7 +269,7 @@ export default async function OktDetaljPage({
                   {spiller.name.split(" ")[0]} · 4/5
                 </div>
               </div>
-              <div className="py-3">
+              <div className="py-2">
                 <div className="font-mono mb-1.5 text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                   COACH-OPPSUMMERING
                 </div>
@@ -278,7 +278,7 @@ export default async function OktDetaljPage({
                   bør gjentas neste uke.
                 </p>
               </div>
-              <div className="pt-3">
+              <div className="pt-2">
                 <AthleticButton variant="lime" size="sm">
                   Bok neste økt → onsdag 04.06
                 </AthleticButton>
@@ -288,9 +288,9 @@ export default async function OktDetaljPage({
         </div>
 
         {/* Høyre: spiller-info */}
-        <aside className="flex flex-col gap-5">
-          <section className="rounded-2xl border border-border bg-card p-5">
-            <div className="mb-4 flex items-center gap-3.5">
+        <aside className="flex flex-col gap-6">
+          <section className="rounded-2xl border border-border bg-card p-6">
+            <div className="mb-4 flex items-center gap-4">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-base font-bold text-accent">
                 {initials}
               </div>
@@ -329,7 +329,7 @@ export default async function OktDetaljPage({
       </DetailShell>
 
       {/* Sticky mobile CTA */}
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card px-4 py-3 md:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card px-4 py-2 md:hidden">
         <div className="flex gap-2">
           {status !== "GJENNOMFØRT" ? (
             <>
@@ -355,7 +355,7 @@ function LiveProgressStrip({ drills }: { drills: typeof SESSION_DRILLS }) {
   const done = drills.filter((d) => d.done > 0).length;
   return (
     <div
-      className="relative overflow-hidden rounded-2xl p-5 text-white"
+      className="relative overflow-hidden rounded-2xl p-6 text-white"
       style={{
         background: "linear-gradient(135deg, #003A2A 0%, #005840 100%)",
       }}
@@ -369,7 +369,7 @@ function LiveProgressStrip({ drills }: { drills: typeof SESSION_DRILLS }) {
           14:08 · 8 min gått
         </span>
       </div>
-      <div className="relative grid grid-cols-[1fr_auto] items-end gap-5">
+      <div className="relative grid grid-cols-[1fr_auto] items-end gap-6">
         <div>
           <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-white/55">
             NÅVÆRENDE DRILL · {done}/{drills.length}
@@ -391,7 +391,7 @@ function LiveProgressStrip({ drills }: { drills: typeof SESSION_DRILLS }) {
           </button>
           <button
             type="button"
-            className="font-mono inline-flex h-9 items-center gap-1 rounded-full bg-accent px-3 text-[11px] font-bold uppercase tracking-[0.08em] text-foreground"
+            className="font-mono inline-flex h-9 items-center gap-1 rounded-full bg-accent px-4 text-[11px] font-bold uppercase tracking-[0.08em] text-foreground"
           >
             <ChevronsRight className="h-3.5 w-3.5" /> Neste
           </button>

@@ -196,13 +196,13 @@ export function WeekProgressCard({
   return (
     <section
       className={cn(
-        "rounded-2xl border border-border bg-card p-6 sm:p-7",
+        "rounded-2xl border border-border bg-card p-6 sm:p-8",
         className,
       )}
       aria-labelledby="week-progress-heading"
     >
       {/* Header med eyebrow + uke-pill */}
-      <div className="mb-6 flex items-end justify-between gap-3">
+      <div className="mb-6 flex items-end justify-between gap-2">
         <div>
           <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
             Ukas progresjon
@@ -214,14 +214,14 @@ export function WeekProgressCard({
             Pyramide-balanse + sammendrag
           </h2>
         </div>
-        <span className="hidden rounded-full bg-foreground px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-background sm:inline-block">
+        <span className="hidden rounded-full bg-foreground px-4 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-background sm:inline-block">
           Siste 7 dager
         </span>
       </div>
 
       <div className="grid grid-cols-1 gap-8 md:grid-cols-5 md:gap-6">
         {/* Venstre: Pyramide-vekting — 3 kolonner */}
-        <div className="space-y-5 md:col-span-3">
+        <div className="space-y-6 md:col-span-3">
           <div className="space-y-4">
             {KATEGORIER.map((kat) => (
               <PyramidBar
@@ -247,12 +247,12 @@ export function WeekProgressCard({
         </div>
 
         {/* Høyre: Ukens stats — 2 kolonner med store tall */}
-        <div className="space-y-3 md:col-span-2">
+        <div className="space-y-2 md:col-span-2">
           <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
             Sammendrag
           </p>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2">
             <StatBlock
               label="Økter"
               value={String(ukens_stats.okter)}
@@ -274,7 +274,7 @@ export function WeekProgressCard({
           </div>
 
           {ukens_stats.okter === 0 && ukens_stats.runder === 0 && (
-            <div className="flex items-start gap-2 rounded-xl border border-dashed border-border bg-secondary/40 p-3">
+            <div className="flex items-start gap-2 rounded-xl border border-dashed border-border bg-secondary/40 p-4">
               <CheckCircle2
                 className="mt-0.5 size-4 shrink-0 text-muted-foreground"
                 strokeWidth={1.5}

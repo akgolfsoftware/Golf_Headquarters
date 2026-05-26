@@ -61,8 +61,8 @@ export default function SesjonOpptakDemo() {
       {/* Frame */}
       <div className="overflow-hidden rounded-lg border border-border bg-card">
         {/* Topbar */}
-        <div className="flex items-center justify-between border-b border-border bg-[var(--surface-alt,#F1EEE5)] px-4 py-3">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between border-b border-border bg-[var(--surface-alt,#F1EEE5)] px-4 py-2">
+          <div className="flex items-center gap-2">
             <span className="inline-flex items-center gap-2 rounded-full border border-[#A32D2D]/30 bg-destructive/8 px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-destructive">
               <span className="relative flex h-1.5 w-1.5">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-destructive opacity-75" />
@@ -120,7 +120,7 @@ export default function SesjonOpptakDemo() {
 
           {/* Transcript */}
           <div
-            className="pointer-events-none absolute bottom-[104px] left-1/2 max-h-[200px] w-[720px] max-w-[90%] -translate-x-1/2 overflow-hidden px-5 py-3 font-mono text-[13px] leading-[1.6]"
+            className="pointer-events-none absolute bottom-[104px] left-1/2 max-h-[200px] w-[720px] max-w-[90%] -translate-x-1/2 overflow-hidden px-6 py-2 font-mono text-[13px] leading-[1.6]"
             style={{
               maskImage:
                 "linear-gradient(to top, #000 70%, transparent 100%)",
@@ -145,12 +145,12 @@ export default function SesjonOpptakDemo() {
         </div>
 
         {/* Bottombar */}
-        <div className="flex items-center gap-3 border-t border-border bg-[var(--surface-alt,#F1EEE5)] px-4 py-4">
-          <button className="inline-flex flex-1 items-center justify-center gap-2 rounded-md border border-border bg-card px-4 py-3 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary">
+        <div className="flex items-center gap-2 border-t border-border bg-[var(--surface-alt,#F1EEE5)] px-4 py-4">
+          <button className="inline-flex flex-1 items-center justify-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary">
             <Pause size={16} strokeWidth={1.5} />
             Pause opptak
           </button>
-          <button className="inline-flex flex-1 items-center justify-center gap-2 rounded-md bg-primary px-4 py-3 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90">
+          <button className="inline-flex flex-1 items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90">
             <Square size={16} strokeWidth={1.5} fill="currentColor" />
             Avslutt og analyser
           </button>
@@ -158,7 +158,7 @@ export default function SesjonOpptakDemo() {
       </div>
 
       {/* Meta-strip under frame */}
-      <div className="mt-5 grid grid-cols-4 gap-3">
+      <div className="mt-5 grid grid-cols-4 gap-2">
         <MetaStat label="Varighet" value="12:34" />
         <MetaStat label="Lyd-kvalitet" value="HD · 48 kHz" />
         <MetaStat label="Ord transkribert" value="1 248" />
@@ -216,7 +216,7 @@ function MetaStat({
   delta?: string;
 }) {
   return (
-    <div className="rounded-md border border-border bg-card px-4 py-3">
+    <div className="rounded-md border border-border bg-card px-4 py-2">
       <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
         {label}
       </div>

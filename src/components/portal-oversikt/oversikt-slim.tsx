@@ -118,7 +118,7 @@ export function OversiktSlim({
       {/* ============= HERO ============= */}
       <section>
         <AthleticEyebrow>PLAYERHQ · OVERSIKT</AthleticEyebrow>
-        <div className="mt-3 flex items-center gap-4">
+        <div className="mt-2 flex items-center gap-4">
           <Link
             href="/portal/meg"
             aria-label="Endre profilbilde"
@@ -160,7 +160,7 @@ export function OversiktSlim({
       </section>
 
       {/* ============= KPI-RAD ============= */}
-      <section className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
+      <section className="grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-4">
         <KpiCard
           label="SNITTSCORE"
           value={scoreAvg !== null ? scoreAvg : "—"}
@@ -187,7 +187,7 @@ export function OversiktSlim({
       {/* ============= DAGENS FOKUS ============= */}
       {todaysFocus ? (
         <section
-          className="rounded-2xl border bg-card p-5 md:p-6"
+          className="rounded-2xl border bg-card p-6 md:p-6"
           style={{ borderColor: "var(--color-accent-deep)" }}
         >
           <div className="flex flex-wrap items-start justify-between gap-4">
@@ -212,8 +212,8 @@ export function OversiktSlim({
 
       {/* ============= FORTSETT DER DU SLUTTET ============= */}
       {resumeSession ? (
-        <section className="rounded-2xl border border-border bg-card p-4 md:p-5">
-          <div className="flex flex-wrap items-center justify-between gap-3">
+        <section className="rounded-2xl border border-border bg-card p-4 md:p-6">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <div>
               <AthleticEyebrow>FORTSETT</AthleticEyebrow>
               <p className="font-display mt-1 text-base font-semibold">
@@ -233,12 +233,12 @@ export function OversiktSlim({
       {/* ============= QUICK ACTIONS ============= */}
       <section>
         <AthleticEyebrow>RASK START</AthleticEyebrow>
-        <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-3">
+        <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-3">
           <Link
             href="/portal/coach?tab=ny-melding"
             className="group rounded-2xl border border-border bg-card p-4 transition hover:border-[var(--color-accent-deep)] hover:shadow-[var(--shadow-card-hover)]"
           >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-accent">
                 <MessageSquare className="h-5 w-5" />
               </span>
@@ -252,7 +252,7 @@ export function OversiktSlim({
             href="/portal/analysere/runder/ny"
             className="group rounded-2xl border border-border bg-card p-4 transition hover:border-[var(--color-accent-deep)] hover:shadow-[var(--shadow-card-hover)]"
           >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-accent">
                 <PenSquare className="h-5 w-5" />
               </span>
@@ -266,7 +266,7 @@ export function OversiktSlim({
             href="/portal/planlegge?tab=treningsplan"
             className="group rounded-2xl border border-border bg-card p-4 transition hover:border-[var(--color-accent-deep)] hover:shadow-[var(--shadow-card-hover)]"
           >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-accent">
                 <Sparkles className="h-5 w-5" />
               </span>
@@ -281,7 +281,7 @@ export function OversiktSlim({
 
       {/* ============= VARSLER-STRIP ============= */}
       <section className="rounded-2xl border border-border bg-card">
-        <header className="flex items-center justify-between border-b border-border px-5 py-3.5">
+        <header className="flex items-center justify-between border-b border-border px-6 py-4">
           <div className="flex items-center gap-2">
             <Bell className="h-4 w-4 text-muted-foreground" />
             <h3 className="font-display text-sm font-semibold tracking-tight">
@@ -300,12 +300,12 @@ export function OversiktSlim({
         </header>
         <ul className="divide-y divide-border">
           {recentNotifications.length === 0 ? (
-            <li className="px-5 py-6 text-center text-sm text-muted-foreground">
+            <li className="px-6 py-6 text-center text-sm text-muted-foreground">
               Ingen varsler — alt er ajour.
             </li>
           ) : (
             recentNotifications.slice(0, 3).map((n) => (
-              <li key={n.id} className="flex items-center justify-between gap-4 px-5 py-3">
+              <li key={n.id} className="flex items-center justify-between gap-4 px-6 py-2">
                 <p className="text-sm text-foreground">{n.title}</p>
                 <span className="font-mono shrink-0 text-[9px] uppercase tracking-[0.08em] text-muted-foreground">
                   {n.timeAgo}
@@ -326,7 +326,7 @@ export function OversiktSlim({
             return (
               <div
                 key={row.area}
-                className="relative rounded-xl border bg-card px-3 py-2.5 shadow-[0_1px_3px_rgba(10,31,24,0.05)] transition"
+                className="relative rounded-xl border bg-card px-4 py-2.5 shadow-[0_1px_3px_rgba(10,31,24,0.05)] transition"
                 style={{ width: PYR_WIDTH[row.area], borderColor: `${color}40` }}
               >
                 <div className="flex items-center justify-between gap-2">

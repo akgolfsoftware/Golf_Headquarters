@@ -73,7 +73,7 @@ export default async function SpillerPlanDetaljPage({
   return (
     <div className="space-y-6">
       {/* Hero */}
-      <header className="-mx-4 -mt-4 border-b border-border bg-gradient-to-b from-[#FBFAF5] to-background px-4 py-7 md:-mx-8 md:-mt-8 md:px-8">
+      <header className="-mx-4 -mt-4 border-b border-border bg-gradient-to-b from-[#FBFAF5] to-background px-4 py-8 md:-mx-8 md:-mt-8 md:px-8">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
             <AthleticEyebrow>
@@ -114,7 +114,7 @@ export default async function SpillerPlanDetaljPage({
         </div>
 
         {/* KPI-strip */}
-        <div className="mt-6 grid grid-cols-2 gap-5 border-t border-border pt-5 md:grid-cols-4">
+        <div className="mt-6 grid grid-cols-2 gap-6 border-t border-border pt-6 md:grid-cols-4">
           <KpiBox label="STATUS" value={
             <span className="font-mono inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-emerald-800">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" /> {plan.status}
@@ -143,9 +143,9 @@ export default async function SpillerPlanDetaljPage({
 
       {/* Tab-innhold */}
       {tab === "oversikt" ? (
-        <div className="grid gap-5 lg:grid-cols-[1.5fr_1fr]">
+        <div className="grid gap-6 lg:grid-cols-[1.5fr_1fr]">
           <div className="rounded-2xl border border-border bg-card p-6">
-            <div className="font-mono mb-3 text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+            <div className="font-mono mb-2 text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
               MÅL · BESKRIVELSE
             </div>
             <p
@@ -157,7 +157,7 @@ export default async function SpillerPlanDetaljPage({
             </p>
           </div>
           <div className="rounded-2xl border border-accent/40 bg-accent/[0.08] p-6">
-            <div className="font-mono mb-3 inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.10em] text-primary">
+            <div className="font-mono mb-2 inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.10em] text-primary">
               <Sparkles className="h-3 w-3" /> AI-GENERERINGS-KONTEKST
             </div>
             <p className="text-sm leading-relaxed">
@@ -180,19 +180,19 @@ export default async function SpillerPlanDetaljPage({
           </div>
           <div className="relative h-12 rounded-lg bg-muted/40">
             <span
-              className="font-mono absolute top-0 flex h-full items-center px-3 text-[10px] font-bold uppercase tracking-[0.08em] text-primary"
+              className="font-mono absolute top-0 flex h-full items-center px-4 text-[10px] font-bold uppercase tracking-[0.08em] text-primary"
               style={{ left: "0%", width: "33%", background: "rgba(0,88,64,0.18)", borderRadius: 8 }}
             >
               FUNDAMENT · TEKNIKK
             </span>
             <span
-              className="font-mono absolute top-0 flex h-full items-center px-3 text-[10px] font-bold uppercase tracking-[0.08em] text-foreground"
+              className="font-mono absolute top-0 flex h-full items-center px-4 text-[10px] font-bold uppercase tracking-[0.08em] text-foreground"
               style={{ left: "33%", width: "34%", background: "rgba(209,248,67,0.45)" }}
             >
               SHORT GAME · PUTT
             </span>
             <span
-              className="font-mono absolute top-0 flex h-full items-center px-3 text-[10px] font-bold uppercase tracking-[0.08em] text-foreground"
+              className="font-mono absolute top-0 flex h-full items-center px-4 text-[10px] font-bold uppercase tracking-[0.08em] text-foreground"
               style={{ left: "67%", width: "33%", background: "rgba(44,125,82,0.20)", borderRadius: 8 }}
             >
               SPILL · COMPETITION
@@ -230,7 +230,7 @@ export default async function SpillerPlanDetaljPage({
             </div>
           </div>
 
-          <div className="rounded-2xl border border-border bg-card p-5">
+          <div className="rounded-2xl border border-border bg-card p-6">
             <header className="mb-4 flex items-baseline justify-between">
               <div>
                 <h2 className="font-display text-base font-semibold">
@@ -245,7 +245,7 @@ export default async function SpillerPlanDetaljPage({
               {DRILLS.map((d, i) => (
                 <li
                   key={d.name}
-                  className="grid grid-cols-[20px_32px_1fr_auto_auto_auto] items-center gap-3 py-3"
+                  className="grid grid-cols-[20px_32px_1fr_auto_auto_auto] items-center gap-2 py-2"
                 >
                   <GripVertical className="h-4 w-4 text-muted-foreground" />
                   <div className="font-mono text-sm font-bold text-muted-foreground">{i + 1}</div>
@@ -299,14 +299,14 @@ export default async function SpillerPlanDetaljPage({
       {tab === "hit-rate" ? (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {DRILLS.filter((d) => d.tm).map((d) => (
-            <div key={d.name} className="rounded-2xl border border-border bg-card p-5">
+            <div key={d.name} className="rounded-2xl border border-border bg-card p-6">
               <span
                 className={`font-mono rounded-full px-2 py-0.5 text-[9.5px] font-bold uppercase tracking-[0.08em] ${d.color}`}
               >
                 {d.category}
               </span>
               <div className="font-display mt-2 text-sm font-semibold">{d.name}</div>
-              <div className="mt-3 flex items-baseline gap-2">
+              <div className="mt-2 flex items-baseline gap-2">
                 <div className="font-mono text-3xl font-bold tabular-nums text-emerald-700">
                   {d.rate}
                 </div>
@@ -330,14 +330,14 @@ export default async function SpillerPlanDetaljPage({
 
       {tab === "effekt" ? (
         <div className="rounded-2xl border border-border bg-card p-6">
-          <div className="font-mono mb-3 text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+          <div className="font-mono mb-2 text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
             FØR / ETTER · UTVALGTE METRIKKER
           </div>
           <ul className="divide-y divide-border">
             {EFFEKT_ROWS.map(([k, before, after]) => (
               <li
                 key={k}
-                className="grid grid-cols-[2fr_1fr_1fr_1fr] items-center gap-3 py-3"
+                className="grid grid-cols-[2fr_1fr_1fr_1fr] items-center gap-2 py-2"
               >
                 <div className="font-display text-sm font-semibold">{k}</div>
                 <div className="font-mono text-right text-sm text-muted-foreground tabular-nums">
@@ -381,7 +381,7 @@ function FilterChip({
   return (
     <button
       type="button"
-      className={`font-mono inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.06em] transition ${
+      className={`font-mono inline-flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.06em] transition ${
         active
           ? "border-primary bg-primary text-accent"
           : "border-border bg-card text-muted-foreground"

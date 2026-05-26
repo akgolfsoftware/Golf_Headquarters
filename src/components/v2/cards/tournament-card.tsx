@@ -83,7 +83,7 @@ export default function TournamentCard({
       {/* Checklist */}
       <div>
         <p
-          className="m-0 mb-3 font-mono text-[10px] font-bold uppercase tracking-[0.14em]"
+          className="m-0 mb-2 font-mono text-[10px] font-bold uppercase tracking-[0.14em]"
           style={{ color: "rgba(250,250,247,0.55)" }}
         >
           FORBEREDELSE
@@ -129,7 +129,7 @@ export default function TournamentCard({
       {/* CTA */}
       <Link
         href={statsHref}
-        className="inline-flex items-center justify-center gap-[6px] px-[22px] py-3 rounded-full font-mono text-[12px] font-bold uppercase tracking-[0.10em] no-underline"
+        className="inline-flex items-center justify-center gap-[6px] px-[22px] py-2 rounded-full font-mono text-[12px] font-bold uppercase tracking-[0.10em] no-underline"
         style={{
           background: "var(--accent)",
           color: "var(--accent-fg)",

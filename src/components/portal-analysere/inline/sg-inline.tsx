@@ -107,7 +107,7 @@ export async function SgInline({ userId }: { userId: string }) {
 
       {/* SG-breakdown — 4 områder */}
       <section>
-        <div className="mb-3 flex items-center justify-between">
+        <div className="mb-2 flex items-center justify-between">
           <h3 className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
             Per kategori · snitt siste {runder.length} runder
           </h3>
@@ -119,7 +119,7 @@ export async function SgInline({ userId }: { userId: string }) {
             <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={1.75} />
           </Link>
         </div>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           {omrader.map((o) => (
             <SgKort key={o.kort} omrade={o} />
           ))}
@@ -128,7 +128,7 @@ export async function SgInline({ userId }: { userId: string }) {
 
       {/* Siste runder med SG */}
       <section>
-        <h3 className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+        <h3 className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
           Siste runder
         </h3>
         <div className="overflow-hidden rounded-2xl border border-border bg-card">
@@ -226,7 +226,7 @@ function KpiBoks({
 function SgKort({ omrade }: { omrade: SgKategori }) {
   const positiv = omrade.snitt !== null && omrade.snitt > 0;
   return (
-    <div className="rounded-md border border-border bg-card p-3">
+    <div className="rounded-md border border-border bg-card p-4">
       <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
         {omrade.kort}
       </p>
@@ -255,7 +255,7 @@ function TomTilstand() {
   return (
     <div className="rounded-2xl border border-dashed border-border bg-card p-8 text-center">
       <Target className="mx-auto h-8 w-8 text-muted-foreground" strokeWidth={1.5} />
-      <h3 className="mt-3 font-display text-lg font-semibold tracking-tight">
+      <h3 className="mt-2 font-display text-lg font-semibold tracking-tight">
         Ingen runder med SG-data ennå
       </h3>
       <p className="mt-2 text-sm text-muted-foreground">
@@ -263,7 +263,7 @@ function TomTilstand() {
       </p>
       <Link
         href="/portal/ny-okt?type=runde"
-        className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
+        className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
       >
         Logg første runde
         <ArrowUpRight className="h-4 w-4" strokeWidth={1.75} />

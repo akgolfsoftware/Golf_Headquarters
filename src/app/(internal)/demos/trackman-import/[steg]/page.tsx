@@ -75,7 +75,7 @@ function Header({ current }: { current: Steg }) {
   };
   const t = titles[current];
   return (
-    <header className="flex items-start justify-between gap-4 border-b border-border px-8 pb-5 pt-6">
+    <header className="flex items-start justify-between gap-4 border-b border-border px-8 pb-6 pt-6">
       <div>
         <div className="font-mono text-[10px] font-bold uppercase tracking-[0.07em] text-muted-foreground">
           {t.eyebrow}
@@ -149,7 +149,7 @@ function Stepper({ current }: { current: Steg }) {
 function StepOne() {
   return (
     <div className="pt-4">
-      <div className="grid grid-cols-2 gap-3.5 pt-2">
+      <div className="grid grid-cols-2 gap-4 pt-2">
         <Method
           selected
           icon={<FileText className="h-7 w-7" strokeWidth={1.5} />}
@@ -165,7 +165,7 @@ function StepOne() {
         />
       </div>
 
-      <div className="mt-5 flex items-start gap-2.5 rounded-md bg-secondary px-4 py-3.5 text-[13px] leading-relaxed text-muted-foreground">
+      <div className="mt-5 flex items-start gap-2.5 rounded-md bg-secondary px-4 py-4 text-[13px] leading-relaxed text-muted-foreground">
         <Info className="mt-0.5 h-4 w-4 flex-shrink-0 text-muted-foreground" strokeWidth={2} />
         <div>
           Du finner CSV-eksport i TrackMan Performance Studio under{" "}
@@ -195,7 +195,7 @@ function Method({
 }) {
   return (
     <div
-      className={`relative flex min-h-[220px] flex-col gap-3.5 rounded-xl border-[1.5px] p-6 transition-colors ${
+      className={`relative flex min-h-[220px] flex-col gap-4 rounded-xl border-[1.5px] p-6 transition-colors ${
         selected ? "border-primary bg-primary/5 border-2 p-[23px]" : "border-border bg-card hover:border-muted-foreground"
       }`}
     >
@@ -230,8 +230,8 @@ function Method({
 function StepTwo() {
   return (
     <div className="pt-4">
-      <div className="rounded-xl border-2 border-dashed border-primary bg-primary/5 px-6 py-7 text-center">
-        <div className="mx-auto mb-3.5 grid h-14 w-14 place-items-center rounded-xl bg-background text-primary">
+      <div className="rounded-xl border-2 border-dashed border-primary bg-primary/5 px-6 py-8 text-center">
+        <div className="mx-auto mb-2.5 grid h-14 w-14 place-items-center rounded-xl bg-background text-primary">
           <Upload className="h-7 w-7" strokeWidth={1.5} />
         </div>
         <div className="font-display text-[16px] font-semibold text-foreground">
@@ -242,13 +242,13 @@ function StepTwo() {
         </div>
         <button
           type="button"
-          className="mt-3.5 inline-block rounded-full border-[1.5px] border-border bg-background px-4 py-2 font-mono text-[11px] font-bold uppercase tracking-[0.05em] text-foreground"
+          className="mt-2.5 inline-block rounded-full border-[1.5px] border-border bg-background px-4 py-2 font-mono text-[11px] font-bold uppercase tracking-[0.05em] text-foreground"
         >
           Velg fil fra Mac
         </button>
       </div>
 
-      <div className="mt-4 flex items-center gap-3 rounded-xl border-[1.5px] border-[rgba(22,163,74,0.45)] bg-card px-4 py-3.5">
+      <div className="mt-4 flex items-center gap-2 rounded-xl border-[1.5px] border-[rgba(22,163,74,0.45)] bg-card px-4 py-4">
         <div className="grid h-10 w-10 flex-shrink-0 place-items-center rounded-md bg-[rgba(22,163,74,0.12)] text-success">
           <FileText className="h-5 w-5" strokeWidth={1.75} />
         </div>
@@ -269,10 +269,10 @@ function StepTwo() {
       </div>
 
       <div className="mt-4 rounded-xl border border-border bg-secondary px-4 py-4">
-        <div className="mb-3 font-mono text-[10px] font-bold uppercase tracking-[0.06em] text-muted-foreground">
+        <div className="mb-2 font-mono text-[10px] font-bold uppercase tracking-[0.06em] text-muted-foreground">
           Oppdaget i filen
         </div>
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-4 gap-2">
           {[
             { v: "14", l: "Køller" },
             { v: "168", l: "Slag" },
@@ -324,7 +324,7 @@ const CLUBS: ClubRow[] = [
 function StepThree() {
   return (
     <div className="pt-4">
-      <div className="flex items-start gap-2.5 rounded-md border border-primary/15 bg-primary/5 px-4 py-3 text-[13px] leading-relaxed text-muted-foreground">
+      <div className="flex items-start gap-2.5 rounded-md border border-primary/15 bg-primary/5 px-4 py-2 text-[13px] leading-relaxed text-muted-foreground">
         <Clock className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" strokeWidth={2} />
         <div>
           Klikk på en celle for å justere snittverdiene før import. CSV-data har 100 % presisjon — endre kun hvis noe ser åpenbart feil ut.
@@ -336,23 +336,23 @@ function StepThree() {
           className="grid items-center border-b-[1.5px] border-border bg-secondary text-[10px] font-bold uppercase tracking-[0.07em] text-muted-foreground"
           style={{ gridTemplateColumns: "1.4fr 0.9fr 0.9fr 1.1fr 0.9fr 1fr 0.7fr" }}
         >
-          <div className="px-3 py-2.5 text-left">Kølle</div>
-          <div className="px-3 py-2.5 text-right">
+          <div className="px-4 py-2.5 text-left">Kølle</div>
+          <div className="px-4 py-2.5 text-right">
             Carry <span className="ml-0.5 text-[10px] font-normal text-muted-foreground">m</span>
           </div>
-          <div className="px-3 py-2.5 text-right">
+          <div className="px-4 py-2.5 text-right">
             Total <span className="ml-0.5 text-[10px] font-normal text-muted-foreground">m</span>
           </div>
-          <div className="px-3 py-2.5 text-right">
+          <div className="px-4 py-2.5 text-right">
             Ball-speed <span className="ml-0.5 text-[10px] font-normal text-muted-foreground">m/s</span>
           </div>
-          <div className="px-3 py-2.5 text-right">
+          <div className="px-4 py-2.5 text-right">
             Spin <span className="ml-0.5 text-[10px] font-normal text-muted-foreground">rpm</span>
           </div>
-          <div className="px-3 py-2.5 text-right">
+          <div className="px-4 py-2.5 text-right">
             Launch <span className="ml-0.5 text-[10px] font-normal text-muted-foreground">°</span>
           </div>
-          <div className="px-3 py-2.5 text-right">Slag</div>
+          <div className="px-4 py-2.5 text-right">Slag</div>
         </div>
         {CLUBS.map((c) => (
           <div
@@ -360,13 +360,13 @@ function StepThree() {
             className="grid items-center border-b border-border text-[12px] text-foreground last:border-b-0 hover:bg-secondary"
             style={{ gridTemplateColumns: "1.4fr 0.9fr 0.9fr 1.1fr 0.9fr 1fr 0.7fr" }}
           >
-            <div className="px-3 py-2.5 text-left font-bold">{c.name}</div>
-            <div className="px-3 py-2.5 text-right">{c.carry}</div>
-            <div className="px-3 py-2.5 text-right">{c.total}</div>
-            <div className="px-3 py-2.5 text-right">{c.ballSpeed}</div>
-            <div className="px-3 py-2.5 text-right">{c.spin}</div>
-            <div className="px-3 py-2.5 text-right">{c.launch}</div>
-            <div className="px-3 py-2.5 text-right">{c.shots}</div>
+            <div className="px-4 py-2.5 text-left font-bold">{c.name}</div>
+            <div className="px-4 py-2.5 text-right">{c.carry}</div>
+            <div className="px-4 py-2.5 text-right">{c.total}</div>
+            <div className="px-4 py-2.5 text-right">{c.ballSpeed}</div>
+            <div className="px-4 py-2.5 text-right">{c.spin}</div>
+            <div className="px-4 py-2.5 text-right">{c.launch}</div>
+            <div className="px-4 py-2.5 text-right">{c.shots}</div>
           </div>
         ))}
       </div>
@@ -381,10 +381,10 @@ function Footer({ current }: { current: Steg }) {
     current === "1" ? "Neste — Last opp CSV" : current === "2" ? "Neste — Verifiser data" : "Importer · 14 køller";
 
   return (
-    <footer className="flex items-center justify-between gap-3 border-t border-border bg-secondary/40 px-8 py-4">
+    <footer className="flex items-center justify-between gap-2 border-t border-border bg-secondary/40 px-8 py-4">
       <Link
         href="/"
-        className="rounded-md border border-border bg-transparent px-3.5 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
+        className="rounded-md border border-border bg-transparent px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
       >
         Avbryt
       </Link>
@@ -392,7 +392,7 @@ function Footer({ current }: { current: Steg }) {
         {prev && (
           <Link
             href={`/demos/trackman-import/${prev}`}
-            className="inline-flex items-center gap-1.5 rounded-md border border-border bg-transparent px-3.5 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
+            className="inline-flex items-center gap-1.5 rounded-md border border-border bg-transparent px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
           >
             <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2} />
             Tilbake
@@ -401,7 +401,7 @@ function Footer({ current }: { current: Steg }) {
         {next ? (
           <Link
             href={`/demos/trackman-import/${next}`}
-            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
+            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
           >
             {primaryLabel}
             <ArrowRight className="h-3.5 w-3.5" strokeWidth={2} />
@@ -409,7 +409,7 @@ function Footer({ current }: { current: Steg }) {
         ) : (
           <button
             type="button"
-            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
+            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
           >
             {primaryLabel}
             <ArrowRight className="h-3.5 w-3.5" strokeWidth={2} />

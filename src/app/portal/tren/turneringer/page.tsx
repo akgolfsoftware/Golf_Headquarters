@@ -99,7 +99,7 @@ export default async function TurneringerPage() {
           </AgentStrip>
           <Link
             href="/portal/tren/turneringer/ny"
-            className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-border bg-card px-3 py-2 text-sm font-medium text-foreground shadow-sm hover:bg-secondary"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-border bg-card px-4 py-2 text-sm font-medium text-foreground shadow-sm hover:bg-secondary"
           >
             <Plus className="h-4 w-4" />
             Legg til turnering
@@ -115,7 +115,7 @@ export default async function TurneringerPage() {
         {/* Historiske turneringsresultater */}
         {resultater.length > 0 && (
           <section aria-label="Historiske resultater" className="mt-12">
-            <div className="mb-6 flex items-center gap-3">
+            <div className="mb-6 flex items-center gap-2">
               <Medal size={20} strokeWidth={1.5} className="text-primary" aria-hidden />
               <h2 className="font-display text-2xl font-medium tracking-tight">
                 Historiske resultater

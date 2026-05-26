@@ -14,7 +14,8 @@ const NB_DATE = new Intl.DateTimeFormat("nb-NO", {
 });
 
 export async function TrackManInline({ userId }: { userId: string }) {
-  const trettiagSiden = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+  const now = new Date();
+  const trettiagSiden = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
   const [siste, total, siste30] = await Promise.all([
     prisma.trackManSession.findMany({
@@ -43,7 +44,7 @@ export async function TrackManInline({ userId }: { userId: string }) {
   return (
     <div className="space-y-6">
       {/* KPI */}
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
         <Kpi label="Totalt antall økter" verdi={total.toString()} />
         <Kpi label="Siste 30 dager" verdi={siste30.toString()} />
         <Kpi
@@ -54,7 +55,7 @@ export async function TrackManInline({ userId }: { userId: string }) {
 
       {/* Liste */}
       <section>
-        <div className="mb-3 flex items-center justify-between">
+        <div className="mb-2 flex items-center justify-between">
           <h3 className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
             Siste økter
           </h3>
@@ -123,7 +124,7 @@ function TomTilstand() {
   return (
     <div className="rounded-2xl border border-dashed border-border bg-card p-8 text-center">
       <Wifi className="mx-auto h-8 w-8 text-muted-foreground" strokeWidth={1.5} />
-      <h3 className="mt-3 font-display text-lg font-semibold tracking-tight">
+      <h3 className="mt-2 font-display text-lg font-semibold tracking-tight">
         Ingen TrackMan-data ennå
       </h3>
       <p className="mt-2 text-sm text-muted-foreground">
@@ -131,7 +132,7 @@ function TomTilstand() {
       </p>
       <Link
         href="/portal/trackman"
-        className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
+        className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
       >
         Åpne TrackMan
         <ArrowUpRight className="h-4 w-4" strokeWidth={1.75} />

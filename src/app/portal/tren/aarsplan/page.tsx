@@ -123,7 +123,7 @@ export default async function AarsplanPage() {
               <div className="mb-6">
                 <AgentStrip label="Årsplan-agent">
                   Du har {ukoblede} {ukoblede === 1 ? "turnering" : "turneringer"} i {ar} som ikke er koblet til sesongplanen. Last dem inn nå for å se dem på tidslinjen.
-                  <span className="ml-3 inline-block">
+                  <span className="ml-2 inline-block">
                     <BulkKoblTurneringer seasonPlanId={plan.id} year={ar} antall={ukoblede} />
                   </span>
                 </AgentStrip>
@@ -133,8 +133,8 @@ export default async function AarsplanPage() {
             <AarsplanInteraktiv plan={plan} turneringer={turneringPins} />
 
             {/* Turneringer-lenke */}
-            <div className="mt-6 flex flex-col items-stretch justify-between gap-3 rounded-xl border border-border bg-card px-4 py-4 sm:flex-row sm:items-center sm:px-6">
-              <div className="flex items-center gap-3">
+            <div className="mt-6 flex flex-col items-stretch justify-between gap-2 rounded-xl border border-border bg-card px-4 py-4 sm:flex-row sm:items-center sm:px-6">
+              <div className="flex items-center gap-2">
                 <Trophy className="h-5 w-5 text-muted-foreground" strokeWidth={1.5} />
                 <div>
                   <div className="text-sm font-semibold text-foreground">
@@ -158,7 +158,7 @@ export default async function AarsplanPage() {
             {/* Turneringsliste-forhåndsvisning */}
             {sesongplan && sesongplan.tournamentEntries.length > 0 && (
               <div className="mt-4 overflow-hidden rounded-xl border border-border bg-card">
-                <div className="border-b border-border px-6 py-3 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+                <div className="border-b border-border px-6 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                   Neste turneringer
                 </div>
                 <div className="divide-y divide-border">
@@ -166,7 +166,7 @@ export default async function AarsplanPage() {
                     const navn = e.tournament?.name ?? e.manualName ?? "Manuell turnering";
                     const dato = e.tournament?.startDate ?? e.manualDate;
                     return (
-                      <div key={e.id} className="flex items-center gap-4 px-6 py-3">
+                      <div key={e.id} className="flex items-center gap-4 px-6 py-2">
                         <Trophy className="h-4 w-4 flex-none text-muted-foreground" strokeWidth={1.5} />
                         <span className="flex-1 text-sm font-medium text-foreground">{navn}</span>
                         {dato && (
@@ -189,7 +189,7 @@ export default async function AarsplanPage() {
                     );
                   })}
                   {sesongplan.tournamentEntries.length > 3 && (
-                    <div className="px-6 py-3">
+                    <div className="px-6 py-2">
                       <Link
                         href="/portal/tren/turneringer"
                         className="text-xs font-medium text-primary hover:underline"

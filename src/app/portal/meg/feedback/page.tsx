@@ -22,7 +22,7 @@ export default async function FeedbackPage({
       />
 
       {sp?.takk === "1" && (
-        <div className="rounded-md border border-primary/30 bg-primary/10 px-4 py-3 text-sm text-foreground">
+        <div className="rounded-md border border-primary/30 bg-primary/10 px-4 py-2 text-sm text-foreground">
           Takk for tilbakemeldingen. Du gjør PlayerHQ bedre.
         </div>
       )}

@@ -238,7 +238,7 @@ export default async function TalentRegion({
 
           {/* Tabell */}
           <section className="overflow-hidden rounded-lg border border-border bg-card">
-            <div className="border-b border-border bg-secondary px-6 py-3">
+            <div className="border-b border-border bg-secondary px-6 py-2">
               <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                 Region-oversikt ({regioner.length})
               </span>

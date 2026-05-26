@@ -148,7 +148,7 @@ export function AgentPipeline({
           return (
             <div
               key={sig.id}
-              className={`absolute left-0 flex w-[220px] items-center gap-3 text-[13px] ${
+              className={`absolute left-0 flex w-[220px] items-center gap-2 text-[13px] ${
                 sig.active ? "text-foreground" : "text-foreground/55"
               }`}
               style={{ top }}

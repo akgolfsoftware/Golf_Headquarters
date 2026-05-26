@@ -30,7 +30,7 @@ export default async function YardagePage() {
       </Link>
 
       <header className="rounded-xl border border-border bg-card p-6">
-        <div className="flex items-start gap-3">
+        <div className="flex items-start gap-2">
           <BarChart2 className="mt-1 h-5 w-5 text-primary" />
           <div>
             <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">

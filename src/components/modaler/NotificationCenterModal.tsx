@@ -86,7 +86,7 @@ export function NotificationCenterModal({ open, onClose }: Props) {
       />
       <div className="relative z-10 w-full max-h-[90vh] overflow-hidden rounded-t-2xl border border-border bg-card shadow-xl sm:max-w-md sm:rounded-xl">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-border px-5 py-3 sm:px-6 sm:py-4">
+        <div className="flex items-center justify-between border-b border-border px-6 py-2 sm:px-6 sm:py-4">
           <div className="flex items-center gap-2">
             <Bell className="h-4 w-4 text-primary" />
             <h2 className="text-base font-semibold">Varsler</h2>
@@ -96,7 +96,7 @@ export function NotificationCenterModal({ open, onClose }: Props) {
               </span>
             )}
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={merkAlleSomLest}
@@ -116,13 +116,13 @@ export function NotificationCenterModal({ open, onClose }: Props) {
         </div>
 
         {/* Faner */}
-        <div className="flex gap-1 border-b border-border px-4 pt-3 pb-0">
+        <div className="flex gap-1 border-b border-border px-4 pt-2 pb-0">
           {FANER.map((fane) => (
             <button
               key={fane.id}
               type="button"
               onClick={() => setAktivFane(fane.id)}
-              className={`pb-3 px-3 text-sm font-medium transition-colors border-b-2 ${
+              className={`pb-2 px-4 text-sm font-medium transition-colors border-b-2 ${
                 aktivFane === fane.id
                   ? "border-primary text-foreground"
                   : "border-transparent text-muted-foreground hover:text-foreground"
@@ -141,7 +141,7 @@ export function NotificationCenterModal({ open, onClose }: Props) {
             </div>
           ) : (
             filtrerte.map((varsel) => (
-              <div key={varsel.id} className="flex gap-3 border-b border-border py-3 last:border-0">
+              <div key={varsel.id} className="flex gap-2 border-b border-border py-2 last:border-0">
                 <div className="mt-2 shrink-0">
                   {erUlest(varsel) ? (
                     <div className="h-2 w-2 rounded-full bg-primary" />

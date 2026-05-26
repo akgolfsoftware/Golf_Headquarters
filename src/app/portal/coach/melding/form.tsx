@@ -178,7 +178,7 @@ export function MeldingForm({ coacher }: { coacher: Coach[] }) {
       )}
 
       {/* Footer */}
-      <div className="mt-6 flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mt-6 flex flex-col gap-2 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
         <button
           type="button"
           onClick={() => {

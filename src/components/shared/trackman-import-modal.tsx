@@ -324,7 +324,7 @@ export function TrackmanImportModal({
         </div>
 
         {/* Steg-indikator */}
-        <div className="flex items-center gap-2 border-b border-border bg-muted/30 px-6 py-3">
+        <div className="flex items-center gap-2 border-b border-border bg-muted/30 px-6 py-2">
           {[1, 2, 3, 4].map((n) => (
             <span
               key={n}
@@ -431,7 +431,7 @@ function Steg1({
       <p className="mb-4 text-sm text-muted-foreground">
         Velg hvor TrackMan-dataene kommer fra.
       </p>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
         {KILDER.map((k) => {
           const aktiv = valgt === k.id;
           const Icon = k.icon;
@@ -579,7 +579,7 @@ function Steg3({
 }) {
   const allSelected = valgt.size === shots.length && shots.length > 0;
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
           Velg hvilke slag som skal lagres.
@@ -594,7 +594,7 @@ function Steg3({
       </div>
 
       <div className="overflow-hidden rounded-lg border border-border">
-        <div className="grid grid-cols-[24px_1fr_70px_70px_70px] gap-3 border-b border-border bg-muted/40 px-4 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+        <div className="grid grid-cols-[24px_1fr_70px_70px_70px] gap-2 border-b border-border bg-muted/40 px-4 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
           <span />
           <span>Kølle</span>
           <span className="text-right">Carry</span>
@@ -607,7 +607,7 @@ function Steg3({
             return (
               <li
                 key={i}
-                className="grid grid-cols-[24px_1fr_70px_70px_70px] items-center gap-3 border-b border-border/60 px-4 py-2 text-sm last:border-0 hover:bg-muted/20"
+                className="grid grid-cols-[24px_1fr_70px_70px_70px] items-center gap-2 border-b border-border/60 px-4 py-2 text-sm last:border-0 hover:bg-muted/20"
               >
                 <input
                   type="checkbox"
@@ -692,7 +692,7 @@ function kildeLabel(k: Kilde | null): string {
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-baseline justify-between gap-4 px-4 py-3 text-sm">
+    <div className="flex items-baseline justify-between gap-4 px-4 py-2 text-sm">
       <dt className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
         {label}
       </dt>

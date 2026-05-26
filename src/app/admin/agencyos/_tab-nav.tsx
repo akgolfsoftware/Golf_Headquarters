@@ -25,7 +25,7 @@ export function AgencyOSTabNav() {
             key={t.href}
             href={t.href}
             aria-current={aktiv ? "page" : undefined}
-            className={`shrink-0 rounded-sm px-3 py-2 font-mono text-[11px] uppercase tracking-[0.10em] transition-colors sm:px-4 sm:py-1.5 ${
+            className={`shrink-0 rounded-sm px-4 py-2 font-mono text-[11px] uppercase tracking-[0.10em] transition-colors sm:px-4 sm:py-1.5 ${
               aktiv
                 ? "bg-primary text-primary-foreground"
                 : "text-muted-foreground hover:bg-secondary hover:text-foreground"

@@ -96,7 +96,7 @@ export function LoggerClient({
     <div className="fixed inset-0 flex flex-col bg-[#0F2A22] text-white">
       {/* Header */}
       <header
-        className="flex items-center justify-between px-5 pt-6 pb-3"
+        className="flex items-center justify-between px-6 pt-6 pb-2"
         style={{ paddingTop: "max(env(safe-area-inset-top), 1.5rem)" }}
       >
         <Link
@@ -114,9 +114,9 @@ export function LoggerClient({
       </header>
 
       {/* Drill-info */}
-      <section className="px-5 text-center">
+      <section className="px-6 text-center">
         <span
-          className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5"
+          className="inline-flex items-center gap-1.5 rounded-full px-4 py-1.5"
           style={{ background: "rgba(209,248,67,0.15)" }}
         >
           <span className="font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-accent">
@@ -126,7 +126,7 @@ export function LoggerClient({
             · {drill.repsPlanned} REPS
           </span>
         </span>
-        <h1 className="font-display mt-3 text-2xl font-semibold leading-tight tracking-tight">
+        <h1 className="font-display mt-2 text-2xl font-semibold leading-tight tracking-tight">
           {drill.title}{" "}
           <em
             className="font-normal not-italic"
@@ -142,7 +142,7 @@ export function LoggerClient({
       </section>
 
       {/* Big counter */}
-      <section className="flex flex-1 flex-col items-center justify-center px-5">
+      <section className="flex flex-1 flex-col items-center justify-center px-6">
         <div className="font-mono text-[10px] uppercase tracking-[0.20em] text-white/55">
           HIT / TOTAL
         </div>
@@ -163,7 +163,7 @@ export function LoggerClient({
         <div className="font-mono mt-1 text-xs uppercase tracking-[0.08em] text-accent tabular-nums">
           {hitRate}% HIT-RATE
         </div>
-        <div className="font-mono mt-3 flex max-w-xs items-center justify-center gap-1 text-center text-[11px] leading-relaxed tracking-[0.06em] text-white/55">
+        <div className="font-mono mt-2 flex max-w-xs items-center justify-center gap-1 text-center text-[11px] leading-relaxed tracking-[0.06em] text-white/55">
           <span>
             Mål: {drill.targetText}
             {left > 0 ? ` — du trenger ${left} til` : " — mål nådd"}
@@ -175,7 +175,7 @@ export function LoggerClient({
       </section>
 
       {/* Bottom CTAs (+1 INN / − BOM) */}
-      <section className="grid grid-cols-[1fr_100px] gap-3 px-5 pb-4">
+      <section className="grid grid-cols-[1fr_100px] gap-2 px-6 pb-4">
         <button
           type="button"
           onClick={addOk}
@@ -205,24 +205,24 @@ export function LoggerClient({
 
       {/* Footer nav (forrige / sett / neste) */}
       <footer
-        className="flex items-center justify-between gap-3 px-5 pb-6"
+        className="flex items-center justify-between gap-2 px-6 pb-6"
         style={{ paddingBottom: "max(env(safe-area-inset-bottom), 1.5rem)" }}
       >
         <button
           type="button"
-          className="font-mono inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-white/[0.06] px-4 py-3 text-[10.5px] font-bold uppercase tracking-[0.10em] text-white"
+          className="font-mono inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-white/[0.06] px-4 py-2 text-[10.5px] font-bold uppercase tracking-[0.10em] text-white"
         >
           <ArrowLeft className="h-3 w-3" /> Forrige
         </button>
         <button
           type="button"
-          className="font-mono min-h-11 rounded-xl bg-white/[0.06] px-4 py-3 text-[10.5px] font-bold uppercase tracking-[0.10em] text-white"
+          className="font-mono min-h-11 rounded-xl bg-white/[0.06] px-4 py-2 text-[10.5px] font-bold uppercase tracking-[0.10em] text-white"
         >
           Sett
         </button>
         <button
           type="button"
-          className="font-mono inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-accent px-4 py-3 text-[10.5px] font-bold uppercase tracking-[0.10em] text-foreground"
+          className="font-mono inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-accent px-4 py-2 text-[10.5px] font-bold uppercase tracking-[0.10em] text-foreground"
         >
           Neste <ArrowRight className="h-3 w-3" />
         </button>

@@ -58,7 +58,7 @@ export async function DrillsInline({ userId }: { userId: string }) {
     <div className="space-y-6">
       {/* Ukens drills */}
       <section>
-        <div className="mb-3 flex items-center justify-between">
+        <div className="mb-2 flex items-center justify-between">
           <h3 className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
             Drills i ukens økter
           </h3>
@@ -79,7 +79,7 @@ export async function DrillsInline({ userId }: { userId: string }) {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
             {ukensDrills.map((d) => (
               <div
                 key={d.id}
@@ -102,7 +102,7 @@ export async function DrillsInline({ userId }: { userId: string }) {
                   {d.session?.title}
                   {d.omraade && ` · ${d.omraade}`}
                 </p>
-                <div className="mt-2 flex items-center gap-3 text-[12px] text-muted-foreground">
+                <div className="mt-2 flex items-center gap-2 text-[12px] text-muted-foreground">
                   <span className="font-mono tabular-nums">
                     {d.durationMinutes} min
                   </span>
@@ -121,10 +121,10 @@ export async function DrillsInline({ userId }: { userId: string }) {
       {/* Populære drills fra global pool */}
       {populaere.length > 0 && (
         <section>
-          <h3 className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+          <h3 className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
             Populære drills
           </h3>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
             {populaere.map((d) => (
               <Link
                 key={d.id}

@@ -249,7 +249,7 @@ export default async function AnleggDetalj({
             <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
               Anlegg
             </span>
-            <h1 className="mt-3 font-display text-4xl font-semibold leading-[1.02] tracking-[-0.025em] sm:text-5xl">
+            <h1 className="mt-2 font-display text-4xl font-semibold leading-[1.02] tracking-[-0.025em] sm:text-5xl">
               <em className="font-normal italic text-primary">{data.name}</em>
             </h1>
             <p className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
@@ -259,7 +259,7 @@ export default async function AnleggDetalj({
               />
               {data.adresse}
             </p>
-            <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-foreground sm:text-[16.5px]">
+            <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-foreground sm:text-[16.5px]">
               {data.tagline}
             </p>
           </div>
@@ -272,7 +272,7 @@ export default async function AnleggDetalj({
           {data.highlights.map(({ Icon, title, description }, index) => (
             <div
               key={title}
-              className="flex min-h-[220px] flex-col gap-4 rounded-2xl border border-border bg-card p-7"
+              className="flex min-h-[220px] flex-col gap-4 rounded-2xl border border-border bg-card p-8"
             >
               {/* Icon in bg-background square */}
               <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-background text-primary">
@@ -297,7 +297,7 @@ export default async function AnleggDetalj({
 
       {/* ── Galleri + Kontakt ── */}
       <section className="px-6 pb-16">
-        <div className="mx-auto grid max-w-5xl gap-5 sm:grid-cols-[1.1fr_0.9fr]">
+        <div className="mx-auto grid max-w-5xl gap-6 sm:grid-cols-[1.1fr_0.9fr]">
           {/* Gallery */}
           <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-secondary">
             <Image
@@ -308,7 +308,7 @@ export default async function AnleggDetalj({
               className="object-cover"
             />
             {/* Label overlay */}
-            <div className="absolute bottom-4 left-4 rounded-lg px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-white backdrop-blur-sm" style={{ background: "rgba(0,40,28,0.55)" }}>
+            <div className="absolute bottom-4 left-4 rounded-lg px-4 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-white backdrop-blur-sm" style={{ background: "rgba(0,40,28,0.55)" }}>
               {data.gallery.label}
             </div>
           </div>
@@ -326,7 +326,7 @@ export default async function AnleggDetalj({
 
             <div className="flex flex-col gap-2.5 border-t border-border pt-4">
               {/* Phone */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <span className="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-background text-primary">
                   <Phone className="h-[14px] w-[14px]" aria-hidden="true" />
                 </span>
@@ -341,7 +341,7 @@ export default async function AnleggDetalj({
               </div>
 
               {/* Email */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <span className="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-background text-primary">
                   <Mail className="h-[14px] w-[14px]" aria-hidden="true" />
                 </span>
@@ -356,7 +356,7 @@ export default async function AnleggDetalj({
               </div>
 
               {/* Address */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <span className="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-background text-primary">
                   <Map className="h-[14px] w-[14px]" aria-hidden="true" />
                 </span>
@@ -373,7 +373,7 @@ export default async function AnleggDetalj({
 
             <a
               href={`tel:${data.kontakt.telefon.replace(/\s/g, "")}`}
-              className="mt-1 inline-flex items-center justify-center gap-2.5 rounded-md bg-primary px-5 py-3.5 text-sm font-semibold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="mt-1 inline-flex items-center justify-center gap-2.5 rounded-md bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               Ring klubben
               <ArrowRight className="h-[14px] w-[14px]" aria-hidden="true" />
@@ -385,7 +385,7 @@ export default async function AnleggDetalj({
       {/* ── Tre veier inn ── */}
       <section className="px-6 pb-14">
         <div className="mx-auto max-w-5xl">
-          <div className="mb-5 flex flex-wrap items-baseline gap-3">
+          <div className="mb-5 flex flex-wrap items-baseline gap-2">
             <span className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
               For gjester og medlemmer
             </span>
@@ -401,7 +401,7 @@ export default async function AnleggDetalj({
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex flex-col gap-3.5 rounded-2xl border border-border bg-card p-6 no-underline transition-shadow hover:shadow-md"
+                className="group flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 no-underline transition-shadow hover:shadow-md"
               >
                 <div className="flex items-center justify-between">
                   <span className="inline-flex h-10 w-10 items-center justify-center rounded-[10px] bg-background text-primary">
@@ -421,7 +421,7 @@ export default async function AnleggDetalj({
                   </p>
                 </div>
 
-                <div className="mt-auto flex items-center justify-between border-t border-border pt-3.5">
+                <div className="mt-auto flex items-center justify-between border-t border-border pt-4">
                   <span className="font-mono text-[12px] font-bold tracking-[0.02em] text-foreground">
                     {cta}
                   </span>
@@ -449,7 +449,7 @@ export default async function AnleggDetalj({
             }}
           />
 
-          <div className="relative flex flex-col items-center gap-5 sm:gap-6">
+          <div className="relative flex flex-col items-center gap-6 sm:gap-6">
             {/* Club logo */}
             <Image
               src={data.logo.src}
@@ -472,10 +472,10 @@ export default async function AnleggDetalj({
               </p>
             </div>
 
-            <div className="flex flex-col items-center gap-3.5 sm:flex-row sm:gap-5">
+            <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-6">
               <Link
                 href="/booking"
-                className="inline-flex items-center gap-2.5 rounded-md bg-accent px-7 py-4 text-sm font-bold text-accent-foreground shadow-[0_8px_24px_rgba(209,248,67,0.35)] hover:opacity-90 sm:text-base"
+                className="inline-flex items-center gap-2.5 rounded-md bg-accent px-8 py-4 text-sm font-bold text-accent-foreground shadow-[0_8px_24px_rgba(209,248,67,0.35)] hover:opacity-90 sm:text-base"
               >
                 Se tilgjengelige tider
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />

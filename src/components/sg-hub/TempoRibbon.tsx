@@ -24,7 +24,7 @@ export function TempoRibbon({ shots, advanced = false }: Props) {
     return (
       <div className="rounded-xl border border-dashed border-border bg-card/50 p-8 text-center">
         <Activity
-          className="mx-auto mb-3 h-6 w-6 text-muted-foreground"
+          className="mx-auto mb-2 h-6 w-6 text-muted-foreground"
           strokeWidth={1.5}
         />
         <p className="text-sm font-semibold text-foreground">
@@ -118,7 +118,7 @@ export function TempoRibbon({ shots, advanced = false }: Props) {
       </div>
 
       {advanced && (
-        <dl className="grid grid-cols-2 gap-3 border-t border-border pt-4 sm:grid-cols-4">
+        <dl className="grid grid-cols-2 gap-2 border-t border-border pt-4 sm:grid-cols-4">
           <Stat label="Snitt-ratio" value={`${avgRatio.toFixed(2)}:1`} />
           <Stat
             label="Optimal"

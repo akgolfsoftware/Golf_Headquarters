@@ -181,7 +181,7 @@ export default function Treningsfilosofi() {
           </p>
         </section>
 
-        <section className="mt-20 rounded-2xl border border-primary/20 bg-primary/5 p-5 text-center sm:p-8 md:p-12">
+        <section className="mt-20 rounded-2xl border border-primary/20 bg-primary/5 p-6 text-center sm:p-8 md:p-12">
           <h2 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">
             Vil du trene slik?
           </h2>

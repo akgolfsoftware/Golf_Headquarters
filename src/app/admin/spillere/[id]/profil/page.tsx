@@ -90,7 +90,7 @@ export default async function SpillerProfilSide({
       <header className="space-y-4">
         <Link
           href={`/admin/spillere/${player.id}`}
-          className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground transition-colors hover:bg-secondary"
+          className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground transition-colors hover:bg-secondary"
         >
           <ArrowLeft size={12} strokeWidth={2} />
           Tilbake til {player.name}
@@ -113,7 +113,7 @@ export default async function SpillerProfilSide({
       </header>
 
       {/* 1. PERSONALIA */}
-      <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+      <section className="rounded-2xl border border-border bg-card p-6 sm:p-6">
         <div className="mb-4">
           <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
             Personalia
@@ -142,7 +142,7 @@ export default async function SpillerProfilSide({
       </section>
 
       {/* 2. FORELDER/VERGE */}
-      <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+      <section className="rounded-2xl border border-border bg-card p-6 sm:p-6">
         <div className="mb-4 flex items-baseline justify-between">
           <div>
             <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
@@ -164,13 +164,13 @@ export default async function SpillerProfilSide({
             Ingen foresatte registrert.
           </p>
         ) : (
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {player.childRelations.map((cr) => {
               const p = cr.parent;
               return (
                 <div
                   key={cr.id}
-                  className="flex items-start gap-3 rounded-xl border border-border bg-background p-4"
+                  className="flex items-start gap-2 rounded-xl border border-border bg-background p-4"
                 >
                   {p.avatarUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
@@ -209,7 +209,7 @@ export default async function SpillerProfilSide({
       </section>
 
       {/* 3. SPILLER-DNA */}
-      <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+      <section className="rounded-2xl border border-border bg-card p-6 sm:p-6">
         <div className="mb-4">
           <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
             Spiller-DNA
@@ -220,13 +220,13 @@ export default async function SpillerProfilSide({
         </div>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-[280px_1fr]">
           <RadarChart dna={dna} cohort={cohort} />
-          <div className="space-y-3">
+          <div className="space-y-2">
             <DnaAxisRow label="FYS" value={dna.fys} cohort={cohort.fys} axis="fys" />
             <DnaAxisRow label="TEK" value={dna.tek} cohort={cohort.tek} axis="tek" />
             <DnaAxisRow label="SLAG" value={dna.slag} cohort={cohort.slag} axis="slag" />
             <DnaAxisRow label="SPILL" value={dna.spill} cohort={cohort.spill} axis="spill" />
             <DnaAxisRow label="TURN" value={dna.turn} cohort={cohort.turn} axis="turn" />
-            <div className="mt-3 flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
+            <div className="mt-2 flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
               <span className="inline-flex items-center gap-1.5">
                 <span className="h-2 w-3 rounded-full bg-accent" />
                 Spilleren
@@ -241,7 +241,7 @@ export default async function SpillerProfilSide({
       </section>
 
       {/* 4. AKTIVE MÅL */}
-      <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+      <section className="rounded-2xl border border-border bg-card p-6 sm:p-6">
         <div className="mb-4 flex items-baseline justify-between">
           <div>
             <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
@@ -260,7 +260,7 @@ export default async function SpillerProfilSide({
             Ingen aktive mål.
           </p>
         ) : (
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {player.goals.slice(0, 3).map((g) => {
               const typeLabel =
                 g.type === "HCP_TARGET"
@@ -293,7 +293,7 @@ export default async function SpillerProfilSide({
       </section>
 
       {/* 5. SKADER / PERMISJONER */}
-      <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+      <section className="rounded-2xl border border-border bg-card p-6 sm:p-6">
         <div className="mb-4">
           <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
             Skader / permisjoner
@@ -321,15 +321,15 @@ export default async function SpillerProfilSide({
               <tbody>
                 {player.leaves.map((l) => (
                   <tr key={l.id} className="border-b border-border last:border-b-0">
-                    <td className="py-3 pr-4 font-medium text-foreground">{l.reason}</td>
-                    <td className="py-3 pr-4 font-mono text-xs tabular-nums text-muted-foreground">
+                    <td className="py-2 pr-4 font-medium text-foreground">{l.reason}</td>
+                    <td className="py-2 pr-4 font-mono text-xs tabular-nums text-muted-foreground">
                       {NB_DATE.format(l.startAt)}
                     </td>
-                    <td className="py-3 pr-4 font-mono text-xs tabular-nums text-muted-foreground">
+                    <td className="py-2 pr-4 font-mono text-xs tabular-nums text-muted-foreground">
                       {l.endAt ? NB_DATE.format(l.endAt) : "pågår"}
                     </td>
-                    <td className="py-3 pr-4 text-foreground">{l.description ?? "—"}</td>
-                    <td className="py-3">
+                    <td className="py-2 pr-4 text-foreground">{l.description ?? "—"}</td>
+                    <td className="py-2">
                       <span className="inline-flex rounded-full bg-secondary px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
                         {l.returnedAt ? "Avsluttet" : l.endAt ? "Planlagt slutt" : "Pågående"}
                       </span>
@@ -348,7 +348,7 @@ export default async function SpillerProfilSide({
           aria-hidden="true"
           className="absolute left-0 top-0 h-full w-1.5 bg-accent"
         />
-        <div className="pl-3">
+        <div className="pl-4">
           <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
             Coachens vurdering
           </div>
@@ -541,7 +541,7 @@ function ProgressRing({ pct }: { pct: number }) {
   const C = 2 * Math.PI * r;
   const offset = C - (pct / 100) * C;
   return (
-    <div className="mt-3 flex items-center gap-3">
+    <div className="mt-2 flex items-center gap-2">
       <svg width={size} height={size} aria-hidden="true">
         <circle
           cx={size / 2}

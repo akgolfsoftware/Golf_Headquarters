@@ -43,10 +43,10 @@ export function SgTrendLine({
 }: SgTrendLineProps) {
   const latest = points[points.length - 1] ?? {};
   return (
-    <div className={cn("rounded-2xl border border-border bg-card p-4 md:p-5", className)}>
-      <div className="mb-4 flex items-baseline justify-between gap-3">
+    <div className={cn("rounded-2xl border border-border bg-card p-4 md:p-6", className)}>
+      <div className="mb-4 flex items-baseline justify-between gap-2">
         <h3 className="font-display text-xl font-bold tracking-[-0.015em]">{title}</h3>
-        <div className="flex items-baseline gap-3 font-mono text-[10px] uppercase tracking-[0.08em]">
+        <div className="flex items-baseline gap-2 font-mono text-[10px] uppercase tracking-[0.08em]">
           {(["sgOtt", "sgApp", "sgArg", "sgPutt"] as const).map((k) => (
             <span key={k} className="flex items-center gap-1.5 text-muted-foreground">
               <span className="h-2 w-2 rounded-full" style={{ backgroundColor: COLORS[k] }} />

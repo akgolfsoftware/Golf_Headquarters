@@ -44,7 +44,7 @@ export function UserMenu({ name, email, avatarUrl }: Props) {
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="menu"
         aria-expanded={open}
-        className="flex h-11 items-center gap-3 rounded-full border border-border bg-card pl-1 pr-2 text-sm transition hover:border-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:pr-3"
+        className="flex h-11 items-center gap-2 rounded-full border border-border bg-card pl-1 pr-2 text-sm transition hover:border-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:pr-4"
       >
         <span className="grid h-8 w-8 place-items-center overflow-hidden rounded-full bg-primary text-xs font-semibold text-primary-foreground">
           {avatarUrl ? (
@@ -72,7 +72,7 @@ export function UserMenu({ name, email, avatarUrl }: Props) {
           className="absolute right-0 z-50 mt-2 w-[calc(100vw-2rem)] max-w-xs rounded-2xl border border-border bg-card p-1.5 shadow-[0_8px_30px_rgba(10,31,24,0.12)] sm:w-64"
         >
           {/* Header */}
-          <div className="flex items-center gap-3 px-3 py-3">
+          <div className="flex items-center gap-2 px-4 py-2">
             <span className="grid h-10 w-10 place-items-center overflow-hidden rounded-full bg-primary text-sm font-semibold text-primary-foreground">
               {avatarUrl ? (
                 <Image src={avatarUrl} alt="" width={40} height={40} className="h-10 w-10 rounded-full object-cover" />
@@ -110,7 +110,7 @@ export function UserMenu({ name, email, avatarUrl }: Props) {
             <button
               type="submit"
               role="menuitem"
-              className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-sm text-destructive transition hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive/30"
+              className="flex w-full items-center gap-2.5 rounded-lg px-4 py-2 text-left text-sm text-destructive transition hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive/30"
             >
               <LogOut className="h-4 w-4" strokeWidth={1.75} />
               Logg ut
@@ -135,7 +135,7 @@ function MenuLink({
     <Link
       href={href}
       role="menuitem"
-      className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-foreground transition hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="flex items-center gap-2.5 rounded-lg px-4 py-2 text-sm text-foreground transition hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
       <Icon className="h-4 w-4 text-muted-foreground" strokeWidth={1.75} />
       {label}

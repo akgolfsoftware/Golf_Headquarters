@@ -125,7 +125,7 @@ export function ClubTaggingModal({ sessionId }: Props) {
                 <button
                   type="button"
                   onClick={() => toggleKolle(club)}
-                  className={`rounded-md border px-3 py-2 text-sm font-medium transition-colors ${
+                  className={`rounded-md border px-4 py-2 text-sm font-medium transition-colors ${
                     selected[club]
                       ? "border-primary bg-primary/10 text-primary"
                       : "border-border bg-card text-foreground hover:bg-secondary"

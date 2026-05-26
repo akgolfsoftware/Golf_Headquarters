@@ -460,7 +460,7 @@ export default async function GoalDetailPage({
                 Hovedhinder
               </span>
             </div>
-            <p className="mt-3 text-sm leading-relaxed text-foreground">
+            <p className="mt-2 text-sm leading-relaxed text-foreground">
               {data.mainObstacle}
             </p>
           </div>
@@ -475,7 +475,7 @@ export default async function GoalDetailPage({
                 Trend siste 90 dager
               </span>
             </div>
-            <div className="mt-3 flex items-baseline gap-2">
+            <div className="mt-2 flex items-baseline gap-2">
               <TrendingUp
                 className={`h-5 w-5 ${
                   data.trend === "UP"
@@ -583,7 +583,7 @@ export default async function GoalDetailPage({
                   href={`/portal/runder/${row.id}`}
                   className="group flex items-center justify-between gap-4 py-4 transition-colors hover:bg-secondary/40"
                 >
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-start gap-2">
                     <Flag
                       className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground"
                       strokeWidth={1.75}
@@ -604,7 +604,7 @@ export default async function GoalDetailPage({
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 text-right">
+                  <div className="flex items-center gap-2 text-right">
                     <div>
                       <span className="font-display text-xl font-semibold tabular-nums">
                         {row.scoreText}
@@ -641,7 +641,7 @@ export default async function GoalDetailPage({
             </span>
           </div>
 
-          <ol className="mt-6 space-y-5">
+          <ol className="mt-6 space-y-6">
             {data.coachMessages.map((m) => (
               <li key={m.id} className="flex items-start gap-4">
                 <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground">
@@ -654,7 +654,7 @@ export default async function GoalDetailPage({
                   <p className="text-sm leading-relaxed text-foreground">
                     {m.text}
                   </p>
-                  <div className="mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                  <div className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                     <span className="text-foreground">{m.authorName}</span>
                     <span>·</span>
                     <span>{m.authorRole}</span>

@@ -161,7 +161,7 @@ export default async function TalentSammenligning({
                 <Layers className="mr-1 inline h-3 w-3" strokeWidth={1.5} />
                 Overlapping radar (1–10)
               </span>
-              <div className="flex flex-wrap items-center gap-3">
+              <div className="flex flex-wrap items-center gap-2">
                 {spillere.map((t, i) => {
                   const c = COLORS[i % COLORS.length]!;
                   return (

@@ -157,7 +157,7 @@ export function PeriodeModal({ apen, initial, spilllerId, onLukk, onLagre }: Pro
                 value={focus}
                 onChange={(e) => setFocus(e.target.value)}
                 placeholder="f.eks. Driver shape, putting under press"
-                className="h-10 w-full rounded-md border border-input bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
+                className="h-10 w-full rounded-md border border-input bg-card px-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
               />
             </div>
 
@@ -209,7 +209,7 @@ export function PeriodeModal({ apen, initial, spilllerId, onLukk, onLagre }: Pro
                 value={notater}
                 onChange={(e) => setNotater(e.target.value)}
                 rows={3}
-                className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
+                className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
               />
             </div>
           </div>
@@ -246,7 +246,7 @@ export function PeriodeModal({ apen, initial, spilllerId, onLukk, onLagre }: Pro
           </div>
         </div>
 
-        <footer className="flex items-center justify-between border-t border-border bg-card px-6 py-3">
+        <footer className="flex items-center justify-between border-t border-border bg-card px-6 py-2">
           {!gyldigSum && (
             <span className="flex items-center gap-1 text-xs text-destructive">
               <AlertCircle size={14} strokeWidth={1.5} />

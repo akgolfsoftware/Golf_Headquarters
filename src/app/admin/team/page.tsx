@@ -118,7 +118,7 @@ export default async function TeamAdmin() {
           }
         />
       ) : (
-        <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {team.map((u) => (
             <CoachCard key={u.id} member={u} />
           ))}
@@ -165,7 +165,7 @@ function CoachCard({ member }: { member: TeamMember }) {
           {roleLabel}
         </span>
       </div>
-      <div className="grid w-full grid-cols-3 gap-2 border-y border-border py-3.5">
+      <div className="grid w-full grid-cols-3 gap-2 border-y border-border py-4">
         <Stat label="Grupper" value={String(member._count.coachedGroups)} />
         <Stat
           label="Tidsvinduer"

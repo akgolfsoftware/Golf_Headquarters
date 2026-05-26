@@ -126,7 +126,7 @@ export default async function TurneringDetalj({
         </>
       }
       kpiRow={
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           <KPICard
             eyebrow="Påmeldte"
             value={String(entries.length)}
@@ -166,17 +166,17 @@ export default async function TurneringDetalj({
             return (
               <div className="flex flex-wrap gap-2">
                 {meta.tour && (
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/30 px-3 py-1 font-mono text-xs font-semibold uppercase tracking-[0.04em] text-foreground">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/30 px-4 py-1 font-mono text-xs font-semibold uppercase tracking-[0.04em] text-foreground">
                     {TOUR_LABEL[meta.tour] ?? meta.tour}
                   </span>
                 )}
                 {meta.krets && (
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 font-mono text-xs text-muted-foreground">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-1 font-mono text-xs text-muted-foreground">
                     Krets · {meta.krets}
                   </span>
                 )}
                 {Array.isArray(meta.categories) && meta.categories.length > 0 && (
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 font-mono text-xs text-muted-foreground">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-1 font-mono text-xs text-muted-foreground">
                     {meta.categories.length} kategori{meta.categories.length === 1 ? "" : "er"}
                   </span>
                 )}

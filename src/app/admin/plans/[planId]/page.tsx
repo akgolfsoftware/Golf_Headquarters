@@ -228,7 +228,7 @@ export default async function AdminPlanDetalj({
         />
       }
       kpiRow={
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           <KPICard
             eyebrow="Total tid"
             value={`${totTimer} t`}
@@ -263,7 +263,7 @@ export default async function AdminPlanDetalj({
               <Link
                 key={key}
                 href={`/admin/plans/${planId}?tab=${key}`}
-                className={`inline-flex min-h-[44px] flex-1 min-w-[80px] items-center justify-center gap-1.5 rounded-md px-3 py-2 text-[13px] sm:text-[12px] font-medium transition-colors ${
+                className={`inline-flex min-h-[44px] flex-1 min-w-[80px] items-center justify-center gap-1.5 rounded-md px-4 py-2 text-[13px] sm:text-[12px] font-medium transition-colors ${
                   active
                     ? "bg-card text-foreground shadow-sm"
                     : "text-muted-foreground hover:text-foreground"
@@ -419,7 +419,7 @@ export default async function AdminPlanDetalj({
                   key={s.id}
                   className="rounded-lg border border-border bg-card"
                 >
-                  <div className="flex items-center justify-between border-b border-border bg-secondary/40 px-6 py-3">
+                  <div className="flex items-center justify-between border-b border-border bg-secondary/40 px-6 py-2">
                     <div>
                       <span className="text-[13px] font-semibold text-foreground">
                         {s.title}
@@ -428,7 +428,7 @@ export default async function AdminPlanDetalj({
                         {s.pyramidArea}
                       </span>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
                       <span className="font-mono text-[11px] text-muted-foreground">
                         {NB_SHORT.format(s.scheduledAt)} · {s.durationMin} min
                       </span>
@@ -452,7 +452,7 @@ export default async function AdminPlanDetalj({
                       {s.drills.map((d, i) => (
                         <li
                           key={d.id}
-                          className="flex items-center gap-4 px-6 py-3"
+                          className="flex items-center gap-4 px-6 py-2"
                         >
                           <span className="w-5 text-center font-mono text-[10px] text-muted-foreground">
                             {i + 1}
@@ -559,7 +559,7 @@ export default async function AdminPlanDetalj({
               <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                 Total økt-tid
               </div>
-              <div className="mt-3 font-mono text-[32px] font-semibold tabular-nums leading-none text-foreground">
+              <div className="mt-2 font-mono text-[32px] font-semibold tabular-nums leading-none text-foreground">
                 {totTimer} t
               </div>
               <div className="mt-2 text-[12px] text-muted-foreground">
@@ -571,7 +571,7 @@ export default async function AdminPlanDetalj({
                 Fullføringsprosent
               </div>
               <div
-                className={`mt-3 font-mono text-[32px] font-semibold tabular-nums leading-none ${
+                className={`mt-2 font-mono text-[32px] font-semibold tabular-nums leading-none ${
                   gjennomforing >= 75
                     ? "text-primary"
                     : gjennomforing >= 50
@@ -581,7 +581,7 @@ export default async function AdminPlanDetalj({
               >
                 {gjennomforing} %
               </div>
-              <div className="mt-3 h-2 overflow-hidden rounded-full bg-secondary">
+              <div className="mt-2 h-2 overflow-hidden rounded-full bg-secondary">
                 <div
                   className="h-full rounded-full bg-primary transition-all"
                   style={{ width: `${gjennomforing}%` }}
@@ -595,7 +595,7 @@ export default async function AdminPlanDetalj({
               <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                 Trend
               </div>
-              <div className="mt-3 flex items-baseline gap-2">
+              <div className="mt-2 flex items-baseline gap-2">
                 <span className="font-mono text-[32px] font-semibold leading-none text-foreground">
                   {gjennomforing >= 75 ? "↑" : gjennomforing >= 50 ? "→" : "↓"}
                 </span>
@@ -633,11 +633,11 @@ export default async function AdminPlanDetalj({
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-border bg-secondary text-left font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                      <th className="px-4 py-3 font-medium">Uke</th>
-                      <th className="px-4 py-3 font-medium">Dato</th>
-                      <th className="px-4 py-3 text-right font-medium">Volum</th>
-                      <th className="px-4 py-3 text-right font-medium">Fullført</th>
-                      <th className="px-4 py-3 font-medium">Fokus</th>
+                      <th className="px-4 py-2 font-medium">Uke</th>
+                      <th className="px-4 py-2 font-medium">Dato</th>
+                      <th className="px-4 py-2 text-right font-medium">Volum</th>
+                      <th className="px-4 py-2 text-right font-medium">Fullført</th>
+                      <th className="px-4 py-2 font-medium">Fokus</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -646,16 +646,16 @@ export default async function AdminPlanDetalj({
                         key={f.key}
                         className="border-b border-border last:border-b-0 hover:bg-secondary/40"
                       >
-                        <td className="px-4 py-3 font-mono text-[12px] font-semibold text-foreground">
+                        <td className="px-4 py-2 font-mono text-[12px] font-semibold text-foreground">
                           Uke {idx + 1}
                         </td>
-                        <td className="px-4 py-3 font-mono text-[11px] text-muted-foreground">
+                        <td className="px-4 py-2 font-mono text-[11px] text-muted-foreground">
                           {f.dateRangeLabel}
                         </td>
-                        <td className="px-4 py-3 text-right font-mono text-[12px] tabular-nums text-foreground">
+                        <td className="px-4 py-2 text-right font-mono text-[12px] tabular-nums text-foreground">
                           {(f.totMin / 60).toFixed(1).replace(".", ",")} t
                         </td>
-                        <td className="px-4 py-3 text-right font-mono text-[12px] tabular-nums">
+                        <td className="px-4 py-2 text-right font-mono text-[12px] tabular-nums">
                           <span
                             className={
                               f.totalSessions > 0 &&
@@ -667,7 +667,7 @@ export default async function AdminPlanDetalj({
                             {f.done}/{f.totalSessions}
                           </span>
                         </td>
-                        <td className="px-4 py-3 font-mono text-[11px] text-muted-foreground">
+                        <td className="px-4 py-2 font-mono text-[11px] text-muted-foreground">
                           {f.dominantArea ?? "—"}
                         </td>
                       </tr>

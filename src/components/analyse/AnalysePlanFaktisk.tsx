@@ -30,31 +30,31 @@ export function AnalysePlanFaktisk({ data }: { data: PlanVsActual[] }) {
 
   return (
     <div className="space-y-4">
-      <section className="rounded-lg border border-border bg-card p-5">
+      <section className="rounded-lg border border-border bg-card p-6">
         <h2 className="font-display text-lg font-semibold">Plan vs faktisk</h2>
         <p className="mt-1 text-sm text-muted-foreground">
           Hvor godt holder du planen din i denne perioden.
         </p>
-        <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">
-          <div className="rounded-md border border-border bg-background p-3">
+        <div className="mt-4 grid grid-cols-2 gap-2 md:grid-cols-4">
+          <div className="rounded-md border border-border bg-background p-4">
             <div className="font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">Planlagt</div>
             <div className="mt-1 font-mono text-xl font-semibold tabular-nums text-foreground">
               {totalPlan}<span className="ml-1 text-xs text-muted-foreground">min</span>
             </div>
           </div>
-          <div className="rounded-md border border-border bg-background p-3">
+          <div className="rounded-md border border-border bg-background p-4">
             <div className="font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">Faktisk</div>
             <div className="mt-1 font-mono text-xl font-semibold tabular-nums text-foreground">
               {totalFaktisk}<span className="ml-1 text-xs text-muted-foreground">min</span>
             </div>
           </div>
-          <div className="rounded-md border border-border bg-background p-3">
+          <div className="rounded-md border border-border bg-background p-4">
             <div className="font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">Adherence</div>
             <div className={`mt-1 font-mono text-xl font-semibold tabular-nums ${adherenceFarge(totalAdh)}`}>
               {Math.round(totalAdh * 100)}<span className="ml-0.5 text-xs">%</span>
             </div>
           </div>
-          <div className="rounded-md border border-border bg-background p-3">
+          <div className="rounded-md border border-border bg-background p-4">
             <div className="font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">Hopp-over</div>
             <div className="mt-1 font-mono text-xl font-semibold tabular-nums text-destructive">
               {hoppOver}<span className="ml-1 text-xs text-muted-foreground">min</span>
@@ -63,7 +63,7 @@ export function AnalysePlanFaktisk({ data }: { data: PlanVsActual[] }) {
         </div>
       </section>
 
-      <section className="rounded-lg border border-border bg-card p-5">
+      <section className="rounded-lg border border-border bg-card p-6">
         <h3 className="font-display text-base font-semibold">Per pyramide</h3>
         <div className="mt-4 overflow-x-auto">
           <table className="w-full text-sm">
@@ -93,7 +93,7 @@ export function AnalysePlanFaktisk({ data }: { data: PlanVsActual[] }) {
                     <td className="py-2 text-right font-mono tabular-nums">{rad.faktiskMin}</td>
                     <td className="py-2 text-right font-mono tabular-nums text-destructive">{hopp === 0 ? "–" : hopp}</td>
                     <td className={`py-2 text-right font-mono font-semibold tabular-nums ${adherenceFarge(rad.adherence)}`}>{pct}%</td>
-                    <td className="py-2 pl-3">
+                    <td className="py-2 pl-4">
                       <div className="relative h-2 w-28 overflow-hidden rounded-full bg-muted">
                         <div className="absolute inset-y-0 left-0 rounded-full" style={{ width: `${Math.min(100, pct)}%`, backgroundColor: farge }} />
                       </div>
@@ -104,7 +104,7 @@ export function AnalysePlanFaktisk({ data }: { data: PlanVsActual[] }) {
             </tbody>
           </table>
         </div>
-        <p className="mt-3 text-xs text-muted-foreground">
+        <p className="mt-2 text-xs text-muted-foreground">
           Adherence over 90 % = grønt. 70–90 % = OK. Under 70 % = trenger oppfølging.
         </p>
       </section>

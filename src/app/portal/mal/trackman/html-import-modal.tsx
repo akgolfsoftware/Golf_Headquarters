@@ -130,7 +130,7 @@ export function HtmlImportModal() {
               )}
             </label>
 
-            <div className="rounded-md bg-secondary px-4 py-3 font-mono text-[11px] leading-relaxed text-muted-foreground">
+            <div className="rounded-md bg-secondary px-4 py-2 font-mono text-[11px] leading-relaxed text-muted-foreground">
               <strong className="text-foreground">Slik eksporterer du fra TrackMan:</strong>
               <br />
               Åpne rapporten i nettleseren → Fil → Lagre som → Nettside, bare HTML

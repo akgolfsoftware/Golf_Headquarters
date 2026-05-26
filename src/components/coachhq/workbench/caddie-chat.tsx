@@ -157,7 +157,7 @@ export function CoachCaddieChat({
     >
       {/* Header */}
       <header className="border-border flex items-center justify-between border-b px-6 py-4">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <div className="bg-accent text-accent-foreground flex h-9 w-9 items-center justify-center rounded-full">
             <Sparkles className="h-4 w-4" strokeWidth={1.75} />
           </div>
@@ -227,7 +227,7 @@ export function CoachCaddieChat({
             ))}
 
             {loading && (
-              <div className="flex items-center gap-3 self-start">
+              <div className="flex items-center gap-2 self-start">
                 <div className="bg-muted text-muted-foreground flex h-8 w-8 shrink-0 items-center justify-center rounded-full">
                   <Bot className="h-4 w-4" strokeWidth={1.75} />
                 </div>
@@ -239,7 +239,7 @@ export function CoachCaddieChat({
             )}
 
             {error && !loading && (
-              <div className="border-destructive/40 bg-destructive/10 text-destructive flex flex-col gap-2 self-stretch rounded-md border px-4 py-3 text-xs">
+              <div className="border-destructive/40 bg-destructive/10 text-destructive flex flex-col gap-2 self-stretch rounded-md border px-4 py-2 text-xs">
                 <p className="font-medium">{error}</p>
                 {messages.some((m) => m.role === "user") && (
                   <button
@@ -292,7 +292,7 @@ function MessageBubble({ message }: { message: ChatMessage }) {
   return (
     <div
       className={cn(
-        "flex items-start gap-3",
+        "flex items-start gap-2",
         isUser ? "flex-row-reverse self-end" : "self-start",
       )}
     >
@@ -303,7 +303,7 @@ function MessageBubble({ message }: { message: ChatMessage }) {
       )}
       <div
         className={cn(
-          "max-w-[78%] rounded-2xl px-4 py-3 text-sm whitespace-pre-wrap",
+          "max-w-[78%] rounded-2xl px-4 py-2 text-sm whitespace-pre-wrap",
           isUser
             ? "bg-primary text-primary-foreground"
             : "bg-secondary text-secondary-foreground",

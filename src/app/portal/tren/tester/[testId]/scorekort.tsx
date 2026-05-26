@@ -241,7 +241,7 @@ export function Scorekort({
       <div className="overflow-hidden rounded-lg border border-border bg-card">
         <div className="overflow-x-auto">
           <div
-            className="hidden border-b border-border bg-muted/40 px-4 py-3 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground sm:grid"
+            className="hidden border-b border-border bg-muted/40 px-4 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground sm:grid"
             style={{
               gridTemplateColumns: `40px 1.5fr ${protocol.inputFields.map(() => "1fr").join(" ")}`,
               gap: "8px",
@@ -269,7 +269,7 @@ export function Scorekort({
                     </div>
                   )}
                   <div
-                    className="grid items-center gap-2 px-4 py-2 sm:gap-3"
+                    className="grid items-center gap-2 px-4 py-2 sm:gap-2"
                     style={{
                       gridTemplateColumns: `40px 1.5fr ${protocol.inputFields.map(() => "1fr").join(" ")}`,
                       minWidth: protocol.inputFields.length > 2 ? `${200 + protocol.inputFields.length * 100}px` : undefined,
@@ -316,7 +316,7 @@ export function Scorekort({
                             type="text"
                             inputMode="decimal"
                             placeholder={field.unit}
-                            className="h-9 w-full min-w-16 rounded-md border border-border bg-background px-3 font-mono text-sm tabular-nums outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 transition-colors focus:border-primary"
+                            className="h-9 w-full min-w-16 rounded-md border border-border bg-background px-4 font-mono text-sm tabular-nums outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 transition-colors focus:border-primary"
                             onChange={(e) =>
                               handleChange(shot.nr, field.key, e.target.value)
                             }
@@ -347,7 +347,7 @@ export function Scorekort({
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             placeholder="Vind, underlag, følt energi..."
-            className="mt-2 w-full rounded-md border border-border bg-background px-4 py-3 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 transition-colors focus:border-primary"
+            className="mt-2 w-full rounded-md border border-border bg-background px-4 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 transition-colors focus:border-primary"
           />
         </div>
 
@@ -355,7 +355,7 @@ export function Scorekort({
           type="button"
           onClick={handleSubmit}
           disabled={liveScore === null || isPending || lagret}
-          className="flex w-full items-center justify-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
+          className="flex w-full items-center justify-center gap-2 rounded-md bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
         >
           {isPending ? (
             <>

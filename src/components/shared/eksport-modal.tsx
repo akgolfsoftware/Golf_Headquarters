@@ -261,7 +261,7 @@ export function EksportModal(props: EksportModalProps) {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <header className="flex items-start justify-between gap-3 border-b border-border px-6 py-5 sm:px-7 sm:py-6">
+        <header className="flex items-start justify-between gap-2 border-b border-border px-6 py-6 sm:px-8 sm:py-6">
           <div className="min-w-0">
             <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
               {eyebrow}
@@ -289,7 +289,7 @@ export function EksportModal(props: EksportModalProps) {
         </header>
 
         {/* Body */}
-        <div className="flex flex-col gap-5 overflow-y-auto px-6 py-5 sm:px-7">
+        <div className="flex flex-col gap-6 overflow-y-auto px-6 py-6 sm:px-8">
           {/* Format */}
           <Section label="Format">
             <Chips>
@@ -362,7 +362,7 @@ export function EksportModal(props: EksportModalProps) {
                 />
               </Chips>
               {scope === "kategori" && (
-                <div className="mt-3">
+                <div className="mt-2">
                   <Chips>
                     {(["A1", "A2", "B1", "B2"] as const).map((k) => (
                       <Chip
@@ -404,7 +404,7 @@ export function EksportModal(props: EksportModalProps) {
               ))}
             </Chips>
             {period === "custom" && (
-              <div className="mt-3 grid grid-cols-2 gap-2">
+              <div className="mt-2 grid grid-cols-2 gap-2">
                 <DateField
                   label="Fra"
                   value={from}
@@ -543,7 +543,7 @@ export function EksportModal(props: EksportModalProps) {
                   setRecipientError(null);
                 }}
                 placeholder="coach@gfgk.no, foreldre@example.com"
-                className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground focus:border-primary"
+                className="w-full rounded-md border border-border bg-background px-4 py-2 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground focus:border-primary"
               />
               <p className="mt-1.5 font-mono text-[11px] text-muted-foreground">
                 La feltet stå tomt for å bare laste ned. Skill flere e-poster
@@ -559,7 +559,7 @@ export function EksportModal(props: EksportModalProps) {
           )}
 
           {error && (
-            <div className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-[12.5px] text-destructive">
+            <div className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-[12.5px] text-destructive">
               <AlertCircle
                 size={14}
                 strokeWidth={1.75}
@@ -571,7 +571,7 @@ export function EksportModal(props: EksportModalProps) {
         </div>
 
         {/* Footer */}
-        <footer className="flex flex-wrap items-center justify-end gap-2 border-t border-border bg-secondary/30 px-6 py-4 pb-safe sm:px-7">
+        <footer className="flex flex-wrap items-center justify-end gap-2 border-t border-border bg-secondary/30 px-6 py-4 pb-safe sm:px-8">
           <button
             type="button"
             onClick={onClose}
@@ -584,7 +584,7 @@ export function EksportModal(props: EksportModalProps) {
             type="button"
             onClick={handleSubmit}
             disabled={pending}
-            className="inline-flex items-center gap-1.5 rounded-full bg-accent px-5 py-2 text-[13px] font-semibold text-accent-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
+            className="inline-flex items-center gap-1.5 rounded-full bg-accent px-6 py-2 text-[13px] font-semibold text-accent-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
           >
             {pending ? (
               <>
@@ -716,7 +716,7 @@ function Toggle({
       onClick={onClick}
       role="switch"
       aria-checked={aktiv}
-      className={`flex items-center justify-between gap-2 rounded-md border px-3 py-2 text-[12.5px] font-medium transition-colors ${
+      className={`flex items-center justify-between gap-2 rounded-md border px-4 py-2 text-[12.5px] font-medium transition-colors ${
         aktiv
           ? "border-primary/30 bg-primary/5 text-foreground"
           : "border-border bg-card text-muted-foreground hover:text-foreground"
@@ -750,7 +750,7 @@ function DateField({
       <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
         {label}
       </span>
-      <span className="inline-flex items-center gap-2 rounded-md border border-border bg-background px-3 py-2 text-sm">
+      <span className="inline-flex items-center gap-2 rounded-md border border-border bg-background px-4 py-2 text-sm">
         <Calendar
           size={13}
           strokeWidth={1.75}
@@ -778,14 +778,14 @@ function SpillerMultiSelect({
 }) {
   if (spillere.length === 0) {
     return (
-      <p className="mt-3 inline-flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground">
+      <p className="mt-2 inline-flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground">
         <Users size={12} strokeWidth={1.75} />
         Ingen spillere tilgjengelig
       </p>
     );
   }
   return (
-    <div className="mt-3 max-h-[180px] overflow-y-auto rounded-md border border-border bg-background p-2">
+    <div className="mt-2 max-h-[180px] overflow-y-auto rounded-md border border-border bg-background p-2">
       <div className="grid grid-cols-1 gap-1 sm:grid-cols-2">
         {spillere.map((s) => {
           const aktiv = valgt.includes(s.id);

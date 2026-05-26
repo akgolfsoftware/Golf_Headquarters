@@ -249,7 +249,7 @@ export function GolfBoxImportModal({
         aria-label="Importer runder fra GolfBox"
         className="m-0 mt-auto w-full max-h-[95vh] rounded-t-2xl border border-border bg-card p-0 shadow-xl backdrop:bg-foreground/40 sm:m-auto sm:w-[760px] sm:max-w-[95vw] sm:rounded-2xl"
       >
-        <div className="p-5 sm:p-8">
+        <div className="p-6 sm:p-8">
           {/* Header */}
           <div className="flex items-start justify-between gap-4">
             <div>
@@ -263,7 +263,7 @@ export function GolfBoxImportModal({
                 Importer fra <em className="font-normal text-primary md:italic">GolfBox</em>
               </h2>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <GolfBoxLogo />
               <button
                 type="button"
@@ -358,7 +358,7 @@ export function GolfBoxImportModal({
           {feil && (
             <div
               role="alert"
-              className="mt-4 flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+              className="mt-4 flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive"
             >
               <AlertTriangle
                 size={16}
@@ -424,7 +424,7 @@ export function GolfBoxImportModal({
             )}
 
             {steg === 3 && (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <span className="font-mono text-xs text-muted-foreground tabular-nums">
                   {valgte.size} av {ikkeDup.length} valgt
                 </span>
@@ -486,7 +486,7 @@ function Steg1({
       <div className="mt-5">
         {tilkoblet ? (
           <div className="flex items-center justify-between gap-4 rounded-lg border border-primary/30 bg-primary/5 px-4 py-4">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <span className="grid h-9 w-9 place-items-center rounded-full bg-primary text-primary-foreground">
                 <Check size={16} strokeWidth={1.75} aria-hidden />
               </span>
@@ -532,11 +532,11 @@ function Steg1({
               )}
             </button>
 
-            <details className="rounded-md border border-input bg-muted/30 px-4 py-3">
+            <details className="rounded-md border border-input bg-muted/30 px-4 py-2">
               <summary className="cursor-pointer font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                 Eller bruk NIF-ID + passord
               </summary>
-              <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
                 <label className="block">
                   <span className="mb-1 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                     NIF-ID / e-post
@@ -544,7 +544,7 @@ function Steg1({
                   <input
                     type="text"
                     placeholder="medlemsnummer eller e-post"
-                    className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-primary"
+                    className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-primary"
                   />
                 </label>
                 <label className="block">
@@ -554,7 +554,7 @@ function Steg1({
                   <input
                     type="password"
                     placeholder="GolfBox-passord"
-                    className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-primary"
+                    className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-primary"
                   />
                 </label>
               </div>
@@ -599,7 +599,7 @@ function Steg2({
         tilbake.
       </p>
 
-      <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <div className="mt-5 grid grid-cols-1 gap-2 sm:grid-cols-2">
         <label className="block">
           <span className="mb-1 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             Fra
@@ -609,7 +609,7 @@ function Steg2({
             value={fromDate}
             onChange={(e) => onFromDate(e.target.value)}
             max={toDate}
-            className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-primary"
+            className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-primary"
           />
         </label>
         <label className="block">
@@ -622,7 +622,7 @@ function Steg2({
             min={fromDate}
             max={isoDato(new Date())}
             onChange={(e) => onToDate(e.target.value)}
-            className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-primary"
+            className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-primary"
           />
         </label>
       </div>
@@ -633,14 +633,14 @@ function Steg2({
             key={q.label}
             type="button"
             onClick={() => onQuickRange(q.days)}
-            className="inline-flex items-center gap-1 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:border-primary"
+            className="inline-flex items-center gap-1 rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium text-foreground transition-colors hover:border-primary"
           >
             {q.label}
           </button>
         ))}
       </div>
 
-      <div className="mt-6 rounded-lg border border-border bg-secondary/40 px-5 py-4">
+      <div className="mt-6 rounded-lg border border-border bg-secondary/40 px-6 py-4">
         <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           Periode
         </div>
@@ -651,7 +651,7 @@ function Steg2({
           {formatDato(fromDate)} – {formatDato(toDate)}
         </div>
         {loading && (
-          <div className="mt-3 inline-flex items-center gap-2 font-mono text-[11px] text-muted-foreground">
+          <div className="mt-2 inline-flex items-center gap-2 font-mono text-[11px] text-muted-foreground">
             <Loader2
               size={12}
               strokeWidth={1.75}
@@ -749,7 +749,7 @@ function Steg3({
               >
                 <label
                   className={[
-                    "grid grid-cols-1 items-center gap-2 px-4 py-3 transition-colors sm:gap-3 sm:py-2.5",
+                    "grid grid-cols-1 items-center gap-2 px-4 py-2 transition-colors sm:gap-2 sm:py-2.5",
                     r.duplicate
                       ? "cursor-not-allowed opacity-60"
                       : "cursor-pointer hover:bg-muted/30",

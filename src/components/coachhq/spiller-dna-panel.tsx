@@ -230,7 +230,7 @@ export function SpillerDNAPanel({ userId, initial }: SpillerDNAProps) {
         <button
           onClick={lagre}
           disabled={isPending}
-          className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
         >
           {lagretOk ? (
             <>
@@ -248,7 +248,7 @@ export function SpillerDNAPanel({ userId, initial }: SpillerDNAProps) {
 
       <div className="space-y-6 p-6">
         {feilmelding && (
-          <div className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-[13px] text-destructive">
+          <div className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-[13px] text-destructive">
             {feilmelding}
           </div>
         )}
@@ -266,7 +266,7 @@ export function SpillerDNAPanel({ userId, initial }: SpillerDNAProps) {
                   (e.target.value as DominantMiss) || null,
                 )
               }
-              className="w-full appearance-none rounded-md border border-input bg-background px-3 py-2 pr-8 text-[13px] text-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+              className="w-full appearance-none rounded-md border border-input bg-background px-4 py-2 pr-8 text-[13px] text-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
             >
               <option value="">Ikke satt</option>
               {DOMINANT_MISS_OPTIONS.map((opt) => (
@@ -285,10 +285,10 @@ export function SpillerDNAPanel({ userId, initial }: SpillerDNAProps) {
 
         {/* SG Breakdown */}
         <div>
-          <div className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+          <div className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
             SG-Breakdown (vs. scratch)
           </div>
-          <div className="space-y-3">
+          <div className="space-y-2">
             {(
               [
                 { key: "ott", label: "OTT" },
@@ -299,7 +299,7 @@ export function SpillerDNAPanel({ userId, initial }: SpillerDNAProps) {
             ).map(({ key, label }) => {
               const verdi = sgBreakdown[key];
               return (
-                <div key={key} className="flex items-center gap-3">
+                <div key={key} className="flex items-center gap-2">
                   <span className="w-10 shrink-0 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-foreground">
                     {label}
                   </span>
@@ -372,7 +372,7 @@ export function SpillerDNAPanel({ userId, initial }: SpillerDNAProps) {
                   key={opt.value}
                   onClick={() => toggleFokus(opt.value)}
                   disabled={deaktivert}
-                  className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] transition-colors ${
+                  className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] transition-colors ${
                     aktiv
                       ? "bg-primary text-primary-foreground"
                       : deaktivert
@@ -390,18 +390,18 @@ export function SpillerDNAPanel({ userId, initial }: SpillerDNAProps) {
 
         {/* Svakhetsprofil */}
         <div>
-          <div className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+          <div className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
             Svakhetsprofil
           </div>
 
           {svakhetProfil.length === 0 ? (
-            <div className="mb-3 rounded-md border border-dashed border-border bg-muted/40 p-3 text-[12px] text-muted-foreground">
+            <div className="mb-2 rounded-md border border-dashed border-border bg-muted/40 p-4 text-[12px] text-muted-foreground">
               Ingen svakheter lagt til ennå.
             </div>
           ) : (
-            <ul className="mb-4 space-y-3">
+            <ul className="mb-4 space-y-2">
               {svakhetProfil.map((item) => (
-                <li key={item.svakhet} className="flex items-center gap-3">
+                <li key={item.svakhet} className="flex items-center gap-2">
                   <div className="min-w-0 flex-1">
                     <div className="mb-1.5 flex items-center justify-between gap-2">
                       <span className="truncate text-[12px] font-medium text-foreground">
@@ -446,14 +446,14 @@ export function SpillerDNAPanel({ userId, initial }: SpillerDNAProps) {
               <button
                 onClick={() => setVisSvakhetVelger(true)}
                 disabled={tilgjengeligeSvakheter.length === 0}
-                className="inline-flex items-center gap-1.5 rounded-md border border-dashed border-border px-3 py-2 text-[12px] font-medium text-muted-foreground transition-colors hover:border-primary hover:text-foreground disabled:opacity-40"
+                className="inline-flex items-center gap-1.5 rounded-md border border-dashed border-border px-4 py-2 text-[12px] font-medium text-muted-foreground transition-colors hover:border-primary hover:text-foreground disabled:opacity-40"
               >
                 <Plus size={12} strokeWidth={2} />
                 Legg til svakhet
               </button>
             ) : (
               <div className="rounded-md border border-border bg-background shadow-sm">
-                <div className="flex items-center gap-2 border-b border-border px-3 py-2">
+                <div className="flex items-center gap-2 border-b border-border px-4 py-2">
                   <input
                     type="text"
                     autoFocus
@@ -488,7 +488,7 @@ export function SpillerDNAPanel({ userId, initial }: SpillerDNAProps) {
                       <li key={s}>
                         <button
                           onClick={() => leggTilSvakhetItem(s)}
-                          className="flex w-full items-center gap-2 px-3 py-2 text-left text-[12px] text-foreground hover:bg-secondary"
+                          className="flex w-full items-center gap-2 px-4 py-2 text-left text-[12px] text-foreground hover:bg-secondary"
                         >
                           <Zap
                             size={10}
@@ -506,7 +506,7 @@ export function SpillerDNAPanel({ userId, initial }: SpillerDNAProps) {
                           .toLowerCase()
                           .includes(leggTilSvakhet.toLowerCase()),
                   ).length === 0 && (
-                    <li className="px-3 py-2 text-[12px] text-muted-foreground">
+                    <li className="px-4 py-2 text-[12px] text-muted-foreground">
                       Ingen treff
                     </li>
                   )}

@@ -143,7 +143,7 @@ export function AIForeslaaDrillModal({
 
 function WeaknessHero() {
   return (
-    <div className="grid grid-cols-[36px_1fr_auto] items-center gap-4 rounded-2xl border border-accent border-l-[4px] border-l-accent bg-gradient-to-br from-accent/25 to-accent/5 p-5">
+    <div className="grid grid-cols-[36px_1fr_auto] items-center gap-4 rounded-2xl border border-accent border-l-[4px] border-l-accent bg-gradient-to-br from-accent/25 to-accent/5 p-6">
       <div className="flex h-9 w-9 items-center justify-center rounded-full bg-foreground text-accent">
         <Sparkles className="h-4 w-4" />
       </div>
@@ -195,7 +195,7 @@ function DrillCard({
         picked ? "border-primary shadow-[0_0_0_3px_rgba(0,88,64,0.08)]" : "border-border"
       }`}
     >
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex items-start justify-between gap-2">
         <div className="flex-1">
           <div className="mb-1.5 flex items-center gap-2">
             <span
@@ -261,8 +261,8 @@ function DrillCard({
 
 function LoadingShell() {
   return (
-    <div className="space-y-3.5">
-      <div className="flex items-center gap-3 py-2">
+    <div className="space-y-4">
+      <div className="flex items-center gap-2 py-2">
         <div className="h-9 w-9 animate-spin rounded-full border-[3px] border-border border-t-primary" />
         <div>
           <div className="font-display text-sm font-semibold">
@@ -286,7 +286,7 @@ function LoadingShell() {
 
 function ErrorShell({ onRetry }: { onRetry: () => void }) {
   return (
-    <div className="flex flex-col gap-3 rounded-2xl border border-destructive/25 border-l-[3px] border-l-destructive bg-destructive/10 p-5">
+    <div className="flex flex-col gap-2 rounded-2xl border border-destructive/25 border-l-[3px] border-l-destructive bg-destructive/10 p-6">
       <div className="font-display text-base font-semibold text-destructive">
         Kunne ikke generere forslag akkurat nå
       </div>

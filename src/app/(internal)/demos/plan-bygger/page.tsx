@@ -27,7 +27,7 @@ export default function PlanByggerDemo() {
         </header>
 
         {/* Step indicator */}
-        <div className="mb-6 grid grid-cols-6 gap-3">
+        <div className="mb-6 grid grid-cols-6 gap-2">
           <StepCard num="1" name="Spiller" sub="Markus R. valgt" state="done" />
           <StepCard num="2" name="Periode" sub="8 uker · 32 økter" state="done" />
           <StepCard num="3" name="Faser" sub="5 auto-foreslått" state="done" />
@@ -43,7 +43,7 @@ export default function PlanByggerDemo() {
 
         {/* Agent strip */}
         <div
-          className="mb-5 flex items-center gap-3.5 rounded-lg border border-[rgba(0,88,64,0.18)] border-l-4 border-l-[var(--brand-primary,#005840)] px-4 py-3.5"
+          className="mb-5 flex items-center gap-4 rounded-lg border border-[rgba(0,88,64,0.18)] border-l-4 border-l-[var(--brand-primary,#005840)] px-4 py-4"
           style={{
             backgroundImage:
               "linear-gradient(135deg, rgba(0,88,64,0.06) 0%, rgba(209,248,67,0.10) 100%)",
@@ -62,10 +62,10 @@ export default function PlanByggerDemo() {
               til 10 % og TEK til 15 % for å gi rom.
             </p>
           </div>
-          <button className="inline-flex items-center rounded-md border border-border bg-transparent px-3.5 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary">
+          <button className="inline-flex items-center rounded-md border border-border bg-transparent px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary">
             Avvis
           </button>
-          <button className="inline-flex items-center rounded-md bg-accent px-3.5 py-2 text-[13px] font-semibold text-[var(--brand-accent-on,#005840)] transition-opacity hover:opacity-90">
+          <button className="inline-flex items-center rounded-md bg-accent px-4 py-2 text-[13px] font-semibold text-[var(--brand-accent-on,#005840)] transition-opacity hover:opacity-90">
             Bruk forslag
           </button>
         </div>
@@ -100,7 +100,7 @@ export default function PlanByggerDemo() {
         </div>
 
         {/* Builder grid */}
-        <div className="grid grid-cols-[1fr_360px] gap-5">
+        <div className="grid grid-cols-[1fr_360px] gap-6">
           {/* Slider panel */}
           <section className="rounded-2xl border border-border bg-card px-6 py-6">
             <div className="mb-4 flex items-start justify-between">
@@ -116,7 +116,7 @@ export default function PlanByggerDemo() {
                   siste 4 uker — for kontekst.
                 </p>
               </div>
-              <button className="inline-flex items-center gap-1.5 rounded-md border border-border bg-transparent px-3.5 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary">
+              <button className="inline-flex items-center gap-1.5 rounded-md border border-border bg-transparent px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary">
                 <Sparkles className="h-4 w-4" strokeWidth={1.5} />
                 AI-forslag
               </button>
@@ -177,7 +177,7 @@ export default function PlanByggerDemo() {
                   100 %
                 </div>
               </div>
-              <div className="inline-flex items-center gap-1.5 rounded-full bg-[var(--status-success-bg,#E5F1EA)] px-3 py-1.5 text-[12px] font-medium text-[var(--status-success,#1A7D56)]">
+              <div className="inline-flex items-center gap-1.5 rounded-full bg-[var(--status-success-bg,#E5F1EA)] px-4 py-1.5 text-[12px] font-medium text-[var(--status-success,#1A7D56)]">
                 <Check className="h-3.5 w-3.5" strokeWidth={2.5} />
                 Klar for neste steg
               </div>
@@ -186,11 +186,11 @@ export default function PlanByggerDemo() {
 
           {/* Side cards */}
           <aside className="flex flex-col gap-4">
-            <div className="rounded-2xl border border-border bg-card px-5 py-5">
-              <h4 className="mb-3 font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+            <div className="rounded-2xl border border-border bg-card px-6 py-6">
+              <h4 className="mb-2 font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                 Spiller
               </h4>
-              <div className="mb-4 grid grid-cols-[48px_1fr] items-center gap-3">
+              <div className="mb-4 grid grid-cols-[48px_1fr] items-center gap-2">
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--brand-primary,#005840)] font-display text-[16px] font-semibold text-white">
                   M
                 </div>
@@ -207,8 +207,8 @@ export default function PlanByggerDemo() {
               <StatRow label="Sist trent" value="i dag" last />
             </div>
 
-            <div className="rounded-2xl border border-border bg-card px-5 py-5">
-              <h4 className="mb-3 font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+            <div className="rounded-2xl border border-border bg-card px-6 py-6">
+              <h4 className="mb-2 font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                 Periode
               </h4>
               <StatRow label="Start" value="9. mai 2026" />
@@ -218,8 +218,8 @@ export default function PlanByggerDemo() {
               <StatRow label="Peak" value="2.–4. juni" last />
             </div>
 
-            <div className="rounded-2xl border border-border bg-card px-5 py-5">
-              <h4 className="mb-3 font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+            <div className="rounded-2xl border border-border bg-card px-6 py-6">
+              <h4 className="mb-2 font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                 Turneringer i perioden
               </h4>
               <StatRow label="Sørlandsåpent" value="02.06" />
@@ -268,7 +268,7 @@ function StepCard({
   const isDone = state === "done";
   return (
     <div
-      className={`relative rounded-[14px] bg-card px-4 py-3.5 ${
+      className={`relative rounded-[14px] bg-card px-4 py-4 ${
         isCurrent
           ? "border-2 border-accent"
           : "border border-border"
@@ -316,7 +316,7 @@ function PhaseCard({
 }) {
   return (
     <div
-      className={`rounded-[14px] bg-card p-3.5 ${
+      className={`rounded-[14px] bg-card p-4 ${
         current ? "border-2 border-accent" : "border border-border"
       }`}
     >
@@ -367,8 +367,8 @@ function SliderBlock({
   historyLabel: string;
 }) {
   return (
-    <div className="border-b border-[var(--line-soft,#EFEDE6)] py-3.5 last:border-b-0">
-      <div className="grid grid-cols-[100px_1fr_70px] items-center gap-3.5">
+    <div className="border-b border-[var(--line-soft,#EFEDE6)] py-4 last:border-b-0">
+      <div className="grid grid-cols-[100px_1fr_70px] items-center gap-4">
         <div className="flex items-center gap-2">
           <span
             className="h-3 w-3 rounded-[3px]"

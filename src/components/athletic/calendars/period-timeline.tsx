@@ -49,8 +49,8 @@ export function PeriodTimeline({
   className,
 }: PeriodTimelineProps) {
   return (
-    <div className={cn("rounded-2xl border border-border bg-card p-4 md:p-5", className)}>
-      <div className="mb-4 flex items-baseline justify-between gap-3">
+    <div className={cn("rounded-2xl border border-border bg-card p-4 md:p-6", className)}>
+      <div className="mb-4 flex items-baseline justify-between gap-2">
         <h3 className="font-display text-xl font-bold tracking-[-0.015em]">{title}</h3>
         <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
           {totalDays} dager · {periods.length} faser
@@ -95,7 +95,7 @@ export function PeriodTimeline({
         </div>
 
         {markers.length > 0 && (
-          <div className="relative mt-3 h-6">
+          <div className="relative mt-2 h-6">
             {markers.map((m) => (
               <div
                 key={m.key}

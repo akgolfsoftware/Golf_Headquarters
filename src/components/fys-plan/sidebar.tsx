@@ -35,7 +35,7 @@ export function FysPlanSidebar({
     : 0;
 
   return (
-    <aside className="space-y-5 rounded-xl border border-border bg-card p-5">
+    <aside className="space-y-6 rounded-xl border border-border bg-card p-6">
       <div className="space-y-2">
         <p className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
           Plan
@@ -46,7 +46,7 @@ export function FysPlanSidebar({
         <StatusBadge status={status} />
       </div>
 
-      <div className="space-y-3 border-t border-border pt-4">
+      <div className="space-y-2 border-t border-border pt-4">
         <MetaRow
           icon={<CalendarDays size={14} strokeWidth={1.5} />}
           label="Periode"
@@ -84,7 +84,7 @@ export function FysPlanSidebar({
           type="button"
           onClick={onLeggTilUke}
           className={cn(
-            "flex w-full items-center justify-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-sm font-medium",
+            "flex w-full items-center justify-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-sm font-medium",
             "transition-colors hover:bg-secondary",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
           )}
@@ -96,7 +96,7 @@ export function FysPlanSidebar({
           type="button"
           onClick={onNyOkt}
           className={cn(
-            "flex w-full items-center justify-center gap-2 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground",
+            "flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground",
             "transition-opacity hover:opacity-90",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
           )}
@@ -119,7 +119,7 @@ function MetaRow({
   value: string;
 }) {
   return (
-    <div className="flex items-center justify-between gap-3 text-sm">
+    <div className="flex items-center justify-between gap-2 text-sm">
       <span className="flex items-center gap-2 text-muted-foreground">
         {icon}
         <span className="font-mono text-[11px] uppercase tracking-[0.06em]">

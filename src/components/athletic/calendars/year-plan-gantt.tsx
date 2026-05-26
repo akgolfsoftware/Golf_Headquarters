@@ -53,8 +53,8 @@ export function YearPlanGantt({
   const totalUnits = 12;
 
   return (
-    <div className={cn("rounded-2xl border border-border bg-card p-4 md:p-5", className)}>
-      <div className="mb-4 flex items-baseline justify-between gap-3">
+    <div className={cn("rounded-2xl border border-border bg-card p-4 md:p-6", className)}>
+      <div className="mb-4 flex items-baseline justify-between gap-2">
         <h3 className="font-display text-xl font-bold tracking-[-0.015em]">Årsplan {year}</h3>
         <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
           {phases.length} faser · {milestones.length} milepæler
@@ -80,7 +80,7 @@ export function YearPlanGantt({
             ))}
           </div>
 
-          <div className="relative space-y-2 border-t border-border pt-3">
+          <div className="relative space-y-2 border-t border-border pt-2">
             {phases.map((p) => {
               const left = `calc(120px + ${((p.startMonth - 1) / totalUnits) * 100}% * ${(totalUnits - 0) / totalUnits})`;
               const width = `calc((${(p.endMonth - p.startMonth + 1)} / ${totalUnits}) * (100% - 120px))`;

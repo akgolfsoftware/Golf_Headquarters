@@ -148,7 +148,7 @@ export function TemplateDetail({ template }: { template: TemplateData }) {
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
           <Link
             href={`/admin/plan-templates/${template.id}/rediger`}
-            className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground transition hover:opacity-90"
           >
             <Edit3 className="h-4 w-4" strokeWidth={1.75} />
             Rediger struktur
@@ -157,7 +157,7 @@ export function TemplateDetail({ template }: { template: TemplateData }) {
             type="button"
             onClick={onDuplicate}
             disabled={isPending}
-            className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-border bg-card px-5 text-sm font-medium text-foreground transition hover:bg-secondary disabled:opacity-50"
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-border bg-card px-6 text-sm font-medium text-foreground transition hover:bg-secondary disabled:opacity-50"
           >
             <Copy className="h-4 w-4" strokeWidth={1.75} />
             Dupliser
@@ -166,7 +166,7 @@ export function TemplateDetail({ template }: { template: TemplateData }) {
             type="button"
             onClick={onToggleArchive}
             disabled={isPending}
-            className={`inline-flex h-11 items-center justify-center gap-2 rounded-full border px-5 text-sm font-medium transition disabled:opacity-50 ${
+            className={`inline-flex h-11 items-center justify-center gap-2 rounded-full border px-6 text-sm font-medium transition disabled:opacity-50 ${
               template.approved
                 ? "border-destructive/30 bg-card text-destructive hover:bg-destructive/10"
                 : "border-primary/30 bg-card text-primary hover:bg-primary/10"
@@ -177,7 +177,7 @@ export function TemplateDetail({ template }: { template: TemplateData }) {
           </button>
           <Link
             href={`/admin/analytics?templateId=${template.id}`}
-            className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-border bg-card px-5 text-sm font-medium text-foreground transition hover:bg-secondary"
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-border bg-card px-6 text-sm font-medium text-foreground transition hover:bg-secondary"
           >
             <TrendingUp className="h-4 w-4" strokeWidth={1.75} />
             Se effekt-historikk
@@ -204,7 +204,7 @@ function KpiStrip({ template }: { template: TemplateData }) {
       : null;
 
   return (
-    <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
+    <div className="grid grid-cols-2 gap-2 lg:grid-cols-5">
       <KpiCard
         eyebrow="Brukt"
         value={template.usageCount.toString()}
@@ -344,7 +344,7 @@ function GanttStrip({
 function Legend() {
   const omr: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
   return (
-    <div className="mt-4 flex flex-wrap items-center gap-3 text-[10px] font-mono uppercase tracking-[0.08em] text-muted-foreground">
+    <div className="mt-4 flex flex-wrap items-center gap-2 text-[10px] font-mono uppercase tracking-[0.08em] text-muted-foreground">
       {omr.map((o) => (
         <span key={o} className="flex items-center gap-1.5">
           <span
@@ -386,7 +386,7 @@ function FordelingDonut({
           const b = anbefalt[o];
           const diff = a - b;
           return (
-            <div key={o} className="flex items-center gap-3">
+            <div key={o} className="flex items-center gap-2">
               <span
                 aria-hidden="true"
                 className="h-3 w-3 shrink-0 rounded-sm"
@@ -476,7 +476,7 @@ function SessionModal({
 
         <div className="mt-4 flex flex-wrap gap-2">
           <span
-            className="rounded-full px-3 py-1 font-mono text-[10px] uppercase tracking-wider"
+            className="rounded-full px-4 py-1 font-mono text-[10px] uppercase tracking-wider"
             style={{
               background: PYR_COLOR[session.pyramidArea],
               color: "var(--color-card)",
@@ -485,7 +485,7 @@ function SessionModal({
             {PYR_LABEL[session.pyramidArea]}
           </span>
           {session.skillArea && (
-            <span className="rounded-full bg-secondary px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-secondary-foreground">
+            <span className="rounded-full bg-secondary px-4 py-1 font-mono text-[10px] uppercase tracking-wider text-secondary-foreground">
               {SKILL_LABEL[session.skillArea]}
             </span>
           )}
@@ -508,12 +508,12 @@ function SessionModal({
             {session.drills.map((d, i) => (
               <li
                 key={`${d.exerciseId}-${i}`}
-                className="rounded-md border border-border bg-background/40 p-3"
+                className="rounded-md border border-border bg-background/40 p-4"
               >
                 <div className="text-sm font-medium">
                   {d.exerciseName ?? d.exerciseId}
                 </div>
-                <div className="mt-1 flex flex-wrap gap-3 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                <div className="mt-1 flex flex-wrap gap-2 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
                   {d.sets != null && <span>{d.sets} sett</span>}
                   {d.reps != null && <span>{d.reps} reps</span>}
                   {d.csTarget != null && <span>CS {d.csTarget}</span>}

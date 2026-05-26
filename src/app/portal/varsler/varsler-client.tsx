@@ -182,7 +182,7 @@ export function VarslerClient({
       {/* Sticky header */}
       <div className="sticky top-0 z-20 border-b border-border bg-card">
         <div className="px-4 py-4 md:px-8">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <h1 className="font-display text-3xl font-bold leading-tight tracking-tight">
                 Var<em className="font-normal italic text-primary">sler</em>
@@ -224,7 +224,7 @@ export function VarslerClient({
           </div>
 
           {/* Filter-pills */}
-          <div className="mt-3 flex flex-wrap items-center gap-2 pb-1">
+          <div className="mt-2 flex flex-wrap items-center gap-2 pb-1">
             {FILTRE.map((f) => {
               const aktiv = filter === f.id;
               const antall = antallForFilter(f.id);
@@ -233,7 +233,7 @@ export function VarslerClient({
                   key={f.id}
                   type="button"
                   onClick={() => setFilter(f.id)}
-                  className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-[12.5px] font-medium leading-none transition-colors ${
+                  className={`inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-[12.5px] font-medium leading-none transition-colors ${
                     aktiv
                       ? "border-accent bg-accent text-foreground"
                       : "border-border bg-card text-foreground hover:bg-muted"
@@ -260,7 +260,7 @@ export function VarslerClient({
       </div>
 
       {demo && (
-        <div className="mx-4 mt-4 rounded-md border border-border bg-secondary/40 px-4 py-3 font-mono text-[11px] uppercase tracking-[0.10em] text-muted-foreground md:mx-8">
+        <div className="mx-4 mt-4 rounded-md border border-border bg-secondary/40 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.10em] text-muted-foreground md:mx-8">
           Demo-data — ekte varsler vises her etter hvert
         </div>
       )}
@@ -302,7 +302,7 @@ function DagGruppe({
 }) {
   return (
     <section>
-      <div className="mb-3 flex items-baseline justify-between">
+      <div className="mb-2 flex items-baseline justify-between">
         <h2 className="font-display text-base font-semibold tracking-tight">
           <em className="font-normal italic text-primary">{tittel}</em>
         </h2>
@@ -335,7 +335,7 @@ function VarselRad({
 
   const inner = (
     <div
-      className={`grid items-center gap-3.5 overflow-hidden rounded-2xl border bg-card pr-4 transition-colors hover:bg-muted/30 ${
+      className={`grid items-center gap-4 overflow-hidden rounded-2xl border bg-card pr-4 transition-colors hover:bg-muted/30 ${
         ulest ? "border-primary/30" : "border-border"
       }`}
       style={{ gridTemplateColumns: "4px 40px 1fr auto" }}
@@ -365,7 +365,7 @@ function VarselRad({
       </div>
 
       {/* Body */}
-      <div className="min-w-0 py-3.5">
+      <div className="min-w-0 py-4">
         <div className="mb-1 flex items-center gap-2">
           <span
             className={`inline-flex items-center rounded-full border px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.10em] ${

@@ -51,7 +51,7 @@ export async function NorskeDenneUkaTeaser() {
   return (
     <section className="border-y border-border bg-accent/10">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-12 md:py-16">
-        <div className="mb-6 flex flex-wrap items-baseline justify-between gap-3">
+        <div className="mb-6 flex flex-wrap items-baseline justify-between gap-2">
           <h2 className="font-display text-2xl font-semibold tracking-tight md:text-3xl">
             <Flag className="mr-2 inline-block h-5 w-5 text-primary" strokeWidth={2} />
             Norske golfere{" "}
@@ -75,7 +75,7 @@ export async function NorskeDenneUkaTeaser() {
           automatisk hver dag.
         </p>
 
-        <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {entries.map((e) => (
             <li key={e.id}>
               <Link
@@ -84,7 +84,7 @@ export async function NorskeDenneUkaTeaser() {
                     ? `/turneringer/${e.tournament.slug}`
                     : "/turneringer"
                 }
-                className="group flex items-center justify-between gap-3 rounded-2xl border border-border bg-card p-4 transition-colors hover:border-foreground/20"
+                className="group flex items-center justify-between gap-2 rounded-2xl border border-border bg-card p-4 transition-colors hover:border-foreground/20"
               >
                 <div className="min-w-0 flex-1">
                   <p className="font-display text-base font-semibold tracking-tight">

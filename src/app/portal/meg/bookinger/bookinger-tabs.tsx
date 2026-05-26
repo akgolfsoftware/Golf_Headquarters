@@ -101,7 +101,7 @@ function TomFane({
         </p>
         <Link
           href={nyBookingHref}
-          className="mt-6 inline-block rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90"
+          className="mt-6 inline-block rounded-md bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
         >
           Book ny time
         </Link>

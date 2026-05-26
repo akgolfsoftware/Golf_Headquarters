@@ -57,7 +57,7 @@ export function StockYardageTable({ rows, playerName }: Props) {
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-4 rounded-xl border border-border bg-card p-4 sm:flex-row sm:items-end sm:justify-between">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:gap-6">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:gap-6">
           <div className="flex items-center gap-2">
             <Sliders className="h-4 w-4 text-muted-foreground" />
             <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
@@ -166,13 +166,13 @@ export function StockYardageTable({ rows, playerName }: Props) {
       </div>
 
       {/* Mobile cards */}
-      <div className="grid gap-3 md:hidden">
+      <div className="grid gap-2 md:hidden">
         {adjustedRows.map((r) => (
           <div
             key={r.club}
             className="rounded-xl border border-border bg-card p-4"
           >
-            <div className="mb-3 flex items-center justify-between">
+            <div className="mb-2 flex items-center justify-between">
               <span className="font-mono text-lg font-semibold">{r.club}</span>
               <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                 {r.shotCount} slag · ±{formatNumber(r.totalSigma, 1)} m
@@ -267,7 +267,7 @@ function Th({
 }) {
   return (
     <th
-      className={`px-4 py-3 font-mono text-[10px] font-medium uppercase tracking-[0.10em] text-muted-foreground ${className}`}
+      className={`px-4 py-2 font-mono text-[10px] font-medium uppercase tracking-[0.10em] text-muted-foreground ${className}`}
     >
       {children}
     </th>
@@ -281,7 +281,7 @@ function Td({
   children: React.ReactNode;
   className?: string;
 }) {
-  return <td className={`px-4 py-3 ${className}`}>{children}</td>;
+  return <td className={`px-4 py-2 ${className}`}>{children}</td>;
 }
 
 function MobileCell({

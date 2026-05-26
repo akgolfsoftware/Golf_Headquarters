@@ -27,7 +27,7 @@ export function LoadCalendar({
 }: LoadCalendarProps) {
   if (days.length === 0) {
     return (
-      <div className={cn("rounded-2xl border border-border bg-card p-4 md:p-5", className)}>
+      <div className={cn("rounded-2xl border border-border bg-card p-4 md:p-6", className)}>
         <p className="text-sm text-muted-foreground">Ingen data</p>
       </div>
     );
@@ -46,8 +46,8 @@ export function LoadCalendar({
   const latest = days[days.length - 1];
 
   return (
-    <div className={cn("rounded-2xl border border-border bg-card p-4 md:p-5", className)}>
-      <div className="mb-4 flex items-baseline justify-between gap-3">
+    <div className={cn("rounded-2xl border border-border bg-card p-4 md:p-6", className)}>
+      <div className="mb-4 flex items-baseline justify-between gap-2">
         <h3 className="font-display text-xl font-bold tracking-[-0.015em]">{title}</h3>
         <div className="flex items-baseline gap-4 font-mono text-[10px] uppercase tracking-[0.08em]">
           {showCtl && (
@@ -113,7 +113,7 @@ export function LoadCalendar({
         )}
       </div>
 
-      <div className="mt-3 flex items-center justify-between font-mono text-[9px] text-muted-foreground">
+      <div className="mt-2 flex items-center justify-between font-mono text-[9px] text-muted-foreground">
         <span>{days[0].date.toLocaleDateString("nb-NO", { day: "2-digit", month: "short" })}</span>
         <span>{latest.date.toLocaleDateString("nb-NO", { day: "2-digit", month: "short" })}</span>
       </div>

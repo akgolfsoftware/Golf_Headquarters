@@ -305,7 +305,7 @@ function Column({
   };
   return (
     <div
-      className={`flex min-h-[520px] flex-col gap-4 rounded-lg border border-border p-3.5 ${bgTint[col.status]}`}
+      className={`flex min-h-[520px] flex-col gap-4 rounded-lg border border-border p-4 ${bgTint[col.status]}`}
     >
       <div className="flex items-center gap-2 px-1.5 pt-1">
         <span className={`h-2 w-2 rounded-full ${dotColor[col.status]}`} />
@@ -332,7 +332,7 @@ function CardItem({ card }: { card: Card }) {
   return (
     <Link
       href={`/admin/elever/${card.id}`}
-      className={`flex flex-col gap-2.5 rounded-md border border-border bg-card p-3.5 shadow-sm transition-shadow hover:shadow-md ${
+      className={`flex flex-col gap-2.5 rounded-md border border-border bg-card p-4 shadow-sm transition-shadow hover:shadow-md ${
         card.priority ? "border-l-[3px] border-l-destructive" : ""
       }`}
     >
@@ -352,7 +352,7 @@ function CardItem({ card }: { card: Card }) {
         <span>{card.signal}</span>
       </div>
       {card.stats.length > 0 && (
-        <div className="flex gap-3.5 px-0.5">
+        <div className="flex gap-4 px-0.5">
           {card.stats.map((s, i) => (
             <div key={i} className="flex flex-col">
               <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">

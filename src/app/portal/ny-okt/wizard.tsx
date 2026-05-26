@@ -45,7 +45,7 @@ export function NyOktWizard() {
           <button
             type="button"
             onClick={() => setSteg(1)}
-            className="inline-flex min-h-11 items-center gap-1.5 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+            className="inline-flex min-h-11 items-center gap-1.5 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
           >
             Videre
             <ArrowRight size={14} strokeWidth={2} aria-hidden />
@@ -73,7 +73,7 @@ export function NyOktWizard() {
       <button
         type="button"
         onClick={() => setSteg(0)}
-        className="mt-3 text-xs underline"
+        className="mt-2 text-xs underline"
       >
         Tilbake
       </button>

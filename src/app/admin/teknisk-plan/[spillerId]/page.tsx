@@ -152,7 +152,7 @@ export default async function TekniskPlanSpiller({
         spiller.homeClub ? ` · ${spiller.homeClub}` : ""
       }`}
       kpiRow={
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
           <KPICard
             eyebrow="TEK-økter"
             value={String(allTekSessions.length)}

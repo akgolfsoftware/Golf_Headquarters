@@ -66,16 +66,16 @@ export default async function OppgraderPage() {
         sub="AI-coach hele døgnet, ubegrenset video-analyse og komplett historikk. Bygd for spillere som har en plan. Avbryt når som helst — første 30 dager er angreretten din."
       />
 
-      <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.06em] text-muted-foreground">
+      <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.06em] text-muted-foreground">
         <Lock className="h-3 w-3 text-primary" strokeWidth={2} />
         Sikker betaling · Stripe
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-3">
+      <div className="grid gap-6 lg:grid-cols-3">
         {FORDELER.map((f) => (
           <div
             key={f.tittel}
-            className={`relative flex flex-col gap-3 rounded-2xl border p-6 shadow-sm transition-transform hover:-translate-y-0.5 ${
+            className={`relative flex flex-col gap-2 rounded-2xl border p-6 shadow-sm transition-transform hover:-translate-y-0.5 ${
               f.featured
                 ? "border-primary/40 bg-gradient-to-br from-accent/30 to-card"
                 : "border-border bg-card"
@@ -109,7 +109,7 @@ export default async function OppgraderPage() {
             300 kr / måned — alt{" "}
             <em className="font-normal italic">inkludert</em>
           </h2>
-          <p className="mt-3 text-sm text-accent/80">
+          <p className="mt-2 text-sm text-accent/80">
             Fri pause, fri avbestilling, 30 dagers full angrerett. Spar ~14 % med årlig faktura.
           </p>
           <div className="mt-5 flex flex-wrap gap-2">
@@ -137,7 +137,7 @@ export default async function OppgraderPage() {
           </div>
           <Link
             href="/portal/meg/abonnement/oppgrader/flyt"
-            className="mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-bold text-foreground transition-transform hover:-translate-y-0.5"
+            className="mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-2 text-sm font-bold text-foreground transition-transform hover:-translate-y-0.5"
           >
             Start oppgradering
             <ArrowRight className="h-4 w-4" strokeWidth={2.2} />

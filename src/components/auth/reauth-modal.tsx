@@ -141,8 +141,8 @@ export function ReauthModal({
       }
       description="For sikkerhets skyld må du bekrefte passordet ditt for å fortsette."
     >
-      <form onSubmit={bekreft} className="space-y-5">
-        <div className="flex items-start gap-3 rounded-md border border-border bg-secondary/40 px-4 py-3 text-sm text-foreground">
+      <form onSubmit={bekreft} className="space-y-6">
+        <div className="flex items-start gap-2 rounded-md border border-border bg-secondary/40 px-4 py-2 text-sm text-foreground">
           <KeyRound
             className="mt-0.5 h-4 w-4 flex-shrink-0 text-muted-foreground"
             strokeWidth={1.75}
@@ -181,7 +181,7 @@ export function ReauthModal({
           <div
             role="alert"
             aria-live="polite"
-            className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+            className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive"
           >
             {error}
           </div>

@@ -39,7 +39,7 @@ export function ChatToolbar({ messages }: { messages: ChatMelding[] }) {
         type="button"
         onClick={eksporterChat}
         disabled={messages.length === 0}
-        className="inline-flex h-10 items-center gap-1.5 rounded-md border border-border bg-card px-3.5 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary disabled:opacity-50"
+        className="inline-flex h-10 items-center gap-1.5 rounded-md border border-border bg-card px-4 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary disabled:opacity-50"
       >
         <Download size={14} strokeWidth={1.5} />
         Eksporter chat

@@ -304,7 +304,7 @@ export function OnskeligOktForm({ coacher }: { coacher: Coach[] }) {
         </div>
       )}
 
-      <div className="mt-2 flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mt-2 flex flex-col gap-2 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
         <Link
           href="/portal"
           className="inline-flex min-h-11 items-center justify-center rounded-md border border-border bg-transparent px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary"

@@ -284,7 +284,7 @@ export function DrillEditor({
                         aktiv ? prev.filter((k) => k !== mg.kode) : [...prev, mg.kode]
                       )
                     }
-                    className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                    className={`rounded-full px-4 py-1 text-xs font-medium transition-colors ${
                       aktiv
                         ? "bg-primary text-primary-foreground"
                         : "border border-input bg-card text-foreground hover:bg-secondary"
@@ -377,7 +377,7 @@ export function DrillEditor({
               <button
                 type="button"
                 onClick={() => setGolfLFase("")}
-                className={`rounded-md border px-3 py-1.5 text-xs font-medium transition-colors ${
+                className={`rounded-md border px-4 py-1.5 text-xs font-medium transition-colors ${
                   !golfLFase ? "border-primary bg-primary/10 text-primary" : "border-border bg-card text-muted-foreground hover:border-foreground/20"
                 }`}
               >
@@ -388,7 +388,7 @@ export function DrillEditor({
                   key={l.kode}
                   type="button"
                   onClick={() => setGolfLFase(l.kode)}
-                  className={`rounded-md border px-3 py-1.5 text-xs font-medium transition-colors ${
+                  className={`rounded-md border px-4 py-1.5 text-xs font-medium transition-colors ${
                     golfLFase === l.kode ? "border-primary bg-primary/10 text-primary" : "border-border bg-card text-muted-foreground hover:border-foreground/20"
                   }`}
                 >
@@ -464,7 +464,7 @@ export function DrillEditor({
         type="button"
         onClick={handleSubmit}
         disabled={!name || isPending}
-        className="flex w-full items-center justify-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
+        className="flex w-full items-center justify-center gap-2 rounded-md bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
       >
         {isPending ? (
           <>

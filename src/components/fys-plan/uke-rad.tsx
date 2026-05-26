@@ -30,7 +30,7 @@ export function UkeRad({
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         className={cn(
-          "flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors",
+          "flex w-full items-center justify-between gap-4 px-6 py-4 text-left transition-colors",
           "hover:bg-secondary/40",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
         )}
@@ -62,13 +62,13 @@ export function UkeRad({
       </button>
 
       {open && (
-        <div className="border-t border-border bg-background/50 px-5 py-4">
+        <div className="border-t border-border bg-background/50 px-6 py-4">
           {uke.okter.length === 0 ? (
             <p className="py-4 text-center text-sm text-muted-foreground">
               Ingen økter i denne uka enda.
             </p>
           ) : (
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
               {uke.okter.map((okt) => (
                 <OktKort
                   key={okt.id}

@@ -179,7 +179,7 @@ export function InnboksListe({ items }: { items: InboxItem[] }) {
   return (
     <div className="space-y-4">
       {/* Filter-rad */}
-      <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-card px-4 py-3">
+      <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-card px-4 py-2">
         <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           Filter
         </span>
@@ -221,7 +221,7 @@ export function InnboksListe({ items }: { items: InboxItem[] }) {
       </div>
 
       {feil && (
-        <div className="rounded-md border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+        <div className="rounded-md border border-destructive/40 bg-destructive/5 px-4 py-2 text-sm text-destructive">
           {feil}
         </div>
       )}
@@ -237,7 +237,7 @@ export function InnboksListe({ items }: { items: InboxItem[] }) {
       ) : (
         <div className="overflow-hidden rounded-lg border border-border bg-card">
           {/* Bulk-header */}
-          <div className="flex items-center gap-4 border-b border-border bg-secondary/40 px-6 py-3">
+          <div className="flex items-center gap-4 border-b border-border bg-secondary/40 px-6 py-2">
             <input
               type="checkbox"
               checked={alleValgt}

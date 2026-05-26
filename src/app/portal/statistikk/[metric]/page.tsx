@@ -338,7 +338,7 @@ export default async function MetricDrillDownPage({
                   key={p}
                   type="button"
                   disabled
-                  className={`whitespace-nowrap rounded-full px-3 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] ${
+                  className={`whitespace-nowrap rounded-full px-4 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] ${
                     i === 2
                       ? "bg-foreground text-accent"
                       : "text-muted-foreground"
@@ -362,10 +362,10 @@ export default async function MetricDrillDownPage({
               <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] opacity-80">
                 Snitt 30 d
               </div>
-              <div className="mt-3 font-mono text-4xl font-semibold tabular-nums md:text-5xl">
+              <div className="mt-2 font-mono text-4xl font-semibold tabular-nums md:text-5xl">
                 {info.format(verdi30d)}
               </div>
-              <div className="mt-3 font-mono text-xs opacity-90">
+              <div className="mt-2 font-mono text-xs opacity-90">
                 {forrige30d === 0 && info.kind === "sg"
                   ? "ny baseline"
                   : `${delta >= 0 ? "↑ +" : "↓ "}${info.format(Math.abs(delta))} vs forrige 30 d`}
@@ -376,14 +376,14 @@ export default async function MetricDrillDownPage({
                 vs kategori-snitt
               </div>
               <div
-                className={`mt-3 font-mono text-3xl font-semibold tabular-nums ${
+                className={`mt-2 font-mono text-3xl font-semibold tabular-nums ${
                   benchmarkDiff >= 0 ? "text-primary" : "text-destructive"
                 }`}
               >
                 {benchmarkDiff >= 0 ? "+" : ""}
                 {info.format(Math.abs(benchmarkDiff))}
               </div>
-              <div className="mt-3 font-mono text-[11px] text-muted-foreground">
+              <div className="mt-2 font-mono text-[11px] text-muted-foreground">
                 Snitt A1 = {info.format(info.benchmark)}
               </div>
             </div>
@@ -393,19 +393,19 @@ export default async function MetricDrillDownPage({
               </div>
               {info.kind === "pyramid" ? (
                 <>
-                  <div className="mt-3 font-mono text-3xl font-semibold tabular-nums">
+                  <div className="mt-2 font-mono text-3xl font-semibold tabular-nums">
                     {(totalMin / 60).toFixed(1).replace(".", ",")} t
                   </div>
-                  <div className="mt-3 font-mono text-[11px] text-muted-foreground">
+                  <div className="mt-2 font-mono text-[11px] text-muted-foreground">
                     {okterTotalt} {okterTotalt === 1 ? "økt" : "økter"} fullført
                   </div>
                 </>
               ) : (
                 <>
-                  <div className="mt-3 font-mono text-3xl font-semibold tabular-nums">
+                  <div className="mt-2 font-mono text-3xl font-semibold tabular-nums">
                     {sgBest ? info.format(sgBest.verdi) : "—"}
                   </div>
-                  <div className="mt-3 font-mono text-[11px] text-muted-foreground">
+                  <div className="mt-2 font-mono text-[11px] text-muted-foreground">
                     {sgBest
                       ? sgBest.dato.toLocaleDateString("nb-NO", {
                           day: "numeric",
@@ -420,7 +420,7 @@ export default async function MetricDrillDownPage({
 
           {/* Trend-chart */}
           <section className="rounded-2xl border border-border bg-card p-4 md:p-6">
-            <div className="mb-3 flex items-baseline justify-between">
+            <div className="mb-2 flex items-baseline justify-between">
               <h2 className="font-display text-base font-semibold tracking-tight">
                 {info.title} {info.italic} · 90 dager
               </h2>
@@ -448,7 +448,7 @@ export default async function MetricDrillDownPage({
           {/* Topp 5 drills (kun pyramid) */}
           {info.kind === "pyramid" && (
             <section>
-              <div className="mb-3">
+              <div className="mb-2">
                 <h2 className="font-display text-xl font-semibold tracking-tight">
                   Topp 5 drills · {info.title.toLowerCase()}
                 </h2>
@@ -463,7 +463,7 @@ export default async function MetricDrillDownPage({
               ) : (
                 <div className="overflow-x-auto rounded-2xl border border-border bg-card">
                   <div className="min-w-[480px]">
-                  <div className="grid grid-cols-[2fr_80px_80px_80px] gap-4 border-b border-border bg-muted/40 px-4 py-3 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground md:px-6">
+                  <div className="grid grid-cols-[2fr_80px_80px_80px] gap-4 border-b border-border bg-muted/40 px-4 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground md:px-6">
                     <span>Drill</span>
                     <span className="text-right">Antall</span>
                     <span className="text-right">Tid</span>
@@ -472,7 +472,7 @@ export default async function MetricDrillDownPage({
                   {drillTopp.map((d) => (
                     <div
                       key={d.navn}
-                      className="grid grid-cols-[2fr_80px_80px_80px] items-center gap-4 border-b border-border/60 px-4 py-3 last:border-0 md:px-6"
+                      className="grid grid-cols-[2fr_80px_80px_80px] items-center gap-4 border-b border-border/60 px-4 py-2 last:border-0 md:px-6"
                     >
                       <span className="flex items-center gap-2 font-medium">
                         <Target
@@ -502,7 +502,7 @@ export default async function MetricDrillDownPage({
           {/* SG-detaljer (kun SG) */}
           {info.kind === "sg" && (
             <section>
-              <div className="mb-3">
+              <div className="mb-2">
                 <h2 className="font-display text-xl font-semibold tracking-tight">
                   SG-utvikling per uke
                 </h2>
@@ -512,7 +512,7 @@ export default async function MetricDrillDownPage({
               </div>
               <div className="overflow-x-auto rounded-2xl border border-border bg-card">
                 <div className="min-w-[420px]">
-                <div className="grid grid-cols-[1fr_80px_80px] gap-4 border-b border-border bg-muted/40 px-4 py-3 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground md:px-6">
+                <div className="grid grid-cols-[1fr_80px_80px] gap-4 border-b border-border bg-muted/40 px-4 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground md:px-6">
                   <span>Periode</span>
                   <span className="text-right">Runder</span>
                   <span className="text-right">SG snitt</span>
@@ -525,7 +525,7 @@ export default async function MetricDrillDownPage({
                 ).map((u) => (
                   <div
                     key={u.label}
-                    className="grid grid-cols-[1fr_80px_80px] items-center gap-4 border-b border-border/60 px-4 py-3 last:border-0 md:px-6"
+                    className="grid grid-cols-[1fr_80px_80px] items-center gap-4 border-b border-border/60 px-4 py-2 last:border-0 md:px-6"
                   >
                     <span className="font-medium">{u.label}</span>
                     <span className="text-right font-mono text-sm tabular-nums">
@@ -614,7 +614,7 @@ function EmptyForDiscipline({
       <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
         Ingen data ennå
       </span>
-      <h3 className="mt-3 font-display text-xl font-semibold">
+      <h3 className="mt-2 font-display text-xl font-semibold">
         {title} · ingen historikk
       </h3>
       <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">

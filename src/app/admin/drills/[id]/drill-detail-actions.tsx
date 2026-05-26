@@ -82,7 +82,7 @@ export function DrillDetailActions({ drillId, drillName, hasSessions }: Props) {
       {error && (
         <div
           role="alert"
-          className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive"
+          className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-xs text-destructive"
         >
           {error}
         </div>

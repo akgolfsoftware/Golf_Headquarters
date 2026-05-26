@@ -79,7 +79,7 @@ export function ManedGrid({ okter }: { okter: ManedOkt[] }) {
           <button
             type="button"
             onClick={() => setMndOffset(0)}
-            className="rounded-full border border-border px-3 py-1 font-mono text-[10px] uppercase tracking-[0.10em] text-foreground hover:bg-secondary"
+            className="rounded-full border border-border px-4 py-1 font-mono text-[10px] uppercase tracking-[0.10em] text-foreground hover:bg-secondary"
           >
             I dag
           </button>
@@ -95,10 +95,10 @@ export function ManedGrid({ okter }: { okter: ManedOkt[] }) {
         <div className="font-display text-lg font-semibold tracking-tight capitalize">
           {valgtMnd.toLocaleDateString("nb-NO", { month: "long", year: "numeric" })}
         </div>
-        <div className="ml-auto flex items-center gap-3">
+        <div className="ml-auto flex items-center gap-2">
           <Link
             href="/admin/kalender/uke"
-            className="rounded-full border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
+            className="rounded-full border border-border px-4 py-1.5 text-xs font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
           >
             ← Uke
           </Link>
@@ -201,7 +201,7 @@ export function ManedGrid({ okter }: { okter: ManedOkt[] }) {
                   {valgteOkter.map((o) => (
                     <li
                       key={o.id}
-                      className="rounded-lg border-l-[3px] border-border bg-secondary/40 p-3"
+                      className="rounded-lg border-l-[3px] border-border bg-secondary/40 p-4"
                       style={{ borderLeftColor: PYRAMIDE_FARGER[o.pyramide] }}
                     >
                       <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">

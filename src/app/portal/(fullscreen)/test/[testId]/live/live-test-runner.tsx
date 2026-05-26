@@ -192,7 +192,7 @@ export function LiveTestRunner({
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-4xl flex-col">
       {/* Header */}
-      <header className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-border bg-card px-4 py-3 sm:px-6">
+      <header className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-border bg-card px-4 py-2 sm:px-6">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">
             <span className="rounded-sm bg-accent/20 px-2 py-0.5 text-[10px] font-semibold text-accent-foreground">
@@ -238,8 +238,8 @@ export function LiveTestRunner({
       {/* Hovedinnhold */}
       <main className="flex-1 px-4 py-6 sm:px-6">
         {/* Steg-tittel + instruksjon */}
-        <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
-          <div className="flex items-start justify-between gap-3">
+        <section className="rounded-2xl border border-border bg-card p-6 sm:p-6">
+          <div className="flex items-start justify-between gap-2">
             <div className="min-w-0">
               <div className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
                 Steg {stepIdx + 1} · {step.shots} slag
@@ -248,7 +248,7 @@ export function LiveTestRunner({
                 {step.label}
               </h2>
               {step.target && (
-                <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-[11px] font-semibold text-primary">
+                <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-4 py-1 text-[11px] font-semibold text-primary">
                   <Target className="h-3 w-3" strokeWidth={2} />
                   Mål: {step.target}
                 </div>
@@ -269,8 +269,8 @@ export function LiveTestRunner({
           </div>
 
           {showInfo && (
-            <div className="mt-4 space-y-3 border-t border-border pt-4">
-              <div className="flex gap-3">
+            <div className="mt-4 space-y-2 border-t border-border pt-4">
+              <div className="flex gap-2">
                 <Info className="h-4 w-4 shrink-0 text-muted-foreground" strokeWidth={1.5} />
                 <p className="text-sm leading-relaxed text-foreground">
                   {step.instruction}
@@ -278,7 +278,7 @@ export function LiveTestRunner({
               </div>
 
               {stepIdx === 0 && protocol.equipment.length > 0 && (
-                <div className="flex flex-wrap gap-1.5 pl-7">
+                <div className="flex flex-wrap gap-1.5 pl-8">
                   {protocol.equipment.map((e) => (
                     <span
                       key={e}
@@ -292,7 +292,7 @@ export function LiveTestRunner({
               )}
 
               {stepIdx === 0 && protocol.notes && (
-                <div className="ml-7 rounded-lg bg-secondary/60 px-3 py-2 text-xs italic text-muted-foreground">
+                <div className="ml-7 rounded-lg bg-secondary/60 px-4 py-2 text-xs italic text-muted-foreground">
                   Tips: {protocol.notes}
                 </div>
               )}
@@ -302,7 +302,7 @@ export function LiveTestRunner({
 
         {/* Slag-input */}
         <section className="mt-5 rounded-2xl border border-border bg-card">
-          <div className="border-b border-border px-5 py-3 sm:px-6">
+          <div className="border-b border-border px-6 py-2 sm:px-6">
             <h3 className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
               Registrer per slag ({step.shots})
             </h3>
@@ -322,7 +322,7 @@ export function LiveTestRunner({
 
         {/* Notater (kun på siste steg) */}
         {isLastStep && (
-          <section className="mt-5 rounded-2xl border border-border bg-card p-5 sm:p-6">
+          <section className="mt-5 rounded-2xl border border-border bg-card p-6 sm:p-6">
             <h3 className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
               Notater (valgfritt)
             </h3>
@@ -331,7 +331,7 @@ export function LiveTestRunner({
               onChange={(e) => setNotes(e.target.value.slice(0, 500))}
               rows={3}
               placeholder="Følt-form, været, utstyrs-issues — bare hvis det er relevant."
-              className="mt-3 w-full rounded-md border border-input bg-background px-4 py-2.5 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
+              className="mt-2 w-full rounded-md border border-input bg-background px-4 py-2.5 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
             />
             <span className="mt-1 block text-right font-mono text-[10px] text-muted-foreground">
               {notes.length} / 500
@@ -349,7 +349,7 @@ export function LiveTestRunner({
 
       {/* Footer-knapp */}
       <footer className="sticky bottom-0 z-10 border-t border-border bg-card px-4 py-4 sm:px-6">
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground">
             <Clock className="h-3.5 w-3.5" strokeWidth={1.5} />
             ~{protocol.expectedDurationMin} min totalt
@@ -358,7 +358,7 @@ export function LiveTestRunner({
             type="button"
             onClick={saveAndAdvance}
             disabled={pending}
-            className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {pending ? (
               "Lagrer…"
@@ -425,12 +425,12 @@ function ShotRow({
   onChange: (key: string, val: string | number | boolean) => void;
 }) {
   return (
-    <div className="grid grid-cols-[40px_1fr] items-center gap-3 px-5 py-3 sm:px-6">
+    <div className="grid grid-cols-[40px_1fr] items-center gap-2 px-6 py-2 sm:px-6">
       <div className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary font-mono text-xs font-semibold tabular-nums text-foreground">
         {shotNumber}
       </div>
       <div
-        className="flex flex-wrap items-end gap-3"
+        className="flex flex-wrap items-end gap-2"
         style={{ gridTemplateColumns: `repeat(${fields.length}, minmax(0, 1fr))` }}
       >
         {fields.map((f) => (
@@ -501,7 +501,7 @@ function FieldInput({
         <select
           value={v}
           onChange={(e) => onChange(e.target.value)}
-          className="rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
+          className="rounded-md border border-input bg-background px-4 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
         >
           {(field.options ?? []).map((opt) => (
             <option key={opt} value={opt}>
@@ -538,7 +538,7 @@ function FieldInput({
             onChange(Number.isFinite(n) ? n : "");
           }
         }}
-        className="w-full rounded-md border border-input bg-background px-3 py-2 font-mono text-sm tabular-nums outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
+        className="w-full rounded-md border border-input bg-background px-4 py-2 font-mono text-sm tabular-nums outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
       />
       {field.helper && (
         <span className="text-[10px] text-muted-foreground">{field.helper}</span>

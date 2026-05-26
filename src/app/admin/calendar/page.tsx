@@ -389,7 +389,7 @@ export default async function AdminCalendar({
             <button
               type="button"
               disabled
-              className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-md border border-border bg-card px-3.5 py-2 text-[13px] font-medium text-foreground opacity-50"
+              className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground opacity-50"
             >
               <Download className="h-4 w-4" /> Eksporter
             </button>

@@ -195,7 +195,7 @@ export default async function NoteDetalj({
               {sesjon.kind === "DIRECT" && (
                 <Link
                   href="/portal/coach/melding"
-                  className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-md border border-border bg-transparent px-3.5 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
+                  className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-md border border-border bg-transparent px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
                 >
                   Send svar
                 </Link>

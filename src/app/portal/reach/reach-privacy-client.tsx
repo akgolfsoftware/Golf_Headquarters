@@ -83,7 +83,7 @@ export function ReachPrivacyClient() {
   }
 
   return (
-    <ul className="space-y-3">
+    <ul className="space-y-2">
       {omrader.map((o) => {
         const Ikon = o.ikon;
         return (
@@ -91,7 +91,7 @@ export function ReachPrivacyClient() {
             key={o.id}
             className="rounded-lg border border-border bg-card p-4"
           >
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-2">
               <div className="grid h-9 w-9 shrink-0 place-items-center rounded-md bg-secondary text-foreground">
                 <Ikon size={16} strokeWidth={1.75} />
               </div>
@@ -104,7 +104,7 @@ export function ReachPrivacyClient() {
                 </p>
               </div>
             </div>
-            <div className="mt-3 grid grid-cols-3 gap-1.5">
+            <div className="mt-2 grid grid-cols-3 gap-1.5">
               {LEVELS.map((l) => {
                 const valgt = o.level === l.id;
                 const LevelIkon = l.ikon;

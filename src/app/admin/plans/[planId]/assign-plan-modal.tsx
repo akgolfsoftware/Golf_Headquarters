@@ -237,7 +237,7 @@ export function AssignPlanToPlayerModal({
       aria-labelledby="assign-plan-title"
       className="m-0 h-full max-h-full w-full max-w-full rounded-none border-0 bg-card p-0 shadow-xl backdrop:bg-foreground/40 backdrop:backdrop-blur-sm sm:m-auto sm:h-auto sm:max-h-[90vh] sm:max-w-[720px] sm:rounded-2xl sm:border sm:border-border"
     >
-      <form onSubmit={bekreft} className="p-4 sm:p-7">
+      <form onSubmit={bekreft} className="p-4 sm:p-8">
         {/* Header */}
         <div className="mb-6 flex items-start justify-between gap-4">
           <div className="min-w-0">
@@ -300,7 +300,7 @@ export function AssignPlanToPlayerModal({
                 value={sok}
                 onChange={(e) => setSok(e.target.value)}
                 placeholder="Søk på navn eller klubb…"
-                className="w-full rounded-md border border-input bg-card py-2 pl-9 pr-4 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
+                className="w-full rounded-md border border-input bg-card py-2 pl-8 pr-4 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
                 autoComplete="off"
                 aria-label="Søk spillere"
               />
@@ -313,7 +313,7 @@ export function AssignPlanToPlayerModal({
                   key={c.key}
                   type="button"
                   onClick={() => setFilter(c.key)}
-                  className={`rounded-full border px-3 py-1 font-mono text-[11px] uppercase tracking-[0.06em] transition-colors ${
+                  className={`rounded-full border px-4 py-1 font-mono text-[11px] uppercase tracking-[0.06em] transition-colors ${
                     filter === c.key
                       ? "border-primary bg-primary text-primary-foreground"
                       : "border-border bg-card text-muted-foreground hover:border-foreground/40 hover:text-foreground"
@@ -346,7 +346,7 @@ export function AssignPlanToPlayerModal({
                     return (
                       <li key={s.id}>
                         <label
-                          className={`flex cursor-pointer items-center gap-3 px-4 py-3 transition-colors ${
+                          className={`flex cursor-pointer items-center gap-2 px-4 py-2 transition-colors ${
                             tierDisabled
                               ? "cursor-not-allowed opacity-50"
                               : valgt
@@ -423,9 +423,9 @@ export function AssignPlanToPlayerModal({
         )}
 
         {steg === 2 && (
-          <div className="space-y-5">
+          <div className="space-y-6">
             {/* Sammendrag */}
-            <div className="rounded-md border border-border bg-secondary/40 px-4 py-3">
+            <div className="rounded-md border border-border bg-secondary/40 px-4 py-2">
               <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                 {valgteSpillere.length} mottakere
               </div>
@@ -450,7 +450,7 @@ export function AssignPlanToPlayerModal({
                   type="date"
                   value={startDato}
                   onChange={(e) => setStartDato(e.target.value)}
-                  className="w-full rounded-md border border-input bg-card px-3 py-2 font-mono text-sm tabular-nums text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
+                  className="w-full rounded-md border border-input bg-card px-4 py-2 font-mono text-sm tabular-nums text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
                   required
                 />
               </label>
@@ -458,7 +458,7 @@ export function AssignPlanToPlayerModal({
                 <span className="mb-1 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                   Sluttdato (auto)
                 </span>
-                <div className="rounded-md border border-border bg-muted px-3 py-2 font-mono text-sm tabular-nums text-muted-foreground">
+                <div className="rounded-md border border-border bg-muted px-4 py-2 font-mono text-sm tabular-nums text-muted-foreground">
                   {sluttDatoLabel}
                 </div>
               </div>
@@ -466,7 +466,7 @@ export function AssignPlanToPlayerModal({
 
             {/* Konflikt-varsel */}
             {konflikter.length > 0 && (
-              <div className="rounded-md border border-amber-300 bg-amber-50 px-4 py-3">
+              <div className="rounded-md border border-amber-300 bg-amber-50 px-4 py-2">
                 <div className="flex items-start gap-2">
                   <AlertTriangle
                     className="mt-0.5 h-4 w-4 shrink-0 text-amber-700"
@@ -491,7 +491,7 @@ export function AssignPlanToPlayerModal({
                         <li>+{konflikter.length - 5} til</li>
                       )}
                     </ul>
-                    <label className="mt-3 flex items-start gap-2 text-[12px] text-amber-900">
+                    <label className="mt-2 flex items-start gap-2 text-[12px] text-amber-900">
                       <input
                         type="checkbox"
                         checked={erstattAktive}
@@ -518,7 +518,7 @@ export function AssignPlanToPlayerModal({
                 onChange={(e) => setVelkomst(e.target.value)}
                 rows={3}
                 maxLength={600}
-                className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
+                className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
                 placeholder="Kort melding spilleren ser i varselet."
               />
               <span className="mt-1 block text-right font-mono text-[10px] text-muted-foreground">
@@ -603,7 +603,7 @@ export function AssignPlanToPlayerModal({
               type="button"
               onClick={videre}
               disabled={valgte.size === 0}
-              className="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+              className="inline-flex items-center gap-1.5 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
             >
               <UserPlus className="h-4 w-4" strokeWidth={1.75} />
               Videre — konfigurer
@@ -612,7 +612,7 @@ export function AssignPlanToPlayerModal({
             <button
               type="submit"
               disabled={pending || valgte.size === 0}
-              className="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+              className="inline-flex items-center gap-1.5 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
             >
               <Check className="h-4 w-4" strokeWidth={1.75} />
               {pending
@@ -644,7 +644,7 @@ function KanalToggle({
       type="button"
       onClick={onToggle}
       disabled={disabled}
-      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 font-mono text-[11px] uppercase tracking-[0.06em] transition-colors ${
+      className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-1 font-mono text-[11px] uppercase tracking-[0.06em] transition-colors ${
         disabled
           ? "cursor-not-allowed border-border bg-muted text-muted-foreground opacity-60"
           : active

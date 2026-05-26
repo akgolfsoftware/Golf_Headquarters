@@ -27,7 +27,7 @@ export async function GruppeSnarveier() {
 
   return (
     <div className="rounded-lg border border-border bg-card p-4 shadow-sm">
-      <div className="mb-3 flex items-center justify-between gap-2">
+      <div className="mb-2 flex items-center justify-between gap-2">
         <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
           Grupper
         </span>
@@ -45,7 +45,7 @@ export async function GruppeSnarveier() {
             <li key={g.id}>
               <Link
                 href={`/admin/elever?group=${g.id}`}
-                className="group flex items-center justify-between gap-2 rounded-md border border-transparent bg-secondary/40 px-3 py-2 text-sm transition-colors hover:border-primary hover:bg-secondary"
+                className="group flex items-center justify-between gap-2 rounded-md border border-transparent bg-secondary/40 px-4 py-2 text-sm transition-colors hover:border-primary hover:bg-secondary"
               >
                 <span className="flex items-center gap-2 min-w-0">
                   <Users className="h-3.5 w-3.5 shrink-0 text-muted-foreground" strokeWidth={1.5} />
@@ -63,7 +63,7 @@ export async function GruppeSnarveier() {
           );
         })}
       </ul>
-      <p className="mt-3 text-[11px] leading-[1.4] text-muted-foreground">
+      <p className="mt-2 text-[11px] leading-[1.4] text-muted-foreground">
         Klikk en gruppe for å filtrere spillere.
       </p>
     </div>

@@ -87,7 +87,7 @@ export default async function TaskDetaljPage({
   return (
     <div className="space-y-6">
       {/* Mini-hero */}
-      <header className="-mx-4 -mt-4 flex items-center justify-between border-b border-border bg-gradient-to-b from-[#FBFAF5] to-background px-4 py-5 md:-mx-8 md:px-8">
+      <header className="-mx-4 -mt-4 flex items-center justify-between border-b border-border bg-gradient-to-b from-[#FBFAF5] to-background px-4 py-6 md:-mx-8 md:px-8">
         <Link
           href="/admin/workspace/oppgaver"
           className="font-mono inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.04em] text-muted-foreground hover:text-foreground"
@@ -135,10 +135,10 @@ export default async function TaskDetaljPage({
 
           {/* Beskrivelse */}
           <section className="rounded-2xl border border-border bg-card p-6">
-            <div className="font-mono mb-3 text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
+            <div className="font-mono mb-2 text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
               BESKRIVELSE
             </div>
-            <div className="space-y-3 text-sm leading-relaxed">
+            <div className="space-y-2 text-sm leading-relaxed">
               <p>
                 Vi må avklare Trackman-leie for sommeren 2026 før <strong>14. juni</strong>.
                 Mulligan Studio har Trackman bay 4 reservert, men jeg er usikker på{" "}
@@ -153,7 +153,7 @@ export default async function TaskDetaljPage({
                 <li>Tilgang for Markus + andre coaches</li>
                 <li>Data-eierskap (vil vi eksportere TrackMan-rapporter)</li>
               </ul>
-              <p className="font-mono inline-flex items-center gap-2 rounded-md border-l-[3px] border-accent bg-muted/40 px-3.5 py-2.5 text-xs text-muted-foreground">
+              <p className="font-mono inline-flex items-center gap-2 rounded-md border-l-[3px] border-accent bg-muted/40 px-4 py-2.5 text-xs text-muted-foreground">
                 <Paperclip className="h-3.5 w-3.5" />
                 Synket fra Notion · «Backlog 2026 · drift»
               </p>
@@ -162,7 +162,7 @@ export default async function TaskDetaljPage({
 
           {/* Sub-tasks */}
           <section className="rounded-2xl border border-border bg-card p-6">
-            <header className="mb-3 flex items-baseline justify-between">
+            <header className="mb-2 flex items-baseline justify-between">
               <div className="font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
                 SUB-TASKS · {SUB_TASKS.filter((s) => s.done).length} / {SUB_TASKS.length} FULLFØRT
               </div>
@@ -194,7 +194,7 @@ export default async function TaskDetaljPage({
                 </li>
               ))}
             </ul>
-            <div className="mt-3 flex items-center gap-2.5 rounded-lg border border-dashed border-border px-2.5 py-2">
+            <div className="mt-2 flex items-center gap-2.5 rounded-lg border border-dashed border-border px-2.5 py-2">
               <Plus className="h-3.5 w-3.5 text-muted-foreground" />
               <input
                 type="text"
@@ -213,7 +213,7 @@ export default async function TaskDetaljPage({
               {ACTIVITY_FEED.map((f, i) => {
                 const isNotion = f.who === "N";
                 return (
-                  <li key={i} className="relative flex items-start gap-3">
+                  <li key={i} className="relative flex items-start gap-2">
                     <span
                       className={`absolute -left-[19px] top-1 h-3.5 w-3.5 rounded-full ${
                         isNotion ? "bg-foreground" : "border-2 border-primary bg-card"
@@ -243,7 +243,7 @@ export default async function TaskDetaljPage({
                 );
               })}
             </ul>
-            <div className="mt-5 flex items-start gap-2.5 rounded-xl border border-border bg-card p-3">
+            <div className="mt-5 flex items-start gap-2.5 rounded-xl border border-border bg-card p-4">
               <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-[11px] font-bold text-accent">
                 AK
               </div>
@@ -389,7 +389,7 @@ export default async function TaskDetaljPage({
               </div>
             </MetaCell>
 
-            <div className="bg-muted/30 px-4 py-3.5">
+            <div className="bg-muted/30 px-4 py-4">
               <div className="flex items-center gap-2">
                 <SourceBadge kind="N" />
                 <div className="flex-1">
@@ -439,7 +439,7 @@ function NoAccessFallback() {
         <div className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
           404 · INGEN TILGANG
         </div>
-        <h2 className="font-display mt-3 text-3xl font-bold tracking-tight">
+        <h2 className="font-display mt-2 text-3xl font-bold tracking-tight">
           Denne{" "}
           <em
             className="font-normal not-italic"
@@ -454,7 +454,7 @@ function NoAccessFallback() {
           er privat
         </h2>
         <p
-          className="mt-3.5 text-base leading-relaxed text-muted-foreground"
+          className="mt-2.5 text-base leading-relaxed text-muted-foreground"
           style={{ fontFamily: "'Inter Tight', sans-serif", fontStyle: "italic" }}
         >
           «Anders har merket denne som PRIVAT. Du må bli tildelt eksplisitt, eller be

@@ -75,7 +75,7 @@ function InsightCard({ insight }: { insight: AiInsight }) {
   return (
     <article
       className={cn(
-        "group relative flex flex-col gap-5 rounded-2xl border bg-card p-6 sm:p-7",
+        "group relative flex flex-col gap-6 rounded-2xl border bg-card p-6 sm:p-8",
         "transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg",
         isHandling
           ? "border-foreground/15 shadow-md"
@@ -83,7 +83,7 @@ function InsightCard({ insight }: { insight: AiInsight }) {
       )}
     >
       {/* Topp-rad: ikon + type-badge */}
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex items-start justify-between gap-2">
         <span
           className={cn(
             "grid size-12 shrink-0 place-items-center rounded-xl",
@@ -135,7 +135,7 @@ function InsightCard({ insight }: { insight: AiInsight }) {
 
 export function AiInsightsRow({ insights, className }: AiInsightsRowProps) {
   return (
-    <div className={cn("grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-5", className)}>
+    <div className={cn("grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6", className)}>
       {insights.map((insight, idx) => (
         <InsightCard key={`${insight.type}-${idx}`} insight={insight} />
       ))}

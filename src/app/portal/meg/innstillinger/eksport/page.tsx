@@ -32,7 +32,7 @@ export default async function EksportPage() {
       </header>
 
       {/* GDPR-info */}
-      <div className="flex items-start gap-3 rounded-md border border-primary/30 bg-primary/5 p-4 text-sm">
+      <div className="flex items-start gap-2 rounded-md border border-primary/30 bg-primary/5 p-4 text-sm">
         <ShieldCheck size={16} strokeWidth={1.5} className="mt-0.5 text-primary" />
         <div>
           <p className="font-semibold text-foreground">Din rett til data-portabilitet</p>
@@ -52,7 +52,7 @@ export default async function EksportPage() {
         cta={
           <a
             href="mailto:personvern@akgolf.no?subject=Forespørsel%20om%20data-eksport"
-            className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-[13px] font-semibold text-primary-foreground hover:opacity-90"
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2 text-[13px] font-semibold text-primary-foreground hover:opacity-90"
           >
             <FileText size={14} strokeWidth={1.5} />
             Be om eksport via e-post

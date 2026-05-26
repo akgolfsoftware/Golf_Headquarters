@@ -196,7 +196,7 @@ export function LeggTilRundeForm({
                 key={m}
                 type="button"
                 onClick={() => setScoreMode(m)}
-                className={`rounded-md px-3 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] ${
+                className={`rounded-md px-4 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] ${
                   scoreMode === m
                     ? "bg-foreground text-accent"
                     : "text-muted-foreground"
@@ -228,7 +228,7 @@ export function LeggTilRundeForm({
               holeScores={holeScores}
               onChange={setHole}
             />
-            <div className="grid grid-cols-3 gap-2 rounded-md border border-border bg-background p-3 sm:gap-4">
+            <div className="grid grid-cols-3 gap-2 rounded-md border border-border bg-background p-4 sm:gap-4">
               <ScoreTot k="Total" v={String(computedTotal)} />
               <ScoreTot
                 k="vs par"
@@ -318,7 +318,7 @@ export function LeggTilRundeForm({
                 key={s}
                 type="button"
                 onClick={() => setSpilltype(s)}
-                className={`rounded-md border px-3 py-2 text-xs font-semibold ${
+                className={`rounded-md border px-4 py-2 text-xs font-semibold ${
                   spilltype === s
                     ? "border-primary bg-primary/10 text-primary"
                     : "border-border bg-card text-muted-foreground"
@@ -335,7 +335,7 @@ export function LeggTilRundeForm({
             {partners.map((p) => (
               <span
                 key={p}
-                className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1 text-xs font-medium text-foreground"
+                className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-4 py-1 text-xs font-medium text-foreground"
               >
                 {p}
                 <button
@@ -374,7 +374,7 @@ export function LeggTilRundeForm({
         titleSuffix="VALGFRITT"
         collapsible
       >
-        <div className="grid grid-cols-[1fr_70px_70px_70px] items-center gap-3">
+        <div className="grid grid-cols-[1fr_70px_70px_70px] items-center gap-2">
           <div />
           <div className="text-center font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
             Treff
@@ -399,7 +399,7 @@ export function LeggTilRundeForm({
           return (
             <div
               key={row.sub}
-              className="grid grid-cols-[1fr_70px_70px_70px] items-center gap-3"
+              className="grid grid-cols-[1fr_70px_70px_70px] items-center gap-2"
             >
               <div className="text-sm">
                 {row.label}
@@ -464,7 +464,7 @@ export function LeggTilRundeForm({
             {notes.length} / 500
           </div>
         </Field>
-        <div className="flex items-center justify-between rounded-md border border-border bg-background px-4 py-3">
+        <div className="flex items-center justify-between rounded-md border border-border bg-background px-4 py-2">
           <div>
             <div className="text-sm font-medium">Tell på handicap</div>
             <div className="font-mono text-[10px] text-muted-foreground">
@@ -491,14 +491,14 @@ export function LeggTilRundeForm({
       {error && (
         <div
           role="alert"
-          className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+          className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive"
         >
           {error}
         </div>
       )}
 
       {/* Sticky footer */}
-      <div className="sticky bottom-0 -mx-4 mt-4 flex items-center gap-3 border-t border-border bg-card px-4 py-3 sm:-mx-6 sm:px-6">
+      <div className="sticky bottom-0 -mx-4 mt-4 flex items-center gap-2 border-t border-border bg-card px-4 py-2 sm:-mx-6 sm:px-6">
         <div className="font-mono text-[11px] text-muted-foreground">
           {courses.find((c) => c.id === courseId)?.name ?? "—"} ·{" "}
           <strong className="text-foreground">
@@ -520,7 +520,7 @@ export function LeggTilRundeForm({
             type="button"
             onClick={lagre}
             disabled={pending}
-            className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60"
           >
             <Check size={14} strokeWidth={2} />
             {pending ? "Lagrer…" : "Lagre runde"}
@@ -607,7 +607,7 @@ function Field({
 
 function MetaCell({ k, v, unit }: { k: string; v: string; unit?: string }) {
   return (
-    <div className="border-b border-border px-4 py-3 last:border-r-0 sm:border-b-0 sm:border-r">
+    <div className="border-b border-border px-4 py-2 last:border-r-0 sm:border-b-0 sm:border-r">
       <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
         {k}
       </div>
@@ -637,8 +637,8 @@ function NineBlock({
   onChange: (i: number, v: string) => void;
 }) {
   return (
-    <div className="rounded-md border border-border bg-background p-3">
-      <div className="mb-3 flex items-center justify-between font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+    <div className="rounded-md border border-border bg-background p-4">
+      <div className="mb-2 flex items-center justify-between font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
         <span>{label}</span>
         <span>
           Par {parTotal} · Score{" "}

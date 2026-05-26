@@ -95,7 +95,7 @@ export default async function CoacherSide() {
             <Link
               key={c.slug}
               href={`/coacher/${c.slug}`}
-              className="group rounded-2xl border border-border bg-card p-5 sm:p-8 transition-colors hover:border-primary"
+              className="group rounded-2xl border border-border bg-card p-6 sm:p-8 transition-colors hover:border-primary"
             >
               <div className="flex h-24 w-24 items-center justify-center rounded-full bg-secondary text-2xl font-semibold text-primary">
                 {c.initialer}

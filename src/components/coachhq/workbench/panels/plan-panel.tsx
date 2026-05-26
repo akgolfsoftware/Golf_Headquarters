@@ -76,7 +76,7 @@ function statusLabel(status: string): string {
  *
  * Pure presentational. Data-fetching gjøres i koordinator-komponent.
  */
-export function PlanPanel({ spillerId: _spillerId, aktivPlan }: PlanPanelProps) {
+export function PlanPanel({ aktivPlan }: PlanPanelProps) {
   if (!aktivPlan) {
     return (
       <EmptyState
@@ -103,7 +103,7 @@ export function PlanPanel({ spillerId: _spillerId, aktivPlan }: PlanPanelProps) 
       {/* Plan-header */}
       <AthleticCard>
         <div className="space-y-4">
-          <div className="flex items-start justify-between gap-3">
+          <div className="flex items-start justify-between gap-2">
             <div className="space-y-1">
               <AthleticEyebrow>Aktiv plan</AthleticEyebrow>
               <h2 className="font-display text-xl font-bold tracking-[-0.015em]">
@@ -121,7 +121,7 @@ export function PlanPanel({ spillerId: _spillerId, aktivPlan }: PlanPanelProps) 
 
           {/* Adherence-bar */}
           <div className="space-y-2">
-            <div className="flex items-baseline justify-between gap-3">
+            <div className="flex items-baseline justify-between gap-2">
               <AthleticEyebrow>
                 Adherence siste {aktivPlan.ukentligAdherence.length} uker
               </AthleticEyebrow>
@@ -150,7 +150,7 @@ export function PlanPanel({ spillerId: _spillerId, aktivPlan }: PlanPanelProps) 
               return (
                 <div
                   key={u.uke}
-                  className="flex items-center gap-3 text-xs"
+                  className="flex items-center gap-2 text-xs"
                 >
                   <span className="w-16 shrink-0 font-mono uppercase tracking-[0.06em] text-muted-foreground">
                     Uke {u.uke}
@@ -190,9 +190,9 @@ export function PlanPanel({ spillerId: _spillerId, aktivPlan }: PlanPanelProps) 
             {aktivPlan.ukasOkter.map((okt) => (
               <li
                 key={okt.id}
-                className="flex items-center justify-between gap-3 py-2.5 text-sm first:pt-0 last:pb-0"
+                className="flex items-center justify-between gap-2 py-2.5 text-sm first:pt-0 last:pb-0"
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                   <Calendar
                     size={14}
                     strokeWidth={1.75}

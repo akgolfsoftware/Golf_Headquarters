@@ -59,7 +59,6 @@ function formatTime(date: Date): string {
 export function InvitationCard({
   participantId,
   hostName,
-  hostAvatarUrl: _hostAvatarUrl,
   okt,
   className,
 }: InvitationCardProps) {
@@ -107,12 +106,12 @@ export function InvitationCard({
   return (
     <section
       className={cn(
-        "rounded-lg border border-accent/40 bg-accent/10 p-4 sm:p-5",
+        "rounded-lg border border-accent/40 bg-accent/10 p-4 sm:p-6",
         className,
       )}
       aria-labelledby={`invitasjon-${participantId}-heading`}
     >
-      <div className="flex items-start gap-3">
+      <div className="flex items-start gap-2">
         {/* Avatar */}
         <div
           className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white"

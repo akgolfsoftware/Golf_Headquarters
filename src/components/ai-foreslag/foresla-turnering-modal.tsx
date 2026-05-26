@@ -168,7 +168,7 @@ export function AIForeslaaTurneringModal({
       }
     >
       {/* Filter-strip */}
-      <div className="mb-4 -mt-2 flex flex-wrap items-center gap-1.5 border-b border-border pb-3">
+      <div className="mb-4 -mt-2 flex flex-wrap items-center gap-1.5 border-b border-border pb-2">
         <FilterPill label="Alle" count={5} active={filter === "alle"} onClick={() => setFilter("alle")} />
         <FilterPill label="Olyo" count={2} active={filter === "olyo"} onClick={() => setFilter("olyo")} />
         <FilterPill label="Srixon" count={1} active={filter === "srixon"} onClick={() => setFilter("srixon")} />
@@ -183,7 +183,7 @@ export function AIForeslaaTurneringModal({
         <FilterPill label="Juli" active={filter === "juli"} onClick={() => setFilter("juli")} />
       </div>
 
-      <div className="space-y-3.5">
+      <div className="space-y-4">
         {filtered.map((t) => {
           const idx = TOURNAMENTS.indexOf(t);
           return (
@@ -247,12 +247,12 @@ function TournamentCard({
 }) {
   return (
     <article
-      className={`flex flex-col gap-3 rounded-2xl border bg-card p-4 transition ${
+      className={`flex flex-col gap-2 rounded-2xl border bg-card p-4 transition ${
         picked ? "border-primary shadow-[0_0_0_3px_rgba(0,88,64,0.08)]" : "border-border"
       }`}
     >
       {/* Header */}
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex items-start justify-between gap-2">
         <div className="flex-1">
           <div className="mb-1.5 flex items-center gap-2">
             <span className="font-mono inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-primary">
@@ -275,7 +275,7 @@ function TournamentCard({
       </div>
 
       {/* Specs */}
-      <div className="grid grid-cols-3 gap-2 border-y border-border py-3">
+      <div className="grid grid-cols-3 gap-2 border-y border-border py-2">
         <Spec label="HCP-KRAV" value={t.hcpReq} />
         <Spec
           label="DITT NIVÅ"
@@ -290,7 +290,7 @@ function TournamentCard({
       </div>
 
       {/* AI-vurdering */}
-      <div className="rounded-md border-l-[3px] border-accent bg-accent/10 py-2 pl-3 pr-2.5">
+      <div className="rounded-md border-l-[3px] border-accent bg-accent/10 py-2 pl-4 pr-2.5">
         <div className="font-mono inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-[0.14em] text-primary">
           <Sparkles className="h-3 w-3" /> AI-VURDERING
         </div>

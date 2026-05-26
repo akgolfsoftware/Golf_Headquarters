@@ -51,7 +51,7 @@ export function AppFeedbackForm() {
     >
       {/* NPS */}
       <section className="overflow-hidden rounded-xl border border-border bg-card p-6 shadow-sm">
-        <div className="mb-4 flex items-baseline justify-between gap-3">
+        <div className="mb-4 flex items-baseline justify-between gap-2">
           <h3 className="font-display text-sm font-semibold text-foreground">
             Hvor sannsynlig er det at du anbefaler PlayerHQ til en venn?
           </h3>
@@ -87,7 +87,7 @@ export function AppFeedbackForm() {
             );
           })}
         </div>
-        <div className="mt-3 flex items-center justify-between font-mono text-[10.5px] uppercase tracking-[0.06em] text-muted-foreground">
+        <div className="mt-2 flex items-center justify-between font-mono text-[10.5px] uppercase tracking-[0.06em] text-muted-foreground">
           <span>Ikke i det hele tatt</span>
           <span className="text-foreground">
             Valgt: <strong>{nps}</strong>{" "}
@@ -109,7 +109,7 @@ export function AppFeedbackForm() {
 
       {/* Type chips */}
       <section className="overflow-hidden rounded-xl border border-border bg-card p-6 shadow-sm">
-        <div className="mb-3 flex items-baseline justify-between gap-3">
+        <div className="mb-2 flex items-baseline justify-between gap-2">
           <h3 className="font-display text-sm font-semibold text-foreground">
             Type tilbakemelding
           </h3>
@@ -148,7 +148,7 @@ export function AppFeedbackForm() {
 
       {/* Dynamic textarea */}
       <section className="overflow-hidden rounded-xl border border-border bg-card p-6 shadow-sm">
-        <div className="mb-3 flex items-baseline justify-between">
+        <div className="mb-2 flex items-baseline justify-between">
           <h3 className="font-display text-sm font-semibold text-foreground">
             {labelOf(nps)}
           </h3>
@@ -162,7 +162,7 @@ export function AppFeedbackForm() {
           value={tekst}
           onChange={(e) => setTekst(e.target.value)}
           placeholder="Skriv her — så detaljert eller kort du vil."
-          className="w-full rounded-md border border-input bg-card px-4 py-3 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30"
+          className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30"
         />
         <div className="mt-2 flex items-center justify-between text-[10.5px]">
           <span className="text-muted-foreground/80">
@@ -175,7 +175,7 @@ export function AppFeedbackForm() {
       </section>
 
       {/* Anonym */}
-      <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-border bg-card p-4 shadow-sm">
+      <label className="flex cursor-pointer items-start gap-2 rounded-xl border border-border bg-card p-4 shadow-sm">
         <input
           type="checkbox"
           checked={anonym}
@@ -194,7 +194,7 @@ export function AppFeedbackForm() {
       </label>
 
       {/* Footer */}
-      <div className="flex items-center gap-3 border-t border-border pt-4">
+      <div className="flex items-center gap-2 border-t border-border pt-4">
         <span className="inline-flex items-center gap-1.5 font-mono text-[10.5px] text-muted-foreground">
           <MapPin className="h-3 w-3" strokeWidth={1.75} />
           Fra <span className="text-foreground">/portal/statistikk</span> · v0.9.4
@@ -202,7 +202,7 @@ export function AppFeedbackForm() {
         <button
           type="submit"
           disabled={pending}
-          className="ml-auto inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
+          className="ml-auto inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
         >
           <Send className="h-3.5 w-3.5" strokeWidth={1.75} />
           {pending ? "Sender …" : "Send"}

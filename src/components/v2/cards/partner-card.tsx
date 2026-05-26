@@ -45,7 +45,7 @@ export default function PartnerCard({ partner, onInvite }: PartnerCardProps) {
           e.stopPropagation();
           onInvite?.(partner);
         }}
-        className="flex-shrink-0 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-foreground rounded-full border border-border px-3 py-[6px]"
+        className="flex-shrink-0 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-foreground rounded-full border border-border px-4 py-[6px]"
         style={{ background: "var(--card)" }}
         type="button"
       >

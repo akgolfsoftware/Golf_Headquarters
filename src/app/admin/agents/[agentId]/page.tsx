@@ -129,7 +129,7 @@ export default async function AgentDetaljPage({
         </AthleticBadge>
       }
       kpiRow={
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
           <KPICard
             eyebrow="Status"
             value={konfig.status.toUpperCase()}
@@ -167,7 +167,7 @@ export default async function AgentDetaljPage({
             sub="Forslag fra denne agenten dukker opp her."
           />
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-2">
             {planActions.map((a) => {
               const sugg = a.suggestion as { forklaring?: string } | null;
               const statusKlasse =

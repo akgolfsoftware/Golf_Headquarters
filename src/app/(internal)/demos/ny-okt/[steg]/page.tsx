@@ -144,7 +144,7 @@ function FooterBar({ current }: { current: StegId }) {
   };
 
   return (
-    <div className="mt-8 flex items-center justify-between gap-2.5 border-t border-border pt-5">
+    <div className="mt-8 flex items-center justify-between gap-2.5 border-t border-border pt-6">
       <div className="flex gap-2.5">
         {prev ? (
           <Link
@@ -191,7 +191,7 @@ function Step1() {
         <SectionHead num="01 · KATEGORI" title="Velg en retning for økta">
           Du kan justere underveis. Kategorien styrer hvilke øvelser agenten foreslår.
         </SectionHead>
-        <div className="grid grid-cols-3 gap-3.5">
+        <div className="grid grid-cols-3 gap-4">
           <KCard
             icon={<Target className="h-6 w-6" strokeWidth={1.5} />}
             title="Fokusert"
@@ -223,7 +223,7 @@ function Step1() {
 
       <section>
         <div
-          className="flex items-start gap-3.5 rounded-xl border bg-card px-5 py-4"
+          className="flex items-start gap-4 rounded-xl border bg-card px-6 py-4"
           style={{
             background: "rgba(0,88,64,0.04)",
             borderColor: "rgba(0,88,64,0.18)",
@@ -245,7 +245,7 @@ function Step1() {
       </section>
 
       <div
-        className="flex items-center gap-2.5 rounded-lg border px-4 py-3 text-[13px]"
+        className="flex items-center gap-2.5 rounded-lg border px-4 py-2 text-[13px]"
         style={{
           background: "rgba(209,248,67,0.16)",
           borderColor: "rgba(209,248,67,0.4)",
@@ -278,7 +278,7 @@ function KCard({
   return (
     <button
       type="button"
-      className={`flex flex-col items-start gap-3 rounded-xl border-2 bg-card p-5 text-left transition-colors ${
+      className={`flex flex-col items-start gap-2 rounded-xl border-2 bg-card p-6 text-left transition-colors ${
         selected
           ? "border-[var(--brand-primary,#005840)] bg-[rgba(0,88,64,0.04)]"
           : "border-border hover:bg-secondary/40"
@@ -385,7 +385,7 @@ function Step2() {
         <SectionHead num="02 · INTENSITET" title="Hvor hardt?">
           Medium · «Du trener kvalitet, ikke volum. Ca. 280 svinger.»
         </SectionHead>
-        <div className="rounded-xl border border-border bg-card px-6 py-5">
+        <div className="rounded-xl border border-border bg-card px-6 py-6">
           <div className="relative h-2 rounded-sm bg-[var(--surface-alt,#F1EEE5)]">
             <div
               className="absolute left-0 top-0 h-full rounded-sm bg-[var(--brand-primary,#005840)]"
@@ -396,7 +396,7 @@ function Step2() {
               style={{ left: "50%" }}
             />
           </div>
-          <div className="mt-3 flex justify-between font-mono text-[11px] text-muted-foreground">
+          <div className="mt-2 flex justify-between font-mono text-[11px] text-muted-foreground">
             <span>1 · Lett</span>
             <span>2</span>
             <span className="font-semibold text-[var(--brand-primary,#005840)]">3 · Medium</span>
@@ -407,7 +407,7 @@ function Step2() {
       </section>
 
       <section>
-        <div className="flex items-center gap-3 rounded-xl border border-border bg-card px-5 py-4">
+        <div className="flex items-center gap-2 rounded-xl border border-border bg-card px-6 py-4">
           <Clock
             className="h-5 w-5 text-[var(--brand-primary,#005840)]"
             strokeWidth={1.75}
@@ -434,16 +434,16 @@ function Step3() {
         <div className="mb-4 flex items-end justify-between gap-4">
           <SectionHead num="01 · STED" title="Hvor skal du trene?" />
           <div className="inline-flex rounded-md border border-border bg-transparent p-1">
-            <button className="rounded-sm bg-[var(--brand-primary,#005840)] px-3 py-1.5 text-[12px] font-medium text-white">
+            <button className="rounded-sm bg-[var(--brand-primary,#005840)] px-4 py-1.5 text-[12px] font-medium text-white">
               Mine vanlige
             </button>
-            <button className="rounded-sm px-3 py-1.5 text-[12px] font-medium text-foreground hover:bg-secondary">
+            <button className="rounded-sm px-4 py-1.5 text-[12px] font-medium text-foreground hover:bg-secondary">
               Søk alle
             </button>
           </div>
         </div>
 
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2">
           <FacRow
             name="Mulligan Studio 2"
             meta="Fredrikstad · 2,1 km · TrackMan-sim · 800 kr/time"
@@ -625,20 +625,20 @@ function Step4() {
             <div className="mb-2 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
               Klokkeslett
             </div>
-            <div className="rounded-xl border border-border bg-card p-5">
-              <div className="mb-3 text-center font-mono text-[42px] font-medium leading-none tabular-nums tracking-tight">
+            <div className="rounded-xl border border-border bg-card p-6">
+              <div className="mb-2 text-center font-mono text-[42px] font-medium leading-none tabular-nums tracking-tight">
                 14:00
               </div>
               <div className="mb-4 flex justify-center gap-2">
-                <button className="rounded-full border border-border bg-transparent px-3 py-1.5 text-[12px] font-medium hover:bg-secondary">
+                <button className="rounded-full border border-border bg-transparent px-4 py-1.5 text-[12px] font-medium hover:bg-secondary">
                   −15 min
                 </button>
-                <button className="rounded-full border border-border bg-transparent px-3 py-1.5 text-[12px] font-medium hover:bg-secondary">
+                <button className="rounded-full border border-border bg-transparent px-4 py-1.5 text-[12px] font-medium hover:bg-secondary">
                   +15 min
                 </button>
               </div>
               <div
-                className="flex items-start gap-2.5 rounded-md border px-3 py-2.5"
+                className="flex items-start gap-2.5 rounded-md border px-4 py-2.5"
                 style={{
                   background: "rgba(216,57,57,0.08)",
                   borderColor: "rgba(216,57,57,0.25)",
@@ -652,7 +652,7 @@ function Step4() {
                   <b className="font-semibold">14:00 er opptatt.</b> Studio er booket til 15:30.
                 </div>
               </div>
-              <div className="mt-3.5 text-[12px] text-muted-foreground">
+              <div className="mt-2.5 text-[12px] text-muted-foreground">
                 Foreslåtte ledige tider:
               </div>
               <div className="mt-2 flex flex-wrap gap-1.5">
@@ -758,7 +758,7 @@ function Step5() {
 
       <section>
         <div
-          className="flex items-center justify-between rounded-xl border border-dashed border-border px-5 py-4"
+          className="flex items-center justify-between rounded-xl border border-dashed border-border px-6 py-4"
           style={{ background: "var(--surface-alt,#F1EEE5)" }}
         >
           <div>
@@ -802,7 +802,7 @@ function ExerciseLine({
 }: ExerciseRow & { last?: boolean }) {
   return (
     <div
-      className={`flex items-center gap-3.5 px-5 py-3.5 ${
+      className={`flex items-center gap-4 px-6 py-4 ${
         last ? "" : "border-b border-[var(--line-soft,#EFEDE6)]"
       }`}
       style={added ? { background: "rgba(209,248,67,0.06)" } : undefined}
@@ -841,7 +841,7 @@ function Step6() {
   return (
     <div className="flex flex-col gap-6">
       <section>
-        <div className="rounded-2xl border border-border bg-card px-7 py-6">
+        <div className="rounded-2xl border border-border bg-card px-8 py-6">
           <div className="mb-5 flex items-start justify-between gap-4">
             <div>
               <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
@@ -851,12 +851,12 @@ function Step6() {
                 «TEK · teknikk på Mulligan Studio 2»
               </h2>
             </div>
-            <span className="inline-flex flex-shrink-0 items-center rounded-full bg-accent px-3 py-1 text-[12px] font-semibold leading-none text-[var(--brand-accent-on,#005840)]">
+            <span className="inline-flex flex-shrink-0 items-center rounded-full bg-accent px-4 py-1 text-[12px] font-semibold leading-none text-[var(--brand-accent-on,#005840)]">
               Klar
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-x-7 gap-y-3.5 border-t border-[var(--line-soft,#EFEDE6)] pt-5">
+          <div className="grid grid-cols-2 gap-x-7 gap-y-3.5 border-t border-[var(--line-soft,#EFEDE6)] pt-6">
             <SummaryItem label="Type" value="Fokusert · TEK" />
             <SummaryItem label="Fasilitet" value="Mulligan Studio 2" />
             <SummaryItem label="Varighet & intensitet" value="60 min · medium (3 / 5)" />
@@ -870,7 +870,7 @@ function Step6() {
             />
           </div>
 
-          <div className="mt-5 border-t border-[var(--line-soft,#EFEDE6)] pt-5">
+          <div className="mt-5 border-t border-[var(--line-soft,#EFEDE6)] pt-6">
             <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
               5 øvelser · 58 min
             </div>
@@ -931,7 +931,7 @@ function ExerciseListRow({
     <li className="flex items-center justify-between text-[13.5px]">
       <span>
         <span className="font-mono text-muted-foreground/60">{num}</span>
-        <span className="ml-3">{title}</span>
+        <span className="ml-2">{title}</span>
       </span>
       <span className="font-mono tabular-nums text-muted-foreground">{mins}</span>
     </li>
@@ -940,7 +940,7 @@ function ExerciseListRow({
 
 function OptionRow({ title, sub }: { title: string; sub: string }) {
   return (
-    <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-border bg-card px-4 py-3">
+    <label className="flex cursor-pointer items-center gap-2 rounded-xl border border-border bg-card px-4 py-2">
       <span className="flex h-[18px] w-[18px] flex-shrink-0 items-center justify-center rounded-sm border-2 border-[var(--brand-primary,#005840)] bg-[var(--brand-primary,#005840)] text-white">
         <Check className="h-3 w-3" strokeWidth={2.5} />
       </span>

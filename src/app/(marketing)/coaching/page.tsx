@@ -98,7 +98,7 @@ export default function Coaching() {
           {PAKKER.map((p) => (
             <article
               key={p.navn}
-              className={`relative flex flex-col rounded-2xl border p-5 sm:p-8 ${
+              className={`relative flex flex-col rounded-2xl border p-6 sm:p-8 ${
                 p.fremhevet
                   ? "border-primary/40 bg-primary/5"
                   : "border-border bg-card"

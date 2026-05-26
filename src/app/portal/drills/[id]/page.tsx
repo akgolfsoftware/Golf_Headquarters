@@ -233,7 +233,7 @@ export default async function DrillDetailPage({
               <h2 className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                 Hva skal jeg trene på?
               </h2>
-              <p className="mt-3 font-display text-base italic leading-relaxed text-foreground">
+              <p className="mt-2 font-display text-base italic leading-relaxed text-foreground">
                 {drill.description}
               </p>
             </div>
@@ -404,7 +404,7 @@ function VideoPlaceholder({ title }: { title: string }) {
           />
         ))}
       </svg>
-      <div className="relative z-10 flex flex-col items-center gap-3 text-center">
+      <div className="relative z-10 flex flex-col items-center gap-2 text-center">
         <button
           type="button"
           aria-label={`Spill av video for ${title}`}
@@ -417,7 +417,7 @@ function VideoPlaceholder({ title }: { title: string }) {
         </span>
       </div>
       <div className="absolute bottom-4 left-4">
-        <span className="rounded-full bg-card/80 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.10em] text-foreground backdrop-blur">
+        <span className="rounded-full bg-card/80 px-4 py-1 font-mono text-[10px] uppercase tracking-[0.10em] text-foreground backdrop-blur">
           Demo · {title}
         </span>
       </div>

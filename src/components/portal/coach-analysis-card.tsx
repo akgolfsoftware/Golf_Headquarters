@@ -132,8 +132,8 @@ function KategoriPanel({
         <div
           className={
             erHjemmelekse
-              ? "border-t border-primary/30 px-4 py-3 text-sm leading-relaxed text-accent-foreground"
-              : "border-t border-border px-4 py-3 text-sm leading-relaxed text-foreground"
+              ? "border-t border-primary/30 px-4 py-2 text-sm leading-relaxed text-accent-foreground"
+              : "border-t border-border px-4 py-2 text-sm leading-relaxed text-foreground"
           }
         >
           {tekstHarInnhold ? (

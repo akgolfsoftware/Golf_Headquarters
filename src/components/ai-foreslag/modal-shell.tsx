@@ -65,7 +65,7 @@ export function AIForeslagModalShell({
         style={{ maxWidth: width }}
       >
         {/* Header */}
-        <header className="flex items-start justify-between gap-4 border-b border-border px-6 py-5">
+        <header className="flex items-start justify-between gap-4 border-b border-border px-6 py-6">
           <div>
             <span className="font-mono inline-flex items-center gap-1.5 rounded-full bg-accent px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.10em] text-foreground">
               <Sparkles className="h-3 w-3" strokeWidth={2.5} />
@@ -99,11 +99,11 @@ export function AIForeslagModalShell({
         </header>
 
         {/* Body */}
-        <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
+        <div className="flex-1 overflow-y-auto px-6 py-6">{children}</div>
 
         {/* Footer */}
         {(footerLeft || footerRight) && (
-          <footer className="flex items-center justify-between gap-3 border-t border-border bg-card px-6 py-3.5">
+          <footer className="flex items-center justify-between gap-2 border-t border-border bg-card px-6 py-4">
             <div className="font-mono text-[10.5px] tracking-[0.04em] text-muted-foreground">
               {footerLeft}
             </div>

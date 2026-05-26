@@ -48,12 +48,12 @@ export function KPICard({
   return (
     <div
       className={cn(
-        "rounded-2xl border p-4 md:p-5 transition-shadow",
+        "rounded-2xl border p-4 md:p-6 transition-shadow",
         variantClasses[variant],
         className,
       )}
     >
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex items-start justify-between gap-2">
         <div className="space-y-1.5">
           <AthleticEyebrow
             className={cn(

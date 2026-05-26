@@ -106,7 +106,7 @@ function DirektivRad({
 
   return (
     <li className="rounded-lg border border-border bg-secondary/40 p-4">
-      <div className="flex items-start gap-3">
+      <div className="flex items-start gap-2">
         <span
           className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] ${cfg.badge}`}
         >
@@ -218,11 +218,11 @@ function LeggTilForm({
 
   return (
     <div className="rounded-lg border border-dashed border-border p-4">
-      <div className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+      <div className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
         Legg til direktiv
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2">
         {/* Drill-søk */}
         <div className="relative">
           <input
@@ -236,7 +236,7 @@ function LeggTilForm({
               setVisDropdown(true);
             }}
             onFocus={() => setVisDropdown(true)}
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-[13px] text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+            className="w-full rounded-md border border-input bg-background px-4 py-2 text-[13px] text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
           />
           {valgtDrill && (
             <button
@@ -260,14 +260,14 @@ function LeggTilForm({
                       type="button"
                       onMouseDown={(e) => e.preventDefault()}
                       onClick={() => velgDrill(d)}
-                      className="flex w-full items-center gap-2 px-3 py-2 text-left text-[12px] text-foreground hover:bg-secondary"
+                      className="flex w-full items-center gap-2 px-4 py-2 text-left text-[12px] text-foreground hover:bg-secondary"
                     >
                       {d.name}
                     </button>
                   </li>
                 ))}
                 {filtrerteDrills.length === 0 && (
-                  <li className="px-3 py-2 text-[12px] text-muted-foreground">
+                  <li className="px-4 py-2 text-[12px] text-muted-foreground">
                     Ingen treff
                   </li>
                 )}
@@ -285,7 +285,7 @@ function LeggTilForm({
             id="direktiv-type"
             value={type}
             onChange={(e) => setType(e.target.value as DirektivType)}
-            className="w-full appearance-none rounded-md border border-input bg-background px-3 py-2 pr-8 text-[13px] text-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+            className="w-full appearance-none rounded-md border border-input bg-background px-4 py-2 pr-8 text-[13px] text-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
           >
             <option value="PIN">PIN — Alltid inkluder</option>
             <option value="BLOCK">BLOCK — Ikke foreslå</option>
@@ -307,7 +307,7 @@ function LeggTilForm({
           value={kommentar}
           onChange={(e) => setKommentar(e.target.value)}
           maxLength={500}
-          className="w-full rounded-md border border-input bg-background px-3 py-2 text-[13px] text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+          className="w-full rounded-md border border-input bg-background px-4 py-2 text-[13px] text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
         />
 
         {/* Gyldig til (valgfri) */}
@@ -323,7 +323,7 @@ function LeggTilForm({
             type="date"
             value={gyldigTil}
             onChange={(e) => setGyldigTil(e.target.value)}
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-[13px] text-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+            className="w-full rounded-md border border-input bg-background px-4 py-2 text-[13px] text-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
           />
         </div>
 
@@ -407,7 +407,7 @@ export function CoachDirektiverPanel({
         <button
           type="button"
           onClick={() => setVisForm((v) => !v)}
-          className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-foreground transition-colors hover:border-primary hover:bg-secondary"
+          className="inline-flex items-center gap-1.5 rounded-md border border-border px-4 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-foreground transition-colors hover:border-primary hover:bg-secondary"
         >
           {visForm ? (
             <>

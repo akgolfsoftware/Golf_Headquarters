@@ -314,7 +314,7 @@ export default async function KalenderPage({
         {/* Pyramide-fordeling */}
         {pyrOmrader.length > 0 && (
           <div className="mb-6 overflow-hidden rounded-xl border border-border bg-card px-6 py-4">
-            <div className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+            <div className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
               Fordeling denne uka
             </div>
             <div className="flex h-3 overflow-hidden rounded-full">
@@ -330,7 +330,7 @@ export default async function KalenderPage({
                 );
               })}
             </div>
-            <div className="mt-3 flex flex-wrap gap-x-6 gap-y-1">
+            <div className="mt-2 flex flex-wrap gap-x-6 gap-y-1">
               {pyrOmrader.map((pyr) => {
                 const min = pyrMin[pyr] ?? 0;
                 const pct = Math.round((min / totalPyrMin) * 100);
@@ -361,7 +361,7 @@ export default async function KalenderPage({
               </Link>
               <Link
                 href="/portal/tren/kalender"
-                className="inline-flex min-h-11 items-center rounded-sm bg-foreground px-3 py-2 text-xs font-medium text-background"
+                className="inline-flex min-h-11 items-center rounded-sm bg-foreground px-4 py-2 text-xs font-medium text-background"
               >
                 I dag
               </Link>

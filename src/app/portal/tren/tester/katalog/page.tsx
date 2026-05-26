@@ -181,7 +181,7 @@ export default async function KatalogPage({
                       {t.description}
                     </p>
                   )}
-                  <div className="mt-4 flex items-center justify-between gap-2 border-t border-border pt-3">
+                  <div className="mt-4 flex items-center justify-between gap-2 border-t border-border pt-2">
                     {badge ? (
                       <span
                         className={`inline-flex rounded-full border px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] ${badge.klasse}`}

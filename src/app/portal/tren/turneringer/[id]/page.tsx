@@ -124,7 +124,7 @@ export default async function TurneringDetaljPage({
           cta={
             <Link
               href="/portal/tren/turneringer"
-              className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-[13px] font-semibold text-primary-foreground hover:opacity-90"
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2 text-[13px] font-semibold text-primary-foreground hover:opacity-90"
             >
               Se alle turneringer
             </Link>
@@ -157,19 +157,19 @@ export default async function TurneringDetaljPage({
         <h1 className="mt-2 font-display text-[28px] sm:text-[36px] italic font-medium leading-[1.05] tracking-tight">
           <em className="font-normal italic">{tournament.name}</em>
         </h1>
-        <div className="mt-3 flex flex-wrap items-center gap-2">
+        <div className="mt-2 flex flex-wrap items-center gap-2">
           <span
-            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-[10px] uppercase tracking-[0.10em] ${badge.className}`}
+            className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1 font-mono text-[10px] uppercase tracking-[0.10em] ${badge.className}`}
           >
             {badge.label}
           </span>
           {tournament.tour && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-secondary px-3 py-1 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            <span className="inline-flex items-center gap-1 rounded-full bg-secondary px-4 py-1 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               {tournament.tour}
             </span>
           )}
           {tournament.format && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-secondary px-3 py-1 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            <span className="inline-flex items-center gap-1 rounded-full bg-secondary px-4 py-1 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               {tournament.format}
             </span>
           )}
@@ -252,7 +252,7 @@ export default async function TurneringDetaljPage({
       {/* Notater */}
       {tournament.notes && (
         <section className="rounded-lg border border-border bg-card p-6">
-          <h2 className="mb-3 font-display text-base font-semibold tracking-tight">
+          <h2 className="mb-2 font-display text-base font-semibold tracking-tight">
             Notater
           </h2>
           <p className="whitespace-pre-wrap text-sm text-foreground">

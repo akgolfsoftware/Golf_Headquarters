@@ -127,18 +127,18 @@ export function WorkbenchShell(props: WorkbenchProps) {
                 </em>
                 {etternavn !== fornavn ? " " : ""}
               </h1>
-              <div className="mt-3 flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center rounded-full bg-secondary px-3 py-1 font-mono text-[11px] font-semibold tabular-nums text-foreground">
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center rounded-full bg-secondary px-4 py-1 font-mono text-[11px] font-semibold tabular-nums text-foreground">
                   HCP {props.hcpString}
                 </span>
                 <span
-                  className={`inline-flex items-center rounded-full px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] ${tierPillStyle(
+                  className={`inline-flex items-center rounded-full px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] ${tierPillStyle(
                     props.tier,
                   )}`}
                 >
                   {tierLabel(props.tier)}
                 </span>
-                <span className="inline-flex items-center rounded-full bg-primary/8 px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-primary">
+                <span className="inline-flex items-center rounded-full bg-primary/8 px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-primary">
                   Fokus: {props.weekFocus}
                 </span>
               </div>
@@ -172,10 +172,10 @@ export function WorkbenchShell(props: WorkbenchProps) {
       </header>
 
       {/* KPI-strip — 4 celler med featured-first */}
-      <section className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <section className="grid grid-cols-2 gap-2 md:grid-cols-4">
         {/* Featured: Snittscore */}
         <div
-          className="rounded-2xl p-5 text-white"
+          className="rounded-2xl p-6 text-white"
           style={{
             background:
               "linear-gradient(135deg, #005840 0%, #003A2A 100%)",
@@ -229,14 +229,14 @@ export function WorkbenchShell(props: WorkbenchProps) {
 
       {/* Dagens fokus-card (lime accent venstre) */}
       <section
-        className="relative overflow-hidden rounded-2xl border border-border bg-card p-5 sm:p-6"
+        className="relative overflow-hidden rounded-2xl border border-border bg-card p-6 sm:p-6"
       >
         <div
           aria-hidden="true"
           className="absolute left-0 top-0 h-full w-1.5"
           style={{ background: "hsl(var(--accent))" }}
         />
-        <div className="pl-3">
+        <div className="pl-4">
           <div className="flex items-baseline justify-between">
             <div>
               <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
@@ -268,7 +268,7 @@ export function WorkbenchShell(props: WorkbenchProps) {
               {props.todaysFocus.map((item, idx) => (
                 <li
                   key={idx}
-                  className="flex items-center gap-4 py-3 first:pt-0 last:pb-0"
+                  className="flex items-center gap-4 py-2 first:pt-0 last:pb-0"
                 >
                   <div className="w-14 shrink-0 font-mono text-sm font-semibold tabular-nums text-foreground">
                     {item.time}
@@ -289,7 +289,7 @@ export function WorkbenchShell(props: WorkbenchProps) {
       </section>
 
       {/* Pyramide-uke-strip */}
-      <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+      <section className="rounded-2xl border border-border bg-card p-6 sm:p-6">
         <div className="mb-4 flex items-baseline justify-between">
           <div>
             <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
@@ -310,7 +310,7 @@ export function WorkbenchShell(props: WorkbenchProps) {
           {props.pyramideWeek.map((d, i) => (
             <div
               key={i}
-              className={`flex flex-col items-center gap-2 rounded-xl border p-2 sm:p-3 ${
+              className={`flex flex-col items-center gap-2 rounded-xl border p-2 sm:p-4 ${
                 d.isToday
                   ? "border-accent bg-accent/10"
                   : "border-border bg-background"
@@ -339,7 +339,7 @@ export function WorkbenchShell(props: WorkbenchProps) {
             </div>
           ))}
         </div>
-        <div className="mt-3 flex flex-wrap items-center gap-3 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
+        <div className="mt-2 flex flex-wrap items-center gap-2 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
           {(["FYS", "TEK", "SLAG", "SPILL", "TURN"] as const).map((a) => (
             <span key={a} className="inline-flex items-center gap-1.5">
               <span
@@ -355,7 +355,7 @@ export function WorkbenchShell(props: WorkbenchProps) {
       {/* Coach-ping-banner (kun hvis ulest melding) */}
       {props.coachPing && (
         <section
-          className="relative overflow-hidden rounded-2xl border border-accent bg-accent/15 p-5"
+          className="relative overflow-hidden rounded-2xl border border-accent bg-accent/15 p-6"
         >
           <div className="flex items-center gap-4">
             <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary text-accent">
@@ -385,7 +385,7 @@ export function WorkbenchShell(props: WorkbenchProps) {
         {/* Venstre kol */}
         <div className="space-y-4">
           {/* Aktiv plan */}
-          <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+          <section className="rounded-2xl border border-border bg-card p-6 sm:p-6">
             <div className="flex items-baseline justify-between">
               <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                 Aktiv plan
@@ -442,14 +442,14 @@ export function WorkbenchShell(props: WorkbenchProps) {
                 </div>
               </>
             ) : (
-              <p className="mt-3 rounded-md border border-dashed border-border p-4 text-sm text-muted-foreground">
+              <p className="mt-2 rounded-md border border-dashed border-border p-4 text-sm text-muted-foreground">
                 Ingen aktiv plan. Be coach om å sette en.
               </p>
             )}
           </section>
 
           {/* Neste milepæl */}
-          <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+          <section className="rounded-2xl border border-border bg-card p-6 sm:p-6">
             <div className="flex items-baseline justify-between">
               <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                 Neste milepæl
@@ -474,7 +474,7 @@ export function WorkbenchShell(props: WorkbenchProps) {
                 </div>
               </>
             ) : (
-              <p className="mt-3 rounded-md border border-dashed border-border p-4 text-sm text-muted-foreground">
+              <p className="mt-2 rounded-md border border-dashed border-border p-4 text-sm text-muted-foreground">
                 Ingen aktiv milepæl satt.
               </p>
             )}
@@ -482,7 +482,7 @@ export function WorkbenchShell(props: WorkbenchProps) {
         </div>
 
         {/* Høyre kol — aktivitet-feed */}
-        <aside className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+        <aside className="rounded-2xl border border-border bg-card p-6 sm:p-6">
           <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
             Aktivitet
           </div>
@@ -494,11 +494,11 @@ export function WorkbenchShell(props: WorkbenchProps) {
               Ingen aktivitet ennå.
             </p>
           ) : (
-            <ul className="mt-4 space-y-3">
+            <ul className="mt-4 space-y-2">
               {props.activityFeed.slice(0, 5).map((ev) => (
                 <li
                   key={ev.id}
-                  className="flex items-start gap-3 border-b border-border pb-3 last:border-b-0 last:pb-0"
+                  className="flex items-start gap-2 border-b border-border pb-2 last:border-b-0 last:pb-0"
                 >
                   <span
                     className="mt-1 h-2 w-2 shrink-0 rounded-full"
@@ -529,7 +529,7 @@ export function WorkbenchShell(props: WorkbenchProps) {
       </div>
 
       {/* Bunn-CTA-bar */}
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_auto]">
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-[1fr_auto]">
         <Link
           href="/portal/gjennomfore?tab=idag"
           className="inline-flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-4 font-display text-base font-semibold text-foreground transition-colors hover:bg-[#BFE933]"
@@ -563,7 +563,7 @@ function KpiTile({
   accent?: boolean;
 }) {
   return (
-    <div className="rounded-2xl border border-border bg-card p-5">
+    <div className="rounded-2xl border border-border bg-card p-6">
       <div className="flex items-start justify-between gap-2">
         <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
           {eyebrow}

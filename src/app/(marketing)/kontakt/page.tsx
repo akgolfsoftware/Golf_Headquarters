@@ -72,7 +72,7 @@ export default function KontaktSide() {
       {/* Skjema + sidebar */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-16 md:py-20">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-[3fr_2fr] lg:gap-16">
-          <div className="rounded-2xl border border-border bg-card p-5 sm:p-8 md:p-10">
+          <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 md:p-10">
             <h2 className="font-display text-3xl font-semibold tracking-tight md:text-4xl">
               Send oss en melding
             </h2>
@@ -86,7 +86,7 @@ export default function KontaktSide() {
           </div>
 
           <aside className="space-y-8">
-            <div className="rounded-2xl border border-border bg-card p-5 sm:p-8">
+            <div className="rounded-2xl border border-border bg-card p-6 sm:p-8">
               <h3 className="font-display text-xl font-semibold tracking-tight">
                 Foretrekker du å ringe?
               </h3>
@@ -100,7 +100,7 @@ export default function KontaktSide() {
               </div>
             </div>
 
-            <div className="rounded-2xl bg-primary p-5 sm:p-8 text-primary-foreground">
+            <div className="rounded-2xl bg-primary p-6 sm:p-8 text-primary-foreground">
               <AthleticEyebrow tone="light">Tips</AthleticEyebrow>
               <p className="mt-4 font-display text-xl font-semibold leading-[1.3] tracking-tight">
                 Vil du heller bare booke en{" "}
@@ -319,7 +319,7 @@ function InfoCard({
     return (
       <a
         href={href}
-        className="flex flex-col rounded-2xl border border-border bg-card p-5 sm:p-8 transition-colors hover:border-foreground/30"
+        className="flex flex-col rounded-2xl border border-border bg-card p-6 sm:p-8 transition-colors hover:border-foreground/30"
       >
         {Body}
       </a>

@@ -145,7 +145,7 @@ export function DelRundeClient({ runde, spiller }: Props) {
                 : format === "link"
                   ? "aspect-[4/3]"
                   : "aspect-[8.5/11]"
-          } flex flex-col p-5`}
+          } flex flex-col p-6`}
         >
           {/* Bakgrunnsdekor (kun på story/post) */}
           {(format === "story" || format === "post") && (
@@ -367,7 +367,7 @@ export function DelRundeClient({ runde, spiller }: Props) {
           type="button"
           onClick={lastNed}
           disabled={lasterNed}
-          className="ml-auto inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-[13.5px] font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
+          className="ml-auto inline-flex items-center gap-1.5 rounded-full bg-primary px-6 py-2.5 text-[13.5px] font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
         >
           <Download className="h-3.5 w-3.5" strokeWidth={2} />
           {lasterNed ? "Laster ned…" : "Last ned"}
@@ -376,7 +376,7 @@ export function DelRundeClient({ runde, spiller }: Props) {
 
       {/* Toast */}
       {kopiert && (
-        <div className="fixed bottom-8 left-1/2 z-50 -translate-x-1/2 rounded-full bg-foreground px-5 py-3 text-sm font-medium text-white shadow-xl">
+        <div className="fixed bottom-8 left-1/2 z-50 -translate-x-1/2 rounded-full bg-foreground px-6 py-2 text-sm font-medium text-white shadow-xl">
           <span className="flex items-center gap-2">
             <Check
               className="h-4 w-4 text-accent"

@@ -199,7 +199,7 @@ export default async function TemplateEffectiveness({
               Snitt SG-Total-delta per måned
             </h2>
           </div>
-          <div className="flex h-40 items-end gap-3">
+          <div className="flex h-40 items-end gap-2">
             {trend.map((t) => {
               const høyde = Math.min(100, (Math.abs(t.snitt) / maxAbs) * 100);
               const positiv = t.snitt >= 0;
@@ -257,17 +257,17 @@ export default async function TemplateEffectiveness({
             <table className="w-full text-[12px]">
               <thead className="bg-background/50 text-left font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
                 <tr>
-                  <th className="px-6 py-3 font-medium">Spiller</th>
-                  <th className="px-3 py-3 font-medium">Plan</th>
-                  <th className="px-3 py-3 font-medium">Periode</th>
-                  <th className="px-3 py-3 text-right font-medium">Completion</th>
-                  <th className="px-3 py-3 text-right font-medium">SG-T</th>
-                  <th className="px-3 py-3 text-right font-medium">OTT</th>
-                  <th className="px-3 py-3 text-right font-medium">APP</th>
-                  <th className="px-3 py-3 text-right font-medium">ARG</th>
-                  <th className="px-3 py-3 text-right font-medium">PUTT</th>
-                  <th className="px-3 py-3 text-right font-medium">Self/Coach</th>
-                  <th className="px-6 py-3 font-medium">Notater</th>
+                  <th className="px-6 py-2 font-medium">Spiller</th>
+                  <th className="px-4 py-2 font-medium">Plan</th>
+                  <th className="px-4 py-2 font-medium">Periode</th>
+                  <th className="px-4 py-2 text-right font-medium">Completion</th>
+                  <th className="px-4 py-2 text-right font-medium">SG-T</th>
+                  <th className="px-4 py-2 text-right font-medium">OTT</th>
+                  <th className="px-4 py-2 text-right font-medium">APP</th>
+                  <th className="px-4 py-2 text-right font-medium">ARG</th>
+                  <th className="px-4 py-2 text-right font-medium">PUTT</th>
+                  <th className="px-4 py-2 text-right font-medium">Self/Coach</th>
+                  <th className="px-6 py-2 font-medium">Notater</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -288,7 +288,7 @@ export default async function TemplateEffectiveness({
                       key={r.id}
                       className="transition-colors hover:bg-background/40"
                     >
-                      <td className="px-6 py-3">
+                      <td className="px-6 py-2">
                         <Link
                           href={`/admin/spillere/${r.user.id}?tab=treningsplan`}
                           className="font-medium text-foreground hover:underline"
@@ -296,7 +296,7 @@ export default async function TemplateEffectiveness({
                           {r.user.name}
                         </Link>
                       </td>
-                      <td className="px-3 py-3 text-muted-foreground">
+                      <td className="px-4 py-2 text-muted-foreground">
                         <Link
                           href={`/admin/plans/${r.plan.id}`}
                           className="hover:text-foreground hover:underline"
@@ -304,38 +304,38 @@ export default async function TemplateEffectiveness({
                           {r.plan.name}
                         </Link>
                       </td>
-                      <td className="px-3 py-3 font-mono tabular-nums text-muted-foreground">
+                      <td className="px-4 py-2 font-mono tabular-nums text-muted-foreground">
                         {periode}
                       </td>
-                      <td className="px-3 py-3 text-right font-mono tabular-nums">
+                      <td className="px-4 py-2 text-right font-mono tabular-nums">
                         {formatProsent(r.completionRate)}
                       </td>
                       <td
-                        className={`px-3 py-3 text-right font-mono font-semibold tabular-nums ${deltaKlasse(r.sgTotalDelta)}`}
+                        className={`px-4 py-2 text-right font-mono font-semibold tabular-nums ${deltaKlasse(r.sgTotalDelta)}`}
                       >
                         {formatDelta(r.sgTotalDelta)}
                       </td>
                       <td
-                        className={`px-3 py-3 text-right font-mono tabular-nums ${deltaKlasse(r.sgOttDelta)}`}
+                        className={`px-4 py-2 text-right font-mono tabular-nums ${deltaKlasse(r.sgOttDelta)}`}
                       >
                         {formatDelta(r.sgOttDelta)}
                       </td>
                       <td
-                        className={`px-3 py-3 text-right font-mono tabular-nums ${deltaKlasse(r.sgAppDelta)}`}
+                        className={`px-4 py-2 text-right font-mono tabular-nums ${deltaKlasse(r.sgAppDelta)}`}
                       >
                         {formatDelta(r.sgAppDelta)}
                       </td>
                       <td
-                        className={`px-3 py-3 text-right font-mono tabular-nums ${deltaKlasse(r.sgArgDelta)}`}
+                        className={`px-4 py-2 text-right font-mono tabular-nums ${deltaKlasse(r.sgArgDelta)}`}
                       >
                         {formatDelta(r.sgArgDelta)}
                       </td>
                       <td
-                        className={`px-3 py-3 text-right font-mono tabular-nums ${deltaKlasse(r.sgPuttDelta)}`}
+                        className={`px-4 py-2 text-right font-mono tabular-nums ${deltaKlasse(r.sgPuttDelta)}`}
                       >
                         {formatDelta(r.sgPuttDelta)}
                       </td>
-                      <td className="px-3 py-3 text-right font-mono tabular-nums text-muted-foreground">
+                      <td className="px-4 py-2 text-right font-mono tabular-nums text-muted-foreground">
                         {r.selfRating ? r.selfRating.toFixed(1).replace(".", ",") : "—"}
                         {" / "}
                         {r.coachRating
@@ -343,7 +343,7 @@ export default async function TemplateEffectiveness({
                           : "—"}
                       </td>
                       <td
-                        className="max-w-[220px] truncate px-6 py-3 text-muted-foreground"
+                        className="max-w-[220px] truncate px-6 py-2 text-muted-foreground"
                         title={r.notes ?? undefined}
                       >
                         {r.notes ?? "—"}
@@ -374,7 +374,7 @@ function KpiCard({
   tone?: string;
 }) {
   return (
-    <article className="rounded-lg border border-border bg-card p-5">
+    <article className="rounded-lg border border-border bg-card p-6">
       <div className="mb-2 flex items-center gap-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
         <Icon className="h-3.5 w-3.5" strokeWidth={1.5} />
         {label}

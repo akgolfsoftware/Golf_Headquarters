@@ -50,7 +50,7 @@ export function OverviewCard({
     <Link
       href={href}
       className={cn(
-        "group flex flex-col gap-3 rounded-2xl border border-border bg-card p-4 md:p-5",
+        "group flex flex-col gap-2 rounded-2xl border border-border bg-card p-4 md:p-6",
         "transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md",
         className,
       )}
@@ -85,7 +85,7 @@ export function OverviewCard({
       </div>
 
       {(primaryLine || secondaryLine) && (
-        <div className="border-t border-border pt-3 space-y-1">
+        <div className="border-t border-border pt-2 space-y-1">
           {primaryLine && (
             <div className="text-sm text-foreground">{primaryLine}</div>
           )}

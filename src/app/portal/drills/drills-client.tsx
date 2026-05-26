@@ -353,10 +353,10 @@ export function DrillsLibraryClient({
         aria-label="Filtre"
         className="space-y-4 rounded-2xl border border-border bg-card p-4 sm:p-6"
       >
-        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
           <label
             htmlFor="drill-sok"
-            className="relative flex h-11 w-full items-center rounded-md border border-input bg-background pl-10 pr-3 focus-within:ring-2 focus-within:ring-ring md:max-w-sm"
+            className="relative flex h-11 w-full items-center rounded-md border border-input bg-background pl-10 pr-4 focus-within:ring-2 focus-within:ring-ring md:max-w-sm"
           >
             <Search
               className="absolute left-3 h-4 w-4 text-muted-foreground"
@@ -406,7 +406,7 @@ export function DrillsLibraryClient({
               <button
                 type="button"
                 onClick={() => setVisning("grid")}
-                className={`flex h-full items-center gap-1.5 px-3 text-sm ${
+                className={`flex h-full items-center gap-1.5 px-4 text-sm ${
                   visning === "grid"
                     ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:text-foreground"
@@ -419,7 +419,7 @@ export function DrillsLibraryClient({
               <button
                 type="button"
                 onClick={() => setVisning("liste")}
-                className={`flex h-full items-center gap-1.5 px-3 text-sm ${
+                className={`flex h-full items-center gap-1.5 px-4 text-sm ${
                   visning === "liste"
                     ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:text-foreground"
@@ -500,7 +500,7 @@ export function DrillsLibraryClient({
           </button>
         </div>
       ) : visning === "grid" ? (
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
           {synlige.map((d) => (
             <DrillCard
               key={d.id}
@@ -527,8 +527,8 @@ export function DrillsLibraryClient({
       {/* Sticky footer — send forespørsel */}
       {valgteDrills.size > 0 && (
         <div className="fixed inset-x-0 bottom-16 z-30 px-4 md:bottom-6">
-          <div className="mx-auto flex max-w-4xl items-center justify-between gap-4 rounded-2xl border border-primary/30 bg-card/95 px-4 py-3 shadow-lg backdrop-blur sm:px-6">
-            <div className="flex items-center gap-3">
+          <div className="mx-auto flex max-w-4xl items-center justify-between gap-4 rounded-2xl border border-primary/30 bg-card/95 px-4 py-2 shadow-lg backdrop-blur sm:px-6">
+            <div className="flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-primary" strokeWidth={1.75} />
               <p className="text-sm">
                 <span className="font-display text-base font-semibold">
@@ -545,7 +545,7 @@ export function DrillsLibraryClient({
               type="button"
               onClick={handleSendForespørsel}
               disabled={pending}
-              className="inline-flex h-11 items-center gap-2 rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60"
+              className="inline-flex h-11 items-center gap-2 rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60"
             >
               {pending ? (
                 <Loader2 className="h-4 w-4 animate-spin" strokeWidth={1.75} />
@@ -559,7 +559,7 @@ export function DrillsLibraryClient({
       )}
 
       {sendStatus === "ok" && (
-        <div className="fixed inset-x-0 bottom-32 z-40 mx-auto flex max-w-md items-center gap-3 rounded-2xl border border-primary/30 bg-card px-4 py-3 shadow-lg">
+        <div className="fixed inset-x-0 bottom-32 z-40 mx-auto flex max-w-md items-center gap-2 rounded-2xl border border-primary/30 bg-card px-4 py-2 shadow-lg">
           <CheckCircle2 className="h-5 w-5 text-primary" strokeWidth={1.75} />
           <p className="text-sm">
             Forespørselen er sendt til Anders. Du får svar i varsler.
@@ -575,7 +575,7 @@ export function DrillsLibraryClient({
         </div>
       )}
       {sendStatus === "feil" && (
-        <div className="fixed inset-x-0 bottom-32 z-40 mx-auto flex max-w-md items-center gap-3 rounded-2xl border border-destructive/40 bg-card px-4 py-3 shadow-lg">
+        <div className="fixed inset-x-0 bottom-32 z-40 mx-auto flex max-w-md items-center gap-2 rounded-2xl border border-destructive/40 bg-card px-4 py-2 shadow-lg">
           <p className="text-sm text-destructive">Noe gikk galt. Prøv igjen.</p>
           <button
             type="button"
@@ -677,7 +677,7 @@ function DrillCard({
       </div>
 
       {/* Nøkkelinfo */}
-      <div className="mt-3 flex flex-wrap items-center gap-3 font-mono text-[11px] text-muted-foreground">
+      <div className="mt-2 flex flex-wrap items-center gap-2 font-mono text-[11px] text-muted-foreground">
         {drill.durationMin !== null && (
           <span className="inline-flex items-center gap-1">
             <Clock className="h-3 w-3" strokeWidth={1.75} />
@@ -708,7 +708,7 @@ function DrillCard({
           onKeyDown={(e) => e.stopPropagation()}
           disabled={erGratis}
           aria-pressed={valgt}
-          className={`inline-flex h-9 w-full items-center justify-center gap-1.5 rounded-full px-3 text-xs font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+          className={`inline-flex h-9 w-full items-center justify-center gap-1.5 rounded-full px-4 text-xs font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
             valgt
               ? "bg-primary text-primary-foreground"
               : "bg-accent text-accent-foreground hover:opacity-90"
@@ -801,29 +801,29 @@ function DrillModal({
           </h2>
 
           {/* Badges */}
-          <div className="mt-3 flex flex-wrap gap-1.5">
+          <div className="mt-2 flex flex-wrap gap-1.5">
             <span
-              className={`inline-flex items-center rounded-full border px-3 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] ${PYR_PILL[drill.pyramidArea]}`}
+              className={`inline-flex items-center rounded-full border px-4 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] ${PYR_PILL[drill.pyramidArea]}`}
             >
               {PYR_LABEL[drill.pyramidArea]}
             </span>
             {drill.skillArea && (
-              <span className="inline-flex items-center rounded-full border border-border bg-secondary px-3 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-secondary-foreground">
+              <span className="inline-flex items-center rounded-full border border-border bg-secondary px-4 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-secondary-foreground">
                 {SKILL_LABEL[drill.skillArea]}
               </span>
             )}
             {drill.treningstype && (
-              <span className="inline-flex items-center rounded-full border border-border bg-secondary px-3 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-secondary-foreground">
+              <span className="inline-flex items-center rounded-full border border-border bg-secondary px-4 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-secondary-foreground">
                 {TRENINGSTYPE_LABEL[drill.treningstype]}
               </span>
             )}
             {drill.morad && (
-              <span className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-3 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-primary">
+              <span className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-4 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-primary">
                 MORAD
               </span>
             )}
             {drill.coachAnbefalt && (
-              <span className="inline-flex items-center gap-1 rounded-full border border-accent/40 bg-accent/20 px-3 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-accent-foreground">
+              <span className="inline-flex items-center gap-1 rounded-full border border-accent/40 bg-accent/20 px-4 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-accent-foreground">
                 <Sparkles className="h-3 w-3" strokeWidth={1.75} />
                 Coach-anbefalt
               </span>
@@ -848,7 +848,7 @@ function DrillModal({
           )}
 
           {/* Metadata-grid */}
-          <div className="mt-6 grid grid-cols-2 gap-3">
+          <div className="mt-6 grid grid-cols-2 gap-2">
             {drill.durationMin !== null && (
               <MetaCell label="Varighet" value={`${drill.durationMin} min`} />
             )}
@@ -1060,7 +1060,7 @@ function DrillModal({
                                   }
                                 });
                               }}
-                              className="rounded-lg px-3 py-2 text-left text-sm text-foreground hover:bg-secondary disabled:opacity-60"
+                              className="rounded-lg px-4 py-2 text-left text-sm text-foreground hover:bg-secondary disabled:opacity-60"
                             >
                               {rt.label}
                             </button>
@@ -1103,7 +1103,7 @@ function DrillModal({
           <Link
             href={`/portal/drills/${drill.id}`}
             onClick={onLukk}
-            className="mt-3 flex h-10 w-full items-center justify-center gap-1.5 rounded-full border border-border text-sm text-muted-foreground hover:bg-secondary hover:text-foreground"
+            className="mt-2 flex h-10 w-full items-center justify-center gap-1.5 rounded-full border border-border text-sm text-muted-foreground hover:bg-secondary hover:text-foreground"
           >
             Se full side
             <ExternalLink className="h-3.5 w-3.5" strokeWidth={1.75} />
@@ -1118,7 +1118,7 @@ function DrillModal({
 
 function MetaCell({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-border bg-background p-3">
+    <div className="rounded-xl border border-border bg-background p-4">
       <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
         {label}
       </p>
@@ -1151,22 +1151,22 @@ function DrillsListe({
       <table className="w-full text-left text-sm">
         <thead className="border-b border-border bg-muted/50">
           <tr>
-            <th className="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            <th className="px-4 py-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               Drill
             </th>
-            <th className="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            <th className="px-4 py-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               Disiplin
             </th>
-            <th className="hidden px-4 py-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground sm:table-cell">
+            <th className="hidden px-4 py-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground sm:table-cell">
               Varighet
             </th>
-            <th className="hidden px-4 py-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground sm:table-cell">
+            <th className="hidden px-4 py-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground sm:table-cell">
               CS
             </th>
-            <th className="hidden px-4 py-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground md:table-cell">
+            <th className="hidden px-4 py-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground md:table-cell">
               Trent
             </th>
-            <th className="px-4 py-3"></th>
+            <th className="px-4 py-2"></th>
           </tr>
         </thead>
         <tbody className="divide-y divide-border">
@@ -1174,7 +1174,7 @@ function DrillsListe({
             const valgt = valgte.has(d.id);
             return (
               <tr key={d.id} className={valgt ? "bg-primary/5" : ""}>
-                <td className="px-4 py-3">
+                <td className="px-4 py-2">
                   <div className="flex items-center gap-2">
                     <button
                       type="button"
@@ -1197,29 +1197,29 @@ function DrillsListe({
                     )}
                   </div>
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-4 py-2">
                   <span
                     className={`inline-flex items-center rounded-full border px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] ${PYR_PILL[d.pyramidArea]}`}
                   >
                     {PYR_LABEL[d.pyramidArea]}
                   </span>
                 </td>
-                <td className="hidden px-4 py-3 font-mono text-xs tabular-nums text-muted-foreground sm:table-cell">
+                <td className="hidden px-4 py-2 font-mono text-xs tabular-nums text-muted-foreground sm:table-cell">
                   {d.durationMin !== null ? `${d.durationMin} min` : "—"}
                 </td>
-                <td className="hidden px-4 py-3 font-mono text-xs tabular-nums text-muted-foreground sm:table-cell">
+                <td className="hidden px-4 py-2 font-mono text-xs tabular-nums text-muted-foreground sm:table-cell">
                   {d.csForMeg !== null ? d.csForMeg : "—"}
                 </td>
-                <td className="hidden px-4 py-3 font-mono text-xs tabular-nums text-muted-foreground md:table-cell">
+                <td className="hidden px-4 py-2 font-mono text-xs tabular-nums text-muted-foreground md:table-cell">
                   {d.ganger > 0 ? `${d.ganger}x` : "—"}
                 </td>
-                <td className="px-4 py-3 text-right">
+                <td className="px-4 py-2 text-right">
                   <button
                     type="button"
                     onClick={() => onToggle(d.id)}
                     disabled={erGratis}
                     aria-pressed={valgt}
-                    className={`inline-flex h-8 items-center rounded-full px-3 text-xs font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+                    className={`inline-flex h-8 items-center rounded-full px-4 text-xs font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
                       valgt
                         ? "bg-primary text-primary-foreground"
                         : "bg-accent text-accent-foreground hover:opacity-90"

@@ -136,26 +136,26 @@ export default async function TalentProfil({
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center rounded-full bg-primary px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.10em] text-primary-foreground">
+              <span className="inline-flex items-center rounded-full bg-primary px-4 py-1 text-[11px] font-semibold uppercase tracking-[0.10em] text-primary-foreground">
                 {t.niva}
               </span>
               {t.klubb && (
-                <span className="inline-flex items-center rounded-full bg-secondary px-3 py-1 text-[11px] font-medium">
+                <span className="inline-flex items-center rounded-full bg-secondary px-4 py-1 text-[11px] font-medium">
                   {t.klubb}
                 </span>
               )}
               {t.region && (
-                <span className="inline-flex items-center rounded-full bg-secondary px-3 py-1 text-[11px] font-medium">
+                <span className="inline-flex items-center rounded-full bg-secondary px-4 py-1 text-[11px] font-medium">
                   {t.region}
                 </span>
               )}
               {t.user.hcp != null && (
-                <span className="inline-flex items-center rounded-full bg-accent/30 px-3 py-1 text-[11px] font-medium">
+                <span className="inline-flex items-center rounded-full bg-accent/30 px-4 py-1 text-[11px] font-medium">
                   HCP {t.user.hcp.toFixed(1).replace(".", ",")}
                 </span>
               )}
             </div>
-            <div className="mt-3 font-display text-[32px] font-semibold leading-tight">
+            <div className="mt-2 font-display text-[32px] font-semibold leading-tight">
               {t.user.name ?? "Uten navn"}
             </div>
             {t.user.email && (
@@ -226,14 +226,14 @@ export default async function TalentProfil({
               required
               minLength={2}
               maxLength={120}
-              className="w-full rounded-md border border-input bg-card px-3 py-2 text-[13px] focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
+              className="w-full rounded-md border border-input bg-card px-4 py-2 text-[13px] focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
             />
             <input
               type="text"
               name="beskrivelse"
               placeholder="Kort beskrivelse (valgfri)"
               maxLength={500}
-              className="w-full rounded-md border border-input bg-card px-3 py-2 text-[13px] focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
+              className="w-full rounded-md border border-input bg-card px-4 py-2 text-[13px] focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
             />
             <button
               type="submit"
@@ -280,7 +280,7 @@ export default async function TalentProfil({
           <StickyNote className="h-3 w-3" strokeWidth={1.5} />
           Notater
         </div>
-        <form action={lagreNotater} className="space-y-3">
+        <form action={lagreNotater} className="space-y-2">
           <input type="hidden" name="playerId" value={t.id} />
           <textarea
             name="notater"
@@ -288,7 +288,7 @@ export default async function TalentProfil({
             rows={6}
             maxLength={5000}
             placeholder="Observasjoner, mål, treningsfokus, langsiktige notater …"
-            className="w-full rounded-md border border-input bg-background px-4 py-3 text-[13px] leading-relaxed focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
+            className="w-full rounded-md border border-input bg-background px-4 py-2 text-[13px] leading-relaxed focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
           />
           <button
             type="submit"
@@ -304,7 +304,7 @@ export default async function TalentProfil({
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <Link
           href={`/admin/talent/sammenligning?ids=${t.id}`}
-          className="group flex items-start gap-3 rounded-lg border border-border bg-card p-6 transition-colors hover:border-primary/40"
+          className="group flex items-start gap-2 rounded-lg border border-border bg-card p-6 transition-colors hover:border-primary/40"
         >
           <GitCompare className="h-5 w-5 shrink-0 text-primary" strokeWidth={1.5} />
           <div>
@@ -320,7 +320,7 @@ export default async function TalentProfil({
         </Link>
         <Link
           href={`/admin/talent/kohort#${t.niva}`}
-          className="group flex items-start gap-3 rounded-lg border border-border bg-card p-6 transition-colors hover:border-primary/40"
+          className="group flex items-start gap-2 rounded-lg border border-border bg-card p-6 transition-colors hover:border-primary/40"
         >
           <Radar className="h-5 w-5 shrink-0 text-primary" strokeWidth={1.5} />
           <div>
@@ -336,7 +336,7 @@ export default async function TalentProfil({
         </Link>
         <Link
           href="/admin/talent/ressurser"
-          className="group flex items-start gap-3 rounded-lg border border-border bg-card p-6 transition-colors hover:border-primary/40"
+          className="group flex items-start gap-2 rounded-lg border border-border bg-card p-6 transition-colors hover:border-primary/40"
         >
           <Award className="h-5 w-5 shrink-0 text-primary" strokeWidth={1.5} />
           <div>

@@ -48,10 +48,10 @@ export function SessionPinControl({
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       {suggestPin && !isCurrentPinned && (
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-accent bg-accent/30 p-4">
-          <div className="flex items-start gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-accent bg-accent/30 p-4">
+          <div className="flex items-start gap-2">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary">
               <Pin className="h-4 w-4" />
             </div>
@@ -83,7 +83,7 @@ export function SessionPinControl({
             type="button"
             onClick={handleUnpin}
             disabled={pending}
-            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground transition-colors hover:border-destructive hover:text-destructive disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground transition-colors hover:border-destructive hover:text-destructive disabled:opacity-50"
           >
             <PinOff className="h-3.5 w-3.5" />
             Fjern pin
@@ -93,7 +93,7 @@ export function SessionPinControl({
             type="button"
             onClick={() => handlePin(false)}
             disabled={pending}
-            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.08em] text-foreground transition-colors hover:border-primary hover:text-primary disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.08em] text-foreground transition-colors hover:border-primary hover:text-primary disabled:opacity-50"
           >
             <Pin className="h-3.5 w-3.5" />
             Pinne denne økten

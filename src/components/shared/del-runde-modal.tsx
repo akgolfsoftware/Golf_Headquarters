@@ -130,7 +130,7 @@ export function DelRundeModal({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <header className="flex items-start justify-between gap-3 border-b border-border px-6 py-5">
+        <header className="flex items-start justify-between gap-2 border-b border-border px-6 py-6">
           <div>
             <h2
               id="del-runde-title"
@@ -158,7 +158,7 @@ export function DelRundeModal({
         </header>
 
         {/* Body */}
-        <div className="flex flex-col gap-5 overflow-y-auto px-6 py-5">
+        <div className="flex flex-col gap-6 overflow-y-auto px-6 py-6">
           {/* Preview */}
           <PreviewCard
             spiller={spiller}
@@ -293,12 +293,12 @@ export function DelRundeModal({
               onChange={(e) => setMelding(e.target.value)}
               rows={2}
               placeholder="Skriv en kort kommentar til mottakeren…"
-              className="w-full resize-none rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground focus:border-primary"
+              className="w-full resize-none rounded-md border border-border bg-background px-4 py-2 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground focus:border-primary"
             />
           </div>
 
           {shareUrl && (
-            <div className="rounded-md border border-primary/30 bg-primary/5 px-3 py-2 font-mono text-[11px] text-foreground">
+            <div className="rounded-md border border-primary/30 bg-primary/5 px-4 py-2 font-mono text-[11px] text-foreground">
               <span className="text-muted-foreground">Delbar lenke: </span>
               <span className="select-all text-primary">{shareUrl}</span>
             </div>
@@ -327,7 +327,7 @@ export function DelRundeModal({
             type="button"
             onClick={handleShare}
             disabled={isPending}
-            className="ml-auto inline-flex items-center gap-1.5 rounded-full bg-accent px-5 py-2 text-[13px] font-semibold text-accent-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
+            className="ml-auto inline-flex items-center gap-1.5 rounded-full bg-accent px-6 py-2 text-[13px] font-semibold text-accent-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
           >
             <Send size={14} strokeWidth={1.75} />
             {isPending ? "Sender…" : "Del"}
@@ -374,7 +374,7 @@ function PreviewCard({
   return (
     <div className="rounded-xl bg-secondary/40 p-4">
       <div
-        className={`relative mx-auto flex w-full ${aspect} flex-col overflow-hidden rounded-lg p-5 ${
+        className={`relative mx-auto flex w-full ${aspect} flex-col overflow-hidden rounded-lg p-6 ${
           erMork
             ? "bg-gradient-to-br from-[#006C50] to-[#003A2A] text-white"
             : format === "pdf"
@@ -444,7 +444,7 @@ function PreviewCard({
 
         {/* SG-pills */}
         {inkluder.statistikk && runde.sgPills && runde.sgPills.length > 0 && (
-          <div className="relative z-10 mt-3 flex flex-wrap gap-1">
+          <div className="relative z-10 mt-2 flex flex-wrap gap-1">
             {runde.sgPills.map((s) => (
               <span
                 key={s.label}
@@ -544,7 +544,7 @@ function VisButton({
     <button
       type="button"
       onClick={onClick}
-      className={`inline-flex items-center justify-center gap-1.5 rounded-md px-3 py-2 text-[12px] font-semibold transition-all ${
+      className={`inline-flex items-center justify-center gap-1.5 rounded-md px-4 py-2 text-[12px] font-semibold transition-all ${
         aktiv
           ? "bg-card text-foreground shadow-sm"
           : "text-muted-foreground hover:text-foreground"
@@ -571,7 +571,7 @@ function Toggle({
       onClick={onClick}
       role="switch"
       aria-checked={aktiv}
-      className={`flex items-center justify-between gap-2 rounded-md border px-3 py-2 text-[12px] font-medium transition-colors ${
+      className={`flex items-center justify-between gap-2 rounded-md border px-4 py-2 text-[12px] font-medium transition-colors ${
         aktiv
           ? "border-primary/30 bg-primary/5 text-foreground"
           : "border-border bg-card text-muted-foreground hover:text-foreground"

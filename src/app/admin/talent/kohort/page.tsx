@@ -134,7 +134,7 @@ export default async function TalentKohort() {
                   snitt {fmt1(k.total)}/10
                 </div>
                 {k.progresjon > 0 && (
-                  <div className="mt-3 inline-flex items-center gap-1 rounded-full bg-accent/30 px-2 py-0.5 text-[10px] font-medium text-foreground">
+                  <div className="mt-2 inline-flex items-center gap-1 rounded-full bg-accent/30 px-2 py-0.5 text-[10px] font-medium text-foreground">
                     <TrendingUp className="h-3 w-3" strokeWidth={1.5} />
                     +{k.progresjon} siste 90d
                   </div>
@@ -145,7 +145,7 @@ export default async function TalentKohort() {
 
           {/* Tabell-grid: nivå × dimensjoner */}
           <section className="overflow-hidden rounded-lg border border-border bg-card">
-            <div className="border-b border-border bg-secondary px-6 py-3">
+            <div className="border-b border-border bg-secondary px-6 py-2">
               <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                 <Layers className="mr-1 inline h-3 w-3" strokeWidth={1.5} />
                 Snitt-radar per nivå (1–10)

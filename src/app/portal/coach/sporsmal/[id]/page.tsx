@@ -22,7 +22,7 @@ export default async function CoachSporsmalDetalj({ params }: RouteProps) {
 
   return (
     <div className="min-h-screen bg-background pb-20 text-foreground md:pb-0">
-      <nav className="flex flex-wrap items-center gap-3 border-b border-border bg-card px-4 py-3 sm:gap-4 sm:px-8 sm:py-[18px]">
+      <nav className="flex flex-wrap items-center gap-2 border-b border-border bg-card px-4 py-2 sm:gap-4 sm:px-8 sm:py-[18px]">
         <Link
           href="/portal/coach"
           className="inline-flex h-11 items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.04em] text-muted-foreground hover:text-foreground"
@@ -37,7 +37,7 @@ export default async function CoachSporsmalDetalj({ params }: RouteProps) {
       </nav>
 
       <main className="mx-auto max-w-[760px] space-y-6 px-4 py-6 sm:px-6 sm:py-10">
-        <div className="space-y-3">
+        <div className="space-y-2">
           <span className="font-mono text-[11px] uppercase tracking-[0.10em] text-muted-foreground">
             Svar fra coach · besvart 18.05.26
           </span>
@@ -51,7 +51,7 @@ export default async function CoachSporsmalDetalj({ params }: RouteProps) {
         </div>
 
         {/* Question card */}
-        <article className="grid grid-cols-[44px_minmax(0,1fr)] gap-4 rounded-2xl border border-border bg-card p-5">
+        <article className="grid grid-cols-[44px_minmax(0,1fr)] gap-4 rounded-2xl border border-border bg-card p-6">
           <div className="grid h-11 w-11 place-items-center rounded-full bg-primary text-[12px] font-semibold text-primary-foreground">
             MR
           </div>
@@ -71,7 +71,7 @@ export default async function CoachSporsmalDetalj({ params }: RouteProps) {
 
         {/* Answer card */}
         <article className="rounded-2xl border border-primary/30 bg-card p-4 shadow-[0_0_0_4px_rgba(0,88,64,0.04)] md:p-6">
-          <header className="flex flex-wrap items-center gap-3 border-b border-border pb-4">
+          <header className="flex flex-wrap items-center gap-2 border-b border-border pb-4">
             <div className="grid h-11 w-11 place-items-center rounded-full bg-primary text-[12px] font-semibold text-primary-foreground">
               HB
             </div>
@@ -90,21 +90,21 @@ export default async function CoachSporsmalDetalj({ params }: RouteProps) {
             </span>
           </header>
 
-          <div className="space-y-4 pt-5 text-[14.5px] leading-relaxed text-foreground">
+          <div className="space-y-4 pt-6 text-[14.5px] leading-relaxed text-foreground">
             <p>
               Et godt utgangspunkt er <strong className="font-semibold">4 av 10</strong> — fast
               nok til kontroll, løst nok til at håndleddene kan jobbe. Hvis du må klemme mer for
               å ikke miste klubben, er enten grep slitt eller hånden i feil posisjon.
             </p>
 
-            <blockquote className="border-l-[3px] border-accent bg-accent/10 px-4 py-3 font-display italic text-[15px] text-foreground/90">
+            <blockquote className="border-l-[3px] border-accent bg-accent/10 px-4 py-2 font-display italic text-[15px] text-foreground/90">
               &quot;Hvis tommelen din blir hvit etter swing, er trykket for hardt. Hvis klubben
               ruller i hånden ved kontakt, er det for løst.&quot;
             </blockquote>
 
             <p>Tre konkrete sjekkpunkter du kan kjøre på neste range-økt:</p>
 
-            <ol className="list-decimal space-y-2 pl-5 text-[14px]">
+            <ol className="list-decimal space-y-2 pl-6 text-[14px]">
               <li>
                 Hold klubben i venstre hånd alene (for høyrehendt) — om du klarer å gjøre en
                 halv backswing uten å miste den, har du nok grep.
@@ -126,8 +126,8 @@ export default async function CoachSporsmalDetalj({ params }: RouteProps) {
             </p>
 
             {/* Attachments */}
-            <div className="grid grid-cols-1 gap-3 pt-2 sm:grid-cols-2">
-              <div className="flex gap-3 rounded-lg border border-border bg-background p-3">
+            <div className="grid grid-cols-1 gap-2 pt-2 sm:grid-cols-2">
+              <div className="flex gap-2 rounded-lg border border-border bg-background p-4">
                 <div className="h-14 w-20 shrink-0 rounded-md bg-gradient-to-br from-secondary to-muted" />
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-[12.5px] font-semibold">
@@ -138,7 +138,7 @@ export default async function CoachSporsmalDetalj({ params }: RouteProps) {
                   </div>
                 </div>
               </div>
-              <div className="flex gap-3 rounded-lg border border-border bg-background p-3">
+              <div className="flex gap-2 rounded-lg border border-border bg-background p-4">
                 <div className="relative h-14 w-20 shrink-0 rounded-md bg-gradient-to-br from-foreground to-primary">
                   <Play className="absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 fill-accent text-accent" />
                   <span className="absolute bottom-1 right-1 rounded bg-foreground/80 px-1 font-mono text-[9px] text-accent">
@@ -156,7 +156,7 @@ export default async function CoachSporsmalDetalj({ params }: RouteProps) {
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-4 border-t border-border pt-3 font-mono text-[10.5px] uppercase tracking-[0.04em] text-muted-foreground">
+            <div className="flex flex-wrap gap-4 border-t border-border pt-2 font-mono text-[10.5px] uppercase tracking-[0.04em] text-muted-foreground">
               <span className="inline-flex items-center gap-1.5">
                 <Clock className="h-3 w-3" strokeWidth={1.75} />
                 Svartid 14 t 52 min
@@ -174,7 +174,7 @@ export default async function CoachSporsmalDetalj({ params }: RouteProps) {
         </article>
 
         {/* Reaction */}
-        <div className="flex flex-wrap items-center gap-4 rounded-xl border border-border bg-card px-5 py-4">
+        <div className="flex flex-wrap items-center gap-4 rounded-xl border border-border bg-card px-6 py-4">
           <div className="min-w-0 flex-1">
             <div className="text-[14px] font-semibold">Hjalp dette deg?</div>
             <div className="text-[12px] text-muted-foreground">
@@ -185,7 +185,7 @@ export default async function CoachSporsmalDetalj({ params }: RouteProps) {
             <button
               type="button"
               aria-pressed="true"
-              className="inline-flex items-center gap-1.5 rounded-full border border-primary bg-primary/10 px-3 py-1.5 text-[12px] font-semibold text-primary"
+              className="inline-flex items-center gap-1.5 rounded-full border border-primary bg-primary/10 px-4 py-1.5 text-[12px] font-semibold text-primary"
             >
               <ThumbsUp className="h-3.5 w-3.5" strokeWidth={1.75} />
               Hjalp <span className="font-mono text-[10px] text-muted-foreground">· markert</span>
@@ -193,7 +193,7 @@ export default async function CoachSporsmalDetalj({ params }: RouteProps) {
             <button
               type="button"
               aria-pressed="false"
-              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-transparent px-3 py-1.5 text-[12px] font-semibold text-muted-foreground hover:border-destructive hover:text-destructive"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-transparent px-4 py-1.5 text-[12px] font-semibold text-muted-foreground hover:border-destructive hover:text-destructive"
             >
               <ThumbsDown className="h-3.5 w-3.5" strokeWidth={1.75} />
               Trenger mer
@@ -202,7 +202,7 @@ export default async function CoachSporsmalDetalj({ params }: RouteProps) {
         </div>
 
         {/* Follow-up */}
-        <div className="grid grid-cols-[44px_minmax(0,1fr)_auto] items-center gap-4 rounded-xl border border-border bg-card px-5 py-4">
+        <div className="grid grid-cols-[44px_minmax(0,1fr)_auto] items-center gap-4 rounded-xl border border-border bg-card px-6 py-4">
           <div className="grid h-11 w-11 place-items-center rounded-full bg-secondary text-primary">
             <MessageSquare className="h-5 w-5" strokeWidth={1.75} />
           </div>
@@ -223,7 +223,7 @@ export default async function CoachSporsmalDetalj({ params }: RouteProps) {
 
         {/* Related */}
         <section>
-          <div className="mb-3 flex items-baseline justify-between">
+          <div className="mb-2 flex items-baseline justify-between">
             <h3 className="font-display text-[18px] font-semibold -tracking-[0.01em]">
               Liknende spørsmål andre har stilt
             </h3>
@@ -231,7 +231,7 @@ export default async function CoachSporsmalDetalj({ params }: RouteProps) {
               3 relaterte · teknikk
             </span>
           </div>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
             {[
               "Hvor mye skal venstre håndledd flektes ved topp?",
               "Hvordan beholde balanse gjennom finish?",

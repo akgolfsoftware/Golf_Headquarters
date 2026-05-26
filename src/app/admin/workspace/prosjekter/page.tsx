@@ -53,7 +53,7 @@ export default async function WorkspaceProsjekterPage({
 
   return (
     <div className="space-y-6">
-      <header className="-mx-4 -mt-4 border-b border-border bg-gradient-to-b from-[#FBFAF5] to-background px-4 py-7 md:-mx-8 md:-mt-8 md:px-8">
+      <header className="-mx-4 -mt-4 border-b border-border bg-gradient-to-b from-[#FBFAF5] to-background px-4 py-8 md:-mx-8 md:-mt-8 md:px-8">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
             <AthleticEyebrow>CoachHQ · Workspace · Prosjekter</AthleticEyebrow>
@@ -78,7 +78,7 @@ export default async function WorkspaceProsjekterPage({
       <WorkspaceTabs active="prosjekter" />
 
       {/* Filter-strip */}
-      <div className="-mx-4 flex flex-wrap items-center gap-2 border-b border-border bg-card px-4 py-3 md:-mx-8 md:px-8">
+      <div className="-mx-4 flex flex-wrap items-center gap-2 border-b border-border bg-card px-4 py-2 md:-mx-8 md:px-8">
         <FilterChip label="Alle" count={counts.alle} active={filter === "alle"} href="?filter=alle" />
         <FilterChip label="Aktive" count={counts.aktive} active={filter === "aktive"} href="?filter=aktive" />
         <FilterChip label="Pause" count={counts.pause} active={filter === "pause"} href="?filter=pause" />
@@ -158,7 +158,7 @@ function ProjectCard({ project: p }: { project: SampleProject }) {
       {/* Cover-strip */}
       <div className={`h-2 ${barClass}`} />
 
-      <div className="flex flex-1 flex-col gap-3 p-4.5" style={{ padding: 18 }}>
+      <div className="flex flex-1 flex-col gap-2 p-4.5" style={{ padding: 18 }}>
         <div className="flex items-center justify-between gap-2">
           <div className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
             {p.company === "AK"
@@ -227,7 +227,7 @@ function ProjectCard({ project: p }: { project: SampleProject }) {
         </div>
 
         {/* Footer */}
-        <div className="mt-auto flex items-center justify-between gap-2 border-t border-border pt-3">
+        <div className="mt-auto flex items-center justify-between gap-2 border-t border-border pt-2">
           <AvatarStack
             items={p.assigned.map((k) => ({
               name: SAMPLE_PEOPLE[k]?.name ?? k,

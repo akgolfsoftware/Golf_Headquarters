@@ -90,7 +90,7 @@ export function RecordingAnalyzeButton({ recordingId, harTranskripsjon }: Props)
           type="button"
           onClick={analyser}
           disabled={laster}
-          className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
         >
           {laster ? (
             <Loader2 className="h-3 w-3 animate-spin" strokeWidth={1.75} />
@@ -104,7 +104,7 @@ export function RecordingAnalyzeButton({ recordingId, harTranskripsjon }: Props)
           type="button"
           onClick={settDummy}
           disabled={laster}
-          className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground transition-colors hover:bg-secondary disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-4 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground transition-colors hover:bg-secondary disabled:opacity-50"
         >
           {laster ? (
             <Loader2 className="h-3 w-3 animate-spin" strokeWidth={1.75} />

@@ -50,14 +50,14 @@ export function ConditionsSlider({ rows }: Props) {
             type="button"
             onClick={reset}
             disabled={isDefault}
-            className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50"
           >
             <RotateCcw className="h-3 w-3" />
             Tilbakestill
           </button>
         </div>
 
-        <div className="grid gap-5 sm:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-3">
           <SliderRow
             icon={Thermometer}
             label="Temperatur"
@@ -94,7 +94,7 @@ export function ConditionsSlider({ rows }: Props) {
         </div>
 
         {c.windMs > 0 && (
-          <div className="mt-5 border-t border-border pt-5">
+          <div className="mt-5 border-t border-border pt-6">
             <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               Vindretning
             </p>
@@ -104,7 +104,7 @@ export function ConditionsSlider({ rows }: Props) {
                   key={d.deg}
                   type="button"
                   onClick={() => setC({ ...c, windDirectionDeg: d.deg })}
-                  className={`rounded-full border px-3 py-1.5 text-xs transition-colors ${
+                  className={`rounded-full border px-4 py-1.5 text-xs transition-colors ${
                     c.windDirectionDeg === d.deg
                       ? "border-primary bg-primary text-primary-foreground"
                       : "border-border bg-card hover:bg-secondary"
@@ -135,25 +135,25 @@ export function ConditionsSlider({ rows }: Props) {
                 key={r.club}
                 className={i % 2 === 0 ? "bg-card" : "bg-secondary/20"}
               >
-                <td className="px-4 py-3">
+                <td className="px-4 py-2">
                   <span className="font-mono text-base font-semibold">
                     {r.club}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-right text-muted-foreground">
+                <td className="px-4 py-2 text-right text-muted-foreground">
                   <span className="font-mono tabular-nums">
                     {formatNumber(r.totalAvg, 0)} m
                   </span>
                 </td>
-                <td className="px-4 py-3 text-right">
+                <td className="px-4 py-2 text-right">
                   <span className="font-mono tabular-nums font-semibold">
                     {formatNumber(r.adjTotal, 0)} m
                   </span>
                 </td>
-                <td className="px-4 py-3 text-right">
+                <td className="px-4 py-2 text-right">
                   <DeltaBadge delta={r.delta} />
                 </td>
-                <td className="px-4 py-3 text-right">
+                <td className="px-4 py-2 text-right">
                   <span className="font-mono tabular-nums">
                     {formatNumber(r.adjCarry, 0)} m
                   </span>
@@ -251,7 +251,7 @@ function Th({
 }) {
   return (
     <th
-      className={`px-4 py-3 font-mono text-[10px] font-medium uppercase tracking-[0.10em] text-muted-foreground ${className}`}
+      className={`px-4 py-2 font-mono text-[10px] font-medium uppercase tracking-[0.10em] text-muted-foreground ${className}`}
     >
       {children}
     </th>

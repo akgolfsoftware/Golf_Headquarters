@@ -307,7 +307,7 @@ function TurneringKort({ t }: { t: TurneringKortData }) {
         href={t.slug ? `/turneringer/${t.slug}` : "/turneringer"}
         className="group flex h-full flex-col rounded-2xl border border-border bg-card p-6 transition-all hover:-translate-y-0.5 hover:border-foreground/20"
       >
-        <div className="flex items-start justify-between gap-3">
+        <div className="flex items-start justify-between gap-2">
           <AthleticEyebrow>{tourLabel}</AthleticEyebrow>
           {erLive && (
             <span className="inline-flex items-center gap-1 rounded-full bg-destructive/15 px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.10em] text-destructive">
@@ -319,7 +319,7 @@ function TurneringKort({ t }: { t: TurneringKortData }) {
         <h3 className="mt-2 font-display text-lg font-semibold tracking-tight leading-tight">
           {t.name}
         </h3>
-        <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-muted-foreground">
+        <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-muted-foreground">
           <span className="inline-flex items-center gap-1">
             <CalendarRange className="h-3.5 w-3.5" strokeWidth={1.75} />
             {datoTekst}

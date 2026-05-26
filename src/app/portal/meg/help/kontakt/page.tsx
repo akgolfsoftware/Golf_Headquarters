@@ -19,7 +19,7 @@ export default async function KontaktSupportPage({
         sub="Beskriv problemet du opplever, så får vi det riktig første gang. Jo mer kontekst — desto raskere svar."
       />
 
-      <div className="inline-flex items-center gap-3 rounded-full border border-border bg-card px-4 py-2 font-mono text-[11px] uppercase tracking-[0.06em] text-muted-foreground shadow-sm">
+      <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 font-mono text-[11px] uppercase tracking-[0.06em] text-muted-foreground shadow-sm">
         <span className="relative inline-block h-2 w-2">
           <span className="absolute inset-0 animate-ping rounded-full bg-[color:rgb(44_125_82)] opacity-60" />
           <span className="absolute inset-0 rounded-full bg-[color:rgb(44_125_82)]" />
@@ -32,7 +32,7 @@ export default async function KontaktSupportPage({
       </div>
 
       {sp?.ticket && (
-        <div className="rounded-md border border-primary/30 bg-primary/10 px-4 py-3 text-sm text-foreground">
+        <div className="rounded-md border border-primary/30 bg-primary/10 px-4 py-2 text-sm text-foreground">
           Melding sendt. Ticket-ID <span className="font-mono font-semibold">#{sp.ticket}</span>. Du får svar på e-post.
         </div>
       )}

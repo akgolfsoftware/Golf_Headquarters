@@ -212,11 +212,11 @@ export function NyRundeModal({ courses }: { courses: Course[] }) {
               </div>
 
               {/* Tee */}
-              <details className="mt-4 rounded-md border border-input/60 bg-card px-4 py-3">
+              <details className="mt-4 rounded-md border border-input/60 bg-card px-4 py-2">
                 <summary className="cursor-pointer font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                   Tee
                 </summary>
-                <div className="mt-3 grid grid-cols-2 gap-4">
+                <div className="mt-2 grid grid-cols-2 gap-4">
                   <Felt label="Tee Total">
                     <input type="number" step="0.1" value={sgTee} onChange={(e) => setSgTee(e.target.value)} className={input} />
                   </Felt>
@@ -224,11 +224,11 @@ export function NyRundeModal({ courses }: { courses: Course[] }) {
               </details>
 
               {/* Approach */}
-              <details className="mt-3 rounded-md border border-input/60 bg-card px-4 py-3">
+              <details className="mt-2 rounded-md border border-input/60 bg-card px-4 py-2">
                 <summary className="cursor-pointer font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                   Approach (per distanse)
                 </summary>
-                <div className="mt-3 grid grid-cols-2 gap-4">
+                <div className="mt-2 grid grid-cols-2 gap-4">
                   <Felt label="Approach 200+ m">
                     <input type="number" step="0.1" value={sgApp200} onChange={(e) => setSgApp200(e.target.value)} className={input} />
                   </Felt>
@@ -245,11 +245,11 @@ export function NyRundeModal({ courses }: { courses: Course[] }) {
               </details>
 
               {/* Nærspill */}
-              <details className="mt-3 rounded-md border border-input/60 bg-card px-4 py-3">
+              <details className="mt-2 rounded-md border border-input/60 bg-card px-4 py-2">
                 <summary className="cursor-pointer font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                   Nærspill
                 </summary>
-                <div className="mt-3 grid grid-cols-2 gap-4">
+                <div className="mt-2 grid grid-cols-2 gap-4">
                   <Felt label="Chip">
                     <input type="number" step="0.1" value={sgChip} onChange={(e) => setSgChip(e.target.value)} className={input} />
                   </Felt>
@@ -266,11 +266,11 @@ export function NyRundeModal({ courses }: { courses: Course[] }) {
               </details>
 
               {/* Putt */}
-              <details className="mt-3 rounded-md border border-input/60 bg-card px-4 py-3">
+              <details className="mt-2 rounded-md border border-input/60 bg-card px-4 py-2">
                 <summary className="cursor-pointer font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                   Putt (per distanse)
                 </summary>
-                <div className="mt-3 grid grid-cols-2 gap-4">
+                <div className="mt-2 grid grid-cols-2 gap-4">
                   <Felt label="Putt 0–3 ft">
                     <input type="number" step="0.1" value={sgPutt0_3} onChange={(e) => setSgPutt0_3(e.target.value)} className={input} />
                   </Felt>

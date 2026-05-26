@@ -239,7 +239,7 @@ export function EditorClient({ template, testRecipient }: Props) {
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         {/* Editor */}
         <section className="overflow-hidden rounded-2xl border border-border bg-card">
-          <header className="flex items-center justify-between border-b border-border bg-secondary/40 px-6 py-3">
+          <header className="flex items-center justify-between border-b border-border bg-secondary/40 px-6 py-2">
             <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               Editor
             </span>
@@ -317,7 +317,7 @@ export function EditorClient({ template, testRecipient }: Props) {
 
         {/* Live preview */}
         <section className="overflow-hidden rounded-2xl border border-border bg-card">
-          <header className="flex items-center justify-between border-b border-border bg-secondary/40 px-6 py-3">
+          <header className="flex items-center justify-between border-b border-border bg-secondary/40 px-6 py-2">
             <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               Forhåndsvisning
             </span>
@@ -327,7 +327,7 @@ export function EditorClient({ template, testRecipient }: Props) {
           </header>
 
           <div className="space-y-4 p-4 sm:p-6">
-            <div className="rounded-md border border-border bg-background/60 px-4 py-3">
+            <div className="rounded-md border border-border bg-background/60 px-4 py-2">
               <div className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
                 Fra
               </div>
@@ -336,7 +336,7 @@ export function EditorClient({ template, testRecipient }: Props) {
               </div>
             </div>
 
-            <div className="rounded-md border border-border bg-background/60 px-4 py-3">
+            <div className="rounded-md border border-border bg-background/60 px-4 py-2">
               <div className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
                 Til
               </div>
@@ -345,7 +345,7 @@ export function EditorClient({ template, testRecipient }: Props) {
               </div>
             </div>
 
-            <div className="rounded-md border border-border bg-background/60 px-4 py-3">
+            <div className="rounded-md border border-border bg-background/60 px-4 py-2">
               <div className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
                 Emne
               </div>
@@ -371,7 +371,7 @@ export function EditorClient({ template, testRecipient }: Props) {
 }
 
 const inputClass =
-  "w-full rounded-md border border-input bg-card px-4 py-3 text-base sm:text-sm sm:py-2.5 outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30";
+  "w-full rounded-md border border-input bg-card px-4 py-2 text-base sm:text-sm sm:py-2.5 outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30";
 
 function Felt({
   label,

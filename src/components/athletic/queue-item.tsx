@@ -22,7 +22,7 @@ export function QueueList({ items, className }: QueueListProps) {
         <li
           key={it.key}
           className={cn(
-            "flex items-center gap-3 py-2.5",
+            "flex items-center gap-2 py-2.5",
             idx < items.length - 1 && "border-b border-border",
           )}
         >

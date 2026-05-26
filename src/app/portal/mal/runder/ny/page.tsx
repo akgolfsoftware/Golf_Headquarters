@@ -17,7 +17,7 @@ export default async function NyRundePage() {
   });
 
   return (
-    <div className="mx-auto flex max-w-3xl flex-col gap-7 px-4 pb-32 sm:px-6">
+    <div className="mx-auto flex max-w-3xl flex-col gap-8 px-4 pb-32 sm:px-6">
       <PageHeader
         eyebrow="PlayerHQ · Runder"
         titleLead="Legg til"

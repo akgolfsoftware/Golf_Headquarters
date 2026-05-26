@@ -245,7 +245,7 @@ export function SlagWizard({
           {/* Par-velger (vises kun hvis hull ikke har slag ennå) */}
           {hullSlag.length === 0 && !parValgt && (
             <div>
-              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground mb-3">
+              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground mb-2">
                 Par på hull {aktivtHull}
               </div>
               <div className="flex gap-2">
@@ -274,11 +274,11 @@ export function SlagWizard({
                 <div
                   key={s.shotNumber}
                   onClick={() => redigerSlag(s)}
-                  className={`flex cursor-pointer items-center justify-between rounded-lg border px-4 py-3 transition-colors hover:border-primary ${
+                  className={`flex cursor-pointer items-center justify-between rounded-lg border px-4 py-2 transition-colors hover:border-primary ${
                     redigert?.shotNumber === s.shotNumber ? "border-primary bg-primary/5" : "border-border"
                   }`}
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
                     <span className="flex h-7 w-7 items-center justify-center rounded-full bg-secondary font-mono text-xs font-bold text-foreground">
                       {s.shotNumber}
                     </span>
@@ -291,7 +291,7 @@ export function SlagWizard({
                       )}
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 font-mono text-[11px] text-muted-foreground">
+                  <div className="flex items-center gap-2 font-mono text-[11px] text-muted-foreground">
                     <span>{LIE_ALTERNATIV.find((l) => l.verdi === s.lie)?.label ?? s.lie}</span>
                     {s.distanceToPin != null && <span>{s.distanceToPin} m til pin</span>}
                     {s.isPenalty && <span className="text-destructive">+1 straff</span>}
@@ -303,7 +303,7 @@ export function SlagWizard({
 
           {/* Slagskjema */}
           {redigert && (
-            <div className="rounded-xl border border-primary/30 bg-primary/5 p-5 space-y-5">
+            <div className="rounded-xl border border-primary/30 bg-primary/5 p-6 space-y-6">
               <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-primary">
                 Slag {redigert.shotNumber}
               </div>
@@ -325,7 +325,7 @@ export function SlagWizard({
                       key={k}
                       type="button"
                       onClick={() => oppdaterFelt("club", redigert.club === k ? null : k)}
-                      className={`rounded-full px-3 py-1 font-mono text-[11px] font-medium transition-colors ${
+                      className={`rounded-full px-4 py-1 font-mono text-[11px] font-medium transition-colors ${
                         redigert.club === k
                           ? "bg-primary text-primary-foreground"
                           : "border border-border bg-card text-foreground hover:border-primary"
@@ -356,7 +356,7 @@ export function SlagWizard({
                     value={redigert.distanceToPin ?? ""}
                     onChange={(e) => oppdaterFelt("distanceToPin", e.target.value ? Number(e.target.value) : null)}
                     placeholder="142"
-                    className="w-full rounded-lg border border-border bg-card px-3 py-2 font-mono text-sm tabular-nums text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-primary"
+                    className="w-full rounded-lg border border-border bg-card px-4 py-2 font-mono text-sm tabular-nums text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-primary"
                   />
                 </FieldGroup>
                 <FieldGroup label="Avstand slått (m)">
@@ -367,7 +367,7 @@ export function SlagWizard({
                     value={redigert.distanceHit ?? ""}
                     onChange={(e) => oppdaterFelt("distanceHit", e.target.value ? Number(e.target.value) : null)}
                     placeholder="138"
-                    className="w-full rounded-lg border border-border bg-card px-3 py-2 font-mono text-sm tabular-nums text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-primary"
+                    className="w-full rounded-lg border border-border bg-card px-4 py-2 font-mono text-sm tabular-nums text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-primary"
                   />
                 </FieldGroup>
               </div>
@@ -382,7 +382,7 @@ export function SlagWizard({
               </FieldGroup>
 
               {/* Straff */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={() => oppdaterFelt("isPenalty", !redigert.isPenalty)}
@@ -404,7 +404,7 @@ export function SlagWizard({
                   value={redigert.notes ?? ""}
                   onChange={(e) => oppdaterFelt("notes", e.target.value || null)}
                   placeholder="Eks. dårlig kontakt, god read..."
-                  className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-primary"
+                  className="w-full rounded-lg border border-border bg-card px-4 py-2 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-primary"
                 />
               </FieldGroup>
 
@@ -420,7 +420,7 @@ export function SlagWizard({
                       type="button"
                       onClick={() => slettSlag(redigert)}
                       disabled={isPending}
-                      className="flex h-9 items-center gap-1.5 rounded-lg border border-border px-3 text-sm text-destructive hover:border-destructive disabled:opacity-50"
+                      className="flex h-9 items-center gap-1.5 rounded-lg border border-border px-4 text-sm text-destructive hover:border-destructive disabled:opacity-50"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                       Slett
@@ -438,7 +438,7 @@ export function SlagWizard({
                   type="button"
                   onClick={lagreSlag}
                   disabled={isPending}
-                  className="inline-flex h-9 items-center gap-2 rounded-lg bg-primary px-5 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60"
+                  className="inline-flex h-9 items-center gap-2 rounded-lg bg-primary px-6 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60"
                 >
                   {isPending ? "Lagrer…" : "Lagre slag"}
                 </button>
@@ -452,7 +452,7 @@ export function SlagWizard({
 
           {/* Legg til / neste hull */}
           {!redigert && (hullSlag.length > 0 || parValgt) && (
-            <div className="flex items-center gap-3 pt-2">
+            <div className="flex items-center gap-2 pt-2">
               <button
                 type="button"
                 onClick={startNyttSlag}
@@ -465,7 +465,7 @@ export function SlagWizard({
                 <button
                   type="button"
                   onClick={() => byttHull(aktivtHull + 1)}
-                  className="inline-flex h-9 items-center gap-2 rounded-lg bg-primary px-5 text-sm font-semibold text-primary-foreground hover:opacity-90"
+                  className="inline-flex h-9 items-center gap-2 rounded-lg bg-primary px-6 text-sm font-semibold text-primary-foreground hover:opacity-90"
                 >
                   Hull {aktivtHull + 1} →
                 </button>
@@ -510,7 +510,7 @@ function ChipGroup({
           key={a.verdi}
           type="button"
           onClick={() => onValg(a.verdi)}
-          className={`rounded-full px-3 py-1 font-mono text-[11px] font-medium transition-colors ${
+          className={`rounded-full px-4 py-1 font-mono text-[11px] font-medium transition-colors ${
             valgt === a.verdi
               ? "bg-primary text-primary-foreground"
               : "border border-border bg-card text-foreground hover:border-primary"

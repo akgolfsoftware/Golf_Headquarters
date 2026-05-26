@@ -232,7 +232,7 @@ export default async function Rapporter() {
               {RAPPORT_TYPER.map((r) => (
                 <div
                   key={r.id}
-                  className="flex flex-col gap-3.5 rounded-xl border border-border bg-card p-5"
+                  className="flex flex-col gap-4 rounded-xl border border-border bg-card p-6"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-primary/10 text-primary">
@@ -290,7 +290,7 @@ export default async function Rapporter() {
               planlagte.map((s, i) => (
                 <div
                   key={i}
-                  className="flex flex-col gap-1.5 border-b border-border px-6 py-3.5 last:border-b-0"
+                  className="flex flex-col gap-1.5 border-b border-border px-6 py-4 last:border-b-0"
                 >
                   <div className="text-[13.5px] font-medium leading-[1.4] text-foreground">
                     {s.name}
@@ -379,7 +379,7 @@ function Chip({
 
 function CategoryHeader({ title, count }: { title: string; count: number }) {
   return (
-    <div className="mt-8 mb-3.5 flex items-center gap-3.5 font-display text-[13px] font-semibold uppercase tracking-[0.04em] text-muted-foreground first:mt-0">
+    <div className="mt-8 mb-2.5 flex items-center gap-4 font-display text-[13px] font-semibold uppercase tracking-[0.04em] text-muted-foreground first:mt-0">
       <span>{title}</span>
       <span className="font-mono text-[11px] font-medium text-muted-foreground">
         {count} maler
@@ -409,7 +409,7 @@ function ReportCard({ report }: { report: EksportTemplate }) {
   };
   return (
     <div
-      className={`relative flex flex-col gap-3.5 rounded-lg border p-6 transition-shadow hover:shadow-md ${
+      className={`relative flex flex-col gap-4 rounded-lg border p-6 transition-shadow hover:shadow-md ${
         report.featured
           ? "border-accent/40 bg-accent/10"
           : "border-border bg-card"
@@ -441,7 +441,7 @@ function ReportCard({ report }: { report: EksportTemplate }) {
           </span>
         ))}
       </div>
-      <div className="mt-1 flex items-center gap-2 border-t border-border pt-3.5">
+      <div className="mt-1 flex items-center gap-2 border-t border-border pt-4">
         <a
           href={report.href}
           download

@@ -57,15 +57,15 @@ export function SessionScheduler({
   };
 
   return (
-    <div className={cn("rounded-2xl border border-border bg-card p-4 md:p-5", className)}>
-      <div className="mb-4 flex items-baseline justify-between gap-3">
+    <div className={cn("rounded-2xl border border-border bg-card p-4 md:p-6", className)}>
+      <div className="mb-4 flex items-baseline justify-between gap-2">
         <h3 className="font-display text-xl font-bold tracking-[-0.015em]">Velg tidspunkt</h3>
         <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
           {slots.filter((s) => s.available).length} ledige
         </span>
       </div>
 
-      <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${daysToShow}, minmax(0, 1fr))` }}>
+      <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${daysToShow}, minmax(0, 1fr))` }}>
         {days.map((d, i) => {
           const daySlots = (slotsByDate.get(d.toDateString()) ?? []).sort((a, b) => a.hour - b.hour);
           return (

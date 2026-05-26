@@ -94,7 +94,7 @@ export default async function FysPlanDetaljPage({ params }: PageProps) {
       title={plan.navn}
       subtitle={plan.notater ?? undefined}
       kpiRow={
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
           <KPICard eyebrow="Uker" value={ukerCount} />
           <KPICard eyebrow="Økter" value={okterTotalCount} />
           <KPICard eyebrow="Fullført" value={`${fullfortPct}%`} variant="hero" />

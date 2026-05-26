@@ -85,7 +85,7 @@ export function VedleggUi() {
   return (
     <>
       <div className="border-b border-border bg-card/60">
-        <div className="mx-auto flex max-w-[1200px] flex-wrap items-center gap-3 px-6 py-4">
+        <div className="mx-auto flex max-w-[1200px] flex-wrap items-center gap-2 px-6 py-4">
           <h1 className="font-display text-[22px] font-semibold -tracking-[0.01em]">
             Vedlegg <em className="font-display italic font-normal text-primary">galleri</em>
           </h1>
@@ -100,7 +100,7 @@ export function VedleggUi() {
                   key={f.key}
                   type="button"
                   onClick={() => setFilter(f.key)}
-                  className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12px] font-semibold transition-colors ${
+                  className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-[12px] font-semibold transition-colors ${
                     filter === f.key
                       ? "border-primary bg-primary text-primary-foreground"
                       : "border-border bg-background text-foreground hover:border-muted-foreground"
@@ -206,7 +206,7 @@ function AttachmentCard({ a }: { a: Attachment }) {
           <div className="absolute inset-4 rounded bg-card shadow-inner" />
         )}
       </div>
-      <div className="flex flex-col gap-1 px-3 pb-3">
+      <div className="flex flex-col gap-1 px-4 pb-2">
         <div className="truncate text-[12.5px] font-semibold">{a.name}</div>
         <div className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.04em] text-muted-foreground">
           <span>{a.size}</span>

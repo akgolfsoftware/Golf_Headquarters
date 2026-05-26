@@ -149,11 +149,11 @@ export default async function LagSnittPage() {
                 }}
               >
                 {/* Header row */}
-                <div className="bg-secondary p-3.5" />
+                <div className="bg-secondary p-4" />
                 {matrix.map((m) => (
                   <div
                     key={m.group.id}
-                    className="bg-secondary p-3.5"
+                    className="bg-secondary p-4"
                   >
                     <div className="font-display text-[14px] font-semibold leading-tight tracking-tight text-foreground">
                       {m.group.name}
@@ -164,7 +164,7 @@ export default async function LagSnittPage() {
                     </div>
                   </div>
                 ))}
-                <div className="bg-foreground p-3.5">
+                <div className="bg-foreground p-4">
                   <div className="font-display text-[14px] font-semibold italic leading-tight tracking-tight text-background">
                     Snitt
                   </div>
@@ -220,7 +220,7 @@ function Tab({
   return (
     <button
       type="button"
-      className={`relative px-4 py-3 font-display text-[14px] font-medium tracking-tight transition-colors ${
+      className={`relative px-4 py-2 font-display text-[14px] font-medium tracking-tight transition-colors ${
         active
           ? "text-foreground after:absolute after:inset-x-0 after:-bottom-px after:h-0.5 after:bg-foreground"
           : "text-muted-foreground hover:text-foreground"
@@ -242,7 +242,7 @@ function RowFokus({
 }) {
   return (
     <>
-      <div className="flex items-center gap-2.5 bg-secondary p-3.5">
+      <div className="flex items-center gap-2.5 bg-secondary p-4">
         <span className={`block h-7 w-2 rounded-sm ${fokus.color}`} />
         <div className="flex flex-col">
           <span className="font-display text-[14px] font-semibold tracking-tight">
@@ -259,7 +259,7 @@ function RowFokus({
         return (
           <div
             key={i}
-            className="relative flex flex-col gap-1.5 bg-card p-3.5 transition-colors hover:bg-secondary/60"
+            className="relative flex flex-col gap-1.5 bg-card p-4 transition-colors hover:bg-secondary/60"
           >
             <div className="flex items-baseline justify-between">
               <span className="font-mono text-[17px] font-medium tabular-nums tracking-tight text-foreground">
@@ -288,7 +288,7 @@ function RowFokus({
         );
       })}
       {/* Snitt-celle */}
-      <div className="flex flex-col gap-1.5 bg-secondary p-3.5">
+      <div className="flex flex-col gap-1.5 bg-secondary p-4">
         <div className="flex items-baseline justify-between">
           <span className="font-mono text-[17px] font-medium tabular-nums tracking-tight text-foreground">
             {snitt.toFixed(1).replace(".", ",")} %
@@ -320,20 +320,20 @@ function InsightCard({
   cta: string;
 }) {
   return (
-    <div className="rounded-lg border border-border bg-card p-5 shadow-sm">
-      <div className="mb-3 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+    <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+      <div className="mb-2 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
         {title}
       </div>
       <h3 className="mb-2 font-display text-[17px] font-semibold leading-snug tracking-tight">
         {h3}
       </h3>
-      <p className="mb-3 text-[13px] leading-relaxed text-muted-foreground">
+      <p className="mb-2 text-[13px] leading-relaxed text-muted-foreground">
         {p}
       </p>
       <button
         type="button"
         disabled
-        className="inline-flex cursor-not-allowed items-center gap-2 rounded-md bg-primary px-3 py-1.5 text-[12px] font-medium text-primary-foreground opacity-50"
+        className="inline-flex cursor-not-allowed items-center gap-2 rounded-md bg-primary px-4 py-1.5 text-[12px] font-medium text-primary-foreground opacity-50"
       >
         {cta}
       </button>
@@ -358,8 +358,8 @@ function ToppSpillere({
     .slice(0, 3);
 
   return (
-    <div className="rounded-lg border border-border bg-card p-5 shadow-sm">
-      <div className="mb-3 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+    <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+      <div className="mb-2 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
         Toppspillere (laveste HCP)
       </div>
       {topp.length === 0 ? (
@@ -367,9 +367,9 @@ function ToppSpillere({
           Ingen spillere med registrert HCP i gruppene ennå.
         </p>
       ) : (
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2">
           {topp.map((s, i) => (
-            <div key={s.id} className="flex items-center gap-3">
+            <div key={s.id} className="flex items-center gap-2">
               <span className="grid h-9 w-9 place-items-center rounded-full bg-secondary font-mono text-[12px] font-semibold text-foreground">
                 {s.name
                   .split(/\s+/)
@@ -401,8 +401,8 @@ function PeriodeSammendrag({
   totalSpillere: number;
 }) {
   return (
-    <div className="rounded-lg border border-border bg-card p-5 shadow-sm">
-      <div className="mb-3 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+    <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+      <div className="mb-2 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
         Periode-sammendrag
       </div>
       <div className="grid grid-cols-2 gap-4">

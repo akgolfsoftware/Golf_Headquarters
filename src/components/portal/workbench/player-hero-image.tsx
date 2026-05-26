@@ -84,9 +84,9 @@ export function PlayerHeroImage({
       {/* Innhold */}
       <div className="relative flex h-full min-h-[340px] flex-col justify-between p-6 md:min-h-[440px] md:p-12">
         {/* Top-rad: PRO-pill + Avatar */}
-        <div className="flex items-start justify-between gap-3">
+        <div className="flex items-start justify-between gap-2">
           <div className="flex items-center gap-2">
-            <span className="rounded-full bg-accent px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-accent-foreground">
+            <span className="rounded-full bg-accent px-4 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-accent-foreground">
               {user.tier === "PRO" ? "PRO" : user.tier === "ELITE" ? "ELITE" : "GRATIS"}
             </span>
             <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-white/70">

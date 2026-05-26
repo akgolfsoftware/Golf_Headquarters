@@ -66,7 +66,7 @@ export default async function ArtikkelPage({
           Hjelp-hub
         </Link>
 
-        <header className="space-y-3">
+        <header className="space-y-2">
           <span className="font-mono text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
             {a.eyebrow}
           </span>
@@ -77,7 +77,7 @@ export default async function ArtikkelPage({
         </header>
 
         <div className="flex flex-wrap items-center gap-4 border-y border-border py-4">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <div className="grid h-9 w-9 place-items-center rounded-full bg-primary font-mono text-xs font-bold text-accent">
               {a.forfatter.initialer}
             </div>
@@ -108,7 +108,7 @@ export default async function ArtikkelPage({
           </button>
         </div>
 
-        <div className="prose-content space-y-5 text-base leading-relaxed text-foreground/90">
+        <div className="prose-content space-y-6 text-base leading-relaxed text-foreground/90">
           <h2 id="h1" className="!mt-8 font-display text-2xl font-semibold tracking-tight">
             Hvorfor en pyramide?
           </h2>
@@ -137,7 +137,7 @@ export default async function ArtikkelPage({
               <text x="180" y="85" fontFamily="JetBrains Mono" fontSize="10" fontWeight="700" fill="#0A1F17" textAnchor="middle" letterSpacing="2">SPILL · 17%</text>
               <text x="180" y="50" fontFamily="JetBrains Mono" fontSize="9" fontWeight="700" fill="#0A1F17" textAnchor="middle" letterSpacing="2">TURN · 8%</text>
             </svg>
-            <p className="mt-3 text-center font-mono text-[10.5px] uppercase tracking-[0.08em] text-muted-foreground">
+            <p className="mt-2 text-center font-mono text-[10.5px] uppercase tracking-[0.08em] text-muted-foreground">
               Pyramiden ideal-fordelt — mai 2026, A1-spiller
             </p>
           </div>
@@ -180,7 +180,7 @@ export default async function ArtikkelPage({
             En typisk uke for en A1-spiller fordeler seg på <strong>6–8 økter</strong> totalt.
           </p>
 
-          <div className="my-6 space-y-2 rounded-xl border border-border bg-card p-5">
+          <div className="my-6 space-y-2 rounded-xl border border-border bg-card p-6">
             {[
               { label: "TURN", pct: 8, target: 10, color: "hsl(var(--accent))" },
               { label: "SPILL", pct: 17, target: 15, color: "hsl(var(--accent))" },
@@ -188,7 +188,7 @@ export default async function ArtikkelPage({
               { label: "TEK", pct: 28, target: 30, color: "hsl(var(--primary))" },
               { label: "FYS", pct: 15, target: 15, color: "hsl(var(--primary))" },
             ].map((p) => (
-              <div key={p.label} className="grid grid-cols-[60px_1fr_80px] items-center gap-3">
+              <div key={p.label} className="grid grid-cols-[60px_1fr_80px] items-center gap-2">
                 <span className="font-mono text-[10.5px] font-bold uppercase tracking-[0.06em] text-muted-foreground">
                   {p.label}
                 </span>
@@ -204,12 +204,12 @@ export default async function ArtikkelPage({
                 </span>
               </div>
             ))}
-            <p className="mt-3 text-center font-mono text-[10.5px] uppercase tracking-[0.08em] text-muted-foreground">
+            <p className="mt-2 text-center font-mono text-[10.5px] uppercase tracking-[0.08em] text-muted-foreground">
               Markus, mai 2026 — pyramide-treff <strong className="text-foreground">72%</strong>
             </p>
           </div>
 
-          <div className="flex gap-3 rounded-xl border border-primary/30 bg-primary/[0.04] p-5">
+          <div className="flex gap-2 rounded-xl border border-primary/30 bg-primary/[0.04] p-6">
             <span className="grid h-7 w-7 flex-shrink-0 place-items-center rounded-md bg-accent text-foreground">
               <Sparkles className="h-3.5 w-3.5" strokeWidth={2} />
             </span>
@@ -229,7 +229,7 @@ export default async function ArtikkelPage({
         </div>
 
         {/* Feedback */}
-        <section className="space-y-3 rounded-xl border border-border bg-card p-6 shadow-sm">
+        <section className="space-y-2 rounded-xl border border-border bg-card p-6 shadow-sm">
           <h3 className="font-display text-base font-semibold text-foreground">
             Var dette nyttig?
           </h3>
@@ -252,11 +252,11 @@ export default async function ArtikkelPage({
         </section>
 
         {/* Related */}
-        <section className="space-y-3">
+        <section className="space-y-2">
           <h3 className="font-mono text-[10.5px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
             Les videre
           </h3>
-          <div className="grid gap-3 sm:grid-cols-3">
+          <div className="grid gap-2 sm:grid-cols-3">
             {[
               { tag: "Kom i gang", tittel: "Slik logger du din første økt", min: 3 },
               { tag: "Trening", tittel: "Hva betyr TEK?", min: 2 },
@@ -295,17 +295,17 @@ export default async function ArtikkelPage({
               Anders K og resten av coach-teamet svarer innen 4 timer på hverdager. Helt fritt for Pro-medlemmer.
             </p>
           </div>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-2">
             <Link
               href="/portal/meldinger/ny"
-              className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-foreground transition-opacity hover:opacity-90"
+              className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-foreground transition-opacity hover:opacity-90"
             >
               <MessageSquare className="h-3.5 w-3.5" strokeWidth={2} />
               Send melding
             </Link>
             <Link
               href="/portal/meg/abonnement/oppgrader"
-              className="inline-flex items-center gap-2 rounded-full border border-accent/40 px-5 py-2.5 text-sm font-semibold text-accent hover:bg-accent/10"
+              className="inline-flex items-center gap-2 rounded-full border border-accent/40 px-6 py-2.5 text-sm font-semibold text-accent hover:bg-accent/10"
             >
               Se Pro-medlemskap
             </Link>
@@ -316,7 +316,7 @@ export default async function ArtikkelPage({
       {/* TOC */}
       <aside className="hidden lg:block">
         <div className="sticky top-8 border-l border-border pl-4">
-          <div className="mb-3 font-mono text-[10.5px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
+          <div className="mb-2 font-mono text-[10.5px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
             I denne artikkelen
           </div>
           <nav className="flex flex-col gap-1 text-sm">

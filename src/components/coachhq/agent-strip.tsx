@@ -18,7 +18,7 @@ export function AgentStrip({
 }) {
   return (
     <div
-      className="flex items-center gap-3.5 rounded-2xl border border-l-[4px] border-primary/20 border-l-primary px-4 py-3.5"
+      className="flex items-center gap-4 rounded-2xl border border-l-[4px] border-primary/20 border-l-primary px-4 py-4"
       style={{
         background:
           "linear-gradient(135deg, rgba(0,88,64,0.06) 0%, rgba(209,248,67,0.10) 100%)",

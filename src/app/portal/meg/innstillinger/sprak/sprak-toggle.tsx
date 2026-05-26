@@ -25,12 +25,12 @@ export function SpraakToggle({ initial }: { initial: Sprak }) {
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       <button
         type="button"
         onClick={() => bytt("nb")}
         disabled={pending}
-        className={`flex w-full items-center justify-between rounded-md border px-4 py-3 text-left transition-colors disabled:opacity-60 ${
+        className={`flex w-full items-center justify-between rounded-md border px-4 py-2 text-left transition-colors disabled:opacity-60 ${
           valgt === "nb"
             ? "border-primary bg-primary/5"
             : "border-input bg-card hover:border-border"
@@ -49,7 +49,7 @@ export function SpraakToggle({ initial }: { initial: Sprak }) {
         type="button"
         disabled
         title="Engelsk-støtte kommer senere"
-        className="flex w-full items-center justify-between rounded-md border border-input bg-card px-4 py-3 text-left opacity-60"
+        className="flex w-full items-center justify-between rounded-md border border-input bg-card px-4 py-2 text-left opacity-60"
       >
         <div>
           <div className="font-semibold">English</div>

@@ -51,8 +51,8 @@ export function StreakCalendar({
   const consistency = completedDays > 0 ? Math.round((doneCount / completedDays) * 100) : 0;
 
   return (
-    <div className={cn("rounded-2xl border border-border bg-card p-4 md:p-5", className)}>
-      <div className="mb-4 flex items-baseline justify-between gap-3">
+    <div className={cn("rounded-2xl border border-border bg-card p-4 md:p-6", className)}>
+      <div className="mb-4 flex items-baseline justify-between gap-2">
         <h3 className="font-display text-xl font-bold tracking-[-0.015em]">{goalLabel}</h3>
         <div className="flex items-baseline gap-4">
           <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">
@@ -89,7 +89,7 @@ export function StreakCalendar({
         ))}
       </div>
 
-      <div className="mt-3 flex flex-wrap items-center gap-3 font-mono text-[9px] uppercase tracking-[0.06em] text-muted-foreground">
+      <div className="mt-2 flex flex-wrap items-center gap-2 font-mono text-[9px] uppercase tracking-[0.06em] text-muted-foreground">
         <span className="flex items-center gap-1.5">
           <span className="h-2.5 w-2.5 rounded-sm bg-primary" /> Gjennomført
         </span>

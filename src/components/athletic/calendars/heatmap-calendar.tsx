@@ -50,8 +50,8 @@ export function HeatmapCalendar({
   const activeDays = days.filter((d) => d.value > 0).length;
 
   return (
-    <div className={cn("rounded-2xl border border-border bg-card p-4 md:p-5", className)}>
-      <div className="mb-4 flex items-baseline justify-between gap-3">
+    <div className={cn("rounded-2xl border border-border bg-card p-4 md:p-6", className)}>
+      <div className="mb-4 flex items-baseline justify-between gap-2">
         <h3 className="font-display text-xl font-bold tracking-[-0.015em]">{title}</h3>
         <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
           {total.toLocaleString("nb-NO")} {unit} · {activeDays} aktive dager
@@ -93,7 +93,7 @@ export function HeatmapCalendar({
           </div>
         </div>
 
-        <div className="mt-3 flex items-center justify-between">
+        <div className="mt-2 flex items-center justify-between">
           <div className="flex items-center gap-1 font-mono text-[9px] uppercase tracking-[0.06em] text-muted-foreground">
             {monthLabels.map((m, i) => (
               <span key={i}>{m}</span>

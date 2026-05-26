@@ -106,7 +106,7 @@ export function DayView({ dato, okter, forventet }: Props) {
         </section>
 
         {/* Blokker proporsjonalt */}
-        <section className="flex flex-col gap-3">
+        <section className="flex flex-col gap-2">
           {sortert.length === 0 && (
             <div className="rounded-lg border border-dashed border-border bg-card p-8 text-center text-sm text-muted-foreground">
               Ingen økter planlagt denne dagen.
@@ -125,7 +125,7 @@ export function DayView({ dato, okter, forventet }: Props) {
                 )}
                 style={{ minHeight: `${hoyde}px` }}
               >
-                <header className="flex items-start justify-between gap-3">
+                <header className="flex items-start justify-between gap-2">
                   <div className="flex flex-col gap-1">
                     <span className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
                       {PYRAMIDE_LABEL[o.pyramide]}
@@ -134,7 +134,7 @@ export function DayView({ dato, okter, forventet }: Props) {
                   </div>
                   <PraksistypeBadge type={o.practiceType} size="md" />
                 </header>
-                <div className="flex items-center gap-3 text-sm">
+                <div className="flex items-center gap-2 text-sm">
                   <span className="font-mono tabular-nums text-foreground">
                     {format(o.startTime, "HH:mm")}–{format(o.endTime, "HH:mm")}
                   </span>

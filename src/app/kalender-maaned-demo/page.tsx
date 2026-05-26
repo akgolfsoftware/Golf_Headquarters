@@ -372,20 +372,20 @@ export default function KalenderMaanedDemo() {
         </div>
         <div className="flex items-center gap-2">
           <div className="inline-flex rounded-full border border-border bg-secondary p-0.5">
-            <button className="rounded-full px-3.5 py-1.5 text-[12px] font-medium text-muted-foreground">
+            <button className="rounded-full px-4 py-1.5 text-[12px] font-medium text-muted-foreground">
               Uke
             </button>
-            <button className="rounded-full bg-foreground px-3.5 py-1.5 text-[12px] font-medium text-background">
+            <button className="rounded-full bg-foreground px-4 py-1.5 text-[12px] font-medium text-background">
               Måned
             </button>
-            <button className="rounded-full px-3.5 py-1.5 text-[12px] font-medium text-muted-foreground">
+            <button className="rounded-full px-4 py-1.5 text-[12px] font-medium text-muted-foreground">
               År
             </button>
           </div>
-          <button className="rounded-md border border-border bg-card px-3.5 py-2 text-[13px] font-medium hover:bg-secondary">
+          <button className="rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium hover:bg-secondary">
             I dag
           </button>
-          <button className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-[13px] font-medium text-primary-foreground hover:opacity-90">
+          <button className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground hover:opacity-90">
             <Plus className="h-4 w-4" strokeWidth={1.75} />
             Ny økt
           </button>
@@ -406,13 +406,13 @@ export default function KalenderMaanedDemo() {
             </div>
             <div className="ml-auto flex items-center gap-2">
               <div className="inline-flex rounded-full border border-border bg-secondary p-0.5">
-                <button className="rounded-full bg-foreground px-3 py-1.5 text-[12px] font-medium text-background">
+                <button className="rounded-full bg-foreground px-4 py-1.5 text-[12px] font-medium text-background">
                   Økter
                 </button>
-                <button className="rounded-full px-3 py-1.5 text-[12px] font-medium text-muted-foreground">
+                <button className="rounded-full px-4 py-1.5 text-[12px] font-medium text-muted-foreground">
                   Belegg
                 </button>
-                <button className="rounded-full px-3 py-1.5 text-[12px] font-medium text-muted-foreground">
+                <button className="rounded-full px-4 py-1.5 text-[12px] font-medium text-muted-foreground">
                   Inntekt
                 </button>
               </div>
@@ -433,7 +433,7 @@ export default function KalenderMaanedDemo() {
             {["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"].map((d) => (
               <div
                 key={d}
-                className="px-3 py-2.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground"
+                className="px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground"
               >
                 {d}
               </div>
@@ -451,7 +451,7 @@ export default function KalenderMaanedDemo() {
         {/* Right sidebar */}
         <aside className="sticky top-6 flex flex-col gap-4">
           {/* Day detail (dark) */}
-          <div className="rounded-2xl bg-foreground p-5 text-background">
+          <div className="rounded-2xl bg-foreground p-6 text-background">
             <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-background/50">
               Valgt dag
             </span>
@@ -461,7 +461,7 @@ export default function KalenderMaanedDemo() {
             <div className="text-[12px] text-background/60">
               i dag · 5 økter · 82 % belegg
             </div>
-            <div className="mt-4 flex flex-col gap-2.5 border-t border-white/10 pt-3.5">
+            <div className="mt-4 flex flex-col gap-2.5 border-t border-white/10 pt-4">
               <ScheduleEv
                 t="09:00"
                 name="Mathias Pedersen"
@@ -493,8 +493,8 @@ export default function KalenderMaanedDemo() {
           </div>
 
           {/* Legend */}
-          <div className="rounded-2xl border border-border bg-card p-5">
-            <div className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+          <div className="rounded-2xl border border-border bg-card p-6">
+            <div className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
               Forklaring
             </div>
             <LegendRow
@@ -516,8 +516,8 @@ export default function KalenderMaanedDemo() {
           </div>
 
           {/* Month stats */}
-          <div className="rounded-2xl border border-border bg-card p-5">
-            <div className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+          <div className="rounded-2xl border border-border bg-card p-6">
+            <div className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
               Måneds-snitt · mai
             </div>
             <MiniStat k="Økter totalt" v="142" />

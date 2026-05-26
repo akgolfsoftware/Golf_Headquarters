@@ -89,7 +89,7 @@ export function NewTemplateForm() {
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="h-11 rounded-md border border-input bg-card px-3 text-sm focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+            className="h-11 rounded-md border border-input bg-card px-4 text-sm focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
             placeholder="F.eks. E Konkurranse Standard"
           />
         </label>
@@ -102,7 +102,7 @@ export function NewTemplateForm() {
             rows={3}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="rounded-md border border-input bg-card px-3 py-2 text-sm focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+            className="rounded-md border border-input bg-card px-4 py-2 text-sm focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
           />
         </label>
 
@@ -113,7 +113,7 @@ export function NewTemplateForm() {
           <select
             value={kategori}
             onChange={(e) => setKategoriAndFordeling(e.target.value as NgfKategori)}
-            className="h-11 rounded-md border border-input bg-card px-3 text-sm"
+            className="h-11 rounded-md border border-input bg-card px-4 text-sm"
           >
             {KATEGORI_ALLE.map((k) => (
               <option key={k} value={k}>
@@ -130,7 +130,7 @@ export function NewTemplateForm() {
           <select
             value={lPhase}
             onChange={(e) => setLPhase(e.target.value as LPhase)}
-            className="h-11 rounded-md border border-input bg-card px-3 text-sm"
+            className="h-11 rounded-md border border-input bg-card px-4 text-sm"
           >
             {FASE_ALLE.map((f) => (
               <option key={f} value={f}>
@@ -150,7 +150,7 @@ export function NewTemplateForm() {
             max={52}
             value={varighetUker}
             onChange={(e) => setVarighetUker(parseInt(e.target.value || "1", 10))}
-            className="h-11 rounded-md border border-input bg-card px-3 text-sm"
+            className="h-11 rounded-md border border-input bg-card px-4 text-sm"
           />
         </label>
 
@@ -166,7 +166,7 @@ export function NewTemplateForm() {
             onChange={(e) =>
               setUkentligOktAntall(parseInt(e.target.value || "1", 10))
             }
-            className="h-11 rounded-md border border-input bg-card px-3 text-sm"
+            className="h-11 rounded-md border border-input bg-card px-4 text-sm"
           />
         </label>
 
@@ -178,7 +178,7 @@ export function NewTemplateForm() {
             type="number"
             value={minAlder}
             onChange={(e) => setMinAlder(e.target.value)}
-            className="h-11 rounded-md border border-input bg-card px-3 text-sm"
+            className="h-11 rounded-md border border-input bg-card px-4 text-sm"
           />
         </label>
 
@@ -190,7 +190,7 @@ export function NewTemplateForm() {
             type="number"
             value={maxAlder}
             onChange={(e) => setMaxAlder(e.target.value)}
-            className="h-11 rounded-md border border-input bg-card px-3 text-sm"
+            className="h-11 rounded-md border border-input bg-card px-4 text-sm"
           />
         </label>
       </div>
@@ -204,7 +204,7 @@ export function NewTemplateForm() {
         </div>
         <div className="space-y-2">
           {PYR_ALLE.map((p) => (
-            <div key={p} className="flex items-center gap-3">
+            <div key={p} className="flex items-center gap-2">
               <span
                 aria-hidden="true"
                 className="h-2.5 w-2.5 rounded-sm"
@@ -237,7 +237,7 @@ export function NewTemplateForm() {
           type="button"
           onClick={submit}
           disabled={isPending}
-          className="inline-flex h-11 items-center gap-2 rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50"
+          className="inline-flex h-11 items-center gap-2 rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50"
         >
           <Save className="h-4 w-4" strokeWidth={1.75} />
           Opprett og fortsett til editor

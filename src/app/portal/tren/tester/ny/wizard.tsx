@@ -468,7 +468,7 @@ export function NyTestWizard({ tests, sistePerTest, spillerNavn }: Props) {
         {feil && (
           <div
             role="alert"
-            className="mt-6 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+            className="mt-6 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive"
           >
             {feil}
           </div>
@@ -591,7 +591,7 @@ function Steg1({
         valget.
       </p>
 
-      <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <div className="mt-6 grid grid-cols-1 gap-2 sm:grid-cols-2">
         {KATALOG.map((k) => {
           const aktiv = valgtSlug === k.slug;
           const Icon = k.Icon;
@@ -703,11 +703,11 @@ function Steg2({
 
       <div className="mt-4">
         <Felt label="Utstyr brukt (tags)">
-          <div className="flex flex-wrap items-center gap-2 rounded-md border border-input bg-card px-3 py-2">
+          <div className="flex flex-wrap items-center gap-2 rounded-md border border-input bg-card px-4 py-2">
             {equipment.map((tag) => (
               <span
                 key={tag}
-                className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1 text-xs font-medium text-foreground"
+                className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-4 py-1 text-xs font-medium text-foreground"
               >
                 {tag}
                 <button
@@ -787,7 +787,7 @@ function Steg3({
       <div
         className={
           erPutting
-            ? "mt-6 grid grid-cols-2 gap-3 sm:grid-cols-5"
+            ? "mt-6 grid grid-cols-2 gap-2 sm:grid-cols-5"
             : "mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2"
         }
       >
@@ -815,7 +815,7 @@ function Steg3({
       </div>
 
       {erPutting && snitt != null && (
-        <div className="mt-6 rounded-md border border-border bg-secondary/50 px-4 py-3">
+        <div className="mt-6 rounded-md border border-border bg-secondary/50 px-4 py-2">
           <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             Auto-snitt
           </div>
@@ -862,12 +862,12 @@ function Steg4({
         Sjekk at sammendraget under stemmer før du lagrer.
       </p>
 
-      <div className="mt-6 rounded-lg border border-border bg-secondary/30 p-5">
+      <div className="mt-6 rounded-lg border border-border bg-secondary/30 p-6">
         <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           Sammendrag · {spillerNavn}
         </div>
 
-        <div className="mt-3 grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
+        <div className="mt-2 grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
           <div>
             <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               Type
@@ -906,7 +906,7 @@ function Steg4({
           <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             Resultater
           </div>
-          <ul className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
+          <ul className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
             {katalog.metrics.map((m) => {
               const raw = state.results[m.key];
               if (!raw) return null;
@@ -915,7 +915,7 @@ function Steg4({
               return (
                 <li
                   key={m.key}
-                  className="rounded-md border border-border bg-card px-3 py-2"
+                  className="rounded-md border border-border bg-card px-4 py-2"
                 >
                   <div className="font-mono text-[10px] uppercase text-muted-foreground">
                     {m.label}
@@ -930,7 +930,7 @@ function Steg4({
         </div>
 
         {siste && !isNaN(nyVerdi) && (
-          <div className="mt-5 flex items-center justify-between rounded-md border border-primary/20 bg-primary/5 px-4 py-3">
+          <div className="mt-5 flex items-center justify-between rounded-md border border-primary/20 bg-primary/5 px-4 py-2">
             <div>
               <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                 Sammenlignet med forrige
@@ -975,7 +975,7 @@ function Steg4({
           />
         </Felt>
 
-        <label className="flex items-center justify-between rounded-md border border-border bg-card px-4 py-3 text-sm">
+        <label className="flex items-center justify-between rounded-md border border-border bg-card px-4 py-2 text-sm">
           <span className="flex items-center gap-2">
             <Share2 size={16} strokeWidth={1.75} aria-hidden />
             <span className="font-medium text-foreground">Del med coach</span>

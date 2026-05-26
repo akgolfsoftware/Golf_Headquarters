@@ -240,7 +240,7 @@ export function EgenTestWizard({ rolle }: Props) {
       {feilmelding && (
         <div
           role="alert"
-          className="rounded-md border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive"
+          className="rounded-md border border-destructive/30 bg-destructive/5 px-4 py-2 text-sm text-destructive"
         >
           {feilmelding}
         </div>
@@ -280,7 +280,7 @@ export function EgenTestWizard({ rolle }: Props) {
       )}
 
       {steg < 5 && (
-        <div className="flex items-center justify-between gap-3 border-t border-border pt-6">
+        <div className="flex items-center justify-between gap-2 border-t border-border pt-6">
           <button
             type="button"
             onClick={() => setSteg((s) => (s > 1 ? ((s - 1) as 1 | 2 | 3 | 4) : s))}
@@ -352,7 +352,7 @@ function Steg1({
 }) {
   return (
     <div className="space-y-8">
-      <div className="space-y-3">
+      <div className="space-y-2">
         <label htmlFor="test-navn" className="block">
           <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             Testnavn
@@ -365,21 +365,21 @@ function Steg1({
           onChange={(e) => oppdater("navn", e.target.value)}
           placeholder="Eks. «Putt-konsistens 6 fot»"
           maxLength={100}
-          className="w-full rounded-md border border-input bg-card px-4 py-3 font-display text-2xl outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
+          className="w-full rounded-md border border-input bg-card px-4 py-2 font-display text-2xl outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
         />
         <p className="text-xs text-muted-foreground">
           Minst 2 tegn. {state.navn.length}/100.
         </p>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2">
         <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           Kategori
         </span>
         <div
           role="radiogroup"
           aria-label="Velg pyramide-område"
-          className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5"
+          className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-5"
         >
           {KATEGORIER.map((k) => {
             const valgt = state.kategori === k.verdi;
@@ -390,7 +390,7 @@ function Steg1({
                 role="radio"
                 aria-checked={valgt}
                 onClick={() => oppdater("kategori", k.verdi)}
-                className={`flex flex-col items-start gap-3 rounded-lg border p-4 text-left transition-all ${
+                className={`flex flex-col items-start gap-2 rounded-lg border p-4 text-left transition-all ${
                   valgt
                     ? "border-primary bg-primary/10 ring-2 ring-primary/30"
                     : `${k.fargeKlasse} hover:border-primary/60`
@@ -461,7 +461,7 @@ function Steg2({
 
   return (
     <div className="space-y-8">
-      <div className="space-y-3">
+      <div className="space-y-2">
         <label htmlFor="test-beskrivelse" className="block">
           <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             Beskrivelse (valgfri)
@@ -474,18 +474,18 @@ function Steg2({
           rows={2}
           maxLength={2000}
           placeholder="Hva måler denne testen og hvorfor er den verdifull?"
-          className="w-full rounded-md border border-input bg-card px-4 py-3 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
+          className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
         />
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2">
         <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           Protokoll — steg for steg
         </span>
         <ol className="space-y-2">
           {state.protokollSteg.map((tekst, i) => (
             <li key={i} className="flex items-start gap-2">
-              <span className="mt-3 font-mono text-xs font-semibold text-primary">
+              <span className="mt-2 font-mono text-xs font-semibold text-primary">
                 {i + 1}.
               </span>
               <textarea
@@ -498,7 +498,7 @@ function Steg2({
                     : `Steg ${i + 1}`
                 }
                 maxLength={300}
-                className="min-h-11 flex-1 rounded-md border border-input bg-card px-3 py-2.5 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
+                className="min-h-11 flex-1 rounded-md border border-input bg-card px-4 py-2.5 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
               />
               {state.protokollSteg.length > 1 && (
                 <button
@@ -524,7 +524,7 @@ function Steg2({
       </div>
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-        <div className="space-y-3">
+        <div className="space-y-2">
           <label htmlFor="est-min" className="block">
             <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               Estimert tid (minutter)
@@ -542,7 +542,7 @@ function Steg2({
           />
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-2">
           <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             Utstyr som trengs
           </span>
@@ -559,12 +559,12 @@ function Steg2({
               }}
               placeholder="Eks. Trackman, 10 baller"
               maxLength={60}
-              className="min-h-11 flex-1 rounded-md border border-input bg-card px-3 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
+              className="min-h-11 flex-1 rounded-md border border-input bg-card px-4 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
             />
             <button
               type="button"
               onClick={leggTilUtstyr}
-              className="inline-flex h-11 items-center gap-1.5 rounded-md border border-input bg-card px-3 text-sm font-medium hover:border-primary hover:text-primary"
+              className="inline-flex h-11 items-center gap-1.5 rounded-md border border-input bg-card px-4 text-sm font-medium hover:border-primary hover:text-primary"
             >
               <Plus size={14} strokeWidth={1.75} />
               Legg til
@@ -575,7 +575,7 @@ function Steg2({
               {state.utstyr.map((u) => (
                 <li
                   key={u}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-accent/20 px-3 py-1 text-xs"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-accent/20 px-4 py-1 text-xs"
                 >
                   <span>{u}</span>
                   <button
@@ -611,7 +611,7 @@ function Steg3({
 
   return (
     <div className="space-y-8">
-      <div className="space-y-3">
+      <div className="space-y-2">
         <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           Måleenhet
         </span>
@@ -629,7 +629,7 @@ function Steg3({
                 role="radio"
                 aria-checked={valgt}
                 onClick={() => oppdater("enhet", e.verdi)}
-                className={`flex items-start justify-between gap-3 rounded-md border p-3 text-left transition-all ${
+                className={`flex items-start justify-between gap-2 rounded-md border p-4 text-left transition-all ${
                   valgt
                     ? "border-primary bg-primary/10 ring-2 ring-primary/30"
                     : "border-input hover:border-primary/60"
@@ -650,7 +650,7 @@ function Steg3({
         </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2">
         <label htmlFor="scoring-rule" className="block">
           <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             Scoring-regel
@@ -670,7 +670,7 @@ function Steg3({
         </p>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2">
         <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           Mål-verdier per NGF-nivå (valgfritt)
         </span>
@@ -678,7 +678,7 @@ function Steg3({
           Definer hva som regnes som godkjent per nivå. La stå tomt hvis ikke
           aktuelt.
         </p>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           {NGF_NIVAAER.map((nivaa) => (
             <div key={nivaa} className="space-y-1.5">
               <label
@@ -694,7 +694,7 @@ function Steg3({
                 onChange={(e) => endreNivaa(nivaa, e.target.value)}
                 placeholder="Verdi"
                 maxLength={60}
-                className="w-full rounded-md border border-input bg-card px-3 py-2 font-mono text-sm tabular-nums outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
+                className="w-full rounded-md border border-input bg-card px-4 py-2 font-mono text-sm tabular-nums outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
               />
             </div>
           ))}
@@ -723,14 +723,14 @@ function Steg4({
 
   return (
     <div className="space-y-8">
-      <div className="space-y-3">
+      <div className="space-y-2">
         <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           Hvem skal kunne bruke testen?
         </span>
         <div
           role="radiogroup"
           aria-label="Velg synlighet"
-          className="grid grid-cols-1 gap-3 sm:grid-cols-2"
+          className="grid grid-cols-1 gap-2 sm:grid-cols-2"
         >
           {synligheter.map((s) => {
             const valgt = state.synlighet === s.verdi;
@@ -741,7 +741,7 @@ function Steg4({
                 role="radio"
                 aria-checked={valgt}
                 onClick={() => oppdater("synlighet", s.verdi)}
-                className={`flex items-start gap-3 rounded-lg border p-4 text-left transition-all ${
+                className={`flex items-start gap-2 rounded-lg border p-4 text-left transition-all ${
                   valgt
                     ? "border-primary bg-primary/10 ring-2 ring-primary/30"
                     : "border-input hover:border-primary/60"
@@ -765,7 +765,7 @@ function Steg4({
       </div>
 
       {erSpiller && state.synlighet === "COACH" && (
-        <div className="rounded-md border border-primary/30 bg-primary/5 px-4 py-3 text-sm text-foreground">
+        <div className="rounded-md border border-primary/30 bg-primary/5 px-4 py-2 text-sm text-foreground">
           <strong className="font-semibold">Tips:</strong> Når du foreslår en
           test til coach, vil hen kunne godkjenne den til hele akademi. Du
           beholder kreditten som skaper.
@@ -805,7 +805,7 @@ function Steg5({
         </h2>
         {kategori && (
           <span
-            className={`mt-2 inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs ${kategori.fargeKlasse}`}
+            className={`mt-2 inline-flex items-center gap-1.5 rounded-full border px-4 py-1 text-xs ${kategori.fargeKlasse}`}
           >
             <kategori.Icon size={12} strokeWidth={1.75} />
             {kategori.navn}
@@ -912,7 +912,7 @@ function Steg5({
         </div>
       </div>
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+      <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
         <button
           type="button"
           onClick={() => onLagre("vanlig")}

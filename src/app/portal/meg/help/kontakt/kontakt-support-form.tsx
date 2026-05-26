@@ -74,7 +74,7 @@ Skjedde på iPhone 15 Pro, iOS 18.4. App-versjon 0.9.4. Wifi tilkoblet hjemme.`,
       }}
     >
       <SectionNum num="01" title="Hva gjelder det?">
-        <div className="grid grid-cols-1 gap-3 p-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-2 p-6 sm:grid-cols-2 lg:grid-cols-3">
           {KATEGORIER.map((k) => {
             const valgt = kategori === k.id;
             return (
@@ -113,7 +113,7 @@ Skjedde på iPhone 15 Pro, iOS 18.4. App-versjon 0.9.4. Wifi tilkoblet hjemme.`,
       </SectionNum>
 
       <SectionNum num="02" title="Beskriv problemet">
-        <div className="space-y-5 p-6">
+        <div className="space-y-6 p-6">
           <Field label="Emne" htmlFor="emne">
             <input
               id="emne"
@@ -148,7 +148,7 @@ Skjedde på iPhone 15 Pro, iOS 18.4. App-versjon 0.9.4. Wifi tilkoblet hjemme.`,
       </SectionNum>
 
       <SectionNum num="03" title="Vedlegg" optional="Valgfritt">
-        <div className="space-y-3 p-6">
+        <div className="space-y-2 p-6">
           <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border bg-muted/40 py-8 text-center transition-colors hover:border-primary hover:bg-muted">
             <span className="grid h-10 w-10 place-items-center rounded-full bg-card text-muted-foreground">
               <Upload className="h-4 w-4" strokeWidth={1.75} />
@@ -167,7 +167,7 @@ Skjedde på iPhone 15 Pro, iOS 18.4. App-versjon 0.9.4. Wifi tilkoblet hjemme.`,
               {vedlegg.map((v) => (
                 <div
                   key={v.navn}
-                  className="grid grid-cols-[40px_1fr_auto] items-center gap-3 rounded-lg border border-border bg-card p-3"
+                  className="grid grid-cols-[40px_1fr_auto] items-center gap-2 rounded-lg border border-border bg-card p-4"
                 >
                   <div className="grid h-10 w-10 place-items-center rounded-md bg-gradient-to-br from-primary to-[color:rgb(136_180_90)] text-white">
                     <ImageIcon className="h-4 w-4" strokeWidth={1.75} />
@@ -199,7 +199,7 @@ Skjedde på iPhone 15 Pro, iOS 18.4. App-versjon 0.9.4. Wifi tilkoblet hjemme.`,
 
       <SectionNum num="04" title="Tilgang">
         <div className="space-y-4 p-6">
-          <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-border bg-card p-4 transition-colors hover:border-primary/40">
+          <label className="flex cursor-pointer items-start gap-2 rounded-lg border border-border bg-card p-4 transition-colors hover:border-primary/40">
             <input
               type="checkbox"
               checked={tillatInnsyn}
@@ -221,7 +221,7 @@ Skjedde på iPhone 15 Pro, iOS 18.4. App-versjon 0.9.4. Wifi tilkoblet hjemme.`,
             onToggle={(e) => setTechOpen((e.target as HTMLDetailsElement).open)}
             className="overflow-hidden rounded-lg border border-border bg-card"
           >
-            <summary className="flex cursor-pointer items-center gap-3 px-4 py-3 [&::-webkit-details-marker]:hidden">
+            <summary className="flex cursor-pointer items-center gap-2 px-4 py-2 [&::-webkit-details-marker]:hidden">
               <span className="grid h-7 w-7 place-items-center rounded-md bg-muted text-muted-foreground">
                 <RefreshCw className="h-3.5 w-3.5" strokeWidth={1.75} />
               </span>
@@ -256,7 +256,7 @@ Skjedde på iPhone 15 Pro, iOS 18.4. App-versjon 0.9.4. Wifi tilkoblet hjemme.`,
         </div>
       </SectionNum>
 
-      <div className="sticky bottom-0 -mx-6 flex items-center gap-3 border-t border-border bg-card/95 px-6 py-4 backdrop-blur">
+      <div className="sticky bottom-0 -mx-6 flex items-center gap-2 border-t border-border bg-card/95 px-6 py-4 backdrop-blur">
         <div className="text-xs text-muted-foreground">
           Eller{" "}
           <a href="#" className="font-semibold text-foreground underline underline-offset-2 hover:text-primary">
@@ -273,7 +273,7 @@ Skjedde på iPhone 15 Pro, iOS 18.4. App-versjon 0.9.4. Wifi tilkoblet hjemme.`,
         <button
           type="submit"
           disabled={!kanSende || pending}
-          className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
         >
           <Send className="h-3.5 w-3.5" strokeWidth={1.75} />
           {pending ? "Sender …" : "Send melding"}
@@ -299,7 +299,7 @@ function SectionNum({
 }) {
   return (
     <section className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
-      <header className="flex items-baseline gap-3 border-b border-border px-6 py-4">
+      <header className="flex items-baseline gap-2 border-b border-border px-6 py-4">
         <span className="font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
           {num}
         </span>

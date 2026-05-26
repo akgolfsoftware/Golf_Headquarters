@@ -144,7 +144,7 @@ export function SammenlignClient({ userName }: { userName: string }) {
           </div>
         </div>
 
-        <div className="flex flex-col gap-3 rounded-2xl border border-primary/30 bg-primary/[0.04] p-4 md:p-6">
+        <div className="flex flex-col gap-2 rounded-2xl border border-primary/30 bg-primary/[0.04] p-4 md:p-6">
           <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-primary">
             Insight
           </span>
@@ -164,7 +164,7 @@ export function SammenlignClient({ userName }: { userName: string }) {
 
       {/* KPI tabell */}
       <section className="mt-6 overflow-hidden rounded-2xl border border-border bg-card">
-        <div className="hidden grid-cols-[1.5fr_80px_120px_120px] gap-4 border-b border-border bg-muted/40 px-6 py-3 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground sm:grid">
+        <div className="hidden grid-cols-[1.5fr_80px_120px_120px] gap-4 border-b border-border bg-muted/40 px-6 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground sm:grid">
           <div>Metrikk</div>
           <div className="text-right">Deg</div>
           <div className="text-right">
@@ -177,7 +177,7 @@ export function SammenlignClient({ userName }: { userName: string }) {
           {KPI_ROWS.map((r, i) => (
             <li
               key={i}
-              className="grid grid-cols-2 gap-3 border-b border-border/60 px-4 py-4 last:border-0 sm:grid-cols-[1.5fr_80px_120px_120px] sm:gap-4 sm:px-6"
+              className="grid grid-cols-2 gap-2 border-b border-border/60 px-4 py-4 last:border-0 sm:grid-cols-[1.5fr_80px_120px_120px] sm:gap-4 sm:px-6"
             >
               <div>
                 <div className="font-medium text-foreground">{r.metric}</div>
@@ -238,7 +238,7 @@ function InsightBullet({
   val: string;
 }) {
   return (
-    <div className="flex items-center gap-3 text-sm">
+    <div className="flex items-center gap-2 text-sm">
       <span
         className={`h-2 w-2 rounded-full ${
           up ? "bg-primary" : "bg-destructive"

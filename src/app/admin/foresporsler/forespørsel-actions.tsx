@@ -13,7 +13,7 @@ export function ForespørselActions({ requestId }: { requestId: string }) {
         type="button"
         disabled={pending}
         onClick={() => startTransition(() => markerSomPlanlagt(requestId))}
-        className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-1.5 text-[12px] font-medium text-foreground transition-colors hover:border-primary hover:text-primary disabled:opacity-50"
+        className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-4 py-1.5 text-[12px] font-medium text-foreground transition-colors hover:border-primary hover:text-primary disabled:opacity-50"
       >
         <CheckCircle2 className="h-3.5 w-3.5" strokeWidth={1.75} />
         Planlagt
@@ -22,7 +22,7 @@ export function ForespørselActions({ requestId }: { requestId: string }) {
         type="button"
         disabled={pending}
         onClick={() => startTransition(() => avslaaForespørsel(requestId))}
-        className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-1.5 text-[12px] font-medium text-muted-foreground transition-colors hover:border-destructive hover:text-destructive disabled:opacity-50"
+        className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-4 py-1.5 text-[12px] font-medium text-muted-foreground transition-colors hover:border-destructive hover:text-destructive disabled:opacity-50"
       >
         <XCircle className="h-3.5 w-3.5" strokeWidth={1.75} />
         Avslå

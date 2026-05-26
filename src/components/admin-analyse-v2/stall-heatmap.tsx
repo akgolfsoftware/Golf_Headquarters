@@ -94,7 +94,7 @@ export function StallHeatmap({ spillere }: { spillere: Spiller[] }) {
             ]}
             onChange={(v) => setMiljo(v as typeof miljo)}
           />
-          <div className="ml-auto flex items-center gap-3 text-xs text-muted-foreground">
+          <div className="ml-auto flex items-center gap-2 text-xs text-muted-foreground">
             <span className="flex items-center gap-1"><Users2 size={12} /> {spillere.length} spillere</span>
           </div>
         </div>
@@ -107,7 +107,7 @@ export function StallHeatmap({ spillere }: { spillere: Spiller[] }) {
             <h2 className="font-display text-lg font-semibold tracking-tight text-foreground">
               Stall-heatmap
             </h2>
-            <div className="flex items-center gap-3 text-[10px]">
+            <div className="flex items-center gap-2 text-[10px]">
               <Legend />
             </div>
           </div>
@@ -125,7 +125,7 @@ export function StallHeatmap({ spillere }: { spillere: Spiller[] }) {
             {/* Rader */}
             {spillere.map((s) => (
               <div key={s.id} className="contents">
-                <div className="sticky left-0 z-10 flex items-center gap-3 border-t border-border bg-card py-3 pr-2">
+                <div className="sticky left-0 z-10 flex items-center gap-2 border-t border-border bg-card py-2 pr-2">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary font-mono text-[10px] text-foreground">
                     {(s.name ?? "?").split(" ").map((p) => p[0]).slice(0, 2).join("")}
                   </div>
@@ -145,7 +145,7 @@ export function StallHeatmap({ spillere }: { spillere: Spiller[] }) {
                       key={`${s.id}-${k.key}`}
                       type="button"
                       onClick={() => setValgtCelle({ spiller: s, kol: k, rate })}
-                      className={`border-t border-border py-3 text-center font-mono text-xs font-semibold transition ${aktiv ? "ring-2 ring-primary ring-offset-1 ring-offset-card" : ""}`}
+                      className={`border-t border-border py-2 text-center font-mono text-xs font-semibold transition ${aktiv ? "ring-2 ring-primary ring-offset-1 ring-offset-card" : ""}`}
                       style={{ background: c.bg, color: c.fg }}
                     >
                       {Math.round(rate * 100)}%
@@ -229,7 +229,7 @@ function FilterPills({
           <button
             key={o.key}
             type="button"
-            className={`rounded-full px-3 py-1 text-xs font-medium transition ${
+            className={`rounded-full px-4 py-1 text-xs font-medium transition ${
               value === o.key ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
             }`}
             onClick={() => onChange(o.key)}

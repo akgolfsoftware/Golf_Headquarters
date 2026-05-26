@@ -178,7 +178,7 @@ export function BookingerView({ bookinger, coachListe }: BookingerViewProps) {
       <div className="overflow-hidden rounded-2xl border border-border bg-card">
         <div className="overflow-x-auto">
           <div className="min-w-[760px]">
-        <div className="grid grid-cols-[1.2fr_1.5fr_1fr_1fr_0.8fr_0.8fr_40px] gap-4 border-b border-border bg-secondary px-5 py-3">
+        <div className="grid grid-cols-[1.2fr_1.5fr_1fr_1fr_0.8fr_0.8fr_40px] gap-4 border-b border-border bg-secondary px-6 py-2">
           <SortHeader k="dato" label="Dato" sortKey={sortKey} sortDir={sortDir} toggle={toggleSort} />
           <SortHeader k="spiller" label="Spiller" sortKey={sortKey} sortDir={sortDir} toggle={toggleSort} />
           <SortHeader k="type" label="Type" sortKey={sortKey} sortDir={sortDir} toggle={toggleSort} />
@@ -196,7 +196,7 @@ export function BookingerView({ bookinger, coachListe }: BookingerViewProps) {
             {sortert.map((b) => (
               <li
                 key={b.id}
-                className="grid grid-cols-[1.2fr_1.5fr_1fr_1fr_0.8fr_0.8fr_40px] items-center gap-4 px-5 py-4 transition hover:bg-secondary/40"
+                className="grid grid-cols-[1.2fr_1.5fr_1fr_1fr_0.8fr_0.8fr_40px] items-center gap-4 px-6 py-4 transition hover:bg-secondary/40"
               >
                 <div className="font-mono text-xs tabular-nums text-foreground">
                   {fmtDato(b.startTime)}
@@ -262,7 +262,7 @@ function StatKort({
 }) {
   return (
     <div
-      className={`rounded-2xl border p-5 ${
+      className={`rounded-2xl border p-6 ${
         featured
           ? "border-transparent bg-gradient-to-br from-primary to-[#003A2A] text-primary-foreground"
           : warn
@@ -314,7 +314,7 @@ function FilterPills({
             key={o.key}
             type="button"
             onClick={() => onChange(o.key)}
-            className={`rounded-full px-3 py-1 text-xs font-medium transition ${
+            className={`rounded-full px-4 py-1 text-xs font-medium transition ${
               value === o.key ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
             }`}
           >

@@ -77,7 +77,7 @@ export function ClubTrendChart({ club, metric, trend }: Props) {
                 label: string;
               };
               return (
-                <div className="rounded-lg border border-border bg-card px-3 py-2 text-xs shadow-md">
+                <div className="rounded-lg border border-border bg-card px-4 py-2 text-xs shadow-md">
                   <p className="font-semibold">{d.label}</p>
                   <p className="text-muted-foreground">
                     {METRIC_LABEL[metric]}: {numberFmt.format(d.value)}{" "}

@@ -33,8 +33,8 @@ export function DriftAlertCard({ alert }: Props) {
   )}`;
 
   return (
-    <article className="rounded-xl border border-border bg-card p-5">
-      <header className="flex items-start gap-3">
+    <article className="rounded-xl border border-border bg-card p-6">
+      <header className="flex items-start gap-2">
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-destructive/10 text-destructive">
           <AlertTriangle className="h-4 w-4" />
         </div>
@@ -54,7 +54,7 @@ export function DriftAlertCard({ alert }: Props) {
         </span>
       </header>
 
-      <p className="mt-3 text-sm text-muted-foreground">
+      <p className="mt-2 text-sm text-muted-foreground">
         {label} har endret seg med {signed}
         {NBSP}
         {unit} per uke — over terskel på{NBSP}

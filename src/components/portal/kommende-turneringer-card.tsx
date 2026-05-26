@@ -101,7 +101,7 @@ export async function KommendeTurneringerCard({ userId }: { userId: string }) {
             return (
               <li
                 key={e.id}
-                className="flex items-center gap-4 py-3 first:pt-0 last:pb-0"
+                className="flex items-center gap-4 py-2 first:pt-0 last:pb-0"
               >
                 <div className="flex h-10 w-10 flex-none flex-col items-center justify-center rounded-md bg-secondary">
                   <span className="font-mono text-[9px] uppercase tracking-[0.10em] text-muted-foreground">

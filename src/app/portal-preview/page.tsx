@@ -62,7 +62,7 @@ export default async function PortalPreviewPage() {
 
   if (!player) {
     return (
-      <div className="mx-auto max-w-2xl px-5 py-12 text-center">
+      <div className="mx-auto max-w-2xl px-6 py-12 text-center">
         <p className="text-sm text-muted-foreground">Spiller-profil mangler. Seed Anders først.</p>
       </div>
     );
@@ -150,7 +150,7 @@ export default async function PortalPreviewPage() {
         weather={{ label: "16°C · LETT BRIS · DELVIS SKYET", pulse: true }}
         height="md"
       >
-        <div className="px-5 pb-5">
+        <div className="px-6 pb-6">
           <Link
             href="/design"
             className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.12em] text-white/85 hover:text-white"
@@ -160,8 +160,8 @@ export default async function PortalPreviewPage() {
         </div>
       </AthleticHero>
 
-      <main className="mx-auto -mt-12 max-w-3xl space-y-6 px-5 pb-12 relative z-10">
-        <div className="rounded-2xl border border-border bg-card p-5 shadow-lg">
+      <main className="mx-auto -mt-12 max-w-3xl space-y-6 px-6 pb-12 relative z-10">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-lg">
           <AthleticGreeting
             avatar={{ initials: "AK", status: "online" }}
             italicEyebrow="God morgen,"
@@ -208,11 +208,11 @@ export default async function PortalPreviewPage() {
 
         {insights.length > 0 && (
           <section>
-            <div className="mb-3 flex items-center gap-2">
+            <div className="mb-2 flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-primary" strokeWidth={1.75} />
               <AthleticEyebrow>AI-coach signaler</AthleticEyebrow>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-2">
               {insights.map((i) => (
                 <SgInsightCard key={i.id} insight={i} />
               ))}
@@ -241,7 +241,7 @@ export default async function PortalPreviewPage() {
         {latestRound && (
           <section>
             <AthleticCard label="Siste runde">
-              <div className="flex items-baseline justify-between gap-3">
+              <div className="flex items-baseline justify-between gap-2">
                 <div>
                   <p className="font-display text-3xl font-bold leading-none">{latestRound.score}</p>
                   <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">

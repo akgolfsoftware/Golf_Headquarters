@@ -131,7 +131,7 @@ export default async function PlanFeiring({ params }: { params: Params }) {
       {/* Hovedkort — fullført */}
       <section className="overflow-hidden rounded-2xl border border-primary/40 bg-card">
         <div className="bg-primary/8 px-6 py-8 sm:px-10">
-          <div className="flex items-center gap-3 font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-primary">
+          <div className="flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-primary">
             <CheckCircle2 className="h-4 w-4" strokeWidth={1.75} />
             Fullført treningsplan
           </div>
@@ -195,7 +195,7 @@ export default async function PlanFeiring({ params }: { params: Params }) {
       {/* Personlig rekord — sammenligning med tidligere planer */}
       {personligRekord !== null && eff?.sgTotalDelta !== null && (
         <section className="rounded-lg border border-border bg-card p-6">
-          <h2 className="mb-3 font-display text-[16px] font-semibold leading-tight">
+          <h2 className="mb-2 font-display text-[16px] font-semibold leading-tight">
             Sammenlignet med tidligere planer
           </h2>
           <div className="flex flex-wrap items-center gap-6 font-mono">
@@ -232,7 +232,7 @@ export default async function PlanFeiring({ params }: { params: Params }) {
       )}
 
       {/* CTA */}
-      <section className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+      <section className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
         <Link
           href="/portal/tren"
           className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"

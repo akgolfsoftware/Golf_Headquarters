@@ -79,7 +79,7 @@ export default async function FakturaDetaljPage({
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-[color:rgb(44_125_82)]/15 px-3 py-1.5 font-mono text-xs font-bold uppercase tracking-[0.06em] text-[color:rgb(44_125_82)]">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-[color:rgb(44_125_82)]/15 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-[0.06em] text-[color:rgb(44_125_82)]">
             <Check className="h-3 w-3" strokeWidth={2.5} />
             Betalt
           </span>
@@ -126,19 +126,19 @@ export default async function FakturaDetaljPage({
           <caption className="sr-only">Fakturalinjer</caption>
           <thead className="bg-muted/60">
             <tr>
-              <th className="px-6 py-3 text-left font-mono text-[10.5px] font-bold uppercase tracking-[0.06em] text-muted-foreground">
+              <th className="px-6 py-2 text-left font-mono text-[10.5px] font-bold uppercase tracking-[0.06em] text-muted-foreground">
                 Beskrivelse
               </th>
-              <th className="px-6 py-3 text-right font-mono text-[10.5px] font-bold uppercase tracking-[0.06em] text-muted-foreground">
+              <th className="px-6 py-2 text-right font-mono text-[10.5px] font-bold uppercase tracking-[0.06em] text-muted-foreground">
                 Antall
               </th>
-              <th className="px-6 py-3 text-right font-mono text-[10.5px] font-bold uppercase tracking-[0.06em] text-muted-foreground">
+              <th className="px-6 py-2 text-right font-mono text-[10.5px] font-bold uppercase tracking-[0.06em] text-muted-foreground">
                 Stk-pris
               </th>
-              <th className="px-6 py-3 text-right font-mono text-[10.5px] font-bold uppercase tracking-[0.06em] text-muted-foreground">
+              <th className="px-6 py-2 text-right font-mono text-[10.5px] font-bold uppercase tracking-[0.06em] text-muted-foreground">
                 MVA
               </th>
-              <th className="px-6 py-3 text-right font-mono text-[10.5px] font-bold uppercase tracking-[0.06em] text-muted-foreground">
+              <th className="px-6 py-2 text-right font-mono text-[10.5px] font-bold uppercase tracking-[0.06em] text-muted-foreground">
                 Sum
               </th>
             </tr>
@@ -169,10 +169,10 @@ export default async function FakturaDetaljPage({
           </tbody>
         </table>
 
-        <div className="space-y-1 border-t border-border px-6 py-5">
+        <div className="space-y-1 border-t border-border px-6 py-6">
           <TotalRow label="Netto" value={`${NOK.format(netto / 100)} kr`} />
           <TotalRow label="MVA (25 %)" value={`${NOK.format(mva / 100)} kr`} />
-          <div className="mt-2 flex items-baseline justify-between border-t border-border pt-3">
+          <div className="mt-2 flex items-baseline justify-between border-t border-border pt-2">
             <span className="font-display text-sm font-semibold text-foreground">Total</span>
             <span className="font-mono text-2xl font-bold tabular-nums text-foreground">
               {NOK.format(beloepOre / 100)} kr
@@ -182,7 +182,7 @@ export default async function FakturaDetaljPage({
       </section>
 
       {/* Betalingsinfo */}
-      <section className="flex items-center gap-4 rounded-xl border border-[color:rgb(44_125_82)]/20 bg-[color:rgb(44_125_82)]/[0.04] border-l-4 border-l-[color:rgb(44_125_82)] p-5">
+      <section className="flex items-center gap-4 rounded-xl border border-[color:rgb(44_125_82)]/20 bg-[color:rgb(44_125_82)]/[0.04] border-l-4 border-l-[color:rgb(44_125_82)] p-6">
         <span className="grid h-9 w-9 flex-shrink-0 place-items-center rounded-md bg-[color:rgb(44_125_82)]/15 text-[color:rgb(44_125_82)]">
           <CreditCard className="h-4 w-4" strokeWidth={1.75} />
         </span>
@@ -194,7 +194,7 @@ export default async function FakturaDetaljPage({
       </section>
 
       {/* Footer */}
-      <footer className="flex flex-wrap items-center justify-between gap-4 border-t border-dashed border-border pt-5">
+      <footer className="flex flex-wrap items-center justify-between gap-4 border-t border-dashed border-border pt-6">
         <span className="font-mono text-[11px] text-muted-foreground">
           Spørsmål om fakturaen?{" "}
           <Link href="/portal/meg/help/kontakt" className="font-semibold text-primary hover:underline">
@@ -224,7 +224,7 @@ function ActionBtn({
   return (
     <button
       type="button"
-      className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-colors ${
+      className={`inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-semibold transition-colors ${
         primary
           ? "border-primary bg-primary text-primary-foreground hover:opacity-90"
           : "border-border bg-card text-foreground hover:bg-muted"
@@ -244,18 +244,18 @@ function MetaBlock({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
+    <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
       <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
         {label}
       </span>
-      <div className="mt-3 space-y-1">{children}</div>
+      <div className="mt-2 space-y-1">{children}</div>
     </div>
   );
 }
 
 function MetaMini({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg border border-border bg-muted/50 px-4 py-3">
+    <div className="rounded-lg border border-border bg-muted/50 px-4 py-2">
       <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
         {label}
       </span>

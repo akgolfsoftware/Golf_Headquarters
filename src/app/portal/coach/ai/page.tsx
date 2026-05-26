@@ -89,8 +89,8 @@ export default async function AiCoachPage({
           sub="Personlig kontekst basert på profil og siste aktivitet."
         />
       </div>
-      <header className="flex items-center justify-between gap-4 border-b border-border bg-card px-4 py-3.5 sm:px-8">
-        <div className="flex items-center gap-3.5">
+      <header className="flex items-center justify-between gap-4 border-b border-border bg-card px-4 py-4 sm:px-8">
+        <div className="flex items-center gap-4">
           <div className="relative grid h-11 w-11 place-items-center rounded-full bg-primary text-primary-foreground">
             <span className="font-bold text-[14px]">{initialer}</span>
             <span className="absolute -right-1 -bottom-0.5 grid h-[18px] w-[18px] place-items-center rounded-full border-2 border-card bg-accent text-accent-foreground">

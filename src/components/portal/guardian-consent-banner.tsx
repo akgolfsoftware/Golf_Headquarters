@@ -41,11 +41,11 @@ export function GuardianConsentBanner({ pendingInvitationEmail }: Props) {
   return (
     <div
       role="alert"
-      className="border-b border-warn/30 bg-warn/10 px-4 py-3 md:px-8"
+      className="border-b border-warn/30 bg-warn/10 px-4 py-2 md:px-8"
       style={{ background: "rgba(184, 133, 42, 0.10)", borderColor: "rgba(184, 133, 42, 0.30)" }}
     >
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="flex items-start gap-3">
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <div className="flex items-start gap-2">
           <AlertCircle
             className="h-5 w-5 shrink-0"
             strokeWidth={1.75}
@@ -74,7 +74,7 @@ export function GuardianConsentBanner({ pendingInvitationEmail }: Props) {
         <button
           type="button"
           onClick={() => setShowResend((v) => !v)}
-          className="font-mono shrink-0 rounded-full border border-warn/40 bg-card px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.06em] text-foreground hover:bg-warn/10"
+          className="font-mono shrink-0 rounded-full border border-warn/40 bg-card px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.06em] text-foreground hover:bg-warn/10"
           style={{ borderColor: "rgba(184, 133, 42, 0.40)" }}
         >
           {pendingInvitationEmail ? "Send ny invitasjon" : "Legg til forelder"}
@@ -82,8 +82,8 @@ export function GuardianConsentBanner({ pendingInvitationEmail }: Props) {
       </div>
 
       {showResend ? (
-        <form onSubmit={onResend} className="mt-3 flex flex-wrap items-center gap-2">
-          <label className="flex flex-1 items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-sm">
+        <form onSubmit={onResend} className="mt-2 flex flex-wrap items-center gap-2">
+          <label className="flex flex-1 items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-sm">
             <Mail className="h-4 w-4 text-muted-foreground" strokeWidth={1.75} />
             <input
               type="email"
@@ -98,7 +98,7 @@ export function GuardianConsentBanner({ pendingInvitationEmail }: Props) {
           <button
             type="submit"
             disabled={isPending || !newEmail.trim()}
-            className="font-display inline-flex h-10 items-center justify-center gap-1.5 rounded-full bg-primary px-5 text-sm font-bold text-primary-foreground transition disabled:opacity-50"
+            className="font-display inline-flex h-10 items-center justify-center gap-1.5 rounded-full bg-primary px-6 text-sm font-bold text-primary-foreground transition disabled:opacity-50"
           >
             {isPending ? "Sender…" : "Send"}
           </button>

@@ -94,8 +94,8 @@ export function AnalyseTrender({
 
   return (
     <div className="space-y-4">
-      <section className="rounded-lg border border-border bg-card p-5">
-        <div className="flex flex-wrap items-end justify-between gap-3">
+      <section className="rounded-lg border border-border bg-card p-6">
+        <div className="flex flex-wrap items-end justify-between gap-2">
           <div>
             <h2 className="font-display text-lg font-semibold">Trender</h2>
             <p className="mt-1 text-sm text-muted-foreground">
@@ -111,7 +111,7 @@ export function AnalyseTrender({
                 value={dim}
                 onChange={(e) => bytt(e.target.value as Dimensjon, agg)}
                 disabled={pending}
-                className="mt-1 rounded-md border border-input bg-background px-3 py-1.5 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+                className="mt-1 rounded-md border border-input bg-background px-4 py-1.5 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
               >
                 {Object.entries(DIM_LABELS).map(([k, l]) => (
                   <option key={k} value={k}>
@@ -128,7 +128,7 @@ export function AnalyseTrender({
                 value={agg}
                 onChange={(e) => bytt(dim, e.target.value as "uke" | "maaned")}
                 disabled={pending}
-                className="mt-1 rounded-md border border-input bg-background px-3 py-1.5 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+                className="mt-1 rounded-md border border-input bg-background px-4 py-1.5 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
               >
                 <option value="uke">Per uke</option>
                 <option value="maaned">Per måned</option>

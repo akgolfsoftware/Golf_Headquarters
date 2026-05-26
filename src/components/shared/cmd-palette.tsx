@@ -35,9 +35,9 @@ const ITEMS: ReadonlyArray<PaletteItem> = [
   // Sider
   { id: "p-1", kategori: "Sider", label: "Hjem", href: "/portal" },
   { id: "p-2", kategori: "Sider", label: "Trening", href: "/portal/tren" },
-  { id: "p-3", kategori: "Sider", label: "Statistikk", href: "/portal/statistikk" },
+  { id: "p-4", kategori: "Sider", label: "Statistikk", href: "/portal/statistikk" },
   { id: "p-4", kategori: "Sider", label: "Coach", href: "/portal/coach" },
-  { id: "p-5", kategori: "Sider", label: "Min profil", href: "/portal/meg" },
+  { id: "p-6", kategori: "Sider", label: "Min profil", href: "/portal/meg" },
   { id: "p-6", kategori: "Sider", label: "Varsler", href: "/portal/varsler" },
   // Spillere (dummy)
   { id: "sp-1", kategori: "Spillere", label: "Markus Roinås Pedersen", hint: "Hcp 4.2", href: "/portal/coach" },
@@ -163,7 +163,7 @@ export function CmdPalette() {
       }}
     >
       <div className="flex w-full flex-col overflow-hidden border border-border bg-card shadow-2xl sm:max-h-[80vh] sm:max-w-xl sm:flex-none sm:rounded-2xl">
-        <div className="flex items-center gap-3 border-b border-border px-4 py-3">
+        <div className="flex items-center gap-2 border-b border-border px-4 py-2">
           <Search
             width={18}
             height={18}
@@ -206,7 +206,7 @@ export function CmdPalette() {
             const KategoriIkon = KATEGORI_IKON[kategori];
             return (
               <div key={kategori} className="mb-2">
-                <div className="flex items-center gap-2 px-3 pt-2 pb-1 font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
+                <div className="flex items-center gap-2 px-4 pt-2 pb-1 font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
                   <KategoriIkon
                     width={12}
                     height={12}
@@ -228,7 +228,7 @@ export function CmdPalette() {
                           onMouseEnter={() => setActive(flatList.indexOf(it))}
                           onClick={() => select(it)}
                           className={[
-                            "flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm transition-colors",
+                            "flex w-full items-center gap-2 rounded-md px-4 py-2 text-left text-sm transition-colors",
                             isActive
                               ? "bg-secondary text-foreground"
                               : "text-foreground hover:bg-secondary/60",

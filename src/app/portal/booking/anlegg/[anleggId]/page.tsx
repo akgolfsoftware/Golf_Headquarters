@@ -202,7 +202,7 @@ export default async function AnleggDetaljPage({ params }: Props) {
           }}
         >
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_70%,rgba(209,248,67,0.18),transparent_60%)]" />
-          <div className="absolute left-5 top-5 inline-flex items-center gap-2 rounded-full bg-black/30 px-3 py-1 font-mono text-[10.5px] font-bold uppercase tracking-[0.12em] text-white/90 backdrop-blur-sm">
+          <div className="absolute left-5 top-5 inline-flex items-center gap-2 rounded-full bg-black/30 px-4 py-1 font-mono text-[10.5px] font-bold uppercase tracking-[0.12em] text-white/90 backdrop-blur-sm">
             <Flag className="h-3 w-3" strokeWidth={2} />
             {anlegg.type}
           </div>
@@ -210,7 +210,7 @@ export default async function AnleggDetaljPage({ params }: Props) {
             <h1 className="font-display text-[30px] font-medium leading-[1.05] -tracking-[0.02em] text-white sm:text-[42px]">
               {anlegg.navn}
             </h1>
-            <div className="mt-1.5 flex items-center gap-3 font-mono text-[12px] text-white/80">
+            <div className="mt-1.5 flex items-center gap-2 font-mono text-[12px] text-white/80">
               <span className="inline-flex items-center gap-1">
                 <MapPin className="h-3.5 w-3.5" strokeWidth={2} />
                 {anlegg.by}
@@ -228,7 +228,7 @@ export default async function AnleggDetaljPage({ params }: Props) {
             </div>
           </div>
         </div>
-        <div className="border-t border-border p-5 sm:p-6">
+        <div className="border-t border-border p-6 sm:p-6">
           <p className="max-w-[820px] font-sans text-[14px] leading-[1.6] text-muted-foreground sm:text-[15px]">
             {anlegg.bio}
           </p>
@@ -238,7 +238,7 @@ export default async function AnleggDetaljPage({ params }: Props) {
       {/* SPECS */}
       {anlegg.hull > 0 && (
         <section>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             <Spec
               label="Hull"
               value={String(anlegg.hull)}
@@ -266,14 +266,14 @@ export default async function AnleggDetaljPage({ params }: Props) {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_360px]">
         {/* SUB-FASILITETER */}
         <section>
-          <h2 className="mb-3 font-display text-[18px] font-semibold -tracking-[0.01em] text-foreground">
+          <h2 className="mb-2 font-display text-[18px] font-semibold -tracking-[0.01em] text-foreground">
             Fasiliteter
           </h2>
           <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
             {anlegg.fasiliteter.map((f) => (
               <div
                 key={f.navn}
-                className="relative flex items-start gap-3 rounded-xl border border-border bg-card p-4"
+                className="relative flex items-start gap-2 rounded-xl border border-border bg-card p-4"
               >
                 {f.pill && (
                   <span className="absolute right-3 top-3 rounded-full bg-accent px-2 py-0.5 font-mono text-[9.5px] font-bold uppercase tracking-[0.06em] text-accent-foreground">
@@ -300,7 +300,7 @@ export default async function AnleggDetaljPage({ params }: Props) {
 
           {/* BOOKING-TILGJENGELIGHET */}
           <div className="mt-8">
-            <div className="mb-3 flex items-baseline justify-between">
+            <div className="mb-2 flex items-baseline justify-between">
               <h2 className="font-display text-[18px] font-semibold -tracking-[0.01em] text-foreground">
                 Tilgjengelighet
               </h2>
@@ -376,20 +376,20 @@ export default async function AnleggDetaljPage({ params }: Props) {
 
         {/* HØYRE: Tournament + CTA */}
         <aside className="space-y-4 lg:sticky lg:top-6 lg:self-start">
-          <div className="rounded-2xl border border-border bg-card p-5">
-            <div className="mb-3 flex items-center gap-2">
+          <div className="rounded-2xl border border-border bg-card p-6">
+            <div className="mb-2 flex items-center gap-2">
               <Calendar className="h-4 w-4 text-foreground" strokeWidth={1.75} />
               <h3 className="font-display text-[15px] font-semibold -tracking-[0.005em] text-foreground">
                 Book på dette anlegget
               </h3>
             </div>
-            <p className="mb-3 font-sans text-[12.5px] leading-[1.5] text-muted-foreground">
+            <p className="mb-2 font-sans text-[12.5px] leading-[1.5] text-muted-foreground">
               Velg coach, type økt og tid. Du kan også booke drop-in på range
               eller TrackMan-bay.
             </p>
             <Link
               href="/portal/booking/coach/anders"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-3 font-sans text-[14px] font-semibold text-primary-foreground hover:opacity-90"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 font-sans text-[14px] font-semibold text-primary-foreground hover:opacity-90"
             >
               Book coach
               <ArrowRight className="h-4 w-4" strokeWidth={2} />
@@ -400,8 +400,8 @@ export default async function AnleggDetaljPage({ params }: Props) {
           </div>
 
           {anlegg.turneringer.length > 0 && (
-            <div className="rounded-2xl border border-border bg-card p-5">
-              <div className="mb-3 flex items-center gap-2">
+            <div className="rounded-2xl border border-border bg-card p-6">
+              <div className="mb-2 flex items-center gap-2">
                 <Trophy
                   className="h-4 w-4 text-foreground"
                   strokeWidth={1.75}
@@ -414,7 +414,7 @@ export default async function AnleggDetaljPage({ params }: Props) {
                 {anlegg.turneringer.map((t) => (
                   <li
                     key={`${t.navn}-${t.aar}`}
-                    className="flex items-start justify-between gap-3 border-b border-border pb-2.5 last:border-b-0 last:pb-0"
+                    className="flex items-start justify-between gap-2 border-b border-border pb-2.5 last:border-b-0 last:pb-0"
                   >
                     <div className="min-w-0">
                       <div className="font-display text-[13px] font-semibold -tracking-[0.005em] text-foreground">
@@ -434,7 +434,7 @@ export default async function AnleggDetaljPage({ params }: Props) {
             </div>
           )}
 
-          <div className="rounded-2xl border border-border bg-card p-5">
+          <div className="rounded-2xl border border-border bg-card p-6">
             <div className="mb-2 flex items-center gap-2">
               <Users className="h-4 w-4 text-foreground" strokeWidth={1.75} />
               <h3 className="font-display text-[15px] font-semibold -tracking-[0.005em] text-foreground">

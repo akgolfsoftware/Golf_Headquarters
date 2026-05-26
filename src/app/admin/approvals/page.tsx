@@ -180,9 +180,9 @@ export default async function Approvals() {
             return (
               <div
                 key={a.id}
-                className="flex flex-col gap-3 border-b border-border px-4 py-4 last:border-b-0 hover:bg-secondary/40 lg:grid lg:grid-cols-[110px_220px_1fr_140px_280px] lg:items-center lg:gap-4 lg:py-3.5"
+                className="flex flex-col gap-2 border-b border-border px-4 py-4 last:border-b-0 hover:bg-secondary/40 lg:grid lg:grid-cols-[110px_220px_1fr_140px_280px] lg:items-center lg:gap-4 lg:py-4"
               >
-                <div className="flex items-center justify-between gap-3 lg:contents">
+                <div className="flex items-center justify-between gap-2 lg:contents">
                   <SevPill severity={sev} />
                   <Link
                     href={`/admin/elever/${a.user.id}`}

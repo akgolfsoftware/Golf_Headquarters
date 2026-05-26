@@ -53,7 +53,7 @@ export default function DesignSystemPage() {
     <div className="min-h-screen bg-background py-12">
       <div className="mx-auto max-w-6xl px-6 space-y-16">
         {/* Header */}
-        <header className="space-y-3 border-b border-border pb-8">
+        <header className="space-y-2 border-b border-border pb-8">
           <AthleticEyebrow>INTERN · DOKUMENTASJON</AthleticEyebrow>
           <h1 className="font-display text-4xl font-bold leading-tight md:text-5xl">
             AK Golf HQ <em className="italic">Designsystem v2</em>
@@ -67,7 +67,7 @@ export default function DesignSystemPage() {
         {/* Tokens — Farger */}
         <section className="space-y-6">
           <h2 className="font-display text-2xl font-bold">Semantiske farger</h2>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
             {[
               { name: "background", className: "bg-background border-2" },
               { name: "foreground", className: "bg-foreground text-background" },
@@ -113,7 +113,7 @@ export default function DesignSystemPage() {
         {/* Buttons */}
         <section className="space-y-6">
           <h2 className="font-display text-2xl font-bold">Buttons</h2>
-          <div className="flex flex-wrap gap-3 rounded-2xl border border-border bg-card p-6">
+          <div className="flex flex-wrap gap-2 rounded-2xl border border-border bg-card p-6">
             <AthleticButton variant="lime">Lime CTA</AthleticButton>
             <AthleticButton variant="primary">Primary</AthleticButton>
             <AthleticButton variant="ghost-light">Ghost light</AthleticButton>
@@ -126,7 +126,7 @@ export default function DesignSystemPage() {
         {/* Badges */}
         <section className="space-y-6">
           <h2 className="font-display text-2xl font-bold">Badges</h2>
-          <div className="flex flex-wrap gap-3 rounded-2xl border border-border bg-card p-6">
+          <div className="flex flex-wrap gap-2 rounded-2xl border border-border bg-card p-6">
             <AthleticBadge variant="primary">Primary</AthleticBadge>
             <AthleticBadge variant="lime">Lime</AthleticBadge>
             <AthleticBadge variant="neutral">Neutral</AthleticBadge>
@@ -140,11 +140,11 @@ export default function DesignSystemPage() {
         <section className="space-y-6">
           <h2 className="font-display text-2xl font-bold">Form-elementer</h2>
           <div className="grid gap-6 rounded-2xl border border-border bg-card p-6 md:grid-cols-2">
-            <div className="space-y-3">
+            <div className="space-y-2">
               <label className="text-sm font-medium">Input</label>
               <Input placeholder="Skriv noe..." />
             </div>
-            <div className="space-y-3">
+            <div className="space-y-2">
               <label className="text-sm font-medium">Select</label>
               <Select>
                 <option>Velg ett</option>
@@ -152,11 +152,11 @@ export default function DesignSystemPage() {
                 <option>Alternativ 2</option>
               </Select>
             </div>
-            <div className="space-y-3 md:col-span-2">
+            <div className="space-y-2 md:col-span-2">
               <label className="text-sm font-medium">Textarea</label>
               <Textarea placeholder="Beskrivelse..." />
             </div>
-            <div className="space-y-3">
+            <div className="space-y-2">
               <label className="flex items-center gap-2 text-sm">
                 <Checkbox checked readOnly />
                 Checkbox (sjekket)
@@ -166,7 +166,7 @@ export default function DesignSystemPage() {
                 Checkbox (ikke sjekket)
               </label>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-2">
               <RadioGroup>
                 <label className="flex items-center gap-2 text-sm">
                   <Radio name="demo" checked readOnly />
@@ -178,7 +178,7 @@ export default function DesignSystemPage() {
                 </label>
               </RadioGroup>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-2">
               <label className="flex items-center gap-2 text-sm">
                 <Switch checked readOnly />
                 Switch (på)
@@ -194,7 +194,7 @@ export default function DesignSystemPage() {
         {/* KPI Cards */}
         <section className="space-y-6">
           <h2 className="font-display text-2xl font-bold">KPI Cards</h2>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
             <KPICard
               eyebrow="Aktive i dag"
               value="12"
@@ -297,7 +297,7 @@ export default function DesignSystemPage() {
         {/* Skeletons */}
         <section className="space-y-6">
           <h2 className="font-display text-2xl font-bold">Skeletons</h2>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
             <SkeletonCard />
             <SkeletonCard />
             <SkeletonCard />
@@ -389,7 +389,7 @@ export default function DesignSystemPage() {
         {/* Skeleton helpers vs primitives */}
         <section className="space-y-6">
           <h2 className="font-display text-2xl font-bold">Skeletons (primitives)</h2>
-          <div className="space-y-3 rounded-2xl border border-border bg-card p-6">
+          <div className="space-y-2 rounded-2xl border border-border bg-card p-6">
             <Skeleton className="h-4 w-1/3" />
             <Skeleton className="h-4 w-2/3" />
             <Skeleton className="h-4 w-1/2" />

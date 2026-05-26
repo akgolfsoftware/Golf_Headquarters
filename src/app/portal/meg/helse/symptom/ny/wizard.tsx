@@ -81,9 +81,9 @@ export function SymptomWizard() {
   return (
     <>
       {/* Stepper */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
         {[1, 2, 3].map((i, idx) => (
-          <div key={i} className="flex items-center gap-3">
+          <div key={i} className="flex items-center gap-2">
             <button
               type="button"
               onClick={() => {
@@ -109,7 +109,7 @@ export function SymptomWizard() {
             )}
           </div>
         ))}
-        <span className="ml-3 font-mono text-[11px] text-muted-foreground">
+        <span className="ml-2 font-mono text-[11px] text-muted-foreground">
           Steg <strong className="text-foreground">{step}</strong> av 3 ·{" "}
           {step === 1 && "Kroppskart"}
           {step === 2 && "Intensitet"}
@@ -134,14 +134,14 @@ export function SymptomWizard() {
           </div>
 
           <div className="grid grid-cols-1 gap-6 rounded-2xl border border-border bg-card p-6 lg:grid-cols-[1fr_280px]">
-            <div className="flex flex-col items-center gap-3">
+            <div className="flex flex-col items-center gap-2">
               <div className="inline-flex rounded-full border border-border bg-background p-1">
                 {(["front", "back"] as View[]).map((v) => (
                   <button
                     key={v}
                     type="button"
                     onClick={() => setView(v)}
-                    className={`rounded-full px-3 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] ${
+                    className={`rounded-full px-4 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] ${
                       view === v
                         ? "bg-foreground text-accent"
                         : "text-muted-foreground"
@@ -223,7 +223,7 @@ export function SymptomWizard() {
                   radius på neste steg.
                 </p>
               </div>
-              <div className="flex items-start gap-3 rounded-lg border border-primary/30 bg-primary/[0.04] p-4">
+              <div className="flex items-start gap-2 rounded-lg border border-primary/30 bg-primary/[0.04] p-4">
                 <span className="mt-1 inline-block h-2.5 w-2.5 rounded-full bg-primary" />
                 <div>
                   <div className="text-sm">
@@ -278,7 +278,7 @@ export function SymptomWizard() {
           </div>
 
           <div className="rounded-2xl border border-border bg-card p-6">
-            <div className="mb-3 flex items-baseline justify-between">
+            <div className="mb-2 flex items-baseline justify-between">
               <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                 Intensitet (VAS 0–10)
               </span>
@@ -355,7 +355,7 @@ export function SymptomWizard() {
                     key={o.id}
                     type="button"
                     onClick={() => setOccurence(o.id)}
-                    className={`flex items-center gap-3 rounded-lg border px-4 py-3 text-left text-sm ${
+                    className={`flex items-center gap-2 rounded-lg border px-4 py-2 text-left text-sm ${
                       occurence === o.id
                         ? "border-primary bg-primary/5"
                         : "border-border bg-card"
@@ -400,7 +400,7 @@ export function SymptomWizard() {
                     key={t}
                     type="button"
                     onClick={() => setMoveTriggers((p) => toggle(p, t))}
-                    className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold ${
+                    className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-xs font-semibold ${
                       moveTriggers.includes(t)
                         ? "border-foreground bg-foreground text-accent"
                         : "border-border bg-card text-muted-foreground"
@@ -422,7 +422,7 @@ export function SymptomWizard() {
                     key={t}
                     type="button"
                     onClick={() => setTimeTriggers((p) => toggle(p, t))}
-                    className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold ${
+                    className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-xs font-semibold ${
                       timeTriggers.includes(t)
                         ? "border-foreground bg-foreground text-accent"
                         : "border-border bg-card text-muted-foreground"
@@ -447,7 +447,7 @@ export function SymptomWizard() {
                 onChange={(e) => setNote(e.target.value.slice(0, 500))}
                 rows={5}
                 placeholder="Skriv kort hva du opplever — hjelper coach og fysio prioritere"
-                className="w-full rounded-md border border-input bg-card px-4 py-3 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
+                className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
               />
               <span className="absolute bottom-2 right-3 font-mono text-[10px] text-muted-foreground">
                 {note.length} / 500
@@ -458,7 +458,7 @@ export function SymptomWizard() {
           <button
             type="button"
             onClick={() => setRequestFysio((v) => !v)}
-            className={`flex w-full items-center gap-3 rounded-lg border p-4 text-left ${
+            className={`flex w-full items-center gap-2 rounded-lg border p-4 text-left ${
               requestFysio
                 ? "border-primary bg-primary/[0.04]"
                 : "border-border bg-card"
@@ -490,13 +490,13 @@ export function SymptomWizard() {
       )}
 
       {error && (
-        <div className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+        <div className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive">
           {error}
         </div>
       )}
 
       {/* Footer */}
-      <footer className="sticky bottom-0 -mx-4 mt-4 flex items-center gap-3 border-t border-border bg-card/95 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6">
+      <footer className="sticky bottom-0 -mx-4 mt-4 flex items-center gap-2 border-t border-border bg-card/95 px-4 py-2 backdrop-blur sm:-mx-6 sm:px-6">
         {step > 1 && (
           <button
             type="button"

@@ -52,8 +52,8 @@ export function CompareCalendar({
   const deltaPct = totalB > 0 ? Math.round((delta / totalB) * 100) : 0;
 
   return (
-    <div className={cn("rounded-2xl border border-border bg-card p-4 md:p-5", className)}>
-      <div className="mb-4 flex items-baseline justify-between gap-3">
+    <div className={cn("rounded-2xl border border-border bg-card p-4 md:p-6", className)}>
+      <div className="mb-4 flex items-baseline justify-between gap-2">
         <h3 className="font-display text-xl font-bold tracking-[-0.015em]">
           Sammenligning · {metricLabel}
         </h3>
@@ -111,7 +111,7 @@ function CompareColumn({
   totalLabel?: string;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-background/60 p-3">
+    <div className="rounded-xl border border-border bg-background/60 p-4">
       <div className="mb-2 flex items-baseline justify-between gap-2">
         <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
           {label}

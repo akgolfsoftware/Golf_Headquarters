@@ -99,14 +99,14 @@ export default async function MittNivaPage() {
           />
         </div>
         <div className="flex flex-col justify-center gap-6">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <Users size={20} strokeWidth={1.5} className="text-primary" aria-hidden />
             <h2 className="font-display text-2xl font-medium tracking-tight">
               Deg mot snittet
             </h2>
           </div>
-          <ul className="space-y-3 text-sm">
-            <li className="flex items-center gap-3">
+          <ul className="space-y-2 text-sm">
+            <li className="flex items-center gap-2">
               <span
                 className="inline-block h-3 w-6 rounded-sm bg-primary"
                 aria-hidden
@@ -115,7 +115,7 @@ export default async function MittNivaPage() {
                 <strong className="font-semibold">Deg</strong> — siste evaluering
               </span>
             </li>
-            <li className="flex items-center gap-3">
+            <li className="flex items-center gap-2">
               <span
                 className="inline-block h-3 w-6 rounded-sm bg-muted-foreground"
                 aria-hidden

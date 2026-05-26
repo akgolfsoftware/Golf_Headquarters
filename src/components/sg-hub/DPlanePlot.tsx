@@ -62,7 +62,7 @@ export function DPlanePlot({ result, advanced = false }: Props) {
               if (!active || !payload?.[0]) return null;
               const d = payload[0].payload as DPlanePoint;
               return (
-                <div className="rounded-lg border border-border bg-card px-3 py-2 text-xs shadow-md">
+                <div className="rounded-lg border border-border bg-card px-4 py-2 text-xs shadow-md">
                   <p className="font-semibold">{DPLANE_LABELS[d.classification]}</p>
                   <p className="text-muted-foreground">Face: {d.faceAngle.toFixed(1)}°</p>
                   <p className="text-muted-foreground">Path: {d.clubPath.toFixed(1)}°</p>
@@ -89,7 +89,7 @@ export function DPlanePlot({ result, advanced = false }: Props) {
         </ScatterChart>
       </ResponsiveContainer>
       {advanced && (
-        <div className="mt-3 flex flex-wrap gap-3">
+        <div className="mt-2 flex flex-wrap gap-2">
           {CLASSIFICATIONS.map((cls) => {
             const count = byClass.get(cls)?.length ?? 0;
             if (count === 0) return null;

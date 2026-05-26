@@ -86,7 +86,7 @@ export function DriveDistanceExplorer({
               Hvor langt slår{" "}
               <em className="font-normal italic text-primary">du</em>?
             </h2>
-            <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
+            <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground">
               Dra slideren til din gjennomsnittlige drive distance, og se hvor
               du står sammenlignet med PGA Tour.
             </p>
@@ -123,8 +123,8 @@ export function DriveDistanceExplorer({
 
             {/* Resultat */}
             <div className="mt-10 grid gap-4 sm:grid-cols-2">
-              <div className="rounded-lg border border-primary/30 bg-primary/5 p-5">
-                <div className="flex items-start gap-3">
+              <div className="rounded-lg border border-primary/30 bg-primary/5 p-6">
+                <div className="flex items-start gap-2">
                   <div className="grid h-9 w-9 place-items-center rounded-full bg-primary/20 text-primary">
                     <ArrowDown className="h-4 w-4" />
                   </div>
@@ -142,8 +142,8 @@ export function DriveDistanceExplorer({
                 </div>
               </div>
 
-              <div className="rounded-lg border border-border bg-secondary/30 p-5">
-                <div className="flex items-start gap-3">
+              <div className="rounded-lg border border-border bg-secondary/30 p-6">
+                <div className="flex items-start gap-2">
                   <div className="grid h-9 w-9 place-items-center rounded-full bg-accent/40 text-accent-foreground">
                     <Sparkles className="h-4 w-4" />
                   </div>
@@ -176,7 +176,7 @@ export function DriveDistanceExplorer({
             <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
               Fordeling — {datapunkter.length} PGA-spillere
             </p>
-            <div className="mt-3 flex h-24 items-end gap-px">
+            <div className="mt-2 flex h-24 items-end gap-px">
               {histogram.buckets.map((b) => {
                 const inBucket = dittTall >= b.start && dittTall < b.start + BUCKET_SIZE;
                 const heightPct = (b.count / histogram.maxCount) * 100;
@@ -223,7 +223,7 @@ export function DriveDistanceExplorer({
             {sortert.slice(0, TOPP_N).map((p, idx) => (
               <li
                 key={p.navn}
-                className="grid grid-cols-[40px_1fr_auto] items-center gap-3 border-b border-border/60 px-4 py-3 last:border-0 sm:px-6"
+                className="grid grid-cols-[40px_1fr_auto] items-center gap-2 border-b border-border/60 px-4 py-2 last:border-0 sm:px-6"
               >
                 <span className="font-mono text-sm tabular-nums text-muted-foreground">
                   #{idx + 1}

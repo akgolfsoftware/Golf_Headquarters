@@ -55,13 +55,13 @@ export function FabButton() {
     >
       {/* Sub-actions (slide opp når open) */}
       {open && (
-        <ul className="mb-3 flex flex-col items-end gap-2 animate-in fade-in slide-in-from-bottom-2 duration-200">
+        <ul className="mb-2 flex flex-col items-end gap-2 animate-in fade-in slide-in-from-bottom-2 duration-200">
           {DEFAULT_ACTIONS.map((action) => (
             <li key={action.href}>
               <Link
                 href={action.href}
                 onClick={() => setOpen(false)}
-                className="flex h-11 items-center gap-2 rounded-full bg-card pl-4 pr-3 shadow-md border border-border text-sm font-medium text-foreground hover:border-primary transition-colors"
+                className="flex h-11 items-center gap-2 rounded-full bg-card pl-4 pr-4 shadow-md border border-border text-sm font-medium text-foreground hover:border-primary transition-colors"
               >
                 <span>{action.label}</span>
                 <span className="grid h-8 w-8 place-items-center rounded-full bg-primary/10 text-primary">

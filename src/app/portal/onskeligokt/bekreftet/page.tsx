@@ -58,7 +58,7 @@ export default async function OnskeligOktBekreftetPage() {
   await requirePortalUser();
 
   return (
-    <div className="mx-auto flex max-w-[720px] flex-col gap-7 py-16 pb-24">
+    <div className="mx-auto flex max-w-[720px] flex-col gap-8 py-16 pb-24">
       {/* Hero — ingen card-wrapper, sentrert på siden */}
       <section className="flex flex-col items-center gap-4 text-center">
         {/* Accent-ikon med glow */}
@@ -98,7 +98,7 @@ export default async function OnskeligOktBekreftetPage() {
 
       {/* Sammendrag */}
       <section
-        className="flex flex-col gap-4 rounded-[18px] border border-border bg-card px-7 py-6"
+        className="flex flex-col gap-4 rounded-[18px] border border-border bg-card px-8 py-6"
         aria-labelledby="sum-h"
       >
         <h2
@@ -141,7 +141,7 @@ export default async function OnskeligOktBekreftetPage() {
             label="Notat"
             value={
               <span
-                className="block border-l-2 border-primary pl-3.5 py-0.5 font-serif italic text-[15px] leading-[1.45] text-foreground"
+                className="block border-l-2 border-primary pl-4 py-0.5 font-serif italic text-[15px] leading-[1.45] text-foreground"
               >
                 Vil jobbe med iron contact før Olyo 5. juni — særlig CS70 → CS80-overgangen som
                 har vært ujevn i mai.
@@ -154,7 +154,7 @@ export default async function OnskeligOktBekreftetPage() {
 
       {/* Timeline */}
       <section
-        className="rounded-[18px] border border-border px-7 py-6"
+        className="rounded-[18px] border border-border px-8 py-6"
         style={{ background: "var(--background)" }}
       >
         <div className="mb-4 font-mono text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
@@ -165,7 +165,7 @@ export default async function OnskeligOktBekreftetPage() {
             const Icon = s.icon;
             const isLast = i === steps.length - 1;
             return (
-              <li key={i} className="relative grid grid-cols-[36px_1fr] gap-3.5 py-3.5">
+              <li key={i} className="relative grid grid-cols-[36px_1fr] gap-4 py-4">
                 {!isLast && (
                   <span
                     className="absolute bottom-[-14px] left-[17px] top-[42px] w-[1.5px]"
@@ -223,21 +223,21 @@ export default async function OnskeligOktBekreftetPage() {
       <div className="flex flex-wrap justify-center gap-2.5">
         <Link
           href="/portal"
-          className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-[13.5px] font-semibold text-primary-foreground hover:opacity-90"
+          className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2 text-[13.5px] font-semibold text-primary-foreground hover:opacity-90"
         >
           <Home size={14} strokeWidth={1.75} />
           Tilbake til hjem
         </Link>
         <Link
           href="/portal/coach"
-          className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-3 text-[13.5px] font-semibold text-foreground hover:bg-muted/40"
+          className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-2 text-[13.5px] font-semibold text-foreground hover:bg-muted/40"
         >
           <MessageSquare size={14} strokeWidth={1.75} />
           Send melding til Anders
         </Link>
         <Link
           href="/portal/coach"
-          className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-3 text-[13.5px] font-semibold text-foreground hover:bg-muted/40"
+          className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-2 text-[13.5px] font-semibold text-foreground hover:bg-muted/40"
         >
           <Users size={14} strokeWidth={1.75} />
           Se andre coacher
@@ -270,7 +270,7 @@ function SumRow({
 }) {
   return (
     <div
-      className={`grid items-baseline gap-4 pb-3.5 ${last ? "" : "mb-0 border-b border-border/50"}`}
+      className={`grid items-baseline gap-4 pb-4 ${last ? "" : "mb-0 border-b border-border/50"}`}
       style={{ gridTemplateColumns: "110px 1fr" }}
     >
       <dt className="font-mono text-[10.5px] font-bold uppercase tracking-[0.10em] text-muted-foreground">

@@ -88,7 +88,7 @@ export default async function BaneDetailPage({
             <circle cx="235" cy="48" r="5" fill="#5E8C3F" />
             <circle cx="220" cy="123" r="5" fill="#5E8C3F" />
           </svg>
-          <div className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-card/90 px-3 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] backdrop-blur">
+          <div className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-card/90 px-4 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] backdrop-blur">
             <MapPin size={11} strokeWidth={1.75} />
             Fredrikstad · 1,1 km
           </div>
@@ -106,8 +106,8 @@ export default async function BaneDetailPage({
       <BaneDetailTabs holes={HOLES} />
 
       {/* Footer actions */}
-      <footer className="fixed bottom-0 left-0 right-0 z-10 border-t border-border bg-card px-6 py-3">
-        <div className="mx-auto flex max-w-5xl items-center gap-3">
+      <footer className="fixed bottom-0 left-0 right-0 z-10 border-t border-border bg-card px-6 py-2">
+        <div className="mx-auto flex max-w-5xl items-center gap-2">
           <span className="font-mono text-[11px] uppercase tracking-[0.06em] text-muted-foreground">
             Sist runde: <strong className="text-foreground">18. apr 2026</strong>{" "}
             · 72 slag · +1
@@ -115,25 +115,25 @@ export default async function BaneDetailPage({
           <div className="ml-auto flex flex-wrap gap-2">
             <button
               type="button"
-              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-2 text-xs font-semibold text-foreground hover:bg-muted/40"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-xs font-semibold text-foreground hover:bg-muted/40"
             >
               <MapPin size={12} strokeWidth={1.75} /> Se på kart
             </button>
             <button
               type="button"
-              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-2 text-xs font-semibold text-foreground hover:bg-muted/40"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-xs font-semibold text-foreground hover:bg-muted/40"
             >
               <User size={12} strokeWidth={1.75} /> Book caddy/coach
             </button>
             <button
               type="button"
-              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-2 text-xs font-semibold text-foreground hover:bg-muted/40"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-xs font-semibold text-foreground hover:bg-muted/40"
             >
               <Share2 size={12} strokeWidth={1.75} /> Del
             </button>
             <Link
               href="/portal/mal/runder/ny"
-              className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
             >
               <Plus size={14} strokeWidth={2} /> Logg runde her
             </Link>

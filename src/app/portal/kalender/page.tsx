@@ -62,7 +62,7 @@ export default async function PortalKalenderPage({
   return (
     <ViewModeProvider initialMode="standard">
       <div className="flex h-[calc(100vh-9rem)] flex-col gap-4 pb-20 md:h-[calc(100vh-8rem)] md:pb-0">
-        <div className="flex flex-col items-start justify-between gap-3 px-1 md:flex-row md:items-end md:gap-4">
+        <div className="flex flex-col items-start justify-between gap-2 px-1 md:flex-row md:items-end md:gap-4">
           <PageHeader
             eyebrow="PlayerHQ · kalender"
             titleLead="Din"

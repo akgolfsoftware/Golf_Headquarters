@@ -41,7 +41,7 @@ export function AnalyseFys({
 
   return (
     <div className="space-y-4">
-      <section className="rounded-lg border border-border bg-card p-5">
+      <section className="rounded-lg border border-border bg-card p-6">
         <h2 className="font-display text-lg font-semibold">
           Fysisk progresjon
         </h2>
@@ -97,7 +97,7 @@ export function AnalyseFys({
                   )}
                 </div>
               </div>
-              <div className="mt-3 h-28 w-full">
+              <div className="mt-2 h-28 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={punkter}>
                     <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
@@ -113,7 +113,7 @@ export function AnalyseFys({
         })}
       </div>
 
-      <section className="rounded-lg border border-border bg-card p-5">
+      <section className="rounded-lg border border-border bg-card p-6">
         <h2 className="font-display text-lg font-semibold">Muskelgruppe-balanse</h2>
         <p className="mt-1 text-sm text-muted-foreground">Minutter trent per muskelgruppe i perioden.</p>
         <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">

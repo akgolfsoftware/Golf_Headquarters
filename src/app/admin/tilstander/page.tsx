@@ -242,7 +242,7 @@ function SectionHeader({
 
 function StateFrame({ kort }: { kort: Kort }) {
   return (
-    <div className="flex flex-col gap-3.5 rounded-lg border border-border bg-card p-4 shadow-sm">
+    <div className="flex flex-col gap-4 rounded-lg border border-border bg-card p-4 shadow-sm">
       <div className="flex items-center justify-between">
         <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.04em] text-muted-foreground">
           {kort.name}
@@ -326,7 +326,7 @@ function SessionCard({ kort }: { kort: Kort }) {
   const erAvlyst = kort.state === "cancelled";
 
   return (
-    <div className={`relative flex flex-col gap-2.5 rounded-md border p-3.5 ${v.wrapper}`}>
+    <div className={`relative flex flex-col gap-2.5 rounded-md border p-4 ${v.wrapper}`}>
       {kort.state === "conflict" && (
         <span className="absolute -left-px top-0 bottom-0 w-1 rounded-l-md bg-destructive" />
       )}

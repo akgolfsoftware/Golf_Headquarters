@@ -46,13 +46,13 @@ export async function InnsiktInline({ userId }: { userId: string }) {
         </Link>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2">
         {innsikter.map((i) => (
           <div
             key={i.id}
             className="rounded-2xl border border-border bg-card p-4"
           >
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-2">
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-accent/20 text-accent-foreground">
                 <Lightbulb className="h-4 w-4" strokeWidth={1.75} />
               </span>
@@ -86,7 +86,7 @@ function TomTilstand() {
   return (
     <div className="rounded-2xl border border-dashed border-border bg-card p-8 text-center">
       <Lightbulb className="mx-auto h-8 w-8 text-muted-foreground" strokeWidth={1.5} />
-      <h3 className="mt-3 font-display text-lg font-semibold tracking-tight">
+      <h3 className="mt-2 font-display text-lg font-semibold tracking-tight">
         Ingen AI-innsikter ennå
       </h3>
       <p className="mt-2 text-sm text-muted-foreground">

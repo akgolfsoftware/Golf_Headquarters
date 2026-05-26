@@ -140,7 +140,7 @@ export default function LokasjonerDemo() {
       <FilterBar />
       <div className="grid gap-4 lg:grid-cols-[1.2fr_1fr]">
         <Map />
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2">
           {LOCATIONS.map((l) => (
             <LocationCard key={l.id} l={l} />
           ))}
@@ -208,7 +208,7 @@ function Kpi({
   deltaGood?: boolean;
 }) {
   return (
-    <div className="rounded-lg border border-border bg-card p-5">
+    <div className="rounded-lg border border-border bg-card p-6">
       <div className="mb-2 font-mono text-[11px] uppercase tracking-[0.06em] text-muted-foreground">
         {label}
       </div>
@@ -226,8 +226,8 @@ function Kpi({
 
 function FilterBar() {
   return (
-    <div className="mb-4 flex flex-wrap items-center gap-2.5 rounded-lg border border-border bg-card px-3.5 py-3">
-      <div className="flex h-10 min-w-[280px] flex-1 items-center gap-2.5 rounded-md border border-border bg-background px-3.5 text-muted-foreground">
+    <div className="mb-4 flex flex-wrap items-center gap-2.5 rounded-lg border border-border bg-card px-4 py-2">
+      <div className="flex h-10 min-w-[280px] flex-1 items-center gap-2.5 rounded-md border border-border bg-background px-4 text-muted-foreground">
         <Search size={16} strokeWidth={1.5} />
         <input
           type="text"
@@ -250,7 +250,7 @@ function FilterBar() {
 
 function Chip({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1.5 text-[13px] text-muted-foreground hover:bg-secondary">
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-4 py-1.5 text-[13px] text-muted-foreground hover:bg-secondary">
       {children}
     </span>
   );
@@ -335,7 +335,7 @@ function Map() {
         <div className="mt-1 font-mono text-[11px] text-muted-foreground">
           Storgata 12 · 06–23 alle dager
         </div>
-        <div className="mt-3 grid grid-cols-3 gap-2 border-t border-border pt-3">
+        <div className="mt-2 grid grid-cols-3 gap-2 border-t border-border pt-2">
           <PopStat v="4" l="Fasilit." />
           <PopStat v="82 %" l="Belegg" />
           <PopStat v="112" l="Bookin. mnd" />
@@ -374,7 +374,7 @@ function LocationCard({ l }: { l: Location }) {
     <div
       className={`rounded-lg border bg-card p-4 ${l.active ? "border-primary/40 shadow-sm" : "border-border"}`}
     >
-      <div className="mb-3 flex items-start gap-3">
+      <div className="mb-2 flex items-start gap-2">
         <div className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-primary text-[14px] font-semibold text-primary-foreground">
           {l.badge}
         </div>
@@ -392,7 +392,7 @@ function LocationCard({ l }: { l: Location }) {
           {t.label}
         </span>
       </div>
-      <div className="mb-3 flex flex-wrap gap-1.5">
+      <div className="mb-2 flex flex-wrap gap-1.5">
         {l.facilities.map((f, i) => {
           const fs = FAC_STYLE[f.kind];
           return (
@@ -406,7 +406,7 @@ function LocationCard({ l }: { l: Location }) {
           );
         })}
       </div>
-      <div className="grid grid-cols-3 gap-3 border-t border-border pt-3">
+      <div className="grid grid-cols-3 gap-2 border-t border-border pt-2">
         <Stat l={l.openLabel} v={l.openValue} small />
         <Stat l="Belegg uke" v={`${l.occupancyPct} %`} />
         <Stat l="Bookinger mnd" v={String(l.bookingsMonth)} />

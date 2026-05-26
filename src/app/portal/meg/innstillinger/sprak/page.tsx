@@ -26,7 +26,7 @@ export default async function SprakPage() {
       </Link>
 
       <header className="space-y-2">
-        <div className="inline-flex items-center gap-2 rounded-full bg-secondary px-3 py-1 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+        <div className="inline-flex items-center gap-2 rounded-full bg-secondary px-4 py-1 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           <Globe size={11} strokeWidth={1.5} />
           PlayerHQ · Meg · Innstillinger · Språk
         </div>

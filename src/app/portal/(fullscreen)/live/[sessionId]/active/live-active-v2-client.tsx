@@ -153,7 +153,7 @@ export function LiveActiveV2Client({
     <div className="min-h-screen bg-background pb-[120px]">
       {/* TOPBAR — sticky */}
       <header className="sticky top-0 z-20 border-b border-border bg-background/95 backdrop-blur">
-        <div className="mx-auto flex max-w-[920px] items-center justify-between gap-3 px-4 py-3">
+        <div className="mx-auto flex max-w-[920px] items-center justify-between gap-2 px-4 py-2">
           <Link
             href={`/portal/live/${sessionId}/brief`}
             className="inline-flex h-11 min-w-11 items-center gap-1.5 font-mono text-[11px] text-muted-foreground hover:text-foreground"
@@ -164,7 +164,7 @@ export function LiveActiveV2Client({
           <div className="flex items-center gap-2">
             <button
               onClick={() => setRunning((r) => !r)}
-              className="inline-flex h-11 min-w-11 items-center gap-1.5 rounded-full border border-border bg-card px-3 font-mono text-[12px] font-semibold tabular-nums text-foreground hover:border-foreground/30"
+              className="inline-flex h-11 min-w-11 items-center gap-1.5 rounded-full border border-border bg-card px-4 font-mono text-[12px] font-semibold tabular-nums text-foreground hover:border-foreground/30"
             >
               {running ? (
                 <Pause className="h-3.5 w-3.5" strokeWidth={2} />
@@ -175,7 +175,7 @@ export function LiveActiveV2Client({
             </button>
             <Link
               href={`/portal/live/${sessionId}/summary`}
-              className="inline-flex h-11 min-w-11 items-center gap-1.5 rounded-full bg-primary px-3 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-primary-foreground"
+              className="inline-flex h-11 min-w-11 items-center gap-1.5 rounded-full bg-primary px-4 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-primary-foreground"
             >
               Fullfør
               <ArrowRight className="h-3 w-3" strokeWidth={2.5} />
@@ -199,7 +199,7 @@ export function LiveActiveV2Client({
         </div>
       </header>
 
-      <main className="mx-auto max-w-[920px] space-y-5 px-4 py-5">
+      <main className="mx-auto max-w-[920px] space-y-6 px-4 py-6">
         {/* DRILL-PROGRESJON STRIP */}
         <section>
           <div className="grid grid-cols-5 gap-1.5 sm:gap-2">
@@ -235,8 +235,8 @@ export function LiveActiveV2Client({
         </section>
 
         {/* AKTIV DRILL */}
-        <section className="rounded-2xl border-2 border-primary bg-card p-5 sm:p-6">
-          <div className="flex items-start justify-between gap-3">
+        <section className="rounded-2xl border-2 border-primary bg-card p-6 sm:p-6">
+          <div className="flex items-start justify-between gap-2">
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <span
@@ -260,7 +260,7 @@ export function LiveActiveV2Client({
           </div>
 
           {/* TRE REP-TELLERE */}
-          <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-3">
+          <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-2">
             {(["dry", "lav", "full"] as RepKind[]).map((kind) => {
               const label =
                 kind === "dry"
@@ -279,7 +279,7 @@ export function LiveActiveV2Client({
                     vibrate(10);
                     setActiveKind(kind);
                   }}
-                  className={`flex flex-col items-start gap-1 rounded-xl border p-3 text-left transition-all ${
+                  className={`flex flex-col items-start gap-1 rounded-xl border p-4 text-left transition-all ${
                     isActive
                       ? "border-primary bg-[rgba(0,88,64,0.05)] shadow-md"
                       : "border-border bg-secondary/20 opacity-80 hover:opacity-100"
@@ -308,7 +308,7 @@ export function LiveActiveV2Client({
           </div>
 
           {/* STORE TOUCHTARGETS +5 / +10 / +25 */}
-          <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-3">
+          <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-2">
             {[5, 10, 25].map((n) => (
               <button
                 key={n}
@@ -346,7 +346,7 @@ export function LiveActiveV2Client({
         className="fixed bottom-0 left-0 right-0 z-20 border-t border-border bg-card/95 backdrop-blur"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
-        <div className="mx-auto flex max-w-[920px] items-center justify-around gap-2 px-4 py-3">
+        <div className="mx-auto flex max-w-[920px] items-center justify-around gap-2 px-4 py-2">
           <PillBtn icon={<FileText className="h-4 w-4" strokeWidth={1.75} />} label="Notat" />
           <PillBtn icon={<Video className="h-4 w-4" strokeWidth={1.75} />} label="Video" />
           <PillBtn
@@ -361,7 +361,7 @@ export function LiveActiveV2Client({
 
 function PillBtn({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
-    <button className="inline-flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-full border border-border bg-background px-3 py-2.5 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-foreground hover:border-foreground/30 active:scale-[0.98]">
+    <button className="inline-flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-full border border-border bg-background px-4 py-2.5 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-foreground hover:border-foreground/30 active:scale-[0.98]">
       {icon}
       {label}
     </button>

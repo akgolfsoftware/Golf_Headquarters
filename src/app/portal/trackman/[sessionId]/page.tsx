@@ -243,7 +243,7 @@ export default async function TrackManSessionPage({
         <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-primary">
           SG-estimat (proxy via smash-faktor)
         </span>
-        <div className="mt-3 flex items-baseline gap-3">
+        <div className="mt-2 flex items-baseline gap-2">
           <span className="font-display text-3xl font-semibold tabular-nums text-foreground">
             {sgEstimate >= 0 ? "+" : ""}
             {sgEstimate.toFixed(2).replace(".", ",")}
@@ -252,7 +252,7 @@ export default async function TrackManSessionPage({
             SG vs. tour-snitt
           </span>
         </div>
-        <p className="mt-3 text-sm text-muted-foreground">
+        <p className="mt-2 text-sm text-muted-foreground">
           Estimat basert på smash-faktor i denne økten. Full SG-beregning krever
           baseline mot tour-snitt per disiplin.
         </p>
@@ -277,16 +277,16 @@ export default async function TrackManSessionPage({
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border bg-secondary/50 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                <th className="px-4 py-3 text-left">#</th>
-                <th className="px-4 py-3 text-left">Kølle</th>
-                <th className="px-4 py-3 text-right">CS</th>
-                <th className="px-4 py-3 text-right">BS</th>
-                <th className="px-4 py-3 text-right">Smash</th>
-                <th className="px-4 py-3 text-right">Carry</th>
-                <th className="px-4 py-3 text-right">Total</th>
-                <th className="px-4 py-3 text-right">Dev</th>
-                <th className="px-4 py-3 text-right">Spin</th>
-                <th className="px-4 py-3 text-right">Launch</th>
+                <th className="px-4 py-2 text-left">#</th>
+                <th className="px-4 py-2 text-left">Kølle</th>
+                <th className="px-4 py-2 text-right">CS</th>
+                <th className="px-4 py-2 text-right">BS</th>
+                <th className="px-4 py-2 text-right">Smash</th>
+                <th className="px-4 py-2 text-right">Carry</th>
+                <th className="px-4 py-2 text-right">Total</th>
+                <th className="px-4 py-2 text-right">Dev</th>
+                <th className="px-4 py-2 text-right">Spin</th>
+                <th className="px-4 py-2 text-right">Launch</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">

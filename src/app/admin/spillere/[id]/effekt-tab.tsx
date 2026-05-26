@@ -136,7 +136,7 @@ function EffektKort({ rad }: { rad: EffektRad }) {
 
   return (
     <article className="overflow-hidden rounded-lg border border-border bg-card">
-      <header className="flex flex-wrap items-start justify-between gap-3 border-b border-border px-5 py-4">
+      <header className="flex flex-wrap items-start justify-between gap-2 border-b border-border px-6 py-4">
         <div className="min-w-0">
           <Link
             href={`/admin/plans/${rad.planId}`}
@@ -168,7 +168,7 @@ function EffektKort({ rad }: { rad: EffektRad }) {
         </div>
       </header>
 
-      <div className="grid grid-cols-2 gap-2 px-5 py-3 sm:grid-cols-5">
+      <div className="grid grid-cols-2 gap-2 px-6 py-2 sm:grid-cols-5">
         <SgCell label="OTT" v={rad.sgOttDelta} />
         <SgCell label="APP" v={rad.sgAppDelta} />
         <SgCell label="ARG" v={rad.sgArgDelta} />
@@ -182,9 +182,9 @@ function EffektKort({ rad }: { rad: EffektRad }) {
 
       <form
         onSubmit={lagre}
-        className="space-y-3 border-t border-border bg-background/40 px-5 py-4"
+        className="space-y-2 border-t border-border bg-background/40 px-6 py-4"
       >
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           <RatingFelt
             label="Spillerens egen rating (1–5)"
             value={self}
@@ -206,7 +206,7 @@ function EffektKort({ rad }: { rad: EffektRad }) {
             rows={3}
             maxLength={2000}
             placeholder="Putting forbedret seg merkbart. Reduser nærspill og øk APP neste plan."
-            className="w-full resize-y rounded-md border border-input bg-card px-3 py-2 text-[13px] focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+            className="w-full resize-y rounded-md border border-input bg-card px-4 py-2 text-[13px] focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
           />
         </div>
 
@@ -247,7 +247,7 @@ function SgCell({
 }) {
   const tone = override ? "text-foreground" : deltaKlasse(v);
   return (
-    <div className="rounded-md bg-card px-3 py-2">
+    <div className="rounded-md bg-card px-4 py-2">
       <div className="font-mono text-[9px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
         {label}
       </div>
@@ -280,7 +280,7 @@ function RatingFelt({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="4,0"
-        className="w-full rounded-md border border-input bg-card px-3 py-2 font-mono text-[13px] tabular-nums focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+        className="w-full rounded-md border border-input bg-card px-4 py-2 font-mono text-[13px] tabular-nums focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
       />
     </div>
   );

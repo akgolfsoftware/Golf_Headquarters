@@ -83,7 +83,7 @@ export function BaneDetailTabs({ holes }: { holes: Hole[] }) {
               role="tab"
               aria-selected={active}
               onClick={() => setTab(t.id)}
-              className={`inline-flex items-center gap-2 px-4 py-3 text-sm font-semibold transition-colors ${
+              className={`inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold transition-colors ${
                 active
                   ? "border-b-2 border-primary text-primary"
                   : "border-b-2 border-transparent text-muted-foreground hover:text-foreground"
@@ -110,7 +110,7 @@ function HolesPane({ holes }: { holes: Hole[] }) {
 
   return (
     <section className="space-y-4">
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
         <HoleSummary
           tone="hard"
           label="Vanskeligst"
@@ -138,7 +138,7 @@ function HolesPane({ holes }: { holes: Hole[] }) {
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-border bg-card">
-        <div className="grid grid-cols-[60px_50px_80px_1fr_70px_70px_70px] gap-3 border-b border-border bg-muted/40 px-4 py-3 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+        <div className="grid grid-cols-[60px_50px_80px_1fr_70px_70px_70px] gap-2 border-b border-border bg-muted/40 px-4 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
           <span>Hull</span>
           <span className="text-center">Par</span>
           <span>Lengde</span>
@@ -153,7 +153,7 @@ function HolesPane({ holes }: { holes: Hole[] }) {
           return (
             <div
               key={h.n}
-              className="grid grid-cols-[60px_50px_80px_1fr_70px_70px_70px] gap-3 border-b border-border/60 px-4 py-3 last:border-0 items-center"
+              className="grid grid-cols-[60px_50px_80px_1fr_70px_70px_70px] gap-2 border-b border-border/60 px-4 py-2 last:border-0 items-center"
             >
               <span className="font-mono text-base font-semibold tabular-nums">
                 {h.n}
@@ -222,7 +222,7 @@ function HoleSummary({
 }) {
   return (
     <div
-      className={`rounded-2xl border p-5 ${
+      className={`rounded-2xl border p-6 ${
         tone === "hard"
           ? "border-destructive/30 bg-destructive/[0.04]"
           : "border-primary/30 bg-primary/[0.04]"
@@ -246,7 +246,7 @@ function HoleSummary({
 function TimelinePane() {
   return (
     <section className="rounded-2xl border border-border bg-card p-6">
-      <div className="mb-3 flex items-baseline justify-between">
+      <div className="mb-2 flex items-baseline justify-between">
         <h3 className="font-display text-base font-semibold">
           Siste 28 runder · GFGK Old Course
         </h3>
@@ -254,7 +254,7 @@ function TimelinePane() {
           Mai 2024 → mai 2026
         </span>
       </div>
-      <div className="mb-3 flex flex-wrap gap-4 font-mono text-[10px] text-muted-foreground">
+      <div className="mb-2 flex flex-wrap gap-4 font-mono text-[10px] text-muted-foreground">
         <LegendItem color="bg-primary">Under par</LegendItem>
         <LegendItem color="bg-muted-foreground">Par</LegendItem>
         <LegendItem color="bg-destructive">Over par</LegendItem>
@@ -314,7 +314,7 @@ function StrategyPane() {
       {STRAT_NOTES.map((n, i) => (
         <div
           key={i}
-          className={`rounded-2xl border p-5 ${
+          className={`rounded-2xl border p-6 ${
             n.self
               ? "border-accent/40 bg-accent/[0.06]"
               : "border-border bg-card"
@@ -329,7 +329,7 @@ function StrategyPane() {
           >
             {n.tag}
           </span>
-          <div className="mt-3 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
+          <div className="mt-2 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
             <span className="font-semibold text-foreground">{n.who}</span>
             <span>{n.when}</span>
           </div>
@@ -362,7 +362,7 @@ function PhotosPane() {
             style={{ background: p.bg }}
             aria-hidden="true"
           />
-          <figcaption className="p-3">
+          <figcaption className="p-4">
             <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
               {p.h}
             </div>

@@ -148,7 +148,7 @@ function ToastPill({
     <div
       role="status"
       className={[
-        "pointer-events-auto flex w-full max-w-md items-center gap-3 rounded-full border px-4 py-2.5 shadow-lg transition-all duration-200",
+        "pointer-events-auto flex w-full max-w-md items-center gap-2 rounded-full border px-4 py-2.5 shadow-lg transition-all duration-200",
         palette,
         mounted ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0",
       ].join(" ")}

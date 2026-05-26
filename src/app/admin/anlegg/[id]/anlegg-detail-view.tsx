@@ -97,7 +97,7 @@ export function AnleggDetailView({ data }: { data: AnleggDetailData }) {
       </nav>
 
       {/* Status-strip */}
-      <div className="flex flex-wrap items-center gap-4 sm:gap-6 rounded-lg border border-border bg-card px-3 py-3 sm:px-4 sm:py-4">
+      <div className="flex flex-wrap items-center gap-4 sm:gap-6 rounded-lg border border-border bg-card px-4 py-2 sm:px-4 sm:py-4">
         <Stat
           label="Fasiliteter"
           value={String(data.stats.total)}
@@ -373,7 +373,7 @@ function KalenderView({
   });
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       <div className="flex items-center justify-between">
         <h2 className="font-display text-lg font-semibold capitalize">
           {dagLabel}
@@ -386,7 +386,7 @@ function KalenderView({
       <div className="overflow-x-auto rounded-2xl border border-border bg-card">
         {/* Header: time-akse */}
         <div className="flex border-b border-border bg-muted/40">
-          <div className="w-[200px] shrink-0 border-r border-border px-4 py-3 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
+          <div className="w-[200px] shrink-0 border-r border-border px-4 py-2 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
             Fasilitet
           </div>
           <div
@@ -416,7 +416,7 @@ function KalenderView({
             <button
               type="button"
               onClick={() => onSelect(f.id)}
-              className="flex w-[200px] shrink-0 flex-col items-start gap-1 border-r border-border px-4 py-3 text-left transition-colors hover:bg-muted/30"
+              className="flex w-[200px] shrink-0 flex-col items-start gap-1 border-r border-border px-4 py-2 text-left transition-colors hover:bg-muted/30"
             >
               <span className="flex items-center gap-2 font-display text-sm font-semibold">
                 <span className="font-mono text-[10px] text-muted-foreground">
@@ -521,7 +521,7 @@ function FasilitetsDrawer({
         <p className="text-sm text-muted-foreground">{facility.description}</p>
       )}
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-2">
         <DrawerStat label="Kapasitet" value={`${facility.capacity} plasser`} />
         <DrawerStat
           label="Bookinger i dag"
@@ -544,7 +544,7 @@ function FasilitetsDrawer({
           return (
             <div
               key={b.id}
-              className="flex items-center justify-between rounded-md border border-border bg-background p-3"
+              className="flex items-center justify-between rounded-md border border-border bg-background p-4"
             >
               <div>
                 <div className="text-sm font-medium">
@@ -575,7 +575,7 @@ function FasilitetsDrawer({
 
 function DrawerStat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-md border border-border bg-background p-3">
+    <div className="rounded-md border border-border bg-background p-4">
       <div className="font-mono text-[9px] uppercase tracking-[0.08em] text-muted-foreground">
         {label}
       </div>

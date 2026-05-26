@@ -53,7 +53,7 @@ function trendRetning(punkter: { dato: string; verdi: number | null }[]) {
 export function AnalyseSG({ data }: { data: SGCouplingPunkt[] }) {
   return (
     <div className="space-y-4">
-      <section className="rounded-lg border border-border bg-card p-5">
+      <section className="rounded-lg border border-border bg-card p-6">
         <h2 className="font-display text-lg font-semibold">
           Strokes Gained — kobling mot trening
         </h2>
@@ -91,7 +91,7 @@ export function AnalyseSG({ data }: { data: SGCouplingPunkt[] }) {
                   </div>
                 </div>
               </div>
-              <div className="mt-3 h-32 w-full">
+              <div className="mt-2 h-32 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={punkter}>
                     <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />

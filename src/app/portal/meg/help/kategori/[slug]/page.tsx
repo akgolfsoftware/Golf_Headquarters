@@ -369,7 +369,7 @@ export default async function KategoriPage({
                   ? `/portal/meg/help/kategori/${k.slug}`
                   : `/portal/meg/help/kategori/${k.slug}?sort=${s.id}`
               }
-              className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-[12px] font-medium transition-colors ${
+              className={`inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-[12px] font-medium transition-colors ${
                 aktiv
                   ? "border-primary bg-primary text-primary-foreground"
                   : "border-border bg-card text-foreground hover:border-primary/40"
@@ -390,7 +390,7 @@ export default async function KategoriPage({
           >
             <Link
               href={`/portal/meg/help/artikkel/${a.slug}`}
-              className="flex items-start gap-3 px-4 py-4 transition-colors hover:bg-secondary/40 sm:gap-4 sm:px-5 sm:py-5"
+              className="flex items-start gap-2 px-4 py-4 transition-colors hover:bg-secondary/40 sm:gap-4 sm:px-6 sm:py-6"
             >
               <span className="w-8 shrink-0 pt-1 font-mono text-xs font-semibold tabular-nums text-muted-foreground">
                 {(i + 1).toString().padStart(2, "0")}
@@ -402,7 +402,7 @@ export default async function KategoriPage({
                 <p className="mt-1.5 line-clamp-2 text-[13px] leading-relaxed text-muted-foreground">
                   {a.preview}
                 </p>
-                <div className="mt-3 flex flex-wrap items-center gap-3 font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
+                <div className="mt-2 flex flex-wrap items-center gap-2 font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
                   <span className="inline-flex items-center gap-1">
                     <Clock size={11} strokeWidth={1.75} />
                     {a.lesetid} min
@@ -437,7 +437,7 @@ export default async function KategoriPage({
         </p>
         <Link
           href="/portal/meg/help/kontakt"
-          className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+          className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2.5 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
         >
           <Mail size={14} strokeWidth={1.75} />
           Send oss et spørsmål

@@ -77,7 +77,7 @@ export default async function AvbestillPage() {
 
       {/* Date block */}
       <div
-        className="grid items-center gap-3 rounded-[14px] border border-border p-4"
+        className="grid items-center gap-2 rounded-[14px] border border-border p-4"
         style={{
           gridTemplateColumns: "1fr auto",
           background: "var(--background)",
@@ -110,7 +110,7 @@ export default async function AvbestillPage() {
         {KONSEKVENSER.map((k) => (
           <div
             key={k.tittel}
-            className="grid items-center gap-3 py-2"
+            className="grid items-center gap-2 py-2"
             style={{ gridTemplateColumns: "20px 1fr auto" }}
           >
             <XCircle className="h-4 w-4 text-destructive" strokeWidth={1.75} />
@@ -132,7 +132,7 @@ export default async function AvbestillPage() {
 
       {/* Pause banner */}
       <div
-        className="grid items-center gap-3 rounded-xl border p-3.5"
+        className="grid items-center gap-2 rounded-xl border p-4"
         style={{
           gridTemplateColumns: "36px 1fr auto",
           borderColor: "rgba(209,248,67,0.55)",
@@ -153,7 +153,7 @@ export default async function AvbestillPage() {
         </div>
         <button
           type="button"
-          className="whitespace-nowrap rounded-full px-3 py-1.5 text-[12.5px] font-semibold text-primary hover:bg-primary/[0.06]"
+          className="whitespace-nowrap rounded-full px-4 py-1.5 text-[12.5px] font-semibold text-primary hover:bg-primary/[0.06]"
         >
           Pause →
         </button>

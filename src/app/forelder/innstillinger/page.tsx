@@ -137,7 +137,7 @@ export default async function ForelderInnstillinger() {
               href="/portal/meg/innstillinger/sikkerhet"
               className="flex w-full items-center justify-between gap-4 px-6 py-4 text-sm transition-colors hover:bg-secondary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <span className="inline-flex items-center gap-3">
+              <span className="inline-flex items-center gap-2">
                 <Lock
                   className="h-4 w-4 text-muted-foreground"
                   strokeWidth={1.5}
@@ -162,7 +162,7 @@ export default async function ForelderInnstillinger() {
               href="/portal/meg/innstillinger/sikkerhet"
               className="flex w-full items-center justify-between gap-4 px-6 py-4 text-sm transition-colors hover:bg-secondary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <span className="inline-flex items-center gap-3">
+              <span className="inline-flex items-center gap-2">
                 <ShieldCheck
                   className="h-4 w-4 text-muted-foreground"
                   strokeWidth={1.5}
@@ -189,7 +189,7 @@ export default async function ForelderInnstillinger() {
               href="/auth/login"
               className="flex w-full items-center justify-between gap-4 px-6 py-4 text-sm text-destructive transition-colors hover:bg-destructive/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <span className="inline-flex items-center gap-3">
+              <span className="inline-flex items-center gap-2">
                 <LogOut className="h-4 w-4" strokeWidth={1.5} aria-hidden />
                 <span className="font-medium">Logg ut</span>
               </span>

@@ -195,7 +195,7 @@ function MeldingKort({ melding }: MeldingKortProps) {
   const harTraad = (melding.trad?.length ?? 0) > 0;
 
   return (
-    <div className="rounded-2xl border border-border bg-card p-4 md:p-5">
+    <div className="rounded-2xl border border-border bg-card p-4 md:p-6">
       <div className="mb-2 flex flex-wrap items-center gap-2">
         <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
           <Ikon size={14} strokeWidth={1.75} aria-hidden />
@@ -224,7 +224,7 @@ function MeldingKort({ melding }: MeldingKortProps) {
         </p>
 
         {harTraad && melding.trad && (
-          <div className="mt-3 space-y-2 border-l-2 border-border pl-3">
+          <div className="mt-2 space-y-2 border-l-2 border-border pl-4">
             {melding.trad.map((svar, idx) => (
               <div key={idx} className="text-sm leading-relaxed">
                 <div className="mb-0.5 flex items-center gap-1.5 text-[11px] text-muted-foreground">
@@ -244,7 +244,7 @@ function MeldingKort({ melding }: MeldingKortProps) {
       </div>
 
       {melding.status === "LOEST" && !harTraad && (
-        <div className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground">
+        <div className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
           <CheckCircle2
             size={12}
             strokeWidth={1.75}
@@ -259,7 +259,6 @@ function MeldingKort({ melding }: MeldingKortProps) {
 }
 
 export function KommunikasjonPanel({
-  spillerId: _spillerId,
   meldinger,
   onNyMelding,
 }: KommunikasjonPanelProps) {
@@ -297,7 +296,7 @@ export function KommunikasjonPanel({
       )}
 
       {harMeldinger ? (
-        <div className="space-y-3">
+        <div className="space-y-2">
           {sortert.map((melding) => (
             <MeldingKort key={melding.id} melding={melding} />
           ))}

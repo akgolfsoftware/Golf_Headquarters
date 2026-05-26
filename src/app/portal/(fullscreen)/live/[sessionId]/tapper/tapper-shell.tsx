@@ -101,9 +101,9 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs }: Props) {
       />
 
       {/* Topbar */}
-      <div className="relative z-10 flex items-center gap-3 border-b border-white/5 px-4 sm:px-6">
-        <div className="flex items-center gap-3">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/[0.06] px-3 py-1.5 font-sans text-[11px] font-semibold uppercase tracking-[0.10em] text-white/95">
+      <div className="relative z-10 flex items-center gap-2 border-b border-white/5 px-4 sm:px-6">
+        <div className="flex items-center gap-2">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/[0.06] px-4 py-1.5 font-sans text-[11px] font-semibold uppercase tracking-[0.10em] text-white/95">
             Range-mode
           </div>
           <div className="hidden items-center gap-2 font-mono text-[12px] text-white/65 tabular-nums sm:inline-flex">
@@ -128,20 +128,20 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs }: Props) {
         <button
           type="button"
           onClick={() => setShowClubPicker((v) => !v)}
-          className="inline-flex items-center gap-3 rounded-full border-2 border-accent bg-[rgba(209,248,67,0.08)] px-5 py-2.5 font-sans text-[14px] font-semibold text-white transition-colors hover:bg-[rgba(209,248,67,0.14)]"
+          className="inline-flex items-center gap-2 rounded-full border-2 border-accent bg-[rgba(209,248,67,0.08)] px-6 py-2.5 font-sans text-[14px] font-semibold text-white transition-colors hover:bg-[rgba(209,248,67,0.14)]"
         >
           <span className="text-accent">▲</span>
           <span className="font-semibold text-[15px]">
             {activeClub?.name ?? "Velg kølle"}
           </span>
-          <span className="inline-flex items-center gap-1 border-l border-white/20 pl-3 font-sans text-[12px] text-white/65">
+          <span className="inline-flex items-center gap-1 border-l border-white/20 pl-4 font-sans text-[12px] text-white/65">
             <ChevronDown className="h-3.5 w-3.5" strokeWidth={1.75} />
             Bytt
           </span>
         </button>
 
         {showClubPicker && (
-          <div className="z-20 mt-3 flex max-w-full flex-wrap justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.04] p-3">
+          <div className="z-20 mt-2 flex max-w-full flex-wrap justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
             {defaultClubs.map((c) => (
               <button
                 key={c.id}
@@ -172,12 +172,12 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs }: Props) {
         >
           {activeCount}
         </div>
-        <div className="mt-3 font-sans text-[16px] text-white/65 sm:text-[18px]">
+        <div className="mt-2 font-sans text-[16px] text-white/65 sm:text-[18px]">
           ball med {activeClub?.name.toLowerCase() ?? "valgt kølle"}
         </div>
 
         {/* Mini stats */}
-        <div className="mt-8 flex max-w-full flex-wrap items-center justify-center gap-x-6 gap-y-2 rounded-full border border-white/10 bg-white/[0.04] px-5 py-3">
+        <div className="mt-8 flex max-w-full flex-wrap items-center justify-center gap-x-6 gap-y-2 rounded-full border border-white/10 bg-white/[0.04] px-6 py-2">
           {defaultClubs.slice(0, 4).map((c) => (
             <div
               key={c.id}
@@ -195,7 +195,7 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs }: Props) {
       </div>
 
       {/* Floating right-side actions (desktop) */}
-      <div className="absolute right-4 top-1/2 z-20 hidden -translate-y-1/2 flex-col gap-3 sm:flex">
+      <div className="absolute right-4 top-1/2 z-20 hidden -translate-y-1/2 flex-col gap-2 sm:flex">
         <button
           type="button"
           onMouseDown={startEndPress}
@@ -261,7 +261,7 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs }: Props) {
         </button>
 
         {/* Mobile pause/stop row */}
-        <div className="mt-3 flex gap-3 sm:hidden">
+        <div className="mt-2 flex gap-2 sm:hidden">
           <button
             type="button"
             onClick={() => setPaused((p) => !p)}
@@ -277,7 +277,7 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs }: Props) {
           </Link>
         </div>
 
-        <p className="mt-3 text-center font-mono text-[11px] text-white/40">
+        <p className="mt-2 text-center font-mono text-[11px] text-white/40">
           {/* TODO: persister tap-data via server-action mot DB
               (per-økt ball-logg per kølle). Foreløpig in-memory. */}
           Tap-data lagres når økten avsluttes.

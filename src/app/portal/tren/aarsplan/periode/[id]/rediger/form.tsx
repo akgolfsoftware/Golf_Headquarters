@@ -112,8 +112,8 @@ export function PeriodeRedigerForm({
 
   return (
     <>
-      <div className="rounded-2xl border border-border bg-card p-5">
-        <div className="mb-3 flex items-baseline justify-between">
+      <div className="rounded-2xl border border-border bg-card p-6">
+        <div className="mb-2 flex items-baseline justify-between">
           <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
             Plassering i årsplan 2026
           </span>
@@ -215,7 +215,7 @@ export function PeriodeRedigerForm({
                 key={s}
                 type="button"
                 onClick={() => setSgFocus((p) => toggle(p, s))}
-                className={`rounded-full border px-3 py-1.5 text-xs font-semibold ${
+                className={`rounded-full border px-4 py-1.5 text-xs font-semibold ${
                   sgFocus.includes(s)
                     ? "border-primary bg-primary/10 text-primary"
                     : "border-border bg-card text-muted-foreground"
@@ -233,7 +233,7 @@ export function PeriodeRedigerForm({
                 key={p}
                 type="button"
                 onClick={() => setPyrFocus((prev) => toggle(prev, p))}
-                className={`rounded-full border px-3 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] ${
+                className={`rounded-full border px-4 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] ${
                   pyrFocus.includes(p)
                     ? "border-foreground bg-foreground text-accent"
                     : "border-border bg-card text-muted-foreground"
@@ -249,7 +249,7 @@ export function PeriodeRedigerForm({
             {goals.map((g, i) => (
               <span
                 key={g}
-                className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-xs"
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-xs"
               >
                 <span className="font-mono text-[10px] font-bold text-muted-foreground">
                   {i + 1}
@@ -266,7 +266,7 @@ export function PeriodeRedigerForm({
               </span>
             ))}
           </div>
-          <div className="mt-3 flex gap-2">
+          <div className="mt-2 flex gap-2">
             <input
               type="text"
               value={newGoal}
@@ -310,20 +310,20 @@ export function PeriodeRedigerForm({
       </Section>
 
       {error && (
-        <div className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+        <div className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive">
           {error}
         </div>
       )}
 
       <footer
-        className="sticky bottom-0 -mx-4 mt-4 flex flex-wrap items-center gap-3 border-t border-border bg-card/95 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6"
+        className="sticky bottom-0 -mx-4 mt-4 flex flex-wrap items-center gap-2 border-t border-border bg-card/95 px-4 py-2 backdrop-blur sm:-mx-6 sm:px-6"
         style={{ paddingBottom: "max(env(safe-area-inset-bottom), 0.75rem)" }}
       >
         <button
           type="button"
           onClick={slett}
           disabled={pending}
-          className="inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 py-2 text-xs font-semibold text-destructive hover:bg-destructive/10"
+          className="inline-flex min-h-11 items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold text-destructive hover:bg-destructive/10"
         >
           <Trash2 size={12} strokeWidth={1.75} /> Slett periode
         </button>
@@ -340,7 +340,7 @@ export function PeriodeRedigerForm({
             type="button"
             onClick={lagre}
             disabled={pending}
-            className="inline-flex min-h-11 items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60"
+            className="inline-flex min-h-11 items-center gap-2 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60"
           >
             <Check size={14} strokeWidth={2} />
             {pending ? "Lagrer…" : "Lagre endringer"}
@@ -409,7 +409,7 @@ function Slider({
 }) {
   return (
     <div className="rounded-md border border-border bg-background p-4">
-      <div className="mb-3 flex items-baseline justify-between">
+      <div className="mb-2 flex items-baseline justify-between">
         <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
           {label}
         </span>

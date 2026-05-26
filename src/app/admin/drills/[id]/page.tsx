@@ -146,7 +146,7 @@ export default async function DrillDetail({
               min={drill.minKategori}
               max={drill.maxKategori}
             />
-            <div className="mt-3 grid grid-cols-2 gap-3 font-mono text-[11px] text-muted-foreground sm:grid-cols-4">
+            <div className="mt-2 grid grid-cols-2 gap-2 font-mono text-[11px] text-muted-foreground sm:grid-cols-4">
               <Stat label="Min kategori" value={drill.minKategori ?? "-"} />
               <Stat label="Max kategori" value={drill.maxKategori ?? "-"} />
               <Stat
@@ -335,7 +335,7 @@ function Card({
 }) {
   return (
     <section className="rounded-2xl border border-border bg-card p-4 sm:p-6">
-      <h2 className="mb-3 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+      <h2 className="mb-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
         {title}
       </h2>
       {children}

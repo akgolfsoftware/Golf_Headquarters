@@ -83,7 +83,7 @@ export function OvelseTabell({ rader, onLogg }: OvelseTabellProps) {
       </div>
 
       {/* Mobile-kort */}
-      <div className="space-y-3 md:hidden">
+      <div className="space-y-2 md:hidden">
         {rader.map((rad) => (
           <RadKort key={rad.id} rad={rad} onLogg={onLogg} />
         ))}
@@ -102,7 +102,7 @@ function Th({
   return (
     <th
       className={cn(
-        "px-3 py-2.5 text-center font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground",
+        "px-4 py-2.5 text-center font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground",
         className,
       )}
     >
@@ -123,7 +123,7 @@ function Td({
   return (
     <td
       className={cn(
-        "px-3 py-3 text-center text-foreground",
+        "px-4 py-2 text-center text-foreground",
         mono && "font-mono tabular-nums",
         className,
       )}
@@ -202,7 +202,7 @@ function RadKort({
   onLogg?: OvelseTabellProps["onLogg"];
 }) {
   return (
-    <div className="rounded-lg border border-border bg-card p-4 space-y-3">
+    <div className="rounded-lg border border-border bg-card p-4 space-y-2">
       <h4 className="font-display text-sm font-semibold leading-tight text-foreground">
         {rad.navn}
       </h4>

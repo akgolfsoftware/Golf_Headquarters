@@ -74,7 +74,7 @@ export default async function MeldingstradPage({ params }: RouteProps) {
 
   return (
     <div className="min-h-screen bg-background pb-40 text-foreground">
-      <nav className="flex flex-wrap items-center gap-3 border-b border-border bg-card px-4 py-3 sm:gap-4 sm:px-8 sm:py-[18px]">
+      <nav className="flex flex-wrap items-center gap-2 border-b border-border bg-card px-4 py-2 sm:gap-4 sm:px-8 sm:py-[18px]">
         <Link
           href="/portal/coach/melding"
           className="inline-flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.04em] text-muted-foreground hover:text-foreground"
@@ -89,7 +89,7 @@ export default async function MeldingstradPage({ params }: RouteProps) {
       </nav>
 
       {/* Thread header */}
-      <header className="sticky top-0 z-10 grid grid-cols-[56px_minmax(0,1fr)_auto] items-center gap-3 border-b border-border bg-card/95 px-4 py-4 backdrop-blur sm:gap-4 sm:px-8">
+      <header className="sticky top-0 z-10 grid grid-cols-[56px_minmax(0,1fr)_auto] items-center gap-2 border-b border-border bg-card/95 px-4 py-4 backdrop-blur sm:gap-4 sm:px-8">
         <div className="relative">
           <div className="grid h-14 w-14 place-items-center rounded-full bg-primary text-[14px] font-semibold text-primary-foreground">
             {coachInitials}

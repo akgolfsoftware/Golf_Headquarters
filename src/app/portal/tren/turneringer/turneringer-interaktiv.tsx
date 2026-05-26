@@ -146,7 +146,7 @@ function LeggTilModal({
               <button
                 key={t}
                 onClick={() => setTab(t)}
-                className={`flex-1 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
+                className={`flex-1 border-b-2 px-4 py-2 text-sm font-medium transition-colors ${
                   tab === t
                     ? "border-primary text-foreground"
                     : "border-transparent text-muted-foreground hover:text-foreground"
@@ -169,19 +169,19 @@ function LeggTilModal({
                   value={sok}
                   onChange={(e) => setSok(e.target.value)}
                   placeholder="Søk etter turnering…"
-                  className="w-full rounded-md border border-input bg-background py-2 pl-9 pr-3 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+                  className="w-full rounded-md border border-input bg-background py-2 pl-8 pr-4 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
                 />
               </div>
               <div className="max-h-48 overflow-y-auto rounded-md border border-border">
                 {filtrert.length === 0 ? (
-                  <p className="px-4 py-3 text-sm text-muted-foreground">Ingen turneringer funnet.</p>
+                  <p className="px-4 py-2 text-sm text-muted-foreground">Ingen turneringer funnet.</p>
                 ) : (
                   filtrert.map((t) => (
                     <button
                       key={t.id}
                       type="button"
                       onClick={() => setValgtId(t.id)}
-                      className={`flex w-full items-center gap-3 px-4 py-2.5 text-left transition-colors ${
+                      className={`flex w-full items-center gap-2 px-4 py-2.5 text-left transition-colors ${
                         valgtId === t.id
                           ? "bg-primary/10 text-primary"
                           : "hover:bg-secondary"
@@ -214,17 +214,17 @@ function LeggTilModal({
                   onChange={(e) => setManualName(e.target.value)}
                   required
                   placeholder="f.eks. Kretsmesterskapet Østfold 2025"
-                  className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+                  className="mt-1 w-full rounded-md border border-input bg-background px-4 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
                 />
               </label>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2">
                 <label className="block">
                   <span className="text-xs font-medium text-muted-foreground">Startdato</span>
                   <input
                     type="date"
                     value={manualDate}
                     onChange={(e) => setManualDate(e.target.value)}
-                    className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+                    className="mt-1 w-full rounded-md border border-input bg-background px-4 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
                   />
                 </label>
                 <label className="block">
@@ -233,7 +233,7 @@ function LeggTilModal({
                     type="date"
                     value={manualEndDate}
                     onChange={(e) => setManualEndDate(e.target.value)}
-                    className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+                    className="mt-1 w-full rounded-md border border-input bg-background px-4 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
                   />
                 </label>
               </div>
@@ -241,13 +241,13 @@ function LeggTilModal({
           )}
 
           {/* Felles felter */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2">
             <label className="block">
               <span className="text-xs font-medium text-muted-foreground">Prioritet</span>
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value as TurnPriority)}
-                className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+                className="mt-1 w-full rounded-md border border-input bg-background px-4 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
               >
                 <option value="MAJOR">Trening</option>
                 <option value="NORMAL">Utvikling</option>
@@ -261,7 +261,7 @@ function LeggTilModal({
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 placeholder="f.eks. A-rekke"
-                className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+                className="mt-1 w-full rounded-md border border-input bg-background px-4 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
               />
             </label>
           </div>
@@ -272,7 +272,7 @@ function LeggTilModal({
               <select
                 value={seasonPlanId}
                 onChange={(e) => setSeasonPlanId(e.target.value)}
-                className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+                className="mt-1 w-full rounded-md border border-input bg-background px-4 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
               >
                 <option value="">Ikke koblet</option>
                 {sesongplaner.map((p) => (
@@ -291,13 +291,13 @@ function LeggTilModal({
               onChange={(e) => setNotes(e.target.value)}
               rows={2}
               placeholder="Mål, forberedelse, reiseplaner…"
-              className="mt-1 w-full resize-none rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
+              className="mt-1 w-full resize-none rounded-md border border-input bg-background px-4 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
             />
           </label>
 
           {feil && <p className="text-sm text-destructive">{feil}</p>}
 
-          <div className="flex items-center justify-end gap-3 border-t border-border pt-4">
+          <div className="flex items-center justify-end gap-2 border-t border-border pt-4">
             <button type="button" onClick={onClose} className="text-sm text-muted-foreground hover:text-foreground">
               Avbryt
             </button>
@@ -336,7 +336,7 @@ function MeldDegPaKnapp({ tournamentId }: { tournamentId: string }) {
         });
       }}
       disabled={isPending}
-      className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.06em] text-primary-foreground hover:opacity-90 disabled:opacity-50"
+      className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.06em] text-primary-foreground hover:opacity-90 disabled:opacity-50"
       title={feil ?? "Meld meg på"}
     >
       <UserPlus className="h-3.5 w-3.5" strokeWidth={1.75} />
@@ -447,14 +447,14 @@ export function TurneringerInteraktiv({
   return (
     <>
       {/* Toolbar */}
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
+      <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
         <div className="-mx-1 overflow-x-auto px-1 sm:mx-0 sm:overflow-visible">
           <div className="inline-flex gap-1 rounded-md border border-border bg-card p-1">
             {(["MINE", "TILGJENGELIGE", "ALLE"] as const).map((m) => (
               <button
                 key={m}
                 onClick={() => setMode(m)}
-                className={`whitespace-nowrap rounded-sm px-3 py-2 text-xs font-medium transition-colors ${
+                className={`whitespace-nowrap rounded-sm px-4 py-2 text-xs font-medium transition-colors ${
                   mode === m
                     ? "bg-foreground text-background"
                     : "text-muted-foreground hover:bg-secondary"
@@ -492,7 +492,7 @@ export function TurneringerInteraktiv({
                 const dato = e.tournament?.startDate ?? e.manualDate;
                 const pri = e.priority as TurnPriority;
                 return (
-                  <div key={e.id} className="flex flex-wrap items-center gap-3 px-4 py-4 sm:gap-4 sm:px-6">
+                  <div key={e.id} className="flex flex-wrap items-center gap-2 px-4 py-4 sm:gap-4 sm:px-6">
                     <Trophy className="h-5 w-5 flex-none text-muted-foreground" strokeWidth={1.5} />
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
@@ -540,7 +540,7 @@ export function TurneringerInteraktiv({
           <div className="overflow-hidden rounded-xl border border-border bg-card">
             <div className="divide-y divide-border">
               {tilgjengelige.map((t) => (
-                <div key={t.id} className="flex flex-wrap items-center gap-3 px-4 py-4 sm:gap-4 sm:px-6">
+                <div key={t.id} className="flex flex-wrap items-center gap-2 px-4 py-4 sm:gap-4 sm:px-6">
                   <Trophy className="h-5 w-5 flex-none text-muted-foreground" strokeWidth={1.5} />
                   <div className="min-w-0 flex-1">
                     <span className="text-sm font-medium text-foreground">{t.name}</span>
@@ -562,7 +562,7 @@ export function TurneringerInteraktiv({
         <div className="overflow-hidden rounded-xl border border-border bg-card">
           <div className="divide-y divide-border">
             {alle.map((row) => (
-              <div key={row.key} className="flex flex-wrap items-center gap-3 px-4 py-4 sm:gap-4 sm:px-6">
+              <div key={row.key} className="flex flex-wrap items-center gap-2 px-4 py-4 sm:gap-4 sm:px-6">
                 <Trophy className="h-5 w-5 flex-none text-muted-foreground" strokeWidth={1.5} />
                 <div className="min-w-0 flex-1">
                   <span className="text-sm font-medium text-foreground">{row.navn}</span>
