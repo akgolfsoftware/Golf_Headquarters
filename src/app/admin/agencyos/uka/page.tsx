@@ -6,6 +6,7 @@ import { Calendar, Plus } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
+import { KpiRing } from "@/components/athletic";
 
 export const dynamic = "force-dynamic";
 
@@ -91,7 +92,17 @@ export default async function UkaPage() {
         <UkeKpi label="Timer totalt" value={`${Math.round(totalTimer)}`} sub={`av ${kapasitet} mål`} />
         <UkeKpi label="Bookinger" value={String(bookinger.length)} sub="denne uka" />
         <UkeKpi label="Unike spillere" value={String(unikeSpillere)} sub="møter denne uka" />
-        <UkeKpi label="Kapasitet" value={`${kapasitetPct}%`} sub={kapasitetPct < 70 ? "Rom til mer" : "Full"} />
+        <div className="rounded-lg border border-border bg-card p-4">
+          <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            Kapasitet
+          </div>
+          <div className="mt-2 flex items-center gap-4">
+            <KpiRing value={kapasitetPct} size={64} />
+            <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+              {kapasitetPct < 70 ? "Rom til mer" : "Full"}
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* 7-dagers grid */}
