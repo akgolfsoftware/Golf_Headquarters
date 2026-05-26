@@ -9,12 +9,13 @@
 |---|---|---|
 | Hardkoda hex utenfor tokens | 388 forekomster | 🟡 VIKTIG |
 | 8pt-grid-brudd (`gap-3`, `p-3`, `gap-3.5` etc.) | 570 forekomster | 🟡 VIKTIG |
-| Forbudt serif-font (Instrument Serif) | 1 fil, ~8 referanser | 🔴 KRITISK |
+| Forbudt serif-font (Instrument Serif) | 51 forekomster | ✅ Lukket (commit f8b5fcf) |
 | Unicode-symboler i UI (✓ ✗ ★ —) | ~10 filer | 🟡 VIKTIG |
 | Duplikate komponent-impl (Sparkline/KpiStrip/Hero) | 16 lokale | 🟢 NICE-TO-HAVE |
 | `error.tsx` på admin/portal-sider | 2 av ~250 ruter | 🟡 VIKTIG |
 | `not-found.tsx` på admin/portal-sider | 0 | 🟢 NICE-TO-HAVE |
-| `outline-none` uten focus-erstatning | 5 callsites | 🟡 VIKTIG (a11y) |
+| `outline-none` uten focus-erstatning (V5: de 5 listede) | 5 → 0 | ✅ Lukket (commit 345a9f2) |
+| `outline-none` uten focus-erstatning (V5b: resten) | 30 callsites | 🟡 VIKTIG (a11y) |
 | Mock-data i hub-overview-sider | 19 hardkoda tall | 🟡 VIKTIG |
 | `/admin/talent` 404 (audit gammel) | **IKKE 404** — fungerer | ✅ Lukket |
 | Kapasitet-progressring (audit gammel) | Fortsatt åpent | 🟡 VIKTIG |
@@ -98,19 +99,62 @@ Design-skill-en favoriserer ÉN pattern. Inkonsistensen er synlig: sidebar-bredd
 
 **Effort:** Beslutning først (30 min). Migrering: 2-4 timer per overview-side.
 
-### V5. `outline-none` uten focus-erstatning (a11y)
-5 inputs bruker `outline-none` uten å erstatte med `focus-visible:`:
-- [src/app/admin/anlegg/page.tsx:230](src/app/admin/anlegg/page.tsx:230)
-- [src/app/admin/messages/_components/messages-inbox.tsx:72](src/app/admin/messages/_components/messages-inbox.tsx:72)
-- [src/app/admin/messages/_components/conversation.tsx:306](src/app/admin/messages/_components/conversation.tsx:306)
-- [src/app/admin/trackman/page.tsx:138](src/app/admin/trackman/page.tsx:138)
-- [src/app/admin/plans/page.tsx:209](src/app/admin/plans/page.tsx:209)
+### V5. `outline-none` uten focus-erstatning (a11y) — ✅ LUKKET
 
-Tastatur-brukere kan ikke se hvor de er. **Bryter WCAG 2.4.7.**
+5 inputs ble fikset i commit [`345a9f2`](https://github.com/akgolfgroup-netizen/akgolf-hq/commit/345a9f2):
+- src/app/admin/anlegg/page.tsx:230
+- src/app/admin/messages/_components/messages-inbox.tsx:72
+- src/app/admin/messages/_components/conversation.tsx:306
+- src/app/admin/trackman/page.tsx:138
+- src/app/admin/plans/page.tsx:209
 
-**Fiks:** Tilføy `focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2` på hver.
+Tilført `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1` (offset-1 for konsistens med eksisterende shadcn-primitives).
 
-**Effort:** 30 min.
+### V5b. `outline-none` uten focus-erstatning — 30 gjenværende (a11y)
+
+Audit-rapport-2026-05-26 V5 telte feil — den oppga 5 callsites mens faktisk antall er **35**. De 5 spesifikke fra V5 er nå fikset, men 30 til gjenstår med samme WCAG 2.4.7-brudd.
+
+**Bryter WCAG 2.4.7 Focus Visible.** Klassifisering: **🟡 VIKTIG** (a11y er ikke nice-to-have).
+
+#### Admin (23 callsites)
+
+- [src/app/admin/agencyos/caddie/aktivitet/aktivitet-client.tsx:165](src/app/admin/agencyos/caddie/aktivitet/aktivitet-client.tsx:165)
+- [src/app/admin/agencyos/caddie/aktivitet/aktivitet-client.tsx:535](src/app/admin/agencyos/caddie/aktivitet/aktivitet-client.tsx:535)
+- [src/app/admin/approvals/page.tsx:148](src/app/admin/approvals/page.tsx:148)
+- [src/app/admin/drills/drill-filter-bar.tsx:134](src/app/admin/drills/drill-filter-bar.tsx:134)
+- [src/app/admin/email-templates/page.tsx:66](src/app/admin/email-templates/page.tsx:66)
+- [src/app/admin/facilities/page.tsx:187](src/app/admin/facilities/page.tsx:187)
+- [src/app/admin/grupper/page.tsx:150](src/app/admin/grupper/page.tsx:150)
+- [src/app/admin/locations/page.tsx:118](src/app/admin/locations/page.tsx:118)
+- [src/app/admin/okter/page.tsx:251](src/app/admin/okter/page.tsx:251)
+- [src/app/admin/runder/page.tsx:152](src/app/admin/runder/page.tsx:152)
+- [src/app/admin/spillere/[id]/enrollment-panel.tsx:123](src/app/admin/spillere/[id]/enrollment-panel.tsx:123)
+- [src/app/admin/spillere/[id]/enrollment-panel.tsx:141](src/app/admin/spillere/[id]/enrollment-panel.tsx:141)
+- [src/app/admin/spillere/[id]/enrollment-panel.tsx:161](src/app/admin/spillere/[id]/enrollment-panel.tsx:161)
+- [src/app/admin/spillere/ny/wizard.tsx:216](src/app/admin/spillere/ny/wizard.tsx:216)
+- [src/app/admin/spillere/page.tsx:409](src/app/admin/spillere/page.tsx:409)
+- [src/app/admin/spillere/page.tsx:417](src/app/admin/spillere/page.tsx:417)
+- [src/app/admin/team/page.tsx:96](src/app/admin/team/page.tsx:96)
+- [src/app/admin/tournaments/page.tsx:290](src/app/admin/tournaments/page.tsx:290)
+- [src/app/admin/workspace/oppgaver/[id]/page.tsx:202](src/app/admin/workspace/oppgaver/[id]/page.tsx:202)
+- [src/app/admin/workspace/oppgaver/[id]/page.tsx:253](src/app/admin/workspace/oppgaver/[id]/page.tsx:253)
+- [src/app/admin/workspace/oppgaver/[id]/page.tsx:268](src/app/admin/workspace/oppgaver/[id]/page.tsx:268)
+- [src/app/admin/workspace/oppgaver/page.tsx:150](src/app/admin/workspace/oppgaver/page.tsx:150)
+- [src/app/admin/workspace/prosjekter/page.tsx:94](src/app/admin/workspace/prosjekter/page.tsx:94)
+
+#### Portal (7 callsites)
+
+- [src/app/portal/coach/melding/form.tsx:164](src/app/portal/coach/melding/form.tsx:164)
+- [src/app/portal/drills/drills-client.tsx:371](src/app/portal/drills/drills-client.tsx:371)
+- [src/app/portal/mal/leaderboard/page.tsx:356](src/app/portal/mal/leaderboard/page.tsx:356)
+- [src/app/portal/mal/runder/ny/form.tsx:364](src/app/portal/mal/runder/ny/form.tsx:364)
+- [src/app/portal/mal/runder/ny/form.tsx:678](src/app/portal/mal/runder/ny/form.tsx:678)
+- [src/app/portal/meg/dokumenter/page.tsx:80](src/app/portal/meg/dokumenter/page.tsx:80)
+- [src/app/portal/tren/tester/ny/wizard.tsx:735](src/app/portal/tren/tester/ny/wizard.tsx:735)
+
+**Fiks:** Samme pattern som V5 — tilføy `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1` til hver className. Kan kjøres mekanisk per fil.
+
+**Effort:** ~1 time (30 callsites × 1-2 min per edit + verifisering).
 
 ### V6. Mock-data i hub-overview-sider
 19 hardkoda tall i `data="..."`-props på de tre overview-sidene. F.eks:
@@ -209,26 +253,27 @@ Fordeling:
 
 ## Prioritert oppgaveliste
 
-| # | Tittel | Klassifisering | Effort | Avhengighet |
+| # | Tittel | Klassifisering | Effort | Status |
 |---|---|---|---|---|
-| 1 | K1: Fjern Instrument Serif | 🔴 KRITISK | 15 min | — |
-| 2 | V5: Fix `outline-none` (5 inputs) | 🟡 VIKTIG | 30 min | — |
-| 3 | V7: Tilføy error.tsx + not-found.tsx | 🟡 VIKTIG | 1 t | — |
-| 4 | V8: Kapasitet progress-ring | 🟡 VIKTIG | 1 t | — |
-| 5 | V3: Erstatt Unicode-symboler med Lucide | 🟡 VIKTIG | 1-2 t | — |
-| 6 | V1: Hardkoda hex → tokens (388 → 0) | 🟡 VIKTIG | 2-3 t | — |
-| 7 | V4: Beslutning HubFrame vs AthleticHero | 🟡 VIKTIG | 30 min besl. + 6-12 t migrering | — |
-| 8 | V6: Mock-data → Prisma-queries i overview | 🟡 VIKTIG | 6-9 t | — |
-| 9 | V2: 8pt-grid (570 → 0) | 🟡 VIKTIG | 4-6 t | — |
-| 10 | N1: Konsolider Sparkline | 🟢 NICE-TO-HAVE | 1-2 t | — |
-| 11 | N2: Konsolider KpiStrip | 🟢 NICE-TO-HAVE | 1-2 t | — |
-| 12 | N3: Konsolider Hero-komponenter | 🟢 NICE-TO-HAVE | 4-6 t | V4 først |
-| 13 | N4: AthleticBadge urgent-bruk | 🟢 NICE-TO-HAVE | 30 min | — |
-| 14 | N5: Touch-target share-button | 🟢 NICE-TO-HAVE | 2 min | — |
+| 1 | K1: Fjern Instrument Serif | 🔴 KRITISK | 15 min | ✅ Lukket ([f8b5fcf](https://github.com/akgolfgroup-netizen/akgolf-hq/commit/f8b5fcf)) |
+| 2 | V5: Fix `outline-none` (de 5 listede) | 🟡 VIKTIG | 30 min | ✅ Lukket ([345a9f2](https://github.com/akgolfgroup-netizen/akgolf-hq/commit/345a9f2)) |
+| 3 | V5b: Fix resten av `outline-none` (30 callsites) | 🟡 VIKTIG (a11y) | ~1 t | Åpent |
+| 4 | V7: Tilføy error.tsx + not-found.tsx | 🟡 VIKTIG | 1 t | Åpent |
+| 5 | V8: Kapasitet progress-ring | 🟡 VIKTIG | 1 t | Åpent |
+| 6 | V3: Erstatt Unicode-symboler med Lucide | 🟡 VIKTIG | 1-2 t | Åpent |
+| 7 | V1: Hardkoda hex → tokens (388 → 0) | 🟡 VIKTIG | 2-3 t | Åpent |
+| 8 | V4: Beslutning HubFrame vs AthleticHero | 🟡 VIKTIG | 30 min besl. + 6-12 t migrering | Åpent |
+| 9 | V6: Mock-data → Prisma-queries i overview | 🟡 VIKTIG | 6-9 t | Åpent |
+| 10 | V2: 8pt-grid (570 → 0) | 🟡 VIKTIG | 4-6 t | Åpent |
+| 11 | N1: Konsolider Sparkline | 🟢 NICE-TO-HAVE | 1-2 t | Åpent |
+| 12 | N2: Konsolider KpiStrip | 🟢 NICE-TO-HAVE | 1-2 t | Åpent |
+| 13 | N3: Konsolider Hero-komponenter | 🟢 NICE-TO-HAVE | 4-6 t | Åpent (V4 først) |
+| 14 | N4: AthleticBadge urgent-bruk | 🟢 NICE-TO-HAVE | 30 min | Åpent |
+| 15 | N5: Touch-target share-button | 🟢 NICE-TO-HAVE | 2 min | Åpent |
 
-**Total estimat:** ~30 timer for å komme i full compliance med CLAUDE.md + design-skill-en.
+**Total estimat gjenstående:** ~30 timer for full compliance.
 
-**Anbefalt minimal sett før lansering:** #1, #2, #3, #4, #5 (totalt ~5 timer).
+**Anbefalt minimal sett før lansering:** V5b, V7, V8, V3 (totalt ~4-5 timer).
 
 ---
 
