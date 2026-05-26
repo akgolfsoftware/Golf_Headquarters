@@ -1,0 +1,242 @@
+<!doctype html><html><head><meta charset="utf-8"><title>States</title>
+<link rel="stylesheet" href="_shared.css">
+<script src="https://unpkg.com/lucide@0.453.0"></script>
+<style>
+  body { width: 800px; }
+  .card { padding: 24px; }
+
+  /* Section heads */
+  .sec {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    display: flex; align-items: center; gap: 8px;
+    margin: 0 0 16px;
+  }
+  .sec::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+  .sec + .grid { margin-bottom: 24px; }
+
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+  /* Panes */
+  .pane {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 16px;
+    min-height: 192px;
+    display: flex; flex-direction: column;
+  }
+  .pane-h {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground); margin: 0 0 16px;
+    display: flex; align-items: center; gap: 8px;
+    font-feature-settings: "tnum","zero";
+  }
+  .pane-h.amber  { color: var(--warning); }
+  .pane-h.red    { color: var(--destructive); }
+  .pane-h .meta { color: var(--muted-foreground); font-weight: 500; }
+
+  /* ============ Skeleton ============ */
+  .sk {
+    border-radius: 8px;
+    background: linear-gradient(90deg, var(--secondary) 0%, var(--muted) 50%, var(--secondary) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1500ms linear infinite;
+  }
+  @keyframes shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+  /* KPI skeleton */
+  .sk-kpi .sk.label  { height: 8px; width: 48%; margin-bottom: 16px; }
+  .sk-kpi .sk.val    { height: 24px; width: 64%; margin-bottom: 16px; }
+  .sk-kpi .sk.trend  { height: 8px; width: 80%; }
+
+  /* Row skeleton */
+  .sk-rows { display: flex; flex-direction: column; gap: 16px; }
+  .sk-row  { display: flex; align-items: center; gap: 16px; }
+  .sk-row .av { width: 32px; height: 32px; border-radius: 999px; flex-shrink: 0;
+    background: linear-gradient(90deg, var(--secondary) 0%, var(--muted) 50%, var(--secondary) 100%);
+    background-size: 200% 100%; animation: shimmer 1500ms linear infinite;
+  }
+  .sk-row .cell { flex: 1; height: 10px; }
+  .sk-row .cell.fx { flex: 0 0 40px; }
+
+  /* Hero skeleton */
+  .sk-hero { display: flex; flex-direction: column; gap: 8px; }
+  .sk-hero .img  { height: 64px; border-radius: 12px; }
+  .sk-hero .eb   { height: 8px; width: 32%; margin-top: 8px; }
+  .sk-hero .ttl  { height: 18px; width: 72%; margin-top: 8px; }
+  .sk-hero .body { height: 8px; width: 96%; }
+  .sk-hero .body.sh { width: 56%; }
+
+  /* ============ Page-states ============ */
+  .icon-circle {
+    width: 48px; height: 48px; border-radius: 999px;
+    background: rgba(209,248,67,0.20);
+    color: var(--primary);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px;
+    flex-shrink: 0;
+  }
+  .icon-circle.amber { background: rgba(184,133,42,0.14); color: var(--warning); }
+  .icon-circle.red   { background: rgba(163,45,45,0.10);  color: var(--destructive); }
+
+  .state-title {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 16px; letter-spacing: -0.015em; line-height: 1.25;
+    text-align: center; color: var(--foreground);
+  }
+  .state-title.amber { color: var(--warning); }
+  .state-title.red   { color: var(--destructive); }
+
+  .state-msg {
+    font-size: 12px; line-height: 1.5;
+    color: var(--muted-foreground);
+    text-align: center;
+    margin-top: 8px;
+  }
+
+  /* CTAs — visible action, hover/focus/active states baked in */
+  .cta-row {
+    margin-top: auto; padding-top: 16px;
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+  }
+  .cta {
+    display: inline-flex; align-items: center; gap: 4px;
+    height: 32px; padding: 0 16px;
+    border-radius: 999px;
+    font-family: var(--font-display); font-weight: 600;
+    font-size: 12px; letter-spacing: -0.005em;
+    color: var(--primary);
+    background: transparent;
+    box-shadow: inset 0 0 0 1px var(--border);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 150ms ease-out, box-shadow 150ms ease-out, color 150ms ease-out;
+    outline: none;
+  }
+  .cta:hover  { background: rgba(0,88,64,0.06); box-shadow: inset 0 0 0 1px var(--primary); }
+  .cta:active { background: rgba(0,88,64,0.10); }
+  .cta:focus-visible { box-shadow: inset 0 0 0 1px var(--primary), 0 0 0 2px var(--ring); }
+
+  .cta.amber { color: var(--warning); }
+  .cta.amber:hover  { background: rgba(184,133,42,0.08); box-shadow: inset 0 0 0 1px var(--warning); }
+  .cta.amber:focus-visible { box-shadow: inset 0 0 0 1px var(--warning), 0 0 0 2px rgba(184,133,42,0.4); }
+
+  .cta.red { color: var(--destructive); }
+  .cta.red:hover  { background: rgba(163,45,45,0.08); box-shadow: inset 0 0 0 1px var(--destructive); }
+  .cta.red:focus-visible { box-shadow: inset 0 0 0 1px var(--destructive), 0 0 0 2px rgba(163,45,45,0.4); }
+
+  /* ============ Footer rules ============ */
+  .rules {
+    margin-top: 24px;
+    padding: 16px;
+    background: var(--secondary);
+    border-radius: 12px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted-foreground); line-height: 1.6;
+  }
+  .rules p { margin: 0; }
+  .rules p + p { margin-top: 8px; }
+  .rules b { color: var(--foreground); font-weight: 700; }
+</style></head>
+<body><div class="card">
+
+  <!-- ============ LOADING ============ -->
+  <div class="sec">Loading · skeletons speiler faktisk layout · 1500 ms linear</div>
+  <div class="grid">
+    <div class="pane sk-kpi">
+      <div class="pane-h">KPI-card</div>
+      <div class="sk label"></div>
+      <div class="sk val"></div>
+      <div class="sk trend"></div>
+    </div>
+    <div class="pane">
+      <div class="pane-h">Tabell-rad</div>
+      <div class="sk-rows">
+        <div class="sk-row"><span class="av"></span><span class="sk cell"></span><span class="sk cell fx"></span></div>
+        <div class="sk-row"><span class="av"></span><span class="sk cell"></span><span class="sk cell fx"></span></div>
+        <div class="sk-row"><span class="av"></span><span class="sk cell"></span><span class="sk cell fx"></span></div>
+      </div>
+    </div>
+    <div class="pane sk-hero">
+      <div class="pane-h">Hero</div>
+      <div class="sk img"></div>
+      <div class="sk eb"></div>
+      <div class="sk ttl"></div>
+      <div class="sk body"></div>
+      <div class="sk body sh"></div>
+    </div>
+  </div>
+
+  <!-- ============ PAGE-STATES ============ -->
+  <div class="sec">Page-states · Empty · Stale · Filter</div>
+  <div class="grid">
+    <!-- Empty -->
+    <div class="pane">
+      <div class="pane-h">Empty</div>
+      <div class="icon-circle"><i data-lucide="activity" style="width:24px;height:24px"></i></div>
+      <div class="state-title">Ingen økter logget</div>
+      <div class="state-msg">Logg første økt for å se SG-trenden bygge seg opp.</div>
+      <div class="cta-row"><a class="cta" href="#" tabindex="0">Logg økt <i data-lucide="arrow-right" style="width:12px;height:12px"></i></a></div>
+    </div>
+
+    <!-- Stale — weakest element rebuilt: cache-stamp moved into pane-h, redundant stripe removed -->
+    <div class="pane">
+      <div class="pane-h amber">Stale · cache <span class="meta">14:30</span></div>
+      <div class="icon-circle amber"><i data-lucide="clock" style="width:24px;height:24px"></i></div>
+      <div class="state-title amber">Sist oppdatert 4 t siden</div>
+      <div class="state-msg">Tallene viser kanskje ikke siste runde.</div>
+      <div class="cta-row"><a class="cta amber" href="#" tabindex="0">Oppdater nå <i data-lucide="refresh-cw" style="width:12px;height:12px"></i></a></div>
+    </div>
+
+    <!-- Filter-empty -->
+    <div class="pane">
+      <div class="pane-h">Filter-empty</div>
+      <div class="icon-circle"><i data-lucide="search-x" style="width:24px;height:24px"></i></div>
+      <div class="state-title">Ingen treff</div>
+      <div class="state-msg">"putt 3m" gir 0 økter i juni 2026.</div>
+      <div class="cta-row">
+        <a class="cta" href="#" tabindex="0">Fjern filter</a>
+        <a class="cta" href="#" tabindex="0">Endre periode</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ ERROR ============ -->
+  <div class="sec">Error · Network · Timeout · Permission</div>
+  <div class="grid">
+    <div class="pane">
+      <div class="pane-h red">Network</div>
+      <div class="icon-circle red"><i data-lucide="wifi-off" style="width:24px;height:24px"></i></div>
+      <div class="state-title red">Internett er borte</div>
+      <div class="state-msg">Klikk for å prøve igjen når du er tilbake online.</div>
+      <div class="cta-row"><a class="cta red" href="#" tabindex="0">Prøv igjen <i data-lucide="rotate-cw" style="width:12px;height:12px"></i></a></div>
+    </div>
+
+    <div class="pane">
+      <div class="pane-h red">Timeout</div>
+      <div class="icon-circle red"><i data-lucide="server-crash" style="width:24px;height:24px"></i></div>
+      <div class="state-title red">Server tar lang tid</div>
+      <div class="state-msg">Vi prøver igjen automatisk om 30 sek.</div>
+      <div class="cta-row"><a class="cta red" href="#" tabindex="0">Prøv nå <i data-lucide="rotate-cw" style="width:12px;height:12px"></i></a></div>
+    </div>
+
+    <div class="pane">
+      <div class="pane-h red">Permission</div>
+      <div class="icon-circle red"><i data-lucide="lock" style="width:24px;height:24px"></i></div>
+      <div class="state-title red">Ingen tilgang</div>
+      <div class="state-msg">Du har ikke rettigheter til denne dataen.</div>
+      <div class="cta-row"><a class="cta red" href="#" tabindex="0">Be om tilgang <i data-lucide="key" style="width:12px;height:12px"></i></a></div>
+    </div>
+  </div>
+
+  <div class="rules">
+    <p><b>200 ms-regelen:</b> skeleton vises kun hvis lasting tar &gt; 200 ms. Under det: ingenting — unngå flash.</p>
+    <p><b>Aldri dead-end:</b> Empty, Stale, Filter, Error — alle har minst én CTA. Brukeren skal alltid kunne ta neste steg.</p>
+    <p><b>Success er toast,</b> ikke page-state. Z-70, fade-in fra topp, auto-dismiss 4 sek. Se Toast-kort (kommende batch).</p>
+  </div>
+
+  <script>lucide.createIcons();</script>
+</div></body></html>

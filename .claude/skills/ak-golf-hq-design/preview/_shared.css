@@ -1,0 +1,26 @@
+/* Shared boilerplate for every preview card.
+   Forces consistent 700×variable canvas, locks tokens, kills body margins. */
+@import url("../colors_and_type.css");
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  width: 700px;
+}
+.card {
+  padding: 20px 24px;
+  position: relative;
+}
+.row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.col { display: flex; flex-direction: column; gap: 8px; }
+.label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted-foreground);
+}
