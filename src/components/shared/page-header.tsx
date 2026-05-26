@@ -1,7 +1,7 @@
 /**
  * PageHeader — standardisert hero for alle produksjons-pages.
  *
- * Bruker italic Instrument Serif via font-display + <em>, matchet
+ * Bruker italic Inter Tight via font-display + <em>, matchet
  * mot demo-page-stilen (se /360-demo, /daglig-brief-demo).
  *
  * Eyebrow:    Liten uppercase tekst over tittelen ("CoachHQ · onsdag 14. mai")
@@ -19,7 +19,7 @@ type Props = {
    */
   titleLead?: string;
   /**
-   * Italic-segment av tittelen (vil renderes som italic Instrument Serif).
+   * Italic-segment av tittelen (vil renderes som italic Inter Tight).
    * Eks: "tilbake" i "Velkommen *tilbake*"
    */
   titleItalic: string;

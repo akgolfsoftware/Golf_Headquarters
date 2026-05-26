@@ -288,7 +288,7 @@ function TournamentCard({
         </div>
         <p
           className="mt-1 text-sm leading-snug"
-          style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic" }}
+          style={{ fontFamily: "'Inter Tight', sans-serif", fontStyle: "italic" }}
         >
           {t.prob}
         </p>

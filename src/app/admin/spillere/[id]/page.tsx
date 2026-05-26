@@ -648,7 +648,7 @@ function ProfilTab({
                   <p
                     className="mt-2 text-sm leading-relaxed text-foreground"
                     style={{
-                      fontFamily: "'Instrument Serif', serif",
+                      fontFamily: "'Inter Tight', sans-serif",
                       fontStyle: "italic",
                     }}
                   >
@@ -835,7 +835,7 @@ function NotaterTab({
             <p
               className="mt-2 text-base leading-relaxed text-foreground"
               style={{
-                fontFamily: "'Instrument Serif', serif",
+                fontFamily: "'Inter Tight', sans-serif",
                 fontStyle: "italic",
               }}
             >

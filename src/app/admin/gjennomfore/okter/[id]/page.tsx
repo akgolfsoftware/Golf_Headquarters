@@ -102,7 +102,7 @@ export default async function OktDetaljPage({
       <em
         className="font-normal not-italic"
         style={{
-          fontFamily: "'Instrument Serif', serif",
+          fontFamily: "'Inter Tight', sans-serif",
           fontStyle: "italic",
           color: "#005840",
         }}
@@ -227,7 +227,7 @@ export default async function OktDetaljPage({
                 </div>
                 <p
                   className="text-sm leading-relaxed"
-                  style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic" }}
+                  style={{ fontFamily: "'Inter Tight', sans-serif", fontStyle: "italic" }}
                 >
                   «{spiller.name.split(" ")[0]} klagde forrige uke over at start-linja
                   vandret på lange putts. Kjør gate-drill først for å re-kalibrere — så
@@ -240,7 +240,7 @@ export default async function OktDetaljPage({
                 </div>
                 <p
                   className="text-sm leading-relaxed"
-                  style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic" }}
+                  style={{ fontFamily: "'Inter Tight', sans-serif", fontStyle: "italic" }}
                 >
                   «Vil ha hjelp med å lese rake-greener — Olyo Tour på Larvik har mye
                   sidefall.»

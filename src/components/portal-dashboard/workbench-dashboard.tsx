@@ -3,7 +3,7 @@
  * Implementering av "AK Golf Workbench Unified.html" fra Claude Design-bundlen.
  *
  * Seksjoner:
- *   1. Hero (eyebrow + Inter Tight + Instrument Serif italic)
+ *   1. Hero (eyebrow + Inter Tight + Inter Tight italic)
  *   2. Årsplan-gantt med periode-blokker + turneringsflagg + "I dag"-pin
  *   3. Workbench 3-pane (profil + ukekalender + drills/periodisering)
  *   4. Mål-tracker (3 mål-kort)

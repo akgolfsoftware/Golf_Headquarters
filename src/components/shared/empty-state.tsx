@@ -1,7 +1,7 @@
 /**
  * EmptyState — standardisert tom-tilstand for lister/dashbords.
  *
- * Mønster: ikon-sirkel + italic Instrument Serif tagline + sub-tekst + valgfri CTA.
+ * Mønster: ikon-sirkel + italic Inter Tight tagline + sub-tekst + valgfri CTA.
  * Matchet mot demo-page-stilen.
  */
 import type { LucideIcon } from "lucide-react";
@@ -9,7 +9,7 @@ import type { ReactNode } from "react";
 
 type Props = {
   icon: LucideIcon;
-  /** Italic-segment av hovedoverskriften (Instrument Serif) */
+  /** Italic-segment av hovedoverskriften (Inter Tight) */
   titleItalic: string;
   /** Vanlig tekst etter italic-delen */
   titleTrail?: string;

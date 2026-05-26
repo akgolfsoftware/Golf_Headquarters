@@ -72,6 +72,8 @@ export function AIForeslaaDrillModal({
 
   useEffect(() => {
     if (!open) return;
+    // Reset på open: bevisst sync setState — prop-change-drevet state-reset.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setState("LOADING");
     setPicked(new Set([0]));
     const t = setTimeout(() => setState("RESULT"), 1100);
@@ -154,7 +156,7 @@ function WeaknessHero() {
           <em
             className="font-normal not-italic"
             style={{
-              fontFamily: "'Instrument Serif', serif",
+              fontFamily: "'Inter Tight', sans-serif",
               fontStyle: "italic",
               color: "#005840",
             }}
@@ -229,7 +231,7 @@ function DrillCard({
         </div>
         <p
           className="mt-1 text-sm leading-relaxed"
-          style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic" }}
+          style={{ fontFamily: "'Inter Tight', sans-serif", fontStyle: "italic" }}
         >
           {drill.why}
         </p>

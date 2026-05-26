@@ -3,7 +3,7 @@
  * Implementering av "Integrasjoner.html" fra Claude Design-bundlen.
  *
  * Settings-shell med side-rail + main-pane:
- *  - Header med eyebrow-crumb og Instrument Serif italic
+ *  - Header med eyebrow-crumb og Inter Tight italic
  *  - 4-celle summary-strip (Tilkoblet/Sist synket/Nye rader/Datapunkter)
  *  - Tilkoblet-grid (GolfBox, TrackMan, Apple Health)
  *  - Tilgjengelig-grid (TrackMan Connect, Strava, Garmin, Spotify PRO, Kalender)

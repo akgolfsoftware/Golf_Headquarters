@@ -42,7 +42,7 @@ export function PlanleggeShell({
             <em
               className="font-normal not-italic"
               style={{
-                fontFamily: "'Instrument Serif', serif",
+                fontFamily: "'Inter Tight', sans-serif",
                 fontStyle: "italic",
                 color: "#005840",
               }}

@@ -1,6 +1,6 @@
 /**
  * ForelderHero — delt hero-komponent for alle foreldreportal-sider.
- * Matcher PlayerHQ Oversikt-mønsteret (avatar venstre + Inter Tight + Instrument Serif italic).
+ * Matcher PlayerHQ Oversikt-mønsteret (avatar venstre + Inter Tight + Inter Tight italic).
  */
 
 import Link from "next/link";
@@ -58,7 +58,7 @@ export function ForelderHero({
             <em
               className="font-normal not-italic"
               style={{
-                fontFamily: "'Instrument Serif', serif",
+                fontFamily: "'Inter Tight', sans-serif",
                 fontStyle: "italic",
                 color: "#005840",
               }}

@@ -86,7 +86,7 @@ export function CoachHome(props: CoachHomeProps) {
           <em
             className="font-normal not-italic"
             style={{
-              fontFamily: "'Instrument Serif', serif",
+              fontFamily: "'Inter Tight', sans-serif",
               fontStyle: "italic",
               color: "#005840",
             }}
@@ -154,7 +154,7 @@ export function CoachHome(props: CoachHomeProps) {
                 <em
                   className="font-normal not-italic"
                   style={{
-                    fontFamily: "'Instrument Serif', serif",
+                    fontFamily: "'Inter Tight', sans-serif",
                     fontStyle: "italic",
                     color: "#005840",
                   }}

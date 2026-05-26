@@ -26,7 +26,7 @@
   line-height: 1.1;
 }
 .tp-scope h1 em, .tp-scope h2 em, .tp-scope h3 em {
-  font-family: 'Instrument Serif', serif;
+  font-family: 'Inter Tight', sans-serif;
   font-style: italic;
   font-weight: 400;
   color: hsl(var(--primary));
@@ -908,7 +908,7 @@
   color: hsl(var(--foreground));
 }
 .tp-activity-row .copy strong { font-weight: 700; }
-.tp-activity-row .copy em { font-family: 'Instrument Serif', serif; font-style: italic; color: hsl(var(--muted-foreground)); }
+.tp-activity-row .copy em { font-family: 'Inter Tight', sans-serif; font-style: italic; color: hsl(var(--muted-foreground)); }
 .tp-activity-row .ts {
   display: block;
   font-family: var(--font-mono, 'JetBrains Mono', monospace);

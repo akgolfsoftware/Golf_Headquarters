@@ -37,7 +37,7 @@
   --font-display: var(--font-inter-tight, 'Inter Tight'), sans-serif;
   --font-body: var(--font-inter, 'Inter'), sans-serif;
   --font-mono: var(--font-jetbrains-mono, 'JetBrains Mono'), monospace;
-  --font-serif: 'Instrument Serif', serif;
+  --font-serif: 'Inter Tight', sans-serif;
 
   /* container */
   font-family: var(--font-body);

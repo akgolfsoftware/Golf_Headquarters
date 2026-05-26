@@ -113,7 +113,7 @@
   margin-top: 14px;
 }
 .bk-step-hero h1 em {
-  font-family: 'Instrument Serif', Georgia, serif;
+  font-family: 'Inter Tight', sans-serif;
   font-style: italic;
   font-weight: 400;
   color: var(--bk-brand);
@@ -365,7 +365,7 @@
   gap: 14px;
 }
 .bk-loc-tagline {
-  font-family: 'Instrument Serif', Georgia, serif;
+  font-family: 'Inter Tight', sans-serif;
   font-style: italic;
   font-size: 15px;
   line-height: 1.5;
@@ -495,7 +495,7 @@
   margin-top: 2px;
 }
 .bk-coach-bio {
-  font-family: 'Instrument Serif', Georgia, serif;
+  font-family: 'Inter Tight', sans-serif;
   font-style: italic;
   font-size: 14px;
   line-height: 1.5;
@@ -631,13 +631,13 @@
   letter-spacing: -0.015em;
 }
 .bk-coaching-body h3 em {
-  font-family: 'Instrument Serif', Georgia, serif;
+  font-family: 'Inter Tight', sans-serif;
   font-style: italic;
   font-weight: 400;
   color: var(--bk-brand);
 }
 .bk-coaching-body .bk-desc {
-  font-family: 'Instrument Serif', Georgia, serif;
+  font-family: 'Inter Tight', sans-serif;
   font-style: italic;
   font-size: 14px;
   line-height: 1.5;
@@ -757,7 +757,7 @@
   z-index: 1;
 }
 .bk-conf-banner h2 em {
-  font-family: 'Instrument Serif', Georgia, serif;
+  font-family: 'Inter Tight', sans-serif;
   font-style: italic;
   font-weight: 400;
   color: var(--bk-accent);

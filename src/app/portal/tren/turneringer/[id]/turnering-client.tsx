@@ -1834,7 +1834,7 @@ const TDC_CSS = `
   --tdc-font-display: 'Inter Tight', sans-serif;
   --tdc-font-body: 'Inter', sans-serif;
   --tdc-font-mono: 'JetBrains Mono', monospace;
-  --tdc-font-serif: 'Instrument Serif', serif;
+  --tdc-font-serif: 'Inter Tight', sans-serif;
   background: var(--tdc-bg);
   color: var(--tdc-fg);
   font-family: var(--tdc-font-body);

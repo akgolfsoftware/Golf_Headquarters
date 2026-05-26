@@ -40,23 +40,22 @@ export function LoggerClient({
   drill: Drill;
 }) {
   const storageKey = `live-logger:${sessionId}`;
-  const [counts, setCounts] = useState<Counts>({ ok: 7, miss: 1 });
-  const [elapsed, setElapsed] = useState(258); // 04:18
-
-  // Restore fra localStorage ved mount (offline-buffer)
-  useEffect(() => {
+  const [counts, setCounts] = useState<Counts>(() => {
+    if (typeof window === "undefined") return { ok: 7, miss: 1 };
     try {
-      const stored = localStorage.getItem(storageKey);
+      const stored = localStorage.getItem(`live-logger:${sessionId}`);
       if (stored) {
         const parsed = JSON.parse(stored) as Counts;
         if (typeof parsed.ok === "number" && typeof parsed.miss === "number") {
-          setCounts(parsed);
+          return parsed;
         }
       }
     } catch {
       // ignore
     }
-  }, [storageKey]);
+    return { ok: 7, miss: 1 };
+  });
+  const [elapsed, setElapsed] = useState(258); // 04:18
 
   // Persistér ved endring
   useEffect(() => {
@@ -132,7 +131,7 @@ export function LoggerClient({
           <em
             className="font-normal not-italic"
             style={{
-              fontFamily: "'Instrument Serif', serif",
+              fontFamily: "'Inter Tight', sans-serif",
               fontStyle: "italic",
               color: "#D1F843",
             }}

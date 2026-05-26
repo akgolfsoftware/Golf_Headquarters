@@ -100,7 +100,7 @@
   line-height: 1.05;
 }
 .meg-pg-title em {
-  font-family: 'Instrument Serif', serif;
+  font-family: 'Inter Tight', sans-serif;
   font-style: italic;
   font-weight: 400;
   color: var(--meg-brand);
@@ -340,7 +340,7 @@
 .meg-danger-link svg { width: 13px; height: 13px; }
 
 .meg-footer-quote {
-  font-family: 'Instrument Serif', serif;
+  font-family: 'Inter Tight', sans-serif;
   font-style: italic;
   font-size: 13.5px;
   color: var(--meg-muted-soft);
@@ -439,7 +439,7 @@
   line-height: 1.05;
 }
 .meg-ph h1 em {
-  font-family: 'Instrument Serif', serif;
+  font-family: 'Inter Tight', sans-serif;
   font-style: italic;
   font-weight: 400;
   color: var(--meg-brand);
@@ -820,7 +820,7 @@
   line-height: 1.15;
 }
 .meg-mh-title em {
-  font-family: 'Instrument Serif', serif;
+  font-family: 'Inter Tight', sans-serif;
   font-style: italic;
   font-weight: 400;
   color: var(--meg-brand);

@@ -33,7 +33,8 @@ type Kort = {
 };
 
 export async function AnalyserOverview({ userId }: { userId: string }) {
-  const trettiagSiden = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+  const now = new Date();
+  const trettiagSiden = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
   const [
     totalRunder,
@@ -163,7 +164,7 @@ export async function AnalyserOverview({ userId }: { userId: string }) {
             <em
               className="font-normal not-italic"
               style={{
-                fontFamily: "'Instrument Serif', serif",
+                fontFamily: "'Inter Tight', sans-serif",
                 fontStyle: "italic",
                 color: "#005840",
               }}

@@ -31,11 +31,12 @@ type Kort = {
 };
 
 export async function GjennomforeOverview({ userId }: { userId: string }) {
-  const startOfDay = new Date();
+  const now = new Date();
+  const startOfDay = new Date(now);
   startOfDay.setHours(0, 0, 0, 0);
-  const endOfDay = new Date();
+  const endOfDay = new Date(now);
   endOfDay.setHours(23, 59, 59, 999);
-  const in7 = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  const in7 = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
 
   const [
     okterIDag,
@@ -150,7 +151,7 @@ export async function GjennomforeOverview({ userId }: { userId: string }) {
             <em
               className="font-normal not-italic"
               style={{
-                fontFamily: "'Instrument Serif', serif",
+                fontFamily: "'Inter Tight', sans-serif",
                 fontStyle: "italic",
                 color: "#005840",
               }}

@@ -64,7 +64,7 @@
   margin-top: 8px;
 }
 .tp-modal .m-head h2 em {
-  font-family: 'Instrument Serif', serif;
+  font-family: 'Inter Tight', sans-serif;
   font-style: italic;
   font-weight: 400;
   color: hsl(var(--primary));
@@ -374,7 +374,7 @@
   font-size: 13px;
 }
 .tp-modal .rep-card .head .nm em {
-  font-family: 'Instrument Serif', serif;
+  font-family: 'Inter Tight', sans-serif;
   font-style: italic;
   color: hsl(var(--muted-foreground));
   font-weight: 400;

@@ -3,7 +3,7 @@
  *
  * Migrert til endelig design (wireframe/design-files-v2/final/11-hjelp.html).
  * Search-driven hjelp-senter med stort søkefelt, kategori-grid, populære artikler
- * og mørk kontakt-card. Italic Instrument Serif hero "Hva lurer du på?".
+ * og mørk kontakt-card. Italic Inter Tight hero "Hva lurer du på?".
  */
 import {
   Sparkles,

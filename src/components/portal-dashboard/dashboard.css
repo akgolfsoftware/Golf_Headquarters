@@ -100,7 +100,7 @@
   line-height: 1.1;
 }
 .phq-section-head h2 em {
-  font-family: 'Instrument Serif', serif;
+  font-family: 'Inter Tight', sans-serif;
   font-style: italic;
   font-weight: 400;
   color: var(--phq-brand);
@@ -162,7 +162,7 @@
   line-height: 1.08;
 }
 .phq-hero h1 em {
-  font-family: 'Instrument Serif', serif;
+  font-family: 'Inter Tight', sans-serif;
   font-style: italic;
   font-weight: 400;
   color: var(--phq-brand);
@@ -1103,7 +1103,7 @@
   letter-spacing: 0.08em;
 }
 .phq-coach-msg .quote {
-  font-family: 'Instrument Serif', serif;
+  font-family: 'Inter Tight', sans-serif;
   font-style: italic;
   font-size: 14px;
   line-height: 1.45;
@@ -1172,7 +1172,7 @@
   display: inline-block;
 }
 .phq-goal-card .quote {
-  font-family: 'Instrument Serif', serif;
+  font-family: 'Inter Tight', sans-serif;
   font-style: italic;
   font-size: 14px;
   line-height: 1.4;

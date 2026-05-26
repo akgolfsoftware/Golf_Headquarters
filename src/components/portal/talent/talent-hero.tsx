@@ -1,6 +1,6 @@
 /**
  * Felles hero for PlayerHQ Talent-sider.
- * Eyebrow + italic-tittel (Instrument Serif) + lead-tekst.
+ * Eyebrow + italic-tittel (Inter Tight) + lead-tekst.
  */
 
 import type { ReactNode } from "react";

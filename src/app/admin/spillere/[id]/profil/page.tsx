@@ -3,7 +3,7 @@
  *
  * Pixel-perfekt v2 (sesjon-1, skjerm 4).
  * Vertikal stack med personalia, forelder, spiller-DNA (radar), aktive mål,
- * skade-historikk og coach-vurdering (Instrument Serif blokk-quote).
+ * skade-historikk og coach-vurdering (Inter Tight blokk-quote).
  */
 
 import Link from "next/link";

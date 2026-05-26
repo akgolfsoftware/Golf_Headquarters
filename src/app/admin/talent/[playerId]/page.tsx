@@ -11,7 +11,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import {
-  ArrowLeft,
   ArrowRight,
   Award,
   GitCompare,
@@ -111,7 +110,7 @@ export default async function TalentProfil({
           <em
             className="not-italic"
             style={{
-              fontFamily: "'Instrument Serif', serif",
+              fontFamily: "'Inter Tight', sans-serif",
               fontStyle: "italic",
               color: "#005840",
             }}

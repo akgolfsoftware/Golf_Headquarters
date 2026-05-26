@@ -57,7 +57,7 @@ export default async function WorkspaceNotionPage({
           <em
             className="font-normal not-italic"
             style={{
-              fontFamily: "'Instrument Serif', serif",
+              fontFamily: "'Inter Tight', sans-serif",
               fontStyle: "italic",
               color: "#005840",
             }}
@@ -190,7 +190,7 @@ function EmptyState({
               <em
                 className="font-normal not-italic"
                 style={{
-                  fontFamily: "'Instrument Serif', serif",
+                  fontFamily: "'Inter Tight', sans-serif",
                   fontStyle: "italic",
                   color: "#005840",
                 }}

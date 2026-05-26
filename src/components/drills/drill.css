@@ -55,7 +55,7 @@
   letter-spacing: -0.02em; line-height: 1.04; margin: 2px 0 0 0;
 }
 .drill-head h1 em {
-  font-family: "Instrument Serif", Georgia, serif; font-style: italic;
+  font-family: 'Inter Tight', sans-serif; font-style: italic;
   font-weight: 400; color: var(--drill-primary); margin-left: 2px;
 }
 .drill-sub {

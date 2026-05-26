@@ -142,7 +142,7 @@ export default async function TaskDetaljPage({
               <p>
                 Vi må avklare Trackman-leie for sommeren 2026 før <strong>14. juni</strong>.
                 Mulligan Studio har Trackman bay 4 reservert, men jeg er usikker på{" "}
-                <em style={{ fontFamily: "'Instrument Serif', serif" }}>
+                <em style={{ fontFamily: "'Inter Tight', sans-serif" }}>
                   om leien dekker hele AK-pulja eller bare privat-coaching
                 </em>
                 .
@@ -444,7 +444,7 @@ function NoAccessFallback() {
           <em
             className="font-normal not-italic"
             style={{
-              fontFamily: "'Instrument Serif', serif",
+              fontFamily: "'Inter Tight', sans-serif",
               fontStyle: "italic",
               color: "#005840",
             }}
@@ -455,7 +455,7 @@ function NoAccessFallback() {
         </h2>
         <p
           className="mt-3.5 text-base leading-relaxed text-muted-foreground"
-          style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic" }}
+          style={{ fontFamily: "'Inter Tight', sans-serif", fontStyle: "italic" }}
         >
           «Anders har merket denne som PRIVAT. Du må bli tildelt eksplisitt, eller be
           om å få endret synlighet.»

@@ -1,6 +1,6 @@
 // DayView — stor enkelt-dag visning.
 //
-// - Editorial hero med dato (Instrument Serif) og italic-undertekst
+// - Editorial hero med dato (Inter Tight) og italic-undertekst
 // - PyramideBar 240px
 // - Blokker proporsjonale med varighet, én kolonne
 

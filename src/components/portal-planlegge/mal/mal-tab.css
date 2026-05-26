@@ -23,7 +23,7 @@
   --font-display: 'Inter Tight', system-ui, sans-serif;
   --font-body:    'Inter', system-ui, sans-serif;
   --font-mono:    'JetBrains Mono', ui-monospace, monospace;
-  --font-serif:   'Instrument Serif', Georgia, serif;
+  --font-serif:   'Inter Tight', sans-serif;
   --r-card: 16px;
 
   display: flex;

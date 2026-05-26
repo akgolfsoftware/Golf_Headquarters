@@ -4,7 +4,7 @@
  * wireframe/design-files-v2/pilot/03-playerhq-mal-oversikt.html.
  *
  * Server-component med:
- *  - PageHeader (italic Instrument Serif) + actions (Eksporter, Nytt mål)
+ *  - PageHeader (italic Inter Tight) + actions (Eksporter, Nytt mål)
  *  - HCP-trend dark-gradient hero med SVG-graf (12 mnd + projeksjon)
  *  - Tre mål-cards: HCP, Score, Ferdighet med progress-bars
  *  - Pyramide-status (5 ringer FYS/TEK/SLAG/SPILL/TURN)

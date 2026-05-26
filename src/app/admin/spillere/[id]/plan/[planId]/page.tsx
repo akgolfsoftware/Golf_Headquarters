@@ -84,7 +84,7 @@ export default async function SpillerPlanDetaljPage({
               <em
                 className="font-normal not-italic"
                 style={{
-                  fontFamily: "'Instrument Serif', serif",
+                  fontFamily: "'Inter Tight', sans-serif",
                   fontStyle: "italic",
                   color: "#005840",
                 }}
@@ -150,7 +150,7 @@ export default async function SpillerPlanDetaljPage({
             </div>
             <p
               className="text-base leading-relaxed"
-              style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic" }}
+              style={{ fontFamily: "'Inter Tight', sans-serif", fontStyle: "italic" }}
             >
               Bygge fundament i putt og short game før sesongstart. Spesielt fokus på &lt; 2,5m
               og pitch 30–50m. Mål: SG-putt fra −2,4 → −1,0 ved sesongstart 28. mars.
