@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AkGolfLogo } from "@/components/shared/ak-golf-logo";
+import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 import { ForgotForm } from "./forgot-form";
 
 export default function ForgotPasswordPage() {
@@ -10,8 +11,9 @@ export default function ForgotPasswordPage() {
           <AkGolfLogo width={56} />
         </Link>
 
-        <h1 className="font-display text-2xl sm:text-3xl font-semibold leading-tight tracking-tight">
-          <em className="font-normal text-primary md:italic">Glemt</em> passord?
+        <AthleticEyebrow tone="lime">BISTAND · PASSORD</AthleticEyebrow>
+        <h1 className="mt-4 font-display text-2xl sm:text-3xl font-semibold leading-tight tracking-tight">
+          <em className="font-normal italic text-primary">Glemt</em> passord?
         </h1>
         <p className="mt-2 mb-6 text-sm text-muted-foreground">
           Skriv inn e-posten din. Vi sender en lenke for å lage nytt passord.

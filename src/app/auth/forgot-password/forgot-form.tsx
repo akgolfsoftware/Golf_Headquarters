@@ -38,7 +38,7 @@ export function ForgotForm() {
         </p>
         <Link
           href="/auth/login"
-          className="mt-2 inline-block rounded-md border border-input bg-card px-6 py-2.5 text-sm font-medium hover:border-border"
+          className="font-display mt-2 inline-flex h-11 items-center justify-center gap-1.5 rounded-md border border-primary bg-transparent px-5 text-sm font-bold tracking-[-0.005em] text-primary transition hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           Tilbake til innlogging
         </Link>
@@ -73,7 +73,7 @@ export function ForgotForm() {
       <button
         type="submit"
         disabled={pending}
-        className="w-full rounded-md bg-primary px-4 py-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
+        className="font-display inline-flex h-11 w-full items-center justify-center gap-1.5 rounded-full bg-accent px-5 text-sm font-bold tracking-[-0.005em] text-primary shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition hover:brightness-105 disabled:opacity-60 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       >
         {pending ? "Sender…" : "Send reset-lenke"}
       </button>

@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { AkGolfLogo } from "@/components/shared/ak-golf-logo";
+import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 import { LoginForm } from "./login-form";
 
 export default function LoginPage() {
@@ -11,8 +12,9 @@ export default function LoginPage() {
           <AkGolfLogo width={56} />
         </Link>
 
-        <h1 className="font-display text-2xl sm:text-3xl font-semibold leading-tight tracking-tight">
-          <em className="font-normal text-primary md:italic">Velkommen</em> tilbake
+        <AthleticEyebrow tone="lime">AK GOLF · LOGG INN</AthleticEyebrow>
+        <h1 className="mt-4 font-display text-2xl sm:text-3xl font-semibold leading-tight tracking-tight">
+          <em className="font-normal italic text-primary">Velkommen</em> tilbake
         </h1>
         <p className="mt-2 mb-6 text-sm text-muted-foreground">
           Logg inn for å fortsette til plattformen.
