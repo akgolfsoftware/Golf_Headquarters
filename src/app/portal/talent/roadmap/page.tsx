@@ -98,6 +98,11 @@ export default async function RoadmapPage() {
 
   return (
     <div className="space-y-8">
+      <div className="rounded-md border border-amber-500/40 bg-amber-500/10 px-4 py-2 text-center">
+        <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-amber-700">
+          PRE-BETA · Talent-modulen viser demo-data — kobles til DB post-BETA
+        </p>
+      </div>
       <div>
         <Link
           href="/portal/talent"

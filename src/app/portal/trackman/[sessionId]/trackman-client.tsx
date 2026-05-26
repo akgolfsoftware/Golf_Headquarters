@@ -11,13 +11,12 @@
  * tilstanden lagres lokalt og kobler seg på senere via context eller URL-state.
  */
 
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Download,
   Trash2,
   GitCompare,
-  Loader2,
   SlidersHorizontal,
 } from "lucide-react";
 import { AthleticButton } from "@/components/athletic/button";
@@ -59,39 +58,15 @@ function Filter() {
   );
 }
 
-function Actions({
-  sessionId,
-  shotCount,
-}: {
-  sessionId: string;
-  shotCount: number;
-}) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function Actions(_props: { sessionId: string; shotCount: number }) {
   const router = useRouter();
-  const [pending, startTransition] = useTransition();
-
-  function eksporterCsv() {
-    // Stub — server action for CSV-eksport kobles på senere.
-    alert(`Eksporterer ${shotCount} shots som CSV. (Kobles til server action)`);
-  }
 
   function sammenlign() {
     router.push("/portal/mal/trackman");
   }
 
-  function slett() {
-    if (
-      !confirm(
-        "Er du sikker på at du vil slette denne TrackMan-økten? Dette kan ikke angres.",
-      )
-    )
-      return;
-    startTransition(() => {
-      // Server action kobles på senere.
-      alert("Slett-action ikke koblet ennå.");
-    });
-  }
-
-  const isDummy = sessionId === "dummy-session";
+  const pending = false;
 
   return (
     <section
@@ -101,11 +76,14 @@ function Actions({
       <AthleticButton
         type="button"
         variant="primary"
-        onClick={eksporterCsv}
-        disabled={pending}
+        disabled
+        title="Kommer post-BETA"
       >
         <Download className="h-4 w-4" strokeWidth={1.75} />
         Eksporter CSV
+        <span className="ml-2 font-mono text-[10px] uppercase tracking-[0.10em] opacity-70">
+          kommer snart
+        </span>
       </AthleticButton>
 
       <button
@@ -120,23 +98,16 @@ function Actions({
 
       <button
         type="button"
-        onClick={slett}
-        disabled={pending || isDummy}
-        className="inline-flex items-center gap-2 rounded-full border border-destructive/30 bg-destructive/5 px-6 py-2.5 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10 disabled:opacity-60"
+        disabled
+        title="Kommer post-BETA"
+        className="inline-flex items-center gap-2 rounded-full border border-destructive/30 bg-destructive/5 px-6 py-2.5 text-sm font-medium text-destructive opacity-50 cursor-not-allowed"
       >
-        {pending ? (
-          <Loader2 className="h-4 w-4 animate-spin" strokeWidth={1.75} />
-        ) : (
-          <Trash2 className="h-4 w-4" strokeWidth={1.75} />
-        )}
+        <Trash2 className="h-4 w-4" strokeWidth={1.75} />
         Slett økt
-      </button>
-
-      {isDummy && (
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Demo · slett-action ikke aktiv
+        <span className="ml-2 font-mono text-[10px] uppercase tracking-[0.10em] opacity-70">
+          kommer snart
         </span>
-      )}
+      </button>
     </section>
   );
 }

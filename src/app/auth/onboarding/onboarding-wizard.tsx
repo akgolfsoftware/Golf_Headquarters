@@ -630,11 +630,11 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
             <button
               className="ob-btn-lime big"
               type="button"
-              onClick={() => {
-                /* TODO: GolfBox OAuth */
-              }}
+              disabled
+              title="Kommer post-BETA"
+              style={{ opacity: 0.5, cursor: "not-allowed" }}
             >
-              Koble til GolfBox
+              Koble til GolfBox · kommer snart
             </button>
             <p
               style={{
@@ -703,11 +703,11 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
             <button
               className="ob-btn-lime big"
               type="button"
-              onClick={() => {
-                /* TODO: TrackMan OAuth */
-              }}
+              disabled
+              title="Kommer post-BETA"
+              style={{ opacity: 0.5, cursor: "not-allowed" }}
             >
-              Koble til TrackMan
+              Koble til TrackMan · kommer snart
             </button>
             <p
               style={{

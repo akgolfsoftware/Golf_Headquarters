@@ -100,6 +100,13 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs }: Props) {
         }}
       />
 
+      {/* Pre-BETA banner */}
+      <div className="absolute inset-x-0 top-14 z-20 border-b border-amber-500/40 bg-amber-500/10 px-4 py-2 text-center sm:px-6">
+        <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-amber-300">
+          PRE-BETA · Tap-data lagres ikke ennå — kun for prøving
+        </p>
+      </div>
+
       {/* Topbar */}
       <div className="relative z-10 flex items-center gap-2 border-b border-white/5 px-4 sm:px-6">
         <div className="flex items-center gap-2">
