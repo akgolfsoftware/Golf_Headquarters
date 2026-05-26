@@ -1,56 +1,38 @@
-"use client";
-
-import { AlertTriangle } from "lucide-react";
+import { Compass } from "lucide-react";
 import Link from "next/link";
-import { useEffect } from "react";
 import { AthleticHero } from "@/components/athletic/hero";
 
-type Props = {
-  error: Error & { digest?: string };
-  reset: () => void;
-};
-
-export default function PortalError({ error, reset }: Props) {
-  useEffect(() => {
-    console.error("[portal/error]", error);
-  }, [error]);
-
+export default function AdminNotFound() {
   return (
     <div className="flex min-h-[60vh] flex-col">
-      <AthleticHero eyebrow="500 · FEIL" height="lg">
+      <AthleticHero eyebrow="404 · IKKE FUNNET" height="lg">
         <div className="px-6 pb-10 md:px-10">
-          <AlertTriangle
+          <Compass
             className="mb-4 h-10 w-10 text-accent"
             strokeWidth={1.5}
             aria-hidden
           />
           <h1 className="font-display text-4xl font-bold leading-tight tracking-tight text-white md:text-5xl">
-            Noe <em className="font-normal italic text-accent">gikk galt</em>
+            Siden <em className="font-normal italic text-accent">finnes ikke</em>
           </h1>
           <p className="mt-3 max-w-md text-sm text-white/80">
-            Vi støtte på en uventet feil. Prøv igjen, eller gå tilbake til hjem.
+            Sjekk URLen eller naviger tilbake til CoachHQ-hjem.
           </p>
-          {error.digest && (
-            <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.12em] text-white/60">
-              ref {error.digest}
-            </p>
-          )}
         </div>
       </AthleticHero>
 
       <div className="flex flex-col items-center justify-center gap-3 px-6 py-10 sm:flex-row">
-        <button
-          type="button"
-          onClick={() => reset()}
+        <Link
+          href="/admin/agencyos"
           className="font-display inline-flex items-center justify-center gap-1.5 rounded-full bg-accent px-6 py-3 text-sm font-bold tracking-[-0.005em] text-primary shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
-          Tilbake til hjem
-        </button>
+          Tilbake til CoachHQ
+        </Link>
         <Link
-          href="/auth/login"
+          href="/admin/messages"
           className="font-display inline-flex items-center justify-center gap-1.5 rounded-full border border-border bg-card px-6 py-3 text-sm font-bold tracking-[-0.005em] text-foreground transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
-          Logg inn på nytt
+          Kontakt support
         </Link>
       </div>
     </div>
