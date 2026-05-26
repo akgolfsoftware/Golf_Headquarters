@@ -191,7 +191,11 @@ export function NextTournamentCountdown({
         <span
           className={cn(
             "font-display font-bold leading-[0.85] tabular-nums tracking-tighter",
-            "text-[80px] sm:text-[120px]",
+            // For numeriske dager-tellinger: stor display-størrelse (3+ siffer = mindre)
+            // For tekst-status (FERDIG/PÅGÅR/I DAG): kompakt — får ikke dominere kortet
+            /^\d+$/.test(cd.big)
+              ? "text-[64px] sm:text-[88px]"
+              : "text-[28px] sm:text-[36px]",
             cd.tone === "warning" && "text-destructive",
             cd.tone === "default" && "text-accent",
             cd.tone === "past" && "text-background/40"
@@ -199,7 +203,7 @@ export function NextTournamentCountdown({
         >
           {cd.big}
         </span>
-        <span className="mb-3 font-mono text-xs uppercase tracking-[0.12em] text-background/60">
+        <span className="mb-2 font-mono text-xs uppercase tracking-[0.12em] text-background/60">
           {cd.small}
         </span>
       </div>
