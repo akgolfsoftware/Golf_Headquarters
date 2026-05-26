@@ -6,15 +6,10 @@
  * etter day (0-6) og span (1-7 dager).
  */
 
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { WBPIc } from "./icon";
 import { usePlanContext } from "./plan-context";
-import {
-  WBP_SESSIONS,
-  WBP_WEEKS,
-  type Axis,
-  type WBP_Session,
-} from "./types";
+import { WBP_WEEKS, type Axis, type WBP_Session } from "./types";
 
 const WBP_AXES: Array<{ key: Axis; name: string; weight: number; h: number }> = [
   { key: "fys", name: "FYS", weight: 15, h: 76 },
@@ -24,16 +19,18 @@ const WBP_AXES: Array<{ key: Axis; name: string; weight: number; h: number }> = 
   { key: "turn", name: "TURN", weight: 10, h: 64 },
 ];
 
-function sessionsFor(axis: Axis, weekId: number): WBP_Session[] {
-  return WBP_SESSIONS.filter((s) => s.axis === axis && s.week === weekId);
-}
-
 function SessionCard({
   s,
   onClick,
+  onDragStart,
+  onDragEnd,
+  isDragging,
 }: {
   s: WBP_Session & { dragging?: boolean; selected?: boolean };
   onClick: (s: WBP_Session) => void;
+  onDragStart: (s: WBP_Session) => void;
+  onDragEnd: () => void;
+  isDragging: boolean;
 }) {
   const left = (s.day / 7) * 100;
   const width = (s.span / 7) * 100;
@@ -41,7 +38,7 @@ function SessionCard({
     "session",
     `s-${s.axis}`,
     s.done && "done",
-    s.dragging && "dragging",
+    isDragging && "dragging",
     s.selected && "selected",
     s.now && "now",
   ]
@@ -54,8 +51,17 @@ function SessionCard({
       style={{
         left: `calc(${left}% + 3px)`,
         width: `calc(${width}% - 6px)`,
+        opacity: isDragging ? 0.4 : 1,
+        cursor: "grab",
       }}
-      title={s.title}
+      title={`${s.title} — dra for å flytte`}
+      draggable
+      onDragStart={(e) => {
+        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("text/plain", s.id);
+        onDragStart(s);
+      }}
+      onDragEnd={onDragEnd}
       onClick={(e) => {
         e.stopPropagation();
         onClick(s);
@@ -81,8 +87,16 @@ function SessionCard({
 }
 
 export function WBP_CanvasPeriode() {
-  const { setActiveSession } = usePlanContext();
+  const { setActiveSession, sessions, moveSession } = usePlanContext();
+  const [draggingId, setDraggingId] = useState<string | null>(null);
+  const [dragOver, setDragOver] = useState<{ axis: Axis; week: number } | null>(
+    null,
+  );
   const weekCount = WBP_WEEKS.length;
+
+  function sessionsFor(axis: Axis, weekId: number): WBP_Session[] {
+    return sessions.filter((s) => s.axis === axis && s.week === weekId);
+  }
 
   const todayWeekIdx = WBP_WEEKS.findIndex((w) => w.state === "now");
   const todayDay = 1; // Tirs
@@ -211,15 +225,48 @@ export function WBP_CanvasPeriode() {
                 const isNow = w.state === "now";
                 const isPeak = w.state === "peak";
                 const ses = sessionsFor(ax.key, w.id);
+                const isDropTarget =
+                  dragOver?.axis === ax.key && dragOver?.week === w.id;
                 return (
                   <div
                     key={w.id}
                     className={
                       "lane-cell" +
                       (isNow ? " now" : "") +
-                      (isPeak ? " peak" : "")
+                      (isPeak ? " peak" : "") +
+                      (isDropTarget ? " drop-target" : "")
                     }
                     style={{ height: ax.h }}
+                    onDragOver={(e) => {
+                      if (draggingId) {
+                        e.preventDefault();
+                        e.dataTransfer.dropEffect = "move";
+                        if (
+                          dragOver?.axis !== ax.key ||
+                          dragOver?.week !== w.id
+                        ) {
+                          setDragOver({ axis: ax.key, week: w.id });
+                        }
+                      }
+                    }}
+                    onDragLeave={() => setDragOver(null)}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      const id = e.dataTransfer.getData("text/plain");
+                      if (id) {
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const day = Math.floor((x / rect.width) * 7);
+                        moveSession(
+                          id,
+                          ax.key,
+                          w.id,
+                          Math.max(0, Math.min(6, day)),
+                        );
+                      }
+                      setDraggingId(null);
+                      setDragOver(null);
+                    }}
                   >
                     <div className="day-ticks">
                       {[0, 1, 2, 3, 4, 5, 6].map((d) => (
@@ -234,9 +281,15 @@ export function WBP_CanvasPeriode() {
                           selected: s.id === "s21c",
                         }}
                         onClick={setActiveSession}
+                        onDragStart={(sess) => setDraggingId(sess.id)}
+                        onDragEnd={() => {
+                          setDraggingId(null);
+                          setDragOver(null);
+                        }}
+                        isDragging={draggingId === s.id}
                       />
                     ))}
-                    {ses.length === 0 && (
+                    {ses.length === 0 && !isDropTarget && (
                       <div className="ai-hint">
                         <WBPIc id="ic-sparkles" size={11} />
                         Caddie · foreslå

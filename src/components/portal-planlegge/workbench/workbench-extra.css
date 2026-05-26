@@ -991,6 +991,78 @@
 }
 
 /* ============================================================
+   DRAG-DROP — Sprint 5
+   ============================================================ */
+.wbp .lane-cell.drop-target {
+  background: rgba(0, 88, 64, 0.08);
+  outline: 2px dashed var(--brand-primary);
+  outline-offset: -4px;
+  border-radius: 8px;
+}
+.wbp .session[draggable="true"] {
+  user-select: none;
+}
+.wbp .session.dragging {
+  opacity: 0.4;
+  cursor: grabbing;
+}
+
+/* ============================================================
+   MOBILE FALLBACK — under 1024px
+   Workbench er designet for desktop (1680px). På mobil viser vi
+   en forenklet versjon med kun canvas, ingen sidebar/inspector.
+   ============================================================ */
+@media (max-width: 1024px) {
+  .wbp .sidebar,
+  .wbp .inspector {
+    display: none;
+  }
+  .wbp .body {
+    grid-template-columns: 1fr !important;
+  }
+  .wbp .topbar .crumbs {
+    display: none;
+  }
+  .wbp .topbar .player-picker {
+    display: none;
+  }
+  .wbp .aibar .ai-suggestions {
+    display: none;
+  }
+  .wbp .week-ribbon,
+  .wbp .lanes,
+  .wbp .periodisation {
+    overflow-x: auto;
+    min-width: 100%;
+  }
+  .wbp .wbp-modal {
+    width: calc(100vw - 16px);
+    max-width: calc(100vw - 16px);
+  }
+  .wbp .sd-drawer {
+    width: 100vw;
+  }
+  .wbp .wb-text {
+    font-size: 11px;
+  }
+}
+
+/* Mobil-only notis øverst */
+.wbp .mobile-notice {
+  display: none;
+  padding: 8px 16px;
+  background: rgba(184, 133, 42, 0.1);
+  border-bottom: 1px solid rgba(184, 133, 42, 0.3);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--warning);
+  text-align: center;
+}
+@media (max-width: 768px) {
+  .wbp .mobile-notice { display: block; }
+}
+
+/* ============================================================
    WIZARD BANNER
    ============================================================ */
 .wbp .wizard-banner {

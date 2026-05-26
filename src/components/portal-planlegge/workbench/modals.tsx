@@ -1,11 +1,15 @@
 "use client";
 
 /**
- * Sprint 2 — full impl av Periode, Camp, Frekvens, Test-velger modaler.
- * Lokal state inntil Sprint 3 kobler til Prisma.
+ * Periode, Camp, Frekvens, Test-velger modaler.
+ * Sprint 5: Camp + Periode persisteres til Prisma.
  */
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import {
+  createPeriod,
+  createTrainingCamp,
+} from "@/app/portal/planlegge/workbench/actions";
 import { WBPIc } from "./icon";
 import { usePlanContext } from "./plan-context";
 import type { Axis } from "./types";
@@ -27,10 +31,26 @@ export function WBP_ModalPeriod() {
   const [name, setName] = useState("Bygging mot turnering");
   const [type, setType] = useState("bygging");
   const [weeks, setWeeks] = useState(6);
+  const [pending, startTransition] = useTransition();
 
   function save() {
-    setModal(null);
-    showToast(`Periode «${name}» opprettet · ${weeks} uker`);
+    const fd = new FormData();
+    fd.set("name", name);
+    fd.set("type", type);
+    fd.set("weeks", String(weeks));
+    startTransition(async () => {
+      try {
+        await createPeriod(fd);
+        setModal(null);
+        showToast(`Periode «${name}» opprettet · ${weeks} uker`);
+      } catch (err) {
+        showToast(
+          err instanceof Error
+            ? `Kunne ikke opprette: ${err.message}`
+            : "Kunne ikke opprette periode",
+        );
+      }
+    });
   }
 
   return (
@@ -126,9 +146,9 @@ export function WBP_ModalPeriod() {
               type="button"
               className="wbp-btn-primary"
               onClick={save}
-              disabled={!name.trim()}
+              disabled={!name.trim() || pending}
             >
-              Opprett periode
+              {pending ? "Lagrer…" : "Opprett periode"}
               <WBPIc id="ic-arrow-right" size={12} />
             </button>
           </div>
@@ -155,10 +175,27 @@ export function WBP_ModalCamp() {
   const [partner, setPartner] = useState("wang");
   const [start, setStart] = useState("2026-06-13");
   const [end, setEnd] = useState("2026-06-16");
+  const [pending, startTransition] = useTransition();
 
   function save() {
-    setModal(null);
-    showToast(`Samling «${name}» lagt til`);
+    const fd = new FormData();
+    fd.set("name", name);
+    fd.set("partner", partner);
+    fd.set("startDate", start);
+    fd.set("endDate", end);
+    startTransition(async () => {
+      try {
+        await createTrainingCamp(fd);
+        setModal(null);
+        showToast(`Samling «${name}» lagret`);
+      } catch (err) {
+        showToast(
+          err instanceof Error
+            ? `Kunne ikke lagre: ${err.message}`
+            : "Kunne ikke lagre samling",
+        );
+      }
+    });
   }
 
   return (
@@ -254,8 +291,13 @@ export function WBP_ModalCamp() {
             >
               Avbryt
             </button>
-            <button type="button" className="wbp-btn-primary" onClick={save}>
-              Lagre samling
+            <button
+              type="button"
+              className="wbp-btn-primary"
+              onClick={save}
+              disabled={pending}
+            >
+              {pending ? "Lagrer…" : "Lagre samling"}
               <WBPIc id="ic-arrow-right" size={12} />
             </button>
           </div>

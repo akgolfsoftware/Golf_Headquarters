@@ -3,8 +3,11 @@
 /**
  * Modal: Fasiliteter — toggle hvilke fasiliteter spilleren har tilgang til.
  * Brukes av Caddie til å tilpasse drill-forslag.
+ * Sprint 5: persisterer til Prisma via saveFacilities.
  */
 
+import { useTransition } from "react";
+import { saveFacilities } from "@/app/portal/planlegge/workbench/actions";
 import { WBPIc } from "./icon";
 import { usePlanContext } from "./plan-context";
 import type { WBP_Facilities } from "./types";
@@ -29,6 +32,7 @@ const FACILITIES: Array<{
 
 export function WBP_ModalFacilities() {
   const { facilities, setFacilities, setModal, showToast } = usePlanContext();
+  const [pending, startTransition] = useTransition();
 
   function toggle(key: keyof WBP_Facilities) {
     setFacilities({ ...facilities, [key]: !facilities[key] });
@@ -37,8 +41,11 @@ export function WBP_ModalFacilities() {
   const yes = Object.values(facilities).filter(Boolean).length;
 
   function handleSave() {
-    setModal(null);
-    showToast(`Fasiliteter oppdatert — ${yes} av ${FACILITIES.length} tilgjengelig`);
+    startTransition(async () => {
+      await saveFacilities(facilities);
+      setModal(null);
+      showToast(`Fasiliteter lagret — ${yes} av ${FACILITIES.length} aktive`);
+    });
   }
 
   return (
@@ -109,8 +116,9 @@ export function WBP_ModalFacilities() {
               type="button"
               className="wbp-btn-primary"
               onClick={handleSave}
+              disabled={pending}
             >
-              Lagre
+              {pending ? "Lagrer…" : "Lagre"}
               <WBPIc id="ic-arrow-right" size={12} />
             </button>
           </div>

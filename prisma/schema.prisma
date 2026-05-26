@@ -455,6 +455,9 @@ model User {
   // Treningssamlinger (Workbench Plan A · Sprint 3)
   trainingCamps       TrainingCamp[]
 
+  // Fasilitet-preferanser (Workbench Plan A · Sprint 5)
+  facilityPrefs       FacilityPrefs?
+
   // Fysisk plan (per plan Del 31)
   fysiskeOktRelasjoner FysiskPlan[] @relation("FysiskPlanUser")
   lagdeFysPlaner       FysiskPlan[] @relation("FysiskPlanCreator")
@@ -3108,6 +3111,28 @@ model TechnicalPlan {
   @@index([periodBlockId])
   @@index([parentPlanId])
   @@map("technical_plans")
+}
+
+// FacilityPrefs — hvilke fasiliteter spilleren har tilgang til (Workbench Plan A · Sprint 5)
+model FacilityPrefs {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  range     Boolean  @default(true)
+  putting   Boolean  @default(true)
+  shortgame Boolean  @default(true)
+  trackman  Boolean  @default(true)
+  course9   Boolean  @default(false)
+  course18  Boolean  @default(true)
+  gym       Boolean  @default(true)
+  yoga      Boolean  @default(false)
+  pool      Boolean  @default(false)
+  video     Boolean  @default(true)
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("facility_prefs")
 }
 
 // TrainingCamp — treningssamling (Workbench Plan A · Sprint 3)

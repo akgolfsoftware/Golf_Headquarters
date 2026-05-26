@@ -148,10 +148,45 @@ type FacilityState = {
 };
 
 export async function saveFacilities(state: FacilityState) {
-  await requirePortalUser();
-  // TODO: lagre til dedikert FacilityPrefs-modell (Sprint 4).
-  // Inntil videre: state holdes i client-side React state.
-  void state;
+  const user = await requirePortalUser();
+  await prisma.facilityPrefs.upsert({
+    where: { userId: user.id },
+    create: { userId: user.id, ...state },
+    update: state,
+  });
   revalidatePath("/portal/planlegge/workbench");
   return { ok: true };
+}
+
+export async function loadFacilities(): Promise<FacilityState> {
+  const user = await requirePortalUser();
+  const prefs = await prisma.facilityPrefs.findUnique({
+    where: { userId: user.id },
+  });
+  if (!prefs) {
+    return {
+      range: true,
+      putting: true,
+      shortgame: true,
+      trackman: true,
+      course9: false,
+      course18: true,
+      gym: true,
+      yoga: false,
+      pool: false,
+      video: true,
+    };
+  }
+  return {
+    range: prefs.range,
+    putting: prefs.putting,
+    shortgame: prefs.shortgame,
+    trackman: prefs.trackman,
+    course9: prefs.course9,
+    course18: prefs.course18,
+    gym: prefs.gym,
+    yoga: prefs.yoga,
+    pool: prefs.pool,
+    video: prefs.video,
+  };
 }
