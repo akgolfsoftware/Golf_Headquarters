@@ -1,253 +1,284 @@
 /**
- * PlayerHQ Workbench v2 — sprint 1-leveranse.
+ * /portal — PlayerHQ Dashboard
  *
- * Bruker 9 nye komponenter fra src/components/portal/workbench/.
- * Lever side-om-side med eksisterende /portal som forhåndsvisning.
- *
- * Athletic editorial: hero med AK Golf Academy-bilde, dark moment-cards,
- * editorial section headers med lime accent, og store display-tall.
- *
- * Når godkjent: erstatter /portal/page.tsx (eller flagges som default).
+ * Pixel-perfect implementering av workbench-v2/planlegge.html
+ * (Athletic Editorial Living v3). Bruker ekte Prisma-data der mulig,
+ * mock-fallback for områder uten datakilde ennå.
  */
 
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { getViewMode } from "@/lib/view-mode";
 import { prisma } from "@/lib/prisma";
-import { PlayerHeroImage } from "@/components/portal/workbench/player-hero-image";
-import { CalendarWidget } from "@/components/portal/workbench/calendar-widget";
-import { AiInsightsRow } from "@/components/portal/workbench/ai-insights-row";
-import { WeekProgressCard } from "@/components/portal/workbench/week-progress-card";
 import {
-  TrainingPartnersRow,
-  type TrainingPartner,
-} from "@/components/portal/workbench/training-partners-row";
-import { NextTournamentCountdown } from "@/components/portal/workbench/next-tournament-countdown";
-import { WellnessIndicators } from "@/components/portal/workbench/wellness-indicators";
-import {
-  QuickActions,
-  DEFAULT_QUICK_ACTIONS,
-} from "@/components/portal/workbench/quick-actions";
-import { FabButton } from "@/components/portal/workbench/fab-button";
-import { SectionHeader } from "@/components/portal/workbench/section-header";
-import { getWeekProgress } from "@/components/portal/workbench/get-week-progress";
-import { getCaddieInsights } from "@/lib/ai/get-workbench-insights";
+  PlanleggeV3,
+  type ActivePlan,
+  type AxisData,
+  type DrillCategory,
+  type Goal,
+  type Tournament,
+} from "@/components/portal-planlegge/planlegge-v3/planlegge-v3";
 
 export const dynamic = "force-dynamic";
 
-export default async function WorkbenchV2() {
+// --- Fallback-data for pre-BETA (ingen koblet data ennå) ---
+
+const MOCK_PLAN: ActivePlan = {
+  id: "pre-beta-plan",
+  name: "Velkommen-plan",
+  coach: "Anders Kristiansen",
+  startDate: "Pågående",
+  endDate: "—",
+  currentWeek: 1,
+  totalWeeks: 6,
+  progress: 0,
+  milestones: [
+    {
+      id: "m1",
+      label: "FYS-fundament",
+      weeks: "Uke 1 – 2",
+      status: "active",
+      summary: "Mobilitet + power-base",
+      drills: 0,
+    },
+    {
+      id: "m2",
+      label: "TEK-konsolidering",
+      weeks: "Uke 3 – 4",
+      status: "planned",
+      summary: "Sving-tempo + gate-drill",
+      drills: 0,
+    },
+    {
+      id: "m3",
+      label: "SLAG-presisjon",
+      weeks: "Uke 5",
+      status: "planned",
+      summary: "Wedge + spin-kontroll",
+      drills: 0,
+    },
+    {
+      id: "m4",
+      label: "TURN-ramping",
+      weeks: "Uke 6",
+      status: "planned",
+      summary: "Visualisering + rutine",
+      drills: 0,
+    },
+  ],
+};
+
+const MOCK_AXES: AxisData[] = [
+  {
+    axis: "FYS",
+    actualHours: 0,
+    targetHours: 6,
+    drills: 0,
+    sessionsThisWeek: 0,
+    lastSession: "ingen",
+    note: "Ikke startet",
+  },
+  {
+    axis: "TEK",
+    actualHours: 0,
+    targetHours: 8,
+    drills: 0,
+    sessionsThisWeek: 0,
+    lastSession: "ingen",
+    note: "Ikke startet",
+  },
+  {
+    axis: "SLAG",
+    actualHours: 0,
+    targetHours: 6,
+    drills: 0,
+    sessionsThisWeek: 0,
+    lastSession: "ingen",
+    note: "Ikke startet",
+  },
+  {
+    axis: "SPILL",
+    actualHours: 0,
+    targetHours: 6.5,
+    drills: 0,
+    sessionsThisWeek: 0,
+    lastSession: "ingen",
+    note: "Ikke startet",
+  },
+  {
+    axis: "TURN",
+    actualHours: 0,
+    targetHours: 1.5,
+    drills: 0,
+    sessionsThisWeek: 0,
+    lastSession: "ingen",
+    note: "Ikke startet",
+  },
+];
+
+const MOCK_DRILL_LIB: DrillCategory[] = [
+  {
+    id: "putting",
+    label: "Putting",
+    count: 0,
+    axis: "SPILL",
+    lastUsed: "aldri",
+    icon: "target",
+    featured: true,
+  },
+  {
+    id: "wedge",
+    label: "Wedge",
+    count: 0,
+    axis: "TEK",
+    lastUsed: "aldri",
+    icon: "flag",
+  },
+  {
+    id: "driver",
+    label: "Driver",
+    count: 0,
+    axis: "TEK",
+    lastUsed: "aldri",
+    icon: "zap",
+  },
+  {
+    id: "approach",
+    label: "Approach",
+    count: 0,
+    axis: "SLAG",
+    lastUsed: "aldri",
+    icon: "compass",
+    featured: true,
+  },
+  {
+    id: "bunker",
+    label: "Bunker",
+    count: 0,
+    axis: "SLAG",
+    lastUsed: "aldri",
+    icon: "mapPin",
+  },
+  {
+    id: "mental",
+    label: "Mental",
+    count: 0,
+    axis: "TURN",
+    lastUsed: "aldri",
+    icon: "brain",
+  },
+];
+
+function initials(name: string | null): string {
+  if (!name) return "??";
+  return name
+    .split(/\s+/)
+    .map((s) => s[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+}
+
+function daysUntil(date: Date): number {
+  const diff = date.getTime() - Date.now();
+  return Math.max(0, Math.ceil(diff / 86_400_000));
+}
+
+function formatDateRange(start: Date, end: Date | null | undefined): string {
+  const opts: Intl.DateTimeFormatOptions = { day: "numeric", month: "short" };
+  const startStr = start.toLocaleDateString("nb-NO", opts);
+  if (!end) return startStr;
+  const endStr = end.toLocaleDateString("nb-NO", opts);
+  return startStr === endStr ? startStr : `${startStr} – ${endStr}`;
+}
+
+export default async function DashboardPage() {
   const user = await requirePortalUser();
-  if (user.role === "PARENT") redirect("/forelder");
+
+  const viewMode = await getViewMode();
+  if (user.role === "COACH" || user.role === "ADMIN") {
+    if (viewMode !== "player") redirect("/admin");
+  }
   if (user.role === "GUEST") redirect("/admin/kalender");
+  if (user.role === "PARENT") redirect("/forelder");
 
-  const now = new Date();
-  const startOfDay = new Date(now);
-  startOfDay.setHours(0, 0, 0, 0);
-  const endOfDay = new Date(startOfDay);
-  endOfDay.setDate(endOfDay.getDate() + 1);
-
-  // --- Dagens økter (TrainingSessionV2) ---
-  const dagensOkter = await prisma.trainingSessionV2
+  // --- Ekte data: mål ---
+  const goalRows = await prisma.goal
     .findMany({
-      where: {
-        studentId: user.id,
-        startTime: { gte: startOfDay, lt: endOfDay },
-      },
-      orderBy: { startTime: "asc" },
-      take: 10,
+      where: { userId: user.id, status: "ACTIVE" },
+      orderBy: { createdAt: "desc" },
+      take: 4,
     })
     .catch(() => []);
 
-  // PracticeType → pyramide-mapping (approksimasjon — bedre når plan-sesjoner brukes)
-  const practiceToPyramid: Record<string, "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN"> = {
-    BLOKK: "TEK",
-    RANDOM: "SLAG",
-    KONKURRANSE: "TURN",
-    SPILL_TEST: "SPILL",
-  };
-
-  const calendarSessions = dagensOkter.map((s) => ({
-    id: s.id,
-    title: s.title,
-    startAt: s.startTime,
-    endAt: s.endTime,
-    pyramid: practiceToPyramid[s.practiceType] ?? "TEK",
-    location: s.miljo ?? undefined,
-    drills: [],
-    tags: [],
+  const goals: Goal[] = goalRows.map((g, i) => ({
+    id: g.id,
+    title: g.title,
+    deadline: g.targetDate
+      ? g.targetDate.toLocaleDateString("nb-NO", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        })
+      : "Ingen frist",
+    current: 0,
+    target: typeof g.targetValue === "number" ? g.targetValue : 0,
+    progress: 0,
+    unit: "stroke" as const,
+    trend: "flat" as const,
+    metric: g.type ?? "Mål",
+    priority: i === 0,
   }));
 
-  // --- HCP-trend (approks via score-trend siste 20 runder) ---
-  const recentRounds = await prisma.round
+  // --- Ekte data: turneringer ---
+  const tournamentRows = await prisma.tournamentEntry
     .findMany({
-      where: { userId: user.id },
-      orderBy: { playedAt: "desc" },
-      take: 20,
-      select: { score: true, playedAt: true },
-    })
-    .catch(() => []);
-
-  let hcpTrend: number | undefined;
-  if (recentRounds.length >= 5) {
-    const half = Math.floor(recentRounds.length / 2);
-    const eldreSnitt =
-      recentRounds.slice(half).reduce((a, r) => a + r.score, 0) /
-      (recentRounds.length - half);
-    const nyereSnitt =
-      recentRounds.slice(0, half).reduce((a, r) => a + r.score, 0) / half;
-    // Lavere score = bedre. Positiv hcpTrend = forbedring.
-    hcpTrend = (eldreSnitt - nyereSnitt) / 10;  // skaler ned til hcp-størrelse
-  }
-
-  // --- Neste turnering ---
-  const upcoming = await prisma.tournamentEntry
-    .findFirst({
       where: {
         userId: user.id,
         entryStatus: { in: ["PLANNED", "CONFIRMED"] },
       },
       include: { tournament: true },
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: "asc" },
+      take: 4,
     })
-    .catch(() => null);
+    .catch(
+      () =>
+        [] as Awaited<
+          ReturnType<
+            typeof prisma.tournamentEntry.findMany<{
+              include: { tournament: true };
+            }>
+          >
+        >,
+    );
 
-  const nesteTurnering = upcoming?.tournament?.startDate
-    ? {
-        id: upcoming.tournamentId ?? "manual",
-        navn:
-          upcoming.tournament?.name ?? upcoming.manualName ?? "Turnering",
-        startDato: upcoming.tournament.startDate,
-        sluttDato: upcoming.tournament.endDate ?? upcoming.tournament.startDate,
-        sted: upcoming.tournament.location ?? "Ukjent sted",
-        format: upcoming.tournament.format ?? undefined,
-      }
-    : null;
-
-  // --- Hero-data ---
-  const userData = {
-    name: user.name ?? "Spiller",
-    tier: (user.tier ?? "GRATIS") as "GRATIS" | "PRO" | "ELITE",
-    nivaa: undefined,  // TODO: bruk NGF-kategori når feltet finnes
-    hcp: user.hcp ?? null,
-    hcpTrend,
-    avatarUrl: user.avatarUrl ?? undefined,
-  };
-
-  // --- Ukens progresjon ---
-  const ukens = await getWeekProgress(user.id).catch(() => null);
-
-  // --- AI-Innsikt (3 kort) ---
-  const insights = await getCaddieInsights(user.id).catch(() => []);
-
-  // --- Treningskompiser (mock inntil SessionParticipant-modellen finnes) ---
-  const partners: TrainingPartner[] = [];
-
-  // --- Wellness (skjelett — wearable ikke koblet ennå) ---
-  const wellnessData = null;
+  const tournaments: Tournament[] = tournamentRows
+    .filter((e) => e.tournament?.startDate || e.manualDate)
+    .map((e, i) => {
+      const startDate = e.tournament?.startDate ?? e.manualDate!;
+      const endDate = e.tournament?.endDate ?? e.manualDate;
+      return {
+        id: e.id,
+        name: e.tournament?.name ?? e.manualName ?? "Turnering",
+        dateRange: formatDateRange(startDate, endDate),
+        location: e.tournament?.location ?? "Ukjent sted",
+        status:
+          e.entryStatus === "CONFIRMED" ? "REGISTRERT" : ("PLANLAGT" as const),
+        daysUntil: daysUntil(startDate),
+        format: e.tournament?.format ?? "—",
+        priority: i === 0,
+      };
+    });
 
   return (
-    <div className="mx-auto max-w-7xl space-y-10 px-4 py-6 sm:py-8 md:px-6 lg:space-y-12 lg:px-8">
-      {/* HERO — AK Golf Academy-bilde med dark gradient */}
-      <PlayerHeroImage
-        user={userData}
-        neste_turnering={
-          nesteTurnering
-            ? { navn: nesteTurnering.navn, dato: nesteTurnering.startDato }
-            : undefined
-        }
-        imageId={1}
-      />
-
-      {/* SEKSJON: I DAG */}
-      <section aria-labelledby="i-dag-heading">
-        <SectionHeader
-          eyebrow="Programmet i dag"
-          title="I dag"
-          description={
-            calendarSessions.length > 0
-              ? `${calendarSessions.length} økt${calendarSessions.length === 1 ? "" : "er"} planlagt — tidslinje fra 05:00 til 24:00.`
-              : "Ingen økter planlagt. Bruk snarveiene under til å starte en økt eller booke en time."
-          }
-          cta={{ label: "Full kalender", href: "/portal/kalender" }}
-        />
-        <CalendarWidget sessions={calendarSessions} currentTime={now} />
-      </section>
-
-      {/* SEKSJON: AI-INNSIKT */}
-      {insights.length > 0 && (
-        <section aria-labelledby="innsikt-heading">
-          <SectionHeader
-            eyebrow="Fra Caddie"
-            title="AI-innsikt"
-            description="Tre observasjoner basert på siste 30 dager. Klikk en handling for å sette i gang."
-          />
-          <AiInsightsRow insights={insights} />
-        </section>
-      )}
-
-      {/* SEKSJON: UKAS PROGRESJON */}
-      {ukens && (
-        <section aria-labelledby="ukens-heading">
-          <SectionHeader
-            eyebrow="Status siste 7 dager"
-            title="Ukas progresjon"
-            description="Hvordan tida er fordelt mellom pyramide-aksene + summering av aktivitet."
-            cta={{ label: "Se analyse", href: "/portal/analysere" }}
-          />
-          <WeekProgressCard
-            fordeling={ukens.fordeling}
-            anbefaling={ukens.anbefaling}
-            ukens_stats={ukens.ukens_stats}
-          />
-        </section>
-      )}
-
-      {/* SEKSJON: SNARVEIER */}
-      <section aria-labelledby="snarveier-heading">
-        <SectionHeader
-          eyebrow="Kom raskt i gang"
-          title="Snarveier"
-          description="Hyppigste handlinger ett klikk unna. Hovedhandling i mørk farge."
-        />
-        <QuickActions actions={DEFAULT_QUICK_ACTIONS} />
-      </section>
-
-      {/* SEKSJON: TRENINGSKOMPISER */}
-      {partners.length > 0 && (
-        <section aria-labelledby="kompiser-heading">
-          <SectionHeader
-            eyebrow="Sosial trening"
-            title="Tren sammen"
-            description="Spillere du har felles økter med denne uka."
-          />
-          <TrainingPartnersRow partners={partners} />
-        </section>
-      )}
-
-      {/* SEKSJON: TURNERING + VELVÆRE — 2-kolonne */}
-      <section aria-labelledby="moment-heading">
-        <SectionHeader
-          eyebrow="Hva som teller mest"
-          title="Turnering + velvære"
-          description="Nedtelling til neste konkurranse og daglig kropp-status fra wearable."
-        />
-        <div className="grid gap-6 md:grid-cols-2">
-          {nesteTurnering && (
-            <NextTournamentCountdown
-              turnering={nesteTurnering}
-              forberedelse={{
-                planOppdatert: true,
-                reiseBooket: false,
-                baneRecon: false,
-                mentalForberedelse: false,
-              }}
-            />
-          )}
-          <WellnessIndicators data={wellnessData} />
-        </div>
-      </section>
-
-      {/* FAB — mobile-only floating action button */}
-      <FabButton />
-    </div>
+    <PlanleggeV3
+      user={{ initials: initials(user.name), name: user.name ?? "Spiller" }}
+      activePlan={MOCK_PLAN}
+      axes={MOCK_AXES}
+      drillLib={MOCK_DRILL_LIB}
+      goals={goals}
+      tournaments={tournaments}
+    />
   );
 }
