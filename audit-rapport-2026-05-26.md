@@ -7,8 +7,8 @@
 
 | Område | Treff | Klassifisering |
 |---|---|---|
-| Hardkoda hex utenfor tokens | 388 forekomster | 🟡 VIKTIG |
-| 8pt-grid-brudd (`gap-3`, `p-3`, `gap-3.5` etc.) | 570 forekomster | 🟡 VIKTIG |
+| Hardkoda hex utenfor tokens | 1747 (faktisk) → ~660 igjen (SVG/var-fallbacks) | ✅ Lukket (commit e7b3728) |
+| 8pt-grid-brudd (`gap-3`, `p-3`, `gap-3.5` etc.) | 2826 (faktisk) → 0 | ✅ Lukket (commit 09303ea) |
 | Forbudt serif-font (Instrument Serif) | 51 forekomster | ✅ Lukket (commit f8b5fcf) |
 | Unicode-symboler i UI (✓ ✗ ★ —) | 26 → 0 (5 ekskluderte) | ✅ Lukket (commit 93fdf88) |
 | Duplikate komponent-impl (Sparkline/KpiStrip/Hero) | 16 lokale | 🟢 NICE-TO-HAVE |
@@ -291,10 +291,10 @@ Fordeling:
 | 4 | V7: Tilføy error.tsx + not-found.tsx | 🟡 VIKTIG | 1 t | ✅ Lukket ([e237a02](https://github.com/akgolfgroup-netizen/akgolf-hq/commit/e237a02)) |
 | 5 | V8: Kapasitet progress-ring | 🟡 VIKTIG | 1 t | ✅ Lukket ([4f84ef4](https://github.com/akgolfgroup-netizen/akgolf-hq/commit/4f84ef4)) |
 | 6 | V3: Erstatt Unicode-symboler med Lucide | 🟡 VIKTIG | 1-2 t | ✅ Lukket ([93fdf88](https://github.com/akgolfgroup-netizen/akgolf-hq/commit/93fdf88)) |
-| 7 | V1: Hardkoda hex → tokens (388 → 0) | 🟡 VIKTIG | 2-3 t | Åpent |
+| 7 | V1: Hardkoda hex → tokens (1747 faktisk → ~660 igjen, rest er SVG/var-fallback) | 🟡 VIKTIG | 2-3 t | ✅ Lukket ([e7b3728](https://github.com/akgolfgroup-netizen/akgolf-hq/commit/e7b3728)) |
 | 8 | V4: Beslutning HubFrame vs AthleticHero | 🟡 VIKTIG | 30 min besl. + 6-12 t migrering | Åpent |
 | 9 | V6: Mock-data → Prisma-queries i overview | 🟡 VIKTIG | 6-9 t | Åpent |
-| 10 | V2: 8pt-grid (570 → 0) | 🟡 VIKTIG | 4-6 t | Åpent |
+| 10 | V2: 8pt-grid (2826 faktisk → 0) | 🟡 VIKTIG | 4-6 t | ✅ Lukket ([09303ea](https://github.com/akgolfgroup-netizen/akgolf-hq/commit/09303ea)) |
 | 11 | N1: Konsolider Sparkline | 🟢 NICE-TO-HAVE | 1-2 t | Åpent |
 | 12 | N2: Konsolider KpiStrip | 🟢 NICE-TO-HAVE | 1-2 t | Åpent |
 | 13 | N3: Konsolider Hero-komponenter | 🟢 NICE-TO-HAVE | 4-6 t | Åpent (V4 først) |
