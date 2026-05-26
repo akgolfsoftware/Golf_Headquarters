@@ -1,0 +1,412 @@
+/* ============================================================
+   Workbench Plan · Variant A · Pyramid Lanes
+   Periode-canvas: x = weeks, y = 5 pyramid axes (heights proportional
+   to current period's ideal weights — they reshape per phase).
+   ============================================================ */
+
+.wbp .canvas {
+  position: relative;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--bg);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+/* ---- Canvas header: period bar + week columns ---- */
+.wbp .canvas-head {
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 20px 0;
+}
+.wbp .canvas-head .top-row {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  margin-bottom: 14px;
+  gap: 16px;
+}
+.wbp .canvas-head .ttl {
+  font-family: var(--font-display);
+  font-size: 24px; font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--fg);
+  display: flex; align-items: baseline; gap: 12px;
+}
+.wbp .canvas-head .ttl em { color: var(--brand-primary); font-style: italic; font-weight: 500; }
+.wbp .canvas-head .ttl .num {
+  font-family: var(--font-mono); font-size: 14px; font-weight: 600;
+  color: var(--muted); letter-spacing: 0.04em;
+  background: var(--bg-2); padding: 3px 8px; border-radius: 5px;
+  align-self: center;
+}
+.wbp .canvas-head .meta-strip {
+  display: flex; align-items: center; gap: 18px;
+  font-family: var(--font-mono); font-size: 11px;
+  color: var(--muted); letter-spacing: 0.04em;
+}
+.wbp .canvas-head .meta-strip strong { color: var(--fg); font-weight: 700; }
+.wbp .canvas-head .meta-strip .sep {
+  width: 3px; height: 3px; border-radius: 50%; background: var(--muted-soft);
+}
+
+/* ---- Phase bar (this period's pyramid shape, as horizontal proportions) ---- */
+.wbp .phase-bar {
+  display: flex; align-items: stretch;
+  height: 8px; border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.wbp .phase-bar .seg { position: relative; }
+.wbp .phase-bar .seg.fys   { background: var(--fys); }
+.wbp .phase-bar .seg.tek   { background: var(--tek); }
+.wbp .phase-bar .seg.slag  { background: var(--slag); }
+.wbp .phase-bar .seg.spill { background: var(--brand-accent); }
+.wbp .phase-bar .seg.turn  { background: var(--turn); }
+
+/* ---- Week columns ribbon ---- */
+.wbp .week-ribbon {
+  display: grid;
+  grid-template-columns: 90px repeat(var(--week-count), 1fr);
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+}
+.wbp .week-ribbon .corner {
+  background: var(--card);
+  border-right: 1px solid var(--border);
+}
+.wbp .week-ribbon .wcol {
+  padding: 8px 10px 10px;
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: 2px;
+  background: var(--card);
+  position: relative;
+}
+.wbp .week-ribbon .wcol:last-child { border-right: 0; }
+.wbp .week-ribbon .wcol .w-id {
+  font-family: var(--font-mono); font-size: 9.5px; font-weight: 600;
+  letter-spacing: 0.10em; text-transform: uppercase; color: var(--muted);
+}
+.wbp .week-ribbon .wcol .w-dates {
+  font-family: var(--font-display); font-size: 13px; font-weight: 600;
+  color: var(--fg); letter-spacing: -0.005em; line-height: 1.1;
+}
+.wbp .week-ribbon .wcol .w-load {
+  margin-top: 4px;
+  position: relative; height: 5px;
+  background: var(--bg-2); border-radius: 999px;
+}
+.wbp .week-ribbon .wcol .w-load .f {
+  position: absolute; left: 0; top: 0; bottom: 0;
+  background: var(--brand-primary); border-radius: 999px;
+}
+.wbp .week-ribbon .wcol .w-load .ideal {
+  position: absolute; top: -3px; bottom: -3px;
+  width: 1.5px; background: var(--fg);
+  border-radius: 1px;
+}
+.wbp .week-ribbon .wcol .w-mini {
+  display: flex; gap: 8px;
+  margin-top: 4px;
+  font-family: var(--font-mono); font-size: 9.5px;
+  color: var(--muted); letter-spacing: 0.04em;
+}
+.wbp .week-ribbon .wcol .w-mini strong { color: var(--fg); font-weight: 700; }
+.wbp .week-ribbon .wcol.now {
+  background: rgba(209,248,67,0.10);
+}
+.wbp .week-ribbon .wcol.now .w-id { color: var(--brand-primary); font-weight: 700; }
+.wbp .week-ribbon .wcol.now::after {
+  content: 'NÅ'; position: absolute; top: 8px; right: 10px;
+  font-family: var(--font-mono); font-size: 8px; font-weight: 700;
+  letter-spacing: 0.10em;
+  background: var(--brand-primary); color: var(--brand-accent);
+  padding: 1px 5px; border-radius: 3px;
+}
+.wbp .week-ribbon .wcol.peak {
+  background: rgba(163,45,45,0.04);
+}
+.wbp .week-ribbon .wcol.peak .w-id { color: var(--turn); font-weight: 700; }
+.wbp .week-ribbon .wcol.peak::after {
+  content: 'TURN'; position: absolute; top: 8px; right: 10px;
+  font-family: var(--font-mono); font-size: 8px; font-weight: 700;
+  letter-spacing: 0.10em;
+  background: var(--turn); color: #fff;
+  padding: 1px 5px; border-radius: 3px;
+}
+
+/* ============================================================
+   PYRAMID LANES — the centerpiece
+   ============================================================ */
+.wbp .lanes-scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+  position: relative;
+}
+.wbp .lanes {
+  display: grid;
+  grid-template-columns: 90px repeat(var(--week-count), 1fr);
+  position: relative;
+}
+
+.wbp .lane-label {
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+  display: flex; align-items: center; justify-content: flex-start;
+  padding: 14px 12px;
+  position: sticky; left: 0; z-index: 5;
+}
+.wbp .lane-label .axis-bar {
+  width: 4px; height: 80%; border-radius: 2px; margin-right: 10px;
+}
+.wbp .lane-label .ax-name {
+  font-family: var(--font-display); font-size: 14px; font-weight: 600;
+  color: var(--fg); letter-spacing: -0.005em;
+}
+.wbp .lane-label .ax-pct {
+  display: block;
+  font-family: var(--font-mono); font-size: 10.5px; font-weight: 700;
+  color: var(--muted); letter-spacing: 0.04em;
+  margin-top: 2px;
+}
+
+.wbp .lane-cell {
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  background: var(--bg);
+  min-height: 60px;
+  cursor: copy;
+}
+.wbp .lane-cell:last-child { border-right: 0; }
+.wbp .lane-cell.now { background: rgba(209,248,67,0.06); }
+.wbp .lane-cell.peak { background: rgba(163,45,45,0.04); }
+.wbp .lane-cell:hover { background: var(--bg-2); }
+.wbp .lane-cell:hover.now  { background: rgba(209,248,67,0.14); }
+.wbp .lane-cell:hover.peak { background: rgba(163,45,45,0.08); }
+
+/* Lane backgrounds — subtle tint per axis */
+.wbp .lane-row.fys   .lane-label .axis-bar { background: var(--fys); }
+.wbp .lane-row.tek   .lane-label .axis-bar { background: var(--tek); }
+.wbp .lane-row.slag  .lane-label .axis-bar { background: var(--slag); }
+.wbp .lane-row.spill .lane-label .axis-bar { background: #B8C73A; }
+.wbp .lane-row.turn  .lane-label .axis-bar { background: var(--turn); }
+
+/* Day-tick markers inside a week cell */
+.wbp .lane-cell .day-ticks {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  height: 4px;
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  opacity: 0.3;
+  pointer-events: none;
+}
+.wbp .lane-cell .day-ticks .t { border-right: 1px solid var(--line-strong); }
+.wbp .lane-cell .day-ticks .t:last-child { border-right: 0; }
+
+/* ---- Session blocks ---- */
+.wbp .session {
+  position: absolute;
+  top: 6px; bottom: 6px;
+  border-radius: 6px;
+  cursor: grab;
+  padding: 5px 7px 5px 9px;
+  display: flex; flex-direction: column; justify-content: center;
+  gap: 1px;
+  font-family: var(--font-body);
+  color: var(--fg);
+  overflow: hidden;
+  border: 1px solid;
+  border-left-width: 3px;
+  transition: transform 140ms ease, box-shadow 140ms ease;
+  z-index: 2;
+}
+.wbp .session:hover { transform: translateY(-1px); box-shadow: 0 6px 14px -4px rgba(10,31,23,0.16); }
+.wbp .session.selected {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 1px;
+  z-index: 4;
+}
+.wbp .session .title {
+  font-family: var(--font-display); font-size: 11.5px; font-weight: 600;
+  line-height: 1.15;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.wbp .session .meta {
+  font-family: var(--font-mono); font-size: 9.5px;
+  color: var(--muted); letter-spacing: 0.04em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.wbp .session.s-fys   { background: rgba(0,88,64,0.10);    border-color: rgba(0,88,64,0.30);    border-left-color: var(--fys); }
+.wbp .session.s-tek   { background: rgba(184,133,42,0.10); border-color: rgba(184,133,42,0.32); border-left-color: var(--tek); }
+.wbp .session.s-slag  { background: rgba(37,99,235,0.10);  border-color: rgba(37,99,235,0.30);  border-left-color: var(--slag); }
+.wbp .session.s-spill { background: rgba(209,248,67,0.32); border-color: rgba(0,0,0,0.10);      border-left-color: #B8C73A; }
+.wbp .session.s-turn  { background: rgba(163,45,45,0.10);  border-color: rgba(163,45,45,0.30);  border-left-color: var(--turn); }
+.wbp .session.s-spill .meta { color: #4A5418; }
+
+.wbp .session.done {
+  opacity: 0.62;
+}
+.wbp .session.done .title { text-decoration: line-through; text-decoration-color: var(--muted-soft); }
+.wbp .session.dragging {
+  opacity: 0.50;
+  cursor: grabbing;
+  box-shadow: 0 12px 28px -8px rgba(10,31,23,0.30);
+  transform: rotate(-1.5deg) translateY(-2px);
+  z-index: 8;
+}
+.wbp .session-ghost {
+  position: absolute;
+  top: 6px; bottom: 6px;
+  border-radius: 6px;
+  border: 2px dashed var(--brand-primary);
+  background: rgba(0,88,64,0.06);
+  pointer-events: none;
+  z-index: 3;
+}
+.wbp .session-ghost .lab {
+  position: absolute; top: -10px; left: 8px;
+  background: var(--brand-primary); color: var(--brand-accent);
+  font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+  letter-spacing: 0.10em; padding: 2px 6px; border-radius: 3px;
+}
+
+/* ---- Tournament pillars (full-height anchors) ---- */
+.wbp .tournament-pillar {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 0;
+  border-left: 2px solid var(--turn);
+  z-index: 6;
+  pointer-events: none;
+}
+.wbp .tournament-pillar.A { border-left-style: solid; }
+.wbp .tournament-pillar.B { border-left-style: dashed; border-color: var(--tek); }
+.wbp .tournament-pillar .flag {
+  position: absolute; top: 0;
+  background: var(--turn); color: #fff;
+  padding: 4px 8px 4px 10px;
+  font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+  letter-spacing: 0.10em;
+  border-radius: 0 4px 4px 0;
+  white-space: nowrap;
+  transform: translateY(-100%);
+  pointer-events: auto;
+  cursor: pointer;
+}
+.wbp .tournament-pillar.B .flag { background: var(--tek); }
+.wbp .tournament-pillar .flag::before {
+  content: ''; display: inline-block;
+  width: 5px; height: 5px; border-radius: 50%;
+  background: #fff; margin-right: 6px; vertical-align: 1px;
+}
+
+/* ---- Today line ---- */
+.wbp .today-line {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 2px;
+  background: var(--brand-accent);
+  z-index: 5;
+  box-shadow: 0 0 0 1px rgba(0,88,64,0.30);
+  pointer-events: none;
+}
+.wbp .today-line::before {
+  content: ''; position: absolute;
+  top: -4px; left: -4px;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--brand-accent);
+  border: 2px solid var(--brand-primary);
+}
+
+/* ---- Empty cell AI suggest ---- */
+.wbp .lane-cell .ai-hint {
+  position: absolute;
+  inset: 6px;
+  border: 1px dashed var(--border);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  gap: 6px;
+  font-family: var(--font-mono); font-size: 9.5px; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--muted-soft);
+  opacity: 0;
+  transition: opacity 140ms ease;
+  pointer-events: none;
+}
+.wbp .lane-cell:hover .ai-hint { opacity: 1; }
+.wbp .lane-cell .ai-hint svg { width: 11px; height: 11px; color: var(--brand-primary); }
+
+/* ============================================================
+   PERIODISATION HANDLES — bottom strip
+   ============================================================ */
+.wbp .periodisation {
+  background: var(--card);
+  border-top: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 90px repeat(var(--week-count), 1fr);
+}
+.wbp .periodisation .pd-label {
+  padding: 12px 12px;
+  border-right: 1px solid var(--border);
+  font-family: var(--font-mono); font-size: 9.5px; font-weight: 600;
+  letter-spacing: 0.10em; text-transform: uppercase;
+  color: var(--muted);
+  display: flex; flex-direction: column; gap: 2px;
+}
+.wbp .periodisation .pd-label strong {
+  display: block;
+  font-family: var(--font-display); font-size: 13px;
+  color: var(--fg); font-weight: 600;
+  letter-spacing: -0.005em; text-transform: none;
+}
+.wbp .periodisation .pd-cell {
+  padding: 8px 10px 10px;
+  border-right: 1px solid var(--border);
+  position: relative;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.wbp .periodisation .pd-cell:last-child { border-right: 0; }
+.wbp .periodisation .pd-cell.now  { background: rgba(209,248,67,0.06); }
+.wbp .periodisation .pd-cell.peak { background: rgba(163,45,45,0.04); }
+
+.wbp .volume-bar {
+  position: relative; height: 22px;
+  background: var(--bg-2); border-radius: 4px;
+  overflow: visible;
+}
+.wbp .volume-bar .fill {
+  position: absolute; left: 0; top: 0; bottom: 0;
+  background: var(--brand-primary); border-radius: 4px;
+}
+.wbp .volume-bar .ideal {
+  position: absolute; top: -3px; bottom: -3px;
+  width: 2px; background: var(--fg); border-radius: 1px;
+}
+.wbp .volume-bar .handle {
+  position: absolute; top: 50%;
+  transform: translate(-50%, -50%);
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--card); border: 2px solid var(--brand-primary);
+  cursor: ew-resize;
+  box-shadow: 0 1px 3px rgba(10,31,23,0.18);
+}
+.wbp .volume-bar .num {
+  position: absolute; top: -16px; right: 0;
+  font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+  color: var(--fg); letter-spacing: 0.04em;
+}
+.wbp .volume-bar .num .u { color: var(--muted); font-weight: 500; }
+.wbp .intensity-pill {
+  align-self: flex-start;
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 2px 7px; border-radius: 999px;
+  font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+}
+.wbp .intensity-pill.low  { background: rgba(26,125,86,0.12); color: var(--success); }
+.wbp .intensity-pill.mid  { background: rgba(184,133,42,0.13); color: var(--warning); }
+.wbp .intensity-pill.high { background: rgba(163,45,45,0.10);  color: var(--danger); }
+.wbp .intensity-pill.peak { background: var(--turn); color: #fff; }
+.wbp .intensity-pill.rec  { background: rgba(37,99,235,0.10); color: var(--info); }
+.wbp .intensity-pill.taper{ background: var(--brand-accent); color: var(--brand-primary-dark); }
