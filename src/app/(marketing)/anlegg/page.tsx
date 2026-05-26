@@ -7,7 +7,7 @@ import { prisma } from "@/lib/prisma";
 export const metadata: Metadata = {
   title: "Anlegg — AK Golf Academy",
   description:
-    "Hovedanleggene våre — Gamle Fredrikstad Golfklubb på Bossum og Miklagard Golfklubb på Kløfta.",
+    "Hovedanleggene våre — Gamle Fredrikstad Golfklubb og Miklagard Golfklubb.",
 };
 
 function slugify(name: string) {
@@ -45,14 +45,16 @@ export default async function AnleggListe() {
           <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
             Anlegg · AK Golf Group
           </div>
-          <h1 className="mt-4 max-w-3xl font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl">
+          <h1 className="mt-4 max-w-4xl font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl">
             Hjemmebaner —{" "}
-            <em className="font-normal italic text-primary">Bossum og Kløfta</em>
+            <em className="font-normal italic text-primary">
+              Gamle Fredrikstad Golfklubb og Miklagard Golfklubb
+            </em>
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-            To tradisjonsrike anlegg på Østlandet. Gamle Fredrikstad GK på
-            Bossum og Miklagard Golfklubb på Kløfta — samme coach, samme
-            plan, sømløs booking.
+            To tradisjonsrike anlegg på Østlandet — Gamle Fredrikstad
+            Golfklubb og Miklagard Golfklubb. Samme coach, samme plan,
+            sømløs booking.
           </p>
         </div>
       </section>

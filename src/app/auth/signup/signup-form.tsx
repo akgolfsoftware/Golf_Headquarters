@@ -9,30 +9,49 @@ import { UserRole, Tier } from "@/generated/prisma/client";
 type RoleOption = { value: UserRole; label: string };
 const ROLES: RoleOption[] = [
   { value: "PLAYER", label: "Spiller" },
-  { value: "COACH", label: "Coach" },
   { value: "PARENT", label: "Foresatt" },
 ];
 
-type TierOption = { value: Tier; name: string; price: string; desc: string };
-const TIERS: TierOption[] = [
+type PackageValue = "PERFORMANCE_PRO" | "PERFORMANCE" | "PLAYERHQ_ONLY";
+type PackageOption = {
+  value: PackageValue;
+  name: string;
+  price: string;
+  trialHint?: string;
+  desc: string;
+  monthlyCredits: number;
+  featured?: boolean;
+};
+const PACKAGES: PackageOption[] = [
   {
-    value: "GRATIS",
-    name: "Gratis",
-    price: "0 kr",
-    desc: "Tilgang til app, basis-funksjoner",
+    value: "PERFORMANCE_PRO",
+    name: "Performance Pro",
+    price: "2 220 kr/mnd",
+    desc: "4 coaching-økter i måneden · PlayerHQ inkludert",
+    monthlyCredits: 4,
+    featured: true,
   },
   {
-    value: "PRO",
-    name: "Pro",
+    value: "PERFORMANCE",
+    name: "Performance",
+    price: "1 200 kr/mnd",
+    desc: "2 coaching-økter i måneden · PlayerHQ inkludert",
+    monthlyCredits: 2,
+  },
+  {
+    value: "PLAYERHQ_ONLY",
+    name: "PlayerHQ",
     price: "300 kr/mnd",
-    desc: "Full tracking, AI-coach, treningsplaner",
+    trialHint: "1. måned gratis",
+    desc: "App-tilgang: tracking, AI-coach, treningsplaner",
+    monthlyCredits: 0,
   },
 ];
 
 export function SignupForm() {
   const router = useRouter();
   const supabase = createClient();
-  const [tier, setTier] = useState<Tier>("PRO");
+  const [pkg, setPkg] = useState<PackageValue>("PERFORMANCE_PRO");
   const [role, setRole] = useState<UserRole>("PLAYER");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -61,11 +80,19 @@ export function SignupForm() {
     }
 
     setLoading(true);
+    const selected = PACKAGES.find((p) => p.value === pkg)!;
     const { data, error: err } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        data: { role, tier, firstName, lastName },
+        data: {
+          role,
+          tier: "PRO" satisfies Tier,
+          package: selected.value,
+          monthlyCredits: selected.monthlyCredits,
+          firstName,
+          lastName,
+        },
       },
     });
     setLoading(false);
@@ -92,26 +119,39 @@ export function SignupForm() {
         <label className="mb-2 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           Velg medlemskap
         </label>
-        <div className="grid grid-cols-2 gap-2">
-          {TIERS.map((t) => {
-            const aktiv = t.value === tier;
+        <div className="space-y-2">
+          {PACKAGES.map((p) => {
+            const aktiv = p.value === pkg;
             return (
               <button
-                key={t.value}
+                key={p.value}
                 type="button"
-                onClick={() => setTier(t.value)}
-                className={`rounded-md border p-4 text-left transition-colors ${
+                onClick={() => setPkg(p.value)}
+                aria-pressed={aktiv}
+                className={`relative block w-full rounded-md border p-4 text-left transition-colors ${
                   aktiv
                     ? "border-primary bg-primary/5 ring-2 ring-primary/20"
                     : "border-input bg-card hover:border-border"
                 }`}
               >
-                <div className="font-display text-sm font-semibold">{t.name}</div>
-                <div className="my-1 font-mono text-xs font-semibold text-primary">
-                  {t.price}
+                {p.featured && (
+                  <span className="absolute -top-2 right-3 inline-flex items-center rounded-full bg-accent px-2 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-[0.10em] text-accent-foreground">
+                    Mest populær
+                  </span>
+                )}
+                <div className="flex items-baseline justify-between gap-2">
+                  <div className="font-display text-sm font-semibold">{p.name}</div>
+                  <div className="font-mono text-xs font-semibold text-primary">
+                    {p.price}
+                  </div>
                 </div>
-                <div className="text-[11px] leading-snug text-muted-foreground">
-                  {t.desc}
+                {p.trialHint && (
+                  <div className="mt-1 inline-block rounded bg-accent/30 px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-accent-foreground">
+                    {p.trialHint}
+                  </div>
+                )}
+                <div className="mt-1 text-[12px] leading-snug text-muted-foreground">
+                  {p.desc}
                 </div>
               </button>
             );

@@ -13,25 +13,27 @@ export default function LoggetUtPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-gradient-to-b from-background to-secondary/40 p-4 sm:p-8">
       <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6 sm:p-10 text-center shadow-sm">
-        <Link
-          href="/"
-          aria-label="AK Golf — hjem"
-          className="mb-8 inline-flex"
-        >
-          <AkGolfLogo width={56} />
-        </Link>
+        <div className="flex flex-col items-center">
+          <Link
+            href="/"
+            aria-label="AK Golf — hjem"
+            className="mb-6 inline-flex"
+          >
+            <AkGolfLogo width={56} />
+          </Link>
 
-        <div className="mx-auto mb-6 grid h-16 w-16 place-items-center rounded-full bg-accent text-primary">
-          <CheckCircle className="h-8 w-8" strokeWidth={1.5} aria-hidden />
+          <div className="mb-6 grid h-16 w-16 place-items-center rounded-full bg-accent text-primary">
+            <CheckCircle className="h-8 w-8" strokeWidth={1.5} aria-hidden />
+          </div>
+
+          <AthleticEyebrow tone="lime">AK GOLF · TAKK FOR DENNE GANG</AthleticEyebrow>
+          <h1 className="mt-4 font-display text-2xl sm:text-3xl font-semibold leading-tight tracking-tight">
+            Vi <em className="font-normal italic text-primary">ses</em> snart
+          </h1>
+          <p className="mt-3 text-sm text-muted-foreground">
+            Din sesjon er avsluttet. Logg inn igjen når du er klar.
+          </p>
         </div>
-
-        <AthleticEyebrow tone="lime">AK GOLF · TAKK FOR DENNE GANG</AthleticEyebrow>
-        <h1 className="mt-4 font-display text-2xl sm:text-3xl font-semibold leading-tight tracking-tight">
-          Vi <em className="font-normal italic text-primary">ses</em> snart
-        </h1>
-        <p className="mt-3 text-sm text-muted-foreground">
-          Din sesjon er avsluttet. Logg inn igjen når du er klar.
-        </p>
 
         <div className="mt-8 flex flex-col gap-2">
           <Link
