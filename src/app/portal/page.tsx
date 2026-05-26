@@ -101,15 +101,24 @@ export default async function WorkbenchV2() {
     hcpTrend = (eldreSnitt - nyereSnitt) / 10;  // skaler ned til hcp-størrelse
   }
 
-  // --- Neste turnering ---
+  // --- Neste turnering — kun framtidige (startDate >= nå) ---
+  const todayMidnight = new Date(now);
+  todayMidnight.setHours(0, 0, 0, 0);
   const upcoming = await prisma.tournamentEntry
     .findFirst({
       where: {
         userId: user.id,
         entryStatus: { in: ["PLANNED", "CONFIRMED"] },
+        OR: [
+          { tournament: { startDate: { gte: todayMidnight } } },
+          { manualDate: { gte: todayMidnight } },
+        ],
       },
       include: { tournament: true },
-      orderBy: { createdAt: "desc" },
+      orderBy: [
+        { tournament: { startDate: "asc" } },
+        { manualDate: "asc" },
+      ],
     })
     .catch(() => null);
 
