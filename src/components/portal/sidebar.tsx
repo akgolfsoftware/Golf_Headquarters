@@ -60,10 +60,8 @@ const MAIN_ITEMS: NavItem[] = [
       "/portal/onskeligokt",
     ],
     children: [
-      { href: "/portal/gjennomfore?tab=idag", label: "I dag" },
-      { href: "/portal/gjennomfore?tab=kalender", label: "Kalender" },
-      { href: "/portal/gjennomfore?tab=live", label: "Live-økt" },
-      { href: "/portal/gjennomfore?tab=booking", label: "Booking" },
+      { href: "/portal/kalender", label: "Kalender" },
+      { href: "/portal/booking", label: "Booking" },
     ],
   },
   {
@@ -77,12 +75,11 @@ const MAIN_ITEMS: NavItem[] = [
       "/portal/talent",
     ],
     children: [
-      { href: "/portal/analysere?tab=statistikk", label: "Statistikk" },
-      { href: "/portal/analysere?tab=sg", label: "Strokes gained" },
-      { href: "/portal/analysere?tab=runder", label: "Runder" },
-      { href: "/portal/analysere?tab=trackman", label: "TrackMan" },
-      { href: "/portal/analysere?tab=tester", label: "Tester" },
-      { href: "/portal/analysere?tab=innsikt", label: "Innsikt" },
+      { href: "/portal/statistikk", label: "Statistikk" },
+      { href: "/portal/mal/sg-hub", label: "Strokes gained" },
+      { href: "/portal/mal/runder", label: "Runder" },
+      { href: "/portal/mal/trackman", label: "TrackMan" },
+      { href: "/portal/tren/tester", label: "Tester" },
     ],
   },
   {
@@ -90,10 +87,9 @@ const MAIN_ITEMS: NavItem[] = [
     label: "Coach",
     matchPrefixes: ["/portal/coach"],
     children: [
-      { href: "/portal/coach?tab=coach", label: "Min coach" },
-      { href: "/portal/coach?tab=meldinger", label: "Meldinger" },
-      { href: "/portal/coach?tab=foresporsler", label: "Forespørsler" },
-      { href: "/portal/coach?tab=ny-melding", label: "Ny melding" },
+      { href: "/portal/coach/melding", label: "Meldinger" },
+      { href: "/portal/coach/melding/ny", label: "Ny melding" },
+      { href: "/portal/coach/plans", label: "Planer" },
     ],
   },
 ];
