@@ -59,7 +59,7 @@ export async function AdminShell({
         <main
           id="admin-main"
           tabIndex={-1}
-          className="flex-1 px-4 pb-24 pt-4 focus:outline-none sm:px-8 sm:py-6 md:pb-6"
+          className="flex-1 px-4 pb-24 pt-4 focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 sm:px-8 sm:py-6 md:pb-6"
         >
           {children}
         </main>

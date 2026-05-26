@@ -873,4 +873,4 @@ function Sum({
 }
 
 const inputCls =
-  "h-11 w-full rounded-md border border-input bg-card px-4 text-base sm:text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30";
+  "h-11 w-full rounded-md border border-input bg-card px-4 text-base sm:text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30";

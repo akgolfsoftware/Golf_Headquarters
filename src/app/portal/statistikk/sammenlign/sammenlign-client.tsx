@@ -75,7 +75,7 @@ export function SammenlignClient({ userName }: { userName: string }) {
           <input
             type="search"
             placeholder="Søk i venner og klubbmedlemmer …"
-            className="w-full rounded-md border border-border bg-card py-2.5 pl-10 pr-4 text-sm outline-none focus:border-primary"
+            className="w-full rounded-md border border-border bg-card py-2.5 pl-10 pr-4 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-primary"
           />
         </div>
       )}

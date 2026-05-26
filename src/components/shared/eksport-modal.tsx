@@ -543,7 +543,7 @@ export function EksportModal(props: EksportModalProps) {
                   setRecipientError(null);
                 }}
                 placeholder="coach@gfgk.no, foreldre@example.com"
-                className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-primary"
+                className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground focus:border-primary"
               />
               <p className="mt-1.5 font-mono text-[11px] text-muted-foreground">
                 La feltet stå tomt for å bare laste ned. Skill flere e-poster
@@ -760,7 +760,7 @@ function DateField({
           type="date"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full border-none bg-transparent text-foreground outline-none"
+          className="w-full border-none bg-transparent text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
         />
       </span>
     </label>

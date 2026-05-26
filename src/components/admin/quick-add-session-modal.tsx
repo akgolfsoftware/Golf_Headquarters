@@ -269,7 +269,7 @@ export function QuickAddSessionModal({
                 }}
                 placeholder="Søk navn eller e-post"
                 autoComplete="off"
-                className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+                className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
               />
               {matchendeSpillere.length > 0 && !spillerId && (
                 <ul className="mt-1 max-h-48 overflow-y-auto rounded-md border border-border bg-popover shadow-sm">
@@ -313,7 +313,7 @@ export function QuickAddSessionModal({
                 id="quick-add-service"
                 value={serviceTypeId}
                 onChange={(e) => valgtServiceType(e.target.value)}
-                className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+                className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
               >
                 {serviceTypes.length === 0 && (
                   <option value="">Ingen tjenester</option>
@@ -339,7 +339,7 @@ export function QuickAddSessionModal({
                   id="quick-add-location"
                   value={locationId}
                   onChange={(e) => setLocationId(e.target.value)}
-                  className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+                  className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
                 >
                   {locations.length === 0 && (
                     <option value="">Ingen lokasjoner</option>
@@ -363,7 +363,7 @@ export function QuickAddSessionModal({
                     id="quick-add-facility"
                     value={facilityId}
                     onChange={(e) => setFacilityId(e.target.value)}
-                    className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+                    className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
                   >
                     <option value="">Ingen spesifikk</option>
                     {facilityValg.map((f) => (
@@ -388,7 +388,7 @@ export function QuickAddSessionModal({
                   step={15}
                   value={varighetMin}
                   onChange={(e) => setVarighetMin(Number(e.target.value))}
-                  className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm font-mono tabular-nums outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+                  className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm font-mono tabular-nums outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
                 />
               </div>
             </div>
@@ -407,7 +407,7 @@ export function QuickAddSessionModal({
                 onChange={(e) => setNotater(e.target.value)}
                 rows={3}
                 placeholder="Valgfri intern notis."
-                className="w-full resize-y rounded-md border border-input bg-card px-4 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+                className="w-full resize-y rounded-md border border-input bg-card px-4 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
               />
             </div>
 

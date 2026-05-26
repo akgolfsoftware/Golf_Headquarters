@@ -147,7 +147,7 @@ function FilterBar({
         <input
           type="search"
           placeholder="Søk i oppgaver …"
-          className="flex-1 bg-transparent text-[12.5px] outline-none placeholder:text-muted-foreground"
+          className="flex-1 bg-transparent text-[12.5px] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground"
         />
       </label>
 

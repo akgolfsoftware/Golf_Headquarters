@@ -149,7 +149,7 @@ export default async function RunderPage() {
           <input
             type="search"
             placeholder="Søk spiller eller bane"
-            className="w-full bg-transparent outline-none placeholder:text-muted-foreground"
+            className="w-full bg-transparent outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground"
             aria-label="Søk spiller eller bane"
           />
         </div>

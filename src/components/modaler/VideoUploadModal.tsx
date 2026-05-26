@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef } from "react"
-import { X, Video, UploadCloud, Play } from "lucide-react"
+import { X, Video, Play } from "lucide-react"
 
 type Props = {
   open: boolean
@@ -119,7 +119,7 @@ export function VideoUploadModal({ open, onClose, shotId }: Props) {
             value={videoUrl}
             onChange={(e) => setVideoUrl(e.target.value)}
             placeholder="https://..."
-            className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+            className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
           />
         </div>
 

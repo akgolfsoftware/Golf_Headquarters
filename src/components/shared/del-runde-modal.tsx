@@ -293,7 +293,7 @@ export function DelRundeModal({
               onChange={(e) => setMelding(e.target.value)}
               rows={2}
               placeholder="Skriv en kort kommentar til mottakeren…"
-              className="w-full resize-none rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-primary"
+              className="w-full resize-none rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground focus:border-primary"
             />
           </div>
 

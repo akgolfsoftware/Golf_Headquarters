@@ -353,7 +353,7 @@ function Filters({ tab, sgTab }: { tab: Tab; sgTab: SgTab }) {
           <Search className="h-4 w-4 text-muted-foreground" />
           <input
             placeholder="Søk spiller …"
-            className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+            className="flex-1 bg-transparent text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground"
           />
         </div>
       </div>

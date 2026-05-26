@@ -84,7 +84,7 @@ export function ImportForm({ spillere }: Props) {
             value={form.wagrUrl}
             onChange={(e) => setForm({ ...form, wagrUrl: e.target.value })}
             placeholder="playerprofile/..."
-            className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none transition-colors focus:border-ring"
+            className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 transition-colors focus:border-ring"
           />
         </Field>
 
@@ -95,7 +95,7 @@ export function ImportForm({ spillere }: Props) {
             value={form.fullName}
             onChange={(e) => setForm({ ...form, fullName: e.target.value })}
             placeholder="Mathias Aase"
-            className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none focus:border-ring"
+            className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring"
           />
         </Field>
 
@@ -108,7 +108,7 @@ export function ImportForm({ spillere }: Props) {
             onChange={(e) =>
               setForm({ ...form, country: e.target.value.toLowerCase() })
             }
-            className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none focus:border-ring"
+            className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring"
           />
         </Field>
 
@@ -120,7 +120,7 @@ export function ImportForm({ spillere }: Props) {
             value={form.rank}
             onChange={(e) => setForm({ ...form, rank: e.target.value })}
             placeholder="697"
-            className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none focus:border-ring"
+            className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring"
           />
         </Field>
 
@@ -131,7 +131,7 @@ export function ImportForm({ spillere }: Props) {
             value={form.ptsAvg}
             onChange={(e) => setForm({ ...form, ptsAvg: e.target.value })}
             placeholder="504,1956"
-            className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none focus:border-ring"
+            className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring"
           />
         </Field>
 
@@ -142,7 +142,7 @@ export function ImportForm({ spillere }: Props) {
             value={form.divisor}
             onChange={(e) => setForm({ ...form, divisor: e.target.value })}
             placeholder="23,0754"
-            className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none focus:border-ring"
+            className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring"
           />
         </Field>
 
@@ -152,7 +152,7 @@ export function ImportForm({ spillere }: Props) {
             min={0}
             value={form.wins}
             onChange={(e) => setForm({ ...form, wins: e.target.value })}
-            className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none focus:border-ring"
+            className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring"
           />
         </Field>
 
@@ -162,7 +162,7 @@ export function ImportForm({ spillere }: Props) {
             min={0}
             value={form.top10s}
             onChange={(e) => setForm({ ...form, top10s: e.target.value })}
-            className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none focus:border-ring"
+            className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring"
           />
         </Field>
 
@@ -172,7 +172,7 @@ export function ImportForm({ spillere }: Props) {
             min={1}
             value={form.bestRank}
             onChange={(e) => setForm({ ...form, bestRank: e.target.value })}
-            className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none focus:border-ring"
+            className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring"
           />
         </Field>
 
@@ -185,7 +185,7 @@ export function ImportForm({ spillere }: Props) {
             onChange={(e) =>
               setForm({ ...form, linkUserEmail: e.target.value })
             }
-            className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none focus:border-ring"
+            className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring"
           >
             <option value="">Ikke koble</option>
             {spillere.map((s) => (

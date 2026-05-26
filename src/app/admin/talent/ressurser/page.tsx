@@ -164,20 +164,20 @@ export default async function TalentRessurser({
               required
               minLength={2}
               maxLength={200}
-              className="rounded-md border border-input bg-background px-3 py-2 text-[13px] focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30"
+              className="rounded-md border border-input bg-background px-3 py-2 text-[13px] focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
             />
             <input
               type="url"
               name="url"
               placeholder="https://…"
               required
-              className="rounded-md border border-input bg-background px-3 py-2 text-[13px] focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30"
+              className="rounded-md border border-input bg-background px-3 py-2 text-[13px] focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
             />
             <select
               name="kategori"
               required
               defaultValue="video"
-              className="rounded-md border border-input bg-background px-3 py-2 text-[13px] focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30"
+              className="rounded-md border border-input bg-background px-3 py-2 text-[13px] focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
             >
               {KATEGORIER.map((k) => (
                 <option key={k} value={k}>
@@ -188,7 +188,7 @@ export default async function TalentRessurser({
             <select
               name="niva"
               defaultValue=""
-              className="rounded-md border border-input bg-background px-3 py-2 text-[13px] focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30"
+              className="rounded-md border border-input bg-background px-3 py-2 text-[13px] focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
             >
               <option value="">Nivå (valgfri)</option>
               {NIVAER.map((n) => (
@@ -200,7 +200,7 @@ export default async function TalentRessurser({
             <select
               name="fokus"
               defaultValue=""
-              className="rounded-md border border-input bg-background px-3 py-2 text-[13px] focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30"
+              className="rounded-md border border-input bg-background px-3 py-2 text-[13px] focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
             >
               <option value="">Fokus (valgfri)</option>
               {FOKUS.map((f) => (
@@ -214,7 +214,7 @@ export default async function TalentRessurser({
               name="beskrivelse"
               placeholder="Beskrivelse (valgfri)"
               maxLength={1000}
-              className="rounded-md border border-input bg-background px-3 py-2 text-[13px] focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30 sm:col-span-2"
+              className="rounded-md border border-input bg-background px-3 py-2 text-[13px] focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30 sm:col-span-2"
             />
             <button
               type="submit"

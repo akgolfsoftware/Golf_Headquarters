@@ -126,7 +126,7 @@ export function Setup2FA() {
           maxLength={6}
           value={code}
           onChange={(e) => setCode(e.target.value.replace(/[^0-9]/g, ""))}
-          className="w-full rounded-md border border-input bg-card px-4 py-4 text-center text-lg font-mono tabular-nums tracking-widest outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+          className="w-full rounded-md border border-input bg-card px-4 py-4 text-center text-lg font-mono tabular-nums tracking-widest outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
           placeholder="000000"
         />
       </label>

@@ -346,7 +346,7 @@ export function ConsentPattern({
               aria-describedby={
                 showSignatureHint ? "signature-hint" : undefined
               }
-              className="w-full rounded-xl border bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground outline-none"
+              className="w-full rounded-xl border bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
               style={{
                 paddingTop: 12,
                 paddingBottom: 12,

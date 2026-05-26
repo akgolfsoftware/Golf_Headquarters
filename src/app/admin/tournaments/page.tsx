@@ -287,7 +287,7 @@ export default async function Turneringer({
               name="q"
               defaultValue={sok}
               placeholder="Søk turnering"
-              className="flex-1 border-none bg-transparent outline-none"
+              className="flex-1 border-none bg-transparent outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
               aria-label="Søk i turneringer"
             />
           </div>

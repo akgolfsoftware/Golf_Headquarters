@@ -213,7 +213,7 @@ export function SpillerOnboardingWizard() {
               <select
                 value={program}
                 onChange={(e) => setProgram(e.target.value as PlayerProgram)}
-                className="w-full rounded-md border border-border bg-card px-3 py-2 text-[13px] text-foreground outline-none"
+                className="w-full rounded-md border border-border bg-card px-3 py-2 text-[13px] text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
               >
                 {ALL_PROGRAMS.map((p) => (
                   <option key={p} value={p}>
@@ -721,7 +721,7 @@ function Steg4Velkomst({
           value={velkomstMelding}
           onChange={(e) => setVelkomstMelding(e.target.value)}
           rows={5}
-          className="w-full resize-y rounded-md border border-input bg-background px-4 py-3 text-base sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+          className="w-full resize-y rounded-md border border-input bg-background px-4 py-3 text-base sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
           placeholder="Hei og velkommen…"
         />
         <p className="text-xs text-muted-foreground">
@@ -812,7 +812,7 @@ function FeltTekst({
         inputMode={inputMode}
         max={maxDato}
         aria-invalid={error ? true : undefined}
-        className={`h-11 rounded-md border bg-card px-4 text-base sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring ${
+        className={`h-11 rounded-md border bg-card px-4 text-base sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring ${
           error ? "border-destructive" : "border-input"
         }`}
       />

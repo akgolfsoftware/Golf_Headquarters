@@ -169,7 +169,7 @@ function LeggTilModal({
                   value={sok}
                   onChange={(e) => setSok(e.target.value)}
                   placeholder="Søk etter turnering…"
-                  className="w-full rounded-md border border-input bg-background py-2 pl-9 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="w-full rounded-md border border-input bg-background py-2 pl-9 pr-3 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
                 />
               </div>
               <div className="max-h-48 overflow-y-auto rounded-md border border-border">
@@ -214,7 +214,7 @@ function LeggTilModal({
                   onChange={(e) => setManualName(e.target.value)}
                   required
                   placeholder="f.eks. Kretsmesterskapet Østfold 2025"
-                  className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
                 />
               </label>
               <div className="grid grid-cols-2 gap-3">
@@ -224,7 +224,7 @@ function LeggTilModal({
                     type="date"
                     value={manualDate}
                     onChange={(e) => setManualDate(e.target.value)}
-                    className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                    className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
                   />
                 </label>
                 <label className="block">
@@ -233,7 +233,7 @@ function LeggTilModal({
                     type="date"
                     value={manualEndDate}
                     onChange={(e) => setManualEndDate(e.target.value)}
-                    className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                    className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
                   />
                 </label>
               </div>
@@ -247,7 +247,7 @@ function LeggTilModal({
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value as TurnPriority)}
-                className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
               >
                 <option value="MAJOR">Trening</option>
                 <option value="NORMAL">Utvikling</option>
@@ -261,7 +261,7 @@ function LeggTilModal({
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 placeholder="f.eks. A-rekke"
-                className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
               />
             </label>
           </div>
@@ -272,7 +272,7 @@ function LeggTilModal({
               <select
                 value={seasonPlanId}
                 onChange={(e) => setSeasonPlanId(e.target.value)}
-                className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
               >
                 <option value="">Ikke koblet</option>
                 {sesongplaner.map((p) => (
@@ -291,7 +291,7 @@ function LeggTilModal({
               onChange={(e) => setNotes(e.target.value)}
               rows={2}
               placeholder="Mål, forberedelse, reiseplaner…"
-              className="mt-1 w-full resize-none rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+              className="mt-1 w-full resize-none rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
             />
           </label>
 

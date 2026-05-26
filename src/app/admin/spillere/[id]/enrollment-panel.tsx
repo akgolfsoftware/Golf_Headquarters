@@ -120,7 +120,7 @@ export function EnrollmentPanel({
               <select
                 value={selectedProgram}
                 onChange={(e) => setSelectedProgram(e.target.value as PlayerProgram)}
-                className="w-full rounded-md border border-border bg-card px-3 py-2 text-[13px] text-foreground outline-none"
+                className="w-full rounded-md border border-border bg-card px-3 py-2 text-[13px] text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
               >
                 {ALL_PROGRAMS.map((p) => (
                   <option key={p} value={p}>
@@ -138,7 +138,7 @@ export function EnrollmentPanel({
                 <select
                   value={selectedCoach}
                   onChange={(e) => setSelectedCoach(e.target.value)}
-                  className="w-full rounded-md border border-border bg-card px-3 py-2 text-[13px] text-foreground outline-none"
+                  className="w-full rounded-md border border-border bg-card px-3 py-2 text-[13px] text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
                 >
                   {coaches.map((c) => (
                     <option key={c.id} value={c.id}>
@@ -158,7 +158,7 @@ export function EnrollmentPanel({
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="f.eks. Høst 2026"
-                className="w-full rounded-md border border-border bg-card px-3 py-2 text-[13px] text-foreground outline-none placeholder:text-muted-foreground"
+                className="w-full rounded-md border border-border bg-card px-3 py-2 text-[13px] text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground"
               />
             </div>
           </div>

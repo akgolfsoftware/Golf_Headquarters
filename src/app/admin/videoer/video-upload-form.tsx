@@ -237,7 +237,7 @@ function Felt({
         type="text"
         placeholder={placeholder}
         required={required}
-        className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+        className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
       />
     </label>
   );
@@ -262,7 +262,7 @@ function FeltSelect({
       <select
         name={name}
         required={required}
-        className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+        className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
       >
         {children}
       </select>
@@ -279,7 +279,7 @@ function FeltTextarea({ label, name }: { label: string; name: string }) {
       <textarea
         name={name}
         rows={3}
-        className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+        className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
       />
     </label>
   );

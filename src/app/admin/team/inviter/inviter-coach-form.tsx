@@ -49,7 +49,7 @@ export function InviterCoachForm() {
           type="text"
           required
           minLength={2}
-          className="w-full rounded-md border border-input bg-background px-4 py-2 text-[14px] outline-none focus:ring-2 focus:ring-ring"
+          className="w-full rounded-md border border-input bg-background px-4 py-2 text-[14px] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
           placeholder="Fornavn Etternavn"
         />
         {fieldErrors.name && (
@@ -66,7 +66,7 @@ export function InviterCoachForm() {
           name="email"
           type="email"
           required
-          className="w-full rounded-md border border-input bg-background px-4 py-2 text-[14px] outline-none focus:ring-2 focus:ring-ring"
+          className="w-full rounded-md border border-input bg-background px-4 py-2 text-[14px] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
           placeholder="coach@akgolf.no"
         />
         {fieldErrors.email && (

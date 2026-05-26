@@ -368,7 +368,7 @@ export function DrillsLibraryClient({
               placeholder="Søk i drills..."
               value={sok}
               onChange={(e) => setSok(e.target.value)}
-              className="h-full w-full bg-transparent text-base outline-none placeholder:text-muted-foreground sm:text-sm"
+              className="h-full w-full bg-transparent text-base outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground sm:text-sm"
             />
           </label>
 

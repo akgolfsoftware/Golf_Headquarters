@@ -89,7 +89,7 @@ export function NewTemplateForm() {
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="h-11 rounded-md border border-input bg-card px-3 text-sm focus:border-primary focus:outline-none"
+            className="h-11 rounded-md border border-input bg-card px-3 text-sm focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
             placeholder="F.eks. E Konkurranse Standard"
           />
         </label>
@@ -102,7 +102,7 @@ export function NewTemplateForm() {
             rows={3}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="rounded-md border border-input bg-card px-3 py-2 text-sm focus:border-primary focus:outline-none"
+            className="rounded-md border border-input bg-card px-3 py-2 text-sm focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
           />
         </label>
 

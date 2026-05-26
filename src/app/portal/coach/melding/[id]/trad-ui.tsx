@@ -139,7 +139,7 @@ export function TradUi({
               onKeyDown={onKeyDown}
               placeholder={`Skriv et svar til ${coachName.split(" ")[0]}…`}
               rows={1}
-              className="flex-1 resize-none bg-transparent py-2 text-[14.5px] leading-relaxed focus:outline-none"
+              className="flex-1 resize-none bg-transparent py-2 text-[14.5px] leading-relaxed focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
             />
             <button
               type="button"

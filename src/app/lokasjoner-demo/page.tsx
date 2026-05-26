@@ -232,7 +232,7 @@ function FilterBar() {
         <input
           type="text"
           placeholder="Søk lokasjon eller adresse"
-          className="flex-1 bg-transparent text-[14px] text-foreground outline-none"
+          className="flex-1 bg-transparent text-[14px] text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
         />
       </div>
       <Chip>Type</Chip>

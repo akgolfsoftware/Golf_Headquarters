@@ -50,7 +50,7 @@ export function HjelpSearch({ articles }: { articles: ReadonlyArray<HelpArticle>
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Søk hjelp-artikler eller skriv et spørsmål…"
           aria-label="Søk hjelp-artikler"
-          className="w-full rounded-lg border border-input bg-card px-4 py-4 pl-12 pr-12 text-[15px] text-foreground outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10"
+          className="w-full rounded-lg border border-input bg-card px-4 py-4 pl-12 pr-12 text-[15px] text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 transition focus:border-primary focus:ring-4 focus:ring-primary/10"
         />
         {hasQuery && (
           <button

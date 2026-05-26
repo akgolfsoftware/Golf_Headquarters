@@ -180,7 +180,7 @@ export function CmdPalette() {
             }}
             onKeyDown={onInputKey}
             placeholder="Søk etter sider, spillere, drills, mål, turneringer…"
-            className="flex-1 bg-transparent text-base text-foreground placeholder:text-muted-foreground focus:outline-none sm:text-sm"
+            className="flex-1 bg-transparent text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 sm:text-sm"
             aria-label="Søk"
           />
           <span className="hidden font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground sm:inline">

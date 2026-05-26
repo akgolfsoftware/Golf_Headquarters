@@ -131,7 +131,7 @@ export function DrillFilterBar({ initial }: { initial: InitialFilters }) {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Sok drill-navn, beskrivelse eller tag"
-            className="h-7 flex-1 bg-transparent text-base outline-none placeholder:text-muted-foreground sm:text-sm"
+            className="h-7 flex-1 bg-transparent text-base outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground sm:text-sm"
           />
           {q && (
             <button

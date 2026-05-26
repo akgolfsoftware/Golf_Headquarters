@@ -171,7 +171,7 @@ export function ConditionalRulesPanel({ regler, onChange }: Props) {
                       onChange={(e) =>
                         oppdater(r.id, { prioritet: Math.max(0, Number(e.target.value) || 0) })
                       }
-                      className="h-8 w-20 rounded-md border border-input bg-card px-2 font-mono text-xs tabular-nums focus:border-ring focus:outline-none"
+                      className="h-8 w-20 rounded-md border border-input bg-card px-2 font-mono text-xs tabular-nums focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
                     />
                   </div>
                 </div>
@@ -185,7 +185,7 @@ export function ConditionalRulesPanel({ regler, onChange }: Props) {
         <select
           value={draftType}
           onChange={(e) => setDraftType(e.target.value as RegelType)}
-          className="h-9 flex-1 rounded-md border border-input bg-card px-2 text-xs focus:border-ring focus:outline-none"
+          className="h-9 flex-1 rounded-md border border-input bg-card px-2 text-xs focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
         >
           {(Object.keys(REGEL_INFO) as RegelType[]).map((t) => (
             <option key={t} value={t}>
@@ -228,7 +228,7 @@ function ParameterRedigerer({
           onChange={(e) =>
             onChange({ ...parametere, [navn]: Math.max(min, Math.min(max, Number(e.target.value) || 0)) })
           }
-          className="h-8 w-24 rounded-md border border-input bg-card px-2 font-mono tabular-nums focus:border-ring focus:outline-none"
+          className="h-8 w-24 rounded-md border border-input bg-card px-2 font-mono tabular-nums focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
         />
       </div>
     );

@@ -336,7 +336,7 @@ export function MestringsLoggClient({
                 setCsInput(e.target.value);
                 if (registrerStatus !== "idle") setRegistrerStatus("idle");
               }}
-              className="h-11 w-32 rounded-md border border-input bg-background px-3 font-mono text-sm tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              className="h-11 w-32 rounded-md border border-input bg-background px-3 font-mono text-sm tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
             />
           </div>
 
@@ -353,7 +353,7 @@ export function MestringsLoggClient({
               placeholder="Hva gikk bra? Hva kan bli bedre?"
               value={kommentarInput}
               onChange={(e) => setKommentarInput(e.target.value)}
-              className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
             />
           </div>
 

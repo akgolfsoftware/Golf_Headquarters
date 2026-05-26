@@ -97,7 +97,7 @@ export function TestDetailClient({
               onChange={(e) => setNotater(e.target.value)}
               rows={4}
               placeholder="Skriv en kort observasjon — fokus-områder, protokoll-avvik, neste steg…"
-              className="w-full resize-none rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-primary"
+              className="w-full resize-none rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground focus:border-primary"
             />
           ) : (
             <p className="text-sm text-muted-foreground">

@@ -65,10 +65,11 @@ export function NyNotatModal({
 
   const erRedigering = !!editingNote;
 
-  // Resett/hydrer state når modal åpnes
+  // Resett/hydrer state når modal åpnes (prop-drevet reset).
   useEffect(() => {
     if (!open) return;
     if (editingNote) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTitle(editingNote.title ?? "");
       setContent(editingNote.content);
       setTags(editingNote.tags ?? []);
@@ -299,7 +300,7 @@ export function NyNotatModal({
                 }
                 maxLength={MAX_TAG_LEN}
                 disabled={pending || tags.length >= MAX_TAGS}
-                className="min-w-[120px] flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                className="min-w-[120px] flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
               />
             </div>
           </div>

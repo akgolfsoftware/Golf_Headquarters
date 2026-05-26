@@ -236,7 +236,7 @@ function LeggTilForm({
               setVisDropdown(true);
             }}
             onFocus={() => setVisDropdown(true)}
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-[13px] text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            className="w-full rounded-md border border-input bg-background px-3 py-2 text-[13px] text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
           />
           {valgtDrill && (
             <button
@@ -285,7 +285,7 @@ function LeggTilForm({
             id="direktiv-type"
             value={type}
             onChange={(e) => setType(e.target.value as DirektivType)}
-            className="w-full appearance-none rounded-md border border-input bg-background px-3 py-2 pr-8 text-[13px] text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            className="w-full appearance-none rounded-md border border-input bg-background px-3 py-2 pr-8 text-[13px] text-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
           >
             <option value="PIN">PIN — Alltid inkluder</option>
             <option value="BLOCK">BLOCK — Ikke foreslå</option>
@@ -307,7 +307,7 @@ function LeggTilForm({
           value={kommentar}
           onChange={(e) => setKommentar(e.target.value)}
           maxLength={500}
-          className="w-full rounded-md border border-input bg-background px-3 py-2 text-[13px] text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+          className="w-full rounded-md border border-input bg-background px-3 py-2 text-[13px] text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
         />
 
         {/* Gyldig til (valgfri) */}
@@ -323,7 +323,7 @@ function LeggTilForm({
             type="date"
             value={gyldigTil}
             onChange={(e) => setGyldigTil(e.target.value)}
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-[13px] text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            className="w-full rounded-md border border-input bg-background px-3 py-2 text-[13px] text-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
           />
         </div>
 

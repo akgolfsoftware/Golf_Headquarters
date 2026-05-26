@@ -241,7 +241,7 @@ export function TemplateEditor({
               onChange={(e) => setDrillSok(e.target.value)}
               placeholder="Søk drill"
               aria-label="Søk drill"
-              className="h-9 w-full rounded-md border border-input bg-card pl-8 pr-3 text-xs focus:border-primary focus:outline-none"
+              className="h-9 w-full rounded-md border border-input bg-card pl-8 pr-3 text-xs focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
             />
           </div>
           <p className="mb-2 text-[10px] text-muted-foreground">
@@ -516,7 +516,7 @@ function FieldText({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="h-9 rounded-md border border-input bg-card px-3 text-xs focus:border-primary focus:outline-none"
+        className="h-9 rounded-md border border-input bg-card px-3 text-xs focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
       />
     </label>
   );
@@ -542,7 +542,7 @@ function FieldTextarea({
         rows={rows}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="rounded-md border border-input bg-card px-3 py-2 text-xs focus:border-primary focus:outline-none"
+        className="rounded-md border border-input bg-card px-3 py-2 text-xs focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
       />
     </label>
   );
@@ -572,7 +572,7 @@ function FieldNumber({
         min={min}
         max={max}
         onChange={(e) => onChange(parseInt(e.target.value || "0", 10))}
-        className="h-9 rounded-md border border-input bg-card px-3 text-xs focus:border-primary focus:outline-none"
+        className="h-9 rounded-md border border-input bg-card px-3 text-xs focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
       />
     </label>
   );
@@ -597,7 +597,7 @@ function FieldSelect({
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="h-9 rounded-md border border-input bg-card px-2 text-xs focus:border-primary focus:outline-none"
+        className="h-9 rounded-md border border-input bg-card px-2 text-xs focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
       >
         {options.map((o) => (
           <option key={o.value} value={o.value}>

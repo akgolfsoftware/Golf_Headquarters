@@ -318,7 +318,7 @@ export function UpGameImportModal({ roundId }: { roundId: string }) {
                               [nøkkel]: e.target.value || null,
                             }))
                           }
-                          className="flex-1 rounded-lg border border-border bg-card px-3 py-2 font-mono text-sm text-foreground outline-none focus:border-primary"
+                          className="flex-1 rounded-lg border border-border bg-card px-3 py-2 font-mono text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-primary"
                         >
                           <option value="">— ikke tilgjengelig —</option>
                           {headers.map((h) => (

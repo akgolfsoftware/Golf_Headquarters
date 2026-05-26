@@ -108,7 +108,7 @@ export default async function SpillereTabPage({
           name="q"
           defaultValue={q}
           placeholder="Søk spiller, pakke eller fokus…"
-          className="h-9 min-w-[200px] flex-1 rounded-md border border-input bg-background px-4 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+          className="h-9 min-w-[200px] flex-1 rounded-md border border-input bg-background px-4 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
         />
         <input type="hidden" name="filter" value={filter} />
         {filtere.map((f) => (

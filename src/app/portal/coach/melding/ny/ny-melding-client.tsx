@@ -139,7 +139,7 @@ export function NyMeldingClient({ mottakere }: { mottakere: Mottaker[] }) {
             value={subject}
             onChange={(e) => setSubject(e.target.value.slice(0, 100))}
             placeholder="Hva gjelder det?"
-            className="w-full rounded-md border border-input bg-card px-4 py-3 pr-20 text-[14.5px] focus:border-primary focus:outline-none"
+            className="w-full rounded-md border border-input bg-card px-4 py-3 pr-20 text-[14.5px] focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
           />
           <span
             className={`absolute right-3 top-1/2 -translate-y-1/2 font-mono text-[10.5px] tabular-nums ${
@@ -174,7 +174,7 @@ export function NyMeldingClient({ mottakere }: { mottakere: Mottaker[] }) {
             value={body}
             onChange={(e) => setBody(e.target.value)}
             rows={10}
-            className="w-full resize-none bg-card px-4 py-4 text-[14.5px] leading-relaxed focus:outline-none"
+            className="w-full resize-none bg-card px-4 py-4 text-[14.5px] leading-relaxed focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
             placeholder="Skriv meldingen din her…"
           />
         </div>

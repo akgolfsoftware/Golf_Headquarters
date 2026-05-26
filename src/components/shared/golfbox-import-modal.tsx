@@ -544,7 +544,7 @@ function Steg1({
                   <input
                     type="text"
                     placeholder="medlemsnummer eller e-post"
-                    className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm outline-none focus:border-primary"
+                    className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-primary"
                   />
                 </label>
                 <label className="block">
@@ -554,7 +554,7 @@ function Steg1({
                   <input
                     type="password"
                     placeholder="GolfBox-passord"
-                    className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm outline-none focus:border-primary"
+                    className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-primary"
                   />
                 </label>
               </div>
@@ -609,7 +609,7 @@ function Steg2({
             value={fromDate}
             onChange={(e) => onFromDate(e.target.value)}
             max={toDate}
-            className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm outline-none focus:border-primary"
+            className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-primary"
           />
         </label>
         <label className="block">
@@ -622,7 +622,7 @@ function Steg2({
             min={fromDate}
             max={isoDato(new Date())}
             onChange={(e) => onToDate(e.target.value)}
-            className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm outline-none focus:border-primary"
+            className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-primary"
           />
         </label>
       </div>

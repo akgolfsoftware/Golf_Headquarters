@@ -63,7 +63,7 @@ export default async function EmailTemplatesAdmin() {
               <input
                 type="text"
                 placeholder="Søk maler…"
-                className="w-full rounded-md border border-input bg-background px-4 py-2 text-[12px] outline-none placeholder:text-muted-foreground"
+                className="w-full rounded-md border border-input bg-background px-4 py-2 text-[12px] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground"
               />
             </div>
             <div>

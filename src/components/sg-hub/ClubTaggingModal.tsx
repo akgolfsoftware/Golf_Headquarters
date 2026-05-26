@@ -106,7 +106,7 @@ export function ClubTaggingModal({ sessionId }: Props) {
               id="club-tagging-environment"
               value={environment}
               onChange={(e) => setEnvironment(e.target.value as TrackManEnvironment)}
-              className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+              className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
             >
               {ENVIRONMENT_OPTIONS.map(([val, label]) => (
                 <option key={val} value={val}>{label}</option>
@@ -143,7 +143,7 @@ export function ClubTaggingModal({ sessionId }: Props) {
                     onChange={(e) =>
                       setShots((prev) => ({ ...prev, [club]: e.target.value }))
                     }
-                    className="w-full rounded-md border border-input bg-card px-2 py-1 text-center font-mono text-xs text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+                    className="w-full rounded-md border border-input bg-card px-2 py-1 text-center font-mono text-xs text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
                   />
                 )}
               </div>

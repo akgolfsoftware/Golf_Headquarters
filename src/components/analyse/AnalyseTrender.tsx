@@ -111,7 +111,7 @@ export function AnalyseTrender({
                 value={dim}
                 onChange={(e) => bytt(e.target.value as Dimensjon, agg)}
                 disabled={pending}
-                className="mt-1 rounded-md border border-input bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                className="mt-1 rounded-md border border-input bg-background px-3 py-1.5 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
               >
                 {Object.entries(DIM_LABELS).map(([k, l]) => (
                   <option key={k} value={k}>
@@ -128,7 +128,7 @@ export function AnalyseTrender({
                 value={agg}
                 onChange={(e) => bytt(dim, e.target.value as "uke" | "maaned")}
                 disabled={pending}
-                className="mt-1 rounded-md border border-input bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                className="mt-1 rounded-md border border-input bg-background px-3 py-1.5 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
               >
                 <option value="uke">Per uke</option>
                 <option value="maaned">Per måned</option>

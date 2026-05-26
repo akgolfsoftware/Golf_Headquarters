@@ -27,7 +27,7 @@ export function HelpSearch() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Søk hjelp-artikler eller skriv et spørsmål..."
-          className="w-full rounded-lg border-[1.5px] border-border bg-card px-6 py-4 pl-14 text-base text-foreground outline-none transition-all focus:border-primary focus:shadow-[0_0_0_4px_var(--color-pyr-fys-track)]"
+          className="w-full rounded-lg border-[1.5px] border-border bg-card px-6 py-4 pl-14 text-base text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 transition-all focus:border-primary focus:shadow-[0_0_0_4px_var(--color-pyr-fys-track)]"
         />
       </div>
 

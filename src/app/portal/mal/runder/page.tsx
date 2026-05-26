@@ -182,7 +182,7 @@ export default async function RunderPage() {
                 type="search"
                 aria-label="Søk bane"
                 placeholder="Søk bane..."
-                className="h-11 w-full rounded-md border border-border bg-card py-2 pl-10 pr-4 text-base outline-none focus:border-primary sm:h-auto sm:text-sm"
+                className="h-11 w-full rounded-md border border-border bg-card py-2 pl-10 pr-4 text-base outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-primary sm:h-auto sm:text-sm"
               />
             </div>
             <Chip>

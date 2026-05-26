@@ -162,7 +162,7 @@ export function AppFeedbackForm() {
           value={tekst}
           onChange={(e) => setTekst(e.target.value)}
           placeholder="Skriv her — så detaljert eller kort du vil."
-          className="w-full rounded-md border border-input bg-card px-4 py-3 text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30"
+          className="w-full rounded-md border border-input bg-card px-4 py-3 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30"
         />
         <div className="mt-2 flex items-center justify-between text-[10.5px]">
           <span className="text-muted-foreground/80">

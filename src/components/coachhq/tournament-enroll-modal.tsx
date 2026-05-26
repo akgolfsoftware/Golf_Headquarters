@@ -258,7 +258,7 @@ export function TournamentEnrollModal({
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Søk spiller …"
                 aria-label="Søk spiller"
-                className="flex-1 border-none bg-transparent outline-none"
+                className="flex-1 border-none bg-transparent outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
               />
             </div>
 

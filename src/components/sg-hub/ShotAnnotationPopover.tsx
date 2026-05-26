@@ -175,14 +175,14 @@ function AnnotationRow({
           value={body}
           onChange={(e) => setBody(e.target.value)}
           rows={3}
-          className="w-full resize-none rounded-md border border-input bg-background px-2 py-1.5 text-sm focus:border-ring focus:outline-none"
+          className="w-full resize-none rounded-md border border-input bg-background px-2 py-1.5 text-sm focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
         />
         <input
           type="url"
           value={videoUrl}
           onChange={(e) => setVideoUrl(e.target.value)}
           placeholder="Videolink (valgfri)"
-          className="mt-2 w-full rounded-md border border-input bg-background px-2 py-1.5 text-xs focus:border-ring focus:outline-none"
+          className="mt-2 w-full rounded-md border border-input bg-background px-2 py-1.5 text-xs focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
         />
         {error && (
           <p className="mt-2 text-xs text-destructive">{error}</p>
@@ -303,14 +303,14 @@ function AddAnnotationForm({
         onChange={(e) => setBody(e.target.value)}
         rows={3}
         placeholder="Hva bør spilleren legge merke til på dette slaget?"
-        className="w-full resize-none rounded-md border border-input bg-background px-2 py-1.5 text-sm focus:border-ring focus:outline-none"
+        className="w-full resize-none rounded-md border border-input bg-background px-2 py-1.5 text-sm focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
       />
       <input
         type="url"
         value={videoUrl}
         onChange={(e) => setVideoUrl(e.target.value)}
         placeholder="Videolink (valgfri)"
-        className="mt-2 w-full rounded-md border border-input bg-background px-2 py-1.5 text-xs focus:border-ring focus:outline-none"
+        className="mt-2 w-full rounded-md border border-input bg-background px-2 py-1.5 text-xs focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
       />
       {error && (
         <p className="mt-2 text-xs text-destructive">{error}</p>

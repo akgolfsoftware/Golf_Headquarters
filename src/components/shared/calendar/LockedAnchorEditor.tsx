@@ -116,7 +116,7 @@ export function LockedAnchorEditor({ apen, studentId, initial, onLukk, onLagre }
               value={navn}
               onChange={(e) => setNavn(e.target.value)}
               placeholder="f.eks. WANG Toppidrett"
-              className="h-10 w-full rounded-md border border-input bg-card px-3 text-sm focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
+              className="h-10 w-full rounded-md border border-input bg-card px-3 text-sm focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
             />
           </div>
 
@@ -128,7 +128,7 @@ export function LockedAnchorEditor({ apen, studentId, initial, onLukk, onLagre }
               <select
                 value={pyramide}
                 onChange={(e) => setPyramide(e.target.value as PyramidArea)}
-                className="h-10 w-full rounded-md border border-input bg-card px-2 text-sm focus:border-ring focus:outline-none"
+                className="h-10 w-full rounded-md border border-input bg-card px-2 text-sm focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
               >
                 {AREAS.map((a) => (
                   <option key={a} value={a}>
@@ -144,7 +144,7 @@ export function LockedAnchorEditor({ apen, studentId, initial, onLukk, onLagre }
               <select
                 value={ukedag}
                 onChange={(e) => setUkedag(Number(e.target.value))}
-                className="h-10 w-full rounded-md border border-input bg-card px-2 text-sm focus:border-ring focus:outline-none"
+                className="h-10 w-full rounded-md border border-input bg-card px-2 text-sm focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
               >
                 {UKEDAGER.map((u, i) => (
                   <option key={u} value={i + 1}>
@@ -177,7 +177,7 @@ export function LockedAnchorEditor({ apen, studentId, initial, onLukk, onLagre }
                 type="time"
                 value={startTid}
                 onChange={(e) => setStartTid(e.target.value)}
-                className="h-10 w-full rounded-md border border-input bg-card px-3 font-mono text-sm tabular-nums focus:border-ring focus:outline-none"
+                className="h-10 w-full rounded-md border border-input bg-card px-3 font-mono text-sm tabular-nums focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
               />
             </div>
             <div>
@@ -188,7 +188,7 @@ export function LockedAnchorEditor({ apen, studentId, initial, onLukk, onLagre }
                 type="time"
                 value={sluttTid}
                 onChange={(e) => setSluttTid(e.target.value)}
-                className="h-10 w-full rounded-md border border-input bg-card px-3 font-mono text-sm tabular-nums focus:border-ring focus:outline-none"
+                className="h-10 w-full rounded-md border border-input bg-card px-3 font-mono text-sm tabular-nums focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
               />
             </div>
           </div>
@@ -219,7 +219,7 @@ export function LockedAnchorEditor({ apen, studentId, initial, onLukk, onLagre }
                   value={fysMuskelgruppe}
                   onChange={(e) => setFysMuskelgruppe(e.target.value)}
                   placeholder="f.eks. ben"
-                  className="h-9 w-full rounded-md border border-input bg-card px-3 text-sm focus:border-ring focus:outline-none"
+                  className="h-9 w-full rounded-md border border-input bg-card px-3 text-sm focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
                 />
               </div>
               <div>
@@ -231,7 +231,7 @@ export function LockedAnchorEditor({ apen, studentId, initial, onLukk, onLagre }
                   value={fysTreningstype}
                   onChange={(e) => setFysTreningstype(e.target.value)}
                   placeholder="f.eks. styrke"
-                  className="h-9 w-full rounded-md border border-input bg-card px-3 text-sm focus:border-ring focus:outline-none"
+                  className="h-9 w-full rounded-md border border-input bg-card px-3 text-sm focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
                 />
               </div>
             </div>
@@ -245,7 +245,7 @@ export function LockedAnchorEditor({ apen, studentId, initial, onLukk, onLagre }
               value={beskrivelse}
               onChange={(e) => setBeskrivelse(e.target.value)}
               rows={2}
-              className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
+              className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
             />
           </div>
         </div>

@@ -117,7 +117,7 @@ export function PlanSidebar({
         <select
           value={valgtSpillerId ?? ""}
           onChange={(e) => onValgSpiller(e.target.value)}
-          className="h-10 rounded-md border border-input bg-card px-3 text-sm text-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
+          className="h-10 rounded-md border border-input bg-card px-3 text-sm text-foreground focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
         >
           <option value="" disabled>
             Velg spiller

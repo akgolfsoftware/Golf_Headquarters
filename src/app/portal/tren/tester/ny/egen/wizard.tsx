@@ -151,10 +151,9 @@ const initialState: State = {
 
 type Props = {
   rolle: "ADMIN" | "COACH" | "PLAYER" | "PARENT" | "GUEST";
-  spillerNavn: string;
 };
 
-export function EgenTestWizard({ rolle, spillerNavn: _spillerNavn }: Props) {
+export function EgenTestWizard({ rolle }: Props) {
   const router = useRouter();
   const toast = useToast();
   const [pending, startTransition] = useTransition();
@@ -366,7 +365,7 @@ function Steg1({
           onChange={(e) => oppdater("navn", e.target.value)}
           placeholder="Eks. «Putt-konsistens 6 fot»"
           maxLength={100}
-          className="w-full rounded-md border border-input bg-card px-4 py-3 font-display text-2xl outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+          className="w-full rounded-md border border-input bg-card px-4 py-3 font-display text-2xl outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
         />
         <p className="text-xs text-muted-foreground">
           Minst 2 tegn. {state.navn.length}/100.
@@ -475,7 +474,7 @@ function Steg2({
           rows={2}
           maxLength={2000}
           placeholder="Hva måler denne testen og hvorfor er den verdifull?"
-          className="w-full rounded-md border border-input bg-card px-4 py-3 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+          className="w-full rounded-md border border-input bg-card px-4 py-3 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
         />
       </div>
 
@@ -499,7 +498,7 @@ function Steg2({
                     : `Steg ${i + 1}`
                 }
                 maxLength={300}
-                className="min-h-11 flex-1 rounded-md border border-input bg-card px-3 py-2.5 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+                className="min-h-11 flex-1 rounded-md border border-input bg-card px-3 py-2.5 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
               />
               {state.protokollSteg.length > 1 && (
                 <button
@@ -539,7 +538,7 @@ function Steg2({
             value={state.estMinutter}
             onChange={(e) => oppdater("estMinutter", e.target.value)}
             placeholder="15"
-            className="w-full rounded-md border border-input bg-card px-4 py-2.5 font-mono text-sm tabular-nums outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+            className="w-full rounded-md border border-input bg-card px-4 py-2.5 font-mono text-sm tabular-nums outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
           />
         </div>
 
@@ -560,7 +559,7 @@ function Steg2({
               }}
               placeholder="Eks. Trackman, 10 baller"
               maxLength={60}
-              className="min-h-11 flex-1 rounded-md border border-input bg-card px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+              className="min-h-11 flex-1 rounded-md border border-input bg-card px-3 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
             />
             <button
               type="button"
@@ -664,7 +663,7 @@ function Steg3({
           onChange={(e) => oppdater("scoringRule", e.target.value)}
           placeholder="Eks. «Antall puttede av 10» eller «Beste tid»"
           maxLength={200}
-          className="w-full rounded-md border border-input bg-card px-4 py-2.5 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+          className="w-full rounded-md border border-input bg-card px-4 py-2.5 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
         />
         <p className="text-xs text-muted-foreground">
           Beskriv hvordan score regnes — høyere bedre eller lavere bedre?
@@ -695,7 +694,7 @@ function Steg3({
                 onChange={(e) => endreNivaa(nivaa, e.target.value)}
                 placeholder="Verdi"
                 maxLength={60}
-                className="w-full rounded-md border border-input bg-card px-3 py-2 font-mono text-sm tabular-nums outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+                className="w-full rounded-md border border-input bg-card px-3 py-2 font-mono text-sm tabular-nums outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
               />
             </div>
           ))}

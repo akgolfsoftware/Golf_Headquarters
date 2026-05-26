@@ -147,7 +147,7 @@ export default async function GrupperPage() {
           <input
             type="search"
             placeholder="Søk gruppe eller medlem"
-            className="w-full bg-transparent outline-none placeholder:text-muted-foreground"
+            className="w-full bg-transparent outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground"
             aria-label="Søk gruppe eller medlem"
           />
         </div>

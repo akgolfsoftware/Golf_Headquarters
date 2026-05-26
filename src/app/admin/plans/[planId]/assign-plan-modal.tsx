@@ -300,7 +300,7 @@ export function AssignPlanToPlayerModal({
                 value={sok}
                 onChange={(e) => setSok(e.target.value)}
                 placeholder="Søk på navn eller klubb…"
-                className="w-full rounded-md border border-input bg-card py-2 pl-9 pr-4 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+                className="w-full rounded-md border border-input bg-card py-2 pl-9 pr-4 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
                 autoComplete="off"
                 aria-label="Søk spillere"
               />
@@ -450,7 +450,7 @@ export function AssignPlanToPlayerModal({
                   type="date"
                   value={startDato}
                   onChange={(e) => setStartDato(e.target.value)}
-                  className="w-full rounded-md border border-input bg-card px-3 py-2 font-mono text-sm tabular-nums text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+                  className="w-full rounded-md border border-input bg-card px-3 py-2 font-mono text-sm tabular-nums text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
                   required
                 />
               </label>
@@ -518,7 +518,7 @@ export function AssignPlanToPlayerModal({
                 onChange={(e) => setVelkomst(e.target.value)}
                 rows={3}
                 maxLength={600}
-                className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+                className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
                 placeholder="Kort melding spilleren ser i varselet."
               />
               <span className="mt-1 block text-right font-mono text-[10px] text-muted-foreground">

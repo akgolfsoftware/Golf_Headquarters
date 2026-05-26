@@ -158,7 +158,7 @@ export function AiChat({
               placeholder="Spør AI-coach …"
               rows={1}
               disabled={sender}
-              className="min-h-[44px] resize-none border-0 bg-transparent px-3.5 py-2.5 text-[15px] leading-[1.4] text-foreground placeholder:text-muted-foreground focus:outline-none disabled:opacity-60"
+              className="min-h-[44px] resize-none border-0 bg-transparent px-3.5 py-2.5 text-[15px] leading-[1.4] text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:opacity-60"
             />
             <button
               type="submit"

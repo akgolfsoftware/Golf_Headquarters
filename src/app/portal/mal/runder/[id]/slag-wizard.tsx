@@ -356,7 +356,7 @@ export function SlagWizard({
                     value={redigert.distanceToPin ?? ""}
                     onChange={(e) => oppdaterFelt("distanceToPin", e.target.value ? Number(e.target.value) : null)}
                     placeholder="142"
-                    className="w-full rounded-lg border border-border bg-card px-3 py-2 font-mono text-sm tabular-nums text-foreground outline-none focus:border-primary"
+                    className="w-full rounded-lg border border-border bg-card px-3 py-2 font-mono text-sm tabular-nums text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-primary"
                   />
                 </FieldGroup>
                 <FieldGroup label="Avstand slått (m)">
@@ -367,7 +367,7 @@ export function SlagWizard({
                     value={redigert.distanceHit ?? ""}
                     onChange={(e) => oppdaterFelt("distanceHit", e.target.value ? Number(e.target.value) : null)}
                     placeholder="138"
-                    className="w-full rounded-lg border border-border bg-card px-3 py-2 font-mono text-sm tabular-nums text-foreground outline-none focus:border-primary"
+                    className="w-full rounded-lg border border-border bg-card px-3 py-2 font-mono text-sm tabular-nums text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-primary"
                   />
                 </FieldGroup>
               </div>
@@ -404,7 +404,7 @@ export function SlagWizard({
                   value={redigert.notes ?? ""}
                   onChange={(e) => oppdaterFelt("notes", e.target.value || null)}
                   placeholder="Eks. dårlig kontakt, god read..."
-                  className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground outline-none focus:border-primary"
+                  className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-primary"
                 />
               </FieldGroup>
 

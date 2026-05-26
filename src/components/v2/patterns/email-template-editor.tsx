@@ -183,7 +183,7 @@ function SelectField({ label, value, onChange, options }: SelectFieldProps) {
         <select
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full appearance-none rounded-md border font-mono text-[13px] pr-8 outline-none transition-colors focus:ring-2"
+          className="w-full appearance-none rounded-md border font-mono text-[13px] pr-8 outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 transition-colors focus:ring-2"
           style={{
             background: "hsl(var(--card))",
             borderColor: "hsl(var(--input))",
@@ -231,7 +231,7 @@ function TextField({ label, value, onChange, placeholder }: TextFieldProps) {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full rounded-md border font-sans text-[14px] outline-none transition-colors focus:ring-2"
+        className="w-full rounded-md border font-sans text-[14px] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 transition-colors focus:ring-2"
         style={{
           background: "hsl(var(--card))",
           borderColor: "hsl(var(--input))",
@@ -592,7 +592,7 @@ export default function EmailTemplateEditorPattern({
               value={draft.body}
               onChange={(e) => update("body", e.target.value)}
               rows={16}
-              className="w-full rounded-md border font-mono text-[13px] leading-relaxed resize-y outline-none transition-colors focus:ring-2"
+              className="w-full rounded-md border font-mono text-[13px] leading-relaxed resize-y outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 transition-colors focus:ring-2"
               style={{
                 background: "hsl(var(--card))",
                 borderColor: "hsl(var(--input))",

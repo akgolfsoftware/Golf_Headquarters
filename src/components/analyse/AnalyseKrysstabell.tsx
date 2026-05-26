@@ -185,7 +185,7 @@ export function AnalyseKrysstabell({
               value={dim1}
               onChange={(e) => oppdater(e.target.value as Dimensjon, dim2)}
               disabled={pending}
-              className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+              className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
             >
               {Object.entries(DIM_LABELS).map(([k, l]) => (
                 <option key={k} value={k}>
@@ -202,7 +202,7 @@ export function AnalyseKrysstabell({
               value={dim2}
               onChange={(e) => oppdater(dim1, e.target.value as Dimensjon)}
               disabled={pending}
-              className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+              className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
             >
               {Object.entries(DIM_LABELS).map(([k, l]) => (
                 <option key={k} value={k}>

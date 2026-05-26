@@ -174,7 +174,7 @@ export function OnboardingClient({ defaultName }: { defaultName: string }) {
                   type="text"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="w-full rounded-md border border-input bg-background px-4 py-3 text-[14px] focus:border-primary focus:outline-none"
+                  className="w-full rounded-md border border-input bg-background px-4 py-3 text-[14px] focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
                 />
               </Field>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -183,14 +183,14 @@ export function OnboardingClient({ defaultName }: { defaultName: string }) {
                     type="text"
                     value={birthDate}
                     onChange={(e) => setBirthDate(e.target.value)}
-                    className="w-full rounded-md border border-input bg-background px-4 py-3 font-mono text-[14px] tabular-nums focus:border-primary focus:outline-none"
+                    className="w-full rounded-md border border-input bg-background px-4 py-3 font-mono text-[14px] tabular-nums focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
                   />
                 </Field>
                 <Field label="Kjønn">
                   <select
                     value={gender}
                     onChange={(e) => setGender(e.target.value)}
-                    className="w-full rounded-md border border-input bg-background px-4 py-3 text-[14px] focus:border-primary focus:outline-none"
+                    className="w-full rounded-md border border-input bg-background px-4 py-3 text-[14px] focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
                   >
                     <option>Gutt</option>
                     <option>Jente</option>
@@ -203,7 +203,7 @@ export function OnboardingClient({ defaultName }: { defaultName: string }) {
                 <select
                   value={homeClub}
                   onChange={(e) => setHomeClub(e.target.value)}
-                  className="w-full rounded-md border border-input bg-background px-4 py-3 text-[14px] focus:border-primary focus:outline-none"
+                  className="w-full rounded-md border border-input bg-background px-4 py-3 text-[14px] focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
                 >
                   <option>Gamle Fredrikstad GK</option>
                   <option>Borre GK</option>
@@ -321,7 +321,7 @@ export function OnboardingClient({ defaultName }: { defaultName: string }) {
                   value={goalText}
                   onChange={(e) => setGoalText(e.target.value)}
                   rows={3}
-                  className="w-full rounded-md border border-input bg-background px-4 py-3 text-[14px] focus:border-primary focus:outline-none"
+                  className="w-full rounded-md border border-input bg-background px-4 py-3 text-[14px] focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
                 />
               </Field>
               <StepFooter onPrev={prev} onNext={next} pending={pending} />
@@ -344,7 +344,7 @@ export function OnboardingClient({ defaultName }: { defaultName: string }) {
                   type="text"
                   defaultValue="Hans Brennum"
                   placeholder="Søk etter coach …"
-                  className="w-full rounded-md border border-input bg-background py-3 pl-10 pr-4 text-[14px] focus:border-primary focus:outline-none"
+                  className="w-full rounded-md border border-input bg-background py-3 pl-10 pr-4 text-[14px] focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
                 />
               </div>
               <button

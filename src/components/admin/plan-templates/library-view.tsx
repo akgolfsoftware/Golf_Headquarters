@@ -251,7 +251,7 @@ export function LibraryView({ templates }: Props) {
                 value={sok}
                 onChange={(e) => setSok(e.target.value)}
                 placeholder="Søk i navn eller beskrivelse"
-                className="h-9 w-full rounded-md border border-input bg-card pl-8 pr-3 text-xs placeholder:text-muted-foreground focus:border-primary focus:outline-none sm:w-64"
+                className="h-9 w-full rounded-md border border-input bg-card pl-8 pr-3 text-xs placeholder:text-muted-foreground focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 sm:w-64"
               />
             </div>
             <select

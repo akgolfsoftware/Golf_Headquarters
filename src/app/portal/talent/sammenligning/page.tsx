@@ -177,7 +177,7 @@ export default async function SammenligningPage({
               type="search"
               defaultValue={q ?? ""}
               placeholder={`Søk blant spillere på ${mineData.niva}`}
-              className="mt-2 w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+              className="mt-2 w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
             />
           </div>
           <div className="flex-1">
@@ -191,7 +191,7 @@ export default async function SammenligningPage({
               id="spiller"
               name="spiller"
               defaultValue={spiller ?? ""}
-              className="mt-2 w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+              className="mt-2 w-full rounded-md border border-input bg-background px-4 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
             >
               <option value="">— Ingen valgt —</option>
               {kandidater.map((k) => {

@@ -92,7 +92,7 @@ export function GuardianConsentBanner({ pendingInvitationEmail }: Props) {
               placeholder="forelder@example.com"
               autoComplete="email"
               required
-              className="flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
+              className="flex-1 bg-transparent outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground"
             />
           </label>
           <button

@@ -39,7 +39,7 @@ export default async function ForelderLayout({
         <main
           id="forelder-main"
           tabIndex={-1}
-          className="flex-1 px-4 py-6 pb-24 focus:outline-none sm:px-8 lg:pb-6"
+          className="flex-1 px-4 py-6 pb-24 focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 sm:px-8 lg:pb-6"
         >
           {children}
         </main>

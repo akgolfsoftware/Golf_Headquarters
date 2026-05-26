@@ -354,7 +354,7 @@ export function SummaryV2Client({ data }: { data: SummaryV2Data }) {
             onChange={(e) => setComment(e.target.value)}
             placeholder="Kommentar til Anders (frivillig)…"
             rows={3}
-            className="mt-3 w-full rounded-md border border-border bg-background p-3 font-sans text-[13.5px] text-foreground placeholder:text-muted-foreground/70 focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
+            className="mt-3 w-full rounded-md border border-border bg-background p-3 font-sans text-[13.5px] text-foreground placeholder:text-muted-foreground/70 focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
           />
         </section>
       </div>

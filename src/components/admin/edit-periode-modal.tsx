@@ -123,7 +123,7 @@ export function EditPeriodeModal({
               type="text"
               value={form.title}
               onChange={(e) => update({ title: e.target.value })}
-              className="mt-1 w-full bg-transparent font-display text-[20px] font-semibold tracking-tight text-foreground outline-none focus:ring-2 focus:ring-ring/30"
+              className="mt-1 w-full bg-transparent font-display text-[20px] font-semibold tracking-tight text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
             />
           </div>
           <button
@@ -143,7 +143,7 @@ export function EditPeriodeModal({
                 type="date"
                 value={form.startDate}
                 onChange={(e) => update({ startDate: e.target.value })}
-                className="w-full rounded-md border border-border bg-card px-3 py-2 font-mono text-[12.5px] outline-none focus:ring-2 focus:ring-ring/30"
+                className="w-full rounded-md border border-border bg-card px-3 py-2 font-mono text-[12.5px] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
               />
             </Field>
             <Field label="Slutt">
@@ -151,7 +151,7 @@ export function EditPeriodeModal({
                 type="date"
                 value={form.endDate}
                 onChange={(e) => update({ endDate: e.target.value })}
-                className="w-full rounded-md border border-border bg-card px-3 py-2 font-mono text-[12.5px] outline-none focus:ring-2 focus:ring-ring/30"
+                className="w-full rounded-md border border-border bg-card px-3 py-2 font-mono text-[12.5px] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
               />
             </Field>
           </section>
@@ -161,7 +161,7 @@ export function EditPeriodeModal({
               rows={2}
               value={form.goal}
               onChange={(e) => update({ goal: e.target.value })}
-              className="w-full resize-y rounded-md border border-border bg-card px-3 py-2 text-[13px] outline-none focus:ring-2 focus:ring-ring/30"
+              className="w-full resize-y rounded-md border border-border bg-card px-3 py-2 text-[13px] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
               placeholder="Hva skal spilleren oppnå i denne perioden?"
             />
           </Field>
@@ -211,7 +211,7 @@ export function EditPeriodeModal({
                     max={100}
                     value={form.fokus[k]}
                     onChange={(e) => updateFokus(k, Number(e.target.value))}
-                    className="w-full rounded-md border border-border bg-card px-2 py-1 text-right font-mono text-[12px] tabular-nums outline-none focus:ring-2 focus:ring-ring/30"
+                    className="w-full rounded-md border border-border bg-card px-2 py-1 text-right font-mono text-[12px] tabular-nums outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
                   />
                 </div>
               ))}
@@ -223,7 +223,7 @@ export function EditPeriodeModal({
               rows={3}
               value={form.notes}
               onChange={(e) => update({ notes: e.target.value })}
-              className="w-full resize-y rounded-md border border-border bg-card px-3 py-2 text-[13px] outline-none focus:ring-2 focus:ring-ring/30"
+              className="w-full resize-y rounded-md border border-border bg-card px-3 py-2 text-[13px] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
               placeholder="Tilleggsnotater til perioden …"
             />
           </Field>

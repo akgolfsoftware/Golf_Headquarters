@@ -80,7 +80,7 @@ export function PeriodVolumeRecipeEditor({ rader, onChange }: Props) {
               onChange={(e) =>
                 oppdater(r.id, { pyramide: e.target.value as PyramidArea })
               }
-              className="h-8 rounded-md border border-input bg-card px-2 text-xs text-foreground focus:border-ring focus:outline-none"
+              className="h-8 rounded-md border border-input bg-card px-2 text-xs text-foreground focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
             >
               {AREAS.map((a) => (
                 <option key={a} value={a}>
@@ -96,7 +96,7 @@ export function PeriodVolumeRecipeEditor({ rader, onChange }: Props) {
               onChange={(e) =>
                 oppdater(r.id, { antallPerUke: Math.max(1, Number(e.target.value) || 1) })
               }
-              className="h-8 rounded-md border border-input bg-card px-2 font-mono text-xs tabular-nums focus:border-ring focus:outline-none"
+              className="h-8 rounded-md border border-input bg-card px-2 font-mono text-xs tabular-nums focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
               title="Antall per uke"
             />
             <input
@@ -108,7 +108,7 @@ export function PeriodVolumeRecipeEditor({ rader, onChange }: Props) {
               onChange={(e) =>
                 oppdater(r.id, { varighetMin: Math.max(15, Number(e.target.value) || 15) })
               }
-              className="h-8 rounded-md border border-input bg-card px-2 font-mono text-xs tabular-nums focus:border-ring focus:outline-none"
+              className="h-8 rounded-md border border-input bg-card px-2 font-mono text-xs tabular-nums focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
               title="Varighet (min)"
             />
             <input
@@ -116,7 +116,7 @@ export function PeriodVolumeRecipeEditor({ rader, onChange }: Props) {
               value={r.notat ?? ""}
               onChange={(e) => oppdater(r.id, { notat: e.target.value })}
               placeholder="Notat (valgfritt)"
-              className="h-8 rounded-md border border-input bg-card px-2 text-xs focus:border-ring focus:outline-none"
+              className="h-8 rounded-md border border-input bg-card px-2 text-xs focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
             />
             <select
               value={r.preferertUkedag ?? ""}
@@ -125,7 +125,7 @@ export function PeriodVolumeRecipeEditor({ rader, onChange }: Props) {
                   preferertUkedag: e.target.value ? Number(e.target.value) : null,
                 })
               }
-              className="h-8 rounded-md border border-input bg-card px-2 text-xs focus:border-ring focus:outline-none"
+              className="h-8 rounded-md border border-input bg-card px-2 text-xs focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
             >
               <option value="">Hvilken som helst</option>
               {UKEDAGER.map((u, i) => (
@@ -140,7 +140,7 @@ export function PeriodVolumeRecipeEditor({ rader, onChange }: Props) {
               onChange={(e) =>
                 oppdater(r.id, { preferertTid: e.target.value || null })
               }
-              className="h-8 rounded-md border border-input bg-card px-2 font-mono text-xs focus:border-ring focus:outline-none"
+              className="h-8 rounded-md border border-input bg-card px-2 font-mono text-xs focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
             />
             <button
               type="button"
@@ -163,7 +163,7 @@ export function PeriodVolumeRecipeEditor({ rader, onChange }: Props) {
         <select
           value={draftPyramide}
           onChange={(e) => setDraftPyramide(e.target.value as PyramidArea)}
-          className="h-9 rounded-md border border-input bg-card px-2 text-xs focus:border-ring focus:outline-none"
+          className="h-9 rounded-md border border-input bg-card px-2 text-xs focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
         >
           {AREAS.map((a) => (
             <option key={a} value={a}>

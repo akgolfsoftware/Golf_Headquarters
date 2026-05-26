@@ -153,7 +153,7 @@ export function RecurringPatternEditor({ apen, studentId, initial, onLukk, onLag
               value={navn}
               onChange={(e) => setNavn(e.target.value)}
               placeholder="f.eks. Putting-rutine"
-              className="h-10 w-full rounded-md border border-input bg-card px-3 text-sm focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
+              className="h-10 w-full rounded-md border border-input bg-card px-3 text-sm focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
             />
           </div>
 
@@ -165,7 +165,7 @@ export function RecurringPatternEditor({ apen, studentId, initial, onLukk, onLag
               <select
                 value={pyramide}
                 onChange={(e) => setPyramide(e.target.value as PyramidArea)}
-                className="h-10 w-full rounded-md border border-input bg-card px-2 text-sm focus:border-ring focus:outline-none"
+                className="h-10 w-full rounded-md border border-input bg-card px-2 text-sm focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
               >
                 {AREAS.map((a) => (
                   <option key={a} value={a}>
@@ -183,7 +183,7 @@ export function RecurringPatternEditor({ apen, studentId, initial, onLukk, onLag
                 onChange={(e) =>
                   setFrekvens(e.target.value as "DAILY" | "WEEKLY" | "MONTHLY")
                 }
-                className="h-10 w-full rounded-md border border-input bg-card px-2 text-sm focus:border-ring focus:outline-none"
+                className="h-10 w-full rounded-md border border-input bg-card px-2 text-sm focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
               >
                 <option value="DAILY">Daglig</option>
                 <option value="WEEKLY">Ukentlig</option>
@@ -200,7 +200,7 @@ export function RecurringPatternEditor({ apen, studentId, initial, onLukk, onLag
                 max={12}
                 value={intervall}
                 onChange={(e) => setIntervall(Math.max(1, Number(e.target.value) || 1))}
-                className="h-10 w-full rounded-md border border-input bg-card px-3 font-mono text-sm tabular-nums focus:border-ring focus:outline-none"
+                className="h-10 w-full rounded-md border border-input bg-card px-3 font-mono text-sm tabular-nums focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
               />
             </div>
           </div>
@@ -254,7 +254,7 @@ export function RecurringPatternEditor({ apen, studentId, initial, onLukk, onLag
                 type="time"
                 value={startTid}
                 onChange={(e) => setStartTid(e.target.value)}
-                className="h-10 w-full rounded-md border border-input bg-card px-3 font-mono text-sm tabular-nums focus:border-ring focus:outline-none"
+                className="h-10 w-full rounded-md border border-input bg-card px-3 font-mono text-sm tabular-nums focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
               />
             </div>
             <div>
@@ -268,7 +268,7 @@ export function RecurringPatternEditor({ apen, studentId, initial, onLukk, onLag
                 step={15}
                 value={varighetMin}
                 onChange={(e) => setVarighetMin(Math.max(15, Number(e.target.value) || 15))}
-                className="h-10 w-full rounded-md border border-input bg-card px-3 font-mono text-sm tabular-nums focus:border-ring focus:outline-none"
+                className="h-10 w-full rounded-md border border-input bg-card px-3 font-mono text-sm tabular-nums focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
               />
             </div>
           </div>
@@ -281,7 +281,7 @@ export function RecurringPatternEditor({ apen, studentId, initial, onLukk, onLag
               value={beskrivelse}
               onChange={(e) => setBeskrivelse(e.target.value)}
               rows={2}
-              className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
+              className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
             />
           </div>
 

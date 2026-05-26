@@ -159,7 +159,7 @@ export function EditOktModal({
               type="text"
               value={plan.title}
               onChange={(e) => update({ title: e.target.value })}
-              className="mt-1 w-full bg-transparent font-display text-[20px] font-semibold tracking-tight text-foreground outline-none focus:ring-2 focus:ring-ring/30"
+              className="mt-1 w-full bg-transparent font-display text-[20px] font-semibold tracking-tight text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
             />
           </div>
           <button
@@ -178,7 +178,7 @@ export function EditOktModal({
               <div className="flex items-center gap-2 rounded-md border border-border bg-card px-3 py-2">
                 <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
                 <input
-                  className="w-full bg-transparent font-mono text-[12.5px] outline-none"
+                  className="w-full bg-transparent font-mono text-[12.5px] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
                   value={plan.dateLabel}
                   onChange={(e) => update({ dateLabel: e.target.value })}
                 />
@@ -187,14 +187,14 @@ export function EditOktModal({
             <Field label="Tid">
               <div className="flex items-center gap-2">
                 <input
-                  className="w-[80px] rounded-md border border-border bg-card px-3 py-2 font-mono text-[12.5px] outline-none focus:ring-2 focus:ring-ring/30"
+                  className="w-[80px] rounded-md border border-border bg-card px-3 py-2 font-mono text-[12.5px] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
                   value={plan.startTime}
                   onChange={(e) => update({ startTime: e.target.value })}
                   aria-label="Starttidspunkt"
                 />
                 <span className="text-muted-foreground" aria-hidden>–</span>
                 <input
-                  className="w-[80px] rounded-md border border-border bg-card px-3 py-2 font-mono text-[12.5px] outline-none focus:ring-2 focus:ring-ring/30"
+                  className="w-[80px] rounded-md border border-border bg-card px-3 py-2 font-mono text-[12.5px] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
                   value={plan.endTime}
                   onChange={(e) => update({ endTime: e.target.value })}
                   aria-label="Sluttidspunkt"
@@ -202,7 +202,7 @@ export function EditOktModal({
                 <input
                   readOnly={!plan.durationOverride}
                   aria-label="Total varighet i minutter"
-                  className={`flex-1 rounded-md border border-border px-3 py-2 font-mono text-[12.5px] outline-none ${
+                  className={`flex-1 rounded-md border border-border px-3 py-2 font-mono text-[12.5px] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 ${
                     plan.durationOverride
                       ? "bg-card"
                       : "bg-secondary text-muted-foreground"
@@ -279,7 +279,7 @@ export function EditOktModal({
                   </div>
                   <div className="grid gap-2 sm:grid-cols-[1fr_auto_auto_auto]">
                     <input
-                      className="rounded-md border border-border bg-card px-3 py-2 text-[13px] outline-none focus:ring-2 focus:ring-ring/30"
+                      className="rounded-md border border-border bg-card px-3 py-2 text-[13px] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
                       value={d.title}
                       onChange={(e) =>
                         updateDrill(d.id, { title: e.target.value })
@@ -295,7 +295,7 @@ export function EditOktModal({
                       suffix="min"
                     />
                     <input
-                      className="w-[140px] rounded-md border border-border bg-card px-3 py-2 text-center font-mono text-[12px] outline-none focus:ring-2 focus:ring-ring/30"
+                      className="w-[140px] rounded-md border border-border bg-card px-3 py-2 text-center font-mono text-[12px] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
                       value={d.reps}
                       onChange={(e) =>
                         updateDrill(d.id, { reps: e.target.value })
@@ -327,7 +327,7 @@ export function EditOktModal({
                 value={plan.notes}
                 onChange={(e) => update({ notes: e.target.value })}
                 rows={3}
-                className="w-full resize-y rounded-md border border-border bg-card px-3 py-2 text-[13px] leading-relaxed outline-none focus:ring-2 focus:ring-ring/30"
+                className="w-full resize-y rounded-md border border-border bg-card px-3 py-2 text-[13px] leading-relaxed outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30"
                 placeholder="Hva er fokuset i denne økten?"
               />
             </Field>

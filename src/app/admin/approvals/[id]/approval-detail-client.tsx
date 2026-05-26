@@ -309,7 +309,7 @@ export function ApprovalDetailClient({ detail }: { detail: ApprovalDetail }) {
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               rows={4}
-              className="mt-3 w-full rounded-md border border-input bg-background p-3 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+              className="mt-3 w-full rounded-md border border-input bg-background p-3 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
               placeholder={
                 mode === "decline"
                   ? "F.eks: for tett innpå turnering, vi tar dette neste uke."

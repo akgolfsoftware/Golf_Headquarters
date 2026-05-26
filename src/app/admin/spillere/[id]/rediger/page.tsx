@@ -301,7 +301,7 @@ function Field({
         name={name}
         defaultValue={defaultValue}
         required={required}
-        className="mt-1.5 block w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-accent"
+        className="mt-1.5 block w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-accent"
       />
       {hint && (
         <span className="mt-1 block font-mono text-[10px] text-muted-foreground">
@@ -332,7 +332,7 @@ function FieldArea({
         name={name}
         defaultValue={defaultValue}
         rows={4}
-        className="mt-1.5 block w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-accent"
+        className="mt-1.5 block w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-accent"
       />
       {hint && (
         <span className="mt-1 block font-mono text-[10px] text-muted-foreground">

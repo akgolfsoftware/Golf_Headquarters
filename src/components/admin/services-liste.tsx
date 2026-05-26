@@ -115,7 +115,7 @@ export function ServicesListe({ services }: { services: ServiceListItem[] }) {
             value={sok}
             onChange={(e) => setSok(e.target.value)}
             placeholder="Søk tjeneste"
-            className="flex-1 bg-transparent text-foreground outline-none placeholder:text-muted-foreground"
+            className="flex-1 bg-transparent text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground"
           />
         </label>
 
@@ -287,7 +287,7 @@ function SelectChip<T extends string>({
       <select
         value={value}
         onChange={(e) => onChange(e.target.value as T)}
-        className="cursor-pointer bg-transparent text-foreground outline-none"
+        className="cursor-pointer bg-transparent text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
       >
         {options.map((o) => (
           <option key={o.value} value={o.value}>

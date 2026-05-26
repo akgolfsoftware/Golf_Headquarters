@@ -145,7 +145,7 @@ export default async function Approvals() {
             type="search"
             name="q"
             placeholder="Søk spiller eller action"
-            className="flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
+            className="flex-1 bg-transparent outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground"
           />
         </label>
         <div className="flex flex-wrap gap-2">

@@ -199,7 +199,7 @@ export default async function TaskDetaljPage({
               <input
                 type="text"
                 placeholder="Legg til sub-task …"
-                className="flex-1 bg-transparent text-[13px] outline-none placeholder:text-muted-foreground"
+                className="flex-1 bg-transparent text-[13px] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground"
               />
             </div>
           </section>
@@ -250,7 +250,7 @@ export default async function TaskDetaljPage({
               <textarea
                 rows={2}
                 placeholder="Skriv en kommentar …"
-                className="flex-1 resize-none bg-transparent text-[13px] outline-none placeholder:text-muted-foreground"
+                className="flex-1 resize-none bg-transparent text-[13px] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground"
               />
               <AthleticButton variant="lime" size="sm" className="self-end">
                 Send
@@ -265,7 +265,7 @@ export default async function TaskDetaljPage({
             <MetaCell label="STATUS">
               <select
                 defaultValue={task.status}
-                className="font-mono w-full rounded-md border border-input bg-card px-2.5 py-2 text-[11px] font-bold tracking-[0.06em] outline-none"
+                className="font-mono w-full rounded-md border border-input bg-card px-2.5 py-2 text-[11px] font-bold tracking-[0.06em] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
               >
                 <option>TODO</option>
                 <option>DOING</option>

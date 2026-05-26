@@ -313,7 +313,7 @@ function BeOmEndringModal({
             rows={5}
             maxLength={2000}
             placeholder="Skriv kort hva du vil ha endret — antall økter, fokus, tidspunkt…"
-            className="mt-2 w-full rounded-md border border-input bg-background px-4 py-2 text-[13px] leading-[1.5] text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
+            className="mt-2 w-full rounded-md border border-input bg-background px-4 py-2 text-[13px] leading-[1.5] text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
           />
           <div className="mt-1 flex justify-between text-[11px] text-muted-foreground">
             <span>Minst 5 tegn. Coachen din får denne meldingen.</span>

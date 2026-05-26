@@ -42,7 +42,7 @@ export function KontaktForm() {
           type="text"
           required
           autoComplete="name"
-          className="mt-2 w-full rounded-md border border-input bg-background px-4 py-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring"
+          className="mt-2 w-full rounded-md border border-input bg-background px-4 py-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
         />
       </div>
 
@@ -60,7 +60,7 @@ export function KontaktForm() {
             type="email"
             required
             autoComplete="email"
-            className="mt-2 w-full rounded-md border border-input bg-background px-4 py-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring"
+            className="mt-2 w-full rounded-md border border-input bg-background px-4 py-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
           />
         </div>
         <div>
@@ -76,7 +76,7 @@ export function KontaktForm() {
             name="telefon"
             type="tel"
             autoComplete="tel"
-            className="mt-2 w-full rounded-md border border-input bg-background px-4 py-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring"
+            className="mt-2 w-full rounded-md border border-input bg-background px-4 py-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
           />
         </div>
       </div>
@@ -93,7 +93,7 @@ export function KontaktForm() {
           name="tema"
           required
           defaultValue=""
-          className="mt-2 w-full rounded-md border border-input bg-background px-4 py-4 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring"
+          className="mt-2 w-full rounded-md border border-input bg-background px-4 py-4 text-sm text-foreground focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
         >
           <option value="" disabled>
             Velg tema
@@ -116,7 +116,7 @@ export function KontaktForm() {
           name="melding"
           required
           rows={5}
-          className="mt-2 w-full rounded-md border border-input bg-background px-4 py-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring"
+          className="mt-2 w-full rounded-md border border-input bg-background px-4 py-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
         />
       </div>
 

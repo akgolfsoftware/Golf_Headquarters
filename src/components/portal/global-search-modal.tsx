@@ -29,7 +29,6 @@ import {
   LineChart,
   LogOut,
   MessageSquare,
-  Moon,
   Search,
   Target,
   TrendingUp,
@@ -601,7 +600,7 @@ export function PortalGlobalSearchModal({
             onKeyDown={onInputKeyDown}
             placeholder="Søk planer, bookinger, mål eller naviger…"
             aria-label="Søk i PlayerHQ"
-            className="flex-1 bg-transparent text-base text-foreground outline-none placeholder:text-muted-foreground"
+            className="flex-1 bg-transparent text-base text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground"
             autoComplete="off"
             spellCheck={false}
           />

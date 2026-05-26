@@ -95,7 +95,7 @@ export function CaddieChatStub({ foreslatteSporsmal }: { foreslatteSporsmal: str
           onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && send(text)}
           placeholder="Skriv direkte til Caddie…"
-          className="min-w-0 flex-1 rounded-full border border-border bg-background px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+          className="min-w-0 flex-1 rounded-full border border-border bg-background px-4 py-2 text-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
         />
         <button
           type="button"

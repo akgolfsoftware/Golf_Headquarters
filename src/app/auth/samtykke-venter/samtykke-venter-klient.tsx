@@ -76,7 +76,7 @@ export function SamtykkeVenterKlient({ spillerNavn, invitasjonEmail }: Props) {
                 placeholder="forelder@example.com"
                 autoComplete="email"
                 required
-                className="flex-1 border-none bg-transparent text-sm text-foreground outline-none"
+                className="flex-1 border-none bg-transparent text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
               />
             </label>
             <button

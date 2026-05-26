@@ -184,7 +184,7 @@ export default async function FacilitiesAdmin({
             <input
               type="search"
               placeholder="Søk fasilitet"
-              className="flex-1 bg-transparent text-foreground outline-none placeholder:text-muted-foreground"
+              className="flex-1 bg-transparent text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground"
             />
           </label>
           {Array.from(grupper.values()).map((items) => (

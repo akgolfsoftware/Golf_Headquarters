@@ -90,6 +90,7 @@ export function TwoFaClient() {
   }, [supabase]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     hentFactors();
   }, [hentFactors]);
 
@@ -406,7 +407,7 @@ export function TwoFaClient() {
                   setKode(e.target.value.replace(/[^0-9]/g, ""))
                 }
                 autoFocus
-                className="w-full rounded-md border border-input bg-card px-4 py-4 text-center font-mono text-lg tabular-nums tracking-[0.5em] outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30"
+                className="w-full rounded-md border border-input bg-card px-4 py-4 text-center font-mono text-lg tabular-nums tracking-[0.5em] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30"
                 placeholder="000000"
               />
             </label>

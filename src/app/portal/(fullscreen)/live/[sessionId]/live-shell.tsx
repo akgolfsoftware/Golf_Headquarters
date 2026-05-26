@@ -1367,7 +1367,7 @@ export function LiveShell({
                 dispatch({ type: "SET_FEEDBACK_NOTE", value: e.target.value })
               }
               placeholder="Skriv kommentar (valgfritt)"
-              className="h-11 w-[280px] rounded-full border border-white/15 bg-transparent pl-10 pr-4 font-display text-[13px] text-white placeholder:text-white/45 outline-none transition-colors focus:border-white/30"
+              className="h-11 w-[280px] rounded-full border border-white/15 bg-transparent pl-10 pr-4 font-display text-[13px] text-white placeholder:text-white/45 outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 transition-colors focus:border-white/30"
             />
           </div>
         </div>

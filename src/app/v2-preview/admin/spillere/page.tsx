@@ -767,7 +767,7 @@ function FilterBar({
           value={search}
           onChange={(e) => onSearch(e.target.value)}
           placeholder="Søk etter spiller eller akademi…"
-          className="flex-1 bg-transparent border-0 outline-none font-mono text-[13px] text-foreground placeholder:text-muted-foreground"
+          className="flex-1 bg-transparent border-0 outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 font-mono text-[13px] text-foreground placeholder:text-muted-foreground"
         />
         {search && (
           <button

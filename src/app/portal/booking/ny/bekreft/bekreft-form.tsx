@@ -52,7 +52,7 @@ export function BekreftForm({ serviceTypeId, coachId, start }: Props) {
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           placeholder="Hva vil du jobbe med? Spesielle ønsker?"
-          className="mt-2 w-full rounded-md border border-input bg-background px-4 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+          className="mt-2 w-full rounded-md border border-input bg-background px-4 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
         />
       </div>
 

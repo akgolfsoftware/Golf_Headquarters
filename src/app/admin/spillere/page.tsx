@@ -406,7 +406,7 @@ export default async function SpillerePage({
             name="q"
             defaultValue={params.q ?? ""}
             placeholder="Søk spiller eller e-post"
-            className="flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
+            className="flex-1 bg-transparent outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground"
           />
         </label>
         <div className="flex flex-wrap gap-2">
@@ -414,7 +414,7 @@ export default async function SpillerePage({
           <select
             name="program"
             defaultValue={params.program ?? ""}
-            className="rounded-full border border-border bg-card px-4 py-1.5 text-[12px] text-muted-foreground outline-none"
+            className="rounded-full border border-border bg-card px-4 py-1.5 text-[12px] text-muted-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
           >
             <option value="">Alle program</option>
             {ALL_PROGRAMS.filter((p) => p !== "PLATFORM_ONLY").map((p) => (

@@ -106,7 +106,7 @@ export function SmartDateInput({
           value={tekst}
           onChange={(e) => setTekst(e.target.value)}
           placeholder={placeholder}
-          className="h-10 w-full rounded-md border border-input bg-card pl-10 pr-10 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
+          className="h-10 w-full rounded-md border border-input bg-card pl-10 pr-10 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
         />
         <span className="absolute right-3 top-1/2 -translate-y-1/2">
           {status.kind === "loading" && (

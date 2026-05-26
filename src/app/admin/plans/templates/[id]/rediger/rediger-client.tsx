@@ -326,7 +326,7 @@ export function TemplateEditor({ initial }: { initial: EditorInitialData }) {
               onChange={(e) => setBeskrivelse(e.target.value)}
               rows={3}
               maxLength={2000}
-              className="resize-y rounded-md border border-input bg-card px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              className="resize-y rounded-md border border-input bg-card px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
               placeholder="Hva passer denne malen for?"
             />
           </label>
@@ -500,7 +500,7 @@ export function TemplateEditor({ initial }: { initial: EditorInitialData }) {
             onChange={(e) => setNotater(e.target.value)}
             rows={4}
             maxLength={4000}
-            className="resize-y rounded-md border border-input bg-card px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            className="resize-y rounded-md border border-input bg-card px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
             placeholder="F.eks. fungerer best for B1-spillere i tapering-fase…"
           />
         </label>
@@ -610,7 +610,7 @@ function FeltTekst({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         aria-invalid={error ? true : undefined}
-        className={`h-11 rounded-md border bg-card px-4 text-base sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring ${
+        className={`h-11 rounded-md border bg-card px-4 text-base sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring ${
           error ? "border-destructive" : "border-input"
         }`}
       />
@@ -656,7 +656,7 @@ function FeltTall({
         max={max}
         step={step}
         aria-invalid={error ? true : undefined}
-        className={`h-11 rounded-md border bg-card px-4 text-base sm:text-sm font-mono tabular-nums text-foreground focus:outline-none focus:ring-2 focus:ring-ring ${
+        className={`h-11 rounded-md border bg-card px-4 text-base sm:text-sm font-mono tabular-nums text-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring ${
           error ? "border-destructive" : "border-input"
         }`}
       />

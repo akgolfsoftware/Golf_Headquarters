@@ -157,7 +157,7 @@ export function OnskeligOktForm({ coacher }: { coacher: Coach[] }) {
           <select
             value={coachId}
             onChange={(e) => setCoachId(e.target.value)}
-            className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+            className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
           >
             <option value="">Ingen preferanse</option>
             {coacher.map((c) => (
@@ -218,7 +218,7 @@ export function OnskeligOktForm({ coacher }: { coacher: Coach[] }) {
           <textarea
             value={detalj}
             onChange={(e) => setDetalj(e.target.value)}
-            className="min-h-24 w-full rounded-md border border-input bg-card px-4 py-2 text-sm leading-relaxed text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            className="min-h-24 w-full rounded-md border border-input bg-card px-4 py-2 text-sm leading-relaxed text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
             placeholder="Beskriv mer hvis du vil — eks. «Jeg sliter med høyre-misser fra 100 m sist runde»"
           />
         </div>
@@ -287,7 +287,7 @@ export function OnskeligOktForm({ coacher }: { coacher: Coach[] }) {
         <textarea
           value={melding}
           onChange={(e) => setMelding(e.target.value.slice(0, 500))}
-          className="min-h-24 w-full rounded-md border border-input bg-card px-4 py-2 text-sm leading-relaxed text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+          className="min-h-24 w-full rounded-md border border-input bg-card px-4 py-2 text-sm leading-relaxed text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
           placeholder="Skriv en kort melding hvis du vil …"
         />
         <div className="mt-1 flex justify-end font-mono text-[10px] text-muted-foreground">
@@ -473,7 +473,7 @@ function TimeRow({
           value={dato}
           disabled={disabled}
           onChange={(e) => onChange("dato", e.target.value)}
-          className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30 disabled:opacity-50"
+          className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30 disabled:opacity-50"
         />
       </div>
       <div>
@@ -487,7 +487,7 @@ function TimeRow({
           value={tid}
           disabled={disabled}
           onChange={(e) => onChange("tid", e.target.value)}
-          className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30 disabled:opacity-50"
+          className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30 disabled:opacity-50"
         />
       </div>
     </div>

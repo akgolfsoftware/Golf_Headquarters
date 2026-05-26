@@ -316,7 +316,7 @@ export function Scorekort({
                             type="text"
                             inputMode="decimal"
                             placeholder={field.unit}
-                            className="h-9 w-full min-w-16 rounded-md border border-border bg-background px-3 font-mono text-sm tabular-nums outline-none transition-colors focus:border-primary"
+                            className="h-9 w-full min-w-16 rounded-md border border-border bg-background px-3 font-mono text-sm tabular-nums outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 transition-colors focus:border-primary"
                             onChange={(e) =>
                               handleChange(shot.nr, field.key, e.target.value)
                             }
@@ -347,7 +347,7 @@ export function Scorekort({
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             placeholder="Vind, underlag, følt energi..."
-            className="mt-2 w-full rounded-md border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-primary"
+            className="mt-2 w-full rounded-md border border-border bg-background px-4 py-3 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 transition-colors focus:border-primary"
           />
         </div>
 

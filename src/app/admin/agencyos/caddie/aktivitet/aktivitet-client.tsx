@@ -162,7 +162,7 @@ export function CaddieAktivitetClient({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Søk spiller, emne eller hendelse"
-            className="flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
+            className="flex-1 bg-transparent outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground"
           />
         </label>
         <FilterSelect
@@ -532,7 +532,7 @@ function FilterSelect({
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="bg-transparent outline-none"
+        className="bg-transparent outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
       >
         {options.map((o) => (
           <option key={o.value} value={o.value}>

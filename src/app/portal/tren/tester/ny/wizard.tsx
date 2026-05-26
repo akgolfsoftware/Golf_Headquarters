@@ -732,7 +732,7 @@ function Steg2({
                 }
               }}
               placeholder="Trykk Enter for å legge til…"
-              className="min-w-[140px] flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+              className="min-w-[140px] flex-1 bg-transparent text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground"
             />
           </div>
         </Felt>
@@ -993,7 +993,7 @@ function Steg4({
 }
 
 const inputCls =
-  "w-full min-h-11 rounded-md border border-input bg-card px-4 py-2 text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30";
+  "w-full min-h-11 rounded-md border border-input bg-card px-4 py-2 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30";
 
 function Felt({
   label,

@@ -93,7 +93,7 @@ export default function BloggListe() {
                 name="q"
                 placeholder="Søk i bloggen"
                 aria-label="Søk i bloggen"
-                className="w-full bg-transparent text-[14px] outline-none placeholder:text-muted-foreground"
+                className="w-full bg-transparent text-[14px] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground"
               />
             </form>
           </div>

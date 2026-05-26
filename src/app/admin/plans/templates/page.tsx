@@ -155,7 +155,7 @@ export default async function PlanTemplates({
               <input
                 type="search"
                 placeholder="Søk i maler …"
-                className="w-full rounded-md border border-border bg-card px-4 py-2 pl-10 text-[13px] text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                className="w-full rounded-md border border-border bg-card px-4 py-2 pl-10 text-[13px] text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
               />
             </div>
             <span className="px-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">

@@ -330,7 +330,7 @@ export function LiveTestRunner({
               onChange={(e) => setNotes(e.target.value.slice(0, 500))}
               rows={3}
               placeholder="Følt-form, været, utstyrs-issues — bare hvis det er relevant."
-              className="mt-3 w-full rounded-md border border-input bg-background px-4 py-2.5 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+              className="mt-3 w-full rounded-md border border-input bg-background px-4 py-2.5 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
             />
             <span className="mt-1 block text-right font-mono text-[10px] text-muted-foreground">
               {notes.length} / 500
@@ -500,7 +500,7 @@ function FieldInput({
         <select
           value={v}
           onChange={(e) => onChange(e.target.value)}
-          className="rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+          className="rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
         >
           {(field.options ?? []).map((opt) => (
             <option key={opt} value={opt}>
@@ -537,7 +537,7 @@ function FieldInput({
             onChange(Number.isFinite(n) ? n : "");
           }
         }}
-        className="w-full rounded-md border border-input bg-background px-3 py-2 font-mono text-sm tabular-nums outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+        className="w-full rounded-md border border-input bg-background px-3 py-2 font-mono text-sm tabular-nums outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
       />
       {field.helper && (
         <span className="text-[10px] text-muted-foreground">{field.helper}</span>

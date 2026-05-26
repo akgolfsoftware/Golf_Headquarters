@@ -522,7 +522,7 @@ function KopierPlanModal({
                     value={sok}
                     onChange={(e) => setSok(e.target.value)}
                     placeholder="Søk på navn eller klubb…"
-                    className="w-full rounded-md border border-input bg-card py-2 pl-8 pr-4 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+                    className="w-full rounded-md border border-input bg-card py-2 pl-8 pr-4 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
                     autoComplete="off"
                   />
                 </div>
@@ -578,7 +578,7 @@ function KopierPlanModal({
               value={nyNavn}
               onChange={(e) => setNyNavn(e.target.value)}
               placeholder={`Kopi av ${originalPlanNavn}`}
-              className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+              className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
               maxLength={200}
               required
             />

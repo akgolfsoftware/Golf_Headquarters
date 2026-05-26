@@ -198,6 +198,7 @@ function SpillerCombobox({ spillere, valgtId, onSelect }: SpillerComboboxProps) 
       const t = setTimeout(() => inputRef.current?.focus(), 0);
       return () => clearTimeout(t);
     }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSearch("");
   }, [open]);
 
@@ -253,7 +254,7 @@ function SpillerCombobox({ spillere, valgtId, onSelect }: SpillerComboboxProps) 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Søk spiller..."
-              className="h-7 w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
+              className="h-7 w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
             />
           </div>
 
@@ -352,6 +353,7 @@ function GruppeCombobox({ grupper, valgtId, onSelect }: GruppeComboboxProps) {
       const t = setTimeout(() => inputRef.current?.focus(), 0);
       return () => clearTimeout(t);
     }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSearch("");
   }, [open]);
 
@@ -400,7 +402,7 @@ function GruppeCombobox({ grupper, valgtId, onSelect }: GruppeComboboxProps) {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Søk gruppe..."
-              className="h-7 w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
+              className="h-7 w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
             />
           </div>
 

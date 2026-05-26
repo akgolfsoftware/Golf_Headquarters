@@ -476,7 +476,7 @@ function Steg1VelgMal(props: {
             onChange={(e) => setEgendefinertTekst(e.target.value)}
             rows={4}
             placeholder="F.eks. Wedge-spill 50-100m, blokk-treninger først, deretter random …"
-            className="mt-2 w-full rounded-md border border-input bg-background px-3 py-2 text-base text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/30 sm:text-sm"
+            className="mt-2 w-full rounded-md border border-input bg-background px-3 py-2 text-base text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30 sm:text-sm"
           />
         </div>
       )}
@@ -978,7 +978,7 @@ function Steg4Forhåndsvis(props: {
               type="text"
               value={forslag.navn}
               onChange={(e) => oppdaterNavn(e.target.value)}
-              className="mt-1.5 w-full rounded-md border border-input bg-background px-3 py-2 text-base font-display font-semibold text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/30 sm:text-[18px]"
+              className="mt-1.5 w-full rounded-md border border-input bg-background px-3 py-2 text-base font-display font-semibold text-foreground focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/30 sm:text-[18px]"
             />
             <p className="mt-3 text-[13px] leading-relaxed text-muted-foreground">
               {forslag.beskrivelse}

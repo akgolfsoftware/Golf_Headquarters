@@ -112,7 +112,7 @@ export function AgentFeedbackModal({ open, onClose, agentAction }: Props) {
             onChange={(e) => setKommentar(e.target.value)}
             rows={3}
             placeholder="Hva fungerte bra eller dårlig med forslaget?"
-            className="w-full resize-none rounded-md border border-input bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+            className="w-full resize-none rounded-md border border-input bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
           />
         </div>
 

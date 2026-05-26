@@ -206,7 +206,7 @@ function EffektKort({ rad }: { rad: EffektRad }) {
             rows={3}
             maxLength={2000}
             placeholder="Putting forbedret seg merkbart. Reduser nærspill og øk APP neste plan."
-            className="w-full resize-y rounded-md border border-input bg-card px-3 py-2 text-[13px] focus:outline-none focus:ring-2 focus:ring-ring"
+            className="w-full resize-y rounded-md border border-input bg-card px-3 py-2 text-[13px] focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
           />
         </div>
 
@@ -280,7 +280,7 @@ function RatingFelt({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="4,0"
-        className="w-full rounded-md border border-input bg-card px-3 py-2 font-mono text-[13px] tabular-nums focus:outline-none focus:ring-2 focus:ring-ring"
+        className="w-full rounded-md border border-input bg-card px-3 py-2 font-mono text-[13px] tabular-nums focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
       />
     </div>
   );

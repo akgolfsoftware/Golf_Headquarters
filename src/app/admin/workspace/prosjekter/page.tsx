@@ -91,7 +91,7 @@ export default async function WorkspaceProsjekterPage({
           <input
             type="search"
             placeholder="Søk prosjekt …"
-            className="w-48 bg-transparent text-[12.5px] outline-none placeholder:text-muted-foreground"
+            className="w-48 bg-transparent text-[12.5px] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground"
           />
         </label>
       </div>

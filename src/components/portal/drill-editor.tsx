@@ -482,7 +482,7 @@ export function DrillEditor({
   );
 }
 
-const inputCss = "w-full rounded-md border border-border bg-background px-4 py-2.5 text-sm outline-none transition-colors focus:border-primary";
+const inputCss = "w-full rounded-md border border-border bg-background px-4 py-2.5 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 transition-colors focus:border-primary";
 
 function Felt({ label, children }: { label: string; children: React.ReactNode }) {
   // Gruppen wrappes som <fieldset> + <legend> for å gi semantisk korrekt

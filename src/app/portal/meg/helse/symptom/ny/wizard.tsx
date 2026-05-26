@@ -447,7 +447,7 @@ export function SymptomWizard() {
                 onChange={(e) => setNote(e.target.value.slice(0, 500))}
                 rows={5}
                 placeholder="Skriv kort hva du opplever — hjelper coach og fysio prioritere"
-                className="w-full rounded-md border border-input bg-card px-4 py-3 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+                className="w-full rounded-md border border-input bg-card px-4 py-3 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
               />
               <span className="absolute bottom-2 right-3 font-mono text-[10px] text-muted-foreground">
                 {note.length} / 500

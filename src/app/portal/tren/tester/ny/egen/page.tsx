@@ -34,10 +34,7 @@ export default async function NyEgenTestPage() {
         sub="Fem steg — navn, protokoll, måleenhet, synlighet og forhåndsvisning."
       />
 
-      <EgenTestWizard
-        rolle={user.role}
-        spillerNavn={user.name ?? "Spiller"}
-      />
+      <EgenTestWizard rolle={user.role} />
     </div>
   );
 }

@@ -248,7 +248,7 @@ export default async function OkterAdmin() {
             type="search"
             name="q"
             placeholder="Søk spiller, gruppe eller dato"
-            className="flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
+            className="flex-1 bg-transparent outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground"
           />
         </label>
         <FilterChip label="Fokus" />

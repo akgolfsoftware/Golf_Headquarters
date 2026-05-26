@@ -308,7 +308,7 @@ function PameldingForm() {
           type="text"
           required
           placeholder="Fornavn Etternavn"
-          className="rounded-md border border-input bg-background px-4 py-3 text-[14px] text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/20"
+          className="rounded-md border border-input bg-background px-4 py-3 text-[14px] text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/20"
         />
       </div>
 
@@ -327,7 +327,7 @@ function PameldingForm() {
           min={5}
           max={18}
           placeholder="F.eks. 12"
-          className="rounded-md border border-input bg-background px-4 py-3 text-[14px] text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/20"
+          className="rounded-md border border-input bg-background px-4 py-3 text-[14px] text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/20"
         />
       </div>
 
@@ -344,7 +344,7 @@ function PameldingForm() {
           type="email"
           required
           placeholder="din@epost.no"
-          className="rounded-md border border-input bg-background px-4 py-3 text-[14px] text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/20"
+          className="rounded-md border border-input bg-background px-4 py-3 text-[14px] text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring/20"
         />
       </div>
 

@@ -157,7 +157,7 @@ export function PeriodeModal({ apen, initial, spilllerId, onLukk, onLagre }: Pro
                 value={focus}
                 onChange={(e) => setFocus(e.target.value)}
                 placeholder="f.eks. Driver shape, putting under press"
-                className="h-10 w-full rounded-md border border-input bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
+                className="h-10 w-full rounded-md border border-input bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
               />
             </div>
 
@@ -193,7 +193,7 @@ export function PeriodeModal({ apen, initial, spilllerId, onLukk, onLagre }: Pro
                           [a]: Math.max(0, Math.min(100, Number(e.target.value) || 0)),
                         })
                       }
-                      className="h-9 w-full rounded-md border border-input bg-card px-2 font-mono text-sm tabular-nums focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
+                      className="h-9 w-full rounded-md border border-input bg-card px-2 font-mono text-sm tabular-nums focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
                     />
                   </div>
                 ))}
@@ -209,7 +209,7 @@ export function PeriodeModal({ apen, initial, spilllerId, onLukk, onLagre }: Pro
                 value={notater}
                 onChange={(e) => setNotater(e.target.value)}
                 rows={3}
-                className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
+                className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
               />
             </div>
           </div>

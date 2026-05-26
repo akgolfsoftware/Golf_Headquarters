@@ -243,7 +243,7 @@ export default async function BookingLandingsside() {
               <input
                 type="search"
                 placeholder="Søk…"
-                className="h-8 w-44 rounded-full border border-border bg-background pl-7.5 pr-3 font-sans text-[12px] text-foreground placeholder:text-muted-foreground/70 focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
+                className="h-8 w-44 rounded-full border border-border bg-background pl-7.5 pr-3 font-sans text-[12px] text-foreground placeholder:text-muted-foreground/70 focus:border-ring focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-1 focus:ring-ring"
               />
             </div>
           </div>

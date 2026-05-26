@@ -266,7 +266,7 @@ export function SpillerDNAPanel({ userId, initial }: SpillerDNAProps) {
                   (e.target.value as DominantMiss) || null,
                 )
               }
-              className="w-full appearance-none rounded-md border border-input bg-background px-3 py-2 pr-8 text-[13px] text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              className="w-full appearance-none rounded-md border border-input bg-background px-3 py-2 pr-8 text-[13px] text-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
             >
               <option value="">Ikke satt</option>
               {DOMINANT_MISS_OPTIONS.map((opt) => (
@@ -311,7 +311,7 @@ export function SpillerDNAPanel({ userId, initial }: SpillerDNAProps) {
                     value={verdi ?? ""}
                     onChange={(e) => oppdaterSg(key, e.target.value)}
                     placeholder="—"
-                    className="w-20 rounded-md border border-input bg-background px-2 py-1.5 text-center font-mono text-[12px] tabular-nums text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                    className="w-20 rounded-md border border-input bg-background px-2 py-1.5 text-center font-mono text-[12px] tabular-nums text-foreground focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-ring"
                   />
                   {/* Bar */}
                   <div className="flex flex-1 items-center gap-1">
@@ -461,7 +461,7 @@ export function SpillerDNAPanel({ userId, initial }: SpillerDNAProps) {
                     aria-label="Søk svakhet"
                     value={leggTilSvakhet}
                     onChange={(e) => setLeggTilSvakhet(e.target.value)}
-                    className="flex-1 bg-transparent text-[12px] text-foreground outline-none placeholder:text-muted-foreground"
+                    className="flex-1 bg-transparent text-[12px] text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground"
                   />
                   <button
                     type="button"
