@@ -452,6 +452,9 @@ model User {
   techPlanAudits      TechnicalPlanAudit[]
   techPlanSuggestions PlanSuggestion[]     @relation("SuggestionDecider")
 
+  // Treningssamlinger (Workbench Plan A · Sprint 3)
+  trainingCamps       TrainingCamp[]
+
   // Fysisk plan (per plan Del 31)
   fysiskeOktRelasjoner FysiskPlan[] @relation("FysiskPlanUser")
   lagdeFysPlaner       FysiskPlan[] @relation("FysiskPlanCreator")
@@ -3081,6 +3084,11 @@ model TechnicalPlan {
   startDato     DateTime
   sluttDato     DateTime?
 
+  // Plan A/B-varianter (Workbench Plan A — sprint 3)
+  isDraft       Boolean        @default(false)
+  planVariant   String? // "A", "B" — null for hovedplan
+  parentPlanId  String? // peker til Plan A når dette er Plan B-variant
+
   // Opprettet av (coach eller spiller)
   opprettetAvId String
 
@@ -3093,10 +3101,32 @@ model TechnicalPlan {
   clubTargets TechnicalPlanClubTarget[]
   audits      TechnicalPlanAudit[]
   suggestions PlanSuggestion[]
+  parentPlan  TechnicalPlan?            @relation("PlanVariants", fields: [parentPlanId], references: [id], onDelete: SetNull)
+  variants    TechnicalPlan[]           @relation("PlanVariants")
 
   @@index([userId, status])
   @@index([periodBlockId])
+  @@index([parentPlanId])
   @@map("technical_plans")
+}
+
+// TrainingCamp — treningssamling (Workbench Plan A · Sprint 3)
+model TrainingCamp {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  startDate DateTime
+  endDate   DateTime
+  location  String?
+  partner   String? // "WANG Toppidrett", "Team Norge", "Klubbsamling", "Privat"
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, startDate])
+  @@map("training_camps")
 }
 
 // ----------------------------------------------------------------------------
