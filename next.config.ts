@@ -1,7 +1,16 @@
 import type { NextConfig } from "next";
 import withSerwistInit from "@serwist/next";
+import createMDX from "@next/mdx";
+
+const withMDX = createMDX({
+  options: {
+    remarkPlugins: [],
+    rehypePlugins: [],
+  },
+});
 
 const nextConfig: NextConfig = {
+  pageExtensions: ["ts", "tsx", "md", "mdx"],
   // Lås Turbopack-root til denne katalogen — uten dette feiler CSS-resolve
   // og dev-server kan havne i compile/render-loop (jf. CLAUDE.md gotcha).
   turbopack: {
@@ -157,4 +166,4 @@ const withSerwist = withSerwistInit({
   disable: process.env.NODE_ENV === "development",
 });
 
-export default withSerwist(nextConfig);
+export default withSerwist(withMDX(nextConfig));

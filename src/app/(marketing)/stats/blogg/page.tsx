@@ -2,6 +2,7 @@
  * /stats/blogg — datadrevne artikkelliste (design 18)
  *
  * Hero + featured-artikkel + kategori-filter + grid.
+ * Henter data fra content/blogg/*.mdx via src/lib/blogg/posts.ts.
  * ISR 1t.
  */
 
@@ -9,7 +10,12 @@ import "../stats.css";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { BLOG_POSTS, getFeaturedPost, getNonFeaturedPosts } from "@/data/blog-posts";
+import {
+  getAllPosts,
+  getFeaturedPost,
+  getNonFeaturedPosts,
+  formaterDato,
+} from "@/lib/blogg/posts";
 import { StatsEyebrow } from "@/components/stats/eyebrow";
 import { Reveal } from "@/components/stats/reveal";
 
@@ -29,10 +35,14 @@ export const metadata: Metadata = {
 };
 
 export default function BloggListePage() {
+  const alle = getAllPosts();
   const featured = getFeaturedPost();
   const rest = getNonFeaturedPosts();
 
-  const alleKategorier = ["Alle", ...Array.from(new Set(BLOG_POSTS.map((p) => p.kategori)))];
+  const alleKategorier = [
+    "Alle",
+    ...Array.from(new Set(alle.map((p) => p.kategori))),
+  ];
 
   return (
     <div className="bg-background text-foreground">
@@ -152,7 +162,8 @@ export default function BloggListePage() {
                       gap: 8,
                     }}
                   >
-                    AV {featured.forfatter.toUpperCase()} · {featured.dato.toUpperCase()}
+                    AV {featured.forfatter.toUpperCase()} ·{" "}
+                    {formaterDato(featured.publisert).toUpperCase()}
                     <ArrowRight size={12} strokeWidth={2} style={{ color: "var(--s-primary)" }} />
                   </div>
                 </div>
@@ -240,7 +251,7 @@ export default function BloggListePage() {
                         color: "var(--s-muted-fg)",
                       }}
                     >
-                      {p.kategori.toUpperCase()} · {p.dato.toUpperCase()}
+                      {p.kategori.toUpperCase()} · {formaterDato(p.publisert).toUpperCase()}
                     </span>
                     <span
                       style={{

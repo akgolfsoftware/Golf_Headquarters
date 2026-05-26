@@ -2,6 +2,7 @@
  * /stats/blogg/[slug] — artikkeldetal (design 18)
  *
  * Editorial magazine-spread. Forfatter-box. Relaterte artikler.
+ * MDX-innhold rendres via dynamic import av content/blogg/{slug}.mdx.
  * ISR 1t.
  */
 
@@ -10,7 +11,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Clock } from "lucide-react";
-import { getBlogPost, getNonFeaturedPosts, BLOG_POSTS } from "@/data/blog-posts";
+import {
+  getAllPosts,
+  getPostBySlug,
+  getRelaterte,
+  formaterDato,
+} from "@/lib/blogg/posts";
 import { StatsEyebrow } from "@/components/stats/eyebrow";
 import { Reveal } from "@/components/stats/reveal";
 
@@ -19,12 +25,12 @@ export const revalidate = 3600;
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {
-  return BLOG_POSTS.map((p) => ({ slug: p.slug }));
+  return getAllPosts().map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const post = getBlogPost(slug);
+  const post = getPostBySlug(slug);
   if (!post) return { title: "Artikkel ikke funnet | AK Golf Stats" };
   return {
     title: `${post.tittel} | AK Golf Stats`,
@@ -36,19 +42,29 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       url: `https://akgolf.no/stats/blogg/${slug}`,
       type: "article",
       authors: [post.forfatter],
-      publishedTime: post.dato,
+      publishedTime: post.publisert,
     },
   };
 }
 
 export default async function BloggDetaljPage({ params }: Props) {
   const { slug } = await params;
-  const post = getBlogPost(slug);
+  const post = getPostBySlug(slug);
   if (!post) notFound();
 
-  const relaterte = getNonFeaturedPosts()
-    .filter((p) => p.slug !== slug)
-    .slice(0, 3);
+  const relaterte = getRelaterte(slug, post.kategori).slice(0, 3);
+
+  // Dynamic import av MDX-modulen — kompilert av Next.js via @next/mdx
+  let MDXContent: React.ComponentType | null = null;
+  try {
+    const mod = (await import(
+      /* webpackMode: "eager" */
+      `../../../../../../content/blogg/${slug}.mdx`
+    )) as { default: React.ComponentType };
+    MDXContent = mod.default;
+  } catch {
+    MDXContent = null;
+  }
 
   return (
     <div className="bg-background text-foreground">
@@ -112,7 +128,7 @@ export default async function BloggDetaljPage({ params }: Props) {
           >
             <span>AV {post.forfatter.toUpperCase()}</span>
             <span>·</span>
-            <span>{post.dato.toUpperCase()}</span>
+            <span>{formaterDato(post.publisert).toUpperCase()}</span>
             <span>·</span>
             <span style={{ display: "flex", alignItems: "center", gap: 4 }}>
               <Clock size={12} strokeWidth={2} />
@@ -122,7 +138,7 @@ export default async function BloggDetaljPage({ params }: Props) {
         </Reveal>
       </section>
 
-      {/* Artikkelinnhold */}
+      {/* Artikkelinnhold — MDX */}
       <section
         style={{
           maxWidth: 720,
@@ -131,16 +147,13 @@ export default async function BloggDetaljPage({ params }: Props) {
         }}
       >
         <Reveal>
-          <div
-            style={{
-              fontSize: 18,
-              lineHeight: 1.75,
-              color: "var(--s-fg)",
-              fontFamily: "var(--font-sans)",
-            }}
-            // Innholdet er hardkodet HTML-strenger uten brukerinput — trygt
-            dangerouslySetInnerHTML={{ __html: post.innhold }}
-          />
+          {MDXContent ? (
+            <MDXContent />
+          ) : (
+            <p style={{ color: "var(--s-muted-fg)", fontStyle: "italic" }}>
+              Innhold ikke tilgjengelig.
+            </p>
+          )}
         </Reveal>
       </section>
 
@@ -273,7 +286,7 @@ export default async function BloggDetaljPage({ params }: Props) {
                           color: "var(--s-muted-fg)",
                         }}
                       >
-                        {p.kategori.toUpperCase()} · {p.dato.toUpperCase()}
+                        {p.kategori.toUpperCase()} · {formaterDato(p.publisert).toUpperCase()}
                       </span>
                       <span
                         style={{
