@@ -11,7 +11,7 @@
 | 8pt-grid-brudd (`gap-3`, `p-3`, `gap-3.5` etc.) | 2826 (faktisk) → 0 | ✅ Lukket (commit 09303ea) |
 | Forbudt serif-font (Instrument Serif) | 51 forekomster | ✅ Lukket (commit f8b5fcf) |
 | Unicode-symboler i UI (✓ ✗ ★ —) | 26 → 0 (5 ekskluderte) | ✅ Lukket (commit 93fdf88) |
-| Duplikate komponent-impl (Sparkline/KpiStrip/Hero) | 16 lokale | 🟢 NICE-TO-HAVE |
+| Duplikate komponent-impl (Sparkline/KpiStrip/Hero) | N1: 1 av 5 konsolidert, 4 deferred (visuell-signatur). N2: 0 av 3 — alle er domain-wrappers, ikke duplikater. | Delvis ([8674054](https://github.com/akgolfgroup-netizen/akgolf-hq/commit/8674054)) |
 | `error.tsx` på admin/portal-sider | 3 → 3 (begge oppgradert) | ✅ Lukket (commit e237a02) |
 | `not-found.tsx` på admin/portal-sider | 0 → 2 | ✅ Lukket (commit e237a02) |
 | `outline-none` uten focus-erstatning (V5: de 5 listede) | 5 → 0 | ✅ Lukket (commit 345a9f2) |
@@ -19,7 +19,7 @@
 | Mock-data i hub-overview-sider | 19 hardkoda tall | 🟡 VIKTIG |
 | `/admin/talent` 404 (audit gammel) | **IKKE 404** — fungerer | ✅ Lukket |
 | Kapasitet-progressring (audit gammel) | Implementert med KpiRing | ✅ Lukket (commit 4f84ef4) |
-| Touch-target-brudd (<44px) | 1 forekomst | 🟢 NICE-TO-HAVE |
+| Touch-target-brudd (<44px) | 1 → 0 | ✅ Lukket ([8674054](https://github.com/akgolfgroup-netizen/akgolf-hq/commit/8674054)) |
 
 ---
 
@@ -295,11 +295,11 @@ Fordeling:
 | 8 | V4: Beslutning HubFrame vs AthleticHero | 🟡 VIKTIG | 30 min besl. + 6-12 t migrering | Åpent |
 | 9 | V6: Mock-data → Prisma-queries i overview | 🟡 VIKTIG | 6-9 t | Åpent |
 | 10 | V2: 8pt-grid (2826 faktisk → 0) | 🟡 VIKTIG | 4-6 t | ✅ Lukket ([09303ea](https://github.com/akgolfgroup-netizen/akgolf-hq/commit/09303ea)) |
-| 11 | N1: Konsolider Sparkline | 🟢 NICE-TO-HAVE | 1-2 t | Åpent |
-| 12 | N2: Konsolider KpiStrip | 🟢 NICE-TO-HAVE | 1-2 t | Åpent |
+| 11 | N1: Konsolider Sparkline | 🟢 NICE-TO-HAVE | 1-2 t | Delvis — 1/5 ([8674054](https://github.com/akgolfgroup-netizen/akgolf-hq/commit/8674054)) |
+| 12 | N2: Konsolider KpiStrip | 🟢 NICE-TO-HAVE | 1-2 t | Vurdert — alle 3 er domain-wrappers, ikke duplikater |
 | 13 | N3: Konsolider Hero-komponenter | 🟢 NICE-TO-HAVE | 4-6 t | Åpent (V4 først) |
-| 14 | N4: AthleticBadge urgent-bruk | 🟢 NICE-TO-HAVE | 30 min | Åpent |
-| 15 | N5: Touch-target share-button | 🟢 NICE-TO-HAVE | 2 min | Åpent |
+| 14 | N4: AthleticBadge urgent-bruk | 🟢 NICE-TO-HAVE | 30 min | Vurdert — variant beholdt som API |
+| 15 | N5: Touch-target share-button | 🟢 NICE-TO-HAVE | 2 min | ✅ Lukket ([8674054](https://github.com/akgolfgroup-netizen/akgolf-hq/commit/8674054)) |
 
 **Total estimat gjenstående:** ~30 timer for full compliance.
 
