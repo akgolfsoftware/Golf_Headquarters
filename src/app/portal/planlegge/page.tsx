@@ -296,8 +296,7 @@ async function TurneringerTab({ userId }: { userId: string }) {
                   </div>
                 </div>
                 <span
-                  className="font-mono rounded-full bg-[var(--color-accent-fill)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.06em]"
-                  style={{ color: "#3B4310" }}
+                  className="font-mono rounded-full bg-[var(--color-accent-fill)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.06em] text-accent-foreground"
                 >
                   {e.entryStatus}
                 </span>

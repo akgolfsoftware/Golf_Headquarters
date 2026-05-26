@@ -1,6 +1,9 @@
 /**
  * /portal/analysere — PlayerHQ Analysere hub
- * Design: hubs-player.jsx (PlayerAnalysere)
+ *
+ * Pre-BETA empty-state: ingen mock-data, ingen fake-statistikk.
+ * Banner øverst forklarer at statistikk kommer når brukeren har
+ * logget runder. Alle HubCards bruker tone="empty".
  */
 
 import {
@@ -21,9 +24,6 @@ import {
   HubHeader,
   HubStatSep,
   HubCard,
-  HubPill,
-  HubSparkline,
-  HubProgress,
 } from "@/components/hubs";
 
 export const dynamic = "force-dynamic";
@@ -51,20 +51,15 @@ export default async function AnalyserePage() {
         stats={
           <>
             <span>
-              <strong>47</strong> runder
-            </span>
-            <HubStatSep />
-            <span className="ok-dot">
-              <span />
-              <strong>SG +1.2</strong> siste
+              <strong>0</strong> runder
             </span>
             <HubStatSep />
             <span>
-              <strong>12/36</strong> tester
+              <strong>0</strong> tester
             </span>
             <HubStatSep />
             <span>
-              <strong>#14</strong> av 87
+              <strong>0</strong> TrackMan-sesjoner
             </span>
           </>
         }
@@ -72,85 +67,93 @@ export default async function AnalyserePage() {
 
       <section className="hub-grid">
         <HubCard
+          href="/portal/mal/runder/ny"
+          icon={Sparkles}
+          eyebrow="KOM I GANG"
+          title="Logg første runde"
+          data="Statistikk og analyser kommer her"
+          sub="Når du har logget dine første runder, ser du SG-fordeling, trender og AI-innsikt. Begynn med å legge til en runde fra Mål-fanen."
+          tone="accent"
+          cta="Legg til runde →"
+        />
+        <HubCard
           href="/portal/statistikk"
           icon={BarChart3}
           eyebrow="01 · OVERSIKT"
           title="Statistikk"
-          data="47 runder loggført"
-          sub="Snitt: 71.4 · driver 268m · 65% GIR"
-          visual={<HubSparkline variant="up" />}
-          cta="Se trender →"
+          data="0 runder loggført"
+          sub="Snitt, GIR og driver-distanse vises når du har minst 3 runder."
+          tone="empty"
+          cta="Til statistikk →"
         />
         <HubCard
           href="/portal/mal/sg-hub"
           icon={TrendingUp}
           eyebrow="02 · NØKKELTALL"
           title="Strokes Gained"
-          data="+1.2 siste runde"
-          sub="Tee +0.4 · Approach +0.7 · Putt +0.1"
-          statusPill={
-            <HubPill kind="ok" dot="d-ok">
-              +1.2 SG
-            </HubPill>
-          }
-          cta="Detalj-analyse →"
+          data="Ingen data enda"
+          sub="SG-fordeling (Tee · Approach · Around · Putt) krever shot-by-shot-runder."
+          tone="empty"
+          cta="Lær mer om SG →"
         />
         <HubCard
           href="/portal/mal/runder"
           icon={Flag}
           eyebrow="03 · RUNDER"
           title="Runder"
-          data="47 totalt"
-          sub="12 denne mnd · 4 par-eller-bedre"
-          cta="Bla →"
+          data="Ingen runder enda"
+          sub="Logg din første runde for å bygge runde-historikken."
+          tone="empty"
+          cta="Logg runde →"
         />
         <HubCard
           href="/portal/mal/trackman"
           icon={Radio}
           eyebrow="04 · ØVELSE"
           title="TrackMan"
-          data="23 sesjoner"
-          sub="Siste: 19. mai · driver-spin -180 rpm"
-          cta="Åpne →"
+          data="Ingen sesjoner enda"
+          sub="Importer fra TrackMan eller logg en ny range-sesjon."
+          tone="empty"
+          cta="Importer →"
         />
         <HubCard
           href="/portal/tren/tester"
           icon={ClipboardCheck}
           eyebrow="05 · MÅLINGER"
           title="Tester"
-          data="12/36 gjennomført"
-          sub="CMJ · Squat · Wedge 50m · 5-iron carry"
-          visual={<HubProgress done={12} total={36} tone="ok" />}
+          data="Ingen test-resultater enda"
+          sub="Test-batteriet (CMJ, Squat, Wedge 50m, 5-iron carry) starter når coach tildeler tester."
+          tone="empty"
           cta="Se tester →"
         />
         <HubCard
           icon={Sparkles}
           eyebrow="06 · AI-CADDIE"
           title="AI-Innsikt"
-          data="3 nye anbefalinger"
-          sub="Approach 100-150m · putt 4-8 fot · driver-tempo"
-          statusPill={<HubPill kind="accent">3 NYE</HubPill>}
-          tone="accent"
-          cta="Les anbefalinger →"
+          data="Anbefalinger kommer"
+          sub="Caddie analyserer SG-data og foreslår fokus-områder etter første runde."
+          tone="empty"
+          cta="Mer info →"
         />
         <HubCard
           href="/portal/mal/baner"
           icon={Map}
           eyebrow="07 · GEOGRAFI"
           title="Baner"
-          data="Top 5 spilte"
-          sub="GFGK · Bjaavann · Hellerudsletta · Losby · Oslo GK"
-          cta="Se kartlag →"
+          data="Ingen baner spilt"
+          sub="Når du logger runder, bygger vi geografisk oversikt over banene dine."
+          tone="empty"
+          cta="Utforsk baner →"
         />
         <HubCard
           href="/portal/mal/leaderboard"
           icon={Trophy}
           eyebrow="08 · POSISJON"
           title="Leaderboard"
-          data="Din rank: 14 / 87"
-          sub="+3 siden forrige uke · A1-klassen"
-          statusPill={<HubPill kind="forest">#14</HubPill>}
-          cta="Se ranking →"
+          data="Ingen rangering enda"
+          sub="Du blir rangert i din spillerklasse etter første loggførte runde."
+          tone="empty"
+          cta="Se leaderboard →"
         />
       </section>
     </HubFrame>
