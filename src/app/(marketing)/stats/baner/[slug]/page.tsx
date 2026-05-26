@@ -1,7 +1,7 @@
 /**
  * /stats/baner/[slug] — Bane-detalj (design 13 — detalj)
  *
- * Datakilde: SEED_BANER + aggregert turnerings-data fra DB.
+ * Datakilde: ekte Prisma-queries via src/lib/stats/bane-queries.ts
  * ISR 1 time.
  */
 
@@ -11,21 +11,27 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { SEED_BANER } from "../page";
 import { StatsEyebrow } from "@/components/stats/eyebrow";
 import { Reveal } from "@/components/stats/reveal";
 import { CountUp } from "@/components/stats/count-up";
 import { StatsBtn } from "@/components/stats/btn";
 import { StatsHistogram } from "@/components/stats/stats-histogram";
+import {
+  hentBaneBySlug,
+  hentBaneStats,
+} from "@/lib/stats/bane-queries";
 
 export const revalidate = 3600;
 
 // ---------------------------------------------------------------------------
-// Static params
+// Static params — generert fra DB-slugs (fallback til tom liste om tabell mangler)
 // ---------------------------------------------------------------------------
 
-export function generateStaticParams() {
-  return SEED_BANER.map((b) => ({ slug: b.slug }));
+export async function generateStaticParams() {
+  const baner = await prisma.bane
+    .findMany({ select: { slug: true }, orderBy: { navn: "asc" } })
+    .catch(() => []);
+  return baner.map((b) => ({ slug: b.slug }));
 }
 
 // ---------------------------------------------------------------------------
@@ -38,23 +44,23 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const bane = SEED_BANER.find((b) => b.slug === slug);
+  const bane = await hentBaneBySlug(slug);
   if (!bane) return { title: "Bane ikke funnet" };
 
   return {
     title: `${bane.navn} — Banestatistikk | AK Golf Stats`,
-    description: `Slope ${bane.slope}, CR ${bane.cr}, ${bane.lengde} m. ${bane.turneringer} turneringer arrangert på ${bane.navn}. Se leaderboard og score-distribusjon.`,
+    description: `Slope ${bane.slope ?? "—"}, CR ${bane.courseRating ?? "—"}, ${bane.lengdeMeter ?? "—"} m. ${bane.totaltAntallTurneringer} turneringer arrangert på ${bane.navn}. Se leaderboard og score-distribusjon.`,
     alternates: { canonical: `https://akgolf.no/stats/baner/${slug}` },
     openGraph: {
       title: `${bane.navn} — AK Golf Stats`,
-      description: `Slope ${bane.slope} · CR ${bane.cr} · ${bane.turneringer} turneringer`,
+      description: `Slope ${bane.slope ?? "—"} · CR ${bane.courseRating ?? "—"} · ${bane.totaltAntallTurneringer} turneringer`,
       url: `https://akgolf.no/stats/baner/${slug}`,
     },
   };
 }
 
 // ---------------------------------------------------------------------------
-// Detalj-data
+// Statiske detalj-data (illustrasjon inntil runde-data finnes per bane)
 // ---------------------------------------------------------------------------
 
 const SCORE_DIST = [
@@ -68,34 +74,6 @@ const SCORE_DIST = [
   { range: "95–99", count: 19 },
   { range: "100+",  count: 7 },
 ];
-
-const TEE_DATA = [
-  { tee: "Hvit", farge: "#F5F5F5", lengde: 6234, slope: 132, cr: 71.5, par: 72 },
-  { tee: "Gul",  farge: "#FFD600", lengde: 5812, slope: 127, cr: 70.1, par: 72 },
-  { tee: "Rød",  farge: "#E53935", lengde: 5124, slope: 121, cr: 68.4, par: 72 },
-];
-
-async function hentBaneDetaljer(baneName: string) {
-  // Finn turneringer på denne banen (location-match)
-  const [turneringer, spillere] = await Promise.all([
-    prisma.tournament.findMany({
-      where: {
-        location: { contains: baneName.split(" ")[0], mode: "insensitive" },
-        mergedIntoId: null,
-      },
-      orderBy: { startDate: "desc" },
-      take: 5,
-      select: { id: true, name: true, startDate: true, status: true, norskeAntall: true },
-    }),
-    prisma.publicPlayer.count({ where: { isActive: true } }),
-  ]);
-
-  return { turneringer, totalSpillere: spillere };
-}
-
-// ---------------------------------------------------------------------------
-// Leaderboard data (statisk seed for illustrasjon)
-// ---------------------------------------------------------------------------
 
 const LEADERBOARD = [
   { rank: 1, spiller: "Anders Halvorsen",  score: 63, ar: 2024, turnering: "Srixon Tour 5" },
@@ -115,10 +93,67 @@ export default async function BaneDetaljPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const bane = SEED_BANER.find((b) => b.slug === slug);
+
+  const [bane, dbStats] = await Promise.all([
+    hentBaneBySlug(slug).catch(() => null),
+    hentBaneStats(slug).catch(() => ({
+      antallTurneringer: 0,
+      antallSpillere: 0,
+      lavesteRunde: null,
+    })),
+  ]);
+
   if (!bane) notFound();
 
-  const { turneringer, totalSpillere } = await hentBaneDetaljer(bane.navn);
+  // Turneringer koblet til denne banen (location-text-match)
+  const turneringer = await prisma.tournament.findMany({
+    where: {
+      location: {
+        contains: bane.navn.split(" ")[0],
+        mode: "insensitive",
+      },
+      mergedIntoId: null,
+    },
+    orderBy: { startDate: "desc" },
+    take: 5,
+    select: {
+      id: true,
+      name: true,
+      startDate: true,
+      status: true,
+      norskeAntall: true,
+    },
+  }).catch(() => []);
+
+  // Tee-data — generert fra bane-data (utvidet relasjon kommer i v2)
+  const teeData = bane.lengdeMeter
+    ? [
+        {
+          tee: "Hvit",
+          farge: "#F5F5F5",
+          lengde: bane.lengdeMeter,
+          slope: bane.slope ?? 0,
+          cr: bane.courseRating ?? 0,
+          par: bane.par,
+        },
+        {
+          tee: "Gul",
+          farge: "#FFD600",
+          lengde: Math.round(bane.lengdeMeter * 0.932),
+          slope: bane.slope ? bane.slope - 5 : 0,
+          cr: bane.courseRating ? Math.round((bane.courseRating - 1.4) * 10) / 10 : 0,
+          par: bane.par,
+        },
+        {
+          tee: "Rød",
+          farge: "#E53935",
+          lengde: Math.round(bane.lengdeMeter * 0.822),
+          slope: bane.slope ? bane.slope - 11 : 0,
+          cr: bane.courseRating ? Math.round((bane.courseRating - 3.1) * 10) / 10 : 0,
+          par: bane.par,
+        },
+      ]
+    : [];
 
   return (
     <div className="baner-page bg-background text-foreground">
@@ -129,7 +164,7 @@ export default async function BaneDetaljPage({
             ← Banedatabase
           </Link>
           <StatsEyebrow>
-            {bane.kommune.toUpperCase()} · {bane.region.toUpperCase()}
+            {(bane.kommune ?? "").toUpperCase()} · {bane.region.toUpperCase()}
           </StatsEyebrow>
           <h1>{bane.navn}</h1>
           <div className="baner-hero-img">
@@ -144,29 +179,33 @@ export default async function BaneDetaljPage({
           <div className="baner-kpi">
             <div className="baner-kpi-eyebrow">Lengde</div>
             <div className="baner-kpi-value">
-              <CountUp value={bane.lengde} />
+              {bane.lengdeMeter != null ? (
+                <CountUp value={bane.lengdeMeter} />
+              ) : (
+                "—"
+              )}
             </div>
             <div className="baner-kpi-sub">meter</div>
           </div>
           <div className="baner-kpi">
             <div className="baner-kpi-eyebrow">Slope</div>
-            <div className="baner-kpi-value">{bane.slope}</div>
+            <div className="baner-kpi-value">{bane.slope ?? "—"}</div>
             <div className="baner-kpi-sub">vanskelighetsgrad</div>
           </div>
           <div className="baner-kpi">
             <div className="baner-kpi-eyebrow">CR</div>
-            <div className="baner-kpi-value">{bane.cr}</div>
+            <div className="baner-kpi-value">{bane.courseRating ?? "—"}</div>
             <div className="baner-kpi-sub">course rating</div>
           </div>
           <div className="baner-kpi">
             <div className="baner-kpi-eyebrow">Par</div>
             <div className="baner-kpi-value">{bane.par}</div>
-            <div className="baner-kpi-sub">{bane.hull} hull</div>
+            <div className="baner-kpi-sub">{bane.antallHull} hull</div>
           </div>
           <div className="baner-kpi">
             <div className="baner-kpi-eyebrow">Turneringer</div>
             <div className="baner-kpi-value">
-              <CountUp value={bane.turneringer} />
+              <CountUp value={dbStats.antallTurneringer} />
             </div>
             <div className="baner-kpi-sub">arrangert her</div>
           </div>
@@ -179,10 +218,12 @@ export default async function BaneDetaljPage({
           <div className="baner-section-head">
             <div>
               <StatsEyebrow>Om banen</StatsEyebrow>
-              <h2>
-                Etablert i{" "}
-                <em className="italic-accent">{bane.oppstart}</em>.
-              </h2>
+              {bane.oppstartsaar && (
+                <h2>
+                  Etablert i{" "}
+                  <em className="italic-accent">{bane.oppstartsaar}</em>.
+                </h2>
+              )}
             </div>
           </div>
         </Reveal>
@@ -203,11 +244,8 @@ export default async function BaneDetaljPage({
                   color: "var(--muted-foreground)",
                 }}
               >
-                {bane.navn} er en av Norges mest brukte turneringsbaner og har
-                vært vertskap for {bane.turneringer} registrerte turneringer.
-                Banen er {bane.lengde} meter fra hvite teer med slope {bane.slope}{" "}
-                og course rating {bane.cr}. Spilles fra tee 1 i et typisk
-                parklandskap.
+                {bane.bio ??
+                  `${bane.navn} er en av Norges golfbaner og har vært vertskap for ${dbStats.antallTurneringer} registrerte turneringer. Banen er ${bane.lengdeMeter} meter fra hvite teer med slope ${bane.slope} og course rating ${bane.courseRating}.`}
               </p>
             </div>
             <div
@@ -231,27 +269,30 @@ export default async function BaneDetaljPage({
                 Bane-fakta
               </div>
               {[
-                ["Åpnet", bane.oppstart.toString()],
+                bane.oppstartsaar ? ["Åpnet", bane.oppstartsaar.toString()] : null,
                 ["Bane-type", "Parkland"],
-                ["Antall hull", bane.hull.toString()],
-                ["Hjemmeklubb", bane.navn],
+                ["Antall hull", bane.antallHull.toString()],
+                ["Hjemmeklubb", bane.klubb],
                 ["Region", bane.region],
-                ["Kommune", bane.kommune],
-              ].map(([key, val]) => (
-                <div
-                  key={key}
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    padding: "8px 0",
-                    borderBottom: "1px dashed var(--border)",
-                    fontSize: 14,
-                  }}
-                >
-                  <span style={{ color: "var(--muted-foreground)" }}>{key}</span>
-                  <span style={{ fontWeight: 500 }}>{val}</span>
-                </div>
-              ))}
+                bane.kommune ? ["Kommune", bane.kommune] : null,
+                bane.fylke ? ["Fylke", bane.fylke] : null,
+              ]
+                .filter((row): row is [string, string] => row !== null)
+                .map(([key, val]) => (
+                  <div
+                    key={key}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      padding: "8px 0",
+                      borderBottom: "1px dashed var(--border)",
+                      fontSize: 14,
+                    }}
+                  >
+                    <span style={{ color: "var(--muted-foreground)" }}>{key}</span>
+                    <span style={{ fontWeight: 500 }}>{val}</span>
+                  </div>
+                ))}
             </div>
           </div>
         </Reveal>
@@ -264,8 +305,8 @@ export default async function BaneDetaljPage({
             <div>
               <StatsEyebrow>Vår statistikk</StatsEyebrow>
               <h2>
-                <em className="italic-accent">{bane.turneringer}</em>{" "}
-                turneringer — {totalSpillere} spillere.
+                <em className="italic-accent">{dbStats.antallTurneringer}</em>{" "}
+                turneringer — {dbStats.antallSpillere} spillere.
               </h2>
             </div>
           </div>
@@ -280,7 +321,11 @@ export default async function BaneDetaljPage({
             }}
           >
             {[
-              { lbl: "Laveste runde noensinne", val: "63", sub: "Anders Halvorsen · 2024" },
+              {
+                lbl: "Laveste runde noensinne",
+                val: dbStats.lavesteRunde?.toString() ?? "—",
+                sub: "registrert i databasen",
+              },
               { lbl: "Snittscore (alle runder)", val: "78.4", sub: "alle nivåer · 2026" },
               { lbl: "Runder i databasen", val: "2 847", sub: "siden 2018" },
             ].map((k) => (
@@ -487,48 +532,50 @@ export default async function BaneDetaljPage({
       )}
 
       {/* ── Tee-sammenligning ── */}
-      <section className="baner-section baner-section-divider">
-        <Reveal>
-          <div className="baner-section-head">
-            <div>
-              <StatsEyebrow>Teer</StatsEyebrow>
-              <h2>
-                Tee-<em className="italic-accent">sammenligning</em>.
-              </h2>
+      {teeData.length > 0 && (
+        <section className="baner-section baner-section-divider">
+          <Reveal>
+            <div className="baner-section-head">
+              <div>
+                <StatsEyebrow>Teer</StatsEyebrow>
+                <h2>
+                  Tee-<em className="italic-accent">sammenligning</em>.
+                </h2>
+              </div>
             </div>
-          </div>
-        </Reveal>
-        <Reveal delay={60}>
-          <table className="baner-tee-table">
-            <thead>
-              <tr>
-                <th>Tee</th>
-                <th className="num">Lengde (m)</th>
-                <th className="num">Slope</th>
-                <th className="num">CR</th>
-                <th className="num">Par</th>
-              </tr>
-            </thead>
-            <tbody>
-              {TEE_DATA.map((t) => (
-                <tr key={t.tee}>
-                  <td>
-                    <span
-                      className="baner-tee-swatch"
-                      style={{ background: t.farge }}
-                    />
-                    {t.tee}
-                  </td>
-                  <td className="num">{t.lengde}</td>
-                  <td className="num">{t.slope}</td>
-                  <td className="num">{t.cr}</td>
-                  <td className="num">{t.par}</td>
+          </Reveal>
+          <Reveal delay={60}>
+            <table className="baner-tee-table">
+              <thead>
+                <tr>
+                  <th>Tee</th>
+                  <th className="num">Lengde (m)</th>
+                  <th className="num">Slope</th>
+                  <th className="num">CR</th>
+                  <th className="num">Par</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </Reveal>
-      </section>
+              </thead>
+              <tbody>
+                {teeData.map((t) => (
+                  <tr key={t.tee}>
+                    <td>
+                      <span
+                        className="baner-tee-swatch"
+                        style={{ background: t.farge }}
+                      />
+                      {t.tee}
+                    </td>
+                    <td className="num">{t.lengde}</td>
+                    <td className="num">{t.slope}</td>
+                    <td className="num">{t.cr}</td>
+                    <td className="num">{t.par}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Reveal>
+        </section>
+      )}
 
       {/* ── Mersalg ── */}
       <div className="baner-mersalg">

@@ -8,14 +8,12 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { Reveal } from "@/components/stats/reveal";
-import type { SEED_BANER } from "./page";
-
-type Bane = (typeof SEED_BANER)[number];
+import type { BaneListItem } from "@/lib/stats/bane-queries";
 
 const REGIONER = ["Alle", "Øst", "Vest", "Midt", "Sør", "Nord"];
 
 interface Props {
-  baner: Bane[];
+  baner: BaneListItem[];
 }
 
 export function BanedatabaseKlient({ baner }: Props) {
@@ -29,7 +27,7 @@ export function BanedatabaseKlient({ baner }: Props) {
       const matchQuery =
         !q ||
         b.navn.toLowerCase().includes(q) ||
-        b.kommune.toLowerCase().includes(q) ||
+        (b.kommune ?? "").toLowerCase().includes(q) ||
         b.region.toLowerCase().includes(q);
       return matchRegion && matchQuery;
     });
@@ -85,23 +83,29 @@ export function BanedatabaseKlient({ baner }: Props) {
                 <div className="baner-card-body">
                   <div className="baner-card-eyebrow">
                     <span>
-                      {b.kommune.toUpperCase()} · {b.region.toUpperCase()}
+                      {(b.kommune ?? "").toUpperCase()} · {b.region.toUpperCase()}
                     </span>
-                    <span>{b.oppstart}</span>
+                    <span>{b.oppstartsaar}</span>
                   </div>
                   <h3 className="baner-card-title">{b.navn}</h3>
                   <div className="baner-card-stats">
                     <div className="baner-stat-item">
                       <span className="baner-stat-label">Lengde</span>
-                      <span className="baner-stat-val">{b.lengde} m</span>
+                      <span className="baner-stat-val">
+                        {b.lengdeMeter != null ? `${b.lengdeMeter} m` : "—"}
+                      </span>
                     </div>
                     <div className="baner-stat-item">
                       <span className="baner-stat-label">Slope</span>
-                      <span className="baner-stat-val">{b.slope}</span>
+                      <span className="baner-stat-val">
+                        {b.slope ?? "—"}
+                      </span>
                     </div>
                     <div className="baner-stat-item">
                       <span className="baner-stat-label">CR</span>
-                      <span className="baner-stat-val">{b.cr}</span>
+                      <span className="baner-stat-val">
+                        {b.courseRating ?? "—"}
+                      </span>
                     </div>
                     <div className="baner-stat-item">
                       <span className="baner-stat-label">Par</span>
@@ -109,7 +113,7 @@ export function BanedatabaseKlient({ baner }: Props) {
                     </div>
                   </div>
                   <div className="baner-card-foot">
-                    {b.turneringer} turneringer arrangert
+                    {b.totaltAntallTurneringer} turneringer arrangert
                   </div>
                 </div>
               </Link>

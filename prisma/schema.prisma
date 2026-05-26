@@ -341,6 +341,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   bookings        Booking[]
+  coachedBookings Booking[]        @relation("BookingCoach")
   parentRelations ParentRelation[] @relation("Child")
   childRelations  ParentRelation[] @relation("Parent")
 
@@ -721,11 +722,17 @@ model Booking {
   guestName               String?
   guestEmail              String?
   guestPhone              String?
+  // Denormalisert fra serviceType.coachUserId for ytelse og unik-indeks.
+  // Settes automatisk ved opprettelse og oppdateres ved koach-bytte.
+  // ON DELETE SET NULL — booking beholdes i historikk hvis coach slettes.
+  // S-12: brukes i partial unique index som hindrer dobbel-booking på DB-nivå.
+  coachId                 String?
   // Sletting av brukerkonto skal ikke slette historiske bookinger — sett userId til null.
   createdAt               DateTime      @default(now())
   updatedAt               DateTime      @updatedAt
 
   user         User?              @relation(fields: [userId], references: [id])
+  coach        User?              @relation("BookingCoach", fields: [coachId], references: [id], onDelete: SetNull)
   serviceType  ServiceType        @relation(fields: [serviceTypeId], references: [id])
   location     Location           @relation(fields: [locationId], references: [id])
   subscription Subscription?      @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
@@ -734,6 +741,7 @@ model Booking {
   recordings   SessionRecording[]
 
   @@index([userId])
+  @@index([coachId])
   @@index([startAt])
   @@index([stripeCheckoutSessionId])
   @@index([subscriptionId])
@@ -1812,6 +1820,50 @@ model Tournament {
   @@index([createdByUserId])
   @@index([mergedIntoId])
   @@map("tournaments")
+}
+
+// ---------- Banedatabase (Stats Fase) ----------
+
+model Bane {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  navn          String
+  kortNavn      String?
+  klubb         String
+
+  // Lokasjon
+  region        String   // "Øst" | "Vest" | "Midt" | "Nord" | "Sør"
+  kommune       String?
+  fylke         String?
+  latitude      Float?
+  longitude     Float?
+
+  // Bane-info
+  antallHull    Int      @default(18)
+  oppstartsaar  Int?
+  hjemmeside    String?
+
+  // Default tee-data (kan utvides med tee-relasjon senere)
+  lengdeMeter   Int?
+  slope         Int?
+  courseRating  Float?
+  par           Int      @default(72)
+
+  // Metadata
+  bio           String?  @db.Text
+  hovedBilde    String?
+
+  // Stats — denormalisert (oppdateres via cron eller manuelt)
+  totaltAntallTurneringer  Int  @default(0)
+  spillereSomHarSpilt      Int  @default(0)
+  lavesteRundeRegistrert   Int?
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([region])
+  @@index([slug])
+  @@map("baner")
 }
 
 // Norske + internasjonale spillere vi følger på /turneringer.
