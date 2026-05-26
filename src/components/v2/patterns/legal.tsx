@@ -328,11 +328,11 @@ function ContactCard({
       </span>
 
       <p className="m-0 mb-6 font-display font-bold text-[var(--color-foreground)] text-xl tracking-[-0.02em]">
-        Sporsmal om dette?
+        Spørsmål om dette?
       </p>
 
       <p className="text-sm text-[var(--color-ink-muted)] leading-relaxed m-0 mb-6">
-        Vi svarer pa henvendelser om personvern og juridiske sporsmal innen
+        Vi svarer på henvendelser om personvern og juridiske spørsmål innen
         5 arbeidsdager.
       </p>
 

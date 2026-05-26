@@ -156,10 +156,10 @@ function CancelModal({ onConfirm, onDismiss }: CancelModalProps) {
             className="m-0 font-display font-bold tracking-[-0.02em] text-foreground"
             style={{ fontSize: 22 }}
           >
-            Avbryt okten?
+            Avbryt økten?
           </h2>
           <p className="m-0 text-[15px] text-muted-foreground leading-[1.5]">
-            Fremgang i denne okten vil ikke bli lagret. Er du sikker pa at du
+            Fremgang i denne økten vil ikke bli lagret. Er du sikker på at du
             vil avbryte?
           </p>
         </div>
@@ -177,7 +177,7 @@ function CancelModal({ onConfirm, onDismiss }: CancelModalProps) {
               minHeight: 48,
             }}
           >
-            Ja, avbryt okten
+            Ja, avbryt økten
           </button>
           <button
             type="button"
@@ -191,7 +191,7 @@ function CancelModal({ onConfirm, onDismiss }: CancelModalProps) {
               minHeight: 48,
             }}
           >
-            Fortsett okten
+            Fortsett økten
           </button>
         </div>
       </div>
@@ -233,7 +233,7 @@ function SessionHeader({
       <button
         type="button"
         onClick={onCancelClick}
-        aria-label="Avbryt okt"
+        aria-label="Avbryt økt"
         className="flex-shrink-0 grid place-items-center rounded-full border cursor-pointer"
         style={{
           width: 44,
@@ -418,7 +418,7 @@ function SessionFooter({
 
 const SETTINGS_ITEMS = [
   "Juster intensitet",
-  "Bytt ovelse",
+  "Bytt øvelse",
   "Legg til pause",
   "Avslutt tidlig",
 ] as const;
@@ -554,7 +554,7 @@ export default function LiveSessionPattern({
           isolation: "isolate",
         }}
         role="main"
-        aria-label={`Live-okt: ${sessionTitle}`}
+        aria-label={`Live-økt: ${sessionTitle}`}
       >
         {/* ── Header (64px) ──────────────────────────────────────── */}
         <SessionHeader
@@ -690,7 +690,7 @@ export function LiveSessionActivePhaseDemo() {
             className="font-mono text-[9px] uppercase tracking-[0.14em]"
             style={{ color: WHITE_40 }}
           >
-            Aktiv ovelse
+            Aktiv øvelse
           </span>
           <span
             className="font-display font-bold truncate"

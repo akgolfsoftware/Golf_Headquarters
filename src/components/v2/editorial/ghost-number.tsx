@@ -17,7 +17,7 @@ export default function GhostNumber({ value, className = "" }: GhostNumberProps)
         .join(" ")}
       style={{
         fontSize: 96,
-        color: "color-mix(in oklab, var(--foreground) 5%, transparent)",
+        color: "color-mix(in oklab, hsl(var(--foreground)) 5%, transparent)",
       }}
     >
       {value}

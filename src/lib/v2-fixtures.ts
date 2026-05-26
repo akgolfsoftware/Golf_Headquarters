@@ -12,21 +12,21 @@ export const DEMO_LEGAL_SECTIONS: LegalSection[] = [
     number: "1",
     title: "Innsamlede opplysninger",
     content:
-      "AK Golf Academy samler inn folgende kategorier av personopplysninger om deg:\n\n- Identitet (navn, e-post, telefon, fodselsdato)\n- Idrettsdata (HCP, treningshistorikk, statistikk)\n- Brukerdata (sider du besoker, klikk, tid brukt)\n\nVi samler kun inn det vi trenger for a levere tjenesten.",
+      "AK Golf Academy samler inn følgende kategorier av personopplysninger om deg:\n\n- Identitet (navn, e-post, telefon, fødselsdato)\n- Idrettsdata (HCP, treningshistorikk, statistikk)\n- Brukerdata (sider du besøker, klikk, tid brukt)\n\nVi samler kun inn det vi trenger for å levere tjenesten.",
   },
   {
     id: "behandling",
     number: "2",
     title: "Hvordan vi behandler dataene",
     content:
-      "Vi behandler dine opplysninger basert pa samtykke (GDPR Art. 6 nr. 1 bokstav a) eller berettiget interesse (Art. 6 nr. 1 bokstav f).\n\nLagring skjer i Supabase EU-region (Frankfurt). Vi deler ikke data med tredjeparter utenfor EU/EOS.",
+      "Vi behandler dine opplysninger basert på samtykke (GDPR Art. 6 nr. 1 bokstav a) eller berettiget interesse (Art. 6 nr. 1 bokstav f).\n\nLagring skjer i Supabase EU-region (Frankfurt). Vi deler ikke data med tredjeparter utenfor EU/EØS.",
   },
   {
     id: "rettigheter",
     number: "3",
     title: "Dine rettigheter",
     content:
-      "Du har rett til:\n\n- Innsyn i hvilke data vi har om deg\n- Retting av feilaktige opplysninger\n- Sletting (\"retten til a bli glemt\")\n- Dataportabilitet (eksportere data)\n- Trekke tilbake samtykke nar som helst\n\nDu kan utove disse rettighetene ved a kontakte personvern@akgolf.no.",
+      "Du har rett til:\n\n- Innsyn i hvilke data vi har om deg\n- Retting av feilaktige opplysninger\n- Sletting (\"retten til å bli glemt\")\n- Dataportabilitet (eksportere data)\n- Trekke tilbake samtykke når som helst\n\nDu kan utøve disse rettighetene ved å kontakte personvern@akgolf.no.",
   },
 ];
 
@@ -591,7 +591,7 @@ export const DEMO_GOALS: Goal[] = [
   },
   {
     id: "g5",
-    title: "Bane-recon Sorlandsapent",
+    title: "Bane-recon Sørlandsåpent",
     axis: "SPILL",
     progress: 25,
     deadline: "21. mai 2026",
@@ -873,7 +873,7 @@ export const DEMO_MILESTONES: Milestone[] = [
     type: "PR_NEW",
     axis: "TEK",
     title: "Personlig rekord — sving-tempo 3.0:1",
-    body: "Trackman-logget over 10 svinger. Konsistens pa 92%.",
+    body: "Trackman-logget over 10 svinger. Konsistens på 92%.",
     metric: { label: "tempo-konsistens", value: "+12% vs forrige mnd", tone: "accent" },
   },
   {
@@ -882,8 +882,8 @@ export const DEMO_MILESTONES: Milestone[] = [
     dateLabel: { day: "15", month: "MAI" },
     type: "PLAN_COMPLETED",
     axis: "FYS",
-    title: "Fullfort: FYS-fase 2 — styrke-blokk",
-    body: "8 ukers FYS-plan med fokus pa kjernemuskulatur og rotasjon.",
+    title: "Fullført: FYS-fase 2 — styrke-blokk",
+    body: "8 ukers FYS-plan med fokus på kjernemuskulatur og rotasjon.",
     photo: "/images/akgolf/AK-Golf-Academy-9.webp",
   },
   {
@@ -892,7 +892,7 @@ export const DEMO_MILESTONES: Milestone[] = [
     dateLabel: { day: "8", month: "MAI" },
     type: "TOURNAMENT_RESULT",
     axis: "TURN",
-    title: "Larviksapent — 4. plass",
+    title: "Larviksåpent — 4. plass",
     body: "67 + 69 + 71 = 207. Beste av kategorien.",
     metric: { label: "vinnermargin", value: "-3 slag fra topp", tone: "default" },
     href: "/portal/turneringer/larvik-2026",
@@ -903,7 +903,7 @@ export const DEMO_MILESTONES: Milestone[] = [
     dateLabel: { day: "22", month: "APR" },
     type: "GOAL_ACHIEVED",
     axis: "SLAG",
-    title: "Mal oppnadd: Putting < 1.8",
+    title: "Mål oppnådd: Putting < 1.8",
     body: "Snitt 1.76 over siste 10 runder.",
     metric: { label: "putting-snitt", value: "1.76", tone: "accent" },
     href: "/portal/mal/goal/g-putting",
@@ -915,6 +915,6 @@ export const DEMO_MILESTONES: Milestone[] = [
     type: "TEST_PASSED",
     axis: "FYS",
     title: "CMJ vertical jump — 64 cm",
-    body: "Pass A-niva for U18. Forbedring fra 58 cm i januar.",
+    body: "Pass A-nivå for U18. Forbedring fra 58 cm i januar.",
   },
 ];

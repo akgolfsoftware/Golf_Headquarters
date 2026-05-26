@@ -39,7 +39,7 @@ export default function MalSamplePage() {
     >
       {/* Page hero */}
       <PageHero
-        eyebrow="DINE MAL"
+        eyebrow="DINE MÅL"
         title="Mål"
         italic="Hvor du skal"
         lead="Oversikt over alle aktive, oppnådde og forfalte mål — sesong 2026."

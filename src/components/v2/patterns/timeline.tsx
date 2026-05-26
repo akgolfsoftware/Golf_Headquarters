@@ -58,13 +58,13 @@ const TYPE_CONFIG: Record<MilestoneType, AchievementConfig> = {
     icon: Trophy,
     color: "var(--color-accent-foreground, #005840)",
     bg: "color-mix(in oklab, var(--color-accent) 25%, transparent)",
-    label: "Mål oppnadd",
+    label: "Mål oppnådd",
   },
   PLAN_COMPLETED: {
     icon: Award,
     color: "var(--color-primary)",
     bg: "color-mix(in oklab, var(--color-primary) 10%, transparent)",
-    label: "Plan fullfort",
+    label: "Plan fullført",
   },
   TOURNAMENT_RESULT: {
     icon: Flag,
@@ -332,7 +332,7 @@ function YearSeparator({ year }: { year: string }) {
     <div
       className="flex items-center gap-4"
       role="separator"
-      aria-label={`Ar ${year}`}
+      aria-label={`År ${year}`}
     >
       <span
         className="font-mono text-xs font-bold uppercase tracking-[0.12em] rounded-full"
@@ -438,7 +438,7 @@ export function TimelinePattern({
           }}
         >
           <p className="text-sm text-muted-foreground text-center px-8">
-            Ingen milepeler enna. Sett deg et mal for a starte.
+            Ingen milepæler ennå. Sett deg et mål for å starte.
           </p>
         </div>
       )}

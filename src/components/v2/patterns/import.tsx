@@ -780,7 +780,7 @@ function SuccessState({
 
       <div className="flex flex-col gap-2">
         <h2 className="m-0 font-display text-3xl font-bold tracking-[-0.03em] text-foreground">
-          Import fullfort
+          Import fullført
         </h2>
         <p className="m-0 font-mono text-[13px] text-muted-foreground">
           {count} spiller{count !== 1 ? "e" : ""} ble importert
@@ -933,7 +933,7 @@ function CtaBar({
                 Importerer …
               </>
             ) : (
-              "Importer na"
+              "Importer nå"
             )}
           </button>
         )}

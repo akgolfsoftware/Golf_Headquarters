@@ -56,7 +56,7 @@ function StatusBadge({ status }: { status: Goal["status"] }) {
       color: "var(--color-success)",
     },
     ACHIEVED: {
-      label: "Oppnadd",
+      label: "Oppnådd",
       bg: "color-mix(in oklab, var(--pyr-fys) 12%, transparent)",
       color: "var(--pyr-fys)",
     },
@@ -145,7 +145,7 @@ function GoalCard({ goal, inView, delayIdx }: GoalCardProps) {
             {goal.progress}%
           </span>
           <span className="font-mono text-[10px] text-muted-foreground">
-            fullfort
+            fullført
           </span>
         </div>
         <div
@@ -180,7 +180,7 @@ function GoalCard({ goal, inView, delayIdx }: GoalCardProps) {
             className="text-muted-foreground flex-shrink-0"
           />
           <span className="font-mono text-[11px] text-muted-foreground tabular">
-            {goal.milestonesDone}/{goal.milestonesTotal} milepaler
+            {goal.milestonesDone}/{goal.milestonesTotal} milepæler
           </span>
         </span>
 
@@ -223,10 +223,10 @@ function EmptyState({ onCreateGoal }: { onCreateGoal?: () => void }) {
 
       <div className="flex flex-col gap-2">
         <h3 className="m-0 font-display text-2xl font-bold tracking-[-0.02em] text-foreground">
-          Ingen mal enda
+          Ingen mål enda
         </h3>
         <p className="m-0 text-muted-foreground text-[15px] max-w-[320px]">
-          Start med ett konkret mal, sa hjelper plattformen deg a holde fokus
+          Start med ett konkret mål, så hjelper plattformen deg å holde fokus
           gjennom sesongen.
         </p>
       </div>
@@ -243,7 +243,7 @@ function EmptyState({ onCreateGoal }: { onCreateGoal?: () => void }) {
           }}
         >
           <Plus size={16} />
-          Lag ditt forste mal
+          Lag ditt første mål
         </button>
       ) : (
         <Link
@@ -256,7 +256,7 @@ function EmptyState({ onCreateGoal }: { onCreateGoal?: () => void }) {
           }}
         >
           <Plus size={16} />
-          Lag ditt forste mal
+          Lag ditt første mål
         </Link>
       )}
     </div>
@@ -278,12 +278,12 @@ export default function GoalsHubPattern({
       <div className="flex items-center justify-between gap-4">
         <div className="flex flex-col gap-[2px]">
           <h2 className="m-0 font-display text-2xl font-bold tracking-[-0.02em] text-foreground">
-            Mine mal
+            Mine mål
           </h2>
           {goals.length > 0 && (
             <p className="m-0 font-mono text-[11px] text-muted-foreground uppercase tracking-[0.10em]">
               {goals.filter((g) => g.status === "ACTIVE").length} aktive ·{" "}
-              {goals.filter((g) => g.status === "ACHIEVED").length} oppnadd
+              {goals.filter((g) => g.status === "ACHIEVED").length} oppnådd
             </p>
           )}
         </div>
@@ -300,7 +300,7 @@ export default function GoalsHubPattern({
             }}
           >
             <Plus size={15} />
-            Nytt mal
+            Nytt mål
           </button>
         ) : (
           <Link
@@ -313,7 +313,7 @@ export default function GoalsHubPattern({
             }}
           >
             <Plus size={15} />
-            Nytt mal
+            Nytt mål
           </Link>
         )}
       </div>

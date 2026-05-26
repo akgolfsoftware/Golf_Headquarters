@@ -39,7 +39,7 @@ const SAMPLES: SampleCard[] = [
   },
   {
     href: "/v2-preview/portal/mal",
-    eyebrow: "PLAYERHQ · MAL",
+    eyebrow: "PLAYERHQ · MÅL",
     title: "Mål-hub",
     description:
       "GoalsHubPattern med 5 mål + TimelinePattern med 5 siste milepæler. Viser akseprogress og deadlines.",
