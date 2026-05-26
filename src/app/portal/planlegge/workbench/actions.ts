@@ -131,6 +131,78 @@ export async function listUserPlans() {
 }
 
 // ============================================================================
+// PLAN SESSIONS — drag-drop-persistering (Sprint 6)
+// ============================================================================
+
+import { WBP_SESSIONS } from "@/components/portal-planlegge/workbench/types";
+
+export async function listPlanSessions() {
+  const user = await requirePortalUser();
+  const rows = await prisma.planSession.findMany({
+    where: { userId: user.id },
+    orderBy: [{ week: "asc" }, { day: "asc" }],
+  });
+  // Seed med mock-data hvis bruker ikke har noen sessions
+  if (rows.length === 0) {
+    await prisma.planSession.createMany({
+      data: WBP_SESSIONS.map((s) => ({
+        userId: user.id,
+        week: s.week,
+        day: s.day,
+        span: s.span,
+        axis: s.axis,
+        title: s.title,
+        meta: s.meta,
+        done: s.done ?? false,
+        isNow: s.now ?? false,
+        isPeak: s.peak ?? false,
+      })),
+    });
+    return prisma.planSession.findMany({
+      where: { userId: user.id },
+      orderBy: [{ week: "asc" }, { day: "asc" }],
+    });
+  }
+  return rows;
+}
+
+export async function moveSessionAction(
+  sessionId: string,
+  toAxis: string,
+  toWeek: number,
+  toDay: number,
+) {
+  const user = await requirePortalUser();
+  const sess = await prisma.planSession.findUnique({ where: { id: sessionId } });
+  if (!sess || sess.userId !== user.id) {
+    throw new Error("Session ikke funnet");
+  }
+  await prisma.planSession.update({
+    where: { id: sessionId },
+    data: { axis: toAxis, week: toWeek, day: toDay },
+  });
+  revalidatePath("/portal/planlegge/workbench");
+  return { ok: true };
+}
+
+// ============================================================================
+// AI — Caddie (Sprint 6: stub-impl med toast-fallback)
+// ============================================================================
+
+export async function generateWeekWithCaddie(periodId: string, weekNumber: number) {
+  await requirePortalUser();
+  // TODO: ekte Anthropic API-kall når ANTHROPIC_API_KEY er konfigurert
+  // For nå returnerer vi en stub-respons
+  void periodId;
+  void weekNumber;
+  return {
+    ok: true,
+    message:
+      "Caddie-integrasjon kommer post-launch. Krever ANTHROPIC_API_KEY i prod-miljø.",
+  };
+}
+
+// ============================================================================
 // FASILITETER
 // ============================================================================
 

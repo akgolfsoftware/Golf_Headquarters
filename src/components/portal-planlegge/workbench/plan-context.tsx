@@ -34,14 +34,26 @@ export type PlanContextValue = {
 
 const PlanContext = createContext<PlanContextValue | null>(null);
 
-export function PlanProvider({ children }: { children: React.ReactNode }) {
+export function PlanProvider({
+  children,
+  initialSessions,
+  initialFacilities,
+}: {
+  children: React.ReactNode;
+  initialSessions?: WBP_Session[];
+  initialFacilities?: WBP_Facilities;
+}) {
   const [modal, setModal] = useState<ModalKey>(null);
   const [zoom, setZoom] = useState<Zoom>("periode");
   const [activeSession, setActiveSession] = useState<WBP_Session | null>(null);
-  const [facilities, setFacilities] = useState<WBP_Facilities>(WBP_INITIAL_FAC);
+  const [facilities, setFacilities] = useState<WBP_Facilities>(
+    initialFacilities ?? WBP_INITIAL_FAC,
+  );
   const [wizardOpen, setWizardOpen] = useState(true);
   const [toast, setToast] = useState<{ text: string } | null>(null);
-  const [sessions, setSessions] = useState<WBP_Session[]>(INITIAL_SESSIONS);
+  const [sessions, setSessions] = useState<WBP_Session[]>(
+    initialSessions ?? INITIAL_SESSIONS,
+  );
 
   const showToast = useCallback((text: string) => {
     setToast({ text });
@@ -50,12 +62,8 @@ export function PlanProvider({ children }: { children: React.ReactNode }) {
 
   const moveSession = useCallback(
     (sessionId: string, toAxis: Axis, toWeek: number, toDay: number) => {
+      // Optimistisk lokal update
       setSessions((curr) => {
-        const updated = curr.map((s) =>
-          s.id === sessionId
-            ? { ...s, axis: toAxis, week: toWeek, day: toDay }
-            : s,
-        );
         const moved = curr.find((s) => s.id === sessionId);
         if (moved) {
           setToast({
@@ -63,8 +71,22 @@ export function PlanProvider({ children }: { children: React.ReactNode }) {
           });
           setTimeout(() => setToast(null), 3000);
         }
-        return updated;
+        return curr.map((s) =>
+          s.id === sessionId
+            ? { ...s, axis: toAxis, week: toWeek, day: toDay }
+            : s,
+        );
       });
+
+      // Persister til DB hvis sessionId er cuid (>10 tegn) — mock-data har korte IDs
+      if (sessionId.length > 10) {
+        import("@/app/portal/planlegge/workbench/actions")
+          .then((mod) => mod.moveSessionAction(sessionId, toAxis, toWeek, toDay))
+          .catch(() => {
+            setToast({ text: "Kunne ikke lagre flytting — prøv igjen" });
+            setTimeout(() => setToast(null), 3000);
+          });
+      }
     },
     [],
   );

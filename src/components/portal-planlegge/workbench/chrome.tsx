@@ -5,7 +5,7 @@
  * Port av workbench-plan/plan-chrome.jsx.
  */
 
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { WBPIc } from "./icon";
 import { usePlanContext } from "./plan-context";
 import {
@@ -219,9 +219,18 @@ export function WBP_AIBar() {
 // ============================================================================
 
 export function WBP_Sidebar() {
-  const { setModal, facilities } = usePlanContext();
+  const { setModal, facilities, showToast } = usePlanContext();
+  const [activePlan, setActivePlan] = useState<string>("A");
   const facYes = Object.values(facilities).filter(Boolean).length;
   const facTotal = Object.keys(facilities).length;
+
+  function switchPlan(planId: string) {
+    if (planId === activePlan) return;
+    setActivePlan(planId);
+    showToast(
+      `Bytter til Plan ${planId} — ${planId === "A" ? "Mot Sør.åpent" : "Konservativ"}`,
+    );
+  }
 
   return (
     <aside className="sidebar">
@@ -306,22 +315,42 @@ export function WBP_Sidebar() {
             <WBPIc id="ic-plus" size={12} />
           </button>
         </div>
-        {WBP_PLANS.map((p) => (
-          <div
-            key={p.id}
-            className={
-              "plan-row" +
-              (p.active ? " active" : "") +
-              (p.draft ? " draft" : "")
-            }
-          >
-            <span className="ic">{p.id}</span>
-            <div>
-              <div className="nm">{p.name.split(" · ")[1] ?? p.name}</div>
-              <span className="meta">{p.meta}</span>
-            </div>
-          </div>
-        ))}
+        {WBP_PLANS.map((p) => {
+          const isActive = p.id === activePlan;
+          return (
+            <button
+              key={p.id}
+              type="button"
+              onClick={() => switchPlan(p.id)}
+              className={
+                "plan-row" +
+                (isActive ? " active" : "") +
+                (p.draft && !isActive ? " draft" : "")
+              }
+              style={{
+                cursor: "pointer",
+                width: "100%",
+                textAlign: "left",
+                background: "none",
+                border: 0,
+                font: "inherit",
+                padding: 0,
+              }}
+            >
+              <span className="ic">{p.id}</span>
+              <div>
+                <div className="nm">{p.name.split(" · ")[1] ?? p.name}</div>
+                <span className="meta">
+                  {isActive
+                    ? "Aktiv · sist endret 2 min"
+                    : p.draft
+                      ? "Utkast · klikk for å aktivere"
+                      : p.meta}
+                </span>
+              </div>
+            </button>
+          );
+        })}
       </div>
 
       {/* Turneringer */}

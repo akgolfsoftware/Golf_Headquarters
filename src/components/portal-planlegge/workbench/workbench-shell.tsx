@@ -77,9 +77,20 @@ function WorkbenchInner() {
   );
 }
 
-export function WorkbenchPlanA() {
+import type { WBP_Facilities, WBP_Session } from "./types";
+
+export function WorkbenchPlanA({
+  initialSessions,
+  initialFacilities,
+}: {
+  initialSessions?: WBP_Session[];
+  initialFacilities?: WBP_Facilities;
+} = {}) {
   return (
-    <PlanProvider>
+    <PlanProvider
+      initialSessions={initialSessions}
+      initialFacilities={initialFacilities}
+    >
       <WorkbenchInner />
     </PlanProvider>
   );
