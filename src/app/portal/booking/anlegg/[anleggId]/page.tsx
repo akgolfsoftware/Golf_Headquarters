@@ -16,8 +16,10 @@ import {
   ArrowLeft,
   ArrowRight,
   Calendar,
+  Check,
   Flag,
   MapPin,
+  Minus,
   Mountain,
   Star,
   Target,
@@ -347,7 +349,7 @@ export default async function AnleggDetaljPage({ params }: Props) {
                         }`}
                       >
                         <span
-                          className={`block text-center font-mono text-[9.5px] font-bold ${
+                          className={`flex items-center justify-center text-center font-mono text-[9.5px] font-bold ${
                             valgt
                               ? "text-primary-foreground"
                               : ledig
@@ -355,7 +357,13 @@ export default async function AnleggDetaljPage({ params }: Props) {
                                 : "text-muted-foreground/30"
                           }`}
                         >
-                          {valgt ? "✓" : ledig ? "Book" : "—"}
+                          {valgt ? (
+                            <Check className="h-3 w-3" strokeWidth={2.5} aria-hidden />
+                          ) : ledig ? (
+                            "Book"
+                          ) : (
+                            <Minus className="h-3 w-3" strokeWidth={2} aria-hidden />
+                          )}
                         </span>
                       </button>
                     );

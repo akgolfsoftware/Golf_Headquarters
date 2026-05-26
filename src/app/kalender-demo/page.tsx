@@ -8,13 +8,14 @@
  */
 
 import {
+  Check,
   ChevronLeft,
   ChevronRight,
   Download,
   Plus,
+  RefreshCw,
   SlidersHorizontal,
   X,
-  RefreshCw,
 } from "lucide-react";
 
 const TIMES = [
@@ -721,7 +722,11 @@ function CalendarTogglesCard() {
               }`}
             >
               {r.checked && (
-                <span className="text-[10px] leading-none text-[var(--surface,#FAFAF7)]">✓</span>
+                <Check
+                  className="h-2.5 w-2.5 text-[var(--surface,#FAFAF7)]"
+                  strokeWidth={3}
+                  aria-hidden
+                />
               )}
             </span>
             <span className="h-2.5 w-2.5 flex-shrink-0 rounded-[3px]" style={r.swatch} />

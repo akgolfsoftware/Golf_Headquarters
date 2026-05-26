@@ -95,6 +95,8 @@ export function AIMalByggerModal({
 
   useEffect(() => {
     if (!open) return;
+    // Reset på open: prop-drevet state-reset.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setStep(1);
     setPicked(
       new Set(GENERATED_GOALS.flatMap((g, i) => (g.defaultPicked ? [i] : []))),
@@ -321,7 +323,7 @@ function Stepper({ step }: { step: Step }) {
                       : "bg-border text-foreground"
                 }`}
               >
-                {done ? "✓" : s.n}
+                {done ? <Check className="h-3.5 w-3.5" strokeWidth={2.5} aria-hidden /> : s.n}
               </span>
               {s.label}
             </div>

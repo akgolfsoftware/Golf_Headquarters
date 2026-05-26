@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Check } from "lucide-react";
 
 export function LeadForm({
   source,
@@ -49,8 +50,9 @@ export function LeadForm({
 
   if (sendt) {
     return (
-      <div className="rounded-md border border-primary/30 bg-primary/10 px-4 py-4 text-sm text-foreground">
-        ✓ {takkemelding}
+      <div className="flex items-center gap-2 rounded-md border border-primary/30 bg-primary/10 px-4 py-4 text-sm text-foreground">
+        <Check className="h-4 w-4 shrink-0 text-primary" strokeWidth={2.5} aria-hidden />
+        <span>{takkemelding}</span>
       </div>
     );
   }

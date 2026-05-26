@@ -277,7 +277,15 @@ function TournamentCard({
       {/* Specs */}
       <div className="grid grid-cols-3 gap-2 border-y border-border py-3">
         <Spec label="HCP-KRAV" value={t.hcpReq} />
-        <Spec label="DITT NIVÅ" value={`${t.mine} ✓`} valueClass="text-emerald-700" />
+        <Spec
+          label="DITT NIVÅ"
+          value={
+            <span className="inline-flex items-center gap-1">
+              {t.mine} <Check className="h-3 w-3" strokeWidth={2.5} aria-hidden />
+            </span>
+          }
+          valueClass="text-emerald-700"
+        />
         <Spec label="PURSE" value={t.purse} />
       </div>
 
@@ -330,7 +338,7 @@ function Spec({
   valueClass = "",
 }: {
   label: string;
-  value: string;
+  value: React.ReactNode;
   valueClass?: string;
 }) {
   return (

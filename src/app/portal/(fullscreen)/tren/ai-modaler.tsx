@@ -5,6 +5,7 @@
 // Bruker samme `.modal-backdrop` / `.modal` CSS-klasser fra workbench-v2.css.
 
 import { useEffect } from "react";
+import { Check, Star } from "lucide-react";
 
 type ModalProps = {
   open: boolean;
@@ -307,9 +308,9 @@ function DrillCard({
           {drill.reasons.map((r, i) => (
             <div
               key={i}
-              style={{ fontSize: 12, lineHeight: 1.4, color: "var(--fg)" }}
+              style={{ fontSize: 12, lineHeight: 1.4, color: "var(--fg)", display: "flex", alignItems: "center", gap: 6 }}
             >
-              ✓ {r}
+              <Check className="h-3.5 w-3.5 shrink-0" strokeWidth={2.5} aria-hidden /> {r}
             </div>
           ))}
         </div>
@@ -431,7 +432,7 @@ const TOURNAMENT_SUGGESTIONS: TournamentSuggestion[] = [
     id: "nm-junior",
     name: "NM",
     italicName: "Junior 2026",
-    badges: ["★ Topp-prioritet", "A1 · Elite", "3 dager"],
+    badges: ["Topp-prioritet", "A1 · Elite", "3 dager"],
     date: "12.–14. juni 2026",
     venue: "Bogstad GK, Oslo",
     daysAway: "23 dager unna",
@@ -574,8 +575,14 @@ function TournamentCard({
                 border: "1px solid var(--border-soft)",
                 color: "var(--fg)",
                 letterSpacing: "0.04em",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 4,
               }}
             >
+              {i === 0 && t.top && (
+                <Star className="h-2.5 w-2.5 fill-current" strokeWidth={2} aria-hidden />
+              )}
               {b}
             </span>
           ))}
@@ -603,8 +610,8 @@ function TournamentCard({
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
           {t.reasons.map((r, i) => (
-            <div key={i} style={{ fontSize: 12, lineHeight: 1.4, color: "var(--fg)" }}>
-              ✓ {r}
+            <div key={i} style={{ fontSize: 12, lineHeight: 1.4, color: "var(--fg)", display: "flex", alignItems: "center", gap: 6 }}>
+              <Check className="h-3.5 w-3.5 shrink-0" strokeWidth={2.5} aria-hidden /> {r}
             </div>
           ))}
         </div>

@@ -18,8 +18,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   ArrowLeft,
-  MapPin,
   ExternalLink,
+  MapPin,
+  Star,
   Trophy,
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
@@ -497,7 +498,12 @@ export default async function TurneringDetalj({ params }: Props) {
                       <td style={{ padding: "12px 16px 12px 0", fontFamily: "var(--font-sans)", fontWeight: 600, fontSize: 14 }}>
                         {e.player.name}
                         {e.player.country === "NO" && (
-                          <span style={{ color: "var(--s-primary)", marginLeft: 6 }}>★</span>
+                          <Star
+                            className="ml-1.5 inline h-3 w-3 fill-current"
+                            style={{ color: "var(--s-primary)" }}
+                            strokeWidth={2}
+                            aria-hidden
+                          />
                         )}
                       </td>
                       <td style={{ padding: "12px 16px 12px 0" }}>

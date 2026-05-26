@@ -6,6 +6,7 @@
 
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Star } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import "../../stats/stats.css";
 import "./uka.css";
@@ -293,7 +294,9 @@ export default async function UkaPage() {
                       <td>
                         <span style={{ fontFamily: "var(--font-mono)", fontWeight: 600, color: (e.position ?? 99) <= 3 ? "var(--s-primary)" : "inherit" }}>
                           {e.position !== null && e.position !== undefined ? `#${e.position}` : "—"}
-                          {(e.position ?? 99) <= 3 && " ★"}
+                          {(e.position ?? 99) <= 3 && (
+                            <Star className="ml-1 inline h-3 w-3 fill-current" strokeWidth={2} aria-hidden />
+                          )}
                         </span>
                       </td>
                       <td>

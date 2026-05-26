@@ -10,7 +10,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, ArrowLeft, X } from "lucide-react";
+import { ArrowRight, ArrowLeft, Check, X } from "lucide-react";
 
 type Drill = {
   category: string;
@@ -163,9 +163,14 @@ export function LoggerClient({
         <div className="font-mono mt-1 text-xs uppercase tracking-[0.08em] text-accent tabular-nums">
           {hitRate}% HIT-RATE
         </div>
-        <div className="font-mono mt-3 max-w-xs text-center text-[11px] leading-relaxed tracking-[0.06em] text-white/55">
-          Mål: {drill.targetText}
-          {left > 0 ? ` — du trenger ${left} til` : " — mål nådd ✓"}
+        <div className="font-mono mt-3 flex max-w-xs items-center justify-center gap-1 text-center text-[11px] leading-relaxed tracking-[0.06em] text-white/55">
+          <span>
+            Mål: {drill.targetText}
+            {left > 0 ? ` — du trenger ${left} til` : " — mål nådd"}
+          </span>
+          {left <= 0 && (
+            <Check className="h-3 w-3 shrink-0" strokeWidth={2.5} aria-hidden />
+          )}
         </div>
       </section>
 

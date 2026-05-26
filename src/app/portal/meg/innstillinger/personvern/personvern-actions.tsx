@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Download, Trash2 } from "lucide-react";
+import { Check, Download, Trash2 } from "lucide-react";
 import { AthleticButton } from "@/components/athletic";
 import {
   exportUserData,
@@ -19,16 +19,18 @@ export function PersonvernActions({ kind }: Props) {
   return <DeleteAction />;
 }
 
+type Status = { ok: boolean; msg: string };
+
 function ExportAction() {
   const [isPending, startTransition] = useTransition();
-  const [status, setStatus] = useState<string | null>(null);
+  const [status, setStatus] = useState<Status | null>(null);
 
   function onExport() {
     startTransition(async () => {
       setStatus(null);
       const result = await exportUserData();
       if (!result.ok || !result.data) {
-        setStatus(result.error ?? "Eksport feilet.");
+        setStatus({ ok: false, msg: result.error ?? "Eksport feilet." });
         return;
       }
       // Trigger nedlasting av JSON-fil
@@ -43,7 +45,7 @@ function ExportAction() {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      setStatus("Eksport lastet ned ✓");
+      setStatus({ ok: true, msg: "Eksport lastet ned" });
     });
   }
 
@@ -60,11 +62,12 @@ function ExportAction() {
       </AthleticButton>
       {status ? (
         <span
-          className={`font-mono text-[11px] tracking-[0.06em] ${
-            status.includes("✓") ? "text-primary" : "text-destructive"
+          className={`inline-flex items-center gap-1 font-mono text-[11px] tracking-[0.06em] ${
+            status.ok ? "text-primary" : "text-destructive"
           }`}
         >
-          {status}
+          {status.msg}
+          {status.ok && <Check className="h-3 w-3" strokeWidth={2.5} aria-hidden />}
         </span>
       ) : null}
     </div>

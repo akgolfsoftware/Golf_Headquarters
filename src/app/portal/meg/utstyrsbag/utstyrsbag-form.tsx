@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { Check } from "lucide-react";
 import { lagreUtstyrsbag, type UtstyrsbagInput } from "./actions";
 
 type Props = {
@@ -189,8 +190,8 @@ export function UtstyrsbagForm({ initial, onAvbryt }: Props) {
           </button>
         )}
         {lagret && (
-          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-primary">
-            Lagret ✓
+          <span className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.10em] text-primary">
+            Lagret <Check className="h-3 w-3" strokeWidth={2.5} aria-hidden />
           </span>
         )}
       </div>

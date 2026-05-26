@@ -5,7 +5,7 @@
  * Detaljert visning av en enkelt runde — KPI-strip, hull-tabell, trend-charts og notater.
  */
 import Link from "next/link";
-import { Pencil, Download, MoreVertical, MapPin, Sun, Wind, BarChart3, ChevronRight } from "lucide-react";
+import { BarChart3, Check, ChevronRight, Download, MapPin, Minus, MoreVertical, Pencil, Sun, Wind, X } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
@@ -521,9 +521,9 @@ function RowYN({
       </td>
       {values.map((v, i) => (
         <td key={i} className="px-2 py-2 text-center">
-          {v === "y" && <span className="text-primary">✓</span>}
-          {v === "n" && <span className="text-destructive">✗</span>}
-          {v === "—" && <span className="text-muted-foreground">—</span>}
+          {v === "y" && <Check className="mx-auto h-4 w-4 text-primary" strokeWidth={2.5} aria-hidden />}
+          {v === "n" && <X className="mx-auto h-4 w-4 text-destructive" strokeWidth={2.5} aria-hidden />}
+          {v === "—" && <Minus className="mx-auto h-4 w-4 text-muted-foreground" strokeWidth={2} aria-hidden />}
         </td>
       ))}
       <td className="px-3 py-2 text-center font-bold tabular-nums">{sumLabel}</td>

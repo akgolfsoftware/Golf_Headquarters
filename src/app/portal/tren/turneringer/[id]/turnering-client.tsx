@@ -236,14 +236,14 @@ function pillClass(pill: PrepPill): string {
   }
 }
 
-function badgeForStatus(status: PrepStatus): { cls: string; text: string } {
+function badgeForStatus(status: PrepStatus): { cls: string; text: string; star?: boolean } {
   switch (status) {
     case "FULLFORT":
       return { cls: "tdc-badge tdc-badge-success", text: "FULLFØRT" };
     case "PLANLAGT":
       return { cls: "tdc-badge tdc-badge-forest", text: "PLANLAGT" };
     case "TURNERING":
-      return { cls: "tdc-badge tdc-badge-danger", text: "★ TURNERING" };
+      return { cls: "tdc-badge tdc-badge-danger", text: "TURNERING", star: true };
     case "SCOUT":
       return { cls: "tdc-badge tdc-badge-lime", text: "SCOUT" };
   }
@@ -574,7 +574,12 @@ export function TurneringDetaljClient({
                     <div className="tdc-prep-meta">{row.meta}</div>
                   </div>
                   <span className={`tdc-pill ${pillClass(row.pill)}`}>{row.pill}</span>
-                  <span className={badge.cls}>{badge.text}</span>
+                  <span className={`${badge.cls} inline-flex items-center gap-1`}>
+                    {badge.star && (
+                      <Star className="h-2.5 w-2.5 fill-current" strokeWidth={2} aria-hidden />
+                    )}
+                    {badge.text}
+                  </span>
                 </div>
               );
             })}

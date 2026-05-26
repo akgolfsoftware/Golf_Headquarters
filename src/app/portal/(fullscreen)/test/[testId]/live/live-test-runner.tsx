@@ -18,6 +18,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
   ArrowRight,
+  Check,
   CheckCircle2,
   ChevronDown,
   ChevronUp,
@@ -475,13 +476,13 @@ function FieldInput({
               checked ? "translate-x-8" : "translate-x-1"
             }`}
           />
-          <span
-            className={`absolute right-2 font-mono text-[10px] font-bold uppercase ${
+          <Check
+            className={`absolute right-2 h-3.5 w-3.5 ${
               checked ? "text-primary-foreground" : "text-transparent"
             }`}
-          >
-            ✓
-          </span>
+            strokeWidth={2.5}
+            aria-hidden
+          />
         </button>
         {field.helper && (
           <span className="text-[10px] text-muted-foreground">{field.helper}</span>

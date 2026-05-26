@@ -8,7 +8,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { AlertCircle, Mail } from "lucide-react";
+import { AlertCircle, Check, Mail } from "lucide-react";
 import { resendGuardianInvitation } from "@/app/auth/onboarding/actions";
 
 type Props = {
@@ -19,7 +19,7 @@ export function GuardianConsentBanner({ pendingInvitationEmail }: Props) {
   const [isPending, startTransition] = useTransition();
   const [showResend, setShowResend] = useState(false);
   const [newEmail, setNewEmail] = useState(pendingInvitationEmail ?? "");
-  const [status, setStatus] = useState<string | null>(null);
+  const [status, setStatus] = useState<{ ok: boolean; msg: string } | null>(null);
 
   function onResend(e: React.FormEvent) {
     e.preventDefault();
@@ -30,10 +30,10 @@ export function GuardianConsentBanner({ pendingInvitationEmail }: Props) {
         guardianEmail: newEmail.trim(),
       });
       if (result.ok) {
-        setStatus("Invitasjon sendt ✓");
+        setStatus({ ok: true, msg: "Invitasjon sendt" });
         setShowResend(false);
       } else {
-        setStatus(result.error ?? "Kunne ikke sende.");
+        setStatus({ ok: false, msg: result.error ?? "Kunne ikke sende." });
       }
     });
   }
@@ -107,11 +107,12 @@ export function GuardianConsentBanner({ pendingInvitationEmail }: Props) {
 
       {status ? (
         <p
-          className={`font-mono mt-2 text-[11px] tracking-[0.06em] ${
-            status.includes("✓") ? "text-primary" : "text-destructive"
+          className={`font-mono mt-2 inline-flex items-center gap-1 text-[11px] tracking-[0.06em] ${
+            status.ok ? "text-primary" : "text-destructive"
           }`}
         >
-          {status}
+          {status.msg}
+          {status.ok && <Check className="h-3 w-3" strokeWidth={2.5} aria-hidden />}
         </p>
       ) : null}
     </div>

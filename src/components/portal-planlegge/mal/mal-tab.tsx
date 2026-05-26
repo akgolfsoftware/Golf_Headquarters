@@ -9,7 +9,7 @@
  */
 
 import Link from "next/link";
-import { ArrowRight, Check, MoreHorizontal, Sparkles, Trophy, Target } from "lucide-react";
+import { ArrowRight, Check, MoreHorizontal, Sparkles, Star, Target, Trophy } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import "./mal-tab.css";
 
@@ -98,7 +98,7 @@ const GOALS: GoalSample[] = [
       { date: "MAR-APR", value: "PR 0,058", state: "done" },
       { date: "23. MAI · NÅ", value: "PR 0,054 · 4/10", state: "current" },
       { date: "14. JUL", value: "5 av 10", state: "upcoming" },
-      { date: "31. AUG", value: "6 av 10 ✓", state: "upcoming" },
+      { date: "31. AUG", value: "6 av 10", state: "upcoming" },
     ],
     side: {
       sparkline: "g2",
@@ -277,8 +277,8 @@ function GoalCard({ goal: g }: { goal: GoalSample }) {
         <div className="top">
           <span className={`g-type ${g.type}`}>{g.type === "resultat" ? "Resultat" : g.type === "prosess" ? "Prosess" : "Atferd"}</span>
           {g.priority ? (
-            <span className="font-mono text-[9.5px] font-bold uppercase tracking-[0.10em] text-primary">
-              ★ HOVED-MÅL
+            <span className="inline-flex items-center gap-1 font-mono text-[9.5px] font-bold uppercase tracking-[0.10em] text-primary">
+              <Star className="h-3 w-3 fill-current" strokeWidth={2} aria-hidden /> HOVED-MÅL
             </span>
           ) : null}
           <span className={`status-pill ${g.status}`}>
@@ -544,8 +544,8 @@ function DoneGoalArchive() {
           <span className="font-mono text-sm font-bold" style={{ color: "var(--success)" }}>
             T-4 · 28 ranking-poeng
           </span>
-          <span className="font-mono ml-auto text-[11px] text-muted-foreground">
-            Mål: topp-10 ✓ · oversteg med 6 plasseringer
+          <span className="font-mono ml-auto inline-flex items-center gap-1 text-[11px] text-muted-foreground">
+            Mål: topp-10 <Check className="h-3 w-3 text-primary" strokeWidth={2.5} aria-hidden /> · oversteg med 6 plasseringer
           </span>
         </div>
       </div>
