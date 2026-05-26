@@ -39,7 +39,7 @@ export function ShareRoundButton({
         type="button"
         aria-label="Del"
         onClick={() => setAapen(true)}
-        className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-accent text-accent-foreground hover:opacity-90"
+        className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-accent text-accent-foreground hover:opacity-90"
       >
         <Share2 size={15} strokeWidth={1.75} />
       </button>

@@ -18,6 +18,7 @@ import {
   TrendingDown,
   Trophy,
 } from "lucide-react";
+import { Sparkline } from "@/components/athletic";
 import { avatarBg, initialsFromName } from "@/lib/avatar-colors";
 
 const PYR_COLOR: Record<string, string> = {
@@ -470,7 +471,7 @@ export function WorkbenchShell(props: WorkbenchProps) {
                       dager igjen
                     </div>
                   </div>
-                  <Sparkline points={props.nextMilestone.sparkline} />
+                  <Sparkline values={props.nextMilestone.sparkline} width={96} height={32} />
                 </div>
               </>
             ) : (
@@ -586,33 +587,3 @@ function KpiTile({
   );
 }
 
-function Sparkline({ points }: { points: number[] }) {
-  if (points.length === 0) {
-    return null;
-  }
-  const max = Math.max(...points);
-  const min = Math.min(...points);
-  const range = Math.max(0.01, max - min);
-  const w = 96;
-  const h = 32;
-  const step = w / Math.max(1, points.length - 1);
-  const path = points
-    .map((p, i) => {
-      const x = i * step;
-      const y = h - ((p - min) / range) * h;
-      return `${i === 0 ? "M" : "L"}${x.toFixed(1)},${y.toFixed(1)}`;
-    })
-    .join(" ");
-  return (
-    <svg width={w} height={h} aria-hidden="true">
-      <path
-        d={path}
-        fill="none"
-        stroke="#005840"
-        strokeWidth={1.5}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
