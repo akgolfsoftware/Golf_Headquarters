@@ -62,3 +62,14 @@ agentdb.rvf*
 
 # Arkiv av stale design-eksperimenter — fjernes etter lansering
 _archive/
+
+# Lokal env/DB/cache — aldri commit
+.env.local.backup-*
+.env.local.tmp
+.env.vercel-check
+*.rvf
+*.rvf.lock
+ruvector.db
+tsconfig.tsbuildinfo
+.DS_Store
+skills-lock.json
