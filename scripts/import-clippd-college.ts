@@ -532,7 +532,7 @@ async function prosesserSpiller(spiller: {
   id: string;
   name: string;
   bio: string | null;
-}): Promise<{ turneringer: number; entries: number; feil: number }> {
+}): Promise<{ turneringer: number; entries: number; feil: number; ingenMatch: boolean }> {
   let turneringerCount = 0;
   let entriesCount = 0;
   let feilCount = 0;
@@ -544,7 +544,7 @@ async function prosesserSpiller(spiller: {
   const clippdSpiller = await finnClippdPlayerId(spiller.name);
   if (!clippdSpiller) {
     console.log(`  Ingen Clippd-match funnet for "${spiller.name}" — hopper over`);
-    return { turneringer: 0, entries: 0, feil: 1 };
+    return { turneringer: 0, entries: 0, feil: 0, ingenMatch: true };
   }
 
   console.log(
@@ -616,7 +616,7 @@ async function prosesserSpiller(spiller: {
     }
   }
 
-  return { turneringer: turneringerCount, entries: entriesCount, feil: feilCount };
+  return { turneringer: turneringerCount, entries: entriesCount, feil: feilCount, ingenMatch: false };
 }
 
 // ---------------------------------------------------------------------------
@@ -657,7 +657,7 @@ async function main(): Promise<void> {
     totTurneringer += res.turneringer;
     totEntries += res.entries;
     totFeil += res.feil;
-    if (res.entries === 0 && res.feil === 0) ingenMatch++;
+    if (res.ingenMatch) ingenMatch++;
   }
 
   console.log("\n=== SAMMENDRAG ===");
