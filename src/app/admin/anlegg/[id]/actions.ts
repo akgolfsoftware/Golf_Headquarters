@@ -54,6 +54,12 @@ export async function createFacilityBooking(input: CreateFacilityBookingInput) {
     throw new Error("endAt må være etter startAt");
   }
 
+  // Hent coachId fra serviceType — brukes i unik-indeks for dobbel-booking-vern.
+  const serviceType = await prisma.serviceType.findUnique({
+    where: { id: input.serviceTypeId },
+    select: { coachUserId: true },
+  });
+
   // Konflikt-sjekk: er fasiliteten booket i samme tidsrom?
   if (facilityId) {
     const konflikt = await prisma.booking.findFirst({
@@ -82,6 +88,7 @@ export async function createFacilityBooking(input: CreateFacilityBookingInput) {
       notes: input.notes,
       status: "CONFIRMED",
       priceOre: 0,
+      coachId: serviceType?.coachUserId ?? null,
     },
   });
 

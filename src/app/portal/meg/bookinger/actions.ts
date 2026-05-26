@@ -43,6 +43,9 @@ export async function cancelBooking(bookingId: string) {
   const kanRefunderes = erStaff || tidTilStart > 24 * 60 * 60 * 1000;
 
   // Refunder via Stripe hvis berettiget og PaymentIntent finnes.
+  // S-19: spor om refund faktisk lyktes — ikke tier stille ved feil.
+  let stripeRefundOk = false;
+  let stripeRefundFeilet = false;
   if (kanRefunderes && booking.stripePaymentIntentId) {
     try {
       const stripe = stripeKlient();
@@ -51,9 +54,29 @@ export async function cancelBooking(bookingId: string) {
         reason: "requested_by_customer",
         metadata: { bookingId: booking.id },
       });
+      stripeRefundOk = true;
     } catch (err) {
+      stripeRefundFeilet = true;
       console.error("[cancel-booking] Stripe refund failed", err);
-      // Fortsetter — vi avbestiller uansett, refusjon kan tas manuelt.
+      // S-19: Legg inn WebhookFailure slik at admin ser det i dashbordet
+      // og kan behandle refund manuelt. Best-effort — ikke blokker avbestilling.
+      try {
+        await prisma.webhookFailure.create({
+          data: {
+            webhookSource: "stripe-refund",
+            eventId: `cancel-${booking.id}-${Date.now()}`,
+            payload: {
+              bookingId: booking.id,
+              paymentIntentId: booking.stripePaymentIntentId,
+              userId: booking.userId,
+            },
+            errorMessage: err instanceof Error ? err.message : "ukjent feil",
+            status: "PENDING",
+          },
+        });
+      } catch (dbErr) {
+        console.error("[cancel-booking] klarte ikke logge WebhookFailure", dbErr);
+      }
     }
   }
 
@@ -90,12 +113,20 @@ export async function cancelBooking(bookingId: string) {
     }
   }
 
+  // S-19: bruk riktig action-navn basert på faktisk refund-resultat
+  const auditAction = stripeRefundFeilet
+    ? "booking.cancelled.refund-failed"
+    : creditRefunded
+      ? "booking.cancelled.credit-refunded"
+      : "booking.cancelled";
+
   await audit({
     actorId: user.id,
-    action: creditRefunded ? "booking.cancelled.credit-refunded" : "booking.cancelled",
+    action: auditAction,
     target: `Booking:${bookingId}`,
     metadata: {
-      stripeRefunded: kanRefunderes && !!booking.stripePaymentIntentId,
+      stripeRefunded: stripeRefundOk,
+      stripeRefundFeilet,
       creditRefunded,
       subscriptionId: booking.subscriptionId,
       tidTilStartMs: tidTilStart,
@@ -111,16 +142,30 @@ export async function cancelBooking(bookingId: string) {
   }
 
   // In-app-varsel til spilleren som eier bookingen
+  // S-19: vær ærlig om refund-status
   const tidStr = booking.startAt.toLocaleString("nb-NO", {
     dateStyle: "medium",
     timeStyle: "short",
   });
   if (booking.userId) {
+    let refundTekst: string;
+    if (creditRefunded) {
+      refundTekst = "Credit returnert.";
+    } else if (stripeRefundFeilet) {
+      refundTekst = "Refundering feilet — vi behandler den manuelt innen 24 timer.";
+    } else if (stripeRefundOk) {
+      refundTekst = "Refusjon underveis.";
+    } else if (!kanRefunderes) {
+      refundTekst = "Mindre enn 24t igjen — ingen refusjon.";
+    } else {
+      refundTekst = "";
+    }
+
     await notify({
       userId: booking.userId,
       type: "booking",
       title: "Booking avbestilt",
-      body: `${tidStr}. ${creditRefunded ? "Credit returnert." : kanRefunderes ? "Refusjon underveis." : "Mindre enn 24t — ingen refusjon."}`,
+      body: `${tidStr}.${refundTekst ? " " + refundTekst : ""}`,
       link: "/portal/meg/bookinger",
     });
   }

@@ -33,6 +33,7 @@ import {
   deleteAnnotation,
   editAnnotation,
 } from "@/app/portal/mal/sg-hub/[club]/annotations/actions";
+import { safeUrl } from "@/lib/security/safe-url";
 
 export type ShotAnnotationRow = {
   id: string;
@@ -211,9 +212,9 @@ function AnnotationRow({
   return (
     <div className="rounded-md border border-border bg-card p-3">
       <p className="text-sm">{annotation.body}</p>
-      {annotation.videoUrl && (
+      {safeUrl(annotation.videoUrl) && (
         <a
-          href={annotation.videoUrl}
+          href={safeUrl(annotation.videoUrl)!}
           target="_blank"
           rel="noreferrer"
           className="mt-2 inline-flex items-center gap-1 text-xs text-primary hover:underline"

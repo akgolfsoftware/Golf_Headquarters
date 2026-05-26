@@ -1,5 +1,6 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { isAwaitingGuardianConsent } from "@/lib/auth/minor";
 import { PortalSidebar } from "./sidebar";
 import { BottomNav } from "./bottom-nav";
 import { MobileSidebarDrawer } from "./mobile-sidebar-drawer";
@@ -10,6 +11,7 @@ import { ViewModeToggle } from "@/components/shared/view-mode-toggle";
 import { NotificationBell } from "@/components/shared/notification-bell";
 import { ToastProvider } from "@/components/shared/toast-provider";
 import { CmdPalette } from "@/components/shared/cmd-palette";
+import { GuardianConsentBanner } from "./guardian-consent-banner";
 
 export async function PortalShell({
   children,
@@ -28,6 +30,20 @@ export async function PortalShell({
   const varslerUlest = await prisma.notification
     .count({ where: { userId: user.id, readAt: null } })
     .catch(() => 0);
+
+  // S-13: hent aktiv guardian-invitasjon for banner (defence-in-depth)
+  const awaitingConsent = isAwaitingGuardianConsent(user);
+  const pendingInvitasjonEmail = awaitingConsent
+    ? (
+        await prisma.parentInvitation
+          .findFirst({
+            where: { playerId: user.id, acceptedAt: null, expiresAt: { gt: new Date() } },
+            orderBy: { createdAt: "desc" },
+            select: { email: true },
+          })
+          .catch(() => null)
+      )?.email ?? null
+    : null;
 
   return (
     <ToastProvider>
@@ -77,6 +93,10 @@ export async function PortalShell({
             />
           </div>
         </header>
+        {/* S-13: vis banner hvis bruker venter på foreldresamtykke (defence-in-depth) */}
+        {awaitingConsent && (
+          <GuardianConsentBanner pendingInvitationEmail={pendingInvitasjonEmail} />
+        )}
         <main
           id="portal-main"
           tabIndex={-1}

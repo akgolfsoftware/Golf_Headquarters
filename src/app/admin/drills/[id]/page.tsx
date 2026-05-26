@@ -14,6 +14,7 @@ import type {
   NgfKategori,
 } from "@/generated/prisma/enums";
 import { DrillDetailActions } from "./drill-detail-actions";
+import { safeUrl } from "@/lib/security/safe-url";
 
 const NGF_ORDER: readonly NgfKategori[] = [
   "A",
@@ -307,10 +308,10 @@ export default async function DrillDetail({
             </Card>
           )}
 
-          {drill.videoUrl && (
+          {safeUrl(drill.videoUrl) && (
             <Card title="Video">
               <a
-                href={drill.videoUrl}
+                href={safeUrl(drill.videoUrl)!}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="break-all text-sm text-primary hover:underline"

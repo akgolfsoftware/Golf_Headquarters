@@ -7,6 +7,7 @@ import { streamText, convertToModelMessages, type UIMessage } from "ai";
 import { gateway } from "@ai-sdk/gateway";
 import { canAccessMissionControl } from "@/lib/auth/canAccessMissionControl";
 import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/rate-limit";
 import { CADDIE_SYSTEM_PROMPT } from "@/lib/caddie/system-prompt";
 import { CADDIE_TOOLS } from "@/lib/caddie/tools";
 
@@ -56,6 +57,15 @@ export async function POST(req: Request) {
   const user = await canAccessMissionControl();
   if (!user) {
     return new Response("Ikke autorisert", { status: 401 });
+  }
+
+  // Rate-limit: 10 AI-requester per minutt per admin-bruker.
+  const rl = await rateLimit({ key: `caddie-chat:${user.id}`, max: 10, windowMs: 60_000 });
+  if (!rl.ok) {
+    return new Response("For mange requester — prøv igjen om litt.", {
+      status: 429,
+      headers: { "x-ratelimit-reset": String(rl.resetAt) },
+    });
   }
 
   let body: ChatRequestBody;

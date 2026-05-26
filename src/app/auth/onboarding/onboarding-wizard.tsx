@@ -14,6 +14,7 @@ import {
   saveSpillerOnboardingStep,
   markStepComplete,
   completeOnboarding,
+  setDateOfBirthAndCheckMinor,
   type SpillerOnboardingData,
 } from "./actions";
 import "@/components/onboarding/onboarding.css";
@@ -223,8 +224,11 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
-  // Steg 2
+  // Steg 2 — Kontaktinfo + fødselsdato
   const [phone, setPhone] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState(""); // format YYYY-MM-DD
+  const [guardianEmail, setGuardianEmail] = useState("");
+  const [dobIsMinor, setDobIsMinor] = useState(false);
 
   // Steg 3
   const [hcp, setHcp] = useState("");
@@ -254,6 +258,44 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
       acceptedTerms,
       acceptedPrivacy,
     };
+  }
+
+  // S-13: steg 2 har egen handler som kaller setDateOfBirthAndCheckMinor
+  // hvis bruker har lagt inn fødselsdato.
+  function nesteSteg2() {
+    setError(null);
+    if (!dateOfBirth) {
+      // DOB ikke satt — tillat videre (DOB er valgfritt på dette steget)
+      neste();
+      return;
+    }
+    startTransition(async () => {
+      const result = await setDateOfBirthAndCheckMinor({
+        dateOfBirth,
+        guardianEmail: dobIsMinor && guardianEmail ? guardianEmail : undefined,
+      });
+      if (!result.ok) {
+        setError(result.error ?? "Noe gikk galt med fødselsdato.");
+        // Hvis bruker er mindreårig og trenger guardian email — vis feltet
+        if (result.isMinor) setDobIsMinor(true);
+        return;
+      }
+      if (result.isMinor && !guardianEmail) {
+        // Bruker er mindreårig men har ikke lagt inn guardian-email ennå
+        setDobIsMinor(true);
+        setError("Du er under 16 år og trenger foreldresamtykke. Oppgi e-post til foresatt.");
+        return;
+      }
+      // DOB lagret — gå videre med vanlig lagring
+      try {
+        await saveSpillerOnboardingStep(buildData());
+        await markStepComplete(step);
+      } catch {
+        setError("Kunne ikke lagre. Prøv igjen.");
+        return;
+      }
+      setStep(step + 1);
+    });
   }
 
   function neste() {
@@ -379,13 +421,54 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
                 placeholder="f.eks. 18,4"
               />
             </div>
+            <div className="ob-field" style={{ gridColumn: "1 / -1" }}>
+              <label htmlFor="ob-dob" className="ob-label">
+                Fødselsdato{" "}
+                <span style={{ fontWeight: 400, color: "#9C9990" }}>
+                  — brukes for GDPR-samtykke (under 16 år)
+                </span>
+              </label>
+              <input
+                id="ob-dob"
+                type="date"
+                className="ob-input"
+                value={dateOfBirth}
+                onChange={(e) => {
+                  setDateOfBirth(e.target.value);
+                  // Reset minor-state når dato endres
+                  setDobIsMinor(false);
+                  setGuardianEmail("");
+                  setError(null);
+                }}
+                max={new Date().toISOString().split("T")[0]}
+              />
+            </div>
+            {dobIsMinor && (
+              <div className="ob-field" style={{ gridColumn: "1 / -1" }}>
+                <label htmlFor="ob-guardian-email" className="ob-label" style={{ color: "#B8852A" }}>
+                  E-post til foresatt (påkrevd)
+                </label>
+                <input
+                  id="ob-guardian-email"
+                  type="email"
+                  className="ob-input"
+                  value={guardianEmail}
+                  onChange={(e) => setGuardianEmail(e.target.value)}
+                  placeholder="forelder@example.com"
+                  autoComplete="email"
+                />
+                <p style={{ marginTop: 4, fontSize: 12, color: "#B8852A" }}>
+                  Vi sender en forespørsel om foreldresamtykke iht. GDPR art. 8.
+                </p>
+              </div>
+            )}
           </div>
           <div className="ob-cta-row">
             <button className="ob-btn-outline" onClick={tilbake} disabled={pending}>
               <ChevronLeft size={15} />
               Tilbake
             </button>
-            <button className="ob-btn-lime" onClick={neste} disabled={pending}>
+            <button className="ob-btn-lime" onClick={nesteSteg2} disabled={pending}>
               {pending ? "Lagrer…" : "Neste — Golf-erfaring"}
               <ArrowRight size={15} />
             </button>

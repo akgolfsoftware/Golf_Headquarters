@@ -12,6 +12,7 @@ import {
 } from "@/lib/caddie/tools";
 import { authenticateMcpRequest } from "@/lib/mcp/auth";
 import { dispatchMcpMethod } from "@/lib/mcp/dispatcher";
+import { rateLimit } from "@/lib/rate-limit";
 import {
   isJsonRpcRequest,
   isNotification,
@@ -65,6 +66,15 @@ export async function POST(req: Request) {
       status: 401,
       headers: { "WWW-Authenticate": "Bearer" },
     });
+  }
+
+  // Rate-limit: 60 MCP-kall per minutt per API-nøkkel.
+  const rl = await rateLimit({ key: `mcp:${auth.apiKeyId}`, max: 60, windowMs: 60_000 });
+  if (!rl.ok) {
+    return Response.json(
+      rpcError(null, -32000, "Rate limit overskredet — prøv igjen om litt."),
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+    );
   }
 
   // 3) Batch eller single?

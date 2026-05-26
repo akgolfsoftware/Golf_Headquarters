@@ -1,12 +1,24 @@
 // Supabase-sesjons-refresh i middleware.
-// Kalles fra src/middleware.ts. Refresher access token automatisk og
+// Kalles fra src/proxy.ts. Refresher access token automatisk og
 // oppdaterer cookies på request + response.
+//
+// Aksepterer optional nonce-string slik at CSP-nonce kan inkluderes
+// i x-nonce request-header — lesbar via headers() i Server Components.
 
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-export async function updateSession(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({ request });
+export async function updateSession(request: NextRequest, nonce?: string) {
+  // Bygg request-headers med optional nonce så RSCs kan lese den via headers().
+  function buildReqHeaders(): Headers {
+    const h = new Headers(request.headers);
+    if (nonce) h.set("x-nonce", nonce);
+    return h;
+  }
+
+  let supabaseResponse = NextResponse.next({
+    request: { headers: buildReqHeaders() },
+  });
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -20,7 +32,10 @@ export async function updateSession(request: NextRequest) {
           cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value)
           );
-          supabaseResponse = NextResponse.next({ request });
+          // Gjenskaper response med oppdatert nonce-header etter cookie-refresh.
+          supabaseResponse = NextResponse.next({
+            request: { headers: buildReqHeaders() },
+          });
           cookiesToSet.forEach(({ name, value, options }) =>
             supabaseResponse.cookies.set(name, value, options)
           );

@@ -714,6 +714,49 @@
   margin-top: 32px;
 }
 
+/* ─── Grid utilities (nye sider) ─── */
+.stats-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+.stats-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+/* 4-kolonne KPI-strip */
+.stats-kpi-strip-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* Compact hero (uten background glyph) */
+.stats-hero.compact {
+  padding: 72px 64px 48px;
+}
+
+/* Breadcrumb tilbake-lenke */
+.stats-breadcrumb {
+  font-size: 13px;
+  color: var(--s-muted-fg);
+  text-decoration: none;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+.stats-breadcrumb:hover { color: var(--s-primary); }
+
+/* ─── Responsive (nye sider) ─── */
+@media (max-width: 900px) {
+  .stats-grid-2 { grid-template-columns: 1fr; }
+  .stats-grid-3 { grid-template-columns: 1fr; }
+  .stats-kpi-strip-4 { grid-template-columns: 1fr 1fr; }
+  .stats-hero.compact { padding: 48px 24px 32px; }
+}
+
 /* ─── Responsive ─── */
 @media (max-width: 900px) {
   .stats-hero { padding: 56px 24px 32px; }

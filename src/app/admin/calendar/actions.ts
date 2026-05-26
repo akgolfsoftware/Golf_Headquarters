@@ -51,7 +51,7 @@ export async function opprettOktPaaTid(
     }),
     prisma.serviceType.findUnique({
       where: { id: data.serviceTypeId },
-      select: { id: true, priceOre: true },
+      select: { id: true, priceOre: true, coachUserId: true },
     }),
     prisma.location.findUnique({
       where: { id: data.locationId },
@@ -89,6 +89,7 @@ export async function opprettOktPaaTid(
       endAt,
       status: "CONFIRMED",
       priceOre: serviceType.priceOre,
+      coachId: serviceType.coachUserId ?? null,
       notes: data.notater?.trim() || null,
     },
     select: { id: true },

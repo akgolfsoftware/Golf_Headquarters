@@ -3424,19 +3424,13 @@ export function EventPreviewPopover({
         </div>
         <div className="kv">
           <span className="k">Fokus</span>
-          <span
-            className="v"
-            dangerouslySetInnerHTML={{ __html: ev.focus || "—" }}
-          />
+          <span className="v">{ev.focus || "—"}</span>
         </div>
         <div className="kv">
           <span className="k">Tildelt</span>
           <span className="v">{ev.assigned || "—"}</span>
         </div>
-        <div
-          className="goals-mini"
-          dangerouslySetInnerHTML={{ __html: ev.goal || "—" }}
-        />
+        <div className="goals-mini">{ev.goal || "—"}</div>
       </div>
       <div className="actions">
         <button className="btn btn-outline" onClick={onEdit}>
@@ -3931,12 +3925,12 @@ const AI_DAYS = [
   { day: "Lør", date: "24/5", kind: "spill" as DisciplineKey, time: "09:00", title: "Bossum Open R1", min: 240, kept: false },
 ];
 
-const AI_REASONS = [
-  "Approach-gap på <em>−0,42 SG</em> → 3 SLAG-økter prioritert",
-  "Du har ikke trent FYS på <em>9 dager</em> → beinbøy tirsdag",
-  "Sørlandsåpent om 21 dager → mental tirsdag",
-  "Bossum Open lørdag → spillsim onsdag",
-  "Anders' tildelte iron-økt <em>beholdt</em> mandag",
+const AI_REASONS: React.ReactNode[] = [
+  <>Approach-gap på <em>−0,42 SG</em> → 3 SLAG-økter prioritert</>,
+  <>Du har ikke trent FYS på <em>9 dager</em> → beinbøy tirsdag</>,
+  <>Sørlandsåpent om 21 dager → mental tirsdag</>,
+  <>Bossum Open lørdag → spillsim onsdag</>,
+  <>Anders&apos; tildelte iron-økt <em>beholdt</em> mandag</>,
 ];
 
 const AI_CHIPS = ["Mer FYS", "Mindre TEK", "Hvile fredag", "Flere korte økter"];
@@ -4309,7 +4303,7 @@ export function AiForeslaUkeModal({
                       style={{ display: "flex", gap: 8, alignItems: "baseline" }}
                     >
                       <span style={{ color: "var(--primary)" }}>•</span>
-                      <span dangerouslySetInnerHTML={{ __html: r }} />
+                      <span>{r}</span>
                     </div>
                   ))}
                 </div>

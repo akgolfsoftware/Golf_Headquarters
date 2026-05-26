@@ -1,5 +1,6 @@
 // Next.js 16 proxy (tidligere "middleware" — renamet i v16).
-// Refresher Supabase-sesjonen og beskytter /portal og /admin mot uautentisert tilgang.
+// Refresher Supabase-sesjonen, genererer CSP-nonce, og beskytter
+// /portal og /admin mot uautentisert tilgang.
 
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
@@ -12,11 +13,48 @@ const INNBOKS_REDIRECTS: Record<string, string> = {
   "/admin/messages": "meldinger",
 };
 
+/**
+ * Bygg Content-Security-Policy-header med nonce.
+ *
+ * script-src bruker 'nonce-{nonce}' + 'strict-dynamic' slik at Next.js
+ * inline-hydration-scripts passerer uten 'unsafe-inline'.
+ * style-src tillater 'unsafe-inline' fordi Tailwind v4 + CSS custom props
+ * bruker inline-stiler i komponent-kode.
+ */
+function buildCsp(nonce: string): string {
+  return [
+    "default-src 'self'",
+    // Next.js hydration + Vercel Analytics + Stripe.js
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://js.stripe.com https://vitals.vercel-insights.com`,
+    // Tailwind v4 / React inline styles
+    "style-src 'self' 'unsafe-inline'",
+    // Supabase Storage + data-URI + blob (fil-previews)
+    "img-src 'self' blob: data: https://eljkjqvggsmnbbszzbpj.supabase.co",
+    // next/font serverer fonter fra self
+    "font-src 'self'",
+    // Fetch / WebSocket: Supabase Realtime, Stripe API, Vercel
+    "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com https://vitals.vercel-insights.com",
+    // Stripe embedded UI
+    "frame-src https://js.stripe.com https://hooks.stripe.com",
+    // Klikkaperting-vern (supplement til X-Frame-Options)
+    "frame-ancestors 'none'",
+    // Forhindre base-tag-injection
+    "base-uri 'self'",
+    // Forhindre skjema-kapring
+    "form-action 'self'",
+    // Blokker Flash/Java
+    "object-src 'none'",
+    // Tving HTTPS for sub-ressurser
+    "upgrade-insecure-requests",
+  ]
+    .join("; ")
+    .trim();
+}
+
 export async function proxy(request: NextRequest) {
-  const response = await updateSession(request);
   const path = request.nextUrl.pathname;
 
-  // Sidemeny-redirect for samle-sider (kun eksakt match — dyperuter består).
+  // Innboks-redirects trenger ikke CSP (redirect-responses rendrer ingen HTML).
   const innboksTab = INNBOKS_REDIRECTS[path];
   if (innboksTab) {
     const url = request.nextUrl.clone();
@@ -25,37 +63,45 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  // Generer per-request nonce — base64-encodet UUID, kryptografisk tilfeldig.
+  // Sendes til updateSession slik at x-nonce-headeren er tilgjengelig i RSCs.
+  const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
+  const response = await updateSession(request, nonce);
+
   const erBeskyttet =
     path.startsWith("/portal") || path.startsWith("/admin");
-  if (!erBeskyttet) return response;
 
-  // Sjekk auth-status via samme cookies som updateSession nettopp refresjet.
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll: () => request.cookies.getAll(),
-        setAll: () => {
-          // Ikke nødvendig her — updateSession har allerede skrevet cookies.
+  if (erBeskyttet) {
+    // Sjekk auth-status via samme cookies som updateSession nettopp refresjet.
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll: () => request.cookies.getAll(),
+          setAll: () => {
+            // Ikke nødvendig her — updateSession har allerede skrevet cookies.
+          },
         },
-      },
-    }
-  );
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+      }
+    );
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
-  if (!user) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/auth/login";
-    url.searchParams.set("next", path);
-    return NextResponse.redirect(url);
+    if (!user) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/auth/login";
+      url.searchParams.set("next", path);
+      return NextResponse.redirect(url);
+    }
   }
 
+  // Sett CSP på alle HTML-responses (ikke på redirects ovenfor).
   // Rolle-sjekk for /admin/* gjøres i src/app/admin/layout.tsx (RSC) via
   // requirePortalUser({ allow: ["ADMIN","COACH"] }) for å unngå Prisma-kall
   // her i proxy-laget. Proxy-en stopper kun uautentiserte requests.
+  response.headers.set("Content-Security-Policy", buildCsp(nonce));
   return response;
 }
 

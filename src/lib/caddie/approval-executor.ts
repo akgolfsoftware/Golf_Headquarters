@@ -92,7 +92,7 @@ export async function executeApprovedTool(
       const [service, location, player] = await Promise.all([
         prisma.serviceType.findUnique({
           where: { slug: input.serviceTypeSlug },
-          select: { id: true, durationMin: true, priceOre: true, name: true },
+          select: { id: true, durationMin: true, priceOre: true, name: true, coachUserId: true },
         }),
         prisma.location.findUnique({
           where: { id: input.locationId },
@@ -123,6 +123,7 @@ export async function executeApprovedTool(
           status: "PENDING",
           notes: input.notes ?? null,
           priceOre: service.priceOre,
+          coachId: service.coachUserId ?? null,
         },
       });
 

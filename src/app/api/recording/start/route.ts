@@ -7,6 +7,7 @@ import { z } from "zod";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
+import { rateLimit } from "@/lib/rate-limit";
 
 const Body = z.object({
   bookingId: z.string().min(1),
@@ -19,6 +20,15 @@ export async function POST(req: Request) {
   }
   if (user.role !== "COACH" && user.role !== "ADMIN") {
     return NextResponse.json({ error: "Mangler tilgang" }, { status: 403 });
+  }
+
+  // Rate-limit: 5 opptak-starter per time per coach.
+  const rl = await rateLimit({ key: `recording-start:${user.id}`, max: 5, windowMs: 3_600_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } }
+    );
   }
 
   const parsed = Body.safeParse(await req.json().catch(() => ({})));

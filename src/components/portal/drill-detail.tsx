@@ -1,6 +1,7 @@
 "use client";
 
 import { Play } from "lucide-react";
+import { safeUrl } from "@/lib/security/safe-url";
 import type { PyramidArea, LPhase } from "@/generated/prisma/client";
 import {
   getDrillModus,
@@ -137,9 +138,9 @@ export function DrillDetail({ exercise }: { exercise: DrillData }) {
       />
 
       {/* Video */}
-      {exercise.videoUrl && (
+      {safeUrl(exercise.videoUrl) && (
         <a
-          href={exercise.videoUrl}
+          href={safeUrl(exercise.videoUrl)!}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90"

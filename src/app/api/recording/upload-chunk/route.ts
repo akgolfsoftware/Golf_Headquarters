@@ -59,6 +59,29 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Mangler chunk-blob" }, { status: 400 });
   }
 
+  // S-15: Chunk-størrelsesbegrensning (10 MB)
+  const MAX_CHUNK_BYTES = 10 * 1024 * 1024;
+  if (chunk.size > MAX_CHUNK_BYTES) {
+    return NextResponse.json(
+      { error: "Chunk er for stor (maks 10 MB per chunk)." },
+      { status: 413 },
+    );
+  }
+
+  // S-15: MIME magic bytes — WebM/EBML: 1A 45 DF A3
+  const chunkBuffer = Buffer.from(await chunk.arrayBuffer());
+  const isWebM =
+    chunkBuffer[0] === 0x1a &&
+    chunkBuffer[1] === 0x45 &&
+    chunkBuffer[2] === 0xdf &&
+    chunkBuffer[3] === 0xa3;
+  if (!isWebM) {
+    return NextResponse.json(
+      { error: "Ugyldig filformat. Kun WebM-lyd støttes." },
+      { status: 415 },
+    );
+  }
+
   const recording = await prisma.sessionRecording.findUnique({
     where: { id: recordingId },
     select: { id: true, uploadedById: true, status: true, chunks: true },
@@ -80,10 +103,9 @@ export async function POST(req: Request) {
     chunkIdx,
   ).padStart(5, "0")}.webm`;
 
-  const buffer = Buffer.from(await chunk.arrayBuffer());
   const { error: uploadErr } = await supabaseAdmin()
     .storage.from(BUCKET)
-    .upload(path, buffer, {
+    .upload(path, chunkBuffer, {
       contentType: "audio/webm",
       upsert: true,
     });
@@ -98,7 +120,7 @@ export async function POST(req: Request) {
   // Append chunk-entry til JSON-arrayen
   const existing = isChunkArray(recording.chunks) ? recording.chunks : [];
   const filtered = existing.filter((c) => c.idx !== chunkIdx);
-  const next: ChunkEntry[] = [...filtered, { idx: chunkIdx, path, size: buffer.length }];
+  const next: ChunkEntry[] = [...filtered, { idx: chunkIdx, path, size: chunkBuffer.length }];
   next.sort((a, b) => a.idx - b.idx);
 
   await prisma.sessionRecording.update({

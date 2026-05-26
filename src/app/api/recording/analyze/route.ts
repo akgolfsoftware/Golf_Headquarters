@@ -10,6 +10,7 @@ import { z } from "zod";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
+import { rateLimit } from "@/lib/rate-limit";
 import {
   analyserCoachingSesjon,
   type SpillerKontekst,
@@ -100,6 +101,15 @@ export async function POST(req: Request) {
   const user = await getCurrentUser();
   if (!user) {
     return NextResponse.json({ error: "Ikke innlogget" }, { status: 401 });
+  }
+
+  // Rate-limit: 10 Claude-analyser per time per bruker (dyr AI-operasjon).
+  const rl = await rateLimit({ key: `recording-analyze:${user.id}`, max: 10, windowMs: 3_600_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } }
+    );
   }
 
   const parsed = Body.safeParse(await req.json().catch(() => ({})));
