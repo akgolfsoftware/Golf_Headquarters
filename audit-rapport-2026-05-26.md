@@ -12,8 +12,8 @@
 | Forbudt serif-font (Instrument Serif) | 51 forekomster | ✅ Lukket (commit f8b5fcf) |
 | Unicode-symboler i UI (✓ ✗ ★ —) | ~10 filer | 🟡 VIKTIG |
 | Duplikate komponent-impl (Sparkline/KpiStrip/Hero) | 16 lokale | 🟢 NICE-TO-HAVE |
-| `error.tsx` på admin/portal-sider | 2 av ~250 ruter | 🟡 VIKTIG |
-| `not-found.tsx` på admin/portal-sider | 0 | 🟢 NICE-TO-HAVE |
+| `error.tsx` på admin/portal-sider | 3 → 3 (begge oppgradert) | ✅ Lukket (commit e237a02) |
+| `not-found.tsx` på admin/portal-sider | 0 → 2 | ✅ Lukket (commit e237a02) |
 | `outline-none` uten focus-erstatning (V5: de 5 listede) | 5 → 0 | ✅ Lukket (commit 345a9f2) |
 | `outline-none` uten focus-erstatning (V5b: resten) | 45 → 0 + 1 false positive | ✅ Lukket (commit 6d276a1) |
 | Mock-data i hub-overview-sider | 19 hardkoda tall | 🟡 VIKTIG |
@@ -181,14 +181,21 @@ Sider markert `dynamic = "force-dynamic"` men leverer ikke ekte tall.
 
 **Effort:** 2-3 timer per side × 3 sider = 6-9 timer.
 
-### V7. Manglende error.tsx + not-found.tsx
-Kun **2 error.tsx** og **0 not-found.tsx** på ~250 ruter. Next.js 16 best practice er minst én på rot av hver seksjon.
+### V7. Manglende error.tsx + not-found.tsx — ✅ LUKKET
 
-**Fiks:** Tilføy:
-- `src/app/admin/error.tsx` + `src/app/admin/not-found.tsx`
-- `src/app/portal/error.tsx` + `src/app/portal/not-found.tsx`
+Fikset i commit [`e237a02`](https://github.com/akgolfgroup-netizen/akgolf-hq/commit/e237a02).
 
-**Effort:** 1 time totalt.
+**Audit-korreksjon:** Faktisk antall eksisterende `error.tsx` var **3** (`src/app/error.tsx`, `src/app/admin/error.tsx`, `src/app/portal/error.tsx`), ikke 2 som audit-tabellen oppga. Audit-tellingen var feil her også.
+
+**Endring:**
+- `src/app/admin/error.tsx` — erstattet custom layout med `AthleticHero`-mønster
+- `src/app/portal/error.tsx` — erstattet custom layout med `AthleticHero`-mønster
+- `src/app/admin/not-found.tsx` — NY (Compass-ikon, lime "Tilbake til CoachHQ"-CTA)
+- `src/app/portal/not-found.tsx` — NY (Compass-ikon, lime "Tilbake til hjem"-CTA)
+
+Alle fire bruker `AthleticHero` med eyebrow + ikon + display-tittel med italic-aksent + sub-tekst + Lime/ghost-light CTAs. HubFrame eksplisitt unngått (V4-teknisk gjeld).
+
+**Routing-merknad:** Next.js App Router fanger segment-nivå `not-found.tsx` kun på eksplisitte `notFound()`-calls (f.eks. fra `talent/[playerId]/page.tsx:84`). Unmatched URLs faller fortsatt til `src/app/not-found.tsx` (root) — den er ikke endret i denne commiten.
 
 ### V8. Kapasitet-KPI mangler progress-ring
 [src/app/admin/agencyos/uka/page.tsx:94](src/app/admin/agencyos/uka/page.tsx:94) viser `${kapasitetPct}%` som ren tekst med sub-conditional. Designet ber om progress-ring + rødt under 30%.
@@ -272,7 +279,7 @@ Fordeling:
 | 1 | K1: Fjern Instrument Serif | 🔴 KRITISK | 15 min | ✅ Lukket ([f8b5fcf](https://github.com/akgolfgroup-netizen/akgolf-hq/commit/f8b5fcf)) |
 | 2 | V5: Fix `outline-none` (de 5 listede) | 🟡 VIKTIG | 30 min | ✅ Lukket ([345a9f2](https://github.com/akgolfgroup-netizen/akgolf-hq/commit/345a9f2)) |
 | 3 | V5b: Fix resten av `outline-none` (45 callsites + 1 FP skipped) | 🟡 VIKTIG (a11y) | ~1 t | ✅ Lukket ([6d276a1](https://github.com/akgolfgroup-netizen/akgolf-hq/commit/6d276a1)) |
-| 4 | V7: Tilføy error.tsx + not-found.tsx | 🟡 VIKTIG | 1 t | Åpent |
+| 4 | V7: Tilføy error.tsx + not-found.tsx | 🟡 VIKTIG | 1 t | ✅ Lukket ([e237a02](https://github.com/akgolfgroup-netizen/akgolf-hq/commit/e237a02)) |
 | 5 | V8: Kapasitet progress-ring | 🟡 VIKTIG | 1 t | Åpent |
 | 6 | V3: Erstatt Unicode-symboler med Lucide | 🟡 VIKTIG | 1-2 t | Åpent |
 | 7 | V1: Hardkoda hex → tokens (388 → 0) | 🟡 VIKTIG | 2-3 t | Åpent |
