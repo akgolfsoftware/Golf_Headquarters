@@ -18,7 +18,7 @@
 | `outline-none` uten focus-erstatning (V5b: resten) | 45 → 0 + 1 false positive | ✅ Lukket (commit 6d276a1) |
 | Mock-data i hub-overview-sider | 19 hardkoda tall | 🟡 VIKTIG |
 | `/admin/talent` 404 (audit gammel) | **IKKE 404** — fungerer | ✅ Lukket |
-| Kapasitet-progressring (audit gammel) | Fortsatt åpent | 🟡 VIKTIG |
+| Kapasitet-progressring (audit gammel) | Implementert med KpiRing | ✅ Lukket (commit 4f84ef4) |
 | Touch-target-brudd (<44px) | 1 forekomst | 🟢 NICE-TO-HAVE |
 
 ---
@@ -197,12 +197,17 @@ Alle fire bruker `AthleticHero` med eyebrow + ikon + display-tittel med italic-a
 
 **Routing-merknad:** Next.js App Router fanger segment-nivå `not-found.tsx` kun på eksplisitte `notFound()`-calls (f.eks. fra `talent/[playerId]/page.tsx:84`). Unmatched URLs faller fortsatt til `src/app/not-found.tsx` (root) — den er ikke endret i denne commiten.
 
-### V8. Kapasitet-KPI mangler progress-ring
-[src/app/admin/agencyos/uka/page.tsx:94](src/app/admin/agencyos/uka/page.tsx:94) viser `${kapasitetPct}%` som ren tekst med sub-conditional. Designet ber om progress-ring + rødt under 30%.
+### V8. Kapasitet-KPI mangler progress-ring — ✅ LUKKET
 
-**Fiks:** Bruk `PyramidProgress`-pattern eller en ny `KpiRing`-primitiv. Eventuelt en SVG-ring direkte i `UkeKpi`.
+Fikset i commit [`4f84ef4`](https://github.com/akgolfgroup-netizen/akgolf-hq/commit/4f84ef4).
 
-**Effort:** 1 time.
+**Endring:**
+- Ny komponent: `src/components/athletic/kpi-ring.tsx` — gjenbrukbar SVG-ring med 2px stroke (default), auto-variant fra pct (≥50 primary, 30–49 warning, <30 destructive), 250ms ease-out animasjon fra 0 ved mount. Eksportert via `athletic/index.ts`.
+- `/admin/agencyos/uka` Kapasitet-KPI bruker nå `<KpiRing value={kapasitetPct} size={64} />` i stedet for ren tekst.
+
+`hsl(var(--primary))` er tema-bevisst — forest grønn i light, lime i dark (matcher spec).
+
+Eksisterende `src/components/ui/progress-ring.tsx` er urørt (annet API, brukt av design-system).
 
 ---
 
@@ -280,7 +285,7 @@ Fordeling:
 | 2 | V5: Fix `outline-none` (de 5 listede) | 🟡 VIKTIG | 30 min | ✅ Lukket ([345a9f2](https://github.com/akgolfgroup-netizen/akgolf-hq/commit/345a9f2)) |
 | 3 | V5b: Fix resten av `outline-none` (45 callsites + 1 FP skipped) | 🟡 VIKTIG (a11y) | ~1 t | ✅ Lukket ([6d276a1](https://github.com/akgolfgroup-netizen/akgolf-hq/commit/6d276a1)) |
 | 4 | V7: Tilføy error.tsx + not-found.tsx | 🟡 VIKTIG | 1 t | ✅ Lukket ([e237a02](https://github.com/akgolfgroup-netizen/akgolf-hq/commit/e237a02)) |
-| 5 | V8: Kapasitet progress-ring | 🟡 VIKTIG | 1 t | Åpent |
+| 5 | V8: Kapasitet progress-ring | 🟡 VIKTIG | 1 t | ✅ Lukket ([4f84ef4](https://github.com/akgolfgroup-netizen/akgolf-hq/commit/4f84ef4)) |
 | 6 | V3: Erstatt Unicode-symboler med Lucide | 🟡 VIKTIG | 1-2 t | Åpent |
 | 7 | V1: Hardkoda hex → tokens (388 → 0) | 🟡 VIKTIG | 2-3 t | Åpent |
 | 8 | V4: Beslutning HubFrame vs AthleticHero | 🟡 VIKTIG | 30 min besl. + 6-12 t migrering | Åpent |
