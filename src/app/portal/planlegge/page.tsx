@@ -1,38 +1,201 @@
 /**
- * /portal/planlegge — PlayerHQ Planlegge hovedseksjon.
+ * /portal/planlegge — PlayerHQ Planlegge hub
  *
- * Tabs: Årsplan / Treningsplan / Mål / Turneringer / Drills
- * Hver tab har sin egen sub-komponent for å holde denne fila slank.
+ * Pixel-perfect implementering av workbench-v2/planlegge.html
+ * (Athletic Editorial Living v3). Bruker ekte Prisma-data der mulig,
+ * mock-fallback for områder uten datakilde ennå.
  */
 
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 import { redirect } from "next/navigation";
-
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getViewMode } from "@/lib/view-mode";
 import { prisma } from "@/lib/prisma";
-import { PlanleggeShell } from "@/components/portal-planlegge/planlegge-shell";
-import { PlanleggeOverview } from "@/components/portal-planlegge/planlegge-overview";
-import { AthleticButton, AthleticEyebrow } from "@/components/athletic";
-import { ArsplanScreen } from "@/components/planlegge-v2/arsplan-screen";
-import { TreningsplanScreen } from "@/components/planlegge-v2/treningsplan-screen";
-import { TurneringerScreen } from "@/components/planlegge-v2/turneringer-screen";
-import { MalTab as MalTabNew } from "@/components/portal-planlegge/mal/mal-tab";
-import { DrillsInline } from "@/components/portal-planlegge/inline/drills-inline";
+import {
+  PlanleggeV3,
+  type ActivePlan,
+  type AxisData,
+  type DrillCategory,
+  type Goal,
+  type Tournament,
+} from "@/components/portal-planlegge/planlegge-v3/planlegge-v3";
 
 export const dynamic = "force-dynamic";
 
-type Props = {
-  searchParams: Promise<{ tab?: string }>;
+// --- Fallback-data for pre-BETA (ingen koblet data ennå) ---
+
+const MOCK_PLAN: ActivePlan = {
+  id: "pre-beta-plan",
+  name: "Velkommen-plan",
+  coach: "Anders Kristiansen",
+  startDate: "Pågående",
+  endDate: "—",
+  currentWeek: 1,
+  totalWeeks: 6,
+  progress: 0,
+  milestones: [
+    {
+      id: "m1",
+      label: "FYS-fundament",
+      weeks: "Uke 1 – 2",
+      status: "active",
+      summary: "Mobilitet + power-base",
+      drills: 0,
+    },
+    {
+      id: "m2",
+      label: "TEK-konsolidering",
+      weeks: "Uke 3 – 4",
+      status: "planned",
+      summary: "Sving-tempo + gate-drill",
+      drills: 0,
+    },
+    {
+      id: "m3",
+      label: "SLAG-presisjon",
+      weeks: "Uke 5",
+      status: "planned",
+      summary: "Wedge + spin-kontroll",
+      drills: 0,
+    },
+    {
+      id: "m4",
+      label: "TURN-ramping",
+      weeks: "Uke 6",
+      status: "planned",
+      summary: "Visualisering + rutine",
+      drills: 0,
+    },
+  ],
 };
 
-const VALID_TABS = ["arsplan", "treningsplan", "mal", "turneringer", "drills"] as const;
+const MOCK_AXES: AxisData[] = [
+  {
+    axis: "FYS",
+    actualHours: 0,
+    targetHours: 6,
+    drills: 0,
+    sessionsThisWeek: 0,
+    lastSession: "ingen",
+    note: "Ikke startet",
+  },
+  {
+    axis: "TEK",
+    actualHours: 0,
+    targetHours: 8,
+    drills: 0,
+    sessionsThisWeek: 0,
+    lastSession: "ingen",
+    note: "Ikke startet",
+  },
+  {
+    axis: "SLAG",
+    actualHours: 0,
+    targetHours: 6,
+    drills: 0,
+    sessionsThisWeek: 0,
+    lastSession: "ingen",
+    note: "Ikke startet",
+  },
+  {
+    axis: "SPILL",
+    actualHours: 0,
+    targetHours: 6.5,
+    drills: 0,
+    sessionsThisWeek: 0,
+    lastSession: "ingen",
+    note: "Ikke startet",
+  },
+  {
+    axis: "TURN",
+    actualHours: 0,
+    targetHours: 1.5,
+    drills: 0,
+    sessionsThisWeek: 0,
+    lastSession: "ingen",
+    note: "Ikke startet",
+  },
+];
 
-export default async function PlanleggePage({ searchParams }: Props) {
+const MOCK_DRILL_LIB: DrillCategory[] = [
+  {
+    id: "putting",
+    label: "Putting",
+    count: 0,
+    axis: "SPILL",
+    lastUsed: "aldri",
+    icon: "target",
+    featured: true,
+  },
+  {
+    id: "wedge",
+    label: "Wedge",
+    count: 0,
+    axis: "TEK",
+    lastUsed: "aldri",
+    icon: "flag",
+  },
+  {
+    id: "driver",
+    label: "Driver",
+    count: 0,
+    axis: "TEK",
+    lastUsed: "aldri",
+    icon: "zap",
+  },
+  {
+    id: "approach",
+    label: "Approach",
+    count: 0,
+    axis: "SLAG",
+    lastUsed: "aldri",
+    icon: "compass",
+    featured: true,
+  },
+  {
+    id: "bunker",
+    label: "Bunker",
+    count: 0,
+    axis: "SLAG",
+    lastUsed: "aldri",
+    icon: "mapPin",
+  },
+  {
+    id: "mental",
+    label: "Mental",
+    count: 0,
+    axis: "TURN",
+    lastUsed: "aldri",
+    icon: "brain",
+  },
+];
+
+function initials(name: string | null): string {
+  if (!name) return "??";
+  return name
+    .split(/\s+/)
+    .map((s) => s[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+}
+
+function daysUntil(date: Date): number {
+  const diff = date.getTime() - Date.now();
+  return Math.max(0, Math.ceil(diff / 86_400_000));
+}
+
+function formatDateRange(start: Date, end: Date | null | undefined): string {
+  const opts: Intl.DateTimeFormatOptions = { day: "numeric", month: "short" };
+  const startStr = start.toLocaleDateString("nb-NO", opts);
+  if (!end) return startStr;
+  const endStr = end.toLocaleDateString("nb-NO", opts);
+  return startStr === endStr ? startStr : `${startStr} – ${endStr}`;
+}
+
+export default async function PlanleggePage() {
   const user = await requirePortalUser();
 
-  // Rolle-redirect (samme som /portal)
   const viewMode = await getViewMode();
   if (user.role === "COACH" || user.role === "ADMIN") {
     if (viewMode !== "player") redirect("/admin");
@@ -40,215 +203,44 @@ export default async function PlanleggePage({ searchParams }: Props) {
   if (user.role === "GUEST") redirect("/admin/kalender");
   if (user.role === "PARENT") redirect("/forelder");
 
-  const params = await searchParams;
-
-  // Ingen tab valgt → vis oversiktsskjerm med kort til alle 5 sub-tabs
-  if (!params.tab) {
-    return <PlanleggeOverview userId={user.id} />;
-  }
-
-  const tab = VALID_TABS.includes(params.tab as (typeof VALID_TABS)[number])
-    ? (params.tab as (typeof VALID_TABS)[number])
-    : "arsplan";
-
-  // Tellere for badge-count
-  const [goalsCount, tournamentsCount] = await Promise.all([
-    prisma.goal.count({ where: { userId: user.id, status: "ACTIVE" } }),
-    prisma.tournamentEntry
-      .count({
-        where: {
-          userId: user.id,
-          entryStatus: { in: ["PLANNED", "CONFIRMED"] },
-        },
-      })
-      .catch(() => 0),
-  ]);
-
-  // Ny pixel-perfekt design (Claude Design-handoff 2026-05-23) for arsplan-tab.
-  // Andre tabs bruker fortsatt gammel shell inntil de blir portet.
-  const initials = user.name
-    ?.split(" ")
-    .map((s) => s[0])
-    .filter(Boolean)
-    .slice(0, 2)
-    .join("")
-    .toUpperCase() ?? "??";
-  const screenProps = {
-    playerName: user.name ?? "Spiller",
-    playerInitials: initials,
-    hcp: user.hcp ?? null,
-    seasonYear: new Date().getFullYear(),
-  };
-
-  if (tab === "arsplan") return <ArsplanScreen {...screenProps} />;
-  if (tab === "treningsplan") return <TreningsplanScreen {...screenProps} />;
-  if (tab === "turneringer") return <TurneringerScreen {...screenProps} />;
-
-  return (
-    <PlanleggeShell
-      counts={{
-        mal: goalsCount,
-        turneringer: tournamentsCount,
-      }}
-    >
-      {tab === "mal" ? <MalTabNew userId={user.id} /> : null}
-      {tab === "drills" ? <DrillsInline userId={user.id} /> : null}
-    </PlanleggeShell>
-  );
-}
-
-// ============================================================================
-// Tab-innhold (placeholders for natt-økt — kobles til eksisterende sider)
-// ============================================================================
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function ArsplanTab({ userId }: { userId: string }) {
-  const seasonPlan = await prisma.seasonPlan
-    .findFirst({
-      where: { userId },
-      orderBy: { createdAt: "desc" },
-      include: { periodBlocks: true },
-    })
-    .catch(() => null);
-
-  return (
-    <div className="space-y-4">
-      <div className="rounded-2xl border border-border bg-card p-6">
-        <div className="flex flex-wrap items-start justify-between gap-2">
-          <div>
-            <AthleticEyebrow>SESONG {new Date().getFullYear()}</AthleticEyebrow>
-            <h2 className="font-display mt-1 text-xl font-semibold tracking-tight">
-              {seasonPlan
-                ? `Aktiv sesongplan · ${seasonPlan.periodBlocks.length} perioder`
-                : "Ingen sesongplan ennå"}
-            </h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {seasonPlan
-                ? "Drag-resize på periodeblokker, koble turneringer, auto-generer økter via periodiserings-popup."
-                : "Opprett en sesongplan for å begynne periodisert trening."}
-            </p>
-          </div>
-          <Link href="/portal/tren/aarsplan">
-            <AthleticButton variant="lime" size="md">
-              {seasonPlan ? "Åpne årsplan" : "Opprett sesongplan"}
-              <ArrowRight className="h-4 w-4" />
-            </AthleticButton>
-          </Link>
-        </div>
-      </div>
-
-      {seasonPlan ? (
-        <div className="rounded-2xl border border-dashed border-border bg-card/50 p-6 text-sm text-muted-foreground">
-          Full gantt-visning med drag-resize, tournament-flagg og I-dag-linje
-          åpnes via knappen over. Bygges direkte i denne tab-en i neste runde.
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function TreningsplanTab({ userId }: { userId: string }) {
-  const activePlan = await prisma.technicalPlan
-    .findFirst({
-      where: { userId, status: "ACTIVE" },
-      orderBy: { startDato: "desc" },
-      include: { positions: { include: { tasks: true } } },
-    })
-    .catch(() => null);
-
-  const taskCount = activePlan?.positions.flatMap((p) => p.tasks).length ?? 0;
-
-  return (
-    <div className="space-y-4">
-      <div className="rounded-2xl border border-border bg-card p-6">
-        <div className="flex flex-wrap items-start justify-between gap-2">
-          <div>
-            <AthleticEyebrow>AKTIV TEKNISK PLAN</AthleticEyebrow>
-            <h2 className="font-display mt-1 text-xl font-semibold tracking-tight">
-              {activePlan ? activePlan.navn : "Ingen aktiv plan"}
-            </h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {activePlan
-                ? `${activePlan.positions.length} posisjoner · ${taskCount} oppgaver`
-                : "Be coachen din om en plan, eller AI-generer en selv."}
-            </p>
-          </div>
-          <Link href="/portal/tren/teknisk-plan">
-            <AthleticButton variant="lime" size="md">
-              {activePlan ? "Åpne plan" : "Be om plan"}
-              <ArrowRight className="h-4 w-4" />
-            </AthleticButton>
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function MalTab({ userId }: { userId: string }) {
-  const goals = await prisma.goal
+  // --- Ekte data: mål ---
+  const goalRows = await prisma.goal
     .findMany({
-      where: { userId, status: "ACTIVE" },
+      where: { userId: user.id, status: "ACTIVE" },
       orderBy: { createdAt: "desc" },
-      take: 6,
+      take: 4,
     })
     .catch(() => []);
 
-  return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <AthleticEyebrow>{goals.length} AKTIVE MÅL</AthleticEyebrow>
-        <Link href="/portal/mal">
-          <AthleticButton variant="ghost-light" size="sm">
-            Full mål-visning
-            <ArrowRight className="h-4 w-4" />
-          </AthleticButton>
-        </Link>
-      </div>
-      {goals.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-border bg-card/50 p-8 text-center">
-          <p className="text-sm text-muted-foreground">
-            Ingen aktive mål. Sett et mål for å komme i gang.
-          </p>
-          <Link href="/portal/mal" className="mt-2 inline-block">
-            <AthleticButton variant="lime" size="sm">
-              Opprett mål
-            </AthleticButton>
-          </Link>
-        </div>
-      ) : (
-        <div className="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
-          {goals.map((g) => (
-            <div key={g.id} className="rounded-2xl border border-border bg-card p-4">
-              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-                {g.type}
-              </div>
-              <div className="font-display mt-2 text-base font-semibold leading-tight">
-                {g.title}
-              </div>
-              {g.targetDate ? (
-                <div className="font-mono mt-1 text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
-                  FRIST {g.targetDate.toLocaleDateString("nb-NO")}
-                </div>
-              ) : null}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
+  const goals: Goal[] = goalRows.map((g, i) => ({
+    id: g.id,
+    title: g.title,
+    deadline: g.targetDate
+      ? g.targetDate.toLocaleDateString("nb-NO", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        })
+      : "Ingen frist",
+    current: 0,
+    target: typeof g.targetValue === "number" ? g.targetValue : 0,
+    progress: 0,
+    unit: "stroke" as const,
+    trend: "flat" as const,
+    metric: g.type ?? "Mål",
+    priority: i === 0,
+  }));
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function TurneringerTab({ userId }: { userId: string }) {
-  const entries = await prisma.tournamentEntry
+  // --- Ekte data: turneringer ---
+  const tournamentRows = await prisma.tournamentEntry
     .findMany({
-      where: { userId, entryStatus: { in: ["PLANNED", "CONFIRMED"] } },
+      where: {
+        userId: user.id,
+        entryStatus: { in: ["PLANNED", "CONFIRMED"] },
+      },
       include: { tournament: true },
-      orderBy: { createdAt: "desc" },
-      take: 5,
+      orderBy: { createdAt: "asc" },
+      take: 4,
     })
     .catch(
       () =>
@@ -261,75 +253,32 @@ async function TurneringerTab({ userId }: { userId: string }) {
         >,
     );
 
-  return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <AthleticEyebrow>{entries.length} KOMMENDE TURNERINGER</AthleticEyebrow>
-        <Link href="/portal/tren/turneringer">
-          <AthleticButton variant="ghost-light" size="sm">
-            Turneringsplanlegger
-            <ArrowRight className="h-4 w-4" />
-          </AthleticButton>
-        </Link>
-      </div>
-      {entries.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-border bg-card/50 p-8 text-center text-sm text-muted-foreground">
-          Ingen kommende turneringer. Meld deg på via turneringsplanleggeren.
-        </div>
-      ) : (
-        <ul className="space-y-2">
-          {entries.map((e) => {
-            const tournamentName = e.tournament?.name ?? e.manualName ?? "Turnering";
-            const tournamentDate = e.tournament?.startDate ?? e.manualDate;
-            return (
-              <li
-                key={e.id}
-                className="flex items-center justify-between rounded-xl border border-border bg-card p-4"
-              >
-                <div>
-                  <div className="font-display text-sm font-semibold">
-                    {tournamentName}
-                  </div>
-                  <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
-                    {tournamentDate?.toLocaleDateString("nb-NO") ?? "—"} ·{" "}
-                    {e.category ?? "—"}
-                  </div>
-                </div>
-                <span
-                  className="font-mono rounded-full bg-[var(--color-accent-fill)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.06em] text-accent-foreground"
-                >
-                  {e.entryStatus}
-                </span>
-              </li>
-            );
-          })}
-        </ul>
-      )}
-    </div>
-  );
-}
+  const tournaments: Tournament[] = tournamentRows
+    .filter((e) => e.tournament?.startDate || e.manualDate)
+    .map((e, i) => {
+      const startDate = e.tournament?.startDate ?? e.manualDate!;
+      const endDate = e.tournament?.endDate ?? e.manualDate;
+      return {
+        id: e.id,
+        name: e.tournament?.name ?? e.manualName ?? "Turnering",
+        dateRange: formatDateRange(startDate, endDate),
+        location: e.tournament?.location ?? "Ukjent sted",
+        status:
+          e.entryStatus === "CONFIRMED" ? "REGISTRERT" : ("PLANLAGT" as const),
+        daysUntil: daysUntil(startDate),
+        format: e.tournament?.format ?? "—",
+        priority: i === 0,
+      };
+    });
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function DrillsTab() {
   return (
-    <div className="rounded-2xl border border-border bg-card p-6">
-      <div className="flex flex-wrap items-start justify-between gap-2">
-        <div>
-          <AthleticEyebrow>DRILL-BIBLIOTEK</AthleticEyebrow>
-          <h2 className="font-display mt-1 text-xl font-semibold tracking-tight">
-            Drills og øvelser
-          </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Bla i biblioteket, favorittmarkér drills, og legg dem i ukens plan.
-          </p>
-        </div>
-        <Link href="/portal/tren/ovelser">
-          <AthleticButton variant="lime" size="md">
-            Åpne bibliotek
-            <ArrowRight className="h-4 w-4" />
-          </AthleticButton>
-        </Link>
-      </div>
-    </div>
+    <PlanleggeV3
+      user={{ initials: initials(user.name), name: user.name ?? "Spiller" }}
+      activePlan={MOCK_PLAN}
+      axes={MOCK_AXES}
+      drillLib={MOCK_DRILL_LIB}
+      goals={goals}
+      tournaments={tournaments}
+    />
   );
 }
