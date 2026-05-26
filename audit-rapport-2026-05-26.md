@@ -10,7 +10,7 @@
 | Hardkoda hex utenfor tokens | 388 forekomster | 🟡 VIKTIG |
 | 8pt-grid-brudd (`gap-3`, `p-3`, `gap-3.5` etc.) | 570 forekomster | 🟡 VIKTIG |
 | Forbudt serif-font (Instrument Serif) | 51 forekomster | ✅ Lukket (commit f8b5fcf) |
-| Unicode-symboler i UI (✓ ✗ ★ —) | ~10 filer | 🟡 VIKTIG |
+| Unicode-symboler i UI (✓ ✗ ★ —) | 26 → 0 (5 ekskluderte) | ✅ Lukket (commit 93fdf88) |
 | Duplikate komponent-impl (Sparkline/KpiStrip/Hero) | 16 lokale | 🟢 NICE-TO-HAVE |
 | `error.tsx` på admin/portal-sider | 3 → 3 (begge oppgradert) | ✅ Lukket (commit e237a02) |
 | `not-found.tsx` på admin/portal-sider | 0 → 2 | ✅ Lukket (commit e237a02) |
@@ -73,19 +73,23 @@ Eksempler:
 
 **Effort:** 4-6 timer (kan delegeres til en agent som gjør én konvertering om gangen).
 
-### V3. Unicode-symboler i UI
-~10 filer bruker `✓ ✗ ★ —` som status-indikatorer. CLAUDE.md: *"INGEN emoji i UI. Bruk Lucide."*
+### V3. Unicode-symboler i UI — ✅ LUKKET
 
-- [src/app/portal/booking/anlegg/[anleggId]/page.tsx:358](src/app/portal/booking/anlegg/[anleggId]/page.tsx:358) — `"✓"` i bookingvalg
-- [src/app/portal/meg/utstyrsbag/utstyrsbag-form.tsx:193](src/app/portal/meg/utstyrsbag/utstyrsbag-form.tsx:193) — `"Lagret ✓"`
-- [src/app/portal/mal/runder/[id]/shot-by-shot/page.tsx:524-525](src/app/portal/mal/runder/[id]/shot-by-shot/page.tsx:524) — `✓ ✗ —`
-- [src/app/portal/(fullscreen)/test/[testId]/live/live-test-runner.tsx:483](src/app/portal/(fullscreen)/test/[testId]/live/live-test-runner.tsx:483) — `✓`
-- [src/app/portal/(fullscreen)/tren/ai-modaler.tsx:312, 434](src/app/portal/(fullscreen)/tren/ai-modaler.tsx:312) — `✓` og `★ Topp-prioritet`
-- [src/app/portal/tren/turneringer/[id]/turnering-client.tsx:246](src/app/portal/tren/turneringer/[id]/turnering-client.tsx:246) — `★ TURNERING`
+Fikset i commit [`93fdf88`](https://github.com/akgolfgroup-netizen/akgolf-hq/commit/93fdf88).
 
-**Fiks:** Bytt til Lucide-ikoner: `✓` → `<Check className="h-4 w-4" />`, `✗` → `<X />`, `★` → `<Star />`, `—` → `<Minus />` eller HTML `&mdash;`.
+**Audit-korreksjon:** Audit-rapporten oppga ~9 callsites. Direkte grep avdekket **26** (19× ✓, 1× ✗, 6× ★). 21 UI-callsites er nå byttet til Lucide-ikoner; 5 er eksplisitt skippet:
 
-**Effort:** 1-2 timer.
+| Skippet | Grunn |
+|---|---|
+| `active/page.tsx:8` | JSDoc-kommentar (ikke UI-markup) |
+| `DrillMalLibrary.tsx:4` | JSDoc-kommentar |
+| `admin/innboks/actions.ts:81` | Database-content `"✓ Behandlet"` lagret i `messages`-felt (server action, ikke UI) |
+| `personvern-actions.tsx:46` (gammel `setStatus("... ✓")`) | Refaktorert til `{ ok, msg }`-state-shape, så `.includes("✓")`-flag-tilfeller er borte |
+| `guardian-consent-banner.tsx:33` (samme) | Samme refactor |
+
+**Endringer per fil (16 totalt):** utstyrsbag-form, booking/anlegg, shot-by-shot, live-test-runner, ai-modaler, logger-client, kalender-demo, lead-form, mal-bygger-modal, mal-tab (3 forekomster), foresla-turnering-modal, turnering-client, marketing/turneringer, marketing/stats/uka, personvern-actions, guardian-consent-banner.
+
+`<Check />`, `<X />`, `<Star className="fill-current" />`, `<Minus />` brukt konsistent med `h-3 w-3` / `h-4 w-4` per kontekst og `strokeWidth={2.5}` på status-symboler.
 
 ### V4. HubFrame vs AdminHero — to/tre hero-patterns parallelt
 Admin-sider bruker tre forskjellige hero-patterns:
@@ -286,7 +290,7 @@ Fordeling:
 | 3 | V5b: Fix resten av `outline-none` (45 callsites + 1 FP skipped) | 🟡 VIKTIG (a11y) | ~1 t | ✅ Lukket ([6d276a1](https://github.com/akgolfgroup-netizen/akgolf-hq/commit/6d276a1)) |
 | 4 | V7: Tilføy error.tsx + not-found.tsx | 🟡 VIKTIG | 1 t | ✅ Lukket ([e237a02](https://github.com/akgolfgroup-netizen/akgolf-hq/commit/e237a02)) |
 | 5 | V8: Kapasitet progress-ring | 🟡 VIKTIG | 1 t | ✅ Lukket ([4f84ef4](https://github.com/akgolfgroup-netizen/akgolf-hq/commit/4f84ef4)) |
-| 6 | V3: Erstatt Unicode-symboler med Lucide | 🟡 VIKTIG | 1-2 t | Åpent |
+| 6 | V3: Erstatt Unicode-symboler med Lucide | 🟡 VIKTIG | 1-2 t | ✅ Lukket ([93fdf88](https://github.com/akgolfgroup-netizen/akgolf-hq/commit/93fdf88)) |
 | 7 | V1: Hardkoda hex → tokens (388 → 0) | 🟡 VIKTIG | 2-3 t | Åpent |
 | 8 | V4: Beslutning HubFrame vs AthleticHero | 🟡 VIKTIG | 30 min besl. + 6-12 t migrering | Åpent |
 | 9 | V6: Mock-data → Prisma-queries i overview | 🟡 VIKTIG | 6-9 t | Åpent |
