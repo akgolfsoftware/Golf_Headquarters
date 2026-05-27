@@ -54,6 +54,9 @@ export type SgResultat = {
 /**
  * Forventet antall slag for å fullføre hullet fra gitt posisjon.
  * 8 distansegrupper per kategori, basert på PGA Top 40-snitt.
+ *
+ * Alle distanser i meter — PUTT-terskler er oppgitt i fot i Broadie (2014)
+ * og konvertert her med konstanten FT_M (1 fot = 0,3048 m).
  */
 type BenchmarkGroup = {
   /** Øvre grense for distanse-gruppen (meter), inklusiv */
@@ -61,6 +64,9 @@ type BenchmarkGroup = {
   /** Forventet antall slag som kreves for å hule (fairway/green-snitt) */
   forventet: number;
 };
+
+/** 1 fot i meter */
+const FT_M = 0.3048;
 
 const BENCHMARK_OTT: ReadonlyArray<BenchmarkGroup> = [
   { maxMeters: 180, forventet: 3.7 },
@@ -95,15 +101,28 @@ const BENCHMARK_ARG: ReadonlyArray<BenchmarkGroup> = [
   { maxMeters: Infinity, forventet: 3.05 },
 ];
 
+/**
+ * PUTT-benchmarks — Broadie (2014) oppgir avstand i fot.
+ * Konvertert til meter med FT_M så alle SgShot.distance-verdier kan være i meter.
+ *
+ *  1 ft  ≈  0,30 m  →  1,05
+ *  2 ft  ≈  0,61 m  →  1,45
+ *  3 ft  ≈  0,91 m  →  1,70
+ *  5 ft  ≈  1,52 m  →  1,85
+ *  8 ft  ≈  2,44 m  →  1,95
+ * 12 ft  ≈  3,66 m  →  2,05
+ * 18 ft  ≈  5,49 m  →  2,15
+ * 18 ft+ →           2,30
+ */
 const BENCHMARK_PUTT: ReadonlyArray<BenchmarkGroup> = [
-  { maxMeters: 1, forventet: 1.05 },
-  { maxMeters: 2, forventet: 1.45 },
-  { maxMeters: 3, forventet: 1.7 },
-  { maxMeters: 5, forventet: 1.85 },
-  { maxMeters: 8, forventet: 1.95 },
-  { maxMeters: 12, forventet: 2.05 },
-  { maxMeters: 18, forventet: 2.15 },
-  { maxMeters: Infinity, forventet: 2.3 },
+  { maxMeters: 1 * FT_M, forventet: 1.05 },   // ≤ 1 ft
+  { maxMeters: 2 * FT_M, forventet: 1.45 },   // ≤ 2 ft
+  { maxMeters: 3 * FT_M, forventet: 1.70 },   // ≤ 3 ft
+  { maxMeters: 5 * FT_M, forventet: 1.85 },   // ≤ 5 ft
+  { maxMeters: 8 * FT_M, forventet: 1.95 },   // ≤ 8 ft
+  { maxMeters: 12 * FT_M, forventet: 2.05 },  // ≤ 12 ft
+  { maxMeters: 18 * FT_M, forventet: 2.15 },  // ≤ 18 ft
+  { maxMeters: Infinity, forventet: 2.30 },
 ];
 
 // ---------------------------------------------------------------------------

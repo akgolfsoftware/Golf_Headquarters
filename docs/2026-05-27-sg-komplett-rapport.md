@@ -87,18 +87,20 @@ Alle distanser er i **meter**. Benchmarks = forventet antall slag for å fullfø
 
 ### 3.4 PUTT — Putting
 
-| Avstand fra hull (m) | Forventet slag (PGA Top 40) |
-|---|---|
-| ≤ 1m | 1,05 |
-| 1,1–2m | 1,45 |
-| 2,1–3m | 1,70 |
-| 3,1–5m | 1,85 |
-| 5,1–8m | 1,95 |
-| 8,1–12m | 2,05 |
-| 12,1–18m | 2,15 |
-| 18m+ | 2,30 |
+> **Avstand i fot (ft)** — Broadie (2014) bruker fot for putting. Systemet konverterer til meter internt (1 ft = 0,3048 m) ved SG-beregning.
 
-*3m putt (birdie-putt): benchmark = 1,70 slag. Gjøres i ett = SG 1,70 − 0 − 1 = +0,70.*
+| Avstand fra hull (ft) | Meter ≈ | Forventet slag (PGA Top 40) |
+|---|---|---|
+| ≤ 1 ft | ≈ 0,3m | 1,05 |
+| ≤ 2 ft | ≈ 0,6m | 1,45 |
+| ≤ 3 ft | ≈ 0,9m | 1,70 |
+| ≤ 5 ft | ≈ 1,5m | 1,85 |
+| ≤ 8 ft | ≈ 2,4m | 1,95 |
+| ≤ 12 ft | ≈ 3,7m | 2,05 |
+| ≤ 18 ft | ≈ 5,5m | 2,15 |
+| 18 ft+ | 5,5m+ | 2,30 |
+
+*3 fot (birdie-putt, ≈ 0,9m): benchmark = 1,70 slag. Gjøres i ett = SG 1,70 − 0 − 1 = +0,70.*
 
 ---
 
@@ -148,15 +150,18 @@ Outcome = annet, >180m fra hull → neste slag er OTT
 | `sgBunker` | Bunker | Fra sandbunker rundt green |
 
 ### 5.4 Granulære putting-felter (avstandsbøtter)
-| Felt | Avstand | Beskrivelse |
-|---|---|---|
-| `sgPutt0_3` | 0–3m | Short putt — under 10 fot |
-| `sgPutt3_5` | 3–5m | Scoring-sone — 10–17 fot |
-| `sgPutt5_10` | 5–10m | Middels putt |
-| `sgPutt10_15` | 10–15m | Langt for 2-putt |
-| `sgPutt15_25` | 15–25m | Veldig lang putt |
-| `sgPutt25_40` | 25–40m | Ekstremt lang |
-| `sgPutt40plus` | 40m+ | Lob-putt |
+
+> Putting-avstand er i **fot (ft)** — standard i golf og Broadie-metodikken.
+
+| Felt | Avstand (ft) | Meter ≈ | Beskrivelse |
+|---|---|---|---|
+| `sgPutt0_3` | 0–3 ft | 0–0,9m | Tap-in / gimme-sone |
+| `sgPutt3_5` | 3–5 ft | 0,9–1,5m | Scoring-sone — must-make |
+| `sgPutt5_10` | 5–10 ft | 1,5–3,0m | Birdie-putt-lengde |
+| `sgPutt10_15` | 10–15 ft | 3,0–4,6m | Langt for 2-putt |
+| `sgPutt15_25` | 15–25 ft | 4,6–7,6m | Veldig lang putt |
+| `sgPutt25_40` | 25–40 ft | 7,6–12,2m | Ekstremt lang |
+| `sgPutt40plus` | 40 ft+ | 12,2m+ | Lob-putt |
 
 ### 5.5 Tee-slag
 | Felt | Beskrivelse |
