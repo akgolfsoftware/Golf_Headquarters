@@ -5,7 +5,7 @@ Innsats: S/M/L. Merk hvert steg som `[x]` når deployet.
 
 ## Fase 1 — Fullføre påbegynt
 - [x] **1. CoachHQ Dashboard steg 2** — `/admin/agencyos` — 3-kolonne (Fokus-spiller · Timeline · Innboks) + Fokus-spiller-panel m/ pyramide. Ekte data: SG-områder (BrukerSgInput), pyramide (TrainingPlanSession via aggregateByArea). — 2026-05-30
-- [ ] **2. Hull-analyse → ekte PlayerHQ-rute** — `/portal/analysere/hull/[runId]` — flytte fra `/hull-demo` til produkt, koble til runde-data. Gjenbruk: `hole-analysis.tsx`. (M)
+- [x] **2. Hull-analyse → ekte PlayerHQ-rute** — `/portal/analysere/hull` — illustrativt kart + ekte tall. Sonene (Tee/Innspill/Nærspill/Putt) mates med spillerens SG (BrukerSgInput) + trening per skillArea (TrainingPlanSession). Komponent parametrisert; demoer uendret. — 2026-05-30
 
 ## Fase 2 — Turneringsresultater
 - [ ] **3. Turnerings-resultatliste / leaderboard** — `/stats/turneringer/[slug]/resultater` — full ranking + score. Gjenbruk: `data-table`, `status-pill`, `sparkline`. (M)
