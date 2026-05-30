@@ -57,8 +57,9 @@ export async function getTasksForUser(userId: string): Promise<SampleTask[]> {
   });
 
   if (!adminConnection) {
-    // Ingen Notion-tilkobling — bruk sample-data som fallback
-    return SAMPLE_TASKS;
+    // Ingen Notion-tilkobling. I prod: tom liste (ekte empty-state, ikke falske
+    // oppgaver). I dev: sample-data for utvikling/onboarding.
+    return process.env.NODE_ENV === "production" ? [] : SAMPLE_TASKS;
   }
 
   let cached: CachedTaskRow[];
