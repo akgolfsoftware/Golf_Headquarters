@@ -118,7 +118,7 @@ export function NextTournamentCountdown({
           </p>
           <Link
             href={browseHref}
-            className="mt-3 inline-flex min-h-[44px] items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+            className="mt-4 inline-flex min-h-[44px] items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90"
           >
             Bla i turneringer
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -210,7 +210,7 @@ export function NextTournamentCountdown({
 
       {/* Forberedelse-sjekkliste */}
       <div className="mb-6">
-        <p className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-background/60">
+        <p className="mb-4 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-background/60">
           Forberedelse
         </p>
         <ul className="space-y-2">

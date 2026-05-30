@@ -40,7 +40,7 @@ export function StrategyCards({
   return (
     <div className="space-y-6">
       <div className="rounded-xl border border-border bg-card p-6">
-        <div className="mb-5 flex items-center gap-2">
+        <div className="mb-6 flex items-center gap-2">
           <Target className="h-4 w-4 text-muted-foreground" />
           <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             Mål-distanse

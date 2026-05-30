@@ -61,7 +61,7 @@ export default async function AvbestillPage() {
         <h1 className="font-display text-[26px] font-semibold leading-[1.15] tracking-[-0.015em] text-foreground">
           Avbestille{" "}
           <em
-            className="font-serif not-italic italic font-normal"
+            className="font-display italic font-normal"
             style={{ color: "var(--destructive)" }}
           >
             Pro
@@ -88,7 +88,7 @@ export default async function AvbestillPage() {
             Pro aktiv til
           </span>
           <div className="mt-1 font-display text-base font-semibold text-foreground">
-            <em className="font-serif not-italic italic font-normal text-primary capitalize">
+            <em className="font-display italic font-normal text-primary capitalize">
               {ukedag(proAktivTil)}
             </em>{" "}
             {datoDag(proAktivTil)}

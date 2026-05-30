@@ -28,7 +28,7 @@ import {
   StatTile,
   PhotoDivider,
   useNowTime,
-} from "@/components/v2";
+} from "@/components/athletic";
 import {
   COACH_DATA,
   TODAY_SESSIONS,

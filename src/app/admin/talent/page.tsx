@@ -189,7 +189,7 @@ export default async function TalentOversikt({
             <div className="mb-1 flex flex-wrap items-center justify-between gap-2">
               <div>
                 <h3 className="font-display text-base font-semibold">
-                  Stall-<em className="font-serif italic font-normal text-primary">talent</em> — 2D-kart
+                  Stall-<em className="font-display italic font-normal text-primary">talent</em> — 2D-kart
                 </h3>
                 <p className="font-mono text-[10px] text-muted-foreground">
                   X-akse: HCP · Y-akse: Talent-score · Boble = spiller

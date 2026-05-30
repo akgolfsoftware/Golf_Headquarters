@@ -136,7 +136,7 @@ export default async function OktDetalj({ params }: Props) {
 
           <h1 className="font-display text-2xl font-semibold leading-tight tracking-tight sm:text-4xl">
             {booking.serviceType.name} —{" "}
-            <em className="font-serif font-normal italic text-primary">
+            <em className="font-display font-normal italic text-primary">
               {booking.location.name.split(" ")[0]}
             </em>
           </h1>
@@ -237,7 +237,7 @@ export default async function OktDetalj({ params }: Props) {
             <h2 className="mb-2 font-display text-lg font-semibold tracking-tight">
               Notat
             </h2>
-            <p className="border-l-2 border-primary/40 pl-4 font-serif italic text-sm leading-relaxed text-foreground">
+            <p className="border-l-2 border-primary/40 pl-4 font-display italic text-sm leading-relaxed text-foreground">
               {booking.notes}
             </p>
           </section>

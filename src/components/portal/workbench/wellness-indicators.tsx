@@ -189,7 +189,7 @@ export function WellnessIndicators({
           </p>
           <Link
             href={connectHref}
-            className="mt-5 inline-flex min-h-[44px] items-center gap-1.5 rounded-full bg-foreground px-6 py-2 font-mono text-[11px] font-bold uppercase tracking-[0.10em] text-background transition hover:bg-foreground/90"
+            className="mt-6 inline-flex min-h-[44px] items-center gap-1.5 rounded-full bg-foreground px-6 py-2 font-mono text-[11px] font-bold uppercase tracking-[0.10em] text-background transition hover:bg-foreground/90"
           >
             Koble enhet
             <ArrowRight className="size-3.5" strokeWidth={2} aria-hidden="true" />
@@ -210,7 +210,7 @@ export function WellnessIndicators({
       aria-labelledby="wellness-heading"
     >
       {/* Header */}
-      <div className="mb-5 flex items-end justify-between gap-2">
+      <div className="mb-6 flex items-end justify-between gap-2">
         <div>
           <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
             Velvære

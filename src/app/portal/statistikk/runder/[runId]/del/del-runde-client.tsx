@@ -135,7 +135,7 @@ export function DelRundeClient({ runde, spiller }: Props) {
       </div>
 
       {/* Forhåndsvisning */}
-      <div className="mb-5 flex items-center justify-center rounded-2xl bg-muted/40 p-4">
+      <div className="mb-6 flex items-center justify-center rounded-2xl bg-muted/40 p-4">
         <div
           className={`relative w-full max-w-xs overflow-hidden rounded-xl shadow-2xl ${kortStil} ${
             format === "story"

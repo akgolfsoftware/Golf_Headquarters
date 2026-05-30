@@ -116,7 +116,7 @@ export function PlayerHeroImage({
             Hei, <em className="italic text-accent">{fornavn}</em>.
           </h1>
 
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 font-mono text-[11px] uppercase tracking-[0.10em] text-white/80 md:text-xs">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 font-mono text-[11px] uppercase tracking-[0.10em] text-white/80 md:text-xs">
             {user.nivaa && (
               <>
                 <span className="font-semibold text-white">{user.nivaa}</span>

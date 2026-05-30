@@ -268,7 +268,7 @@ function FooterBar({ current }: { current: StegId }) {
 function Step1() {
   return (
     <section className="rounded-2xl border border-border bg-card px-6 py-6">
-      <div className="mb-5 flex items-start justify-between">
+      <div className="mb-6 flex items-start justify-between">
         <div>
           <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             Mine 38 elever
@@ -288,7 +288,7 @@ function Step1() {
         </div>
       </div>
 
-      <div className="relative mb-5">
+      <div className="relative mb-6">
         <Search
           className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
           strokeWidth={1.5}
@@ -409,7 +409,7 @@ function Step2() {
 
       <div className="grid grid-cols-[1fr_360px] gap-6">
         <section className="rounded-2xl border border-border bg-card px-6 py-6">
-          <div className="mb-5">
+          <div className="mb-6">
             <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               Mai – juli 2026
             </div>
@@ -606,7 +606,7 @@ function Step3() {
       />
 
       <section className="rounded-2xl border border-border bg-card px-6 py-6">
-        <div className="mb-5 flex items-start justify-between">
+        <div className="mb-6 flex items-start justify-between">
           <div>
             <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               5 faser · 8 uker · totalt 56 dager
@@ -786,7 +786,7 @@ function Step4() {
   return (
     <>
       <div
-        className="mb-5 flex items-center gap-4 rounded-lg border border-[rgba(0,88,64,0.18)] border-l-4 border-l-[var(--brand-primary,#005840)] px-4 py-4"
+        className="mb-6 flex items-center gap-4 rounded-lg border border-[rgba(0,88,64,0.18)] border-l-4 border-l-[var(--brand-primary,#005840)] px-4 py-4"
         style={{
           backgroundImage:
             "linear-gradient(135deg, rgba(0,88,64,0.06) 0%, rgba(209,248,67,0.10) 100%)",
@@ -1123,7 +1123,7 @@ function Step5() {
       />
 
       <section className="rounded-2xl border border-border bg-card px-6 py-6">
-        <div className="mb-5 flex items-start justify-between">
+        <div className="mb-6 flex items-start justify-between">
           <div>
             <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               Ukeoversikt · klikk økt for å redigere
@@ -1227,7 +1227,7 @@ function Step6() {
   return (
     <>
       <div
-        className="mb-5 rounded-2xl px-8 py-8 text-white"
+        className="mb-6 rounded-2xl px-8 py-8 text-white"
         style={{
           background: "linear-gradient(135deg, #005840 0%, #006B4F 100%)",
         }}
@@ -1281,7 +1281,7 @@ function Step6() {
         </SumBlock>
       </div>
 
-      <section className="mt-5">
+      <section className="mt-6">
         <div className="mb-2.5 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
           Varselforhåndsvisning — det Markus vil se
         </div>
@@ -1361,7 +1361,7 @@ function SumRow({
 function AgentStrip({ label, body }: { label: string; body: React.ReactNode }) {
   return (
     <div
-      className="mb-5 flex items-center gap-4 rounded-lg border border-[rgba(0,88,64,0.18)] border-l-4 border-l-[var(--brand-primary,#005840)] px-4 py-4"
+      className="mb-6 flex items-center gap-4 rounded-lg border border-[rgba(0,88,64,0.18)] border-l-4 border-l-[var(--brand-primary,#005840)] px-4 py-4"
       style={{
         backgroundImage:
           "linear-gradient(135deg, rgba(0,88,64,0.06) 0%, rgba(209,248,67,0.10) 100%)",

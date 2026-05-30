@@ -72,7 +72,7 @@ export default function SesjonOpptakDemo() {
             </span>
           </div>
           <div className="flex items-center gap-2 text-[13px] text-foreground">
-            <span className="grid h-5 w-5 place-items-center rounded-full bg-[var(--color-pyr-tek,#1A7D56)] font-mono text-[9px] font-semibold text-white">
+            <span className="grid h-5 w-5 place-items-center rounded-full bg-[var(--color-pyr-tek,#B8852A)] font-mono text-[9px] font-semibold text-white">
               MR
             </span>
             <span className="font-medium">Markus R Pedersen</span>
@@ -158,7 +158,7 @@ export default function SesjonOpptakDemo() {
       </div>
 
       {/* Meta-strip under frame */}
-      <div className="mt-5 grid grid-cols-4 gap-2">
+      <div className="mt-6 grid grid-cols-4 gap-2">
         <MetaStat label="Varighet" value="12:34" />
         <MetaStat label="Lyd-kvalitet" value="HD · 48 kHz" />
         <MetaStat label="Ord transkribert" value="1 248" />

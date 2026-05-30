@@ -243,7 +243,7 @@ export default async function TaskDetaljPage({
                 );
               })}
             </ul>
-            <div className="mt-5 flex items-start gap-2.5 rounded-xl border border-border bg-card p-4">
+            <div className="mt-6 flex items-start gap-2.5 rounded-xl border border-border bg-card p-4">
               <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-[11px] font-bold text-accent">
                 AK
               </div>

@@ -83,7 +83,7 @@ export default async function GodkjennPortalPage() {
         const items = PORTAL_ROUTES.filter((r) => r.category === category);
         if (items.length === 0) return null;
         return (
-          <section key={category} className="space-y-3">
+          <section key={category} className="space-y-4">
             <h2 className="font-display text-2xl font-semibold tracking-tight">
               {category}
               <span className="ml-2 font-mono text-sm font-normal text-muted-foreground">
@@ -110,7 +110,7 @@ export default async function GodkjennPortalPage() {
                         key={item.route}
                         className="border-b border-border last:border-0 hover:bg-secondary/30"
                       >
-                        <td className="px-4 py-3">
+                        <td className="px-4 py-4">
                           <div className="font-display font-semibold">
                             {item.label}
                           </div>
@@ -118,7 +118,7 @@ export default async function GodkjennPortalPage() {
                             {item.route}
                           </div>
                         </td>
-                        <td className="px-4 py-3">
+                        <td className="px-4 py-4">
                           {item.designPath ? (
                             <a
                               href={item.designPath}
@@ -135,7 +135,7 @@ export default async function GodkjennPortalPage() {
                             </span>
                           )}
                         </td>
-                        <td className="px-4 py-3">
+                        <td className="px-4 py-4">
                           <span
                             className={`inline-flex items-center rounded-full px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] ${STATUS_CLASS[status]}`}
                           >
@@ -147,7 +147,7 @@ export default async function GodkjennPortalPage() {
                             </p>
                           )}
                         </td>
-                        <td className="px-4 py-3">
+                        <td className="px-4 py-4">
                           {approval?.reviewedAt && (
                             <div className="font-mono text-[11px] text-muted-foreground">
                               {approval.reviewedAt.toLocaleDateString("nb-NO")}
@@ -159,7 +159,7 @@ export default async function GodkjennPortalPage() {
                             </div>
                           )}
                         </td>
-                        <td className="whitespace-nowrap px-4 py-3 text-right">
+                        <td className="whitespace-nowrap px-4 py-4 text-right">
                           <div className="inline-flex items-center gap-1">
                             <Link
                               href={item.route.replace(/\[[^\]]+\]/g, "demo")}

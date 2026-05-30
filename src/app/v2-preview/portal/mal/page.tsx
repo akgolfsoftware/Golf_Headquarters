@@ -6,7 +6,7 @@ import {
   SectionHeader,
   GoalsHubPattern,
   TimelinePattern,
-} from "@/components/v2";
+} from "@/components/athletic";
 import {
   ØYVIND_USER,
   TODAY_SESSIONS,
@@ -14,7 +14,7 @@ import {
   DEMO_GOALS,
   DEMO_MILESTONES,
 } from "@/lib/v2-fixtures";
-import type { Goal } from "@/components/v2";
+import type { Goal } from "@/components/athletic";
 
 // Konverter fixture Goal til GoalsHubPattern sin Goal-type
 // (identisk shape — direkte bruk)

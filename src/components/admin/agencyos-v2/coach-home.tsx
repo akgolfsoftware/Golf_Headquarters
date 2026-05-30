@@ -145,7 +145,7 @@ export function CoachHome(props: CoachHomeProps) {
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[2fr_1fr]">
         {/* Tidslinje */}
         <section className="rounded-2xl border border-border bg-card p-6 sm:p-6">
-          <div className="mb-5 flex items-baseline justify-between">
+          <div className="mb-6 flex items-baseline justify-between">
             <div>
               <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                 I dag

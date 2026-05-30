@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import Link from "next/link";
 import { Plus, Target, Clock, CheckSquare } from "lucide-react";
-import { useInView } from "@/components/v2/hooks";
+import { useInView } from "@/components/athletic/hooks";
 
 // ── Types ────────────────────────────────────────────────────────
 

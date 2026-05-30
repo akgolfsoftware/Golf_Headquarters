@@ -6,7 +6,7 @@
 
 import { Play } from "lucide-react";
 import { AthleticEyebrow } from "@/components/athletic";
-import { TabBar, type TabItem } from "@/components/ds/tab-bar";
+import { TabBar, type TabItem } from "@/components/athletic/tab-bar";
 
 const TABS: TabItem[] = [
   { id: "idag", label: "I dag" },

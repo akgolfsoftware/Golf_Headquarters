@@ -1,6 +1,6 @@
 "use client";
 
-import { useCountUp } from "@/components/v2/hooks";
+import { useCountUp } from "@/components/athletic/hooks";
 import type { StatTile as StatTileData } from "@/lib/v2-fixtures";
 
 export type StatTileProps = {

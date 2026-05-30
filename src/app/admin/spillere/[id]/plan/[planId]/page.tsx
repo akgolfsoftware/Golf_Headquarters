@@ -15,7 +15,7 @@ import { Edit, Copy, ChevronRight, Plus, Sparkles, GripVertical } from "lucide-r
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { AthleticEyebrow, AthleticButton } from "@/components/athletic";
-import { TabBar } from "@/components/ds/tab-bar";
+import { TabBar } from "@/components/athletic/tab-bar";
 
 export const dynamic = "force-dynamic";
 

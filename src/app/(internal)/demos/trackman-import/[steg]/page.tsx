@@ -165,7 +165,7 @@ function StepOne() {
         />
       </div>
 
-      <div className="mt-5 flex items-start gap-2.5 rounded-md bg-secondary px-4 py-4 text-[13px] leading-relaxed text-muted-foreground">
+      <div className="mt-6 flex items-start gap-2.5 rounded-md bg-secondary px-4 py-4 text-[13px] leading-relaxed text-muted-foreground">
         <Info className="mt-0.5 h-4 w-4 flex-shrink-0 text-muted-foreground" strokeWidth={2} />
         <div>
           Du finner CSV-eksport i TrackMan Performance Studio under{" "}

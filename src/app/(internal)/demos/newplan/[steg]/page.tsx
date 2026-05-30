@@ -657,7 +657,7 @@ function Steg4() {
             9. mai – 30. juni 2026 · 8 uker · 32 økter
           </div>
 
-          <div className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3.5 border-t border-border pt-4">
+          <div className="mt-4 grid grid-cols-2 gap-x-6 gap-y-4.5 border-t border-border pt-4">
             <SumMeta
               label="Spiller"
               value={
@@ -694,7 +694,7 @@ function Steg4() {
 
         <div className="flex flex-col items-center gap-2">
           <PyrDonut />
-          <div className="grid grid-cols-2 gap-x-3 gap-y-1 font-mono text-[11px]">
+          <div className="grid grid-cols-2 gap-x-4 gap-y-1 font-mono text-[11px]">
             <DonutLegend swatch="hsl(var(--primary))" label="TEK" pct="40%" />
             <DonutLegend swatch="hsl(var(--accent))" label="SLAG" pct="25%" />
             <DonutLegend swatch="hsl(var(--success))" label="FYS" pct="15%" />

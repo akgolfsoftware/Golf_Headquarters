@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Check, ArrowRight } from "lucide-react";
-import { useCountUp } from "@/components/v2/hooks";
+import { useCountUp } from "@/components/athletic/hooks";
 import type { Tournament, TournamentChecklistItem } from "@/lib/v2-fixtures";
 
 export type TournamentCardProps = {

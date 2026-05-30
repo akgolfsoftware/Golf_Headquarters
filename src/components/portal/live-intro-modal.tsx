@@ -111,7 +111,7 @@ export function LiveIntroModal({
           <span className="h-1.5 w-1.5 rounded-full bg-success" />
           {eyebrow}
         </div>
-        <h1 className="mt-7 font-display text-[44px] font-bold leading-[0.95] -tracking-[0.035em] text-white sm:text-[64px] md:text-[88px]">
+        <h1 className="mt-8 font-display text-[44px] font-bold leading-[0.95] -tracking-[0.035em] text-white sm:text-[64px] md:text-[88px]">
           {title}
         </h1>
         <div className="mt-2.5 font-sans text-[16px] leading-tight text-white/75 sm:text-[20px] md:text-[24px]">

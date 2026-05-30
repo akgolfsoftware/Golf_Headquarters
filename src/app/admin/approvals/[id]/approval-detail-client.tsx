@@ -167,7 +167,7 @@ export function ApprovalDetailClient({ detail }: { detail: ApprovalDetail }) {
             <p key={i}>{p}</p>
           ))}
         </div>
-        <div className="mt-5 flex items-center gap-2 border-t border-accent/15 pt-4 font-mono text-[11px] font-semibold text-accent">
+        <div className="mt-6 flex items-center gap-2 border-t border-accent/15 pt-4 font-mono text-[11px] font-semibold text-accent">
           <span>
             <span className="mr-1.5 text-accent/60">KONFIDENS</span>
             {confidencePct}%

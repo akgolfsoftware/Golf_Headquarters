@@ -118,7 +118,7 @@ export default async function RoadmapPage() {
           PlayerHQ · Talent · Min plan
         </div>
         <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
-          Min <em className="font-serif italic font-normal text-primary">talent-plan</em> — 12 måneder
+          Min <em className="font-display italic font-normal text-primary">talent-plan</em> — 12 måneder
         </h1>
         <p className="mt-1 font-mono text-[11px] text-muted-foreground">
           Kategori {tracking.niva} · 4 faser · 6 evaluerings-punkter
@@ -225,7 +225,7 @@ export default async function RoadmapPage() {
             </span>
             <span className="ml-auto font-mono text-[11px] text-muted-foreground">{fase.periode}</span>
           </div>
-          <p className="mb-2 font-serif italic text-sm text-muted-foreground">{fase.fokus}</p>
+          <p className="mb-2 font-display italic text-sm text-muted-foreground">{fase.fokus}</p>
           {fase.mal.map((m, j) => (
             <div key={j} className="ta-goal-row">
               <span className={`${DISC_CLASS_SMALL[m.disiplin] ?? "te-badge"} text-[9px]`}>

@@ -8,7 +8,7 @@ import { ArrowRight, Inbox, Mail, FolderTree, ListChecks } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { AthleticButton, AthleticEyebrow } from "@/components/athletic";
-import { TabBar, type TabItem } from "@/components/ds/tab-bar";
+import { TabBar, type TabItem } from "@/components/athletic/tab-bar";
 
 export const dynamic = "force-dynamic";
 

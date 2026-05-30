@@ -189,7 +189,7 @@ export function AIMalByggerModal({
       <Stepper step={step} />
 
       {step === 1 ? (
-        <div className="mt-5 space-y-6">
+        <div className="mt-6 space-y-6">
           <Field label="Hva vil du oppnå?">
             <textarea
               value={input}
@@ -252,7 +252,7 @@ export function AIMalByggerModal({
       ) : null}
 
       {step === 2 ? (
-        <div className="mt-5 flex flex-col items-center gap-4 px-4 py-6">
+        <div className="mt-6 flex flex-col items-center gap-4 px-4 py-6">
           <div className="h-14 w-14 animate-spin rounded-full border-[4px] border-border border-t-primary" />
           <div className="font-display text-lg font-semibold tracking-tight">
             Bygger 5 SMART-mål fra ditt input …
@@ -269,7 +269,7 @@ export function AIMalByggerModal({
       ) : null}
 
       {step === 3 ? (
-        <div className="mt-5 space-y-2">
+        <div className="mt-6 space-y-2">
           <div className="flex items-start gap-2 rounded-xl border border-accent/50 bg-accent/10 p-4">
             <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
             <div className="text-sm leading-relaxed">

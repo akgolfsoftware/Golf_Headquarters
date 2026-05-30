@@ -111,7 +111,7 @@ export default async function OppgraderPage() {
           <p className="mt-2 text-sm text-accent/80">
             Fri pause, fri avbestilling, 30 dagers full angrerett. Spar ~14 % med årlig faktura.
           </p>
-          <div className="mt-5 flex flex-wrap gap-2">
+          <div className="mt-6 flex flex-wrap gap-2">
             {["AI-coach 24/7", "4 credits/mnd", "Videoanalyse", "Ubegrenset historikk", "Familiekonto"].map((c) => (
               <span
                 key={c}
@@ -136,7 +136,7 @@ export default async function OppgraderPage() {
           </div>
           <a
             href="mailto:post@akgolf.no?subject=Oppgrader%20til%20Pro&body=Hei!%20Jeg%20%C3%B8nsker%20%C3%A5%20oppgradere%20til%20Pro."
-            className="mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-2 text-sm font-bold text-foreground transition-transform hover:-translate-y-0.5"
+            className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-2 text-sm font-bold text-foreground transition-transform hover:-translate-y-0.5"
           >
             Oppgrader via e-post
             <ArrowRight className="h-4 w-4" strokeWidth={2.2} />

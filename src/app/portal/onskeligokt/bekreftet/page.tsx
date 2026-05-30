@@ -85,7 +85,7 @@ export default async function OnskeligOktBekreftetPage() {
           PlayerHQ · Ønske sendt · 19. mai 14:42
         </span>
         <h1 className="max-w-[460px] font-display text-[36px] font-semibold leading-[1.1] tracking-[-0.015em]">
-          <em className="font-serif not-italic italic font-normal text-primary">
+          <em className="font-display italic font-normal text-primary">
             Sendt til coach
           </em>
         </h1>
@@ -141,7 +141,7 @@ export default async function OnskeligOktBekreftetPage() {
             label="Notat"
             value={
               <span
-                className="block border-l-2 border-primary pl-4 py-0.5 font-serif italic text-[15px] leading-[1.45] text-foreground"
+                className="block border-l-2 border-primary pl-4 py-0.5 font-display italic text-[15px] leading-[1.45] text-foreground"
               >
                 Vil jobbe med iron contact før Olyo 5. juni — særlig CS70 → CS80-overgangen som
                 har vært ujevn i mai.

@@ -806,7 +806,7 @@ function SessionEditModal({
         </div>
 
         {/* Drills */}
-        <div className="mt-5">
+        <div className="mt-6">
           <div className="mb-2 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">
             <span>Drills ({drills.length})</span>
           </div>

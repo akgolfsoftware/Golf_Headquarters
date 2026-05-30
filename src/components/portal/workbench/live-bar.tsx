@@ -57,7 +57,7 @@ export function LiveBar({ nextSession, weather, onAlertClick }: LiveBarProps) {
 
   return (
     <div
-      className={`flex h-9 items-center gap-3 border-y px-4 font-mono text-[11px] uppercase tracking-[0.08em] sm:px-6 ${
+      className={`flex h-9 items-center gap-4 border-y px-4 font-mono text-[11px] uppercase tracking-[0.08em] sm:px-6 ${
         critical
           ? "border-destructive/40 bg-destructive/10 text-destructive"
           : "border-border bg-card text-muted-foreground"

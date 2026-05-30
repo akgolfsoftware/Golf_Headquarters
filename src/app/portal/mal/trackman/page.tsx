@@ -370,7 +370,7 @@ export default async function TrackManPage() {
               <DispersionClient />
 
               {/* Legend */}
-              <div className="mt-2 flex flex-wrap gap-x-3.5 gap-y-1.5 font-mono text-[11px] text-muted-foreground">
+              <div className="mt-2 flex flex-wrap gap-x-4.5 gap-y-1.5 font-mono text-[11px] text-muted-foreground">
                 <LegendDot color="hsl(var(--success))" label="Innenfor 5 % · grønn" />
                 <LegendDot color="hsl(var(--warning))" label="Akseptabelt · gull" />
                 <LegendDot color="hsl(var(--destructive))" label="Utenfor · rød" />

@@ -100,7 +100,7 @@ function DublettKort({ kandidat }: { kandidat: MergeKandidat }) {
                 {kandidat.manual.name}
               </h3>
             </div>
-            <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+            <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
               <span>{formaterDato(kandidat.manual.startDate)}</span>
               {kandidat.manual.location && (
                 <span className="inline-flex items-center gap-1">
@@ -143,7 +143,7 @@ function DublettKort({ kandidat }: { kandidat: MergeKandidat }) {
                     {f.name}
                   </span>
                 </div>
-                <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                <div className="mt-0.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
                   <span>{formaterDato(f.startDate)}</span>
                   {f.location && (
                     <span className="inline-flex items-center gap-1">

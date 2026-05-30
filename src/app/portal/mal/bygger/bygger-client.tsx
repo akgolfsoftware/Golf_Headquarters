@@ -579,7 +579,7 @@ function Steg2Anbefaling(props: {
           Vi fant ingen plan-template som matcher din kategori og fase. Du kan
           fortsatt la AI-en lage en plan fra scratch.
         </p>
-        <div className="mt-5 flex gap-2">
+        <div className="mt-6 flex gap-2">
           <button
             type="button"
             onClick={onTilbake}
@@ -708,7 +708,7 @@ function MalKortStor(props: {
         </div>
       </div>
 
-      <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-[1fr_auto]">
+      <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-[1fr_auto]">
         <DisciplinFordelingBar fordeling={mal.disciplinFordeling} />
         <div className="flex items-center gap-4 text-[12px] text-muted-foreground">
           <span>
@@ -784,7 +784,7 @@ function DisciplinFordelingBar({
           />
         ))}
       </div>
-      <div className="flex flex-wrap gap-x-3 gap-y-1 text-[10.5px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
+      <div className="flex flex-wrap gap-x-4 gap-y-1 text-[10.5px] font-mono uppercase tracking-[0.06em] text-muted-foreground">
         {entries.map(([k, v]) => (
           <span key={k} className="inline-flex items-center gap-1.5">
             <span

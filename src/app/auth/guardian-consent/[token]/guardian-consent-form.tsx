@@ -78,7 +78,7 @@ export function GuardianConsentForm({
       </div>
 
       {/* Guardian name */}
-      <div className="mt-5">
+      <div className="mt-6">
         <label
           htmlFor="guardianName"
           className="block font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground"
@@ -101,7 +101,7 @@ export function GuardianConsentForm({
       </div>
 
       {/* Consent checkboxes */}
-      <div className="mt-5 space-y-2">
+      <div className="mt-6 space-y-2">
         <label className="flex cursor-pointer items-start gap-2 rounded-xl border border-border bg-card p-4 hover:bg-secondary/30">
           <input
             type="checkbox"

@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { Inter, Inter_Tight, JetBrains_Mono } from "next/font/google";
-import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { InstallPrompt } from "@/components/portal/install-prompt";
 import { SwRegister } from "@/components/sw-register";
+// S-14: CookieBanner + AnalyticsLoader erstatter hardkodet Plausible <Script>.
+// Plausible lastes nå kun etter eksplisitt samtykke fra bruker.
 import { CookieBanner } from "@/components/shared/cookie-banner";
+import { AnalyticsLoader } from "@/components/shared/analytics-loader";
 import "./globals.css";
 
 // Inter — UI og brødtekst (variable font)
@@ -119,29 +121,25 @@ export default async function RootLayout({
   // med 'nonce-{nonce}' + 'strict-dynamic' godkjenner dem.
   const nonce = (await headers()).get("x-nonce") ?? undefined;
 
+  // nonce er fremdeles tilgjengelig for fremtidig bruk
+  void nonce;
+
   return (
     <html
       lang="nb"
       className={`${inter.variable} ${interTight.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
-      <head>
-        {process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN && (
-          <Script
-            defer
-            nonce={nonce}
-            data-domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}
-            src="https://plausible.io/js/script.js"
-            strategy="afterInteractive"
-          />
-        )}
-      </head>
       <body className="min-h-full flex flex-col">
         {children}
         <InstallPrompt />
         <SwRegister />
-        <CookieBanner />
         <Analytics />
         <SpeedInsights />
+        {/* S-14: cookie-samtykke + betinget Plausible-lasting */}
+        <CookieBanner />
+        {process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN && (
+          <AnalyticsLoader domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN} />
+        )}
       </body>
     </html>
   );

@@ -89,7 +89,7 @@ export function TesterDetaljScreen({
               </h1>
               <p
                 style={{
-                  fontFamily: "var(--font-serif)",
+                  fontFamily: "var(--font-display)",
                   fontStyle: "italic",
                   fontSize: "16px",
                   color: "var(--muted)",

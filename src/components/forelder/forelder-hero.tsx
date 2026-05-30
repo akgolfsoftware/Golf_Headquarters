@@ -30,7 +30,7 @@ export function ForelderHero({
   return (
     <section>
       <AthleticEyebrow>{eyebrow}</AthleticEyebrow>
-      <div className="mt-3 flex flex-wrap items-center gap-4">
+      <div className="mt-4 flex flex-wrap items-center gap-4">
         {avatarInitials || avatarUrl ? (
           <Link
             href="/forelder/innstillinger"

@@ -136,7 +136,7 @@ export default async function CoachMeldingPage() {
                   strokeWidth={1.5}
                   className="mx-auto text-muted-foreground/40"
                 />
-                <p className="mt-3 text-xs text-muted-foreground">
+                <p className="mt-4 text-xs text-muted-foreground">
                   Ingen meldingshistorikk ennå
                 </p>
               </div>

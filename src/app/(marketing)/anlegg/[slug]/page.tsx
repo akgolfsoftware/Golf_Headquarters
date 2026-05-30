@@ -385,7 +385,7 @@ export default async function AnleggDetalj({
       {/* ── Tre veier inn ── */}
       <section className="px-6 pb-14">
         <div className="mx-auto max-w-5xl">
-          <div className="mb-5 flex flex-wrap items-baseline gap-2">
+          <div className="mb-6 flex flex-wrap items-baseline gap-2">
             <span className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
               For gjester og medlemmer
             </span>

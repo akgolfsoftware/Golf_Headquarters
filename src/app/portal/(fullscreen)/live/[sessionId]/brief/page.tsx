@@ -152,7 +152,7 @@ export default async function LiveBriefPage({
             </em>
           </h1>
 
-          <blockquote className="mt-5 border-l-2 border-accent pl-4 sm:pl-6">
+          <blockquote className="mt-6 border-l-2 border-accent pl-4 sm:pl-6">
             <p
               className="font-display text-[16px] italic leading-[1.5] text-foreground sm:text-[18px]"
               style={{ fontFamily: "var(--font-instrument-serif, serif)" }}
@@ -165,7 +165,7 @@ export default async function LiveBriefPage({
             </footer>
           </blockquote>
 
-          <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2">
+          <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2">
             <MetaItem icon={<Calendar className="h-3.5 w-3.5" />} label="Dato" value={datoStr} />
             <MetaItem icon={<Clock className="h-3.5 w-3.5" />} label="Start" value={tidStr} />
             <MetaItem icon={<Target className="h-3.5 w-3.5" />} label="Varighet" value={`${session.durationMin} min`} />

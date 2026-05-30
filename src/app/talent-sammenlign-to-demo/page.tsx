@@ -135,7 +135,7 @@ export default function TalentSammenlignToDemo() {
                 vs
               </span>
             </div>
-            <ul className="mt-5 space-y-2.5">
+            <ul className="mt-6 space-y-2.5">
               {DIFFS.map((d) => (
                 <li
                   key={d.label}
@@ -240,12 +240,12 @@ function PlayerCard({ player }: { player: PlayerData }) {
       </div>
 
       {/* Radar */}
-      <div className="mt-5 grid place-items-center rounded-lg bg-secondary/30 p-4">
+      <div className="mt-6 grid place-items-center rounded-lg bg-secondary/30 p-4">
         <SGRadar values={player.sg} color={player.avatar === "primary" ? "hsl(159 100% 17%)" : "hsl(200 70% 45%)"} />
       </div>
 
       {/* 6 stats */}
-      <ul className="mt-5 divide-y divide-border">
+      <ul className="mt-6 divide-y divide-border">
         {player.stats.map((s) => (
           <li
             key={s.label}

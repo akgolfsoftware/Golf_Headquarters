@@ -220,7 +220,7 @@ function DenneUkaList({ tasks }: { tasks: SampleTask[] }) {
 
 function EmptyStatePreview() {
   return (
-    <div className="mt-7 rounded-xl border border-border bg-card p-4">
+    <div className="mt-8 rounded-xl border border-border bg-card p-4">
       <div className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
         EMPTY-STATE · NY COACH
       </div>

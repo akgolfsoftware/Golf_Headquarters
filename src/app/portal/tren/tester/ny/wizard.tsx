@@ -867,7 +867,7 @@ function Steg4({
           Sammendrag · {spillerNavn}
         </div>
 
-        <div className="mt-2 grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
+        <div className="mt-2 grid grid-cols-2 gap-x-6 gap-y-4 text-sm">
           <div>
             <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               Type
@@ -902,7 +902,7 @@ function Steg4({
           </div>
         </div>
 
-        <div className="mt-5 border-t border-border pt-4">
+        <div className="mt-6 border-t border-border pt-4">
           <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             Resultater
           </div>
@@ -930,7 +930,7 @@ function Steg4({
         </div>
 
         {siste && !isNaN(nyVerdi) && (
-          <div className="mt-5 flex items-center justify-between rounded-md border border-primary/20 bg-primary/5 px-4 py-2">
+          <div className="mt-6 flex items-center justify-between rounded-md border border-primary/20 bg-primary/5 px-4 py-2">
             <div>
               <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                 Sammenlignet med forrige

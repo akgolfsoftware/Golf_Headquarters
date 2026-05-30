@@ -154,7 +154,7 @@ export function KoblingDetailClient({
           <select
             value={confirmedRoute}
             onChange={(e) => setConfirmedR(e.target.value)}
-            className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+            className="w-full rounded-md border border-border bg-background px-4 py-2 text-sm"
           >
             <option value="">— ikke koblet —</option>
             {allRoutes.map((r) => (
@@ -171,7 +171,7 @@ export function KoblingDetailClient({
               )
             }
             disabled={pending}
-            className="mt-2 inline-flex w-full items-center justify-center gap-1 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+            className="mt-2 inline-flex w-full items-center justify-center gap-1 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
           >
             <Save className="h-3.5 w-3.5" />
             Lagre rute
@@ -244,7 +244,7 @@ export function KoblingDetailClient({
             onChange={(e) => setN(e.target.value)}
             onBlur={() => start(() => setNotes(kobling.id, notes))}
             rows={4}
-            className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+            className="w-full rounded-md border border-border bg-background px-4 py-2 text-sm"
             placeholder="F.eks. mangler hover-state, feil ikon, knapp X går ingensteder…"
           />
         </div>

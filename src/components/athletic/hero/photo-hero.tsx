@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { ChevronUp, ChevronDown, Minus } from "lucide-react";
-import { useHeroParallax, useCountUp } from "@/components/v2/hooks";
+import { useHeroParallax, useCountUp } from "@/components/athletic/hooks";
 import type { Player, Tournament } from "@/lib/v2-fixtures";
 
 export type PhotoHeroProps = {

@@ -67,7 +67,7 @@ export default async function RundeShotByShotPage({
               {round.course.name.split(" ").slice(1).join(" ") || "GK"}
             </em>
           </h1>
-          <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
+          <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
             <span>
               {round.playedAt.toLocaleDateString("nb-NO", {
                 day: "numeric",

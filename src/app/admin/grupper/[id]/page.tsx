@@ -269,7 +269,7 @@ export default async function GruppeDetalj({
             </div>
 
             {kommendeSamlinger.length > 1 && (
-              <ul className="mt-5 divide-y divide-border border-t border-border">
+              <ul className="mt-6 divide-y divide-border border-t border-border">
                 {kommendeSamlinger.slice(1).map((s) => (
                   <li key={s.id} className="flex items-center justify-between gap-2 py-2">
                     <div className="min-w-0">

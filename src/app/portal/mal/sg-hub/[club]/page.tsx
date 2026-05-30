@@ -59,7 +59,7 @@ export default async function ClubDetailPage({
           </p>
           <Link
             href="/portal/mal/trackman"
-            className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+            className="mt-6 inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
           >
             Importer TrackMan-data
           </Link>

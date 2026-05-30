@@ -1,7 +1,7 @@
 "use client";
 
 import { Activity, Moon, Heart } from "lucide-react";
-import { useCountUp } from "@/components/v2/hooks";
+import { useCountUp } from "@/components/athletic/hooks";
 import type { Wellness } from "@/lib/v2-fixtures";
 
 export type WellnessCardProps = {

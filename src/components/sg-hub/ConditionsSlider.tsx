@@ -37,7 +37,7 @@ export function ConditionsSlider({ rows }: Props) {
   return (
     <div className="space-y-6">
       <div className="rounded-xl border border-border bg-card p-6">
-        <div className="mb-5 flex items-center justify-between">
+        <div className="mb-6 flex items-center justify-between">
           <div>
             <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               Forhold
@@ -94,7 +94,7 @@ export function ConditionsSlider({ rows }: Props) {
         </div>
 
         {c.windMs > 0 && (
-          <div className="mt-5 border-t border-border pt-6">
+          <div className="mt-6 border-t border-border pt-6">
             <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               Vindretning
             </p>

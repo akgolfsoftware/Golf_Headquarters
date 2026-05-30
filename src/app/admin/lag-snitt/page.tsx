@@ -130,7 +130,7 @@ export default async function LagSnittPage() {
 
           {/* Matrix */}
           <section className="rounded-lg border border-border bg-card p-6 shadow-sm">
-            <div className="mb-5 flex items-end justify-between gap-4">
+            <div className="mb-6 flex items-end justify-between gap-4">
               <div>
                 <h2 className="font-display text-[20px] font-semibold tracking-tight">
                   Pyramide-fokus per gruppe

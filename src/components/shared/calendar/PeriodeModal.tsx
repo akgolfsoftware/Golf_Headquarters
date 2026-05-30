@@ -225,7 +225,7 @@ export function PeriodeModal({ apen, initial, spilllerId, onLukk, onLagre }: Pro
 
             <div className="flex flex-col gap-2 text-xs">
               <span className="font-medium text-foreground">Pyramide min/max (%)</span>
-              <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-muted-foreground">
+              <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-muted-foreground">
                 {AREAS.map((a) => (
                   <div key={a} className="flex justify-between font-mono tabular-nums">
                     <span>{a}</span>

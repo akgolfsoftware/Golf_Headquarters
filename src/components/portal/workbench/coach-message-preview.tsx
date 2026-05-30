@@ -21,7 +21,7 @@ export function CoachMessagePreview({
   return (
     <Link
       href={href}
-      className="flex items-center gap-4 rounded-2xl border border-border bg-card px-5 py-4 transition-colors hover:border-primary/40"
+      className="flex items-center gap-4 rounded-2xl border border-border bg-card px-6 py-4 transition-colors hover:border-primary/40"
       aria-label={`Melding fra ${coach.name}`}
     >
       <span

@@ -500,7 +500,7 @@ function SessionModal({
           </div>
         )}
 
-        <div className="mt-5">
+        <div className="mt-6">
           <div className="font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">
             Drills ({session.drills.length})
           </div>

@@ -292,7 +292,7 @@ export function LiveTestRunner({
               )}
 
               {stepIdx === 0 && protocol.notes && (
-                <div className="ml-7 rounded-lg bg-secondary/60 px-4 py-2 text-xs italic text-muted-foreground">
+                <div className="ml-8 rounded-lg bg-secondary/60 px-4 py-2 text-xs italic text-muted-foreground">
                   Tips: {protocol.notes}
                 </div>
               )}
@@ -301,7 +301,7 @@ export function LiveTestRunner({
         </section>
 
         {/* Slag-input */}
-        <section className="mt-5 rounded-2xl border border-border bg-card">
+        <section className="mt-6 rounded-2xl border border-border bg-card">
           <div className="border-b border-border px-6 py-2 sm:px-6">
             <h3 className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
               Registrer per slag ({step.shots})
@@ -322,7 +322,7 @@ export function LiveTestRunner({
 
         {/* Notater (kun på siste steg) */}
         {isLastStep && (
-          <section className="mt-5 rounded-2xl border border-border bg-card p-6 sm:p-6">
+          <section className="mt-6 rounded-2xl border border-border bg-card p-6 sm:p-6">
             <h3 className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
               Notater (valgfritt)
             </h3>
@@ -385,7 +385,7 @@ export function LiveTestRunner({
             <p className="mt-2 text-sm text-muted-foreground">
               Data du har registrert beholdes som UTKAST i 24 timer. Etter det slettes den.
             </p>
-            <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:justify-end">
+            <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-end">
               <button
                 type="button"
                 onClick={() => setShowAbortConfirm(false)}

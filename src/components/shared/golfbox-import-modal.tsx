@@ -483,7 +483,7 @@ function Steg1({
         kobles fra når som helst.
       </p>
 
-      <div className="mt-5">
+      <div className="mt-6">
         {tilkoblet ? (
           <div className="flex items-center justify-between gap-4 rounded-lg border border-primary/30 bg-primary/5 px-4 py-4">
             <div className="flex items-center gap-2">
@@ -599,7 +599,7 @@ function Steg2({
         tilbake.
       </p>
 
-      <div className="mt-5 grid grid-cols-1 gap-2 sm:grid-cols-2">
+      <div className="mt-6 grid grid-cols-1 gap-2 sm:grid-cols-2">
         <label className="block">
           <span className="mb-1 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             Fra
@@ -711,7 +711,7 @@ function Steg3({
       </p>
 
       {/* Tabell — stack på mobil */}
-      <div className="mt-5 overflow-hidden rounded-lg border border-border bg-card">
+      <div className="mt-6 overflow-hidden rounded-lg border border-border bg-card">
         <div
           className="hidden border-b border-border bg-muted/40 px-4 py-2.5 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground sm:grid sm:items-center"
           style={{

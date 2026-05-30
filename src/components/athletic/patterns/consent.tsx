@@ -133,7 +133,7 @@ function ConsentItemCard({ item, onChange, showHint }: ConsentItemCardProps) {
       {/* Validation hint */}
       {missingRequired && (
         <p
-          className="mt-3 font-mono text-[11px] font-medium"
+          className="mt-4 font-mono text-[11px] font-medium"
           style={{ color: "hsl(var(--destructive))", paddingLeft: 40 }}
           role="alert"
           aria-live="polite"

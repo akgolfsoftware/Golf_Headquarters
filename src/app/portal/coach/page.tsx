@@ -124,14 +124,14 @@ export default async function CoachHubPage() {
         <div className="flex flex-wrap items-center gap-2">
           <Link
             href="/portal/coach/melding"
-            className="inline-flex h-11 items-center gap-1.5 rounded-md border border-primary bg-transparent px-5 text-sm font-semibold text-primary transition hover:bg-primary/5"
+            className="inline-flex h-11 items-center gap-1.5 rounded-md border border-primary bg-transparent px-6 text-sm font-semibold text-primary transition hover:bg-primary/5"
           >
             <MessageSquare size={14} strokeWidth={1.75} aria-hidden />
             Meldinger
           </Link>
           <Link
             href="/portal/coach/melding/ny"
-            className="inline-flex h-11 items-center gap-1.5 rounded-full bg-accent px-5 text-sm font-bold text-primary shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition hover:brightness-105"
+            className="inline-flex h-11 items-center gap-1.5 rounded-full bg-accent px-6 text-sm font-bold text-primary shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition hover:brightness-105"
           >
             <Plus size={14} strokeWidth={2} aria-hidden />
             Ny melding

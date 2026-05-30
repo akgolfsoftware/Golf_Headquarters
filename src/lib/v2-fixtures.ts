@@ -4,7 +4,7 @@
  */
 
 // ── LegalPattern fixture ──────────────────────────────────────────
-import type { LegalSection } from "@/components/v2/patterns/legal";
+import type { LegalSection } from "@/components/athletic/patterns/legal";
 
 export const DEMO_LEGAL_SECTIONS: LegalSection[] = [
   {
@@ -31,7 +31,7 @@ export const DEMO_LEGAL_SECTIONS: LegalSection[] = [
 ];
 
 // ── EmailTemplateEditorPattern fixture ────────────────────────────
-import type { EmailTemplate } from "@/components/v2/patterns/email-template-editor";
+import type { EmailTemplate } from "@/components/athletic/patterns/email-template-editor";
 
 export const DEMO_EMAIL_TEMPLATE: EmailTemplate = {
   id: "t1",
@@ -606,7 +606,7 @@ export const DEMO_GOALS: Goal[] = [
 // Import pattern fixtures
 // ──────────────────────────────────────────────────────────────
 
-import type { ImportColumn, ImportRow } from "@/components/v2/patterns/import";
+import type { ImportColumn, ImportRow } from "@/components/athletic/patterns/import";
 
 export const DEMO_IMPORT_COLUMNS: ImportColumn[] = [
   { key: "name", label: "Fullt navn", required: true },
@@ -688,7 +688,7 @@ export const COACH_THREADS: CoachThread[] = [
 // Notification center fixtures (NotificationCenterPattern)
 // ──────────────────────────────────────────────────────────────
 
-import type { Notification } from "@/components/v2/patterns/notification-center";
+import type { Notification } from "@/components/athletic/patterns/notification-center";
 
 export const DEMO_NOTIFICATIONS: Notification[] = [
   {
@@ -747,7 +747,7 @@ export const DEMO_NOTIFICATIONS: Notification[] = [
 // Audit log fixtures (AuditLogPattern)
 // ──────────────────────────────────────────────────────────────
 
-import type { AuditEvent } from "@/components/v2/patterns/audit-log";
+import type { AuditEvent } from "@/components/athletic/patterns/audit-log";
 
 export const DEMO_AUDIT_EVENTS: AuditEvent[] = [
   {
@@ -800,7 +800,7 @@ export const DEMO_AUDIT_EVENTS: AuditEvent[] = [
 ];
 
 // ── ConsentPattern fixture ────────────────────────────────────────
-import type { ConsentItem } from "@/components/v2/patterns/consent";
+import type { ConsentItem } from "@/components/athletic/patterns/consent";
 
 export const DEMO_CONSENT_ITEMS: ConsentItem[] = [
   {

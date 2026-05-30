@@ -53,15 +53,18 @@ export const colors = {
 } as const;
 
 /**
- * Pyramide-farger (offisielle AK Golf-pyramide).
+ * Pyramide-farger — KANONISK spec (mode-invariant rå hex).
+ * FYS=forest, TEK=ochre, SLAG=blå, SPILL=lime, TURN=rød.
+ * Speiler --pyr-* i globals.css. Kilden er
+ * .claude/skills/ak-golf-hq-design/colors_and_type.css.
  * Aldri endre uten beslutning.
  */
 export const pyramidColors = {
-  fys: "#005840",
-  tek: "#1A7D56",
-  slag: "#D1F843",
-  spill: "#B8852A",
-  turn: "#5E5C57",
+  fys: "#005840", // forest
+  tek: "#B8852A", // ochre
+  slag: "#2563EB", // blå
+  spill: "#D1F843", // lime
+  turn: "#A32D2D", // rød
 } as const;
 
 export type PyramidArea = keyof typeof pyramidColors;

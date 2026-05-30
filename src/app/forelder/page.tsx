@@ -360,7 +360,7 @@ function ForelderHero({
   return (
     <section>
       <AthleticEyebrow>FORELDREPORTAL · OVERSIKT</AthleticEyebrow>
-      <div className="mt-3 flex items-center gap-4">
+      <div className="mt-4 flex items-center gap-4">
         <AthleticAvatar
           src={avatarUrl ?? undefined}
           initials={initials}

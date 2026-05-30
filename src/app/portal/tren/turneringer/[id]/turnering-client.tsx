@@ -1840,7 +1840,6 @@ const TDC_CSS = `
   --tdc-font-display: 'Inter Tight', sans-serif;
   --tdc-font-body: 'Inter', sans-serif;
   --tdc-font-mono: 'JetBrains Mono', monospace;
-  --tdc-font-serif: 'Inter Tight', sans-serif;
   background: var(--tdc-bg);
   color: var(--tdc-fg);
   font-family: var(--tdc-font-body);
@@ -1872,12 +1871,14 @@ const TDC_CSS = `
   color: var(--tdc-muted);
 }
 .tdc-italic-accent {
-  font-family: var(--tdc-font-serif);
+  font-family: var(--tdc-font-display);
+  font-style: italic;
   font-style: italic; font-weight: 400;
   color: var(--tdc-primary);
 }
 .tdc-italic-block {
-  font-family: var(--tdc-font-serif);
+  font-family: var(--tdc-font-display);
+  font-style: italic;
   font-style: italic; font-size: 13.5px;
   color: var(--tdc-fg); margin-top: 14px;
   line-height: 1.5; padding-top: 14px;
@@ -1985,7 +1986,8 @@ const TDC_CSS = `
   letter-spacing: -0.02em; margin-top: 6px;
 }
 .tdc-hero-title em {
-  font-family: var(--tdc-font-serif);
+  font-family: var(--tdc-font-display);
+  font-style: italic;
   font-style: italic; font-weight: 400;
   color: var(--tdc-accent);
 }
@@ -2378,7 +2380,8 @@ const TDC_CSS = `
   letter-spacing: -0.015em; margin: 0;
 }
 .tdc-modal-title em {
-  font-family: var(--tdc-font-serif);
+  font-family: var(--tdc-font-display);
+  font-style: italic;
   font-style: italic; font-weight: 400;
   color: var(--tdc-primary);
 }
@@ -2616,7 +2619,8 @@ const TDC_CSS = `
   font-size: 18px; font-weight: 700;
 }
 .tdc-map-tt-sig {
-  font-family: var(--tdc-font-serif);
+  font-family: var(--tdc-font-display);
+  font-style: italic;
   font-style: italic; font-size: 12.5px;
   color: rgba(255,255,255,0.85); margin-top: 4px;
 }

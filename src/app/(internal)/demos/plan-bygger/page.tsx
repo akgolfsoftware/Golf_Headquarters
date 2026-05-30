@@ -43,7 +43,7 @@ export default function PlanByggerDemo() {
 
         {/* Agent strip */}
         <div
-          className="mb-5 flex items-center gap-4 rounded-lg border border-[rgba(0,88,64,0.18)] border-l-4 border-l-[var(--brand-primary,#005840)] px-4 py-4"
+          className="mb-6 flex items-center gap-4 rounded-lg border border-[rgba(0,88,64,0.18)] border-l-4 border-l-[var(--brand-primary,#005840)] px-4 py-4"
           style={{
             backgroundImage:
               "linear-gradient(135deg, rgba(0,88,64,0.06) 0%, rgba(209,248,67,0.10) 100%)",
@@ -71,7 +71,7 @@ export default function PlanByggerDemo() {
         </div>
 
         {/* Phase cards */}
-        <div className="mb-5 grid grid-cols-5 gap-2.5">
+        <div className="mb-6 grid grid-cols-5 gap-2.5">
           <PhaseCard num="Fase 1" tag="Base" name="Base" dates="9.–22. mai · 2 u" progress={100} />
           <PhaseCard
             num="Fase 2"
@@ -95,7 +95,7 @@ export default function PlanByggerDemo() {
             name="Peak"
             dates="2.–4. jun · turnering"
             progress={0}
-            barColor="var(--color-pyr-spill,#B8852A)"
+            barColor="var(--color-pyr-spill,#D1F843)"
           />
         </div>
 
@@ -132,39 +132,39 @@ export default function PlanByggerDemo() {
               historyLabel="Faktisk siste 4 u: 18 %"
             />
             <SliderBlock
-              color="var(--color-pyr-tek,#1A7D56)"
+              color="var(--color-pyr-tek,#B8852A)"
               code="TEK"
               label="teknikk"
               value={15}
               historyPct={32}
-              historyBg="rgba(26,125,86,0.30)"
+              historyBg="rgba(184,133,42,0.30)"
               historyLabel="Faktisk siste 4 u: 32 %"
             />
             <SliderBlock
-              color="var(--color-pyr-slag,#D1F843)"
+              color="var(--color-pyr-slag,#2563EB)"
               code="SLAG"
               label="slagprogresjon"
               value={35}
               historyPct={24}
-              historyBg="rgba(209,248,67,0.40)"
+              historyBg="rgba(37,99,235,0.30)"
               historyLabel="Faktisk siste 4 u: 24 % · agent foreslår løft"
             />
             <SliderBlock
-              color="var(--color-pyr-spill,#B8852A)"
+              color="var(--color-pyr-spill,#D1F843)"
               code="SPILL"
               label="banespill"
               value={30}
               historyPct={14}
-              historyBg="rgba(184,133,42,0.30)"
+              historyBg="rgba(209,248,67,0.40)"
               historyLabel="Faktisk siste 4 u: 14 %"
             />
             <SliderBlock
-              color="var(--color-pyr-turn,#5E5C57)"
+              color="var(--color-pyr-turn,#A32D2D)"
               code="TURN"
               label="turnering"
               value={10}
               historyPct={12}
-              historyBg="rgba(94,92,87,0.30)"
+              historyBg="rgba(163,45,45,0.30)"
               historyLabel="Faktisk siste 4 u: 12 %"
             />
 

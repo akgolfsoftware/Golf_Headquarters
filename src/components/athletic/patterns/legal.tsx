@@ -292,7 +292,7 @@ function LegalSectionBlock({ section }: { section: LegalSection }) {
         style={{ fontSize: "clamp(20px, 2.5vw, 26px)" }}
       >
         {section.number && (
-          <span className="font-mono text-[var(--color-ink-subtle)] font-bold mr-3">
+          <span className="font-mono text-[var(--color-ink-subtle)] font-bold mr-4">
             {section.number}.
           </span>
         )}

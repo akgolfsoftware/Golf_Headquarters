@@ -138,8 +138,19 @@ akgolf-hq/
 │   │   ├── globals.css       # DESIGNSYSTEM-TOKENS (eneste kilde)
 │   │   └── layout.tsx
 │   ├── components/
-│   │   ├── athletic/         # AthleticHero, AthleticCard, AthleticKPI etc.
-│   │   ├── ui/               # shadcn-primitiver
+│   │   ├── ui/               # UI-primitiver: Button, Dialog, Sheet, Popover,
+│   │   │                     # DropdownMenu, Toast, Input, Tabs, etc.
+│   │   │                     # ERROR-håndhevet av ESLint — drift blokker CI.
+│   │   ├── athletic/         # Branded bibliotek — eneste sannhet for AK-DNA:
+│   │   │                     # Hero, FeaturedCard, KpiStrip, PyramidProgress,
+│   │   │                     # PhotoHero, LiveBar, InsightCard, GoalsHubPattern,
+│   │   │                     # SectionHeader, ItineraryRow, calendars/, data/.
+│   │   │                     # Tidligere v2/ + ds/tab-bar konsolidert hit (M5).
+│   │   ├── shared/           # Funksjonelle utility-komponenter (cookie-banner,
+│   │   │                     # cmd-palette, analytics-loader, mobile-bottom-nav).
+│   │   │                     # NB: Modal/PageHeader/OverviewShell er thin-wrappers
+│   │   │                     # for bakoverkompatibilitet — ny kode bruker
+│   │   │                     # ui/Dialog og athletic/-mønstre direkte.
 │   │   ├── admin*/           # CoachHQ-spesifikke
 │   │   ├── portal*/          # PlayerHQ-spesifikke
 │   │   └── booking/          # Booking-spesifikke

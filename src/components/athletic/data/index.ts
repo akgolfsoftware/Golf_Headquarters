@@ -12,3 +12,9 @@ export { RoundScorecard, type ScorecardHole } from "./round-scorecard";
 export { ShotMap, type ShotMapPoint } from "./shot-map";
 export { PyramidComparison, type PyramidValue } from "./pyramid-comparison";
 export { ClubMetricTrendChart, type ClubTrendPoint } from "./club-metric-trend-chart";
+
+// Migrert fra v2/data — kortere/avgrensede data-komponenter
+export { default as StatTile, type StatTileProps } from "./stat-tile";
+export { default as PyramidBar, type PyramidBarProps } from "./pyramid-bar";
+export { default as SgBar, type SgBarProps } from "./sg-bar";
+export { default as HcpDelta, type HcpDeltaProps } from "./hcp-delta";

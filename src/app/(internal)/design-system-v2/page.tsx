@@ -20,7 +20,7 @@ import {
   StatTile,
   PyramidBar,
   SgBar,
-  HcpTrend,
+  HcpDelta,
   ItineraryList,
   ItineraryRow,
   NowLine,
@@ -35,8 +35,8 @@ import {
   PhotoDivider,
   GhostNumber,
   StubModal,
-} from "@/components/v2";
-import { useNowTime } from "@/components/v2/hooks";
+} from "@/components/athletic";
+import { useNowTime } from "@/components/athletic/hooks";
 import {
   ØYVIND_USER,
   TODAY_SESSIONS,
@@ -82,7 +82,7 @@ function ComponentShowcase({
 }) {
   return (
     <div className="rounded-2xl border border-border bg-card p-6 sm:p-8">
-      <div className="mb-5 space-y-1">
+      <div className="mb-6 space-y-1">
         <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-accent">
           COMPONENT
         </p>
@@ -577,25 +577,25 @@ export default function DesignSystemV2Page() {
               </div>
             </ComponentShowcase>
 
-            {/* HcpTrend */}
+            {/* HcpDelta */}
             <ComponentShowcase
-              name="HcpTrend"
-              path="src/components/v2/data/hcp-trend.tsx"
+              name="HcpDelta"
+              path="src/components/athletic/data/hcp-delta.tsx"
               description="Inline HCP-trendindikator med pil og verdi. Props: delta (positiv = bedre, negativ = dårligere, 0 = stabil)."
             >
               <div className="space-y-4">
                 <VariantRow label="3 tilstander: forbedring +0.3 / stabil 0 / forverring -0.2">
                   <div className="flex flex-wrap items-center gap-8">
                     <div className="flex flex-col items-center gap-2">
-                      <HcpTrend delta={0.3} />
+                      <HcpDelta delta={0.3} />
                       <span className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.08em]">Forbedring</span>
                     </div>
                     <div className="flex flex-col items-center gap-2">
-                      <HcpTrend delta={0} />
+                      <HcpDelta delta={0} />
                       <span className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.08em]">Stabil</span>
                     </div>
                     <div className="flex flex-col items-center gap-2">
-                      <HcpTrend delta={-0.2} />
+                      <HcpDelta delta={-0.2} />
                       <span className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.08em]">Forverring</span>
                     </div>
                   </div>

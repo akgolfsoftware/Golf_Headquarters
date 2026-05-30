@@ -92,14 +92,14 @@ export default function Hjem() {
           <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-2 sm:gap-4">
             <Link
               href="/booking"
-              className="font-display inline-flex h-11 items-center justify-center gap-1.5 rounded-full bg-accent px-5 text-sm font-bold tracking-[-0.005em] text-primary shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              className="font-display inline-flex h-11 items-center justify-center gap-1.5 rounded-full bg-accent px-6 text-sm font-bold tracking-[-0.005em] text-primary shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               Book gratis kartleggings-økt
               <ArrowRight className="h-4 w-4" strokeWidth={2} />
             </Link>
             <Link
               href="/coaching"
-              className="font-display inline-flex h-11 items-center justify-center gap-1.5 rounded-md border border-primary bg-transparent px-5 text-sm font-bold tracking-[-0.005em] text-primary transition hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              className="font-display inline-flex h-11 items-center justify-center gap-1.5 rounded-md border border-primary bg-transparent px-6 text-sm font-bold tracking-[-0.005em] text-primary transition hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               Se tjenestene
             </Link>
@@ -234,7 +234,7 @@ export default function Hjem() {
 
         <div className="mt-10 flex flex-wrap items-center justify-between gap-6 rounded-2xl border border-border bg-card px-8 py-6">
           <AthleticEyebrow>Samarbeid og partnere</AthleticEyebrow>
-          <div className="flex flex-wrap items-center gap-x-10 gap-y-3 text-[14px] font-medium text-foreground">
+          <div className="flex flex-wrap items-center gap-x-10 gap-y-4 text-[14px] font-medium text-foreground">
             <Partner
               label="WANG Toppidrett Fredrikstad"
               logoSrc=""

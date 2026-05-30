@@ -25,7 +25,7 @@ import {
   ItineraryList,
   AuditLogPattern,
   useNowTime,
-} from "@/components/v2";
+} from "@/components/athletic";
 import {
   COACH_DATA,
   WEATHER_DATA,

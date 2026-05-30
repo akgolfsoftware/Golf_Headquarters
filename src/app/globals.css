@@ -141,27 +141,30 @@
   --font-display: var(--font-inter-tight), system-ui, -apple-system, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
 
-  /* Pyramide-farger (offisielle AK Golf-pyramide) */
-  --color-pyr-fys: #005840;
-  --color-pyr-tek: #1A7D56;
-  --color-pyr-slag: #D1F843;
-  --color-pyr-spill: #B8852A;
-  --color-pyr-turn: #5E5C57;
+  /* Pyramide-utility-aliaser: bg-pyr-fys, text-pyr-tek, border-pyr-slag, ...
+   * Kilden er --pyr-* (kanonisk spec). Aldri redefinér her. */
+  --color-pyr-fys: var(--pyr-fys);
+  --color-pyr-tek: var(--pyr-tek);
+  --color-pyr-slag: var(--pyr-slag);
+  --color-pyr-spill: var(--pyr-spill);
+  --color-pyr-turn: var(--pyr-turn);
 
-  /* V2 Pyramide-tokens (funksjonsbaserte for WCAG-kontrast) — brukes av v2-komponenter
-   * Mapping: FYS=primary, TEK=warning, SLAG=info, SPILL=accent, TURN=destructive */
+  /* Pyramide-farger — KANONISK spec (mode-invariant rå hex).
+   * FYS=forest, TEK=ochre, SLAG=blå, SPILL=lime, TURN=rød.
+   * Endres ALDRI. Kilden er .claude/skills/ak-golf-hq-design/colors_and_type.css.
+   * --color-pyr-* utility-aliasene mappes nedenfor i @theme inline. */
   --pyr-fys: #005840;
   --pyr-tek: #B8852A;
   --pyr-slag: #2563EB;
   --pyr-spill: #D1F843;
   --pyr-turn: #A32D2D;
 
-  /* Pyramide-track (lette versjoner for bg) */
+  /* Pyramide-track (lette versjoner for bg, matchet til nye farger) */
   --color-pyr-fys-track: rgba(0, 88, 64, 0.10);
-  --color-pyr-tek-track: rgba(26, 125, 86, 0.12);
-  --color-pyr-slag-track: rgba(209, 248, 67, 0.28);
-  --color-pyr-spill-track: rgba(184, 133, 42, 0.14);
-  --color-pyr-turn-track: rgba(94, 92, 87, 0.14);
+  --color-pyr-tek-track: rgba(184, 133, 42, 0.14);
+  --color-pyr-slag-track: rgba(37, 99, 235, 0.12);
+  --color-pyr-spill-track: rgba(209, 248, 67, 0.28);
+  --color-pyr-turn-track: rgba(163, 45, 45, 0.12);
 
   /* Wireframe-tokens overført fra base.css */
   --radius-card: 16px;

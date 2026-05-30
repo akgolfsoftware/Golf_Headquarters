@@ -18,7 +18,7 @@ import {
   StubModal,
   useNowTime,
   useInView,
-} from "@/components/v2";
+} from "@/components/athletic";
 import {
   ØYVIND_USER,
   TODAY_SESSIONS,

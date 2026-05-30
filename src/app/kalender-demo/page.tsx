@@ -774,7 +774,7 @@ function PyramideLegendCard() {
       <div className="mb-2 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
         Pyramide-stripe
       </div>
-      <div className="grid grid-cols-2 gap-x-3 gap-y-2">
+      <div className="grid grid-cols-2 gap-x-4 gap-y-2">
         {items.map((it) => (
           <div
             key={it.label}

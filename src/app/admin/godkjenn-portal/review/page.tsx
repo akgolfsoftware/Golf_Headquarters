@@ -49,7 +49,7 @@ export default async function ReviewPage({ searchParams }: Props) {
   return (
     <div className="flex h-screen flex-col bg-background">
       {/* Topbar */}
-      <header className="border-b border-border bg-card px-4 py-3 sm:px-6">
+      <header className="border-b border-border bg-card px-4 py-4 sm:px-6">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <Link
@@ -75,7 +75,7 @@ export default async function ReviewPage({ searchParams }: Props) {
             {prev && (
               <Link
                 href={`/admin/godkjenn-portal/review?route=${encodeURIComponent(prev.route)}`}
-                className="inline-flex items-center gap-1 rounded-md border border-border px-3 py-1.5 text-xs hover:border-primary"
+                className="inline-flex items-center gap-1 rounded-md border border-border px-4 py-1.5 text-xs hover:border-primary"
               >
                 <ChevronLeft className="h-3 w-3" />
                 Forrige
@@ -84,7 +84,7 @@ export default async function ReviewPage({ searchParams }: Props) {
             {next && (
               <Link
                 href={`/admin/godkjenn-portal/review?route=${encodeURIComponent(next.route)}`}
-                className="inline-flex items-center gap-1 rounded-md border border-border px-3 py-1.5 text-xs hover:border-primary"
+                className="inline-flex items-center gap-1 rounded-md border border-border px-4 py-1.5 text-xs hover:border-primary"
               >
                 Neste
                 <ChevronRight className="h-3 w-3" />
@@ -97,7 +97,7 @@ export default async function ReviewPage({ searchParams }: Props) {
       {/* Side-ved-side iframes */}
       <div className="grid flex-1 grid-cols-2 gap-2 overflow-hidden bg-secondary/20 p-2">
         <div className="flex flex-col overflow-hidden rounded-md border border-border bg-card">
-          <div className="border-b border-border bg-secondary/40 px-3 py-1.5">
+          <div className="border-b border-border bg-secondary/40 px-4 py-1.5">
             <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
               LIVE · {previewRoute}
             </p>
@@ -109,7 +109,7 @@ export default async function ReviewPage({ searchParams }: Props) {
           />
         </div>
         <div className="flex flex-col overflow-hidden rounded-md border border-border bg-card">
-          <div className="border-b border-border bg-secondary/40 px-3 py-1.5">
+          <div className="border-b border-border bg-secondary/40 px-4 py-1.5">
             <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
               DESIGN · {item.designPath?.split("/").pop() ?? "ingen designfil"}
             </p>
@@ -139,7 +139,7 @@ export default async function ReviewPage({ searchParams }: Props) {
       {/* Status-knapper + notater */}
       <form
         action={setApprovalStatus}
-        className="border-t border-border bg-card px-4 py-3 sm:px-6"
+        className="border-t border-border bg-card px-4 py-4 sm:px-6"
       >
         <input type="hidden" name="route" value={item.route} />
         <input
@@ -147,13 +147,13 @@ export default async function ReviewPage({ searchParams }: Props) {
           name="designPath"
           value={item.designPath ?? ""}
         />
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-4">
           <input
             type="text"
             name="notes"
             defaultValue={approval?.notes ?? ""}
             placeholder="Notater (valgfritt)…"
-            className="min-w-[280px] flex-1 rounded-md border border-input bg-card px-3 py-2 text-sm focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30"
+            className="min-w-[280px] flex-1 rounded-md border border-input bg-card px-4 py-2 text-sm focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30"
           />
           <div className="flex items-center gap-1">
             <button

@@ -56,7 +56,7 @@ export default function TalentRegionPipelineDemo() {
   return (
     <div className="min-h-screen bg-[var(--color-card,#FFFFFF)] text-foreground">
       {/* Header */}
-      <header className="grid grid-cols-[1fr_auto] items-end gap-6 border-b border-border pb-6 pt-1 mb-5">
+      <header className="grid grid-cols-[1fr_auto] items-end gap-6 border-b border-border pb-6 pt-1 mb-6">
         <div>
           <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             Scout · Regional pipeline
@@ -75,7 +75,7 @@ export default function TalentRegionPipelineDemo() {
       </header>
 
       {/* Action-strip */}
-      <div className="mb-5 flex flex-wrap items-center gap-2.5 rounded-lg border border-border bg-card px-4 py-2.5">
+      <div className="mb-6 flex flex-wrap items-center gap-2.5 rounded-lg border border-border bg-card px-4 py-2.5">
         <span className="mr-1 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           Sammendrag
         </span>

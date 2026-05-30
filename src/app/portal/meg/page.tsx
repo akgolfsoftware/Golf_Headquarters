@@ -134,7 +134,7 @@ export default async function MegPage() {
         <div className="flex flex-wrap items-center gap-2">
           <Link
             href="/portal/meg/profil/rediger"
-            className="inline-flex h-11 items-center gap-1.5 rounded-md border border-primary bg-transparent px-5 text-sm font-semibold text-primary transition hover:bg-primary/5"
+            className="inline-flex h-11 items-center gap-1.5 rounded-md border border-primary bg-transparent px-6 text-sm font-semibold text-primary transition hover:bg-primary/5"
           >
             <User size={14} strokeWidth={1.75} aria-hidden />
             Rediger profil

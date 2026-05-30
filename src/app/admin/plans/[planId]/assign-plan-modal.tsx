@@ -268,7 +268,7 @@ export function AssignPlanToPlayerModal({
         </div>
 
         {/* Steg-indikator */}
-        <div className="mb-5 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+        <div className="mb-6 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           <span
             className={
               steg === 1 ? "text-foreground" : "text-muted-foreground"
@@ -560,7 +560,7 @@ export function AssignPlanToPlayerModal({
         {feil && (
           <div
             role="alert"
-            className="mt-5 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive"
+            className="mt-6 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive"
           >
             {feil}
           </div>
@@ -569,7 +569,7 @@ export function AssignPlanToPlayerModal({
         {suksess && (
           <div
             role="status"
-            className="mt-5 rounded-md border border-primary/30 bg-primary/10 px-4 py-2 text-sm text-foreground"
+            className="mt-6 rounded-md border border-primary/30 bg-primary/10 px-4 py-2 text-sm text-foreground"
           >
             {suksess}
           </div>

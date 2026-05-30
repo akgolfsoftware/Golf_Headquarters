@@ -137,7 +137,7 @@ export function AnalyseTrender({
           </div>
         </div>
 
-        <div className="mt-5 h-80 w-full">
+        <div className="mt-6 h-80 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={flat}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />

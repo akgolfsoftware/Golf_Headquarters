@@ -178,7 +178,7 @@ export function PlayerHeroV2({
         </div>
 
         {/* Sub-metadata */}
-        <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
+        <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
           {user.nivaa ? (
             <span className="font-mono text-xs font-medium text-foreground">
               {user.nivaa}
@@ -228,7 +228,7 @@ export function PlayerHeroV2({
 
         {/* Wellness-rad (kun hvis data foreligger) */}
         {hasWellness ? (
-          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs">
+          <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs">
             {wellness?.energi !== undefined ? (
               <span className="inline-flex items-center gap-1.5">
                 <Battery

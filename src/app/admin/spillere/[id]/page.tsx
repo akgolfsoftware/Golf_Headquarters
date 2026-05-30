@@ -515,7 +515,7 @@ function ProfilTab({
               Full profil →
             </Link>
           </div>
-          <dl className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">
+          <dl className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
             <Fact label="Navn" value={player.name} />
             <Fact label="E-post" value={player.email} mono />
             <Fact

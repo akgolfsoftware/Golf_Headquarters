@@ -319,7 +319,7 @@ function TurneringKort({ t }: { t: TurneringKortData }) {
         <h3 className="mt-2 font-display text-lg font-semibold tracking-tight leading-tight">
           {t.name}
         </h3>
-        <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-muted-foreground">
+        <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[12px] text-muted-foreground">
           <span className="inline-flex items-center gap-1">
             <CalendarRange className="h-3.5 w-3.5" strokeWidth={1.75} />
             {datoTekst}

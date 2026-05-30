@@ -260,7 +260,7 @@ export function LiveActiveV2Client({
           </div>
 
           {/* TRE REP-TELLERE */}
-          <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-2">
+          <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-2">
             {(["dry", "lav", "full"] as RepKind[]).map((kind) => {
               const label =
                 kind === "dry"
@@ -308,7 +308,7 @@ export function LiveActiveV2Client({
           </div>
 
           {/* STORE TOUCHTARGETS +5 / +10 / +25 */}
-          <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-2">
+          <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-2">
             {[5, 10, 25].map((n) => (
               <button
                 key={n}
@@ -332,7 +332,7 @@ export function LiveActiveV2Client({
           {/* FERDIG-CTA */}
           <button
             onClick={finishDrill}
-            className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-4 font-display text-[16px] font-semibold text-primary-foreground hover:opacity-90"
+            className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-4 font-display text-[16px] font-semibold text-primary-foreground hover:opacity-90"
           >
             <CheckCircle2 className="h-4 w-4" strokeWidth={2} />
             Ferdig med drill

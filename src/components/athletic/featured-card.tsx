@@ -53,7 +53,7 @@ export function FeaturedCard({
 
       <div className="relative z-10 flex h-full flex-col">
         {eyebrow && (
-          <div className="mb-3 flex items-center gap-2">
+          <div className="mb-4 flex items-center gap-2">
             {showPulse && <PulseDot size="sm" />}
             <AthleticEyebrow tone="lime">{eyebrow}</AthleticEyebrow>
           </div>

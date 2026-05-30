@@ -52,7 +52,7 @@ export function NorskeDenneUkaWidget({ entries }: { entries: Entry[] }) {
   return (
     <section className="border-b border-border bg-accent/10">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8">
-        <div className="mb-5 flex flex-wrap items-baseline justify-between gap-2">
+        <div className="mb-6 flex flex-wrap items-baseline justify-between gap-2">
           <h2 className="font-display text-2xl font-semibold tracking-tight md:text-3xl">
             <Flag className="mr-2 inline-block h-5 w-5 text-primary" strokeWidth={2} />
             Nordmenn denne uka

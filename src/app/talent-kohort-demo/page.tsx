@@ -83,7 +83,7 @@ export default function TalentKohortDemo() {
   return (
     <div className="min-h-screen bg-[var(--color-card,#FFFFFF)] text-foreground">
       {/* Header */}
-      <header className="grid grid-cols-[1fr_auto] items-end gap-6 border-b border-border pb-6 pt-1 mb-5">
+      <header className="grid grid-cols-[1fr_auto] items-end gap-6 border-b border-border pb-6 pt-1 mb-6">
         <div>
           <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             Scout · Kohort-explorer
@@ -110,7 +110,7 @@ export default function TalentKohortDemo() {
       </header>
 
       {/* Action-strip */}
-      <div className="mb-5 flex flex-wrap items-center gap-2.5 rounded-lg border border-border bg-card px-4 py-2.5">
+      <div className="mb-6 flex flex-wrap items-center gap-2.5 rounded-lg border border-border bg-card px-4 py-2.5">
         <span className="mr-1 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           I visning
         </span>
@@ -171,7 +171,7 @@ export default function TalentKohortDemo() {
       <section className="rounded-lg border border-border bg-card p-6">
         <CohortScatter />
         {/* Footer-totals */}
-        <div className="mt-5 grid grid-cols-5 gap-2 border-t border-[var(--line-soft,#EFEDE6)] pt-4">
+        <div className="mt-6 grid grid-cols-5 gap-2 border-t border-[var(--line-soft,#EFEDE6)] pt-4">
           <FooterStat label="Totalt" value="118" sub="spillere" />
           <FooterStat label="Topp 10 %" value="12" sub="over p90" />
           <FooterStat label="Median alder" value="16,2" sub="år" />

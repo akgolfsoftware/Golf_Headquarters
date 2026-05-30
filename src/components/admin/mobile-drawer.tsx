@@ -155,7 +155,7 @@ export function AdminMobileDrawer() {
                   >
                     {group.label}
                   </Link>
-                  <div className="ml-3 space-y-0.5 border-l border-white/10 pl-1">
+                  <div className="ml-4 space-y-0.5 border-l border-white/10 pl-1">
                     {group.items.map((n) => {
                       const aktiv =
                         path === n.href ||

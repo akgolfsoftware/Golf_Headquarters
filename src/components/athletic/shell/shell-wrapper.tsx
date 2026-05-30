@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Plus } from "lucide-react";
-import { useNowTime } from "@/components/v2/hooks";
+import { useNowTime } from "@/components/athletic/hooks";
 import Sidebar from "./sidebar";
 import Topbar from "./topbar";
 import LiveBar from "./live-bar";

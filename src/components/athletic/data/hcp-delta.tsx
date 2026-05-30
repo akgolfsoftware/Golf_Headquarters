@@ -2,13 +2,13 @@
 
 import { ChevronUp, ChevronDown, Minus } from "lucide-react";
 
-export type HcpTrendProps = {
+export type HcpDeltaProps = {
   /** Positive = improving (HCP going up in amateur land, or down if scratch+).
    *  In this design: positive delta = good (accent), negative = bad (destructive). */
   delta: number;
 };
 
-export default function HcpTrend({ delta }: HcpTrendProps) {
+export default function HcpDelta({ delta }: HcpDeltaProps) {
   const up = delta > 0;
   const dn = delta < 0;
   const color = up

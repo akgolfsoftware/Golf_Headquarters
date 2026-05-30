@@ -39,7 +39,7 @@ export function WorkspacePlaceholder({
             {description}
           </p>
 
-          <div className="mt-5">
+          <div className="mt-6">
             <div className="font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
               NESTE STEG
             </div>
@@ -55,7 +55,7 @@ export function WorkspacePlaceholder({
             </ul>
           </div>
 
-          {cta ? <div className="mt-5">{cta}</div> : null}
+          {cta ? <div className="mt-6">{cta}</div> : null}
         </div>
       </div>
     </div>

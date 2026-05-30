@@ -59,7 +59,7 @@ export default async function OvelserPage({
   return (
     <div className="space-y-0">
       {/* Header */}
-      <div className="mb-5">
+      <div className="mb-6">
         <Link
           href="/portal/tren"
           className="mb-4 inline-flex min-h-11 items-center gap-1 font-mono text-[12px] font-medium text-muted-foreground hover:text-foreground"

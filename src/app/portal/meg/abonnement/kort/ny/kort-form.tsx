@@ -178,7 +178,7 @@ export function KortForm({
             </div>
           </div>
 
-          <div className="mt-7 flex items-center justify-end gap-2 border-t border-border pt-6">
+          <div className="mt-8 flex items-center justify-end gap-2 border-t border-border pt-6">
             <AthleticButton
               type="button"
               variant="ghost-light"

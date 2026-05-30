@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import Link from "next/link";
 import { ChevronLeft, Clock } from "lucide-react";
-import { useHeroParallax, useInView } from "@/components/v2/hooks";
+import { useHeroParallax, useInView } from "@/components/athletic/hooks";
 import type { Axis } from "@/lib/v2-fixtures";
 
 export type DetailHeroProps = {

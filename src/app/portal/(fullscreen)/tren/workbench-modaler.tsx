@@ -4291,7 +4291,7 @@ export function AiForeslaUkeModal({
                     display: "flex",
                     flexDirection: "column",
                     gap: 6,
-                    fontFamily: "var(--font-serif)",
+                    fontFamily: "var(--font-display)",
                     fontStyle: "italic",
                     fontSize: 13.5,
                     lineHeight: 1.5,

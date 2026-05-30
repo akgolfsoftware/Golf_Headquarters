@@ -43,7 +43,7 @@ export function ForgotForm() {
         </p>
         <Link
           href="/auth/login"
-          className="font-display mt-2 inline-flex h-11 items-center justify-center gap-1.5 rounded-md bg-transparent px-5 text-sm font-bold tracking-[-0.005em] text-foreground transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="font-display mt-2 inline-flex h-11 items-center justify-center gap-1.5 rounded-md bg-transparent px-6 text-sm font-bold tracking-[-0.005em] text-foreground transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           Tilbake til innlogging
         </Link>

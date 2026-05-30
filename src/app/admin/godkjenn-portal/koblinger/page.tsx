@@ -109,21 +109,21 @@ export default async function KoblingerPage({
           <table className="w-full">
             <thead className="border-b border-border bg-muted/40">
               <tr className="text-left font-mono text-xs uppercase tracking-wide text-muted-foreground">
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3">Design</th>
-                <th className="px-4 py-3">Foreslått rute</th>
-                <th className="px-4 py-3 text-right">Knapper</th>
-                <th className="px-4 py-3 text-right">Match</th>
-                <th className="px-4 py-3" />
+                <th className="px-4 py-4">Status</th>
+                <th className="px-4 py-4">Design</th>
+                <th className="px-4 py-4">Foreslått rute</th>
+                <th className="px-4 py-4 text-right">Knapper</th>
+                <th className="px-4 py-4 text-right">Match</th>
+                <th className="px-4 py-4" />
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
               {koblinger.map((k) => (
                 <tr key={k.id} className="hover:bg-muted/30">
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-4">
                     <StatusBadge status={k.status} />
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-4">
                     <div className="font-medium text-foreground">
                       {k.designTitle.slice(0, 60)}
                     </div>
@@ -131,7 +131,7 @@ export default async function KoblingerPage({
                       {k.designFile}
                     </div>
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-4">
                     {k.confirmedRoute ? (
                       <span className="font-mono text-xs text-success">
                         ✓ {k.confirmedRoute}
@@ -146,16 +146,16 @@ export default async function KoblingerPage({
                       </span>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-right font-mono text-sm text-muted-foreground">
+                  <td className="px-4 py-4 text-right font-mono text-sm text-muted-foreground">
                     {k.buttonCount + k.linkCount}
                   </td>
-                  <td className="px-4 py-3 text-right font-mono text-sm text-muted-foreground">
+                  <td className="px-4 py-4 text-right font-mono text-sm text-muted-foreground">
                     {k.confidence}%
                   </td>
-                  <td className="px-4 py-3 text-right">
+                  <td className="px-4 py-4 text-right">
                     <Link
                       href={`/admin/godkjenn-portal/koblinger/${k.id}`}
-                      className="inline-flex items-center gap-1 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
+                      className="inline-flex items-center gap-1 rounded-md bg-primary px-4 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
                     >
                       <Link2 className="h-3 w-3" />
                       Åpne

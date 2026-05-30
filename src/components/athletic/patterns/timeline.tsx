@@ -11,7 +11,7 @@ import {
   Star,
   ArrowRight,
 } from "lucide-react";
-import { useInView } from "@/components/v2/hooks";
+import { useInView } from "@/components/athletic/hooks";
 
 // ── Types ─────────────────────────────────────────────────────────
 

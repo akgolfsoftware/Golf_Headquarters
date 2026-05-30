@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { useInView, useCountUp } from "@/components/v2/hooks";
+import { useInView, useCountUp } from "@/components/athletic/hooks";
 
 export type SgBarProps = {
   /** Category label e.g. "OTT", "APP" */

@@ -27,7 +27,7 @@ export function MersalgBanner() {
             Lær av dem også.
           </em>
         </h2>
-        <p className="mt-5 max-w-2xl text-[15px] leading-[1.6] opacity-90 md:text-[17px]">
+        <p className="mt-6 max-w-2xl text-[15px] leading-[1.6] opacity-90 md:text-[17px]">
           Du følger Hovland og Aune denne uka — kanskje du bør strukturere din egen
           trening på samme måte. PlayerHQ gir deg treningsdagbok, statistikk og
           AI-coach. Bygd av coacher med 10+ års erfaring fra norsk landslag.

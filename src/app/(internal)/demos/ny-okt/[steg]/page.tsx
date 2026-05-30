@@ -93,7 +93,7 @@ function DotIndicator({ current }: { current: StegId }) {
   const idx = Number(current);
   const label = STEPS[idx - 1].label;
   return (
-    <div className="mb-7">
+    <div className="mb-8">
       <div className="mb-2.5 flex items-center gap-1.5">
         {STEPS.map((s, i) => {
           const stepNum = i + 1;
@@ -842,7 +842,7 @@ function Step6() {
     <div className="flex flex-col gap-6">
       <section>
         <div className="rounded-2xl border border-border bg-card px-8 py-6">
-          <div className="mb-5 flex items-start justify-between gap-4">
+          <div className="mb-6 flex items-start justify-between gap-4">
             <div>
               <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                 Sammendrag
@@ -856,7 +856,7 @@ function Step6() {
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-x-7 gap-y-3.5 border-t border-[var(--line-soft,#EFEDE6)] pt-6">
+          <div className="grid grid-cols-2 gap-x-8 gap-y-4.5 border-t border-[var(--line-soft,#EFEDE6)] pt-6">
             <SummaryItem label="Type" value="Fokusert · TEK" />
             <SummaryItem label="Fasilitet" value="Mulligan Studio 2" />
             <SummaryItem label="Varighet & intensitet" value="60 min · medium (3 / 5)" />
@@ -870,7 +870,7 @@ function Step6() {
             />
           </div>
 
-          <div className="mt-5 border-t border-[var(--line-soft,#EFEDE6)] pt-6">
+          <div className="mt-6 border-t border-[var(--line-soft,#EFEDE6)] pt-6">
             <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
               5 øvelser · 58 min
             </div>
