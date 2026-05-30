@@ -2,12 +2,20 @@
 // Speiler PlayersScreen fra Claude artifact AK Golf AgencyOS.
 
 import Link from "next/link";
-import { Sparkles, TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { Sparkles, Minus, ChevronRight } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
+import { Sparkline } from "@/components/athletic/sparkline";
 
 export const dynamic = "force-dynamic";
+
+// SG-verdi → norsk format med fortegn (ekte minus-tegn).
+function fmtSg(n: number | null): string {
+  if (n == null) return "—";
+  const s = `${Math.abs(n).toFixed(2).replace(".", ",")}`;
+  return n > 0 ? `+${s}` : n < 0 ? `−${s}` : s;
+}
 
 type Filter = "alle" | "aktiv" | "abonnent" | "skylder";
 
@@ -36,6 +44,12 @@ export default async function SpillereTabPage({
         orderBy: { startAt: "desc" },
         take: 1,
       },
+      // Siste 8 SG-registreringer → trend-sparkline + nyeste SG total.
+      sgInputs: {
+        orderBy: { dato: "desc" },
+        take: 8,
+        select: { sgTotal: true },
+      },
       _count: { select: { bookings: true } },
     },
     orderBy: { name: "asc" },
@@ -52,6 +66,8 @@ export default async function SpillereTabPage({
     sistMott: Date | null;
     totaltOkter: number;
     skylder: boolean;
+    sgTotal: number | null; // nyeste SG total
+    sgTrend: number[]; // eldste → nyeste, for sparkline
   };
 
   const rader: Rad[] = spillere.map((s) => {
@@ -64,6 +80,11 @@ export default async function SpillereTabPage({
       .toUpperCase();
     const pakke = s.subscription?.tier ?? "Drop-in";
     const pakkeAktiv = s.subscription?.status === "ACTIVE";
+    // sgInputs er desc (nyeste først). Trend skal være eldste → nyeste.
+    const sgVerdier = s.sgInputs
+      .map((i) => i.sgTotal)
+      .filter((v): v is number => v != null);
+    const sgTrend = [...sgVerdier].reverse();
     return {
       id: s.id,
       navn,
@@ -74,6 +95,8 @@ export default async function SpillereTabPage({
       sistMott: s.bookings[0]?.startAt ?? null,
       totaltOkter: s._count.bookings,
       skylder: false, // TODO: koble til Payment.status=PENDING når relevant
+      sgTotal: sgVerdier[0] ?? null,
+      sgTrend,
     };
   });
 
@@ -141,6 +164,8 @@ export default async function SpillereTabPage({
               <tr>
                 <Th>Spiller</Th>
                 <Th>HCP</Th>
+                <Th>SG total</Th>
+                <Th>Trend · 6 mnd</Th>
                 <Th>Pakke</Th>
                 <Th>Sist møtt</Th>
                 <Th>Totalt</Th>
@@ -169,6 +194,39 @@ export default async function SpillereTabPage({
                       {r.hcp != null ? r.hcp.toFixed(1) : "—"}
                       <Minus className="h-3 w-3 text-muted-foreground" />
                     </span>
+                  </Td>
+                  <Td>
+                    <span
+                      className={`font-mono font-semibold tabular-nums ${
+                        r.sgTotal == null
+                          ? "text-muted-foreground"
+                          : r.sgTotal > 0
+                            ? "text-success"
+                            : r.sgTotal < 0
+                              ? "text-destructive"
+                              : "text-muted-foreground"
+                      }`}
+                    >
+                      {fmtSg(r.sgTotal)}
+                    </span>
+                  </Td>
+                  <Td>
+                    {r.sgTrend.length >= 2 ? (
+                      <Sparkline
+                        values={r.sgTrend}
+                        width={72}
+                        height={24}
+                        color={
+                          r.sgTrend[r.sgTrend.length - 1] >= r.sgTrend[0]
+                            ? "hsl(var(--success))"
+                            : "hsl(var(--destructive))"
+                        }
+                      />
+                    ) : (
+                      <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                        for få data
+                      </span>
+                    )}
                   </Td>
                   <Td>
                     <span
@@ -201,16 +259,17 @@ export default async function SpillereTabPage({
                   <Td>
                     <Link
                       href={`/admin/elever/${r.id}`}
-                      className="font-mono text-[10px] uppercase tracking-[0.10em] text-primary hover:underline"
+                      aria-label={`Åpne ${r.navn}`}
+                      className="inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-secondary hover:text-primary"
                     >
-                      Åpne →
+                      <ChevronRight className="h-4 w-4" strokeWidth={1.5} />
                     </Link>
                   </Td>
                 </tr>
               ))}
               {filtrert.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="py-10 text-center text-sm text-muted-foreground">
+                  <td colSpan={9} className="py-10 text-center text-sm text-muted-foreground">
                     Ingen spillere matcher filteret.
                   </td>
                 </tr>
@@ -230,10 +289,23 @@ export default async function SpillereTabPage({
                 <div className="min-w-0 flex-1">
                   <div className="font-semibold text-foreground">{r.navn}</div>
                   <div className="text-xs text-muted-foreground">
-                    HCP {r.hcp?.toFixed(1) ?? "—"} · {r.pakke}
+                    HCP {r.hcp?.toFixed(1) ?? "—"} · SG {fmtSg(r.sgTotal)} · {r.pakke}
                   </div>
                 </div>
-                <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-primary">→</span>
+                {r.sgTrend.length >= 2 && (
+                  <Sparkline
+                    values={r.sgTrend}
+                    width={56}
+                    height={20}
+                    color={
+                      r.sgTrend[r.sgTrend.length - 1] >= r.sgTrend[0]
+                        ? "hsl(var(--success))"
+                        : "hsl(var(--destructive))"
+                    }
+                    className="shrink-0"
+                  />
+                )}
+                <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" strokeWidth={1.5} />
               </Link>
             </li>
           ))}
@@ -256,7 +328,3 @@ function Td({ children, mono = false }: { children?: React.ReactNode; mono?: boo
     <td className={`px-4 py-2.5 ${mono ? "font-mono tabular-nums" : ""}`}>{children}</td>
   );
 }
-
-// Lucide-icons brukes nedenfor — sørg for at de er importert øverst
-void TrendingUp;
-void TrendingDown;
