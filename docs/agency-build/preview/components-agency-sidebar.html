@@ -1,0 +1,553 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>AgencyOS sidebar-nav</title>
+<link rel="stylesheet" href="_shared.css">
+<script src="https://unpkg.com/lucide@0.453.0"></script>
+<style>
+  body { width: 880px; }
+  .card { padding: 24px; }
+
+  .sec {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    display: flex; align-items: center; gap: 8px;
+    margin: 0 0 16px;
+  }
+  .sec::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+
+  /* ===== Stage ===== */
+  .stage {
+    display: grid;
+    grid-template-columns: 240px 56px 1fr;
+    column-gap: 16px;
+    align-items: start;
+  }
+  .stage .annot {
+    padding-top: 8px;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted-foreground);
+    line-height: 1.7;
+    letter-spacing: 0.02em;
+  }
+  .stage .annot b { color: var(--foreground); font-weight: 700; }
+  .stage .annot p { margin: 0 0 12px; }
+  .stage .annot code {
+    background: var(--secondary); padding: 1px 5px; border-radius: 3px;
+    color: var(--foreground); font-weight: 700;
+  }
+
+  .states-row {
+    display: grid;
+    grid-template-columns: 240px 56px 1fr;
+    column-gap: 16px;
+    margin-bottom: 8px;
+  }
+  .states-row .cap {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+
+  /* ============================================================
+     SIDEBAR base — dark, forest-900
+     ============================================================ */
+  .ag {
+    background: var(--forest-900);
+    color: var(--cream-100);
+    height: 760px;
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    font-feature-settings: "ss01","cv11";
+  }
+  .ag.expanded { width: 240px; }
+  .ag.rail     { width: 56px; }
+
+  /* Header — AK brand + collapse toggle */
+  .ag-head {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 14px;
+    border-bottom: 1px solid var(--forest-300);
+  }
+  .ag.rail .ag-head { padding: 14px 0; justify-content: center; }
+
+  .ag-mono {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: var(--lime-500);
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0; overflow: hidden;
+  }
+  .ag-mono img { width: 21px; height: auto; display: block; }
+  .ag-head .brand {
+    display: flex; flex-direction: column; line-height: 1.1;
+    min-width: 0; flex: 1;
+  }
+  .ag-head .brand .eb {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: rgba(245,244,238,0.55);
+  }
+  .ag-head .brand .nm {
+    font-family: var(--font-display); font-weight: 700; font-size: 13px;
+    margin-top: 2px; letter-spacing: -0.015em;
+    color: var(--cream-100);
+  }
+  .ag-head .toggle {
+    width: 24px; height: 24px; border-radius: 6px;
+    border: 1px solid var(--forest-300); background: transparent;
+    color: rgba(245,244,238,0.65);
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; flex-shrink: 0;
+  }
+  .ag-head .toggle:hover { background: rgba(245,244,238,0.05); color: var(--cream-100); }
+  .ag-head .toggle i { width: 12px; height: 12px; }
+
+  /* Org switcher pill — only expanded */
+  .ag-org {
+    display: flex; align-items: center; gap: 8px;
+    margin: 10px 10px 6px;
+    padding: 8px 10px;
+    background: rgba(245,244,238,0.04);
+    border: 1px solid var(--forest-300);
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .ag-org .av {
+    width: 22px; height: 22px; border-radius: 6px;
+    background: var(--lime-500); color: var(--forest-900);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-weight: 700; font-size: 11px;
+    flex-shrink: 0;
+  }
+  .ag-org .nm {
+    font-size: 12px; font-weight: 700; letter-spacing: -0.005em;
+    line-height: 1.15; color: var(--cream-100);
+    flex: 1; min-width: 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .ag-org .nm .sub {
+    display: block;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 600;
+    color: rgba(245,244,238,0.55); letter-spacing: 0.04em;
+    margin-top: 2px; text-transform: uppercase;
+  }
+  .ag-org i { color: rgba(245,244,238,0.55); width: 12px; height: 12px; }
+
+  /* ============================================================
+     NAV
+     ============================================================ */
+  .ag-nav {
+    flex: 1; overflow-y: auto;
+    padding: 8px 8px 16px;
+  }
+  .ag.rail .ag-nav { padding: 8px 4px 16px; }
+
+  .ag-nav .group {
+    margin-top: 14px;
+  }
+  .ag-nav .group:first-child { margin-top: 0; }
+  .ag-nav .group-lbl {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: rgba(245,244,238,0.40);
+    padding: 6px 10px 10px;
+  }
+  .ag.rail .group-lbl { display: none; }
+  .ag.rail .group {
+    margin-top: 10px;
+    border-top: 1px solid var(--forest-300);
+    padding-top: 10px;
+  }
+  .ag.rail .group:first-child { border-top: 0; padding-top: 0; }
+
+  .nav-item {
+    position: relative;
+    display: grid;
+    grid-template-columns: 18px 1fr auto;
+    align-items: center; column-gap: 12px;
+    padding: 9px 12px;
+    border-radius: 8px;
+    color: rgba(245,244,238,0.75);
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 150ms ease-out, color 150ms ease-out;
+    white-space: nowrap;
+  }
+  .nav-item:hover {
+    background: rgba(245,244,238,0.05);
+    color: var(--cream-100);
+  }
+  .nav-item .ic { color: currentColor; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; }
+  .nav-item .ic i { width: 18px; height: 18px; stroke-width: 1.5; }
+  .nav-item .label {
+    font-size: 13px; font-weight: 500; letter-spacing: -0.005em;
+    min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .nav-item .kbd {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: rgba(245,244,238,0.45); letter-spacing: 0.04em;
+    padding: 1px 5px; border-radius: 3px;
+    background: rgba(245,244,238,0.06);
+  }
+  .nav-item .badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 18px; height: 18px; padding: 0 5px;
+    border-radius: 9999px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    background: rgba(245,244,238,0.10);
+    color: var(--cream-100);
+    font-feature-settings: "tnum","zero";
+  }
+  .nav-item .badge.alert { background: var(--alert-coral); color: var(--forest-900); }
+  .nav-item .badge.lime  { background: var(--lime-500); color: var(--forest-900); }
+
+  /* Primary nav items — slightly brighter */
+  .nav-item.primary { color: var(--cream-100); }
+  .nav-item.primary .ic { color: var(--cream-100); }
+
+  /* ACTIVE state — 3px lime left border + lighter bg + lime text */
+  .nav-item.is-active {
+    background: rgba(209,248,67,0.08);
+    color: var(--cream-100);
+  }
+  .nav-item.is-active::before {
+    content: "";
+    position: absolute; left: -8px; top: 8px; bottom: 8px;
+    width: 3px; border-radius: 9999px;
+    background: var(--lime-500);
+    box-shadow: 0 0 8px rgba(209,248,67,0.50);
+  }
+  .nav-item.is-active .ic { color: var(--lime-500); }
+  .nav-item.is-active .badge:not(.alert) {
+    background: rgba(209,248,67,0.20); color: var(--lime-500);
+  }
+
+  /* hover-state shown explicitly on Bookinger */
+  .nav-item.is-hover {
+    background: rgba(245,244,238,0.05);
+    color: var(--cream-100);
+  }
+
+  /* ====== Rail (collapsed) variant ====== */
+  .ag.rail .nav-item {
+    grid-template-columns: 36px;
+    justify-content: center;
+    padding: 9px 0;
+    position: relative;
+  }
+  .ag.rail .nav-item .ic {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+  }
+  .ag.rail .nav-item .label,
+  .ag.rail .nav-item .kbd { display: none; }
+  .ag.rail .nav-item .badge {
+    position: absolute; top: 4px; right: 8px;
+    min-width: 14px; height: 14px; padding: 0 4px;
+    font-size: 8px;
+    border: 2px solid var(--forest-900);
+  }
+  .ag.rail .nav-item.is-active::before {
+    left: 0; top: 12px; bottom: 12px;
+  }
+  .ag.rail .nav-item.is-active .ic {
+    background: rgba(209,248,67,0.12);
+  }
+  /* Tooltip on hover for rail */
+  .ag.rail .nav-item .tip {
+    position: absolute; left: calc(100% + 8px); top: 50%;
+    transform: translateY(-50%);
+    padding: 4px 8px; border-radius: 6px;
+    background: var(--forest-700); color: var(--cream-100);
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    white-space: nowrap;
+    opacity: 0; pointer-events: none;
+    transition: opacity 120ms ease-out;
+    z-index: 5;
+    box-shadow: var(--shadow-md);
+  }
+  .ag.rail .nav-item:hover .tip { opacity: 1; }
+
+  /* ============================================================
+     COACH PROFILE FOOTER
+     ============================================================ */
+  .ag-coach {
+    border-top: 1px solid var(--forest-300);
+    padding: 10px 10px 12px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .ag.rail .ag-coach { padding: 10px 4px 12px; align-items: center; }
+
+  .ag-coach .who {
+    display: grid;
+    grid-template-columns: 32px 1fr 22px;
+    align-items: center; column-gap: 10px;
+    padding: 6px 8px; border-radius: 8px;
+    cursor: pointer;
+  }
+  .ag-coach .who:hover { background: rgba(245,244,238,0.05); }
+  .ag.rail .ag-coach .who {
+    grid-template-columns: 32px;
+    padding: 0;
+  }
+  .ag-coach .av {
+    width: 32px; height: 32px; border-radius: 9999px;
+    background: var(--secondary); color: var(--forest-900);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-weight: 700; font-size: 12px;
+    position: relative;
+  }
+  .ag-coach .av::after {
+    content: ""; position: absolute; bottom: 1px; right: 1px;
+    width: 8px; height: 8px; border-radius: 9999px;
+    background: var(--success);
+    border: 2px solid var(--forest-900);
+  }
+  .ag-coach .meta {
+    min-width: 0;
+    display: flex; flex-direction: column; line-height: 1.15;
+  }
+  .ag-coach .meta .nm {
+    font-size: 13px; font-weight: 700; color: var(--cream-100);
+    letter-spacing: -0.005em;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .ag-coach .meta .role {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 600;
+    color: rgba(245,244,238,0.55); letter-spacing: 0.10em; text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .ag-coach .menu-btn {
+    width: 22px; height: 22px; border-radius: 6px;
+    background: transparent; border: 0; color: rgba(245,244,238,0.55);
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  .ag-coach .menu-btn:hover { background: rgba(245,244,238,0.06); color: var(--cream-100); }
+  .ag-coach .menu-btn i { width: 14px; height: 14px; }
+  .ag.rail .ag-coach .meta,
+  .ag.rail .ag-coach .menu-btn { display: none; }
+
+  /* status row (online · 3 spillere booked i dag) */
+  .ag-status {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 8px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    color: rgba(245,244,238,0.55);
+  }
+  .ag-status .live {
+    display: inline-flex; align-items: center; gap: 5px;
+    color: var(--lime-500);
+  }
+  .ag-status .live::before {
+    content: ""; width: 6px; height: 6px; border-radius: 9999px;
+    background: var(--lime-500);
+    box-shadow: 0 0 6px rgba(209,248,67,0.7);
+  }
+  .ag.rail .ag-status { display: none; }
+
+  /* Rules block */
+  .rules {
+    margin-top: 24px; padding: 16px;
+    background: var(--secondary); border-radius: 12px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted-foreground); line-height: 1.6;
+  }
+  .rules p { margin: 0; }
+  .rules p + p { margin-top: 8px; }
+  .rules b { color: var(--foreground); font-weight: 700; }
+  .rules code {
+    background: var(--card); padding: 1px 5px; border-radius: 3px;
+    color: var(--foreground); font-weight: 700;
+  }
+</style></head>
+<body><div class="card">
+
+  <div class="sec">AgencyOS sidebar-nav · 240 utfoldet + 56 ikon-rail</div>
+
+  <div class="states-row">
+    <div class="cap">240 · UTFOLDET</div>
+    <div class="cap">56 · RAIL</div>
+    <div class="cap">ANATOMI</div>
+  </div>
+
+  <div class="stage">
+
+    <!-- =============== EXPANDED 240 =============== -->
+    <aside class="ag expanded" aria-label="AgencyOS navigation">
+
+      <!-- Brand -->
+      <div class="ag-head">
+        <div class="ag-mono"><img src="../assets/logo-primary-mono.svg" alt="AK Golf" /></div>
+        <div class="brand">
+          <span class="eb">AGENCYOS</span>
+          <span class="nm">AK Golf HQ</span>
+        </div>
+        <button class="toggle" aria-label="Skjul"><i data-lucide="panel-left-close"></i></button>
+      </div>
+
+      <!-- Org switcher -->
+      <div class="ag-org">
+        <span class="av">GF</span>
+        <span class="nm">
+          GFGK Akademi
+          <span class="sub">38 spillere · pro</span>
+        </span>
+        <i data-lucide="chevrons-up-down"></i>
+      </div>
+
+      <!-- Nav -->
+      <nav class="ag-nav" aria-label="Hovedmeny">
+
+        <div class="group">
+          <div class="group-lbl">Daglig</div>
+
+          <a class="nav-item primary is-active" href="#" aria-current="page">
+            <span class="ic"><i data-lucide="sun"></i></span>
+            <span class="label">Daglig brief</span>
+            <span class="badge lime">4</span>
+          </a>
+          <a class="nav-item primary" href="#">
+            <span class="ic"><i data-lucide="users"></i></span>
+            <span class="label">Stallen</span>
+            <span class="badge">38</span>
+          </a>
+          <a class="nav-item" href="#">
+            <span class="ic"><i data-lucide="inbox"></i></span>
+            <span class="label">Innboks</span>
+            <span class="badge alert">4</span>
+          </a>
+        </div>
+
+        <div class="group">
+          <div class="group-lbl">Planlegging</div>
+
+          <a class="nav-item" href="#">
+            <span class="ic"><i data-lucide="calendar"></i></span>
+            <span class="label">Kalender</span>
+            <span class="kbd">⌘1</span>
+          </a>
+          <a class="nav-item is-hover" href="#">
+            <span class="ic"><i data-lucide="clock"></i></span>
+            <span class="label">Bookinger</span>
+            <span class="badge">12</span>
+          </a>
+        </div>
+
+        <div class="group">
+          <div class="group-lbl">Utvikling</div>
+
+          <a class="nav-item" href="#">
+            <span class="ic"><i data-lucide="clipboard-check"></i></span>
+            <span class="label">Tester</span>
+            <span class="badge">7</span>
+          </a>
+          <a class="nav-item" href="#">
+            <span class="ic"><i data-lucide="settings"></i></span>
+            <span class="label">Drift</span>
+          </a>
+        </div>
+
+      </nav>
+
+      <!-- Coach footer -->
+      <div class="ag-coach">
+        <div class="ag-status">
+          <span class="live">ONLINE</span>
+          <span>4 ØKTER I DAG</span>
+        </div>
+        <div class="who" role="button">
+          <span class="av">AK</span>
+          <span class="meta">
+            <span class="nm">Andreas Kragerud</span>
+            <span class="role">HEAD COACH</span>
+          </span>
+          <button class="menu-btn" aria-label="Profilmeny"><i data-lucide="more-horizontal"></i></button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- =============== RAIL 56 =============== -->
+    <aside class="ag rail" aria-label="AgencyOS rail">
+
+      <div class="ag-head">
+        <div class="ag-mono"><img src="../assets/logo-primary-mono.svg" alt="AK Golf" /></div>
+      </div>
+
+      <nav class="ag-nav" aria-label="Hovedmeny – kompakt">
+
+        <div class="group">
+          <a class="nav-item primary is-active" href="#" aria-label="Daglig brief" aria-current="page">
+            <span class="ic"><i data-lucide="sun"></i></span>
+            <span class="badge lime">4</span>
+            <span class="tip">Daglig brief</span>
+          </a>
+          <a class="nav-item primary" href="#" aria-label="Stallen">
+            <span class="ic"><i data-lucide="users"></i></span>
+            <span class="badge">38</span>
+            <span class="tip">Stallen</span>
+          </a>
+          <a class="nav-item" href="#" aria-label="Innboks">
+            <span class="ic"><i data-lucide="inbox"></i></span>
+            <span class="badge alert">4</span>
+            <span class="tip">Innboks</span>
+          </a>
+        </div>
+
+        <div class="group">
+          <a class="nav-item" href="#" aria-label="Kalender">
+            <span class="ic"><i data-lucide="calendar"></i></span>
+            <span class="tip">Kalender</span>
+          </a>
+          <a class="nav-item is-hover" href="#" aria-label="Bookinger">
+            <span class="ic"><i data-lucide="clock"></i></span>
+            <span class="badge">12</span>
+            <span class="tip">Bookinger</span>
+          </a>
+        </div>
+
+        <div class="group">
+          <a class="nav-item" href="#" aria-label="Tester">
+            <span class="ic"><i data-lucide="clipboard-check"></i></span>
+            <span class="badge">7</span>
+            <span class="tip">Tester</span>
+          </a>
+          <a class="nav-item" href="#" aria-label="Drift">
+            <span class="ic"><i data-lucide="settings"></i></span>
+            <span class="tip">Drift</span>
+          </a>
+        </div>
+      </nav>
+
+      <!-- Coach footer (rail) -->
+      <div class="ag-coach">
+        <div class="who" role="button" aria-label="Profilmeny">
+          <span class="av">AK</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- =============== ANNOTATIONS =============== -->
+    <div class="annot">
+      <p><b>Brand-header.</b> 56 px tall. AK-monogram (lime fyll, forest-900 tekst). Eyebrow "AGENCYOS" + organisasjon. Toggle-knapp kollapser til 56 px rail.</p>
+      <p><b>Org-switcher.</b> Pill mellom header og nav når flere klubber. Vises kun utfoldet.</p>
+      <p><b>Grupper.</b> 3 logiske: <em>Daglig</em> (Daglig brief, Stallen, Innboks) · <em>Planlegging</em> (Kalender, Bookinger) · <em>Utvikling</em> (Tester, Drift-innstillinger). Mono caps som section-labels. <code>Daglig</code> som gruppe-label unngår kollisjon med nav-itemet <code>Drift</code> (innstillinger-siden).</p>
+      <p><b>Daglig brief + Stallen.</b> Primær — lysere tekst som default. De er coach-ens grunnflyt.</p>
+      <p><b>Aktiv.</b> 3 px lime venstre-border (utenfor item-padding, glow ut til venstre) + <code>rgba(lime, 0.08)</code> bg + lime ikon. Tall-badge skifter til lime-tint.</p>
+      <p><b>Hover.</b> <code>rgba(245,244,238,0.05)</code> bg + cream-100 tekst. Vist på "Bookinger".</p>
+      <p><b>Badges.</b> Innboks <code>4</code> = rød (uleste — synkronisert med innboks-matrise). Daglig brief <code>4</code> = lime (handlinger som venter coach). Andre = nøytrale.</p>
+      <p><b>Rail (56 px).</b> Skjul label, org-pill, kbd-shortcuts. Badges flyttes til top-right på ikonet med 2 px forest-ramme for kontrast. Hover viser tooltip til høyre.</p>
+      <p><b>Coach-footer.</b> Online-puls + dagens øktantall over avatar-row. Avatar har grønn presence-dot. <code>···</code> menu åpner profil/logg-ut.</p>
+    </div>
+  </div>
+
+  <div class="rules">
+    <p><b>Bredde:</b> <code>240 px</code> utfoldet · <code>56 px</code> rail. Persisteres i <code>localStorage</code>.</p>
+    <p><b>Bakgrunn:</b> <code>--forest-900</code>. Border mellom seksjoner: <code>--forest-300</code>. Tekst-default: <code>rgba(cream-100, 0.75)</code>. Hover/aktiv tekst: <code>--cream-100</code>.</p>
+    <p><b>Ikoner:</b> Lucide, 18 px, 1.5 px stroke, <code>currentColor</code>. Sun · Users · Inbox · Calendar · Clock · ClipboardCheck · Settings.</p>
+    <p><b>Aksessibilitet:</b> aktiv-state har <code>aria-current="page"</code>. Rail-tooltip åpnes på hover/focus. Min touch-target 36 px (ikon-cell).</p>
+  </div>
+
+  <script>lucide.createIcons();</script>
+</div></body></html>
