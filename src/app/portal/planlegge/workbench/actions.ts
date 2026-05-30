@@ -134,35 +134,13 @@ export async function listUserPlans() {
 // PLAN SESSIONS — drag-drop-persistering (Sprint 6)
 // ============================================================================
 
-import { WBP_SESSIONS } from "@/components/portal-planlegge/workbench/types";
-
 export async function listPlanSessions() {
   const user = await requirePortalUser();
   const rows = await prisma.planSession.findMany({
     where: { userId: user.id },
     orderBy: [{ week: "asc" }, { day: "asc" }],
   });
-  // Seed med mock-data hvis bruker ikke har noen sessions
-  if (rows.length === 0) {
-    await prisma.planSession.createMany({
-      data: WBP_SESSIONS.map((s) => ({
-        userId: user.id,
-        week: s.week,
-        day: s.day,
-        span: s.span,
-        axis: s.axis,
-        title: s.title,
-        meta: s.meta,
-        done: s.done ?? false,
-        isNow: s.now ?? false,
-        isPeak: s.peak ?? false,
-      })),
-    });
-    return prisma.planSession.findMany({
-      where: { userId: user.id },
-      orderBy: [{ week: "asc" }, { day: "asc" }],
-    });
-  }
+  // Ingen mock-seed — tom plan viser empty-state (ekte data, ikke falske økter).
   return rows;
 }
 

@@ -34,11 +34,11 @@ Stripe-kode komplett · 15 unit + 5 e2e + CI · PWA/offline · **RLS deny-all ak
 - [⊘] **B9** Shot-map / dispersion — `Shot` mangler x/y-koordinater → krever koordinatdata (se D3)
 
 ## Fase C — Kode-gjeld / datakvalitet (P1)
-- [ ] **C1** Koble `/portal/mal/runder/[id]/shot-by-shot` til ekte data (bruker hardkodet `FRONT_SCORES` nå; vi har 288 skudd) (M, ~M)
-- [ ] **C2** Fjern/feature-flag `src/components/workspace/sample-data.ts` (11 TODO, eksponert i admin) (M, S)
-- [ ] **C3** Skjul BankID-knapp i `/auth/bankid` (stub "kommer post-beta") til den er implementert (M, S)
-- [ ] **C4** Stub-shield ufullførte features: `meg/sikkerhet` (MFA), `mal/leaderboard` (placeholder-tall), blob-opplasting i meldinger, AI-fallback i workbench — skjul i UI til ekte (M, ~M)
-- [ ] **C5** Gå gjennom resten av 91 TODO; lukk eller dokumentér de som ikke blokkerer (M, ~M)
+- [x] **C1** `/portal/mal/runder/[id]/shot-by-shot` koblet til ekte Round/Shot (per-hull par/score/FIR/GIR/putter, KPI, trend-charts, notat). Mock fjernet (−126 linjer). — 2026-05-30
+- [x] **C2** Workspace-task-fallback returnerer `[]` i prod (ingen falske oppgaver uten Notion-kobling); sample beholdt for dev. NB: `workspace/prosjekter` + task-`[id]` er fortsatt mock (internt verktøy, ingen datamodell — trenger flag/modell senere). — 2026-05-30
+- [x] **C3** N/A — ingen BankID-knapp i UI lenker til stubben (intet å skjule). — 2026-05-30
+- [x] **C4** Workbench seedet mock-økter inn i ekte plan → fjernet (tom = empty-state). Blob-opplasting returnerte falskt vedlegg → kaster nå tydelig feil. `meg/sikkerhet` (kommer-snart), `mal/leaderboard` (feature-flag av), AI Caddie (ærlig toast) var alt ærlige. — 2026-05-30
+- [~] **C5** Kritiske mock/fake-data TODO-er lukket (C1-C4). Resterende ~85 TODO er ikke-blokkerende (interne notater, future-features) — dokumentert, ryddes løpende.
 
 ## Fase D — Datafundament (låser opp B6/B8/B9 — krever beslutning)
 - [ ] **D1** Turnerings-resultater for AK-spillere: kilde? (manuell innlegging i `/admin/tournaments`, NGF/GolfBox-import, eller score fra `Round`). Låser opp **B6**. (A+M)

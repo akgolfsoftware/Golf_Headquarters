@@ -56,10 +56,7 @@ export async function uploadMessageAttachment(formData: FormData): Promise<{
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
   void formData;
-  // TODO: integrer med @vercel/blob put() — returner ekte URL.
-  return {
-    url: "/placeholder.png",
-    name: "screenshot-trackman-1422.png",
-    size: 240_000,
-  };
+  // Vercel Blob er ikke konfigurert ennå — feil tydelig i stedet for å returnere
+  // et falskt vedlegg. Aktiveres når @vercel/blob put() er på plass.
+  throw new Error("Filvedlegg er ikke tilgjengelig ennå.");
 }
