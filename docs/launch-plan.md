@@ -16,10 +16,10 @@ Marker `[x]` per steg når deployet/verifisert.
 
 ## Fase A — P0 launch-blokkere
 
-- [ ] **A1. Fjern/gate demo-ruter** — 9 offentlige demo/preview-ruter (`/demo`, `/hull-demo`, `/kalender-demo`, `/kalender-maaned-demo`, `/lokasjoner-demo`, `/sesjon-opptak-demo`, `/talent-*-demo`, `/coach-preview`, `/portal-preview`, `/v2-preview`). Slett eller flytt bak `/intern`-gate. (30 min)
-- [ ] **A2. Sentral env-validering** — `src/lib/env.ts` med zod-schema som fail-faster på manglende kritiske nøkler ved oppstart (Supabase, DATABASE_URL, Stripe). (1–2 t)
-- [ ] **A3. Sikkerhets-quickwins** — skru på leaked-password-protection (Supabase Auth), flytt `pg_trgm` ut av public-schema. (15 min)
-- [ ] **A4. (MANUELT — Anders)** DNS `akgolf.no` → Vercel · Stripe webhook → `https://akgolf.no/api/stripe/webhook` · verifiser prod env-vars i Vercel (Stripe-nøkler, Sentry DSN, Plausible-domene). (15 min)
+- [x] **A1. Gate demo-ruter** — 13 demo/preview-ruter gated bak auth i `proxy.ts` (`DEMO_PREFIXES`). Ingen produksjonskode lenker til dem. — 2026-05-30
+- [x] **A2. Sentral env-validering** — `src/lib/env.ts` (zod, kritisk = throw, anbefalt = warn) kjørt via `src/instrumentation.ts` ved server-start. — 2026-05-30
+- [ ] **A3. (MANUELT — Anders)** Supabase Dashboard → Auth → skru på "Leaked password protection" (HaveIBeenPwned). `pg_trgm`-flytting er valgfri (ingen indekser bruker den — trygt, men kun WARN).
+- [ ] **A4. (MANUELT — Anders)** DNS `akgolf.no` → Vercel · Stripe webhook → `https://akgolf.no/api/stripe/webhook` · verifiser prod env-vars i Vercel (Stripe-nøkler, Sentry DSN, Plausible-domene).
 
 ## Fase B — Resterende skjermer
 - [ ] **B5. #4 Scorecard per runde** — hull-for-hull (score · SG · skudd) fra `Round`/`Shot`. `/portal/tren/turneringer/[id]/runde/[nr]`. (M)
