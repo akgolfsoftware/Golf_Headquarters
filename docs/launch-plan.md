@@ -24,10 +24,10 @@ Marker `[x]` per steg når deployet/verifisert.
 ## Fase B — Resterende skjermer
 - [x] **B5. #4 Scorecard per runde** — re-scopet: `Round` har ingen `tournamentId`, og `/portal/mal/runder/[id]` viste alt ekte per-hull-data (KPI + wizard) men manglet scorecard-grid. La til `RoundScorecard` (hull-for-hull, UT/INN, score-til-par) på ekte data. — 2026-05-30
   - NB (Fase C): `/portal/mal/runder/[id]/shot-by-shot` bruker hardkodet mock (`FRONT_SCORES`) — må kobles til ekte data eller skjules.
-- [ ] **B6. #3-rest Intern leaderboard** — AK-spillere i en intern turnering (`TournamentResult`). `/portal/tren/turneringer/[id]`. (S)
-- [ ] **B7. #8 Benchmark** — vs coach / region / Tour. `/portal/mal/sg-hub/benchmark`. (M)
-- [ ] **B8. #5 Live turnerings-tracking** — under spill, portal + coach. (L)
-- [ ] **B9. #7 Shot-map / dispersion** — top-down, ekte data. `/portal/statistikk/shot-map`. (M, lav prio)
+- [⊘] **B6. #3-rest Intern leaderboard** — UTSATT: `tournament_results` har 0 rader. Empty-state finnes alt i `/portal/tren/turneringer/[id]`. Bygges når data finnes.
+- [ ] **B7. #8 Benchmark** — vs Tour (PGA-data + BrukerSgInput finnes). vs coach/region = senere. `/portal/mal/sg-hub/benchmark`. (M) — delvis mulig
+- [⊘] **B8. #5 Live turnerings-tracking** — UTSATT: ingen live score-feed i datamodellen. Krever ekstern integrasjon først.
+- [⊘] **B9. #7 Shot-map / dispersion** — UTSATT: `Shot` mangler x/y-koordinater (kun lie + avstander). Ekte dispersion-kart krever koordinat-data først.
 
 ## Fase C — Kode-gjeld / datakvalitet (P1)
 - [ ] **C10. Stub-shield + sample-data** — skjul 5 kritiske ufullførte features i UI til de er ekte (MFA/`meg/sikkerhet`, `mal/leaderboard` placeholder-tall, blob-opplasting meldinger, AI-fallback workbench); fjern/feature-flag `workspace/sample-data.ts` fra admin; skjul BankID-knapp. (3–4 t)
