@@ -1,6 +1,6 @@
 /**
- * CoachHQ Hjem — pixel-perfekt operations cockpit (Variant A)
- * Spec: sesjon-1-hjem-og-spiller.md, skjerm 2.
+ * CoachHQ Hjem — operations cockpit (Variant A, steg 2 · 3-kolonne)
+ * Spec: ui_kits/coachhq (CoachHQ UI-kit) — Fokus-spiller · Timeline · Innboks.
  *
  * Tokens: forest #005840, accent lime #D1F843, surface #FAFAF7.
  * Server Component (kun Links).
@@ -8,7 +8,6 @@
 
 import Link from "next/link";
 import {
-  AlertOctagon,
   ArrowRight,
   CalendarClock,
   Flame,
@@ -18,6 +17,20 @@ import {
   Users,
 } from "lucide-react";
 import { avatarBg, initialsFromName } from "@/lib/avatar-colors";
+import { PyramidProgress, type PyramidRow } from "@/components/athletic/pyramid-progress";
+
+export type SgTile = { label: string; value: string; tone: "good" | "bad" | "neutral" };
+
+export type FocusPlayer = {
+  id: string;
+  name: string;
+  hcpLabel: string; // "Hcp 4,2"
+  roundsLabel: string; // "14 runder · 2026"
+  nextLabel: string; // "Klar 14:30" / "Ingen økt i dag"
+  online: boolean;
+  sg: SgTile[]; // 4 tiles
+  pyramid: PyramidRow[];
+};
 
 export type CoachHomeProps = {
   coachName: string;
@@ -27,6 +40,8 @@ export type CoachHomeProps = {
   enrolledThisWeek: number;
   burningTaskCount: number;
   stallHealthPct: number;
+  // Fokus-spiller (venstre kolonne)
+  focusPlayer: FocusPlayer | null;
   // Timeline
   timeline: {
     id: string;
@@ -141,10 +156,13 @@ export function CoachHome(props: CoachHomeProps) {
         />
       </section>
 
-      {/* I dag-tidslinje + Brennende oppgaver */}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[2fr_1fr]">
+      {/* 3-kolonne: Fokus-spiller · Timeline · Innboks */}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-[320px_1fr_360px]">
+        {/* Fokus-spiller */}
+        <FocusPanel player={props.focusPlayer} />
+
         {/* Tidslinje */}
-        <section className="rounded-2xl border border-border bg-card p-6 sm:p-6">
+        <section className="rounded-2xl border border-border bg-card p-6">
           <div className="mb-6 flex items-baseline justify-between">
             <div>
               <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
@@ -210,7 +228,7 @@ export function CoachHome(props: CoachHomeProps) {
                   <Link
                     key={ev.id}
                     href={`/admin/kalender#${ev.id}`}
-                    className="pointer-events-auto absolute left-3 right-2 overflow-hidden rounded-xl border border-primary/20 bg-primary/8 px-4 py-2 transition-colors hover:bg-primary/15"
+                    className="pointer-events-auto absolute left-3 right-2 overflow-hidden rounded-xl border border-border border-l-[3px] border-l-primary bg-primary/8 px-4 py-2 transition-colors hover:bg-primary/15"
                     style={{ top, height }}
                   >
                     <div className="font-mono text-[10px] font-semibold tabular-nums text-primary">
@@ -240,61 +258,12 @@ export function CoachHome(props: CoachHomeProps) {
           </div>
         </section>
 
-        {/* Brennende oppgaver */}
-        <section
-          className="relative overflow-hidden rounded-2xl border border-border bg-card p-6"
-        >
-          <div
-            aria-hidden="true"
-            className="absolute left-0 top-0 h-full w-1.5"
-            style={{ background: "hsl(var(--destructive))" }}
-          />
-          <div className="pl-4">
-            <div className="flex items-center gap-2">
-              <AlertOctagon
-                size={16}
-                strokeWidth={1.75}
-                className="text-destructive"
-              />
-              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-destructive">
-                Brennende
-              </div>
-            </div>
-            <h2 className="mt-1 font-display text-lg font-semibold leading-snug text-foreground">
-              Krever handling
-            </h2>
-            {props.burningTasks.length === 0 ? (
-              <p className="mt-4 text-sm text-muted-foreground">
-                Ingen brennende oppgaver. Pust ut.
-              </p>
-            ) : (
-              <ul className="mt-4 space-y-2">
-                {props.burningTasks.map((t) => (
-                  <li
-                    key={t.id}
-                    className="rounded-xl border border-[#A32D2D]/15 bg-destructive/5 p-4"
-                  >
-                    <Link
-                      href={t.href}
-                      className="group block"
-                    >
-                      <div className="text-sm font-semibold text-foreground group-hover:text-destructive">
-                        {t.title}
-                      </div>
-                      <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.08em] text-destructive">
-                        {t.deadline}
-                      </div>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </section>
+        {/* Innboks */}
+        <Inbox burningTasks={props.burningTasks} messages={props.recentMessages} />
       </div>
 
       {/* Stall-overview-strip */}
-      <section className="rounded-2xl border border-border bg-card p-6 sm:p-6">
+      <section className="rounded-2xl border border-border bg-card p-6">
         <div className="mb-4 flex items-baseline justify-between">
           <div>
             <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
@@ -359,9 +328,7 @@ export function CoachHome(props: CoachHomeProps) {
       </section>
 
       {/* Workspace-quick-strip */}
-      <section
-        className="relative overflow-hidden rounded-2xl border border-border bg-card p-6"
-      >
+      <section className="relative overflow-hidden rounded-2xl border border-border bg-card p-6">
         <div
           aria-hidden="true"
           className="absolute left-0 top-0 h-full w-1.5"
@@ -404,73 +371,211 @@ export function CoachHome(props: CoachHomeProps) {
         </div>
       </section>
 
-      {/* Aktivitet-strøm 2-kol */}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <section className="rounded-2xl border border-border bg-card p-6 sm:p-6">
-          <div className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-            Siste meldinger
+      {/* Siste godkjenninger */}
+      <section className="rounded-2xl border border-border bg-card p-6">
+        <div className="mb-2 flex items-center gap-2">
+          <CalendarClock
+            size={14}
+            strokeWidth={1.75}
+            className="text-muted-foreground"
+          />
+          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+            Siste godkjenninger
           </div>
-          {props.recentMessages.length === 0 ? (
-            <p className="text-sm text-muted-foreground">Innboksen er rolig.</p>
-          ) : (
-            <ul className="space-y-2">
-              {props.recentMessages.slice(0, 4).map((m) => (
-                <li
-                  key={m.id}
-                  className="border-b border-border pb-2 last:border-b-0 last:pb-0"
-                >
-                  <div className="flex items-baseline justify-between gap-2">
-                    <span className="truncate text-sm font-semibold text-foreground">
-                      {m.from}
-                    </span>
-                    <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
-                      {m.timeAgo}
-                    </span>
-                  </div>
-                  <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
-                    {m.preview}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
+        </div>
+        {props.recentApprovals.length === 0 ? (
+          <p className="text-sm text-muted-foreground">Alt godkjent.</p>
+        ) : (
+          <ul className="space-y-2">
+            {props.recentApprovals.slice(0, 4).map((a) => (
+              <li
+                key={a.id}
+                className="flex items-start justify-between gap-2 border-b border-border pb-2 last:border-b-0 last:pb-0"
+              >
+                <div className="min-w-0">
+                  <p className="truncate text-sm text-foreground">{a.title}</p>
+                </div>
+                <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
+                  {a.timeAgo}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    </div>
+  );
+}
 
-        <section className="rounded-2xl border border-border bg-card p-6 sm:p-6">
-          <div className="mb-2 flex items-center gap-2">
-            <CalendarClock
-              size={14}
-              strokeWidth={1.75}
-              className="text-muted-foreground"
-            />
-            <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-              Siste godkjenninger
+/* ── Fokus-spiller-panel ───────────────────────────────────────────── */
+function FocusPanel({ player }: { player: FocusPlayer | null }) {
+  if (!player) {
+    return (
+      <section className="rounded-2xl border border-border bg-card p-6">
+        <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+          Fokus-spiller
+        </div>
+        <p className="mt-4 text-sm text-muted-foreground">
+          Ingen spiller å vise ennå.
+        </p>
+      </section>
+    );
+  }
+  const sgColor: Record<SgTile["tone"], string> = {
+    good: "text-success",
+    bad: "text-destructive",
+    neutral: "text-foreground",
+  };
+  return (
+    <section className="rounded-2xl border border-border bg-card p-6">
+      <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+        Fokus-spiller
+      </div>
+
+      <div className="mt-3 flex items-center gap-3">
+        <div className="relative">
+          <div
+            className="grid h-14 w-14 place-items-center rounded-full font-display text-base font-bold text-white"
+            style={{ background: avatarBg(player.name) }}
+          >
+            {initialsFromName(player.name)}
+          </div>
+          {player.online && (
+            <span className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-accent ring-2 ring-card" />
+          )}
+        </div>
+        <div className="min-w-0">
+          <div className="truncate font-display text-xl font-bold tracking-tight text-foreground">
+            {player.name}
+          </div>
+          <div className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
+            {player.hcpLabel} · {player.roundsLabel} · {player.nextLabel}
+          </div>
+        </div>
+      </div>
+
+      {/* 4 SG-tiles */}
+      <div className="mt-4 grid grid-cols-2 gap-2">
+        {player.sg.map((t) => (
+          <div key={t.label} className="rounded-xl border border-border bg-background p-3">
+            <div className="font-mono text-[9px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+              {t.label}
+            </div>
+            <div
+              className={`mt-1.5 font-mono text-xl font-semibold tabular-nums leading-none ${sgColor[t.tone]}`}
+            >
+              {t.value}
             </div>
           </div>
-          {props.recentApprovals.length === 0 ? (
-            <p className="text-sm text-muted-foreground">Alt godkjent.</p>
-          ) : (
-            <ul className="space-y-2">
-              {props.recentApprovals.slice(0, 4).map((a) => (
-                <li
-                  key={a.id}
-                  className="flex items-start justify-between gap-2 border-b border-border pb-2 last:border-b-0 last:pb-0"
-                >
-                  <div className="min-w-0">
-                    <p className="truncate text-sm text-foreground">
-                      {a.title}
-                    </p>
-                  </div>
-                  <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
-                    {a.timeAgo}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
+        ))}
       </div>
-    </div>
+
+      {/* Pyramide */}
+      <div className="mt-5">
+        <div className="mb-2.5 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+          Pyramide · siste 30 d
+        </div>
+        <PyramidProgress rows={player.pyramid} />
+      </div>
+
+      <Link
+        href={`/admin/spillere/${player.id}`}
+        className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 font-display text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+      >
+        Åpne spillerprofil
+        <ArrowRight size={14} strokeWidth={2} />
+      </Link>
+    </section>
+  );
+}
+
+/* ── Innboks ───────────────────────────────────────────────────────── */
+function Inbox({
+  burningTasks,
+  messages,
+}: {
+  burningTasks: CoachHomeProps["burningTasks"];
+  messages: CoachHomeProps["recentMessages"];
+}) {
+  const items = [
+    ...burningTasks.map((t) => ({
+      key: `b-${t.id}`,
+      name: t.title,
+      detail: t.deadline,
+      href: t.href,
+      badge: "Haster",
+      tone: "urgent" as const,
+    })),
+    ...messages.map((m) => ({
+      key: `m-${m.id}`,
+      name: m.from,
+      detail: m.preview,
+      href: "/admin/innboks",
+      badge: m.timeAgo,
+      tone: "neutral" as const,
+    })),
+  ].slice(0, 6);
+
+  const toneCls: Record<"urgent" | "neutral", string> = {
+    urgent: "bg-destructive/12 text-destructive",
+    neutral: "bg-secondary text-muted-foreground",
+  };
+
+  return (
+    <section className="rounded-2xl border border-border bg-card p-6">
+      <div className="mb-4 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full rounded-full bg-accent opacity-75 motion-safe:animate-ping" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
+          </span>
+          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+            Innboks · {burningTasks.length} krever handling
+          </div>
+        </div>
+        <Link
+          href="/admin/innboks"
+          className="font-mono text-[10px] uppercase tracking-[0.08em] text-primary hover:underline"
+        >
+          Se alle →
+        </Link>
+      </div>
+
+      {items.length === 0 ? (
+        <p className="text-sm text-muted-foreground">Innboksen er rolig.</p>
+      ) : (
+        <ul className="space-y-1">
+          {items.map((it, i) => (
+            <li key={it.key}>
+              <Link
+                href={it.href}
+                className={`flex items-center gap-3 py-2.5 ${i < items.length - 1 ? "border-b border-border" : ""}`}
+              >
+                <div
+                  className="grid h-8 w-8 shrink-0 place-items-center rounded-full font-mono text-[10px] font-semibold text-white"
+                  style={{ background: avatarBg(it.name) }}
+                >
+                  {initialsFromName(it.name)}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="truncate text-[13px] font-semibold text-foreground">
+                    {it.name}
+                  </div>
+                  <div className="truncate font-mono text-[10px] text-muted-foreground">
+                    {it.detail}
+                  </div>
+                </div>
+                <span
+                  className={`shrink-0 rounded-full px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.06em] ${toneCls[it.tone]}`}
+                >
+                  {it.badge}
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
   );
 }
 

@@ -7,9 +7,35 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { CoachHome, type CoachHomeProps } from "@/components/admin/agencyos-v2/coach-home";
+import {
+  CoachHome,
+  type CoachHomeProps,
+  type SgTile,
+} from "@/components/admin/agencyos-v2/coach-home";
+import { aggregateByArea, prosentPerArea, PYR_LABEL } from "@/lib/pyramide";
 
 export const dynamic = "force-dynamic";
+
+// Pyramide-visning topp→bunn: Turnering først, Fysisk sist (jf. designsystem).
+const PYR_ORDER = ["TURN", "SPILL", "SLAG", "TEK", "FYS"] as const;
+const PYR_TONE = {
+  FYS: "pyr-fys",
+  TEK: "pyr-tek",
+  SLAG: "pyr-slag",
+  SPILL: "pyr-spill",
+  TURN: "pyr-turn",
+} as const;
+
+// SG-tile: norsk format med ekte fortegn + tone.
+function sgTile(label: string, v: number | null | undefined): SgTile {
+  if (v == null) return { label, value: "—", tone: "neutral" };
+  const s = Math.abs(v).toFixed(2).replace(".", ",");
+  return {
+    label,
+    value: v > 0 ? `+${s}` : v < 0 ? `−${s}` : s,
+    tone: v > 0 ? "good" : v < 0 ? "bad" : "neutral",
+  };
+}
 
 const DAGER = [
   "SØNDAG",
@@ -249,6 +275,64 @@ export default async function AgencyOSPage() {
 
   const dato = `${DAGER[now.getDay()]} ${now.getDate()}. ${MND[now.getMonth()]} · UKE ${isoWeek(now)}`;
 
+  // Fokus-spiller: neste spiller i dagens timeline, ellers første i stallen.
+  const focusId =
+    dagensBookinger.find((b) => b.user?.id)?.user?.id ?? stallSpillere[0]?.id ?? null;
+
+  let focusPlayer: CoachHomeProps["focusPlayer"] = null;
+  if (focusId) {
+    const [fp, fpSessions] = await Promise.all([
+      prisma.user.findUnique({
+        where: { id: focusId },
+        select: {
+          id: true,
+          name: true,
+          hcp: true,
+          sgInputs: {
+            orderBy: { dato: "desc" },
+            take: 1,
+            select: { sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
+          },
+          _count: { select: { sgInputs: true } },
+        },
+      }),
+      prisma.trainingPlanSession.findMany({
+        where: { plan: { userId: focusId }, scheduledAt: { gte: tretti } },
+        select: { pyramidArea: true, durationMin: true },
+      }),
+    ]);
+
+    if (fp) {
+      const sg = fp.sgInputs[0] ?? null;
+      const nextBk = dagensBookinger.find(
+        (b) => b.user?.id === fp.id && b.startAt >= now,
+      );
+      const pct = prosentPerArea(aggregateByArea(fpSessions));
+      focusPlayer = {
+        id: fp.id,
+        name: fp.name || "Ukjent",
+        hcpLabel: `Hcp ${fp.hcp != null ? fp.hcp.toFixed(1).replace(".", ",") : "—"}`,
+        roundsLabel: `${fp._count.sgInputs} SG-runder`,
+        nextLabel: nextBk
+          ? `Klar ${nextBk.startAt.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" })}`
+          : "Ingen økt i dag",
+        online: Boolean(nextBk),
+        sg: [
+          sgTile("SG Tee→green", sg?.sgOtt),
+          sgTile("SG Approach", sg?.sgApp),
+          sgTile("SG Nærspill", sg?.sgArg),
+          sgTile("SG Putt", sg?.sgPutt),
+        ],
+        pyramid: PYR_ORDER.map((a) => ({
+          label: PYR_LABEL[a],
+          fillPercent: pct[a],
+          value: `${pct[a]} %`,
+          tone: PYR_TONE[a],
+        })),
+      };
+    }
+  }
+
   return (
     <CoachHome
       coachName={user.name}
@@ -257,6 +341,7 @@ export default async function AgencyOSPage() {
       enrolledThisWeek={ukensBookingerCount}
       burningTaskCount={burningCount}
       stallHealthPct={stallHealthPct}
+      focusPlayer={focusPlayer}
       timeline={timeline}
       burningTasks={burningTasks}
       stallOverview={stallOverview}
