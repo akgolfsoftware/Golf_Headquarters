@@ -704,6 +704,20 @@ export default async function StatsTurneringDetalj({ params }: Props) {
                 Sist oppdatert {NB_DATE_SHORT.format(t.leaderboardSnap.fetchedAt)}
               </div>
             )}
+            <Link
+              href={`/stats/turneringer/${slug}/statistikk`}
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: 10,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "var(--s-primary, #005840)",
+                fontWeight: 600,
+                whiteSpace: "nowrap",
+              }}
+            >
+              Se statistikk →
+            </Link>
           </div>
 
           <div style={{ overflowX: "auto" }}>

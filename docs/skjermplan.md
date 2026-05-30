@@ -11,7 +11,7 @@ Innsats: S/M/L. Merk hvert steg som `[x]` når deployet.
 - [~] **3. Turnerings-resultatliste / leaderboard** — FINNES ALLEREDE for offentlige turneringer i `/stats/turneringer/[slug]` (full leaderboard, posisjon, score-to-par, norske, maks 50). Gjenstår ev.: intern-spiller-leaderboard for `/portal/tren/turneringer/[id]`. Re-scopes.
 - [ ] **4. Turnerings-scorecard per runde** — `/portal/tren/turneringer/[id]/runde/[nr]` (+ admin) — hull-for-hull. Gjenbruk: `round-scorecard.tsx`. (M)
 - [ ] **5. Live turnerings-tracking** — `/portal/tren/turneringer/[id]/live` (+ coach-view). Gjenbruk: `pulse-dot`, `kpi`, leaderboard fra #3. (L)
-- [ ] **6. Turnerings-statistikk** — `/stats/turneringer/[slug]/statistikk` — score vs historisk/median. Gjenbruk: `stats-trend-graf`, `stats-histogram`. (S)
+- [x] **6. Turnerings-statistikk** — `/stats/turneringer/[slug]/statistikk` — scorefordeling, median, beste, kutt, score-til-par-histogram, norske vs feltet. Ekte data fra PublicPlayerEntry. Lenket fra slug-siden. — 2026-05-30
 
 ## Fase 3 — Data golf-finpuss
 - [ ] **7. Shot-map / dispersion-side** — `/portal/statistikk/shot-map` — top-down, ekte data. Gjenbruk: `shot-map.tsx`. (M) — lav prioritet
