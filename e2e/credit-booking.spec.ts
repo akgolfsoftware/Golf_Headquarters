@@ -43,7 +43,7 @@ test.describe("Credit booking", () => {
     // egen test-DB.
   });
 
-  test.skip("Full credit-flyt: book + avbestill, credits back to 4", async ({ page: _page }) => {
+  test.skip("Full credit-flyt: book + avbestill, credits back to 4", async () => {
     // Skip inntil test-DB med seedet Pro-spiller + ledige slots er på plass.
   });
 });
