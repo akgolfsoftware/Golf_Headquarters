@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
+import { RoundScorecard, type ScorecardHole } from "@/components/athletic/data/round-scorecard";
 import { SlagWizard } from "./slag-wizard";
 import { UpGameImportModal } from "./upgame-import-modal";
 
@@ -65,6 +66,11 @@ export default async function RundeDetalj({
     return { hit, mulig };
   })();
 
+  // Hull-for-hull scorecard (strokes = antall slag per hull).
+  const scorecardHull: ScorecardHole[] = Array.from(hullMap.entries())
+    .map(([hole, slag]) => ({ hole, par: slag[0].holePar, score: slag.length }))
+    .sort((a, b) => a.hole - b.hole);
+
   const serialiserteSlag = runde.shots.map((s) => ({
     id: s.id,
     holeNumber: s.holeNumber,
@@ -113,6 +119,17 @@ export default async function RundeDetalj({
             sub={antallGir.mulig > 0 ? `${Math.round((antallGir.hit / antallGir.mulig) * 100)} %` : ""}
           />
         </div>
+      )}
+
+      {/* Hull-for-hull scorecard */}
+      {scorecardHull.length > 0 && (
+        <RoundScorecard
+          holes={scorecardHull}
+          playedAt={runde.playedAt}
+          courseName={runde.course.name}
+          totalScore={runde.score}
+          totalSg={runde.sgTotal}
+        />
       )}
 
       {/* Import-knapp */}

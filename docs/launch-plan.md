@@ -22,7 +22,8 @@ Marker `[x]` per steg når deployet/verifisert.
 - [ ] **A4. (MANUELT — Anders)** DNS `akgolf.no` → Vercel · Stripe webhook → `https://akgolf.no/api/stripe/webhook` · verifiser prod env-vars i Vercel (Stripe-nøkler, Sentry DSN, Plausible-domene).
 
 ## Fase B — Resterende skjermer
-- [ ] **B5. #4 Scorecard per runde** — hull-for-hull (score · SG · skudd) fra `Round`/`Shot`. `/portal/tren/turneringer/[id]/runde/[nr]`. (M)
+- [x] **B5. #4 Scorecard per runde** — re-scopet: `Round` har ingen `tournamentId`, og `/portal/mal/runder/[id]` viste alt ekte per-hull-data (KPI + wizard) men manglet scorecard-grid. La til `RoundScorecard` (hull-for-hull, UT/INN, score-til-par) på ekte data. — 2026-05-30
+  - NB (Fase C): `/portal/mal/runder/[id]/shot-by-shot` bruker hardkodet mock (`FRONT_SCORES`) — må kobles til ekte data eller skjules.
 - [ ] **B6. #3-rest Intern leaderboard** — AK-spillere i en intern turnering (`TournamentResult`). `/portal/tren/turneringer/[id]`. (S)
 - [ ] **B7. #8 Benchmark** — vs coach / region / Tour. `/portal/mal/sg-hub/benchmark`. (M)
 - [ ] **B8. #5 Live turnerings-tracking** — under spill, portal + coach. (L)
