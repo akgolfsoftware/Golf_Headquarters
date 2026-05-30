@@ -29,8 +29,9 @@ DESIGNSYSTEM — ufravikelig:
 - cn() fra @/lib/utils for klassesammenslåing. Komponent-API i TypeScript, ingen `any`.
 
 VERIFISER FØR DU ER FERDIG: npx tsc --noEmit && npx eslint <dine-filer> --max-warnings 0
-Lever komponenten + en kort Storybook-aktig demo-rute under src/app/_dev/<navn>/page.tsx med mock-data
-som matcher preview, så den kan screenshot-verifiseres mot docs/agency-build/preview/<fil>.html.
+Lever komponenten + en kort demo-rute under src/app/<navn>-demo/page.tsx (toppnivå, RUTBAR — IKKE
+src/app/_dev/, da _-prefiks er privat mappe i Next.js og gir 404) med mock-data som matcher preview,
+så den kan screenshot-verifiseres mot docs/agency-build/preview/<fil>.html.
 ```
 
 ---
