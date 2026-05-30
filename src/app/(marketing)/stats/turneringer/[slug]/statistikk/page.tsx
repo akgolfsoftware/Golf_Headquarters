@@ -18,6 +18,27 @@ type Props = { params: Promise<{ slug: string }> };
 
 const fmtScore = (n: number): string => (n === 0 ? "E" : n > 0 ? `+${n}` : `−${Math.abs(n)}`);
 
+// scoreToPar-kolonnen er tom — utled fra rounds-JSON ({n, par:"-2"|"+2"|"Par", score}).
+// Defensiv runtime-parsing (ingen blind cast av hele blobben).
+function roundsParSum(rounds: unknown): number | null {
+  if (!Array.isArray(rounds) || rounds.length === 0) return null;
+  let sum = 0;
+  let any = false;
+  for (const r of rounds) {
+    if (r && typeof r === "object" && "par" in r) {
+      const p = (r as { par: unknown }).par;
+      if (typeof p === "string") {
+        const v = p === "Par" || p === "E" ? 0 : Number.parseInt(p, 10);
+        if (!Number.isNaN(v)) {
+          sum += v;
+          any = true;
+        }
+      }
+    }
+  }
+  return any ? sum : null;
+}
+
 function median(sorted: number[]): number | null {
   if (sorted.length === 0) return null;
   const mid = Math.floor(sorted.length / 2);
@@ -43,20 +64,26 @@ export default async function TurneringStatistikk({ params }: Props) {
     include: {
       publicEntries: {
         select: {
-          scoreToPar: true,
+          rounds: true,
           status: true,
-          player: { select: { name: true, country: true } },
+          player: { select: { country: true } },
         },
       },
     },
   });
   if (!t) notFound();
 
-  const ferdige = t.publicEntries.filter((e) => e.scoreToPar != null);
-  const scores = ferdige.map((e) => e.scoreToPar as number).sort((a, b) => a - b);
+  const utledet = t.publicEntries.map((e) => ({
+    stp: roundsParSum(e.rounds),
+    country: e.player.country,
+  }));
+  const ferdige = utledet.filter(
+    (e): e is { stp: number; country: string } => e.stp !== null,
+  );
+  const scores = ferdige.map((e) => e.stp).sort((a, b) => a - b);
   const norske = ferdige
-    .filter((e) => e.player.country === "NO")
-    .map((e) => e.scoreToPar as number)
+    .filter((e) => e.country === "NO")
+    .map((e) => e.stp)
     .sort((a, b) => a - b);
   const kuttet = t.publicEntries.filter((e) => e.status === "CUT").length;
 
