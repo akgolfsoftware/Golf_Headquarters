@@ -90,6 +90,7 @@ export function HoleAnalysis() {
           width={1073}
           height={1600}
           priority
+          unoptimized
           className="block h-auto w-full origin-center transition-transform duration-500 ease-out"
           style={{ transformOrigin: `${GREEN.x}% ${GREEN.y}%`, transform: zoomed ? `scale(${ZOOM})` : "scale(1)" }}
         />

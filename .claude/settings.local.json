@@ -259,7 +259,15 @@
       "Bash(mkdir -p .claude/skills/ak-golf-hq-design)",
       "Bash(unzip -q -o \"/Users/anderskristiansen/Library/Application Support/Claude/local-agent-mode-sessions/71f1229b-43c5-4290-b218-70fb23d00c12/946ce9f4-8bab-4b31-bb52-0e2aa6f80498/local_be3b64f0-fecb-471c-bceb-84f268be243d/outputs/ak-golf-hq-design.skill\" -d .claude/skills/ak-golf-hq-design/)",
       "mcp__be780ca8-bdd5-4b1e-bcb6-fb5e309a4f3e__get_advisors",
-      "mcp__be780ca8-bdd5-4b1e-bcb6-fb5e309a4f3e__list_migrations"
+      "mcp__be780ca8-bdd5-4b1e-bcb6-fb5e309a4f3e__list_migrations",
+      "Bash(cd /Users/anderskristiansen/Developer/akgolf-hq *)",
+      "Bash(echo \"TSC=$?\")",
+      "Bash(echo \"ESLINT=$?\")",
+      "Bash(rm -f .git/index.lock)",
+      "Bash(vercel deploy *)",
+      "mcp__Claude_in_Chrome__navigate",
+      "mcp__Claude_in_Chrome__resize_window",
+      "mcp__Claude_in_Chrome__computer"
     ]
   }
 }
