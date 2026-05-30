@@ -1,329 +1,174 @@
 "use client";
 
-import { useRef, useState, useMemo } from "react";
+import { useState } from "react";
 import Image from "next/image";
-import { Wind, Navigation } from "lucide-react";
+import { X, ArrowLeft, TrendingUp, Target, Activity, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AthleticEyebrow } from "@/components/athletic/eyebrow";
+import { Sparkline } from "@/components/athletic/sparkline";
 
 /* ─────────────────────────────────────────────────────────────────────────
-   Interaktiv hull-analyse på foto.
-   - Grønn pulserende "Tee total" på tee-boksen (anker / utslagssted).
-   - Dra-bar siktelinje (aim-håndtak) → endrer retning venstre/høyre + lengde.
-   - Vind-kalkulator (styrke + retning) → flytter spredningens senter (motvind
-     kortere, medvind lenger, sidevind drift) og øker spredning i motvind.
-   Overlay-koordinater: 100 bred × VB_H høy (matcher foto 781:1400).
+   Hull-analyse — kategori-oversikt på foto (uten spredning; perspektivet gjør
+   spredning geometrisk upålitelig). Markører langs hullet fra tee til putt,
+   hver med stats + treningsdata. Trykk green → fly opp / zoom inn på green-
+   sonen der nærspill- og putt-kategoriene ligger.
    ───────────────────────────────────────────────────────────────────────── */
 
-const ASPECT = 1400 / 781;
-const VB_H = 100 * ASPECT; // 179.26
-
-// ── PGA Tour-kalibrering ──
-// Snitt fairwaybredde i landingssonen ≈ 30 yd (guideline 25–30 yd) = 27,4 m.
-// Fairwayen i fotoet kalibreres til denne bredden → spillerens spredning vises
-// i ekte målestokk og kan sammenlignes mot Tour-fairwayen + Tour-treff%.
-const FAIRWAY_M = 27.4;
-const FAIRWAY_UNITS = 26; // fairwayens overlay-bredde v/ landingssone (foto-kalibrert)
-const M_LAT = FAIRWAY_M / FAIRWAY_UNITS; // ≈ 1.054 m/enhet sideveis
-const M_LONG = 2.5; // m/enhet langsgående (perspektiv-forkortet)
-const TOUR_FAIRWAY_PCT = 60; // PGA Tour-snitt fairway-treff
-const FAIRWAY_CX = 50; // fairway-senterlinje v/ landingssone
-
-const TEE = { x: 50, y: 163 }; // tee-boks (overlay)
-const AIM0 = { x: 50, y: 95 }; // start-aim (landingssone)
-
-// Spillerens spredning i meter; ellipsen skaleres til PGA-kalibrert fairway.
-const PLAYER = { sideStdM: 9, carryStdM: 12 };
-const K95 = 2.0; // 95% per akse ≈ 1.96σ
-const BASE = {
-  side: (K95 * PLAYER.sideStdM) / M_LAT,
-  carry: (K95 * PLAYER.carryStdM) / M_LAT,
+type Cat = {
+  id: string;
+  label: string;
+  sub: string;
+  sg: number;
+  attempts: string;
+  hit: { label: string; value: string };
+  okter: number;
+  slag: number;
+  trend: number[];
 };
 
-// Deterministiske enhets-gauss-par (stabile mellom renders).
-function mulberry32(seed: number) {
-  let a = seed;
-  return () => {
-    a |= 0;
-    a = (a + 0x6d2b79f5) | 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-function gauss(rng: () => number) {
-  let u = 0;
-  let v = 0;
-  while (u === 0) u = rng();
-  while (v === 0) v = rng();
-  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
-}
-const UNIT = (() => {
-  const rng = mulberry32(7);
-  return Array.from({ length: 27 }, () => ({ sx: gauss(rng), sy: gauss(rng) }));
-})();
+type FairwayCat = Cat & { x: number; y: number };
+type GreenCat = Cat & { gx: number; gy: number };
 
-// Aim-retning i grader (0 = rett opp hullet, + = mot høyre).
-function aimAngleDeg(aim: { x: number; y: number }) {
-  return (Math.atan2(aim.x - TEE.x, -(aim.y - TEE.y)) * 180) / Math.PI;
+const FAIRWAY: FairwayCat[] = [
+  { id: "tee", label: "Tee total", sub: "Driver · snitt 248 m", x: 50, y: 86, sg: 0.31, attempts: "28 slag", hit: { label: "Fairway", value: "64 %" }, okter: 8, slag: 142, trend: [3, 4, 3, 5, 6, 5, 7, 8] },
+  { id: "inn200", label: "Innspill 200+", sub: "3-tre / hybrid", x: 50, y: 60, sg: -0.12, attempts: "14 slag", hit: { label: "GIR", value: "29 %" }, okter: 4, slag: 36, trend: [4, 3, 4, 3, 2, 3, 3, 2] },
+  { id: "inn150", label: "Innspill 150–200", sub: "5–7 jern", x: 49, y: 49, sg: 0.08, attempts: "31 slag", hit: { label: "GIR", value: "48 %" }, okter: 6, slag: 88, trend: [3, 4, 4, 5, 4, 6, 5, 6] },
+  { id: "inn100", label: "Innspill 100–150", sub: "8-jern – PW", x: 50, y: 39, sg: 0.22, attempts: "44 slag", hit: { label: "GIR", value: "61 %" }, okter: 9, slag: 156, trend: [4, 5, 5, 6, 6, 7, 7, 8] },
+];
+
+const GREEN: GreenCat[] = [
+  { id: "near30", label: "Nærspill 30–100 m", sub: "Wedge-pitch", sg: -0.05, attempts: "37 slag", hit: { label: "≤ 3 m", value: "41 %" }, okter: 7, slag: 120, trend: [3, 3, 4, 3, 4, 4, 5, 4], gx: 26, gy: 30 },
+  { id: "near0", label: "Nærspill 0–30 m", sub: "Chip / pitch", sg: 0.04, attempts: "52 slag", hit: { label: "≤ 1,5 m", value: "55 %" }, okter: 8, slag: 180, trend: [4, 4, 5, 5, 6, 5, 6, 7], gx: 72, gy: 34 },
+  { id: "puttlag", label: "Putt 3 m +", sub: "Lag-putt", sg: 0.11, attempts: "63 slag", hit: { label: "2-putt", value: "88 %" }, okter: 9, slag: 240, trend: [5, 5, 6, 6, 7, 7, 8, 8], gx: 34, gy: 62 },
+  { id: "putt3", label: "Putt 0–3 fot", sub: "Kort putt", sg: 0.18, attempts: "98 slag", hit: { label: "Hullet", value: "96 %" }, okter: 9, slag: 310, trend: [6, 7, 7, 8, 8, 8, 9, 9], gx: 64, gy: 66 },
+];
+
+const ALL = [...FAIRWAY, ...GREEN];
+const fmtSg = (n: number) => `${n > 0 ? "+" : ""}${n.toFixed(2).replace(".", ",")}`;
+
+function CatPill({ label, sg, onClick, className, style }: { label: string; sg: number; onClick: () => void; className?: string; style?: React.CSSProperties }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      style={style}
+      className={cn("group absolute -translate-x-1/2 -translate-y-1/2", className)}
+    >
+      <span className="relative flex items-center justify-center">
+        <span className="absolute inline-flex h-5 w-5 rounded-full bg-accent/40 motion-safe:animate-ping" />
+        <span className="relative inline-flex h-3 w-3 rounded-full bg-accent ring-2 ring-coach-sidebar" />
+      </span>
+      <span className="absolute left-1/2 top-[calc(100%+3px)] flex -translate-x-1/2 items-center gap-1.5 whitespace-nowrap rounded-full bg-card px-2 py-0.5 shadow-card">
+        <span className="font-mono text-[8px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground">{label}</span>
+        <span className={cn("font-mono text-[10px] font-bold tabular-nums", sg >= 0 ? "text-success" : "text-destructive")}>{fmtSg(sg)}</span>
+      </span>
+    </button>
+  );
 }
-
-// Vind-effekt. windFromDeg: retning vinden kommer FRA (0 = forfra = motvind,
-// 90 = fra høyre, 180 = bakfra = medvind, 270 = fra venstre).
-function windEffect(windFromDeg: number, speed: number, aimDeg: number, distU: number) {
-  if (speed <= 0) return { alongU: 0, acrossU: 0, spreadMul: 1 };
-  const windToDeg = (windFromDeg + 180) % 360;
-  const rel = (((windToDeg - aimDeg) % 360) + 360) % 360;
-  const relRad = (rel * Math.PI) / 180;
-  const along = Math.cos(relRad); // +1 medvind, -1 motvind
-  const across = Math.sin(relRad); // +1 skyver mot høyre
-  const distFactor = Math.pow(Math.max(distU, 1) / 35, 1.25);
-  const alongU = along * speed * distFactor * (along >= 0 ? 0.45 : 0.75);
-  const acrossU = across * speed * distFactor * 0.55;
-  const spreadMul = 1 + (along < 0 ? -along : 0) * speed * 0.014;
-  return { alongU, acrossU, spreadMul };
-}
-
-const dirLabel = (deg: number) => {
-  const d = ((deg % 360) + 360) % 360;
-  if (d < 22.5 || d >= 337.5) return "Motvind";
-  if (d < 67.5) return "Mot · høyre";
-  if (d < 112.5) return "Sidevind høyre";
-  if (d < 157.5) return "Med · høyre";
-  if (d < 202.5) return "Medvind";
-  if (d < 247.5) return "Med · venstre";
-  if (d < 292.5) return "Sidevind venstre";
-  return "Mot · venstre";
-};
-
-const fmt = (n: number, unit: string) => `${n > 0 ? "+" : ""}${n.toFixed(0)} ${unit}`;
 
 export function HoleAnalysis() {
-  const canvasRef = useRef<HTMLDivElement>(null);
-  const [aim, setAim] = useState(AIM0);
-  const [speed, setSpeed] = useState(4);
-  const [windFrom, setWindFrom] = useState(0); // motvind default
-  const [dragging, setDragging] = useState<"aim" | "wind" | null>(null);
-
-  const geom = useMemo(() => {
-    const aimDeg = aimAngleDeg(aim);
-    const aimRad = (aimDeg * Math.PI) / 180;
-    const fwd = { x: Math.sin(aimRad), y: -Math.cos(aimRad) };
-    const right = { x: Math.cos(aimRad), y: Math.sin(aimRad) };
-    const distU = Math.hypot(aim.x - TEE.x, aim.y - TEE.y);
-    const w = windEffect(windFrom, speed, aimDeg, distU);
-    const C = {
-      x: aim.x + fwd.x * w.alongU + right.x * w.acrossU,
-      y: aim.y + fwd.y * w.alongU + right.y * w.acrossU,
-    };
-    const sm = w.spreadMul;
-    const dots = UNIT.map((u) => ({
-      x: C.x + right.x * (u.sx * BASE.side * sm) + fwd.x * (u.sy * BASE.carry * sm),
-      y: C.y + right.y * (u.sx * BASE.side * sm) + fwd.y * (u.sy * BASE.carry * sm),
-    }));
-    // Fairway-treff: andel slag innenfor den PGA-kalibrerte fairway-korridoren.
-    const inFw = dots.filter((d) => Math.abs(d.x - FAIRWAY_CX) < FAIRWAY_UNITS / 2).length;
-    const fairwayPct = Math.round((inFw / dots.length) * 100);
-    return { aimDeg, C, sm, dots, w, distU, fairwayPct };
-  }, [aim, speed, windFrom]);
-
-  function onMove(e: React.PointerEvent) {
-    if (!dragging || !canvasRef.current) return;
-    const r = canvasRef.current.getBoundingClientRect();
-    const x = ((e.clientX - r.left) / r.width) * 100;
-    const y = ((e.clientY - r.top) / r.height) * VB_H;
-    if (dragging === "aim") {
-      setAim({
-        x: Math.max(28, Math.min(72, x)),
-        y: Math.max(30, Math.min(150, y)),
-      });
-    }
-  }
-
-  // Vind-dial: klikk/dra setter retningen vinden kommer FRA.
-  function onWindPointer(e: React.PointerEvent<HTMLDivElement>) {
-    const r = e.currentTarget.getBoundingClientRect();
-    const cx = r.left + r.width / 2;
-    const cy = r.top + r.height / 2;
-    const deg = (Math.atan2(e.clientX - cx, -(e.clientY - cy)) * 180) / Math.PI;
-    setWindFrom(((deg % 360) + 360) % 360);
-  }
-
-  const { aimDeg, C, sm, dots, w, fairwayPct } = geom;
+  const [zoomed, setZoomed] = useState(false);
+  const [openId, setOpenId] = useState<string | null>(null);
+  const open = openId ? ALL.find((c) => c.id === openId) ?? null : null;
 
   return (
     <div className="space-y-3">
-      {/* ── Canvas ── */}
-      <div
-        ref={canvasRef}
-        onPointerMove={onMove}
-        onPointerUp={() => setDragging(null)}
-        onPointerLeave={() => setDragging(null)}
-        className="relative mx-auto w-full max-w-[440px] touch-none select-none overflow-hidden rounded-[20px] border border-border bg-coach-sidebar shadow-card"
-      >
-        <Image
-          src="/images/akademy/hull-ovenfra.jpg"
-          alt="Hull ovenfra — fairway"
-          width={781}
-          height={1400}
-          priority
-          className="block h-auto w-full"
-        />
+      <div className="relative mx-auto w-full max-w-[440px] overflow-hidden rounded-[20px] border border-border bg-coach-sidebar shadow-card">
+        {/* Zoom-bart bildelag */}
+        <div
+          className="transition-transform duration-500 ease-out"
+          style={{ transformOrigin: "50% 16%", transform: zoomed ? "scale(2.6)" : "scale(1)" }}
+        >
+          <Image src="/images/akademy/hull-ovenfra.jpg" alt="Hull ovenfra" width={781} height={1400} priority className="block h-auto w-full select-none" />
+        </div>
 
+        {/* Topp-eyebrow */}
         <div className="pointer-events-none absolute left-3 top-3 rounded-full bg-coach-sidebar/70 px-2.5 py-1 backdrop-blur-sm">
-          <AthleticEyebrow tone="light">Hull 4 · 392 m · par 4</AthleticEyebrow>
+          <AthleticEyebrow tone="light">{zoomed ? "Green · nærspill + putt" : "Hull 4 · 392 m · par 4"}</AthleticEyebrow>
         </div>
 
-        <div className="pointer-events-none absolute right-3 top-3 flex items-center gap-1.5 rounded-full bg-coach-sidebar/70 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-white/90 backdrop-blur-sm">
-          <Wind className="h-3 w-3" strokeWidth={1.5} />
-          {speed} m/s · {dirLabel(windFrom)}
-        </div>
+        {/* ── Oversikt: fairway-kategorier + green-hotspot ── */}
+        {!zoomed && (
+          <>
+            {FAIRWAY.map((c) => (
+              <CatPill key={c.id} label={c.label} sg={c.sg} onClick={() => setOpenId(c.id)} style={{ left: `${c.x}%`, top: `${c.y}%` }} />
+            ))}
+            {/* Green-hotspot */}
+            <button
+              type="button"
+              onClick={() => setZoomed(true)}
+              aria-label="Zoom inn på green"
+              className="absolute left-1/2 top-[19%] flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-1"
+            >
+              <span className="h-16 w-24 rounded-[50%] border border-accent/70 bg-accent/15 backdrop-blur-[1px]" />
+              <span className="-mt-9 inline-flex items-center gap-1 rounded-full bg-card px-2.5 py-1 shadow-card">
+                <span className="font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] text-primary">Green</span>
+                <ChevronRight className="h-3 w-3 text-primary" strokeWidth={2} />
+              </span>
+            </button>
+          </>
+        )}
 
-        {/* SVG-overlay */}
-        <svg
-          viewBox={`0 0 100 ${VB_H.toFixed(2)}`}
-          preserveAspectRatio="none"
-          className="pointer-events-none absolute inset-0 h-full w-full"
-          aria-hidden
-        >
-          {/* PGA Tour-fairway-korridor (27 m kalibrert bredde) */}
-          <rect
-            x={FAIRWAY_CX - FAIRWAY_UNITS / 2}
-            y={20}
-            width={FAIRWAY_UNITS}
-            height={140}
-            rx={4}
-            fill="hsl(var(--accent))"
-            fillOpacity={0.05}
-            stroke="hsl(var(--accent))"
-            strokeWidth={0.35}
-            strokeDasharray="1.6 1.6"
-            strokeOpacity={0.55}
-          />
-          {/* Siktelinje tee → aim */}
-          <line x1={TEE.x} y1={TEE.y} x2={aim.x} y2={aim.y} stroke="hsl(var(--accent))" strokeWidth={0.5} strokeDasharray="2 2" opacity={0.85} />
-          {/* 95%-ellipse (vind-justert senter, rotert til aim) */}
-          <ellipse
-            cx={C.x}
-            cy={C.y}
-            rx={BASE.side * sm}
-            ry={BASE.carry * sm}
-            transform={`rotate(${aimDeg} ${C.x} ${C.y})`}
-            fill="hsl(var(--accent))"
-            fillOpacity={0.16}
-            stroke="hsl(var(--accent))"
-            strokeWidth={0.6}
-            strokeOpacity={0.85}
-          />
-          {dots.map((d, i) => (
-            <circle key={i} cx={d.x} cy={d.y} r={0.85} fill="#fff" fillOpacity={0.9} stroke="hsl(var(--primary))" strokeWidth={0.18} />
-          ))}
-          <circle cx={C.x} cy={C.y} r={1.5} fill="hsl(var(--accent))" stroke="hsl(var(--primary))" strokeWidth={0.4} />
-        </svg>
+        {/* ── Green-zoom: nærspill + putt-kategorier ── */}
+        {zoomed && (
+          <>
+            {GREEN.map((c) => (
+              <CatPill key={c.id} label={c.label} sg={c.sg} onClick={() => setOpenId(c.id)} style={{ left: `${c.gx}%`, top: `${c.gy}%` }} />
+            ))}
+            <button
+              type="button"
+              onClick={() => { setZoomed(false); setOpenId(null); }}
+              className="absolute left-3 top-12 inline-flex items-center gap-1.5 rounded-full bg-card px-3 py-1.5 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-foreground shadow-card"
+            >
+              <ArrowLeft className="h-3 w-3" strokeWidth={2} />Hele hullet
+            </button>
+          </>
+        )}
 
-        {/* Grønn pulserende "Tee total" på tee-boksen */}
-        <div className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2" style={{ left: `${TEE.x}%`, top: `${(TEE.y / VB_H) * 100}%` }}>
-          <span className="relative flex h-7 w-7 items-center justify-center">
-            <span className="absolute inline-flex h-full w-full rounded-full bg-accent/40 motion-safe:animate-ping" />
-            <span className="relative inline-flex h-4 w-4 rounded-full bg-accent ring-2 ring-coach-sidebar" />
-          </span>
-          <span className="absolute left-1/2 top-[calc(100%+3px)] -translate-x-1/2 whitespace-nowrap rounded-full bg-card px-2 py-0.5 shadow-card">
-            <span className="font-mono text-[8px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">Tee total</span>
-          </span>
-        </div>
-
-        {/* Dra-bart aim-håndtak */}
-        <button
-          type="button"
-          aria-label="Dra siktet"
-          onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); setDragging("aim"); }}
-          onPointerMove={onMove}
-          onPointerUp={(e) => { e.currentTarget.releasePointerCapture(e.pointerId); setDragging(null); }}
-          className="absolute h-10 w-10 -translate-x-1/2 -translate-y-1/2 cursor-grab touch-none active:cursor-grabbing"
-          style={{ left: `${aim.x}%`, top: `${(aim.y / VB_H) * 100}%` }}
-        >
-          <span className="absolute left-1/2 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-accent/30 shadow-card" />
-          <span className="absolute left-1/2 top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white" />
-        </button>
-      </div>
-
-      {/* ── Vind-kalkulator + avlesninger ── */}
-      <div className="mx-auto w-full max-w-[440px] rounded-[14px] border border-border bg-card p-3">
-        <div className="flex items-center gap-3">
-          {/* Dial */}
-          <div
-            onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); setDragging("wind"); onWindPointer(e); }}
-            onPointerMove={(e) => { if (dragging === "wind") onWindPointer(e); }}
-            onPointerUp={() => setDragging(null)}
-            className="relative h-14 w-14 flex-shrink-0 cursor-pointer touch-none rounded-full border border-border bg-background"
-            role="slider"
-            aria-label="Vindretning"
-            aria-valuenow={Math.round(windFrom)}
-          >
-            <span className="absolute left-1 top-1 font-mono text-[7px] font-bold text-muted-foreground">MOT</span>
-            <span className="absolute bottom-1 right-1 font-mono text-[7px] font-bold text-muted-foreground">MED</span>
-            <Navigation
-              className="absolute left-1/2 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 text-primary"
-              strokeWidth={2}
-              style={{ transform: `translate(-50%,-50%) rotate(${windFrom + 180}deg)` }}
-            />
-          </div>
-
-          {/* Speed slider */}
-          <div className="flex-1">
-            <div className="mb-1 flex items-baseline justify-between">
-              <span className="font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground">Vindstyrke</span>
-              <span className="font-mono text-sm font-bold tabular-nums text-foreground">{speed} <span className="text-[10px] text-muted-foreground">m/s</span></span>
+        {/* ── Drill-down: stats + treningsdata (ingen spredning) ── */}
+        {open && (
+          <div className="absolute inset-x-0 bottom-0 rounded-t-2xl border-t border-border bg-card p-4 shadow-deck">
+            <div className="mb-3 flex items-start justify-between gap-3">
+              <div>
+                <AthleticEyebrow>{open.sub}</AthleticEyebrow>
+                <h3 className="mt-0.5 font-display text-base font-bold tracking-tight text-foreground">{open.label}</h3>
+              </div>
+              <button type="button" onClick={() => setOpenId(null)} aria-label="Lukk" className="inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-secondary">
+                <X className="h-4 w-4" strokeWidth={1.5} />
+              </button>
             </div>
-            <input
-              type="range"
-              min={0}
-              max={14}
-              step={1}
-              value={speed}
-              onChange={(e) => setSpeed(Number(e.target.value))}
-              className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-secondary accent-primary"
-            />
-            <div className="mt-1 font-mono text-[9px] font-bold uppercase tracking-[0.06em] text-muted-foreground">{dirLabel(windFrom)}</div>
-          </div>
-        </div>
 
-        {/* Live avlesninger (vind) */}
-        <div className="mt-3 grid grid-cols-3 gap-2">
-          <Readout label="Distanse" value={fmt(w.alongU * M_LONG, "m")} good={w.alongU >= 0} />
-          <Readout label="Side-drift" value={fmt(w.acrossU * M_LAT, "m")} neutral />
-          <Readout label="Spredning" value={`+${Math.round((sm - 1) * 100)} %`} bad={sm > 1.001} />
-        </div>
+            <div className="grid grid-cols-3 gap-2">
+              <Stat icon={TrendingUp} label="SG" value={fmtSg(open.sg)} good={open.sg >= 0} />
+              <Stat icon={Target} label={open.hit.label} value={open.hit.value} />
+              <Stat icon={Activity} label="Forsøk" value={open.attempts} />
+            </div>
 
-        {/* PGA Tour-sammenligning */}
-        <div className="mt-2 flex items-center justify-between rounded-lg border border-accent/40 bg-accent/[0.06] px-3 py-2.5">
-          <div>
-            <div className="font-mono text-[8px] font-extrabold uppercase tracking-[0.08em] text-muted-foreground">Fairway-treff · vs PGA Tour</div>
-            <div className="mt-0.5 flex items-baseline gap-2">
-              <span className="font-mono text-xl font-bold tabular-nums text-foreground">{fairwayPct} %</span>
-              <span className="font-mono text-[10px] text-muted-foreground">Tour-snitt {TOUR_FAIRWAY_PCT} %</span>
+            <div className="mt-3 flex items-center justify-between rounded-lg border border-border bg-background px-3 py-2.5">
+              <div>
+                <div className="font-mono text-[9px] font-extrabold uppercase tracking-[0.08em] text-muted-foreground">Trening · 30 d</div>
+                <div className="mt-0.5 font-mono text-sm font-bold tabular-nums text-foreground">{open.okter} økter · {open.slag} slag</div>
+              </div>
+              <Sparkline values={open.trend} width={96} height={32} />
             </div>
           </div>
-          <div className="text-right">
-            <div className="font-mono text-[8px] font-extrabold uppercase tracking-[0.08em] text-muted-foreground">Din spredning</div>
-            <div className="mt-0.5 font-mono text-sm font-bold tabular-nums text-foreground">±{Math.round(BASE.side * M_LAT)} m</div>
-            <div className="font-mono text-[8px] text-muted-foreground">PGA-fairway {Math.round(FAIRWAY_M)} m</div>
-          </div>
-        </div>
-
-        <p className="mt-2.5 text-[11px] leading-[1.4] text-muted-foreground">
-          Fairwayen er skalert til PGA-snittet (27 m). Dra siktet og still vinden — fairway-treffet oppdateres mot Tour-standarden.
-        </p>
+        )}
       </div>
+
+      <p className="mx-auto max-w-[440px] text-xs leading-[1.5] text-muted-foreground">
+        Trykk en kategori for stats + treningsdata. Trykk <b className="text-foreground">Green</b> for å zoome inn på nærspill- og putt-sonene.
+      </p>
     </div>
   );
 }
 
-function Readout({ label, value, good, bad, neutral }: { label: string; value: string; good?: boolean; bad?: boolean; neutral?: boolean }) {
+function Stat({ icon: Icon, label, value, good }: { icon: typeof Target; label: string; value: string; good?: boolean }) {
   return (
     <div className="rounded-lg border border-border bg-background px-2.5 py-2">
-      <div className="font-mono text-[8px] font-extrabold uppercase tracking-[0.08em] text-muted-foreground">{label}</div>
-      <div className={cn("mt-0.5 font-mono text-sm font-bold tabular-nums leading-none", neutral ? "text-foreground" : good ? "text-success" : bad ? "text-warning" : "text-foreground")}>{value}</div>
+      <div className="flex items-center gap-1 font-mono text-[8px] font-extrabold uppercase tracking-[0.06em] text-muted-foreground">
+        <Icon className="h-2.5 w-2.5" strokeWidth={1.5} />{label}
+      </div>
+      <div className={cn("mt-1 font-mono text-base font-bold tabular-nums leading-none", good ? "text-success" : "text-foreground")}>{value}</div>
     </div>
   );
 }
