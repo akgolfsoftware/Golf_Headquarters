@@ -104,6 +104,14 @@ type FeatureCard = {
 
 const LIVE_FEATURES: FeatureCard[] = [
   {
+    href: "/portal/mal/sg-hub/benchmark",
+    icon: Activity,
+    title: "Benchmark vs Tour",
+    description:
+      "Din snitt-SG per område mot PGA Tour-snittet (0-linjen) — hvor du henter og hvor du taper slag.",
+    fase: "Live",
+  },
+  {
     href: "/portal/mal/sg-hub/yardage",
     icon: BarChart2,
     title: "Stock Yardage Chart",

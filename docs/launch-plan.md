@@ -28,7 +28,7 @@ Stripe-kode komplett · 15 unit + 5 e2e + CI · PWA/offline · **RLS deny-all ak
 
 ## Fase B — Resterende skjermer
 - [x] **B5** Hull-for-hull scorecard (ekte data) — `/portal/mal/runder/[id]` (M)
-- [ ] **B7** Benchmark vs Tour — PGA-data + BrukerSgInput finnes. vs coach/region senere. `/portal/mal/sg-hub/benchmark` (M, ~M)
+- [x] **B7** Benchmark vs Tour — `/portal/mal/sg-hub/benchmark`. Snitt-SG per område (OTT/APP/ARG/PUTT) mot Tour-baseline (0) via `aggregateSg(Round[])` + `SgBar`. Lenket fra SG-Hub. vs coach/region senere. — 2026-05-30
 - [⊘] **B6** Intern turnerings-leaderboard — `tournament_results` = 0 rader → krever data (se D1)
 - [⊘] **B8** Live turnerings-tracking — ingen live score-feed → krever integrasjon (se D2)
 - [⊘] **B9** Shot-map / dispersion — `Shot` mangler x/y-koordinater → krever koordinatdata (se D3)
