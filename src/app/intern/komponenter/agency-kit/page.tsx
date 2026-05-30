@@ -16,7 +16,7 @@ const groups: AgencyNavGroup[] = [
     label: "Daglig",
     items: [
       { href: "/admin/brief", label: "Daglig brief", icon: Sun, primary: true, badge: { value: 4, tone: "lime" } },
-      { href: "/_dev/agency-kit", label: "Stallen", icon: Users, primary: true, badge: { value: 38 } },
+      { href: "/intern/komponenter/agency-kit", label: "Stallen", icon: Users, primary: true, badge: { value: 38 } },
       { href: "/admin/innboks", label: "Innboks", icon: Inbox, badge: { value: 4, tone: "alert" } },
     ],
   },
