@@ -5,7 +5,7 @@ import { ArrowUpRight } from "lucide-react";
 // Mock-data, ingen DB. Bør gates eller fjernes før produksjon.
 
 const demos: { slug: string; title: string; desc: string; bolk: string }[] = [
-  { slug: "hull-analyse", title: "Hull-analyse", desc: "Interaktivt hull-kart på foto: Tee total-markør → spredning (95%-ellipse + slag) på fairway, eller SG + treningsdata for sonen.", bolk: "PlayerHQ" },
+  { slug: "hull-analyse", title: "Hull-analyse", desc: "Top-down hull-kart med kategori-markører langs shot-pathen (Tee total → Innspill → Nærspill → Putt). Trykk for SG + treningsdata per sone.", bolk: "PlayerHQ" },
   { slug: "daglig-brief", title: "Daglig brief", desc: "3-kolonne AgencyOS-dashboard (timeline · innboks · fokus-spillere) + KPI-strip.", bolk: "Pulje D" },
   { slug: "agency-kit", title: "Sidebar + Stallen", desc: "AgencySidebar (mørk, rail/utvidet) + DataTable med sortering, seleksjon og indicators.", bolk: "Bolk 1" },
   { slug: "inbox-tester", title: "Innboks + tester", desc: "Inbox-kit (filter, batch-bar, inline-expand) + TestMatrix med fargekodede celler.", bolk: "Bolk 2a" },
