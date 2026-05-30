@@ -17,11 +17,28 @@ import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 
 const ASPECT = 1400 / 781;
 const VB_H = 100 * ASPECT; // 179.26
-const SCALE = 2.6; // meter per overlay-enhet (for avlesninger)
+
+// ── PGA Tour-kalibrering ──
+// Snitt fairwaybredde i landingssonen ≈ 30 yd (guideline 25–30 yd) = 27,4 m.
+// Fairwayen i fotoet kalibreres til denne bredden → spillerens spredning vises
+// i ekte målestokk og kan sammenlignes mot Tour-fairwayen + Tour-treff%.
+const FAIRWAY_M = 27.4;
+const FAIRWAY_UNITS = 26; // fairwayens overlay-bredde v/ landingssone (foto-kalibrert)
+const M_LAT = FAIRWAY_M / FAIRWAY_UNITS; // ≈ 1.054 m/enhet sideveis
+const M_LONG = 2.5; // m/enhet langsgående (perspektiv-forkortet)
+const TOUR_FAIRWAY_PCT = 60; // PGA Tour-snitt fairway-treff
+const FAIRWAY_CX = 50; // fairway-senterlinje v/ landingssone
 
 const TEE = { x: 50, y: 163 }; // tee-boks (overlay)
 const AIM0 = { x: 50, y: 95 }; // start-aim (landingssone)
-const BASE = { side: 8.5, carry: 16 }; // 95%-ellipse-radier (overlay)
+
+// Spillerens spredning i meter; ellipsen skaleres til PGA-kalibrert fairway.
+const PLAYER = { sideStdM: 9, carryStdM: 12 };
+const K95 = 2.0; // 95% per akse ≈ 1.96σ
+const BASE = {
+  side: (K95 * PLAYER.sideStdM) / M_LAT,
+  carry: (K95 * PLAYER.carryStdM) / M_LAT,
+};
 
 // Deterministiske enhets-gauss-par (stabile mellom renders).
 function mulberry32(seed: number) {
@@ -104,7 +121,10 @@ export function HoleAnalysis() {
       x: C.x + right.x * (u.sx * BASE.side * sm) + fwd.x * (u.sy * BASE.carry * sm),
       y: C.y + right.y * (u.sx * BASE.side * sm) + fwd.y * (u.sy * BASE.carry * sm),
     }));
-    return { aimDeg, C, sm, dots, w, distU };
+    // Fairway-treff: andel slag innenfor den PGA-kalibrerte fairway-korridoren.
+    const inFw = dots.filter((d) => Math.abs(d.x - FAIRWAY_CX) < FAIRWAY_UNITS / 2).length;
+    const fairwayPct = Math.round((inFw / dots.length) * 100);
+    return { aimDeg, C, sm, dots, w, distU, fairwayPct };
   }, [aim, speed, windFrom]);
 
   function onMove(e: React.PointerEvent) {
@@ -129,7 +149,7 @@ export function HoleAnalysis() {
     setWindFrom(((deg % 360) + 360) % 360);
   }
 
-  const { aimDeg, C, sm, dots, w } = geom;
+  const { aimDeg, C, sm, dots, w, fairwayPct } = geom;
 
   return (
     <div className="space-y-3">
@@ -166,6 +186,20 @@ export function HoleAnalysis() {
           className="pointer-events-none absolute inset-0 h-full w-full"
           aria-hidden
         >
+          {/* PGA Tour-fairway-korridor (27 m kalibrert bredde) */}
+          <rect
+            x={FAIRWAY_CX - FAIRWAY_UNITS / 2}
+            y={20}
+            width={FAIRWAY_UNITS}
+            height={140}
+            rx={4}
+            fill="hsl(var(--accent))"
+            fillOpacity={0.05}
+            stroke="hsl(var(--accent))"
+            strokeWidth={0.35}
+            strokeDasharray="1.6 1.6"
+            strokeOpacity={0.55}
+          />
           {/* Siktelinje tee → aim */}
           <line x1={TEE.x} y1={TEE.y} x2={aim.x} y2={aim.y} stroke="hsl(var(--accent))" strokeWidth={0.5} strokeDasharray="2 2" opacity={0.85} />
           {/* 95%-ellipse (vind-justert senter, rotert til aim) */}
@@ -254,14 +288,31 @@ export function HoleAnalysis() {
           </div>
         </div>
 
-        {/* Live avlesninger */}
+        {/* Live avlesninger (vind) */}
         <div className="mt-3 grid grid-cols-3 gap-2">
-          <Readout label="Distanse" value={fmt(w.alongU * SCALE, "m")} good={w.alongU >= 0} />
-          <Readout label="Side-drift" value={fmt(w.acrossU * SCALE, "m")} neutral />
+          <Readout label="Distanse" value={fmt(w.alongU * M_LONG, "m")} good={w.alongU >= 0} />
+          <Readout label="Side-drift" value={fmt(w.acrossU * M_LAT, "m")} neutral />
           <Readout label="Spredning" value={`+${Math.round((sm - 1) * 100)} %`} bad={sm > 1.001} />
         </div>
+
+        {/* PGA Tour-sammenligning */}
+        <div className="mt-2 flex items-center justify-between rounded-lg border border-accent/40 bg-accent/[0.06] px-3 py-2.5">
+          <div>
+            <div className="font-mono text-[8px] font-extrabold uppercase tracking-[0.08em] text-muted-foreground">Fairway-treff · vs PGA Tour</div>
+            <div className="mt-0.5 flex items-baseline gap-2">
+              <span className="font-mono text-xl font-bold tabular-nums text-foreground">{fairwayPct} %</span>
+              <span className="font-mono text-[10px] text-muted-foreground">Tour-snitt {TOUR_FAIRWAY_PCT} %</span>
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="font-mono text-[8px] font-extrabold uppercase tracking-[0.08em] text-muted-foreground">Din spredning</div>
+            <div className="mt-0.5 font-mono text-sm font-bold tabular-nums text-foreground">±{Math.round(BASE.side * M_LAT)} m</div>
+            <div className="font-mono text-[8px] text-muted-foreground">PGA-fairway {Math.round(FAIRWAY_M)} m</div>
+          </div>
+        </div>
+
         <p className="mt-2.5 text-[11px] leading-[1.4] text-muted-foreground">
-          Dra det hvite siktet for å endre retning, og still vinden i dialen — ellipsen flytter seg live.
+          Fairwayen er skalert til PGA-snittet (27 m). Dra siktet og still vinden — fairway-treffet oppdateres mot Tour-standarden.
         </p>
       </div>
     </div>
