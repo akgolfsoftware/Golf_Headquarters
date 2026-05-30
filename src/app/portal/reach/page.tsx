@@ -200,7 +200,7 @@ export default async function ReachPage() {
         sub="Synlighet, connections og personvern. Du bestemmer hva som deles og med hvem."
         actions={
           <Link
-            href="/portal/innstillinger"
+            href="/portal/meg/innstillinger"
             className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-[12px] font-medium text-foreground transition-colors hover:bg-secondary"
           >
             <Lock size={14} strokeWidth={1.75} />

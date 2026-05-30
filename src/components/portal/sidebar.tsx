@@ -229,9 +229,9 @@ export function PortalSidebar({
       {/* Profil-lenke */}
       <div className="px-4 pb-2">
         <Link
-          href="/portal/profil"
+          href="/portal/meg"
           className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm transition-colors ${
-            path === "/portal/profil"
+            path === "/portal/meg"
               ? "bg-[var(--color-accent-fill)] font-semibold text-white"
               : "text-white/50 hover:bg-white/5 hover:text-white"
           }`}
