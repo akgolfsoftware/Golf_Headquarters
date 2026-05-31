@@ -128,6 +128,7 @@ export async function NorskeDenneUkaTeaser() {
 function formaterTour(t: string | null): string {
   switch (t) {
     case "pga": return "PGA Tour";
+    case "opp": return "PGA Tour · Opposite Field";
     case "euro": return "DP World Tour";
     case "kft": return "Korn Ferry";
     case "alt": return "Alt-tour";

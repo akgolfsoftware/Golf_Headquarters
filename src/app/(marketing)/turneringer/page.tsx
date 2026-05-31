@@ -359,6 +359,7 @@ function TomTilstand() {
 function formaterTour(t: string | null): string {
   switch (t) {
     case "pga": return "PGA Tour";
+    case "opp": return "PGA Tour · Opposite Field";
     case "euro": return "DP World Tour";
     case "kft": return "Korn Ferry Tour";
     case "alt": return "Alt-tour";

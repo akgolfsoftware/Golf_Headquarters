@@ -36,6 +36,7 @@ function formaterPos(n: number | null | undefined): string {
 function formaterTour(t: string | null | undefined): string {
   const labels: Record<string, string> = {
     pga: "PGA TOUR",
+    opp: "PGA TOUR · OPPOSITE FIELD",
     dp: "DP WORLD TOUR",
     "korn-ferry": "KORN FERRY",
     lpga: "LPGA",

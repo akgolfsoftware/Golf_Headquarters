@@ -132,6 +132,7 @@ function formaterTour(tour: string | null): string {
   if (!tour) return "—";
   const map: Record<string, string> = {
     pga: "PGA Tour",
+    opp: "PGA Tour · Opposite Field",
     dp: "DP World Tour",
     lpga: "LPGA",
     "korn-ferry": "Korn Ferry",

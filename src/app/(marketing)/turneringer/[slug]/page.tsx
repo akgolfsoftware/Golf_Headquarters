@@ -120,6 +120,17 @@ export default async function TurneringDetalj({ params }: Props) {
   const tourLabel = formaterTour(t.tour);
   const datoStr = formaterDato(t.startDate, t.endDate);
 
+  // Beregn hvilke posisjoner som er delt (T-prefix brukes kun ved delt posisjon)
+  const positionCounts: Record<number, number> = {};
+  for (const e of alle) {
+    if (e.position !== null) positionCounts[e.position] = (positionCounts[e.position] ?? 0) + 1;
+  }
+  const tiedPositions = new Set(
+    Object.entries(positionCounts)
+      .filter(([, count]) => count > 1)
+      .map(([pos]) => Number(pos)),
+  );
+
   return (
     <div className="bg-background text-foreground">
       {/* SEO JSON-LD */}
@@ -408,7 +419,11 @@ export default async function TurneringDetalj({ params }: Props) {
                             className="font-mono"
                             style={{ fontSize: 28, fontWeight: 500, marginTop: 4, color: "var(--s-primary)" }}
                           >
-                            T{e.position}
+                            {e.position !== null
+                              ? tiedPositions.has(e.position)
+                                ? `T${e.position}`
+                                : `${e.position}`
+                              : "—"}
                           </div>
                         </div>
                         {e.scoreToPar !== null && (
@@ -657,6 +672,7 @@ function formaterToPar(n: number): string {
 function formaterTour(t: string | null): string {
   switch (t) {
     case "pga": return "PGA Tour";
+    case "opp": return "PGA Tour · Opposite Field";
     case "euro": return "DP World Tour";
     case "kft": return "Korn Ferry Tour";
     case "alt": return "Alt-tour";

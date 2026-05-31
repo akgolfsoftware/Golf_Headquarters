@@ -218,11 +218,13 @@ export async function syncLiveLeaderboards(): Promise<{
 
     // Match turnering på navn + aktiv status. Opposite-field-events ligger i
     // schedule under tour="pga", så vi begrenser ikke matchen til touren.
+    // orderBy startDate desc sikrer deterministisk valg hvis to rader deler navn.
     const turnering = await prisma.tournament.findFirst({
       where: {
         name: stats.event_name,
         status: { in: ["IN_PROGRESS", "UPCOMING"] },
       },
+      orderBy: { startDate: "desc" },
     });
     if (!turnering) continue;
     totalEvents++;
@@ -277,8 +279,19 @@ export async function syncLiveLeaderboards(): Promise<{
       const pos = parsePosition(row.position);
       const status =
         pos === "CUT" ? "CUT" : pos === "WD" ? "WITHDREW" : "TEED_OFF";
+      // DataGolf kan returnere thru som number ELLER string ("F" = finished, "18").
+      // Konverter begge til number. "F" → 18 (fullstendig runde).
+      const thruRaw = row.thru;
+      const thruNum =
+        typeof thruRaw === "number"
+          ? thruRaw
+          : thruRaw === "F"
+            ? 18
+            : typeof thruRaw === "string" && /^\d+$/.test(thruRaw)
+              ? parseInt(thruRaw, 10)
+              : null;
       const rounds = {
-        thru: typeof row.thru === "number" ? row.thru : null,
+        thru: thruNum,
         round: currentRound,
       };
 
@@ -337,32 +350,56 @@ async function ensurePlayers(
     existing.map((p) => [p.dataGolfId!, p.id]),
   );
 
-  let created = 0;
-  for (const row of rows) {
-    if (byDgId.has(row.dg_id)) continue;
+  // Pre-beregn alle basis-slugger for nye spillere (batched slug-kollisjonsssjekk)
+  const newRows = rows.filter((r) => !byDgId.has(r.dg_id));
+  const candidateSlugs = [
+    ...new Set(
+      newRows.map((r) => slugify(formatPlayerName(r.player_name)) || `spiller-${r.dg_id}`)
+    ),
+  ];
 
+  // Hent alle eksisterende slug-kollisjoner i én DB-runde
+  const kollisjonRows = candidateSlugs.length > 0
+    ? await prisma.publicPlayer.findMany({
+        where: { slug: { in: candidateSlugs } },
+        select: { slug: true },
+      })
+    : [];
+  const kollisjoner = new Set(kollisjonRows.map((r) => r.slug));
+
+  let created = 0;
+  for (const row of newRows) {
     const navn = formatPlayerName(row.player_name);
     const meta = playerMeta.get(row.dg_id);
-    const country = iso3to2(meta?.country_code).toUpperCase();
+    const country = iso3to2(meta?.country_code); // iso3to2 returnerer allerede uppercase
     const tier = meta?.amateur === 1 ? "amateur" : LIVE_PLAYER_TIER;
 
     const baseSlug = slugify(navn) || `spiller-${row.dg_id}`;
-    const slugKollisjon = await prisma.publicPlayer.findUnique({
-      where: { slug: baseSlug },
-    });
-    const finalSlug = slugKollisjon ? `${baseSlug}-${row.dg_id}` : baseSlug;
+    const finalSlug = kollisjoner.has(baseSlug) ? `${baseSlug}-${row.dg_id}` : baseSlug;
 
-    const nyspiller = await prisma.publicPlayer.create({
-      data: {
-        name: navn,
-        slug: finalSlug,
-        country,
-        tier,
-        dataGolfId: row.dg_id,
-      },
-    });
-    byDgId.set(row.dg_id, nyspiller.id);
-    created++;
+    try {
+      const nyspiller = await prisma.publicPlayer.create({
+        data: { name: navn, slug: finalSlug, country, tier, dataGolfId: row.dg_id },
+      });
+      byDgId.set(row.dg_id, nyspiller.id);
+      created++;
+    } catch (e) {
+      // P2002: concurrent cron-kjøring opprettet spilleren mellom vår sjekk og create.
+      // Hent den eksisterende raden og fortsett.
+      if (
+        e instanceof Error &&
+        "code" in e &&
+        (e as { code: string }).code === "P2002"
+      ) {
+        const existing = await prisma.publicPlayer.findFirst({
+          where: { dataGolfId: row.dg_id },
+          select: { id: true },
+        });
+        if (existing) byDgId.set(row.dg_id, existing.id);
+      } else {
+        throw e;
+      }
+    }
   }
 
   return { byDgId, created };
