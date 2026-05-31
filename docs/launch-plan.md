@@ -30,7 +30,8 @@ Stripe-kode komplett · 15 unit + 5 e2e + CI · PWA/offline · **RLS deny-all ak
 - [x] **B5** Hull-for-hull scorecard (ekte data) — `/portal/mal/runder/[id]` (M)
 - [x] **B7** Benchmark vs Tour — `/portal/mal/sg-hub/benchmark`. Snitt-SG per område (OTT/APP/ARG/PUTT) mot Tour-baseline (0) via `aggregateSg(Round[])` + `SgBar`. Lenket fra SG-Hub. vs coach/region senere. — 2026-05-30
 - [⊘] **B6** Intern turnerings-leaderboard — `tournament_results` = 0 rader → krever data (se D1)
-- [⊘] **B8** Live turnerings-tracking — ingen live score-feed → krever integrasjon (se D2)
+- [x] **B8 (offentlig del)** Live turnerings-leaderboard på `/turneringer/[slug]` — hele feltet, posisjon/score-to-par/thru, ekte KPI-er, auto-refresh. Kilde: DataGolf live (PGA + opposite-field). Cron `turneringer-live` hver 10. min. Deployet til prod 2026-05-31, verifisert mot live Charles Schwab Challenge (132 spillere). **NB: skjult fra nav til etter launch** (bevisst v1-beslutning). euro/kft/challenge = kun kalender + link (DataGolf-grense). Se `fase-d-datafundament.md` § C.
+- [⊘] **B8 (intern del)** Live-tracking for AK-spillere i portal/coach-view — egen score-feed → krever integrasjon (se D2)
 - [⊘] **B9** Shot-map / dispersion — `Shot` mangler x/y-koordinater → krever koordinatdata (se D3)
 
 ## Fase C — Kode-gjeld / datakvalitet (P1)
