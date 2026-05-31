@@ -40,14 +40,9 @@ interface ServerResultater {
   turneringer: Turnering[];
 }
 
-// Fallback klubber (ingen Prisma-modell ennå)
-const KLUBBER_FALLBACK = [
-  { navn: "Bærum Golfklubb", region: "Øst", spillere: 89 },
-  { navn: "Oslo Golfklubb", region: "Øst", spillere: 112 },
-  { navn: "GFGK", region: "Øst", spillere: 73 },
-  { navn: "Stavanger GK", region: "Vest", spillere: 68 },
-  { navn: "Bergen GK", region: "Vest", spillere: 78 },
-];
+// Ingen klubb-datamodell ennå — tom til ekte klubb-data finnes (ikke
+// fabrikkerte spiller-tall). Søket dekker spillere + turneringer fra API-et.
+const KLUBBER_FALLBACK: { navn: string; region: string; spillere: number }[] = [];
 
 const POPULAERE_SOK = [
   "Hovland", "Norske college", "Bærum GK", "Srixon Tour", "2009-årgangen", "PGA Tour 2026",
