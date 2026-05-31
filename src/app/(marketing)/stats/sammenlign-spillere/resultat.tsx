@@ -5,6 +5,7 @@
  * Viser: sticky topp-bar, KPI-strip, linjegraf, beste resultater, summary-card.
  */
 
+import DOMPurify from "dompurify";
 import {
   CartesianGrid,
   Legend,
@@ -839,7 +840,11 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                   fontStyle: "italic",
                   color: "hsl(var(--foreground))",
                 }}
-                dangerouslySetInnerHTML={{ __html: summary }}
+                dangerouslySetInnerHTML={{
+                  __html: typeof window !== "undefined"
+                    ? DOMPurify.sanitize(summary, { ALLOWED_TAGS: ["em", "strong", "br"] })
+                    : summary,
+                }}
               />
               <div
                 style={{
