@@ -10,6 +10,10 @@ Verifisert prod-tilstand 2026-05-30 — det meste er allerede på plass.
 - `robots.txt` + `sitemap.xml` → 200
 - Gating virker: `/portal` og `/admin` → 307 redirect til login
 - Env-validering passerer (deploy lykkes = kritiske nøkler satt i Vercel)
+- **Sikkerhets-headere**: HSTS (preload), CSP, X-Frame-Options, X-Content-Type, Referrer-Policy, Permissions-Policy ✓
+- **Prod-DB har ekte innhold**: 30 brukere, 30 baner, 1821 turneringer, 2637 off. spillere
+- **Migrasjons-historikk reconciled** (2026-05-31) — `migrate status` = "up to date"
+- **robots.ts** disallower nå alle gated/demo-ruter (kode)
 
 ---
 
@@ -37,6 +41,10 @@ Observability (anbefalt):
 - [ ] `NEXT_PUBLIC_SENTRY_DSN`
 - [ ] `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` = `akgolf.no`
 
+SEO/URL (🔴 må fikses):
+- [ ] `NEXT_PUBLIC_APP_URL` = `https://akgolf.no` — er nå satt til vercel-URL → gir feil robots/sitemap-host.
+- [ ] `RESEND_FROM_EMAIL` = `AK Golf <post@akgolf.no>` (eller ønsket avsender)
+
 ## E3 — Stripe LIVE
 - [ ] Bytt fra test- til **live-modus** i Stripe Dashboard.
 - [ ] **Developers → Webhooks → Add endpoint:** `https://akgolf.no/api/stripe/webhook`. Velg events: `checkout.session.completed`, `customer.subscription.*`, `invoice.*`.
@@ -63,6 +71,26 @@ Observability (anbefalt):
 ## E7 — Observability
 - [ ] Trigger en testfeil → verifiser at den dukker opp i **Sentry**.
 - [ ] Besøk en side → verifiser besøk i **Plausible** (krever cookie-samtykke).
+
+## E9 — E-post-deliverability (🔴 P0)
+Appen sender fra `post@akgolf.no` via Resend. Uten domeneverifisering havner
+signup-bekreftelse + passord-reset i spam → brukere kommer ikke inn.
+- [ ] **Resend → Domains → Add domain** `akgolf.no`. Legg inn **SPF + DKIM** DNS-records hos domeneleverandør.
+- [ ] (Anbefalt) Sett opp **DMARC**-record.
+- [ ] Send en test-signup → bekreft at e-posten lander i innboks (ikke spam).
+
+## E10 — Datavern
+- [ ] **Supabase → Database → Backups:** verifiser at automatisk backup / PITR er på.
+- [ ] Noter rollback-plan: `vercel rollback` eller promotér forrige deploy i Vercel-dashboard.
+
+## E11 — Hardening / kvalitet (P1–P2)
+- [ ] **Rate-limiting** på auth-endepunkter (brute-force/abuse) — vurder Vercel BotID eller middleware.
+- [ ] **Databehandleravtaler (DPA)** med Supabase, Stripe, Vercel, Resend, Plausible, Anthropic. Personvern-siden lister disse (GDPR).
+- [ ] **Lighthouse / Core Web Vitals** på forsiden + booking (perf, a11y).
+- [ ] Verifiser at **cookie-banneret faktisk blokkerer scripts** før samtykke.
+- [ ] **OG-bilde** rendres ved deling (test i Slack/LinkedIn-preview).
+- [ ] **Mobil-QA** på ekte enhet (PlayerHQ + booking).
+- [ ] **Uptime-monitor** (f.eks. en cron-ping) + Sentry-alerts konfigurert.
 
 ## E8 — Go-live
 - [ ] Annonser/åpne for brukere.
