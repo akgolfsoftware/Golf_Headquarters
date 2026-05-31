@@ -31,6 +31,32 @@ schema + eksisterende integrasjoner (2026-05-31).
 
 ---
 
+## C — Verdens proff-tourer: LIVE leaderboard (GJORT 2026-05-31)
+**Status: deployet.** Delsystem C (live-resultater for proff-tourer) er bygget for det
+DataGolf faktisk tilbyr. Inngår i turnerings-pipeline-brainstormen (A norsk amatør / B WAGR /
+C proff).
+
+**Hardt funn (research på hull ferdig):** DataGolf `/preds/live-tournament-stats` svarer
+`400: "live stats only available for pga and opp tours"`. Live leaderboard er altså KUN
+mulig for **PGA Tour + opposite-field ("opp")**. DP World (euro), Korn Ferry (kft), Challenge
+og øvrige har vi **schedule (kalender + offisiell link)**, men IKKE live scoring via DataGolf.
+Vil vi ha live på disse → ny datakilde (SportRadar / RapidAPI golf), egen kostnad + integrasjon.
+
+**Hva som ble bygget (commit etter 5d6eca18):**
+- `syncLiveLeaderboards` (`src/lib/turneringer/sync.ts`): lagrer nå HELE feltet (alle spillere),
+  ikke kun nordmenn. Auto-oppretter ukjente `PublicPlayer` fra live-feeden med land
+  (`iso3to2` i `src/lib/datagolf/country.ts`) + tier. `LIVE_TOURS = ["pga","opp"]`.
+  Feiltolerant per tour (400 → hopp videre). Rundenummer fra topp-nivå `stat_round`
+  (per-spiller `round`-felt er IKKE rundenummer — inneholder stat-verdier).
+- Detaljside `/turneringer/[slug]`: viser hele feltet (var topp 20), Thru-kolonne, ekte
+  KPI-er (Leder/Runde) i stedet for placeholder. Auto-refresh 120s når live. Rounds-JSON
+  zod-validert ved read.
+- Cron `turneringer-live`: hver 10. min (var hver 2. time tors–søn) i `vercel.json`.
+- Verifisert mot live Charles Schwab Challenge: 132 spillere lagret + rendret.
+
+**Gjenstår på C (hvis ønsket):** rå-stats per hull/skudd (shot tracking) = krever lisensiert
+kilde (ShotLink/SportRadar), dyrt — ikke anbefalt. Live for euro/kft/challenge = ny kilde.
+
 ## D1 — DataGolf rå-stats i ekte enheter
 **Mål:** drive (yds), fairway %, GIR %, putts/runde, scoring avg.
 **Kilde:** DataGolf "raw stats"-endpoint (skill-ratings gir kun relative). Sjekk om abonnementet
