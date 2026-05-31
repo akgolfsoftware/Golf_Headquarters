@@ -803,3 +803,9 @@
   .stats-bottom-cta { padding: 64px 24px; }
   .stats-bottom-cta h2 { font-size: 36px; }
 }
+
+/* Årgang-kort hover (CSS i stedet for JS-handlers — server-komponent-trygt) */
+.stats-aargang-card:hover {
+  box-shadow: var(--s-shadow-hover);
+  transform: translateY(-2px);
+}

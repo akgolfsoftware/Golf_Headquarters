@@ -136,6 +136,7 @@ export default async function AargangIndexPage() {
             <Reveal key={k.aar} delay={i * 40}>
               <Link href={`/stats/aargang/${k.aar}`} style={{ textDecoration: "none" }}>
                 <div
+                  className="stats-aargang-card"
                   style={{
                     background: k.aar === 2009 ? "var(--s-primary)" : "var(--s-card)",
                     border: `1px solid ${k.aar === 2009 ? "var(--s-primary)" : "var(--s-border)"}`,
@@ -143,14 +144,6 @@ export default async function AargangIndexPage() {
                     padding: 24,
                     transition: "box-shadow .18s ease, transform .18s ease",
                     cursor: "pointer",
-                  }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLElement).style.boxShadow = "var(--s-shadow-hover)";
-                    (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)";
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLElement).style.boxShadow = "none";
-                    (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
                   }}
                 >
                   <div

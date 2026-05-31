@@ -43,9 +43,6 @@ const STATS_PROTOTYPE_PREFIXES = [
   "/stats/spillere",
   "/stats/verktoy",
   "/stats/sok",
-  // /stats/aargang har en pre-eksisterende 500 ("Event handlers cannot be passed
-  // to Client Component props") + per-årgang fake roster. Skjult til bug fikset.
-  "/stats/aargang",
 ];
 
 /**
@@ -102,9 +99,10 @@ export async function proxy(request: NextRequest) {
   // er wired til ekte data. Redirect → /stats. Gjelder også /stats/aargang/<aar>
   // (per-årgang-detalj med fake roster), men ikke /stats/aargang-hub-en.
   if (process.env.VERCEL_ENV === "production") {
-    const erStatsPrototype = STATS_PROTOTYPE_PREFIXES.some(
-      (p) => path === p || path.startsWith(`${p}/`),
-    );
+    const erStatsPrototype =
+      STATS_PROTOTYPE_PREFIXES.some((p) => path === p || path.startsWith(`${p}/`)) ||
+      // /stats/aargang-hub er ekte (re-aktivert), men per-årgang-detalj har fake roster.
+      /^\/stats\/aargang\/.+/.test(path);
     if (erStatsPrototype) {
       const url = request.nextUrl.clone();
       url.pathname = "/stats";

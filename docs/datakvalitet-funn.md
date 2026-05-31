@@ -33,10 +33,11 @@ Offentlig fake navngitte personer = kredibilitets-/GDPR-risiko.
 `/stats`: leaderboards, regions, klubber, pga, tour, spillere, verktoy, sok, **aargang**.
 Lokalt/dev uendret. Ekte sider beholdt: `/stats` (hub), `/stats/norske`, `/stats/turneringer`.
 
-**Pre-eksisterende bug:** `/stats/aargang` ga 500 ("Event handlers cannot be passed to
-Client Component props") FØR denne økten — dyp-sjekken antok feil at den virket. Skjult
-til bugen er fikset. **TODO:** debug server/client-grensen (StatsBtn/Reveal/CountUp) +
-wire ekte data, så fjern fra redirect-listen.
+**Pre-eksisterende bug FIKSET (2026-05-31):** `/stats/aargang` ga 500 ("Event handlers
+cannot be passed to Client Component props") — årsak: et `<div>` med `onMouseEnter`/
+`onMouseLeave` (JS-hover) i en server-komponent. Erstattet med CSS-hover-klasse
+(`.stats-aargang-card:hover`). Hub-en re-aktivert (200). `/stats/aargang/[aar]`-detaljen
+forblir redirected (fake roster + skal wires).
 
 **Wiring post-launch:** PGA-sidene KAN wires til `pga_*`-tabeller (data finnes). Norske
 amatør-leaderboards (region/klubb/årgang) trenger datakilde først.
