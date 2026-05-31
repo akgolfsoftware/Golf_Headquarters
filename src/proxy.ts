@@ -39,7 +39,6 @@ const STATS_PROTOTYPE_PREFIXES = [
   "/stats/regions",
   "/stats/klubber",
   "/stats/tour",
-  "/stats/spillere",
   // PGA: hub + sg-total er ekte (DataGolf SG). Disse under-sidene har enten
   // NULL-kolonner (gir/putts/scoring) eller DataGolf-relative ratings feilmerket
   // som yds/% (drive/fairway), eller hardkodet fallback (spillere). Skjult til
