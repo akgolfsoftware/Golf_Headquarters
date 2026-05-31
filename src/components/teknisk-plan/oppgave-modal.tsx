@@ -27,7 +27,7 @@ import {
   HIT_RATE_PROTOCOLS,
   type HitRateProtocol,
   type PyramidArea,
-} from "./tokens";
+} from "./constants";
 import "./oppgave-modal.css";
 
 const PYRAMIDES: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];

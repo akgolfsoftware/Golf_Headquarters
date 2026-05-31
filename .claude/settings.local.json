@@ -267,7 +267,9 @@
       "Bash(vercel deploy *)",
       "mcp__Claude_in_Chrome__navigate",
       "mcp__Claude_in_Chrome__resize_window",
-      "mcp__Claude_in_Chrome__computer"
+      "mcp__Claude_in_Chrome__computer",
+      "Bash(python3 -c ' *)",
+      "mcp__155fc8b0-b0e0-46f1-82bd-2c95b9840afa__get_project"
     ]
   }
 }

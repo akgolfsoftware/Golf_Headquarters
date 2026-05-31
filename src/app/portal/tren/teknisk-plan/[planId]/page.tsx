@@ -25,7 +25,7 @@ import {
   type ClubTargetRow,
   type ActivityItem,
 } from "@/components/teknisk-plan/sidebar";
-import type { PyramidArea } from "@/components/teknisk-plan/tokens";
+import type { PyramidArea } from "@/components/teknisk-plan/constants";
 import "@/components/teknisk-plan/teknisk-plan.css";
 
 export const dynamic = "force-dynamic";

@@ -1,5 +1,5 @@
 import { GripVertical, MoreHorizontal } from "lucide-react";
-import type { PyramidArea } from "./tokens";
+import type { PyramidArea } from "./constants";
 
 export interface RepProgress {
   current: number;

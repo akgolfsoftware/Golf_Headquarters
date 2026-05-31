@@ -1,20 +1,13 @@
 /**
- * Teknisk plan — designtokens og kategorier matchet mot HTML-bundlen
- * fra Claude Design (workbench-v2.css).
+ * Teknisk plan — domenekonstanter (golf-spesifikke).
  *
- * Tokens er allerede definert i globals.css. Denne fila gir bare
- * TypeScript-konstanter for kategorier, farger og kategori-mappings.
+ * Dette er IKKE designtokens. Pyramide-farger ligger i globals.css
+ * (--pyr-fys/tek/slag/spill/turn) og brukes via Tailwind-klasser
+ * (bg-pyr-fys etc.) — aldri hardkodet her.
  */
 
-export const PYRAMID_COLORS = {
-  FYS: { dot: "hsl(var(--primary))", bg: "#E8F3EC", tag: "hsl(var(--primary))" },
-  TEK: { dot: "hsl(var(--primary))", bg: "#E8F0EC", tag: "hsl(var(--primary))" },
-  SLAG: { dot: "hsl(var(--success))", bg: "#EAF2EC", tag: "hsl(var(--success))" },
-  SPILL: { dot: "hsl(var(--accent))", bg: "#F0F5E8", tag: "#5E7A36" },
-  TURN: { dot: "hsl(var(--accent))", bg: "#F4FBE0", tag: "#6E7E1F" },
-} as const;
-
-export type PyramidArea = keyof typeof PYRAMID_COLORS;
+/** De fem pyramide-aksene. Farger hentes fra --pyr-* i globals.css. */
+export type PyramidArea = "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";
 
 export const SG_BUCKETS = {
   Tee: ["Tee Total"],
