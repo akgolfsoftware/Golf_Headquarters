@@ -14,17 +14,20 @@ schema + eksisterende integrasjoner (2026-05-31).
 
 ---
 
-## ⚡ Quick wins — kode, ingen/minimal ny data (dager)
-- [ ] **QW1 — leaderboards SG-only:** fjern de 5 rå-stats-boardene (null/relative), behold
-  det ekte SG-boardet. Re-aktiver `/stats/leaderboards`. (S, ingen ny data)
-- [ ] **QW2 — scoreToPar-backfill:** engangs-job som fyller `publicPlayerEntry.scoreToPar`
-  fra `rounds`-JSON (vi har allerede `roundsParSum`-logikken). Låser opp dypere turnerings-
-  statistikk + NO-leaderboards. (S, data finnes)
-- [ ] **QW3 — aargang/[aar] ekte roster:** list ekte spillere per `birthYear` fra
-  `publicPlayer` (navn ekte), vis turnerings-antall i stedet for fabrikkert topp-3-ranking.
-  Re-aktiver `/stats/aargang/[aar]`. (S–M, navn fra DB, ranking utsatt til D3)
-- [ ] **QW4 — tour/[slug] internasjonal:** wire PGA/EURO/KFT fra `pgaPlayerSeason.tour`
-  (ekte). Norske tourer venter på D2/D3. (S)
+## ⚡ Quick wins
+- [x] **QW2 — scoreToPar-backfill (GJORT 2026-05-31):** fylte `publicPlayerEntry.scoreToPar`
+  fra `rounds`-JSON via SQL (regex-guard, kun entries der alle runder har gyldig par).
+  Resultat: turneringer har nå ekte score-to-par (f.eks. 148/137 per turnering) → de
+  eksisterende `/stats/turneringer/[slug]`-leaderboardene viser ekte score etter ISR-revalidering.
+
+### Reassessert — IKKE quick wins (dype prototyper, krever full side-rebuild)
+- [ ] **QW1 — leaderboards:** 799-linjers prototype med ~12 hardkodede fake-boards (norske
+  snitt/forbedring/WAGR/klubber + PGA-fallbacks à la «R. McIlroy 327.4 yds»). Re-bygg til
+  SG-only + ekte norske aggregeringer (nå mulig via QW2-backfill). (M, ikke quick)
+- [ ] **QW3 — aargang/[aar]:** hardkodet roster (16 navn). Re-bygg: ekte spillere per
+  `publicPlayer.birthYear` + score fra QW2-backfill. (M)
+- [ ] **QW4 — tour/[slug]:** hardkodet roster (11 navn). PGA/EURO/KFT wirebar fra
+  `pgaPlayerSeason.tour`, norske tourer venter på D2/D3. (M)
 
 ---
 
