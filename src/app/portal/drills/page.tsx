@@ -204,6 +204,22 @@ export default async function DrillBibliotekPage() {
   return (
     <div className="drill-scope">
       <div className="drill-page">
+        <div
+          style={{
+            marginBottom: 16,
+            padding: "10px 14px",
+            borderRadius: 10,
+            background: "rgb(251 239 212)",
+            border: "1px solid rgb(232 205 142)",
+            fontFamily: "var(--font-mono)",
+            fontSize: 11,
+            letterSpacing: "0.06em",
+            textTransform: "uppercase",
+            color: "rgb(107 77 17)",
+          }}
+        >
+          Pre-beta · Drill-biblioteket viser foreløpig demo-data — kobles til ekte drill-database post-beta
+        </div>
         <header className="drill-head">
           <div>
             <div className="eyebrow">PLAYERHQ · TREN</div>

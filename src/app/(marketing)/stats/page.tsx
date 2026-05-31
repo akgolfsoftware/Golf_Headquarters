@@ -101,71 +101,6 @@ function formaterDatoKort(d: Date | null): string {
 }
 
 // ---------------------------------------------------------------------------
-// Static fallback data (shown when DB returns 0 — design prototype values)
-// ---------------------------------------------------------------------------
-
-const NORSKE_FALLBACK = [
-  {
-    initials: "VH",
-    name: "V. Halvorsen",
-    tour: "PGA Tour",
-    event: "Memorial Tournament",
-    pos: "T-12",
-    score: "-4",
-    live: true,
-    flag: "no",
-  },
-  {
-    initials: "KR",
-    name: "K. Reinertsen",
-    tour: "DP World Tour",
-    event: "Soudal Open",
-    pos: "T-31",
-    score: "+1",
-    live: true,
-    flag: "no",
-  },
-  {
-    initials: "KV",
-    name: "K. Vangen",
-    tour: "Korn Ferry",
-    event: "Wichita Open",
-    pos: "T-08",
-    score: "-7",
-    live: true,
-    flag: "no",
-  },
-  {
-    initials: "EK",
-    name: "E. Koldal",
-    tour: "Challenge",
-    event: "Open de Bretagne",
-    pos: "MC",
-    score: "+3",
-    live: false,
-    flag: "no",
-  },
-  {
-    initials: "SH",
-    name: "S. Halland",
-    tour: "LET",
-    event: "Helsingborg Open",
-    pos: "T-04",
-    score: "-9",
-    live: true,
-    flag: "no",
-  },
-  {
-    initials: "AM",
-    name: "A. Mæhlum",
-    tour: "Nordic Golf",
-    event: "Skive Classic",
-    pos: "T-19",
-    score: "E",
-    live: true,
-    flag: "no",
-  },
-];
 
 const TRENER_STEG = [
   {
@@ -208,11 +143,9 @@ export default async function StatsLandingPage() {
   const snapshot = await hentLiveSnapshot();
   const sisteSync = formaterDatoKort(snapshot.sisteSyncDato);
 
-  // Use DB values if present, otherwise fallback to design data
-  const norskeIAksjon =
-    snapshot.norskeIAksjon > 0 ? snapshot.norskeIAksjon : 6;
-  const kommendeTurneringer =
-    snapshot.kommendeTurneringer > 0 ? snapshot.kommendeTurneringer : 17;
+  // Ekte DB-tall (ingen fabrikkerte fallback-verdier).
+  const norskeIAksjon = snapshot.norskeIAksjon;
+  const kommendeTurneringer = snapshot.kommendeTurneringer;
 
   return (
     <div>
@@ -337,42 +270,30 @@ export default async function StatsLandingPage() {
           </div>
         </Reveal>
 
-        <div className="stats-norske-grid">
-          {NORSKE_FALLBACK.map((p, i) => (
-            <Reveal key={p.initials} delay={i * 60}>
-              <div className="stats-norske-card">
-                <div className="stats-norske-head">
-                  <div className="stats-norske-avatar">{p.initials}</div>
-                  <div>
-                    <div className="stats-norske-name">{p.name}</div>
-                    <div className="stats-norske-tour">
-                      <FlagGlyph code={p.flag} />
-                      {p.tour}
-                    </div>
-                  </div>
-                </div>
-                <div className="stats-norske-event">{p.event}</div>
-                <div className="stats-norske-pos">
-                  <div>
-                    {p.live ? (
-                      <div className="stats-live-badge">Live</div>
-                    ) : (
-                      <span className="stats-pos-label">Cut</span>
-                    )}
-                  </div>
-                  <div style={{ display: "flex", alignItems: "baseline" }}>
-                    <span className="stats-pos-value">{p.pos}</span>
-                    <span
-                      className={`stats-pos-score${p.score.startsWith("-") ? " under-par" : ""}`}
-                    >
-                      {p.score}
-                    </span>
-                  </div>
-                </div>
+        <Reveal>
+          <Link href="/stats/norske" className="stats-norske-card" style={{ display: "block", textDecoration: "none" }}>
+            <div className="stats-norske-head">
+              <div className="stats-norske-avatar">
+                <FlagGlyph code="no" />
               </div>
-            </Reveal>
-          ))}
-        </div>
+              <div>
+                <div className="stats-norske-name">
+                  {norskeIAksjon > 0
+                    ? `${norskeIAksjon} norske spillere i aksjon`
+                    : "Norske spillere"}
+                </div>
+                <div className="stats-norske-tour">Live leaderboards — oppdatert automatisk</div>
+              </div>
+            </div>
+            <div className="stats-norske-event">
+              Følg norske spillere på PGA Tour, DP World Tour, Korn Ferry, Challenge og LET.
+            </div>
+            <div className="stats-norske-pos">
+              <span className="stats-pos-label">Åpne leaderboard</span>
+              <span className="stats-pos-value">→</span>
+            </div>
+          </Link>
+        </Reveal>
       </section>
 
       {/* ── 4. BENTO ── */}

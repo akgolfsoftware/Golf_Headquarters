@@ -30,20 +30,21 @@ export const metadata: Metadata = {
 // Static cohort overview data (DB will eventually supply this)
 // ---------------------------------------------------------------------------
 
+// Årganger 2000–2012. Antall spillere hentes fra DB (publicPlayer); alder er avledet.
 const KOHORTER = [
-  { aar: 2012, alder: 14, spillere: 34, topp3: ["E. Bjørnstad", "N. Krogh", "T. Andersen"] },
-  { aar: 2011, alder: 15, spillere: 42, topp3: ["O. Fossdal", "S. Løvås", "P. Kverndal"] },
-  { aar: 2010, alder: 16, spillere: 51, topp3: ["M. Aas", "L. Dahlberg", "H. Kjelsberg"] },
-  { aar: 2009, alder: 17, spillere: 87, topp3: ["A. Halvorsen", "M. Olsen", "K. Reinertsen"] },
-  { aar: 2008, alder: 18, spillere: 94, topp3: ["S. Halland", "E. Koldal", "P. Hagen"] },
-  { aar: 2007, alder: 19, spillere: 102, topp3: ["V. Halvorsen", "M. Larsen", "A. Mæhlum"] },
-  { aar: 2006, alder: 20, spillere: 97, topp3: ["K. Vangen", "T. Nilsen", "C. Hansen"] },
-  { aar: 2005, alder: 21, spillere: 89, topp3: ["L. Eriksen", "A. Berg", "N. Andersen"] },
-  { aar: 2004, alder: 22, spillere: 78, topp3: ["H. Kristiansen", "O. Larsen", "S. Lund"] },
-  { aar: 2003, alder: 23, spillere: 71, topp3: ["J. Pedersen", "M. Olsen", "A. Hansen"] },
-  { aar: 2002, alder: 24, spillere: 64, topp3: ["B. Nilsen", "T. Larsen", "P. Berg"] },
-  { aar: 2001, alder: 25, spillere: 58, topp3: ["C. Andreassen", "M. Vik", "H. Strand"] },
-  { aar: 2000, alder: 26, spillere: 52, topp3: ["K. Holm", "A. Grønvold", "T. Bakke"] },
+  { aar: 2012, alder: 14 },
+  { aar: 2011, alder: 15 },
+  { aar: 2010, alder: 16 },
+  { aar: 2009, alder: 17 },
+  { aar: 2008, alder: 18 },
+  { aar: 2007, alder: 19 },
+  { aar: 2006, alder: 20 },
+  { aar: 2005, alder: 21 },
+  { aar: 2004, alder: 22 },
+  { aar: 2003, alder: 23 },
+  { aar: 2002, alder: 24 },
+  { aar: 2001, alder: 25 },
+  { aar: 2000, alder: 26 },
 ];
 
 async function hentAargangData() {
@@ -61,7 +62,7 @@ async function hentAargangData() {
 
   return KOHORTER.map((k) => ({
     ...k,
-    spillere: dbMap.get(k.aar) ?? k.spillere,
+    spillere: dbMap.get(k.aar) ?? 0,
   }));
 }
 
@@ -205,41 +206,6 @@ export default async function AargangIndexPage() {
                     >
                       spillere
                     </span>
-                  </div>
-
-                  <div style={{ marginTop: 16 }}>
-                    <div
-                      style={{
-                        fontFamily: "var(--font-mono)",
-                        fontSize: 10,
-                        letterSpacing: "0.1em",
-                        textTransform: "uppercase",
-                        color: k.aar === 2009 ? "rgba(209,248,67,0.6)" : "var(--s-muted-fg)",
-                        marginBottom: 6,
-                      }}
-                    >
-                      Topp 3
-                    </div>
-                    {k.topp3.map((navn, ni) => (
-                      <div
-                        key={ni}
-                        style={{
-                          fontSize: 13,
-                          fontWeight: ni === 0 ? 600 : 400,
-                          color:
-                            k.aar === 2009
-                              ? ni === 0
-                                ? "var(--s-accent)"
-                                : "rgba(209,248,67,0.8)"
-                              : ni === 0
-                                ? "var(--s-primary)"
-                                : "var(--s-fg)",
-                          lineHeight: 1.6,
-                        }}
-                      >
-                        {ni + 1}. {navn}
-                      </div>
-                    ))}
                   </div>
 
                   <div
