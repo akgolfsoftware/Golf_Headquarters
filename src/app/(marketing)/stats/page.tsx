@@ -330,32 +330,6 @@ export default async function StatsLandingPage() {
                   én kalender.
                 </div>
 
-                <div className="stats-mini-lb">
-                  <div className="stats-mini-lb-row">
-                    <span className="stats-mini-pos">1</span>
-                    <span className="stats-mini-name">S. Devlin</span>
-                    <span className="stats-mini-mono">−12</span>
-                    <span className="stats-mini-score">F</span>
-                  </div>
-                  <div className="stats-mini-lb-row">
-                    <span className="stats-mini-pos">2</span>
-                    <span className="stats-mini-name">O. Yamagata</span>
-                    <span className="stats-mini-mono">−10</span>
-                    <span className="stats-mini-score">F</span>
-                  </div>
-                  <div className="stats-mini-lb-row">
-                    <span className="stats-mini-pos">T-12</span>
-                    <span
-                      className="stats-mini-name"
-                      style={{ display: "flex", alignItems: "center", gap: 6 }}
-                    >
-                      <FlagGlyph code="no" size={12} /> V. Halvorsen
-                    </span>
-                    <span className="stats-mini-mono">−4</span>
-                    <span className="stats-mini-score-live">LIVE</span>
-                  </div>
-                </div>
-
                 <div className="stats-bento-foot">
                   {(1175).toLocaleString("nb-NO")} TURNERINGER · OPPDATERT
                   DAGLIG
