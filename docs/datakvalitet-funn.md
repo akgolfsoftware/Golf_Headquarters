@@ -39,8 +39,19 @@ cannot be passed to Client Component props") — årsak: et `<div>` med `onMouse
 (`.stats-aargang-card:hover`). Hub-en re-aktivert (200). `/stats/aargang/[aar]`-detaljen
 forblir redirected (fake roster + skal wires).
 
-**Wiring post-launch:** PGA-sidene KAN wires til `pga_*`-tabeller (data finnes). Norske
-amatør-leaderboards (region/klubb/årgang) trenger datakilde først.
+**PGA-sider er allerede wired (2026-05-31):** grep-en min telte feil — «navn:»-treffene
+var RELATERTE kategori-labels, ikke fake spillere. PGA-sidene henter ekte DataGolf-data
+via `getPgaTopN`/Prisma (1299 ekte Tour-spillere). MEN dataene er DataGolf skill-ratings:
+- `sgTotal/sgOtt/sgApp/sgArg/sgPutt` = ekte + meningsfulle ✓
+- `driveDist`/`fairwayPct` = relative ratings (−25…23), feilmerket som yds/% → misvisende
+- `avgScore`/`girPct`/`puttsPerRound` = NULL → tomme sider
+
+**Re-aktivert:** `/stats/pga` (hub) + `/stats/pga/sg-total` (ekte SG av ekte spillere).
+**Fortsatt skjult:** drive-distance, fairway-pct, gir-pct, putts-per-round, scoring-avg,
+putt-explorer, spillere — trenger rå-stats-data i ekte enheter (yds/%/score), eller
+redesign rundt SG/skill-ratings.
+
+Norske amatør-leaderboards (region/klubb/årgang-[aar]) trenger fortsatt datakilde.
 
 ## ✅ Bekreftet ekte data (mesteparten)
 Dashboard, spillerliste, statistikk, mal/SG-hub, shot-by-shot, workbench, finance,

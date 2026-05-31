@@ -38,11 +38,21 @@ const STATS_PROTOTYPE_PREFIXES = [
   "/stats/leaderboards",
   "/stats/regions",
   "/stats/klubber",
-  "/stats/pga",
   "/stats/tour",
   "/stats/spillere",
   "/stats/verktoy",
   "/stats/sok",
+  // PGA: hub + sg-total er ekte (DataGolf SG). Disse under-sidene har enten
+  // NULL-kolonner (gir/putts/scoring) eller DataGolf-relative ratings feilmerket
+  // som yds/% (drive/fairway), eller hardkodet fallback (spillere). Skjult til
+  // rå-stats-data finnes.
+  "/stats/pga/drive-distance",
+  "/stats/pga/fairway-pct",
+  "/stats/pga/gir-pct",
+  "/stats/pga/putts-per-round",
+  "/stats/pga/scoring-avg",
+  "/stats/pga/putt-explorer",
+  "/stats/pga/spillere",
 ];
 
 /**
