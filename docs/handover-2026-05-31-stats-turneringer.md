@@ -1,8 +1,27 @@
 # Handover — Stats-rydding + Turnerings-pipeline (2026-05-31)
 
-> **⚠️ TO SESSIONER I SAMME REPO.** Denne handoveren er fra "stats/turnerings"-sessionen.
-> Siste commit `5d6eca18` (PlayerHQ testplan) kom fra en ANNEN session. Begge committer til
-> `main` i `~/Developer/akgolf-hq`. **Koordiner før store endringer i samme filer.**
+> **✅ KONSOLIDERT TIL ÉN SESSION (2026-05-31).** Anders har bestemt: turnerings-pipelinen +
+> stats-seksjonen eies nå av ÉN session (denne). HEAD `960d680d` inneholder begge sessioners
+> arbeid (stats-rydding + delsystem C live-leaderboard).
+>
+> **DEN ANDRE SESSIONEN SKAL STOPPE** å redigere: `src/proxy.ts`, `src/app/(marketing)/stats/*`,
+> `src/app/(marketing)/turneringer/*`, `src/lib/turneringer/*`, `vercel.json`, og denne handoveren
+> + `docs/fase-d-datafundament.md`. (Den kan fortsette på PlayerHQ-testing, som er uavhengig.)
+>
+> **NB for fremtidig meg:** ALDRI blind `git stash pop` — det poppet en gammel lint-staged-backup
+> og lagde konflikt i 8 filer (gjenopprettet via `git checkout HEAD -- <fil>`).
+>
+> ## Konsolidert tilstand på turnerings-pipeline
+> - **C (proff, LIVE):** ✅ GJORT av andre session — DataGolf `pga`+`opp` live-leaderboard,
+>   `/turneringer/[slug]`, cron hver 10. min. (DataGolf live KUN pga/opp.)
+> - **C (proff, HISTORISK):** ⬜ DataGolf Raw Data Archive dekker ~22 herre-tourer (event-list +
+>   round-scoring/SG-endpoint) — IKKE bygget ennå. Utvider dekning fra live-3 til arkiv-22.
+> - **Dame-tourer (LPGA/LET/LET Access):** ⬜ Anders vil ha alle. DataGolf dekker IKKE dame.
+>   LPGA = betalt API (Sportradar/Data Sports Group). LET/LET Access = OCS-plattform
+>   (`live-letas.ocs-software.com`, `ocs-let.com`), ingen offentlig API → scraping.
+> - **A (norsk amatør):** ⬜ Olyo/Srixon/Garmin NC/Østlands/Global Junior — GolfBox/NGF-scraper
+>   er STUB. Største byggejobb.
+> - **B (WAGR):** ⬜ manuell import i dag (`admin/talent/wagr-import`).
 
 ---
 
