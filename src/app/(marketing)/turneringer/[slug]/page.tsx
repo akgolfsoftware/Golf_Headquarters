@@ -23,14 +23,35 @@ import {
   Star,
   Trophy,
 } from "lucide-react";
+import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { FlagGlyph } from "@/components/stats/flag-glyph";
 import { Reveal } from "@/components/stats/reveal";
 import { CountUp } from "@/components/stats/count-up";
 import { StatsEyebrow } from "@/components/stats/eyebrow";
 import { MersalgBanner } from "@/components/turneringer/mersalg-banner";
+import { LiveRefresher } from "@/components/turneringer/live-refresher";
 
-export const revalidate = 900;
+// Live-turneringer oppdateres av cron hvert 10. min — 2 min ISR holder
+// siden fersk uten å hamre databasen.
+export const revalidate = 120;
+
+// Per-runde-data lagret som JSON-blob på PublicPlayerEntry. Valideres ved read.
+const RoundsSchema = z
+  .object({
+    thru: z.number().nullable().optional(),
+    round: z.number().nullable().optional(),
+  })
+  .nullable();
+
+function parseRounds(raw: unknown): { thru: number | null; round: number | null } {
+  const parsed = RoundsSchema.safeParse(raw);
+  if (!parsed.success || !parsed.data) return { thru: null, round: null };
+  return {
+    thru: parsed.data.thru ?? null,
+    round: parsed.data.round ?? null,
+  };
+}
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -79,11 +100,22 @@ export default async function TurneringDetalj({ params }: Props) {
   if (!t) notFound();
 
   const norske = t.publicEntries.filter((e) => e.player.country === "NO");
-  const andre = t.publicEntries.filter((e) => e.player.country !== "NO");
   const alle = t.publicEntries;
   const erLive = t.status === "IN_PROGRESS";
   const erFerdig = t.status === "COMPLETED";
   const erKommende = t.status === "UPCOMING";
+
+  // Ekte KPI-er beregnet fra feltet (ingen placeholder-tall)
+  const medScore = alle.filter((e) => e.scoreToPar !== null);
+  const lederToPar =
+    medScore.length > 0
+      ? Math.min(...medScore.map((e) => e.scoreToPar as number))
+      : null;
+  const naavarendeRunde = alle.reduce<number | null>((maks, e) => {
+    const r = parseRounds(e.rounds).round;
+    if (r === null) return maks;
+    return maks === null ? r : Math.max(maks, r);
+  }, null);
 
   const tourLabel = formaterTour(t.tour);
   const datoStr = formaterDato(t.startDate, t.endDate);
@@ -95,6 +127,9 @@ export default async function TurneringDetalj({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: tilJsonLd(t) }}
       />
+
+      {/* Auto-refresh kun når turneringen er live */}
+      {erLive && <LiveRefresher />}
 
       {/* Hero */}
       <section
@@ -283,23 +318,31 @@ export default async function TurneringDetalj({ params }: Props) {
             </div>
           </div>
           <div className="stats-kpi">
-            <div className="stats-kpi-eyebrow">Korteste runde</div>
+            <div className="stats-kpi-eyebrow">
+              {erFerdig ? "Vinnerscore" : "Leder"}
+            </div>
             <div className="stats-kpi-value font-mono" style={{ fontSize: 32, marginTop: 8 }}>
-              {erLive || erFerdig ? "−7" : "—"}
+              {lederToPar !== null ? formaterToPar(lederToPar) : "—"}
             </div>
             <div className="stats-kpi-sub">
-              {erLive ? "R2 · Ledende" : erFerdig ? "Beste runde" : "Ikke startet"}
+              {lederToPar !== null
+                ? erFerdig
+                  ? "Sluttresultat"
+                  : "Beste score to par"
+                : "Ikke startet"}
             </div>
           </div>
           <div className="stats-kpi">
-            <div className="stats-kpi-eyebrow">
-              {erFerdig ? "Vinnerscore" : "Cut-linje"}
-            </div>
+            <div className="stats-kpi-eyebrow">Runde</div>
             <div className="stats-kpi-value font-mono" style={{ fontSize: 32, marginTop: 8 }}>
-              {erLive || erFerdig ? "+3" : "—"}
+              {naavarendeRunde !== null ? `R${naavarendeRunde}` : "—"}
             </div>
             <div className="stats-kpi-sub">
-              {erLive ? "76 spillere gjorde cut" : erFerdig ? "cut-resultat" : ""}
+              {erLive
+                ? "Pågår nå"
+                : erFerdig
+                  ? "Fullført"
+                  : "Ikke startet"}
             </div>
           </div>
         </div>
@@ -443,8 +486,8 @@ export default async function TurneringDetalj({ params }: Props) {
               <div>
                 <StatsEyebrow>Leaderboard</StatsEyebrow>
                 <h2 className="font-display">
-                  Topp {Math.min(alle.length, 20)}{" "}
-                  <em className="stats-italic-accent">deltakere</em>.
+                  Hele <em className="stats-italic-accent">feltet</em> —{" "}
+                  {alle.length} spillere.
                 </h2>
               </div>
               {t.leaderboardSnap && (
@@ -480,11 +523,14 @@ export default async function TurneringDetalj({ params }: Props) {
                     {erLive && (
                       <th style={{ padding: "10px 0", textAlign: "right", fontWeight: 500, fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--s-muted-fg)" }}>To par</th>
                     )}
+                    {erLive && (
+                      <th style={{ padding: "10px 0 10px 16px", textAlign: "right", fontWeight: 500, fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--s-muted-fg)" }}>Thru</th>
+                    )}
                     <th style={{ padding: "10px 0", textAlign: "right", fontWeight: 500, fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--s-muted-fg)" }}>Status</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {alle.slice(0, 20).map((e, i) => (
+                  {alle.map((e, i) => (
                     <tr
                       key={e.id}
                       style={{
@@ -519,12 +565,19 @@ export default async function TurneringDetalj({ params }: Props) {
                           }}
                         >
                           {e.scoreToPar !== null
-                            ? e.scoreToPar === 0
-                              ? "E"
-                              : e.scoreToPar > 0
-                                ? `+${e.scoreToPar}`
-                                : e.scoreToPar
+                            ? formaterToPar(e.scoreToPar)
                             : "—"}
+                        </td>
+                      )}
+                      {erLive && (
+                        <td style={{ padding: "12px 0 12px 16px", textAlign: "right", color: "var(--s-muted-fg)" }}>
+                          {(() => {
+                            const r = parseRounds(e.rounds);
+                            if (e.status === "CUT") return "—";
+                            if (r.thru === null) return "—";
+                            if (r.thru >= 18) return "F";
+                            return r.thru;
+                          })()}
                         </td>
                       )}
                       <td style={{ padding: "12px 0", textAlign: "right" }}>
@@ -554,71 +607,6 @@ export default async function TurneringDetalj({ params }: Props) {
                 </tbody>
               </table>
             </div>
-          </Reveal>
-        </section>
-      )}
-
-      {/* Andre spillere (utenfor topp 20) */}
-      {andre.length > 0 && alle.length <= 20 && (
-        <section className="stats-section stats-section-divider">
-          <Reveal>
-            <div className="stats-section-head">
-              <div>
-                <StatsEyebrow>Andre deltakere</StatsEyebrow>
-                <h2 className="font-display">
-                  {andre.length} spillere{" "}
-                  <em className="stats-italic-accent">i felt</em>.
-                </h2>
-              </div>
-            </div>
-          </Reveal>
-          <Reveal delay={60}>
-            <ul style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              {andre.map((e) => (
-                <li
-                  key={e.id}
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    padding: "12px 16px",
-                    background: "var(--s-card)",
-                    border: "1px solid var(--s-border)",
-                    borderRadius: "var(--s-r-md)",
-                  }}
-                >
-                  <div>
-                    <div className="font-display" style={{ fontWeight: 600, fontSize: 15 }}>
-                      {e.player.name}
-                    </div>
-                    <div
-                      style={{
-                        fontFamily: "var(--font-mono)",
-                        fontSize: 10,
-                        textTransform: "uppercase",
-                        letterSpacing: "0.1em",
-                        color: "var(--s-muted-fg)",
-                        marginTop: 2,
-                      }}
-                    >
-                      {formaterTier(e.player.tier)} · {e.player.country}
-                    </div>
-                  </div>
-                  {erLive && e.scoreToPar !== null && (
-                    <span
-                      className="font-mono"
-                      style={{
-                        fontSize: 18,
-                        fontWeight: 500,
-                        color: e.scoreToPar < 0 ? "var(--s-primary)" : e.scoreToPar > 0 ? "hsl(var(--destructive))" : "var(--s-fg)",
-                      }}
-                    >
-                      {e.scoreToPar === 0 ? "E" : e.scoreToPar > 0 ? `+${e.scoreToPar}` : e.scoreToPar}
-                    </span>
-                  )}
-                </li>
-              ))}
-            </ul>
           </Reveal>
         </section>
       )}
@@ -659,6 +647,11 @@ function formaterDato(start: Date, slutt: Date | null): string {
   if (!slutt) return NB_DATE.format(start);
   if (start.toDateString() === slutt.toDateString()) return NB_DATE.format(start);
   return `${NB_DATE.format(start)} — ${NB_DATE.format(slutt)}`;
+}
+
+function formaterToPar(n: number): string {
+  if (n === 0) return "E";
+  return n > 0 ? `+${n}` : String(n);
 }
 
 function formaterTour(t: string | null): string {

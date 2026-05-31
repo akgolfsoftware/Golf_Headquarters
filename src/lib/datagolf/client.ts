@@ -16,7 +16,10 @@
 
 const BASE = "https://feeds.datagolf.com";
 
-export type DGTour = "pga" | "euro" | "kft" | "alt" | "champ" | "liv";
+// "opp" = opposite-field event (samme uke som et signature/major event).
+// DataGolf live-tournament-stats støtter KUN "pga" og "opp" — øvrige tourer
+// (euro/kft/alt) har vi schedule for, men ikke live leaderboard.
+export type DGTour = "pga" | "opp" | "euro" | "kft" | "alt" | "champ" | "liv";
 
 function key(): string {
   const k = process.env.DATAGOLF_API_KEY;
@@ -108,6 +111,8 @@ export type DGLiveStatsResponse = {
   last_updated?: string;
   tour?: string;
   course?: string;
+  // Hvilken runde turneringen er i nå (1-4). Topp-nivå — IKKE per-spiller.
+  stat_round?: number;
   live_stats?: DGLiveStatsRow[];
 };
 

@@ -14,7 +14,9 @@ import {
   getAllPlayers,
   type DGTour,
   type DGScheduleEvent,
+  type DGLiveStatsRow,
 } from "@/lib/datagolf/client";
+import { iso3to2 } from "@/lib/datagolf/country";
 import { scrapeNgfSchedule } from "@/lib/scrapers/ngf";
 
 // ---------------------------------------------------------------------------
@@ -180,28 +182,52 @@ function formatPlayerName(raw: string): string {
 // 3) Live leaderboard sync — hver time under turnering
 // ---------------------------------------------------------------------------
 
-export async function syncLiveLeaderboards(): Promise<{ tours: number; entries: number }> {
-  let totalEntries = 0;
+// DataGolf live-tournament-stats støtter KUN "pga" og "opp" (opposite-field).
+// Øvrige tourer (DP World/Korn Ferry/Challenge) har vi kalender + offisiell
+// link for, men ikke live leaderboard via dette endepunktet.
+const LIVE_TOURS: DGTour[] = ["pga", "opp"];
 
-  // DataGolf live-stats er kun tilgjengelig for PGA (og evt opposite-field event).
-  // De andre turene har vi schedule for, men ikke live leaderboard via samme endpoint.
-  const LIVE_TOURS: DGTour[] = ["pga"];
+// Spillere fra live-feeden (pga + opposite-field) er pro-er på PGA-nivå.
+const LIVE_PLAYER_TIER = "pro-pga";
+
+export async function syncLiveLeaderboards(): Promise<{
+  tours: number;
+  events: number;
+  entries: number;
+  playersCreated: number;
+}> {
+  let totalEntries = 0;
+  let totalEvents = 0;
+  let playersCreated = 0;
+
+  // Metadata for alle DataGolf-spillere (dg_id → land/amatør) — én gang,
+  // gjenbrukt på tvers av tourer for å berike auto-opprettede spillere.
+  let playerMeta: Map<number, { country_code: string; amateur: number }> | null =
+    null;
 
   for (const tour of LIVE_TOURS) {
-    const stats = await getLiveTournamentStats(tour);
-    if (!stats.event_name || !stats.live_stats) continue;
+    let stats: Awaited<ReturnType<typeof getLiveTournamentStats>>;
+    try {
+      stats = await getLiveTournamentStats(tour);
+    } catch {
+      // En tour uten aktiv turnering kan svare 400 — hopp videre.
+      continue;
+    }
+    if (!stats.event_name || !stats.live_stats || stats.live_stats.length === 0)
+      continue;
 
-    // Finn matchende turnering i DB
+    // Match turnering på navn + aktiv status. Opposite-field-events ligger i
+    // schedule under tour="pga", så vi begrenser ikke matchen til touren.
     const turnering = await prisma.tournament.findFirst({
       where: {
-        tour,
         name: stats.event_name,
         status: { in: ["IN_PROGRESS", "UPCOMING"] },
       },
     });
     if (!turnering) continue;
+    totalEvents++;
 
-    // Lagre snapshot
+    // Lagre rå-snapshot (hele DataGolf-svaret) for reprosessering
     await prisma.leaderboardSnapshot.upsert({
       where: { tournamentId: turnering.id },
       create: {
@@ -215,7 +241,6 @@ export async function syncLiveLeaderboards(): Promise<{ tours: number; entries: 
       },
     });
 
-    // Oppdater status hvis live
     if (turnering.status !== "IN_PROGRESS") {
       await prisma.tournament.update({
         where: { id: turnering.id },
@@ -223,44 +248,124 @@ export async function syncLiveLeaderboards(): Promise<{ tours: number; entries: 
       });
     }
 
-    // Oppdater entries for norske spillere
-    const norske = await prisma.publicPlayer.findMany({
-      where: { country: "NO", dataGolfId: { not: null } },
-    });
-    const norskeDgIds = new Map(norske.map((p) => [p.dataGolfId!, p.id]));
+    // Last spiller-metadata lat — kun hvis vi faktisk har et aktivt felt
+    if (!playerMeta) {
+      const all = await getAllPlayers();
+      playerMeta = new Map(
+        all.map((p) => [
+          p.dg_id,
+          { country_code: p.country_code, amateur: p.amateur ?? 0 },
+        ]),
+      );
+    }
 
+    // Sørg for at alle spillere i feltet finnes som PublicPlayer (auto-opprett)
+    const { byDgId, created } = await ensurePlayers(stats.live_stats, playerMeta);
+    playersCreated += created;
+
+    // Rundenummeret er topp-nivå (stat_round), ikke per-spiller. Per-spiller
+    // "round"-feltet inneholder stat-verdier, ikke rundenummer.
+    const currentRound =
+      typeof stats.stat_round === "number" ? stats.stat_round : null;
+
+    // Upsert entry per spiller i feltet
+    let norske = 0;
     for (const row of stats.live_stats) {
-      const playerId = norskeDgIds.get(row.dg_id);
+      const playerId = byDgId.get(row.dg_id);
       if (!playerId) continue;
 
       const pos = parsePosition(row.position);
-      const status = pos === "CUT" ? "CUT" : pos === "WD" ? "WITHDREW" : "TEED_OFF";
+      const status =
+        pos === "CUT" ? "CUT" : pos === "WD" ? "WITHDREW" : "TEED_OFF";
+      const rounds = {
+        thru: typeof row.thru === "number" ? row.thru : null,
+        round: currentRound,
+      };
 
       await prisma.publicPlayerEntry.upsert({
-        where: {
-          playerId_tournamentId: {
-            playerId,
-            tournamentId: turnering.id,
-          },
-        },
+        where: { playerId_tournamentId: { playerId, tournamentId: turnering.id } },
         create: {
           playerId,
           tournamentId: turnering.id,
           status,
           position: typeof pos === "number" ? pos : null,
           scoreToPar: row.total ?? null,
+          rounds,
         },
         update: {
           status,
           position: typeof pos === "number" ? pos : null,
           scoreToPar: row.total ?? null,
+          rounds,
         },
       });
       totalEntries++;
+      if ((playerMeta.get(row.dg_id)?.country_code ?? "") === "NOR") norske++;
     }
+
+    // Oppdater denormalisert norske-teller på turneringen
+    await prisma.tournament.update({
+      where: { id: turnering.id },
+      data: { norskeAntall: norske, lastSyncAt: new Date() },
+    });
   }
 
-  return { tours: LIVE_TOURS.length, entries: totalEntries };
+  return {
+    tours: LIVE_TOURS.length,
+    events: totalEvents,
+    entries: totalEntries,
+    playersCreated,
+  };
+}
+
+/**
+ * Sørger for at hver spiller i live-feltet finnes som PublicPlayer.
+ * Auto-oppretter ukjente spillere med land/tier fra DataGolf-metadata.
+ * Returnerer map dg_id → playerId + antall nyopprettede.
+ */
+async function ensurePlayers(
+  rows: DGLiveStatsRow[],
+  playerMeta: Map<number, { country_code: string; amateur: number }>,
+): Promise<{ byDgId: Map<number, string>; created: number }> {
+  const dgIds = [...new Set(rows.map((r) => r.dg_id))];
+
+  const existing = await prisma.publicPlayer.findMany({
+    where: { dataGolfId: { in: dgIds } },
+    select: { id: true, dataGolfId: true },
+  });
+  const byDgId = new Map<number, string>(
+    existing.map((p) => [p.dataGolfId!, p.id]),
+  );
+
+  let created = 0;
+  for (const row of rows) {
+    if (byDgId.has(row.dg_id)) continue;
+
+    const navn = formatPlayerName(row.player_name);
+    const meta = playerMeta.get(row.dg_id);
+    const country = iso3to2(meta?.country_code).toUpperCase();
+    const tier = meta?.amateur === 1 ? "amateur" : LIVE_PLAYER_TIER;
+
+    const baseSlug = slugify(navn) || `spiller-${row.dg_id}`;
+    const slugKollisjon = await prisma.publicPlayer.findUnique({
+      where: { slug: baseSlug },
+    });
+    const finalSlug = slugKollisjon ? `${baseSlug}-${row.dg_id}` : baseSlug;
+
+    const nyspiller = await prisma.publicPlayer.create({
+      data: {
+        name: navn,
+        slug: finalSlug,
+        country,
+        tier,
+        dataGolfId: row.dg_id,
+      },
+    });
+    byDgId.set(row.dg_id, nyspiller.id);
+    created++;
+  }
+
+  return { byDgId, created };
 }
 
 function parsePosition(p: string | undefined): number | "CUT" | "WD" | null {
