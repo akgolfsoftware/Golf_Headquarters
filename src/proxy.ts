@@ -30,6 +30,21 @@ const DEMO_PREFIXES = [
   "/v2-preview",
 ];
 
+// Stats-sider som fortsatt har hardkodede design-/prototypedata (fabrikkerte
+// spillere). Skjules i PRODUKSJON (redirect → /stats) til de er wired til ekte
+// data. Lokalt/dev forblir de tilgjengelige for utvikling. Ekte sider beholdes:
+// /stats (hub), /stats/norske, /stats/turneringer, /stats/aargang (hub).
+const STATS_PROTOTYPE_PREFIXES = [
+  "/stats/leaderboards",
+  "/stats/regions",
+  "/stats/klubber",
+  "/stats/pga",
+  "/stats/tour",
+  "/stats/spillere",
+  "/stats/verktoy",
+  "/stats/sok",
+];
+
 /**
  * Bygg Content-Security-Policy-header med nonce.
  *
@@ -78,6 +93,21 @@ export async function proxy(request: NextRequest) {
     url.pathname = "/admin/innboks";
     url.searchParams.set("tab", innboksTab);
     return NextResponse.redirect(url);
+  }
+
+  // Skjul prototype-stats-sider (hardkodede fake-spillere) i PRODUKSJON til de
+  // er wired til ekte data. Redirect → /stats. Gjelder også /stats/aargang/<aar>
+  // (per-årgang-detalj med fake roster), men ikke /stats/aargang-hub-en.
+  if (process.env.VERCEL_ENV === "production") {
+    const erStatsPrototype =
+      STATS_PROTOTYPE_PREFIXES.some((p) => path === p || path.startsWith(`${p}/`)) ||
+      /^\/stats\/aargang\/.+/.test(path);
+    if (erStatsPrototype) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/stats";
+      url.search = "";
+      return NextResponse.redirect(url);
+    }
   }
 
   // Generer per-request nonce — base64-encodet UUID, kryptografisk tilfeldig.
