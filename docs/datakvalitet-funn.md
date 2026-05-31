@@ -23,6 +23,24 @@ CoachHQ) for å skille ekte Prisma-henting fra hardkodet/mock data. Hovedbilde:
 - **Drills**: trenger ekte `Drill`-modell + seed for å erstatte `MOCK_DRILLS` (banner holder til da).
 - **Fallback-når-DB-tom** (`/admin/bookinger`, `/admin/analyse`, `/admin/kalender`, `/portal/analyse`, `/portal/planlegge`, `/portal/talent/roadmap`): henter ekte data først, viser demo kun hvis tomt. Etablert konvensjon. Vurder empty-state i prod for de mest synlige.
 
+## 🔴 STORT FUNN — marketing-/stats er i stor grad prototype (2026-05-31)
+Dyp-sjekken undervurderte: grep-sveip fant **~15 offentlige stats-sider med 250+
+hardkodede fabrikkerte spillernavn** (leaderboards 160, regions/[slug] 41,
+aargang/[aar] 16, pga/spillere 15, klubber/[slug] 13, tour/[slug] 12, + ~10 pga-sider).
+Offentlig fake navngitte personer = kredibilitets-/GDPR-risiko.
+
+**Tiltak (valgt: skjul uwired sider):** `proxy.ts` redirecter i PRODUKSJON disse →
+`/stats`: leaderboards, regions, klubber, pga, tour, spillere, verktoy, sok, **aargang**.
+Lokalt/dev uendret. Ekte sider beholdt: `/stats` (hub), `/stats/norske`, `/stats/turneringer`.
+
+**Pre-eksisterende bug:** `/stats/aargang` ga 500 ("Event handlers cannot be passed to
+Client Component props") FØR denne økten — dyp-sjekken antok feil at den virket. Skjult
+til bugen er fikset. **TODO:** debug server/client-grensen (StatsBtn/Reveal/CountUp) +
+wire ekte data, så fjern fra redirect-listen.
+
+**Wiring post-launch:** PGA-sidene KAN wires til `pga_*`-tabeller (data finnes). Norske
+amatør-leaderboards (region/klubb/årgang) trenger datakilde først.
+
 ## ✅ Bekreftet ekte data (mesteparten)
 Dashboard, spillerliste, statistikk, mal/SG-hub, shot-by-shot, workbench, finance,
 tournaments, økter, kalender/uke, talent/mitt-nivå, WAGR + alle marketing-stats-sidene
