@@ -52,7 +52,6 @@ const STATS_PROTOTYPE_PREFIXES = [
   "/stats/pga/putts-per-round",
   "/stats/pga/scoring-avg",
   "/stats/pga/putt-explorer",
-  "/stats/pga/spillere",
 ];
 
 /**

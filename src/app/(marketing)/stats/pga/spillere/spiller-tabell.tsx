@@ -25,12 +25,9 @@ export type SpillerRad = {
 };
 
 const TOURS = ["Alle", "PGA", "EURO", "KFT"];
-const SORT_OPTIONS = [
-  { id: "sgTotal",  label: "SG Total" },
-  { id: "drive",    label: "Drive Distance" },
-  { id: "fairway",  label: "Fairway %" },
-  { id: "scoring",  label: "Scoring Avg" },
-] as const;
+// Kun SG Total er ekte/meningsfull i DataGolf-dataen — rå-stats (drive/fairway/
+// gir/scoring) er relative ratings eller null, så de er fjernet fra tabellen.
+const SORT_OPTIONS = [{ id: "sgTotal", label: "SG Total" }] as const;
 
 type SortKey = (typeof SORT_OPTIONS)[number]["id"];
 
@@ -55,12 +52,7 @@ export function SpillerTabell({ spillere }: Props) {
       const q = query.toLowerCase();
       res = res.filter((s) => s.navn.toLowerCase().includes(q));
     }
-    res.sort((a, b) => {
-      const av = a[sortBy] ?? 0;
-      const bv = b[sortBy] ?? 0;
-      // Lower is better for scoring
-      return sortBy === "scoring" ? (av as number) - (bv as number) : (bv as number) - (av as number);
-    });
+    res.sort((a, b) => (b[sortBy] ?? 0) - (a[sortBy] ?? 0));
     return res;
   }, [spillere, tour, query, sortBy]);
 
@@ -121,10 +113,6 @@ export function SpillerTabell({ spillere }: Props) {
             <th>Tour</th>
             <th className="num">Runder</th>
             <th className="num">SG Total</th>
-            <th className="num">Drive</th>
-            <th className="num">Fairway</th>
-            <th className="num">GIR</th>
-            <th className="num">Scoring</th>
           </tr>
         </thead>
         <tbody>
@@ -182,16 +170,6 @@ export function SpillerTabell({ spillere }: Props) {
                   }}
                 >
                   {s.sgTotal ? `+${s.sgTotal.toFixed(2)}` : "—"}
-                </td>
-                <td className="num">{s.drive ? s.drive.toFixed(1) : "—"}</td>
-                <td className="num">
-                  {s.fairway ? `${s.fairway.toFixed(1)}%` : "—"}
-                </td>
-                <td className="num">
-                  {s.gir ? `${s.gir.toFixed(1)}%` : "—"}
-                </td>
-                <td className="num">
-                  {s.scoring ? s.scoring.toFixed(2) : "—"}
                 </td>
               </tr>
             );

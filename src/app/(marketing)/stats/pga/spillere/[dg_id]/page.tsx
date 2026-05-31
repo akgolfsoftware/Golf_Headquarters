@@ -193,44 +193,19 @@ export default async function SpillerProfilPage({
   ];
   const themRadar = [0.5, 0.5, 0.5, 0.5]; // Tour-snitt = 0
 
-  // Stats-grid
+  // Stats-grid — kun ekte SG (rå-stats finnes ikke i DataGolf-dataen).
+  const sgKort = (lbl: string, v: number) => ({
+    lbl,
+    val: v ? `${v > 0 ? "+" : ""}${v.toFixed(2)}` : "—",
+    pct: percentile(v, 0, 0.4),
+    positiv: v > 0,
+  });
   const statsKort = [
-    {
-      lbl: "Drive Distance",
-      val: spiller.drive ? `${spiller.drive.toFixed(1)} yds` : "—",
-      pct: percentile(spiller.drive, 297, 15),
-      positiv: spiller.drive > 297,
-    },
-    {
-      lbl: "Fairway %",
-      val: spiller.fairway ? `${spiller.fairway.toFixed(1)}%` : "—",
-      pct: percentile(spiller.fairway, 61, 6),
-      positiv: spiller.fairway > 61,
-    },
-    {
-      lbl: "GIR %",
-      val: spiller.gir ? `${spiller.gir.toFixed(1)}%` : "—",
-      pct: percentile(spiller.gir, 70, 4),
-      positiv: spiller.gir > 70,
-    },
-    {
-      lbl: "Putts/runde",
-      val: spiller.putts ? spiller.putts.toFixed(1) : "—",
-      pct: percentile(-spiller.putts, -28.9, 0.8), // Lavere er bedre
-      positiv: spiller.putts < 28.9,
-    },
-    {
-      lbl: "Scoring Avg",
-      val: spiller.scoring ? spiller.scoring.toFixed(2) : "—",
-      pct: percentile(-spiller.scoring, -70.85, 1.5),
-      positiv: spiller.scoring < 70.85,
-    },
-    {
-      lbl: "SG Total",
-      val: spiller.sgTotal ? `+${spiller.sgTotal.toFixed(2)}` : "—",
-      pct: percentile(spiller.sgTotal, 0, 0.8),
-      positiv: spiller.sgTotal > 0,
-    },
+    sgKort("SG Total", spiller.sgTotal),
+    sgKort("SG OTT", spiller.sgOtt),
+    sgKort("SG Approach", spiller.sgApp),
+    sgKort("SG Around green", spiller.sgArg),
+    sgKort("SG Putting", spiller.sgPutt),
   ];
 
   // SG breakdown
