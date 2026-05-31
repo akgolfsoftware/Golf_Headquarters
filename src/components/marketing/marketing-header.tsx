@@ -2,12 +2,11 @@ import Link from "next/link";
 import { AkGolfLogo } from "@/components/shared/ak-golf-logo";
 import { MobileMenu } from "./mobile-menu";
 
+// Stats og Turneringer er ikke med i v1-lanseringen — aktiveres etter launch
 const NAV = [
   { href: "/coaching", label: "Coaching" },
   { href: "/treningsfilosofi", label: "Slik trener vi" },
   { href: "/playerhq", label: "PlayerHQ" },
-  { href: "/stats", label: "Statistikk" },
-  { href: "/turneringer", label: "Turneringer" },
   { href: "/anlegg", label: "Anlegg" },
   { href: "/om-oss", label: "Om oss" },
 ];

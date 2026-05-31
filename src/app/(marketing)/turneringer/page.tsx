@@ -75,7 +75,7 @@ export default async function TurneringerPage({ searchParams }: Props) {
               Alle
             </TabLink>
             <TabLink href="/turneringer?tab=norske" active={tab === "norske"} count={counts.norske}>
-              🇳🇴 Med nordmenn
+              Med nordmenn
             </TabLink>
             <TabLink href="/turneringer?tab=norge" active={tab === "norge"} count={counts.norge}>
               Norge
@@ -334,7 +334,7 @@ function TurneringKort({ t }: { t: TurneringKortData }) {
         {t.norskeCount > 0 && (
           <div className="mt-4 inline-flex w-fit items-center gap-1.5 rounded-full bg-accent/20 px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-accent-foreground">
             <Flag className="h-3 w-3" strokeWidth={2} />
-            🇳🇴 {t.norskeCount} {t.norskeCount === 1 ? "spiller" : "spillere"}
+            {t.norskeCount} {t.norskeCount === 1 ? "norsk spiller" : "norske spillere"}
           </div>
         )}
       </Link>
