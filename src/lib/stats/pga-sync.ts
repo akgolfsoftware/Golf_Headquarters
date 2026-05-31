@@ -138,7 +138,8 @@ export async function getPgaTopN(
     where: {
       tour,
       year,
-      rounds: { gte: minRounds },
+      // DataGolf skill-ratings har rounds=null; minRounds<=0 dropper filteret.
+      ...(minRounds > 0 ? { rounds: { gte: minRounds } } : {}),
       [category]: { not: null },
     },
     orderBy: {
@@ -171,7 +172,8 @@ export async function getPgaTourAverage(
     where: {
       tour,
       year,
-      rounds: { gte: minRounds },
+      // DataGolf skill-ratings har rounds=null; minRounds<=0 dropper filteret.
+      ...(minRounds > 0 ? { rounds: { gte: minRounds } } : {}),
       [category]: { not: null },
     },
     _avg: { [category]: true },

@@ -39,9 +39,10 @@ const RELATERTE: RelatertKategori[] = [
 ];
 
 export default async function SgTotalPage() {
+  // DataGolf skill-ratings har rounds=null → minRounds:0 dropper rounds-filteret.
   const [topp, snittData] = await Promise.all([
-    getPgaTopN("sgTotal", { limit: 100 }),
-    getPgaTourAverage("sgTotal"),
+    getPgaTopN("sgTotal", { limit: 100, minRounds: 0 }),
+    getPgaTourAverage("sgTotal", { minRounds: 0 }),
   ]);
 
   const alleSpillere = topp.map((p) => ({
