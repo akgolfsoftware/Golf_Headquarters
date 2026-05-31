@@ -6,6 +6,7 @@
 // ikke her. Alle feil kastes som vanlige Error med norsk melding.
 
 import { z } from "zod";
+import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 
 // ---------- Input-skjemaer ----------
@@ -113,19 +114,29 @@ export async function executeApprovedTool(
       }
       const end = new Date(start.getTime() + service.durationMin * 60_000);
 
-      const booking = await prisma.booking.create({
-        data: {
-          userId: input.playerId,
-          serviceTypeId: service.id,
-          locationId: location.id,
-          startAt: start,
-          endAt: end,
-          status: "PENDING",
-          notes: input.notes ?? null,
-          priceOre: service.priceOre,
-          coachId: service.coachUserId ?? null,
-        },
-      });
+      let booking: { id: string; status: string };
+      try {
+        booking = await prisma.booking.create({
+          data: {
+            userId: input.playerId,
+            serviceTypeId: service.id,
+            locationId: location.id,
+            startAt: start,
+            endAt: end,
+            status: "PENDING",
+            notes: input.notes ?? null,
+            priceOre: service.priceOre,
+            coachId: service.coachUserId ?? null,
+          },
+          select: { id: true, status: true },
+        });
+      } catch (e) {
+        // P2002: unique constraint — coachen er allerede booket på dette tidspunktet
+        if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
+          throw new Error("Denne timen er allerede booket for denne coachen. Velg et annet tidspunkt.");
+        }
+        throw e;
+      }
 
       // Send notifikasjon til spilleren om at en booking er foreslått
       await prisma.notification.create({

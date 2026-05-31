@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { Prisma } from "@/generated/prisma/client";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
@@ -79,21 +80,30 @@ export async function opprettOktPaaTid(
     facilityId = facility.id;
   }
 
-  const booking = await prisma.booking.create({
-    data: {
-      userId: spiller.id,
-      serviceTypeId: serviceType.id,
-      locationId: location.id,
-      facilityId,
-      startAt,
-      endAt,
-      status: "CONFIRMED",
-      priceOre: serviceType.priceOre,
-      coachId: serviceType.coachUserId ?? null,
-      notes: data.notater?.trim() || null,
-    },
-    select: { id: true },
-  });
+  let booking: { id: string };
+  try {
+    booking = await prisma.booking.create({
+      data: {
+        userId: spiller.id,
+        serviceTypeId: serviceType.id,
+        locationId: location.id,
+        facilityId,
+        startAt,
+        endAt,
+        status: "CONFIRMED",
+        priceOre: serviceType.priceOre,
+        coachId: serviceType.coachUserId ?? null,
+        notes: data.notater?.trim() || null,
+      },
+      select: { id: true },
+    });
+  } catch (e) {
+    // P2002: unique constraint — coachen er allerede booket på dette tidspunktet
+    if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
+      throw new Error("Denne timen er allerede booket for denne coachen. Velg et annet tidspunkt.");
+    }
+    throw e;
+  }
 
   await audit({
     actorId: aktor.id,
