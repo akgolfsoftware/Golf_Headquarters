@@ -20,9 +20,12 @@
 import Link from "next/link";
 import {
   ArrowRight,
+  BarChart3,
   CalendarPlus,
+  CalendarRange,
   ChevronRight,
   Flag,
+  MessageSquare,
   Play,
   Sparkles,
   Target,
@@ -31,7 +34,6 @@ import {
 import {
   FeaturedCard,
   KpiCard,
-  KpiStrip,
   PyramidProgress,
 } from "@/components/athletic";
 import { PulseDot } from "@/components/athletic/pulse-dot";
@@ -209,17 +211,21 @@ function KpiSeksjon({ kpi }: { kpi: KpiCelle[] }) {
       </div>
 
       {kpi.length > 0 ? (
-        <KpiStrip cols={2} columns={4} className="gap-3">
+        <div
+          className={cn(
+            "grid gap-2.5",
+            kpi.length === 3 ? "grid-cols-3" : "grid-cols-2 sm:grid-cols-4",
+          )}
+        >
           {kpi.map((k) => (
             <KpiCard
               key={k.label}
               label={k.label}
               value={k.value}
-              size="lg"
               trend={k.trend}
             />
           ))}
-        </KpiStrip>
+        </div>
       ) : (
         <div className="rounded-xl border border-dashed border-border bg-card px-4 py-6 text-center">
           <p className="text-sm text-muted-foreground">
@@ -415,6 +421,47 @@ function InnsiktSeksjon({ innsikt }: { innsikt: AiInsight | null }) {
 }
 
 // ── Hovedkomponent ──
+// ── Hurtighandlinger — v10 HomeScreen hub-grid (4 kort, 2×2) ──
+const HURTIG = [
+  { href: "/portal/planlegge", Icon: CalendarRange, eyebrow: "PLANLEGGE", title: "Plan", status: "Sesong, mål og drills" },
+  { href: "/portal/gjennomfore", Icon: Play, eyebrow: "GJENNOMFØRE", title: "Gjør jobben", status: "Dagens program" },
+  { href: "/portal/analysere", Icon: BarChart3, eyebrow: "ANALYSERE", title: "Tallene", status: "SG og runder" },
+  { href: "/portal/coach/melding", Icon: MessageSquare, eyebrow: "COACH", title: "Coachen din", status: "Meldinger" },
+] as const;
+
+function HurtighandlingerSeksjon() {
+  return (
+    <section aria-labelledby="hurtig-heading" className="space-y-3">
+      <h2
+        id="hurtig-heading"
+        className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground"
+      >
+        Hurtighandlinger
+      </h2>
+      <div className="grid grid-cols-2 gap-3">
+        {HURTIG.map((h) => (
+          <Link
+            key={h.href}
+            href={h.href}
+            className="group flex flex-col rounded-2xl border border-border bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-foreground/20"
+          >
+            <span className="grid h-10 w-10 place-items-center rounded-full bg-secondary text-primary">
+              <h.Icon className="h-5 w-5" strokeWidth={1.5} />
+            </span>
+            <span className="mt-3 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+              {h.eyebrow}
+            </span>
+            <span className="mt-0.5 font-display text-lg font-semibold tracking-tight text-foreground">
+              {h.title}
+            </span>
+            <span className="mt-1 text-[12px] text-muted-foreground">{h.status}</span>
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export function HjemOversikt({ data }: { data: HjemData }) {
   // "harPlan" = brukeren har minst én økt loggført denne uka eller en kommende tee.
   const harPlan = data.pyramide.length > 0 || data.nesteTee != null;
@@ -422,8 +469,9 @@ export function HjemOversikt({ data }: { data: HjemData }) {
   return (
     <div className="mx-auto w-full max-w-[460px] space-y-5 px-4 py-5 sm:px-0 md:max-w-[720px]">
       <FotoHero data={data} />
-      <DagensOktSeksjon okt={data.dagensOkt} harPlan={harPlan} />
       <KpiSeksjon kpi={data.kpi} />
+      <DagensOktSeksjon okt={data.dagensOkt} harPlan={harPlan} />
+      <HurtighandlingerSeksjon />
 
       <div className="grid gap-5 md:grid-cols-2">
         <PyramideSeksjon data={data} />
