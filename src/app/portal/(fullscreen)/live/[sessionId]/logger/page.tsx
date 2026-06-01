@@ -1,16 +1,16 @@
 /**
- * /portal/(fullscreen)/live/[sessionId]/logger — Live-økt logger
+ * PlayerHQ · Live-økt logger (rep-logging) — forest-fullscreen.
  *
- * Variant A "Stor +1 touchtarget" fra Claude Design-bundle Sg2FEKvykU45c4naIgQx6w
- * (s8-live-logger.jsx).
- *
- * En-hånds bruk på range/putting-green. Stort +1-touchtarget (96px) +
- * mindre BOM-knapp. 80–110px tabular-nums rep-counter sentralt. Offline-
- * fungerende (localStorage-buffer). Vibrasjon ved hver rep.
+ * Loggeren er rep-loggings-opplevelsen — samme forest-flate som aktiv drill
+ * (skjerm 2 i designet): stor mono-timer, rep-tracker, sirkulære rep-knapper,
+ * logg-rad. Henter ekte data via loadLiveSession. Auth-guard + tier-gating
+ * beholdt. Ett mønster — aktiv og logger deler LiveActive.
  */
 
+import { notFound, redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { LoggerClient } from "./logger-client";
+import { loadLiveSession } from "@/lib/portal-live/data";
+import { LiveActive } from "@/components/portal/live";
 
 export const dynamic = "force-dynamic";
 
@@ -19,22 +19,19 @@ export default async function LiveLoggerPage({
 }: {
   params: Promise<{ sessionId: string }>;
 }) {
-  await requirePortalUser();
+  const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
   const { sessionId } = await params;
 
-  // Dummy-data — kobles mot Prisma TrainingSession + drill når den
-  // tilstanden finnes i schemaet.
-  const drill = {
-    category: "PUTT",
-    title: "Gate-putt med",
-    titleItalic: "start-linje",
-    target: 8,
-    targetTotal: 10,
-    targetText: "8 av 10 inn",
-    repsPlanned: 10,
-    drillIndex: 2,
-    drillTotal: 5,
-  };
+  const isCoach = user.role === "COACH" || user.role === "ADMIN";
+  if (user.tier === "GRATIS" && !isCoach) {
+    redirect("/portal/meg/abonnement");
+  }
 
-  return <LoggerClient sessionId={sessionId} drill={drill} />;
+  const result = await loadLiveSession(sessionId, user.id, isCoach);
+  if (!result.ok) {
+    if (result.reason === "notfound") notFound();
+    redirect("/portal/tren");
+  }
+
+  return <LiveActive data={result.data} />;
 }

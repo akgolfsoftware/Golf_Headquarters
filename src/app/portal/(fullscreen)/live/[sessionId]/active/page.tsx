@@ -1,82 +1,35 @@
 /**
- * PlayerHQ · Live-økt active (sesjon 2 · pixel-perfect)
+ * PlayerHQ · Live-økt aktiv (skjerm 2 + overgang skjerm 3) — forest-fullscreen.
  *
- * Spec: BATCH PR7 · Skjerm 7.2
- * - Lys tema (matcher PlayerHQ)
- * - Aktiv drill: tittel + 3 rep-tellere (Dry / Lav / Full)
- * - Touchtargets: +5 / +10 / +25 (96px høyde, store lime knapper)
- * - Drill-progresjon side-by-side (status ✓/●/○)
- * - Notat-pill + Video-pill + Spørsmål-pill bunn
- * - "Ferdig med drill"-CTA
+ * Det viktigste skjermbildet. Henter ekte data via loadLiveSession
+ * (trainingPlanSession + drills). Auth-guard + eierskap/tier-gating beholdt.
+ * Faktiske reps/tid logges klient-side (offline-først) i LiveActive.
  */
 
+import { notFound, redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { LiveActiveV2Client, type LiveDrillV2 } from "./live-active-v2-client";
+import { loadLiveSession } from "@/lib/portal-live/data";
+import { LiveActive } from "@/components/portal/live";
 
 export default async function LiveActivePage({
   params,
 }: {
   params: Promise<{ sessionId: string }>;
 }) {
-  await requirePortalUser({
-    allow: ["PLAYER", "COACH", "ADMIN"],
-  });
+  const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
   const { sessionId } = await params;
 
-  // Stub-data inntil reell SessionDrillInstance-uttrekk er på plass.
-  // Speiler PositionTask-modellen: hver drill har repsMaal for Dry / Lav / Full.
-  const drills: LiveDrillV2[] = [
-    {
-      id: "d1",
-      index: 1,
-      name: "Pitch 50–80m · lav trajectory",
-      pyramidArea: "TEK",
-      lPhase: "L3",
-      status: "active",
-      target: { dry: 20, lav: 30, full: 30 },
-      counts: { dry: 12, lav: 8, full: 0 },
-    },
-    {
-      id: "d2",
-      index: 2,
-      name: "Iron progresjon CS70 → CS80",
-      pyramidArea: "TEK",
-      lPhase: "L4",
-      status: "queued",
-      target: { dry: 10, lav: 25, full: 25 },
-      counts: { dry: 0, lav: 0, full: 0 },
-    },
-    {
-      id: "d3",
-      index: 3,
-      name: "Putting 0–3m blokk",
-      pyramidArea: "SLAG",
-      lPhase: "L2",
-      status: "queued",
-      target: { dry: 0, lav: 50, full: 0 },
-      counts: { dry: 0, lav: 0, full: 0 },
-    },
-    {
-      id: "d4",
-      index: 4,
-      name: "Wedge fullslag 80m",
-      pyramidArea: "SLAG",
-      lPhase: "L3",
-      status: "queued",
-      target: { dry: 5, lav: 15, full: 15 },
-      counts: { dry: 0, lav: 0, full: 0 },
-    },
-    {
-      id: "d5",
-      index: 5,
-      name: "Spillsim · Tee til green",
-      pyramidArea: "SPILL",
-      lPhase: "L5",
-      status: "queued",
-      target: { dry: 0, lav: 0, full: 18 },
-      counts: { dry: 0, lav: 0, full: 0 },
-    },
-  ];
+  // Live-logging krever PRO (coach/admin slipper gjennom for innsyn/test).
+  const isCoach = user.role === "COACH" || user.role === "ADMIN";
+  if (user.tier === "GRATIS" && !isCoach) {
+    redirect("/portal/meg/abonnement");
+  }
 
-  return <LiveActiveV2Client sessionId={sessionId} drills={drills} />;
+  const result = await loadLiveSession(sessionId, user.id, isCoach);
+  if (!result.ok) {
+    if (result.reason === "notfound") notFound();
+    redirect("/portal/tren");
+  }
+
+  return <LiveActive data={result.data} />;
 }

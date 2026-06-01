@@ -1,14 +1,33 @@
 "use client";
 
+/**
+ * Onboarding-wizard (spiller) — MOBIL-FØRST 430px.
+ * Pixel-port av public/design-handover/playerhq/components-onboarding.html.
+ *
+ * 7-stegs velkomst (state-maskinen i lib/auth/onboarding-state.ts er låst til 7):
+ *   1 Velkommen · 2 Om deg + fødselsdato (GDPR <16 gate) · 3 Golf-erfaring ·
+ *   4 GolfBox · 5 TrackMan · 6 Coach + abonnement · 7 Siste sjekk (samtykke).
+ *
+ * VIKTIG: All steg-logikk og lagre-actions er beholdt uendret fra forrige
+ * versjon — kun presentasjonen er portet til mobil-først DS-token-komponenter.
+ * Ingen hardkodet hex. Ingen emoji — kun lucide-react. Norsk bokmål.
+ */
+
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
-  Check,
-  ArrowRight,
+  Coffee,
+  CircleDot,
+  Dumbbell,
+  Flag,
+  Hexagon,
   Link2,
   Settings,
-  ChevronLeft,
-  Flag,
+  Sun,
+  Sunrise,
+  Sunset,
+  Target,
+  Trophy,
 } from "lucide-react";
 import {
   saveSpillerOnboardingStep,
@@ -17,7 +36,32 @@ import {
   setDateOfBirthAndCheckMinor,
   type SpillerOnboardingData,
 } from "./actions";
-import "@/components/onboarding/onboarding.css";
+import {
+  ProgressDots,
+  StepHeader,
+  StepHeading,
+  PrimaryCta,
+  SecondaryLink,
+} from "@/components/auth/onboarding/wizard-chrome";
+import {
+  Field,
+  TextField,
+  HeroIllo,
+  InfoNote,
+  FieldGroupLabel,
+  OptionRow,
+  PillToggle,
+  ProfileCard,
+  ImplicationBanner,
+  FacilityRow,
+  FrequencySegment,
+  CoachCard,
+  PlanCard,
+  SummaryCard,
+  SummaryRow,
+  AgreeItem,
+  SecurityStrip,
+} from "@/components/auth/onboarding/wizard-fields";
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Konstanter
@@ -43,166 +87,32 @@ const COACHES = [
   { initialer: "MH", navn: "Maja Hagen", rolle: "JUNIOR / UTVIKLING", meta: "Anbefales for nybegynnere og 12–16 år" },
 ];
 
-// ──────────────────────────────────────────────────────────────────────────────
-// Illustrasjoner
-// ──────────────────────────────────────────────────────────────────────────────
+const FREKVENS_VALG = [3, 4, 5, 6, 7];
 
-function IllustVelkommen() {
-  return (
-    <div
-      className="ob-illust"
-      style={{ background: "linear-gradient(160deg, #D1F843 0%, #88B45A 100%)" }}
-    >
-      <svg viewBox="0 0 520 180" preserveAspectRatio="xMidYMid meet">
-        <ellipse cx="130" cy="155" rx="65" ry="16" fill="#1A4D2E" opacity="0.55" />
-        <path
-          d="M130 45 L147 78 L170 74 L150 104 L178 112 L148 136 L130 155 L112 136 L82 112 L110 104 L90 74 L113 78 Z"
-          fill="#1A4D2E"
-        />
-        <path d="M 0 155 Q 260 130 520 155 L 520 180 L 0 180 Z" fill="#5E8538" />
-        <g transform="translate(340 75)" fill="#003A2A">
-          <ellipse cx="0" cy="-6" rx="10" ry="11" />
-          <path d="M0 5 L-3 53 L-13 80 L-8 84 L0 58 L8 78 L13 80 L3 53 L0 5 Z" />
-          <path d="M-5 12 Q-23-8-40-10 Q-35-6-24 0 Q-15 6-5 18 Z" />
-          <line x1="-38" y1="-12" x2="-70" y2="-51" stroke="#003A2A" strokeWidth="2.5" strokeLinecap="round" />
-        </g>
-        <circle cx="375" cy="155" r="5" fill="#fff" />
-      </svg>
-    </div>
-  );
-}
+// Profil-type (mosjon / konkurranse) + undertype — påvirker plan-rytmen.
+type Profiltype = "MOSJON" | "KONKURRANSE";
 
-function IllustProfil() {
-  return (
-    <div
-      className="ob-illust"
-      style={{ background: "linear-gradient(160deg, #003A2A 0%, #006C50 100%)" }}
-    >
-      <svg viewBox="0 0 520 180">
-        <rect x="160" y="30" width="200" height="120" rx="12" fill="#FAFAF7" stroke="#D1F843" strokeWidth="2.5" />
-        <circle cx="210" cy="84" r="25" fill="#D1F843" />
-        <rect x="248" y="52" width="90" height="8" rx="3" fill="#005840" opacity="0.30" />
-        <rect x="248" y="68" width="70" height="6" rx="2" fill="#005840" opacity="0.20" />
-        <rect x="248" y="82" width="80" height="6" rx="2" fill="#005840" opacity="0.20" />
-        <rect x="185" y="124" width="150" height="5" rx="2" fill="#005840" opacity="0.15" />
-        <rect x="185" y="134" width="110" height="5" rx="2" fill="#005840" opacity="0.15" />
-      </svg>
-    </div>
-  );
-}
+const KONKURRANSE_NIVAA = [
+  { id: "KLUBB", label: "Klubbgolfer", sub: "turneringer i klubb" },
+  { id: "TOUR", label: "Tour-aspirant", sub: "NM, Korn Ferry, sikte mot proff" },
+];
 
-function IllustHcp() {
-  return (
-    <div
-      className="ob-illust"
-      style={{ background: "linear-gradient(160deg, #F1EEE5 0%, #E5E3DD 100%)" }}
-    >
-      <svg viewBox="0 0 520 180">
-        <g transform="translate(225 40)">
-          <ellipse cx="35" cy="22" rx="40" ry="10" fill="#1A4D2E" />
-          <path d="M-5 22 L-5 120 Q-5 132 35 132 Q75 132 75 120 L75 22 Z" fill="#005840" />
-          <ellipse cx="35" cy="22" rx="40" ry="10" fill="#003A2A" opacity="0.55" />
-          <line x1="20" y1="16" x2="14" y2="-22" stroke="#3A3A3A" strokeWidth="2.5" />
-          <line x1="32" y1="16" x2="30" y2="-30" stroke="#3A3A3A" strokeWidth="2.5" />
-          <line x1="44" y1="16" x2="44" y2="-38" stroke="#3A3A3A" strokeWidth="2.5" />
-          <line x1="56" y1="16" x2="60" y2="-26" stroke="#3A3A3A" strokeWidth="2.5" />
-          <ellipse cx="14" cy="-22" rx="5" ry="3" fill="#D1F843" />
-          <ellipse cx="30" cy="-30" rx="5" ry="3" fill="#D1F843" />
-          <ellipse cx="44" cy="-38" rx="5.5" ry="3.5" fill="#D1F843" />
-          <ellipse cx="60" cy="-26" rx="5" ry="3" fill="#D1F843" />
-        </g>
-      </svg>
-    </div>
-  );
-}
+// Fasilitet-valg for steg 4 — speiler design-HTMLs fasilitets-rader.
+const FASILITETER = [
+  { id: "TRACKMAN", navn: "TrackMan", sub: "launch monitor / radar", icon: Target },
+  { id: "MATTE_PUTTING", navn: "Matte / putting", sub: "innendørs vinter", icon: Hexagon },
+  { id: "GRESS_BANE", navn: "Gress-bane", sub: "9 eller 18 hull", icon: CircleDot },
+  { id: "STUDIO", navn: "Treningsstudio", sub: "fysiske økter", icon: Dumbbell },
+];
 
-function IllustGolfBox() {
-  return (
-    <div
-      className="ob-illust"
-      style={{ background: "linear-gradient(160deg, #F1EEE5 0%, #FAFAF7 100%)" }}
-    >
-      <svg viewBox="0 0 520 180">
-        <rect x="120" y="20" width="280" height="140" rx="12" fill="#fff" stroke="#005840" strokeWidth="1.5" />
-        <line x1="138" y1="38" x2="138" y2="148" stroke="#E5E3DD" strokeWidth="1" />
-        <line x1="138" y1="148" x2="382" y2="148" stroke="#E5E3DD" strokeWidth="1" />
-        <polyline points="145,128 178,104 210,108 242,84 274,78 306,62 338,52 358,42" fill="none" stroke="#D1F843" strokeWidth="2.5" />
-        <polyline points="145,136 182,124 214,120 246,112 278,104 310,96 342,88 362,80" fill="none" stroke="#005840" strokeWidth="1.5" strokeDasharray="3 2" />
-        <text x="260" y="170" textAnchor="middle" fontFamily="JetBrains Mono" fontSize="9" fontWeight="700" fill="#005840" letterSpacing="0.10em">HCP-HISTORIKK</text>
-      </svg>
-    </div>
-  );
-}
-
-function IllustTrackMan() {
-  return (
-    <div
-      className="ob-illust"
-      style={{ background: "linear-gradient(160deg, #003A2A 0%, #006C50 100%)" }}
-    >
-      <svg viewBox="0 0 520 180">
-        <g stroke="#D1F843" fill="none" strokeWidth="1.5" opacity="0.5">
-          <path d="M 40 155 Q 40 75 155 75" />
-          <path d="M 40 155 Q 40 45 215 45" />
-          <path d="M 40 155 Q 40 15 275 15" />
-        </g>
-        <path d="M 40 155 Q 215 38 460 84" fill="none" stroke="#D1F843" strokeWidth="3" />
-        <g fill="#D1F843">
-          <circle cx="155" cy="92" r="4" />
-          <circle cx="245" cy="62" r="4" />
-          <circle cx="335" cy="62" r="4" />
-          <circle cx="425" cy="83" r="4" />
-        </g>
-        <rect x="42" y="150" width="6" height="11" fill="#fff" />
-        <circle cx="45" cy="155" r="3" fill="#fff" />
-        <text x="340" y="170" textAnchor="middle" fontFamily="JetBrains Mono" fontSize="9" fontWeight="700" fill="#D1F843" letterSpacing="0.08em">258m · 1.37 smash · 6° launch</text>
-      </svg>
-    </div>
-  );
-}
-
-function IllustCoach() {
-  return (
-    <div
-      className="ob-illust"
-      style={{ background: "linear-gradient(160deg, #88B45A 0%, #5E8538 100%)" }}
-    >
-      <svg viewBox="0 0 520 180">
-        <ellipse cx="260" cy="158" rx="200" ry="12" fill="#003A2A" opacity="0.30" />
-        <g transform="translate(200 68)" fill="#003A2A">
-          <ellipse cx="0" cy="-4" rx="10" ry="11" />
-          <path d="M-2 6 L-5 62 L-14 86 L-9 90 L-2 64 L0 64 L2 64 L9 90 L14 86 L5 62 L2 6 Z" />
-        </g>
-        <g transform="translate(310 74)" fill="#003A2A">
-          <ellipse cx="0" cy="-4" rx="9" ry="10" />
-          <path d="M-2 5 L-4 56 L-12 78 L-8 82 L-2 58 L0 58 L2 58 L8 82 L12 78 L4 56 L2 5 Z" />
-        </g>
-        <circle cx="255" cy="153" r="8" fill="#D1F843" stroke="#003A2A" strokeWidth="1.5" />
-      </svg>
-    </div>
-  );
-}
-
-function IllustFerdig() {
-  return (
-    <div
-      className="ob-illust"
-      style={{ background: "linear-gradient(160deg, #F1EEE5 0%, #E5E3DD 100%)" }}
-    >
-      <svg viewBox="0 0 520 180">
-        <ellipse cx="260" cy="162" rx="200" ry="10" fill="#88B45A" opacity="0.55" />
-        <g transform="translate(220 82)" fill="#003A2A">
-          <ellipse cx="0" cy="-6" rx="11" ry="12" />
-          <path d="M-2 6 L-5 60 L-15 80 L-9 84 L-2 62 L0 62 L2 62 L9 84 L15 80 L5 60 L2 6 Z" />
-        </g>
-        <g transform="translate(300 96)" fill="#003A2A">
-          <ellipse cx="0" cy="-4" rx="9" ry="10" />
-          <path d="M-2 5 L-4 50 L-12 70 L-8 74 L-2 52 L0 52 L2 52 L8 74 L12 70 L4 50 L2 5 Z" />
-        </g>
-      </svg>
-    </div>
-  );
-}
+// Preferanser — ukedager, tid på dagen, hva som driver spilleren.
+const UKEDAGER = ["man", "tir", "ons", "tor", "fre", "lør", "søn"];
+const TID_PAA_DAGEN = [
+  { id: "TIDLIG", label: "Tidlig", icon: Sunrise },
+  { id: "DAG", label: "Dag", icon: Sun },
+  { id: "ETTER_SKOLE", label: "Etter skole", icon: Sunset },
+];
+const DRIVKRAFT = ["Resultater", "Konsistens", "Sosialt", "Stillhet", "Konkurranse"];
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Hjelpere
@@ -212,6 +122,15 @@ function toggle<T>(arr: T[], item: T, max: number): T[] {
   if (arr.includes(item)) return arr.filter((x) => x !== item);
   if (arr.length >= max) return arr;
   return [...arr, item];
+}
+
+// Mobil-først body-wrapper — 430px kolonne, DS-token-spacing.
+function StepBody({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="mx-auto flex w-full max-w-[430px] flex-col gap-4 px-4 py-6">
+      {children}
+    </div>
+  );
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -236,12 +155,18 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
   const [playingYears, setPlayingYears] = useState("5");
   const [sessionFrequency, setSessionFrequency] = useState(5);
   const [seasonGoals, setSeasonGoals] = useState<string[]>([]);
+  const [profiltype, setProfiltype] = useState<Profiltype>("KONKURRANSE");
+  const [konkurranseNivaa, setKonkurranseNivaa] = useState("KLUBB");
+  const [fasiliteter, setFasiliteter] = useState<string[]>(["TRACKMAN", "MATTE_PUTTING", "GRESS_BANE"]);
+  const [traningsdager, setTraningsdager] = useState<string[]>(["man", "ons", "tor", "lør"]);
+  const [tidPaaDagen, setTidPaaDagen] = useState("ETTER_SKOLE");
+  const [drivkraft, setDrivkraft] = useState<string[]>(["Resultater", "Sosialt"]);
 
-  // Steg 5
+  // Steg 6
   const [selectedCoach, setSelectedCoach] = useState("Anders Kristiansen");
   const [selectedTier, setSelectedTier] = useState<"GRATIS" | "PRO">("PRO");
 
-  // Steg 6
+  // Steg 7
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
 
@@ -347,745 +272,518 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
     });
   }
 
+  const eyebrowFor: Record<number, string> = {
+    1: "1 av 7 · Velkommen",
+    2: "2 av 7 · Om deg",
+    3: "3 av 7 · Golf-erfaring",
+    4: "4 av 7 · GolfBox",
+    5: "5 av 7 · TrackMan",
+    6: "6 av 7 · Coach og abonnement",
+    7: "7 av 7 · Siste sjekk",
+  };
+
   return (
-    <div>
+    <div className="w-full">
+      {/* progress + header (felles chrome) */}
+      <div className="mx-auto w-full max-w-[430px] px-4 pt-4">
+        <ProgressDots total={TOTAL_STEPS} current={step} />
+        <div className="mt-3">
+          <StepHeader
+            step={step}
+            total={TOTAL_STEPS}
+            eyebrow={eyebrowFor[step]}
+            onBack={tilbake}
+            canGoBack={step > 1}
+            disabled={pending}
+          />
+        </div>
+      </div>
+
+      {/* ── STEG 1 — Velkommen ─────────────────────────────────── */}
       {step === 1 && (
-        <div className="ob-step-body">
-          <IllustVelkommen />
-          <h2 className="ob-step-title">
-            Vi <em>gleder oss</em> til å jobbe med deg.
-          </h2>
-          <div className="ob-ingress">
-            <p>
-              Coach Anders har invitert deg inn i AK Golf Academy. De neste 5
-              minuttene tar vi en kort gjennomgang for å sette opp profilen din
-              og vise deg hvordan AK Golf fungerer.
-            </p>
-            <p>
-              Du kan når som helst gå tilbake, lagre og fortsette senere.{" "}
-              <strong>Ingenting er låst før du bekrefter siste steg.</strong>
-            </p>
-          </div>
-          <div className="ob-inspo">
-            <blockquote>
-              Vi tenker langsiktig. Du blir bedre ved å gjøre de små tingene
-              riktig — hver dag, i 3 år, i 5 år. Vi bygger karriere, ikke quick
-              fixes.
+        <StepBody>
+          <HeroIllo label="Velkommen" />
+          <StepHeading
+            title="Vi"
+            emphasis="gleder oss"
+            titleAfter=" til å jobbe med deg."
+            deck="Coach Anders har invitert deg inn i AK Golf Academy. De neste minuttene tar vi en kort gjennomgang for å sette opp profilen din."
+          />
+          <div className="rounded-xl bg-accent px-4 py-4">
+            <blockquote className="font-display text-[15px] italic leading-snug text-accent-foreground">
+              Vi tenker langsiktig. Du blir bedre ved å gjøre de små tingene riktig — hver dag,
+              i 3 år, i 5 år. Vi bygger karriere, ikke quick fixes.
             </blockquote>
-            <cite>Anders Kristiansen · Head Coach AK Golf Academy</cite>
+            <cite className="mt-2 block font-mono text-[10px] font-bold uppercase not-italic tracking-[0.10em] text-primary">
+              Anders Kristiansen · Head Coach
+            </cite>
           </div>
-          <div className="ob-cta-row center">
-            <button className="ob-btn-lime big" onClick={neste} disabled={pending}>
-              La oss starte
-              <ArrowRight size={16} />
-            </button>
-          </div>
-        </div>
+          <p className="text-xs leading-relaxed text-muted-foreground">
+            Du kan når som helst gå tilbake, lagre og fortsette senere.{" "}
+            <strong className="font-semibold text-foreground">
+              Ingenting er låst før du bekrefter siste steg.
+            </strong>
+          </p>
+          <PrimaryCta onClick={neste} disabled={pending}>
+            La oss starte
+          </PrimaryCta>
+        </StepBody>
       )}
 
+      {/* ── STEG 2 — Om deg + fødselsdato (GDPR-gate) ──────────── */}
       {step === 2 && (
-        <div className="ob-step-body">
-          <IllustProfil />
-          <h2 className="ob-step-title">
-            La oss bli <em>kjent</em>.
-          </h2>
-          <p className="ob-ingress">
-            Litt grunninfo så Anders kan tilpasse opplegget ditt. Du kan endre alt
-            senere.
-          </p>
-          <div className="ob-field-grid">
-            <div className="ob-field">
-              <label htmlFor="ob-phone" className="ob-label">
-                Telefon
-              </label>
-              <input
-                id="ob-phone"
-                type="tel"
-                className="ob-input"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="+47 ..."
+        <StepBody>
+          <StepHeading
+            title="La oss bli"
+            emphasis="kjent"
+            titleAfter="."
+            deck="Litt grunninfo så Anders kan tilpasse opplegget ditt. Du kan endre alt senere."
+          />
+          <Field label="Telefon" htmlFor="ob-phone">
+            <TextField
+              id="ob-phone"
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="+47 ..."
+              autoComplete="tel"
+            />
+          </Field>
+          <Field label="Handicap" hint="forhåndsvisning" htmlFor="ob-hcp-early">
+            <TextField
+              id="ob-hcp-early"
+              mono
+              inputMode="decimal"
+              value={hcp}
+              onChange={(e) => setHcp(e.target.value)}
+              placeholder="f.eks. 18,4"
+            />
+          </Field>
+          <Field label="Fødselsdato" hint="brukes for GDPR-samtykke (under 16 år)" htmlFor="ob-dob">
+            <TextField
+              id="ob-dob"
+              type="date"
+              value={dateOfBirth}
+              onChange={(e) => {
+                setDateOfBirth(e.target.value);
+                // Reset minor-state når dato endres
+                setDobIsMinor(false);
+                setGuardianEmail("");
+                setError(null);
+              }}
+              max={new Date().toISOString().split("T")[0]}
+            />
+          </Field>
+          {dobIsMinor && (
+            <Field label="E-post til foresatt (påkrevd)" htmlFor="ob-guardian-email">
+              <TextField
+                id="ob-guardian-email"
+                type="email"
+                value={guardianEmail}
+                onChange={(e) => setGuardianEmail(e.target.value)}
+                placeholder="forelder@example.com"
+                autoComplete="email"
               />
-            </div>
-            <div className="ob-field">
-              <label htmlFor="ob-hcp-early" className="ob-label">
-                Handicap (forhåndsvisning)
-              </label>
-              <input
-                id="ob-hcp-early"
-                type="text"
-                inputMode="decimal"
-                className="ob-input font-mono"
-                value={hcp}
-                onChange={(e) => setHcp(e.target.value)}
-                placeholder="f.eks. 18,4"
-              />
-            </div>
-            <div className="ob-field" style={{ gridColumn: "1 / -1" }}>
-              <label htmlFor="ob-dob" className="ob-label">
-                Fødselsdato{" "}
-                <span style={{ fontWeight: 400, color: "hsl(var(--muted-foreground))" }}>
-                  — brukes for GDPR-samtykke (under 16 år)
-                </span>
-              </label>
-              <input
-                id="ob-dob"
-                type="date"
-                className="ob-input"
-                value={dateOfBirth}
-                onChange={(e) => {
-                  setDateOfBirth(e.target.value);
-                  // Reset minor-state når dato endres
-                  setDobIsMinor(false);
-                  setGuardianEmail("");
-                  setError(null);
-                }}
-                max={new Date().toISOString().split("T")[0]}
-              />
-            </div>
-            {dobIsMinor && (
-              <div className="ob-field" style={{ gridColumn: "1 / -1" }}>
-                <label htmlFor="ob-guardian-email" className="ob-label" style={{ color: "hsl(var(--warning))" }}>
-                  E-post til foresatt (påkrevd)
-                </label>
-                <input
-                  id="ob-guardian-email"
-                  type="email"
-                  className="ob-input"
-                  value={guardianEmail}
-                  onChange={(e) => setGuardianEmail(e.target.value)}
-                  placeholder="forelder@example.com"
-                  autoComplete="email"
-                />
-                <p style={{ marginTop: 4, fontSize: 12, color: "hsl(var(--warning))" }}>
-                  Vi sender en forespørsel om foreldresamtykke iht. GDPR art. 8.
-                </p>
-              </div>
-            )}
-          </div>
-          <div className="ob-cta-row">
-            <button className="ob-btn-outline" onClick={tilbake} disabled={pending}>
-              <ChevronLeft size={15} />
-              Tilbake
-            </button>
-            <button className="ob-btn-lime" onClick={nesteSteg2} disabled={pending}>
-              {pending ? "Lagrer…" : "Neste — Golf-erfaring"}
-              <ArrowRight size={15} />
-            </button>
-          </div>
-        </div>
+              <p className="mt-1 text-[11px] text-warning">
+                Vi sender en forespørsel om foreldresamtykke iht. GDPR art. 8.
+              </p>
+            </Field>
+          )}
+          {dobIsMinor && (
+            <InfoNote>
+              Du er under 16. Vi ber en{" "}
+              <strong className="font-semibold">foresatt bekrefte kontoen din</strong>. Du kan
+              fortsette gjennom alle steg, men booking og logging åpnes først etter bekreftelse.
+            </InfoNote>
+          )}
+          <PrimaryCta onClick={nesteSteg2} disabled={pending}>
+            {pending ? "Lagrer…" : "Neste — Golf-erfaring"}
+          </PrimaryCta>
+        </StepBody>
       )}
 
+      {/* ── STEG 3 — Golf-erfaring + profil + fasiliteter + preferanser ─ */}
       {step === 3 && (
-        <div className="ob-step-body">
-          <IllustHcp />
-          <h2 className="ob-step-title">
-            Fortell om <em>spillet ditt</em>.
-          </h2>
-          <p className="ob-ingress">
-            Dette hjelper Anders med å skreddersy treningsplanen din fra dag én.
-          </p>
-          <div className="ob-field-grid">
-            <div className="ob-field">
-              <label htmlFor="ob-hcp" className="ob-label">
-                Handicap
-              </label>
-              <input
-                id="ob-hcp"
-                type="text"
-                inputMode="decimal"
-                className="ob-input font-mono"
-                style={{ fontSize: "22px", fontWeight: 700 }}
-                value={hcp}
-                onChange={(e) => setHcp(e.target.value)}
-                placeholder="+3,5"
-              />
-            </div>
-            <div className="ob-field">
-              <label htmlFor="ob-club" className="ob-label">
-                Hjemmebane / klubb
-              </label>
-              <input
-                id="ob-club"
-                type="text"
-                className="ob-input"
-                value={homeClub}
-                onChange={(e) => setHomeClub(e.target.value)}
-                placeholder="f.eks. Gamle Fredrikstad GK"
-              />
-            </div>
-            <div className="ob-field">
-              <label htmlFor="ob-years" className="ob-label">
-                Antall år du har spilt
-              </label>
-              <input
-                id="ob-years"
-                type="number"
-                min={0}
-                max={50}
-                className="ob-input font-mono"
-                value={playingYears}
-                onChange={(e) => setPlayingYears(e.target.value)}
-                placeholder="f.eks. 11"
-              />
-            </div>
-            <div className="ob-field">
-              <span className="ob-label">Antall økter per uke</span>
-              <div
-                style={{
-                  display: "flex",
-                  gap: 4,
-                  flexWrap: "wrap",
-                  background: "#fff",
-                  border: "1px solid #E5E3DD",
-                  borderRadius: 8,
-                  padding: "6px 8px",
-                }}
-              >
-                {[3, 4, 5, 6, 7].map((n) => (
-                  <button
-                    key={n}
-                    type="button"
-                    onClick={() => setSessionFrequency(n)}
-                    style={{
-                      padding: "5px 12px",
-                      borderRadius: 6,
-                      fontFamily: "var(--font-jetbrains-mono)",
-                      fontWeight: 700,
-                      fontSize: 13,
-                      border: "none",
-                      cursor: "pointer",
-                      background: sessionFrequency === n ? "hsl(var(--primary))" : "transparent",
-                      color: sessionFrequency === n ? "hsl(var(--accent))" : "hsl(var(--muted-foreground))",
-                    }}
-                  >
-                    {n}
-                  </button>
+        <StepBody>
+          <StepHeading
+            title="Fortell om"
+            emphasis="spillet ditt"
+            titleAfter="."
+            deck="Dette hjelper Anders med å skreddersy treningsplanen din fra dag én."
+          />
+
+          <Field label="Handicap" htmlFor="ob-hcp">
+            <TextField
+              id="ob-hcp"
+              mono
+              inputMode="decimal"
+              className="text-lg font-bold"
+              value={hcp}
+              onChange={(e) => setHcp(e.target.value)}
+              placeholder="+3,5"
+            />
+          </Field>
+          <Field label="Hjemmebane / klubb" htmlFor="ob-club">
+            <TextField
+              id="ob-club"
+              value={homeClub}
+              onChange={(e) => setHomeClub(e.target.value)}
+              placeholder="f.eks. Gamle Fredrikstad GK"
+            />
+          </Field>
+          <Field label="Antall år du har spilt" htmlFor="ob-years">
+            <TextField
+              id="ob-years"
+              mono
+              type="number"
+              min={0}
+              max={50}
+              value={playingYears}
+              onChange={(e) => setPlayingYears(e.target.value)}
+              placeholder="f.eks. 11"
+            />
+          </Field>
+
+          <Field label="Antall økter per uke">
+            <FrequencySegment
+              options={FREKVENS_VALG}
+              value={sessionFrequency}
+              onChange={setSessionFrequency}
+              unit="økter / uke"
+            />
+          </Field>
+
+          {/* Profil-bryter — mosjon eller konkurranse */}
+          <FieldGroupLabel>Mosjon eller konkurranse</FieldGroupLabel>
+          <div className="grid grid-cols-2 gap-2">
+            <ProfileCard
+              name="Mosjon"
+              desc="Spill for moro · ingen test-press"
+              icon={Coffee}
+              selected={profiltype === "MOSJON"}
+              onClick={() => setProfiltype("MOSJON")}
+            />
+            <ProfileCard
+              name="Konkurranse"
+              desc="Klubb-/regionsspill · testuker"
+              icon={Trophy}
+              selected={profiltype === "KONKURRANSE"}
+              onClick={() => setProfiltype("KONKURRANSE")}
+            />
+          </div>
+          {profiltype === "KONKURRANSE" && (
+            <>
+              <ImplicationBanner>
+                Dette betyr: periodisert årsplan · testuke · resultatmål
+              </ImplicationBanner>
+              <div className="flex flex-col gap-1.5">
+                {KONKURRANSE_NIVAA.map((n) => (
+                  <OptionRow
+                    key={n.id}
+                    label={n.label}
+                    sub={n.sub}
+                    selected={konkurranseNivaa === n.id}
+                    onClick={() => setKonkurranseNivaa(n.id)}
+                  />
                 ))}
               </div>
-            </div>
+            </>
+          )}
+
+          {/* Fasiliteter */}
+          <FieldGroupLabel>Hvor trener du?</FieldGroupLabel>
+          <div className="flex flex-col gap-1.5">
+            {FASILITETER.map((f) => (
+              <FacilityRow
+                key={f.id}
+                name={f.navn}
+                sub={f.sub}
+                icon={f.icon}
+                selected={fasiliteter.includes(f.id)}
+                onClick={() => setFasiliteter((prev) => toggle(prev, f.id, FASILITETER.length))}
+              />
+            ))}
           </div>
 
-          <div className="ob-field">
-            <span className="ob-label">Sesongmål — velg inntil 3</span>
-            <div className="ob-multi-pills" style={{ marginTop: 4 }}>
-              {SESONMAAL.map((maal) => (
-                <button
-                  key={maal}
-                  type="button"
-                  onClick={() =>
-                    setSeasonGoals((prev) => toggle(prev, maal, 3))
-                  }
-                  className={`ob-pill-toggle${seasonGoals.includes(maal) ? " selected" : ""}`}
-                >
-                  {maal}
-                </button>
-              ))}
-            </div>
+          {/* Preferanser — ukedager / tid / drivkraft */}
+          <FieldGroupLabel>Når passer det å trene?</FieldGroupLabel>
+          <div className="flex flex-wrap gap-1.5">
+            {UKEDAGER.map((d) => (
+              <PillToggle
+                key={d}
+                label={d}
+                selected={traningsdager.includes(d)}
+                onClick={() => setTraningsdager((prev) => toggle(prev, d, UKEDAGER.length))}
+              />
+            ))}
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {TID_PAA_DAGEN.map((t) => (
+              <PillToggle
+                key={t.id}
+                label={t.label}
+                icon={t.icon}
+                selected={tidPaaDagen === t.id}
+                onClick={() => setTidPaaDagen(t.id)}
+              />
+            ))}
+          </div>
+          <FieldGroupLabel>Hva driver deg</FieldGroupLabel>
+          <div className="flex flex-wrap gap-1.5">
+            {DRIVKRAFT.map((d) => (
+              <PillToggle
+                key={d}
+                label={d}
+                selected={drivkraft.includes(d)}
+                onClick={() => setDrivkraft((prev) => toggle(prev, d, DRIVKRAFT.length))}
+              />
+            ))}
           </div>
 
-          <div className="ob-cta-row">
-            <button className="ob-btn-outline" onClick={tilbake} disabled={pending}>
-              <ChevronLeft size={15} />
-              Tilbake
-            </button>
-            <button className="ob-btn-lime" onClick={neste} disabled={pending}>
-              {pending ? "Lagrer…" : "Neste — Koble GolfBox"}
-              <ArrowRight size={15} />
-            </button>
+          {/* Sesongmål */}
+          <FieldGroupLabel>Sesongmål — velg inntil 3</FieldGroupLabel>
+          <div className="flex flex-wrap gap-1.5">
+            {SESONMAAL.map((maal) => (
+              <PillToggle
+                key={maal}
+                label={maal}
+                selected={seasonGoals.includes(maal)}
+                onClick={() => setSeasonGoals((prev) => toggle(prev, maal, 3))}
+              />
+            ))}
           </div>
-        </div>
+
+          <PrimaryCta onClick={neste} disabled={pending}>
+            {pending ? "Lagrer…" : "Neste — Koble GolfBox"}
+          </PrimaryCta>
+        </StepBody>
       )}
 
+      {/* ── STEG 4 — GolfBox ───────────────────────────────────── */}
       {step === 4 && (
-        <div className="ob-step-body">
-          <IllustGolfBox />
-          <h2 className="ob-step-title">
-            Koble til <em>GolfBox</em>.
-          </h2>
-          <p className="ob-ingress">
-            Når du kobler til GolfBox-kontoen din, henter vi automatisk inn
-            HCP-historikken og runde-data dine.{" "}
-            <strong>Anders får et komplett bilde fra dag én.</strong>
-          </p>
-          <div className="ob-connect-box">
-            <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-              <div className="ob-connect-icon">
-                <Link2 size={24} />
-              </div>
-              <span
-                style={{
-                  fontFamily: "var(--font-inter-tight)",
-                  fontSize: 22,
-                  fontWeight: 800,
-                  letterSpacing: "-0.02em",
-                }}
-              >
-                GolfBox
-              </span>
-            </div>
-            <p style={{ fontSize: 14, color: "hsl(var(--muted-foreground))", maxWidth: 380, textAlign: "center" }}>
+        <StepBody>
+          <StepHeading
+            title="Koble til"
+            emphasis="GolfBox"
+            titleAfter="."
+            deck={
+              <>
+                Når du kobler til GolfBox-kontoen din, henter vi automatisk inn HCP-historikken og
+                runde-data dine.{" "}
+                <strong className="font-semibold text-foreground">
+                  Anders får et komplett bilde fra dag én.
+                </strong>
+              </>
+            }
+          />
+          <div className="flex flex-col items-center gap-3 rounded-xl border border-border bg-secondary px-4 py-6 text-center">
+            <span className="inline-flex h-14 w-14 items-center justify-center rounded-xl border border-border bg-card text-primary">
+              <Link2 className="h-6 w-6" strokeWidth={1.75} aria-hidden />
+            </span>
+            <span className="font-display text-[22px] font-extrabold tracking-[-0.02em] text-foreground">
+              GolfBox
+            </span>
+            <p className="text-[13px] leading-relaxed text-muted-foreground">
               Vi henter HCP, runder spilt siste 24 mnd, og turneringshistorikk.
             </p>
             <button
-              className="ob-btn-lime big"
               type="button"
               disabled
               title="Kommer post-BETA"
-              style={{ opacity: 0.5, cursor: "not-allowed" }}
+              className="flex h-12 w-full cursor-not-allowed items-center justify-center rounded-xl bg-primary px-6 text-sm font-bold text-primary-foreground opacity-50"
             >
               Koble til GolfBox · kommer snart
             </button>
-            <p
-              style={{
-                fontFamily: "var(--font-jetbrains-mono)",
-                fontSize: 10,
-                color: "#908D86",
-                letterSpacing: "0.06em",
-              }}
-            >
+            <p className="font-mono text-[10px] tracking-[0.06em] text-muted-foreground">
               Krever GolfBox-konto · Vi lagrer aldri passordet ditt
             </p>
           </div>
-          <div style={{ textAlign: "center" }}>
-            <button className="ob-skip-link" type="button" onClick={neste} disabled={pending}>
-              Hopp over — jeg kobler til senere
-            </button>
-          </div>
-          <div className="ob-security-strip">
-            Vi følger GDPR og lagrer kun det vi trenger for å hjelpe deg utvikle
-            deg som spiller.
-          </div>
-          <div className="ob-cta-row">
-            <button className="ob-btn-outline" onClick={tilbake} disabled={pending}>
-              <ChevronLeft size={15} />
-              Tilbake
-            </button>
-            <button className="ob-btn-lime" onClick={neste} disabled={pending}>
-              {pending ? "Lagrer…" : "Neste — TrackMan"}
-              <ArrowRight size={15} />
-            </button>
-          </div>
-        </div>
+          <SecurityStrip>
+            Vi følger GDPR og lagrer kun det vi trenger for å hjelpe deg utvikle deg som spiller.
+          </SecurityStrip>
+          <PrimaryCta onClick={neste} disabled={pending}>
+            {pending ? "Lagrer…" : "Neste — TrackMan"}
+          </PrimaryCta>
+          <SecondaryLink onClick={neste} disabled={pending}>
+            Hopp over — jeg kobler til senere
+          </SecondaryLink>
+        </StepBody>
       )}
 
+      {/* ── STEG 5 — TrackMan ──────────────────────────────────── */}
       {step === 5 && (
-        <div className="ob-step-body">
-          <IllustTrackMan />
-          <h2 className="ob-step-title">
-            Koble til <em>TrackMan</em>.
-          </h2>
-          <p className="ob-ingress">
-            Hvis du har en TrackMan-konto (egen, fra klubb, eller fra Performance
-            Studio), kobler vi den slik at swing-data og ball-flight-info
-            automatisk synkes til profilen din.
-          </p>
-          <div className="ob-connect-box">
-            <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-              <div className="ob-connect-icon">
-                <Settings size={24} />
-              </div>
-              <span
-                style={{
-                  fontFamily: "var(--font-inter-tight)",
-                  fontSize: 22,
-                  fontWeight: 800,
-                  letterSpacing: "-0.02em",
-                }}
-              >
-                TrackMan
-              </span>
-            </div>
-            <p style={{ fontSize: 14, color: "hsl(var(--muted-foreground))", maxWidth: 380, textAlign: "center" }}>
-              Vi henter swing-data, ball-flight og distance-data fra alle dine
-              økter.
+        <StepBody>
+          <StepHeading
+            title="Koble til"
+            emphasis="TrackMan"
+            titleAfter="."
+            deck="Har du en TrackMan-konto, kobler vi den slik at swing-data og ball-flight automatisk synkes til profilen din."
+          />
+          <div className="flex flex-col items-center gap-3 rounded-xl border border-border bg-secondary px-4 py-6 text-center">
+            <span className="inline-flex h-14 w-14 items-center justify-center rounded-xl border border-border bg-card text-primary">
+              <Settings className="h-6 w-6" strokeWidth={1.75} aria-hidden />
+            </span>
+            <span className="font-display text-[22px] font-extrabold tracking-[-0.02em] text-foreground">
+              TrackMan
+            </span>
+            <p className="text-[13px] leading-relaxed text-muted-foreground">
+              Vi henter swing-data, ball-flight og distance-data fra alle dine økter.
             </p>
             <button
-              className="ob-btn-lime big"
               type="button"
               disabled
               title="Kommer post-BETA"
-              style={{ opacity: 0.5, cursor: "not-allowed" }}
+              className="flex h-12 w-full cursor-not-allowed items-center justify-center rounded-xl bg-primary px-6 text-sm font-bold text-primary-foreground opacity-50"
             >
               Koble til TrackMan · kommer snart
             </button>
-            <p
-              style={{
-                fontFamily: "var(--font-jetbrains-mono)",
-                fontSize: 10,
-                color: "#908D86",
-                letterSpacing: "0.06em",
-              }}
-            >
+            <p className="font-mono text-[10px] tracking-[0.06em] text-muted-foreground">
               Krever TrackMan-konto eller Performance Studio-tilgang
             </p>
           </div>
-          <div style={{ textAlign: "center" }}>
-            <button className="ob-skip-link" type="button" onClick={neste} disabled={pending}>
-              Hopp over — jeg har ikke TrackMan-konto
-            </button>
-          </div>
-          <div className="ob-security-strip">
-            <strong>Bruker du Performance Studio på GFGK?</strong> Da er TrackMan
-            automatisk koblet på via klubb-abonnementet.
-          </div>
-          <div className="ob-cta-row">
-            <button className="ob-btn-outline" onClick={tilbake} disabled={pending}>
-              <ChevronLeft size={15} />
-              Tilbake
-            </button>
-            <button className="ob-btn-lime" onClick={neste} disabled={pending}>
-              {pending ? "Lagrer…" : "Neste — Coach og abonnement"}
-              <ArrowRight size={15} />
-            </button>
-          </div>
-        </div>
+          <SecurityStrip>
+            <strong className="font-semibold">Bruker du Performance Studio på GFGK?</strong> Da er
+            TrackMan automatisk koblet på via klubb-abonnementet.
+          </SecurityStrip>
+          <PrimaryCta onClick={neste} disabled={pending}>
+            {pending ? "Lagrer…" : "Neste — Coach og abonnement"}
+          </PrimaryCta>
+          <SecondaryLink onClick={neste} disabled={pending}>
+            Hopp over — jeg har ikke TrackMan-konto
+          </SecondaryLink>
+        </StepBody>
       )}
 
+      {/* ── STEG 6 — Coach + abonnement ────────────────────────── */}
       {step === 6 && (
-        <div className="ob-step-body">
-          <IllustCoach />
-          <h2 className="ob-step-title">
-            Din <em>coach</em> og ditt opplegg.
-          </h2>
-          <p className="ob-ingress">
-            Velg coach og abonnement. Du kan endre dette når som helst.
-          </p>
+        <StepBody>
+          <StepHeading
+            title="Din"
+            emphasis="coach"
+            titleAfter=" og ditt opplegg."
+            deck="Velg coach og abonnement. Du kan endre dette når som helst."
+          />
 
-          <div>
-            <span
-              className="ob-label"
-              style={{ display: "block", marginBottom: 8 }}
-            >
-              Velg coach
-            </span>
-            <div className="ob-coach-grid">
-              {COACHES.map((coach) => (
-                <button
-                  key={coach.navn}
-                  type="button"
-                  className={`ob-coach-card${selectedCoach === coach.navn ? " selected" : ""}`}
-                  onClick={() => setSelectedCoach(coach.navn)}
-                >
-                  {selectedCoach === coach.navn && (
-                    <span
-                      style={{
-                        position: "absolute",
-                        top: 8,
-                        right: 8,
-                        fontFamily: "var(--font-jetbrains-mono)",
-                        fontSize: 8,
-                        fontWeight: 800,
-                        letterSpacing: "0.10em",
-                        padding: "2px 6px",
-                        borderRadius: 4,
-                        background: "hsl(var(--accent))",
-                        color: "hsl(var(--foreground))",
-                      }}
-                    >
-                      VALGT
-                    </span>
-                  )}
-                  <div className="ob-coach-avatar">{coach.initialer}</div>
-                  <div
-                    style={{
-                      fontFamily: "var(--font-inter-tight)",
-                      fontSize: 13,
-                      fontWeight: 700,
-                    }}
-                  >
-                    {coach.navn}
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: "var(--font-jetbrains-mono)",
-                      fontSize: 9,
-                      color: "hsl(var(--muted-foreground))",
-                      letterSpacing: "0.10em",
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    {coach.rolle}
-                  </div>
-                  <div style={{ fontSize: 11, color: "hsl(var(--muted-foreground))", lineHeight: 1.4 }}>
-                    {coach.meta}
-                  </div>
-                </button>
-              ))}
-            </div>
+          <FieldGroupLabel>Velg coach</FieldGroupLabel>
+          <div className="flex flex-col gap-2">
+            {COACHES.map((coach) => (
+              <CoachCard
+                key={coach.navn}
+                initials={coach.initialer}
+                name={coach.navn}
+                role={coach.rolle}
+                meta={coach.meta}
+                selected={selectedCoach === coach.navn}
+                onClick={() => setSelectedCoach(coach.navn)}
+              />
+            ))}
           </div>
 
-          <div>
-            <span
-              className="ob-label"
-              style={{ display: "block", marginBottom: 8 }}
-            >
-              Velg abonnement
-            </span>
-            <div className="ob-plan-grid">
-              <button
-                type="button"
-                className={`ob-plan-card${selectedTier === "GRATIS" ? " selected" : ""}`}
-                onClick={() => setSelectedTier("GRATIS")}
-              >
-                <div
-                  style={{
-                    fontFamily: "var(--font-jetbrains-mono)",
-                    fontSize: 11,
-                    fontWeight: 800,
-                    letterSpacing: "0.14em",
-                    color: selectedTier === "GRATIS" ? "hsl(var(--primary))" : "hsl(var(--muted-foreground))",
-                  }}
-                >
-                  GRATIS
-                </div>
-                <div
-                  style={{
-                    fontFamily: "var(--font-jetbrains-mono)",
-                    fontSize: 24,
-                    fontWeight: 800,
-                    color: "hsl(var(--foreground))",
-                  }}
-                >
-                  0 kr
-                  <span style={{ fontSize: 13, color: "hsl(var(--muted-foreground))", fontWeight: 500 }}>
-                    /mnd
-                  </span>
-                </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 5, fontSize: 12, color: "hsl(var(--muted-foreground))" }}>
-                  {["PlayerHQ-profil", "1 økt-logg per uke", "Turneringskalender", "HCP-tracking"].map((f) => (
-                    <div key={f} style={{ display: "flex", gap: 6, alignItems: "flex-start" }}>
-                      <Check size={12} style={{ color: "hsl(var(--success))", marginTop: 1, flexShrink: 0 }} />
-                      {f}
-                    </div>
-                  ))}
-                  <div style={{ color: "#908D86", marginTop: 2 }}>— Ingen booking, drill-bibliotek eller AI-coach</div>
-                </div>
-              </button>
-              <button
-                type="button"
-                className={`ob-plan-card${selectedTier === "PRO" ? " selected" : ""}`}
-                onClick={() => setSelectedTier("PRO")}
-              >
-                {selectedTier === "PRO" && (
-                  <span
-                    style={{
-                      position: "absolute",
-                      top: -9,
-                      right: 14,
-                      fontFamily: "var(--font-jetbrains-mono)",
-                      fontSize: 8.5,
-                      fontWeight: 800,
-                      letterSpacing: "0.10em",
-                      padding: "2px 7px",
-                      borderRadius: 4,
-                      background: "hsl(var(--accent))",
-                      color: "hsl(var(--foreground))",
-                    }}
-                  >
-                    ANBEFALT
-                  </span>
-                )}
-                <div
-                  style={{
-                    fontFamily: "var(--font-jetbrains-mono)",
-                    fontSize: 11,
-                    fontWeight: 800,
-                    letterSpacing: "0.14em",
-                    color: selectedTier === "PRO" ? "hsl(var(--primary))" : "hsl(var(--muted-foreground))",
-                  }}
-                >
-                  PRO
-                </div>
-                <div
-                  style={{
-                    fontFamily: "var(--font-jetbrains-mono)",
-                    fontSize: 24,
-                    fontWeight: 800,
-                    color: "hsl(var(--foreground))",
-                  }}
-                >
-                  300 kr
-                  <span style={{ fontSize: 13, color: "hsl(var(--muted-foreground))", fontWeight: 500 }}>
-                    /mnd
-                  </span>
-                </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 5, fontSize: 12, color: "hsl(var(--muted-foreground))" }}>
-                  {[
-                    "Alt i GRATIS",
-                    "Booking av økter og turneringer",
-                    "142-drill bibliotek",
-                    "AI-coach Anders",
-                    "Bane-strategier · Foreldre-portal",
-                  ].map((f) => (
-                    <div key={f} style={{ display: "flex", gap: 6, alignItems: "flex-start" }}>
-                      <Check size={12} style={{ color: "hsl(var(--success))", marginTop: 1, flexShrink: 0 }} />
-                      {f}
-                    </div>
-                  ))}
-                  <div style={{ fontFamily: "var(--font-jetbrains-mono)", fontSize: 10, color: "hsl(var(--muted-foreground))", marginTop: 4 }}>
-                    Avsluttes når som helst
-                  </div>
-                </div>
-              </button>
-            </div>
+          <FieldGroupLabel>Velg abonnement</FieldGroupLabel>
+          <div className="grid grid-cols-1 gap-2">
+            <PlanCard
+              tier="Gratis"
+              price="0 kr"
+              per="/mnd"
+              features={["PlayerHQ-profil", "1 økt-logg per uke", "Turneringskalender", "HCP-tracking"]}
+              footnote="Ingen booking, drill-bibliotek eller AI-coach"
+              selected={selectedTier === "GRATIS"}
+              onClick={() => setSelectedTier("GRATIS")}
+            />
+            <PlanCard
+              tier="Pro"
+              price="300 kr"
+              per="/mnd"
+              recommended
+              features={[
+                "Alt i GRATIS",
+                "Booking av økter og turneringer",
+                "142-drill bibliotek",
+                "AI-coach Anders",
+                "Bane-strategier · Foreldre-portal",
+              ]}
+              footnote="Avsluttes når som helst"
+              selected={selectedTier === "PRO"}
+              onClick={() => setSelectedTier("PRO")}
+            />
           </div>
 
-          <div className="ob-cta-row">
-            <button className="ob-btn-outline" onClick={tilbake} disabled={pending}>
-              <ChevronLeft size={15} />
-              Tilbake
-            </button>
-            <button className="ob-btn-lime" onClick={neste} disabled={pending}>
-              {pending ? "Lagrer…" : "Neste — Siste sjekk"}
-              <ArrowRight size={15} />
-            </button>
-          </div>
-        </div>
+          <PrimaryCta onClick={neste} disabled={pending}>
+            {pending ? "Lagrer…" : "Neste — Siste sjekk"}
+          </PrimaryCta>
+        </StepBody>
       )}
 
+      {/* ── STEG 7 — Siste sjekk (samtykke) ────────────────────── */}
       {step === 7 && (
-        <div className="ob-step-body">
-          <IllustFerdig />
-          <h2 className="ob-step-title">
-            Nesten <em>ferdig</em> — siste sjekk.
-          </h2>
-          <p className="ob-ingress">
-            Bekreft at du godtar vilkårene for å fullføre registreringen.
-          </p>
+        <StepBody>
+          <StepHeading
+            title="Nesten"
+            emphasis="ferdig"
+            titleAfter=" — siste sjekk."
+            deck="Bekreft at du godtar vilkårene for å fullføre registreringen."
+          />
 
-          <div className="ob-summary">
-            <span
-              style={{
-                fontFamily: "var(--font-jetbrains-mono)",
-                fontSize: 10,
-                fontWeight: 700,
-                letterSpacing: "0.12em",
-                color: "hsl(var(--muted-foreground))",
-                textTransform: "uppercase",
-                display: "block",
-                marginBottom: 10,
-              }}
-            >
-              Du har valgt
-            </span>
-            <div className="ob-summary-row">
-              <span className="ob-summary-key">Coach</span>
-              <span className="ob-summary-val">{selectedCoach}</span>
+          <SummaryCard>
+            <div className="flex flex-col">
+              <SummaryRow label="Coach" value={selectedCoach} />
+              <SummaryRow
+                label="Abonnement"
+                value={
+                  <span className="font-mono">
+                    {selectedTier === "PRO" ? "PRO · 300 kr/mnd" : "GRATIS"}
+                  </span>
+                }
+              />
+              {homeClub && <SummaryRow label="Hjemmebane" value={homeClub} />}
+              {hcp && <SummaryRow label="HCP" value={<span className="font-mono">{hcp}</span>} />}
+              {seasonGoals.length > 0 && (
+                <SummaryRow label="Mål" value={seasonGoals.join(" · ")} />
+              )}
             </div>
-            <div className="ob-summary-row">
-              <span className="ob-summary-key">Abonnement</span>
-              <span className="ob-summary-val" style={{ fontFamily: "var(--font-jetbrains-mono)" }}>
-                {selectedTier === "PRO" ? "PRO · 300 kr/mnd" : "GRATIS"}
-              </span>
-            </div>
-            {homeClub && (
-              <div className="ob-summary-row">
-                <span className="ob-summary-key">Hjemmebane</span>
-                <span className="ob-summary-val">{homeClub}</span>
-              </div>
-            )}
-            {hcp && (
-              <div className="ob-summary-row">
-                <span className="ob-summary-key">HCP</span>
-                <span className="ob-summary-val" style={{ fontFamily: "var(--font-jetbrains-mono)" }}>
-                  {hcp}
-                </span>
-              </div>
-            )}
-            {seasonGoals.length > 0 && (
-              <div className="ob-summary-row">
-                <span className="ob-summary-key">Mål</span>
-                <span className="ob-summary-val" style={{ fontSize: 13 }}>
-                  {seasonGoals.join(" · ")}
-                </span>
-              </div>
-            )}
-          </div>
+          </SummaryCard>
 
-          <div className="ob-agree-list">
-            <button
-              type="button"
-              className={`ob-agree-item${acceptedTerms ? " checked" : ""}`}
+          <div className="flex flex-col gap-2">
+            <AgreeItem
+              title="Jeg har lest og godtar AK Golf Academy sine vilkår"
+              desc="Inkluderer personvernerklæring og treningsfilosofi."
+              checked={acceptedTerms}
               onClick={() => setAcceptedTerms(!acceptedTerms)}
-            >
-              <div className="ob-agree-checkbox">
-                {acceptedTerms && <Check size={12} color="#fff" />}
-              </div>
-              <div>
-                <div
-                  style={{
-                    fontFamily: "var(--font-inter-tight)",
-                    fontSize: 14,
-                    fontWeight: 700,
-                  }}
-                >
-                  Jeg har lest og godtar AK Golf Academy sine vilkår
-                </div>
-                <div style={{ fontSize: 12, color: "hsl(var(--muted-foreground))", marginTop: 2 }}>
-                  Inkluderer personvernerklæring og treningsfilosofi.
-                </div>
-              </div>
-            </button>
-            <button
-              type="button"
-              className={`ob-agree-item${acceptedPrivacy ? " checked" : ""}`}
+            />
+            <AgreeItem
+              title="Jeg samtykker til datadeling mellom coach og meg"
+              desc="Trenings- og helsedata. Du kan trekke tilbake samtykket når som helst."
+              checked={acceptedPrivacy}
               onClick={() => setAcceptedPrivacy(!acceptedPrivacy)}
-            >
-              <div className="ob-agree-checkbox">
-                {acceptedPrivacy && <Check size={12} color="#fff" />}
-              </div>
-              <div>
-                <div
-                  style={{
-                    fontFamily: "var(--font-inter-tight)",
-                    fontSize: 14,
-                    fontWeight: 700,
-                  }}
-                >
-                  Jeg samtykker til datadeling mellom coach og meg
-                </div>
-                <div style={{ fontSize: 12, color: "hsl(var(--muted-foreground))", marginTop: 2 }}>
-                  Trenings- og helsedata. Du kan trekke tilbake samtykket når
-                  som helst.
-                </div>
-              </div>
-            </button>
+            />
           </div>
 
-          <div className="ob-cta-row">
-            <button className="ob-btn-outline" onClick={tilbake} disabled={pending}>
-              <ChevronLeft size={15} />
-              Tilbake
-            </button>
-            <button
-              className="ob-btn-lime big"
-              onClick={fullfor}
-              disabled={pending || !acceptedTerms || !acceptedPrivacy}
-            >
-              {pending ? "Lagrer…" : "Fullfør registrering"}
-              <Flag size={15} />
-            </button>
-          </div>
-        </div>
+          <PrimaryCta
+            onClick={fullfor}
+            disabled={pending || !acceptedTerms || !acceptedPrivacy}
+            icon={Flag}
+          >
+            {pending ? "Lagrer…" : "Fullfør registrering"}
+          </PrimaryCta>
+        </StepBody>
       )}
 
       {error && (
-        <div className="ob-error" style={{ margin: "0 40px 24px" }} role="alert">
-          {error}
+        <div className="mx-auto mb-4 w-full max-w-[430px] px-4">
+          <div
+            className="rounded-lg border border-destructive/25 bg-destructive/10 px-4 py-3 text-[13px] text-destructive"
+            role="alert"
+          >
+            {error}
+          </div>
         </div>
       )}
 
-      {step > 1 && step < 7 && (
-        <div style={{ textAlign: "center", paddingBottom: 24 }}>
-          <button
-            type="button"
-            onClick={hopp}
-            disabled={pending}
-            className="ob-skip-link"
-          >
+      {step > 1 && step < TOTAL_STEPS && (
+        <div className="mx-auto w-full max-w-[430px] px-4 pb-6">
+          <SecondaryLink onClick={hopp} disabled={pending}>
             Hopp over og gå til portalen
-          </button>
+          </SecondaryLink>
         </div>
       )}
     </div>

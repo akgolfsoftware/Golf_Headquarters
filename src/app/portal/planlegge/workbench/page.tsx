@@ -1,19 +1,16 @@
 /**
- * /portal/planlegge/workbench — Workbench Plan A.
+ * /portal/planlegge/workbench — PlayerHQ Workbench (mobil-først 430px).
  *
- * Sprint 6: server-loaded sessions + facilities. Sessions seedes
- * automatisk fra mock-data hvis bruker ikke har noen ennå.
+ * Delt kjerne: spiller-versjon. Coach-versjonen ligger i
+ * /admin/spillere/[id]/workbench. Spilleren ser SIN egen plan — ekte data fra
+ * loadPlayerWorkbench (TrainingPlan + TrainingPlanSession + Goal).
  */
 
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getViewMode } from "@/lib/view-mode";
-import { WorkbenchPlanA } from "@/components/portal-planlegge/workbench/workbench-shell";
-import type {
-  Axis,
-  WBP_Session,
-} from "@/components/portal-planlegge/workbench/types";
-import { listPlanSessions, loadFacilities } from "./actions";
+import { PlayerWorkbench } from "@/components/portal/workbench/player-workbench";
+import { loadPlayerWorkbench } from "@/lib/portal-workbench/player-workbench-data";
 
 export const dynamic = "force-dynamic";
 
@@ -27,28 +24,7 @@ export default async function WorkbenchPage() {
   if (user.role === "GUEST") redirect("/admin/kalender");
   if (user.role === "PARENT") redirect("/forelder");
 
-  const [planSessions, facilities] = await Promise.all([
-    listPlanSessions().catch(() => []),
-    loadFacilities().catch(() => undefined),
-  ]);
+  const data = await loadPlayerWorkbench();
 
-  const sessions: WBP_Session[] = planSessions.map((s) => ({
-    id: s.id,
-    week: s.week,
-    day: s.day,
-    span: s.span,
-    axis: s.axis as Axis,
-    title: s.title,
-    meta: s.meta,
-    done: s.done,
-    now: s.isNow,
-    peak: s.isPeak,
-  }));
-
-  return (
-    <WorkbenchPlanA
-      initialSessions={sessions.length > 0 ? sessions : undefined}
-      initialFacilities={facilities}
-    />
-  );
+  return <PlayerWorkbench data={data} />;
 }
