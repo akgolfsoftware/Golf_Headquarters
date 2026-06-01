@@ -76,3 +76,7 @@ skills-lock.json
 
 # Design-handover: kilde-zip arkiveres lokalt, men er for stor for git (>100 MB GitHub-grense)
 public/design-handover/*.zip
+
+# v10-design (stor — utenfor git, kilde for porting)
+public/design-handover/v10/
+public/design-handover/_arkiv-v9/
