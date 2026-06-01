@@ -1,0 +1,436 @@
+# Alle ruter per seksjon (2026-06-01)
+
+> **411 ruter** totalt · **40 redesignet** (✅) · 371 gjenstår. Kategori: skjerm / variant ([id], arver) / demo (ikke prod).
+
+## PlayerHQ · /portal — 146 ruter (23 redesignet ✅)
+
+- ✅ `/portal`
+- `/portal-preview` · _demo_
+- `/portal-preview/planlegger` · _demo_
+- `/portal/agent-pipeline` · _skjerm_
+- `/portal/ai/foresla-drill` · _skjerm_
+- `/portal/ai/foresla-turnering` · _skjerm_
+- `/portal/ai/mal-bygger` · _skjerm_
+- `/portal/analyse` · _skjerm_
+- ✅ `/portal/analysere`
+- `/portal/analysere/hull` · _skjerm_
+- ✅ `/portal/booking`
+- `/portal/booking/[bookingId]` · _variant_
+- `/portal/booking/anlegg/[anleggId]` · _variant_
+- `/portal/booking/bekreftet` · _skjerm_
+- `/portal/booking/coach/[coachId]` · _variant_
+- ✅ `/portal/booking/ny`
+- `/portal/booking/ny/bekreft` · _skjerm_
+- `/portal/coach` · _skjerm_
+- `/portal/coach/[coachId]` · _variant_
+- `/portal/coach/ai` · _skjerm_
+- `/portal/coach/melding` · _skjerm_
+- `/portal/coach/melding/[id]` · _variant_
+- `/portal/coach/melding/[id]/vedlegg` · _variant_
+- `/portal/coach/melding/ny` · _skjerm_
+- `/portal/coach/notes` · _skjerm_
+- `/portal/coach/notes/[noteId]` · _variant_
+- `/portal/coach/ovelser` · _skjerm_
+- `/portal/coach/ovelser/[id]/rediger` · _variant_
+- `/portal/coach/ovelser/ny` · _skjerm_
+- `/portal/coach/plans` · _skjerm_
+- `/portal/coach/plans/[planId]` · _variant_
+- `/portal/coach/plans/[planId]/ny-okt` · _variant_
+- `/portal/coach/plans/perioder` · _skjerm_
+- `/portal/coach/sporsmal/[id]` · _variant_
+- `/portal/coach/videoer` · _skjerm_
+- ✅ `/portal/drills`
+- ✅ `/portal/drills/[id]`
+- `/portal/gjennomfore` · _skjerm_
+- `/portal/kalender` · _skjerm_
+- `/portal/live/[sessionId]` · _variant_
+- ✅ `/portal/live/[sessionId]/active`
+- ✅ `/portal/live/[sessionId]/brief`
+- ✅ `/portal/live/[sessionId]/logger`
+- ✅ `/portal/live/[sessionId]/summary`
+- `/portal/live/[sessionId]/tapper` · _variant_
+- `/portal/mal` · _skjerm_
+- `/portal/mal/baner` · _skjerm_
+- `/portal/mal/baner/[id]` · _variant_
+- `/portal/mal/bygger` · _skjerm_
+- `/portal/mal/goal/[id]` · _variant_
+- `/portal/mal/leaderboard` · _skjerm_
+- `/portal/mal/milepaeler` · _skjerm_
+- ✅ `/portal/mal/runder`
+- `/portal/mal/runder/[id]` · _variant_
+- `/portal/mal/runder/[id]/shot-by-shot` · _variant_
+- ✅ `/portal/mal/runder/ny`
+- ✅ `/portal/mal/sg-hub`
+- `/portal/mal/sg-hub/[club]` · _variant_
+- `/portal/mal/sg-hub/benchmark` · _skjerm_
+- `/portal/mal/sg-hub/best-vs-now` · _skjerm_
+- `/portal/mal/sg-hub/coach/[spillerId]` · _variant_
+- `/portal/mal/sg-hub/coach/[spillerId]/[club]` · _variant_
+- `/portal/mal/sg-hub/coach/[spillerId]/equipment` · _variant_
+- `/portal/mal/sg-hub/conditions` · _skjerm_
+- `/portal/mal/sg-hub/equipment` · _skjerm_
+- `/portal/mal/sg-hub/strategy` · _skjerm_
+- `/portal/mal/sg-hub/yardage` · _skjerm_
+- `/portal/mal/statistikk` · _skjerm_
+- ✅ `/portal/mal/trackman`
+- `/portal/mal/trackman/[id]` · _variant_
+- ✅ `/portal/meg`
+- ✅ `/portal/meg/abonnement`
+- `/portal/meg/abonnement/avbestill` · _skjerm_
+- `/portal/meg/abonnement/faktura/[id]` · _variant_
+- `/portal/meg/abonnement/kort/ny` · _skjerm_
+- `/portal/meg/abonnement/oppgrader` · _skjerm_
+- `/portal/meg/abonnement/oppgrader/flyt` · _skjerm_
+- `/portal/meg/bookinger` · _skjerm_
+- `/portal/meg/bookinger/reschedule/[bookingId]` · _variant_
+- `/portal/meg/dokumenter` · _skjerm_
+- `/portal/meg/feedback` · _skjerm_
+- `/portal/meg/foreldre` · _skjerm_
+- `/portal/meg/help` · _skjerm_
+- `/portal/meg/help/artikkel/[slug]` · _variant_
+- `/portal/meg/help/kategori/[slug]` · _variant_
+- `/portal/meg/help/kontakt` · _skjerm_
+- `/portal/meg/helse` · _skjerm_
+- `/portal/meg/helse/symptom/ny` · _skjerm_
+- ✅ `/portal/meg/innstillinger`
+- `/portal/meg/innstillinger/anlegg` · _skjerm_
+- `/portal/meg/innstillinger/eksport` · _skjerm_
+- `/portal/meg/innstillinger/integrasjoner` · _skjerm_
+- `/portal/meg/innstillinger/okter` · _skjerm_
+- `/portal/meg/innstillinger/personvern` · _skjerm_
+- `/portal/meg/innstillinger/sikkerhet` · _skjerm_
+- `/portal/meg/innstillinger/sprak` · _skjerm_
+- `/portal/meg/innstillinger/varsler` · _skjerm_
+- `/portal/meg/profil/rediger` · _skjerm_
+- `/portal/meg/sikkerhet` · _skjerm_
+- `/portal/meg/sikkerhet/2fa` · _skjerm_
+- `/portal/meg/utstyrsbag` · _skjerm_
+- `/portal/ny-okt` · _skjerm_
+- `/portal/onskeligokt` · _skjerm_
+- `/portal/onskeligokt/bekreftet` · _skjerm_
+- `/portal/planlegge` · _skjerm_
+- ✅ `/portal/planlegge/workbench`
+- `/portal/reach` · _skjerm_
+- `/portal/spiller/[spillerId]` · _variant_
+- `/portal/statistikk` · _skjerm_
+- `/portal/statistikk/[metric]` · _variant_
+- `/portal/statistikk/runder/[runId]/del` · _variant_
+- `/portal/statistikk/sammenlign` · _skjerm_
+- ✅ `/portal/stats`
+- `/portal/talent` · _skjerm_
+- `/portal/talent/min-plan` · _skjerm_
+- `/portal/talent/mitt-niva` · _skjerm_
+- `/portal/talent/roadmap` · _skjerm_
+- `/portal/talent/sammenligning` · _skjerm_
+- `/portal/test/[testId]/live` · _variant_
+- `/portal/test/[testId]/summary` · _variant_
+- `/portal/trackman/[sessionId]` · _variant_
+- `/portal/tren` · _skjerm_
+- `/portal/tren/[sessionId]` · _variant_
+- `/portal/tren/[sessionId]/planlagt` · _variant_
+- ✅ `/portal/tren/aarsplan`
+- `/portal/tren/aarsplan/periode/[id]/rediger` · _variant_
+- `/portal/tren/feiring/[planId]` · _variant_
+- `/portal/tren/fys-plan` · _skjerm_
+- `/portal/tren/fys-plan/[planId]` · _variant_
+- `/portal/tren/kalender` · _skjerm_
+- `/portal/tren/ovelser` · _skjerm_
+- `/portal/tren/ovelser/[id]` · _variant_
+- `/portal/tren/teknisk-plan` · _skjerm_
+- `/portal/tren/teknisk-plan/[planId]` · _variant_
+- ✅ `/portal/tren/tester`
+- `/portal/tren/tester/[testId]` · _variant_
+- `/portal/tren/tester/katalog` · _skjerm_
+- `/portal/tren/tester/ny` · _skjerm_
+- `/portal/tren/tester/ny/egen` · _skjerm_
+- `/portal/tren/turneringer` · _skjerm_
+- ✅ `/portal/tren/turneringer/[id]`
+- `/portal/tren/turneringer/ny` · _skjerm_
+- `/portal/utfordringer` · _skjerm_
+- `/portal/utfordringer/[id]` · _variant_
+- `/portal/utfordringer/ny` · _skjerm_
+- ✅ `/portal/varsler`
+
+## AgencyOS · /admin — 133 ruter (12 redesignet ✅)
+
+- `/admin` · _skjerm_
+- ✅ `/admin/agencyos`
+- `/admin/agencyos/caddie` · _skjerm_
+- `/admin/agencyos/caddie/aktivitet` · _skjerm_
+- `/admin/agencyos/okonomi` · _skjerm_
+- `/admin/agencyos/spillere` · _skjerm_
+- `/admin/agencyos/uka` · _skjerm_
+- `/admin/agents` · _skjerm_
+- `/admin/agents/[agentId]` · _variant_
+- `/admin/analyse` · _skjerm_
+- `/admin/analysere` · _skjerm_
+- ✅ `/admin/analysere/compliance`
+- `/admin/analytics` · _skjerm_
+- `/admin/anlegg` · _skjerm_
+- `/admin/anlegg/[id]` · _variant_
+- `/admin/approvals` · _skjerm_
+- `/admin/approvals/[id]` · _variant_
+- `/admin/audit-log` · _skjerm_
+- `/admin/audit-log/[id]` · _variant_
+- `/admin/availability` · _skjerm_
+- `/admin/board` · _skjerm_
+- ✅ `/admin/bookinger`
+- `/admin/bookinger/ny` · _skjerm_
+- `/admin/brief` · _skjerm_
+- ✅ `/admin/caddie`
+- `/admin/calendar` · _skjerm_
+- `/admin/calendar/maned` · _skjerm_
+- `/admin/coach-workbench` · _skjerm_
+- `/admin/drills` · _skjerm_
+- `/admin/drills/[id]` · _variant_
+- `/admin/drills/[id]/rediger` · _variant_
+- `/admin/email-templates` · _skjerm_
+- `/admin/email-templates/[id]/rediger` · _variant_
+- `/admin/facilities` · _skjerm_
+- `/admin/facilities/[id]` · _variant_
+- `/admin/finance` · _skjerm_
+- `/admin/foresporsler` · _skjerm_
+- `/admin/gjennomfore` · _skjerm_
+- `/admin/gjennomfore/okter/[id]` · _variant_
+- `/admin/godkjenn-portal` · _skjerm_
+- `/admin/godkjenn-portal/koblinger` · _skjerm_
+- `/admin/godkjenn-portal/koblinger/[id]` · _variant_
+- `/admin/godkjenn-portal/review` · _skjerm_
+- `/admin/godkjenninger` · _skjerm_
+- `/admin/godkjenninger/[id]` · _variant_
+- `/admin/grupper` · _skjerm_
+- `/admin/grupper/[id]` · _variant_
+- `/admin/hjelp` · _skjerm_
+- ✅ `/admin/innboks`
+- `/admin/integrasjoner` · _skjerm_
+- ✅ `/admin/kalender`
+- `/admin/kalender/maned` · _skjerm_
+- `/admin/kalender/uke` · _skjerm_
+- `/admin/kapasitet` · _skjerm_
+- `/admin/klubb/innstillinger` · _skjerm_
+- `/admin/kommunikasjon` · _skjerm_
+- `/admin/lag-snitt` · _skjerm_
+- `/admin/live/[sessionId]/active` · _variant_
+- `/admin/live/[sessionId]/brief` · _variant_
+- `/admin/live/[sessionId]/summary` · _variant_
+- `/admin/locations` · _skjerm_
+- `/admin/messages` · _skjerm_
+- `/admin/okter` · _skjerm_
+- `/admin/oppfolging` · _skjerm_
+- `/admin/organisasjon` · _skjerm_
+- `/admin/plan-templates` · _skjerm_
+- `/admin/plan-templates/[id]` · _variant_
+- `/admin/plan-templates/[id]/rediger` · _variant_
+- `/admin/plan-templates/ny` · _skjerm_
+- `/admin/planlegge` · _skjerm_
+- `/admin/plans` · _skjerm_
+- `/admin/plans/[planId]` · _variant_
+- `/admin/plans/new` · _skjerm_
+- `/admin/plans/templates` · _skjerm_
+- `/admin/plans/templates/[id]/effectiveness` · _variant_
+- `/admin/plans/templates/[id]/rediger` · _variant_
+- `/admin/plans/templates/ny` · _skjerm_
+- `/admin/profile` · _skjerm_
+- `/admin/queue` · _skjerm_
+- `/admin/reach` · _skjerm_
+- `/admin/recording` · _skjerm_
+- `/admin/reports` · _skjerm_
+- `/admin/runder` · _skjerm_
+- `/admin/services` · _skjerm_
+- ✅ `/admin/settings`
+- `/admin/settings/api` · _skjerm_
+- `/admin/settings/calendar` · _skjerm_
+- `/admin/settings/security` · _skjerm_
+- `/admin/settings/tilgang` · _skjerm_
+- ✅ `/admin/spillere`
+- ✅ `/admin/spillere/[id]`
+- `/admin/spillere/[id]/plan/[planId]` · _variant_
+- `/admin/spillere/[id]/profil` · _variant_
+- `/admin/spillere/[id]/rediger` · _variant_
+- `/admin/spillere/[id]/tester` · _variant_
+- `/admin/spillere/[id]/tildel-test` · _variant_
+- ✅ `/admin/spillere/[id]/workbench`
+- `/admin/spillere/ny` · _skjerm_
+- `/admin/stall` · _skjerm_
+- `/admin/stats/moderering` · _skjerm_
+- `/admin/stats/overview` · _skjerm_
+- `/admin/talent` · _skjerm_
+- `/admin/talent/[playerId]` · _variant_
+- `/admin/talent/discovery` · _skjerm_
+- `/admin/talent/kohort` · _skjerm_
+- `/admin/talent/radar` · _skjerm_
+- `/admin/talent/radar/[playerId]` · _variant_
+- `/admin/talent/region` · _skjerm_
+- `/admin/talent/ressurser` · _skjerm_
+- ✅ `/admin/talent/sammenligning`
+- `/admin/talent/wagr-benchmark` · _skjerm_
+- `/admin/talent/wagr-import` · _skjerm_
+- `/admin/team` · _skjerm_
+- `/admin/team/inviter` · _skjerm_
+- `/admin/teknisk-plan` · _skjerm_
+- `/admin/teknisk-plan/[spillerId]` · _variant_
+- ✅ `/admin/tester`
+- `/admin/tester/[id]` · _variant_
+- `/admin/tester/foreslatte` · _skjerm_
+- `/admin/tester/tildel/[spillerId]` · _variant_
+- `/admin/tilstander` · _skjerm_
+- `/admin/tournaments` · _skjerm_
+- `/admin/tournaments/[id]` · _variant_
+- `/admin/tournaments/dubletter` · _skjerm_
+- `/admin/tournaments/ny` · _skjerm_
+- `/admin/trackman` · _skjerm_
+- `/admin/videoer` · _skjerm_
+- `/admin/workspace` · _skjerm_
+- `/admin/workspace/notion` · _skjerm_
+- `/admin/workspace/oppgaver` · _skjerm_
+- `/admin/workspace/oppgaver/[id]` · _variant_
+- `/admin/workspace/prosjekter` · _skjerm_
+- `/admin/workspace/tildelt-meg` · _skjerm_
+
+## Marketing · Stats · /stats — 45 ruter (0 redesignet ✅)
+
+- `/stats` · _skjerm_
+- `/stats/2026` · _skjerm_
+- `/stats/aargang` · _skjerm_
+- `/stats/aargang/[aar]` · _variant_
+- `/stats/baner` · _skjerm_
+- `/stats/baner/[slug]` · _variant_
+- `/stats/blogg` · _skjerm_
+- `/stats/blogg/[slug]` · _variant_
+- `/stats/klubber` · _skjerm_
+- `/stats/klubber/[slug]` · _variant_
+- `/stats/leaderboards` · _skjerm_
+- `/stats/min-progresjon` · _skjerm_
+- `/stats/norske` · _skjerm_
+- `/stats/pga` · _skjerm_
+- `/stats/pga/drive-distance` · _skjerm_
+- `/stats/pga/fairway-pct` · _skjerm_
+- `/stats/pga/gir-pct` · _skjerm_
+- `/stats/pga/putt-explorer` · _skjerm_
+- `/stats/pga/putts-per-round` · _skjerm_
+- `/stats/pga/scoring-avg` · _skjerm_
+- `/stats/pga/sg-total` · _skjerm_
+- `/stats/pga/spillere` · _skjerm_
+- `/stats/pga/spillere/[dg_id]` · _variant_
+- `/stats/quiz` · _skjerm_
+- `/stats/regions` · _skjerm_
+- `/stats/regions/[slug]` · _variant_
+- `/stats/sammenlign-spillere` · _skjerm_
+- `/stats/sg-sammenlign` · _skjerm_
+- `/stats/sg-sammenlign/resultat/[id]` · _variant_
+- `/stats/sg-sammenlign/start` · _skjerm_
+- `/stats/sok` · _skjerm_
+- `/stats/spillere` · _skjerm_
+- `/stats/spillere/[slug]` · _variant_
+- `/stats/tour/[slug]` · _variant_
+- `/stats/turneringer` · _skjerm_
+- `/stats/turneringer/[slug]` · _variant_
+- `/stats/turneringer/[slug]/statistikk` · _variant_
+- `/stats/uka` · _skjerm_
+- `/stats/verktoy` · _skjerm_
+- `/stats/verktoy/avstand` · _skjerm_
+- `/stats/verktoy/score-til-hcp` · _skjerm_
+- `/stats/verktoy/sg-estimator` · _skjerm_
+- `/stats/verktoy/tour-ekvivalent` · _skjerm_
+- `/stats/verktoy/whs-kalkulator` · _skjerm_
+- `/stats/wrapped/[slug]` · _variant_
+
+## Marketing · øvrig — 19 ruter (0 redesignet ✅)
+
+- `/` · _skjerm_
+- `/anlegg` · _skjerm_
+- `/anlegg/[slug]` · _variant_
+- `/blogg` · _skjerm_
+- `/blogg/[slug]` · _variant_
+- `/booking` · _skjerm_
+- `/booking/[slug]` · _variant_
+- `/booking/[slug]/bekreft` · _variant_
+- `/booking/kvittering/[bookingId]` · _variant_
+- `/faq` · _skjerm_
+- `/junior` · _skjerm_
+- `/kontakt` · _skjerm_
+- `/om-oss` · _skjerm_
+- `/personvern` · _skjerm_
+- `/suksess` · _skjerm_
+- `/treningsfilosofi` · _skjerm_
+- `/turneringer` · _skjerm_
+- `/turneringer/[slug]` · _variant_
+- `/vilkar` · _skjerm_
+
+## Foreldreportal · /forelder — 11 ruter (2 redesignet ✅)
+
+- ✅ `/forelder`
+- ✅ `/forelder/barn`
+- `/forelder/barn/[childId]` · _variant_
+- `/forelder/bookinger` · _skjerm_
+- `/forelder/coach` · _skjerm_
+- `/forelder/fakturaer` · _skjerm_
+- `/forelder/innstillinger` · _skjerm_
+- `/forelder/okonomi` · _skjerm_
+- `/forelder/samtykke` · _skjerm_
+- `/forelder/ukerapport` · _skjerm_
+- `/forelder/varsler` · _skjerm_
+
+## Auth · /auth — 12 ruter (2 redesignet ✅)
+
+- ✅ `/auth/bankid`
+- `/auth/check-email` · _skjerm_
+- `/auth/forgot-password` · _skjerm_
+- `/auth/guardian-consent/[token]` · _variant_
+- ✅ `/auth/logget-ut`
+- `/auth/login` · _skjerm_
+- `/auth/onboarding` · _skjerm_
+- `/auth/onboarding/forelder` · _skjerm_
+- `/auth/reset-password` · _skjerm_
+- `/auth/samtykke-venter` · _skjerm_
+- `/auth/signup` · _skjerm_
+- `/onboarding` · _skjerm_
+
+## Andre / topp-nivå — 45 ruter (1 redesignet ✅)
+
+- `/cases` · _skjerm_
+- ✅ `/coach-preview/agencyos`
+- `/coach-preview/planlegger` · _demo_
+- `/coacher` · _skjerm_
+- `/coacher/[slug]` · _variant_
+- `/coaching` · _skjerm_
+- `/cookies` · _skjerm_
+- `/demo` · _demo_
+- `/demos/newplan/[steg]` · _demo_
+- `/demos/ny-okt/[steg]` · _demo_
+- `/demos/plan-bygger` · _demo_
+- `/demos/plan-bygger/[steg]` · _demo_
+- `/demos/trackman-import/[steg]` · _demo_
+- `/design-system` · _skjerm_
+- `/design-system-v2` · _skjerm_
+- `/hull-demo` · _demo_
+- `/intern/komponenter` · _skjerm_
+- `/intern/komponenter/agency-kit` · _skjerm_
+- `/intern/komponenter/daglig-brief` · _skjerm_
+- `/intern/komponenter/forelder` · _skjerm_
+- `/intern/komponenter/hull-analyse` · _skjerm_
+- `/intern/komponenter/inbox-tester` · _skjerm_
+- `/intern/komponenter/spiller-panel` · _skjerm_
+- `/intern/komponenter/team-bookinger` · _skjerm_
+- `/inviter/forelder/[token]` · _variant_
+- `/jobb` · _skjerm_
+- `/kalender-demo` · _demo_
+- `/kalender-maaned-demo` · _demo_
+- `/lokasjoner-demo` · _demo_
+- `/offline` · _skjerm_
+- `/onboard/coach` · _skjerm_
+- `/onboard/klubb` · _skjerm_
+- `/playerhq` · _skjerm_
+- `/priser` · _skjerm_
+- `/sesjon-opptak-demo` · _demo_
+- `/talent-kohort-demo` · _demo_
+- `/talent-region-pipeline-demo` · _demo_
+- `/talent-sammenlign-to-demo` · _demo_
+- `/talent-spiller-360-demo` · _demo_
+- `/v2-preview` · _demo_
+- `/v2-preview/admin` · _demo_
+- `/v2-preview/admin/spillere` · _demo_
+- `/v2-preview/portal` · _demo_
+- `/v2-preview/portal/kalender` · _demo_
+- `/v2-preview/portal/mal` · _demo_
+
