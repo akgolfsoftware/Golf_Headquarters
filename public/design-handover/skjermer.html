@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Redesign · 35 skjermer for godkjenning · AK Golf HQ</title>
+<style>
+  :root {
+    --forest:#005840; --forest-900:#003D2C; --lime:#D1F843; --cream:#FAFAF7;
+    --card:#FFFFFF; --fg:#0A1F17; --muted:#5E5C57; --border:#E5E3DD;
+    --sans:'Inter',system-ui,-apple-system,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:var(--sans);background:var(--cream);color:var(--fg);line-height:1.5;-webkit-text-size-adjust:100%;}
+  .wrap{max-width:1100px;margin:0 auto;padding:24px 16px 80px;}
+  header{margin-bottom:24px;}
+  .eyebrow{font-family:var(--mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--forest);margin-bottom:8px;}
+  h1{font-size:30px;font-weight:700;letter-spacing:-.02em;line-height:1.05;}
+  h1 em{font-style:italic;font-weight:400;color:var(--forest);}
+  .lead{color:var(--muted);margin-top:10px;font-size:14px;max-width:60ch;}
+  .meta{margin-top:14px;font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+  h2{font-size:20px;font-weight:700;letter-spacing:-.01em;margin:40px 0 4px;}
+  .sec-sub{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--border);padding-bottom:12px;margin-bottom:20px;}
+  .agency h2{color:var(--forest-900);}
+  .grid{display:grid;gap:20px;}
+  .grid.desktop{grid-template-columns:repeat(auto-fill,minmax(320px,1fr));}
+  .grid.mobile{grid-template-columns:repeat(auto-fill,minmax(220px,1fr));}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;}
+  .card .hd{padding:12px 14px;border-bottom:1px solid var(--border);}
+  .card .id{font-family:var(--mono);font-size:9px;font-weight:700;color:var(--forest);letter-spacing:.1em;}
+  .card .nm{font-size:14px;font-weight:600;letter-spacing:-.01em;margin-top:2px;}
+  .card .rt{font-family:var(--mono);font-size:11px;color:var(--muted);word-break:break-all;margin-top:2px;}
+  .shot{display:block;background:var(--cream);}
+  .shot img{display:block;width:100%;height:auto;border:0;}
+  .mobile .shot{padding:14px;display:flex;justify-content:center;}
+  .mobile .shot img{max-width:240px;border-radius:14px;border:1px solid var(--border);box-shadow:0 4px 14px rgba(10,31,23,.08);}
+  .tap{font-family:var(--mono);font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;padding:8px 14px;border-top:1px solid var(--border);}
+  footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);font-family:var(--mono);font-size:11px;color:var(--muted);line-height:1.7;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">AK GOLF HQ · REDESIGN · 2026-06-01</div>
+    <h1>35 skjermer, <em>klare for godkjenning</em>.</h1>
+    <p class="lead">Skjermbilder av de faktiske portede skjermene med ekte data (test-database). Trykk et bilde for å se det i full størrelse. AgencyOS er desktop, PlayerHQ er mobil.</p>
+    <div class="meta" id="meta"></div>
+  </header>
+  <section class="agency">
+    <h2>AgencyOS</h2>
+    <div class="sec-sub">/admin · desktop · 12 skjermer</div>
+    <div class="grid desktop" id="g-agency"></div>
+  </section>
+  <section>
+    <h2>PlayerHQ</h2>
+    <div class="sec-sub">/portal · mobil · 20 skjermer</div>
+    <div class="grid mobile" id="g-player"></div>
+  </section>
+  <section>
+    <h2>Live-økt</h2>
+    <div class="sec-sub">/portal/(fullscreen)/live · mobil · 3 skjermer</div>
+    <div class="grid mobile" id="g-live"></div>
+  </section>
+  <footer>
+    Skjermbilder generert mot test-database — tomme felt («—», «Ingen …») betyr at test-dataen mangler verdier der, ikke at skjermen er feil.<br>
+    Designsystem: forest #005840 · lime #D1F843 · cream #FAFAF7 · Inter / Inter Tight / JetBrains Mono.
+  </footer>
+</div>
+<script>
+  const AGENCY=[
+    ["ag-dashboard","Daglig brief (dashboard)","/admin/agencyos"],
+    ["ag-stallen","Stallen","/admin/spillere"],
+    ["ag-spiller","Spiller-detalj","/admin/spillere/[id]"],
+    ["ag-workbench","Coach-Workbench","/admin/spillere/[id]/workbench"],
+    ["ag-innboks","Innboks","/admin/innboks"],
+    ["ag-kalender","Kalender","/admin/kalender"],
+    ["ag-bookinger","Bookinger","/admin/bookinger"],
+    ["ag-tester","Tester-matrise","/admin/tester"],
+    ["ag-drift","Drift / innstillinger","/admin/settings"],
+    ["ag-compliance","Compliance","/admin/analysere/compliance"],
+    ["ag-compare","Multi-sammenligning","/admin/talent/sammenligning"],
+    ["ag-caddie","Caddie / co-agent","/admin/caddie"],
+  ];
+  const PLAYER=[
+    ["pl-hjem","Hjem / Workbench","/portal"],
+    ["pl-workbench","Workbench (plan)","/portal/planlegge/workbench"],
+    ["pl-stats","Stats-oversikt","/portal/stats"],
+    ["pl-sghub","Strokes Gained","/portal/mal/sg-hub"],
+    ["pl-trackman","TrackMan","/portal/mal/trackman"],
+    ["pl-runder","Runder","/portal/mal/runder"],
+    ["pl-runde-ny","Ny runde","/portal/mal/runder/ny"],
+    ["pl-tester","Tester","/portal/tren/tester"],
+    ["pl-drills","Drill-bibliotek","/portal/drills"],
+    ["pl-drill","Drill-detalj","/portal/drills/[id]"],
+    ["pl-turnering","Turnering-detalj","/portal/tren/turneringer/[id]"],
+    ["pl-varsler","Varsler","/portal/varsler"],
+    ["pl-meg","Profil","/portal/meg"],
+    ["pl-innstillinger","Innstillinger","/portal/meg/innstillinger"],
+    ["pl-abonnement","Abonnement","/portal/meg/abonnement"],
+    ["pl-booking","Booking","/portal/booking"],
+    ["pl-analyse","Analyse-hub","/portal/analysere"],
+    ["pl-aarsplan","Årsplan","/portal/tren/aarsplan"],
+    ["pl-onboarding","Onboarding","/auth/onboarding"],
+    ["pl-forelder","Foreldre-portal","/forelder"],
+  ];
+  const LIVE=[
+    ["pl-live-brief","Live: brief","/portal/(fullscreen)/live/[id]/brief"],
+    ["pl-live-active","Live: aktiv drill","/portal/(fullscreen)/live/[id]/active"],
+    ["pl-live-summary","Live: oppsummering","/portal/(fullscreen)/live/[id]/summary"],
+  ];
+  function card([slug,nm,rt],n){
+    return `<div class="card"><div class="hd"><div class="id">${n}</div><div class="nm">${nm}</div><div class="rt">${rt}</div></div>`+
+      `<a class="shot" href="_screens/${slug}.png" target="_blank" rel="noopener"><img loading="lazy" src="_screens/${slug}.png" alt="${nm}"></a>`+
+      `<div class="tap">Trykk for full størrelse →</div></div>`;
+  }
+  let i=1;
+  document.getElementById("g-agency").innerHTML=AGENCY.map(s=>card(s,"A"+(i++ - 0))).join("");
+  i=1; document.getElementById("g-player").innerHTML=PLAYER.map(s=>card(s,"P"+(i++))).join("");
+  i=1; document.getElementById("g-live").innerHTML=LIVE.map(s=>card(s,"L"+(i++))).join("");
+  document.getElementById("meta").textContent=`${AGENCY.length+PLAYER.length+LIVE.length} skjermer · forest/lime/cream · ekte Prisma-data`;
+</script>
+</body>
+</html>
