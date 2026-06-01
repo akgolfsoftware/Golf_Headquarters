@@ -28,9 +28,18 @@ Full spec: [docs/skjerm-manifest-elite-fase2.md](skjerm-manifest-elite-fase2.md)
 
 ---
 
+## 🧹 Del 1 strukturrydding (2026-06-01)
+
+- [x] **Oppgave 1 — to-URL:** dokumentert akgolf.no som eneste prod-URL + auto-deploy-dashboard-instruks (se over).
+- [x] **Oppgave 2 — demo-ruter:** IKKE slettet. Viste seg å være en bevisst demo/screenshot-suite (`/demo`-indeks + `proxy.ts`-bypass + `robots.ts`-disallow + coach-preview screenshot-rute), ikke død kode. Lav verdi/risiko å fjerne. Lar stå.
+- [x] **Oppgave 3 — mock-sveip:** `audit-log` koblet til ekte `AuditLog` (16 rader) + tomstate. De fleste andre «mock»-treff var allerede ekte Prisma m/ merket dev-fallback (workspace, trackman, approvals).
+- [ ] **Gjenstående mock (lav prio, coach-side):** `caddie/caddie-page-shell.tsx` (MOCK_CONVERSATIONS — ekte `/api/caddie/*` finnes, koble senere) · `talent/roadmap` DEMO_FASER (disclosed scaffold bak pre-beta-stripe — fase-modell finnes ikke i DB ennå).
+
 ## 🔧 Kjente tekniske rester (ikke haster)
 
-- [x] **Vercel-deploy gjort 2026-06-01** — manuell `vercel --prod --yes` deployet Fase 0+1+2 til prod. Aliaset til **akgolf.no** (live, åpent, build grønn — 315 sider på 2m). Alle nøkkelruter svarer 200. Auto-deploy fra GitHub henger fortsatt → bruk manuell `vercel --prod` ved fremtidige releaser.
+- [x] **Vercel-deploy gjort 2026-06-01** — manuell `vercel --prod --yes` deployet Fase 0+1+2 til prod. Aliaset til **akgolf.no** (live, åpent, build grønn — 315 sider på 2m). Alle nøkkelruter svarer 200.
+- ⚠️ **PROD-URL: bruk KUN `akgolf.no`.** Prosjektet har 5 domener; de tre `*.vercel.app`-domenene (inkl. `akgolf-hq-akgolfgroup-netizen-…vercel.app`) er SSO-beskyttet og forvirrende. `akgolf.no` er åpen og peker alltid på siste deploy. Anders så «gamle sider» fordi han brukte en vercel.app-URL.
+- [ ] **Auto-deploy henger (Diagnose 2026-06-01):** git ER koblet (alle deploys har GitHub-commit-metadata), men push trigger ikke lenger auto-deploy — siste ~10 deploys er manuelle (`actor: claude-code`). Ikke i `vercel.json` (kun crons der). Årsak ligger i Vercel-dashboard. **Fiks (Anders, ~2 min):** vercel.com → akgolf-hq → Settings → Git → sjekk at «Automatic deployments» er PÅ + at production-branch = `main`; hvis «Ignored Build Step» er satt, fjern den. Inntil da: deploy manuelt med `vercel --prod --yes`.
 - [ ] **google-calendar `invalid_grant`** under build (freebusy for ~10 kalendere) — utløpt OAuth-token i build-miljø. Ikke kritisk (build fullfører), men coach-kalender-freebusy feiler til token fornyes. Lav prio.
 - [ ] **`/stats/sammenlign-spillere`** gir 500 (stats-prototype med fake-data) — skjul i prod som de andre stats-prototypene, eller fiks.
 - [ ] **Gamle skyggede sider** (locations, facilities, analyse, statistikk, kalender, mal m.fl.) — redirecter til nye sider, men `page.tsx` ligger igjen og deler kode med aktive sider. Krever forsiktig refactor (flytt delt kode → oppdater imports → slett), ikke ren sletting. Lavt prioritert — usynlig for brukere.
