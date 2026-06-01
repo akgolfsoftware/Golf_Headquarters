@@ -5,7 +5,9 @@
 import { prisma } from "@/lib/prisma";
 import {
   SAMPLE_TASKS,
+  SAMPLE_PROJECTS,
   type SampleTask,
+  type SampleProject,
 } from "@/components/workspace/sample-data";
 import type {
   CompanyKind,
@@ -189,4 +191,72 @@ function hashId(cuid: string): number {
     hash = (hash * 31 + cuid.charCodeAt(i)) | 0;
   }
   return Math.abs(hash);
+}
+
+// ---------- Henter prosjekter ----------
+
+type CachedProjectRow = Awaited<
+  ReturnType<typeof prisma.prosjektCache.findMany>
+>[number];
+
+/**
+ * Henter prosjekter fra ProsjektCache (synket fra Notion). Faller tilbake til
+ * SAMPLE_PROJECTS i dev når ingen Notion-tilkobling finnes — i prod returneres
+ * tom liste (ekte tomstate, ikke falske prosjekter).
+ */
+export async function getProjectsForUser(): Promise<SampleProject[]> {
+  const adminConnection = await prisma.notionConnection.findFirst({
+    where: { user: { role: "ADMIN" } },
+    select: { id: true },
+  });
+
+  if (!adminConnection) {
+    return process.env.NODE_ENV === "production" ? [] : SAMPLE_PROJECTS;
+  }
+
+  const cached = await prisma.prosjektCache.findMany({
+    where: { connectionId: adminConnection.id },
+    orderBy: { notionLastEdited: "desc" },
+    take: 100,
+  });
+
+  if (cached.length === 0) {
+    return process.env.NODE_ENV === "production" ? [] : SAMPLE_PROJECTS;
+  }
+
+  return cached.map(mapCachedToProject);
+}
+
+function mapCachedToProject(c: CachedProjectRow): SampleProject {
+  const open = c.oppgaverOpen;
+  const doing = c.oppgaverDoing;
+  const done = c.oppgaverDone;
+  const total = open + doing + done;
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+  return {
+    id: c.id,
+    company: mapCompany(c.selskap),
+    title: c.navn,
+    desc: c.beskrivelse ?? "—",
+    open,
+    doing,
+    done,
+    total,
+    pct,
+    assigned: [],
+    vis: mapVisibility(c.selskap),
+    status: mapProjectStatus(c.status),
+    due: c.selskap.length > 0 ? c.selskap[0].toUpperCase() : "—",
+  };
+}
+
+function mapProjectStatus(
+  status: string | null,
+): "AKTIV" | "PAUSE" | "ARKIVERT" {
+  const s = (status ?? "").toUpperCase();
+  if (s.includes("ARKIV") || s.includes("FERDIG") || s.includes("DONE"))
+    return "ARKIVERT";
+  if (s.includes("PAUSE") || s.includes("VENT") || s.includes("HOLD"))
+    return "PAUSE";
+  return "AKTIV";
 }

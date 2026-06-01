@@ -1,29 +1,25 @@
 /**
- * /admin/recording — CoachHQ sesjon-opptak
+ * AgencyOS — Sesjon-opptak (/admin/recording)
  *
- * Designet hentet fra src/app/sesjon-opptak-demo/page.tsx.
- * Henter siste 30 SessionRecording-rader fra Prisma og viser dem som
- * pipeline-status (transkriberer → analyserer → foreslår), waveform-placeholder
- * og meta-stats. Når Deepgram ikke er konfigurert, vises advarsels-kort.
+ * Coach tar opp coaching-økt; Deepgram transkriberer og pipeline trekker ut
+ * nøkkelpunkter. Henter siste 30 SessionRecording-rader fra Prisma og viser
+ * pipeline-status, waveform-placeholder og meta-stats. Server component —
+ * ekte Prisma, ingen falske tall.
  *
- * Roller: COACH, ADMIN.
+ * Recording-controls + analyze-button er egne klient-komponenter (urørt).
  */
 
 import {
   Check,
   CircleDot,
-  Flag,
   Loader2,
   Mic,
-  Pause,
-  Play,
-  Square,
-  Tag,
+  type LucideIcon,
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 import { EmptyState } from "@/components/shared/empty-state";
+import { cn } from "@/lib/utils";
 import { RecordingControls } from "./recording-controls";
 import { RecordingAnalyzeButton } from "@/components/admin/recording-analyze-button";
 
@@ -36,15 +32,19 @@ type PipelineStep = {
 };
 
 const STATUS_LABEL: Record<string, string> = {
+  RECORDING: "Tar opp",
   PROCESSING: "Behandles",
   DONE: "Ferdig",
   FAILED: "Feilet",
+  ABORTED: "Avbrutt",
 };
 
 const STATUS_PILL: Record<string, string> = {
-  PROCESSING: "bg-accent/25 text-foreground border border-accent/40",
+  RECORDING: "bg-destructive/10 text-destructive border border-destructive/30",
+  PROCESSING: "bg-accent/25 text-foreground border border-accent/50",
   DONE: "bg-primary/10 text-primary border border-primary/20",
   FAILED: "bg-destructive/15 text-destructive border border-destructive/30",
+  ABORTED: "bg-secondary text-muted-foreground border border-border",
 };
 
 // Pre-computed deterministic waveform bars
@@ -143,168 +143,153 @@ export default async function RecordingAdmin({
   const feilet = recordings.filter((r) => r.status === "FAILED").length;
 
   return (
-    <div className="space-y-8">
-      <PageHeader
-        eyebrow="CoachHQ · Sesjon · opptak"
-        titleLead="Lytter"
-        titleItalic="mens du coacher"
-        sub="Last opp lyd-fil og Deepgram transkriberer i sanntid. Pipeline trekker ut nøkkelpunkter til slutt."
-      />
+    <div className="space-y-1">
+      {/* header */}
+      <div className="mb-3">
+        <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
+          AGENCYOS · OPPTAK
+        </span>
+        <h1 className="mt-2 font-display text-[30px] font-bold leading-[1.05] tracking-[-0.025em] text-foreground">
+          Lytter <em className="font-normal italic text-primary">mens du coacher</em>.
+        </h1>
+        <p className="mt-1.5 max-w-[780px] text-sm leading-relaxed text-muted-foreground">
+          Last opp lyd-fil og Deepgram transkriberer i sanntid. Pipeline trekker ut nøkkelpunkter til
+          slutt og foreslår oppfølging.
+        </p>
+      </div>
 
       {!harDeepgramKey && (
-        <div className="rounded-lg border border-accent/40 bg-accent/5 p-6">
-          <h3 className="font-display text-base font-semibold tracking-tight">
+        <div className="mt-5 rounded-xl border border-warning/40 bg-warning/[0.06] p-5">
+          <h3 className="font-display text-[15px] font-bold tracking-[-0.01em] text-foreground">
             Deepgram ikke konfigurert
           </h3>
-          <p className="mt-2 text-sm text-muted-foreground">
+          <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
             Automatisk transkripsjon krever en{" "}
-            <code className="rounded bg-secondary px-1 py-0.5 font-mono text-xs">
-              DEEPGRAM_API_KEY
-            </code>{" "}
-            i .env.local. Inntil videre kan opptak lastes opp manuelt og
-            transkripsjon limes inn for hånd.
+            <code className="rounded bg-secondary px-1 py-0.5 font-mono text-xs">DEEPGRAM_API_KEY</code> i
+            .env.local. Inntil videre kan opptak lastes opp manuelt og transkripsjon limes inn for hånd.
           </p>
         </div>
       )}
 
       {/* Live recording frame */}
-      <RecordingControls
-        recordingId={activeRecordingId}
-        recoveryRecordingId={recovery?.id ?? null}
-        recoveryStartedAt={
-          recovery
-            ? recovery.startedAt.toLocaleString("nb-NO", {
-                day: "2-digit",
-                month: "2-digit",
-                hour: "2-digit",
-                minute: "2-digit",
-              })
-            : null
-        }
-        topbar={
-          <>
-            {harAktivt && aktivt.status === "PROCESSING" ? (
-              <span className="inline-flex items-center gap-2 rounded-full border border-destructive/30 bg-destructive/10 px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-destructive">
-                <span className="relative flex h-1.5 w-1.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-destructive opacity-75" />
-                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-destructive" />
+      <div className="pt-5">
+        <RecordingControls
+          recordingId={activeRecordingId}
+          recoveryRecordingId={recovery?.id ?? null}
+          recoveryStartedAt={
+            recovery
+              ? recovery.startedAt.toLocaleString("nb-NO", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })
+              : null
+          }
+          topbar={
+            <>
+              {harAktivt && aktivt.status === "PROCESSING" ? (
+                <span className="inline-flex items-center gap-2 rounded-full border border-destructive/30 bg-destructive/10 px-2.5 py-1 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-destructive">
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-destructive opacity-75" />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-destructive" />
+                  </span>
+                  REC {formatVarighet(aktivt.durationSec ?? null)}
                 </span>
-                REC {formatVarighet(aktivt.durationSec ?? null)}
-              </span>
-            ) : (
-              <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-                <CircleDot className="h-3 w-3" strokeWidth={1.5} />
-                Ingen aktiv økt
-              </span>
-            )}
-            <div className="ml-auto flex items-center gap-2 text-[13px] text-foreground">
-              <span className="grid h-5 w-5 place-items-center rounded-full bg-primary font-mono text-[9px] font-semibold text-primary-foreground">
-                {(user.name ?? "?").trim().charAt(0).toUpperCase()}
-              </span>
-              <span className="font-medium">{user.name}</span>
-              <span className="text-muted-foreground">— coach</span>
-            </div>
-          </>
-        }
-        stage={
-          <div className="relative grid min-h-[480px] grid-rows-[auto_auto_1fr] items-start gap-8 px-8 pt-12 pb-32">
-          {/* Pipeline */}
-          <div className="flex items-center justify-center gap-6">
-            {pipeline.map((step, i) => (
-              <div key={step.label} className="flex items-center gap-6">
-                <PipelineNode step={step} />
-                {i < pipeline.length - 1 && (
-                  <div
-                    className={`h-px w-14 ${
-                      pipeline[i].status === "done" ? "bg-primary" : "bg-border"
-                    }`}
+              ) : (
+                <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
+                  <CircleDot className="h-3 w-3" strokeWidth={1.5} aria-hidden />
+                  Ingen aktiv økt
+                </span>
+              )}
+              <div className="ml-auto flex items-center gap-2 text-[13px] text-foreground">
+                <span className="grid h-5 w-5 place-items-center rounded-full bg-primary font-mono text-[9px] font-bold text-primary-foreground">
+                  {(user.name ?? "?").trim().charAt(0).toUpperCase()}
+                </span>
+                <span className="font-medium">{user.name}</span>
+                <span className="text-muted-foreground">— coach</span>
+              </div>
+            </>
+          }
+          stage={
+            <div className="relative grid min-h-[480px] grid-rows-[auto_auto_1fr] items-start gap-8 px-8 pb-32 pt-12">
+              {/* Pipeline */}
+              <div className="flex items-center justify-center gap-6">
+                {pipeline.map((step, i) => (
+                  <div key={step.label} className="flex items-center gap-6">
+                    <PipelineNode step={step} />
+                    {i < pipeline.length - 1 && (
+                      <div
+                        className={cn(
+                          "h-px w-14",
+                          pipeline[i].status === "done" ? "bg-primary" : "bg-border",
+                        )}
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {/* Waveform */}
+              <div className="mx-auto flex h-[140px] w-full max-w-[720px] items-center justify-center gap-[3px]">
+                {wave.map((h, i) => (
+                  <span
+                    key={i}
+                    className={cn(
+                      "block w-1 rounded-full",
+                      harAktivt && aktivt.status === "PROCESSING" ? "bg-primary" : "bg-muted-foreground/30",
+                    )}
+                    style={{ height: h, opacity: 0.4 + (i % 5) * 0.12 }}
                   />
+                ))}
+              </div>
+
+              {/* Transcript-placeholder */}
+              <div
+                className="pointer-events-none absolute bottom-[104px] left-1/2 max-h-[200px] w-[720px] max-w-[90%] -translate-x-1/2 overflow-hidden px-6 py-4 font-mono text-[13px] leading-[1.6]"
+                style={{
+                  maskImage: "linear-gradient(to top, #000 70%, transparent 100%)",
+                  WebkitMaskImage: "linear-gradient(to top, #000 70%, transparent 100%)",
+                }}
+              >
+                {aktivt?.transcript ? (
+                  <div className="text-foreground">
+                    {aktivt.transcript
+                      .split(/\n+/)
+                      .slice(-4)
+                      .map((line, i) => (
+                        <div key={i} className="text-muted-foreground">
+                          {line}
+                        </div>
+                      ))}
+                  </div>
+                ) : (
+                  <div className="italic text-muted-foreground/60">
+                    Transkripsjon vises her når opptak starter …
+                  </div>
                 )}
               </div>
-            ))}
-          </div>
-
-          {/* Waveform */}
-          <div className="mx-auto flex h-[140px] w-full max-w-[720px] items-center justify-center gap-[3px]">
-            {wave.map((h, i) => (
-              <span
-                key={i}
-                className={`block w-1 rounded-full ${
-                  harAktivt && aktivt.status === "PROCESSING"
-                    ? "bg-primary"
-                    : "bg-muted-foreground/30"
-                }`}
-                style={{
-                  height: h,
-                  opacity: 0.4 + (i % 5) * 0.12,
-                }}
-              />
-            ))}
-          </div>
-
-          {/* Transcript-placeholder */}
-          <div
-            className="pointer-events-none absolute bottom-[104px] left-1/2 max-h-[200px] w-[720px] max-w-[90%] -translate-x-1/2 overflow-hidden px-6 py-4 font-mono text-[13px] leading-[1.6]"
-            style={{
-              maskImage: "linear-gradient(to top, #000 70%, transparent 100%)",
-              WebkitMaskImage:
-                "linear-gradient(to top, #000 70%, transparent 100%)",
-            }}
-          >
-            {aktivt?.transcript ? (
-              <div className="text-foreground">
-                {aktivt.transcript
-                  .split(/\n+/)
-                  .slice(-4)
-                  .map((line, i) => (
-                    <div key={i} className="text-muted-foreground">
-                      {line}
-                    </div>
-                  ))}
-              </div>
-            ) : (
-              <div className="text-muted-foreground/60 italic">
-                Transkripsjon vises her når opptak starter …
-              </div>
-            )}
-          </div>
-        </div>
-        }
-      />
-
-      {/* Timeline-scrubber */}
-      <TimelineScrubber
-        varighet={aktivt?.durationSec ?? 754}
-        aktiv={harAktivt && aktivt?.status === "PROCESSING"}
-      />
-
-      {/* Meta-strip under frame */}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <MetaStat label="Totalt opptak" value={String(totalt)} />
-        <MetaStat label="Ferdig" value={String(ferdig)} />
-        <MetaStat
-          label="Behandles"
-          value={String(behandles)}
-          delta={behandles > 0 ? "live" : undefined}
-        />
-        <MetaStat
-          label="Feilet"
-          value={String(feilet)}
-          tone={feilet > 0 ? "danger" : "default"}
+            </div>
+          }
         />
       </div>
 
+      {/* Meta-strip under frame */}
+      <div className="grid grid-cols-2 gap-3 pt-5 sm:grid-cols-4">
+        <MetaStat label="TOTALT OPPTAK" value={String(totalt)} />
+        <MetaStat label="FERDIG" value={String(ferdig)} />
+        <MetaStat label="BEHANDLES" value={String(behandles)} delta={behandles > 0 ? "live" : undefined} />
+        <MetaStat label="FEILET" value={String(feilet)} tone={feilet > 0 ? "danger" : "default"} />
+      </div>
+
       {/* Siste opptak */}
-      <section className="space-y-4">
-        <div className="flex items-end justify-between">
-          <div>
-            <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-              Historikk
-            </span>
-            <h3 className="mt-1 font-display text-lg font-semibold tracking-tight">
-              Siste 30 opptak
-            </h3>
-          </div>
+      <section className="space-y-4 pt-7">
+        <div className="flex items-center gap-3 font-mono text-[11px] font-extrabold uppercase tracking-[0.12em] text-foreground">
+          <span>Historikk · siste 30 opptak</span>
+          <span className="rounded-full bg-secondary px-2 py-0.5 text-[9px] tracking-[0.06em] text-muted-foreground">
+            {recordings.length}
+          </span>
+          <span className="h-px flex-1 bg-border" aria-hidden />
         </div>
 
         {recordings.length === 0 ? (
@@ -319,16 +304,16 @@ export default async function RecordingAdmin({
             {recordings.map((r) => (
               <li
                 key={r.id}
-                className="flex flex-wrap items-center gap-4 rounded-lg border border-border bg-card p-4"
+                className="flex flex-wrap items-center gap-4 rounded-xl border border-border bg-card p-4"
               >
-                <span className="font-mono text-xs text-muted-foreground">
+                <span className="font-mono text-xs tabular-nums text-muted-foreground">
                   {formatDato(r.createdAt)}
                 </span>
                 <span
-                  className={`rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] ${
-                    STATUS_PILL[r.status] ??
-                    "border border-border bg-secondary text-muted-foreground"
-                  }`}
+                  className={cn(
+                    "rounded-full px-2 py-0.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.10em]",
+                    STATUS_PILL[r.status] ?? "border border-border bg-secondary text-muted-foreground",
+                  )}
                 >
                   {STATUS_LABEL[r.status] ?? r.status}
                 </span>
@@ -338,17 +323,13 @@ export default async function RecordingAdmin({
                   </span>
                 )}
                 {r.audioUrl ? (
-                  <span className="font-mono text-[10px] text-muted-foreground">
-                    {r.audioUrl}
-                  </span>
+                  <span className="truncate font-mono text-[10px] text-muted-foreground">{r.audioUrl}</span>
                 ) : (
-                  <span className="font-mono text-[10px] text-muted-foreground italic">
-                    Lyd ikke klar
-                  </span>
+                  <span className="font-mono text-[10px] italic text-muted-foreground">Lyd ikke klar</span>
                 )}
                 {r.transcript && (
                   <details className="w-full">
-                    <summary className="cursor-pointer font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                    <summary className="cursor-pointer font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground hover:text-foreground">
                       Vis transkripsjon
                     </summary>
                     <pre className="mt-2 whitespace-pre-wrap rounded-md bg-secondary p-4 text-xs text-foreground">
@@ -371,196 +352,32 @@ export default async function RecordingAdmin({
   );
 }
 
-// Stub-markers — i prod kommer disse fra SessionRecording.markers (eller en
-// separat tabell). Beholdes som inline-array til schema er på plass.
-type Marker = {
-  posisjon: number; // 0..1
-  ts: string;
-  tag: "Setup" | "Backswing" | "Impact" | "Notat";
-  notat: string;
-};
-
-const STUB_MARKERS: Marker[] = [
-  { posisjon: 0.15, ts: "01:53", tag: "Setup", notat: "Bredere stance" },
-  { posisjon: 0.38, ts: "04:46", tag: "Backswing", notat: "Skuldre roterer godt" },
-  { posisjon: 0.62, ts: "07:48", tag: "Impact", notat: "Hofte først" },
-  { posisjon: 0.84, ts: "10:34", tag: "Notat", notat: "Pust mellom slag" },
-];
-
-const TAG_FARGE: Record<Marker["tag"], string> = {
-  Setup: "bg-accent text-accent-foreground",
-  Backswing: "bg-primary/15 text-primary border border-primary/30",
-  Impact: "bg-destructive/15 text-destructive border border-destructive/30",
-  Notat: "bg-secondary text-foreground border border-border",
-};
-
-function formatTid(s: number): string {
-  const m = Math.floor(s / 60);
-  const sek = Math.round(s % 60);
-  return `${String(m).padStart(2, "0")}:${String(sek).padStart(2, "0")}`;
-}
-
-function TimelineScrubber({
-  varighet,
-  aktiv,
-}: {
-  varighet: number;
-  aktiv: boolean;
-}) {
-  const playhead = aktiv ? 0.42 : 0.0;
-
-  return (
-    <section className="space-y-4 rounded-2xl border border-border bg-card p-6">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            Timeline
-          </span>
-          <h3 className="mt-1 font-display text-lg font-semibold tracking-tight">
-            Markers og tagging
-          </h3>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            type="button"
-            className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-4 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-secondary"
-          >
-            {aktiv ? (
-              <Pause className="h-3.5 w-3.5" strokeWidth={1.75} />
-            ) : (
-              <Play className="h-3.5 w-3.5" strokeWidth={1.75} />
-            )}
-            {aktiv ? "Pause" : "Spill"}
-          </button>
-          <button
-            type="button"
-            className="inline-flex items-center gap-1.5 rounded-md bg-accent px-4 py-1.5 text-xs font-semibold text-accent-foreground transition-opacity hover:opacity-90"
-          >
-            <Flag className="h-3.5 w-3.5" strokeWidth={2} />
-            Legg til marker
-          </button>
-          <button
-            type="button"
-            className="inline-flex items-center gap-1.5 rounded-md bg-destructive px-4 py-1.5 text-xs font-semibold text-destructive-foreground transition-opacity hover:opacity-90"
-          >
-            <Square className="h-3 w-3 fill-current" strokeWidth={0} />
-            Stopp
-          </button>
-        </div>
-      </div>
-
-      {/* Stub video-player */}
-      <div className="relative aspect-video w-full overflow-hidden rounded-md bg-foreground/90 dark:bg-card">
-        <video
-          className="h-full w-full"
-          poster=""
-          preload="none"
-          controls={false}
-          aria-label="Sesjon-opptak video"
-        >
-          <source src="" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 grid place-items-center text-background/60">
-          <span className="font-mono text-[10px] uppercase tracking-[0.12em]">
-            Video-stub
-          </span>
-        </div>
-      </div>
-
-      {/* Scrubber-spor */}
-      <div className="space-y-2">
-        <div className="relative h-12 rounded-md border border-border bg-secondary/40">
-          <span
-            className="absolute inset-y-0 left-0 rounded-l-md bg-primary/20"
-            style={{ width: `${playhead * 100}%` }}
-          />
-          <span
-            className="absolute top-0 h-full w-px bg-primary"
-            style={{ left: `${playhead * 100}%` }}
-            aria-hidden
-          />
-          <span
-            className="absolute top-1/2 grid h-4 w-4 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-primary"
-            style={{ left: `${playhead * 100}%` }}
-            aria-hidden
-          />
-          {STUB_MARKERS.map((m, i) => (
-            <span
-              key={i}
-              className="absolute top-0 flex h-full -translate-x-1/2 flex-col items-center"
-              style={{ left: `${m.posisjon * 100}%` }}
-            >
-              <span className="h-full w-0.5 bg-foreground/40" aria-hidden />
-              <span className="absolute -top-2 grid h-4 w-4 place-items-center rounded-full border-2 border-background bg-foreground text-background">
-                <Flag className="h-2 w-2" strokeWidth={2.5} />
-              </span>
-            </span>
-          ))}
-        </div>
-        <div className="flex justify-between font-mono text-[10px] tabular-nums text-muted-foreground">
-          <span>00:00</span>
-          <span>{formatTid(varighet / 2)}</span>
-          <span>{formatTid(varighet)}</span>
-        </div>
-      </div>
-
-      {/* Marker-liste med tag-system */}
-      <ul className="space-y-2">
-        {STUB_MARKERS.map((m, i) => (
-          <li
-            key={i}
-            className="flex flex-wrap items-center gap-4 rounded-md border border-border bg-background px-4 py-2 dark:bg-card"
-          >
-            <span className="font-mono text-xs tabular-nums text-muted-foreground">
-              {m.ts}
-            </span>
-            <span
-              className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] ${TAG_FARGE[m.tag]}`}
-            >
-              <Tag className="h-2.5 w-2.5" strokeWidth={2} />
-              {m.tag}
-            </span>
-            <span className="flex-1 text-sm text-foreground">{m.notat}</span>
-          </li>
-        ))}
-      </ul>
-    </section>
-  );
-}
-
 function PipelineNode({ step }: { step: PipelineStep }) {
   const ringStyles =
-    step.status === "active"
+    step.status === "active" || step.status === "done"
       ? "border-primary text-primary bg-primary/10"
-      : step.status === "done"
-        ? "border-primary text-primary bg-primary/10"
-        : "border-border text-muted-foreground bg-card";
+      : "border-border text-muted-foreground bg-card";
   const metaStyles =
     step.status === "active"
       ? "text-primary font-mono"
       : step.status === "done"
         ? "text-primary"
         : "text-muted-foreground";
-  const Icon =
-    step.status === "active"
-      ? Loader2
-      : step.status === "done"
-        ? Check
-        : CircleDot;
+  const Icon: LucideIcon =
+    step.status === "active" ? Loader2 : step.status === "done" ? Check : CircleDot;
   return (
     <div className="flex min-w-[200px] flex-col items-center gap-2.5">
-      <div
-        className={`grid h-14 w-14 place-items-center rounded-full border-2 ${ringStyles}`}
-      >
+      <div className={cn("grid h-14 w-14 place-items-center rounded-full border-2", ringStyles)}>
         <Icon
-          className={`h-5 w-5 ${step.status === "active" ? "animate-spin" : ""}`}
+          className={cn("h-5 w-5", step.status === "active" && "animate-spin")}
           strokeWidth={1.5}
+          aria-hidden
         />
       </div>
-      <div className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+      <div className="font-mono text-[11px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground">
         {step.label}
       </div>
-      <div className={`text-[12px] ${metaStyles}`}>{step.meta}</div>
+      <div className={cn("text-[12px]", metaStyles)}>{step.meta}</div>
     </div>
   );
 }
@@ -577,21 +394,20 @@ function MetaStat({
   tone?: "default" | "danger";
 }) {
   return (
-    <div className="rounded-md border border-border bg-card px-4 py-4">
-      <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+    <div className="rounded-xl border border-border bg-card px-[18px] py-4">
+      <div className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
         {label}
       </div>
-      <div className="mt-1 flex items-baseline gap-2">
+      <div className="mt-2 flex items-baseline gap-2">
         <span
-          className={`font-mono text-[20px] font-medium tabular-nums tracking-tight ${
-            tone === "danger" ? "text-destructive" : "text-foreground"
-          }`}
+          className={cn(
+            "font-mono text-[28px] font-bold leading-none tracking-[-0.02em] tabular-nums",
+            tone === "danger" ? "text-destructive" : "text-foreground",
+          )}
         >
           {value}
         </span>
-        {delta && (
-          <span className="font-mono text-[10px] text-primary">{delta}</span>
-        )}
+        {delta && <span className="font-mono text-[10px] font-bold text-primary">{delta}</span>}
       </div>
     </div>
   );

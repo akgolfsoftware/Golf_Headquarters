@@ -1,23 +1,33 @@
 /**
- * /admin/stats/overview — admin dashboard (design 29)
+ * AgencyOS — Stats-oversikt (admin) (/admin/stats/overview)
  *
  * Krever ADMIN.
  * Data hentes fra: User, Tournament, PgaPlayerSeason, PublicPlayer,
  *   BrukerSgInput, BrukerSammenligning, PublicPlayerEntry, git log.
  *
  * Plausible (trafikk, topp-sider): merket som "Krever Plausible-integrasjon".
+ *
+ * Server component — ekte Prisma, ingen falske tall. Re-stylet til athletic
+ * DS-tokens (ingen hardkodet hex, ingen marketing-stats.css). Reveal + CountUp
+ * beholdt som behavioral animasjons-primitiver.
  */
 
-import "../../../(marketing)/stats/stats.css";
 import type { Metadata } from "next";
 import { execSync } from "child_process";
 import Link from "next/link";
-import { ArrowRight, Play } from "lucide-react";
+import {
+  AlertTriangle,
+  ArrowRight,
+  Check,
+  GitCommitHorizontal,
+  Play,
+  type LucideIcon,
+} from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { Reveal } from "@/components/stats/reveal";
-import { StatsEyebrow } from "@/components/stats/eyebrow";
 import { CountUp } from "@/components/stats/count-up";
+import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 300;
@@ -54,9 +64,11 @@ function hentSisteCommits(): { hash: string; melding: string }[] {
 // Data-henting
 // ---------------------------------------------------------------------------
 
+type SyncStatus = "ok" | "stale" | "warning" | "error";
+
 interface SyncRad {
   navn: string;
-  status: "ok" | "stale" | "warning" | "error";
+  status: SyncStatus;
   tid: string;
   detalj: string;
 }
@@ -159,12 +171,69 @@ function formaterTidSiden(dato: Date | null | undefined): string {
   return `${Math.round(timSiden / 24)}d siden`;
 }
 
-const SYNC_CFG = {
-  ok: { bg: "#2EA66B15", col: "#2EA66B", icon: "+" },
-  warning: { bg: "#B5731715", col: "#B57317", icon: "!" },
-  error: { bg: "#BE3D3D15", col: "hsl(var(--destructive))", icon: "x" },
-  stale: { bg: "#B5731715", col: "#B57317", icon: "!" },
-} as const;
+const SYNC_CFG: Record<SyncStatus, { wrap: string; dot: string; text: string; icon: LucideIcon }> = {
+  ok: {
+    wrap: "border-success/30 bg-success/[0.06]",
+    dot: "bg-success/15 text-success",
+    text: "text-success",
+    icon: Check,
+  },
+  warning: {
+    wrap: "border-warning/40 bg-warning/[0.06]",
+    dot: "bg-warning/15 text-warning",
+    text: "text-warning",
+    icon: AlertTriangle,
+  },
+  stale: {
+    wrap: "border-warning/40 bg-warning/[0.06]",
+    dot: "bg-warning/15 text-warning",
+    text: "text-warning",
+    icon: AlertTriangle,
+  },
+  error: {
+    wrap: "border-destructive/40 bg-destructive/[0.06]",
+    dot: "bg-destructive/15 text-destructive",
+    text: "text-destructive",
+    icon: AlertTriangle,
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Små byggeklosser
+// ---------------------------------------------------------------------------
+
+function Eyebrow({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="inline-flex items-center gap-2 font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-primary">
+      <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden />
+      {children}
+    </span>
+  );
+}
+
+function SectionHead({ eyebrow, title }: { eyebrow: string; title: string }) {
+  return (
+    <Reveal>
+      <Eyebrow>{eyebrow}</Eyebrow>
+      <h2 className="mt-2.5 font-display text-[24px] font-bold leading-tight tracking-[-0.02em] text-foreground">
+        {title}
+      </h2>
+    </Reveal>
+  );
+}
+
+function MiniStat({ label, value }: { label: string; value: number }) {
+  return (
+    <div className="rounded-xl border border-border bg-background p-5">
+      <div className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
+        {label}
+      </div>
+      <div className="mt-2 font-mono text-[34px] font-bold leading-none tracking-[-0.02em] tabular-nums text-foreground">
+        {value.toLocaleString("nb-NO")}
+      </div>
+    </div>
+  );
+}
 
 // ---------------------------------------------------------------------------
 // Page
@@ -177,87 +246,72 @@ export default async function AdminStatsOverviewPage() {
   const now = new Date();
 
   return (
-    <div className="bg-background text-foreground">
+    <div className="space-y-1">
       {/* Hero */}
-      <section
-        style={{
-          padding: "32px 64px 24px",
-          background: "var(--s-secondary)",
-          borderBottom: "1px solid var(--s-border)",
-        }}
-      >
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div>
-            <StatsEyebrow>Admin · Stats</StatsEyebrow>
-            <h1
-              className="font-display"
-              style={{ fontSize: 36, fontWeight: 600, marginTop: 8, letterSpacing: "-0.025em" }}
-            >
-              Overview
-            </h1>
-          </div>
-          <div
-            style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: 11,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              color: "var(--s-muted-fg)",
-            }}
-          >
-            SIST OPPDATERT {now.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" })}
-          </div>
+      <div className="mb-3 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
+            AGENCYOS · STATS
+          </span>
+          <h1 className="mt-2 font-display text-[30px] font-bold leading-[1.05] tracking-[-0.025em] text-foreground">
+            Plattformen i <em className="font-normal italic text-primary">tall</em>.
+          </h1>
+          <p className="mt-1.5 max-w-[760px] text-sm leading-relaxed text-muted-foreground">
+            Admin-dashboard for AK Golf Stats — brukere, SG-data, turneringsdatabase og pipeline-status,
+            alt live fra databasen.
+          </p>
         </div>
-      </section>
+        <span className="inline-flex shrink-0 items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
+          SIST OPPDATERT {now.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" })}
+        </span>
+      </div>
 
       {/* KPI-strip — ekte DB-data */}
       <Reveal>
-        <div
-          className="stats-kpi-strip"
-          style={{ gridTemplateColumns: "repeat(4, 1fr)", borderRadius: 0 }}
-        >
-          <div className="stats-kpi">
-            <div className="stats-kpi-eyebrow">Totale brukere</div>
-            <div className="stats-kpi-value">
+        <div className="grid grid-cols-1 gap-3 pt-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="rounded-xl border border-border bg-card px-[18px] py-4">
+            <div className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
+              Totale brukere
+            </div>
+            <div className="mt-2 font-mono text-[34px] font-bold leading-none tracking-[-0.02em] tabular-nums text-foreground">
               <CountUp value={data.totalBrukere} />
             </div>
-            <div className="stats-kpi-sub">
-              <span style={{ color: "var(--s-primary)", fontWeight: 600, fontFamily: "var(--font-mono)", fontSize: 11 }}>
-                {data.brukereSomHarSgInputs}
-              </span>{" "}
-              med SG-data
+            <div className="mt-3 font-mono text-[11px] font-bold tracking-[0.04em] text-muted-foreground">
+              <span className="text-primary">{data.brukereSomHarSgInputs}</span> med SG-data
             </div>
           </div>
-          <div className="stats-kpi">
-            <div className="stats-kpi-eyebrow">SG-inputs</div>
-            <div className="stats-kpi-value">
+          <div className="rounded-xl border border-border bg-card px-[18px] py-4">
+            <div className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
+              SG-inputs
+            </div>
+            <div className="mt-2 font-mono text-[34px] font-bold leading-none tracking-[-0.02em] tabular-nums text-foreground">
               <CountUp value={data.totalSgInputs} />
             </div>
-            <div className="stats-kpi-sub">
-              <span style={{ color: "var(--s-primary)", fontWeight: 600, fontFamily: "var(--font-mono)", fontSize: 11 }}>
-                {data.totalSammenligninger}
-              </span>{" "}
-              sammenligninger
+            <div className="mt-3 font-mono text-[11px] font-bold tracking-[0.04em] text-muted-foreground">
+              <span className="text-primary">{data.totalSammenligninger}</span> sammenligninger
             </div>
           </div>
-          <div className="stats-kpi">
-            <div className="stats-kpi-eyebrow">Turneringer i DB</div>
-            <div className="stats-kpi-value">
+          <div className="rounded-xl border border-border bg-card px-[18px] py-4">
+            <div className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
+              Turneringer i DB
+            </div>
+            <div className="mt-2 font-mono text-[34px] font-bold leading-none tracking-[-0.02em] tabular-nums text-foreground">
               <CountUp value={data.totalTurneringer} />
             </div>
-            <div className="stats-kpi-sub">
-              <span style={{ color: "var(--s-primary)", fontWeight: 600, fontFamily: "var(--font-mono)", fontSize: 11 }}>
-                {data.totalDeltakerRader.toLocaleString("nb-NO")}
-              </span>{" "}
+            <div className="mt-3 font-mono text-[11px] font-bold tracking-[0.04em] text-muted-foreground">
+              <span className="text-primary">{data.totalDeltakerRader.toLocaleString("nb-NO")}</span>{" "}
               deltakerrader
             </div>
           </div>
-          <div className="stats-kpi">
-            <div className="stats-kpi-eyebrow">Norske spillere</div>
-            <div className="stats-kpi-value" style={{ color: "var(--s-primary)" }}>
+          <div className="rounded-xl border border-border bg-primary px-[18px] py-4 text-primary-foreground">
+            <div className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-accent">
+              Norske spillere
+            </div>
+            <div className="mt-2 font-mono text-[34px] font-bold leading-none tracking-[-0.02em] tabular-nums text-accent">
               <CountUp value={data.totalNorskeSpillere} />
             </div>
-            <div className="stats-kpi-sub">
+            <div className="mt-3 font-mono text-[11px] font-bold tracking-[0.04em] text-primary-foreground/70">
               av {data.totalPgaSpillere.toLocaleString("nb-NO")} PGA-spillere
             </div>
           </div>
@@ -265,113 +319,15 @@ export default async function AdminStatsOverviewPage() {
       </Reveal>
 
       {/* Topp sider + trafikk — Plausible placeholder */}
-      <section style={{ padding: "32px 64px" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
-          <Reveal>
-            <div
-              style={{
-                background: "var(--s-card)",
-                border: "1px solid var(--s-border)",
-                borderRadius: "var(--s-r-lg)",
-                padding: 28,
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginBottom: 16,
-                }}
-              >
-                <StatsEyebrow>Top 5 sider</StatsEyebrow>
-                <span
-                  style={{
-                    fontSize: 10,
-                    fontFamily: "var(--font-mono)",
-                    letterSpacing: "0.1em",
-                    textTransform: "uppercase",
-                    color: "#B57317",
-                    background: "rgba(181,115,23,0.1)",
-                    padding: "3px 8px",
-                    borderRadius: 4,
-                  }}
-                >
-                  Krever Plausible-integrasjon
-                </span>
-              </div>
-              <div
-                style={{
-                  padding: "24px 0",
-                  textAlign: "center",
-                  color: "var(--s-muted-fg)",
-                  fontSize: 13,
-                  lineHeight: 1.6,
-                }}
-              >
-                Sidevisnings-data hentes fra Plausible Analytics.
-                <br />
-                Koble til Plausible API-nøkkel for å aktivere.
-              </div>
-            </div>
-          </Reveal>
-
-          <Reveal delay={100}>
-            <div
-              style={{
-                background: "var(--s-card)",
-                border: "1px solid var(--s-border)",
-                borderRadius: "var(--s-r-lg)",
-                padding: 28,
-              }}
-            >
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-                <StatsEyebrow>Trafikkilder</StatsEyebrow>
-                <span
-                  style={{
-                    fontSize: 10,
-                    fontFamily: "var(--font-mono)",
-                    letterSpacing: "0.1em",
-                    textTransform: "uppercase",
-                    color: "#B57317",
-                    background: "rgba(181,115,23,0.1)",
-                    padding: "3px 8px",
-                    borderRadius: 4,
-                  }}
-                >
-                  Krever Plausible-integrasjon
-                </span>
-              </div>
-              <div
-                style={{
-                  padding: "24px 0",
-                  textAlign: "center",
-                  color: "var(--s-muted-fg)",
-                  fontSize: 13,
-                  lineHeight: 1.6,
-                }}
-              >
-                Trafikk-fordeling hentes fra Plausible Analytics.
-                <br />
-                Koble til Plausible API-nøkkel for å aktivere.
-              </div>
-            </div>
-          </Reveal>
-        </div>
-      </section>
+      <div className="grid grid-cols-1 gap-3 pt-5 lg:grid-cols-2">
+        <PlausibleCard delay={0} title="Top 5 sider" />
+        <PlausibleCard delay={100} title="Trafikkilder" />
+      </div>
 
       {/* Stats-database status */}
-      <section style={{ padding: "0 64px 32px" }}>
-        <Reveal>
-          <StatsEyebrow>Database-status</StatsEyebrow>
-          <h2
-            className="font-display"
-            style={{ fontSize: 24, fontWeight: 600, marginTop: 12, marginBottom: 20, letterSpacing: "-0.02em" }}
-          >
-            Stats-databasen live.
-          </h2>
-        </Reveal>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
+      <section className="pt-7">
+        <SectionHead eyebrow="Database-status" title="Stats-databasen live." />
+        <div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
           {[
             { lbl: "PGA-spillere", n: data.totalPgaSpillere },
             { lbl: "Turneringer", n: data.totalTurneringer },
@@ -379,89 +335,33 @@ export default async function AdminStatsOverviewPage() {
             { lbl: "Norske spillere", n: data.totalNorskeSpillere },
           ].map((rad, i) => (
             <Reveal key={i} delay={i * 40}>
-              <div
-                style={{
-                  background: "var(--s-secondary)",
-                  border: "1px solid var(--s-border)",
-                  borderRadius: "var(--s-r-md)",
-                  padding: 20,
-                }}
-              >
-                <div
-                  style={{
-                    fontFamily: "var(--font-mono)",
-                    fontSize: 10,
-                    letterSpacing: "0.14em",
-                    textTransform: "uppercase",
-                    color: "var(--s-muted-fg)",
-                    marginBottom: 8,
-                  }}
-                >
-                  {rad.lbl}
-                </div>
-                <div
-                  className="font-mono"
-                  style={{ fontSize: 36, color: "var(--s-fg)", fontWeight: 500 }}
-                >
-                  {rad.n.toLocaleString("nb-NO")}
-                </div>
-              </div>
+              <MiniStat label={rad.lbl} value={rad.n} />
             </Reveal>
           ))}
         </div>
       </section>
 
       {/* Sync-status */}
-      <section style={{ padding: "0 64px 32px", borderTop: "1px solid var(--s-border)", paddingTop: 32 }}>
-        <Reveal>
-          <StatsEyebrow>Sync-status</StatsEyebrow>
-          <h2
-            className="font-display"
-            style={{ fontSize: 24, fontWeight: 600, marginTop: 12, marginBottom: 20, letterSpacing: "-0.02em" }}
-          >
-            Pipeline — siste kjøring.
-          </h2>
-        </Reveal>
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      <section className="mt-7 border-t border-border pt-7">
+        <SectionHead eyebrow="Sync-status" title="Pipeline — siste kjøring." />
+        <div className="mt-5 flex flex-col gap-2">
           {data.syncRader.map((s, i) => {
-            const cfg = SYNC_CFG[s.status as keyof typeof SYNC_CFG] ?? SYNC_CFG.warning;
+            const cfg = SYNC_CFG[s.status];
+            const Icon = cfg.icon;
             return (
               <Reveal key={i} delay={i * 40}>
                 <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "32px 1fr auto auto",
-                    gap: 16,
-                    alignItems: "center",
-                    padding: 14,
-                    background: cfg.bg,
-                    border: `1px solid var(--s-border)`,
-                    borderRadius: "var(--s-r-md)",
-                  }}
+                  className={cn(
+                    "grid grid-cols-[32px_1fr_auto_auto] items-center gap-4 rounded-xl border p-3.5",
+                    cfg.wrap,
+                  )}
                 >
-                  <span
-                    style={{
-                      width: 28,
-                      height: 28,
-                      borderRadius: "50%",
-                      background: `${cfg.col}15`,
-                      color: cfg.col,
-                      display: "grid",
-                      placeItems: "center",
-                      fontWeight: 700,
-                      fontSize: 14,
-                      fontFamily: "var(--font-mono)",
-                    }}
-                  >
-                    {cfg.icon}
+                  <span className={cn("grid h-7 w-7 place-items-center rounded-full", cfg.dot)}>
+                    <Icon className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
                   </span>
-                  <span style={{ fontWeight: 500, fontSize: 14 }}>{s.navn}</span>
-                  <span className="font-mono" style={{ fontSize: 12, color: "var(--s-muted-fg)" }}>
-                    {s.tid}
-                  </span>
-                  <span className="font-mono" style={{ fontSize: 12, color: cfg.col, fontWeight: 500 }}>
-                    {s.detalj}
-                  </span>
+                  <span className="text-sm font-medium text-foreground">{s.navn}</span>
+                  <span className="font-mono text-xs text-muted-foreground">{s.tid}</span>
+                  <span className={cn("font-mono text-xs font-bold", cfg.text)}>{s.detalj}</span>
                 </div>
               </Reveal>
             );
@@ -470,44 +370,25 @@ export default async function AdminStatsOverviewPage() {
       </section>
 
       {/* Modereringskø — ekte tall */}
-      <section
-        style={{
-          padding: "32px 64px",
-          borderTop: "1px solid var(--s-border)",
-        }}
-      >
+      <section className="mt-7 border-t border-border pt-7">
         <Reveal>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <StatsEyebrow>Modereringskø</StatsEyebrow>
-              <h2 className="font-display" style={{ fontSize: 24, fontWeight: 600, marginTop: 8, letterSpacing: "-0.02em" }}>
+              <Eyebrow>Modereringskø</Eyebrow>
+              <h2 className="mt-2.5 font-display text-[24px] font-bold leading-tight tracking-[-0.02em] text-foreground">
                 {data.ventendeManuelleTurneringer} ventende turneringer.
               </h2>
             </div>
-            <Link href="/admin/stats/moderering">
-              <button
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 8,
-                  padding: "12px 22px",
-                  borderRadius: 999,
-                  background: "var(--s-primary)",
-                  color: "var(--s-primary-fg)",
-                  border: "none",
-                  cursor: "pointer",
-                  fontFamily: "inherit",
-                  fontWeight: 500,
-                  fontSize: 14,
-                }}
-              >
-                Til moderering
-                <ArrowRight size={14} strokeWidth={2} />
-              </button>
+            <Link
+              href="/admin/stats/moderering"
+              className="inline-flex shrink-0 items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+            >
+              Til moderering
+              <ArrowRight className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
             </Link>
           </div>
         </Reveal>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
+        <div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
           {[
             { lbl: "Manuelle turneringer", n: data.ventendeManuelleTurneringer, haster: data.ventendeManuelleTurneringer > 5 },
             { lbl: "SG-inputs", n: data.totalSgInputs, haster: false },
@@ -516,28 +397,24 @@ export default async function AdminStatsOverviewPage() {
           ].map((m, i) => (
             <Reveal key={i} delay={i * 40}>
               <div
-                style={{
-                  background: m.haster ? "rgba(190,61,61,0.06)" : "var(--s-secondary)",
-                  border: m.haster ? "1px solid #BE3D3D" : "1px solid var(--s-border)",
-                  borderRadius: "var(--s-r-md)",
-                  padding: 20,
-                }}
+                className={cn(
+                  "rounded-xl border p-5",
+                  m.haster ? "border-destructive/40 bg-destructive/[0.06]" : "border-border bg-background",
+                )}
               >
                 <div
-                  style={{
-                    fontFamily: "var(--font-mono)",
-                    fontSize: 10,
-                    letterSpacing: "0.14em",
-                    textTransform: "uppercase",
-                    color: m.haster ? "hsl(var(--destructive))" : "var(--s-muted-fg)",
-                    marginBottom: 8,
-                  }}
+                  className={cn(
+                    "font-mono text-[10px] font-extrabold uppercase tracking-[0.12em]",
+                    m.haster ? "text-destructive" : "text-muted-foreground",
+                  )}
                 >
-                  {m.lbl.toUpperCase()}
+                  {m.lbl}
                 </div>
                 <div
-                  className="font-mono"
-                  style={{ fontSize: 40, color: m.haster ? "hsl(var(--destructive))" : "var(--s-fg)", fontWeight: 500 }}
+                  className={cn(
+                    "mt-2 font-mono text-[34px] font-bold leading-none tracking-[-0.02em] tabular-nums",
+                    m.haster ? "text-destructive" : "text-foreground",
+                  )}
                 >
                   {m.n.toLocaleString("nb-NO")}
                 </div>
@@ -549,38 +426,17 @@ export default async function AdminStatsOverviewPage() {
 
       {/* Git-commits */}
       {data.sisteCommits.length > 0 && (
-        <section style={{ padding: "0 64px 32px", borderTop: "1px solid var(--s-border)", paddingTop: 32 }}>
-          <Reveal>
-            <StatsEyebrow>Siste commits</StatsEyebrow>
-            <h2
-              className="font-display"
-              style={{ fontSize: 24, fontWeight: 600, marginTop: 12, marginBottom: 20, letterSpacing: "-0.02em" }}
-            >
-              Kodehistorikk — main branch.
-            </h2>
-          </Reveal>
-          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        <section className="mt-7 border-t border-border pt-7">
+          <SectionHead eyebrow="Siste commits" title="Kodehistorikk — main branch." />
+          <div className="mt-5 flex flex-col gap-2">
             {data.sisteCommits.map((c, i) => (
               <Reveal key={i} delay={i * 30}>
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "auto 1fr",
-                    gap: 12,
-                    alignItems: "center",
-                    padding: "12px 16px",
-                    background: "var(--s-card)",
-                    border: "1px solid var(--s-border)",
-                    borderRadius: "var(--s-r-md)",
-                  }}
-                >
-                  <span
-                    className="font-mono"
-                    style={{ fontSize: 11, color: "var(--s-primary)", background: "rgba(0,88,64,0.08)", padding: "3px 8px", borderRadius: 4 }}
-                  >
+                <div className="grid grid-cols-[auto_1fr] items-center gap-3 rounded-xl border border-border bg-card px-4 py-3">
+                  <span className="inline-flex items-center gap-1.5 rounded bg-primary/10 px-2 py-1 font-mono text-[11px] font-bold text-primary">
+                    <GitCommitHorizontal className="h-3 w-3" strokeWidth={2} aria-hidden />
                     {c.hash}
                   </span>
-                  <span style={{ fontSize: 13, fontWeight: 500 }}>{c.melding}</span>
+                  <span className="truncate text-[13px] font-medium text-foreground">{c.melding}</span>
                 </div>
               </Reveal>
             ))}
@@ -589,20 +445,9 @@ export default async function AdminStatsOverviewPage() {
       )}
 
       {/* Raske handlinger */}
-      <section
-        style={{
-          padding: "0 64px 64px",
-          borderTop: "1px solid var(--s-border)",
-          paddingTop: 32,
-        }}
-      >
-        <Reveal>
-          <StatsEyebrow>Raske handlinger</StatsEyebrow>
-          <h2 className="font-display" style={{ fontSize: 24, fontWeight: 600, marginTop: 8, marginBottom: 20, letterSpacing: "-0.02em" }}>
-            Cron + admin-snarveier.
-          </h2>
-        </Reveal>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
+      <section className="mt-7 border-t border-border pb-2 pt-7">
+        <SectionHead eyebrow="Raske handlinger" title="Cron + admin-snarveier." />
+        <div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
           {[
             "Kjør manuell sync av PGA-data",
             "Send ukentlig roundup nå",
@@ -611,34 +456,36 @@ export default async function AdminStatsOverviewPage() {
           ].map((tekst, i) => (
             <Reveal key={i} delay={i * 40}>
               <button
-                style={{
-                  background: "var(--s-card)",
-                  border: "1px solid var(--s-border)",
-                  borderRadius: "var(--s-r-md)",
-                  padding: 20,
-                  textAlign: "left",
-                  cursor: "pointer",
-                  fontFamily: "inherit",
-                  fontSize: 13,
-                  lineHeight: 1.4,
-                  width: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 10,
-                  transition: "border-color .2s",
-                }}
+                type="button"
+                className="flex w-full flex-col gap-2.5 rounded-xl border border-border bg-card p-5 text-left transition-colors hover:border-primary"
               >
-                <Play
-                  size={16}
-                  style={{ color: "var(--s-primary)" }}
-                  strokeWidth={1.75}
-                />
-                <div style={{ fontWeight: 500 }}>{tekst}</div>
+                <Play className="h-4 w-4 text-primary" strokeWidth={1.75} aria-hidden />
+                <span className="text-[13px] font-medium leading-snug text-foreground">{tekst}</span>
               </button>
             </Reveal>
           ))}
         </div>
       </section>
     </div>
+  );
+}
+
+function PlausibleCard({ delay, title }: { delay: number; title: string }) {
+  return (
+    <Reveal delay={delay}>
+      <div className="rounded-xl border border-border bg-card p-6">
+        <div className="mb-4 flex items-center justify-between">
+          <Eyebrow>{title}</Eyebrow>
+          <span className="rounded bg-warning/10 px-2 py-1 font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] text-warning">
+            Krever Plausible-integrasjon
+          </span>
+        </div>
+        <div className="py-6 text-center text-[13px] leading-relaxed text-muted-foreground">
+          Data hentes fra Plausible Analytics.
+          <br />
+          Koble til Plausible API-nøkkel for å aktivere.
+        </div>
+      </div>
+    </Reveal>
   );
 }

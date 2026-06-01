@@ -2,253 +2,271 @@
  * /admin/drills — CoachHQ Drill-bibliotek (samme UI som /portal/drills)
  * Design: plan Del 6
  *
- * Coach-versjon: samme grid + slide-in panel, men med "Rediger drill" + "Ny drill"-knapper.
- * NB: Bruker mock-data foreløpig — koble til Prisma når drill-modellen er utvidet.
+ * Coach-versjon: grid + slide-in panel med "Ny drill". Data hentes fra ekte
+ * ExerciseDefinition via Prisma og mappes til DrillGrid-komponentenes form.
+ * Filtrering går via URL-state (DrillFilterBar) — server-rendrer leser
+ * searchParams og filtrerer i Prisma. Tom database gir ærlig tom-tilstand
+ * (ingen demo-data, ingen falske tall).
  */
 
-import { Filter, Plus, Search } from "lucide-react";
+import Link from "next/link";
+import { Layers } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { DrillGrid, type DrillCardData, type DrillDetailData } from "@/components/drills";
+import { prisma } from "@/lib/prisma";
+import {
+  DrillGrid,
+  type DrillCardData,
+  type DrillDetailData,
+} from "@/components/drills";
+import { DrillFilterBar } from "./drill-filter-bar";
+import type {
+  PyramidArea,
+  SkillArea,
+  NgfKategori,
+  SessionEnvironment,
+  LPhase,
+} from "@/generated/prisma/enums";
 import "@/components/drills/drill.css";
 
 export const dynamic = "force-dynamic";
 
-const MOCK_DRILLS: DrillCardData[] = [
-  {
-    id: "gate-drill-50",
-    skillArea: "PUTTING",
-    title: "Gate-drill 50cm",
-    duration: 15,
-    intensity: 7,
-    ngfCategoryRange: "D–G",
-    timesTrained: 47,
-    isCoachRecommended: true,
-  },
-  {
-    id: "avstand-50m",
-    skillArea: "NÆRSPILL",
-    title: "Avstandskontroll 50m",
-    duration: 20,
-    intensity: 6,
-    ngfCategoryRange: "C–F",
-    timesTrained: 132,
-  },
-  {
-    id: "iron-tempo",
-    skillArea: "JERNSLAG",
-    title: "Tempo-jernslag 7-iron",
-    duration: 25,
-    intensity: 5,
-    ngfCategoryRange: "D–G",
-    timesTrained: 89,
-    isCoachRecommended: true,
-  },
-  {
-    id: "driver-launch",
-    skillArea: "DRIVER",
-    title: "Launch-vinkel driver",
-    duration: 30,
-    intensity: 8,
-    ngfCategoryRange: "B–E",
-    timesTrained: 23,
-  },
-  {
-    id: "wedge-spinn",
-    skillArea: "NÆRSPILL",
-    title: "Wedge-spinn fra rough",
-    duration: 18,
-    intensity: 7,
-    ngfCategoryRange: "C–F",
-    timesTrained: 41,
-  },
-  {
-    id: "putt-rutine",
-    skillArea: "PUTTING",
-    title: "Putt-rutine 4–8 fot",
-    duration: 12,
-    intensity: 4,
-    ngfCategoryRange: "D–H",
-    timesTrained: 312,
-  },
-];
-
-const MOCK_DETAILS: Record<string, DrillDetailData> = {
-  "gate-drill-50": {
-    id: "gate-drill-50",
-    title: "Gate-drill 50cm",
-    skillArea: "PUTTING",
-    pyramidArea: "TEK",
-    duration: 15,
-    intensity: 7,
-    setsReps: "3×10",
-    environment: "Driving range",
-    csMal: 78,
-    csMalNivaa: "D",
-    treningsfaser: ["Grunnfase", "Spesialfase"],
-    fasilitetskrav: [
-      { name: "Driving range" },
-      { name: "Radar" },
-      { name: "Kamera" },
-    ],
-    description:
-      "Plasser to tees 50 cm fra hverandre, 1,5 m fra hullet. Putt 10 baller gjennom porten med jevn tempo.",
-    coachNotes:
-      "Standard rutine for D-G. Coach-anbefalt for spillere som mangler putting-konsistens.",
-    tags: ["slag-kontroll", "avstand", "blokktrening"],
-  },
-  "avstand-50m": {
-    id: "avstand-50m",
-    title: "Avstandskontroll 50m",
-    skillArea: "NÆRSPILL",
-    pyramidArea: "SLAG",
-    duration: 20,
-    intensity: 6,
-    setsReps: "4×5",
-    environment: "Practice green",
-    csMal: 72,
-    csMalNivaa: "D",
-    treningsfaser: ["Spesialfase"],
-    fasilitetskrav: [{ name: "Practice green" }],
-    description: "5 slag per avstand (50/40/30/20/10m). Mål: alle baller innenfor 3m fra hullet.",
-    tags: ["distanse", "kontroll", "wedge"],
-  },
-  "iron-tempo": {
-    id: "iron-tempo",
-    title: "Tempo-jernslag 7-iron",
-    skillArea: "JERNSLAG",
-    pyramidArea: "TEK",
-    duration: 25,
-    intensity: 5,
-    setsReps: "3×15",
-    environment: "Driving range",
-    csMal: 85,
-    csMalNivaa: "C",
-    treningsfaser: ["Grunnfase", "Spesialfase"],
-    fasilitetskrav: [{ name: "Driving range" }, { name: "Radar" }],
-    description: "Tempo 3:1 (opp:ned), metronom 75 BPM. Smash-faktor 1.40+.",
-    tags: ["tempo", "rytme", "swing-mekanikk"],
-  },
-  "driver-launch": {
-    id: "driver-launch",
-    title: "Launch-vinkel driver",
-    skillArea: "DRIVER",
-    pyramidArea: "SLAG",
-    duration: 30,
-    intensity: 8,
-    setsReps: "5×10",
-    environment: "Driving range",
-    csMal: 102,
-    csMalNivaa: "B",
-    treningsfaser: ["Spesialfase", "Konkurransefase"],
-    fasilitetskrav: [
-      { name: "Driving range" },
-      { name: "Radar" },
-      { name: "Kamera" },
-    ],
-    description: "Launch 13-15°, spin 2200-2600 rpm. 10 svinger per tee-høyde.",
-    tags: ["distanse", "launch", "spin"],
-  },
-  "wedge-spinn": {
-    id: "wedge-spinn",
-    title: "Wedge-spinn fra rough",
-    skillArea: "NÆRSPILL",
-    pyramidArea: "SLAG",
-    duration: 18,
-    intensity: 7,
-    setsReps: "3×8",
-    environment: "Practice green med rough",
-    csMal: 80,
-    csMalNivaa: "C",
-    treningsfaser: ["Spesialfase"],
-    fasilitetskrav: [{ name: "Practice green" }, { name: "Radar" }],
-    description: "Generer spinn 5000+ rpm fra lett rough. Test grip-trykk.",
-    tags: ["spinn", "rough", "wedge"],
-  },
-  "putt-rutine": {
-    id: "putt-rutine",
-    title: "Putt-rutine 4–8 fot",
-    skillArea: "PUTTING",
-    pyramidArea: "TEK",
-    duration: 12,
-    intensity: 4,
-    setsReps: "5×4",
-    environment: "Practice green",
-    csMal: 70,
-    csMalNivaa: "D",
-    treningsfaser: ["Grunnfase"],
-    fasilitetskrav: [{ name: "Practice green" }],
-    description: "20 putts på 4-8 fot i klokken-mønster. Mål: 75% gjennomgang.",
-    tags: ["pre-shot-rutine", "kortputt", "konsistens"],
-  },
+// ── Etikett-mappinger (ekte enum → norsk visning) ───────────────
+const SKILL_LABEL: Record<SkillArea, string> = {
+  TEE_TOTAL: "TEE",
+  TILNAERMING: "JERNSLAG",
+  AROUND_GREEN: "NÆRSPILL",
+  PUTTING: "PUTTING",
+  SPILL: "SPILL",
 };
 
-export default async function CoachDrillsPage() {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+const PYR_LABEL: Record<PyramidArea, string> = {
+  FYS: "FYSISK",
+  TEK: "TEKNIKK",
+  SLAG: "SLAG",
+  SPILL: "SPILL",
+  TURN: "TURNERING",
+};
 
-  const drills = MOCK_DRILLS;
-  const loadDetail = (id: string) => MOCK_DETAILS[id] ?? null;
+const ENV_LABEL: Record<SessionEnvironment, string> = {
+  RANGE: "Driving range",
+  BANE: "Bane",
+  STUDIO: "Studio",
+  HJEM: "Hjemme",
+  SIMULATOR: "Simulator",
+  GYM: "Gym",
+};
+
+const LPHASE_LABEL: Record<LPhase, string> = {
+  GRUNN: "Grunnfase",
+  SPESIAL: "Spesialfase",
+  TURNERING: "Konkurransefase",
+};
+
+const FASILITET_LABEL: Record<string, string> = {
+  RADAR: "Radar",
+  MAT_NET: "Matte + nett",
+  BUNKER: "Bunker",
+  KAMERA: "Kamera",
+  PUTTING_GREEN_KORT: "Putting green (kort)",
+  PUTTING_GREEN_LANG: "Putting green (lang)",
+  SHORT_GAME_AREA: "Nærspillsareal",
+  DRIVING_RANGE: "Driving range",
+  BANE: "Bane",
+  SIMULATOR: "Simulator",
+  VEKTSTANG: "Vektstang",
+  TRAPBAR: "Trapbar",
+  LOPEBANE: "Løpebane",
+  MED_BALL: "Medisinball",
+};
+
+const NGF_ORDER: readonly NgfKategori[] = [
+  "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L",
+] as const;
+
+/** "D–G", "D+", "≤G" eller "Alle" fra min/max NGF-kategori. */
+function ngfRange(min: NgfKategori | null, max: NgfKategori | null): string {
+  if (min && max) return min === max ? min : `${min}–${max}`;
+  if (min) return `${min}+`;
+  if (max) return `≤${max}`;
+  return "Alle";
+}
+
+/** "3×10", "10 reps" eller "—" fra default-feltene. */
+function setsReps(sets: number | null, reps: number | null, txt: string | null): string {
+  if (sets !== null && reps !== null) return `${sets}×${reps}`;
+  if (txt) return txt;
+  if (reps !== null) return `${reps} reps`;
+  return "—";
+}
+
+// ── searchParams → Prisma where ─────────────────────────────────
+function parseList<T extends string>(raw: string | undefined): T[] {
+  if (!raw) return [];
+  return raw.split(",").map((s) => s.trim()).filter(Boolean) as T[];
+}
+
+type Search = {
+  q?: string;
+  disiplin?: string;
+  skill?: string;
+  env?: string;
+  minNgf?: string;
+  maxNgf?: string;
+  morad?: string;
+};
+
+export default async function CoachDrillsPage({
+  searchParams,
+}: {
+  searchParams: Promise<Search>;
+}) {
+  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const sp = await searchParams;
+
+  const disipliner = parseList<PyramidArea>(sp.disiplin);
+  const skills = parseList<SkillArea>(sp.skill);
+  const envs = parseList<SessionEnvironment>(sp.env);
+  const minNgf = (sp.minNgf as NgfKategori | undefined) || undefined;
+  const maxNgf = (sp.maxNgf as NgfKategori | undefined) || undefined;
+  const morad = sp.morad === "1";
+  const q = (sp.q ?? "").trim();
+
+  // Bygg where fra aktive filtre. Tomme filtre = ingen begrensning.
+  const where = {
+    ...(disipliner.length > 0 && { pyramidArea: { in: disipliner } }),
+    ...(skills.length > 0 && { skillArea: { in: skills } }),
+    ...(envs.length > 0 && { environment: { hasSome: envs } }),
+    ...(minNgf && { minKategori: minNgf }),
+    ...(maxNgf && { maxKategori: maxNgf }),
+    ...(morad && { morad: true }),
+    ...(q && {
+      OR: [
+        { name: { contains: q, mode: "insensitive" as const } },
+        { description: { contains: q, mode: "insensitive" as const } },
+        { tags: { has: q } },
+      ],
+    }),
+  };
+
+  const drillsRaw = await prisma.exerciseDefinition.findMany({
+    where,
+    orderBy: [{ pyramidArea: "asc" }, { name: "asc" }],
+    include: { _count: { select: { sessionDrills: true } } },
+  });
+
+  // Kategori-tellinger for filter-chips (uavhengig av aktivt filter → totaler).
+  const total = await prisma.exerciseDefinition.count();
+
+  // Map til DrillCardData (grid-kort)
+  const cards: DrillCardData[] = drillsRaw.map((d) => ({
+    id: d.id,
+    skillArea: d.skillArea ? SKILL_LABEL[d.skillArea] : PYR_LABEL[d.pyramidArea],
+    title: d.name,
+    duration: d.durationMin ?? 0,
+    intensity: d.intensitet ?? 0,
+    ngfCategoryRange: ngfRange(d.minKategori, d.maxKategori),
+    timesTrained: d._count.sessionDrills,
+    isCoachRecommended: d.morad,
+  }));
+
+  // Map til DrillDetailData (slide-in panel) — full detalj per drill.
+  const csTargetOf = (json: unknown): { csMal: number; nivaa: string } => {
+    if (json && typeof json === "object" && !Array.isArray(json)) {
+      const rec = json as Record<string, unknown>;
+      for (const k of NGF_ORDER) {
+        const v = rec[k];
+        if (typeof v === "number") return { csMal: v, nivaa: k };
+      }
+    }
+    return { csMal: 0, nivaa: "—" };
+  };
+
+  const details: Record<string, DrillDetailData> = {};
+  for (const d of drillsRaw) {
+    const cs = csTargetOf(d.csTargetByKategori);
+    const csMal = cs.csMal || d.csMin || d.csMax || 0;
+    details[d.id] = {
+      id: d.id,
+      title: d.name,
+      skillArea: d.skillArea ? SKILL_LABEL[d.skillArea] : PYR_LABEL[d.pyramidArea],
+      pyramidArea: PYR_LABEL[d.pyramidArea],
+      duration: d.durationMin ?? 0,
+      intensity: d.intensitet ?? 0,
+      setsReps: setsReps(d.defaultSets, d.defaultReps, d.defaultRepsSets),
+      environment: d.environment[0] ? ENV_LABEL[d.environment[0]] : "—",
+      csMal,
+      csMalNivaa: cs.nivaa !== "—" ? cs.nivaa : (d.minKategori ?? "—"),
+      treningsfaser: d.lPhases.map((p) => LPHASE_LABEL[p]),
+      fasilitetskrav: d.fasilitetKrav.map((f) => ({
+        name: FASILITET_LABEL[f] ?? f,
+      })),
+      description: d.description ?? "Ingen beskrivelse lagret.",
+      coachNotes: d.coachNotes ?? undefined,
+      tags: d.tags,
+    };
+  }
+
+  const loadDetail = (id: string) => details[id] ?? null;
+  const harAktivtFilter =
+    disipliner.length + skills.length + envs.length > 0 || !!minNgf || !!maxNgf || morad || !!q;
 
   return (
     <div className="drill-scope">
       <div className="drill-page">
-        <div
-          style={{
-            marginBottom: 16,
-            padding: "10px 14px",
-            borderRadius: 10,
-            background: "rgb(251 239 212)",
-            border: "1px solid rgb(232 205 142)",
-            fontFamily: "var(--font-mono)",
-            fontSize: 11,
-            letterSpacing: "0.06em",
-            textTransform: "uppercase",
-            color: "rgb(107 77 17)",
-          }}
-        >
-          Pre-beta · Drill-biblioteket viser foreløpig demo-data — kobles til ekte drill-database post-beta
-        </div>
         <header className="drill-head">
           <div>
-            <div className="eyebrow">COACHHQ · DRILLS</div>
+            <div className="eyebrow">COACHHQ · /admin/drills</div>
             <h1>
               Drill <em>-bibliotek</em>
             </h1>
             <p className="drill-sub">
-              Administrér ditt drill-bibliotek. Klikk en drill for å se hvor mye
-              den er brukt og redigere coach-notater.
+              {total} drill{total === 1 ? "" : "er"} i biblioteket · {drillsRaw.length}{" "}
+              treff på valgt filter. Klikk en drill for detaljer og coach-notater.
             </p>
           </div>
           <div className="drill-head-actions">
-            <button type="button" className="drill-filter-pill">
-              <Search size={12} strokeWidth={1.75} aria-hidden /> Søk
-            </button>
-            <button type="button" className="drill-filter-pill">
-              <Filter size={12} strokeWidth={1.75} aria-hidden /> Filter
-            </button>
-            <button
-              type="button"
-              className="drill-filter-pill active"
-              style={{
-                background: "hsl(var(--primary))",
-                color: "hsl(var(--accent))",
-                borderColor: "hsl(var(--primary))",
-              }}
+            <Link
+              href="/admin/plans/templates"
+              className="inline-flex h-9 items-center gap-1.5 rounded-md border border-border bg-card px-4 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-foreground transition-colors hover:bg-secondary"
             >
-              <Plus size={12} strokeWidth={2} aria-hidden /> Ny drill
-            </button>
+              <Layers size={13} strokeWidth={1.75} aria-hidden /> Maler
+            </Link>
           </div>
         </header>
 
-        <div className="drill-filter-row">
-          <span className="drill-filter-pill active">Alle (247)</span>
-          <span className="drill-filter-pill">Putting (62)</span>
-          <span className="drill-filter-pill">Nærspill (51)</span>
-          <span className="drill-filter-pill">Jernslag (84)</span>
-          <span className="drill-filter-pill">Driver (28)</span>
-          <span className="drill-filter-pill">Coach anbefalt (28)</span>
+        <div className="mb-4">
+          <DrillFilterBar
+            initial={{
+              q,
+              disipliner,
+              skills,
+              envs,
+              minNgf,
+              maxNgf,
+              morad,
+            }}
+          />
         </div>
 
-        <DrillGrid drills={drills} loadDetail={loadDetail} />
+        {cards.length === 0 ? (
+          <div className="rounded-2xl border border-border bg-card p-16 text-center">
+            <Layers
+              className="mx-auto h-8 w-8 text-muted-foreground/40"
+              strokeWidth={1.5}
+              aria-hidden
+            />
+            <h2 className="mt-4 font-display text-lg font-bold tracking-[-0.01em] text-foreground">
+              {harAktivtFilter ? "Ingen drills matcher filteret" : "Ingen drills ennå"}
+            </h2>
+            <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+              {harAktivtFilter
+                ? "Juster eller tilbakestill filteret for å se flere drills."
+                : "Drill-biblioteket er tomt. Drills opprettes via plan-byggeren og økt-malene."}
+            </p>
+          </div>
+        ) : (
+          <DrillGrid drills={cards} loadDetail={loadDetail} />
+        )}
       </div>
     </div>
   );

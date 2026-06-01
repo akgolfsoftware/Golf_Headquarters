@@ -1,11 +1,11 @@
 /**
- * /admin/workspace/prosjekter — Prosjekt-grid
+ * /admin/workspace/prosjekter — Prosjekt-grid (AgencyOS)
  *
- * Pixel-perfekt fra Claude Design-bundle _SEBg4QyodvbW2k06JWiGw
- * (workspace/s4-prosjekter.jsx).
+ * Ekte data fra ProsjektCache (Notion-sync) via getProjectsForUser().
+ * Faller tilbake til SAMPLE_PROJECTS kun i dev når ingen Notion-tilkobling.
  *
- * 3-kol grid. Per card: top-strip i selskaps-farge, eyebrow (selskap +
- * status), tittel + desc, 4 stats (open/doing/done/total), progress-bar,
+ * 3-kol grid, athletic data-tett. Per card: top-strip i selskaps-farge,
+ * eyebrow (selskap + status), tittel + desc, 4 stats, fremdriftsbar,
  * footer med tildelt-avatar-stack + frist + arrow.
  */
 
@@ -19,13 +19,18 @@ import {
   WorkspaceTabs,
   getCompanyBar,
 } from "@/components/workspace/primitives";
-import {
-  SAMPLE_PROJECTS,
-  SAMPLE_PEOPLE,
-  type SampleProject,
-} from "@/components/workspace/sample-data";
+import { SAMPLE_PEOPLE, type SampleProject } from "@/components/workspace/sample-data";
+import { getProjectsForUser } from "@/lib/notion/queries";
 
 export const dynamic = "force-dynamic";
+
+const COMPANY_LABEL: Record<SampleProject["company"], string> = {
+  AK: "AK GOLF",
+  MULLIGAN: "MULLIGAN",
+  WANG: "WANG TOPP",
+  SKARP: "SKARPNORD",
+  PRIVAT: "PRIVAT",
+};
 
 export default async function WorkspaceProsjekterPage({
   searchParams,
@@ -36,8 +41,9 @@ export default async function WorkspaceProsjekterPage({
   const sp = await searchParams;
   const filter = sp.filter ?? "alle";
 
-  const filtered = SAMPLE_PROJECTS.filter((p) => {
-    if (filter === "alle") return true;
+  const projects = await getProjectsForUser();
+
+  const filtered = projects.filter((p) => {
     if (filter === "aktive") return p.status === "AKTIV";
     if (filter === "pause") return p.status === "PAUSE";
     if (filter === "arkiv") return p.status === "ARKIVERT";
@@ -45,22 +51,22 @@ export default async function WorkspaceProsjekterPage({
   });
 
   const counts = {
-    alle: SAMPLE_PROJECTS.length,
-    aktive: SAMPLE_PROJECTS.filter((p) => p.status === "AKTIV").length,
-    pause: SAMPLE_PROJECTS.filter((p) => p.status === "PAUSE").length,
-    arkiv: SAMPLE_PROJECTS.filter((p) => p.status === "ARKIVERT").length,
+    alle: projects.length,
+    aktive: projects.filter((p) => p.status === "AKTIV").length,
+    pause: projects.filter((p) => p.status === "PAUSE").length,
+    arkiv: projects.filter((p) => p.status === "ARKIVERT").length,
   };
 
   return (
     <div className="space-y-6">
-      <header className="-mx-4 -mt-4 border-b border-border bg-gradient-to-b from-[#FBFAF5] to-background px-4 py-8 md:-mx-8 md:-mt-8 md:px-8">
+      <header className="-mx-4 -mt-4 border-b border-border bg-gradient-to-b from-secondary/40 to-background px-4 py-8 md:-mx-8 md:-mt-8 md:px-8">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
             <AthleticEyebrow>CoachHQ · Workspace · Prosjekter</AthleticEyebrow>
-            <h1 className="font-display mt-2 text-3xl font-bold leading-tight tracking-tight md:text-4xl">
+            <h1 className="font-display mt-2 text-3xl font-bold leading-tight tracking-[-0.02em] md:text-4xl">
               Prosjekter
             </h1>
-            <div className="font-mono mt-2.5 text-[11.5px] uppercase tracking-[0.04em] text-muted-foreground">
+            <div className="font-mono mt-2.5 text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
               {counts.alle} TOTALT · {counts.aktive} AKTIVE · {counts.pause} PÅ PAUSE
             </div>
           </div>
@@ -86,7 +92,7 @@ export default async function WorkspaceProsjekterPage({
         <span className="mx-1 h-5 w-px bg-border" />
         <FilterChip label="Selskap" />
         <FilterChip label="Eier · Meg" />
-        <label className="ml-auto flex items-center gap-2 rounded-md border border-input bg-muted/30 px-2.5 py-1">
+        <label className="ml-auto flex items-center gap-2 rounded-md border border-input bg-secondary/40 px-2.5 py-1">
           <Search className="h-3.5 w-3.5 text-muted-foreground" />
           <input
             type="search"
@@ -97,12 +103,16 @@ export default async function WorkspaceProsjekterPage({
       </div>
 
       {/* Grid */}
-      <div className="grid gap-4 pb-12 md:grid-cols-2 xl:grid-cols-3">
-        {filtered.map((p) => (
-          <ProjectCard key={p.id} project={p} />
-        ))}
-        <NewProjectCard />
-      </div>
+      {projects.length === 0 ? (
+        <EmptyProjects />
+      ) : (
+        <div className="grid gap-4 pb-12 md:grid-cols-2 xl:grid-cols-3">
+          {filtered.map((p) => (
+            <ProjectCard key={p.id} project={p} />
+          ))}
+          <NewProjectCard />
+        </div>
+      )}
     </div>
   );
 }
@@ -134,7 +144,7 @@ function FilterChip({
       {typeof count === "number" ? (
         <span
           className={`rounded-full px-1.5 py-px tabular-nums ${
-            active ? "bg-white/20" : "bg-muted"
+            active ? "bg-accent/25 text-accent" : "bg-secondary"
           }`}
         >
           {count}
@@ -144,71 +154,70 @@ function FilterChip({
   );
 }
 
+function StatusBadge({ status }: { status: SampleProject["status"] }) {
+  const tone =
+    status === "AKTIV"
+      ? "bg-success/10 text-success"
+      : status === "PAUSE"
+        ? "bg-warning/15 text-warning"
+        : "bg-secondary text-muted-foreground";
+  return (
+    <span className={`rounded-full px-1.5 py-0.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] ${tone}`}>
+      {status}
+    </span>
+  );
+}
+
 function ProjectCard({ project: p }: { project: SampleProject }) {
   const barClass = getCompanyBar(p.company);
-  const statusTone =
-    p.status === "AKTIV"
-      ? "text-emerald-700"
-      : p.status === "PAUSE"
-        ? "text-amber-700"
-        : "text-muted-foreground";
 
   return (
     <article className="flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-border bg-card transition hover:shadow-md">
       {/* Cover-strip */}
-      <div className={`h-2 ${barClass}`} />
+      <div className={`h-1.5 ${barClass}`} />
 
-      <div className="flex flex-1 flex-col gap-2 p-4.5" style={{ padding: 18 }}>
+      <div className="flex flex-1 flex-col gap-2.5 p-4">
         <div className="flex items-center justify-between gap-2">
-          <div className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-            {p.company === "AK"
-              ? "AK GOLF"
-              : p.company === "MULLIGAN"
-                ? "MULLIGAN"
-                : p.company === "WANG"
-                  ? "WANG TOPP"
-                  : p.company === "SKARP"
-                    ? "SKARPNORD"
-                    : "PRIVAT"}{" "}
-            · <span className={statusTone}>{p.status}</span>
+          <div className="flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+            {COMPANY_LABEL[p.company]}
+            <span className="text-border">·</span>
+            <StatusBadge status={p.status} />
           </div>
           <VisibilityIcon kind={p.vis} />
         </div>
 
         <div>
-          <h3 className="font-display text-base font-bold leading-tight tracking-tight">
+          <h3 className="font-display text-base font-bold leading-tight tracking-[-0.01em]">
             {p.title}
           </h3>
-          <p
-            className="mt-1.5 line-clamp-2 text-[12.5px] leading-relaxed text-muted-foreground"
-          >
+          <p className="mt-1.5 line-clamp-2 text-[12.5px] leading-relaxed text-muted-foreground">
             {p.desc}
           </p>
         </div>
 
         {/* Stats */}
-        <div className="font-mono grid grid-cols-4 gap-2 text-[10.5px] uppercase tracking-[0.04em] text-muted-foreground">
+        <div className="font-mono grid grid-cols-4 gap-2 text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
           <div>
-            <strong className="block text-sm font-bold text-foreground">{p.open}</strong>
+            <strong className="block font-mono text-sm font-bold tabular-nums text-foreground">{p.open}</strong>
             open
           </div>
           <div>
-            <strong className="block text-sm font-bold text-foreground">{p.doing}</strong>
+            <strong className="block font-mono text-sm font-bold tabular-nums text-foreground">{p.doing}</strong>
             doing
           </div>
           <div>
-            <strong className="block text-sm font-bold text-emerald-700">{p.done}</strong>
+            <strong className="block font-mono text-sm font-bold tabular-nums text-success">{p.done}</strong>
             done
           </div>
           <div>
-            <strong className="block text-sm font-bold text-muted-foreground">
+            <strong className="block font-mono text-sm font-bold tabular-nums text-muted-foreground">
               {p.total}
             </strong>
             total
           </div>
         </div>
 
-        {/* Progress */}
+        {/* Fremdrift */}
         <div>
           <div className="mb-1 flex items-baseline justify-between">
             <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
@@ -218,7 +227,7 @@ function ProjectCard({ project: p }: { project: SampleProject }) {
               {p.pct}%
             </span>
           </div>
-          <div className="h-1.5 overflow-hidden rounded-full bg-muted/60">
+          <div className="h-1.5 overflow-hidden rounded-full bg-secondary">
             <div
               className="h-full rounded-full bg-accent transition-all"
               style={{ width: `${p.pct}%` }}
@@ -227,16 +236,22 @@ function ProjectCard({ project: p }: { project: SampleProject }) {
         </div>
 
         {/* Footer */}
-        <div className="mt-auto flex items-center justify-between gap-2 border-t border-border pt-2">
-          <AvatarStack
-            items={p.assigned.map((k) => ({
-              name: SAMPLE_PEOPLE[k]?.name ?? k,
-              initials: SAMPLE_PEOPLE[k]?.initials ?? k,
-            }))}
-            size={22}
-          />
-          <div className="font-mono text-[10.5px] uppercase tracking-[0.04em] text-muted-foreground">
-            FRIST {p.due}
+        <div className="mt-auto flex items-center justify-between gap-2 border-t border-border pt-2.5">
+          {p.assigned.length > 0 ? (
+            <AvatarStack
+              items={p.assigned.map((k) => ({
+                name: SAMPLE_PEOPLE[k]?.name ?? k,
+                initials: SAMPLE_PEOPLE[k]?.initials ?? k,
+              }))}
+              size={22}
+            />
+          ) : (
+            <span className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground/60">
+              Ikke tildelt
+            </span>
+          )}
+          <div className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
+            {p.due}
           </div>
           <ArrowRight className="h-3 w-3 text-muted-foreground" />
         </div>
@@ -249,7 +264,7 @@ function NewProjectCard() {
   return (
     <button
       type="button"
-      className="flex min-h-[260px] flex-col items-center justify-center gap-2.5 rounded-2xl border-[1.5px] border-dashed border-border bg-muted/30 p-6 text-muted-foreground hover:bg-muted/50"
+      className="flex min-h-[260px] flex-col items-center justify-center gap-2.5 rounded-2xl border-[1.5px] border-dashed border-border bg-secondary/30 p-6 text-muted-foreground hover:bg-secondary/50"
     >
       <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card">
         <Plus className="h-4 w-4" />
@@ -257,11 +272,35 @@ function NewProjectCard() {
       <div className="font-display text-sm font-semibold text-foreground">
         Nytt prosjekt
       </div>
-      <div className="font-mono text-center text-[10.5px] leading-relaxed tracking-[0.04em] text-muted-foreground">
+      <div className="font-mono text-center text-[10px] leading-relaxed uppercase tracking-[0.06em] text-muted-foreground">
         Sync med Notion eller
         <br />
         opprett manuelt
       </div>
     </button>
+  );
+}
+
+function EmptyProjects() {
+  return (
+    <div className="rounded-2xl border border-border bg-card">
+      <div className="flex flex-col items-center gap-4 px-6 py-16 text-center">
+        <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-secondary text-muted-foreground">
+          <ExternalLink className="h-6 w-6" strokeWidth={1.5} aria-hidden />
+        </span>
+        <div>
+          <p className="font-display text-lg font-bold tracking-[-0.01em] text-foreground">
+            Ingen prosjekter ennå
+          </p>
+          <p className="mt-1 max-w-sm text-sm text-muted-foreground">
+            Koble til Notion for å synke prosjekter automatisk, eller opprett et
+            prosjekt manuelt.
+          </p>
+        </div>
+        <AthleticButton variant="lime" size="sm">
+          <Plus className="h-3.5 w-3.5" /> Nytt prosjekt
+        </AthleticButton>
+      </div>
+    </div>
   );
 }

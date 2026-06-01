@@ -8,6 +8,7 @@ import {
   Clock,
   Info,
   Search,
+  Sparkles,
   X,
 } from "lucide-react";
 import { avatarBg } from "@/lib/avatar-colors";
@@ -27,15 +28,26 @@ export type CaddieEvent = {
   followUp: "followed" | "ignored" | null;
 };
 
+export type AiError = {
+  id: string;
+  title: string;
+  desc: string;
+  at: Date;
+};
+
 type FilterType = CaddieEvent["type"] | "all";
 type FilterDate = "today" | "yesterday" | "7d" | "all";
 
 export function CaddieAktivitetClient({
   events: initialEvents,
   nowMs,
+  isDummy = false,
+  aiErrors = [],
 }: {
   events: ReadonlyArray<CaddieEvent>;
   nowMs: number;
+  isDummy?: boolean;
+  aiErrors?: AiError[];
 }) {
   const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState<FilterType>("all");
@@ -107,6 +119,54 @@ export function CaddieAktivitetClient({
     };
   }, [initialEvents, nowMs]);
 
+  // Mest aktive spillere siste 7 dager — avledet fra ekte events.
+  const topPlayers = useMemo(() => {
+    const dayMs = 24 * 60 * 60 * 1000;
+    const counts = new Map<string, { name: string; initials: string; count: number }>();
+    for (const e of initialEvents) {
+      if (nowMs - e.at.getTime() > 7 * dayMs) continue;
+      const prev = counts.get(e.playerName);
+      if (prev) prev.count += 1;
+      else
+        counts.set(e.playerName, {
+          name: e.playerName,
+          initials: e.playerInitials,
+          count: 1,
+        });
+    }
+    return Array.from(counts.values())
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+  }, [initialEvents, nowMs]);
+
+  // Fordeling av hendelsestyper siste 30 dager — avledet fra ekte events.
+  const eventDistribution = useMemo(() => {
+    const dayMs = 24 * 60 * 60 * 1000;
+    const counts: Record<CaddieEvent["type"], number> = {
+      suggest: 0,
+      analyzed: 0,
+      escalate: 0,
+      flagged: 0,
+      import: 0,
+    };
+    let total = 0;
+    for (const e of initialEvents) {
+      if (nowMs - e.at.getTime() > 30 * dayMs) continue;
+      counts[e.type] += 1;
+      total += 1;
+    }
+    if (total === 0) return [];
+    return (Object.keys(counts) as CaddieEvent["type"][])
+      .map((type) => ({
+        type,
+        label: TYPE_LABEL[type],
+        pct: Math.round((counts[type] / total) * 100),
+        barClass: TYPE_BAR_CLASS[type],
+      }))
+      .filter((d) => d.pct > 0)
+      .sort((a, b) => b.pct - a.pct);
+  }, [initialEvents, nowMs]);
+
   function toggleFollowup(id: string, kind: "followed" | "ignored") {
     setFollowups((s) => ({ ...s, [id]: s[id] === kind ? null : kind }));
   }
@@ -119,13 +179,21 @@ export function CaddieAktivitetClient({
         titleItalic="aktivitet"
         sub={`I dag · ${stats.total} hendelser · ${stats.ok} godkjent · ${stats.rej} avvist · ${stats.wait} venter · snitt-konfidens ${(stats.conf * 100).toFixed(0)} %`}
         actions={
-          <span className="inline-flex items-center gap-2 rounded-full bg-accent/40 px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-accent-foreground">
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
+          <div className="flex items-center gap-2">
+            {isDummy && (
+              <span className="inline-flex items-center gap-2 rounded-full border border-warning/40 bg-warning/10 px-4 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-warning">
+                <Sparkles size={12} strokeWidth={1.75} aria-hidden />
+                Eksempeldata
+              </span>
+            )}
+            <span className="inline-flex items-center gap-2 rounded-full bg-accent/40 px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-accent-foreground">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
+              </span>
+              Live · auto 10s
             </span>
-            Live · auto 10s
-          </span>
+          </div>
         }
       />
 
@@ -353,7 +421,7 @@ export function CaddieAktivitetClient({
             </div>
           </div>
 
-          {/* Mest aktive spillere */}
+          {/* Mest aktive spillere — avledet fra events */}
           <div className="rounded-lg border border-border bg-card p-6">
             <h3 className="font-display text-sm font-semibold tracking-tight">
               Mest aktive spillere · 7d
@@ -361,98 +429,117 @@ export function CaddieAktivitetClient({
             <p className="mt-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
               Flest AI-interaksjoner
             </p>
-            <ul className="mt-2 divide-y divide-border">
-              {TOP_PLAYERS.map((p, i) => (
-                <li
-                  key={p.name}
-                  className="grid grid-cols-[24px_28px_1fr_auto] items-center gap-2 py-2"
-                >
-                  <span className="font-mono text-[11px] font-bold text-muted-foreground">
-                    {i + 1}
-                  </span>
-                  <span
-                    aria-hidden="true"
-                    className="grid h-7 w-7 place-items-center rounded-full font-mono text-[10px] font-semibold text-white"
-                    style={{ background: avatarBg(p.name) }}
+            {topPlayers.length === 0 ? (
+              <p className="mt-4 font-mono text-[11px] text-muted-foreground">
+                Ingen aktivitet siste 7 dager.
+              </p>
+            ) : (
+              <ul className="mt-2 divide-y divide-border">
+                {topPlayers.map((p, i) => (
+                  <li
+                    key={p.name}
+                    className="grid grid-cols-[24px_28px_1fr_auto] items-center gap-2 py-2"
                   >
-                    {p.initials}
-                  </span>
-                  <span className="font-display text-[13px] font-semibold">
-                    {p.name}
-                  </span>
-                  <span className="rounded-full bg-background px-2 py-0.5 font-mono text-[11px] font-bold text-foreground">
-                    {p.count}
-                  </span>
-                </li>
-              ))}
-            </ul>
+                    <span className="font-mono text-[11px] font-bold text-muted-foreground">
+                      {i + 1}
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className="grid h-7 w-7 place-items-center rounded-full font-mono text-[10px] font-semibold text-white"
+                      style={{ background: avatarBg(p.name) }}
+                    >
+                      {p.initials}
+                    </span>
+                    <span className="font-display text-[13px] font-semibold">
+                      {p.name}
+                    </span>
+                    <span className="rounded-full bg-secondary px-2 py-0.5 font-mono text-[11px] font-bold tabular-nums text-foreground">
+                      {p.count}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
-          {/* Drill-typer */}
+          {/* Hendelsestyper — avledet fra events */}
           <div className="rounded-lg border border-border bg-card p-6">
             <h3 className="font-display text-sm font-semibold tracking-tight">
-              Mest brukte drill-typer · 30d
+              Fordeling av hendelser · 30d
             </h3>
             <p className="mt-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-              Fordeling av AI-forslag
+              Andel per hendelsestype
             </p>
-            <div className="mt-4 space-y-2">
-              {DRILL_DISTRIBUTION.map((d) => (
-                <div key={d.label} className="space-y-1">
-                  <div className="flex items-center justify-between font-mono text-[11px]">
-                    <span className="text-foreground">{d.label}</span>
-                    <span className="font-semibold text-muted-foreground">
-                      {d.pct} %
-                    </span>
+            {eventDistribution.length === 0 ? (
+              <p className="mt-4 font-mono text-[11px] text-muted-foreground">
+                Ingen hendelser siste 30 dager.
+              </p>
+            ) : (
+              <div className="mt-4 space-y-2">
+                {eventDistribution.map((d) => (
+                  <div key={d.type} className="space-y-1">
+                    <div className="flex items-center justify-between font-mono text-[11px]">
+                      <span className="text-foreground">{d.label}</span>
+                      <span className="font-semibold tabular-nums text-muted-foreground">
+                        {d.pct} %
+                      </span>
+                    </div>
+                    <div className="h-1.5 overflow-hidden rounded-full bg-secondary">
+                      <div
+                        className={`h-full rounded-full ${d.barClass}`}
+                        style={{ width: `${d.pct}%` }}
+                      />
+                    </div>
                   </div>
-                  <div className="h-1.5 overflow-hidden rounded-full bg-secondary">
-                    <div
-                      className="h-full rounded-full"
-                      style={{
-                        width: `${d.pct}%`,
-                        background: d.color,
-                      }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
 
-          {/* AI-feil */}
+          {/* AI-feil — ekte AgentRun-feil siste 7 dager */}
           <div className="rounded-lg border border-border bg-card p-6">
             <h3 className="font-display text-sm font-semibold tracking-tight">
               AI-feil · siste 7 dager
             </h3>
             <p className="mt-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-              2 rapporterte tilfeller
+              {aiErrors.length === 0
+                ? "Ingen rapporterte tilfeller"
+                : `${aiErrors.length} rapportert${aiErrors.length === 1 ? "" : "e"} tilfelle${aiErrors.length === 1 ? "" : "r"}`}
             </p>
-            <ul className="mt-2 space-y-2">
-              {AI_ERRORS.map((er) => (
-                <li
-                  key={er.title}
-                  className="grid grid-cols-[28px_1fr_auto] items-center gap-2 rounded-md border border-destructive/25 bg-destructive/5 p-4"
-                >
-                  <span className="grid h-7 w-7 place-items-center rounded-md bg-destructive/15 text-destructive">
-                    <AlertTriangle size={13} strokeWidth={2} />
-                  </span>
-                  <div>
-                    <p className="font-display text-[12.5px] font-semibold">
-                      {er.title}
-                    </p>
-                    <p className="mt-0.5 font-mono text-[10px] text-muted-foreground">
-                      {er.desc}
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    className="font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-destructive hover:underline"
+            {aiErrors.length === 0 ? (
+              <div className="mt-3 flex items-center gap-2 rounded-md border border-success/25 bg-success/5 p-4">
+                <span className="grid h-7 w-7 place-items-center rounded-md bg-success/15 text-success">
+                  <Check size={13} strokeWidth={2.5} aria-hidden />
+                </span>
+                <p className="font-mono text-[11px] text-muted-foreground">
+                  Ingen agent-feil registrert siste 7 dager.
+                </p>
+              </div>
+            ) : (
+              <ul className="mt-2 space-y-2">
+                {aiErrors.map((er) => (
+                  <li
+                    key={er.id}
+                    className="grid grid-cols-[28px_1fr] items-start gap-2 rounded-md border border-destructive/25 bg-destructive/5 p-4"
                   >
-                    Se detalj
-                  </button>
-                </li>
-              ))}
-            </ul>
+                    <span className="grid h-7 w-7 place-items-center rounded-md bg-destructive/15 text-destructive">
+                      <AlertTriangle size={13} strokeWidth={2} aria-hidden />
+                    </span>
+                    <div className="min-w-0">
+                      <p className="font-display text-[12.5px] font-semibold">
+                        {er.title}
+                        <span className="ml-2 font-mono text-[10px] font-normal text-muted-foreground">
+                          {formatTime(er.at)}
+                        </span>
+                      </p>
+                      <p className="mt-0.5 line-clamp-2 font-mono text-[10px] text-muted-foreground">
+                        {er.desc}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </aside>
       </div>
@@ -622,34 +709,23 @@ function Meta({ k, v }: { k: string; v: string }) {
   );
 }
 
-// ----------------- Statisk hjelpedata -----------------
+// ----------------- Hendelsestype-metadata (DS-token) -----------------
 
-const TOP_PLAYERS = [
-  { name: "Markus R.P.", initials: "MR", count: 28 },
-  { name: "Joachim T.", initials: "JT", count: 22 },
-  { name: "Øyvind R.", initials: "ØR", count: 19 },
-  { name: "Emma S.", initials: "ES", count: 17 },
-  { name: "Ida M.", initials: "IM", count: 14 },
-];
+const TYPE_LABEL: Record<CaddieEvent["type"], string> = {
+  suggest: "Forslag",
+  analyzed: "Analyse",
+  escalate: "Eskalering",
+  flagged: "Flagg",
+  import: "Import",
+};
 
-const DRILL_DISTRIBUTION = [
-  { label: "Putting", pct: 36, color: "#A8C82E" },
-  { label: "Iron", pct: 24, color: "var(--primary)" },
-  { label: "Pitch & chip", pct: 18, color: "hsl(var(--accent))" },
-  { label: "Mental", pct: 14, color: "#7B4FB4" },
-  { label: "Fysisk", pct: 8, color: "hsl(var(--warning))" },
-];
-
-const AI_ERRORS = [
-  {
-    title: "Feil drill-anbefaling · 16.5",
-    desc: "Anbefalte driver-volum for spiller med albue-flagg — overstyrte helse-status",
-  },
-  {
-    title: "Konflikt-deteksjon mislyktes · 14.5",
-    desc: "Foreslo booking-tid som kolliderte med private hendelser i Google Calendar",
-  },
-];
+const TYPE_BAR_CLASS: Record<CaddieEvent["type"], string> = {
+  suggest: "bg-accent",
+  analyzed: "bg-primary",
+  escalate: "bg-destructive",
+  flagged: "bg-warning",
+  import: "bg-info",
+};
 
 // ----------------- Helpers -----------------
 

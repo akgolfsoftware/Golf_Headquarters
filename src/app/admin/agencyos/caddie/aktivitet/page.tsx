@@ -12,7 +12,7 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { CaddieAktivitetClient } from "./aktivitet-client";
-import type { CaddieEvent } from "./aktivitet-client";
+import type { CaddieEvent, AiError } from "./aktivitet-client";
 
 export const dynamic = "force-dynamic";
 
@@ -185,6 +185,8 @@ export default async function CaddieAktivitetPage() {
 
   const nowMs = new Date().getTime();
   let events: ReadonlyArray<CaddieEvent> = buildDummyEvents(nowMs);
+  let isDummy = true;
+  let aiErrors: AiError[] = [];
 
   try {
     const raw = await prisma.notification.findMany({
@@ -197,6 +199,7 @@ export default async function CaddieAktivitetPage() {
     });
 
     if (raw.length > 0) {
+      isDummy = false;
       events = raw.map((n, i) => ({
         id: n.id,
         at: n.createdAt,
@@ -215,7 +218,34 @@ export default async function CaddieAktivitetPage() {
     // Fallback til DUMMY
   }
 
-  return <CaddieAktivitetClient events={events} nowMs={nowMs} />;
+  // Ekte AI-feil siste 7 dager fra AgentRun (status ERROR). Kun ved ekte data.
+  if (!isDummy) {
+    const syvDager = new Date(nowMs - 7 * 24 * 60 * 60 * 1000);
+    try {
+      const runs = await prisma.agentRun.findMany({
+        where: { status: "ERROR", createdAt: { gte: syvDager } },
+        orderBy: { createdAt: "desc" },
+        take: 10,
+      });
+      aiErrors = runs.map((r) => ({
+        id: r.id,
+        title: `${r.agentName} feilet`,
+        desc: r.error ?? "Ukjent feil",
+        at: r.createdAt,
+      }));
+    } catch {
+      aiErrors = [];
+    }
+  }
+
+  return (
+    <CaddieAktivitetClient
+      events={events}
+      nowMs={nowMs}
+      isDummy={isDummy}
+      aiErrors={aiErrors}
+    />
+  );
 }
 
 function mapNotificationToCaddieType(

@@ -77,28 +77,26 @@ export function ReachClient({ data }: { data: ReachData }) {
   }, [filter, data.players]);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* HERO */}
       <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <span
-            aria-hidden="true"
-            className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
-          >
+          <span className="inline-flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+            <span className="h-1.5 w-1.5 rounded-full bg-accent" />
             Reach & Engasjement · Siste 30 dager
           </span>
-          <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
+          <h1 className="mt-2 font-display text-3xl font-bold leading-tight tracking-[-0.02em] sm:text-4xl">
             Plattform-{" "}
             <em className="font-normal italic text-primary">engasjement</em>
           </h1>
-          <p className="mt-2 font-mono text-xs text-muted-foreground">
+          <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.06em] text-muted-foreground">
             {data.totalPlayers} spillere · hvor mye lander det vi sender, og hvem
             trenger oppmerksomhet?
           </p>
         </div>
         {data.isDummy && (
-          <div className="inline-flex items-center gap-2 rounded-full border border-amber-500/40 bg-amber-500/10 px-4 py-1.5 font-mono text-[10px] uppercase tracking-[0.10em] text-amber-700 dark:text-amber-300">
-            <Sparkles size={12} strokeWidth={1.75} />
+          <div className="inline-flex items-center gap-2 rounded-full border border-warning/40 bg-warning/10 px-4 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-warning">
+            <Sparkles size={12} strokeWidth={1.75} aria-hidden />
             Eksempeldata
           </div>
         )}
@@ -442,22 +440,26 @@ function Kpi({
     tone === "bad"
       ? "bg-destructive"
       : tone === "warn"
-        ? "bg-amber-500"
+        ? "bg-warning"
         : "bg-primary";
 
   return (
-    <div className="flex flex-col gap-1 rounded-xl border border-border bg-card p-4 shadow-sm">
-      <div className="flex items-center gap-2 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
-        <Icon size={14} strokeWidth={1.75} />
-        {label}
+    <div className="flex flex-col gap-2 rounded-xl border border-border bg-card px-[18px] py-4">
+      <div className="flex items-center justify-between">
+        <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
+          {label}
+        </span>
+        <span className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-secondary text-muted-foreground">
+          <Icon size={14} strokeWidth={1.5} aria-hidden />
+        </span>
       </div>
       <div
-        className={`mt-1 font-mono text-3xl font-semibold tabular-nums ${valueColor}`}
+        className={`font-mono text-[34px] font-bold leading-none tracking-[-0.02em] tabular-nums ${valueColor}`}
       >
         {value}
       </div>
       {typeof progress === "number" && (
-        <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-secondary">
+        <div className="h-1.5 overflow-hidden rounded-full bg-secondary">
           <div
             className={`h-full rounded-full transition-all ${barColor}`}
             style={{ width: `${Math.min(100, progress)}%` }}
@@ -465,7 +467,7 @@ function Kpi({
         </div>
       )}
       {sub && (
-        <p className="mt-1 font-mono text-[11px] text-muted-foreground">
+        <p className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
           {sub}
         </p>
       )}
@@ -505,8 +507,8 @@ function Avatar({
 
 function StatusDot({ status }: { status: "green" | "amber" | "red" }) {
   const colors: Record<typeof status, string> = {
-    green: "bg-primary",
-    amber: "bg-amber-500",
+    green: "bg-success",
+    amber: "bg-warning",
     red: "bg-destructive",
   };
   const labels: Record<typeof status, string> = {
@@ -553,7 +555,7 @@ function Td({
 
 function complianceBarColor(pct: number): string {
   if (pct >= 75) return "bg-primary";
-  if (pct >= 50) return "bg-amber-500";
+  if (pct >= 50) return "bg-warning";
   return "bg-destructive";
 }
 

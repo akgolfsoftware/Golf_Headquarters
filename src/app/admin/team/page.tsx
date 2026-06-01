@@ -7,7 +7,7 @@
  */
 
 import Link from "next/link";
-import { Search, UserPlus, Users } from "lucide-react";
+import { Mail, Search, UserPlus, Users } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
@@ -85,19 +85,17 @@ export default async function TeamAdmin() {
         />
       </div>
 
-      {/* Filter */}
+      {/* Søk */}
       <form className="flex flex-wrap items-center gap-2">
-        <label className="flex flex-1 min-w-[260px] items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] text-muted-foreground">
+        <label className="flex flex-1 min-w-[260px] items-center gap-2 rounded-full border border-input bg-card px-4 py-2 text-[13px] text-muted-foreground">
           <Search size={14} strokeWidth={1.75} />
           <input
             type="search"
             name="q"
-            placeholder="Søk navn eller sertifisering"
+            placeholder="Søk navn eller e-post"
             className="flex-1 bg-transparent outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground"
           />
         </label>
-        <FilterChip label="Rolle" />
-        <FilterChip label="Status" />
       </form>
 
       {/* Body */}
@@ -176,16 +174,11 @@ function CoachCard({ member }: { member: TeamMember }) {
       <div className="flex w-full gap-1.5">
         <a
           href={`mailto:${member.email}`}
-          className="inline-flex flex-1 items-center justify-center gap-1 rounded-md bg-primary px-4 py-1.5 text-[12px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
+          className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md bg-primary px-4 py-1.5 text-[12px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
         >
-          Meld →
+          <Mail size={13} strokeWidth={1.75} />
+          Send e-post
         </a>
-        <Link
-          href={`/admin/team`}
-          className="inline-flex flex-1 items-center justify-center gap-1 rounded-md border border-border bg-card px-4 py-1.5 text-[12px] font-medium text-foreground hover:bg-secondary"
-        >
-          Profil →
-        </Link>
       </div>
     </article>
   );
@@ -268,14 +261,6 @@ function Kpi({
         </div>
       )}
     </div>
-  );
-}
-
-function FilterChip({ label }: { label: string }) {
-  return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-1.5 text-[12px] text-muted-foreground">
-      {label}
-    </span>
   );
 }
 

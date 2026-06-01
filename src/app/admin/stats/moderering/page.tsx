@@ -11,7 +11,6 @@
  *   - Sticky batch-bar
  */
 
-import "../../../(marketing)/stats/stats.css";
 import type { Metadata } from "next";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { ModeringClient } from "./client";

@@ -1,11 +1,9 @@
 /**
- * /admin/workspace/oppgaver — Liste / Kanban / Kalender
+ * /admin/workspace/oppgaver — Liste / Kanban / Kalender (AgencyOS)
  *
- * Pixel-perfekt fra Claude Design-bundle _SEBg4QyodvbW2k06JWiGw
- * (workspace/s2-oppgaver.jsx).
- *
- * View-state lagres i URL via ?view=liste|kanban|kalender.
- * Filter-bar er sticky.
+ * Ekte data fra OppgaveCache (Notion-sync) via getTasksForUser().
+ * Alle teller (totalt, delt, prosjekter, status) avledes fra reelle tasks —
+ * ingen hardkodede tall. View-state lagres i URL via ?view=liste|kanban|kalender.
  */
 
 import { Plus, Search, Flame, List, LayoutGrid, Calendar } from "lucide-react";
@@ -50,19 +48,26 @@ export default async function WorkspaceOppgaverPage({
   const tasks = await getTasksForUser(user.id);
 
   const counts = {
+    alle: tasks.length,
     todo: tasks.filter((t) => t.status === "TODO" && !t.done).length,
     doing: tasks.filter((t) => t.status === "DOING").length,
     done: tasks.filter((t) => t.done).length,
     blokkert: tasks.filter((t) => t.status === "BLOKKERT").length,
   };
+  // Avledede header-tall fra ekte data
+  const delt = tasks.filter(
+    (t) => t.vis === "ALLE" || t.vis === "SELSKAP" || t.vis === "JUNIOR",
+  ).length;
+  const prosjekter = new Set(tasks.map((t) => t.project.name ?? t.project.company))
+    .size;
 
   return (
     <div className="space-y-6">
-      <header className="-mx-4 -mt-4 border-b border-border bg-gradient-to-b from-[#FBFAF5] to-background px-4 py-8 md:-mx-8 md:-mt-8 md:px-8">
+      <header className="-mx-4 -mt-4 border-b border-border bg-gradient-to-b from-secondary/40 to-background px-4 py-8 md:-mx-8 md:-mt-8 md:px-8">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
             <AthleticEyebrow>CoachHQ · Workspace · Oppgaver</AthleticEyebrow>
-            <h1 className="font-display mt-2 text-3xl font-bold leading-tight tracking-tight md:text-4xl">
+            <h1 className="font-display mt-2 text-3xl font-bold leading-tight tracking-[-0.02em] md:text-4xl">
               Alle{" "}
               <em
                 className="font-normal not-italic"
@@ -75,8 +80,9 @@ export default async function WorkspaceOppgaverPage({
                 oppgaver
               </em>
             </h1>
-            <div className="font-mono mt-2.5 text-[11.5px] uppercase tracking-[0.04em] text-muted-foreground">
-              23 OPPGAVER · 5 DELT MED COACHES · 7 PROSJEKTER
+            <div className="font-mono mt-2.5 text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+              {counts.alle} OPPGAVER · {delt} DELT MED COACHES · {prosjekter}{" "}
+              {prosjekter === 1 ? "PROSJEKT" : "PROSJEKTER"}
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -93,9 +99,15 @@ export default async function WorkspaceOppgaverPage({
       <FilterBar counts={counts} />
 
       <div className="pb-12">
-        {view === "liste" ? <ListView tasks={tasks} /> : null}
-        {view === "kanban" ? <KanbanView tasks={tasks} /> : null}
-        {view === "kalender" ? <CalView tasks={tasks} /> : null}
+        {tasks.length === 0 ? (
+          <EmptyTasks />
+        ) : (
+          <>
+            {view === "liste" ? <ListView tasks={tasks} /> : null}
+            {view === "kanban" ? <KanbanView tasks={tasks} /> : null}
+            {view === "kalender" ? <CalView tasks={tasks} /> : null}
+          </>
+        )}
       </div>
     </div>
   );
@@ -110,7 +122,7 @@ function ViewToggle({ current }: { current: View }) {
     { id: "kalender", icon: Calendar, label: "Kalender" },
   ];
   return (
-    <div className="inline-flex rounded-full border border-border bg-muted/40 p-1">
+    <div className="inline-flex rounded-full border border-border bg-secondary/40 p-1">
       {views.map((v) => {
         const Icon = v.icon;
         const isActive = current === v.id;
@@ -138,11 +150,11 @@ function ViewToggle({ current }: { current: View }) {
 function FilterBar({
   counts,
 }: {
-  counts: { todo: number; doing: number; done: number; blokkert: number };
+  counts: { alle: number; todo: number; doing: number; done: number; blokkert: number };
 }) {
   return (
     <div className="sticky top-0 z-10 -mx-4 flex flex-wrap items-center gap-2 border-b border-border bg-card px-4 py-2 md:-mx-8 md:px-8">
-      <label className="flex min-w-[240px] items-center gap-2 rounded-md border border-input bg-muted/30 px-4 py-1.5">
+      <label className="flex min-w-[240px] items-center gap-2 rounded-md border border-input bg-secondary/40 px-4 py-1.5">
         <Search className="h-3.5 w-3.5 text-muted-foreground" />
         <input
           type="search"
@@ -153,7 +165,7 @@ function FilterBar({
 
       <span className="mx-1 h-5 w-px bg-border" />
 
-      <FilterPill label="Alle" count={23} active />
+      <FilterPill label="Alle" count={counts.alle} active />
       <FilterPill label="TODO" count={counts.todo} />
       <FilterPill label="DOING" count={counts.doing} />
       <FilterPill label="DONE" count={counts.done} />
@@ -161,7 +173,7 @@ function FilterBar({
 
       <span className="mx-1 h-5 w-px bg-border" />
 
-      <FilterPill label="Prosjekt · 3" />
+      <FilterPill label="Prosjekt" />
       <FilterPill label="Synlighet · Mine" />
       <FilterPill label="Prioritet" />
 
@@ -197,7 +209,7 @@ function FilterPill({
       {typeof count === "number" ? (
         <span
           className={`rounded-full px-1.5 py-px tabular-nums ${
-            active ? "bg-white/20" : "bg-muted"
+            active ? "bg-accent/25 text-accent" : "bg-secondary"
           }`}
         >
           {count}
@@ -220,72 +232,78 @@ function ListView({ tasks }: { tasks: SampleTask[] }) {
   return (
     <div className="space-y-8 px-1">
       {(["DOING", "TODO", "BLOKKERT", "DONE"] as StatusKind[]).map((status) => {
-        const tasks = grouped[status];
-        if (tasks.length === 0) return null;
+        const rows = grouped[status];
+        if (rows.length === 0) return null;
         return (
           <section key={status}>
             <div className="mb-2 flex items-center gap-2.5">
               <StatusPill kind={status} />
               <span className="font-mono text-[11px] tracking-[0.04em] text-muted-foreground">
-                {tasks.length}
+                {rows.length}
               </span>
             </div>
 
             <div className="overflow-x-auto">
               <div className="min-w-[760px]">
-            {/* Column headers */}
-            <div className="font-mono grid grid-cols-[20px_1fr_140px_88px_80px_100px_80px_60px] items-center gap-2 rounded-lg bg-muted/40 px-4 py-2 text-[9.5px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
-              <div />
-              <div>Oppgave</div>
-              <div>Prosjekt</div>
-              <div>Prio</div>
-              <div>Forfaller</div>
-              <div>Tildelt</div>
-              <div>Synlighet</div>
-              <div>Kilde</div>
-            </div>
+                {/* Column headers */}
+                <div className="font-mono grid grid-cols-[20px_1fr_140px_88px_80px_100px_80px_60px] items-center gap-2 rounded-lg bg-secondary/40 px-4 py-2 text-[9.5px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
+                  <div />
+                  <div>Oppgave</div>
+                  <div>Prosjekt</div>
+                  <div>Prio</div>
+                  <div>Forfaller</div>
+                  <div>Tildelt</div>
+                  <div>Synlighet</div>
+                  <div>Kilde</div>
+                </div>
 
-            <ul>
-              {tasks.map((t) => (
-                <li
-                  key={t.id}
-                  className={`grid grid-cols-[20px_1fr_140px_88px_80px_100px_80px_60px] items-center gap-2 border-b border-border px-4 py-2 ${
-                    t.done ? "opacity-55" : ""
-                  }`}
-                >
-                  <TaskCheck done={t.done} />
-                  <div className="flex items-center gap-2">
-                    {t.brenner ? (
-                      <Flame
-                        className="h-3 w-3 text-destructive"
-                        fill="currentColor"
-                      />
-                    ) : null}
-                    <span
-                      className={`text-[13px] font-medium ${t.done ? "line-through" : ""}`}
+                <ul>
+                  {rows.map((t) => (
+                    <li
+                      key={t.id}
+                      className={`grid grid-cols-[20px_1fr_140px_88px_80px_100px_80px_60px] items-center gap-2 border-b border-border px-4 py-2 ${
+                        t.done ? "opacity-55" : ""
+                      }`}
                     >
-                      {t.title}
-                    </span>
-                  </div>
-                  <ProjectPill
-                    company={t.project.company}
-                    name={t.project.name}
-                    compact
-                  />
-                  <PrioDot kind={t.prio} withLabel />
-                  <DueDate value={t.due} today={t.today} />
-                  <AvatarStack
-                    items={t.assigned.map((k) => ({
-                      name: SAMPLE_PEOPLE[k]?.name ?? k,
-                      initials: SAMPLE_PEOPLE[k]?.initials ?? k,
-                    }))}
-                    size={20}
-                  />
-                  <VisibilityPill kind={t.vis} compact />
-                  <SourceBadge kind={t.source} />
-                </li>
-              ))}
-            </ul>
+                      <TaskCheck done={t.done} />
+                      <div className="flex items-center gap-2">
+                        {t.brenner ? (
+                          <Flame
+                            className="h-3 w-3 text-destructive"
+                            fill="currentColor"
+                          />
+                        ) : null}
+                        <span
+                          className={`text-[13px] font-medium ${t.done ? "line-through" : ""}`}
+                        >
+                          {t.title}
+                        </span>
+                      </div>
+                      <ProjectPill
+                        company={t.project.company}
+                        name={t.project.name}
+                        compact
+                      />
+                      <PrioDot kind={t.prio} withLabel />
+                      <DueDate value={t.due} today={t.today} />
+                      {t.assigned.length > 0 ? (
+                        <AvatarStack
+                          items={t.assigned.map((k) => ({
+                            name: SAMPLE_PEOPLE[k]?.name ?? k,
+                            initials: SAMPLE_PEOPLE[k]?.initials ?? k,
+                          }))}
+                          size={20}
+                        />
+                      ) : (
+                        <span className="font-mono text-[9px] uppercase tracking-[0.06em] text-muted-foreground/60">
+                          —
+                        </span>
+                      )}
+                      <VisibilityPill kind={t.vis} compact />
+                      <SourceBadge kind={t.source} />
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
           </section>
@@ -324,7 +342,7 @@ function KanbanCol({
       : allTasks.filter((t) => t.status === status && !t.done);
 
   return (
-    <div className="flex min-h-[540px] flex-col gap-2.5 rounded-2xl bg-muted/30 p-4">
+    <div className="flex min-h-[540px] flex-col gap-2.5 rounded-2xl bg-secondary/30 p-4">
       <div
         className={`flex items-center gap-2.5 border-b px-1 pb-2 ${
           accent ? "border-b-[2px] border-accent" : "border-border"
@@ -346,7 +364,7 @@ function KanbanCol({
       ))}
       <button
         type="button"
-        className="font-mono rounded-xl border border-dashed border-border px-4 py-2 text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground hover:bg-muted/40"
+        className="font-mono rounded-xl border border-dashed border-border px-4 py-2 text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground hover:bg-secondary/40"
       >
         + NY
       </button>
@@ -381,14 +399,16 @@ function KanbanCard({ task: t }: { task: SampleTask }) {
         <div className="ml-auto flex items-center gap-1.5">
           <VisibilityIcon kind={t.vis} />
           <SourceBadge kind={t.source} />
-          <AvatarStack
-            items={t.assigned.map((k) => ({
-              name: SAMPLE_PEOPLE[k]?.name ?? k,
-              initials: SAMPLE_PEOPLE[k]?.initials ?? k,
-            }))}
-            size={18}
-            max={2}
-          />
+          {t.assigned.length > 0 ? (
+            <AvatarStack
+              items={t.assigned.map((k) => ({
+                name: SAMPLE_PEOPLE[k]?.name ?? k,
+                initials: SAMPLE_PEOPLE[k]?.initials ?? k,
+              }))}
+              size={18}
+              max={2}
+            />
+          ) : null}
         </div>
       </div>
     </article>
@@ -398,71 +418,112 @@ function KanbanCard({ task: t }: { task: SampleTask }) {
 // ────────────────────────────────────────────────────────── CALENDAR VIEW ──
 
 function CalView({ tasks }: { tasks: SampleTask[] }) {
-  const days = ["MAN", "TIR", "ONS", "TOR", "FRE", "LØR", "SØN"];
-  const dates = ["26", "27", "28", "29", "30", "31", "01"];
+  // Inneværende uke (man–søn), avledet fra dagens dato.
+  const today = new Date();
+  const dow = (today.getDay() + 6) % 7; // 0 = mandag
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - dow);
+  monday.setHours(0, 0, 0, 0);
+
+  const dayNames = ["MAN", "TIR", "ONS", "TOR", "FRE", "LØR", "SØN"];
+  const days = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    return {
+      name: dayNames[i],
+      date: String(d.getDate()).padStart(2, "0"),
+      isToday: i === dow,
+    };
+  });
 
   return (
     <div className="px-1">
       <div className="overflow-hidden rounded-2xl border border-border bg-card">
         <div className="overflow-x-auto">
           <div className="min-w-[760px]">
-        <div className="grid grid-cols-7 border-b border-border">
-          {days.map((d, i) => (
-            <div
-              key={d}
-              className={`flex items-baseline gap-2 px-4 py-2 ${
-                i < 6 ? "border-r border-border" : ""
-              }`}
-            >
-              <span className="font-mono text-[10px] font-bold tracking-[0.12em] text-muted-foreground">
-                {d}
-              </span>
-              <span
-                className={`font-display text-base font-bold ${i === 1 ? "text-primary" : ""}`}
-              >
-                {dates[i]}
-              </span>
-              {i === 1 ? (
-                <span className="ml-1 h-1.5 w-1.5 rounded-full bg-accent" />
-              ) : null}
+            <div className="grid grid-cols-7 border-b border-border">
+              {days.map((d, i) => (
+                <div
+                  key={i}
+                  className={`flex items-baseline gap-2 px-4 py-2 ${
+                    i < 6 ? "border-r border-border" : ""
+                  }`}
+                >
+                  <span className="font-mono text-[10px] font-bold tracking-[0.12em] text-muted-foreground">
+                    {d.name}
+                  </span>
+                  <span
+                    className={`font-display text-base font-bold ${d.isToday ? "text-primary" : ""}`}
+                  >
+                    {d.date}
+                  </span>
+                  {d.isToday ? (
+                    <span className="ml-1 h-1.5 w-1.5 rounded-full bg-accent" />
+                  ) : null}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
 
-        <div className="grid min-h-[400px] grid-cols-7">
-          {days.map((d, i) => {
-            const dayTasks = tasks.filter((_, idx) => idx % 7 === i).slice(
-              0,
-              2 + (i % 2),
-            );
-            return (
-              <div
-                key={d}
-                className={`flex flex-col gap-1.5 p-2.5 ${i < 6 ? "border-r border-border" : ""} ${
-                  i === 1 ? "bg-accent/[0.06]" : ""
-                }`}
-              >
-                {dayTasks.map((t) => {
-                  const barClass = getCompanyBar(t.project.company);
-                  return (
-                    <div
-                      key={t.id}
-                      className={`flex items-center gap-1.5 rounded-md border-l-2 px-2 py-1.5 text-[11px] font-semibold leading-tight ${barClass.replace(
-                        "bg-",
-                        "border-l-",
-                      )} bg-muted/30 ${barClass === "bg-primary" ? "text-primary" : "text-foreground"}`}
-                    >
-                      <PrioDot kind={t.prio} />
-                      <span className="flex-1 truncate">{t.title}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            );
-          })}
-        </div>
+            <div className="grid min-h-[400px] grid-cols-7">
+              {days.map((d, i) => {
+                const dayTasks = tasks.filter((_, idx) => idx % 7 === i).slice(
+                  0,
+                  3,
+                );
+                return (
+                  <div
+                    key={i}
+                    className={`flex flex-col gap-1.5 p-2.5 ${i < 6 ? "border-r border-border" : ""} ${
+                      d.isToday ? "bg-accent/[0.06]" : ""
+                    }`}
+                  >
+                    {dayTasks.map((t) => {
+                      const barClass = getCompanyBar(t.project.company);
+                      return (
+                        <div
+                          key={t.id}
+                          className={`flex items-center gap-1.5 rounded-md border-l-2 px-2 py-1.5 text-[11px] font-semibold leading-tight ${barClass.replace(
+                            "bg-",
+                            "border-l-",
+                          )} bg-secondary/30 ${barClass === "bg-primary" ? "text-primary" : "text-foreground"}`}
+                        >
+                          <PrioDot kind={t.prio} />
+                          <span className="flex-1 truncate">{t.title}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+// ───────────────────────────────────────────────────────────── EMPTY STATE ──
+
+function EmptyTasks() {
+  return (
+    <div className="rounded-2xl border border-border bg-card">
+      <div className="flex flex-col items-center gap-4 px-6 py-16 text-center">
+        <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-secondary text-muted-foreground">
+          <List className="h-6 w-6" strokeWidth={1.5} aria-hidden />
+        </span>
+        <div>
+          <p className="font-display text-lg font-bold tracking-[-0.01em] text-foreground">
+            Ingen oppgaver
+          </p>
+          <p className="mt-1 max-w-sm text-sm text-muted-foreground">
+            Koble til Notion for å synke oppgaver automatisk, eller opprett en
+            oppgave manuelt.
+          </p>
+        </div>
+        <AthleticButton variant="lime" size="sm">
+          <Plus className="h-3.5 w-3.5" /> Ny oppgave
+        </AthleticButton>
       </div>
     </div>
   );

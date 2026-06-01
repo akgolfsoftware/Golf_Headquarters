@@ -1,3 +1,10 @@
+/**
+ * AgencyOS — Rapporter (/admin/reports)
+ *
+ * Rapport-katalog for coach/admin: server-action-genererte rapporter +
+ * CSV-eksporter. Server component. Generering logges via server actions
+ * (faktisk PDF/CSV-pipeline koples på senere — eksport-endepunktene er ekte).
+ */
 import Link from "next/link";
 import {
   BarChart3,
@@ -10,6 +17,7 @@ import {
   User,
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -59,7 +67,7 @@ const EKSPORTER: EksportTemplate[] = [
     title: "Spilleroversikt",
     desc: "Liste over alle spillere med HCP, tier og siste innlogging. Brukes til regnskap og oppfølging.",
     meta: ["CSV", "1 fil", "~3 sek"],
-    icon: <FileText className="h-5 w-5" />,
+    icon: <FileText className="h-5 w-5" strokeWidth={1.5} aria-hidden />,
     tone: "accent",
     href: "/api/admin/reports/spillere.csv",
     featured: true,
@@ -69,7 +77,7 @@ const EKSPORTER: EksportTemplate[] = [
     title: "Runder · siste 90 dager",
     desc: "Alle registrerte runder med SG-data og bane. Til statistikk og trendanalyse.",
     meta: ["CSV", "1 fil", "~5 sek"],
-    icon: <BarChart3 className="h-5 w-5" />,
+    icon: <BarChart3 className="h-5 w-5" strokeWidth={1.5} aria-hidden />,
     tone: "turn",
     href: "/api/admin/reports/runder.csv",
   },
@@ -78,7 +86,7 @@ const EKSPORTER: EksportTemplate[] = [
     title: "Treningsøkter",
     desc: "Loggførte treningsøkter med CS-rating og notater fra coach.",
     meta: ["CSV", "1 fil", "~4 sek"],
-    icon: <LineChart className="h-5 w-5" />,
+    icon: <LineChart className="h-5 w-5" strokeWidth={1.5} aria-hidden />,
     tone: "default",
     href: "/api/admin/reports/okter.csv",
   },
@@ -87,7 +95,7 @@ const EKSPORTER: EksportTemplate[] = [
     title: "Abonnement-status",
     desc: "Pro-abonnenter med Stripe-status og periode. Brukes til faktura-avstemming.",
     meta: ["CSV", "1 fil", "~3 sek"],
-    icon: <DollarSign className="h-5 w-5" />,
+    icon: <DollarSign className="h-5 w-5" strokeWidth={1.5} aria-hidden />,
     tone: "gold",
     href: "/api/admin/reports/abonnement.csv",
   },
@@ -103,7 +111,7 @@ const RAPPORT_TYPER = [
     action: genererSpillerFremgang,
     format: "PDF",
     frekvens: "Manuell",
-    icon: <User className="h-5 w-5" />,
+    icon: <User className="h-5 w-5" strokeWidth={1.5} aria-hidden />,
   },
   {
     id: "trener-oppsummering",
@@ -112,7 +120,7 @@ const RAPPORT_TYPER = [
     action: genererTrenersesjonOppsummering,
     format: "CSV",
     frekvens: "Ukentlig",
-    icon: <BarChart3 className="h-5 w-5" />,
+    icon: <BarChart3 className="h-5 w-5" strokeWidth={1.5} aria-hidden />,
   },
   {
     id: "inntektsrapport",
@@ -121,7 +129,7 @@ const RAPPORT_TYPER = [
     action: genererInntektsrapport,
     format: "PDF",
     frekvens: "Månedlig",
-    icon: <DollarSign className="h-5 w-5" />,
+    icon: <DollarSign className="h-5 w-5" strokeWidth={1.5} aria-hidden />,
   },
   {
     id: "aktivitetslogg",
@@ -130,7 +138,7 @@ const RAPPORT_TYPER = [
     action: genererAktivitetslogg,
     format: "CSV",
     frekvens: "Manuell",
-    icon: <LineChart className="h-5 w-5" />,
+    icon: <LineChart className="h-5 w-5" strokeWidth={1.5} aria-hidden />,
   },
 ] as const;
 
@@ -147,178 +155,154 @@ export default async function Rapporter() {
     next: string;
   }[] = [];
 
+  const antallTotalt = RAPPORT_TYPER.length + EKSPORTER.length;
+
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <div className="mx-auto max-w-[1400px] px-8 py-8">
-        {/* Hero */}
-        <header className="mb-8 flex items-start justify-between gap-6">
-          <div>
-            <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-              CoachHQ · Rapport-katalog
-            </div>
-            <h1 className="mt-2 font-display text-[22px] sm:text-[28px] md:text-[36px] italic leading-[1.1] tracking-tight">
-              <em className="font-normal italic">
-                Hva trenger du å rapportere?
-              </em>
-            </h1>
-            <p className="mt-2 text-[13.5px] text-muted-foreground">
-              {RAPPORT_TYPER.length + EKSPORTER.length} rapporter og eksporter
-              tilgjengelig
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <Link
-              href="/admin/audit-log"
-              className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
-            >
-              <History className="h-4 w-4" />
-              Historikk
-            </Link>
-            <Link
-              href="/admin/kalender"
-              className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
-            >
-              <Plus className="h-4 w-4" />
-              Planlegg ny
-            </Link>
-          </div>
-        </header>
-
-        {/* KPI strip */}
-        <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          <Kpi
-            label="Rapport-typer"
-            value={String(RAPPORT_TYPER.length)}
-            foot="med server actions"
-          />
-          <Kpi
-            label="Eksporter"
-            value={String(EKSPORTER.length)}
-            foot="CSV-format"
-          />
-          <Kpi
-            label="Planlagte leveranser"
-            value={String(planlagte.length)}
-            foot="ingen aktive ennå"
-          />
-          <Kpi
-            label="Snitt-genereringstid"
-            value="4"
-            unit=" s"
-            foot="raskest 3 s · tregest 5 s"
-          />
+    <div className="space-y-1">
+      {/* header */}
+      <div className="mb-3 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
+            AGENCYOS · RAPPORTER
+          </span>
+          <h1 className="mt-2 font-display text-[30px] font-bold leading-[1.05] tracking-[-0.025em] text-foreground">
+            Hva trenger du å <em className="font-normal italic text-primary">rapportere</em>?
+          </h1>
+          <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+            <b className="font-semibold text-foreground">{antallTotalt}</b> rapporter og eksporter
+            tilgjengelig — server-genererte rapporter og CSV-nedlasting.
+          </p>
         </div>
-
-        {/* Filter bar */}
-        <div className="mb-6 flex flex-wrap items-center gap-4">
-          <div className="flex max-w-[280px] flex-1 items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] text-muted-foreground">
-            <Search className="h-3.5 w-3.5" />
-            <span>Søk rapport-mal</span>
-          </div>
-          <Chip active>Alle kategorier</Chip>
-          <Chip>Rapporter ({RAPPORT_TYPER.length})</Chip>
-          <Chip>Eksporter ({EKSPORTER.length})</Chip>
+        <div className="flex flex-wrap items-center gap-2">
+          <Link
+            href="/admin/audit-log"
+            className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
+          >
+            <History className="h-4 w-4" strokeWidth={1.75} aria-hidden />
+            Historikk
+          </Link>
+          <Link
+            href="/admin/kalender"
+            className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
+          >
+            <Plus className="h-4 w-4" strokeWidth={2} aria-hidden />
+            Planlegg ny
+          </Link>
         </div>
+      </div>
 
-        {/* Layout */}
-        <div className="grid grid-cols-[1fr_320px] items-start gap-8">
-          <div>
-            {/* ---- Rapport-typer med Server Actions ---- */}
-            <CategoryHeader
-              title="Rapporter"
-              count={RAPPORT_TYPER.length}
-            />
-            <div className="grid grid-cols-2 gap-4">
-              {RAPPORT_TYPER.map((r) => (
-                <div
-                  key={r.id}
-                  className="flex flex-col gap-4 rounded-xl border border-border bg-card p-6"
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-primary/10 text-primary">
-                      {r.icon}
-                    </div>
-                    <div className="flex gap-1.5">
-                      <span className="inline-flex items-center rounded-full bg-secondary px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
-                        {r.format}
-                      </span>
-                      <span className="inline-flex items-center rounded-full bg-secondary px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
-                        {r.frekvens}
-                      </span>
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-foreground">{r.title}</h3>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      {r.desc}
-                    </p>
-                  </div>
-                  <form action={r.action}>
-                    <input type="hidden" name="type" value={r.id} />
-                    <button
-                      type="submit"
-                      className="mt-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
-                    >
-                      Generer rapport
-                    </button>
-                  </form>
-                </div>
-              ))}
-            </div>
+      {/* KPI-strip */}
+      <div className="grid grid-cols-2 gap-3 pt-3 md:grid-cols-4">
+        <Kpi label="RAPPORT-TYPER" value={String(RAPPORT_TYPER.length)} foot="med server actions" />
+        <Kpi label="EKSPORTER" value={String(EKSPORTER.length)} foot="CSV-format" />
+        <Kpi label="PLANLAGTE LEVERANSER" value={String(planlagte.length)} foot="ingen aktive ennå" />
+        <Kpi label="SNITT-GENERERINGSTID" value="4" unit="s" foot="raskest 3 s · tregest 5 s" />
+      </div>
 
-            {/* ---- Eksporter (CSV) ---- */}
-            <CategoryHeader title="Eksporter" count={EKSPORTER.length} />
-            <ReportGrid reports={EKSPORTER} />
-          </div>
+      {/* Filter-rad */}
+      <div className="flex flex-wrap items-center gap-2 pt-5">
+        <div className="flex max-w-[280px] flex-1 items-center gap-2 rounded-md border border-border bg-card px-3.5 py-2 text-[13px] text-muted-foreground">
+          <Search className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden />
+          <span>Søk rapport-mal</span>
+        </div>
+        <Chip active>Alle kategorier</Chip>
+        <Chip>Rapporter · {RAPPORT_TYPER.length}</Chip>
+        <Chip>Eksporter · {EKSPORTER.length}</Chip>
+      </div>
 
-          {/* Right rail */}
-          <aside className="sticky top-6 overflow-hidden rounded-lg border border-border bg-card">
-            <div className="flex items-baseline justify-between border-b border-border px-6 py-4">
-              <h3 className="font-display text-[14px] font-semibold tracking-tight">
-                Planlagte leveranser
-              </h3>
-              <span className="font-mono text-[12px] text-muted-foreground">
-                {planlagte.length} aktive
-              </span>
-            </div>
-            {planlagte.length === 0 ? (
-              <div className="px-6 py-6 text-[13px] text-muted-foreground">
-                Ingen planlagte leveranser ennå. Bruk «Planlegg ny» for å
-                sette opp automatisk e-postutsending.
-              </div>
-            ) : (
-              planlagte.map((s, i) => (
-                <div
-                  key={i}
-                  className="flex flex-col gap-1.5 border-b border-border px-6 py-4 last:border-b-0"
-                >
-                  <div className="text-[13.5px] font-medium leading-[1.4] text-foreground">
-                    {s.name}
+      {/* Layout */}
+      <div className="grid grid-cols-1 items-start gap-6 pt-5 lg:grid-cols-[1fr_320px]">
+        <div>
+          {/* ---- Rapport-typer med Server Actions ---- */}
+          <CategoryHeader title="Rapporter" count={RAPPORT_TYPER.length} />
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {RAPPORT_TYPER.map((r) => (
+              <div
+                key={r.id}
+                className="flex flex-col gap-4 rounded-xl border border-border bg-card p-5"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-primary/10 text-primary">
+                    {r.icon}
                   </div>
-                  <div className="text-[11.5px] text-muted-foreground">
-                    {s.recipients}
-                  </div>
-                  <div className="mt-0.5 flex items-center gap-2 font-mono text-[11.5px] text-muted-foreground">
-                    <span>{s.when}</span>
-                    <span>·</span>
-                    <span className="font-semibold text-primary">
-                      {s.next}
+                  <div className="flex gap-1.5">
+                    <span className="inline-flex items-center rounded-full bg-secondary px-2 py-0.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground">
+                      {r.format}
+                    </span>
+                    <span className="inline-flex items-center rounded-full bg-secondary px-2 py-0.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground">
+                      {r.frekvens}
                     </span>
                   </div>
                 </div>
-              ))
-            )}
-            <div className="border-t border-border px-6 py-4">
-              <Link
-                href="/admin/kalender"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
-              >
-                <Plus className="h-4 w-4" />
-                Planlegg ny leveranse
-              </Link>
-            </div>
-          </aside>
+                <div className="leading-snug">
+                  <h3 className="font-display text-[16px] font-bold tracking-[-0.01em] text-foreground">
+                    {r.title}
+                  </h3>
+                  <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">{r.desc}</p>
+                </div>
+                <form action={r.action} className="mt-auto">
+                  <input type="hidden" name="type" value={r.id} />
+                  <button
+                    type="submit"
+                    className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+                  >
+                    Generer rapport
+                  </button>
+                </form>
+              </div>
+            ))}
+          </div>
+
+          {/* ---- Eksporter (CSV) ---- */}
+          <CategoryHeader title="Eksporter" count={EKSPORTER.length} />
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {EKSPORTER.map((r) => (
+              <ReportCard key={r.id} report={r} />
+            ))}
+          </div>
         </div>
+
+        {/* Right rail */}
+        <aside className="overflow-hidden rounded-xl border border-border bg-card lg:sticky lg:top-6">
+          <div className="flex items-baseline justify-between border-b border-border px-5 py-4">
+            <h3 className="font-display text-[14px] font-bold tracking-[-0.01em] text-foreground">
+              Planlagte leveranser
+            </h3>
+            <span className="font-mono text-[10px] font-bold tracking-[0.04em] text-muted-foreground">
+              {planlagte.length} aktive
+            </span>
+          </div>
+          {planlagte.length === 0 ? (
+            <div className="px-5 py-6 text-[13px] leading-relaxed text-muted-foreground">
+              Ingen planlagte leveranser ennå. Bruk «Planlegg ny» for å sette opp automatisk
+              e-postutsending.
+            </div>
+          ) : (
+            planlagte.map((s, i) => (
+              <div
+                key={i}
+                className="flex flex-col gap-1.5 border-b border-border px-5 py-4 last:border-b-0"
+              >
+                <div className="text-[13.5px] font-medium leading-[1.4] text-foreground">{s.name}</div>
+                <div className="text-[11.5px] text-muted-foreground">{s.recipients}</div>
+                <div className="mt-0.5 flex items-center gap-2 font-mono text-[11px] text-muted-foreground">
+                  <span>{s.when}</span>
+                  <span>·</span>
+                  <span className="font-semibold text-primary">{s.next}</span>
+                </div>
+              </div>
+            ))
+          )}
+          <div className="border-t border-border px-5 py-4">
+            <Link
+              href="/admin/kalender"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
+            >
+              <Plus className="h-4 w-4" strokeWidth={2} aria-hidden />
+              Planlegg ny leveranse
+            </Link>
+          </div>
+        </aside>
       </div>
     </div>
   );
@@ -338,39 +322,28 @@ function Kpi({
   foot: string;
 }) {
   return (
-    <div className="rounded-lg border border-border bg-card p-6">
-      <div className="font-mono text-[10px] uppercase tracking-[0.10em] font-medium text-muted-foreground">
+    <div className="rounded-xl border border-border bg-card px-[18px] py-4">
+      <div className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
         {label}
       </div>
-      <div className="mt-2 font-mono text-[32px] font-medium leading-none tracking-tight tabular-nums">
+      <div className="mt-2 font-mono text-[32px] font-bold leading-none tracking-[-0.02em] tabular-nums text-foreground">
         {value}
-        {unit && (
-          <span className="text-[14px] font-normal text-muted-foreground">
-            {unit}
-          </span>
-        )}
+        {unit && <span className="ml-1 text-sm font-bold text-muted-foreground">{unit}</span>}
       </div>
-      <div className="mt-4 flex items-center gap-2 text-[12px] text-muted-foreground">
+      <div className="mt-3 font-mono text-[11px] font-bold tracking-[0.04em] text-muted-foreground">
         {foot}
       </div>
     </div>
   );
 }
 
-function Chip({
-  active,
-  children,
-}: {
-  active?: boolean;
-  children: React.ReactNode;
-}) {
+function Chip({ active, children }: { active?: boolean; children: React.ReactNode }) {
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-4 py-1.5 text-[12px] font-medium ${
-        active
-          ? "border-foreground bg-foreground text-background"
-          : "border-border bg-card text-muted-foreground"
-      }`}
+      className={cn(
+        "inline-flex items-center rounded-full border px-3.5 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.06em]",
+        active ? "border-primary bg-primary text-accent" : "border-border bg-card text-muted-foreground",
+      )}
     >
       {children}
     </span>
@@ -379,22 +352,10 @@ function Chip({
 
 function CategoryHeader({ title, count }: { title: string; count: number }) {
   return (
-    <div className="mt-8 mb-2.5 flex items-center gap-4 font-display text-[13px] font-semibold uppercase tracking-[0.04em] text-muted-foreground first:mt-0">
+    <div className="mb-3 mt-8 flex items-center gap-3 font-mono text-[11px] font-extrabold uppercase tracking-[0.12em] text-foreground first:mt-0">
       <span>{title}</span>
-      <span className="font-mono text-[11px] font-medium text-muted-foreground">
-        {count} maler
-      </span>
-      <span className="h-px flex-1 bg-border" />
-    </div>
-  );
-}
-
-function ReportGrid({ reports }: { reports: EksportTemplate[] }) {
-  return (
-    <div className="grid grid-cols-2 gap-4">
-      {reports.map((r) => (
-        <ReportCard key={r.id} report={r} />
-      ))}
+      <span className="font-bold tracking-[0.04em] text-muted-foreground">{count} maler</span>
+      <span className="h-px flex-1 bg-border" aria-hidden />
     </div>
   );
 }
@@ -403,57 +364,52 @@ function ReportCard({ report }: { report: EksportTemplate }) {
   const iconBg: Record<Tone, string> = {
     default: "bg-primary/10 text-primary",
     accent: "bg-accent/30 text-primary",
-    gold: "bg-muted text-muted-foreground",
+    gold: "bg-secondary text-muted-foreground",
     danger: "bg-destructive/10 text-destructive",
-    turn: "bg-muted text-muted-foreground",
+    turn: "bg-secondary text-muted-foreground",
   };
   return (
     <div
-      className={`relative flex flex-col gap-4 rounded-lg border p-6 transition-shadow hover:shadow-md ${
-        report.featured
-          ? "border-accent/40 bg-accent/10"
-          : "border-border bg-card"
-      }`}
+      className={cn(
+        "relative flex flex-col gap-4 rounded-xl border p-5 transition-shadow hover:shadow-md",
+        report.featured ? "border-accent/50 bg-accent/[0.08]" : "border-border bg-card",
+      )}
     >
       {report.featured && (
-        <span className="absolute right-3.5 top-3.5 rounded-full bg-accent px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-accent-foreground">
+        <span className="absolute right-3.5 top-3.5 rounded-full bg-accent px-2.5 py-1 font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] text-accent-foreground">
           Mest brukt
         </span>
       )}
-      <div
-        className={`grid h-10 w-10 place-items-center rounded-md ${iconBg[report.tone]}`}
-      >
+      <div className={cn("grid h-10 w-10 place-items-center rounded-md", iconBg[report.tone])}>
         {report.icon}
       </div>
       <div>
-        <div className="font-display text-[16px] font-semibold tracking-tight text-foreground">
+        <div className="font-display text-[16px] font-bold tracking-[-0.01em] text-foreground">
           {report.title}
         </div>
-        <div className="mt-2 flex-1 text-[13px] leading-[1.55] text-muted-foreground">
-          {report.desc}
-        </div>
+        <div className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">{report.desc}</div>
       </div>
-      <div className="flex flex-wrap gap-2.5 font-mono text-[11px] text-muted-foreground">
+      <div className="flex flex-wrap items-center gap-2 font-mono text-[10px] font-bold tracking-[0.04em] text-muted-foreground">
         {report.meta.map((m, i) => (
-          <span key={i}>
-            {i > 0 && <span className="mr-2.5 text-muted-foreground">·</span>}
+          <span key={i} className="inline-flex items-center gap-2">
+            {i > 0 && <span className="text-border">·</span>}
             {m}
           </span>
         ))}
       </div>
-      <div className="mt-1 flex items-center gap-2 border-t border-border pt-4">
+      <div className="mt-auto flex items-center gap-2 border-t border-border pt-4">
         <a
           href={report.href}
           download
           className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-1.5 text-[12.5px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
         >
-          Last ned →
+          Last ned
         </a>
         <Link
           href="/admin/kalender"
           className="inline-flex items-center gap-1.5 rounded-md px-4 py-1.5 text-[12.5px] font-medium text-foreground transition-colors hover:bg-secondary"
         >
-          Planlegg →
+          Planlegg
         </Link>
       </div>
     </div>

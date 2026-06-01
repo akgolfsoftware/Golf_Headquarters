@@ -1,9 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { Check, X, AlertTriangle, Sparkles } from "lucide-react";
-import { StatsEyebrow } from "@/components/stats/eyebrow";
-import { Reveal } from "@/components/stats/reveal";
+import {
+  Check,
+  X,
+  AlertTriangle,
+  ShieldCheck,
+  Trash2,
+  Trophy,
+  ListChecks,
+  UserCog,
+  History,
+} from "lucide-react";
 import { CountUp } from "@/components/stats/count-up";
 
 type Turnering = {
@@ -34,11 +42,11 @@ type Stats = {
 };
 
 const TABS = [
-  { id: "turneringer", label: "Turneringer" },
-  { id: "resultater", label: "Resultater" },
-  { id: "profil", label: "Profil-endringer" },
-  { id: "slett", label: "Slett-forespørsler" },
-  { id: "historikk", label: "Historikk" },
+  { id: "turneringer", label: "Turneringer", icon: Trophy },
+  { id: "resultater", label: "Resultater", icon: ListChecks },
+  { id: "profil", label: "Profil-endringer", icon: UserCog },
+  { id: "slett", label: "Slett-forespørsler", icon: Trash2 },
+  { id: "historikk", label: "Historikk", icon: History },
 ] as const;
 
 type Tab = (typeof TABS)[number]["id"];
@@ -52,7 +60,7 @@ export function ModeringClient({
   slett: Slett;
   stats: Stats;
 }) {
-  const [aktifTab, setAktifTab] = useState<Tab>("turneringer");
+  const [aktivTab, setAktivTab] = useState<Tab>("turneringer");
   const [valgte, setValgte] = useState<string[]>([]);
   const totaltVentende =
     stats.turneringer + stats.resultater + stats.profilEndringer + stats.slett;
@@ -61,94 +69,44 @@ export function ModeringClient({
     setValgte((v) => (v.includes(id) ? v.filter((s) => s !== id) : [...v, id]));
 
   return (
-    <div className="bg-background text-foreground">
+    <div className="space-y-6 pb-24">
       {/* Hero */}
-      <section
-        style={{
-          padding: "32px 64px 24px",
-          background: "var(--s-secondary)",
-          borderBottom: "1px solid var(--s-border)",
-        }}
-      >
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div>
-            <StatsEyebrow>Admin · Stats</StatsEyebrow>
-            <h1
-              className="font-display"
-              style={{ fontSize: 36, fontWeight: 600, marginTop: 8, letterSpacing: "-0.025em" }}
-            >
-              Moderering
-            </h1>
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <span className="inline-flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+            <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+            Admin · Stats
+          </span>
+          <h1 className="mt-2 font-display text-3xl font-bold leading-tight tracking-[-0.02em] sm:text-4xl">
+            Moderering
+          </h1>
+          <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.06em] text-muted-foreground">
+            Godkjenn innsendte turneringer, resultater og profil-endringer ·
+            håndter GDPR-slett
+          </p>
+        </div>
+        <div className="text-right">
+          <div className="font-mono text-[56px] font-bold leading-none tabular-nums text-primary">
+            <CountUp value={totaltVentende} />
           </div>
-          <div style={{ textAlign: "right" }}>
-            <div
-              className="font-mono"
-              style={{ fontSize: 56, color: "var(--s-primary)", lineHeight: 1, fontWeight: 500 }}
-            >
-              {totaltVentende}
-            </div>
-            <div
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: 10,
-                letterSpacing: "0.14em",
-                textTransform: "uppercase",
-                color: "var(--s-muted-fg)",
-              }}
-            >
-              Ventende
-            </div>
+          <div className="mt-1 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+            Ventende
           </div>
         </div>
-      </section>
+      </header>
 
       {/* KPI-strip */}
-      <Reveal>
-        <div
-          className="stats-kpi-strip"
-          style={{ gridTemplateColumns: "repeat(4, 1fr)", borderRadius: 0 }}
-        >
-          <div className="stats-kpi">
-            <div className="stats-kpi-eyebrow">Ventende</div>
-            <div className="stats-kpi-value">
-              <CountUp value={totaltVentende} />
-            </div>
-          </div>
-          <div className="stats-kpi">
-            <div className="stats-kpi-eyebrow">Godkjent denne uka</div>
-            <div className="stats-kpi-value">
-              <CountUp value={stats.godkjentDenneUka} />
-            </div>
-          </div>
-          <div className="stats-kpi">
-            <div className="stats-kpi-eyebrow">Avvist denne uka</div>
-            <div className="stats-kpi-value">
-              <CountUp value={stats.avvistDenneUka} />
-            </div>
-          </div>
-          <div className="stats-kpi">
-            <div className="stats-kpi-eyebrow">Snitt-tid</div>
-            <div
-              className="stats-kpi-value font-mono"
-              style={{ fontSize: 28, marginTop: 8 }}
-            >
-              {stats.snittTid}
-            </div>
-          </div>
-        </div>
-      </Reveal>
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <Kpi label="Ventende" value={totaltVentende} tone="primary" />
+        <Kpi label="Godkjent denne uka" value={stats.godkjentDenneUka} tone="success" />
+        <Kpi label="Avvist denne uka" value={stats.avvistDenneUka} tone="destructive" />
+        <KpiText label="Snitt-tid" value={stats.snittTid} />
+      </div>
 
       {/* Tab-bar */}
-      <div
-        style={{
-          borderBottom: "1px solid var(--s-border)",
-          padding: "0 64px",
-          display: "flex",
-          gap: 0,
-          overflowX: "auto",
-        }}
-      >
+      <div className="flex items-center gap-0 overflow-x-auto border-b border-border">
         {TABS.map((t) => {
+          const TabIcon = t.icon;
           const count =
             t.id === "turneringer"
               ? stats.turneringer
@@ -159,40 +117,28 @@ export function ModeringClient({
                   : t.id === "slett"
                     ? stats.slett
                     : undefined;
+          const isActive = aktivTab === t.id;
 
           return (
             <button
               key={t.id}
-              onClick={() => setAktifTab(t.id)}
-              style={{
-                padding: "16px 20px",
-                background: "transparent",
-                border: "none",
-                borderBottom:
-                  aktifTab === t.id ? "2px solid var(--s-primary)" : "2px solid transparent",
-                cursor: "pointer",
-                fontFamily: "var(--font-mono)",
-                fontSize: 11,
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                color: aktifTab === t.id ? "var(--s-primary)" : "var(--s-muted-fg)",
-                fontWeight: aktifTab === t.id ? 600 : 400,
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                whiteSpace: "nowrap",
-              }}
+              type="button"
+              onClick={() => setAktivTab(t.id)}
+              className={`-mb-px inline-flex items-center gap-2 whitespace-nowrap border-b-2 px-4 py-4 font-mono text-[11px] font-bold uppercase tracking-[0.10em] transition-colors ${
+                isActive
+                  ? "border-primary text-primary"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              }`}
             >
+              <TabIcon className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden />
               {t.label}
               {count !== undefined && count > 0 && (
                 <span
-                  style={{
-                    background: t.id === "slett" ? "hsl(var(--destructive))" : "var(--s-primary)",
-                    color: t.id === "slett" ? "#FFF" : "var(--s-primary-fg)",
-                    borderRadius: 999,
-                    padding: "1px 7px",
-                    fontSize: 10,
-                  }}
+                  className={`rounded-full px-1.5 py-px font-mono text-[10px] font-extrabold tabular-nums ${
+                    t.id === "slett"
+                      ? "bg-destructive text-white"
+                      : "bg-primary text-accent"
+                  }`}
                 >
                   {count}
                 </span>
@@ -203,225 +149,115 @@ export function ModeringClient({
       </div>
 
       {/* Tab-innhold */}
-      <div style={{ padding: "32px 64px" }}>
-        {aktifTab === "turneringer" && (
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {turneringer.map((t) => (
-              <div
-                key={t.id}
-                style={{
-                  background: "var(--s-card)",
-                  border: "1px solid var(--s-border)",
-                  borderRadius: "var(--s-r-md)",
-                  padding: 20,
-                  display: "flex",
-                  gap: 16,
-                  alignItems: "flex-start",
-                }}
-              >
-                <input
-                  type="checkbox"
-                  checked={valgte.includes(t.id)}
-                  onChange={() => toggleValgt(t.id)}
-                  style={{ marginTop: 3, cursor: "pointer", accentColor: "var(--s-primary)" }}
-                />
-                <div style={{ flex: 1 }}>
-                  <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
-                    <div
-                      className="font-display"
-                      style={{ fontSize: 17, fontWeight: 600 }}
-                    >
-                      {t.navn}
-                    </div>
-                    <span
-                      style={{
-                        fontFamily: "var(--font-mono)",
-                        fontSize: 10,
-                        letterSpacing: "0.12em",
-                        textTransform: "uppercase",
-                        color: "var(--s-muted-fg)",
-                      }}
-                    >
-                      {t.dato.toUpperCase()}
-                    </span>
-                    {t.flagg > 0 && (
-                      <span
-                        style={{
-                          fontSize: 11,
-                          fontFamily: "var(--font-mono)",
-                          color: t.flagg >= 3 ? "hsl(var(--destructive))" : "#B57317",
-                          fontWeight: 600,
-                          background:
-                            t.flagg >= 3 ? "rgba(190,61,61,0.1)" : "rgba(181,115,23,0.1)",
-                          padding: "2px 8px",
-                          borderRadius: 4,
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 4,
-                        }}
-                      >
-                        <AlertTriangle size={11} strokeWidth={2} />
-                        {t.flagg} FLAGG
+      <div>
+        {aktivTab === "turneringer" && (
+          <div className="flex flex-col gap-2.5">
+            {turneringer.length === 0 ? (
+              <EmptyTab kind="turneringer" />
+            ) : (
+              turneringer.map((t) => (
+                <div
+                  key={t.id}
+                  className="flex items-start gap-4 rounded-xl border border-border bg-card p-4"
+                >
+                  <input
+                    type="checkbox"
+                    checked={valgte.includes(t.id)}
+                    onChange={() => toggleValgt(t.id)}
+                    className="mt-1 h-4 w-4 shrink-0 cursor-pointer accent-[hsl(var(--primary))]"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <div className="font-display text-[17px] font-bold tracking-[-0.01em]">
+                        {t.navn}
+                      </div>
+                      <span className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+                        {t.dato.toUpperCase()}
                       </span>
-                    )}
+                      {t.flagg > 0 && (
+                        <span
+                          className={`inline-flex items-center gap-1 rounded px-2 py-0.5 font-mono text-[10px] font-extrabold uppercase tracking-[0.06em] ${
+                            t.flagg >= 3
+                              ? "bg-destructive/10 text-destructive"
+                              : "bg-warning/15 text-warning"
+                          }`}
+                        >
+                          <AlertTriangle className="h-3 w-3" strokeWidth={2} aria-hidden />
+                          {t.flagg} FLAGG
+                        </span>
+                      )}
+                    </div>
+                    <div className="mt-1.5 text-[13px] text-muted-foreground">
+                      Innlagt av{" "}
+                      <strong className="font-semibold text-foreground">
+                        {t.innlegger}
+                      </strong>
+                      {t.dubletter.length > 0 && (
+                        <> · Mulige dubletter: {t.dubletter.join(", ")}</>
+                      )}
+                    </div>
                   </div>
-                  <div style={{ color: "var(--s-muted-fg)", fontSize: 13, marginTop: 6 }}>
-                    Innlagt av <strong>{t.innlegger}</strong>
-                    {t.dubletter.length > 0 && (
-                      <> · Mulige dubletter: {t.dubletter.join(", ")}</>
-                    )}
+                  <div className="flex shrink-0 gap-2">
+                    <button
+                      type="button"
+                      title="Godkjenn"
+                      className="grid h-9 w-9 place-items-center rounded-md bg-accent text-accent-foreground transition-opacity hover:opacity-90"
+                    >
+                      <Check className="h-4 w-4" strokeWidth={2.5} aria-hidden />
+                    </button>
+                    <button
+                      type="button"
+                      title="Avvis"
+                      className="grid h-9 w-9 place-items-center rounded-md bg-destructive/10 text-destructive transition-colors hover:bg-destructive/15"
+                    >
+                      <X className="h-4 w-4" strokeWidth={2.5} aria-hidden />
+                    </button>
                   </div>
                 </div>
-                <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
-                  <button
-                    style={{
-                      background: "var(--s-accent)",
-                      border: "none",
-                      borderRadius: 6,
-                      width: 36,
-                      height: 36,
-                      color: "var(--s-accent-fg)",
-                      cursor: "pointer",
-                      display: "grid",
-                      placeItems: "center",
-                    }}
-                    title="Godkjenn"
-                  >
-                    <Check size={16} strokeWidth={2.5} />
-                  </button>
-                  <button
-                    style={{
-                      background: "rgba(190,61,61,0.1)",
-                      border: "none",
-                      borderRadius: 6,
-                      width: 36,
-                      height: 36,
-                      color: "hsl(var(--destructive))",
-                      cursor: "pointer",
-                      display: "grid",
-                      placeItems: "center",
-                    }}
-                    title="Avvis"
-                  >
-                    <X size={16} strokeWidth={2.5} />
-                  </button>
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         )}
 
-        {aktifTab === "slett" && (
-          <div
-            style={{
-              background: "rgba(190,61,61,0.05)",
-              border: "1px solid #BE3D3D",
-              borderRadius: "var(--s-r-lg)",
-              padding: 32,
-              maxWidth: 640,
-            }}
-          >
-            <div
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: 10,
-                letterSpacing: "0.14em",
-                textTransform: "uppercase",
-                color: "hsl(var(--destructive))",
-                marginBottom: 12,
-              }}
-            >
+        {aktivTab === "slett" && (
+          <div className="max-w-[640px] rounded-2xl border border-destructive/30 bg-destructive/5 p-8">
+            <div className="mb-3 inline-flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-destructive">
+              <ShieldCheck className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
               GDPR · Slett-forespørsel
             </div>
-            <h2
-              className="font-display"
-              style={{ fontSize: 28, fontWeight: 600 }}
-            >
+            <h2 className="font-display text-[28px] font-bold tracking-[-0.02em]">
               {slett.spiller}
             </h2>
-            <div
-              style={{
-                marginTop: 20,
-                display: "grid",
-                gridTemplateColumns: "auto 1fr",
-                gap: "8px 24px",
-                fontSize: 14,
-              }}
-            >
-              <span style={{ color: "var(--s-muted-fg)" }}>Forespurt av:</span>
-              <span>{slett.forespurAv}</span>
-              <span style={{ color: "var(--s-muted-fg)" }}>Mottatt:</span>
-              <span>{slett.mottatt}</span>
-              <span style={{ color: "var(--s-muted-fg)" }}>Grunn:</span>
-              <span>«{slett.grunn}»</span>
+            <div className="mt-5 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-sm">
+              <span className="text-muted-foreground">Forespurt av:</span>
+              <span className="text-foreground">{slett.forespurAv}</span>
+              <span className="text-muted-foreground">Mottatt:</span>
+              <span className="text-foreground">{slett.mottatt}</span>
+              <span className="text-muted-foreground">Grunn:</span>
+              <span className="text-foreground">«{slett.grunn}»</span>
             </div>
 
-            <div
-              style={{
-                marginTop: 24,
-                padding: 16,
-                background: "rgba(190,61,61,0.08)",
-                borderRadius: "var(--s-r-md)",
-              }}
-            >
-              <div
-                style={{
-                  fontFamily: "var(--font-mono)",
-                  fontSize: 10,
-                  letterSpacing: "0.14em",
-                  textTransform: "uppercase",
-                  color: "hsl(var(--destructive))",
-                  marginBottom: 10,
-                }}
-              >
+            <div className="mt-6 rounded-xl bg-destructive/[0.08] p-4">
+              <div className="mb-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-destructive">
                 Konsekvens
               </div>
-              <ul
-                style={{
-                  margin: 0,
-                  padding: 0,
-                  listStyle: "none",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 6,
-                  fontSize: 13,
-                  lineHeight: 1.5,
-                }}
-              >
+              <ul className="flex flex-col gap-1.5 text-[13px] leading-relaxed text-foreground">
                 <li>· Sletter PublicPlayer + {slett.rader} PublicPlayerEntry-rader</li>
                 <li>· Markerer {slett.rader} turneringer som «anonym deltaker»</li>
                 <li>· Sender bekreftelse til {slett.forespurAv}</li>
               </ul>
             </div>
 
-            <div style={{ display: "flex", gap: 12, marginTop: 24 }}>
+            <div className="mt-6 flex flex-wrap gap-3">
               <button
-                style={{
-                  padding: "12px 22px",
-                  borderRadius: 999,
-                  background: "hsl(var(--destructive))",
-                  color: "#FFF",
-                  border: "none",
-                  cursor: "pointer",
-                  fontFamily: "inherit",
-                  fontWeight: 500,
-                  fontSize: 14,
-                }}
+                type="button"
+                className="rounded-full bg-destructive px-6 py-3 text-sm font-bold text-white transition-opacity hover:opacity-90"
               >
                 Bekreft sletting
               </button>
               <button
-                style={{
-                  padding: "12px 22px",
-                  borderRadius: 999,
-                  background: "var(--s-secondary)",
-                  color: "var(--s-fg)",
-                  border: "1px solid var(--s-border)",
-                  cursor: "pointer",
-                  fontFamily: "inherit",
-                  fontWeight: 500,
-                  fontSize: 14,
-                }}
+                type="button"
+                className="rounded-full border border-border bg-secondary px-6 py-3 text-sm font-bold text-foreground transition-colors hover:bg-secondary/70"
               >
                 Avvis med begrunnelse
               </button>
@@ -429,93 +265,104 @@ export function ModeringClient({
           </div>
         )}
 
-        {aktifTab !== "turneringer" && aktifTab !== "slett" && (
-          <div
-            style={{
-              padding: 64,
-              textAlign: "center",
-              color: "var(--s-muted-fg)",
-            }}
-          >
-            <Sparkles
-              size={32}
-              style={{ opacity: 0.4, margin: "0 auto 16px", display: "block" }}
-              strokeWidth={1.5}
-            />
-            <div style={{ fontSize: 14 }}>Ingen ventende i denne kategorien akkurat nå.</div>
-          </div>
+        {aktivTab !== "turneringer" && aktivTab !== "slett" && (
+          <EmptyTab kind={aktivTab} />
         )}
       </div>
 
       {/* Sticky batch-bar */}
       {valgte.length > 0 && (
-        <div
-          style={{
-            position: "sticky",
-            bottom: 16,
-            left: 64,
-            right: 64,
-            background: "var(--s-primary)",
-            color: "var(--s-bg)",
-            borderRadius: 999,
-            padding: "12px 24px",
-            margin: "0 64px",
-            display: "flex",
-            alignItems: "center",
-            gap: 16,
-            boxShadow: "0 12px 32px rgba(0,88,64,0.3)",
-          }}
-        >
-          <span
-            className="font-mono"
-            style={{ fontSize: 13 }}
-          >
+        <div className="sticky bottom-4 z-20 flex items-center gap-4 rounded-full bg-primary px-6 py-3 text-accent shadow-[0_12px_32px_hsl(var(--primary)/0.3)]">
+          <span className="font-mono text-[13px] font-bold uppercase tracking-[0.08em]">
             {valgte.length} VALGT
           </span>
           <button
-            style={{
-              padding: "8px 18px",
-              borderRadius: 999,
-              background: "transparent",
-              color: "var(--s-primary-fg)",
-              border: "1px solid var(--s-primary-fg)",
-              cursor: "pointer",
-              fontFamily: "inherit",
-              fontSize: 13,
-            }}
+            type="button"
+            className="rounded-full border border-accent/40 px-4 py-1.5 font-mono text-[12px] font-bold uppercase tracking-[0.06em] text-accent transition-colors hover:bg-accent/10"
           >
             Godkjenn alle
           </button>
           <button
-            style={{
-              padding: "8px 18px",
-              borderRadius: 999,
-              background: "transparent",
-              color: "var(--s-primary-fg)",
-              border: "1px solid var(--s-primary-fg)",
-              cursor: "pointer",
-              fontFamily: "inherit",
-              fontSize: 13,
-            }}
+            type="button"
+            className="rounded-full border border-accent/40 px-4 py-1.5 font-mono text-[12px] font-bold uppercase tracking-[0.06em] text-accent transition-colors hover:bg-accent/10"
           >
             Avvis alle
           </button>
           <button
+            type="button"
             onClick={() => setValgte([])}
-            style={{
-              marginLeft: "auto",
-              background: "transparent",
-              border: "none",
-              color: "var(--s-primary-fg)",
-              cursor: "pointer",
-              fontSize: 18,
-              lineHeight: 1,
-            }}
+            className="ml-auto grid h-7 w-7 place-items-center rounded-full text-accent transition-colors hover:bg-accent/10"
+            aria-label="Lukk utvalg"
           >
-            ×
+            <X className="h-4 w-4" strokeWidth={2} aria-hidden />
           </button>
         </div>
       )}
+    </div>
+  );
+}
+
+// ───────────────────────────────────────────────────────────── helpers ──
+
+function Kpi({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: number;
+  tone: "primary" | "success" | "destructive";
+}) {
+  const toneClass =
+    tone === "success"
+      ? "text-success"
+      : tone === "destructive"
+        ? "text-destructive"
+        : "text-foreground";
+  return (
+    <div className="flex flex-col gap-1.5 rounded-xl border border-border bg-card px-4 py-4">
+      <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
+        {label}
+      </span>
+      <div className={`font-mono text-[34px] font-bold leading-none tabular-nums ${toneClass}`}>
+        <CountUp value={value} />
+      </div>
+    </div>
+  );
+}
+
+function KpiText({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex flex-col gap-1.5 rounded-xl border border-border bg-card px-4 py-4">
+      <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
+        {label}
+      </span>
+      <div className="font-mono text-[28px] font-bold leading-none tabular-nums text-foreground">
+        {value}
+      </div>
+    </div>
+  );
+}
+
+function EmptyTab({ kind }: { kind: Tab }) {
+  const labels: Record<Tab, string> = {
+    turneringer: "turneringer",
+    resultater: "resultater",
+    profil: "profil-endringer",
+    slett: "slett-forespørsler",
+    historikk: "historikk",
+  };
+  return (
+    <div className="rounded-2xl border border-border bg-card px-6 py-16 text-center">
+      <span className="mx-auto inline-flex h-12 w-12 items-center justify-center rounded-xl bg-secondary text-muted-foreground">
+        <Check className="h-6 w-6" strokeWidth={1.5} aria-hidden />
+      </span>
+      <p className="mt-4 font-display text-base font-bold tracking-[-0.01em] text-foreground">
+        Ingen ventende {labels[kind]}
+      </p>
+      <p className="mt-1 text-sm text-muted-foreground">
+        Køen er tom akkurat nå.
+      </p>
     </div>
   );
 }
