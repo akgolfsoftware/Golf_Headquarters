@@ -25,6 +25,11 @@ concurrency:
 jobs:
   scrape:
     runs-on: ubuntu-latest
+    # DB-creds må være tilgjengelig allerede ved `npm ci` (postinstall kjører
+    # `prisma generate`, som leser DIRECT_URL fra prisma.config.ts).
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DIRECT_URL: ${{ secrets.DIRECT_URL }}
     steps:
       - uses: actions/checkout@v4
 
@@ -41,6 +46,3 @@ jobs:
 
       - name: Scrape GolfBox
         run: npx tsx scripts/scrape-golfbox.ts --mode=${{ github.event.inputs.mode || 'all' }}
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DIRECT_URL: ${{ secrets.DIRECT_URL }}
