@@ -1,6 +1,14 @@
+/**
+ * PlayerHQ · Meg · Rediger profil (/portal/meg/profil/rediger). Mobil-først (430px).
+ *
+ * Skjema mot ekte User-felter. HCP synkes fra GolfBox (read-only). Felter som
+ * lagres via server-action: navn, telefon, klubb, ambisjon. Server component
+ * henter ekte data — INGEN falske fallback-verdier. Behold auth-guard + action.
+ */
+import Link from "next/link";
+import { ChevronLeft } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { ProfilRedigerForm } from "./profil-rediger-form";
 
 export const dynamic = "force-dynamic";
@@ -11,45 +19,51 @@ export default async function ProfilRedigerPage() {
   const dbUser = await prisma.user.findUnique({
     where: { id: user.id },
     select: {
-      id: true,
       name: true,
       email: true,
       phone: true,
       hcp: true,
-      playingYears: true,
-      ambition: true,
       homeClub: true,
+      ambition: true,
       avatarUrl: true,
       tier: true,
     },
   });
 
   const initial = {
-    name: dbUser?.name ?? user.name ?? "Markus Røinås Pedersen",
-    email: dbUser?.email ?? user.email ?? "markus.rp@example.com",
-    phone: dbUser?.phone ?? "+47 412 33 555",
-    hcp: dbUser?.hcp ?? -3.5,
-    homeClub: dbUser?.homeClub ?? "Søgne & Mandal Golfklubb",
+    name: dbUser?.name ?? user.name ?? "",
+    email: dbUser?.email ?? user.email ?? "",
+    phone: dbUser?.phone ?? "",
+    hcp: dbUser?.hcp ?? null,
+    homeClub: dbUser?.homeClub ?? "",
     ambition: dbUser?.ambition ?? "",
-    playingYears: dbUser?.playingYears ?? null,
     avatarUrl: dbUser?.avatarUrl ?? null,
     tier: dbUser?.tier ?? "GRATIS",
-    fodselsdato: "13.08.2007",
-    adresse: "Lundeveien 14, 4621 Kristiansand",
-    kjonn: "Mann",
-    aListe: "A1 — Toppidrett",
-    dominantHand: "Høyrehendt" as const,
   };
 
   return (
-    <div className="mx-auto max-w-[1240px] space-y-6 px-4 pb-20 sm:px-6 md:space-y-8 md:pb-0">
-      <PageHeader
-        eyebrow="PlayerHQ · Meg · Profil"
-        titleLead="Rediger"
-        titleItalic="profil"
-        sub="HCP synkes automatisk fra GolfBox. Andre felter lagres når du trykker «Lagre endringer»."
-      />
-      <ProfilRedigerForm initial={initial} />
+    <div className="mx-auto w-full max-w-[480px] pb-8">
+      {/* topbar — tilbake + tittel */}
+      <div className="flex items-center gap-3 border-b border-border px-2 py-3">
+        <Link
+          href="/portal/meg"
+          className="inline-flex items-center gap-1.5 px-1 py-1.5 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <ChevronLeft className="h-[13px] w-[13px]" strokeWidth={2} aria-hidden />
+          Profil
+        </Link>
+        <h1 className="font-display text-[17px] font-bold tracking-[-0.015em] text-foreground">
+          Rediger profil
+        </h1>
+      </div>
+
+      <div className="px-2 pb-4 pt-3">
+        <p className="mb-3 px-1 text-[13px] leading-relaxed text-muted-foreground">
+          HCP synkes automatisk fra GolfBox. Andre felter lagres når du trykker
+          «Lagre».
+        </p>
+        <ProfilRedigerForm initial={initial} />
+      </div>
     </div>
   );
 }

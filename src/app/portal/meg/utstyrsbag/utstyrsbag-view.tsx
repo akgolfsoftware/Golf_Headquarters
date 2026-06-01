@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import {
-  Target,
-  Wrench,
-  Flag,
   CircleDot,
   Compass,
-  StickyNote,
+  Flag,
   Pencil,
+  StickyNote,
+  Target,
+  Wrench,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { EmptyState } from "@/components/shared/empty-state";
@@ -66,7 +66,7 @@ export function UtstyrsbagView({ initial, finnes }: Props) {
           <button
             type="button"
             onClick={() => setRedigerer(true)}
-            className="rounded-md bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring"
+            className="inline-flex h-11 items-center justify-center rounded-md bg-primary px-6 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
           >
             Sett opp utstyrsbag
           </button>
@@ -76,19 +76,19 @@ export function UtstyrsbagView({ initial, finnes }: Props) {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-end">
+    <div className="flex flex-col gap-3">
+      <div className="flex justify-end">
         <button
           type="button"
           onClick={() => setRedigerer(true)}
-          className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+          className="inline-flex h-10 items-center gap-1.5 rounded-[10px] border border-border bg-card px-3.5 font-mono text-[11px] font-extrabold tracking-[0.04em] text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
         >
-          <Pencil className="h-4 w-4" strokeWidth={1.5} />
+          <Pencil className="h-[13px] w-[13px]" strokeWidth={2} aria-hidden />
           Rediger
         </button>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="divide-y divide-border overflow-hidden rounded-[14px] border border-border bg-card">
         {FELTER.map((f) => {
           const verdi = initial[f.key];
           const harVerdi = verdi != null && verdi.trim().length > 0;
@@ -96,28 +96,26 @@ export function UtstyrsbagView({ initial, finnes }: Props) {
           return (
             <div
               key={f.key}
-              className="rounded-lg border border-border bg-card p-4 transition-colors hover:border-primary/40 sm:p-6"
+              className="grid grid-cols-[34px_1fr] items-start gap-x-3 px-3.5 py-3.5"
             >
-              <div className="flex items-start gap-4">
-                <div
-                  aria-hidden="true"
-                  className="grid h-10 w-10 flex-shrink-0 place-items-center rounded-full bg-secondary text-primary"
-                >
-                  <Icon className="h-5 w-5" strokeWidth={1.5} />
+              <span
+                aria-hidden="true"
+                className="grid h-[34px] w-[34px] place-items-center rounded-[9px] bg-primary/[0.08] text-primary"
+              >
+                <Icon className="h-[17px] w-[17px]" strokeWidth={1.75} />
+              </span>
+              <div className="min-w-0">
+                <div className="font-mono text-[10px] font-bold uppercase tracking-[0.04em] text-muted-foreground">
+                  {f.label}
                 </div>
-                <div className="min-w-0 flex-1">
-                  <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                    {f.label}
-                  </div>
-                  <div
-                    className={`mt-2 text-sm leading-relaxed ${
-                      harVerdi
-                        ? "text-foreground"
-                        : "italic text-muted-foreground/70"
-                    }`}
-                  >
-                    {harVerdi ? verdi : "Ikke satt"}
-                  </div>
+                <div
+                  className={`mt-0.5 text-[14px] leading-snug ${
+                    harVerdi
+                      ? "font-semibold text-foreground"
+                      : "italic text-muted-foreground/70"
+                  }`}
+                >
+                  {harVerdi ? verdi : "Ikke satt"}
                 </div>
               </div>
             </div>

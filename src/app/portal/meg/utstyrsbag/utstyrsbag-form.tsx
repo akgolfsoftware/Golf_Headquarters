@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Check } from "lucide-react";
+import { Check, Loader2, Save } from "lucide-react";
 import { lagreUtstyrsbag, type UtstyrsbagInput } from "./actions";
 
 type Props = {
@@ -63,15 +63,8 @@ export function UtstyrsbagForm({ initial, onAvbryt }: Props) {
   }
 
   return (
-    <form
-      onSubmit={lagre}
-      className="space-y-6 rounded-lg border border-border bg-card p-6"
-    >
-      <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-        Min utstyrsbag
-      </span>
-
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <form onSubmit={lagre} className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3.5 rounded-[14px] border border-border bg-card p-4">
         <Felt label="Driver" hint="Merke + modell + loft">
           <input
             type="text"
@@ -152,55 +145,66 @@ export function UtstyrsbagForm({ initial, onAvbryt }: Props) {
             className={input}
           />
         </Felt>
+        <Felt label="Notater" hint="Skaft, grep, fitting-data">
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="f.eks. Project X 6.0 i jernsett, Golf Pride MCC grep"
+            maxLength={FELT_MAX}
+            rows={4}
+            className={`${input} resize-y`}
+          />
+        </Felt>
       </div>
 
-      <Felt label="Notater" hint="Skaft, grep, fitting-data">
-        <textarea
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          placeholder="f.eks. Project X 6.0 i jernsett, Golf Pride MCC grep"
-          maxLength={FELT_MAX}
-          rows={4}
-          className={`${input} resize-y`}
-        />
-      </Felt>
-
       {feil && (
-        <div className="rounded-md border border-destructive/40 bg-destructive/10 px-4 py-2 text-sm text-destructive">
+        <div className="rounded-[12px] border border-destructive/40 bg-destructive/10 px-4 py-2.5 text-[13px] text-destructive">
           {feil}
         </div>
       )}
 
-      <div className="flex items-center gap-4">
-        <button
-          type="submit"
-          disabled={pending}
-          className="rounded-md bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
-        >
-          {pending ? "Lagrer…" : "Lagre utstyrsbag"}
-        </button>
+      {/* lagre-bar */}
+      <div className="sticky bottom-0 flex items-center gap-2.5 rounded-[14px] border border-border bg-secondary px-4 py-3">
+        <span className="inline-flex flex-1 items-center gap-1.5 font-mono text-[10px] font-bold tracking-[0.04em] text-muted-foreground">
+          {pending ? (
+            <>
+              <Loader2 className="h-[13px] w-[13px] animate-spin" strokeWidth={2} aria-hidden />
+              Lagrer …
+            </>
+          ) : lagret ? (
+            <>
+              <Check className="h-[13px] w-[13px] text-primary" strokeWidth={2} aria-hidden />
+              Lagret
+            </>
+          ) : (
+            "Alle felter er valgfrie"
+          )}
+        </span>
         {onAvbryt && (
           <button
             type="button"
             onClick={onAvbryt}
             disabled={pending}
-            className="rounded-md border border-border bg-card px-6 py-4 text-sm font-medium text-foreground transition-colors hover:bg-secondary disabled:opacity-50"
+            className="inline-flex h-[46px] items-center rounded-[12px] px-4 font-mono text-[11px] font-extrabold uppercase tracking-[0.08em] text-muted-foreground transition-colors hover:text-foreground disabled:opacity-50"
           >
             Avbryt
           </button>
         )}
-        {lagret && (
-          <span className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.10em] text-primary">
-            Lagret <Check className="h-3 w-3" strokeWidth={2.5} aria-hidden />
-          </span>
-        )}
+        <button
+          type="submit"
+          disabled={pending}
+          className="inline-flex h-[46px] items-center gap-2 rounded-[12px] bg-primary px-5 font-mono text-[11px] font-extrabold uppercase tracking-[0.08em] text-accent transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:opacity-50"
+        >
+          <Save className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
+          {pending ? "Lagrer" : "Lagre"}
+        </button>
       </div>
     </form>
   );
 }
 
 const input =
-  "w-full rounded-md border border-input bg-card px-4 py-2 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30";
+  "w-full rounded-[11px] border border-input bg-card px-3.5 py-2.5 text-[15px] text-foreground outline-none transition-colors focus-visible:outline-none focus:border-ring focus:ring-2 focus:ring-ring/30";
 
 function Felt({
   label,
@@ -212,13 +216,15 @@ function Felt({
   children: React.ReactNode;
 }) {
   return (
-    <label className="block">
-      <span className="mb-1 flex items-baseline justify-between gap-2">
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+    <label className="flex flex-col gap-1.5">
+      <span className="flex items-baseline justify-between gap-2">
+        <span className="font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground">
           {label}
         </span>
         {hint && (
-          <span className="text-[10px] text-muted-foreground/70">{hint}</span>
+          <span className="font-mono text-[9px] tracking-[0.02em] text-muted-foreground/70">
+            {hint}
+          </span>
         )}
       </span>
       {children}

@@ -1,9 +1,11 @@
 import { Video } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
+import { PlayerHero } from "@/components/portal/player-hero";
 import { EmptyState } from "@/components/shared/empty-state";
 import { PlayerVideoCard } from "./player-video-card";
+
+export const dynamic = "force-dynamic";
 
 export default async function VideoerPage() {
   const user = await requirePortalUser({
@@ -17,14 +19,25 @@ export default async function VideoerPage() {
   });
 
   return (
-    <div className="mx-auto max-w-[1240px] space-y-6 px-4 pb-20 sm:px-6 md:pb-0">
-      <PageHeader
+    <div className="mx-auto max-w-[430px] space-y-5 px-4 pb-20 md:pb-8">
+      <PlayerHero
         eyebrow="PlayerHQ · Coach · Videoer"
         titleLead="Coaching-"
         titleItalic="videoer"
         titleTrail="fra coachen din"
-        sub={`${videos.length} videoer. Klikk for å åpne i ny fane.`}
       />
+
+      <div className="flex items-center gap-2 border-b border-border pb-3">
+        <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-foreground">
+          Alle videoer
+        </span>
+        <span className="font-mono text-[10px] font-bold tracking-[0.04em] text-muted-foreground">
+          {videos.length}
+        </span>
+        <span className="ml-auto font-mono text-[9px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
+          Åpnes i ny fane
+        </span>
+      </div>
 
       {videos.length === 0 ? (
         <EmptyState
@@ -34,7 +47,7 @@ export default async function VideoerPage() {
           sub="Coachen din kan dele swing-analyser, drill-demo og kamp-feedback her."
         />
       ) : (
-        <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="flex flex-col gap-2.5">
           {videos.map((v) => (
             <PlayerVideoCard
               key={v.id}

@@ -1,26 +1,42 @@
 /**
- * PlayerHQ — Talent · Min plan
+ * PlayerHQ — Talent · Min plan (MOBILE-FIRST 430px)
  *
- * Spillerens egen utviklingsplan:
- *  - Hero med eyebrow + italic-tittel
- *  - Status-kort (nivå, klubb, region, i programmet siden)
- *  - 5 KPI-kort med radar-akser + bar-graf 1–10
- *  - Milepæler-timeline (fra TalentTracking.milepaeler JSON)
- *  - "Neste mål" — første ufullførte milepæl eller hardkodet placeholder
+ * Spillerens egen utviklingsplan. Athletic-editorial re-styl mot DS-tokens:
+ *  - Mono-eyebrow m/pulse + italic display-tittel
+ *  - Status-strip (nivå, klubb, region, i programmet siden)
+ *  - 5 akse-kort (1–10) farget per pyramide-token + progress-bar
+ *  - "Neste mål"-kort (lime-glød) fra første ufullførte milepæl
+ *  - Milepæler-tidslinje fra TalentTracking.milepaeler (DB)
+ *
+ * All data fra TalentTracking — ingen falske tall (tomstate når null).
  */
 
-import { BookOpen, CheckCircle2, Circle, Target, TrendingUp } from "lucide-react";
+import Link from "next/link";
+import { ArrowLeft, CheckCircle2, Circle, Target } from "lucide-react";
 
-import { TalentHero } from "@/components/portal/talent/talent-hero";
-import { AXIS_KEYS, AXIS_LABELS, type AxisKey } from "@/components/portal/talent/radar-chart";
+import {
+  AXIS_KEYS,
+  AXIS_LABELS,
+  type AxisKey,
+} from "@/components/portal/talent/radar-chart";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { cn } from "@/lib/utils";
 
 type Milepael = {
   tittel: string;
   dato?: string;
   beskrivelse?: string;
   fullfort?: boolean;
+};
+
+// Talent-akse → pyramide-token-klasser (gir hver akse en farge-identitet).
+const AXIS_BAR: Record<AxisKey, string> = {
+  fysisk: "bg-pyr-fys",
+  teknikk: "bg-pyr-tek",
+  taktikk: "bg-pyr-slag",
+  mental: "bg-pyr-turn",
+  motivasjon: "bg-pyr-spill",
 };
 
 function parseMilepaeler(json: unknown): Milepael[] {
@@ -50,15 +66,10 @@ function formatDato(iso?: string): string {
 export default async function MinPlanPage() {
   const user = await requirePortalUser({ allow: ["PLAYER"] });
 
-  // Layout har allerede bekreftet at tracking finnes — men typescript trenger
-  // garantien her også.
   const tracking = await prisma.talentTracking.findUnique({
     where: { userId: user.id },
   });
-
-  if (!tracking) {
-    return null;
-  }
+  if (!tracking) return null;
 
   const values: Record<AxisKey, number | null> = {
     fysisk: tracking.fysisk,
@@ -76,79 +87,113 @@ export default async function MinPlanPage() {
     year: "numeric",
   });
 
-  return (
-    <div className="mx-auto max-w-6xl px-4 py-6 pb-20 sm:px-6 sm:py-8 md:px-8 md:py-12 md:pb-12">
-      <TalentHero
-        eyebrow="PlayerHQ · Talent · Min plan"
-        italic="Min"
-        rest="utviklingsplan"
-        lead="Sporet på de fem aksene som coachen din bruker for å plassere deg på nivå og bygge programmet ditt."
-      />
+  const statusKort: { label: string; value: string }[] = [
+    { label: "Nivå", value: tracking.niva },
+    { label: "Klubb", value: tracking.klubb ?? "Ikke registrert" },
+    { label: "Region", value: tracking.region ?? "Ikke registrert" },
+    { label: "I programmet", value: iProgrammetSiden },
+  ];
 
-      {/* Status-kort */}
+  return (
+    <div className="mx-auto flex max-w-[480px] flex-col gap-4">
+      {/* Tilbake */}
+      <Link
+        href="/portal/talent"
+        className="inline-flex w-fit items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground transition-colors hover:text-foreground"
+      >
+        <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
+        Tilbake til talent
+      </Link>
+
+      {/* Header */}
+      <header>
+        <span className="inline-flex items-center gap-2 font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
+          <span className="relative inline-flex h-1.5 w-1.5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60" />
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_6px_hsl(var(--accent)/0.6)]" />
+          </span>
+          TALENT · MIN PLAN · {tracking.niva}
+        </span>
+        <h1 className="mt-1.5 font-display text-[26px] font-bold leading-[1.1] tracking-[-0.02em] text-foreground">
+          Min{" "}
+          <em className="font-normal italic text-primary">utviklingsplan</em>.
+        </h1>
+        <p className="mt-1.5 text-[13px] leading-snug text-muted-foreground">
+          Sporet på de fem aksene coachen din bruker for å plassere deg på nivå
+          og bygge programmet ditt.
+        </p>
+      </header>
+
+      {/* Status-strip 2x2 */}
       <section
         aria-label="Status i talent-programmet"
-        className="mb-8 grid grid-cols-2 gap-4 md:grid-cols-4"
+        className="grid grid-cols-2 gap-3"
       >
-        <StatusCard label="Nivå" value={tracking.niva} />
-        <StatusCard label="Klubb" value={tracking.klubb ?? "Ikke registrert"} />
-        <StatusCard label="Region" value={tracking.region ?? "Ikke registrert"} />
-        <StatusCard label="I programmet siden" value={iProgrammetSiden} />
+        {statusKort.map((s) => (
+          <div
+            key={s.label}
+            className="flex flex-col gap-1 rounded-xl border border-border bg-card p-3.5"
+          >
+            <span className="font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground">
+              {s.label}
+            </span>
+            <span className="text-sm font-semibold capitalize leading-tight text-foreground">
+              {s.value}
+            </span>
+          </div>
+        ))}
       </section>
 
-      {/* KPI-kort 5 akser */}
-      <section aria-label="Mine fem utviklingsakser" className="mb-12">
-        <div className="mb-6 flex items-center gap-2">
-          <TrendingUp size={20} strokeWidth={1.5} className="text-primary" aria-hidden />
-          <h2 className="font-display text-2xl font-medium tracking-tight">
-            Mine fem akser
-          </h2>
-        </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      {/* 5 akse-kort */}
+      <section aria-label="Mine fem utviklingsakser" className="flex flex-col gap-3">
+        <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
+          Mine fem akser
+        </span>
+        <div className="grid grid-cols-1 gap-3">
           {AXIS_KEYS.map((k) => (
-            <AxisCard key={k} label={AXIS_LABELS[k]} value={values[k]} />
+            <AxisCard key={k} label={AXIS_LABELS[k]} value={values[k]} barClass={AXIS_BAR[k]} />
           ))}
         </div>
       </section>
 
-      {/* Neste mål */}
+      {/* Neste mål (lime-glød) */}
       <section
         aria-label="Neste mål"
-        className="mb-12 overflow-hidden rounded-lg border border-border bg-card p-6 md:p-8"
+        className="rounded-xl border border-l-[3px] border-accent/55 border-l-accent bg-accent/10 p-4"
       >
-        <div className="flex items-start gap-4">
+        <div className="flex items-start gap-3">
           <span
-            className="mt-1 inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary"
+            className="mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent text-accent-foreground"
             aria-hidden
           >
-            <Target size={24} strokeWidth={1.5} />
+            <Target className="h-4 w-4" strokeWidth={2} />
           </span>
           <div className="min-w-0 flex-1">
-            <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
               Neste mål
             </span>
             {nesteMal ? (
               <>
-                <h3 className="mt-2 font-display text-2xl font-medium leading-tight tracking-tight">
+                <h3 className="mt-1 font-display text-lg font-bold leading-tight tracking-[-0.01em] text-foreground">
                   {nesteMal.tittel}
                 </h3>
-                {nesteMal.beskrivelse ? (
-                  <p className="mt-2 max-w-prose text-sm leading-relaxed text-muted-foreground">
+                {nesteMal.beskrivelse && (
+                  <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">
                     {nesteMal.beskrivelse}
                   </p>
-                ) : null}
-                {nesteMal.dato ? (
-                  <p className="mt-2 font-mono text-xs text-muted-foreground">
+                )}
+                {nesteMal.dato && (
+                  <p className="mt-1.5 font-mono text-[10px] tracking-[0.04em] text-muted-foreground">
                     Frist {formatDato(nesteMal.dato)}
                   </p>
-                ) : null}
+                )}
               </>
             ) : (
               <>
-                <h3 className="mt-2 font-display text-2xl font-medium leading-tight tracking-tight">
+                <h3 className="mt-1 font-display text-lg font-bold leading-tight tracking-[-0.01em] text-foreground">
                   Ingen aktive milepæler
                 </h3>
-                <p className="mt-2 max-w-prose text-sm leading-relaxed text-muted-foreground">
+                <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">
                   Coachen din legger inn neste milepæl etter neste evaluering. I
                   mellomtiden: hold tråden i ukeplanen.
                 </p>
@@ -158,56 +203,54 @@ export default async function MinPlanPage() {
         </div>
       </section>
 
-      {/* Milepæler-timeline */}
-      <section aria-label="Milepæler" className="mb-8">
-        <div className="mb-6 flex items-center gap-2">
-          <BookOpen size={20} strokeWidth={1.5} className="text-primary" aria-hidden />
-          <h2 className="font-display text-2xl font-medium tracking-tight">
-            Milepæler
-          </h2>
-        </div>
+      {/* Milepæler-tidslinje */}
+      <section aria-label="Milepæler" className="flex flex-col gap-3">
+        <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
+          Milepæler
+        </span>
         {milepaeler.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-border bg-card p-8 text-sm text-muted-foreground">
+          <p className="rounded-xl border border-dashed border-border bg-card px-4 py-8 text-center text-[13px] text-muted-foreground">
             Ingen milepæler registrert ennå. Coachen din legger til milepæler
             etter hvert som planen utvikles.
-          </div>
+          </p>
         ) : (
-          <ol className="space-y-4">
+          <ol className="flex flex-col gap-3">
             {milepaeler.map((m, i) => (
               <li
                 key={`${m.tittel}-${i}`}
-                className="flex items-start gap-4 rounded-lg border border-border bg-card p-6"
+                className="flex items-start gap-3 rounded-xl border border-border bg-card p-4"
               >
                 <span
-                  className={`mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
+                  className={cn(
+                    "mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full",
                     m.fullfort
-                      ? "bg-primary/10 text-primary"
-                      : "bg-secondary text-muted-foreground"
-                  }`}
+                      ? "bg-primary text-accent"
+                      : "bg-secondary text-muted-foreground",
+                  )}
                   aria-hidden
                 >
                   {m.fullfort ? (
-                    <CheckCircle2 size={18} strokeWidth={1.5} />
+                    <CheckCircle2 className="h-4 w-4" strokeWidth={2} />
                   ) : (
-                    <Circle size={18} strokeWidth={1.5} />
+                    <Circle className="h-4 w-4" strokeWidth={2} />
                   )}
                 </span>
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-baseline justify-between gap-2">
-                    <h3 className="font-display text-lg font-medium leading-snug">
+                    <h3 className="text-sm font-bold leading-snug text-foreground">
                       {m.tittel}
                     </h3>
-                    {m.dato ? (
-                      <span className="font-mono text-[11px] text-muted-foreground">
+                    {m.dato && (
+                      <span className="font-mono text-[10px] tracking-[0.04em] text-muted-foreground">
                         {formatDato(m.dato)}
                       </span>
-                    ) : null}
+                    )}
                   </div>
-                  {m.beskrivelse ? (
-                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  {m.beskrivelse && (
+                    <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                       {m.beskrivelse}
                     </p>
-                  ) : null}
+                  )}
                 </div>
               </li>
             ))}
@@ -218,37 +261,33 @@ export default async function MinPlanPage() {
   );
 }
 
-function StatusCard({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-lg border border-border bg-card p-4">
-      <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-        {label}
-      </div>
-      <div className="mt-2 text-base font-semibold leading-tight">{value}</div>
-    </div>
-  );
-}
-
-function AxisCard({ label, value }: { label: string; value: number | null }) {
+function AxisCard({
+  label,
+  value,
+  barClass,
+}: {
+  label: string;
+  value: number | null;
+  barClass: string;
+}) {
   const v = value ?? 0;
   const pct = Math.max(0, Math.min(100, (v / 10) * 100));
   return (
-    <div className="rounded-lg border border-border bg-card p-4">
-      <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-        {label}
-      </div>
-      <div className="mt-2 flex items-baseline gap-1">
-        <span className="font-display text-3xl font-medium tabular-nums">
-          {value === null ? "—" : v.toFixed(1)}
+    <div className="rounded-xl border border-border bg-card p-3.5">
+      <div className="flex items-baseline justify-between gap-2">
+        <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground">
+          {label}
         </span>
-        <span className="font-mono text-xs text-muted-foreground">/ 10</span>
+        <span className="font-mono text-[18px] font-bold leading-none tabular-nums tracking-[-0.02em] text-foreground">
+          {value === null ? "—" : v.toFixed(1)}
+          <span className="ml-0.5 text-[11px] font-medium text-muted-foreground">
+            / 10
+          </span>
+        </span>
       </div>
-      <div
-        className="mt-2 h-2 w-full overflow-hidden rounded-full bg-secondary"
-        role="presentation"
-      >
+      <div className="mt-2.5 h-2 w-full overflow-hidden rounded-full bg-secondary">
         <div
-          className="h-full rounded-full bg-primary transition-all"
+          className={cn("h-full rounded-full transition-all", barClass)}
           style={{ width: `${pct}%` }}
         />
       </div>

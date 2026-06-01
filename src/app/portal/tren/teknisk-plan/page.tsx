@@ -1,19 +1,29 @@
 /**
- * Teknisk plan — Plan-liste (PlayerHQ)
- * Implementering av "AK Golf Plan-liste.html" fra design-bundle.
+ * Teknisk plan — Plan-liste (PlayerHQ), mobile-first 430px.
  *
- * Live data fra TechnicalPlan-modellen. Gruppert per periodefase
- * (Spesialisering · Turnering · Grunntrening).
+ * Live data fra TechnicalPlan-modellen, gruppert per periodefase
+ * (Spesialisering · Turnering · Grunntrening). Re-stylet til athletic
+ * DS-tokens (tidligere tp-*-CSS). Logikk og Prisma-spørringen er uendret —
+ * kun presentasjonslaget er byttet. Reps-progresjon + P-posisjoner per kort.
  */
 
-import { Plus, Calendar, Check, ChevronRight } from "lucide-react";
+import Link from "next/link";
+import {
+  ArrowRight,
+  Calendar,
+  Check,
+  ChevronRight,
+  Plus,
+  type LucideIcon,
+} from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PageHead } from "@/components/teknisk-plan/page-head";
-import { PlanCard, type PlanCardStatus } from "@/components/teknisk-plan/plan-card";
-import "@/components/teknisk-plan/teknisk-plan.css";
+import { PlayerHero } from "@/components/portal/player-hero";
+import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
+
+type PlanCardStatus = "ACTIVE" | "DRAFT" | "ARCHIVED";
 
 interface GroupBucket {
   eyebrow: string;
@@ -40,7 +50,6 @@ interface PlanWithStats {
   isCreatedByPlayer: boolean;
   weeklyReps?: number;
   estimertFerdig?: string;
-  archivedAt?: string;
 }
 
 export default async function TekniskPlanListePage() {
@@ -136,141 +145,254 @@ export default async function TekniskPlanListePage() {
   ];
 
   return (
-    <div className="tp-scope">
-      <PageHead
-        crumb={
-          <>
-            <span>Tren</span>
-            <span style={{ color: "hsl(var(--muted-foreground))" }}>›</span>
-            <b>Tekniske planer</b>
-          </>
-        }
-        title={
-          <>
-            Tekniske <em>planer</em>
-          </>
-        }
-        sub="Strukturerte utviklingsplaner per periodefase. Planene er knyttet til P-posisjoner i golfsving og spilles inn med Mac O'Grady-skalaen for trenings-modalitet."
-        actions={
-          <>
-            <button className="tp-btn outline" type="button">
-              <Calendar size={13} aria-hidden /> Periodisering
-            </button>
-            <button className="tp-btn primary" type="button">
-              <Plus size={13} aria-hidden /> Ny plan
-            </button>
-          </>
-        }
+    <div className="mx-auto max-w-[430px] space-y-6 px-4 pb-24 md:pb-8">
+      <PlayerHero
+        eyebrow="PlayerHQ · Tren · Tekniske planer"
+        titleLead="Tekniske"
+        titleItalic="planer"
+        sub="Strukturerte utviklingsplaner per periodefase, knyttet til P-posisjoner i svingen."
       />
 
-      <main className="tp-wrap">
+      <div className="flex gap-2">
+        <button
+          type="button"
+          className="inline-flex h-11 items-center gap-1.5 rounded-xl border border-border bg-card px-4 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-foreground transition-colors hover:bg-secondary"
+        >
+          <Calendar className="h-3.5 w-3.5" strokeWidth={2} aria-hidden /> Periodisering
+        </button>
+        <button
+          type="button"
+          className="inline-flex h-11 flex-1 items-center justify-center gap-1.5 rounded-xl bg-primary px-4 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-accent transition-opacity hover:opacity-90"
+        >
+          <Plus className="h-3.5 w-3.5" strokeWidth={2.5} aria-hidden /> Ny plan
+        </button>
+      </div>
+
+      <div className="space-y-7">
         {groups.map((g) => (
           <section key={g.eyebrow}>
-            <header className="tp-group-head">
-              <span className="tp-group-eyebrow">
-                PERIODE · <b>{g.eyebrow}</b>
+            <header className="mb-3 flex flex-wrap items-baseline gap-x-2.5 gap-y-1 border-b border-border pb-2.5">
+              <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.14em] text-muted-foreground">
+                Periode · <span className="text-foreground">{g.eyebrow}</span>
               </span>
-              <span className={`tp-group-pill ${g.pill}`}>
-                {g.pill === "done" ? (
-                  <Check size={10} aria-hidden />
-                ) : (
-                  <span className="dot" />
-                )}
-                {g.pillLabel}
+              <GroupPill pill={g.pill} label={g.pillLabel} />
+              <span className="ml-auto font-mono text-[10px] tabular-nums tracking-[0.04em] text-muted-foreground">
+                {g.span}
               </span>
-              <span className="tp-group-meta">{g.span}</span>
             </header>
 
             {g.plans.length === 0 ? (
-              <div className="tp-empty-state">
-                <div className="ic" aria-hidden>
-                  <Calendar size={18} />
-                </div>
-                <div className="body">
-                  <span className="ttl">Ingen plan for {g.eyebrow.toLowerCase()} enda.</span>
-                  <span className="desc">
-                    Opprett en plan for denne fasen. Anbefaler maintenance + nærspill
-                    (rundt grønt + putt 0–5 m).
-                  </span>
-                </div>
-                <button className="tp-btn outline" type="button">
-                  <Plus size={13} aria-hidden /> Opprett plan
-                </button>
-              </div>
+              <EmptyRow
+                icon={Calendar}
+                title={`Ingen plan for ${g.eyebrow.toLowerCase()} ennå.`}
+                desc="Opprett en plan for denne fasen — coachen kan også sette den opp for deg."
+              />
             ) : (
-              <div className="tp-plan-grid">
+              <div className="flex flex-col gap-2.5">
                 {g.plans.map((p, i) => (
-                  <PlanCard
-                    key={p.id}
-                    href={`/portal/tren/teknisk-plan/${p.id}`}
-                    title={p.navn}
-                    periodLabel={p.periodLabel}
-                    status={p.status}
-                    oppgaveCount={p.oppgaveCount}
-                    pPositionCount={p.pPositionCount}
-                    pPositionTotal={10}
-                    metaLabel={
-                      p.status === "ARCHIVED"
-                        ? "Varighet"
-                        : p.status === "ACTIVE"
-                        ? "Opprettet"
-                        : "Opprettet"
-                    }
-                    metaValue={
-                      p.status === "ARCHIVED"
-                        ? formatMonths(p.startDato, p.sluttDato)
-                        : formatDateRelative(p.startDato)
-                    }
-                    authorAvatar={p.authorInitials}
-                    authorName={p.authorName}
-                    authorRole={p.authorRole}
-                    progressLabel={p.status === "ARCHIVED" ? "Reps · sluttsum" : "Reps · totalt"}
-                    progressCurrent={p.repsCurrent}
-                    progressTarget={p.repsTarget}
-                    progressTailLeft={
-                      p.status === "ACTIVE"
-                        ? `~${p.weeklyReps?.toLocaleString("nb-NO") ?? 0} reps · uke`
-                        : p.status === "ARCHIVED"
-                        ? "Avsluttet"
-                        : "Ikke startet"
-                    }
-                    progressTailRight={
-                      p.status === "ACTIVE" && p.estimertFerdig
-                        ? `estim. ferdig ${p.estimertFerdig}`
-                        : ""
-                    }
-                    footRole={footRoleFor(p)}
-                    footAvatars={footAvatarsFor(p, user)}
-                    featured={i === 0 && p.status === "ACTIVE"}
-                  />
+                  <PlanCard key={p.id} plan={p} featured={i === 0 && p.status === "ACTIVE"} />
                 ))}
               </div>
             )}
           </section>
         ))}
 
-        {enriched.length === 0 ? (
-          <section>
-            <div className="tp-empty-state">
-              <div className="ic" aria-hidden>
-                <ChevronRight size={18} />
-              </div>
-              <div className="body">
-                <span className="ttl">Ingen tekniske planer enda.</span>
-                <span className="desc">
-                  Kontakt coach for å sette opp din første plan, eller opprett et utkast selv.
-                </span>
-              </div>
-              <button className="tp-btn primary" type="button">
-                <Plus size={13} aria-hidden /> Opprett din første plan
-              </button>
-            </div>
-          </section>
-        ) : null}
-      </main>
+        {enriched.length === 0 && (
+          <EmptyRow
+            icon={ChevronRight}
+            title="Ingen tekniske planer ennå."
+            desc="Kontakt coach for å sette opp din første plan, eller opprett et utkast selv."
+          />
+        )}
+      </div>
     </div>
   );
 }
+
+// ── Presentasjon ────────────────────────────────────────────────
+
+const STATUS_META: Record<
+  PlanCardStatus,
+  { label: string; cls: string; dot: boolean }
+> = {
+  ACTIVE: { label: "Aktiv", cls: "bg-accent text-accent-foreground", dot: true },
+  DRAFT: { label: "Utkast", cls: "bg-secondary text-muted-foreground", dot: true },
+  ARCHIVED: { label: "Avsluttet", cls: "bg-[var(--color-pyr-spill-track)] text-primary", dot: false },
+};
+
+const AV_TONE: Record<"coach" | "player", string> = {
+  coach: "bg-primary text-accent",
+  player: "bg-accent text-accent-foreground",
+};
+
+function PlanCard({ plan, featured }: { plan: PlanWithStats; featured: boolean }) {
+  const pct =
+    plan.repsTarget > 0 ? Math.min(100, Math.round((plan.repsCurrent / plan.repsTarget) * 100)) : 0;
+  const status = STATUS_META[plan.status];
+  const archived = plan.status === "ARCHIVED";
+
+  return (
+    <Link
+      href={`/portal/tren/teknisk-plan/${plan.id}`}
+      className={cn(
+        "block rounded-xl border border-border bg-card p-4 transition-[transform,box-shadow] hover:-translate-y-0.5 hover:shadow-[0_10px_22px_rgba(10,31,23,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+        featured && "border-l-[3px] border-l-primary",
+        archived && "opacity-90",
+      )}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <h3 className="text-[16px] font-bold leading-tight tracking-[-0.015em] text-foreground">
+          {plan.navn}
+          {plan.periodLabel && (
+            <em
+              className="ml-1 font-normal not-italic text-muted-foreground"
+              style={{ fontFamily: "'Inter Tight', sans-serif", fontStyle: "italic" }}
+            >
+              · {plan.periodLabel}
+            </em>
+          )}
+        </h3>
+        <span
+          className={cn(
+            "inline-flex shrink-0 items-center gap-1.5 rounded-full px-2 py-0.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.10em]",
+            status.cls,
+          )}
+        >
+          {archived ? (
+            <Check className="h-2.5 w-2.5" strokeWidth={3} aria-hidden />
+          ) : (
+            <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" aria-hidden />
+          )}
+          {status.label}
+        </span>
+      </div>
+
+      {/* Meta-rad */}
+      <div className="mt-3 flex flex-wrap items-end gap-x-5 gap-y-2">
+        <Stat label="Oppgaver" value={String(plan.oppgaveCount)} />
+        <Stat label="P-posisjoner" value={`${plan.pPositionCount}`} unit="/10" />
+        <div className="ml-auto flex items-center gap-1.5">
+          <span
+            className={cn(
+              "inline-flex h-5 w-5 items-center justify-center rounded-full font-mono text-[9px] font-extrabold",
+              AV_TONE[plan.authorRole],
+            )}
+          >
+            {plan.authorInitials}
+          </span>
+          <span className="font-mono text-[10px] text-muted-foreground">{plan.authorName}</span>
+        </div>
+      </div>
+
+      {/* Reps-progresjon */}
+      <div className="mt-3">
+        <div className="flex items-baseline justify-between">
+          <span className="font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground">
+            {archived ? "Reps · sluttsum" : "Reps · totalt"}
+          </span>
+          <span className="font-mono text-[12px] font-bold tabular-nums text-foreground">
+            {plan.repsCurrent.toLocaleString("nb-NO")}{" "}
+            <span className="font-medium text-muted-foreground">
+              / {plan.repsTarget.toLocaleString("nb-NO")}
+            </span>
+          </span>
+        </div>
+        <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-secondary">
+          <div
+            className={cn("h-full rounded-full", pct === 0 ? "bg-border" : "bg-primary", archived && "opacity-60")}
+            style={{ width: `${Math.max(2, pct)}%` }}
+          />
+        </div>
+        <div className="mt-1.5 flex items-center justify-between font-mono text-[10px] tabular-nums text-muted-foreground">
+          <span>
+            {plan.status === "ACTIVE"
+              ? `~${plan.weeklyReps?.toLocaleString("nb-NO") ?? 0} reps · uke`
+              : archived
+                ? "Avsluttet"
+                : "Ikke startet"}
+          </span>
+          <span>
+            <span className="font-bold text-foreground">{pct} %</span>
+            {plan.status === "ACTIVE" && plan.estimertFerdig
+              ? ` · est. ferdig ${plan.estimertFerdig}`
+              : ""}
+          </span>
+        </div>
+      </div>
+
+      <div className="mt-3 flex items-center justify-between border-t border-border pt-2.5">
+        <span className="font-mono text-[10px] uppercase tracking-[0.04em] text-muted-foreground">
+          {footRoleText(plan)}
+        </span>
+        <span className="inline-flex items-center gap-1 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-primary">
+          Åpne plan
+          <ArrowRight className="h-3 w-3" strokeWidth={2.5} aria-hidden />
+        </span>
+      </div>
+    </Link>
+  );
+}
+
+function Stat({ label, value, unit }: { label: string; value: string; unit?: string }) {
+  return (
+    <div className="flex flex-col gap-0.5">
+      <span className="font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground">
+        {label}
+      </span>
+      <span className="font-display text-[17px] font-bold leading-none tracking-[-0.01em] text-foreground">
+        {value}
+        {unit && <span className="ml-0.5 text-[11px] font-medium text-muted-foreground">{unit}</span>}
+      </span>
+    </div>
+  );
+}
+
+function GroupPill({ pill, label }: { pill: "active" | "upcoming" | "done"; label: string }) {
+  const cls =
+    pill === "active"
+      ? "bg-accent text-accent-foreground"
+      : pill === "done"
+        ? "bg-[var(--color-pyr-spill-track)] text-primary"
+        : "bg-secondary text-muted-foreground";
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.10em]",
+        cls,
+      )}
+    >
+      {pill === "done" ? (
+        <Check className="h-2.5 w-2.5" strokeWidth={3} aria-hidden />
+      ) : (
+        <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" aria-hidden />
+      )}
+      {label}
+    </span>
+  );
+}
+
+function EmptyRow({ icon: Icon, title, desc }: { icon: LucideIcon; title: string; desc: string }) {
+  return (
+    <div className="flex items-center gap-3.5 rounded-xl border border-dashed border-border bg-card/40 px-4 py-5">
+      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-secondary text-muted-foreground">
+        <Icon size={18} strokeWidth={1.5} aria-hidden />
+      </span>
+      <div className="min-w-0">
+        <p className="text-[14px] font-semibold leading-tight text-foreground">{title}</p>
+        <p className="mt-0.5 text-[12px] leading-snug text-muted-foreground">{desc}</p>
+      </div>
+    </div>
+  );
+}
+
+function footRoleText(p: PlanWithStats): string {
+  if (p.status === "ARCHIVED") return "Arkivert · skrivebeskyttet";
+  if (p.status === "DRAFT" && p.isCreatedByPlayer)
+    return `Sendt til ${p.authorName.split(" ")[0]} for review`;
+  return `${p.authorName} · felles redigering`;
+}
+
+// ── Helpers (uendret logikk) ────────────────────────────────────
 
 function formatPeriode(d: Date): string {
   const month = d.getMonth();
@@ -279,21 +401,6 @@ function formatPeriode(d: Date): string {
   if (month >= 6 && month <= 8) return `sommer ${year}`;
   if (month >= 9 && month <= 10) return `høst ${year}`;
   return `vinter ${year}/${(year + 1).toString().slice(2)}`;
-}
-
-function formatDateRelative(d: Date): string {
-  const now = new Date();
-  const diffDays = Math.floor((now.getTime() - d.getTime()) / 86_400_000);
-  if (diffDays === 0) return "i dag";
-  if (diffDays === 1) return "i går";
-  if (diffDays < 14) return `${diffDays}d siden`;
-  return d.toLocaleDateString("nb-NO", { day: "numeric", month: "short" });
-}
-
-function formatMonths(start: Date, slutt: Date | null): string {
-  const end = slutt ?? new Date();
-  const months = Math.max(1, Math.round((end.getTime() - start.getTime()) / (30 * 86_400_000)));
-  return `${months} mnd`;
 }
 
 function spanFromPlans(plans: PlanWithStats[]): string {
@@ -309,36 +416,4 @@ function estimateFerdig(start: Date, current: number, target: number): string {
   const totalEstimateMs = (elapsed / current) * target;
   const ferdigDate = new Date(start.getTime() + totalEstimateMs);
   return ferdigDate.toLocaleDateString("nb-NO", { day: "numeric", month: "short" });
-}
-
-function footRoleFor(p: PlanWithStats) {
-  if (p.status === "ARCHIVED") return <>Arkivert · skrivebeskyttet</>;
-  if (p.status === "DRAFT" && p.isCreatedByPlayer)
-    return (
-      <>
-        Sendt til <b>{p.authorName.split(" ")[0]}</b> for review
-      </>
-    );
-  return (
-    <>
-      <b>{p.authorName}</b> · felles redigering
-    </>
-  );
-}
-
-function footAvatarsFor(p: PlanWithStats, user: { name: string | null }) {
-  const playerInitials = (user.name ?? "??")
-    .split(" ")
-    .map((w) => w[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
-
-  if (p.status === "DRAFT" && p.isCreatedByPlayer) {
-    return [{ initials: p.authorInitials, role: "player" as const }];
-  }
-  return [
-    { initials: p.authorInitials, role: p.authorRole },
-    { initials: playerInitials, role: "player" as const },
-  ];
 }

@@ -1,18 +1,18 @@
 /**
  * /portal/meg/abonnement/kort/ny — Legg til betalingskort
  *
- * Design: Variant A "By-the-book to-kolonne" fra Claude Design-bundle
- * Sg2FEKvykU45c4naIgQx6w (s1-kort.jsx).
+ * Mobil-først (430px) redesign mot athletic-designsystemet. UI er en mockup av
+ * Stripe Elements-flyten — selve Stripe-integrasjonen kobles opp i egen runde.
+ * Form-state håndteres lokalt i KortForm (client component).
  *
- * UI er pixel-perfekt mockup av Stripe Elements-flyt — selve Stripe-
- * integrasjonen kobles opp i egen runde. Form-state håndteres lokalt
- * i KortForm (client component).
+ * Auth-guard + redirect-vakt (krever aktivt abonnement) beholdt uendret.
  */
 
 import { redirect } from "next/navigation";
+import Link from "next/link";
+import { ChevronLeft } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PlayerHero } from "@/components/portal/player-hero";
 import { KortForm } from "./kort-form";
 
 export const dynamic = "force-dynamic";
@@ -33,18 +33,43 @@ export default async function NyttKortPage() {
   const nesteBelastning = subscription.currentPeriodEnd ?? null;
 
   return (
-    <div className="mx-auto max-w-[1240px] space-y-8 px-4 sm:px-6">
-      <PlayerHero
-        eyebrow="PlayerHQ · Meg · Abonnement · Betalingskort"
-        titleLead="Legg til"
-        titleItalic="kort"
-        sub="Sikret av Stripe. Kortdata forlater aldri din enhet."
-      />
+    <div className="mx-auto w-full max-w-[480px] px-4 pb-20 sm:px-6">
+      <Link
+        href="/portal/meg/abonnement"
+        className="inline-flex min-h-11 items-center gap-1.5 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground transition-colors hover:text-foreground"
+      >
+        <ChevronLeft className="h-[13px] w-[13px]" strokeWidth={2} aria-hidden />
+        Abonnement
+      </Link>
 
-      <KortForm
-        defaultNavn={navnPaaKortet}
-        nesteBelastning={nesteBelastning?.toISOString() ?? null}
-      />
+      <header className="mt-3 space-y-2">
+        <span className="font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
+          PlayerHQ · Meg · Abonnement · Betalingskort
+        </span>
+        <h1 className="font-display text-[28px] font-bold leading-[1.05] tracking-[-0.02em] text-foreground sm:text-[34px]">
+          Legg til{" "}
+          <em
+            className="not-italic"
+            style={{
+              fontFamily: "'Inter Tight', sans-serif",
+              fontStyle: "italic",
+              color: "hsl(var(--primary))",
+            }}
+          >
+            kort
+          </em>
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          Sikret av Stripe. Kortdata forlater aldri din enhet.
+        </p>
+      </header>
+
+      <div className="mt-6">
+        <KortForm
+          defaultNavn={navnPaaKortet}
+          nesteBelastning={nesteBelastning?.toISOString() ?? null}
+        />
+      </div>
     </div>
   );
 }
