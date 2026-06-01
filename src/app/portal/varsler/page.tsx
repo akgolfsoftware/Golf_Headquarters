@@ -1,6 +1,9 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { VarslerClient, type VarselItem } from "./varsler-client";
+import {
+  VarslerClient,
+  type VarselItem,
+} from "@/components/portal/varsler/varsler-client";
 
 /**
  * Dummy-fallback hvis brukeren ikke har noen varsler i databasen ennå.

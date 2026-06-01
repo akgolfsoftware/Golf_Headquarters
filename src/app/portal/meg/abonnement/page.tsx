@@ -1,9 +1,10 @@
-import { Check, AlertTriangle, ExternalLink, Receipt } from "lucide-react";
+import { AlertTriangle, ArrowRight, Check, ExternalLink, Receipt } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { prisma } from "@/lib/prisma";
 import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { ProKampanjeBanner } from "@/components/shared/pro-kampanje-banner";
 import { PRO_KAMPANJE_INFO } from "@/lib/feature-flags";
+import { getAbonnementData } from "@/lib/portal-abonnement/abonnement-data";
+import { PlanOverview } from "@/components/portal/abonnement/plan-overview";
 import { UpgradeButton, ManageButton, CancelButton } from "./upgrade-button";
 
 type Search = { ok?: string; cancelled?: string };
@@ -40,36 +41,9 @@ export default async function AbonnementPage({
   const user = await requirePortalUser();
   const params = await searchParams;
 
-  // Hent FAKTISK tier direkte fra DB — `user.tier` er overstyrt mens
-  // PRO-kampanjen er aktiv (se lib/feature-flags.ts).
-  const faktisk = await prisma.user.findUnique({
-    where: { id: user.id },
-    select: { tier: true },
-  });
-  const faktiskTier = faktisk?.tier ?? "GRATIS";
-
-  const subscription = await prisma.subscription.findUnique({
-    where: { userId: user.id },
-  });
-
-  // Faktura-historikk: siste 12 vellykkede betalinger
-  const fakturaer = await prisma.payment.findMany({
-    where: { userId: user.id, status: "SUCCEEDED" },
-    orderBy: { paidAt: "desc" },
-    take: 12,
-    select: {
-      id: true,
-      paidAt: true,
-      amountOre: true,
-      type: true,
-      stripeInvoiceId: true,
-      description: true,
-    },
-  });
-
-  const erPro = faktiskTier === "PRO";
-  const periodEnd = subscription?.currentPeriodEnd;
-  const aktivSiden = subscription?.createdAt;
+  const data = await getAbonnementData(user.id);
+  const { erPro, fakturaer } = data;
+  const periodEnd = data.nesteTrekk;
 
   return (
     <div className="mx-auto max-w-[1240px] space-y-8 px-4 sm:px-6">
@@ -79,7 +53,7 @@ export default async function AbonnementPage({
         titleItalic="faktura"
         sub={
           erPro
-            ? "Du er på Pro. Du ser planen din, neste belastning og fakturahistorikken her."
+            ? "Du er på Pro. Du ser planen din, credit-saldo, neste belastning og fakturahistorikken her."
             : "Du står på Gratis-planen. Oppgrader til Pro for AI-coach, egendefinerte økter og direkte kontakt med coach."
         }
       />
@@ -91,89 +65,41 @@ export default async function AbonnementPage({
       )}
       {params.cancelled === "1" && (
         <div className="rounded-md border border-border bg-muted px-4 py-4 text-sm text-muted-foreground">
-          Oppgraderingen ble avbrutt. Du står fortsatt på {faktiskTier}.
+          Oppgraderingen ble avbrutt. Du står fortsatt på {erPro ? "Pro" : "Gratis"}.
         </div>
       )}
 
       {PRO_KAMPANJE_INFO.aktiv && <ProKampanjeBanner />}
 
-      {/* Hero plan-kort */}
-      <div className="relative grid gap-8 overflow-hidden rounded-2xl border border-border bg-card p-8 shadow-sm lg:grid-cols-[1fr_300px]">
-        <div className="pointer-events-none absolute right-0 top-0 hidden h-full w-[300px] lg:block bg-gradient-to-br from-primary/5 to-accent/10" />
-        <div className="relative z-10">
-          <div className="mb-4 flex flex-wrap items-center gap-2">
-            <span className="rounded-md bg-primary px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-primary-foreground">
-              {erPro ? "Pro" : "Gratis"}
-            </span>
-            {erPro && (
-              <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-primary">
-                <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                {subscription?.status ?? "Aktiv"}
-                {aktivSiden && <> · siden {formatDato(aktivSiden)}</>}
-              </span>
-            )}
-          </div>
-          <h2 className="mb-2 font-display text-3xl font-medium italic leading-none tracking-tight text-foreground">
-            {erPro ? "Pro" : "Gratis"}
-          </h2>
-          <div className="mb-6 font-mono text-base text-foreground">
-            <span className="text-2xl font-medium">{erPro ? "300" : "0"}</span>{" "}
-            <span className="text-sm text-muted-foreground">
-              {erPro ? "kr/mnd · faktureres månedlig" : "kr · gratis-tier"}
-            </span>
-          </div>
-          <div className="mb-6 flex flex-col gap-2">
-            {(erPro
-              ? [
-                  "Ubegrenset bruk av AI-coach (Claude)",
-                  "Lag egendefinerte økter med Live Session",
-                  "Direkte kontakt med tilknyttet coach",
-                  "Full SG-analyse og pyramide-progresjon",
-                  "Coach-laget treningsplaner",
-                ]
-              : [
-                  "Basis treningsplan",
-                  "Begrenset coaching-historikk",
-                  "Bookinger og kvitteringer",
-                ]
-            ).map((t) => (
-              <Feature key={t}>{t}</Feature>
-            ))}
-          </div>
-          {erPro ? <ManageButton /> : <UpgradeButton />}
-        </div>
-
-        <div className="relative z-10 flex flex-col justify-center gap-4 border-border lg:border-l lg:pl-6">
-          <div>
-            <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-              Neste belastning
-            </span>
-            <div className="mt-2 font-mono text-sm font-medium text-foreground">
-              {erPro && periodEnd ? (
-                <>
-                  {formatDato(periodEnd)}
-                  <span className="mt-1 block text-xl font-semibold text-primary">
-                    {NOK.format(30000 / 100)} kr
-                  </span>
-                </>
-              ) : (
-                <span className="text-muted-foreground">—</span>
-              )}
-            </div>
-          </div>
-          <div>
-            <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-              Årspris ved årlig
-            </span>
-            <div className="mt-2 font-mono text-sm text-muted-foreground">
-              {erPro ? "3 000 kr/år · spar 600 kr" : "Tilgjengelig som Pro"}
-            </div>
-          </div>
-        </div>
+      {/* Plan-hero — status, credit-saldo, neste trekk + handling */}
+      <div id="plan" className="scroll-mt-6">
+        <PlanOverview
+          erPro={erPro}
+          status={data.status}
+          aktivSiden={data.aktivSiden}
+          nesteTrekk={data.nesteTrekk}
+          monthlyCredits={data.monthlyCredits}
+          creditsRemaining={data.creditsRemaining}
+          forfallOmDager={data.forfallOmDager}
+          playerName={user.name}
+          action={erPro ? <ManageButton /> : <UpgradeButton />}
+        />
       </div>
 
       {/* Sammenligning */}
-      <Section title="Sammenlign planer" aux={erPro ? "Pro er din nåværende" : "Gratis er din nåværende"}>
+      <Section
+        title="Sammenlign planer"
+        aux={erPro ? "Pro er din nåværende" : "Gratis er din nåværende"}
+        action={
+          <a
+            href="#plan"
+            className="inline-flex items-center gap-1 font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-primary hover:underline"
+          >
+            Endre plan
+            <ArrowRight className="h-3 w-3" strokeWidth={2.5} aria-hidden />
+          </a>
+        }
+      >
         {/* Desktop: tabell */}
         <div className="hidden overflow-x-auto sm:block">
           <table className="w-full">
@@ -379,23 +305,28 @@ export default async function AbonnementPage({
 function Section({
   title,
   aux,
+  action,
   children,
 }: {
   title: string;
   aux?: string;
+  action?: React.ReactNode;
   children: React.ReactNode;
 }) {
   return (
     <section className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
-      <header className="flex items-baseline justify-between border-b border-border px-6 py-4">
+      <header className="flex items-baseline justify-between gap-3 border-b border-border px-6 py-4">
         <h2 className="font-display text-base font-semibold text-foreground">
           {title}
         </h2>
-        {aux && (
-          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            {aux}
-          </span>
-        )}
+        <div className="flex items-baseline gap-3">
+          {aux && (
+            <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+              {aux}
+            </span>
+          )}
+          {action}
+        </div>
       </header>
       <div>{children}</div>
     </section>
