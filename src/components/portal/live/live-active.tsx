@@ -29,7 +29,7 @@ import {
   X,
 } from "lucide-react";
 import type { LiveDrill, LiveSessionData } from "@/lib/portal-live/types";
-import { fmtMSS } from "@/lib/portal-live/data";
+import { fmtMSS } from "@/lib/portal-live/format";
 import { AXIS_SHORT, axisDotColor } from "./axis";
 import { writeLiveSnapshot } from "./snapshot";
 

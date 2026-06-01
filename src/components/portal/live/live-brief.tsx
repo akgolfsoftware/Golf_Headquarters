@@ -12,7 +12,7 @@
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2, Lock, X, Zap } from "lucide-react";
 import type { LiveSessionData } from "@/lib/portal-live/types";
-import { AXIS_LABEL, formatDateTimeEyebrow } from "@/lib/portal-live/data";
+import { AXIS_LABEL, formatDateTimeEyebrow } from "@/lib/portal-live/format";
 import { AXIS_SHORT, axisDotColor } from "./axis";
 
 export function LiveBrief({

@@ -17,7 +17,7 @@ import { useMemo, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Check, Send, Star, Trophy, Video, X } from "lucide-react";
 import type { LiveSessionData } from "@/lib/portal-live/types";
-import { fmtMSS, formatDateEyebrow, AXIS_LABEL } from "@/lib/portal-live/data";
+import { fmtMSS, formatDateEyebrow, AXIS_LABEL } from "@/lib/portal-live/format";
 import { AXIS_SHORT, axisDotColor } from "./axis";
 import { liveSnapshotKey, type LiveSnapshot } from "./snapshot";
 
