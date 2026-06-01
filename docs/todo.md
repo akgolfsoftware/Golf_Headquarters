@@ -1,0 +1,45 @@
+# TODO — AK Golf HQ
+
+Levende to-do for gjenstående arbeid. Sist oppdatert: 2026-06-01.
+
+---
+
+## ⏸️ Venter (bevisst utsatt)
+
+### Elite Fase 2 — VENTER (besluttet 2026-06-01)
+Disse skal **ikke** bygges nå. Krever design i Claude Design først.
+
+- [ ] **Video-analyse** (4 skjermer) — bibliotek, analyse, sammenlign, coach-versjon
+  - Mangler design — må tegnes i Claude Design først.
+  - Ruter: `/portal/analysere/video` + `/admin/spillere/[id]/video`
+  - Nye datamodeller: `VideoAnnotation`, `VideoComparison`
+- [ ] **Mental** (5 skjermer) — hub, rutine, dagbok, vurdering, pressure
+  - Mangler design — må tegnes i Claude Design først.
+  - Ruter: `/portal/mental` + coach-innsyn `/admin/spillere/[id]/mental`
+  - Nye datamodeller: `MentalLog`, `RoutineLog`, `MentalAssessment`
+
+### Elite Fase 2 — Dispersjon (klar å bygge, men venter med resten)
+- [ ] **Dispersjon-motor** (3 skjermer) — oversikt, sikte-planlegger, game-plan
+  - Har design i zip (`DispersionTool.html`, `Utslag-spredning.html`, `components-trackman-dispersion.html`).
+  - Krever ny Prisma-modell: `DispersionProfile`, `AimStrategy` (utledes fra TrackMan-data via cron).
+  - Tas sammen med resten av Elite Fase 2 når video + mental er designet.
+
+Full spec: [docs/skjerm-manifest-elite-fase2.md](skjerm-manifest-elite-fase2.md)
+
+---
+
+## 🔧 Kjente tekniske rester (ikke haster)
+
+- [ ] **Vercel auto-deploy henger** — main pushes deployer ikke automatisk. Hele redesignet (40 skjermer) ligger på `main` men ikke i prod. Trigge `vercel deploy --prod` manuelt når redesignet skal live.
+- [ ] **`/stats/sammenlign-spillere`** gir 500 (stats-prototype med fake-data) — skjul i prod som de andre stats-prototypene, eller fiks.
+- [ ] **Gamle skyggede sider** (locations, facilities, analyse, statistikk, kalender, mal m.fl.) — redirecter til nye sider, men `page.tsx` ligger igjen og deler kode med aktive sider. Krever forsiktig refactor (flytt delt kode → oppdater imports → slett), ikke ren sletting. Lavt prioritert — usynlig for brukere.
+
+---
+
+## ✅ Ferdig (denne runden, 2026-06-01)
+
+- 40 skjermer portet fra Claude Design-handover (PlayerHQ + AgencyOS + auth + øvrig) — alle 8 design-runder
+- Godkjennings-galleri: https://akgolf-skjermer.vercel.app (44 screenshots)
+- IA-redirect-loops fjernet (tester/booking/aarsplan synlige) + compliance flyttet
+- Schema-bug fikset (imageUrl/muscleGroups @map) — drill/live ga 500
+- 5 døde komponent-filer ryddet
