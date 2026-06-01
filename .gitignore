@@ -73,3 +73,6 @@ ruvector.db
 tsconfig.tsbuildinfo
 .DS_Store
 skills-lock.json
+
+# Design-handover: kilde-zip arkiveres lokalt, men er for stor for git (>100 MB GitHub-grense)
+public/design-handover/*.zip
