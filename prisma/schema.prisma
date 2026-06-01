@@ -908,8 +908,8 @@ model ExerciseDefinition {
   // Egendefinerte øvelser (COACH/PLAYER-source)
   source       ExerciseSource      @default(SYSTEM)
   visibility   ExerciseVisibility  @default(PRIVATE)
-  imageUrl     String?             // Supabase Storage URL for bilde/screenshot
-  muscleGroups String[]            @default([]) // ["glutes","hamstrings",...]
+  imageUrl     String?             @map("image_url") // Supabase Storage URL for bilde/screenshot
+  muscleGroups String[]            @default([]) @map("muscle_groups") // ["glutes","hamstrings",...]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
