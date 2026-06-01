@@ -28,6 +28,7 @@ import {
   golfboxSlugify,
   deriveStatus,
 } from "../src/lib/scrapers/golfbox-customers";
+import { resolvePlayer } from "../src/lib/scrapers/player-resolve";
 
 loadEnv({ path: ".env.local" });
 
@@ -176,21 +177,14 @@ async function syncLeaderboards(): Promise<{
       const country = (e.nationality ?? "").toUpperCase() || "XX";
       if (country === "NO") norske++;
 
-      // Finn/opprett spiller (match på slug — navn-basert, ingen stabil GolfBox-id i schema)
-      const baseSlug = golfboxSlugify(fullName) || `spiller-${competitionId}-${entries}`;
-      let player = await prisma.publicPlayer.findUnique({ where: { slug: baseSlug } });
-      if (!player) {
-        player = await prisma.publicPlayer.create({
-          data: {
-            name: fullName,
-            slug: baseSlug,
-            country,
-            tier: cls.playerTier,
-            birthYear: e.birthYear ?? null,
-          },
-        });
-        playersCreated++;
-      }
+      // Match mot eksisterende profil (navn + fødselsår) for å unngå dubletter.
+      const { player, created } = await resolvePlayer(prisma, {
+        name: fullName,
+        country,
+        tier: cls.playerTier,
+        birthYear: e.birthYear ?? null,
+      });
+      if (created) playersCreated++;
 
       const rounds = {
         today: e.todayText,

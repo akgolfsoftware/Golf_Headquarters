@@ -133,6 +133,7 @@ async function hentTurneringer(tab: Tab): Promise<TurneringKortData[]> {
   const baseWhere = {
     startDate: { gte: today, lte: in60 },
     status: { in: ["UPCOMING", "IN_PROGRESS"] },
+    mergedIntoId: null,
   };
 
   type TurneringWhere =
@@ -196,6 +197,7 @@ async function hentNorskeDenneUka() {
       tournament: {
         startDate: { gte: today, lte: in7 },
         status: { in: ["UPCOMING", "IN_PROGRESS"] },
+        mergedIntoId: null,
       },
     },
     include: {
@@ -227,6 +229,7 @@ async function hentCounts() {
   const base = {
     startDate: { gte: today, lte: in60 },
     status: { in: ["UPCOMING", "IN_PROGRESS"] },
+    mergedIntoId: null,
   };
 
   const [alle, norge, pro, norske] = await Promise.all([

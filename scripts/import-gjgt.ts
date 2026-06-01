@@ -25,6 +25,7 @@ import {
   NORWAY_NATION_ID,
 } from "../src/lib/scrapers/gjgt";
 import { golfboxSlugify, deriveStatus } from "../src/lib/scrapers/golfbox-customers";
+import { resolvePlayer } from "../src/lib/scrapers/player-resolve";
 
 loadEnv({ path: ".env.local" });
 
@@ -93,14 +94,13 @@ async function sync(): Promise<{
 
     for (const e of norske) {
       if (!e.name) continue;
-      const baseSlug = golfboxSlugify(e.name) || `gjgt-${tid}-${entryCount}`;
-      let player = await prisma.publicPlayer.findUnique({ where: { slug: baseSlug } });
-      if (!player) {
-        player = await prisma.publicPlayer.create({
-          data: { name: e.name, slug: baseSlug, country: "NO", tier: "junior" },
-        });
-        norwegianPlayers++;
-      }
+      // gradYear ≈ videregående-avgang, ikke fødselsår → ikke bruk til match.
+      const { player, created } = await resolvePlayer(prisma, {
+        name: e.name,
+        country: "NO",
+        tier: "junior",
+      });
+      if (created) norwegianPlayers++;
 
       await prisma.publicPlayerEntry.upsert({
         where: {

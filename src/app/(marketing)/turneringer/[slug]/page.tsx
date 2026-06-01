@@ -15,7 +15,7 @@
 import "../../stats/stats.css";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import {
   ArrowLeft,
   ExternalLink,
@@ -94,10 +94,15 @@ export default async function TurneringDetalj({ params }: Props) {
         orderBy: [{ position: "asc" }, { player: { name: "asc" } }],
       },
       leaderboardSnap: { select: { fetchedAt: true } },
+      mergedInto: { select: { slug: true } },
     },
   });
 
   if (!t) notFound();
+  // Dublett merget inn i en kanonisk turnering → send dit
+  if (t.mergedIntoId && t.mergedInto?.slug) {
+    redirect(`/turneringer/${t.mergedInto.slug}`);
+  }
 
   const norske = t.publicEntries.filter((e) => e.player.country === "NO");
   const alle = t.publicEntries;
