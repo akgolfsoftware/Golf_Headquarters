@@ -77,13 +77,9 @@ const nextConfig: NextConfig = {
       { source: "/portal/coach/notater/:path*", destination: "/portal/coach/notes/:path*", permanent: true },
       { source: "/portal/statistikk", destination: "/portal/analysere?tab=statistikk", permanent: true },
       { source: "/portal/statistikk/:path*", destination: "/portal/analysere?tab=statistikk", permanent: true },
-      { source: "/portal/mal", destination: "/portal/planlegge?tab=mal", permanent: true },
-      { source: "/portal/kalender", destination: "/portal/gjennomfore?tab=kalender", permanent: true },
-      // /portal/tren/aarsplan: dedikert Gantt-skjerm (redesign 2026-06-01) — loop-redirect fjernet.
-      { source: "/portal/tren/teknisk-plan", destination: "/portal/planlegge?tab=treningsplan", permanent: true },
-      { source: "/portal/tren/teknisk-plan/:path*", destination: "/portal/planlegge?tab=treningsplan", permanent: true },
-      { source: "/portal/tren/turneringer", destination: "/portal/planlegge?tab=turneringer", permanent: true },
-      { source: "/portal/tren/turneringer/:path*", destination: "/portal/planlegge?tab=turneringer", permanent: true },
+      // IA 2026-06-01 (dedikerte sider): skyggende redirects fjernet — menyen peker nå rett på de
+      // ekte sidene. /portal/mal (930l), /portal/kalender, /portal/tren/teknisk-plan (419l) og
+      // /portal/tren/turneringer er nå direkte tilgjengelige (var skjult bak ?tab=-redirects).
       { source: "/portal/tren/ovelser", destination: "/portal/planlegge?tab=drills", permanent: true },
       { source: "/portal/tren/ovelser/:path*", destination: "/portal/planlegge?tab=drills", permanent: true },
       // /portal/tren/tester: dedikert test-batteri-skjerm (redesign 2026-06-01) — loop-redirect fjernet.

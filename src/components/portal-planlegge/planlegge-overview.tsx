@@ -114,7 +114,7 @@ export async function PlanleggeOverview({ userId }: { userId: string }) {
 
   const kort: Kort[] = [
     {
-      href: "/portal/planlegge?tab=arsplan",
+      href: "/portal/tren/aarsplan",
       eyebrow: "Sesongplan",
       titel: "Årsplan",
       Icon: CalendarRange,
@@ -126,7 +126,7 @@ export async function PlanleggeOverview({ userId }: { userId: string }) {
         : "Opprett en plan for året",
     },
     {
-      href: "/portal/planlegge?tab=treningsplan",
+      href: "/portal/tren/teknisk-plan",
       eyebrow: "Ukeplan",
       titel: "Treningsplan",
       Icon: CalendarCheck,
@@ -138,7 +138,7 @@ export async function PlanleggeOverview({ userId }: { userId: string }) {
         : "Be coachen din legge inn økter",
     },
     {
-      href: "/portal/planlegge?tab=mal",
+      href: "/portal/mal",
       eyebrow: "Personlige mål",
       titel: "Mål",
       Icon: Target,
@@ -149,7 +149,7 @@ export async function PlanleggeOverview({ userId }: { userId: string }) {
           : "Sett ditt første mål",
     },
     {
-      href: "/portal/planlegge?tab=turneringer",
+      href: "/portal/tren/turneringer",
       eyebrow: "Turnerings­kalender",
       titel: "Turneringer",
       Icon: Trophy,
@@ -168,7 +168,7 @@ export async function PlanleggeOverview({ userId }: { userId: string }) {
         : "Meld deg på en turnering",
     },
     {
-      href: "/portal/planlegge?tab=drills",
+      href: "/portal/drills",
       eyebrow: "Øvelser",
       titel: "Drills",
       Icon: Dumbbell,

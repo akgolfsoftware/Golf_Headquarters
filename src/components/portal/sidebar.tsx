@@ -41,12 +41,12 @@ const MAIN_ITEMS: NavItem[] = [
       "/portal/mal",
     ],
     children: [
-      { href: "/portal/planlegge?tab=arsplan", label: "Årsplan" },
-      { href: "/portal/planlegge?tab=treningsplan", label: "Treningsplan" },
+      { href: "/portal/tren/aarsplan", label: "Årsplan" },
+      { href: "/portal/tren/teknisk-plan", label: "Treningsplan" },
       { href: "/portal/tren/fys-plan", label: "Fysplan" },
-      { href: "/portal/planlegge?tab=mal", label: "Mål" },
-      { href: "/portal/planlegge?tab=turneringer", label: "Turneringer" },
-      { href: "/portal/planlegge?tab=drills", label: "Drills" },
+      { href: "/portal/mal", label: "Mål" },
+      { href: "/portal/tren/turneringer", label: "Turneringer" },
+      { href: "/portal/drills", label: "Drills" },
     ],
   },
   {
@@ -75,11 +75,12 @@ const MAIN_ITEMS: NavItem[] = [
       "/portal/talent",
     ],
     children: [
-      { href: "/portal/statistikk", label: "Statistikk" },
+      { href: "/portal/analysere", label: "Statistikk" },
       { href: "/portal/mal/sg-hub", label: "Strokes gained" },
       { href: "/portal/mal/runder", label: "Runder" },
       { href: "/portal/mal/trackman", label: "TrackMan" },
       { href: "/portal/tren/tester", label: "Tester" },
+      { href: "/portal/analysere/hull", label: "Innsikt" },
     ],
   },
   {
