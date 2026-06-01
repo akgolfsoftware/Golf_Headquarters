@@ -1,0 +1,46 @@
+name: Scrape GolfBox (norske turneringer)
+
+# Henter terminliste + leaderboard for norske amatør/junior-turneringer fra
+# GolfBox sine offentlige JSON-handlere. Skriver direkte til Supabase.
+# Delsystem A — se docs/turnering-datakilder.md.
+
+on:
+  schedule:
+    # Hver time 06–20 UTC (norsk dag/kveld, dekker spilletid). --mode=all
+    # gjør både schedule- og leaderboard-sync; leaderboards treffer kun
+    # pågående/nylig fullførte turneringer, så det er billig utenom sesong.
+    - cron: "0 6-20 * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "schedule | leaderboards | all"
+        required: false
+        default: "all"
+
+# Unngå overlappende kjøringer.
+concurrency:
+  group: scrape-golfbox
+  cancel-in-progress: false
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Scrape GolfBox
+        run: npx tsx scripts/scrape-golfbox.ts --mode=${{ github.event.inputs.mode || 'all' }}
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.DIRECT_URL }}
