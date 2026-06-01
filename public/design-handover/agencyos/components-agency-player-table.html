@@ -1,0 +1,1232 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>AgencyOS spillertabell (Stallen)</title>
+<link rel="stylesheet" href="_shared.css">
+<script src="https://unpkg.com/lucide@0.453.0"></script>
+<style>
+  body { width: 1240px; }
+  .card { padding: 24px; }
+
+  .sec {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    display: flex; align-items: center; gap: 8px;
+    margin: 0 0 14px;
+  }
+  .sec::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+
+  /* ============================================================
+     Outer panel
+     ============================================================ */
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  /* Title row */
+  .title-row {
+    display: flex; align-items: baseline; gap: 16px;
+    padding: 18px 20px 14px;
+  }
+  .title-row h2 {
+    margin: 0;
+    font-family: var(--font-display); font-weight: 700; font-size: 24px;
+    letter-spacing: -0.02em;
+    color: var(--foreground);
+  }
+  .title-row .eb {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .title-row .meta {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    display: inline-flex; gap: 16px; align-items: center;
+  }
+  .title-row .meta b { color: var(--foreground); font-weight: 700; }
+
+  /* ============================================================
+     Toolbar — filter pills + search + sort
+     ============================================================ */
+  .toolbar {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 20px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--cream-50);
+  }
+  .pills {
+    display: inline-flex; gap: 6px;
+  }
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    height: 28px; padding: 0 12px;
+    border-radius: 9999px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--foreground);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    cursor: pointer;
+  }
+  .pill:hover { background: var(--secondary); }
+  .pill.is-on {
+    background: var(--primary); color: var(--accent);
+    border-color: var(--primary);
+  }
+  .pill .ct {
+    font-family: var(--font-mono);
+    font-size: 9px; font-weight: 800;
+    padding: 2px 5px; border-radius: 9999px;
+    background: rgba(0,88,64,0.08);
+    color: var(--muted-foreground);
+  }
+  .pill.is-on .ct { background: rgba(209,248,67,0.30); color: var(--accent); }
+
+  .search {
+    display: inline-flex; align-items: center; gap: 8px;
+    height: 28px; padding: 0 10px;
+    background: var(--card);
+    border: 1px solid var(--input);
+    border-radius: 9999px;
+    min-width: 220px;
+    flex: 1;
+    max-width: 320px;
+  }
+  .search input {
+    border: 0; outline: 0; background: transparent;
+    flex: 1; min-width: 0;
+    font-family: var(--font-sans); font-size: 12px;
+    color: var(--foreground);
+  }
+  .search input::placeholder { color: var(--muted-foreground); }
+  .search i { width: 13px; height: 13px; color: var(--muted-foreground); }
+  .search .kbd {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    padding: 1px 5px; border-radius: 3px;
+    background: var(--secondary);
+  }
+
+  .toolbar .actions {
+    margin-left: auto;
+    display: inline-flex; gap: 6px;
+  }
+  .tb-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    height: 28px; padding: 0 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 9999px;
+    color: var(--foreground);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    cursor: pointer;
+  }
+  .tb-btn:hover { background: var(--secondary); }
+  .tb-btn i { width: 12px; height: 12px; }
+  .tb-btn.pri { background: var(--primary); color: var(--accent); border-color: var(--primary); }
+  .tb-btn.pri:hover { background: var(--primary-hover); }
+
+  /* ============================================================
+     TABLE
+     ============================================================ */
+  table {
+    width: 100%; border-collapse: collapse;
+    font-family: var(--font-sans);
+    table-layout: fixed;
+  }
+  thead th {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 12px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    text-align: left;
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+  }
+  thead th .sort {
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  thead th .sort i {
+    width: 10px; height: 10px;
+    opacity: 0.4;
+  }
+  thead th.is-sorted .sort i { opacity: 1; color: var(--foreground); }
+  thead th.is-sorted { color: var(--foreground); }
+  thead th.r { text-align: right; }
+  thead th.r .sort { justify-content: flex-end; flex-direction: row-reverse; }
+  thead th.c { text-align: center; }
+
+  /* col widths */
+  .col-name    { width: 240px; }
+  .col-gruppe  { width: 76px; }
+  .col-coach   { width: 122px; }
+  .col-tier    { width: 92px; }
+  .col-okter   { width: 110px; }
+  .col-hours   { width: 90px; }
+  .col-sg      { width: 130px; }
+  .col-adh     { width: 160px; }
+  .col-status  { width: 120px; }
+
+  tbody td {
+    padding: 11px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px; color: var(--foreground); letter-spacing: -0.005em;
+    vertical-align: middle;
+  }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr {
+    cursor: pointer;
+    transition: background-color 120ms ease-out;
+  }
+  tbody tr:hover { background: rgba(0,88,64,0.03); }
+  tbody tr.is-selected { background: rgba(209,248,67,0.10); }
+  tbody tr.is-selected td:first-child { position: relative; }
+  tbody tr.is-selected td:first-child::before {
+    content: "";
+    position: absolute; left: 0; top: 8px; bottom: 8px;
+    width: 3px; border-radius: 9999px;
+    background: var(--accent);
+    box-shadow: 0 0 6px rgba(209,248,67,0.55);
+  }
+  tbody td.mono {
+    font-family: var(--font-mono); font-feature-settings: "tnum","zero";
+    font-weight: 600;
+  }
+  tbody td.r { text-align: right; }
+  tbody td.c { text-align: center; }
+
+  /* Avatar + name cell */
+  .pname {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .pname .av {
+    width: 32px; height: 32px; border-radius: 9999px;
+    background: var(--secondary); color: var(--foreground);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-weight: 700; font-size: 11px;
+    flex-shrink: 0;
+  }
+  .pname .av.pri { background: var(--primary); color: var(--accent); }
+  .pname .av.lime { background: var(--accent); color: var(--primary); }
+  .pname .meta-stack { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
+  .pname .nm {
+    font-weight: 600; font-size: 13px; letter-spacing: -0.005em;
+    color: var(--foreground);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .pname .sub {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.10em;
+    text-transform: uppercase; margin-top: 1px;
+  }
+
+  /* Group badge */
+  .grp {
+    display: inline-flex; align-items: center; justify-content: center;
+    height: 22px; padding: 0 8px; border-radius: 9999px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+  }
+  .grp.wang { background: rgba(94,92,107,0.10); color: var(--neutral-chip-foreground); }
+  .grp.gfgk { background: rgba(0,88,64,0.10);    color: var(--success-foreground); }
+  .grp.aka  { background: rgba(184,133,42,0.12); color: var(--warning-foreground); }
+
+  /* Coach cell */
+  .coach {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; color: var(--foreground);
+  }
+  .coach .av {
+    width: 18px; height: 18px; border-radius: 9999px;
+    background: var(--secondary); color: var(--foreground);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-weight: 700; font-size: 8px;
+    flex-shrink: 0;
+  }
+
+  /* Tier icon + label */
+  .tier {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--foreground); letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .tier i {
+    width: 14px; height: 14px;
+  }
+  .tier.konk i { color: var(--primary); }
+  .tier.mosj i { color: var(--muted-foreground); }
+  .tier.akad i { color: var(--warning); }
+
+  /* Økter denne uka — fraction + mini bar */
+  .okt {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono);
+    font-feature-settings: "tnum","zero";
+  }
+  .okt .frac {
+    font-size: 12px; font-weight: 700;
+    color: var(--foreground); letter-spacing: -0.01em;
+  }
+  .okt .frac .of {
+    color: var(--muted-foreground); font-weight: 600;
+  }
+  .okt.below .frac { color: var(--warning); }
+  .okt.over .frac { color: var(--success); }
+  .okt .bar {
+    width: 56px; height: 4px;
+    background: rgba(10,31,23,0.06);
+    border-radius: 9999px; overflow: hidden;
+  }
+  .okt .bar .f {
+    height: 100%;
+    background: var(--primary);
+  }
+  .okt.below .bar .f { background: var(--warning); }
+  .okt.over .bar .f { background: var(--success); }
+
+  /* SG-trend sparkline */
+  .sg {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono);
+    font-feature-settings: "tnum","zero";
+  }
+  .sg svg {
+    width: 64px; height: 26px;
+    display: block;
+  }
+  .sg .val {
+    font-size: 12px; font-weight: 700; letter-spacing: -0.01em;
+  }
+  .sg .val.pos { color: var(--success); }
+  .sg .val.neg { color: var(--destructive); }
+  .sg .val.flat { color: var(--muted-foreground); }
+
+  /* Pyramide-adherence mini-bar (5 axes stacked thin) */
+  .adh {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .adh .meter {
+    display: flex; gap: 2px;
+    width: 100px;
+  }
+  .adh .meter .ax {
+    flex: 1;
+    height: 14px;
+    background: rgba(10,31,23,0.06);
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+  }
+  .adh .meter .ax .f {
+    position: absolute; left: 0; bottom: 0; right: 0;
+    border-radius: 2px;
+  }
+  .adh .meter .ax.fys   .f { background: var(--pyr-fys); }
+  .adh .meter .ax.tek   .f { background: var(--pyr-tek); }
+  .adh .meter .ax.slag  .f { background: var(--pyr-slag); }
+  .adh .meter .ax.spill .f { background: var(--pyr-spill); }
+  .adh .meter .ax.turn  .f { background: var(--pyr-turn); }
+  .adh .meter .ax.alarm { box-shadow: inset 0 0 0 1px var(--destructive); }
+  .adh .pct {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--foreground); letter-spacing: -0.01em;
+    font-feature-settings: "tnum","zero";
+  }
+    /* ALARM-flag — 30 % threshold per spec. Aggregat under 30 % er r\u00f8d.
+       Default-fargen brukes for alt over (selv om enkelt-akser har alarm). */
+    .adh .pct.alarm { color: var(--destructive); }
+    .adh .pct.warn { color: var(--warning); }
+
+  /* Status pill */
+  .status {
+    display: inline-flex; align-items: center; gap: 6px;
+    height: 22px; padding: 0 10px 0 8px; border-radius: 9999px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+  }
+  .status::before {
+    content: ""; width: 6px; height: 6px; border-radius: 9999px;
+  }
+  .status.aktiv {
+    background: rgba(0,88,64,0.08); color: var(--success-foreground);
+  }
+  .status.aktiv::before {
+    background: var(--success);
+    box-shadow: 0 0 6px rgba(26,125,86,0.6);
+  }
+  .status.bak {
+    background: rgba(184,133,42,0.14); color: var(--warning-foreground);
+  }
+  .status.bak::before { background: var(--warning); }
+  .status.inaktiv {
+    background: rgba(163,45,45,0.10); color: var(--destructive);
+  }
+  .status.inaktiv::before { background: var(--destructive); }
+  .status.veil {
+    background: var(--accent); color: var(--primary);
+  }
+  .status.veil::before { background: var(--primary); }
+
+  /* Pagination */
+  .pag {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 20px;
+    border-top: 1px solid var(--border);
+    background: var(--cream-50);
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .pag .ct {
+    font-feature-settings: "tnum","zero";
+  }
+  .pag .ct b { color: var(--foreground); }
+  .pag .nav {
+    display: inline-flex; gap: 4px; align-items: center;
+  }
+  .pag .nav button {
+    width: 26px; height: 26px; border-radius: 6px;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--muted-foreground);
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .pag .nav button:hover { color: var(--foreground); }
+  .pag .nav button i { width: 12px; height: 12px; }
+  .pag .nav .num {
+    width: auto; padding: 0 8px;
+    background: transparent;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 800;
+    color: var(--foreground);
+  }
+  .pag .nav .num.is-on {
+    background: var(--primary); color: var(--accent); border-color: var(--primary);
+  }
+
+  /* ============================================================
+     SELECTABLE — checkbox column (multi-select)
+     ============================================================ */
+  .col-check { width: 44px; }
+  .cbx {
+    width: 16px; height: 16px; border-radius: 4px;
+    border: 1.5px solid var(--input); background: var(--card);
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; flex-shrink: 0; transition: background-color 120ms, border-color 120ms;
+    position: relative;
+  }
+  .cbx:hover { border-color: var(--primary); }
+  .cbx i { width: 11px; height: 11px; color: var(--primary); opacity: 0; }
+  .cbx.on { background: var(--accent); border-color: var(--accent); }
+  .cbx.on i { opacity: 1; }
+  .cbx.ind { background: var(--accent); border-color: var(--accent); }
+  .cbx.ind::after {
+    content: ""; width: 8px; height: 2px;
+    background: var(--primary); border-radius: 1px;
+  }
+  thead th.col-check-h { cursor: default; text-align: center; }
+  tbody td.cbx-cell { text-align: center; padding-left: 12px; padding-right: 0; }
+  tbody tr.is-checked { background: rgba(209,248,67,0.06); }
+  tbody tr.is-checked:hover { background: rgba(209,248,67,0.10); }
+
+  /* ============================================================
+     BATCH ACTION BAR — conditional on selection
+     ============================================================ */
+  .batchbar {
+    display: flex; align-items: center; gap: 14px;
+    padding: 10px 20px;
+    background: rgba(209,248,67,0.13);
+    border-bottom: 1px solid var(--border);
+  }
+  .batchbar .bb-count {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em; color: var(--primary);
+  }
+  .batchbar .bb-count b {
+    min-width: 18px; height: 18px; padding: 0 5px;
+    border-radius: 9999px; background: var(--primary); color: var(--accent);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 800;
+  }
+  .batchbar .bb-actions { display: inline-flex; gap: 6px; }
+  .batchbar .bb-actions button {
+    display: inline-flex; align-items: center; gap: 6px;
+    height: 28px; padding: 0 12px; border-radius: 9999px;
+    background: var(--card); border: 1px solid var(--border); color: var(--foreground);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.10em; cursor: pointer;
+  }
+  .batchbar .bb-actions button:hover { background: var(--secondary); }
+  .batchbar .bb-actions button i { width: 12px; height: 12px; }
+  .batchbar .bb-clear {
+    margin-left: auto;
+    background: transparent; border: 0; color: var(--muted-foreground);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.10em; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .batchbar .bb-clear:hover { color: var(--foreground); }
+  .batchbar .bb-clear i { width: 12px; height: 12px; }
+
+  /* ============================================================
+     SORT-STATE anatomy strip — asc / desc / inactive
+     ============================================================ */
+  .sortkey { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .sortkey .k {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 8px 14px; border: 1px solid var(--border);
+    border-radius: 10px; background: var(--card);
+  }
+  .sortkey .th-demo {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted-foreground);
+  }
+  .sortkey .th-demo i { width: 10px; height: 10px; opacity: 0.4; }
+  .sortkey .k.act .th-demo { color: var(--foreground); }
+  .sortkey .k.act .th-demo i { opacity: 1; color: var(--foreground); }
+  .sortkey .lbl {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.06em;
+    padding-left: 2px; border-left: 1px solid var(--border);
+  }
+
+  /* ============================================================
+     groupBy separator row (shared DataTable variant)
+     ============================================================ */
+  tbody tr.group-sep td {
+    background: var(--cream-50);
+    padding: 7px 12px 7px 16px;
+  }
+  .group-sep .gh {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted-foreground);
+  }
+  .group-sep .gh i { width: 11px; height: 11px; }
+  .group-sep .gh .gc {
+    font-size: 9px; background: var(--secondary); color: var(--muted-foreground);
+    border-radius: 9999px; padding: 1px 7px;
+  }
+
+  /* ============================================================
+     EMPTY STATE
+     ============================================================ */
+  .empty {
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center; padding: 52px 24px 56px; gap: 4px;
+  }
+  .empty .ic {
+    width: 48px; height: 48px; border-radius: 12px;
+    background: var(--secondary); color: var(--muted-foreground);
+    display: inline-flex; align-items: center; justify-content: center; margin-bottom: 10px;
+  }
+  .empty .ic i { width: 22px; height: 22px; }
+  .empty h3 {
+    margin: 0; font-family: var(--font-display); font-weight: 700; font-size: 16px;
+    letter-spacing: -0.01em; color: var(--foreground);
+  }
+  .empty p {
+    margin: 0; font-size: 13px; color: var(--muted-foreground);
+    max-width: 40ch; line-height: 1.5;
+  }
+  .empty p b { color: var(--foreground); font-weight: 700; }
+  .empty .cta {
+    margin-top: 14px;
+    display: inline-flex; align-items: center; gap: 7px;
+    height: 32px; padding: 0 16px; border-radius: 9999px;
+    background: var(--card); border: 1px solid var(--border); color: var(--foreground);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.10em; cursor: pointer;
+  }
+  .empty .cta:hover { background: var(--secondary); }
+  .empty .cta i { width: 13px; height: 13px; }
+
+  /* Rules */
+  .rules {
+    margin-top: 24px; padding: 16px;
+    background: var(--secondary); border-radius: 12px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted-foreground); line-height: 1.6;
+  }
+  .rules p { margin: 0; }
+  .rules p + p { margin-top: 8px; }
+  .rules b { color: var(--foreground); font-weight: 700; }
+  .rules code {
+    background: var(--card); padding: 1px 5px; border-radius: 3px;
+    color: var(--foreground); font-weight: 700;
+  }
+</style></head>
+<body><div class="card">
+
+  <div class="sec">AgencyOS · Stallen · sortbar spillertabell</div>
+
+  <div class="panel">
+
+    <!-- ====== Title row ====== -->
+    <div class="title-row">
+      <span class="eb">STALLEN</span>
+      <h2>38 spillere · uke 22</h2>
+      <span class="meta">
+        <span><b>4</b> bak plan</span>
+        <span>·</span>
+        <span><b>2</b> inaktive</span>
+        <span>·</span>
+        <span><b>+18 t</b> vs forrige 30 d</span>
+      </span>
+    </div>
+
+    <!-- ====== Toolbar ====== -->
+    <div class="toolbar">
+      <div class="pills" role="tablist">
+        <button class="pill is-on">Alle <span class="ct">38</span></button>
+        <button class="pill">WANG <span class="ct">14</span></button>
+        <button class="pill">GFGK <span class="ct">18</span></button>
+        <button class="pill">AKA <span class="ct">6</span></button>
+      </div>
+
+      <div class="search">
+        <i data-lucide="search"></i>
+        <input type="text" placeholder="Søk på navn, coach, status …" />
+        <span class="kbd">⌘F</span>
+      </div>
+
+      <div class="actions">
+        <button class="tb-btn"><i data-lucide="sliders-horizontal"></i>Filter</button>
+        <button class="tb-btn"><i data-lucide="arrow-down-narrow-wide"></i>Sortér</button>
+        <button class="tb-btn pri"><i data-lucide="plus"></i>Ny spiller</button>
+      </div>
+    </div>
+
+    <!-- ====== Batch action bar — vises betinget når rader er valgt ====== -->
+    <div class="batchbar">
+      <span class="bb-count"><b>2</b> valgt</span>
+      <div class="bb-actions">
+        <button><i data-lucide="user-cog"></i>Tildel coach</button>
+        <button><i data-lucide="send"></i>Send melding</button>
+        <button><i data-lucide="folder-input"></i>Flytt gruppe</button>
+        <button><i data-lucide="download"></i>Eksporter</button>
+      </div>
+      <button class="bb-clear"><i data-lucide="x"></i>Avbryt</button>
+    </div>
+
+    <!-- ====== Table ====== -->
+    <table>
+      <colgroup>
+        <col class="col-check">
+        <col class="col-name">
+        <col class="col-gruppe">
+        <col class="col-coach">
+        <col class="col-tier">
+        <col class="col-okter">
+        <col class="col-hours">
+        <col class="col-sg">
+        <col class="col-adh">
+        <col class="col-status">
+      </colgroup>
+      <thead>
+        <tr>
+          <th class="col-check-h"><span class="cbx ind" role="checkbox" aria-checked="mixed" aria-label="Velg alle"></span></th>
+          <th><span class="sort">Spiller<i data-lucide="chevrons-up-down"></i></span></th>
+          <th><span class="sort">Gruppe<i data-lucide="chevrons-up-down"></i></span></th>
+          <th><span class="sort">Coach<i data-lucide="chevrons-up-down"></i></span></th>
+          <th><span class="sort">Tier<i data-lucide="chevrons-up-down"></i></span></th>
+          <th class="r"><span class="sort">Økter uke<i data-lucide="chevrons-up-down"></i></span></th>
+          <th class="r"><span class="sort">Tim. 30 d<i data-lucide="chevrons-up-down"></i></span></th>
+          <th class="is-sorted"><span class="sort">SG-trend<i data-lucide="arrow-down"></i></span></th>
+          <th><span class="sort">Pyr. uke<i data-lucide="chevrons-up-down"></i></span></th>
+          <th><span class="sort">Status<i data-lucide="chevrons-up-down"></i></span></th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <!-- Markus R.P. — SELECTED, bak plan — alarm på slag-aksen.
+             Verdiene matcher player-panel UKE 22 / PLAN (timer denne uka /
+             planlagt). Drill-down skal vise nøyaktig samme tall. -->
+        <tr class="is-selected">
+          <td class="cbx-cell"><span class="cbx"><i data-lucide="check"></i></span></td>
+          <td>
+            <div class="pname">
+              <span class="av pri">MR</span>
+              <span class="meta-stack">
+                <span class="nm">Markus R.P.</span>
+                <span class="sub">SRIXON #2 · 12 DG</span>
+              </span>
+            </div>
+          </td>
+          <td><span class="grp wang">WANG</span></td>
+          <td><span class="coach"><span class="av">AK</span>Andreas K.</span></td>
+          <td><span class="tier konk"><i data-lucide="trophy"></i>KONK</span></td>
+          <td class="r">
+            <span class="okt below">
+              <span class="frac">2<span class="of">/4</span></span>
+              <span class="bar"><span class="f" style="width:50%"></span></span>
+            </span>
+          </td>
+          <td class="mono r">14,5</td>
+          <td>
+            <span class="sg">
+              <svg viewBox="0 0 64 26" preserveAspectRatio="none">
+                <path d="M0 12 L 9 14 L 18 13 L 27 15 L 36 18 L 45 20 L 55 22 L 64 24"
+                      fill="none" stroke="var(--destructive)" stroke-width="1.5"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="64" cy="24" r="2" fill="var(--destructive)"/>
+              </svg>
+              <span class="val neg">−0,42</span>
+            </span>
+          </td>
+          <td>
+            <span class="adh">
+              <span class="meter">
+                <span class="ax fys"><span class="f" style="height:100%"></span></span>
+                <span class="ax tek"><span class="f" style="height:100%"></span></span>
+                <span class="ax slag alarm"><span class="f" style="height:33%"></span></span>
+                <span class="ax spill"><span class="f" style="height:67%"></span></span>
+                <span class="ax turn"><span class="f" style="height:38%"></span></span>
+              </span>
+              <span class="pct">68 %</span>
+            </span>
+          </td>
+          <td><span class="status bak">Bak plan</span></td>
+        </tr>
+
+        <!-- Sofie K. -->
+        <tr class="is-checked">
+          <td class="cbx-cell"><span class="cbx on"><i data-lucide="check"></i></span></td>
+          <td>
+            <div class="pname">
+              <span class="av">SK</span>
+              <span class="meta-stack">
+                <span class="nm">Sofie K.</span>
+                <span class="sub">PLAN B · UTKAST</span>
+              </span>
+            </div>
+          </td>
+          <td><span class="grp gfgk">GFGK</span></td>
+          <td><span class="coach"><span class="av">MV</span>Marte V.</span></td>
+          <td><span class="tier mosj"><i data-lucide="leaf"></i>MOSJ</span></td>
+          <td class="r">
+            <span class="okt">
+              <span class="frac">3<span class="of">/3</span></span>
+              <span class="bar"><span class="f" style="width:100%"></span></span>
+            </span>
+          </td>
+          <td class="mono r">8,0</td>
+          <td>
+            <span class="sg">
+              <svg viewBox="0 0 64 26" preserveAspectRatio="none">
+                <path d="M0 16 L 9 14 L 18 12 L 27 11 L 36 10 L 45 8 L 55 7 L 64 5"
+                      fill="none" stroke="var(--success)" stroke-width="1.5"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="64" cy="5" r="2" fill="var(--success)"/>
+              </svg>
+              <span class="val pos">+0,18</span>
+            </span>
+          </td>
+          <td>
+            <span class="adh">
+              <span class="meter">
+                <span class="ax fys"><span class="f" style="height:70%"></span></span>
+                <span class="ax tek"><span class="f" style="height:84%"></span></span>
+                <span class="ax slag"><span class="f" style="height:68%"></span></span>
+                <span class="ax spill"><span class="f" style="height:78%"></span></span>
+                <span class="ax turn"><span class="f" style="height:50%"></span></span>
+              </span>
+              <span class="pct">78 %</span>
+            </span>
+          </td>
+          <td><span class="status veil">Ønsker veil.</span></td>
+        </tr>
+
+        <!-- Karl Ludvig -->
+        <tr class="is-checked">
+          <td class="cbx-cell"><span class="cbx on"><i data-lucide="check"></i></span></td>
+          <td>
+            <div class="pname">
+              <span class="av lime">KL</span>
+              <span class="meta-stack">
+                <span class="nm">Karl Ludvig</span>
+                <span class="sub">ELIT · 12 CR.</span>
+              </span>
+            </div>
+          </td>
+          <td><span class="grp aka">AKA</span></td>
+          <td><span class="coach"><span class="av">NT</span>Nina T.</span></td>
+          <td><span class="tier akad"><i data-lucide="graduation-cap"></i>AKAD</span></td>
+          <td class="r">
+            <span class="okt over">
+              <span class="frac">6<span class="of">/5</span></span>
+              <span class="bar"><span class="f" style="width:100%"></span></span>
+            </span>
+          </td>
+          <td class="mono r">22,5</td>
+          <td>
+            <span class="sg">
+              <svg viewBox="0 0 64 26" preserveAspectRatio="none">
+                <path d="M0 14 L 9 12 L 18 10 L 27 8 L 36 9 L 45 6 L 55 4 L 64 3"
+                      fill="none" stroke="var(--success)" stroke-width="1.5"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="64" cy="3" r="2" fill="var(--success)"/>
+              </svg>
+              <span class="val pos">+0,64</span>
+            </span>
+          </td>
+          <td>
+            <span class="adh">
+              <span class="meter">
+                <span class="ax fys"><span class="f" style="height:90%"></span></span>
+                <span class="ax tek"><span class="f" style="height:88%"></span></span>
+                <span class="ax slag"><span class="f" style="height:84%"></span></span>
+                <span class="ax spill"><span class="f" style="height:90%"></span></span>
+                <span class="ax turn"><span class="f" style="height:76%"></span></span>
+              </span>
+              <span class="pct">86 %</span>
+            </span>
+          </td>
+          <td><span class="status aktiv">Aktiv</span></td>
+        </tr>
+
+        <!-- Emilie B. -->
+        <tr>
+          <td class="cbx-cell"><span class="cbx"><i data-lucide="check"></i></span></td>
+          <td>
+            <div class="pname">
+              <span class="av">EB</span>
+              <span class="meta-stack">
+                <span class="nm">Emilie B.</span>
+                <span class="sub">TEST-UKE</span>
+              </span>
+            </div>
+          </td>
+          <td><span class="grp gfgk">GFGK</span></td>
+          <td><span class="coach"><span class="av">AK</span>Andreas K.</span></td>
+          <td><span class="tier konk"><i data-lucide="trophy"></i>KONK</span></td>
+          <td class="r">
+            <span class="okt">
+              <span class="frac">4<span class="of">/4</span></span>
+              <span class="bar"><span class="f" style="width:100%"></span></span>
+            </span>
+          </td>
+          <td class="mono r">17,0</td>
+          <td>
+            <span class="sg">
+              <svg viewBox="0 0 64 26" preserveAspectRatio="none">
+                <path d="M0 13 L 9 13 L 18 12 L 27 11 L 36 12 L 45 10 L 55 9 L 64 8"
+                      fill="none" stroke="var(--success)" stroke-width="1.5"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="64" cy="8" r="2" fill="var(--success)"/>
+              </svg>
+              <span class="val pos">+0,22</span>
+            </span>
+          </td>
+          <td>
+            <span class="adh">
+              <span class="meter">
+                <span class="ax fys"><span class="f" style="height:76%"></span></span>
+                <span class="ax tek"><span class="f" style="height:88%"></span></span>
+                <span class="ax slag"><span class="f" style="height:80%"></span></span>
+                <span class="ax spill"><span class="f" style="height:72%"></span></span>
+                <span class="ax turn"><span class="f" style="height:64%"></span></span>
+              </span>
+              <span class="pct">76 %</span>
+            </span>
+          </td>
+          <td><span class="status aktiv">Aktiv</span></td>
+        </tr>
+
+        <!-- Jonas H. -->
+        <tr>
+          <td class="cbx-cell"><span class="cbx"><i data-lucide="check"></i></span></td>
+          <td>
+            <div class="pname">
+              <span class="av">JH</span>
+              <span class="meta-stack">
+                <span class="nm">Jonas H.</span>
+                <span class="sub">5 D INAKTIV</span>
+              </span>
+            </div>
+          </td>
+          <td><span class="grp gfgk">GFGK</span></td>
+          <td><span class="coach"><span class="av">MV</span>Marte V.</span></td>
+          <td><span class="tier konk"><i data-lucide="trophy"></i>KONK</span></td>
+          <td class="r">
+            <span class="okt below">
+              <span class="frac">0<span class="of">/4</span></span>
+              <span class="bar"><span class="f" style="width:0%"></span></span>
+            </span>
+          </td>
+          <td class="mono r">3,0</td>
+          <td>
+            <span class="sg">
+              <svg viewBox="0 0 64 26" preserveAspectRatio="none">
+                <path d="M0 10 L 9 11 L 18 13 L 27 14 L 36 16 L 45 18 L 55 19 L 64 21"
+                      fill="none" stroke="var(--destructive)" stroke-width="1.5"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="64" cy="21" r="2" fill="var(--destructive)"/>
+              </svg>
+              <span class="val neg">−0,28</span>
+            </span>
+          </td>
+          <td>
+            <span class="adh">
+              <span class="meter">
+                <span class="ax fys"><span class="f" style="height:22%"></span></span>
+                <span class="ax tek"><span class="f" style="height:18%"></span></span>
+                <span class="ax slag"><span class="f" style="height:14%"></span></span>
+                <span class="ax spill"><span class="f" style="height:10%"></span></span>
+                <span class="ax turn"><span class="f" style="height:8%"></span></span>
+              </span>
+              <span class="pct alarm">14 %</span>
+            </span>
+          </td>
+          <td><span class="status inaktiv">Inaktiv</span></td>
+        </tr>
+
+        <!-- Nora T. -->
+        <tr>
+          <td class="cbx-cell"><span class="cbx"><i data-lucide="check"></i></span></td>
+          <td>
+            <div class="pname">
+              <span class="av">NT</span>
+              <span class="meta-stack">
+                <span class="nm">Nora T.</span>
+                <span class="sub">JUNIOR · 16 år</span>
+              </span>
+            </div>
+          </td>
+          <td><span class="grp aka">AKA</span></td>
+          <td><span class="coach"><span class="av">NT</span>Nina T.</span></td>
+          <td><span class="tier konk"><i data-lucide="trophy"></i>KONK</span></td>
+          <td class="r">
+            <span class="okt">
+              <span class="frac">5<span class="of">/5</span></span>
+              <span class="bar"><span class="f" style="width:100%"></span></span>
+            </span>
+          </td>
+          <td class="mono r">19,5</td>
+          <td>
+            <span class="sg">
+              <svg viewBox="0 0 64 26" preserveAspectRatio="none">
+                <path d="M0 14 L 9 12 L 18 13 L 27 10 L 36 11 L 45 9 L 55 8 L 64 7"
+                      fill="none" stroke="var(--success)" stroke-width="1.5"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="64" cy="7" r="2" fill="var(--success)"/>
+              </svg>
+              <span class="val pos">+0,35</span>
+            </span>
+          </td>
+          <td>
+            <span class="adh">
+              <span class="meter">
+                <span class="ax fys"><span class="f" style="height:82%"></span></span>
+                <span class="ax tek"><span class="f" style="height:80%"></span></span>
+                <span class="ax slag"><span class="f" style="height:76%"></span></span>
+                <span class="ax spill"><span class="f" style="height:84%"></span></span>
+                <span class="ax turn"><span class="f" style="height:70%"></span></span>
+              </span>
+              <span class="pct">78 %</span>
+            </span>
+          </td>
+          <td><span class="status aktiv">Aktiv</span></td>
+        </tr>
+
+        <!-- Lars-Erik B. -->
+        <tr>
+          <td class="cbx-cell"><span class="cbx"><i data-lucide="check"></i></span></td>
+          <td>
+            <div class="pname">
+              <span class="av">LB</span>
+              <span class="meta-stack">
+                <span class="nm">Lars-Erik B.</span>
+                <span class="sub">SENIOR · 54 år</span>
+              </span>
+            </div>
+          </td>
+          <td><span class="grp wang">WANG</span></td>
+          <td><span class="coach"><span class="av">MV</span>Marte V.</span></td>
+          <td><span class="tier mosj"><i data-lucide="leaf"></i>MOSJ</span></td>
+          <td class="r">
+            <span class="okt">
+              <span class="frac">2<span class="of">/2</span></span>
+              <span class="bar"><span class="f" style="width:100%"></span></span>
+            </span>
+          </td>
+          <td class="mono r">6,5</td>
+          <td>
+            <span class="sg">
+              <svg viewBox="0 0 64 26" preserveAspectRatio="none">
+                <path d="M0 13 L 9 13 L 18 14 L 27 13 L 36 13 L 45 14 L 55 13 L 64 13"
+                      fill="none" stroke="var(--muted-foreground)" stroke-width="1.5"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="64" cy="13" r="2" fill="var(--muted-foreground)"/>
+              </svg>
+              <span class="val flat">±0,02</span>
+            </span>
+          </td>
+          <td>
+            <span class="adh">
+              <span class="meter">
+                <span class="ax fys"><span class="f" style="height:60%"></span></span>
+                <span class="ax tek"><span class="f" style="height:72%"></span></span>
+                <span class="ax slag"><span class="f" style="height:64%"></span></span>
+                <span class="ax spill"><span class="f" style="height:80%"></span></span>
+                <span class="ax turn"><span class="f" style="height:30%"></span></span>
+              </span>
+              <span class="pct">62 %</span>
+            </span>
+          </td>
+          <td><span class="status aktiv">Aktiv</span></td>
+        </tr>
+
+        <!-- Tobias W. -->
+        <tr>
+          <td class="cbx-cell"><span class="cbx"><i data-lucide="check"></i></span></td>
+          <td>
+            <div class="pname">
+              <span class="av">TW</span>
+              <span class="meta-stack">
+                <span class="nm">Tobias W.</span>
+                <span class="sub">SKADE · KNE</span>
+              </span>
+            </div>
+          </td>
+          <td><span class="grp aka">AKA</span></td>
+          <td><span class="coach"><span class="av">AK</span>Andreas K.</span></td>
+          <td><span class="tier akad"><i data-lucide="graduation-cap"></i>AKAD</span></td>
+          <td class="r">
+            <span class="okt below">
+              <span class="frac">1<span class="of">/3</span></span>
+              <span class="bar"><span class="f" style="width:33%"></span></span>
+            </span>
+          </td>
+          <td class="mono r">7,5</td>
+          <td>
+            <span class="sg">
+              <svg viewBox="0 0 64 26" preserveAspectRatio="none">
+                <path d="M0 11 L 9 11 L 18 12 L 27 13 L 36 14 L 45 15 L 55 16 L 64 17"
+                      fill="none" stroke="var(--warning)" stroke-width="1.5"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="64" cy="17" r="2" fill="var(--warning)"/>
+              </svg>
+              <span class="val neg">−0,12</span>
+            </span>
+          </td>
+          <td>
+            <span class="adh">
+              <span class="meter">
+                <span class="ax fys"><span class="f" style="height:38%"></span></span>
+                <span class="ax tek"><span class="f" style="height:60%"></span></span>
+                <span class="ax slag"><span class="f" style="height:50%"></span></span>
+                <span class="ax spill"><span class="f" style="height:32%"></span></span>
+                <span class="ax turn"><span class="f" style="height:20%"></span></span>
+              </span>
+              <span class="pct warn">40 %</span>
+            </span>
+          </td>
+          <td><span class="status bak">Bak plan</span></td>
+        </tr>
+
+        <!-- Maria S. -->
+        <tr>
+          <td class="cbx-cell"><span class="cbx"><i data-lucide="check"></i></span></td>
+          <td>
+            <div class="pname">
+              <span class="av">MS</span>
+              <span class="meta-stack">
+                <span class="nm">Maria S.</span>
+                <span class="sub">NL · KVAL.</span>
+              </span>
+            </div>
+          </td>
+          <td><span class="grp wang">WANG</span></td>
+          <td><span class="coach"><span class="av">NT</span>Nina T.</span></td>
+          <td><span class="tier konk"><i data-lucide="trophy"></i>KONK</span></td>
+          <td class="r">
+            <span class="okt">
+              <span class="frac">4<span class="of">/4</span></span>
+              <span class="bar"><span class="f" style="width:100%"></span></span>
+            </span>
+          </td>
+          <td class="mono r">16,0</td>
+          <td>
+            <span class="sg">
+              <svg viewBox="0 0 64 26" preserveAspectRatio="none">
+                <path d="M0 14 L 9 13 L 18 14 L 27 12 L 36 11 L 45 11 L 55 10 L 64 9"
+                      fill="none" stroke="var(--success)" stroke-width="1.5"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="64" cy="9" r="2" fill="var(--success)"/>
+              </svg>
+              <span class="val pos">+0,14</span>
+            </span>
+          </td>
+          <td>
+            <span class="adh">
+              <span class="meter">
+                <span class="ax fys"><span class="f" style="height:74%"></span></span>
+                <span class="ax tek"><span class="f" style="height:80%"></span></span>
+                <span class="ax slag"><span class="f" style="height:78%"></span></span>
+                <span class="ax spill"><span class="f" style="height:76%"></span></span>
+                <span class="ax turn"><span class="f" style="height:68%"></span></span>
+              </span>
+              <span class="pct">75 %</span>
+            </span>
+          </td>
+          <td><span class="status aktiv">Aktiv</span></td>
+        </tr>
+
+        <!-- Aksel R. -->
+        <tr>
+          <td class="cbx-cell"><span class="cbx"><i data-lucide="check"></i></span></td>
+          <td>
+            <div class="pname">
+              <span class="av">AR</span>
+              <span class="meta-stack">
+                <span class="nm">Aksel R.</span>
+                <span class="sub">U-18 · EM JUNIOR</span>
+              </span>
+            </div>
+          </td>
+          <td><span class="grp gfgk">GFGK</span></td>
+          <td><span class="coach"><span class="av">AK</span>Andreas K.</span></td>
+          <td><span class="tier konk"><i data-lucide="trophy"></i>KONK</span></td>
+          <td class="r">
+            <span class="okt over">
+              <span class="frac">6<span class="of">/5</span></span>
+              <span class="bar"><span class="f" style="width:100%"></span></span>
+            </span>
+          </td>
+          <td class="mono r">21,0</td>
+          <td>
+            <span class="sg">
+              <svg viewBox="0 0 64 26" preserveAspectRatio="none">
+                <path d="M0 16 L 9 15 L 18 13 L 27 11 L 36 9 L 45 8 L 55 6 L 64 5"
+                      fill="none" stroke="var(--success)" stroke-width="1.5"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="64" cy="5" r="2" fill="var(--success)"/>
+              </svg>
+              <span class="val pos">+0,52</span>
+            </span>
+          </td>
+          <td>
+            <span class="adh">
+              <span class="meter">
+                <span class="ax fys"><span class="f" style="height:84%"></span></span>
+                <span class="ax tek"><span class="f" style="height:86%"></span></span>
+                <span class="ax slag"><span class="f" style="height:88%"></span></span>
+                <span class="ax spill"><span class="f" style="height:80%"></span></span>
+                <span class="ax turn"><span class="f" style="height:72%"></span></span>
+              </span>
+              <span class="pct">82 %</span>
+            </span>
+          </td>
+          <td><span class="status aktiv">Aktiv</span></td>
+        </tr>
+
+      </tbody>
+    </table>
+
+    <!-- ====== Pagination ====== -->
+    <div class="pag">
+      <span class="ct">Viser <b>1–10</b> av <b>38</b> spillere</span>
+      <div class="nav">
+        <button><i data-lucide="chevron-left"></i></button>
+        <button class="num is-on">1</button>
+        <button class="num">2</button>
+        <button class="num">3</button>
+        <button class="num">4</button>
+        <button><i data-lucide="chevron-right"></i></button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ====== Sort-state contract ====== -->
+  <div class="sec" style="margin-top:30px;">Sort-header · 3-state — klikk syklisk asc → desc → av</div>
+  <div class="sortkey">
+    <div class="k act">
+      <span class="th-demo">SG-trend<i data-lucide="arrow-up"></i></span>
+      <span class="lbl">ASC · stigende</span>
+    </div>
+    <div class="k act">
+      <span class="th-demo">SG-trend<i data-lucide="arrow-down"></i></span>
+      <span class="lbl">DESC · aktiv default</span>
+    </div>
+    <div class="k">
+      <span class="th-demo">Gruppe<i data-lucide="chevrons-up-down"></i></span>
+      <span class="lbl">AV · usortert</span>
+    </div>
+  </div>
+
+  <!-- ====== groupBy variant + empty-state ====== -->
+  <div class="sec" style="margin-top:30px;">DataTable · groupBy-separator + tom-tilstand</div>
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; align-items:start;">
+
+    <!-- groupBy separator example -->
+    <div class="panel">
+      <table>
+        <colgroup><col class="col-check"><col class="col-name"><col class="col-status"></colgroup>
+        <tbody>
+          <tr class="group-sep">
+            <td colspan="3"><span class="gh"><i data-lucide="folder"></i>WANG TOPPIDRETT <span class="gc">14</span></span></td>
+          </tr>
+          <tr>
+            <td class="cbx-cell"><span class="cbx"><i data-lucide="check"></i></span></td>
+            <td><div class="pname"><span class="av pri">MR</span><span class="meta-stack"><span class="nm">Markus R.P.</span><span class="sub">SRIXON #2</span></span></div></td>
+            <td><span class="status bak">Bak plan</span></td>
+          </tr>
+          <tr>
+            <td class="cbx-cell"><span class="cbx"><i data-lucide="check"></i></span></td>
+            <td><div class="pname"><span class="av">LB</span><span class="meta-stack"><span class="nm">Lars-Erik B.</span><span class="sub">SENIOR</span></span></div></td>
+            <td><span class="status aktiv">Aktiv</span></td>
+          </tr>
+          <tr class="group-sep">
+            <td colspan="3"><span class="gh"><i data-lucide="folder"></i>GFGK AKADEMI <span class="gc">18</span></span></td>
+          </tr>
+          <tr>
+            <td class="cbx-cell"><span class="cbx"><i data-lucide="check"></i></span></td>
+            <td><div class="pname"><span class="av">SK</span><span class="meta-stack"><span class="nm">Sofie K.</span><span class="sub">PLAN B</span></span></div></td>
+            <td><span class="status veil">Ønsker veil.</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- empty-state example -->
+    <div class="panel">
+      <div class="toolbar">
+        <div class="search" style="max-width:none;">
+          <i data-lucide="search"></i>
+          <input type="text" value="zlatan" readonly />
+          <span class="kbd">⌘F</span>
+        </div>
+      </div>
+      <div class="empty">
+        <span class="ic"><i data-lucide="user-round-search"></i></span>
+        <h3>Ingen spillere matcher «zlatan»</h3>
+        <p>Prøv et annet navn, eller fjern <b>WANG</b>-filteret for å søke i hele stallen.</p>
+        <button class="cta"><i data-lucide="rotate-ccw"></i>Nullstill søk &amp; filter</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="rules">
+    <p><b>Seleksjon (<code>selectable</code>):</b> ledende checkbox-kolonne. Header = <code>indeterminate</code> når noen (ikke alle) er valgt. Valgte rader får lime-tint bg + fylt lime-checkbox. Seleksjon utløser <b>BatchActionBar</b> (lime-tint, over tabellen). Dette er <em>uavhengig</em> av fokus-raden — Markus har lime venstre-marker (åpen i panel) men er <em>ikke</em> i batch-utvalget.</p>
+    <p><b>Sortering (3-state):</b> klikk header sykler <code>asc ↑ → desc ↓ → av</code>. Aktiv kolonne: 100 % opacity-pil (<code>arrow-up</code>/<code>arrow-down</code>) + foreground header. Usortert: dim <code>chevrons-up-down</code>. Default: SG-trend descending (alarm-spillere først).</p>
+    <p><b>groupBy:</b> valgfri seksjonsrad (<code>colspan</code>) med gruppenavn + antall — delt variant med Bookinger (dato-grupper). Av som default i Stallen.</p>
+    <p><b>Tom-tilstand:</b> ikon + søk-ekko i overskrift + handling som nullstiller søk <em>og</em> aktive filtre.</p>
+    <p><b>Klikk rad:</b> åpner side-panel (komponent 9). Valgt rad får 3 px lime venstre-marker + 10 % lime-tint bg.</p>
+    <p><b>Pyramide-adherence (uke):</b> 5 søyler i pyramide-akse-farger, høyde = % oppnådd av planlagte timer denne uka. Søyle med 1 px rød ramme = akse-alarm (under 40 %). Aggregat-sluttall: forest default · varsel-okker under 60 % · rød under 40 %. Tallene matcher side-panelets <code>UKE X / PLAN</code>-blokk.</p>
+    <p><b>SG-trend:</b> 8-punkt sparkline (siste 8 uker). Endepunkt-dot i fargen til delta — grønn opp · rød ned · grå flat (< ±0,05).</p>
+    <p><b>Status:</b> Aktiv (grønn puls), Bak plan (warn), Inaktiv (destructive), Ønsker veil. (lime — spilleren har sendt forespørsel).</p>
+  </div>
+
+  <script>lucide.createIcons();</script>
+</div></body></html>

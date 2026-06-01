@@ -1,0 +1,1252 @@
+<!doctype html><html><head><meta charset="utf-8"><title>TrackMan · Dispersion + Siktelinje</title>
+<link rel="stylesheet" href="_shared.css">
+<script src="https://unpkg.com/lucide@0.453.0"></script>
+<style>
+  @property --aim-angle { syntax: '<angle>'; inherits: true; initial-value: 0deg; }
+
+  body { width: 1280px; }
+  .card { padding: 24px; position: relative; }
+
+  /* === CARD CHROME === */
+  .dp-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .dp-head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 18px;
+    padding: 18px 22px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .dp-eyebrow {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .dp-eyebrow .pulse {
+    width: 6px; height: 6px; border-radius: 9999px;
+    background: var(--accent); box-shadow: 0 0 6px rgba(209,248,67,0.6);
+    position: relative;
+  }
+  .dp-eyebrow .pulse::after {
+    content: ""; position: absolute; inset: 0; border-radius: 9999px;
+    background: var(--accent);
+    animation: ping 1500ms cubic-bezier(0,0,0.2,1) infinite; opacity: 0.6;
+  }
+  @keyframes ping { 70%,100% { transform: scale(2.6); opacity: 0; } }
+  .dp-title {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 22px; line-height: 1.1; letter-spacing: -0.015em;
+    margin: 4px 0 0;
+  }
+  .dp-title em { font-style: italic; font-weight: 400; color: var(--muted-foreground); margin-left: 4px; }
+
+  /* Back-link (drill fra Bag-view) */
+  .dp-back {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: transparent; border: 0; padding: 0;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--muted-foreground);
+    cursor: pointer; text-decoration: none;
+    transition: color 150ms;
+    margin-bottom: 6px;
+  }
+  .dp-back:hover { color: var(--primary); }
+  .dp-back:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px; border-radius: 4px;
+  }
+  .dp-back svg { width: 12px; height: 12px; }
+
+  /* Club selector */
+  .club-select {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 7px 12px;
+    cursor: pointer;
+    transition: background 150ms, border-color 150ms;
+  }
+  .club-select:hover { background: var(--secondary); border-color: var(--input); }
+  .club-select .cs-name {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 14px;
+    letter-spacing: -0.005em;
+  }
+  .club-select .cs-meta {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted-foreground);
+    letter-spacing: 0.02em;
+    font-feature-settings: "tnum","zero";
+  }
+  .club-select svg { width: 12px; height: 12px; opacity: 0.6; }
+
+  /* === ROT + ARCHETYPE ROW === */
+  .green-tabs {
+    display: flex; gap: 8px;
+    padding: 10px 22px;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    justify-content: space-between;
+  }
+  .green-tabs .gt-bg {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .green-tabs .gt-bg b {
+    color: var(--foreground); font-weight: 700; letter-spacing: 0.04em;
+  }
+  .green-tabs .gt-bg .gt-dot {
+    width: 6px; height: 6px; border-radius: 9999px;
+    background: var(--course-green);
+  }
+
+  /* Club picker menu */
+  .club-menu {
+    position: absolute;
+    right: 22px; top: 74px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 8px;
+    min-width: 220px;
+    max-height: 360px; overflow-y: auto;
+    box-shadow: 0 12px 28px rgba(10,31,23,0.16);
+    z-index: 50;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
+  }
+  .cm-item {
+    border: 0; background: transparent; cursor: pointer; text-align: left;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--foreground);
+    padding: 7px 10px;
+    border-radius: 6px;
+    display: flex; justify-content: space-between; align-items: baseline;
+    transition: background 100ms;
+  }
+  .cm-item:hover { background: var(--secondary); }
+  .cm-item:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: -2px;
+  }
+  .cm-item.is-active { background: var(--primary); color: var(--accent); }
+  .cm-item .cm-yd {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    color: var(--muted-foreground);
+    font-feature-settings: "tnum","zero";
+  }
+  .cm-item.is-active .cm-yd { color: rgba(209,248,67,0.7); }
+
+  /* Rotation control */
+  .rot-group {
+    display: inline-flex; align-items: center; gap: 4px;
+    margin-left: 8px;
+    padding-left: 12px;
+    border-left: 1px solid var(--border);
+  }
+  .rot-group .rot-label {
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--muted-foreground);
+    margin-right: 4px;
+  }
+  .rot-btn {
+    width: 28px; height: 28px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--muted-foreground);
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: background 150ms, color 150ms, border-color 150ms;
+  }
+  .rot-btn:hover { background: var(--secondary); color: var(--foreground); border-color: var(--input); }
+  .rot-btn svg { width: 13px; height: 13px; }
+  .rot-val {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--foreground);
+    min-width: 38px; text-align: center;
+    font-feature-settings: "tnum","zero";
+  }
+
+  /* The green/hole background rotates; dispersion + aim stay on top */
+  .plot { --green-rot: 0deg; }
+  .plot-svg, .plot-bg-default, .plot-photo {
+    transform: scale(1.5) rotate(var(--green-rot));
+    transform-origin: 50% 50%;
+    transition: transform 280ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .green-tab {
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--muted-foreground);
+    cursor: pointer;
+    font-family: var(--font-mono); font-weight: 600;
+    font-size: 10px; letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 6px 11px;
+    border-radius: 8px;
+    transition: background 150ms, color 150ms, border-color 150ms;
+  }
+  .green-tab:hover { background: var(--secondary); color: var(--foreground); }
+  .green-tab.is-active {
+    background: var(--primary); color: var(--accent); border-color: var(--primary);
+  }
+
+  /* === MAIN LAYOUT === */
+  .dp-body {
+    display: grid;
+    grid-template-columns: 800px 1fr;
+    gap: 1px;
+    background: var(--border);
+  }
+  .dp-plot-wrap, .dp-outcome { background: var(--card); }
+  .dp-plot-wrap { padding: 18px 22px; }
+  .dp-outcome   { padding: 18px 22px; }
+
+  /* === PLOT === */
+  .plot {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 760 / 540;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--course-grass-deep);
+    user-select: none;
+  }
+  .plot-svg {
+    position: absolute; inset: 0; width: 100%; height: 100%; display: block;
+  }
+  .plot-photo {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+  }
+  .plot .surface-label {
+    position: absolute;
+    bottom: 12px; right: 14px;
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+    color: rgba(255,255,255,0.7);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    pointer-events: none;
+  }
+
+  /* Siktelinje (aim line) — dragbar, rotates ellipse */
+  .aim-line {
+    position: absolute;
+    left: 50%;       /* tee X anchor */
+    bottom: 0;
+    width: 5px;
+    background: linear-gradient(to top,
+      rgba(209,248,67,0.85) 0%,
+      rgba(209,248,67,0.65) 70%,
+      rgba(209,248,67,0.20) 100%);
+    transform-origin: 50% 100%;
+    pointer-events: auto;
+    cursor: grab;
+    z-index: 4;
+    margin-left: -2.5px;
+    box-shadow: 0 0 10px rgba(209,248,67,0.40);
+  }
+  .aim-line:active { cursor: grabbing; }
+  .aim-line::before {
+    /* tick at far end */
+    content: ""; position: absolute;
+    left: 50%; top: 0; transform: translateX(-50%);
+    width: 14px; height: 2px;
+    background: var(--accent);
+    border-radius: 9999px;
+  }
+
+  /* Aim handle — dragbar end */
+  .aim-handle {
+    position: absolute;
+    width: 26px; height: 26px;
+    margin: -13px 0 0 -13px;
+    cursor: grab; z-index: 6;
+  }
+  .aim-handle:active { cursor: grabbing; }
+  .aim-handle::before {
+    content: ""; position: absolute; inset: 4px;
+    border-radius: 9999px;
+    background: var(--accent);
+    box-shadow: 0 0 12px rgba(209,248,67,0.7), 0 2px 4px rgba(10,31,23,0.32);
+  }
+  .aim-handle::after {
+    content: ""; position: absolute; inset: 0;
+    border: 1.5px solid var(--accent);
+    border-radius: 9999px;
+    opacity: 0.4;
+    animation: ping 1800ms ease-out infinite;
+  }
+  .aim-label {
+    position: absolute;
+    top: -28px; left: 50%; transform: translateX(-50%);
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--primary);
+    background: var(--accent);
+    padding: 2px 6px;
+    border-radius: 4px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  /* Tee marker (origin of aim line) */
+  .tee-marker {
+    position: absolute;
+    left: 50%; bottom: 8px; transform: translateX(-50%);
+    z-index: 3;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    pointer-events: none;
+  }
+  .tee-marker .tm-dot {
+    width: 12px; height: 12px;
+    border-radius: 9999px;
+    background: var(--cream-50);
+    border: 2px solid var(--forest-900);
+    box-shadow: 0 2px 4px rgba(10,31,23,0.32);
+  }
+  .tee-marker .tm-lbl {
+    font-family: var(--font-mono); font-size: 8.5px; font-weight: 700;
+    color: rgba(255,255,255,0.85);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+  }
+
+  /* Dispersion ellipse + dots — rotates with aim */
+  .disp-group {
+    position: absolute;
+    transform-origin: var(--anchor-x, 50%) var(--anchor-y, 50%);
+    transform: rotate(var(--aim-angle, 0deg));
+    inset: 0;
+    pointer-events: none;
+    z-index: 5;
+  }
+  .ellipse {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 1.5px solid;
+    pointer-events: none;
+  }
+  .ellipse.is-95 {
+    background: rgba(209,248,67,0.10);
+    border-color: rgba(209,248,67,0.5);
+  }
+  .ellipse.is-68 {
+    background: rgba(209,248,67,0.18);
+    border-color: rgba(209,248,67,0.85);
+  }
+  .ellipse.is-danger {
+    background: rgba(184,66,51,0.15);
+    border-color: rgba(184,66,51,0.85);
+  }
+
+  .shot {
+    position: absolute;
+    width: 7px; height: 7px;
+    margin: -3.5px 0 0 -3.5px;
+    border-radius: 9999px;
+    background: rgba(255,255,255,0.92);
+    border: 1.2px solid var(--forest-900);
+    box-shadow: 0 1px 2px rgba(10,31,23,0.4);
+  }
+
+  /* Pin — draggable */
+  .pin {
+    position: absolute;
+    width: 28px; height: 36px;
+    margin: -32px 0 0 -2px;
+    cursor: grab;
+    z-index: 7;
+  }
+  .pin:active { cursor: grabbing; }
+  .pin svg { width: 100%; height: 100%; pointer-events: none; }
+  .pin-label {
+    position: absolute;
+    top: -16px; left: 50%; transform: translateX(-50%);
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--cream-50);
+    background: var(--destructive);
+    padding: 2px 5px;
+    border-radius: 4px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* Wind indicator on plot */
+  .wind-indicator {
+    position: absolute;
+    top: 14px; left: 14px;
+    width: 64px; height: 64px;
+    z-index: 8;
+    cursor: grab;
+  }
+  .wind-indicator:active { cursor: grabbing; }
+  .wind-indicator .wi-bg {
+    position: absolute; inset: 0;
+    border-radius: 9999px;
+    background: rgba(10,31,23,0.6);
+    border: 1px solid rgba(255,255,255,0.18);
+    backdrop-filter: blur(4px);
+  }
+  .wind-indicator .wi-arrow {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    transform: rotate(var(--wind-dir, 180deg));
+    transition: transform 80ms ease-out;
+    pointer-events: none;
+  }
+  .wind-indicator .wi-arrow svg {
+    width: 36px; height: 36px;
+    color: var(--accent);
+  }
+  .wind-indicator .wi-speed {
+    position: absolute;
+    bottom: -22px; left: 50%; transform: translateX(-50%);
+    font-family: var(--font-mono); font-weight: 700;
+    font-size: 10px;
+    color: var(--cream-50);
+    background: var(--forest-900);
+    padding: 2px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+    letter-spacing: 0.06em;
+    pointer-events: none;
+  }
+  .wind-indicator::after {
+    content: "VIND"; position: absolute;
+    top: -16px; left: 50%; transform: translateX(-50%);
+    font-family: var(--font-mono); font-size: 8.5px; font-weight: 700;
+    color: rgba(255,255,255,0.75);
+    letter-spacing: 0.12em;
+    pointer-events: none;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  }
+
+  /* === OUTCOME PANEL === */
+  .out-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .out-title {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 15px; letter-spacing: -0.015em;
+  }
+  .out-sub {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted-foreground);
+    letter-spacing: 0.02em;
+  }
+
+  .out-guideline {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(184,133,42,0.10);
+    border: 1px solid rgba(184,133,42,0.30);
+    color: var(--warning);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    margin-bottom: 14px;
+  }
+  .out-guideline svg { width: 11px; height: 11px; }
+
+  .zones {
+    display: flex; flex-direction: column;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .zone {
+    background: var(--card);
+    padding: 12px 14px;
+    display: grid;
+    grid-template-columns: 18px 1fr 64px;
+    gap: 12px;
+    align-items: center;
+  }
+  .zone .z-dot {
+    width: 10px; height: 10px; border-radius: 9999px;
+    justify-self: center;
+  }
+  .zone .z-dot.green   { background: var(--course-green-mid); }
+  .zone .z-dot.fringe  { background: var(--course-green-soft); }
+  .zone .z-dot.bunker  { background: var(--course-bunker-light); }
+  .zone .z-dot.water   { background: var(--course-water-mid); }
+  .zone .z-dot.kort    { background: var(--warm-gray); }
+  .zone .z-dot.over    { background: var(--warm-gray); }
+  .zone .z-name {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: 13px;
+    letter-spacing: -0.005em;
+  }
+  .zone .z-pct {
+    font-family: var(--font-mono); font-weight: 700;
+    font-size: 14px;
+    color: var(--foreground);
+    text-align: right;
+    font-feature-settings: "tnum","zero";
+  }
+  .zone .z-pct .z-bar {
+    display: block;
+    height: 3px;
+    background: var(--secondary);
+    border-radius: 9999px;
+    margin-top: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+  .zone .z-pct .z-bar::after {
+    content: "";
+    position: absolute; left: 0; top: 0; bottom: 0;
+    background: var(--bar-color, var(--course-green-mid));
+    width: var(--bar-w, 0%);
+    border-radius: 9999px;
+  }
+  .zone.is-danger .z-pct { color: var(--destructive); }
+  /* Sone uten treff — dempes så øyet umiddelbart ser hva som faktisk
+     traff. Konfigurert dynamisk: ingen "Vann 0 %" som visuelt larm. */
+  .zone.is-empty { opacity: 0.42; }
+  .zone.is-empty .z-pct .z-bar::after { display: none; }
+
+  /* Outcome alert */
+  .out-alert {
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: rgba(163,45,45,0.08);
+    border: 1px solid rgba(163,45,45,0.25);
+    border-radius: 10px;
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 12.5px;
+    line-height: 1.45;
+  }
+  .out-alert svg {
+    width: 16px; height: 16px;
+    color: var(--destructive);
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .out-alert b { font-family: var(--font-display); font-weight: 700; color: var(--foreground); }
+
+  /* === WIND MODULE STRIP === */
+  .wind-strip {
+    padding: 14px 22px;
+    border-top: 1px solid var(--border);
+    background: var(--background);
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 24px;
+    align-items: center;
+  }
+  .wind-controls { display: flex; align-items: center; gap: 18px; }
+  .wind-block { display: flex; flex-direction: column; gap: 4px; }
+  .wind-block .wb-lbl {
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .wind-block .wb-val {
+    font-family: var(--font-mono); font-weight: 700;
+    font-size: 17px;
+    color: var(--foreground);
+    font-feature-settings: "tnum","zero";
+  }
+  .wind-block .wb-val small {
+    font-size: 10px; font-weight: 600;
+    color: var(--muted-foreground);
+    margin-left: 3px;
+  }
+
+  .wind-slider {
+    flex: 1; min-width: 140px;
+    -webkit-appearance: none; appearance: none;
+    height: 4px;
+    background: var(--border);
+    border-radius: 9999px;
+    outline: none;
+    margin: 8px 0 4px;
+  }
+  .wind-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px; height: 18px;
+    background: var(--primary);
+    border-radius: 9999px;
+    cursor: grab;
+    border: 2px solid var(--card);
+    box-shadow: 0 2px 5px rgba(10,31,23,0.18);
+  }
+  .wind-slider::-moz-range-thumb {
+    width: 18px; height: 18px;
+    background: var(--primary);
+    border-radius: 9999px;
+    cursor: grab;
+    border: 2px solid var(--card);
+  }
+
+  /* Wind effect summary */
+  .wind-effect {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .we-cell {
+    background: var(--card);
+    padding: 10px 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .we-cell .we-icon {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: var(--secondary);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted-foreground);
+  }
+  .we-cell .we-icon svg { width: 14px; height: 14px; }
+  .we-cell.is-strong .we-icon { background: rgba(163,45,45,0.10); color: var(--destructive); }
+  .we-cell .we-text {
+    display: flex; flex-direction: column; gap: 1px;
+  }
+  .we-cell .we-lbl {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--muted-foreground);
+  }
+  .we-cell .we-val {
+    font-family: var(--font-mono); font-weight: 700;
+    font-size: 14px;
+    color: var(--foreground);
+    font-feature-settings: "tnum","zero";
+  }
+  .we-cell .we-val small {
+    font-size: 10px; font-weight: 600;
+    color: var(--muted-foreground);
+    margin-left: 3px;
+  }
+
+</style></head>
+<body><div class="card">
+
+  <div class="dp-card">
+
+    <!-- HEADER -->
+    <header class="dp-head">
+      <div>
+        <a class="dp-back" href="components-trackman.html" id="dp-back-link"><i data-lucide="chevron-left"></i>Tilbake til Bag</a>
+        <span class="dp-eyebrow"><span class="pulse"></span>TRACKMAN · DRILL · DISPERSION-VERKTØY</span>
+        <h2 class="dp-title">Sikt + vind <em>· 7-jern · 28 slag</em></h2>
+      </div>
+      <button class="club-select" id="club-select-btn" aria-haspopup="listbox" aria-expanded="false">
+        <div style="display:flex;flex-direction:column;gap:1px;text-align:left;">
+          <span class="cs-name" id="cs-name">7-jern</span>
+          <span class="cs-meta" id="cs-meta">165 yd · ±5 yd · stab 8,2</span>
+        </div>
+        <i data-lucide="chevron-down"></i>
+      </button>
+      <div class="club-menu" id="club-menu" role="listbox" hidden></div>
+    </header>
+
+    <!-- ARCHETYPE + ROT ROW -->
+    <div class="green-tabs">
+      <span class="gt-bg"><span class="gt-dot"></span>Bakgrunn: <b>Pære-green</b> · 165 yd til pin</span>
+      <span class="rot-group">
+        <span class="rot-label">Vri</span>
+        <button class="rot-btn" data-rot="-45" aria-label="Roter mot venstre"><i data-lucide="rotate-ccw"></i></button>
+        <span class="rot-val" id="rot-val">0°</span>
+        <button class="rot-btn" data-rot="45" aria-label="Roter mot høyre"><i data-lucide="rotate-cw"></i></button>
+        <button class="rot-btn" data-rot="reset" aria-label="Nullstill rotasjon"><i data-lucide="refresh-ccw"></i></button>
+      </span>
+    </div>
+
+    <!-- BODY: PLOT + OUTCOME -->
+    <div class="dp-body">
+
+      <!-- PLOT -->
+      <div class="dp-plot-wrap">
+        <div class="plot" id="plot">
+
+          <!-- Photo background (rotates with --green-rot) -->
+          <img class="plot-photo" id="green-photo"
+               src="../assets/green-archetype-pear.png" alt="" />
+
+          <!-- Green archetype SVG (kept for future overlays; pin/aim/ellipse rendered as siblings) -->
+          <svg class="plot-svg" id="green-svg" viewBox="0 0 760 540" preserveAspectRatio="none"></svg>
+
+          <!-- Wind indicator -->
+          <div class="wind-indicator" id="wind-indicator" style="--wind-dir: 180deg;">
+            <div class="wi-bg"></div>
+            <div class="wi-arrow"><i data-lucide="arrow-down"></i></div>
+            <span class="wi-speed" id="wi-speed">4 m/s</span>
+          </div>
+
+          <!-- Aim line + handle (rotates from tee) -->
+          <div class="aim-line" id="aim-line" style="height: 60%;"></div>
+          <div class="aim-handle" id="aim-handle" style="left: 50%; top: 38%;">
+            <span class="aim-label">SIKTE</span>
+          </div>
+
+          <!-- Tee marker (origin) -->
+          <div class="tee-marker">
+            <span class="tm-dot"></span>
+            <span class="tm-lbl">Spiller</span>
+          </div>
+
+          <!-- Dispersion group (rotates with aim) -->
+          <div class="disp-group" id="disp-group">
+            <span class="ellipse is-95" id="ellipse-95"></span>
+            <span class="ellipse is-68" id="ellipse-68"></span>
+            <div id="dots"></div>
+          </div>
+
+          <!-- Pin (draggable, independent of aim) -->
+          <div class="pin" id="pin" style="left: 52%; top: 36%;">
+            <svg viewBox="0 0 28 36">
+              <line x1="6" y1="4" x2="6" y2="34" stroke="var(--forest-900)" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M 6 4 L 26 9 L 6 14 Z" fill="var(--destructive)" stroke="var(--forest-900)" stroke-width="1"/>
+              <circle cx="6" cy="34" r="2.5" fill="var(--forest-900)"/>
+            </svg>
+            <span class="pin-label">PIN</span>
+          </div>
+
+          <span class="surface-label">Generisk green-arketype · 165 yd</span>
+        </div>
+      </div>
+
+      <!-- OUTCOME PANEL -->
+      <section class="dp-outcome">
+        <div class="out-head">
+          <div>
+            <div class="out-title">Resultatfordeling</div>
+            <div class="out-sub">% av 95 %-ellipsen per sone</div>
+          </div>
+        </div>
+        <span class="out-guideline"><i data-lucide="info"></i>VEILEDENDE</span>
+
+        <div class="zones" id="zones">
+          <div class="zone" style="--bar-color:var(--course-green-mid)">
+            <span class="z-dot green"></span>
+            <span class="z-name">Green</span>
+            <span class="z-pct"><span class="z-num">62 %</span><span class="z-bar" style="--bar-w:62%"></span></span>
+          </div>
+          <div class="zone" style="--bar-color:var(--course-green-soft)">
+            <span class="z-dot fringe"></span>
+            <span class="z-name">Forgreen</span>
+            <span class="z-pct"><span class="z-num">18 %</span><span class="z-bar" style="--bar-w:18%"></span></span>
+          </div>
+          <div class="zone" style="--bar-color:var(--course-bunker-light)">
+            <span class="z-dot bunker"></span>
+            <span class="z-name">Bunker</span>
+            <span class="z-pct"><span class="z-num">8 %</span><span class="z-bar" style="--bar-w:8%"></span></span>
+          </div>
+          <div class="zone is-danger" style="--bar-color:var(--course-water-mid)">
+            <span class="z-dot water"></span>
+            <span class="z-name">Vann</span>
+            <span class="z-pct"><span class="z-num">4 %</span><span class="z-bar" style="--bar-w:4%"></span></span>
+          </div>
+          <div class="zone" style="--bar-color:var(--warm-gray)">
+            <span class="z-dot kort"></span>
+            <span class="z-name">Kort</span>
+            <span class="z-pct"><span class="z-num">5 %</span><span class="z-bar" style="--bar-w:5%"></span></span>
+          </div>
+          <div class="zone" style="--bar-color:var(--warm-gray)">
+            <span class="z-dot over"></span>
+            <span class="z-name">Over</span>
+            <span class="z-pct"><span class="z-num">3 %</span><span class="z-bar" style="--bar-w:3%"></span></span>
+          </div>
+        </div>
+
+        <div class="out-alert">
+          <i data-lucide="alert-triangle"></i>
+          <span id="out-alert-text"><b>62 % green-treff</b> med dette siktet. Dra sikte, vind eller pin for å teste alternativ.</span>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- WIND STRIP -->
+    <div class="wind-strip">
+      <div class="wind-controls">
+        <div class="wind-block">
+          <span class="wb-lbl">Vindstyrke</span>
+          <input type="range" class="wind-slider" id="wind-slider" min="0" max="15" step="1" value="4">
+          <span class="wb-val" id="wind-val">4<small>m/s</small></span>
+        </div>
+        <div class="wind-block">
+          <span class="wb-lbl">Retning</span>
+          <span class="wb-val" id="wind-dir-label">Motvind<small>↓ 0°</small></span>
+        </div>
+      </div>
+
+      <div class="wind-effect">
+        <div class="we-cell">
+          <span class="we-icon"><i data-lucide="arrow-down-from-line"></i></span>
+          <div class="we-text">
+            <span class="we-lbl">Distanse-effekt</span>
+            <span class="we-val" id="we-dist">−8<small>m kortere</small></span>
+          </div>
+        </div>
+        <div class="we-cell">
+          <span class="we-icon"><i data-lucide="move-horizontal"></i></span>
+          <div class="we-text">
+            <span class="we-lbl">Side-drift</span>
+            <span class="we-val" id="we-side">0<small>m</small></span>
+          </div>
+        </div>
+        <div class="we-cell is-strong">
+          <span class="we-icon"><i data-lucide="maximize-2"></i></span>
+          <div class="we-text">
+            <span class="we-lbl">Spredning</span>
+            <span class="we-val" id="we-spread">+12 %<small>i motvind</small></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // ============================================================
+    // GREEN ARCHETYPE SVGs
+    // ============================================================
+    const GREENS = {
+      // Photo is rendered via HTML <img> in the markup, not SVG.
+      // GREENS object kept for backward compatibility (setGreen no-op for photo).
+      photo: ''
+    };
+
+    function setGreen(id) {
+      document.getElementById('green-svg').innerHTML = GREENS[id] || GREENS.photo;
+    }
+
+    // ============================================================
+    // DISPERSION DOTS
+    // ============================================================
+    const PLOT_W = 760, PLOT_H = 540;
+    const CLUB = { carrySd: 5, sideSd: 7, count: 28, carry_m: 150 };
+    // Ellipse sizes in pixels (per-yard scale ~4 px). Carry-SD = depth, side-SD = width.
+    const ELLIPSE_68 = { rx: CLUB.sideSd * 4, ry: CLUB.carrySd * 4 };
+    const ELLIPSE_95 = { rx: CLUB.sideSd * 8, ry: CLUB.carrySd * 8 };
+
+    // Anchor table for wind effect (meters of displacement at 10 m/s).
+    // Asymmetric: headwind shortens MORE than tailwind extends.
+    const ANCHOR = {
+      50:  { mot: 3,  med: 2,  side: 2 },
+      100: { mot: 8,  med: 5,  side: 6 },
+      150: { mot: 15, med: 9,  side: 13 },
+      200: { mot: 24, med: 14, side: 22 }
+    };
+    const PX_PER_M = 4.37; // 1 m ≈ 1.094 yd ≈ 4.37 px (with 4 px per yard)
+
+    function interpolateAnchor(dist, key) {
+      const keys = [50, 100, 150, 200];
+      if (dist <= 50) return ANCHOR[50][key];
+      if (dist >= 200) return ANCHOR[200][key];
+      for (let i = 0; i < keys.length - 1; i++) {
+        if (dist >= keys[i] && dist <= keys[i+1]) {
+          const t = (dist - keys[i]) / (keys[i+1] - keys[i]);
+          return ANCHOR[keys[i]][key] + t * (ANCHOR[keys[i+1]][key] - ANCHOR[keys[i]][key]);
+        }
+      }
+      return ANCHOR[150][key];
+    }
+
+    let aim = { x: PLOT_W / 2, y: PLOT_H * 0.38 };
+    let pin = { x: PLOT_W * 0.52, y: PLOT_H * 0.36 };
+    const tee = { x: PLOT_W / 2, y: PLOT_H - 14 };
+
+    // Deterministic gaussian
+    let seed = 7;
+    const rng = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+    const gauss = (m, s) => {
+      const u = rng() || 0.001, v = rng() || 0.001;
+      return m + s * Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+    };
+    const shots = [];
+    for (let i = 0; i < CLUB.count; i++) {
+      shots.push({ side: gauss(0, CLUB.sideSd / 1.8), forward: gauss(0, CLUB.carrySd / 1.8) });
+    }
+
+    const dotsEl  = document.getElementById('dots');
+    const grpEl   = document.getElementById('disp-group');
+    const e95     = document.getElementById('ellipse-95');
+    const e68     = document.getElementById('ellipse-68');
+    const aimLine = document.getElementById('aim-line');
+    const aimH    = document.getElementById('aim-handle');
+    const pinEl   = document.getElementById('pin');
+
+    function getAimAngle() {
+      const dx = aim.x - tee.x;
+      const dy = aim.y - tee.y;
+      return Math.atan2(dx, -dy); // 0 = up, positive = clockwise
+    }
+
+    function computeWindShift() {
+      const aimRad = getAimAngle();
+      const windDirRad = windDir * Math.PI / 180;
+      // windDir = source direction (cw from up). Physics sign flipped: wind FROM left pushes ball RIGHT.
+      const alongComp = -windSpeed * Math.cos(windDirRad - aimRad);
+      const crossComp = -windSpeed * Math.sin(windDirRad - aimRad);
+
+      const mot  = interpolateAnchor(CLUB.carry_m, 'mot');
+      const med  = interpolateAnchor(CLUB.carry_m, 'med');
+      const side = interpolateAnchor(CLUB.carry_m, 'side');
+
+      // Along-shift in meters (positive = further from player)
+      let along_m;
+      if (alongComp > 0) along_m =  med * (alongComp / 10);   // tailwind: longer
+      else               along_m =  mot * (alongComp / 10);   // headwind: alongComp<0 → negative
+
+      const cross_m = side * (crossComp / 10);
+      const along_px = along_m * PX_PER_M;
+      const cross_px = cross_m * PX_PER_M;
+
+      // Project onto plot coordinates using aim direction vector
+      const shotVecX =  Math.sin(aimRad);
+      const shotVecY = -Math.cos(aimRad);
+      const perpVecX =  Math.cos(aimRad);
+      const perpVecY =  Math.sin(aimRad);
+
+      return {
+        dx: along_px * shotVecX + cross_px * perpVecX,
+        dy: along_px * shotVecY + cross_px * perpVecY,
+        sizeMul: alongComp < 0 ? (1 + 0.15 * Math.abs(alongComp) / 10) : 1,
+        aimRad
+      };
+    }
+
+    function renderEllipses() {
+      const w = computeWindShift();
+      const center = { x: aim.x + w.dx, y: aim.y + w.dy };
+      const ax = (center.x / PLOT_W) * 100;
+      const ay = (center.y / PLOT_H) * 100;
+      // Rotation anchor at landing center so ellipse rotates around its own centroid
+      grpEl.style.setProperty('--anchor-x', ax + '%');
+      grpEl.style.setProperty('--anchor-y', ay + '%');
+      grpEl.style.setProperty('--aim-angle', (w.aimRad * 180 / Math.PI) + 'deg');
+
+      [e95, e68].forEach((el) => {
+        el.style.left = ax + '%';
+        el.style.top  = ay + '%';
+      });
+      e95.style.width  = (ELLIPSE_95.rx * 2) + 'px';
+      e95.style.height = (ELLIPSE_95.ry * 2 * w.sizeMul) + 'px';
+      e68.style.width  = (ELLIPSE_68.rx * 2) + 'px';
+      e68.style.height = (ELLIPSE_68.ry * 2 * w.sizeMul) + 'px';
+
+      // Dots: relative to center, vertical = forward (along shot), horizontal = side
+      dotsEl.innerHTML = shots.map((s) => {
+        const sf = s.forward * w.sizeMul;
+        const x = center.x + s.side * 4;
+        const y = center.y - sf * 4;
+        return `<span class="shot" style="left:${x}px;top:${y}px"></span>`;
+      }).join('');
+
+      // Recompute zone distribution from where these simulated shots actually
+      // landed on the green-archetype. NOT hardcoded.
+      computeDistribution(center, w.sizeMul);
+    }
+
+    // ============================================================
+    // ZONE CLASSIFIER — sampler PNG-bakgrunnen per slag-koordinat.
+    // Klassifikasjon er semantisk (grønt/fringe/sand/skog/vann), ikke
+    // posisjonell-på-image alene; "kort vs. over" avgjøres relativt til pin.
+    // ============================================================
+    // greenRot er hoistet hit fordi rebuildSampleMap kjøres på image-load —
+    // og bildet kan være cached (load synkront før resten av scriptet).
+    let greenRot = 0;
+    const SAMPLE_W = 380, SAMPLE_H = 270;
+    const sampleCanvas = document.createElement('canvas');
+    sampleCanvas.width = SAMPLE_W; sampleCanvas.height = SAMPLE_H;
+    const sampleCtx = sampleCanvas.getContext('2d', { willReadFrequently: true });
+    let sampleData = null;
+    const greenImgEl = document.getElementById('green-photo');
+
+    function rebuildSampleMap() {
+      if (!greenImgEl.complete || !greenImgEl.naturalWidth) return;
+      sampleCtx.save();
+      sampleCtx.fillStyle = '#000';
+      sampleCtx.fillRect(0, 0, SAMPLE_W, SAMPLE_H);
+      sampleCtx.translate(SAMPLE_W / 2, SAMPLE_H / 2);
+      sampleCtx.rotate(greenRot * Math.PI / 180);
+      sampleCtx.scale(1.5, 1.5);
+      sampleCtx.drawImage(greenImgEl, -SAMPLE_W / 2, -SAMPLE_H / 2, SAMPLE_W, SAMPLE_H);
+      sampleCtx.restore();
+      try {
+        sampleData = sampleCtx.getImageData(0, 0, SAMPLE_W, SAMPLE_H);
+      } catch (_) {
+        sampleData = null; // CORS-blocked — fall back to hardcoded zones
+      }
+    }
+
+    function classifyPixel(r, g, b) {
+      const L = (r + g + b) / 3;
+      // Vann: dominant blue
+      if (b > r + 18 && b > g + 4 && L > 50) return 'vann';
+      // Sand/bunker: light, low chroma, warm
+      if (L > 165 && Math.abs(r - g) < 35 && r > 150 && b < r) return 'bunker';
+      // Mørk skog / tre / out (kategoriseres som "over" hvis past pin, ellers "kort")
+      if (L < 70) return 'rough_dark';
+      // Klar lys grønn = green (putting surface)
+      if (g > r + 14 && g > b + 22 && L > 105) return 'green';
+      // Medium grønn = fringe / forgreen
+      if (g > r + 4 && g > b + 8 && L > 80) return 'fringe';
+      return 'rough';
+    }
+
+    function classifyShot(plotX, plotY) {
+      if (!sampleData) return 'rough';
+      const sx = Math.max(0, Math.min(SAMPLE_W - 1, Math.floor((plotX / PLOT_W) * SAMPLE_W)));
+      const sy = Math.max(0, Math.min(SAMPLE_H - 1, Math.floor((plotY / PLOT_H) * SAMPLE_H)));
+      const i = (sy * SAMPLE_W + sx) * 4;
+      const cls = classifyPixel(sampleData.data[i], sampleData.data[i+1], sampleData.data[i+2]);
+      if (cls === 'rough' || cls === 'rough_dark') {
+        // Pin-relativt: y < pin.y betyr forbi pin (lengre fra tee) → over
+        return plotY < pin.y ? 'over' : 'kort';
+      }
+      return cls;
+    }
+
+    const ZONE_ORDER = ['green', 'fringe', 'bunker', 'vann', 'kort', 'over'];
+    const ZONE_LABELS = {
+      green: 'Green', fringe: 'Forgreen', bunker: 'Bunker',
+      vann: 'Vann', kort: 'Kort', over: 'Over'
+    };
+
+    function computeDistribution(center, sizeMul) {
+      if (!sampleData) return; // ikke klar enda — beholder eksisterende verdier
+      const counts = { green: 0, fringe: 0, bunker: 0, vann: 0, kort: 0, over: 0 };
+      shots.forEach((s) => {
+        const sf = s.forward * sizeMul;
+        const x = center.x + s.side * 4;
+        const y = center.y - sf * 4;
+        const cls = classifyShot(x, y);
+        counts[cls]++;
+      });
+      const N = shots.length;
+      const zoneEls = document.querySelectorAll('#zones .zone');
+      ZONE_ORDER.forEach((k, idx) => {
+        const pct = Math.round((counts[k] / N) * 100);
+        const z = zoneEls[idx];
+        if (!z) return;
+        z.querySelector('.z-num').textContent = pct + ' %';
+        z.querySelector('.z-bar').style.setProperty('--bar-w', Math.max(0, pct) + '%');
+        z.classList.toggle('is-empty', pct === 0);
+        // Dynamisk fare-flag: vann, bunker, over over 5 % er rødt
+        const isDangerZone = (k === 'vann' || k === 'bunker' || k === 'over');
+        z.classList.toggle('is-danger', isDangerZone && pct >= 5);
+      });
+
+      // Honest alert: les av nåværende risiko + green-treff i stedet for
+      // hardkodet prescription.
+      const greenPct = Math.round((counts.green / N) * 100);
+      const dangerPct = Math.round(((counts.vann + counts.bunker + counts.over) / N) * 100);
+      const alertEl = document.getElementById('out-alert-text');
+      if (alertEl) {
+        alertEl.innerHTML =
+          `<b>${greenPct} % green-treff</b> med dette siktet. ` +
+          `${dangerPct > 0 ? `<b>${dangerPct} %</b> havner i bunker, vann eller over green — ` : 'Ingen treff i bunker, vann eller over green — '}` +
+          `dra sikte, vind eller pin for å teste alternativ.`;
+      }
+    }
+
+    greenImgEl.addEventListener('load', () => {
+      rebuildSampleMap();
+      updateAim();
+    });
+    if (greenImgEl.complete) {
+      rebuildSampleMap();
+    }
+
+    function updateAim() {
+      // Vector from tee to aim
+      const dx = aim.x - tee.x;
+      const dy = aim.y - tee.y;
+      const dist = Math.hypot(dx, dy);
+      const angle = Math.atan2(dx, -dy) * 180 / Math.PI;
+      const teePctX = (tee.x / PLOT_W) * 100;
+      aimLine.style.left = teePctX + '%';
+      aimLine.style.height = (dist / PLOT_H * 100) + '%';
+      aimLine.style.transform = `rotate(${angle}deg)`;
+
+      aimH.style.left = (aim.x / PLOT_W * 100) + '%';
+      aimH.style.top  = (aim.y / PLOT_H * 100) + '%';
+
+      renderEllipses();
+    }
+
+    function updatePin() {
+      pinEl.style.left = (pin.x / PLOT_W * 100) + '%';
+      pinEl.style.top  = (pin.y / PLOT_H * 100) + '%';
+    }
+
+    function makeDraggable(el, getter, setter) {
+      el.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        el.setPointerCapture(e.pointerId);
+        const plot = document.getElementById('plot');
+        const rect = plot.getBoundingClientRect();
+        const move = (ev) => {
+          let x = ((ev.clientX - rect.left) / rect.width) * PLOT_W;
+          let y = ((ev.clientY - rect.top)  / rect.height) * PLOT_H;
+          x = Math.max(40, Math.min(PLOT_W - 40, x));
+          y = Math.max(40, Math.min(PLOT_H - 40, y));
+          setter({ x, y });
+        };
+        const up = () => {
+          try { el.releasePointerCapture(e.pointerId); } catch (_) {}
+          document.removeEventListener('pointermove', move);
+          document.removeEventListener('pointerup', up);
+        };
+        document.addEventListener('pointermove', move);
+        document.addEventListener('pointerup', up);
+      });
+    }
+    makeDraggable(aimH, () => aim, (v) => { aim = v; updateAim(); });
+    makeDraggable(aimLine, () => aim, (v) => { aim = v; updateAim(); });
+    makeDraggable(pinEl, () => pin, (v) => { pin = v; updatePin(); });
+
+    // Wind indicator drag (rotate)
+    let windDir = 0, windSpeed = 6;
+    const windInd = document.getElementById('wind-indicator');
+    const windSpeedEl = document.getElementById('wi-speed');
+    const windDirLabel = document.getElementById('wind-dir-label');
+
+    windInd.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      windInd.setPointerCapture(e.pointerId);
+      const rect = windInd.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const move = (ev) => {
+        const dx = ev.clientX - cx;
+        const dy = ev.clientY - cy;
+        windDir = Math.round(Math.atan2(dx, -dy) * 180 / Math.PI);
+        if (windDir < 0) windDir += 360;
+        windInd.style.setProperty('--wind-dir', ((windDir + 180) % 360) + 'deg');
+        updateWindLabel();
+      };
+      const up = () => {
+        try { windInd.releasePointerCapture(e.pointerId); } catch (_) {}
+        document.removeEventListener('pointermove', move);
+        document.removeEventListener('pointerup', up);
+      };
+      document.addEventListener('pointermove', move);
+      document.addEventListener('pointerup', up);
+    });
+
+    function updateWindLabel() {
+      windSpeedEl.textContent = windSpeed + ' m/s';
+      document.getElementById('wind-val').innerHTML = windSpeed + '<small>m/s</small>';
+      windInd.style.setProperty('--wind-dir', ((windDir + 180) % 360) + 'deg');
+      const dirName = (windDir < 45 || windDir > 315) ? 'Motvind' :
+                      (windDir < 135) ? 'Sidevind fra H' :
+                      (windDir < 225) ? 'Medvind' : 'Sidevind fra V';
+      windDirLabel.innerHTML = `${dirName}<small>${windDir}°</small>`;
+      // Effect cells — use the same wind logic for consistency
+      const aimRad = getAimAngle();
+      const windDirRad = windDir * Math.PI / 180;
+      const alongComp = -windSpeed * Math.cos(windDirRad - aimRad);
+      const crossComp = -windSpeed * Math.sin(windDirRad - aimRad);
+      const mot  = interpolateAnchor(CLUB.carry_m, 'mot');
+      const med  = interpolateAnchor(CLUB.carry_m, 'med');
+      const side = interpolateAnchor(CLUB.carry_m, 'side');
+      const along_m = alongComp > 0 ? med * (alongComp / 10) : mot * (alongComp / 10);
+      const cross_m = side * (crossComp / 10);
+      const spreadPct = alongComp < 0 ? Math.round(15 * Math.abs(alongComp) / 10) : 0;
+
+      const distR = Math.round(along_m);
+      const sideR = Math.round(cross_m);
+      document.getElementById('we-dist').innerHTML =
+        (distR === 0 ? '0' : (distR > 0 ? '+' + distR : distR)) +
+        '<small>m ' + (distR < 0 ? 'kortere' : distR > 0 ? 'lengre' : '') + '</small>';
+      document.getElementById('we-side').innerHTML =
+        (sideR === 0 ? '0' : (sideR > 0 ? '+' + sideR : sideR)) +
+        '<small>m ' + (sideR > 0 ? 'høyre' : sideR < 0 ? 'venstre' : '') + '</small>';
+      document.getElementById('we-spread').innerHTML =
+        (spreadPct > 0 ? '+' + spreadPct : '0') +
+        '<small>% i motvind</small>';
+
+      // CRITICAL — re-render ellipse so it actually moves with wind
+      renderEllipses();
+    }
+
+    // Wind speed slider
+    document.getElementById('wind-slider').addEventListener('input', (e) => {
+      windSpeed = +e.target.value;
+      updateWindLabel();
+    });
+
+    // Green archetype tabs
+    document.querySelectorAll('.green-tab').forEach((t) => {
+      t.addEventListener('click', () => {
+        document.querySelectorAll('.green-tab').forEach((x) => x.classList.toggle('is-active', x === t));
+        setGreen(t.dataset.green);
+      });
+    });
+
+    // Green-rotation controls
+    const rotValEl = document.getElementById('rot-val');
+    const plotEl_forRot = document.getElementById('plot');
+    function applyGreenRot() {
+      plotEl_forRot.style.setProperty('--green-rot', greenRot + 'deg');
+      const norm = ((greenRot % 360) + 360) % 360;
+      rotValEl.textContent = norm + '°';
+      // Sample map følger rotasjonen — slag-klassifisering må stemme med
+      // det brukeren ser visuelt.
+      rebuildSampleMap();
+      renderEllipses();
+    }
+    document.querySelectorAll('.rot-btn').forEach((b) => {
+      b.addEventListener('click', () => {
+        if (b.dataset.rot === 'reset') greenRot = 0;
+        else greenRot += parseInt(b.dataset.rot, 10);
+        applyGreenRot();
+      });
+    });
+
+    // INIT
+    setGreen('photo');
+    updateAim();
+    updatePin();
+    updateWindLabel();
+    lucide.createIcons();
+
+    // === CLUB SYNC via URL-hash (delt state med Trackman-fanene) ===
+    // Tilbake-lenken bærer hash → Bag-view markerer riktig kølle.
+    const backLink = document.getElementById('dp-back-link');
+    function syncBackLink() {
+      backLink.href = 'components-trackman.html' + (location.hash || '');
+    }
+    syncBackLink();
+    window.addEventListener('hashchange', syncBackLink);
+
+    // Når en kølle velges via dropdown — skriv til hash. (Dropdown-koden
+    // ligger lenger oppe; vi lytter på endring i cs-name.)
+    const csName = document.getElementById('cs-name');
+    if (csName) {
+      const obs = new MutationObserver(() => {
+        const club = csName.textContent.trim();
+        if (club) location.hash = 'club=' + encodeURIComponent(club);
+      });
+      obs.observe(csName, { childList: true, characterData: true, subtree: true });
+    }
+  </script>
+</div></body></html>

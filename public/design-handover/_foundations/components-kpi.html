@@ -1,0 +1,332 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KPI card</title>
+<link rel="stylesheet" href="_shared.css">
+<script src="https://unpkg.com/lucide@0.453.0"></script>
+<style>
+  body { width: 800px; }
+  .card { padding: 24px; }
+
+  .sec {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    display: flex; align-items: center; gap: 8px;
+    margin: 0 0 16px;
+  }
+  .sec::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+  .sec.tight { margin: 24px 0 16px; }
+
+  /* === KPI === */
+  .kpi {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 16px;
+    display: flex; flex-direction: column; gap: 8px;
+    cursor: pointer;
+    transition: border-color 150ms ease-out, transform 150ms ease-out, box-shadow 150ms ease-out;
+    outline: none;
+  }
+  .kpi:hover  { border-color: var(--primary); transform: translateY(-1px); }
+  .kpi:focus-visible { box-shadow: 0 0 0 2px var(--ring); border-color: var(--primary); }
+  .kpi:active { transform: translateY(0); }
+
+  .kpi-head {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .kpi-label {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .kpi-ico {
+    width: 16px; height: 16px;
+    color: var(--muted-foreground);
+    opacity: 0.7;
+  }
+
+  .kpi-val {
+    font-family: var(--font-mono); font-weight: 600;
+    font-size: 32px;
+    letter-spacing: -0.025em; line-height: 1;
+    font-feature-settings: "tnum","zero";
+    color: var(--foreground);
+    display: flex; align-items: baseline; gap: 4px;
+  }
+  .kpi-val .unit {
+    font-size: 14px; color: var(--muted-foreground); font-weight: 400;
+  }
+
+  .kpi-foot {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px;
+  }
+  .kpi-trend {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 500;
+    display: inline-flex; align-items: center; gap: 4px;
+    font-feature-settings: "tnum","zero";
+  }
+  .kpi-trend.pos { color: var(--success); }
+  .kpi-trend.neg { color: var(--destructive); }
+  .kpi-trend.neu { color: var(--muted-foreground); }
+  .kpi-trend svg { width: 12px; height: 12px; }
+
+  .spark {
+    display: inline-flex; align-items: flex-end; gap: 2px;
+    height: 16px;
+  }
+  .spark span {
+    width: 3px; border-radius: 1px;
+    background: var(--primary); opacity: 0.5;
+  }
+  .spark span:last-child { background: var(--accent); opacity: 1; }
+
+  /* === LIME · kun aktiv/valgt + nå-markør (aldri dekor) === */
+  /* 1. Valgt KPI — drill-down åpen: lime venstre-accent + svak tint */
+  .kpi.is-active {
+    border-color: var(--accent);
+    box-shadow: inset 3px 0 0 var(--accent), 0 2px 12px rgba(209,248,67,0.14);
+  }
+  .kpi.is-active:hover { border-color: var(--accent); }
+  /* 2. Live KPI — oppdateres under aktiv økt: lime puls-markør */
+  .kpi-live {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--primary);
+  }
+  .pulse {
+    position: relative; display: inline-block;
+    width: 6px; height: 6px; border-radius: 9999px;
+    background: var(--accent);
+    box-shadow: 0 0 6px rgba(209,248,67,0.6);
+  }
+  .pulse::after {
+    content: ""; position: absolute; inset: 0; border-radius: 9999px;
+    background: var(--accent);
+    animation: ping 1500ms cubic-bezier(0,0,0.2,1) infinite; opacity: 0.6;
+  }
+  @keyframes ping { 70%,100% { transform: scale(2.6); opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .pulse::after { animation: none; } }
+
+  /* Sizes */
+  .kpi.sm { padding: 12px; gap: 6px; }
+  .kpi.sm .kpi-val { font-size: 22px; }
+  .kpi.sm .kpi-val .unit { font-size: 11px; }
+  .kpi.sm .kpi-label { font-size: 9px; }
+
+  .kpi.lg { padding: 24px; gap: 16px; }
+  .kpi.lg .kpi-val { font-size: 48px; }
+  .kpi.lg .kpi-val .unit { font-size: 18px; }
+
+  /* === SKELETON === */
+  .kpi.is-loading { pointer-events: none; }
+  .sk {
+    border-radius: 6px;
+    background: linear-gradient(90deg, var(--secondary) 0%, var(--muted) 50%, var(--secondary) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1500ms linear infinite;
+  }
+  .sk.label { height: 8px; width: 48%; }
+  .sk.val   { height: 28px; width: 56%; }
+  .sk.trend { height: 10px; width: 72%; }
+  @keyframes shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* === EMPTY === */
+  .kpi.is-empty {
+    cursor: default; border-style: dashed;
+    background: transparent;
+  }
+  .kpi.is-empty:hover { transform: none; }
+  .kpi.is-empty .empty-val {
+    font-family: var(--font-mono); font-weight: 600;
+    font-size: 32px; line-height: 1;
+    color: var(--muted-foreground); opacity: 0.5;
+  }
+  .kpi.is-empty .empty-msg {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted-foreground);
+    text-transform: uppercase; letter-spacing: 0.10em;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+
+  /* === ERROR === */
+  .kpi.is-error {
+    cursor: default; border-color: rgba(163,45,45,0.30);
+    background: rgba(163,45,45,0.03);
+  }
+  .kpi.is-error:hover { transform: none; border-color: rgba(163,45,45,0.30); }
+  .kpi.is-error .kpi-label { color: var(--destructive); }
+  .kpi.is-error .err-msg {
+    font-size: 12px; color: var(--destructive);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .kpi.is-error .err-msg svg { width: 14px; height: 14px; }
+
+  /* Grids */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+  .rules {
+    margin-top: 24px; padding: 16px;
+    background: var(--secondary); border-radius: 12px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted-foreground); line-height: 1.6;
+  }
+  .rules p { margin: 0; }
+  .rules p + p { margin-top: 8px; }
+  .rules b { color: var(--foreground); font-weight: 700; }
+</style></head>
+<body><div class="card">
+
+  <!-- === DEFAULT · positive + negative trend === -->
+  <div class="sec">Default · interaktiv (hele kortet er klikkbart)</div>
+  <div class="grid-2">
+    <div class="kpi" tabindex="0">
+      <div class="kpi-head">
+        <span class="kpi-label">SG Approach</span>
+        <span class="kpi-ico"><i data-lucide="target"></i></span>
+      </div>
+      <div class="kpi-val">−0,5<span class="unit">SG</span></div>
+      <div class="kpi-foot">
+        <span class="kpi-trend neg">
+          <svg viewBox="0 0 12 12" fill="none"><path d="M2 4 L5 7 L7 5 L10 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          −0,5 over 4 uker · Tour +0,1
+        </span>
+        <span class="spark"><span style="height:88%; background: var(--destructive); opacity:0.5"></span><span style="height:72%; background: var(--destructive); opacity:0.6"></span><span style="height:62%; background: var(--destructive); opacity:0.7"></span><span style="height:46%; background: var(--destructive); opacity:0.8"></span><span style="height:28%; background: var(--destructive); opacity:1"></span></span>
+      </div>
+    </div>
+
+    <div class="kpi" tabindex="0">
+      <div class="kpi-head">
+        <span class="kpi-label">Putt 3m</span>
+        <span class="kpi-ico"><i data-lucide="circle-dot"></i></span>
+      </div>
+      <div class="kpi-val">62<span class="unit">%</span></div>
+      <div class="kpi-foot">
+        <span class="kpi-trend pos">
+          <svg viewBox="0 0 12 12" fill="none"><path d="M2 8 L5 5 L7 7 L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          +0,38 SG · Tour 48 %
+        </span>
+        <span class="spark"><span style="height:40%"></span><span style="height:52%"></span><span style="height:60%"></span><span style="height:78%"></span><span style="height:96%"></span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- === STATES (rebuilt — replaces redundant dark-mirror) === -->
+  <div class="sec tight">States · default · loading · empty · error</div>
+  <div class="grid-4">
+    <div class="kpi" tabindex="0">
+      <div class="kpi-head">
+        <span class="kpi-label">Drive</span>
+        <span class="kpi-ico"><i data-lucide="wind"></i></span>
+      </div>
+      <div class="kpi-val">268<span class="unit">m</span></div>
+      <div class="kpi-foot">
+        <span class="kpi-trend pos">↑ Tour +4 m</span>
+      </div>
+    </div>
+
+    <div class="kpi is-loading" aria-busy="true">
+      <div class="kpi-head"><span class="sk label"></span></div>
+      <span class="sk val"></span>
+      <span class="sk trend"></span>
+    </div>
+
+    <div class="kpi is-empty">
+      <div class="kpi-head">
+        <span class="kpi-label">Spillsim</span>
+        <span class="kpi-ico"><i data-lucide="activity"></i></span>
+      </div>
+      <div class="empty-val">—</div>
+      <div class="empty-msg"><i data-lucide="plus" style="width:10px;height:10px"></i>Logg første økt</div>
+    </div>
+
+    <div class="kpi is-error">
+      <div class="kpi-head">
+        <span class="kpi-label">SG Total</span>
+        <span class="kpi-ico"><i data-lucide="gauge" style="color: var(--destructive)"></i></span>
+      </div>
+      <div class="err-msg">
+        <i data-lucide="wifi-off"></i>
+        Kunne ikke laste
+      </div>
+      <span class="kpi-trend neu" style="cursor: pointer; color: var(--destructive);">Prøv igjen →</span>
+    </div>
+  </div>
+
+  <!-- === SIZES === -->
+  <div class="sec tight">Sizes · sm 22 / md 32 / lg 48</div>
+  <div class="grid-3">
+    <div class="kpi sm">
+      <span class="kpi-label">SG Approach</span>
+      <div class="kpi-val">−0,5</div>
+      <span class="kpi-trend neg">−0,5 · 4 uker</span>
+    </div>
+    <div class="kpi">
+      <span class="kpi-label">SG Approach</span>
+      <div class="kpi-val">−0,5<span class="unit">SG</span></div>
+      <span class="kpi-trend neg">−0,5 over 4 uker</span>
+    </div>
+    <div class="kpi lg">
+      <span class="kpi-label">SG Approach</span>
+      <div class="kpi-val">−0,5<span class="unit">SG</span></div>
+      <span class="kpi-trend neg">−0,5 over 4 uker · Tour-snitt +0,1</span>
+    </div>
+  </div>
+
+  <!-- === LIME · kun aktiv/valgt + nå-markør === -->
+  <div class="sec tight">Lime · kun aktiv/valgt + nå-markør</div>
+  <div class="grid-3">
+
+    <!-- 1. VALGT — drill-down åpen -->
+    <div class="kpi is-active" tabindex="0" aria-current="true">
+      <div class="kpi-head">
+        <span class="kpi-label">SG Approach</span>
+        <span class="kpi-ico"><i data-lucide="target"></i></span>
+      </div>
+      <div class="kpi-val">−0,5<span class="unit">SG</span></div>
+      <div class="kpi-foot">
+        <span class="kpi-trend neg">
+          <svg viewBox="0 0 12 12" fill="none"><path d="M2 4 L5 7 L7 5 L10 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Valgt · vises i graf
+        </span>
+      </div>
+    </div>
+
+    <!-- 2. LIVE — oppdateres under aktiv økt -->
+    <div class="kpi" tabindex="0">
+      <div class="kpi-head">
+        <span class="kpi-live"><span class="pulse"></span>Pågår nå</span>
+        <span class="kpi-ico"><i data-lucide="radio"></i></span>
+      </div>
+      <div class="kpi-val">14<span class="unit">slag</span></div>
+      <div class="kpi-foot">
+        <span class="kpi-trend neu">Stinger-drill · hull 6</span>
+      </div>
+    </div>
+
+    <!-- 3. SPARK — siste punkt = nå (allerede lime) -->
+    <div class="kpi" tabindex="0">
+      <div class="kpi-head">
+        <span class="kpi-label">Putt 3m</span>
+        <span class="kpi-ico"><i data-lucide="circle-dot"></i></span>
+      </div>
+      <div class="kpi-val">62<span class="unit">%</span></div>
+      <div class="kpi-foot">
+        <span class="kpi-trend pos">+0,38 SG</span>
+        <span class="spark"><span style="height:40%"></span><span style="height:52%"></span><span style="height:60%"></span><span style="height:78%"></span><span style="height:96%"></span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="rules">
+    <p><b>Hele kortet er klikkbart.</b> <code>tabindex="0"</code> + cursor:pointer + hover-løft. Aldri en KPI uten drill-down.</p>
+    <p><b>Trend-ikon er SVG,</b> ikke unicode <code>↑↓</code>. Pos = success-grønn, neg = destructive-rød, neu = muted.</p>
+    <p><b>Lime <code>--accent</code> kun på 3 lovlige steder:</b> (1) <code>.is-active</code> = valgt KPI med drill-down åpen — 3 px lime venstre-accent + svak glow; (2) <code>.kpi-live</code> puls-dot = faktisk live tilstand under en økt; (3) sparkline siste søyle = nå-punktet. Aldri som dekor på verdi, ramme eller vanlig trend.</p>
+    <p><b>Skeleton, empty, error</b> alle høyrebar-kompatible. Empty + error har CTA. Loading har <code>aria-busy</code>. Puls gates av <code>prefers-reduced-motion</code>.</p>
+  </div>
+
+  <script>lucide.createIcons();</script>
+</div></body></html>

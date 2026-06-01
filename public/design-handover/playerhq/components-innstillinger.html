@@ -1,0 +1,384 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>Innstillinger · accordion-seksjoner</title>
+<link rel="stylesheet" href="_shared.css">
+<script src="https://unpkg.com/lucide@0.453.0"></script>
+<style>
+  body { width: 760px; }
+  .card { padding: 28px 32px; }
+
+  .head { margin-bottom: 22px; }
+  .head .eb {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted-foreground);
+  }
+  .head h1 {
+    margin: 8px 0 6px;
+    font-family: var(--font-display); font-weight: 700; font-size: 28px;
+    letter-spacing: -0.025em; line-height: 1.05; color: var(--foreground);
+  }
+  .head h1 em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .head .helper { font-family: var(--font-sans); font-size: 14px; line-height: 1.55; color: var(--muted-foreground); max-width: 620px; }
+
+  /* phone frame */
+  .phone {
+    width: 412px; margin: 0 auto;
+    background: var(--card);
+    border-radius: 40px;
+    border: 7px solid var(--bezel-black);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+  }
+  .ph-status {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 13px 24px 4px;
+    font-family: var(--font-mono); font-size: 13px; font-weight: 700;
+    position: relative; font-feature-settings: "tnum","zero";
+  }
+  .ph-status::after {
+    content: ""; position: absolute; left: 50%; top: 13px; transform: translateX(-50%);
+    width: 96px; height: 24px; border-radius: 9999px; background: var(--bezel-black);
+  }
+  .ph-status .icons { display: inline-flex; gap: 5px; }
+  .ph-status .icons i { width: 13px; height: 13px; }
+
+  .topbar {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 18px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .topbar .back {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em; color: var(--muted-foreground);
+    background: none; border: 0; cursor: pointer; padding: 6px 4px;
+  }
+  .topbar .back i { width: 13px; height: 13px; }
+  .topbar h2 {
+    margin: 0; font-family: var(--font-display); font-weight: 700; font-size: 17px;
+    letter-spacing: -0.015em; color: var(--foreground);
+  }
+
+  .acc { padding: 8px 14px 16px; }
+  .sec {
+    border: 1px solid var(--border); border-radius: 14px;
+    margin-top: 10px; overflow: hidden; background: var(--card);
+  }
+  .sec-head {
+    display: flex; align-items: center; gap: 12px;
+    width: 100%; min-height: 56px; padding: 0 16px;
+    background: var(--card); border: 0; cursor: pointer; text-align: left;
+  }
+  .sec-head .ic {
+    width: 34px; height: 34px; border-radius: 9px; flex-shrink: 0;
+    background: rgba(0,88,64,0.08); color: var(--primary);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .sec-head .ic i { width: 17px; height: 17px; }
+  .sec-head .tt { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+  .sec-head .tt .t {
+    font-family: var(--font-display); font-weight: 700; font-size: 15px;
+    letter-spacing: -0.012em; color: var(--foreground);
+  }
+  .sec-head .tt .s {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em; margin-top: 2px;
+  }
+  .sec-head .chev { color: var(--muted-foreground); transition: transform 220ms ease; }
+  .sec-head .chev i { width: 18px; height: 18px; }
+  .sec.is-open .sec-head .chev { transform: rotate(180deg); color: var(--primary); }
+
+  .sec-body { max-height: 0; overflow: hidden; transition: max-height 300ms ease; }
+  .sec.is-open .sec-body { max-height: 560px; }
+  .sec-body .inner { padding: 4px 16px 18px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 14px; }
+
+  /* fields */
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field .lbl {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em; color: var(--muted-foreground);
+  }
+  .field input, .field select {
+    height: 46px; padding: 0 14px; border-radius: 11px;
+    border: 1px solid var(--input); background: var(--card); color: var(--foreground);
+    font: 15px var(--font-sans); outline: none;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .field input:focus, .field select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 20%, transparent);
+  }
+  .avatar-row { display: flex; align-items: center; gap: 14px; }
+  .avatar-row .av {
+    width: 56px; height: 56px; border-radius: 9999px;
+    background: var(--primary); color: var(--accent);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-weight: 700; font-size: 20px;
+  }
+  .avatar-row .btn-mini {
+    height: 40px; padding: 0 14px; border-radius: 10px;
+    border: 1px solid var(--border); background: var(--card); color: var(--foreground);
+    font-family: var(--font-mono); font-size: 11px; font-weight: 800; letter-spacing: 0.04em;
+    cursor: pointer; display: inline-flex; align-items: center; gap: 7px;
+  }
+  .avatar-row .btn-mini i { width: 13px; height: 13px; }
+
+  /* slider rows */
+  .slider {
+    display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; align-items: baseline;
+  }
+  .slider .nm { font-size: 14px; font-weight: 600; color: var(--foreground); letter-spacing: -0.005em; }
+  .slider .val {
+    font-family: var(--font-mono); font-size: 14px; font-weight: 800; color: var(--primary);
+    font-feature-settings: "tnum","zero"; letter-spacing: -0.01em;
+  }
+  .slider input[type=range] {
+    grid-column: 1 / -1; width: 100%; height: 44px; margin: 0; cursor: pointer;
+    -webkit-appearance: none; appearance: none; background: transparent;
+  }
+  .slider input[type=range]::-webkit-slider-runnable-track {
+    height: 6px; border-radius: 9999px; background: rgba(10,31,23,0.10);
+  }
+  .slider input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none; margin-top: -9px;
+    width: 24px; height: 24px; border-radius: 9999px;
+    background: var(--accent); border: 3px solid var(--card);
+    box-shadow: 0 2px 8px rgba(10,31,23,0.25);
+  }
+  .slider input[type=range]::-moz-range-track { height: 6px; border-radius: 9999px; background: rgba(10,31,23,0.10); }
+  .slider input[type=range]::-moz-range-thumb {
+    width: 24px; height: 24px; border-radius: 9999px; border: 3px solid var(--card);
+    background: var(--accent); box-shadow: 0 2px 8px rgba(10,31,23,0.25);
+  }
+
+  /* toggle rows */
+  .toggle {
+    display: flex; align-items: center; gap: 12px; min-height: 48px;
+    padding: 4px 0;
+  }
+  .toggle .tx { flex: 1; }
+  .toggle .tx .t { font-size: 14px; font-weight: 600; color: var(--foreground); letter-spacing: -0.005em; }
+  .toggle .tx .s { font-family: var(--font-mono); font-size: 10px; font-weight: 700; color: var(--muted-foreground); letter-spacing: 0.04em; margin-top: 1px; }
+  .sw {
+    width: 48px; height: 28px; border-radius: 9999px; flex-shrink: 0;
+    background: var(--cream-300); border: 0; cursor: pointer; position: relative;
+    transition: background 180ms ease;
+  }
+  .sw::after {
+    content: ""; position: absolute; top: 3px; left: 3px;
+    width: 22px; height: 22px; border-radius: 9999px; background: var(--card);
+    box-shadow: 0 1px 4px rgba(10,31,23,0.25); transition: transform 180ms ease;
+  }
+  .sw.on { background: var(--primary); }
+  .sw.on::after { transform: translateX(20px); }
+
+  /* privacy links */
+  .plink {
+    display: flex; align-items: center; gap: 12px; min-height: 48px;
+    padding: 0 2px; cursor: pointer;
+    border-top: 1px dashed var(--border);
+  }
+  .plink:first-child { border-top: 0; }
+  .plink i.l { width: 16px; height: 16px; color: var(--muted-foreground); }
+  .plink .t { flex: 1; font-size: 14px; font-weight: 600; color: var(--foreground); letter-spacing: -0.005em; }
+  .plink.danger .t, .plink.danger i.l { color: var(--destructive); }
+  .plink i.c { width: 15px; height: 15px; color: var(--muted-foreground); }
+
+  /* save bar */
+  .savebar {
+    padding: 12px 16px 18px; border-top: 1px solid var(--border);
+    display: flex; gap: 10px; align-items: center;
+    background: var(--cream-50);
+  }
+  .savebar .status {
+    flex: 1; font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .savebar .status.dirty { color: var(--warning-foreground); }
+  .savebar .status i { width: 13px; height: 13px; }
+  .savebar .save {
+    height: 46px; padding: 0 20px; border-radius: 12px; border: 0;
+    background: var(--primary); color: var(--accent); cursor: pointer;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: opacity 150ms;
+  }
+  .savebar .save.clean { opacity: 0.45; pointer-events: none; }
+  .savebar .save i { width: 14px; height: 14px; }
+
+  .rules {
+    margin-top: 26px; padding: 16px 18px; background: var(--secondary); border-radius: 12px;
+    font-family: var(--font-mono); font-size: 11px; color: var(--muted-foreground); line-height: 1.65;
+  }
+  .rules p { margin: 0; } .rules p + p { margin-top: 8px; } .rules b { color: var(--foreground); font-weight: 700; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sec-body, .sec-head .chev, .sw, .sw::after { transition: none; }
+  }
+</style></head>
+<body><div class="card">
+
+  <div class="head">
+    <span class="eb">2.12 · /PORTAL/MEG/INNSTILLINGER</span>
+    <h1>Innstillinger i <em>accordion</em>.</h1>
+    <p class="helper">Fire seksjoner som folder ut én om gangen — profil, fasiliteter, varsler og personvern.
+      44 px touch-targets, ekte toggles og snap-slidere, og en lagre-bar som først våkner når noe er endret.</p>
+  </div>
+
+  <div class="phone">
+    <div class="ph-status">
+      <span>09:41</span>
+      <span class="icons"><i data-lucide="signal"></i><i data-lucide="wifi"></i><i data-lucide="battery-medium"></i></span>
+    </div>
+
+    <div class="topbar">
+      <button class="back"><i data-lucide="chevron-left"></i>Profil</button>
+      <h2>Innstillinger</h2>
+    </div>
+
+    <div class="acc" id="acc">
+
+      <!-- PROFIL -->
+      <div class="sec is-open" data-sec>
+        <button class="sec-head">
+          <span class="ic"><i data-lucide="user"></i></span>
+          <span class="tt"><span class="t">Profil</span><span class="s">NAVN · E-POST · BILDE</span></span>
+          <span class="chev"><i data-lucide="chevron-down"></i></span>
+        </button>
+        <div class="sec-body"><div class="inner">
+          <div class="avatar-row">
+            <span class="av">MB</span>
+            <button class="btn-mini"><i data-lucide="camera"></i>Bytt bilde</button>
+          </div>
+          <div class="field"><span class="lbl">Fullt navn</span><input value="Markus Berg" data-dirty></div>
+          <div class="field"><span class="lbl">E-post</span><input value="markus@akgolf.no" data-dirty></div>
+          <div class="field"><span class="lbl">Hjemmeklubb</span>
+            <select data-dirty><option>Grenland &amp; Falkensten GK</option><option>Oslo GK</option><option>Holtsmark GK</option></select>
+          </div>
+        </div></div>
+      </div>
+
+      <!-- FASILITETER -->
+      <div class="sec" data-sec>
+        <button class="sec-head">
+          <span class="ic"><i data-lucide="map-pin"></i></span>
+          <span class="tt"><span class="t">Fasiliteter</span><span class="s">TILGJENGELIGE OMRÅDER · SNAP 5 M</span></span>
+          <span class="chev"><i data-lucide="chevron-down"></i></span>
+        </button>
+        <div class="sec-body"><div class="inner">
+          <div class="slider">
+            <span class="nm">Range maks-lengde</span><span class="val" data-out>250 m</span>
+            <input type="range" min="50" max="320" step="5" value="250" data-unit="m" data-dirty>
+          </div>
+          <div class="slider">
+            <span class="nm">Innspill-område</span><span class="val" data-out>90 m</span>
+            <input type="range" min="20" max="140" step="5" value="90" data-unit="m" data-dirty>
+          </div>
+          <div class="slider">
+            <span class="nm">Putting-green</span><span class="val" data-out>600 m²</span>
+            <input type="range" min="100" max="1200" step="50" value="600" data-unit="m²" data-dirty>
+          </div>
+        </div></div>
+      </div>
+
+      <!-- VARSLER -->
+      <div class="sec" data-sec>
+        <button class="sec-head">
+          <span class="ic"><i data-lucide="bell"></i></span>
+          <span class="tt"><span class="t">Varsler</span><span class="s">3 AV 4 PÅ</span></span>
+          <span class="chev"><i data-lucide="chevron-down"></i></span>
+        </button>
+        <div class="sec-body"><div class="inner">
+          <div class="toggle"><span class="tx"><span class="t">Økt-påminnelser</span><span class="s">24 T FØR HVER ØKT</span></span><button class="sw on" data-toggle aria-pressed="true"></button></div>
+          <div class="toggle"><span class="tx"><span class="t">Ukerapport</span><span class="s">SØNDAG 18:00</span></span><button class="sw on" data-toggle aria-pressed="true"></button></div>
+          <div class="toggle"><span class="tx"><span class="t">Coach-meldinger</span><span class="s">PUSH + E-POST</span></span><button class="sw on" data-toggle aria-pressed="true"></button></div>
+          <div class="toggle"><span class="tx"><span class="t">Testuke-varsel</span><span class="s">2 UKER FØR</span></span><button class="sw" data-toggle aria-pressed="false"></button></div>
+        </div></div>
+      </div>
+
+      <!-- PERSONVERN -->
+      <div class="sec" data-sec>
+        <button class="sec-head">
+          <span class="ic"><i data-lucide="shield-check"></i></span>
+          <span class="tt"><span class="t">Personvern</span><span class="s">DATA · GDPR · KONTO</span></span>
+          <span class="chev"><i data-lucide="chevron-down"></i></span>
+        </button>
+        <div class="sec-body"><div class="inner">
+          <div class="plink"><i data-lucide="download" class="l"></i><span class="t">Last ned mine data</span><i data-lucide="chevron-right" class="c"></i></div>
+          <div class="plink"><i data-lucide="file-text" class="l"></i><span class="t">Personvernerklæring</span><i data-lucide="external-link" class="c"></i></div>
+          <div class="plink danger"><i data-lucide="trash-2" class="l"></i><span class="t">Slett konto</span><i data-lucide="chevron-right" class="c"></i></div>
+        </div></div>
+      </div>
+
+    </div>
+
+    <div class="savebar">
+      <span class="status" id="saveStatus"><i data-lucide="check-circle-2"></i>Alt lagret</span>
+      <button class="save clean" id="saveBtn"><i data-lucide="save"></i>Lagre</button>
+    </div>
+  </div>
+
+  <div class="rules">
+    <p><b>Accordion, ikke faner.</b> Én seksjon åpen om gangen holder mobil-skjermen kort. Chevron snur 180°, body animeres via max-height (reduced-motion-gated).</p>
+    <p><b>Lagre-bar våkner ved endring.</b> Den er nedtonet til noe faktisk endres — da blir den primary og statusen skifter til «Ulagrede endringer».</p>
+  </div>
+
+  <script>lucide.createIcons();</script>
+  <script>
+  (function () {
+    /* accordion — one open at a time */
+    var secs = Array.prototype.slice.call(document.querySelectorAll('#acc [data-sec]'));
+    secs.forEach(function (sec) {
+      sec.querySelector('.sec-head').addEventListener('click', function () {
+        var open = sec.classList.contains('is-open');
+        secs.forEach(function (s) { s.classList.remove('is-open'); });
+        if (!open) sec.classList.add('is-open');
+      });
+    });
+
+    /* dirty tracking */
+    var status = document.getElementById('saveStatus');
+    var saveBtn = document.getElementById('saveBtn');
+    function markDirty() {
+      status.classList.add('dirty');
+      status.innerHTML = '<i data-lucide="circle-dot"></i>Ulagrede endringer';
+      saveBtn.classList.remove('clean');
+      lucide.createIcons();
+    }
+    function markClean() {
+      status.classList.remove('dirty');
+      status.innerHTML = '<i data-lucide="check-circle-2"></i>Alt lagret';
+      saveBtn.classList.add('clean');
+      lucide.createIcons();
+    }
+    document.querySelectorAll('[data-dirty]').forEach(function (el) {
+      el.addEventListener('input', markDirty);
+      el.addEventListener('change', markDirty);
+    });
+
+    /* sliders — live value */
+    document.querySelectorAll('.slider input[type=range]').forEach(function (r) {
+      var out = r.closest('.slider').querySelector('[data-out]');
+      var unit = r.getAttribute('data-unit') || '';
+      r.addEventListener('input', function () {
+        out.textContent = Number(r.value).toLocaleString('nb-NO') + ' ' + unit;
+      });
+    });
+
+    /* toggles */
+    document.querySelectorAll('[data-toggle]').forEach(function (sw) {
+      sw.addEventListener('click', function () {
+        var on = sw.classList.toggle('on');
+        sw.setAttribute('aria-pressed', on ? 'true' : 'false');
+        var sec = sw.closest('[data-sec]');
+        var n = sec.querySelectorAll('.sw.on').length;
+        var total = sec.querySelectorAll('.sw').length;
+        sec.querySelector('.sec-head .s').textContent = n + ' AV ' + total + ' PÅ';
+        markDirty();
+      });
+    });
+
+    saveBtn.addEventListener('click', markClean);
+  })();
+  </script>
+</div></body></html>

@@ -1,0 +1,796 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Trackman · Trend</title>
+<link rel="stylesheet" href="_shared.css">
+<script src="https://unpkg.com/lucide@0.453.0"></script>
+<style>
+  body { width: 1280px; }
+  .card { padding: 24px; position: relative; }
+
+  /* === CARD CHROME === */
+  .tr-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .tr-head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 24px;
+    padding: 18px 22px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tr-eyebrow {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .tr-eyebrow .pulse {
+    width: 6px; height: 6px; border-radius: 9999px;
+    background: var(--accent); box-shadow: 0 0 6px rgba(209,248,67,0.6);
+    position: relative;
+  }
+  .tr-eyebrow .pulse::after {
+    content: ""; position: absolute; inset: 0; border-radius: 9999px;
+    background: var(--accent);
+    animation: ping 1500ms cubic-bezier(0,0,0.2,1) infinite; opacity: 0.6;
+  }
+  @keyframes ping { 70%,100% { transform: scale(2.6); opacity: 0; } }
+  .tr-title {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 22px; line-height: 1.1; letter-spacing: -0.015em;
+    margin: 4px 0 0;
+  }
+  .tr-title em {
+    font-style: italic; font-weight: 400;
+    color: var(--muted-foreground);
+    margin-left: 4px;
+  }
+
+  /* Session-range selector */
+  .tr-range {
+    display: inline-flex; gap: 2px;
+    padding: 3px;
+    background: var(--secondary);
+    border-radius: 10px;
+  }
+  .range-tab {
+    border: 0; background: transparent; cursor: pointer;
+    font-family: var(--font-display);
+    font-weight: 600; font-size: 12px;
+    letter-spacing: -0.005em;
+    color: var(--muted-foreground);
+    padding: 7px 12px;
+    border-radius: 8px;
+  }
+  .range-tab.is-active {
+    background: var(--card);
+    color: var(--foreground);
+    box-shadow: 0 1px 2px rgba(10,31,23,0.06), 0 0 0 1px var(--border);
+  }
+
+  /* Top KPI strip */
+  .tr-kpis {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);    border-bottom: 1px solid var(--border);
+  }
+  .tk-cell {
+    padding: 16px 22px;
+    border-right: 1px solid var(--border);
+    display: flex; align-items: center; gap: 14px;
+  }
+  .tk-cell:last-child { border-right: 0; }
+  .tk-cell .tk-icon {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .tk-cell .tk-icon svg { width: 18px; height: 18px; }
+  .tk-cell.is-up    .tk-icon { background: rgba(26,125,86,0.14);  color: var(--success); }
+  .tk-cell.is-flat  .tk-icon { background: rgba(94,92,87,0.12);   color: var(--muted-foreground); }
+  .tk-cell.is-down  .tk-icon { background: rgba(184,133,42,0.14); color: var(--warning); }
+  .tk-cell .tk-text { display: flex; flex-direction: column; gap: 2px; }
+  .tk-cell .tk-lbl {
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .tk-cell .tk-val {
+    font-family: var(--font-mono); font-weight: 700;
+    font-size: 22px;
+    letter-spacing: -0.015em;
+    color: var(--foreground);
+    font-feature-settings: "tnum","zero";
+  }
+  .tk-cell .tk-val small {
+    font-size: 11px; font-weight: 600;
+    color: var(--muted-foreground);
+    margin-left: 4px;
+  }
+  .tk-cell .tk-detail {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted-foreground);
+    font-feature-settings: "tnum","zero";
+    margin-top: 2px;
+  }
+
+  /* === BAG SPARKLINE GRID === */
+  .bag-section {
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .section-head .sh-title {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 15px; letter-spacing: -0.015em;
+  }
+  .section-head .sh-meta {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted-foreground);
+    font-feature-settings: "tnum","zero";
+  }
+  .bag-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+  }
+  .club-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: background 150ms, border-color 150ms, transform 150ms;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .club-card:hover {
+    background: var(--secondary);
+    border-color: var(--input);
+    transform: translateY(-1px);
+  }
+  .club-card.is-active {
+    background: var(--primary);
+    border-color: var(--primary);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(10,31,23,0.16);
+  }
+  .club-card.is-active .cc-name,
+  .club-card.is-active .cc-now { color: var(--cream-50); }
+  .club-card.is-active .cc-delta.up   { color: var(--accent); }
+  .club-card.is-active .cc-delta.flat { color: rgba(245,244,238,0.6); }
+  .club-card.is-active .cc-delta.down { color: var(--warn-amber-dark); }
+
+  .cc-top { display: flex; align-items: baseline; justify-content: space-between; gap: 4px; }
+  .cc-name {
+    font-family: var(--font-mono); font-size: 10.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--foreground);
+  }
+  .cc-now {
+    font-family: var(--font-mono); font-weight: 700;
+    font-size: 18px;
+    letter-spacing: -0.025em;
+    color: var(--foreground);
+    font-feature-settings: "tnum","zero";
+  }
+  .cc-now small {
+    font-size: 10px; font-weight: 600;
+    color: var(--muted-foreground);
+    margin-left: 2px;
+  }
+  .club-card.is-active .cc-now small { color: rgba(245,244,238,0.6); }
+  .cc-mid {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 6px;
+  }
+  .cc-delta {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    font-feature-settings: "tnum","zero";
+    display: inline-flex; align-items: center; gap: 3px;
+  }
+  .cc-delta svg { width: 11px; height: 11px; }
+  .cc-delta.up   { color: var(--success); }
+  .cc-delta.flat { color: var(--muted-foreground); }
+  .cc-delta.down { color: var(--warning); }
+
+  /* R30 — drift flag + selectable affordance */
+  .club-card { position: relative; }
+  .club-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .cc-flag {
+    position: absolute; top: -6px; right: -4px;
+    font-family: var(--font-mono); font-size: 7.5px; font-weight: 800;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    background: var(--warning); color: var(--card);
+    padding: 1px 5px; border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(10,31,23,0.18);
+  }
+  .club-card.is-active .cc-flag { background: var(--warn-amber-dark, var(--warning)); color: var(--cream-50); }
+  .drift-note {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-left: 10px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--warning-foreground);
+    background: rgba(184,133,42,0.14);
+    padding: 3px 8px; border-radius: 6px;
+  }
+  .drift-note svg { width: 11px; height: 11px; }
+
+  .cc-spark {
+    width: 100%;
+    height: 32px;
+    display: block;
+  }
+
+  /* === DETAIL — multi-parameter trend === */
+  .detail-section {
+    padding: 18px 22px 22px;
+  }
+  .detail-section .section-head .sh-club {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 15px; letter-spacing: -0.015em;
+  }
+  .detail-section .sh-club .badge {
+    background: var(--primary);
+    color: var(--cream-50);
+    padding: 4px 9px;
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  /* Parameter rows */
+  .param-trends {
+    display: flex; flex-direction: column;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .pt-row {
+    display: grid;
+    grid-template-columns: 140px 90px 1fr 90px 80px;
+    gap: 18px;
+    align-items: center;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .pt-row:last-child { border-bottom: 0; }
+  .pt-name {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: 13px; letter-spacing: -0.005em;
+    color: var(--foreground);
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .pt-name small {
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--muted-foreground);
+  }
+  .pt-prev {
+    font-family: var(--font-mono); font-size: 12px;
+    color: var(--muted-foreground);
+    text-align: right;
+    font-feature-settings: "tnum","zero";
+  }
+  .pt-prev small {
+    display: block;
+    font-size: 9px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin-top: 2px;
+  }
+  .pt-spark-large {
+    width: 100%;
+    height: 36px;
+  }
+  .pt-now {
+    font-family: var(--font-mono); font-weight: 700;
+    font-size: 17px;
+    letter-spacing: -0.015em;
+    color: var(--foreground);
+    text-align: right;
+    font-feature-settings: "tnum","zero";
+  }
+  .pt-now small {
+    display: block;
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--muted-foreground);
+    margin-top: 2px;
+  }
+  .pt-delta {
+    font-family: var(--font-mono); font-weight: 700;
+    font-size: 13px;
+    font-feature-settings: "tnum","zero";
+    text-align: right;
+    display: inline-flex; align-items: center; justify-content: flex-end; gap: 3px;
+  }
+  .pt-delta svg { width: 12px; height: 12px; }
+  .pt-delta.up   { color: var(--success); }
+  .pt-delta.flat { color: var(--muted-foreground); }
+  .pt-delta.down { color: var(--warning); }
+
+</style></head>
+<body><div class="card">
+
+  <div class="tr-card">
+
+    <!-- HEADER -->
+    <header class="tr-head">
+      <div>
+        <span class="tr-eyebrow"><span class="pulse"></span>TRACKMAN · TREND · SISTE 8 ØKTER</span>
+        <h2 class="tr-title">Utvikling over tid <em>· 25. mar → 22. mai</em></h2>
+      </div>
+      <div class="tr-range">
+        <button class="range-tab">4 økter</button>
+        <button class="range-tab is-active">8 økter</button>
+        <button class="range-tab">12 økter</button>
+        <button class="range-tab">Sesong</button>
+      </div>
+    </header>
+
+    <!-- TRAINING-PLAN LINK CALLOUT -->
+    <div style="padding: 14px 22px; border-bottom: 1px solid var(--border); background: linear-gradient(to right, rgba(0,88,64,0.04) 0%, transparent 100%);">
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <span style="width: 38px; height: 38px; border-radius: 10px; background: var(--primary); color: var(--accent); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <i data-lucide="link" style="width:18px;height:18px;"></i>
+        </span>
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 3px;">
+          <span style="font-family: var(--font-mono); font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted-foreground); display: inline-flex; align-items: center; gap: 8px;">
+            <span style="color: var(--primary); font-weight: 700;">SPESIALISERING · UKE 9–21</span>
+            <span style="opacity: 0.5;">·</span>
+            <span>DRIVER + INNSPILL-FOKUS</span>
+          </span>
+          <span style="font-family: var(--font-display); font-weight: 600; font-size: 14px; letter-spacing: -0.005em; line-height: 1.4;">
+            Siden driver-fokus startet <b style="font-weight: 700;">1. mai</b> har klubbhastighet økt
+            <b style="color: var(--success); font-family: var(--font-mono); font-weight: 700;">+2,1 mph</b>
+            og stabiliteten gjått fra <b style="font-family: var(--font-mono); font-weight: 700;">6,8</b>
+            til <b style="color: var(--success); font-family: var(--font-mono); font-weight: 700;">7,4</b>.
+          </span>
+        </div>
+        <a href="#" style="font-family: var(--font-mono); font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--primary); text-decoration: none; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; display: inline-flex; align-items: center; gap: 6px; transition: background 150ms; background: var(--card); white-space: nowrap;">
+          Åpne treningsplan <i data-lucide="arrow-right" style="width:12px;height:12px;"></i>
+        </a>
+      </div>
+    </div>
+
+    <!-- TOP KPIs -->
+    <div class="tr-kpis">
+      <div class="tk-cell is-up">
+        <span class="tk-icon"><i data-lucide="trending-up"></i></span>
+        <div class="tk-text">
+          <span class="tk-lbl">I framgang</span>
+          <span class="tk-val">5<small>køller</small></span>
+          <span class="tk-detail">Driver +6 yd · 7-jern +6 yd · 5-W +4 yd</span>
+        </div>
+      </div>
+      <div class="tk-cell is-flat">
+        <span class="tk-icon"><i data-lucide="minus"></i></span>
+        <div class="tk-text">
+          <span class="tk-lbl">Stødige</span>
+          <span class="tk-val">5<small>køller</small></span>
+          <span class="tk-detail">3-W · 5-jern · 6-jern · 8-jern · 4-jern</span>
+        </div>
+      </div>
+      <div class="tk-cell is-down">
+        <span class="tk-icon"><i data-lucide="trending-down"></i></span>
+        <div class="tk-text">
+          <span class="tk-lbl">Krever fokus</span>
+          <span class="tk-val">4<small>køller</small></span>
+          <span class="tk-detail">56° −4 yd · 60° −3 yd · PW −2 yd · 52° −2 yd</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- BAG GRID WITH SPARKLINES -->
+    <div class="bag-section">
+      <div class="section-head">
+        <div>
+          <div class="sh-title">Carry-trend per kølle</div>
+        </div>
+        <div class="sh-meta">Klikk en kølle for detaljert parameter-trend</div>
+      </div>
+
+      <div class="bag-grid">
+
+        <!-- Driver — up -->
+        <div class="club-card" data-club="Driver">
+          <div class="cc-top">
+            <span class="cc-name">Driver</span>
+          </div>
+          <div class="cc-mid">
+            <span class="cc-now">268<small>yd</small></span>
+            <span class="cc-delta up"><i data-lucide="arrow-up"></i>+6</span>
+          </div>
+          <svg class="cc-spark" viewBox="0 0 100 32" preserveAspectRatio="none">
+            <polyline fill="none" stroke="var(--success)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
+                      points="0,24 14,22 28,20 42,18 56,16 70,12 84,10 100,6"/>
+            <circle cx="100" cy="6" r="3" fill="var(--success)"/>
+          </svg>
+        </div>
+
+        <!-- 3W — flat -->
+        <div class="club-card" data-club="3W">
+          <div class="cc-top"><span class="cc-name">3-W</span></div>
+          <div class="cc-mid"><span class="cc-now">245<small>yd</small></span>
+            <span class="cc-delta flat"><i data-lucide="minus"></i>±1</span></div>
+          <svg class="cc-spark" viewBox="0 0 100 32" preserveAspectRatio="none">
+            <polyline fill="none" stroke="var(--warm-gray)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
+                      points="0,16 14,18 28,14 42,17 56,15 70,16 84,14 100,15"/>
+            <circle cx="100" cy="15" r="3" fill="var(--warm-gray)"/>
+          </svg>
+        </div>
+
+        <!-- 5W — up -->
+        <div class="club-card" data-club="5W">
+          <div class="cc-top"><span class="cc-name">5-W</span></div>
+          <div class="cc-mid"><span class="cc-now">222<small>yd</small></span>
+            <span class="cc-delta up"><i data-lucide="arrow-up"></i>+4</span></div>
+          <svg class="cc-spark" viewBox="0 0 100 32" preserveAspectRatio="none">
+            <polyline fill="none" stroke="var(--success)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
+                      points="0,22 14,20 28,21 42,17 56,16 70,14 84,11 100,8"/>
+            <circle cx="100" cy="8" r="3" fill="var(--success)"/>
+          </svg>
+        </div>
+
+        <!-- 4-iron — flat -->
+        <div class="club-card" data-club="4I">
+          <div class="cc-top"><span class="cc-name">4-jern</span></div>
+          <div class="cc-mid"><span class="cc-now">198<small>yd</small></span>
+            <span class="cc-delta flat"><i data-lucide="minus"></i>±0</span></div>
+          <svg class="cc-spark" viewBox="0 0 100 32" preserveAspectRatio="none">
+            <polyline fill="none" stroke="var(--warm-gray)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
+                      points="0,17 14,16 28,18 42,15 56,17 70,18 84,16 100,16"/>
+            <circle cx="100" cy="16" r="3" fill="var(--warm-gray)"/>
+          </svg>
+        </div>
+
+        <!-- 5-iron — flat -->
+        <div class="club-card" data-club="5I">
+          <div class="cc-top"><span class="cc-name">5-jern</span></div>
+          <div class="cc-mid"><span class="cc-now">188<small>yd</small></span>
+            <span class="cc-delta flat"><i data-lucide="minus"></i>±1</span></div>
+          <svg class="cc-spark" viewBox="0 0 100 32" preserveAspectRatio="none">
+            <polyline fill="none" stroke="var(--warm-gray)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
+                      points="0,18 14,15 28,17 42,16 56,16 70,17 84,15 100,16"/>
+            <circle cx="100" cy="16" r="3" fill="var(--warm-gray)"/>
+          </svg>
+        </div>
+
+        <!-- 6-iron — flat -->
+        <div class="club-card" data-club="6I">
+          <div class="cc-top"><span class="cc-name">6-jern</span></div>
+          <div class="cc-mid"><span class="cc-now">177<small>yd</small></span>
+            <span class="cc-delta flat"><i data-lucide="minus"></i>±0</span></div>
+          <svg class="cc-spark" viewBox="0 0 100 32" preserveAspectRatio="none">
+            <polyline fill="none" stroke="var(--warm-gray)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
+                      points="0,16 14,17 28,15 42,18 56,16 70,15 84,17 100,16"/>
+            <circle cx="100" cy="16" r="3" fill="var(--warm-gray)"/>
+          </svg>
+        </div>
+
+        <!-- 7-iron — SELECTED, up -->
+        <div class="club-card is-active" data-club="7I">
+          <div class="cc-top"><span class="cc-name">7-jern</span></div>
+          <div class="cc-mid"><span class="cc-now">165<small>yd</small></span>
+            <span class="cc-delta up"><i data-lucide="arrow-up"></i>+6</span></div>
+          <svg class="cc-spark" viewBox="0 0 100 32" preserveAspectRatio="none">
+            <polyline fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"
+                      points="0,24 14,21 28,22 42,16 56,18 70,12 84,13 100,7"/>
+            <circle cx="100" cy="7" r="3.5" fill="var(--accent)"/>
+          </svg>
+        </div>
+
+        <!-- 8-iron — flat -->
+        <div class="club-card" data-club="8I">
+          <div class="cc-top"><span class="cc-name">8-jern</span></div>
+          <div class="cc-mid"><span class="cc-now">152<small>yd</small></span>
+            <span class="cc-delta flat"><i data-lucide="minus"></i>±1</span></div>
+          <svg class="cc-spark" viewBox="0 0 100 32" preserveAspectRatio="none">
+            <polyline fill="none" stroke="var(--warm-gray)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
+                      points="0,16 14,17 28,15 42,16 56,17 70,15 84,16 100,15"/>
+            <circle cx="100" cy="15" r="3" fill="var(--warm-gray)"/>
+          </svg>
+        </div>
+
+        <!-- 9-iron — up -->
+        <div class="club-card" data-club="9I">
+          <div class="cc-top"><span class="cc-name">9-jern</span></div>
+          <div class="cc-mid"><span class="cc-now">140<small>yd</small></span>
+            <span class="cc-delta up"><i data-lucide="arrow-up"></i>+2</span></div>
+          <svg class="cc-spark" viewBox="0 0 100 32" preserveAspectRatio="none">
+            <polyline fill="none" stroke="var(--success)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
+                      points="0,20 14,18 28,17 42,16 56,15 70,13 84,12 100,10"/>
+            <circle cx="100" cy="10" r="3" fill="var(--success)"/>
+          </svg>
+        </div>
+
+        <!-- PW — down -->
+        <div class="club-card" data-club="PW">
+          <div class="cc-top"><span class="cc-name">PW</span></div>
+          <div class="cc-mid"><span class="cc-now">128<small>yd</small></span>
+            <span class="cc-delta down"><i data-lucide="arrow-down"></i>−2</span></div>
+          <svg class="cc-spark" viewBox="0 0 100 32" preserveAspectRatio="none">
+            <polyline fill="none" stroke="var(--warning)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
+                      points="0,12 14,13 28,14 42,15 56,15 70,17 84,18 100,20"/>
+            <circle cx="100" cy="20" r="3" fill="var(--warning)"/>
+          </svg>
+        </div>
+
+        <!-- 50° — up -->
+        <div class="club-card" data-club="50">
+          <div class="cc-top"><span class="cc-name">50°</span></div>
+          <div class="cc-mid"><span class="cc-now">115<small>yd</small></span>
+            <span class="cc-delta up"><i data-lucide="arrow-up"></i>+2</span></div>
+          <svg class="cc-spark" viewBox="0 0 100 32" preserveAspectRatio="none">
+            <polyline fill="none" stroke="var(--success)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
+                      points="0,22 14,20 28,21 42,18 56,17 70,15 84,13 100,11"/>
+            <circle cx="100" cy="11" r="3" fill="var(--success)"/>
+          </svg>
+        </div>
+
+        <!-- 52° — down -->
+        <div class="club-card" data-club="52">
+          <div class="cc-top"><span class="cc-name">52°</span></div>
+          <div class="cc-mid"><span class="cc-now">108<small>yd</small></span>
+            <span class="cc-delta down"><i data-lucide="arrow-down"></i>−2</span></div>
+          <svg class="cc-spark" viewBox="0 0 100 32" preserveAspectRatio="none">
+            <polyline fill="none" stroke="var(--warning)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
+                      points="0,13 14,15 28,14 42,16 56,17 70,18 84,19 100,21"/>
+            <circle cx="100" cy="21" r="3" fill="var(--warning)"/>
+          </svg>
+        </div>
+
+        <!-- 56° — DOWN (problem club) -->
+        <div class="club-card" data-club="56">
+          <div class="cc-top"><span class="cc-name">56°</span></div>
+          <div class="cc-mid"><span class="cc-now">88<small>yd</small></span>
+            <span class="cc-delta down"><i data-lucide="arrow-down"></i>−4</span></div>
+          <svg class="cc-spark" viewBox="0 0 100 32" preserveAspectRatio="none">
+            <polyline fill="none" stroke="var(--warning)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
+                      points="0,8 14,12 28,10 42,14 56,16 70,18 84,22 100,24"/>
+            <circle cx="100" cy="24" r="3" fill="var(--warning)"/>
+          </svg>
+        </div>
+
+        <!-- 60° — down -->
+        <div class="club-card" data-club="60">
+          <div class="cc-top"><span class="cc-name">60°</span></div>
+          <div class="cc-mid"><span class="cc-now">72<small>yd</small></span>
+            <span class="cc-delta down"><i data-lucide="arrow-down"></i>−3</span></div>
+          <svg class="cc-spark" viewBox="0 0 100 32" preserveAspectRatio="none">
+            <polyline fill="none" stroke="var(--warning)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
+                      points="0,10 14,12 28,13 42,14 56,16 70,17 84,19 100,22"/>
+            <circle cx="100" cy="22" r="3" fill="var(--warning)"/>
+          </svg>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SELECTED CLUB DETAIL — all parameters -->
+    <div class="detail-section">
+      <div class="section-head">
+        <div class="sh-club">
+          <span class="badge">7-JERN</span>
+          Parameter-trend · siste 8 økter
+        </div>
+        <div class="sh-meta">Lyse områder = framgang · 25. mar → 22. mai</div>
+      </div>
+
+      <div class="param-trends">
+
+        <!-- Carry -->
+        <div class="pt-row">
+          <span class="pt-name">Carry<small>yd</small></span>
+          <span class="pt-prev">159<small>8 økter siden</small></span>
+          <svg class="pt-spark-large" viewBox="0 0 200 36" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="g-carry" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="rgba(26,125,86,0.30)"/>
+                <stop offset="100%" stop-color="rgba(26,125,86,0)"/>
+              </linearGradient>
+            </defs>
+            <polyline fill="url(#g-carry)" stroke="none"
+                      points="0,26 28,22 56,24 84,16 112,18 140,12 168,13 200,7 200,36 0,36"/>
+            <polyline fill="none" stroke="var(--success)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
+                      points="0,26 28,22 56,24 84,16 112,18 140,12 168,13 200,7"/>
+            <circle cx="200" cy="7" r="3.5" fill="var(--success)" stroke="#fff" stroke-width="1.5"/>
+          </svg>
+          <span class="pt-now">165<small>nå</small></span>
+          <span class="pt-delta up"><i data-lucide="arrow-up"></i>+6 yd</span>
+        </div>
+
+        <!-- Ball speed -->
+        <div class="pt-row">
+          <span class="pt-name">Ballhastighet<small>mph</small></span>
+          <span class="pt-prev">122,1<small>8 økter siden</small></span>
+          <svg class="pt-spark-large" viewBox="0 0 200 36" preserveAspectRatio="none">
+            <polyline fill="rgba(26,125,86,0.18)" stroke="none"
+                      points="0,22 28,20 56,18 84,19 112,15 140,14 168,16 200,12 200,36 0,36"/>
+            <polyline fill="none" stroke="var(--success)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
+                      points="0,22 28,20 56,18 84,19 112,15 140,14 168,16 200,12"/>
+            <circle cx="200" cy="12" r="3.5" fill="var(--success)" stroke="#fff" stroke-width="1.5"/>
+          </svg>
+          <span class="pt-now">124,0<small>nå</small></span>
+          <span class="pt-delta up"><i data-lucide="arrow-up"></i>+1,9</span>
+        </div>
+
+        <!-- Spin rate -->
+        <div class="pt-row">
+          <span class="pt-name">Spinnrate<small>rpm · lavere = bedre</small></span>
+          <span class="pt-prev">7 600<small>8 økter siden</small></span>
+          <svg class="pt-spark-large" viewBox="0 0 200 36" preserveAspectRatio="none">
+            <polyline fill="rgba(26,125,86,0.18)" stroke="none"
+                      points="0,8 28,11 56,15 84,17 112,15 140,19 168,17 200,22 200,36 0,36"/>
+            <polyline fill="none" stroke="var(--success)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
+                      points="0,8 28,11 56,15 84,17 112,15 140,19 168,17 200,22"/>
+            <circle cx="200" cy="22" r="3.5" fill="var(--success)" stroke="#fff" stroke-width="1.5"/>
+          </svg>
+          <span class="pt-now">7 200<small>nå</small></span>
+          <span class="pt-delta up"><i data-lucide="arrow-down"></i>−400</span>
+        </div>
+
+        <!-- Spin axis -->
+        <div class="pt-row">
+          <span class="pt-name">Spinnakse<small>°</small></span>
+          <span class="pt-prev">+4,8<small>8 økter siden</small></span>
+          <svg class="pt-spark-large" viewBox="0 0 200 36" preserveAspectRatio="none">
+            <polyline fill="rgba(26,125,86,0.18)" stroke="none"
+                      points="0,10 28,12 56,15 84,14 112,17 140,18 168,19 200,21 200,36 0,36"/>
+            <polyline fill="none" stroke="var(--success)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
+                      points="0,10 28,12 56,15 84,14 112,17 140,18 168,19 200,21"/>
+            <circle cx="200" cy="21" r="3.5" fill="var(--success)" stroke="#fff" stroke-width="1.5"/>
+          </svg>
+          <span class="pt-now">+2,1<small>nå</small></span>
+          <span class="pt-delta up"><i data-lucide="arrow-down"></i>−2,7° tilt</span>
+        </div>
+
+        <!-- Smash factor -->
+        <div class="pt-row">
+          <span class="pt-name">Smash factor</span>
+          <span class="pt-prev">1,35<small>8 økter siden</small></span>
+          <svg class="pt-spark-large" viewBox="0 0 200 36" preserveAspectRatio="none">
+            <polyline fill="rgba(94,92,87,0.14)" stroke="none"
+                      points="0,16 28,15 56,15 84,16 112,14 140,15 168,14 200,15 200,36 0,36"/>
+            <polyline fill="none" stroke="var(--warm-gray)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
+                      points="0,16 28,15 56,15 84,16 112,14 140,15 168,14 200,15"/>
+            <circle cx="200" cy="15" r="3.5" fill="var(--warm-gray)" stroke="#fff" stroke-width="1.5"/>
+          </svg>
+          <span class="pt-now">1,36<small>nå</small></span>
+          <span class="pt-delta flat"><i data-lucide="minus"></i>±0,01</span>
+        </div>
+
+        <!-- Side total -->
+        <div class="pt-row">
+          <span class="pt-name">Sidemiss<small>yd</small></span>
+          <span class="pt-prev">+6,2<small>8 økter siden</small></span>
+          <svg class="pt-spark-large" viewBox="0 0 200 36" preserveAspectRatio="none">
+            <polyline fill="rgba(26,125,86,0.18)" stroke="none"
+                      points="0,12 28,15 56,14 84,17 112,16 140,19 168,18 200,21 200,36 0,36"/>
+            <polyline fill="none" stroke="var(--success)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
+                      points="0,12 28,15 56,14 84,17 112,16 140,19 168,18 200,21"/>
+            <circle cx="200" cy="21" r="3.5" fill="var(--success)" stroke="#fff" stroke-width="1.5"/>
+          </svg>
+          <span class="pt-now">+2,0<small>nå</small></span>
+          <span class="pt-delta up"><i data-lucide="arrow-down"></i>−4,2 yd</span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script>lucide.createIcons();</script>
+
+  <script>
+  /* ============================================================
+     R30 · TRACKMAN — club grid now drives the detail panel.
+     Was: detail frozen on 7-jern; clicking a club did nothing.
+     Carry-raden er ekte (lest fra køllens egen sparkline);
+     øvrige biomek-parametere er seedede mock (stabile per kølle).
+     ============================================================ */
+  (function () {
+    var cards = Array.prototype.slice.call(document.querySelectorAll('.club-card'));
+    var detail = document.querySelector('.detail-section');
+    if (!cards.length || !detail) return;
+    var badge = detail.querySelector('.badge');
+    var head = detail.querySelector('.section-head');
+    var rows = detail.querySelector('.param-trends');
+
+    function hash(s){var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
+    function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;var t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+    function nb(n,d){return (d?n.toFixed(d):String(Math.round(n))).replace('.',',');}
+
+    /* build an 8-pt spark from a direction; returns {line, fill} point-strings */
+    function spark(dir, r){
+      var pts=[], y=dir==='down'?9:(dir==='up'?27:16);
+      for(var i=0;i<8;i++){
+        var x=Math.round(i*200/7);
+        pts.push(x+','+Math.max(5,Math.min(31,Math.round(y))));
+        var drift=dir==='up'?-2.4:(dir==='down'?2.4:0);
+        y+=drift+(r()*3-1.5);
+      }
+      return {line:pts.join(' '), fill:pts.join(' ')+' 200,36 0,36'};
+    }
+
+    /* read carry trend straight from the card's own sparkline (truthful) */
+    function carryFromCard(card){
+      var poly=card.querySelector('polyline');
+      var p=(poly.getAttribute('points')||'').trim().split(/\s+/).map(function(s){return s.split(',').map(Number);});
+      var ys=p.map(function(a){return a[1];});
+      return {ys:ys};
+    }
+
+    function ptRow(name, unit, prev, now, delta, good, arrow, color){
+      var s = spark(good==='up'?'up':(good==='down'?'down':'flat'), rng(hash(name+now)));
+      var stroke = color || (good==='up'||good==='down'?'var(--success)':'var(--warm-gray)');
+      var fillC = good==='flat' ? 'rgba(94,92,87,0.14)' : 'rgba(26,125,86,0.18)';
+      return '<div class="pt-row">'+
+        '<span class="pt-name">'+name+(unit?'<small>'+unit+'</small>':'')+'</span>'+
+        '<span class="pt-prev">'+prev+'<small>8 økter siden</small></span>'+
+        '<svg class="pt-spark-large" viewBox="0 0 200 36" preserveAspectRatio="none">'+
+          '<polyline fill="'+fillC+'" stroke="none" points="'+s.fill+'"/>'+
+          '<polyline fill="none" stroke="'+stroke+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="'+s.line+'"/>'+
+          '<circle cx="200" cy="'+s.line.split(' ').pop().split(',')[1]+'" r="3.5" fill="'+stroke+'" stroke="#fff" stroke-width="1.5"/>'+
+        '</svg>'+
+        '<span class="pt-now">'+now+'<small>nå</small></span>'+
+        '<span class="pt-delta '+good+'"><i data-lucide="'+arrow+'"></i>'+delta+'</span>'+
+      '</div>';
+    }
+
+    function render(card){
+      var name=card.querySelector('.cc-name').textContent.trim();
+      var nowYd=parseInt(card.querySelector('.cc-now').textContent,10);
+      var dEl=card.querySelector('.cc-delta');
+      var dir=dEl.classList.contains('up')?'up':(dEl.classList.contains('down')?'down':'flat');
+      var dNum=parseInt(dEl.textContent.replace('±','').replace('−','-'),10)||0;
+      var r=rng(hash(name));
+
+      badge.textContent=name.toUpperCase();
+      var drift=head.querySelector('.drift-note');
+      if(dir==='down'){ if(!drift){drift=document.createElement('span');drift.className='drift-note';head.querySelector('.sh-club').appendChild(drift);} drift.innerHTML='<i data-lucide="trending-down"></i>DRIFT · '+Math.abs(dNum)+' yd ned over 8 økter'; }
+      else if(drift){ drift.remove(); }
+
+      /* Carry — real, from card */
+      var carryPrev=nowYd-dNum;
+      var carryGood=dir==='up'?'up':(dir==='down'?'down':'flat');
+      var carryArrow=dir==='up'?'arrow-up':(dir==='down'?'arrow-down':'minus');
+      var carryDelta=(dNum>0?'+':'')+(dNum===0?'±0':nb(dNum))+' yd';
+      var html=ptRow('Carry','yd',carryPrev,nowYd,carryDelta,carryGood,carryArrow);
+
+      /* derived biomech (seeded mock, stable per club) */
+      var bs=118+r()*30, bsd=dir==='up'?1+r()*1.5:(dir==='down'?-(0.5+r()):0);
+      html+=ptRow('Ballhastighet','mph',nb(bs-bsd,1),nb(bs,1),(bsd>0?'+':'')+(Math.abs(bsd)<0.05?'±0':nb(bsd,1)),bsd>0.1?'up':(bsd<-0.1?'down':'flat'),bsd>0.1?'arrow-up':(bsd<-0.1?'arrow-down':'minus'));
+      var sp=5500+Math.round(r()*2000/50)*50, spd=dir==='up'?-(100+Math.round(r()*4)*50):(dir==='down'?(100+Math.round(r()*4)*50):0);
+      html+=ptRow('Spinnrate','rpm · lavere = bedre',nb(sp-spd).replace(/\B(?=(\d{3})+(?!\d))/g,' '),nb(sp).replace(/\B(?=(\d{3})+(?!\d))/g,' '),(spd>0?'+':'')+(spd===0?'±0':nb(spd)),spd<0?'up':(spd>0?'down':'flat'),spd<0?'arrow-down':(spd>0?'arrow-up':'minus'));
+      var sm=1.33+r()*0.15, smd=dir==='up'?0.01+r()*0.02:0;
+      html+=ptRow('Smash factor','',nb(sm-smd,2),nb(sm,2),(smd>0.005?'+':'±')+(smd>0.005?nb(smd,2):'0,01'),smd>0.008?'up':'flat',smd>0.008?'arrow-up':'minus');
+      var side=1.5+r()*6, sided=dir==='up'?-(1+r()*3):(dir==='down'?(1+r()*2):0);
+      html+=ptRow('Sidemiss','yd',(sided<0?'+':'+')+nb(side-sided,1),'+'+nb(side,1),(sided<0?'−':'+')+nb(Math.abs(sided),1)+' yd',sided<0?'up':(sided>0?'down':'flat'),sided<0?'arrow-down':(sided>0?'arrow-up':'minus'));
+
+      rows.innerHTML=html;
+      head.querySelector('.sh-meta') && (head.querySelector('.sh-meta').textContent='Carry ekte · øvrige illustrative · 25. mar → 22. mai');
+      lucide.createIcons();
+    }
+
+    cards.forEach(function(card){
+      var dEl=card.querySelector('.cc-delta');
+      if(dEl && dEl.classList.contains('down') && !card.querySelector('.cc-flag')){
+        var f=document.createElement('span'); f.className='cc-flag'; f.textContent='drift'; card.appendChild(f);
+      }
+      card.setAttribute('role','button'); card.setAttribute('tabindex','0');
+      function pick(){ cards.forEach(function(c){c.classList.remove('is-active');}); card.classList.add('is-active'); render(card); }
+      card.addEventListener('click', pick);
+      card.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){e.preventDefault();pick();} });
+    });
+
+    var init=document.querySelector('.club-card.is-active')||cards[0];
+    render(init);
+  })();
+  </script>
+</div></body></html>

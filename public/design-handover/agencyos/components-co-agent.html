@@ -1,0 +1,1405 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>Co-agent rammeverk · ⌘K-palette, utkast-godkjenning, forvaltning, audit</title>
+<link rel="stylesheet" href="_shared.css">
+<script src="https://unpkg.com/lucide@0.453.0"></script>
+<style>
+  body { width: 1240px; }
+  .card { padding: 28px 32px; }
+
+  /* ===== HEADER ===== */
+  .head { margin-bottom: 24px; }
+  .head .eb {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .head h1 {
+    margin: 8px 0 6px;
+    font-family: var(--font-display); font-weight: 700; font-size: 30px;
+    letter-spacing: -0.025em; line-height: 1.05; color: var(--foreground);
+  }
+  .head h1 em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .head .helper {
+    font-family: var(--font-sans); font-size: 14px; line-height: 1.55;
+    color: var(--muted-foreground); max-width: 800px;
+  }
+
+  /* ===== SECTION HEADERS ===== */
+  .sec {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--foreground);
+    display: flex; align-items: center; gap: 12px;
+    margin: 32px 0 14px;
+  }
+  .sec::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+  .sec .sub {
+    color: var(--muted-foreground); font-weight: 700; letter-spacing: 0.04em;
+  }
+  .sec .count {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    background: var(--secondary); color: var(--muted-foreground);
+    padding: 2px 8px; border-radius: 9999px; letter-spacing: 0.06em;
+  }
+
+  .panel {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; overflow: hidden;
+  }
+  .frule {
+    padding: 12px 20px;
+    background: var(--cream-50);
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted-foreground); line-height: 1.55;
+  }
+  .frule b { color: var(--foreground); font-weight: 700; }
+
+  /* ============================================================ */
+  /* SECTION 1 · ⌘K COMMANDLINE                                    */
+  /* ============================================================ */
+  .stage-dark {
+    background:
+      linear-gradient(180deg, rgba(10,31,23,0.40) 0%, rgba(10,31,23,0.60) 100%),
+      repeating-linear-gradient(135deg, transparent 0 18px, rgba(255,255,255,0.03) 18px 36px),
+      var(--forest-700);
+    padding: 36px 28px;
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .stage-dark::before {
+    content: ""; position: absolute;
+    right: -50px; top: -50px;
+    width: 200px; height: 200px; border-radius: 9999px;
+    background: var(--accent); opacity: 0.10;
+    filter: blur(60px);
+  }
+  .stage-dark .ag-chrome {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 22px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: rgba(255,255,255,0.55); letter-spacing: 0.10em;
+  }
+  .stage-dark .ag-chrome .dot {
+    width: 8px; height: 8px; border-radius: 9999px; background: var(--accent);
+    box-shadow: 0 0 0 4px rgba(209,248,67,0.20);
+  }
+  .stage-dark .ag-chrome b { color: var(--accent); font-weight: 800; }
+  .stage-dark .ag-chrome .sep { color: rgba(255,255,255,0.25); margin: 0 4px; }
+
+  .palette {
+    width: 720px; margin: 0 auto;
+    background: var(--card);
+    border: 1px solid var(--cream-300);
+    border-radius: 14px;
+    box-shadow: 0 24px 56px rgba(10,31,23,0.50), 0 4px 12px rgba(10,31,23,0.30);
+    overflow: hidden;
+  }
+  .palette .pal-top {
+    display: grid; grid-template-columns: 24px 1fr auto auto;
+    align-items: center; gap: 10px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .palette .pal-top .ic {
+    width: 18px; height: 18px; color: var(--muted-foreground);
+  }
+  .palette .pal-top .query {
+    font-family: var(--font-sans); font-size: 17px; font-weight: 500;
+    color: var(--foreground); letter-spacing: -0.005em;
+    line-height: 1.2;
+  }
+  .palette .pal-top .query .caret {
+    width: 2px; height: 18px; background: var(--primary);
+    display: inline-block; vertical-align: text-bottom;
+    margin-left: 1px;
+    animation: blink 1.1s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+  .palette .pal-top .mic {
+    width: 30px; height: 30px;
+    border-radius: 9999px;
+    background: var(--accent); color: var(--primary);
+    display: inline-flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .palette .pal-top .mic i { width: 14px; height: 14px; }
+  .palette .pal-top .mic::after {
+    content: ""; position: absolute; inset: -3px;
+    border-radius: 9999px; border: 1.5px solid var(--accent);
+    opacity: 0.5;
+    animation: ringp 1.4s ease-out infinite;
+  }
+  @keyframes ringp {
+    0% { transform: scale(1); opacity: 0.55; }
+    100% { transform: scale(1.45); opacity: 0; }
+  }
+  .palette .pal-top .kbd {
+    display: inline-flex; gap: 4px;
+  }
+  .palette .pal-top .kbd .k {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    background: var(--secondary); border: 1px solid var(--border);
+    padding: 2px 6px; border-radius: 4px;
+  }
+
+  /* interpretation strip */
+  .interp {
+    padding: 12px 18px;
+    background: rgba(209,248,67,0.16);
+    border-bottom: 1px solid var(--border);
+    display: grid; grid-template-columns: 20px 1fr auto;
+    gap: 12px; align-items: center;
+  }
+  .interp i { width: 16px; height: 16px; color: var(--primary); }
+  .interp .t {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--primary); margin-bottom: 3px;
+  }
+  .interp .b {
+    font-size: 13px; color: var(--foreground); line-height: 1.4; letter-spacing: -0.005em;
+  }
+  .interp .b b { font-weight: 700; }
+  .interp .conf {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    color: var(--primary); padding: 3px 8px;
+    background: var(--accent); border-radius: 9999px;
+    letter-spacing: 0.06em;
+  }
+
+  /* sections */
+  .pal-sec {
+    padding: 10px 0;
+  }
+  .pal-sec .sh {
+    padding: 4px 18px 6px;
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .pal-sec .sh .badge-r {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    padding: 1px 6px; border-radius: 3px;
+    letter-spacing: 0.06em;
+  }
+  .pal-sec .sh .badge-r.in { background: rgba(0,88,64,0.10); color: var(--primary); }
+  .pal-sec .sh .badge-r.out { background: rgba(184,133,42,0.14); color: var(--warning-foreground); }
+  .pal-sec .sh .count {
+    margin-left: auto;
+    color: var(--muted-foreground); font-weight: 700; letter-spacing: 0.04em;
+  }
+
+  .pal-row {
+    display: grid; grid-template-columns: 28px 1fr auto auto;
+    gap: 12px; align-items: center;
+    padding: 8px 18px;
+    cursor: pointer;
+  }
+  .pal-row:hover { background: var(--cream-50); }
+  .pal-row.sel {
+    background: rgba(0,88,64,0.06);
+    border-left: 3px solid var(--accent);
+    padding-left: 15px;
+  }
+  .pal-row .ico {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: var(--cream-50); border: 1px solid var(--border);
+    color: var(--primary);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .pal-row .ico.out { background: rgba(184,133,42,0.14); color: var(--warning-foreground); border-color: transparent; }
+  .pal-row .ico i { width: 14px; height: 14px; }
+  .pal-row .nm {
+    display: flex; flex-direction: column; gap: 1px; min-width: 0;
+  }
+  .pal-row .nm .t {
+    font-family: var(--font-sans); font-size: 13px; font-weight: 600;
+    color: var(--foreground); letter-spacing: -0.005em;
+    line-height: 1.3;
+  }
+  .pal-row .nm .t b { font-weight: 800; color: var(--primary); }
+  .pal-row .nm .sub {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.02em;
+  }
+  .pal-row .meta {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .pal-row .ret {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    padding: 2px 6px; border-radius: 3px;
+    background: var(--secondary); color: var(--muted-foreground);
+    letter-spacing: 0.06em;
+  }
+  .pal-row.sel .ret {
+    background: var(--primary); color: var(--accent);
+  }
+
+  .pal-foot {
+    padding: 10px 18px;
+    background: var(--cream-50);
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; gap: 14px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .pal-foot .li { display: inline-flex; gap: 5px; align-items: center; }
+  .pal-foot .k {
+    font-size: 9px; font-weight: 800;
+    background: var(--card); border: 1px solid var(--border);
+    padding: 1px 5px; border-radius: 3px;
+    color: var(--foreground);
+  }
+  .pal-foot .right { margin-left: auto; }
+
+  /* ============================================================ */
+  /* SECTION 2 · UTKAST → GODKJENNING                              */
+  /* ============================================================ */
+  .draft {
+    display: grid; grid-template-columns: 380px 1fr 300px;
+  }
+  .draft-meta {
+    padding: 22px 24px;
+    border-right: 1px solid var(--border);
+    background: var(--cream-50);
+  }
+  .draft-meta .at {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground); margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .draft-meta .at .dot {
+    width: 7px; height: 7px; border-radius: 9999px; background: var(--accent);
+    box-shadow: 0 0 0 3px rgba(209,248,67,0.30);
+  }
+  .draft-meta h3 {
+    margin: 0 0 8px;
+    font-family: var(--font-display); font-weight: 700; font-size: 22px;
+    letter-spacing: -0.02em; line-height: 1.15;
+  }
+  .draft-meta h3 em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .draft-meta p {
+    margin: 0;
+    font-size: 13px; color: var(--muted-foreground); line-height: 1.55;
+    letter-spacing: -0.005em;
+  }
+
+  .src-block {
+    margin-top: 18px;
+    padding: 14px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  .src-block .sl {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground); margin-bottom: 8px;
+  }
+  .src-block .src-row {
+    display: grid; grid-template-columns: 22px 1fr auto;
+    gap: 10px; align-items: center;
+    padding: 7px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .src-block .src-row:last-child { border-bottom: 0; }
+  .src-block .src-row .ic {
+    width: 22px; height: 22px; border-radius: 6px;
+    background: var(--cream-50); color: var(--primary);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .src-block .src-row .ic i { width: 12px; height: 12px; }
+  .src-block .src-row .nm {
+    font-size: 12px; font-weight: 600; color: var(--foreground);
+    letter-spacing: -0.005em; line-height: 1.3;
+  }
+  .src-block .src-row .nm small {
+    display: block;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.02em; margin-top: 1px;
+  }
+  .src-block .src-row .w {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    color: var(--primary); letter-spacing: 0.04em;
+  }
+
+  /* center diff */
+  .draft-body {
+    padding: 22px 28px;
+    overflow: hidden;
+  }
+  .doc-head {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 16px;
+  }
+  .doc-head .ts {
+    display: inline-flex; gap: 4px;
+  }
+  .doc-head .ts .t {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    padding: 3px 8px; border-radius: 9999px;
+    background: var(--cream-50); color: var(--muted-foreground);
+    border: 1px solid var(--border);
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .doc-head .ts .t.on {
+    background: var(--primary); color: var(--accent); border-color: var(--primary);
+  }
+  .doc-head .vers {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .doc-head .vers b { color: var(--foreground); font-weight: 800; }
+
+  .doc {
+    font-family: var(--font-sans); font-size: 14px; line-height: 1.65;
+    color: var(--foreground);
+    letter-spacing: -0.005em;
+  }
+  .doc h4 {
+    margin: 0 0 4px;
+    font-family: var(--font-display); font-weight: 700; font-size: 18px;
+    letter-spacing: -0.02em;
+  }
+  .doc .week-grid {
+    display: grid; grid-template-columns: 60px 1fr;
+    gap: 0; margin-top: 8px;
+    border: 1px solid var(--border);
+    border-radius: 10px; overflow: hidden;
+  }
+  .doc .week-grid .day {
+    border-bottom: 1px solid var(--border);
+    padding: 10px 12px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    color: var(--muted-foreground);
+    border-right: 1px solid var(--border);
+    background: var(--cream-50);
+  }
+  .doc .week-grid .day:last-of-type { border-bottom: 0; }
+  .doc .week-grid .sess {
+    border-bottom: 1px solid var(--border);
+    padding: 10px 12px;
+    font-size: 13px; line-height: 1.4; color: var(--foreground);
+  }
+  .doc .week-grid .sess:last-of-type { border-bottom: 0; }
+  .doc .week-grid .sess b { font-weight: 700; }
+  .doc .week-grid .sess small {
+    display: block;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.02em; margin-top: 2px;
+  }
+  .doc .ins,
+  .doc .del {
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+  .doc .ins {
+    background: rgba(26,125,86,0.14);
+    color: var(--success);
+  }
+  .doc .del {
+    background: rgba(163,45,45,0.10);
+    color: var(--destructive);
+    text-decoration: line-through;
+  }
+
+  .diff-summary {
+    margin-top: 16px;
+    padding: 12px 14px;
+    background: var(--cream-50); border-radius: 10px;
+    display: grid; grid-template-columns: 22px 1fr;
+    gap: 10px; align-items: flex-start;
+  }
+  .diff-summary i { width: 16px; height: 16px; color: var(--primary); margin-top: 2px; }
+  .diff-summary .l {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--primary); margin-bottom: 3px;
+  }
+  .diff-summary .b {
+    font-size: 12px; line-height: 1.5; color: var(--foreground);
+  }
+  .diff-summary .b b { font-weight: 700; }
+  .diff-summary .b .ins-l { color: var(--success); font-weight: 700; }
+  .diff-summary .b .del-l { color: var(--destructive); font-weight: 700; }
+
+  /* right column · actions */
+  .draft-actions {
+    padding: 22px 24px;
+    border-left: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .draft-actions .agent-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px;
+    background: var(--primary); color: var(--cream-100);
+    border-radius: 10px;
+  }
+  .draft-actions .agent-row .av {
+    width: 28px; height: 28px; border-radius: 9999px;
+    background: var(--accent); color: var(--primary);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 12px; font-weight: 700;
+  }
+  .draft-actions .agent-row .who {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    color: var(--accent);
+  }
+  .draft-actions .agent-row .who b { color: var(--cream-100); font-weight: 800; }
+  .draft-actions .agent-row .who small {
+    display: block;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: rgba(255,255,255,0.65); letter-spacing: 0.04em;
+    margin-top: 1px;
+  }
+  .draft-actions .timing {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 12px; border-radius: 8px;
+    background: var(--cream-50); border: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .draft-actions .timing i { width: 12px; height: 12px; }
+  .draft-actions .timing b { color: var(--foreground); font-weight: 800; }
+
+  .draft-actions .btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    height: 44px; border-radius: 10px;
+    font-family: var(--font-sans); font-size: 14px; font-weight: 700;
+    letter-spacing: -0.005em;
+    cursor: pointer;
+  }
+  .draft-actions .btn i { width: 14px; height: 14px; }
+  .draft-actions .btn.primary {
+    background: var(--primary); color: var(--accent);
+  }
+  .draft-actions .btn.edit {
+    background: var(--card); color: var(--foreground);
+    border: 1px solid var(--border);
+  }
+  .draft-actions .btn.reject {
+    background: var(--card); color: var(--destructive);
+    border: 1px solid rgba(163,45,45,0.20);
+  }
+
+  .draft-actions .confidence {
+    margin-top: 4px;
+    padding: 12px;
+    background: var(--cream-50); border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .draft-actions .confidence .l {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground); margin-bottom: 8px;
+  }
+  .draft-actions .confidence .meter {
+    height: 6px; border-radius: 3px;
+    background: var(--cream-200); position: relative; overflow: hidden;
+    margin-bottom: 6px;
+  }
+  .draft-actions .confidence .meter .f {
+    position: absolute; left: 0; top: 0; bottom: 0;
+    background: var(--primary); border-radius: 3px;
+  }
+  .draft-actions .confidence .ln {
+    display: flex; align-items: baseline; gap: 5px;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--foreground); letter-spacing: 0.02em;
+  }
+  .draft-actions .confidence .ln b {
+    font-size: 18px; font-weight: 800; letter-spacing: -0.02em;
+    font-feature-settings: "tnum","zero";
+  }
+
+  /* ============================================================ */
+  /* SECTION 3 · AGENT FORVALTNING TABLE                           */
+  /* ============================================================ */
+  table.agents {
+    width: 100%; border-collapse: collapse; table-layout: fixed;
+    font-family: var(--font-sans);
+  }
+  table.agents thead th {
+    background: var(--cream-50);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 12px; text-align: left;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    vertical-align: middle;
+  }
+  table.agents th.c { text-align: center; }
+  table.agents .col-ag { width: 250px; }
+  table.agents .col-st { width: 110px; }
+  table.agents .col-mt { width: 130px; }
+  table.agents .col-acc { width: 130px; }
+  table.agents .col-last { width: auto; }
+  table.agents .col-run { width: 80px; }
+  table.agents .col-tog { width: 70px; }
+
+  table.agents tbody td {
+    padding: 11px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    vertical-align: middle;
+    letter-spacing: -0.005em;
+  }
+  table.agents tbody tr:last-child td { border-bottom: 0; }
+  table.agents tbody tr:hover { background: rgba(0,88,64,0.025); }
+
+  .agent-name {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .agent-name .av {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: var(--primary); color: var(--accent);
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .agent-name .av i { width: 14px; height: 14px; }
+  .agent-name .nm {
+    display: flex; flex-direction: column; line-height: 1.25;
+  }
+  .agent-name .nm b { font-weight: 700; font-size: 13px; color: var(--foreground); }
+  .agent-name .nm small {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em; margin-top: 1px;
+  }
+
+  .ag-st {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    padding: 3px 8px; border-radius: 4px;
+  }
+  .ag-st.live    { background: rgba(26,125,86,0.10); color: var(--success); }
+  .ag-st.draft   { background: rgba(184,133,42,0.14); color: var(--warning-foreground); }
+  .ag-st.paused  { background: var(--secondary); color: var(--muted-foreground); }
+  .ag-st.review  { background: rgba(37,99,235,0.10); color: var(--info); }
+  .ag-st .d {
+    width: 6px; height: 6px; border-radius: 9999px;
+  }
+  .ag-st.live .d   { background: var(--success); box-shadow: 0 0 0 2px rgba(26,125,86,0.20); }
+  .ag-st.draft .d  { background: var(--warning); }
+  .ag-st.paused .d { background: var(--muted-foreground); }
+  .ag-st.review .d { background: var(--info); }
+
+  .mat {
+    display: flex; align-items: center; gap: 6px;
+  }
+  .mat-bar {
+    display: flex; gap: 2px;
+  }
+  .mat-bar .b {
+    width: 12px; height: 14px;
+    border: 1.5px solid var(--cream-300);
+    border-radius: 2px;
+  }
+  .mat-bar .b.on { background: var(--primary); border-color: var(--primary); }
+  .mat .lbl {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    color: var(--foreground); letter-spacing: 0.04em;
+  }
+  .mat .lbl small {
+    display: block;
+    font-size: 8px; color: var(--muted-foreground); font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.10em; margin-top: 1px;
+  }
+
+  .acc-bar {
+    display: flex; flex-direction: column; gap: 3px; min-width: 100px;
+  }
+  .acc-bar .top {
+    display: flex; align-items: baseline; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 800;
+    color: var(--foreground); letter-spacing: 0.02em;
+    font-feature-settings: "tnum","zero";
+  }
+  .acc-bar .top small {
+    font-size: 9px; font-weight: 700; color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .acc-bar .track {
+    height: 5px; border-radius: 3px; background: var(--cream-200);
+    position: relative; overflow: hidden;
+  }
+  .acc-bar .track .f { position: absolute; top:0; left:0; bottom:0; border-radius: 3px; }
+  .acc-bar .track .f.ok { background: var(--success); }
+  .acc-bar .track .f.warn { background: var(--warning); }
+  .acc-bar .track .f.bad { background: var(--destructive); }
+
+  .last-action {
+    font-family: var(--font-sans); font-size: 12px; color: var(--foreground);
+    line-height: 1.4; letter-spacing: -0.005em;
+  }
+  .last-action small {
+    display: block;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em; margin-top: 2px;
+  }
+  .last-action b { font-weight: 700; }
+
+  .runs {
+    font-family: var(--font-mono); font-size: 14px; font-weight: 800;
+    letter-spacing: -0.015em; color: var(--foreground);
+    font-feature-settings: "tnum","zero";
+  }
+  .runs small {
+    display: block;
+    font-size: 8px; font-weight: 700; color: var(--muted-foreground);
+    text-transform: uppercase; letter-spacing: 0.10em; margin-top: 1px;
+  }
+
+  /* toggle switch */
+  .tog {
+    position: relative; width: 36px; height: 20px;
+    background: var(--primary); border-radius: 9999px;
+    cursor: pointer;
+  }
+  .tog.off { background: var(--cream-300); }
+  .tog::after {
+    content: ""; position: absolute;
+    top: 2px; left: 18px;
+    width: 16px; height: 16px; border-radius: 9999px;
+    background: var(--accent);
+    transition: left .15s ease;
+  }
+  .tog.off::after { left: 2px; background: var(--card); }
+
+  /* table header bar with summary */
+  .ahead {
+    display: grid; grid-template-columns: 1fr auto;
+    align-items: center; gap: 18px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .ahead .tt {
+    font-family: var(--font-display); font-weight: 700; font-size: 18px;
+    letter-spacing: -0.02em;
+  }
+  .ahead .summary {
+    display: flex; gap: 0;
+  }
+  .ahead .summary .s {
+    padding: 0 16px;
+    border-left: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .ahead .summary .s:first-child { border-left: 0; padding-left: 0; }
+  .ahead .summary .s .l {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    color: var(--muted-foreground);
+  }
+  .ahead .summary .s .v {
+    font-family: var(--font-mono); font-weight: 800; font-size: 20px;
+    letter-spacing: -0.02em; color: var(--foreground);
+    font-feature-settings: "tnum","zero";
+  }
+  .ahead .summary .s .v.live { color: var(--success); }
+  .ahead .summary .s .v.draft { color: var(--warning); }
+
+  /* ============================================================ */
+  /* SECTION 4 · AUDIT LOG                                         */
+  /* ============================================================ */
+  .audit-head {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: grid; grid-template-columns: 1fr auto auto;
+    gap: 14px; align-items: center;
+  }
+  .audit-head .tt {
+    font-family: var(--font-display); font-weight: 700; font-size: 18px;
+    letter-spacing: -0.02em;
+  }
+  .audit-head .pills {
+    display: inline-flex; gap: 6px;
+  }
+  .audit-head .pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    height: 26px; padding: 0 10px;
+    border-radius: 9999px;
+    background: var(--card); border: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--foreground); letter-spacing: 0.06em;
+  }
+  .audit-head .pill.on { background: var(--primary); color: var(--accent); border-color: var(--primary); }
+  .audit-head .pill .d {
+    width: 7px; height: 7px; border-radius: 9999px;
+  }
+  .audit-head .pill .d.ag { background: var(--accent); }
+  .audit-head .pill.on .d.ag { background: var(--accent); }
+  .audit-head .pill .d.hu { background: var(--info); }
+  .audit-head .search {
+    display: inline-flex; align-items: center; gap: 6px;
+    height: 28px; padding: 0 10px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 9999px;
+    min-width: 200px;
+    font-family: var(--font-mono); font-size: 11px; color: var(--muted-foreground);
+    letter-spacing: 0.04em;
+  }
+  .audit-head .search i { width: 12px; height: 12px; }
+  .audit-head .search .kbd {
+    margin-left: auto;
+    font-size: 9px; background: var(--secondary); padding: 1px 5px; border-radius: 3px;
+    color: var(--foreground); font-weight: 700;
+  }
+
+  .alog {
+    display: grid;
+    grid-template-columns: 90px 30px 240px 1fr 100px 80px;
+    gap: 0;
+  }
+  .alog .ah {
+    background: var(--cream-50);
+    border-bottom: 1px solid var(--border);
+    padding: 9px 12px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .alog .ar {
+    padding: 11px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px; color: var(--foreground);
+    letter-spacing: -0.005em;
+    display: flex; align-items: center;
+    line-height: 1.4;
+  }
+  .alog .row-end { border-bottom: 1px solid var(--border); }
+
+  .alog .ts {
+    font-family: var(--font-mono); font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.02em;
+    font-size: 11px;
+    font-feature-settings: "tnum","zero";
+  }
+  .alog .ts b { color: var(--foreground); font-weight: 800; }
+
+  .alog .actor-dot {
+    padding: 11px 0 11px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center;
+  }
+  .alog .actor-dot .d {
+    width: 8px; height: 8px; border-radius: 9999px;
+  }
+  .alog .actor-dot .d.ag { background: var(--accent); box-shadow: 0 0 0 2px rgba(209,248,67,0.30); }
+  .alog .actor-dot .d.hu { background: var(--info); }
+
+  .alog .actor {
+    font-family: var(--font-sans); font-weight: 600;
+  }
+  .alog .actor small {
+    display: block;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em; margin-top: 2px;
+  }
+  .alog .actor b { font-weight: 700; }
+
+  .alog .what b { font-weight: 700; }
+  .alog .what .tag {
+    display: inline-block; padding: 1px 6px; border-radius: 3px;
+    background: var(--secondary); color: var(--foreground);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+  .alog .what .tag.ok { background: rgba(26,125,86,0.10); color: var(--success); }
+  .alog .what .tag.warn { background: rgba(184,133,42,0.14); color: var(--warning-foreground); }
+  .alog .what .tag.bad { background: rgba(163,45,45,0.10); color: var(--destructive); }
+
+  .alog .outcome {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    padding: 2px 7px; border-radius: 4px;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    display: inline-block;
+  }
+  .alog .outcome.ok    { background: rgba(26,125,86,0.10); color: var(--success); }
+  .alog .outcome.appr  { background: rgba(0,88,64,0.10); color: var(--primary); }
+  .alog .outcome.rej   { background: rgba(163,45,45,0.10); color: var(--destructive); }
+  .alog .outcome.skip  { background: var(--secondary); color: var(--muted-foreground); }
+
+  .alog .open {
+    width: 26px; height: 26px; border-radius: 6px;
+    border: 1px solid var(--border); background: var(--card);
+    color: var(--muted-foreground);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .alog .open i { width: 13px; height: 13px; }
+
+  /* ===== Final principles footer ===== */
+  .rules {
+    margin-top: 28px; padding: 18px 20px;
+    background: var(--secondary); border-radius: 12px;
+    font-family: var(--font-mono); font-size: 12px;
+    color: var(--muted-foreground); line-height: 1.7;
+  }
+  .rules p { margin: 0; }
+  .rules p + p { margin-top: 8px; }
+  .rules b { color: var(--foreground); font-weight: 700; }
+
+  /* prefers-reduced-motion — AK-spec krever det. Stenger caret-blink + mic-ring. */
+  @media (prefers-reduced-motion: reduce) {
+    .palette .pal-top .query .caret { animation: none; }
+    .palette .pal-top .mic::after { animation: none; opacity: 0; }
+  }
+
+</style></head>
+<body><div class="card">
+
+  <!-- ===================== HEADER ===================== -->
+  <div class="head">
+    <span class="eb">B3 · CO-AGENT RAMMEVERK</span>
+    <h1>Rammen er klar — <em>logikken</em> kommer senere.</h1>
+    <p class="helper">
+      Fire primitiver for AI-assistert coachen i AgencyOS: kommandolinje med tale-inngang, utkast-til-godkjenning
+      med kildebruk og diff, forvaltning av agenter med modenhet/treffsikkerhet, og audit-log som likestiller agent
+      og menneske. Vi designer mønsteret nå — koblingen til ekte modeller skjer i fase 3.
+    </p>
+  </div>
+
+  <!-- ===================== SECTION 1 · ⌘K palette ===================== -->
+  <div class="sec">
+    1 · Co-agent kommandolinje
+    <span class="sub">⌘K · naturlig språk · tale-inngang · interne vs utgående handlinger</span>
+    <span class="count">PALETTE</span>
+  </div>
+
+  <div class="stage-dark">
+    <div class="ag-chrome">
+      <span class="dot"></span>
+      AGENCYOS <span class="sep">·</span> CO-AGENT <b>v0.4 · alfa</b> <span class="sep">·</span> COACH FREDRIK SOLBERG
+    </div>
+
+    <div class="palette">
+      <div class="pal-top">
+        <i class="ic" data-lucide="sparkles"></i>
+        <div class="query">bestill tee-time for markus på oslo gk 12. juni etter <span class="caret"></span></div>
+        <div class="mic"><i data-lucide="mic"></i></div>
+        <div class="kbd"><span class="k">⌘</span><span class="k">K</span></div>
+      </div>
+
+      <div class="interp">
+        <i data-lucide="brain"></i>
+        <div>
+          <div class="t">FORSTOD</div>
+          <div class="b">Booke <b>Oslo GK</b> for <b>Markus Berg</b> · <b>12. juni · etter 15:00</b> · vil sjekke ledige slots → utkast for godkjenning</div>
+        </div>
+        <span class="conf">92 %</span>
+      </div>
+
+      <div class="pal-sec">
+        <div class="sh">
+          <span>FORESLÅTT HANDLING</span>
+          <span class="badge-r out">UTGÅENDE · KREVER GODKJENNING</span>
+          <span class="count">1 treff</span>
+        </div>
+
+        <div class="pal-row sel">
+          <span class="ico out"><i data-lucide="calendar-plus"></i></span>
+          <div class="nm">
+            <span class="t"><b>Bestill tee-time</b> · Oslo GK · 12. juni etter 15:00 · for Markus Berg</span>
+            <span class="sub">3 ledige slots: 15:30 · 16:00 · 16:50 · finn beste mot plan</span>
+          </div>
+          <span class="meta">UTGÅENDE</span>
+          <span class="ret">↵</span>
+        </div>
+      </div>
+
+      <div class="pal-sec">
+        <div class="sh">
+          <span>INTERNE TREFF</span>
+          <span class="badge-r in">LAV RISIKO · KAN UTFØRES DIREKTE</span>
+          <span class="count">3 treff</span>
+        </div>
+
+        <div class="pal-row">
+          <span class="ico"><i data-lucide="user"></i></span>
+          <div class="nm">
+            <span class="t">Åpne <b>Markus Berg</b> · spillerpanel</span>
+            <span class="sub">15 år · GFGK · hcp 4,2 · sist logget 2 d siden</span>
+          </div>
+          <span class="meta">NAVIGASJON</span>
+          <span class="ret">→</span>
+        </div>
+
+        <div class="pal-row">
+          <span class="ico"><i data-lucide="calendar"></i></span>
+          <div class="nm">
+            <span class="t">Vis <b>Oslo GK · 12. juni</b> i fasilitets-kalender</span>
+            <span class="sub">3 ledige tider · 2 bookinger for andre spillere</span>
+          </div>
+          <span class="meta">NAVIGASJON</span>
+          <span class="ret">→</span>
+        </div>
+
+        <div class="pal-row">
+          <span class="ico"><i data-lucide="file-text"></i></span>
+          <div class="nm">
+            <span class="t">Notat-mal · <b>«Booking-bekreftelse junior»</b></span>
+            <span class="sub">automatisk inkluder credit-status og foresatt-varsel</span>
+          </div>
+          <span class="meta">MAL</span>
+          <span class="ret">→</span>
+        </div>
+      </div>
+
+      <div class="pal-foot">
+        <span class="li"><span class="k">↑↓</span> naviger</span>
+        <span class="li"><span class="k">↵</span> velg</span>
+        <span class="li"><span class="k">⌘ ↵</span> uten å åpne utkast</span>
+        <span class="li"><span class="k">Esc</span> lukk</span>
+        <span class="right">CO-AGENT · alfa · loggføres alltid</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top: 14px">
+    <div class="frule">
+      <b>Prinsipp.</b> To-spors arkitektur. <b>Interne handlinger</b> (navigasjon, åpne mal, filtrer) utføres umiddelbart.
+      <b>Utgående handlinger</b> (book, send e-post, endre plan) gir alltid et utkast som mennesket godkjenner.
+      Tale-inngang er likestilt med tastatur — mic er fast i palette-toppen, ikke gjemt bak innstilling.
+    </div>
+  </div>
+
+  <!-- ===================== SECTION 2 · UTKAST → GODKJENNING ===================== -->
+  <div class="sec">
+    2 · Utkast-til-godkjenning
+    <span class="sub">kildebruk · diff · primær godkjenn · sekundær rediger · tertiær avvis</span>
+    <span class="count">PLAN-JUSTERING</span>
+  </div>
+
+  <div class="panel">
+    <div class="draft">
+
+      <!-- left: meta + sources -->
+      <div class="draft-meta">
+        <div class="at"><span class="dot"></span>UTKAST FRA <b style="color:var(--foreground);font-weight:800">PLAN-COPILOT</b></div>
+        <h3>Plan-justering for <em>Markus</em>: bytte onsdag fysisk → spillsim</h3>
+        <p>Trigget av compliance-modulen i går: spillsim er 3 økter bak plan, fysisk er 2 over. Co-agent foreslår én enkelt bytte for kommende uke.</p>
+
+        <div class="src-block">
+          <div class="sl">BYGGET PÅ</div>
+          <div class="src-row">
+            <span class="ic"><i data-lucide="file-text"></i></span>
+            <div class="nm">Plan-mal · <b>Innspill-fokus</b><small>AK-second-brain / patterns / 12</small></div>
+            <span class="w">82 %</span>
+          </div>
+          <div class="src-row">
+            <span class="ic"><i data-lucide="layers"></i></span>
+            <div class="nm">Markus' plan v3.2<small>oppdatert 26. mai</small></div>
+            <span class="w">100 %</span>
+          </div>
+          <div class="src-row">
+            <span class="ic"><i data-lucide="line-chart"></i></span>
+            <div class="nm">Compliance-modul · 28 d<small>spillsim 5/8 · fysisk 12/10</small></div>
+            <span class="w">98 %</span>
+          </div>
+          <div class="src-row">
+            <span class="ic"><i data-lucide="calendar"></i></span>
+            <div class="nm">Fasilitets-kalender Oslo GK<small>onsdag 14:00 ledig · spill-sim</small></div>
+            <span class="w">100 %</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- center: diff -->
+      <div class="draft-body">
+        <div class="doc-head">
+          <div class="ts">
+            <span class="t on">Diff-visning</span>
+            <span class="t">Bare ny</span>
+            <span class="t">Bare gammel</span>
+          </div>
+          <span class="vers">v3.2 → <b>v3.3</b> · ENDRING <b>1 ØKT</b> · UKE 23</span>
+        </div>
+
+        <div class="doc">
+          <h4>Uke 23 · plan-utdrag</h4>
+          <div class="week-grid">
+            <div class="day">man</div>
+            <div class="sess"><b>Putting-lab</b> · 40 min · Oslo GK 14:00<small>4 drillpar · gate-3m + stress-stiger</small></div>
+
+            <div class="day">tir</div>
+            <div class="sess"><b>Innspill 50–90 m</b> · 50 min · Oslo GK 14:00<small>Gate-50 · trajectory-window · lag-distance</small></div>
+
+            <div class="day">ons</div>
+            <div class="sess">
+              <span class="del">Fysisk · 60 min · hjem 18:00</span>
+              <span class="ins">Spill-simulering · 40 min · Oslo GK 14:00</span>
+              <small><span class="del">styrkeprogresjon uke 3 · serie A</span> <span class="ins">9 hull press · PR3-stress · innspill-fokus</span></small>
+            </div>
+
+            <div class="day">tor</div>
+            <div class="sess"><b>TrackMan-sesjon</b> · 50 min · Oslo GK 15:30<small>klubb-bytte verifikasjon · driver lie-vinkel</small></div>
+
+            <div class="day">fre</div>
+            <div class="sess"><b>Hviledag</b><small>aktiv pause anbefalt · valgfri spin/turtog</small></div>
+
+            <div class="day">lør</div>
+            <div class="sess"><b>9 hull spill</b> · Holtsmark 10:00<small>med coach Solberg · loggføring full SG</small></div>
+          </div>
+        </div>
+
+        <div class="diff-summary">
+          <i data-lucide="git-pull-request"></i>
+          <div>
+            <div class="l">DIFF · 1 ENDRING</div>
+            <div class="b">
+              <span class="del-l">−1 fysisk-økt</span> (uke ligger 2 over) ·
+              <span class="ins-l">+1 spillsim</span> (uke ligger 3 under) ·
+              ingen andre dager påvirkes · <b>plan-mål uendret</b>.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- right: actions -->
+      <div class="draft-actions">
+        <div class="agent-row">
+          <span class="av">PC</span>
+          <div class="who">
+            FRA <b>PLAN-COPILOT</b>
+            <small>autopilot · alfa</small>
+          </div>
+        </div>
+
+        <div class="timing"><i data-lucide="clock"></i> Generert <b>3 min siden</b> · forfaller <b>i morgen 18:00</b></div>
+
+        <div class="confidence">
+          <div class="l">MODELL-KONFIDENS</div>
+          <div class="meter"><div class="f" style="width: 88%"></div></div>
+          <div class="ln"><b>88 %</b> &middot; konsistent med plan-mal Innspill-fokus &middot; <span style="color:var(--muted-foreground)">2 lignende godkjent uke 21</span></div>
+        </div>
+
+        <div class="btn primary"><i data-lucide="check"></i> Godkjenn og send</div>
+        <div class="btn edit"><i data-lucide="pencil"></i> Rediger først</div>
+        <div class="btn reject"><i data-lucide="x"></i> Avvis</div>
+      </div>
+
+    </div>
+    <div class="frule">
+      <b>Prinsipp.</b> Tre-handlingsstruktur er hellig: <b>Godkjenn</b> (primær), <b>Rediger</b> (sekundær, åpner inline-edit), <b>Avvis</b> (tertiær, med valgfri grunn).
+      Kildebruk er forklart med vekting — agenten "viser arbeidet". Konfidens-score er aldri en knapp; den hjelper coachen velge hvor nøye å lese diff'en.
+    </div>
+  </div>
+
+  <!-- ===================== SECTION 3 · FORVALTNING ===================== -->
+  <div class="sec">
+    3 · Agent-forvaltning
+    <span class="sub">status · modenhet · treffsikkerhet · sist kjørt · av/på</span>
+    <span class="count">6 AGENTER</span>
+  </div>
+
+  <div class="panel">
+    <div class="ahead">
+      <div class="tt">Co-agent fleet</div>
+      <div class="summary">
+        <div class="s"><div class="l">TOTALT</div><div class="v">6</div></div>
+        <div class="s"><div class="l">AKTIVE</div><div class="v live">4</div></div>
+        <div class="s"><div class="l">UTKAST</div><div class="v draft">1</div></div>
+        <div class="s"><div class="l">SNITT TREFF</div><div class="v">81 %</div></div>
+        <div class="s"><div class="l">KJØRT 7 D</div><div class="v">128</div></div>
+      </div>
+    </div>
+
+    <table class="agents">
+      <thead>
+        <tr>
+          <th class="col-ag">Agent</th>
+          <th class="col-st">Status</th>
+          <th class="col-mt">Modenhet</th>
+          <th class="col-acc">Treffsikkerhet</th>
+          <th class="col-last">Sist kjørt</th>
+          <th class="c col-run">Kjøringer / 7 d</th>
+          <th class="c col-tog">Av/på</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr>
+          <td>
+            <div class="agent-name">
+              <span class="av"><i data-lucide="layers"></i></span>
+              <span class="nm"><b>Plan-copilot</b><small>plan-justering · diff</small></span>
+            </div>
+          </td>
+          <td><span class="ag-st live"><span class="d"></span>LIVE</span></td>
+          <td>
+            <div class="mat">
+              <div class="mat-bar"><span class="b on"></span><span class="b on"></span><span class="b on"></span><span class="b"></span></div>
+              <span class="lbl">3/4<small>UTKAST</small></span>
+            </div>
+          </td>
+          <td>
+            <div class="acc-bar">
+              <div class="top"><span>88 %</span><small>n=24</small></div>
+              <div class="track"><div class="f ok" style="width:88%"></div></div>
+            </div>
+          </td>
+          <td><div class="last-action">Foreslo bytte for <b>Markus Berg</b><small>UKE 23 · 3 MIN SIDEN</small></div></td>
+          <td class="c"><div class="runs">24<small>SISTE 7D</small></div></td>
+          <td class="c"><span class="tog"></span></td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="agent-name">
+              <span class="av"><i data-lucide="mail"></i></span>
+              <span class="nm"><b>Innboks-summary</b><small>daglig brief · prioritet</small></span>
+            </div>
+          </td>
+          <td><span class="ag-st live"><span class="d"></span>LIVE</span></td>
+          <td>
+            <div class="mat">
+              <div class="mat-bar"><span class="b on"></span><span class="b on"></span><span class="b on"></span><span class="b on"></span></div>
+              <span class="lbl">4/4<small>AUTOPILOT</small></span>
+            </div>
+          </td>
+          <td>
+            <div class="acc-bar">
+              <div class="top"><span>94 %</span><small>n=58</small></div>
+              <div class="track"><div class="f ok" style="width:94%"></div></div>
+            </div>
+          </td>
+          <td><div class="last-action">Sortert <b>14 saker → 3 viktige</b><small>I DAG · 06:00</small></div></td>
+          <td class="c"><div class="runs">7<small>DAGLIG</small></div></td>
+          <td class="c"><span class="tog"></span></td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="agent-name">
+              <span class="av" style="background:rgba(184,133,42,0.18); color: var(--warning-foreground)"><i data-lucide="lightbulb"></i></span>
+              <span class="nm"><b>Innsiktskort-bygger</b><small>SG-narrativ · ukerapport</small></span>
+            </div>
+          </td>
+          <td><span class="ag-st live"><span class="d"></span>LIVE</span></td>
+          <td>
+            <div class="mat">
+              <div class="mat-bar"><span class="b on"></span><span class="b on"></span><span class="b on"></span><span class="b"></span></div>
+              <span class="lbl">3/4<small>UTKAST</small></span>
+            </div>
+          </td>
+          <td>
+            <div class="acc-bar">
+              <div class="top"><span>76 %</span><small>n=31</small></div>
+              <div class="track"><div class="f warn" style="width:76%"></div></div>
+            </div>
+          </td>
+          <td><div class="last-action">Generert <b>5 ukerapporter</b><small>SØNDAG 06:00</small></div></td>
+          <td class="c"><div class="runs">35<small>5/UKE</small></div></td>
+          <td class="c"><span class="tog"></span></td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="agent-name">
+              <span class="av" style="background:rgba(37,99,235,0.10); color: var(--info)"><i data-lucide="git-compare"></i></span>
+              <span class="nm"><b>Gap-til-drill</b><small>SG-svakhet → MORAD-drill</small></span>
+            </div>
+          </td>
+          <td><span class="ag-st review"><span class="d"></span>EVAL</span></td>
+          <td>
+            <div class="mat">
+              <div class="mat-bar"><span class="b on"></span><span class="b on"></span><span class="b"></span><span class="b"></span></div>
+              <span class="lbl">2/4<small>FORSLAG</small></span>
+            </div>
+          </td>
+          <td>
+            <div class="acc-bar">
+              <div class="top"><span>71 %</span><small>n=14</small></div>
+              <div class="track"><div class="f warn" style="width:71%"></div></div>
+            </div>
+          </td>
+          <td><div class="last-action">Foreslo <b>Gate-50</b> for Kaja Helle<small>I GÅR · 18:42</small></div></td>
+          <td class="c"><div class="runs">12<small>SISTE 7D</small></div></td>
+          <td class="c"><span class="tog"></span></td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="agent-name">
+              <span class="av" style="background:rgba(94,92,87,0.18); color: var(--muted-foreground)"><i data-lucide="message-square"></i></span>
+              <span class="nm"><b>Foreldre-meldinger</b><small>gruppemail · sommerleir</small></span>
+            </div>
+          </td>
+          <td><span class="ag-st draft"><span class="d"></span>UTKAST</span></td>
+          <td>
+            <div class="mat">
+              <div class="mat-bar"><span class="b on"></span><span class="b"></span><span class="b"></span><span class="b"></span></div>
+              <span class="lbl">1/4<small>SKISSE</small></span>
+            </div>
+          </td>
+          <td>
+            <div class="acc-bar">
+              <div class="top" style="color: var(--muted-foreground)"><span>—</span><small>n=2 · for lavt</small></div>
+              <div class="track"><div class="f" style="width:0%"></div></div>
+            </div>
+          </td>
+          <td><div class="last-action" style="color: var(--muted-foreground)">Skisse · venter test<small>2 D SIDEN</small></div></td>
+          <td class="c"><div class="runs">2<small>SISTE 7D</small></div></td>
+          <td class="c"><span class="tog off"></span></td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="agent-name">
+              <span class="av" style="background:rgba(163,45,45,0.10); color: var(--destructive)"><i data-lucide="alert-octagon"></i></span>
+              <span class="nm"><b>Skader-radar</b><small>volum-spike · advarsel</small></span>
+            </div>
+          </td>
+          <td><span class="ag-st paused"><span class="d"></span>PAUSE</span></td>
+          <td>
+            <div class="mat">
+              <div class="mat-bar"><span class="b on"></span><span class="b on"></span><span class="b"></span><span class="b"></span></div>
+              <span class="lbl">2/4<small>FORSLAG</small></span>
+            </div>
+          </td>
+          <td>
+            <div class="acc-bar">
+              <div class="top"><span>54 %</span><small>n=11 · for mange falske</small></div>
+              <div class="track"><div class="f bad" style="width:54%"></div></div>
+            </div>
+          </td>
+          <td><div class="last-action">Pauset av Solberg<small>5 D SIDEN · «trenger bedre data»</small></div></td>
+          <td class="c"><div class="runs">0<small>SISTE 7D</small></div></td>
+          <td class="c"><span class="tog off"></span></td>
+        </tr>
+
+      </tbody>
+    </table>
+
+    <div class="frule">
+      <b>Prinsipp.</b> <b>4-trinns modenhet</b>: Skisse (1) → Forslag (2) → Utkast (3) → Autopilot (4). En agent kan ikke
+      hoppe modenhet — den må kjøres på N-nivå med ≥ 80 % treff over ≥ 20 kjøringer for å promoteres. Treff under 60 %
+      eller for få kjøringer demper UI'en og blokkerer promotion.
+    </div>
+  </div>
+
+  <!-- ===================== SECTION 4 · AUDIT LOG ===================== -->
+  <div class="sec">
+    4 · Audit-log
+    <span class="sub">agent og menneske · samme log · samme språk</span>
+    <span class="count">SISTE 8 HENDELSER</span>
+  </div>
+
+  <div class="panel">
+
+    <div class="audit-head">
+      <div class="tt">Audit · co-agent fleet</div>
+      <div class="pills">
+        <span class="pill on">Alle</span>
+        <span class="pill"><span class="d ag"></span> Agent</span>
+        <span class="pill"><span class="d hu"></span> Menneske</span>
+        <span class="pill">Avvist</span>
+        <span class="pill">7 dager</span>
+      </div>
+      <div class="search">
+        <i data-lucide="search"></i>
+        Søk i audit-log
+        <span class="kbd">/</span>
+      </div>
+    </div>
+
+    <div class="alog">
+      <!-- header -->
+      <div class="ah">TID</div>
+      <div class="ah"></div>
+      <div class="ah">AKTØR</div>
+      <div class="ah">HANDLING</div>
+      <div class="ah">UTFALL</div>
+      <div class="ah" style="text-align: center"></div>
+
+      <!-- row 1 · agent suggests -->
+      <div class="ar ts">I dag<br/><b>14:08</b></div>
+      <div class="actor-dot"><span class="d ag"></span></div>
+      <div class="ar actor"><b>Plan-copilot</b><small>AGENT · v0.4 · ALFA</small></div>
+      <div class="ar what">Foreslo plan-justering <b>v3.2 → v3.3</b> for Markus Berg <span class="tag">SPILLSIM-BYTTE</span></div>
+      <div class="ar"><span class="outcome">UTKAST</span></div>
+      <div class="ar" style="justify-content:center"><div class="open"><i data-lucide="external-link"></i></div></div>
+
+      <!-- row 2 · human approves -->
+      <div class="ar ts">I dag<br/><b>14:12</b></div>
+      <div class="actor-dot"><span class="d hu"></span></div>
+      <div class="ar actor"><b>Fredrik Solberg</b><small>MENNESKE · COACH</small></div>
+      <div class="ar what">Godkjente plan-justering <b>v3.3</b> uten endring <span class="tag ok">+1 spillsim</span></div>
+      <div class="ar"><span class="outcome appr">GODKJENT</span></div>
+      <div class="ar" style="justify-content:center"><div class="open"><i data-lucide="external-link"></i></div></div>
+
+      <!-- row 3 · agent sends summary -->
+      <div class="ar ts">I dag<br/><b>06:00</b></div>
+      <div class="actor-dot"><span class="d ag"></span></div>
+      <div class="ar actor"><b>Innboks-summary</b><small>AGENT · v0.4</small></div>
+      <div class="ar what">Sortert <b>14 saker → 3 prioritert</b> for daglig brief</div>
+      <div class="ar"><span class="outcome ok">UTFØRT</span></div>
+      <div class="ar" style="justify-content:center"><div class="open"><i data-lucide="external-link"></i></div></div>
+
+      <!-- row 4 · agent suggests, human rejects -->
+      <div class="ar ts">I går<br/><b>18:42</b></div>
+      <div class="actor-dot"><span class="d ag"></span></div>
+      <div class="ar actor"><b>Gap-til-drill</b><small>AGENT · v0.3</small></div>
+      <div class="ar what">Foreslo Gate-50 for Kaja Helle <span class="tag warn">PÅ SKADEPAUSE</span></div>
+      <div class="ar"><span class="outcome rej">AVVIST</span></div>
+      <div class="ar" style="justify-content:center"><div class="open"><i data-lucide="external-link"></i></div></div>
+
+      <!-- row 5 · human rejects with reason -->
+      <div class="ar ts">I går<br/><b>18:43</b></div>
+      <div class="actor-dot"><span class="d hu"></span></div>
+      <div class="ar actor"><b>Fredrik Solberg</b><small>MENNESKE · COACH</small></div>
+      <div class="ar what">Avvist forslag &mdash; «Kaja er <b>på skadepause til 18. juni</b>» <span class="tag bad">FEEDBACK</span></div>
+      <div class="ar"><span class="outcome rej">AVVIST</span></div>
+      <div class="ar" style="justify-content:center"><div class="open"><i data-lucide="external-link"></i></div></div>
+
+      <!-- row 6 · human pauses agent -->
+      <div class="ar ts">5 d siden<br/><b>11:14</b></div>
+      <div class="actor-dot"><span class="d hu"></span></div>
+      <div class="ar actor"><b>Fredrik Solberg</b><small>MENNESKE · COACH</small></div>
+      <div class="ar what">Pauset <b>Skader-radar</b> &mdash; «for mange falske positiv, trenger bedre data»</div>
+      <div class="ar"><span class="outcome skip">PAUSET</span></div>
+      <div class="ar" style="justify-content:center"><div class="open"><i data-lucide="external-link"></i></div></div>
+
+      <!-- row 7 · agent sends weekly report -->
+      <div class="ar ts">søndag<br/><b>06:00</b></div>
+      <div class="actor-dot"><span class="d ag"></span></div>
+      <div class="ar actor"><b>Innsiktskort-bygger</b><small>AGENT · v0.4</small></div>
+      <div class="ar what">Generert <b>5 ukerapporter</b> · Markus, Kaja, Jonas, Ella, Noah</div>
+      <div class="ar"><span class="outcome ok">UTFØRT</span></div>
+      <div class="ar" style="justify-content:center"><div class="open"><i data-lucide="external-link"></i></div></div>
+
+      <!-- row 8 · co-agent palette command -->
+      <div class="ar ts row-end">søndag<br/><b>20:18</b></div>
+      <div class="actor-dot row-end"><span class="d hu"></span></div>
+      <div class="ar actor row-end"><b>Fredrik Solberg</b><small>MENNESKE · ⌘K</small></div>
+      <div class="ar what row-end">Tale-kommando &mdash; «bestill tee-time markus oslo gk 12. juni etter 15»</div>
+      <div class="ar row-end"><span class="outcome ok">ROUTET</span></div>
+      <div class="ar row-end" style="justify-content:center"><div class="open"><i data-lucide="external-link"></i></div></div>
+
+    </div>
+
+    <div class="frule">
+      <b>Prinsipp.</b> Agent og menneske er likestilt i audit-log &mdash; samme rad-form, samme tids-presisjon, samme verktøy.
+      <b>Avvist</b>-rader med menneske-feedback brukes som treningsdata for å forbedre agentens forslag.
+      Hver rad har <b>"åpne"</b>-knapp som viser full hendelse: input, output, kildebruk og diff.
+    </div>
+  </div>
+
+  <!-- ===================== PRINCIPLES FOOTER ===================== -->
+  <div class="rules">
+    <p><b>Fire primitiver, samme språk.</b> Kommandolinjen tolker. Utkastet forklarer. Forvaltningen evaluerer. Audit logger. Alle bruker samme tre-handlings-struktur (Godkjenn · Rediger · Avvis) og samme kildebruk-vekting (0–100 %).</p>
+    <p><b>Interne vs utgående er ikke knapp-tekst &mdash; det er arkitektur.</b> Interne handlinger (navigasjon, åpne mal, filtrer) krever aldri godkjenning. Utgående (book, send, endre plan) krever alltid utkast. Skillet er hardkodet per handling, ikke per agent.</p>
+    <p><b>Modenhet er en kontrakt.</b> En agent under 80 % treff promoteres ikke til høyere nivå. Coachen kan overstyre, men blokkeringen er default. Det er hvordan vi forhindrer at en alfa-agent får autopilot for tidlig.</p>
+    <p><b>Loggføres alltid &mdash; ingen unntak.</b> Hver tolkning, hvert utkast, hver godkjenning og hver avvisning lander i audit. Det er hvordan vi viser foreldre, regulatorer og oss selv hva systemet faktisk gjør.</p>
+  </div>
+
+  <script>lucide.createIcons({ nameAttr: 'data-lucide', icons: lucide.icons });</script>
+</div></body></html>

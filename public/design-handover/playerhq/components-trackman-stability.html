@@ -1,0 +1,1297 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Trackman · Stabilitet</title>
+<link rel="stylesheet" href="_shared.css">
+<script src="https://unpkg.com/lucide@0.453.0"></script>
+<style>
+  body { width: 1280px; }
+  .card { padding: 24px; position: relative; }
+
+  /* === CARD CHROME === */
+  .st-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .st-head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 24px;
+    padding: 18px 22px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .st-eyebrow {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .st-eyebrow .pulse {
+    width: 6px; height: 6px; border-radius: 9999px;
+    background: var(--accent); box-shadow: 0 0 6px rgba(209,248,67,0.6);
+    position: relative;
+  }
+  .st-eyebrow .pulse::after {
+    content: ""; position: absolute; inset: 0; border-radius: 9999px;
+    background: var(--accent);
+    animation: ping 1500ms cubic-bezier(0,0,0.2,1) infinite; opacity: 0.6;
+  }
+  @keyframes ping { 70%,100% { transform: scale(2.6); opacity: 0; } }
+  .st-title {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 22px; line-height: 1.1; letter-spacing: -0.015em;
+    margin: 4px 0 0;
+  }
+  .st-title em {
+    font-style: italic; font-weight: 400;
+    color: var(--muted-foreground);
+    margin-left: 4px;
+  }
+
+  /* Tab-bar — IDENTISK med trackman.html. Felles skall. */
+  .tm-views {
+    display: flex; gap: 2px;
+    padding: 3px;
+    background: var(--secondary);
+    border-radius: 10px;
+  }
+  .view-tab {
+    border: 0; background: transparent; cursor: pointer;
+    font-family: var(--font-display);
+    font-weight: 600; font-size: 12px;
+    letter-spacing: -0.005em;
+    color: var(--muted-foreground);
+    padding: 7px 12px;
+    border-radius: 8px;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: background 150ms, color 150ms, box-shadow 150ms;
+  }
+  .view-tab svg { width: 13px; height: 13px; }
+  .view-tab:hover:not(.is-disabled) { color: var(--foreground); }
+  .view-tab:focus-visible {
+    outline: 2px solid var(--ring, var(--primary));
+    outline-offset: 2px;
+  }
+  .view-tab.is-active {
+    background: var(--card);
+    color: var(--foreground);
+    box-shadow: 0 1px 2px rgba(10,31,23,0.06), 0 0 0 1px var(--border);
+  }
+  .view-tab.is-disabled {
+    color: var(--muted-foreground);
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .view-tab.is-disabled .vt-soon {
+    font-family: var(--font-mono); font-size: 8px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    background: var(--secondary);
+    color: var(--muted-foreground);
+    padding: 1px 4px; border-radius: 3px;
+    margin-left: 4px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .view-tab { transition: none; }
+    .st-eyebrow .pulse::after { animation: none; opacity: 0; }
+  }
+
+  /* Top KPI callouts */
+  .st-callouts {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-bottom: 1px solid var(--border);
+  }
+  .co-cell {
+    padding: 16px 22px;
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 4px;
+    position: relative;
+  }
+  .co-cell:last-child { border-right: 0; }
+  .co-cell .co-lbl {
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .co-cell .co-club {
+    display: flex; align-items: baseline; gap: 10px;
+    margin-top: 4px;
+  }
+  .co-cell .co-club b {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 22px;
+    letter-spacing: -0.015em;
+    color: var(--foreground);
+  }
+  .co-cell .co-club .co-stab {
+    font-family: var(--font-mono); font-weight: 700;
+    font-size: 14px;
+    font-feature-settings: "tnum","zero";
+  }
+  .co-cell .co-club .co-stab.pos { color: var(--success); }
+  .co-cell .co-club .co-stab.neg { color: var(--destructive); }
+  .co-cell .co-club .co-stab.warn { color: var(--warning); }
+  .co-cell .co-detail {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted-foreground);
+    letter-spacing: 0.02em;
+    font-feature-settings: "tnum","zero";
+  }
+  .co-cell .co-icon {
+    position: absolute;
+    top: 16px; right: 22px;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .co-cell.is-best  .co-icon { background: rgba(26,125,86,0.14); color: var(--success); }
+  .co-cell.is-worst .co-icon { background: rgba(184,66,51,0.14); color: var(--destructive); }
+  .co-cell.is-prog  .co-icon { background: rgba(184,133,42,0.14); color: var(--warning); }
+  .co-icon svg { width: 14px; height: 14px; }
+
+  /* === HEATMAP === */
+  .heatmap-wrap {
+    padding: 18px 22px 22px;
+  }
+  .heatmap-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .heatmap-head .hh-title {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 15px; letter-spacing: -0.015em;
+  }
+  .heatmap-head .hh-meta {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted-foreground);
+    letter-spacing: 0.02em;
+    font-feature-settings: "tnum","zero";
+  }
+
+  /* Legend */
+  .heatmap-legend {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 12px;
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--muted-foreground);
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .heatmap-legend .scale {
+    display: flex; height: 12px; border-radius: 9999px; overflow: hidden;
+    width: 240px;
+    border: 1px solid var(--border);
+  }
+  .heatmap-legend .scale span { flex: 1; height: 100%; }
+  .heatmap-legend .scale .s1 { background: var(--variance-best); }
+  .heatmap-legend .scale .s2 { background: var(--variance-good); }
+  .heatmap-legend .scale .s3 { background: var(--variance-mid); }
+  .heatmap-legend .scale .s4 { background: var(--variance-poor); }
+  .heatmap-legend .scale .s5 { background: var(--variance-worst); }
+
+  /* === FILTER PILLS === */
+  .filter-row {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    position: relative;
+  }
+  .filter-row .fr-label {
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--muted-foreground);
+    margin-right: 4px;
+  }
+  .filter-pill {
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--muted-foreground);
+    font-family: var(--font-mono); font-weight: 600;
+    font-size: 10px; letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 6px 11px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: background 150ms, color 150ms, border-color 150ms;
+  }
+  .filter-pill:hover { background: var(--secondary); color: var(--foreground); }
+  .filter-pill.is-active {
+    background: var(--primary); color: var(--accent);
+    border-color: var(--primary);
+  }
+  .filter-pill svg { width: 11px; height: 11px; }
+  .filter-pill .pc {
+    background: rgba(255,255,255,0.18);
+    color: inherit;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 9px;
+    font-feature-settings: "tnum","zero";
+  }
+  .filter-pill:not(.is-active) .pc {
+    background: var(--secondary);
+  }
+
+  /* Custom-filter dropdown */
+  .filter-custom { position: relative; }
+  .fc-list {
+    position: absolute;
+    top: 100%; left: 0;
+    margin-top: 6px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px;
+    min-width: 220px;
+    box-shadow: 0 12px 28px rgba(10,31,23,0.16);
+    z-index: 20;
+    display: none;
+  }
+  .filter-custom.is-open .fc-list { display: flex; flex-direction: column; gap: 1px; }
+  .fc-head {
+    padding: 6px 8px 8px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 4px;
+  }
+  .fc-item {
+    display: flex; align-items: center; gap: 9px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--foreground);
+    transition: background 100ms;
+  }
+  .fc-item:hover { background: var(--secondary); }
+  .fc-item input {
+    accent-color: var(--primary);
+    cursor: pointer;
+  }
+  .fc-item .fc-cat {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 8.5px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--muted-foreground);
+    padding: 1px 5px;
+    border-radius: 3px;
+    background: var(--secondary);
+  }
+  .fc-item .fc-cat.ball { background: rgba(0,88,64,0.08);   color: var(--primary); }
+  .fc-item .fc-cat.club { background: rgba(184,133,42,0.10); color: var(--warning); }
+
+  /* Heatmap filter states: shrink grid + hide columns by nth-child */
+  .heatmap[data-filter="ball"] { grid-template-columns: 90px repeat(6, 1fr) 80px; }
+  .heatmap[data-filter="ball"] > :nth-child(10n+8),
+  .heatmap[data-filter="ball"] > :nth-child(10n+9) { display: none; }
+
+  .heatmap[data-filter="club"] { grid-template-columns: 90px repeat(2, 1fr) 80px; }
+  .heatmap[data-filter="club"] > :nth-child(10n+2),
+  .heatmap[data-filter="club"] > :nth-child(10n+3),
+  .heatmap[data-filter="club"] > :nth-child(10n+4),
+  .heatmap[data-filter="club"] > :nth-child(10n+5),
+  .heatmap[data-filter="club"] > :nth-child(10n+6),
+  .heatmap[data-filter="club"] > :nth-child(10n+7) { display: none; }
+
+  /* Heatmap grid: club rows × param cols */
+  .heatmap {
+    display: grid;
+    grid-template-columns: 90px repeat(8, 1fr) 80px;
+    gap: 2px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--border);
+  }
+  .hm-cell {
+    background: var(--card);
+    padding: 9px 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    font-feature-settings: "tnum","zero";
+    color: var(--foreground);
+    cursor: pointer;
+    transition: filter 100ms;
+    position: relative;
+  }
+  .hm-cell:hover { filter: brightness(0.94); z-index: 2; }
+  .hm-cell.h-head {
+    background: var(--background);
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--muted-foreground);
+    cursor: default;
+  }
+  .hm-cell.h-head:hover { filter: none; }
+  .hm-cell.h-club {
+    background: var(--background);
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--foreground);
+    justify-content: flex-start;
+    padding-left: 12px;
+    cursor: default;
+  }
+  .hm-cell.h-club:hover { filter: none; }
+  .hm-cell .hm-val {
+    position: relative;
+    z-index: 1;
+    font-weight: 600;
+  }
+  /* Variance color levels (1=best, 5=worst) */
+  .hm-cell[data-v="1"] { background: var(--variance-best); color: var(--cream-50); }
+  .hm-cell[data-v="2"] { background: var(--variance-good); color: var(--cream-50); }
+  .hm-cell[data-v="3"] { background: var(--variance-mid); color: var(--forest-900); }
+  .hm-cell[data-v="4"] { background: var(--variance-poor); color: var(--cream-50); }
+  .hm-cell[data-v="5"] { background: var(--variance-worst); color: var(--cream-50); }
+  /* Stability column (last) */
+  .hm-cell.h-stab {
+    background: var(--card);
+    font-family: var(--font-mono); font-weight: 700;
+    font-size: 13px;
+    color: var(--foreground);
+    padding-right: 14px;
+    justify-content: flex-end;
+    cursor: default;
+  }
+  .hm-cell.h-stab small {
+    color: var(--muted-foreground);
+    font-weight: 600;
+    font-size: 10px;
+    margin-left: 3px;
+  }
+
+  /* "Not in bag" row dimmed */
+  .hm-cell.is-off { opacity: 0.32; }
+
+  /* ============================================================
+     BIAS VS RANDOM SPREAD
+     ============================================================ */
+  .bs-section {
+    padding: 22px;
+    border-top: 1px solid var(--border);
+  }
+  .bs-head {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 16px;
+  }
+  .bs-head .bsh-title {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 15px; letter-spacing: -0.015em;
+  }
+  .bs-head .bsh-sub {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted-foreground);
+    letter-spacing: 0.02em;
+    margin-top: 4px;
+  }
+  .bs-legend {
+    display: flex; gap: 14px;
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--muted-foreground);
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .bs-legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .bs-legend i {
+    font-style: normal;
+    width: 18px; height: 12px; border-radius: 3px;
+    display: inline-block;
+  }
+  .bs-legend i.steady  { background: rgba(26,125,86,0.18);  border: 1px solid rgba(26,125,86,0.45); }
+  .bs-legend i.bias    { background: rgba(184,133,42,0.18); border: 1px solid rgba(184,133,42,0.45); }
+  .bs-legend i.spread  { background: rgba(184,66,51,0.15);  border: 1px solid rgba(184,66,51,0.40);  }
+  .bs-legend i.both    { background: rgba(163,45,45,0.22);  border: 1px solid rgba(163,45,45,0.55);  }
+
+  .bs-grid {
+    display: grid;
+    /* Alle 14 køller, to rader á 7 — hele baggen synlig på én gang.
+       Spec sa "alle køller" — ikke "noen utvalgte". */
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+  }
+  .bs-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px;
+    display: flex; flex-direction: column; align-items: stretch; gap: 8px;
+    cursor: pointer;
+    transition: background 150ms, border-color 150ms, transform 150ms;
+  }
+  .bs-card:hover { background: var(--secondary); border-color: var(--input); transform: translateY(-1px); }
+  .bs-card:focus-visible {
+    outline: 2px solid var(--ring, var(--primary));
+    outline-offset: 2px;
+  }
+  /* Aktiv kølle — markeres når sync'et med URL-hash */
+  .bs-card.is-active {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 1px var(--primary);
+    background: var(--card);
+  }
+  .bs-card.is-active .bs-mini {
+    border-color: var(--primary);
+    box-shadow: inset 0 0 0 1px rgba(0,88,64,0.20);
+  }
+
+  .bs-mini {
+    width: 100%; aspect-ratio: 1.6 / 1;
+    background: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    position: relative;
+    flex-shrink: 0;
+  }
+  /* Crosshair (target) */
+  .bs-mini::before, .bs-mini::after {
+    content: ""; position: absolute;
+    background: rgba(10,31,23,0.10);
+  }
+  .bs-mini::before { left: 50%; top: 6px; bottom: 6px; width: 1px; }
+  .bs-mini::after  { top: 50%; left: 6px; right: 6px; height: 1px; }
+  /* Center target dot */
+  .bs-mini .bs-target {
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 4px; height: 4px;
+    border-radius: 9999px;
+    background: var(--muted-foreground);
+    z-index: 1;
+  }
+  /* Spread ellipse — sized by spread magnitude, positioned at bias point */
+  .bs-spread-ellipse {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 1.5px solid;
+    z-index: 2;
+  }
+  .bs-spread-ellipse.steady  { background: rgba(26,125,86,0.16);  border-color: rgba(26,125,86,0.6); }
+  .bs-spread-ellipse.bias    { background: rgba(184,133,42,0.18); border-color: rgba(184,133,42,0.75); }
+  .bs-spread-ellipse.spread  { background: rgba(184,66,51,0.16);  border-color: rgba(184,66,51,0.7); }
+  .bs-spread-ellipse.both    { background: rgba(163,45,45,0.22);  border-color: rgba(163,45,45,0.8); }
+
+  /* Mean miss point (the bias) */
+  .bs-mean {
+    position: absolute;
+    width: 7px; height: 7px;
+    transform: translate(-50%, -50%);
+    border-radius: 9999px;
+    background: var(--foreground);
+    border: 1.5px solid var(--card);
+    z-index: 3;
+  }
+
+  .bs-text {
+    flex: 1; min-width: 0;
+    display: flex; flex-direction: column; gap: 3px;
+  }
+  .bs-club {
+    font-family: var(--font-mono);
+    font-weight: 700; font-size: 11.5px;
+    letter-spacing: 0.04em;
+    color: var(--foreground);
+  }
+  .bs-diag {
+    font-family: var(--font-mono); font-size: 8.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    padding: 2px 5px; border-radius: 4px;
+    align-self: flex-start;
+    white-space: nowrap;
+  }
+  .bs-diag.steady  { background: rgba(26,125,86,0.12);  color: var(--success); }
+  .bs-diag.bias    { background: rgba(184,133,42,0.14); color: var(--warning); }
+  .bs-diag.spread  { background: rgba(184,66,51,0.12);  color: var(--destructive); }
+  .bs-diag.both    { background: rgba(163,45,45,0.20);  color: var(--destructive); }
+
+  .bs-meta {
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--muted-foreground);
+    font-feature-settings: "tnum","zero";
+    letter-spacing: 0.02em;
+    line-height: 1.35;
+  }
+  .bs-meta b {
+    font-family: var(--font-mono); font-weight: 700;
+    color: var(--foreground);
+  }
+
+  /* === DETAIL ROW (parameter breakdown for highlighted club) === */
+  .detail-wrap {
+    padding: 0 22px 22px;
+  }
+  .detail-card {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .detail-card-head {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--background);
+  }
+  .detail-card-head .dch-left {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .detail-card-head .dch-club {
+    font-family: var(--font-mono); font-weight: 700;
+    font-size: 14px;
+    color: var(--foreground);
+    background: var(--primary);
+    color: var(--cream-50);
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+  .detail-card-head .dch-title {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: 14px; letter-spacing: -0.005em;
+  }
+  .detail-card-head .dch-meta {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted-foreground);
+    font-feature-settings: "tnum","zero";
+  }
+  .detail-card-body {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 1px;
+    background: var(--border);
+  }
+  .det-cell {
+    background: var(--card);
+    padding: 14px 12px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .det-cell .det-lbl {
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--muted-foreground);
+  }
+  .det-cell .det-val {
+    font-family: var(--font-mono); font-weight: 700;
+    font-size: 17px; letter-spacing: -0.015em;
+    color: var(--foreground);
+    font-feature-settings: "tnum","zero";
+  }
+  .det-cell .det-val small {
+    font-size: 10px; font-weight: 600;
+    color: var(--muted-foreground);
+    margin-left: 3px;
+    letter-spacing: 0.02em;
+  }
+  .det-cell .det-bar {
+    height: 4px;
+    border-radius: 9999px;
+    background: var(--secondary);
+    position: relative;
+    margin-top: 6px;
+    overflow: hidden;
+  }
+  .det-cell .det-bar-fill {
+    position: absolute; left: 0; top: 0; bottom: 0;
+    border-radius: 9999px;
+  }
+
+</style></head>
+<body><div class="card">
+
+  <div class="st-card">
+
+    <!-- HEADER -->
+    <header class="st-head">
+      <div>
+        <span class="st-eyebrow"><span class="pulse"></span>TRACKMAN · STABILITET · 22. MAI 2026</span>
+        <h2 class="st-title">Konsistens-analyse <em>· 419 slag · 14 køller</em></h2>
+      </div>
+      <div class="tm-views" role="tablist" aria-label="Trackman-visning">
+        <button class="view-tab" role="tab" aria-selected="false" onclick="location.href='components-trackman.html' + location.hash"><i data-lucide="grid-3x3"></i>Bag</button>
+        <button class="view-tab is-active" role="tab" aria-selected="true"><i data-lucide="activity"></i>Stabilitet</button>
+        <button class="view-tab" role="tab" aria-selected="false" onclick="location.href='components-trackman-trend.html' + location.hash"><i data-lucide="line-chart"></i>Trend</button>
+        <button class="view-tab is-disabled" role="tab" aria-selected="false" aria-disabled="true" disabled><i data-lucide="users"></i>Sammenligne<span class="vt-soon">Kommer</span></button>
+      </div>
+    </header>
+
+    <!-- TOP CALLOUTS -->
+    <div class="st-callouts">
+      <div class="co-cell is-best">
+        <span class="co-lbl">Mest stødig</span>
+        <span class="co-club"><b>8-jern</b><span class="co-stab pos">8,8 / 10</span></span>
+        <span class="co-detail">Carry ±4 yd · spinn ±310 rpm</span>
+        <span class="co-icon"><i data-lucide="check"></i></span>
+      </div>
+      <div class="co-cell is-worst">
+        <span class="co-lbl">Trenger jobbing</span>
+        <span class="co-club"><b>56° wedge</b><span class="co-stab neg">4,8 / 10</span></span>
+        <span class="co-detail">Smash-spredning ±0,09 · carry ±14 yd</span>
+        <span class="co-icon"><i data-lucide="alert-triangle"></i></span>
+      </div>
+      <div class="co-cell is-prog">
+        <span class="co-lbl">Største forbedring</span>
+        <span class="co-club"><b>Driver</b><span class="co-stab warn">+0,8 / 4 uker</span></span>
+        <span class="co-detail">Spin axis variance −18 % siden 25. apr</span>
+        <span class="co-icon"><i data-lucide="trending-up"></i></span>
+      </div>
+    </div>
+
+    <!-- HEATMAP -->
+    <div class="heatmap-wrap">
+
+      <div class="heatmap-head">
+        <div>
+          <div class="hh-title">Varians-heatmap · klubber × parametere</div>
+          <div class="hh-meta">Lavere tall = mer stødig · klikk en celle for å se utvikling</div>
+        </div>
+      </div>
+
+      <!-- FILTER PILLS -->
+      <div class="filter-row" id="filter-row">
+        <span class="fr-label">Vis</span>
+        <button class="filter-pill is-active" data-filter="all">Alle <span class="pc">8</span></button>
+        <button class="filter-pill" data-filter="ball"><i data-lucide="circle-dot"></i>Balldata <span class="pc">6</span></button>
+        <button class="filter-pill" data-filter="club"><i data-lucide="target"></i>Kølledata <span class="pc">2</span></button>
+        <div class="filter-custom" id="filter-custom">
+          <button class="filter-pill" data-filter="custom"><i data-lucide="sliders-horizontal"></i>Egne filter <i data-lucide="chevron-down" style="opacity:0.55"></i></button>
+          <div class="fc-list">
+            <span class="fc-head">Velg parametere</span>
+            <label class="fc-item"><input type="checkbox" data-col="2" checked>Carry<span class="fc-cat ball">Ball</span></label>
+            <label class="fc-item"><input type="checkbox" data-col="3" checked>Side<span class="fc-cat ball">Ball</span></label>
+            <label class="fc-item"><input type="checkbox" data-col="4" checked>Ballhastighet<span class="fc-cat ball">Ball</span></label>
+            <label class="fc-item"><input type="checkbox" data-col="5" checked>Launch<span class="fc-cat ball">Ball</span></label>
+            <label class="fc-item"><input type="checkbox" data-col="6" checked>Spinnrate<span class="fc-cat ball">Ball</span></label>
+            <label class="fc-item"><input type="checkbox" data-col="7" checked>Spinnakse<span class="fc-cat ball">Ball</span></label>
+            <label class="fc-item"><input type="checkbox" data-col="8" checked>Smash factor<span class="fc-cat club">Kølle</span></label>
+            <label class="fc-item"><input type="checkbox" data-col="9" checked>Attack angle<span class="fc-cat club">Kølle</span></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="heatmap-legend">
+        <span>Stødig</span>
+        <div class="scale">
+          <span class="s1"></span>
+          <span class="s2"></span>
+          <span class="s3"></span>
+          <span class="s4"></span>
+          <span class="s5"></span>
+        </div>
+        <span>Inkonsistent</span>
+        <span style="flex:1;text-align:right;">14 av 19 i bag · 95 % konfidensintervall</span>
+      </div>
+
+      <!-- Grid: 1 club col + 8 param cols + 1 stability col -->
+      <div class="heatmap" id="heatmap" data-filter="all">
+        <!-- Header row -->
+        <div class="hm-cell h-head">Kølle</div>
+        <div class="hm-cell h-head">Carry</div>
+        <div class="hm-cell h-head">Side</div>
+        <div class="hm-cell h-head">Ball spd</div>
+        <div class="hm-cell h-head">Launch</div>
+        <div class="hm-cell h-head">Spin</div>
+        <div class="hm-cell h-head">Spin axis</div>
+        <div class="hm-cell h-head">Smash</div>
+        <div class="hm-cell h-head">Attack</div>
+        <div class="hm-cell h-head" style="text-align:right;justify-content:flex-end;padding-right:14px;">Stab</div>
+
+        <!-- Driver -->
+        <div class="hm-cell h-club">Driver</div>
+        <div class="hm-cell" data-v="3"><span class="hm-val">±8,2</span></div>
+        <div class="hm-cell" data-v="4"><span class="hm-val">±9,1</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±1,8</span></div>
+        <div class="hm-cell" data-v="3"><span class="hm-val">±1,4</span></div>
+        <div class="hm-cell" data-v="4"><span class="hm-val">±280</span></div>
+        <div class="hm-cell" data-v="3"><span class="hm-val">±3,4</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±0,03</span></div>
+        <div class="hm-cell" data-v="3"><span class="hm-val">±1,9</span></div>
+        <div class="hm-cell h-stab">7,2<small>/10</small></div>
+
+        <!-- 3-Wood -->
+        <div class="hm-cell h-club">3-W</div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±6,8</span></div>
+        <div class="hm-cell" data-v="3"><span class="hm-val">±7,2</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±1,4</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±1,1</span></div>
+        <div class="hm-cell" data-v="3"><span class="hm-val">±220</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±2,6</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±0,02</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±1,5</span></div>
+        <div class="hm-cell h-stab">7,8<small>/10</small></div>
+
+        <!-- 5-Wood -->
+        <div class="hm-cell h-club">5-W</div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±5,4</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±6,1</span></div>
+        <div class="hm-cell" data-v="1"><span class="hm-val">±1,1</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±1,0</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±180</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±2,2</span></div>
+        <div class="hm-cell" data-v="1"><span class="hm-val">±0,02</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±1,3</span></div>
+        <div class="hm-cell h-stab">8,0<small>/10</small></div>
+
+        <!-- 4-iron -->
+        <div class="hm-cell h-club">4-jern</div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±5,9</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±5,4</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±1,2</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±1,0</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±220</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±2,4</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±0,02</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±1,1</span></div>
+        <div class="hm-cell h-stab">7,6<small>/10</small></div>
+
+        <!-- 5-iron -->
+        <div class="hm-cell h-club">5-jern</div>
+        <div class="hm-cell" data-v="1"><span class="hm-val">±4,8</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±5,2</span></div>
+        <div class="hm-cell" data-v="1"><span class="hm-val">±1,0</span></div>
+        <div class="hm-cell" data-v="1"><span class="hm-val">±0,9</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±290</span></div>
+        <div class="hm-cell" data-v="1"><span class="hm-val">±2,0</span></div>
+        <div class="hm-cell" data-v="1"><span class="hm-val">±0,02</span></div>
+        <div class="hm-cell" data-v="1"><span class="hm-val">±0,9</span></div>
+        <div class="hm-cell h-stab">8,5<small>/10</small></div>
+
+        <!-- 6-iron -->
+        <div class="hm-cell h-club">6-jern</div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±5,2</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±5,8</span></div>
+        <div class="hm-cell" data-v="1"><span class="hm-val">±1,0</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±1,1</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±310</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±2,4</span></div>
+        <div class="hm-cell" data-v="1"><span class="hm-val">±0,02</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±1,0</span></div>
+        <div class="hm-cell h-stab">8,3<small>/10</small></div>
+
+        <!-- 7-iron — selected (state via URL-hash; default 7-jern) -->
+        <div class="hm-cell h-club">7-jern</div>
+        <div class="hm-cell" data-v="1"><span class="hm-val">±5,0</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±5,4</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±1,2</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±1,2</span></div>
+        <div class="hm-cell" data-v="3"><span class="hm-val">±410</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±2,8</span></div>
+        <div class="hm-cell" data-v="1"><span class="hm-val">±0,02</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±1,1</span></div>
+        <div class="hm-cell h-stab">8,2<small>/10</small></div>
+
+        <!-- 8-iron — best -->
+        <div class="hm-cell h-club">8-jern</div>
+        <div class="hm-cell" data-v="1"><span class="hm-val">±4,0</span></div>
+        <div class="hm-cell" data-v="1"><span class="hm-val">±4,4</span></div>
+        <div class="hm-cell" data-v="1"><span class="hm-val">±0,9</span></div>
+        <div class="hm-cell" data-v="1"><span class="hm-val">±0,8</span></div>
+        <div class="hm-cell" data-v="1"><span class="hm-val">±220</span></div>
+        <div class="hm-cell" data-v="1"><span class="hm-val">±2,0</span></div>
+        <div class="hm-cell" data-v="1"><span class="hm-val">±0,02</span></div>
+        <div class="hm-cell" data-v="1"><span class="hm-val">±0,8</span></div>
+        <div class="hm-cell h-stab">8,8<small>/10</small></div>
+
+        <!-- 9-iron -->
+        <div class="hm-cell h-club">9-jern</div>
+        <div class="hm-cell" data-v="1"><span class="hm-val">±4,2</span></div>
+        <div class="hm-cell" data-v="1"><span class="hm-val">±4,6</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±1,0</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±1,2</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±260</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±2,4</span></div>
+        <div class="hm-cell" data-v="1"><span class="hm-val">±0,02</span></div>
+        <div class="hm-cell" data-v="1"><span class="hm-val">±0,9</span></div>
+        <div class="hm-cell h-stab">8,6<small>/10</small></div>
+
+        <!-- PW -->
+        <div class="hm-cell h-club">PW</div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±5,8</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±5,4</span></div>
+        <div class="hm-cell" data-v="3"><span class="hm-val">±1,4</span></div>
+        <div class="hm-cell" data-v="3"><span class="hm-val">±1,4</span></div>
+        <div class="hm-cell" data-v="3"><span class="hm-val">±420</span></div>
+        <div class="hm-cell" data-v="3"><span class="hm-val">±3,4</span></div>
+        <div class="hm-cell" data-v="3"><span class="hm-val">±0,03</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±1,2</span></div>
+        <div class="hm-cell h-stab">7,4<small>/10</small></div>
+
+        <!-- 50° -->
+        <div class="hm-cell h-club">50°</div>
+        <div class="hm-cell" data-v="3"><span class="hm-val">±6,2</span></div>
+        <div class="hm-cell" data-v="3"><span class="hm-val">±6,0</span></div>
+        <div class="hm-cell" data-v="3"><span class="hm-val">±1,5</span></div>
+        <div class="hm-cell" data-v="3"><span class="hm-val">±1,6</span></div>
+        <div class="hm-cell" data-v="3"><span class="hm-val">±480</span></div>
+        <div class="hm-cell" data-v="3"><span class="hm-val">±3,8</span></div>
+        <div class="hm-cell" data-v="3"><span class="hm-val">±0,04</span></div>
+        <div class="hm-cell" data-v="3"><span class="hm-val">±1,4</span></div>
+        <div class="hm-cell h-stab">7,0<small>/10</small></div>
+
+        <!-- 52° -->
+        <div class="hm-cell h-club">52°</div>
+        <div class="hm-cell" data-v="3"><span class="hm-val">±6,8</span></div>
+        <div class="hm-cell" data-v="3"><span class="hm-val">±6,2</span></div>
+        <div class="hm-cell" data-v="3"><span class="hm-val">±1,6</span></div>
+        <div class="hm-cell" data-v="3"><span class="hm-val">±1,8</span></div>
+        <div class="hm-cell" data-v="4"><span class="hm-val">±520</span></div>
+        <div class="hm-cell" data-v="3"><span class="hm-val">±4,2</span></div>
+        <div class="hm-cell" data-v="3"><span class="hm-val">±0,04</span></div>
+        <div class="hm-cell" data-v="2"><span class="hm-val">±1,3</span></div>
+        <div class="hm-cell h-stab">6,6<small>/10</small></div>
+
+        <!-- 56° — WORST -->
+        <div class="hm-cell h-club" style="background:rgba(184,66,51,0.10);color:var(--destructive);">56°</div>
+        <div class="hm-cell" data-v="5"><span class="hm-val">±14,1</span></div>
+        <div class="hm-cell" data-v="4"><span class="hm-val">±9,0</span></div>
+        <div class="hm-cell" data-v="4"><span class="hm-val">±2,2</span></div>
+        <div class="hm-cell" data-v="4"><span class="hm-val">±2,4</span></div>
+        <div class="hm-cell" data-v="5"><span class="hm-val">±720</span></div>
+        <div class="hm-cell" data-v="4"><span class="hm-val">±5,4</span></div>
+        <div class="hm-cell" data-v="5"><span class="hm-val">±0,09</span></div>
+        <div class="hm-cell" data-v="4"><span class="hm-val">±2,1</span></div>
+        <div class="hm-cell h-stab" style="color:var(--destructive);">4,8<small>/10</small></div>
+
+        <!-- 60° -->
+        <div class="hm-cell h-club">60°</div>
+        <div class="hm-cell" data-v="4"><span class="hm-val">±10,2</span></div>
+        <div class="hm-cell" data-v="3"><span class="hm-val">±6,8</span></div>
+        <div class="hm-cell" data-v="3"><span class="hm-val">±1,8</span></div>
+        <div class="hm-cell" data-v="3"><span class="hm-val">±2,0</span></div>
+        <div class="hm-cell" data-v="4"><span class="hm-val">±600</span></div>
+        <div class="hm-cell" data-v="3"><span class="hm-val">±4,6</span></div>
+        <div class="hm-cell" data-v="4"><span class="hm-val">±0,06</span></div>
+        <div class="hm-cell" data-v="3"><span class="hm-val">±1,8</span></div>
+        <div class="hm-cell h-stab">6,4<small>/10</small></div>
+
+      </div>
+    </div>
+
+    <!-- SELECTED CLUB PARAMETER DETAIL -->
+    <div class="detail-wrap">
+      <div class="detail-card">
+        <header class="detail-card-head">
+          <div class="dch-left">
+            <span class="dch-club">7-JERN</span>
+            <span class="dch-title">Standardavvik per parameter · siste 28 slag</span>
+          </div>
+          <span class="dch-meta">Stabilitet 8,2 · over PGA-snitt</span>
+        </header>
+        <div class="detail-card-body">
+          <div class="det-cell">
+            <span class="det-lbl">Carry</span>
+            <span class="det-val">±5,0<small>yd</small></span>
+            <span class="det-bar"><span class="det-bar-fill" style="width:60%;background:var(--variance-best)"></span></span>
+          </div>
+          <div class="det-cell">
+            <span class="det-lbl">Side</span>
+            <span class="det-val">±5,4<small>yd</small></span>
+            <span class="det-bar"><span class="det-bar-fill" style="width:55%;background:var(--variance-good)"></span></span>
+          </div>
+          <div class="det-cell">
+            <span class="det-lbl">Ball spd</span>
+            <span class="det-val">±1,2<small>mph</small></span>
+            <span class="det-bar"><span class="det-bar-fill" style="width:50%;background:var(--variance-good)"></span></span>
+          </div>
+          <div class="det-cell">
+            <span class="det-lbl">Launch</span>
+            <span class="det-val">±1,2<small>°</small></span>
+            <span class="det-bar"><span class="det-bar-fill" style="width:50%;background:var(--variance-good)"></span></span>
+          </div>
+          <div class="det-cell">
+            <span class="det-lbl">Spin</span>
+            <span class="det-val">±410<small>rpm</small></span>
+            <span class="det-bar"><span class="det-bar-fill" style="width:65%;background:var(--variance-mid)"></span></span>
+          </div>
+          <div class="det-cell">
+            <span class="det-lbl">Spin axis</span>
+            <span class="det-val">±2,8<small>°</small></span>
+            <span class="det-bar"><span class="det-bar-fill" style="width:48%;background:var(--variance-good)"></span></span>
+          </div>
+          <div class="det-cell">
+            <span class="det-lbl">Smash</span>
+            <span class="det-val">±0,02</span>
+            <span class="det-bar"><span class="det-bar-fill" style="width:30%;background:var(--variance-best)"></span></span>
+          </div>
+          <div class="det-cell">
+            <span class="det-lbl">Attack</span>
+            <span class="det-val">±1,1<small>°</small></span>
+            <span class="det-bar"><span class="det-bar-fill" style="width:42%;background:var(--variance-good)"></span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BIAS VS RANDOM SPREAD -->
+    <section class="bs-section">
+      <div class="bs-head">
+        <div>
+          <div class="bsh-title">Bias vs. tilfeldig spredning</div>
+          <div class="bsh-sub">Bias = misser samme vei (sikte fikser det) · Spredning = tilfeldig (krever teknikk). Samme snitt-miss, helt ulik diagnose.</div>
+        </div>
+        <div class="bs-legend">
+          <span><i class="steady"></i>Stødig</span>
+          <span><i class="bias"></i>Bias</span>
+          <span><i class="spread"></i>Spredning</span>
+          <span><i class="both"></i>Begge</span>
+        </div>
+      </div>
+
+      <div class="bs-grid">
+
+        <!-- Driver — BIAS (consistent right miss) -->
+        <div class="bs-card">
+          <div class="bs-mini">
+            <span class="bs-target"></span>
+            <span class="bs-spread-ellipse bias" style="left: 65%; top: 50%; width: 22px; height: 18px;"></span>
+            <span class="bs-mean" style="left: 65%; top: 50%;"></span>
+          </div>
+          <div class="bs-text">
+            <span class="bs-club">Driver</span>
+            <span class="bs-diag bias">Bias høyre</span>
+            <span class="bs-meta">Snitt <b>+5,2 yd</b> · spred <b>±8,5</b></span>
+          </div>
+        </div>
+
+        <!-- 3-Wood — STEADY (centered, tight) -->
+        <div class="bs-card">
+          <div class="bs-mini">
+            <span class="bs-target"></span>
+            <span class="bs-spread-ellipse steady" style="left: 52%; top: 50%; width: 16px; height: 14px;"></span>
+            <span class="bs-mean" style="left: 52%; top: 50%;"></span>
+          </div>
+          <div class="bs-text">
+            <span class="bs-club">3-W</span>
+            <span class="bs-diag steady">Stødig</span>
+            <span class="bs-meta">Snitt <b>+1,0 yd</b> · spred <b>±6,2</b></span>
+          </div>
+        </div>
+
+        <!-- 5-Wood — STEADY -->
+        <div class="bs-card">
+          <div class="bs-mini">
+            <span class="bs-target"></span>
+            <span class="bs-spread-ellipse steady" style="left: 50%; top: 50%; width: 14px; height: 12px;"></span>
+            <span class="bs-mean" style="left: 50%; top: 50%;"></span>
+          </div>
+          <div class="bs-text">
+            <span class="bs-club">5-W</span>
+            <span class="bs-diag steady">Stødig</span>
+            <span class="bs-meta">Snitt <b>+0,4 yd</b> · spred <b>±5,4</b></span>
+          </div>
+        </div>
+
+        <!-- 4-jern — BIAS (mild left, lengste jern) -->
+        <div class="bs-card">
+          <div class="bs-mini">
+            <span class="bs-target"></span>
+            <span class="bs-spread-ellipse bias" style="left: 42%; top: 50%; width: 16px; height: 14px;"></span>
+            <span class="bs-mean" style="left: 42%; top: 50%;"></span>
+          </div>
+          <div class="bs-text">
+            <span class="bs-club">4-jern</span>
+            <span class="bs-diag bias">Bias venstre</span>
+            <span class="bs-meta">Snitt <b>−2,2 yd</b> · spred <b>±5,9</b></span>
+          </div>
+        </div>
+
+        <!-- 5-iron — STEADY -->
+        <div class="bs-card">
+          <div class="bs-mini">
+            <span class="bs-target"></span>
+            <span class="bs-spread-ellipse steady" style="left: 50%; top: 50%; width: 13px; height: 11px;"></span>
+            <span class="bs-mean" style="left: 50%; top: 50%;"></span>
+          </div>
+          <div class="bs-text">
+            <span class="bs-club">5-jern</span>
+            <span class="bs-diag steady">Stødig</span>
+            <span class="bs-meta">Snitt <b>±0 yd</b> · spred <b>±4,8</b></span>
+          </div>
+        </div>
+
+        <!-- 6-iron — BIAS (small left) -->
+        <div class="bs-card">
+          <div class="bs-mini">
+            <span class="bs-target"></span>
+            <span class="bs-spread-ellipse bias" style="left: 40%; top: 50%; width: 16px; height: 14px;"></span>
+            <span class="bs-mean" style="left: 40%; top: 50%;"></span>
+          </div>
+          <div class="bs-text">
+            <span class="bs-club">6-jern</span>
+            <span class="bs-diag bias">Bias venstre</span>
+            <span class="bs-meta">Snitt <b>−3,1 yd</b> · spred <b>±5,4</b></span>
+          </div>
+        </div>
+
+        <!-- 7-iron — STEADY (best mid-iron) -->
+        <div class="bs-card">
+          <div class="bs-mini">
+            <span class="bs-target"></span>
+            <span class="bs-spread-ellipse steady" style="left: 53%; top: 48%; width: 14px; height: 12px;"></span>
+            <span class="bs-mean" style="left: 53%; top: 48%;"></span>
+          </div>
+          <div class="bs-text">
+            <span class="bs-club">7-jern</span>
+            <span class="bs-diag steady">Stødig</span>
+            <span class="bs-meta">Snitt <b>+2,0 yd</b> · spred <b>±5,0</b></span>
+          </div>
+        </div>
+
+        <!-- 8-iron — STEADY (tightest) -->
+        <div class="bs-card">
+          <div class="bs-mini">
+            <span class="bs-target"></span>
+            <span class="bs-spread-ellipse steady" style="left: 50%; top: 50%; width: 10px; height: 9px;"></span>
+            <span class="bs-mean" style="left: 50%; top: 50%;"></span>
+          </div>
+          <div class="bs-text">
+            <span class="bs-club">8-jern</span>
+            <span class="bs-diag steady">Stødig</span>
+            <span class="bs-meta">Snitt <b>+0,5 yd</b> · spred <b>±4,0</b></span>
+          </div>
+        </div>
+
+        <!-- 9-jern — STEADY -->
+        <div class="bs-card">
+          <div class="bs-mini">
+            <span class="bs-target"></span>
+            <span class="bs-spread-ellipse steady" style="left: 51%; top: 50%; width: 11px; height: 10px;"></span>
+            <span class="bs-mean" style="left: 51%; top: 50%;"></span>
+          </div>
+          <div class="bs-text">
+            <span class="bs-club">9-jern</span>
+            <span class="bs-diag steady">Stødig</span>
+            <span class="bs-meta">Snitt <b>+0,9 yd</b> · spred <b>±4,2</b></span>
+          </div>
+        </div>
+
+        <!-- PW — SPREAD (random scatter) -->
+        <div class="bs-card">
+          <div class="bs-mini">
+            <span class="bs-target"></span>
+            <span class="bs-spread-ellipse spread" style="left: 51%; top: 50%; width: 26px; height: 22px;"></span>
+            <span class="bs-mean" style="left: 51%; top: 50%;"></span>
+          </div>
+          <div class="bs-text">
+            <span class="bs-club">PW</span>
+            <span class="bs-diag spread">Spredning</span>
+            <span class="bs-meta">Snitt <b>+0,8 yd</b> · spred <b>±8,4</b></span>
+          </div>
+        </div>
+
+        <!-- 50° — BIAS left -->
+        <div class="bs-card">
+          <div class="bs-mini">
+            <span class="bs-target"></span>
+            <span class="bs-spread-ellipse bias" style="left: 36%; top: 50%; width: 18px; height: 16px;"></span>
+            <span class="bs-mean" style="left: 36%; top: 50%;"></span>
+          </div>
+          <div class="bs-text">
+            <span class="bs-club">50°</span>
+            <span class="bs-diag bias">Bias venstre</span>
+            <span class="bs-meta">Snitt <b>−4,3 yd</b> · spred <b>±6,0</b></span>
+          </div>
+        </div>
+
+        <!-- 52° — SPREAD -->
+        <div class="bs-card">
+          <div class="bs-mini">
+            <span class="bs-target"></span>
+            <span class="bs-spread-ellipse spread" style="left: 52%; top: 50%; width: 24px; height: 20px;"></span>
+            <span class="bs-mean" style="left: 52%; top: 50%;"></span>
+          </div>
+          <div class="bs-text">
+            <span class="bs-club">52°</span>
+            <span class="bs-diag spread">Spredning</span>
+            <span class="bs-meta">Snitt <b>+1,2 yd</b> · spred <b>±7,4</b></span>
+          </div>
+        </div>
+
+        <!-- 56° — BOTH (worst club) -->
+        <div class="bs-card">
+          <div class="bs-mini">
+            <span class="bs-target"></span>
+            <span class="bs-spread-ellipse both" style="left: 62%; top: 38%; width: 34px; height: 28px;"></span>
+            <span class="bs-mean" style="left: 62%; top: 38%;"></span>
+          </div>
+          <div class="bs-text">
+            <span class="bs-club">56°</span>
+            <span class="bs-diag both">Bias + spredning</span>
+            <span class="bs-meta">Snitt <b>+6,1 yd</b> · spred <b>±9,8</b></span>
+          </div>
+        </div>
+
+        <!-- 60° — SPREAD (kort lobwedge, mer kast) -->
+        <div class="bs-card">
+          <div class="bs-mini">
+            <span class="bs-target"></span>
+            <span class="bs-spread-ellipse spread" style="left: 50%; top: 50%; width: 28px; height: 24px;"></span>
+            <span class="bs-mean" style="left: 50%; top: 50%;"></span>
+          </div>
+          <div class="bs-text">
+            <span class="bs-club">60°</span>
+            <span class="bs-diag spread">Spredning</span>
+            <span class="bs-meta">Snitt <b>+0,2 yd</b> · spred <b>±10,2</b></span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="out-alert" style="margin: 16px 0 0; padding: 12px 14px; background: rgba(184,133,42,0.08); border: 1px solid rgba(184,133,42,0.30); border-radius: 10px; display: flex; align-items: flex-start; gap: 10px; font-size: 13px; line-height: 1.45;">
+        <i data-lucide="info" style="color:var(--warning); flex-shrink: 0; margin-top: 1px;"></i>
+        <span><b style="font-family: var(--font-display); font-weight: 700;">Diagnose-prinsipp:</b> Bias = trener på sikte. Spredning = trener på teknikk. Begge = prioriter teknikk først, ellers gjør sikte-justering ingen forskjell.</span>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    // === FILTER PILLS ===
+    const heatmap = document.getElementById('heatmap');
+    const filterRow = document.getElementById('filter-row');
+    const filterCustom = document.getElementById('filter-custom');
+    const customStyleEl = document.createElement('style');
+    customStyleEl.id = 'custom-filter-style';
+    document.head.appendChild(customStyleEl);
+
+    function applyCustomFilter() {
+      const hidden = [];
+      filterCustom.querySelectorAll('input').forEach((cb) => {
+        if (!cb.checked) hidden.push(+cb.dataset.col);
+      });
+      const visibleCount = 8 - hidden.length;
+      let rules = `.heatmap[data-filter="custom"] { grid-template-columns: 90px repeat(${Math.max(1, visibleCount)}, 1fr) 80px; }\n`;
+      hidden.forEach((col) => {
+        rules += `.heatmap[data-filter="custom"] > :nth-child(10n+${col}) { display: none; }\n`;
+      });
+      customStyleEl.textContent = rules;
+      // Update pill count
+      const pcEl = filterCustom.querySelector('.pc');
+      if (!pcEl) {
+        const pill = filterCustom.querySelector('.filter-pill');
+        const chev = pill.querySelector('[data-lucide="chevron-down"]') || pill.querySelector('svg:last-child');
+        const span = document.createElement('span');
+        span.className = 'pc';
+        span.textContent = visibleCount;
+        pill.insertBefore(span, chev);
+      } else {
+        pcEl.textContent = visibleCount;
+      }
+    }
+
+    filterRow.querySelectorAll('.filter-pill').forEach((p) => {
+      p.addEventListener('click', (e) => {
+        const f = p.dataset.filter;
+        if (f === 'custom') {
+          // Toggle dropdown open/close
+          filterCustom.classList.toggle('is-open');
+          if (filterCustom.classList.contains('is-open')) {
+            // Activate custom mode (apply current selections)
+            filterRow.querySelectorAll('.filter-pill').forEach((x) => x.classList.toggle('is-active', x === p));
+            applyCustomFilter();
+            heatmap.dataset.filter = 'custom';
+          }
+          e.stopPropagation();
+          return;
+        }
+        filterRow.querySelectorAll('.filter-pill').forEach((x) => x.classList.toggle('is-active', x === p));
+        heatmap.dataset.filter = f;
+        filterCustom.classList.remove('is-open');
+      });
+    });
+
+    // Custom-filter checkbox changes
+    filterCustom.querySelectorAll('input').forEach((cb) => {
+      cb.addEventListener('change', () => {
+        if (heatmap.dataset.filter !== 'custom') {
+          // Switch to custom mode when user toggles a checkbox
+          filterRow.querySelectorAll('.filter-pill').forEach((x) =>
+            x.classList.toggle('is-active', x.dataset.filter === 'custom'));
+          heatmap.dataset.filter = 'custom';
+        }
+        applyCustomFilter();
+      });
+    });
+
+    // Close dropdown on outside click
+    document.addEventListener('click', (e) => {
+      if (!filterCustom.contains(e.target)) {
+        filterCustom.classList.remove('is-open');
+      }
+    });
+
+    // === CLUB SYNC (delt state mellom Trackman-fanene via URL-hash) ===
+    // Bag-fanen bruker IDer som '7-I', '8-I'; her viser vi '7-jern', '8-jern'.
+    // Aksepter begge formater i hash så lenker fra Bag treffer riktig kort.
+    const HASH_TO_LABEL = {
+      'Driver': 'Driver', '3-W': '3-W', '5-W': '5-W',
+      '4-I': '4-jern', '5-I': '5-jern', '6-I': '6-jern',
+      '7-I': '7-jern', '8-I': '8-jern', '9-I': '9-jern',
+      'PW': 'PW', '50°': '50°', '52°': '52°', '56°': '56°', '60°': '60°'
+    };
+    const LABEL_TO_HASH = Object.fromEntries(Object.entries(HASH_TO_LABEL).map(([k, v]) => [v, k]));
+
+    function readHashClub() {
+      const m = (location.hash || '').match(/club=([^&]+)/);
+      if (!m) return null;
+      const raw = decodeURIComponent(m[1]);
+      return HASH_TO_LABEL[raw] || raw;
+    }
+    function writeHashClub(label) {
+      const id = LABEL_TO_HASH[label] || label;
+      history.replaceState(null, '', '#club=' + encodeURIComponent(id));
+      setActiveClub(label);
+    }
+
+    function setActiveClub(club) {
+      // Bias-vs-spread cards
+      document.querySelectorAll('.bs-card').forEach((card) => {
+        const name = card.querySelector('.bs-club')?.textContent.trim();
+        card.classList.toggle('is-active', name === club);
+        card.setAttribute('role', 'button');
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('aria-pressed', name === club ? 'true' : 'false');
+        card.setAttribute('aria-label', `Velg ${name} for analyse`);
+      });
+      // Heatmap club rows
+      document.querySelectorAll('.hm-cell.h-club').forEach((cell) => {
+        const name = cell.textContent.trim();
+        cell.style.background = '';
+        cell.style.color = '';
+        if (name === club) {
+          cell.style.background = 'var(--primary)';
+          cell.style.color = 'var(--accent)';
+        }
+      });
+    }
+
+    // Card click → set hash
+    document.querySelectorAll('.bs-card').forEach((card) => {
+      const handler = () => {
+        const name = card.querySelector('.bs-club')?.textContent.trim();
+        if (name) writeHashClub(name);
+      };
+      card.addEventListener('click', handler);
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handler(); }
+      });
+    });
+    // Heatmap row click → set hash
+    document.querySelectorAll('.hm-cell.h-club').forEach((cell) => {
+      cell.style.cursor = 'pointer';
+      cell.setAttribute('tabindex', '0');
+      cell.setAttribute('role', 'button');
+      const handler = () => writeHashClub(cell.textContent.trim());
+      cell.addEventListener('click', handler);
+      cell.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handler(); }
+      });
+    });
+
+    window.addEventListener('hashchange', () => setActiveClub(readHashClub() || '7-jern'));
+    setActiveClub(readHashClub() || '7-jern');
+  </script>
+</div></body></html>

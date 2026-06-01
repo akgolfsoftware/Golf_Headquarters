@@ -1,0 +1,714 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>Credit-saldo + booking</title>
+<link rel="stylesheet" href="_shared.css">
+<script src="https://unpkg.com/lucide@0.453.0"></script>
+<style>
+  body { width: 880px; }
+  .card { padding: 24px; }
+
+  .sec {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    display: flex; align-items: center; gap: 8px;
+    margin: 0 0 14px;
+  }
+  .sec::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+  .sec.tight { margin-top: 28px; }
+
+  .stage {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .stage + .stage { margin-top: 12px; }
+
+  .stage-head {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px;
+    background: var(--secondary);
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .stage-head .ctx { color: var(--foreground); }
+  .stage-head .meta { margin-left: auto; }
+
+  /* ============================================================
+     CREDIT METER — shared primitive
+     - bar (track) + filled segments per credit
+     - 4 segments visible by default; supports 1–12 range
+     ============================================================ */
+  .credit-meter {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono);
+    font-feature-settings: "tnum","zero";
+  }
+  .credit-meter .label {
+    font-size: 11px; font-weight: 700;
+    color: var(--foreground); letter-spacing: -0.005em;
+  }
+  .credit-meter .label .of {
+    color: var(--muted-foreground); font-weight: 600;
+  }
+  .credit-meter .bar {
+    display: inline-flex; gap: 3px;
+    flex-shrink: 0;
+  }
+  .credit-meter .seg {
+    width: 18px; height: 6px;
+    border-radius: 9999px;
+    background: rgba(10,31,23,0.08);
+  }
+  .credit-meter .seg.is-on { background: var(--primary); }
+  .credit-meter .seg.is-last { background: var(--accent); }
+
+  /* size variants */
+  .credit-meter.sm .seg { width: 12px; height: 4px; }
+  .credit-meter.sm .label { font-size: 10px; }
+  .credit-meter.lg .seg { width: 24px; height: 8px; }
+  .credit-meter.lg .label { font-size: 13px; }
+
+  /* status-modifier — colored bar reflects severity */
+  .credit-meter.warn .seg.is-on { background: var(--warning); }
+  .credit-meter.danger .seg.is-on { background: var(--destructive); }
+  .credit-meter.danger .seg.is-last { background: var(--destructive); }
+
+  /* "tier-prefix" tag for badge-context */
+  .tier {
+    display: inline-flex; align-items: center; gap: 4px;
+    height: 18px; padding: 0 8px;
+    border-radius: 9999px;
+    background: var(--primary); color: var(--accent);
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+  }
+  .tier.free { background: var(--secondary); color: var(--muted-foreground); }
+  .tier.pro  { background: var(--primary); color: var(--accent); }
+  .tier.elit { background: var(--accent); color: var(--primary); }
+
+  /* ============================================================
+     VARIANT 1 — INLINE in booking form
+     ============================================================ */
+  .booking-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 18px;
+    padding: 18px 20px;
+  }
+  .booking-form .full { grid-column: 1 / -1; }
+  .booking-form .field {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .booking-form .lbl {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    color: var(--muted-foreground);
+  }
+  .booking-form .input {
+    height: 38px; padding: 0 12px;
+    background: var(--card);
+    border: 1px solid var(--input);
+    border-radius: 8px;
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 13px;
+    color: var(--foreground); letter-spacing: -0.005em;
+  }
+  .booking-form .input i { width: 14px; height: 14px; color: var(--muted-foreground); }
+  .booking-form .input .chev {
+    margin-left: auto; color: var(--muted-foreground);
+  }
+  .booking-form .input.is-selected { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(0,88,64,0.08); }
+
+  .booking-form .credits-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--cream-50);
+  }
+  .booking-form .credits-row.is-warn {
+    background: rgba(184,133,42,0.06);
+    border-color: rgba(184,133,42,0.30);
+  }
+  .booking-form .credits-row .cost {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--foreground);
+    display: inline-flex; align-items: center; gap: 6px;
+    font-feature-settings: "tnum","zero";
+  }
+  .booking-form .credits-row .cost i { width: 12px; height: 12px; color: var(--muted-foreground); }
+  .booking-form .credits-row .deduct {
+    color: var(--muted-foreground); font-weight: 600;
+  }
+  .booking-form .credits-row .deduct b {
+    color: var(--foreground); font-weight: 800;
+  }
+  .booking-form .credits-row .meter-wrap {
+    margin-left: auto;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+
+  .booking-form .row-actions {
+    display: flex; gap: 8px; justify-content: flex-end;
+    padding: 12px 20px;
+    background: var(--secondary);
+    border-top: 1px solid var(--border);
+  }
+  .btn {
+    height: 36px; padding: 0 14px; border-radius: 9999px;
+    border: 1px solid var(--border); background: var(--card);
+    color: var(--foreground);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn:hover { background: var(--secondary); }
+  .btn.pri { background: var(--primary); color: var(--accent); border-color: var(--primary); }
+  .btn.pri:hover { background: var(--primary-hover); }
+  .btn.lime { background: var(--accent); color: var(--primary); border-color: var(--accent); box-shadow: 0 4px 12px rgba(209,248,67,0.25); }
+  .btn.lime:hover { background: var(--accent-hover); }
+  .btn i { width: 12px; height: 12px; }
+
+  /* ============================================================
+     VARIANT 2 — Badge in player profile
+     ============================================================ */
+  .profile-card {
+    padding: 18px 20px;
+    display: grid;
+    grid-template-columns: 56px 1fr auto;
+    column-gap: 16px; row-gap: 4px;
+    align-items: center;
+  }
+  .profile-card .avatar {
+    width: 56px; height: 56px; border-radius: 9999px;
+    background: var(--primary); color: var(--accent);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-weight: 700; font-size: 20px;
+    letter-spacing: -0.02em;
+    grid-row: span 2;
+  }
+  .profile-card .name {
+    font-family: var(--font-display); font-weight: 700; font-size: 20px;
+    letter-spacing: -0.015em; color: var(--foreground);
+  }
+  .profile-card .meta {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .profile-card .credit-badge {
+    grid-column: 3; grid-row: span 2;
+    display: inline-flex; flex-direction: column; align-items: flex-end; gap: 6px;
+  }
+
+  /* R31 — profile badge expands to a credit breakdown + hover-løft */
+  .profile-card { cursor: pointer; transition: background 140ms ease; }
+  .profile-card:hover { background: rgba(0,88,64,0.025); }
+  .profile-card:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .cb-exp { max-height: 0; overflow: hidden; transition: max-height 260ms ease; background: var(--cream-50); }
+  .profile-card.is-open + .cb-exp { max-height: 120px; border-top: 1px solid var(--border); }
+  .cb-exp .inner { padding: 12px 20px 14px 72px; display: flex; flex-direction: column; gap: 9px; }
+  .cb-exp .stat-row { display: flex; gap: 22px; flex-wrap: wrap; }
+  .cb-exp .st .k { font-family: var(--font-mono); font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.10em; color: var(--muted-foreground); margin-bottom: 3px; }
+  .cb-exp .st .v { font-family: var(--font-mono); font-size: 14px; font-weight: 800; color: var(--foreground); font-feature-settings: "tnum","zero"; }
+  .cb-exp .note { font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--muted-foreground); letter-spacing: 0.04em; }
+  @media (prefers-reduced-motion: reduce) { .cb-exp, .profile-card { transition: none; } }
+  .credit-badge .pill-row {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 10px 6px 6px;
+    background: var(--cream-50);
+    border: 1px solid var(--border);
+    border-radius: 9999px;
+  }
+  .credit-badge .pill-row .num {
+    font-family: var(--font-mono); font-size: 13px; font-weight: 800;
+    color: var(--foreground); letter-spacing: -0.01em;
+    font-feature-settings: "tnum","zero";
+  }
+  .credit-badge .pill-row .num .of {
+    color: var(--muted-foreground); font-weight: 600;
+  }
+  .credit-badge .sub {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .credit-badge .sub.warn { color: var(--warning); }
+
+  /* ============================================================
+     VARIANT 3 — Coach-view in player table
+     ============================================================ */
+  table {
+    width: 100%; border-collapse: collapse;
+    font-family: var(--font-sans);
+  }
+  thead th {
+    background: var(--secondary);
+    text-align: left;
+    padding: 10px 14px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    border-bottom: 1px solid var(--border);
+  }
+  thead th.r { text-align: right; }
+  tbody td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px; color: var(--foreground); letter-spacing: -0.005em;
+    vertical-align: middle;
+  }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr:hover { background: rgba(0,88,64,0.03); }
+  tbody td.mono {
+    font-family: var(--font-mono); font-feature-settings: "tnum","zero";
+    font-weight: 600;
+  }
+  tbody td .row {
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  tbody td .av {
+    width: 28px; height: 28px; border-radius: 9999px;
+    background: var(--secondary); color: var(--foreground);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-weight: 700; font-size: 10px;
+  }
+
+  /* credit cell — compact w/ color + mini bar */
+  .credit-cell {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-feature-settings: "tnum","zero";
+    font-size: 12px; font-weight: 700;
+  }
+  .credit-cell .frac { letter-spacing: -0.01em; }
+  .credit-cell .frac .of { color: var(--muted-foreground); font-weight: 600; }
+  .credit-cell.ok      { color: var(--foreground); }
+  .credit-cell.warn    { color: var(--warning); }
+  .credit-cell.danger  { color: var(--destructive); }
+  .credit-cell.empty   { color: var(--muted-foreground); }
+
+  /* ============================================================
+     VARIANT 4 — Empty state CTA
+     ============================================================ */
+  .empty {
+    padding: 18px 20px;
+    display: grid;
+    grid-template-columns: 40px 1fr auto;
+    align-items: center;
+    column-gap: 14px;
+    background: linear-gradient(90deg, rgba(184,133,42,0.06), transparent 70%);
+  }
+  .empty .ic {
+    width: 40px; height: 40px; border-radius: 9999px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: rgba(184,133,42,0.12); color: var(--warning-foreground);
+  }
+  .empty .ic i { width: 18px; height: 18px; }
+  .empty .nm {
+    font-family: var(--font-display); font-weight: 700; font-size: 16px;
+    letter-spacing: -0.015em; color: var(--foreground);
+  }
+  .empty .sub {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    margin-top: 2px;
+  }
+  .empty .actions { display: inline-flex; gap: 8px; }
+
+  /* ============================================================
+     Anatomy panel
+     ============================================================ */
+  .anatomy {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-top: 14px;
+  }
+  .ana-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .ana-card .lbl {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .ana-card .dsc {
+    font-size: 11px; color: var(--muted-foreground); line-height: 1.4;
+  }
+
+  .rules {
+    margin-top: 24px; padding: 16px;
+    background: var(--secondary); border-radius: 12px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted-foreground); line-height: 1.6;
+  }
+  .rules p { margin: 0; }
+  .rules p + p { margin-top: 8px; }
+  .rules b { color: var(--foreground); font-weight: 700; }
+  .rules code {
+    background: var(--card); padding: 1px 5px; border-radius: 3px;
+    color: var(--foreground); font-weight: 700;
+  }
+</style></head>
+<body><div class="card">
+
+  <div class="sec">Credit-saldo · 3 varianter + tom-state</div>
+
+  <!-- =================================================== -->
+  <!-- VARIANT 1 — Inline i booking-form                   -->
+  <!-- =================================================== -->
+  <div class="stage">
+    <div class="stage-head">
+      <span class="ctx">Variant 1</span>
+      <span>·</span>
+      <span>INLINE I BOOKING-FORM</span>
+      <span class="meta">Spillerflyt: ny TrackMan-booking</span>
+    </div>
+
+    <form class="booking-form" onsubmit="return false">
+      <div class="field">
+        <label class="lbl">Type</label>
+        <div class="input is-selected">
+          <i data-lucide="radar"></i>
+          TrackMan-time
+          <i data-lucide="chevron-down" class="chev"></i>
+        </div>
+      </div>
+      <div class="field">
+        <label class="lbl">Coach</label>
+        <div class="input">
+          <i data-lucide="user"></i>
+          Solberg
+          <i data-lucide="chevron-down" class="chev"></i>
+        </div>
+      </div>
+      <div class="field">
+        <label class="lbl">Dato</label>
+        <div class="input">
+          <i data-lucide="calendar"></i>
+          Tor 29. mai · 14:30
+          <i data-lucide="chevron-down" class="chev"></i>
+        </div>
+      </div>
+      <div class="field">
+        <label class="lbl">Varighet</label>
+        <div class="input">
+          <i data-lucide="clock"></i>
+          60 min
+          <i data-lucide="chevron-down" class="chev"></i>
+        </div>
+      </div>
+
+      <div class="full">
+        <div class="credits-row">
+          <span class="cost"><i data-lucide="ticket"></i>Trekker <b style="margin-left:4px">1 credit</b></span>
+          <span class="deduct">· Saldo etter booking: <b>7 av 12</b></span>
+          <span class="meter-wrap">
+            <span class="credit-meter">
+              <span class="label">8 <span class="of">/ 12 credits</span></span>
+              <span class="bar">
+                <span class="seg is-on"></span><span class="seg is-on"></span><span class="seg is-on"></span><span class="seg is-on"></span>
+                <span class="seg is-on"></span><span class="seg is-on"></span><span class="seg is-on"></span><span class="seg is-on"></span>
+                <span class="seg"></span><span class="seg"></span><span class="seg"></span><span class="seg"></span>
+              </span>
+            </span>
+          </span>
+        </div>
+      </div>
+    </form>
+
+    <div class="row-actions">
+      <button class="btn">Avbryt</button>
+      <button class="btn lime"><i data-lucide="check"></i>Bekreft booking</button>
+    </div>
+  </div>
+
+  <!-- =================================================== -->
+  <!-- VARIANT 2 — Badge i profil                          -->
+  <!-- =================================================== -->
+  <div class="sec tight">Variant 2 · Badge i spillerprofil</div>
+  <div class="stage">
+    <div class="stage-head">
+      <span class="ctx">Variant 2</span>
+      <span>·</span>
+      <span>BADGE I PROFIL</span>
+      <span class="meta">Header på spillerside</span>
+    </div>
+
+    <div class="profile-card">
+      <div class="avatar">MB</div>
+      <div class="name">Markus Berg</div>
+      <div class="meta">GFGK · KONKURRANSE · COACH SOLBERG</div>
+      <div class="credit-badge">
+        <div class="pill-row">
+          <span class="tier pro">PRO</span>
+          <span class="num">8<span class="of"> / 12</span></span>
+        </div>
+        <span class="sub">CREDITS · 1 BRUKT DENNE UKA</span>
+      </div>
+    </div>
+
+    <div class="profile-card" style="border-top:1px solid var(--border)">
+      <div class="avatar" style="background:var(--secondary); color:var(--foreground)">SK</div>
+      <div class="name">Sofie K.</div>
+      <div class="meta">GFGK AKADEMI · MOSJONIST · COACH MARTE V.</div>
+      <div class="credit-badge">
+        <div class="pill-row">
+          <span class="tier free">FREE</span>
+          <span class="num">0<span class="of"> / 0</span></span>
+        </div>
+        <span class="sub">PAY-AS-YOU-GO</span>
+      </div>
+    </div>
+
+    <div class="profile-card" style="border-top:1px solid var(--border)">
+      <div class="avatar" style="background:var(--accent); color:var(--primary)">KL</div>
+      <div class="name">Karl Ludvig</div>
+      <div class="meta">AKA · KONKURRANSE · COACH NINA T.</div>
+      <div class="credit-badge">
+        <div class="pill-row">
+          <span class="tier elit">PERF</span>
+          <span class="num">∞</span>
+        </div>
+        <span class="sub">UBEGRENSET COACHING</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================== -->
+  <!-- VARIANT 3 — Coach-view i spillertabell              -->
+  <!-- =================================================== -->
+  <div class="sec tight">Variant 3 · Coach-view i spillertabell</div>
+  <div class="stage">
+    <div class="stage-head">
+      <span class="ctx">Variant 3</span>
+      <span>·</span>
+      <span>COACH-VIEW · TABELL</span>
+      <span class="meta">Stallen · sorter på credits</span>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Spiller</th>
+          <th>Gruppe</th>
+          <th>Tier</th>
+          <th class="r">Credits</th>
+          <th>Saldo</th>
+          <th class="r">Bookinger 7 d</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="row"><span class="av">MB</span>Markus Berg</span></td>
+          <td class="mono">GFGK</td>
+          <td><span class="tier pro">PRO</span></td>
+          <td class="r"><span class="credit-cell ok"><span class="frac">8<span class="of">/12</span></span></span></td>
+          <td>
+            <span class="credit-meter sm">
+              <span class="bar">
+                <span class="seg is-on"></span><span class="seg is-on"></span><span class="seg is-on"></span><span class="seg is-on"></span>
+                <span class="seg is-on"></span><span class="seg is-on"></span><span class="seg is-on"></span><span class="seg is-on"></span>
+                <span class="seg"></span><span class="seg"></span><span class="seg"></span><span class="seg"></span>
+              </span>
+            </span>
+          </td>
+          <td class="r mono">2</td>
+        </tr>
+        <tr>
+          <td><span class="row"><span class="av">EB</span>Emilie B.</span></td>
+          <td class="mono">GFGK</td>
+          <td><span class="tier pro">PRO</span></td>
+          <td class="r"><span class="credit-cell warn"><span class="frac">2<span class="of">/12</span></span></span></td>
+          <td>
+            <span class="credit-meter sm warn">
+              <span class="bar">
+                <span class="seg is-on"></span><span class="seg is-on"></span><span class="seg"></span><span class="seg"></span>
+                <span class="seg"></span><span class="seg"></span><span class="seg"></span><span class="seg"></span>
+                <span class="seg"></span><span class="seg"></span><span class="seg"></span><span class="seg"></span>
+              </span>
+            </span>
+          </td>
+          <td class="r mono">3</td>
+        </tr>
+        <tr>
+          <td><span class="row"><span class="av">KL</span>Karl Ludvig</span></td>
+          <td class="mono">AKA</td>
+          <td><span class="tier elit">PERF</span></td>
+          <td class="r"><span class="credit-cell ok"><span class="frac">∞</span></span></td>
+          <td>
+            <span style="font-family:var(--font-mono); font-size:10px; color:var(--muted-foreground); letter-spacing:0.04em">UBEGRENSET</span>
+          </td>
+          <td class="r mono">1</td>
+        </tr>
+        <tr>
+          <td><span class="row"><span class="av">JH</span>Jonas H.</span></td>
+          <td class="mono">GFGK</td>
+          <td><span class="tier pro">PRO</span></td>
+          <td class="r"><span class="credit-cell danger"><span class="frac">0<span class="of">/12</span></span></span></td>
+          <td>
+            <span class="credit-meter sm danger">
+              <span class="bar">
+                <span class="seg"></span><span class="seg"></span><span class="seg"></span><span class="seg"></span>
+                <span class="seg"></span><span class="seg"></span><span class="seg"></span><span class="seg"></span>
+                <span class="seg"></span><span class="seg"></span><span class="seg"></span><span class="seg"></span>
+              </span>
+            </span>
+          </td>
+          <td class="r mono">4</td>
+        </tr>
+        <tr>
+          <td><span class="row"><span class="av">SK</span>Sofie K.</span></td>
+          <td class="mono">GFGK</td>
+          <td><span class="tier free">FREE</span></td>
+          <td class="r"><span class="credit-cell empty">—</span></td>
+          <td><span style="font-family:var(--font-mono); font-size:10px; color:var(--muted-foreground); letter-spacing:0.04em">PAY-AS-YOU-GO</span></td>
+          <td class="r mono">0</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- =================================================== -->
+  <!-- VARIANT 4 — Empty state                              -->
+  <!-- =================================================== -->
+  <div class="sec tight">Tom-state · 0 credits</div>
+  <div class="stage">
+    <div class="stage-head">
+      <span class="ctx">Variant 4</span>
+      <span>·</span>
+      <span>TOM-STATE</span>
+      <span class="meta">Vises i booking-form når saldo = 0</span>
+    </div>
+
+    <div class="empty">
+      <span class="ic"><i data-lucide="ticket-x"></i></span>
+      <div>
+        <div class="nm">0 credits — betal per booking</div>
+        <div class="sub">Free tier · 250 kr per TrackMan-time · 450 kr per coaching</div>
+      </div>
+      <div class="actions">
+        <button class="btn">Fortsett uten</button>
+        <button class="btn lime"><i data-lucide="arrow-up-right"></i>Oppgrader til Pro</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Anatomy ===== -->
+  <div class="sec tight">Anatomi · credit-meter</div>
+  <div class="anatomy">
+    <div class="ana-card">
+      <div class="lbl">SM (tabell)</div>
+      <span class="credit-meter sm">
+        <span class="bar">
+          <span class="seg is-on"></span><span class="seg is-on"></span><span class="seg"></span><span class="seg"></span>
+        </span>
+      </span>
+      <div class="dsc">Brukes i tette tabell-rader. Kun bar — tall vises i egen celle.</div>
+    </div>
+    <div class="ana-card">
+      <div class="lbl">MD (default)</div>
+      <span class="credit-meter">
+        <span class="label">2 <span class="of">/ 4 credits</span></span>
+        <span class="bar">
+          <span class="seg is-on"></span><span class="seg is-on"></span><span class="seg"></span><span class="seg"></span>
+        </span>
+      </span>
+      <div class="dsc">I form og inline-kontekst. Label venstre, bar høyre.</div>
+    </div>
+    <div class="ana-card">
+      <div class="lbl">LG (profil)</div>
+      <span class="credit-meter lg">
+        <span class="label">2 <span class="of">/ 4</span></span>
+        <span class="bar">
+          <span class="seg is-on"></span><span class="seg is-on"></span><span class="seg"></span><span class="seg"></span>
+        </span>
+      </span>
+      <div class="dsc">Hero-plassering i profil-banner.</div>
+    </div>
+    <div class="ana-card">
+      <div class="lbl">FARGE-LOGIKK</div>
+      <div style="display:flex; flex-direction:column; gap:6px">
+        <span class="credit-meter sm">
+          <span class="bar">
+            <span class="seg is-on"></span><span class="seg is-on"></span><span class="seg"></span><span class="seg"></span>
+          </span>
+        </span>
+        <span class="credit-meter sm warn">
+          <span class="bar">
+            <span class="seg is-on"></span><span class="seg"></span><span class="seg"></span><span class="seg"></span>
+          </span>
+        </span>
+        <span class="credit-meter sm danger">
+          <span class="bar">
+            <span class="seg"></span><span class="seg"></span><span class="seg"></span><span class="seg"></span>
+          </span>
+        </span>
+      </div>
+      <div class="dsc">≥ 50 % forest · 25 % varsel · 0 destructive.</div>
+    </div>
+  </div>
+
+  <div class="rules">
+    <p><b>Forretningslogikk:</b> credits = forhåndsbetalte coaching-/TrackMan-bookinger. FREE = 0 (pay-as-you-go). PRO = 12. PERFORMANCE = ∞ (ubegrenset). Fornyes månedlig.</p>
+    <p><b>Bar:</b> én segment per credit (12 maks; over 12 — vis numerisk i stedet for bar). Aktive segmenter = <code>--primary</code>. Siste segment kan rendres i <code>--accent</code> for å forsterke "én igjen".</p>
+    <p><b>Farge-trigger:</b> ≥ 50 % saldo = forest (default). Under 50 % = warning okker. 0 = destructive rød.</p>
+    <p><b>Konsistens:</b> alle tall i JetBrains Mono, <code>tnum, zero</code>. Brøk-format alltid "X / Y credits" eller kompakt "X/Y" i tabell.</p>
+  </div>
+
+  <script>lucide.createIcons();</script>
+
+  <script>
+  /* ============================================================
+     R31 · MEG — profil-credit-badge utvider seg til et breakdown,
+     og profil-kortene har hover-løft. Tall avledet fra badgen selv.
+     ============================================================ */
+  (function () {
+    document.querySelectorAll('.profile-card').forEach(function (card) {
+      var tierEl = card.querySelector('.tier');
+      var numEl = card.querySelector('.pill-row .num');
+      if (!tierEl || !numEl) return;
+      var tier = tierEl.textContent.trim();
+      var num = numEl.textContent.replace(/\s/g, '');
+      var inner;
+      if (num.indexOf('/') > -1) {
+        var parts = num.split('/');
+        var now = parseInt(parts[0], 10);
+        var total = parseInt(parts[1], 10);
+        if (total > 0) {
+          var brukt = total - now;
+          inner = '<div class="stat-row">' +
+            '<div class="st"><div class="k">Igjen</div><div class="v">' + now + ' / ' + total + '</div></div>' +
+            '<div class="st"><div class="k">Brukt denne perioden</div><div class="v">' + brukt + '</div></div>' +
+            '<div class="st"><div class="k">Fornyer</div><div class="v">+' + total + ' · 15. jun</div></div>' +
+          '</div>';
+        } else {
+          inner = '<div class="note">Pay-as-you-go · 250 kr per TrackMan-time · 450 kr per coaching</div>';
+        }
+      } else {
+        inner = '<div class="note">Ubegrenset coaching · ingen credit-telling på ' + tier + '-tier</div>';
+      }
+      var exp = document.createElement('div');
+      exp.className = 'cb-exp';
+      exp.innerHTML = '<div class="inner">' + inner + '</div>';
+      card.after(exp);
+
+      card.setAttribute('role', 'button');
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('aria-expanded', 'false');
+      function toggle() {
+        var open = card.classList.toggle('is-open');
+        card.setAttribute('aria-expanded', open ? 'true' : 'false');
+      }
+      card.addEventListener('click', toggle);
+      card.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+      });
+    });
+  })();
+  </script>
+</div></body></html>

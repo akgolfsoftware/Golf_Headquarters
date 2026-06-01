@@ -1,0 +1,1002 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>AgencyOS daglig brief</title>
+<link rel="stylesheet" href="_shared.css">
+<script src="https://unpkg.com/lucide@0.453.0"></script>
+<style>
+  body { width: 1200px; }
+  .card { padding: 24px; }
+
+  .sec {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    display: flex; align-items: center; gap: 8px;
+    margin: 0 0 14px;
+  }
+  .sec::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+
+  /* ============================================================
+     Outer brief header
+     ============================================================ */
+  .brief-head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .brief-head .title {
+    font-family: var(--font-display); font-weight: 700; font-size: 26px;
+    letter-spacing: -0.02em; line-height: 1.1; color: var(--foreground);
+  }
+  .brief-head .title em {
+    font-style: italic; font-weight: 400; color: var(--primary);
+  }
+  .brief-head .when {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .brief-head .when .live {
+    display: inline-flex; align-items: center; gap: 5px;
+    color: var(--primary);
+  }
+  .brief-head .when .live::before {
+    content: ""; width: 6px; height: 6px; border-radius: 9999px;
+    background: var(--accent);
+    box-shadow: 0 0 6px rgba(209,248,67,0.7);
+    animation: livepulse 1.8s ease-in-out infinite;
+  }
+
+  /* ============================================================
+     3-column grid
+     ============================================================ */
+  .grid3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .col {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    height: 720px;
+  }
+  .col-head {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .col-head .lbl {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--foreground);
+  }
+  .col-head .ct {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .col-head .ct.alert { color: var(--destructive); }
+  .col-head .filter {
+    margin-left: auto;
+    display: inline-flex; align-items: center; gap: 4px;
+    height: 22px; padding: 0 8px; border-radius: 9999px;
+    background: var(--secondary);
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.10em; text-transform: uppercase;
+    cursor: pointer;
+  }
+  .col-head .filter i { width: 10px; height: 10px; }
+
+  .col-body { flex: 1; overflow-y: auto; }
+  .col-body::-webkit-scrollbar { width: 6px; }
+  .col-body::-webkit-scrollbar-thumb { background: var(--cream-300); border-radius: 9999px; }
+
+  /* ============================================================
+     COL 1 — TIMELINE
+     ============================================================ */
+  .tl {
+    position: relative;
+    padding: 8px 14px 14px;
+  }
+  .tl::before {
+    content: ""; position: absolute;
+    top: 18px; bottom: 14px; left: 56px;
+    width: 1px; background: var(--border);
+  }
+  .tl .now {
+    position: absolute; left: 14px; right: 14px;
+    height: 2px; background: var(--accent);
+    box-shadow: 0 0 8px rgba(209,248,67,0.5);
+    z-index: 2;
+  }
+  .tl .now::before {
+    content: ""; position: absolute; left: 38px; top: -4px;
+    width: 10px; height: 10px; border-radius: 9999px;
+    background: var(--accent); border: 2px solid var(--card);
+  }
+  .tl .now .pill {
+    position: absolute; right: 0; top: -10px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    color: var(--primary); background: var(--accent);
+    padding: 2px 8px; border-radius: 9999px;
+    text-transform: uppercase; letter-spacing: 0.10em;
+  }
+
+  .tl-row {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    column-gap: 16px;
+    align-items: flex-start;
+    padding: 10px 0;
+    position: relative;
+  }
+  .tl-row .tm {
+    font-family: var(--font-mono); font-size: 12px; font-weight: 800;
+    color: var(--foreground); letter-spacing: -0.005em;
+    font-feature-settings: "tnum","zero";
+    line-height: 1.2;
+  }
+  .tl-row .tm .dur {
+    display: block;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 600;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    margin-top: 2px;
+  }
+  .tl-row .ev {
+    position: relative;
+    padding: 8px 10px 10px 14px;
+    background: var(--cream-50);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .tl-row .ev:hover { background: var(--secondary); }
+  .tl-row .ev::before {
+    content: ""; position: absolute; left: 0; top: 8px; bottom: 8px;
+    width: 3px; border-radius: 9999px;
+    background: var(--muted-foreground);
+  }
+  .tl-row.fys   .ev::before { background: var(--pyr-fys); }
+  .tl-row.tek   .ev::before { background: var(--pyr-tek); }
+  .tl-row.slag  .ev::before { background: var(--pyr-slag); }
+  .tl-row.spill .ev::before { background: var(--pyr-spill); }
+  .tl-row.turn  .ev::before { background: var(--pyr-turn); }
+
+  .tl-row .ev .head-row {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .tl-row .ev .av {
+    width: 22px; height: 22px; border-radius: 9999px;
+    background: var(--secondary); color: var(--foreground);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-weight: 700; font-size: 9px;
+    flex-shrink: 0;
+  }
+  .tl-row .ev .pname {
+    font-size: 12px; font-weight: 700; line-height: 1.2;
+    color: var(--foreground); letter-spacing: -0.005em;
+  }
+  .tl-row .ev .ax {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    padding: 2px 6px; border-radius: 9999px;
+    background: var(--secondary); color: var(--muted-foreground);
+  }
+  .tl-row.fys   .ev .ax { background: rgba(0,88,64,0.10);   color: var(--success-foreground); }
+  .tl-row.tek   .ev .ax { background: rgba(184,133,42,0.14); color: var(--warning-foreground); }
+  .tl-row.slag  .ev .ax { background: rgba(37,99,235,0.10); color: var(--info-foreground); }
+  .tl-row.spill .ev .ax { background: rgba(209,248,67,0.30); color: var(--primary); }
+  .tl-row.turn  .ev .ax { background: rgba(163,45,45,0.10); color: var(--destructive-foreground); }
+
+  .tl-row .ev .nm {
+    font-size: 12px; line-height: 1.3;
+    color: var(--foreground); letter-spacing: -0.005em;
+    margin-top: 4px;
+  }
+  .tl-row .ev .meta {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    margin-top: 4px;
+    display: inline-flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  }
+  .tl-row .ev .meta i { width: 10px; height: 10px; }
+  .tl-row .ev .meta .gchip {
+    height: 14px; padding: 0 5px; border-radius: 3px;
+    font-family: var(--font-mono); font-size: 8px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    display: inline-flex; align-items: center;
+  }
+  .tl-row .ev .meta .gchip.wang { background: rgba(94,92,107,0.10); color: var(--neutral-chip-foreground); }
+  .tl-row .ev .meta .gchip.gfgk { background: rgba(0,88,64,0.10);   color: var(--success-foreground); }
+  .tl-row .ev .meta .gchip.test { background: rgba(37,99,235,0.10); color: var(--info-foreground); }
+
+  .tl-row.is-active .ev { background: var(--card); box-shadow: 0 0 0 2px var(--accent); }
+  .tl-row.is-active .tm { color: var(--primary); }
+  .tl-row .live-pill {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    color: var(--primary);
+    margin-left: auto;
+  }
+  .tl-row .live-pill::before {
+    content: ""; width: 5px; height: 5px; border-radius: 9999px;
+    background: var(--accent);
+    box-shadow: 0 0 4px rgba(209,248,67,0.7);
+    animation: livepulse 1.8s ease-in-out infinite;
+  }
+  @keyframes livepulse {
+    0%, 100% { box-shadow: 0 0 4px rgba(209,248,67,0.7); }
+    50%      { box-shadow: 0 0 9px rgba(209,248,67,0.95); }
+  }
+
+  /* Done sessions — past NOW. Dimmed, checked. */
+  .tl-row.is-done .ev { opacity: 0.62; }
+  .tl-row.is-done .tm { color: var(--muted-foreground); }
+  .tl-row.is-done .ev .pname { text-decoration: line-through; text-decoration-color: var(--cream-300); }
+  .tl-row .done-pill {
+    display: inline-flex; align-items: center; gap: 4px;
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    color: var(--success);
+  }
+  .tl-row .done-pill i { width: 11px; height: 11px; }
+  /* Upcoming sessions — future. Subtle countdown chip injected by JS. */
+  .tl-row .eta {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    margin-top: 2px;
+  }
+  .tl-row .eta.next { color: var(--primary); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tl-row .live-pill::before,
+    .brief-head .when .live::before { animation: none; }
+  }
+
+  /* ============================================================
+     COL 2 — INBOX + TASKS
+     ============================================================ */
+  .ix-section {
+    padding: 4px 14px 14px;
+  }
+  .ix-section + .ix-section {
+    border-top: 1px solid var(--border);
+    padding-top: 14px;
+  }
+  .ix-row {
+    display: grid;
+    grid-template-columns: 24px 1fr auto;
+    column-gap: 10px;
+    align-items: center;
+    padding: 9px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    position: relative;
+  }
+  .ix-row + .ix-row { border-top: 1px solid var(--border); border-radius: 0; }
+  .ix-row:hover { background: var(--secondary); }
+  .ix-row.unread .pname { color: var(--foreground); }
+  .ix-row.unread::before {
+    content: ""; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+    width: 4px; height: 4px; border-radius: 9999px;
+    background: var(--destructive);
+  }
+  .ix-row .av {
+    width: 24px; height: 24px; border-radius: 9999px;
+    background: var(--secondary); color: var(--foreground);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-weight: 700; font-size: 9px;
+    flex-shrink: 0;
+  }
+  .ix-row .body {
+    min-width: 0;
+    display: flex; flex-direction: column; line-height: 1.2;
+  }
+  .ix-row .pname {
+    font-size: 12px; font-weight: 600; color: var(--muted-foreground);
+    letter-spacing: -0.005em;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .ix-row .pname .type {
+    font-family: var(--font-mono); font-size: 8px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    padding: 1px 5px; border-radius: 3px;
+  }
+  .ix-row .type.appr  { background: rgba(209,248,67,0.30); color: var(--primary); }
+  .ix-row .type.req   { background: rgba(37,99,235,0.10);  color: var(--info-foreground); }
+  .ix-row .type.msg   { background: var(--secondary);      color: var(--muted-foreground); }
+  .ix-row .type.advice{ background: rgba(184,133,42,0.14); color: var(--warning-foreground); }
+  .ix-row .preview {
+    font-size: 11px; color: var(--foreground); letter-spacing: -0.005em;
+    margin-top: 2px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .ix-row.unread .preview { font-weight: 600; }
+  .ix-row .when {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    flex-shrink: 0;
+  }
+
+  .ix-head {
+    display: flex; align-items: center; gap: 8px;
+    padding: 4px 8px 10px;
+  }
+  .ix-head .l {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--foreground);
+  }
+  .ix-head .c {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground);
+  }
+  .ix-head .c.alert { color: var(--destructive); }
+  .ix-head .link {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    color: var(--primary); cursor: pointer;
+  }
+
+  /* TASKS */
+  .task {
+    display: grid;
+    grid-template-columns: 18px 1fr auto;
+    column-gap: 10px;
+    padding: 7px 8px;
+    border-radius: 6px;
+    align-items: center;
+    cursor: pointer;
+  }
+  .task:hover { background: var(--secondary); }
+  .task .chk {
+    width: 16px; height: 16px;
+    border: 1.5px solid var(--input);
+    border-radius: 4px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: transparent;
+    background: var(--card);
+  }
+  .task .chk i { width: 11px; height: 11px; }
+  .task.done .chk {
+    background: var(--primary); border-color: var(--primary); color: var(--accent);
+  }
+  .task .label {
+    font-size: 12px; line-height: 1.3; letter-spacing: -0.005em;
+    color: var(--foreground);
+  }
+  .task.done .label {
+    color: var(--muted-foreground); text-decoration: line-through;
+  }
+  .task .tag {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    color: var(--muted-foreground);
+  }
+  .task .tag.due {
+    color: var(--destructive);
+  }
+
+  /* ============================================================
+     COL 3 — FOKUS-SPILLERE
+     ============================================================ */
+  .focus-wrap { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .focus {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--card);
+  }
+  .focus.alert {
+    background: linear-gradient(180deg, rgba(163,45,45,0.04), transparent 40%);
+    border-color: rgba(163,45,45,0.30);
+  }
+  .focus .row {
+    display: grid;
+    grid-template-columns: 44px 1fr auto;
+    column-gap: 12px;
+    align-items: center;
+    padding: 12px;
+  }
+  .focus .av {
+    width: 44px; height: 44px; border-radius: 9999px;
+    background: var(--secondary); color: var(--foreground);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-weight: 700; font-size: 14px;
+    position: relative;
+  }
+  .focus .av.markus { background: var(--primary); color: var(--accent); }
+  .focus .av.sofie  { background: var(--cream-200); color: var(--foreground); }
+  .focus .av.jonas  { background: var(--secondary); color: var(--foreground); }
+
+  .focus .name {
+    font-family: var(--font-display); font-weight: 700; font-size: 15px;
+    letter-spacing: -0.015em; line-height: 1.1; color: var(--foreground);
+  }
+  .focus .meta {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted-foreground); letter-spacing: 0.06em;
+    margin-top: 2px; text-transform: uppercase;
+  }
+  .focus .signal {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 9999px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+  }
+  .focus .signal.alert {
+    background: rgba(163,45,45,0.10); color: var(--destructive);
+  }
+  .focus .signal.warn {
+    background: rgba(184,133,42,0.14); color: var(--warning-foreground);
+  }
+  .focus .signal.lime {
+    background: var(--accent); color: var(--primary);
+  }
+  .focus .signal i { width: 11px; height: 11px; }
+
+  .focus .reason {
+    padding: 0 12px 10px;
+    font-size: 12px; line-height: 1.45;
+    color: var(--foreground); letter-spacing: -0.005em;
+  }
+  .focus .reason b { font-weight: 700; }
+  .focus .reason em {
+    font-style: normal;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    background: var(--secondary);
+    padding: 1px 6px; border-radius: 3px;
+    margin: 0 2px;
+  }
+
+  .focus .actions {
+    display: flex; gap: 6px;
+    padding: 0 12px 12px;
+  }
+  .focus .actions .qa {
+    height: 30px; padding: 0 10px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--card);
+    color: var(--foreground);
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .focus .actions .qa:hover { background: var(--secondary); }
+  .focus .actions .qa.pri {
+    background: var(--primary); color: var(--accent); border-color: var(--primary);
+  }
+  .focus .actions .qa.pri:hover { background: var(--primary-hover); }
+  .focus .actions .qa i { width: 11px; height: 11px; }
+
+  /* ============================================================
+     KPI STRIP
+     ============================================================ */
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .kpi {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    display: flex; flex-direction: column; gap: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi .top {
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .kpi .lbl {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .kpi .ic {
+    width: 24px; height: 24px; border-radius: 6px;
+    background: var(--secondary); color: var(--muted-foreground);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .kpi .ic i { width: 14px; height: 14px; }
+  .kpi .val {
+    font-family: var(--font-mono); font-weight: 700; font-size: 34px;
+    letter-spacing: -0.02em; line-height: 1; color: var(--foreground);
+    font-feature-settings: "tnum","zero";
+  }
+  .kpi .val .un {
+    font-size: 16px; font-weight: 700; color: var(--muted-foreground);
+    margin-left: 4px;
+  }
+  .kpi .delta {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .kpi .delta i { width: 11px; height: 11px; }
+  .kpi .delta.up   { color: var(--success); }
+  .kpi .delta.down { color: var(--destructive); }
+  .kpi .spark {
+    position: absolute; right: 14px; bottom: 14px;
+    width: 80px; height: 24px;
+    opacity: 0.6;
+  }
+
+  /* Rules box */
+  .rules {
+    margin-top: 24px; padding: 16px;
+    background: var(--secondary); border-radius: 12px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted-foreground); line-height: 1.6;
+  }
+  .rules p { margin: 0; }
+  .rules p + p { margin-top: 8px; }
+  .rules b { color: var(--foreground); font-weight: 700; }
+  .rules code {
+    background: var(--card); padding: 1px 5px; border-radius: 3px;
+    color: var(--foreground); font-weight: 700;
+  }
+</style></head>
+<body><div class="card">
+
+  <div class="sec">AgencyOS · daglig brief · 3-kolonne Bloomberg-tetthet</div>
+
+  <!-- ===== Header ===== -->
+  <div class="brief-head">
+    <div class="title">God formiddag, Andreas — <em>Markus er på range nå.</em></div>
+    <div class="when">
+      <span class="live">LIVE</span>
+      ONSDAG 28 MAI · 11:24
+    </div>
+  </div>
+
+  <!-- ===== 3-column grid ===== -->
+  <div class="grid3">
+
+    <!-- ============================================ -->
+    <!-- COL 1 — TIMELINE                              -->
+    <!-- ============================================ -->
+    <div class="col">
+      <div class="col-head">
+        <span class="lbl">DAGENS TIMELINE</span>
+        <span class="ct">ONSDAG 28 MAI · 4 ØKTER</span>
+        <span class="filter">ALLE<i data-lucide="chevron-down"></i></span>
+      </div>
+
+      <div class="col-body">
+        <div class="tl">
+
+          <!-- 09:00 Sofie K. TEK gruppe WANG -->
+          <div class="tl-row tek" data-start="540" data-dur="60">
+            <div class="tm">09:00<span class="dur">60 m</span></div>
+            <div class="ev">
+              <div class="head-row">
+                <span class="av">SK</span>
+                <span class="pname">Sofie K.</span>
+                <span class="ax">TEK</span>
+              </div>
+              <div class="nm">Sekvens P4–P8 · balltreff</div>
+              <div class="meta">
+                <span><i data-lucide="users"></i>5 spillere</span>
+                <span class="gchip wang">WANG</span>
+                <span><i data-lucide="map-pin"></i>GFGK · matte 1–5</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 11:00 Markus Berg SLAG 1-1 -->
+          <div class="tl-row slag" data-start="660" data-dur="60">
+            <div class="tm">11:00<span class="dur">60 m</span></div>
+            <div class="ev">
+              <div class="head-row">
+                <span class="av" style="background:var(--primary); color:var(--accent)">MB</span>
+                <span class="pname">Markus Berg</span>
+                <span class="live-pill">PÅGÅR</span>
+                <span class="ax" style="margin-left:8px">SLAG</span>
+              </div>
+              <div class="nm">Innspill 50–80 m · presisjon</div>
+              <div class="meta">
+                <span><i data-lucide="user"></i>1-til-1</span>
+                <span><i data-lucide="layers"></i>4 drills · CS 80</span>
+                <span><i data-lucide="map-pin"></i>GFGK · TM 3</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 14:30 Emilie B. TEK TEST -->
+          <div class="tl-row tek" data-start="870" data-dur="45">
+            <div class="tm">14:30<span class="dur">45 m</span></div>
+            <div class="ev">
+              <div class="head-row">
+                <span class="av">EB</span>
+                <span class="pname">Emilie B.</span>
+                <span class="ax">TEK</span>
+              </div>
+              <div class="nm">Putt-konsistens 4 m · TEST</div>
+              <div class="meta">
+                <span><i data-lucide="clipboard-check"></i>TEST-UKE</span>
+                <span class="gchip test">TEST</span>
+                <span><i data-lucide="map-pin"></i>Indoor green</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 17:00 Karl Ludvig SPILL -->
+          <div class="tl-row spill" data-start="1020" data-dur="90">
+            <div class="tm">17:00<span class="dur">90 m</span></div>
+            <div class="ev">
+              <div class="head-row">
+                <span class="av" style="background:var(--accent); color:var(--primary)">KL</span>
+                <span class="pname">Karl Ludvig</span>
+                <span class="ax">SPILL</span>
+              </div>
+              <div class="nm">9-hulls spillsimulering</div>
+              <div class="meta">
+                <span><i data-lucide="user"></i>1-til-1</span>
+                <span><i data-lucide="map-pin"></i>GFGK Old · hull 10–18</span>
+                <span><i data-lucide="cloud"></i>9 °C</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- COL 2 — INBOX + TASKS                         -->
+    <!-- ============================================ -->
+    <div class="col">
+      <div class="col-head">
+        <span class="lbl">INNBOKS</span>
+        <span class="ct alert">3 ULESTE</span>
+        <span class="filter">ALLE<i data-lucide="chevron-down"></i></span>
+      </div>
+
+      <div class="col-body">
+
+        <div class="ix-section">
+          <div class="ix-head">
+            <span class="l">SISTE 24 T</span>
+            <span class="c">6</span>
+            <span class="link">SE ALLE</span>
+          </div>
+
+          <div class="ix-row unread">
+            <span class="av" style="background:var(--primary); color:var(--accent)">MB</span>
+            <div class="body">
+              <span class="pname">Markus Berg <span class="type appr">GODKJENN</span></span>
+              <span class="preview">Foreslår å bytte fre-økt til lørdag før Srixon Tour #2</span>
+            </div>
+            <span class="when">07:42</span>
+          </div>
+
+          <div class="ix-row unread">
+            <span class="av">SK</span>
+            <div class="body">
+              <span class="pname">Sofie K. <span class="type req">FORESPØRSEL</span></span>
+              <span class="preview">Kan jeg booke ekstra TrackMan-time tirsdag?</span>
+            </div>
+            <span class="when">06:18</span>
+          </div>
+
+          <div class="ix-row unread">
+            <span class="av" style="background:var(--accent); color:var(--primary)">KL</span>
+            <div class="body">
+              <span class="pname">Karl Ludvig <span class="type msg">MELDING</span></span>
+              <span class="preview">Sender video fra runden i går — ser noe på driveren</span>
+            </div>
+            <span class="when">i går 21:14</span>
+          </div>
+
+          <div class="ix-row">
+            <span class="av">EB</span>
+            <div class="body">
+              <span class="pname">Emilie B. <span class="type msg">MELDING</span></span>
+              <span class="preview">Takk for økten — føles bra med ny gripp</span>
+            </div>
+            <span class="when">i går 18:02</span>
+          </div>
+
+          <div class="ix-row">
+            <span class="av" style="background:var(--secondary)">JH</span>
+            <div class="body">
+              <span class="pname">Jonas H. <span class="type advice">RÅD</span></span>
+              <span class="preview">Wedge-bytte før neste turnering — får ikke til vinkel</span>
+            </div>
+            <span class="when">i går 15:55</span>
+          </div>
+
+          <div class="ix-row">
+            <span class="av">SY</span>
+            <div class="body">
+              <span class="pname">Stiftelsen Y. <span class="type msg">MELDING</span></span>
+              <span class="preview">Bekreftelse på reise-stipend Q3 — vedlegg</span>
+            </div>
+            <span class="when">i går 12:30</span>
+          </div>
+        </div>
+
+        <div class="ix-section">
+          <div class="ix-head">
+            <span class="l">OPPGAVER</span>
+            <span class="c">3 av 5 i dag</span>
+            <span class="link">+ NY</span>
+          </div>
+
+          <div class="task done">
+            <span class="chk"><i data-lucide="check"></i></span>
+            <span class="label">Send video-feedback til Markus (Innspill 50–80)</span>
+            <span class="tag">⌘1</span>
+          </div>
+          <div class="task done">
+            <span class="chk"><i data-lucide="check"></i></span>
+            <span class="label">Godkjenn Sofies plan-endring · uke 22</span>
+            <span class="tag">2 m</span>
+          </div>
+          <div class="task done">
+            <span class="chk"><i data-lucide="check"></i></span>
+            <span class="label">Bestille range-baller torsdag</span>
+            <span class="tag">5 m</span>
+          </div>
+          <div class="task">
+            <span class="chk"></span>
+            <span class="label">Ring forelder til Karl L. (turneringspåmelding)</span>
+            <span class="tag due">DAG</span>
+          </div>
+          <div class="task">
+            <span class="chk"></span>
+            <span class="label">Klargjør Srixon Tour #2-orientering for fredag</span>
+            <span class="tag">FRE</span>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- COL 3 — FOKUS-SPILLERE                        -->
+    <!-- ============================================ -->
+    <div class="col">
+      <div class="col-head">
+        <span class="lbl">TRENGER OPPMERKSOMHET</span>
+        <span class="ct">3 SPILLERE</span>
+        <span class="filter">AUTO<i data-lucide="chevron-down"></i></span>
+      </div>
+
+      <div class="col-body">
+        <div class="focus-wrap">
+
+          <div class="focus alert">
+            <div class="row">
+              <span class="av markus">MB</span>
+              <div>
+                <div class="name">Markus Berg</div>
+                <div class="meta">WANG · KONK · 12 DG TIL SRIXON #2</div>
+              </div>
+              <span class="signal alert">
+                <i data-lucide="alert-triangle"></i>2 ØKTER BAK
+              </span>
+            </div>
+            <div class="reason">
+              Taper <b>−0,42 SG i innspill</b>, men kun <em>2 av 6 t</em> SLAG-trening denne uka.
+              Foreslå tilleggs-økt før helgen.
+            </div>
+            <div class="actions">
+              <button class="qa pri"><i data-lucide="plus"></i>Legg til økt</button>
+              <button class="qa"><i data-lucide="message-square"></i>Melding</button>
+              <button class="qa"><i data-lucide="user"></i>Profil</button>
+            </div>
+          </div>
+
+          <div class="focus">
+            <div class="row">
+              <span class="av sofie">SK</span>
+              <div>
+                <div class="name">Sofie K.</div>
+                <div class="meta">GFGK · MOSJONIST · 8 ØKTER 30 D</div>
+              </div>
+              <span class="signal lime">
+                <i data-lucide="hand"></i>ØNSKER VEILEDNING
+              </span>
+            </div>
+            <div class="reason">
+              Spurt om hjelp med <b>nærspill 20–30 m</b>. Plan B-utkast venter.
+              Kort 1-1 før gruppen i dag?
+            </div>
+            <div class="actions">
+              <button class="qa pri"><i data-lucide="calendar-plus"></i>Book 30 m</button>
+              <button class="qa"><i data-lucide="reply"></i>Svar</button>
+            </div>
+          </div>
+
+          <div class="focus alert">
+            <div class="row">
+              <span class="av jonas">JH</span>
+              <div>
+                <div class="name">Jonas H.</div>
+                <div class="meta">GFGK · KONKURRANSE · INAKTIV</div>
+              </div>
+              <span class="signal warn">
+                <i data-lucide="zap-off"></i>5 DG INAKTIV
+              </span>
+            </div>
+            <div class="reason">
+              Ingen registrerte økter siden <em>23. mai</em>. Ingen
+              kommunikasjon. Sjekk inn.
+            </div>
+            <div class="actions">
+              <button class="qa pri"><i data-lucide="phone"></i>Ring</button>
+              <button class="qa"><i data-lucide="message-square"></i>Melding</button>
+              <button class="qa"><i data-lucide="user"></i>Profil</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== KPI STRIP ===== -->
+  <div class="kpis">
+
+    <div class="kpi">
+      <div class="top">
+        <span class="lbl">AKTIVE SPILLERE</span>
+        <span class="ic"><i data-lucide="users"></i></span>
+      </div>
+      <div class="val">38</div>
+      <div class="delta up"><i data-lucide="trending-up"></i>+2 denne mnd.</div>
+      <svg class="spark" viewBox="0 0 80 24" preserveAspectRatio="none">
+        <path d="M0 18 L 13 16 L 26 14 L 40 12 L 53 9 L 66 8 L 80 5"
+              fill="none" stroke="var(--primary)" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <div class="kpi">
+      <div class="top">
+        <span class="lbl">ØKTER I DAG</span>
+        <span class="ic"><i data-lucide="calendar-clock"></i></span>
+      </div>
+      <div class="val">4</div>
+      <div class="delta"><i data-lucide="minus"></i><span id="oktBreakdownVal">1 fullført · 1 pågår · 2 igjen</span></div>
+      <svg class="spark" viewBox="0 0 80 24" preserveAspectRatio="none">
+        <rect x="0"  y="10" width="6" height="14" fill="var(--cream-300)"/>
+        <rect x="12" y="6"  width="6" height="18" fill="var(--cream-300)"/>
+        <rect x="24" y="2"  width="6" height="22" fill="var(--accent)"/>
+        <rect x="36" y="8"  width="6" height="16" fill="var(--cream-300)"/>
+        <rect x="48" y="12" width="6" height="12" fill="var(--cream-300)"/>
+        <rect x="60" y="4"  width="6" height="20" fill="var(--cream-300)"/>
+        <rect x="72" y="14" width="6" height="10" fill="var(--cream-300)"/>
+      </svg>
+    </div>
+
+    <div class="kpi">
+      <div class="top">
+        <span class="lbl">BOOKINGER · UKE 22</span>
+        <span class="ic"><i data-lucide="clock"></i></span>
+      </div>
+      <div class="val">12</div>
+      <div class="delta up"><i data-lucide="trending-up"></i>+3 vs uke 21</div>
+      <svg class="spark" viewBox="0 0 80 24" preserveAspectRatio="none">
+        <path d="M0 18 L 13 14 L 26 16 L 40 10 L 53 12 L 66 7 L 80 4"
+              fill="none" stroke="var(--primary)" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <div class="kpi">
+      <div class="top">
+        <span class="lbl">TRENINGSTIMER · STALLEN</span>
+        <span class="ic"><i data-lucide="activity"></i></span>
+      </div>
+      <div class="val">142<span class="un">t</span></div>
+      <div class="delta up"><i data-lucide="trending-up"></i>+18 t vs 30 d</div>
+      <svg class="spark" viewBox="0 0 80 24" preserveAspectRatio="none">
+        <path d="M0 16 L 13 18 L 26 14 L 40 12 L 53 13 L 66 8 L 80 6"
+              fill="none" stroke="var(--primary)" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+  </div>
+
+  <div class="rules">
+    <p><b>Tre kolonner.</b> Bloomberg-tetthet — linehøyde 1.2–1.45, mono caps 8–10 px for labels. Hver kolonne har egen header med count + filter, scrollbar bare ved overflow.</p>
+    <p><b>Timeline (kol 1).</b> Spillerens avatar er anker. Klokkeslett venstre i mono. Pyramide-akse-pille høyre, 3 px farget kant. Pågående økt: 2 px lime ring + <code>PÅGÅR</code>-puls.</p>
+    <p><b>Innboks (kol 2).</b> Uleste: rød 4 px dot venstre + foreground tekst. Type-pille (GODKJENN/FORESPØRSEL/MELDING/RÅD) anvender pyramide-farger semantisk. Oppgaver-seksjon under separator med 16 px checkbox + DAG/FRE tag.</p>
+    <p><b>Fokus-spillere (kol 3).</b> Alarm-kort har rød-tonet gradient + rød border. Signal-pille er hoved-information: ALERT / WARN / LIME. Quick-actions inline i kortet: maks 3 knapper, primary først.</p>
+    <p><b>KPI-strip.</b> 4 kort i én rad. Tall i JetBrains Mono 34 px tabular. Subtilt spark / barchart bottom-right. Delta-rad alltid mono med opp/ned-pil og tegn. <b>Ingen HCP</b> — primær-KPI er aktivitet og volum, ikke handicap.</p>
+  </div>
+
+  <script>
+    /* ---- Daglig brief · én sann "nå" styrer hele skjermen ----
+       NOW settes én gang; økt-states (ferdig / pågår / kommer),
+       NÅ-streken og KPI-fordelingen utledes fra DOM — ikke hardkodet. */
+    (function () {
+      var NOW = 11 * 60 + 24;            // ONSDAG 28 MAI · 11:24
+      var tl = document.querySelector('.tl');
+      if (!tl) return;
+      var rows = Array.prototype.slice.call(tl.querySelectorAll('.tl-row'));
+      var done = 0, active = 0, upcoming = 0, firstUpcoming = null;
+
+      rows.forEach(function (row) {
+        var start = +row.getAttribute('data-start');
+        var dur   = +row.getAttribute('data-dur');
+        if (isNaN(start)) return;
+        var end = start + dur;
+        row.classList.remove('is-active', 'is-done', 'is-upcoming');
+        var headRow = row.querySelector('.head-row');
+        var livePill = row.querySelector('.live-pill');
+
+        if (NOW >= end) {                                  // ferdig
+          done++;
+          row.classList.add('is-done');
+          if (livePill) livePill.remove();
+          if (headRow && !headRow.querySelector('.done-pill')) {
+            var dp = document.createElement('span');
+            dp.className = 'done-pill';
+            dp.innerHTML = '<i data-lucide="check"></i>FERDIG';
+            var ax = headRow.querySelector('.ax');
+            headRow.insertBefore(dp, ax || null);
+          }
+        } else if (NOW >= start) {                         // pågår
+          active++;
+          row.classList.add('is-active');
+        } else {                                           // kommer
+          upcoming++;
+          row.classList.add('is-upcoming');
+          if (livePill) livePill.remove();
+          if (!firstUpcoming) firstUpcoming = row;
+          var ev = row.querySelector('.ev');
+          if (ev && !ev.querySelector('.eta')) {
+            var mins = start - NOW;
+            var label = mins >= 60 ? 'om ' + Math.floor(mins / 60) + ' t ' + (mins % 60) + ' m'
+                                   : 'om ' + mins + ' m';
+            var eta = document.createElement('div');
+            eta.className = 'eta';
+            eta.textContent = label;
+            ev.appendChild(eta);
+          }
+        }
+      });
+
+      // Marker første kommende økt som "neste"
+      if (firstUpcoming) {
+        var nextEta = firstUpcoming.querySelector('.eta');
+        if (nextEta) nextEta.classList.add('next');
+        // NÅ-strek rett før første kommende økt
+        var now = document.createElement('div');
+        now.className = 'now';
+        var hh = String(Math.floor(NOW / 60)).padStart(2, '0');
+        var mm = String(NOW % 60).padStart(2, '0');
+        now.innerHTML = '<span class="pill">NÅ · ' + hh + ':' + mm + '</span>';
+        firstUpcoming.parentNode.insertBefore(now, firstUpcoming);
+      }
+
+      // KPI "Økter i dag" — fordelingen regnes fra faktiske states
+      var bd = document.getElementById('oktBreakdownVal');
+      if (bd) {
+        var parts = [];
+        if (done) parts.push(done + ' fullført');
+        if (active) parts.push(active + ' pågår');
+        if (upcoming) parts.push(upcoming + ' igjen');
+        bd.textContent = parts.join(' · ');
+      }
+
+      lucide.createIcons();
+    })();
+  </script>
+</div></body></html>

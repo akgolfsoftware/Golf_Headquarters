@@ -1,0 +1,1553 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>Onboarding-flyt · 8-stegs velkomst-til-første-plan</title>
+<link rel="stylesheet" href="_shared.css">
+<script src="https://unpkg.com/lucide@0.453.0"></script>
+<style>
+  body { width: 1240px; }
+  .card { padding: 28px 32px; }
+
+  /* ===== HEADER ===== */
+  .head { margin-bottom: 24px; }
+  .head .eb {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .head h1 {
+    margin: 8px 0 6px;
+    font-family: var(--font-display); font-weight: 700; font-size: 30px;
+    letter-spacing: -0.025em; line-height: 1.05;
+  }
+  .head h1 em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .head .helper {
+    font-family: var(--font-sans); font-size: 14px; line-height: 1.55;
+    color: var(--muted-foreground); max-width: 800px;
+  }
+
+  /* ===== SECTION HEADERS ===== */
+  .sec {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--foreground);
+    display: flex; align-items: center; gap: 12px;
+    margin: 32px 0 14px;
+  }
+  .sec::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+  .sec .sub { color: var(--muted-foreground); font-weight: 700; letter-spacing: 0.04em; }
+  .sec .count {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    background: var(--secondary); color: var(--muted-foreground);
+    padding: 2px 8px; border-radius: 9999px; letter-spacing: 0.06em;
+  }
+
+  .panel {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; overflow: hidden;
+  }
+  .frule {
+    padding: 12px 20px;
+    background: var(--cream-50);
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted-foreground); line-height: 1.55;
+  }
+  .frule b { color: var(--foreground); font-weight: 700; }
+
+  /* ============================================================ */
+  /* SECTION 1 · 8-STEP FLYT                                       */
+  /* ============================================================ */
+  .step-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    padding: 20px;
+    background: var(--cream-50);
+  }
+  .step-cell {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .step-cell .step-eb {
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .step-cell .step-eb .num {
+    width: 18px; height: 18px; border-radius: 4px;
+    background: var(--primary); color: var(--accent);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 800;
+  }
+  .step-cell .step-eb .tag {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    padding: 2px 6px; border-radius: 3px;
+    background: var(--secondary); color: var(--foreground);
+    letter-spacing: 0.06em;
+  }
+  .step-cell .step-eb .tag.input { background: rgba(0,88,64,0.10); color: var(--primary); }
+  .step-cell .step-eb .tag.ai { background: rgba(209,248,67,0.50); color: var(--primary); }
+  .step-cell .step-eb .tag.review { background: rgba(184,133,42,0.18); color: var(--warning-foreground); }
+  .step-cell .step-eb .tag.done { background: rgba(26,125,86,0.12); color: var(--success); }
+
+  /* Phone */
+  .phone {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 20px; overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    display: flex; flex-direction: column;
+    min-height: 460px;
+  }
+  .phone .bar {
+    height: 26px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 14px;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--foreground);
+  }
+  .phone .bar i { width: 10px; height: 10px; color: var(--muted-foreground); }
+  .phone .bar .ind { display: inline-flex; gap: 5px; align-items: center; }
+
+  /* progress dots */
+  .prog {
+    display: flex; gap: 3px;
+    padding: 10px 14px 0;
+  }
+  .prog .d {
+    flex: 1; height: 3px; border-radius: 2px;
+    background: var(--cream-200);
+  }
+  .prog .d.done { background: var(--primary); }
+  .prog .d.now { background: var(--accent); }
+
+  .phone .body {
+    padding: 14px;
+    flex: 1; display: flex; flex-direction: column;
+  }
+
+  /* shared phone-body bits */
+  .ph-eb {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground); margin-bottom: 6px;
+  }
+  .ph-h {
+    font-family: var(--font-display); font-weight: 700; font-size: 18px;
+    line-height: 1.15; letter-spacing: -0.02em;
+    color: var(--foreground); margin: 0 0 4px;
+  }
+  .ph-h em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .ph-deck {
+    margin: 0 0 12px;
+    font-size: 11px; line-height: 1.5; color: var(--muted-foreground);
+  }
+  .ph-cta {
+    margin-top: auto;
+    height: 38px; border-radius: 8px;
+    background: var(--primary); color: var(--accent);
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    font-family: var(--font-sans); font-size: 12px; font-weight: 700;
+  }
+  .ph-cta i { width: 13px; height: 13px; }
+  .ph-secondary-cta {
+    margin-top: 6px;
+    height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* Fix 4 — mindreårig info-banner (editorial-kort: card-bg + 3px lime venstrekant) */
+  .minor-note {
+    margin: 2px 0 8px;
+    display: grid; grid-template-columns: 14px 1fr; gap: 8px;
+    padding: 8px 10px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+  }
+  .minor-note i { width: 13px; height: 13px; color: var(--primary); margin-top: 1px; }
+  .minor-note .mn-t {
+    font-family: var(--font-sans); font-size: 10px; line-height: 1.45;
+    color: var(--foreground);
+  }
+  .minor-note .mn-t b { font-weight: 700; }
+
+  /* STEP 1 — basis */
+  .fld {
+    display: flex; flex-direction: column; gap: 3px;
+    margin-bottom: 8px;
+  }
+  .fld label {
+    font-family: var(--font-mono); font-size: 8px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .fld input,
+  .fld .iput {
+    height: 32px; padding: 0 10px;
+    border: 1px solid var(--input); border-radius: 8px;
+    background: var(--card);
+    font-family: var(--font-sans); font-size: 12px; color: var(--foreground);
+    display: flex; align-items: center;
+    outline: 0;
+  }
+  .fld .iput.placeholder { color: var(--muted-foreground); }
+  .fld.focus .iput { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,88,64,0.10); }
+  .fld .row-seg { display: flex; gap: 4px; }
+  .fld .row-seg .seg {
+    flex: 1; height: 32px; border: 1px solid var(--input);
+    border-radius: 8px; background: var(--card);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    color: var(--foreground); font-feature-settings: "tnum","zero";
+  }
+  .fld .row-seg .seg.on {
+    background: rgba(0,88,64,0.06); border-color: var(--primary); color: var(--primary);
+  }
+
+  .hero-illo {
+    height: 88px; border-radius: 10px;
+    margin-bottom: 10px;
+    background:
+      linear-gradient(180deg, rgba(0,88,64,0.85) 0%, rgba(15,42,34,0.95) 100%),
+      repeating-linear-gradient(135deg, transparent 0 12px, rgba(255,255,255,0.06) 12px 24px);
+    position: relative; overflow: hidden;
+    display: flex; align-items: flex-end; padding: 8px 10px;
+    /* Fix 5 — hero-treatment: bevisst mørkt kort kun på steg 1, løftet fra cream-flaten */
+    box-shadow: 0 8px 22px -10px rgba(15,42,34,0.55), 0 2px 6px -2px rgba(15,42,34,0.30);
+  }
+  .hero-illo::before {
+    content: ""; position: absolute; top: -10px; right: -10px;
+    width: 56px; height: 56px; border-radius: 9999px;
+    background: var(--accent); opacity: 0.20; filter: blur(14px);
+  }
+  .hero-illo .ak-mini {
+    width: 26px; height: 26px; border-radius: 6px;
+    background: var(--accent); color: var(--primary);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-weight: 700; font-size: 13px;
+    position: relative; z-index: 1;
+  }
+  .hero-illo .ak-mini::after {
+    content: ""; position: absolute; top: 5px; right: 5px;
+    width: 4px; height: 4px; border-radius: 9999px; background: var(--primary);
+  }
+  .hero-illo .lbl {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase;
+    position: relative; z-index: 1;
+  }
+
+  /* STEP 2 — nivå/mål/frekvens */
+  .opt-list { display: flex; flex-direction: column; gap: 5px; }
+  .opt {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 10px; border-radius: 8px;
+    border: 1px solid var(--input); background: var(--card);
+  }
+  .opt.on { background: rgba(0,88,64,0.06); border-color: var(--primary); }
+  .opt .rad {
+    width: 14px; height: 14px; border-radius: 9999px;
+    border: 1.5px solid var(--cream-300);
+    flex-shrink: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .opt.on .rad { border-color: var(--primary); background: var(--primary); }
+  .opt.on .rad::after {
+    content: ""; width: 6px; height: 6px; border-radius: 9999px; background: var(--accent);
+  }
+  .opt .lbl {
+    font-size: 12px; font-weight: 600; color: var(--foreground);
+    letter-spacing: -0.005em; line-height: 1.3;
+  }
+  .opt .lbl small {
+    display: block;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.02em; margin-top: 1px;
+  }
+  .opt .num {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 12px; font-weight: 800;
+    color: var(--foreground); letter-spacing: -0.005em;
+    font-feature-settings: "tnum","zero";
+  }
+  .opt.on .num { color: var(--primary); }
+
+  /* drag slider mini */
+  .slider {
+    margin-top: 4px;
+    padding: 10px 12px;
+    background: var(--cream-50); border-radius: 10px;
+  }
+  .slider .vt {
+    display: flex; align-items: baseline; gap: 4px; margin-bottom: 6px;
+  }
+  .slider .vt .v {
+    font-family: var(--font-mono); font-weight: 800; font-size: 26px;
+    letter-spacing: -0.025em; line-height: 1; color: var(--foreground);
+    font-feature-settings: "tnum","zero";
+  }
+  .slider .vt .u {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .slider .track {
+    height: 6px; border-radius: 3px;
+    background: var(--cream-200); position: relative;
+  }
+  .slider .track .fill {
+    position: absolute; top: 0; left: 0; bottom: 0;
+    background: var(--primary); border-radius: 3px;
+  }
+  .slider .track .thumb {
+    position: absolute; top: 50%; transform: translate(-50%,-50%);
+    width: 18px; height: 18px; border-radius: 9999px;
+    background: var(--accent); border: 2px solid var(--primary);
+    box-shadow: var(--shadow-sm);
+  }
+  .slider .ticks {
+    display: flex; justify-content: space-between;
+    margin-top: 4px;
+    font-family: var(--font-mono); font-size: 8px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+
+  /* STEP 4.1 — green-detalj sliders (snap 5m, mono-tall over track) */
+  .dsl { margin-bottom: 13px; }
+  .dsl-top {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 7px;
+  }
+  .dsl-top .lbl {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    color: var(--muted-foreground);
+  }
+  .dsl-top .val {
+    font-family: var(--font-mono); font-size: 17px; font-weight: 800;
+    letter-spacing: -0.02em; color: var(--foreground);
+    font-feature-settings: "tnum","zero";
+  }
+  .dsl-top .val .u { font-size: 10px; font-weight: 700; color: var(--muted-foreground); margin-left: 1px; }
+  .dsl .track { height: 6px; border-radius: 3px; background: var(--cream-200); position: relative; }
+  .dsl .track .fill { position: absolute; top: 0; left: 0; bottom: 0; background: var(--primary); border-radius: 3px; }
+  .dsl .track .thumb {
+    position: absolute; top: 50%; transform: translate(-50%,-50%);
+    width: 18px; height: 18px; border-radius: 9999px;
+    background: var(--accent); border: 2px solid var(--primary);
+    box-shadow: var(--shadow-sm);
+  }
+  .dsl .ends {
+    display: flex; justify-content: space-between; margin-top: 5px;
+    font-family: var(--font-mono); font-size: 8px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+
+  /* STEP 3 — profil bryter */
+  .profile-toggle {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 6px; margin-top: 6px;
+  }
+  .profile-card {
+    padding: 10px 8px; border-radius: 10px;
+    border: 1.5px solid var(--cream-300); background: var(--card);
+    text-align: center;
+    display: flex; flex-direction: column; gap: 4px; align-items: center;
+  }
+  .profile-card.on {
+    border-color: var(--primary); background: rgba(0,88,64,0.05);
+  }
+  .profile-card .ico {
+    width: 32px; height: 32px; border-radius: 9999px;
+    background: var(--cream-50); color: var(--muted-foreground);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .profile-card .ico i { width: 16px; height: 16px; }
+  .profile-card.on .ico { background: var(--primary); color: var(--accent); }
+  .profile-card .nm {
+    font-family: var(--font-display); font-weight: 700; font-size: 12px;
+    letter-spacing: -0.015em; color: var(--foreground);
+  }
+  .profile-card .desc {
+    font-family: var(--font-mono); font-size: 8px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    line-height: 1.3;
+  }
+
+  .impl {
+    margin-top: 8px;
+    padding: 8px 10px; border-radius: 8px;
+    background: var(--accent); color: var(--primary);
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    line-height: 1.4; letter-spacing: 0.04em;
+  }
+  .impl b { font-weight: 800; }
+
+  /* STEP 4 — fasilitet kondensert */
+  .fac-mini { display: flex; flex-direction: column; gap: 6px; }
+  .fac-mini .row {
+    display: grid; grid-template-columns: 28px 1fr auto;
+    gap: 8px; align-items: center;
+    padding: 7px 10px;
+    border: 1px solid var(--border); border-radius: 8px;
+  }
+  .fac-mini .row.on { border-color: var(--primary); background: rgba(0,88,64,0.05); }
+  .fac-mini .row .ic {
+    width: 26px; height: 26px; border-radius: 6px;
+    background: var(--cream-50); color: var(--muted-foreground);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .fac-mini .row.on .ic { background: var(--primary); color: var(--accent); }
+  .fac-mini .row .ic i { width: 13px; height: 13px; }
+  .fac-mini .row .nm {
+    font-size: 12px; font-weight: 600; color: var(--foreground); line-height: 1.2;
+  }
+  .fac-mini .row .nm small {
+    display: block;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.02em; margin-top: 1px;
+  }
+  .fac-mini .row .chk {
+    width: 16px; height: 16px; border-radius: 4px;
+    border: 1.5px solid var(--cream-300);
+  }
+  .fac-mini .row.on .chk {
+    background: var(--primary); border-color: var(--primary);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--accent);
+  }
+  .fac-mini .row.on .chk i { width: 11px; height: 11px; }
+
+  /* STEP 5 — preferanser */
+  .chip-cloud {
+    display: flex; flex-wrap: wrap; gap: 4px;
+    margin-top: 4px;
+  }
+  .pref-chip {
+    height: 28px; padding: 0 10px;
+    border-radius: 9999px;
+    border: 1px solid var(--cream-300); background: var(--card);
+    display: inline-flex; align-items: center; gap: 4px;
+    font-family: var(--font-sans); font-size: 11px; font-weight: 600;
+    color: var(--foreground);
+  }
+  .pref-chip.on {
+    background: var(--primary); color: var(--accent); border-color: var(--primary);
+  }
+  .pref-chip i { width: 11px; height: 11px; }
+
+  /* STEP 6 — AI bygger */
+  .build-screen {
+    flex: 1;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+    text-align: center;
+  }
+  .build-ring {
+    width: 60px; height: 60px; position: relative;
+    flex-shrink: 0;
+  }
+  .build-ring::before {
+    content: ""; position: absolute; inset: 0;
+    border-radius: 9999px;
+    border: 3px solid var(--cream-200);
+  }
+  .build-ring::after {
+    content: ""; position: absolute; inset: 0;
+    border-radius: 9999px;
+    border: 3px solid transparent; border-top-color: var(--primary); border-right-color: var(--primary);
+    animation: spin 1.2s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .build-ring .mid {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--primary);
+  }
+  .build-ring .mid i { width: 18px; height: 18px; }
+  .build-screen .lt {
+    font-family: var(--font-display); font-weight: 700; font-size: 17px;
+    letter-spacing: -0.02em; line-height: 1.2;
+  }
+  .build-screen .lt em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .build-screen .ld {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    line-height: 1.5;
+  }
+  .build-screen .steps {
+    margin-top: 10px;
+    display: flex; flex-direction: column; gap: 8px; width: 100%;
+    text-align: left;
+    padding: 12px 14px;
+    background: var(--cream-50); border: 1px solid var(--border); border-radius: 10px;
+  }
+  .build-screen .bs {
+    display: grid; grid-template-columns: 16px 1fr;
+    gap: 9px; align-items: center;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--foreground); letter-spacing: 0.02em;
+  }
+  .build-screen .bs i { width: 13px; height: 13px; color: var(--success); }
+  .build-screen .bs.now { color: var(--primary); }
+  .build-screen .bs.now i { color: var(--primary); animation: pulse-now 1.4s ease-in-out infinite; }
+  @keyframes pulse-now {
+    0%,100% { opacity: 0.5; } 50% { opacity: 1; }
+  }
+  .build-screen .bs.todo { color: var(--muted-foreground); font-weight: 600; }
+
+  /* STEP 7 — plan review */
+  .plan-mini {
+    margin-top: 4px;
+    border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
+  }
+  .plan-mini .pmh {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+    background: var(--cream-50);
+  }
+  .plan-mini .pmh .nm {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em; color: var(--foreground);
+  }
+  .plan-mini .pmh .v {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .plan-mini .pm-day {
+    display: grid; grid-template-columns: 40px 1fr;
+    gap: 0; border-bottom: 1px solid var(--border);
+  }
+  .plan-mini .pm-day:last-child { border-bottom: 0; }
+  .plan-mini .pm-day .dl {
+    padding: 8px 6px;
+    background: var(--cream-50);
+    border-right: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--muted-foreground);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .plan-mini .pm-day .ds {
+    padding: 7px 9px;
+    font-size: 11px; line-height: 1.3; color: var(--foreground);
+    border-left: 2px solid var(--accent);
+  }
+  .plan-mini .pm-day.rest .ds {
+    border-left-color: var(--cream-300);
+    color: var(--muted-foreground);
+  }
+  .plan-mini .pm-day .ds b { font-weight: 700; }
+  .plan-mini .pm-day .ds small {
+    display: block;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.02em; margin-top: 1px;
+  }
+
+  /* STEP 8 — ferdig */
+  .done-screen {
+    flex: 1;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+    text-align: center;
+    padding: 10px 4px;
+  }
+  .done-screen .badge {
+    width: 64px; height: 64px; border-radius: 9999px;
+    background: var(--primary); color: var(--accent);
+    display: inline-flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .done-screen .badge::before {
+    content: ""; position: absolute; inset: -6px; border-radius: 9999px;
+    border: 1.5px dashed var(--accent); opacity: 0.6;
+    animation: spin 14s linear infinite;
+  }
+  .done-screen .badge i { width: 28px; height: 28px; }
+  .done-screen .lt {
+    font-family: var(--font-display); font-weight: 700; font-size: 19px;
+    letter-spacing: -0.02em; line-height: 1.1;
+  }
+  .done-screen .lt em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .done-screen .ld {
+    font-size: 12px; line-height: 1.5; color: var(--muted-foreground);
+    max-width: 220px;
+  }
+  .done-screen .pills {
+    display: flex; gap: 5px; flex-wrap: wrap; justify-content: center;
+    margin-top: 4px;
+  }
+  .done-screen .pills .pl {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    background: var(--cream-50); color: var(--foreground);
+    padding: 3px 7px; border-radius: 9999px;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    border: 1px solid var(--border);
+  }
+
+  /* arrow between */
+  .step-cell {
+    position: relative;
+  }
+  .step-cell::after {
+    content: "";
+    position: absolute; right: -10px; top: 110px;
+    width: 14px; height: 1px;
+    border-top: 1px dashed var(--cream-300);
+  }
+  .step-cell:nth-child(4n)::after,
+  .step-cell:last-child::after { display: none; }
+
+  /* ============================================================ */
+  /* SECTION 2 · MINDREÅRIG-GREN                                   */
+  /* ============================================================ */
+  .branch-row {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+  .branch-left {
+    padding: 22px 24px;
+    border-right: 1px solid var(--border);
+  }
+  .branch-right {
+    padding: 22px 24px;
+    background: var(--cream-50);
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .branch-left .eb-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    margin-bottom: 8px;
+  }
+  .branch-left .eb-tag .pip {
+    width: 7px; height: 7px; border-radius: 9999px;
+    background: var(--warning);
+  }
+  .branch-left h2 {
+    margin: 0 0 6px;
+    font-family: var(--font-display); font-weight: 700; font-size: 22px;
+    letter-spacing: -0.025em; line-height: 1.1;
+  }
+  .branch-left h2 em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .branch-left p {
+    margin: 0 0 16px;
+    font-size: 14px; line-height: 1.55; color: var(--muted-foreground);
+  }
+  .branch-left p b { color: var(--foreground); font-weight: 700; }
+
+  .flow-diagram {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px 16px;
+  }
+  .flow-diagram .lab {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground); margin-bottom: 10px;
+  }
+  .flow-diagram .lane {
+    display: grid; grid-template-columns: 22px 1fr;
+    align-items: center; gap: 10px;
+    padding: 6px 0;
+    font-size: 12px; line-height: 1.4;
+  }
+  .flow-diagram .lane .n {
+    width: 22px; height: 22px; border-radius: 9999px;
+    background: var(--secondary); color: var(--muted-foreground);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+  }
+  .flow-diagram .lane.on .n { background: var(--primary); color: var(--accent); }
+  .flow-diagram .lane.gate .n { background: var(--warning); color: var(--cream-50); }
+  .flow-diagram .lane .t {
+    color: var(--foreground);
+  }
+  .flow-diagram .lane .t b { font-weight: 700; }
+  .flow-diagram .lane .t small {
+    display: block;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.02em; margin-top: 1px;
+  }
+  .flow-diagram .lane.gate {
+    background: rgba(184,133,42,0.08); border-radius: 8px;
+    padding: 8px 10px; margin: 4px -4px;
+  }
+  .flow-diagram .branch-line {
+    margin-left: 11px;
+    border-left: 1px dashed var(--cream-300);
+    padding: 6px 0 6px 18px;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    line-height: 1.5;
+  }
+  .flow-diagram .branch-line b { color: var(--foreground); font-weight: 700; }
+
+  .small-phones {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  /* ============================================================ */
+  /* SECTION 3 · FASILITETS-PROFIL — desktop expanded              */
+  /* ============================================================ */
+  .fac-head {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+    display: grid; grid-template-columns: 1fr auto;
+    align-items: center; gap: 14px;
+  }
+  .fac-head h2 {
+    margin: 0; font-family: var(--font-display); font-weight: 700; font-size: 22px;
+    letter-spacing: -0.02em;
+  }
+  .fac-head h2 em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .fac-head .meta {
+    margin-top: 4px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .fac-head .meta b { color: var(--foreground); font-weight: 800; }
+  .fac-head .progress {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .fac-head .progress .meter {
+    width: 100px; height: 6px; background: var(--cream-200);
+    border-radius: 3px; overflow: hidden; position: relative;
+  }
+  .fac-head .progress .meter .f {
+    position: absolute; top: 0; left: 0; bottom: 0;
+    background: var(--primary); border-radius: 3px;
+  }
+  .fac-head .progress b { color: var(--foreground); font-weight: 800; }
+
+  /* facility tile grid */
+  .fac-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 12px; padding: 22px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .fac-tile {
+    position: relative;
+    border: 1.5px solid var(--cream-300); border-radius: 12px;
+    padding: 14px 14px;
+    background: var(--card);
+    cursor: pointer;
+    display: flex; flex-direction: column; gap: 6px; align-items: flex-start;
+  }
+  .fac-tile.on {
+    border-color: var(--primary);
+    background: rgba(0,88,64,0.04);
+  }
+  .fac-tile.on::before {
+    content: ""; position: absolute; top: 10px; right: 10px;
+    width: 18px; height: 18px; border-radius: 9999px;
+    background: var(--primary);
+  }
+  .fac-tile.on::after {
+    content: "✓"; position: absolute; top: 8px; right: 10px;
+    width: 18px; height: 18px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--accent); font-family: var(--font-mono); font-size: 13px; font-weight: 800;
+    line-height: 1;
+  }
+  .fac-tile .icon-block {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: var(--cream-50); color: var(--primary);
+    display: inline-flex; align-items: center; justify-content: center;
+    margin-bottom: 4px;
+  }
+  .fac-tile.on .icon-block { background: var(--primary); color: var(--accent); }
+  .fac-tile .icon-block i { width: 22px; height: 22px; }
+  .fac-tile .nm {
+    font-family: var(--font-display); font-weight: 700; font-size: 14px;
+    letter-spacing: -0.015em; line-height: 1.2;
+  }
+  .fac-tile .desc {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    line-height: 1.4;
+  }
+  .fac-tile.disabled {
+    opacity: 0.55;
+  }
+
+  /* dist sliders */
+  .dist-section {
+    padding: 22px 24px;
+    border-bottom: 1px solid var(--border);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  }
+  .dist-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 18px;
+  }
+  .dist-card .dh {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 4px;
+  }
+  .dist-card .dh i { width: 16px; height: 16px; color: var(--primary); }
+  .dist-card .dh h3 {
+    margin: 0;
+    font-family: var(--font-display); font-weight: 700; font-size: 15px;
+    letter-spacing: -0.015em; color: var(--foreground);
+  }
+  .dist-card .dh .v {
+    margin-left: auto;
+    font-family: var(--font-mono); font-weight: 800; font-size: 24px;
+    letter-spacing: -0.025em;
+    color: var(--foreground); font-feature-settings: "tnum","zero";
+  }
+  .dist-card .dh .v .u {
+    font-size: 12px; color: var(--muted-foreground); font-weight: 700;
+  }
+  .dist-card .dd {
+    font-size: 12px; color: var(--muted-foreground); line-height: 1.5; margin-bottom: 14px;
+  }
+  .dist-card .dd b { color: var(--foreground); font-weight: 700; }
+
+  .dist-bar {
+    position: relative; height: 30px;
+    margin: 12px 0 0;
+  }
+  .dist-bar .track {
+    position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%);
+    height: 6px; border-radius: 3px;
+    background: var(--cream-200);
+  }
+  .dist-bar .track .fill {
+    position: absolute; top: 0; left: 0; bottom: 0;
+    background: var(--primary); border-radius: 3px;
+  }
+  .dist-bar .thumb {
+    position: absolute; top: 50%; transform: translate(-50%,-50%);
+    width: 24px; height: 24px; border-radius: 9999px;
+    background: var(--accent); border: 2px solid var(--primary);
+    box-shadow: var(--shadow-sm);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .dist-bar .thumb i { width: 12px; height: 12px; color: var(--primary); }
+  .dist-bar .ticks-row {
+    display: flex; justify-content: space-between;
+    margin-top: 14px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+
+  .dist-card .pic-vis {
+    position: relative; height: 60px;
+    margin-top: 14px;
+    border-radius: 8px;
+    background:
+      linear-gradient(180deg, transparent 0%, transparent 60%, rgba(0,88,64,0.10) 60%, rgba(0,88,64,0.18) 100%);
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .dist-card .pic-vis .target {
+    position: absolute; bottom: 8px;
+    width: 16px; height: 16px; border-radius: 9999px;
+    background: var(--accent); border: 2px solid var(--primary);
+  }
+  .dist-card .pic-vis .me {
+    position: absolute; bottom: 8px; left: 4%;
+    width: 10px; height: 10px; border-radius: 9999px;
+    background: var(--primary);
+    border: 2px solid var(--card);
+  }
+  .dist-card .pic-vis .arc {
+    position: absolute; bottom: 8px; left: 8%; right: 18%;
+    height: 32px;
+    border-top: 1.5px dashed var(--primary);
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    opacity: 0.55;
+  }
+  .dist-card .pic-vis .dscale {
+    position: absolute; bottom: 4px; left: 4%; right: 12%;
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 8px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+
+  /* radio chips (for putting size) */
+  .radio-chips {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
+    margin-top: 12px;
+  }
+  .radio-chips .rc {
+    padding: 12px 8px; border-radius: 10px;
+    border: 1.5px solid var(--cream-300); background: var(--card);
+    text-align: center;
+    display: flex; flex-direction: column; gap: 2px; align-items: center;
+    cursor: pointer;
+  }
+  .radio-chips .rc.on {
+    border-color: var(--primary); background: rgba(0,88,64,0.05);
+  }
+  .radio-chips .rc .pv {
+    font-family: var(--font-mono); font-weight: 800; font-size: 18px;
+    letter-spacing: -0.02em; color: var(--foreground);
+    font-feature-settings: "tnum","zero";
+  }
+  .radio-chips .rc.on .pv { color: var(--primary); }
+  .radio-chips .rc .pv .u {
+    font-size: 11px; color: var(--muted-foreground); font-weight: 700; margin-left: 1px;
+  }
+  .radio-chips .rc .l {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--muted-foreground); line-height: 1.3;
+  }
+  .radio-chips .rc.on .l { color: var(--primary); }
+
+  /* derived insights box */
+  .derived {
+    padding: 18px 24px;
+    background: var(--cream-50);
+    display: grid; grid-template-columns: 22px 1fr auto;
+    gap: 14px; align-items: center;
+  }
+  .derived i { width: 18px; height: 18px; color: var(--primary); }
+  .derived .t {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--primary); margin-bottom: 4px;
+  }
+  .derived .b {
+    font-family: var(--font-sans); font-size: 13px; line-height: 1.5;
+    color: var(--foreground); letter-spacing: -0.005em;
+  }
+  .derived .b b { font-weight: 700; }
+  .derived .b em { font-style: italic; font-weight: 500; color: var(--primary); }
+  .derived .cta {
+    display: inline-flex; align-items: center; gap: 6px;
+    height: 36px; padding: 0 14px;
+    background: var(--primary); color: var(--accent);
+    border-radius: 9999px;
+    font-family: var(--font-sans); font-size: 13px; font-weight: 700;
+  }
+  .derived .cta i { width: 13px; height: 13px; color: var(--accent); }
+
+  /* ===== Final principles footer ===== */
+  .rules {
+    margin-top: 28px; padding: 18px 20px;
+    background: var(--secondary); border-radius: 12px;
+    font-family: var(--font-mono); font-size: 12px;
+    color: var(--muted-foreground); line-height: 1.7;
+  }
+  .rules p { margin: 0; }
+  .rules p + p { margin-top: 8px; }
+  .rules b { color: var(--foreground); font-weight: 700; }
+
+  /* prefers-reduced-motion — AK-spec krever det. Stenger build-spinner, badge-rotasjon og puls. */
+  @media (prefers-reduced-motion: reduce) {
+    .build-ring::after,
+    .done-screen .badge::before { animation: none; }
+    .build-screen .bs.now i { animation: none; opacity: 1; }
+  }
+</style></head>
+<body><div class="card">
+
+  <!-- ===================== HEADER ===================== -->
+  <div class="head">
+    <span class="eb">B2 · ONBOARDING-FLYT</span>
+    <h1>Velkomst til <em>første plan</em> i åtte steg.</h1>
+    <p class="helper">
+      Fra navn til ferdig treningsplan på 4–6 minutter. Hver skjerm samler én bit informasjon
+      som plan-builderen leser videre. Mindreårig-gren utløses automatisk av fødselsdato.
+      Fasilitets-skjemaet er det viktigste — det er der planen virkelig forankres.
+    </p>
+  </div>
+
+  <!-- ===================== SECTION 1 — 8-STEP MAIN FLOW ===================== -->
+  <div class="sec">
+    1 · Hovedflyt
+    <span class="sub">8 horisontale paneler · 430 × 760 mobil</span>
+    <span class="count">8 SKJERMER</span>
+  </div>
+
+  <div class="panel">
+    <div class="step-grid">
+
+      <!-- STEP 1 — basis -->
+      <div class="step-cell">
+        <div class="step-eb"><span class="num">1</span>BASISINFO <span class="tag input">INPUT</span></div>
+        <div class="phone">
+          <div class="bar"><span>09:41</span><span class="ind"><i data-lucide="signal-high"></i><i data-lucide="wifi"></i><i data-lucide="battery-full"></i></span></div>
+          <div class="prog"><div class="d now"></div><div class="d"></div><div class="d"></div><div class="d"></div><div class="d"></div><div class="d"></div><div class="d"></div><div class="d"></div></div>
+          <div class="body">
+            <div class="hero-illo"><span class="ak-mini">ak</span><span class="lbl">VELKOMMEN</span></div>
+            <span class="ph-eb">1 AV 8 · BASISINFO</span>
+            <h3 class="ph-h">La oss bli <em>kjent</em>.</h3>
+            <p class="ph-deck">Navn, e-post, fødselsdato. Ingenting mer akkurat nå.</p>
+            <div class="fld focus"><label>Fornavn</label><div class="iput">Markus</div></div>
+            <div class="fld"><label>E-post</label><div class="iput placeholder">navn@e-post.no</div></div>
+            <div class="fld"><label>Fødselsdato</label>
+              <div class="row-seg">
+                <div class="seg on">14</div><div class="seg on">06</div><div class="seg on">2010</div>
+              </div>
+            </div>
+            <div class="minor-note">
+              <i data-lucide="info"></i>
+              <div class="mn-t">Du er under 18. Vi ber en <b>foresatt bekrefte kontoen din etter steg 8</b>. Du kan ikke logge inn før godkjenning er bekreftet.</div>
+            </div>
+            <div class="ph-cta">Fortsett <i data-lucide="arrow-right"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2 — nivå/mål/frekvens -->
+      <div class="step-cell">
+        <div class="step-eb"><span class="num">2</span>NIVÅ &amp; MÅL <span class="tag input">INPUT</span></div>
+        <div class="phone">
+          <div class="bar"><span>09:42</span><span class="ind"><i data-lucide="signal-high"></i><i data-lucide="wifi"></i><i data-lucide="battery-full"></i></span></div>
+          <div class="prog"><div class="d done"></div><div class="d now"></div><div class="d"></div><div class="d"></div><div class="d"></div><div class="d"></div><div class="d"></div><div class="d"></div></div>
+          <div class="body">
+            <span class="ph-eb">2 AV 8 · NIVÅ · MÅL · FREKVENS</span>
+            <h3 class="ph-h">Hvor er du <em>nå</em>?</h3>
+            <p class="ph-deck">SG-trend, treningstimer og HCP som kontekst. Vi finjusterer ukentlig.</p>
+            <div class="fld"><label>Handicap <small style="color:var(--muted-foreground); font-weight:600; margin-left:6px">KONTEKST</small></label>
+              <div class="row-seg" style="margin-top:2px">
+                <div class="seg">−</div><div class="seg on">4,2</div><div class="seg">+</div>
+              </div>
+            </div>
+            <div class="ph-eb" style="margin-top:8px">MÅL TIL ÅRSSLUTT</div>
+            <div class="opt-list">
+              <div class="opt on"><span class="rad"></span><span class="lbl">Forbedre SG-total<small>fra +0,38 til Tour-nivå</small></span><span class="num">+0,8 SG</span></div>
+              <div class="opt"><span class="rad"></span><span class="lbl">Spille turneringer<small>fast på Tour</small></span></div>
+              <div class="opt"><span class="rad"></span><span class="lbl">Bli mer konsistent<small>mindre svingning</small></span></div>
+              <div class="opt"><span class="rad"></span><span class="lbl">Senke HCP<small>til scratch (0)</small></span><span class="num">−4,2</span></div>
+            </div>
+            <div class="ph-eb" style="margin-top:8px">FREKVENS</div>
+            <div class="slider">
+              <div class="vt"><span class="v">4</span><span class="u">økter / uke</span></div>
+              <div class="track"><div class="fill" style="width:60%"></div><div class="thumb" style="left:60%"></div></div>
+              <div class="ticks"><span>2</span><span>3</span><span>4</span><span>5</span><span>6+</span></div>
+            </div>
+            <div class="ph-cta">Fortsett <i data-lucide="arrow-right"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3 — profil bryter -->
+      <div class="step-cell">
+        <div class="step-eb"><span class="num">3</span>PROFIL-BRYTER <span class="tag input">INPUT</span></div>
+        <div class="phone">
+          <div class="bar"><span>09:43</span><span class="ind"><i data-lucide="signal-high"></i><i data-lucide="wifi"></i><i data-lucide="battery-full"></i></span></div>
+          <div class="prog"><div class="d done"></div><div class="d done"></div><div class="d now"></div><div class="d"></div><div class="d"></div><div class="d"></div><div class="d"></div><div class="d"></div></div>
+          <div class="body">
+            <span class="ph-eb">3 AV 8 · MOSJON ELLER KONKURRANSE</span>
+            <h3 class="ph-h">Hva slags <em>golfer</em> er du?</h3>
+            <p class="ph-deck">Bryteren bestemmer plan-rytmen — særlig om testuke 43 trigges.</p>
+            <div class="profile-toggle">
+              <div class="profile-card">
+                <span class="ico"><i data-lucide="coffee"></i></span>
+                <div class="nm">Mosjon</div>
+                <div class="desc">Spill for moro · ingen test-press</div>
+              </div>
+              <div class="profile-card on">
+                <span class="ico"><i data-lucide="trophy"></i></span>
+                <div class="nm">Konkurranse</div>
+                <div class="desc">Klubb-/regionsspill · testuker · stress</div>
+              </div>
+            </div>
+            <div class="impl">DETTE BETYR: PERIODISERT ÅRSPLAN · TESTUKE · RESULTATMÅL</div>
+
+            <div class="opt-list" style="margin-top:10px">
+              <div class="opt on"><span class="rad"></span><span class="lbl">Klubbgolfer<small>turneringer i klubb</small></span></div>
+              <div class="opt"><span class="rad"></span><span class="lbl">Tour-aspirant<small>NM, Korn Ferry, sikte mot proff</small></span></div>
+            </div>
+            <div class="ph-cta">Fortsett <i data-lucide="arrow-right"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4 — fasilitets-profil kondensert (link til seksjon 3 nedenfor) -->
+      <div class="step-cell">
+        <div class="step-eb"><span class="num">4</span>FASILITETS-PROFIL <span class="tag input">INPUT</span></div>
+        <div class="phone">
+          <div class="bar"><span>09:45</span><span class="ind"><i data-lucide="signal-high"></i><i data-lucide="wifi"></i><i data-lucide="battery-full"></i></span></div>
+          <div class="prog"><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d now"></div><div class="d"></div><div class="d"></div><div class="d"></div><div class="d"></div></div>
+          <div class="body">
+            <span class="ph-eb">4 AV 8 · FASILITETER</span>
+            <h3 class="ph-h">Hvor <em>trener</em> du?</h3>
+            <p class="ph-deck">Klikk det du har tilgang til. Plan-builder leser dette direkte.</p>
+            <div class="fac-mini">
+              <div class="row on"><span class="ic"><i data-lucide="target"></i></span><div class="nm">TrackMan<small>Oslo GK · ubegrenset</small></div><span class="chk"><i data-lucide="check"></i></span></div>
+              <div class="row on"><span class="ic"><i data-lucide="hexagon"></i></span><div class="nm">Matte / putting<small>innendørs vinter</small></div><span class="chk"><i data-lucide="check"></i></span></div>
+              <div class="row on"><span class="ic"><i data-lucide="circle-dot"></i></span><div class="nm">Gress-bane<small>Holtsmark · 9 hull</small></div><span class="chk"><i data-lucide="check"></i></span></div>
+              <div class="row"><span class="ic"><i data-lucide="dumbbell"></i></span><div class="nm">Treningsstudio<small>fysisk-økter</small></div><span class="chk"></span></div>
+            </div>
+            <div class="ph-secondary-cta">3 AV 4 · DETALJER →</div>
+            <div class="ph-cta">Fyll inn detaljer <i data-lucide="arrow-right"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 5 — preferanser -->
+      <div class="step-cell">
+        <div class="step-eb"><span class="num">5</span>PREFERANSER <span class="tag input">INPUT</span></div>
+        <div class="phone">
+          <div class="bar"><span>09:47</span><span class="ind"><i data-lucide="signal-high"></i><i data-lucide="wifi"></i><i data-lucide="battery-full"></i></span></div>
+          <div class="prog"><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d now"></div><div class="d"></div><div class="d"></div><div class="d"></div></div>
+          <div class="body">
+            <span class="ph-eb">5 AV 8 · NÅR · HVOR LENGE · HVA MOTIVERER</span>
+            <h3 class="ph-h">Når <em>passer</em> det å trene?</h3>
+            <p class="ph-deck">Vi prøver å ikke kollidere med skole, jobb og søvn.</p>
+
+            <div class="ph-eb">UKEDAGER</div>
+            <div class="chip-cloud">
+              <span class="pref-chip on">man</span><span class="pref-chip">tir</span><span class="pref-chip on">ons</span>
+              <span class="pref-chip on">tor</span><span class="pref-chip">fre</span><span class="pref-chip on">lør</span><span class="pref-chip">søn</span>
+            </div>
+
+            <div class="ph-eb" style="margin-top:10px">TID PÅ DAGEN</div>
+            <div class="chip-cloud">
+              <span class="pref-chip"><i data-lucide="sunrise"></i>Tidlig</span>
+              <span class="pref-chip"><i data-lucide="sun"></i>Dag</span>
+              <span class="pref-chip on"><i data-lucide="sunset"></i>Etter skole</span>
+              <span class="pref-chip"><i data-lucide="moon"></i>Sent</span>
+            </div>
+
+            <div class="ph-eb" style="margin-top:10px">HVA DRIVER DEG</div>
+            <div class="chip-cloud">
+              <span class="pref-chip on">Resultater</span>
+              <span class="pref-chip">Konsistens</span>
+              <span class="pref-chip on">Sosialt</span>
+              <span class="pref-chip">Stillhet</span>
+              <span class="pref-chip">Konkurranse</span>
+            </div>
+
+            <div class="ph-cta">Fortsett <i data-lucide="arrow-right"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 6 — AI bygger -->
+      <div class="step-cell">
+        <div class="step-eb"><span class="num">6</span>AI BYGGER PLAN <span class="tag ai">AI</span></div>
+        <div class="phone">
+          <div class="bar"><span>09:48</span><span class="ind"><i data-lucide="signal-high"></i><i data-lucide="wifi"></i><i data-lucide="battery-full"></i></span></div>
+          <div class="prog"><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d now"></div><div class="d"></div><div class="d"></div></div>
+          <div class="body">
+            <span class="ph-eb">6 AV 8 · BYGGER STARTPLAN</span>
+            <div class="build-screen">
+              <div class="build-ring"><div class="mid"><i data-lucide="sparkles"></i></div></div>
+              <div class="lt">Bygger din <em>startplan</em>…</div>
+              <div class="ld">Tilpasser etter SG-profil · 4 økter/uke · Oslo GK<small style="display:block; font-size:9px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.08em; margin-top:2px">HCP 4,2 · KONTEKST</small></div>
+              <div class="steps">
+                <div class="bs"><i data-lucide="check"></i>Leser fasilitets-profil</div>
+                <div class="bs"><i data-lucide="check"></i>Velger 12-ukers periode</div>
+                <div class="bs now"><i data-lucide="loader-2"></i>Plotter drills mot SG-svakheter</div>
+                <div class="bs todo"><i data-lucide="circle"></i>Balanserer pyramide-akser</div>
+                <div class="bs todo"><i data-lucide="circle"></i>Plotter testuke 43</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 7 — plan review -->
+      <div class="step-cell">
+        <div class="step-eb"><span class="num">7</span>PLAN-REVIEW <span class="tag review">SE OVER</span></div>
+        <div class="phone">
+          <div class="bar"><span>09:49</span><span class="ind"><i data-lucide="signal-high"></i><i data-lucide="wifi"></i><i data-lucide="battery-full"></i></span></div>
+          <div class="prog"><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d now"></div><div class="d"></div></div>
+          <div class="body">
+            <span class="ph-eb">7 AV 8 · UKE 1 · SE OVER</span>
+            <h3 class="ph-h">Slik blir <em>første uka</em>.</h3>
+            <p class="ph-deck">Du kan tweake det meste senere — godkjenn for å starte.</p>
+
+            <div class="plan-mini">
+              <div class="pmh"><span class="nm">UKE 14 · 4 ØKTER</span><span class="v">v1.0</span></div>
+              <div class="pm-day"><div class="dl">man</div><div class="ds"><b>Putting-lab</b> · 40m<small>OSLO GK 17:00 · gate-3m</small></div></div>
+              <div class="pm-day"><div class="dl">tir</div><div class="ds"><b>Innspill 50–90 m</b> · 50m<small>OSLO GK 17:00 · gate-50</small></div></div>
+              <div class="pm-day rest"><div class="dl">ons</div><div class="ds">Hvile · valgfri turtog<small>20–30 MIN</small></div></div>
+              <div class="pm-day"><div class="dl">tor</div><div class="ds"><b>TrackMan</b> · 50m<small>OSLO GK 17:00 · drv-lie</small></div></div>
+              <div class="pm-day"><div class="dl">lør</div><div class="ds"><b>9 hull spill</b><small>HOLTSMARK 10:00 · full SG</small></div></div>
+            </div>
+
+            <div class="ph-cta">Godkjenn og start <i data-lucide="check"></i></div>
+            <div class="ph-secondary-cta">JUSTER FØR GODKJENNING</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 8 — ferdig -->
+      <div class="step-cell">
+        <div class="step-eb"><span class="num">8</span>KLAR <span class="tag done">FERDIG</span></div>
+        <div class="phone">
+          <div class="bar"><span>09:50</span><span class="ind"><i data-lucide="signal-high"></i><i data-lucide="wifi"></i><i data-lucide="battery-full"></i></span></div>
+          <div class="prog"><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div></div>
+          <div class="body">
+            <div class="done-screen">
+              <span class="badge"><i data-lucide="check"></i></span>
+              <div class="lt">Du er <em>klar</em>, Markus.</div>
+              <div class="ld">Første økt mandag 17:00. Vi sender en påminnelse to timer før.</div>
+              <div class="pills">
+                <span class="pl">PLAN v1.0</span>
+                <span class="pl">12 UKER</span>
+                <span class="pl">TESTUKE 43</span>
+              </div>
+            </div>
+            <div class="ph-cta">Gå til hjem-skjermen <i data-lucide="arrow-right"></i></div>
+            <div class="ph-secondary-cta">SE HELE 12-UKERS-PLANEN</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="frule">
+      <b>Prinsipp.</b> Maks <b>30 sekunder per skjerm</b>. Skjerm 1–5 er ren input, skjerm 6 er AI, skjerm 7 er menneske-review, skjerm 8 er bekreftelse.
+      Hver progress-prikk over body fylles forutsigbart — spilleren vet alltid hvor langt de er kommet.
+    </div>
+  </div>
+
+  <!-- ===================== STEG 4.1 — BETINGET GREEN-DETALJ ===================== -->
+  <div class="sec">
+    1.1 · Steg 4.1 · Green-detalj
+    <span class="sub">betinget · vises kun når Matte-putting eller Gress-bane er krysset av på steg 4</span>
+    <span class="count">CONDITIONAL SUB-STEP</span>
+  </div>
+
+  <div class="panel">
+    <div class="branch-row">
+
+      <div class="branch-left">
+        <div class="eb-tag"><span class="pip" style="background:var(--accent)"></span>UTLØSES AV STEG 4</div>
+        <h2>Hvor langt rekker <em>greenen din</em>?</h2>
+        <p>Krysser spilleren av <b>Matte-putting</b> eller <b>Gress-bane</b>, åpnes ett ekstra steg med fem
+        meter-slidere. Plan-builderen bruker tallene til å filtrere drills — den anbefaler aldri en
+        <b>20 m putt-drill til en 10 m green</b>, eller et bunkerslag spilleren ikke har plass til å øve.</p>
+
+        <div class="flow-diagram">
+          <div class="lab">FILTER-LOGIKK</div>
+          <div class="lane on"><span class="n"><i data-lucide="check" style="width:11px;height:11px"></i></span><div class="t"><b>Lengste putt 15 m</b><small>LÅSER UT &gt;15 M PUTT-DRILLS</small></div></div>
+          <div class="lane on"><span class="n"><i data-lucide="check" style="width:11px;height:11px"></i></span><div class="t"><b>Lengste bunker 10 m</b><small>KUN BUNKER-DRILLS ≤10 M</small></div></div>
+          <div class="lane on"><span class="n"><i data-lucide="check" style="width:11px;height:11px"></i></span><div class="t"><b>Range 220 m</b><small>FULL DRIVER-ØKT TILGJENGELIG</small></div></div>
+          <div class="branch-line">Alle verdier <b>snappes til 5 m</b> og lagres på fasilitets-profilen.</div>
+        </div>
+      </div>
+
+      <div class="branch-right" style="align-items:center; justify-content:center">
+        <div class="phone" style="width:264px">
+          <div class="bar"><span>09:46</span><span class="ind"><i data-lucide="signal-high"></i><i data-lucide="wifi"></i><i data-lucide="battery-full"></i></span></div>
+          <div class="prog"><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d now"></div><div class="d"></div><div class="d"></div><div class="d"></div><div class="d"></div></div>
+          <div class="body">
+            <span class="ph-eb">4.1 AV 8 · FASILITETER · DETALJER</span>
+            <h3 class="ph-h">Detaljer om <em>greenen din</em>.</h3>
+            <p class="ph-deck">Hvor langt rekker du? Vi tilpasser drill-avstandene.</p>
+
+            <div class="dsl">
+              <div class="dsl-top"><span class="lbl">Lengste putt</span><span class="val">15<span class="u">m</span></span></div>
+              <div class="track"><div class="fill" style="width:50%"></div><div class="thumb" style="left:50%"></div></div>
+              <div class="ends"><span>0</span><span>30 m</span></div>
+            </div>
+
+            <div class="dsl">
+              <div class="dsl-top"><span class="lbl">Lengste chip</span><span class="val">8<span class="u">m</span></span></div>
+              <div class="track"><div class="fill" style="width:27%"></div><div class="thumb" style="left:27%"></div></div>
+              <div class="ends"><span>0</span><span>30 m</span></div>
+            </div>
+
+            <div class="dsl">
+              <div class="dsl-top"><span class="lbl">Lengste pitch</span><span class="val">25<span class="u">m</span></span></div>
+              <div class="track"><div class="fill" style="width:50%"></div><div class="thumb" style="left:50%"></div></div>
+              <div class="ends"><span>0</span><span>50 m</span></div>
+            </div>
+
+            <div class="dsl">
+              <div class="dsl-top"><span class="lbl">Lengste bunkerslag</span><span class="val">10<span class="u">m</span></span></div>
+              <div class="track"><div class="fill" style="width:50%"></div><div class="thumb" style="left:50%"></div></div>
+              <div class="ends"><span>0</span><span>20 m</span></div>
+            </div>
+
+            <div class="dsl">
+              <div class="dsl-top"><span class="lbl">Lengste slag på range</span><span class="val">220<span class="u">m</span></span></div>
+              <div class="track"><div class="fill" style="width:68%"></div><div class="thumb" style="left:68%"></div></div>
+              <div class="ends"><span>50</span><span>300 m</span></div>
+            </div>
+
+            <div class="ph-cta">Fortsett <i data-lucide="arrow-right"></i></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="frule">
+      <b>Snap til 5 m.</b> Tall i JetBrains Mono. Verdiene mater rett inn i drill-filteret — fasilitets-profilen
+      vet nå både <b>hva</b> spilleren har tilgang til (steg 4) og <b>hvor langt</b> det rekker (steg 4.1).
+    </div>
+  </div>
+
+  <!-- ===================== SECTION 2 — MINDREÅRIG-GREN ===================== -->
+  <div class="sec">
+    2 · Mindreårig-gren
+    <span class="sub">trigges av fødselsdato på skjerm 1 · foresatt-invitasjon mellom skjerm 1 og 2</span>
+    <span class="count">CONDITIONAL BRANCH</span>
+  </div>
+
+  <div class="panel">
+    <div class="branch-row">
+
+      <div class="branch-left">
+        <div class="eb-tag"><span class="pip"></span>GDPR-KRITISK · UNDER 18 ÅR</div>
+        <h2>To grener fletter <em>tilbake</em> til steg 2.</h2>
+        <p>Når fødselsdatoen på steg 1 viser under 18, settes hovedflyten i kjøremodus mens en foresatt-invitasjon
+        går ut. Spilleren kan fortsette gjennom steg 2–8 og se planen sin — men <b>logging og booking åpnes først etter at foresatt bekrefter</b>.</p>
+
+        <div class="flow-diagram">
+          <div class="lab">FLYT-DIAGRAM</div>
+          <div class="lane on"><span class="n">1</span><div class="t"><b>Basisinfo</b><small>NAVN · E-POST · FØDSELSDATO</small></div></div>
+          <div class="lane gate"><span class="n">!</span><div class="t"><b>Mindreårig-gate</b> · fødselsdato &lt; 18 år<small>UTLØSES AUTOMATISK</small></div></div>
+          <div class="branch-line">
+            <div><b>1a · Inviter foresatt</b> — e-post + forhold (mor/far/verge)</div>
+            <div><b>1b · Samtykke</b> — kryss av deling av treningsdata</div>
+          </div>
+          <div class="lane on"><span class="n">2</span><div class="t">Nivå &amp; mål<small>FORTSETTER PARALLELT</small></div></div>
+          <div class="lane on"><span class="n">3</span><div class="t">Profil-bryter</div></div>
+          <div class="lane on"><span class="n">…</span><div class="t">Resten av flyten kjører som vanlig</div></div>
+          <div class="lane gate"><span class="n">⏳</span><div class="t"><b>Lås på handlinger</b> til foresatt bekrefter<small>SE PLAN: JA · BOOK / LOGG: NEI</small></div></div>
+        </div>
+      </div>
+
+      <div class="branch-right">
+
+        <div class="small-phones">
+          <!-- branch 1a -->
+          <div>
+            <div class="step-eb" style="margin-bottom:6px"><span style="font-family: var(--font-mono); font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted-foreground)">1a · INVITER</span></div>
+            <div class="phone">
+              <div class="bar"><span>09:41</span><span class="ind"><i data-lucide="signal-high"></i><i data-lucide="wifi"></i><i data-lucide="battery-full"></i></span></div>
+              <div class="body">
+                <span class="ph-eb"><i data-lucide="shield" style="width:9px;height:9px;display:inline-block;vertical-align:middle"></i> GDPR · UNDER 18</span>
+                <h3 class="ph-h">Vi trenger en <em>foresatt</em>.</h3>
+                <p class="ph-deck">Mamma, pappa eller verge. De får en lenke for å bekrefte.</p>
+                <div class="fld focus"><label>Foresatts e-post</label><div class="iput">hanne.berg@gmail.com</div></div>
+                <div class="fld"><label>Forhold</label><div class="iput">Mor</div></div>
+                <div class="opt on" style="margin-top:8px"><span class="rad"></span><span class="lbl">Samtykker til datadeling<small>kan trekkes tilbake senere</small></span></div>
+                <div class="ph-cta">Send invitasjon <i data-lucide="send"></i></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- branch 1b -->
+          <div>
+            <div class="step-eb" style="margin-bottom:6px"><span style="font-family: var(--font-mono); font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted-foreground)">1b · STATUS</span></div>
+            <div class="phone">
+              <div class="bar"><span>09:42</span><span class="ind"><i data-lucide="signal-high"></i><i data-lucide="wifi"></i><i data-lucide="battery-full"></i></span></div>
+              <div class="body">
+                <span class="ph-eb">VENTER BEKREFTELSE</span>
+                <h3 class="ph-h">Sendt til <em>mor</em>.</h3>
+                <p class="ph-deck">Du kan fortsette onboarding mens vi venter.</p>
+
+                <div class="build-screen" style="padding: 16px 0">
+                  <div class="build-ring" style="width: 70px; height: 70px"><div class="mid"><i data-lucide="mail-check"></i></div></div>
+                  <div class="ld" style="font-size: 10px">hanne.berg@gmail.com</div>
+                  <div class="steps" style="width: 100%">
+                    <div class="bs"><i data-lucide="check"></i>E-post sendt</div>
+                    <div class="bs now"><i data-lucide="loader-2"></i>Venter klikk fra mor</div>
+                    <div class="bs todo"><i data-lucide="circle"></i>Foresatt bekrefter alder</div>
+                    <div class="bs todo"><i data-lucide="circle"></i>Booking + logging låses opp</div>
+                  </div>
+                </div>
+
+                <div class="ph-cta">Fortsett onboarding <i data-lucide="arrow-right"></i></div>
+                <div class="ph-secondary-cta">SEND PÅNYTT</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="frule">
+      <b>Prinsipp.</b> Mindreårig-grenen er <b>ikke en hard blokk</b> — den fletter inn og ut av hovedflyten.
+      Spilleren får full plan-opplevelse for å bygge engasjement, men handlings-låsen er hardkodet til foresatt-bekreftelse.
+    </div>
+  </div>
+
+  <!-- ===================== SECTION 3 — FASILITETS-PROFIL DESKTOP ===================== -->
+  <div class="sec">
+    3 · Fasilitets-profil · skjema
+    <span class="sub">steg 4 utvidet · billedlig · ikke en kjedelig form</span>
+    <span class="count">DESKTOP UTVIDET</span>
+  </div>
+
+  <div class="panel">
+
+    <div class="fac-head">
+      <div>
+        <h2>Hvor <em>øver</em> du best?</h2>
+        <div class="meta">DETTE LESES DIREKTE AV <b>PLAN-BUILDER</b> · DRILLS FORANKRES TIL DET DU HAR TILGANG PÅ</div>
+      </div>
+      <div class="progress">
+        <span>FYLT UT</span>
+        <span class="meter"><span class="f" style="width: 75%"></span></span>
+        <b>6 / 8</b>
+      </div>
+    </div>
+
+    <!-- facility tiles -->
+    <div class="fac-grid">
+      <div class="fac-tile on">
+        <span class="icon-block"><i data-lucide="target"></i></span>
+        <span class="nm">TrackMan-bay</span>
+        <span class="desc">OSLO GK · UBEGRENSET · IPHONE-APP</span>
+      </div>
+      <div class="fac-tile on">
+        <span class="icon-block"><i data-lucide="hexagon"></i></span>
+        <span class="nm">Matte / range</span>
+        <span class="desc">OSLO GK · INNENDØRS VINTER</span>
+      </div>
+      <div class="fac-tile on">
+        <span class="icon-block"><i data-lucide="circle-dot"></i></span>
+        <span class="nm">Gress-range</span>
+        <span class="desc">OSLO GK SOMMER · HOLTSMARK</span>
+      </div>
+      <div class="fac-tile on">
+        <span class="icon-block"><i data-lucide="map"></i></span>
+        <span class="nm">9-hull spill</span>
+        <span class="desc">HOLTSMARK · SOMMERSESONG</span>
+      </div>
+      <div class="fac-tile on">
+        <span class="icon-block"><i data-lucide="flag"></i></span>
+        <span class="nm">18-hull spill</span>
+        <span class="desc">OSLO GK · HOLTSMARK · GREENFEE</span>
+      </div>
+      <div class="fac-tile on">
+        <span class="icon-block"><i data-lucide="circle"></i></span>
+        <span class="nm">Putting-green</span>
+        <span class="desc">OSLO GK · INNENDØRS + UTE</span>
+      </div>
+      <div class="fac-tile">
+        <span class="icon-block"><i data-lucide="dumbbell"></i></span>
+        <span class="nm">Treningsstudio</span>
+        <span class="desc">FYSISK · STYRKE + KARDIO</span>
+      </div>
+      <div class="fac-tile disabled">
+        <span class="icon-block"><i data-lucide="snowflake"></i></span>
+        <span class="nm">Simulator</span>
+        <span class="desc">PERFECTSWING · IKKE TILGJENGELIG</span>
+      </div>
+    </div>
+
+    <!-- distance sliders -->
+    <div class="dist-section">
+
+      <div class="dist-card">
+        <div class="dh">
+          <i data-lucide="circle-dot"></i>
+          <h3>Lengste chip-avstand</h3>
+          <span class="v">35<span class="u"> m</span></span>
+        </div>
+        <div class="dd">Hvor langt rekker chip-treningen din på <b>Oslo GK gress-range</b>? Vi bruker dette til å plotte realistiske drill-distanser.</div>
+
+        <div class="pic-vis">
+          <div class="dscale"><span>0</span><span>10</span><span>20</span><span>30</span><span>40</span><span>50 m</span></div>
+          <div class="me"></div>
+          <div class="arc"></div>
+          <div class="target" style="left: 72%"></div>
+        </div>
+
+        <div class="dist-bar">
+          <div class="track"><div class="fill" style="width: 65%"></div></div>
+          <div class="thumb" style="left: 65%"><i data-lucide="chevrons-left-right"></i></div>
+          <div class="ticks-row"><span>10 m</span><span>20</span><span>30</span><span>40</span><span>50+</span></div>
+        </div>
+      </div>
+
+      <div class="dist-card">
+        <div class="dh">
+          <i data-lucide="zap"></i>
+          <h3>TrackMan-tilgang</h3>
+          <span class="v">3×<span class="u"> /uke</span></span>
+        </div>
+        <div class="dd">Hvor ofte kan du faktisk bruke <b>TrackMan-bay'en</b>? Begrenser hvor ofte plan-builder kan plotte dispersion-drills.</div>
+
+        <div class="pic-vis" style="background: linear-gradient(180deg, transparent 0%, transparent 70%, rgba(184,133,42,0.10) 70%, rgba(184,133,42,0.18) 100%)">
+          <div class="dscale"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5+ /uke</span></div>
+          <div class="me" style="background:var(--warning); border-color: var(--card)"></div>
+          <div class="arc" style="border-top-color: var(--warning); left: 8%; right: 32%"></div>
+          <div class="target" style="left: 60%; background: var(--accent); border-color: var(--warning)"></div>
+        </div>
+
+        <div class="dist-bar">
+          <div class="track"><div class="fill" style="width: 60%; background: var(--warning)"></div></div>
+          <div class="thumb" style="left: 60%; border-color: var(--warning)"><i data-lucide="chevrons-left-right"></i></div>
+          <div class="ticks-row"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5+</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- putting size + course access -->
+    <div class="dist-section" style="grid-template-columns: 1fr 1fr">
+
+      <div class="dist-card">
+        <div class="dh">
+          <i data-lucide="circle"></i>
+          <h3>Putting-green-størrelse</h3>
+          <span class="v" style="font-size: 16px">MEDIUM<span class="u"> · 9 m</span></span>
+        </div>
+        <div class="dd">Avstanden fra hull til kanten av <b>din vanlige putting-green</b>. Bestemmer maks-distanse på putt-drills.</div>
+        <div class="radio-chips">
+          <div class="rc"><span class="pv">3<span class="u">m</span></span><span class="l">Liten<br/>innendørs</span></div>
+          <div class="rc on"><span class="pv">9<span class="u">m</span></span><span class="l">Medium<br/>klubb</span></div>
+          <div class="rc"><span class="pv">15<span class="u">m</span></span><span class="l">Stor<br/>tournament</span></div>
+          <div class="rc"><span class="pv">20+<span class="u">m</span></span><span class="l">Bane-<br/>green</span></div>
+        </div>
+      </div>
+
+      <div class="dist-card">
+        <div class="dh">
+          <i data-lucide="map"></i>
+          <h3>Bane-tilgang</h3>
+          <span class="v" style="font-size: 16px">2 BANER<span class="u"> · klubb</span></span>
+        </div>
+        <div class="dd">Hvilke baner kan du faktisk gå runder på? Plan-builder bruker dette til å plotte <b>spillsim-økter</b>.</div>
+        <div class="opt-list" style="margin-top:8px; gap:6px">
+          <div class="opt on" style="padding: 9px 12px"><span class="rad"></span><span class="lbl">Oslo GK<small>HOVEDKLUBB · OFTE</small></span></div>
+          <div class="opt on" style="padding: 9px 12px"><span class="rad"></span><span class="lbl">Holtsmark<small>SOMMERHJEM · UKENTLIG</small></span></div>
+          <div class="opt" style="padding: 9px 12px"><span class="rad"></span><span class="lbl">Bogstad<small>GREENFEE · OPPHØYET</small></span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- derived insight -->
+    <div class="derived">
+      <i data-lucide="lightbulb"></i>
+      <div>
+        <div class="t">PLAN-BUILDER LESER DETTE SOM</div>
+        <div class="b">
+          «3× TrackMan/uke + 35 m chip + 9 m putting-green + 2 baner = <em>høy fasilitets-dekning</em>».
+          Plan-builderen velger <b>innspill 50–90 m + putt 3–9 m + spillsim 9 hull</b> som primær trening.
+          Drills som krever lengre chip- eller putt-distanser droppes til sommerlukene.
+        </div>
+      </div>
+      <div class="cta">Fortsett <i data-lucide="arrow-right"></i></div>
+    </div>
+
+    <div class="frule">
+      <b>Prinsipp.</b> Fasilitets-skjemaet er det <b>viktigste</b> i hele onboardingen — det forankrer hver eneste drill i planen.
+      Klikkbare tiles + slidere + radio-chips i stedet for fritekst. Skjemaet skal være artig nok å fylle ut at spilleren ikke hopper over det.
+    </div>
+  </div>
+
+  <!-- ===================== PRINCIPLES FOOTER ===================== -->
+  <div class="rules">
+    <p><b>8 steg på 4–6 minutter.</b> Maks 30 sekunder per skjerm. Hopp aldri input du kan beregne — fødselsdato gir alder, alder gir mindreårig-gate.</p>
+    <p><b>Mindreårig-grenen er en flett, ikke en blokk.</b> Spilleren får hele plan-opplevelsen for å bygge engasjement; foresatt-bekreftelse låser opp handlinger (booking, logging, betaling).</p>
+    <p><b>Fasilitets-skjemaet er kjernen.</b> Plan-builderen leser dette direkte. Hvert spørsmål må gi plan-mening (tiles → drill-katalog, slider → drill-distanse, radio → drill-grense).</p>
+    <p><b>Aldri "Annet" som default-svar.</b> Vi tilbyr forhåndsdefinerte valg fordi de tvinger fram et begripelig data-skjelett. Spilleren kan endre alt etterpå i innstillinger.</p>
+  </div>
+
+  <script>lucide.createIcons();</script>
+</div></body></html>

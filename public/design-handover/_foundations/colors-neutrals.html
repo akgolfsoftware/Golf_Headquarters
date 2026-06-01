@@ -1,0 +1,26 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Neutrals</title>
+<link rel="stylesheet" href="_shared.css">
+<style>
+  .row2 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+  .swatch { display: flex; flex-direction: column; gap: 4px; }
+  .chip { height: 64px; border-radius: 10px; border: 1px solid var(--border); position: relative; }
+  .chip .hex {
+    position: absolute; left: 8px; bottom: 6px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 600;
+  }
+  .name { font-family: var(--font-mono); font-size: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted-foreground); }
+</style></head>
+<body><div class="card">
+  <div class="row2">
+    <div class="swatch"><div class="chip" style="background:#FFFFFF;"><span class="hex" style="color:#0A1F17;">#FFFFFF</span></div><div class="name">card · pure</div></div>
+    <div class="swatch"><div class="chip" style="background:#FAFAF7;"><span class="hex" style="color:#0A1F17;">#FAFAF7</span></div><div class="name">background</div></div>
+    <div class="swatch"><div class="chip" style="background:#F1EEE5;"><span class="hex" style="color:#0A1F17;">#F1EEE5</span></div><div class="name">secondary · sand</div></div>
+    <div class="swatch"><div class="chip" style="background:#E5E3DD;"><span class="hex" style="color:#0A1F17;">#E5E3DD</span></div><div class="name">border</div></div>
+    <div class="swatch"><div class="chip" style="background:#E0DDD6;"><span class="hex" style="color:#0A1F17;">#E0DDD6</span></div><div class="name">input</div></div>
+    <div class="swatch"><div class="chip" style="background:#5E5C57;"><span class="hex" style="color:#F5F4EE;">#5E5C57</span></div><div class="name">muted-fg</div></div>
+    <div class="swatch"><div class="chip" style="background:#2B4F42;"><span class="hex" style="color:#F5F4EE;">#2B4F42</span></div><div class="name">border · dark</div></div>
+    <div class="swatch"><div class="chip" style="background:#163027;"><span class="hex" style="color:#F5F4EE;">#163027</span></div><div class="name">card · dark</div></div>
+    <div class="swatch"><div class="chip" style="background:#0F2A22;"><span class="hex" style="color:#F5F4EE;">#0F2A22</span></div><div class="name">bg · dark</div></div>
+    <div class="swatch"><div class="chip" style="background:#0A1F17;"><span class="hex" style="color:#D1F843;">#0A1F17</span></div><div class="name">foreground</div></div>
+  </div>
+</div></body></html>

@@ -1,0 +1,156 @@
+/* Shared boilerplate for every preview card.
+   Forces consistent 700×variable canvas, locks tokens, kills body margins. */
+@import url("../colors_and_type.css");
+
+/* ============================================================
+   Foreground-on-tint tokens
+   ------------------------------------------------------------
+   Bruksgrense: KUN korte badge-/pill-labels (typisk 10–12 px,
+   semibold, uppercase eller emphasized). Maks 2–3 ord per label.
+   IKKE for brødtekst, body-skala (14 px+), eller lengre lesetekst —
+   kontrasten er optimalisert for kompakt UI-tekst på tint-bakgrunn
+   med 10–30 % opacity, ikke for prosa.
+   ============================================================ */
+:root {
+  /* Tekst på rgba(184,133,42, .10–.18) — varsel/sand-amber tint */
+  --warning-foreground: #6B4D11;
+
+  /* Tekst på rgba(37,99,235, .10–.18) — info/blå tint */
+  --info-foreground: #1846A8;
+
+  /* Tekst på rgba(0,88,64, .10–.14) — success/forest tint */
+  --success-foreground: #075440;
+
+  /* Tekst på rgba(163,45,45, .10–.14) — destructive/rød tint */
+  --destructive-foreground: #7F1D1D;
+
+  /* Tekst på rgba(209,248,67, .15–.30) — accent/lime tint.
+     UI-ONLY: lav kontrast mot lime/15; flagget i foundations-a11y.
+     Aldri lesetekst, kun pill-/badge-labels. */
+  --accent-foreground-on-tint: #3B4310;
+
+  /* Primary hover-tilstand. Mørkere forest enn --primary (#005840). */
+  --primary-hover: #074a36;
+
+  /* Primary active-tilstand. Mørkere enn --primary-hover. Brukes på :active. */
+  --primary-active: #053628;
+
+  /* ============================================================
+     Course terrain palette (RUNDE 3)
+     ------------------------------------------------------------
+     Domene-spesifikke farger for hull-illustrasjoner og
+     spredningsplots. IKKE semantiske UI-farger — bare for SVG-tegning
+     av baneterreng. Lyshet er kalibrert for jord-tone-leselighet
+     mot mørk forest bakgrunn.
+     ============================================================ */
+  --course-rough:        #1A4D2E;
+  --course-fairway:      #2E7A4A;
+  --course-green:        #4FA76A;
+  --course-green-light:  #7ec18a;  /* lysere green for ellipser/markører */
+  --course-green-mid:    #5a9b6e;
+  --course-green-soft:   #98b88a;  /* forgreen */
+  --course-bunker:       #E4D9B8;  /* sand mot mørk bakgrunn */
+  --course-bunker-light: #e8d9a8;  /* sand mot lys bakgrunn */
+  --course-water:        #2563EB;  /* primær vann-blå (info-blå) */
+  --course-water-mid:    #3a6ea5;  /* dypere vann mot lys bakgrunn */
+  --course-water-deep:   #2a4d7a;  /* dypeste vann (gradient-stop) */
+  --course-grass-deep:   #2c5536;  /* gradient bunn for hull-tegning */
+  --course-grass-light:  #5d9c5e;  /* gradient topp for hull-tegning */
+
+  /* ============================================================
+     Semantic tint-bakgrunner (RUNDE 3)
+     ------------------------------------------------------------
+     Parres med tilsvarende --*-foreground tokens for badge-/pill-
+     bakgrunn. Bruk disse i stedet for hardkodet rgba() når tint-
+     varianten skal være konsistent på tvers av komponenter.
+     ============================================================ */
+  --success-tint-bg:     #C8EBDC;  /* brand success — badge-bg */
+  --warning-tint-bg:     #FBEFD4;  /* brand sand-amber — badge-bg */
+  --destructive-tint-bg: #FAD7D7;  /* brand destructive — badge-bg */
+
+  /* ============================================================
+     Spesielle aksent-tokens (RUNDE 3)
+     ============================================================ */
+  /* Alert-coral: notification-badge med høyere salience enn destructive.
+     Brukes i navigasjons-rail / sidebar-badges, aldri for status-pill. */
+  --alert-coral: #FF6B6B;
+
+  /* Accent-hover: lysere lime for lime-CTA hover-tilstand. */
+  --accent-hover: #DCFC5A;
+
+  /* Wang-chip foreground (secondary chip-tekst på warm-gray tint). */
+  --neutral-chip-foreground: #4A4858;
+
+  /* ============================================================
+     Chart palette tokens (RUNDE 6)
+     ------------------------------------------------------------
+     Dedikerte chart-/SVG-paletter for å rense de siste hex-restene
+     i visualiserings-komponentene. Disse er dekorative — IKKE
+     semantiske UI-farger. Bruk dem kun i chart-/SVG-kontekst.
+     ============================================================ */
+
+  /* Variance / diverging-skala (5 trinn best → worst).
+     Brukes i: SG-radar bd-marker, trackman-stability heatmap,
+     stability detail-bars. Samme palett begge steder. */
+  --variance-best:   #2A7C4E;
+  --variance-good:   #6FA178;
+  --variance-mid:    #C9C5BE;
+  --variance-poor:   #C77C56;
+  --variance-worst:  #B8424A;
+
+  /* TrackMan shot-canvas — water radial gradient (depth 1→3) */
+  --shot-canvas-water-1: #1a3a55;
+  --shot-canvas-water-2: #0d2238;
+  --shot-canvas-water-3: #06121f;
+
+  /* TrackMan shot-canvas — green gradient (lys topp → mørk bunn) */
+  --shot-canvas-grass-1: #8bca94;
+  --shot-canvas-grass-2: #3f7a4d;
+
+  /* TrackMan shot-outlier marker (skiller seg fra --destructive
+     med varmere coral-tone, beregnet for små punkter på chart). */
+  --shot-outlier:        #FF8866;
+  --shot-outlier-stroke: #5a1f15;
+
+  /* Warning amber for dark-mode chart-kontekst (TrackMan dark UI).
+     Lysere enn --warning for lesbarhet mot mørk bakgrunn. */
+  --warn-amber-dark: #F0B65A;
+
+  /* Monthcal event-tag-farger. Bevisst avvikende fra warning/destructive
+     for å skille kalender-events fra UI-status. */
+  --event-test:     #C48A32;
+  --event-conflict: #B84233;
+
+  /* Phone bezel + dark-mode tekst (mobil-rammer, dark video-frames). */
+  --bezel-black:           #050D08;
+  --info-on-dark:          #94B6FF;
+  --info-on-dark-strong:   #C9D9FF;
+
+  /* Video-frame bakgrunn (placeholder for camera/video-feed mockups
+     i mobile-skjermer). Distinkt fra --bezel-black (kameraets bezel)
+     og --foreground (UI-tekst). */
+  --video-frame-bg: #2A2D2A;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  width: 700px;
+}
+.card {
+  padding: 20px 24px;
+  position: relative;
+}
+.row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.col { display: flex; flex-direction: column; gap: 8px; }
+.label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted-foreground);
+}

@@ -1,0 +1,806 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>AgencyOS drift-panel</title>
+<link rel="stylesheet" href="_shared.css">
+<script src="https://unpkg.com/lucide@0.453.0"></script>
+<style>
+  body { width: 1200px; }
+  .card { padding: 24px; }
+
+  .sec {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    display: flex; align-items: center; gap: 8px;
+    margin: 0 0 14px;
+  }
+  .sec::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  /* ===== TITLE ===== */
+  .title-row {
+    display: flex; align-items: baseline; gap: 16px;
+    padding: 18px 20px 12px;
+  }
+  .title-row h2 {
+    margin: 0;
+    font-family: var(--font-display); font-weight: 700; font-size: 22px;
+    letter-spacing: -0.02em; color: var(--foreground);
+  }
+  .title-row .eb {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .title-row .meta {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .title-row .meta b { color: var(--foreground); }
+
+  /* ===== TAB BAR ===== */
+  .tabs {
+    display: flex; align-items: stretch;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 0 16px;
+  }
+  .tab {
+    position: relative;
+    display: inline-flex; align-items: center; gap: 8px;
+    height: 44px; padding: 0 14px;
+    background: transparent; border: 0; cursor: pointer;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .tab:hover { color: var(--foreground); background: rgba(0,88,64,0.04); }
+  .tab.is-active { color: var(--foreground); }
+  .tab.is-active::after {
+    content: ""; position: absolute; left: 14px; right: 14px; bottom: 0; height: 3px;
+    background: var(--accent); border-radius: 9999px 9999px 0 0;
+    box-shadow: 0 -2px 8px rgba(209,248,67,0.45);
+  }
+  .tab i { width: 14px; height: 14px; }
+  .tab .badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 18px; height: 18px; padding: 0 5px;
+    border-radius: 9999px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    background: var(--secondary); color: var(--muted-foreground);
+  }
+  .tab.is-active .badge { background: rgba(209,248,67,0.30); color: var(--primary); }
+
+  /* ===== CONTENT WRAP ===== */
+  .content {
+    padding: 18px 20px 22px;
+    background: var(--cream-50);
+  }
+  .content > section + section { margin-top: 22px; }
+
+  .sub-head {
+    display: flex; align-items: baseline; gap: 10px;
+    margin-bottom: 12px;
+  }
+  .sub-head h3 {
+    margin: 0;
+    font-family: var(--font-display); font-weight: 700; font-size: 16px;
+    letter-spacing: -0.015em; color: var(--foreground);
+  }
+  .sub-head .sub {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .sub-head .right {
+    margin-left: auto;
+    display: inline-flex; gap: 6px;
+  }
+  .btn {
+    height: 30px; padding: 0 11px; border-radius: 9999px;
+    border: 1px solid var(--border); background: var(--card);
+    color: var(--foreground);
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    cursor: pointer; display: inline-flex; align-items: center; gap: 5px;
+    white-space: nowrap;
+  }
+  .btn:hover { background: var(--secondary); }
+  .btn.pri { background: var(--primary); color: var(--accent); border-color: var(--primary); }
+  .btn.pri:hover { background: var(--primary-hover); }
+  .btn i { width: 10px; height: 10px; flex-shrink: 0; }
+
+  /* ============================================================
+     TEAM table
+     ============================================================ */
+  .team {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .team-row {
+    display: grid;
+    grid-template-columns: 40px 1fr 200px 220px 110px 80px;
+    align-items: center;
+    column-gap: 14px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .team-row:last-child { border-bottom: 0; }
+  .team-row.head {
+    background: var(--cream-50);
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    padding-top: 9px; padding-bottom: 9px;
+  }
+  .team-row:hover:not(.head) { background: rgba(0,88,64,0.03); }
+
+  .team-row .av {
+    width: 36px; height: 36px; border-radius: 9999px;
+    background: var(--secondary); color: var(--foreground);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-weight: 700; font-size: 12px;
+    position: relative;
+  }
+  .team-row .av.pri { background: var(--primary); color: var(--accent); }
+  .team-row .av.lime { background: var(--accent); color: var(--primary); }
+  .team-row .av .presence {
+    position: absolute; bottom: 0; right: 0;
+    width: 9px; height: 9px; border-radius: 9999px;
+    border: 2px solid var(--card);
+  }
+  .team-row .av .presence.on  { background: var(--success); }
+  .team-row .av .presence.off { background: var(--muted-foreground); }
+  .team-row .av .presence.busy { background: var(--warning); }
+
+  .team-row .who { display: flex; flex-direction: column; line-height: 1.2; min-width: 0; }
+  .team-row .who .nm {
+    font-size: 14px; font-weight: 700; letter-spacing: -0.005em;
+    color: var(--foreground);
+  }
+  .team-row .who .email {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted-foreground); letter-spacing: 0.02em; margin-top: 2px;
+  }
+  .team-row .who .email.pending { color: var(--warning); }
+
+  .role-badges { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+  /* CBAC role-badges — aligned to canonical S3 .role contract (badges.html):
+     kvadratisk 6px, secondary+border base, kun EIER/HEAD fremhevet, ingen lime-dekor. */
+  .rbadge {
+    display: inline-flex; align-items: center; gap: 4px;
+    height: 20px; padding: 0 7px; border-radius: 6px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    background: var(--secondary); color: var(--foreground);
+    box-shadow: inset 0 0 0 1px var(--border);
+  }
+  .rbadge i { width: 9px; height: 9px; }
+  .rbadge.owner  { background: var(--primary); color: var(--accent); box-shadow: none; }
+  .rbadge.head   { background: rgba(0,88,64,0.10); color: var(--success-foreground); box-shadow: none; }
+  .rbadge.coach  { /* base: secondary + foreground + border */ }
+  .rbadge.phys   { color: var(--success-foreground); }
+  .rbadge.asst   { color: var(--muted-foreground); }
+  .rbadge.billing{ color: var(--warning-foreground); }
+  .rbadge.pending{ background: rgba(184,133,42,0.14); color: var(--warning-foreground); box-shadow: none; }
+  .rbadge.read   { background: rgba(94,92,107,0.10); color: var(--neutral-chip-foreground); box-shadow: none; }
+
+  .scope {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted-foreground); letter-spacing: 0.02em;
+    line-height: 1.4;
+  }
+  .scope b { color: var(--foreground); font-weight: 700; }
+  .scope .grp-pip {
+    display: inline-flex; align-items: center;
+    height: 16px; padding: 0 5px; border-radius: 3px;
+    font-family: var(--font-mono); font-size: 8px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    margin-right: 4px;
+  }
+  .scope .grp-pip.wang { background: rgba(94,92,107,0.10); color: var(--neutral-chip-foreground); }
+  .scope .grp-pip.gfgk { background: rgba(0,88,64,0.10);   color: var(--success-foreground); }
+  .scope .grp-pip.aka  { background: rgba(184,133,42,0.12); color: var(--warning-foreground); }
+
+  .seen {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+
+  .team-row .more {
+    width: 28px; height: 28px; border-radius: 6px;
+    background: transparent; border: 0;
+    color: var(--muted-foreground);
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; justify-self: end;
+  }
+  .team-row .more:hover { background: var(--secondary); color: var(--foreground); }
+  .team-row .more i { width: 14px; height: 14px; }
+
+  /* ============================================================
+     PLAN-MALER grid
+     ============================================================ */
+  .mal-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .mal {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex; flex-direction: column; gap: 10px;
+    cursor: pointer;
+    transition: box-shadow 120ms ease-out, border-color 120ms ease-out;
+  }
+  .mal:hover { box-shadow: var(--shadow-md); border-color: var(--cream-400); }
+  .mal.is-active {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(209,248,67,0.25);
+  }
+  .mal.new {
+    background: rgba(209,248,67,0.06);
+    border: 1px dashed var(--accent);
+    align-items: center; justify-content: center;
+    text-align: center;
+  }
+  .mal.new .ico {
+    width: 36px; height: 36px; border-radius: 9999px;
+    background: var(--accent); color: var(--primary);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .mal.new .ico i { width: 18px; height: 18px; }
+  .mal.new .nm {
+    font-family: var(--font-display); font-weight: 700; font-size: 14px;
+    letter-spacing: -0.005em; color: var(--primary);
+  }
+  .mal.new .sub {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--primary); opacity: 0.7; letter-spacing: 0.04em;
+  }
+
+  .mal .top {
+    display: flex; align-items: flex-start; gap: 10px;
+  }
+  .mal .periode-tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    height: 18px; padding: 0 7px; border-radius: 4px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    flex-shrink: 0;
+  }
+  /* Periode-tag — aligned to canonical S3 .per contract (badges.html).
+     Tidligere lokal palett var stokket: skade var blå, test var grå. Nå semantisk. */
+  .periode-tag.grunn { background: rgba(94,92,107,0.12); color: var(--neutral-chip-foreground); }
+  .periode-tag.spes  { background: rgba(0,88,64,0.10);   color: var(--success-foreground); }
+  .periode-tag.turn  { background: var(--primary);       color: var(--accent); }
+  .periode-tag.skade { background: rgba(163,45,45,0.10); color: var(--destructive); }
+  .periode-tag.test  { background: rgba(37,99,235,0.10); color: var(--info-foreground); }
+
+  .mal .nm {
+    font-family: var(--font-display); font-weight: 700; font-size: 16px;
+    letter-spacing: -0.015em; line-height: 1.2;
+    color: var(--foreground);
+  }
+  .mal .dur {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted-foreground); letter-spacing: 0.04em; text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  /* Pyramide distribution mini-row */
+  .pyr-dist { display: flex; gap: 2px; height: 8px; border-radius: 9999px; overflow: hidden; }
+  .pyr-dist .seg.fys   { background: var(--pyr-fys); }
+  .pyr-dist .seg.tek   { background: var(--pyr-tek); }
+  .pyr-dist .seg.slag  { background: var(--pyr-slag); }
+  .pyr-dist .seg.spill { background: var(--pyr-spill); }
+  .pyr-dist .seg.turn  { background: var(--pyr-turn); }
+
+  .pyr-legend {
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    font-feature-settings: "tnum","zero";
+  }
+  .pyr-legend span { display: inline-flex; align-items: center; gap: 4px; }
+  .pyr-legend .d {
+    width: 6px; height: 6px; border-radius: 9999px;
+  }
+  .pyr-legend .d.fys   { background: var(--pyr-fys); }
+  .pyr-legend .d.tek   { background: var(--pyr-tek); }
+  .pyr-legend .d.slag  { background: var(--pyr-slag); }
+  .pyr-legend .d.spill { background: var(--pyr-spill); }
+  .pyr-legend .d.turn  { background: var(--pyr-turn); }
+
+  .mal .foot {
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 1px solid var(--border);
+    margin-top: 2px; padding-top: 10px;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .mal .foot .uses {
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .mal .foot .uses i { width: 11px; height: 11px; }
+  .mal .foot .uses b { color: var(--foreground); font-weight: 700; }
+  .mal .foot .by { color: var(--muted-foreground); }
+  .mal .foot .by b { color: var(--foreground); font-weight: 700; }
+  .mal .badge-row {
+    display: inline-flex; gap: 4px;
+  }
+  .mal-tag {
+    display: inline-flex; align-items: center;
+    height: 16px; padding: 0 5px; border-radius: 3px;
+    font-family: var(--font-mono); font-size: 8px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    background: var(--secondary); color: var(--muted-foreground);
+  }
+  .mal-tag.shared { background: rgba(209,248,67,0.30); color: var(--primary); }
+
+  /* ===== Footer note ===== */
+  .other-tabs {
+    margin-top: 20px;
+    padding: 14px 16px;
+    background: var(--secondary);
+    border-radius: 10px;
+    display: flex; align-items: center; gap: 14px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .other-tabs i { width: 14px; height: 14px; color: var(--muted-foreground); }
+  .other-tabs b { color: var(--foreground); font-weight: 800; }
+  .other-tabs .item {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 8px; border-radius: 9999px;
+    background: var(--card);
+  }
+
+  /* Rules */
+  .rules {
+    margin-top: 24px; padding: 16px;
+    background: var(--secondary); border-radius: 12px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted-foreground); line-height: 1.6;
+  }
+  .rules p { margin: 0; }
+  .rules p + p { margin-top: 8px; }
+  .rules b { color: var(--foreground); font-weight: 700; }
+  .rules code {
+    background: var(--card); padding: 1px 5px; border-radius: 3px;
+    color: var(--foreground); font-weight: 700;
+  }
+  /* Context-pille — brukes når en seksjon er vist fra en annen fane
+     for sammenligning, slik at brukeren forstår de ikke har to faner
+     åpne samtidig. */
+  .context-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    height: 18px; padding: 0 7px;
+    border-radius: 9999px;
+    background: var(--card);
+    border: 1px dashed var(--cream-400, var(--cream-300));
+    color: var(--muted-foreground);
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    margin-right: 6px;
+  }
+  .context-pill i { width: 9px; height: 9px; }
+</style></head>
+<body><div class="card">
+
+  <div class="sec">AgencyOS · drift-panel · tabs (Team aktiv · Plan-maler vist for kontekst)</div>
+
+  <div class="panel">
+
+    <!-- TITLE -->
+    <div class="title-row">
+      <span class="eb">DRIFT</span>
+      <h2>AK Golf HQ · GFGK Akademi</h2>
+      <span class="meta">EIER <b>Andreas K.</b> · OPPRETTET <b>03.01.2025</b></span>
+    </div>
+
+    <!-- TABS — én aktiv av gangen (radio, ikke checkbox).
+         Plan-maler-seksjonen vises lenger ned med en eksplisitt
+         "vist for kontekst"-label, ikke fordi to faner er aktive. -->
+    <nav class="tabs" role="tablist" aria-label="Drift-undersider">
+      <button class="tab" role="tab" aria-selected="false"><i data-lucide="settings"></i>Innstillinger</button>
+      <button class="tab is-active" role="tab" aria-selected="true">
+        <i data-lucide="users-round"></i>Team <span class="badge">4</span>
+      </button>
+      <button class="tab" role="tab" aria-selected="false">
+        <i data-lucide="layout-template"></i>Plan-maler <span class="badge">6</span>
+      </button>
+      <button class="tab" role="tab" aria-selected="false"><i data-lucide="calendar-clock"></i>Tilgjengelighet</button>
+      <button class="tab" role="tab" aria-selected="false"><i data-lucide="file-clock"></i>Audit-log</button>
+      <button class="tab" role="tab" aria-selected="false"><i data-lucide="globe"></i>WAGR-import</button>
+    </nav>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- ============================================================ -->
+      <!-- TEAM                                                          -->
+      <!-- ============================================================ -->
+      <section>
+        <div class="sub-head">
+          <h3>Team</h3>
+          <span class="sub">4 aktive · 1 invitert · CBAC-roller</span>
+          <div class="right">
+            <button class="btn"><i data-lucide="shield-check"></i>Roll-matriks</button>
+            <button class="btn pri"><i data-lucide="user-plus"></i>Inviter</button>
+          </div>
+        </div>
+
+        <div class="team">
+          <div class="team-row head">
+            <div></div>
+            <div>Coach / e-post</div>
+            <div>Roller</div>
+            <div>Tilgang / scope</div>
+            <div>Sist sett</div>
+            <div></div>
+          </div>
+
+          <!-- 1. Andreas K. — Owner + Head coach -->
+          <div class="team-row">
+            <div>
+              <span class="av pri">AK<span class="presence on"></span></span>
+            </div>
+            <div class="who">
+              <span class="nm">Andreas Kragerud</span>
+              <span class="email">andreas@akgolf.no</span>
+            </div>
+            <div class="role-badges">
+              <span class="rbadge owner"><i data-lucide="crown"></i>EIER</span>
+              <span class="rbadge head">HEAD COACH</span>
+              <span class="rbadge billing">FAKT.</span>
+            </div>
+            <div class="scope">
+              <b>Full tilgang</b> · alle grupper
+              <div style="margin-top:4px">
+                <span class="grp-pip wang">WANG</span>
+                <span class="grp-pip gfgk">GFGK</span>
+                <span class="grp-pip aka">AKA</span>
+              </div>
+            </div>
+            <div class="seen">NÅ</div>
+            <button class="more" aria-label="Mer"><i data-lucide="more-horizontal"></i></button>
+          </div>
+
+          <!-- 2. Marte V. — Coach (GFGK only) -->
+          <div class="team-row">
+            <div>
+              <span class="av">MV<span class="presence on"></span></span>
+            </div>
+            <div class="who">
+              <span class="nm">Marte Vågsether</span>
+              <span class="email">marte@akgolf.no</span>
+            </div>
+            <div class="role-badges">
+              <span class="rbadge coach">COACH</span>
+            </div>
+            <div class="scope">
+              <b>GFGK</b> · 18 spillere
+              <div style="margin-top:4px">
+                <span class="grp-pip gfgk">GFGK</span>
+              </div>
+            </div>
+            <div class="seen">12 m</div>
+            <button class="more" aria-label="Mer"><i data-lucide="more-horizontal"></i></button>
+          </div>
+
+          <!-- 3. Nina T. — Coach (AKA) + Akademi-leder -->
+          <div class="team-row">
+            <div>
+              <span class="av">NT<span class="presence busy"></span></span>
+            </div>
+            <div class="who">
+              <span class="nm">Nina Tjøstheim</span>
+              <span class="email">nina@akgolf.no</span>
+            </div>
+            <div class="role-badges">
+              <span class="rbadge coach">COACH</span>
+              <span class="rbadge head">AKAD-LEDER</span>
+            </div>
+            <div class="scope">
+              <b>AKA + 4 WANG</b> · 10 spillere
+              <div style="margin-top:4px">
+                <span class="grp-pip aka">AKA</span>
+                <span class="grp-pip wang">WANG ×4</span>
+              </div>
+            </div>
+            <div class="seen">2 t</div>
+            <button class="more" aria-label="Mer"><i data-lucide="more-horizontal"></i></button>
+          </div>
+
+          <!-- 4. Espen R. — Phys -->
+          <div class="team-row">
+            <div>
+              <span class="av lime">ER<span class="presence off"></span></span>
+            </div>
+            <div class="who">
+              <span class="nm">Espen Rødland</span>
+              <span class="email">espen@klinikk.no</span>
+            </div>
+            <div class="role-badges">
+              <span class="rbadge phys"><i data-lucide="dumbbell"></i>FYS</span>
+              <span class="rbadge read">LES</span>
+            </div>
+            <div class="scope">
+              <b>FYS-akse</b> · alle spillere · ingen Workbench-tilgang
+            </div>
+            <div class="seen">i går</div>
+            <button class="more" aria-label="Mer"><i data-lucide="more-horizontal"></i></button>
+          </div>
+
+          <!-- 5. Tobias H. — Assistant pending -->
+          <div class="team-row">
+            <div>
+              <span class="av" style="opacity:0.6">TH</span>
+            </div>
+            <div class="who">
+              <span class="nm" style="color:var(--muted-foreground)">Tobias Hovde</span>
+              <span class="email pending">tobias@akgolf.no · venter svar</span>
+            </div>
+            <div class="role-badges">
+              <span class="rbadge asst">ASSISTENT</span>
+              <span class="rbadge pending"><i data-lucide="clock"></i>INVITERT</span>
+            </div>
+            <div class="scope" style="opacity:0.7">
+              <b>WANG</b> · 14 spillere · les + kommenter
+            </div>
+            <div class="seen">—</div>
+            <button class="more" aria-label="Mer"><i data-lucide="more-horizontal"></i></button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- PLAN-MALER — fra annen fane, vist her for sammenligning      -->
+      <!-- ============================================================ -->
+      <section>
+        <div class="sub-head">
+          <h3>Plan-maler</h3>
+          <span class="sub">
+            <span class="context-pill"><i data-lucide="link-2"></i>FRA PLAN-MALER-FANEN</span>
+            6 maler · sortert på bruk
+          </span>
+          <div class="right">
+            <button class="btn"><i data-lucide="upload"></i>Importer</button>
+            <button class="btn pri"><i data-lucide="plus"></i>Ny mal</button>
+          </div>
+        </div>
+
+        <div class="mal-grid">
+
+          <!-- 1. Grunnperiode 4-uker — most used -->
+          <div class="mal is-active">
+            <div class="top">
+              <span class="periode-tag grunn">GRUNN</span>
+              <span class="badge-row" style="margin-left:auto">
+                <span class="mal-tag shared">DELT</span>
+              </span>
+            </div>
+            <div>
+              <div class="nm">Grunnperiode · 4 uker</div>
+              <div class="dur">12 t / uke · 4 økter SLAG · 3 økter FYS</div>
+            </div>
+            <div>
+              <div class="pyr-dist">
+                <span class="seg fys"   style="width:25%"></span>
+                <span class="seg tek"   style="width:18%"></span>
+                <span class="seg slag"  style="width:30%"></span>
+                <span class="seg spill" style="width:17%"></span>
+                <span class="seg turn"  style="width:10%"></span>
+              </div>
+              <div class="pyr-legend" style="margin-top:6px">
+                <span><span class="d fys"></span>25 %</span>
+                <span><span class="d tek"></span>18 %</span>
+                <span><span class="d slag"></span>30 %</span>
+                <span><span class="d spill"></span>17 %</span>
+                <span><span class="d turn"></span>10 %</span>
+              </div>
+            </div>
+            <div class="foot">
+              <span class="uses"><i data-lucide="users"></i><b>22</b> spillere</span>
+              <span class="by">REDIGERT <b>Andreas K.</b> · 12/5</span>
+            </div>
+          </div>
+
+          <!-- 2. Spesialiseringsperiode 6-uker -->
+          <div class="mal">
+            <div class="top">
+              <span class="periode-tag spes">SPES</span>
+            </div>
+            <div>
+              <div class="nm">Spesialisering · 6 uker</div>
+              <div class="dur">14 t / uke · innspill-fokus 50–100 m</div>
+            </div>
+            <div>
+              <div class="pyr-dist">
+                <span class="seg fys"   style="width:15%"></span>
+                <span class="seg tek"   style="width:22%"></span>
+                <span class="seg slag"  style="width:38%"></span>
+                <span class="seg spill" style="width:20%"></span>
+                <span class="seg turn"  style="width:5%"></span>
+              </div>
+              <div class="pyr-legend" style="margin-top:6px">
+                <span><span class="d fys"></span>15 %</span>
+                <span><span class="d tek"></span>22 %</span>
+                <span><span class="d slag"></span>38 %</span>
+                <span><span class="d spill"></span>20 %</span>
+                <span><span class="d turn"></span>5 %</span>
+              </div>
+            </div>
+            <div class="foot">
+              <span class="uses"><i data-lucide="users"></i><b>14</b> spillere</span>
+              <span class="by">REDIGERT <b>Nina T.</b> · 8/5</span>
+            </div>
+          </div>
+
+          <!-- 3. Turn-uke (Tour week) -->
+          <div class="mal">
+            <div class="top">
+              <span class="periode-tag turn">TURN</span>
+              <span class="badge-row" style="margin-left:auto">
+                <span class="mal-tag shared">DELT</span>
+              </span>
+            </div>
+            <div>
+              <div class="nm">Turneringsuke · 1 uke</div>
+              <div class="dur">8 t / uke · 1–2 runder + lett trening</div>
+            </div>
+            <div>
+              <div class="pyr-dist">
+                <span class="seg fys"   style="width:10%"></span>
+                <span class="seg tek"   style="width:8%"></span>
+                <span class="seg slag"  style="width:12%"></span>
+                <span class="seg spill" style="width:20%"></span>
+                <span class="seg turn"  style="width:50%"></span>
+              </div>
+              <div class="pyr-legend" style="margin-top:6px">
+                <span><span class="d fys"></span>10 %</span>
+                <span><span class="d tek"></span>8 %</span>
+                <span><span class="d slag"></span>12 %</span>
+                <span><span class="d spill"></span>20 %</span>
+                <span><span class="d turn"></span>50 %</span>
+              </div>
+            </div>
+            <div class="foot">
+              <span class="uses"><i data-lucide="users"></i><b>8</b> spillere</span>
+              <span class="by">REDIGERT <b>Andreas K.</b> · 22/4</span>
+            </div>
+          </div>
+
+          <!-- 4. Test-uke -->
+          <div class="mal">
+            <div class="top">
+              <span class="periode-tag test">TEST</span>
+            </div>
+            <div>
+              <div class="nm">Test-uke · 1 uke</div>
+              <div class="dur">10 t / uke · ny baseline 5 akser</div>
+            </div>
+            <div>
+              <div class="pyr-dist">
+                <span class="seg fys"   style="width:25%"></span>
+                <span class="seg tek"   style="width:25%"></span>
+                <span class="seg slag"  style="width:20%"></span>
+                <span class="seg spill" style="width:20%"></span>
+                <span class="seg turn"  style="width:10%"></span>
+              </div>
+              <div class="pyr-legend" style="margin-top:6px">
+                <span><span class="d fys"></span>25 %</span>
+                <span><span class="d tek"></span>25 %</span>
+                <span><span class="d slag"></span>20 %</span>
+                <span><span class="d spill"></span>20 %</span>
+                <span><span class="d turn"></span>10 %</span>
+              </div>
+            </div>
+            <div class="foot">
+              <span class="uses"><i data-lucide="users"></i><b>38</b> spillere</span>
+              <span class="by">REDIGERT <b>Nina T.</b> · 1/4</span>
+            </div>
+          </div>
+
+          <!-- 5. Skadeperiode -->
+          <div class="mal">
+            <div class="top">
+              <span class="periode-tag skade">SKADE</span>
+            </div>
+            <div>
+              <div class="nm">Skadeperiode · 2–6 uker</div>
+              <div class="dur">5 t / uke · FYS-rehab + putting</div>
+            </div>
+            <div>
+              <div class="pyr-dist">
+                <span class="seg fys"   style="width:55%"></span>
+                <span class="seg tek"   style="width:22%"></span>
+                <span class="seg slag"  style="width:10%"></span>
+                <span class="seg spill" style="width:8%"></span>
+                <span class="seg turn"  style="width:5%"></span>
+              </div>
+              <div class="pyr-legend" style="margin-top:6px">
+                <span><span class="d fys"></span>55 %</span>
+                <span><span class="d tek"></span>22 %</span>
+                <span><span class="d slag"></span>10 %</span>
+                <span><span class="d spill"></span>8 %</span>
+                <span><span class="d turn"></span>5 %</span>
+              </div>
+            </div>
+            <div class="foot">
+              <span class="uses"><i data-lucide="users"></i><b>1</b> spiller</span>
+              <span class="by">REDIGERT <b>Espen R.</b> · 18/5</span>
+            </div>
+          </div>
+
+          <!-- 6. Mosjonist 6-uker -->
+          <div class="mal">
+            <div class="top">
+              <span class="periode-tag grunn">GRUNN</span>
+            </div>
+            <div>
+              <div class="nm">Mosjonist · 6 uker</div>
+              <div class="dur">4 t / uke · vedlikehold + ferie-rom</div>
+            </div>
+            <div>
+              <div class="pyr-dist">
+                <span class="seg fys"   style="width:22%"></span>
+                <span class="seg tek"   style="width:20%"></span>
+                <span class="seg slag"  style="width:22%"></span>
+                <span class="seg spill" style="width:30%"></span>
+                <span class="seg turn"  style="width:6%"></span>
+              </div>
+              <div class="pyr-legend" style="margin-top:6px">
+                <span><span class="d fys"></span>22 %</span>
+                <span><span class="d tek"></span>20 %</span>
+                <span><span class="d slag"></span>22 %</span>
+                <span><span class="d spill"></span>30 %</span>
+                <span><span class="d turn"></span>6 %</span>
+              </div>
+            </div>
+            <div class="foot">
+              <span class="uses"><i data-lucide="users"></i><b>6</b> spillere</span>
+              <span class="by">REDIGERT <b>Marte V.</b> · 3/4</span>
+            </div>
+          </div>
+
+          <!-- + Ny mal -->
+          <div class="mal new">
+            <span class="ico"><i data-lucide="plus"></i></span>
+            <div class="nm">Ny mal</div>
+            <div class="sub">START FRA TOM ELLER DUPLISER</div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===== Other tabs preview ===== -->
+      <div class="other-tabs">
+        <span><b>ANDRE UNDERSIDER</b></span>
+        <span class="item"><i data-lucide="settings"></i>Innstillinger · klubb · branding · varsler</span>
+        <span class="item"><i data-lucide="calendar-clock"></i>Tilgjengelighet · uke-kalender per coach</span>
+        <span class="item"><i data-lucide="file-clock"></i>Audit-log · siste 30 d</span>
+        <span class="item"><i data-lucide="globe"></i>WAGR-import · API-status + manuell trigger</span>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="rules">
+    <p><b>Tabs:</b> 6 undersider — Innstillinger · Team · Plan-maler · Tilgjengelighet · Audit-log · WAGR-import. Aktiv = 3 px lime underline + foreground tekst (samme primitiv som komponent 4). Team-tab har badge med antall medlemmer.</p>
+    <p><b>Team-rad:</b> 6-kolonne grid — Avatar (m/ presence-dot: on/busy/off) · Navn + e-post · Roller (CBAC-badges) · Tilgang/scope (gruppe-pips) · Sist sett · meny. Inviterte rader 60 % opacity + warning <code>INVITERT</code>-badge.</p>
+    <p><b>CBAC-roller (kanonisk S3-kontrakt):</b> EIER (forest+lime) og HEAD COACH / AKAD-LEDER (grønn-tint) fremhevet; COACH · FYS · ASSISTENT · FAKT. nøytrale med kantlinje, skilt på tekstfarge (FYS grønn, FAKT. okker, ASSISTENT dempet). LES + INVITERT er status, ikke roller. Ingen lime-dekor — lime kun på EIER. Importeres fra <code>components-badges</code>, ikke reimplementert.</p>
+    <p><b>Plan-mal-kort:</b> periode-tag bruker samme kanoniske palett som S3 (GRUNN grå · SPES grønn · TURN forest+lime · SKADE rød · TEST blå). Pyramide-distribusjon: 8 px segmentert bar i rå <code>--pyr-*</code>-hex + 5-akse legend — <b>summerer alltid til 100 %</b>. DELT-badge om delt på tvers av coacher. Footer: bruk-count + sist redigert av.</p>
+    <p><b>Aktiv mal:</b> 2 px lime ring rundt kortet — markerer hva som er åpnet for redigering.</p>
+  </div>
+
+  <script>lucide.createIcons();</script>
+</div></body></html>

@@ -1,0 +1,106 @@
+<!doctype html><html><head><meta charset="utf-8"><title>AthleticBadge — audit</title>
+<link rel="stylesheet" href="_shared.css">
+<!--
+  ============================================================
+  UNNTAK: hardkodet hex i denne filen er INTENSJONELL.
+  ------------------------------------------------------------
+  Denne filen er en visuell audit som sammenligner pre-brand
+  badge-implementasjonen (`.b-now`) mot ny brand-aligned spec
+  (`.b-next`). Hex-verdiene er dokumentasjon — de skal vises
+  som råe hex så reviewer kan verifisere mot Figma/spec.
+  Skal IKKE token-erstattes.
+  ============================================================
+-->
+<style>
+  body { width: 760px; }
+  .card { padding: 22px 24px; }
+  .col2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .col-h { font-family: var(--font-mono); font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted-foreground); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .col-h.now::before { content: ""; width: 6px; height: 6px; border-radius: 999px; background: var(--muted-foreground); }
+  .col-h.next::before { content: ""; width: 6px; height: 6px; border-radius: 999px; background: var(--primary); }
+  .pane { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+  /* Current — replicates athletic/badge.tsx exactly */
+  .b-now { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 9999px; font-family: var(--font-mono); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+  .b-now.primary { background: #005840; color: #D1F843; }
+  .b-now.lime    { background: #D1F843; color: #005840; }
+  .b-now.neutral { background: #F1EEE5; color: #0A1F17; }
+  .b-now.warn    { background: #FEF3C7; color: #78350F; } /* amber-100 / amber-900 */
+  .b-now.urgent  { background: #FEE2E2; color: #991B1B; } /* red-100 / red-800 */
+  .b-now.ok      { background: #D1FAE5; color: #065F46; } /* emerald-100 / emerald-800 */
+
+  /* Proposed — brand-aligned + dot */
+  .b-next { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; font-family: var(--font-mono); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+  .b-next .dot { width: 5px; height: 5px; border-radius: 999px; background: currentColor; opacity: 0.85; }
+  .b-next.primary { background: #005840; color: #D1F843; }
+  .b-next.lime    { background: #D1F843; color: #005840; }
+  .b-next.neutral { background: #F1EEE5; color: #0A1F17; }
+  .b-next.warn    { background: #FBEFD4; color: #6B4D11; }  /* brand sand-amber */
+  .b-next.urgent  { background: #FAD7D7; color: #7A1E1E; }  /* brand destructive */
+  .b-next.ok      { background: #C8EBDC; color: #0E5D3F; }  /* brand success */
+
+  .diff {
+    margin-top: 4px; padding: 14px 16px;
+    background: var(--secondary);
+    border-radius: 10px;
+    font-size: 12px; line-height: 1.55;
+    color: var(--foreground);
+  }
+  .diff h4 {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground); margin: 0 0 10px;
+  }
+  .diff ul { margin: 0; padding-left: 16px; }
+  .diff li { margin-bottom: 6px; }
+  .diff li:last-child { margin-bottom: 0; }
+  .tag {
+    display: inline-block; padding: 1px 6px; border-radius: 4px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    background: var(--card); border: 1px solid var(--border); color: var(--muted-foreground);
+    margin-right: 4px;
+  }
+  .tag.api { background: rgba(184,133,42,0.12); color: #6B4D11; border-color: transparent; }
+</style></head>
+<body><div class="card">
+  <div class="col2">
+    <div class="pane">
+      <div class="col-h now">Nåværende</div>
+      <div class="row">
+        <span class="b-now primary">Primary</span>
+        <span class="b-now lime">Lime</span>
+        <span class="b-now neutral">Hcp 4.2</span>
+      </div>
+      <div class="row">
+        <span class="b-now ok">Ok</span>
+        <span class="b-now warn">Forfaller</span>
+        <span class="b-now urgent">Forfalt</span>
+      </div>
+    </div>
+    <div class="pane">
+      <div class="col-h next">Foreslått</div>
+      <div class="row">
+        <span class="b-next primary">Primary</span>
+        <span class="b-next lime"><span class="dot"></span>Live</span>
+        <span class="b-next neutral">Hcp 4,2</span>
+      </div>
+      <div class="row">
+        <span class="b-next ok"><span class="dot"></span>Ok</span>
+        <span class="b-next warn"><span class="dot"></span>Forfaller</span>
+        <span class="b-next urgent"><span class="dot"></span>Forfalt</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="diff">
+    <h4>Diff</h4>
+    <ul>
+      <li><span class="tag">color</span> Status-variantene (<code>warn</code>, <code>urgent</code>, <code>ok</code>) bruker nå Tailwind <code>amber/red/emerald</code> — bytt til brand-tonene (sand-amber, varm destructive, dyp success) så de leser som AK Golf, ikke som bootstrap.</li>
+      <li><span class="tag">spacing</span> Vertikal padding <code>3px → 4px</code> for bedre rytme på 10px-tekst. Horisontal forblir 10px.</li>
+      <li><span class="tag">type</span> Letter-spacing <code>0.05em → 0.06em</code> — minimal, men gir caps-glyphene den editorial pusten.</li>
+      <li><span class="tag api">api · fremtidig</span> Valgfri <code>dot</code>-prefix (5×5 px, <code>currentColor</code> @ 85 % opacity) for live/forfalt/ok-status. Krever ny <code>showDot</code> eller <code>icon</code>-prop — refactor.</li>
+    </ul>
+  </div>
+</div></body></html>

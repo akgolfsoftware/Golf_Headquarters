@@ -1,0 +1,1089 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>Gap-to-drill · SG → fault → drill → plan</title>
+<link rel="stylesheet" href="_shared.css">
+<script src="https://unpkg.com/lucide@0.453.0"></script>
+<style>
+  body { width: 1240px; }
+  .card { padding: 28px 32px; }
+
+  /* ===== HEADER ===== */
+  .head { margin-bottom: 22px; }
+  .head .eb {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .head h1 {
+    margin: 8px 0 6px;
+    font-family: var(--font-display); font-weight: 700; font-size: 30px;
+    letter-spacing: -0.025em; line-height: 1.05; color: var(--foreground);
+  }
+  .head h1 em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .head .helper {
+    font-family: var(--font-sans); font-size: 14px; line-height: 1.55;
+    color: var(--muted-foreground); max-width: 760px;
+  }
+
+  /* ===== SECTION HEADER ===== */
+  .sec {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--foreground);
+    display: flex; align-items: center; gap: 12px;
+    margin: 0 0 14px;
+  }
+  .sec::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+  .sec.tight { margin-top: 28px; }
+  .sec .sub {
+    color: var(--muted-foreground); font-weight: 700; letter-spacing: 0.04em;
+  }
+
+  /* ===== PANEL ===== */
+  .panel {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; overflow: hidden;
+  }
+
+  /* ===== KJEDE STRIP (Data → Fault → MORAD → Drill → Plan) ===== */
+  .chain {
+    display: grid;
+    grid-template-columns: 1fr 24px 1fr 24px 1fr 24px 1fr 24px 1fr;
+    gap: 0;
+    padding: 12px 16px;
+    background: var(--cream-50);
+    border-bottom: 1px solid var(--border);
+  }
+  .step {
+    display: flex; flex-direction: column; gap: 4px;
+    padding: 4px 12px;
+  }
+  .step .l {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .step .l .n {
+    width: 16px; height: 16px; border-radius: 9999px;
+    background: var(--primary); color: var(--accent);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+  }
+  .step .nm {
+    font-family: var(--font-display); font-weight: 700; font-size: 14px;
+    letter-spacing: -0.015em; line-height: 1.15; color: var(--foreground);
+  }
+  .step .meta {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    font-feature-settings: "tnum","zero";
+  }
+  .step .meta.neg { color: var(--destructive); }
+  .step .meta.pos { color: var(--success); }
+  .arrow {
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted-foreground); opacity: 0.6;
+  }
+  .arrow i { width: 16px; height: 16px; }
+
+  /* Highlighted (current) step */
+  .step.is-current .nm { color: var(--primary); }
+  .step.is-current .l .n { background: var(--accent); color: var(--primary); }
+
+  /* ============================================================
+     VARIANT 1 — SPILLER GAP-TO-DRILL
+     ============================================================ */
+  .vr-body {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 0;
+  }
+
+  /* Left column = SG svakhet + fault + drill */
+  .v-col {
+    padding: 20px 22px;
+  }
+  .v-col + .v-col {
+    border-left: 1px solid var(--border);
+    background: var(--cream-50);
+  }
+
+  .v-eyebrow {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 10px;
+  }
+  .v-eyebrow .pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    height: 18px; padding: 0 7px; border-radius: 4px;
+    background: rgba(37,99,235,0.10); color: var(--info-foreground);
+  }
+  .v-eyebrow .pill::before {
+    content: ""; width: 6px; height: 6px; border-radius: 9999px; background: var(--course-water);
+  }
+
+  /* Headline weakness */
+  .weak {
+    font-family: var(--font-display); font-weight: 700; font-size: 24px;
+    letter-spacing: -0.02em; line-height: 1.1; color: var(--foreground);
+  }
+  .weak em {
+    font-style: italic; font-weight: 400;
+    color: var(--destructive);
+    font-feature-settings: "tnum","zero";
+  }
+
+  .weak-sub {
+    margin-top: 8px;
+    font-family: var(--font-sans); font-size: 13px; line-height: 1.5;
+    color: var(--muted-foreground); letter-spacing: -0.005em;
+  }
+  .weak-sub b { color: var(--foreground); font-weight: 700; }
+
+  /* SG mini chart inside weak section */
+  .sg-mini {
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    display: grid;
+    grid-template-columns: 80px 1fr 90px;
+    align-items: center;
+    column-gap: 14px;
+  }
+  .sg-mini .lbl {
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .sg-mini .lbl .cat {
+    font-family: var(--font-mono); font-weight: 800; font-size: 12px;
+    color: var(--foreground); letter-spacing: 0.04em;
+  }
+  .sg-mini .lbl .desc {
+    font-family: var(--font-mono); font-size: 9px;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .sg-mini svg { width: 100%; height: 40px; }
+  .sg-mini .val {
+    text-align: right;
+  }
+  .sg-mini .val .v {
+    font-family: var(--font-mono); font-weight: 800; font-size: 22px;
+    color: var(--destructive); letter-spacing: -0.01em; line-height: 1;
+    font-feature-settings: "tnum","zero";
+  }
+  .sg-mini .val .delta {
+    margin-top: 4px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--destructive); letter-spacing: 0.04em;
+  }
+  .sg-mini .val .delta i { width: 10px; height: 10px; }
+
+  /* Fault card */
+  .fault {
+    margin-top: 14px;
+    padding: 14px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--warning);
+    border-radius: 10px;
+  }
+  .fault .lbl {
+    display: flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--warning-foreground);
+  }
+  .fault .lbl i { width: 11px; height: 11px; }
+  .fault .nm {
+    margin-top: 6px;
+    font-family: var(--font-display); font-weight: 700; font-size: 17px;
+    letter-spacing: -0.015em; color: var(--foreground); line-height: 1.2;
+  }
+  .fault .morad {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-top: 6px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .fault .morad b {
+    color: var(--foreground); font-weight: 800;
+    background: rgba(184,133,42,0.14);
+    padding: 2px 6px; border-radius: 3px;
+  }
+  .fault .desc {
+    margin-top: 8px;
+    font-size: 13px; line-height: 1.5;
+    color: var(--foreground); letter-spacing: -0.005em;
+  }
+
+  /* P-positions (MORAD) row */
+  .p-row {
+    display: flex; gap: 4px; margin-top: 10px;
+  }
+  .p-pip {
+    flex: 1;
+    height: 28px;
+    border-radius: 6px;
+    background: var(--secondary);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .p-pip.is-fault {
+    background: rgba(184,133,42,0.20);
+    color: var(--warning-foreground);
+    box-shadow: inset 0 0 0 1px rgba(184,133,42,0.40);
+  }
+  .p-pip.is-fault.is-primary {
+    background: rgba(163,45,45,0.10);
+    color: var(--destructive);
+    box-shadow: inset 0 0 0 1px var(--destructive);
+  }
+  .p-pip .pos {
+    font-size: 11px; font-weight: 800; letter-spacing: -0.005em;
+  }
+  .p-pip .dot {
+    width: 5px; height: 5px; border-radius: 9999px;
+    background: currentColor; margin-top: 2px;
+  }
+
+  /* ===== Right column: drill ===== */
+  .drill-eb {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--primary);
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 10px;
+  }
+  .drill-eb::before {
+    content: ""; width: 6px; height: 6px; border-radius: 9999px;
+    background: var(--accent); box-shadow: 0 0 6px rgba(209,248,67,0.7);
+  }
+
+  .drill-card {
+    background: var(--card);
+    border: 2px solid var(--accent);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 0 0 4px rgba(209,248,67,0.10);
+  }
+
+  /* Video thumb */
+  .vid-thumb {
+    position: relative;
+    width: 100%; height: 180px;
+    background:
+      linear-gradient(135deg, rgba(0,88,64,0.30) 0%, rgba(0,88,64,0.10) 100%),
+      repeating-linear-gradient(45deg,
+        rgba(245,244,238,0.40) 0 14px,
+        rgba(245,244,238,0.20) 14px 28px);
+    background-color: var(--cream-200);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .vid-thumb .play {
+    width: 56px; height: 56px; border-radius: 9999px;
+    background: var(--card);
+    color: var(--primary);
+    display: inline-flex; align-items: center; justify-content: center;
+    box-shadow: 0 6px 18px rgba(10,31,23,0.25);
+  }
+  .vid-thumb .play i { width: 22px; height: 22px; margin-left: 3px; }
+  .vid-thumb .ph-label {
+    position: absolute; left: 12px; top: 12px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--card); background: var(--forest-900);
+    padding: 4px 8px; border-radius: 4px;
+    opacity: 0.85;
+  }
+  .vid-thumb .duration {
+    position: absolute; right: 12px; bottom: 12px;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 800;
+    color: var(--card); background: rgba(10,31,23,0.80);
+    padding: 3px 8px; border-radius: 4px;
+    font-feature-settings: "tnum","zero";
+  }
+
+  /* Drill body */
+  .drill-body { padding: 16px 18px; }
+  .drill-body .axis {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    height: 18px; padding: 0 8px; border-radius: 4px;
+    background: rgba(37,99,235,0.10); color: var(--info-foreground);
+  }
+  .drill-body .nm {
+    margin-top: 8px;
+    font-family: var(--font-display); font-weight: 700; font-size: 20px;
+    letter-spacing: -0.02em; line-height: 1.15; color: var(--foreground);
+  }
+  .drill-body .why {
+    margin-top: 6px;
+    font-size: 13px; line-height: 1.5;
+    color: var(--muted-foreground); letter-spacing: -0.005em;
+  }
+  .drill-body .why b { color: var(--foreground); font-weight: 700; }
+
+  /* Drill params */
+  .params {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .param {
+    padding: 8px 10px;
+    background: var(--cream-50);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: flex; flex-direction: column; gap: 2px;
+    text-align: center;
+  }
+  .param .l {
+    font-family: var(--font-mono); font-size: 8px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    color: var(--muted-foreground);
+  }
+  .param .v {
+    font-family: var(--font-mono); font-weight: 800; font-size: 14px;
+    color: var(--foreground); letter-spacing: -0.01em;
+    font-feature-settings: "tnum","zero";
+  }
+  .param .v.warn { color: var(--warning); }
+
+  /* CTA row */
+  .cta-row {
+    margin-top: 14px;
+    display: flex; gap: 8px;
+  }
+  .btn-pri, .btn-sec, .btn-gh {
+    height: 38px; padding: 0 14px; border-radius: 9999px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    cursor: pointer; border: 1px solid var(--border);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-pri {
+    background: var(--accent); color: var(--primary); border-color: var(--accent);
+    flex: 1; justify-content: center;
+    box-shadow: 0 4px 12px rgba(209,248,67,0.25);
+  }
+  .btn-pri:hover { background: var(--accent-hover); }
+  .btn-sec {
+    background: var(--card); color: var(--foreground);
+  }
+  .btn-sec:hover { background: var(--secondary); }
+  .btn-gh {
+    background: transparent; border: 0; color: var(--muted-foreground);
+  }
+  .btn-gh:hover { color: var(--foreground); background: var(--secondary); }
+  .btn-pri i, .btn-sec i, .btn-gh i { width: 12px; height: 12px; }
+
+  /* Alternative drills strip */
+  .alt-drills {
+    margin-top: 16px;
+    border-top: 1px solid var(--border);
+    padding-top: 14px;
+  }
+  .alt-drills .lbl {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    margin-bottom: 8px;
+  }
+  .alt-list { display: flex; flex-direction: column; gap: 6px; }
+  .alt {
+    display: grid;
+    grid-template-columns: 40px 1fr auto;
+    align-items: center; column-gap: 10px;
+    padding: 8px 10px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .alt:hover { background: var(--secondary); }
+  .alt .num {
+    width: 24px; height: 24px; border-radius: 9999px;
+    background: var(--secondary); color: var(--foreground);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-weight: 800; font-size: 11px;
+  }
+  .alt .nm {
+    font-size: 12px; font-weight: 700; letter-spacing: -0.005em;
+    color: var(--foreground);
+  }
+  .alt .nm .sub {
+    display: block;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em; margin-top: 2px;
+  }
+  .alt .meta {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    font-feature-settings: "tnum","zero";
+  }
+
+  /* ============================================================
+     VARIANT 2 — COACH GAP-TO-DRILL (over stallen)
+     ============================================================ */
+  table.coach-tbl {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-family: var(--font-sans);
+  }
+  .coach-tbl thead th {
+    background: var(--cream-50);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 12px;
+    text-align: left;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .coach-tbl .col-fault { width: 240px; }
+  .coach-tbl .col-players { width: auto; }
+  .coach-tbl .col-sg { width: 100px; }
+  .coach-tbl .col-drill { width: 200px; }
+  .coach-tbl .col-act { width: 160px; }
+
+  .coach-tbl tbody td {
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px; vertical-align: middle;
+  }
+  .coach-tbl tbody tr:last-child td { border-bottom: 0; }
+  .coach-tbl tbody tr:hover { background: rgba(0,88,64,0.03); }
+  .coach-tbl tbody tr.is-grouped {
+    background: rgba(209,248,67,0.08);
+  }
+  .coach-tbl tbody tr.is-grouped:hover { background: rgba(209,248,67,0.14); }
+
+  /* Fault cell */
+  .fault-cell { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .fault-cell .nm {
+    font-family: var(--font-display); font-weight: 700; font-size: 14px;
+    letter-spacing: -0.015em; color: var(--foreground); line-height: 1.2;
+  }
+  .fault-cell .morad {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    color: var(--muted-foreground); letter-spacing: 0.06em;
+  }
+  .fault-cell .morad b {
+    color: var(--warning-foreground); font-weight: 800;
+    background: rgba(184,133,42,0.14);
+    padding: 1px 5px; border-radius: 3px;
+  }
+  .fault-cell .cat {
+    display: inline-flex; align-items: center; gap: 5px;
+    height: 16px; padding: 0 6px; border-radius: 3px;
+    font-family: var(--font-mono); font-size: 8px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    align-self: flex-start;
+    margin-top: 4px;
+  }
+  .fault-cell .cat.app { background: rgba(37,99,235,0.10); color: var(--info-foreground); }
+  .fault-cell .cat.ott { background: rgba(0,88,64,0.10); color: var(--success-foreground); }
+  .fault-cell .cat.arg { background: rgba(184,133,42,0.14); color: var(--warning-foreground); }
+  .fault-cell .cat.putt { background: rgba(94,92,107,0.10); color: var(--neutral-chip-foreground); }
+
+  /* Players avatar stack */
+  .avstack {
+    display: inline-flex;
+    align-items: center;
+  }
+  .avstack .av {
+    width: 30px; height: 30px; border-radius: 9999px;
+    background: var(--secondary); color: var(--foreground);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-weight: 700; font-size: 10px;
+    border: 2px solid var(--card);
+    margin-left: -8px;
+    position: relative;
+  }
+  .avstack .av:first-child { margin-left: 0; }
+  .avstack .av.pri { background: var(--primary); color: var(--accent); }
+  .avstack .av.lime { background: var(--accent); color: var(--primary); }
+  .avstack .av.cnt {
+    background: var(--card); color: var(--muted-foreground);
+    border-color: var(--border);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+  }
+  .players-cell .count {
+    margin-left: 10px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .players-cell .count b { color: var(--foreground); font-weight: 800; }
+  .players-cell { display: flex; align-items: center; }
+
+  /* SG delta cell */
+  .sg-cell {
+    display: flex; flex-direction: column; gap: 2px;
+    font-family: var(--font-mono); font-feature-settings: "tnum","zero";
+  }
+  .sg-cell .v {
+    font-weight: 800; font-size: 16px; letter-spacing: -0.01em;
+    color: var(--destructive); line-height: 1;
+  }
+  .sg-cell .label {
+    font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* Drill cell */
+  .drill-cell { display: flex; flex-direction: column; gap: 3px; }
+  .drill-cell .nm {
+    font-size: 13px; font-weight: 700; letter-spacing: -0.005em;
+    color: var(--foreground); line-height: 1.25;
+  }
+  .drill-cell .meta {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .drill-cell .meta i { width: 10px; height: 10px; margin-right: 3px; vertical-align: middle; }
+  .drill-cell .group-tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    margin-top: 4px;
+    height: 18px; padding: 0 7px; border-radius: 9999px;
+    background: var(--accent); color: var(--primary);
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    align-self: flex-start;
+  }
+  .drill-cell .group-tag i { width: 11px; height: 11px; }
+
+  /* Action cell */
+  .act-cell {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .ac-btn {
+    height: 30px; padding: 0 12px; border-radius: 9999px;
+    border: 1px solid var(--border); background: var(--card);
+    color: var(--foreground);
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+    width: 100%;
+  }
+  .ac-btn:hover { background: var(--secondary); }
+  .ac-btn.pri {
+    background: var(--primary); color: var(--accent); border-color: var(--primary);
+  }
+  .ac-btn.pri:hover { background: var(--primary-hover); }
+  .ac-btn.lime {
+    background: var(--accent); color: var(--primary); border-color: var(--accent);
+  }
+  .ac-btn.lime:hover { background: var(--accent-hover); }
+  .ac-btn i { width: 11px; height: 11px; }
+
+  /* Stallen-summary banner above coach-table */
+  .coach-banner {
+    padding: 14px 20px;
+    background: rgba(209,248,67,0.10);
+    border-bottom: 1px solid var(--accent);
+    display: flex; align-items: center; gap: 14px;
+  }
+  .coach-banner .ic {
+    width: 36px; height: 36px; border-radius: 9999px;
+    background: var(--accent); color: var(--primary);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .coach-banner .ic i { width: 18px; height: 18px; }
+  .coach-banner .body {
+    flex: 1;
+  }
+  .coach-banner .body .ttl {
+    font-family: var(--font-display); font-weight: 700; font-size: 15px;
+    letter-spacing: -0.015em; color: var(--foreground); line-height: 1.2;
+  }
+  .coach-banner .body .sub {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted-foreground); letter-spacing: 0.04em; margin-top: 2px;
+  }
+  .coach-banner .body .sub b { color: var(--foreground); font-weight: 700; }
+  .coach-banner .acts {
+    display: inline-flex; gap: 6px;
+  }
+
+  /* Filter strip for coach table */
+  .filt-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 20px;
+    background: var(--cream-50);
+    border-bottom: 1px solid var(--border);
+  }
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    height: 26px; padding: 0 10px;
+    border-radius: 9999px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--foreground);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    cursor: pointer;
+  }
+  .pill.is-on { background: var(--primary); color: var(--accent); border-color: var(--primary); }
+  .pill .ct {
+    background: rgba(0,88,64,0.08); color: var(--muted-foreground);
+    padding: 1px 5px; border-radius: 9999px;
+    font-size: 9px;
+  }
+  .pill.is-on .ct { background: rgba(209,248,67,0.30); color: var(--accent); }
+
+  /* Rules */
+  .rules {
+    margin-top: 28px; padding: 18px 20px;
+    background: var(--secondary); border-radius: 12px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted-foreground); line-height: 1.65;
+  }
+  .rules p { margin: 0; }
+  .rules p + p { margin-top: 8px; }
+  .rules b { color: var(--foreground); font-weight: 700; }
+  .rules code {
+    background: var(--card); padding: 1px 5px; border-radius: 3px;
+    color: var(--foreground); font-weight: 700;
+  }
+</style></head>
+<body><div class="card">
+
+  <!-- ===== HEADER ===== -->
+  <div class="head">
+    <span class="eb">B4 · GAP-TO-DRILL · KJERNE-IP</span>
+    <h1>Fra <em>data</em> til <em>drill</em> — synlig kjede.</h1>
+    <p class="helper">
+      SG-svakhet → MORAD-fault → anbefalt drill → plan. Spilleren skal forstå <em>hvorfor</em> en drill anbefales, ikke bare se den.
+      Coach-versjon ser samme svakhet på tvers av stallen og foreslår gruppe-drill.
+    </p>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- VARIANT 1 — SPILLER                                           -->
+  <!-- ============================================================ -->
+  <div class="sec">
+    Spiller-versjon
+    <span class="sub">Markus R.P. · APP 50–90 m svakhet</span>
+  </div>
+
+  <div class="panel">
+
+    <!-- KJEDE -->
+    <div class="chain">
+      <div class="step">
+        <div class="l"><span class="n">1</span>DATA</div>
+        <div class="nm">Strokes Gained</div>
+        <div class="meta neg">−0,42 SG · APP · 30 D</div>
+      </div>
+      <div class="arrow"><i data-lucide="chevron-right"></i></div>
+      <div class="step">
+        <div class="l"><span class="n">2</span>FAULT</div>
+        <div class="nm">Tidlig sequencing</div>
+        <div class="meta">P5 → P7 · MORAD</div>
+      </div>
+      <div class="arrow"><i data-lucide="chevron-right"></i></div>
+      <div class="step is-current">
+        <div class="l"><span class="n">3</span>DRILL</div>
+        <div class="nm">Lavpunkt-kontroll 65 m</div>
+        <div class="meta">4 drills · CS 80</div>
+      </div>
+      <div class="arrow"><i data-lucide="chevron-right"></i></div>
+      <div class="step">
+        <div class="l"><span class="n">4</span>PLAN</div>
+        <div class="nm">Uke 22 · TOR 14:30</div>
+        <div class="meta">60 min SLAG-økt</div>
+      </div>
+      <div class="arrow"><i data-lucide="chevron-right"></i></div>
+      <div class="step">
+        <div class="l"><span class="n">5</span>UTFALL</div>
+        <div class="nm">SG-mål</div>
+        <div class="meta pos">+0,15 om 21 d</div>
+      </div>
+    </div>
+
+    <div class="vr-body">
+
+      <!-- ===== Left col — SG + Fault ===== -->
+      <div class="v-col">
+
+        <div class="v-eyebrow">
+          <span>SG-SVAKHET</span>
+          <span class="pill">APP · INNSPILL 50–90 M</span>
+        </div>
+
+        <div class="weak">
+          Du taper <em>−0,42 SG</em> på innspill 50–90 m — mest av alle dine kategorier.
+        </div>
+        <div class="weak-sub">
+          Sammenlignet med <b>WANG-snittet</b> (±0,02) og din egen <b>baseline</b> i mars (+0,18) — trenden er negativ siste 6 uker.
+        </div>
+
+        <!-- SG-mini chart -->
+        <div class="sg-mini">
+          <div class="lbl">
+            <span class="cat">APP</span>
+            <span class="desc">Innspill 50–90 m</span>
+          </div>
+          <svg viewBox="0 0 200 40" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="sg-grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="rgba(163,45,45,0.30)"/>
+                <stop offset="100%" stop-color="rgba(163,45,45,0)"/>
+              </linearGradient>
+            </defs>
+            <path d="M0 16 L 25 18 L 50 22 L 75 26 L 100 28 L 125 30 L 150 33 L 175 35 L 200 36 L 200 40 L 0 40 Z"
+              fill="url(#sg-grad)"/>
+            <path d="M0 16 L 25 18 L 50 22 L 75 26 L 100 28 L 125 30 L 150 33 L 175 35 L 200 36"
+              fill="none" stroke="var(--destructive)" stroke-width="1.6"
+              stroke-linecap="round" stroke-linejoin="round"/>
+            <line x1="0" y1="18" x2="200" y2="18" stroke="var(--muted-foreground)" stroke-width="1" stroke-dasharray="2 3" opacity="0.5"/>
+            <circle cx="200" cy="36" r="3" fill="var(--destructive)"/>
+          </svg>
+          <div class="val">
+            <div class="v">−0,42</div>
+            <div class="delta"><i data-lucide="trending-down"></i>−0,60 ↓ 6 u</div>
+          </div>
+        </div>
+
+        <!-- Fault card -->
+        <div class="fault">
+          <div class="lbl">
+            <i data-lucide="alert-triangle"></i>
+            DETEKTERT FAULT · MORAD
+          </div>
+          <div class="nm">Tidlig sequencing — overkropp starter før hofte</div>
+          <div class="morad">
+            P5 → P7 <b>SEKVENS</b> · WAGR-coach-vurdering · TM-data 28 slag
+          </div>
+          <div class="desc">
+            Du <b>roterer overkroppen før hoften slipper</b> fra topp til ball-kontakt.
+            Resultat: brattere ankomst-vinkel, mer kompresjon-variasjon, lavpunkt vandrer 2–3 cm.
+          </div>
+
+          <!-- P-positions row -->
+          <div class="p-row">
+            <div class="p-pip"><span class="pos">P1</span><span class="dot"></span></div>
+            <div class="p-pip"><span class="pos">P2</span><span class="dot"></span></div>
+            <div class="p-pip"><span class="pos">P3</span><span class="dot"></span></div>
+            <div class="p-pip"><span class="pos">P4</span><span class="dot"></span></div>
+            <div class="p-pip is-fault is-primary"><span class="pos">P5</span><span class="dot"></span></div>
+            <div class="p-pip is-fault"><span class="pos">P6</span><span class="dot"></span></div>
+            <div class="p-pip is-fault is-primary"><span class="pos">P7</span><span class="dot"></span></div>
+            <div class="p-pip"><span class="pos">P8</span><span class="dot"></span></div>
+            <div class="p-pip"><span class="pos">P9</span><span class="dot"></span></div>
+            <div class="p-pip"><span class="pos">P10</span><span class="dot"></span></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===== Right col — Drill ===== -->
+      <div class="v-col">
+
+        <div class="drill-eb">ANBEFALT DRILL · MATCH 94 %</div>
+
+        <div class="drill-card">
+
+          <!-- Video thumb -->
+          <div class="vid-thumb">
+            <span class="ph-label">PLASSHOLDER · VIDEO</span>
+            <span class="play"><i data-lucide="play"></i></span>
+            <span class="duration">2:14</span>
+          </div>
+
+          <!-- Drill body -->
+          <div class="drill-body">
+            <span class="axis">SLAG · INNSPILL · TEK</span>
+            <div class="nm">Lavpunkt-kontroll med tee-board</div>
+            <p class="why">
+              Jobber direkte på <b>sekvens-faulten</b> i P5 → P7: tving hoften til å lede ved å plassere et tee-board
+              2 cm bak ballen. Tee-en skal stå igjen etter slaget.
+            </p>
+
+            <div class="params">
+              <div class="param">
+                <span class="l">REPS</span>
+                <span class="v">30</span>
+              </div>
+              <div class="param">
+                <span class="l">DIST.</span>
+                <span class="v">65 m</span>
+              </div>
+              <div class="param">
+                <span class="l">TID</span>
+                <span class="v">15 m</span>
+              </div>
+              <div class="param">
+                <span class="l">CS</span>
+                <span class="v warn">80</span>
+              </div>
+            </div>
+
+            <div class="cta-row">
+              <button class="btn-pri">
+                <i data-lucide="plus"></i>Legg til i plan
+              </button>
+              <button class="btn-sec">
+                <i data-lucide="message-square"></i>Be coach se på
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Alternativer -->
+        <div class="alt-drills">
+          <div class="lbl">2 ALTERNATIVE DRILLS · SAMME FAULT</div>
+          <div class="alt-list">
+            <div class="alt">
+              <span class="num">2</span>
+              <span class="nm">Sequencing-kjede 9-jern
+                <span class="sub">P5–P7 · 88 % match · 20 m</span>
+              </span>
+              <span class="meta">CS 75</span>
+            </div>
+            <div class="alt">
+              <span class="num">3</span>
+              <span class="nm">Step-thru drill 50–80 m
+                <span class="sub">P5–P7 · 82 % match · 15 m</span>
+              </span>
+              <span class="meta">CS 85</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- VARIANT 2 — COACH OVER STALLEN                                -->
+  <!-- ============================================================ -->
+  <div class="sec tight">
+    Coach-versjon
+    <span class="sub">Samme svakhet på tvers av stallen · gruppe-drill</span>
+  </div>
+
+  <div class="panel">
+
+    <!-- Banner -->
+    <div class="coach-banner">
+      <span class="ic"><i data-lucide="sparkles"></i></span>
+      <div class="body">
+        <div class="ttl">6 spillere har samme MORAD-fault denne uka</div>
+        <div class="sub">
+          <b>Tidlig sequencing</b> (P5 → P7) er stallens dominerende fault · estimert <b>+0,18 SG</b> per spiller om man kjører gruppe-drill torsdag
+        </div>
+      </div>
+      <div class="acts">
+        <button class="ac-btn pri" style="width:auto;padding:0 14px;height:34px">
+          <i data-lucide="calendar-plus"></i>Book gruppe-drill TOR
+        </button>
+      </div>
+    </div>
+
+    <!-- Filter -->
+    <div class="filt-row">
+      <button class="pill is-on">Alle fault <span class="ct">12</span></button>
+      <button class="pill">APP <span class="ct">5</span></button>
+      <button class="pill">OTT <span class="ct">3</span></button>
+      <button class="pill">ARG <span class="ct">2</span></button>
+      <button class="pill">PUTT <span class="ct">2</span></button>
+      <span style="margin-left:auto; font-family: var(--font-mono); font-size: 10px; font-weight: 700; color: var(--muted-foreground); letter-spacing: 0.06em">
+        SORTERT PÅ <b style="color:var(--foreground)">ANTALL × SG-TAP</b>
+      </span>
+    </div>
+
+    <!-- Table -->
+    <table class="coach-tbl">
+      <thead>
+        <tr>
+          <th class="col-fault">Detektert fault</th>
+          <th class="col-players">Spillere</th>
+          <th class="col-sg">SG-tap</th>
+          <th class="col-drill">Anbefalt drill</th>
+          <th class="col-act">Handling</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <!-- Row 1: 6 spillere, gruppert -->
+        <tr class="is-grouped">
+          <td>
+            <div class="fault-cell">
+              <span class="nm">Tidlig sequencing</span>
+              <span class="morad">P5 → P7 · <b>MORAD</b></span>
+              <span class="cat app">APP · INNSPILL</span>
+            </div>
+          </td>
+          <td>
+            <div class="players-cell">
+              <span class="avstack">
+                <span class="av pri">MR</span>
+                <span class="av">EB</span>
+                <span class="av">JH</span>
+                <span class="av">NT</span>
+                <span class="av">MS</span>
+                <span class="av cnt">+1</span>
+              </span>
+              <span class="count"><b>6</b> spillere · gjennomsnitt <b>−0,38 SG</b></span>
+            </div>
+          </td>
+          <td>
+            <div class="sg-cell">
+              <span class="v">−2,28</span>
+              <span class="label">SUM 30 D</span>
+            </div>
+          </td>
+          <td>
+            <div class="drill-cell">
+              <span class="nm">Lavpunkt-kontroll med tee-board</span>
+              <span class="meta"><i data-lucide="clock"></i>15 m · <i data-lucide="layers"></i>4 drills</span>
+              <span class="group-tag"><i data-lucide="users"></i>GRUPPE-MULIG</span>
+            </div>
+          </td>
+          <td>
+            <div class="act-cell">
+              <button class="ac-btn lime"><i data-lucide="calendar-plus"></i>Book gruppe</button>
+              <button class="ac-btn"><i data-lucide="external-link"></i>Se kandidater</button>
+            </div>
+          </td>
+        </tr>
+
+        <!-- Row 2: 3 spillere, OTT -->
+        <tr>
+          <td>
+            <div class="fault-cell">
+              <span class="nm">Åpen klubbflate ved impact</span>
+              <span class="morad">P7 · <b>MORAD</b></span>
+              <span class="cat ott">OTT · DRIVER</span>
+            </div>
+          </td>
+          <td>
+            <div class="players-cell">
+              <span class="avstack">
+                <span class="av lime">KL</span>
+                <span class="av">AR</span>
+                <span class="av">LB</span>
+              </span>
+              <span class="count"><b>3</b> spillere · gjennomsnitt <b>−0,22 SG</b></span>
+            </div>
+          </td>
+          <td>
+            <div class="sg-cell">
+              <span class="v">−0,66</span>
+              <span class="label">SUM 30 D</span>
+            </div>
+          </td>
+          <td>
+            <div class="drill-cell">
+              <span class="nm">Tour-mock club-face gate</span>
+              <span class="meta"><i data-lucide="clock"></i>20 m · <i data-lucide="layers"></i>3 drills</span>
+              <span class="group-tag"><i data-lucide="users"></i>GRUPPE-MULIG</span>
+            </div>
+          </td>
+          <td>
+            <div class="act-cell">
+              <button class="ac-btn"><i data-lucide="calendar-plus"></i>Book gruppe</button>
+              <button class="ac-btn"><i data-lucide="external-link"></i>Se kandidater</button>
+            </div>
+          </td>
+        </tr>
+
+        <!-- Row 3: 2 spillere, ARG -->
+        <tr>
+          <td>
+            <div class="fault-cell">
+              <span class="nm">For tidlig håndledd-release</span>
+              <span class="morad">P6 · <b>MORAD</b></span>
+              <span class="cat arg">ARG · NÆRSPILL</span>
+            </div>
+          </td>
+          <td>
+            <div class="players-cell">
+              <span class="avstack">
+                <span class="av">SK</span>
+                <span class="av">JH</span>
+              </span>
+              <span class="count"><b>2</b> spillere · gjennomsnitt <b>−0,14 SG</b></span>
+            </div>
+          </td>
+          <td>
+            <div class="sg-cell">
+              <span class="v">−0,28</span>
+              <span class="label">SUM 30 D</span>
+            </div>
+          </td>
+          <td>
+            <div class="drill-cell">
+              <span class="nm">Forward-shaft chip-drill</span>
+              <span class="meta"><i data-lucide="clock"></i>15 m · <i data-lucide="layers"></i>2 drills</span>
+              <span class="meta" style="color:var(--muted-foreground); margin-top: 4px">1-til-1 anbefalt</span>
+            </div>
+          </td>
+          <td>
+            <div class="act-cell">
+              <button class="ac-btn"><i data-lucide="user-plus"></i>Tildel 1-til-1</button>
+              <button class="ac-btn"><i data-lucide="external-link"></i>Se kandidater</button>
+            </div>
+          </td>
+        </tr>
+
+        <!-- Row 4: 1 individuell -->
+        <tr>
+          <td>
+            <div class="fault-cell">
+              <span class="nm">Greenlesning · venstre-helling</span>
+              <span class="morad">PUTT · <b>AK-STIGEN</b></span>
+              <span class="cat putt">PUTT · 3–4 M</span>
+            </div>
+          </td>
+          <td>
+            <div class="players-cell">
+              <span class="avstack">
+                <span class="av pri">MR</span>
+              </span>
+              <span class="count"><b>1</b> spiller · individuell</span>
+            </div>
+          </td>
+          <td>
+            <div class="sg-cell">
+              <span class="v">−0,18</span>
+              <span class="label">SUM 30 D</span>
+            </div>
+          </td>
+          <td>
+            <div class="drill-cell">
+              <span class="nm">Helling-clock 4 m · venstre</span>
+              <span class="meta"><i data-lucide="clock"></i>20 m · <i data-lucide="layers"></i>1 drill</span>
+            </div>
+          </td>
+          <td>
+            <div class="act-cell">
+              <button class="ac-btn"><i data-lucide="plus"></i>Legg i plan</button>
+              <button class="ac-btn"><i data-lucide="external-link"></i>Åpne i Workbench</button>
+            </div>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ===== FOOTER PRINSIPP ===== -->
+  <div class="rules">
+    <p><b>Kjeden er produktet.</b> 5 steg horisontalt øverst — DATA → FAULT → DRILL → PLAN → UTFALL. Spilleren forstår <em>hvorfor</em> drillen anbefales, ikke bare <em>at</em> den anbefales. Hvert steg har sitt eget kort i flyten under, og kjeden viser hvilket steg som er aktuelt.</p>
+    <p><b>Spiller-versjon</b> har én svakhet av gangen, vekslende mellom kategorier (APP / OTT / ARG / PUTT). Match-prosent (94 %) viser hvor godt MORAD-faulten matcher TM-data + WAGR-vurdering. Alternativer = samme fault, ulike kontekster (gress vs matte, distanse, vanskelighet).</p>
+    <p><b>Coach-versjon</b> aggregerer fault-deteksjoner på tvers av stallen. <b>"Gruppe-mulig"</b>-tag når 2+ spillere har samme fault — én lime "Book gruppe-drill"-handling sparer 3–6 individuelle økter. Sortert på <em>antall spillere × SG-tap</em>, ikke alfabetisk.</p>
+    <p><b>Datakilder.</b> SG fra rundedata. Fault fra MORAD-bevegelsesvurdering (manuell TrackMan-coach-tagging + auto-detektering der det er TM-data). Drill fra <code>ak-second-brain</code>-bibliotek med video-thumb. Plan = legg-i-Workbench-handling.</p>
+    <p><b>Empty/error.</b> "Ingen fault detektert ennå — logger 3 økter til så får du første anbefaling." Lav konfidens-state &lt; 5 slag på APP demper hele kortet til 60 % opacity + "for få datapunkter" banner.</p>
+  </div>
+
+  <script>lucide.createIcons();</script>
+</div></body></html>

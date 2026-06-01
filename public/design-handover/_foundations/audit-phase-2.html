@@ -1,0 +1,1036 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>Fase 2 · audit av 35 komponenter</title>
+<link rel="stylesheet" href="_shared.css">
+<script src="https://unpkg.com/lucide@0.453.0"></script>
+<style>
+  body { width: 1280px; }
+  .card { padding: 28px 32px; }
+
+  /* ============ HEADER ============ */
+  .head {
+    margin-bottom: 20px;
+  }
+  .head .eb {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .head h1 {
+    margin: 8px 0 6px;
+    font-family: var(--font-display); font-weight: 700; font-size: 32px;
+    letter-spacing: -0.025em; color: var(--foreground); line-height: 1.05;
+  }
+  .head h1 em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .head .helper {
+    font-family: var(--font-sans); font-size: 14px;
+    color: var(--muted-foreground); line-height: 1.55; max-width: 760px;
+    margin-top: 4px;
+  }
+
+  /* ============ KPI strip ============ */
+  .stat-strip {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;
+    margin: 20px 0 24px;
+  }
+  .stat {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px 16px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .stat .v {
+    font-family: var(--font-mono); font-weight: 800; font-size: 26px;
+    letter-spacing: -0.02em; line-height: 1; color: var(--foreground);
+    font-feature-settings: "tnum","zero";
+  }
+  .stat .v.pos { color: var(--success); }
+  .stat .v.warn { color: var(--warning); }
+  .stat .v.neg { color: var(--destructive); }
+  .stat .l {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+
+  /* ============ Section ============ */
+  .sec {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--foreground);
+    display: flex; align-items: center; gap: 12px;
+    margin: 28px 0 12px;
+  }
+  .sec::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+  .sec .sub {
+    color: var(--muted-foreground); font-weight: 700; letter-spacing: 0.04em;
+  }
+  .sec .count {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    background: var(--secondary); color: var(--muted-foreground);
+    padding: 2px 8px; border-radius: 9999px; letter-spacing: 0.04em;
+  }
+
+  /* ============ TABLE ============ */
+  .panel {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; overflow: hidden;
+  }
+  table {
+    width: 100%; border-collapse: collapse; table-layout: fixed;
+    font-family: var(--font-sans);
+  }
+  thead th {
+    background: var(--cream-50);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 12px;
+    text-align: left;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    vertical-align: middle;
+  }
+  thead th.c { text-align: center; }
+  thead th i { width: 11px; height: 11px; }
+
+  .col-comp { width: 200px; }
+  .col-kind { width: 90px; }
+  .col-state { width: 78px; }
+  .col-mob { width: 78px; }
+  .col-voice { width: 70px; }
+  .col-polish { width: 84px; }
+  .col-foot { width: 64px; }
+  .col-prio { width: 70px; }
+  .col-action { width: auto; }
+
+  tbody td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px; color: var(--foreground); letter-spacing: -0.005em;
+    vertical-align: top; line-height: 1.4;
+  }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr:hover { background: rgba(0,88,64,0.025); }
+
+  /* Component cell */
+  .cn {
+    display: flex; flex-direction: column; line-height: 1.25; min-width: 0;
+  }
+  .cn .nm {
+    font-weight: 700; font-size: 13px; letter-spacing: -0.005em; color: var(--foreground);
+  }
+  .cn .path {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 600;
+    color: var(--muted-foreground); letter-spacing: 0; margin-top: 1px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  /* Kind chip */
+  .kind {
+    display: inline-flex; align-items: center;
+    height: 18px; padding: 0 7px; border-radius: 4px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+  }
+  .kind.fnd  { background: var(--secondary); color: var(--muted-foreground); }
+  .kind.brd  { background: rgba(209,248,67,0.30); color: var(--primary); }
+  .kind.prm  { background: rgba(94,92,107,0.10); color: var(--neutral-chip-foreground); }
+  .kind.cmp  { background: rgba(0,88,64,0.10); color: var(--success-foreground); }
+  .kind.dom  { background: rgba(37,99,235,0.10); color: var(--info-foreground); }
+  .kind.scr  { background: rgba(184,133,42,0.14); color: var(--warning-foreground); }
+  .kind.mob  { background: rgba(163,45,45,0.10); color: var(--destructive-foreground); }
+
+  /* Status pip */
+  .pip {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    letter-spacing: 0.04em;
+    font-feature-settings: "tnum","zero";
+  }
+  .pip::before {
+    content: ""; width: 8px; height: 8px; border-radius: 9999px;
+    flex-shrink: 0;
+  }
+  .pip.ok   { color: var(--success); }
+  .pip.ok::before   { background: var(--success); }
+  .pip.part { color: var(--warning); }
+  .pip.part::before { background: var(--warning); }
+  .pip.miss { color: var(--destructive); }
+  .pip.miss::before { background: var(--destructive); }
+  .pip.na   { color: var(--muted-foreground); }
+  .pip.na::before   { background: var(--cream-300); }
+
+  /* Priority pill */
+  .prio {
+    display: inline-flex; align-items: center; gap: 4px;
+    height: 20px; padding: 0 8px 0 6px; border-radius: 9999px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+  }
+  .prio::before {
+    content: ""; width: 6px; height: 6px; border-radius: 9999px;
+  }
+  .prio.p1 { background: rgba(163,45,45,0.10); color: var(--destructive); }
+  .prio.p1::before { background: var(--destructive); }
+  .prio.p2 { background: rgba(184,133,42,0.14); color: var(--warning-foreground); }
+  .prio.p2::before { background: var(--warning); }
+  .prio.p3 { background: rgba(0,88,64,0.10); color: var(--success-foreground); }
+  .prio.p3::before { background: var(--success); }
+  .prio.done { background: var(--secondary); color: var(--muted-foreground); }
+  .prio.done::before { background: var(--muted-foreground); }
+
+  /* Action cell text */
+  td.action {
+    font-size: 12px; color: var(--muted-foreground); letter-spacing: -0.005em;
+    line-height: 1.45;
+  }
+  td.action b { color: var(--foreground); font-weight: 700; }
+
+  /* ============ B-section table ============ */
+  table.b-table .col-id { width: 70px; }
+  table.b-table .col-comp { width: 220px; }
+  table.b-table .col-why { width: auto; }
+  table.b-table .col-prio { width: 80px; }
+  table.b-table .col-blockers { width: 220px; }
+  table.b-table .col-est { width: 80px; }
+
+  .badge-id {
+    display: inline-flex; align-items: center;
+    height: 22px; padding: 0 8px; border-radius: 6px;
+    background: var(--primary); color: var(--accent);
+    font-family: var(--font-mono); font-size: 11px; font-weight: 800;
+    letter-spacing: 0.04em;
+  }
+  .badge-id.c { background: rgba(184,133,42,0.14); color: var(--warning-foreground); }
+  .badge-id.a { background: rgba(37,99,235,0.10); color: var(--info-foreground); }
+
+  /* ============ Sequence map (visual rail) ============ */
+  .seq {
+    margin-top: 8px;
+    display: grid; grid-template-columns: repeat(10, 1fr); gap: 10px;
+  }
+  .seq .step {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 12px 10px;
+    display: flex; flex-direction: column; gap: 4px;
+    position: relative;
+  }
+  .seq .step .n {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    color: var(--muted-foreground); letter-spacing: 0.10em;
+  }
+  .seq .step .nm {
+    font-family: var(--font-display); font-weight: 700; font-size: 13px;
+    letter-spacing: -0.015em; color: var(--foreground); line-height: 1.15;
+  }
+  .seq .step .why {
+    font-family: var(--font-mono); font-size: 9px;
+    color: var(--muted-foreground); letter-spacing: 0.02em; margin-top: 2px;
+  }
+  .seq .step.now {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(209,248,67,0.30);
+  }
+  .seq .step.now::before {
+    content: "NÅ"; position: absolute; top: -8px; left: 10px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    background: var(--accent); color: var(--primary);
+    padding: 2px 7px; border-radius: 4px; letter-spacing: 0.10em;
+  }
+
+  /* Footer rules */
+  .rules {
+    margin-top: 28px; padding: 18px 20px;
+    background: var(--secondary); border-radius: 12px;
+    font-family: var(--font-mono); font-size: 12px;
+    color: var(--muted-foreground); line-height: 1.7;
+  }
+  .rules p { margin: 0; }
+  .rules p + p { margin-top: 8px; }
+  .rules b { color: var(--foreground); font-weight: 700; }
+
+  /* Legend (state pip legend at top of A-table) */
+  .legend-row {
+    display: flex; flex-wrap: wrap; gap: 18px;
+    padding: 10px 16px;
+    background: var(--cream-50);
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .legend-row b { color: var(--foreground); }
+</style></head>
+<body><div class="card">
+
+  <!-- ============================================================ -->
+  <!-- HEADER                                                        -->
+  <!-- ============================================================ -->
+  <div class="head">
+    <span class="eb">FASE 2 · AUDIT</span>
+    <h1>Premium-finpuss → <em>museumskvalitet.</em></h1>
+    <p class="helper">
+      Kart over alle 35 produkt-komponenter mot DEL A-kravene (states · mobil · tale · polish · footer).
+      Prioritert plukk-liste over hva som tas først. Brukes som backlog mellom denne fasen og handover til Claude Code.
+    </p>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- KPI STRIP                                                     -->
+  <!-- ============================================================ -->
+  <div class="stat-strip">
+    <div class="stat">
+      <span class="v">35</span>
+      <span class="l">PRODUKT-KOMPONENTER</span>
+    </div>
+    <div class="stat">
+      <span class="v pos">3</span>
+      <span class="l">FULL STATE-MATRISE</span>
+    </div>
+    <div class="stat">
+      <span class="v warn">11</span>
+      <span class="l">TRENGER 2-3 STATES</span>
+    </div>
+    <div class="stat">
+      <span class="v neg">21</span>
+      <span class="l">MANGLER MOBIL</span>
+    </div>
+    <div class="stat">
+      <span class="v">+22</span>
+      <span class="l">FOUNDATIONS / TOKENS (OK)</span>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- DEL A · AUDIT-TABELL                                          -->
+  <!-- ============================================================ -->
+  <div class="sec">
+    DEL A · audit av 35 komponenter
+    <span class="sub">states · mobil · tale · polish · footer</span>
+    <span class="count">35 RADER</span>
+  </div>
+
+  <div class="panel">
+    <div class="legend-row">
+      <span><b>States</b> = default + loading + empty + error</span>
+      <span><b>Mobil</b> = 430 × 760 variant finnes</span>
+      <span><b>Tale</b> = Deepgram-mic-affordance integrert</span>
+      <span><b>Polish</b> = mikrointeraksjon + konfidens + skeleton</span>
+      <span><b>Footer</b> = prinsipp-tekst som lærer brukeren systemet</span>
+      <span style="margin-left:auto"><span class="pip ok">FULL</span> · <span class="pip part">DELVIS</span> · <span class="pip miss">MANGLER</span> · <span class="pip na">N/A</span></span>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th class="col-comp">Komponent</th>
+          <th class="col-kind">Type</th>
+          <th class="c col-state">States</th>
+          <th class="c col-mob">Mobil</th>
+          <th class="c col-voice">Tale</th>
+          <th class="c col-polish">Polish</th>
+          <th class="c col-foot">Footer</th>
+          <th class="c col-prio">Prio</th>
+          <th class="col-action">Plukk-liste · konkret arbeid</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <!-- ===== PRIMITIVES ===== -->
+
+        <tr>
+          <td><div class="cn"><span class="nm">KPI-kort</span><span class="path">components-kpi.html</span></div></td>
+          <td><span class="kind prm">PRIMITIV</span></td>
+          <td class="c"><span class="pip ok">FULL</span></td>
+          <td class="c"><span class="pip part">DELVIS</span></td>
+          <td class="c"><span class="pip na">—</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="prio done">REF</span></td>
+          <td class="action">Brukes som <b>målestokk</b> for DEL A1. Ingen endring — alle andre måles mot denne.</td>
+        </tr>
+
+        <tr>
+          <td><div class="cn"><span class="nm">Kø-liste</span><span class="path">components-queue.html</span></div></td>
+          <td><span class="kind prm">PRIMITIV</span></td>
+          <td class="c"><span class="pip ok">FULL</span></td>
+          <td class="c"><span class="pip part">DELVIS</span></td>
+          <td class="c"><span class="pip na">—</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="prio done">REF</span></td>
+          <td class="action">Andre målestokk. Loading + empty + cta-mønster brukes overalt.</td>
+        </tr>
+
+        <tr>
+          <td><div class="cn"><span class="nm">Badges</span><span class="path">components-badges.html</span></div></td>
+          <td><span class="kind prm">PRIMITIV</span></td>
+          <td class="c"><span class="pip part">DELVIS</span></td>
+          <td class="c"><span class="pip na">—</span></td>
+          <td class="c"><span class="pip na">—</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="prio p3">P3</span></td>
+          <td class="action">Legg til <b>loading shimmer-state</b>. Resten OK.</td>
+        </tr>
+
+        <tr>
+          <td><div class="cn"><span class="nm">Buttons</span><span class="path">components-buttons.html</span></div></td>
+          <td><span class="kind prm">PRIMITIV</span></td>
+          <td class="c"><span class="pip ok">FULL</span></td>
+          <td class="c"><span class="pip na">—</span></td>
+          <td class="c"><span class="pip na">—</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="prio done">REF</span></td>
+          <td class="action">Komplett. Ingen endring.</td>
+        </tr>
+
+        <tr>
+          <td><div class="cn"><span class="nm">Inputs</span><span class="path">components-inputs.html</span></div></td>
+          <td><span class="kind prm">PRIMITIV</span></td>
+          <td class="c"><span class="pip ok">FULL</span></td>
+          <td class="c"><span class="pip part">DELVIS</span></td>
+          <td class="c"><span class="pip miss">MANGLER</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="prio p1">P1</span></td>
+          <td class="action"><b>Tale-mic-affordance som suffix-ikon</b> på alle multiline-fields. Forutsetning for A4.</td>
+        </tr>
+
+        <tr>
+          <td><div class="cn"><span class="nm">Eyebrow</span><span class="path">components-eyebrow.html</span></div></td>
+          <td><span class="kind prm">PRIMITIV</span></td>
+          <td class="c"><span class="pip na">—</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip na">—</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="prio done">REF</span></td>
+          <td class="action">Type-primitiv. Komplett.</td>
+        </tr>
+
+        <tr>
+          <td><div class="cn"><span class="nm">Featured</span><span class="path">components-featured.html</span></div></td>
+          <td><span class="kind prm">PRIMITIV</span></td>
+          <td class="c"><span class="pip part">DELVIS</span></td>
+          <td class="c"><span class="pip miss">MANGLER</span></td>
+          <td class="c"><span class="pip na">—</span></td>
+          <td class="c"><span class="pip part">DELVIS</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="prio p2">P2</span></td>
+          <td class="action">Mobil-stack-variant for hero-treatments. Loading shimmer på cover-image.</td>
+        </tr>
+
+        <tr>
+          <td><div class="cn"><span class="nm">Hover-preview</span><span class="path">components-hover-preview.html</span></div></td>
+          <td><span class="kind prm">PRIMITIV</span></td>
+          <td class="c"><span class="pip part">DELVIS</span></td>
+          <td class="c"><span class="pip na">—</span></td>
+          <td class="c"><span class="pip na">—</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="prio p2">P2</span></td>
+          <td class="action"><b>Empty + error i preview-popover</b> ("Kunne ikke hente"). Mobil = long-press fallback til side-panel.</td>
+        </tr>
+
+        <!-- ===== KALENDER ===== -->
+
+        <tr>
+          <td><div class="cn"><span class="nm">Dag-kalender</span><span class="path">components-daycal.html</span></div></td>
+          <td><span class="kind cmp">KALENDER</span></td>
+          <td class="c"><span class="pip part">DELVIS</span></td>
+          <td class="c"><span class="pip miss">MANGLER</span></td>
+          <td class="c"><span class="pip na">—</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="prio p2">P2</span></td>
+          <td class="action"><b>Empty-dag</b> ("ingen økter — planlegg første"). Loading-skeleton på timer. Mobil 430-variant.</td>
+        </tr>
+
+        <tr>
+          <td><div class="cn"><span class="nm">Måned-kalender</span><span class="path">components-monthcal.html</span></div></td>
+          <td><span class="kind cmp">KALENDER</span></td>
+          <td class="c"><span class="pip part">DELVIS</span></td>
+          <td class="c"><span class="pip miss">MANGLER</span></td>
+          <td class="c"><span class="pip na">—</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip part">DELVIS</span></td>
+          <td class="c"><span class="prio p2">P2</span></td>
+          <td class="action">Empty-state for hver dag (tom periode). Mobil-vertikal. Prinsipp-footer om periode-fargekoder.</td>
+        </tr>
+
+        <tr>
+          <td><div class="cn"><span class="nm">Periode-tidslinje</span><span class="path">components-timeline.html</span></div></td>
+          <td><span class="kind cmp">KALENDER</span></td>
+          <td class="c"><span class="pip part">DELVIS</span></td>
+          <td class="c"><span class="pip miss">MANGLER</span></td>
+          <td class="c"><span class="pip miss">MANGLER</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="prio p1">P1</span></td>
+          <td class="action"><b>"Ikke bygget ennå"-state</b> + "AI-genererer …" + "venter coach-godkjenning" + "manuell justering pågår" (DEL A1 plan-flyt). Mobil read-only stack.</td>
+        </tr>
+
+        <!-- ===== ØKT ===== -->
+
+        <tr>
+          <td><div class="cn"><span class="nm">Øktplan-detalj</span><span class="path">components-okt-detail.html</span></div></td>
+          <td><span class="kind cmp">ØKT</span></td>
+          <td class="c"><span class="pip ok">FULL</span></td>
+          <td class="c"><span class="pip part">DELVIS</span></td>
+          <td class="c"><span class="pip miss">MANGLER</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="prio p2">P2</span></td>
+          <td class="action">Allerede mobil-stage. Trenger <b>tale-mic på notat-felt</b>. <b>Drill-fullføring vs plan</b> (B6) under drill-listen.</td>
+        </tr>
+
+        <tr>
+          <td><div class="cn"><span class="nm">Live Session</span><span class="path">components-live-session.html</span></div></td>
+          <td><span class="kind mob">MOBIL</span></td>
+          <td class="c"><span class="pip ok">FULL</span></td>
+          <td class="c"><span class="pip ok">FULL</span></td>
+          <td class="c"><span class="pip miss">MANGLER</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="prio p2">P2</span></td>
+          <td class="action">Reff for mobil. Trenger <b>"Diktér notat"-knapp</b> ved siden av foto/video. Avbrutt-state + "lavpunkt-deteksjon mistet"-feilrekkefølge.</td>
+        </tr>
+
+        <!-- ===== TRACKMAN / SG ===== -->
+
+        <tr>
+          <td><div class="cn"><span class="nm">TrackMan · sesjon</span><span class="path">components-trackman.html</span></div></td>
+          <td><span class="kind dom">DOMAIN</span></td>
+          <td class="c"><span class="pip part">DELVIS</span></td>
+          <td class="c"><span class="pip miss">MANGLER</span></td>
+          <td class="c"><span class="pip na">—</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="prio p1">P1</span></td>
+          <td class="action"><b>4 nye states</b>: ingen data · CSV-import feilet · lav konfidens (&lt; 10 slag) · OCR pågår. Mobil CSV-upload-flyt.</td>
+        </tr>
+
+        <tr>
+          <td><div class="cn"><span class="nm">TM dispersion</span><span class="path">components-trackman-dispersion.html</span></div></td>
+          <td><span class="kind dom">DOMAIN</span></td>
+          <td class="c"><span class="pip part">DELVIS</span></td>
+          <td class="c"><span class="pip miss">MANGLER</span></td>
+          <td class="c"><span class="pip na">—</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="prio p1">P1</span></td>
+          <td class="action"><b>Konfidens-demping &lt; 10 slag</b> (allerede ±-merket — men gjør visuelt subtilt). Empty / lav-data / klubb-bytte-animasjon.</td>
+        </tr>
+
+        <tr>
+          <td><div class="cn"><span class="nm">TM stability</span><span class="path">components-trackman-stability.html</span></div></td>
+          <td><span class="kind dom">DOMAIN</span></td>
+          <td class="c"><span class="pip part">DELVIS</span></td>
+          <td class="c"><span class="pip miss">MANGLER</span></td>
+          <td class="c"><span class="pip na">—</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="prio p2">P2</span></td>
+          <td class="action">Lav-konfidens state. Mobil-stack.</td>
+        </tr>
+
+        <tr>
+          <td><div class="cn"><span class="nm">TM trend</span><span class="path">components-trackman-trend.html</span></div></td>
+          <td><span class="kind dom">DOMAIN</span></td>
+          <td class="c"><span class="pip part">DELVIS</span></td>
+          <td class="c"><span class="pip miss">MANGLER</span></td>
+          <td class="c"><span class="pip na">—</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="prio p2">P2</span></td>
+          <td class="action">Empty (mindre enn 4 økter) + lav-konfidens. Mobil-stack.</td>
+        </tr>
+
+        <tr>
+          <td><div class="cn"><span class="nm">Stats &amp; SG</span><span class="path">components-stats-sg.html</span></div></td>
+          <td><span class="kind dom">DOMAIN</span></td>
+          <td class="c"><span class="pip part">DELVIS</span></td>
+          <td class="c"><span class="pip miss">MANGLER</span></td>
+          <td class="c"><span class="pip na">—</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="prio p1">P1</span></td>
+          <td class="action"><b>Lav-data state</b> (&lt; 3 runder) som forklarer hvorfor SG er upålitelig. Ingen-data + import-feil. Mobil scroll-stack.</td>
+        </tr>
+
+        <!-- ===== PYRAMIDE ===== -->
+
+        <tr>
+          <td><div class="cn"><span class="nm">Pyramide-progress</span><span class="path">components-pyramid.html</span></div></td>
+          <td><span class="kind dom">DOMAIN</span></td>
+          <td class="c"><span class="pip part">DELVIS</span></td>
+          <td class="c"><span class="pip miss">MANGLER</span></td>
+          <td class="c"><span class="pip na">—</span></td>
+          <td class="c"><span class="pip part">DELVIS</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="prio p1">P1</span></td>
+          <td class="action"><b>"Tom-pyramide → første økt"-overgang</b> (DEL A5 mikrointeraksjon). Mobil-stack.</td>
+        </tr>
+
+        <tr>
+          <td><div class="cn"><span class="nm">Pyramide-leksikon</span><span class="path">components-pyramid-levels.html</span></div></td>
+          <td><span class="kind dom">DOMAIN</span></td>
+          <td class="c"><span class="pip na">—</span></td>
+          <td class="c"><span class="pip miss">MANGLER</span></td>
+          <td class="c"><span class="pip na">—</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip part">DELVIS</span></td>
+          <td class="c"><span class="prio p3">P3</span></td>
+          <td class="action">Brukes som <b>konseptkort</b> (C2). Mobil bottom-sheet. Footer: prinsipp om pyramide-hierarki.</td>
+        </tr>
+
+        <!-- ===== AGENCYOS ===== -->
+
+        <tr>
+          <td><div class="cn"><span class="nm">Agency sidebar-nav</span><span class="path">components-agency-sidebar.html</span></div></td>
+          <td><span class="kind scr">AGENCY</span></td>
+          <td class="c"><span class="pip ok">FULL</span></td>
+          <td class="c"><span class="pip miss">MANGLER</span></td>
+          <td class="c"><span class="pip miss">MANGLER</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="prio p1">P1</span></td>
+          <td class="action"><b>Coach-mobil bottom-tab</b> (A3). <b>⌘K-trigger</b> i header (B8).</td>
+        </tr>
+
+        <tr>
+          <td><div class="cn"><span class="nm">Daglig brief</span><span class="path">components-agency-dashboard.html</span></div></td>
+          <td><span class="kind scr">AGENCY</span></td>
+          <td class="c"><span class="pip part">DELVIS</span></td>
+          <td class="c"><span class="pip miss">MANGLER</span></td>
+          <td class="c"><span class="pip miss">MANGLER</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="prio p1">P1</span></td>
+          <td class="action"><b>Mobil-versjon</b> = 3 viktigste (A3). <b>Tale-dispatch</b> i top-bar (A4). Empty-stat: "ingen økter i dag".</td>
+        </tr>
+
+        <tr>
+          <td><div class="cn"><span class="nm">Stallen</span><span class="path">components-agency-player-table.html</span></div></td>
+          <td><span class="kind scr">AGENCY</span></td>
+          <td class="c"><span class="pip part">DELVIS</span></td>
+          <td class="c"><span class="pip miss">MANGLER</span></td>
+          <td class="c"><span class="pip na">—</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="prio p1">P1</span></td>
+          <td class="action"><b>Compliance-kolonne</b> (B6). <b>Ingen-treff på filter</b>-state. Mobil = kort-liste i stedet for tabell.</td>
+        </tr>
+
+        <tr>
+          <td><div class="cn"><span class="nm">Spiller-detalj panel</span><span class="path">components-agency-player-panel.html</span></div></td>
+          <td><span class="kind scr">AGENCY</span></td>
+          <td class="c"><span class="pip part">DELVIS</span></td>
+          <td class="c"><span class="pip miss">MANGLER</span></td>
+          <td class="c"><span class="pip miss">MANGLER</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="prio p1">P1</span></td>
+          <td class="action"><b>Mobil = full-screen sheet</b> (A3 quickview). <b>Diktér notat-CTA</b>. <b>Video-capture-knapp</b> (A3).</td>
+        </tr>
+
+        <tr>
+          <td><div class="cn"><span class="nm">Innboks</span><span class="path">components-agency-inbox.html</span></div></td>
+          <td><span class="kind scr">AGENCY</span></td>
+          <td class="c"><span class="pip part">DELVIS</span></td>
+          <td class="c"><span class="pip miss">MANGLER</span></td>
+          <td class="c"><span class="pip miss">MANGLER</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="prio p1">P1</span></td>
+          <td class="action"><b>Mobil swipe-handlinger</b> (godkjenn høyre · avvis venstre · snooze opp) (A3). Empty + tale-svar.</td>
+        </tr>
+
+        <tr>
+          <td><div class="cn"><span class="nm">Booking-oversikt</span><span class="path">components-agency-bookings.html</span></div></td>
+          <td><span class="kind scr">AGENCY</span></td>
+          <td class="c"><span class="pip part">DELVIS</span></td>
+          <td class="c"><span class="pip miss">MANGLER</span></td>
+          <td class="c"><span class="pip na">—</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="prio p2">P2</span></td>
+          <td class="action"><b>Ingen ledige tider</b> · <b>betaling feilet</b> · <b>venter coach-bekreftelse</b> (DEL A1). Mobil = liste.</td>
+        </tr>
+
+        <tr>
+          <td><div class="cn"><span class="nm">Drift-panel</span><span class="path">components-agency-drift.html</span></div></td>
+          <td><span class="kind scr">AGENCY</span></td>
+          <td class="c"><span class="pip part">DELVIS</span></td>
+          <td class="c"><span class="pip miss">MANGLER</span></td>
+          <td class="c"><span class="pip na">—</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="prio p3">P3</span></td>
+          <td class="action">"Ingen team-medlem ennå" + "ingen mal-historikk". Tilgjengelighet-tab. Audit-log-tab.</td>
+        </tr>
+
+        <tr>
+          <td><div class="cn"><span class="nm">Tester-stall</span><span class="path">components-agency-tests.html</span></div></td>
+          <td><span class="kind scr">AGENCY</span></td>
+          <td class="c"><span class="pip part">DELVIS</span></td>
+          <td class="c"><span class="pip miss">MANGLER</span></td>
+          <td class="c"><span class="pip na">—</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="prio p2">P2</span></td>
+          <td class="action">Empty for hele matrisen (sesongstart). Test-detalj-modal når man klikker celle. Mobil = scroll-horisontalt grid.</td>
+        </tr>
+
+        <!-- ===== WORKBENCH ===== -->
+
+        <tr>
+          <td><div class="cn"><span class="nm">Workbench sidemeny</span><span class="path">components-workbench-sidebar.html</span></div></td>
+          <td><span class="kind scr">WORKBENCH</span></td>
+          <td class="c"><span class="pip part">DELVIS</span></td>
+          <td class="c"><span class="pip miss">MANGLER</span></td>
+          <td class="c"><span class="pip na">—</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="prio p2">P2</span></td>
+          <td class="action">"Plan ikke bygget" på hver dropdown-seksjon. Mobil bottom-sheet (plan-tweak).</td>
+        </tr>
+
+        <tr>
+          <td><div class="cn"><span class="nm">Workbench uke-grid</span><span class="path">components-workbench-week.html</span></div></td>
+          <td><span class="kind scr">WORKBENCH</span></td>
+          <td class="c"><span class="pip part">DELVIS</span></td>
+          <td class="c"><span class="pip miss">MANGLER</span></td>
+          <td class="c"><span class="pip na">—</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="prio p2">P2</span></td>
+          <td class="action">"AI-genererer plan" loading. "Venter godkjenning"-overlay. Mobil read-only stack.</td>
+        </tr>
+
+        <tr>
+          <td><div class="cn"><span class="nm">Workbench dag-tidslinje</span><span class="path">components-workbench-day.html</span></div></td>
+          <td><span class="kind scr">WORKBENCH</span></td>
+          <td class="c"><span class="pip part">DELVIS</span></td>
+          <td class="c"><span class="pip miss">MANGLER</span></td>
+          <td class="c"><span class="pip na">—</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="prio p3">P3</span></td>
+          <td class="action">"Hviledag — ingen økter"-state. Mobil-versjon = en lang scroll-list.</td>
+        </tr>
+
+        <!-- ===== ANALYSE ===== -->
+
+        <tr>
+          <td><div class="cn"><span class="nm">Treningsanalyse</span><span class="path">components-training-analysis.html</span></div></td>
+          <td><span class="kind dom">DOMAIN</span></td>
+          <td class="c"><span class="pip part">DELVIS</span></td>
+          <td class="c"><span class="pip miss">MANGLER</span></td>
+          <td class="c"><span class="pip na">—</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="prio p2">P2</span></td>
+          <td class="action">"Mindre enn 4 uker data — analyse kommer". Mobil scroll. Print/PDF-variant for ukerapport (DEL A5).</td>
+        </tr>
+
+        <!-- ===== TAB / NAV / CREDIT / DRAG ===== -->
+
+        <tr>
+          <td><div class="cn"><span class="nm">Tab-bar</span><span class="path">components-tabbar.html</span></div></td>
+          <td><span class="kind prm">PRIMITIV</span></td>
+          <td class="c"><span class="pip ok">FULL</span></td>
+          <td class="c"><span class="pip ok">FULL</span></td>
+          <td class="c"><span class="pip na">—</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="prio done">REF</span></td>
+          <td class="action">Komplett (mine 5 states inkluderer disabled/focus). Brukes som-er.</td>
+        </tr>
+
+        <tr>
+          <td><div class="cn"><span class="nm">Credit-saldo</span><span class="path">components-credit-indicator.html</span></div></td>
+          <td><span class="kind cmp">FORRETNING</span></td>
+          <td class="c"><span class="pip ok">FULL</span></td>
+          <td class="c"><span class="pip part">DELVIS</span></td>
+          <td class="c"><span class="pip na">—</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="prio p2">P2</span></td>
+          <td class="action">Krever <b>foreldre-versjon</b> (B7) — abonnement + faktura. Betaling-feilet state.</td>
+        </tr>
+
+        <tr>
+          <td><div class="cn"><span class="nm">Drag-slider</span><span class="path">components-drag-slider.html</span></div></td>
+          <td><span class="kind cmp">ONBOARDING</span></td>
+          <td class="c"><span class="pip ok">FULL</span></td>
+          <td class="c"><span class="pip miss">MANGLER</span></td>
+          <td class="c"><span class="pip na">—</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="pip ok">OK</span></td>
+          <td class="c"><span class="prio p2">P2</span></td>
+          <td class="action">Mobil touch-affordance (større thumb 32 px). Brukes i B2-onboarding.</td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- DEL B · MANGLENDE KOMPONENTER                                 -->
+  <!-- ============================================================ -->
+  <div class="sec">
+    DEL B · 10 manglende komponenter
+    <span class="sub">prioritert · gap-to-drill først</span>
+    <span class="count">10 KORT</span>
+  </div>
+
+  <div class="panel">
+    <table class="b-table">
+      <thead>
+        <tr>
+          <th class="col-id">ID</th>
+          <th class="col-comp">Komponent</th>
+          <th class="col-why">Hvorfor det er nødvendig</th>
+          <th class="c col-prio">Prio</th>
+          <th class="col-blockers">Avhengigheter</th>
+          <th class="c col-est">Est.</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr>
+          <td><span class="badge-id">B4</span></td>
+          <td><div class="cn"><span class="nm">Gap-to-drill</span><span class="path">SG-svakhet → fault → drill</span></div></td>
+          <td>Produktets kjerne-IP synliggjort. Synlig kjede Data → Fault → MORAD → Drill → Plan. Coach-versjon over hele stallen.</td>
+          <td class="c"><span class="prio p1">P1</span></td>
+          <td>Bruker: SG-card · pyramide-akse · MORAD-tag · drill-card med video-thumb</td>
+          <td class="c">M</td>
+        </tr>
+
+        <tr>
+          <td><span class="badge-id">B1</span></td>
+          <td><div class="cn"><span class="nm">Foreldre-flate</span><span class="path">onboarding + portal + godkjenn</span></div></td>
+          <td>GDPR-kritisk. Mindreårig-gate. Foreldre-portal + godkjennings-mønster + gruppemelding.</td>
+          <td class="c"><span class="prio p1">P1</span></td>
+          <td>Bruker: avatar · KPI · innboks-rad · betalings-status</td>
+          <td class="c">L</td>
+        </tr>
+
+        <tr>
+          <td><span class="badge-id">B6</span></td>
+          <td><div class="cn"><span class="nm">Compliance-sporing</span><span class="path">reps vs plan · barometer</span></div></td>
+          <td>Coachs første spørsmål på neste økt baseres på dette. Kobler plan til faktisk logget arbeid.</td>
+          <td class="c"><span class="prio p1">P1</span></td>
+          <td>Modifiserer: Stallen-tabell (rad) · spiller-panel (modul) · økt-detalj (drill-row)</td>
+          <td class="c">M</td>
+        </tr>
+
+        <tr>
+          <td><span class="badge-id">B3</span></td>
+          <td><div class="cn"><span class="nm">Co-agent rammeverk</span><span class="path">⌘K palette + utkast + audit</span></div></td>
+          <td>Lim mellom AgencyOS og AI. Designet nå selv om logikken kommer senere — låser primitivene.</td>
+          <td class="c"><span class="prio p2">P2</span></td>
+          <td>Bruker: A4 mic · diff-view · godkjenn-pattern</td>
+          <td class="c">L</td>
+        </tr>
+
+        <tr>
+          <td><span class="badge-id">B8</span></td>
+          <td><div class="cn"><span class="nm">⌘K command palette</span><span class="path">global søk + handling</span></div></td>
+          <td>Power-bruker navigasjon. Avhenger av B3-mic for tale-inngang.</td>
+          <td class="c"><span class="prio p2">P2</span></td>
+          <td>Bruker: hover-preview · mic-input</td>
+          <td class="c">M</td>
+        </tr>
+
+        <tr>
+          <td><span class="badge-id">B9</span></td>
+          <td><div class="cn"><span class="nm">Varslingsstrøm</span><span class="path">passive · ikke handling</span></div></td>
+          <td>"Markus endret 3 økter denne uka" — ikke en sak men en notis. Separat fra innboks.</td>
+          <td class="c"><span class="prio p2">P2</span></td>
+          <td>Modifiserer: AgencyOS sidebar · header-bell</td>
+          <td class="c">S</td>
+        </tr>
+
+        <tr>
+          <td><span class="badge-id">B5</span></td>
+          <td><div class="cn"><span class="nm">Test-uke-syklus</span><span class="path">trigger → evaluering → ny plan</span></div></td>
+          <td>Uke-43-flyt for konkurranseprofiler. Krever før/etter-dialog + manuell coach-godkjenning.</td>
+          <td class="c"><span class="prio p2">P2</span></td>
+          <td>Bruker: tester-stall · pyramide · timeline</td>
+          <td class="c">M</td>
+        </tr>
+
+        <tr>
+          <td><span class="badge-id">B2</span></td>
+          <td><div class="cn"><span class="nm">Onboarding-flyt</span><span class="path">8 steg · fasilitets-profil</span></div></td>
+          <td>Komplett velkomst-til-første-plan. Bruker eksisterende drag-slider (komponent 15).</td>
+          <td class="c"><span class="prio p2">P2</span></td>
+          <td>Bruker: drag-slider · inputs · stepper-primitiv</td>
+          <td class="c">L</td>
+        </tr>
+
+        <tr>
+          <td><span class="badge-id">B7</span></td>
+          <td><div class="cn"><span class="nm">Abonnement + faktura</span><span class="path">Pro/Performance/Free + credits</span></div></td>
+          <td>Stripe-flyt. Credits-historikk + avbestillinger.</td>
+          <td class="c"><span class="prio p3">P3</span></td>
+          <td>Bruker: credit-indicator · tabell-primitiv</td>
+          <td class="c">M</td>
+        </tr>
+
+        <tr>
+          <td><span class="badge-id">B10</span></td>
+          <td><div class="cn"><span class="nm">Multi-spiller sammenligning</span><span class="path">kohort + 2–4 side om side</span></div></td>
+          <td>Team-Norway-uttak + talent-spotting. Bruker stats-sg-primitivene side om side.</td>
+          <td class="c"><span class="prio p3">P3</span></td>
+          <td>Bruker: stats-sg · pyramide · avatar-row</td>
+          <td class="c">M</td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- DEL C · VISUALISERINGER (anbefalt utvalg)                     -->
+  <!-- ============================================================ -->
+  <div class="sec">
+    DEL C · 5 nye visualiseringer
+    <span class="sub">anbefalt utvalg · 3 leveres i fase 2</span>
+    <span class="count">5 KORT</span>
+  </div>
+
+  <div class="panel">
+    <table class="b-table">
+      <thead>
+        <tr>
+          <th class="col-id">ID</th>
+          <th class="col-comp">Visualisering</th>
+          <th class="col-why">Hva den løfter</th>
+          <th class="c col-prio">Prio</th>
+          <th class="col-blockers">Form / datakrav</th>
+          <th class="c col-est">Est.</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr>
+          <td><span class="badge-id c">C3a</span></td>
+          <td><div class="cn"><span class="nm">SG waterfall · runde</span><span class="path">hull-for-hull pluss/minus</span></div></td>
+          <td>Synliggjør <b>hvor på 18 hull</b> slagene tapes. Sentralt for runde-debrief.</td>
+          <td class="c"><span class="prio p1">P1</span></td>
+          <td>Vertikal stackede +/− barer per hull · 4 SG-kategorier</td>
+          <td class="c">M</td>
+        </tr>
+
+        <tr>
+          <td><span class="badge-id c">C4</span></td>
+          <td><div class="cn"><span class="nm">Innsiktskort · narrativ</span><span class="path">historie + anbefaling + CTA</span></div></td>
+          <td>The Athletic-stil. <b>"Du har trent X, men SG Y. Foreslår Z."</b> Klikkbar handling.</td>
+          <td class="c"><span class="prio p1">P1</span></td>
+          <td>Tekst-blokk · 1-2 talls-pivot · primary handling</td>
+          <td class="c">S</td>
+        </tr>
+
+        <tr>
+          <td><span class="badge-id c">C1</span></td>
+          <td><div class="cn"><span class="nm">Sesong-timeline</span><span class="path">karriere-strøm vertikal</span></div></td>
+          <td>2–3 sesonger med data som lesbar fortelling. Turneringer · skader · breakthroughs.</td>
+          <td class="c"><span class="prio p2">P2</span></td>
+          <td>Vertikal tids-akse · markører · klikkbare hendelser</td>
+          <td class="c">M</td>
+        </tr>
+
+        <tr>
+          <td><span class="badge-id c">C3b</span></td>
+          <td><div class="cn"><span class="nm">Bane-heatmap</span><span class="path">tee + lande-mønster</span></div></td>
+          <td>Hvor lander tee-skuddet konsekvent. Hvor mister hun slag.</td>
+          <td class="c"><span class="prio p3">P3</span></td>
+          <td>Hull-illustrasjon SVG + scatter overlay. Krever bane-data.</td>
+          <td class="c">L</td>
+        </tr>
+
+        <tr>
+          <td><span class="badge-id c">C3c</span></td>
+          <td><div class="cn"><span class="nm">SG ↔ trening scatter</span><span class="path">kausalitet synliggjort</span></div></td>
+          <td>"Timer trent på APP" × "SG APP-endring 90 d". Validerer treningsanalyse-konklusjon.</td>
+          <td class="c"><span class="prio p3">P3</span></td>
+          <td>Scatter · regresjons-linje · konfidens-bånd</td>
+          <td class="c">M</td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- LEVERANSE-SEKVENS                                             -->
+  <!-- ============================================================ -->
+  <div class="sec">
+    LEVERANSE-SEKVENS
+    <span class="sub">10 bolker · én HTML per leveranse</span>
+  </div>
+
+  <div class="seq">
+    <div class="step now">
+      <span class="n">01 · NÅ</span>
+      <span class="nm">Audit (denne)</span>
+      <span class="why">grunnlag</span>
+    </div>
+    <div class="step">
+      <span class="n">02 · NESTE</span>
+      <span class="nm">B4 Gap-to-drill</span>
+      <span class="why">produktets IP</span>
+    </div>
+    <div class="step">
+      <span class="n">03</span>
+      <span class="nm">A4 Tale-input</span>
+      <span class="why">primitiv</span>
+    </div>
+    <div class="step">
+      <span class="n">04</span>
+      <span class="nm">A3 Coach-mobil</span>
+      <span class="why">5 skjermer</span>
+    </div>
+    <div class="step">
+      <span class="n">05</span>
+      <span class="nm">A2 Spiller-mobil</span>
+      <span class="why">5 skjermer</span>
+    </div>
+    <div class="step">
+      <span class="n">06</span>
+      <span class="nm">B1 Foreldre</span>
+      <span class="why">GDPR-kritisk</span>
+    </div>
+    <div class="step">
+      <span class="n">07</span>
+      <span class="nm">B6 Compliance</span>
+      <span class="why">coaching-verdi</span>
+    </div>
+    <div class="step">
+      <span class="n">08</span>
+      <span class="nm">B3 Co-agent</span>
+      <span class="why">rammeverk</span>
+    </div>
+    <div class="step">
+      <span class="n">09</span>
+      <span class="nm">C3a + C4</span>
+      <span class="why">SG waterfall + narrativ</span>
+    </div>
+    <div class="step">
+      <span class="n">10</span>
+      <span class="nm">B2 Onboarding</span>
+      <span class="why">8-steg flyt</span>
+    </div>
+  </div>
+
+  <div class="rules">
+    <p><b>Prio-logikk.</b> P1 = blokkerer ende-til-ende-flyt eller mangler GDPR-/forretningskrav. P2 = løfter UX vesentlig. P3 = polish som kan komme i fase 3.</p>
+    <p><b>Mobil-strategi.</b> Vi leverer mobil-paritet i to bolker (A3 coach + A2 spiller) i stedet for å sprinkle 21 separate mobil-varianter. Hver bolk inneholder 5 skjermer i én HTML — speiler hvordan komponentene faktisk brukes på telefon.</p>
+    <p><b>Tale.</b> A4 leveres som <em>primitiv</em> som så drop-inn i alle relevante komponenter via "diktér"-suffix. Ingen separate tale-states per komponent.</p>
+    <p><b>States.</b> Loading/empty/error-arbeid for de 11 "DELVIS"-radene gjøres når komponenten anyway røres for mobil eller compliance. Ingen egen pass — for tett arbeidsmønster.</p>
+    <p><b>Snip-strategi.</b> Hver leveranse er én HTML i <code>preview/</code> · samme mønster som fase 1 · samme tokens · ingen dependency-graf utenfor _shared.css.</p>
+  </div>
+
+  <script>lucide.createIcons();</script>
+</div></body></html>

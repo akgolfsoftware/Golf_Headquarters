@@ -1,0 +1,1508 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>Multi-spiller sammenligning · 2-4 side om side, kohort, region</title>
+<link rel="stylesheet" href="_shared.css">
+<script src="https://unpkg.com/lucide@0.453.0"></script>
+<style>
+  body { width: 1240px; }
+  .card { padding: 28px 32px; }
+
+  /* ===== HEADER ===== */
+  .head { margin-bottom: 24px; }
+  .head .eb {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .head h1 {
+    margin: 8px 0 6px;
+    font-family: var(--font-display); font-weight: 700; font-size: 30px;
+    letter-spacing: -0.025em; line-height: 1.05;
+  }
+  .head h1 em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .head .helper {
+    font-family: var(--font-sans); font-size: 14px; line-height: 1.55;
+    color: var(--muted-foreground); max-width: 800px;
+  }
+
+  .sec {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--foreground);
+    display: flex; align-items: center; gap: 12px;
+    margin: 32px 0 14px;
+  }
+  .sec::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+  .sec .sub { color: var(--muted-foreground); font-weight: 700; letter-spacing: 0.04em; }
+  .sec .count {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    background: var(--secondary); color: var(--muted-foreground);
+    padding: 2px 8px; border-radius: 9999px; letter-spacing: 0.06em;
+  }
+
+  .panel {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; overflow: hidden;
+  }
+  .frule {
+    padding: 12px 20px;
+    background: var(--cream-50);
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted-foreground); line-height: 1.55;
+  }
+  .frule b { color: var(--foreground); font-weight: 700; }
+
+  /* ============================================================ */
+  /* SECTION 1 · SIDE-OM-SIDE (4 SPILLERE)                         */
+  /* ============================================================ */
+  .compare-head {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+    display: grid; grid-template-columns: 1fr auto auto;
+    gap: 16px; align-items: center;
+  }
+  .compare-head .tt {
+    font-family: var(--font-display); font-weight: 700; font-size: 22px;
+    letter-spacing: -0.02em;
+  }
+  .compare-head .tt em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .compare-head .sub {
+    margin-top: 4px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .compare-head .sub b { color: var(--foreground); font-weight: 800; }
+  .compare-head .sub .sep { color: var(--cream-300); margin: 0 5px; }
+
+  .compare-head .pills {
+    display: inline-flex; gap: 6px;
+  }
+  .compare-head .pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    height: 28px; padding: 0 12px;
+    border-radius: 9999px;
+    background: var(--card); border: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--foreground); letter-spacing: 0.06em;
+  }
+  .compare-head .pill.on { background: var(--primary); color: var(--accent); border-color: var(--primary); }
+
+  .compare-head .ic-btn {
+    width: 30px; height: 30px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--card);
+    color: var(--muted-foreground);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .compare-head .ic-btn i { width: 13px; height: 13px; }
+
+  /* player columns header */
+  .player-row {
+    display: grid;
+    grid-template-columns: 220px repeat(4, 1fr) 90px;
+    border-bottom: 1px solid var(--border);
+    background: var(--cream-50);
+  }
+  .player-row .axis-cell {
+    padding: 18px 16px;
+    border-right: 1px solid var(--border);
+    display: flex; align-items: flex-end;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .player-row .pcol {
+    padding: 16px 14px;
+    border-right: 1px solid var(--border);
+    background: var(--card);
+    display: flex; flex-direction: column; gap: 8px;
+    position: relative;
+  }
+  .player-row .pcol:last-of-type { border-right: 1px solid var(--border); }
+  .player-row .ref-cell {
+    padding: 16px 14px;
+    background: var(--cream-50);
+    display: flex; flex-direction: column; gap: 4px;
+    align-items: flex-start;
+  }
+  .player-row .pcol .pc-top {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .player-row .pcol .av {
+    width: 36px; height: 36px; border-radius: 9999px;
+    background: var(--primary); color: var(--accent);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-weight: 700; font-size: 14px;
+    flex-shrink: 0;
+  }
+  .player-row .pcol .av.alt { background: var(--cream-200); color: var(--foreground); }
+  .player-row .pcol .nm {
+    line-height: 1.2; min-width: 0; flex: 1;
+  }
+  .player-row .pcol .nm b {
+    display: block; font-family: var(--font-display); font-weight: 700; font-size: 15px;
+    letter-spacing: -0.02em; color: var(--foreground);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .player-row .pcol .nm small {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .player-row .pcol .close {
+    width: 22px; height: 22px; border-radius: 9999px;
+    background: var(--cream-50); color: var(--muted-foreground);
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .player-row .pcol .close i { width: 11px; height: 11px; }
+  .player-row .pcol .meta {
+    display: flex; gap: 8px; flex-wrap: wrap;
+  }
+  .player-row .pcol .meta .chip {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    padding: 2px 6px; border-radius: 3px;
+    background: var(--cream-50); color: var(--foreground);
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .player-row .pcol .meta .chip.tour {
+    background: var(--primary); color: var(--accent);
+  }
+  .player-row .pcol .meta .chip.junior {
+    background: rgba(184,133,42,0.14); color: var(--warning-foreground);
+  }
+  .player-row .ref-cell .l {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .player-row .ref-cell .v {
+    font-family: var(--font-display); font-weight: 700; font-size: 17px;
+    letter-spacing: -0.02em; color: var(--foreground);
+  }
+  .player-row .ref-cell .v small {
+    display: block;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em; margin-top: 2px;
+  }
+
+  /* metric rows */
+  .mrow {
+    display: grid;
+    grid-template-columns: 220px repeat(4, 1fr) 90px;
+    border-bottom: 1px solid var(--border);
+  }
+  .mrow:last-of-type { border-bottom: 0; }
+  .mrow .axis {
+    padding: 14px 16px;
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 4px; justify-content: center;
+    background: var(--cream-50);
+  }
+  .mrow .axis .h {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .mrow .axis .h .ax-sw {
+    width: 4px; height: 16px; border-radius: 2px; flex-shrink: 0;
+  }
+  .mrow .axis .h .ax-sw.fys { background: var(--pyr-fys); }
+  .mrow .axis .h .ax-sw.tek { background: var(--pyr-tek); }
+  .mrow .axis .h .ax-sw.slag { background: var(--pyr-slag); }
+  .mrow .axis .h .ax-sw.spill { background: var(--pyr-spill); }
+  .mrow .axis .h .ax-sw.tur { background: var(--pyr-turn); }
+  .mrow .axis .h .ax-sw.sg { background: var(--foreground); }
+  .mrow .axis .nm {
+    font-family: var(--font-display); font-weight: 700; font-size: 14px;
+    letter-spacing: -0.015em; color: var(--foreground); line-height: 1.2;
+  }
+  .mrow .axis .sub {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    margin-left: 12px;
+  }
+
+  .mrow .cell {
+    padding: 14px 14px;
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 6px;
+    position: relative;
+  }
+  .mrow .cell .vrow {
+    display: flex; align-items: baseline; gap: 6px;
+  }
+  .mrow .cell .v {
+    font-family: var(--font-mono); font-weight: 800; font-size: 22px;
+    letter-spacing: -0.02em; line-height: 1;
+    color: var(--foreground); font-feature-settings: "tnum","zero";
+  }
+  .mrow .cell .v.u { font-size: 12px; color: var(--muted-foreground); font-weight: 700; margin-left: 1px; }
+  .mrow .cell .v .u { font-size: 11px; color: var(--muted-foreground); font-weight: 700; margin-left: 1px; }
+  .mrow .cell .delta {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .mrow .cell .delta.pos { color: var(--success); }
+  .mrow .cell .delta.neg { color: var(--destructive); }
+  .mrow .cell .delta.flat { color: var(--muted-foreground); }
+  /* leader badge */
+  .mrow .cell.leader::before {
+    content: "BEST"; position: absolute; top: 8px; right: 10px;
+    font-family: var(--font-mono); font-size: 8px; font-weight: 800;
+    padding: 2px 6px; border-radius: 3px;
+    background: var(--accent); color: var(--primary);
+    letter-spacing: 0.10em;
+  }
+  /* bar visualization */
+  .mrow .cell .bar {
+    height: 5px; border-radius: 3px;
+    background: var(--cream-200); overflow: hidden;
+    position: relative;
+  }
+  .mrow .cell .bar .f { position: absolute; top: 0; left: 0; bottom: 0; border-radius: 3px; }
+  .mrow .cell .bar .f.ok { background: var(--primary); }
+  .mrow .cell .bar .f.warn { background: var(--warning); }
+  .mrow .cell .bar .f.bad { background: var(--destructive); }
+  .mrow .cell .bar .f.over { background: var(--success); }
+
+  .mrow .ref {
+    padding: 14px 14px;
+    background: var(--cream-50);
+    display: flex; flex-direction: column; gap: 4px;
+    justify-content: center;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--foreground); letter-spacing: 0.02em;
+    font-feature-settings: "tnum","zero";
+  }
+  .mrow .ref .label {
+    font-family: var(--font-mono); font-size: 8px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .mrow .ref b {
+    font-family: var(--font-mono); font-weight: 800; font-size: 16px;
+    color: var(--foreground); letter-spacing: -0.015em; line-height: 1;
+  }
+
+  /* compact spark for trend rows */
+  .spark { height: 24px; display: block; }
+  .spark .ln { fill: none; stroke-width: 1.5; }
+
+  /* overall verdict footer */
+  .verdict-row {
+    padding: 18px 24px;
+    background: var(--cream-50);
+    border-top: 1px solid var(--border);
+    display: grid; grid-template-columns: 22px 1fr auto;
+    gap: 14px; align-items: center;
+  }
+  .verdict-row i { width: 18px; height: 18px; color: var(--primary); }
+  .verdict-row .t {
+    font-family: var(--font-sans); font-size: 13px; line-height: 1.55;
+    color: var(--foreground); letter-spacing: -0.005em;
+    max-width: 880px;
+  }
+  .verdict-row .t b { font-weight: 700; }
+  .verdict-row .t em { font-style: italic; font-weight: 500; color: var(--primary); }
+  .verdict-row .cta {
+    display: inline-flex; align-items: center; gap: 6px;
+    height: 36px; padding: 0 14px; border-radius: 9999px;
+    background: var(--primary); color: var(--accent);
+    font-family: var(--font-sans); font-size: 12px; font-weight: 700;
+  }
+  .verdict-row .cta i { width: 13px; height: 13px; color: var(--accent); }
+
+  /* ============================================================ */
+  /* SECTION 2 · KOHORT-VISNING                                    */
+  /* ============================================================ */
+  .cohort-head {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+    display: grid; grid-template-columns: 1fr auto auto;
+    gap: 16px; align-items: center;
+  }
+  .cohort-head .tt {
+    font-family: var(--font-display); font-weight: 700; font-size: 22px;
+    letter-spacing: -0.02em;
+  }
+  .cohort-head .tt em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .cohort-head .sub {
+    margin-top: 4px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .cohort-head .sub b { color: var(--foreground); font-weight: 800; }
+  .cohort-head .sub .sep { color: var(--cream-300); margin: 0 5px; }
+
+  .cohort-head .selector {
+    display: inline-flex; gap: 6px; align-items: center;
+    background: var(--cream-50); border: 1px solid var(--border);
+    border-radius: 9999px; padding: 4px;
+  }
+  .cohort-head .selector .opt {
+    padding: 4px 12px; border-radius: 9999px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.06em;
+  }
+  .cohort-head .selector .opt.on { background: var(--primary); color: var(--accent); }
+  .cohort-head .selector .opt .ax-sw {
+    display: inline-block;
+    width: 8px; height: 8px; border-radius: 2px;
+    margin-right: 4px; vertical-align: middle;
+  }
+
+  .cohort-head .stats {
+    display: inline-flex; gap: 0;
+  }
+  .cohort-head .stats .s {
+    padding: 0 14px;
+    border-left: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .cohort-head .stats .s:first-child { border-left: 0; padding-left: 0; }
+  .cohort-head .stats .s .l {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    color: var(--muted-foreground);
+  }
+  .cohort-head .stats .s .v {
+    font-family: var(--font-mono); font-weight: 800; font-size: 20px;
+    letter-spacing: -0.02em; line-height: 1;
+    color: var(--foreground); font-feature-settings: "tnum","zero";
+  }
+  .cohort-head .stats .s .v.pos { color: var(--success); }
+  .cohort-head .stats .s .v.neg { color: var(--destructive); }
+
+  /* cohort scale + benchmark line */
+  .cohort-scale {
+    padding: 14px 24px 0;
+    position: relative;
+  }
+  .cohort-scale .legend {
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    margin-bottom: 8px;
+  }
+  .cohort-scale .legend .right {
+    display: flex; gap: 14px;
+  }
+  .cohort-scale .legend .li {
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .cohort-scale .legend .sw {
+    width: 10px; height: 10px; border-radius: 2px;
+  }
+  .cohort-scale .legend .sw.over { background: var(--success); }
+  .cohort-scale .legend .sw.ok { background: var(--primary); }
+  .cohort-scale .legend .sw.warn { background: var(--warning); }
+  .cohort-scale .legend .sw.bad { background: var(--destructive); }
+  .cohort-scale .legend .tline {
+    width: 14px; height: 0; border-top: 1.5px dashed var(--foreground);
+  }
+
+  .scale-ticks {
+    display: grid; grid-template-columns: 200px 1fr 100px; gap: 0;
+    align-items: end;
+    height: 14px;
+  }
+  .scale-ticks .axis {}
+  .scale-ticks .ticks {
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    font-feature-settings: "tnum","zero";
+  }
+
+  /* cohort rows */
+  .cohort-row {
+    display: grid;
+    grid-template-columns: 200px 1fr 100px;
+    align-items: center;
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .cohort-row:last-of-type { border-bottom: 0; }
+  .cohort-row:hover { background: rgba(0,88,64,0.02); }
+
+  .cohort-row .player {
+    display: flex; align-items: center; gap: 10px;
+    padding-right: 14px;
+  }
+  .cohort-row .player .rank {
+    width: 18px; text-align: center;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 800;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    font-feature-settings: "tnum","zero";
+  }
+  .cohort-row .player .rank.top { color: var(--primary); }
+  .cohort-row .player .av {
+    width: 26px; height: 26px; border-radius: 9999px;
+    background: var(--primary); color: var(--accent);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-weight: 700; font-size: 11px;
+    flex-shrink: 0;
+  }
+  .cohort-row .player .av.alt { background: var(--cream-200); color: var(--foreground); }
+  .cohort-row .player .av.tagged {
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+  .cohort-row .player .nm {
+    line-height: 1.2; min-width: 0;
+  }
+  .cohort-row .player .nm b {
+    display: block;
+    font-weight: 700; font-size: 13px; color: var(--foreground);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .cohort-row .player .nm small {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+
+  /* horizontal bar in track */
+  .ctrack {
+    position: relative;
+    height: 30px;
+    background: var(--cream-50);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .ctrack .center {
+    position: absolute; top: 0; bottom: 0; left: 50%;
+    width: 1px; background: var(--foreground);
+    z-index: 3;
+  }
+  .ctrack .pga-line {
+    position: absolute; top: -4px; bottom: -4px;
+    width: 2px; background: var(--warning);
+    z-index: 4;
+  }
+  .ctrack .bar {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    height: 18px;
+    border-radius: 4px;
+    z-index: 2;
+    display: flex; align-items: center;
+    padding: 0 8px;
+  }
+  .ctrack .bar.pos {
+    left: 50%;
+    background: var(--success);
+    color: var(--cream-50);
+  }
+  .ctrack .bar.ok-pos {
+    left: 50%;
+    background: var(--primary);
+    color: var(--accent);
+  }
+  .ctrack .bar.warn-neg {
+    right: 50%;
+    background: var(--warning);
+    color: var(--cream-50);
+    justify-content: flex-end;
+  }
+  .ctrack .bar.bad-neg {
+    right: 50%;
+    background: var(--destructive);
+    color: var(--cream-50);
+    justify-content: flex-end;
+  }
+  .ctrack .bar.flat {
+    left: 50%; width: 4px;
+    background: var(--muted-foreground);
+  }
+  .ctrack .bar .vt {
+    font-family: var(--font-mono); font-weight: 800; font-size: 10px;
+    letter-spacing: 0.02em;
+    font-feature-settings: "tnum","zero";
+    white-space: nowrap;
+  }
+
+  .cohort-row .right-meta {
+    padding-left: 14px;
+    text-align: right;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.02em;
+    font-feature-settings: "tnum","zero";
+  }
+  .cohort-row .right-meta b {
+    font-weight: 800; font-size: 13px; color: var(--foreground);
+  }
+  .cohort-row .right-meta small {
+    display: block; margin-top: 2px;
+    font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase;
+  }
+
+  /* highlighted row (tagged) */
+  .cohort-row.tagged {
+    background: rgba(209,248,67,0.10);
+    border-left: 3px solid var(--accent);
+    padding-left: 21px;
+  }
+
+  /* ============================================================ */
+  /* SECTION 3 · REGION-KART                                       */
+  /* ============================================================ */
+  .map-row {
+    display: grid; grid-template-columns: 1fr 360px;
+  }
+  .map-area {
+    padding: 22px 26px;
+    border-right: 1px solid var(--border);
+    background:
+      radial-gradient(ellipse at center top, rgba(0,88,64,0.04) 0%, transparent 60%),
+      var(--card);
+  }
+  .map-head {
+    display: grid; grid-template-columns: 1fr auto; gap: 14px;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+  .map-head .tt {
+    font-family: var(--font-display); font-weight: 700; font-size: 20px;
+    letter-spacing: -0.02em;
+  }
+  .map-head .tt em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .map-head .sub {
+    margin-top: 3px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .map-head .sub b { color: var(--foreground); font-weight: 800; }
+  .map-head .toggle {
+    display: inline-flex; gap: 0; align-items: center;
+    border: 1px solid var(--border); border-radius: 9999px;
+    background: var(--cream-50);
+    padding: 3px;
+  }
+  .map-head .toggle .opt {
+    padding: 4px 12px; border-radius: 9999px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.06em;
+  }
+  .map-head .toggle .opt.on { background: var(--primary); color: var(--accent); }
+
+  .map-canvas {
+    position: relative;
+    background:
+      linear-gradient(180deg, rgba(0,88,64,0.04) 0%, rgba(0,88,64,0.02) 100%);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    height: 460px;
+    overflow: hidden;
+  }
+  .map-canvas svg {
+    width: 100%; height: 100%;
+  }
+
+  .map-canvas .region-fill {
+    fill: var(--cream-50);
+    stroke: var(--cream-300);
+    stroke-width: 1;
+  }
+  .map-canvas .region-fill.we   { fill: rgba(0,88,64,0.05); }
+  .map-canvas .region-fill.us   { fill: rgba(0,88,64,0.12); }
+  .map-canvas .region-fill.os   { fill: rgba(0,88,64,0.22); }
+  .map-canvas .region-fill.our-active { fill: rgba(209,248,67,0.30); stroke: var(--primary); stroke-width: 1.5; }
+  .map-canvas .region-label {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    fill: var(--foreground); letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .map-canvas .region-label.us {
+    fill: var(--cream-50);
+  }
+
+  /* dots — clubs */
+  .map-canvas .club-dot {
+    fill: var(--primary);
+    stroke: var(--cream-50);
+    stroke-width: 1.5;
+  }
+  .map-canvas .club-dot.them {
+    fill: var(--destructive);
+  }
+  .map-canvas .club-dot.tag {
+    fill: var(--accent);
+    stroke: var(--primary);
+  }
+
+  .map-canvas .club-label {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    fill: var(--foreground); letter-spacing: 0.04em;
+  }
+  .map-canvas .club-label.muted { fill: var(--muted-foreground); }
+
+  .map-canvas .pulse-ring {
+    fill: none; stroke: var(--accent); stroke-width: 2;
+    opacity: 0.6;
+    animation: ringp 1.8s ease-out infinite;
+  }
+  @keyframes ringp {
+    0% { r: 6; opacity: 0.7; }
+    100% { r: 16; opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .map-canvas .pulse-ring { animation: none; opacity: 0.5; }
+  }
+
+  /* mini legend */
+  .map-legend {
+    margin-top: 12px;
+    display: flex; gap: 18px; flex-wrap: wrap;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .map-legend .li {
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .map-legend .sw-d {
+    width: 10px; height: 10px; border-radius: 9999px;
+  }
+  .map-legend .sw-d.ours { background: var(--primary); }
+  .map-legend .sw-d.theirs { background: var(--destructive); }
+  .map-legend .sw-d.tag { background: var(--accent); }
+  .map-legend .sw-h {
+    display: inline-block; width: 12px; height: 10px; border-radius: 2px;
+  }
+  .map-legend .sw-h.shade { background: rgba(0,88,64,0.22); }
+  .map-legend b { color: var(--foreground); font-weight: 800; }
+
+  /* right column — region table */
+  .region-rail {
+    background: var(--cream-50);
+    padding: 22px 24px;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .region-rail .eb {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .region-rail h3 {
+    margin: 0 0 4px;
+    font-family: var(--font-display); font-weight: 700; font-size: 18px;
+    letter-spacing: -0.02em;
+  }
+  .region-rail h3 em { font-style: italic; font-weight: 400; color: var(--primary); }
+
+  .region-row {
+    display: grid; grid-template-columns: 1fr auto auto auto;
+    gap: 10px; align-items: center;
+    padding: 10px 12px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  .region-row.us {
+    background: rgba(0,88,64,0.04); border-color: var(--primary);
+  }
+  .region-row .nm {
+    font-family: var(--font-sans); font-size: 13px; font-weight: 700;
+    color: var(--foreground); letter-spacing: -0.005em;
+  }
+  .region-row .nm small {
+    display: block;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em; margin-top: 1px;
+  }
+  .region-row .ct {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 800;
+    color: var(--foreground); letter-spacing: -0.005em;
+    font-feature-settings: "tnum","zero";
+    text-align: right;
+  }
+  .region-row .ct small {
+    display: block;
+    font-size: 8px; font-weight: 700; color: var(--muted-foreground);
+    letter-spacing: 0.06em; text-transform: uppercase; margin-top: 1px;
+  }
+  .region-row .pip {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    padding: 2px 6px; border-radius: 3px;
+    letter-spacing: 0.04em;
+  }
+  .region-row .pip.ours { background: rgba(0,88,64,0.10); color: var(--primary); }
+  .region-row .pip.theirs { background: rgba(163,45,45,0.10); color: var(--destructive); }
+
+  /* derived insight */
+  .map-insight {
+    padding: 12px 14px;
+    background: var(--primary); color: var(--cream-100);
+    border-radius: 10px;
+    display: grid; grid-template-columns: 20px 1fr;
+    gap: 10px;
+  }
+  .map-insight i { width: 16px; height: 16px; color: var(--accent); margin-top: 2px; }
+  .map-insight .t {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--accent); margin-bottom: 4px;
+  }
+  .map-insight .b {
+    font-size: 12px; line-height: 1.5; color: var(--cream-100);
+  }
+  .map-insight .b em { font-style: italic; font-weight: 500; color: var(--accent); }
+  .map-insight .b b { font-weight: 700; }
+
+  /* ===== Final principles footer ===== */
+  .rules {
+    margin-top: 28px; padding: 18px 20px;
+    background: var(--secondary); border-radius: 12px;
+    font-family: var(--font-mono); font-size: 12px;
+    color: var(--muted-foreground); line-height: 1.7;
+  }
+  .rules p { margin: 0; }
+  .rules p + p { margin-top: 8px; }
+  .rules b { color: var(--foreground); font-weight: 700; }
+</style></head>
+<body><div class="card">
+
+  <!-- ===================== HEADER ===================== -->
+  <div class="head">
+    <span class="eb">B10 · SAMMENLIGNINGS-FLATE</span>
+    <h1>Side om side, hele kohorten, og <em>kartet</em>.</h1>
+    <p class="helper">
+      Stats-sg gjør én spiller mot PGA-snitt. B10 utvider til talent-spotting: 2–4 spillere parallelt
+      i AgencyOS, kohort-rangering for Team Norway-uttak, og regions-kart for å se hvor våre spillere er
+      vs konkurrerende klubber.
+    </p>
+  </div>
+
+  <!-- ===================== SECTION 1 — SIDE OM SIDE ===================== -->
+  <div class="sec">
+    1 · 4 spillere side om side
+    <span class="sub">samme parametre · TOUR-snitt som referanse · vinner-badge per metrikk</span>
+    <span class="count">4 SPILLERE</span>
+  </div>
+
+  <div class="panel">
+    <div class="compare-head">
+      <div>
+        <div class="tt">Talent-<em>kohort</em> · konkurranseprofiler</div>
+        <div class="sub">
+          PERIODE <b>30 DAGER</b> <span class="sep">·</span>
+          KONKURRANSEPROFIL · N3 OG OPP <span class="sep">·</span>
+          <b>4 av 7</b> i sammenligning
+        </div>
+      </div>
+      <div class="pills">
+        <span class="pill on">30 dager</span>
+        <span class="pill">Sesong</span>
+        <span class="pill">12 mnd</span>
+      </div>
+      <div class="ic-btn"><i data-lucide="user-plus"></i></div>
+    </div>
+
+    <!-- player columns -->
+    <div class="player-row">
+      <div class="axis-cell">METRIKK</div>
+
+      <div class="pcol">
+        <div class="pc-top">
+          <span class="av">MB</span>
+          <div class="nm"><b>Markus Berg</b><small>U18 · GFGK</small></div>
+          <span class="close"><i data-lucide="x"></i></span>
+        </div>
+        <div class="meta">
+          <span class="chip junior">JUNIOR</span>
+          <span class="chip">HCP 4,2</span>
+        </div>
+      </div>
+
+      <div class="pcol">
+        <div class="pc-top">
+          <span class="av">SS</span>
+          <div class="nm"><b>Sigrid Solli</b><small>SR · OSLO GK</small></div>
+          <span class="close"><i data-lucide="x"></i></span>
+        </div>
+        <div class="meta">
+          <span class="chip tour">TOUR</span>
+          <span class="chip">HCP 0,8</span>
+        </div>
+      </div>
+
+      <div class="pcol">
+        <div class="pc-top">
+          <span class="av alt">JL</span>
+          <div class="nm"><b>Jonas Larsen</b><small>SR · OSLO GK</small></div>
+          <span class="close"><i data-lucide="x"></i></span>
+        </div>
+        <div class="meta">
+          <span class="chip tour">TOUR</span>
+          <span class="chip">HCP 1,4</span>
+        </div>
+      </div>
+
+      <div class="pcol">
+        <div class="pc-top">
+          <span class="av alt">AM</span>
+          <div class="nm"><b>Andreas Moe</b><small>SR · HOLTSMARK</small></div>
+          <span class="close"><i data-lucide="x"></i></span>
+        </div>
+        <div class="meta">
+          <span class="chip">N3</span>
+          <span class="chip">HCP 3,0</span>
+        </div>
+      </div>
+
+      <div class="ref-cell">
+        <span class="l">REFERANSE</span>
+        <span class="v">PGA Tour<small>SNITT 2025-26</small></span>
+      </div>
+    </div>
+
+    <!-- METRIC ROWS -->
+
+    <!-- SG TOTAL -->
+    <div class="mrow">
+      <div class="axis">
+        <div class="h"><span class="ax-sw sg"></span><span class="nm">SG Total · 30 d</span></div>
+        <span class="sub">per runde · vs Tour-snitt</span>
+      </div>
+      <div class="cell">
+        <div class="vrow"><span class="v" style="color: var(--destructive)">−1,1</span></div>
+        <span class="delta neg">−1,2 vs Tour</span>
+        <div class="bar"><div class="f bad" style="width: 30%"></div></div>
+      </div>
+      <div class="cell leader">
+        <div class="vrow"><span class="v" style="color: var(--success)">+0,8</span></div>
+        <span class="delta pos">+0,7 vs Tour</span>
+        <div class="bar"><div class="f over" style="width: 85%"></div></div>
+      </div>
+      <div class="cell">
+        <div class="vrow"><span class="v" style="color: var(--warning)">−0,3</span></div>
+        <span class="delta neg">−0,4 vs Tour</span>
+        <div class="bar"><div class="f warn" style="width: 42%"></div></div>
+      </div>
+      <div class="cell">
+        <div class="vrow"><span class="v" style="color: var(--success)">+0,2</span></div>
+        <span class="delta pos">+0,1 vs Tour</span>
+        <div class="bar"><div class="f ok" style="width: 56%"></div></div>
+      </div>
+      <div class="ref"><span class="label">TOUR-SNITT</span><b>+0,1</b></div>
+    </div>
+
+    <!-- SG OFF-THE-TEE -->
+    <div class="mrow">
+      <div class="axis">
+        <div class="h"><span class="ax-sw slag"></span><span class="nm">SG Off-the-tee</span></div>
+        <span class="sub">drive line + carry</span>
+      </div>
+      <div class="cell">
+        <div class="vrow"><span class="v" style="color: var(--success)">+0,4</span></div>
+        <span class="delta pos">+0,3 vs Tour</span>
+        <div class="bar"><div class="f ok" style="width: 65%"></div></div>
+      </div>
+      <div class="cell leader">
+        <div class="vrow"><span class="v" style="color: var(--success)">+0,5</span></div>
+        <span class="delta pos">+0,4 vs Tour</span>
+        <div class="bar"><div class="f over" style="width: 72%"></div></div>
+      </div>
+      <div class="cell">
+        <div class="vrow"><span class="v" style="color: var(--destructive)">−0,8</span></div>
+        <span class="delta neg">−0,9 vs Tour · klubb-bytte</span>
+        <div class="bar"><div class="f bad" style="width: 22%"></div></div>
+      </div>
+      <div class="cell">
+        <div class="vrow"><span class="v" style="color: var(--muted-foreground)">+0,0</span></div>
+        <span class="delta flat">−0,1 vs Tour</span>
+        <div class="bar"><div class="f warn" style="width: 48%"></div></div>
+      </div>
+      <div class="ref"><span class="label">TOUR-SNITT</span><b>+0,1</b></div>
+    </div>
+
+    <!-- SG APPROACH -->
+    <div class="mrow">
+      <div class="axis">
+        <div class="h"><span class="ax-sw tek"></span><span class="nm">SG Approach</span></div>
+        <span class="sub">50–150 m, primær avstand</span>
+      </div>
+      <div class="cell">
+        <div class="vrow"><span class="v" style="color: var(--destructive)">−1,9</span></div>
+        <span class="delta neg">−2,0 vs Tour</span>
+        <div class="bar"><div class="f bad" style="width: 12%"></div></div>
+      </div>
+      <div class="cell leader">
+        <div class="vrow"><span class="v" style="color: var(--success)">+0,4</span></div>
+        <span class="delta pos">+0,3 vs Tour</span>
+        <div class="bar"><div class="f over" style="width: 70%"></div></div>
+      </div>
+      <div class="cell">
+        <div class="vrow"><span class="v" style="color: var(--success)">+0,3</span></div>
+        <span class="delta pos">+0,2 vs Tour</span>
+        <div class="bar"><div class="f ok" style="width: 64%"></div></div>
+      </div>
+      <div class="cell">
+        <div class="vrow"><span class="v" style="color: var(--warning)">−0,1</span></div>
+        <span class="delta neg">−0,2 vs Tour</span>
+        <div class="bar"><div class="f warn" style="width: 44%"></div></div>
+      </div>
+      <div class="ref"><span class="label">TOUR-SNITT</span><b>+0,1</b></div>
+    </div>
+
+    <!-- SG PUTT -->
+    <div class="mrow">
+      <div class="axis">
+        <div class="h"><span class="ax-sw spill"></span><span class="nm">SG Putt</span></div>
+        <span class="sub">3 m + lange · 30 d</span>
+      </div>
+      <div class="cell leader">
+        <div class="vrow"><span class="v" style="color: var(--success)">+0,38</span></div>
+        <span class="delta pos">+0,30 vs Tour · breakthrough</span>
+        <div class="bar"><div class="f over" style="width: 82%"></div></div>
+      </div>
+      <div class="cell">
+        <div class="vrow"><span class="v" style="color: var(--success)">+0,12</span></div>
+        <span class="delta pos">+0,04 vs Tour</span>
+        <div class="bar"><div class="f ok" style="width: 58%"></div></div>
+      </div>
+      <div class="cell">
+        <div class="vrow"><span class="v" style="color: var(--destructive)">−0,4</span></div>
+        <span class="delta neg">−0,5 vs Tour</span>
+        <div class="bar"><div class="f bad" style="width: 22%"></div></div>
+      </div>
+      <div class="cell">
+        <div class="vrow"><span class="v" style="color: var(--success)">+0,2</span></div>
+        <span class="delta pos">+0,12 vs Tour</span>
+        <div class="bar"><div class="f ok" style="width: 62%"></div></div>
+      </div>
+      <div class="ref"><span class="label">TOUR-SNITT</span><b>+0,08</b></div>
+    </div>
+
+    <!-- SLAGLENGDE DRIVER -->
+    <div class="mrow">
+      <div class="axis">
+        <div class="h"><span class="ax-sw tek"></span><span class="nm">Drive · carry</span></div>
+        <span class="sub">snitt · TrackMan</span>
+      </div>
+      <div class="cell">
+        <div class="vrow"><span class="v">261<span class="u">m</span></span></div>
+        <span class="delta flat">−4 vs Tour-snitt</span>
+        <div class="bar"><div class="f ok" style="width: 78%"></div></div>
+      </div>
+      <div class="cell leader">
+        <div class="vrow"><span class="v">274<span class="u">m</span></span></div>
+        <span class="delta pos">+9 vs Tour</span>
+        <div class="bar"><div class="f over" style="width: 92%"></div></div>
+      </div>
+      <div class="cell">
+        <div class="vrow"><span class="v">258<span class="u">m</span></span></div>
+        <span class="delta flat">−7 vs Tour</span>
+        <div class="bar"><div class="f warn" style="width: 70%"></div></div>
+      </div>
+      <div class="cell">
+        <div class="vrow"><span class="v">252<span class="u">m</span></span></div>
+        <span class="delta neg">−13 vs Tour</span>
+        <div class="bar"><div class="f warn" style="width: 56%"></div></div>
+      </div>
+      <div class="ref"><span class="label">TOUR-SNITT</span><b>265<small style="margin: 0">m</small></b></div>
+    </div>
+
+    <!-- MTQ PRESS TOLERANCE -->
+    <div class="mrow">
+      <div class="axis">
+        <div class="h"><span class="ax-sw tur"></span><span class="nm">MTQ · press</span></div>
+        <span class="sub">PR3 · testuke 16 · april (siste fullførte)</span>
+      </div>
+      <div class="cell">
+        <div class="vrow"><span class="v" style="color: var(--destructive)">58<span class="u">%</span></span></div>
+        <span class="delta neg">−4 vs N3-norm</span>
+        <div class="bar"><div class="f bad" style="width: 48%"></div></div>
+      </div>
+      <div class="cell leader">
+        <div class="vrow"><span class="v" style="color: var(--success)">74<span class="u">%</span></span></div>
+        <span class="delta pos">+12 vs N3-norm</span>
+        <div class="bar"><div class="f over" style="width: 82%"></div></div>
+      </div>
+      <div class="cell">
+        <div class="vrow"><span class="v">65<span class="u">%</span></span></div>
+        <span class="delta pos">+3 vs N3-norm</span>
+        <div class="bar"><div class="f ok" style="width: 62%"></div></div>
+      </div>
+      <div class="cell">
+        <div class="vrow"><span class="v">61<span class="u">%</span></span></div>
+        <span class="delta flat">−1 vs N3-norm</span>
+        <div class="bar"><div class="f warn" style="width: 56%"></div></div>
+      </div>
+      <div class="ref"><span class="label">N3-NORM</span><b>62<small>%</small></b></div>
+    </div>
+
+    <!-- TREND ROW -->
+    <div class="mrow">
+      <div class="axis">
+        <div class="h"><span class="ax-sw sg"></span><span class="nm">Trend · 12 mnd</span></div>
+        <span class="sub">SG total per måned</span>
+      </div>
+
+      <div class="cell">
+        <svg class="spark" viewBox="0 0 100 24" preserveAspectRatio="none">
+          <polyline class="ln" points="0,8 14,10 28,14 42,12 56,16 70,14 84,18 100,20" stroke="var(--destructive)"/>
+          <circle cx="100" cy="20" r="2" fill="var(--destructive)"/>
+        </svg>
+        <span class="delta neg" style="margin-top:2px">−0,6 hellende</span>
+      </div>
+
+      <div class="cell leader">
+        <svg class="spark" viewBox="0 0 100 24" preserveAspectRatio="none">
+          <polyline class="ln" points="0,18 14,16 28,12 42,12 56,8 70,8 84,6 100,4" stroke="var(--success)"/>
+          <circle cx="100" cy="4" r="2" fill="var(--success)"/>
+        </svg>
+        <span class="delta pos" style="margin-top:2px">+0,4 stigende</span>
+      </div>
+
+      <div class="cell">
+        <svg class="spark" viewBox="0 0 100 24" preserveAspectRatio="none">
+          <polyline class="ln" points="0,10 14,12 28,8 42,10 56,14 70,18 84,16 100,14" stroke="var(--warning)"/>
+          <circle cx="100" cy="14" r="2" fill="var(--warning)"/>
+        </svg>
+        <span class="delta flat" style="margin-top:2px">flat · volatil</span>
+      </div>
+
+      <div class="cell">
+        <svg class="spark" viewBox="0 0 100 24" preserveAspectRatio="none">
+          <polyline class="ln" points="0,14 14,12 28,12 42,10 56,10 70,8 84,8 100,6" stroke="var(--primary)"/>
+          <circle cx="100" cy="6" r="2" fill="var(--primary)"/>
+        </svg>
+        <span class="delta pos" style="margin-top:2px">+0,3 stigende</span>
+      </div>
+
+      <div class="ref"><span class="label">12 MND</span></div>
+    </div>
+
+    <!-- verdict -->
+    <div class="verdict-row">
+      <i data-lucide="lightbulb"></i>
+      <div class="t">
+        <b>Sigrid</b> leder 5 av 7 metrikker — <em>etablerte tour-tall</em>. <b>Markus</b> ledet kun putting,
+        men trend-linja er fallende — passer Pyramide-aksen «turnering» dårlig nå. <b>Andreas</b> har sterkest
+        nedover-til-oppover trend de siste 4 mnd — potensiell <em>uttak-kandidat</em>.
+      </div>
+      <div class="cta">Lagre kohort <i data-lucide="bookmark"></i></div>
+    </div>
+  </div>
+
+  <!-- ===================== SECTION 2 — KOHORT-VISNING ===================== -->
+  <div class="sec">
+    2 · Kohort-rangering
+    <span class="sub">én metrikk · alle spillere i gruppe · sortert · for Team Norway-uttak</span>
+    <span class="count">12 SPILLERE</span>
+  </div>
+
+  <div class="panel">
+    <div class="cohort-head">
+      <div>
+        <div class="tt"><em>WANG-stallen</em> · innspill · 30 d</div>
+        <div class="sub">12 SPILLERE I KOHORT <span class="sep">·</span> SNITT <b>−0,5</b> <span class="sep">·</span> MEDIAN <b>−0,35</b> <span class="sep">·</span> SORTERT <b>HØYEST FØRST</b></div>
+      </div>
+      <div class="selector">
+        <span class="opt"><span class="ax-sw" style="background:var(--foreground)"></span>SG TOTAL</span>
+        <span class="opt"><span class="ax-sw" style="background:var(--pyr-slag)"></span>SG OFF-TEE</span>
+        <span class="opt on"><span class="ax-sw" style="background:var(--pyr-tek)"></span>SG APP</span>
+        <span class="opt"><span class="ax-sw" style="background:var(--pyr-spill)"></span>SG PUTT</span>
+        <span class="opt"><span class="ax-sw" style="background:var(--pyr-turn)"></span>MTQ</span>
+      </div>
+      <div class="stats">
+        <div class="s"><span class="l">SNITT</span><span class="v">−0,5</span></div>
+        <div class="s"><span class="l">BESTE</span><span class="v pos">+0,6</span></div>
+        <div class="s"><span class="l">SVAKESTE</span><span class="v neg">−2,1</span></div>
+      </div>
+    </div>
+
+    <div class="cohort-scale">
+      <div class="legend">
+        <span class="li"><span class="tline"></span> TOUR-SNITT <b>+0,1</b> · referanselinje</span>
+        <div class="right">
+          <span class="li"><span class="sw over"></span>over</span>
+          <span class="li"><span class="sw ok"></span>på</span>
+          <span class="li"><span class="sw warn"></span>under</span>
+          <span class="li"><span class="sw bad"></span>bak</span>
+        </div>
+      </div>
+      <div class="scale-ticks">
+        <div></div>
+        <div class="ticks">
+          <span>−2,0</span><span>−1,0</span><span>0</span><span>+1,0</span><span>+2,0</span>
+        </div>
+        <div></div>
+      </div>
+    </div>
+
+    <!-- rank rows -->
+    <div class="cohort-row">
+      <div class="player">
+        <span class="rank top">1</span>
+        <span class="av alt">EM</span>
+        <div class="nm"><b>Eivind Mikkelsen</b><small>BÆRUM · TOUR · HCP 1,2</small></div>
+      </div>
+      <div class="ctrack">
+        <div class="center"></div>
+        <div class="pga-line" style="left: 53%"></div>
+        <div class="bar ok-pos" style="width: 15%"></div>
+      </div>
+      <div class="right-meta"><b>+0,6</b><small>+0,5 vs TOUR</small></div>
+    </div>
+
+    <div class="cohort-row tagged">
+      <div class="player">
+        <span class="rank">2</span>
+        <span class="av tagged">SS</span>
+        <div class="nm"><b>Sigrid Solli</b><small>OSLO GK · TOUR · HCP 0,8</small></div>
+      </div>
+      <div class="ctrack">
+        <div class="center"></div>
+        <div class="pga-line" style="left: 53%"></div>
+        <div class="bar ok-pos" style="width: 10%"></div>
+      </div>
+      <div class="right-meta"><b>+0,4</b><small>+0,3 vs TOUR</small></div>
+    </div>
+
+    <div class="cohort-row tagged">
+      <div class="player">
+        <span class="rank">3</span>
+        <span class="av alt tagged">JL</span>
+        <div class="nm"><b>Jonas Larsen</b><small>OSLO GK · TOUR · HCP 1,4</small></div>
+      </div>
+      <div class="ctrack">
+        <div class="center"></div>
+        <div class="pga-line" style="left: 53%"></div>
+        <div class="bar ok-pos" style="width: 7.5%"></div>
+      </div>
+      <div class="right-meta"><b>+0,3</b><small>+0,2 vs TOUR</small></div>
+    </div>
+
+    <div class="cohort-row tagged">
+      <div class="player">
+        <span class="rank">4</span>
+        <span class="av alt tagged">AM</span>
+        <div class="nm"><b>Andreas Moe</b><small>HOLTSMARK · N3 · HCP 3,0</small></div>
+      </div>
+      <div class="ctrack">
+        <div class="center"></div>
+        <div class="pga-line" style="left: 53%"></div>
+        <div class="bar warn-neg" style="width: 2.5%; right: 50%"></div>
+      </div>
+      <div class="right-meta"><b>−0,1</b><small>−0,2 vs TOUR</small></div>
+    </div>
+
+    <div class="cohort-row">
+      <div class="player">
+        <span class="rank">5</span>
+        <span class="av">EH</span>
+        <div class="nm"><b>Ella Hansen</b><small>GFGK · JR · HCP 12,0</small></div>
+      </div>
+      <div class="ctrack">
+        <div class="center"></div>
+        <div class="pga-line" style="left: 53%"></div>
+        <div class="bar warn-neg" style="width: 5%"></div>
+      </div>
+      <div class="right-meta"><b>−0,2</b><small>−0,3 vs TOUR</small></div>
+    </div>
+
+    <div class="cohort-row">
+      <div class="player">
+        <span class="rank">6</span>
+        <span class="av alt">NA</span>
+        <div class="nm"><b>Noah Andersen</b><small>GFGK · JR · HCP 8,3</small></div>
+      </div>
+      <div class="ctrack">
+        <div class="center"></div>
+        <div class="pga-line" style="left: 53%"></div>
+        <div class="bar warn-neg" style="width: 7.5%"></div>
+      </div>
+      <div class="right-meta"><b>−0,3</b><small>−0,4 vs TOUR</small></div>
+    </div>
+
+    <div class="cohort-row">
+      <div class="player">
+        <span class="rank">7</span>
+        <span class="av">FR</span>
+        <div class="nm"><b>Frida Ruud</b><small>GFGK · JR · HCP 14,0</small></div>
+      </div>
+      <div class="ctrack">
+        <div class="center"></div>
+        <div class="pga-line" style="left: 53%"></div>
+        <div class="bar warn-neg" style="width: 10%"></div>
+      </div>
+      <div class="right-meta"><b>−0,4</b><small>−0,5 vs TOUR</small></div>
+    </div>
+
+    <div class="cohort-row">
+      <div class="player">
+        <span class="rank">8</span>
+        <span class="av alt">KS</span>
+        <div class="nm"><b>Kasper Solli</b><small>GFGK · JR · HCP 8,8</small></div>
+      </div>
+      <div class="ctrack">
+        <div class="center"></div>
+        <div class="pga-line" style="left: 53%"></div>
+        <div class="bar warn-neg" style="width: 13.75%"></div>
+      </div>
+      <div class="right-meta"><b>−0,55</b><small>−0,65 vs TOUR</small></div>
+    </div>
+
+    <div class="cohort-row">
+      <div class="player">
+        <span class="rank">9</span>
+        <span class="av">KH</span>
+        <div class="nm"><b>Kaja Helle</b><small>GFGK · JR · HCP 6,8 · SKADEPAUSE</small></div>
+      </div>
+      <div class="ctrack">
+        <div class="center"></div>
+        <div class="pga-line" style="left: 53%"></div>
+        <div class="bar bad-neg" style="width: 17.5%"></div>
+      </div>
+      <div class="right-meta"><b>−0,7</b><small>−0,8 vs TOUR</small></div>
+    </div>
+
+    <div class="cohort-row">
+      <div class="player">
+        <span class="rank">10</span>
+        <span class="av alt">TG</span>
+        <div class="nm"><b>Trym Grøthe</b><small>OSLO GK · SR · HCP 5,4</small></div>
+      </div>
+      <div class="ctrack">
+        <div class="center"></div>
+        <div class="pga-line" style="left: 53%"></div>
+        <div class="bar bad-neg" style="width: 22.5%"></div>
+      </div>
+      <div class="right-meta"><b>−0,9</b><small>−1,0 vs TOUR</small></div>
+    </div>
+
+    <div class="cohort-row tagged">
+      <div class="player">
+        <span class="rank">11</span>
+        <span class="av tagged">MB</span>
+        <div class="nm"><b>Markus Berg</b><small>GFGK · JR · HCP 4,2</small></div>
+      </div>
+      <div class="ctrack">
+        <div class="center"></div>
+        <div class="pga-line" style="left: 53%"></div>
+        <div class="bar bad-neg" style="width: 47.5%"></div>
+      </div>
+      <div class="right-meta"><b>−1,9</b><small>−2,0 vs TOUR</small></div>
+    </div>
+
+    <div class="cohort-row">
+      <div class="player">
+        <span class="rank">12</span>
+        <span class="av alt">VB</span>
+        <div class="nm"><b>Vetle Borg</b><small>HOLTSMARK · JR · HCP 7,2</small></div>
+      </div>
+      <div class="ctrack">
+        <div class="center"></div>
+        <div class="pga-line" style="left: 53%"></div>
+        <div class="bar bad-neg" style="width: 50%"></div>
+      </div>
+      <div class="right-meta"><b>−2,1</b><small>−2,2 vs TOUR</small></div>
+    </div>
+
+    <div class="frule">
+      <b>Prinsipp.</b> Én metrikk om gangen, hele kohorten på én skjerm. Bar-lengdene er tegnet til <b>akse-skalaen −2,0 → +2,0</b> (1,0 = 25 % bredde): den svarte <em>senter-linjen er nullpunktet (0)</em> — bar henger til høyre hvis positiv, venstre hvis negativ. Den gule stiplede linjen er <b>Tour-snittet (+0,1)</b>, et eget referansepunkt litt til høyre for null. Eksaktverdi står i høyre kolonne.
+      Lime-rammede avatarer = i 4-spiller-sammenligningen over. Klikk en rad for å swappe inn / ut av sammenligningen.
+    </div>
+  </div>
+
+  <!-- ===================== SECTION 3 — REGION-KART ===================== -->
+  <div class="sec">
+    3 · Region-kart
+    <span class="sub">geografisk fordeling · våre spillere vs konkurrerende klubber</span>
+    <span class="count">SØR-NORGE</span>
+  </div>
+
+  <div class="panel">
+    <div class="map-row">
+
+      <div class="map-area">
+        <div class="map-head">
+          <div>
+            <div class="tt">Spiller-<em>geografi</em></div>
+            <div class="sub">VÅRE STALL <b>· 14 spillere</b> <span style="color:var(--cream-300);margin:0 5px">·</span> KONKURRANSE-STALLER <b>· 28 sporet</b></div>
+          </div>
+          <div class="toggle">
+            <span class="opt on">Tetthet</span>
+            <span class="opt">Klubber</span>
+            <span class="opt">Stigning</span>
+          </div>
+        </div>
+
+        <div class="map-canvas">
+          <svg viewBox="0 0 600 460" preserveAspectRatio="xMidYMid meet">
+            <!-- Simplified Sør-Norge regions as abstract shapes -->
+            <!-- water/background -->
+            <rect width="600" height="460" fill="rgba(37,99,235,0.04)"/>
+
+            <!-- Vestland (left, lower density) -->
+            <path class="region-fill we"
+                  d="M 40 60 L 130 50 L 180 120 L 170 230 L 120 290 L 80 320 L 40 280 L 30 180 Z"/>
+            <text class="region-label" x="100" y="180">VESTLAND</text>
+
+            <!-- Sørlandet (bottom-left) -->
+            <path class="region-fill we"
+                  d="M 120 290 L 170 230 L 230 280 L 270 350 L 200 400 L 130 380 Z"/>
+            <text class="region-label" x="190" y="350">SØRLAND</text>
+
+            <!-- Innland (top-mid, lower density) -->
+            <path class="region-fill we"
+                  d="M 200 30 L 320 30 L 360 100 L 370 180 L 300 200 L 230 160 L 200 100 Z"/>
+            <text class="region-label" x="280" y="120">INNLAND</text>
+
+            <!-- Viken/Akershus (middle, our most active) -->
+            <path class="region-fill our-active"
+                  d="M 230 160 L 300 200 L 370 220 L 380 290 L 340 330 L 280 320 L 240 280 L 220 220 Z"/>
+            <text class="region-label" x="290" y="265">VIKEN</text>
+
+            <!-- Oslo (small high-density pocket inside Viken) -->
+            <path class="region-fill os"
+                  d="M 280 230 L 320 230 L 340 260 L 320 290 L 280 290 L 270 260 Z"/>
+            <text class="region-label us" x="285" y="265">OSLO</text>
+
+            <!-- Vestfold/Telemark (south-east, med density) -->
+            <path class="region-fill us"
+                  d="M 230 280 L 280 320 L 340 330 L 320 380 L 270 400 L 230 380 Z"/>
+            <text class="region-label" x="265" y="355">VESTFOLD</text>
+
+            <!-- Trøndelag teaser (top right) -->
+            <path class="region-fill we"
+                  d="M 360 30 L 470 40 L 500 100 L 460 130 L 380 110 L 360 60 Z"/>
+            <text class="region-label" x="410" y="80">TRØNDELAG</text>
+
+            <!-- Nord-Norge teaser -->
+            <path class="region-fill we"
+                  d="M 470 40 L 580 50 L 580 130 L 500 130 L 470 80 Z"/>
+            <text class="region-label" x="510" y="90">NORDLAND</text>
+
+            <!-- ===== DOTS ===== -->
+
+            <!-- Oslo GK (Oslo) — tagged -->
+            <circle class="pulse-ring" cx="295" cy="262" r="6"/>
+            <circle class="club-dot tag" cx="295" cy="262" r="6"/>
+            <text class="club-label" x="305" y="259">Oslo GK · 5</text>
+
+            <!-- GFGK (Oslo area, Viken) — ours -->
+            <circle class="club-dot" cx="310" cy="240" r="5"/>
+            <text class="club-label" x="320" y="237">GFGK · 6</text>
+
+            <!-- Holtsmark (Viken outskirts) — ours -->
+            <circle class="club-dot" cx="250" cy="240" r="5"/>
+            <text class="club-label muted" x="180" y="240">Holtsmark · 3</text>
+
+            <!-- Bærum GK -->
+            <circle class="club-dot them" cx="280" cy="225" r="4"/>
+            <text class="club-label muted" x="220" y="220">Bærum · 4</text>
+
+            <!-- Bogstad -->
+            <circle class="club-dot them" cx="270" cy="280" r="4"/>
+            <text class="club-label muted" x="200" y="285">Bogstad · 3</text>
+
+            <!-- Drammen -->
+            <circle class="club-dot them" cx="240" cy="285" r="3.5"/>
+
+            <!-- Tønsberg -->
+            <circle class="club-dot them" cx="275" cy="365" r="4"/>
+            <text class="club-label muted" x="285" y="368">Tønsberg · 5</text>
+
+            <!-- Stavanger -->
+            <circle class="club-dot them" cx="60" cy="280" r="4"/>
+            <text class="club-label muted" x="70" y="285">Stavanger · 6</text>
+
+            <!-- Bergen -->
+            <circle class="club-dot them" cx="60" cy="140" r="4"/>
+            <text class="club-label muted" x="70" y="143">Bergen · 4</text>
+
+            <!-- Hamar -->
+            <circle class="club-dot them" cx="305" cy="170" r="3.5"/>
+            <text class="club-label muted" x="315" y="173">Hamar · 2</text>
+
+            <!-- Trondheim -->
+            <circle class="club-dot them" cx="415" cy="75" r="3.5"/>
+            <text class="club-label muted" x="425" y="78">Trondheim · 3</text>
+
+            <!-- Tag for ours — a Holtsmark satellite -->
+            <circle class="pulse-ring" cx="250" cy="240" r="6"/>
+          </svg>
+        </div>
+
+        <div class="map-legend">
+          <span class="li"><span class="sw-d ours"></span><b>AK Golf</b>-stallene · 14 spillere</span>
+          <span class="li"><span class="sw-d theirs"></span>Konkurrerende klubber · 28 sporet</span>
+          <span class="li"><span class="sw-d tag"></span>Klubb i fokus</span>
+          <span class="li"><span class="sw-h shade"></span>Tetthet · vår tilstedeværelse</span>
+        </div>
+      </div>
+
+      <!-- region-rail -->
+      <div class="region-rail">
+        <div>
+          <span class="eb">REGIONER · VÅRE VS KONKURRANSE</span>
+          <h3>Hvor er <em>spillerne</em>?</h3>
+        </div>
+
+        <div class="region-row us">
+          <div class="nm">Viken<small>OSLO + AKERSHUS-OMRÅDET</small></div>
+          <div class="ct"><b>11</b><small>VÅRE</small></div>
+          <div class="ct"><b>7</b><small>KONK.</small></div>
+          <span class="pip ours">+4</span>
+        </div>
+
+        <div class="region-row">
+          <div class="nm">Vestfold<small>TØNSBERG-OMRÅDET</small></div>
+          <div class="ct"><b>2</b><small>VÅRE</small></div>
+          <div class="ct"><b>5</b><small>KONK.</small></div>
+          <span class="pip theirs">−3</span>
+        </div>
+
+        <div class="region-row">
+          <div class="nm">Sørland<small>KRISTIANSAND/MANDAL</small></div>
+          <div class="ct"><b>1</b><small>VÅRE</small></div>
+          <div class="ct"><b>2</b><small>KONK.</small></div>
+          <span class="pip theirs">−1</span>
+        </div>
+
+        <div class="region-row">
+          <div class="nm">Vestland<small>BERGEN + STAVANGER</small></div>
+          <div class="ct"><b>0</b><small>VÅRE</small></div>
+          <div class="ct"><b>10</b><small>KONK.</small></div>
+          <span class="pip theirs">−10</span>
+        </div>
+
+        <div class="region-row">
+          <div class="nm">Innland<small>HAMAR + GJØVIK</small></div>
+          <div class="ct"><b>0</b><small>VÅRE</small></div>
+          <div class="ct"><b>2</b><small>KONK.</small></div>
+          <span class="pip theirs">−2</span>
+        </div>
+
+        <div class="region-row">
+          <div class="nm">Trøndelag<small>TRONDHEIM</small></div>
+          <div class="ct"><b>0</b><small>VÅRE</small></div>
+          <div class="ct"><b>3</b><small>KONK.</small></div>
+          <span class="pip theirs">−3</span>
+        </div>
+
+        <div class="map-insight">
+          <i data-lucide="lightbulb"></i>
+          <div>
+            <div class="t">REGIONAL INNSIKT</div>
+            <div class="b">
+              <b>Viken</b> er vårt hjemfelt — vi dominerer der. <em>Hullet</em> i Vestland (0 spillere mot 10 konkurrerende)
+              er talent-spotting-mulighet uten å konkurrere internt.
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="frule">
+      <b>Prinsipp.</b> Kartet er <em>nivå 1</em> — det viser hvor spillerne fysisk er. Region-tabellen på høyre er <em>nivå 2</em> — hva tetthet betyr i tall.
+      Insight-blokken er <em>nivå 3</em> — handling. Vi anbefaler aldri uttak basert på kartet alene; det matches med kohort-rangering (seksjon 2).
+    </div>
+  </div>
+
+  <!-- ===================== PRINCIPLES FOOTER ===================== -->
+  <div class="rules">
+    <p><b>Tre nivåer av sammenligning.</b> 4 spillere parallelt (dybde), hele kohorten (rang), regional fordeling (kontekst). Alle tre svarer på "hvor er vi" — men på ulike skalaer.</p>
+    <p><b>Vinner-badge gjør rangering rask.</b> Side-om-side får BEST-pin per metrikk. Coachen kan scanne kolonnene og se hvem som leder hva på 200 ms — uten å lese tall.</p>
+    <p><b>Tour-snitt er nullpunktet.</b> I kohort-rangeringen er Tour-snitt-linjen visuell midt-akse — barer hengende til høyre = over Tour, til venstre = under. Det er den ene konsistente referansen.</p>
+    <p><b>Geografi er kontekst, ikke konklusjon.</b> Kartet svarer "hvor er talentet vi ikke har enda?" — ikke "hvem skal til Team Norway?". Det siste avgjøres av kohort-tabellen.</p>
+  </div>
+
+  <script>lucide.createIcons();</script>
+</div></body></html>

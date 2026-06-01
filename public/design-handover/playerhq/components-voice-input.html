@@ -1,0 +1,1061 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>Tale-input · Deepgram-mic-pattern</title>
+<link rel="stylesheet" href="_shared.css">
+<script src="https://unpkg.com/lucide@0.453.0"></script>
+<style>
+  body { width: 1180px; }
+  .card { padding: 28px 32px; }
+
+  /* ===== HEADER ===== */
+  .head { margin-bottom: 22px; }
+  .head .eb {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .head h1 {
+    margin: 8px 0 6px;
+    font-family: var(--font-display); font-weight: 700; font-size: 30px;
+    letter-spacing: -0.025em; line-height: 1.05; color: var(--foreground);
+  }
+  .head h1 em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .head .helper {
+    font-family: var(--font-sans); font-size: 14px; line-height: 1.55;
+    color: var(--muted-foreground); max-width: 760px;
+  }
+
+  /* ===== SECTION HEADER ===== */
+  .sec {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--foreground);
+    display: flex; align-items: center; gap: 12px;
+    margin: 0 0 14px;
+  }
+  .sec::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+  .sec.tight { margin-top: 28px; }
+  .sec .sub { color: var(--muted-foreground); font-weight: 700; letter-spacing: 0.04em; }
+
+  /* ============================================================
+     STATE-STRIP — 4 mic-states
+     ============================================================ */
+  .state-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .state-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    display: flex; flex-direction: column; gap: 12px;
+    min-height: 220px;
+  }
+  .state-card .lbl {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .state-card .lbl .step {
+    background: var(--primary); color: var(--accent);
+    width: 16px; height: 16px; border-radius: 9999px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 800;
+  }
+  .state-card .demo {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--cream-50);
+    border-radius: 8px;
+    padding: 16px;
+    position: relative;
+  }
+  .state-card .dsc {
+    font-family: var(--font-mono); font-size: 10px; line-height: 1.5;
+    color: var(--muted-foreground); letter-spacing: 0.02em;
+  }
+  .state-card .dsc b { color: var(--foreground); font-weight: 700; }
+
+  /* ===== MIC BUTTON (base) ===== */
+  .mic-btn {
+    width: 48px; height: 48px;
+    border-radius: 9999px;
+    background: var(--card);
+    border: 1.5px solid var(--input);
+    color: var(--muted-foreground);
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; position: relative;
+    transition: background-color 120ms ease-out, border-color 120ms ease-out;
+  }
+  .mic-btn:hover { background: var(--secondary); color: var(--foreground); border-color: var(--foreground); }
+  .mic-btn i { width: 18px; height: 18px; }
+
+  /* Recording state — lime glow + waveform ring */
+  .mic-btn.is-recording {
+    background: var(--accent); color: var(--primary); border-color: var(--accent);
+    box-shadow:
+      0 0 0 8px rgba(209,248,67,0.20),
+      0 0 0 16px rgba(209,248,67,0.10);
+    animation: mic-pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes mic-pulse {
+    0%,100% { box-shadow: 0 0 0 8px rgba(209,248,67,0.20), 0 0 0 16px rgba(209,248,67,0.10); }
+    50% { box-shadow: 0 0 0 12px rgba(209,248,67,0.25), 0 0 0 22px rgba(209,248,67,0.12); }
+  }
+
+  /* Transcribing state — forest spin */
+  .mic-btn.is-transcribing {
+    background: var(--primary); color: var(--accent); border-color: var(--primary);
+  }
+  .mic-btn.is-transcribing::after {
+    content: ""; position: absolute; inset: -4px;
+    border: 2px solid transparent;
+    border-top-color: var(--primary);
+    border-right-color: var(--primary);
+    border-radius: 9999px;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Done state */
+  .mic-btn.is-done {
+    background: var(--primary); color: var(--accent); border-color: var(--primary);
+  }
+
+  /* Waveform bars under recording mic */
+  .waveform {
+    display: inline-flex; align-items: center; gap: 3px;
+    height: 24px;
+    margin-top: 14px;
+  }
+  .waveform .bar {
+    width: 3px; height: 100%;
+    background: var(--lime-500);
+    border-radius: 9999px;
+    transform-origin: center;
+    animation: wave 1.2s ease-in-out infinite;
+  }
+  .waveform .bar:nth-child(1) { animation-delay: 0.0s; height: 30%; }
+  .waveform .bar:nth-child(2) { animation-delay: 0.1s; height: 60%; }
+  .waveform .bar:nth-child(3) { animation-delay: 0.2s; height: 90%; }
+  .waveform .bar:nth-child(4) { animation-delay: 0.3s; height: 70%; }
+  .waveform .bar:nth-child(5) { animation-delay: 0.4s; height: 100%; }
+  .waveform .bar:nth-child(6) { animation-delay: 0.5s; height: 50%; }
+  .waveform .bar:nth-child(7) { animation-delay: 0.6s; height: 80%; }
+  .waveform .bar:nth-child(8) { animation-delay: 0.7s; height: 40%; }
+  .waveform .bar:nth-child(9) { animation-delay: 0.8s; height: 65%; }
+  .waveform .bar:nth-child(10) { animation-delay: 0.9s; height: 90%; }
+  @keyframes wave {
+    0%,100% { transform: scaleY(0.6); opacity: 0.5; }
+    50% { transform: scaleY(1.2); opacity: 1; }
+  }
+
+  /* Demo layouts */
+  .demo-stack { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .demo-stack .hint {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .demo-stack .hint.live { color: var(--primary); }
+  .demo-stack .kbd {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    padding: 1px 5px; border-radius: 3px;
+    background: var(--secondary);
+  }
+
+  .partial-text {
+    font-family: var(--font-sans); font-size: 12px; line-height: 1.5;
+    color: var(--foreground); letter-spacing: -0.005em;
+    text-align: center; max-width: 200px;
+    padding: 8px 0;
+  }
+  .partial-text .word { display: inline; }
+  .partial-text .word.firm { color: var(--foreground); }
+  .partial-text .word.draft { color: var(--muted-foreground); font-style: italic; opacity: 0.7; }
+  .partial-text .cursor {
+    display: inline-block;
+    width: 1.5px; height: 14px;
+    background: var(--primary);
+    margin-left: 2px; vertical-align: -2px;
+    animation: blink 1s steps(2) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .editable-text {
+    font-family: var(--font-sans); font-size: 12px; line-height: 1.5;
+    color: var(--foreground); letter-spacing: -0.005em;
+    background: var(--card); border: 1.5px solid var(--primary);
+    border-radius: 6px;
+    padding: 8px 10px;
+    max-width: 220px;
+  }
+  .editable-text .edit-cursor {
+    display: inline-block;
+    width: 1.5px; height: 14px;
+    background: var(--primary);
+    margin-left: 1px; vertical-align: -2px;
+    animation: blink 1s steps(2) infinite;
+  }
+
+  /* ============================================================
+     CONTEXT 1 — COACH-NOTAT (inline i tekstfelt)
+     ============================================================ */
+  .ctx-panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .ctx-panel + .ctx-panel { margin-top: 14px; }
+  .ctx-head {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .ctx-head .num {
+    width: 24px; height: 24px; border-radius: 9999px;
+    background: var(--primary); color: var(--accent);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 800;
+  }
+  .ctx-head .nm {
+    font-family: var(--font-display); font-weight: 700; font-size: 16px;
+    letter-spacing: -0.015em; color: var(--foreground);
+  }
+  .ctx-head .where {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    margin-left: 4px;
+  }
+  .ctx-head .where::before {
+    content: "·"; margin: 0 6px;
+  }
+  .ctx-head .meta {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+
+  .ctx-body { padding: 18px; }
+
+  /* coach-note context — player chip + textarea + mic */
+  .coach-note {
+    background: var(--cream-50);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .coach-note .top {
+    display: flex; align-items: center; gap: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .coach-note .av {
+    width: 32px; height: 32px; border-radius: 9999px;
+    background: var(--primary); color: var(--accent);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-weight: 700; font-size: 11px;
+  }
+  .coach-note .who {
+    display: flex; flex-direction: column; line-height: 1.2;
+  }
+  .coach-note .who .nm {
+    font-size: 13px; font-weight: 700; letter-spacing: -0.005em;
+  }
+  .coach-note .who .sub {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.06em; margin-top: 2px;
+    text-transform: uppercase;
+  }
+  .coach-note .tags {
+    margin-left: auto;
+    display: inline-flex; gap: 4px;
+  }
+  .coach-note .tag {
+    display: inline-flex; align-items: center;
+    height: 18px; padding: 0 7px; border-radius: 4px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+  }
+  .coach-note .tag.slag { background: rgba(37,99,235,0.10); color: var(--info-foreground); }
+  .coach-note .tag.app  { background: var(--secondary); color: var(--muted-foreground); }
+
+  /* textarea simulering */
+  .ta-wrap {
+    position: relative;
+    background: var(--card);
+    border: 1.5px solid var(--primary);
+    border-radius: 10px;
+    padding: 10px 50px 10px 12px;
+    box-shadow: 0 0 0 3px rgba(0,88,64,0.08);
+    min-height: 80px;
+  }
+  .ta-content {
+    font-family: var(--font-sans); font-size: 13px; line-height: 1.55;
+    color: var(--foreground); letter-spacing: -0.005em;
+  }
+  .ta-content .firm { color: var(--foreground); }
+  .ta-content .draft { color: var(--muted-foreground); font-style: italic; opacity: 0.85; }
+  .ta-content .live-cursor {
+    display: inline-block;
+    width: 1.5px; height: 16px;
+    background: var(--primary);
+    margin-left: 2px; vertical-align: -2px;
+    animation: blink 1s steps(2) infinite;
+  }
+  .ta-wrap .mic-suffix {
+    position: absolute; right: 8px; top: 50%;
+    transform: translateY(-50%);
+    width: 36px; height: 36px;
+    border-radius: 9999px;
+    background: var(--accent); color: var(--primary);
+    display: inline-flex; align-items: center; justify-content: center;
+    box-shadow:
+      0 0 0 6px rgba(209,248,67,0.20),
+      0 0 0 12px rgba(209,248,67,0.10);
+    animation: mic-pulse 1.4s ease-in-out infinite;
+  }
+  .ta-wrap .mic-suffix i { width: 14px; height: 14px; }
+
+  /* recording info row under ta */
+  .rec-info {
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--primary); letter-spacing: 0.04em;
+    font-feature-settings: "tnum","zero";
+  }
+  .rec-info .dot {
+    width: 8px; height: 8px; border-radius: 9999px;
+    background: var(--destructive);
+    animation: blink 1s steps(2) infinite;
+  }
+  .rec-info .lang {
+    margin-left: auto;
+    color: var(--muted-foreground); font-weight: 700;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .rec-info .lang i { width: 11px; height: 11px; }
+
+  .rec-waveform-large {
+    flex: 1;
+    display: inline-flex; align-items: center; gap: 2px;
+    height: 16px;
+  }
+  .rec-waveform-large .bar {
+    flex: 1; min-width: 2px;
+    background: var(--primary);
+    border-radius: 9999px;
+    animation: wave 1.2s ease-in-out infinite;
+  }
+  .rec-waveform-large .bar:nth-child(1)  { animation-delay: 0.00s; height: 30%; }
+  .rec-waveform-large .bar:nth-child(2)  { animation-delay: 0.05s; height: 50%; }
+  .rec-waveform-large .bar:nth-child(3)  { animation-delay: 0.10s; height: 80%; }
+  .rec-waveform-large .bar:nth-child(4)  { animation-delay: 0.15s; height: 100%; }
+  .rec-waveform-large .bar:nth-child(5)  { animation-delay: 0.20s; height: 65%; }
+  .rec-waveform-large .bar:nth-child(6)  { animation-delay: 0.25s; height: 90%; }
+  .rec-waveform-large .bar:nth-child(7)  { animation-delay: 0.30s; height: 45%; }
+  .rec-waveform-large .bar:nth-child(8)  { animation-delay: 0.35s; height: 75%; }
+  .rec-waveform-large .bar:nth-child(9)  { animation-delay: 0.40s; height: 60%; }
+  .rec-waveform-large .bar:nth-child(10) { animation-delay: 0.45s; height: 95%; }
+  .rec-waveform-large .bar:nth-child(11) { animation-delay: 0.50s; height: 35%; }
+  .rec-waveform-large .bar:nth-child(12) { animation-delay: 0.55s; height: 80%; }
+  .rec-waveform-large .bar:nth-child(13) { animation-delay: 0.60s; height: 55%; }
+  .rec-waveform-large .bar:nth-child(14) { animation-delay: 0.65s; height: 70%; }
+  .rec-waveform-large .bar:nth-child(15) { animation-delay: 0.70s; height: 40%; }
+  .rec-waveform-large .bar:nth-child(16) { animation-delay: 0.75s; height: 85%; }
+  .rec-waveform-large .bar:nth-child(17) { animation-delay: 0.80s; height: 50%; }
+  .rec-waveform-large .bar:nth-child(18) { animation-delay: 0.85s; height: 95%; }
+  .rec-waveform-large .bar:nth-child(19) { animation-delay: 0.90s; height: 65%; }
+  .rec-waveform-large .bar:nth-child(20) { animation-delay: 0.95s; height: 75%; }
+  .rec-waveform-large .bar:nth-child(21) { animation-delay: 1.00s; height: 45%; }
+  .rec-waveform-large .bar:nth-child(22) { animation-delay: 1.05s; height: 60%; }
+  .rec-waveform-large .bar:nth-child(23) { animation-delay: 1.10s; height: 90%; }
+  .rec-waveform-large .bar:nth-child(24) { animation-delay: 1.15s; height: 70%; }
+
+  .note-actions {
+    display: flex; gap: 6px; align-items: center;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+  .btn {
+    height: 32px; padding: 0 12px; border-radius: 9999px;
+    border: 1px solid var(--border); background: var(--card);
+    color: var(--foreground);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn:hover { background: var(--secondary); }
+  .btn.pri { background: var(--primary); color: var(--accent); border-color: var(--primary); }
+  .btn.pri:hover { background: var(--primary-hover); }
+  .btn.lime { background: var(--accent); color: var(--primary); border-color: var(--accent); }
+  .btn.lime:hover { background: var(--accent-hover); }
+  .btn.gh { background: transparent; border-color: transparent; color: var(--muted-foreground); }
+  .btn.gh:hover { color: var(--foreground); background: var(--secondary); }
+  .btn i { width: 11px; height: 11px; }
+
+  .note-actions .meta {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    font-feature-settings: "tnum","zero";
+  }
+  .note-actions .meta b { color: var(--foreground); }
+
+  /* ============================================================
+     CONTEXT 2 — SPILLER-REFLEKSJON (mobil 360 px)
+     ============================================================ */
+  .ctx-2-stage {
+    display: flex; justify-content: center; padding: 14px 0;
+    background: var(--cream-50);
+  }
+  .phone-mini {
+    width: 360px; height: 640px;
+    background: var(--card);
+    border-radius: 36px;
+    border: 8px solid var(--bezel-black);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    position: relative;
+    font-feature-settings: "ss01","cv11";
+  }
+  .phone-mini .stat {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 24px 6px;
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    color: var(--foreground);
+    position: relative;
+  }
+  .phone-mini .stat::after {
+    content: ""; position: absolute; left: 50%; top: 12px;
+    transform: translateX(-50%);
+    width: 88px; height: 24px; border-radius: 9999px;
+    background: var(--bezel-black);
+  }
+  .phone-mini .stat .icons {
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .phone-mini .stat .icons i { width: 13px; height: 13px; color: var(--foreground); }
+
+  .ref-head {
+    padding: 14px 18px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .ref-head .close {
+    width: 28px; height: 28px; border-radius: 9999px;
+    border: 1px solid var(--border); background: var(--card);
+    color: var(--muted-foreground);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .ref-head .close i { width: 14px; height: 14px; }
+  .ref-head .body {
+    display: flex; flex-direction: column; line-height: 1.15;
+  }
+  .ref-head .eb {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .ref-head .ttl {
+    font-family: var(--font-display); font-weight: 700; font-size: 16px;
+    letter-spacing: -0.015em; color: var(--foreground);
+    margin-top: 2px;
+  }
+  .ref-head .save {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    color: var(--primary); cursor: pointer;
+  }
+
+  .ref-prompt {
+    padding: 16px 18px 10px;
+    font-family: var(--font-display); font-weight: 700; font-size: 18px;
+    letter-spacing: -0.02em; line-height: 1.25; color: var(--foreground);
+  }
+  .ref-prompt em { font-style: italic; font-weight: 400; color: var(--primary); }
+
+  .ref-tags {
+    padding: 0 18px 14px;
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .ref-tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    height: 22px; padding: 0 9px;
+    border-radius: 9999px;
+    background: var(--secondary); color: var(--muted-foreground);
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    border: 1px solid transparent;
+  }
+  .ref-tag.is-on {
+    background: rgba(209,248,67,0.20); color: var(--primary);
+    border-color: var(--accent);
+  }
+
+  .ref-transcript {
+    margin: 6px 18px;
+    padding: 14px;
+    background: var(--cream-50);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    min-height: 140px;
+    font-family: var(--font-sans); font-size: 14px; line-height: 1.55;
+    color: var(--foreground); letter-spacing: -0.005em;
+  }
+  .ref-transcript .firm { color: var(--foreground); }
+  .ref-transcript .draft { color: var(--muted-foreground); font-style: italic; opacity: 0.8; }
+  .ref-transcript .lc {
+    display: inline-block;
+    width: 1.5px; height: 18px;
+    background: var(--primary);
+    margin-left: 1px; vertical-align: -3px;
+    animation: blink 1s steps(2) infinite;
+  }
+
+  /* big mic at bottom */
+  .ref-mic-area {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    padding: 20px 24px 32px;
+    background: linear-gradient(180deg, transparent, var(--card) 28%);
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+  }
+  .ref-status {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    color: var(--primary); letter-spacing: 0.12em; text-transform: uppercase;
+    font-feature-settings: "tnum","zero";
+  }
+  .ref-status .dot {
+    width: 7px; height: 7px; border-radius: 9999px;
+    background: var(--destructive);
+    animation: blink 1s steps(2) infinite;
+  }
+
+  .ref-mic-btn {
+    width: 88px; height: 88px; border-radius: 9999px;
+    background: var(--accent); color: var(--primary);
+    border: 0; cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    box-shadow:
+      0 0 0 10px rgba(209,248,67,0.20),
+      0 0 0 22px rgba(209,248,67,0.10),
+      0 12px 32px rgba(209,248,67,0.30);
+    animation: mic-pulse 1.4s ease-in-out infinite;
+  }
+  .ref-mic-btn i { width: 38px; height: 38px; }
+
+  .ref-mic-row {
+    display: inline-flex; align-items: center; gap: 24px;
+  }
+  .ref-side-btn {
+    width: 48px; height: 48px; border-radius: 9999px;
+    border: 1px solid var(--border); background: var(--card);
+    color: var(--muted-foreground);
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  .ref-side-btn i { width: 20px; height: 20px; }
+  .ref-side-btn.danger { color: var(--destructive); border-color: rgba(163,45,45,0.30); }
+
+  /* ============================================================
+     CONTEXT 3 — AGENCY DISPATCH (top-bar / co-agent)
+     ============================================================ */
+  .agency-bar {
+    background: var(--forest-900);
+    color: var(--cream-100);
+    border-radius: 12px;
+    overflow: hidden;
+    padding: 14px 18px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .agency-bar .row {
+    display: grid;
+    grid-template-columns: 28px 1fr auto;
+    align-items: center; column-gap: 12px;
+  }
+  .agency-bar .mono {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: var(--lime-500); color: var(--forest-900);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-weight: 800; font-size: 12px;
+  }
+  .agency-bar .heard {
+    display: flex; flex-direction: column; gap: 3px; min-width: 0;
+  }
+  .agency-bar .heard .l {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--lime-500);
+  }
+  .agency-bar .heard .txt {
+    font-family: var(--font-sans); font-size: 15px; line-height: 1.4;
+    color: var(--cream-100); letter-spacing: -0.005em;
+  }
+  .agency-bar .heard .txt b { font-weight: 700; }
+  .agency-bar .right-mic {
+    width: 44px; height: 44px; border-radius: 9999px;
+    background: rgba(209,248,67,0.18); color: var(--lime-500);
+    border: 1px solid rgba(209,248,67,0.40);
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; position: relative;
+  }
+  .agency-bar .right-mic i { width: 18px; height: 18px; }
+  .agency-bar .right-mic .pip {
+    position: absolute; bottom: -2px; right: -2px;
+    width: 12px; height: 12px; border-radius: 9999px;
+    background: var(--lime-500); border: 2px solid var(--forest-900);
+    box-shadow: 0 0 4px rgba(209,248,67,0.7);
+  }
+
+  .interpret-row {
+    display: grid; grid-template-columns: 28px 1fr auto;
+    column-gap: 12px; align-items: flex-start;
+    padding-top: 12px;
+    border-top: 1px solid var(--forest-300);
+  }
+  .interpret-row .ic {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: rgba(245,244,238,0.06); color: var(--cream-100);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .interpret-row .ic i { width: 14px; height: 14px; }
+  .interpret-row .body { min-width: 0; }
+  .interpret-row .l {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: rgba(245,244,238,0.55);
+  }
+  .interpret-row .parsed {
+    margin-top: 5px;
+    font-family: var(--font-display); font-weight: 700; font-size: 18px;
+    letter-spacing: -0.015em; line-height: 1.25; color: var(--cream-100);
+  }
+  .interpret-row .parsed .slot {
+    background: rgba(209,248,67,0.20); color: var(--lime-500);
+    padding: 1px 7px; border-radius: 4px;
+    font-family: var(--font-mono); font-weight: 800;
+  }
+  .interpret-row .conf {
+    margin-top: 6px;
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: rgba(245,244,238,0.55); letter-spacing: 0.04em;
+  }
+  .interpret-row .conf b { color: var(--lime-500); font-weight: 800; }
+  .interpret-row .actions {
+    display: inline-flex; gap: 6px; align-items: center;
+  }
+  .ag-btn {
+    height: 32px; padding: 0 12px; border-radius: 9999px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    cursor: pointer; border: 1px solid var(--forest-300);
+    background: transparent; color: var(--cream-100);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .ag-btn:hover { background: rgba(245,244,238,0.05); }
+  .ag-btn.pri {
+    background: var(--lime-500); color: var(--forest-900); border-color: var(--lime-500);
+  }
+  .ag-btn.pri:hover { background: var(--accent-hover); }
+  .ag-btn i { width: 12px; height: 12px; }
+
+  /* Route chips */
+  .route-chips {
+    display: flex; gap: 6px;
+    padding-top: 12px;
+    border-top: 1px solid var(--forest-300);
+  }
+  .route-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    height: 26px; padding: 0 10px; border-radius: 9999px;
+    background: rgba(245,244,238,0.05);
+    color: rgba(245,244,238,0.65);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+  }
+  .route-chip:hover { background: rgba(245,244,238,0.10); color: var(--cream-100); }
+  .route-chip.is-on {
+    background: rgba(209,248,67,0.15); color: var(--lime-500);
+    border: 1px solid rgba(209,248,67,0.30);
+  }
+  .route-chip .l {
+    font-size: 8px; font-weight: 800; opacity: 0.7;
+    text-transform: uppercase; letter-spacing: 0.10em;
+  }
+
+  /* Rules */
+  .rules {
+    margin-top: 28px; padding: 18px 20px;
+    background: var(--secondary); border-radius: 12px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted-foreground); line-height: 1.65;
+  }
+  .rules p { margin: 0; }
+  .rules p + p { margin-top: 8px; }
+  .rules b { color: var(--foreground); font-weight: 700; }
+  .rules code {
+    background: var(--card); padding: 1px 5px; border-radius: 3px;
+    color: var(--foreground); font-weight: 700;
+  }
+
+  /* ============================================================
+     prefers-reduced-motion — AK-spec krever det. Stenger alle
+     infinite-loop animasjoner i mic-primitivet:
+     mic-pulse (recording-glow), spin (transcribing-ring),
+     blink (cursor + status-dot), wave (waveform bars).
+     ============================================================ */
+  @media (prefers-reduced-motion: reduce) {
+    .mic-btn.is-recording,
+    .ta-wrap .mic-suffix,
+    .ref-mic-btn {
+      animation: none;
+      /* Bevar glow som statisk skygge — ikke pulsering */
+    }
+    .mic-btn.is-transcribing::after,
+    .tm-ocr-status .spin { animation: none; }
+    .partial-text .cursor,
+    .editable-text .edit-cursor,
+    .ta-wrap .live-cursor,
+    .ref-transcript .lc,
+    .ref-status .dot,
+    .rec-info .dot { animation: none; }
+    .waveform .bar,
+    .rec-waveform-large .bar { animation: none; opacity: 0.7; }
+  }
+</style></head>
+<body><div class="card">
+
+  <!-- ===== HEADER ===== -->
+  <div class="head">
+    <span class="eb">A4 · TALE-INPUT · DEEPGRAM NOVA-3 NORSK</span>
+    <h1>Snakk i stedet for å <em>tappe.</em></h1>
+    <p class="helper">
+      Mic-primitiv som dropper inn der den passer — som suffix-knapp i tekstfelt (coach-notat), som dispatch-knapp i AgencyOS-topbar,
+      eller som full-screen modus på mobil der inline-feltet er for lite (spiller-refleksjon).
+      Live transkribering på norsk bokmål, redigerbar tekst etter stopp.
+    </p>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- STATES                                                        -->
+  <!-- ============================================================ -->
+  <div class="sec">
+    Primitiv · 4 states
+    <span class="sub">idle → recording → transcribing → done (redigerbar)</span>
+  </div>
+
+  <div class="state-grid">
+
+    <!-- STATE 1: IDLE -->
+    <div class="state-card">
+      <div class="lbl"><span class="step">1</span>IDLE</div>
+      <div class="demo">
+        <div class="demo-stack">
+          <button class="mic-btn" aria-label="Start opptak">
+            <i data-lucide="mic"></i>
+          </button>
+          <span class="hint">TAP FOR Å SNAKKE</span>
+          <span class="kbd">⌘ + . — globalt</span>
+        </div>
+      </div>
+      <div class="dsc">
+        Hul mic-knapp. <b>Tap</b> eller hold <b>⌘ + .</b> globalt for å starte opptak.
+        Aldri "tekst-først" tomt felt — mic alltid synlig.
+      </div>
+    </div>
+
+    <!-- STATE 2: RECORDING -->
+    <div class="state-card">
+      <div class="lbl"><span class="step">2</span>RECORDING</div>
+      <div class="demo">
+        <div class="demo-stack">
+          <button class="mic-btn is-recording" aria-label="Stopp opptak">
+            <i data-lucide="mic"></i>
+          </button>
+          <div class="waveform">
+            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            <span class="bar"></span>
+          </div>
+          <span class="hint live">LYTTER · 0:04 · NB-NO</span>
+        </div>
+      </div>
+      <div class="dsc">
+        Lime fyll + pulserende glow-ring. <b>Live waveform</b> reflekterer amplitude.
+        Klikk igjen eller pause &gt; 2 s for å stoppe.
+      </div>
+    </div>
+
+    <!-- STATE 3: TRANSCRIBING -->
+    <div class="state-card">
+      <div class="lbl"><span class="step">3</span>TRANSCRIBING</div>
+      <div class="demo">
+        <div class="demo-stack">
+          <button class="mic-btn is-transcribing">
+            <i data-lucide="loader-2"></i>
+          </button>
+          <div class="partial-text">
+            <span class="word firm">Lavpunktet var stabilt i dag</span>
+            <span class="word draft"> men sequencing</span>
+            <span class="cursor"></span>
+          </div>
+          <span class="hint live">PARTIAL → FINAL</span>
+        </div>
+      </div>
+      <div class="dsc">
+        Forest mic + spinner-ring. Tekst kommer i to lag: <b>firm</b> (foreground) +
+        <b>draft</b> (kursiv, dempet) — drafts korrigeres til firm fortløpende.
+      </div>
+    </div>
+
+    <!-- STATE 4: DONE (EDITABLE) -->
+    <div class="state-card">
+      <div class="lbl"><span class="step">4</span>DONE · EDITABLE</div>
+      <div class="demo">
+        <div class="demo-stack">
+          <button class="mic-btn is-done">
+            <i data-lucide="check"></i>
+          </button>
+          <div class="editable-text">
+            Lavpunktet var stabilt i dag, men sequencing vandret på<span class="edit-cursor"></span>
+          </div>
+          <span class="hint">REDIGERBAR · ⌘↵ = LAGRE</span>
+        </div>
+      </div>
+      <div class="dsc">
+        Forest check-mic. Tekstboks med <b>2 px primary border</b> = nylig diktert.
+        Vanlige tastatur-redigering. <b>⌘↵</b> lagrer. Mic-tap igjen = append.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- CONTEXT 1 — COACH-NOTAT                                       -->
+  <!-- ============================================================ -->
+  <div class="sec tight">
+    Kontekst 1 · coach-notat
+    <span class="sub">Inline i økt-detalj — Andreas K. dikterer notat på Markus' økt</span>
+  </div>
+
+  <div class="ctx-panel">
+    <div class="ctx-head">
+      <span class="num">1</span>
+      <span class="nm">Diktér notat</span>
+      <span class="where">ØKT-DETALJ · ANDREAS K.</span>
+      <span class="meta">ONS 28/5 · 14:42 · OPPTAK 00:18</span>
+    </div>
+
+    <div class="ctx-body">
+      <div class="coach-note">
+
+        <!-- Player chip + tags -->
+        <div class="top">
+          <span class="av">MR</span>
+          <div class="who">
+            <span class="nm">Notat på Markus R.P.</span>
+            <span class="sub">SLAG · INNSPILL 50–80 M · DRILL 3</span>
+          </div>
+          <div class="tags">
+            <span class="tag slag">SLAG</span>
+            <span class="tag app">APP 65 m</span>
+          </div>
+        </div>
+
+        <!-- Textarea with live dictation -->
+        <div class="ta-wrap" role="textbox" aria-multiline="true">
+          <div class="ta-content">
+            <span class="firm">Lavpunktet var stabilt i dag, men sequencing vandret på drill 3 — særlig fra 65 m og oppover.</span><span class="draft"> Hofta starter et halvt sekund </span><span class="live-cursor"></span>
+          </div>
+          <div class="mic-suffix" aria-label="Spiller inn">
+            <i data-lucide="mic"></i>
+          </div>
+        </div>
+
+        <!-- Recording info -->
+        <div class="rec-info">
+          <span class="dot"></span>
+          <span>LYTTER · 0:18</span>
+          <div class="rec-waveform-large">
+            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+          </div>
+          <span class="lang"><i data-lucide="globe"></i>NB-NO · DEEPGRAM NOVA-3</span>
+        </div>
+
+        <!-- Actions -->
+        <div class="note-actions">
+          <button class="btn lime"><i data-lucide="square"></i>Stopp · lagre</button>
+          <button class="btn"><i data-lucide="pause"></i>Pause</button>
+          <button class="btn gh"><i data-lucide="x"></i>Forkast</button>
+          <span class="meta">AUTO-TAG: <b>SLAG · APP 65 m</b> · KOBLET TIL ØKT</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- CONTEXT 2 — SPILLER-REFLEKSJON (mobil)                         -->
+  <!-- ============================================================ -->
+  <div class="sec tight">
+    Kontekst 2 · spiller-refleksjon
+    <span class="sub">Etter-økt prompt på mobil · stor mic-knapp i tommel-rekkevidde</span>
+  </div>
+
+  <div class="ctx-panel">
+    <div class="ctx-head">
+      <span class="num">2</span>
+      <span class="nm">Etter-økt refleksjon</span>
+      <span class="where">MOBIL · MARKUS R.P. · KL. 15:36</span>
+      <span class="meta">ETTER LIVE SESSION · INNSPILL 50–80 M</span>
+    </div>
+
+    <div class="ctx-2-stage">
+      <div class="phone-mini">
+
+        <div class="stat">
+          <span>15:36</span>
+          <span class="icons">
+            <i data-lucide="signal"></i>
+            <i data-lucide="wifi"></i>
+            <i data-lucide="battery-medium"></i>
+          </span>
+        </div>
+
+        <div class="ref-head">
+          <button class="close" aria-label="Lukk"><i data-lucide="x"></i></button>
+          <div class="body">
+            <span class="eb">ETTER-ØKT · 5 SP</span>
+            <span class="ttl">Hvordan føltes det?</span>
+          </div>
+          <span class="save">LAGRE</span>
+        </div>
+
+        <div class="ref-prompt">
+          Hva var <em>én ting</em> som funket — og <em>én</em> du vil jobbe mer med?
+        </div>
+
+        <div class="ref-tags">
+          <span class="ref-tag is-on">SLAG</span>
+          <span class="ref-tag is-on">APP 65 m</span>
+          <span class="ref-tag">TEK</span>
+          <span class="ref-tag">FYSISK</span>
+          <span class="ref-tag">MENTAL</span>
+        </div>
+
+        <div class="ref-transcript">
+          <span class="firm">Lavpunktet føltes mye mer stabilt på matte. Drill 4 — random-mix — der mister jeg det fortsatt.</span><span class="draft"> Tror jeg må jobbe på</span><span class="lc"></span>
+        </div>
+
+        <div class="ref-mic-area">
+          <span class="ref-status">
+            <span class="dot"></span>LYTTER · 0:12
+          </span>
+          <div class="ref-mic-row">
+            <button class="ref-side-btn danger" aria-label="Forkast">
+              <i data-lucide="trash-2"></i>
+            </button>
+            <button class="ref-mic-btn" aria-label="Stopp">
+              <i data-lucide="mic"></i>
+            </button>
+            <button class="ref-side-btn" aria-label="Bytt til tastatur">
+              <i data-lucide="keyboard"></i>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- CONTEXT 3 — AGENCYOS DISPATCH (co-agent)                       -->
+  <!-- ============================================================ -->
+  <div class="sec tight">
+    Kontekst 3 · AgencyOS co-agent dispatch
+    <span class="sub">⌘K-stil tale-inngang · forstått-bekreftelse før utkast bygges</span>
+  </div>
+
+  <div class="ctx-panel">
+    <div class="ctx-head">
+      <span class="num">3</span>
+      <span class="nm">Co-agent · dispatch</span>
+      <span class="where">AGENCYOS TOPBAR · ANDREAS K.</span>
+      <span class="meta">⌘K · TALE-INNGANG</span>
+    </div>
+
+    <div class="ctx-body" style="background: var(--cream-50)">
+
+      <div class="agency-bar">
+
+        <!-- Heard -->
+        <div class="row">
+          <span class="mono">ak</span>
+          <div class="heard">
+            <span class="l">JEG HØRTE</span>
+            <span class="txt">"Bestill tid på Oslo GK <b>12. juni</b> for Markus og Sofie — gjerne morgen."</span>
+          </div>
+          <button class="right-mic" aria-label="Stopp">
+            <i data-lucide="mic"></i>
+            <span class="pip"></span>
+          </button>
+        </div>
+
+        <!-- Interpretation -->
+        <div class="interpret-row">
+          <span class="ic"><i data-lucide="sparkles"></i></span>
+          <div class="body">
+            <span class="l">FORSTÅTT SOM</span>
+            <div class="parsed">
+              Book <span class="slot">2 tee-tider</span> · <span class="slot">Oslo GK</span> ·
+              <span class="slot">12. JUN</span> · før <span class="slot">11:00</span> · spillere
+              <span class="slot">Markus R.P.</span> + <span class="slot">Sofie K.</span>
+            </div>
+            <span class="conf">
+              KONFIDENS <b>94 %</b> · 5 SLOTS UTFYLT · 0 USIKRE
+            </span>
+          </div>
+          <div class="actions">
+            <button class="ag-btn"><i data-lucide="edit-3"></i>Rediger</button>
+            <button class="ag-btn pri"><i data-lucide="arrow-right"></i>Bygg utkast</button>
+          </div>
+        </div>
+
+        <!-- Routing -->
+        <div class="route-chips">
+          <span class="route-chip"><span class="l">INTERN</span>Lav risiko</span>
+          <span class="route-chip is-on"><span class="l">UTGÅENDE</span>Krever godkjenning</span>
+          <span class="route-chip"><span class="l">KOSTNAD</span>~ 1 200 NOK</span>
+          <span class="route-chip"><span class="l">SLA</span>Bekreftelse innen 4 t</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <div class="rules">
+    <p><b>Hvor det dukker opp.</b> Som <em>suffix</em>-knapp i tekstfelt (notat-felt, melding, plan-builder) der inline er mulig. Som <em>floating</em>/<em>full-screen</em> på mobile flater der tekstfeltet er for lite — spiller-refleksjon, raskt notat fra brief. Som <em>dispatch</em>-knapp i AgencyOS-topbar (⌘K + mic). Mønsteret er det samme, plasseringen tilpasses konteksten.</p>
+    <p><b>Norsk-først.</b> Deepgram Nova-3 NB-NO. Språk-pip alltid synlig i recording-state. Auto-tagging av norske golf-termer (innspill, lavpunkt, sequencing, SLAG/TEK/FYS) for å koble notatet til pyramide-akse.</p>
+    <p><b>To-lags transkribering.</b> <em>Firm</em> = bekreftet av modellen. <em>Draft</em> = pågående, kursiv + dempet. Brukeren ser systemet jobbe — ingen "wait then surprise"-mønster.</p>
+    <p><b>Co-agent gate.</b> AgencyOS-dispatch viser <em>alltid</em> "jeg hørte" + "forstått som" med slot-highlight FØR utkastet bygges. Konfidens &lt; 80 % åpner rediger-modal i stedet for auto-bygging. Utgående handlinger krever godkjenning uavhengig av konfidens.</p>
+    <p><b>Aksessibilitet.</b> Alle mic-knapper har <code>aria-label</code>. Tastatur fallback alltid synlig (keyboard-side-knapp på mobil). <code>aria-busy="true"</code> på transcribing-state. Recording-status leses av skjermleser hvert 5. sekund.</p>
+  </div>
+
+  <script>lucide.createIcons();</script>
+</div></body></html>

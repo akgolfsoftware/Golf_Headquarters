@@ -1,0 +1,274 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>Ny runde · mobil score-input</title>
+<link rel="stylesheet" href="_shared.css">
+<script src="https://unpkg.com/lucide@0.453.0"></script>
+<style>
+  body { width: 760px; }
+  .card { padding: 28px 32px; }
+
+  .head { margin-bottom: 22px; }
+  .head .eb { font-family: var(--font-mono); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted-foreground); }
+  .head h1 { margin: 8px 0 6px; font-family: var(--font-display); font-weight: 700; font-size: 28px; letter-spacing: -0.025em; line-height: 1.05; color: var(--foreground); }
+  .head h1 em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .head .helper { font-family: var(--font-sans); font-size: 14px; line-height: 1.55; color: var(--muted-foreground); max-width: 620px; }
+
+  .phone {
+    width: 412px; margin: 0 auto;
+    background: var(--card); border-radius: 40px;
+    border: 7px solid var(--bezel-black); box-shadow: var(--shadow-lg); overflow: hidden;
+  }
+  .ph-status {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 13px 24px 4px; font-family: var(--font-mono); font-size: 13px; font-weight: 700;
+    position: relative; font-feature-settings: "tnum","zero";
+  }
+  .ph-status::after { content: ""; position: absolute; left: 50%; top: 13px; transform: translateX(-50%); width: 96px; height: 24px; border-radius: 9999px; background: var(--bezel-black); }
+  .ph-status .icons { display: inline-flex; gap: 5px; } .ph-status .icons i { width: 13px; height: 13px; }
+
+  .mtop {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 18px 14px; border-bottom: 1px solid var(--border);
+  }
+  .mtop .x {
+    width: 36px; height: 36px; border-radius: 9999px; flex-shrink: 0;
+    border: 1px solid var(--border); background: var(--card); color: var(--muted-foreground);
+    display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+  }
+  .mtop .x i { width: 16px; height: 16px; }
+  .mtop h2 { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: 17px; letter-spacing: -0.015em; }
+  .mtop .eb { margin-left: auto; font-family: var(--font-mono); font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.10em; color: var(--muted-foreground); }
+
+  .body { padding: 16px 16px 0; }
+  .field { display: flex; flex-direction: column; gap: 7px; margin-bottom: 16px; }
+  .field .lbl { font-family: var(--font-mono); font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.10em; color: var(--muted-foreground); }
+  .field .inp {
+    height: 48px; padding: 0 14px; border-radius: 12px; border: 1px solid var(--input);
+    background: var(--card); color: var(--foreground); font: 15px var(--font-sans);
+    display: inline-flex; align-items: center; gap: 10px; cursor: text;
+  }
+  .field .inp i { width: 16px; height: 16px; color: var(--muted-foreground); }
+  .field .inp input { border: 0; background: none; outline: none; flex: 1; font: 15px var(--font-sans); color: var(--foreground); padding: 0; }
+  .field .inp.date { color: var(--foreground); font-family: var(--font-mono); font-feature-settings: "tnum","zero"; font-weight: 700; }
+
+  .sechead {
+    display: flex; align-items: baseline; gap: 10px; margin: 6px 0 10px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.10em; color: var(--muted-foreground);
+  }
+  .sechead::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+  .sechead .opt { color: var(--muted-foreground); font-weight: 700; }
+
+  /* live score summary */
+  .score-sum {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 16px; margin-bottom: 14px;
+    border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 12px;
+    background: var(--card);
+  }
+  .score-sum .topar {
+    font-family: var(--font-mono); font-weight: 800; font-size: 30px; letter-spacing: -0.03em; line-height: 1;
+    font-feature-settings: "tnum","zero"; color: var(--foreground);
+  }
+  .score-sum .topar.under { color: var(--success); }
+  .score-sum .topar.over { color: var(--destructive); }
+  .score-sum .meta { display: flex; flex-direction: column; gap: 2px; }
+  .score-sum .meta .strokes { font-family: var(--font-mono); font-weight: 800; font-size: 16px; color: var(--foreground); font-feature-settings: "tnum","zero"; }
+  .score-sum .meta .lbl2 { font-family: var(--font-mono); font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.10em; color: var(--muted-foreground); }
+  .score-sum .par-of { margin-left: auto; text-align: right; font-family: var(--font-mono); font-size: 10px; font-weight: 700; color: var(--muted-foreground); letter-spacing: 0.04em; }
+  .score-sum .par-of b { color: var(--foreground); font-weight: 800; display: block; font-size: 14px; }
+
+  .nine-lbl { display: flex; justify-content: space-between; align-items: baseline; margin: 4px 2px 8px; }
+  .nine-lbl .n { font-family: var(--font-mono); font-size: 10px; font-weight: 800; letter-spacing: 0.10em; color: var(--foreground); }
+  .nine-lbl .s { font-family: var(--font-mono); font-size: 11px; font-weight: 800; color: var(--muted-foreground); font-feature-settings: "tnum","zero"; }
+  .nine-lbl .s b { color: var(--foreground); }
+
+  .holes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+  .hole {
+    border: 1px solid var(--border); border-radius: 12px; padding: 8px 8px 8px;
+    display: flex; flex-direction: column; align-items: center; gap: 5px; background: var(--card);
+  }
+  .hole .top { display: flex; align-items: baseline; gap: 6px; }
+  .hole .top .h { font-family: var(--font-mono); font-size: 11px; font-weight: 800; color: var(--foreground); }
+  .hole .top .par { font-family: var(--font-mono); font-size: 9px; font-weight: 700; color: var(--muted-foreground); letter-spacing: 0.04em; }
+  .hole .sc {
+    font-family: var(--font-mono); font-weight: 800; font-size: 26px; line-height: 1;
+    letter-spacing: -0.03em; font-feature-settings: "tnum","zero";
+    width: 40px; height: 34px; display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 8px;
+  }
+  .hole .sc.under { color: var(--success); background: rgba(26,125,86,0.10); }
+  .hole .sc.par   { color: var(--foreground); }
+  .hole .sc.bogey { color: var(--warning-foreground); background: rgba(184,133,42,0.14); }
+  .hole .sc.dbl   { color: var(--destructive); background: rgba(163,45,45,0.10); }
+  .hole .steps { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; width: 100%; }
+  .hole .steps button {
+    height: 38px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--cream-50); color: var(--foreground); cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .hole .steps button:active { background: var(--secondary); }
+  .hole .steps button i { width: 15px; height: 15px; }
+  .hole .steps button:disabled { opacity: 0.35; pointer-events: none; }
+
+  /* SG inputs */
+  .sg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .sg-cell { display: flex; flex-direction: column; gap: 5px; }
+  .sg-cell .k { font-family: var(--font-mono); font-size: 9px; font-weight: 800; letter-spacing: 0.10em; color: var(--muted-foreground); }
+  .sg-cell .inp { height: 46px; border: 1px solid var(--input); border-radius: 11px; display: flex; align-items: center; padding: 0 10px; gap: 6px; background: var(--card); }
+  .sg-cell .inp input { border: 0; background: none; outline: none; width: 100%; font-family: var(--font-mono); font-size: 15px; font-weight: 700; color: var(--foreground); font-feature-settings: "tnum","zero"; }
+  .sg-cell .inp .u { font-family: var(--font-mono); font-size: 10px; font-weight: 700; color: var(--muted-foreground); }
+
+  textarea { width: 100%; min-height: 72px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--input); background: var(--card); color: var(--foreground); font: 14px var(--font-sans); resize: none; outline: none; }
+  textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 20%, transparent); }
+
+  .cta-bar { position: sticky; bottom: 0; padding: 14px 16px 18px; background: linear-gradient(180deg, transparent, var(--card) 30%); }
+  .cta {
+    width: 100%; height: 52px; border-radius: 14px; border: 0;
+    background: var(--primary); color: var(--accent); cursor: pointer;
+    font-family: var(--font-mono); font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em;
+    display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+    box-shadow: 0 8px 20px rgba(0,88,64,0.18);
+  }
+  .cta i { width: 16px; height: 16px; }
+
+  .rules { margin-top: 26px; padding: 16px 18px; background: var(--secondary); border-radius: 12px; font-family: var(--font-mono); font-size: 11px; color: var(--muted-foreground); line-height: 1.65; }
+  .rules p { margin: 0; } .rules p + p { margin-top: 8px; } .rules b { color: var(--foreground); font-weight: 700; }
+
+  @media (prefers-reduced-motion: reduce) { .hole .steps button { transition: none; } }
+</style></head>
+<body><div class="card">
+
+  <div class="head">
+    <span class="eb">2.13 · /PORTAL/RUNDER/NY</span>
+    <h1>Legg til runde — <em>score per hull</em>.</h1>
+    <p class="helper">Mobil-optimal score-input: hvert hull har store ±-steppere (≥ 44 px), og score-til-par regnes
+      ut live mens du taster. Front- og back-nine får hver sin sub-total, og fargene koder birdie / par / bogey / dobbel.</p>
+  </div>
+
+  <div class="phone">
+    <div class="ph-status">
+      <span>14:08</span>
+      <span class="icons"><i data-lucide="signal"></i><i data-lucide="wifi"></i><i data-lucide="battery-medium"></i></span>
+    </div>
+
+    <div class="mtop">
+      <button class="x"><i data-lucide="x"></i></button>
+      <h2>Legg til runde</h2>
+      <span class="eb">TRINN 1 AV 1</span>
+    </div>
+
+    <div class="body">
+      <div class="field">
+        <span class="lbl">Bane</span>
+        <label class="inp"><i data-lucide="search"></i><input value="Larvik GK" placeholder="Søk bane…"></label>
+      </div>
+      <div class="field">
+        <span class="lbl">Dato</span>
+        <label class="inp date"><i data-lucide="calendar"></i><input value="18.05.2026" inputmode="numeric"></label>
+      </div>
+
+      <div class="sechead">Score per hull</div>
+
+      <div class="score-sum">
+        <span class="topar" id="toPar">E</span>
+        <div class="meta">
+          <span class="strokes"><b id="strokes">72</b></span>
+          <span class="lbl2">Slag totalt</span>
+        </div>
+        <div class="par-of"><b id="parTotal">Par 72</b>18 hull</div>
+      </div>
+
+      <div class="nine-lbl"><span class="n">UT · 1–9</span><span class="s" id="outSum">Par 36 · <b>36</b></span></div>
+      <div class="holes" id="holesOut"></div>
+
+      <div class="nine-lbl"><span class="n">INN · 10–18</span><span class="s" id="inSum">Par 36 · <b>36</b></span></div>
+      <div class="holes" id="holesIn"></div>
+
+      <div class="sechead">Strokes Gained <span class="opt">· valgfritt</span></div>
+      <div class="sg-grid">
+        <div class="sg-cell"><span class="k">OTT</span><span class="inp"><input value="+0,32" inputmode="decimal"><span class="u">SG</span></span></div>
+        <div class="sg-cell"><span class="k">APP</span><span class="inp"><input value="+0,65" inputmode="decimal"><span class="u">SG</span></span></div>
+        <div class="sg-cell"><span class="k">ARG</span><span class="inp"><input value="−0,15" inputmode="decimal"><span class="u">SG</span></span></div>
+        <div class="sg-cell"><span class="k">PUTT</span><span class="inp"><input value="+0,38" inputmode="decimal"><span class="u">SG</span></span></div>
+      </div>
+
+      <div class="field">
+        <span class="lbl">Notat · valgfritt</span>
+        <textarea placeholder="Beste runden i år, godt på innspill…">Beste runden i år — innspill satt fra 60–90 m hele dagen.</textarea>
+      </div>
+    </div>
+
+    <div class="cta-bar">
+      <button class="cta"><i data-lucide="check"></i>Lagre runde</button>
+    </div>
+  </div>
+
+  <div class="rules">
+    <p><b>Score-til-par er live.</b> Hver ±-knapp oppdaterer hullets score, fargekoder mot par, og regner om begge nine-subtotaler + totalen i samme frame. «E» = even par, ikke «0».</p>
+    <p><b>Touch før tetthet.</b> Stepper-knappene er 38–44 px høye, par er default-verdien så de fleste hull krever null tap. SG-feltene er valgfrie og bevisst nedprioritert under scoren.</p>
+  </div>
+
+  <script>lucide.createIcons();</script>
+  <script>
+  (function () {
+    var PAR_OUT = [4,3,5,4,4,3,4,5,4];
+    var PAR_IN  = [4,4,3,5,4,4,5,3,4];
+    var scores = {}; // holeIndex 1..18 -> strokes
+
+    function cls(diff) {
+      if (diff <= -1) return 'under';
+      if (diff === 0) return 'par';
+      if (diff === 1) return 'bogey';
+      return 'dbl';
+    }
+    function buildNine(container, pars, offset) {
+      pars.forEach(function (par, i) {
+        var n = offset + i + 1;
+        scores[n] = par;
+        var cell = document.createElement('div');
+        cell.className = 'hole';
+        cell.innerHTML =
+          '<div class="top"><span class="h">' + n + '</span><span class="par">par ' + par + '</span></div>' +
+          '<span class="sc par" data-sc>' + par + '</span>' +
+          '<div class="steps">' +
+            '<button data-d="-1" aria-label="Trekk fra"><i data-lucide="minus"></i></button>' +
+            '<button data-d="1" aria-label="Legg til"><i data-lucide="plus"></i></button>' +
+          '</div>';
+        var scEl = cell.querySelector('[data-sc]');
+        cell.querySelectorAll('.steps button').forEach(function (b) {
+          b.addEventListener('click', function () {
+            var v = scores[n] + parseInt(b.dataset.d, 10);
+            v = Math.max(1, Math.min(12, v));
+            scores[n] = v;
+            scEl.textContent = v;
+            scEl.className = 'sc ' + cls(v - par);
+            recalc();
+          });
+        });
+        container.appendChild(cell);
+      });
+    }
+
+    function sumNine(pars, offset) {
+      var s = 0; for (var i = 0; i < 9; i++) s += scores[offset + i + 1]; return s;
+    }
+    function recalc() {
+      var parOut = PAR_OUT.reduce(function (a,b){return a+b;}, 0);
+      var parIn  = PAR_IN.reduce(function (a,b){return a+b;}, 0);
+      var sOut = sumNine(PAR_OUT, 0), sIn = sumNine(PAR_IN, 9);
+      var total = sOut + sIn, parTotal = parOut + parIn;
+      var diff = total - parTotal;
+      document.getElementById('outSum').innerHTML = 'Par ' + parOut + ' · <b>' + sOut + '</b>';
+      document.getElementById('inSum').innerHTML  = 'Par ' + parIn + ' · <b>' + sIn + '</b>';
+      document.getElementById('strokes').textContent = total;
+      document.getElementById('parTotal').textContent = 'Par ' + parTotal;
+      var tp = document.getElementById('toPar');
+      tp.textContent = diff === 0 ? 'E' : (diff > 0 ? '+' + diff : '−' + Math.abs(diff));
+      tp.className = 'topar ' + (diff < 0 ? 'under' : (diff > 0 ? 'over' : ''));
+    }
+
+    buildNine(document.getElementById('holesOut'), PAR_OUT, 0);
+    buildNine(document.getElementById('holesIn'), PAR_IN, 9);
+    recalc();
+    lucide.createIcons();
+  })();
+  </script>
+</div></body></html>

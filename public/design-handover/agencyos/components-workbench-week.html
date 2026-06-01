@@ -1,0 +1,797 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>Workbench uke-grid</title>
+<link rel="stylesheet" href="_shared.css">
+<script src="https://unpkg.com/lucide@0.453.0"></script>
+<style>
+  body { width: 1180px; }
+  .card { padding: 24px; }
+
+  .sec {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    display: flex; align-items: center; gap: 8px;
+    margin: 0 0 16px;
+  }
+  .sec::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+
+  /* ===== PANEL ===== */
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* R29 — session slide-over drill-down */
+  .ev { cursor: pointer; }
+  .ev:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .so-backdrop {
+    position: absolute; inset: 0; z-index: 12;
+    background: rgba(10,31,23,0.28);
+    opacity: 0; pointer-events: none;
+    transition: opacity 220ms ease;
+  }
+  .so-backdrop.open { opacity: 1; pointer-events: auto; }
+  .slideover {
+    position: absolute; top: 0; right: 0; bottom: 0; z-index: 13;
+    width: 340px; max-width: 86%;
+    background: var(--card);
+    border-left: 1px solid var(--border);
+    box-shadow: -16px 0 40px rgba(10,31,23,0.16);
+    transform: translateX(100%);
+    transition: transform 280ms cubic-bezier(0.22,1,0.36,1);
+    display: flex; flex-direction: column;
+  }
+  .slideover.open { transform: translateX(0); }
+  @media (prefers-reduced-motion: reduce) {
+    .so-backdrop, .slideover { transition: none; }
+  }
+  .so-head {
+    padding: 16px 18px 14px;
+    border-bottom: 1px solid var(--border);
+    border-top: 3px solid var(--muted-foreground);
+  }
+  .so-head.fys { border-top-color: var(--pyr-fys); }
+  .so-head.tek { border-top-color: var(--pyr-tek); }
+  .so-head.slag { border-top-color: var(--pyr-slag); }
+  .so-head.spill { border-top-color: var(--pyr-spill); }
+  .so-head.turn { border-top-color: var(--pyr-turn); }
+  .so-eb {
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .so-eb .ax { color: var(--foreground); }
+  .so-eb .close {
+    margin-left: auto; width: 26px; height: 26px; border-radius: 9999px;
+    border: 1px solid var(--border); background: var(--card);
+    color: var(--muted-foreground); cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .so-eb .close i { width: 13px; height: 13px; }
+  .so-title {
+    margin: 10px 0 0;
+    font-family: var(--font-display); font-weight: 700; font-size: 19px;
+    letter-spacing: -0.018em; line-height: 1.18; color: var(--foreground);
+  }
+  .so-when {
+    margin-top: 6px;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    font-feature-settings: "tnum","zero";
+  }
+  .so-body { padding: 16px 18px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
+  .so-sec .l {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground); margin-bottom: 8px;
+  }
+  .so-drill {
+    display: grid; grid-template-columns: 18px 1fr auto; gap: 10px; align-items: baseline;
+    padding: 7px 0; border-top: 1px solid var(--border);
+    font-size: 13px; color: var(--foreground); letter-spacing: -0.005em;
+  }
+  .so-drill:first-child { border-top: 0; }
+  .so-drill .n { font-family: var(--font-mono); font-size: 10px; font-weight: 800; color: var(--muted-foreground); }
+  .so-drill .m { font-family: var(--font-mono); font-size: 10px; font-weight: 700; color: var(--muted-foreground); letter-spacing: 0.02em; }
+  .so-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .so-meta-grid .c { background: var(--card); padding: 10px 12px; }
+  .so-meta-grid .c .k { font-family: var(--font-mono); font-size: 8.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.10em; color: var(--muted-foreground); }
+  .so-meta-grid .c .v { font-family: var(--font-mono); font-weight: 800; font-size: 13px; color: var(--foreground); margin-top: 3px; letter-spacing: -0.01em; }
+  .so-cta {
+    margin-top: 2px; height: 44px; border-radius: 12px;
+    background: var(--primary); color: var(--accent); border: 0;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em; cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .so-cta i { width: 14px; height: 14px; }
+
+  /* Period band */
+  .periode {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px;
+    background: linear-gradient(90deg, rgba(184,133,42,0.10), rgba(184,133,42,0.02) 70%, transparent);
+    border-bottom: 1px solid var(--border);
+  }
+  .periode .eb {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--warning-foreground);
+  }
+  .periode .nm {
+    font-size: 13px; color: var(--foreground); font-weight: 600;
+    letter-spacing: -0.005em;
+  }
+  .periode .focus {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .periode .focus strong { color: var(--foreground); font-weight: 700; }
+
+  /* Day headers */
+  .dayhead {
+    display: grid;
+    grid-template-columns: 56px repeat(7, 1fr);
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+  }
+  .dayhead .gut {
+    border-right: 1px solid var(--border);
+  }
+  .dayhead .dh {
+    padding: 12px 14px;
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .dayhead .dh:last-child { border-right: 0; }
+  .dayhead .dh.weekend { background: rgba(10,31,23,0.02); }
+  .dayhead .dow {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .dayhead .dt {
+    font-family: var(--font-display); font-weight: 700; font-size: 18px;
+    letter-spacing: -0.015em;
+    color: var(--foreground);
+    font-feature-settings: "tnum","zero";
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .dayhead .dt.today { color: var(--primary); }
+  .dayhead .dt.today::after {
+    content: ""; width: 6px; height: 6px; border-radius: 9999px;
+    background: var(--accent);
+    box-shadow: 0 0 6px rgba(209,248,67,0.7);
+  }
+  .dayhead .sub {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .dayhead .dt.weekend { color: var(--muted-foreground); }
+
+  /* ===== GRID ===== */
+  .grid {
+    display: grid;
+    grid-template-columns: 56px repeat(7, 1fr);
+    position: relative;
+  }
+  .grid .time-col {
+    border-right: 1px solid var(--border);
+    background: var(--card);
+    position: relative;
+  }
+  .grid .day-col {
+    position: relative;
+    border-right: 1px solid var(--border);
+    background: var(--card);
+  }
+  .grid .day-col:last-child { border-right: 0; }
+  .grid .day-col.weekend { background: rgba(10,31,23,0.02); }
+  .grid .day-col.today {
+    background: rgba(209,248,67,0.05);
+  }
+
+  /* hour rows: 06–21 (15 hours), 32px each = 480px tall grid body */
+  .grid .time-col, .grid .day-col { height: 480px; }
+  .grid .day-col .hl {
+    position: absolute; left: 0; right: 0; height: 1px;
+    background: var(--border); opacity: 0.45;
+    pointer-events: none;
+  }
+  .grid .time-col .h {
+    position: absolute; right: 0; padding-right: 8px;
+    transform: translateY(-50%);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    font-feature-settings: "tnum","zero";
+  }
+  .grid .time-col .h::after {
+    content: ""; position: absolute; right: 0; top: 50%; width: 4px; height: 1px;
+    background: var(--border);
+  }
+
+  /* Now-line in today column */
+  .now-line {
+    position: absolute; left: 0; right: 0; height: 2px;
+    background: var(--accent);
+    box-shadow: 0 0 8px rgba(209,248,67,0.5);
+    z-index: 4;
+    pointer-events: none;
+  }
+  .now-line::before {
+    content: ""; position: absolute; left: -4px; top: -3px;
+    width: 8px; height: 8px; border-radius: 9999px;
+    background: var(--accent);
+  }
+
+  /* ===== SESSION CHIPS ===== */
+  .ev {
+    position: absolute;
+    left: 6px; right: 6px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--muted-foreground);
+    border-radius: 8px;
+    padding: 7px 9px;
+    display: flex; flex-direction: column; gap: 3px;
+    overflow: hidden;
+    cursor: grab;
+    box-shadow: 0 1px 2px rgba(10,31,23,0.04);
+    transition: box-shadow 120ms ease-out;
+  }
+  .ev:hover { box-shadow: 0 4px 12px rgba(10,31,23,0.08); }
+  .ev.fys   { border-left-color: var(--pyr-fys); }
+  .ev.tek   { border-left-color: var(--pyr-tek); }
+  .ev.slag  { border-left-color: var(--pyr-slag); }
+  .ev.spill { border-left-color: var(--pyr-spill); }
+  .ev.turn  { border-left-color: var(--pyr-turn); }
+
+  .ev .top {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--foreground);
+    letter-spacing: 0.02em; font-feature-settings: "tnum","zero";
+  }
+  .ev .top .ax {
+    font-size: 9px; font-weight: 700; letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+  }
+  .ev .top .ic {
+    margin-left: auto;
+    display: inline-flex; align-items: center; gap: 4px;
+    color: var(--muted-foreground);
+  }
+  .ev .top .ic i { width: 11px; height: 11px; }
+  .ev .nm {
+    font-size: 12px; font-weight: 600; line-height: 1.25;
+    color: var(--foreground); letter-spacing: -0.005em;
+  }
+  .ev .meta {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    font-feature-settings: "tnum","zero";
+    display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .ev .meta i { width: 10px; height: 10px; }
+
+  /* Compact (small height) variant — title only */
+  .ev.compact { padding: 5px 8px; gap: 2px; }
+  .ev.compact .nm { font-size: 11px; }
+  .ev.compact .meta { font-size: 9px; }
+
+  /* Group/tournament/test badge sit in chip header */
+  .gchip {
+    display: inline-flex; align-items: center; gap: 4px;
+    height: 16px; padding: 0 6px; border-radius: 4px;
+    font-family: var(--font-mono); font-size: 8px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+  }
+  .gchip.wang { background: rgba(94,92,107,0.10); color: var(--neutral-chip-foreground); }
+  .gchip.gfgk { background: rgba(0,88,64,0.10);  color: var(--success-foreground); }
+  .gchip.test { background: rgba(37,99,235,0.10); color: var(--info-foreground); }
+  .gchip.tour { background: rgba(163,45,45,0.10); color: var(--destructive-foreground); }
+  .gchip i { width: 9px; height: 9px; }
+
+  /* Tournament block — span tall, distinct treatment */
+  .ev.tournament {
+    background: linear-gradient(180deg, rgba(163,45,45,0.06), rgba(163,45,45,0.02));
+    border: 1px solid rgba(163,45,45,0.30);
+    border-left: 3px solid var(--pyr-turn);
+  }
+  .ev.tournament .nm { color: var(--foreground); }
+
+  /* ===== DRAG STATES ===== */
+  /* Ghost — semi-transparent floating chip */
+  .ghost {
+    position: absolute;
+    left: 6px; right: 6px;
+    background: var(--card);
+    border: 1px solid var(--primary);
+    border-left: 3px solid var(--pyr-slag);
+    border-radius: 8px;
+    padding: 7px 9px;
+    display: flex; flex-direction: column; gap: 3px;
+    box-shadow: 0 8px 20px rgba(10,31,23,0.20), 0 0 0 4px rgba(0,88,64,0.08);
+    opacity: 0.92;
+    z-index: 8;
+    pointer-events: none;
+    transform: rotate(-1deg) scale(1.02);
+  }
+  .ghost .top {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+  }
+  .ghost .nm {
+    font-size: 12px; font-weight: 600; letter-spacing: -0.005em;
+  }
+  .ghost .meta {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .ghost .src-line {
+    position: absolute; left: -3px; top: 50%;
+    width: 12px; height: 1px;
+    background: var(--primary);
+    transform: translateX(-100%);
+  }
+
+  /* Drop-zone — lime dashed border on target slot */
+  .dropzone {
+    position: absolute;
+    left: 4px; right: 4px;
+    background: rgba(209,248,67,0.10);
+    border: 2px dashed var(--accent);
+    border-radius: 10px;
+    z-index: 2;
+    box-shadow: 0 0 0 1px rgba(209,248,67,0.25) inset;
+  }
+  .dropzone .label {
+    position: absolute; top: 8px; left: 10px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    color: var(--primary);
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent);
+    padding: 3px 8px; border-radius: 9999px;
+  }
+  .dropzone .label i { width: 11px; height: 11px; }
+
+  /* Faded source — original chip dimmed while dragging */
+  .ev.is-source {
+    opacity: 0.35;
+    border-style: dashed;
+    cursor: grabbing;
+  }
+
+  /* ===== STATE LEGEND under main panel ===== */
+  .legend {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .legend .lg {
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--card);
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .legend .lg .ttl {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    color: var(--foreground);
+  }
+  .legend .lg .dsc {
+    font-size: 12px; line-height: 1.4; color: var(--muted-foreground);
+    letter-spacing: -0.005em;
+  }
+  .legend .lg .row {
+    display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 2px;
+  }
+
+  /* axis swatches in legend */
+  .ax-swatch {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--foreground); letter-spacing: 0.04em;
+  }
+  .ax-swatch .sw {
+    display: inline-block; width: 16px; height: 3px;
+    border-radius: 9999px;
+  }
+  .ax-swatch .sw.fys   { background: var(--pyr-fys); }
+  .ax-swatch .sw.tek   { background: var(--pyr-tek); }
+  .ax-swatch .sw.slag  { background: var(--pyr-slag); }
+  .ax-swatch .sw.spill { background: var(--pyr-spill); }
+  .ax-swatch .sw.turn  { background: var(--pyr-turn); }
+
+  /* Annotations rules block */
+  .rules {
+    margin-top: 24px; padding: 16px;
+    background: var(--secondary); border-radius: 12px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted-foreground); line-height: 1.6;
+  }
+  .rules p { margin: 0; }
+  .rules p + p { margin-top: 8px; }
+  .rules b { color: var(--foreground); font-weight: 700; }
+</style></head>
+<body><div class="card">
+
+  <div class="sec">Workbench uke-grid · drag-in-progress med ghost-preview + lime drop-sone</div>
+
+  <div class="panel">
+
+    <!-- Periode-band -->
+    <div class="periode">
+      <span class="eb">PERIODE · SPESIALISERING</span>
+      <span class="nm">Uke 22 · 26. mai – 1. juni</span>
+      <span class="focus">FOKUS: <strong>balltreff · innspill 50–80 m</strong></span>
+    </div>
+
+    <!-- Dag-headers -->
+    <div class="dayhead">
+      <div class="gut"></div>
+      <div class="dh"><span class="dow">MAN</span><span class="dt">26</span><span class="sub">mai</span></div>
+      <div class="dh"><span class="dow">TIR</span><span class="dt">27</span></div>
+      <div class="dh"><span class="dow">ONS</span><span class="dt today">28</span></div>
+      <div class="dh"><span class="dow">TOR</span><span class="dt">29</span></div>
+      <div class="dh"><span class="dow">FRE</span><span class="dt">30</span></div>
+      <div class="dh weekend"><span class="dow">LØR</span><span class="dt weekend">31</span></div>
+      <div class="dh weekend"><span class="dow">SØN</span><span class="dt weekend">01</span><span class="sub">jun</span></div>
+    </div>
+
+    <!-- Grid -->
+    <div class="grid">
+
+      <!-- TIME GUTTER 06–21 (15 rows × 32px = 480px) -->
+      <div class="time-col">
+        <div class="h" style="top: 0">06</div>
+        <div class="h" style="top: 32px">07</div>
+        <div class="h" style="top: 64px">08</div>
+        <div class="h" style="top: 96px">09</div>
+        <div class="h" style="top: 128px">10</div>
+        <div class="h" style="top: 160px">11</div>
+        <div class="h" style="top: 192px">12</div>
+        <div class="h" style="top: 224px">13</div>
+        <div class="h" style="top: 256px">14</div>
+        <div class="h" style="top: 288px">15</div>
+        <div class="h" style="top: 320px">16</div>
+        <div class="h" style="top: 352px">17</div>
+        <div class="h" style="top: 384px">18</div>
+        <div class="h" style="top: 416px">19</div>
+        <div class="h" style="top: 448px">20</div>
+        <div class="h" style="top: 480px">21</div>
+      </div>
+
+      <!-- helpers: top px = (h-6)*32 ; height = mins/60 * 32 -->
+
+      <!-- MAN 26 -->
+      <div class="day-col">
+        <div class="hl" style="top:32px"></div><div class="hl" style="top:64px"></div>
+        <div class="hl" style="top:96px"></div><div class="hl" style="top:128px"></div>
+        <div class="hl" style="top:160px"></div><div class="hl" style="top:192px"></div>
+        <div class="hl" style="top:224px"></div><div class="hl" style="top:256px"></div>
+        <div class="hl" style="top:288px"></div><div class="hl" style="top:320px"></div>
+        <div class="hl" style="top:352px"></div><div class="hl" style="top:384px"></div>
+        <div class="hl" style="top:416px"></div><div class="hl" style="top:448px"></div>
+
+        <div class="ev fys" style="top: 32px; height: 32px;">
+          <div class="top">
+            <span>07:00</span>
+            <span class="ax">FYS</span>
+          </div>
+          <div class="nm">Morgenmobilitet</div>
+        </div>
+      </div>
+
+      <!-- TIR 27 — gruppetrening WANG -->
+      <div class="day-col">
+        <div class="hl" style="top:32px"></div><div class="hl" style="top:64px"></div>
+        <div class="hl" style="top:96px"></div><div class="hl" style="top:128px"></div>
+        <div class="hl" style="top:160px"></div><div class="hl" style="top:192px"></div>
+        <div class="hl" style="top:224px"></div><div class="hl" style="top:256px"></div>
+        <div class="hl" style="top:288px"></div><div class="hl" style="top:320px"></div>
+        <div class="hl" style="top:352px"></div><div class="hl" style="top:384px"></div>
+        <div class="hl" style="top:416px"></div><div class="hl" style="top:448px"></div>
+
+        <div class="ev tek" style="top: 96px; height: 60px;">
+          <div class="top">
+            <span>09:00</span>
+            <span class="ax">TEK</span>
+            <span class="ic"><i data-lucide="users"></i></span>
+          </div>
+          <div class="nm">Sekvens P4–P8 · balltreff</div>
+          <div class="meta">
+            <span>60 m · 4 drills</span>
+            <span class="gchip wang"><i data-lucide="users"></i>WANG</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ONS 28 (today) -->
+      <div class="day-col today">
+        <div class="hl" style="top:32px"></div><div class="hl" style="top:64px"></div>
+        <div class="hl" style="top:96px"></div><div class="hl" style="top:128px"></div>
+        <div class="hl" style="top:160px"></div><div class="hl" style="top:192px"></div>
+        <div class="hl" style="top:224px"></div><div class="hl" style="top:256px"></div>
+        <div class="hl" style="top:288px"></div><div class="hl" style="top:320px"></div>
+        <div class="hl" style="top:352px"></div><div class="hl" style="top:384px"></div>
+        <div class="hl" style="top:416px"></div><div class="hl" style="top:448px"></div>
+
+        <!-- Now-line at 14:42 = (14-6)*32 + 42/60*32 = 256 + 22.4 ≈ 278 px. Synkronisert med workbench-day. -->
+        <div class="now-line" style="top: 278px"></div>
+
+        <!-- 07:00 FYS — matcher dag-tidslinje. (7-6)*32 = 32 ; 20m visuelt 32px for lesbarhet. -->
+        <div class="ev fys compact" style="top: 32px; height: 32px;">
+          <div class="top">
+            <span>07:00</span>
+            <span class="ax">FYS</span>
+          </div>
+          <div class="nm">Morgenmobilitet</div>
+        </div>
+
+        <!-- SLAG 14:30 — matcher dag-tidslinje. (14-6)*32 + 30/60*32 = 272. -->
+        <div class="ev slag" style="top: 272px; height: 60px;" data-loc="GFGK · TM bay 3" data-focus="Balltreff · lengdekontroll" data-drills="Ladder 50–80 m|12 ball|Klokke-spill 65 m|2×10|Landingsvindu ± 3 m|10 ball|CS-test 80 m|score">
+          <div class="top">
+            <span>14:30</span>
+            <span class="ax">SLAG</span>
+          </div>
+          <div class="nm">Innspill 50–80 m · presisjon</div>
+          <div class="meta">
+            <span>60 m · 4 drills · CS 80</span>
+          </div>
+        </div>
+
+        <div class="ev spill" style="top: 352px; height: 90px;" data-loc="GFGK Old · hull 1–9" data-focus="Scoring · beslutninger" data-drills="Par-3 n&aelig;rspill|9 hull|Up-and-down challenge|score|Putt fra 2–3 m|tally">
+          <div class="top">
+            <span>17:00</span>
+            <span class="ax">SPILL</span>
+            <span class="ic"><i data-lucide="map-pin"></i></span>
+          </div>
+          <div class="nm">9-hulls spillsimulering</div>
+          <div class="meta">
+            <span>90 m · scoring · GFGK Old</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TOR 29 — DRAG TARGET (drop-zone here) -->
+      <div class="day-col">
+        <div class="hl" style="top:32px"></div><div class="hl" style="top:64px"></div>
+        <div class="hl" style="top:96px"></div><div class="hl" style="top:128px"></div>
+        <div class="hl" style="top:160px"></div><div class="hl" style="top:192px"></div>
+        <div class="hl" style="top:224px"></div><div class="hl" style="top:256px"></div>
+        <div class="hl" style="top:288px"></div><div class="hl" style="top:320px"></div>
+        <div class="hl" style="top:352px"></div><div class="hl" style="top:384px"></div>
+        <div class="hl" style="top:416px"></div><div class="hl" style="top:448px"></div>
+
+        <!-- existing test (faded source while user is dragging another) -->
+        <div class="ev tek compact" style="top: 128px; height: 60px;">
+          <div class="top">
+            <span>10:00</span>
+            <span class="ax">TEK</span>
+            <span class="ic"><i data-lucide="clipboard-check"></i></span>
+          </div>
+          <div class="nm">Putt-konsistens 4 m</div>
+          <div class="meta">
+            <span>60 m</span>
+            <span class="gchip test"><i data-lucide="clipboard-check"></i>TEST</span>
+          </div>
+        </div>
+
+        <!-- Drop-zone where SLAG-økt would land if released now. 14:30 → 15:45 (75 min) -->
+        <div class="dropzone" style="top: 270px; height: 70px;">
+          <span class="label"><i data-lucide="arrow-down-to-dot"></i>Slipp her · TOR 14:30</span>
+        </div>
+
+        <!-- Ghost — exactly mirrors what's being dragged, but shifted slightly off -->
+        <div class="ghost" style="top: 282px; height: 70px; left: 14px; right: -4px;">
+          <span class="src-line"></span>
+          <div class="top">
+            <span style="font-family: var(--font-mono); font-size:10px; font-weight:700;">14:30</span>
+            <span class="ax" style="font-size:9px; font-weight:700; letter-spacing:0.10em; text-transform:uppercase; color: var(--muted-foreground)">SLAG</span>
+          </div>
+          <div class="nm">Lengdekontroll 50–80 m</div>
+          <div class="meta">75 m · 4 drills · standard</div>
+        </div>
+      </div>
+
+      <!-- FRE 30 — TURN tournament -->
+      <div class="day-col">
+        <div class="hl" style="top:32px"></div><div class="hl" style="top:64px"></div>
+        <div class="hl" style="top:96px"></div><div class="hl" style="top:128px"></div>
+        <div class="hl" style="top:160px"></div><div class="hl" style="top:192px"></div>
+        <div class="hl" style="top:224px"></div><div class="hl" style="top:256px"></div>
+        <div class="hl" style="top:288px"></div><div class="hl" style="top:320px"></div>
+        <div class="hl" style="top:352px"></div><div class="hl" style="top:384px"></div>
+        <div class="hl" style="top:416px"></div><div class="hl" style="top:448px"></div>
+
+        <div class="ev tournament" style="top: 0; height: 480px;">
+          <div class="top">
+            <span>09:00</span>
+            <span class="ax">TURN</span>
+            <span class="ic"><i data-lucide="flag"></i></span>
+          </div>
+          <div class="nm">Srixon Tour #2 · R1</div>
+          <div class="meta">
+            <span>18 hull · Larvik GK</span>
+          </div>
+          <div class="meta" style="margin-top:auto">
+            <span class="gchip tour"><i data-lucide="flag"></i>TURNERING</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- LØR 31 -->
+      <div class="day-col weekend">
+        <div class="hl" style="top:32px"></div><div class="hl" style="top:64px"></div>
+        <div class="hl" style="top:96px"></div><div class="hl" style="top:128px"></div>
+        <div class="hl" style="top:160px"></div><div class="hl" style="top:192px"></div>
+        <div class="hl" style="top:224px"></div><div class="hl" style="top:256px"></div>
+        <div class="hl" style="top:288px"></div><div class="hl" style="top:320px"></div>
+        <div class="hl" style="top:352px"></div><div class="hl" style="top:384px"></div>
+        <div class="hl" style="top:416px"></div><div class="hl" style="top:448px"></div>
+      </div>
+
+      <!-- SØN 01 -->
+      <div class="day-col weekend">
+        <div class="hl" style="top:32px"></div><div class="hl" style="top:64px"></div>
+        <div class="hl" style="top:96px"></div><div class="hl" style="top:128px"></div>
+        <div class="hl" style="top:160px"></div><div class="hl" style="top:192px"></div>
+        <div class="hl" style="top:224px"></div><div class="hl" style="top:256px"></div>
+        <div class="hl" style="top:288px"></div><div class="hl" style="top:320px"></div>
+        <div class="hl" style="top:352px"></div><div class="hl" style="top:384px"></div>
+        <div class="hl" style="top:416px"></div><div class="hl" style="top:448px"></div>
+      </div>
+
+    </div>
+
+    <div class="so-backdrop" id="soBackdrop"></div>
+    <aside class="slideover" id="slideover" aria-hidden="true">
+      <div class="so-head" id="soHead">
+        <div class="so-eb"><span class="ax" id="soAx">SLAG</span><span id="soGroup"></span>
+          <button class="close" id="soClose" aria-label="Lukk"><i data-lucide="x"></i></button>
+        </div>
+        <h3 class="so-title" id="soTitle">—</h3>
+        <div class="so-when" id="soWhen">—</div>
+      </div>
+      <div class="so-body">
+        <div class="so-meta-grid" id="soMetaGrid"></div>
+        <div class="so-sec" id="soDrillSec">
+          <div class="l">Drills</div>
+          <div id="soDrills"></div>
+        </div>
+        <button class="so-cta"><i data-lucide="play"></i>Åpne økt</button>
+      </div>
+    </aside>
+  </div>
+  <div class="legend">
+    <div class="lg">
+      <div class="ttl">Akse-farger</div>
+      <div class="dsc">3 px venstre border på alle økt-blokker.</div>
+      <div class="row">
+        <span class="ax-swatch"><span class="sw fys"></span>FYS</span>
+        <span class="ax-swatch"><span class="sw tek"></span>TEK</span>
+        <span class="ax-swatch"><span class="sw slag"></span>SLAG</span>
+        <span class="ax-swatch"><span class="sw spill"></span>SPILL</span>
+        <span class="ax-swatch"><span class="sw turn"></span>TURN</span>
+      </div>
+    </div>
+
+    <div class="lg">
+      <div class="ttl">Type-ikoner</div>
+      <div class="dsc">Tilstede når relevant; ellers utelatt.</div>
+      <div class="row">
+        <span class="gchip wang"><i data-lucide="users"></i>WANG</span>
+        <span class="gchip gfgk"><i data-lucide="users"></i>GFGK</span>
+        <span class="gchip test"><i data-lucide="clipboard-check"></i>TEST</span>
+        <span class="gchip tour"><i data-lucide="flag"></i>TURNERING</span>
+      </div>
+    </div>
+
+    <div class="lg">
+      <div class="ttl">Ghost-preview</div>
+      <div class="dsc">Original-blokk fades til 35 %, dashet outline. Ghost: −1° rotasjon, lift-skygge, 92 % opacity.</div>
+    </div>
+
+    <div class="lg">
+      <div class="ttl">Drop-sone</div>
+      <div class="dsc">2 px lime dashed border + 10 % lime fill. Pille viser måldag og snap-tid (15 min).</div>
+    </div>
+  </div>
+
+  <div class="rules">
+    <p><b>Tid:</b> 06–21 (15 timer). Rad-høyde 32 px = 1 t. Snap til 15 min.</p>
+    <p><b>Idag-kolonne:</b> 5 % lime tint på bakgrunn. Now-line: 2 px lime + 8 px dot ved venstrekanten. Helg: 2 % forest-tint, dato i muted.</p>
+    <p><b>Tournament-blokk:</b> full-høyde i kolonnen, rød-tonet gradient bakgrunn, TURN-rød 3 px venstre. <code>TURNERING</code>-chip nederst. Innspill (pre-shot, range) plasseres som vanlige TURN-blokker over.</p>
+    <p><b>Drag-kilder:</b> standardøkter (sidemeny), eksisterende ukens-blokker (re-tids), turneringer (sidemeny). Slipp utenfor grid → cancel.</p>
+  </div>
+
+  <script>lucide.createIcons();</script>
+
+  <script>
+  /* ============================================================
+     R29 · WORKBENCH — click a session → slide-over drill-down
+     ============================================================ */
+  (function () {
+    var over = document.getElementById('slideover');
+    var back = document.getElementById('soBackdrop');
+    if (!over) return;
+    var head = document.getElementById('soHead');
+    var elAx = document.getElementById('soAx');
+    var elGroup = document.getElementById('soGroup');
+    var elTitle = document.getElementById('soTitle');
+    var elWhen = document.getElementById('soWhen');
+    var elGrid = document.getElementById('soMetaGrid');
+    var elDrills = document.getElementById('soDrills');
+    var elDrillSec = document.getElementById('soDrillSec');
+    var AXES = ['fys','tek','slag','spill','turn'];
+
+    function open(ev) {
+      var ax = AXES.filter(function (c) { return ev.classList.contains(c); })[0] || 'slag';
+      var axLabel = (ev.querySelector('.ax') ? ev.querySelector('.ax').textContent : ax).trim();
+      var time = ev.querySelector('.top span') ? ev.querySelector('.top span').textContent.trim() : '';
+      var name = ev.querySelector('.nm') ? ev.querySelector('.nm').textContent.trim() : 'Økt';
+      var meta = ev.querySelector('.meta span') ? ev.querySelector('.meta span').textContent.trim() : '';
+      var group = ev.querySelector('.gchip') ? ev.querySelector('.gchip').textContent.trim() : '';
+      var loc = ev.getAttribute('data-loc') || meta.split('·').pop().trim();
+      var focus = ev.getAttribute('data-focus') || '—';
+
+      head.className = 'so-head ' + ax;
+      elAx.textContent = axLabel;
+      elGroup.textContent = group ? '· ' + group : '';
+      elTitle.textContent = name;
+      elWhen.textContent = time + (meta ? '  ·  ' + meta : '');
+
+      elGrid.innerHTML =
+        '<div class="c"><div class="k">Akse</div><div class="v">' + axLabel + '</div></div>' +
+        '<div class="c"><div class="k">Tid</div><div class="v">' + (time || '—') + '</div></div>' +
+        '<div class="c"><div class="k">Sted</div><div class="v">' + loc + '</div></div>' +
+        '<div class="c"><div class="k">Fokus</div><div class="v">' + focus + '</div></div>';
+
+      var drills = ev.getAttribute('data-drills');
+      if (drills) {
+        var parts = drills.split('|');
+        var html = '';
+        for (var i = 0; i < parts.length; i += 2) {
+          html += '<div class="so-drill"><span class="n">' + (i / 2 + 1) +
+            '</span><span>' + parts[i] + '</span><span class="m">' + (parts[i + 1] || '') + '</span></div>';
+        }
+        elDrills.innerHTML = html;
+        elDrillSec.style.display = '';
+      } else {
+        elDrillSec.style.display = 'none';
+      }
+
+      over.classList.add('open');
+      over.setAttribute('aria-hidden', 'false');
+      back.classList.add('open');
+    }
+    function close() {
+      over.classList.remove('open');
+      over.setAttribute('aria-hidden', 'true');
+      back.classList.remove('open');
+    }
+
+    document.querySelectorAll('.grid .ev').forEach(function (ev) {
+      if (ev.classList.contains('ghost') || ev.classList.contains('is-source')) return;
+      ev.setAttribute('role', 'button');
+      ev.setAttribute('tabindex', '0');
+      ev.addEventListener('click', function () { open(ev); });
+      ev.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(ev); }
+      });
+    });
+    document.getElementById('soClose').addEventListener('click', close);
+    back.addEventListener('click', close);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+  })();
+  </script>
+</div></body></html>

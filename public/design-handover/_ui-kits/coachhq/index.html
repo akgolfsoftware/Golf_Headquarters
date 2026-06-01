@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="nb">
+<head>
+  <meta charset="utf-8">
+  <title>CoachHQ — AK Golf HQ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="coachhq.css">
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/lucide@0.453.0"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel" src="Components.jsx"></script>
+  <script type="text/babel" src="Screens.jsx"></script>
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    function App() {
+      const [view, setView] = useState("today");
+
+      useEffect(() => {
+        if (window.lucide) window.lucide.createIcons();
+      }, [view]);
+
+      return (
+        <div className="app" data-screen-label={view === "today" ? "01 CoachHQ Dashboard" : "02 CoachHQ Spillere"}>
+          <Sidebar view={view} onNav={setView} />
+          <main>
+            <Topbar />
+            <div className="content">
+              {view === "today"   && <TodayView />}
+              {view === "players" && <PlayersView />}
+              {view !== "today" && view !== "players" && (
+                <div style={{ padding: 48, textAlign: "center", color: "var(--muted-foreground)" }}>
+                  <div className="eyebrow">PLACEHOLDER</div>
+                  <h2 style={{ fontFamily: "var(--font-display)", marginTop: 8 }}>Denne fanen er ikke bygd i UI-kittet.</h2>
+                </div>
+              )}
+            </div>
+          </main>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>

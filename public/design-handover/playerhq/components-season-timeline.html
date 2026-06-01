@@ -1,0 +1,661 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>Sesong-timeline · vertikal karriere-strøm</title>
+<link rel="stylesheet" href="_shared.css">
+<script src="https://unpkg.com/lucide@0.453.0"></script>
+<style>
+  body { width: 1100px; }
+  .card { padding: 28px 32px; }
+
+  /* HEADER */
+  .head { margin-bottom: 24px; }
+  .head .eb {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .head h1 {
+    margin: 8px 0 6px;
+    font-family: var(--font-display); font-weight: 700; font-size: 30px;
+    letter-spacing: -0.025em; line-height: 1.05;
+  }
+  .head h1 em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .head .helper {
+    font-family: var(--font-sans); font-size: 14px; line-height: 1.55;
+    color: var(--muted-foreground); max-width: 760px;
+  }
+
+  .sec {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--foreground);
+    display: flex; align-items: center; gap: 12px;
+    margin: 32px 0 14px;
+  }
+  .sec::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+  .sec .sub { color: var(--muted-foreground); font-weight: 700; letter-spacing: 0.04em; }
+  .sec .count {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    background: var(--secondary); color: var(--muted-foreground);
+    padding: 2px 8px; border-radius: 9999px; letter-spacing: 0.06em;
+  }
+
+  .panel {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; overflow: hidden;
+  }
+  .frule {
+    padding: 12px 20px;
+    background: var(--cream-50);
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted-foreground); line-height: 1.55;
+  }
+  .frule b { color: var(--foreground); font-weight: 700; }
+
+  /* HEAD ROW */
+  .ttop {
+    display: grid; grid-template-columns: 1fr auto;
+    align-items: center; gap: 18px;
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .ttop h2 {
+    margin: 0;
+    font-family: var(--font-display); font-weight: 700; font-size: 22px;
+    letter-spacing: -0.02em;
+  }
+  .ttop h2 em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .ttop .sub {
+    margin-top: 4px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .ttop .sub b { color: var(--foreground); font-weight: 800; }
+  .ttop .filters {
+    display: inline-flex; gap: 6px;
+  }
+  .ttop .filters .opt {
+    display: inline-flex; align-items: center; gap: 5px;
+    height: 28px; padding: 0 12px;
+    border-radius: 9999px;
+    background: var(--card); border: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--foreground); letter-spacing: 0.06em;
+  }
+  .ttop .filters .opt.on { background: var(--primary); color: var(--accent); border-color: var(--primary); }
+  .ttop .filters .opt .ct {
+    font-size: 9px; font-weight: 800;
+    background: rgba(0,88,64,0.10); color: var(--primary);
+    padding: 1px 6px; border-radius: 9999px;
+  }
+  .ttop .filters .opt.on .ct { background: rgba(209,248,67,0.30); color: var(--accent); }
+
+  /* Hendelse-tally — stille telleverk som erstatter de falske pillene. */
+  .tl-tally {
+    display: inline-flex; align-items: center; gap: 12px;
+    padding: 6px 14px;
+    background: var(--cream-50);
+    border: 1px solid var(--border);
+    border-radius: 9999px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .tl-tally .t-it {
+    display: inline-flex; align-items: baseline; gap: 5px;
+  }
+  .tl-tally .t-it b {
+    font-family: var(--font-mono); font-weight: 800;
+    color: var(--foreground); font-size: 12px;
+    letter-spacing: -0.005em;
+    font-feature-settings: "tnum","zero";
+  }
+  .tl-tally .t-sep {
+    width: 1px; height: 12px;
+    background: var(--cream-300);
+  }
+
+  /* SG HERO STRIP (PRIMÆR-KPI) */
+  .sg-strip {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--cream-50);
+  }
+  .sg-head {
+    display: flex; align-items: baseline; gap: 12px;
+    margin-bottom: 16px;
+  }
+  .sg-head .h {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .sg-head .v {
+    font-family: var(--font-mono); font-weight: 800; font-size: 36px;
+    letter-spacing: -0.025em; line-height: 1;
+    color: var(--success); font-feature-settings: "tnum","zero";
+  }
+  .sg-head .v small { font-size: 13px; color: var(--muted-foreground); font-weight: 700; margin-left: 4px; }
+  .sg-head .delta {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 800;
+    color: var(--success); letter-spacing: 0.02em;
+    font-feature-settings: "tnum","zero";
+  }
+  .sg-chart {
+    height: 112px; position: relative;
+  }
+  .sg-chart svg { width: 100%; height: 100%; overflow: visible; }
+  .sg-chart .gridline { stroke: var(--cream-300); stroke-dasharray: 3 3; stroke-width: 1; }
+  .sg-chart .gridlabel {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    fill: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .sg-chart .area { fill: rgba(26,125,86,0.10); }
+  .sg-chart .line { fill: none; stroke: var(--success); stroke-width: 2.25; }
+  .sg-chart .marker { fill: var(--card); stroke: var(--success); stroke-width: 1.5; }
+  .sg-chart .marker.signal { fill: var(--accent); stroke: var(--success); stroke-width: 2; }
+  .sg-chart .marker.injury { fill: var(--destructive); stroke: var(--card); stroke-width: 1.5; }
+  .sg-chart .zero-line { stroke: var(--cream-400); stroke-width: 1; stroke-dasharray: 2 4; }
+  .sg-chart .xaxis-label {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    fill: var(--muted-foreground); letter-spacing: 0.10em;
+    text-anchor: middle;
+  }
+
+  /* TIMELINE */
+  .timeline {
+    padding: 22px 24px 28px;
+    position: relative;
+  }
+  .timeline::before {
+    content: "";
+    position: absolute;
+    top: 22px; bottom: 28px;
+    left: 138px;
+    width: 1px;
+    background: var(--cream-300);
+  }
+
+  .year-bar {
+    display: grid; grid-template-columns: 120px 1fr;
+    gap: 24px;
+    align-items: center;
+    margin-bottom: 18px;
+    position: relative;
+  }
+  .year-bar .year {
+    text-align: right;
+    font-family: var(--font-display); font-weight: 800; font-size: 24px;
+    letter-spacing: -0.02em; color: var(--foreground);
+    font-feature-settings: "tnum","zero";
+  }
+  .year-bar .year small {
+    display: block;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.06em;
+    text-transform: uppercase; margin-top: 2px;
+  }
+  .year-bar .pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 14px;
+    border-radius: 9999px;
+    background: var(--primary); color: var(--accent);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    letter-spacing: 0.10em; text-transform: uppercase;
+  }
+  .year-bar .pill .dot {
+    width: 6px; height: 6px; border-radius: 9999px; background: var(--accent);
+  }
+  .year-bar .pill.now {
+    background: var(--accent); color: var(--primary);
+  }
+  .year-bar .pill.now .dot { background: var(--primary); }
+
+  .tl-event {
+    display: grid;
+    grid-template-columns: 120px 36px 1fr;
+    gap: 0;
+    align-items: flex-start;
+    padding: 10px 0;
+    position: relative;
+  }
+  .tl-event .when {
+    padding-right: 24px;
+    text-align: right;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 800;
+    color: var(--foreground); letter-spacing: 0.02em;
+    line-height: 1.2;
+    font-feature-settings: "tnum","zero";
+    padding-top: 4px;
+  }
+  .tl-event .when small {
+    display: block;
+    font-size: 9px; color: var(--muted-foreground); font-weight: 700;
+    letter-spacing: 0.06em; margin-top: 2px;
+    text-transform: uppercase;
+  }
+  .tl-event .marker {
+    width: 36px; display: flex; justify-content: center;
+    padding-top: 2px;
+    position: relative;
+  }
+  .tl-event .marker .ic {
+    width: 32px; height: 32px;
+    background: var(--card);
+    border-radius: 9999px;
+    border: 2px solid var(--cream-300);
+    display: inline-flex; align-items: center; justify-content: center;
+    z-index: 2;
+    position: relative;
+  }
+  .tl-event .marker .ic i { width: 15px; height: 15px; }
+  .tl-event .marker .ic.tour    { border-color: var(--destructive); color: var(--destructive); background: rgba(163,45,45,0.06); }
+  .tl-event .marker .ic.signal  { border-color: var(--primary); background: var(--accent); color: var(--primary); }
+  .tl-event .marker .ic.coach   { border-color: var(--info); color: var(--info); background: rgba(37,99,235,0.06); }
+  .tl-event .marker .ic.injury  { border-color: var(--destructive); color: var(--destructive); background: var(--cream-50); }
+  .tl-event .marker .ic.club    { border-color: var(--warning); color: var(--warning-foreground); background: rgba(184,133,42,0.10); }
+  .tl-event .marker .ic.phase   { border-color: var(--primary); color: var(--primary); background: rgba(0,88,64,0.06); }
+  .tl-event .marker .ic.test    { border-color: var(--foreground); color: var(--foreground); background: var(--cream-50); }
+  .tl-event .marker .ic.round   { border-color: var(--cream-300); color: var(--muted-foreground); background: var(--card); }
+
+  .tl-event .body {
+    padding-left: 18px;
+    min-width: 0;
+  }
+  .tl-event .body .head {
+    display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
+  }
+  .tl-event .body .head .t {
+    font-family: var(--font-display); font-weight: 700; font-size: 16px;
+    letter-spacing: -0.015em; line-height: 1.2;
+    color: var(--foreground);
+  }
+  .tl-event .body .head .t em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .tl-event .body .head .tag {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    padding: 1px 6px; border-radius: 3px;
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .tl-event .body .head .tag.win { background: rgba(26,125,86,0.10); color: var(--success); }
+  .tl-event .body .head .tag.tour { background: rgba(163,45,45,0.10); color: var(--destructive); }
+  .tl-event .body .head .tag.phase { background: rgba(0,88,64,0.10); color: var(--primary); }
+  .tl-event .body .head .tag.injury { background: var(--secondary); color: var(--muted-foreground); }
+  .tl-event .body .deck {
+    margin-top: 4px;
+    font-family: var(--font-sans); font-size: 13px; line-height: 1.5;
+    color: var(--muted-foreground); letter-spacing: -0.005em;
+    text-wrap: pretty;
+    max-width: 620px;
+  }
+  .tl-event .body .deck b { color: var(--foreground); font-weight: 700; }
+  .tl-event .body .deck em { font-style: italic; font-weight: 500; color: var(--primary); }
+  .tl-event .body .meta {
+    display: flex; gap: 14px; flex-wrap: wrap; margin-top: 8px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .tl-event .body .meta b { color: var(--foreground); font-weight: 800; font-feature-settings: "tnum","zero"; }
+  .tl-event .body .meta .pos { color: var(--success); font-weight: 800; }
+  .tl-event .body .meta .neg { color: var(--destructive); font-weight: 800; }
+  .tl-event .body .meta .sep { color: var(--cream-300); }
+
+  /* phase row — wider, more prominent */
+  .tl-event.phase {
+    margin: 6px 0;
+  }
+  .tl-event.phase .body {
+    padding: 12px 16px;
+    margin-left: 18px;
+    background: rgba(0,88,64,0.04);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+  }
+
+  /* breakthrough — accented */
+  .tl-event.signal .body .head .t {
+    color: var(--primary);
+  }
+
+  /* injury — muted */
+  .tl-event.injury .body .deck { color: var(--muted-foreground); }
+  .tl-event.injury .body .head .t { color: var(--muted-foreground); }
+
+  /* rules */
+  .rules {
+    margin-top: 28px; padding: 18px 20px;
+    background: var(--secondary); border-radius: 12px;
+    font-family: var(--font-mono); font-size: 12px;
+    color: var(--muted-foreground); line-height: 1.7;
+  }
+  .rules p { margin: 0; }
+  .rules p + p { margin-top: 8px; }
+  .rules b { color: var(--foreground); font-weight: 700; }
+
+</style></head>
+<body><div class="card">
+
+  <div class="head">
+    <span class="eb">C1 · SESONG-TIMELINE</span>
+    <h1>Tre <em>sesonger</em> som lesbar fortelling.</h1>
+    <p class="helper">
+      Vertikal karriere-strøm i The Athletic-stil. SG-grafen øverst med kontekst-markører,
+      deretter hendelsene kronologisk nedover: turneringer,
+      klubb-bytter, coach-skifter, skader, breakthrough-uker.
+      Hver hendelse forklarer hvorfor SG-linja flyttet seg da den gjorde.
+    </p>
+  </div>
+
+  <div class="sec">
+    Karrierestrøm
+    <span class="sub">2024 → 2026 · Markus Berg · SG −1,18 → +1,12 · HCP 14,2 → 4,2</span>
+    <span class="count">17 HENDELSER</span>
+  </div>
+
+  <div class="panel">
+
+    <div class="ttop">
+      <div>
+        <h2>Markus <em>Berg</em> · karrierestrøm</h2>
+        <div class="sub">
+          15 ÅR <span style="color:var(--cream-300); margin: 0 5px">·</span>
+          GFGK <span style="color:var(--cream-300); margin: 0 5px">·</span>
+          COACH <b>FREDRIK SOLBERG</b> SIDEN MAR 2025
+          <span style="color:var(--cream-300); margin: 0 5px">·</span>
+          SG <b style="color:var(--success)">+1,12</b> <span style="color:var(--cream-300); margin: 0 4px">·</span> HCP <b>4,2</b>
+        </div>
+      </div>
+      <!-- Tidligere: fem filter-pills (Alle/Turneringer/Breakthroughs/
+           Endringer/Skader) med "on"-state men ingen logikk. Samme
+           mønster som runde 8. Fjernet til fordel for en stille tally
+           med faktiske antall — informasjon, ikke falsk interaksjon. -->
+      <div class="tl-tally">
+        <span class="t-it"><b>17</b>hendelser</span>
+        <span class="t-sep"></span>
+        <span class="t-it"><b>7</b>turneringer</span>
+        <span class="t-sep"></span>
+        <span class="t-it"><b>3</b>breakthroughs</span>
+        <span class="t-sep"></span>
+        <span class="t-it"><b>5</b>plan-endringer</span>
+        <span class="t-sep"></span>
+        <span class="t-it"><b>2</b>skader</span>
+      </div>
+    </div>
+
+    <!-- SG TOTAL · HERO (PRIMÆR-KPI) -->
+    <div class="sg-strip">
+      <div class="sg-head">
+        <span class="h">SG total · 24 mnd</span>
+        <span class="v">+1,12<small>SG/runde</small></span>
+        <span class="delta">+2,30 over 24 mnd</span>
+      </div>
+      <div class="sg-chart">
+        <svg viewBox="0 0 900 100" preserveAspectRatio="none">
+          <!-- gridlines: SG +1.5, 0, -1.5 → y 8, 50, 92 -->
+          <line class="gridline" x1="0" y1="8"  x2="900" y2="8"/>
+          <line class="zero-line" x1="0" y1="50" x2="900" y2="50"/>
+          <line class="gridline" x1="0" y1="92" x2="900" y2="92"/>
+
+          <!-- SG curve (mirror av HCP-kurve: HCP ned = SG opp) -->
+          <path class="area"
+            d="M 0,82 L 60,80 L 110,76 L 160,72 L 210,68 L 260,60 L 320,52 L 380,55
+               L 430,46 L 480,38 L 540,42 L 600,28 L 660,22 L 720,18 L 770,16 L 830,14 L 900,14
+               L 900,50 L 0,50 Z"/>
+          <path class="line"
+            d="M 0,82 L 60,80 L 110,76 L 160,72 L 210,68 L 260,60 L 320,52 L 380,55
+               L 430,46 L 480,38 L 540,42 L 600,28 L 660,22 L 720,18 L 770,16 L 830,14 L 900,14"/>
+
+          <!-- event markers along the curve -->
+          <circle class="marker" cx="60" cy="80" r="3.5"/>
+          <circle class="marker injury" cx="380" cy="55" r="4.5"/>
+          <circle class="marker" cx="320" cy="52" r="3.5"/>
+          <circle class="marker signal" cx="600" cy="28" r="5"/>
+          <circle class="marker" cx="660" cy="22" r="3.5"/>
+          <circle class="marker signal" cx="770" cy="16" r="5"/>
+          <circle class="marker" cx="900" cy="14" r="4.5"/>
+
+          <!-- y labels -->
+          <text class="gridlabel" x="0" y="6">+1,5</text>
+          <text class="gridlabel" x="0" y="54">0</text>
+          <text class="gridlabel" x="0" y="99">−1,5</text>
+
+          <!-- x labels -->
+          <text class="xaxis-label" x="60" y="118">JUN ’24</text>
+          <text class="xaxis-label" x="320" y="118">JAN ’25</text>
+          <text class="xaxis-label" x="600" y="118">SEP ’25</text>
+          <text class="xaxis-label" x="900" y="118">JUN ’26</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- TIMELINE -->
+    <div class="timeline">
+
+      <!-- 2026 -->
+      <div class="year-bar">
+        <div class="year">2026<small>SESONGEN NÅ</small></div>
+        <span class="pill now"><span class="dot"></span>NÅ · SG <b>+1,12</b></span>
+      </div>
+
+      <div class="tl-event signal">
+        <div class="when">8. juni<small>I GÅR</small></div>
+        <div class="marker"><span class="ic signal"><i data-lucide="sparkles"></i></span></div>
+        <div class="body">
+          <div class="head"><span class="t">Putting-<em>breakthrough</em></span><span class="tag win">SIGNAL</span></div>
+          <div class="deck">62 % fra 3 m over 34 putt — over PGA-snittet selv i verste konfidensintervall. Første gang Markus passerer Tour-grensen i en kategori.</div>
+          <div class="meta">
+            <span>SG PUTT <b class="pos">+0,38</b></span>
+            <span class="sep">·</span>
+            <span>4 UKER <b>34 putt</b></span>
+            <span class="sep">·</span>
+            <span>KONFIDENS <b>HØY</b></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-event">
+        <div class="when">25. mai<small>UKE 21</small></div>
+        <div class="marker"><span class="ic club"><i data-lucide="circle-dot"></i></span></div>
+        <div class="body">
+          <div class="head"><span class="t">Ny driver · Ping G430 Max</span></div>
+          <div class="deck">Klubb-bytte etter 30 % fairway-treff i april. Lengre carry, men dispersion fortsatt under verifisering.</div>
+          <div class="meta">
+            <span>CARRY <b>+8 m</b></span>
+            <span class="sep">·</span>
+            <span>FAIRWAY <b class="neg">−22 % første 2 uker</b></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-event phase">
+        <div class="when">1. mai<small>UKE 18</small></div>
+        <div class="marker"><span class="ic phase"><i data-lucide="layers"></i></span></div>
+        <div class="body">
+          <div class="head"><span class="t">Plan v3 · innspill-fokus</span><span class="tag phase">PLAN-FASE</span></div>
+          <div class="deck">12-ukers periode mot turneringssesongen. Hovedfokus på 50–90 m og putting-konsistens. Sesongmål: HCP &lt; 4,0 før uke 43.</div>
+          <div class="meta">
+            <span>VARIGHET <b>12 UKER</b></span>
+            <span class="sep">·</span>
+            <span>4 ØKTER/UKE</span>
+            <span class="sep">·</span>
+            <span>FOKUS <b>INNSPILL 50–90 M</b></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-event">
+        <div class="when">14. apr<small>UKE 16</small></div>
+        <div class="marker"><span class="ic test"><i data-lucide="grid-3x3"></i></span></div>
+        <div class="body">
+          <div class="head"><span class="t">Testuke 16 · vår-baseline</span></div>
+          <div class="deck">5 tester gjennomført. CMJ +1,2 cm vs forrige test. PEI-bane scoret 38 (par 36). Spilte runden i 39 spillsim.</div>
+          <div class="meta">
+            <span>SAMLET INDEX <b class="pos">+6 %</b></span>
+            <span class="sep">·</span>
+            <span>4 framgang · 1 holdt</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-event">
+        <div class="when">29. mar<small>UKE 13</small></div>
+        <div class="marker"><span class="ic tour"><i data-lucide="trophy"></i></span></div>
+        <div class="body">
+          <div class="head"><span class="t">NM-junior · cut-tap</span><span class="tag tour">TUR</span></div>
+          <div class="deck">Tre slag bak cut etter 36 hull. Tre putt fra 1 m på back 9 i runde 2 brøt strekken — driver-line var ellers solid.</div>
+          <div class="meta">
+            <span>SCORE <b>+8</b></span>
+            <span class="sep">·</span>
+            <span>FAIRWAYS <b>72 %</b></span>
+            <span class="sep">·</span>
+            <span>SG PUTT <b class="neg">−1,8</b></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2025 -->
+      <div class="year-bar">
+        <div class="year">2025<small>SESONGEN I FJOR</small></div>
+        <span class="pill"><span class="dot"></span>HCP 9,4 → 5,8</span>
+      </div>
+
+      <div class="tl-event signal">
+        <div class="when">14. sep<small>UKE 38</small></div>
+        <div class="marker"><span class="ic signal"><i data-lucide="trending-down"></i></span></div>
+        <div class="body">
+          <div class="head"><span class="t">HCP under <em>5</em> første gang</span><span class="tag win">MILEPÆL</span></div>
+          <div class="deck">Etter to runder under par i septemberturneringene falt HCP fra 5,2 til 4,8. Første gang under 5.</div>
+          <div class="meta">
+            <span>RUNDER <b>67 + 69</b></span>
+            <span class="sep">·</span>
+            <span>OSLO GK · HOLTSMARK</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-event">
+        <div class="when">22. aug<small>UKE 34</small></div>
+        <div class="marker"><span class="ic tour"><i data-lucide="trophy"></i></span></div>
+        <div class="body">
+          <div class="head"><span class="t">Korn Ferry Junior · 12. plass</span><span class="tag tour">TUR</span></div>
+          <div class="deck">Beste turneringresultat så langt. Sterkt innspill-spillet (SG +1,2) bar runden — putting var marginal men holdt seg over Tour-snitt.</div>
+          <div class="meta">
+            <span>SCORE <b>−4</b></span>
+            <span class="sep">·</span>
+            <span>SG APP <b class="pos">+1,2</b></span>
+            <span class="sep">·</span>
+            <span>SG PUTT <b>+0,1</b></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-event phase">
+        <div class="when">20. okt<small>UKE 43</small></div>
+        <div class="marker"><span class="ic phase"><i data-lucide="layers"></i></span></div>
+        <div class="body">
+          <div class="head"><span class="t">Testuke 43 → ny periodisering</span><span class="tag phase">SYKLUS</span></div>
+          <div class="deck">Press-toleranse falt 8 % uten at fysikk forklarte det. Ny plan v2 trippet press-treningen før vintersesongen.</div>
+          <div class="meta">
+            <span>5 TESTER · 4 FRAMGANG</span>
+            <span class="sep">·</span>
+            <span>MTQ <b class="neg">−8 %</b></span>
+            <span class="sep">·</span>
+            <span>PLAN <b>v1 → v2</b></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-event injury">
+        <div class="when">12. jul<small>UKE 28</small></div>
+        <div class="marker"><span class="ic injury"><i data-lucide="alert-octagon"></i></span></div>
+        <div class="body">
+          <div class="head"><span class="t">Skadepause · skulder-issue</span><span class="tag injury">SKADE</span></div>
+          <div class="deck">3 ukers pause etter venstre skulder-betennelse. Returnerte med modifisert plan og redusert volum først 2 uker.</div>
+          <div class="meta">
+            <span>VARIGHET <b>3 UKER</b></span>
+            <span class="sep">·</span>
+            <span>ØKTER MISTET <b>9</b></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-event">
+        <div class="when">3. mai<small>UKE 18</small></div>
+        <div class="marker"><span class="ic tour"><i data-lucide="trophy"></i></span></div>
+        <div class="body">
+          <div class="head"><span class="t">GFGK Klubbmesterskap junior · 2. plass</span><span class="tag tour">TUR</span></div>
+          <div class="deck">Topp-3 første gang. Tapte gull på en bogey-bogey-finish på hull 17–18. Lærte at lediggang i siste 3 hull er en konsistent svakhet.</div>
+        </div>
+      </div>
+
+      <div class="tl-event">
+        <div class="when">15. mar<small>UKE 11</small></div>
+        <div class="marker"><span class="ic coach"><i data-lucide="user-check"></i></span></div>
+        <div class="body">
+          <div class="head"><span class="t">Ny coach: <em>Fredrik Solberg</em></span></div>
+          <div class="deck">Skifte fra klubbcoach til AK Golf etter anbefaling fra forelder. Første plan ble v1 — bred bredde-trening for å kartlegge svakheter.</div>
+          <div class="meta">
+            <span>FRA <b>GFGK-CLUB-COACH</b></span>
+            <span class="sep">·</span>
+            <span>TIL <b>AK GOLF · FREDRIK SOLBERG</b></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2024 -->
+      <div class="year-bar">
+        <div class="year">2024<small>SESONGEN FØR</small></div>
+        <span class="pill"><span class="dot"></span>HCP 14,2 → 9,4</span>
+      </div>
+
+      <div class="tl-event">
+        <div class="when">28. sep<small>UKE 39</small></div>
+        <div class="marker"><span class="ic round"><i data-lucide="check"></i></span></div>
+        <div class="body">
+          <div class="head"><span class="t">Sesongens beste runde · 71</span></div>
+          <div class="deck">Eneste under-par-runde i 2024. Tegn på at ren teknikk var der — det manglet konsistens og press-toleranse.</div>
+        </div>
+      </div>
+
+      <div class="tl-event">
+        <div class="when">11. jul<small>UKE 28</small></div>
+        <div class="marker"><span class="ic tour"><i data-lucide="trophy"></i></span></div>
+        <div class="body">
+          <div class="head"><span class="t">NM-junior · ikke kvalifisert til finalen</span><span class="tag tour">TUR</span></div>
+          <div class="deck">For svak til distrikt-cut. Definerte målet for resten av sesongen: HCP under 8 før 2025.</div>
+        </div>
+      </div>
+
+      <div class="tl-event">
+        <div class="when">2. mai<small>UKE 18</small></div>
+        <div class="marker"><span class="ic round"><i data-lucide="flag"></i></span></div>
+        <div class="body">
+          <div class="head"><span class="t">Første ranking-runde i sesongen</span></div>
+          <div class="deck">Spilte 82 på Oslo GK. HCP økte fra 9,4 til 9,8 etter vinteren. Klassisk vår-tap som tok 3 uker å komme tilbake fra.</div>
+        </div>
+      </div>
+
+      <div class="tl-event injury">
+        <div class="when">vinter ’24<small>JAN–MAR</small></div>
+        <div class="marker"><span class="ic injury"><i data-lucide="snowflake"></i></span></div>
+        <div class="body">
+          <div class="head"><span class="t">Vinterpause · ingen trening</span></div>
+          <div class="deck">Familiebytte mellom Bærum og Oslo. Trening prioritert ned. Returnerte med dårlig form i mars — verste fysikk-baseline noen gang.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="frule">
+      <b>Prinsipp.</b> SG-grafen øverst er <b>sammendraget av spillenivå</b>; tidslinjen under er <b>forklaringen</b>. Hver markør på SG-grafen tilsvarer en hendelse nedenfor. HCP eksisterer som <b>kontekst-tall</b> i sub-line og års-piller — ikke som egen graf.
+      Hendelses-typer farges av sin marker-ring: rød = turnering, lime = breakthrough, blå = coach, gul = klubb-bytte, grå = skade/pause, forest-fyll = plan-fase.
+    </div>
+  </div>
+
+  <div class="rules">
+    <p><b>Vertikal er bevisst.</b> Nyeste øverst, eldre nedover — som sosiale feeder folk allerede leser. Står i kontrast til kalender-komponentene som er rom-orienterte (uke/måned).</p>
+    <p><b>Markørene matcher SG-grafen.</b> Når brukeren ser et signifikant brudd i SG-linja, finner de hendelsen som forklarer det rett under. Det er karrierens grunnstruktur. HCP eksisterer som <b>kontekst-tall</b> i sub-line og års-piller, ikke som egen visualisering.</p>
+    <p><b>Plan-faser er rom-givende.</b> Forest-fyll og venstre-kantstrek skiller dem fra punkthendelser. De spenner ofte over flere måneder.</p>
+  </div>
+
+  <script>lucide.createIcons();</script>
+</div></body></html>

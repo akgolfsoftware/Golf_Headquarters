@@ -1,0 +1,1520 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>Test-uke-syklus · trigger, evaluering, ny periodisering</title>
+<link rel="stylesheet" href="_shared.css">
+<script src="https://unpkg.com/lucide@0.453.0"></script>
+<style>
+  body { width: 1240px; }
+  .card { padding: 28px 32px; }
+
+  /* ===== HEADER ===== */
+  .head { margin-bottom: 24px; }
+  .head .eb {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .head h1 {
+    margin: 8px 0 6px;
+    font-family: var(--font-display); font-weight: 700; font-size: 30px;
+    letter-spacing: -0.025em; line-height: 1.05; color: var(--foreground);
+  }
+  .head h1 em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .head .helper {
+    font-family: var(--font-sans); font-size: 14px; line-height: 1.55;
+    color: var(--muted-foreground); max-width: 800px;
+  }
+
+  /* ===== SECTION HEADERS ===== */
+  .sec {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--foreground);
+    display: flex; align-items: center; gap: 12px;
+    margin: 32px 0 14px;
+  }
+  .sec::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+  .sec .sub { color: var(--muted-foreground); font-weight: 700; letter-spacing: 0.04em; }
+  .sec .count {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    background: var(--secondary); color: var(--muted-foreground);
+    padding: 2px 8px; border-radius: 9999px; letter-spacing: 0.06em;
+  }
+
+  .panel {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; overflow: hidden;
+  }
+  .frule {
+    padding: 12px 20px;
+    background: var(--cream-50);
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted-foreground); line-height: 1.55;
+  }
+  .frule b { color: var(--foreground); font-weight: 700; }
+
+  .ptitle {
+    display: flex; align-items: baseline; gap: 14px;
+    padding: 16px 20px 12px;
+  }
+  .ptitle h2 {
+    margin: 0; font-family: var(--font-display); font-weight: 700;
+    font-size: 19px; letter-spacing: -0.02em; color: var(--foreground);
+  }
+  .ptitle .eb {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .ptitle .meta {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .ptitle .meta b { color: var(--foreground); font-weight: 800; }
+  .ptitle .meta .sep { color: var(--cream-300); margin: 0 5px; }
+
+  /* ============================================================ */
+  /* SECTION 1 · TRIGGER (uke 41-42 nedtelling)                    */
+  /* ============================================================ */
+  .trigger-row {
+    display: grid; grid-template-columns: 1fr 380px;
+  }
+
+  /* coach view — big timeline countdown */
+  .coach-view {
+    padding: 26px 28px;
+    border-right: 1px solid var(--border);
+  }
+  .coach-view .top {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 18px;
+  }
+  .coach-view .top .pin {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 9999px;
+    background: rgba(184,133,42,0.14); color: var(--warning-foreground);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    letter-spacing: 0.10em; text-transform: uppercase;
+  }
+  .coach-view .top .pin .dot {
+    width: 6px; height: 6px; border-radius: 9999px; background: var(--warning);
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.15); }
+  }
+  .coach-view .top .right {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .coach-view .top .right b { color: var(--foreground); font-weight: 800; }
+  .coach-view h2 {
+    margin: 0 0 8px;
+    font-family: var(--font-display); font-weight: 700; font-size: 28px;
+    letter-spacing: -0.025em; line-height: 1.1;
+  }
+  .coach-view h2 em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .coach-view .lead {
+    margin: 0 0 22px;
+    font-size: 14px; line-height: 1.55; color: var(--muted-foreground);
+    max-width: 580px; letter-spacing: -0.005em;
+  }
+  .coach-view .lead b { color: var(--foreground); font-weight: 700; }
+
+  /* week ribbon */
+  .ribbon {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    margin-bottom: 24px;
+    background: var(--cream-50);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 6px;
+  }
+  .ribbon .rwk {
+    padding: 12px 10px;
+    border-radius: 8px;
+    position: relative;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .ribbon .rwk.past {
+    color: var(--muted-foreground);
+  }
+  .ribbon .rwk.now {
+    background: var(--accent); color: var(--primary);
+    box-shadow: var(--shadow-sm);
+  }
+  .ribbon .rwk.now::after {
+    content: "NÅ"; position: absolute; top: -8px; right: 8px;
+    font-family: var(--font-mono); font-size: 8px; font-weight: 800;
+    background: var(--primary); color: var(--accent);
+    padding: 2px 6px; border-radius: 3px; letter-spacing: 0.10em;
+  }
+  .ribbon .rwk.up {
+    background: var(--card); border: 1.5px dashed var(--warning);
+    color: var(--warning-foreground);
+  }
+  .ribbon .rwk.test {
+    background: var(--primary); color: var(--cream-100);
+  }
+  .ribbon .rwk.future {
+    color: var(--muted-foreground);
+  }
+  .ribbon .rwk .w {
+    font-family: var(--font-mono); font-weight: 800; font-size: 18px;
+    letter-spacing: -0.02em; line-height: 1;
+    font-feature-settings: "tnum","zero";
+  }
+  .ribbon .rwk.now .w,
+  .ribbon .rwk.test .w { color: inherit; }
+  .ribbon .rwk .dt {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    letter-spacing: 0.04em; opacity: 0.85;
+  }
+  .ribbon .rwk .lbl {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    margin-top: 4px;
+  }
+
+  /* players affected list */
+  .affected {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .affected .pcard {
+    display: grid; grid-template-columns: 32px 1fr auto;
+    gap: 10px; align-items: center;
+    padding: 11px 14px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  .affected .pcard .av {
+    width: 32px; height: 32px; border-radius: 9999px;
+    background: var(--primary); color: var(--accent);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 12px; font-weight: 700;
+  }
+  .affected .pcard .av.alt { background: var(--cream-200); color: var(--foreground); }
+  .affected .pcard .nm b {
+    display: block; font-weight: 700; font-size: 13px; color: var(--foreground);
+  }
+  .affected .pcard .nm small {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .affected .pcard .st {
+    display: flex; flex-direction: column; gap: 2px; align-items: flex-end;
+  }
+  .affected .pcard .st .ready {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    padding: 2px 7px; border-radius: 4px;
+    background: rgba(26,125,86,0.10); color: var(--success);
+    letter-spacing: 0.10em; text-transform: uppercase;
+  }
+  .affected .pcard .st .ready.ok2 { background: rgba(184,133,42,0.14); color: var(--warning-foreground); }
+  .affected .pcard .st .ready.no { background: rgba(163,45,45,0.10); color: var(--destructive); }
+  .affected .pcard .st .tests {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .affected .pcard .st .tests b { color: var(--foreground); font-weight: 800; }
+
+  .more {
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: var(--cream-50); border-radius: 8px;
+    text-align: center;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .more b { color: var(--foreground); font-weight: 800; }
+
+  /* tests planned right column */
+  .tests-col {
+    padding: 22px 24px;
+    background: var(--cream-50);
+  }
+  .tests-col h3 {
+    margin: 0 0 4px;
+    font-family: var(--font-display); font-weight: 700; font-size: 17px;
+    letter-spacing: -0.02em;
+  }
+  .tests-col h3 small {
+    display: block;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    text-transform: uppercase; margin-top: 4px;
+  }
+  .test-list {
+    margin-top: 14px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .test {
+    display: grid; grid-template-columns: 32px 1fr auto;
+    gap: 10px; align-items: center;
+    padding: 10px 12px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .test .ic {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: var(--cream-50); color: var(--primary);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .test .ic.tek { background: rgba(184,133,42,0.14); color: var(--warning-foreground); }
+  .test .ic.fys { background: rgba(0,88,64,0.10); color: var(--primary); }
+  .test .ic.spl { background: rgba(209,248,67,0.30); color: var(--primary); }
+  .test .ic.tur { background: rgba(163,45,45,0.10); color: var(--destructive); }
+  .test .ic i { width: 16px; height: 16px; }
+  .test .nm {
+    line-height: 1.3;
+  }
+  .test .nm b { font-weight: 700; font-size: 13px; color: var(--foreground); }
+  .test .nm small {
+    display: block;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em; margin-top: 1px;
+  }
+  .test .when {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 800;
+    color: var(--foreground); letter-spacing: 0.02em;
+    text-align: right;
+    font-feature-settings: "tnum","zero";
+  }
+  .test .when small {
+    display: block;
+    font-size: 9px; color: var(--muted-foreground); font-weight: 700;
+    letter-spacing: 0.06em; margin-top: 1px;
+  }
+
+  /* actions strip */
+  .actions-strip {
+    margin-top: 18px;
+    display: flex; gap: 10px;
+  }
+  .actions-strip .btn {
+    flex: 1;
+    height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    font-family: var(--font-sans); font-size: 13px; font-weight: 700;
+    cursor: pointer; letter-spacing: -0.005em;
+  }
+  .actions-strip .btn i { width: 14px; height: 14px; }
+  .actions-strip .btn.primary { background: var(--primary); color: var(--accent); }
+  .actions-strip .btn.secondary { background: var(--card); color: var(--foreground); border: 1px solid var(--border); }
+
+  /* PLAYER MOBILE — countdown card */
+  .device {
+    width: 280px; margin: 22px auto 0;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+  }
+  .device .bar {
+    height: 28px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 18px;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--foreground);
+  }
+  .device .bar i { width: 11px; height: 11px; color: var(--muted-foreground); }
+  .device .ind { display: inline-flex; gap: 6px; align-items: center; }
+  .device .body { padding: 18px 16px; }
+  .device .badge-warn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px;
+    background: rgba(184,133,42,0.14); color: var(--warning-foreground);
+    border-radius: 9999px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    letter-spacing: 0.10em; text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .device h3 {
+    margin: 0 0 6px;
+    font-family: var(--font-display); font-weight: 700; font-size: 19px;
+    line-height: 1.15; letter-spacing: -0.02em;
+  }
+  .device h3 em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .device .deck {
+    margin: 0 0 14px;
+    font-size: 12px; color: var(--muted-foreground); line-height: 1.5;
+  }
+  .device .count-ring {
+    width: 140px; height: 140px; margin: 0 auto;
+    position: relative;
+  }
+  .device .count-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .device .count-ring .b { stroke: var(--cream-200); fill: none; }
+  .device .count-ring .f { stroke: var(--warning); fill: none; stroke-linecap: round; }
+  .device .count-ring .mid {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .device .count-ring .mid .n {
+    font-family: var(--font-mono); font-weight: 800; font-size: 44px;
+    letter-spacing: -0.03em; line-height: 1;
+    color: var(--foreground); font-feature-settings: "tnum","zero";
+  }
+  .device .count-ring .mid .u {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground); margin-top: 4px;
+  }
+  .device .mini-list {
+    margin-top: 16px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .device .mini-list .mr {
+    display: grid; grid-template-columns: 20px 1fr auto;
+    gap: 8px; align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px dashed var(--border);
+    font-size: 12px;
+  }
+  .device .mini-list .mr:last-child { border-bottom: 0; }
+  .device .mini-list .mr i { width: 13px; height: 13px; color: var(--muted-foreground); }
+  .device .mini-list .mr b { font-weight: 700; }
+  .device .mini-list .mr .w {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .device .next-btn {
+    margin-top: 14px;
+    height: 42px; border-radius: 10px;
+    background: var(--primary); color: var(--accent);
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    font-family: var(--font-sans); font-size: 13px; font-weight: 700;
+  }
+  .device .next-btn i { width: 14px; height: 14px; }
+
+  .mobile-eb {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    text-align: center; margin-top: 12px;
+  }
+
+  /* ============================================================ */
+  /* SECTION 2 · EVALUERING — aggregert resultat                   */
+  /* ============================================================ */
+  .eval-head {
+    display: grid; grid-template-columns: 1fr auto; gap: 16px;
+    align-items: center;
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .eval-head h2 {
+    margin: 0; font-family: var(--font-display); font-weight: 700; font-size: 22px;
+    letter-spacing: -0.02em;
+  }
+  .eval-head h2 em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .eval-head .sub {
+    margin-top: 4px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .eval-head .sub b { color: var(--foreground); font-weight: 800; }
+  .eval-head .stats {
+    display: flex; gap: 0;
+  }
+  .eval-head .stat {
+    padding: 0 18px;
+    border-left: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 3px;
+  }
+  .eval-head .stat:first-child { border-left: 0; padding-left: 0; }
+  .eval-head .stat .l {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    color: var(--muted-foreground);
+  }
+  .eval-head .stat .v {
+    font-family: var(--font-mono); font-weight: 800; font-size: 22px;
+    letter-spacing: -0.02em; line-height: 1;
+    color: var(--foreground); font-feature-settings: "tnum","zero";
+  }
+  .eval-head .stat .v.pos { color: var(--success); }
+  .eval-head .stat .v.neg { color: var(--destructive); }
+
+  /* Test results grid */
+  table.tests-tbl {
+    width: 100%; border-collapse: collapse; table-layout: fixed;
+  }
+  table.tests-tbl thead th {
+    background: var(--cream-50);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 12px; text-align: left;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  table.tests-tbl th.c { text-align: center; }
+  table.tests-tbl .col-test { width: 240px; }
+  table.tests-tbl .col-now { width: 110px; }
+  table.tests-tbl .col-prev { width: 110px; }
+  table.tests-tbl .col-delta { width: 110px; }
+  table.tests-tbl .col-bench { width: 110px; }
+  table.tests-tbl .col-trend { width: auto; }
+  table.tests-tbl .col-verdict { width: 130px; }
+
+  table.tests-tbl tbody td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    vertical-align: middle;
+    letter-spacing: -0.005em;
+  }
+  table.tests-tbl tbody tr:last-child td { border-bottom: 0; }
+
+  .tname {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .tname .axis {
+    width: 4px; height: 36px; border-radius: 2px;
+  }
+  .tname .axis.fys { background: var(--pyr-fys); }
+  .tname .axis.tek { background: var(--pyr-tek); }
+  .tname .axis.slag { background: var(--pyr-slag); }
+  .tname .axis.spill { background: var(--pyr-spill); }
+  .tname .axis.tur { background: var(--pyr-turn); }
+  .tname .nm b {
+    display: block; font-weight: 700; font-size: 13px; color: var(--foreground);
+  }
+  .tname .nm small {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .num {
+    font-family: var(--font-mono); font-weight: 800; font-size: 15px;
+    letter-spacing: -0.015em; color: var(--foreground);
+    font-feature-settings: "tnum","zero"; line-height: 1.1;
+  }
+  .num .u {
+    font-size: 10px; color: var(--muted-foreground); font-weight: 700; margin-left: 2px;
+  }
+  .num small {
+    display: block;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em; margin-top: 2px;
+  }
+  .delta {
+    font-family: var(--font-mono); font-weight: 800; font-size: 14px;
+    letter-spacing: -0.015em;
+    font-feature-settings: "tnum","zero";
+  }
+  .delta.pos { color: var(--success); }
+  .delta.neg { color: var(--destructive); }
+  .delta.flat { color: var(--muted-foreground); }
+  .delta small {
+    display: block;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    letter-spacing: 0.04em; margin-top: 2px;
+    color: var(--muted-foreground);
+  }
+
+  /* mini trend SVG line */
+  .trend {
+    height: 32px; position: relative;
+  }
+  .trend svg { width: 100%; height: 100%; overflow: visible; }
+  .trend .ln { fill: none; stroke-width: 1.5; }
+  .trend .ln.pos { stroke: var(--success); }
+  .trend .ln.neg { stroke: var(--destructive); }
+  .trend .ln.flat { stroke: var(--muted-foreground); }
+  .trend .dot { stroke: none; }
+  .trend .dot.now { stroke: var(--card); stroke-width: 2; }
+
+  .verdict {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 10px; border-radius: 4px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+  }
+  .verdict.gain { background: rgba(26,125,86,0.10); color: var(--success); }
+  .verdict.hold { background: var(--secondary); color: var(--muted-foreground); }
+  .verdict.drop { background: rgba(163,45,45,0.10); color: var(--destructive); }
+  .verdict.signal { background: rgba(184,133,42,0.14); color: var(--warning-foreground); }
+
+  /* axes summary strip */
+  .axes-strip {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    border-top: 1px solid var(--border);
+    background: var(--cream-50);
+  }
+  .ax-box {
+    padding: 14px 16px;
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .ax-box:last-child { border-right: 0; }
+  .ax-box .l {
+    display: flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    color: var(--muted-foreground);
+  }
+  .ax-box .l .sw {
+    width: 8px; height: 8px; border-radius: 2px;
+  }
+  .ax-box .v {
+    font-family: var(--font-mono); font-weight: 800; font-size: 22px;
+    letter-spacing: -0.02em; line-height: 1;
+    color: var(--foreground); font-feature-settings: "tnum","zero";
+  }
+  .ax-box .v.pos { color: var(--success); }
+  .ax-box .v.neg { color: var(--destructive); }
+  .ax-box .ctx {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.02em; margin-top: 2px;
+  }
+
+  /* ============================================================ */
+  /* SECTION 3 · NY PERIODISERING — før / etter dialog            */
+  /* ============================================================ */
+  .modal-shell {
+    position: relative;
+    background:
+      linear-gradient(135deg, rgba(10,31,23,0.25) 0%, rgba(10,31,23,0.55) 100%),
+      repeating-linear-gradient(135deg, transparent 0 18px, rgba(255,255,255,0.04) 18px 36px),
+      var(--forest-700);
+    padding: 28px;
+    border-radius: 16px;
+  }
+  .modal {
+    background: var(--card);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 24px 56px rgba(10,31,23,0.40);
+    border: 1px solid var(--cream-300);
+  }
+  .modal .mtop {
+    display: grid; grid-template-columns: 1fr auto auto;
+    gap: 14px; align-items: center;
+    padding: 16px 22px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .modal .mtop .who {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .modal .mtop .who .av {
+    width: 30px; height: 30px; border-radius: 9999px;
+    background: var(--primary); color: var(--accent);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 11px; font-weight: 700;
+  }
+  .modal .mtop .who .nm {
+    font-size: 13px; font-weight: 700;
+  }
+  .modal .mtop .who .nm small {
+    display: block;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em; margin-top: 1px;
+  }
+  .modal .mtop .pin {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px;
+    background: var(--accent); color: var(--primary);
+    border-radius: 9999px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    letter-spacing: 0.10em; text-transform: uppercase;
+  }
+  .modal .mtop .ax {
+    width: 28px; height: 28px; border-radius: 6px;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--muted-foreground);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .modal .mtop .ax i { width: 13px; height: 13px; }
+
+  .modal .mhead {
+    padding: 20px 22px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .modal h2 {
+    margin: 0;
+    font-family: var(--font-display); font-weight: 700; font-size: 24px;
+    letter-spacing: -0.025em; line-height: 1.1;
+  }
+  .modal h2 em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .modal .deck {
+    margin: 6px 0 0;
+    font-size: 13px; color: var(--muted-foreground); line-height: 1.55;
+    max-width: 760px;
+  }
+  .modal .deck b { color: var(--foreground); font-weight: 700; }
+
+  /* before / after season grid */
+  .ba {
+    display: grid; grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid var(--border);
+  }
+  .ba .col {
+    padding: 18px 22px;
+    border-right: 1px solid var(--border);
+  }
+  .ba .col:last-child { border-right: 0; }
+  .ba .col .ttl {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px;
+  }
+  .ba .col .ttl .tag {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    padding: 3px 8px; border-radius: 4px;
+    text-transform: uppercase; letter-spacing: 0.10em;
+  }
+  .ba .col.old .ttl .tag { background: var(--secondary); color: var(--muted-foreground); }
+  .ba .col.new .ttl .tag { background: var(--primary); color: var(--accent); }
+  .ba .col .ttl h3 {
+    margin: 0;
+    font-family: var(--font-display); font-weight: 700; font-size: 17px;
+    letter-spacing: -0.02em;
+  }
+  .ba .col .ttl .meta {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+
+  /* periodisering blocks */
+  .period {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    border: 1px solid var(--border); border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+  .period .lbl {
+    padding: 12px 8px;
+    text-align: center;
+    background: var(--cream-50);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  }
+  .period .lbl .wks {
+    font-family: var(--font-mono); font-weight: 800; font-size: 13px;
+    color: var(--foreground); letter-spacing: 0.02em;
+    font-feature-settings: "tnum","zero";
+  }
+  .period .lbl small {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .period .bd {
+    padding: 12px 14px;
+  }
+  .period .bd .nm {
+    font-family: var(--font-display); font-weight: 700; font-size: 14px;
+    letter-spacing: -0.015em; color: var(--foreground); line-height: 1.2;
+  }
+  .period .bd .focus {
+    margin-top: 6px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .period .bd .focus .sep { color: var(--cream-300); margin: 0 4px; }
+
+  /* mini distribution bar */
+  .dist {
+    margin-top: 8px;
+    height: 8px; border-radius: 4px;
+    display: flex; overflow: hidden;
+  }
+  .dist .seg.fys { background: var(--pyr-fys); }
+  .dist .seg.tek { background: var(--pyr-tek); }
+  .dist .seg.slag { background: var(--pyr-slag); }
+  .dist .seg.spill { background: var(--pyr-spill); }
+  .dist .seg.tur { background: var(--pyr-turn); }
+  .dist .seg.hvile { background: var(--cream-300); }
+
+  .period.changed {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(0,88,64,0.08);
+  }
+  .period.changed .lbl { background: rgba(0,88,64,0.06); }
+
+  /* diff badges */
+  .diff-tags {
+    margin-top: 14px;
+    padding: 12px;
+    background: rgba(209,248,67,0.16);
+    border-radius: 10px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .diff-tags .ln {
+    display: grid; grid-template-columns: 22px 1fr;
+    gap: 8px;
+    font-family: var(--font-sans); font-size: 12px; color: var(--foreground);
+    line-height: 1.5; letter-spacing: -0.005em;
+  }
+  .diff-tags .ln i { width: 14px; height: 14px; color: var(--primary); margin-top: 2px; }
+  .diff-tags .ln b { font-weight: 700; }
+  .diff-tags .ln .ax {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    padding: 1px 6px; border-radius: 3px;
+    letter-spacing: 0.06em;
+  }
+  .diff-tags .ln .ax.tur { background: rgba(163,45,45,0.10); color: var(--destructive); }
+  .diff-tags .ln .ax.fys { background: rgba(0,88,64,0.10); color: var(--primary); }
+  .diff-tags .ln .ax.spill { background: rgba(209,248,67,0.40); color: var(--primary); }
+
+  /* reasoning block */
+  .reason-block {
+    padding: 18px 22px;
+    background: var(--cream-50);
+    border-bottom: 1px solid var(--border);
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+  }
+  .reason-block .why {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .reason-block .why .h {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .reason-block .why .v {
+    font-family: var(--font-display); font-weight: 700; font-size: 18px;
+    letter-spacing: -0.02em; color: var(--foreground); line-height: 1.15;
+  }
+  .reason-block .why .v em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .reason-block .why .b {
+    font-size: 12px; line-height: 1.5; color: var(--muted-foreground);
+    margin-top: 2px;
+  }
+  .reason-block .why .b b { color: var(--foreground); font-weight: 700; }
+
+  /* approval bar */
+  .approval {
+    display: grid; grid-template-columns: 1fr auto auto auto;
+    gap: 12px; align-items: center;
+    padding: 16px 22px;
+  }
+  .approval .conf {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .approval .conf .meter {
+    width: 120px; height: 6px; background: var(--cream-200);
+    border-radius: 3px; overflow: hidden; position: relative;
+  }
+  .approval .conf .meter .f {
+    position: absolute; top: 0; bottom: 0; left: 0;
+    background: var(--primary); border-radius: 3px;
+  }
+  .approval .conf .ln {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .approval .conf .ln b { color: var(--foreground); font-weight: 800; }
+  .approval .conf .ln .sep { color: var(--cream-300); margin: 0 4px; }
+  .approval .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    height: 44px; padding: 0 18px;
+    border-radius: 10px;
+    font-family: var(--font-sans); font-size: 14px; font-weight: 700;
+    letter-spacing: -0.005em;
+    cursor: pointer;
+  }
+  .approval .btn i { width: 14px; height: 14px; }
+  .approval .btn.primary { background: var(--primary); color: var(--accent); }
+  .approval .btn.edit { background: var(--card); color: var(--foreground); border: 1px solid var(--border); }
+  .approval .btn.reject { background: var(--card); color: var(--destructive); border: 1px solid rgba(163,45,45,0.20); }
+
+  /* ===== Final principles footer ===== */
+  .rules {
+    margin-top: 28px; padding: 18px 20px;
+    background: var(--secondary); border-radius: 12px;
+    font-family: var(--font-mono); font-size: 12px;
+    color: var(--muted-foreground); line-height: 1.7;
+  }
+  .rules p { margin: 0; }
+  .rules p + p { margin-top: 8px; }
+  .rules b { color: var(--foreground); font-weight: 700; }
+
+  /* R30 — eval-table rows expand inline to a history drawer */
+  .tests-tbl tbody tr.test-main { cursor: pointer; transition: background 150ms; }
+  .tests-tbl tbody tr.test-main:hover { background: var(--cream-50); }
+  .tests-tbl tbody tr.test-main:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .tname .caret { width: 14px; height: 14px; color: var(--muted-foreground); flex-shrink: 0; transition: transform 180ms ease, color 150ms; opacity: 0.5; }
+  .test-main:hover .tname .caret { opacity: 1; color: var(--primary); }
+  .test-main.is-open .tname .caret { transform: rotate(90deg); color: var(--primary); opacity: 1; }
+  .exp-row > td { padding: 0; border-bottom: 1px solid var(--border); background: var(--cream-50); }
+  .exp-wrap { max-height: 0; overflow: hidden; transition: max-height 300ms ease; }
+  .test-main.is-open + .exp-row .exp-wrap { max-height: 240px; }
+  .exp { padding: 16px 20px 18px 26px; display: flex; flex-direction: column; gap: 14px; }
+  .exp .ex-stats { display: flex; gap: 32px; flex-wrap: wrap; }
+  .exp .ex-cell .k { font-family: var(--font-mono); font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.10em; color: var(--muted-foreground); margin-bottom: 4px; white-space: nowrap; }
+  .exp .ex-cell .v { font-family: var(--font-mono); font-weight: 800; font-size: 16px; letter-spacing: -0.015em; color: var(--foreground); font-feature-settings: "tnum","zero"; }
+  .exp .ex-cell .v .u { font-size: 10px; color: var(--muted-foreground); font-weight: 700; margin-left: 2px; }
+  .exp .ex-cell .v small { display: block; font-size: 9px; color: var(--muted-foreground); font-weight: 700; letter-spacing: 0.04em; margin-top: 2px; }
+  .exp .ex-bottom { display: flex; gap: 22px; align-items: center; }
+  .exp .ex-trend { width: 220px; flex-shrink: 0; }
+  .exp .ex-trend .k { font-family: var(--font-mono); font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.10em; color: var(--muted-foreground); margin-bottom: 4px; }
+  .exp .ex-trend .trend { height: 44px; }
+  .exp .ex-note { flex: 1; font-size: 13px; line-height: 1.5; color: var(--muted-foreground); letter-spacing: -0.005em; }
+  .exp .ex-note b { color: var(--foreground); font-weight: 700; }
+
+  /* prefers-reduced-motion — AK-spec krever det. Stenger varsel-pulsen. */
+  @media (prefers-reduced-motion: reduce) {
+    .coach-view .top .pin .dot { animation: none; }
+    .exp-wrap, .tname .caret { transition: none; }
+  }
+</style></head>
+<body><div class="card">
+
+  <!-- ===================== HEADER ===================== -->
+  <div class="head">
+    <span class="eb">B5 · TEST-UKE-SYKLUS</span>
+    <h1>Trigger uke 41, test uke 43, ny <em>periodisering</em> uke 44.</h1>
+    <p class="helper">
+      Sesongens viktigste sjekk-flyt for konkurranseprofilen. Tre flater: varselet to uker før, evalueringen
+      etter testen med sammenligning mot forrige sesong, og den ene store endringen som krever coach-godkjenning —
+      en ny periodisering for resten av sesongen.
+    </p>
+  </div>
+
+  <!-- ===================== SECTION 1 — TRIGGER ===================== -->
+  <div class="sec">
+    1 · Trigger · uke 41-42 nedtelling
+    <span class="sub">coach-dashboard + spiller-mobil · varsel for berørte spillere</span>
+    <span class="count">COACH + MOBIL</span>
+  </div>
+
+  <div class="panel">
+    <div class="trigger-row">
+
+      <!-- coach view -->
+      <div class="coach-view">
+        <div class="top">
+          <span class="pin"><span class="dot"></span>TESTUKE NÆRMER SEG</span>
+          <span class="right">UTLØST <b>I DAG · 06:00</b> · 13 DAGER IGJEN</span>
+        </div>
+
+        <h2>Testuke 43 starter <em>om 13 dager</em>.</h2>
+        <p class="lead">
+          7 konkurranseprofiler i stallen din skal kjøre full test-rekke. Tre tester krever booking
+          på Oslo GK i god tid. <b>Send varsel til alle og bekreft fasilitets-tider</b>.
+        </p>
+
+        <!-- ribbon -->
+        <div class="ribbon">
+          <div class="rwk past"><span class="w">U40</span><span class="dt">29.09–05.10</span><span class="lbl">FORRIGE</span></div>
+          <div class="rwk now"><span class="w">U41</span><span class="dt">06.10–12.10</span><span class="lbl">NÅ · VARSEL</span></div>
+          <div class="rwk up"><span class="w">U42</span><span class="dt">13.10–19.10</span><span class="lbl">FOR-UKE</span></div>
+          <div class="rwk test"><span class="w">U43</span><span class="dt">20.10–26.10</span><span class="lbl">TEST</span></div>
+          <div class="rwk future"><span class="w">U44</span><span class="dt">27.10–02.11</span><span class="lbl">EVAL · NY PLAN</span></div>
+        </div>
+
+        <!-- players affected -->
+        <div style="font-family: var(--font-mono); font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted-foreground); margin-bottom: 10px">
+          7 SPILLERE BERØRT · BEREDSKAP
+        </div>
+
+        <div class="affected">
+          <div class="pcard">
+            <span class="av">MB</span>
+            <div class="nm"><b>Markus Berg</b><small>HCP 4,2 · GFGK</small></div>
+            <div class="st">
+              <span class="ready">KLAR</span>
+              <span class="tests"><b>5/5</b> tester</span>
+            </div>
+          </div>
+          <div class="pcard">
+            <span class="av">SS</span>
+            <div class="nm"><b>Sigrid Solli</b><small>HCP 0,8 · OSLO GK</small></div>
+            <div class="st">
+              <span class="ready">KLAR</span>
+              <span class="tests"><b>5/5</b> tester</span>
+            </div>
+          </div>
+          <div class="pcard">
+            <span class="av alt">JL</span>
+            <div class="nm"><b>Jonas Larsen</b><small>HCP 1,4 · OSLO GK</small></div>
+            <div class="st">
+              <span class="ready ok2">DELVIS</span>
+              <span class="tests"><b>3/5</b> booket</span>
+            </div>
+          </div>
+          <div class="pcard">
+            <span class="av">KH</span>
+            <div class="nm"><b>Kaja Helle</b><small>HCP 6,8 · GFGK</small></div>
+            <div class="st">
+              <span class="ready no">UTSATT</span>
+              <span class="tests"><b>0/5</b> · skade</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="more">VIS DE ANDRE <b>3 SPILLERNE</b> · Ella, Noah, Andreas</div>
+
+        <div class="actions-strip">
+          <div class="btn primary"><i data-lucide="send"></i> Varsle alle 7 spillere</div>
+          <div class="btn secondary"><i data-lucide="calendar"></i> Bekreft fasilitets-tider (3)</div>
+          <div class="btn secondary"><i data-lucide="more-horizontal"></i></div>
+        </div>
+      </div>
+
+      <!-- player mobile -->
+      <div class="tests-col">
+        <h3>Tester planlagt<small>UKE 43 · MARKUS BERG</small></h3>
+
+        <div class="test-list">
+          <div class="test">
+            <span class="ic fys"><i data-lucide="zap"></i></span>
+            <div class="nm"><b>CMJ + sprint 20 m</b><small>FYSISK · max-power</small></div>
+            <div class="when">man 14:00<small>OSLO GK</small></div>
+          </div>
+          <div class="test">
+            <span class="ic tek"><i data-lucide="target"></i></span>
+            <div class="nm"><b>TrackMan dispersion 60–110 m</b><small>TEKNISK · 5 distanser</small></div>
+            <div class="when">tir 15:00<small>OSLO GK</small></div>
+          </div>
+          <div class="test">
+            <span class="ic spl"><i data-lucide="map"></i></span>
+            <div class="nm"><b>PEI Test Bane · 9 hull</b><small>SPILL · scoring + SG</small></div>
+            <div class="when">tor 10:00<small>HOLTSMARK</small></div>
+          </div>
+          <div class="test">
+            <span class="ic tur"><i data-lucide="thermometer"></i></span>
+            <div class="nm"><b>MTQ stress + PR3</b><small>TURNERING · press-progresjon</small></div>
+            <div class="when">fre 14:00<small>OSLO GK</small></div>
+          </div>
+          <div class="test">
+            <span class="ic tek"><i data-lucide="circle"></i></span>
+            <div class="nm"><b>Putt-stiger 3–9 m</b><small>TEKNISK · konsistens</small></div>
+            <div class="when">lør 11:00<small>OSLO GK</small></div>
+          </div>
+        </div>
+
+        <!-- mobile preview -->
+        <div class="device">
+          <div class="bar">
+            <span>09:41</span>
+            <span class="ind">
+              <i data-lucide="signal-high"></i>
+              <i data-lucide="wifi"></i>
+              <i data-lucide="battery-full"></i>
+            </span>
+          </div>
+          <div class="body">
+            <span class="badge-warn"><i data-lucide="alert-circle" style="width:10px;height:10px"></i> TESTUKE NÆRMER SEG</span>
+            <h3>Din testuke er <em>om 13 dager</em></h3>
+            <p class="deck">5 tester planlagt mellom 20. og 26. oktober. Hold uke 42 lett — vi vil ha deg uthvilt.</p>
+
+            <div class="count-ring">
+              <svg viewBox="0 0 200 200">
+                <circle class="b" cx="100" cy="100" r="85" stroke-width="14"/>
+                <!-- 13/56 ≈ 23% remaining gap -->
+                <circle class="f" cx="100" cy="100" r="85" stroke-width="14"
+                  stroke-dasharray="411 534" stroke-linecap="round"/>
+              </svg>
+              <div class="mid">
+                <div class="n">13</div>
+                <div class="u">DAGER IGJEN</div>
+              </div>
+            </div>
+
+            <div class="mini-list">
+              <div class="mr"><i data-lucide="zap"></i><b>5 tester</b><span class="w">FYS · TEK · SPILL · TUR</span></div>
+              <div class="mr"><i data-lucide="moon"></i><b>For-uke</b><span class="w">UKE 42 · LETT</span></div>
+              <div class="mr"><i data-lucide="map-pin"></i><b>2 baner</b><span class="w">OSLO · HOLTSMARK</span></div>
+            </div>
+
+            <div class="next-btn">Se hele testuken <i data-lucide="arrow-right"></i></div>
+          </div>
+        </div>
+
+        <div class="mobile-eb">SPILLER-MOBIL · DAGENS BRIEF</div>
+      </div>
+
+    </div>
+
+    <div class="frule">
+      <b>Prinsipp.</b> Trigger to uker før gir tid til å booke fasiliteter, varsle spillere og legge inn for-uken (lett trening).
+      Status-pillen (KLAR / DELVIS / UTSATT) sortere coachens fokus. Spilleren ser samme nedtelling som coachen — ingen overraskelser.
+    </div>
+  </div>
+
+  <!-- ===================== SECTION 2 — EVALUERING ===================== -->
+  <div class="sec">
+    2 · Evaluering · etter testuken
+    <span class="sub">aggregert resultat · vs forrige sesong · auto-forslag til ny periodisering</span>
+    <span class="count">5 TESTER</span>
+  </div>
+
+  <div class="panel">
+    <div class="eval-head">
+      <div>
+        <h2>Testuke <em>43</em> · evaluering</h2>
+        <div class="sub">MARKUS BERG <span class="sep">·</span> 5 TESTER FULLFØRT <span class="sep">·</span> SAMMENLIGNING MOT <b>TESTUKE 16 · APRIL 2026</b></div>
+      </div>
+      <div class="stats">
+        <div class="stat"><span class="l">SAMLET INDEX</span><span class="v pos">+8 %</span></div>
+        <div class="stat"><span class="l">FRAMGANG</span><span class="v pos">3</span></div>
+        <div class="stat"><span class="l">HOLDT</span><span class="v">1</span></div>
+        <div class="stat"><span class="l">TILBAKEGANG</span><span class="v neg">1</span></div>
+      </div>
+    </div>
+
+    <table class="tests-tbl">
+      <thead>
+        <tr>
+          <th class="col-test">Test</th>
+          <th class="col-now">Nå · uke 43</th>
+          <th class="col-prev">Forrige · uke 16</th>
+          <th class="col-delta">Endring</th>
+          <th class="col-bench">Snitt-kohort</th>
+          <th class="col-trend">Trend · 3 sykluser</th>
+          <th class="c col-verdict">Verdikt</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr>
+          <td>
+            <div class="tname">
+              <span class="axis fys"></span>
+              <span class="nm"><b>CMJ + sprint 20 m</b><small>FYSISK · MAX-POWER</small></span>
+            </div>
+          </td>
+          <td><div class="num">42,1<span class="u">cm</span><small>2,98 s sprint</small></div></td>
+          <td><div class="num">38,4<span class="u">cm</span><small>3,08 s sprint</small></div></td>
+          <td><div class="delta pos">+3,7 cm<small>+9,6 %</small></div></td>
+          <td><div class="num">39,5<span class="u">cm</span><small>SNITT N3</small></div></td>
+          <td>
+            <div class="trend">
+              <svg viewBox="0 0 100 32">
+                <polyline class="ln pos" points="0,26 33,22 66,18 100,8"/>
+                <circle class="dot" cx="0" cy="26" r="2.5" fill="var(--success)"/>
+                <circle class="dot" cx="33" cy="22" r="2.5" fill="var(--success)"/>
+                <circle class="dot" cx="66" cy="18" r="2.5" fill="var(--success)"/>
+                <circle class="dot now" cx="100" cy="8" r="3.5" fill="var(--success)"/>
+              </svg>
+            </div>
+          </td>
+          <td><span class="verdict gain">FRAMGANG</span></td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="tname">
+              <span class="axis tek"></span>
+              <span class="nm"><b>TrackMan dispersion 60–110 m</b><small>TEKNISK · 5 DISTANSER</small></span>
+            </div>
+          </td>
+          <td><div class="num">±7,2<span class="u">m</span><small>40 SLAG</small></div></td>
+          <td><div class="num">±8,0<span class="u">m</span><small>40 SLAG</small></div></td>
+          <td><div class="delta pos">−0,8 m<small>10 % TIGHTERE</small></div></td>
+          <td><div class="num">±8,5<span class="u">m</span><small>N3-NORM</small></div></td>
+          <td>
+            <div class="trend">
+              <svg viewBox="0 0 100 32">
+                <polyline class="ln pos" points="0,22 33,20 66,16 100,10"/>
+                <circle class="dot" cx="0" cy="22" r="2.5" fill="var(--success)"/>
+                <circle class="dot" cx="33" cy="20" r="2.5" fill="var(--success)"/>
+                <circle class="dot" cx="66" cy="16" r="2.5" fill="var(--success)"/>
+                <circle class="dot now" cx="100" cy="10" r="3.5" fill="var(--success)"/>
+              </svg>
+            </div>
+          </td>
+          <td><span class="verdict gain">FRAMGANG</span></td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="tname">
+              <span class="axis spill"></span>
+              <span class="nm"><b>PEI Test Bane · 9 hull</b><small>SPILL · SCORING + SG</small></span>
+            </div>
+          </td>
+          <td><div class="num">38<span class="u">slag</span><small>SG +0,4</small></div></td>
+          <td><div class="num">37<span class="u">slag</span><small>SG +0,3</small></div></td>
+          <td><div class="delta flat">+1 slag<small>FLAT SG</small></div></td>
+          <td><div class="num">39<span class="u">slag</span><small>N3-SNITT</small></div></td>
+          <td>
+            <div class="trend">
+              <svg viewBox="0 0 100 32">
+                <polyline class="ln flat" points="0,16 33,17 66,16 100,18"/>
+                <circle class="dot" cx="0" cy="16" r="2.5" fill="var(--muted-foreground)"/>
+                <circle class="dot" cx="33" cy="17" r="2.5" fill="var(--muted-foreground)"/>
+                <circle class="dot" cx="66" cy="16" r="2.5" fill="var(--muted-foreground)"/>
+                <circle class="dot now" cx="100" cy="18" r="3.5" fill="var(--muted-foreground)"/>
+              </svg>
+            </div>
+          </td>
+          <td><span class="verdict hold">HOLDT</span></td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="tname">
+              <span class="axis tur"></span>
+              <span class="nm"><b>MTQ stress + PR3</b><small>TURNERING · PRESS-PROGRESJON</small></span>
+            </div>
+          </td>
+          <td><div class="num">58<span class="u">%</span><small>22/38 UNDER PR3</small></div></td>
+          <td><div class="num">66<span class="u">%</span><small>25/38 UNDER PR3</small></div></td>
+          <td><div class="delta neg">−8 %p<small>SVEKKET</small></div></td>
+          <td><div class="num">62<span class="u">%</span><small>N3-NORM</small></div></td>
+          <td>
+            <div class="trend">
+              <svg viewBox="0 0 100 32">
+                <polyline class="ln neg" points="0,14 33,12 66,16 100,22"/>
+                <circle class="dot" cx="0" cy="14" r="2.5" fill="var(--destructive)"/>
+                <circle class="dot" cx="33" cy="12" r="2.5" fill="var(--destructive)"/>
+                <circle class="dot" cx="66" cy="16" r="2.5" fill="var(--destructive)"/>
+                <circle class="dot now" cx="100" cy="22" r="3.5" fill="var(--destructive)"/>
+              </svg>
+            </div>
+          </td>
+          <td><span class="verdict drop">TILBAKE</span></td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="tname">
+              <span class="axis tek"></span>
+              <span class="nm"><b>Putt-stiger 3–9 m</b><small>TEKNISK · KONSISTENS</small></span>
+            </div>
+          </td>
+          <td><div class="num">68<span class="u">%</span><small>3M · 12/15 INN</small></div></td>
+          <td><div class="num">60<span class="u">%</span><small>3M · 9/15 INN</small></div></td>
+          <td><div class="delta pos">+8 %p<small>BREAK-THROUGH</small></div></td>
+          <td><div class="num">52<span class="u">%</span><small>PGA-SNITT 3M</small></div></td>
+          <td>
+            <div class="trend">
+              <svg viewBox="0 0 100 32">
+                <polyline class="ln pos" points="0,24 33,22 66,16 100,6"/>
+                <circle class="dot" cx="0" cy="24" r="2.5" fill="var(--success)"/>
+                <circle class="dot" cx="33" cy="22" r="2.5" fill="var(--success)"/>
+                <circle class="dot" cx="66" cy="16" r="2.5" fill="var(--success)"/>
+                <circle class="dot now" cx="100" cy="6" r="3.5" fill="var(--success)"/>
+              </svg>
+            </div>
+          </td>
+          <td><span class="verdict signal">SIGNAL</span></td>
+        </tr>
+
+      </tbody>
+    </table>
+
+    <!-- axes summary -->
+    <div class="axes-strip">
+      <div class="ax-box">
+        <div class="l"><span class="sw" style="background:var(--pyr-fys)"></span>FYSISK</div>
+        <div class="v pos">+10 %</div>
+        <div class="ctx">power oppe · sprinten ned 0,1 s</div>
+      </div>
+      <div class="ax-box">
+        <div class="l"><span class="sw" style="background:var(--pyr-tek)"></span>TEKNISK</div>
+        <div class="v pos">+9 %</div>
+        <div class="ctx">dispersion tightere · putt break-through</div>
+      </div>
+      <div class="ax-box">
+        <div class="l"><span class="sw" style="background:var(--pyr-slag)"></span>SLAG</div>
+        <div class="v">+2 %</div>
+        <div class="ctx">marginal · hold som er</div>
+      </div>
+      <div class="ax-box">
+        <div class="l"><span class="sw" style="background:var(--pyr-spill)"></span>SPILL</div>
+        <div class="v">0 %</div>
+        <div class="ctx">PEI flatt · stoppet å vokse</div>
+      </div>
+      <div class="ax-box">
+        <div class="l"><span class="sw" style="background:var(--pyr-turn)"></span>TURNERING</div>
+        <div class="v neg">−8 %</div>
+        <div class="ctx">press-toleranse svekket vesentlig</div>
+      </div>
+    </div>
+
+    <div class="frule">
+      <b>Prinsipp.</b> Evaluering må ha <b>tre baselines</b> samtidig: forrige test-syklus (egen progresjon), kohort-snitt (relativ posisjon), trend-linje (retning).
+      Verdiktet på høyre side er <em>kun</em> en flagg-funksjon — coachen tar avgjørelsen i ny periodisering.
+    </div>
+  </div>
+
+  <!-- ===================== SECTION 3 — NY PERIODISERING ===================== -->
+  <div class="sec">
+    3 · Ny periodisering · før / etter
+    <span class="sub">én årsplan-endring · krever manuell coach-godkjenning</span>
+    <span class="count">DIALOG · BLOKKERENDE</span>
+  </div>
+
+  <div class="modal-shell">
+    <div class="modal">
+
+      <!-- top -->
+      <div class="mtop">
+        <div class="who">
+          <span class="av">PC</span>
+          <div class="nm">Foreslått av <b>Plan-copilot</b><small>BASERT PÅ UKE 43-EVALUERING · 4 MIN SIDEN</small></div>
+        </div>
+        <span class="pin"><i data-lucide="git-pull-request" style="width:12px;height:12px"></i>KREVER COACH-GODKJENNING</span>
+        <span class="ax"><i data-lucide="x"></i></span>
+      </div>
+
+      <!-- header -->
+      <div class="mhead">
+        <h2>Bytt makro-fase fra <em>kompetisjon-volum</em> til <em>turnerings-skarphet</em>.</h2>
+        <p class="deck">
+          Press-toleransen falt <b>−8 %</b> uten at fysikk eller teknikk forklarer det. Forslaget kutter
+          volum, doblet press-treningen og legger inn én ekstra hviledag per uke fram til sesongslutt.
+          <b>Påvirker resten av sesongen — ikke reverserbart automatisk.</b>
+        </p>
+      </div>
+
+      <!-- before / after -->
+      <div class="ba">
+
+        <!-- OLD -->
+        <div class="col old">
+          <div class="ttl">
+            <span class="tag">FØR</span>
+            <h3>Sesong-plan v2</h3>
+            <span class="meta">GJELDENDE FRA <b>15.05</b></span>
+          </div>
+
+          <div class="period">
+            <div class="lbl"><span class="wks">U35–42</span><small>8 UKER</small></div>
+            <div class="bd">
+              <div class="nm">Volum-fase</div>
+              <div class="focus">FYS 30% <span class="sep">·</span> TEK 25% <span class="sep">·</span> SPILL 30% <span class="sep">·</span> TUR 10%</div>
+              <div class="dist">
+                <div class="seg fys" style="width:30%"></div>
+                <div class="seg tek" style="width:25%"></div>
+                <div class="seg slag" style="width:5%"></div>
+                <div class="seg spill" style="width:30%"></div>
+                <div class="seg tur" style="width:10%"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="period">
+            <div class="lbl"><span class="wks">U43</span><small>1 UKE</small></div>
+            <div class="bd">
+              <div class="nm">Testuke</div>
+              <div class="focus">5 TESTER <span class="sep">·</span> FULL EVAL</div>
+              <div class="dist"><div class="seg hvile" style="width:100%"></div></div>
+            </div>
+          </div>
+
+          <div class="period">
+            <div class="lbl"><span class="wks">U44–48</span><small>5 UKER</small></div>
+            <div class="bd">
+              <div class="nm">Konkurransevolum</div>
+              <div class="focus">FYS 20% <span class="sep">·</span> TEK 20% <span class="sep">·</span> SPILL 35% <span class="sep">·</span> TUR 25%</div>
+              <div class="dist">
+                <div class="seg fys" style="width:20%"></div>
+                <div class="seg tek" style="width:20%"></div>
+                <div class="seg slag" style="width:0%"></div>
+                <div class="seg spill" style="width:35%"></div>
+                <div class="seg tur" style="width:25%"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="period">
+            <div class="lbl"><span class="wks">U49–52</span><small>4 UKER</small></div>
+            <div class="bd">
+              <div class="nm">Avslapning</div>
+              <div class="focus">FYS 50% <span class="sep">·</span> HVILE 30% <span class="sep">·</span> SPILL 20%</div>
+              <div class="dist">
+                <div class="seg fys" style="width:50%"></div>
+                <div class="seg hvile" style="width:30%"></div>
+                <div class="seg spill" style="width:20%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- NEW -->
+        <div class="col new">
+          <div class="ttl">
+            <span class="tag">ETTER</span>
+            <h3>Sesong-plan v3</h3>
+            <span class="meta">FORESLÅTT FRA <b>27.10</b></span>
+          </div>
+
+          <div class="period">
+            <div class="lbl"><span class="wks">U35–42</span><small>8 UKER</small></div>
+            <div class="bd">
+              <div class="nm">Volum-fase <span style="color: var(--muted-foreground); font-weight: 400; font-size: 11px">· uendret</span></div>
+              <div class="focus">FYS 30% <span class="sep">·</span> TEK 25% <span class="sep">·</span> SPILL 30% <span class="sep">·</span> TUR 10%</div>
+              <div class="dist">
+                <div class="seg fys" style="width:30%"></div>
+                <div class="seg tek" style="width:25%"></div>
+                <div class="seg slag" style="width:5%"></div>
+                <div class="seg spill" style="width:30%"></div>
+                <div class="seg tur" style="width:10%"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="period">
+            <div class="lbl"><span class="wks">U43</span><small>1 UKE</small></div>
+            <div class="bd">
+              <div class="nm">Testuke <span style="color: var(--muted-foreground); font-weight: 400; font-size: 11px">· uendret</span></div>
+              <div class="focus">5 TESTER <span class="sep">·</span> FULL EVAL</div>
+              <div class="dist"><div class="seg hvile" style="width:100%"></div></div>
+            </div>
+          </div>
+
+          <div class="period changed">
+            <div class="lbl"><span class="wks">U44–48</span><small>5 UKER</small></div>
+            <div class="bd">
+              <div class="nm">Turnerings-skarphet <span style="color: var(--primary); font-weight: 800; font-size: 10px; letter-spacing: 0.06em">· NY</span></div>
+              <div class="focus">FYS 15% <span class="sep">·</span> TEK 15% <span class="sep">·</span> SPILL 30% <span class="sep">·</span> TUR 40%</div>
+              <div class="dist">
+                <div class="seg fys" style="width:15%"></div>
+                <div class="seg tek" style="width:15%"></div>
+                <div class="seg slag" style="width:0%"></div>
+                <div class="seg spill" style="width:30%"></div>
+                <div class="seg tur" style="width:40%"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="period changed">
+            <div class="lbl"><span class="wks">U49–52</span><small>4 UKER</small></div>
+            <div class="bd">
+              <div class="nm">Aktiv avslapning <span style="color: var(--primary); font-weight: 800; font-size: 10px; letter-spacing: 0.06em">· JUSTERT</span></div>
+              <div class="focus">FYS 40% <span class="sep">·</span> HVILE 40% <span class="sep">·</span> SPILL 20%</div>
+              <div class="dist">
+                <div class="seg fys" style="width:40%"></div>
+                <div class="seg hvile" style="width:40%"></div>
+                <div class="seg spill" style="width:20%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- diff summary -->
+          <div class="diff-tags">
+            <div class="ln"><i data-lucide="trending-up"></i><div><b>+15 %p</b> turneringstrening uke 44–48 <span class="ax tur">TUR</span> — adresserer −8 % press-toleranse</div></div>
+            <div class="ln"><i data-lucide="trending-down"></i><div><b>−10 %p</b> fysisk og teknisk volum <span class="ax fys">FYS</span> — gevinsten er allerede tatt ut</div></div>
+            <div class="ln"><i data-lucide="moon"></i><div><b>+10 %p</b> hvile i avslappingsfasen — for å beskytte gevinsten inn i 2027-sesongen</div></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- reasoning -->
+      <div class="reason-block">
+        <div class="why">
+          <span class="h">HVORFOR</span>
+          <span class="v">MTQ-stress falt <em>uten</em> at fysikk forklarer det.</span>
+          <span class="b">Press-mengden i konkurransevolum var <b>10 %</b>, evalueringen viser at det ikke holder. Trippel den i ny fase.</span>
+        </div>
+        <div class="why">
+          <span class="h">PÅVIRKER</span>
+          <span class="v">9 uker · resten av <em>sesongen</em>.</span>
+          <span class="b">U44–52 omformuleres. Plan-versjoner låses, drill-katalogen opprettholdes. <b>Tilbakerulling er manuell</b> hvis ikke virker.</span>
+        </div>
+        <div class="why">
+          <span class="h">KONFIDENS</span>
+          <span class="v">Høy — basert på <em>tre</em> test-sykluser.</span>
+          <span class="b">Press-fokus etter testuke har gitt <b>+11 %</b> snitt-løft for spillere på N3-nivå tidligere år (n=8).</span>
+        </div>
+      </div>
+
+      <!-- approval -->
+      <div class="approval">
+        <div class="conf">
+          <div class="meter"><div class="f" style="width: 87%"></div></div>
+          <div class="ln">MODELL-KONFIDENS <b>87 %</b> <span class="sep">·</span> KILDE <b>plan-mal "post-test press-skift"</b></div>
+        </div>
+        <div class="btn reject"><i data-lucide="x"></i> Avvis · behold v2</div>
+        <div class="btn edit"><i data-lucide="pencil"></i> Rediger først</div>
+        <div class="btn primary"><i data-lucide="check"></i> Godkjenn ny periodisering</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top: 14px">
+    <div class="frule">
+      <b>Prinsipp.</b> Årsplan-endring er <b>den ene</b> tingen vi har slått fast at krever manuell coach-godkjenning. Co-agent forklarer hvorfor,
+      viser før/etter side-om-side, og lister de berørte ukene eksplisitt. Tre handlinger: <b>Avvis</b> (behold gammel), <b>Rediger først</b> (tweak før godkjenning), <b>Godkjenn</b> (lås for resten av sesongen).
+    </div>
+  </div>
+
+  <!-- ===================== PRINCIPLES FOOTER ===================== -->
+  <div class="rules">
+    <p><b>Tre flater, én syklus.</b> Trigger to uker før (varsel + booking-status), evaluering rett etter (5 tester · 3 baselines), ny periodisering uke 44 (dialog · coach-godkjenning). Spilleren ser bare trigger og resultat — periodiseringsdialogen er coach-only.</p>
+    <p><b>Verdikt er flagg, ikke dom.</b> "Tilbakegang" på MTQ trigger forslag — men coachen kan velge å behandle det som engangs-utslag. Vi gir signal, mennesket tar avgjørelsen.</p>
+    <p><b>Før/etter er hellig.</b> Coachen skal se nøyaktig hva som endrer seg og hvorfor. Periode-blokker med farge-distribusjon gir 200ms-lesbarhet av forskjellen. Uendrede perioder vises som-er for å vise hva som <em>ikke</em> endres.</p>
+    <p><b>Bare konkurranseprofilen.</b> Mosjons-spillere kjører ikke testuke 43-syklusen. Triggeren respekterer profilen som settes i onboardingen (B2).</p>
+  </div>
+
+  <script>lucide.createIcons();</script>
+
+  <script>
+  /* ============================================================
+     R30 · TESTER — eval-table rows expand inline to a history drawer.
+     Tallene er placeholder (FYS-formel ikke låst ennå); strukturen
+     er ekte — hver rad åpner sine tre baselines + trend + verdikt-note.
+     ============================================================ */
+  (function () {
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function note(v) {
+      if (/FRAMGANG/.test(v)) return '<b>Framgang.</b> Over forrige syklus og kohort-snitt — hold treningsdosen og re-test neste syklus.';
+      if (/HOLDT/.test(v))    return '<b>Holdt.</b> Verken opp eller ned. Vurder ny stimulus hvis det er flatt også neste syklus.';
+      if (/TILBAKE/.test(v))  return '<b>Tilbakegang.</b> Flagget til periodiserings-justering — se forslaget i seksjon 3.';
+      if (/SIGNAL/.test(v))   return '<b>Signal.</b> Gjennombrudd over referanse — lås inn og bygg videre på det.';
+      return 'Detaljert historikk for denne testen.';
+    }
+    var rowsTbody = document.querySelectorAll('.tests-tbl tbody tr');
+    rowsTbody.forEach(function (tr) {
+      if (tr.classList.contains('exp-row')) return;
+      tr.classList.add('test-main');
+      tr.tabIndex = 0;
+      tr.setAttribute('role', 'button');
+      tr.setAttribute('aria-expanded', 'false');
+
+      var tn = tr.querySelector('.tname');
+      if (tn && !tn.querySelector('.caret')) {
+        var c = document.createElement('i');
+        c.setAttribute('data-lucide', 'chevron-right');
+        c.className = 'caret';
+        tn.insertBefore(c, tn.firstChild);
+      }
+
+      var now = tr.cells[1] ? tr.cells[1].innerHTML : '';
+      var prev = tr.cells[2] ? tr.cells[2].innerHTML : '';
+      var bench = tr.cells[4] ? tr.cells[4].innerHTML : '';
+      var trend = tr.cells[5] ? tr.cells[5].innerHTML : '';
+      var verdict = tr.cells[6] ? tr.cells[6].textContent.trim() : '';
+
+      var exp = document.createElement('tr');
+      exp.className = 'exp-row';
+      exp.innerHTML = '<td colspan="7"><div class="exp-wrap"><div class="exp">' +
+        '<div class="ex-stats">' +
+          '<div class="ex-cell"><div class="k">Nå · uke 43</div><div class="v">' + now + '</div></div>' +
+          '<div class="ex-cell"><div class="k">Forrige · uke 16</div><div class="v">' + prev + '</div></div>' +
+          '<div class="ex-cell"><div class="k">Kohort N3</div><div class="v">' + bench + '</div></div>' +
+        '</div>' +
+        '<div class="ex-bottom">' +
+          '<div class="ex-trend"><div class="k">Trend · 3 sykluser</div>' + trend + '</div>' +
+          '<div class="ex-note">' + note(verdict) + '</div>' +
+        '</div>' +
+      '</div></div></td>';
+      tr.after(exp);
+
+      function toggle() {
+        var open = tr.classList.toggle('is-open');
+        tr.setAttribute('aria-expanded', open ? 'true' : 'false');
+      }
+      tr.addEventListener('click', toggle);
+      tr.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+      });
+    });
+    lucide.createIcons();
+  })();
+  </script>
+</div></body></html>

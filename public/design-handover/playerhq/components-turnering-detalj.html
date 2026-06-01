@@ -1,0 +1,176 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>Turnering-detalj · checklist</title>
+<link rel="stylesheet" href="_shared.css">
+<script src="https://unpkg.com/lucide@0.453.0"></script>
+<style>
+  body { width: 760px; }
+  .card { padding: 28px 32px; }
+
+  .head { margin-bottom: 22px; }
+  .head .eb { font-family: var(--font-mono); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted-foreground); }
+  .head h1 { margin: 8px 0 6px; font-family: var(--font-display); font-weight: 700; font-size: 28px; letter-spacing: -0.025em; line-height: 1.05; color: var(--foreground); }
+  .head h1 em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .head .helper { font-family: var(--font-sans); font-size: 14px; line-height: 1.55; color: var(--muted-foreground); max-width: 600px; }
+
+  .phone { width: 412px; margin: 0 auto; background: var(--card); border-radius: 40px; border: 7px solid var(--bezel-black); box-shadow: var(--shadow-lg); overflow: hidden; }
+  .ph-status { display: flex; align-items: center; justify-content: space-between; padding: 13px 24px 4px; font-family: var(--font-mono); font-size: 13px; font-weight: 700; position: relative; font-feature-settings: "tnum","zero"; }
+  .ph-status::after { content: ""; position: absolute; left: 50%; top: 13px; transform: translateX(-50%); width: 96px; height: 24px; border-radius: 9999px; background: var(--bezel-black); }
+  .ph-status .icons { display: inline-flex; gap: 5px; } .ph-status .icons i { width: 13px; height: 13px; }
+
+  .topbar { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+  .topbar .back { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.10em; color: var(--muted-foreground); background: none; border: 0; cursor: pointer; }
+  .topbar .back i { width: 13px; height: 13px; }
+
+  .body { max-height: 720px; overflow-y: auto; }
+
+  /* featured banner — striped placeholder w/ overlay */
+  .banner { position: relative; height: 150px; background: repeating-linear-gradient(135deg, rgba(0,88,64,0.10) 0 14px, rgba(0,88,64,0.04) 14px 28px), var(--forest-900); display: flex; align-items: flex-end; }
+  .banner .ph-lab { position: absolute; top: 10px; right: 12px; font-family: var(--font-mono); font-size: 8.5px; font-weight: 800; letter-spacing: 0.08em; color: rgba(245,244,238,0.55); background: rgba(10,31,23,0.45); padding: 3px 8px; border-radius: 9999px; }
+  .banner .grad { position: absolute; inset: 0; background: linear-gradient(0deg, rgba(10,31,23,0.85), transparent 70%); }
+  .banner .b-inner { position: relative; padding: 16px 18px; }
+  .banner .eb { display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-mono); font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.10em; color: var(--accent); }
+  .banner .eb i { width: 13px; height: 13px; }
+  .banner h2 { margin: 6px 0 3px; font-family: var(--font-display); font-weight: 700; font-size: 21px; letter-spacing: -0.02em; color: var(--cream-50); }
+  .banner .dt { font-family: var(--font-mono); font-size: 10px; font-weight: 700; color: rgba(245,244,238,0.8); letter-spacing: 0.04em; }
+
+  .statusbar { display: flex; align-items: center; gap: 10px; padding: 12px 18px; border-bottom: 1px solid var(--border); }
+  .pmeld { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--success); background: var(--success-tint-bg); padding: 5px 10px; border-radius: 9999px; }
+  .pmeld i { width: 12px; height: 12px; }
+  .statusbar .start { margin-left: auto; font-family: var(--font-mono); font-size: 10px; font-weight: 700; color: var(--muted-foreground); letter-spacing: 0.04em; }
+  .statusbar .start b { color: var(--foreground); font-weight: 800; display: block; font-size: 13px; }
+
+  .sec { padding: 16px 18px; border-bottom: 1px solid var(--border); }
+  .sec .l { font-family: var(--font-mono); font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted-foreground); margin-bottom: 10px; display: flex; justify-content: space-between; }
+  .sec .l .prog { color: var(--primary); font-weight: 800; }
+
+  .din { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 11px; overflow: hidden; }
+  .din .c { background: var(--card); padding: 11px 12px; }
+  .din .c .k { font-family: var(--font-mono); font-size: 8.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted-foreground); }
+  .din .c .v { font-family: var(--font-mono); font-weight: 800; font-size: 15px; color: var(--foreground); margin-top: 3px; letter-spacing: -0.01em; }
+  .din .c .v.pos { color: var(--success); }
+
+  /* checklist */
+  .checks { display: flex; flex-direction: column; gap: 7px; }
+  .chk { display: grid; grid-template-columns: 26px 1fr; gap: 12px; align-items: center; padding: 11px 12px; border: 1px solid var(--border); border-radius: 11px; cursor: pointer; background: var(--card); transition: background 140ms ease; min-height: 46px; }
+  .chk:hover { background: var(--secondary); }
+  .chk .box { width: 24px; height: 24px; border-radius: 7px; border: 2px solid var(--cream-300); display: inline-flex; align-items: center; justify-content: center; color: var(--accent); transition: background 140ms, border-color 140ms; flex-shrink: 0; }
+  .chk .box i { width: 14px; height: 14px; display: none; }
+  .chk.done .box { background: var(--primary); border-color: var(--primary); }
+  .chk.done .box i { display: block; }
+  .chk .t { font-size: 13.5px; font-weight: 600; color: var(--foreground); letter-spacing: -0.005em; }
+  .chk.done .t { color: var(--muted-foreground); text-decoration: line-through; }
+
+  /* historic */
+  .hist { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border); border-radius: 11px; overflow: hidden; }
+  .hrow { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+  .hrow:last-child { border-bottom: 0; }
+  .hrow .yr { font-family: var(--font-mono); font-size: 12px; font-weight: 800; color: var(--foreground); font-feature-settings: "tnum","zero"; }
+  .hrow .res { margin-left: auto; font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--muted-foreground); letter-spacing: 0.04em; }
+  .hrow .res b { color: var(--foreground); font-weight: 800; }
+
+  .cta-bar { position: sticky; bottom: 0; padding: 12px 16px 18px; background: linear-gradient(180deg, transparent, var(--card) 30%); display: flex; gap: 9px; }
+  .cta { flex: 1; height: 48px; border-radius: 12px; border: 0; background: var(--primary); color: var(--accent); cursor: pointer; font-family: var(--font-mono); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 8px 20px rgba(0,88,64,0.18); }
+  .cta i { width: 14px; height: 14px; }
+  .cta.ghost { background: var(--card); color: var(--destructive); border: 1px solid rgba(163,45,45,0.22); box-shadow: none; }
+
+  .rules { margin-top: 26px; padding: 16px 18px; background: var(--secondary); border-radius: 12px; font-family: var(--font-mono); font-size: 11px; color: var(--muted-foreground); line-height: 1.65; }
+  .rules p { margin: 0; } .rules p + p { margin-top: 8px; } .rules b { color: var(--foreground); font-weight: 700; }
+  @media (prefers-reduced-motion: reduce) { .chk, .chk .box { transition: none; } }
+</style></head>
+<body><div class="card">
+
+  <div class="head">
+    <span class="eb">2.17 · /PORTAL/TOURNAMENT/[ID]</span>
+    <h1>Turnering-detalj med <em>forberedelse-checklist</em>.</h1>
+    <p class="helper">Status, din klasse/tee, en avkryssbar forberedelse-checklist med live progresjon, og historikk
+      hvis du har spilt turneringen før. Avmeld og starttid nederst.</p>
+  </div>
+
+  <div class="phone">
+    <div class="ph-status">
+      <span>09:41</span>
+      <span class="icons"><i data-lucide="signal"></i><i data-lucide="wifi"></i><i data-lucide="battery-medium"></i></span>
+    </div>
+
+    <div class="topbar"><button class="back"><i data-lucide="chevron-left"></i>Turneringer</button></div>
+
+    <div class="body">
+      <div class="banner">
+        <span class="ph-lab">BANE-FOTO · DROPP HER</span>
+        <div class="grad"></div>
+        <div class="b-inner">
+          <span class="eb"><i data-lucide="trophy"></i>SRIXON TOUR #2</span>
+          <h2>Srixon Tour #2 · R1</h2>
+          <div class="dt">30. MAI – 1. JUN · OSLO GK</div>
+        </div>
+      </div>
+
+      <div class="statusbar">
+        <span class="pmeld"><i data-lucide="check-circle-2"></i>Påmeldt</span>
+        <span class="start">START<b>Fredag 11:24</b></span>
+      </div>
+
+      <div class="sec">
+        <div class="l">Din status</div>
+        <div class="din">
+          <div class="c"><div class="k">Klasse</div><div class="v">Herre A</div></div>
+          <div class="c"><div class="k">Tee</div><div class="v">Hvit</div></div>
+          <div class="c"><div class="k">Forv. HCP</div><div class="v pos">+0,2</div></div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="l">Forberedelse <span class="prog" id="prog">1 / 4 klart</span></div>
+        <div class="checks" id="checks">
+          <div class="chk done" data-chk><span class="box"><i data-lucide="check"></i></span><span class="t">Banerecon utført</span></div>
+          <div class="chk" data-chk><span class="box"><i data-lucide="check"></i></span><span class="t">Pre-shot-rutine trent</span></div>
+          <div class="chk" data-chk><span class="box"><i data-lucide="check"></i></span><span class="t">Pakke utstyr</span></div>
+          <div class="chk" data-chk><span class="box"><i data-lucide="check"></i></span><span class="t">Sjekk vær (oppdateres daglig)</span></div>
+        </div>
+      </div>
+
+      <div class="sec" style="border-bottom: 0;">
+        <div class="l">Tidligere år</div>
+        <div class="hist">
+          <div class="hrow"><span class="yr">2025</span><span class="res">topp <b>8</b></span></div>
+          <div class="hrow"><span class="yr">2024</span><span class="res">topp <b>14</b></span></div>
+          <div class="hrow"><span class="yr">2023</span><span class="res">topp <b>21</b></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-bar">
+      <button class="cta ghost"><i data-lucide="x"></i>Avmeld</button>
+      <button class="cta"><i data-lucide="clock"></i>Se starttid</button>
+    </div>
+  </div>
+
+  <div class="rules">
+    <p><b>Checklist er avkryssbar.</b> Tap en rad → fullført (lime boks, gjennomstreket), og «N / 4 klart» oppdateres live. Banerecon er allerede gjort som default.</p>
+    <p><b>Historikk vises bare når den finnes.</b> Tidligere-år-kortet rendres kun for turneringer spilleren har deltatt i før — ellers utelatt.</p>
+  </div>
+
+  <script>lucide.createIcons();</script>
+  <script>
+  (function () {
+    var chks = Array.prototype.slice.call(document.querySelectorAll('#checks [data-chk]'));
+    var prog = document.getElementById('prog');
+    function refresh() {
+      var n = chks.filter(function (c) { return c.classList.contains('done'); }).length;
+      prog.textContent = n + ' / ' + chks.length + ' klart';
+    }
+    chks.forEach(function (c) {
+      c.setAttribute('role', 'checkbox');
+      c.setAttribute('tabindex', '0');
+      c.setAttribute('aria-checked', c.classList.contains('done') ? 'true' : 'false');
+      function toggle() {
+        var on = c.classList.toggle('done');
+        c.setAttribute('aria-checked', on ? 'true' : 'false');
+        refresh();
+      }
+      c.addEventListener('click', toggle);
+      c.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
+    });
+    refresh();
+  })();
+  </script>
+</div></body></html>

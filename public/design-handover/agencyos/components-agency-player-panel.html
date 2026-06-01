@@ -1,0 +1,680 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>Spiller-detalj side-panel</title>
+<link rel="stylesheet" href="_shared.css">
+<script src="https://unpkg.com/lucide@0.453.0"></script>
+<style>
+  body { width: 1180px; }
+  .card { padding: 24px; }
+
+  .sec {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    display: flex; align-items: center; gap: 8px;
+    margin: 0 0 14px;
+  }
+  .sec::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+
+  /* ===== STAGE — fake table behind, drawer from right ===== */
+  .stage {
+    position: relative;
+    background: rgba(10,31,23,0.04);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    height: 760px;
+  }
+  .behind {
+    position: absolute; inset: 0;
+    padding: 14px 0;
+    opacity: 0.55;
+    pointer-events: none;
+  }
+  .behind .topbar {
+    height: 56px; margin: 0 14px 14px;
+    background: rgba(255,255,255,0.85);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  .behind .table {
+    background: rgba(255,255,255,0.85);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin: 0 14px;
+    padding: 14px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .behind .strip { height: 32px; border-radius: 6px; background: rgba(10,31,23,0.06); }
+  .behind .strip.head { height: 14px; opacity: 0.6; }
+
+  /* Drawer */
+  .drawer {
+    position: absolute; top: 0; right: 0; bottom: 0;
+    width: 400px;
+    background: var(--card);
+    border-left: 1px solid var(--border);
+    box-shadow: -16px 0 40px rgba(10,31,23,0.12);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  /* Backdrop tint */
+  .stage::after {
+    content: ""; position: absolute; inset: 0; right: 400px;
+    background: rgba(10,31,23,0.20);
+    pointer-events: none;
+  }
+
+  /* ===== DRAWER HEADER ===== */
+  .dr-head {
+    padding: 16px 18px 14px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .dr-head .row1 {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .dr-head .av {
+    width: 56px; height: 56px; border-radius: 9999px;
+    background: var(--primary); color: var(--accent);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-weight: 700; font-size: 20px;
+    letter-spacing: -0.02em;
+    position: relative; flex-shrink: 0;
+  }
+  .dr-head .av::after {
+    content: ""; position: absolute; bottom: 1px; right: 2px;
+    width: 12px; height: 12px; border-radius: 9999px;
+    background: var(--success);
+    border: 2.5px solid var(--card);
+  }
+  .dr-head .name {
+    font-family: var(--font-display); font-weight: 700; font-size: 22px;
+    letter-spacing: -0.02em; line-height: 1.1; color: var(--foreground);
+  }
+  .dr-head .meta {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.10em;
+    text-transform: uppercase; margin-top: 4px;
+    display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  }
+  .dr-head .grp {
+    background: rgba(94,92,107,0.10); color: var(--neutral-chip-foreground);
+    padding: 2px 6px; border-radius: 3px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    letter-spacing: 0.10em;
+  }
+  .dr-head .tier {
+    background: rgba(0,88,64,0.10); color: var(--primary);
+    padding: 2px 6px; border-radius: 3px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    letter-spacing: 0.10em;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .dr-head .tier i { width: 9px; height: 9px; }
+  .dr-head .close {
+    position: absolute; top: 14px; right: 14px;
+    width: 28px; height: 28px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--card);
+    color: var(--muted-foreground);
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  .dr-head .close:hover { color: var(--foreground); }
+  .dr-head .close i { width: 14px; height: 14px; }
+
+  .status-row {
+    display: flex; align-items: center; gap: 8px;
+    margin-top: 10px;
+  }
+  .status {
+    display: inline-flex; align-items: center; gap: 6px;
+    height: 22px; padding: 0 10px 0 8px; border-radius: 9999px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    background: rgba(184,133,42,0.14); color: var(--warning-foreground);
+  }
+  .status::before {
+    content: ""; width: 6px; height: 6px; border-radius: 9999px;
+    background: var(--warning);
+  }
+  .alarm-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    height: 22px; padding: 0 8px; border-radius: 9999px;
+    background: rgba(163,45,45,0.10); color: var(--destructive);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+  }
+  .alarm-pill i { width: 11px; height: 11px; }
+
+  /* ===== BODY ===== */
+  .dr-body { flex: 1; overflow-y: auto; }
+  .dr-body::-webkit-scrollbar { width: 6px; }
+  .dr-body::-webkit-scrollbar-thumb { background: var(--cream-300); border-radius: 9999px; }
+
+  .sect {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sect:last-of-type { border-bottom: 0; }
+  .sect .lbl {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 10px;
+  }
+  .sect .lbl .lnk {
+    margin-left: auto;
+    color: var(--primary); font-weight: 800; cursor: pointer;
+  }
+
+  /* KPI row */
+  .kpis3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .kpi {
+    background: var(--cream-50);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .kpi .v {
+    font-family: var(--font-mono); font-weight: 800; font-size: 18px;
+    letter-spacing: -0.01em; color: var(--foreground); line-height: 1;
+    font-feature-settings: "tnum","zero";
+  }
+  .kpi .v.pos { color: var(--success); }
+  .kpi .v.neg { color: var(--destructive); }
+  .kpi .v.warn { color: var(--warning); }
+  .kpi .l {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    color: var(--muted-foreground);
+  }
+  .kpi .d {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .kpi .d.up { color: var(--success); }
+  .kpi .d.dn { color: var(--destructive); }
+
+  /* Mini-pyramide (compact) */
+  .mp {
+    display: flex; flex-direction: column; gap: 5px;
+  }
+  .mp .r {
+    display: grid; grid-template-columns: 34px 1fr 56px;
+    align-items: center; gap: 8px;
+  }
+  .mp .r .l {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    color: var(--foreground);
+  }
+  .mp .r .b {
+    height: 8px; background: rgba(10,31,23,0.06);
+    border-radius: 9999px; overflow: hidden; position: relative;
+  }
+  .mp .r .b .f {
+    position: absolute; left: 0; top: 0; bottom: 0; border-radius: 9999px;
+  }
+  .mp .r .b .tgt {
+    position: absolute; top: -2px; bottom: -2px; width: 1px;
+    background: var(--muted-foreground);
+  }
+  .mp .r .f.fys   { background: var(--pyr-fys); }
+  .mp .r .f.tek   { background: var(--pyr-tek); }
+  .mp .r .f.slag  { background: var(--pyr-slag); }
+  .mp .r .f.spill { background: var(--pyr-spill); }
+  .mp .r .f.turn  { background: var(--pyr-turn); }
+  .mp .r .v {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); text-align: right;
+    font-feature-settings: "tnum","zero";
+  }
+  .mp .r.alarm .v { color: var(--destructive); }
+  .mp .r.alarm .b .f { box-shadow: 0 0 0 1px var(--destructive); }
+
+  /* Uke-oversikt (7 dager) */
+  .week {
+    display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px;
+  }
+  .week .day {
+    background: var(--cream-50);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 4px 8px;
+    display: flex; flex-direction: column; align-items: center; gap: 5px;
+    min-height: 78px;
+  }
+  .week .day.today { background: rgba(209,248,67,0.10); border-color: var(--accent); }
+  .week .day .dow {
+    font-family: var(--font-mono); font-size: 8px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    color: var(--muted-foreground);
+  }
+  .week .day .dt {
+    font-family: var(--font-mono); font-size: 12px; font-weight: 800;
+    color: var(--foreground); letter-spacing: -0.01em; line-height: 1;
+    font-feature-settings: "tnum","zero";
+  }
+  .week .day.today .dt { color: var(--primary); }
+  .week .day .dots {
+    display: flex; flex-direction: column; gap: 3px; align-items: center;
+    width: 100%;
+  }
+  .week .day .pip {
+    width: 14px; height: 4px; border-radius: 2px;
+  }
+  .week .day .pip.fys   { background: var(--pyr-fys); }
+  .week .day .pip.tek   { background: var(--pyr-tek); }
+  .week .day .pip.slag  { background: var(--pyr-slag); }
+  .week .day .pip.spill { background: var(--pyr-spill); }
+  .week .day .pip.turn  { background: var(--pyr-turn); }
+  .week .day.empty { background: transparent; }
+
+  /* Booking + last comm */
+  .booking {
+    display: grid; grid-template-columns: 44px 1fr auto;
+    align-items: center; column-gap: 10px;
+    padding: 10px 12px;
+    background: var(--cream-50);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  .booking .when-tile {
+    width: 44px; height: 44px; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .booking .when-tile .dow {
+    font-family: var(--font-mono); font-size: 8px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    color: var(--muted-foreground); line-height: 1;
+  }
+  .booking .when-tile .dt {
+    font-family: var(--font-display); font-weight: 800; font-size: 16px;
+    color: var(--foreground); letter-spacing: -0.02em; line-height: 1; margin-top: 2px;
+  }
+  .booking .body { min-width: 0; }
+  .booking .body .nm {
+    font-size: 13px; font-weight: 700; letter-spacing: -0.005em;
+    color: var(--foreground);
+  }
+  .booking .body .meta {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    margin-top: 3px;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .booking .body .meta i { width: 10px; height: 10px; }
+  .booking .ax {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    padding: 2px 6px; border-radius: 9999px;
+  }
+  .booking .ax.slag { background: rgba(37,99,235,0.10); color: var(--info-foreground); }
+
+  /* Last communication */
+  .comm {
+    display: grid; grid-template-columns: 28px 1fr auto;
+    column-gap: 10px;
+    padding: 9px 8px;
+    border-radius: 6px;
+    align-items: flex-start;
+  }
+  .comm:hover { background: var(--secondary); }
+  .comm + .comm { border-top: 1px solid var(--border); border-radius: 0; }
+  .comm .av {
+    width: 28px; height: 28px; border-radius: 9999px;
+    background: var(--secondary); color: var(--foreground);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-weight: 700; font-size: 10px;
+    flex-shrink: 0;
+  }
+  .comm .av.coach { background: var(--primary); color: var(--accent); }
+  .comm .body { min-width: 0; }
+  .comm .who {
+    font-size: 12px; font-weight: 700; letter-spacing: -0.005em;
+    color: var(--foreground);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .comm .who .type {
+    font-family: var(--font-mono); font-size: 8px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    padding: 1px 5px; border-radius: 3px;
+    background: var(--secondary); color: var(--muted-foreground);
+  }
+  .comm .who .type.appr  { background: rgba(209,248,67,0.30); color: var(--primary); }
+  .comm .preview {
+    font-family: var(--font-sans); font-size: 11px; color: var(--muted-foreground);
+    line-height: 1.4; margin-top: 2px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .comm .when {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em; flex-shrink: 0;
+  }
+
+  /* ===== ACTIONS FOOTER ===== */
+  .dr-foot {
+    border-top: 1px solid var(--border);
+    background: var(--cream-50);
+    padding: 12px 16px 14px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .dr-foot .row1 {
+    display: flex; gap: 8px;
+  }
+  .dr-foot .row2 {
+    display: flex; gap: 8px; align-items: center;
+  }
+  .btn {
+    height: 36px; padding: 0 13px; border-radius: 9999px;
+    border: 1px solid var(--border); background: var(--card);
+    color: var(--foreground);
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+    white-space: nowrap;
+  }
+  .btn:hover { background: var(--secondary); }
+  .btn.pri {
+    background: var(--primary); color: var(--accent); border-color: var(--primary);
+    flex: 1;
+    justify-content: center;
+  }
+  .btn.pri:hover { background: var(--primary-hover); }
+  .btn.sec {
+    background: var(--card);
+  }
+  .btn.gh {
+    background: transparent; border-color: transparent;
+    color: var(--muted-foreground);
+    padding: 0 8px; height: 28px;
+    font-size: 9px;
+  }
+  .btn.gh:hover { color: var(--foreground); background: var(--secondary); }
+  .btn.link {
+    background: transparent; border: 0; padding: 0; height: auto;
+    color: var(--primary); font-size: 10px;
+    text-decoration: underline; text-underline-offset: 3px;
+  }
+  .btn i { width: 11px; height: 11px; flex-shrink: 0; }
+
+  /* Rules */
+  .rules {
+    margin-top: 24px; padding: 16px;
+    background: var(--secondary); border-radius: 12px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted-foreground); line-height: 1.6;
+  }
+  .rules p { margin: 0; }
+  .rules p + p { margin-top: 8px; }
+  .rules b { color: var(--foreground); font-weight: 700; }
+  .rules code {
+    background: var(--card); padding: 1px 5px; border-radius: 3px;
+    color: var(--foreground); font-weight: 700;
+  }
+</style></head>
+<body><div class="card">
+
+  <div class="sec">AgencyOS · spiller-detalj side-panel · 400 px slide-over fra høyre</div>
+
+  <div class="stage">
+
+    <!-- ===== BEHIND (dimmed table) ===== -->
+    <div class="behind">
+      <div class="topbar"></div>
+      <div class="table">
+        <div class="strip head" style="width: 30%"></div>
+        <div class="strip" style="width: 92%"></div>
+        <div class="strip" style="width: 88%"></div>
+        <div class="strip" style="width: 90%; background: rgba(209,248,67,0.16); border: 1px solid var(--accent)"></div>
+        <div class="strip" style="width: 86%"></div>
+        <div class="strip" style="width: 92%"></div>
+        <div class="strip" style="width: 80%"></div>
+        <div class="strip" style="width: 88%"></div>
+        <div class="strip" style="width: 90%"></div>
+      </div>
+    </div>
+
+    <!-- ===== DRAWER ===== -->
+    <aside class="drawer" aria-label="Spiller-detalj">
+
+      <!-- HEADER -->
+      <div class="dr-head">
+        <button class="close" aria-label="Lukk"><i data-lucide="x"></i></button>
+        <div class="row1">
+          <span class="av">MR</span>
+          <div>
+            <div class="name">Markus R.P.</div>
+            <div class="meta">
+              <span class="grp">WANG</span>
+              <span class="tier"><i data-lucide="trophy"></i>KONK</span>
+              <span>· COACH ANDREAS K.</span>
+            </div>
+          </div>
+        </div>
+        <div class="status-row">
+          <span class="status">Bak plan</span>
+          <span class="alarm-pill"><i data-lucide="alert-triangle"></i>2 ØKTER BAK · 12 DG TIL SRIXON #2</span>
+        </div>
+      </div>
+
+      <!-- BODY -->
+      <div class="dr-body">
+
+        <!-- KPI 3-row -->
+        <div class="sect">
+          <div class="lbl">SISTE 30 DAGER</div>
+          <div class="kpis3">
+            <div class="kpi">
+              <span class="v">12</span>
+              <span class="l">ØKTER</span>
+              <span class="d dn">−2 vs plan</span>
+            </div>
+            <div class="kpi">
+              <span class="v">14,5 t</span>
+              <span class="l">TIM. TRENT</span>
+              <span class="d dn">−3 t</span>
+            </div>
+            <div class="kpi">
+              <span class="v neg">−0,42</span>
+              <span class="l">SG-TREND</span>
+              <span class="d dn">innspill</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mini-pyramide -->
+        <div class="sect">
+          <div class="lbl">
+            <span>PYRAMIDE · UKE 22 / PLAN</span>
+            <span class="lnk">SE FULL ›</span>
+          </div>
+          <div class="mp">
+            <div class="r">
+              <span class="l">TURN</span>
+              <div class="b">
+                <div class="f turn" style="width:38%"></div>
+                <div class="tgt" style="left:40%"></div>
+              </div>
+              <span class="v">1,5 / 4 t</span>
+            </div>
+            <div class="r">
+              <span class="l">SPILL</span>
+              <div class="b">
+                <div class="f spill" style="width:67%"></div>
+                <div class="tgt" style="left:100%"></div>
+              </div>
+              <span class="v">2,0 / 3 t</span>
+            </div>
+            <div class="r alarm">
+              <span class="l">SLAG</span>
+              <div class="b">
+                <div class="f slag" style="width:33%"></div>
+                <div class="tgt" style="left:100%"></div>
+              </div>
+              <span class="v">2,0 / 6 t</span>
+            </div>
+            <div class="r">
+              <span class="l">TEK</span>
+              <div class="b">
+                <div class="f tek" style="width:100%"></div>
+                <div class="tgt" style="left:100%"></div>
+              </div>
+              <span class="v">2,0 / 2 t</span>
+            </div>
+            <div class="r">
+              <span class="l">FYS</span>
+              <div class="b">
+                <div class="f fys" style="width:100%"></div>
+                <div class="tgt" style="left:100%"></div>
+              </div>
+              <span class="v">3,0 / 3 t</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Uke-oversikt -->
+        <div class="sect">
+          <div class="lbl">
+            <span>UKE 22 · MAN → SØN</span>
+            <span class="lnk">ÅPNE I WORKBENCH ›</span>
+          </div>
+          <div class="week">
+            <div class="day">
+              <span class="dow">MAN</span>
+              <span class="dt">26</span>
+              <div class="dots">
+                <span class="pip fys"></span>
+                <span class="pip slag"></span>
+              </div>
+            </div>
+            <div class="day">
+              <span class="dow">TIR</span>
+              <span class="dt">27</span>
+              <div class="dots">
+                <span class="pip tek"></span>
+                <span class="pip fys"></span>
+              </div>
+            </div>
+            <div class="day today">
+              <span class="dow">ONS</span>
+              <span class="dt">28</span>
+              <div class="dots">
+                <span class="pip fys"></span>
+                <span class="pip slag"></span>
+                <span class="pip spill"></span>
+              </div>
+            </div>
+            <div class="day">
+              <span class="dow">TOR</span>
+              <span class="dt">29</span>
+              <div class="dots">
+                <span class="pip slag"></span>
+              </div>
+            </div>
+            <div class="day">
+              <span class="dow">FRE</span>
+              <span class="dt">30</span>
+              <div class="dots">
+                <span class="pip slag"></span>
+              </div>
+            </div>
+            <div class="day empty">
+              <span class="dow">LØR</span>
+              <span class="dt">31</span>
+            </div>
+            <div class="day empty">
+              <span class="dow">SØN</span>
+              <span class="dt">01</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Neste booking -->
+        <div class="sect">
+          <div class="lbl">NESTE BOOKING</div>
+          <div class="booking">
+            <div class="when-tile">
+              <span class="dow">TOR</span>
+              <span class="dt">29</span>
+            </div>
+            <div class="body">
+              <div class="nm">Innspill 50–80 m · 1-til-1</div>
+              <div class="meta">
+                <span><i data-lucide="clock"></i>14:30 · 60 m</span>
+                <span><i data-lucide="map-pin"></i>GFGK TM 3</span>
+              </div>
+            </div>
+            <span class="ax slag">SLAG</span>
+          </div>
+        </div>
+
+        <!-- Siste kommunikasjon -->
+        <div class="sect">
+          <div class="lbl">
+            <span>SISTE KOMMUNIKASJON</span>
+            <span class="lnk">ÅPNE TRÅD ›</span>
+          </div>
+          <div class="comm">
+            <span class="av">MR</span>
+            <div class="body">
+              <span class="who">Markus R.P. <span class="type appr">GODKJENN</span></span>
+              <span class="preview">Foreslår å bytte fre-økt til lørdag før Srixon Tour #2</span>
+            </div>
+            <span class="when">07:42</span>
+          </div>
+          <div class="comm">
+            <span class="av coach">AK</span>
+            <div class="body">
+              <span class="who">Andreas K.</span>
+              <span class="preview">Bra video — pass på lavpunktet på random-mix-drillen</span>
+            </div>
+            <span class="when">i går</span>
+          </div>
+          <div class="comm">
+            <span class="av">MR</span>
+            <div class="body">
+              <span class="who">Markus R.P. <span class="type">VIDEO</span></span>
+              <span class="preview">Innspill 65 m · 30 reps · merk: rask sequencing</span>
+            </div>
+            <span class="when">man 22:14</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- FOOTER -->
+      <div class="dr-foot">
+        <div class="row1">
+          <button class="btn pri">
+            <i data-lucide="arrow-up-right"></i>Åpne i Workbench
+          </button>
+          <button class="btn sec">
+            <i data-lucide="send"></i>Send melding
+          </button>
+        </div>
+        <div class="row2">
+          <button class="btn gh"><i data-lucide="pencil-line"></i>Notat</button>
+          <button class="btn gh"><i data-lucide="check-square"></i>Oppgave</button>
+          <button class="btn gh"><i data-lucide="calendar-plus"></i>Book</button>
+          <span style="flex:1"></span>
+          <a class="btn link" href="#">Komplett profil</a>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+
+  <div class="rules">
+    <p><b>Drawer:</b> <code>400 px</code> bredt, slide-over fra høyre. <code>−16 0 40 px</code> skygge venstre. Bakgrunn dempes <code>20 % forest-tint</code>. ESC eller backdrop-click lukker.</p>
+    <p><b>Header:</b> Stor 56 px avatar med grønn presence-dot. Navn 22 px display + gruppe/tier/coach i mono. Status-pille + alarm-pille på neste rad. Lukk-knapp top-right.</p>
+    <p><b>Seksjoner (5):</b> KPI 30 d (3 kort) · Mini-pyramide vs plan med alarm-row · Uke-oversikt (7 dag-tiles m/ pyramide-pips) · Neste booking (dato-tile + akse-pille) · Siste kommunikasjon (3 rader, godkjenn-type pille).</p>
+    <p><b>Delt datakilde (risiko #6):</b> samme spiller forteller samme historie overalt. Markus' KPI (14,5 t · −0,42 SG) og pyramide (FYS 100 · TEK 100 · SLAG 33 alarm · SPILL 67 · TURN 38) er <b>identiske med spillertabellen (S2)</b>. Uke-grid viser kun <b>bekreftede</b> bookinger: TOR 29 + FRE 30 er slag-økter (coach laster slag fordi Markus ligger på 33 %) — matcher «neste booking» og inbox-tråden (S5). Den pending FRE→LØR-flyttingen vises <em>ikke</em> før godkjent.</p>
+    <p><b>Coach-handlinger (footer):</b> Primær "Åpne i Workbench" (lime ↗) + "Send melding" sekundær. Ghost-row: Notat · Oppgave · Book. Text-link "Komplett profil" høyre.</p>
+  </div>
+
+  <script>lucide.createIcons();</script>
+</div></body></html>

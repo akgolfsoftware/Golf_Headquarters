@@ -1,0 +1,1250 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>⌘K command palette · søk, navigasjon, handlinger</title>
+<link rel="stylesheet" href="_shared.css">
+<script src="https://unpkg.com/lucide@0.453.0"></script>
+<style>
+  body { width: 1240px; }
+  .card { padding: 28px 32px; }
+
+  /* ===== HEADER ===== */
+  .head { margin-bottom: 24px; }
+  .head .eb {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .head h1 {
+    margin: 8px 0 6px;
+    font-family: var(--font-display); font-weight: 700; font-size: 30px;
+    letter-spacing: -0.025em; line-height: 1.05;
+  }
+  .head h1 em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .head .helper {
+    font-family: var(--font-sans); font-size: 14px; line-height: 1.55;
+    color: var(--muted-foreground); max-width: 800px;
+  }
+
+  .sec {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--foreground);
+    display: flex; align-items: center; gap: 12px;
+    margin: 32px 0 14px;
+  }
+  .sec::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+  .sec .sub { color: var(--muted-foreground); font-weight: 700; letter-spacing: 0.04em; }
+  .sec .count {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    background: var(--secondary); color: var(--muted-foreground);
+    padding: 2px 8px; border-radius: 9999px; letter-spacing: 0.06em;
+  }
+
+  .panel {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; overflow: hidden;
+  }
+  .frule {
+    padding: 12px 20px;
+    background: var(--cream-50);
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted-foreground); line-height: 1.55;
+  }
+  .frule b { color: var(--foreground); font-weight: 700; }
+
+  /* ============================================================ */
+  /* DARK STAGE                                                    */
+  /* ============================================================ */
+  .stage-dark {
+    background:
+      linear-gradient(180deg, rgba(10,31,23,0.40) 0%, rgba(10,31,23,0.60) 100%),
+      repeating-linear-gradient(135deg, transparent 0 18px, rgba(255,255,255,0.03) 18px 36px),
+      var(--forest-700);
+    padding: 36px 28px;
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .stage-dark::before {
+    content: ""; position: absolute;
+    right: -60px; top: -60px;
+    width: 220px; height: 220px; border-radius: 9999px;
+    background: var(--accent); opacity: 0.08;
+    filter: blur(70px);
+  }
+  .stage-dark .chrome {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 22px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: rgba(255,255,255,0.55); letter-spacing: 0.10em;
+  }
+  .stage-dark .chrome .dot {
+    width: 8px; height: 8px; border-radius: 9999px; background: var(--accent);
+    box-shadow: 0 0 0 4px rgba(209,248,67,0.20);
+  }
+  .stage-dark .chrome b { color: var(--accent); font-weight: 800; }
+  .stage-dark .chrome .sep { color: rgba(255,255,255,0.25); margin: 0 4px; }
+  .stage-dark .chrome .right {
+    margin-left: auto;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .stage-dark .chrome .kbd {
+    background: rgba(255,255,255,0.10); color: var(--accent);
+    padding: 2px 6px; border-radius: 3px;
+    font-size: 9px; font-weight: 800;
+    letter-spacing: 0.06em;
+  }
+
+  /* ============================================================ */
+  /* MAIN PALETTE (with preview pane)                              */
+  /* ============================================================ */
+  .palette {
+    width: 920px; margin: 0 auto;
+    background: var(--card);
+    border: 1px solid var(--cream-300);
+    border-radius: 14px;
+    box-shadow: 0 28px 64px rgba(10,31,23,0.55), 0 4px 12px rgba(10,31,23,0.30);
+    overflow: hidden;
+  }
+  .palette .top {
+    display: grid; grid-template-columns: 24px auto 1fr auto auto;
+    align-items: center; gap: 10px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .palette .top .ic {
+    width: 18px; height: 18px; color: var(--muted-foreground);
+  }
+  .palette .top .scope-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 9px 3px 6px;
+    background: rgba(0,88,64,0.10); color: var(--primary);
+    border-radius: 6px;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 800;
+    letter-spacing: 0.04em;
+  }
+  .palette .top .scope-chip .x {
+    width: 12px; height: 12px; border-radius: 9999px;
+    background: rgba(0,88,64,0.15); color: var(--primary);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .palette .top .scope-chip .x i { width: 9px; height: 9px; }
+  .palette .top .query {
+    font-family: var(--font-sans); font-size: 17px; font-weight: 500;
+    color: var(--foreground); letter-spacing: -0.005em;
+    line-height: 1.2;
+  }
+  .palette .top .query .caret {
+    width: 2px; height: 18px; background: var(--primary);
+    display: inline-block; vertical-align: text-bottom;
+    margin-left: 1px;
+    animation: blink 1.1s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+  .palette .top .mic {
+    width: 30px; height: 30px;
+    border-radius: 9999px;
+    background: var(--accent); color: var(--primary);
+    display: inline-flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .palette .top .mic i { width: 14px; height: 14px; }
+  .palette .top .kbd-pair {
+    display: inline-flex; gap: 4px;
+  }
+  .palette .top .kbd-pair .k {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    background: var(--secondary); border: 1px solid var(--border);
+    padding: 2px 6px; border-radius: 4px;
+  }
+
+  /* split body: results + preview */
+  .body-split {
+    display: grid; grid-template-columns: 1fr 320px;
+  }
+  .results { padding: 6px 0; }
+  .preview-pane {
+    border-left: 1px solid var(--border);
+    background: var(--cream-50);
+    padding: 14px 16px;
+    display: flex; flex-direction: column; gap: 12px;
+    min-height: 360px;
+  }
+
+  /* results */
+  .rsec { padding: 6px 0; }
+  .rsec .sh {
+    padding: 4px 18px 6px;
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .rsec .sh .ct {
+    margin-left: auto;
+    color: var(--muted-foreground); font-weight: 700; letter-spacing: 0.04em;
+  }
+
+  .rrow {
+    display: grid; grid-template-columns: 28px 1fr auto auto;
+    gap: 12px; align-items: center;
+    padding: 8px 18px;
+    cursor: pointer;
+  }
+  .rrow:hover { background: var(--cream-50); }
+  .rrow.sel {
+    background: rgba(0,88,64,0.06);
+    border-left: 3px solid var(--accent);
+    padding-left: 15px;
+  }
+  .rrow .ico {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: var(--cream-50); border: 1px solid var(--border);
+    color: var(--primary);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .rrow .ico.player { background: var(--primary); color: var(--accent); border-color: transparent; font-family: var(--font-display); font-size: 11px; font-weight: 700; }
+  .rrow .ico.session { background: rgba(184,133,42,0.14); color: var(--warning-foreground); border-color: transparent; }
+  .rrow .ico.page { background: rgba(37,99,235,0.10); color: var(--info); border-color: transparent; }
+  .rrow .ico.action { background: rgba(0,88,64,0.10); color: var(--primary); border-color: transparent; }
+  .rrow .ico i { width: 14px; height: 14px; }
+  .rrow .nm {
+    display: flex; flex-direction: column; gap: 1px; min-width: 0;
+  }
+  .rrow .nm .t {
+    font-family: var(--font-sans); font-size: 13px; font-weight: 600;
+    color: var(--foreground); letter-spacing: -0.005em;
+    line-height: 1.3;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .rrow .nm .t mark {
+    background: rgba(209,248,67,0.45); color: var(--primary);
+    font-weight: 800; padding: 0 1px; border-radius: 2px;
+  }
+  .rrow .nm .sub {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.02em;
+  }
+  .rrow .nm .sub .sep { color: var(--cream-300); margin: 0 5px; }
+  .rrow .crumbs {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .rrow .ret {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    padding: 2px 6px; border-radius: 3px;
+    background: var(--secondary); color: var(--muted-foreground);
+    letter-spacing: 0.06em;
+  }
+  .rrow.sel .ret {
+    background: var(--primary); color: var(--accent);
+  }
+
+  /* preview pane content */
+  .pp-eb {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .pp-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px 16px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .pp-card .who {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .pp-card .who .av {
+    width: 40px; height: 40px; border-radius: 9999px;
+    background: var(--primary); color: var(--accent);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-weight: 700; font-size: 15px;
+  }
+  .pp-card .who .nm {
+    font-family: var(--font-display); font-weight: 700; font-size: 16px;
+    letter-spacing: -0.015em; line-height: 1.15;
+  }
+  .pp-card .who .nm small {
+    display: block;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.06em; margin-top: 2px;
+    text-transform: uppercase;
+  }
+
+  .pp-kpi {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid var(--border); padding-top: 10px;
+    gap: 6px;
+  }
+  .pp-kpi .k {
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .pp-kpi .k .l {
+    font-family: var(--font-mono); font-size: 8px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    color: var(--muted-foreground);
+  }
+  .pp-kpi .k .v {
+    font-family: var(--font-mono); font-weight: 800; font-size: 15px;
+    letter-spacing: -0.015em; color: var(--foreground);
+    font-feature-settings: "tnum","zero"; line-height: 1.1;
+  }
+  .pp-kpi .k .v.pos { color: var(--success); }
+  .pp-kpi .k .v.neg { color: var(--destructive); }
+  .pp-kpi .k .v.warn { color: var(--warning); }
+
+  .pp-pyr {
+    margin-top: 4px;
+  }
+  .pp-pyr .l {
+    font-family: var(--font-mono); font-size: 8px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    color: var(--muted-foreground); margin-bottom: 4px;
+  }
+  .pp-pyr .row {
+    display: grid; grid-template-columns: 36px 1fr 36px;
+    gap: 6px; align-items: center; padding: 2px 0;
+  }
+  .pp-pyr .row .nm {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    color: var(--foreground); letter-spacing: 0.04em;
+  }
+  .pp-pyr .row .bar {
+    height: 5px; border-radius: 2px;
+    background: var(--cream-200); position: relative; overflow: hidden;
+  }
+  .pp-pyr .row .bar .f {
+    position: absolute; top: 0; left: 0; bottom: 0;
+    border-radius: 2px;
+  }
+  .pp-pyr .row .bar .f.fys { background: var(--pyr-fys); }
+  .pp-pyr .row .bar .f.tek { background: var(--pyr-tek); }
+  .pp-pyr .row .bar .f.slag { background: var(--pyr-slag); }
+  .pp-pyr .row .bar .f.spill { background: var(--pyr-spill); }
+  .pp-pyr .row .bar .f.tur { background: var(--pyr-turn); }
+  .pp-pyr .row .v {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    color: var(--foreground); letter-spacing: 0.02em; text-align: right;
+    font-feature-settings: "tnum","zero";
+  }
+
+  .pp-next {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 12px 14px;
+    border-left: 3px solid var(--accent);
+  }
+  .pp-next .l {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground); margin-bottom: 4px;
+  }
+  .pp-next .nm {
+    font-family: var(--font-display); font-weight: 700; font-size: 14px;
+    letter-spacing: -0.015em; line-height: 1.2;
+  }
+  .pp-next .meta {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em; margin-top: 4px;
+  }
+  .pp-next .meta .sep { color: var(--cream-300); margin: 0 5px; }
+
+  /* keyboard footer (palette) */
+  .pal-foot {
+    padding: 10px 18px;
+    background: var(--cream-50);
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; gap: 14px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .pal-foot .li { display: inline-flex; gap: 5px; align-items: center; }
+  .pal-foot .k {
+    font-size: 9px; font-weight: 800;
+    background: var(--card); border: 1px solid var(--border);
+    padding: 1px 5px; border-radius: 3px;
+    color: var(--foreground);
+  }
+  .pal-foot .right { margin-left: auto; }
+  .pal-foot .right b { color: var(--foreground); font-weight: 800; }
+
+  /* ============================================================ */
+  /* SECTION 2 — SCOPE MODES                                       */
+  /* ============================================================ */
+  .scope-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .scope-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .scope-card .sh {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .scope-card .sh .pip {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 2px 8px; border-radius: 4px;
+    background: rgba(0,88,64,0.10); color: var(--primary);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    letter-spacing: 0.06em;
+  }
+  .scope-card .sh .pip.pages   { background: rgba(37,99,235,0.10); color: var(--info); }
+  .scope-card .sh .pip.actions { background: rgba(184,133,42,0.14); color: var(--warning-foreground); }
+  .scope-card .sh .pip.global  { background: var(--secondary); color: var(--muted-foreground); }
+  .scope-card .sh .nm {
+    font-family: var(--font-display); font-weight: 700; font-size: 14px;
+    letter-spacing: -0.015em;
+  }
+  .scope-card .sh .h {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    color: var(--muted-foreground); letter-spacing: 0.06em;
+  }
+  .scope-card .sh .h .k {
+    font-size: 10px;
+    background: var(--secondary); border: 1px solid var(--border);
+    padding: 1px 5px; border-radius: 3px;
+    color: var(--foreground);
+  }
+
+  .scope-card .input {
+    padding: 10px 14px;
+    display: grid; grid-template-columns: 18px auto 1fr;
+    align-items: center; gap: 8px;
+    border-bottom: 1px solid var(--border);
+    background: var(--cream-50);
+  }
+  .scope-card .input i { width: 14px; height: 14px; color: var(--muted-foreground); }
+  .scope-card .input .scp {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 1px 7px; border-radius: 4px;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 800;
+    letter-spacing: 0.04em;
+  }
+  .scope-card .input .scp.pages { background: rgba(37,99,235,0.10); color: var(--info); }
+  .scope-card .input .scp.action { background: rgba(184,133,42,0.14); color: var(--warning-foreground); }
+  .scope-card .input .scp.player { background: rgba(0,88,64,0.10); color: var(--primary); }
+  .scope-card .input .q {
+    font-family: var(--font-sans); font-size: 14px; font-weight: 500;
+    color: var(--foreground);
+  }
+  .scope-card .input .q mark {
+    background: rgba(209,248,67,0.45); color: var(--primary);
+    font-weight: 800; padding: 0 1px; border-radius: 2px;
+  }
+
+  .scope-card .rsec { padding: 4px 0 8px; }
+  .scope-card .rrow { padding: 6px 14px; }
+  .scope-card .rrow.sel { padding-left: 11px; }
+  .scope-card .rrow .nm .t { font-size: 12px; }
+  .scope-card .rrow .nm .sub { font-size: 9px; }
+  .scope-card .rrow .ico { width: 24px; height: 24px; border-radius: 5px; }
+  .scope-card .rrow .ico i { width: 12px; height: 12px; }
+  .scope-card .rrow .ico.player { font-size: 10px; }
+  .scope-card .pf {
+    margin-top: auto;
+    padding: 8px 14px;
+    background: var(--cream-50);
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .scope-card .pf .k {
+    font-size: 9px; font-weight: 800;
+    background: var(--card); border: 1px solid var(--border);
+    padding: 1px 5px; border-radius: 3px;
+    color: var(--foreground);
+  }
+  .scope-card .pf .right { margin-left: auto; }
+
+  /* sub-action tree (third scope variant) */
+  .sub-tree { display: flex; flex-direction: column; gap: 0; }
+  .sub-tree .leaf {
+    display: grid; grid-template-columns: 18px 1fr auto;
+    gap: 8px; align-items: center;
+    padding: 5px 14px 5px 28px;
+    font-size: 11px; line-height: 1.3;
+    border-left: 1px dashed var(--cream-300);
+    margin-left: 22px;
+    color: var(--foreground);
+  }
+  .sub-tree .leaf i { width: 11px; height: 11px; color: var(--muted-foreground); }
+  .sub-tree .leaf .meta {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+
+  /* ============================================================ */
+  /* SECTION 3 — EMPTY / RECENT / SUGGESTED                        */
+  /* ============================================================ */
+  .empty-stage {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; overflow: hidden;
+    width: 720px; margin: 0 auto;
+    box-shadow: 0 16px 38px rgba(10,31,23,0.18);
+  }
+  .empty-stage .top {
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--border);
+    display: grid; grid-template-columns: 18px 1fr auto;
+    align-items: center; gap: 10px;
+  }
+  .empty-stage .top i { width: 16px; height: 16px; color: var(--muted-foreground); }
+  .empty-stage .top .ph {
+    font-family: var(--font-sans); font-size: 16px;
+    color: var(--muted-foreground);
+  }
+  .empty-stage .top .kbd-pair {
+    display: inline-flex; gap: 4px;
+  }
+  .empty-stage .top .k {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    background: var(--secondary); border: 1px solid var(--border);
+    padding: 2px 6px; border-radius: 4px;
+  }
+
+  .empty-stage .columns {
+    display: grid; grid-template-columns: 1fr 1px 1fr;
+    gap: 0;
+  }
+  .empty-stage .divider {
+    background: var(--border);
+  }
+  .empty-stage .col {
+    padding: 14px 18px 16px;
+  }
+  .empty-stage .col .ch {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground); margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .empty-stage .col .ch i { width: 11px; height: 11px; }
+
+  .empty-stage .col ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 0; }
+  .empty-stage .col li {
+    padding: 7px 6px;
+    display: grid; grid-template-columns: 22px 1fr auto;
+    align-items: center; gap: 10px;
+    border-radius: 6px;
+    font-size: 12px; line-height: 1.3;
+  }
+  .empty-stage .col li:hover { background: var(--cream-50); }
+  .empty-stage .col li .ic {
+    width: 22px; height: 22px; border-radius: 5px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--primary); background: var(--cream-50);
+  }
+  .empty-stage .col li .ic.player { background: var(--primary); color: var(--accent); font-family: var(--font-display); font-size: 10px; font-weight: 700; }
+  .empty-stage .col li .ic.action { background: rgba(184,133,42,0.14); color: var(--warning-foreground); }
+  .empty-stage .col li .ic.session { background: rgba(37,99,235,0.10); color: var(--info); }
+  .empty-stage .col li .ic.insight { background: rgba(209,248,67,0.45); color: var(--primary); }
+  .empty-stage .col li .ic i { width: 11px; height: 11px; }
+  .empty-stage .col li .nm {
+    font-weight: 600; color: var(--foreground); letter-spacing: -0.005em;
+  }
+  .empty-stage .col li .nm small {
+    display: block;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.02em; margin-top: 1px;
+  }
+  .empty-stage .col li .when {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .empty-stage .col li .when.ai {
+    color: var(--primary); font-weight: 800;
+  }
+
+  .empty-stage .foot {
+    border-top: 1px solid var(--border);
+    background: var(--cream-50);
+    padding: 10px 18px;
+    display: flex; align-items: center; gap: 12px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .empty-stage .foot .k {
+    font-size: 9px; font-weight: 800;
+    background: var(--card); border: 1px solid var(--border);
+    padding: 1px 5px; border-radius: 3px;
+    color: var(--foreground);
+  }
+  .empty-stage .foot .right { margin-left: auto; }
+
+  /* ============================================================ */
+  /* SECTION 4 — KEYBOARD MAP + RESULT TYPES                       */
+  /* ============================================================ */
+  .ref-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .ref-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; overflow: hidden;
+  }
+  .ref-card .rh {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .ref-card .rh h3 {
+    margin: 0;
+    font-family: var(--font-display); font-weight: 700; font-size: 17px;
+    letter-spacing: -0.02em;
+  }
+  .ref-card .rh h3 em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .ref-card .rh .sub {
+    margin-top: 2px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+
+  .kb-rows { padding: 4px 0; }
+  .kb-row {
+    display: grid; grid-template-columns: 130px 1fr;
+    gap: 14px; align-items: center;
+    padding: 10px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .kb-row:last-child { border-bottom: 0; }
+  .kb-row .keys {
+    display: inline-flex; gap: 4px;
+  }
+  .kb-row .keys .k {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    background: var(--secondary); border: 1px solid var(--border);
+    padding: 3px 7px; border-radius: 4px;
+    color: var(--foreground); letter-spacing: 0.04em;
+    min-width: 22px; text-align: center;
+  }
+  .kb-row .keys .plus { color: var(--muted-foreground); align-self: center; padding: 0 2px; font-size: 11px; }
+  .kb-row .desc {
+    font-size: 12px; line-height: 1.4; color: var(--foreground);
+    letter-spacing: -0.005em;
+  }
+  .kb-row .desc b { font-weight: 700; }
+  .kb-row .desc small {
+    display: block;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em; margin-top: 2px;
+  }
+
+  .type-rows { padding: 4px 0; }
+  .type-row {
+    display: grid; grid-template-columns: 32px auto 1fr auto;
+    gap: 12px; align-items: center;
+    padding: 10px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .type-row:last-child { border-bottom: 0; }
+  .type-row .ic {
+    width: 28px; height: 28px; border-radius: 8px;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .type-row .ic.player { background: var(--primary); color: var(--accent); }
+  .type-row .ic.session { background: rgba(184,133,42,0.14); color: var(--warning-foreground); }
+  .type-row .ic.page { background: rgba(37,99,235,0.10); color: var(--info); }
+  .type-row .ic.action { background: rgba(0,88,64,0.10); color: var(--primary); }
+  .type-row .ic.insight { background: rgba(209,248,67,0.45); color: var(--primary); }
+  .type-row .ic.invoice { background: rgba(163,45,45,0.10); color: var(--destructive); }
+  .type-row .ic i { width: 14px; height: 14px; }
+  .type-row .ic.player {
+    font-family: var(--font-display); font-weight: 700; font-size: 11px;
+  }
+  .type-row .scope-pill {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    background: var(--secondary); color: var(--foreground);
+    padding: 2px 8px; border-radius: 4px;
+    letter-spacing: 0.06em;
+  }
+  .type-row .nm {
+    font-family: var(--font-sans); font-size: 13px; font-weight: 600;
+    color: var(--foreground); letter-spacing: -0.005em;
+  }
+  .type-row .nm small {
+    display: block;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.02em; margin-top: 1px;
+  }
+  .type-row .ret {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    background: var(--secondary); color: var(--muted-foreground);
+    padding: 2px 7px; border-radius: 3px;
+    letter-spacing: 0.06em;
+  }
+
+  /* ===== Final principles footer ===== */
+  .rules {
+    margin-top: 28px; padding: 18px 20px;
+    background: var(--secondary); border-radius: 12px;
+    font-family: var(--font-mono); font-size: 12px;
+    color: var(--muted-foreground); line-height: 1.7;
+  }
+  .rules p { margin: 0; }
+  .rules p + p { margin-top: 8px; }
+  .rules b { color: var(--foreground); font-weight: 700; }
+</style></head>
+<body><div class="card">
+
+  <!-- ===================== HEADER ===================== -->
+  <div class="head">
+    <span class="eb">B8 · ⌘K COMMAND PALETTE</span>
+    <h1>Søk, naviger og <em>handle</em> — fra hvor som helst.</h1>
+    <p class="helper">
+      Power-bruker-primitivet for AgencyOS. Fire scopes på én tast: spillere, sider, handlinger, innstillinger.
+      Hovedvisningen blander spillere, økter, sider og handlinger i én liste. Live preview-pane på høyre side
+      gjenbruker hover-preview-mønsteret. Tale-mic er fast i toppen. Komplementer B3-coagenten —
+      denne er <em>navigasjon</em>, B3 er <em>tolkning</em>.
+    </p>
+  </div>
+
+  <!-- ===================== SECTION 1 — MAIN PALETTE ===================== -->
+  <div class="sec">
+    1 · Hovedvisning med live preview
+    <span class="sub">fuzzy-søk · blandede resultater · preview-pane på høyre</span>
+    <span class="count">920 × 460</span>
+  </div>
+
+  <div class="stage-dark">
+    <div class="chrome">
+      <span class="dot"></span>
+      AGENCYOS <span class="sep">·</span> COMMAND PALETTE
+      <span class="right">
+        <span class="kbd">⌘</span><span class="kbd">K</span> for å åpne overalt
+      </span>
+    </div>
+
+    <div class="palette">
+      <div class="top">
+        <i class="ic" data-lucide="search"></i>
+        <span></span>
+        <div class="query">markus berg<span class="caret"></span></div>
+        <div class="mic"><i data-lucide="mic"></i></div>
+        <div class="kbd-pair"><span class="k">esc</span></div>
+      </div>
+
+      <div class="body-split">
+        <div class="results">
+
+          <div class="rsec">
+            <div class="sh"><span>SPILLERE</span><span class="ct">2 treff</span></div>
+
+            <div class="rrow sel">
+              <span class="ico player">MB</span>
+              <div class="nm">
+                <span class="t"><mark>Markus</mark> <mark>Berg</mark></span>
+                <span class="sub">U18 · GFGK Junior <span class="sep">·</span> HCP 4,2 <span class="sep">·</span> coach Solberg</span>
+              </div>
+              <span class="crumbs">SPILLERE › STALL</span>
+              <span class="ret">↵</span>
+            </div>
+
+            <div class="rrow">
+              <span class="ico player" style="background:var(--cream-200); color:var(--foreground)">MB</span>
+              <div class="nm">
+                <span class="t"><mark>Markus</mark> <mark>Berg</mark>sen</span>
+                <span class="sub">SR · Holtsmark <span class="sep">·</span> HCP 9,8 <span class="sep">·</span> coach Andreas</span>
+              </div>
+              <span class="crumbs">SPILLERE › STALL</span>
+              <span class="ret">↵</span>
+            </div>
+          </div>
+
+          <div class="rsec">
+            <div class="sh"><span>ØKTER · MARKUS BERG</span><span class="ct">3 nylig</span></div>
+
+            <div class="rrow">
+              <span class="ico session"><i data-lucide="target"></i></span>
+              <div class="nm">
+                <span class="t">Innspill 50–90 m · TrackMan</span>
+                <span class="sub">i går · 14:00–14:50 · Oslo GK <span class="sep">·</span> 5 drills · 60 % compliance</span>
+              </div>
+              <span class="crumbs">ØKTER › I DAG</span>
+              <span class="ret">↵</span>
+            </div>
+
+            <div class="rrow">
+              <span class="ico session"><i data-lucide="map"></i></span>
+              <div class="nm">
+                <span class="t">9-hull spillsim · Holtsmark</span>
+                <span class="sub">6. juni · 10:00 <span class="sep">·</span> SG total −1,8 <span class="sep">·</span> 18 hull-runde</span>
+              </div>
+              <span class="crumbs">ØKTER › UKE 24</span>
+              <span class="ret">↵</span>
+            </div>
+
+            <div class="rrow">
+              <span class="ico session"><i data-lucide="circle"></i></span>
+              <div class="nm">
+                <span class="t">Putting-lab · 40 min</span>
+                <span class="sub">2. juni · 09:30 · Oslo GK <span class="sep">·</span> 12/15 gate-3m <span class="sep">·</span> SG putt +0,38</span>
+              </div>
+              <span class="crumbs">ØKTER › UKE 23</span>
+              <span class="ret">↵</span>
+            </div>
+          </div>
+
+          <div class="rsec">
+            <div class="sh"><span>HANDLINGER</span><span class="ct">2 mulige</span></div>
+
+            <div class="rrow">
+              <span class="ico action"><i data-lucide="calendar-plus"></i></span>
+              <div class="nm">
+                <span class="t">Bestill tee-time for <mark>Markus</mark> <mark>Berg</mark></span>
+                <span class="sub">utgående handling <span class="sep">·</span> krever foresatt-godkjenning &gt; 24 t</span>
+              </div>
+              <span class="crumbs">HANDLINGER</span>
+              <span class="ret">⌘↵</span>
+            </div>
+
+            <div class="rrow">
+              <span class="ico action"><i data-lucide="message-square"></i></span>
+              <div class="nm">
+                <span class="t">Send notat til <mark>Markus</mark></span>
+                <span class="sub">intern handling <span class="sep">·</span> publiseres umiddelbart i spiller-tråd</span>
+              </div>
+              <span class="crumbs">HANDLINGER</span>
+              <span class="ret">⌘↵</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- preview pane -->
+        <aside class="preview-pane">
+          <span class="pp-eb">FORHÅNDSVISNING · SPILLER</span>
+
+          <div class="pp-card">
+            <div class="who">
+              <span class="av">MB</span>
+              <div class="nm">Markus Berg<small>U18 · GFGK · HCP 4,2</small></div>
+            </div>
+            <div class="pp-kpi">
+              <div class="k"><span class="l">SG TOTAL · 30D</span><span class="v neg">−1,1</span></div>
+              <div class="k"><span class="l">COMPLIANCE</span><span class="v warn">60%</span></div>
+              <div class="k"><span class="l">CREDITS</span><span class="v">4</span></div>
+            </div>
+            <div class="pp-pyr">
+              <div class="l">PYRAMIDE-AKSER</div>
+              <div class="row"><span class="nm">TUR</span><span class="bar"><span class="f tur" style="width:30%"></span></span><span class="v">30%</span></div>
+              <div class="row"><span class="nm">SPILL</span><span class="bar"><span class="f spill" style="width:65%"></span></span><span class="v">65%</span></div>
+              <div class="row"><span class="nm">SLAG</span><span class="bar"><span class="f slag" style="width:78%"></span></span><span class="v">78%</span></div>
+              <div class="row"><span class="nm">TEK</span><span class="bar"><span class="f tek" style="width:89%"></span></span><span class="v">89%</span></div>
+              <div class="row"><span class="nm">FYS</span><span class="bar"><span class="f fys" style="width:100%"></span></span><span class="v">120%</span></div>
+            </div>
+          </div>
+
+          <div class="pp-next">
+            <div class="l">NESTE PLANLAGT</div>
+            <div class="nm">Innspill · TrackMan · 50 min</div>
+            <div class="meta">tor 12.06 <span class="sep">·</span> 15:30 <span class="sep">·</span> Oslo GK</div>
+          </div>
+
+          <div class="pp-eb" style="margin-top: auto">
+            HOVER ELLER ↑↓ FOR Å BYTTE FORHÅNDSVISNING
+          </div>
+        </aside>
+      </div>
+
+      <div class="pal-foot">
+        <span class="li"><span class="k">↑↓</span> naviger</span>
+        <span class="li"><span class="k">↵</span> åpne</span>
+        <span class="li"><span class="k">⌘↵</span> uten preview</span>
+        <span class="li"><span class="k">⇥</span> bytt scope</span>
+        <span class="li"><span class="k">esc</span> lukk</span>
+        <span class="right">7 TREFF <span style="color:var(--cream-300);margin:0 5px">·</span> SØK <b>42 ms</b></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top: 14px">
+    <div class="frule">
+      <b>Prinsipp.</b> Resultatene grupperes etter <b>type</b> i seksjoner (spillere, økter, handlinger). Preview-panen reagerer på markør-bevegelse —
+      ikke bare på klikk. Søket er fuzzy med <code>mark</code>-uthevet match i begge ord. Tale-mic er alltid synlig, aldri gjemt bak innstillinger.
+    </div>
+  </div>
+
+  <!-- ===================== SECTION 2 — SCOPE MODES ===================== -->
+  <div class="sec">
+    2 · Scope-modi
+    <span class="sub">4 varianter · prefix-symbol åpner spesifikk søk-overflate</span>
+    <span class="count">4 MODI</span>
+  </div>
+
+  <div class="scope-grid">
+
+    <!-- Sider scope -->
+    <div class="scope-card">
+      <div class="sh">
+        <span class="pip pages"><i data-lucide="layout" style="width:11px;height:11px"></i>SIDER</span>
+        <span class="nm">Hopp til side</span>
+        <span class="h"><span class="k">/</span> for å aktivere</span>
+      </div>
+      <div class="input">
+        <i data-lucide="search"></i>
+        <span class="scp pages">/</span>
+        <span class="q"><mark>stall</mark>en</span>
+      </div>
+      <div class="rsec">
+        <div class="rrow sel">
+          <span class="ico page"><i data-lucide="users"></i></span>
+          <div class="nm"><span class="t"><mark>Stallen</mark></span><span class="sub">38 spillere · sortert bak plan først</span></div>
+          <span class="ret">↵</span>
+        </div>
+        <div class="rrow">
+          <span class="ico page"><i data-lucide="git-compare"></i></span>
+          <div class="nm"><span class="t">Multi-spiller sammenligning</span><span class="sub">kohort · 4 spillere side-om-side</span></div>
+          <span class="ret">↵</span>
+        </div>
+        <div class="rrow">
+          <span class="ico page"><i data-lucide="grid-3x3"></i></span>
+          <div class="nm"><span class="t">Tester-stall · matrise</span><span class="sub">8 × 5 tester · uke 22 status</span></div>
+          <span class="ret">↵</span>
+        </div>
+      </div>
+      <div class="pf">
+        <span><span class="k">↵</span> åpne</span>
+        <span><span class="k">esc</span> tilbake til alle</span>
+        <span class="right">3 SIDER</span>
+      </div>
+    </div>
+
+    <!-- Handlinger scope -->
+    <div class="scope-card">
+      <div class="sh">
+        <span class="pip actions"><i data-lucide="zap" style="width:11px;height:11px"></i>HANDLINGER</span>
+        <span class="nm">Utfør handling</span>
+        <span class="h"><span class="k">&gt;</span> for å aktivere</span>
+      </div>
+      <div class="input">
+        <i data-lucide="zap"></i>
+        <span class="scp action">&gt;</span>
+        <span class="q">send <mark>notat</mark></span>
+      </div>
+      <div class="rsec">
+        <div class="rrow sel">
+          <span class="ico action"><i data-lucide="message-square"></i></span>
+          <div class="nm"><span class="t">Send <mark>notat</mark> til spiller</span><span class="sub">intern · velg mottaker etterpå</span></div>
+          <span class="ret">⌘↵</span>
+        </div>
+        <div class="sub-tree">
+          <div class="leaf"><i data-lucide="user"></i><span>Markus Berg</span><span class="meta">SIST: I DAG 09:14</span></div>
+          <div class="leaf"><i data-lucide="user"></i><span>Kaja Helle</span><span class="meta">SIST: 5 D SIDEN</span></div>
+          <div class="leaf"><i data-lucide="users"></i><span>Hele stallen (38)</span><span class="meta">GRUPPE-NOTAT</span></div>
+        </div>
+        <div class="rrow">
+          <span class="ico action"><i data-lucide="mic"></i></span>
+          <div class="nm"><span class="t">Diktér <mark>notat</mark> · tale-input</span><span class="sub">Deepgram · live transkribering</span></div>
+          <span class="ret">⌘↵</span>
+        </div>
+      </div>
+      <div class="pf">
+        <span><span class="k">↵</span> velg</span>
+        <span><span class="k">⌘↵</span> uten utkast</span>
+        <span class="right">2 + 3 underhandlinger</span>
+      </div>
+    </div>
+
+    <!-- Spillere scope -->
+    <div class="scope-card">
+      <div class="sh">
+        <span class="pip"><i data-lucide="user" style="width:11px;height:11px"></i>SPILLERE</span>
+        <span class="nm">Bare spillere</span>
+        <span class="h"><span class="k">@</span> for å aktivere</span>
+      </div>
+      <div class="input">
+        <i data-lucide="user"></i>
+        <span class="scp player">@</span>
+        <span class="q"><mark>k</mark>aja</span>
+      </div>
+      <div class="rsec">
+        <div class="rrow sel">
+          <span class="ico player">KH</span>
+          <div class="nm"><span class="t"><mark>Kaja</mark> Helle</span><span class="sub">U18 · GFGK · HCP 6,8 · <span style="color:var(--destructive)">SKADEPAUSE</span></span></div>
+          <span class="ret">↵</span>
+        </div>
+        <div class="rrow">
+          <span class="ico player" style="background:var(--cream-200); color:var(--foreground)">KJ</span>
+          <div class="nm"><span class="t">Kaja Johansen</span><span class="sub">SR · Oslo GK · HCP 4,5</span></div>
+          <span class="ret">↵</span>
+        </div>
+        <div class="rrow">
+          <span class="ico player" style="background:var(--cream-200); color:var(--foreground)">KS</span>
+          <div class="nm"><span class="t">Kasper Solli</span><span class="sub">U18 · GFGK · HCP 8,8</span></div>
+          <span class="ret">↵</span>
+        </div>
+      </div>
+      <div class="pf">
+        <span><span class="k">↵</span> åpne panel</span>
+        <span><span class="k">⌘↵</span> åpne i ny fane</span>
+        <span class="right">3 TREFF</span>
+      </div>
+    </div>
+
+    <!-- Innstillinger / global -->
+    <div class="scope-card">
+      <div class="sh">
+        <span class="pip global"><i data-lucide="settings-2" style="width:11px;height:11px"></i>INNSTILLINGER</span>
+        <span class="nm">App-innstillinger</span>
+        <span class="h"><span class="k">?</span> for å aktivere</span>
+      </div>
+      <div class="input">
+        <i data-lucide="settings"></i>
+        <span class="scp" style="background:var(--secondary); color:var(--muted-foreground)">?</span>
+        <span class="q"><mark>credits</mark></span>
+      </div>
+      <div class="rsec">
+        <div class="rrow sel">
+          <span class="ico"><i data-lucide="ticket"></i></span>
+          <div class="nm"><span class="t"><mark>Credits</mark>-historikk</span><span class="sub">INNSTILLINGER › ABONNEMENT</span></div>
+          <span class="ret">↵</span>
+        </div>
+        <div class="rrow">
+          <span class="ico"><i data-lucide="repeat"></i></span>
+          <div class="nm"><span class="t">Avbestillings-regler · 24 t</span><span class="sub">INNSTILLINGER › COACHING</span></div>
+          <span class="ret">↵</span>
+        </div>
+        <div class="rrow">
+          <span class="ico"><i data-lucide="receipt"></i></span>
+          <div class="nm"><span class="t">Fakturahistorikk</span><span class="sub">INNSTILLINGER › ABONNEMENT</span></div>
+          <span class="ret">↵</span>
+        </div>
+      </div>
+      <div class="pf">
+        <span><span class="k">↵</span> åpne innstilling</span>
+        <span><span class="k">esc</span> tilbake</span>
+        <span class="right">3 TREFF</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="panel" style="margin-top: 14px">
+    <div class="frule">
+      <b>Prinsipp.</b> Prefix-symboler er <b>muligheten</b>, ikke kravet — det bare-skriv-flyten i hovedvisningen returnerer blandede resultater.
+      Power-brukere lærer <code>/</code> for sider, <code>&gt;</code> for handlinger, <code>@</code> for spillere, <code>?</code> for innstillinger.
+      Backspace fra tom input fjerner scope.
+    </div>
+  </div>
+
+  <!-- ===================== SECTION 3 — EMPTY / RECENT ===================== -->
+  <div class="sec">
+    3 · Tom-tilstand
+    <span class="sub">før første tegn · nylig · foreslått av co-agent</span>
+    <span class="count">2 KOLONNER</span>
+  </div>
+
+  <div style="background: rgba(10,31,23,0.08); padding: 28px; border-radius: 16px;">
+    <div class="empty-stage">
+      <div class="top">
+        <i data-lucide="search"></i>
+        <span class="ph">Søk spillere, økter, sider eller handlinger…</span>
+        <span class="kbd-pair"><span class="k">⌘</span><span class="k">K</span></span>
+      </div>
+
+      <div class="columns">
+
+        <div class="col">
+          <div class="ch"><i data-lucide="clock-3"></i> NYLIG</div>
+          <ul>
+            <li>
+              <span class="ic player">MB</span>
+              <span class="nm">Markus Berg<small>SPILLERPANEL · ÅPNET 3 GANGER I DAG</small></span>
+              <span class="when">1 t SIDEN</span>
+            </li>
+            <li>
+              <span class="ic session"><i data-lucide="target"></i></span>
+              <span class="nm">Innspill-økt · 8. juni<small>MARKUS BERG · COMPLIANCE 60 %</small></span>
+              <span class="when">2 t SIDEN</span>
+            </li>
+            <li>
+              <span class="ic action"><i data-lucide="git-pull-request"></i></span>
+              <span class="nm">Godkjente plan v3.3<small>UTKAST FRA PLAN-COPILOT</small></span>
+              <span class="when">3 t SIDEN</span>
+            </li>
+            <li>
+              <span class="ic player" style="background:var(--cream-200); color:var(--foreground)">KH</span>
+              <span class="nm">Kaja Helle<small>SPILLERPANEL · SKADEPAUSE</small></span>
+              <span class="when">I GÅR</span>
+            </li>
+            <li>
+              <span class="ic session"><i data-lucide="grid-3x3"></i></span>
+              <span class="nm">Tester-stall · uke 22<small>8 SPILLERE · BEREDSKAP</small></span>
+              <span class="when">I GÅR</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="col">
+          <div class="ch"><i data-lucide="sparkles"></i> FORESLÅTT AV CO-AGENT</div>
+          <ul>
+            <li>
+              <span class="ic insight"><i data-lucide="lightbulb"></i></span>
+              <span class="nm">3 spillere bak plan trenger oppfølging<small>MARKUS · KAJA · JONAS</small></span>
+              <span class="when ai">SE</span>
+            </li>
+            <li>
+              <span class="ic action"><i data-lucide="send"></i></span>
+              <span class="nm">Varsle 8 spillere om testuke 22<small>13 DAGER FRAM · IKKE SENDT ENDA</small></span>
+              <span class="when ai">↵</span>
+            </li>
+            <li>
+              <span class="ic action"><i data-lucide="trending-down"></i></span>
+              <span class="nm">Kaja over 11 dager uten økt-logg<small>SKADEPAUSE — SJEKK STATUS</small></span>
+              <span class="when ai">↵</span>
+            </li>
+            <li>
+              <span class="ic action"><i data-lucide="calendar-clock"></i></span>
+              <span class="nm">Bekreft fasilitets-tider · uke 22<small>3 AV 5 TESTER MANGLER BOOKING</small></span>
+              <span class="when ai">↵</span>
+            </li>
+            <li>
+              <span class="ic insight"><i data-lucide="file-text"></i></span>
+              <span class="nm">Ukerapporter klare for utsending<small>5 SPILLERE · GENERERT 06:00</small></span>
+              <span class="when ai">SE</span>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="foot">
+        <span><span class="k">↑↓</span> velg</span>
+        <span><span class="k">↵</span> åpne</span>
+        <span class="right">CO-AGENT-FORSLAG <span style="color:var(--cream-300);margin:0 5px">·</span> OPPDATERT FOR 2 MIN SIDEN</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top: 14px">
+    <div class="frule">
+      <b>Prinsipp.</b> Tom-tilstand er en <b>arbeids-skjerm</b>, ikke en gjettende empty-state. Venstre kolonne er <em>egen</em> historikk (nylig åpnet),
+      høyre kolonne er <em>co-agentens</em> forslag (B3 leverer disse). Power-brukeren bruker den ofte uten å skrive noe i det hele tatt.
+    </div>
+  </div>
+
+  <!-- ===================== SECTION 4 — REFERENCE ===================== -->
+  <div class="sec">
+    4 · Referanse
+    <span class="sub">tastatur · resultat-typer</span>
+    <span class="count">SPEC</span>
+  </div>
+
+  <div class="ref-grid">
+
+    <!-- Keyboard reference -->
+    <div class="ref-card">
+      <div class="rh">
+        <h3>Tastatur-<em>kart</em></h3>
+        <div class="sub">SAMME OPPFØRSEL OVERALT I APPEN</div>
+      </div>
+      <div class="kb-rows">
+        <div class="kb-row">
+          <div class="keys"><span class="k">⌘</span><span class="plus">+</span><span class="k">K</span></div>
+          <div class="desc">Åpne palette<small>fungerer fra hvilken som helst side</small></div>
+        </div>
+        <div class="kb-row">
+          <div class="keys"><span class="k">↑</span><span class="k">↓</span></div>
+          <div class="desc">Naviger resultater<small>preview-pane oppdaterer seg samtidig</small></div>
+        </div>
+        <div class="kb-row">
+          <div class="keys"><span class="k">↵</span></div>
+          <div class="desc">Åpne valgt resultat<small>navigerer eller åpner utkast for handling</small></div>
+        </div>
+        <div class="kb-row">
+          <div class="keys"><span class="k">⌘</span><span class="plus">+</span><span class="k">↵</span></div>
+          <div class="desc">Åpne uten utkast<small>for handlinger: utfør direkte hvis intern · for sider: åpne i ny fane</small></div>
+        </div>
+        <div class="kb-row">
+          <div class="keys"><span class="k">⇥</span></div>
+          <div class="desc">Bytt mellom scope-modi<small>uten å gå via prefix-symbol</small></div>
+        </div>
+        <div class="kb-row">
+          <div class="keys"><span class="k">⌫</span></div>
+          <div class="desc">Fjern scope-chip<small>fra tom input · ellers vanlig slett</small></div>
+        </div>
+        <div class="kb-row">
+          <div class="keys"><span class="k">⌘</span><span class="plus">+</span><span class="k">M</span></div>
+          <div class="desc">Aktiver tale-input<small>Deepgram · norsk · tolkes av B3-coagent</small></div>
+        </div>
+        <div class="kb-row">
+          <div class="keys"><span class="k">Esc</span></div>
+          <div class="desc">Lukk palette eller fjern scope<small>etter hva som er aktivt</small></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Result types -->
+    <div class="ref-card">
+      <div class="rh">
+        <h3>Resultat-<em>typer</em></h3>
+        <div class="sub">SEKS KATEGORIER MED EGEN VISUELL SIGNATUR</div>
+      </div>
+      <div class="type-rows">
+
+        <div class="type-row">
+          <span class="ic player">MB</span>
+          <span class="scope-pill">@</span>
+          <div class="nm">Spiller<small>åpner spiller-panel · forhåndsviser KPI + pyramide</small></div>
+          <span class="ret">↵</span>
+        </div>
+
+        <div class="type-row">
+          <span class="ic session"><i data-lucide="target"></i></span>
+          <span class="scope-pill">—</span>
+          <div class="nm">Økt<small>åpner økt-detalj · forhåndsviser drills + compliance</small></div>
+          <span class="ret">↵</span>
+        </div>
+
+        <div class="type-row">
+          <span class="ic page"><i data-lucide="layout"></i></span>
+          <span class="scope-pill">/</span>
+          <div class="nm">Side<small>navigerer til app-side · ingen preview</small></div>
+          <span class="ret">↵</span>
+        </div>
+
+        <div class="type-row">
+          <span class="ic action"><i data-lucide="zap"></i></span>
+          <span class="scope-pill">&gt;</span>
+          <div class="nm">Handling<small>åpner utkast for godkjenning (utgående) eller utfører (intern)</small></div>
+          <span class="ret">⌘↵</span>
+        </div>
+
+        <div class="type-row">
+          <span class="ic insight"><i data-lucide="lightbulb"></i></span>
+          <span class="scope-pill">—</span>
+          <div class="nm">Innsikt<small>åpner narrativ-kort · forhåndsviser hovedsetning</small></div>
+          <span class="ret">↵</span>
+        </div>
+
+        <div class="type-row">
+          <span class="ic invoice"><i data-lucide="receipt"></i></span>
+          <span class="scope-pill">—</span>
+          <div class="nm">Faktura<small>åpner faktura-detalj · forhåndsviser sum + status</small></div>
+          <span class="ret">↵</span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===================== PRINCIPLES FOOTER ===================== -->
+  <div class="rules">
+    <p><b>Søk er navigasjon, palette er det viktigste verktøyet.</b> Power-brukere skal sjelden bruke menyer — alt går gjennom ⌘K. Designet er optimalisert for å være rask og lesbart, ikke å imponere.</p>
+    <p><b>Preview-pane er ikke en hover-tooltip.</b> Den oppdateres med tastatur-navigering, viser samme rik-data som spiller-panelet, og gjør at coachen kan finne riktig spiller uten å åpne den.</p>
+    <p><b>Komplementer co-agenten i B3.</b> Denne palette finner og åpner ting som finnes. B3-palette tolker naturlig språk og foreslår nye handlinger. Begge kjører i samme overlay, samme tastatur, samme mic — bare ulike søke-modi.</p>
+    <p><b>Loggføres alltid.</b> Hver palette-bruk logges i audit (B3 sek. 4) som "menneske · ⌘K"-rad — så vi kan måle hva folk faktisk leter etter, og forbedre fuzzy-rangering.</p>
+  </div>
+
+  <script>lucide.createIcons();</script>
+</div></body></html>

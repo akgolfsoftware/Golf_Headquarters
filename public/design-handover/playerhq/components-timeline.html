@@ -1,0 +1,2423 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Periodisering · Tidslinje</title>
+<link rel="stylesheet" href="_shared.css">
+<script src="https://unpkg.com/lucide@0.453.0"></script>
+<style>
+  @property --period-color {
+    syntax: '<color>';
+    inherits: true;
+    initial-value: var(--primary);
+  }
+
+  body { width: 1200px; }
+  .card { padding: 24px; position: relative; }
+
+  /* ============================================================
+     CARD CHROME
+     ============================================================ */
+  .ts-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  /* === HEADER === */
+  .ts-head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 24px;
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .ts-eyebrow {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .ts-eyebrow .pulse {
+    width: 6px; height: 6px; border-radius: 9999px;
+    background: var(--accent); box-shadow: 0 0 6px rgba(209,248,67,0.6);
+    position: relative;
+  }
+  .ts-eyebrow .pulse::after {
+    content: ""; position: absolute; inset: 0; border-radius: 9999px;
+    background: var(--accent);
+    animation: ping 1500ms cubic-bezier(0,0,0.2,1) infinite; opacity: 0.6;
+  }
+  @keyframes ping { 70%,100% { transform: scale(2.6); opacity: 0; } }
+  .ts-title {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 22px; line-height: 1.1; letter-spacing: -0.015em;
+    margin: 4px 0 0;
+  }
+  .ts-title em {
+    font-style: italic; font-weight: 400;
+    color: var(--muted-foreground);
+    margin-left: 4px;
+  }
+
+  /* View switcher tabs */
+  .ts-views {
+    display: flex; gap: 2px;
+    padding: 3px;
+    background: var(--secondary);
+    border-radius: 10px;
+  }
+  .view-tab {
+    border: 0; background: transparent; cursor: pointer;
+    font-family: var(--font-display);
+    font-weight: 600; font-size: 12px;
+    letter-spacing: -0.005em;
+    color: var(--muted-foreground);
+    padding: 7px 12px;
+    border-radius: 8px;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: background 150ms, color 150ms, box-shadow 150ms;
+  }
+  .view-tab svg { width: 13px; height: 13px; }
+  .view-tab:hover { color: var(--foreground); }
+  .view-tab.is-active {
+    background: var(--card);
+    color: var(--foreground);
+    box-shadow: 0 1px 2px rgba(10,31,23,0.06), 0 0 0 1px var(--border);
+  }
+
+  /* ============================================================
+     TIMELINE
+     ============================================================ */
+  .ts-body {
+    padding: 16px 20px 20px;
+  }
+
+  /* Month scale strip */
+  .ts-scale {
+    display: flex;
+    margin-bottom: 8px;
+  }
+  .ts-label-cell {
+    flex: 0 0 96px;
+    padding: 0 12px 0 0;
+    box-sizing: border-box;
+  }
+  .ts-canvas {
+    flex: 1;
+    position: relative;
+    height: 100%;
+  }
+  .ts-months {
+    display: flex;
+    position: relative;
+    height: 30px;
+    border-bottom: 1px solid var(--border);
+  }
+  .ts-month {
+    position: relative;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 0 6px 6px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--muted-foreground);
+    border-left: 1px solid rgba(10,31,23,0.06);
+  }
+  .ts-month:first-child { border-left: 0; }
+  .ts-month .mn-name { color: var(--foreground); }
+  .ts-month .mn-weeks {
+    font-size: 9px; font-weight: 500; letter-spacing: 0.05em;
+    color: var(--muted-foreground);
+    opacity: 0.7;
+    margin-top: 1px;
+  }
+  /* Quarter-year markers */
+  .ts-month.is-quarter { border-left-color: rgba(10,31,23,0.18); }
+
+  /* === TRACK === */
+  .ts-track {
+    display: flex;
+    align-items: stretch;
+    border-bottom: 1px solid var(--border);
+  }
+  .ts-track:last-of-type { border-bottom: 0; }
+  .ts-track .ts-label-cell {
+    display: flex; flex-direction: column; justify-content: center;
+    gap: 2px;
+    padding-right: 12px;
+  }
+  .trk-label {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--foreground);
+  }
+  .trk-sub {
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--muted-foreground);
+    font-feature-settings: "tnum","zero";
+  }
+
+  /* Background grid on canvas (month lines) */
+  .ts-canvas.has-grid {
+    background-image:
+      linear-gradient(to right,
+        rgba(10,31,23,0.06) 1px, transparent 1px);
+    background-size: 8.333% 100%;
+  }
+
+  /* === MAIN PERIOD TRACK === */
+  .ts-track-main { padding: 14px 0; }
+  .ts-track-main .ts-canvas {
+    height: 56px;
+  }
+
+  .period {
+    position: absolute;
+    top: 0; bottom: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: filter 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+    --period-color: var(--primary);
+  }
+  .period[data-id="grunn"] { --period-color: var(--primary); }
+  .period[data-id="spes"]  { --period-color: var(--warning); }
+  .period[data-id="turn"]  { --period-color: var(--destructive); }
+
+  .period .p-bg {
+    position: absolute; inset: 0;
+    background-color: var(--period-color);
+  }
+  .period .p-bg::before {
+    /* depth overlay — same DNA as pyramid */
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(to bottom,
+      rgba(255,255,255,0.18) 0%,
+      rgba(255,255,255,0.04) 14%,
+      rgba(255,255,255,0)    36%,
+      rgba(0,0,0,0)          62%,
+      rgba(0,0,0,0.08)       86%,
+      rgba(0,0,0,0.18)      100%);
+    pointer-events: none;
+  }
+  .period .p-bg::after {
+    /* rim light on top edge */
+    content: "";
+    position: absolute; left: 0; right: 0; top: 0;
+    height: 1px;
+    background: linear-gradient(to right,
+      rgba(255,255,255,0) 0%,
+      rgba(255,255,255,0.4) 18%,
+      rgba(255,255,255,0.5) 50%,
+      rgba(255,255,255,0.4) 82%,
+      rgba(255,255,255,0) 100%);
+    pointer-events: none;
+  }
+  .period:hover { filter: brightness(1.04); }
+  .period.is-active {
+    box-shadow: 0 0 0 2px var(--card), 0 0 0 4px var(--period-color), 0 10px 22px rgba(10,31,23,0.18);
+    z-index: 3;
+  }
+
+  .period-content {
+    position: relative;
+    height: 100%;
+    padding: 0 14px;
+    color: var(--cream-50);
+    display: flex; align-items: center; gap: 12px;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .period-num {
+    font-family: var(--font-display);
+    font-style: italic; font-weight: 400;
+    font-size: 24px; line-height: 1;
+    letter-spacing: -0.02em;
+    opacity: 0.7;
+    font-feature-settings: "tnum","zero";
+  }
+  .period-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .period-name {
+    font-family: var(--font-display);
+    font-weight: 600; font-size: 14px;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.10);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .period-meta {
+    font-family: var(--font-mono);
+    font-size: 10px; font-weight: 500;
+    color: rgba(250,250,247,0.85);
+    font-feature-settings: "tnum","zero";
+    letter-spacing: 0.02em;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  /* Drag handles on period boundaries */
+  .boundary {
+    position: absolute;
+    top: -2px; bottom: -2px;
+    width: 8px;
+    transform: translateX(-50%);
+    cursor: ew-resize;
+    z-index: 5;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .boundary::before {
+    content: "";
+    width: 2px; height: 100%;
+    background: var(--card);
+    border-radius: 9999px;
+    transition: width 150ms, background 150ms;
+  }
+  .boundary::after {
+    content: "";
+    position: absolute;
+    width: 8px; height: 28px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(10,31,23,0.18);
+    opacity: 0;
+    transition: opacity 150ms;
+  }
+  .boundary:hover::after,
+  .boundary.is-dragging::after { opacity: 1; }
+  .boundary:hover::before { background: transparent; }
+
+  /* Date tooltip while dragging */
+  .drag-tip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translate(-50%, -8px);
+    background: var(--forest-900);
+    color: var(--cream-100);
+    font-family: var(--font-mono);
+    font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    padding: 4px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 120ms;
+    font-feature-settings: "tnum","zero";
+  }
+  .drag-tip::after {
+    content: "";
+    position: absolute;
+    left: 50%; top: 100%;
+    transform: translateX(-50%);
+    border: 4px solid transparent;
+    border-top-color: var(--forest-900);
+  }
+  .boundary.is-dragging .drag-tip,
+  .boundary:hover .drag-tip { opacity: 1; }
+
+  /* === SUB-TRACKS === */
+  .ts-track-sub { padding: 8px 0; }
+  .ts-track-sub .ts-canvas { height: 22px; }
+
+  .sub-block {
+    position: absolute;
+    top: 0; bottom: 0;
+    border-radius: 5px;
+    display: flex; align-items: center;
+    padding: 0 8px;
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap; overflow: hidden;
+    cursor: pointer;
+    transition: filter 150ms, transform 150ms;
+  }
+  .sub-block:hover { filter: brightness(1.05); transform: translateY(-1px); }
+
+  /* Restitusjon — soft success green */
+  .sub-block.rest {
+    background: rgba(26,125,86,0.18);
+    color: var(--success);
+    border: 1px solid rgba(26,125,86,0.35);
+  }
+  /* Ferie — neutral warm */
+  .sub-block.ferie {
+    background: rgba(94,92,87,0.14);
+    color: var(--warm-gray);
+    border: 1px solid rgba(94,92,87,0.30);
+  }
+  /* Eksamen — info blue */
+  .sub-block.eksamen {
+    background: rgba(37,99,235,0.14);
+    color: var(--course-water);
+    border: 1px solid rgba(37,99,235,0.30);
+  }
+
+  /* Tournament point markers */
+  .tournament {
+    position: absolute;
+    top: 0; bottom: 0;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center;
+    cursor: grab;
+    touch-action: none;
+  }
+  .tournament.is-dragging { cursor: grabbing; z-index: 10; }
+  .sub-block.is-dragging { cursor: grabbing; z-index: 10; box-shadow: 0 4px 10px rgba(10,31,23,0.18); }
+  .sub-block { cursor: grab; touch-action: none; position: relative; }
+  /* Edge-resize affordance — subtle gripper on hover */
+  .sub-block::before, .sub-block::after {
+    content: ""; position: absolute;
+    top: 4px; bottom: 4px; width: 3px;
+    border-radius: 9999px;
+    background: currentColor;
+    opacity: 0;
+    transition: opacity 120ms;
+    pointer-events: none;
+  }
+  .sub-block::before { left: 3px; }
+  .sub-block::after  { right: 3px; }
+  .sub-block:hover::before,
+  .sub-block:hover::after { opacity: 0.55; }
+  .sub-block.is-resize { cursor: ew-resize; }
+
+  /* Global drag tooltip (follows cursor during drag) */
+  .drag-tip-global {
+    position: fixed;
+    background: var(--forest-900);
+    color: var(--cream-100);
+    font-family: var(--font-mono);
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    padding: 5px 9px;
+    border-radius: 8px;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 200;
+    font-feature-settings: "tnum","zero";
+    transform: translate(-50%, -130%);
+    box-shadow: 0 6px 18px rgba(10,31,23,0.32);
+    opacity: 0;
+    transition: opacity 80ms ease-out;
+  }
+  .drag-tip-global.is-visible { opacity: 1; }
+  .drag-tip-global::after {
+    content: ""; position: absolute;
+    left: 50%; top: 100%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--forest-900);
+  }
+  .tournament .t-dot {
+    width: 10px; height: 10px; border-radius: 9999px;
+    background: var(--destructive);
+    border: 2px solid var(--card);
+    box-shadow: 0 0 0 1px rgba(163,45,45,0.4), 0 2px 4px rgba(10,31,23,0.18);
+    margin-top: 6px;
+    transition: transform 150ms;
+  }
+  .tournament:hover .t-dot { transform: scale(1.2); }
+  .tournament .t-label {
+    position: absolute;
+    top: 22px;
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--foreground);
+    white-space: nowrap;
+    padding: 1px 5px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    opacity: 0;
+    transition: opacity 150ms;
+    pointer-events: none;
+  }
+  .tournament:hover .t-label,
+  .tournament.is-major .t-label { opacity: 1; }
+  .tournament.is-major .t-dot {
+    width: 12px; height: 12px;
+    background: var(--accent);
+    box-shadow: 0 0 0 2px var(--destructive), 0 0 0 4px rgba(163,45,45,0.2);
+  }
+
+  /* === NOW LINE === */
+  .now-line {
+    position: absolute;
+    top: -8px; bottom: -8px;
+    width: 2px;
+    background: var(--accent);
+    z-index: 4;
+    pointer-events: none;
+    transform: translateX(-50%);
+  }
+  .now-line::before {
+    content: "";
+    position: absolute; top: -5px; left: -4px;
+    width: 10px; height: 10px; border-radius: 9999px;
+    background: var(--accent);
+    box-shadow: 0 0 8px rgba(209,248,67,0.7);
+  }
+  .now-line .now-pin {
+    position: absolute;
+    top: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-mono);
+    font-size: 9.5px; font-weight: 700;
+    color: var(--primary);
+    background: var(--accent);
+    padding: 2px 6px;
+    border-radius: 9999px;
+    white-space: nowrap;
+    letter-spacing: 0.08em;
+  }
+
+  /* ============================================================
+     QUICK PLANNING PANEL (slides in when period selected)
+     ============================================================ */
+  .qp-panel {
+    margin: 12px 20px 20px;
+    background: var(--secondary);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    --period-color: var(--warning);
+  }
+  .qp-accent {
+    height: 4px;
+    background-color: var(--period-color);
+    transition: background-color 200ms;
+  }
+  .qp-body {
+    display: grid;
+    grid-template-columns: 280px 1fr 200px;
+    gap: 28px;
+    padding: 18px 20px;
+    align-items: center;
+  }
+
+  .qp-summary {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .qp-summary .qp-eyebrow {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    display: inline-flex; align-items: center; gap: 7px;
+  }
+  .qp-summary .qp-eyebrow .dot {
+    width: 7px; height: 7px; border-radius: 9999px;
+    background-color: var(--period-color);
+    transition: background-color 200ms;
+  }
+  .qp-summary .qp-title {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 18px; letter-spacing: -0.015em;
+    margin: 4px 0 2px;
+  }
+  .qp-summary .qp-dates {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted-foreground);
+    font-feature-settings: "tnum","zero";
+    letter-spacing: 0.02em;
+  }
+
+  .qp-steppers {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 18px;
+  }
+  .qp-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 0;
+  }
+  .qp-dot {
+    width: 8px; height: 8px; border-radius: 9999px;
+    flex-shrink: 0;
+  }
+  .qp-name {
+    font-family: var(--font-display);
+    font-weight: 500; font-size: 13px;
+    letter-spacing: -0.005em;
+    color: var(--foreground);
+    flex: 1;
+  }
+  .qp-stepper {
+    display: inline-flex; align-items: center; gap: 0;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .qp-stepper button {
+    width: 24px; height: 26px;
+    border: 0; background: transparent;
+    color: var(--muted-foreground);
+    font-family: var(--font-mono); font-size: 13px;
+    cursor: pointer;
+    transition: background 120ms, color 120ms;
+  }
+  .qp-stepper button:hover { background: var(--secondary); color: var(--foreground); }
+  .qp-stepper .qp-val {
+    min-width: 26px; height: 26px;
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    color: var(--foreground);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-feature-settings: "tnum","zero";
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+  }
+  .qp-unit {
+    font-family: var(--font-mono); font-size: 9px;
+    color: var(--muted-foreground);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin-left: 4px;
+  }
+
+  .qp-cta {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .qp-total {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted-foreground);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    text-align: right;
+  }
+  .qp-total b {
+    font-family: var(--font-mono); font-weight: 700;
+    color: var(--foreground); font-size: 14px;
+    text-transform: none; letter-spacing: 0;
+    display: block;
+    margin-top: 2px;
+    font-feature-settings: "tnum","zero";
+  }
+  .qp-generate {
+    border: 0;
+    background: var(--primary);
+    color: var(--accent);
+    padding: 11px 14px;
+    border-radius: 10px;
+    font-family: var(--font-display);
+    font-weight: 600; font-size: 13px;
+    letter-spacing: -0.005em;
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    box-shadow: 0 6px 14px rgba(209,248,67,0.18);
+    transition: background 150ms, transform 150ms;
+  }
+  .qp-generate svg { width: 14px; height: 14px; }
+  .qp-generate:hover { background: var(--forest-700); transform: translateY(-1px); }
+
+  /* Coming-soon stub for other views */
+  .ts-stub {
+    padding: 80px 24px;
+    text-align: center;
+    color: var(--muted-foreground);
+  }
+  .ts-stub .stub-icon {
+    width: 44px; height: 44px;
+    background: var(--secondary);
+    border-radius: 12px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted-foreground);
+    margin-bottom: 12px;
+  }
+  .ts-stub h3 {
+    font-family: var(--font-display);
+    font-size: 18px; font-weight: 600;
+    letter-spacing: -0.015em;
+    margin: 0 0 4px;
+    color: var(--foreground);
+  }
+  .ts-stub p {
+    font-size: 13px;
+    margin: 0;
+    color: var(--muted-foreground);
+  }
+
+  [hidden] { display: none !important; }
+
+  /* ============================================================
+     ENHANCED QP — sessions × minutes × total hours
+     ============================================================ */
+  .qp-body-v2 {
+    display: grid;
+    grid-template-columns: 280px 1fr 220px;
+    gap: 28px;
+    padding: 18px 20px 20px;
+    align-items: start;
+  }
+  .qp-col-left, .qp-col-mid, .qp-col-right {
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .qp-section-label {
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .qp-section-label .badge {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--foreground);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    font-feature-settings: "tnum","zero";
+  }
+  .qp-section-label::after {
+    content: ""; flex: 1; height: 1px;
+    background: var(--border);
+  }
+
+  /* === Faste treninger list === */
+  .qp-fixed-list {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .qp-fixed-item {
+    display: grid;
+    grid-template-columns: 14px 1fr auto;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 12px;
+  }
+  .qp-fixed-item .fx-dot {
+    width: 6px; height: 6px; border-radius: 9999px;
+    background: var(--forest-500);
+    justify-self: center;
+  }
+  .qp-fixed-item .fx-text {
+    min-width: 0;
+    display: flex; flex-direction: column; gap: 1px;
+  }
+  .qp-fixed-item .fx-name {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: 12.5px; letter-spacing: -0.005em;
+    color: var(--foreground);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .qp-fixed-item .fx-when {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted-foreground);
+    font-feature-settings: "tnum","zero";
+    letter-spacing: 0.02em;
+  }
+  .qp-fixed-item .fx-hrs {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--foreground);
+    font-feature-settings: "tnum","zero";
+  }
+  .qp-add-link {
+    border: 1px dashed var(--border);
+    background: transparent;
+    color: var(--muted-foreground);
+    padding: 7px 10px;
+    border-radius: 8px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    transition: background 150ms, color 150ms, border-color 150ms;
+  }
+  .qp-add-link:hover {
+    background: var(--card); color: var(--foreground); border-color: var(--input);
+  }
+  .qp-add-link svg { width: 11px; height: 11px; }
+
+  /* === Stepper rows v2 (sessions × mins × hours) === */
+  .qp-rows-v2 {
+    display: flex; flex-direction: column;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .qp-row-v2 {
+    display: grid;
+    grid-template-columns: 14px 1fr 96px 96px 80px;
+    gap: 12px;
+    align-items: center;
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .qp-row-v2:last-child { border-bottom: 0; }
+  .qp-row-v2 .v2-dot {
+    width: 8px; height: 8px; border-radius: 9999px;
+  }
+  .qp-row-v2 .v2-name {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 13px; letter-spacing: -0.005em;
+    color: var(--foreground);
+  }
+  .qp-row-v2 .v2-stepper {
+    display: inline-flex; align-items: stretch;
+    background: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    height: 26px;
+  }
+  .qp-row-v2 .v2-stepper button {
+    width: 24px;
+    border: 0; background: transparent;
+    color: var(--muted-foreground);
+    font-family: var(--font-mono); font-size: 13px;
+    cursor: pointer;
+  }
+  .qp-row-v2 .v2-stepper button:hover { background: var(--secondary); color: var(--foreground); }
+  .qp-row-v2 .v2-stepper .val {
+    flex: 1;
+    font-family: var(--font-mono); font-size: 11.5px; font-weight: 700;
+    color: var(--foreground);
+    display: inline-flex; align-items: center; justify-content: center;
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    font-feature-settings: "tnum","zero";
+  }
+  .qp-row-v2 .v2-stepper .val-unit {
+    font-size: 9px; font-weight: 500;
+    color: var(--muted-foreground);
+    margin-left: 3px;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .qp-row-v2 .v2-hours {
+    text-align: right;
+    font-family: var(--font-mono);
+    font-size: 12.5px; font-weight: 700;
+    color: var(--foreground);
+    font-feature-settings: "tnum","zero";
+  }
+  .qp-row-v2 .v2-hours .v2-hours-unit {
+    font-size: 9.5px; font-weight: 600;
+    color: var(--muted-foreground);
+    margin-left: 3px;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .qp-row-v2[data-zero="true"] {
+    opacity: 0.5;
+  }
+
+  /* === Right column totals === */
+  .qp-totals {
+    display: flex; flex-direction: column; gap: 8px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+  .qp-tot-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted-foreground);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .qp-tot-row b {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--foreground);
+    text-transform: none;
+    letter-spacing: -0.01em;
+    font-feature-settings: "tnum","zero";
+  }
+  .qp-tot-row.is-period b { font-size: 13px; }
+  .qp-tot-divider {
+    border-top: 1px dashed var(--border);
+    margin: 2px 0;
+  }
+
+  /* Sync badge for turn period — links to turneringsplanlegger */
+  .qp-sync {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 10px;
+    background: rgba(163,45,45,0.08);
+    border: 1px solid rgba(163,45,45,0.20);
+    color: var(--destructive);
+    border-radius: 8px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .qp-sync svg { width: 11px; height: 11px; }
+  .qp-sync.is-hidden { display: none; }
+
+  /* ============================================================
+     LIST VIEW
+     ============================================================ */
+  .ts-list {
+    display: flex; flex-direction: column;
+    padding: 4px 20px 20px;
+  }
+  .list-section {
+    border-bottom: 1px solid var(--border);
+  }
+  .list-section:last-child { border-bottom: 0; }
+  .list-head {
+    display: grid;
+    grid-template-columns: 28px 36px 1fr auto auto;
+    gap: 14px;
+    align-items: center;
+    padding: 16px 0;
+    cursor: pointer;
+    user-select: none;
+  }
+  .list-toggle {
+    width: 24px; height: 24px;
+    background: var(--secondary);
+    border: 0;
+    border-radius: 6px;
+    color: var(--muted-foreground);
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: transform 200ms;
+  }
+  .list-toggle svg { width: 13px; height: 13px; }
+  .list-section[data-collapsed="true"] .list-toggle { transform: rotate(-90deg); }
+  .list-section[data-collapsed="true"] .list-body { display: none; }
+  .list-num {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--cream-50);
+    font-family: var(--font-display);
+    font-weight: 700; font-size: 14px;
+    letter-spacing: -0.01em;
+    font-feature-settings: "tnum","zero";
+  }
+  .list-section[data-id="grunn"] .list-num { background: var(--primary); }
+  .list-section[data-id="spes"]  .list-num { background: var(--warning); }
+  .list-section[data-id="turn"]  .list-num { background: var(--destructive); }
+
+  .list-title-wrap {
+    display: flex; flex-direction: column; gap: 2px;
+    min-width: 0;
+  }
+  .list-title {
+    font-family: var(--font-display);
+    font-weight: 700; font-size: 18px;
+    letter-spacing: -0.015em;
+    color: var(--foreground);
+    line-height: 1.1;
+  }
+  .list-sub {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted-foreground);
+    font-feature-settings: "tnum","zero";
+    letter-spacing: 0.02em;
+  }
+  .list-totals {
+    text-align: right;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted-foreground);
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .list-totals b {
+    font-family: var(--font-mono);
+    font-weight: 700; font-size: 16px;
+    color: var(--foreground);
+    display: block;
+    text-transform: none; letter-spacing: -0.01em;
+    margin-top: 2px;
+    font-feature-settings: "tnum","zero";
+  }
+
+  .list-body {
+    padding: 0 0 16px 78px;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .list-group {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .list-group-head {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    display: flex; align-items: center; gap: 8px;
+    padding-right: 10px;
+  }
+  .list-group-head .count {
+    color: var(--foreground); font-weight: 700;
+  }
+  .list-group-head::after {
+    content: ""; flex: 1; height: 1px; background: var(--border);
+  }
+  .list-items {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; flex-direction: column;
+  }
+  .list-item {
+    display: grid;
+    grid-template-columns: 14px 1fr auto auto auto;
+    gap: 14px;
+    align-items: center;
+    padding: 9px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    transition: background 120ms;
+  }
+  .list-item:hover { background: var(--card); }
+  .list-item .li-dot {
+    width: 7px; height: 7px; border-radius: 9999px;
+    justify-self: center;
+  }
+  .list-item .li-name {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 13px;
+    letter-spacing: -0.005em;
+    color: var(--foreground);
+  }
+  .list-item .li-meta {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted-foreground);
+    font-feature-settings: "tnum","zero";
+    letter-spacing: 0.02em;
+  }
+  .list-item .li-vol {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+    color: var(--foreground);
+    font-feature-settings: "tnum","zero";
+    text-align: right;
+  }
+  .list-item .li-tag {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: var(--secondary);
+    color: var(--muted-foreground);
+  }
+  .list-item .li-tag.is-fixed   { background: rgba(0,88,64,0.10);   color: var(--primary); }
+  .list-item .li-tag.is-tournament { background: rgba(163,45,45,0.10); color: var(--destructive); }
+  .list-item .li-tag.is-rest    { background: rgba(26,125,86,0.12);  color: var(--success); }
+  .list-item .li-tag.is-other   { background: rgba(37,99,235,0.10);  color: var(--course-water); }
+
+  /* ============================================================
+     KANBAN VIEW
+     ============================================================ */
+  .ts-kanban {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    padding: 4px 20px 20px;
+  }
+  .kan-col {
+    background: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    min-height: 460px;
+  }
+  .kan-head {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 4px;
+    position: relative;
+  }
+  .kan-head::before {
+    content: "";
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: var(--kan-color, var(--primary));
+  }
+  .kan-col[data-id="grunn"] { --kan-color: var(--primary); }
+  .kan-col[data-id="spes"]  { --kan-color: var(--warning); }
+  .kan-col[data-id="turn"]  { --kan-color: var(--destructive); }
+  .kan-head .kan-eyebrow {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .kan-head .kan-eyebrow b {
+    color: var(--kan-color); font-weight: 700;
+  }
+  .kan-head .kan-title {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 17px; letter-spacing: -0.015em;
+    color: var(--foreground);
+  }
+  .kan-head .kan-stats {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted-foreground);
+    font-feature-settings: "tnum","zero";
+    letter-spacing: 0.02em;
+    margin-top: 2px;
+  }
+  .kan-body {
+    flex: 1;
+    padding: 10px;
+    display: flex; flex-direction: column; gap: 8px;
+    background: var(--secondary);
+  }
+  .kan-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    cursor: grab;
+    transition: box-shadow 150ms, transform 150ms, border-color 150ms;
+    display: flex; flex-direction: column; gap: 6px;
+    position: relative;
+  }
+  .kan-card:hover {
+    box-shadow: 0 4px 12px rgba(10,31,23,0.08);
+    transform: translateY(-1px);
+  }
+  .kan-card.is-fixed {
+    border-color: rgba(0,88,64,0.30);
+    background: rgba(0,88,64,0.04);
+  }
+  .kan-card.is-tournament {
+    border-color: rgba(163,45,45,0.30);
+    background: rgba(163,45,45,0.04);
+  }
+  .kan-card.is-other {
+    border-color: rgba(37,99,235,0.30);
+    background: rgba(37,99,235,0.04);
+  }
+  .kan-card .kc-top {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .kan-card .kc-left {
+    display: flex; align-items: center; gap: 8px;
+    min-width: 0;
+    flex: 1;
+  }
+  .kan-card .kc-dot {
+    width: 8px; height: 8px; border-radius: 9999px;
+    flex-shrink: 0;
+  }
+  .kan-card .kc-name {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: 13px; letter-spacing: -0.005em;
+    color: var(--foreground);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .kan-card .kc-vol {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--foreground);
+    font-feature-settings: "tnum","zero";
+    flex-shrink: 0;
+  }
+  .kan-card .kc-meta {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted-foreground);
+    font-feature-settings: "tnum","zero";
+    letter-spacing: 0.02em;
+  }
+  .kan-card .kc-tag {
+    font-family: var(--font-mono); font-size: 8.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    padding: 2px 6px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .kan-card.is-fixed .kc-tag { background: rgba(0,88,64,0.10);   color: var(--primary); }
+  .kan-card.is-tournament .kc-tag { background: rgba(163,45,45,0.10); color: var(--destructive); }
+  .kan-card.is-other .kc-tag { background: rgba(37,99,235,0.10);  color: var(--course-water); }
+
+  .kan-add {
+    border: 1px dashed var(--border);
+    background: transparent;
+    color: var(--muted-foreground);
+    padding: 10px;
+    border-radius: 8px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    margin-top: 2px;
+  }
+  .kan-add:hover { background: var(--card); color: var(--foreground); border-color: var(--input); }
+
+  /* ============================================================
+     DASHBOARD VIEW
+     ============================================================ */
+  .ts-dash {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    padding: 4px 20px 20px;
+  }
+  .dash-kpi {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex; flex-direction: column; gap: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+  .dash-kpi .kpi-lbl {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--muted-foreground);
+  }
+  .dash-kpi .kpi-val {
+    font-family: var(--font-mono); font-weight: 700;
+    font-size: 32px; line-height: 1.05;
+    letter-spacing: -0.025em;
+    color: var(--foreground);
+    margin-top: 4px;
+    font-feature-settings: "tnum","zero";
+  }
+  .dash-kpi .kpi-val .kpi-unit {
+    font-size: 14px; font-weight: 600;
+    color: var(--muted-foreground);
+    margin-left: 4px;
+    letter-spacing: 0;
+  }
+  .dash-kpi .kpi-sub {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted-foreground);
+    font-feature-settings: "tnum","zero";
+    margin-top: 4px;
+    letter-spacing: 0.02em;
+  }
+  .dash-kpi .kpi-sub.pos { color: var(--success); }
+  .dash-kpi .kpi-accent {
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 3px; background: var(--kpi-color, var(--primary));
+  }
+
+  /* Wide row */
+  .dash-row-wide {
+    grid-column: 1 / -1;
+  }
+  .dash-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+  }
+  .dash-card-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .dash-card-head .dc-title {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 15px; letter-spacing: -0.015em;
+    color: var(--foreground);
+  }
+  .dash-card-head .dc-sub {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted-foreground);
+    text-transform: uppercase; letter-spacing: 0.1em;
+  }
+
+  /* Distribution chart — stacked bar per period */
+  .dash-dist {
+    grid-column: span 2;
+  }
+  .dist-bar {
+    display: flex;
+    height: 36px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--secondary);
+    margin-bottom: 8px;
+  }
+  .dist-seg {
+    height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--cream-50);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    font-feature-settings: "tnum","zero";
+    transition: filter 150ms;
+    cursor: pointer;
+  }
+  .dist-seg:hover { filter: brightness(1.08); }
+  .dist-seg.is-lime { color: var(--forest-900); }
+  .dist-legend {
+    display: flex; flex-wrap: wrap; gap: 12px;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted-foreground);
+    margin-top: 8px;
+    letter-spacing: 0.02em;
+  }
+  .dist-legend span {
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .dist-legend span::before {
+    content: "";
+    width: 8px; height: 8px; border-radius: 9999px;
+    background: var(--leg-color);
+  }
+
+  .dash-upcoming {
+    grid-column: span 2;
+  }
+  .upcoming-list {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .upcoming-row {
+    display: grid;
+    grid-template-columns: 60px 1fr auto auto;
+    gap: 14px;
+    align-items: center;
+    padding: 10px 12px;
+    background: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    transition: background 120ms;
+    cursor: pointer;
+  }
+  .upcoming-row:hover { background: var(--card); }
+  .upcoming-row .up-when {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--foreground);
+    font-feature-settings: "tnum","zero";
+    letter-spacing: 0.02em;
+  }
+  .upcoming-row .up-when small {
+    display: block;
+    font-family: var(--font-mono); font-weight: 500; font-size: 9.5px;
+    color: var(--muted-foreground);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin-top: 1px;
+  }
+  .upcoming-row .up-name {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: 13px; letter-spacing: -0.005em;
+    color: var(--foreground);
+  }
+  .upcoming-row .up-tag {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(163,45,45,0.10);
+    color: var(--destructive);
+  }
+  .upcoming-row .up-tag.is-fixed { background: rgba(0,88,64,0.10); color: var(--primary); }
+  .upcoming-row .up-tag.is-other { background: rgba(37,99,235,0.10); color: var(--course-water); }
+  .upcoming-row .up-dot {
+    width: 8px; height: 8px; border-radius: 9999px;
+  }
+
+</style></head>
+<body><div class="card">
+
+  <div class="ts-card">
+
+    <!-- HEADER -->
+    <header class="ts-head">
+      <div>
+        <span class="ts-eyebrow"><span class="pulse"></span>SESONG 2026/2027 · 52 UKER</span>
+        <h2 class="ts-title">Periodisering <em>· uke 44 → uke 43</em></h2>
+      </div>
+      <div class="ts-views" role="tablist">
+        <button class="view-tab is-active" data-view="timeline"><i data-lucide="bar-chart-2"></i>Tidslinje</button>
+        <button class="view-tab" data-view="list"><i data-lucide="list"></i>Liste</button>
+        <button class="view-tab" data-view="kanban"><i data-lucide="columns-3"></i>Kanban</button>
+        <button class="view-tab" data-view="dashboard"><i data-lucide="layout-dashboard"></i>Dashboard</button>
+      </div>
+    </header>
+
+    <!-- TIMELINE VIEW -->
+    <div class="ts-body" data-view-body="timeline">
+
+      <!-- Month scale -->
+      <div class="ts-scale">
+        <div class="ts-label-cell"></div>
+        <div class="ts-canvas">
+          <div class="ts-months" id="months"></div>
+        </div>
+      </div>
+
+      <!-- Main period track -->
+      <div class="ts-track ts-track-main">
+        <div class="ts-label-cell">
+          <span class="trk-label">Hovedperioder</span>
+          <span class="trk-sub">3 stk · 52 uker</span>
+        </div>
+        <div class="ts-canvas has-grid" id="period-canvas">
+          <!-- Periods (positioned by JS based on weeks) -->
+          <div class="period is-active" data-id="grunn" data-start="44" data-end="8">
+            <div class="p-bg"></div>
+            <div class="period-content">
+              <span class="period-num">01</span>
+              <div class="period-text">
+                <span class="period-name">Grunnperiode</span>
+                <span class="period-meta period-meta-tag">Uke 44 → 8 · 17 uker</span>
+              </div>
+            </div>
+          </div>
+          <div class="period" data-id="spes" data-start="9" data-end="21">
+            <div class="p-bg"></div>
+            <div class="period-content">
+              <span class="period-num">02</span>
+              <div class="period-text">
+                <span class="period-name">Spesialisering</span>
+                <span class="period-meta period-meta-tag">Uke 9 → 21 · 13 uker</span>
+              </div>
+            </div>
+          </div>
+          <div class="period" data-id="turn" data-start="22" data-end="43">
+            <div class="p-bg"></div>
+            <div class="period-content">
+              <span class="period-num">03</span>
+              <div class="period-text">
+                <span class="period-name">Turneringsperiode</span>
+                <span class="period-meta period-meta-tag">Uke 22 → 43 · 22 uker</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Boundary handles (between periods) -->
+          <div class="boundary" data-boundary="grunn-spes">
+            <span class="drag-tip">UKE 9 · 22. FEB</span>
+          </div>
+          <div class="boundary" data-boundary="spes-turn">
+            <span class="drag-tip">UKE 22 · 24. MAI</span>
+          </div>
+
+          <!-- Now line -->
+          <div class="now-line" id="now-line">
+            <span class="now-pin">UKE 22 · I DAG</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub-track: Restitusjon -->
+      <div class="ts-track ts-track-sub">
+        <div class="ts-label-cell">
+          <span class="trk-label">Restitusjon</span>
+          <span class="trk-sub">3 uker</span>
+        </div>
+        <div class="ts-canvas has-grid">
+          <div class="sub-block rest" data-start="52" data-end="52" title="Restitusjonsuke etter base-blokk">Rest 1u</div>
+          <div class="sub-block rest" data-start="21" data-end="21" title="Restitusjonsuke før turneringssesong">Rest 1u</div>
+          <div class="sub-block rest" data-start="35" data-end="35" title="Mid-turnering recovery">Rest 1u</div>
+        </div>
+      </div>
+
+      <!-- Sub-track: Ferie -->
+      <div class="ts-track ts-track-sub">
+        <div class="ts-label-cell">
+          <span class="trk-label">Ferie</span>
+          <span class="trk-sub">3 uker</span>
+        </div>
+        <div class="ts-canvas has-grid">
+          <div class="sub-block ferie" data-start="52" data-end="52" title="Juleferie">Jul</div>
+          <div class="sub-block ferie" data-start="29" data-end="30" title="Sommerferie">Sommer 2u</div>
+        </div>
+      </div>
+
+      <!-- Sub-track: Turneringer -->
+      <div class="ts-track ts-track-sub">
+        <div class="ts-label-cell">
+          <span class="trk-label">Turneringer</span>
+          <span class="trk-sub">6 stk</span>
+        </div>
+        <div class="ts-canvas has-grid" style="overflow: visible;">
+          <div class="tournament"      data-week="18" title="Vår-cup · Miklagard"><span class="t-dot"></span><span class="t-label">Vår-cup</span></div>
+          <div class="tournament is-major" data-week="22" title="Klubbmesterskap"><span class="t-dot"></span><span class="t-label">Klubbmesterskap</span></div>
+          <div class="tournament"      data-week="26" title="NM Junior"><span class="t-dot"></span><span class="t-label">NM Junior</span></div>
+          <div class="tournament is-major" data-week="31" title="Hovedrunde · GFGK"><span class="t-dot"></span><span class="t-label">Hovedrunde</span></div>
+          <div class="tournament"      data-week="36" title="Høst-cup"><span class="t-dot"></span><span class="t-label">Høst-cup</span></div>
+          <div class="tournament"      data-week="42" title="Avslutning"><span class="t-dot"></span><span class="t-label">Avslutning</span></div>
+        </div>
+      </div>
+
+      <!-- Sub-track: Eksamen -->
+      <div class="ts-track ts-track-sub">
+        <div class="ts-label-cell">
+          <span class="trk-label">Eksamen</span>
+          <span class="trk-sub">2 perioder</span>
+        </div>
+        <div class="ts-canvas has-grid">
+          <div class="sub-block eksamen" data-start="49" data-end="51" title="Vinter-eksamen">Vinter 3u</div>
+          <div class="sub-block eksamen" data-start="22" data-end="24" title="Vår-eksamen">Vår 3u</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- LIST VIEW — hierarchical per period -->
+    <div class="ts-body" data-view-body="list" hidden>
+      <div class="ts-list" id="ts-list">
+        <!-- rendered by JS -->
+      </div>
+    </div>
+
+    <!-- KANBAN VIEW — periods as columns -->
+    <div class="ts-body" data-view-body="kanban" hidden>
+      <div class="ts-kanban" id="ts-kanban">
+        <!-- rendered by JS -->
+      </div>
+    </div>
+
+    <!-- DASHBOARD VIEW — KPIs + distribution + upcoming -->
+    <div class="ts-body" data-view-body="dashboard" hidden>
+      <div class="ts-dash" id="ts-dash">
+        <!-- rendered by JS -->
+      </div>
+    </div>
+
+    <!-- QUICK PLANNING PANEL — enhanced: sessions × hours, faste treninger, add-other -->
+    <section class="qp-panel" id="qp-panel">
+      <div class="qp-accent"></div>
+
+      <!-- Header summary row -->
+      <div style="padding: 14px 20px 10px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-end; gap: 16px;">
+        <div class="qp-summary">
+          <span class="qp-eyebrow"><span class="dot"></span><span class="qp-period-id">01 · GRUNNPERIODE</span></span>
+          <h3 class="qp-title">Grunnperiode</h3>
+          <span class="qp-dates">Uke 44 → 8 · 17 uker · 27. okt → 22. feb</span>
+        </div>
+        <a class="qp-sync is-hidden" id="qp-sync">
+          <i data-lucide="link"></i>Synkronisert med turneringsplanlegger
+        </a>
+      </div>
+
+      <div class="qp-body-v2">
+
+        <!-- LEFT: Faste treninger -->
+        <div class="qp-col-left">
+          <span class="qp-section-label">FASTE ØKTER <span class="badge" id="fx-summary">4 · 6 t/uke</span></span>
+          <div class="qp-fixed-list" id="qp-fixed-list">
+            <!-- rendered by JS -->
+          </div>
+          <button class="qp-add-link"><i data-lucide="plus"></i>Legg til fast økt</button>
+        </div>
+
+        <!-- MIDDLE: Sessions + hours stepper -->
+        <div class="qp-col-mid">
+          <span class="qp-section-label">ØKTER × VARIGHET <span class="badge" id="qp-mid-sum">11 økter · 11,8 t/uke</span></span>
+          <div class="qp-rows-v2" id="qp-rows-v2">
+            <!-- rendered by JS -->
+          </div>
+          <button class="qp-add-link"><i data-lucide="plus"></i>Legg til annet (eksamen · prøve · ferie)</button>
+        </div>
+
+        <!-- RIGHT: Totals + CTA -->
+        <div class="qp-col-right">
+          <div class="qp-totals">
+            <div class="qp-tot-row">
+              <span>Sum / uke</span><b><span class="qp-week-h">17,8</span> t</b>
+            </div>
+            <div class="qp-tot-row">
+              <span>Faste / uke</span><b><span class="qp-week-fx">6</span> t</b>
+            </div>
+            <div class="qp-tot-divider"></div>
+            <div class="qp-tot-row is-period">
+              <span>Sum / periode</span><b><span class="qp-period-h">302</span> t</b>
+            </div>
+            <div class="qp-tot-row is-period">
+              <span>Antall økter</span><b><span class="qp-period-n">255</span></b>
+            </div>
+          </div>
+          <button class="qp-generate">Generer i kalender <i data-lucide="arrow-right"></i></button>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Global drag tooltip (follows cursor while dragging tournaments/sub-blocks) -->
+  <div class="drag-tip-global" id="drag-tip-global" aria-hidden="true"></div>
+
+  <script>
+    // ============================================================
+    // CONFIG — 52-week year starting at week 44 (ISO)
+    // ============================================================
+    const WEEKS = 52;
+    const WEEK_PCT = 100 / WEEKS;
+
+    // Months in order, with their week-counts within the 52-week timeline.
+    // Starting from Nov 2026 (weeks 44-48 of ISO calendar year) and going forward.
+    const MONTHS = [
+      { name: 'NOV', weeks: 5, isQuarter: false },
+      { name: 'DES', weeks: 4, isQuarter: false },
+      { name: 'JAN', weeks: 4, isQuarter: true  },
+      { name: 'FEB', weeks: 4, isQuarter: false },
+      { name: 'MAR', weeks: 5, isQuarter: false },
+      { name: 'APR', weeks: 4, isQuarter: true  },
+      { name: 'MAI', weeks: 5, isQuarter: false },
+      { name: 'JUN', weeks: 4, isQuarter: false },
+      { name: 'JUL', weeks: 4, isQuarter: true  },
+      { name: 'AUG', weeks: 5, isQuarter: false },
+      { name: 'SEP', weeks: 4, isQuarter: false },
+      { name: 'OKT', weeks: 4, isQuarter: true  }
+    ];
+
+    // ISO week → linear-week (0 to 51) — week 44 of year N becomes linear week 0
+    const isoToLinear = (iso) => (iso >= 44 ? iso - 44 : iso + (52 - 44));
+
+    // Linear → ISO week
+    const linearToIso = (lin) => ((lin + 44 - 1) % 52) + 1;
+
+    // Linear → percentage offset
+    const linearToPct = (lin) => lin * WEEK_PCT;
+
+    // Approx. calendar date label for an ISO week (Norwegian convention, Monday-start)
+    const WEEK_DATES = {
+      44: '27. okt', 45: '03. nov', 46: '10. nov', 47: '17. nov', 48: '24. nov',
+      49: '01. des', 50: '08. des', 51: '15. des', 52: '22. des',
+      1:  '29. des', 2:  '05. jan', 3:  '12. jan', 4:  '19. jan',
+      5:  '26. jan', 6:  '02. feb', 7:  '09. feb', 8:  '16. feb',
+      9:  '23. feb', 10: '02. mar', 11: '09. mar', 12: '16. mar', 13: '23. mar',
+      14: '30. mar', 15: '06. apr', 16: '13. apr', 17: '20. apr',
+      18: '27. apr', 19: '04. mai', 20: '11. mai', 21: '18. mai', 22: '25. mai',
+      23: '01. jun', 24: '08. jun', 25: '15. jun', 26: '22. jun',
+      27: '29. jun', 28: '06. jul', 29: '13. jul', 30: '20. jul',
+      31: '27. jul', 32: '03. aug', 33: '10. aug', 34: '17. aug', 35: '24. aug',
+      36: '31. aug', 37: '07. sep', 38: '14. sep', 39: '21. sep',
+      40: '28. sep', 41: '05. okt', 42: '12. okt', 43: '19. okt'
+    };
+
+    // ============================================================
+    // RENDER MONTH SCALE
+    // ============================================================
+    const monthsEl = document.getElementById('months');
+    let weekCursor = 44;
+    MONTHS.forEach((m) => {
+      const div = document.createElement('div');
+      div.className = 'ts-month' + (m.isQuarter ? ' is-quarter' : '');
+      div.style.flex = `${m.weeks} 1 0`;
+      const firstWeekIso = weekCursor;
+      div.innerHTML = `<span class="mn-name">${m.name}</span><span class="mn-weeks">u${firstWeekIso}</span>`;
+      monthsEl.appendChild(div);
+      weekCursor = ((weekCursor + m.weeks - 1) % 52) + 1;
+    });
+
+    // ============================================================
+    // POSITION PERIODS BY ISO-WEEK RANGE
+    // ============================================================
+    function positionPeriods() {
+      document.querySelectorAll('.period').forEach((p) => {
+        const startIso = +p.dataset.start;
+        const endIso   = +p.dataset.end;
+        const startLin = isoToLinear(startIso);
+        const endLin   = isoToLinear(endIso);
+        const widthLin = (endLin - startLin + 1);
+        p.style.left  = (startLin * WEEK_PCT) + '%';
+        p.style.width = (widthLin * WEEK_PCT) + '%';
+
+        // Update text meta
+        const metaEl = p.querySelector('.period-meta-tag');
+        if (metaEl) metaEl.textContent = `Uke ${startIso} → ${endIso} · ${widthLin} uker`;
+      });
+    }
+
+    // ============================================================
+    // POSITION SUB-BLOCKS (rest, ferie, eksamen)
+    // ============================================================
+    function positionSubBlocks() {
+      document.querySelectorAll('.sub-block').forEach((b) => {
+        const startIso = +b.dataset.start;
+        const endIso   = +b.dataset.end;
+        const startLin = isoToLinear(startIso);
+        const endLin   = isoToLinear(endIso);
+        const widthLin = (endLin - startLin + 1);
+        b.style.left  = (startLin * WEEK_PCT) + '%';
+        b.style.width = (widthLin * WEEK_PCT) + '%';
+      });
+      document.querySelectorAll('.tournament').forEach((t) => {
+        const lin = isoToLinear(+t.dataset.week);
+        t.style.left = ((lin + 0.5) * WEEK_PCT) + '%';
+      });
+    }
+
+    // ============================================================
+    // BOUNDARY HANDLES — drag to resize
+    // ============================================================
+    function positionBoundaries() {
+      // Place each boundary at the START of the period it follows
+      const map = {
+        'grunn-spes': 'spes',
+        'spes-turn':  'turn'
+      };
+      Object.entries(map).forEach(([bid, pid]) => {
+        const b = document.querySelector(`.boundary[data-boundary="${bid}"]`);
+        const p = document.querySelector(`.period[data-id="${pid}"]`);
+        if (b && p) b.style.left = p.style.left;
+      });
+    }
+
+    // Period order helper
+    const PERIOD_ORDER = ['grunn', 'spes', 'turn'];
+    function getPeriod(id) { return document.querySelector(`.period[data-id="${id}"]`); }
+
+    // Update period start/end and dependent positions
+    function setPeriodRange(id, startIso, endIso) {
+      const p = getPeriod(id);
+      p.dataset.start = startIso;
+      p.dataset.end   = endIso;
+      positionPeriods();
+      positionBoundaries();
+    }
+
+    function dragBoundary(boundary, e) {
+      const canvas = boundary.closest('.ts-canvas');
+      const rect = canvas.getBoundingClientRect();
+      const tip = boundary.querySelector('.drag-tip');
+      boundary.classList.add('is-dragging');
+
+      const bid = boundary.dataset.boundary;
+      // Identify left/right periods around this boundary
+      const [leftId, rightId] = bid.split('-');
+      const leftP  = getPeriod(leftId);
+      const rightP = getPeriod(rightId);
+
+      const move = (ev) => {
+        const x = (ev.clientX - rect.left) / rect.width; // 0–1 across canvas
+        const linWeek = Math.round(x * WEEKS);
+        // Constrain: must leave at least 1 week on each side
+        const leftStartLin  = isoToLinear(+leftP.dataset.start);
+        const rightEndLin   = isoToLinear(+rightP.dataset.end);
+        const minLin = leftStartLin + 1;
+        const maxLin = rightEndLin;
+        const newLin = Math.max(minLin, Math.min(maxLin, linWeek));
+
+        // newLin is the linear-week index that becomes the START of the right period
+        const newStartIso = linearToIso(newLin);
+        const newEndIso_left = linearToIso(newLin - 1);
+
+        leftP.dataset.end    = newEndIso_left;
+        rightP.dataset.start = newStartIso;
+        positionPeriods();
+        positionBoundaries();
+        if (tip) tip.textContent = `UKE ${newStartIso} · ${(WEEK_DATES[newStartIso] || '').toUpperCase()}`;
+
+        // If the dragged period is the selected one, refresh QP summary
+        if (selectedId === leftId || selectedId === rightId) updateQuickPlanSummary();
+      };
+
+      const up = () => {
+        boundary.classList.remove('is-dragging');
+        document.removeEventListener('pointermove', move);
+        document.removeEventListener('pointerup', up);
+      };
+      document.addEventListener('pointermove', move);
+      document.addEventListener('pointerup', up);
+    }
+
+    document.querySelectorAll('.boundary').forEach((b) => {
+      b.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        dragBoundary(b, e);
+      });
+    });
+
+    // ============================================================
+    // DRAG TOURNAMENTS + SUB-BLOCKS (date popup on hover/drag)
+    // ============================================================
+    const dragTip = document.getElementById('drag-tip-global');
+
+    function showDragTip(text, clientX, clientY) {
+      dragTip.textContent = text;
+      dragTip.style.left = clientX + 'px';
+      dragTip.style.top  = clientY + 'px';
+      dragTip.classList.add('is-visible');
+    }
+    function hideDragTip() {
+      dragTip.classList.remove('is-visible');
+    }
+
+    // Tournament markers — single-point drag
+    document.querySelectorAll('.tournament').forEach((t, idx) => {
+      t.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        t.setPointerCapture(e.pointerId);
+        t.classList.add('is-dragging');
+        const canvas = t.closest('.ts-canvas');
+        const rect = canvas.getBoundingClientRect();
+
+        const move = (ev) => {
+          const x = (ev.clientX - rect.left) / rect.width;
+          const lin = Math.max(0, Math.min(51, Math.round(x * WEEKS - 0.5)));
+          const iso = linearToIso(lin);
+          t.dataset.week = iso;
+          t.style.left = ((lin + 0.5) * WEEK_PCT) + '%';
+          showDragTip(`UKE ${iso} · ${WEEK_DATES[iso] || ''}`, ev.clientX, ev.clientY);
+        };
+        const up = () => {
+          t.classList.remove('is-dragging');
+          try { t.releasePointerCapture(e.pointerId); } catch (_) {}
+          hideDragTip();
+          document.removeEventListener('pointermove', move);
+          document.removeEventListener('pointerup', up);
+          // Sync TOURNAMENTS array so list/kanban/dashboard reflect on next render
+          if (TOURNAMENTS[idx]) TOURNAMENTS[idx].week = +t.dataset.week;
+        };
+        document.addEventListener('pointermove', move);
+        document.addEventListener('pointerup', up);
+      });
+    });
+
+    // Sub-blocks (restitusjon, ferie, eksamen) — move OR resize from edges
+    const EDGE_PX = 9;
+    document.querySelectorAll('.sub-block').forEach((b) => {
+      // Track hover edge for cursor change
+      b.addEventListener('pointermove', (e) => {
+        if (b.classList.contains('is-dragging')) return;
+        const r = b.getBoundingClientRect();
+        const relX = e.clientX - r.left;
+        const onEdge = relX < EDGE_PX || relX > r.width - EDGE_PX;
+        b.classList.toggle('is-resize', onEdge);
+      });
+      b.addEventListener('pointerleave', () => {
+        if (!b.classList.contains('is-dragging')) b.classList.remove('is-resize');
+      });
+
+      b.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        b.setPointerCapture(e.pointerId);
+        b.classList.add('is-dragging');
+        const canvas = b.closest('.ts-canvas');
+        const rect = canvas.getBoundingClientRect();
+        const elRect = b.getBoundingClientRect();
+        const relX = e.clientX - elRect.left;
+
+        // Mode: L = resize start, R = resize end, M = move both
+        const mode = relX < EDGE_PX ? 'L' :
+                     relX > elRect.width - EDGE_PX ? 'R' : 'M';
+        if (mode !== 'M') b.classList.add('is-resize');
+
+        const startX = e.clientX;
+        const origStart = isoToLinear(+b.dataset.start);
+        const origEnd   = isoToLinear(+b.dataset.end);
+        const span = origEnd - origStart;
+
+        const move = (ev) => {
+          const dx = ev.clientX - startX;
+          const dxLin = Math.round((dx / rect.width) * WEEKS);
+
+          let newStart = origStart;
+          let newEnd   = origEnd;
+
+          if (mode === 'M') {
+            newStart = Math.max(0, Math.min(WEEKS - 1 - span, origStart + dxLin));
+            newEnd   = newStart + span;
+          } else if (mode === 'L') {
+            // Resize left edge: shrink/extend start, keep end fixed
+            newStart = Math.max(0, Math.min(origEnd, origStart + dxLin));
+          } else { // 'R'
+            // Resize right edge: shrink/extend end, keep start fixed
+            newEnd = Math.max(origStart, Math.min(WEEKS - 1, origEnd + dxLin));
+          }
+
+          const startIso = linearToIso(newStart);
+          const endIso   = linearToIso(newEnd);
+          const newSpan  = newEnd - newStart;
+          b.dataset.start = startIso;
+          b.dataset.end   = endIso;
+          b.style.left  = (newStart * WEEK_PCT) + '%';
+          b.style.width = ((newSpan + 1) * WEEK_PCT) + '%';
+
+          // Tooltip — show range + mode hint
+          const modeLabel = mode === 'M' ? '' : (mode === 'L' ? 'START — ' : 'SLUTT — ');
+          const range = (newSpan === 0)
+            ? `${modeLabel}UKE ${startIso} · ${WEEK_DATES[startIso] || ''}`
+            : `${modeLabel}UKE ${startIso}–${endIso} · ${newSpan + 1} UKER`;
+          showDragTip(range, ev.clientX, ev.clientY);
+        };
+        const up = () => {
+          b.classList.remove('is-dragging');
+          b.classList.remove('is-resize');
+          try { b.releasePointerCapture(e.pointerId); } catch (_) {}
+          hideDragTip();
+          document.removeEventListener('pointermove', move);
+          document.removeEventListener('pointerup', up);
+        };
+        document.addEventListener('pointermove', move);
+        document.addEventListener('pointerup', up);
+      });
+    });
+
+    // ============================================================
+    // PERIOD SELECTION + DATA
+    // ============================================================
+    const PERIOD_META = {
+      grunn: { num: '01', name: 'Grunnperiode',      color: 'var(--primary)', short: 'Grunn' },
+      spes:  { num: '02', name: 'Spesialisering',    color: 'var(--warning)', short: 'Spes' },
+      turn:  { num: '03', name: 'Turneringsperiode', color: 'var(--destructive)', short: 'Turnering' }
+    };
+
+    // Training type metadata (color + display name)
+    const TYPES = {
+      fys:   { name: 'Fysisk',     color: 'var(--primary)' },
+      tek:   { name: 'Teknisk',    color: 'var(--warning)' },
+      slag:  { name: 'Golfslag',   color: 'var(--course-water)' },
+      spill: { name: 'Spill',      color: 'var(--accent)', limeText: true },
+      rest:  { name: 'Restitusjon',color: 'var(--success)' }
+    };
+    const TYPE_ORDER = ['fys', 'tek', 'slag', 'spill', 'rest'];
+
+    // Per-period plan defaults — { count: sessions/uke, mins: minutes/session }
+    const PLANS = {
+      grunn: {
+        fys:   { count: 4, mins: 60 },
+        tek:   { count: 3, mins: 75 },
+        slag:  { count: 2, mins: 60 },
+        spill: { count: 1, mins: 90 },
+        rest:  { count: 1, mins: 30 }
+      },
+      spes: {
+        fys:   { count: 3, mins: 60 },
+        tek:   { count: 4, mins: 75 },
+        slag:  { count: 4, mins: 60 },
+        spill: { count: 2, mins: 90 },
+        rest:  { count: 1, mins: 30 }
+      },
+      turn: {
+        fys:   { count: 2, mins: 45 },
+        tek:   { count: 2, mins: 60 },
+        slag:  { count: 3, mins: 60 },
+        spill: { count: 3, mins: 90 },
+        rest:  { count: 2, mins: 30 }
+      }
+    };
+
+    // Faste/recurring trainings per period — set by coach (Wang, club, etc.)
+    const FIXED = {
+      grunn: [
+        { name: 'Wang Toppidrett', when: 'Man 09–11', hours: 2 },
+        { name: 'Wang Toppidrett', when: 'Tor 09–11', hours: 2 },
+        { name: 'Klubb · Andreas', when: 'Ons 17–18', hours: 1 },
+        { name: 'Lag-økt U16',     when: 'Lør 10–11', hours: 1 }
+      ],
+      spes: [
+        { name: 'Wang Toppidrett', when: 'Man 09–11', hours: 2 },
+        { name: 'Wang Toppidrett', when: 'Tor 09–11', hours: 2 },
+        { name: 'Klubb · Andreas', when: 'Ons 17–18', hours: 1 },
+        { name: 'Strategi · Per',  when: 'Fre 16–17', hours: 1 }
+      ],
+      turn: [
+        { name: 'Wang Toppidrett', when: 'Man 09–11', hours: 2 },
+        { name: 'Pre-turnering',   when: 'Tir 09–10', hours: 1 },
+        { name: 'Lag-økt U16',     when: 'Lør 10–11', hours: 1 }
+      ]
+    };
+
+    // "Annet" — school/exam/vacation per period
+    const OTHER = {
+      grunn: [
+        { name: 'Vinter-eksamen', kind: 'eksamen', when: 'Uke 49–51', hours: 30 },
+        { name: 'Juleferie',      kind: 'ferie',   when: 'Uke 52',    hours: 0 }
+      ],
+      spes: [
+        { name: 'Vår-tentamen',   kind: 'eksamen', when: 'Uke 14–15', hours: 16 }
+      ],
+      turn: [
+        { name: 'Vår-eksamen',    kind: 'eksamen', when: 'Uke 22–24', hours: 28 },
+        { name: 'Sommerferie',    kind: 'ferie',   when: 'Uke 29–30', hours: 0 }
+      ]
+    };
+
+    // Tournament list (used for sync indicator + dashboard + list/kanban)
+    const TOURNAMENTS = [
+      { name: 'Vår-cup · Miklagard', week: 18, major: false },
+      { name: 'Klubbmesterskap',     week: 22, major: true  },
+      { name: 'NM Junior',           week: 26, major: false },
+      { name: 'Hovedrunde · GFGK',   week: 31, major: true  },
+      { name: 'Høst-cup',            week: 36, major: false },
+      { name: 'Avslutning',          week: 42, major: false }
+    ];
+
+    // ============================================================
+    // QP PANEL — refs
+    // ============================================================
+    const qpPanel       = document.getElementById('qp-panel');
+    const qpAccent      = qpPanel.querySelector('.qp-accent');
+    const qpDot         = qpPanel.querySelector('.qp-eyebrow .dot');
+    const qpPeriodId    = qpPanel.querySelector('.qp-period-id');
+    const qpTitle       = qpPanel.querySelector('.qp-title');
+    const qpDates       = qpPanel.querySelector('.qp-dates');
+    const qpFixedList   = document.getElementById('qp-fixed-list');
+    const qpFixedSum    = document.getElementById('fx-summary');
+    const qpRows        = document.getElementById('qp-rows-v2');
+    const qpMidSum      = document.getElementById('qp-mid-sum');
+    const qpSyncBadge   = document.getElementById('qp-sync');
+    const qpWeekH       = qpPanel.querySelector('.qp-week-h');
+    const qpWeekFx      = qpPanel.querySelector('.qp-week-fx');
+    const qpPeriodH     = qpPanel.querySelector('.qp-period-h');
+    const qpPeriodN     = qpPanel.querySelector('.qp-period-n');
+
+    let selectedId = 'grunn';
+
+    function periodWidth(id) {
+      const p = getPeriod(id);
+      return isoToLinear(+p.dataset.end) - isoToLinear(+p.dataset.start) + 1;
+    }
+
+    function planTotals(id) {
+      const plan = PLANS[id];
+      let sessionsPerWeek = 0, planHrs = 0;
+      TYPE_ORDER.forEach((t) => {
+        sessionsPerWeek += plan[t].count;
+        planHrs += plan[t].count * plan[t].mins / 60;
+      });
+      const fixedHrs = FIXED[id].reduce((a, b) => a + b.hours, 0);
+      const fixedCount = FIXED[id].length;
+      const weekHrs = planHrs + fixedHrs;
+      const weeks = periodWidth(id);
+      return {
+        sessionsPerWeek, fixedCount, fixedHrs, planHrs, weekHrs,
+        periodHrs: weekHrs * weeks,
+        periodSessions: (sessionsPerWeek + fixedCount) * weeks
+      };
+    }
+
+    function fmtHours(h) {
+      if (h % 1 === 0) return String(h);
+      return h.toFixed(1).replace('.', ',');
+    }
+
+    function renderFixedList() {
+      const items = FIXED[selectedId];
+      const hrs = items.reduce((a, b) => a + b.hours, 0);
+      qpFixedSum.textContent = `${items.length} · ${fmtHours(hrs)} t/uke`;
+      qpFixedList.innerHTML = items.map((f) => `
+        <div class="qp-fixed-item">
+          <span class="fx-dot"></span>
+          <span class="fx-text">
+            <span class="fx-name">${f.name}</span>
+            <span class="fx-when">${f.when}</span>
+          </span>
+          <span class="fx-hrs">${f.hours} t</span>
+        </div>
+      `).join('');
+    }
+
+    function renderQpRows() {
+      const plan = PLANS[selectedId];
+      qpRows.innerHTML = TYPE_ORDER.map((t) => {
+        const meta = TYPES[t];
+        const v = plan[t];
+        const hrs = v.count * v.mins / 60;
+        const dotStyle = `background:${meta.color};${meta.limeText ? 'outline:1px solid rgba(10,31,23,0.18);' : ''}`;
+        return `
+          <div class="qp-row-v2" data-type="${t}" data-zero="${v.count === 0}">
+            <span class="v2-dot" style="${dotStyle}"></span>
+            <span class="v2-name">${meta.name}</span>
+            <span class="v2-stepper" data-field="count">
+              <button data-step="-1" aria-label="Mindre">−</button>
+              <span class="val">${v.count}<span class="val-unit">×</span></span>
+              <button data-step="1" aria-label="Mer">+</button>
+            </span>
+            <span class="v2-stepper" data-field="mins">
+              <button data-step="-15" aria-label="Mindre">−</button>
+              <span class="val">${v.mins}<span class="val-unit">min</span></span>
+              <button data-step="15" aria-label="Mer">+</button>
+            </span>
+            <span class="v2-hours">${fmtHours(hrs)}<span class="v2-hours-unit">t/uke</span></span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function updateTotals() {
+      const t = planTotals(selectedId);
+      qpMidSum.textContent = `${t.sessionsPerWeek} økter · ${fmtHours(t.planHrs)} t/uke`;
+      qpWeekH.textContent  = fmtHours(t.weekHrs);
+      qpWeekFx.textContent = fmtHours(t.fixedHrs);
+      qpPeriodH.textContent = fmtHours(Math.round(t.periodHrs * 10) / 10);
+      qpPeriodN.textContent = t.periodSessions;
+    }
+
+    function updateQuickPlanSummary() {
+      const p = getPeriod(selectedId);
+      const meta = PERIOD_META[selectedId];
+      const startIso = +p.dataset.start;
+      const endIso   = +p.dataset.end;
+      const widthLin = periodWidth(selectedId);
+
+      qpAccent.style.backgroundColor = meta.color;
+      qpDot.style.backgroundColor    = meta.color;
+      qpPeriodId.textContent = `${meta.num} · ${meta.name.toUpperCase()}`;
+      qpTitle.textContent    = meta.name;
+      qpDates.textContent    = `Uke ${startIso} → ${endIso} · ${widthLin} uker · ${WEEK_DATES[startIso] || ''} → ${WEEK_DATES[endIso] || ''}`;
+
+      // Show sync badge only for turn period
+      qpSyncBadge.classList.toggle('is-hidden', selectedId !== 'turn');
+
+      renderFixedList();
+      renderQpRows();
+      updateTotals();
+    }
+
+    function selectPeriod(id) {
+      selectedId = id;
+      document.querySelectorAll('.period').forEach((p) => {
+        p.classList.toggle('is-active', p.dataset.id === id);
+      });
+      updateQuickPlanSummary();
+      lucide.createIcons();
+    }
+
+    document.querySelectorAll('.period').forEach((p) => {
+      p.addEventListener('click', (e) => {
+        if (e.target.closest('.boundary')) return;
+        selectPeriod(p.dataset.id);
+      });
+    });
+
+    // Stepper logic — supports both count (sessions) and mins (minutes/session)
+    qpRows.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-step]');
+      if (!btn) return;
+      const stepper = btn.closest('.v2-stepper');
+      const field = stepper.dataset.field; // 'count' or 'mins'
+      const row   = btn.closest('.qp-row-v2');
+      const type  = row.dataset.type;
+      const step  = +btn.dataset.step;
+      const plan  = PLANS[selectedId][type];
+      if (field === 'count') {
+        plan.count = Math.max(0, Math.min(7, plan.count + step));
+      } else {
+        plan.mins = Math.max(15, Math.min(180, plan.mins + step));
+      }
+      // Update just this row + totals (avoid full re-render so focus stays)
+      const hrs = plan.count * plan.mins / 60;
+      row.dataset.zero = plan.count === 0 ? 'true' : 'false';
+      stepper.querySelector('.val').firstChild.textContent = (field === 'count' ? plan.count : plan.mins);
+      row.querySelector('.v2-hours').firstChild.textContent = fmtHours(hrs);
+      updateTotals();
+    });
+
+    // ============================================================
+    // NOW LINE — week 22 (May 27)
+    // ============================================================
+    const nowLine = document.getElementById('now-line');
+    nowLine.style.left = ((isoToLinear(22) + 0.5) * WEEK_PCT) + '%';
+
+    // ============================================================
+    // LIST VIEW
+    // ============================================================
+    const listEl = document.getElementById('ts-list');
+
+    function renderList() {
+      listEl.innerHTML = ['grunn', 'spes', 'turn'].map((id) => {
+        const meta = PERIOD_META[id];
+        const p = getPeriod(id);
+        const startIso = +p.dataset.start;
+        const endIso   = +p.dataset.end;
+        const weeks = periodWidth(id);
+        const t = planTotals(id);
+
+        const plan = PLANS[id];
+        const planned = TYPE_ORDER.map((tp) => {
+          const v = plan[tp];
+          if (v.count === 0) return '';
+          const hrs = v.count * v.mins / 60;
+          return `
+            <li class="list-item">
+              <span class="li-dot" style="background:${TYPES[tp].color}${TYPES[tp].limeText ? ';outline:1px solid rgba(10,31,23,0.18)' : ''}"></span>
+              <span class="li-name">${TYPES[tp].name}</span>
+              <span class="li-meta">${v.count}× × ${v.mins} min</span>
+              <span class="li-vol">${fmtHours(hrs)} t/uke</span>
+              <span class="li-tag">Plan</span>
+            </li>`;
+        }).filter(Boolean).join('');
+
+        const fixed = FIXED[id].map((f) => `
+          <li class="list-item">
+            <span class="li-dot" style="background:var(--primary)"></span>
+            <span class="li-name">${f.name}</span>
+            <span class="li-meta">${f.when}</span>
+            <span class="li-vol">${f.hours} t/uke</span>
+            <span class="li-tag is-fixed">Fast</span>
+          </li>`).join('');
+
+        const tournaments = TOURNAMENTS
+          .filter((trn) => {
+            const lin = isoToLinear(trn.week);
+            return lin >= isoToLinear(startIso) && lin <= isoToLinear(endIso);
+          })
+          .map((trn) => `
+            <li class="list-item">
+              <span class="li-dot" style="background:var(--destructive)"></span>
+              <span class="li-name">${trn.name}</span>
+              <span class="li-meta">Uke ${trn.week} · ${WEEK_DATES[trn.week] || ''}</span>
+              <span class="li-vol">${trn.major ? 'Hoved' : '—'}</span>
+              <span class="li-tag is-tournament">Turnering</span>
+            </li>`).join('');
+
+        const others = OTHER[id].map((o) => `
+          <li class="list-item">
+            <span class="li-dot" style="background:${o.kind === 'eksamen' ? 'var(--course-water)' : 'var(--warm-gray)'}"></span>
+            <span class="li-name">${o.name}</span>
+            <span class="li-meta">${o.when}</span>
+            <span class="li-vol">${o.hours ? o.hours + ' t' : '—'}</span>
+            <span class="li-tag ${o.kind === 'eksamen' ? 'is-other' : ''}">${o.kind.charAt(0).toUpperCase() + o.kind.slice(1)}</span>
+          </li>`).join('');
+
+        return `
+          <article class="list-section" data-id="${id}" data-collapsed="false">
+            <header class="list-head">
+              <button class="list-toggle"><i data-lucide="chevron-down"></i></button>
+              <span class="list-num">${meta.num}</span>
+              <div class="list-title-wrap">
+                <span class="list-title">${meta.name}</span>
+                <span class="list-sub">Uke ${startIso} → ${endIso} · ${weeks} uker · ${WEEK_DATES[startIso] || ''} → ${WEEK_DATES[endIso] || ''}</span>
+              </div>
+              <span class="list-totals">${t.sessionsPerWeek + t.fixedCount} økter/uke<b>${fmtHours(Math.round(t.periodHrs * 10) / 10)} t totalt</b></span>
+            </header>
+            <div class="list-body">
+              ${fixed ? `<div class="list-group">
+                <span class="list-group-head">Faste økter <span class="count">${FIXED[id].length} stk</span></span>
+                <ul class="list-items">${fixed}</ul>
+              </div>` : ''}
+              ${planned ? `<div class="list-group">
+                <span class="list-group-head">Planlagte økter <span class="count">${t.sessionsPerWeek}/uke</span></span>
+                <ul class="list-items">${planned}</ul>
+              </div>` : ''}
+              ${tournaments ? `<div class="list-group">
+                <span class="list-group-head">Turneringer <span class="count">${TOURNAMENTS.filter((trn) => { const lin = isoToLinear(trn.week); return lin >= isoToLinear(startIso) && lin <= isoToLinear(endIso); }).length} stk</span></span>
+                <ul class="list-items">${tournaments}</ul>
+              </div>` : ''}
+              ${others ? `<div class="list-group">
+                <span class="list-group-head">Annet <span class="count">${OTHER[id].length} stk</span></span>
+                <ul class="list-items">${others}</ul>
+              </div>` : ''}
+            </div>
+          </article>`;
+      }).join('');
+
+      // Hook up collapse toggles
+      listEl.querySelectorAll('.list-head').forEach((h) => {
+        h.addEventListener('click', () => {
+          const sec = h.closest('.list-section');
+          sec.dataset.collapsed = sec.dataset.collapsed === 'true' ? 'false' : 'true';
+        });
+      });
+    }
+
+    // ============================================================
+    // KANBAN VIEW
+    // ============================================================
+    const kanbanEl = document.getElementById('ts-kanban');
+
+    function renderKanban() {
+      kanbanEl.innerHTML = ['grunn', 'spes', 'turn'].map((id) => {
+        const meta = PERIOD_META[id];
+        const p = getPeriod(id);
+        const startIso = +p.dataset.start;
+        const endIso   = +p.dataset.end;
+        const weeks = periodWidth(id);
+        const t = planTotals(id);
+        const plan = PLANS[id];
+
+        const planCards = TYPE_ORDER.filter((tp) => plan[tp].count > 0).map((tp) => {
+          const v = plan[tp];
+          const hrs = v.count * v.mins / 60;
+          return `
+            <div class="kan-card">
+              <div class="kc-top">
+                <div class="kc-left">
+                  <span class="kc-dot" style="background:${TYPES[tp].color}${TYPES[tp].limeText ? ';outline:1px solid rgba(10,31,23,0.18)' : ''}"></span>
+                  <span class="kc-name">${TYPES[tp].name}</span>
+                </div>
+                <span class="kc-vol">${fmtHours(hrs)} t</span>
+              </div>
+              <span class="kc-meta">${v.count}× × ${v.mins} min/uke · ${v.count * weeks} økter</span>
+            </div>`;
+        }).join('');
+
+        const fixedCards = FIXED[id].map((f) => `
+          <div class="kan-card is-fixed">
+            <div class="kc-top">
+              <div class="kc-left">
+                <span class="kc-dot" style="background:var(--primary)"></span>
+                <span class="kc-name">${f.name}</span>
+              </div>
+              <span class="kc-tag">Fast</span>
+              <span class="kc-vol">${f.hours} t</span>
+            </div>
+            <span class="kc-meta">${f.when} · ${weeks} uker</span>
+          </div>`).join('');
+
+        const tournamentCards = TOURNAMENTS
+          .filter((trn) => {
+            const lin = isoToLinear(trn.week);
+            return lin >= isoToLinear(startIso) && lin <= isoToLinear(endIso);
+          })
+          .map((trn) => `
+            <div class="kan-card is-tournament">
+              <div class="kc-top">
+                <div class="kc-left">
+                  <span class="kc-dot" style="background:var(--destructive)"></span>
+                  <span class="kc-name">${trn.name}</span>
+                </div>
+                <span class="kc-tag">${trn.major ? 'Hoved' : 'Turn'}</span>
+              </div>
+              <span class="kc-meta">Uke ${trn.week} · ${WEEK_DATES[trn.week] || ''}</span>
+            </div>`).join('');
+
+        const otherCards = OTHER[id].map((o) => `
+          <div class="kan-card ${o.kind === 'eksamen' ? 'is-other' : ''}">
+            <div class="kc-top">
+              <div class="kc-left">
+                <span class="kc-dot" style="background:${o.kind === 'eksamen' ? 'var(--course-water)' : 'var(--warm-gray)'}"></span>
+                <span class="kc-name">${o.name}</span>
+              </div>
+              <span class="kc-tag">${o.kind === 'eksamen' ? 'Eksamen' : 'Ferie'}</span>
+              ${o.hours ? `<span class="kc-vol">${o.hours} t</span>` : ''}
+            </div>
+            <span class="kc-meta">${o.when}</span>
+          </div>`).join('');
+
+        return `
+          <section class="kan-col" data-id="${id}">
+            <header class="kan-head">
+              <span class="kan-eyebrow">${meta.num}<b>·</b>${weeks} UKER</span>
+              <span class="kan-title">${meta.name}</span>
+              <span class="kan-stats">Uke ${startIso} → ${endIso} · ${fmtHours(Math.round(t.periodHrs * 10) / 10)} t · ${t.periodSessions} økter</span>
+            </header>
+            <div class="kan-body">
+              ${fixedCards}
+              ${planCards}
+              ${tournamentCards}
+              ${otherCards}
+              <button class="kan-add"><i data-lucide="plus"></i>Legg til</button>
+            </div>
+          </section>`;
+      }).join('');
+    }
+
+    // ============================================================
+    // DASHBOARD VIEW
+    // ============================================================
+    const dashEl = document.getElementById('ts-dash');
+
+    function renderDashboard() {
+      // Compute totals across the year
+      let totalSessions = 0, totalHours = 0;
+      let typeHrs = { fys: 0, tek: 0, slag: 0, spill: 0, rest: 0, fixed: 0 };
+      ['grunn', 'spes', 'turn'].forEach((id) => {
+        const weeks = periodWidth(id);
+        const plan = PLANS[id];
+        TYPE_ORDER.forEach((tp) => {
+          const v = plan[tp];
+          totalSessions += v.count * weeks;
+          const hrs = v.count * v.mins / 60 * weeks;
+          totalHours += hrs;
+          typeHrs[tp] += hrs;
+        });
+        const fxHrs = FIXED[id].reduce((a, b) => a + b.hours, 0);
+        totalHours += fxHrs * weeks;
+        totalSessions += FIXED[id].length * weeks;
+        typeHrs.fixed += fxHrs * weeks;
+      });
+      const totalAll = Object.values(typeHrs).reduce((a, b) => a + b, 0);
+
+      // Find next major tournament (week > 22 = now). Treat week 22 as "this week".
+      const upcoming = TOURNAMENTS.filter((t) => isoToLinear(t.week) >= isoToLinear(22));
+      const nextTurn = upcoming[0];
+      const weeksToNext = nextTurn ? isoToLinear(nextTurn.week) - isoToLinear(22) : 0;
+      const nextLabel = weeksToNext === 0 ? 'NÅ' : weeksToNext + 'u';
+
+      // KPI cards
+      const kpiHtml = `
+        <div class="dash-kpi" style="--kpi-color:var(--primary)">
+          <span class="kpi-accent"></span>
+          <span class="kpi-lbl">Totalt / sesong</span>
+          <span class="kpi-val">${Math.round(totalHours)}<span class="kpi-unit">t</span></span>
+          <span class="kpi-sub">${totalSessions} økter · 52 uker</span>
+        </div>
+        <div class="dash-kpi" style="--kpi-color:var(--warning)">
+          <span class="kpi-accent"></span>
+          <span class="kpi-lbl">Snitt / uke</span>
+          <span class="kpi-val">${fmtHours(Math.round(totalHours / 52 * 10) / 10)}<span class="kpi-unit">t</span></span>
+          <span class="kpi-sub">${Math.round(totalSessions / 52)} økter/uke</span>
+        </div>
+        <div class="dash-kpi" style="--kpi-color:var(--destructive)">
+          <span class="kpi-accent"></span>
+          <span class="kpi-lbl">Turneringer</span>
+          <span class="kpi-val">${TOURNAMENTS.length}<span class="kpi-unit">stk</span></span>
+          <span class="kpi-sub">${TOURNAMENTS.filter((t) => t.major).length} hovedrunder</span>
+        </div>
+        <div class="dash-kpi" style="--kpi-color:var(--accent)">
+          <span class="kpi-accent"></span>
+          <span class="kpi-lbl">Neste turnering</span>
+          <span class="kpi-val">${weeksToNext === 0 ? 'NÅ' : weeksToNext}${weeksToNext === 0 ? '' : '<span class="kpi-unit">u</span>'}</span>
+          <span class="kpi-sub">${nextTurn ? nextTurn.name : '—'}</span>
+        </div>`;
+
+      // Distribution stacked bar
+      const distOrder = [
+        ['fixed', 'Faste',       'var(--primary)', false],
+        ['fys',   'Fysisk',      'var(--primary)', false],
+        ['tek',   'Teknisk',     'var(--warning)', false],
+        ['slag',  'Golfslag',    'var(--course-water)', false],
+        ['spill', 'Spill',       'var(--accent)', true],
+        ['rest',  'Restitusjon', 'var(--success)', false]
+      ];
+      // Dedupe fixed+fys colors by using different shades
+      const distSegs = distOrder.map(([k, label, color, isLime]) => {
+        const pct = (typeHrs[k] / totalAll) * 100;
+        if (pct < 0.5) return '';
+        return `<div class="dist-seg${isLime ? ' is-lime' : ''}" style="width:${pct}%;background:${k === 'fixed' ? '#0a3b2e' : color}" title="${label}: ${Math.round(typeHrs[k])} t">${pct >= 6 ? Math.round(typeHrs[k]) + 't' : ''}</div>`;
+      }).join('');
+      const distLegend = distOrder.map(([k, label, color]) => `
+        <span style="--leg-color:${k === 'fixed' ? '#0a3b2e' : color}">${label} ${Math.round(typeHrs[k])} t</span>`).join('');
+
+      // Upcoming events
+      const upcomingHtml = upcoming.slice(0, 5).map((t) => `
+        <div class="upcoming-row">
+          <span class="up-when">Uke ${t.week}<small>${WEEK_DATES[t.week] || ''}</small></span>
+          <span class="up-name">${t.name}</span>
+          <span class="up-dot" style="background:var(--destructive)"></span>
+          <span class="up-tag">${t.major ? 'Hoved' : 'Turnering'}</span>
+        </div>`).join('');
+
+      dashEl.innerHTML = `
+        ${kpiHtml}
+
+        <div class="dash-card dash-dist">
+          <div class="dash-card-head">
+            <span class="dc-title">Tidsfordeling · sesong</span>
+            <span class="dc-sub">${Math.round(totalAll)} t totalt</span>
+          </div>
+          <div class="dist-bar">${distSegs}</div>
+          <div class="dist-legend">${distLegend}</div>
+        </div>
+
+        <div class="dash-card dash-upcoming">
+          <div class="dash-card-head">
+            <span class="dc-title">Kommende turneringer</span>
+            <span class="dc-sub">${upcoming.length} igjen</span>
+          </div>
+          <div class="upcoming-list">${upcomingHtml}</div>
+        </div>`;
+    }
+
+    // ============================================================
+    // VIEW SWITCHER
+    // ============================================================
+    document.querySelectorAll('.view-tab').forEach((t) => {
+      t.addEventListener('click', () => {
+        document.querySelectorAll('.view-tab').forEach((x) => x.classList.toggle('is-active', x === t));
+        const v = t.dataset.view;
+        document.querySelectorAll('[data-view-body]').forEach((b) => {
+          b.hidden = (b.dataset.viewBody !== v);
+        });
+        qpPanel.hidden = (v !== 'timeline');
+
+        // Lazy-render the active view
+        if (v === 'list') renderList();
+        else if (v === 'kanban') renderKanban();
+        else if (v === 'dashboard') renderDashboard();
+        lucide.createIcons();
+      });
+    });
+
+    // ============================================================
+    // INIT
+    // ============================================================
+    positionPeriods();
+    positionSubBlocks();
+    positionBoundaries();
+    updateQuickPlanSummary();
+    lucide.createIcons();
+  </script>
+</div></body></html>

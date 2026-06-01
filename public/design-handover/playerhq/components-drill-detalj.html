@@ -1,0 +1,215 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>Drill-detalj · media + trinn + parametere</title>
+<link rel="stylesheet" href="_shared.css">
+<script src="https://unpkg.com/lucide@0.453.0"></script>
+<style>
+  body { width: 760px; }
+  .card { padding: 28px 32px; }
+
+  .head { margin-bottom: 22px; }
+  .head .eb { font-family: var(--font-mono); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted-foreground); }
+  .head h1 { margin: 8px 0 6px; font-family: var(--font-display); font-weight: 700; font-size: 28px; letter-spacing: -0.025em; line-height: 1.05; color: var(--foreground); }
+  .head h1 em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .head .helper { font-family: var(--font-sans); font-size: 14px; line-height: 1.55; color: var(--muted-foreground); max-width: 600px; }
+
+  .phone { width: 412px; margin: 0 auto; background: var(--card); border-radius: 40px; border: 7px solid var(--bezel-black); box-shadow: var(--shadow-lg); overflow: hidden; }
+  .ph-status { display: flex; align-items: center; justify-content: space-between; padding: 13px 24px 4px; font-family: var(--font-mono); font-size: 13px; font-weight: 700; position: relative; font-feature-settings: "tnum","zero"; }
+  .ph-status::after { content: ""; position: absolute; left: 50%; top: 13px; transform: translateX(-50%); width: 96px; height: 24px; border-radius: 9999px; background: var(--bezel-black); }
+  .ph-status .icons { display: inline-flex; gap: 5px; } .ph-status .icons i { width: 13px; height: 13px; }
+
+  .topbar { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+  .topbar .back { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.10em; color: var(--muted-foreground); background: none; border: 0; cursor: pointer; }
+  .topbar .back i { width: 13px; height: 13px; }
+  .topbar .nm { font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--foreground); margin-left: auto; letter-spacing: 0.02em; }
+
+  .body { max-height: 720px; overflow-y: auto; }
+
+  /* hero — axis-color editorial banner (lime left edge per DS), not flat fill */
+  .hero { padding: 18px 18px 16px; border-bottom: 1px solid var(--border); border-left: 3px solid var(--pyr-slag); background: var(--card); }
+  .hero .eb { display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-mono); font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.10em; color: var(--muted-foreground); }
+  .hero .eb .dot { width: 8px; height: 8px; border-radius: 9999px; background: var(--pyr-slag); }
+  .hero h2 { margin: 8px 0 0; font-family: var(--font-display); font-weight: 700; font-size: 22px; letter-spacing: -0.02em; line-height: 1.15; color: var(--foreground); }
+  .hero h2 em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .hero .meta { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .hero .chip { font-family: var(--font-mono); font-size: 9.5px; font-weight: 700; letter-spacing: 0.04em; color: var(--foreground); background: var(--secondary); padding: 4px 9px; border-radius: 9999px; display: inline-flex; align-items: center; gap: 5px; }
+  .hero .chip i { width: 11px; height: 11px; color: var(--muted-foreground); }
+  .hero .chip .on { color: var(--warning); }
+
+  .sec { padding: 16px 18px; border-bottom: 1px solid var(--border); }
+  .sec .l { font-family: var(--font-mono); font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted-foreground); margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
+  .sec .l .prog { color: var(--primary); font-weight: 800; }
+  .desc { font-size: 14px; line-height: 1.6; color: var(--foreground); letter-spacing: -0.005em; }
+
+  /* media */
+  .media-tabs { display: inline-flex; gap: 3px; padding: 3px; background: var(--secondary); border-radius: 10px; margin-bottom: 10px; }
+  .media-tab { border: 0; background: transparent; cursor: pointer; font-family: var(--font-mono); font-size: 10px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted-foreground); padding: 6px 12px; border-radius: 8px; }
+  .media-tab.on { background: var(--card); color: var(--foreground); box-shadow: 0 1px 2px rgba(10,31,23,0.08); }
+  .media-frame {
+    height: 188px; border-radius: 12px; border: 1px solid var(--border); position: relative; overflow: hidden;
+    background: repeating-linear-gradient(135deg, rgba(10,31,23,0.05) 0 12px, rgba(10,31,23,0.02) 12px 24px), var(--cream-50);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .media-frame .lab { font-family: var(--font-mono); font-size: 10px; font-weight: 800; letter-spacing: 0.10em; text-transform: uppercase; color: var(--muted-foreground); background: var(--card); border: 1px solid var(--border); padding: 6px 11px; border-radius: 9999px; display: inline-flex; align-items: center; gap: 7px; }
+  .media-frame .lab i { width: 13px; height: 13px; color: var(--primary); }
+
+  /* steps */
+  .steps { display: flex; flex-direction: column; gap: 8px; }
+  .step { display: grid; grid-template-columns: 28px 1fr; gap: 12px; align-items: start; padding: 10px 12px; border: 1px solid var(--border); border-radius: 12px; cursor: pointer; background: var(--card); transition: background 140ms ease; }
+  .step:hover { background: var(--secondary); }
+  .step .num { width: 28px; height: 28px; border-radius: 9999px; border: 2px solid var(--cream-300); color: var(--muted-foreground); display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-weight: 800; font-size: 12px; flex-shrink: 0; transition: background 140ms, border-color 140ms, color 140ms; }
+  .step .num i { width: 14px; height: 14px; display: none; }
+  .step.done .num { background: var(--primary); border-color: var(--primary); color: var(--accent); }
+  .step.done .num span { display: none; } .step.done .num i { display: block; }
+  .step .nm { font-size: 13.5px; font-weight: 600; color: var(--foreground); letter-spacing: -0.005em; line-height: 1.3; }
+  .step.done .nm { color: var(--muted-foreground); text-decoration: line-through; }
+  .step .sm { font-family: var(--font-mono); font-size: 10px; font-weight: 700; color: var(--muted-foreground); letter-spacing: 0.02em; margin-top: 3px; }
+
+  /* parametere table */
+  .params { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .prow { display: grid; grid-template-columns: 96px 1fr; border-bottom: 1px solid var(--border); }
+  .prow:last-child { border-bottom: 0; }
+  .prow .pk { padding: 10px 12px; font-family: var(--font-mono); font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted-foreground); background: var(--cream-50); border-right: 1px solid var(--border); display: flex; align-items: center; }
+  .prow .pv { padding: 10px 12px; font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--foreground); font-feature-settings: "tnum","zero"; letter-spacing: -0.005em; }
+
+  .coach { display: flex; gap: 11px; padding: 12px 14px; background: var(--card); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 12px; }
+  .coach .av { width: 30px; height: 30px; border-radius: 9999px; background: var(--primary); color: var(--accent); display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; font-size: 11px; flex-shrink: 0; }
+  .coach .ct { font-size: 13px; line-height: 1.5; color: var(--foreground); letter-spacing: -0.005em; }
+  .coach .ct b { font-weight: 700; } .coach .ct em { font-style: italic; color: var(--primary); }
+
+  .cta-bar { position: sticky; bottom: 0; padding: 12px 16px 18px; background: linear-gradient(180deg, transparent, var(--card) 30%); display: flex; gap: 9px; }
+  .cta { flex: 1; height: 50px; border-radius: 13px; border: 0; background: var(--primary); color: var(--accent); cursor: pointer; font-family: var(--font-mono); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 8px 20px rgba(0,88,64,0.18); }
+  .cta i { width: 15px; height: 15px; }
+  .cta.ghost { flex: 0 0 52px; background: var(--card); color: var(--muted-foreground); border: 1px solid var(--border); box-shadow: none; }
+
+  .rules { margin-top: 26px; padding: 16px 18px; background: var(--secondary); border-radius: 12px; font-family: var(--font-mono); font-size: 11px; color: var(--muted-foreground); line-height: 1.65; }
+  .rules p { margin: 0; } .rules p + p { margin-top: 8px; } .rules b { color: var(--foreground); font-weight: 700; }
+
+  @media (prefers-reduced-motion: reduce) { .step, .step .num { transition: none; } }
+</style></head>
+<body><div class="card">
+
+  <div class="head">
+    <span class="eb">2.16 · /PORTAL/DRILLS/[ID]</span>
+    <h1>Drill-detalj — <em>media, trinn, parametere</em>.</h1>
+    <p class="helper">Hele drillen på én flate: hero med akse-farge, media-veksler (video/foto), en avkryssbar
+      trinn-liste med live progresjon, parameter-tabell og coach-notat — og «Legg til i plan» som primær handling.</p>
+  </div>
+
+  <div class="phone">
+    <div class="ph-status">
+      <span>09:41</span>
+      <span class="icons"><i data-lucide="signal"></i><i data-lucide="wifi"></i><i data-lucide="battery-medium"></i></span>
+    </div>
+
+    <div class="topbar">
+      <button class="back"><i data-lucide="chevron-left"></i>Bibliotek</button>
+      <span class="nm">DRILL #142</span>
+    </div>
+
+    <div class="body">
+      <div class="hero">
+        <span class="eb"><span class="dot"></span>SLAG · INNSPILL</span>
+        <h2>Wedge-presisjon <em>50–80 m</em></h2>
+        <div class="meta">
+          <span class="chip"><i data-lucide="clock"></i>60 min</span>
+          <span class="chip"><i data-lucide="list-checks"></i>4 trinn</span>
+          <span class="chip"><i data-lucide="target"></i>CS 80</span>
+          <span class="chip"><span class="on">★★★★</span>☆ 4,2</span>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="l">Beskrivelse</div>
+        <p class="desc">Bygg avstandskontroll i scoring-sonen. Du veksler mellom faste og tilfeldige distanser
+          50–80 m og scorer mot et landingsvindu på ±3 m. Avslutt med en CS-test så framgangen blir målbar mellom øktene.</p>
+      </div>
+
+      <div class="sec">
+        <div class="l">Media</div>
+        <div class="media-tabs" id="mtabs">
+          <button class="media-tab on" data-m="video">Video</button>
+          <button class="media-tab" data-m="foto">Foto</button>
+          <button class="media-tab" data-m="face">Face-on</button>
+        </div>
+        <div class="media-frame">
+          <span class="lab" id="mediaLab"><i data-lucide="play"></i>VIDEO · DOWN-LINE · 0:42</span>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="l">Trinn <span class="prog" id="prog">0 / 4 fullført</span></div>
+        <div class="steps" id="steps">
+          <div class="step" data-step><span class="num"><span>1</span><i data-lucide="check"></i></span><div><div class="nm">Oppvarming · ladder 50 → 80 m</div><div class="sm">12 BALL · PW–52° · STIGENDE</div></div></div>
+          <div class="step" data-step><span class="num"><span>2</span><i data-lucide="check"></i></span><div><div class="nm">Fast distanse 65 m · landingsvindu ±3 m</div><div class="sm">20 BALL · 56° · TELL TREFF</div></div></div>
+          <div class="step" data-step><span class="num"><span>3</span><i data-lucide="check"></i></span><div><div class="nm">Tilfeldig distanse-kall (50/65/80)</div><div class="sm">15 BALL · BYTT KØLLE PER KALL</div></div></div>
+          <div class="step" data-step><span class="num"><span>4</span><i data-lucide="check"></i></span><div><div class="nm">CS-test · 9 baller mot benchmark</div><div class="sm">SCORE MOT CS 80 · LOGG RESULTAT</div></div></div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="l">Parametere</div>
+        <div class="params">
+          <div class="prow"><span class="pk">Reps</span><span class="pv">56 baller</span></div>
+          <div class="prow"><span class="pk">Tid</span><span class="pv">60 min</span></div>
+          <div class="prow"><span class="pk">CS</span><span class="pv">80</span></div>
+          <div class="prow"><span class="pk">Kølle</span><span class="pv">PW · 52° · 56°</span></div>
+          <div class="prow"><span class="pk">Miljø</span><span class="pv">Range eller bane · fast underlag</span></div>
+        </div>
+      </div>
+
+      <div class="sec" style="border-bottom: 0;">
+        <div class="l">Coach-notat</div>
+        <div class="coach">
+          <span class="av">AS</span>
+          <div class="ct">Hold tempo <b>3:1</b> i innspillet og <em>fullfør svingen mot målet</em> — du faller fortsatt litt
+            bakover på de korteste. Logg CS-resultatet så ser vi trenden mot uke 43.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-bar">
+      <button class="cta ghost" aria-label="Lagre"><i data-lucide="bookmark"></i></button>
+      <button class="cta"><i data-lucide="calendar-plus"></i>Legg til i plan</button>
+    </div>
+  </div>
+
+  <div class="rules">
+    <p><b>Én drill, hele historien.</b> Hero (akse-farge venstrekant, ikke flat-grønn flate) · media-veksler · avkryssbare trinn · parameter-tabell · coach-notat (lime venstrekant) · primær «Legg til i plan».</p>
+    <p><b>Trinn er avkryssbare.</b> Tap et trinn → fullført (lime check, gjennomstreket), og progresjonen «N / 4» oppdateres live. Media-veksleren bytter klipp-etikett.</p>
+  </div>
+
+  <script>lucide.createIcons();</script>
+  <script>
+  (function () {
+    /* media tabs */
+    var LAB = {
+      video: '<i data-lucide="play"></i>VIDEO · DOWN-LINE · 0:42',
+      foto:  '<i data-lucide="image"></i>FOTO · NEDSLAGSPUNKT · DROPP HER',
+      face:  '<i data-lucide="video"></i>FACE-ON · SLOW-MO · 0:18'
+    };
+    var lab = document.getElementById('mediaLab');
+    document.querySelectorAll('#mtabs .media-tab').forEach(function (t) {
+      t.addEventListener('click', function () {
+        document.querySelectorAll('#mtabs .media-tab').forEach(function (x) { x.classList.toggle('on', x === t); });
+        lab.innerHTML = LAB[t.dataset.m];
+        lucide.createIcons();
+      });
+    });
+
+    /* step check-off + progress */
+    var steps = Array.prototype.slice.call(document.querySelectorAll('#steps [data-step]'));
+    var prog = document.getElementById('prog');
+    function refresh() {
+      var done = steps.filter(function (s) { return s.classList.contains('done'); }).length;
+      prog.textContent = done + ' / ' + steps.length + ' fullført';
+    }
+    steps.forEach(function (s) {
+      s.setAttribute('role', 'button');
+      s.setAttribute('tabindex', '0');
+      function toggle() { s.classList.toggle('done'); refresh(); }
+      s.addEventListener('click', toggle);
+      s.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
+    });
+    refresh();
+  })();
+  </script>
+</div></body></html>

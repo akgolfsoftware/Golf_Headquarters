@@ -1,0 +1,29 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Shadow scale</title>
+<link rel="stylesheet" href="_shared.css">
+<style>
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; padding: 8px 0; }
+  .swatch { display: flex; flex-direction: column; gap: 8px; align-items: center; }
+  .box { width: 110px; height: 64px; background: var(--card); border-radius: 12px; border: 1px solid var(--border); }
+  .name { font-family: var(--font-mono); font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
+  .desc { font-family: var(--font-mono); font-size: 9px; color: var(--muted-foreground); text-align: center; }
+</style></head>
+<body><div class="card">
+  <div class="grid">
+    <div class="swatch">
+      <div class="box" style="box-shadow: 0 1px 2px rgba(10,31,23,0.04);"></div>
+      <div class="name">shadow-xs</div><div class="desc">hairline lift</div>
+    </div>
+    <div class="swatch">
+      <div class="box" style="box-shadow: 0 2px 4px rgba(10,31,23,0.05);"></div>
+      <div class="name">shadow-sm</div><div class="desc">subtle cards</div>
+    </div>
+    <div class="swatch">
+      <div class="box" style="box-shadow: 0 4px 14px rgba(10,31,23,0.08);"></div>
+      <div class="name">shadow-md</div><div class="desc">popovers · max</div>
+    </div>
+    <div class="swatch">
+      <div class="box" style="background:var(--accent); box-shadow: 0 6px 14px rgba(209,248,67,0.25); border: 0;"></div>
+      <div class="name">lime cta</div><div class="desc">signature glow</div>
+    </div>
+  </div>
+</div></body></html>

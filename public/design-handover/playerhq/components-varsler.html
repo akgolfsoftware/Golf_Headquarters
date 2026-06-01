@@ -1,0 +1,146 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>Varsler · tids-gruppering</title>
+<link rel="stylesheet" href="_shared.css">
+<script src="https://unpkg.com/lucide@0.453.0"></script>
+<style>
+  body { width: 760px; }
+  .card { padding: 28px 32px; }
+
+  .head { margin-bottom: 22px; }
+  .head .eb { font-family: var(--font-mono); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted-foreground); }
+  .head h1 { margin: 8px 0 6px; font-family: var(--font-display); font-weight: 700; font-size: 28px; letter-spacing: -0.025em; line-height: 1.05; color: var(--foreground); }
+  .head h1 em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .head .helper { font-family: var(--font-sans); font-size: 14px; line-height: 1.55; color: var(--muted-foreground); max-width: 600px; }
+
+  .phone { width: 412px; margin: 0 auto; background: var(--card); border-radius: 40px; border: 7px solid var(--bezel-black); box-shadow: var(--shadow-lg); overflow: hidden; }
+  .ph-status { display: flex; align-items: center; justify-content: space-between; padding: 13px 24px 4px; font-family: var(--font-mono); font-size: 13px; font-weight: 700; position: relative; font-feature-settings: "tnum","zero"; }
+  .ph-status::after { content: ""; position: absolute; left: 50%; top: 13px; transform: translateX(-50%); width: 96px; height: 24px; border-radius: 9999px; background: var(--bezel-black); }
+  .ph-status .icons { display: inline-flex; gap: 5px; } .ph-status .icons i { width: 13px; height: 13px; }
+
+  .topbar { display: flex; align-items: center; gap: 10px; padding: 12px 16px 14px; border-bottom: 1px solid var(--border); }
+  .topbar .back { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.10em; color: var(--muted-foreground); background: none; border: 0; cursor: pointer; }
+  .topbar .back i { width: 13px; height: 13px; }
+  .topbar .tt { font-family: var(--font-display); font-weight: 700; font-size: 17px; letter-spacing: -0.015em; color: var(--foreground); }
+  .topbar .tt b { color: var(--primary); }
+  .topbar .read { margin-left: auto; font-family: var(--font-mono); font-size: 9.5px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: var(--primary); background: rgba(0,88,64,0.06); border: 1px solid rgba(0,88,64,0.18); border-radius: 8px; padding: 6px 9px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; }
+  .topbar .read i { width: 12px; height: 12px; }
+  .topbar .read.done { opacity: 0.5; pointer-events: none; }
+
+  .body { max-height: 680px; overflow-y: auto; }
+
+  .day-bar { padding: 9px 18px; background: var(--cream-50); border-bottom: 1px solid var(--border); font-family: var(--font-mono); font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted-foreground); display: flex; align-items: center; gap: 10px; }
+  .day-bar .ct { margin-left: auto; background: var(--card); border: 1px solid var(--border); border-radius: 9999px; padding: 1px 7px; font-size: 8.5px; font-weight: 700; }
+
+  .nv { display: grid; grid-template-columns: 36px 1fr; gap: 12px; padding: 13px 18px; border-bottom: 1px solid var(--border); cursor: pointer; position: relative; transition: background 140ms ease; }
+  .nv:hover { background: rgba(0,88,64,0.02); }
+  .nv .ic { width: 36px; height: 36px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .nv .ic i { width: 17px; height: 17px; }
+  .nv .ic.plan { background: rgba(209,248,67,0.30); color: var(--primary); }
+  .nv .ic.turn { background: rgba(163,45,45,0.10); color: var(--destructive); }
+  .nv .ic.runde { background: rgba(0,88,64,0.10); color: var(--primary); }
+  .nv .ic.credit { background: rgba(184,133,42,0.14); color: var(--warning-foreground); }
+  .nv .ic.coach { background: rgba(37,99,235,0.10); color: var(--info); }
+  .nv .ic.test { background: var(--secondary); color: var(--muted-foreground); }
+  .nv .ic.faktura { background: rgba(0,88,64,0.08); color: var(--primary); }
+  .nv .agent { font-family: var(--font-mono); font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.10em; color: var(--muted-foreground); }
+  .nv .msg { font-size: 13.5px; line-height: 1.4; color: var(--foreground); letter-spacing: -0.005em; margin-top: 3px; }
+  .nv .msg b { font-weight: 700; } .nv .msg .star { color: var(--warning); }
+  .nv .when { font-family: var(--font-mono); font-size: 9.5px; font-weight: 700; color: var(--muted-foreground); letter-spacing: 0.04em; margin-top: 5px; }
+  .nv .dot { position: absolute; top: 16px; right: 16px; width: 9px; height: 9px; border-radius: 9999px; background: var(--accent); box-shadow: 0 0 0 3px var(--card); }
+  .nv.read .dot { display: none; }
+  .nv.read .agent, .nv.read .msg { opacity: 0.62; }
+
+  .older-grp { display: none; }
+  .older-grp.show { display: block; }
+  .show-older { padding: 14px 18px 18px; text-align: center; }
+  .show-older button { font-family: var(--font-mono); font-size: 10px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--primary); background: none; border: 0; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+  .show-older button i { width: 13px; height: 13px; }
+  .show-older.hide { display: none; }
+
+  .rules { margin-top: 26px; padding: 16px 18px; background: var(--secondary); border-radius: 12px; font-family: var(--font-mono); font-size: 11px; color: var(--muted-foreground); line-height: 1.65; }
+  .rules p { margin: 0; } .rules p + p { margin-top: 8px; } .rules b { color: var(--foreground); font-weight: 700; }
+  @media (prefers-reduced-motion: reduce) { .nv { transition: none; } }
+</style></head>
+<body><div class="card">
+
+  <div class="head">
+    <span class="eb">2.18 · /PORTAL/VARSLER</span>
+    <h1>Varsel-senter med <em>tids-gruppering</em>.</h1>
+    <p class="helper">Agent-varsler gruppert per tid (I dag / I går / Denne uka / Eldre), med lime ulest-prikker.
+      Tap et varsel for å lese det, «Mark alle» nullstiller, og «Vis eldre» folder ut arkivet — alle tellere fra DOM.</p>
+  </div>
+
+  <div class="phone">
+    <div class="ph-status">
+      <span>09:41</span>
+      <span class="icons"><i data-lucide="signal"></i><i data-lucide="wifi"></i><i data-lucide="battery-medium"></i></span>
+    </div>
+
+    <div class="topbar">
+      <button class="back"><i data-lucide="chevron-left"></i></button>
+      <span class="tt">Varsler · <b id="newCount">5</b> nye</span>
+      <button class="read" id="readAll"><i data-lucide="check-check"></i>Mark alle</button>
+    </div>
+
+    <div class="body" id="body">
+      <div class="day-bar"><span>I dag</span><span class="ct">2</span></div>
+      <div class="nv unread" data-nv><span class="ic plan"><i data-lucide="zap"></i></span><div><div class="agent">Plan-vakten</div><div class="msg">Plan justert: fjernet <b>overlapp i uke 22</b>.</div><div class="when">2 T SIDEN</div></div><span class="dot"></span></div>
+      <div class="nv unread" data-nv><span class="ic turn"><i data-lucide="trophy"></i></span><div><div class="agent">Turnering-agent</div><div class="msg"><b>Srixon Tour #2</b> påmelding stenger om 3 dager.</div><div class="when">5 T SIDEN</div></div><span class="dot"></span></div>
+
+      <div class="day-bar"><span>I går</span><span class="ct">2</span></div>
+      <div class="nv unread" data-nv><span class="ic runde"><i data-lucide="bar-chart-3"></i></span><div><div class="agent">Runde-agent</div><div class="msg">Larvik GK <b>72 (−1)</b> · +1,20 SG · <span class="star">★</span> beste runde i år.</div><div class="when">1 D SIDEN</div></div><span class="dot"></span></div>
+      <div class="nv unread" data-nv><span class="ic credit"><i data-lucide="ticket"></i></span><div><div class="agent">Credit</div><div class="msg"><b>1 credit refundert</b> — avbestilt utenfor 24 t.</div><div class="when">1 D SIDEN</div></div><span class="dot"></span></div>
+
+      <div class="day-bar"><span>Denne uka</span><span class="ct">2</span></div>
+      <div class="nv unread" data-nv><span class="ic coach"><i data-lucide="message-square"></i></span><div><div class="agent">Coach Andreas</div><div class="msg">Se videoen på <b>innspill 60–90 m</b> før fredag.</div><div class="when">3 D SIDEN</div></div><span class="dot"></span></div>
+      <div class="nv read" data-nv><span class="ic test"><i data-lucide="clipboard-check"></i></span><div><div class="agent">System · sesongplan</div><div class="msg">Testuke 43 lagt i planen din.</div><div class="when">4 D SIDEN</div></div><span class="dot"></span></div>
+
+      <div class="older-grp" id="older">
+        <div class="day-bar"><span>Eldre</span><span class="ct">2</span></div>
+        <div class="nv read" data-nv><span class="ic faktura"><i data-lucide="receipt"></i></span><div><div class="agent">Fakturaer</div><div class="msg">Coaching mai · <b>3 200 kr</b> betalt.</div><div class="when">12 D SIDEN</div></div><span class="dot"></span></div>
+        <div class="nv read" data-nv><span class="ic test"><i data-lucide="bell"></i></span><div><div class="agent">System</div><div class="msg">Velkommen til <b>Performance Pro</b>.</div><div class="when">20 D SIDEN</div></div><span class="dot"></span></div>
+      </div>
+
+      <div class="show-older" id="showOlder"><button id="showOlderBtn">Vis eldre <i data-lucide="chevron-down"></i></button></div>
+    </div>
+  </div>
+
+  <div class="rules">
+    <p><b>Tids-gruppering.</b> I dag / I går / Denne uka / Eldre. Ulest = lime prikk + full opacitet; lest dempes til 62 %. Hver dag-bar teller sine varsler.</p>
+    <p><b>Tellere fra DOM.</b> «N nye» = antall uleste, regnet ut — ikke hardkodet. Tap et varsel → lest; «Mark alle» nullstiller. «Vis eldre» folder ut arkivet.</p>
+  </div>
+
+  <script>lucide.createIcons();</script>
+  <script>
+  (function () {
+    var items = Array.prototype.slice.call(document.querySelectorAll('#body [data-nv]'));
+    var newCount = document.getElementById('newCount');
+    var readAll = document.getElementById('readAll');
+
+    function refresh() {
+      var n = items.filter(function (it) { return it.classList.contains('unread'); }).length;
+      newCount.textContent = n;
+      readAll.classList.toggle('done', n === 0);
+    }
+    items.forEach(function (it) {
+      it.setAttribute('role', 'button');
+      it.setAttribute('tabindex', '0');
+      function read() { if (it.classList.contains('unread')) { it.classList.remove('unread'); it.classList.add('read'); refresh(); } }
+      it.addEventListener('click', read);
+      it.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); read(); } });
+    });
+    readAll.addEventListener('click', function () {
+      items.forEach(function (it) { it.classList.remove('unread'); it.classList.add('read'); });
+      refresh();
+    });
+
+    var older = document.getElementById('older');
+    var showOlder = document.getElementById('showOlder');
+    document.getElementById('showOlderBtn').addEventListener('click', function () {
+      older.classList.add('show');
+      showOlder.classList.add('hide');
+    });
+
+    refresh();
+  })();
+  </script>
+</div></body></html>

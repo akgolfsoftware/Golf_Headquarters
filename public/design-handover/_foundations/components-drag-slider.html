@@ -1,0 +1,656 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>Drag-slider · fasilitets-profil</title>
+<link rel="stylesheet" href="_shared.css">
+<script src="https://unpkg.com/lucide@0.453.0"></script>
+<style>
+  body { width: 880px; }
+  .card { padding: 24px; }
+
+  .sec {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    display: flex; align-items: center; gap: 8px;
+    margin: 0 0 16px;
+  }
+  .sec::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+  .sec.tight { margin-top: 28px; }
+
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .panel-head {
+    padding: 18px 24px 12px;
+  }
+  .panel-head .eb {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .panel-head h1 {
+    margin: 8px 0 4px;
+    font-family: var(--font-display); font-weight: 700; font-size: 22px;
+    letter-spacing: -0.02em; line-height: 1.15; color: var(--foreground);
+  }
+  .panel-head h1 em {
+    font-style: italic; font-weight: 400; color: var(--primary);
+  }
+  .panel-head .helper {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+
+  /* ============================================================
+     SLIDER BLOCK
+     ============================================================ */
+  .sliders {
+    padding: 18px 24px 8px;
+    display: flex; flex-direction: column; gap: 26px;
+  }
+
+  .slider {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .slider .head-row {
+    display: flex; align-items: baseline; gap: 10px;
+  }
+  .slider .nm {
+    font-family: var(--font-display); font-weight: 700; font-size: 14px;
+    letter-spacing: -0.005em; color: var(--foreground);
+  }
+  .slider .sub {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .slider .range {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.10em; text-transform: uppercase;
+    font-feature-settings: "tnum","zero";
+  }
+  .slider .range b { color: var(--foreground); font-weight: 800; }
+
+  /* Track wrapper has 16 px padding around to accommodate thumb */
+  .track-wrap {
+    position: relative;
+    height: 56px;
+    margin: 0 16px;
+  }
+  .track {
+    position: absolute; left: 0; right: 0; top: 50%;
+    transform: translateY(-50%);
+    height: 8px;
+    background: rgba(10,31,23,0.06);
+    border-radius: 9999px;
+    overflow: visible;
+  }
+  .track .fill {
+    position: absolute; left: 0; top: 0; bottom: 0;
+    background: var(--primary);
+    border-radius: 9999px;
+  }
+
+  /* Snap ticks (every 5 m) */
+  .ticks {
+    position: absolute; left: 0; right: 0; top: 50%;
+    transform: translateY(-50%);
+    height: 8px;
+    pointer-events: none;
+  }
+  .ticks .tick {
+    position: absolute; top: -2px; bottom: -2px;
+    width: 1px; background: rgba(10,31,23,0.20);
+  }
+  .ticks .tick.major {
+    background: rgba(10,31,23,0.45);
+    top: -4px; bottom: -4px;
+  }
+
+  /* Tick labels under track */
+  .tick-labels {
+    position: absolute; left: 0; right: 0; top: calc(50% + 12px);
+    height: 14px;
+    pointer-events: none;
+  }
+  .tick-labels .tl {
+    position: absolute; transform: translateX(-50%);
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    font-feature-settings: "tnum","zero";
+  }
+
+  /* Thumb */
+  .thumb {
+    position: absolute; top: 50%;
+    width: 24px; height: 24px;
+    transform: translate(-50%, -50%);
+    background: var(--primary);
+    border-radius: 9999px;
+    border: 3px solid var(--card);
+    box-shadow: 0 2px 8px rgba(10,31,23,0.18), 0 0 0 1px var(--primary);
+    cursor: grab;
+    z-index: 2;
+  }
+  .thumb:active, .thumb.dragging {
+    cursor: grabbing;
+    box-shadow: 0 4px 14px rgba(10,31,23,0.24), 0 0 0 6px rgba(0,88,64,0.12), 0 0 0 1px var(--primary);
+  }
+
+  /* Value bubble above thumb */
+  .value-bubble {
+    position: absolute; left: 50%; top: -32px;
+    transform: translateX(-50%);
+    height: 26px; padding: 0 10px;
+    background: var(--primary); color: var(--accent);
+    border-radius: 9999px;
+    display: inline-flex; align-items: center;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 800;
+    letter-spacing: -0.005em;
+    font-feature-settings: "tnum","zero";
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(10,31,23,0.15);
+  }
+  .value-bubble::after {
+    content: "";
+    position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%);
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid var(--primary);
+  }
+
+  /* Active drag-affordance state */
+  .slider.is-active .thumb {
+    box-shadow: 0 4px 14px rgba(10,31,23,0.24), 0 0 0 8px rgba(209,248,67,0.30), 0 0 0 1px var(--primary);
+  }
+  .slider.is-active .value-bubble {
+    background: var(--accent); color: var(--primary);
+    box-shadow: 0 6px 14px rgba(209,248,67,0.40);
+  }
+  .slider.is-active .value-bubble::after {
+    border-top-color: var(--accent);
+  }
+
+  /* Empty / not-set */
+  .slider.is-empty .fill { background: var(--muted-foreground); opacity: 0.20; }
+  .slider.is-empty .thumb {
+    background: var(--card); border-color: var(--input);
+    box-shadow: 0 1px 4px rgba(10,31,23,0.10), 0 0 0 1px var(--input);
+  }
+  .slider.is-empty .value-bubble {
+    background: var(--secondary); color: var(--muted-foreground);
+    box-shadow: none;
+  }
+  .slider.is-empty .value-bubble::after { border-top-color: var(--secondary); }
+
+  /* ============================================================
+     FACILITY CHECKBOXES
+     ============================================================ */
+  .facility {
+    padding: 18px 24px 22px;
+    border-top: 1px solid var(--border);
+    background: var(--cream-50);
+  }
+  .facility .lbl {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    margin-bottom: 12px;
+    display: flex; align-items: baseline; gap: 8px;
+  }
+  .facility .lbl .sub {
+    font-weight: 700;
+    text-transform: none; letter-spacing: 0.02em;
+    color: var(--muted-foreground); opacity: 0.8;
+  }
+
+  .fac-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+  }
+  .fac {
+    display: grid;
+    grid-template-columns: 18px 1fr;
+    align-items: center;
+    column-gap: 10px;
+    padding: 11px 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 120ms ease-out, border-color 120ms ease-out;
+  }
+  .fac:hover { background: var(--secondary); }
+  .fac.is-on {
+    background: rgba(209,248,67,0.10);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px rgba(209,248,67,0.45);
+  }
+  .fac .chk {
+    width: 18px; height: 18px; border-radius: 5px;
+    border: 1.5px solid var(--input);
+    background: var(--card);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: transparent;
+  }
+  .fac.is-on .chk {
+    background: var(--primary); border-color: var(--primary); color: var(--accent);
+  }
+  .fac .chk i { width: 12px; height: 12px; }
+  .fac .body { display: flex; flex-direction: column; line-height: 1.2; min-width: 0; }
+  .fac .nm {
+    font-size: 13px; font-weight: 700; letter-spacing: -0.005em;
+    color: var(--foreground);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .fac .nm i { width: 13px; height: 13px; color: var(--muted-foreground); }
+  .fac.is-on .nm i { color: var(--primary); }
+  .fac .sub {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.06em;
+    margin-top: 2px; text-transform: uppercase;
+  }
+
+  /* Custom add row */
+  .fac.add {
+    background: transparent;
+    border: 1px dashed var(--border);
+  }
+  .fac.add .chk {
+    border-style: dashed; background: transparent;
+    color: var(--muted-foreground);
+  }
+  .fac.add .chk i { width: 13px; height: 13px; }
+  .fac.add .nm { color: var(--muted-foreground); }
+
+  /* ============================================================
+     ACTION ROW
+     ============================================================ */
+  .actions {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 24px 18px;
+    border-top: 1px solid var(--border);
+  }
+  .actions .summary {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .actions .summary b { color: var(--foreground); }
+  .actions .btn {
+    height: 36px; padding: 0 14px; border-radius: 9999px;
+    border: 1px solid var(--border); background: var(--card);
+    color: var(--foreground);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .actions .btn:hover { background: var(--secondary); }
+  .actions .btn.pri { background: var(--primary); color: var(--accent); border-color: var(--primary); }
+  .actions .btn.pri:hover { background: var(--primary-hover); }
+  .actions .btn i { width: 12px; height: 12px; }
+  .actions .right { margin-left: auto; display: inline-flex; gap: 6px; }
+
+  /* ============================================================
+     ANATOMY (state strip)
+     ============================================================ */
+  .states-row {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 14px;
+  }
+  .state-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .state-card .lbl {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .state-card .dsc {
+    font-size: 11px; color: var(--muted-foreground); line-height: 1.4;
+    letter-spacing: -0.005em;
+  }
+  .state-card .demo {
+    position: relative; height: 56px; margin: 0 12px;
+  }
+
+  /* Rules */
+  .rules {
+    margin-top: 24px; padding: 16px;
+    background: var(--secondary); border-radius: 12px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted-foreground); line-height: 1.6;
+  }
+  .rules p { margin: 0; }
+  .rules p + p { margin-top: 8px; }
+  .rules b { color: var(--foreground); font-weight: 700; }
+  .rules code {
+    background: var(--card); padding: 1px 5px; border-radius: 3px;
+    color: var(--foreground); font-weight: 700;
+  }
+</style></head>
+<body><div class="card">
+
+  <div class="sec">Drag-slider · fasilitets-profil</div>
+
+  <div class="panel">
+
+    <!-- HEADER -->
+    <div class="panel-head">
+      <div class="eb">ONBOARDING · STEG 4 AV 8</div>
+      <h1>Fortell oss om <em>treningsstedet</em></h1>
+      <div class="helper">Drag for å sette lengde · snap til 5 m · brukes til å foreslå relevante drills</div>
+    </div>
+
+    <!-- SLIDERS -->
+    <div class="sliders">
+
+      <!-- 1. Putting green — value 15 m, snap-to-5 -->
+      <div class="slider">
+        <div class="head-row">
+          <span class="nm">Putting green</span>
+          <span class="sub">Lengste tilgjengelige putt</span>
+          <span class="range">0–<b>30</b> M</span>
+        </div>
+        <div class="track-wrap">
+          <div class="track">
+            <div class="fill" style="width:50%"></div>
+          </div>
+          <div class="ticks">
+            <div class="tick" style="left:0%"></div>
+            <div class="tick major" style="left:16.66%"></div>
+            <div class="tick" style="left:33.33%"></div>
+            <div class="tick major" style="left:50%"></div>
+            <div class="tick" style="left:66.66%"></div>
+            <div class="tick major" style="left:83.33%"></div>
+            <div class="tick" style="left:100%"></div>
+          </div>
+          <div class="tick-labels">
+            <span class="tl" style="left:0%">0</span>
+            <span class="tl" style="left:33.33%">10</span>
+            <span class="tl" style="left:66.66%">20</span>
+            <span class="tl" style="left:100%">30</span>
+          </div>
+          <div class="thumb" style="left:50%">
+            <div class="value-bubble">15 m</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Lengste chip — value 25 m, ACTIVE (dragging) -->
+      <div class="slider is-active">
+        <div class="head-row">
+          <span class="nm">Lengste chip</span>
+          <span class="sub">Maks chip-distanse fra rough/forgreen</span>
+          <span class="range">0–<b>30</b> M</span>
+        </div>
+        <div class="track-wrap">
+          <div class="track">
+            <div class="fill" style="width:83.33%"></div>
+          </div>
+          <div class="ticks">
+            <div class="tick" style="left:0%"></div>
+            <div class="tick major" style="left:16.66%"></div>
+            <div class="tick" style="left:33.33%"></div>
+            <div class="tick major" style="left:50%"></div>
+            <div class="tick" style="left:66.66%"></div>
+            <div class="tick major" style="left:83.33%"></div>
+            <div class="tick" style="left:100%"></div>
+          </div>
+          <div class="tick-labels">
+            <span class="tl" style="left:0%">0</span>
+            <span class="tl" style="left:33.33%">10</span>
+            <span class="tl" style="left:66.66%">20</span>
+            <span class="tl" style="left:100%">30</span>
+          </div>
+          <div class="thumb dragging" style="left:83.33%">
+            <div class="value-bubble">25 m</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Lengste pitch — value 40 m -->
+      <div class="slider">
+        <div class="head-row">
+          <span class="nm">Lengste pitch</span>
+          <span class="sub">Maks pitch-distanse</span>
+          <span class="range">0–<b>50</b> M</span>
+        </div>
+        <div class="track-wrap">
+          <div class="track">
+            <div class="fill" style="width:80%"></div>
+          </div>
+          <div class="ticks">
+            <div class="tick" style="left:0%"></div>
+            <div class="tick" style="left:10%"></div>
+            <div class="tick major" style="left:20%"></div>
+            <div class="tick" style="left:30%"></div>
+            <div class="tick major" style="left:40%"></div>
+            <div class="tick" style="left:50%"></div>
+            <div class="tick major" style="left:60%"></div>
+            <div class="tick" style="left:70%"></div>
+            <div class="tick major" style="left:80%"></div>
+            <div class="tick" style="left:90%"></div>
+            <div class="tick" style="left:100%"></div>
+          </div>
+          <div class="tick-labels">
+            <span class="tl" style="left:0%">0</span>
+            <span class="tl" style="left:20%">10</span>
+            <span class="tl" style="left:40%">20</span>
+            <span class="tl" style="left:60%">30</span>
+            <span class="tl" style="left:80%">40</span>
+            <span class="tl" style="left:100%">50</span>
+          </div>
+          <div class="thumb" style="left:80%">
+            <div class="value-bubble">40 m</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Lengste bunkerslag — EMPTY (not set) -->
+      <div class="slider is-empty">
+        <div class="head-row">
+          <span class="nm">Lengste bunkerslag</span>
+          <span class="sub">Maks slag-distanse fra bunker</span>
+          <span class="range">0–<b>20</b> M</span>
+        </div>
+        <div class="track-wrap">
+          <div class="track">
+            <div class="fill" style="width:0%"></div>
+          </div>
+          <div class="ticks">
+            <div class="tick" style="left:0%"></div>
+            <div class="tick major" style="left:25%"></div>
+            <div class="tick" style="left:50%"></div>
+            <div class="tick major" style="left:75%"></div>
+            <div class="tick" style="left:100%"></div>
+          </div>
+          <div class="tick-labels">
+            <span class="tl" style="left:0%">0</span>
+            <span class="tl" style="left:25%">5</span>
+            <span class="tl" style="left:50%">10</span>
+            <span class="tl" style="left:75%">15</span>
+            <span class="tl" style="left:100%">20</span>
+          </div>
+          <div class="thumb" style="left:0%">
+            <div class="value-bubble">Ikke satt</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Lengste slag range — value 220 m -->
+      <div class="slider">
+        <div class="head-row">
+          <span class="nm">Lengste slag (range)</span>
+          <span class="sub">Maks tilgjengelig driver-distanse</span>
+          <span class="range">50–<b>300</b> M</span>
+        </div>
+        <div class="track-wrap">
+          <div class="track">
+            <div class="fill" style="width:68%"></div>
+          </div>
+          <div class="ticks">
+            <div class="tick" style="left:0%"></div>
+            <div class="tick" style="left:10%"></div>
+            <div class="tick major" style="left:20%"></div>
+            <div class="tick" style="left:30%"></div>
+            <div class="tick major" style="left:40%"></div>
+            <div class="tick" style="left:50%"></div>
+            <div class="tick major" style="left:60%"></div>
+            <div class="tick" style="left:70%"></div>
+            <div class="tick major" style="left:80%"></div>
+            <div class="tick" style="left:90%"></div>
+            <div class="tick" style="left:100%"></div>
+          </div>
+          <div class="tick-labels">
+            <span class="tl" style="left:0%">50</span>
+            <span class="tl" style="left:20%">100</span>
+            <span class="tl" style="left:40%">150</span>
+            <span class="tl" style="left:60%">200</span>
+            <span class="tl" style="left:80%">250</span>
+            <span class="tl" style="left:100%">300</span>
+          </div>
+          <div class="thumb" style="left:68%">
+            <div class="value-bubble">220 m</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- FACILITY -->
+    <div class="facility">
+      <div class="lbl">
+        FASILITETER
+        <span class="sub">Hva har du tilgjengelig?</span>
+      </div>
+      <div class="fac-grid">
+
+        <div class="fac is-on">
+          <span class="chk"><i data-lucide="check"></i></span>
+          <div class="body">
+            <span class="nm"><i data-lucide="weight"></i>Vektstang</span>
+            <span class="sub">FYS · STYRKE</span>
+          </div>
+        </div>
+
+        <div class="fac is-on">
+          <span class="chk"><i data-lucide="check"></i></span>
+          <div class="body">
+            <span class="nm"><i data-lucide="dumbbell"></i>Trapbar</span>
+            <span class="sub">FYS · LØFT</span>
+          </div>
+        </div>
+
+        <div class="fac">
+          <span class="chk"></span>
+          <div class="body">
+            <span class="nm"><i data-lucide="footprints"></i>Løpebane</span>
+            <span class="sub">FYS · UTH.</span>
+          </div>
+        </div>
+
+        <div class="fac is-on">
+          <span class="chk"><i data-lucide="check"></i></span>
+          <div class="body">
+            <span class="nm"><i data-lucide="circle"></i>Medisinball</span>
+            <span class="sub">FYS · ROTASJON</span>
+          </div>
+        </div>
+
+        <div class="fac is-on">
+          <span class="chk"><i data-lucide="check"></i></span>
+          <div class="body">
+            <span class="nm"><i data-lucide="radar"></i>TrackMan</span>
+            <span class="sub">SLAG · DATA</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="fac-grid" style="margin-top:10px; grid-template-columns: 1fr">
+        <div class="fac add">
+          <span class="chk"><i data-lucide="plus"></i></span>
+          <span class="nm">Legg til annen fasilitet (f.eks. <em>innendørs simulator, kettlebell, sled</em>)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="actions">
+      <span class="summary">
+        <b>4 av 5</b> distanser satt · <b>4</b> fasiliteter valgt
+      </span>
+      <div class="right">
+        <button class="btn"><i data-lucide="arrow-left"></i>Tilbake</button>
+        <button class="btn pri">Neste<i data-lucide="arrow-right"></i></button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- =========== States anatomy =========== -->
+  <div class="sec tight">States</div>
+  <div class="states-row">
+
+    <div class="state-card">
+      <span class="lbl">DEFAULT · MED VERDI</span>
+      <div class="demo">
+        <div class="track">
+          <div class="fill" style="width:60%"></div>
+        </div>
+        <div class="thumb" style="left:60%">
+          <div class="value-bubble">15 m</div>
+        </div>
+      </div>
+      <span class="dsc">Forest-thumb 24 px. Mono-bubble over. Fyll i primary.</span>
+    </div>
+
+    <div class="state-card">
+      <span class="lbl">DRAGGING</span>
+      <div class="demo">
+        <div class="track">
+          <div class="fill" style="width:75%"></div>
+        </div>
+        <div class="thumb dragging" style="left:75%; box-shadow: 0 4px 14px rgba(10,31,23,0.24), 0 0 0 8px rgba(209,248,67,0.30), 0 0 0 1px var(--primary);">
+          <div class="value-bubble" style="background: var(--accent); color: var(--primary); box-shadow: 0 6px 14px rgba(209,248,67,0.40);">25 m</div>
+        </div>
+      </div>
+      <span class="dsc">Lime 8 px glow-ring rundt thumb. Bubble adopterer lime fyll.</span>
+    </div>
+
+    <div class="state-card">
+      <span class="lbl">IKKE SATT</span>
+      <div class="demo">
+        <div class="track">
+          <div class="fill" style="width:0%; background:var(--muted-foreground); opacity:0.20"></div>
+        </div>
+        <div class="thumb" style="left:0%; background:var(--card); border-color:var(--input); box-shadow: 0 1px 4px rgba(10,31,23,0.10), 0 0 0 1px var(--input);">
+          <div class="value-bubble" style="background:var(--secondary); color:var(--muted-foreground); box-shadow:none">Ikke satt</div>
+        </div>
+      </div>
+      <span class="dsc">Hul thumb + grå track. Bubble viser "Ikke satt".</span>
+    </div>
+  </div>
+
+  <div class="rules">
+    <p><b>Snap:</b> alle sliders snap-to-5 m. Major ticks markeres tykkere (hver 10 m for 0–30/0–50, hver 50 m for 50–300).</p>
+    <p><b>Thumb:</b> 24 px sirkel, primary fyll, 3 px card-rim (gir kontrast på lyse bakgrunner) + 1 px primary ring. Tastatur: ←/→ flytter 5 m. Shift+←/→ flytter 25 m.</p>
+    <p><b>Value-bubble:</b> mono caps, JetBrains tabular. Alltid synlig over thumb. Følger thumb live ved drag. Mens dragging vises 8 px lime glow-ring + lime bubble for å feile-trygt vise hva verdien blir ved release.</p>
+    <p><b>Empty-state:</b> hul thumb + "Ikke satt"-bubble. Track fyll skjult. Brukes for valgfrie distanser (f.eks. ingen bunker tilgjengelig).</p>
+    <p><b>Fasiliteter:</b> kort-checkbox-pair (18 px checkbox + ikon + navn + akse-tagging). Aktiv = lime-tint bg + accent border. Lucide-ikon i muted som default; primary i aktiv state.</p>
+  </div>
+
+  <script>lucide.createIcons();</script>
+</div></body></html>

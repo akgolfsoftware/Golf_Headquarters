@@ -1,0 +1,1473 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Trackman · Sesjonsanalyse</title>
+<link rel="stylesheet" href="_shared.css">
+<script src="https://unpkg.com/lucide@0.453.0"></script>
+<style>
+  body { width: 1280px; }
+  .card { padding: 24px; position: relative; }
+
+  /* ============================================================
+     CARD CHROME
+     ============================================================ */
+  .tm-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  /* === HEADER === */
+  .tm-head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 24px;
+    padding: 18px 22px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tm-eyebrow {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .tm-eyebrow .pulse {
+    width: 6px; height: 6px; border-radius: 9999px;
+    background: var(--accent); box-shadow: 0 0 6px rgba(209,248,67,0.6);
+    position: relative;
+  }
+  .tm-eyebrow .pulse::after {
+    content: ""; position: absolute; inset: 0; border-radius: 9999px;
+    background: var(--accent);
+    animation: ping 1500ms cubic-bezier(0,0,0.2,1) infinite; opacity: 0.6;
+  }
+  @keyframes ping { 70%,100% { transform: scale(2.6); opacity: 0; } }
+  .tm-title {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 22px; line-height: 1.1; letter-spacing: -0.015em;
+    margin: 4px 0 0;
+  }
+  .tm-title em {
+    font-style: italic; font-weight: 400;
+    color: var(--muted-foreground);
+    margin-left: 4px;
+  }
+
+  .tm-views {
+    display: flex; gap: 2px;
+    padding: 3px;
+    background: var(--secondary);
+    border-radius: 10px;
+  }
+  .view-tab {
+    border: 0; background: transparent; cursor: pointer;
+    font-family: var(--font-display);
+    font-weight: 600; font-size: 12px;
+    letter-spacing: -0.005em;
+    color: var(--muted-foreground);
+    padding: 7px 12px;
+    border-radius: 8px;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: background 150ms, color 150ms, box-shadow 150ms;
+  }
+  .view-tab svg { width: 13px; height: 13px; }
+  .view-tab:hover:not(.is-disabled) { color: var(--foreground); }
+  .view-tab:focus-visible {
+    outline: 2px solid var(--ring, var(--primary));
+    outline-offset: 2px;
+  }
+  .view-tab.is-active {
+    background: var(--card);
+    color: var(--foreground);
+    box-shadow: 0 1px 2px rgba(10,31,23,0.06), 0 0 0 1px var(--border);
+  }
+  .view-tab.is-disabled {
+    color: var(--muted-foreground);
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .view-tab.is-disabled .vt-soon {
+    font-family: var(--font-mono); font-size: 8px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    background: var(--secondary);
+    color: var(--muted-foreground);
+    padding: 1px 4px; border-radius: 3px;
+    margin-left: 4px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .view-tab, .club, .upload, .compare, .rot-btn { transition: none; }
+    .tm-eyebrow .pulse::after { animation: none; opacity: 0; }
+  }
+
+  /* ============================================================
+     UPLOAD + AI INSIGHTS ROW
+     ============================================================ */
+  .tm-top-row {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 16px;
+    padding: 16px 22px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Upload dropzone */
+  .upload {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 16px;
+    border: 1px dashed var(--input);
+    border-radius: 12px;
+    background: var(--background);
+    cursor: pointer;
+    transition: background 150ms, border-color 150ms;
+  }
+  .upload:hover {
+    background: var(--secondary);
+    border-color: var(--primary);
+  }
+  .upload .up-icon {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--primary);
+    flex-shrink: 0;
+  }
+  .upload .up-icon svg { width: 18px; height: 18px; }
+  .upload .up-text {
+    display: flex; flex-direction: column; gap: 2px; min-width: 0;
+  }
+  .upload .up-text strong {
+    font-family: var(--font-display);
+    font-weight: 600; font-size: 13px;
+    letter-spacing: -0.005em;
+    color: var(--foreground);
+  }
+  .upload .up-text span {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--muted-foreground);
+    font-feature-settings: "tnum","zero";
+    letter-spacing: 0.02em;
+  }
+  .upload .up-status {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 600;
+    color: var(--success);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .upload .up-status svg { width: 11px; height: 11px; }
+
+  /* AI insights — 3 stacked rows. Editorial card med lime venstrekant
+     (samme språk som event-/timeline-kort), IKKE flat forest-flate. */
+  .ai-panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 12px;
+    padding: 14px 18px;
+    color: var(--foreground);
+    position: relative;
+  }
+  .ai-panel .ai-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .ai-panel .ai-head .ai-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--primary);
+  }
+  .ai-panel .ai-head .ai-eyebrow svg { width: 12px; height: 12px; }
+  .ai-panel .ai-head .ai-score {
+    font-family: var(--font-mono); font-weight: 700;
+    font-size: 17px;
+    color: var(--foreground);
+    letter-spacing: -0.015em;
+    font-feature-settings: "tnum","zero";
+  }
+  .ai-panel .ai-head .ai-score small {
+    font-family: var(--font-mono); font-weight: 500;
+    font-size: 10.5px;
+    color: var(--muted-foreground);
+    margin-left: 4px;
+  }
+  .ai-panel .ai-list {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .ai-row {
+    display: grid;
+    grid-template-columns: 14px 1fr auto;
+    gap: 10px;
+    align-items: center;
+    font-size: 12.5px;
+    line-height: 1.4;
+    color: var(--foreground);
+  }
+  .ai-row .ai-dot {
+    width: 8px; height: 8px; border-radius: 9999px;
+    justify-self: center;
+  }
+  .ai-row.is-good .ai-dot { background: var(--success); }
+  .ai-row.is-warn .ai-dot { background: var(--warning); }
+  .ai-row.is-act  .ai-dot { background: var(--destructive); }
+  .ai-row b {
+    font-family: var(--font-display); font-weight: 600;
+    color: var(--foreground);
+  }
+  .ai-row .ai-meta {
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    white-space: nowrap;
+  }
+  .ai-row.is-good .ai-meta { color: var(--success); }
+  .ai-row.is-warn .ai-meta { color: var(--warning); }
+  .ai-row.is-act  .ai-meta { color: var(--destructive); }
+
+  /* ============================================================
+     BAG STRIP — 19 clubs (2 rows of 10/9)
+     ============================================================ */
+  .bag {
+    padding: 14px 22px;
+    border-bottom: 1px solid var(--border);
+  }
+  .bag-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .bag-head .bag-label {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .bag-head .bag-label b {
+    color: var(--foreground);
+    font-weight: 700; letter-spacing: 0.04em;
+  }
+  .bag-head .bag-legend {
+    display: inline-flex; align-items: center; gap: 14px;
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--muted-foreground);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .bag-head .bag-legend span {
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .bag-head .bag-legend i {
+    width: 8px; height: 8px; border-radius: 9999px;
+  }
+  .bag-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 8px;
+  }
+  .club {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 9px 10px 10px;
+    cursor: pointer;
+    transition: background 150ms, border-color 150ms, transform 150ms;
+    position: relative;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .club:hover {
+    background: var(--secondary);
+    border-color: var(--input);
+    transform: translateY(-1px);
+  }
+  .club.is-active {
+    background: var(--primary);
+    border-color: var(--primary);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(10,31,23,0.16);
+  }
+  .club.is-active .c-name,
+  .club.is-active .c-carry { color: var(--cream-50); }
+  .club.is-active .c-spread { color: rgba(245,244,238,0.7); }
+  .club.is-active .c-stab .ss-track { background: rgba(255,255,255,0.18); }
+  .club.is-active .c-stab .ss-fill { background: var(--accent); }
+  .club.is-active .c-stab .ss-val { color: var(--accent); }
+
+  .c-name {
+    font-family: var(--font-mono); font-size: 10.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--foreground);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 4px;
+  }
+  .c-name .c-cat {
+    font-family: var(--font-mono); font-size: 8.5px; font-weight: 600;
+    color: var(--muted-foreground);
+    opacity: 0.7;
+  }
+  .club.is-active .c-name .c-cat { color: rgba(245,244,238,0.6); }
+  .c-carry {
+    font-family: var(--font-mono); font-weight: 700;
+    font-size: 22px; line-height: 1;
+    letter-spacing: -0.025em;
+    color: var(--foreground);
+    font-feature-settings: "tnum","zero";
+    margin-top: 2px;
+  }
+  .c-carry .unit {
+    font-size: 11px; font-weight: 600;
+    color: var(--muted-foreground);
+    margin-left: 3px;
+    letter-spacing: 0;
+  }
+  .club.is-active .c-carry .unit { color: rgba(245,244,238,0.6); }
+  .c-spread {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 500;
+    color: var(--muted-foreground);
+    font-feature-settings: "tnum","zero";
+    letter-spacing: 0.02em;
+  }
+  .c-stab {
+    display: flex; align-items: center; gap: 6px;
+    margin-top: 2px;
+  }
+  .c-stab .ss-track {
+    flex: 1;
+    height: 4px;
+    border-radius: 9999px;
+    background: var(--secondary);
+    overflow: hidden;
+  }
+  .c-stab .ss-fill {
+    height: 100%;
+    border-radius: 9999px;
+    background: var(--primary);
+    transition: width 250ms ease;
+  }
+  .c-stab .ss-val {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--foreground);
+    font-feature-settings: "tnum","zero";
+  }
+
+  /* "Not in bag" cards: lower opacity + dashed border */
+  .club.is-off {
+    opacity: 0.42;
+    border-style: dashed;
+  }
+
+  /* === GAPPING + CONFIDENCE ===
+     Begge badge-typer ligger INNE i kortet (ikke escape med top: -8px)
+     så de ikke overlapper raden over når bag-grid har lite row-gap. */
+  .club.has-gap-before .c-name span:first-child::after {
+    content: "GAP↑";
+    font-family: var(--font-mono);
+    font-size: 8px; font-weight: 700;
+    background: var(--warning-tint-bg);
+    color: var(--warning-foreground);
+    padding: 1px 4px;
+    border-radius: 3px;
+    letter-spacing: 0.08em;
+    margin-left: 4px;
+    vertical-align: 1px;
+  }
+  .club.is-active.has-gap-before .c-name span:first-child::after {
+    background: rgba(209,248,67,0.18);
+    color: var(--accent);
+  }
+  /* Overlap: kun stiplet kant beholdes (samme signal, ikke dobbel chrome) */
+  .club.is-overlap {
+    border-color: rgba(184,133,42,0.55);
+    border-style: dashed;
+  }
+  /* Confidence dot — top-right corner */
+  .club .conf-dot {
+    position: absolute;
+    top: 6px; right: 6px;
+    width: 6px; height: 6px;
+    border-radius: 9999px;
+    z-index: 3;
+  }
+  .club .conf-dot.high   { background: var(--success); }
+  .club .conf-dot.medium { background: var(--warning); }
+  .club .conf-dot.low    { background: var(--destructive); }
+  .club .conf-dot.off    { display: none; }
+  /* "+ data"-hint på off-kort — ble flyttet inn når vi mistet ::before-slot.
+     Vises som tag inni c-spread-raden i stedet for absolutt posisjonert. */
+  .club.is-off .c-spread::after {
+    content: " · + DATA";
+    color: var(--primary);
+    opacity: 0.75;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  /* ============================================================
+     DISPERSION + PARAMETER PANE
+     ============================================================ */
+  .tm-body {
+    display: grid;
+    grid-template-columns: 620px 1fr;
+    gap: 22px;
+    padding: 18px 22px 22px;
+  }
+
+  /* === DISPERSION PLOT === */
+  .disp {
+    display: flex; flex-direction: column;
+  }
+  .disp-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
+    gap: 12px;
+  }
+  .disp-head .dh-title {
+    font-family: var(--font-display);
+    font-weight: 700; font-size: 15px;
+    letter-spacing: -0.015em;
+    color: var(--foreground);
+  }
+  .disp-head .dh-sub {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted-foreground);
+    font-feature-settings: "tnum","zero";
+    letter-spacing: 0.02em;
+  }
+
+  .hole-tabs {
+    display: flex; gap: 2px;
+    padding: 3px;
+    background: var(--secondary);
+    border-radius: 8px;
+  }
+  .hole-tab {
+    border: 0; background: transparent; cursor: pointer;
+    font-family: var(--font-mono); font-weight: 600;
+    font-size: 9.5px; letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+    padding: 5px 8px;
+    border-radius: 6px;
+    transition: background 150ms, color 150ms, box-shadow 150ms;
+  }
+  .hole-tab:hover { color: var(--foreground); }
+  .hole-tab.is-active {
+    background: var(--card);
+    color: var(--foreground);
+    box-shadow: 0 1px 2px rgba(10,31,23,0.06), 0 0 0 1px var(--border);
+  }
+
+  .plot {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 620 / 440;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--background);
+    user-select: none;
+  }
+  .plot svg { width: 100%; height: 100%; display: block; }
+  .plot .plot-svg { position: absolute; inset: 0; }
+
+  /* Rotate the hole/green background; dispersion + aim stay on top */
+  .plot { --green-rot: 0deg; }
+  .plot-svg, .plot-bg-default {
+    transform: scale(1.5) rotate(var(--green-rot));
+    transform-origin: 50% 50%;
+    transition: transform 280ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  /* Rotation control group (lives next to hole-tabs) */
+  .rot-group {
+    display: inline-flex; align-items: center; gap: 4px;
+    margin-left: 8px;
+    padding-left: 10px;
+    border-left: 1px solid var(--border);
+  }
+  .rot-group .rot-label {
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--muted-foreground);
+    margin-right: 4px;
+  }
+  .rot-btn {
+    width: 26px; height: 26px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--muted-foreground);
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: background 150ms, color 150ms, border-color 150ms;
+  }
+  .rot-btn:hover { background: var(--secondary); color: var(--foreground); border-color: var(--input); }
+  .rot-btn svg { width: 12px; height: 12px; }
+  .rot-val {
+    font-family: var(--font-mono); font-size: 10.5px; font-weight: 700;
+    color: var(--foreground);
+    min-width: 36px; text-align: center;
+    font-feature-settings: "tnum","zero";
+  }
+
+  /* Default fugleperspektiv background */
+  .plot-bg-default {
+    position: absolute; inset: 0;
+    background-color: var(--course-grass-deep);
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .plot-bg-default::after {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 200px 100px at 50% 30%, rgba(0,0,0,0.18) 0%, transparent 60%);
+  }
+
+  /* Distance rings */
+  .plot-rings {
+    position: absolute; inset: 0;
+    pointer-events: none;
+  }
+
+  /* Dots overlay */
+  .plot-dots {
+    position: absolute; inset: 0;
+    pointer-events: none;
+  }
+  .shot {
+    position: absolute;
+    width: 8px; height: 8px;
+    margin: -4px 0 0 -4px;
+    border-radius: 9999px;
+    background: rgba(255,255,255,0.92);
+    border: 1.5px solid var(--forest-900);
+    box-shadow: 0 1px 3px rgba(10,31,23,0.32);
+    transition: transform 200ms ease;
+  }
+  .shot.is-outlier {
+    background: var(--shot-outlier);
+    border-color: var(--shot-outlier-stroke);
+  }
+  .shot:hover { transform: scale(1.4); }
+
+  /* Aim crosshair (draggable) */
+  .aim {
+    position: absolute;
+    width: 28px; height: 28px;
+    margin: -14px 0 0 -14px;
+    cursor: grab;
+    z-index: 4;
+  }
+  .aim:active { cursor: grabbing; }
+  .aim::before, .aim::after {
+    content: "";
+    position: absolute;
+    background: var(--accent);
+    box-shadow: 0 0 6px rgba(209,248,67,0.7);
+  }
+  .aim::before {
+    left: 50%; top: 0; bottom: 0;
+    width: 2px; margin-left: -1px;
+  }
+  .aim::after {
+    top: 50%; left: 0; right: 0;
+    height: 2px; margin-top: -1px;
+  }
+  .aim .aim-dot {
+    position: absolute;
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 10px; height: 10px;
+    background: var(--accent);
+    border-radius: 9999px;
+    box-shadow: 0 0 8px rgba(209,248,67,0.8);
+  }
+  .aim-label {
+    position: absolute;
+    bottom: -22px; left: 50%; transform: translateX(-50%);
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--primary);
+    background: var(--accent);
+    padding: 2px 5px;
+    border-radius: 4px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* Pin/flag (draggable) */
+  .pin {
+    position: absolute;
+    width: 28px; height: 36px;
+    margin: -32px 0 0 -2px;
+    cursor: grab;
+    z-index: 5;
+  }
+  .pin:active { cursor: grabbing; }
+  .pin svg { width: 100%; height: 100%; pointer-events: none; }
+  .pin-label {
+    position: absolute;
+    top: -16px; left: 50%; transform: translateX(-50%);
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--cream-50);
+    background: var(--destructive);
+    padding: 2px 5px;
+    border-radius: 4px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* Stats footer for plot */
+  .disp-foot {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    margin-top: 12px;
+  }
+  .df-cell {
+    background: var(--card);
+    padding: 10px 12px;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .df-cell .df-lbl {
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--muted-foreground);
+  }
+  .df-cell .df-val {
+    font-family: var(--font-mono); font-weight: 700;
+    font-size: 17px; line-height: 1.05;
+    letter-spacing: -0.015em;
+    color: var(--foreground);
+    font-feature-settings: "tnum","zero";
+  }
+  .df-cell .df-val small {
+    font-family: var(--font-mono); font-weight: 500;
+    font-size: 10.5px;
+    color: var(--muted-foreground);
+    margin-left: 3px;
+    letter-spacing: 0;
+  }
+
+  /* ============================================================
+     PARAMETER PANEL
+     ============================================================ */
+  .params {
+    display: flex; flex-direction: column;
+    background: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .params-head {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--card);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+  }
+  .params-head .ph-left {
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .params-head .ph-club {
+    font-family: var(--font-display);
+    font-weight: 700; font-size: 17px;
+    letter-spacing: -0.015em;
+    color: var(--foreground);
+  }
+  .params-head .ph-meta {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--muted-foreground);
+    font-feature-settings: "tnum","zero";
+    letter-spacing: 0.02em;
+  }
+
+  .compare {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 5px 10px 5px 8px;
+    cursor: pointer;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted-foreground);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    transition: background 150ms, color 150ms, border-color 150ms;
+  }
+  .compare:hover { background: var(--secondary); color: var(--foreground); border-color: var(--input); }
+  .compare .cmp-name {
+    color: var(--foreground);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  .compare svg { width: 11px; height: 11px; opacity: 0.6; }
+
+  .pgroup {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .pgroup:last-child { border-bottom: 0; }
+  .pg-label {
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+    display: flex; align-items: center; gap: 8px;
+    margin: 0 0 10px;
+  }
+  .pg-label::after {
+    content: ""; flex: 1; height: 1px; background: var(--border);
+  }
+  .pg-rows {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 18px;
+  }
+  .p-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 10px;
+    align-items: baseline;
+    padding: 4px 0;
+  }
+  .p-row .p-name {
+    font-size: 12.5px;
+    color: var(--foreground);
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.005em;
+  }
+  .p-row .p-val {
+    font-family: var(--font-mono); font-weight: 700;
+    font-size: 13.5px;
+    color: var(--foreground);
+    font-feature-settings: "tnum","zero";
+    text-align: right;
+    letter-spacing: 0;
+  }
+  .p-row .p-val .p-unit {
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 600;
+    color: var(--muted-foreground);
+    margin-left: 3px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .p-row .p-sd {
+    font-family: var(--font-mono);
+    font-size: 10px; font-weight: 500;
+    color: var(--muted-foreground);
+    text-align: right;
+    min-width: 40px;
+    font-feature-settings: "tnum","zero";
+  }
+  .p-row .p-sd.pos { color: var(--success); }
+  .p-row .p-sd.warn { color: var(--warning); }
+
+  /* Benchmark indicator under value */
+  .p-row .p-bench {
+    grid-column: 1 / -1;
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--muted-foreground);
+    font-feature-settings: "tnum","zero";
+    letter-spacing: 0.04em;
+    display: flex; justify-content: space-between;
+    margin-top: -2px;
+  }
+  .p-row .p-bench .delta { font-weight: 700; }
+  .p-row .p-bench .delta.pos { color: var(--success); }
+  .p-row .p-bench .delta.neg { color: var(--destructive); }
+
+</style></head>
+<body><div class="card">
+
+  <div class="tm-card">
+
+    <!-- HEADER -->
+    <header class="tm-head">
+      <div>
+        <span class="tm-eyebrow"><span class="pulse"></span>TRACKMAN · SESJONSANALYSE · 22. MAI 2026</span>
+        <h2 class="tm-title">Range-analyse <em>· 419 slag · 56 min</em></h2>
+      </div>
+      <div class="tm-views" role="tablist" aria-label="Trackman-visning">
+        <button class="view-tab is-active" role="tab" aria-selected="true"><i data-lucide="grid-3x3"></i>Bag</button>
+        <button class="view-tab" role="tab" aria-selected="false" onclick="location.href='components-trackman-stability.html' + location.hash"><i data-lucide="activity"></i>Stabilitet</button>
+        <button class="view-tab" role="tab" aria-selected="false" onclick="location.href='components-trackman-trend.html' + location.hash"><i data-lucide="line-chart"></i>Trend</button>
+        <button class="view-tab is-disabled" role="tab" aria-selected="false" aria-disabled="true" disabled><i data-lucide="users"></i>Sammenligne<span class="vt-soon">Kommer</span></button>
+      </div>
+    </header>
+
+    <!-- UPLOAD + AI INSIGHTS -->
+    <div class="tm-top-row">
+      <div class="upload">
+        <span class="up-icon"><i data-lucide="upload-cloud"></i></span>
+        <div class="up-text">
+          <strong>Last opp Trackman-data</strong>
+          <span>Dra inn CSV eller screenshot — AI leser automatisk</span>
+        </div>
+        <span class="up-status"><i data-lucide="check-circle-2"></i>Lest inn</span>
+      </div>
+
+      <div class="ai-panel">
+        <div class="ai-head">
+          <span class="ai-eyebrow"><i data-lucide="sparkles"></i>AI-ANALYSE</span>
+          <span class="ai-score">7,4<small>/ 10 stabilitet</small></span>
+        </div>
+        <div class="ai-list">
+          <div class="ai-row is-warn">
+            <span class="ai-dot"></span>
+            <span><b>7-jern</b> har +400 RPM spinn over PGA-snitt — prøv lavere dynamisk loft (−1°) eller mer compression.</span>
+            <span class="ai-meta">FOKUS</span>
+          </div>
+          <div class="ai-row is-good">
+            <span class="ai-dot"></span>
+            <span><b>Driver smash 1,48</b> — over tour-snitt. Ballhastighet 168 mph er meget bra.</span>
+            <span class="ai-meta">STERK</span>
+          </div>
+          <div class="ai-row is-act">
+            <span class="ai-dot"></span>
+            <span><b>56°-kile</b> spredning ±9 yd er for stort — fokuser på treffpunkt og samme tempo.</span>
+            <span class="ai-meta">ACTION</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BAG STRIP -->
+    <div class="bag">
+      <div class="bag-head">
+        <span class="bag-label">MIN BAG · <b id="bag-count">14/19</b> registrert · klikk for å analysere</span>
+        <span class="bag-legend">
+          <span><i style="background:var(--success)"></i>Stødig</span>
+          <span><i style="background:var(--warning)"></i>Inkonsistent</span>
+          <span><i style="background:var(--destructive)"></i>Trenger jobbing</span>
+        </span>
+      </div>
+      <div class="bag-grid" id="bag-grid"></div>
+    </div>
+
+    <!-- DISPERSION + PARAMETERS -->
+    <div class="tm-body">
+
+      <!-- DISPERSION -->
+      <section class="disp">
+        <div class="disp-head">
+          <div>
+            <div class="dh-title" id="dh-title">7-jern · spredning</div>
+            <div class="dh-sub" id="dh-sub">28 slag · drag flagg eller siktepunkt for å eksperimentere</div>
+          </div>
+          <div class="hole-tabs" id="hole-tabs">
+            <button class="hole-tab is-active" data-hole="default">Fugleperspektiv</button>
+            <button class="hole-tab" data-hole="photo">Foto</button>
+            <button class="hole-tab" data-hole="sawgrass">Øy-green</button>
+            <button class="hole-tab" data-hole="augusta">Par 3 m/ vann foran</button>
+            <button class="hole-tab" data-hole="pga">Bred green vann h.</button>
+            <span class="rot-group">
+              <span class="rot-label">Vri</span>
+              <button class="rot-btn" data-rot="-45" aria-label="Roter mot venstre"><i data-lucide="rotate-ccw"></i></button>
+              <span class="rot-val" id="rot-val">0°</span>
+              <button class="rot-btn" data-rot="45" aria-label="Roter mot høyre"><i data-lucide="rotate-cw"></i></button>
+              <button class="rot-btn" data-rot="reset" aria-label="Nullstill"><i data-lucide="refresh-ccw"></i></button>
+            </span>
+          </div>
+        </div>
+
+        <div class="plot" id="plot">
+          <div class="plot-bg-default" id="plot-bg-default"></div>
+          <svg class="plot-svg" id="plot-svg" viewBox="0 0 620 440" preserveAspectRatio="none" hidden></svg>
+          <svg class="plot-rings" viewBox="0 0 620 440" preserveAspectRatio="none" id="plot-rings"></svg>
+          <div class="plot-dots" id="plot-dots"></div>
+          <div class="aim" id="aim">
+            <span class="aim-dot"></span>
+            <span class="aim-label">SIKTE</span>
+          </div>
+          <div class="pin" id="pin">
+            <svg viewBox="0 0 28 36">
+              <line x1="6" y1="4" x2="6" y2="34" stroke="var(--forest-900)" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M 6 4 L 26 9 L 6 14 Z" fill="var(--destructive)" stroke="var(--forest-900)" stroke-width="1"/>
+              <circle cx="6" cy="34" r="2.5" fill="var(--forest-900)"/>
+            </svg>
+            <span class="pin-label">PIN</span>
+          </div>
+        </div>
+
+        <div class="disp-foot">
+          <div class="df-cell">
+            <span class="df-lbl">Snitt-distanse</span>
+            <span class="df-val" id="df-dist">165<small>yd</small></span>
+          </div>
+          <div class="df-cell">
+            <span class="df-lbl">Spread (95%)</span>
+            <span class="df-val" id="df-spread">±12<small>yd</small></span>
+          </div>
+          <div class="df-cell">
+            <span class="df-lbl">Sidemiss snitt</span>
+            <span class="df-val" id="df-side">+2<small>yd høyre</small></span>
+          </div>
+          <div class="df-cell">
+            <span class="df-lbl">Innenfor pin</span>
+            <span class="df-val" id="df-near">68<small>%</small></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- PARAMETERS -->
+      <aside class="params">
+        <header class="params-head">
+          <div class="ph-left">
+            <span class="ph-club" id="ph-club">7-jern</span>
+            <span class="ph-meta" id="ph-meta">28 slag · 22. mai · stabilitet 8,2/10</span>
+          </div>
+          <button class="compare">
+            Sammenlign:
+            <span class="cmp-name">PGA-snitt</span>
+            <i data-lucide="chevron-down"></i>
+          </button>
+        </header>
+
+        <div class="pgroup">
+          <span class="pg-label">RESULTAT</span>
+          <div class="pg-rows">
+            <div class="p-row"><span class="p-name">Carry</span><span class="p-val">165<span class="p-unit">yd</span></span><span class="p-sd pos">±5</span></div>
+            <div class="p-row"><span class="p-name">Total</span><span class="p-val">175<span class="p-unit">yd</span></span><span class="p-sd pos">±6</span></div>
+            <div class="p-row"><span class="p-name">Side</span><span class="p-val">+2<span class="p-unit">yd</span></span><span class="p-sd pos">±4</span></div>
+            <div class="p-row"><span class="p-name">Side total</span><span class="p-val">+4<span class="p-unit">yd</span></span><span class="p-sd pos">±5</span></div>
+            <div class="p-row"><span class="p-name">Apex</span><span class="p-val">28<span class="p-unit">m</span></span><span class="p-sd pos">±1,5</span></div>
+            <div class="p-row"><span class="p-name">Hang time</span><span class="p-val">5,8<span class="p-unit">s</span></span><span class="p-sd pos">±0,2</span></div>
+          </div>
+        </div>
+
+        <div class="pgroup">
+          <span class="pg-label">BALL</span>
+          <div class="pg-rows">
+            <div class="p-row"><span class="p-name">Ballhastighet</span><span class="p-val">124<span class="p-unit">mph</span></span><span class="p-sd pos">±2,1</span></div>
+            <div class="p-row"><span class="p-name">Launch angle</span><span class="p-val">16,2<span class="p-unit">°</span></span><span class="p-sd pos">±1,2</span></div>
+            <div class="p-row"><span class="p-name">Spinnrate</span><span class="p-val">7 200<span class="p-unit">rpm</span></span><span class="p-sd warn">±410</span></div>
+            <div class="p-row"><span class="p-name">Spinnakse</span><span class="p-val">+2,1<span class="p-unit">°</span></span><span class="p-sd pos">±2,8</span></div>
+            <div class="p-row"><span class="p-name">Launch retning</span><span class="p-val">+0,8<span class="p-unit">°</span></span><span class="p-sd pos">±1,5</span></div>
+            <div class="p-row"><span class="p-name">Spin loft</span><span class="p-val">25,4<span class="p-unit">°</span></span><span class="p-sd pos">±1,3</span></div>
+          </div>
+        </div>
+
+        <div class="pgroup">
+          <span class="pg-label">KLUBBLEVERING</span>
+          <div class="pg-rows">
+            <div class="p-row"><span class="p-name">Club speed</span><span class="p-val">87,5<span class="p-unit">mph</span></span><span class="p-sd pos">±1,5</span></div>
+            <div class="p-row"><span class="p-name">Smash factor</span><span class="p-val">1,36</span><span class="p-sd pos">±0,02</span></div>
+            <div class="p-row"><span class="p-name">Attack angle</span><span class="p-val">−3,4<span class="p-unit">°</span></span><span class="p-sd pos">±1,1</span></div>
+            <div class="p-row"><span class="p-name">Club path</span><span class="p-val">+1,2<span class="p-unit">°</span></span><span class="p-sd pos">±2,0</span></div>
+            <div class="p-row"><span class="p-name">Face to path</span><span class="p-val">−1,0<span class="p-unit">°</span></span><span class="p-sd pos">±1,4</span></div>
+            <div class="p-row"><span class="p-name">Dynamic loft</span><span class="p-val">22,0<span class="p-unit">°</span></span><span class="p-sd pos">±1,2</span></div>
+          </div>
+        </div>
+
+      </aside>
+
+    </div>
+
+  </div>
+
+  <script>
+    // ============================================================
+    // CLUB DATABASE  (avg distances calibrated to strong amateur)
+    // ============================================================
+    const CLUBS = [
+      { id: 'Driver', cat: 'Wood',  carry: 268, spread: 18, sideSd: 14, stab: 7.2, inBag: true,  fwdSd: 8 },
+      { id: '3-W',    cat: 'Wood',  carry: 245, spread: 14, sideSd: 11, stab: 7.8, inBag: true,  fwdSd: 7 },
+      { id: '4-W',    cat: 'Wood',  carry: 232, spread: 12, sideSd: 10, stab: 7.4, inBag: false, fwdSd: 6 },
+      { id: '5-W',    cat: 'Wood',  carry: 222, spread: 11, sideSd:  9, stab: 8.0, inBag: true,  fwdSd: 6 },
+      { id: '7-W',    cat: 'Wood',  carry: 208, spread: 10, sideSd:  9, stab: 7.6, inBag: false, fwdSd: 5 },
+      { id: '2-I',    cat: 'Long',  carry: 215, spread: 12, sideSd: 10, stab: 6.4, inBag: false, fwdSd: 6 },
+      { id: '3-I',    cat: 'Long',  carry: 205, spread: 11, sideSd:  9, stab: 6.8, inBag: false, fwdSd: 6 },
+      { id: '4-I',    cat: 'Long',  carry: 198, spread: 11, sideSd:  9, stab: 7.6, inBag: true,  fwdSd: 5 },
+      { id: '5-I',    cat: 'Mid',   carry: 188, spread:  9, sideSd:  8, stab: 8.5, inBag: true,  fwdSd: 5 },
+      { id: '6-I',    cat: 'Mid',   carry: 177, spread:  9, sideSd:  8, stab: 8.3, inBag: true,  fwdSd: 5 },
+      { id: '7-I',    cat: 'Mid',   carry: 165, spread:  8, sideSd:  7, stab: 8.2, inBag: true,  fwdSd: 5 },
+      { id: '8-I',    cat: 'Short', carry: 152, spread:  7, sideSd:  6, stab: 8.8, inBag: true,  fwdSd: 4 },
+      { id: '9-I',    cat: 'Short', carry: 140, spread:  7, sideSd:  6, stab: 8.6, inBag: true,  fwdSd: 4 },
+      { id: 'PW',     cat: 'Wedge', carry: 128, spread:  8, sideSd:  7, stab: 7.4, inBag: true,  fwdSd: 4 },
+      { id: '50°',    cat: 'Wedge', carry: 115, spread:  8, sideSd:  7, stab: 7.0, inBag: true,  fwdSd: 4 },
+      { id: '52°',    cat: 'Wedge', carry: 108, spread:  9, sideSd:  7, stab: 6.6, inBag: true,  fwdSd: 4 },
+      { id: '54°',    cat: 'Wedge', carry:  98, spread: 10, sideSd:  8, stab: 6.2, inBag: false, fwdSd: 5 },
+      { id: '56°',    cat: 'Wedge', carry:  88, spread: 14, sideSd:  9, stab: 4.8, inBag: true,  fwdSd: 7 },
+      { id: '60°',    cat: 'Wedge', carry:  72, spread: 10, sideSd:  7, stab: 6.4, inBag: true,  fwdSd: 5 }
+    ];
+
+    // Stability → color  (8+ stødig green, 6–8 amber, <6 red)
+    function stabColor(s) {
+      if (s >= 8)   return 'var(--success)';
+      if (s >= 6.5) return 'var(--warning)';
+      return 'var(--destructive)';
+    }
+
+    // Shots-per-club (synthesized for demo)
+    const SHOT_COUNT = {
+      'Driver': 35, '3-W': 22, '4-W': 0, '5-W': 18, '7-W': 0,
+      '2-I': 0, '3-I': 0, '4-I': 12, '5-I': 28, '6-I': 32,
+      '7-I': 28, '8-I': 28, '9-I': 25, 'PW': 28, '50°': 18,
+      '52°': 16, '54°': 0, '56°': 30, '60°': 20
+    };
+    function confLevel(shots) {
+      if (shots === 0) return 'off';
+      if (shots >= 25) return 'high';
+      if (shots >= 15) return 'medium';
+      return 'low';
+    }
+    function computeGaps() {
+      // Sort in-bag clubs by carry descending and flag gaps/overlaps
+      const inBag = CLUBS.filter((c) => c.inBag).sort((a, b) => b.carry - a.carry);
+      const flags = {};
+      for (let i = 1; i < inBag.length; i++) {
+        const diff = inBag[i - 1].carry - inBag[i].carry;
+        if (diff > 18) {
+          // Significant gap — mark on the shorter (lower) club
+          flags[inBag[i].id] = 'has-gap-before';
+        } else if (diff < 8) {
+          // Too close — both flagged as overlap
+          flags[inBag[i - 1].id] = (flags[inBag[i - 1].id] || '') + ' is-overlap';
+          flags[inBag[i].id]     = (flags[inBag[i].id]     || '') + ' is-overlap';
+        }
+      }
+      return flags;
+    }
+
+    // ============================================================
+    // RENDER BAG STRIP
+    // ============================================================
+    const bagGrid = document.getElementById('bag-grid');
+    function renderBag() {
+      const gaps = computeGaps();
+      bagGrid.innerHTML = CLUBS.map((c, i) => {
+        const shots = SHOT_COUNT[c.id] || 0;
+        const conf = confLevel(shots);
+        const gapClass = gaps[c.id] || '';
+        return `
+        <div class="club ${c.inBag ? '' : 'is-off'} ${c.id === '7-I' ? 'is-active' : ''} ${gapClass}" data-club="${c.id}">
+          <span class="conf-dot ${conf}"></span>
+          <div class="c-name"><span>${c.id}</span><span class="c-cat">${c.cat[0]}</span></div>
+          <div class="c-carry">${c.carry}<span class="unit">yd</span></div>
+          <div class="c-spread">±${c.spread} yd · ${shots > 0 ? shots + ' slag' : 'ingen data'}</div>
+          <div class="c-stab">
+            <span class="ss-track"><span class="ss-fill" style="width:${c.stab * 10}%; background:${stabColor(c.stab)}"></span></span>
+            <span class="ss-val">${c.stab.toFixed(1)}</span>
+          </div>
+        </div>`;
+      }).join('');
+      document.getElementById('bag-count').textContent = `${CLUBS.filter(c => c.inBag).length}/${CLUBS.length}`;
+      // Wire clicks
+      bagGrid.querySelectorAll('.club').forEach((el) => {
+        el.addEventListener('click', () => selectClub(el.dataset.club));
+      });
+    }
+
+    // ============================================================
+    // DISPERSION PLOT
+    // ============================================================
+    const plotEl   = document.getElementById('plot');
+    const dotsEl   = document.getElementById('plot-dots');
+    const aimEl    = document.getElementById('aim');
+    const pinEl    = document.getElementById('pin');
+    const svgEl    = document.getElementById('plot-svg');
+    const ringsEl  = document.getElementById('plot-rings');
+    const bgDefault = document.getElementById('plot-bg-default');
+
+    const PLOT_W = 620, PLOT_H = 440;
+
+    // Yards-to-pixels: we scale based on selected club so all dots fit.
+    // Target sits at 60% down on plot (aim default), pin sits at the same point.
+    let aimPx = { x: PLOT_W / 2, y: PLOT_H * 0.55 };
+    let pinPx = { x: PLOT_W / 2, y: PLOT_H * 0.55 };
+    let currentClub = '7-I';
+    let currentHole = 'default';
+
+    // Per-club shot dataset (cached so it doesn't reshuffle on re-render)
+    const shotCache = {};
+
+    // Deterministic gaussian using seeded LCG (so demo is stable)
+    function makeShots(club) {
+      if (shotCache[club.id]) return shotCache[club.id];
+      let seed = club.id.charCodeAt(0) * 137 + club.id.length;
+      const rng = () => {
+        seed = (seed * 9301 + 49297) % 233280;
+        return seed / 233280;
+      };
+      const gauss = (mu, sd) => {
+        let u = rng() || 0.001, v = rng() || 0.001;
+        return mu + sd * Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+      };
+      const count = 28;
+      const shots = [];
+      for (let i = 0; i < count; i++) {
+        shots.push({
+          forward: gauss(0, club.fwdSd),    // yards short(-) / long(+)
+          side:    gauss(2, club.sideSd / 2) // +2 mean = slight right bias
+        });
+      }
+      shotCache[club.id] = shots;
+      return shots;
+    }
+
+    // Scale: fit ±2σ of biggest-spread club into ~70% of plot
+    function getScale(club) {
+      const maxYd = Math.max(club.spread * 1.5, club.sideSd * 2.5);
+      return Math.min((PLOT_H * 0.35) / maxYd, (PLOT_W * 0.35) / maxYd);
+    }
+
+    function renderDots() {
+      const club = CLUBS.find(c => c.id === currentClub);
+      const shots = makeShots(club);
+      const scale = getScale(club);
+      dotsEl.innerHTML = shots.map((s, i) => {
+        const x = aimPx.x + s.side * scale;
+        const y = aimPx.y - s.forward * scale;
+        const outlier = Math.hypot(s.side, s.forward) > club.spread;
+        return `<span class="shot ${outlier ? 'is-outlier' : ''}" style="left:${x}px;top:${y}px"></span>`;
+      }).join('');
+      positionMarkers();
+    }
+
+    function positionMarkers() {
+      aimEl.style.left = aimPx.x + 'px';
+      aimEl.style.top  = aimPx.y + 'px';
+      pinEl.style.left = pinPx.x + 'px';
+      pinEl.style.top  = pinPx.y + 'px';
+    }
+
+    function renderRings() {
+      const club = CLUBS.find(c => c.id === currentClub);
+      const scale = getScale(club);
+      // Concentric rings at 5y, 10y, 15y, 20y
+      const cx = aimPx.x, cy = aimPx.y;
+      ringsEl.innerHTML = [5, 10, 15, 20].map((yd) => {
+        const r = yd * scale;
+        return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(255,255,255,0.16)" stroke-width="1" stroke-dasharray="2 4"/>`;
+      }).join('') +
+      `<text x="${cx + 10 * scale + 4}" y="${cy + 4}" fill="rgba(255,255,255,0.5)" font-family="monospace" font-size="10" font-weight="600">10y</text>`;
+    }
+
+    // ============================================================
+    // HOLE OVERLAY SVGs  (stylized — concept-level)
+    // ============================================================
+    const HOLE_SVG = {
+      photo: `
+        <image href="../assets/green-archetype-pear.png" x="0" y="0" width="620" height="440" preserveAspectRatio="xMidYMid slice"/>
+        <text x="20" y="32" fill="rgba(255,255,255,0.92)" font-family="monospace" font-size="11" font-weight="700" letter-spacing="0.12em">FOTO · PÆRE-GREEN</text>
+        <text x="20" y="48" fill="rgba(255,255,255,0.6)" font-family="monospace" font-size="9.5" font-weight="500" letter-spacing="0.06em">REELL GREEN-FORM</text>`,
+      sawgrass: `
+        <!-- TPC Sawgrass · Hole 17 · Island Green (aerial) -->
+        <defs>
+          <radialGradient id="sw-water" cx="50%" cy="48%" r="75%">
+            <stop offset="0%" stop-color="var(--shot-canvas-water-1)"/>
+            <stop offset="60%" stop-color="var(--shot-canvas-water-2)"/>
+            <stop offset="100%" stop-color="var(--shot-canvas-water-3)"/>
+          </radialGradient>
+          <linearGradient id="sw-green" x1="0" y1="0" x2="0.6" y2="1">
+            <stop offset="0%" stop-color="var(--shot-canvas-grass-1)"/>
+            <stop offset="100%" stop-color="var(--shot-canvas-grass-2)"/>
+          </linearGradient>
+          <radialGradient id="sw-vignette" cx="50%" cy="50%" r="70%">
+            <stop offset="60%" stop-color="rgba(0,0,0,0)"/>
+            <stop offset="100%" stop-color="rgba(0,0,0,0.35)"/>
+          </radialGradient>
+        </defs>
+
+        <!-- Water (full bg) -->
+        <rect width="620" height="440" fill="url(#sw-water)"/>
+
+        <!-- Land strip at top + bottom + left edge -->
+        <path d="M 0 0 L 620 0 L 620 38 Q 480 52 310 50 Q 140 48 0 30 Z"
+              fill="#27452e" opacity="0.92"/>
+        <path d="M 0 414 Q 220 426 410 422 Q 520 420 620 412 L 620 440 L 0 440 Z"
+              fill="#27452e" opacity="0.92"/>
+        <path d="M 0 0 L 92 0 L 106 90 L 116 200 L 122 290 L 110 380 L 90 440 L 0 440 Z"
+              fill="#27452e" opacity="0.94"/>
+
+        <!-- Texture grain on land (subtle vegetation) -->
+        <g fill="#1a3322" opacity="0.5">
+          <circle cx="40"  cy="50"  r="14"/>
+          <circle cx="20"  cy="120" r="10"/>
+          <circle cx="60"  cy="180" r="12"/>
+          <circle cx="30"  cy="260" r="10"/>
+          <circle cx="55"  cy="340" r="13"/>
+          <circle cx="200" cy="20"  r="9"/>
+          <circle cx="430" cy="22"  r="11"/>
+          <circle cx="540" cy="425" r="10"/>
+          <circle cx="180" cy="428" r="9"/>
+        </g>
+
+        <!-- Subtle water ripples -->
+        <g stroke="rgba(255,255,255,0.05)" stroke-width="1" fill="none">
+          <path d="M 130 110 Q 240 120 360 112 T 590 110"/>
+          <path d="M 130 200 Q 240 210 360 202 T 590 200"/>
+          <path d="M 130 320 Q 240 330 360 322 T 590 320"/>
+        </g>
+
+        <!-- Tee box on left land mass -->
+        <rect x="48" y="208" width="48" height="32" fill="#3d6b48" stroke="#1a3322" stroke-width="2" rx="3"/>
+        <text x="72" y="228" text-anchor="middle" fill="rgba(255,255,255,0.85)"
+              font-family="monospace" font-size="9.5" font-weight="700" letter-spacing="0.08em">TEE</text>
+
+        <!-- Wood walkway from tee land to island green -->
+        <path d="M 100 222 Q 175 222 235 222" stroke="#1a1108" stroke-width="9" stroke-linecap="round" fill="none"/>
+        <path d="M 100 222 Q 175 222 235 222" stroke="#a98655" stroke-width="6" stroke-linecap="round" fill="none"/>
+        <g stroke="#6e4f2e" stroke-width="1.2">
+          <line x1="115" y1="218" x2="115" y2="226"/>
+          <line x1="135" y1="218" x2="135" y2="226"/>
+          <line x1="155" y1="218" x2="155" y2="226"/>
+          <line x1="175" y1="218" x2="175" y2="226"/>
+          <line x1="195" y1="218" x2="195" y2="226"/>
+          <line x1="215" y1="218" x2="215" y2="226"/>
+        </g>
+
+        <!-- Island green (kidney shape, centered slightly right) -->
+        <path d="M 340 125
+                 Q 425 122 470 175
+                 Q 495 230 470 280
+                 Q 450 320 390 330
+                 Q 330 335 290 320
+                 Q 260 310 270 280
+                 Q 230 265 230 215
+                 Q 230 165 280 140
+                 Q 305 128 340 125 Z"
+              fill="url(#sw-green)" stroke="#1a3322" stroke-width="2.5"/>
+
+        <!-- Subtle mow stripes on green -->
+        <g stroke="rgba(0,0,0,0.08)" stroke-width="1" fill="none">
+          <path d="M 245 200 Q 360 210 480 205"/>
+          <path d="M 240 235 Q 360 245 478 240"/>
+          <path d="M 250 270 Q 360 280 470 275"/>
+          <path d="M 270 300 Q 360 310 458 305"/>
+        </g>
+
+        <!-- Pot bunker at front of green (the famous one) -->
+        <ellipse cx="295" cy="318" rx="20" ry="9" fill="#dccea0" opacity="0.94"/>
+        <ellipse cx="295" cy="318" rx="20" ry="9" fill="none" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>
+
+        <!-- Vignette overlay -->
+        <rect width="620" height="440" fill="url(#sw-vignette)" pointer-events="none"/>
+
+        <!-- Hole label -->
+        <text x="20" y="32" fill="rgba(255,255,255,0.92)" font-family="monospace" font-size="11" font-weight="700" letter-spacing="0.12em">ØY-GREEN · ARKETYPE</text>
+        <text x="20" y="48" fill="rgba(255,255,255,0.6)" font-family="monospace" font-size="9.5" font-weight="500" letter-spacing="0.06em">~135 YD · PAR 3 · VANN RUNDT</text>`,
+
+      augusta: `
+        <!-- Augusta National · Hole 12 · Golden Bell -->
+        <defs>
+          <linearGradient id="au-grass" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#4a8a5a"/>
+            <stop offset="100%" stop-color="#2e6038"/>
+          </linearGradient>
+        </defs>
+        <rect width="620" height="440" fill="url(#au-grass)"/>
+        <!-- Subtle texture lines -->
+        <g stroke="rgba(0,0,0,0.05)" stroke-width="1">
+          <line x1="0" y1="100" x2="620" y2="100"/>
+          <line x1="0" y1="180" x2="620" y2="180"/>
+          <line x1="0" y1="280" x2="620" y2="280"/>
+        </g>
+        <!-- Tee box -->
+        <rect x="285" y="400" width="50" height="30" fill="#3d6b48" stroke="#28432f" stroke-width="2" rx="3"/>
+        <text x="310" y="420" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-family="monospace" font-size="10" font-weight="700" letter-spacing="0.08em">TEE</text>
+        <!-- Creek (Rae's Creek) -->
+        <path d="M 0 245 Q 155 230 310 245 T 620 245 L 620 270 Q 465 280 310 270 T 0 270 Z"
+              fill="var(--course-water-mid)" opacity="0.92"/>
+        <path d="M 0 245 Q 155 230 310 245 T 620 245"
+              fill="none" stroke="rgba(255,255,255,0.20)" stroke-width="1"/>
+        <!-- Front bunker -->
+        <ellipse cx="240" cy="210" rx="80" ry="20" fill="var(--course-bunker-light)" opacity="0.92"/>
+        <!-- Green (shallow, wide) -->
+        <path d="M 180 180
+                 Q 230 155 310 152
+                 Q 400 152 445 175
+                 Q 455 195 420 210
+                 Q 360 220 280 218
+                 Q 200 215 180 200
+                 Q 170 188 180 180 Z"
+              fill="var(--course-green-light)" stroke="#3d6b48" stroke-width="2"/>
+        <!-- Two rear bunkers -->
+        <ellipse cx="260" cy="125" rx="32" ry="14" fill="var(--course-bunker-light)"/>
+        <ellipse cx="360" cy="125" rx="38" ry="15" fill="var(--course-bunker-light)"/>
+        <!-- Trees -->
+        <circle cx="60"  cy="60"  r="20" fill="#1f4a2a" opacity="0.7"/>
+        <circle cx="560" cy="60"  r="22" fill="#1f4a2a" opacity="0.7"/>
+        <circle cx="40"  cy="120" r="18" fill="#1f4a2a" opacity="0.7"/>
+        <circle cx="580" cy="130" r="20" fill="#1f4a2a" opacity="0.7"/>
+        <!-- Hole label -->
+        <text x="20" y="32" fill="rgba(255,255,255,0.85)" font-family="monospace" font-size="11" font-weight="700" letter-spacing="0.12em">PAR 3 M/ VANN FORAN · ARKETYPE</text>
+        <text x="20" y="48" fill="rgba(255,255,255,0.55)" font-family="monospace" font-size="10" font-weight="500" letter-spacing="0.06em">~155 YD · BREDDEGREEN</text>`,
+
+      pga: `
+        <!-- PGA National · Hole 17 · Bear Trap -->
+        <defs>
+          <linearGradient id="pga-water" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="var(--course-water-mid)"/>
+            <stop offset="100%" stop-color="var(--course-water-deep)"/>
+          </linearGradient>
+          <linearGradient id="pga-grass" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#4a8a5a"/>
+            <stop offset="100%" stop-color="#2e6038"/>
+          </linearGradient>
+        </defs>
+        <rect width="620" height="440" fill="url(#pga-grass)"/>
+        <!-- Water on right -->
+        <path d="M 380 0 L 620 0 L 620 440 L 410 440 Q 360 280 380 0 Z" fill="url(#pga-water)"/>
+        <g fill="none" stroke="rgba(255,255,255,0.10)" stroke-width="1">
+          <path d="M 410 100 Q 500 110 620 100"/>
+          <path d="M 410 200 Q 500 210 620 200"/>
+          <path d="M 410 300 Q 500 310 620 300"/>
+        </g>
+        <!-- Tee box -->
+        <rect x="190" y="400" width="50" height="30" fill="#3d6b48" stroke="#28432f" stroke-width="2" rx="3"/>
+        <text x="215" y="420" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-family="monospace" font-size="10" font-weight="700" letter-spacing="0.08em">TEE</text>
+        <!-- Front bunker -->
+        <ellipse cx="220" cy="240" rx="60" ry="18" fill="var(--course-bunker-light)" opacity="0.92"/>
+        <!-- Long narrow green -->
+        <path d="M 200 130
+                 Q 260 115 340 120
+                 Q 380 125 380 165
+                 Q 380 200 340 210
+                 Q 270 220 220 205
+                 Q 185 190 195 160
+                 Q 195 138 200 130 Z"
+              fill="var(--course-green-light)" stroke="#3d6b48" stroke-width="2"/>
+        <!-- Rear bunker -->
+        <ellipse cx="280" cy="90" rx="60" ry="16" fill="var(--course-bunker-light)"/>
+        <!-- Hole label -->
+        <text x="20" y="32" fill="rgba(255,255,255,0.85)" font-family="monospace" font-size="11" font-weight="700" letter-spacing="0.12em">BRED GREEN M/ VANN H. · ARKETYPE</text>
+        <text x="20" y="48" fill="rgba(255,255,255,0.55)" font-family="monospace" font-size="10" font-weight="500" letter-spacing="0.06em">~190 YD · PAR 3</text>`
+    };
+
+    function applyHoleOverlay(holeId) {
+      currentHole = holeId;
+      if (holeId === 'default') {
+        bgDefault.hidden = false;
+        svgEl.hidden = true;
+        svgEl.innerHTML = '';
+      } else {
+        bgDefault.hidden = true;
+        svgEl.hidden = false;
+        svgEl.innerHTML = HOLE_SVG[holeId];
+        // Pin and aim reposition near green centre per hole
+        const pinDefaults = {
+          photo:    { aim: [310, 220], pin: [340, 200] },
+          sawgrass: { aim: [365, 220], pin: [410, 200] },
+          augusta:  { aim: [310, 195], pin: [340, 175] },
+          pga:      { aim: [280, 175], pin: [305, 145] }
+        };
+        aimPx = { x: pinDefaults[holeId].aim[0], y: pinDefaults[holeId].aim[1] };
+        pinPx = { x: pinDefaults[holeId].pin[0], y: pinDefaults[holeId].pin[1] };
+      }
+      renderDots();
+      renderRings();
+    }
+
+    // ============================================================
+    // DRAG INTERACTIONS
+    // ============================================================
+    function makeDraggable(el, onMove) {
+      el.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        el.setPointerCapture(e.pointerId);
+        const rect = plotEl.getBoundingClientRect();
+        const scaleX = PLOT_W / rect.width;
+        const scaleY = PLOT_H / rect.height;
+        const move = (ev) => {
+          let x = (ev.clientX - rect.left) * scaleX;
+          let y = (ev.clientY - rect.top)  * scaleY;
+          x = Math.max(20, Math.min(PLOT_W - 20, x));
+          y = Math.max(20, Math.min(PLOT_H - 20, y));
+          onMove(x, y);
+        };
+        const up = () => {
+          el.releasePointerCapture(e.pointerId);
+          document.removeEventListener('pointermove', move);
+          document.removeEventListener('pointerup', up);
+        };
+        document.addEventListener('pointermove', move);
+        document.addEventListener('pointerup', up);
+      });
+    }
+
+    makeDraggable(aimEl, (x, y) => {
+      aimPx = { x, y };
+      renderDots();
+      renderRings();
+    });
+    makeDraggable(pinEl, (x, y) => {
+      pinPx = { x, y };
+      positionMarkers();
+    });
+
+    // Hole tabs
+    document.querySelectorAll('.hole-tab').forEach((t) => {
+      t.addEventListener('click', () => {
+        document.querySelectorAll('.hole-tab').forEach((x) => x.classList.toggle('is-active', x === t));
+        applyHoleOverlay(t.dataset.hole);
+      });
+    });
+
+    // Green rotation controls
+    let greenRot = 0;
+    const rotValEl = document.getElementById('rot-val');
+    const plotElForRot = document.getElementById('plot');
+    function applyGreenRot() {
+      plotElForRot.style.setProperty('--green-rot', greenRot + 'deg');
+      const norm = ((greenRot % 360) + 360) % 360;
+      rotValEl.textContent = norm + '°';
+    }
+    document.querySelectorAll('.rot-btn').forEach((b) => {
+      b.addEventListener('click', () => {
+        if (b.dataset.rot === 'reset') greenRot = 0;
+        else greenRot += parseInt(b.dataset.rot, 10);
+        applyGreenRot();
+      });
+    });
+
+    // ============================================================
+    // CLUB SELECTION
+    // ============================================================
+    function selectClub(id) {
+      currentClub = id;
+      bagGrid.querySelectorAll('.club').forEach((c) => {
+        c.classList.toggle('is-active', c.dataset.club === id);
+      });
+      const club = CLUBS.find(c => c.id === id);
+      document.getElementById('dh-title').textContent = `${id} · spredning`;
+      document.getElementById('ph-club').textContent  = id;
+      document.getElementById('ph-meta').textContent  = `28 slag · 22. mai · stabilitet ${club.stab.toFixed(1)}/10`;
+      document.getElementById('df-dist').innerHTML    = `${club.carry}<small>yd</small>`;
+      document.getElementById('df-spread').innerHTML  = `±${club.spread}<small>yd</small>`;
+      document.getElementById('df-side').innerHTML    = `+${Math.round(club.sideSd / 4)}<small>yd høyre</small>`;
+      document.getElementById('df-near').innerHTML    = `${Math.round(60 + (club.stab - 6) * 4)}<small>%</small>`;
+      renderDots();
+      renderRings();
+      // Skriv til hash så de andre Trackman-fanene leser samme valg.
+      if (location.hash !== '#club=' + encodeURIComponent(id)) {
+        history.replaceState(null, '', '#club=' + encodeURIComponent(id));
+      }
+    }
+
+    function readHashClub() {
+      const m = (location.hash || '').match(/club=([^&]+)/);
+      if (!m) return null;
+      const id = decodeURIComponent(m[1]);
+      return CLUBS.find(c => c.id === id) ? id : null;
+    }
+
+    window.addEventListener('hashchange', () => {
+      const id = readHashClub();
+      if (id && id !== currentClub) selectClub(id);
+    });
+
+    // ============================================================
+    // INIT
+    // ============================================================
+    renderBag();
+    applyHoleOverlay('default');
+    selectClub(readHashClub() || '7-I');
+    lucide.createIcons();
+  </script>
+</div></body></html>

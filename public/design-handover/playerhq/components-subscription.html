@@ -1,0 +1,1507 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>Abonnement + faktura · plan-skifte, faktura-detalj, credit-historikk</title>
+<link rel="stylesheet" href="_shared.css">
+<script src="https://unpkg.com/lucide@0.453.0"></script>
+<style>
+  body { width: 1240px; }
+  .card { padding: 28px 32px; }
+
+  /* ===== HEADER ===== */
+  .head { margin-bottom: 24px; }
+  .head .eb {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .head h1 {
+    margin: 8px 0 6px;
+    font-family: var(--font-display); font-weight: 700; font-size: 30px;
+    letter-spacing: -0.025em; line-height: 1.05;
+  }
+  .head h1 em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .head .helper {
+    font-family: var(--font-sans); font-size: 14px; line-height: 1.55;
+    color: var(--muted-foreground); max-width: 800px;
+  }
+
+  .sec {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--foreground);
+    display: flex; align-items: center; gap: 12px;
+    margin: 32px 0 14px;
+  }
+  .sec::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+  .sec .sub { color: var(--muted-foreground); font-weight: 700; letter-spacing: 0.04em; }
+  .sec .count {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    background: var(--secondary); color: var(--muted-foreground);
+    padding: 2px 8px; border-radius: 9999px; letter-spacing: 0.06em;
+  }
+
+  .panel {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; overflow: hidden;
+  }
+  .frule {
+    padding: 12px 20px;
+    background: var(--cream-50);
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--muted-foreground); line-height: 1.55;
+  }
+  .frule b { color: var(--foreground); font-weight: 700; }
+
+  /* ============================================================ */
+  /* SECTION 1 · PLAN-SKIFTE                                       */
+  /* ============================================================ */
+  .plan-head {
+    display: grid; grid-template-columns: 1fr auto;
+    align-items: center; gap: 20px;
+    padding: 22px 28px;
+    border-bottom: 1px solid var(--border);
+    background:
+      linear-gradient(180deg, transparent 0%, rgba(0,88,64,0.025) 100%),
+      var(--card);
+  }
+  .plan-head .ll .pip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 3px 10px; border-radius: 9999px;
+    background: var(--primary); color: var(--accent);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    letter-spacing: 0.10em; text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .plan-head .ll .pip .d {
+    width: 6px; height: 6px; border-radius: 9999px; background: var(--accent);
+  }
+  .plan-head .ll h2 {
+    margin: 0;
+    font-family: var(--font-display); font-weight: 700; font-size: 26px;
+    letter-spacing: -0.025em; line-height: 1.1;
+  }
+  .plan-head .ll h2 em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .plan-head .ll .meta {
+    margin-top: 4px;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .plan-head .ll .meta b { color: var(--foreground); font-weight: 800; }
+  .plan-head .ll .meta .sep { color: var(--cream-300); margin: 0 5px; }
+
+  .plan-head .stats {
+    display: flex; gap: 0;
+  }
+  .plan-head .stats .s {
+    padding: 0 18px;
+    border-left: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 3px;
+  }
+  .plan-head .stats .s:first-child { border-left: 0; padding-left: 0; }
+  .plan-head .stats .s .l {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    color: var(--muted-foreground);
+  }
+  .plan-head .stats .s .v {
+    font-family: var(--font-mono); font-weight: 800; font-size: 24px;
+    letter-spacing: -0.02em; line-height: 1;
+    color: var(--foreground); font-feature-settings: "tnum","zero";
+  }
+  .plan-head .stats .s .v.warn { color: var(--warning); }
+  .plan-head .stats .s .v .u {
+    font-size: 12px; color: var(--muted-foreground); font-weight: 700; margin-left: 1px;
+  }
+
+  /* tier cards */
+  .tier-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+  }
+  .tier {
+    padding: 24px 22px 22px;
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 4px;
+    position: relative;
+  }
+  .tier:last-child { border-right: 0; }
+  .tier.current {
+    background: rgba(0,88,64,0.025);
+  }
+  .tier.current::before {
+    content: ""; position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px; background: var(--accent);
+  }
+  .tier .badge-row {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px; min-height: 24px;
+  }
+  .tier .tag {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    padding: 3px 10px; border-radius: 4px;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    background: var(--secondary); color: var(--muted-foreground);
+  }
+  .tier .tag.cur { background: var(--primary); color: var(--accent); }
+  .tier .tag.rec { background: var(--accent); color: var(--primary); }
+  .tier .tag.down { background: rgba(184,133,42,0.14); color: var(--warning-foreground); }
+  .tier h3 {
+    margin: 0 0 6px;
+    font-family: var(--font-display); font-weight: 700; font-size: 26px;
+    letter-spacing: -0.025em; line-height: 1.05;
+  }
+  .tier .pitch {
+    margin: 0 0 14px;
+    font-size: 13px; color: var(--muted-foreground); line-height: 1.5;
+  }
+  .tier .price-row {
+    display: flex; align-items: baseline; gap: 6px;
+    margin-bottom: 12px;
+  }
+  .tier .price {
+    font-family: var(--font-mono); font-weight: 800; font-size: 38px;
+    letter-spacing: -0.03em; line-height: 1;
+    color: var(--foreground); font-feature-settings: "tnum","zero";
+  }
+  .tier .price-u {
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.02em;
+  }
+  .tier .credits-line {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 12px;
+    background: var(--cream-50);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 14px;
+  }
+  .tier .credits-line i {
+    width: 16px; height: 16px; color: var(--primary);
+  }
+  .tier .credits-line .v {
+    font-family: var(--font-mono); font-size: 14px; font-weight: 800;
+    color: var(--foreground); letter-spacing: -0.005em;
+    font-feature-settings: "tnum","zero";
+  }
+  .tier .credits-line .l {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+
+  .feats { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+  .feat {
+    display: grid; grid-template-columns: 14px 1fr;
+    gap: 9px; align-items: flex-start;
+    font-size: 12px; line-height: 1.45; color: var(--foreground);
+    letter-spacing: -0.005em;
+  }
+  .feat i { width: 13px; height: 13px; color: var(--primary); margin-top: 2px; }
+  .feat.absent { color: var(--muted-foreground); }
+  .feat.absent i { color: var(--cream-300); }
+  .feat b { font-weight: 700; }
+
+  .tier .ctas {
+    margin-top: auto;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .tier .btn {
+    height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    font-family: var(--font-sans); font-size: 13px; font-weight: 700;
+    letter-spacing: -0.005em;
+    cursor: pointer;
+  }
+  .tier .btn i { width: 14px; height: 14px; }
+  .tier .btn.primary { background: var(--primary); color: var(--accent); }
+  .tier .btn.cur { background: var(--card); color: var(--muted-foreground); border: 1px dashed var(--border); }
+  .tier .btn.down { background: var(--card); color: var(--foreground); border: 1px solid var(--border); }
+  .tier .micro {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em; line-height: 1.5;
+    text-align: center;
+  }
+
+  /* impact panel — change dialog */
+  .impact {
+    display: grid; grid-template-columns: 320px 1fr;
+    border-top: 1px solid var(--border);
+    background: var(--cream-50);
+  }
+  .impact .left {
+    padding: 22px 24px;
+    border-right: 1px solid var(--border);
+    background: var(--card);
+  }
+  .impact .left .lab {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--primary);
+    margin-bottom: 8px;
+  }
+  .impact .left .lab i { width: 12px; height: 12px; }
+  .impact .left h3 {
+    margin: 0 0 6px;
+    font-family: var(--font-display); font-weight: 700; font-size: 19px;
+    letter-spacing: -0.02em;
+  }
+  .impact .left h3 em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .impact .left p {
+    margin: 0 0 16px; font-size: 13px; line-height: 1.55;
+    color: var(--muted-foreground);
+  }
+  .impact .left p b { color: var(--foreground); font-weight: 700; }
+
+  .impact .left .ba {
+    display: grid; grid-template-columns: 1fr 16px 1fr;
+    gap: 0;
+    background: var(--cream-50);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    margin-bottom: 12px;
+  }
+  .impact .left .ba .from, .impact .left .ba .to {
+    padding: 10px 12px;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .impact .left .ba .arrow {
+    display: flex; align-items: center; justify-content: center;
+    color: var(--primary);
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    background: var(--card);
+  }
+  .impact .left .ba .arrow i { width: 14px; height: 14px; }
+  .impact .left .ba .l {
+    font-family: var(--font-mono); font-size: 8px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .impact .left .ba .v {
+    font-family: var(--font-mono); font-weight: 800; font-size: 18px;
+    letter-spacing: -0.02em; line-height: 1;
+    color: var(--foreground); font-feature-settings: "tnum","zero";
+  }
+
+  .impact .right {
+    padding: 22px 24px;
+  }
+  .impact .right .it-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .impact .right .it {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px 16px;
+    display: grid; grid-template-columns: 28px 1fr;
+    gap: 12px; align-items: flex-start;
+  }
+  .impact .right .it .ic {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: rgba(0,88,64,0.08); color: var(--primary);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .impact .right .it .ic.warn { background: rgba(184,133,42,0.14); color: var(--warning-foreground); }
+  .impact .right .it .ic.ok { background: rgba(26,125,86,0.10); color: var(--success); }
+  .impact .right .it .ic i { width: 14px; height: 14px; }
+  .impact .right .it .t {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    color: var(--muted-foreground); margin-bottom: 4px;
+  }
+  .impact .right .it .h {
+    font-family: var(--font-display); font-weight: 700; font-size: 16px;
+    letter-spacing: -0.02em; line-height: 1.15;
+    color: var(--foreground);
+  }
+  .impact .right .it .h em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .impact .right .it .b {
+    font-size: 12px; line-height: 1.5; color: var(--muted-foreground); margin-top: 4px;
+  }
+  .impact .right .it .b b { font-weight: 700; color: var(--foreground); }
+  .impact .right .it .b .num {
+    font-family: var(--font-mono); font-weight: 800;
+    font-feature-settings: "tnum","zero";
+  }
+
+  .impact .right .approval {
+    margin-top: 18px;
+    display: flex; gap: 10px; align-items: center;
+  }
+  .impact .right .approval .conf {
+    flex: 1;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .impact .right .approval .conf b { color: var(--foreground); font-weight: 800; }
+  .impact .right .approval .btn {
+    height: 42px; padding: 0 16px; border-radius: 10px;
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-sans); font-size: 13px; font-weight: 700;
+    cursor: pointer;
+  }
+  .impact .right .approval .btn i { width: 14px; height: 14px; }
+  .impact .right .approval .btn.cancel { background: var(--card); color: var(--foreground); border: 1px solid var(--border); }
+  .impact .right .approval .btn.confirm { background: var(--primary); color: var(--accent); }
+
+  /* ============================================================ */
+  /* SECTION 2 · FAKTURA-DETALJ                                    */
+  /* ============================================================ */
+  .invoice {
+    display: grid; grid-template-columns: 1fr 280px;
+  }
+  .invoice .doc {
+    padding: 32px 36px;
+    border-right: 1px solid var(--border);
+  }
+  .invoice .doc .top-row {
+    display: grid; grid-template-columns: 1fr auto;
+    gap: 22px; align-items: flex-start;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 22px;
+  }
+  .invoice .doc .logo-row {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 8px;
+  }
+  .invoice .doc .logo-row .ak {
+    width: 30px; height: 30px; border-radius: 8px;
+    background: var(--primary); color: var(--accent);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-weight: 700; font-size: 14px;
+    position: relative;
+  }
+  .invoice .doc .logo-row .ak::after {
+    content: ""; position: absolute; top: 5px; right: 5px;
+    width: 4px; height: 4px; border-radius: 9999px; background: var(--accent);
+  }
+  .invoice .doc .logo-row .nm {
+    font-family: var(--font-display); font-weight: 700; font-size: 14px;
+    letter-spacing: -0.01em;
+  }
+  .invoice .doc .logo-row .nm small {
+    display: block;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.12em; text-transform: uppercase;
+    margin-top: 1px;
+  }
+  .invoice .doc .biz {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+    color: var(--muted-foreground); line-height: 1.6; letter-spacing: 0.02em;
+  }
+  .invoice .doc .biz b { color: var(--foreground); font-weight: 700; }
+
+  .invoice .doc .inv-title {
+    text-align: right;
+  }
+  .invoice .doc .inv-title .eb {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground); margin-bottom: 4px;
+  }
+  .invoice .doc .inv-title h2 {
+    margin: 0;
+    font-family: var(--font-display); font-weight: 700; font-size: 28px;
+    letter-spacing: -0.025em; line-height: 1.05;
+  }
+  .invoice .doc .inv-title h2 em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .invoice .doc .inv-title .num {
+    margin-top: 8px;
+    font-family: var(--font-mono); font-size: 13px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+    font-feature-settings: "tnum","zero";
+  }
+  .invoice .doc .inv-title .num b { color: var(--foreground); font-weight: 800; }
+
+  .invoice .doc .ad-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 26px;
+  }
+  .invoice .doc .ad {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .invoice .doc .ad .l {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground); margin-bottom: 2px;
+  }
+  .invoice .doc .ad .body {
+    font-family: var(--font-sans); font-size: 13px; color: var(--foreground);
+    line-height: 1.5; letter-spacing: -0.005em;
+  }
+  .invoice .doc .ad .body b { font-weight: 700; }
+  .invoice .doc .ad .body small {
+    display: block;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    color: var(--muted-foreground); letter-spacing: 0.02em; margin-top: 2px;
+  }
+
+  /* line items table */
+  table.lines {
+    width: 100%; border-collapse: collapse;
+    margin-bottom: 18px;
+  }
+  table.lines thead th {
+    border-bottom: 1px solid var(--border);
+    padding: 9px 0;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground); text-align: left;
+  }
+  table.lines th.r { text-align: right; }
+  table.lines th.col-desc { width: auto; padding-right: 12px; }
+  table.lines th.col-qty { width: 60px; text-align: right; padding-right: 12px; }
+  table.lines th.col-unit { width: 90px; text-align: right; padding-right: 12px; }
+  table.lines th.col-sum { width: 110px; text-align: right; }
+
+  table.lines tbody td {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px; color: var(--foreground);
+    vertical-align: top;
+    letter-spacing: -0.005em;
+  }
+  table.lines tbody td.qty,
+  table.lines tbody td.unit,
+  table.lines tbody td.sum {
+    font-family: var(--font-mono); font-weight: 700;
+    text-align: right; padding-right: 12px;
+    font-feature-settings: "tnum","zero";
+  }
+  table.lines tbody td.sum { padding-right: 0; }
+  table.lines tbody td .desc b { font-weight: 700; }
+  table.lines tbody td .desc .meta {
+    display: block;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.02em; margin-top: 2px;
+  }
+  table.lines tbody td .desc .meta .sep { color: var(--cream-300); margin: 0 4px; }
+  table.lines tbody td.credit-line {
+    color: var(--success);
+  }
+  table.lines tbody td.credit-line .desc b { color: var(--success); }
+  table.lines tbody td.credit-line { font-weight: 700; }
+
+  /* totals */
+  .totals {
+    margin-left: auto; max-width: 300px;
+    display: flex; flex-direction: column; gap: 0;
+  }
+  .totals .row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 6px 0;
+    font-family: var(--font-sans); font-size: 13px; color: var(--foreground);
+  }
+  .totals .row .l { color: var(--muted-foreground); }
+  .totals .row .v {
+    font-family: var(--font-mono); font-weight: 700;
+    font-feature-settings: "tnum","zero";
+  }
+  .totals .row.credit .v { color: var(--success); }
+  .totals .row.grand {
+    padding: 12px 0 4px;
+    margin-top: 4px;
+    border-top: 1.5px solid var(--foreground);
+  }
+  .totals .row.grand .l {
+    font-family: var(--font-display); font-weight: 700; font-size: 17px;
+    color: var(--foreground); letter-spacing: -0.02em;
+  }
+  .totals .row.grand .v {
+    font-family: var(--font-mono); font-weight: 800; font-size: 24px;
+    letter-spacing: -0.025em; color: var(--foreground);
+  }
+
+  /* invoice right rail */
+  .inv-rail {
+    padding: 32px 24px;
+    background: var(--cream-50);
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .inv-rail .status-card {
+    background: var(--primary); color: var(--cream-100);
+    border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .inv-rail .status-card .lab {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--accent); margin-bottom: 6px;
+  }
+  .inv-rail .status-card .v {
+    font-family: var(--font-display); font-weight: 700; font-size: 22px;
+    letter-spacing: -0.02em; line-height: 1.05;
+  }
+  .inv-rail .status-card .v em { font-style: italic; font-weight: 400; color: var(--accent); }
+  .inv-rail .status-card .meta {
+    margin-top: 8px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: rgba(255,255,255,0.72); letter-spacing: 0.04em;
+  }
+  .inv-rail .status-card .meta b { color: var(--accent); font-weight: 800; }
+
+  .inv-rail .pay-method {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px 16px;
+    display: grid; grid-template-columns: 36px 1fr auto;
+    gap: 12px; align-items: center;
+  }
+  .inv-rail .pay-method .card-ic {
+    width: 36px; height: 24px; border-radius: 4px;
+    background: var(--forest-700); color: var(--cream-50);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    letter-spacing: 0.08em;
+  }
+  .inv-rail .pay-method .nm {
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    color: var(--foreground); letter-spacing: 0.02em;
+    font-feature-settings: "tnum","zero";
+  }
+  .inv-rail .pay-method .nm small {
+    display: block;
+    font-size: 9px; color: var(--muted-foreground); font-weight: 700;
+    letter-spacing: 0.04em; margin-top: 1px;
+  }
+  .inv-rail .pay-method i { width: 14px; height: 14px; color: var(--muted-foreground); }
+
+  .inv-rail .actions {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .inv-rail .actions .btn {
+    height: 42px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    font-family: var(--font-sans); font-size: 13px; font-weight: 700;
+    cursor: pointer;
+  }
+  .inv-rail .actions .btn i { width: 14px; height: 14px; }
+  .inv-rail .actions .btn.primary { background: var(--primary); color: var(--accent); }
+  .inv-rail .actions .btn.secondary { background: var(--card); color: var(--foreground); border: 1px solid var(--border); }
+  .inv-rail .actions .btn.ghost { background: transparent; color: var(--muted-foreground); }
+
+  .inv-rail .help {
+    margin-top: auto;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.02em; line-height: 1.5;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+  .inv-rail .help b { color: var(--foreground); font-weight: 800; }
+
+  /* paid stamp */
+  .stamp {
+    margin-top: 16px;
+    width: 100%; max-width: 180px;
+    aspect-ratio: 3 / 1;
+    border: 1.5px solid var(--success);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    font-family: var(--font-display); font-weight: 800; font-size: 20px;
+    color: var(--success); letter-spacing: -0.015em;
+    transform: rotate(-3deg);
+    background: rgba(26,125,86,0.05);
+  }
+  .stamp i { width: 18px; height: 18px; }
+  .stamp small {
+    display: block;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--success); letter-spacing: 0.10em; text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .stamp .col {
+    display: flex; flex-direction: column; align-items: center;
+    line-height: 1;
+  }
+
+  /* ============================================================ */
+  /* SECTION 3 · CREDIT-HISTORIKK                                  */
+  /* ============================================================ */
+  .ledger-head {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+    display: grid; grid-template-columns: 1fr auto auto;
+    gap: 16px; align-items: center;
+  }
+  .ledger-head .tt {
+    font-family: var(--font-display); font-weight: 700; font-size: 22px;
+    letter-spacing: -0.02em;
+  }
+  .ledger-head .tt em { font-style: italic; font-weight: 400; color: var(--primary); }
+  .ledger-head .sub {
+    margin-top: 4px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .ledger-head .sub b { color: var(--foreground); font-weight: 800; }
+
+  .ledger-head .pills {
+    display: inline-flex; gap: 6px;
+  }
+  .ledger-head .pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    height: 28px; padding: 0 12px;
+    border-radius: 9999px;
+    background: var(--card); border: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--foreground); letter-spacing: 0.06em;
+  }
+  .ledger-head .pill.on { background: var(--primary); color: var(--accent); border-color: var(--primary); }
+  .ledger-head .pill .ct {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    background: rgba(0,88,64,0.10); color: var(--primary);
+    padding: 1px 6px; border-radius: 9999px;
+  }
+  .ledger-head .pill.on .ct { background: rgba(209,248,67,0.30); color: var(--accent); }
+
+  .ledger-head .stats {
+    display: flex; gap: 0;
+  }
+  .ledger-head .stats .s {
+    padding: 0 16px;
+    border-left: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .ledger-head .stats .s:first-child { border-left: 0; padding-left: 0; }
+  .ledger-head .stats .s .l {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    color: var(--muted-foreground);
+  }
+  .ledger-head .stats .s .v {
+    font-family: var(--font-mono); font-weight: 800; font-size: 20px;
+    letter-spacing: -0.02em; line-height: 1;
+    color: var(--foreground); font-feature-settings: "tnum","zero";
+  }
+  .ledger-head .stats .s .v.pos { color: var(--success); }
+  .ledger-head .stats .s .v.neg { color: var(--destructive); }
+
+  /* balance hero */
+  .balance-hero {
+    padding: 22px 24px;
+    border-bottom: 1px solid var(--border);
+    background:
+      linear-gradient(180deg, transparent 0%, rgba(0,88,64,0.025) 100%),
+      var(--card);
+    display: grid; grid-template-columns: auto 1fr auto;
+    gap: 24px; align-items: center;
+  }
+  .balance-hero .left {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .balance-hero .left .lab {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  .balance-hero .left .v {
+    font-family: var(--font-mono); font-weight: 800; font-size: 46px;
+    letter-spacing: -0.03em; line-height: 1;
+    color: var(--foreground); font-feature-settings: "tnum","zero";
+  }
+  .balance-hero .left .v .u {
+    font-size: 18px; color: var(--muted-foreground); font-weight: 700; margin-left: 4px;
+  }
+  .balance-hero .meter {
+    height: 14px; border-radius: 8px;
+    background: var(--cream-200);
+    overflow: hidden; position: relative;
+    display: flex;
+  }
+  .balance-hero .meter .seg {
+    height: 100%;
+  }
+  .balance-hero .meter .seg.used { background: var(--primary); }
+  .balance-hero .meter .seg.lost { background: var(--destructive); opacity: 0.6; }
+  .balance-hero .meter .seg.refund { background: var(--cream-300); }
+  .balance-hero .legend {
+    display: flex; gap: 14px; flex-wrap: wrap;
+    margin-top: 10px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .balance-hero .legend .li { display: inline-flex; align-items: center; gap: 6px; }
+  .balance-hero .legend .sw {
+    width: 10px; height: 10px; border-radius: 2px;
+  }
+  .balance-hero .legend .sw.used { background: var(--primary); }
+  .balance-hero .legend .sw.lost { background: var(--destructive); opacity: 0.6; }
+  .balance-hero .legend .sw.refund { background: var(--cream-300); }
+  .balance-hero .legend .sw.avail { background: var(--cream-200); }
+  .balance-hero .legend b { color: var(--foreground); font-weight: 800; }
+  .balance-hero .next-row {
+    padding: 12px 16px; border-radius: 10px;
+    border: 1px dashed var(--border); background: var(--cream-50);
+    display: flex; align-items: center; gap: 12px;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em;
+  }
+  .balance-hero .next-row i { width: 14px; height: 14px; color: var(--primary); }
+  .balance-hero .next-row b { color: var(--foreground); font-weight: 800; }
+
+  /* ledger table */
+  table.ledger {
+    width: 100%; border-collapse: collapse; table-layout: fixed;
+    font-family: var(--font-sans);
+  }
+  table.ledger thead th {
+    background: var(--cream-50);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 14px; text-align: left;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted-foreground);
+  }
+  table.ledger th.r { text-align: right; }
+  table.ledger .col-date { width: 100px; }
+  table.ledger .col-type { width: 38px; }
+  table.ledger .col-desc { width: auto; }
+  table.ledger .col-window { width: 130px; }
+  table.ledger .col-cred { width: 90px; text-align: right; }
+  table.ledger .col-bal { width: 80px; text-align: right; }
+
+  table.ledger tbody td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px; vertical-align: middle;
+    letter-spacing: -0.005em;
+  }
+  table.ledger tbody tr:last-child td { border-bottom: 0; }
+  table.ledger tbody tr:hover { background: rgba(0,88,64,0.025); }
+
+  .ldate {
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+    color: var(--foreground); letter-spacing: 0.02em;
+    line-height: 1.2;
+  }
+  .ldate small {
+    display: block;
+    font-size: 9px; color: var(--muted-foreground); font-weight: 700;
+    letter-spacing: 0.06em; margin-top: 2px;
+  }
+
+  .tic {
+    width: 22px; height: 22px; border-radius: 6px;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .tic.in    { background: rgba(26,125,86,0.10); color: var(--success); }
+  .tic.use   { background: var(--secondary); color: var(--muted-foreground); }
+  .tic.cancel { background: rgba(184,133,42,0.14); color: var(--warning-foreground); }
+  .tic.loss  { background: rgba(163,45,45,0.10); color: var(--destructive); }
+  .tic.refund { background: rgba(37,99,235,0.10); color: var(--info); }
+  .tic i { width: 12px; height: 12px; }
+
+  .ldesc b { font-weight: 700; }
+  .ldesc small {
+    display: block;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.02em; margin-top: 2px;
+  }
+  .ldesc small .sep { color: var(--cream-300); margin: 0 4px; }
+
+  .wpill {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+    padding: 3px 8px; border-radius: 4px;
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .wpill.ok    { background: rgba(26,125,86,0.10); color: var(--success); }
+  .wpill.warn  { background: rgba(184,133,42,0.14); color: var(--warning-foreground); }
+  .wpill.bad   { background: rgba(163,45,45,0.10); color: var(--destructive); }
+  .wpill.muted { background: var(--secondary); color: var(--muted-foreground); }
+
+  .lcred {
+    font-family: var(--font-mono); font-weight: 800; font-size: 15px;
+    letter-spacing: -0.015em; color: var(--foreground);
+    font-feature-settings: "tnum","zero";
+    text-align: right;
+  }
+  .lcred.pos { color: var(--success); }
+  .lcred.neg { color: var(--destructive); }
+  .lcred.refund { color: var(--info); }
+  .lcred small {
+    display: block;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    color: var(--muted-foreground); letter-spacing: 0.04em; margin-top: 2px;
+  }
+
+  .lbal {
+    font-family: var(--font-mono); font-weight: 700; font-size: 13px;
+    color: var(--muted-foreground); letter-spacing: 0.02em;
+    font-feature-settings: "tnum","zero"; text-align: right;
+  }
+
+  /* ===== Final principles footer ===== */
+  .rules {
+    margin-top: 28px; padding: 18px 20px;
+    background: var(--secondary); border-radius: 12px;
+    font-family: var(--font-mono); font-size: 12px;
+    color: var(--muted-foreground); line-height: 1.7;
+  }
+  .rules p { margin: 0; }
+  .rules p + p { margin-top: 8px; }
+  .rules b { color: var(--foreground); font-weight: 700; }
+</style></head>
+<body><div class="card">
+
+  <!-- ===================== HEADER ===================== -->
+  <div class="head">
+    <span class="eb">B7 · ABONNEMENT &amp; FAKTURA</span>
+    <h1>Plan-skifte, faktura-detalj og <em>credit-historikk</em>.</h1>
+    <p class="helper">
+      Stripe-integrert forretningslag. Spilleren ser nøyaktig hva som skjer med credits ved oppgradering, leser
+      egne fakturaer i samme stilform som hele appen, og kan spore hvor hver eneste credit gikk —
+      inkludert avbestillinger innenfor og utenfor 24-timersvinduet.
+    </p>
+  </div>
+
+  <!-- ===================== SECTION 1 — PLAN-SKIFTE ===================== -->
+  <style>
+    /* R32 — tier-kort er valgbare og driver impact-panelet */
+    .tier { cursor: pointer; transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease; }
+    .tier:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(10,31,23,0.08); }
+    .tier.is-selected { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(0,88,64,0.20); }
+    .tier:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .impact .approval .btn.confirm.is-disabled { opacity: 0.5; pointer-events: none; }
+    @media (prefers-reduced-motion: reduce) { .tier { transition: none; } }
+  </style>
+  <div class="sec">
+    1 · Abonnementsskifte
+    <span class="sub">Free ↔ Pro ↔ Performance · transparent endrings-impact</span>
+    <span class="count">3 NIVÅER + DIALOG</span>
+  </div>
+
+  <div class="panel">
+
+    <div class="plan-head">
+      <div class="ll">
+        <span class="pip"><span class="d"></span>NÅVÆRENDE PLAN</span>
+        <h2>Du er på <em>Pro</em>.</h2>
+        <div class="meta">
+          MARKUS BERG <span class="sep">·</span>
+          ABONNEMENT FRA <b>15.05.2026</b> <span class="sep">·</span>
+          NESTE TREKK <b>15.06.2026</b>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="s"><span class="l">MND-AVGIFT</span><span class="v">390<span class="u">kr</span></span></div>
+        <div class="s"><span class="l">FORBRUKT (NETTO)</span><span class="v">4 / 12</span></div>
+        <div class="s"><span class="l">CREDITS IGJEN</span><span class="v">8</span></div>
+        <div class="s"><span class="l">FORFALL OM</span><span class="v">4 d</span></div>
+      </div>
+    </div>
+
+    <!-- tier cards -->
+    <div class="tier-grid">
+
+      <!-- Free -->
+      <div class="tier" data-plan="free">
+        <div class="badge-row">
+          <span class="tag down">NEDGRADERING</span>
+        </div>
+        <h3>Free</h3>
+        <p class="pitch">Spor egen trening og se planen — ingen coach-økter inkludert.</p>
+        <div class="price-row">
+          <span class="price">0</span>
+          <span class="price-u">kr / mnd</span>
+        </div>
+        <div class="credits-line">
+          <i data-lucide="ticket"></i>
+          <div><span class="v">0</span> <span class="l">CREDITS / MND</span></div>
+        </div>
+        <div class="feats">
+          <div class="feat"><i data-lucide="check"></i><span>Logg egne økter manuelt</span></div>
+          <div class="feat"><i data-lucide="check"></i><span>Se gjeldende plan (read-only)</span></div>
+          <div class="feat"><i data-lucide="check"></i><span>SG-statistikk for egne runder</span></div>
+          <div class="feat absent"><i data-lucide="x"></i><span>Coach-økter <b>(betal pr. økt)</b></span></div>
+          <div class="feat absent"><i data-lucide="x"></i><span>TrackMan-import</span></div>
+          <div class="feat absent"><i data-lucide="x"></i><span>AI plan-justering</span></div>
+        </div>
+        <div class="ctas">
+          <div class="btn down"><i data-lucide="arrow-down-circle"></i> Nedgrader til Free</div>
+          <div class="micro">Trer i kraft <b style="color:var(--foreground)">15.06.2026</b></div>
+        </div>
+      </div>
+
+      <!-- Pro (current) -->
+      <div class="tier current" data-plan="pro">
+        <div class="badge-row">
+          <span class="tag cur">NÅVÆRENDE</span>
+          <span class="tag rec" style="margin-left:auto">MEST VALGT</span>
+        </div>
+        <h3>Pro</h3>
+        <p class="pitch">Den vanlige planen for klubbgolfere som trener fast.</p>
+        <div class="price-row">
+          <span class="price">390</span>
+          <span class="price-u">kr / mnd</span>
+        </div>
+        <div class="credits-line">
+          <i data-lucide="ticket"></i>
+          <div><span class="v">12</span> <span class="l">CREDITS / MND</span></div>
+        </div>
+        <div class="feats">
+          <div class="feat"><i data-lucide="check"></i><span>Alt i Free</span></div>
+          <div class="feat"><i data-lucide="check"></i><span><b>12 coach-økter</b> per måned</span></div>
+          <div class="feat"><i data-lucide="check"></i><span>TrackMan CSV + screenshot-import</span></div>
+          <div class="feat"><i data-lucide="check"></i><span>AI plan-justering ukentlig</span></div>
+          <div class="feat"><i data-lucide="check"></i><span>Ukerapport søndag</span></div>
+          <div class="feat absent"><i data-lucide="x"></i><span>Test-uke-syklus + periodisering</span></div>
+        </div>
+        <div class="ctas">
+          <div class="btn cur"><i data-lucide="check"></i> Aktiv plan</div>
+          <div class="micro">Neste trekk <b style="color:var(--foreground)">15.06.2026</b></div>
+        </div>
+      </div>
+
+      <!-- Performance -->
+      <div class="tier" data-plan="performance">
+        <div class="badge-row">
+          <span class="tag" style="background: var(--primary); color: var(--accent)">OPPGRADERING</span>
+        </div>
+        <h3>Performance</h3>
+        <p class="pitch">For konkurranseprofiler — testuker, periodisering, ubegrenset.</p>
+        <div class="price-row">
+          <span class="price">890</span>
+          <span class="price-u">kr / mnd</span>
+        </div>
+        <div class="credits-line">
+          <i data-lucide="infinity"></i>
+          <div><span class="v">∞</span> <span class="l">UBEGRENSET COACHING</span></div>
+        </div>
+        <div class="feats">
+          <div class="feat"><i data-lucide="check"></i><span>Alt i Pro</span></div>
+          <div class="feat"><i data-lucide="check"></i><span><b>Ubegrenset</b> coach-økter</span></div>
+          <div class="feat"><i data-lucide="check"></i><span>Test-uke-syklus + periodisering</span></div>
+          <div class="feat"><i data-lucide="check"></i><span>Sesong-årsplan + MTQ-stress</span></div>
+          <div class="feat"><i data-lucide="check"></i><span>SG-narrativ + ukerapport-magasin</span></div>
+          <div class="feat"><i data-lucide="check"></i><span>Prioritert support &lt; 4 t</span></div>
+        </div>
+        <div class="ctas">
+          <div class="btn primary"><i data-lucide="arrow-up-circle"></i> Oppgrader til Performance</div>
+          <div class="micro">Pro-rata fra <b style="color:var(--foreground)">i dag</b></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- impact panel -->
+    <div class="impact">
+      <div class="left">
+        <div class="lab"><i data-lucide="git-pull-request"></i>FORESLÅTT ENDRING</div>
+        <h3>Oppgrader til <em>Performance</em></h3>
+        <p>Du har <b>8 credits igjen</b> av 12 så langt i perioden (5 brukt · 1 tapt · 2 refundert) og fornyer 15. juni. Performance fjerner credit-taket og åpner test-uke-syklus i tide for uke 43.</p>
+
+        <div class="ba">
+          <div class="from">
+            <span class="l">FRA</span>
+            <span class="v">Pro</span>
+            <span class="l" style="margin-top: 4px">390 kr/mnd</span>
+          </div>
+          <div class="arrow"><i data-lucide="arrow-right"></i></div>
+          <div class="to">
+            <span class="l">TIL</span>
+            <span class="v">Performance</span>
+            <span class="l" style="margin-top: 4px">890 kr/mnd</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="right">
+        <div class="it-grid">
+
+          <div class="it">
+            <span class="ic ok"><i data-lucide="ticket"></i></span>
+            <div>
+              <div class="t">CREDITS</div>
+              <div class="h"><em>8 ubrukte</em> overføres som <em>bonus</em></div>
+              <div class="b">De siste 8 Pro-creditene blir lagt til Performance-kontoen og kan brukes innen <b>15. juli 2026</b>. Etter det krever Performance ingen credits.</div>
+            </div>
+          </div>
+
+          <div class="it">
+            <span class="ic"><i data-lucide="calendar"></i></span>
+            <div>
+              <div class="t">FORSTE TREKK</div>
+              <div class="h">Pro-rata <em>i dag</em></div>
+              <div class="b">Du betaler <b class="num">385 kr</b> nå for resten av perioden frem til 15. juni (10 dager). Deretter <b class="num">890 kr/mnd</b> fra 15.06.</div>
+            </div>
+          </div>
+
+          <div class="it">
+            <span class="ic"><i data-lucide="sparkles"></i></span>
+            <div>
+              <div class="t">NYE FUNKSJONER</div>
+              <div class="h">Test-uke 43 og <em>periodisering</em> åpnes</div>
+              <div class="b">Konkurranseprofilen aktiveres umiddelbart, og plan-builder begynner å bygge inn testuke 43 (8 uker fram).</div>
+            </div>
+          </div>
+
+          <div class="it">
+            <span class="ic warn"><i data-lucide="info"></i></span>
+            <div>
+              <div class="t">ANGRERETT</div>
+              <div class="h">14 dager, full refusjon</div>
+              <div class="b">Du kan kansellere endringen og få full refusjon innen <b>22. juni</b>. Etter det går neste trekk på Performance-nivå.</div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="approval">
+          <span class="conf">MODELL-FORSLAG MED <b>92 %</b> KONFIDENS · BASERT PÅ BRUKSMØNSTER 90 D</span>
+          <div class="btn cancel"><i data-lucide="x"></i> Avbryt</div>
+          <div class="btn confirm"><i data-lucide="check"></i> Bekreft oppgradering · 385 kr</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="frule">
+      <b>Prinsipp.</b> Hver plan-endring viser <b>4 ting</b>: hva skjer med credits, første trekk og pro-rata, hvilke funksjoner åpnes/stenges,
+      og angrerett. Det er ingen "Klikk her for å se hva det koster" — alt er på samme skjerm før bekreftelse.
+    </div>
+  </div>
+
+  <!-- ===================== SECTION 2 — FAKTURA-DETALJ ===================== -->
+  <div class="sec">
+    2 · Faktura-detalj
+    <span class="sub">samme komponent for PlayerHQ og foreldreportal</span>
+    <span class="count">FAKTURA 2026-0142</span>
+  </div>
+
+  <div class="panel">
+    <div class="invoice">
+
+      <!-- document -->
+      <div class="doc">
+
+        <div class="top-row">
+          <div>
+            <div class="logo-row">
+              <span class="ak">ak</span>
+              <span class="nm">AK Golf<small>GROUP AS</small></span>
+            </div>
+            <div class="biz">
+              <b>AK Golf Group AS</b><br/>
+              Holtsmarkveien 14, 2920 Holtsmark<br/>
+              Org. nr. <b>923 814 552 MVA</b>
+            </div>
+          </div>
+          <div class="inv-title">
+            <div class="eb">FAKTURA</div>
+            <h2>Mai <em>2026</em></h2>
+            <div class="num">FAKTURA <b>2026-0142</b></div>
+          </div>
+        </div>
+
+        <div class="ad-grid">
+          <div class="ad">
+            <span class="l">FAKTURERES</span>
+            <div class="body"><b>Hanne Berg</b><br/>Bjerregaards gate 22<br/>0172 Oslo<small>FORESATT FOR MARKUS BERG</small></div>
+          </div>
+          <div class="ad">
+            <span class="l">SPILLER</span>
+            <div class="body"><b>Markus Berg</b><br/>GFGK Junior<small>HCP 4,2 · 15 ÅR</small></div>
+          </div>
+          <div class="ad">
+            <span class="l">PERIODE · FORFALL</span>
+            <div class="body"><b>01.05 – 31.05.2026</b><br/>Forfall <b>10.06.2026</b><small>BETALT 03.06.2026</small></div>
+          </div>
+        </div>
+
+        <table class="lines">
+          <thead>
+            <tr>
+              <th class="col-desc">Beskrivelse</th>
+              <th class="col-qty r">Antall</th>
+              <th class="col-unit r">Sats</th>
+              <th class="col-sum r">Sum</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="desc">
+                  <b>Pro-abonnement · mai</b>
+                  <span class="meta">12 CREDITS INKLUDERT <span class="sep">·</span> AUTO-FORNYET 15.05</span>
+                </div>
+              </td>
+              <td class="qty">1</td>
+              <td class="unit">390,00</td>
+              <td class="sum">390,00</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="desc">
+                  <b>Greenfee · Holtsmark · 9 hull</b>
+                  <span class="meta">SPILL-SIMULERING MED COACH <span class="sep">·</span> 18.05</span>
+                </div>
+              </td>
+              <td class="qty">1</td>
+              <td class="unit">340,00</td>
+              <td class="sum">340,00</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="totals">
+          <div class="row"><span class="l">Subtotal</span><span class="v">730,00 kr</span></div>
+          <div class="row credit"><span class="l">Lojalitets-rabatt</span><span class="v">−190,00 kr</span></div>
+          <div class="row"><span class="l">MVA · 25 %</span><span class="v">135,00 kr</span></div>
+          <div class="row grand"><span class="l">Å betale</span><span class="v">675,00 kr</span></div>
+        </div>
+
+        <div class="stamp">
+          <i data-lucide="check-circle-2"></i>
+          <div class="col">
+            BETALT
+            <small>03.06.2026</small>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- right rail -->
+      <div class="inv-rail">
+
+        <div class="status-card">
+          <div class="lab"><i data-lucide="check-circle-2" style="width:10px;height:10px;display:inline-block;vertical-align:middle"></i> BETALT</div>
+          <div class="v">675,00 <em>kr</em></div>
+          <div class="meta">TREKKET <b>03.06.2026 · 09:12</b><br/>STRIPE · TRANS-ID <b>txn_3PMa…f9c</b></div>
+        </div>
+
+        <div class="pay-method">
+          <span class="card-ic">VISA</span>
+          <span class="nm">•••• 4982<small>UTLØPER 11/28 · HANNE BERG</small></span>
+          <i data-lucide="check"></i>
+        </div>
+
+        <div class="actions">
+          <div class="btn primary"><i data-lucide="file-down"></i> Last ned PDF</div>
+          <div class="btn secondary"><i data-lucide="mail"></i> Send på e-post</div>
+          <div class="btn secondary"><i data-lucide="repeat"></i> Be om refusjon</div>
+          <div class="btn ghost"><i data-lucide="message-circle"></i> Spørsmål om fakturaen</div>
+        </div>
+
+        <div class="help">
+          <b>Spørsmål?</b> Snakk med Hanne Berg om betaling, eller spør AK Golf-support om grunnlaget for hver linje. <b>Svar &lt; 4 t</b>.
+        </div>
+      </div>
+
+    </div>
+
+    <div class="frule">
+      <b>Prinsipp.</b> Faktura-detaljen er bevisst <b>papir-aktig</b> i venstre kolonne — det er det folk forventer i en faktura.
+      Høyre rail er handlings-kolonnen (status · betaling · PDF · refusjon · spørsmål). Samme komponent kan rendres som papir (print-PDF) ved å skjule rail-en.
+    </div>
+  </div>
+
+  <!-- ===================== SECTION 3 — CREDIT-HISTORIKK ===================== -->
+  <style>
+    /* R31 — ledger filter-pills filtrerer faktisk + rad-hover-løft */
+    .ledger-head .pill { cursor: pointer; transition: background 150ms, border-color 150ms, color 150ms; }
+    .ledger-head .pill:hover:not(.on) { border-color: var(--input); background: var(--secondary); }
+    .ledger tbody tr { transition: background 140ms ease, box-shadow 140ms ease; }
+    .ledger tbody tr:hover { background: rgba(0,88,64,0.03); box-shadow: inset 3px 0 0 var(--accent); }
+    .ledger tbody tr.is-hidden { display: none; }
+    @media (prefers-reduced-motion: reduce) { .ledger tbody tr { transition: none; } }
+  </style>
+  <div class="sec">
+    3 · Credit-historikk
+    <span class="sub">hver credit · avbestillinger med tid før (innenfor/utenfor 24 t)</span>
+    <span class="count">SISTE 30 D</span>
+  </div>
+
+  <div class="panel">
+
+    <div class="ledger-head">
+      <div>
+        <div class="tt">Credit-<em>regnskap</em></div>
+        <div class="sub">MARKUS BERG <span style="color: var(--cream-300); margin: 0 5px">·</span> SISTE 30 DAGER <span style="color: var(--cream-300); margin: 0 5px">·</span> <b>9 BEVEGELSER</b></div>
+      </div>
+      <div class="pills">
+        <span class="pill on" data-cat="alle">Alle <span class="ct">9</span></span>
+        <span class="pill" data-cat="brukt">Brukt <span class="ct">5</span></span>
+        <span class="pill" data-cat="avbestilt">Avbestilt <span class="ct">2</span></span>
+        <span class="pill" data-cat="tapt">Tapt <span class="ct">1</span></span>
+      </div>
+      <div class="stats">
+        <div class="s"><span class="l">TILDELT</span><span class="v">+12</span></div>
+        <div class="s"><span class="l">BRUKT</span><span class="v">−5</span></div>
+        <div class="s"><span class="l">TAPT</span><span class="v neg">−1</span></div>
+      </div>
+    </div>
+
+    <div class="balance-hero">
+      <div class="left">
+        <span class="lab">SALDO NÅ</span>
+        <span class="v">8<span class="u">credits</span></span>
+      </div>
+
+      <div>
+        <div class="meter">
+          <div class="seg used"   style="width: 25%"></div>
+          <div class="seg lost"   style="width: 8.3%"></div>
+          <div class="seg refund" style="width: 0%"></div>
+          <div style="flex:1"></div>
+        </div>
+        <div class="legend">
+          <span class="li"><span class="sw used"></span> BRUKT <b>5</b></span>
+          <span class="li"><span class="sw lost"></span> TAPT <b>1</b></span>
+          <span class="li"><span class="sw refund"></span> REFUNDERT <b>2</b></span>
+          <span class="li"><span class="sw avail"></span> IGJEN <b>8</b></span>
+        </div>
+      </div>
+
+      <div class="next-row">
+        <i data-lucide="calendar-plus"></i>
+        <div>NESTE FORNYING<br/><b>+12 credits</b> · 15. juni 2026</div>
+      </div>
+    </div>
+
+    <table class="ledger">
+      <thead>
+        <tr>
+          <th class="col-date">Dato</th>
+          <th class="col-type"></th>
+          <th class="col-desc">Beskrivelse</th>
+          <th class="col-window">Avbestillings-vindu</th>
+          <th class="col-cred r">Δ Credits</th>
+          <th class="col-bal r">Saldo</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr>
+          <td><div class="ldate">15.05.2026<small>09:00</small></div></td>
+          <td><span class="tic in"><i data-lucide="plus"></i></span></td>
+          <td>
+            <div class="ldesc"><b>Månedlig fornying · Pro</b><small>FAKTURA 2026-0142 <span class="sep">·</span> AUTO-TREKK</small></div>
+          </td>
+          <td><span class="wpill muted">—</span></td>
+          <td><div class="lcred pos">+12<small>TILDELT</small></div></td>
+          <td><div class="lbal">12</div></td>
+        </tr>
+
+        <tr>
+          <td><div class="ldate">18.05.2026<small>10:00 LØR</small></div></td>
+          <td><span class="tic use"><i data-lucide="check"></i></span></td>
+          <td>
+            <div class="ldesc"><b>9-hull spillsim · Holtsmark</b><small>COACH SOLBERG <span class="sep">·</span> 18.05 · 10:00–12:00</small></div>
+          </td>
+          <td><span class="wpill ok"><i data-lucide="check" style="width:11px;height:11px"></i>FULLFØRT</span></td>
+          <td><div class="lcred">−1<small>BRUKT</small></div></td>
+          <td><div class="lbal">11</div></td>
+        </tr>
+
+        <tr>
+          <td><div class="ldate">21.05.2026<small>14:00 TIR</small></div></td>
+          <td><span class="tic use"><i data-lucide="check"></i></span></td>
+          <td>
+            <div class="ldesc"><b>Innspill 50–90 m · TrackMan</b><small>COACH SOLBERG <span class="sep">·</span> OSLO GK · 14:00–14:50</small></div>
+          </td>
+          <td><span class="wpill ok"><i data-lucide="check" style="width:11px;height:11px"></i>FULLFØRT</span></td>
+          <td><div class="lcred">−1<small>BRUKT</small></div></td>
+          <td><div class="lbal">10</div></td>
+        </tr>
+
+        <tr>
+          <td><div class="ldate">23.05.2026<small>11:42</small></div></td>
+          <td><span class="tic cancel"><i data-lucide="x"></i></span></td>
+          <td>
+            <div class="ldesc"><b>Avbestilt · putting-økt</b><small>OPPRINNELIG 24.05 14:00 <span class="sep">·</span> AVBESTILT <b>26,3 T FØR</b></small></div>
+          </td>
+          <td><span class="wpill ok"><i data-lucide="rotate-ccw" style="width:11px;height:11px"></i>UTENFOR 24 T</span></td>
+          <td><div class="lcred refund">+1<small>REFUNDERT</small></div></td>
+          <td><div class="lbal">11</div></td>
+        </tr>
+
+        <tr>
+          <td><div class="ldate">26.05.2026<small>14:00 TOR</small></div></td>
+          <td><span class="tic use"><i data-lucide="check"></i></span></td>
+          <td>
+            <div class="ldesc"><b>Drive-line · TrackMan</b><small>COACH SOLBERG <span class="sep">·</span> OSLO GK · 14:00–14:50</small></div>
+          </td>
+          <td><span class="wpill ok"><i data-lucide="check" style="width:11px;height:11px"></i>FULLFØRT</span></td>
+          <td><div class="lcred">−1<small>BRUKT</small></div></td>
+          <td><div class="lbal">10</div></td>
+        </tr>
+
+        <tr>
+          <td><div class="ldate">30.05.2026<small>15:30 LØR</small></div></td>
+          <td><span class="tic loss"><i data-lucide="alert-triangle"></i></span></td>
+          <td>
+            <div class="ldesc"><b>Avbestilt · spillsim</b><small>OPPRINNELIG 30.05 17:00 <span class="sep">·</span> AVBESTILT <b>1,5 T FØR</b></small></div>
+          </td>
+          <td><span class="wpill bad"><i data-lucide="clock" style="width:11px;height:11px"></i>INNENFOR 24 T</span></td>
+          <td><div class="lcred neg">−1<small>TAPT</small></div></td>
+          <td><div class="lbal">9</div></td>
+        </tr>
+
+        <tr>
+          <td><div class="ldate">02.06.2026<small>09:30</small></div></td>
+          <td><span class="tic use"><i data-lucide="check"></i></span></td>
+          <td>
+            <div class="ldesc"><b>Putting-lab · 40 min</b><small>COACH SOLBERG <span class="sep">·</span> OSLO GK · 09:30–10:10</small></div>
+          </td>
+          <td><span class="wpill ok"><i data-lucide="check" style="width:11px;height:11px"></i>FULLFØRT</span></td>
+          <td><div class="lcred">−1<small>BRUKT</small></div></td>
+          <td><div class="lbal">8</div></td>
+        </tr>
+
+        <tr>
+          <td><div class="ldate">06.06.2026<small>14:00 LØR</small></div></td>
+          <td><span class="tic use"><i data-lucide="check"></i></span></td>
+          <td>
+            <div class="ldesc"><b>Innspill 50–90 m · TrackMan</b><small>COACH SOLBERG <span class="sep">·</span> OSLO GK · 14:00–14:50</small></div>
+          </td>
+          <td><span class="wpill ok"><i data-lucide="check" style="width:11px;height:11px"></i>FULLFØRT</span></td>
+          <td><div class="lcred">−1<small>BRUKT</small></div></td>
+          <td><div class="lbal">7</div></td>
+        </tr>
+
+        <tr>
+          <td><div class="ldate">08.06.2026<small>09:14</small></div></td>
+          <td><span class="tic cancel"><i data-lucide="rotate-ccw"></i></span></td>
+          <td>
+            <div class="ldesc"><b>Avbestilt · Spør-coach-sesjon</b><small>OPPRINNELIG 12.06 11:00 <span class="sep">·</span> AVBESTILT <b>97 T FØR</b></small></div>
+          </td>
+          <td><span class="wpill ok"><i data-lucide="rotate-ccw" style="width:11px;height:11px"></i>UTENFOR 24 T</span></td>
+          <td><div class="lcred refund">+1<small>REFUNDERT</small></div></td>
+          <td><div class="lbal">8</div></td>
+        </tr>
+
+      </tbody>
+    </table>
+
+    <div class="frule">
+      <b>Prinsipp.</b> Hver linje viser <b>type</b> (tildelt/brukt/avbestilt/tapt/refundert), <b>vindu</b> (innenfor/utenfor 24 t), og <b>kontekst</b>
+      (hvilken økt, hvilken coach, hvor lang tid før). Tapt-status er <b>visuelt rød</b> uten å være anklagende — det forklarer hvorfor saldoen ble lavere.
+    </div>
+  </div>
+
+  <!-- ===================== PRINCIPLES FOOTER ===================== -->
+  <div class="rules">
+    <p><b>Tre kompletterende flater.</b> Plan-skifte er forhåndsvisning + bekreftelse. Faktura-detalj er kvittering + ettersporing. Credit-historikk er regnskap. Samme språk i alle tre.</p>
+    <p><b>Pro-rata og rabatt forklares åpent.</b> Vi skjuler aldri matematikken — første trekk vises som "385 kr i dag", ikke "vi sender deg en regning senere". Lojalitets-rabatten har egen kvitterings-linje.</p>
+    <p><b>24-timersvinduet er hellig.</b> Avbestilling utenfor 24 t = refundert credit. Innenfor 24 t = tapt. Reglen er hardkodet i ledgeren — coach kan ikke overstyre uten å logge det som "manuell refusjon" med begrunnelse.</p>
+    <p><b>Foreldreportalen bruker samme faktura-komponent.</b> Forskjellen er bare "fakturerer"-feltet (foresatt) og hvilke handlinger som er tilgjengelige i rail-en. Ingen dobbel kodebase.</p>
+  </div>
+
+  <script>lucide.createIcons();</script>
+
+  <script>
+  /* ============================================================
+     R31 · CREDIT-HISTORIKK — filter-pills filtrerer ledgeren nå.
+     ============================================================ */
+  (function () {
+    var tbody = document.querySelector('.ledger tbody');
+    if (!tbody) return;
+    var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+    var TIC = { in:'tildelt', use:'brukt', cancel:'avbestilt', loss:'tapt' };
+    rows.forEach(function (tr) {
+      var tic = tr.querySelector('.tic');
+      var cls = tic ? Array.prototype.slice.call(tic.classList).filter(function (c){ return c !== 'tic'; })[0] : '';
+      tr.dataset.cat = TIC[cls] || '';
+    });
+    var pills = Array.prototype.slice.call(document.querySelectorAll('.ledger-head .pill'));
+    function cnt(cat){ return cat === 'alle' ? rows.length : rows.filter(function (r){ return r.dataset.cat === cat; }).length; }
+    pills.forEach(function (p){ var ct = p.querySelector('.ct'); if (ct) ct.textContent = cnt(p.dataset.cat); });
+    function apply(cat){ rows.forEach(function (r){ r.classList.toggle('is-hidden', !(cat === 'alle' || r.dataset.cat === cat)); }); }
+    pills.forEach(function (p){
+      p.addEventListener('click', function (){
+        pills.forEach(function (x){ x.classList.toggle('on', x === p); });
+        apply(p.dataset.cat);
+      });
+    });
+  })();
+  </script>
+
+  <script>
+  /* ============================================================
+     R32 · ABONNEMENT — tier-kortene driver impact-panelet.
+     Var: panelet hardkodet til "Oppgrader til Performance" uansett.
+     ============================================================ */
+  (function () {
+    var impact = document.querySelector('.impact');
+    if (!impact) return;
+    var left = impact.querySelector('.left');
+    var to = impact.querySelector('.ba .to');
+    var itGrid = impact.querySelector('.it-grid');
+    var confEl = impact.querySelector('.approval .conf');
+    var confirmBtn = impact.querySelector('.approval .btn.confirm');
+
+    var PLANS = {
+      free: {
+        lab: 'FORESLÅTT ENDRING', title: 'Nedgrader til <em>Free</em>',
+        lead: 'Free fjerner de 12 månedlige creditene og coach-økt-tilgangen. Du beholder logging, plan-innsyn og SG-statistikk — og betaler per økt ved behov.',
+        toName: 'Free', toPrice: '0 kr/mnd',
+        items: [
+          { ic:'',     ti:'ticket',   t:'CREDITS',     h:'8 ubrukte gjelder til <em>15.06</em>', b:'De resterende creditene kan brukes ut perioden. Etter 15.06 nullstilles credit-kontoen.' },
+          { ic:'warn', ti:'user-x',   t:'COACH-ØKTER', h:'Stenges — betal per økt', b:'TrackMan 250 kr · coaching 450 kr per gang. AI plan-justering og ukerapport faller bort.' },
+          { ic:'',     ti:'calendar', t:'TRER I KRAFT', h:'15.06.2026', b:'Du blir på Pro ut inneværende periode. Ingen kostnad i dag, ingen refusjon for resten av perioden.' }
+        ],
+        conf: 'INGEN UMIDDELBAR KOSTNAD · TRER I KRAFT VED PERIODESLUTT 15.06',
+        btn: '<i data-lucide="arrow-down-circle"></i> Bekreft nedgradering', disabled: false
+      },
+      pro: {
+        lab: 'NÅVÆRENDE PLAN', title: 'Du er på <em>Pro</em>.',
+        lead: 'Dette er din aktive plan: 12 credits i måneden, TrackMan-import og ukentlig AI-justering. Velg Free eller Performance over for å se nøyaktig hva en endring koster.',
+        toName: 'Pro', toPrice: '390 kr/mnd',
+        items: [
+          { ic:'ok', ti:'ticket',   t:'CREDITS',     h:'<em>8 igjen</em> av 12', b:'5 brukt · 1 tapt · 2 refundert så langt i perioden.' },
+          { ic:'',   ti:'calendar', t:'NESTE TREKK',  h:'15.06.2026', b:'390 kr trekkes automatisk, og 12 nye credits tildeles.' },
+          { ic:'',   ti:'check',    t:'STATUS',       h:'Aktiv — ingen endring valgt', b:'Velg en annen plan for å se endrings-impact før bekreftelse.' }
+        ],
+        conf: 'DETTE ER DIN AKTIVE PLAN', btn: '<i data-lucide="check"></i> Aktiv plan', disabled: true
+      },
+      performance: {
+        lab: 'FORESLÅTT ENDRING', title: 'Oppgrader til <em>Performance</em>',
+        lead: 'Du har <b>8 credits igjen</b> av 12 så langt i perioden (5 brukt · 1 tapt · 2 refundert) og fornyer 15. juni. Performance fjerner credit-taket og åpner test-uke-syklus i tide for uke 43.',
+        toName: 'Performance', toPrice: '890 kr/mnd',
+        items: [
+          { ic:'ok',   ti:'ticket',   t:'CREDITS',        h:'<em>8 ubrukte</em> overføres som <em>bonus</em>', b:'De siste 8 Pro-creditene legges til Performance-kontoen og kan brukes innen <b>15. juli 2026</b>.' },
+          { ic:'',     ti:'calendar', t:'FØRSTE TREKK',    h:'Pro-rata <em>i dag</em>', b:'Du betaler <b class="num">385 kr</b> nå for resten av perioden frem til 15. juni. Deretter <b class="num">890 kr/mnd</b>.' },
+          { ic:'',     ti:'sparkles', t:'NYE FUNKSJONER',  h:'Test-uke 43 og <em>periodisering</em> åpnes', b:'Konkurranseprofilen aktiveres umiddelbart, og plan-builder bygger inn testuke 43.' },
+          { ic:'warn', ti:'info',     t:'ANGRERETT',       h:'14 dager, full refusjon', b:'Kanseller endringen og få full refusjon innen <b>22. juni</b>.' }
+        ],
+        conf: 'MODELL-FORSLAG MED <b>92 %</b> KONFIDENS · BASERT PÅ BRUKSMØNSTER 90 D',
+        btn: '<i data-lucide="check"></i> Bekreft oppgradering · 385 kr', disabled: false
+      }
+    };
+
+    function render(plan) {
+      var d = PLANS[plan];
+      if (!d) return;
+      left.querySelector('.lab').innerHTML = '<i data-lucide="git-pull-request"></i>' + d.lab;
+      left.querySelector('h3').innerHTML = d.title;
+      left.querySelector('p').innerHTML = d.lead;
+      to.querySelector('.v').textContent = d.toName;
+      var tl = to.querySelectorAll('.l'); if (tl[1]) tl[1].textContent = d.toPrice;
+      itGrid.innerHTML = d.items.map(function (it) {
+        return '<div class="it"><span class="ic ' + it.ic + '"><i data-lucide="' + it.ti + '"></i></span>' +
+          '<div><div class="t">' + it.t + '</div><div class="h">' + it.h + '</div><div class="b">' + it.b + '</div></div></div>';
+      }).join('');
+      confEl.innerHTML = d.conf;
+      confirmBtn.innerHTML = d.btn;
+      confirmBtn.classList.toggle('is-disabled', !!d.disabled);
+      lucide.createIcons();
+    }
+
+    var cards = Array.prototype.slice.call(document.querySelectorAll('.tier[data-plan]'));
+    cards.forEach(function (card) {
+      card.setAttribute('role', 'button');
+      card.setAttribute('tabindex', '0');
+      function pick() {
+        cards.forEach(function (c) { c.classList.toggle('is-selected', c === card); });
+        render(card.dataset.plan);
+      }
+      card.addEventListener('click', pick);
+      card.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
+    });
+    var initial = document.querySelector('.tier[data-plan="performance"]');
+    if (initial) initial.classList.add('is-selected');
+  })();
+  </script>
+</div></body></html>
