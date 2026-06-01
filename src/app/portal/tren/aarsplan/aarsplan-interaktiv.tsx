@@ -508,16 +508,21 @@ function PeriodListe({
 export function AarsplanInteraktiv({
   plan,
   turneringer = [],
+  visTidslinje = true,
 }: {
   plan: SeasonPlanData;
   turneringer?: TurneringPin[];
+  /** Skjul den innebygde tidslinjen når en ekstern Gantt rendres over (default true). */
+  visTidslinje?: boolean;
 }) {
   const [visSkjema, setVisSkjema] = useState(false);
   const [visDetaljer, setVisDetaljer] = useState(false);
 
   return (
     <div className="space-y-6">
-      <Tidslinje plan={plan} blocks={plan.periodBlocks} turneringer={turneringer} />
+      {visTidslinje && (
+        <Tidslinje plan={plan} blocks={plan.periodBlocks} turneringer={turneringer} />
+      )}
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_280px]">
         {/* Perioder */}

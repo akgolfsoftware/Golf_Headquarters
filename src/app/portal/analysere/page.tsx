@@ -21,6 +21,8 @@ import {
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 import { AthleticCard } from "@/components/athletic/card";
+import { hentTreningsanalyse } from "@/lib/portal-analyse/treningsanalyse-data";
+import { Treningsanalyse } from "@/components/portal/analyse/treningsanalyse";
 
 export const dynamic = "force-dynamic";
 
@@ -120,7 +122,8 @@ const HUB_ITEMS: HubItem[] = [
 ];
 
 export default async function AnaylsererPage() {
-  await requirePortalUser();
+  const user = await requirePortalUser();
+  const treningsanalyse = await hentTreningsanalyse(user.id);
 
   return (
     <div className="mx-auto max-w-7xl space-y-10 px-4 py-6 sm:py-8 md:px-6 lg:space-y-12 lg:px-8">
@@ -164,6 +167,11 @@ export default async function AnaylsererPage() {
         <span>
           <strong className="text-foreground tabular-nums">0</strong> TrackMan-sesjoner
         </span>
+      </div>
+
+      {/* Treningsanalyse — dekomponer treningen, koble tid mot SG */}
+      <div className="mx-auto w-full max-w-[480px] lg:max-w-[640px]">
+        <Treningsanalyse data={treningsanalyse} />
       </div>
 
       {/* Hub-cards */}

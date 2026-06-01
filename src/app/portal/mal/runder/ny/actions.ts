@@ -21,6 +21,11 @@ export type LogRoundManualInput = {
   penalties?: number;
   notes?: string;
   tellHandicap?: boolean;
+  // Strokes Gained — manuelt registrert, alle valgfrie.
+  sgOtt?: number | null;
+  sgApp?: number | null;
+  sgArg?: number | null;
+  sgPutt?: number | null;
 };
 
 /**
@@ -31,6 +36,11 @@ export async function logRoundManual(input: LogRoundManualInput) {
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
 
+  const sgValues = [input.sgOtt, input.sgApp, input.sgArg, input.sgPutt];
+  const sgTotal = sgValues.some((v) => typeof v === "number")
+    ? sgValues.reduce<number>((sum, v) => sum + (v ?? 0), 0)
+    : null;
+
   await prisma.round.create({
     data: {
       userId: user.id,
@@ -38,6 +48,11 @@ export async function logRoundManual(input: LogRoundManualInput) {
       playedAt: new Date(input.playedAt),
       score: input.score,
       notes: input.notes ?? null,
+      sgOtt: input.sgOtt ?? null,
+      sgApp: input.sgApp ?? null,
+      sgArg: input.sgArg ?? null,
+      sgPutt: input.sgPutt ?? null,
+      sgTotal,
     },
   });
 

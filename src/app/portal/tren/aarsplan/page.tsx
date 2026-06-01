@@ -21,6 +21,25 @@ import {
   type TurneringPin,
 } from "./aarsplan-interaktiv";
 import { BulkKoblTurneringer } from "./bulk-kobl-button";
+import {
+  AarsplanGantt,
+  type GanttAxis,
+  type GanttPeriod,
+} from "@/components/portal/aarsplan/aarsplan-gantt";
+import type { LPhase } from "@/generated/prisma/client";
+
+// GRUNN→fys (forest), SPESIAL→tek (gull), TURNERING→turn (rød) — faser farget per pyramide-akse.
+const LPHASE_TIL_AKSE: Record<LPhase, GanttAxis> = {
+  GRUNN: "fys",
+  SPESIAL: "tek",
+  TURNERING: "turn",
+};
+
+const LPHASE_NAVN: Record<LPhase, string> = {
+  GRUNN: "Grunnperiode",
+  SPESIAL: "Spesialisering",
+  TURNERING: "Turneringsperiode",
+};
 
 export default async function AarsplanPage() {
   const user = await requirePortalUser();
@@ -78,6 +97,18 @@ export default async function AarsplanPage() {
       }
     : null;
 
+  // Gantt-perioder — faser farget per pyramide-akse, posisjonert på ekte datoer.
+  const ganttPerioder: GanttPeriod[] = (sesongplan?.periodBlocks ?? []).map((b) => ({
+    id: b.id,
+    axis: LPHASE_TIL_AKSE[b.lPhase],
+    label: LPHASE_NAVN[b.lPhase],
+    startDate: b.startDate,
+    endDate: b.endDate,
+    focus: b.focus,
+    weeklyVolMin: b.weeklyVolMin,
+    weeklyVolMax: b.weeklyVolMax,
+  }));
+
   const fornavn = user.name.split(" ")[0];
 
   return (
@@ -130,7 +161,16 @@ export default async function AarsplanPage() {
               </div>
             )}
 
-            <AarsplanInteraktiv plan={plan} turneringer={turneringPins} />
+            <AarsplanGantt
+              year={ar}
+              periods={ganttPerioder}
+              turneringer={turneringPins}
+              now={new Date()}
+            />
+
+            <div className="mt-6">
+              <AarsplanInteraktiv plan={plan} turneringer={turneringPins} visTidslinje={false} />
+            </div>
 
             {/* Turneringer-lenke */}
             <div className="mt-6 flex flex-col items-stretch justify-between gap-2 rounded-xl border border-border bg-card px-4 py-4 sm:flex-row sm:items-center sm:px-6">
