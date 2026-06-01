@@ -38,6 +38,9 @@ Full spec: [docs/skjerm-manifest-elite-fase2.md](skjerm-manifest-elite-fase2.md)
 
 ## ✅ Ferdig (denne runden, 2026-06-01)
 
+- **Fase 0 — audit:** klassifisert resterende skjermer (91 på-brand, 15 redesign, 48 stub). Se [audit-resterende-2026-06-01.md](audit-resterende-2026-06-01.md).
+- **Fase 1 — komplett (45 skjermer):** PlayerHQ (19) + AgencyOS (26) til athletic-DNA via 10 parallelle agenter. Fant + fikset ekte bugs: døde lenker (/admin/elever, /admin/bookings/ny), fabrikerte tall (kohort, video-markører, caddie-data, MRR-placeholder) → ekte Prisma/tomstate, priskorr 249→300, slettet 10 foreldreløse filer. tsc 0 / eslint 0 / pushet.
+- **Plan for gjenstående:** [plan-gjenstaende-2026-06-01.md](plan-gjenstaende-2026-06-01.md) — Fase 2 (foreldre+auth) + stats/marketing-beslutning + Elite.
 - 40 skjermer portet fra Claude Design-handover (PlayerHQ + AgencyOS + auth + øvrig) — alle 8 design-runder
 - Godkjennings-galleri: https://akgolf-skjermer.vercel.app (44 screenshots)
 - IA-redirect-loops fjernet (tester/booking/aarsplan synlige) + compliance flyttet
