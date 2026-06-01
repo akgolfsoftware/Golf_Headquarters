@@ -101,7 +101,9 @@ Editorial italic via Inter Tight italic. INGEN Instrument Serif eller andre font
 
 ### Spacing
 
-8pt-grid strikt. Kun `p-2/4/6/8/10/12/16`. Aldri `p-3/p-5/p-7`. Samme for `m-`, `gap-`, `space-y-`.
+8pt-grid som standard. Kun `p-2/4/6/8/10/12/16`. Aldri `p-3/p-5/p-7`. Samme for `m-`, `gap-`, `space-y-`.
+
+**Unntak — data-tette flater (Bloomberg-tetthet):** Dashboards, tabeller, timelines, innboks-rader og lignende compact UI kan bruke 12/14px (`p-3`, `p-3.5`, `gap-3`, `py-2.5`) der design-handover-HTML-en gjør det. Avgjort 2026-06-01 ved kalibrering av `/admin/agencyos`. Port fra design-HTML er fasit for slik spacing.
 
 ### Ikoner
 
