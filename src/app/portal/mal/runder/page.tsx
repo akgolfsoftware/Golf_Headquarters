@@ -1,14 +1,15 @@
 /**
- * PlayerHQ · Mål · Runder
+ * PlayerHQ · Mål · Runder — liste-siden.
  *
- * Migrert til endelig design (wireframe/design-files-v2/final/13-runder.html).
- * Pro-versjon med 4 KPI-kort (snitt, vs par, beste, SG total), filter-row,
- * og tabell med tee-pill, score, vs-par-pill, SG og detaljer-link.
+ * Port av design-fasit (SKJERMER-RUNDE-2-PLAYERHQ): runde-liste i queue-mønster
+ * (dato + bane + score + vs-par + SG + ★beste), klikk → runde-detalj.
+ * Aggregering ligger i lib/portal-runder/runder-list-data; siden gjør kun rendering.
+ * Pro-versjon med 4 KPI-kort, filter-row og import/eksport-handlinger.
  */
-import Link from "next/link";
 import { Flag, Search, ChevronDown } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { prisma } from "@/lib/prisma";
+import { getRunderListModel } from "@/lib/portal-runder/runder-list-data";
+import { RundeQueueList } from "@/components/portal/runder/runde-queue-list";
 import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { EmptyState } from "@/components/shared/empty-state";
 import { NyRundeModal } from "./ny-runde-modal";
@@ -22,59 +23,10 @@ function formatSg(v: number | null | undefined): string {
   return v > 0 ? `+${formatted}` : formatted;
 }
 
-function vsParClass(diff: number): string {
-  if (diff < 0) return "bg-primary/12 text-primary";
-  if (diff === 0) return "bg-secondary text-muted-foreground";
-  if (diff <= 5) return "bg-accent/30 text-accent-foreground";
-  return "bg-destructive/15 text-destructive";
-}
-
 export default async function RunderPage() {
   const user = await requirePortalUser();
-
-  const [rounds, courses] = await Promise.all([
-    prisma.round.findMany({
-      where: { userId: user.id },
-      orderBy: { playedAt: "desc" },
-      include: { course: true },
-      take: 50,
-    }),
-    prisma.courseDefinition.findMany({ orderBy: { name: "asc" } }),
-  ]);
-
-  // KPI-aggregat (kun hvis vi har runder)
-  const total = rounds.length;
-  const snittScore =
-    total === 0 ? null : rounds.reduce((s, r) => s + r.score, 0) / total;
-  const snittVsPar =
-    total === 0
-      ? null
-      : rounds.reduce((s, r) => s + (r.score - r.course.par), 0) / total;
-  const beste =
-    total === 0
-      ? null
-      : rounds.reduce(
-          (best, r) =>
-            r.score - r.course.par < best.diff
-              ? {
-                  score: r.score,
-                  diff: r.score - r.course.par,
-                  course: r.course.name,
-                  date: r.playedAt,
-                }
-              : best,
-          {
-            score: rounds[0].score,
-            diff: rounds[0].score - rounds[0].course.par,
-            course: rounds[0].course.name,
-            date: rounds[0].playedAt,
-          },
-        );
-  const sgTotalSnitt = (() => {
-    const med = rounds.filter((r) => r.sgTotal != null);
-    if (med.length === 0) return null;
-    return med.reduce((s, r) => s + (r.sgTotal ?? 0), 0) / med.length;
-  })();
+  const { rows, kpis, courses } = await getRunderListModel(user.id);
+  const { total, snittScore, snittVsPar, beste, sgTotalSnitt } = kpis;
 
   return (
     <div className="mx-auto max-w-[1240px] space-y-6 px-4 pb-20 sm:px-6 md:space-y-8 md:pb-0">
@@ -90,15 +42,7 @@ export default async function RunderPage() {
             ? "Ingen registrerte runder ennå. Logg din første runde for å se trender."
             : `Siste ${total} runder · sortert etter dato`
         }
-        actions={
-          <NyRundeModal
-            courses={courses.map((c) => ({
-              id: c.id,
-              name: c.name,
-              par: c.par,
-            }))}
-          />
-        }
+        actions={<NyRundeModal courses={courses} />}
       />
 
       {courses.length === 0 && (
@@ -116,13 +60,7 @@ export default async function RunderPage() {
           sub="Logg din første 18-hulls runde manuelt, eller koble til GolfBox for å importere automatisk fra din historikk."
           cta={
             <div className="flex flex-col items-center gap-4 sm:flex-row">
-              <NyRundeModal
-                courses={courses.map((c) => ({
-                  id: c.id,
-                  name: c.name,
-                  par: c.par,
-                }))}
-              />
+              <NyRundeModal courses={courses} />
               <span className="font-mono text-[11px] text-muted-foreground">
                 eller
               </span>
@@ -151,10 +89,12 @@ export default async function RunderPage() {
             <KpiCard
               label="Beste runde"
               value={beste ? `${beste.score}` : "—"}
-              unit={beste ? `${beste.diff > 0 ? "+" : ""}${beste.diff} · ${beste.course}` : ""}
+              unit={
+                beste ? `${beste.vsPar > 0 ? "+" : ""}${beste.vsPar} · ${beste.courseName}` : ""
+              }
               sub={
                 beste
-                  ? beste.date.toLocaleDateString("nb-NO", {
+                  ? beste.playedAt.toLocaleDateString("nb-NO", {
                       day: "numeric",
                       month: "short",
                       year: "numeric",
@@ -201,75 +141,8 @@ export default async function RunderPage() {
             </div>
           </div>
 
-          {/* Tabell */}
-          <div className="overflow-hidden rounded-lg border border-border bg-card">
-            <div
-              className="hidden border-b border-border bg-muted/40 px-6 py-4 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground sm:grid"
-              style={{
-                gridTemplateColumns:
-                  "100px 1.4fr 70px 80px 80px 80px",
-                gap: "12px",
-              }}
-            >
-              <div>Dato</div>
-              <div>Bane</div>
-              <div>Score</div>
-              <div>Vs par</div>
-              <div>SG total</div>
-              <div />
-            </div>
-
-            <ul>
-              {rounds.map((r) => {
-                const diff = r.score - r.course.par;
-                return (
-                  <li
-                    key={r.id}
-                    className="border-b border-border/60 last:border-0"
-                  >
-                    <div className="grid grid-cols-1 items-center gap-4 px-6 py-4 transition-colors hover:bg-muted/30 sm:grid-cols-[100px_1.4fr_70px_80px_80px_80px]">
-                      <span className="font-mono text-xs text-muted-foreground tabular-nums">
-                        {r.playedAt.toLocaleDateString("nb-NO", {
-                          day: "numeric",
-                          month: "short",
-                          year: "numeric",
-                        })}
-                      </span>
-                      <div className="font-medium text-foreground">
-                        {r.course.name}
-                      </div>
-                      <span className="font-mono text-base font-semibold text-foreground tabular-nums">
-                        {r.score}
-                      </span>
-                      <span
-                        className={`inline-flex w-fit items-center justify-center rounded-sm px-2 py-1 font-mono text-xs font-semibold tabular-nums ${vsParClass(diff)}`}
-                      >
-                        {diff > 0 ? "+" : ""}
-                        {diff}
-                      </span>
-                      <span
-                        className={`font-mono text-sm font-semibold tabular-nums ${
-                          r.sgTotal != null && r.sgTotal > 0
-                            ? "text-primary"
-                            : r.sgTotal != null && r.sgTotal < 0
-                              ? "text-destructive"
-                              : "text-muted-foreground"
-                        }`}
-                      >
-                        {formatSg(r.sgTotal)}
-                      </span>
-                      <Link
-                        href={`/portal/mal/runder/${r.id}`}
-                        className="text-xs font-medium text-primary hover:underline"
-                      >
-                        Detaljer →
-                      </Link>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
+          {/* Rundeliste — queue-mønster */}
+          <RundeQueueList rows={rows} />
         </>
       )}
     </div>

@@ -1,30 +1,24 @@
 /**
- * PlayerHQ · Tren · Tester — pixel-perfekt port av Claude Design-handoff
- * docs/design-handoff/test-modul/tester-dashboard.html
+ * PlayerHQ · Tren · Tester — egen test-oversikt med ekte data.
+ *
+ * Port av public/design-handover/playerhq/components-test-week.html (mobile-first).
+ * Data fra Prisma (TestResult, TestDefinition, TestSession) via loadTesterScreen.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { TesterDashboardScreen } from "@/components/test-modul-v2/tester-dashboard-screen";
+import { loadTesterScreen } from "@/lib/portal-tester/tester-data";
+import { TesterScreen } from "@/components/portal/tester/tester-screen";
 
 export const dynamic = "force-dynamic";
 
 export default async function TesterPage() {
-  const user = await requirePortalUser();
-  const initials =
-    user.name
-      ?.split(" ")
-      .map((s) => s[0])
-      .filter(Boolean)
-      .slice(0, 2)
-      .join("")
-      .toUpperCase() ?? "??";
+  const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
+  const data = await loadTesterScreen({
+    id: user.id,
+    name: user.name,
+    hcp: user.hcp,
+    tier: user.tier,
+  });
 
-  return (
-    <TesterDashboardScreen
-      playerName={user.name ?? "Spiller"}
-      playerInitials={initials}
-      hcp={user.hcp ?? null}
-      isPro={user.tier === "PRO"}
-    />
-  );
+  return <TesterScreen data={data} />;
 }

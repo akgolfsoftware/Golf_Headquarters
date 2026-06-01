@@ -27,8 +27,10 @@ import { lesPreferences } from "@/lib/preferences";
 import { prisma } from "@/lib/prisma";
 import { aggregateSg, formatSg } from "@/lib/sg";
 import { extractClubs } from "@/lib/sg-hub/extract-shots";
+import { lastSgWaterfall } from "@/lib/portal-sghub/sg-waterfall-data";
 import type { InsightCategory } from "@/generated/prisma/client";
 import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
+import { SgWaterfall } from "@/components/portal/sg-hub/sg-waterfall";
 
 const CLUB_ORDER = [
   "Driver",
@@ -160,7 +162,7 @@ export default async function SgHubPage() {
   const naa = new Date();
   const ninetiDagSiden = new Date(naa.getTime() - 90 * 24 * 60 * 60 * 1000);
 
-  const [sessions, sisteOkt, runder, insightCount, insights] = await Promise.all([
+  const [sessions, sisteOkt, runder, insightCount, insights, waterfall] = await Promise.all([
     prisma.trackManSession.findMany({
       where: { userId: user.id },
       select: { rawJson: true },
@@ -196,6 +198,7 @@ export default async function SgHubPage() {
         createdAt: true,
       },
     }),
+    lastSgWaterfall(user.id),
   ]);
 
   const sg = aggregateSg(runder);
@@ -326,6 +329,26 @@ export default async function SgHubPage() {
             sub="kategori A1"
           />
         </div>
+      </section>
+
+      {/* SG-WATERFALL — siste runde hull-for-hull */}
+      <section>
+        <div className="mb-4 flex items-baseline justify-between">
+          <h2 className="font-display text-xl font-semibold tracking-tight">
+            Hvor på 18 hull{" "}
+            <em className="font-normal text-primary md:italic">forsvant</em> slagene?
+          </h2>
+          {waterfall.roundId && (
+            <Link
+              href={`/portal/mal/runder/${waterfall.roundId}`}
+              className="inline-flex items-center gap-1 font-mono text-[11px] font-semibold text-primary hover:underline"
+            >
+              Åpne runde
+              <ArrowRight size={11} strokeWidth={1.75} />
+            </Link>
+          )}
+        </div>
+        <SgWaterfall data={waterfall} />
       </section>
 
       {/* 4 STORE DISCIPLINE-KORT */}
