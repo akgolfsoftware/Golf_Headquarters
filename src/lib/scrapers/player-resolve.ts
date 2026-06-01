@@ -19,9 +19,13 @@ type PlayerRow = {
   birthYear: number | null;
 };
 
-/** Normaliser navn for sammenligning: ascii, kun alfanumerisk. */
+/**
+ * Normaliser navn for sammenligning: fjern parentes-markører (f.eks. amatør-
+ * markører "(am)"/"(a)" som har lekket inn i navnefelt), ascii, kun alfanumerisk.
+ */
 export function normalizePlayerName(s: string): string {
   return s
+    .replace(/\([^)]*\)/g, " ") // (am), (a), (pro) osv.
     .toLowerCase()
     .replace(/æ/g, "ae")
     .replace(/ø/g, "o")
