@@ -2,17 +2,20 @@
  * CoachHQ — Anlegg (samle-side).
  *
  * Tabs:
- *  - oversikt  : KPI-strip + kart-stub + lokasjons-kort med fasilitet-grid
- *  - lokasjoner: Lokasjons-CRUD (eksisterende side)
- *  - fasiliteter: Fasilitets-oversikt (eksisterende side)
- *  - tilgjengelighet: Coach-tilgjengelighet (eksisterende side)
+ *  - grid        : Anlegg-kort-grid (AnleggGrid)
+ *  - oversikt    : KPI-strip + kart + lokasjons-kort med fasiliteter
+ *  - lokasjoner  : Lokasjons-CRUD (eksisterende side)
+ *  - fasiliteter : Fasilitets-oversikt (eksisterende side)
+ *  - tilgjengelighet : Coach-tilgjengelighet (eksisterende side)
  *
- * Oversikten er bygd fra src/app/lokasjoner-demo/page.tsx, men kobles til
- * Prisma-data (location + facility + bookings).
+ * Re-stylet til AgencyOS-DNA (mono-eyebrows, lime-aksent-KPI, rounded-xl). Alle
+ * tall er ekte Prisma (location + facility + bookings-telling) — ingen demo-data.
+ * Tom DB gir tomstate. Sub-side-importene (locations/facilities/availability) +
+ * AnleggGrid/AnleggMapbox er uendret.
  */
 
 import Link from "next/link";
-import { MapPin, Search } from "lucide-react";
+import { Building2, Gauge, MapPin, Search, type LucideIcon } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
@@ -24,6 +27,7 @@ import FacilitiesPage from "@/app/admin/facilities/page";
 import AvailabilityPage from "@/app/admin/availability/page";
 import { LocationForm } from "@/app/admin/locations/location-form";
 import { AnleggGrid, type AnleggKort } from "@/components/admin-anlegg-v2/anlegg-grid";
+import { cn } from "@/lib/utils";
 
 type TabKey = "oversikt" | "grid" | "lokasjoner" | "fasiliteter" | "tilgjengelighet";
 
@@ -84,9 +88,9 @@ export default async function AnleggPage({
       : "grid";
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto max-w-[1240px] space-y-6">
       <PageHeader
-        eyebrow="CoachHQ · Planlegge"
+        eyebrow="CoachHQ · Drift"
         titleLead="Anlegg og"
         titleItalic="tilgjengelighet"
         sub="Lokasjoner, fasiliteter og trener-tilgjengelighet samlet."
@@ -132,24 +136,25 @@ async function GridView() {
     orderBy: { name: "asc" },
   });
 
-  const DEMO: AnleggKort[] = [
-    { id: "demo-gfgk", navn: "GFGK Bossum", type: "hybrid", adresse: "Fredrikstad", fasiliteter: ["Range", "9-hulls", "Putting green", "Bunker"], utnyttelsePct: 72, aktiv: true },
-    { id: "demo-mulligan", navn: "Mulligan Indoor", type: "indoor", adresse: "Fredrikstad sentrum", fasiliteter: ["TrackMan 4", "Sim-rom 1", "Sim-rom 2", "Lounge"], utnyttelsePct: 88, aktiv: true },
-    { id: "demo-miklagard", navn: "Miklagard GK", type: "bane", adresse: "Kløfta", fasiliteter: ["18-hulls", "Range", "Akademi"], utnyttelsePct: 45, aktiv: true },
-  ];
+  if (locations.length === 0) {
+    return (
+      <EmptyState
+        title="Ingen lokasjoner registrert ennå"
+        body="Legg til din første lokasjon for å booke timer og vise belegg her."
+      />
+    );
+  }
 
-  const anlegg: AnleggKort[] = locations.length > 0
-    ? locations.map((l): AnleggKort => ({
-        id: l.id,
-        navn: l.name,
-        type: deriveType(l.name),
-        adresse: l.address,
-        fasiliteter: l.facilities.map((f) => f.name),
-        // Pseudo-utnyttelse basert på bookings i dag (max 100)
-        utnyttelsePct: Math.min(100, l._count.bookings * 12),
-        aktiv: l.active,
-      }))
-    : DEMO;
+  const anlegg: AnleggKort[] = locations.map((l): AnleggKort => ({
+    id: l.id,
+    navn: l.name,
+    type: deriveType(l.name),
+    adresse: l.address,
+    fasiliteter: l.facilities.map((f) => f.name),
+    // Pseudo-utnyttelse basert på bookings i dag (max 100).
+    utnyttelsePct: Math.min(100, l._count.bookings * 12),
+    aktiv: l.active,
+  }));
 
   return <AnleggGrid anlegg={anlegg} />;
 }
@@ -176,18 +181,12 @@ async function Oversikt() {
     orderBy: { name: "asc" },
   });
 
-  const totalFacilities = locations.reduce(
-    (s, l) => s + l.facilities.length,
-    0,
-  );
+  const totalFacilities = locations.reduce((s, l) => s + l.facilities.length, 0);
   const totalBookings = locations.reduce((s, l) => s + l._count.bookings, 0);
   const aktive = locations.filter((l) => l.active).length;
   const beleggSnitt =
     totalFacilities > 0
-      ? Math.min(
-          100,
-          Math.round((totalBookings / Math.max(1, totalFacilities)) * 4),
-        )
+      ? Math.min(100, Math.round((totalBookings / Math.max(1, totalFacilities)) * 4))
       : 0;
 
   const mapLocations = locations.map((l) => ({
@@ -199,42 +198,56 @@ async function Oversikt() {
     active: l.active,
   }));
 
+  if (locations.length === 0) {
+    return (
+      <EmptyState
+        title="Ingen lokasjoner registrert ennå"
+        body="Når du legger til lokasjoner, ser du belegg, fasiliteter og kart her."
+      />
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* KPI-strip */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <Kpi
           label="Aktive lokasjoner"
           value={String(aktive)}
+          icon={MapPin}
           sub={`${aktive} av ${locations.length} synlige`}
+          accent
         />
         <Kpi
           label="Totale fasiliteter"
           value={String(totalFacilities)}
+          icon={Building2}
           sub={`Over ${locations.length} lokasjon${locations.length === 1 ? "" : "er"}`}
         />
         <Kpi
           label="Snitt-belegg 30 dgr"
-          value={`${beleggSnitt} %`}
+          value={`${beleggSnitt}`}
+          unit="%"
+          icon={Gauge}
           sub={`${totalBookings} bookinger totalt`}
         />
       </div>
 
-      {/* Filter-chips */}
-      <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-card px-4 py-4">
-        <label className="flex h-11 w-full min-w-0 items-center gap-2 rounded-md border border-border bg-background px-4 text-base text-muted-foreground sm:h-10 sm:w-auto sm:min-w-[260px] sm:flex-1 sm:text-sm">
-          <Search size={14} strokeWidth={1.75} />
+      {/* Filter-bar */}
+      <div className="flex flex-wrap items-center gap-2 rounded-xl border border-border bg-card px-4 py-3.5">
+        <label className="flex h-10 w-full min-w-0 items-center gap-2 rounded-lg border border-border bg-background px-3 text-sm text-muted-foreground sm:w-auto sm:min-w-[260px] sm:flex-1">
+          <Search size={14} strokeWidth={1.75} aria-hidden />
           <input
             type="search"
             placeholder="Søk lokasjon eller adresse"
-            className="flex-1 bg-transparent text-foreground outline-none placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+            className="flex-1 bg-transparent text-foreground outline-none placeholder:text-muted-foreground focus-visible:outline-none"
           />
         </label>
         <Chip>Indoor</Chip>
         <Chip>Hybrid</Chip>
         <Chip>Bane</Chip>
         <Chip>Range</Chip>
-        <span className="ml-auto font-mono text-[11px] text-muted-foreground">
+        <span className="ml-auto font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
           Sortert: navn ↑
         </span>
       </div>
@@ -242,18 +255,13 @@ async function Oversikt() {
       {/* Kart + kort */}
       <div className="grid gap-4 lg:grid-cols-[1.2fr_1fr]">
         <AnleggMapbox locations={mapLocations} />
-        <div className="flex flex-col gap-4 overflow-visible pr-0 sm:grid sm:grid-cols-2 lg:grid-cols-1 lg:flex lg:max-h-[640px] lg:overflow-y-auto lg:pr-1">
-          {locations.length === 0 && (
-            <div className="rounded-lg border border-dashed border-border bg-card p-8 text-center text-sm text-muted-foreground">
-              Ingen lokasjoner registrert ennå.
-            </div>
-          )}
+        <div className="flex flex-col gap-4 overflow-visible pr-0 sm:grid sm:grid-cols-2 lg:flex lg:max-h-[640px] lg:grid-cols-1 lg:overflow-y-auto lg:pr-1">
           {locations.map((l) => (
             <Link
               key={l.id}
               href={`/admin/anlegg/${l.id}`}
               data-loc-id={l.id}
-              className="block rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="block rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <LocationCard
                 name={l.name}
@@ -271,27 +279,62 @@ async function Oversikt() {
   );
 }
 
+function EmptyState({ title, body }: { title: string; body: string }) {
+  return (
+    <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border bg-card px-6 py-16 text-center">
+      <Building2 className="h-8 w-8 text-muted-foreground/40" strokeWidth={1.5} aria-hidden />
+      <p className="mt-3 font-display text-base font-bold tracking-[-0.015em] text-foreground">
+        {title}
+      </p>
+      <p className="mt-1 max-w-sm text-sm text-muted-foreground">{body}</p>
+      <div className="mt-5">
+        <LocationForm triggerLabel="+ Ny lokasjon" />
+      </div>
+    </div>
+  );
+}
+
 function Kpi({
   label,
   value,
+  unit,
   sub,
+  icon: Icon,
+  accent,
 }: {
   label: string;
   value: string;
+  unit?: string;
   sub?: string;
+  icon: LucideIcon;
+  accent?: boolean;
 }) {
   return (
-    <div className="flex flex-col gap-2 rounded-lg border border-border bg-card p-4">
-      <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-        {label}
+    <div
+      className={cn(
+        "relative flex flex-col gap-2 overflow-hidden rounded-xl border bg-card px-[18px] py-4",
+        accent ? "border-accent/40" : "border-border",
+      )}
+    >
+      <div className="flex items-center justify-between">
+        <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
+          {label}
+        </span>
+        <span
+          className={cn(
+            "inline-flex h-6 w-6 items-center justify-center rounded-md",
+            accent ? "bg-accent text-primary" : "bg-secondary text-muted-foreground",
+          )}
+        >
+          <Icon className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden />
+        </span>
       </div>
-      <div className="font-mono text-[28px] font-medium leading-none tabular-nums text-foreground">
+      <div className="font-mono text-[26px] font-bold leading-none tracking-[-0.02em] tabular-nums text-foreground">
         {value}
+        {unit && <span className="ml-1 text-[13px] font-bold text-muted-foreground">{unit}</span>}
       </div>
       {sub && (
-        <div className="font-mono text-[11px] text-muted-foreground">
-          {sub}
-        </div>
+        <div className="font-mono text-[11px] tracking-[0.04em] text-muted-foreground">{sub}</div>
       )}
     </div>
   );
@@ -299,12 +342,11 @@ function Kpi({
 
 function Chip({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-4 py-2 text-[12px] text-muted-foreground hover:bg-secondary">
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.06em] text-muted-foreground hover:bg-secondary">
       {children}
     </span>
   );
 }
-
 
 function LocationCard({
   name,
@@ -322,33 +364,36 @@ function LocationCard({
   bookingsMonth: number;
 }) {
   return (
-    <article className="rounded-2xl border border-border bg-card p-4 transition-colors hover:border-primary">
+    <article className="rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary/40">
       <div className="mb-4 flex items-start gap-2">
-        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-primary text-sm font-semibold text-primary-foreground">
+        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-primary font-display text-sm font-bold text-accent">
           {name.charAt(0)}
         </div>
         <div className="min-w-0 flex-1">
-          <div className="font-display text-sm font-semibold leading-tight">
+          <div className="font-display text-sm font-bold leading-tight tracking-[-0.005em]">
             {name}
           </div>
           <div className="mt-1 inline-flex items-center gap-1 font-mono text-[11px] text-muted-foreground">
-            <MapPin size={11} strokeWidth={1.75} />
+            <MapPin size={11} strokeWidth={1.75} aria-hidden />
             {address}
           </div>
         </div>
         <span
-          className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${TYPE_PILL[type]}`}
+          className={cn(
+            "inline-flex items-center rounded-full px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.06em]",
+            TYPE_PILL[type],
+          )}
         >
           {TYPE_LABEL[type]}
         </span>
       </div>
 
       {facilities.length > 0 && (
-        <div className="mb-4 flex flex-wrap gap-2">
+        <div className="mb-4 flex flex-wrap gap-1.5">
           {facilities.map((f, i) => (
             <span
               key={i}
-              className="inline-flex items-center rounded-sm bg-secondary px-2 py-0.5 font-mono text-[11px] text-foreground"
+              className="inline-flex items-center rounded-[3px] bg-secondary px-2 py-0.5 font-mono text-[10px] text-foreground"
             >
               {f}
             </span>
@@ -371,9 +416,7 @@ function Stat({ label, value }: { label: string; value: string }) {
       <div className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
         {label}
       </div>
-      <div className="mt-1 font-mono text-sm font-semibold leading-none tabular-nums">
-        {value}
-      </div>
+      <div className="mt-1 font-mono text-sm font-bold leading-none tabular-nums">{value}</div>
     </div>
   );
 }
