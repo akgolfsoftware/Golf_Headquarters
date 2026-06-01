@@ -30,7 +30,8 @@ Full spec: [docs/skjerm-manifest-elite-fase2.md](skjerm-manifest-elite-fase2.md)
 
 ## 🔧 Kjente tekniske rester (ikke haster)
 
-- [ ] **Vercel auto-deploy henger** — main pushes deployer ikke automatisk. Hele redesignet (40 skjermer) ligger på `main` men ikke i prod. Trigge `vercel deploy --prod` manuelt når redesignet skal live.
+- [x] **Vercel-deploy gjort 2026-06-01** — manuell `vercel --prod --yes` deployet Fase 0+1+2 til prod. Aliaset til **akgolf.no** (live, åpent, build grønn — 315 sider på 2m). Alle nøkkelruter svarer 200. Auto-deploy fra GitHub henger fortsatt → bruk manuell `vercel --prod` ved fremtidige releaser.
+- [ ] **google-calendar `invalid_grant`** under build (freebusy for ~10 kalendere) — utløpt OAuth-token i build-miljø. Ikke kritisk (build fullfører), men coach-kalender-freebusy feiler til token fornyes. Lav prio.
 - [ ] **`/stats/sammenlign-spillere`** gir 500 (stats-prototype med fake-data) — skjul i prod som de andre stats-prototypene, eller fiks.
 - [ ] **Gamle skyggede sider** (locations, facilities, analyse, statistikk, kalender, mal m.fl.) — redirecter til nye sider, men `page.tsx` ligger igjen og deler kode med aktive sider. Krever forsiktig refactor (flytt delt kode → oppdater imports → slett), ikke ren sletting. Lavt prioritert — usynlig for brukere.
 
