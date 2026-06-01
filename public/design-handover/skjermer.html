@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Redesign · 35 skjermer for godkjenning · AK Golf HQ</title>
+<title>Redesign · 44 skjermer for godkjenning · AK Golf HQ</title>
 <style>
   :root {
     --forest:#005840; --forest-900:#003D2C; --lime:#D1F843; --cream:#FAFAF7;
@@ -42,7 +42,7 @@
 <div class="wrap">
   <header>
     <div class="eyebrow">AK GOLF HQ · REDESIGN · 2026-06-01</div>
-    <h1>35 skjermer, <em>klare for godkjenning</em>.</h1>
+    <h1>44 skjermer, <em>klare for godkjenning</em>.</h1>
     <p class="lead">Skjermbilder av de faktiske portede skjermene med ekte data (test-database). Trykk et bilde for å se det i full størrelse. AgencyOS er desktop, PlayerHQ er mobil.</p>
     <div class="meta" id="meta"></div>
   </header>
@@ -60,6 +60,16 @@
     <h2>Live-økt</h2>
     <div class="sec-sub">/portal/(fullscreen)/live · mobil · 3 skjermer</div>
     <div class="grid mobile" id="g-live"></div>
+  </section>
+  <section>
+    <h2>Auth</h2>
+    <div class="sec-sub">/auth · innlogging &amp; onboarding · 5 skjermer</div>
+    <div class="grid mobile" id="g-auth"></div>
+  </section>
+  <section>
+    <h2>Øvrig</h2>
+    <div class="sec-sub">booking-wizard · foreldre · marketing · 404 · 4 skjermer</div>
+    <div class="grid mobile" id="g-ovrig"></div>
   </section>
   <footer>
     Skjermbilder generert mot test-database — tomme felt («—», «Ingen …») betyr at test-dataen mangler verdier der, ikke at skjermen er feil.<br>
@@ -108,6 +118,19 @@
     ["pl-live-active","Live: aktiv drill","/portal/(fullscreen)/live/[id]/active"],
     ["pl-live-summary","Live: oppsummering","/portal/(fullscreen)/live/[id]/summary"],
   ];
+  const AUTH=[
+    ["au-login","Logg inn","/auth/login"],
+    ["au-signup","Registrer / opprett konto","/auth/signup"],
+    ["au-forgot","Glemt passord","/auth/forgot-password"],
+    ["au-bankid","BankID (placeholder)","/auth/bankid"],
+    ["au-loggetut","Logget ut","/auth/logget-ut"],
+  ];
+  const OVRIG=[
+    ["pl-booking-ny","Booking-wizard","/portal/booking/ny"],
+    ["fo-barn","Foreldre: barnas fremgang","/forelder/barn"],
+    ["mk-forside","Marketing-forside","/"],
+    ["mx-404","404 – ikke funnet","/(not-found)"],
+  ];
   function card([slug,nm,rt],n){
     return `<div class="card"><div class="hd"><div class="id">${n}</div><div class="nm">${nm}</div><div class="rt">${rt}</div></div>`+
       `<a class="shot" href="_screens/${slug}.png" target="_blank" rel="noopener"><img loading="lazy" src="_screens/${slug}.png" alt="${nm}"></a>`+
@@ -117,7 +140,9 @@
   document.getElementById("g-agency").innerHTML=AGENCY.map(s=>card(s,"A"+(i++ - 0))).join("");
   i=1; document.getElementById("g-player").innerHTML=PLAYER.map(s=>card(s,"P"+(i++))).join("");
   i=1; document.getElementById("g-live").innerHTML=LIVE.map(s=>card(s,"L"+(i++))).join("");
-  document.getElementById("meta").textContent=`${AGENCY.length+PLAYER.length+LIVE.length} skjermer · forest/lime/cream · ekte Prisma-data`;
+  i=1; document.getElementById("g-auth").innerHTML=AUTH.map(s=>card(s,"AU"+(i++))).join("");
+  i=1; document.getElementById("g-ovrig").innerHTML=OVRIG.map(s=>card(s,"Ø"+(i++))).join("");
+  document.getElementById("meta").textContent=`${AGENCY.length+PLAYER.length+LIVE.length+AUTH.length+OVRIG.length} skjermer · forest/lime/cream · ekte Prisma-data`;
 </script>
 </body>
 </html>
