@@ -21,11 +21,13 @@ import {
 import { DetailShell } from "@/components/shared/detail-shell";
 import { KPICard } from "@/components/ui";
 import { AthleticBadge } from "@/components/athletic";
+import { SpillerDetaljOversikt } from "@/components/admin/spiller-detalj/spiller-detalj-oversikt";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { aggregateSg, formatSg } from "@/lib/sg";
 import { avatarBg, initialsFromName } from "@/lib/avatar-colors";
+import { loadSpillerDetaljOversikt } from "@/lib/admin-spiller/spiller-detalj-data";
 import { EffektTab, type EffektRad } from "./effekt-tab";
 import { EnrollmentPanel } from "./enrollment-panel";
 
@@ -203,6 +205,9 @@ export default async function SpillerCoachView({
     coachRating: r.coachRating,
     notes: r.notes,
   }));
+
+  // Oversikt-data (Profil-tab) — KPI 30 d, pyramide-adherence, uke, booking, komm.
+  const oversikt = await loadSpillerDetaljOversikt(player.id);
 
   const aktivPlan = player.trainingPlans[0] ?? null;
   const planTotal = aktivPlan?.sessions.length ?? 0;
@@ -401,7 +406,7 @@ export default async function SpillerCoachView({
     >
       {/* Tab-innhold */}
       {tab === "profil" && (
-        <>
+        <div className="space-y-4">
           <EnrollmentPanel
             playerId={player.id}
             enrollments={enrollments.map((e) => ({
@@ -415,18 +420,18 @@ export default async function SpillerCoachView({
             }))}
             coaches={coaches}
           />
-          <ProfilTab
-            player={player}
-            parents={player.childRelations.map((cr) => cr.parent)}
-            coachNotater={recentCoachNotater.map((n) => ({
-              id: n.id,
-              title: n.session.title,
-              text: n.coachFeedback ?? "",
-              date: n.coachFeedbackAt ?? new Date(),
-            }))}
-            ageYears={ageYears}
+          <SpillerDetaljOversikt
+            data={oversikt}
+            config={{
+              workbenchHref: `${baseHref}/workbench`,
+              meldingHref: `/admin/innboks?tab=meldinger&to=${player.id}`,
+              bookHref: `/admin/kalender?action=ny-okt&spiller=${player.id}`,
+              pyramideHref: `${baseHref}?tab=plan`,
+              fullProfileHref: `${baseHref}/profil`,
+              innboksHref: `/admin/innboks?tab=meldinger&to=${player.id}`,
+            }}
           />
-        </>
+        </div>
       )}
       {tab === "plan" && (
         <PlanTab
@@ -462,205 +467,6 @@ export default async function SpillerCoachView({
         />
       )}
     </DetailShell>
-  );
-}
-
-// ---------- PROFIL-TAB ----------
-
-function ProfilTab({
-  player,
-  parents,
-  coachNotater,
-  ageYears,
-}: {
-  player: {
-    id: string;
-    name: string;
-    email: string;
-    phone: string | null;
-    homeClub: string | null;
-    dateOfBirth: Date | null;
-    ambition: string | null;
-    createdAt: Date;
-  };
-  parents: {
-    id: string;
-    name: string;
-    phone: string | null;
-    email: string;
-    avatarUrl: string | null;
-  }[];
-  coachNotater: { id: string; title: string; text: string; date: Date }[];
-  ageYears: number | null;
-}) {
-  return (
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_360px]">
-      {/* Hoved-innhold */}
-      <div className="space-y-4">
-        {/* Personalia */}
-        <section className="rounded-2xl border border-border bg-card p-6 sm:p-6">
-          <div className="mb-4 flex items-baseline justify-between">
-            <div>
-              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-                Personalia
-              </div>
-              <h2 className="mt-1 font-display text-lg font-semibold text-foreground">
-                Stamdata
-              </h2>
-            </div>
-            <Link
-              href={`/admin/spillere/${player.id}/profil`}
-              className="font-mono text-[10px] uppercase tracking-[0.08em] text-primary hover:underline"
-            >
-              Full profil →
-            </Link>
-          </div>
-          <dl className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
-            <Fact label="Navn" value={player.name} />
-            <Fact label="E-post" value={player.email} mono />
-            <Fact
-              label="Fødselsdato"
-              value={
-                player.dateOfBirth
-                  ? `${NB_LONG.format(player.dateOfBirth)}${ageYears != null ? ` · ${ageYears} år` : ""}`
-                  : "—"
-              }
-            />
-            <Fact label="Telefon" value={player.phone ?? "—"} mono />
-            <Fact label="Klubb" value={player.homeClub ?? "—"} />
-            <Fact
-              label="Medlem siden"
-              value={NB_LONG.format(player.createdAt)}
-            />
-          </dl>
-        </section>
-
-        {/* Forelder/verge */}
-        {parents.length > 0 && (
-          <section className="rounded-2xl border border-border bg-card p-6 sm:p-6">
-            <div className="mb-4 flex items-baseline justify-between">
-              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-                Forelder / verge
-              </div>
-              <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
-                {parents.length}
-              </span>
-            </div>
-            <ul className="space-y-2">
-              {parents.map((p) => (
-                <li
-                  key={p.id}
-                  className="flex items-center gap-2 rounded-xl border border-border bg-background p-4"
-                >
-                  {p.avatarUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={p.avatarUrl}
-                      alt=""
-                      className="h-10 w-10 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div
-                      className="grid h-10 w-10 place-items-center rounded-full font-mono text-xs font-semibold text-white"
-                      style={{ background: avatarBg(p.name) }}
-                    >
-                      {initialsFromName(p.name)}
-                    </div>
-                  )}
-                  <div className="min-w-0 flex-1">
-                    <div className="truncate text-sm font-semibold text-foreground">
-                      {p.name}
-                    </div>
-                    <div className="truncate font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
-                      {p.phone ?? p.email}
-                    </div>
-                  </div>
-                  <span className="shrink-0 rounded-full bg-primary/10 px-2 py-1 font-mono text-[9px] font-semibold uppercase tracking-[0.08em] text-primary">
-                    Stripe-betaler
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-
-        {/* Aktivitet-tidslinje (siste 30 dager) */}
-        <section className="rounded-2xl border border-border bg-card p-6 sm:p-6">
-          <div className="mb-4 flex items-baseline justify-between">
-            <div>
-              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-                Aktivitet · siste 30 dager
-              </div>
-              <h2 className="mt-1 font-display text-lg font-semibold text-foreground">
-                Tidslinje
-              </h2>
-            </div>
-          </div>
-          <ul className="space-y-2">
-            {/* Sample event-stream — full impl bygges når data finnes */}
-            <TimelineEvent
-              dot="primary"
-              title="Putt-økt fullført · 45 min"
-              meta="i dag, 11:00 · Mulligan Studio"
-            />
-            <TimelineEvent
-              dot="accent"
-              title="Test gjennomført · CS70"
-              meta="i går, 14:30"
-            />
-            <TimelineEvent
-              dot="warning"
-              title="Runde · GFGK · 74"
-              meta="20. mai"
-            />
-            <TimelineEvent
-              dot="muted"
-              title="Meldte seg på Sørlandsåpent"
-              meta="18. mai"
-            />
-          </ul>
-        </section>
-      </div>
-
-      {/* Sidekol — Coach-notater */}
-      <aside className="space-y-4 lg:sticky lg:top-6 lg:self-start">
-        <section className="rounded-2xl border border-border bg-card p-6 sm:p-6">
-          <div className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-            Coach-notater
-          </div>
-          {coachNotater.length === 0 ? (
-            <p className="text-sm text-muted-foreground">Ingen notater ennå.</p>
-          ) : (
-            <ul className="space-y-4">
-              {coachNotater.map((n) => (
-                <li
-                  key={n.id}
-                  className="border-l-2 border-accent pl-4"
-                >
-                  <div className="flex items-baseline justify-between gap-2">
-                    <span className="truncate text-sm font-semibold text-foreground">
-                      {n.title}
-                    </span>
-                    <time className="shrink-0 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
-                      {NB_DATE.format(n.date)}
-                    </time>
-                  </div>
-                  <p
-                    className="mt-2 text-sm leading-relaxed text-foreground"
-                    style={{
-                      fontFamily: "'Inter Tight', sans-serif",
-                      fontStyle: "italic",
-                    }}
-                  >
-                    &laquo;{n.text}&raquo;
-                  </p>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
-      </aside>
-    </div>
   );
 }
 
@@ -847,59 +653,3 @@ function NotaterTab({
     </section>
   );
 }
-
-// ---------- Hjelpekomponenter ----------
-
-function Fact({
-  label,
-  value,
-  mono,
-}: {
-  label: string;
-  value: string;
-  mono?: boolean;
-}) {
-  return (
-    <div>
-      <dt className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-        {label}
-      </dt>
-      <dd
-        className={`mt-1 text-sm text-foreground ${mono ? "font-mono tabular-nums" : ""}`}
-      >
-        {value}
-      </dd>
-    </div>
-  );
-}
-
-function TimelineEvent({
-  dot,
-  title,
-  meta,
-}: {
-  dot: "primary" | "accent" | "warning" | "muted";
-  title: string;
-  meta: string;
-}) {
-  const dotClass: Record<typeof dot, string> = {
-    primary: "bg-primary",
-    accent: "bg-accent",
-    warning: "bg-warning",
-    muted: "bg-muted-foreground",
-  };
-  return (
-    <li className="flex items-start gap-2">
-      <span
-        className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${dotClass[dot]}`}
-      />
-      <div className="min-w-0 flex-1">
-        <div className="text-sm font-medium text-foreground">{title}</div>
-        <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
-          {meta}
-        </div>
-      </div>
-    </li>
-  );
-}
-

@@ -1,14 +1,16 @@
 /**
- * /admin/spillere/[id]/workbench — Coach-view av spillers plan-workbench.
- * Gjenbruker WorkbenchPlanA-komponenten i coach-modus.
+ * /admin/spillere/[id]/workbench — Coach-Workbench.
+ * Coach opererer i spillerens workbench (role=coach): tre-sidemeny,
+ * uke-kalender, inspector med coach-handlinger + COACH-ONLY-blokk.
  *
- * Workbench Plan A · Sprint 4 — coach-routes.
+ * Pixel-port av design-handover/agencyos/components-workbench-{sidebar,week,day}.html.
+ * Server Component med live Prisma-data via loadCoachWorkbench.
  */
 
 import { notFound, redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
-import { prisma } from "@/lib/prisma";
-import { WorkbenchPlanA } from "@/components/portal-planlegge/workbench/workbench-shell";
+import { CoachWorkbench } from "@/components/admin/coach-workbench/coach-workbench";
+import { loadCoachWorkbench } from "@/lib/admin-workbench/workbench-data";
 
 export const dynamic = "force-dynamic";
 
@@ -23,11 +25,8 @@ export default async function CoachWorkbenchPage({ params }: Props) {
   }
 
   const { id } = await params;
-  const player = await prisma.user.findUnique({
-    where: { id },
-    select: { id: true, name: true, hcp: true, tier: true },
-  });
-  if (!player) notFound();
+  const props = await loadCoachWorkbench(id);
+  if (!props) notFound();
 
-  return <WorkbenchPlanA />;
+  return <CoachWorkbench {...props} />;
 }

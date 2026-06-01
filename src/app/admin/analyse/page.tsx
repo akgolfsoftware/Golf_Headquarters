@@ -18,6 +18,8 @@ import { AnalyseSG } from "@/components/analyse/AnalyseSG";
 import { AnalyseFys } from "@/components/analyse/AnalyseFys";
 import { AnalysePlanFaktisk } from "@/components/analyse/AnalysePlanFaktisk";
 import { StallHeatmap } from "@/components/admin-analyse-v2/stall-heatmap";
+import { ComplianceTracking } from "@/components/admin/compliance/compliance-tracking";
+import { loadComplianceData } from "@/lib/admin-compliance/compliance-data";
 import {
   getAnalysisOverview,
   getKrysstabulering,
@@ -41,6 +43,7 @@ export const dynamic = "force-dynamic";
 
 type View =
   | "stall"
+  | "compliance"
   | "oversikt"
   | "krysstabell"
   | "trender"
@@ -50,6 +53,7 @@ type View =
 
 const GYLDIGE_VIEWS: View[] = [
   "stall",
+  "compliance",
   "oversikt",
   "krysstabell",
   "trender",
@@ -136,6 +140,19 @@ export default async function AnalysePage({
         <StallHeatmap spillere={stallSpillere} />
       </div>
     );
+  }
+
+  // COMPLIANCE-VIEW: stall-analyse plan vs reps (egen full-bredde layout)
+  if (view === "compliance") {
+    const data = await loadComplianceData({
+      windowDays: Math.max(
+        1,
+        Math.round((periode.to.getTime() - periode.from.getTime()) / 86_400_000),
+      ),
+      periodLabel: periode.label,
+      selectedPlayerId: params.studentId,
+    });
+    return <ComplianceTracking data={data} />;
   }
 
   // Hvis ingen studentId valgt → velg første spiller eller send til tom-state
