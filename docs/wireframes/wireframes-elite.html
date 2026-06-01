@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AK Golf HQ — Elite Fase 2 Wireframes</title>
+<style>
+  :root { --forest:#005840; --lime:#D1F843; --cream:#FAFAF7; --ink:#0A1F17; --line:#C9C9C2; --box:#ECECE6; --box2:#E0E0D8; --muted:#8A8A82; --dash:#B5B5AD; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:ui-monospace,"SF Mono",Menlo,monospace; background:#6b6b66; color:var(--ink); padding:40px 20px; line-height:1.4; }
+  .doc-head { max-width:1100px; margin:0 auto 32px; color:#fff; }
+  .doc-head h1 { font-size:22px; } .doc-head p { font-size:12px; opacity:0.8; margin-top:6px; }
+  h3.section { color:#fff; max-width:1100px; margin:40px auto 14px; font-size:14px; letter-spacing:0.1em; text-transform:uppercase; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:6px; }
+  .screen { max-width:1100px; margin:0 auto 36px; background:var(--cream); border-radius:10px; overflow:hidden; box-shadow:0 8px 30px rgba(0,0,0,0.25); }
+  .screen-label { background:var(--ink); color:var(--lime); font-size:11px; letter-spacing:0.14em; text-transform:uppercase; padding:8px 16px; display:flex; justify-content:space-between; }
+  .screen-label .route { color:#9fe6c4; } .screen-label .tag { color:#fff; opacity:0.7; }
+  .main { padding:16px; }
+  .lbl { font-size:8px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:4px; }
+  .box { background:var(--box); border:1px solid var(--line); border-radius:6px; }
+  .ph { background:repeating-linear-gradient(45deg,var(--box),var(--box) 6px,var(--box2) 6px,var(--box2) 12px); border:1px dashed var(--dash); border-radius:6px; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:10px; text-align:center; padding:8px; }
+  .note { font-size:9px; color:var(--muted); font-style:italic; margin-top:8px; }
+  .pill { background:#fff; border:1px solid var(--line); border-radius:14px; padding:4px 10px; font-size:9px; display:inline-block; }
+  .pill.lime { background:var(--lime); color:var(--forest); font-weight:700; border:none; }
+  .pill.dark { background:var(--forest); color:#fff; border:none; }
+  .row { display:flex; gap:12px; } .stack>*+*{ margin-top:10px; }
+  .grid3 { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+</style>
+</head>
+<body>
+<div class="doc-head">
+  <h1>AK Golf HQ — Elite Fase 2</h1>
+  <p>Verdensledende differensiatorer for tour-spillere. Blueprint — struktur, ikke endelig design.</p>
+</div>
+
+<!-- VIDEO -->
+<h3 class="section">1 · Video-analyse — svingverktøyet</h3>
+<div class="screen">
+  <div class="screen-label"><span class="route">/portal/analysere/video/[id]</span><span class="tag">Frame-by-frame + annotering</span></div>
+  <div class="main">
+    <div class="row">
+      <div style="flex:2">
+        <div class="ph" style="height:200px">[ Svingvideo ]<br><br>◄ &nbsp; ❚❚ &nbsp; ►  &nbsp; 0.25×</div>
+        <div class="box" style="margin-top:8px; padding:6px; font-size:9px; color:var(--muted)">P1──P2──P3──[P4-topp]──P5──P6──P7──P8──P9──P10</div>
+        <div style="margin-top:8px"><span class="pill">Sammenlign med pro</span> <span class="pill dark">Del med coach</span></div>
+      </div>
+      <div style="flex:1">
+        <div class="box" style="padding:10px">
+          <div class="lbl">Verktøy</div>
+          <div style="font-size:11px; line-height:2">╲ Linje<br>∠ Vinkel<br>○ Sirkel<br>T Tekst</div>
+        </div>
+        <div class="box" style="padding:10px; margin-top:8px">
+          <div class="lbl">Coach-kommentar</div>
+          <div style="font-size:10px">"Litt for flat i overgangen — kjenn på lag-følelsen"</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="screen">
+  <div class="screen-label"><span class="route">/portal/analysere/video/sammenlign</span><span class="tag">Side-ved-side, synkronisert</span></div>
+  <div class="main"><div class="row">
+    <div style="flex:1"><div class="lbl">Min sving · 28 mai</div><div class="ph" style="height:160px">[ Video A ]</div></div>
+    <div style="flex:1"><div class="lbl">Pro-modell / 1 mai</div><div class="ph" style="height:160px">[ Video B ]</div></div>
+  </div><div class="note">Synkronisert scrubbing — begge spoler samtidig · Overlay-modus (legg oppå, semi-transparent)</div></div>
+</div>
+
+<!-- DISPERSJON -->
+<h3 class="section">2 · Dispersjon-motor (DECADE-stil) — største moat</h3>
+<div class="screen">
+  <div class="screen-label"><span class="route">/portal/mal/sg-hub/strategi</span><span class="tag">Sikte-planlegger + expected value</span></div>
+  <div class="main"><div class="row">
+    <div style="flex:2">
+      <div class="lbl">Hull 7 · 165m · 7-jern</div>
+      <div class="box" style="height:220px; position:relative; background:#eef3ee; padding:10px">
+        <div style="position:absolute; top:10px; left:30%; right:10%; height:30px; background:repeating-linear-gradient(45deg,#cfe0ec,#cfe0ec 5px,#bcd4e6 5px,#bcd4e6 10px); border-radius:4px; font-size:8px; display:flex; align-items:center; justify-content:center; color:#5a7a94">░ vann ░</div>
+        <div style="position:absolute; top:55px; left:30%; width:140px; height:110px; border:2px solid var(--forest); border-radius:50%/40%; background:rgba(0,88,64,0.06); display:flex; align-items:center; justify-content:center; font-size:8px; color:var(--forest)">GREEN · din oval 95%</div>
+        <div style="position:absolute; top:95px; left:48%; font-size:14px">⚑</div>
+        <div style="position:absolute; bottom:14px; left:18%; font-size:8px; background:#e8dcc0; padding:2px 6px; border-radius:3px; color:#8a6a2a">▓ bunker ▓</div>
+        <div style="position:absolute; top:60px; right:14px; font-size:9px; color:var(--forest); text-align:right">Anbefalt sikte:<br><b>4m venstre for flagg</b><br>forventet 2,9 slag</div>
+      </div>
+      <div class="box" style="margin-top:8px; padding:6px; font-size:9px">EV-VARMEKART: <span style="color:var(--forest)">●lavest 2,9</span> ········· <span style="color:#a32d2d">●høyest 3,4</span></div>
+    </div>
+    <div style="flex:1" class="stack">
+      <div class="box" style="padding:10px"><div class="lbl">Din spredning</div><div style="font-size:10px; line-height:1.8">Lateral σ: 6,2m<br>Distanse σ: 4,1m<br>Miss-tendens: høyre</div></div>
+      <span class="pill">Velg kølle ▾</span> <span class="pill">68% / 95%</span>
+      <div><span class="pill lime">Lagre game plan</span></div>
+    </div>
+  </div></div>
+</div>
+<div class="screen">
+  <div class="screen-label"><span class="route">/portal/analysere/dispersjon</span><span class="tag">Dispersjon per kølle</span></div>
+  <div class="main"><div class="grid3">
+    <div class="box" style="padding:8px"><div class="lbl">Driver</div><div class="ph" style="height:80px">scatter + oval</div></div>
+    <div class="box" style="padding:8px"><div class="lbl">7-jern</div><div class="ph" style="height:80px">scatter + oval</div></div>
+    <div class="box" style="padding:8px"><div class="lbl">PW</div><div class="ph" style="height:80px">scatter + oval</div></div>
+  </div><div class="note">Tabell under: kølle · snitt-carry · lateral σ · distanse σ · miss-tendens</div></div>
+</div>
+
+<!-- MENTAL -->
+<h3 class="section">3 · Mental prestasjonspsykologi</h3>
+<div class="screen">
+  <div class="screen-label"><span class="route">/portal/mental</span><span class="tag">Mental-hub</span></div>
+  <div class="main"><div class="row">
+    <div style="flex:1" class="box" style="padding:12px">
+      <div class="lbl">Dagens logg</div>
+      <div style="font-size:11px; line-height:2">Humør &nbsp;●●●○○<br>Fokus &nbsp;●●●●○<br>Arousal ●●○○○<br>Selvtillit ●●●●○</div>
+      <div style="margin-top:8px"><span class="pill lime">Logg →</span></div>
+    </div>
+    <div style="flex:1.4" class="box" style="padding:12px">
+      <div class="lbl">Mental-ferdigheter (radar)</div>
+      <div class="ph" style="height:120px">Fokus · Selvtillit · Resiliens · Ro · Motivasjon</div>
+    </div>
+  </div>
+  <div class="box" style="margin-top:10px; padding:8px; font-size:9px">
+    PRE-SHOT RUTINE: 87% konsistens siste 5 runder &nbsp;·&nbsp; PRESSURE: score 2,1 slag bedre når arousal = 3/5
+  </div>
+  <div style="margin-top:8px"><span class="pill">Skriv dagbok</span> <span class="pill">Ny vurdering</span></div>
+  </div>
+</div>
+
+<div class="doc-head" style="margin-top:30px"><p style="opacity:0.6">Hver funksjon = ny Prisma-datamodell + komponenter + skjermer. Bygges som Fase 2 etter kjerne-redesignet. Endelig visuell design fra Claude Design.</p></div>
+</body>
+</html>
