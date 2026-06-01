@@ -22,8 +22,8 @@ export default function BankIDPage() {
             <AkGolfLogo width={56} />
           </Link>
 
-          <div className="mb-6 grid h-16 w-16 place-items-center rounded-full bg-primary/10 text-primary">
-            <ShieldCheck className="h-8 w-8" strokeWidth={1.5} aria-hidden />
+          <div className="mb-6 grid h-[88px] w-[88px] place-items-center rounded-full bg-primary/10 text-primary">
+            <ShieldCheck className="h-11 w-11" strokeWidth={1.5} aria-hidden />
           </div>
 
           <AthleticEyebrow tone="lime">BANKID · KOMMER POST-BETA</AthleticEyebrow>
