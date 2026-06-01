@@ -17,7 +17,6 @@ import {
   ClipboardCheck,
   Download,
   Printer,
-  Target,
 } from "lucide-react";
 
 type Spiller = {
@@ -33,8 +32,7 @@ type View =
   | "trender"
   | "sg"
   | "fys"
-  | "plan-faktisk"
-  | "compliance";
+  | "plan-faktisk";
 
 const VIEWS: { kode: View; label: string; ikon: React.ElementType }[] = [
   { kode: "oversikt", label: "Oversikt", ikon: BarChart3 },
@@ -43,7 +41,6 @@ const VIEWS: { kode: View; label: string; ikon: React.ElementType }[] = [
   { kode: "sg", label: "Strokes Gained", ikon: Activity },
   { kode: "fys", label: "Fysisk", ikon: Dumbbell },
   { kode: "plan-faktisk", label: "Plan vs faktisk", ikon: ClipboardCheck },
-  { kode: "compliance", label: "Compliance", ikon: Target },
 ];
 
 const PERIODER = [

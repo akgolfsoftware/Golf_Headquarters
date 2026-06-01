@@ -79,16 +79,14 @@ const nextConfig: NextConfig = {
       { source: "/portal/statistikk/:path*", destination: "/portal/analysere?tab=statistikk", permanent: true },
       { source: "/portal/mal", destination: "/portal/planlegge?tab=mal", permanent: true },
       { source: "/portal/kalender", destination: "/portal/gjennomfore?tab=kalender", permanent: true },
-      { source: "/portal/tren/aarsplan", destination: "/portal/planlegge?tab=arsplan", permanent: true },
-      { source: "/portal/tren/aarsplan/:path*", destination: "/portal/planlegge?tab=arsplan", permanent: true },
+      // /portal/tren/aarsplan: dedikert Gantt-skjerm (redesign 2026-06-01) — loop-redirect fjernet.
       { source: "/portal/tren/teknisk-plan", destination: "/portal/planlegge?tab=treningsplan", permanent: true },
       { source: "/portal/tren/teknisk-plan/:path*", destination: "/portal/planlegge?tab=treningsplan", permanent: true },
       { source: "/portal/tren/turneringer", destination: "/portal/planlegge?tab=turneringer", permanent: true },
       { source: "/portal/tren/turneringer/:path*", destination: "/portal/planlegge?tab=turneringer", permanent: true },
       { source: "/portal/tren/ovelser", destination: "/portal/planlegge?tab=drills", permanent: true },
       { source: "/portal/tren/ovelser/:path*", destination: "/portal/planlegge?tab=drills", permanent: true },
-      { source: "/portal/tren/tester", destination: "/portal/analysere?tab=tester", permanent: true },
-      { source: "/portal/tren/tester/:path*", destination: "/portal/analysere?tab=tester", permanent: true },
+      // /portal/tren/tester: dedikert test-batteri-skjerm (redesign 2026-06-01) — loop-redirect fjernet.
       { source: "/portal/tren/kalender", destination: "/portal/gjennomfore?tab=kalender", permanent: true },
       { source: "/portal/tren/kalender/:path*", destination: "/portal/gjennomfore?tab=kalender", permanent: true },
       { source: "/portal/tren", destination: "/portal/planlegge?tab=treningsplan", permanent: true },
@@ -97,8 +95,7 @@ const nextConfig: NextConfig = {
       { source: "/portal/talent/:path*", destination: "/portal/talent/:path*", permanent: false },
       { source: "/portal/trackman", destination: "/portal/analysere?tab=trackman", permanent: true },
       { source: "/portal/trackman/:path*", destination: "/portal/analysere?tab=trackman", permanent: true },
-      { source: "/portal/booking", destination: "/portal/gjennomfore?tab=booking", permanent: true },
-      { source: "/portal/booking/:path*", destination: "/portal/gjennomfore?tab=booking", permanent: true },
+      // /portal/booking: dedikert booking-hub m/ credits (redesign 2026-06-01) — loop-redirect fjernet.
       { source: "/portal/ny-okt", destination: "/portal/gjennomfore/ny-okt", permanent: true },
 
       // ============================================================
