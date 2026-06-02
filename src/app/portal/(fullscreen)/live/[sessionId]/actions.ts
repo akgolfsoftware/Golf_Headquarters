@@ -146,27 +146,29 @@ export async function abandonLiveSession(
   const snap = parseLiveSnapshot(session.liveSnapshot);
   const { totalReps, drillAggregates, startedAt } = freezeFromSnapshot(snap);
 
-  await prisma.trainingPlanSessionLog.upsert({
-    where: { sessionId },
-    create: {
-      sessionId,
-      startedAt,
-      completedAt: null,
-      totalReps,
-      drillAggregates: drillAggregates as unknown as Prisma.InputJsonValue,
-      abandonReason: reason ?? null,
-    },
-    update: {
-      totalReps,
-      drillAggregates: drillAggregates as unknown as Prisma.InputJsonValue,
-      abandonReason: reason ?? null,
-    },
-  });
-
-  await prisma.trainingPlanSession.update({
-    where: { id: sessionId },
-    data: { status: "ABANDONED", liveSnapshot: Prisma.JsonNull },
-  });
+  // Frys delvis logg + sett ABANDONED/null snapshot ATOMISK (se completeSession).
+  await prisma.$transaction([
+    prisma.trainingPlanSessionLog.upsert({
+      where: { sessionId },
+      create: {
+        sessionId,
+        startedAt,
+        completedAt: null,
+        totalReps,
+        drillAggregates: drillAggregates as unknown as Prisma.InputJsonValue,
+        abandonReason: reason ?? null,
+      },
+      update: {
+        totalReps,
+        drillAggregates: drillAggregates as unknown as Prisma.InputJsonValue,
+        abandonReason: reason ?? null,
+      },
+    }),
+    prisma.trainingPlanSession.update({
+      where: { id: sessionId },
+      data: { status: "ABANDONED", liveSnapshot: Prisma.JsonNull },
+    }),
+  ]);
 
   revalidatePath("/portal/tren");
   revalidatePath(`/portal/live/${sessionId}`);
@@ -182,37 +184,41 @@ export async function completeSession(input: SessionLogInput) {
   const startedAt = input.startedAt ? new Date(input.startedAt) : snapStartedAt;
   const hasSnapshot = snap !== null;
 
-  await prisma.trainingPlanSessionLog.upsert({
-    where: { sessionId: input.sessionId },
-    create: {
-      sessionId: input.sessionId,
-      startedAt,
-      completedAt: new Date(),
-      csAchieved: input.csAchieved ?? null,
-      notes: input.notes ?? null,
-      rating: input.rating ?? null,
-      totalReps: hasSnapshot ? totalReps : null,
-      drillAggregates: hasSnapshot
-        ? (drillAggregates as unknown as Prisma.InputJsonValue)
-        : Prisma.JsonNull,
-    },
-    update: {
-      completedAt: new Date(),
-      csAchieved: input.csAchieved ?? null,
-      notes: input.notes ?? null,
-      rating: input.rating ?? null,
-      totalReps: hasSnapshot ? totalReps : null,
-      drillAggregates: hasSnapshot
-        ? (drillAggregates as unknown as Prisma.InputJsonValue)
-        : Prisma.JsonNull,
-    },
-  });
-
-  // Sett COMPLETED og null ut snapshot (økta er avsluttet).
-  await prisma.trainingPlanSession.update({
-    where: { id: input.sessionId },
-    data: { status: "COMPLETED", liveSnapshot: Prisma.JsonNull },
-  });
+  // Frys logg + sett COMPLETED/null snapshot ATOMISK. Uten transaksjon kunne
+  // et avbrudd mellom skrivingene gi inkonsistens (logg fullført, men status
+  // fortsatt ACTIVE og snapshot ikke nullet → økta ser pågående ut).
+  const completedAt = new Date();
+  await prisma.$transaction([
+    prisma.trainingPlanSessionLog.upsert({
+      where: { sessionId: input.sessionId },
+      create: {
+        sessionId: input.sessionId,
+        startedAt,
+        completedAt,
+        csAchieved: input.csAchieved ?? null,
+        notes: input.notes ?? null,
+        rating: input.rating ?? null,
+        totalReps: hasSnapshot ? totalReps : null,
+        drillAggregates: hasSnapshot
+          ? (drillAggregates as unknown as Prisma.InputJsonValue)
+          : Prisma.JsonNull,
+      },
+      update: {
+        completedAt,
+        csAchieved: input.csAchieved ?? null,
+        notes: input.notes ?? null,
+        rating: input.rating ?? null,
+        totalReps: hasSnapshot ? totalReps : null,
+        drillAggregates: hasSnapshot
+          ? (drillAggregates as unknown as Prisma.InputJsonValue)
+          : Prisma.JsonNull,
+      },
+    }),
+    prisma.trainingPlanSession.update({
+      where: { id: input.sessionId },
+      data: { status: "COMPLETED", liveSnapshot: Prisma.JsonNull },
+    }),
+  ]);
 
   // Sjekk om alle økter i planen nå er ferdige — i så fall auto-arkiver planen,
   // beregn effectiveness og opprett celebration-notifikasjon. Sender også
@@ -250,7 +256,15 @@ export async function completeSession(input: SessionLogInput) {
       try {
         await computeEffectiveness(planId);
       } catch (err) {
-        console.error("[completeSession] computeEffectiveness failed", err);
+        // Ikke-blokkerende: planen er allerede arkivert. Logg med full kontekst
+        // så manglende effectiveness kan oppdages og kjøres på nytt.
+        // (verify-live-session.ts <sessionId> flagger også manglende PlanEffectiveness.)
+        console.error(
+          `[completeSession] computeEffectiveness FEILET for planId=${planId} ` +
+            `(userId=${planFortsattAapen.userId}). Planen er arkivert uten ` +
+            `effektivitets-analyse — må kjøres på nytt manuelt.`,
+          err,
+        );
       }
 
       await notify({

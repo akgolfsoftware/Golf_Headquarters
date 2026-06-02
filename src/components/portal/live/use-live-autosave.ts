@@ -58,22 +58,35 @@ export function useLiveAutosave({
       });
     }, AUTOSAVE_MS);
 
-    // beforeunload → synkron pause via sendBeacon.
-    function onBeforeUnload() {
+    // Synkron flush via sendBeacon (vanlig async fetch dør ved unload).
+    // pause=true → sett PAUSED (siden forlates). pause=false → kun lagre snapshot.
+    function flush(pause: boolean) {
       try {
         const blob = new Blob([JSON.stringify(stamp(getRef.current()))], {
           type: "application/json",
         });
-        navigator.sendBeacon(`${url}?pause=1`, blob);
+        navigator.sendBeacon(pause ? `${url}?pause=1` : url, blob);
       } catch {
         /* sendBeacon utilgjengelig — ignorer */
       }
     }
-    window.addEventListener("beforeunload", onBeforeUnload);
+
+    // beforeunload (desktop) + pagehide (pålitelig på mobil/iOS) → pause.
+    const onUnload = () => flush(true);
+    // visibilitychange→hidden (app til bakgrunn på mobil): lagre snapshot uten
+    // å pause, så et kort fanebytte ikke trigger «Fortsett pågående?»-banneret.
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") flush(false);
+    };
+    window.addEventListener("beforeunload", onUnload);
+    window.addEventListener("pagehide", onUnload);
+    document.addEventListener("visibilitychange", onVisibility);
 
     return () => {
       window.clearInterval(intervalId);
-      window.removeEventListener("beforeunload", onBeforeUnload);
+      window.removeEventListener("beforeunload", onUnload);
+      window.removeEventListener("pagehide", onUnload);
+      document.removeEventListener("visibilitychange", onVisibility);
     };
   }, [sessionId, enabled]);
 }
