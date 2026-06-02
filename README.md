@@ -1,37 +1,55 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AK Golf HQ
 
-## Getting Started
+Hele plattformen for AK Golf Group — ett monorepo, ett Next.js-prosjekt, fire produkter under samme tak.
 
-First, run the development server:
+| Produkt | Rute | Beskrivelse |
+|---|---|---|
+| **Marketing** (akgolf.no) | `/`, `/(marketing)` | Offentlige sider |
+| **Booking** | `/booking` | Booking av coaching/fasiliteter |
+| **PlayerHQ** | `/portal` | Spillerportal |
+| **CoachHQ** | `/admin` | Coach/admin-grensesnitt |
+
+## Stack
+
+- Next.js 16 (App Router, TypeScript strict, Turbopack)
+- React 19
+- Prisma 7 + Supabase (Postgres)
+- Tailwind CSS v4 (CSS-first via `@theme` i `src/app/globals.css`)
+- Lucide React (eneste icon-bibliotek), Inter / Inter Tight / JetBrains Mono
+- npm
+
+## Kom i gang
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install                # postinstall kjører prisma generate
+cp .env.example .env.local # fyll inn verdier (se under)
+npm run dev                # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Miljøvariabler
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Valideres ved oppstart i `src/lib/env.ts`. Kritiske (appen starter ikke uten): Supabase-URL/nøkler, `DATABASE_URL`, `DIRECT_URL`. Anbefalte (advarsel i prod): Stripe, Resend, `CRON_SECRET`, `ANTHROPIC_API_KEY`, krypteringsnøkler. Se `.env.example` for full liste.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Verifikasjon før commit
 
-## Learn More
+```bash
+npx prisma validate && npx prisma generate
+npx tsc --noEmit
+npm run build
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Dokumentasjon
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **`CLAUDE.md`** — arbeidsregler, designsystem, gotchas (les denne først)
+- **`PLATFORM.md`** — autoritativ arkitekturbeskrivelse
+- **`LAUNCH-CHECKLIST.md`** + `docs/go-live-sjekkliste.md` — go-live
+- **`docs/mvp-audit-2026-06-02.md`** — siste fullstendige audit + backlog
+- **`docs/todo.md`** — levende backlog
+- **`SECURITY.md`** — sikkerhetsprinsipper og RLS
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Test
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# akgolfhoq
+```bash
+npm test          # enhetstester (lib)
+npm run e2e       # Playwright e2e
+```

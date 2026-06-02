@@ -17,11 +17,18 @@ const kritisk = z.object({
   DIRECT_URL: z.string().min(1),
 });
 
-// Anbefalte: kjernefunksjoner (betaling, e-post) → kun advarsel i prod.
+// Anbefalte: kjernefunksjoner (betaling, e-post, cron, kryptering, AI)
+// → kun advarsel i prod. Mangler de, feiler den aktuelle funksjonen stille:
+// cron-jobber avvises, OAuth-tokens krypteres ikke, AI-coach svarer ikke.
 const ANBEFALTE = [
   "STRIPE_SECRET_KEY",
   "STRIPE_WEBHOOK_SECRET",
   "RESEND_API_KEY",
+  "CRON_SECRET",
+  "BOOKING_DRAFT_SECRET",
+  "ANTHROPIC_API_KEY",
+  "NOTION_ENCRYPTION_KEY",
+  "GOOGLE_TOKEN_ENCRYPTION_KEY",
 ] as const;
 
 export function validateEnv(): void {
