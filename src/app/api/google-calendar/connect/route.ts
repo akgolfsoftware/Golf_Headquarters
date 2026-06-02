@@ -9,10 +9,11 @@ import { getAuthUrl } from "@/lib/google-calendar";
 
 export const runtime = "nodejs";
 
-export async function GET() {
+export async function GET(request: Request) {
   const user = await getCurrentUser();
   if (!user) {
-    return NextResponse.redirect(new URL("/auth/login", "http://localhost"));
+    // Resolv mot faktisk request-origin — aldri hardkod host (feiler i prod).
+    return NextResponse.redirect(new URL("/auth/login", request.url));
   }
   if (user.role !== "ADMIN" && user.role !== "COACH") {
     return NextResponse.json({ error: "forbidden" }, { status: 403 });
