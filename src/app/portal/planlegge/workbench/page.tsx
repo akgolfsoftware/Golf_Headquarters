@@ -9,8 +9,7 @@
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getViewMode } from "@/lib/view-mode";
-import { PlayerWorkbench } from "@/components/portal/workbench/player-workbench";
-import { loadPlayerWorkbench } from "@/lib/portal-workbench/player-workbench-data";
+import { Workbench } from "@/components/workbench/workbench";
 
 export const dynamic = "force-dynamic";
 
@@ -24,7 +23,7 @@ export default async function WorkbenchPage() {
   if (user.role === "GUEST") redirect("/admin/kalender");
   if (user.role === "PARENT") redirect("/forelder");
 
-  const data = await loadPlayerWorkbench();
-
-  return <PlayerWorkbench data={data} />;
+  // W5a: ny v10-Workbench (delt kjerne) montert med demo-data.
+  // Ekte data (loadPlayerWorkbench → data-adapter) kobles i W5b.
+  return <Workbench role="player" />;
 }

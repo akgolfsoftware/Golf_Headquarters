@@ -7,10 +7,9 @@
  * Server Component med live Prisma-data via loadCoachWorkbench.
  */
 
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
-import { CoachWorkbench } from "@/components/admin/coach-workbench/coach-workbench";
-import { loadCoachWorkbench } from "@/lib/admin-workbench/workbench-data";
+import { Workbench } from "@/components/workbench/workbench";
 
 export const dynamic = "force-dynamic";
 
@@ -24,9 +23,9 @@ export default async function CoachWorkbenchPage({ params }: Props) {
     redirect("/auth/login");
   }
 
-  const { id } = await params;
-  const props = await loadCoachWorkbench(id);
-  if (!props) notFound();
+  await params; // spiller-id brukes i W5b for ekte coach-data + notFound
 
-  return <CoachWorkbench {...props} />;
+  // W5a: ny v10-Workbench (coach-variant) montert med demo-data.
+  // Ekte data (loadCoachWorkbench(id) → data-adapter) + notFound kobles i W5b.
+  return <Workbench role="coach" />;
 }
