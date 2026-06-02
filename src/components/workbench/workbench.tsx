@@ -46,6 +46,9 @@ type WorkbenchProps = {
       When set (preview ?view=), it wins over the stored value so
       screenshots are deterministic. */
   initialView?: View;
+  /** open B's drill-overlay on first render (preview ?drill=1).
+      Only effective in B · TIDSLINJE. */
+  initialDrill?: boolean;
 };
 
 /** Resolve the initial formspråk: an explicit `initialView` (preview
@@ -65,7 +68,12 @@ function resolveInitialView(initialView?: View): View {
   return "A";
 }
 
-export function Workbench({ role = "player", initialMode, initialView }: WorkbenchProps) {
+export function Workbench({
+  role = "player",
+  initialMode,
+  initialView,
+  initialDrill = false,
+}: WorkbenchProps) {
   // view: 'A' = kalender (default) | 'B' = liste.
   const [view, setView] = useState<View>(() => resolveInitialView(initialView));
   // Unified mode across both vocabularies. An explicit initialMode wins;
@@ -101,7 +109,13 @@ export function Workbench({ role = "player", initialMode, initialView }: Workben
       mode === "KANBAN" ? "KANBAN" : mode === "DASHBOARD" ? "DASHBOARD" : "TIDSLINJE";
     return (
       <div className="akwb">
-        <ListShell variant={role} mode={bMode} onVis={onVis} onMode={onMode} />
+        <ListShell
+          variant={role}
+          mode={bMode}
+          onVis={onVis}
+          onMode={onMode}
+          initialDrill={initialDrill}
+        />
       </div>
     );
   }

@@ -3,12 +3,18 @@
 // (DirBSlideOver). Right slide-over inspector shown only in B ·
 // TIDSLINJE: selected session head + 3 KPIs + compact drill list +
 // periode-fordeling mini-bars + action row. The primary "Åpne
-// drill-modus" CTA is visual only in Bolk 3 (drill-overlay = Bolk 4).
+// drill-modus" CTA (⌘D) opens the drill-overlay (Bolk 4) via the
+// `onOpenDrill` callback owned by ListShell.
 // ============================================================
 import { Icon } from "./icon";
 import { DIRB_SLIDE } from "./data";
 
-export function DirBSlideOver() {
+type DirBSlideOverProps = {
+  /** Open the drill-modus overlay (slide-over primary CTA / ⌘D). */
+  onOpenDrill?: () => void;
+};
+
+export function DirBSlideOver({ onOpenDrill }: DirBSlideOverProps) {
   return (
     <aside className="wbb-slide">
       <div className="wbb-slide-head">
@@ -78,7 +84,7 @@ export function DirBSlideOver() {
       </div>
 
       <div className="wbb-slide-actions">
-        <button type="button" className="btn pri">
+        <button type="button" className="btn pri" onClick={onOpenDrill}>
           <Icon n="maximize-2" />
           Åpne drill-modus
           <span className="kbd-hint">⌘D</span>

@@ -2132,8 +2132,8 @@
    public/design-handover/ak-design-system/.../workbench-dir-b.css
    Every selector prefixed with .akwb (token-shim + --pyr-* +
    --font-* inherited from the .akwb scope above). The Bolk-4
-   drill-overlay block is intentionally omitted; the slide-over
-   drill-modus CTA styling is kept (visual only for now).
+   drill-overlay block is ported at the end of this section
+   (.drill-overlay / .dr-* / .wb-b-with-drill).
    ============================================================ */
 /* ============================================================
    Workbench · Direction B — Linear Agenda
@@ -3122,3 +3122,116 @@
   letter-spacing: 0.02em;
   color: var(--accent);
 }
+
+
+/* ============================================================
+   Drill-overlay (Runde 5 · Bolk 4) — B → A · DAG escalation.
+   Ported 1:1 from workbench-dir-b.css; scoped under .akwb. The
+   overlay renders inside .wb-b (position:relative) so inset:0
+   covers the whole B screen (v10's .wb-b-with-drill wrapper).
+   ============================================================ */
+.akwb .wb-b-with-drill { position: relative; width: 100%; height: 100%; }
+
+.akwb .drill-overlay {
+  position: absolute; inset: 0;
+  z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: auto;
+}
+.akwb .dr-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(10, 31, 23, 0.55);
+  backdrop-filter: blur(2px);
+}
+.akwb .dr-modal {
+  position: relative;
+  width: calc(100% - 80px); height: calc(100% - 64px);
+  max-width: 1280px;
+  background: var(--cream-50);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow:
+    0 24px 64px rgba(0,0,0,0.18),
+    0 8px 24px rgba(0,0,0,0.10);
+  overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.akwb .dr-head {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  gap: 16px;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+  flex-shrink: 0;
+}
+.akwb .dr-back {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--muted-foreground);
+  background: transparent; border: 0;
+  padding: 6px 10px 6px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.akwb .dr-back:hover { background: var(--secondary); color: var(--foreground); }
+
+.akwb .dr-crumb {
+  display: inline-flex; align-items: center; gap: 10px;
+  min-width: 0;
+}
+.akwb .dr-crumb .ax-dot {
+  width: 8px; height: 8px; border-radius: 9999px;
+  background: var(--pyr-slag);
+  flex-shrink: 0;
+}
+.akwb .dr-crumb .eb {
+  font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--muted-foreground);
+  flex-shrink: 0;
+}
+.akwb .dr-crumb .sep { color: var(--cream-400); }
+.akwb .dr-crumb .ttl {
+  font-family: var(--font-display); font-size: 14px; font-weight: 600;
+  letter-spacing: -0.005em;
+  color: var(--foreground);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.akwb .dr-keys {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.10em;
+  color: var(--muted-foreground);
+}
+.akwb .dr-keys .kbd {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 18px; height: 18px; padding: 0 5px;
+  background: var(--secondary);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+  color: var(--foreground);
+}
+.akwb .dr-keys .kbd-lbl { color: var(--muted-foreground); }
+
+.akwb .dr-close {
+  width: 32px; height: 32px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; border: 0;
+  border-radius: 8px;
+  color: var(--muted-foreground);
+  cursor: pointer;
+}
+.akwb .dr-close:hover { background: var(--secondary); color: var(--foreground); }
+
+.akwb .dr-body {
+  flex: 1; min-height: 0;
+  overflow: hidden;
+  background: var(--cream-50);
+  position: relative;
+}
+.akwb .dr-body .cal { height: 100%; }
