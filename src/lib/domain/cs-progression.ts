@@ -110,7 +110,10 @@ export function beregnCsProgresjon(sesjoner: ReadonlyArray<CsSesjon>): CsProgres
   for (const s of sesjoner) {
     const t = s.dato.getTime();
     if (t > anker.getTime()) continue; // ignorer framtidige
-    if (t >= cutoffGjeldende) {
+    // Eksklusiv øvre grense: en sesjon nøyaktig 4 uker før anker tilhører
+    // forrige periode (uke 5-8), ikke gjeldende — ellers lekker den inn i
+    // begge snitt og forskyver trenden.
+    if (t > cutoffGjeldende) {
       gjeldendeVerdier.push(s.csValue);
     } else if (t >= cutoffForrige) {
       forrigeVerdier.push(s.csValue);
