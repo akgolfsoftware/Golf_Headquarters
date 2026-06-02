@@ -20,6 +20,13 @@ type ActionResult<T extends object = {}> =
   | ({ ok: true } & T)
   | { ok: false; error: string };
 
+// DrillMestringsLogg/DrillRating finnes ikke i Prisma-schemaet ennå (planlagt
+// migrasjon). Guard hindrer runtime-krasj (kall på undefined delegate) inntil da.
+const MODELL_IKKE_KLAR = "Denne funksjonen aktiveres i en kommende oppdatering.";
+function drillModellKlar(navn: "drillMestringsLogg" | "drillRating"): boolean {
+  return Boolean((prisma as unknown as Record<string, unknown>)[navn]);
+}
+
 /**
  * Registrerer en mestrings-økt for en drill.
  * Sjekker om csScore >= csTarget for spillerens kategori og setter mestret=true.
@@ -68,6 +75,9 @@ export async function registrerMestringsOkt(
     }
   }
 
+  if (!drillModellKlar("drillMestringsLogg"))
+    return { ok: false, error: MODELL_IKKE_KLAR };
+
   // @ts-expect-error – DrillMestringsLogg er planlagt i neste Prisma-migrasjon
   await prisma.drillMestringsLogg.create({
     data: {
@@ -106,6 +116,9 @@ export async function rateDrill(
   if (!drill) return { ok: false, error: "Drill ikke funnet" };
 
   const spillerKategori = kategoriFraHcp(user.hcp);
+
+  if (!drillModellKlar("drillRating"))
+    return { ok: false, error: MODELL_IKKE_KLAR };
 
   // @ts-expect-error – DrillRating er planlagt i neste Prisma-migrasjon
   await prisma.drillRating.create({

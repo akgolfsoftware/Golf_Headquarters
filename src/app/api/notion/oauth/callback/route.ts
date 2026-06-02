@@ -14,6 +14,8 @@
 import "server-only";
 import { NextResponse, type NextRequest } from "next/server";
 import { createHmac } from "node:crypto";
+import { prisma } from "@/lib/prisma";
+import { encrypt } from "@/lib/notion/crypto";
 
 export const runtime = "nodejs";
 
@@ -110,11 +112,40 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // TODO: lagre access_token til NotionConnection-tabellen (kryptert)
-    // via /lib/notion/client.ts når Notion per-user OAuth er fullt implementert.
-    // For nå: logg og redirect OK.
-    const _tokenData = await tokenRes.json();
-    console.info("[notion/oauth/callback] token mottatt for userId:", userId);
+    // Lagre access_token kryptert til NotionConnection (upsert per bruker).
+    const tokenData = (await tokenRes.json()) as {
+      access_token?: string;
+      bot_id?: string;
+      workspace_id?: string;
+      workspace_name?: string;
+      workspace_icon?: string;
+    };
+
+    if (!tokenData.access_token || !tokenData.workspace_id) {
+      return NextResponse.redirect(
+        new URL(`${REDIRECT_BASE}?error=ufullstendig-token-respons`, url.origin),
+      );
+    }
+
+    await prisma.notionConnection.upsert({
+      where: { userId },
+      create: {
+        userId,
+        accessTokenEnc: encrypt(tokenData.access_token),
+        botId: tokenData.bot_id ?? null,
+        workspaceId: tokenData.workspace_id,
+        workspaceName: tokenData.workspace_name ?? "Notion",
+        workspaceIcon: tokenData.workspace_icon ?? null,
+      },
+      update: {
+        accessTokenEnc: encrypt(tokenData.access_token),
+        botId: tokenData.bot_id ?? null,
+        workspaceId: tokenData.workspace_id,
+        workspaceName: tokenData.workspace_name ?? "Notion",
+        workspaceIcon: tokenData.workspace_icon ?? null,
+        lastSyncError: null,
+      },
+    });
 
     return NextResponse.redirect(
       new URL(`${REDIRECT_BASE}?ok=1`, url.origin),

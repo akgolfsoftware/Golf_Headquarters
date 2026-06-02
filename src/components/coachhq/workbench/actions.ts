@@ -49,9 +49,20 @@ export async function sendCaddieMelding(
     };
   }
 
-  // TODO(authz): verifiser at coach har rettighet til spilleren via
-  //   PlayerCoachRelation eller tilsvarende tabell. Foreløpig stoler vi
-  //   på rolle-sjekken i requirePortalUser.
+  // Authz: en COACH kan kun chatte om spillere de faktisk har en aktiv
+  // enrollering på (PlayerEnrollment med endedAt = null). ADMIN har full tilgang.
+  if (coach.role !== "ADMIN") {
+    const relasjon = await prisma.playerEnrollment.findFirst({
+      where: { coachId: coach.id, userId: input.spillerId, endedAt: null },
+      select: { id: true },
+    });
+    if (!relasjon) {
+      return {
+        ok: false,
+        error: "Ingen tilgang — du er ikke koblet til denne spilleren.",
+      };
+    }
+  }
 
   const result = await chatCaddieMedSpiller({
     messages: input.messages,

@@ -65,6 +65,18 @@ async function main() {
     console.log(`  [${t.aarsak}] ${t.navn}`);
   }
 
+  // Sikkerhet: dry-run som standard. Krever eksplisitt --apply for å faktisk slette.
+  // Hindrer at en uhell-kjøring sletter produksjonsdata uten bekreftelse.
+  const apply = process.argv.includes("--apply");
+  if (!apply) {
+    console.log(
+      `\n[DRY-RUN] Ingenting slettet. Kjør med --apply for å slette ${skalSlettes.length} turneringer:`,
+    );
+    console.log("  npx tsx scripts/cleanup-tournaments.ts --apply");
+    await prisma.$disconnect();
+    return;
+  }
+
   // Slett — onDelete: Cascade på TournamentResult og TournamentEntry vil håndtere resten
   const result = await prisma.tournament.deleteMany({
     where: { id: { in: skalSlettes.map((t) => t.id) } },
