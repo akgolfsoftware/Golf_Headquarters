@@ -1,0 +1,1755 @@
+/* ============================================================
+   Workbench (Bolk 1) — ported v10 styles, scoped under .akwb
+   ------------------------------------------------------------
+   Source of truth: public/design-handover/v10/workbench-styles.css
+   (sections: frame, topbar, main, sidebar, calendar/week, day view,
+   inspector, statusbar). Kanban/Dashboard rules intentionally omitted
+   in this bolk.
+
+   TOKEN SHIM: v10 CSS uses var(--foreground) etc. as COMPLETE colors,
+   but the project's globals.css defines them as bare HSL triples
+   (used via hsl(var(--…))). We therefore re-declare the v10 color
+   variables as complete colors here, scoped to .akwb, using the
+   values from colors_and_type.css. We do NOT touch globals.css.
+   --pyr-* and --font-* are RAW values in globals.css already, so we
+   let them inherit (do not override).
+   ============================================================ */
+
+.akwb {
+  /* --- semantic colors as complete values (v10 expects these) --- */
+  --background: #fafaf7;
+  --foreground: #0a1f17;
+  --card: #ffffff;
+  --popover: #ffffff;
+  --primary: #005840;
+  --secondary: #f1eee5;
+  --accent: #d1f843;
+  --muted-foreground: #5e5c57;
+  --destructive: #a32d2d;
+  --success: #1a7d56;
+  --warning: #b8852a;
+  --info: #2563eb;
+  --border: #e5e3dd;
+  --input: #e0ddd6;
+  --ring: #005840;
+  --pure-white: #ffffff;
+
+  /* --- cream primitives (missing in globals.css) --- */
+  --cream-50: #fafaf7;
+  --cream-100: #f5f4ee;
+  --cream-200: #f1eee5;
+  --cream-300: #e5e3dd;
+  --cream-400: #e0ddd6;
+
+  /* --- shadows (v10) --- */
+  --shadow-xs: 0 1px 2px rgba(10, 31, 23, 0.04);
+  --shadow-lg: 0 12px 32px rgba(10, 31, 23, 0.12);
+  --shadow-lime: 0 6px 14px rgba(209, 248, 67, 0.25);
+
+  /* --pyr-fys/tek/slag/spill/turn and --font-sans/display/mono are
+     inherited from globals.css (raw values there). */
+
+  box-sizing: border-box;
+
+  /* The app <body> sets line-height: 1.5 (→ 24px), which cascades into
+     the workbench and makes every text element with no explicit
+     line-height taller than v10 (v10's standalone <body> is `normal`).
+     That extra leading pushed the sidebar groups below the 900px fold
+     and shifted the canvas/inspector down ~10px. Reset to `normal` here
+     so unset text matches v10's intrinsic line boxes. Elements that set
+     their own line-height in this file (1.2/1.25/1.3/1.4/1.55) are
+     unaffected — they keep their explicit values, exactly like v10. */
+  line-height: normal;
+}
+.akwb *,
+.akwb *::before,
+.akwb *::after {
+  box-sizing: border-box;
+}
+
+/* ===== Frame ===== */
+.akwb .wb {
+  width: 1440px;
+  height: 900px;
+  background: var(--cream-50);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  display: grid;
+  grid-template-rows: 56px 1fr 32px;
+  overflow: hidden;
+  font-feature-settings: "ss01", "cv11";
+}
+
+/* ============================================================
+   TOPBAR
+   ============================================================ */
+.akwb .wb-top {
+  display: grid;
+  grid-template-columns: 360px 1fr 540px;
+  align-items: center;
+  gap: 16px;
+  padding: 0 16px;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+}
+.akwb .wb-top .grp-l,
+.akwb .wb-top .grp-c,
+.akwb .wb-top .grp-r {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.akwb .wb-top .grp-r {
+  justify-content: flex-end;
+}
+
+.akwb .wb-mono {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.akwb .wb-mono img {
+  width: 21px;
+  height: auto;
+  display: block;
+}
+
+.akwb .wb-crumb {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted-foreground);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.akwb .wb-crumb .cur {
+  color: var(--foreground);
+}
+
+.akwb .wb-plan-toggle {
+  display: inline-flex;
+  background: var(--secondary);
+  border-radius: 9999px;
+  padding: 3px;
+  flex-shrink: 0;
+}
+.akwb .wb-plan-toggle .seg {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.akwb .wb-plan-toggle .seg.is-active {
+  background: var(--card);
+  color: var(--foreground);
+  box-shadow: var(--shadow-xs);
+}
+.akwb .wb-plan-toggle .seg.is-active .dot {
+  background: var(--accent);
+  box-shadow: 0 0 6px rgba(209, 248, 67, 0.7);
+}
+.akwb .wb-plan-toggle .seg .dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 9999px;
+  background: var(--muted-foreground);
+  opacity: 0.7;
+}
+
+/* ----- VIS toggle (A=kalender / B=liste) ----- */
+.akwb .wb-vis-toggle {
+  display: inline-flex;
+  background: var(--secondary);
+  border-radius: 6px;
+  padding: 2px;
+  flex-shrink: 0;
+  border: 1px solid rgba(0, 88, 64, 0.18);
+}
+.akwb .wb-vis-toggle .seg {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted-foreground);
+  border: 0;
+  background: transparent;
+  padding: 4px 9px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.akwb .wb-vis-toggle .seg.is-active {
+  background: var(--primary);
+  color: var(--accent);
+  box-shadow: var(--shadow-xs);
+}
+.akwb .wb-vis-toggle .seg.is-active svg {
+  color: var(--accent);
+}
+
+/* ----- AI Command Bar ----- */
+.akwb .wb-ai {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.akwb .wb-ai .input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 12px;
+  background: var(--card);
+  border: 1px solid var(--input);
+  border-radius: 10px;
+  box-shadow: var(--shadow-xs);
+}
+.akwb .wb-ai .input-wrap:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(0, 88, 64, 0.1);
+}
+.akwb .wb-ai .input-wrap .spk {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: var(--primary);
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.akwb .wb-ai input {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  flex: 1;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--foreground);
+  min-width: 0;
+}
+.akwb .wb-ai input::placeholder {
+  color: var(--muted-foreground);
+  opacity: 0.8;
+}
+.akwb .wb-ai .kbd {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--muted-foreground);
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--secondary);
+  letter-spacing: 0.04em;
+}
+.akwb .wb-ai .chips {
+  display: flex;
+  gap: 6px;
+  padding: 0 4px;
+}
+.akwb .wb-ai .chip {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+}
+.akwb .wb-ai .chip:hover {
+  color: var(--foreground);
+  border-color: var(--foreground);
+}
+.akwb .wb-ai .chip.is-on {
+  background: var(--accent);
+  color: var(--primary);
+  border-color: var(--accent);
+}
+
+/* ----- Zoom + mode toggles ----- */
+.akwb .seg-group {
+  display: inline-flex;
+  align-items: center;
+  background: var(--secondary);
+  border-radius: 9999px;
+  padding: 3px;
+}
+.akwb .seg-group .s {
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 9999px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted-foreground);
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.akwb .seg-group .s.is-on {
+  background: var(--card);
+  color: var(--foreground);
+  box-shadow: var(--shadow-xs);
+  position: relative;
+}
+.akwb .seg-group .s.is-on::after {
+  content: "";
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 2px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 9999px;
+}
+.akwb .seg-group .s svg {
+  width: 14px;
+  height: 14px;
+}
+
+.akwb .wb-nav-btns {
+  display: inline-flex;
+  gap: 2px;
+}
+.akwb .wb-nav-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--muted-foreground);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.akwb .wb-nav-btn:hover {
+  color: var(--foreground);
+}
+.akwb .wb-nav-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.akwb .wb-btn-ghost {
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--foreground);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+.akwb .wb-btn-ghost:hover {
+  background: var(--secondary);
+}
+.akwb .wb-btn-ghost svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Search field (coach) */
+.akwb .wb-search {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 10px;
+  background: var(--secondary);
+  border-radius: 8px;
+  color: var(--muted-foreground);
+  min-width: 180px;
+}
+.akwb .wb-search input {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  flex: 1;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--foreground);
+  min-width: 0;
+}
+.akwb .wb-search input::placeholder {
+  color: var(--muted-foreground);
+}
+.akwb .wb-search svg {
+  width: 14px;
+  height: 14px;
+}
+
+.akwb .wb-bell {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: var(--secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--foreground);
+  cursor: pointer;
+  border: 0;
+}
+.akwb .wb-bell .badge {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 9999px;
+  background: var(--destructive);
+  color: var(--pure-white);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--card);
+}
+
+/* ============================================================
+   MAIN — sidebar | calendar | inspector
+   ============================================================ */
+.akwb .wb-main {
+  display: grid;
+  grid-template-columns: 280px 1fr 320px;
+  overflow: hidden;
+  height: 100%;
+}
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+.akwb .sb {
+  background: var(--card);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+.akwb .sb::-webkit-scrollbar {
+  width: 6px;
+}
+.akwb .sb::-webkit-scrollbar-thumb {
+  background: var(--cream-300);
+  border-radius: 9999px;
+}
+
+.akwb .grp {
+  border-bottom: 1px solid var(--border);
+}
+.akwb .grp:last-child {
+  border-bottom: 0;
+}
+.akwb .grp-head {
+  display: grid;
+  grid-template-columns: 16px 1fr auto 12px;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 14px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+  outline: none;
+  color: var(--foreground);
+}
+.akwb .grp-head:hover {
+  background: rgba(0, 88, 64, 0.04);
+}
+.akwb .grp-head > svg:first-child {
+  /* v10 renders the leading group icon at its intrinsic 14×14 (the v10
+     `.grp-head .ic { 16px }` rule never applies — the <i data-lucide>
+     carries no `.ic` class). Forcing 16px made each grp-head 36px vs
+     v10's 34px and added to the sidebar overflow. Match v10 at 14px. */
+  width: 14px;
+  height: 14px;
+  color: var(--muted-foreground);
+}
+.akwb .grp-head .lbl {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--foreground);
+}
+.akwb .grp-head .ct {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--muted-foreground);
+  font-feature-settings: "tnum", "zero";
+}
+.akwb .grp-head > svg:last-child {
+  /* v10 chevron points right on BOTH open and collapsed groups — its
+     rotation rule targets `.chev`, a class the <i data-lucide> never
+     gets, so it never fires. Keep it static (no rotation). */
+  width: 12px;
+  height: 12px;
+  color: var(--muted-foreground);
+}
+.akwb .grp.is-open .grp-head > svg:last-child {
+  color: var(--foreground);
+}
+.akwb .grp-body {
+  padding: 4px 12px 12px;
+  display: none;
+}
+.akwb .grp.is-open .grp-body {
+  display: block;
+}
+
+/* Tree rows */
+.akwb .tr-row {
+  display: grid;
+  grid-template-columns: 14px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--foreground);
+}
+.akwb .tr-row:hover {
+  background: rgba(0, 88, 64, 0.05);
+}
+.akwb .tr-row.is-active {
+  background: rgba(209, 248, 67, 0.18);
+}
+.akwb .tr-row > svg:first-child {
+  /* Same as the group chevron: v10's `.tr-chev` rotation never applies
+     to the bare <i data-lucide>, so the tree-row chevron always points
+     right. Keep it static. */
+  width: 12px;
+  height: 12px;
+  color: var(--muted-foreground);
+}
+.akwb .tr-row.is-open > svg:first-child {
+  color: var(--foreground);
+}
+.akwb .tr-name {
+  font-size: 12px;
+  line-height: 1.3;
+  letter-spacing: -0.005em;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.akwb .tr-name .nm-meta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted-foreground);
+  font-weight: 500;
+}
+.akwb .tr-period-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  flex-shrink: 0;
+}
+.akwb .tr-period-dot.grunn {
+  background: var(--pyr-fys);
+}
+.akwb .tr-period-dot.spes {
+  background: var(--pyr-tek);
+}
+.akwb .tr-period-dot.turn {
+  background: var(--pyr-turn);
+}
+.akwb .tr-live {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--accent);
+  box-shadow: 0 0 6px rgba(209, 248, 67, 0.7);
+}
+.akwb .tr-children {
+  margin-left: 18px;
+  border-left: 1px dashed var(--border);
+  padding-left: 8px;
+}
+
+.akwb .tr-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 16px;
+  padding: 0 6px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.akwb .tr-tag.rest {
+  background: rgba(0, 88, 64, 0.1);
+  color: #075440;
+}
+.akwb .tr-tag.fer {
+  background: rgba(184, 133, 42, 0.14);
+  color: #6b4d11;
+}
+.akwb .tr-tag.eks {
+  background: rgba(163, 45, 45, 0.1);
+  color: #7a1e1e;
+}
+.akwb .tr-tag.test {
+  background: rgba(37, 99, 235, 0.1);
+  color: #1846a8;
+}
+
+/* Standardøkter / drag rows */
+.akwb .oekt {
+  display: grid;
+  grid-template-columns: 12px 8px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  border-radius: 8px;
+  cursor: grab;
+}
+.akwb .oekt:hover {
+  background: rgba(0, 88, 64, 0.05);
+}
+.akwb .oekt > svg:first-child {
+  color: var(--muted-foreground);
+  opacity: 0.5;
+  display: inline-flex;
+}
+.akwb .oekt:hover > svg:first-child {
+  opacity: 1;
+}
+.akwb .ax {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+}
+.akwb .ax.fys {
+  background: var(--pyr-fys);
+}
+.akwb .ax.tek {
+  background: var(--pyr-tek);
+}
+.akwb .ax.slag {
+  background: var(--pyr-slag);
+}
+.akwb .ax.spill {
+  background: var(--pyr-spill);
+}
+.akwb .ax.turn {
+  background: var(--pyr-turn);
+}
+.akwb .oekt .nm {
+  font-size: 12px;
+  line-height: 1.25;
+  letter-spacing: -0.005em;
+}
+.akwb .oekt .nm .sub {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--muted-foreground);
+  margin-top: 2px;
+  letter-spacing: 0.04em;
+}
+.akwb .oekt .dur {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--muted-foreground);
+  font-feature-settings: "tnum", "zero";
+}
+
+.akwb .create-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: 6px;
+  padding: 7px 10px;
+  background: transparent;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.akwb .create-btn:hover {
+  background: rgba(0, 88, 64, 0.04);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+.akwb .create-btn svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Planer */
+.akwb .plan-row {
+  display: grid;
+  grid-template-columns: 8px 1fr auto;
+  align-items: center;
+  column-gap: 8px;
+  padding: 6px 4px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.akwb .plan-row:hover {
+  background: rgba(0, 88, 64, 0.05);
+}
+.akwb .plan-row .pd {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--muted-foreground);
+  opacity: 0.4;
+}
+.akwb .plan-row.is-active .pd {
+  background: var(--accent);
+  opacity: 1;
+  box-shadow: 0 0 6px rgba(209, 248, 67, 0.7);
+}
+.akwb .plan-row .pn {
+  font-size: 12px;
+  color: var(--foreground);
+  letter-spacing: -0.005em;
+}
+.akwb .plan-row.is-active .pn {
+  font-weight: 600;
+}
+.akwb .plan-row .meta {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--muted-foreground);
+  letter-spacing: 0.04em;
+}
+
+/* Turneringer mini */
+.akwb .turn-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  column-gap: 8px;
+  padding: 6px 4px;
+  border-radius: 6px;
+  cursor: grab;
+}
+.akwb .turn-row:hover {
+  background: rgba(0, 88, 64, 0.05);
+}
+.akwb .turn-row .tn {
+  font-size: 12px;
+  color: var(--foreground);
+  line-height: 1.25;
+  letter-spacing: -0.005em;
+}
+.akwb .turn-row .td {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--muted-foreground);
+  background: var(--secondary);
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 9999px;
+  letter-spacing: 0.06em;
+}
+.akwb .turn-row .td.soon {
+  background: rgba(163, 45, 45, 0.1);
+  color: var(--destructive);
+}
+
+/* Mål */
+.akwb .goal-row {
+  display: grid;
+  grid-template-columns: 1fr 44px;
+  align-items: center;
+  column-gap: 8px;
+  row-gap: 4px;
+  padding: 5px 4px;
+}
+.akwb .goal-row .gn {
+  font-size: 12px;
+  color: var(--foreground);
+  letter-spacing: -0.005em;
+}
+.akwb .goal-row .gn .gm {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--muted-foreground);
+  margin-top: 2px;
+  letter-spacing: 0.04em;
+}
+.akwb .goal-row .gpct {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  text-align: right;
+  font-feature-settings: "tnum", "zero";
+  color: var(--muted-foreground);
+}
+.akwb .goal-bar {
+  grid-column: 1 / -1;
+  height: 4px;
+  background: rgba(0, 88, 64, 0.06);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.akwb .goal-bar .fl {
+  height: 100%;
+}
+.akwb .goal-bar.fys .fl {
+  background: var(--pyr-fys);
+}
+.akwb .goal-bar.tek .fl {
+  background: var(--pyr-tek);
+}
+.akwb .goal-bar.spill .fl {
+  background: var(--pyr-spill);
+}
+
+/* Pyramide-bars in sidebar */
+.akwb .py-row {
+  display: grid;
+  grid-template-columns: 38px 1fr 44px;
+  align-items: center;
+  column-gap: 8px;
+  padding: 5px 4px;
+}
+.akwb .py-row .lbl {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.akwb .py-bar {
+  position: relative;
+  height: 8px;
+  background: rgba(0, 88, 64, 0.06);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.akwb .py-bar .fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: 9999px;
+}
+.akwb .py-bar .midline {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  left: 50%;
+  width: 1px;
+  background: var(--border);
+}
+.akwb .py-fill.fys {
+  background: var(--pyr-fys);
+}
+.akwb .py-fill.tek {
+  background: var(--pyr-tek);
+}
+.akwb .py-fill.slag {
+  background: var(--pyr-slag);
+}
+.akwb .py-fill.spill {
+  background: var(--pyr-spill);
+}
+.akwb .py-fill.turn {
+  background: var(--pyr-turn);
+}
+.akwb .py-sg {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  text-align: right;
+  font-feature-settings: "tnum", "zero";
+  color: var(--muted-foreground);
+}
+.akwb .py-sg.pos {
+  color: var(--success);
+}
+.akwb .py-sg.neg {
+  color: var(--destructive);
+}
+
+.akwb .py-alarm {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 8px;
+  background: rgba(163, 45, 45, 0.06);
+  border: 1px solid rgba(163, 45, 45, 0.18);
+  border-radius: 8px;
+}
+.akwb .py-alarm svg {
+  width: 12px;
+  height: 12px;
+  color: var(--destructive);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.akwb .py-alarm .tx {
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--foreground);
+}
+.akwb .py-alarm .tx b {
+  color: var(--destructive);
+  font-weight: 700;
+}
+
+/* ============================================================
+   CALENDAR (week view default)
+   ============================================================ */
+.akwb .cal {
+  display: flex;
+  flex-direction: column;
+  background: var(--cream-50);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Week-row header */
+.akwb .cal-week-head {
+  display: grid;
+  grid-template-columns: 56px repeat(5, 1fr);
+  border-bottom: 1px solid var(--border);
+  background: var(--cream-50);
+}
+.akwb .cal-week-head .day {
+  padding: 12px 12px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.akwb .cal-week-head .day:last-child {
+  border-right: 0;
+}
+.akwb .cal-week-head .day.gutter {
+  padding: 12px 4px;
+}
+.akwb .cal-week-head .day .dow {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted-foreground);
+}
+.akwb .cal-week-head .day .dt {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.015em;
+  color: var(--foreground);
+  font-feature-settings: "tnum", "zero";
+}
+.akwb .cal-week-head .day .dt.today {
+  color: var(--primary);
+}
+.akwb .cal-week-head .day .dt.today::after {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-left: 4px;
+  vertical-align: middle;
+  background: var(--accent);
+  border-radius: 9999px;
+  box-shadow: 0 0 6px rgba(209, 248, 67, 0.7);
+}
+.akwb .cal-week-head .day .sub {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--muted-foreground);
+  letter-spacing: 0.06em;
+}
+
+.akwb .cal-week-grid {
+  display: grid;
+  grid-template-columns: 56px repeat(5, 1fr);
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* Period band (background overlay) */
+.akwb .cal-week-grid .period-band {
+  grid-column: 2 / -1;
+  grid-row: 1;
+  background: linear-gradient(180deg, rgba(184, 133, 42, 0.06) 0%, rgba(184, 133, 42, 0.02) 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 0;
+}
+.akwb .cal-week-grid .period-band .eb {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #6b4d11;
+}
+.akwb .cal-week-grid .period-band .name {
+  font-size: 12px;
+  color: var(--foreground);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+.akwb .cal-week-grid .period-band .focus {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted-foreground);
+  letter-spacing: 0.04em;
+  margin-left: auto;
+}
+
+.akwb .cal-time-col {
+  border-right: 1px solid var(--border);
+  background: var(--cream-50);
+  position: relative;
+  grid-row: 2;
+}
+.akwb .cal-time-col .h {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 6px;
+  align-items: flex-start;
+  pointer-events: none;
+}
+.akwb .cal-time-col .h::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 4px;
+  height: 1px;
+  background: var(--border);
+}
+.akwb .cal-time-col .h .t {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--muted-foreground);
+  letter-spacing: 0.04em;
+  transform: translateY(-50%);
+}
+
+.akwb .cal-day-col {
+  border-right: 1px solid var(--border);
+  position: relative;
+  background: var(--cream-50);
+  grid-row: 2;
+}
+.akwb .cal-day-col:last-child {
+  border-right: 0;
+}
+.akwb .cal-day-col .hline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--border);
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* Event block */
+.akwb .event {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--muted-foreground);
+  border-radius: 8px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(10, 31, 23, 0.04);
+}
+.akwb .event.is-selected {
+  box-shadow:
+    0 0 0 2px var(--primary),
+    0 4px 14px rgba(10, 31, 23, 0.1);
+  z-index: 3;
+}
+.akwb .event.fys {
+  border-left-color: var(--pyr-fys);
+}
+.akwb .event.tek {
+  border-left-color: var(--pyr-tek);
+}
+.akwb .event.slag {
+  border-left-color: var(--pyr-slag);
+}
+.akwb .event.spill {
+  border-left-color: var(--pyr-spill);
+}
+.akwb .event.turn {
+  border-left-color: var(--pyr-turn);
+}
+.akwb .event.group {
+  background: var(--secondary);
+}
+.akwb .event .eb {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted-foreground);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.akwb .event .eb .ax {
+  width: 6px;
+  height: 6px;
+}
+.akwb .event .ttl {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.005em;
+  color: var(--foreground);
+}
+.akwb .event .meta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted-foreground);
+  letter-spacing: 0.04em;
+  font-feature-settings: "tnum", "zero";
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.akwb .event .meta svg {
+  width: 10px;
+  height: 10px;
+}
+.akwb .event .chips {
+  display: inline-flex;
+  gap: 4px;
+  margin-top: 2px;
+  flex-wrap: wrap;
+}
+.akwb .event .gchip {
+  height: 16px;
+  padding: 0 6px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  display: inline-flex;
+  align-items: center;
+  background: rgba(0, 88, 64, 0.08);
+  color: #075440;
+}
+.akwb .event .gchip.wang {
+  background: rgba(94, 92, 107, 0.1);
+  color: #4a4858;
+}
+.akwb .event .gchip.aka {
+  background: var(--secondary);
+  color: var(--muted-foreground);
+}
+
+/* Tournament pillar — spans column tall */
+.akwb .event.tournament {
+  background: linear-gradient(180deg, rgba(163, 45, 45, 0.06), rgba(163, 45, 45, 0.02));
+  border: 1px solid rgba(163, 45, 45, 0.3);
+  border-left: 3px solid var(--pyr-turn);
+}
+
+/* "Now" line */
+.akwb .now-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent);
+  z-index: 2;
+  pointer-events: none;
+  box-shadow: 0 0 6px rgba(209, 248, 67, 0.6);
+}
+.akwb .now-line::before {
+  content: "";
+  position: absolute;
+  left: -4px;
+  top: -3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: var(--accent);
+  box-shadow: 0 0 8px rgba(209, 248, 67, 0.8);
+}
+
+/* ============================================================
+   INSPECTOR
+   ============================================================ */
+.akwb .insp {
+  background: var(--card);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+.akwb .insp::-webkit-scrollbar {
+  width: 6px;
+}
+.akwb .insp::-webkit-scrollbar-thumb {
+  background: var(--cream-300);
+  border-radius: 9999px;
+}
+
+.akwb .insp-head {
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.akwb .insp-head .eb {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted-foreground);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.akwb .insp-head .ttl {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+  color: var(--foreground);
+  margin-top: 2px;
+}
+.akwb .insp-head .sub {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted-foreground);
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+.akwb .insp-head .sub .ax {
+  width: 7px;
+  height: 7px;
+}
+
+.akwb .insp-sec {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.akwb .insp-sec:last-child {
+  border-bottom: 0;
+}
+.akwb .insp-sec .sec-lbl {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted-foreground);
+  margin-bottom: 10px;
+}
+
+.akwb .insp-kpis {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+.akwb .insp-kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.akwb .insp-kpi .v {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  font-feature-settings: "tnum", "zero";
+}
+.akwb .insp-kpi .l {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted-foreground);
+}
+
+/* Mini pyramide (stacked horizontal bars in inspector) */
+.akwb .mp {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.akwb .mp .mp-row {
+  display: grid;
+  grid-template-columns: 32px 1fr 56px;
+  align-items: center;
+  gap: 6px;
+}
+.akwb .mp .mp-row .l {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.akwb .mp .mp-row .b {
+  height: 8px;
+  background: rgba(0, 88, 64, 0.06);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.akwb .mp .mp-row .b .f {
+  height: 100%;
+  border-radius: 9999px;
+}
+.akwb .mp .mp-row .f.fys {
+  background: var(--pyr-fys);
+}
+.akwb .mp .mp-row .f.tek {
+  background: var(--pyr-tek);
+}
+.akwb .mp .mp-row .f.slag {
+  background: var(--pyr-slag);
+}
+.akwb .mp .mp-row .f.spill {
+  background: var(--pyr-spill);
+}
+.akwb .mp .mp-row .f.turn {
+  background: var(--pyr-turn);
+}
+.akwb .mp .mp-row .v {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted-foreground);
+  text-align: right;
+  font-feature-settings: "tnum", "zero";
+}
+
+/* Test cards (2-col grid in inspector) */
+.akwb .test-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.akwb .test-card {
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+}
+.akwb .test-card:hover {
+  background: var(--secondary);
+}
+.akwb .test-card .tlbl {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted-foreground);
+}
+.akwb .test-card .tnm {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.005em;
+}
+.akwb .test-card .tdue {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--muted-foreground);
+  letter-spacing: 0.04em;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.akwb .test-card .tdue.overdue {
+  color: var(--destructive);
+  font-weight: 700;
+}
+.akwb .test-card .tdue svg {
+  width: 9px;
+  height: 9px;
+}
+
+.akwb .insp-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 10px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--primary);
+  cursor: pointer;
+  text-decoration: none;
+}
+.akwb .insp-link:hover {
+  text-decoration: underline;
+}
+.akwb .insp-link svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Coach actions */
+.akwb .coach-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.akwb .coach-act {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--foreground);
+  letter-spacing: -0.005em;
+  text-align: left;
+}
+.akwb .coach-act:hover {
+  background: var(--secondary);
+}
+.akwb .coach-act svg {
+  width: 14px;
+  height: 14px;
+  color: var(--muted-foreground);
+}
+.akwb .coach-act.pri {
+  background: var(--primary);
+  color: var(--accent);
+  border-color: var(--primary);
+}
+.akwb .coach-act.pri svg {
+  color: var(--accent);
+}
+
+/* ============================================================
+   STATUSBAR
+   ============================================================ */
+.akwb .wb-status {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 16px;
+  background: var(--card);
+  border-top: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted-foreground);
+  letter-spacing: 0.02em;
+  font-feature-settings: "tnum", "zero";
+  overflow: hidden;
+}
+.akwb .wb-status .sb-sep {
+  width: 1px;
+  height: 12px;
+  background: var(--border);
+}
+.akwb .wb-status .sb-key {
+  color: var(--foreground);
+  font-weight: 600;
+}
+.akwb .wb-status .ax-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 9999px;
+  background: var(--secondary);
+}
+.akwb .wb-status .ax-pill .d {
+  width: 5px;
+  height: 5px;
+  border-radius: 9999px;
+}
+.akwb .wb-status .ax-pill .d.fys {
+  background: var(--pyr-fys);
+}
+.akwb .wb-status .ax-pill .d.tek {
+  background: var(--pyr-tek);
+}
+.akwb .wb-status .ax-pill .d.slag {
+  background: var(--pyr-slag);
+}
+.akwb .wb-status .ax-pill .d.spill {
+  background: var(--pyr-spill);
+}
+.akwb .wb-status .ax-pill .d.turn {
+  background: var(--pyr-turn);
+}
+.akwb .wb-status .warn {
+  color: var(--warning);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.akwb .wb-status .pending {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.akwb .wb-status .pending svg {
+  width: 11px;
+  height: 11px;
+}
+
+/* ============================================================
+   DAY VIEW — vertical timeline single column
+   ============================================================ */
+.akwb .day-grid {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+}
+.akwb .day-grid .time-col {
+  border-right: 1px solid var(--border);
+  position: relative;
+  background: var(--cream-50);
+}
+.akwb .day-grid .day-col {
+  position: relative;
+  background: var(--cream-50);
+}
+
+/* Big day event with drill list */
+.akwb .day-event {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--muted-foreground);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: var(--shadow-xs);
+}
+.akwb .day-event.fys {
+  border-left-color: var(--pyr-fys);
+}
+.akwb .day-event.tek {
+  border-left-color: var(--pyr-tek);
+}
+.akwb .day-event.slag {
+  border-left-color: var(--pyr-slag);
+}
+.akwb .day-event.spill {
+  border-left-color: var(--pyr-spill);
+}
+.akwb .day-event.turn {
+  border-left-color: var(--pyr-turn);
+}
+.akwb .day-event .eb {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted-foreground);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.akwb .day-event .ttl {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+}
+.akwb .day-event .meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted-foreground);
+  letter-spacing: 0.04em;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-feature-settings: "tnum", "zero";
+}
+.akwb .day-event .meta svg {
+  width: 11px;
+  height: 11px;
+}
+
+.akwb .drill-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}
+.akwb .drill {
+  display: grid;
+  grid-template-columns: 18px 1fr auto auto;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: var(--cream-50);
+  border: 1px solid var(--border);
+}
+.akwb .drill .num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--muted-foreground);
+}
+.akwb .drill .nm {
+  font-size: 12px;
+  color: var(--foreground);
+  letter-spacing: -0.005em;
+}
+.akwb .drill .nm .sub {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--muted-foreground);
+  margin-left: 6px;
+  letter-spacing: 0.04em;
+}
+.akwb .drill .reps,
+.akwb .drill .tm {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--muted-foreground);
+  font-feature-settings: "tnum", "zero";
+}
+.akwb .drill .tm {
+  color: var(--foreground);
+}
+
+.akwb .day-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 9999px;
+  background: var(--accent);
+  color: var(--primary);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  align-self: flex-start;
+  border: 0;
+  cursor: pointer;
+  box-shadow: var(--shadow-lime);
+  text-decoration: none;
+}
+.akwb .day-cta svg {
+  width: 14px;
+  height: 14px;
+}
