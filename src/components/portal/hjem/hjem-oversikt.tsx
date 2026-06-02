@@ -48,6 +48,13 @@ import type { AiInsight } from "@/components/portal/workbench/ai-insights-row";
 
 // ── Foto-hero — design-handover §1 (320px, dark gradient, eyebrow + greeting) ──
 function FotoHero({ data }: { data: HjemData }) {
+  const naa = new Date();
+  const hilsen =
+    naa.getHours() < 11
+      ? "God morgen"
+      : naa.getHours() < 18
+        ? "God dag"
+        : "God kveld";
   return (
     <header className="relative overflow-hidden rounded-[20px] shadow-[0_20px_48px_-12px_rgba(10,31,23,0.18)]">
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -110,7 +117,7 @@ function FotoHero({ data }: { data: HjemData }) {
           </span>
         </div>
 
-        {/* Eyebrow + greeting */}
+        {/* Eyebrow + greeting + headline (v10-struktur) */}
         <div className="mt-8">
           <div className="flex items-center gap-2">
             <PulseDot size="sm" />
@@ -118,19 +125,18 @@ function FotoHero({ data }: { data: HjemData }) {
               {data.datoEyebrow}
             </span>
           </div>
-          <h1 className="mt-2.5 font-display text-[30px] font-bold leading-[1.05] tracking-[-0.025em] text-background">
+          <span className="mt-3 block font-display text-lg font-medium italic text-accent">
+            {hilsen}, {data.user.fornavn}.
+          </span>
+          <h1 className="mt-1 font-display text-[30px] font-bold leading-[1.05] tracking-[-0.025em] text-background">
             {data.headlineNormal}
             {data.headlineAksent && (
               <span className="italic font-normal text-accent">
                 {data.headlineAksent}
               </span>
             )}
+            {data.metaLinje ? ` ${data.metaLinje}` : ""}
           </h1>
-          {data.metaLinje && (
-            <p className="mt-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.06em] text-background/70">
-              {data.metaLinje}
-            </p>
-          )}
         </div>
       </div>
     </header>
