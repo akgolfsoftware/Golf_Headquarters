@@ -39,7 +39,9 @@ enum BookingStatus {
 enum SessionStatus {
   PLANNED
   ACTIVE
+  PAUSED
   COMPLETED
+  ABANDONED
   SKIPPED
   CANCELLED
 }
@@ -847,6 +849,7 @@ model TrainingPlanSession {
   lPhase        LPhase?
   pressureLevel PressureLevel?
   status        SessionStatus       @default(PLANNED)
+  liveSnapshot  Json? // Løpende live-fremdrift (reps/tid per drill). Nulles ved completeSession.
   createdAt     DateTime            @default(now())
   updatedAt     DateTime            @updatedAt
 
@@ -1051,6 +1054,9 @@ model TrainingPlanSessionLog {
   csAchieved        Int?
   notes             String? // Spillerens egne notater fra live-økt
   rating            Int? // 1-5, spillerens mood/rating
+  totalReps         Int? // Sum faktiske reps logget i økta (frosset ved fullføring)
+  drillAggregates   Json? // Per-drill aggregat: reps, elapsedSec, CS/M/PR, notat (frosset ved fullføring)
+  abandonReason     String? // Valgfri årsak når økta ble forlatt (ABANDONED)
   coachFeedback     String? // Coachens tilbakemelding på fullført økt
   coachFeedbackAt   DateTime?
   coachFeedbackById String?

@@ -13,13 +13,14 @@
  * Finnes ingen snapshot (direkte navigasjon) vises planen — ALDRI falske tall.
  */
 
-import { useMemo, useSyncExternalStore } from "react";
+import { useMemo, useSyncExternalStore, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Check, Send, Star, Trophy, Video, X } from "lucide-react";
 import type { LiveSessionData } from "@/lib/portal-live/types";
 import { fmtMSS, formatDateEyebrow, AXIS_LABEL } from "@/lib/portal-live/format";
 import { AXIS_SHORT, axisDotColor } from "./axis";
 import { liveSnapshotKey, type LiveSnapshot } from "./snapshot";
+import { completeSession } from "@/app/portal/(fullscreen)/live/[sessionId]/actions";
 
 export function LiveSummary({ data }: { data: LiveSessionData }) {
   const router = useRouter();
@@ -45,23 +46,24 @@ export function LiveSummary({ data }: { data: LiveSessionData }) {
     }
   }, [rawSnap]);
 
-  // Per-drill faktisk fra snapshot, ellers fall tilbake til 0-logget.
-  const perDrill = useMemo(
-    () =>
-      data.drills.map((d) => {
-        const logged = snap?.drills.find((x) => x.drillId === d.id);
-        return {
-          ...d,
-          actualReps: logged?.reps ?? 0,
-          elapsedSec: logged?.elapsedSec ?? 0,
-          completed: logged?.status === "done",
-        };
-      }),
-    [data.drills, snap],
-  );
+  // Per-drill faktisk: foretrekk DB-snapshot (durabelt), fall tilbake til
+  // sessionStorage, ellers 0-logget.
+  const perDrill = useMemo(() => {
+    const live = data.liveSnapshot?.drills ?? snap?.drills ?? [];
+    return data.drills.map((d) => {
+      const logged = live.find((x) => x.drillId === d.id);
+      return {
+        ...d,
+        actualReps: logged?.reps ?? 0,
+        elapsedSec: logged?.elapsedSec ?? 0,
+        completed: logged?.status === "done",
+      };
+    });
+  }, [data.drills, data.liveSnapshot, snap]);
 
   const totalActualReps = perDrill.reduce((s, d) => s + d.actualReps, 0);
-  const totalElapsedSec = snap?.totalSec ?? perDrill.reduce((s, d) => s + d.elapsedSec, 0);
+  const totalElapsedSec =
+    data.liveSnapshot?.totalSec ?? snap?.totalSec ?? perDrill.reduce((s, d) => s + d.elapsedSec, 0);
   const completedDrills = perDrill.filter((d) => d.completed).length;
   const repDelta = data.totalPlannedReps > 0 ? totalActualReps - data.totalPlannedReps : 0;
 
@@ -91,12 +93,23 @@ export function LiveSummary({ data }: { data: LiveSessionData }) {
   const dateEyebrow = `${formatDateEyebrow(data.scheduledAtISO)} · ${AXIS_LABEL[data.axis].toUpperCase()}`;
   const heroTitle = lowCompliance ? "Økt loggført" : "Økt fullført";
 
-  function close() {
+  const [pending, startTransition] = useTransition();
+
+  // Fullfør økta: fryser aggregat til DB og nuller snapshot (completeSession
+  // redirigerer til økt-detalj eller feiring).
+  function handleComplete() {
     try {
       sessionStorage.removeItem(liveSnapshotKey(data.sessionId));
     } catch {
       /* ignore */
     }
+    startTransition(async () => {
+      await completeSession({ sessionId: data.sessionId });
+    });
+  }
+
+  // Lukk uten å fullføre — økta forblir aktiv/resumbar.
+  function close() {
     router.push("/portal/tren");
   }
 
@@ -283,18 +296,20 @@ export function LiveSummary({ data }: { data: LiveSessionData }) {
       >
         <button
           type="button"
-          onClick={close}
-          className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-accent font-mono text-[14px] font-extrabold uppercase tracking-[0.08em] text-accent-foreground"
+          onClick={handleComplete}
+          disabled={pending}
+          className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-accent font-mono text-[14px] font-extrabold uppercase tracking-[0.08em] text-accent-foreground disabled:opacity-60"
           style={{ boxShadow: "0 4px 16px hsl(var(--accent) / 0.28)" }}
         >
           <Send className="h-4 w-4" strokeWidth={2} aria-hidden />
-          Lagre og del med coach
+          {pending ? "Lagrer …" : "Lagre og del med coach"}
           <ArrowRight className="h-4 w-4" strokeWidth={2.5} aria-hidden />
         </button>
         <button
           type="button"
-          onClick={close}
-          className="mt-3 inline-flex h-11 w-full items-center justify-center font-mono text-[12px] font-bold uppercase tracking-[0.08em] text-background/55 hover:text-background"
+          onClick={handleComplete}
+          disabled={pending}
+          className="mt-3 inline-flex h-11 w-full items-center justify-center font-mono text-[12px] font-bold uppercase tracking-[0.08em] text-background/55 hover:text-background disabled:opacity-60"
         >
           Bare lagre
         </button>

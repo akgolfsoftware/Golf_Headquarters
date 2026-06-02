@@ -32,6 +32,13 @@ import type { LiveDrill, LiveSessionData } from "@/lib/portal-live/types";
 import { fmtMSS } from "@/lib/portal-live/format";
 import { AXIS_SHORT, axisDotColor } from "./axis";
 import { writeLiveSnapshot } from "./snapshot";
+import { useLiveAutosave, type LiveSnapshotContent } from "./use-live-autosave";
+import {
+  startSession,
+  pauseLiveSession,
+  resumeLiveSession,
+  abandonLiveSession,
+} from "@/app/portal/(fullscreen)/live/[sessionId]/actions";
 
 type Phase = "active" | "transition";
 
@@ -40,6 +47,26 @@ type DrillState = LiveDrill & {
   elapsedSec: number;
   status: "done" | "active" | "queued";
 };
+
+/** Bygg initial drill-state fra plan + ev. lagret snapshot (gjenoppta). */
+function buildInitialDrills(data: LiveSessionData): DrillState[] {
+  const snap = data.liveSnapshot;
+  const drills: DrillState[] = data.drills.map((d, i) => {
+    const s = snap?.drills.find((x) => x.drillId === d.id);
+    return {
+      ...d,
+      reps: s?.reps ?? 0,
+      elapsedSec: s?.elapsedSec ?? 0,
+      status: s?.status ?? (i === 0 ? "active" : "queued"),
+    };
+  });
+  // Normaliser: sørg for nøyaktig én aktiv drill hvis det finnes ikke-ferdige.
+  if (!drills.some((d) => d.status === "active")) {
+    const firstQueued = drills.find((d) => d.status === "queued");
+    if (firstQueued) firstQueued.status = "active";
+  }
+  return drills;
+}
 
 function vibrate(pattern: number | number[]) {
   if (typeof navigator !== "undefined" && "vibrate" in navigator) {
@@ -54,21 +81,85 @@ function vibrate(pattern: number | number[]) {
 export function LiveActive({ data }: { data: LiveSessionData }) {
   const router = useRouter();
 
-  const [drills, setDrills] = useState<DrillState[]>(() =>
-    data.drills.map((d, i) => ({
-      ...d,
-      reps: 0,
-      elapsedSec: 0,
-      status: i === 0 ? "active" : "queued",
-    })),
-  );
+  const [drills, setDrills] = useState<DrillState[]>(() => buildInitialDrills(data));
   const [phase, setPhase] = useState<Phase>("active");
-  const [paused, setPaused] = useState(false);
-  const [totalSec, setTotalSec] = useState(0);
+  const [paused, setPaused] = useState(data.status === "PAUSED");
+  const [totalSec, setTotalSec] = useState(data.liveSnapshot?.totalSec ?? 0);
   const [drillSec, setDrillSec] = useState(0);
 
   const activeIdx = drills.findIndex((d) => d.status === "active");
   const active = activeIdx >= 0 ? drills[activeIdx] : null;
+
+  // Bygg gjeldende snapshot-innhold (uten tidsstempel — settes ved sending).
+  const buildSnapshotContent = useCallback(
+    (): LiveSnapshotContent => ({
+      startedAtISO: data.liveSnapshot?.startedAtISO ?? new Date().toISOString(),
+      totalSec,
+      drills: drills.map((d) => ({
+        drillId: d.id,
+        reps: d.reps,
+        elapsedSec: d.elapsedSec,
+        status: d.status,
+      })),
+    }),
+    [data.liveSnapshot?.startedAtISO, totalSec, drills],
+  );
+
+  // Aktiver økta ved mount (brief→active). Statusbevisst + idempotent re-mount.
+  const activatedRef = useRef(false);
+  useEffect(() => {
+    if (activatedRef.current) return;
+    activatedRef.current = true;
+    let cancelled = false;
+    void startSession(data.sessionId).then((res) => {
+      if (cancelled) return;
+      if (res.state === "completed" || res.state === "abandoned") {
+        router.replace(res.redirectTo);
+      } else if (res.state === "paused") {
+        setPaused(true);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [data.sessionId, router]);
+
+  // Auto-save hvert 60. sekund (per-økt, ryddes på unmount).
+  useLiveAutosave({
+    sessionId: data.sessionId,
+    enabled: true,
+    getSnapshot: buildSnapshotContent,
+  });
+
+  // Pause/gjenoppta — persisterer til DB.
+  const pauseNow = useCallback(() => {
+    setPaused(true);
+    void pauseLiveSession(data.sessionId, {
+      ...buildSnapshotContent(),
+      updatedAtISO: new Date().toISOString(),
+    });
+  }, [data.sessionId, buildSnapshotContent]);
+
+  const resumeNow = useCallback(() => {
+    setPaused(false);
+    void resumeLiveSession(data.sessionId);
+  }, [data.sessionId]);
+
+  const togglePause = useCallback(() => {
+    if (paused) resumeNow();
+    else pauseNow();
+  }, [paused, resumeNow, pauseNow]);
+
+  // Forlat økta (terminal) — fryser delvis logg, status ABANDONED.
+  const handleAbandon = useCallback(() => {
+    void abandonLiveSession(data.sessionId).finally(() => router.push("/portal/tren"));
+  }, [data.sessionId, router]);
+
+  // Avslutt uten å fullføre (resumbart) — pauser og går hjem.
+  const handleExit = useCallback(() => {
+    pauseNow();
+    router.push("/portal/tren");
+  }, [pauseNow, router]);
 
   // Tidtaker — total + aktiv drill. Stopper ved pause / overgang.
   useEffect(() => {
@@ -136,21 +227,27 @@ export function LiveActive({ data }: { data: LiveSessionData }) {
     setPhase("transition");
   }, [active, drillSec]);
 
-  // Skriv klient-snapshot (offline-overlevering) og gå til oppsummering.
-  const goToSummary = useCallback(() => {
+  // Flush snapshot til DB + skriv klient-fallback, så gå til oppsummering.
+  const goToSummary = useCallback(async () => {
+    const content = buildSnapshotContent();
     writeLiveSnapshot({
       sessionId: data.sessionId,
       totalSec,
       videoCount: 0,
-      drills: drills.map((d) => ({
-        drillId: d.id,
-        reps: d.reps,
-        elapsedSec: d.elapsedSec,
-        status: d.status,
-      })),
+      drills: content.drills,
     });
+    try {
+      await fetch(`/api/portal/live/${data.sessionId}/snapshot`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...content, updatedAtISO: new Date().toISOString() }),
+        keepalive: true,
+      });
+    } catch {
+      /* offline — sessionStorage dekker overgangen */
+    }
     router.push(`/portal/live/${data.sessionId}/summary`);
-  }, [data.sessionId, totalSec, drills, router]);
+  }, [data.sessionId, totalSec, buildSnapshotContent, router]);
 
   // Fra overgang → start neste drill (eller summary hvis ingen flere).
   const startNext = useCallback(() => {
@@ -168,9 +265,8 @@ export function LiveActive({ data }: { data: LiveSessionData }) {
     setPhase("active");
   }, [drills, goToSummary]);
 
-  function handleCancel() {
-    router.push(`/portal/live/${data.sessionId}/brief`);
-  }
+  // Topbar X / generelt avbryt: pause og gå hjem (resumbart).
+  const handleCancel = handleExit;
 
   // ── Tomt: ingen drills i økta ────────────────────────────────────
   if (drills.length === 0) {
@@ -229,7 +325,7 @@ export function LiveActive({ data }: { data: LiveSessionData }) {
         doneCount={doneCount}
         totalDrills={drills.length}
         onStartNext={startNext}
-        onPause={() => router.push(`/portal/live/${data.sessionId}/brief`)}
+        onPause={handleExit}
         onCancel={handleCancel}
       />
     );
@@ -243,7 +339,7 @@ export function LiveActive({ data }: { data: LiveSessionData }) {
       title={data.title}
       onCancel={handleCancel}
       crumb={`DRILL ${active.index} AV ${drills.length}`}
-      onPauseToggle={() => setPaused((p) => !p)}
+      onPauseToggle={togglePause}
       paused={paused}
     >
       {/* drill-progresjon (hele økta) */}
@@ -374,7 +470,7 @@ export function LiveActive({ data }: { data: LiveSessionData }) {
           </span>
           <button
             type="button"
-            onClick={() => setPaused(false)}
+            onClick={resumeNow}
             className="inline-flex h-14 w-full max-w-xs items-center justify-center gap-2 rounded-full bg-accent px-8 font-mono text-[14px] font-extrabold uppercase tracking-[0.08em] text-accent-foreground"
           >
             <Play className="h-4 w-4 fill-current" strokeWidth={2.5} aria-hidden />
@@ -382,7 +478,7 @@ export function LiveActive({ data }: { data: LiveSessionData }) {
           </button>
           <button
             type="button"
-            onClick={handleCancel}
+            onClick={handleAbandon}
             className="font-mono text-[12px] font-bold uppercase tracking-[0.08em] text-background/60 hover:text-background"
           >
             Avbryt økt

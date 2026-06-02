@@ -67,7 +67,9 @@ const PYR_COLOR: Record<PyramidArea, string> = {
 const STATUS_LABEL: Record<SessionStatus, string> = {
   PLANNED: "Planlagt",
   ACTIVE: "Pågår",
+  PAUSED: "Pauset",
   COMPLETED: "Fullført",
+  ABANDONED: "Avbrutt",
   SKIPPED: "Hoppet over",
   CANCELLED: "Avlyst",
 };

@@ -10,8 +10,8 @@
  */
 
 import Link from "next/link";
-import { ArrowLeft, CheckCircle2, Lock, X, Zap } from "lucide-react";
-import type { LiveSessionData } from "@/lib/portal-live/types";
+import { ArrowLeft, CheckCircle2, Info, Lock, RotateCcw, X, Zap } from "lucide-react";
+import type { LiveSessionData, OngoingSessionRef } from "@/lib/portal-live/types";
 import { AXIS_LABEL, formatDateTimeEyebrow } from "@/lib/portal-live/format";
 import { AXIS_SHORT, axisDotColor } from "./axis";
 
@@ -19,11 +19,17 @@ export function LiveBrief({
   data,
   canStart,
   blockReason,
+  ongoing,
+  abandoned,
 }: {
   data: LiveSessionData;
   canStart: boolean;
   /** Hvorfor start er sperret (vises i stedet for CTA). */
   blockReason: "completed" | "tier" | null;
+  /** Pågående økt (ACTIVE/PAUSED) for spilleren — vises som «Fortsett»-banner. */
+  ongoing?: OngoingSessionRef | null;
+  /** Kom hit fra en avbrutt økt — vis notis. */
+  abandoned?: boolean;
 }) {
   const eyebrow = `${formatDateTimeEyebrow(data.scheduledAtISO)} · ${AXIS_LABEL[data.axis].toUpperCase()}`;
   const goalLines = (data.rationale ?? "")
@@ -62,6 +68,29 @@ export function LiveBrief({
 
       {/* scroll-innhold */}
       <div className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden" style={{ minHeight: 0 }}>
+        {abandoned && (
+          <div className="mx-5 mt-4 flex items-center gap-2 rounded-xl border border-background/20 bg-background/[0.07] px-4 py-3 text-[13px] text-background/80">
+            <Info className="h-4 w-4 flex-shrink-0 text-accent" strokeWidth={2} aria-hidden />
+            Økten ble avbrutt.
+          </div>
+        )}
+        {ongoing && (
+          <Link
+            href={`/portal/live/${ongoing.sessionId}/active`}
+            className="mx-5 mt-4 flex items-center gap-3 rounded-xl border border-accent/40 bg-accent/10 px-4 py-3"
+          >
+            <RotateCcw className="h-5 w-5 flex-shrink-0 text-accent" strokeWidth={2} aria-hidden />
+            <div className="min-w-0 flex-1">
+              <div className="font-mono text-[11px] font-extrabold uppercase tracking-[0.10em] text-accent">
+                Fortsett pågående økt?
+              </div>
+              <div className="truncate text-[14px] font-semibold text-background">{ongoing.title}</div>
+            </div>
+            <span className="flex-shrink-0 font-mono text-[12px] font-bold uppercase tracking-[0.06em] text-accent">
+              Fortsett
+            </span>
+          </Link>
+        )}
         {/* hero */}
         <div className="px-5 pb-2 pt-5">
           <div className="font-mono text-[11px] font-extrabold uppercase tracking-[0.12em] text-accent">

@@ -10,9 +10,40 @@
  * persisteres til `trainingPlanSessionLog` ved fullført økt.
  */
 
-import type { PyramidArea } from "@/generated/prisma/client";
+import type { PyramidArea, SessionStatus } from "@/generated/prisma/client";
 
 export type LiveAxis = PyramidArea; // "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN"
+
+export type LiveStatus = SessionStatus; // PLANNED | ACTIVE | PAUSED | COMPLETED | ABANDONED | SKIPPED | CANCELLED
+
+/** Per-drill faktisk logget — del av live-snapshot, fryses til drillAggregates ved fullføring. */
+export type LiveSnapshotDrill = {
+  drillId: string;
+  reps: number;
+  elapsedSec: number;
+  status: "done" | "active" | "queued";
+};
+
+/**
+ * Løpende live-snapshot lagret på `TrainingPlanSession.liveSnapshot` (Json).
+ * Upsertes løpende (auto-save + ved unload), nulles ved completeSession.
+ */
+export type LiveSnapshotData = {
+  /** ISO — når økta ble startet (satt ved PLANNED→ACTIVE). */
+  startedAtISO: string;
+  /** Total medgått tid i sekunder. */
+  totalSec: number;
+  /** ISO — sist oppdatert (sist-skriver-vinner ved flere enheter). */
+  updatedAtISO: string;
+  drills: LiveSnapshotDrill[];
+};
+
+/** Referanse til en pågående økt (ACTIVE/PAUSED) for «Fortsett pågående økt?». */
+export type OngoingSessionRef = {
+  sessionId: string;
+  title: string;
+  status: "ACTIVE" | "PAUSED";
+};
 
 /** Én drill i live-økta — planlagte verdier fra SessionDrill. */
 export type LiveDrill = {
@@ -48,6 +79,10 @@ export type LiveSessionData = {
   scheduledAtISO: string;
   /** Allerede fullført? (status === COMPLETED) */
   completed: boolean;
+  /** Råstatus fra DB — styrer resume/abandoned-håndtering. */
+  status: LiveStatus;
+  /** Lagret live-snapshot fra DB (for å gjenoppta pågående økt). Null hvis ingen. */
+  liveSnapshot: LiveSnapshotData | null;
   drills: LiveDrill[];
   /** Sum av planlagte reps på tvers av alle drills. */
   totalPlannedReps: number;

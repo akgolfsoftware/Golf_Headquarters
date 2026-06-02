@@ -57,7 +57,9 @@ const PYR_TAG_BG: Record<PyramidArea, string> = {
 const STATUS_LABEL: Record<SessionStatus, string> = {
   PLANNED: "Planlagt",
   ACTIVE: "Aktiv",
+  PAUSED: "Pauset",
   COMPLETED: "Gjennomført",
+  ABANDONED: "Avbrutt",
   SKIPPED: "Hoppet over",
   CANCELLED: "Kansellert",
 };

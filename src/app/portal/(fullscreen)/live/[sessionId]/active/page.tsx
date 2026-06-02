@@ -31,5 +31,9 @@ export default async function LiveActivePage({
     redirect("/portal/tren");
   }
 
+  // Terminal-statuser: ikke vis aktiv-UI.
+  if (result.data.status === "COMPLETED") redirect(`/portal/live/${sessionId}/summary`);
+  if (result.data.status === "ABANDONED") redirect(`/portal/live/${sessionId}/brief?avbrutt=1`);
+
   return <LiveActive data={result.data} />;
 }

@@ -10,8 +10,37 @@
  * Mangler verdi → 0. Faktiske reps logges klient-side under økta.
  */
 
+import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import type { LiveDrill, LiveSessionData, NextSessionRef } from "./types";
+import type {
+  LiveDrill,
+  LiveSessionData,
+  LiveSnapshotData,
+  NextSessionRef,
+  OngoingSessionRef,
+} from "./types";
+
+/** Zod-skjema for liveSnapshot (Json-blob fra DB MÅ valideres ved read). */
+export const LiveSnapshotSchema = z.object({
+  startedAtISO: z.string(),
+  totalSec: z.number(),
+  updatedAtISO: z.string(),
+  drills: z.array(
+    z.object({
+      drillId: z.string(),
+      reps: z.number(),
+      elapsedSec: z.number(),
+      status: z.enum(["done", "active", "queued"]),
+    }),
+  ),
+});
+
+/** Trygt parse av liveSnapshot-Json. Returnerer null ved manglende/ugyldig blob. */
+export function parseLiveSnapshot(json: unknown): LiveSnapshotData | null {
+  if (json == null) return null;
+  const parsed = LiveSnapshotSchema.safeParse(json);
+  return parsed.success ? parsed.data : null;
+}
 
 /**
  * Parser planlagte reps fra en SessionDrill.
@@ -117,10 +146,45 @@ export async function loadLiveSession(
       durationMin: session.durationMin,
       scheduledAtISO: session.scheduledAt.toISOString(),
       completed: session.status === "COMPLETED",
+      status: session.status,
+      liveSnapshot: parseLiveSnapshot(session.liveSnapshot),
       drills,
       totalPlannedReps,
       nextSession,
     },
+  };
+}
+
+/**
+ * Finner brukerens pågående økt (ACTIVE/PAUSED) for «Fortsett pågående økt?».
+ * Sorterer på updatedAt DESC og returnerer nyligste. Ved mer enn én pågående
+ * økt logges WARN (skal normalt ikke skje) — «to pågående økter»-UI er ikke i
+ * scope for denne flyten, sist-oppdaterte vinner.
+ *
+ * @param userId  Innlogget spillers id (sjekkes på userId, ikke sessionId).
+ */
+export async function findOngoingSession(
+  userId: string,
+): Promise<OngoingSessionRef | null> {
+  const ongoing = await prisma.trainingPlanSession.findMany({
+    where: { plan: { userId }, status: { in: ["ACTIVE", "PAUSED"] } },
+    orderBy: { updatedAt: "desc" },
+    select: { id: true, title: true, status: true },
+    take: 2,
+  });
+
+  if (ongoing.length === 0) return null;
+  if (ongoing.length > 1) {
+    console.warn(
+      `[findOngoingSession] Bruker ${userId} har ${ongoing.length}+ pågående økter — returnerer nyligste (${ongoing[0].id}).`,
+    );
+  }
+
+  const latest = ongoing[0];
+  return {
+    sessionId: latest.id,
+    title: latest.title,
+    status: latest.status as "ACTIVE" | "PAUSED",
   };
 }
 
