@@ -38,12 +38,29 @@ arbeidstre (`git status` tomt) før Fase 2.
 
 ## Fase 1 — Fullfør gjenstående bygg (denne uka)
 
+**Scope-beslutning (Anders, 3. juni): ALLE skjermer i planen vår skal med i MVP.
+Ingen skjermer utsettes til v1.1.** Fasit: `docs/skjermplan.md` + skjerm-manifestene
+(`docs/skjerm-manifest-playerhq.md`, `-agencyos.md`, `-workbench.md`).
+
+### Infrastruktur/sikkerhet
 | Oppgave | Eier | Status |
 |---|---|---|
 | Koble Stripe kort-form til Billing Portal (K1) | Anders + Claude | I kveld |
-| Ferdigstill Workbench (Bolk-serien) | Workbench-sesjon | Pågår |
 | Commit/rydd design-handover-reorg | Design-sesjon | Pågår |
-| Roter de 4 beta-passordene (sikkerhet) | Anders (Supabase) | Gjenstår |
+| Roter de 4 beta-passordene | Anders (Supabase) | Gjenstår |
+
+### Gjenstående skjermer (fra `docs/skjermplan.md` — alle MÅ ferdig)
+| # | Skjerm | Rute | Innsats |
+|---|---|---|---|
+| 3 | Intern-spiller-leaderboard | `/portal/tren/turneringer/[id]` | re-scopes |
+| 4 | Turnerings-scorecard per runde | `/portal/tren/turneringer/[id]/runde/[nr]` (+admin) | M |
+| 5 | Live turnerings-tracking | `/portal/tren/turneringer/[id]/live` (+coach) | L |
+| 7 | Shot-map / dispersion | `/portal/statistikk/shot-map` | M |
+| 8 | Benchmark-skjerm | `/portal/mal/sg-hub/benchmark` | M |
+| — | Workbench-serien (Bolk 1/2/...) | workbench-flatene | Pågår (egen sesjon) |
+
+Hold `docs/skjermplan.md` oppdatert: marker `[x]` når hver skjerm er deployet.
+MVP er IKKE klar for Fase 3 før alle boksene der er `[x]`.
 
 K10 (drill-modeller) holdes UTENFOR MVP — krasj-sikret, gjøres post-launch
 (se `docs/oppfolging-k10-drill-modeller.md`).
@@ -105,7 +122,9 @@ Forutsetning: alle sesjoner ferdige, alt committet+pushet, Fase 2 grønn.
 
 ## Beslutningspunkter for Anders
 
-1. **Workbench i MVP?** Skal hele workbench-serien (Bolk 1/2/...) være med i
-   første lansering, eller kan den vente til v1.1? Påvirker hvor lenge Fase 1 tar.
+1. ✅ **AVKLART:** Alle skjermer i planen vår skal med i MVP — ingen utsettelse
+   til v1.1. Workbench-serien inkludert. Fasit: `docs/skjermplan.md` + manifestene.
 2. **Hard launch-dato denne uka?** Sett en dag → da vet vi når Fase 3/4 må skje.
+   NB: med full skjerm-scope (#4,5,7,8 + workbench) er det mer arbeid i Fase 1 —
+   #5 Live turnerings-tracking er «L» (stor). Vurder om den realistisk rekker uka.
 3. **Hvem lukker de andre sesjonene** før merge (Fase 3)?
