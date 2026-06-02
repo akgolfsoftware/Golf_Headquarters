@@ -185,7 +185,7 @@ export default async function Approvals() {
                 <div className="flex items-center justify-between gap-2 lg:contents">
                   <SevPill severity={sev} />
                   <Link
-                    href={`/admin/elever/${a.user.id}`}
+                    href={`/admin/spillere/${a.user.id}`}
                     className="flex items-center gap-2.5 hover:text-primary"
                   >
                     <div

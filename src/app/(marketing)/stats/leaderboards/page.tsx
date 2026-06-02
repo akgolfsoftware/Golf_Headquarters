@@ -21,7 +21,7 @@ import { StatsEyebrow } from "@/components/stats/eyebrow";
 import { Reveal } from "@/components/stats/reveal";
 import { StatsBtn } from "@/components/stats/btn";
 import { StatsLeaderboardCard } from "@/components/stats/stats-leaderboard-card";
-import { StatsLeaderboardsClient } from "./leaderboards-client";
+import { LeaderboardsSearchBox, LeaderboardsKategoriStrip } from "./leaderboards-client";
 
 export const revalidate = 3600;
 
@@ -305,13 +305,13 @@ export default async function LeaderboardsPage() {
 
         <Reveal delay={80}>
           <div style={{ maxWidth: 600, marginTop: 32 }}>
-            <StatsLeaderboardsClient.SearchBox />
+            <LeaderboardsSearchBox />
           </div>
         </Reveal>
       </section>
 
       {/* ── 2. STICKY KATEGORI-STRIP ── */}
-      <StatsLeaderboardsClient.KategoriStrip />
+      <LeaderboardsKategoriStrip />
 
       {/* ── 3. PGA TOUR ── */}
       <section id="pga" className="stats-section stats-section-divider">
@@ -328,7 +328,7 @@ export default async function LeaderboardsPage() {
               title="Drive Distance"
               sub="yds · sesong 2026"
               rows={data.pga.drive}
-              formatValue={(v) => (typeof v === "number" ? v.toFixed(1) : String(v))}
+              format="decimal1"
               icon="Crosshair"
               seeAllHref="/stats/pga?kategori=drive"
             />
@@ -338,7 +338,7 @@ export default async function LeaderboardsPage() {
               title="Fairway-treff"
               sub="% · sesong 2026"
               rows={data.pga.fairway}
-              formatValue={(v) => (typeof v === "number" ? v.toFixed(1) + "%" : String(v))}
+              format="pct1"
               icon="Target"
               seeAllHref="/stats/pga?kategori=fairway"
             />
@@ -348,7 +348,7 @@ export default async function LeaderboardsPage() {
               title="GIR"
               sub="greener i regulasjon % · 2026"
               rows={data.pga.gir}
-              formatValue={(v) => (typeof v === "number" ? v.toFixed(1) + "%" : String(v))}
+              format="pct1"
               icon="Flag"
               seeAllHref="/stats/pga?kategori=gir"
             />
@@ -358,7 +358,7 @@ export default async function LeaderboardsPage() {
               title="Putter per runde"
               sub="lavere = bedre · 2026"
               rows={data.pga.putts}
-              formatValue={(v) => (typeof v === "number" ? v.toFixed(1) : String(v))}
+              format="decimal1"
               icon="Circle"
               seeAllHref="/stats/pga?kategori=putter"
             />
@@ -368,7 +368,7 @@ export default async function LeaderboardsPage() {
               title="Scoring Average"
               sub="lavere = bedre · 2026"
               rows={data.pga.scoring}
-              formatValue={(v) => (typeof v === "number" ? v.toFixed(2) : String(v))}
+              format="decimal2"
               icon="LineChart"
               seeAllHref="/stats/pga?kategori=scoring"
             />
@@ -378,9 +378,7 @@ export default async function LeaderboardsPage() {
               title="SG Total"
               sub="strokes/runde vs Tour-snitt"
               rows={data.pga.sgTotal}
-              formatValue={(v) =>
-                typeof v === "number" ? (v >= 0 ? "+" : "") + v.toFixed(2) : String(v)
-              }
+              format="signed2"
               icon="Sparkles"
               seeAllHref="/stats/pga?kategori=sg-total"
             />
@@ -416,9 +414,7 @@ export default async function LeaderboardsPage() {
                 { name: "F. Gutiérrez", value: 1.28 },
                 { name: "H. Tanaka", value: 1.22 },
               ]}
-              formatValue={(v) =>
-                typeof v === "number" ? (v >= 0 ? "+" : "") + v.toFixed(2) : String(v)
-              }
+              format="signed2"
               icon="Trophy"
             />
           </Reveal>
@@ -438,9 +434,7 @@ export default async function LeaderboardsPage() {
                 { name: "G. Coetzee", value: 1.26 },
                 { name: "H. Stenson", value: 1.21 },
               ]}
-              formatValue={(v) =>
-                typeof v === "number" ? (v >= 0 ? "+" : "") + v.toFixed(2) : String(v)
-              }
+              format="signed2"
               icon="Globe"
             />
           </Reveal>
@@ -463,7 +457,7 @@ export default async function LeaderboardsPage() {
               title="Beste snitt 2026"
               sub="min 15 runder"
               rows={data.norske.besteSnitt}
-              formatValue={(v) => (typeof v === "number" ? v.toFixed(1) : String(v))}
+              format="decimal1"
               icon="LineChart"
               seeAllHref="/stats/spillere?sort=snitt"
             />
@@ -473,9 +467,7 @@ export default async function LeaderboardsPage() {
               title="Største forbedring"
               sub="2025 → 2026"
               rows={data.norske.forbedring}
-              formatValue={(v) =>
-                typeof v === "number" ? (v > 0 ? "+" : "") + v.toFixed(1) : String(v)
-              }
+              format="signed1"
               icon="TrendingUp"
               seeAllHref="/stats/spillere?sort=forbedring"
             />
@@ -485,7 +477,7 @@ export default async function LeaderboardsPage() {
               title="Mest aktive 2026"
               sub="turneringer spilt"
               rows={data.norske.mestAktive}
-              formatValue={(v) => (typeof v === "number" ? v + " T" : String(v))}
+              format="raw"
               icon="Activity"
               seeAllHref="/stats/spillere?sort=aktivitet"
             />
@@ -495,7 +487,7 @@ export default async function LeaderboardsPage() {
               title="Yngste talent (2009-kull)"
               sub="snittscore 2026"
               rows={data.norske.yngsteTalent}
-              formatValue={(v) => (typeof v === "number" ? v.toFixed(1) : String(v))}
+              format="decimal1"
               icon="Star"
               seeAllHref="/stats/aargang/2009"
             />
@@ -505,7 +497,7 @@ export default async function LeaderboardsPage() {
               title="WAGR Topp 10"
               sub="norske på verdensranking"
               rows={data.norske.wagrTopp}
-              formatValue={(v) => "#" + v}
+              format="raw"
               icon="Award"
               seeAllHref="/stats/spillere?tier=pro"
             />
@@ -515,7 +507,7 @@ export default async function LeaderboardsPage() {
               title="Flest topp-10-plasseringer"
               sub="norske turneringer 2026"
               rows={data.norske.flesteTopp10}
-              formatValue={(v) => (typeof v === "number" ? v + " stk" : String(v))}
+              format="raw"
               icon="Trophy"
               seeAllHref="/stats/spillere"
             />

@@ -193,4 +193,4 @@ function KategoriStrip() {
   );
 }
 
-export const StatsLeaderboardsClient = { SearchBox, KategoriStrip };
+export { SearchBox as LeaderboardsSearchBox, KategoriStrip as LeaderboardsKategoriStrip };

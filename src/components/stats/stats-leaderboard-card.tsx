@@ -3,6 +3,15 @@
 /**
  * StatsLeaderboardCard — dense 10-row mini-leaderboard
  * Used on /stats/leaderboards. Client for hover state.
+ *
+ * `format` replaces the old `formatValue` function prop so the component
+ * can be used from Server Components (functions are not serializable).
+ *   decimal1  → v.toFixed(1)
+ *   pct1      → v.toFixed(1) + "%"
+ *   decimal2  → v.toFixed(2)
+ *   signed2   → (+/-)v.toFixed(2)
+ *   signed1   → (+/-)v.toFixed(1)
+ *   raw       → String(v)  (default)
  */
 
 import { useState } from "react";
@@ -15,11 +24,33 @@ export interface LeaderboardRow {
   value: number | string;
 }
 
+export type LeaderboardFormat =
+  | "decimal1"
+  | "pct1"
+  | "decimal2"
+  | "signed2"
+  | "signed1"
+  | "raw";
+
+function applyFormat(v: number | string, format: LeaderboardFormat): string {
+  if (typeof v !== "number") return String(v);
+  switch (format) {
+    case "decimal1": return v.toFixed(1);
+    case "pct1":     return v.toFixed(1) + "%";
+    case "decimal2": return v.toFixed(2);
+    case "signed2":  return (v >= 0 ? "+" : "") + v.toFixed(2);
+    case "signed1":  return (v > 0 ? "+" : "") + v.toFixed(1);
+    case "raw":
+    default:         return String(v);
+  }
+}
+
 interface StatsLeaderboardCardProps {
   title: string;
   sub?: string;
   rows: LeaderboardRow[];
-  formatValue?: (v: number | string) => string;
+  /** Serializable format key — replaces the old non-serializable formatValue prop */
+  format?: LeaderboardFormat;
   icon?: StatsIconName;
   seeAllHref?: string;
   /** If true, lower value = better (e.g. putts, scoring avg) */
@@ -30,7 +61,7 @@ export function StatsLeaderboardCard({
   title,
   sub,
   rows,
-  formatValue = (v) => String(v),
+  format = "raw",
   icon,
   seeAllHref,
 }: StatsLeaderboardCardProps) {
@@ -139,7 +170,7 @@ export function StatsLeaderboardCard({
                 color: i < 3 ? "var(--s-primary)" : "inherit",
               }}
             >
-              {formatValue(row.value)}
+              {applyFormat(row.value, format)}
             </span>
           </div>
         ))}
