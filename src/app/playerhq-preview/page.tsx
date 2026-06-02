@@ -13,6 +13,31 @@ const SCREENS = [
     title: "Hjem",
     desc: "Spillerens daglige landing — tom-tilstand (ny GRATIS-spiller).",
   },
+  {
+    href: "/playerhq-preview/sg-hub",
+    title: "SG-Hub",
+    desc: "Strokes Gained — tom-tilstand, 4 disipliner + verktøy.",
+  },
+  {
+    href: "/playerhq-preview/live-brief",
+    title: "Live-økt · Brief",
+    desc: "Pre-økt: mål, fokus, dagens drill.",
+  },
+  {
+    href: "/playerhq-preview/live-active",
+    title: "Live-økt · Aktiv",
+    desc: "Fullscreen treningsmodus — timer, rep-teller, logg.",
+  },
+  {
+    href: "/playerhq-preview/live-summary",
+    title: "Live-økt · Summary",
+    desc: "Etter økt: compliance, statistikk, per drill.",
+  },
+  {
+    href: "/playerhq-preview/runder",
+    title: "Runder",
+    desc: "Rundeliste — tom-tilstand (ingen runder logget).",
+  },
 ] as const;
 
 export default function PlayerHqPreviewIndex() {
