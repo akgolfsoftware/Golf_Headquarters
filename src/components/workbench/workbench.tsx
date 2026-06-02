@@ -4,12 +4,13 @@
 // <Workbench role="player" /> — shared shell, ported from v10
 // (Workbench.html → WorkbenchDirA composition).
 //
-// BOLK 1 scope: Calendar formspråk (A) only, with WeekView (UKE,
-// default) + DayView (DAG). The zoom segment (UKE/DAG) switches the
-// rendered view. The Liste/Kalender toggle and the Kanban/Dashboard
-// mode buttons exist visually but are no-op in this bolk — they are
-// built in later bolker. The `role` prop and `mode`/`view` state are
-// in place so the shell is ready for coach + Liste + Kanban/Dashboard.
+// BOLK 1+2 scope: Calendar formspråk (A) only, with WeekView (UKE,
+// default), DayView (DAG), KanbanView (KANBAN) + DashboardView
+// (DASHBOARD). The zoom segment (UKE/DAG) and the mode segment
+// (Tidslinje/Kanban/Dashboard) switch the rendered view. The
+// Liste/Kalender toggle (B) is still no-op — it is built in Bolk 3.
+// The `role` prop drives the coach additions (search + bell in the
+// topbar, 6 coach actions in the inspector), gated on role="coach".
 // ============================================================
 
 import { useState } from "react";
@@ -19,6 +20,8 @@ import { WBInspector } from "./inspector";
 import { WBStatusbar } from "./statusbar";
 import { WeekView } from "./week-view";
 import { DayView } from "./day-view";
+import { KanbanView } from "./kanban-view";
+import { DashboardView } from "./dashboard-view";
 import "./workbench.css";
 
 export type Role = "player" | "coach";
@@ -27,14 +30,17 @@ export type Mode = "UKE" | "DAG" | "KANBAN" | "DASHBOARD" | "TIDSLINJE";
 
 type WorkbenchProps = {
   role?: Role;
+  /** initial Calendar (A) mode — used by the preview route to land on
+      a specific screen for screenshots. Default = "UKE" (matches v10). */
+  initialMode?: Mode;
 };
 
-export function Workbench({ role = "player" }: WorkbenchProps) {
-  // view: 'A' = kalender (default) | 'B' = liste (built in a later bolk).
+export function Workbench({ role = "player", initialMode = "UKE" }: WorkbenchProps) {
+  // view: 'A' = kalender (default) | 'B' = liste (built in Bolk 3).
   // Kept in state so the Liste/Kalender toggle is wired for the future.
   const [view, setView] = useState<"A" | "B">("A");
-  // Only UKE/DAG are rendered in this bolk; default = UKE (matches v10).
-  const [mode, setMode] = useState<Mode>("UKE");
+  // UKE/DAG/KANBAN/DASHBOARD are rendered in this bolk; default = UKE.
+  const [mode, setMode] = useState<Mode>(initialMode);
 
   const onVis = (v: "A" | "B") => {
     // No-op for Liste (B) in this bolk — stays on Kalender (A).
@@ -42,15 +48,24 @@ export function Workbench({ role = "player" }: WorkbenchProps) {
   };
 
   const onMode = (m: Mode) => {
-    // Only UKE/DAG change the rendered view in this bolk.
-    if (m === "UKE" || m === "DAG") setMode(m);
+    // UKE/DAG/KANBAN/DASHBOARD change the rendered view in this bolk.
+    if (m === "UKE" || m === "DAG" || m === "KANBAN" || m === "DASHBOARD") setMode(m);
   };
 
-  const viewEl = mode === "DAG" ? <DayView /> : <WeekView />;
+  const viewEl =
+    mode === "DAG" ? (
+      <DayView />
+    ) : mode === "KANBAN" ? (
+      <KanbanView />
+    ) : mode === "DASHBOARD" ? (
+      <DashboardView />
+    ) : (
+      <WeekView />
+    );
 
   return (
     <div className="akwb">
-      {/* `view` is 'A' (kalender) in this bolk; 'B' (liste) lands in a later bolk. */}
+      {/* `view` is 'A' (kalender) in this bolk; 'B' (liste) lands in Bolk 3. */}
       <div className="wb" data-screen-label={`Workbench · ${view} · ${mode}`}>
         <WBTopbar
           role={role}

@@ -386,3 +386,104 @@ export const STATUSBAR_AXES: { lbl: string; ax: Axis; hrs: string }[] = [
   { lbl: "SPILL", ax: "spill", hrs: "2,0 t" },
   { lbl: "TURN", ax: "turn", hrs: "1,5 t" },
 ];
+
+// ───────── KanbanView (5 axis columns) ─────────
+export const KANBAN_COLS: {
+  key: Axis;
+  lbl: string;
+  ct: number;
+  cards: { day: string; nm: string; meta: string }[];
+}[] = [
+  {
+    key: "fys",
+    lbl: "FYS",
+    ct: 3,
+    cards: [
+      { day: "MAN · 07:00", nm: "Morgenmobilitet", meta: "20 m · 3 drills" },
+      { day: "TIR · 16:00", nm: "Rotasjonsstyrke + core", meta: "45 m · 5 øv." },
+      { day: "TOR · 07:00", nm: "Aktiv hvile + tøy", meta: "30 m" },
+    ],
+  },
+  {
+    key: "tek",
+    lbl: "TEK",
+    ct: 2,
+    cards: [
+      { day: "TIR · 09:00", nm: "Sekvens P4–P8", meta: "60 m · WANG-gruppe" },
+      { day: "TOR · 10:00", nm: "Putt-konsistens 4 m", meta: "60 m · TEST-UKE" },
+    ],
+  },
+  {
+    key: "slag",
+    lbl: "SLAG",
+    ct: 3,
+    cards: [
+      { day: "MAN · 14:00", nm: "Lengdekontroll 50–80", meta: "75 m · 4 drills" },
+      { day: "ONS · 14:00", nm: "Innspill presisjon 50–80", meta: "60 m · CS 80" },
+      { day: "TOR · 15:00", nm: "Fulle slag · matte → gress", meta: "75 m · GFGK" },
+    ],
+  },
+  {
+    key: "spill",
+    lbl: "SPILL",
+    ct: 1,
+    cards: [{ day: "ONS · 17:00", nm: "9-hulls spillsimulering", meta: "90 m · scoring" }],
+  },
+  {
+    key: "turn",
+    lbl: "TURN",
+    ct: 2,
+    cards: [
+      { day: "FRE · 06:00", nm: "Pre-round oppvarming", meta: "90 m · pre-shot" },
+      { day: "FRE · 08:42", nm: "Srixon Tour #2 R1", meta: "Larvik GK · 18 h" },
+    ],
+  },
+];
+
+// ───────── DashboardView ─────────
+export const DASH_PIE_TOTAL = 12.5;
+
+export const DASH_PIE_SEG: { key: Axis; hrs: number; color: string; lbl: string }[] = [
+  { key: "fys", hrs: 3.0, color: "var(--pyr-fys)", lbl: "FYS" },
+  { key: "tek", hrs: 2.0, color: "var(--pyr-tek)", lbl: "TEK" },
+  { key: "slag", hrs: 4.0, color: "var(--pyr-slag)", lbl: "SLAG" },
+  { key: "spill", hrs: 2.0, color: "var(--pyr-spill)", lbl: "SPILL" },
+  { key: "turn", hrs: 1.5, color: "var(--pyr-turn)", lbl: "TURN" },
+];
+
+export const DASH_TRENDS: {
+  lbl: string;
+  vals: number[];
+  col: string;
+  d: string;
+  cls: "up" | "down" | "";
+  warn?: boolean;
+}[] = [
+  { lbl: "FYS", vals: [10, 11, 11, 10, 12, 12, 13, 12], col: "var(--pyr-fys)", d: "+3 %", cls: "up" },
+  { lbl: "TEK", vals: [6, 7, 8, 9, 10, 11, 12, 13], col: "var(--pyr-tek)", d: "+22 %", cls: "up" },
+  {
+    lbl: "SLAG",
+    vals: [16, 15, 14, 13, 11, 10, 8, 6],
+    col: "var(--pyr-slag)",
+    d: "−42 %",
+    cls: "down",
+    warn: true,
+  },
+  { lbl: "SPILL", vals: [8, 8, 8, 9, 8, 9, 8, 8], col: "var(--pyr-spill)", d: "stabil", cls: "" },
+  { lbl: "TURN", vals: [2, 2, 3, 3, 4, 5, 5, 6], col: "var(--pyr-turn)", d: "+18 %", cls: "up" },
+];
+
+export const DASH_BALANCE: {
+  lbl: string;
+  key: Axis;
+  target: number;
+  actual: number;
+  diff: string;
+  cls: "pos" | "neg";
+}[] = [
+  { lbl: "FYS", key: "fys", target: 80, actual: 88, diff: "+8 pp", cls: "pos" },
+  { lbl: "TEK", key: "tek", target: 70, actual: 72, diff: "+2 pp", cls: "pos" },
+  { lbl: "SLAG", key: "slag", target: 72, actual: 56, diff: "−16 pp", cls: "neg" },
+  { lbl: "SPILL", key: "spill", target: 60, actual: 52, diff: "−8 pp", cls: "neg" },
+  { lbl: "TURN", key: "turn", target: 40, actual: 38, diff: "−2 pp", cls: "neg" },
+];
