@@ -487,3 +487,272 @@ export const DASH_BALANCE: {
   { lbl: "SPILL", key: "spill", target: 60, actual: 52, diff: "−8 pp", cls: "neg" },
   { lbl: "TURN", key: "turn", target: 40, actual: 38, diff: "−2 pp", cls: "neg" },
 ];
+
+// ════════════════════════════════════════════════════════════
+// Direction B (Liste) demo data — frozen 1:1 from v10
+// workbench-dir-b.jsx. Kept separate from the A-data above so the
+// B-screens render byte-for-byte like the v10 source; some labels
+// differ subtly between A and B by design.
+// ════════════════════════════════════════════════════════════
+
+// ───────── B · Pyramide strip ─────────
+export const DIRB_PYR_SEG: { k: Axis; w: number; lbl: string }[] = [
+  { k: "fys", w: 24, lbl: "FYS 3,0 t" },
+  { k: "tek", w: 16, lbl: "TEK 2,0 t" },
+  { k: "slag", w: 32, lbl: "SLAG 4,0 t" },
+  { k: "spill", w: 16, lbl: "SPILL 2,0 t" },
+  { k: "turn", w: 12, lbl: "TURN 1,5 t" },
+];
+
+export const DIRB_PYR_SGS: { k: Axis; nm: string; v: string; cls: "pos" | "neg" }[] = [
+  { k: "fys", nm: "FYS", v: "+0,45", cls: "pos" },
+  { k: "tek", nm: "TEK", v: "+0,33", cls: "pos" },
+  { k: "slag", nm: "SLAG", v: "−0,42", cls: "neg" },
+  { k: "spill", nm: "SPILL", v: "+0,21", cls: "pos" },
+  { k: "turn", nm: "TURN", v: "+0,12", cls: "pos" },
+];
+
+// ───────── B · Tidslinje (day sections + rows) ─────────
+export type DirBRowData = {
+  time: string;
+  ax: Axis;
+  axt: string;
+  ttl: string;
+  /** [icon, text] meta items */
+  meta?: [icon: string, text: string][];
+  /** [label, cls] pills */
+  pills?: [label: string, cls: string][];
+  dur: string;
+  selected?: boolean;
+};
+
+export type DirBDayData = {
+  dow: string;
+  dt: string;
+  mn: string;
+  tag?: string;
+  tagCls?: string;
+  isToday?: boolean;
+  /** summary parts: count + duration text */
+  summary: { ct: string; dur: string };
+  rows: DirBRowData[];
+};
+
+export const DIRB_TOUR_STRIP = {
+  eb: "TURN · NÆR",
+  nm: "Srixon Tour #2 · Larvik GK",
+  meta: "Fre 30/5 · tee 08:42 · 12 dg igjen",
+};
+
+export const DIRB_DAYS: DirBDayData[] = [
+  {
+    dow: "MAN",
+    dt: "26",
+    mn: "MAI",
+    summary: { ct: "2", dur: "1 t 45 m" },
+    rows: [
+      { time: "07:00", ax: "fys", axt: "FYS", ttl: "Morgenmobilitet", meta: [["layers", "3 drills"]], dur: "30 m" },
+      {
+        time: "14:00",
+        ax: "slag",
+        axt: "SLAG",
+        ttl: "Lengdekontroll 50–80 m",
+        meta: [
+          ["layers", "4 drills"],
+          ["gauge", "CS 80"],
+        ],
+        dur: "75 m",
+      },
+    ],
+  },
+  {
+    dow: "TIR",
+    dt: "27",
+    mn: "MAI",
+    summary: { ct: "2", dur: "1 t 45 m" },
+    rows: [
+      {
+        time: "09:00",
+        ax: "tek",
+        axt: "TEK",
+        ttl: "Sekvens P4–P8 · balltreff",
+        pills: [["WANG · 6 sp", "wang"]],
+        dur: "60 m",
+      },
+      { time: "16:00", ax: "fys", axt: "FYS", ttl: "Rotasjonsstyrke + core", meta: [["layers", "5 øvelser"]], dur: "45 m" },
+    ],
+  },
+  {
+    dow: "ONS",
+    dt: "28",
+    mn: "MAI",
+    tag: "I DAG",
+    isToday: true,
+    summary: { ct: "3", dur: "3 t 0 m" },
+    rows: [
+      { time: "08:00", ax: "fys", axt: "FYS", ttl: "Aktiv oppvarming", dur: "30 m" },
+      {
+        time: "14:00",
+        ax: "slag",
+        axt: "SLAG",
+        ttl: "Innspill 50–80 m · presisjon",
+        meta: [
+          ["layers", "4 drills"],
+          ["gauge", "CS 80"],
+          ["map-pin", "GFGK · TM bay 3"],
+        ],
+        dur: "60 m",
+        selected: true,
+      },
+      {
+        time: "17:00",
+        ax: "spill",
+        axt: "SPILL",
+        ttl: "9-hulls spillsimulering",
+        meta: [
+          ["map-pin", "GFGK Old"],
+          ["cloud", "9 °C · vind sør"],
+        ],
+        dur: "90 m",
+      },
+    ],
+  },
+  {
+    dow: "TOR",
+    dt: "29",
+    mn: "MAI",
+    tag: "TEST-UKE",
+    tagCls: "",
+    summary: { ct: "3", dur: "2 t 35 m" },
+    rows: [
+      { time: "07:00", ax: "fys", axt: "FYS", ttl: "Morgenmobilitet", dur: "20 m" },
+      { time: "10:00", ax: "tek", axt: "TEK", ttl: "Putt-konsistens 4 m", pills: [["TEST", "test"]], dur: "60 m" },
+      {
+        time: "15:00",
+        ax: "slag",
+        axt: "SLAG",
+        ttl: "Fulle slag · matte → gress",
+        pills: [["GFGK · 4 sp", "gfgk"]],
+        dur: "75 m",
+      },
+    ],
+  },
+  {
+    dow: "FRE",
+    dt: "30",
+    mn: "MAI",
+    tag: "SRIXON TOUR #2 · R1",
+    tagCls: "tour",
+    summary: { ct: "2", dur: "9 t 30 m" },
+    rows: [
+      { time: "06:00", ax: "turn", axt: "TURN", ttl: "Pre-shot oppvarming + range", dur: "90 m" },
+      {
+        time: "08:42",
+        ax: "turn",
+        axt: "TURN",
+        ttl: "Srixon Tour #2 · R1 · Larvik GK",
+        meta: [["flag", "18 hull"]],
+        dur: "8 t",
+      },
+    ],
+  },
+];
+
+// ───────── B · Slide-over inspector ─────────
+export const DIRB_SLIDE = {
+  ebLeft: "VALGT · ØKT",
+  ebRight: "SLAG · ONS 28/5",
+  ttl: "Innspill 50–80 m · presisjon",
+  sub: "14:00–15:00 · GFGK · TM bay 3 · CS 80",
+  kpis: [
+    { v: "60 m", l: "VARIGHET" },
+    { v: "4", l: "DRILLS" },
+    { v: "CS 80", l: "VANSKE", warn: true },
+  ] as { v: string; l: string; warn?: boolean }[],
+  drillsLbl: { left: "DRILL-INNHOLD", right: "110 REPS · 60 M" },
+  drills: [
+    { num: "1.", nm: "Lengdekontroll 50 m", sub: "matte", reps: "30 reps", tm: "15 m" },
+    { num: "2.", nm: "Lengdekontroll 65 m", sub: "matte", reps: "30 reps", tm: "15 m" },
+    { num: "3.", nm: "Lengdekontroll 80 m", sub: "gress", reps: "30 reps", tm: "15 m" },
+    { num: "4.", nm: "Random-mix 50/65/80", sub: "scoring", reps: "20 reps", tm: "15 m" },
+  ],
+  periodLbl: { left: "PERIODE-FORDELING · U. 19–24", right: "SLAG: 24 / 27 T" },
+  period: [
+    { l: "TURN", ax: "turn", width: "38%", v: "10 / 10 t" },
+    { l: "SPILL", ax: "spill", width: "52%", v: "26 / 30 t" },
+    { l: "SLAG", ax: "slag", width: "88%", v: "24 / 27 t" },
+    { l: "TEK", ax: "tek", width: "72%", v: "22 / 18 t" },
+    { l: "FYS", ax: "fys", width: "88%", v: "18 / 15 t" },
+  ] as { l: string; ax: Axis; width: string; v: string }[],
+};
+
+// ───────── B · Kanban (5 axis columns, denser cards) ─────────
+export const DIRB_KANBAN_COLS: {
+  key: Axis;
+  lbl: string;
+  ct: number;
+  cards: { day: string; nm: string; meta: string; selected?: boolean }[];
+}[] = [
+  {
+    key: "fys",
+    lbl: "FYS",
+    ct: 3,
+    cards: [
+      { day: "MAN · 07:00", nm: "Morgenmobilitet", meta: "20 m · 3 drills" },
+      { day: "TIR · 16:00", nm: "Rotasjonsstyrke + core", meta: "45 m · 5 øv." },
+      { day: "TOR · 07:00", nm: "Aktiv hvile + tøy", meta: "30 m" },
+    ],
+  },
+  {
+    key: "tek",
+    lbl: "TEK",
+    ct: 2,
+    cards: [
+      { day: "TIR · 09:00", nm: "Sekvens P4–P8", meta: "60 m · WANG-gruppe" },
+      { day: "TOR · 10:00", nm: "Putt-konsistens 4 m", meta: "60 m · TEST-UKE" },
+    ],
+  },
+  {
+    key: "slag",
+    lbl: "SLAG",
+    ct: 3,
+    cards: [
+      { day: "MAN · 14:00", nm: "Lengdekontroll 50–80", meta: "75 m · 4 drills" },
+      { day: "ONS · 14:00", nm: "Innspill 50–80 m · presisjon", meta: "60 m · CS 80", selected: true },
+      { day: "TOR · 15:00", nm: "Fulle slag · matte → gress", meta: "75 m · GFGK" },
+    ],
+  },
+  {
+    key: "spill",
+    lbl: "SPILL",
+    ct: 1,
+    cards: [{ day: "ONS · 17:00", nm: "9-hulls spillsimulering", meta: "90 m · scoring" }],
+  },
+  {
+    key: "turn",
+    lbl: "TURN",
+    ct: 2,
+    cards: [
+      { day: "FRE · 06:00", nm: "Pre-shot oppvarming + range", meta: "90 m" },
+      { day: "FRE · 08:42", nm: "Srixon Tour #2 · R1", meta: "Larvik GK · 18 h" },
+    ],
+  },
+];
+
+// ───────── B · Dashboard ─────────
+export const DIRB_DASH_KPIS: {
+  eb: string;
+  v: string;
+  vCls?: "destructive";
+  d: string;
+  dCls: "up" | "down" | "";
+  dIcon: string;
+}[] = [
+  { eb: "TIMER · UKE 22", v: "12,5 t", d: "+2 t", dCls: "up", dIcon: "trending-up" },
+  { eb: "ØKTER · 4 / 5", v: "80 %", d: "−1 vs plan", dCls: "down", dIcon: "trending-down" },
+  { eb: "COMPLIANCE · 30 D", v: "88 %", d: "stabil", dCls: "", dIcon: "minus" },
+  { eb: "SG · 8 R", v: "−1,1", vCls: "destructive", d: "+0,08", dCls: "up", dIcon: "trending-up" },
+];
+
+// B-dashboard reuses DASH_PIE_TOTAL, DASH_PIE_SEG, DASH_TRENDS, DASH_BALANCE
+// above — they are identical to the v10 DirBDashboardBody literals.
