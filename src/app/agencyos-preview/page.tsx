@@ -4,7 +4,7 @@
  */
 
 import Link from "next/link";
-import { ArrowRight, LayoutDashboard } from "lucide-react";
+import { ArrowRight, LayoutDashboard, Users, Inbox, User } from "lucide-react";
 
 const SCREENS: { href: string; label: string; desc: string; Icon: typeof LayoutDashboard }[] = [
   {
@@ -12,6 +12,24 @@ const SCREENS: { href: string; label: string; desc: string; Icon: typeof LayoutD
     label: "Cockpit",
     desc: "Operations cockpit — 3-kolonne daglig brief + KPI-strip",
     Icon: LayoutDashboard,
+  },
+  {
+    href: "/agencyos-preview/spillere",
+    label: "Spillere / Stallen",
+    desc: "Spillerliste — tabell med SG-trend, pyramide, status",
+    Icon: Users,
+  },
+  {
+    href: "/agencyos-preview/innboks",
+    label: "Innboks",
+    desc: "Coachens samle-innboks — meldinger, faktura, forespørsler",
+    Icon: Inbox,
+  },
+  {
+    href: "/agencyos-preview/spiller",
+    label: "Spiller-detalj",
+    desc: "DetailShell — hero + tabs (Profil/Plan/Analyse/Tester/Workbench)",
+    Icon: User,
   },
 ];
 
