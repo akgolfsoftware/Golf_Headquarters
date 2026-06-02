@@ -40,16 +40,27 @@ export type ResolveInput = {
   birthYear?: number | null;
 };
 
+/** Rent visningsnavn: fjern parentes-markører (f.eks. amatør "(am)"), kollaps mellomrom. */
+export function cleanDisplayName(s: string): string {
+  return s.replace(/\([^)]*\)/g, " ").replace(/\s+/g, " ").trim();
+}
+
 /**
- * Finn eksisterende spiller eller opprett ny. Matcher på navn (insensitivt),
- * deretter fødselsår når tilgjengelig, ellers flest entries (etablert profil).
+ * Finn eksisterende spiller eller opprett ny. Matcher på NORMALISERT navn
+ * (markør-strippet + ascii), så vi gjenbruker etablert profil i stedet for å
+ * lage dubletter av "Navn (am)"-varianter. Disambiguerer på fødselsår.
  */
 export async function resolvePlayer(
   prisma: PrismaClient,
   input: ResolveInput,
 ): Promise<{ player: PlayerRow; created: boolean }> {
-  const candidates = await prisma.publicPlayer.findMany({
-    where: { name: { equals: input.name, mode: "insensitive" } },
+  const cleaned = cleanDisplayName(input.name);
+  const norm = normalizePlayerName(cleaned);
+
+  // Grovt filter på etternavn-token (insensitivt), så presis match på normalisert navn i JS.
+  const lastToken = cleaned.split(/\s+/).filter(Boolean).pop() ?? cleaned;
+  const rough = await prisma.publicPlayer.findMany({
+    where: { name: { contains: lastToken, mode: "insensitive" } },
     select: {
       id: true,
       name: true,
@@ -59,7 +70,7 @@ export async function resolvePlayer(
     },
   });
 
-  let pool = candidates;
+  let pool = rough.filter((p) => normalizePlayerName(p.name) === norm);
   if (pool.length > 1 && input.birthYear) {
     const byYear = pool.filter((p) => p.birthYear === input.birthYear);
     if (byYear.length > 0) pool = byYear;
@@ -69,8 +80,8 @@ export async function resolvePlayer(
     return { player: pool[0], created: false };
   }
 
-  // Ingen match → opprett med unik slug (legg på fødselsår, så teller).
-  const dashed = baseSlugDashed(input.name);
+  // Ingen match → opprett med renset navn + unik slug.
+  const dashed = baseSlugDashed(cleaned);
   let slug = dashed;
   let n = 2;
   while (await prisma.publicPlayer.findUnique({ where: { slug }, select: { id: true } })) {
@@ -79,7 +90,7 @@ export async function resolvePlayer(
   }
   const player = await prisma.publicPlayer.create({
     data: {
-      name: input.name,
+      name: cleaned,
       slug,
       country: input.country,
       tier: input.tier,
