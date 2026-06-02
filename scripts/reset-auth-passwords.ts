@@ -18,12 +18,30 @@ const admin = createClient(supabaseUrl, serviceRoleKey, {
   auth: { autoRefreshToken: false, persistSession: false },
 });
 
-const USERS = [
-  { email: "anders@akgolf.no", password: "Beta2026Anders" },
-  { email: "markus@akgolf.no", password: "Beta2026Markus" },
-  { email: "leder@gfgkjunior.no", password: "Beta2026Espen" },
-  { email: "njo@gfgk.no", password: "Beta2026Njo" },
-] as const;
+// Passord leses fra env-variabelen BETA_USER_PASSWORDS (JSON: { "<email>": "<passord>" }).
+// Aldri hardkod passord i kildekode — de havner i git-historikk.
+// Eksempel (sett i .env.local, som er gitignored):
+//   BETA_USER_PASSWORDS='{"anders@akgolf.no":"<sterkt-passord>","markus@akgolf.no":"<sterkt-passord>"}'
+const raw = process.env.BETA_USER_PASSWORDS;
+if (!raw) {
+  console.error(
+    "Mangler BETA_USER_PASSWORDS i miljøet. Sett den i .env.local som JSON:\n" +
+      '  BETA_USER_PASSWORDS=\'{"anders@akgolf.no":"<passord>", ...}\'',
+  );
+  process.exit(1);
+}
+
+let parsed: Record<string, string>;
+try {
+  parsed = JSON.parse(raw) as Record<string, string>;
+} catch {
+  console.error("BETA_USER_PASSWORDS er ikke gyldig JSON.");
+  process.exit(1);
+}
+
+const USERS: { email: string; password: string }[] = Object.entries(parsed).map(
+  ([email, password]) => ({ email, password }),
+);
 
 async function main() {
   console.log("Resetter passord via Supabase Admin API\n");
