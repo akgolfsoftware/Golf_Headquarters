@@ -14,6 +14,9 @@ jobs:
       # `npm ci`) og senere steg har dem. Generate kobler ikke til DB.
       DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy?pgbouncer=true
       DIRECT_URL: postgresql://dummy:dummy@localhost:5432/dummy
+      # tsc --noEmit + next build går tom for default ~2GB heap på et stort
+      # prosjekt (411 ruter). Hev til 4GB (ubuntu-latest har 7GB RAM).
+      NODE_OPTIONS: --max-old-space-size=4096
     steps:
       - uses: actions/checkout@v4
 
