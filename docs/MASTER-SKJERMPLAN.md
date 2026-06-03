@@ -651,4 +651,8 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 ## Endringslogg
 
+- 3. juni (Bolk 1, workflow): 42 preview-skjermer kjørt gjennom port → adversarisk review. Resultat: **29 portet til ekte adresse med ekte data** (mapper-mønster fra pilot-Hjem), 5 allerede koblet, 8 blokkert. tsc + build grønn samlet. 41/42 godkjent av review.
+  - **Krever oppfølging (komponent-fiks, ikke data):** `drill-detalj` — v10-komponenten mangler «Trinn»-liste + «Coach-notat», har feil primærknapp og en fabrikkert feedback-seksjon vs v10-fasit. Loaderen gir steps+coachNotes, men komponenten bruker dem ikke. Data-koblingen er teknisk OK; komponenten må utvides til full v10-fasit (egen oppgave, ikke Bolk 1).
+  - **Blokkert (trenger mer enn data-kobling):** auth-login/signup/forgot (skjema-flyt), marketing-forside, runde-ny, booking-ny, forelder, trackman. Disse rørte agentene ikke — flagget for manuell/sekvensiell port.
+  - **Fikset av orchestrator:** kalender-port importerte WeekCalendarProps fra feil modul (loader i stedet for komponent) → 3 tsc-feil, rettet.
 - 3. juni (natt): Pulje 1 + 2 ferdig — 43 skjermer fikk nytt v10-design i forhåndsvisning (liksom-tall). Workbench eneste med ekte data. Neste: ekte data + koble til ekte adresser.

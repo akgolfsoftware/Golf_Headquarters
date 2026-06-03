@@ -1,19 +1,44 @@
 /**
- * /portal/drills — PlayerHQ Drill-bibliotek
+ * /portal/drills — PlayerHQ Drill-bibliotek (v10-design).
  *
- * Mobil-first bibliotek (430px) portet fra
- * public/design-handover/playerhq/components-drill-bibliotek.html.
+ * Rendrer <DrillBibliotek> (v10-fasit fra pl-drills) med EKTE data fra
+ * getDrillLibrary() (Prisma · ExerciseDefinition, source=SYSTEM).
+ * mapDrills oversetter loaderens DrillCard-shape til v10-komponentens prop-shape.
  *
- * Data: ekte SYSTEM-drills fra ExerciseDefinition via getDrillLibrary().
- * Stjerne-rating finnes ikke i databasen og utelates bevisst (ingen falske tall).
- * Klikk på et kort åpner /portal/drills/[id].
+ * Tom database → tom liste; komponenten viser ærlig tom-tilstand. Ingen falske
+ * tall: stjerne-rating finnes ikke i databasen og utelates bevisst.
+ *
+ * Server component. Auth-guard via requirePortalUser. Klikk på et kort åpner
+ * /portal/drills/[id].
+ *
+ * Bolk (3. juni): byttet fra DrillLibrary (eldre design) til DrillBibliotek (v10).
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { getDrillLibrary } from "@/lib/portal-drills/drills-data";
-import { DrillLibrary } from "@/components/portal/drills";
+import {
+  getDrillLibrary,
+  type DrillCard as LoaderDrillCard,
+} from "@/lib/portal-drills/drills-data";
+import {
+  DrillBibliotek,
+  type DrillCard,
+} from "@/components/portal/drills/drill-bibliotek";
 
 export const dynamic = "force-dynamic";
+
+/** Oversetter loaderens DrillCard → v10 DrillCard. Fasilitet-enum → string[]. */
+function mapDrills(rows: LoaderDrillCard[]): DrillCard[] {
+  return rows.map((d) => ({
+    id: d.id,
+    axis: d.axis,
+    axisLabel: d.axisLabel,
+    title: d.title,
+    meta: d.meta,
+    difficulty: d.difficulty,
+    fasilitet: d.fasilitet as string[],
+    chsLink: d.chsLink,
+  }));
+}
 
 export default async function DrillBibliotekPage() {
   await requirePortalUser();
@@ -22,7 +47,7 @@ export default async function DrillBibliotekPage() {
 
   return (
     <div className="py-4">
-      <DrillLibrary drills={drills} />
+      <DrillBibliotek drills={mapDrills(drills)} />
     </div>
   );
 }
