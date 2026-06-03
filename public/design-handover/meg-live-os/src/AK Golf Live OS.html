@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AK Golf Academy — Live OS-dashboard</title>
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="dir-a.css">
+<link rel="stylesheet" href="dir-b.css">
+<link rel="stylesheet" href="dir-c.css">
+<link rel="stylesheet" href="bp.css">
+<style>
+  html, body { margin: 0; height: 100%; background: #0f2a22; font-family: "Inter", system-ui, sans-serif; }
+  #root { height: 100vh; }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<template id="__bundler_thumbnail">
+  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100" height="100" fill="#0F2A22"/>
+    <rect x="30" y="30" width="40" height="40" rx="9" fill="#005840"/>
+    <text x="50" y="58" font-family="Inter, sans-serif" font-size="20" font-weight="800" fill="#D1F843" text-anchor="middle">ak</text>
+    <circle cx="64" cy="36" r="4" fill="#D1F843"/>
+  </svg>
+</template>
+
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="data.jsx"></script>
+<script type="text/babel" src="dir-a.jsx"></script>
+<script type="text/babel" src="dir-b.jsx"></script>
+<script type="text/babel" src="dir-c.jsx"></script>
+<script type="text/babel" src="dir-blueprint.jsx"></script>
+<script type="text/babel">
+  const { DesignCanvas, DCSection, DCArtboard } = window;
+  const { DirA, DirB, DirC, DirBlueprint } = window;
+
+  function App() {
+    return (
+      <DesignCanvas>
+        <DCSection id="dashboards" title="Levende OS-dashboard" subtitle="Tre retninger · samme data, samme 8 kilder · klikk for fullskjerm">
+          <DCArtboard id="a" label="A · Mission Control — mørk cockpit" width={1360} height={1950}><DirA /></DCArtboard>
+          <DCArtboard id="b" label="B · Editorial — lys, tett kolonne-cockpit" width={1460} height={1370}><DirB /></DCArtboard>
+          <DCArtboard id="c" label="C · Prioritetsfeed — hybrid, dra-å-reprioritere" width={1380} height={2130}><DirC /></DCArtboard>
+        </DCSection>
+        <DCSection id="blueprint" title="Teknisk blueprint" subtitle="Paste-ready konfig — datakilder, prioritet, feilhåndtering, sikkerhet">
+          <DCArtboard id="bp" label="Blueprint — enhetlig sanntidsvindu" width={1180} height={1580}><DirBlueprint /></DCArtboard>
+        </DCSection>
+      </DesignCanvas>
+    );
+  }
+  ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>

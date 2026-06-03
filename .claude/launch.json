@@ -22,6 +22,13 @@
       "port": 0
     },
     {
+      "name": "meg-live-os-design",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8790", "--directory", "public/design-handover/meg-live-os/src"],
+      "port": 8790,
+      "autoPort": true
+    },
+    {
       "name": "wireframe",
       "runtimeExecutable": "python3",
       "runtimeArgs": ["-m", "http.server", "8765", "--directory", "wireframe"],
