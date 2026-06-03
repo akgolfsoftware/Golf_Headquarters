@@ -127,12 +127,7 @@ function VarselCard({ v }: { v: VarselItem }) {
   const ulest = !v.readAt;
 
   const inner = (
-    <div
-      className={cn(
-        "relative grid grid-cols-[36px_1fr] gap-3 px-[18px] py-[13px] transition-colors hover:bg-primary/[0.02]",
-        !ulest && "opacity-[0.62]",
-      )}
-    >
+    <div className="relative grid grid-cols-[36px_1fr] gap-3 px-[18px] py-[13px] transition-colors hover:bg-primary/[0.02]">
       <span
         className={cn(
           "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px]",
@@ -144,10 +139,20 @@ function VarselCard({ v }: { v: VarselItem }) {
       </span>
 
       <div className="min-w-0">
-        <p className="font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground">
+        <p
+          className={cn(
+            "font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground",
+            !ulest && "opacity-[0.62]",
+          )}
+        >
           {p.agent}
         </p>
-        <p className="mt-[3px] text-[13.5px] font-medium leading-[1.4] tracking-[-0.005em] text-foreground">
+        <p
+          className={cn(
+            "mt-[3px] text-[13.5px] font-medium leading-[1.4] tracking-[-0.005em] text-foreground",
+            !ulest && "opacity-[0.62]",
+          )}
+        >
           <span className="font-bold">{v.title}</span>
           {v.body ? <> {v.body}</> : null}
         </p>
@@ -184,7 +189,7 @@ function VarselCard({ v }: { v: VarselItem }) {
 // ── Dag-bar ─────────────────────────────────────────────────────
 function DayBar({ label, count }: { label: string; count: number }) {
   return (
-    <div className="flex items-center gap-2.5 border-b border-border bg-secondary/40 px-[18px] py-[9px]">
+    <div className="flex items-center gap-2.5 border-b border-border bg-background px-[18px] py-[9px]">
       <span className="font-mono text-[9.5px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
         {label}
       </span>

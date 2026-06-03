@@ -14,6 +14,11 @@
 // close-X dismiss it. Only available in TIDSLINJE (the only mode
 // with a slide-over). `initialDrill` lets the preview route land
 // with the overlay open for deterministic screenshots.
+//
+// W5b: `data` is optional. `dirBDays` (timeline) + `kanbanCols`
+// (kanban) render from Prisma when present; the pyramide-strip,
+// tournament strip, slide-over (selected session) and dashboard
+// have no schema source → v10 demo. Absent → all demo.
 // ============================================================
 "use client";
 
@@ -27,18 +32,21 @@ import { DirBSlideOver } from "./dir-b-slideover";
 import { DirBDrillOverlay } from "./dir-b-drill-overlay";
 import { DirBBot } from "./dir-b-statusbar";
 import type { Role, Mode } from "./workbench";
+import type { WorkbenchData } from "@/lib/workbench/load-workbench";
 
 type ListShellProps = {
   variant: Role;
   /** B-mode (TIDSLINJE default for Liste) */
   mode: "TIDSLINJE" | "KANBAN" | "DASHBOARD";
+  /** Ekte data — dirBDays + kanbanCols brukes; resten v10-demo. */
+  data?: WorkbenchData;
   onVis?: (v: "A" | "B") => void;
   onMode?: (m: Mode) => void;
   /** Open the drill-overlay on first render (preview ?drill=1). */
   initialDrill?: boolean;
 };
 
-export function ListShell({ variant, mode, onVis, onMode, initialDrill = false }: ListShellProps) {
+export function ListShell({ variant, mode, data, onVis, onMode, initialDrill = false }: ListShellProps) {
   const isTidslinje = mode === "TIDSLINJE";
   const [drillOpen, setDrillOpen] = useState(initialDrill && isTidslinje);
 
@@ -63,11 +71,11 @@ export function ListShell({ variant, mode, onVis, onMode, initialDrill = false }
 
   const body =
     mode === "KANBAN" ? (
-      <DirBKanbanBody />
+      <DirBKanbanBody cols={data?.kanbanCols} />
     ) : mode === "DASHBOARD" ? (
       <DirBDashboardBody />
     ) : (
-      <DirBTidslinjeBody />
+      <DirBTidslinjeBody days={data?.dirBDays} />
     );
 
   return (

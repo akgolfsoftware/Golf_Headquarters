@@ -1,6 +1,15 @@
 // ============================================================
 // WBSidebar — ported 1:1 from v10 workbench-chrome.jsx
 // 7 collapsible groups. Open/closed state is static (matches v10).
+//
+// W5b: `tournaments`/`goals`/`pyramid` are optional real Prisma data.
+//   - Turneringer (gruppe 4) + Mål (gruppe 6): rene ekte mappinger.
+//   - Stats·pyramide (gruppe 7): bar-bredder drives av ekte 30-d
+//     fordeling (pct); SG-tallene har INGEN schema-kilde og forblir
+//     v10-demo (SIDEBAR_PYRAMIDE) — bevisst (W5b-rapport).
+// Sesong-tre (gruppe 1), Planer (2), Standardøkter (3),
+// Treningsplaner (5) og ubalanse-alarmen forblir v10-demo.
+// Mangler prop → alt v10-demo.
 // ============================================================
 import { Icon } from "./icon";
 import {
@@ -8,9 +17,29 @@ import {
   SIDEBAR_PYRAMIDE,
   SIDEBAR_STANDARDOKTER,
   SIDEBAR_TURNERINGER,
+  type Axis,
 } from "./data";
 
-export function WBSidebar() {
+type WBSidebarProps = {
+  tournaments?: { tn: string; td: string; soon?: boolean }[];
+  goals?: { gn: string; gm: string; ax: Axis }[];
+  pyramid?: { lbl: string; ax: Axis; hours: number; pct: number }[];
+};
+
+export function WBSidebar({ tournaments, goals, pyramid }: WBSidebarProps = {}) {
+  const turneringer = tournaments ?? SIDEBAR_TURNERINGER;
+  // Mål mappes til v10-formen; gpct/width har ingen kilde → 0-bredde når ekte.
+  const maalRows = goals
+    ? goals.map((g) => ({ gn: g.gn, gm: g.gm, ax: g.ax, gpct: "", width: "0%" }))
+    : SIDEBAR_GOALS;
+  const turneringerCount = turneringer.filter((t) => t.soon).length;
+  // Pyramide: behold v10-demo-radene (rekkefølge + SG), men overstyr bar-bredde
+  // med ekte 30-d pct når data finnes. Match per akse.
+  const pyrRows = SIDEBAR_PYRAMIDE.map((row) => {
+    const real = pyramid?.find((p) => p.ax === row.ax);
+    return real ? { ...row, width: `${real.pct}%` } : row;
+  });
+
   return (
     <aside className="sb">
       {/* 1. Sesong */}
@@ -130,11 +159,11 @@ export function WBSidebar() {
         <button type="button" className="grp-head">
           <Icon n="flag" />
           <span className="lbl">Turneringer</span>
-          <span className="ct">2 nær</span>
+          <span className="ct">{turneringerCount} nær</span>
           <Icon n="chevron-right" w={12} h={12} />
         </button>
         <div className="grp-body">
-          {SIDEBAR_TURNERINGER.map((t) => (
+          {turneringer.map((t) => (
             <div className="turn-row" key={t.tn}>
               <span className="tn">{t.tn}</span>
               <span className={"td" + (t.soon ? " soon" : "")}>{t.td}</span>
@@ -158,11 +187,11 @@ export function WBSidebar() {
         <button type="button" className="grp-head">
           <Icon n="target" />
           <span className="lbl">Mål</span>
-          <span className="ct">6</span>
+          <span className="ct">{goals ? String(goals.length) : "6"}</span>
           <Icon n="chevron-right" w={12} h={12} />
         </button>
         <div className="grp-body">
-          {SIDEBAR_GOALS.map((g) => (
+          {maalRows.map((g) => (
             <div className="goal-row" key={g.gn}>
               <span className="gn">
                 {g.gn}
@@ -186,7 +215,7 @@ export function WBSidebar() {
           <Icon n="chevron-right" w={12} h={12} />
         </button>
         <div className="grp-body">
-          {SIDEBAR_PYRAMIDE.map((p) => (
+          {pyrRows.map((p) => (
             <div className="py-row" key={p.lbl}>
               <span className="lbl">{p.lbl}</span>
               <div className="py-bar">

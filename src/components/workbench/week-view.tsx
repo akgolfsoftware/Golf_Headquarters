@@ -1,9 +1,18 @@
 // ============================================================
 // WeekView — ported 1:1 from v10 workbench-views.jsx
 // 5-day grid (MAN 26 – FRE 30), hours 06–21, axis-coloured events.
+//
+// W5b: `head`/`days` are optional. Real Prisma data (loadWorkbenchData)
+// is passed in via props; absent → v10 demo (WEEK_HEAD/WEEK_DAYS).
 // ============================================================
 import { Icon } from "./icon";
-import { PERIOD_BAND, WEEK_DAYS, WEEK_HEAD, type WeekEvent } from "./data";
+import {
+  PERIOD_BAND,
+  WEEK_DAYS,
+  WEEK_HEAD,
+  type WeekDay,
+  type WeekEvent,
+} from "./data";
 
 // Hours 6..21 → 16 slots. ROW_H px per hour (16 hrs → grid_h).
 const HOURS = Array.from({ length: 16 }, (_, i) => 6 + i); // 6..21
@@ -14,12 +23,19 @@ const GRID_H = ROW_H * (HOURS.length - 1);
 const topPx = (h: number, m = 0) => (((h - 6) * 60 + m) * ROW_H) / 60;
 const heightFor = (mins: number) => (mins * ROW_H) / 60;
 
-export function WeekView() {
+type WeekViewProps = {
+  head?: { dow: string; date: string; today: boolean; sub: string }[];
+  days?: WeekDay[];
+};
+
+export function WeekView({ head, days }: WeekViewProps = {}) {
+  const weekHead = head ?? WEEK_HEAD;
+  const weekDays = days ?? WEEK_DAYS;
   return (
     <section className="cal">
       <div className="cal-week-head">
         <div className="day gutter" />
-        {WEEK_HEAD.map((d) => (
+        {weekHead.map((d) => (
           <div className="day" key={d.dow}>
             <span className="dow">{d.dow}</span>
             <span className={"dt" + (d.today ? " today" : "")}>{d.date}</span>
@@ -48,7 +64,7 @@ export function WeekView() {
         </div>
 
         {/* Day columns */}
-        {WEEK_DAYS.map((day) => (
+        {weekDays.map((day) => (
           <DayCol key={day.dow} today={day.today}>
             {day.nowLine && <NowLine top={topPx(day.nowLine.h, day.nowLine.m)} />}
             {day.events.map((ev, i) => (

@@ -2,7 +2,13 @@
 // DashboardView — ported 1:1 from v10 workbench-views.jsx
 // (DashboardView). 4 KPI cards + pyramide-pie (conic-gradient)
 // + 8-week trends (SVG sparklines) + balance bars (plan vs mål).
-// Rent presentasjonelt — ingen interaksjon (per manifest §4 a-dash).
+//
+// W5b: `axisHours`/`summary` are optional real Prisma data.
+//   - KPI "TIMER PLANLAGT", "ØKTER · UKE", pie segments + total:
+//     real when present.
+//   - Compliance, SG, the +Δ deltas, 8-week trends and balance bars
+//     have NO schema source → kept as v10 demo (W5b-rapport).
+// Mangler prop → alt v10-demo (byte-for-byte).
 //
 // Icon sizes mirror v10: in v10 the lucide UMD rendered an <i> that
 // `.dash-card .delta i { width:11px }` sized down to 11px. Our React
@@ -11,7 +17,13 @@
 // The trend warn icon passed w/h=14 explicitly in v10 — kept as-is.
 // ============================================================
 import { Icon } from "./icon";
-import { DASH_PIE_SEG, DASH_PIE_TOTAL, DASH_TRENDS, DASH_BALANCE } from "./data";
+import {
+  DASH_PIE_SEG,
+  DASH_PIE_TOTAL,
+  DASH_TRENDS,
+  DASH_BALANCE,
+  type Axis,
+} from "./data";
 
 // Sparkline helper — returns the SVG path `d` for an 8-point line.
 // Ported 1:1 from v10 (w=100, h=32, 2px top/bottom inset).
@@ -28,17 +40,46 @@ function spark(vals: number[], w = 100, h = 32): string {
     .join(" ");
 }
 
-export function DashboardView() {
-  // Conic-gradient pie for pyramide-fordeling. Build cumulative angle
-  // stops without mutating a closure variable (React-compiler-safe).
-  const stops = DASH_PIE_SEG.map((s, i) => {
-    const start = DASH_PIE_SEG.slice(0, i).reduce(
-      (a, p) => a + (p.hrs / DASH_PIE_TOTAL) * 360,
-      0,
-    );
-    const end = start + (s.hrs / DASH_PIE_TOTAL) * 360;
-    return `${s.color} ${start}deg ${end}deg`;
-  }).join(", ");
+function fmtH(hours: number): string {
+  return (Math.round(hours * 10) / 10).toString().replace(".", ",");
+}
+
+type DashboardViewProps = {
+  axisHours?: { ax: Axis; lbl: string; hours: number }[];
+  summary?: { weekNumber: number; sessionCount: number; plannedHours: number };
+};
+
+const PYR_VAR: Record<Axis, string> = {
+  fys: "var(--pyr-fys)",
+  tek: "var(--pyr-tek)",
+  slag: "var(--pyr-slag)",
+  spill: "var(--pyr-spill)",
+  turn: "var(--pyr-turn)",
+};
+
+export function DashboardView({ axisHours, summary }: DashboardViewProps = {}) {
+  // Pie segments: real per-axis weekly hours when present, else v10 demo.
+  const pieSeg = axisHours
+    ? axisHours.map((a) => ({ key: a.ax, hrs: a.hours, color: PYR_VAR[a.ax], lbl: a.lbl }))
+    : DASH_PIE_SEG;
+  const pieTotal = axisHours
+    ? axisHours.reduce((a, s) => a + s.hours, 0) || 1
+    : DASH_PIE_TOTAL;
+
+  const weekLabel = summary ? `UKE ${summary.weekNumber}` : "UKE 22";
+  const plannedLabel = summary ? `${fmtH(summary.plannedHours)} t` : "12,5 t";
+  const totalLabel = `${fmtH(pieTotal)} t`;
+  const sessionLabel = summary ? `${summary.sessionCount} / 5` : "4 / 5";
+
+  // Conic-gradient pie. Build cumulative angle stops without mutating a
+  // closure variable (React-compiler-safe).
+  const stops = pieSeg
+    .map((s, i) => {
+      const start = pieSeg.slice(0, i).reduce((a, p) => a + (p.hrs / pieTotal) * 360, 0);
+      const end = start + (s.hrs / pieTotal) * 360;
+      return `${s.color} ${start}deg ${end}deg`;
+    })
+    .join(", ");
   const pieBg = `conic-gradient(${stops})`;
 
   return (
@@ -47,9 +88,9 @@ export function DashboardView() {
       <div className="dash-card kpi-card">
         <div className="eb">
           <span>TIMER PLANLAGT</span>
-          <span>UKE 22</span>
+          <span>{weekLabel}</span>
         </div>
-        <div className="val">12,5 t</div>
+        <div className="val">{plannedLabel}</div>
         <div className="delta up">
           <Icon n="trending-up" w={11} h={11} /> +2 t vs forrige
         </div>
@@ -59,7 +100,7 @@ export function DashboardView() {
           <span>ØKTER · UKE</span>
           <span>AKTUELT</span>
         </div>
-        <div className="val">4 / 5</div>
+        <div className="val">{sessionLabel}</div>
         <div className="delta down">
           <Icon n="trending-down" w={11} h={11} /> −1 vs plan
         </div>
@@ -90,8 +131,8 @@ export function DashboardView() {
       {/* Pyramide-pie */}
       <div className="dash-card pie-card">
         <div className="eb">
-          <span>PYRAMIDE-FORDELING · UKE 22</span>
-          <span>12,5 t total</span>
+          <span>PYRAMIDE-FORDELING · {weekLabel}</span>
+          <span>{totalLabel} total</span>
         </div>
         <div className="wrap">
           <div
@@ -125,7 +166,7 @@ export function DashboardView() {
                   letterSpacing: "-0.01em",
                 }}
               >
-                12,5 t
+                {totalLabel}
               </div>
               <div
                 style={{
@@ -143,12 +184,12 @@ export function DashboardView() {
             </div>
           </div>
           <div className="legend">
-            {DASH_PIE_SEG.map((s) => (
+            {pieSeg.map((s) => (
               <div className="lg-row" key={s.key}>
                 <span className="sw" style={{ background: s.color }} />
                 <span className="nm">{s.lbl}</span>
-                <span className="hrs">{s.hrs.toString().replace(".", ",")} t</span>
-                <span className="pct">{Math.round((s.hrs / DASH_PIE_TOTAL) * 100)} %</span>
+                <span className="hrs">{fmtH(s.hrs)} t</span>
+                <span className="pct">{Math.round((s.hrs / pieTotal) * 100)} %</span>
               </div>
             ))}
           </div>

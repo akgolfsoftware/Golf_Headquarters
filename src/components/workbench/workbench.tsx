@@ -16,6 +16,14 @@
 // A·UKE ↔ B·TIDSLINJE, while KANBAN/DASHBOARD carry over unchanged.
 // The `role` prop drives the coach additions (search + bell, coach
 // actions in A; bell in B), gated on role="coach".
+//
+// W5b — real data: `data` (WorkbenchData) is optional. When present,
+// the mappable surfaces (week grid, B-timeline, kanban, statusbar
+// hours, sidebar tournaments/goals/pyramide, dashboard pie/summary)
+// render from Prisma. Surfaces with no schema source (inspector,
+// season-tree, SG, 8-week trends, balance, CS-difficulty, period
+// targets) keep the v10 demo. When `data` is absent (preview route),
+// every component falls back to demo — byte-for-byte v10.
 // ============================================================
 
 import { useState } from "react";
@@ -28,6 +36,7 @@ import { DayView } from "./day-view";
 import { KanbanView } from "./kanban-view";
 import { DashboardView } from "./dashboard-view";
 import { ListShell } from "./list-shell";
+import type { WorkbenchData } from "@/lib/workbench/load-workbench";
 import "./workbench.css";
 
 export type Role = "player" | "coach";
@@ -39,6 +48,8 @@ const STORE_KEY = "akgolf.wb.view";
 
 type WorkbenchProps = {
   role?: Role;
+  /** Ekte data fra loadWorkbenchData. Mangler/tom → v10-demo. */
+  data?: WorkbenchData;
   /** initial mode — used by the preview route to land on a specific
       screen for screenshots. Default = "UKE" (A) / "TIDSLINJE" (B). */
   initialMode?: Mode;
@@ -70,6 +81,7 @@ function resolveInitialView(initialView?: View): View {
 
 export function Workbench({
   role = "player",
+  data,
   initialMode,
   initialView,
   initialDrill = false,
@@ -112,6 +124,7 @@ export function Workbench({
         <ListShell
           variant={role}
           mode={bMode}
+          data={data}
           onVis={onVis}
           onMode={onMode}
           initialDrill={initialDrill}
@@ -124,11 +137,11 @@ export function Workbench({
     mode === "DAG" ? (
       <DayView />
     ) : mode === "KANBAN" ? (
-      <KanbanView />
+      <KanbanView cols={data?.kanbanCols} />
     ) : mode === "DASHBOARD" ? (
-      <DashboardView />
+      <DashboardView axisHours={data?.axisHours} summary={data?.summary} />
     ) : (
-      <WeekView />
+      <WeekView head={data?.weekHead} days={data?.weekDays} />
     );
 
   return (
@@ -144,11 +157,11 @@ export function Workbench({
           onMode={onMode}
         />
         <div className="wb-main">
-          <WBSidebar />
+          <WBSidebar tournaments={data?.tournaments} goals={data?.goals} pyramid={data?.pyramid} />
           {viewEl}
           <WBInspector role={role} />
         </div>
-        <WBStatusbar />
+        <WBStatusbar axisHours={data?.axisHours} summary={data?.summary} />
       </div>
     </div>
   );

@@ -1,0 +1,137 @@
+/**
+ * Preview-indeks for AgencyOS-skjermer (offentlig, ingen auth).
+ * Lenke-liste til design-kalibrerings-previews bygget FRA v10-fasiten.
+ */
+
+import Link from "next/link";
+import {
+  ArrowRight,
+  LayoutDashboard,
+  Users,
+  Inbox,
+  User,
+  CalendarDays,
+  CalendarCheck,
+  ClipboardCheck,
+  Trophy,
+  Bot,
+  GitCompareArrows,
+  ShieldCheck,
+  Activity,
+} from "lucide-react";
+
+const SCREENS: { href: string; label: string; desc: string; Icon: typeof LayoutDashboard }[] = [
+  {
+    href: "/agencyos-preview/cockpit",
+    label: "Cockpit",
+    desc: "Operations cockpit — 3-kolonne daglig brief + KPI-strip",
+    Icon: LayoutDashboard,
+  },
+  {
+    href: "/agencyos-preview/spillere",
+    label: "Spillere / Stallen",
+    desc: "Spillerliste — tabell med SG-trend, pyramide, status",
+    Icon: Users,
+  },
+  {
+    href: "/agencyos-preview/innboks",
+    label: "Innboks",
+    desc: "Coachens samle-innboks — meldinger, faktura, forespørsler",
+    Icon: Inbox,
+  },
+  {
+    href: "/agencyos-preview/spiller",
+    label: "Spiller-detalj",
+    desc: "DetailShell — hero + tabs (Profil/Plan/Analyse/Tester/Workbench)",
+    Icon: User,
+  },
+  {
+    href: "/agencyos-preview/kalender",
+    label: "Kalender",
+    desc: "Uke/måned — alle økter på tvers av stallen",
+    Icon: CalendarDays,
+  },
+  {
+    href: "/agencyos-preview/bookinger",
+    label: "Bookinger",
+    desc: "Alle bookinger + manuell booking",
+    Icon: CalendarCheck,
+  },
+  {
+    href: "/agencyos-preview/tester",
+    label: "Tester",
+    desc: "Tester på tvers + foreslåtte",
+    Icon: ClipboardCheck,
+  },
+  {
+    href: "/agencyos-preview/turneringer",
+    label: "Turneringer",
+    desc: "Turneringskalender uke/måned/år auto-populert + fellesmelding",
+    Icon: Trophy,
+  },
+  // AgencyOS — pulje-2
+  {
+    href: "/agencyos-preview/caddie",
+    label: "Caddie",
+    desc: "Coachens AI-medhjelper (chat)",
+    Icon: Bot,
+  },
+  {
+    href: "/agencyos-preview/compare",
+    label: "Sammenlign",
+    desc: "Sammenlign flere spillere",
+    Icon: GitCompareArrows,
+  },
+  {
+    href: "/agencyos-preview/compliance",
+    label: "Compliance",
+    desc: "Compliance-oversikt",
+    Icon: ShieldCheck,
+  },
+  {
+    href: "/agencyos-preview/drift",
+    label: "Drift",
+    desc: "Daglig drift",
+    Icon: Activity,
+  },
+];
+
+export default function AgencyOsPreviewIndex() {
+  return (
+    <main className="mx-auto min-h-screen max-w-2xl bg-background px-6 py-12">
+      <p className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+        AgencyOS · preview
+      </p>
+      <h1 className="mt-2 font-display text-2xl font-bold tracking-[-0.02em] text-foreground">
+        Skjermer
+      </h1>
+      <p className="mt-1 text-sm text-muted-foreground">
+        Design-kalibrerings-previews (ingen auth, demo-data).
+      </p>
+
+      <ul className="mt-8 space-y-3">
+        {SCREENS.map(({ href, label, desc, Icon }) => (
+          <li key={href}>
+            <Link
+              href={href}
+              className="group flex items-center gap-4 rounded-xl border border-border bg-card px-5 py-4 transition-colors hover:border-primary/40 hover:bg-secondary"
+            >
+              <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-secondary text-muted-foreground">
+                <Icon className="h-5 w-5" strokeWidth={1.5} aria-hidden />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-sm font-semibold text-foreground">{label}</span>
+                <span className="block text-[13px] text-muted-foreground">{desc}</span>
+              </span>
+              <ArrowRight
+                className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5"
+                strokeWidth={2}
+                aria-hidden
+              />
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </main>
+  );
+}
