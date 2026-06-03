@@ -1,0 +1,280 @@
+/* ============================================================
+   AK Golf HQ — Design Tokens (LOCKED)
+   ------------------------------------------------------------
+   Editorial sport-analytics.
+   Forest #005840 + Lime #D1F843 + Cream #FAFAF7.
+   Inter (UI) · Inter Tight (display) · JetBrains Mono (data).
+   ============================================================ */
+
+/* ---- Fonts: self-hosted woff2 (variable fonts) ---- */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("fonts/Inter.woff2") format("woff2-variations"),
+       url("fonts/Inter.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter Tight";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("fonts/InterTight.woff2") format("woff2-variations"),
+       url("fonts/InterTight.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter Tight";
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("fonts/InterTight-Italic.woff2") format("woff2-variations"),
+       url("fonts/InterTight-Italic.woff2") format("woff2");
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("fonts/JetBrainsMono.woff2") format("woff2-variations"),
+       url("fonts/JetBrainsMono.woff2") format("woff2");
+}
+
+:root {
+  /* === Brand primitives (do not reference directly in components) === */
+  --forest-900: #0A1F17;   /* deep forest — text */
+  --forest-700: #0F2A22;   /* dark bg */
+  --forest-600: #163027;   /* dark card */
+  --forest-500: #005840;   /* primary forest — CTA */
+  --forest-300: #2B4F42;   /* dark border */
+  --lime-500:   #D1F843;   /* lime accent */
+  --cream-50:   #FAFAF7;   /* warm off-white bg */
+  --cream-100:  #F5F4EE;   /* warm hi-contrast text on dark */
+  --cream-200:  #F1EEE5;   /* warm sand secondary */
+  --cream-300:  #E5E3DD;   /* border */
+  --cream-400:  #E0DDD6;   /* input border */
+  --warm-gray:  #5E5C57;   /* muted-foreground */
+  --pure-white: #FFFFFF;
+
+  /* Semantic states */
+  --destructive-500: #A32D2D;
+  --success-500:     #1A7D56;
+  --warning-500:     #B8852A;
+  --info-500:        #2563EB;
+
+  /* ============================================================
+     Semantic tokens — LIGHT theme (default)
+     Use ONLY these in component code. Never reach for primitives.
+     ============================================================ */
+  --background: var(--cream-50);
+  --foreground: var(--forest-900);
+  --card: var(--pure-white);
+  --card-foreground: var(--forest-900);
+  --popover: var(--pure-white);
+  --popover-foreground: var(--forest-900);
+
+  --primary: var(--forest-500);
+  --primary-foreground: var(--lime-500);
+
+  --secondary: var(--cream-200);
+  --secondary-foreground: var(--forest-900);
+
+  --accent: var(--lime-500);
+  --accent-foreground: var(--forest-500);
+
+  --muted: var(--cream-200);
+  --muted-foreground: var(--warm-gray);
+
+  --destructive: var(--destructive-500);
+  --destructive-foreground: var(--pure-white);
+  --success: var(--success-500);
+  --warning: var(--warning-500);
+  --info: var(--info-500);
+
+  --border: var(--cream-300);
+  --input: var(--cream-400);
+  --ring: var(--forest-500);
+
+  /* Pyramide-akser — chart fills, NEVER text */
+  --pyr-fys:   #005840;  /* fysisk */
+  --pyr-tek:   #B8852A;  /* teknisk */
+  --pyr-slag:  #2563EB;  /* slag */
+  --pyr-spill: #D1F843;  /* spill */
+  --pyr-turn:  #A32D2D;  /* turnering */
+
+  /* === Typography === */
+  --font-sans:    "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Inter Tight", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Type scale — display / body / mono */
+  --text-xs:   12px;   /* mono small caps */
+  --text-sm:   13px;
+  --text-base: 14px;
+  --text-md:   16px;
+  --text-lg:   18px;
+  --text-xl:   20px;
+  --text-2xl:  24px;
+  --text-3xl:  30px;
+  --text-4xl:  36px;
+  --text-5xl:  48px;
+  --text-6xl:  60px;
+  --text-7xl:  72px;
+
+  /* Tight tracking for display, generous for eyebrow caps */
+  --tracking-tight:   -0.025em;
+  --tracking-snug:    -0.015em;
+  --tracking-default: -0.005em;
+  --tracking-mono:     0.02em;
+  --tracking-eyebrow:  0.12em;
+
+  /* === Spacing — 8pt grid (strict) === */
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-8: 64px;
+  --space-10: 80px;
+  --space-12: 96px;
+
+  /* === Radii === */
+  --radius-sm:   8px;   /* badges, tags */
+  --radius-md:  12px;   /* inputs, buttons, small cards */
+  --radius-lg:  16px;   /* cards, panels */
+  --radius-xl:  20px;   /* big cards */
+  --radius-2xl: 24px;   /* hero cards */
+  --radius-full: 9999px;
+
+  /* === Shadows (soft, editorial — no neon glow except lime CTA) === */
+  --shadow-xs: 0 1px 2px rgba(10, 31, 23, 0.04);
+  --shadow-sm: 0 2px 4px rgba(10, 31, 23, 0.05);
+  --shadow-md: 0 4px 14px rgba(10, 31, 23, 0.08);
+  --shadow-lg: 0 12px 32px rgba(10, 31, 23, 0.12);
+  --shadow-lime: 0 6px 14px rgba(209, 248, 67, 0.25);
+  --shadow-lime-glow: 0 0 8px rgba(209, 248, 67, 0.6);
+}
+
+/* ============================================================
+   DARK theme — Lime promotes to primary, forest deepens
+   ============================================================ */
+.dark {
+  --background: var(--forest-700);
+  --foreground: var(--cream-100);
+  --card: var(--forest-600);
+  --card-foreground: var(--cream-100);
+  --popover: var(--forest-600);
+  --popover-foreground: var(--cream-100);
+
+  --primary: var(--lime-500);
+  --primary-foreground: var(--forest-900);
+
+  --secondary: var(--forest-600);
+  --secondary-foreground: var(--cream-100);
+
+  --accent: var(--lime-500);
+  --accent-foreground: var(--forest-900);
+
+  --muted: var(--forest-600);
+  --muted-foreground: #9CA39E;
+
+  --border: var(--forest-300);
+  --input: var(--forest-300);
+  --ring: var(--lime-500);
+}
+
+/* ============================================================
+   Semantic CSS helpers (canonical typography classes)
+   ============================================================ */
+body {
+  font-family: var(--font-sans);
+  color: var(--foreground);
+  background: var(--background);
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-display { font-family: var(--font-display); }
+.font-sans    { font-family: var(--font-sans); }
+.font-mono    { font-family: var(--font-mono); font-feature-settings: "tnum", "zero"; }
+
+/* Display — hero overskrifter */
+.h-display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(40px, 6vw, 72px);
+  line-height: 1.02;
+  letter-spacing: var(--tracking-tight);
+  color: var(--foreground);
+  text-wrap: balance;
+}
+
+/* Editorial italic — Inter Tight italic, never serif */
+.h-display em,
+em.editorial {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--primary);
+}
+
+.h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-4xl);
+  line-height: 1.05;
+  letter-spacing: var(--tracking-tight);
+}
+.h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-3xl);
+  line-height: 1.1;
+  letter-spacing: var(--tracking-snug);
+}
+.h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--text-xl);
+  line-height: 1.2;
+  letter-spacing: var(--tracking-snug);
+}
+
+.body  { font-size: var(--text-base); line-height: 1.55; }
+.body-lg { font-size: var(--text-md);   line-height: 1.55; }
+.caption {
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  color: var(--muted-foreground);
+}
+
+/* Eyebrow — mono caps, the signature label */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-eyebrow);
+  color: var(--muted-foreground);
+}
+.eyebrow--light { color: rgba(255,255,255,0.9); text-shadow: 0 1px 4px rgba(0,0,0,0.4); }
+.eyebrow--lime  { color: var(--accent); }
+
+/* KPI tall — JetBrains Mono tabular */
+.kpi-value {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: var(--text-3xl);
+  line-height: 1;
+  letter-spacing: var(--tracking-tight);
+  color: var(--foreground);
+  font-feature-settings: "tnum", "zero";
+}
+.kpi-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted-foreground);
+}
