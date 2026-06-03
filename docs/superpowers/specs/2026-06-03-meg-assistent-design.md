@@ -31,6 +31,8 @@ i en "black box".
 | MVP-kjerne | Chat + logg + minne + morgenbrief + kveldsjournal | Lavest friksjon, mest verdi dag 1. |
 | MVP-ferdigheter (oppå kjernen) | Mikrostegs-nedbryting · "Du lovet/glemte X" · Foto/stemme mat-logging · Personlig CRM-nudge | Alle deler samme motor; ikke separate systemer. |
 | Moduler (ADHD, søvn, kosthold, investering, mål) | Starter som **tagger** i loggen | Unngår fire nye systemer. Egne skjermer bygges én og én senere. |
+| AI-motor | **Claude via modell-bryter (Vercel AI Gateway)** — Haiku til klassifisering, Sonnet til brief/rådgivning | Lav kost (titalls kr/mnd), høy kvalitet nå, men modellen er en env-konfig så vi kan bytte til Kimi K2 / billigere uten ombygging. |
+| Kunnskaps-tilgang | **AK Brain + Second Brain + egne Meg-logger**, indeksert som søkbart minne | Boten "kjenner" begge hjernene, men henter kun de 3-5 mest relevante bitene per spørsmål (presist + billig). Egne logger er først ute; vaultene kobles på via indekserings-jobb. |
 
 **Bevisst frarådet** (fra kildens master-prompt, ikke tatt inn):
 - Egen separat React-app → nei, vi bruker eksisterende Next.js 16.
@@ -50,8 +52,13 @@ Ingen deling, ingen invitasjoner, ingen multi-bruker. Dette forenkler alt.
 - **Tilgang:** Kun Anders. Ingen kunde, spiller eller annen coach når dataene — ikke
   engang ved feil i golf-plattformen, fordi det er en fysisk separat database.
 - **Tredjeparter som prosesserer data** (dokumenteres for åpenhet): Telegram (melding
-  i transitt), Wispr Flow (tale → tekst på enhet), Anthropic Claude API (forstår/svarer),
-  Supabase (lagring). Ingen andre.
+  i transitt), Wispr Flow (tale → tekst på enhet), Vercel AI Gateway → Claude/valgt modell
+  (forstår/svarer), embeddings-leverandør (indeksering av tekst til søk), Supabase (lagring).
+  Ingen andre.
+- **Kunnskaps-kilder kopieres til Anders' egen Meg-DB:** AK Brain (`~/ak-brain`) og Second
+  Brain (`~/Developer/ak-second-brain`) indekseres inn i `me_knowledge` (se §5) av en jobb
+  på Mac Mini. Kunnskapen forlater altså Mac-en kun til Anders' egen sky-database — ikke
+  til noen tredjepart utover embeddings-kallet på korte tekstbiter.
 
 **Sikkerhet:**
 - **Kryptering:** Supabase krypterer at-rest; all trafikk over TLS.
@@ -127,8 +134,15 @@ Få tabeller, bevisst. Modulene er tagger, ikke tabeller.
   `id, created_at, fact, category, confidence, source_log_ids[]`
   Dette er nøkkelen mot "memory bloat": vi destillerer logg til korte fakta her.
 
-**Søk:** hybrid — vanlig nøkkelord + semantisk (pgvector-embedding på `me_log.text`
-og `me_memory.fact`) så "hvordan har søvnen vært i juni?" finner riktig på tvers av måneder.
+- **`me_knowledge`** — indekserte biter fra AK Brain + Second Brain (ekstern kunnskap).
+  `id, source ('ak-brain'|'second-brain'), file_path, chunk_text, embedding (vector),
+  content_hash, updated_at`
+  Mac Mini-jobb leser vaultene, deler i biter, lager embeddings, og upserter her.
+  `content_hash` gjør at uendrede biter hoppes over (billig, inkrementell sync).
+
+**Søk:** hybrid — vanlig nøkkelord + semantisk (pgvector) over `me_log.text`, `me_memory.fact`
+OG `me_knowledge.chunk_text`. Boten henter kun topp 3-5 mest relevante biter per spørsmål —
+på tvers av egne logger og begge hjernene — så svar blir presist og rimelig.
 
 ---
 
@@ -201,6 +215,9 @@ Lenke: https://youtu.be/CvLkhGWZlvE (bygges inn som embed på onboarding-skjerme
 
 ## 11. Senere-kart (bygges én og én, ingenting glemmes)
 
+0. **Kunnskaps-indeksering (egen plan):** Mac Mini-jobb som leser AK Brain + Second Brain,
+   deler i biter, lager embeddings og upserter til `me_knowledge`. Kjøres via LaunchAgent
+   (samme mekanikk som claude-config-sync). Pluss hybrid-søk-funksjon som boten bruker.
 1. Egne skjermer/grafer per modul (søvn, trening, kosthold, humør).
 2. Readiness-/recovery-score (når wearable-data er koblet).
 3. Smart mat-logging med makroer over tid.
