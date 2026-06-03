@@ -583,6 +583,7 @@ Designeren leverte 47 ferdige komponent-design (HTML-biter). Mange er brukt i sk
 Designeren har levert en egen elite-mappe (spredningsverktøy for utslag — «dispersion»):
 
 - `elite/DispersionTool.html`, `elite/Utslag-spredning.html`, `elite/components-trackman-dispersion.html`.
+- `Break-tabell.html` — putting green-reading-/break-tabell. Tegnet, men IKKE dekket noe sted i appen eller planen (funnet ved ZIP-gjennomgang 3. juni). Hører hjemme i putting-/SG-putt- eller elite-delen. Ikke bygget.
 
 Dette hører hjemme i elite-/talent-delen (f.eks. shot-map/dispersjon: `/portal/statistikk/shot-map` eller talent-radar). **Bevisst utsatt** — «Elite Fase 2» er parkert. Det er greit at den ligger ubrukt nå, men den må ikke glemmes når Elite Fase 2 starter.
 
