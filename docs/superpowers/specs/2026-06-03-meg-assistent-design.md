@@ -195,7 +195,7 @@ Dokumenteres i onboarding:
 ## 10. Onboarding + referansemateriale
 
 Første gang `/meg` åpnes: kort intro + **NotebookLM-YouTube-video** innebygd.
-**Åpent punkt:** Anders gir lenken → settes inn (plassholder til da).
+Lenke: https://youtu.be/CvLkhGWZlvE (bygges inn som embed på onboarding-skjermen).
 
 ---
 
@@ -226,9 +226,19 @@ Første gang `/meg` åpnes: kort intro + **NotebookLM-YouTube-video** innebygd.
 
 ---
 
-## 13. Åpne punkter
+## 13. Tone
 
-- [ ] NotebookLM-YouTube-lenke (Anders leverer).
+Boten kommuniserer **kort og tydelig**. Ingen pjatt, ingen lange utlegninger.
+Bekreft handling i én linje, svar konkret. Matcher Anders' egen stil.
+
+---
+
+## 14. Åpne punkter (oppsett ved bygging)
+
 - [ ] Bekreft Telegram bot-token + chat-id ved oppsett.
 - [ ] Opprett ny Supabase-prosjekt for Meg-databasen (separat fra golf-DB).
-- [ ] Avklar tone/personlighet for boten (kort, direkte — matcher Anders' stil).
+
+**Avklart:**
+- NotebookLM-video: https://youtu.be/CvLkhGWZlvE
+- Tone: kort og tydelig (§13).
+- Alle fire MVP-ferdigheter er med.
