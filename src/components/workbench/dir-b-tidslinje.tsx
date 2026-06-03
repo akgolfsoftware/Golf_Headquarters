@@ -5,9 +5,20 @@
 // SG-row + Ubalanse/Balansér actions) · tournament strip · day
 // sections with session rows (grip · time · axis-dot · title +
 // meta/pills · duration · chevron).
+//
+// W5b: `days` is optional. Real Prisma day-sections render via props;
+// absent → v10 demo (DIRB_DAYS). The pyramide-strip (SG-based) and the
+// tournament strip have no schema source → kept v10 demo.
 // ============================================================
 import { Icon } from "./icon";
-import { DIRB_DAYS, DIRB_PYR_SEG, DIRB_PYR_SGS, DIRB_TOUR_STRIP, type DirBDayData, type DirBRowData } from "./data";
+import {
+  DIRB_DAYS,
+  DIRB_PYR_SEG,
+  DIRB_PYR_SGS,
+  DIRB_TOUR_STRIP,
+  type DirBDayData,
+  type DirBRowData,
+} from "./data";
 
 // ───────── Pyramide strip (anchor) ─────────
 export function DirBPyramideStrip() {
@@ -121,7 +132,8 @@ function DirBRow({ row }: { row: DirBRowData }) {
 }
 
 // ───────── Tidslinje body (vertical agenda) ─────────
-export function DirBTidslinjeBody() {
+export function DirBTidslinjeBody({ days }: { days?: DirBDayData[] } = {}) {
+  const dayList = days ?? DIRB_DAYS;
   return (
     <>
       <DirBPyramideStrip />
@@ -134,8 +146,8 @@ export function DirBTidslinjeBody() {
         <span className="meta">{DIRB_TOUR_STRIP.meta}</span>
       </div>
 
-      {DIRB_DAYS.map((day) => (
-        <DirBDay key={day.dt} day={day} />
+      {dayList.map((day, i) => (
+        <DirBDay key={i} day={day} />
       ))}
 
       {/* Spacer */}

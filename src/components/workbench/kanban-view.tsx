@@ -2,13 +2,24 @@
 // KanbanView — ported 1:1 from v10 workbench-views.jsx (KanbanView).
 // 5 pyramide-axis columns (FYS/TEK/SLAG/SPILL/TURN) with session
 // cards + "+ Slipp her" drop-zone hint per column.
+//
+// W5b: `cols` is optional. Real Prisma kanban-columns are passed via
+// props; absent → v10 demo (KANBAN_COLS).
 // ============================================================
-import { KANBAN_COLS } from "./data";
+import { KANBAN_COLS, type Axis } from "./data";
 
-export function KanbanView() {
+type KanbanCol = {
+  key: Axis;
+  lbl: string;
+  ct: number;
+  cards: { day: string; nm: string; meta: string }[];
+};
+
+export function KanbanView({ cols }: { cols?: KanbanCol[] } = {}) {
+  const columns = cols ?? KANBAN_COLS;
   return (
     <section className="kanban">
-      {KANBAN_COLS.map((c) => (
+      {columns.map((c) => (
         <div className={"kb-col " + c.key} key={c.key}>
           <div className="kb-head">
             <span className={"ax " + c.key} />

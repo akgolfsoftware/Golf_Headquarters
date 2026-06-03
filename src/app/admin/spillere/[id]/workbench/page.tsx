@@ -3,13 +3,14 @@
  * Coach opererer i spillerens workbench (role=coach): tre-sidemeny,
  * uke-kalender, inspector med coach-handlinger + COACH-ONLY-blokk.
  *
- * Pixel-port av design-handover/agencyos/components-workbench-{sidebar,week,day}.html.
- * Server Component med live Prisma-data via loadCoachWorkbench.
+ * Server Component med live Prisma-data via loadWorkbenchData(id).
+ * notFound() hvis spiller-id ikke finnes.
  */
 
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { Workbench } from "@/components/workbench/workbench";
+import { loadWorkbenchData } from "@/lib/workbench/load-workbench";
 
 export const dynamic = "force-dynamic";
 
@@ -23,9 +24,11 @@ export default async function CoachWorkbenchPage({ params }: Props) {
     redirect("/auth/login");
   }
 
-  await params; // spiller-id brukes i W5b for ekte coach-data + notFound
+  const { id } = await params;
 
-  // W5a: ny v10-Workbench (coach-variant) montert med demo-data.
-  // Ekte data (loadCoachWorkbench(id) → data-adapter) + notFound kobles i W5b.
-  return <Workbench role="coach" />;
+  // W5b: ekte data for spilleren. null → spilleren finnes ikke → 404.
+  const data = await loadWorkbenchData(id);
+  if (data === null) notFound();
+
+  return <Workbench role="coach" data={data} />;
 }
