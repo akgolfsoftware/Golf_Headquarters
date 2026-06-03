@@ -60,6 +60,11 @@ PERIODISERING-REGLER:
 - Alltid: minst 1 putting-økt per uke uansett nivå.
 - Aldri mer enn 6 økter per uke; deload-uker har maks 4 økter.
 
+FASILITET OG SESONG:
+- Generer ALDRI økter med environment BANE om vinteren (nov–mar) med mindre spilleren eksplisitt har tilgang til simulator eller innendørs-bane. Bruk STUDIO/SIMULATOR/HJEM i stedet.
+- Tilpass environment per økt til hva spilleren faktisk har tilgang til (se fasiliteter i kontekst-meldingen).
+- Respekter spillerens oppgitte ukentlige timekapasitet — planlegg aldri mer trening enn det.
+
 DATA-DREVET TILPASNING:
 Du får signaler (SG_TOTAL, SG_PUTTING, etc.), tidligere planer, øktlogger og evt. WAGR-snapshot/NGF-kategori. Bruk dette til å:
 - Velge fokusområde basert på spillerens svakeste SG-area.
