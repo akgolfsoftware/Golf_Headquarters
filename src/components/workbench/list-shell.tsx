@@ -54,11 +54,9 @@ export function ListShell({ variant, mode, data, onVis, onMode, initialDrill = f
   // slide-over (and thus the drill-modus CTA) exists. (The overlay's
   // own Esc/⌘D-to-close lives in DirBDrillOverlay while it is open.)
   useEffect(() => {
-    if (!isTidslinje) {
-      // Leaving TIDSLINJE (e.g. to Kanban) must not strand an open overlay.
-      setDrillOpen(false);
-      return;
-    }
+    // Drill-overlay rendres kun i TIDSLINJE (se render-gaten under), så et
+    // modusbytte strander aldri en åpen overlay — ingen setState nødvendig her.
+    if (!isTidslinje) return;
     const onKey = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && (e.key === "d" || e.key === "D")) {
         e.preventDefault();
