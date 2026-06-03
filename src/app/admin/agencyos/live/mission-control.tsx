@@ -37,6 +37,7 @@ import {
   X,
   type LucideIcon,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import {
   ANTALL_AVTALER,
@@ -349,6 +350,14 @@ export function MissionControl() {
         {/* command bar */}
         <header className="sticky top-0 z-20 flex items-center gap-4 border-b border-border bg-background/55 px-6 py-3.5 backdrop-blur-md">
           <div className="flex shrink-0 items-center gap-3">
+            <Image
+              src="/logos/ak-golf-logo-white-on-dark.svg"
+              alt="AK Golf"
+              width={30}
+              height={26}
+              priority
+              className="block h-[26px] w-auto"
+            />
             <span className="font-display text-[15px] font-bold tracking-[-0.01em] text-foreground">
               AgencyOS
               <b className="ml-1.5 text-[12px] font-medium text-muted-foreground">
