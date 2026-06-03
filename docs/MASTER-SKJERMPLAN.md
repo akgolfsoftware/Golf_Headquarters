@@ -578,6 +578,12 @@ Designeren leverte 47 ferdige komponent-design (HTML-biter). Mange er brukt i sk
 | `components-foreldre.html` | Foreldre-komponent for coach | Coachens foreldre-/kommunikasjonsside. Ikke tydelig brukt. |
 | `components-cmdk.html` | Hurtigsøk-boks (⌘K) | Søk i hele AgencyOS. Delvis — søkefeltet finnes, men hurtig-paletten er ikke bekreftet koblet. |
 
+**Coach-flyter (flyt-spesifikasjon, ny i leveranse 3. juni):** `Coach-flyter.html` (+ offline-bundle)
+er en interaktiv prototype som viser hvordan coachen navigerer GJENNOM AgencyOS-skjermene
+(flere flyter: innboks → godkjenn → plan o.l.). Ikke nye enkeltskjermer — men fasit for
+«Flyt»-haken når AgencyOS-skjermene kobles. Bruk den som referanse for knapp-til-knapp-flyt.
+Arkivert kilde: `public/design-handover/ak-golf-hq-design-system-2026-06-03.zip`.
+
 ### C. Hele «Elite»-pakken er tegnet, men ikke i bruk
 
 Designeren har levert en egen elite-mappe (spredningsverktøy for utslag — «dispersion»):
