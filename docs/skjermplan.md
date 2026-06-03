@@ -15,7 +15,14 @@ Innsats: S/M/L. Merk hvert steg som `[x]` når deployet.
 
 ## Fase 3 — Data golf-finpuss
 - [ ] **7. Shot-map / dispersion-side** — `/portal/statistikk/shot-map` — top-down, ekte data. Gjenbruk: `shot-map.tsx`. (M) — lav prioritet
-- [ ] **8. Benchmark-skjerm** — `/portal/mal/sg-hub/benchmark` — vs coach / region / Tour. Gjenbruk: `stats-big-radar`, `sg-bar`. (M)
+- [x] **8. Benchmark-skjerm** — `/portal/mal/sg-hub/benchmark` — vs PGA Tour, ekte data (aggregateSg + SgBar). Tour-benchmark live. (coach/region-sammenligning = post-launch) — 2026-06-03
+
+## DATA-BLOKKERT — UI-klar, men datamodell mangler (avdekket 2026-06-03)
+Disse kan ikke bygges med ekte data uten datafundament først. «Ærlig data»-prinsippet
+forbyr falske tall. Krever migrasjon + innsamlingsflyt, ikke bare skjerm-bygging.
+- [ ] **4. Scorecard per runde (hull-for-hull)** — mangler `HoleScore`-modell. `Round` har kun totalscore.
+- [ ] **5. Live turnerings-tracking** — mangler hele live-scoring-dataflyten.
+- [ ] **7. Shot-map / dispersion** — `Shot` mangler x/y-koordinater for spredningsplott.
 
 ## Allerede ferdig (referanse)
 - [x] Spillerliste: SG total + 6-mnd trend-sparkline (`/admin/agencyos/spillere`) — 2026-05-30

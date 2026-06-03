@@ -1,38 +1,37 @@
 /**
- * PlayerHQ · Trening · Årsplan
+ * PlayerHQ · Trening · Årsplan (`/portal/tren/aarsplan`) — v10-design.
  *
- * Hierarkisk sesongplanlegger:
- *   Årsplan → PeriodBlokker (LPhase) → Turneringer
+ * Rendrer <Aarsplan> (v10-fasit fra pl-aarsplan, public/design-handover/
+ * _screens/pl-aarsplan.png) med EKTE data fra Prisma (seasonPlan +
+ * periodBlocks). mapAarsplanData oversetter seasonPlan-shapen til
+ * AarsplanData. Tom-tilstand (faser: []) bevares når ingen sesongplan
+ * finnes for året — aldri liksom-tall.
  *
- * Tidslinje viser periodisering visuelt jan–des.
+ * Server component. Auth-guard via requirePortalUser. PortalShell (layout)
+ * eier sidebar/topbar/bunn-nav — denne siden rendrer kun innholdet.
+ *
+ * Bolk (3. juni): byttet fra AarsplanGantt/AarsplanInteraktiv (eldre design)
+ * til v10-komponenten <Aarsplan>.
  */
-
-import Link from "next/link";
-import { CalendarDays, Trophy } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
-import { AgentStrip } from "@/components/coachhq/agent-strip";
 import {
-  AarsplanInteraktiv,
-  OpprettSesonPlanSkjema,
-  type SeasonPlanData,
-  type TurneringPin,
-} from "./aarsplan-interaktiv";
-import { BulkKoblTurneringer } from "./bulk-kobl-button";
-import {
-  AarsplanGantt,
-  type GanttAxis,
-  type GanttPeriod,
-} from "@/components/portal/aarsplan/aarsplan-gantt";
+  Aarsplan,
+  type AarsplanData,
+  type Fase,
+  type PyramideAkse,
+} from "@/components/portal/aarsplan/aarsplan";
 import type { LPhase } from "@/generated/prisma/client";
 
-// GRUNN→fys (forest), SPESIAL→tek (gull), TURNERING→turn (rød) — faser farget per pyramide-akse.
-const LPHASE_TIL_AKSE: Record<LPhase, GanttAxis> = {
-  GRUNN: "fys",
-  SPESIAL: "tek",
-  TURNERING: "turn",
+export const dynamic = "force-dynamic";
+
+// GRUNN→FYS (forest), SPESIAL→TEK (gull), TURNERING→TURN (rød) —
+// faser farget per pyramide-akse i v10-komponenten.
+const LPHASE_TIL_AKSE: Record<LPhase, PyramideAkse> = {
+  GRUNN: "FYS",
+  SPESIAL: "TEK",
+  TURNERING: "TURN",
 };
 
 const LPHASE_NAVN: Record<LPhase, string> = {
@@ -40,6 +39,11 @@ const LPHASE_NAVN: Record<LPhase, string> = {
   SPESIAL: "Spesialisering",
   TURNERING: "Turneringsperiode",
 };
+
+/** Måned 1–12 fra Date (lokal). */
+function maned(d: Date): number {
+  return d.getMonth() + 1;
+}
 
 export default async function AarsplanPage() {
   const user = await requirePortalUser();
@@ -50,200 +54,27 @@ export default async function AarsplanPage() {
     where: { userId: user.id, year: ar },
     include: {
       periodBlocks: { orderBy: { startDate: "asc" } },
-      tournamentEntries: {
-        orderBy: { manualDate: "asc" },
-        include: { tournament: { select: { name: true, startDate: true } } },
-      },
     },
   });
 
-  // Antall entries i året som IKKE er koblet til sesongplan (kandidater for bulk-kobling)
-  const fra = new Date(ar, 0, 1);
-  const til = new Date(ar, 11, 31, 23, 59, 59);
-  const ukoblede = await prisma.tournamentEntry.count({
-    where: {
-      userId: user.id,
-      seasonPlanId: null,
-      OR: [
-        { tournament: { startDate: { gte: fra, lte: til } } },
-        { manualDate: { gte: fra, lte: til } },
-      ],
-    },
-  });
-
-  const antallTurneringer = sesongplan?.tournamentEntries.length ?? 0;
-
-  const turneringPins: TurneringPin[] = (sesongplan?.tournamentEntries ?? [])
-    .map((e) => {
-      const dato = e.tournament?.startDate ?? e.manualDate;
-      if (!dato) return null;
-      return {
-        id: e.id,
-        navn: e.tournament?.name ?? e.manualName ?? "Manuell turnering",
-        dato,
-        priority: e.priority as "MAJOR" | "NORMAL" | "LOCAL",
-      };
-    })
-    .filter((p): p is TurneringPin => p !== null);
-
-  const plan: SeasonPlanData | null = sesongplan
-    ? {
-        id: sesongplan.id,
-        year: sesongplan.year,
-        name: sesongplan.name,
-        startDate: sesongplan.startDate,
-        endDate: sesongplan.endDate,
-        periodBlocks: sesongplan.periodBlocks,
-      }
-    : null;
-
-  // Gantt-perioder — faser farget per pyramide-akse, posisjonert på ekte datoer.
-  const ganttPerioder: GanttPeriod[] = (sesongplan?.periodBlocks ?? []).map((b) => ({
+  // periodBlocks → faser. Tom array = tom-tilstand (fasiten).
+  const faser: Fase[] = (sesongplan?.periodBlocks ?? []).map((b) => ({
     id: b.id,
-    axis: LPHASE_TIL_AKSE[b.lPhase],
-    label: LPHASE_NAVN[b.lPhase],
-    startDate: b.startDate,
-    endDate: b.endDate,
-    focus: b.focus,
-    weeklyVolMin: b.weeklyVolMin,
-    weeklyVolMax: b.weeklyVolMax,
+    akse: LPHASE_TIL_AKSE[b.lPhase],
+    navn: LPHASE_NAVN[b.lPhase],
+    fraManed: maned(b.startDate),
+    tilManed: maned(b.endDate),
   }));
 
-  const fornavn = user.name.split(" ")[0];
+  const data: AarsplanData = {
+    aar: ar,
+    fornavn: user.name.split(" ")[0],
+    faser,
+    hrefs: {
+      opprett: "/portal/planlegge/workbench",
+      faseBase: "/portal/tren/aarsplan/periode",
+    },
+  };
 
-  return (
-    <div className="min-h-screen bg-background text-foreground">
-      <div className="mx-auto max-w-[1200px] px-4 py-6 sm:px-6 sm:py-8">
-        <div className="mb-6 sm:mb-8">
-          <PageHeader
-            eyebrow="PlayerHQ · Trening · Årsplan"
-            titleLead="Årsplan"
-            titleItalic={String(ar)}
-            sub={
-              plan
-                ? `${plan.periodBlocks.length} perioder · ${antallTurneringer} turneringer planlagt, ${fornavn}.`
-                : `Ingen sesongplan for ${ar} enda, ${fornavn}. Opprett en for å starte planleggingen.`
-            }
-          />
-        </div>
-
-        {/* Ingen sesongplan → tom-tilstand */}
-        {!plan && (
-          <div className="rounded-2xl border border-border bg-card p-16 text-center">
-            <CalendarDays
-              className="mx-auto h-12 w-12 text-muted-foreground"
-              strokeWidth={1}
-            />
-            <h2 className="mt-4 font-display text-2xl font-semibold tracking-tight">
-              Ingen sesongplan for {ar}
-            </h2>
-            <p className="mx-auto mt-2 max-w-md text-[15px] leading-[1.6] text-muted-foreground">
-              En sesongplan hjelper deg å strukturere hele treningsåret med
-              Mac O&apos;Grady-faser, volummål og turneringsplan.
-            </p>
-            <div className="mt-8 flex justify-center">
-              <OpprettSesonPlanSkjema year={ar} />
-            </div>
-          </div>
-        )}
-
-        {/* Sesongplan funnet */}
-        {plan && (
-          <>
-            {ukoblede > 0 && (
-              <div className="mb-6">
-                <AgentStrip label="Årsplan-agent">
-                  Du har {ukoblede} {ukoblede === 1 ? "turnering" : "turneringer"} i {ar} som ikke er koblet til sesongplanen. Last dem inn nå for å se dem på tidslinjen.
-                  <span className="ml-2 inline-block">
-                    <BulkKoblTurneringer seasonPlanId={plan.id} year={ar} antall={ukoblede} />
-                  </span>
-                </AgentStrip>
-              </div>
-            )}
-
-            <AarsplanGantt
-              year={ar}
-              periods={ganttPerioder}
-              turneringer={turneringPins}
-              now={new Date()}
-            />
-
-            <div className="mt-6">
-              <AarsplanInteraktiv plan={plan} turneringer={turneringPins} visTidslinje={false} />
-            </div>
-
-            {/* Turneringer-lenke */}
-            <div className="mt-6 flex flex-col items-stretch justify-between gap-2 rounded-xl border border-border bg-card px-4 py-4 sm:flex-row sm:items-center sm:px-6">
-              <div className="flex items-center gap-2">
-                <Trophy className="h-5 w-5 text-muted-foreground" strokeWidth={1.5} />
-                <div>
-                  <div className="text-sm font-semibold text-foreground">
-                    Turneringsplan
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    {antallTurneringer === 0
-                      ? "Ingen turneringer planlagt enda"
-                      : `${antallTurneringer} turneringer i sesongplanen`}
-                  </div>
-                </div>
-              </div>
-              <Link
-                href="/portal/tren/turneringer"
-                className="inline-flex min-h-11 items-center justify-center rounded-full bg-secondary px-4 py-2 text-xs font-semibold text-foreground hover:bg-foreground/10"
-              >
-                Se turneringsplan
-              </Link>
-            </div>
-
-            {/* Turneringsliste-forhåndsvisning */}
-            {sesongplan && sesongplan.tournamentEntries.length > 0 && (
-              <div className="mt-4 overflow-hidden rounded-xl border border-border bg-card">
-                <div className="border-b border-border px-6 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-                  Neste turneringer
-                </div>
-                <div className="divide-y divide-border">
-                  {sesongplan.tournamentEntries.slice(0, 3).map((e) => {
-                    const navn = e.tournament?.name ?? e.manualName ?? "Manuell turnering";
-                    const dato = e.tournament?.startDate ?? e.manualDate;
-                    return (
-                      <div key={e.id} className="flex items-center gap-4 px-6 py-2">
-                        <Trophy className="h-4 w-4 flex-none text-muted-foreground" strokeWidth={1.5} />
-                        <span className="flex-1 text-sm font-medium text-foreground">{navn}</span>
-                        {dato && (
-                          <span className="font-mono text-xs tabular-nums text-muted-foreground">
-                            {dato.toLocaleDateString("nb-NO", { day: "numeric", month: "short" })}
-                          </span>
-                        )}
-                        <span
-                          className={`rounded-full px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] ${
-                            e.priority === "MAJOR"
-                              ? "bg-primary/10 text-primary"
-                              : e.priority === "LOCAL"
-                              ? "bg-secondary text-muted-foreground"
-                              : "bg-accent/10 text-accent-foreground"
-                          }`}
-                        >
-                          {e.priority === "MAJOR" ? "Trening" : e.priority === "LOCAL" ? "Prestasjon" : "Utvikling"}
-                        </span>
-                      </div>
-                    );
-                  })}
-                  {sesongplan.tournamentEntries.length > 3 && (
-                    <div className="px-6 py-2">
-                      <Link
-                        href="/portal/tren/turneringer"
-                        className="text-xs font-medium text-primary hover:underline"
-                      >
-                        Se alle {sesongplan.tournamentEntries.length} turneringer
-                      </Link>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-          </>
-        )}
-      </div>
-    </div>
-  );
+  return <Aarsplan data={data} />;
 }

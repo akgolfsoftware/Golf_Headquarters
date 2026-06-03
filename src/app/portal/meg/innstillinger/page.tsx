@@ -1,46 +1,29 @@
 /**
- * Innstillinger — /portal/meg/innstillinger
- * Mobil-først accordion (port av components-innstillinger.html fra Claude Design).
+ * Innstillinger — /portal/meg/innstillinger (v10-design).
  *
- * Server-component:
- *  - Auth-guard via requirePortalUser
- *  - Henter ekte data: navn/e-post/hjemmeklubb/avatar, notif-preferanser,
- *    tilgjengelige fasiliteter
- *  - Rendrer InnstillingerAccordion (Profil · Fasiliteter · Varsler · Personvern)
+ * Rendrer <Innstillinger> (v10-fasit fra pl-innstillinger) med EKTE data:
+ *  - Auth-guard via requirePortalUser.
+ *  - Profil/varsler fra Prisma-User + lesPreferences (User.preferences JSON).
+ *  - mapInnstillingerData oversetter loader-output → InnstillingerData.
+ *
+ * Tom-tilstander bevares: hjemmeklubb «Ikke satt» når null, og fasiliteter-
+ * slidere returneres tomme ([]) fordi v10-meter-sliderne ikke er schema-backet
+ * — aldri liksom-tall.
+ *
+ * Server component. Bolk (3. juni): byttet fra InnstillingerAccordion (gammelt
+ * design) til Innstillinger (v10).
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { lesPreferences } from "@/lib/preferences";
-import { InnstillingerAccordion } from "@/components/portal/innstillinger/innstillinger-accordion";
+import { Innstillinger } from "@/components/portal/meg/innstillinger";
+import { mapInnstillingerData } from "./map-innstillinger-data";
 
 export const dynamic = "force-dynamic";
-
-function initials(name: string | null | undefined): string {
-  if (!name) return "??";
-  return name
-    .split(" ")
-    .map((w) => w[0])
-    .filter(Boolean)
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
-}
 
 export default async function InnstillingerPage() {
   const user = await requirePortalUser();
   const prefs = lesPreferences(user);
 
-  return (
-    <InnstillingerAccordion
-      profil={{
-        navn: user.name ?? "Spiller",
-        epost: user.email ?? "",
-        hjemmeklubb: user.homeClub ?? null,
-        avatarUrl: user.avatarUrl ?? null,
-        initialer: initials(user.name),
-      }}
-      notif={prefs.notif}
-      fasiliteter={user.tilgjengeligeFasiliteter}
-    />
-  );
+  return <Innstillinger data={mapInnstillingerData(user, prefs)} />;
 }

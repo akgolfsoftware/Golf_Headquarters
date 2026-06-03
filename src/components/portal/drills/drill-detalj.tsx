@@ -44,6 +44,10 @@ export type DrillDetaljData = {
   /** CS-badge i hero, f.eks. "CS 45". null = skjul. */
   csBadge: string | null;
   description: string | null;
+  /** Utførelse-trinn (nummerert). Tom array = skjul seksjon. */
+  steps: { n: number; text: string }[];
+  /** Coach-notat (vises med lime venstrekant). null = skjul seksjon. */
+  coachNotes: string | null;
   /** Media-URL hvis lastet opp. null/undefined = tom-tilstand med «Media kommer». */
   mediaUrl?: string | null;
   params: DrillParam[];
@@ -125,6 +129,37 @@ export function DrillDetalj({ data }: { data: DrillDetaljData }) {
           <p className="text-sm leading-relaxed tracking-[-0.005em] text-foreground">
             {data.description}
           </p>
+        </section>
+      )}
+
+      {/* Trinn — nummerert utførelse-liste (v10-fasit) */}
+      {data.steps.length > 0 && (
+        <section className="border-b border-border px-[18px] py-4">
+          <SectionLabel>Trinn · {data.steps.length} totalt</SectionLabel>
+          <ol className="space-y-2.5">
+            {data.steps.map((s) => (
+              <li key={s.n} className="flex gap-3">
+                <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-primary font-mono text-[11px] font-bold text-primary-foreground">
+                  {s.n}
+                </span>
+                <span className="pt-0.5 text-sm leading-relaxed text-foreground">
+                  {s.text}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+
+      {/* Coach-notat — lime venstrekant (v10-fasit) */}
+      {data.coachNotes && (
+        <section className="border-b border-border px-[18px] py-4">
+          <SectionLabel>Coach-notat</SectionLabel>
+          <div className="rounded-xl border border-border border-l-[3px] border-l-accent bg-secondary/30 p-3.5">
+            <p className="text-sm leading-relaxed text-foreground">
+              {data.coachNotes}
+            </p>
+          </div>
         </section>
       )}
 

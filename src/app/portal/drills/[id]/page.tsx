@@ -1,27 +1,63 @@
 /**
- * PlayerHQ · Drill-detalj (/portal/drills/[id])
+ * PlayerHQ · Drill-detalj (/portal/drills/[id]) — v10-design.
  *
- * Server Component. Mobile-first port av
- * public/design-handover/playerhq/components-drill-detalj.html.
+ * Rendrer <DrillDetalj> (v10-fasit fra pl-drill, @/components/portal/drills)
+ * med EKTE data fra loadDrillDetalj (Prisma · én ExerciseDefinition).
+ * mapDrillData oversetter loader-output → v10 DrillDetaljData.
  *
- * Henter én ekte ExerciseDefinition via loadDrillDetalj og rendrer:
- * - DrillDetalj: topbar · hero (akse-farge venstrekant) · beskrivelse · media ·
- *   utledede trinn · parameter-tabell · coach-notat
- * - MestringsLoggClient: mestringslogg + registrerings-skjema + rating-widget
- *   (eksisterende server-action-funksjonalitet på denne ruten)
- * - DrillDetailClient: handlinger («Legg til i plan» / Start økt / Del)
+ * Tom-tilstander bevares: csBadge=null når CS mangler, mediaUrl=null gir
+ * «Media kommer»-placeholder, params=[] skjuler parameter-tabellen.
+ * Ingen fabrikerte tall — alt utledes fra faktiske felter.
  *
- * Tilgang: PLAYER + PARENT (auth-guard beholdt).
+ * Server component. Auth-guard: PLAYER + PARENT. Not-found-fallback beholdt.
+ *
+ * 3. juni: byttet fra @/components/portal/drill-detalj (gammelt design +
+ * MestringsLoggClient/DrillDetailClient) til v10-komponenten i
+ * @/components/portal/drills.
  */
 
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { loadDrillDetalj } from "@/lib/portal-drilldetalj/drill-detalj-data";
-import { DrillDetalj } from "@/components/portal/drill-detalj/drill-detalj";
-import { DrillDetailClient } from "./drill-client";
-import { MestringsLoggClient } from "./mestrings-logg-client";
+import {
+  loadDrillDetalj,
+  type DrillDetaljData as LoaderDrillData,
+} from "@/lib/portal-drilldetalj/drill-detalj-data";
+import {
+  DrillDetalj,
+  type DrillDetaljData,
+} from "@/components/portal/drills/drill-detalj";
+
+/** Faste feedback-etiketter (UI-affordans, ikke spillerdata) — matcher v10. */
+const FEEDBACK_OPTIONS = [
+  "Aha!",
+  "Utfordrende",
+  "Passe",
+  "Kjedelig",
+  "For vanskelig",
+];
+
+/** Oversetter ekte loader-output → v10 DrillDetaljData. Tom-tilstander bevart. */
+function mapDrillData(d: LoaderDrillData): DrillDetaljData {
+  return {
+    topbarTag: d.topbarTag,
+    axis: d.axis,
+    eyebrow: d.eyebrow,
+    name: d.name,
+    csBadge: d.csForMeg !== null ? `CS ${d.csForMeg}` : null,
+    description: d.description,
+    steps: d.steps,
+    coachNotes: d.coachNotes,
+    mediaUrl: d.media.find((m) => m.kind === "video")?.url ?? null,
+    params: d.params,
+    feedbackOptions: FEEDBACK_OPTIONS,
+    hrefs: {
+      bibliotek: "/portal/drills",
+      startOkt: "/portal/ny-okt",
+    },
+  };
+}
 
 export default async function DrillDetailPage({
   params,
@@ -60,20 +96,8 @@ export default async function DrillDetailPage({
   }
 
   return (
-    <div className="mx-auto max-w-xl space-y-4 pb-24 md:pb-6">
-      <DrillDetalj data={data} />
-
-      {/* Mestringslogg + registrering + rating (eksisterende funksjonalitet) */}
-      <MestringsLoggClient
-        drillId={data.id}
-        drillNavn={data.name}
-        mestringsLogg={[]}
-        ratings={[]}
-        csForMeg={data.csForMeg}
-      />
-
-      {/* Handlinger — «Legg til i plan» som primær */}
-      <DrillDetailClient drillId={data.id} drillTitle={data.name} />
+    <div className="mx-auto max-w-2xl">
+      <DrillDetalj data={mapDrillData(data)} />
     </div>
   );
 }

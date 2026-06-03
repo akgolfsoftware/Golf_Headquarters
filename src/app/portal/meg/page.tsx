@@ -1,15 +1,42 @@
 /**
- * /portal/meg — PlayerHQ Profil-oversikt (mobil-først landing).
+ * /portal/meg — PlayerHQ "Meg" (profil), v10-design.
  *
- * Header (avatar + navn + meta + abonnement-badge), KPI 3-col (Runder/Beste/
- * Snitt), klikkbare profil-rader og "Logg ut". Ekte data via hentProfilOversikt.
+ * Rendrer <MegProfil> (v10-fasit fra ProfileScreen) med EKTE data fra
+ * hentProfilOversikt (Prisma). Hero (avatar + eyebrow + navn + e-post),
+ * KPI 3-col (Runder/Best/Snitt), fakturaer og "Logg ut".
+ *
+ * Server component. Auth-guard via requirePortalUser. mapMegData oversetter
+ * den eksisterende ProfilOversikt-shapen til MegProfilData. Tom-tilstander
+ * bevares — fakturaer er [] fordi loaderen kun gir aggregat (antall/sum),
+ * ikke per-rad-data. Aldri liksom-tall.
+ *
+ * Bolk (3. juni): byttet fra ProfilOversiktView (eldre design) til MegProfil (v10).
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { hentProfilOversikt } from "@/lib/portal-meg/profil-data";
-import { ProfilOversiktView } from "@/components/portal/meg/profil-oversikt";
+import { hentProfilOversikt, type ProfilOversikt } from "@/lib/portal-meg/profil-data";
+import { MegProfil, type MegProfilData } from "@/components/portal/meg/meg-profil";
 
 export const dynamic = "force-dynamic";
+
+/** Oversetter ekte ProfilOversikt → v10 MegProfilData. Tom-tilstander bevares. */
+function mapMegData(data: ProfilOversikt, epost: string): MegProfilData {
+  return {
+    navn: data.navn,
+    initialer: data.initialer,
+    avatarUrl: data.avatarUrl,
+    // Eyebrow over navnet: "HCP 4,2 · GFGK · Pro 2/4 credits" (uppercase, v10-stil).
+    eyebrow: data.metaDeler.join(" · ").toUpperCase(),
+    epost,
+    kpi: {
+      runder: data.kpi.runder,
+      beste: data.kpi.beste,
+      snitt: data.kpi.snitt,
+    },
+    // Loaderen gir kun aggregat (antall/sum), ikke per-rad — bevar tom-tilstand.
+    fakturaer: [],
+  };
+}
 
 export default async function MegPage() {
   const user = await requirePortalUser();
@@ -23,5 +50,5 @@ export default async function MegPage() {
     tier: user.tier,
   });
 
-  return <ProfilOversiktView data={data} />;
+  return <MegProfil data={mapMegData(data, user.email)} />;
 }

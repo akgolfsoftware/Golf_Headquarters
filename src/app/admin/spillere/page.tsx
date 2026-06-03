@@ -22,13 +22,9 @@ import { avatarBg } from "@/lib/avatar-colors";
 import type { PlayerProgram } from "@/generated/prisma/client";
 import { Sparkline } from "@/components/athletic";
 import { EmptyState } from "@/components/shared/empty-state";
-import { StallenTable } from "@/components/admin/spillere/stallen-table";
-import {
-  loadStallen,
-  type GroupBucket,
-  type StallenSort,
-  type SortDir,
-} from "@/lib/admin/stallen-data";
+import { SpillerListe } from "@/components/admin/spillere/spiller-liste";
+import { mapStallenData } from "./spiller-liste-map";
+import { loadStallen } from "@/lib/admin/stallen-data";
 
 export const dynamic = "force-dynamic";
 
@@ -90,28 +86,7 @@ async function TabellView({
     { q: params.q, group: params.group, sort: params.sort, dir: params.dir },
   );
 
-  const activeGroup: GroupBucket | "alle" =
-    params.group === "WANG" || params.group === "GFGK" || params.group === "AKA"
-      ? (params.group as GroupBucket)
-      : "alle";
-  const activeSort = (params.sort as StallenSort) || "sg";
-  const activeDir: SortDir = params.dir === "asc" ? "asc" : "desc";
-
-  return (
-    <StallenTable
-      rows={data.rows}
-      total={data.total}
-      counts={data.counts}
-      bakPlan={data.bakPlan}
-      inaktive={data.inaktive}
-      hoursDelta={data.hoursDelta}
-      weekNo={data.weekNo}
-      activeGroup={activeGroup}
-      activeSort={activeSort}
-      activeDir={activeDir}
-      query={params.q ?? ""}
-    />
-  );
+  return <SpillerListe data={mapStallenData(data)} />;
 }
 
 // ── View-tabs ────────────────────────────────────────────────────

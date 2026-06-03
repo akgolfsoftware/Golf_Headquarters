@@ -578,11 +578,19 @@ Designeren leverte 47 ferdige komponent-design (HTML-biter). Mange er brukt i sk
 | `components-foreldre.html` | Foreldre-komponent for coach | Coachens foreldre-/kommunikasjonsside. Ikke tydelig brukt. |
 | `components-cmdk.html` | Hurtigsøk-boks (⌘K) | Søk i hele AgencyOS. Delvis — søkefeltet finnes, men hurtig-paletten er ikke bekreftet koblet. |
 
+**Coach-flyter (flyt-spesifikasjon, ny i leveranse 3. juni):** `Coach-flyter.html` (+ offline-bundle)
+er en interaktiv prototype som viser hvordan coachen navigerer GJENNOM AgencyOS-skjermene
+(flere flyter: innboks → godkjenn → plan o.l.). Ikke nye enkeltskjermer — men fasit for
+«Flyt»-haken når AgencyOS-skjermene kobles. Bruk den som referanse for knapp-til-knapp-flyt.
+Arkivert kilde: `public/design-handover/ak-golf-hq-design-system-2026-06-03.zip`.
+
 ### C. Hele «Elite»-pakken er tegnet, men ikke i bruk
 
 Designeren har levert en egen elite-mappe (spredningsverktøy for utslag — «dispersion»):
 
 - `elite/DispersionTool.html`, `elite/Utslag-spredning.html`, `elite/components-trackman-dispersion.html`.
+- `Break-tabell.html` — putting green-reading-/break-tabell. Tegnet, men IKKE dekket noe sted i appen eller planen (funnet ved ZIP-gjennomgang 3. juni). Hører hjemme i putting-/SG-putt- eller elite-delen. Ikke bygget.
+- `Putte-verktoy.html` — putting-verktøy (henger sammen med Break-tabell). Ny i utvidet leveranse 3. juni. Ikke dekket i appen/planen. Hører hjemme i putting-/elite-delen. Ikke bygget.
 
 Dette hører hjemme i elite-/talent-delen (f.eks. shot-map/dispersjon: `/portal/statistikk/shot-map` eller talent-radar). **Bevisst utsatt** — «Elite Fase 2» er parkert. Det er greit at den ligger ubrukt nå, men den må ikke glemmes når Elite Fase 2 starter.
 
@@ -643,4 +651,8 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 ## Endringslogg
 
+- 3. juni (Bolk 1, workflow): 42 preview-skjermer kjørt gjennom port → adversarisk review. Resultat: **29 portet til ekte adresse med ekte data** (mapper-mønster fra pilot-Hjem), 5 allerede koblet, 8 blokkert. tsc + build grønn samlet. 41/42 godkjent av review.
+  - **Krever oppfølging (komponent-fiks, ikke data):** `drill-detalj` — v10-komponenten mangler «Trinn»-liste + «Coach-notat», har feil primærknapp og en fabrikkert feedback-seksjon vs v10-fasit. Loaderen gir steps+coachNotes, men komponenten bruker dem ikke. Data-koblingen er teknisk OK; komponenten må utvides til full v10-fasit (egen oppgave, ikke Bolk 1).
+  - **Blokkert (trenger mer enn data-kobling):** auth-login/signup/forgot (skjema-flyt), marketing-forside, runde-ny, booking-ny, forelder, trackman. Disse rørte agentene ikke — flagget for manuell/sekvensiell port.
+  - **Fikset av orchestrator:** kalender-port importerte WeekCalendarProps fra feil modul (loader i stedet for komponent) → 3 tsc-feil, rettet.
 - 3. juni (natt): Pulje 1 + 2 ferdig — 43 skjermer fikk nytt v10-design i forhåndsvisning (liksom-tall). Workbench eneste med ekte data. Neste: ekte data + koble til ekte adresser.

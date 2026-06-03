@@ -1,8 +1,20 @@
+/**
+ * Auth · Logget ut (/auth/logget-ut) — v10-design.
+ *
+ * Rendrer <LoggetUtSkjerm> (v10-fasit fra public/design-handover/_screens/
+ * au-loggetut.png) som selvstendig sentrert kort på cream-bakgrunn, INGEN
+ * app-sidebar.
+ *
+ * Rent presentasjonelt — ingen Prisma/DB/auth/loader. Komponenten rendres med
+ * de ekte lenkene for denne ruten; ingen liksom-data.
+ *
+ * Bolk (3. juni): byttet fra hand-bygget duplikat til v10-komponenten
+ * <LoggetUtSkjerm> for å eliminere design-drift (knappehøyde, font-størrelse,
+ * bakgrunn, footer-divider).
+ */
+
 import type { Metadata } from "next";
-import Link from "next/link";
-import { CheckCircle } from "lucide-react";
-import { AkGolfLogo } from "@/components/shared/ak-golf-logo";
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
+import { LoggetUtSkjerm } from "@/components/auth/logget-ut";
 
 export const metadata: Metadata = {
   title: "Logget ut · AK Golf",
@@ -11,55 +23,11 @@ export const metadata: Metadata = {
 
 export default function LoggetUtPage() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gradient-to-b from-background to-secondary/40 p-4 sm:p-8">
-      <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6 sm:p-10 text-center shadow-sm">
-        <div className="flex flex-col items-center">
-          <Link
-            href="/"
-            aria-label="AK Golf — hjem"
-            className="mb-6 inline-flex"
-          >
-            <AkGolfLogo width={56} />
-          </Link>
-
-          <div className="mb-6 grid h-[88px] w-[88px] place-items-center rounded-full bg-accent text-primary">
-            <CheckCircle className="h-11 w-11" strokeWidth={1.5} aria-hidden />
-          </div>
-
-          <AthleticEyebrow tone="lime">AK GOLF · TAKK FOR DENNE GANG</AthleticEyebrow>
-          <h1 className="mt-4 font-display text-2xl sm:text-3xl font-semibold leading-tight tracking-tight">
-            Vi <em className="font-normal italic text-primary">ses</em> snart
-          </h1>
-          <p className="mt-4 text-sm text-muted-foreground">
-            Din sesjon er avsluttet. Logg inn igjen når du er klar.
-          </p>
-        </div>
-
-        <div className="mt-8 flex flex-col gap-2">
-          <Link
-            href="/auth/login"
-            className="font-display inline-flex h-11 items-center justify-center gap-1.5 rounded-md bg-primary px-6 text-sm font-bold tracking-[-0.005em] text-accent transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-          >
-            Logg inn på nytt →
-          </Link>
-          <Link
-            href="/"
-            className="font-display inline-flex h-11 items-center justify-center gap-1.5 rounded-md bg-transparent px-6 text-sm font-bold tracking-[-0.005em] text-foreground transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-          >
-            Tilbake til akgolf.no
-          </Link>
-        </div>
-
-        <p className="mt-8 text-xs text-muted-foreground">
-          Hadde du en god økt? Del feedback med oss på{" "}
-          <a
-            href="mailto:post@akgolf.no"
-            className="text-primary hover:underline"
-          >
-            post@akgolf.no
-          </a>
-        </p>
-      </div>
-    </main>
+    <LoggetUtSkjerm
+      hjemHref="/"
+      loggInnHref="/auth/login"
+      marketingHref="/"
+      feedbackEpost="post@akgolf.no"
+    />
   );
 }

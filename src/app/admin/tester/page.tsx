@@ -1,18 +1,25 @@
 /**
- * /admin/tester — AgencyOS Tester-matrise (spillere × tester ytelse-matrise).
- * Port av public/design-handover/agencyos/components-agency-tests.html.
+ * /admin/tester — AgencyOS Tester på tvers (spillere × tester ytelse-matrise) — v10-design.
  *
- * Server Component med live Prisma-data via loadTesterMatrix.
+ * Rendrer <TesterOversikt> (v10-fasit fra ag-tester.png) med EKTE data fra
+ * loadTesterMatrix (Prisma). mapTesterOversikt oversetter loaderens TesterMatrixData
+ * til v10-komponentens TesterOversiktData og bevarer alle tom-tilstander (umålte
+ * celler = "IKKE TESTET", manglende mål = ingen fargekode).
+ *
+ * Server Component. Auth-guard via requirePortalUser({ allow: ["COACH","ADMIN"] }).
+ *
+ * 3. juni: byttet fra TesterMatrix (eldre design) til TesterOversikt (v10).
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { TesterMatrix } from "@/components/admin/tester/tester-matrix";
+import { TesterOversikt } from "@/components/admin/tester/tester-oversikt";
 import { loadTesterMatrix } from "@/lib/admin/tester-matrix-data";
+import { mapTesterOversikt } from "./map-tester-oversikt";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminTesterPage() {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const data = await loadTesterMatrix();
-  return <TesterMatrix data={data} />;
+  return <TesterOversikt data={mapTesterOversikt(data)} />;
 }

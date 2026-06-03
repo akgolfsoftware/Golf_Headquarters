@@ -34,6 +34,12 @@ const demoDrill: DrillDetaljData = {
   name: "Chip-landing",
   csBadge: "CS 45",
   description: "Chip til target-sone, landing-spot fokus.",
+  steps: [
+    { n: 1, text: "Legg ut tre landing-soner på greenen." },
+    { n: 2, text: "Chip 10 baller mot hver sone, fokus på landing-spot." },
+    { n: 3, text: "Tell treff per sone og noter beste serie." },
+  ],
+  coachNotes: "Hold hodet rolig gjennom treffet — la lengden styres av baksvingen.",
   mediaUrl: null,
   params: [
     { key: "Reps", value: "3x10" },
