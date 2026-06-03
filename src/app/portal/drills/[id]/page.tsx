@@ -47,6 +47,8 @@ function mapDrillData(d: LoaderDrillData): DrillDetaljData {
     name: d.name,
     csBadge: d.csForMeg !== null ? `CS ${d.csForMeg}` : null,
     description: d.description,
+    steps: d.steps,
+    coachNotes: d.coachNotes,
     mediaUrl: d.media.find((m) => m.kind === "video")?.url ?? null,
     params: d.params,
     feedbackOptions: FEEDBACK_OPTIONS,
