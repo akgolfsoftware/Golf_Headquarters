@@ -6,6 +6,17 @@ Dette er **hele plattformen** for AK Golf Group. Ett monorepo, ett Next.js-prosj
 
 ---
 
+## FØR DU RØRER EN SKJERM — `docs/MASTER-SKJERMPLAN.md` (LÅST regel)
+
+Master-skjermplanen er den autoritative lista over HVER skjerm i appen + status på 6 haker per skjerm: **Design · Mobil/Desktop/iPad · Adresse · Flyt · Data · Funker**.
+
+- **Før** du bygger, endrer eller kobler en skjerm: åpne planen, finn raden, jobb mot den, oppdater hakene i SAMME commit.
+- En skjerm er **ikke ferdig** før alle 6 hakene er grønne.
+- Alt Claude Design har tegnet skal ende opp koblet et sted — sjekk «drop-off»-lista (tegnet, ubrukt) så ingenting glemmes.
+- Når du fullfører eller endrer skjermer: oppdater dashboard-tallene + endringsloggen nederst i planen.
+
+---
+
 ## Hva som ligger her
 
 | Produkt | Rute | Mappe |
