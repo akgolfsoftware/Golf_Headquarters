@@ -4,7 +4,17 @@
  */
 
 import Link from "next/link";
-import { ArrowRight, LayoutDashboard, Users, Inbox, User } from "lucide-react";
+import {
+  ArrowRight,
+  LayoutDashboard,
+  Users,
+  Inbox,
+  User,
+  CalendarDays,
+  CalendarCheck,
+  ClipboardCheck,
+  Trophy,
+} from "lucide-react";
 
 const SCREENS: { href: string; label: string; desc: string; Icon: typeof LayoutDashboard }[] = [
   {
@@ -30,6 +40,30 @@ const SCREENS: { href: string; label: string; desc: string; Icon: typeof LayoutD
     label: "Spiller-detalj",
     desc: "DetailShell — hero + tabs (Profil/Plan/Analyse/Tester/Workbench)",
     Icon: User,
+  },
+  {
+    href: "/agencyos-preview/kalender",
+    label: "Kalender",
+    desc: "Uke/måned — alle økter på tvers av stallen",
+    Icon: CalendarDays,
+  },
+  {
+    href: "/agencyos-preview/bookinger",
+    label: "Bookinger",
+    desc: "Alle bookinger + manuell booking",
+    Icon: CalendarCheck,
+  },
+  {
+    href: "/agencyos-preview/tester",
+    label: "Tester",
+    desc: "Tester på tvers + foreslåtte",
+    Icon: ClipboardCheck,
+  },
+  {
+    href: "/agencyos-preview/turneringer",
+    label: "Turneringer",
+    desc: "Turneringskalender uke/måned/år auto-populert + fellesmelding",
+    Icon: Trophy,
   },
 ];
 

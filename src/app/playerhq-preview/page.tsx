@@ -38,6 +38,46 @@ const SCREENS = [
     title: "Runder",
     desc: "Rundeliste — tom-tilstand (ingen runder logget).",
   },
+  {
+    href: "/playerhq-preview/statistikk",
+    title: "Statistikk",
+    desc: "Nøkkeltall + metrikk-oversikt for spilleren.",
+  },
+  {
+    href: "/playerhq-preview/analyse",
+    title: "Analyse",
+    desc: "Analyse-hub — innganger til SG, runder og innsikt.",
+  },
+  {
+    href: "/playerhq-preview/meg",
+    title: "Meg",
+    desc: "Profil — bilde, HCP, abonnement, snarveier.",
+  },
+  {
+    href: "/playerhq-preview/abonnement",
+    title: "Abonnement",
+    desc: "GRATIS / PRO + oppgrader (Stripe).",
+  },
+  {
+    href: "/playerhq-preview/drills",
+    title: "Drill-bibliotek",
+    desc: "Drill-bibliotek grid/liste + søk.",
+  },
+  {
+    href: "/playerhq-preview/tester",
+    title: "Tester",
+    desc: "Test-oversikt + NGF-katalog.",
+  },
+  {
+    href: "/playerhq-preview/aarsplan",
+    title: "Årsplan",
+    desc: "Gantt-kart hele året, faser per pyramide-akse.",
+  },
+  {
+    href: "/playerhq-preview/booking",
+    title: "Booking",
+    desc: "Book time-CTA, credits, kommende bookinger.",
+  },
 ] as const;
 
 export default function PlayerHqPreviewIndex() {
