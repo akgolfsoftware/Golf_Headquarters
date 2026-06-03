@@ -11,7 +11,7 @@
     "db:seed": "tsx prisma/seed.ts",
     "e2e": "playwright test",
     "e2e:headed": "playwright test --headed",
-    "test": "tsx --conditions=react-server --test src/lib/__tests__/**/*.test.ts",
+    "test": "tsx --conditions=react-server --test src/lib/__tests__/*.test.ts src/lib/__tests__/**/*.test.ts",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",

@@ -31,15 +31,17 @@ export async function POST(req: Request) {
   const text = update.message?.text?.trim() ?? "";
 
   // Verifiser avsender — svar 200 uansett så Telegram ikke re-sender, men gjør ingenting.
-  if (!isAuthorizedUpdate({ headerSecret, chatId }, {
+  const authInput = { headerSecret, chatId };
+  if (!isAuthorizedUpdate(authInput, {
     webhookSecret: env.telegramWebhookSecret,
     allowedChatId: env.allowedChatId,
   })) {
+    console.warn("[meg/webhook] uautorisert request", { chatId });
     return NextResponse.json({ ok: true });
   }
 
   if (!text) {
-    await sendTelegramMessage(env.telegramBotToken, chatId!, "Tom melding — send tekst.");
+    await sendTelegramMessage(env.telegramBotToken, authInput.chatId, "Tom melding — send tekst.");
     return NextResponse.json({ ok: true });
   }
 
@@ -56,6 +58,6 @@ export async function POST(req: Request) {
     await storeConversation("assistant", reply);
   }
 
-  await sendTelegramMessage(env.telegramBotToken, chatId!, reply);
+  await sendTelegramMessage(env.telegramBotToken, authInput.chatId, reply);
   return NextResponse.json({ ok: true });
 }

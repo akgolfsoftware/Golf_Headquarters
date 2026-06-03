@@ -1,6 +1,7 @@
 // src/lib/meg/env.ts
 // Defensiv lesing av Meg-env-vars. Returnerer null hvis ufullstendig —
 // krasjer aldri resten av appen om Meg ikke er konfigurert.
+import "server-only";
 import { z } from "zod";
 
 const megEnvSchema = z.object({

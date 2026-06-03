@@ -35,5 +35,9 @@ export async function classifyMessage(text: string): Promise<Classification | nu
   if (!toolBlock || toolBlock.type !== "tool_use") return null;
 
   const parsed = ClassificationSchema.safeParse(toolBlock.input);
-  return parsed.success ? parsed.data : null;
+  if (!parsed.success) {
+    console.warn("[meg/classify] ugyldig Claude-output", parsed.error);
+    return null;
+  }
+  return parsed.data;
 }

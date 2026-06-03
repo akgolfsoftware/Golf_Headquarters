@@ -1,10 +1,13 @@
 // src/lib/meg/store.ts
 // Lagrer klassifiserte logg-oppføringer og samtale-historikk i Meg-DB.
 import "server-only";
+import { z } from "zod";
 import { megSupabase } from "@/lib/meg/supabase";
 import type { Classification } from "@/lib/meg/classify-schema";
 
 export type StoredLog = { id: string };
+
+const idSchema = z.object({ id: z.string().uuid() });
 
 /** Lagrer en klassifisert logg i me_log. Returnerer null hvis Meg ikke er konfigurert. */
 export async function storeLog(
@@ -27,7 +30,9 @@ export async function storeLog(
     .select("id")
     .single();
   if (error || !data) return null;
-  return { id: data.id as string };
+  const v = idSchema.safeParse(data);
+  if (!v.success) return null;
+  return { id: v.data.id };
 }
 
 /** Lagrer én melding i chat-historikken (me_conversation). */
@@ -38,9 +43,10 @@ export async function storeConversation(
 ): Promise<void> {
   const db = megSupabase();
   if (!db) return;
-  await db.from("me_conversation").insert({
+  const { error } = await db.from("me_conversation").insert({
     role,
     content,
     related_log_id: relatedLogId,
   });
+  if (error) console.error("[meg/store] storeConversation feilet", error.message);
 }
