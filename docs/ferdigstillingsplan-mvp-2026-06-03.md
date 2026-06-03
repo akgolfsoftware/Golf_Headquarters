@@ -118,6 +118,15 @@ Forutsetning: alle sesjoner ferdige, alt committet+pushet, Fase 2 grønn.
 - Komponent-dedup: empty-state, profil-rediger-modal, sheet, sidebar (×7)
 - Notion per-user OAuth: verifiser env satt i prod (ellers deaktiver knapp)
 
+## SIST I KØEN — SG-tracking + statistikkføring (SG-mapping)
+
+Design klart og bevart i `docs/superpowers/specs/2026-06-03-sg-tracking-design.md`.
+**Parkert til etter alt over.** Venter på supplerende research (Perplexity, Grok, Gemini,
+Manus) om hvordan systemet skal legges opp + full gjennomgang av masterdokumentet i cowork.
+Starter IKKE før de dokumentene er inne og designet er endelig godkjent.
+Mye av fundamentet finnes allerede (Shot-modell, slag-wizard, beregnSg) — gjenstår bro,
+proximity, putt-baseline-fiks, mentalt scorekort.
+
 ---
 
 ## Beslutningspunkter for Anders
