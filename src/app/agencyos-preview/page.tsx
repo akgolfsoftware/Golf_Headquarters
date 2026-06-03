@@ -14,6 +14,10 @@ import {
   CalendarCheck,
   ClipboardCheck,
   Trophy,
+  Bot,
+  GitCompareArrows,
+  ShieldCheck,
+  Activity,
 } from "lucide-react";
 
 const SCREENS: { href: string; label: string; desc: string; Icon: typeof LayoutDashboard }[] = [
@@ -64,6 +68,31 @@ const SCREENS: { href: string; label: string; desc: string; Icon: typeof LayoutD
     label: "Turneringer",
     desc: "Turneringskalender uke/måned/år auto-populert + fellesmelding",
     Icon: Trophy,
+  },
+  // AgencyOS — pulje-2
+  {
+    href: "/agencyos-preview/caddie",
+    label: "Caddie",
+    desc: "Coachens AI-medhjelper (chat)",
+    Icon: Bot,
+  },
+  {
+    href: "/agencyos-preview/compare",
+    label: "Sammenlign",
+    desc: "Sammenlign flere spillere",
+    Icon: GitCompareArrows,
+  },
+  {
+    href: "/agencyos-preview/compliance",
+    label: "Compliance",
+    desc: "Compliance-oversikt",
+    Icon: ShieldCheck,
+  },
+  {
+    href: "/agencyos-preview/drift",
+    label: "Drift",
+    desc: "Daglig drift",
+    Icon: Activity,
   },
 ];
 

@@ -78,6 +78,96 @@ const SCREENS = [
     title: "Booking",
     desc: "Book time-CTA, credits, kommende bookinger.",
   },
+  // PlayerHQ — pulje-2
+  {
+    href: "/playerhq-preview/booking-ny",
+    title: "Booking — ny",
+    desc: "Booking-wizard (velg coach/anlegg/tjeneste/tid/bekreft).",
+  },
+  {
+    href: "/playerhq-preview/drill-detalj",
+    title: "Drill-detalj",
+    desc: "Drill-detalj (video + beskrivelse).",
+  },
+  {
+    href: "/playerhq-preview/innstillinger",
+    title: "Innstillinger",
+    desc: "Innstillinger (varsler/personvern/sikkerhet/språk).",
+  },
+  {
+    href: "/playerhq-preview/runde-ny",
+    title: "Runde — ny",
+    desc: "Logg ny runde.",
+  },
+  {
+    href: "/playerhq-preview/trackman",
+    title: "TrackMan",
+    desc: "TrackMan dispersjon + per-slag-data.",
+  },
+  {
+    href: "/playerhq-preview/turnering",
+    title: "Turnering-detalj",
+    desc: "Turnering-detalj (bane/dato/resultat).",
+  },
+  {
+    href: "/playerhq-preview/varsler",
+    title: "Varsler",
+    desc: "Varsler/notifikasjoner.",
+  },
+  // Auth
+  {
+    href: "/playerhq-preview/auth-login",
+    title: "Logg inn",
+    desc: "Innlogging.",
+  },
+  {
+    href: "/playerhq-preview/auth-signup",
+    title: "Registrer konto",
+    desc: "Registrer konto (tier-valg).",
+  },
+  {
+    href: "/playerhq-preview/auth-forgot",
+    title: "Glemt passord",
+    desc: "Tilbakestill passord.",
+  },
+  {
+    href: "/playerhq-preview/auth-bankid",
+    title: "BankID",
+    desc: "BankID-verifisering.",
+  },
+  {
+    href: "/playerhq-preview/auth-loggetut",
+    title: "Logget ut",
+    desc: "Logget ut-skjerm.",
+  },
+  {
+    href: "/playerhq-preview/onboarding",
+    title: "Onboarding",
+    desc: "Onboarding-wizard (8 steg).",
+  },
+  // Forelder
+  {
+    href: "/playerhq-preview/forelder",
+    title: "Foreldreportal",
+    desc: "Foreldreportal — barnets oversikt.",
+  },
+  {
+    href: "/playerhq-preview/foreldre-info",
+    title: "Foresatt-info",
+    desc: "Foresatt-info (spillerside).",
+  },
+  // Marketing
+  {
+    href: "/playerhq-preview/marketing-forside",
+    title: "Marketing-forside",
+    desc: "Marketing-forside (akgolf.no landing).",
+  },
+  // System
+  {
+    href: "/playerhq-preview/ikke-funnet",
+    title: "404 — ikke funnet",
+    desc: "404 ikke funnet-side.",
+  },
 ] as const;
 
 export default function PlayerHqPreviewIndex() {
