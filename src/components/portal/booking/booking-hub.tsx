@@ -1,17 +1,18 @@
 /**
- * BookingHub — mobil-first booking-landingsside (/portal/booking), 430px.
+ * BookingHub — mobil-first booking-landingsside for PlayerHQ (/portal/booking).
  *
- * Port av public/design-handover/playerhq/components-booking-flow.html +
- * components-credit-indicator.html (HUB-en, ikke wizard-stegene).
+ * Port av public/design-handover/_screens/pl-booking.png + components-booking-flow.html
+ * + components-credit-indicator.html (HUB-en, ikke wizard-stegene).
  *
- * Seksjoner (vertikal stack, tap-vennlig):
- *   1. Hero — "Book *neste økt*" + primær lime-CTA → /portal/booking/ny
- *   2. Mine credits — ekte saldo via CreditMeter, eller pay-as-you-go-tomstate
- *   3. Kommende bookinger — ekte prisma.booking, eller tom-state
- *   4. Book direkte med coach — ekte coach-User med aktive tjenester
+ * Seksjoner (vertikal stack, tap-vennlig — mobil-først 430px):
+ *   1. Hero       — eyebrow + "Book *neste økt*" + primær lime-CTA → booking-wizard
+ *   2. Credits    — CreditMeter med saldo, eller pay-as-you-go tom-tilstand (Variant 4)
+ *   3. Kommende   — liste over bookinger, eller tom-tilstand
+ *   4. Coacher    — "Book direkte med coach" (skjules om ingen)
  *
- * Rene props (ingen Prisma-import). Tall kommer fra DB — aldri hardkodet.
- * DS-tokens + athletic-primitiver. Ingen hex, ingen emoji (kun lucide).
+ * Rent presentasjonell og props-drevet — INGEN Prisma/DB/auth-import.
+ * Bruker DS-tokens + athletic-primitiver. Ingen hardkodet hex, ingen emoji
+ * (kun lucide-ikoner). Tall sendes inn via props — aldri hardkodet i UI.
  */
 
 import Link from "next/link";
@@ -21,30 +22,84 @@ import {
   CalendarClock,
   CalendarPlus,
   MapPin,
-  Plus,
-  Sparkles,
   TicketX,
   User as UserIcon,
 } from "lucide-react";
-import { CreditMeter } from "@/components/portal/abonnement/credit-meter";
+import { cn } from "@/lib/utils";
 import { AthleticBadge } from "@/components/athletic";
-import type {
-  HubBooking,
-  HubCoach,
-  HubCredits,
-} from "@/lib/portal-booking/hub-data";
 
-const WIZARD_HREF = "/portal/booking/ny";
+// ── Props-typer ───────────────────────────────────────────────────
+// NB: Strukturelt kompatible med src/lib/portal-booking/hub-data.ts slik at
+// både den ekte /portal/booking-ruten og preview-ruten kan dele komponenten.
+// Komponenten er likevel selvstendig presentasjonell — den importerer ikke
+// hub-data, og formaterer credits/datoer/tier selv.
 
-function tierLabel(credits: HubCredits): string {
-  if (credits.monthlyCredits > 0) return "Pro";
-  return "Free";
+export interface HubCredits {
+  /** Tier-etikett, f.eks. "GRATIS" / "PRO" / "PERFORMANCE". */
+  tier: string;
+  /** Antall credits månedspakken gir (0 for GRATIS). */
+  monthlyCredits: number;
+  /** Saldo for inneværende periode. */
+  creditsRemaining: number;
+  /** Når saldoen fornyes — ISO-streng eller null. */
+  renewsAtIso: string | null;
+  /** True hvis spilleren kan booke med credits. Free = false. */
+  canUseCredits: boolean;
+}
+
+export interface HubBooking {
+  id: string;
+  /** Tjeneste-/økt-navn, f.eks. "Privattime". */
+  serviceName: string;
+  /** Lokasjon/fasilitet. */
+  locationName: string;
+  /** Coach-navn, eller null. */
+  coachName: string | null;
+  /** Starttidspunkt — ISO-streng. */
+  startIso: string;
+  /** Varighet i minutter. */
+  durationMin: number;
+  /** Trukket fra credits. */
+  fromCredits: boolean;
+  status: "PENDING" | "CONFIRMED";
+}
+
+export interface HubCoach {
+  id: string;
+  name: string;
+  /** Initialer til avatar, f.eks. "MV". */
+  initials: string;
+  /** Antall tilgjengelige tjenester. */
+  serviceCount: number;
+  /** Laveste pris, ferdig formatert (f.eks. "450 kr"), eller null. */
+  fromPrice: string | null;
+}
+
+export interface BookingHubProps {
+  credits: HubCredits;
+  upcoming: HubBooking[];
+  coaches: HubCoach[];
+  /** Wizard-rute for ny booking. Default: /portal/booking/ny. */
+  bookHref?: string;
+  /** Rute til full bookingoversikt. Default: /portal/meg/bookinger. */
+  allBookingsHref?: string;
+  /** Rute til oppgradering. Default: /portal/abonnement. */
+  upgradeHref?: string;
+}
+
+// Pen tier-etikett til badge (DB-enum → Title Case).
+function tierLabel(tier: string): string {
+  const t = tier.toUpperCase();
+  if (t === "PRO") return "Pro";
+  if (t === "PERFORMANCE") return "Performance";
+  if (t === "ELITE") return "Elite";
+  return "Pro";
 }
 
 function formatRenews(iso: string | null): string | null {
   if (!iso) return null;
   return new Date(iso).toLocaleDateString("nb-NO", {
-    day: "2-digit",
+    day: "numeric",
     month: "short",
   });
 }
@@ -54,14 +109,18 @@ function formatBookingTime(iso: string): { day: string; time: string } {
   return {
     day: d.toLocaleDateString("nb-NO", {
       weekday: "short",
-      day: "2-digit",
+      day: "numeric",
       month: "short",
     }),
     time: d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" }),
   };
 }
 
-// ── Eyebrow ──────────────────────────────────────────────────────
+const DEFAULT_BOOK_HREF = "/portal/booking/ny";
+const DEFAULT_ALL_HREF = "/portal/meg/bookinger";
+const DEFAULT_UPGRADE_HREF = "/portal/abonnement";
+
+// ── Eyebrow ───────────────────────────────────────────────────────
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
     <div className="inline-flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
@@ -70,14 +129,40 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
   );
 }
 
-// ── 2. Mine credits ──────────────────────────────────────────────
-function CreditsCard({ credits }: { credits: HubCredits }) {
-  const renews = formatRenews(credits.renewsAtIso);
+// ── Credit-meter (inline — segment per credit, maks 12) ───────────
+function CreditMeter({ remaining, total }: { remaining: number; total: number }) {
+  if (total <= 0 || total > 12) return null;
+  return (
+    <span className="inline-flex shrink-0 gap-[3px]" aria-hidden>
+      {Array.from({ length: total }).map((_, i) => {
+        const on = i < remaining;
+        const isLast = on && i === remaining - 1;
+        return (
+          <span
+            key={i}
+            className={cn(
+              "h-1.5 w-[18px] rounded-full",
+              on ? (isLast ? "bg-accent" : "bg-primary") : "bg-foreground/[0.08]",
+            )}
+          />
+        );
+      })}
+    </span>
+  );
+}
 
-  // GRATIS / ingen credit-pakke → pay-as-you-go (credit-indicator Variant 4)
+// ── 2. Mine credits ──────────────────────────────────────────────
+function CreditsCard({
+  credits,
+  upgradeHref,
+}: {
+  credits: HubCredits;
+  upgradeHref: string;
+}) {
+  // Free / ingen credit-pakke → pay-as-you-go (credit-indicator Variant 4).
   if (!credits.canUseCredits) {
     return (
-      <section className="rounded-2xl border border-warning/30 bg-card p-5">
+      <section className="rounded-2xl border border-border bg-card p-5">
         <div className="flex items-start gap-3.5">
           <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-warning/[0.12] text-warning">
             <TicketX className="h-[18px] w-[18px]" strokeWidth={2} aria-hidden />
@@ -91,8 +176,8 @@ function CreditsCard({ credits }: { credits: HubCredits }) {
               forhåndsbetalte coaching-timer hver måned.
             </p>
             <Link
-              href="/coaching"
-              className="mt-3 inline-flex h-9 items-center gap-1.5 rounded-full bg-accent px-4 font-mono text-[10px] font-extrabold uppercase tracking-[0.1em] text-primary"
+              href={upgradeHref}
+              className="mt-3 inline-flex h-9 items-center gap-1.5 rounded-full bg-accent px-4 font-mono text-[10px] font-extrabold uppercase tracking-[0.1em] text-primary transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               <ArrowUpRight className="h-3 w-3" strokeWidth={2.5} aria-hidden />
               Oppgrader til Pro
@@ -103,13 +188,14 @@ function CreditsCard({ credits }: { credits: HubCredits }) {
     );
   }
 
-  const brukt = credits.monthlyCredits - credits.creditsRemaining;
+  const brukt = Math.max(0, credits.monthlyCredits - credits.creditsRemaining);
+  const renews = formatRenews(credits.renewsAtIso);
 
   return (
     <section className="rounded-2xl border border-border bg-card p-5">
       <div className="flex items-center justify-between gap-3">
         <Eyebrow>Mine credits</Eyebrow>
-        <AthleticBadge variant="primary">{tierLabel(credits)}</AthleticBadge>
+        <AthleticBadge variant="primary">{tierLabel(credits.tier)}</AthleticBadge>
       </div>
 
       <div className="mt-3 flex items-baseline gap-2">
@@ -125,7 +211,6 @@ function CreditsCard({ credits }: { credits: HubCredits }) {
         <CreditMeter
           remaining={credits.creditsRemaining}
           total={credits.monthlyCredits}
-          showLabel={false}
         />
       </div>
 
@@ -138,7 +223,13 @@ function CreditsCard({ credits }: { credits: HubCredits }) {
 }
 
 // ── 3. Kommende bookinger ────────────────────────────────────────
-function UpcomingCard({ upcoming }: { upcoming: HubBooking[] }) {
+function UpcomingCard({
+  upcoming,
+  allBookingsHref,
+}: {
+  upcoming: HubBooking[];
+  allBookingsHref: string;
+}) {
   return (
     <section>
       <div className="mb-2 flex items-baseline justify-between">
@@ -146,8 +237,8 @@ function UpcomingCard({ upcoming }: { upcoming: HubBooking[] }) {
           Kommende bookinger
         </h2>
         <Link
-          href="/portal/meg/bookinger"
-          className="font-mono text-[10px] font-bold uppercase tracking-[0.1em] text-primary"
+          href={allBookingsHref}
+          className="font-mono text-[10px] font-bold uppercase tracking-[0.1em] text-primary transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           Se alle
         </Link>
@@ -170,62 +261,54 @@ function UpcomingCard({ upcoming }: { upcoming: HubBooking[] }) {
             const { day, time } = formatBookingTime(b.startIso);
             return (
               <li key={b.id} className={i > 0 ? "border-t border-border" : ""}>
-                <Link
-                  href={`/portal/booking/${b.id}`}
-                  className="flex items-center gap-3.5 px-4 py-3.5 transition-colors hover:bg-secondary"
-                >
-                  <div className="flex w-[52px] shrink-0 flex-col items-center rounded-xl bg-secondary py-2">
-                    <span className="font-mono text-[14px] font-bold leading-none tabular-nums text-foreground">
-                      {time}
+              <Link
+                href={`/portal/booking/${b.id}`}
+                className="flex items-center gap-3.5 px-4 py-3.5 transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+              >
+                <div className="flex w-[52px] shrink-0 flex-col items-center rounded-xl bg-secondary py-2">
+                  <span className="font-mono text-[14px] font-bold leading-none tabular-nums text-foreground">
+                    {time}
+                  </span>
+                  <span className="mt-1 font-mono text-[9px] font-semibold uppercase tracking-[0.04em] text-muted-foreground">
+                    {b.durationMin} m
+                  </span>
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="truncate font-display text-[14.5px] font-semibold -tracking-[0.005em] text-foreground">
+                      {b.serviceName}
                     </span>
-                    <span className="mt-1 font-mono text-[9px] font-semibold uppercase tracking-[0.04em] text-muted-foreground">
-                      {b.durationMin} m
+                    {b.status === "PENDING" && (
+                      <AthleticBadge variant="warn">Avventer</AthleticBadge>
+                    )}
+                    {b.fromCredits && b.status === "CONFIRMED" && (
+                      <AthleticBadge variant="lime">Credit</AthleticBadge>
+                    )}
+                  </div>
+                  <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 font-mono text-[10.5px] tracking-[0.02em] text-muted-foreground">
+                    <span className="inline-flex items-center gap-1">
+                      <CalendarClock className="h-3 w-3" strokeWidth={1.5} aria-hidden />
+                      {day}
                     </span>
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="truncate font-display text-[14.5px] font-semibold -tracking-[0.005em] text-foreground">
-                        {b.serviceName}
-                      </span>
-                      {b.status === "PENDING" && (
-                        <AthleticBadge variant="warn">Avventer</AthleticBadge>
-                      )}
-                      {b.fromCredits && b.status === "CONFIRMED" && (
-                        <AthleticBadge variant="lime">Credit</AthleticBadge>
-                      )}
-                    </div>
-                    <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 font-mono text-[10.5px] tracking-[0.02em] text-muted-foreground">
+                    <span className="inline-flex items-center gap-1">
+                      <MapPin className="h-3 w-3" strokeWidth={1.5} aria-hidden />
+                      {b.locationName}
+                    </span>
+                    {b.coachName && (
                       <span className="inline-flex items-center gap-1">
-                        <CalendarClock
-                          className="h-3 w-3"
-                          strokeWidth={1.5}
-                          aria-hidden
-                        />
-                        {day}
+                        <UserIcon className="h-3 w-3" strokeWidth={1.5} aria-hidden />
+                        {b.coachName}
                       </span>
-                      <span className="inline-flex items-center gap-1">
-                        <MapPin className="h-3 w-3" strokeWidth={1.5} aria-hidden />
-                        {b.locationName}
-                      </span>
-                      {b.coachName && (
-                        <span className="inline-flex items-center gap-1">
-                          <UserIcon
-                            className="h-3 w-3"
-                            strokeWidth={1.5}
-                            aria-hidden
-                          />
-                          {b.coachName}
-                        </span>
-                      )}
-                    </div>
+                    )}
                   </div>
-                  <ArrowRight
-                    className="h-4 w-4 shrink-0 text-muted-foreground"
-                    strokeWidth={2}
-                    aria-hidden
-                  />
-                </Link>
-              </li>
+                </div>
+                <ArrowRight
+                  className="h-4 w-4 shrink-0 text-muted-foreground"
+                  strokeWidth={2}
+                  aria-hidden
+                />
+              </Link>
+            </li>
             );
           })}
         </ul>
@@ -235,7 +318,13 @@ function UpcomingCard({ upcoming }: { upcoming: HubBooking[] }) {
 }
 
 // ── 4. Book direkte med coach ────────────────────────────────────
-function CoachesCard({ coaches }: { coaches: HubCoach[] }) {
+function CoachesCard({
+  coaches,
+  bookHref,
+}: {
+  coaches: HubCoach[];
+  bookHref: string;
+}) {
   if (coaches.length === 0) return null;
 
   return (
@@ -245,7 +334,8 @@ function CoachesCard({ coaches }: { coaches: HubCoach[] }) {
           Book direkte med coach
         </h2>
         <span className="font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
-          {coaches.length} coacher
+          {coaches.length}{" "}
+          {coaches.length === 1 ? "coach" : "coacher"}
         </span>
       </div>
 
@@ -253,8 +343,8 @@ function CoachesCard({ coaches }: { coaches: HubCoach[] }) {
         {coaches.map((c) => (
           <Link
             key={c.id}
-            href={WIZARD_HREF}
-            className="flex items-center gap-3.5 rounded-2xl border border-border bg-card p-4 transition-colors hover:border-foreground/30"
+            href={bookHref}
+            className="flex items-center gap-3.5 rounded-2xl border border-border bg-card p-4 transition-colors hover:border-foreground/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-primary font-display text-[16px] font-semibold text-primary-foreground">
               {c.initials}
@@ -288,11 +378,10 @@ export function BookingHub({
   credits,
   upcoming,
   coaches,
-}: {
-  credits: HubCredits;
-  upcoming: HubBooking[];
-  coaches: HubCoach[];
-}) {
+  bookHref = DEFAULT_BOOK_HREF,
+  allBookingsHref = DEFAULT_ALL_HREF,
+  upgradeHref = DEFAULT_UPGRADE_HREF,
+}: BookingHubProps) {
   const ctaLabel = credits.canUseCredits ? "Book med credit" : "Book ny økt";
 
   return (
@@ -300,26 +389,20 @@ export function BookingHub({
       {/* 1. HERO */}
       <section>
         <Eyebrow>
-          <span
-            className="h-1.5 w-1.5 rounded-full bg-primary"
-            style={{ boxShadow: "0 0 0 3px hsl(var(--accent) / 0.7)" }}
-          />
+          <span className="h-1.5 w-1.5 rounded-full bg-primary ring-[3px] ring-accent/70" />
           PLAYERHQ · BOOKING
         </Eyebrow>
         <h1 className="mt-2 font-display text-[32px] font-semibold leading-[1.05] -tracking-[0.02em] text-foreground">
           Book{" "}
-          <em className="font-normal italic text-muted-foreground">
-            neste økt
-          </em>
+          <em className="font-normal italic text-muted-foreground">neste økt</em>
         </h1>
         <p className="mt-2 font-sans text-[14.5px] leading-[1.5] text-muted-foreground">
-          Privattime, gruppe, test eller TrackMan — velg coach og tid på ett
-          sted.
+          Privattime, gruppe, test eller TrackMan — velg coach og tid på ett sted.
         </p>
 
         <Link
-          href={WIZARD_HREF}
-          className="mt-4 flex h-[50px] w-full items-center justify-center gap-2 rounded-2xl bg-accent font-sans text-[15px] font-semibold -tracking-[0.01em] text-primary shadow-[0_6px_18px_-6px_hsl(var(--accent)/0.5)] transition-opacity hover:opacity-90"
+          href={bookHref}
+          className="mt-4 flex h-[50px] w-full items-center justify-center gap-2 rounded-2xl bg-accent font-sans text-[15px] font-semibold -tracking-[0.01em] text-primary shadow-[0_6px_18px_-6px_hsl(var(--accent)/0.5)] transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           <CalendarPlus className="h-[18px] w-[18px]" strokeWidth={2} aria-hidden />
           {ctaLabel}
@@ -327,23 +410,13 @@ export function BookingHub({
       </section>
 
       {/* 2. MINE CREDITS */}
-      <CreditsCard credits={credits} />
+      <CreditsCard credits={credits} upgradeHref={upgradeHref} />
 
       {/* 3. KOMMENDE BOOKINGER */}
-      <UpcomingCard upcoming={upcoming} />
+      <UpcomingCard upcoming={upcoming} allBookingsHref={allBookingsHref} />
 
       {/* 4. BOOK DIREKTE MED COACH */}
-      <CoachesCard coaches={coaches} />
-
-      {/* Sekundær handling — full booking-flyt */}
-      <Link
-        href={WIZARD_HREF}
-        className="flex items-center justify-center gap-2 rounded-2xl border border-dashed border-border bg-card px-4 py-4 font-sans text-[13.5px] font-medium text-foreground transition-colors hover:border-foreground/30"
-      >
-        <Plus className="h-4 w-4" strokeWidth={2} aria-hidden />
-        Start full booking-flyt
-        <Sparkles className="h-3.5 w-3.5 text-muted-foreground" strokeWidth={2} aria-hidden />
-      </Link>
+      <CoachesCard coaches={coaches} bookHref={bookHref} />
     </div>
   );
 }
