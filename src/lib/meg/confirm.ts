@@ -12,11 +12,14 @@ import {
   isCancellation,
 } from "@/lib/meg/pending";
 import { notionOpprettOppgave, notionFullforOppgave } from "@/lib/meg/connectors/notion";
+import { gmailSend, diskOpprett } from "@/lib/meg/connectors/google";
 
 // Registret over faktiske skrive-handlinger. Kalles KUN etter bekreftelse.
 const WRITE_DISPATCH: Record<string, (args: never) => Promise<string>> = {
   notion_opprett_oppgave: (args) => notionOpprettOppgave(args),
   notion_fullfor_oppgave: (args) => notionFullforOppgave(args),
+  gmail_send: (args) => gmailSend(args),
+  disk_opprett: (args) => diskOpprett(args),
 };
 
 export async function handleConfirmation(text: string): Promise<string | null> {

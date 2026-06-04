@@ -5,7 +5,7 @@
 import { NextResponse } from "next/server";
 import { randomBytes, createHmac } from "node:crypto";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
-import { getAuthUrl } from "@/lib/google-calendar";
+import { getAuthUrl, MEG_GOOGLE_SCOPES, SCOPES } from "@/lib/google-calendar";
 
 export const runtime = "nodejs";
 
@@ -32,5 +32,9 @@ export async function GET(request: Request) {
   const sig = createHmac("sha256", secret).update(payload).digest("hex");
   const state = `${payload}.${sig}`;
 
-  return NextResponse.redirect(getAuthUrl(state));
+  // ?meg=1 (kun ADMIN): be om utvidede Gmail/Disk-scopes for Meg-assistenten.
+  const wantMeg = new URL(request.url).searchParams.get("meg") === "1";
+  const scopes = wantMeg && user.role === "ADMIN" ? MEG_GOOGLE_SCOPES : SCOPES;
+
+  return NextResponse.redirect(getAuthUrl(state, scopes));
 }

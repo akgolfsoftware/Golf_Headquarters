@@ -6,6 +6,7 @@ import { sokMinne } from "@/lib/meg/search";
 import type { Classification } from "@/lib/meg/classify-schema";
 import { notionSok, notionLesSide, notionOppgaver } from "@/lib/meg/connectors/notion";
 import { helseHent } from "@/lib/meg/connectors/health";
+import { gmailSok, gmailLesTraad, diskSok, diskLesFil } from "@/lib/meg/connectors/google";
 import { createPending } from "@/lib/meg/pending";
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -161,6 +162,89 @@ export const helseHentTool: Tool = {
   },
 };
 
+// ── Gmail (Fase 4) ───────────────────────────────────────────────────────────
+
+export const gmailSokTool: Tool = {
+  name: "gmail_sok",
+  description:
+    "Søker i Anders' Gmail. Bruk Gmail-søkesyntaks (f.eks. 'from:markus is:unread', " +
+    "'newer_than:2d'). Returnerer emne, avsender, utdrag + tråd-id.",
+  input_schema: {
+    type: "object",
+    properties: {
+      query: { type: "string", description: "Gmail-søkestreng" },
+      limit: { type: "number", description: "Antall treff (default 5, maks 10)" },
+    },
+    required: ["query"],
+  },
+};
+
+export const gmailLesTraadTool: Tool = {
+  name: "gmail_les_traad",
+  description: "Leser en hel e-posttråd. Bruk tråd-id fra gmail_sok.",
+  input_schema: {
+    type: "object",
+    properties: { threadId: { type: "string", description: "Gmail tråd-id" } },
+    required: ["threadId"],
+  },
+};
+
+export const gmailLagUtkastTool: Tool = {
+  name: "gmail_lag_utkast",
+  description:
+    "Foreslår å sende en e-post. Sender IKKE direkte — lager et forslag med " +
+    "preview som Anders må bekrefte med BEKREFT. Bruk ved 'svar på ...' / 'send mail til ...'.",
+  input_schema: {
+    type: "object",
+    properties: {
+      til: { type: "string", description: "Mottakers e-postadresse" },
+      emne: { type: "string", description: "Emnefelt" },
+      tekst: { type: "string", description: "E-postens brødtekst" },
+    },
+    required: ["til", "emne", "tekst"],
+  },
+};
+
+// ── Google Disk (Fase 5) ─────────────────────────────────────────────────────
+
+export const diskSokTool: Tool = {
+  name: "disk_sok",
+  description: "Søker etter filer i Anders' Google Disk (på filnavn). Returnerer navn + fil-id.",
+  input_schema: {
+    type: "object",
+    properties: {
+      query: { type: "string", description: "Del av filnavnet" },
+      limit: { type: "number", description: "Antall treff (default 5, maks 10)" },
+    },
+    required: ["query"],
+  },
+};
+
+export const diskLesFilTool: Tool = {
+  name: "disk_les_fil",
+  description: "Leser tekstinnholdet i en Disk-fil (også Google Docs). Bruk fil-id fra disk_sok.",
+  input_schema: {
+    type: "object",
+    properties: { fileId: { type: "string", description: "Google Disk fil-id" } },
+    required: ["fileId"],
+  },
+};
+
+export const diskOpprettTool: Tool = {
+  name: "disk_opprett",
+  description:
+    "Foreslår å lagre et notat som fil i Disk. Oppretter IKKE direkte — lager et " +
+    "forslag Anders må bekrefte med BEKREFT.",
+  input_schema: {
+    type: "object",
+    properties: {
+      navn: { type: "string", description: "Filnavn" },
+      innhold: { type: "string", description: "Tekstinnhold" },
+    },
+    required: ["navn", "innhold"],
+  },
+};
+
 export const MEG_ALL_TOOLS: Tool[] = [
   loggTool,
   hentNyligeTool,
@@ -171,6 +255,12 @@ export const MEG_ALL_TOOLS: Tool[] = [
   notionOpprettOppgaveTool,
   notionFullforOppgaveTool,
   helseHentTool,
+  gmailSokTool,
+  gmailLesTraadTool,
+  gmailLagUtkastTool,
+  diskSokTool,
+  diskLesFilTool,
+  diskOpprettTool,
 ];
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -201,6 +291,12 @@ type NotionOppgaverInput = { limit?: number };
 type NotionOpprettOppgaveInput = { tittel: string; forfaller?: string };
 type NotionFullforOppgaveInput = { pageId: string; status: string };
 type HelseHentInput = { metric?: string; dager?: number };
+type GmailSokInput = { query: string; limit?: number };
+type GmailLesTraadInput = { threadId: string };
+type GmailLagUtkastInput = { til: string; emne: string; tekst: string };
+type DiskSokInput = { query: string; limit?: number };
+type DiskLesFilInput = { fileId: string };
+type DiskOpprettInput = { navn: string; innhold: string };
 
 // ────────────────────────────────────────────────────────────────────────────
 // Executor-tabell
@@ -279,5 +375,44 @@ export const MEG_EXEC_BY_NAME: Record<string, (args: unknown) => Promise<string>
   helse_hent: async (raw) => {
     const args = raw as HelseHentInput;
     return helseHent(args.metric, args.dager ?? 14);
+  },
+
+  // ── Gmail: les (kjøres direkte) ──
+  gmail_sok: async (raw) => {
+    const args = raw as GmailSokInput;
+    return gmailSok(args.query, args.limit ?? 5);
+  },
+
+  gmail_les_traad: async (raw) => {
+    const args = raw as GmailLesTraadInput;
+    return gmailLesTraad(args.threadId);
+  },
+
+  // ── Gmail: send (lager KUN ventende handling med tool_name=gmail_send) ──
+  gmail_lag_utkast: async (raw) => {
+    const args = raw as GmailLagUtkastInput;
+    const preview = args.tekst.length > 200 ? `${args.tekst.slice(0, 200)}…` : args.tekst;
+    const summary = `Sende e-post til ${args.til} — "${args.emne}":\n${preview}`;
+    await createPending("gmail_send", args, summary);
+    return `Forslag klart:\n${summary}\n\nBe Anders svare BEKREFT for å sende.`;
+  },
+
+  // ── Disk: les (kjøres direkte) ──
+  disk_sok: async (raw) => {
+    const args = raw as DiskSokInput;
+    return diskSok(args.query, args.limit ?? 5);
+  },
+
+  disk_les_fil: async (raw) => {
+    const args = raw as DiskLesFilInput;
+    return diskLesFil(args.fileId);
+  },
+
+  // ── Disk: opprett (lager KUN ventende handling) ──
+  disk_opprett: async (raw) => {
+    const args = raw as DiskOpprettInput;
+    const summary = `Opprette fil "${args.navn}" i Disk`;
+    await createPending("disk_opprett", args, summary);
+    return `Forslag klart: ${summary}. Be Anders svare BEKREFT for å utføre.`;
   },
 };

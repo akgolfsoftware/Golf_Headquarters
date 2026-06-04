@@ -37,6 +37,16 @@ export const SCOPES = [
   "email",
 ];
 
+// Utvidede scopes for Meg-assistenten (kun Anders re-godkjenner disse).
+// Coach-booking-flyten bruker fortsatt SCOPES — ikke endre den.
+export const MEG_GOOGLE_SCOPES = [
+  ...SCOPES,
+  "https://www.googleapis.com/auth/gmail.readonly",
+  "https://www.googleapis.com/auth/gmail.send",
+  "https://www.googleapis.com/auth/drive.readonly",
+  "https://www.googleapis.com/auth/drive.file",
+];
+
 export function getEncryptionKey(): Buffer {
   if (!ENCRYPTION_KEY_HEX || ENCRYPTION_KEY_HEX.length !== 64) {
     throw new Error("GOOGLE_TOKEN_ENCRYPTION_KEY må være 64 hex-tegn (32 byte)");
@@ -76,12 +86,12 @@ export function getOAuth2Client(): OAuth2Client {
 /**
  * Hent autorisasjons-URL for å starte OAuth-flyt.
  */
-export function getAuthUrl(state: string): string {
+export function getAuthUrl(state: string, scopes: string[] = SCOPES): string {
   const oauth = getOAuth2Client();
   return oauth.generateAuthUrl({
     access_type: "offline",
     prompt: "consent",
-    scope: SCOPES,
+    scope: scopes,
     state,
   });
 }
