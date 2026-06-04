@@ -6,7 +6,7 @@ import { sokMinne } from "@/lib/meg/search";
 import type { Classification } from "@/lib/meg/classify-schema";
 import { notionSok, notionLesSide, notionOppgaver } from "@/lib/meg/connectors/notion";
 import { helseHent } from "@/lib/meg/connectors/health";
-import { gmailSok, gmailLesTraad, diskSok, diskLesFil } from "@/lib/meg/connectors/google";
+import { gmailSok, gmailLesTraad, diskSok, diskLesFil, kalenderAgenda } from "@/lib/meg/connectors/google";
 import { createPending } from "@/lib/meg/pending";
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -205,6 +205,22 @@ export const gmailLagUtkastTool: Tool = {
   },
 };
 
+// ── Google Kalender ──────────────────────────────────────────────────────────
+
+export const kalenderAgendaTool: Tool = {
+  name: "kalender_agenda",
+  description:
+    "Henter Anders' kommende kalender-hendelser fra Google Kalender. Bruk ved " +
+    "'hva skjer i dag/denne uka', 'når har jeg ...', eller for dagens agenda.",
+  input_schema: {
+    type: "object",
+    properties: {
+      dager: { type: "number", description: "Antall dager fremover (default 1 = i dag, maks 30)" },
+    },
+    required: [],
+  },
+};
+
 // ── Google Disk (Fase 5) ─────────────────────────────────────────────────────
 
 export const diskSokTool: Tool = {
@@ -258,6 +274,7 @@ export const MEG_ALL_TOOLS: Tool[] = [
   gmailSokTool,
   gmailLesTraadTool,
   gmailLagUtkastTool,
+  kalenderAgendaTool,
   diskSokTool,
   diskLesFilTool,
   diskOpprettTool,
@@ -294,6 +311,7 @@ type HelseHentInput = { metric?: string; dager?: number };
 type GmailSokInput = { query: string; limit?: number };
 type GmailLesTraadInput = { threadId: string };
 type GmailLagUtkastInput = { til: string; emne: string; tekst: string };
+type KalenderAgendaInput = { dager?: number };
 type DiskSokInput = { query: string; limit?: number };
 type DiskLesFilInput = { fileId: string };
 type DiskOpprettInput = { navn: string; innhold: string };
@@ -395,6 +413,12 @@ export const MEG_EXEC_BY_NAME: Record<string, (args: unknown) => Promise<string>
     const summary = `Sende e-post til ${args.til} — "${args.emne}":\n${preview}`;
     await createPending("gmail_send", args, summary);
     return `Forslag klart:\n${summary}\n\nBe Anders svare BEKREFT for å sende.`;
+  },
+
+  // ── Kalender: les (kjøres direkte) ──
+  kalender_agenda: async (raw) => {
+    const args = raw as KalenderAgendaInput;
+    return kalenderAgenda(args.dager ?? 1);
   },
 
   // ── Disk: les (kjøres direkte) ──
