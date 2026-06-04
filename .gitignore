@@ -74,9 +74,7 @@ tsconfig.tsbuildinfo
 .DS_Store
 skills-lock.json
 
-# Design-handover: kilde-zip arkiveres lokalt, men er for stor for git (>100 MB GitHub-grense)
-public/design-handover/*.zip
-
-# v10-design (stor — utenfor git, kilde for porting)
-public/design-handover/v10/
-public/design-handover/_arkiv-v9/
+# Design-handover: alt design-arbeidsmateriale (store binærfiler, kilde for porting).
+# Ligger lokalt + i Google Drive — for stort/binært for git, og serveres ikke i prod
+# (kode refererer det kun i kommentarer som «fasit»). Besluttet 2026-06-04.
+public/design-handover/
