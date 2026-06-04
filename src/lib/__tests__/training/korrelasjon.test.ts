@@ -1,23 +1,24 @@
-import { describe, it, expect } from "vitest";
+import { describe, it } from "node:test";
+import assert from "node:assert/strict";
 import { beregnPearson, koblTreningOgSg } from "../../training/korrelasjon";
 import type { SgCategory } from "@/generated/prisma/client";
 
 describe("beregnPearson", () => {
   it("returnerer null ved for fa datapunkter", () => {
-    expect(beregnPearson([1], [2])).toBeNull();
-    expect(beregnPearson([], [])).toBeNull();
+    assert.equal(beregnPearson([1], [2]), null);
+    assert.equal(beregnPearson([], []), null);
   });
 
   it("returnerer 1.0 for perfekt positiv korrelasjon", () => {
     const r = beregnPearson([1, 2, 3, 4], [2, 4, 6, 8]);
-    expect(r).not.toBeNull();
-    expect(Math.abs(r! - 1.0)).toBeLessThan(0.001);
+    assert.ok(r !== null);
+    assert.ok(Math.abs(r - 1.0) < 0.001);
   });
 
   it("returnerer -1.0 for perfekt negativ korrelasjon", () => {
     const r = beregnPearson([1, 2, 3, 4], [8, 6, 4, 2]);
-    expect(r).not.toBeNull();
-    expect(Math.abs(r! + 1.0)).toBeLessThan(0.001);
+    assert.ok(r !== null);
+    assert.ok(Math.abs(r + 1.0) < 0.001);
   });
 });
 
@@ -32,10 +33,10 @@ describe("koblTreningOgSg", () => {
       { uke: "2026-W12", sgArea: "OTT" as SgCategory, snittSg: 0.1 },
     ];
     const par = koblTreningOgSg(treningUker, sgUker);
-    expect(par.length).toBe(2);
-    expect(par[0].minutterTreningsuke).toBe(60);
-    expect(par[0].sgEndringNesteUke).toBe(-0.2);
-    expect(par[1].minutterTreningsuke).toBe(90);
-    expect(par[1].sgEndringNesteUke).toBe(0.1);
+    assert.equal(par.length, 2);
+    assert.equal(par[0].minutterTreningsuke, 60);
+    assert.equal(par[0].sgEndringNesteUke, -0.2);
+    assert.equal(par[1].minutterTreningsuke, 90);
+    assert.equal(par[1].sgEndringNesteUke, 0.1);
   });
 });

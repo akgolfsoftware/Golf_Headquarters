@@ -38,6 +38,7 @@ const MAIN_ITEMS: NavItem[] = [
     matchPrefixes: [
       "/portal/planlegge",
       "/portal/tren",
+      "/portal/trening",
       "/portal/mal",
     ],
     children: [
@@ -47,6 +48,7 @@ const MAIN_ITEMS: NavItem[] = [
       { href: "/portal/mal", label: "Mål" },
       { href: "/portal/tren/turneringer", label: "Turneringer" },
       { href: "/portal/drills", label: "Drills" },
+      { href: "/portal/trening/logg", label: "Logg treningsøkt" },
     ],
   },
   {

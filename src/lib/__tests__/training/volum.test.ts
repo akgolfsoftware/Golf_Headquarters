@@ -1,10 +1,11 @@
-import { describe, it, expect } from "vitest";
+import { describe, it } from "node:test";
+import assert from "node:assert/strict";
 import { aggregerVolumPerUke } from "../../training/volum";
 
 describe("aggregerVolumPerUke", () => {
   it("returnerer tom array hvis ingen logger", () => {
     const result = aggregerVolumPerUke([], 4);
-    expect(result).toEqual([]);
+    assert.deepEqual(result, []);
   });
 
   it("summerer minutter per uke per SgCategory", () => {
@@ -16,9 +17,9 @@ describe("aggregerVolumPerUke", () => {
     ];
     const result = aggregerVolumPerUke(logs, 4, now);
     const ottUke = result.find((r) => r.sgArea === "OTT" && r.uke === "2026-W20");
-    expect(ottUke, "OTT uke 20 skal finnes").toBeTruthy();
-    expect(ottUke?.minutter).toBe(50);
+    assert.ok(ottUke, "OTT uke 20 skal finnes");
+    assert.equal(ottUke?.minutter, 50);
     const puttUke = result.find((r) => r.sgArea === "PUTT" && r.uke === "2026-W20");
-    expect(puttUke?.minutter).toBe(45);
+    assert.equal(puttUke?.minutter, 45);
   });
 });
