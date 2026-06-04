@@ -1,5 +1,7 @@
 # Skjerm-manifest — PlayerHQ
 
+> **FORELDET REFERANSE (1. juni).** Tegnet før beslutningene 4. juni — viser 6-kort Planlegge (nå ett trykkpunkt → Workbench) og «Performance»-tier-valg (nå: ingen tier-nivåer). Gjeldende fasit: `docs/MASTER-SKJERMPLAN.md` + «Låste beslutninger» i `CLAUDE.md`.
+>
 > Generert 2026-06-01 · Design-intensjon (fasit for redesign), ikke nåværende implementasjon.
 > For hver skjerm: **inngang** · **hva er synlig** · **knapper → destinasjon** · wireframe på nøkkelskjermer.
 >

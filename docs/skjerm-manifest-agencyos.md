@@ -1,5 +1,7 @@
 # Skjerm-manifest — AgencyOS (tidl. CoachHQ)
 
+> **FORELDET REFERANSE (1. juni).** Tegnet før beslutningene 4. juni. Gjeldende fasit: `docs/MASTER-SKJERMPLAN.md` + «Låste beslutninger» i `CLAUDE.md`. App-navn = AgencyOS (ikke CoachHQ).
+>
 > Generert 2026-06-01 · Design-intensjon (fasit for redesign), ikke nåværende implementasjon.
 > For hver skjerm: **inngang** · **hva er synlig** · **knapper → destinasjon** · wireframe på nøkkelskjermer.
 >

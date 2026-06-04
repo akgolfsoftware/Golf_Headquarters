@@ -1,11 +1,11 @@
 # Design-porting-gate (LÅST regel)
 
-Når en skjerm portes fra v10-designet (`public/design-handover/v10/`) til kode, MÅ denne gaten følges. En skjerm er IKKE «ferdig» og vises IKKE til Anders før gaten er bestått. Dette finnes fordi porting «fra minne/eksisterende kode» gir «nesten»-resultater som avviker fra fasit.
+Når en skjerm portes fra det ferske designet (`public/design-handover/AK Golf HQ Design System/`) til kode, MÅ denne gaten følges. En skjerm er IKKE «ferdig» og vises IKKE til Anders før gaten er bestått. Dette finnes fordi porting «fra minne/eksisterende kode» gir «nesten»-resultater som avviker fra fasit.
 
 ## Gaten — 5 steg per skjerm
 
-1. **Bygg FRA v10, ikke fra eksisterende kode.**
-   Les v10-kilden: `playerhq-app/`/`agencyos-app/` screen-JSX + matchende `screenshots/*.png`.
+1. **Bygg FRA design-kilden, ikke fra eksisterende kode.**
+   Les kilden under `public/design-handover/AK Golf HQ Design System/`: `playerhq-app/`/`agencyos-app/` screen-JSX + matchende `screenshots/*.png`.
    Lag en **element-liste** (hero-topp, hero-bunn, hver seksjon, hvert tall/tekst, rekkefølge).
    Bygg implementeringen fra lista — ikke ved å modifisere det som allerede finnes.
 
@@ -13,7 +13,7 @@ Når en skjerm portes fra v10-designet (`public/design-handover/v10/`) til kode,
    Playwright mot riktig bredde (PlayerHQ 430px, AgencyOS ~1280px), full-page.
 
 3. **ADVERSARIAL diff — egen agent, ikke meg selv.**
-   Spawn en subagent med: v10-screenshot + min screenshot + element-lista.
+   Spawn en subagent med: design-screenshot (fra handover) + min screenshot + element-lista.
    Oppgaven er å **FINNE avvik** — den er kritiker, ikke heiagjeng. Den lister hvert avvik
    (topp, rekkefølge, farge, tekst, manglende/ekstra element, layout). Default: anta avvik
    finnes til den har lett grundig.
@@ -23,12 +23,12 @@ Når en skjerm portes fra v10-designet (`public/design-handover/v10/`) til kode,
 
 5. **FØRST DA** vises skjermen til Anders / merkes ferdig.
 
-## Bevisste unntak (Anders-beslutninger som overstyrer v10)
+## Bevisste unntak (Anders-beslutninger som overstyrer designet)
 
 Dokumenteres her så diff-agenten måler mot riktig fasit:
 
 - **PlayerHQ-hjem hero:** beholder **profilbilde + tier-pill** øverst (Anders' valg 2026-06-02),
-  selv om v10 har dato-eyebrow + vær der. Resten av hero (greeting + samlet headline) følger v10.
+  selv om designet har dato-eyebrow + vær der. Resten av hero (greeting + samlet headline) følger designet.
 
 ## Hvorfor dette (ikke bare «vær nøye»)
 
