@@ -2,6 +2,7 @@ import "server-only";
 import type { Tool } from "@anthropic-ai/sdk/resources/messages";
 import { storeLog } from "@/lib/meg/store";
 import { hentNylige } from "@/lib/meg/read";
+import { sokMinne } from "@/lib/meg/search";
 import type { Classification } from "@/lib/meg/classify-schema";
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -52,7 +53,23 @@ export const hentNyligeTool: Tool = {
   },
 };
 
-export const MEG_ALL_TOOLS: Tool[] = [loggTool, hentNyligeTool];
+export const sokMinneTool: Tool = {
+  name: "sok_minne",
+  description:
+    "Søker i Anders' minne og kunnskap: tidligere logger, destillerte minner " +
+    "og indeksert kunnskap fra ak-brain + second-brain. Bruk når brukeren spør " +
+    "om noe han har sagt/tenkt før, eller når svar trenger personlig kontekst.",
+  input_schema: {
+    type: "object",
+    properties: {
+      query: { type: "string", description: "Det du vil finne (fritekst)" },
+      limit: { type: "number", description: "Antall treff (default 5)" },
+    },
+    required: ["query"],
+  },
+};
+
+export const MEG_ALL_TOOLS: Tool[] = [loggTool, hentNyligeTool, sokMinneTool];
 
 // ────────────────────────────────────────────────────────────────────────────
 // Input-typer
@@ -69,6 +86,11 @@ type LoggInput = {
 type HentNyligeInput = {
   limit?: number;
   kind?: string;
+};
+
+type SokMinneInput = {
+  query: string;
+  limit?: number;
 };
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -96,6 +118,20 @@ export const MEG_EXEC_BY_NAME: Record<string, (args: unknown) => Promise<string>
     if (rader.length === 0) return "Ingen oppføringer funnet.";
     return rader
       .map((r) => `[${r.created_at.slice(0, 10)} ${r.kind}] ${r.text}`)
+      .join("\n");
+  },
+
+  sok_minne: async (raw) => {
+    const args = raw as SokMinneInput;
+    const limit = Math.min(Math.max(args.limit ?? 5, 1), 10);
+    const treff = await sokMinne(args.query, limit);
+    if (treff.length === 0) return "Ingen treff i minne eller kunnskap.";
+    return treff
+      .map((t) => {
+        const sim = t.similarity !== null ? ` (${(t.similarity * 100).toFixed(0)}%)` : "";
+        const ref = t.ref ? ` [${t.ref}]` : "";
+        return `- ${t.source}${ref}${sim}: ${t.content}`;
+      })
       .join("\n");
   },
 };
