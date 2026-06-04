@@ -23,6 +23,10 @@ export const anthropic: Anthropic | null = apiKey
 // samme modell-streng (COACH_MODEL). Holdes synkronisert manuelt.
 export const AI_MODEL = "claude-sonnet-4-6";
 
+// Meg-assistenten — modell-bryter via env.
+export const MEG_MODEL_SMART = process.env.MEG_MODEL_SMART ?? "claude-sonnet-4-6";
+export const MEG_MODEL_FAST = process.env.MEG_MODEL_FAST ?? "claude-haiku-4-5-20251001";
+
 // Max tokens for ett chat-svar fra agent (uten streaming).
 export const AI_MAX_TOKENS = 2048;
 

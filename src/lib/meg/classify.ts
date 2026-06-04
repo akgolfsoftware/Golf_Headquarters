@@ -2,7 +2,7 @@
 // Klassifiserer en fritekst-melding fra Anders via Claude tool-use.
 // Bruker eksisterende anthropic-klient fra src/lib/ai/client.ts.
 import "server-only";
-import { anthropic, AI_MODEL } from "@/lib/ai/client";
+import { anthropic, MEG_MODEL_FAST } from "@/lib/ai/client";
 import {
   ClassificationSchema,
   classificationToolSchema,
@@ -19,7 +19,7 @@ export async function classifyMessage(text: string): Promise<Classification | nu
   if (!anthropic) return null;
 
   const res = await anthropic.messages.create({
-    model: AI_MODEL,
+    model: MEG_MODEL_FAST,
     max_tokens: 512,
     system: SYSTEM,
     tools: [{
