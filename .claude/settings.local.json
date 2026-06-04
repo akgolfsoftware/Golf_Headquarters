@@ -269,7 +269,9 @@
       "mcp__Claude_in_Chrome__resize_window",
       "mcp__Claude_in_Chrome__computer",
       "Bash(python3 -c ' *)",
-      "mcp__155fc8b0-b0e0-46f1-82bd-2c95b9840afa__get_project"
+      "mcp__155fc8b0-b0e0-46f1-82bd-2c95b9840afa__get_project",
+      "mcp__72351f58-4d83-4538-8807-8f01835b16a1__search_files",
+      "mcp__72351f58-4d83-4538-8807-8f01835b16a1__list_recent_files"
     ]
   }
 }
