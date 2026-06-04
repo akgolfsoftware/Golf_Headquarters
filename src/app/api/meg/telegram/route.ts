@@ -4,6 +4,7 @@ import { isAuthorizedUpdate, sendTelegramMessage } from "@/lib/meg/telegram";
 import { storeConversation } from "@/lib/meg/store";
 import { hentSamtaleHistorikk } from "@/lib/meg/read";
 import { runMegAgent } from "@/lib/meg/agent";
+import { handleConfirmation } from "@/lib/meg/confirm";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -43,6 +44,15 @@ export async function POST(req: Request) {
   }
 
   await storeConversation("user", text);
+
+  // Bekreftelsesflyt: hvis en ventende skrive-handling finnes og dette er
+  // BEKREFT/avbryt, utfør/forkast den her — uten å gå via agenten.
+  const confirmReply = await handleConfirmation(text);
+  if (confirmReply !== null) {
+    await storeConversation("assistant", confirmReply);
+    await sendTelegramMessage(env.telegramBotToken, authInput.chatId, confirmReply);
+    return NextResponse.json({ ok: true });
+  }
 
   const history = await hentSamtaleHistorikk(20);
   // Fjern siste user-melding fra historikk (er lagt til rett over, sendes separat til agenten)

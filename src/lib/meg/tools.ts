@@ -4,6 +4,9 @@ import { storeLog } from "@/lib/meg/store";
 import { hentNylige } from "@/lib/meg/read";
 import { sokMinne } from "@/lib/meg/search";
 import type { Classification } from "@/lib/meg/classify-schema";
+import { notionSok, notionLesSide, notionOppgaver } from "@/lib/meg/connectors/notion";
+import { helseHent } from "@/lib/meg/connectors/health";
+import { createPending } from "@/lib/meg/pending";
 
 // ────────────────────────────────────────────────────────────────────────────
 // Tool-definisjoner (Anthropic SDK-format)
@@ -69,7 +72,106 @@ export const sokMinneTool: Tool = {
   },
 };
 
-export const MEG_ALL_TOOLS: Tool[] = [loggTool, hentNyligeTool, sokMinneTool];
+// ── Notion (Fase 3) ──────────────────────────────────────────────────────────
+
+export const notionSokTool: Tool = {
+  name: "notion_sok",
+  description:
+    "Søker i Anders' Notion-arbeidsområde (sider, databaser). Bruk for å finne " +
+    "notater, prosjekter eller dokumenter. Returnerer titler + side-id/url.",
+  input_schema: {
+    type: "object",
+    properties: {
+      query: { type: "string", description: "Det du leter etter (fritekst)" },
+      limit: { type: "number", description: "Antall treff (default 5, maks 10)" },
+    },
+    required: ["query"],
+  },
+};
+
+export const notionLesSideTool: Tool = {
+  name: "notion_les_side",
+  description: "Leser tekstinnholdet på en Notion-side. Bruk page-id fra notion_sok.",
+  input_schema: {
+    type: "object",
+    properties: { pageId: { type: "string", description: "Notion side-id" } },
+    required: ["pageId"],
+  },
+};
+
+export const notionOppgaverTool: Tool = {
+  name: "notion_oppgaver",
+  description:
+    "Henter oppgaver fra Anders' oppgave-database i Notion. Bruk når han spør om " +
+    "oppgavelista. Returnerer oppgave-titler + side-id (brukes til å fullføre dem).",
+  input_schema: {
+    type: "object",
+    properties: { limit: { type: "number", description: "Antall (default 10, maks 30)" } },
+    required: [],
+  },
+};
+
+export const notionOpprettOppgaveTool: Tool = {
+  name: "notion_opprett_oppgave",
+  description:
+    "Foreslår å opprette en oppgave i Notion. Utfører IKKE direkte — lager et " +
+    "forslag som Anders må bekrefte med BEKREFT. Bruk ved 'lag oppgave: ...'.",
+  input_schema: {
+    type: "object",
+    properties: {
+      tittel: { type: "string", description: "Oppgavens tittel" },
+      forfaller: { type: "string", description: "Forfallsdato ISO (YYYY-MM-DD), valgfritt" },
+    },
+    required: ["tittel"],
+  },
+};
+
+export const notionFullforOppgaveTool: Tool = {
+  name: "notion_fullfor_oppgave",
+  description:
+    "Foreslår å markere en Notion-oppgave med en status. Utfører IKKE direkte — " +
+    "lager et forslag Anders må bekrefte med BEKREFT. Bruk page-id fra notion_oppgaver.",
+  input_schema: {
+    type: "object",
+    properties: {
+      pageId: { type: "string", description: "Notion side-id for oppgaven" },
+      status: { type: "string", description: "Statusverdi, f.eks. 'Ferdig'" },
+    },
+    required: ["pageId", "status"],
+  },
+};
+
+// ── Helse (Fase 3b) ──────────────────────────────────────────────────────────
+
+export const helseHentTool: Tool = {
+  name: "helse_hent",
+  description:
+    "Henter Anders' helsedata (søvn, puls, HRV, skritt m.m.) fra samlet kilde " +
+    "(Apple Watch + Garmin). Bruk ved spørsmål om søvn/recovery/trender.",
+  input_schema: {
+    type: "object",
+    properties: {
+      metric: {
+        type: "string",
+        description: "Metrikk å filtrere på, f.eks. sleep_hours, resting_hr, hrv, steps, vo2max (valgfritt)",
+      },
+      dager: { type: "number", description: "Antall dager bakover (default 14)" },
+    },
+    required: [],
+  },
+};
+
+export const MEG_ALL_TOOLS: Tool[] = [
+  loggTool,
+  hentNyligeTool,
+  sokMinneTool,
+  notionSokTool,
+  notionLesSideTool,
+  notionOppgaverTool,
+  notionOpprettOppgaveTool,
+  notionFullforOppgaveTool,
+  helseHentTool,
+];
 
 // ────────────────────────────────────────────────────────────────────────────
 // Input-typer
@@ -92,6 +194,13 @@ type SokMinneInput = {
   query: string;
   limit?: number;
 };
+
+type NotionSokInput = { query: string; limit?: number };
+type NotionLesSideInput = { pageId: string };
+type NotionOppgaverInput = { limit?: number };
+type NotionOpprettOppgaveInput = { tittel: string; forfaller?: string };
+type NotionFullforOppgaveInput = { pageId: string; status: string };
+type HelseHentInput = { metric?: string; dager?: number };
 
 // ────────────────────────────────────────────────────────────────────────────
 // Executor-tabell
@@ -133,5 +242,42 @@ export const MEG_EXEC_BY_NAME: Record<string, (args: unknown) => Promise<string>
         return `- ${t.source}${ref}${sim}: ${t.content}`;
       })
       .join("\n");
+  },
+
+  // ── Notion: les-verktøy (kjøres direkte) ──
+  notion_sok: async (raw) => {
+    const args = raw as NotionSokInput;
+    return notionSok(args.query, args.limit ?? 5);
+  },
+
+  notion_les_side: async (raw) => {
+    const args = raw as NotionLesSideInput;
+    return notionLesSide(args.pageId);
+  },
+
+  notion_oppgaver: async (raw) => {
+    const args = raw as NotionOppgaverInput;
+    return notionOppgaver(args.limit ?? 10);
+  },
+
+  // ── Notion: skrive-verktøy (lager KUN ventende handling) ──
+  notion_opprett_oppgave: async (raw) => {
+    const args = raw as NotionOpprettOppgaveInput;
+    const summary = `Opprette oppgave i Notion: "${args.tittel}"${args.forfaller ? ` (forfaller ${args.forfaller})` : ""}`;
+    await createPending("notion_opprett_oppgave", args, summary);
+    return `Forslag klart: ${summary}. Be Anders svare BEKREFT for å utføre.`;
+  },
+
+  notion_fullfor_oppgave: async (raw) => {
+    const args = raw as NotionFullforOppgaveInput;
+    const summary = `Sette Notion-oppgave til status "${args.status}"`;
+    await createPending("notion_fullfor_oppgave", args, summary);
+    return `Forslag klart: ${summary}. Be Anders svare BEKREFT for å utføre.`;
+  },
+
+  // ── Helse (kjøres direkte) ──
+  helse_hent: async (raw) => {
+    const args = raw as HelseHentInput;
+    return helseHent(args.metric, args.dager ?? 14);
   },
 };
