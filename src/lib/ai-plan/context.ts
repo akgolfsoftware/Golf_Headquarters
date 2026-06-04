@@ -13,6 +13,11 @@ import type {
   SessionEnvironment,
   SkillArea,
 } from "@/generated/prisma/client";
+import { hentTreningsVolum, type UkeVolum } from "../training/volum";
+import {
+  beregnKorrelasjon,
+  type KorrelasjonsResultat,
+} from "../training/korrelasjon";
 
 export type DrillKatalogEntry = {
   id: string;
@@ -118,6 +123,10 @@ export type SpillerKontekst = {
   tilgjengeligeDrills: DrillKatalogEntry[];
   /** Forrige PlanEffectiveness — hva som virket / ikke virket. */
   forrigeEffektivitet: ForrigeEffektivitet | null;
+  /** Loggført treningsvolum per uke (siste 8 uker), per SG-område. */
+  treningsVolum: UkeVolum[];
+  /** Korrelasjon mellom treningsvolum og SG neste uke, per SG-område. */
+  korrelasjon: KorrelasjonsResultat[];
 };
 
 // HCP → NGF-kategori-mapping (grov terskel; brukes hvis WAGR ikke finnes).
@@ -450,26 +459,29 @@ export async function byggSpillerKontekst(
   const ngfKategori =
     parseKategori(wagr?.ngfCategory ?? null) ?? kategoriFraHcp(user.hcp);
 
-  const [logger, tilgjengeligeDrills, forrigeEffektivitet] = await Promise.all([
-    prisma.trainingPlanSessionLog.findMany({
-      where: { session: { plan: { userId } } },
-      orderBy: { createdAt: "desc" },
-      take: 20,
-      select: {
-        rating: true,
-        notes: true,
-        createdAt: true,
-        session: {
-          select: {
-            title: true,
-            drills: { select: { exercise: { select: { name: true } } } },
+  const [logger, tilgjengeligeDrills, forrigeEffektivitet, treningsVolum, korrelasjon] =
+    await Promise.all([
+      prisma.trainingPlanSessionLog.findMany({
+        where: { session: { plan: { userId } } },
+        orderBy: { createdAt: "desc" },
+        take: 20,
+        select: {
+          rating: true,
+          notes: true,
+          createdAt: true,
+          session: {
+            select: {
+              title: true,
+              drills: { select: { exercise: { select: { name: true } } } },
+            },
           },
         },
-      },
-    }),
-    hentTilgjengeligeDrills(ngfKategori, user.tilgjengeligeFasiliteter as DrillFasilitet[]),
-    hentForrigeEffektivitet(userId),
-  ]);
+      }),
+      hentTilgjengeligeDrills(ngfKategori, user.tilgjengeligeFasiliteter as DrillFasilitet[]),
+      hentForrigeEffektivitet(userId),
+      hentTreningsVolum(userId, 8),
+      beregnKorrelasjon(userId, 16),
+    ]);
 
   // For å holde token-budsjettet nede: ikke send hele drills-katalogen hvis
   // den blir veldig stor. Kutt til 80 mest relevante (sortert som vi har dem).
@@ -522,6 +534,8 @@ export async function byggSpillerKontekst(
     })),
     tilgjengeligeDrills: drills,
     forrigeEffektivitet,
+    treningsVolum,
+    korrelasjon,
   };
 }
 
