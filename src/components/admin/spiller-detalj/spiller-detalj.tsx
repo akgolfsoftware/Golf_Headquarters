@@ -299,6 +299,7 @@ function TabRow({ id }: { id: string }) {
     { label: "Profil", active: true },
     { label: "Plan", href: `/admin/spillere/${id}/plan` },
     { label: "Analyse", href: `/admin/spillere/${id}/analyse` },
+    { label: "Fremgang", href: `/admin/spillere/${id}/fremgang` },
     { label: "Tester", href: `/admin/spillere/${id}/tester` },
     { label: "Workbench", href: `/admin/spillere/${id}/workbench` },
   ];

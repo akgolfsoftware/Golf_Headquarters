@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import type { SgCategory } from '@/generated/prisma/client'
+import { requirePortalUser } from '@/lib/auth/requirePortalUser'
 import { prisma } from '@/lib/prisma'
 import { hentTreningsVolum } from '@/lib/training/volum'
 import { beregnKorrelasjon } from '@/lib/training/korrelasjon'
@@ -22,6 +23,7 @@ function isoUkeNummer(dato: Date): string {
 }
 
 export default async function FremgangPage({ params }: Props) {
+  await requirePortalUser({ allow: ['COACH', 'ADMIN'] })
   const { id } = await params
 
   const spiller = await prisma.user.findUnique({
