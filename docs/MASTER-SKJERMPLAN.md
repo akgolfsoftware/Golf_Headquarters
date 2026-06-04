@@ -2,7 +2,7 @@
 
 > Dette er den komplette lista over hver eneste skjerm i appen, og om den er helt ferdig eller ikke. Én plass å se alt.
 
-Sist oppdatert: 3. juni 2026.
+Sist oppdatert: 4. juni 2026.
 
 ---
 
@@ -21,11 +21,13 @@ Før noen — du eller en hjelper — rører en skjerm: finn raden her først, o
 
 Tegnforklaring: ✓ = ferdig · ~ = delvis / i arbeid · – = ikke startet.
 
+† = bygd, koblet og kjører på ekte data; tsc + build grønt — men ikke nettleser-testet ende-til-ende ennå (derfor «Funker» = ~).
+
 ---
 
 ## Status akkurat nå (tallene)
 
-- **Skjermer totalt vi sporer:** ca. 180 hovedskjermer (pluss mange små undersider — alle er med i lista under).
+- **Skjermer totalt vi sporer:** ca. 182 hovedskjermer (pluss mange små undersider — alle er med i lista under). To nye kom inn 4. juni: «Logg treningsøkt» (spiller) og «Fremgang» (coach), begge på ekte data.
 - **Helt ferdige (alle seks haker grønne):** 2 — begge Workbench-variantene (spiller + coach). Det er foreløpig de eneste med ekte data hele veien.
 - **Nytt design ferdig i forhåndsvisning (men venter på ekte data + ekte adresse):** ca. 43 skjermer. Disse fikk nytt v10-utseende i natt, men kjører fortsatt på liksom-tall og ligger i en forhåndsvisning — ikke på sin ekte nettadresse ennå. De er altså «pene, men ikke ferdig koblet».
 - **Ikke startet / fortsatt gammelt design:** flertallet av de ca. 180 — de finnes som adresse i appen, men er ikke pusset opp til nytt design ennå.
@@ -94,6 +96,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Kalender | `/portal/kalender` | – | --- | ✓ | ~ | ~ | ✓ |
 | Kalender (alt. adresse) | `/portal/tren/kalender` | – | --- | ✓ | ~ | ~ | ✓ |
 | Ny økt (handlingsvalg) | `/portal/ny-okt` | – | --- | ✓ | ~ | ~ | ✓ |
+| Logg treningsøkt (volum per SG) † | `/portal/trening/logg` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ~ |
 | Ønsket økt (be coach) | `/portal/onskeligokt` | – | --- | ✓ | ~ | ~ | ~ |
 | · Ønsket økt bekreftet | `/portal/onskeligokt/bekreftet` | – | --- | ✓ | ~ | ~ | ~ |
 | Live-økt: brief | `/portal/(fullscreen)/live/[sessionId]/brief` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
@@ -292,6 +295,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Profil | `/admin/spillere/[id]/profil` | – | --- | ✓ | ~ | ~ | ~ |
 | · **Workbench (coach-i-spiller)** ★ | `/admin/spillere/[id]/workbench` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
 | · Plan-detalj | `/admin/spillere/[id]/plan/[planId]` | – | --- | ✓ | ~ | ~ | ~ |
+| · Fremgang (trening vs SG) † | `/admin/spillere/[id]/fremgang` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ~ |
 | · Tester | `/admin/spillere/[id]/tester` | – | --- | ✓ | ~ | ~ | ~ |
 | · Tildel test | `/admin/spillere/[id]/tildel-test` | – | --- | ✓ | ~ | ~ | ~ |
 | · Rediger | `/admin/spillere/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
@@ -651,6 +655,10 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 ## Endringslogg
 
+- 4. juni: To nye skjermer lagt til på ekte data (port av sprint3-arbeid):
+  - **Logg treningsøkt** (`/portal/trening/logg`) — spiller logger treningstid per SG-område; lenket fra PlayerHQ-sidemenyen under «Planlegge».
+  - **Fremgang** (`/admin/spillere/[id]/fremgang`) — coach-fane med SG-grafer, treningsvolum og korrelasjon trening↔SG; coach-beskyttet.
+  - Begge: Design ✓ · `✓✓–` · Adresse ✓ · Flyt ✓ · Data ✓ · Funker `~` (tsc + build grønt, ikke nettleser-testet ende-til-ende ennå). Database-tabell `training_logs` opprettet i prod (RLS deny-all). Også: training-gap-cron-agent (varsler coach når svakeste SG-område får <20 % treningstid). De fire øvrige gamle feature-branchene ble forkastet som utdaterte.
 - 3. juni (Bolk 1, workflow): 42 preview-skjermer kjørt gjennom port → adversarisk review. Resultat: **29 portet til ekte adresse med ekte data** (mapper-mønster fra pilot-Hjem), 5 allerede koblet, 8 blokkert. tsc + build grønn samlet. 41/42 godkjent av review.
   - **Krever oppfølging (komponent-fiks, ikke data):** `drill-detalj` — v10-komponenten mangler «Trinn»-liste + «Coach-notat», har feil primærknapp og en fabrikkert feedback-seksjon vs v10-fasit. Loaderen gir steps+coachNotes, men komponenten bruker dem ikke. Data-koblingen er teknisk OK; komponenten må utvides til full v10-fasit (egen oppgave, ikke Bolk 1).
   - **Blokkert (trenger mer enn data-kobling):** auth-login/signup/forgot (skjema-flyt), marketing-forside, runde-ny, booking-ny, forelder, trackman. Disse rørte agentene ikke — flagget for manuell/sekvensiell port.
