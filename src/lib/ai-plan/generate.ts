@@ -136,7 +136,7 @@ export async function genererPlan(
       coachId,
       prompt: brukerPrompt,
       systemPrompt: AI_COACH_SYSTEM_PROMPT,
-      contextJson: { ...ctx, _templateId: template?.templateId ?? null },
+      contextJson: { ...ctx, _templateId: template?.templateId ?? null } as object,
       responseJson: forslag as object,
       model: AI_PLAN_MODEL,
       tokensInput,

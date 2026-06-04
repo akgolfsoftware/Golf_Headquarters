@@ -495,6 +495,9 @@ model User {
   // Egen-test — TestDefinition opprettet av spiller
   customTests TestDefinition[] @relation("TestCreator")
 
+  // Fri trenings-logg (volum per SG-område) — mater korrelasjon + training-gap-agent
+  trainingLogs TrainingLog[]
+
   // Performance: hot path — filtrere aktive spillere/coacher
   // (PlayerHQ-lister, CoachHQ-portefølje, talent-tracking).
   @@index([role, deletedAt])
@@ -1081,6 +1084,27 @@ model CourseDefinition {
   tournaments Tournament[]
 
   @@map("course_definitions")
+}
+
+// Fri trenings-logg: spiller logger treningstid per SG-område (ad-hoc, utenfor plan).
+// Mater korrelasjonsanalyse (volum vs SG neste uke) og training-gap-agenten.
+model TrainingLog {
+  id        String     @id @default(cuid())
+  userId    String
+  date      DateTime   @db.Date
+  sgArea    SgCategory
+  minutes   Int
+  drillName String?
+  quality   Int?       @db.SmallInt // 1-5
+  notes     String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
+  @@index([userId, sgArea])
+  @@map("training_logs")
 }
 
 model Round {
