@@ -17,6 +17,12 @@ import {
   syncNgfSchedule,
 } from "@/lib/turneringer/sync";
 import { syncPgaSkillRatings, syncPgaPuttDistance, syncPgaApproach } from "@/lib/stats/pga-sync";
+import {
+  runMorgenbrief,
+  runKveldsjournal,
+  runLoftesjekk,
+  runCrmNudge,
+} from "@/lib/meg/briefs";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -39,6 +45,11 @@ const AGENTS: Record<string, () => Promise<unknown>> = {
   "pga-skill-ratings": syncPgaSkillRatings,
   "pga-putt-distance": syncPgaPuttDistance,
   "pga-approach": syncPgaApproach,
+  // Meg-assistent proaktive briefer (Fase 6)
+  "meg-morgenbrief": runMorgenbrief,
+  "meg-kveldsjournal": runKveldsjournal,
+  "meg-loftesjekk": runLoftesjekk,
+  "meg-crm-nudge": runCrmNudge,
 };
 
 export async function GET(

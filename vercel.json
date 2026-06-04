@@ -68,6 +68,22 @@
     {
       "path": "/api/cron/pga-approach",
       "schedule": "30 7 * * 1"
+    },
+    {
+      "path": "/api/cron/meg-morgenbrief",
+      "schedule": "0 5 * * *"
+    },
+    {
+      "path": "/api/cron/meg-kveldsjournal",
+      "schedule": "0 19 * * *"
+    },
+    {
+      "path": "/api/cron/meg-loftesjekk",
+      "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/cron/meg-crm-nudge",
+      "schedule": "0 8 * * 1"
     }
   ]
 }
