@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import type { GoogleCalendarConnection } from "@/generated/prisma/client";
 import { getGmailApi, buildRawMessage } from "@/lib/google-gmail";
 import { getDriveApi } from "@/lib/google-drive";
+import { getCalendarApi } from "@/lib/google-calendar";
 
 async function getOwnerConnection(): Promise<GoogleCalendarConnection | null> {
   const conn = await prisma.googleCalendarConnection.findFirst({
@@ -88,6 +89,37 @@ export async function gmailSend(args: { til: string; emne: string; tekst: string
     return `Sendt e-post til ${args.til}: "${args.emne}".`;
   } catch (err) {
     return `Kunne ikke sende e-post: ${err instanceof Error ? err.message : String(err)}`;
+  }
+}
+
+// ── Kalender: les (direkte) ──────────────────────────────────────────────────
+
+export async function kalenderAgenda(dager = 1): Promise<string> {
+  const conn = await getOwnerConnection();
+  if (!conn) return "Google er ikke koblet (ingen aktiv ADMIN-tilkobling).";
+  try {
+    const cal = getCalendarApi(conn);
+    const naa = new Date();
+    const til = new Date(naa.getTime() + Math.min(Math.max(dager, 1), 30) * 24 * 60 * 60 * 1000);
+    const res = await cal.events.list({
+      calendarId: "primary",
+      timeMin: naa.toISOString(),
+      timeMax: til.toISOString(),
+      singleEvents: true,
+      orderBy: "startTime",
+      maxResults: 20,
+    });
+    const events = res.data.items ?? [];
+    if (events.length === 0) return `Ingen hendelser de neste ${dager} dagene.`;
+    return events
+      .map((e) => {
+        const start = e.start?.dateTime ?? e.start?.date ?? "";
+        const naar = start.length > 10 ? start.slice(0, 16).replace("T", " ") : start;
+        return `- ${naar}: ${e.summary ?? "(uten tittel)"}${e.location ? ` @ ${e.location}` : ""}`;
+      })
+      .join("\n");
+  } catch (err) {
+    return `Kunne ikke lese kalender: ${err instanceof Error ? err.message : String(err)}`;
   }
 }
 

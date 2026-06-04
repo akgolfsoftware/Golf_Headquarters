@@ -10,6 +10,7 @@ import { sendTelegramMessage } from "@/lib/meg/telegram";
 import { hentNylige } from "@/lib/meg/read";
 import { helseHent } from "@/lib/meg/connectors/health";
 import { notionOppgaver } from "@/lib/meg/connectors/notion";
+import { kalenderAgenda } from "@/lib/meg/connectors/google";
 import { prisma } from "@/lib/prisma";
 
 type BriefKind = "morgenbrief" | "kveldsjournal" | "loftesjekk" | "crm_nudge";
@@ -73,14 +74,16 @@ async function agencyOsSnapshot(): Promise<string> {
 
 // ── Morgenbrief ──────────────────────────────────────────────────────────────
 export async function runMorgenbrief(): Promise<BriefResult> {
-  const [helse, oppgaver, agencyOs] = await Promise.all([
+  const [helse, oppgaver, agencyOs, kalender] = await Promise.all([
     helseHent(undefined, 3),
     notionOppgaver(8),
     agencyOsSnapshot(),
+    kalenderAgenda(1),
   ]);
   const kontekst = [
     `Helse siste dager:\n${helse}`,
     `Notion-oppgaver:\n${oppgaver}`,
+    `Dagens kalender:\n${kalender}`,
     agencyOs,
   ].join("\n\n");
   const content = await komponer(
