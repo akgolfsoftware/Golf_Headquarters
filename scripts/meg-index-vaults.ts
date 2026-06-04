@@ -84,6 +84,8 @@ function hashOf(s: string): string {
   return createHash("sha256").update(s).digest("hex");
 }
 
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
 async function embedBatch(
   texts: string[],
   apiKey: string,
@@ -91,23 +93,35 @@ async function embedBatch(
   baseUrl: string,
 ): Promise<number[][] | null> {
   if (texts.length === 0) return [];
-  const res = await fetch(baseUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
-    body: JSON.stringify({
-      input: texts,
-      model,
-      input_type: "document",
-      output_dimension: EMBEDDING_DIM,
-    }),
-  });
-  if (!res.ok) {
-    console.error("[index] Voyage-feil", res.status, await res.text());
-    return null;
+  // Voyage gratisnivå uten betalingsmetode = 3 RPM. Vent og prøv igjen på 429
+  // i stedet for å droppe biter, så indekseringen alltid fullfører.
+  const maxForsok = 6;
+  for (let forsok = 1; forsok <= maxForsok; forsok++) {
+    const res = await fetch(baseUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify({
+        input: texts,
+        model,
+        input_type: "document",
+        output_dimension: EMBEDDING_DIM,
+      }),
+    });
+    if (res.status === 429 && forsok < maxForsok) {
+      const ventS = 22 * forsok; // 3 RPM → ~20s mellom kall, øker ved gjentatt 429
+      console.log(`[index] 429 ratelimit — venter ${ventS}s (forsøk ${forsok}/${maxForsok})`);
+      await sleep(ventS * 1000);
+      continue;
+    }
+    if (!res.ok) {
+      console.error("[index] Voyage-feil", res.status, await res.text());
+      return null;
+    }
+    const json = (await res.json()) as { data?: { embedding: number[]; index: number }[] };
+    if (!json.data) return null;
+    return json.data.sort((a, b) => a.index - b.index).map((d) => d.embedding);
   }
-  const json = (await res.json()) as { data?: { embedding: number[]; index: number }[] };
-  if (!json.data) return null;
-  return json.data.sort((a, b) => a.index - b.index).map((d) => d.embedding);
+  return null;
 }
 
 async function main() {
