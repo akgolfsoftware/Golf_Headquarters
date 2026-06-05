@@ -3,7 +3,7 @@
  * Bygd direkte fra wireframe/design-files-v2/coachhq-A/02-plan-bygger.html
  * URL: /demos/plan-bygger (under (internal) → ADMIN-only)
  *
- * Mock-data for Markus Roinås Pedersen. Bytt til Prisma-henting senere.
+ * Mock-data for Øyvind Rohjan. Bytt til Prisma-henting senere.
  */
 
 import { Check, Sparkles } from "lucide-react";
@@ -15,7 +15,7 @@ export default function PlanByggerDemo() {
         {/* Page head */}
         <header className="mb-6">
           <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            Treningsplaner · Ny plan · Markus R. Pedersen · Kategori A · HCP +2,4
+            Treningsplaner · Ny plan · Øyvind Rohjan · Kategori A · HCP +2,4
           </span>
           <h1 className="mt-1 font-display text-[36px] font-bold leading-[1.1] tracking-tight">
             <em className="font-medium italic">Bygg ny plan</em> · Sørlandsåpent 2026
@@ -28,7 +28,7 @@ export default function PlanByggerDemo() {
 
         {/* Step indicator */}
         <div className="mb-6 grid grid-cols-6 gap-2">
-          <StepCard num="1" name="Spiller" sub="Markus R. valgt" state="done" />
+          <StepCard num="1" name="Spiller" sub="Øyvind R. valgt" state="done" />
           <StepCard num="2" name="Periode" sub="8 uker · 32 økter" state="done" />
           <StepCard num="3" name="Faser" sub="5 auto-foreslått" state="done" />
           <StepCard
@@ -38,7 +38,7 @@ export default function PlanByggerDemo() {
             state="current"
           />
           <StepCard num="5" name="Økt-skjelett" sub="Auto-bygges" state="todo" />
-          <StepCard num="6" name="Bekreft" sub="Send til Markus" state="todo" />
+          <StepCard num="6" name="Bekreft" sub="Send til Øyvind" state="todo" />
         </div>
 
         {/* Agent strip */}
@@ -58,7 +58,7 @@ export default function PlanByggerDemo() {
             </div>
             <p className="mt-1 max-w-[720px] text-[13px] leading-[1.5] text-foreground">
               <b className="font-semibold">Foreslår SLAG 35 % i Spesifikk-fase</b> — Bjaavann har
-              sandbase med dyp bunkersand, og Markus&apos; SG-arg er −0,1 siste 30 d. Reduser FYS
+              sandbase med dyp bunkersand, og Øyvind&apos; SG-arg er −0,1 siste 30 d. Reduser FYS
               til 10 % og TEK til 15 % for å gi rom.
             </p>
           </div>
@@ -112,7 +112,7 @@ export default function PlanByggerDemo() {
                   Hvordan tid fordeles i fase 3
                 </h3>
                 <p className="mt-1 max-w-[500px] text-[12px] leading-[1.5] text-muted-foreground">
-                  Sum må være 100 %. Subtil bar under hver slider viser hva Markus har faktisk trent
+                  Sum må være 100 %. Subtil bar under hver slider viser hva Øyvind har faktisk trent
                   siste 4 uker — for kontekst.
                 </p>
               </div>
@@ -195,7 +195,7 @@ export default function PlanByggerDemo() {
                   M
                 </div>
                 <div>
-                  <div className="text-[14px] font-semibold leading-tight">Markus R. Pedersen</div>
+                  <div className="text-[14px] font-semibold leading-tight">Øyvind Rohjan</div>
                   <div className="mt-1 text-[11px] leading-[1.3] text-muted-foreground">
                     Kategori A · 17 år · WANG
                   </div>

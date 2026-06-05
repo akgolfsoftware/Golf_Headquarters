@@ -145,7 +145,7 @@ export async function hentProfilOversikt(input: {
   const utestaaende = fakturaAgg._count._all;
   const sumOre = fakturaAgg._sum.amountOre ?? 0;
 
-  // Neste booking → "Tirs 28/5 · Markus · Oslo GK · 14:30"
+  // Neste booking → "Tirs 28/5 · Øyvind · Oslo GK · 14:30"
   let bookingTekst: string | null = null;
   if (nesteBookingRad) {
     const d = nesteBookingRad.startAt;

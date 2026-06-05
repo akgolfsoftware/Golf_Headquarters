@@ -54,7 +54,7 @@ const SUB_TASKS = [
   { title: "Be om tilbud fra TrackMan Norge", done: true },
   { title: "Snakke med Mulligan-eier om bay-prising", done: true },
   { title: "Avklare data-eierskap med juridisk", done: false },
-  { title: "Lage budsjett-forslag til Markus", done: false },
+  { title: "Lage budsjett-forslag til Øyvind", done: false },
 ];
 
 export default async function TaskDetaljPage({
@@ -150,7 +150,7 @@ export default async function TaskDetaljPage({
               <p>Hovedspørsmål:</p>
               <ul className="list-disc space-y-1 pl-6">
                 <li>Pris pr. time vs. fast leie</li>
-                <li>Tilgang for Markus + andre coaches</li>
+                <li>Tilgang for Øyvind + andre coaches</li>
                 <li>Data-eierskap (vil vi eksportere TrackMan-rapporter)</li>
               </ul>
               <p className="font-mono inline-flex items-center gap-2 rounded-md border-l-[3px] border-accent bg-muted/40 px-4 py-2.5 text-xs text-muted-foreground">

@@ -417,7 +417,7 @@ function Steg1Identitet({
           label="Fullt navn"
           value={navn}
           onChange={setNavn}
-          placeholder="F.eks. Markus Roinås Pedersen"
+          placeholder="F.eks. Øyvind Rohjan"
           paakrevd
           error={fieldErrors.navn}
         />

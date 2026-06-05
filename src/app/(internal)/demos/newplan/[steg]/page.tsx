@@ -3,7 +3,7 @@
  * Dynamic route: /demos/newplan/[1..4] (under (internal) → ADMIN-only)
  * Bygd direkte fra wireframe/design-files-v2/modaler-A/{01..04}-newplan-steg*.html
  *
- * Mock-data for Markus Roinås Pedersen mot Sørlandsåpent (mai-juni 2026).
+ * Mock-data for Øyvind Rohjan mot Sørlandsåpent (mai-juni 2026).
  */
 
 import Link from "next/link";
@@ -64,7 +64,7 @@ const STEG_META: Record<StegId, { title: string; lede: string; label: string }> 
   },
   "4": {
     title: "Bekreft og send",
-    lede: "Gjennomgå sammendraget før du sender forslaget til Markus.",
+    lede: "Gjennomgå sammendraget før du sender forslaget til Øyvind.",
     label: "Bekreft",
   },
 };
@@ -198,7 +198,7 @@ function ModalFooter({ current }: { current: StegId }) {
         ) : (
           <button className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90">
             <Send className="h-3.5 w-3.5" strokeWidth={2.5} />
-            Send forslag → Markus
+            Send forslag → Øyvind
           </button>
         )}
       </div>
@@ -221,7 +221,7 @@ function Steg1() {
           </div>
           <div className="flex-1">
             <div className="text-[14px] font-semibold leading-tight text-foreground">
-              Markus Roinås Pedersen
+              Øyvind Rohjan
             </div>
             <div className="mt-1 flex items-center gap-2.5 font-mono text-[11px] text-muted-foreground">
               <span>
@@ -286,7 +286,7 @@ function Steg1() {
         </div>
 
         <p className="mt-2 text-[11px] text-muted-foreground">
-          Forhåndsfordeling fra Markus&apos; siste plan. Juster om Sørlandsåpent krever annet
+          Forhåndsfordeling fra Øyvind&apos; siste plan. Juster om Sørlandsåpent krever annet
           fokus.
         </p>
       </section>
@@ -346,7 +346,7 @@ function Steg2() {
             Spiller & periode
           </div>
           <div className="text-[13px]">
-            <b className="font-semibold text-foreground">Markus R. Pedersen</b>
+            <b className="font-semibold text-foreground">Øyvind Rohjan</b>
             <span className="font-mono text-[11px] text-muted-foreground">
               {" "}
               · 9. mai – 30. juni · 8 uker · 32 økter
@@ -375,7 +375,7 @@ function Steg2() {
           badge="Anbefalt"
           badgeAccent
           title="AI-generer"
-          desc="Anders&apos; agenter bygger planen fra Markus&apos; 90-dagers historikk og Sørlandsåpent-fokus."
+          desc="Anders&apos; agenter bygger planen fra Øyvind&apos; 90-dagers historikk og Sørlandsåpent-fokus."
           feats={["~15 sek", "Begrunnelse", "Editerbar"]}
           arrowLabel="Generer"
           highlighted
@@ -665,7 +665,7 @@ function Steg4() {
                   <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground">
                     MP
                   </span>
-                  Markus R. Pedersen
+                  Øyvind Rohjan
                 </span>
               }
             />
@@ -707,8 +707,8 @@ function Steg4() {
       <div className="flex flex-col gap-2.5 rounded-xl bg-[var(--surface-alt,#F1EEE5)] p-4">
         <CheckRow
           checked
-          title="Send forslag til Markus til godkjenning"
-          sub="Markus får varsel i PlayerHQ og e-post · godkjenner eller ber om endring"
+          title="Send forslag til Øyvind til godkjenning"
+          sub="Øyvind får varsel i PlayerHQ og e-post · godkjenner eller ber om endring"
         />
         <CheckRow
           checked
@@ -722,7 +722,7 @@ function Steg4() {
       </div>
 
       <div className="rounded-r-lg border-l-2 border-accent bg-[var(--accent-bg,rgba(209,248,67,0.10))] px-4 py-2.5 font-mono text-[11px] leading-[1.5] text-muted-foreground">
-        Markus får 7 dager på seg til å godkjenne. Etter det aktiveres planen automatisk. Du kan
+        Øyvind får 7 dager på seg til å godkjenne. Etter det aktiveres planen automatisk. Du kan
         justere og resende fra plan-detaljsiden når som helst.
       </div>
     </>

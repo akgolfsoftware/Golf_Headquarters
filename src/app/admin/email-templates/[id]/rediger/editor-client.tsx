@@ -36,8 +36,8 @@ type Props = {
 // Eksempel-data for live preview. Matcher template-tokens vi typisk
 // bruker på tvers av AK Golf-maler.
 const PREVIEW_DATA: Record<string, string> = {
-  spillerNavn: "Markus Roinås Pedersen",
-  spillerFornavn: "Markus",
+  spillerNavn: "Øyvind Rohjan",
+  spillerFornavn: "Øyvind",
   coachNavn: "Anders Kristiansen",
   klubbNavn: "Gamle Fredrikstad Golfklubb",
   okt_navn: "Performance · sving-økt",

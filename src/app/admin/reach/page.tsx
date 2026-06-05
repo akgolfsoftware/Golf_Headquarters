@@ -310,7 +310,7 @@ function statusFromCompliance(
 function buildFallbackData(now: Date): ReachData {
   // Realistic dummy-data — 38 spillere
   const playerNames = [
-    "Markus R.P.",
+    "Øyvind R.",
     "Joachim Therkelsen",
     "Emma Solberg",
     "Henrik Bakke",
@@ -391,7 +391,7 @@ function buildFallbackData(now: Date): ReachData {
   const topEngaged = [
     {
       id: "dummy-0",
-      name: "Markus R.P.",
+      name: "Øyvind R.",
       avatarUrl: null,
       compliancePct: 95,
       readRatePct: 100,

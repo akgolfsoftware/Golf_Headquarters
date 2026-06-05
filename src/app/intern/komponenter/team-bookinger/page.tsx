@@ -19,7 +19,7 @@ const maler: PlanMal[] = [
 ];
 
 const players: AcOption[] = [
-  { id: "mb", initials: "MB", name: "Markus Berg", sub: "4 cr.", avatarClass: "bg-primary text-accent" },
+  { id: "mb", initials: "ØR", name: "Øyvind Rohjan", sub: "4 cr.", avatarClass: "bg-primary text-accent" },
   { id: "sk", initials: "SK", name: "Sofie K.", sub: "2 cr." },
   { id: "kl", initials: "KL", name: "Karl Ludvig", sub: "12 cr.", avatarClass: "bg-accent text-primary" },
   { id: "eb", initials: "EB", name: "Emilie B.", sub: "6 cr." },

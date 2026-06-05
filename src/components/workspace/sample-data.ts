@@ -35,7 +35,7 @@ export const SAMPLE_TASKS: SampleTask[] = [
   // I dag
   {
     id: 1,
-    title: "Forberede Markus' økt 14:00 — putt-fokus",
+    title: "Forberede Øyvind' økt 14:00 — putt-fokus",
     project: { company: "AK", name: "AK COACHING" },
     prio: "BRENNER",
     due: "I dag 13:30",
@@ -256,7 +256,7 @@ export const SAMPLE_PROJECTS: SampleProject[] = [
 
 export const SAMPLE_PEOPLE: Record<string, { name: string; initials: string }> = {
   AK: { name: "Anders Kvam", initials: "AK" },
-  MR: { name: "Markus R.P.", initials: "MR" },
+  MR: { name: "Øyvind R.", initials: "ØR" },
   SL: { name: "Sofie L.", initials: "SL" },
   HT: { name: "Henrik T.", initials: "HT" },
   IB: { name: "Ingrid B.", initials: "IB" },

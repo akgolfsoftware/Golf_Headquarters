@@ -31,8 +31,8 @@ export function DirBTopbar({ variant, mode, onVis, onMode }: DirBTopbarProps) {
           <span className="cur">PLANLEGGING</span>
         </div>
         <div className="wbb-player-chip">
-          <span className="av">MR</span>
-          <span className="nm">Markus R.P.</span>
+          <span className="av">ØR</span>
+          <span className="nm">Øyvind R.</span>
           <Icon n="chevron-down" w={11} h={11} />
         </div>
       </div>

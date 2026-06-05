@@ -12,7 +12,7 @@
 // Bevarer alle 13 modaler fra workbench-modaler.tsx + Cmd+K palette
 // + toast via useToast() + sidebar-navigering.
 //
-// Hardkodet data for Markus R.P. · Uke 21 · Spesialisering-periode.
+// Hardkodet data for Øyvind R. · Uke 21 · Spesialisering-periode.
 
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -184,7 +184,7 @@ const Icon = ({
   </svg>
 );
 
-/* ─── Uke-event data (Markus R.P. · Uke 21) ────────────────────────── */
+/* ─── Uke-event data (Øyvind R. · Uke 21) ────────────────────────── */
 
 const UKE_EVENTS: UkeEvent[] = [
   {
@@ -452,9 +452,9 @@ export function WorkbenchClient() {
           </div>
 
           <div className="sb-profile">
-            <span className="av">MR</span>
+            <span className="av">ØR</span>
             <div>
-              <div className="nm">Markus R.P.</div>
+              <div className="nm">Øyvind R.</div>
               <div className="pmeta">HCP +3,5 · A1</div>
             </div>
           </div>
@@ -800,8 +800,8 @@ export function WorkbenchClient() {
                 {/* ===== PANE A ===== */}
                 <div className="pane-a">
                   <div className="profile-hero">
-                    <div className="av-big">MR</div>
-                    <div className="nm">Markus Røinås Pedersen</div>
+                    <div className="av-big">ØR</div>
+                    <div className="nm">Øyvind Rohjan</div>
                     <div className="pmeta">HCP +3,5 · A1 · GFGK</div>
                     <div className="status-pill">
                       <Icon id="i-check" />
@@ -1291,7 +1291,7 @@ export function WorkbenchClient() {
                         </span>
                       </div>
                       <p className="quote">
-                        &ldquo;Du har vært jevn denne uka, Markus. Hold trykket
+                        &ldquo;Du har vært jevn denne uka, Øyvind. Hold trykket
                         inn mot Sørlandsåpent.&rdquo;
                       </p>
                     </div>

@@ -1,6 +1,6 @@
 // ============================================================
 // Workbench demo data — frozen 1:1 from the v10 design.
-// Week 22 · MAN 26 – FRE 30 mai 2026 · player "Markus R.P."
+// Week 22 · MAN 26 – FRE 30 mai 2026 · player "Øyvind R."
 // These literals must match v10 exactly so the adversarial diff
 // against the v10 screenshot lands on 0 deviations.
 // ============================================================
@@ -372,7 +372,7 @@ export const INSPECTOR_TESTS: {
 export const INSPECTOR_COACH_ACTIONS: { icon: string; label: string; pri?: boolean }[] = [
   { icon: "pencil-line", label: "Legg til notat på økt", pri: true },
   { icon: "video", label: "Legg til video / link" },
-  { icon: "check-square", label: "Opprett oppgave til Markus" },
+  { icon: "check-square", label: "Opprett oppgave til Øyvind" },
   { icon: "send", label: "Send melding" },
   { icon: "check-circle-2", label: "Godkjenn plan-endring" },
   { icon: "arrow-up-right", label: "Løft til hovedcoach" },

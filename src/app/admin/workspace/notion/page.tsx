@@ -485,7 +485,7 @@ function ConnectedState({
           <p className="mb-4 text-[13px] leading-relaxed text-muted-foreground">
             Hvis en oppgave kommer inn fra Notion uten Synlighet-feltet satt, settes den
             til denne verdien. <strong>Tildelt-feltet overstyrer alltid Synlighet</strong>{" "}
-            — hvis Markus er tildelt, ser han oppgaven selv om den er PRIVAT.
+            — hvis Øyvind er tildelt, ser han oppgaven selv om den er PRIVAT.
           </p>
           <div className="flex flex-wrap gap-1.5">
             {(["PRIVAT", "AK", "ALLE"] as const).map((k, i) => (

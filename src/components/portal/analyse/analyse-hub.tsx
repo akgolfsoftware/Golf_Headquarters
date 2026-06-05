@@ -47,7 +47,7 @@ export type AkseRad = {
 };
 
 export type AnalyseHubData = {
-  /** Spillerens fornavn + initial, f.eks. «Markus R.P.» — vist i seksjons-eyebrow. */
+  /** Spillerens fornavn + initial, f.eks. «Øyvind R.» — vist i seksjons-eyebrow. */
   spillerNavn: string;
   /** Valgt periode-etikett, f.eks. «30 dager». */
   periodeLabel: string;

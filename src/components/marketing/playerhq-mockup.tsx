@@ -75,7 +75,7 @@ export function PlayerHQMockup() {
                   M
                 </div>
                 <div>
-                  <p className="text-[11px] font-medium text-white">Markus R.</p>
+                  <p className="text-[11px] font-medium text-white">Øyvind R.</p>
                   <p className="text-[10px] text-white/40">HCP −2,4</p>
                 </div>
               </div>
@@ -92,7 +92,7 @@ export function PlayerHQMockup() {
                 </p>
                 <h2 className="mt-0.5 font-[var(--font-instrument-serif)] text-[22px] font-semibold text-foreground">
                   God morgen,{" "}
-                  <em className="italic text-primary">Markus</em>
+                  <em className="italic text-primary">Øyvind</em>
                 </h2>
                 <p className="mt-0.5 text-[11px] text-muted-foreground">
                   Neste økt: fredag 16. mai · 14:00 · Golfhuset Fredrikstad

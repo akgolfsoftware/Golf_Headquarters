@@ -16,7 +16,7 @@ const TESTS = [
   { kind: "slag", title: "Chip landingsone 15 m", sub: "10 chip · 3m landingsone · % i sone · ~8 min" },
 ];
 
-export function TildelTestModalScreen({ playerName = "Markus R. Pedersen", playerInitials = "MP" }: { playerName?: string; playerInitials?: string }) {
+export function TildelTestModalScreen({ playerName = "Øyvind Rohjan", playerInitials = "ØR" }: { playerName?: string; playerInitials?: string }) {
   return (
     <div className="planlegge-scope">
       <PlanleggeSprite />
@@ -171,7 +171,7 @@ export function TildelTestModalScreen({ playerName = "Markus R. Pedersen", playe
               <div className="suggested">
                 <svg fill="none" stroke="currentColor"><use href="#i-zap" /></svg>
                 <div>
-                  <strong>Foreslått: onsdag 27. mai · 16:00</strong> — Markus har Teknisk-økt planlagt; passer å koble på testen før økten.
+                  <strong>Foreslått: onsdag 27. mai · 16:00</strong> — Øyvind har Teknisk-økt planlagt; passer å koble på testen før økten.
                 </div>
               </div>
             </div>
@@ -181,7 +181,7 @@ export function TildelTestModalScreen({ playerName = "Markus R. Pedersen", playe
               <div className="field-lbl">Notat til spiller</div>
               <textarea
                 className="textarea"
-                placeholder="Hva skal Markus ha i tankene før testen?"
+                placeholder="Hva skal Øyvind ha i tankene før testen?"
                 defaultValue="Vi tar Putt 1–3m som baseline før vi øker volum til 90 putt/uke. Fokuser på pre-shot rutinen — 7 sekunder fra setup til putt. Lykke til."
               />
               <div style={{ fontFamily: "var(--font-mono)", fontSize: "10px", color: "var(--subtle)", letterSpacing: "0.04em", marginTop: "4px" }}>

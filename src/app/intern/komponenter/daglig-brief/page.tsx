@@ -49,7 +49,7 @@ const sessions = [
   },
   {
     time: "11:00", dur: "60 m", ax: "SLAG" as Axis, status: "active" as const,
-    initials: "MB", avatar: "bg-primary text-accent", name: "Markus Berg",
+    initials: "ØR", avatar: "bg-primary text-accent", name: "Øyvind Rohjan",
     title: "Innspill 50–80 m · presisjon",
     meta: [
       { icon: User, text: "1-til-1" },
@@ -80,7 +80,7 @@ const sessions = [
 ];
 
 const inbox = [
-  { initials: "MB", avatar: "bg-primary text-accent", name: "Markus Berg", type: "GODKJENN", typeCls: "bg-pyr-spill-track text-primary", preview: "Foreslår å bytte fre-økt til lørdag før Srixon Tour #2", when: "07:42", unread: true },
+  { initials: "ØR", avatar: "bg-primary text-accent", name: "Øyvind Rohjan", type: "GODKJENN", typeCls: "bg-pyr-spill-track text-primary", preview: "Foreslår å bytte fre-økt til lørdag før Srixon Tour #2", when: "07:42", unread: true },
   { initials: "SK", avatar: "bg-secondary text-foreground", name: "Sofie K.", type: "FORESPØRSEL", typeCls: "bg-pyr-slag-track text-info-foreground", preview: "Kan jeg booke ekstra TrackMan-time tirsdag?", when: "06:18", unread: true },
   { initials: "KL", avatar: "bg-accent text-primary", name: "Karl Ludvig", type: "MELDING", typeCls: "bg-secondary text-muted-foreground", preview: "Sender video fra runden i går — ser noe på driveren", when: "i går 21:14", unread: true },
   { initials: "EB", avatar: "bg-secondary text-foreground", name: "Emilie B.", type: "MELDING", typeCls: "bg-secondary text-muted-foreground", preview: "Takk for økten — føles bra med ny gripp", when: "i går 18:02", unread: false },
@@ -89,7 +89,7 @@ const inbox = [
 ];
 
 const tasks = [
-  { label: "Send video-feedback til Markus (Innspill 50–80)", tag: "⌘1", done: true },
+  { label: "Send video-feedback til Øyvind (Innspill 50–80)", tag: "⌘1", done: true },
   { label: "Godkjenn Sofies plan-endring · uke 22", tag: "2 m", done: true },
   { label: "Bestille range-baller torsdag", tag: "5 m", done: true },
   { label: "Ring forelder til Karl L. (turneringspåmelding)", tag: "DAG", due: true },
@@ -128,7 +128,7 @@ export default function R35BriefDemo() {
         {/* header */}
         <div className="mb-3 flex items-end justify-between">
           <h1 className="font-display text-[26px] font-bold leading-[1.1] tracking-[-0.02em] text-foreground">
-            God formiddag, Andreas — <em className="font-normal italic text-primary">Markus er på range nå.</em>
+            God formiddag, Andreas — <em className="font-normal italic text-primary">Øyvind er på range nå.</em>
           </h1>
           <div className="inline-flex items-center gap-2 font-mono text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
             <span className="inline-flex items-center gap-1.5 text-primary">
@@ -252,9 +252,9 @@ export default function R35BriefDemo() {
             <ColHead lbl="TRENGER OPPMERKSOMHET" ct="3 SPILLERE" filter="AUTO" />
             <div className="flex-1 overflow-y-auto">
               <div className="flex flex-col gap-2.5 p-3.5">
-                {/* Markus — alert */}
+                {/* Øyvind — alert */}
                 <FocusCard
-                  alert avatarCls="bg-primary text-accent" initials="MB" name="Markus Berg"
+                  alert avatarCls="bg-primary text-accent" initials="ØR" name="Øyvind Rohjan"
                   meta="WANG · KONK · 12 DG TIL SRIXON #2"
                   signal={{ icon: AlertTriangle, text: "2 ØKTER BAK", cls: "bg-destructive/10 text-destructive" }}
                   reason={<>Taper <b className="font-bold">−0,42 SG i innspill</b>, men kun <em className="not-italic mx-0.5 rounded-[3px] bg-secondary px-1.5 py-px font-mono text-[10px] font-bold tracking-[0.04em] text-muted-foreground">2 av 6 t</em> SLAG-trening denne uka. Foreslå tilleggs-økt før helgen.</>}

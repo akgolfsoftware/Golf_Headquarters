@@ -43,8 +43,8 @@ const HEADERS: { kind: Pyr; label: string }[] = [
 
 const PLAYERS: PlayerRow[] = [
   {
-    initials: "MP",
-    name: "Markus R. Pedersen",
+    initials: "ØR",
+    name: "Øyvind Rohjan",
     tag: "A1 · HCP 4.8",
     cells: [
       { kind: "empty" },

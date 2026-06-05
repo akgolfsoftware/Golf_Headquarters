@@ -141,7 +141,7 @@ const DUMMY: GoalView = {
   coachMessages: [
     {
       id: "c1",
-      text: "Markus — fokuser på 100–150m approach denne uken. Vi henter inn 0,2 SG hvis du holder lav trajectory og lander innenfor ±3m.",
+      text: "Øyvind — fokuser på 100–150m approach denne uken. Vi henter inn 0,2 SG hvis du holder lav trajectory og lander innenfor ±3m.",
       authorName: "Anders Kristiansen",
       authorRole: "Coach · AK Golf Academy",
       sentAt: "2026-05-13",

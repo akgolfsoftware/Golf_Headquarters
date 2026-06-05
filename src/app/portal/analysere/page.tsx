@@ -43,7 +43,7 @@ const AKSE_LABEL: Record<AkseKey, { kort: string; full: string }> = {
 
 const AKSE_REKKEFOLGE: AkseKey[] = ["fys", "tek", "slag", "spill", "turn"];
 
-/** Kort visningsnavn «Markus R.P.» fra fullt navn. */
+/** Kort visningsnavn «Øyvind R.» fra fullt navn. */
 function kortNavn(navn: string): string {
   const deler = navn.trim().split(/\s+/).filter(Boolean);
   if (deler.length === 0) return "Spiller";

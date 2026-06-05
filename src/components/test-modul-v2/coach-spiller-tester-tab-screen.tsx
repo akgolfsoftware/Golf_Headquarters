@@ -10,8 +10,8 @@ import "../planlegge-v2/styles.css";
 import { PlanleggeSprite } from "../planlegge-v2/icons";
 
 export function CoachSpillerTesterTabScreen({
-  playerName = "Markus Røinaas Pedersen",
-  playerInitials = "MP",
+  playerName = "Øyvind Rohjan",
+  playerInitials = "ØR",
 }: { playerName?: string; playerInitials?: string }) {
   return (
     <div className="planlegge-scope">
@@ -128,7 +128,7 @@ export function CoachSpillerTesterTabScreen({
               <div className="card-h" style={{ marginBottom: "6px" }}>
                 <div>
                   <div className="eyebrow">RADAR · 5 DISIPLINER</div>
-                  <h2 style={{ marginTop: "4px" }}>Markus vs A1-snitt</h2>
+                  <h2 style={{ marginTop: "4px" }}>Øyvind vs A1-snitt</h2>
                 </div>
                 <div className="right" style={{ display: "inline-flex", gap: "8px", alignItems: "center" }}>
                   <span className="pill pill-pro" style={{ background: "var(--lime)", color: "var(--forest)" }}>MARKUS</span>
@@ -165,7 +165,7 @@ export function CoachSpillerTesterTabScreen({
                   strokeWidth="2"
                   strokeLinejoin="round"
                 />
-                {/* Markus */}
+                {/* Øyvind */}
                 <polygon
                   points="200,72 322,160 256.6,277.1 124.6,302.8 100,158"
                   fill="rgba(209,248,67,0.45)"
@@ -203,7 +203,7 @@ export function CoachSpillerTesterTabScreen({
               <div className="radar-legend">
                 <span className="sw">
                   <span className="box" style={{ background: "hsl(var(--primary))" }} />
-                  Markus (siste 30 d)
+                  Øyvind (siste 30 d)
                 </span>
                 <span className="sw">
                   <span className="box" style={{ background: "hsl(var(--muted-foreground))" }} />
@@ -243,7 +243,7 @@ export function CoachSpillerTesterTabScreen({
                   Tildel <em className="italic-accent">MTQ stress-skåre</em>
                 </h3>
                 <p style={{ fontSize: "13px", color: "var(--ink)", lineHeight: 1.5, marginTop: "8px" }}>
-                  Markus mangler hele TURN-disiplinen og er <strong>0,008 unna PR</strong> på Driver Basic — riktig tid å baseline mental tøffhet før neste turnering (Sørlandsåpent 8. juni).
+                  Øyvind mangler hele TURN-disiplinen og er <strong>0,008 unna PR</strong> på Driver Basic — riktig tid å baseline mental tøffhet før neste turnering (Sørlandsåpent 8. juni).
                 </p>
                 <div style={{ display: "flex", gap: "6px", marginTop: "14px", flexWrap: "wrap" }}>
                   <button className="btn btn-primary btn-sm">Tildel MTQ</button>

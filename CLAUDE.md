@@ -42,7 +42,7 @@ Disse er bestemt og overstyrer eldre dokumenter/design. Bygg etter disse, ikke e
 
 - **App-navn:** Coach-appen heter **AgencyOS** (`/admin`). «CoachHQ» er gammelt navn — ikke bruk det i ny UI-tekst.
 - **Tema per produkt:** PlayerHQ alltid **lyst**, AgencyOS alltid **mørkt** (`.dark`). **Ingen tema-toggle** — det er fast, ikke et valg.
-- **Navne-kanon (demo):** spiller = **Markus Berg**, coach = **Anders Kristiansen**. Alltid fulle navn. (Gamle: Magnus / Markus R.P. / Anders Berg / Andreas Kragerud — skal bort.)
+- **Navne-kanon (demo):** spiller = **Øyvind Rohjan**, coach = **Anders Kristiansen**. Alltid fulle navn. (Gamle: Magnus / Markus R.P. / Markus Berg / Anders Berg / Andreas Kragerud — skal bort.) NB: en EKTE coach «Markus Røinås Pedersen» finnes på markedssidene — IKKE bytt han ut med demo-spilleren.
 - **Planlegge → Workbench:** All planlegging går gjennom Workbench. Planlegge er **ett trykkpunkt** dit, ikke en meny av 6 kort. Samme mønster i coachens spiller-Workbench.
 - **Analyse samlet:** Analysere + TrackMan + Runder + SG er én flate med faner — ikke separate moduler. Mål bor i Oversikt og redigeres i Workbench.
 - **Abonnement (ingen tier-nivåer):** PlayerHQ-tilgang er enten gratis eller 300 kr/mnd. **Gratis** hvis: 1 mnd prøveperiode, ELLER har coaching-pakke (Performance / Performance Pro), ELLER er i en gruppe gjennom AK Golf. **300 kr/mnd** for alle andre. «Performance / Performance Pro» er **coaching-pakker** (antall økter), IKKE app-nivåer. **ELITE finnes ikke** (dødt enum i Prisma — vis det aldri i UI).

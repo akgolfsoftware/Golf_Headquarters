@@ -144,7 +144,7 @@ export default async function GjennomforePage() {
           eyebrow="07 · UTSTYR"
           title="TrackMan"
           data="1 aktiv sesjon"
-          sub="Markus R.P. · GFGK Bay 3"
+          sub="Øyvind R. · GFGK Bay 3"
           statusPill={
             <HubPill kind="accent" dot="d-pulse">
               LIVE

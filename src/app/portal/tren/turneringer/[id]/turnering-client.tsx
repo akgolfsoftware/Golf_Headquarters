@@ -218,7 +218,7 @@ const PARTICIPANTS: Participant[] = [
   { initialer: "HV", navn: "Henrik Vatne", meta: "HCP +0,4 · OSLO GK · A1", sg: "+0,84", sgPositiv: true, rank: "#1" },
   { initialer: "JT", navn: "Joachim Thorsen", meta: "HCP +1,2 · BÆRUM · A1", sg: "+0,62", sgPositiv: true, rank: "#3" },
   { initialer: "ØR", navn: "Øyvind Rud", meta: "HCP +3,5 · STAVANGER · A1", sg: "+0,38", sgPositiv: true, rank: "#8" },
-  { initialer: "MR", navn: "Markus Røinås Pedersen", meta: "HCP +3,5 · GFGK · A1", sg: "+0,21", sgPositiv: true, rank: "#14", me: true },
+  { initialer: "ØR", navn: "Øyvind Rohjan", meta: "HCP +3,5 · GFGK · A1", sg: "+0,21", sgPositiv: true, rank: "#14", me: true },
   { initialer: "HM", navn: "Hampus Mörner", meta: "HCP 0,8 · STOCKHOLM · A1 (gjest)", sg: "+0,18", sgPositiv: true, rank: "#15" },
   { initialer: "SH", navn: "Sigrid Hansen", meta: "HCP 1,4 · MANDAL · A1 (vert)", sg: "+0,12", sgPositiv: true, rank: "#18" },
   { initialer: "ES", navn: "Emma Skogli", meta: "HCP 4,8 · TRONDHEIM · A1", sg: "−0,08", sgPositiv: false, rank: "#22" },

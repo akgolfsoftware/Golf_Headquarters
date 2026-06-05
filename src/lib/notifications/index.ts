@@ -7,7 +7,7 @@
  *   userId: spiller.id,
  *   trigger: "booking-confirmed",
  *   title: "Booking bekreftet",
- *   body: "Markus R.P. · 28. mai 14:00",
+ *   body: "Øyvind R. · 28. mai 14:00",
  *   link: `/portal/booking/${bookingId}`,
  *   data: { bookingId },
  * });

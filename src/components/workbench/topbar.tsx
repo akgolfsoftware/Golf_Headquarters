@@ -97,7 +97,7 @@ export function WBTopbar({ role, activeMode, activeZoom, onVis, onMode }: Topbar
           <>
             <div className="wb-search">
               <Icon n="search" w={14} h={14} />
-              <input type="text" defaultValue="Markus R.P." />
+              <input type="text" defaultValue="Øyvind R." />
             </div>
             <CoachBell />
           </>

@@ -95,7 +95,7 @@ export default async function FakturaDetaljPage({
       <section className="grid gap-4 sm:grid-cols-2">
         <MetaBlock label="Fakturert til">
           <div className="font-display text-base font-semibold text-foreground">
-            {user.name ?? "Markus Røinås Pedersen"}
+            {user.name ?? "Øyvind Rohjan"}
           </div>
           <div className="text-sm text-muted-foreground">
             Storgata 14<br />

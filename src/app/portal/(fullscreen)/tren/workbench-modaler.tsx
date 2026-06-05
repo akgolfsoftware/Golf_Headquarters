@@ -2718,7 +2718,7 @@ type Notif = {
 };
 
 const INITIAL_NOTIFS: Notif[] = [
-  { id: 1, type: "coach", kind: "coach", who: "AK", eyebrow: "COACH-MELDING · 2 T SIDEN", ttl: "Anders sendte deg en melding", snippet: "\"Du har vært jevn denne uka, Markus. Hold trykket inn mot Sørlandsåpent.\"", unread: true },
+  { id: 1, type: "coach", kind: "coach", who: "AK", eyebrow: "COACH-MELDING · 2 T SIDEN", ttl: "Anders sendte deg en melding", snippet: "\"Du har vært jevn denne uka, Øyvind. Hold trykket inn mot Sørlandsåpent.\"", unread: true },
   { id: 2, type: "coach", kind: "drill", icon: "ic-target", eyebrow: "NY DRILL · 5 T SIDEN", ttl: "Ny drill tildelt: Bunker-eskalering", snippet: "SLAG · 80 reps · planlagt Tir 20. mai 09:00. Tildelt av Anders.", unread: true },
   { id: 3, type: "tour", kind: "tour", icon: "ic-flag", eyebrow: "TURNERING · 1 D SIDEN", ttl: "Sørlandsåpent om 21 dager", snippet: "Klar for å bygge form? Du har 12 økter på planen som peker mot dette hovedmålet.", unread: true },
   { id: 4, type: "goal", kind: "streak", icon: "ic-flame", eyebrow: "STREAK · 1 D SIDEN", ttl: "Du nådde 11 av 14 dagers streak", snippet: "Lengste streak hittil: 23 dager. Hold gang i FYS på torsdag for å fortsette.", unread: false },
@@ -2861,19 +2861,19 @@ const INITIAL_THREADS: Thread[] = [
     avatar: "AK",
     avatarStyle: { background: "var(--primary)", color: "var(--accent)" },
     snip:
-      "\"Du har vært jevn denne uka, Markus. Hold trykket inn mot Sørlandsåpent.\"",
+      "\"Du har vært jevn denne uka, Øyvind. Hold trykket inn mot Sørlandsåpent.\"",
     ts: "2 t siden",
     unread: true,
     messages: [
       { kind: "sep", text: "Søndag 17. mai" },
-      { kind: "them", text: "Hei Markus, jeg har satt opp iron-progresjon og driver-grunntrening denne uka.", ts: "17/5 · 14:22" },
+      { kind: "them", text: "Hei Øyvind, jeg har satt opp iron-progresjon og driver-grunntrening denne uka.", ts: "17/5 · 14:22" },
       { kind: "me", text: "Takk! Approach-data ser dårlig ut — kan vi få inn noe der?", ts: "17/5 · 15:01" },
       { kind: "them", text: "Helt enig. Jeg ser approach −0,42 SG mot kategori-snitt. Legger inn pitch 50—100m i tillegg.", ts: "17/5 · 15:14" },
       { kind: "sep", text: "Mandag 18. mai" },
       { kind: "me", text: "Bra. Hva med Sørlandsåpent — er Bossum-banen lik Mandal?", ts: "18/5 · 09:42" },
       { kind: "them", text: "Begge er park-links med smale fairways. Bossum har litt færre par-3-utfordringer, men forhøyede greener — så approach-fokus passer perfekt.", ts: "18/5 · 11:10" },
       { kind: "sep", text: "I dag" },
-      { kind: "them", text: "Du har vært jevn denne uka, Markus. Hold trykket inn mot Sørlandsåpent.", ts: "14:32", unread: true },
+      { kind: "them", text: "Du har vært jevn denne uka, Øyvind. Hold trykket inn mot Sørlandsåpent.", ts: "14:32", unread: true },
     ],
   },
   {

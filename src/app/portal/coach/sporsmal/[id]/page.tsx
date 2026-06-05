@@ -57,7 +57,7 @@ export default async function CoachSporsmalDetalj({ params }: RouteProps) {
           </div>
           <div className="space-y-2">
             <div className="flex flex-wrap items-baseline gap-2 text-[12px]">
-              <span className="font-semibold text-foreground">Markus Røinås Pedersen</span>
+              <span className="font-semibold text-foreground">Øyvind Rohjan</span>
               <span className="rounded-full bg-secondary px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
                 Teknikk
               </span>
