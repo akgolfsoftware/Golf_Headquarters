@@ -1,5 +1,8 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# Genererte design-kobling-tabeller (store base64-HTML, regenereres via scripts/kobling-*.mjs)
+docs/kobling-godkjenning/*.html
+
 # dependencies
 /node_modules
 /.pnp
