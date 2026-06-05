@@ -13,23 +13,6 @@ const INNBOKS_REDIRECTS: Record<string, string> = {
   "/admin/messages": "meldinger",
 };
 
-// Demo/preview-ruter med mock-data — gates bak auth før launch (ikke offentlig).
-const DEMO_PREFIXES = [
-  "/demo",
-  "/hull-demo",
-  "/kalender-demo",
-  "/kalender-maaned-demo",
-  "/lokasjoner-demo",
-  "/sesjon-opptak-demo",
-  "/talent-kohort-demo",
-  "/talent-region-pipeline-demo",
-  "/talent-sammenlign-to-demo",
-  "/talent-spiller-360-demo",
-  "/coach-preview",
-  "/portal-preview",
-  "/v2-preview",
-];
-
 // Stats-sider som fortsatt har hardkodede design-/prototypedata (fabrikkerte
 // spillere). Skjules i PRODUKSJON (redirect → /stats) til de er wired til ekte
 // data. Lokalt/dev forblir de tilgjengelige for utvikling. Ekte sider beholdes:
@@ -122,14 +105,10 @@ export async function proxy(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const response = await updateSession(request, nonce);
 
-  const erDemo = DEMO_PREFIXES.some(
-    (p) => path === p || path.startsWith(`${p}/`),
-  );
   const erBeskyttet =
     path.startsWith("/portal") ||
     path.startsWith("/admin") ||
-    path.startsWith("/intern") ||
-    erDemo;
+    path.startsWith("/intern");
 
   if (erBeskyttet) {
     // Sjekk auth-status via samme cookies som updateSession nettopp refresjet.
