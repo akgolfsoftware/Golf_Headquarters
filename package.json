@@ -9,6 +9,7 @@
     "lint": "eslint",
     "postinstall": "prisma generate",
     "db:seed": "tsx prisma/seed.ts",
+    "kart": "tsx scripts/skjerm-kart.ts",
     "e2e": "playwright test",
     "e2e:headed": "playwright test --headed",
     "test": "tsx --conditions=react-server --test src/lib/__tests__/*.test.ts src/lib/__tests__/**/*.test.ts",
