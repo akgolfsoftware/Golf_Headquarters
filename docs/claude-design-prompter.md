@@ -63,7 +63,7 @@ innboks, dashboards i AgencyOS) er 12–14px tillatt for tetthet.
 TONE I TEKST: kort, direkte, profesjonell. Ingen utropstegn. Ikke "Bra jobba!".
 Bruk "Solid", "Sterkt". Aktiv stemme.
 
-NAVNE-KANON (demo-data): spiller heter "Markus Berg", coach heter
+NAVNE-KANON (demo-data): spiller heter "Øyvind Rohjan", coach heter
 "Anders Kristiansen". Alltid fulle navn.
 
 PRODUKT-REGLER:
@@ -133,7 +133,7 @@ Skjermene er gruppert slik appen er bygd. ★ = hovedskjerm (prioriter disse fø
 **★ Hjem / Workbench-hjem** — `/portal`
 ```
 Tegn PlayerHQ-hjem. Hero øverst med spillerens profilbilde i sirkel + navn
-(Markus Berg) + tier-pill, så en samlet overskrift ("Klar for dagen").
+(Øyvind Rohjan) + tier-pill, så en samlet overskrift ("Klar for dagen").
 Under hero: dagens økt-kort (hva skal trenes i dag), en KPI-rad
 (handicap, SG totalt, økter denne uka), AI-innsikt-kort (kort tekst om formen),
 og en handlingsliste med 2–3 neste steg. Bunn-nav på mobil, sidemeny på desktop.

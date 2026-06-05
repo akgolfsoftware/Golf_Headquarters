@@ -81,7 +81,7 @@ og bruk de opplastede skjermbildene som fasit for utseende/datatetthet.
 ## HVA AGENCYOS ER
 
 Coachens spørsmål er «hvem trenger MEG i dag?». **Data-tett, desktop-først, alltid MØRKT tema (.dark).**
-Navne-kanon: spiller = **Markus Berg**, coach = **Anders Kristiansen** (alltid fulle navn).
+Navne-kanon: spiller = **Øyvind Rohjan**, coach = **Anders Kristiansen** (alltid fulle navn).
 All UI-tekst på norsk bokmål med æ, ø, å. Kun Lucide-ikoner. Ingen emoji.
 
 ## STRUKTUR (6 seksjoner — venstre sidebar)

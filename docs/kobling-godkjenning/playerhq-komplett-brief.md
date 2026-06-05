@@ -80,7 +80,7 @@ Følg designsystemet som er lastet inn, og bruk de opplastede skjermbildene som 
 ## HVA PLAYERHQ ER
 
 Spillerens spørsmål er «hva skal JEG gjøre i dag?». **LYST tema, mobil-først (430px) + desktop.**
-Navne-kanon: spiller = **Markus Berg**, coach = **Anders Kristiansen** (alltid fulle navn).
+Navne-kanon: spiller = **Øyvind Rohjan**, coach = **Anders Kristiansen** (alltid fulle navn).
 All UI-tekst på norsk bokmål med æ, ø, å. Kun Lucide-ikoner. Ingen emoji.
 
 ## STRUKTUR — 5 faste faner (mobil bunn-nav / desktop sidebar)

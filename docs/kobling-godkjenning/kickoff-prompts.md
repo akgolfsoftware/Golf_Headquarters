@@ -21,7 +21,7 @@ motor som finnes i koden.
    spiller↔gruppe-veksler. Resten er re-kobling.
 
 Regler: High fidelity. Branch design/agencyos-lean, ALDRI main, IKKE merge.
-Markus Berg / Anders Kristiansen. Norsk bokmål. Kun Lucide. Ingen emoji.
+Øyvind Rohjan / Anders Kristiansen. Norsk bokmål. Kun Lucide. Ingen emoji.
 Mangler du noe → «Åpne spørsmål», ikke dikt. Legg fram KORT plan før du bygger.
 ```
 
@@ -41,7 +41,7 @@ Bygg PlayerHQ — spillerens app i AK Golf HQ — etter den opplastede briefen
 5. Bygg KUN nytt: Turnering-detalj, og la trykk på en økt-rad åpne SELVE økten.
 
 Regler: High fidelity. Branch design/playerhq-lean, ALDRI main, IKKE merge.
-Markus Berg / Anders Kristiansen. Norsk bokmål. Kun Lucide. Ingen emoji.
+Øyvind Rohjan / Anders Kristiansen. Norsk bokmål. Kun Lucide. Ingen emoji.
 Abonnement: gratis / 300 kr — ingen tier-nivåer, ELITE finnes ikke.
 Mangler du noe → «Åpne spørsmål», ikke dikt. Legg fram KORT plan før du bygger.
 ```
