@@ -47,7 +47,7 @@ const SIDEBAR_NAV: NavGroup[] = [
   },
   {
     group: "MEG",
-    items: [{ id: "/profil", label: "Profil", icon: <User size={18} /> }],
+    items: [{ id: "/portal/meg", label: "Profil", icon: <User size={18} /> }],
   },
 ];
 

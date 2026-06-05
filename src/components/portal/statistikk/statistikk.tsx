@@ -87,10 +87,10 @@ export type StatistikkData = {
 
 const TABS: { id: StatistikkTab; href: string; label: string }[] = [
   { id: "oversikt", href: "/portal/stats", label: "Oversikt" },
-  { id: "sg", href: "/portal/stats/sg", label: "Strokes Gained" },
-  { id: "trackman", href: "/portal/stats/trackman", label: "TrackMan" },
-  { id: "tester", href: "/portal/stats/tester", label: "Tester" },
-  { id: "runder", href: "/portal/stats/runder", label: "Runder" },
+  { id: "sg", href: "/portal/analysere", label: "Strokes Gained" },
+  { id: "trackman", href: "/portal/analysere", label: "TrackMan" },
+  { id: "tester", href: "/portal/analysere", label: "Tester" },
+  { id: "runder", href: "/portal/analysere", label: "Runder" },
 ];
 
 function SeksjonsTabs({ aktiv }: { aktiv: StatistikkTab }) {

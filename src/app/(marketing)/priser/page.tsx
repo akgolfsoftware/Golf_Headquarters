@@ -36,7 +36,7 @@ const TIERS: Tier[] = [
     ],
     anbefalt: false,
     ctaTekst: "Kom i gang gratis",
-    ctaHref: "/registrer",
+    ctaHref: "/auth/signup",
   },
   {
     navn: "PRO",
@@ -146,7 +146,7 @@ export default function PriserSide() {
             </p>
             <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-center gap-2 sm:gap-4">
               <Link
-                href="/registrer"
+                href="/auth/signup"
                 className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-accent px-6 text-[15px] font-bold text-accent-foreground shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition-opacity hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 Opprett gratis konto

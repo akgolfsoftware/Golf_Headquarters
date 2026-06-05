@@ -96,7 +96,7 @@ function mapDriftData(data: LoaderDriftData): DriftData {
       summary: `${data.templatesTotal} ${data.templatesTotal === 1 ? "mal" : "maler"} · sortert på bruk`,
       items: data.templates.map(mapTemplate),
       importHref: "/admin/plan-maler/import",
-      newHref: "/admin/plan-maler/ny",
+      newHref: "/admin/plans/templates/ny",
     },
 
     settingsHref: "/admin/organisasjon/innstillinger",

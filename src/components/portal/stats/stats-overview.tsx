@@ -216,7 +216,7 @@ function SgFordelingCard({ rader }: { rader: SgFordelingRad[] }) {
           SG-fordeling · siste 5
         </span>
         <Link
-          href="/portal/stats/sg"
+          href="/portal/analysere"
           className="font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-primary hover:underline"
         >
           Detaljer
@@ -238,7 +238,7 @@ function SgFordelingCard({ rader }: { rader: SgFordelingRad[] }) {
             return (
               <Link
                 key={r.key}
-                href="/portal/stats/sg"
+                href="/portal/analysere"
                 className="group grid grid-cols-[44px_1fr_auto] items-center gap-3"
                 aria-label={`${r.full} — se detaljer`}
               >

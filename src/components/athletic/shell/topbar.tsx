@@ -64,7 +64,7 @@ export default function Topbar({ mobile = false }: TopbarProps) {
 
         {!mobile && (
           <Link
-            href="/profil"
+            href="/portal/meg"
             className="w-8 h-8 grid place-items-center rounded-[10px] border border-border text-foreground"
             style={{ background: "var(--card)" }}
             aria-label="Innstillinger"

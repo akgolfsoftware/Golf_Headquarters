@@ -247,7 +247,7 @@ function EmptyState({ onCreateGoal }: { onCreateGoal?: () => void }) {
         </button>
       ) : (
         <Link
-          href="/portal/mal/ny"
+          href="/portal/ai/mal-bygger"
           className="inline-flex items-center gap-2 rounded-full font-mono text-[12px] font-bold uppercase tracking-[0.10em] no-underline"
           style={{
             background: "hsl(var(--primary))",
@@ -304,7 +304,7 @@ export default function GoalsHubPattern({
           </button>
         ) : (
           <Link
-            href="/portal/mal/ny"
+            href="/portal/ai/mal-bygger"
             className="inline-flex items-center gap-2 rounded-full font-mono text-[12px] font-bold uppercase tracking-[0.10em] no-underline flex-shrink-0"
             style={{
               background: "hsl(var(--primary))",

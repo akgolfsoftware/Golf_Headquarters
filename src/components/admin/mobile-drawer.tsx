@@ -65,8 +65,8 @@ const NAV_GROUPS: { label: string; href: string; items: NavItem[] }[] = [
     items: [
       { href: "/admin/innboks", label: "Innboks" },
       { href: "/admin/email-templates", label: "E-postmaler" },
-      { href: "/admin/notion-prosjekter", label: "Notion-prosjekter" },
-      { href: "/admin/notion-oppgaver", label: "Notion-oppgaver" },
+      { href: "/admin/workspace/notion", label: "Notion-prosjekter" },
+      { href: "/admin/workspace/notion", label: "Notion-oppgaver" },
     ],
   },
   {

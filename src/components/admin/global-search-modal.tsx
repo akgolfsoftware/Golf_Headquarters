@@ -88,7 +88,7 @@ const ACTIONS: Action[] = [
     description: "Legg til ny spiller i porteføljen",
     keywords: ["spiller", "elev", "ny", "create", "register", "legg til"],
     icon: UserPlus,
-    kind: { type: "navigate", href: "/admin/elever/ny" },
+    kind: { type: "navigate", href: "/admin/spillere/ny" },
   },
   {
     id: "send-message",

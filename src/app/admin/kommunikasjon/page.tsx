@@ -83,7 +83,7 @@ export default async function KommunikasjonPage({ searchParams }: Props) {
             eyebrow="NOTION-SYNC"
             title="Prosjekter-database"
             description="2-veis sync til Notion for ekstern dokumentasjon."
-            href="/admin/notion-prosjekter"
+            href="/admin/workspace/notion"
             icon={FolderTree}
           />
         ) : null}
@@ -92,7 +92,7 @@ export default async function KommunikasjonPage({ searchParams }: Props) {
             eyebrow="OPPGAVER"
             title="Notion-oppgaver"
             description="Daglige oppgaver synket til Notion (todo-liste)."
-            href="/admin/notion-oppgaver"
+            href="/admin/workspace/notion"
             icon={ListChecks}
           />
         ) : null}

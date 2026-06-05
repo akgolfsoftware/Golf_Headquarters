@@ -593,7 +593,7 @@ export default async function BaneDetaljPage({
             på samme bane. Gratis å starte.
           </p>
           <div className="baner-mersalg-ctas">
-            <Link href="/registrer">
+            <Link href="/auth/signup">
               <StatsBtn variant="outline" icon="ArrowRight">
                 Start gratis
               </StatsBtn>

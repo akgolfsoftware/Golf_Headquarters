@@ -263,7 +263,7 @@ function TeamBody({ data }: { data: DriftData }) {
           <Users className="mx-auto h-7 w-7 text-muted-foreground/40" strokeWidth={1.5} aria-hidden />
           <p className="mt-3 text-[13px] text-muted-foreground">Ingen coacher ennå.</p>
           <div className="mt-4 inline-flex">
-            <Btn icon={UserPlus} primary href="/admin/team/ny">
+            <Btn icon={UserPlus} primary href="/admin/team/inviter">
               Inviter coach
             </Btn>
           </div>
@@ -282,7 +282,7 @@ function TeamBody({ data }: { data: DriftData }) {
             <Btn icon={ShieldCheck} href="/admin/settings/tilgang">
               Roll-matriks
             </Btn>
-            <Btn icon={UserPlus} primary href="/admin/team/ny">
+            <Btn icon={UserPlus} primary href="/admin/team/inviter">
               Inviter
             </Btn>
           </>
@@ -391,7 +391,7 @@ function TemplatesBody({ data }: { data: DriftData }) {
             : `${data.templatesTotal} maler · sortert på bruk`
         }
         actions={
-          <Btn icon={Plus} primary href="/admin/plan-maler/ny">
+          <Btn icon={Plus} primary href="/admin/plans/templates/ny">
             Ny mal
           </Btn>
         }
@@ -403,7 +403,7 @@ function TemplatesBody({ data }: { data: DriftData }) {
 
         {/* + Ny mal — dashed lime kort */}
         <Link
-          href="/admin/plan-maler/ny"
+          href="/admin/plans/templates/ny"
           className="flex flex-col items-center justify-center gap-2.5 rounded-xl border border-dashed border-accent bg-accent/[0.06] p-4 text-center hover:bg-accent/10"
         >
           <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-accent text-primary">

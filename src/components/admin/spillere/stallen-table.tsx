@@ -400,7 +400,7 @@ export function StallenTable({
             Sortér
           </button>
           <Link
-            href="/admin/elever/ny"
+            href="/admin/spillere/ny"
             className="inline-flex h-7 items-center gap-1.5 rounded-full border border-primary bg-primary px-3 font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-accent hover:opacity-90"
           >
             <Plus className="h-3 w-3" strokeWidth={2} aria-hidden />
@@ -480,7 +480,7 @@ export function StallenTable({
             </button>
           ) : (
             <Link
-              href="/admin/elever/ny"
+              href="/admin/spillere/ny"
               className="mt-3.5 inline-flex h-8 items-center gap-[7px] rounded-full border border-border bg-card px-4 font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-foreground hover:bg-secondary"
             >
               <Plus className="h-[13px] w-[13px]" strokeWidth={2} aria-hidden />
