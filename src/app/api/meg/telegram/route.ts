@@ -6,6 +6,7 @@ import { storeConversation } from "@/lib/meg/store";
 import { hentSamtaleHistorikk } from "@/lib/meg/read";
 import { runMegAgent } from "@/lib/meg/agent";
 import { handleConfirmation } from "@/lib/meg/confirm";
+import { tryLocalFastPath } from "@/lib/meg/router";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -56,6 +57,16 @@ export async function POST(req: Request) {
   if (confirmReply !== null) {
     await storeConversation("assistant", confirmReply, subject);
     await sendTelegramMessage(env.telegramBotToken, subject, confirmReply);
+    return NextResponse.json({ ok: true });
+  }
+
+  // Lokal snarvei: enkle logg-meldinger håndteres billig (Ollama/Haiku) uten
+  // å vekke den dyre Claude-agenten. Faller gjennom til agenten ved null.
+  const fastPath = await tryLocalFastPath({ text, subject });
+  if (fastPath !== null) {
+    console.info("[meg/webhook] lokal snarvei", { engine: fastPath.engine });
+    await storeConversation("assistant", fastPath.reply, subject);
+    await sendTelegramMessage(env.telegramBotToken, subject, fastPath.reply);
     return NextResponse.json({ ok: true });
   }
 

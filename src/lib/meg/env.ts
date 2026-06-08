@@ -65,6 +65,30 @@ export function readMegEmbeddingsEnv(
   };
 }
 
+// Ollama-env (lokal/gratis modell for enkle oppgaver). Valgfri — aktiveres kun
+// når MEG_OLLAMA_URL er satt. Uten den faller alt tilbake til Claude (som i dag).
+const ollamaEnvSchema = z.object({
+  MEG_OLLAMA_URL: z.string().url(),
+  MEG_OLLAMA_MODEL: z.string().default("llama3.2"),
+});
+
+export type MegOllamaEnv = {
+  url: string;
+  model: string;
+};
+
+/** Leser Ollama-env defensivt. Returnerer null hvis ikke konfigurert (→ bruk Claude). */
+export function readMegOllamaEnv(
+  source: NodeJS.ProcessEnv | Record<string, string | undefined> = process.env,
+): MegOllamaEnv | null {
+  const parsed = ollamaEnvSchema.safeParse(source);
+  if (!parsed.success) return null;
+  return {
+    url: parsed.data.MEG_OLLAMA_URL.replace(/\/$/, ""),
+    model: parsed.data.MEG_OLLAMA_MODEL,
+  };
+}
+
 /** Secret for helse-inntak-endepunktet (Fase 3b). Returnerer null hvis ikke satt. */
 export function readMegHealthIngestSecret(
   source: NodeJS.ProcessEnv | Record<string, string | undefined> = process.env,
