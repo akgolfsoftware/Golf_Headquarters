@@ -14,12 +14,18 @@ function secretsMatch(a: string, b: string): boolean {
   return timingSafeEqual(bufA, bufB);
 }
 
-/** Sant kun hvis webhook-secret matcher OG chat-id er Anders' allowlistede id. */
+/** Sant hvis webhook-secret matcher (tidskonstant). Avsender-id sjekkes separat. */
+export function webhookSecretOk(headerSecret: string | null, webhookSecret: string): boolean {
+  if (!headerSecret) return false;
+  return secretsMatch(headerSecret, webhookSecret);
+}
+
+/** Sant kun hvis webhook-secret matcher OG chat-id er den allowlistede id-en. */
 export function isAuthorizedUpdate(
   input: AuthInput,
   cfg: AuthConfig,
 ): input is { headerSecret: string; chatId: number } {
-  if (!input.headerSecret || !secretsMatch(input.headerSecret, cfg.webhookSecret)) return false;
+  if (!webhookSecretOk(input.headerSecret, cfg.webhookSecret)) return false;
   if (input.chatId == null) return false;
   return String(input.chatId) === cfg.allowedChatId;
 }

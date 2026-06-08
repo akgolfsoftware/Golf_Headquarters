@@ -4,6 +4,7 @@
 // Design-promptene (lagret i Google Drive inbox/meg-assistent-design-prompter.md).
 import { notFound } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { adminSubject } from "@/lib/meg/access";
 import { hentBriefer, hentVentende, hentNylige } from "@/lib/meg/read";
 import { AthleticEyebrow, AthleticBadge } from "@/components/athletic";
 
@@ -25,10 +26,11 @@ export default async function MegDashboard() {
   const user = await getCurrentUser();
   if (!user || user.role !== "ADMIN") notFound();
 
+  const subject = adminSubject() ?? "";
   const [briefer, ventende, logg] = await Promise.all([
-    hentBriefer(8),
-    hentVentende(10),
-    hentNylige(12),
+    hentBriefer(subject, 8),
+    hentVentende(subject, 10),
+    hentNylige(subject, 12),
   ]);
 
   const sisteMorgenbrief = briefer.find((b) => b.kind === "morgenbrief") ?? briefer[0] ?? null;

@@ -14,6 +14,7 @@ export async function storeLog(
   text: string,
   c: Classification,
   source: "telegram_text" | "telegram_voice" | "telegram_photo" | "web" | "system" = "telegram_text",
+  subject: string,
 ): Promise<StoredLog | null> {
   const db = megSupabase();
   if (!db) return null;
@@ -26,6 +27,7 @@ export async function storeLog(
       value_unit: c.value_unit ?? null,
       tags: c.tags,
       source,
+      subject,
     })
     .select("id")
     .single();
@@ -39,6 +41,7 @@ export async function storeLog(
 export async function storeConversation(
   role: "user" | "assistant",
   content: string,
+  subject: string,
   relatedLogId: string | null = null,
 ): Promise<void> {
   const db = megSupabase();
@@ -46,6 +49,7 @@ export async function storeConversation(
   const { error } = await db.from("me_conversation").insert({
     role,
     content,
+    subject,
     related_log_id: relatedLogId,
   });
   if (error) console.error("[meg/store] storeConversation feilet", error.message);

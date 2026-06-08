@@ -24,12 +24,13 @@ export async function createPending(
   toolName: string,
   args: unknown,
   summary: string,
+  subject: string,
 ): Promise<string | null> {
   const db = megSupabase();
   if (!db) return null;
   const { data, error } = await db
     .from("me_pending_action")
-    .insert({ tool_name: toolName, args: args ?? {}, summary })
+    .insert({ tool_name: toolName, args: args ?? {}, summary, subject })
     .select("id")
     .single();
   if (error || !data) return null;
@@ -37,13 +38,14 @@ export async function createPending(
   return v.success ? v.data.id : null;
 }
 
-/** Henter siste åpne (pending, ikke utløpte) handling. Null hvis ingen finnes. */
-export async function getLatestPending(): Promise<PendingAction | null> {
+/** Henter siste åpne (pending, ikke utløpte) handling for én person. Null hvis ingen. */
+export async function getLatestPending(subject: string): Promise<PendingAction | null> {
   const db = megSupabase();
   if (!db) return null;
   const { data, error } = await db
     .from("me_pending_action")
     .select("id, tool_name, args, summary")
+    .eq("subject", subject)
     .eq("status", "pending")
     .gt("expires_at", new Date().toISOString())
     .order("created_at", { ascending: false })

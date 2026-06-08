@@ -22,8 +22,8 @@ const WRITE_DISPATCH: Record<string, (args: never) => Promise<string>> = {
   disk_opprett: (args) => diskOpprett(args),
 };
 
-export async function handleConfirmation(text: string): Promise<string | null> {
-  const pending = await getLatestPending();
+export async function handleConfirmation(text: string, subject: string): Promise<string | null> {
+  const pending = await getLatestPending(subject);
   if (!pending) return null;
 
   if (isCancellation(text)) {
