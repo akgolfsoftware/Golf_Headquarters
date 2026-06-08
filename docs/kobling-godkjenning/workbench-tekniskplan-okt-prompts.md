@@ -240,9 +240,159 @@ fullføring (rating, gjort vs mål, notat) + coach-handlinger (kommentar/feedbac
 Samme felter, mørkt tema, coach kan gi tilbakemelding (coachFeedback).
 ```
 
+# 4 — Workbench-modusene (detalj + alle under-knapper)
+
+Status mot kode: **Treningsplan · Mål · Ny økt** er data-drevet; **Årsplan ·
+Periodisering · Fysplan** mangler redigerings-knappene (kun visning i dag). Coach
+(AgencyOS) bygger; PlayerHQ-noten = hva spilleren ser.
+
+## 4.1 Årsplan — AgencyOS-prosjektet
+
+```
+Bygg ut Årsplan-modusen i coach-Workbench (AgencyOS, mørkt). Gjenbruk motoren
+(PLATFORM.md) — bygg ALDRI datalaget på nytt. Spiller = Øyvind Rohjan.
+
+MOTOR: TrainingPlan (år) · Tournament · TournamentEntry · YearPhase/perioder ·
+YearMilestone (turnering/test/review-flagg). Gantt-komponenten finnes
+(year-plan-gantt.tsx) — visning er der, redigerings-knappene MANGLER.
+
+SKJERM: 12-måneders gantt + sesong-tre i sidebar (perioder → uker, «nå»-uke markert).
+Periode-blokker farget per intensitet (base/build/peak/recovery), turneringsflagg
+på tidslinjen.
+
+UNDER-KNAPPER som skal finnes og virke:
+- «Legg til turnering» → velg fra turneringskalender (Tournament) → legg på
+  tidslinjen som milestone + opprett TournamentEntry for spilleren.
+- Trykk en turnering på tidslinjen → FULL Turnering-detalj (ikke et halvt sammendrag).
+- «Ny periode» / trykk en periode → åpner Periode-editor (se modus 4.2).
+- Dra periode-blokk for å flytte/endre lengde (oppdaterer start/slutt).
+- Ekspander/kollaps perioder i sesong-treet.
+- «Planlegg mot [turnering]» → genererer/justerer periodisering frem mot peak-dato.
+
+REGLER: «AgencyOS», mørkt. Coach = master, endringer propagerer til PlayerHQ.
+Kun Lucide, ingen emoji, 8pt-grid, mono-tall. Kort plan før bygg.
+```
+PlayerHQ-note: Spilleren ser samme gantt/sesong-tre i les-modus + kan trykke en turnering → full Turnering-detalj. Ingen redigering.
+
+## 4.2 Periodisering — AgencyOS-prosjektet
+
+```
+Bygg ut Periodisering i coach-Workbench (AgencyOS, mørkt). Gjenbruk motoren.
+
+MOTOR: PeriodBlock/periode + actions createPeriod/updatePeriod/deletePeriod
+(finnes). EditPeriodeModal finnes med: tittel, startdato, sluttdato, hovedmål,
+NOTATER, og fokusfordeling-sliders FYS/TEK/SLAG/SPILL/TURN (sum MÅ være 100%).
+
+SKJERM: periode-tidslinje (Grunn → Spesialisering → Turnering) der hver periode
+er en blokk med navn, ukespenn og fokusfordeling.
+
+UNDER-KNAPPER som skal finnes og virke:
+- «Ny periode» → åpner editor-modalen (alle feltene over).
+- Trykk en periode → rediger (samme modal). «Lagre» / «Slett».
+- Fokus-sliders: dra → tall oppdateres, sum-validering 100% (vis avvik hvis ikke).
+- Fase-type-velger på perioden: Grunnperiode · Spesialisering · Turnering
+  (BUILD/STAB/TEST/TRANSFER/PERFORM som underfase hvis relevant).
+- Dra periode-grensene på tidslinjen for å endre lengde (start/slutt).
+- «Bruk mal» → periode-template (f.eks. «A1 Turnering 12 uker»).
+- Vis ideell pyramide-fordeling for valgt kategori×periode som referanse mot
+  spillerens faktiske fokus.
+
+REGLER: «AgencyOS», mørkt. Propagerer til PlayerHQ. Kun Lucide, ingen emoji.
+Kort plan før bygg.
+```
+PlayerHQ-note: Spilleren ser periodene + fokusfordeling i les-modus. Ingen redigering.
+
+## 4.3 Treningsplan (uke/dag) — begge prosjekter
+
+```
+Wir alle under-knapper i Treningsplan-modusen (uke-/dagsvisning). Gjenbruk motoren
+(TrainingPlanSession + drills). Spiller = Øyvind Rohjan.
+
+VISNING: uke-grid (MAN–SØN × tidsrader) + dag-visning, økt-blokker farget per
+pyramide-område, «nå»-strek i dag-kolonnen.
+
+UNDER-KNAPPER:
+- «Ny økt» → Ny-økt-bygger (se modus 4.6).
+- Trykk en økt → Økt-visning med ALLE Workbench-felter (pyramide-område, ferdighet,
+  miljø, L-fase, CS-mål, press, begrunnelse, køller, drills) — se del 3.
+- Dra økt → flytt til annen dag/tid (oppdaterer scheduledAt).
+- «Logg økt» → logg gjennomføring (CS, reps, rating).
+- (PlayerHQ) «Be om tilpasning» → sender forespørsel til coach.
+- (AgencyOS) coach-handlinger på økt: rediger, kommenter, godkjenn.
+- «AI-foreslå uke» → AI-genererer uke-forslag (aiSuggestWeek).
+
+Tema per app (lyst PlayerHQ / mørkt AgencyOS). Kun Lucide, ingen emoji. Kort plan før bygg.
+```
+
+## 4.4 Fysplan — AgencyOS-prosjektet
+
+```
+Bygg ut Fysplan i coach-Workbench (AgencyOS, mørkt). I dag kun visning — bygg
+redigerings-knappene. Gjenbruk fys-modellen.
+
+VISNING: øvelses-tabell (desktop) / kort-stack (mobil). Kolonner per øvelse:
+Øvelse · Sett · Reps (min–maks) · Hvile (sek) · %1RM · RIR + logg-felter
+(oppnådd kg, RIR, sett, reps/sett).
+
+UNDER-KNAPPER som skal finnes og virke:
+- «Legg til øvelse» → velg fra øvelsesbibliotek → sett/reps/hvile/%1RM/RIR.
+- Trykk en øvelse → rediger. «Slett øvelse».
+- Dra for å endre rekkefølge.
+- Uke-/blokk-struktur: legg øvelser i ukerader.
+- Vis kobling til FYS-pyramide-andel for spilleren.
+
+REGLER: «AgencyOS», mørkt. Propagerer til PlayerHQ. Kun Lucide, ingen emoji. Kort plan før bygg.
+```
+PlayerHQ-note: Spilleren ser øvelsene og LOGGER oppnådd belastning (kg + RIR + sett) per rad. Kan ikke endre selve programmet.
+
+## 4.5 Mål — begge prosjekter
+
+```
+Bygg Mål-modusen komplett (Workbench). I dag finnes opprett-modal + sidebar-strip;
+mål-detalj og «merk oppnådd» MANGLER. Gjenbruk Goal-modellen. Spiller = Øyvind Rohjan.
+
+MOTOR: Goal { tittel, kategori (OUTCOME/PROCESS), type (HCP_TARGET · SG_AREA ·
+ROUNDS_PER_MONTH · FREE_TEXT), targetValue, targetDate, status (ACTIVE/ACHIEVED/
+ABANDONED), payload }. Action createGoal finnes.
+
+SKJERMER/KNAPPER:
+- Mål-liste: kort med navn, kategori, fremgangsbar (farget per område), %/dager igjen.
+- «Nytt mål» → modal (tittel, kategori, type, målverdi, måldato, beskrivelse).
+- Trykk et mål → MÅL-DETALJ (ny): framdrift over tid, knytning til økter/SG,
+  delmål, historikk.
+- «Merk som oppnådd» / «Avslutt mål» → endrer status.
+- (AgencyOS) coach kan opprette/justere mål for spilleren (propagerer).
+- (PlayerHQ) spilleren ser mål + framdrift; kan opprette egne prosess-mål.
+
+Tema per app. Kun Lucide, ingen emoji, mono-tall. Kort plan før bygg.
+```
+
+## 4.6 Ny økt (bygger) — begge prosjekter
+
+```
+Bygg Ny-økt-byggeren komplett (Workbench-modal/wizard). Gjenbruk motoren
+(TrainingPlanSession + SessionDrill + drill-bibliotek). Spiller = Øyvind Rohjan.
+
+STEG/FELTER (alle skal virke):
+1. Tema (chip-rad, påkrevd): FYS · TEK · SLAG · SPILL · TURN (auto-foreslått av AI hvis tilgjengelig).
+2. Tittel (auto-fylles hvis drill velges).
+3. Dato/tid (datetime) + 4. Varighet (min, default 60).
+5. Sted/fasilitet (velg anlegg/bay, hjemme, annet).
+6. Drill-søk & velg → fyller tittel/varighet/disiplin; legg flere drills i rekkefølge,
+   hver med serier×reps + CS-mål.
+7. Fokus-notat (begrunnelse).
+8. Lenk mål (checkbox over aktive mål).
+9. Logg-modus: BLOKK · RANDOM · KONKURRANSE · SPILL-TEST.
+«Opprett» → økten legges i uka og åpnes i Økt-visning med alle felt.
+
+(AgencyOS) coach bygger økten for spilleren (propagerer). (PlayerHQ) spilleren kan
+bygge egen økt. Tema per app. Kun Lucide, ingen emoji. Kort plan før bygg.
+```
+
 ---
 
 ## Handoff-noter (mine, ikke til Claude Design)
 - **Video-diagnose** = ny funksjon, mangler datalag (klipp-lagring + P-markør + kobling til PositionTask). Skal noteres i master-skjermplanen.
 - **Treff-rate «Mekanisme 7»** = felt finnes i Prisma (PositionTaskTmGoal, HIT_RATE-protokoller), men beregnings-logikken er ikke implementert ennå.
 - **Live-økt Spor A** persistens-gap (reps i sessionStorage, ikke DB) løses i kode-fasen, ikke i prototypen.
+- **Manglende Workbench-detalj-skjermer** (kun visning i dag, redigering mangler): årsplan-redigering (legg til/åpne turnering, dra periode), periodisering (drag-grenser + template), fysplan (legg til/rediger/slett øvelse), mål-detalj + «merk oppnådd». Skal spores i `docs/MASTER-SKJERMPLAN.md`.
