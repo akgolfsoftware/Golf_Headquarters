@@ -34,17 +34,15 @@ import {
   AlertTriangle,
   ArrowRight,
   ArrowUpRight,
-  CalendarPlus,
-  CheckSquare,
   ClipboardList,
   Clock,
   MapPin,
   PencilLine,
-  Send,
   Trophy,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ActionBar } from "./_action-bar";
 
 // ── Typer ───────────────────────────────────────────────────────
 type SgTone = "pos" | "neg" | "flat";
@@ -298,7 +296,7 @@ function TabRow({ id }: { id: string }) {
   const tabs: { label: string; href?: string; active?: boolean }[] = [
     { label: "Profil", active: true },
     { label: "Plan", href: `/admin/spillere/${id}/plan` },
-    { label: "Analyse", href: `/admin/spillere/${id}/analyse` },
+    { label: "Analyse", href: `/admin/analysere?spiller=${id}` },
     { label: "Fremgang", href: `/admin/spillere/${id}/fremgang` },
     { label: "Tester", href: `/admin/spillere/${id}/tester` },
     { label: "Workbench", href: `/admin/spillere/${id}/workbench` },
@@ -548,7 +546,7 @@ function NextBooking({ booking }: { booking: SpillerBooking | null }) {
 function LastComm({ comms, id }: { comms: SpillerComm[]; id: string }) {
   return (
     <Panel>
-      <SectionLabel link={{ label: "Åpne tråd", href: `/admin/spillere/${id}/innboks` }}>
+      <SectionLabel link={{ label: "Åpne tråd", href: `/admin/innboks?spiller=${id}` }}>
         SISTE KOMMUNIKASJON
       </SectionLabel>
       {comms.length > 0 ? (
@@ -604,60 +602,6 @@ function LastComm({ comms, id }: { comms: SpillerComm[]; id: string }) {
   );
 }
 
-// ── Workbench-CTA-bar + ghost-rad (★ delt kjerne) ───────────────
-function ActionBar({ id }: { id: string }) {
-  return (
-    <Panel className="flex flex-col gap-3">
-      <div className="flex flex-col gap-2 sm:flex-row">
-        <Link
-          href={`/admin/spillere/${id}/workbench`}
-          className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-full bg-primary px-4 font-mono text-[11px] font-extrabold uppercase tracking-[0.08em] text-accent transition-colors hover:bg-[var(--color-brand-primary-hover)]"
-        >
-          <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
-          Åpne i Workbench
-        </Link>
-        <Link
-          href={`/admin/spillere/${id}/innboks`}
-          className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-border bg-card px-5 font-mono text-[11px] font-extrabold uppercase tracking-[0.08em] text-foreground transition-colors hover:bg-secondary"
-        >
-          <Send className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
-          Send melding
-        </Link>
-      </div>
-      <div className="flex flex-wrap items-center gap-1">
-        <button
-          type="button"
-          className="inline-flex h-7 items-center gap-1.5 rounded-full px-2 font-mono text-[9px] font-extrabold uppercase tracking-[0.06em] text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-        >
-          <PencilLine className="h-[11px] w-[11px]" strokeWidth={2} aria-hidden />
-          Notat
-        </button>
-        <button
-          type="button"
-          className="inline-flex h-7 items-center gap-1.5 rounded-full px-2 font-mono text-[9px] font-extrabold uppercase tracking-[0.06em] text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-        >
-          <CheckSquare className="h-[11px] w-[11px]" strokeWidth={2} aria-hidden />
-          Oppgave
-        </button>
-        <button
-          type="button"
-          className="inline-flex h-7 items-center gap-1.5 rounded-full px-2 font-mono text-[9px] font-extrabold uppercase tracking-[0.06em] text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-        >
-          <CalendarPlus className="h-[11px] w-[11px]" strokeWidth={2} aria-hidden />
-          Book
-        </button>
-        <span className="flex-1" />
-        <Link
-          href={`/admin/spillere/${id}`}
-          className="font-mono text-[10px] font-extrabold uppercase tracking-[0.06em] text-primary underline underline-offset-[3px] hover:no-underline"
-        >
-          Komplett profil
-        </Link>
-      </div>
-    </Panel>
-  );
-}
-
 // ── DetailShell (eksport) ───────────────────────────────────────
 export function SpillerDetalj({ data }: { data: SpillerDetaljData }) {
   return (
@@ -677,7 +621,7 @@ export function SpillerDetalj({ data }: { data: SpillerDetaljData }) {
         <div className="flex flex-col gap-5">
           <NextBooking booking={data.booking} />
           <LastComm comms={data.comms} id={data.id} />
-          <ActionBar id={data.id} />
+          <ActionBar id={data.id} playerName={data.name} />
         </div>
       </div>
     </div>
