@@ -20,6 +20,12 @@ export type ProfilOversikt = {
   /** Meta-deler: "HCP 4,2" · "GFGK" · "Pro 2/4 credits" — kun de som finnes. */
   metaDeler: string[];
   badge: { label: string; variant: "lime" | "neutral" };
+  /** App-abonnement: gratis (via coaching/gruppe/prøve) eller betalende. */
+  abonnement: {
+    gratis: boolean;
+    /** Coaching-pakkenavn ("Performance Pro" / "Performance") eller null. */
+    planNavn: string | null;
+  };
   kpi: {
     runder: string;
     beste: string;
@@ -177,6 +183,11 @@ export async function hentProfilOversikt(input: {
       input.tier === "PRO"
         ? { label: "Pro · 300 kr/mnd", variant: "lime" }
         : { label: "Gratis", variant: "neutral" },
+    abonnement: {
+      // Coaching-pakke (credits) ⇒ app-tilgang inkludert (gratis). Ellers betalende.
+      gratis: monthlyCredits > 0,
+      planNavn: monthlyCredits >= 4 ? "Performance Pro" : monthlyCredits > 0 ? "Performance" : null,
+    },
     kpi: {
       runder: antallRunder > 0 ? String(antallRunder) : "—",
       beste: beste != null ? String(beste) : "—",

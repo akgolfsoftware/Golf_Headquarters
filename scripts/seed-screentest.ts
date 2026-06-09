@@ -223,6 +223,13 @@ async function main() {
     ],
   });
 
+  // 9. Coaching-abonnement (Performance Pro = 4 credits) → gratis app-tilgang via coaching.
+  await prisma.subscription.upsert({
+    where: { userId: player.id },
+    update: { tier: "PRO", status: "ACTIVE", monthlyCredits: 4, creditsRemaining: 3 },
+    create: { userId: player.id, tier: "PRO", status: "ACTIVE", monthlyCredits: 4, creditsRemaining: 3 },
+  });
+
   console.log(`\n✓ Ferdig. Login: ${EMAIL} / ${PASSWORD}`);
   await prisma.$disconnect();
 }

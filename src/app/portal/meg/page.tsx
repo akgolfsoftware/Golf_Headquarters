@@ -19,13 +19,13 @@ import { MegProfil, type MegProfilData } from "@/components/portal/meg/meg-profi
 
 export const dynamic = "force-dynamic";
 
-/** Oversetter ekte ProfilOversikt → v10 MegProfilData. Tom-tilstander bevares. */
+/** Oversetter ekte ProfilOversikt → MegProfilData (fasit-struktur). */
 function mapMegData(data: ProfilOversikt, epost: string): MegProfilData {
   return {
     navn: data.navn,
     initialer: data.initialer,
     avatarUrl: data.avatarUrl,
-    // Eyebrow over navnet: "HCP 4,2 · GFGK · Pro 2/4 credits" (uppercase, v10-stil).
+    // Eyebrow over navnet: "HCP 4,2 · OSLO GK · ..." (uppercase).
     eyebrow: data.metaDeler.join(" · ").toUpperCase(),
     epost,
     kpi: {
@@ -33,8 +33,7 @@ function mapMegData(data: ProfilOversikt, epost: string): MegProfilData {
       beste: data.kpi.beste,
       snitt: data.kpi.snitt,
     },
-    // Loaderen gir kun aggregat (antall/sum), ikke per-rad — bevar tom-tilstand.
-    fakturaer: [],
+    abonnement: data.abonnement,
   };
 }
 
