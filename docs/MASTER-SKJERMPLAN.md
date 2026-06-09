@@ -268,7 +268,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Coaching-board | `/admin/board` | – | --- | ✓ | ~ | ~ | ~ |
 | Oppfølging | `/admin/oppfolging` | – | --- | ✓ | ~ | ~ | ~ |
 | Oppgave-kø | `/admin/queue` | – | --- | ✓ | ~ | ~ | ~ |
-| **Innboks** ★ | `/admin/innboks` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| **Innboks** ★ | `/admin/innboks` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
 | Meldinger (alt.) | `/admin/messages` | – | --- | ✓ | ~ | ~ | ~ |
 | Kommunikasjon-hub | `/admin/kommunikasjon` | – | --- | ✓ | ~ | ~ | ~ |
 | Reach | `/admin/reach` | – | --- | ✓ | ~ | ~ | ~ |
