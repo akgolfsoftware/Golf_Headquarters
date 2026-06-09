@@ -30,6 +30,7 @@ export type HjemUser = {
 export type KpiCelle = {
   label: string;
   value: string;
+  unit?: string;
   trend?: { value: string; tone: "positive" | "negative" | "neutral" };
 };
 
@@ -81,6 +82,8 @@ export type HjemData = {
   hilsen: string;
   headline: Headline;
   kpi: KpiCelle[];
+  /** Desktop-utvidet KPI-sett (opptil 5: HCP/SG Total/Drive snitt/Snitt/Neste økt). */
+  kpiDesktop: KpiCelle[];
   dagensFokus: DagensFokus | null;
   dagensProgram: ProgramOkt[];
   pyramide: PyramidRow[];
@@ -196,13 +199,16 @@ export async function getHjemData(userId: string): Promise<HjemData> {
       }
     : null;
 
-  // --- KPI: HCP · SG Total · Neste økt ---
-  const runder = await prisma.round
-    .findMany({ where: { userId }, orderBy: { playedAt: "desc" }, select: { sgTotal: true } })
-    .catch(() => []);
+  // --- KPI: mobil = HCP · SG Total · Neste økt; desktop legger til Drive snitt + Snitt ---
+  const [runder, driverTrend] = await Promise.all([
+    prisma.round.findMany({ where: { userId }, orderBy: { playedAt: "desc" }, select: { sgTotal: true, score: true } }).catch(() => []),
+    prisma.clubMetricTrend.findFirst({ where: { userId, club: "Driver" }, orderBy: { weekStart: "desc" }, select: { avgTotal: true } }).catch(() => null),
+  ]);
   const sgVals = runder.map((r) => r.sgTotal).filter((n): n is number => n != null);
+  const scoreVals = runder.map((r) => r.score).filter((n): n is number => n != null);
   const snitt = (xs: number[]) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null);
   const sgSnitt = snitt(sgVals);
+  const snittScore = snitt(scoreVals);
   let sgTrend: KpiCelle["trend"] | undefined;
   if (sgVals.length >= 6) {
     const nyere = snitt(sgVals.slice(0, Math.ceil(sgVals.length / 2)));
@@ -213,10 +219,15 @@ export async function getHjemData(userId: string): Promise<HjemData> {
     }
   }
 
-  const kpi: KpiCelle[] = [];
-  if (user.hcp != null) kpi.push({ label: "HCP", value: nb2(user.hcp) });
-  if (sgSnitt != null) kpi.push({ label: "SG Total", value: nb2(sgSnitt, true), trend: sgTrend });
-  if (fokusKilde) kpi.push({ label: "Neste økt", value: tid(fokusKilde.startTime) });
+  const kHcp: KpiCelle | null = user.hcp != null ? { label: "HCP", value: user.hcp.toLocaleString("nb-NO", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) } : null;
+  const kSg: KpiCelle | null = sgSnitt != null ? { label: "SG Total", value: nb2(sgSnitt, true), trend: sgTrend } : null;
+  const kNeste: KpiCelle | null = fokusKilde ? { label: "Neste økt", value: tid(fokusKilde.startTime) } : null;
+  const kDrive: KpiCelle | null = driverTrend?.avgTotal != null ? { label: "Drive snitt", value: String(Math.round(driverTrend.avgTotal)), unit: "m" } : null;
+  const kSnitt: KpiCelle | null = snittScore != null ? { label: "Snitt", value: snittScore.toLocaleString("nb-NO", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) } : null;
+
+  // Mobil: 3 viktigste. Desktop: opptil 5 i fasit-rekkefølge.
+  const kpi: KpiCelle[] = [kHcp, kSg, kNeste].filter((k): k is KpiCelle => k != null);
+  const kpiDesktop: KpiCelle[] = [kHcp, kSg, kDrive, kSnitt, kNeste].filter((k): k is KpiCelle => k != null);
 
   // --- Pyramide siste 7 dager ---
   const ukens = await getWeekProgress(userId).catch(() => null);
@@ -301,6 +312,7 @@ export async function getHjemData(userId: string): Promise<HjemData> {
     hilsen,
     headline,
     kpi,
+    kpiDesktop,
     dagensFokus,
     dagensProgram,
     pyramide,

@@ -15,7 +15,7 @@
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getHjemData } from "@/lib/portal-hjem/hjem-data";
-import { PlayerHome } from "@/components/portal/home/player-home";
+import { PlayerHome, PlayerHomeDesktop } from "@/components/portal/home/player-home";
 
 export const dynamic = "force-dynamic";
 
@@ -26,5 +26,10 @@ export default async function PortalHjemPage() {
 
   const data = await getHjemData(user.id);
 
-  return <PlayerHome data={data} />;
+  return (
+    <>
+      <PlayerHome data={data} />
+      <PlayerHomeDesktop data={data} />
+    </>
+  );
 }

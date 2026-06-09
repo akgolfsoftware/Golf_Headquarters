@@ -29,6 +29,8 @@ Dokumenteres her så diff-agenten måler mot riktig fasit:
 
 - **PlayerHQ-hjem hero:** beholder **profilbilde + tier-pill** øverst (Anders' valg 2026-06-02),
   selv om designet har dato-eyebrow + vær der. Resten av hero (greeting + samlet headline) følger designet.
+- **Tier-pill-tekst (alle hero-pills, mobil + desktop):** viser **«PlayerHQ · {tier}»** (+ «· HCP {hcp}» på desktop),
+  IKKE designets «Performance Pro». Performance/Performance Pro er **coaching-pakker, ikke app-nivåer** (CLAUDE.md låst beslutning) — skal aldri vises som app-nivå. Vær-linje i hero-topp utelates der appen ikke har vær-data.
 
 ## Hvorfor dette (ikke bare «vær nøye»)
 
