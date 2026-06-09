@@ -204,6 +204,17 @@ async function main() {
   await mkSession({ title: "Putt 3 m · 30 forsøk", start: at(17, 0), end: at(17, 25), practiceType: "SPILL_TEST", status: "PLANNED", miljo: "M2",
     drills: [{ name: "3 m putt-test", durationMinutes: 25, pyramide: "SPILL" }] });
 
+  // Fremtidige økter denne uka (for Planlegge/Workbench-tidslinjen) — PLANNED
+  const fremRoll: Array<{ off: number; h: number; pyr: "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN"; pt: "BLOKK" | "RANDOM" | "KONKURRANSE" | "SPILL_TEST"; t: string }> = [
+    { off: 1, h: 10, pyr: "SPILL", pt: "SPILL_TEST", t: "Putt-test · 3/6/9 m" },
+    { off: 3, h: 15, pyr: "TEK", pt: "BLOKK", t: "Teknisk · P5–P6" },
+    { off: 4, h: 9, pyr: "TURN", pt: "KONKURRANSE", t: "Runde 18 · Oslo GK" },
+  ];
+  for (const f of fremRoll) {
+    await mkSession({ title: f.t, start: at(f.h, 0, f.off), end: at(f.h + 1, 0, f.off), practiceType: f.pt, status: "PLANNED", miljo: "M2",
+      drills: [{ name: `${f.pyr}-drill`, durationMinutes: 45, pyramide: f.pyr }] });
+  }
+
   // Uke-historikk for pyramide-vekting (siste 6 dager, fullførte)
   const weekRoll: Array<{ pyr: "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN"; pt: "BLOKK" | "RANDOM" | "KONKURRANSE" | "SPILL_TEST" }> = [
     { pyr: "TEK", pt: "BLOKK" }, { pyr: "SLAG", pt: "RANDOM" }, { pyr: "FYS", pt: "BLOKK" },
@@ -221,6 +232,21 @@ async function main() {
       { userId: player.id, manualName: "Oslo GK Klubbmesterskap", manualDate: at(9, 0, 5), category: "Klubb", priority: "NORMAL", entryStatus: "CONFIRMED" },
       { userId: player.id, manualName: "Sørlandsåpne", manualDate: at(9, 0, 20), category: "Srixon Tour", priority: "NORMAL", entryStatus: "PLANNED" },
     ],
+  });
+
+  // 8b. Club metric trends (TrackMan-fane på Analysere)
+  await prisma.clubMetricTrend.deleteMany({ where: { userId: player.id } });
+  const clubs = ["Driver", "3w", "5w", "5i", "7i", "PW"];
+  await prisma.clubMetricTrend.createMany({
+    data: clubs.flatMap((club, idx) =>
+      Array.from({ length: 4 }, (_, w) => ({
+        userId: player.id, club, weekStart: at(12, 0, -(w * 7)),
+        avgClubPath: roundTo(rand(-2, 2), 2), avgFaceAngle: roundTo(rand(-2, 2), 2),
+        avgSmash: roundTo(club === "Driver" ? rand(1.46, 1.5) : rand(1.32, 1.42), 3),
+        avgTotal: roundTo([268, 242, 215, 196, 168, 120][idx] + rand(-4, 4), 1),
+        sigmaBall: roundTo(rand(2.5, 6), 1), shotCount: Math.round(rand(20, 80)),
+      })),
+    ),
   });
 
   // 9. Coaching-abonnement (Performance Pro = 4 credits) → gratis app-tilgang via coaching.
