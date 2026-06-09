@@ -10,8 +10,8 @@ const DEVICE = process.argv[2] || "mobil";
 const PATHS_CSV = process.argv[3] || "home:/portal,planlegge:/portal/planlegge,gjennomfore:/portal/gjennomfore,analysere:/portal/analysere,meg:/portal/meg";
 const OUT = process.argv[4] || `/tmp/akhq-app-shots-${DEVICE}`;
 const BASE = process.argv[5] || "http://localhost:3000";
-const EMAIL = "screentest@akgolf.test";
-const PASSWORD = "Screentest123!";
+const EMAIL = process.env.SHOT_EMAIL || "screentest@akgolf.test";
+const PASSWORD = process.env.SHOT_PASSWORD || "Screentest123!";
 
 const VIEWPORTS = {
   mobil: { width: 430, height: 932, isMobile: true, hasTouch: true, deviceScaleFactor: 2 },
