@@ -62,8 +62,9 @@ await page.waitForTimeout(800);
 const results = [];
 for (const s of SCREENS) {
   try {
-    await page.locator(".m-bottomnav .m-tab").nth(s.tab).click();
-    await page.waitForTimeout(900);
+    // Programmatisk klikk (DOM .click() ignorerer at .m-bottomnav skjules av UNWRAP_CSS).
+    await page.evaluate((i) => { document.querySelectorAll(".m-bottomnav .m-tab")[i]?.click(); }, s.tab);
+    await page.waitForTimeout(1100);
     await page.addStyleTag({ content: UNWRAP_CSS }); // re-injiser etter evt. re-render
     await page.waitForTimeout(400);
     await page.evaluate(() => window.scrollTo(0, 0));
