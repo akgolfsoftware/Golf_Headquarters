@@ -1,25 +1,29 @@
-// Logger inn som testspiller og tar full-page mobil-skjermbilder av PlayerHQ-hovedskjermene.
-// Kjør: node scripts/app-shot.mjs [BASE_URL] [OUT_DIR]
+// Logger inn som testspiller og tar full-page skjermbilder av PlayerHQ-ruter.
+// Kjør: node scripts/app-shot.mjs [DEVICE] [PATHS_CSV] [OUT_DIR] [BASE_URL]
+//   DEVICE   = mobil | ipad | desktop   (default mobil)
+//   PATHS_CSV= navn:rute,navn:rute,...   (default = 5 hovedskjermer)
+//   OUT_DIR  = default /tmp/akhq-app-shots-<device>
 import { chromium } from "playwright";
 import { mkdir } from "node:fs/promises";
 
-const BASE = process.argv[2] || "http://localhost:3000";
-const OUT = process.argv[3] || "/tmp/akhq-app-shots";
+const DEVICE = process.argv[2] || "mobil";
+const PATHS_CSV = process.argv[3] || "home:/portal,planlegge:/portal/planlegge,gjennomfore:/portal/gjennomfore,analysere:/portal/analysere,meg:/portal/meg";
+const OUT = process.argv[4] || `/tmp/akhq-app-shots-${DEVICE}`;
+const BASE = process.argv[5] || "http://localhost:3000";
 const EMAIL = "screentest@akgolf.test";
 const PASSWORD = "Screentest123!";
 
-const SCREENS = [
-  { name: "home", path: "/portal" },
-  { name: "planlegge", path: "/portal/planlegge" },
-  { name: "gjennomfore", path: "/portal/gjennomfore" },
-  { name: "analysere", path: "/portal/analysere" },
-  { name: "meg", path: "/portal/meg" },
-];
+const VIEWPORTS = {
+  mobil: { width: 430, height: 932, isMobile: true, hasTouch: true, deviceScaleFactor: 2 },
+  ipad: { width: 834, height: 1112, isMobile: true, hasTouch: true, deviceScaleFactor: 2 },
+  desktop: { width: 1280, height: 900, isMobile: false, hasTouch: false, deviceScaleFactor: 1 },
+};
+const vp = VIEWPORTS[DEVICE] || VIEWPORTS.mobil;
+const SCREENS = PATHS_CSV.split(",").map((s) => { const [name, path] = s.split(":"); return { name, path }; });
 
 await mkdir(OUT, { recursive: true });
 const browser = await chromium.launch({ headless: true });
-const page = await browser.newPage({ viewport: { width: 430, height: 932 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
-// Forhåndsgodta cookies (skjul global cookie-banner) før noen navigering.
+const page = await browser.newPage({ viewport: { width: vp.width, height: vp.height }, deviceScaleFactor: vp.deviceScaleFactor, isMobile: vp.isMobile, hasTouch: vp.hasTouch });
 await page.addInitScript(() => { try { localStorage.setItem("ak_cookie_consent", "all"); } catch {} });
 
 // --- Login ---
@@ -27,15 +31,15 @@ await page.goto(`${BASE}/auth/login`, { waitUntil: "networkidle" });
 await page.fill("#email", EMAIL);
 await page.fill("#password", PASSWORD);
 await Promise.all([
-  page.waitForURL(/\/portal/, { timeout: 30000 }).catch(() => {}),
+  page.waitForURL(/\/(portal|admin|forelder)/, { timeout: 30000 }).catch(() => {}),
   page.click('button[type="submit"]'),
 ]);
 await page.waitForTimeout(1500);
 const url = page.url();
-console.log(`Etter login: ${url}`);
-if (!url.includes("/portal")) {
+console.log(`[${DEVICE} ${vp.width}px] Etter login: ${url}`);
+if (!/\/(portal|admin|forelder)/.test(url)) {
   const err = await page.locator('[role="alert"]').innerText().catch(() => "");
-  console.error(`LOGIN FEILET. Feilmelding: ${err || "(ingen)"}`);
+  console.error(`LOGIN FEILET. ${err || "(ingen feilmelding)"}`);
   await page.screenshot({ path: `${OUT}/_login-fail.png`, fullPage: true });
   await browser.close();
   process.exit(1);
@@ -47,14 +51,13 @@ for (const s of SCREENS) {
     await page.goto(`${BASE}${s.path}`, { waitUntil: "networkidle", timeout: 30000 });
     await page.waitForTimeout(1200);
     await page.evaluate(() => window.scrollTo(0, 0));
-    // Skjul Next.js dev-overlay/issue-indikator (ikke del av skjermen).
     await page.addStyleTag({ content: "nextjs-portal,[data-nextjs-toast],#__next-dev-tools-indicator{display:none!important} nav[aria-label='Hovednavigasjon']{display:none!important}" }).catch(() => {});
     await page.waitForTimeout(200);
     await page.screenshot({ path: `${OUT}/${s.name}.png`, fullPage: true });
     const h = await page.evaluate(() => document.body.innerText.slice(0, 50).replace(/\n/g, " "));
-    results.push(`OK    ${s.name.padEnd(12)} ${s.path}  — "${h}"`);
+    results.push(`OK    ${s.name.padEnd(14)} ${s.path}  — "${h}"`);
   } catch (e) {
-    results.push(`FEIL  ${s.name.padEnd(12)} ${s.path}  — ${e.message.split("\n")[0]}`);
+    results.push(`FEIL  ${s.name.padEnd(14)} ${s.path}  — ${e.message.split("\n")[0]}`);
   }
 }
 await browser.close();

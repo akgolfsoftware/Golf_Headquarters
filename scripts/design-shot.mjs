@@ -1,15 +1,16 @@
-// Rendrer Claude Design PlayerHQ-prototypen (mobil) og lagrer ett full-høyde skjermbilde per hovedskjerm.
-// Den ferske prototypen bruker intern React-nav (useNav), IKKE window.__ph — vi navigerer ved å klikke bunn-tab-baren.
-// Telefonrammen foldes ut (auto-høyde, ingen bezel, mock-statusbar skjult) så full-page fanger hele skjermen.
-// Kjør: node scripts/design-shot.mjs [DESIGN_DIR] [OUT_DIR]
+// Rendrer Claude Design PlayerHQ-prototypen og lagrer ett full-høyde skjermbilde per hovedskjerm.
+// Prototypen bruker intern React-nav (useNav) — vi navigerer ved programmatisk klikk på nav (DOM .click()).
+// Kjør: node scripts/design-shot.mjs [DEVICE] [OUT_DIR] [DESIGN_DIR]
+//   DEVICE = mobil | desktop   (default mobil)  — iPad har ingen egen fasit
 import { chromium } from "playwright";
 import http from "node:http";
 import { readFile, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import path from "node:path";
 
-const DESIGN_DIR = process.argv[2] || "/Users/anderskristiansen/Developer/akgolf-hq/public/design-handover/AK Golf HQ Design System";
-const OUT_DIR = process.argv[3] || "/tmp/akhq-design-shots";
+const DEVICE = process.argv[2] || "mobil";
+const OUT_DIR = process.argv[3] || `/tmp/akhq-design-shots-${DEVICE}`;
+const DESIGN_DIR = process.argv[4] || "/Users/anderskristiansen/Developer/akgolf-hq/public/design-handover/AK Golf HQ Design System";
 const PORT = 8799;
 
 const MIME = {
@@ -31,8 +32,7 @@ const server = http.createServer(async (req, res) => {
 });
 await new Promise((r) => server.listen(PORT, r));
 
-// Bunn-tab-rekkefølge i prototypen (SECTIONS): home, workbench, execute, analyze, me.
-// Navn matcher app-shot.mjs for enkel paring.
+// Bunn-tab/sidebar-rekkefølge i prototypen (SECTIONS): home, workbench, execute, analyze, me.
 const SCREENS = [
   { name: "home", tab: 0 },
   { name: "planlegge", tab: 1 },
@@ -41,31 +41,37 @@ const SCREENS = [
   { name: "meg", tab: 4 },
 ];
 
-// Folder ut telefonrammen så hele den scrollbare skjermen kommer med i full-page.
-const UNWRAP_CSS = `
-  .dev-toggle { display: none !important; }
-  .m-statusbar { display: none !important; }
-  .app--mobile { height: auto !important; min-height: 0 !important; display: block !important; padding: 0 !important; }
-  .phone-frame { width: 430px !important; height: auto !important; max-height: none !important; border-radius: 0 !important; box-shadow: none !important; overflow: visible !important; }
-  .m-scroll { overflow: visible !important; height: auto !important; }
-  .m-bottomnav { display: none !important; }
-`;
+const isMobil = DEVICE !== "desktop";
+const NAV_SELECTOR = isMobil ? ".m-bottomnav .m-tab" : ".d-nav .d-navitem";
+const UNWRAP_CSS = isMobil
+  ? `
+    .dev-toggle, .m-statusbar, .m-bottomnav { display: none !important; }
+    .app--mobile { height: auto !important; min-height: 0 !important; display: block !important; padding: 0 !important; }
+    .phone-frame { width: 430px !important; height: auto !important; max-height: none !important; border-radius: 0 !important; box-shadow: none !important; overflow: visible !important; }
+    .m-scroll { overflow: visible !important; height: auto !important; }`
+  : `
+    .dev-toggle { display: none !important; }
+    .app--desktop { height: auto !important; min-height: 100vh !important; }
+    .d-main { height: auto !important; overflow: visible !important; }
+    .d-scroll { overflow: visible !important; height: auto !important; }`;
+
+const VP = isMobil ? { width: 430, height: 932 } : { width: 1280, height: 900 };
 
 await mkdir(OUT_DIR, { recursive: true });
 const browser = await chromium.launch({ headless: true });
-const page = await browser.newPage({ viewport: { width: 430, height: 932 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
-await page.addInitScript(() => { localStorage.setItem("ph-authed", "1"); localStorage.setItem("ph-device", "mobile"); });
+const page = await browser.newPage({ viewport: VP, deviceScaleFactor: 2, isMobile: isMobil, hasTouch: isMobil });
+await page.addInitScript((dev) => { localStorage.setItem("ph-authed", "1"); localStorage.setItem("ph-device", dev); }, isMobil ? "mobile" : "desktop");
 await page.goto(`http://localhost:${PORT}/playerhq-app/PlayerHQ.html`, { waitUntil: "networkidle" });
-await page.waitForSelector(".m-bottomnav .m-tab", { timeout: 20000 });
+await page.waitForSelector(NAV_SELECTOR, { timeout: 20000 });
 await page.waitForTimeout(800);
 
 const results = [];
 for (const s of SCREENS) {
   try {
-    // Programmatisk klikk (DOM .click() ignorerer at .m-bottomnav skjules av UNWRAP_CSS).
-    await page.evaluate((i) => { document.querySelectorAll(".m-bottomnav .m-tab")[i]?.click(); }, s.tab);
-    await page.waitForTimeout(1100);
-    await page.addStyleTag({ content: UNWRAP_CSS }); // re-injiser etter evt. re-render
+    await page.evaluate(({ sel, i }) => { document.querySelectorAll(sel)[i]?.click(); }, { sel: NAV_SELECTOR, i: s.tab });
+    // Workbench desktop laster en iframe — gi den ekstra tid.
+    await page.waitForTimeout(s.tab === 1 && !isMobil ? 2500 : 1100);
+    await page.addStyleTag({ content: UNWRAP_CSS });
     await page.waitForTimeout(400);
     await page.evaluate(() => window.scrollTo(0, 0));
     const txt = await page.evaluate(() => document.body.innerText.slice(0, 50).replace(/\n/g, " "));
@@ -78,5 +84,6 @@ for (const s of SCREENS) {
 }
 await browser.close();
 server.close();
+console.log(`[${DEVICE} ${VP.width}px]`);
 console.log(results.join("\n"));
 console.log(`\nLagret i ${OUT_DIR}`);
