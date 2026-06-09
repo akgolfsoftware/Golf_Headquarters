@@ -10,16 +10,16 @@ interface PlayerCard {
 const C = ["var(--pyr-fys)", "var(--pyr-tek)", "var(--pyr-slag)", "var(--pyr-spill)", "var(--pyr-turn)"];
 
 const players: PlayerCard[] = [
-  { initials: "M.R.", score: "74,0", focus: "SPILL / TURN", level: 5, group: 0, next: "Finpuss og konkurransetrening. Holde rutinene stabile under press." },
-  { initials: "S.H.", score: "74,3", focus: "SPILL / TURN", level: 5, group: 0, next: "Bygge ut turneringsspill og scoringssituasjoner mot flagg." },
-  { initials: "F.H.", score: "77,8", focus: "SPILL / TURN", level: 5, group: 0, next: "Score lavere i turnering — omsette godt spill til resultat under press." },
-  { initials: "A.R.", score: "78,8", focus: "SLAG / SPILL", level: 4, group: 1, next: "Avstandskontroll og banestrategi — sette slagene sammen til lavere runder." },
-  { initials: "V.H.", score: "79,4", focus: "SLAG / SPILL", level: 4, group: 1, next: "Mer presisjon i innspill, og smartere valg gjennom 18 hull." },
-  { initials: "J.H.", score: "83,1", focus: "TEK / SLAG", level: 3, group: 1, next: "Stabilisere teknikken slik at slagkvaliteten tåler mer fart og press." },
-  { initials: "F.S.", score: "86,0", focus: "TEK / SLAG", level: 3, group: 1, next: "Bygge slagkvalitet og teknikk — jevnere kontakt og avstandskontroll." },
-  { initials: "A.L.", score: "88,4", focus: "TEK / FYS", level: 2, group: 2, next: "Teknisk grunnmur — repeterbar sving og trygg ballkontakt." },
-  { initials: "C.H.", score: "89,8", focus: "TEK / FYS", level: 2, group: 2, next: "Grunnslag og putting-teknikk. Mengde og gode repetisjoner." },
-  { initials: "S.S.", score: "104,2", focus: "FYS / TEK", level: 1, group: 2, next: "Grunnmur først: motorikk, bevegelseskvalitet og trygg teknikk. Glede og mestring." },
+  { initials: "M.R.", score: "74,0", focus: "SPILL / TURN", level: 5, group: 0, next: "Finpusse spillet og trene konkurranse. Holde roen under press." },
+  { initials: "S.H.", score: "74,3", focus: "SPILL / TURN", level: 5, group: 0, next: "Spille flere turneringer og bli skarpere når det gjelder å score." },
+  { initials: "F.H.", score: "77,8", focus: "SPILL / TURN", level: 5, group: 0, next: "Score lavere i turnering — få godt spill til å gi resultater når det teller." },
+  { initials: "A.R.", score: "78,8", focus: "SLAG / SPILL", level: 4, group: 1, next: "Treffe riktig lengde og velge smart — sette slagene sammen til lavere runder." },
+  { initials: "V.H.", score: "79,4", focus: "SLAG / SPILL", level: 4, group: 1, next: "Mer presise innspill, og smartere valg gjennom 18 hull." },
+  { initials: "J.H.", score: "83,1", focus: "TEK / SLAG", level: 3, group: 1, next: "Få teknikken stabil, så slagene tåler mer fart og press." },
+  { initials: "F.S.", score: "86,0", focus: "TEK / SLAG", level: 3, group: 1, next: "Bygge teknikk og slagkvalitet — jevnere treff og riktig lengde." },
+  { initials: "A.L.", score: "88,4", focus: "TEK / FYS", level: 2, group: 2, next: "Bygge teknisk grunnmur — en stabil sving og trygt treff." },
+  { initials: "C.H.", score: "89,8", focus: "TEK / FYS", level: 2, group: 2, next: "Grunnslag og putting. Mye trening og gode gjentakelser." },
+  { initials: "S.S.", score: "104,2", focus: "FYS / TEK", level: 1, group: 2, next: "Grunnmur først: god bevegelse og trygg teknikk. Glede og mestring." },
 ];
 
 const groups = [
