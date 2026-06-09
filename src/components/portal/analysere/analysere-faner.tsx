@@ -79,7 +79,7 @@ function SeasonHeader({ data }: { data: AnalysereData }) {
   const sisteSg = pts.length ? pts[pts.length - 1] : null;
 
   return (
-    <div className="mb-6 space-y-4">
+    <div className="mb-6 space-y-4 md:grid md:grid-cols-[1.3fr_1fr] md:items-start md:gap-4 md:space-y-0">
       <div className="rounded-xl border border-border bg-card p-4">
         <div className="mb-3 flex items-baseline justify-between">
           <AthleticEyebrow>SG-total · siste runder</AthleticEyebrow>
