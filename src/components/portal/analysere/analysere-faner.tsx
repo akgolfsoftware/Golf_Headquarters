@@ -239,7 +239,7 @@ export function AnalysereFaner({ data }: { data: AnalysereData }) {
   return (
     <div>
       <SeasonHeader data={data} />
-      <div className="flex border-b border-border">
+      <div className="flex gap-1 overflow-x-auto border-b border-border [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {TABS.map((t) => {
           const count =
             t.key === "runder" ? data.kpi.runder !== "—" ? data.kpi.runder : null
@@ -250,15 +250,15 @@ export function AnalysereFaner({ data }: { data: AnalysereData }) {
               key={t.key}
               onClick={() => setTab(t.key)}
               className={
-                "relative -mb-px flex items-center justify-center gap-1 px-2 py-2.5 font-mono text-[11px] font-bold uppercase tracking-[0.02em] transition-colors " +
+                "relative -mb-px mr-[18px] flex shrink-0 items-center py-3 text-sm font-semibold tracking-[-0.01em] transition-colors " +
                 (tab === t.key
-                  ? "border-b-2 border-accent text-foreground"
-                  : "border-b-2 border-transparent text-muted-foreground hover:text-foreground")
+                  ? "text-primary after:absolute after:inset-x-0 after:-bottom-px after:h-0.5 after:bg-primary"
+                  : "text-muted-foreground hover:text-foreground")
               }
             >
               {t.label}
               {count != null && (
-                <span className="rounded-full bg-secondary px-1.5 py-0.5 text-[9px] leading-none text-muted-foreground">{count}</span>
+                <span className="ml-1.5 font-mono text-[10px] font-normal text-muted-foreground">{count}</span>
               )}
             </button>
           );

@@ -22,7 +22,7 @@ function OktRad({ o }: { o: GjennomforeOkt }) {
     o.status === "now"
       ? { variant: "lime" as const, label: "Nå" }
       : o.status === "done"
-        ? { variant: "neutral" as const, label: "Logget" }
+        ? { variant: "ok" as const, label: "Logget" }
         : { variant: "neutral" as const, label: "Kommer" };
   return (
     <Link
@@ -180,10 +180,10 @@ export function GjennomforeFaner({ data }: { data: GjennomforeData }) {
             key={t.key}
             onClick={() => setTab(t.key)}
             className={
-              "relative -mb-px px-4 py-2.5 font-mono text-[12px] font-bold uppercase tracking-[0.08em] transition-colors " +
+              "relative -mb-px mr-4 px-1 py-3 text-sm font-semibold tracking-[-0.01em] transition-colors " +
               (tab === t.key
-                ? "border-b-2 border-accent text-foreground"
-                : "border-b-2 border-transparent text-muted-foreground hover:text-foreground")
+                ? "text-primary after:absolute after:inset-x-0 after:-bottom-px after:h-0.5 after:bg-primary"
+                : "text-muted-foreground hover:text-foreground")
             }
           >
             {t.label}

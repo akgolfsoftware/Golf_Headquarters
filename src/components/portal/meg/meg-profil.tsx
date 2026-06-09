@@ -194,7 +194,7 @@ function KontoListe() {
 // ── Desktop-layout (ph-screens.jsx · MeScreen desktop): header + 2-kol grid ──
 export function MegProfilDesktop({ data }: { data: MegProfilData }) {
   return (
-    <div className="mx-auto hidden w-full max-w-[1000px] px-8 py-8 md:block">
+    <div className="mx-auto hidden w-full max-w-[1000px] px-8 pb-8 pt-5 md:block">
       <header className="flex items-center gap-4">
         <AthleticAvatar src={data.avatarUrl} initials={data.initialer} borderColor="card" className="h-16 w-16 border-0 text-xl shadow-none" />
         <div className="min-w-0">
@@ -220,7 +220,7 @@ export function MegProfilDesktop({ data }: { data: MegProfilData }) {
             <KontoListe />
           </section>
           <form action={logout} className="max-w-[260px]">
-            <button type="submit" className="flex h-12 w-full items-center justify-center gap-2 rounded-full border border-border font-mono text-[12px] font-bold uppercase tracking-[0.1em] text-destructive transition-colors hover:bg-destructive/5">
+            <button type="submit" className="inline-flex h-11 items-center gap-2 rounded-full px-4 font-mono text-[12px] font-bold uppercase tracking-[0.1em] text-destructive transition-colors hover:bg-destructive/5">
               <LogOut className="h-4 w-4" strokeWidth={2} aria-hidden />
               Logg ut
             </button>
