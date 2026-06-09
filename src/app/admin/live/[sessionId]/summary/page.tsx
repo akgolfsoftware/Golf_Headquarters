@@ -9,7 +9,8 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, CheckCircle2, Star, FileText } from "lucide-react";
+import { ArrowLeft, CheckCircle2 } from "lucide-react";
+import { CoachSummaryForm } from "./_coach-summary-form";
 
 export const dynamic = "force-dynamic";
 
@@ -50,6 +51,16 @@ export default async function CoachLiveSummaryPage({ params }: Props) {
     dateStyle: "short",
     timeStyle: "short",
   }).format(session.startTime);
+
+  // Les ev. eksisterende coach-vurdering fra completedSummary-JSON.
+  const rawSummary: unknown = session.completedSummary;
+  const summaryObj =
+    rawSummary && typeof rawSummary === "object" && !Array.isArray(rawSummary)
+      ? (rawSummary as Record<string, unknown>)
+      : {};
+  const initialRating =
+    typeof summaryObj.coachRating === "number" ? summaryObj.coachRating : null;
+  const initialNotat = session.notes ?? "";
 
   return (
     <div className="min-h-screen bg-background">
@@ -100,49 +111,11 @@ export default async function CoachLiveSummaryPage({ params }: Props) {
           </div>
         </div>
 
-        <div className="mt-6 space-y-6 rounded-lg border border-border bg-card p-6">
-          <div>
-            <h2 className="font-mono text-xs uppercase tracking-widest text-muted-foreground mb-3">
-              <Star className="inline h-3.5 w-3.5 mr-1" />
-              Coach-vurdering
-            </h2>
-            <div className="flex items-center gap-1">
-              {[1, 2, 3, 4, 5].map((n) => (
-                <button
-                  key={n}
-                  type="button"
-                  className="h-8 w-8 rounded-md border border-border text-sm text-muted-foreground hover:border-primary hover:text-primary"
-                >
-                  {n}
-                </button>
-              ))}
-              <span className="ml-2 text-xs text-muted-foreground">
-                Økt-kvalitet (1–5)
-              </span>
-            </div>
-          </div>
-
-          <div>
-            <label className="block font-mono text-xs uppercase tracking-widest text-muted-foreground mb-2">
-              <FileText className="inline h-3.5 w-3.5 mr-1" />
-              Coach-notat
-            </label>
-            <textarea
-              rows={4}
-              placeholder="Observasjoner, fremgang, fokus til neste økt..."
-              className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-            />
-          </div>
-
-          <div className="flex justify-end">
-            <button
-              type="button"
-              className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-            >
-              Lagre vurdering
-            </button>
-          </div>
-        </div>
+        <CoachSummaryForm
+          sessionId={sessionId}
+          initialRating={initialRating}
+          initialNotat={initialNotat}
+        />
 
         <div className="mt-6 flex gap-3">
           <Link

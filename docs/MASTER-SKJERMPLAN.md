@@ -364,9 +364,9 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Fasilitet-detalj | `/admin/facilities/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | Lokasjoner | `/admin/locations` | – | --- | ✓ | ~ | ~ | ~ |
 | TrackMan (på tvers) | `/admin/trackman` | – | --- | ✓ | ~ | ~ | ~ |
-| Live-økt: brief (coach) | `/admin/live/[sessionId]/brief` | – | --- | ✓ | ~ | ~ | ✓ |
-| Live-økt: aktiv (coach) | `/admin/live/[sessionId]/active` | – | --- | ✓ | ~ | ~ | ✓ |
-| Live-økt: oppsummering (coach) | `/admin/live/[sessionId]/summary` | – | --- | ✓ | ~ | ~ | ✓ |
+| Live-økt: brief (coach) | `/admin/live/[sessionId]/brief` | – | --- | ✓ | ✓ | ✓ | ✓ |
+| Live-økt: aktiv (coach) | `/admin/live/[sessionId]/active` | – | --- | ✓ | ✓ | ✓ | ✓ |
+| Live-økt: oppsummering (coach) | `/admin/live/[sessionId]/summary` | – | --- | ✓ | ✓ | ✓ | ✓ |
 | Coach-workbench (prototype) | `/admin/coach-workbench` | – | --- | ✓ | – | ~ | ~ |
 
 ### Innsikt (analyse på tvers)
