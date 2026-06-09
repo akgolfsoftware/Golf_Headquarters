@@ -142,7 +142,7 @@ export function ResultsTable({ data }: { data: GfgkData }) {
         </table>
       </div>
       <p className="small muted" style={{ marginTop: 14 }}>
-        Klikk en spiller for å se alle turneringer. Snittskår er banejustert
+        Klikk en spiller for å se alle turneringer. Snitt score er banejustert
         brutto over 18 hull · sesong 2025–2026.
       </p>
     </>

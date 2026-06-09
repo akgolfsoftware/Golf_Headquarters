@@ -208,9 +208,9 @@ export function Presentation({ data }: { data: GfgkData }) {
                 Utvikling bygges <em className="key">nedenfra</em> og opp
               </h2>
               <p className="lead muted reveal d3" style={{ marginTop: 20 }}>
-                Pyramidemodellen fra AK Golf og Team Norway. En spiller må ha
-                solid grunnmur i de nederste lagene før de øverste gir mening.
-                Klikk på et lag.
+                Vi bygger en spiller nedenfra og opp, som en pyramide. Det
+                nederste må sitte før det øverste gir mening. Klikk på et lag
+                for å se hva vi mener.
               </p>
             </div>
             <PyramidSection />
@@ -231,7 +231,7 @@ export function Presentation({ data }: { data: GfgkData }) {
                 vi
               </h2>
               <p className="lead muted reveal d3" style={{ marginTop: 20 }}>
-                Hver prikk er en spiller, anonymisert. Brutto snittskår på 18
+                Hver prikk er en spiller, anonymisert. Brutto snitt score på 18
                 hull. Ingen navn, ingen rangering — bare den objektive grunnen
                 til at én felles økt ikke kan treffe alle.
               </p>
@@ -247,7 +247,7 @@ export function Presentation({ data }: { data: GfgkData }) {
                 }}
               >
                 <p className="eyebrow" style={{ margin: 0 }}>
-                  Brutto snittskår · 18 hull · 2025–2026
+                  Brutto snitt score · 18 hull · 2025–2026
                 </p>
                 <p className="pyr-hint" style={{ margin: 0 }}>
                   Banejustert · vanskelig bane teller annerledes enn lett

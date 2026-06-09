@@ -63,7 +63,7 @@ export function PlayerCards() {
                     <span className="initials">{p.initials}</span>
                     <span className="score">
                       <div className="v">{p.score}</div>
-                      <div className="k">Snittskår · 18</div>
+                      <div className="k">Snitt score · 18</div>
                     </span>
                   </div>
                   <div className="focus-row">
