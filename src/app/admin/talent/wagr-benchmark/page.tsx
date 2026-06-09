@@ -15,6 +15,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 import { EmptyState } from "@/components/shared/empty-state";
+import { WagrDeleteButton } from "./wagr-delete-button";
 
 // NGF-kategori → label fra Øyvinds tabell
 const KATEGORI_INFO: Record<string, { tier: string; pts: string }> = {
@@ -182,6 +183,7 @@ function PlayerTable({ rows }: { rows: SnapshotRow[] }) {
             <Th align="right">Pts Avg</Th>
             <Th align="center">NGF-kat</Th>
             <Th align="right">WAGR</Th>
+            <Th align="right">Slett</Th>
           </tr>
         </thead>
         <tbody>
@@ -222,6 +224,9 @@ function PlayerTable({ rows }: { rows: SnapshotRow[] }) {
                   Åpne
                   <ExternalLink size={11} strokeWidth={1.75} />
                 </Link>
+              </Td>
+              <Td align="right">
+                <WagrDeleteButton snapshotId={r.id} fullName={r.fullName} />
               </Td>
             </tr>
           ))}

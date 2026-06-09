@@ -9,6 +9,7 @@ import { KPICard } from "@/components/ui";
 import { AthleticBadge } from "@/components/athletic";
 import { TournamentForm } from "../tournament-form";
 import { ResultForm } from "./result-form";
+import { UnmergeBanner } from "./unmerge-banner";
 import {
   TournamentEnrollModal,
   PriorityPill,
@@ -52,6 +53,15 @@ export default async function TurneringDetalj({
   ]);
 
   if (!tournament) notFound();
+
+  // Hvis turneringen er slått sammen (dublett), hent navnet på mål-turneringen
+  // slik at vi kan vise en "opphev sammenslåing"-banner øverst.
+  const mergedInto = tournament.mergedIntoId
+    ? await prisma.tournament.findUnique({
+        where: { id: tournament.mergedIntoId },
+        select: { name: true },
+      })
+    : null;
 
   const startStr = tournament.startDate.toLocaleDateString("nb-NO", {
     day: "2-digit",
@@ -152,6 +162,13 @@ export default async function TurneringDetalj({
         </div>
       }
     >
+      {tournament.mergedIntoId && (
+        <UnmergeBanner
+          sourceId={tournament.id}
+          targetName={mergedInto?.name ?? null}
+        />
+      )}
+
       {tournament.notes && (() => {
         // Forsøk å parse som tour-metadata JSON
         try {
