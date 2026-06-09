@@ -15,7 +15,7 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentProfilOversikt, type ProfilOversikt } from "@/lib/portal-meg/profil-data";
-import { MegProfil, type MegProfilData } from "@/components/portal/meg/meg-profil";
+import { MegProfil, MegProfilDesktop, type MegProfilData } from "@/components/portal/meg/meg-profil";
 
 export const dynamic = "force-dynamic";
 
@@ -49,5 +49,11 @@ export default async function MegPage() {
     tier: user.tier,
   });
 
-  return <MegProfil data={mapMegData(data, user.email)} />;
+  const mapped = mapMegData(data, user.email);
+  return (
+    <>
+      <MegProfil data={mapped} />
+      <MegProfilDesktop data={mapped} />
+    </>
+  );
 }
