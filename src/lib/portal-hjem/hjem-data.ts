@@ -1,19 +1,22 @@
 /**
- * Data-loader for PlayerHQ Hjem (/portal) — "Spotify Now Playing for trening".
+ * Data-loader for PlayerHQ Hjem (/portal).
  *
- * Samler all server-side henting for hjem-skjermen til én typet `HjemData`.
+ * Samler all server-side henting for hjem-skjermen til én typet `HjemData`,
+ * strukturert mot Claude Design-fasiten (ph-home.jsx · HomeMobile):
+ *   hero → 3 KPI → dagens fokus → Workbench-CTA → pyramide → dagens program →
+ *   neste tee → neste turnering.
+ *
  * Alt kommer fra ekte Prisma. Mangler data → null/tom liste → tomstate i UI.
  * ALDRI falske tall.
- *
- * Mønster lånt fra src/app/portal/page.tsx (workbench v1) + profil-data.ts.
  */
 
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import { getWeekProgress } from "@/components/portal/workbench/get-week-progress";
-import { getCaddieInsights } from "@/lib/ai/get-workbench-insights";
-import type { AiInsight } from "@/components/portal/workbench/ai-insights-row";
 import type { PyramidRow } from "@/components/athletic";
+
+type PyramidArea = "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";
+type OktStatus = "done" | "now" | "upcoming";
 
 export type HjemUser = {
   fornavn: string;
@@ -24,101 +27,90 @@ export type HjemUser = {
   avatarUrl: string | null;
 };
 
-/** Dagens økt — det "som spiller nå" i Spotify-metaforen. */
-export type DagensOkt = {
-  id: string;
-  tittel: string;
-  /** "11:00 — 12:00" */
-  tidsrom: string;
-  /** "60 min · 4 drills · GFGK" */
-  meta: string;
-  pyramide: "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";
-  href: string;
-};
-
 export type KpiCelle = {
   label: string;
   value: string;
   trend?: { value: string; tone: "positive" | "negative" | "neutral" };
 };
 
+/** Display-headline med italic-aksent midt i setningen. */
+export type Headline = { pre: string; em: string; post: string };
+
+/** Dagens fokus-økt → FeaturedCard. */
+export type DagensFokus = {
+  eyebrow: string;
+  tittel: string;
+  /** Editorial italic-aksent etter tittelen. */
+  italic: string;
+  beskrivelse: string;
+  startHref: string;
+  planHref: string;
+};
+
+/** Én rad i "Resten av dagen". */
+export type ProgramOkt = {
+  id: string;
+  tid: string;
+  tittel: string;
+  meta: string;
+  status: OktStatus;
+  href: string;
+};
+
 export type NesteTee = {
-  /** "FRE" */
   dagKort: string;
-  /** "30" */
   datoTall: string;
   navn: string;
-  sted: string;
-  /** "om 4 dager" */
-  naar: string;
+  meta: string;
   href: string;
+};
+
+export type NesteTurnering = {
+  navn: string;
+  meta: string;
+  chip: string;
+  href: string;
+  planHref: string;
 };
 
 export type HjemData = {
   user: HjemUser;
-  /** "ONS 28. MAI · UKE 22" */
+  /** "ONS 28. MAI · OSLO GK" */
   datoEyebrow: string;
-  /** Display-headline med italic-aksent, f.eks "Innspill er der det skjer i dag." */
-  headlineNormal: string;
-  headlineAksent: string | null;
-  /** "SRIXON #2 OM 12 DAGER · 2 ØKTER BAK PLAN" — null hvis ingenting å vise */
-  metaLinje: string | null;
-  heroImageId: number;
-  dagensOkt: DagensOkt | null;
-  /** 4 SG-baserte KPI-celler. Tom hvis ingen runder/SG-input. */
+  /** "God morgen" */
+  hilsen: string;
+  headline: Headline;
   kpi: KpiCelle[];
-  /** Pyramide-vekting siste 7 dager. Tom hvis ingen økter. */
+  dagensFokus: DagensFokus | null;
+  dagensProgram: ProgramOkt[];
   pyramide: PyramidRow[];
-  /** Endring i pyramide-balanse, f.eks "Balansert mot ideell fordeling". */
   pyramideNote: string | null;
   nesteTee: NesteTee | null;
-  innsikt: AiInsight | null;
+  nesteTurnering: NesteTurnering | null;
+  heroImageId: number;
+  /** ISO-ukenummer nå — til "UKE NN · PYRAMIDEN". */
+  ukeNr: number;
 };
 
-const PRACTICE_TO_PYRAMID: Record<
-  string,
-  "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN"
-> = {
+const PRACTICE_TO_PYRAMID: Record<string, PyramidArea> = {
   BLOKK: "TEK",
   RANDOM: "SLAG",
   KONKURRANSE: "TURN",
   SPILL_TEST: "SPILL",
 };
 
-const PYRAMID_LABEL: Record<string, string> = {
-  fys: "FYS",
-  tek: "TEK",
-  slag: "SLAG",
-  spill: "SPILL",
-  turn: "TURN",
+const PYRAMID_LABEL: Record<string, string> = { fys: "Fysisk", tek: "Teknisk", slag: "Golfslag", spill: "Spill", turn: "Turnering" };
+const PYRAMID_TONE: Record<string, "pyr-fys" | "pyr-tek" | "pyr-slag" | "pyr-spill" | "pyr-turn"> = {
+  fys: "pyr-fys", tek: "pyr-tek", slag: "pyr-slag", spill: "pyr-spill", turn: "pyr-turn",
 };
-
-const PYRAMID_TONE: Record<
-  string,
-  "pyr-fys" | "pyr-tek" | "pyr-slag" | "pyr-spill" | "pyr-turn"
-> = {
-  fys: "pyr-fys",
-  tek: "pyr-tek",
-  slag: "pyr-slag",
-  spill: "pyr-spill",
-  turn: "pyr-turn",
-};
+const TEMA: Record<PyramidArea, string> = { FYS: "Fysikken", TEK: "Teknikken", SLAG: "Slagene", SPILL: "Spillet", TURN: "Turneringsformen" };
+/** Kort område-navn til økt-rad-meta (matcher fasitens "Oppvarming ·"/"Approach ·"-form). */
+const TEMA_LABEL: Record<PyramidArea, string> = { FYS: "Fysisk", TEK: "Teknisk", SLAG: "Golfslag", SPILL: "Spill", TURN: "Turnering" };
+/** Editorial italic-frase per fokusområde (designets "alt om bane-flighten."-mønster). */
+const FOKUS_ITALIC: Record<PyramidArea, string> = { FYS: "bygg motoren.", TEK: "slip teknikken.", SLAG: "der slagene sitter.", SPILL: "spill det smart.", TURN: "toppform mot start." };
 
 const UKEDAG_KORT = ["SØN", "MAN", "TIR", "ONS", "TOR", "FRE", "LØR"];
-const MND_KORT = [
-  "JAN",
-  "FEB",
-  "MAR",
-  "APR",
-  "MAI",
-  "JUN",
-  "JUL",
-  "AUG",
-  "SEP",
-  "OKT",
-  "NOV",
-  "DES",
-];
+const MND_KORT = ["JAN", "FEB", "MAR", "APR", "MAI", "JUN", "JUL", "AUG", "SEP", "OKT", "NOV", "DES"];
 
 function ukenummer(d: Date): number {
   const target = new Date(d.valueOf());
@@ -126,76 +118,26 @@ function ukenummer(d: Date): number {
   target.setDate(target.getDate() - dayNr + 3);
   const firstThursday = target.valueOf();
   target.setMonth(0, 1);
-  if (target.getDay() !== 4) {
-    target.setMonth(0, 1 + ((4 - target.getDay() + 7) % 7));
-  }
+  if (target.getDay() !== 4) target.setMonth(0, 1 + ((4 - target.getDay() + 7) % 7));
   return 1 + Math.ceil((firstThursday - target.valueOf()) / 604_800_000);
 }
 
 function tid(d: Date): string {
-  return d.toLocaleTimeString("nb-NO", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
+  return d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit", hour12: false });
 }
 
 function initialerAv(navn: string): string {
-  return (
-    navn
-      .trim()
-      .split(/\s+/)
-      .slice(0, 2)
-      .map((w) => w[0]?.toUpperCase() ?? "")
-      .join("") || "?"
-  );
+  return navn.trim().split(/\s+/).slice(0, 2).map((w) => w[0]?.toUpperCase() ?? "").join("") || "?";
 }
 
-/** Antall hele dager fra nå til en framtidig dato (>= 0). */
-function dagerTil(dato: Date): number {
-  const naa = new Date();
-  naa.setHours(0, 0, 0, 0);
-  const mal = new Date(dato);
-  mal.setHours(0, 0, 0, 0);
-  return Math.max(0, Math.round((mal.getTime() - naa.getTime()) / 86_400_000));
-}
-
-function naarTekst(dager: number): string {
-  if (dager === 0) return "I dag";
-  if (dager === 1) return "I morgen";
-  return `Om ${dager} dager`;
-}
-
-function sgKpi(
-  label: string,
-  verdi: number | null | undefined,
-): KpiCelle {
-  if (verdi == null) return { label, value: "—" };
-  const fmt = verdi.toLocaleString("nb-NO", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-    signDisplay: "exceptZero",
-  });
-  return {
-    label,
-    value: fmt,
-    trend: {
-      value: verdi >= 0 ? "Over baseline" : "Under baseline",
-      tone: verdi >= 0 ? "positive" : "negative",
-    },
-  };
+function nb2(n: number, signed = false): string {
+  return n.toLocaleString("nb-NO", { minimumFractionDigits: 2, maximumFractionDigits: 2, signDisplay: signed ? "exceptZero" : "auto" });
 }
 
 export async function getHjemData(userId: string): Promise<HjemData> {
   const user = await prisma.user.findUniqueOrThrow({
     where: { id: userId },
-    select: {
-      name: true,
-      tier: true,
-      hcp: true,
-      homeClub: true,
-      avatarUrl: true,
-    },
+    select: { name: true, tier: true, hcp: true, homeClub: true, avatarUrl: true },
   });
 
   const now = new Date();
@@ -204,201 +146,168 @@ export async function getHjemData(userId: string): Promise<HjemData> {
   const endOfDay = new Date(startOfDay);
   endOfDay.setDate(endOfDay.getDate() + 1);
 
-  // --- Dagens økt (nåværende/neste i dag) ---
+  // --- Dagens økter ---
   const dagensOkter = await prisma.trainingSessionV2
     .findMany({
       where: { studentId: userId, startTime: { gte: startOfDay, lt: endOfDay } },
       orderBy: { startTime: "asc" },
       select: {
-        id: true,
-        title: true,
-        startTime: true,
-        endTime: true,
-        practiceType: true,
-        miljo: true,
+        id: true, title: true, startTime: true, endTime: true, status: true, practiceType: true,
         _count: { select: { drills: true } },
+        drills: { select: { name: true }, orderBy: { sortOrder: "asc" }, take: 3 },
       },
-      take: 10,
+      take: 12,
     })
     .catch(() => []);
 
-  const valgtOkt =
-    dagensOkter.find((o) => o.endTime > now) ?? dagensOkter[0] ?? null;
+  const statusAv = (s: string): OktStatus =>
+    s === "COMPLETED" ? "done" : s === "IN_PROGRESS" ? "now" : "upcoming";
+  const varighetMin = (o: { startTime: Date; endTime: Date }) =>
+    Math.max(0, Math.round((o.endTime.getTime() - o.startTime.getTime()) / 60_000));
+  const pyrAv = (pt: string): PyramidArea => PRACTICE_TO_PYRAMID[pt] ?? "TEK";
 
-  const dagensOkt: DagensOkt | null = valgtOkt
+  const dagensProgram: ProgramOkt[] = dagensOkter.map((o) => ({
+    id: o.id,
+    tid: tid(o.startTime),
+    tittel: o.title,
+    meta: `${TEMA_LABEL[pyrAv(o.practiceType)]} · ${varighetMin(o)} min`,
+    status: statusAv(o.status),
+    href: `/portal/gjennomfore/${o.id}`,
+  }));
+
+  // Fokus-økt: pågående → neste planlagte → første.
+  const fokusKilde =
+    dagensOkter.find((o) => o.status === "IN_PROGRESS") ??
+    dagensOkter.find((o) => o.endTime > now) ??
+    dagensOkter[0] ??
+    null;
+
+  const fokusDrills = fokusKilde?.drills.map((d) => d.name) ?? [];
+  const dagensFokus: DagensFokus | null = fokusKilde
     ? {
-        id: valgtOkt.id,
-        tittel: valgtOkt.title,
-        tidsrom: `${tid(valgtOkt.startTime)} — ${tid(valgtOkt.endTime)}`,
-        meta: [
-          `${Math.max(
-            0,
-            Math.round(
-              (valgtOkt.endTime.getTime() - valgtOkt.startTime.getTime()) /
-                60_000,
-            ),
-          )} min`,
-          `${valgtOkt._count.drills} drill${valgtOkt._count.drills === 1 ? "" : "s"}`,
-          user.homeClub ?? "Egen økt",
-        ].join(" · "),
-        pyramide: PRACTICE_TO_PYRAMID[valgtOkt.practiceType] ?? "TEK",
-        href: `/portal/gjennomfore/${valgtOkt.id}`,
+        eyebrow: `Dagens fokus · kl ${tid(fokusKilde.startTime)}`,
+        tittel: fokusKilde.title,
+        italic: FOKUS_ITALIC[pyrAv(fokusKilde.practiceType)],
+        beskrivelse: fokusDrills.length
+          ? fokusDrills.join(", ")
+          : `${fokusKilde._count.drills} drills · ${user.homeClub ?? "egen økt"}`,
+        startHref: `/portal/gjennomfore/${fokusKilde.id}`,
+        planHref: "/portal/planlegge",
       }
     : null;
 
-  // --- SG-KPI: prøv siste BrukerSgInput, fall tilbake til snitt av runder ---
-  const sisteSg = await prisma.brukerSgInput
-    .findFirst({
-      where: { userId },
-      orderBy: { dato: "desc" },
-      select: { sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
-    })
-    .catch(() => null);
-
-  let sgKilde = sisteSg;
-  if (
-    !sgKilde ||
-    (sgKilde.sgOtt == null &&
-      sgKilde.sgApp == null &&
-      sgKilde.sgArg == null &&
-      sgKilde.sgPutt == null)
-  ) {
-    const agg = await prisma.round
-      .aggregate({
-        where: { userId },
-        _avg: { sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
-      })
-      .catch(() => null);
-    sgKilde = agg?._avg ?? null;
+  // --- KPI: HCP · SG Total · Neste økt ---
+  const runder = await prisma.round
+    .findMany({ where: { userId }, orderBy: { playedAt: "desc" }, select: { sgTotal: true } })
+    .catch(() => []);
+  const sgVals = runder.map((r) => r.sgTotal).filter((n): n is number => n != null);
+  const snitt = (xs: number[]) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null);
+  const sgSnitt = snitt(sgVals);
+  let sgTrend: KpiCelle["trend"] | undefined;
+  if (sgVals.length >= 6) {
+    const nyere = snitt(sgVals.slice(0, Math.ceil(sgVals.length / 2)));
+    const eldre = snitt(sgVals.slice(Math.ceil(sgVals.length / 2)));
+    if (nyere != null && eldre != null) {
+      const d = nyere - eldre;
+      sgTrend = { value: `${d >= 0 ? "↑" : "↓"} ${nb2(d, true)}`, tone: d >= 0 ? "positive" : "negative" };
+    }
   }
 
-  const kpi: KpiCelle[] = sgKilde
-    ? [
-        sgKpi("SG Innspill", sgKilde.sgApp),
-        sgKpi("SG Driver", sgKilde.sgOtt),
-        sgKpi("SG Nærspill", sgKilde.sgArg),
-        sgKpi("SG Putt", sgKilde.sgPutt),
-      ]
-    : [];
+  const kpi: KpiCelle[] = [];
+  if (user.hcp != null) kpi.push({ label: "HCP", value: nb2(user.hcp) });
+  if (sgSnitt != null) kpi.push({ label: "SG Total", value: nb2(sgSnitt, true), trend: sgTrend });
+  if (fokusKilde) kpi.push({ label: "Neste økt", value: tid(fokusKilde.startTime) });
 
-  // Hvis alle fire er "—" → behandle som tomt (ingen ekte KPI ennå).
-  const harKpi = kpi.some((k) => k.value !== "—");
-
-  // --- Pyramide-vekting siste 7 dager ---
+  // --- Pyramide siste 7 dager ---
   const ukens = await getWeekProgress(userId).catch(() => null);
-  const REKKEFOLGE = ["turn", "spill", "slag", "tek", "fys"] as const;
+  const REKKEFOLGE = ["fys", "tek", "slag", "spill", "turn"] as const;
   const pyramide: PyramidRow[] =
     ukens && ukens.ukens_stats.okter > 0
       ? REKKEFOLGE.map((k) => {
           const andel = ukens.fordeling.actual[k];
-          return {
-            label: PYRAMID_LABEL[k],
-            fillPercent: Math.round(andel * 100),
-            value: `${Math.round(andel * 100)} %`,
-            tone: PYRAMID_TONE[k],
-          };
+          return { label: PYRAMID_LABEL[k], fillPercent: Math.round(andel * 100), value: `${Math.round(andel * 100)} %`, tone: PYRAMID_TONE[k] };
         })
       : [];
-
   const pyramideNote =
-    pyramide.length > 0
-      ? `${ukens?.ukens_stats.okter} økt${ukens?.ukens_stats.okter === 1 ? "" : "er"} siste 7 dager`
-      : null;
+    pyramide.length > 0 ? `Uke ${ukenummer(now)} · ${ukens?.ukens_stats.okter} økter siste 7 dager` : null;
 
-  // --- Neste tee (framtidig turnering) ---
+  // --- Kommende turneringer (to nærmeste) ---
   const todayMidnight = new Date(now);
   todayMidnight.setHours(0, 0, 0, 0);
   const upcoming = await prisma.tournamentEntry
-    .findFirst({
+    .findMany({
       where: {
         userId,
         entryStatus: { in: ["PLANNED", "CONFIRMED"] },
-        OR: [
-          { tournament: { startDate: { gte: todayMidnight } } },
-          { manualDate: { gte: todayMidnight } },
-        ],
+        OR: [{ tournament: { startDate: { gte: todayMidnight } } }, { manualDate: { gte: todayMidnight } }],
       },
       include: { tournament: true },
       orderBy: [{ tournament: { startDate: "asc" } }, { manualDate: "asc" }],
+      take: 2,
     })
-    .catch(() => null);
+    .catch(() => []);
 
-  const teeDato = upcoming?.tournament?.startDate ?? upcoming?.manualDate ?? null;
-  const nesteTee: NesteTee | null =
-    upcoming && teeDato
-      ? {
-          dagKort: UKEDAG_KORT[teeDato.getDay()],
-          datoTall: String(teeDato.getDate()),
-          navn:
-            upcoming.tournament?.name ?? upcoming.manualName ?? "Turnering",
-          sted:
-            upcoming.tournament?.location ??
-            upcoming.tournament?.country ??
-            upcoming.category ??
-            "Sted ikke satt",
-          naar: naarTekst(dagerTil(teeDato)),
-          href: "/portal/kalender",
-        }
-      : null;
+  const teeAv = (e: (typeof upcoming)[number]): { dato: Date; navn: string; sted: string; status: string } | null => {
+    const dato = e.tournament?.startDate ?? e.manualDate ?? null;
+    if (!dato) return null;
+    return {
+      dato,
+      navn: e.tournament?.name ?? e.manualName ?? "Turnering",
+      sted: e.tournament?.location ?? e.category ?? "Sted ikke satt",
+      status: e.entryStatus === "CONFIRMED" ? "Bekreftet" : "Påmeldt",
+    };
+  };
 
-  // --- AI-innsikt (topp 1) ---
-  const insights = await getCaddieInsights(userId).catch(() => []);
-  const innsikt = insights[0] ?? null;
+  const t0 = upcoming[0] ? teeAv(upcoming[0]) : null;
+  const t1 = upcoming[1] ? teeAv(upcoming[1]) : null;
+
+  const nesteTee: NesteTee | null = t0
+    ? {
+        dagKort: UKEDAG_KORT[t0.dato.getDay()],
+        datoTall: String(t0.dato.getDate()),
+        navn: t0.navn,
+        meta: `${tid(t0.dato)} · 18 hull · ${t0.sted}`,
+        href: "/portal/tren/turneringer",
+      }
+    : null;
+
+  const turn = t1 ?? t0;
+  const nesteTurnering: NesteTurnering | null = turn
+    ? {
+        navn: turn.navn,
+        meta: `${turn.dato.getDate()}. ${MND_KORT[turn.dato.getMonth()].toLowerCase()} · ${turn.sted}`,
+        chip: turn.status,
+        href: "/portal/tren/turneringer",
+        planHref: "/portal/planlegge",
+      }
+    : null;
 
   // --- Hero-tekst ---
   const fornavn = user.name.trim().split(/\s+/)[0] || "spiller";
   const time = now.getHours();
-  const hilsen =
-    time < 5
-      ? "God natt"
-      : time < 11
-        ? "God morgen"
-        : time < 17
-          ? "Hei"
-          : "God kveld";
+  const hilsen = time < 5 ? "God natt" : time < 11 ? "God morgen" : time < 17 ? "Hei" : "God kveld";
 
-  const headlineNormal = `${hilsen}, `;
-  const headlineAksent = `${fornavn}.`;
+  const fokusPyr: PyramidArea | null = fokusKilde ? PRACTICE_TO_PYRAMID[fokusKilde.practiceType] ?? "TEK" : null;
+  const headline: Headline = fokusPyr
+    ? { pre: `${TEMA[fokusPyr]} er`, em: "der", post: "det skjer i dag." }
+    : { pre: "I dag er", em: "det", post: "som teller." };
 
-  const datoEyebrow = `${UKEDAG_KORT[now.getDay()]} ${now.getDate()}. ${MND_KORT[now.getMonth()]} · UKE ${ukenummer(now)}`;
-
-  // Meta-linje: neste tee-nedtelling + plan-status hvis tilgjengelig.
-  const metaDeler: string[] = [];
-  if (nesteTee && teeDato) {
-    const d = dagerTil(teeDato);
-    metaDeler.push(
-      `${nesteTee.navn.toUpperCase()} OM ${d} DAG${d === 1 ? "" : "ER"}`,
-    );
-  }
-  if (ukens && ukens.ukens_stats.okter > 0) {
-    metaDeler.push(
-      `${ukens.ukens_stats.okter} ØKT${ukens.ukens_stats.okter === 1 ? "" : "ER"} SISTE UKE`,
-    );
-  }
-  const metaLinje = metaDeler.length > 0 ? metaDeler.join(" · ") : null;
-
-  // Hero-bilde: stabilt per bruker (deterministisk fra navn-lengde).
+  const datoEyebrow = `${UKEDAG_KORT[now.getDay()]} ${now.getDate()}. ${MND_KORT[now.getMonth()]} · ${(user.homeClub ?? "").toUpperCase() || `UKE ${ukenummer(now)}`}`;
   const heroImageId = ((user.name.length * 7) % 30) + 1;
 
   return {
-    user: {
-      fornavn,
-      initialer: initialerAv(user.name),
-      tier: user.tier,
-      hcp: user.hcp,
-      homeClub: user.homeClub,
-      avatarUrl: user.avatarUrl,
-    },
+    user: { fornavn, initialer: initialerAv(user.name), tier: user.tier, hcp: user.hcp, homeClub: user.homeClub, avatarUrl: user.avatarUrl },
     datoEyebrow,
-    headlineNormal,
-    headlineAksent,
-    metaLinje,
-    heroImageId,
-    dagensOkt,
-    kpi: harKpi ? kpi : [],
+    hilsen,
+    headline,
+    kpi,
+    dagensFokus,
+    dagensProgram,
     pyramide,
     pyramideNote,
     nesteTee,
-    innsikt,
+    nesteTurnering,
+    heroImageId,
+    ukeNr: ukenummer(now),
   };
 }

@@ -1,0 +1,230 @@
+/**
+ * Seed en innloggbar test-SPILLER for skjerm-paritet-screenshots.
+ *
+ * Lager:
+ *  - Supabase Auth-bruker (email_confirm, kjent passord) — så Playwright kan logge inn.
+ *  - Prisma User koblet via authId, kanon-identitet Øyvind Rohjan (PLAYER · PRO · HCP 4,2 · Oslo GK).
+ *  - Rik demo-data (runder, SG, TrackMan, helse, plan, insights) så skjermene ikke er tomme.
+ *
+ * Idempotent. Kjør: npx tsx scripts/seed-screentest.ts
+ */
+
+import { config as loadEnv } from "dotenv";
+loadEnv({ path: ".env.local" });
+
+import { PrismaPg } from "@prisma/adapter-pg";
+import { createClient } from "@supabase/supabase-js";
+import { PrismaClient } from "../src/generated/prisma/client";
+
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
+const prisma = new PrismaClient({ adapter });
+
+const admin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  { auth: { autoRefreshToken: false, persistSession: false } },
+);
+
+const EMAIL = "screentest@akgolf.test";
+const PASSWORD = "Screentest123!";
+const NAME = "Øyvind Rohjan";
+
+function addDays(d: Date, n: number): Date {
+  const r = new Date(d);
+  r.setDate(d.getDate() + n);
+  return r;
+}
+function rand(min: number, max: number): number {
+  return Math.random() * (max - min) + min;
+}
+function roundTo(n: number, places: number): number {
+  const f = 10 ** places;
+  return Math.round(n * f) / f;
+}
+
+/** Opprett (eller hent) Supabase Auth-bruker og returner auth-id. */
+async function ensureAuthUser(): Promise<string> {
+  const created = await admin.auth.admin.createUser({
+    email: EMAIL,
+    password: PASSWORD,
+    email_confirm: true,
+    user_metadata: { role: "PLAYER", tier: "PRO", firstName: "Øyvind", lastName: "Rohjan" },
+  });
+  if (created.data.user) {
+    console.log(`Auth-bruker opprettet: ${created.data.user.id}`);
+    return created.data.user.id;
+  }
+  // Finnes allerede — finn og resett passord.
+  const list = await admin.auth.admin.listUsers({ page: 1, perPage: 200 });
+  const existing = list.data.users.find((u) => u.email === EMAIL);
+  if (!existing) throw new Error(`Kunne ikke opprette eller finne auth-bruker: ${created.error?.message}`);
+  await admin.auth.admin.updateUserById(existing.id, {
+    password: PASSWORD,
+    email_confirm: true,
+    user_metadata: { role: "PLAYER", tier: "PRO", firstName: "Øyvind", lastName: "Rohjan" },
+  });
+  console.log(`Auth-bruker fantes — passord resatt: ${existing.id}`);
+  return existing.id;
+}
+
+async function main() {
+  console.log("Seeder skjermtest-spiller (Øyvind Rohjan)...");
+  const authId = await ensureAuthUser();
+
+  // 1. Prisma User koblet via authId
+  const player = await prisma.user.upsert({
+    where: { email: EMAIL },
+    update: { authId, name: NAME, role: "PLAYER", tier: "PRO", hcp: 4.2, playingYears: 12, ambition: "NM-topping og lavere HCP", homeClub: "Oslo GK", avatarUrl: null },
+    create: { authId, email: EMAIL, name: NAME, role: "PLAYER", tier: "PRO", hcp: 4.2, playingYears: 12, ambition: "NM-topping og lavere HCP", homeClub: "Oslo GK" },
+  });
+  console.log(`Spiller-User: ${player.id}`);
+
+  let course = await prisma.courseDefinition.findFirst({ where: { name: "Oslo GK" } });
+  if (!course) {
+    course = await prisma.courseDefinition.create({ data: { name: "Oslo GK", par: 71, rating: 71.4, slope: 124 } });
+  }
+
+  // Ren seed
+  await prisma.round.deleteMany({ where: { userId: player.id } });
+  await prisma.trackManSession.deleteMany({ where: { userId: player.id } });
+  await prisma.testResult.deleteMany({ where: { userId: player.id } });
+  await prisma.healthEntry.deleteMany({ where: { userId: player.id } });
+  await prisma.trainingPlan.deleteMany({ where: { userId: player.id } });
+  await prisma.sgInsight.deleteMany({ where: { userId: player.id } });
+  await prisma.clubMetricTrend.deleteMany({ where: { userId: player.id } });
+
+  const today = new Date(2026, 5, 8);
+
+  // 2. 14 runder med stigende SG
+  const roundsData = Array.from({ length: 14 }, (_, i) => {
+    const daysAgo = 88 - i * 6 - Math.floor(rand(0, 3));
+    const trend = i / 14;
+    const sgTotal = roundTo(-1.5 + trend * 3 + rand(-1, 1), 2);
+    const sgOtt = roundTo(-0.5 + trend * 0.8 + rand(-0.5, 0.5), 2);
+    const sgApp = roundTo(-0.4 + trend * 1.1 + rand(-0.6, 0.6), 2);
+    const sgArg = roundTo(-0.3 + trend * 0.6 + rand(-0.4, 0.4), 2);
+    const sgPutt = roundTo(-0.3 + trend * 0.5 + rand(-0.5, 0.5), 2);
+    return {
+      userId: player.id, courseId: course!.id, playedAt: addDays(today, -daysAgo),
+      score: Math.round(71 - sgTotal * 1.1 + rand(-1, 1)),
+      sgTotal, sgOtt, sgApp, sgArg, sgPutt,
+      sgTee: roundTo(sgOtt * 0.85, 2),
+      sgApp200: roundTo(sgApp * 0.2 + rand(-0.2, 0.2), 2), sgApp150: roundTo(sgApp * 0.35 + rand(-0.2, 0.2), 2),
+      sgApp100: roundTo(sgApp * 0.3 + rand(-0.15, 0.15), 2), sgApp50: roundTo(sgApp * 0.15 + rand(-0.1, 0.1), 2),
+      sgChip: roundTo(sgArg * 0.4 + rand(-0.1, 0.1), 2), sgPitch: roundTo(sgArg * 0.35 + rand(-0.1, 0.1), 2),
+      sgBunker: roundTo(sgArg * 0.15 + rand(-0.05, 0.05), 2),
+      sgPutt0_3: roundTo(sgPutt * 0.45 + rand(-0.1, 0.1), 2), sgPutt3_5: roundTo(sgPutt * 0.3 + rand(-0.1, 0.1), 2),
+      sgPutt5_10: roundTo(sgPutt * 0.15 + rand(-0.08, 0.08), 2), sgPutt10_15: roundTo(sgPutt * 0.07 + rand(-0.05, 0.05), 2),
+      notes: i === 13 ? "Sterk sluttrunde — 4 birdies på back-9" : null,
+    };
+  });
+  await prisma.round.createMany({ data: roundsData });
+
+  // 3. 12 TrackMan-økter
+  await prisma.trackManSession.createMany({
+    data: Array.from({ length: 12 }, (_, i) => ({
+      userId: player.id, recordedAt: addDays(today, -(58 - i * 5)), source: "csv-import",
+      shotCount: Math.round(rand(30, 90)),
+      environment: (i % 3 === 0 ? "RANGE_OUTDOOR_GRASS" : "SIMULATOR_INDOOR") as "RANGE_OUTDOOR_GRASS" | "SIMULATOR_INDOOR",
+    })),
+  });
+
+  // 4. 30 dager helse
+  await prisma.healthEntry.createMany({
+    data: Array.from({ length: 30 }, (_, i) => ({
+      userId: player.id, date: addDays(today, -(29 - i)),
+      restingHr: Math.round(rand(52, 60)), sleepHours: roundTo(rand(6.2, 8.4), 1), weightKg: roundTo(78 + rand(-1.5, 1.5), 1),
+      notes: i === 5 ? "Litt stiv etter lang økt" : null,
+    })),
+  });
+
+  // 5. Testresultater hvis definisjoner finnes
+  const tests = await prisma.testDefinition.findMany({ take: 6 });
+  if (tests.length > 0) {
+    await prisma.testResult.createMany({
+      data: tests.map((t, i) => ({ userId: player.id, testId: t.id, takenAt: addDays(today, -((i + 1) * 14)), score: roundTo(rand(60, 92), 1), notes: null })),
+    });
+  }
+
+  // 6. TrainingPlan + 12 sessions
+  const plan = await prisma.trainingPlan.create({
+    data: { userId: player.id, name: "Vår-progresjon 2026", startDate: addDays(today, -28), endDate: addDays(today, 28), isActive: true, status: "ACTIVE" },
+  });
+  const pyr: Array<"FYS" | "TEK" | "SLAG" | "SPILL" | "TURN"> = ["TEK", "SLAG", "SPILL", "TEK", "FYS", "SLAG", "SPILL", "TURN", "TEK", "SLAG", "SPILL", "TURN"];
+  const skill: Array<"TEE_TOTAL" | "TILNAERMING" | "AROUND_GREEN" | "PUTTING" | "SPILL"> = ["TEE_TOTAL", "TILNAERMING", "PUTTING", "AROUND_GREEN", "TEE_TOTAL", "TILNAERMING", "PUTTING", "SPILL", "TEE_TOTAL", "TILNAERMING", "AROUND_GREEN", "PUTTING"];
+  const lph: Array<"GRUNN" | "SPESIAL" | "TURNERING"> = ["GRUNN", "GRUNN", "GRUNN", "GRUNN", "SPESIAL", "SPESIAL", "SPESIAL", "SPESIAL", "TURNERING", "TURNERING", "TURNERING", "TURNERING"];
+  await prisma.trainingPlanSession.createMany({
+    data: Array.from({ length: 12 }, (_, i) => ({
+      planId: plan.id, scheduledAt: addDays(today, -24 + i * 4), durationMin: [60, 90, 120][i % 3],
+      title: `Økt ${i + 1} — ${skill[i]}`, pyramidArea: pyr[i], skillArea: skill[i],
+      environment: (["RANGE", "BANE", "STUDIO", "SIMULATOR"][i % 4]) as "RANGE" | "BANE" | "STUDIO" | "SIMULATOR",
+      lPhase: lph[i], pressureLevel: (["PR2", "PR3", "PR3", "PR4", "PR4", "PR5"][i % 6]) as "PR2" | "PR3" | "PR4" | "PR5",
+    })),
+  });
+
+  // 7. SG-insights
+  await prisma.sgInsight.createMany({
+    data: [
+      { userId: player.id, category: "DISTANCE_GAPPING", severity: 4, title: "Gap mellom 8i og PW", body: "25m gap mellom 8-jern og PW (135m → 110m). Jevnere gapping anbefalt.", payload: { from: "8i", to: "PW", gapMeters: 25 } },
+      { userId: player.id, category: "PROGRESSION_TREND", severity: 2, title: "Putt 5-10 ft forbedrer seg", body: "Fra -0.15 til +0.22 SG på putt 5-10 ft siste 4 uker.", payload: { metric: "sgPutt5_10", from: -0.15, to: 0.22 } },
+      { userId: player.id, category: "TRAINING_GAP", severity: 3, title: "For lite Around-Green", body: "Kun 8% treningstid på AROUND_GREEN, anbefalt 15-20%.", payload: { area: "AROUND_GREEN", current: 8, target: 18 } },
+    ],
+  });
+
+  // 8. Dagens program + uke (TrainingSessionV2 — det getHjemData faktisk leser) + turneringer
+  await prisma.trainingSessionV2.deleteMany({ where: { studentId: player.id } });
+  await prisma.tournamentEntry.deleteMany({ where: { userId: player.id } });
+
+  const realNow = new Date();
+  const at = (h: number, m: number, dayOffset = 0): Date => {
+    const d = new Date(realNow);
+    d.setDate(d.getDate() + dayOffset);
+    d.setHours(h, m, 0, 0);
+    return d;
+  };
+  type DrillSeed = { name: string; durationMinutes: number; pyramide: "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN" };
+  const mkSession = async (s: {
+    title: string; start: Date; end: Date; practiceType: "BLOKK" | "RANDOM" | "KONKURRANSE" | "SPILL_TEST";
+    status: "PLANNED" | "IN_PROGRESS" | "COMPLETED"; miljo: "M0" | "M1" | "M2" | "M3" | "M4" | "M5"; drills: DrillSeed[];
+  }) => {
+    await prisma.trainingSessionV2.create({
+      data: {
+        title: s.title, studentId: player.id, coachId: player.id, startTime: s.start, endTime: s.end,
+        miljo: s.miljo, practiceType: s.practiceType, status: s.status, isCoachCreated: true,
+        drills: { create: s.drills.map((d, i) => ({ sortOrder: i, name: d.name, durationMinutes: d.durationMinutes, pyramide: d.pyramide })) },
+      },
+    });
+  };
+
+  // Dagens 3 økter (status styrer done/now/upcoming deterministisk)
+  await mkSession({ title: "Mobility + speed-stick", start: at(7, 0), end: at(7, 50), practiceType: "BLOKK", status: "COMPLETED", miljo: "M1",
+    drills: [{ name: "Dynamisk mobilitet", durationMinutes: 20, pyramide: "FYS" }, { name: "Speed-stick protokoll", durationMinutes: 30, pyramide: "FYS" }] });
+  await mkSession({ title: "Stinger-drill · 150 m", start: at(14, 30), end: at(15, 15), practiceType: "RANDOM", status: "IN_PROGRESS", miljo: "M3",
+    drills: [{ name: "Stinger 150 m", durationMinutes: 25, pyramide: "SLAG" }, { name: "Lav ball-flukt", durationMinutes: 12, pyramide: "TEK" }, { name: "Bane-flight", durationMinutes: 8, pyramide: "SLAG" }] });
+  await mkSession({ title: "Putt 3 m · 30 forsøk", start: at(17, 0), end: at(17, 25), practiceType: "SPILL_TEST", status: "PLANNED", miljo: "M2",
+    drills: [{ name: "3 m putt-test", durationMinutes: 25, pyramide: "SPILL" }] });
+
+  // Uke-historikk for pyramide-vekting (siste 6 dager, fullførte)
+  const weekRoll: Array<{ pyr: "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN"; pt: "BLOKK" | "RANDOM" | "KONKURRANSE" | "SPILL_TEST" }> = [
+    { pyr: "TEK", pt: "BLOKK" }, { pyr: "SLAG", pt: "RANDOM" }, { pyr: "FYS", pt: "BLOKK" },
+    { pyr: "SPILL", pt: "SPILL_TEST" }, { pyr: "TURN", pt: "KONKURRANSE" }, { pyr: "TEK", pt: "BLOKK" },
+  ];
+  for (let i = 0; i < weekRoll.length; i++) {
+    const off = -(i + 1);
+    await mkSession({ title: `Økt ${weekRoll[i].pyr.toLowerCase()}`, start: at(16, 0, off), end: at(17, 30, off), practiceType: weekRoll[i].pt, status: "COMPLETED", miljo: "M2",
+      drills: [{ name: `${weekRoll[i].pyr}-blokk`, durationMinutes: 60, pyramide: weekRoll[i].pyr }, { name: `${weekRoll[i].pyr}-spill`, durationMinutes: 30, pyramide: weekRoll[i].pyr }] });
+  }
+
+  // To kommende turneringer (manuelle)
+  await prisma.tournamentEntry.createMany({
+    data: [
+      { userId: player.id, manualName: "Oslo GK Klubbmesterskap", manualDate: at(9, 0, 5), category: "Klubb", priority: "NORMAL", entryStatus: "CONFIRMED" },
+      { userId: player.id, manualName: "Sørlandsåpne", manualDate: at(9, 0, 20), category: "Srixon Tour", priority: "NORMAL", entryStatus: "PLANNED" },
+    ],
+  });
+
+  console.log(`\n✓ Ferdig. Login: ${EMAIL} / ${PASSWORD}`);
+  await prisma.$disconnect();
+}
+
+main().catch((e) => { console.error(e); process.exit(1); });

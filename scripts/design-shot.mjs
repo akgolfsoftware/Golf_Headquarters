@@ -1,15 +1,15 @@
-// Rendrer Claude Design-prototypen (PlayerHQ) og lagrer ett rent skjermbilde per skjerm.
-// Brukes til knapp→skjerm-godkjenningstabellen (docs/kobling-godkjenning/).
+// Rendrer Claude Design PlayerHQ-prototypen (mobil) og lagrer ett full-høyde skjermbilde per hovedskjerm.
+// Den ferske prototypen bruker intern React-nav (useNav), IKKE window.__ph — vi navigerer ved å klikke bunn-tab-baren.
+// Telefonrammen foldes ut (auto-høyde, ingen bezel, mock-statusbar skjult) så full-page fanger hele skjermen.
 // Kjør: node scripts/design-shot.mjs [DESIGN_DIR] [OUT_DIR]
-// Prototypen er statisk React+Babel (ingen auth). Vi eksponerer window.__ph i ph-shell.jsx.
 import { chromium } from "playwright";
 import http from "node:http";
 import { readFile, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import path from "node:path";
 
-const DESIGN_DIR = process.argv[2] || "/tmp/akds";
-const OUT_DIR = process.argv[3] || "/tmp/akds/_shots";
+const DESIGN_DIR = process.argv[2] || "/Users/anderskristiansen/Developer/akgolf-hq/public/design-handover/AK Golf HQ Design System";
+const OUT_DIR = process.argv[3] || "/tmp/akhq-design-shots";
 const PORT = 8799;
 
 const MIME = {
@@ -19,7 +19,6 @@ const MIME = {
   ".svg": "image/svg+xml", ".woff": "font/woff", ".woff2": "font/woff2",
 };
 
-// --- enkel statisk server for design-mappen ---
 const server = http.createServer(async (req, res) => {
   try {
     const p = decodeURIComponent(req.url.split("?")[0]);
@@ -32,66 +31,51 @@ const server = http.createServer(async (req, res) => {
 });
 await new Promise((r) => server.listen(PORT, r));
 
-// Skjermer å fange. `nav` kjøres i nettleseren mot window.__ph.
+// Bunn-tab-rekkefølge i prototypen (SECTIONS): home, workbench, execute, analyze, me.
+// Navn matcher app-shot.mjs for enkel paring.
 const SCREENS = [
-  { name: "home",              nav: () => window.__ph.setScreen("home") },
-  { name: "live-brief",        nav: () => window.__ph.setLive({ title: "Stinger-drill · 150 m", goal: "4 av 6 innenfor 4 m" }) },
-  { name: "workbench",         nav: () => window.__ph.nav.go("workbench") },
-  { name: "workbench-arsplan", nav: () => window.__ph.nav.go("workbench", { mode: "arsplan" }) },
-  { name: "tournaments",       nav: () => window.__ph.nav.go("tournaments") },
-  { name: "tournament-detail", nav: () => window.__ph.nav.go("tournament-detail", { id: 0 }) },
-  { name: "execute",           nav: () => window.__ph.nav.go("execute") },
-  { name: "analyze",           nav: () => window.__ph.nav.go("analyze") },
-  { name: "me",                nav: () => window.__ph.nav.go("me") },
-  { name: "round-detail",      nav: () => window.__ph.nav.go("round-detail", { course: "Oslo GK" }) },
-  { name: "log-round",         nav: () => window.__ph.nav.go("log-round") },
-  { name: "varsler",           nav: () => window.__ph.nav.go("varsler") },
-  { name: "coach-panel",       nav: () => window.__ph.setCoach({ open: true, tab: "meldinger" }) },
-  // Meg-undersider
-  { name: "me-profil",         nav: () => window.__ph.nav.go("me-profil") },
-  { name: "me-abonnement",     nav: () => window.__ph.nav.go("me-abonnement") },
-  { name: "me-innstillinger",  nav: () => window.__ph.nav.go("me-innstillinger") },
-  { name: "me-helse",          nav: () => window.__ph.nav.go("me-helse") },
-  { name: "me-utstyr",         nav: () => window.__ph.nav.go("me-utstyr") },
-  { name: "me-dokumenter",     nav: () => window.__ph.nav.go("me-dokumenter") },
-  { name: "me-hjelp",          nav: () => window.__ph.nav.go("me-hjelp") },
-  // Auth + onboarding (registrert i PH_SCREENS; rendres som skjerm når authed)
-  { name: "login",             nav: () => window.__ph.nav.go("login") },
-  { name: "signup",            nav: () => window.__ph.nav.go("signup") },
-  { name: "glemt",             nav: () => window.__ph.nav.go("glemt") },
-  { name: "bankid",            nav: () => window.__ph.nav.go("bankid") },
-  { name: "samtykke",          nav: () => window.__ph.nav.go("samtykke") },
-  { name: "onboarding",        nav: () => window.__ph.nav.go("onboarding") },
-  // Coach-skuff faner + AI-Caddie
-  { name: "coach-caddie",      nav: () => window.__ph.setCoach({ open: true, tab: "caddie" }) },
+  { name: "home", tab: 0 },
+  { name: "planlegge", tab: 1 },
+  { name: "gjennomfore", tab: 2 },
+  { name: "analysere", tab: 3 },
+  { name: "meg", tab: 4 },
 ];
+
+// Folder ut telefonrammen så hele den scrollbare skjermen kommer med i full-page.
+const UNWRAP_CSS = `
+  .dev-toggle { display: none !important; }
+  .m-statusbar { display: none !important; }
+  .app--mobile { height: auto !important; min-height: 0 !important; display: block !important; padding: 0 !important; }
+  .phone-frame { width: 430px !important; height: auto !important; max-height: none !important; border-radius: 0 !important; box-shadow: none !important; overflow: visible !important; }
+  .m-scroll { overflow: visible !important; height: auto !important; }
+  .m-bottomnav { display: none !important; }
+`;
 
 await mkdir(OUT_DIR, { recursive: true });
 const browser = await chromium.launch({ headless: true });
-const page = await browser.newPage({ viewport: { width: 1440, height: 980 }, deviceScaleFactor: 2 });
-await page.addInitScript(() => localStorage.setItem("ph-authed", "1"));
+const page = await browser.newPage({ viewport: { width: 430, height: 932 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
+await page.addInitScript(() => { localStorage.setItem("ph-authed", "1"); localStorage.setItem("ph-device", "mobile"); });
 await page.goto(`http://localhost:${PORT}/playerhq-app/PlayerHQ.html`, { waitUntil: "networkidle" });
-await page.waitForFunction(() => !!window.__ph, null, { timeout: 20000 });
-await page.evaluate(() => window.__ph.setDevice("desktop"));
-// skjul flytende device-toggle så den ikke havner i bildene
-await page.addStyleTag({ content: ".dev-toggle{display:none !important}" });
-await page.waitForTimeout(600);
+await page.waitForSelector(".m-bottomnav .m-tab", { timeout: 20000 });
+await page.waitForTimeout(800);
 
 const results = [];
 for (const s of SCREENS) {
   try {
-    await page.evaluate(() => { try { window.__ph.setLive(null); window.__ph.setCoach({ open: false, tab: "meldinger" }); } catch {} window.scrollTo(0, 0); });
-    await page.evaluate(s.nav);
+    await page.locator(".m-bottomnav .m-tab").nth(s.tab).click();
     await page.waitForTimeout(900);
+    await page.addStyleTag({ content: UNWRAP_CSS }); // re-injiser etter evt. re-render
+    await page.waitForTimeout(400);
     await page.evaluate(() => window.scrollTo(0, 0));
-    const txt = await page.evaluate(() => document.body.innerText.slice(0, 60));
+    const txt = await page.evaluate(() => document.body.innerText.slice(0, 50).replace(/\n/g, " "));
     const missing = txt.includes("Mangler skjerm");
     await page.screenshot({ path: path.join(OUT_DIR, `${s.name}.png`), fullPage: true });
-    results.push(`${missing ? "MANGLER" : "OK"}  ${s.name}`);
+    results.push(`${missing ? "MANGLER" : "OK"}  ${s.name.padEnd(12)} — "${txt}"`);
   } catch (e) {
-    results.push(`FEIL    ${s.name}  — ${e.message.split("\n")[0]}`);
+    results.push(`FEIL    ${s.name.padEnd(12)} — ${e.message.split("\n")[0]}`);
   }
 }
 await browser.close();
 server.close();
 console.log(results.join("\n"));
+console.log(`\nLagret i ${OUT_DIR}`);
