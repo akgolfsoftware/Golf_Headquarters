@@ -2,7 +2,7 @@
 
 > Dette er den komplette lista over hver eneste skjerm i appen, og om den er helt ferdig eller ikke. Én plass å se alt.
 
-Sist oppdatert: 4. juni 2026.
+Sist oppdatert: 9. juni 2026.
 
 ---
 
@@ -29,6 +29,7 @@ Tegnforklaring: ✓ = ferdig · ~ = delvis / i arbeid · – = ikke startet.
 
 - **Skjermer totalt vi sporer:** ca. 182 hovedskjermer (pluss mange små undersider — alle er med i lista under). To nye kom inn 4. juni: «Logg treningsøkt» (spiller) og «Fremgang» (coach), begge på ekte data.
 - **Helt ferdige (alle seks haker grønne):** 2 — begge Workbench-variantene (spiller + coach). Det er foreløpig de eneste med ekte data hele veien.
+- **PlayerHQ-hovedskjermer på MOBIL-paritet med ekte data (9. juni):** 5 — Hjem, Planlegge, Gjennomføre, Analysere, Meg. Disse er bygd om fra den FERSKE Claude Design-fasiten (4. juni), kjører på ekte Prisma-data (testspiller Øyvind Rohjan), ligger på ekte adresse, og er verifisert av uavhengig kritiker-agent til **0 avvik** mot fasiten på 430px. Eneste gjenstående hake er desktop/iPad-utgaven (mobil-fasit er portet, ikke desktop-layoutene).
 - **Nytt design ferdig i forhåndsvisning (men venter på ekte data + ekte adresse):** ca. 43 skjermer. Disse fikk nytt v10-utseende i natt, men kjører fortsatt på liksom-tall og ligger i en forhåndsvisning — ikke på sin ekte nettadresse ennå. De er altså «pene, men ikke ferdig koblet».
 - **Ikke startet / fortsatt gammelt design:** flertallet av de ca. 180 — de finnes som adresse i appen, men er ikke pusset opp til nytt design ennå.
 - **Ting designeren har tegnet, men som IKKE har funnet en plass i appen ennå (drop-off):** se egen liste lenger ned. Dette er det viktigste å passe på.
@@ -56,14 +57,14 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Hjem (Workbench-hjem) ★ | `/portal` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| Hjem (Workbench-hjem) ★ | `/portal` | ✓ | ✓~– | ✓ | ✓ | ✓ | ✓ |
 | Varsler | `/portal/varsler` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
 
 ### Planlegge
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Planlegge-hub | `/portal/planlegge` | – | --- | ✓ | – | – | ~ |
+| Planlegge (= Workbench mobil) ★ | `/portal/planlegge` | ✓ | ✓~– | ✓ | ✓ | ✓ | ✓ |
 | **Workbench (planlegging)** ★ | `/portal/planlegge/workbench` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
 | Årsplan | `/portal/tren/aarsplan` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
 | · Rediger periode | `/portal/tren/aarsplan/periode/[id]/rediger` | – | --- | ✓ | – | – | ~ |
@@ -92,7 +93,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Gjennomføre-hub | `/portal/gjennomfore` | – | --- | ✓ | ~ | ~ | ✓ |
+| Gjennomføre (I dag/Kalender/Booking) ★ | `/portal/gjennomfore` | ✓ | ✓~– | ✓ | ✓ | ✓ | ✓ |
 | Kalender | `/portal/kalender` | – | --- | ✓ | ~ | ~ | ✓ |
 | Kalender (alt. adresse) | `/portal/tren/kalender` | – | --- | ✓ | ~ | ~ | ✓ |
 | Ny økt (handlingsvalg) | `/portal/ny-okt` | – | --- | ✓ | ~ | ~ | ✓ |
@@ -113,7 +114,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Analyse-hub | `/portal/analysere` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| Analysere (Les tallene · faner) ★ | `/portal/analysere` | ✓ | ✓~– | ✓ | ✓ | ✓ | ✓ |
 | · Hull-analyse | `/portal/analysere/hull` | ~ | ✓✓– | ✓ | ~ | ✓ | ✓ |
 | Statistikk (oversikt) | `/portal/statistikk` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
 | · Metrikk-detalj | `/portal/statistikk/[metric]` | – | --- | ✓ | ~ | ~ | ~ |
@@ -175,7 +176,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Meg (profil) | `/portal/meg` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| Meg (profil) ★ | `/portal/meg` | ✓ | ✓~– | ✓ | ✓ | ✓ | ✓ |
 | · Rediger profil | `/portal/meg/profil/rediger` | – | --- | ✓ | ~ | ~ | ~ |
 | Abonnement | `/portal/meg/abonnement` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
 | · Oppgrader | `/portal/meg/abonnement/oppgrader` | – | --- | ✓ | ~ | ~ | ~ |
@@ -655,6 +656,13 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 ## Endringslogg
 
+- 9. juni: **De 5 PlayerHQ-hovedskjermene portet til paritet mot den ferske Claude Design-fasiten (mobil 430px), via porting-gaten med uavhengig kritiker-agent per skjerm.** Avdekket at alle 5 fortsatt kjørte gammelt design/IA («feil skjerm»). Bygd om fra design-kilden, koblet til ekte data, kritiker-loop til 0 avvik hver (Hjem 14→0, Planlegge 8→0, Gjennomføre 11→0, Analysere 11→0, Meg 11→0).
+  - **Hjem** (`/portal`): hero+display-headline, 3-KPI, Dagens fokus, Planlegg-i-Workbench, pyramide (5 rader), Resten av dagen, Neste tee, Neste turnering. Utvidet `getHjemData`. Slettet utdatert `hjem-oversikt.tsx`.
+  - **Planlegge** (`/portal/planlegge`): mode-rail-Workbench (Treningsplan-tidslinje default, pyramide-fargede venstrekanter) — erstattet gammel hub-av-kort.
+  - **Gjennomføre** (`/portal/gjennomfore`): faner (I dag/Kalender/Booking) + accent-kort med «Start nå» + dagens program med status-chips — erstattet modul-launcher.
+  - **Analysere** (`/portal/analysere`): «Les tallene»-fane-flate (SG/Runder/TrackMan/Tester/Innsikt) + sesong-header — erstattet treningstimer-hub (feil skjerm).
+  - **Meg** (`/portal/meg`): header + abonnement-kort + 3-KPI + KONTO-lenkeliste (7) + Logg ut — fjernet fane-rad (SubNav).
+  - Verktøy: `app-shot.mjs` (login + per-rute mobil-shots), `design-shot.mjs` (fersk prototyp klikk-nav), `seed-screentest.ts` (innloggbar Øyvind Rohjan med rik data). Alle 5 committet på `design/komplett`. **Gjenstår:** desktop/iPad-paritet for de samme 5; resten av PlayerHQ + AgencyOS.
 - 4. juni: To nye skjermer lagt til på ekte data (port av sprint3-arbeid):
   - **Logg treningsøkt** (`/portal/trening/logg`) — spiller logger treningstid per SG-område; lenket fra PlayerHQ-sidemenyen under «Planlegge».
   - **Fremgang** (`/admin/spillere/[id]/fremgang`) — coach-fane med SG-grafer, treningsvolum og korrelasjon trening↔SG; coach-beskyttet.
