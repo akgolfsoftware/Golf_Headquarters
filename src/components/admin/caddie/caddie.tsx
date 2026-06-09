@@ -21,7 +21,6 @@ import {
   CalendarSync,
   Check,
   Clock,
-  ExternalLink,
   FileText,
   GitCompare,
   GitPullRequest,
@@ -30,14 +29,13 @@ import {
   LineChart,
   Mail,
   MessageSquare,
-  Pencil,
   Search,
   Trophy,
   Wand2,
-  X,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { AuditOpenButton, DraftActions, FleetToggle } from "./_caddie-actions";
 
 // ── Typer (lokale, presentasjonelle) ────────────────────────────
 export type CaddieStatus = "live" | "draft" | "paused" | "review";
@@ -411,24 +409,7 @@ function DraftPanel({ draft }: { draft: CaddieDraft }) {
             </div>
           )}
 
-          <button
-            type="button"
-            className="flex h-11 items-center justify-center gap-2 rounded-lg bg-primary text-sm font-bold tracking-[-0.005em] text-accent transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-          >
-            <Check className="h-3.5 w-3.5" strokeWidth={2} aria-hidden /> Godkjenn og send
-          </button>
-          <button
-            type="button"
-            className="flex h-11 items-center justify-center gap-2 rounded-lg border border-border bg-card text-sm font-bold tracking-[-0.005em] text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-          >
-            <Pencil className="h-3.5 w-3.5" strokeWidth={2} aria-hidden /> Rediger først
-          </button>
-          <button
-            type="button"
-            className="flex h-11 items-center justify-center gap-2 rounded-lg border border-destructive/20 bg-card text-sm font-bold tracking-[-0.005em] text-destructive transition-colors hover:bg-destructive/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive focus-visible:ring-offset-2"
-          >
-            <X className="h-3.5 w-3.5" strokeWidth={2} aria-hidden /> Avvis
-          </button>
+          <DraftActions />
         </div>
       </div>
 
@@ -455,23 +436,6 @@ function MaturityBars({ level }: { level: number }) {
           )}
         />
       ))}
-    </span>
-  );
-}
-
-function Toggle({ on }: { on: boolean }) {
-  return (
-    <span
-      role="switch"
-      aria-checked={on}
-      className={cn("relative inline-block h-5 w-9 rounded-full", on ? "bg-primary" : "bg-input")}
-    >
-      <span
-        className={cn(
-          "absolute top-0.5 h-4 w-4 rounded-full transition-[left]",
-          on ? "left-[18px] bg-accent" : "left-0.5 bg-card",
-        )}
-      />
     </span>
   );
 }
@@ -645,7 +609,7 @@ function FleetPanel({
                     </td>
                     <td className="text-center">
                       <div className="flex justify-center">
-                        <Toggle on={a.enabled} />
+                        <FleetToggle initialOn={a.enabled} agentName={a.name} />
                       </div>
                     </td>
                   </tr>
@@ -786,9 +750,7 @@ function AuditRowCells({ row }: { row: CaddieAuditRow }) {
         </span>
       </div>
       <div className="flex items-center justify-center border-b border-border px-3 py-3">
-        <span className="inline-flex h-[26px] w-[26px] items-center justify-center rounded-md border border-border bg-card text-muted-foreground">
-          <ExternalLink className="h-3 w-3" strokeWidth={1.5} aria-hidden />
-        </span>
+        <AuditOpenButton label={`${row.actorName} · ${row.outcomeLabel} · ${row.dayLabel} ${row.timeLabel}`} />
       </div>
     </>
   );

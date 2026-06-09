@@ -400,10 +400,11 @@ export function MissionControl() {
           <button
             type="button"
             aria-label="Varsler"
-            className="relative inline-flex h-10 w-10 items-center justify-center rounded-[11px] border border-border mc-surface text-foreground"
+            disabled
+            title="Kommer"
+            className="relative inline-flex h-10 w-10 cursor-not-allowed items-center justify-center rounded-[11px] border border-border mc-surface text-muted-foreground opacity-60"
           >
             <Bell size={17} strokeWidth={1.5} />
-            <i className="mc-dot-glow absolute right-2.5 top-[9px] h-[7px] w-[7px] rounded-full bg-accent" />
           </button>
         </header>
 
@@ -503,7 +504,15 @@ export function MissionControl() {
                   {inner}
                 </Link>
               ) : (
-                <button key={m.key} type="button" className={cls}>
+                // Eksterne kilder (Notion/Gmail/Kalender) har ingen in-app
+                // rute ennå → tydelig disablet med «Kommer», ikke død knapp.
+                <button
+                  key={m.key}
+                  type="button"
+                  disabled
+                  title="Kommer"
+                  className={`${cls} cursor-not-allowed opacity-50 hover:translate-y-0 hover:border-border`}
+                >
                   {inner}
                 </button>
               );

@@ -23,7 +23,6 @@ import Link from "next/link";
 import {
   CalendarClock,
   Check,
-  ChevronDown,
   Minus,
   TrendingDown,
   TrendingUp,
@@ -31,6 +30,7 @@ import {
 } from "lucide-react";
 import { Sparkline } from "@/components/athletic";
 import { cn } from "@/lib/utils";
+import { FilterChip, TasksSection } from "./_cockpit-interactive";
 
 // ── Typer ───────────────────────────────────────────────────────
 type AvatarTone = "default" | "primary" | "accent";
@@ -171,10 +171,7 @@ function ColShell({
         >
           {count}
         </span>
-        <span className="ml-auto inline-flex h-[22px] cursor-pointer items-center gap-1 rounded-full bg-secondary px-2 font-mono text-[9px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
-          {filter}
-          <ChevronDown className="h-2.5 w-2.5" strokeWidth={2} aria-hidden />
-        </span>
+        <FilterChip label={filter} />
       </div>
       <div className="flex-1 overflow-y-auto">{children}</div>
     </div>
@@ -365,9 +362,12 @@ function InboxCol({
           <span className="font-mono text-[10px] font-bold text-muted-foreground">
             {inboxCount}
           </span>
-          <span className="ml-auto cursor-pointer font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-primary">
+          <Link
+            href="/admin/innboks"
+            className="ml-auto font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-primary transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-card"
+          >
             SE ALLE
-          </span>
+          </Link>
         </div>
 
         {inbox.map((it, idx) => {
@@ -430,54 +430,12 @@ function InboxCol({
         })}
       </div>
 
-      {/* OPPGAVER */}
-      <div className="border-t border-border px-3.5 pb-3.5 pt-3.5">
-        <div className="flex items-center gap-2 px-2 pb-2.5 pt-1">
-          <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-foreground">
-            OPPGAVER
-          </span>
-          <span className="font-mono text-[10px] font-bold text-muted-foreground">
-            {tasksDoneToday} av {tasksTotalToday} i dag
-          </span>
-          <span className="ml-auto cursor-pointer font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-primary">
-            + NY
-          </span>
-        </div>
-
-        {tasks.map((t) => (
-          <div
-            key={t.id}
-            className="grid cursor-pointer grid-cols-[18px_1fr_auto] items-center gap-x-2.5 rounded-md px-2 py-[7px] hover:bg-secondary"
-          >
-            <span
-              className={cn(
-                "inline-flex h-4 w-4 items-center justify-center rounded border-[1.5px]",
-                t.done
-                  ? "border-primary bg-primary text-accent"
-                  : "border-input bg-card text-transparent",
-              )}
-            >
-              {t.done && <Check className="h-[11px] w-[11px]" strokeWidth={3} aria-hidden />}
-            </span>
-            <span
-              className={cn(
-                "text-xs leading-snug tracking-[-0.005em]",
-                t.done ? "text-muted-foreground line-through" : "text-foreground",
-              )}
-            >
-              {t.label}
-            </span>
-            <span
-              className={cn(
-                "font-mono text-[9px] font-bold uppercase tracking-[0.10em]",
-                t.due ? "text-destructive" : "text-muted-foreground",
-              )}
-            >
-              {t.tag}
-            </span>
-          </div>
-        ))}
-      </div>
+      {/* OPPGAVER — lokal toggle + «+ NY» (client-leaf) */}
+      <TasksSection
+        initialTasks={tasks}
+        doneToday={tasksDoneToday}
+        totalToday={tasksTotalToday}
+      />
     </ColShell>
   );
 }
