@@ -22,16 +22,6 @@ type ActionResult<T extends object = {}> =
   | ({ ok: true } & T)
   | { ok: false; error: string };
 
-// CoachDrillDirectiv-modellen finnes ikke i Prisma-schemaet ennå (planlagt migrasjon).
-// Denne guarden hindrer runtime-krasj (kall på en undefined delegate) inntil
-// migrasjonen er kjørt. Når modellen finnes, returnerer den true automatisk.
-const MODELL_IKKE_KLAR = "Denne funksjonen aktiveres i en kommende oppdatering.";
-function coachDirektivModellKlar(): boolean {
-  return Boolean(
-    (prisma as unknown as Record<string, unknown>).coachDrillDirectiv,
-  );
-}
-
 // ─── Validerings-skjemaer ─────────────────────────────────────────────────────
 
 const SgBreakdownSchema = z
@@ -166,9 +156,7 @@ export async function lagreCoachDirektiv(
 
   const { drillId, type, kommentar, gyldigTil } = parsed.data;
 
-  if (!coachDirektivModellKlar()) return { ok: false, error: MODELL_IKKE_KLAR };
 
-  // @ts-expect-error – CoachDrillDirectiv er planlagt i neste Prisma-migrasjon
   const direktiv = await prisma.coachDrillDirectiv.upsert({
     where: {
       coachId_userId_drillId_type: {
@@ -209,9 +197,7 @@ export async function slettCoachDirektiv(
 ): Promise<ActionResult> {
   const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
-  if (!coachDirektivModellKlar()) return { ok: false, error: MODELL_IKKE_KLAR };
 
-  // @ts-expect-error – CoachDrillDirectiv er planlagt i neste Prisma-migrasjon
   const direktiv = await prisma.coachDrillDirectiv.findUnique({
     where: { id: direktivId },
     select: { id: true, coachId: true, type: true, drillId: true },
@@ -222,7 +208,6 @@ export async function slettCoachDirektiv(
     return { ok: false, error: "Ikke tilgang — kun opprettende coach kan slette" };
   }
 
-  // @ts-expect-error – CoachDrillDirectiv er planlagt i neste Prisma-migrasjon
   await prisma.coachDrillDirectiv.delete({ where: { id: direktivId } });
 
   await audit({
