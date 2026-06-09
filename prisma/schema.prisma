@@ -436,6 +436,8 @@ model User {
 
   // Drill-opprettelse (taxonomy v4)
   createdExercises ExerciseDefinition[] @relation("ExerciseCreator")
+  coachDirektiverGitt    CoachDrillDirectiv[] @relation("DirektivCoach")
+  coachDirektiverMottatt CoachDrillDirectiv[] @relation("DirektivSpiller")
 
   // Voice-memo-opptak (Sprint recording V1)
   uploadedRecordings SessionRecording[] @relation("UploadedRecordings")
@@ -922,6 +924,7 @@ model ExerciseDefinition {
 
   createdByUser  User?          @relation("ExerciseCreator", fields: [createdBy], references: [id], onDelete: SetNull)
   sessionDrills  SessionDrill[]
+  coachDirektiver CoachDrillDirectiv[]
   fysOvelseRader FysOvelseRad[]
 
   @@index([pyramidArea])
@@ -3843,4 +3846,35 @@ model DesignKobling {
   @@index([status])
   @@index([confirmedRoute])
   @@map("design_koblinger")
+}
+
+
+enum CoachDirektivType {
+  PIN
+  BLOCK
+  PRIORITER
+}
+
+/// Coach-direktiv pa en drill for en spiller: PIN (fremhev), BLOCK (skjul), PRIORITER.
+/// Unik per coach+spiller+drill+type. Lagres kun via Prisma (server actions); RLS deny-all.
+model CoachDrillDirectiv {
+  id        String            @id @default(cuid())
+  coachId   String
+  userId    String
+  drillId   String
+  type      CoachDirektivType
+  kommentar String?
+  gyldigTil DateTime?
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  coach User               @relation("DirektivCoach", fields: [coachId], references: [id], onDelete: Cascade)
+  user  User               @relation("DirektivSpiller", fields: [userId], references: [id], onDelete: Cascade)
+  drill ExerciseDefinition @relation(fields: [drillId], references: [id], onDelete: Cascade)
+
+  @@unique([coachId, userId, drillId, type], name: "coachId_userId_drillId_type")
+  @@index([userId])
+  @@index([coachId])
+  @@index([drillId])
+  @@map("coach_drill_directiv")
 }
