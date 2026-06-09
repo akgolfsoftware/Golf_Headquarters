@@ -162,7 +162,7 @@ export function TesterSummaryScreen({ variant = "pr" }: { variant?: "pr" | "prog
 
             {[
               <>
-                <strong>Resultatet er sendt automatisk til coach Anders.</strong> Han ser det i CoachHQ med en gang.
+                <strong>Resultatet er sendt automatisk til coach Anders.</strong> Han ser det i AgencyOS med en gang.
               </>,
               <>
                 Ta samme test om <strong>14 dager</strong> for å måle om PEI under 0,06 holder seg konsistent.

@@ -1,5 +1,5 @@
 /**
- * CoachHQ — Drill-detalj
+ * AgencyOS — Drill-detalj
  * Viser én ExerciseDefinition i full bredde.
  */
 

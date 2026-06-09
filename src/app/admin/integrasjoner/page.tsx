@@ -1,5 +1,5 @@
 /**
- * CoachHQ — Integrasjoner.
+ * AgencyOS — Integrasjoner.
  *
  * Dashboard som viser status for alle tilkoblede tredjeparts-tjenester:
  * Google Calendar, Stripe, Notion, Anthropic, Resend, Supabase.
@@ -148,7 +148,7 @@ export default async function IntegrasjonerPage() {
   return (
     <div className="space-y-8">
       <PageHeader
-        eyebrow="CoachHQ · Verktøy"
+        eyebrow="AgencyOS · Verktøy"
         titleLead="Tilkoblede"
         titleItalic="tjenester"
         sub="Status og konfigurasjon for tredjeparts-integrasjoner."

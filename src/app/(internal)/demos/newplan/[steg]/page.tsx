@@ -89,7 +89,7 @@ function ModalShell({
         <header className="flex items-start justify-between gap-4 border-b border-border px-8 py-6">
           <div className="flex-1">
             <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-              CoachHQ · /admin/plans · ny plan
+              AgencyOS · /admin/plans · ny plan
             </div>
             <h2 className="mt-1 font-display text-[22px] font-bold leading-tight tracking-tight">
               {meta.title}

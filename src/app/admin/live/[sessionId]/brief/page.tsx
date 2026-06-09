@@ -1,5 +1,5 @@
 /**
- * CoachHQ · Live-økt brief — coach-perspektiv
+ * AgencyOS · Live-økt brief — coach-perspektiv
  *
  * Coach ser sesjonens detaljer og kan legge til et fokuspunkt
  * som vises til spilleren før økten starter.

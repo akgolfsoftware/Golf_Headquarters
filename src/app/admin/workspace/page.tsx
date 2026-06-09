@@ -38,7 +38,7 @@ export default async function WorkspaceMinUkePage() {
   return (
     <div className="space-y-6">
       <WorkspaceHero
-        eyebrow="CoachHQ · Workspace"
+        eyebrow="AgencyOS · Workspace"
         title="Min"
         titleItalic="uke"
         sub="23 OPPGAVER · 5 FORFALLER I DAG · 3 BRENNER"

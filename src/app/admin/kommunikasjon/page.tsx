@@ -1,5 +1,5 @@
 /**
- * /admin/kommunikasjon — CoachHQ Kommunikasjon hovedseksjon.
+ * /admin/kommunikasjon — AgencyOS Kommunikasjon hovedseksjon.
  * Tabs: Innboks / E-postmaler / Notion-prosjekter / Notion-oppgaver
  */
 

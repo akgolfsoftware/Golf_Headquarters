@@ -35,7 +35,7 @@ export function TildelTestModalScreen({ playerName = "Øyvind Rohjan", playerIni
         <div className="modal" role="dialog" aria-label="Tildel test">
           <div className="modal-head">
             <div>
-              <div className="eye">CoachHQ · Stall · Spillere</div>
+              <div className="eye">AgencyOS · Stall · Spillere</div>
               <h2>
                 Tildel test til <strong>{playerName}</strong>
               </h2>

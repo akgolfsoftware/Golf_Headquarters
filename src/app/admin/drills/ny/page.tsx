@@ -1,5 +1,5 @@
 /**
- * CoachHQ — Ny drill
+ * AgencyOS — Ny drill
  * Oppretter en ExerciseDefinition via createDrill-action. Speiler felt-settet
  * fra rediger-skjemaet, men starter blankt.
  */
@@ -24,7 +24,7 @@ export default async function NyDrillPage() {
 
       <header>
         <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          CoachHQ · Ny drill
+          AgencyOS · Ny drill
         </span>
         <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
           <em className="font-normal text-primary md:italic">Ny</em> drill

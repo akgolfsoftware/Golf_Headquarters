@@ -72,7 +72,7 @@ export default async function AgentsAdmin() {
   return (
     <div className="space-y-8">
       <PageHeader
-        eyebrow="CoachHQ · Agenter"
+        eyebrow="AgencyOS · Agenter"
         titleLead="Agent"
         titleItalic="pipeline"
         sub={`${signalsCount} signaler · ${planActionsCount} plan-actions totalt.`}

@@ -62,7 +62,7 @@ export default async function AvailabilityAdmin({
   return (
     <div className="space-y-8">
       <PageHeader
-        eyebrow="CoachHQ · Tilgjengelighet"
+        eyebrow="AgencyOS · Tilgjengelighet"
         titleLead="Når er du"
         titleItalic="bookbar"
         sub={

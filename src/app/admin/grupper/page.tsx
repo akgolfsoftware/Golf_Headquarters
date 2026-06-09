@@ -1,5 +1,5 @@
 /**
- * CoachHQ — Grupper (Bølge B)
+ * AgencyOS — Grupper (Bølge B)
  *
  * Coach-view over alle trenings-grupper. Kort-grid med hero-gradient per
  * gruppe, KPI-strip (4 kort, første med dark accent), filter-chips og
@@ -76,7 +76,7 @@ export default async function GrupperPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="CoachHQ · /admin/grupper"
+        eyebrow="AgencyOS · /admin/grupper"
         titleLead={`${groups.length}`}
         titleItalic="grupper"
         titleTrail={`· ${totalMembers} medlemmer · ${totalSchedules} fellesøkter`}

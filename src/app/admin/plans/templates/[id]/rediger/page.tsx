@@ -1,5 +1,5 @@
 /**
- * CoachHQ — Rediger plan-mal.
+ * AgencyOS — Rediger plan-mal.
  *
  * Server-component som henter PlanTemplate og rendrer klient-editor med 6
  * seksjoner (periode, faser, allokering, ukentlig template, drill-bibliotek,

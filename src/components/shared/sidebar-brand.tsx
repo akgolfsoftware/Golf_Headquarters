@@ -7,7 +7,7 @@
  *
  * Brukes konsistent i:
  *  - PlayerHQ sidebar (variant="player")
- *  - CoachHQ sidebar (variant="coach")
+ *  - AgencyOS sidebar (variant="coach")
  *  - Foreldreportal sidebar (variant="parent")
  *  - Mobile drawers (samme komponent, justerbart via prop)
  *

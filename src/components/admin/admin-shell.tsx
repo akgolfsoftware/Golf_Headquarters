@@ -38,10 +38,10 @@ export async function AdminShell({
           <div className="flex min-w-0 items-center gap-2 sm:gap-4">
             <AdminMobileDrawer />
             <div
-              aria-label={`CoachHQ, rolle ${user.role}`}
+              aria-label={`AgencyOS, rolle ${user.role}`}
               className="truncate font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
             >
-              <span className="hidden sm:inline">CoachHQ · </span>
+              <span className="hidden sm:inline">AgencyOS · </span>
               {user.role}
             </div>
           </div>

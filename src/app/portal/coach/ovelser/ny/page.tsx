@@ -18,7 +18,7 @@ export default async function NyOvelsePage() {
       </Link>
 
       <PageHeader
-        eyebrow="CoachHQ · Ny øvelse"
+        eyebrow="AgencyOS · Ny øvelse"
         titleLead="Opprett"
         titleItalic="øvelse"
       />

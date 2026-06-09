@@ -32,7 +32,7 @@ export default async function EmailTemplatesAdmin() {
   return (
     <div className="space-y-8">
       <PageHeader
-        eyebrow="CoachHQ · Admin · Maler"
+        eyebrow="AgencyOS · Admin · Maler"
         titleLead="Maler."
         titleItalic={`${templates.length} e-post${templates.length === 1 ? "" : "er"} du sender ofte.`}
         sub={`Slug-baserte maler brukes av agent-pipeline for automatiske e-poster. ${aktive} aktiv${aktive === 1 ? "" : "e"} · ${templates.length} totalt.`}

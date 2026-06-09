@@ -1,5 +1,5 @@
 /**
- * CoachHQ — Team
+ * AgencyOS — Team
  * Design migrert fra wireframe/design-files-v2/final/08-team.html.
  *
  * Card-grid med 2 kolonner (mobile 1), avatar i sirkel, rolle-tags,
@@ -43,7 +43,7 @@ export default async function TeamAdmin() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow={`CoachHQ · /admin/team`}
+        eyebrow={`AgencyOS · /admin/team`}
         titleLead={`${totalCount}`}
         titleItalic="coacher"
         titleTrail={`· ${totalSpillere} spillere fordelt`}

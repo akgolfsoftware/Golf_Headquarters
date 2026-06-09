@@ -4,7 +4,7 @@
  * Bruker italic Inter Tight via font-display + <em>, matchet
  * mot demo-page-stilen (se /360-demo, /daglig-brief-demo).
  *
- * Eyebrow:    Liten uppercase tekst over tittelen ("CoachHQ · onsdag 14. mai")
+ * Eyebrow:    Liten uppercase tekst over tittelen ("AgencyOS · onsdag 14. mai")
  * Title:      Hovedtittel, max 1-2 ord italic (resten regular)
  * Sub:        Sub-tekst under (forklaring eller kontekst)
  * Actions:    Slot for høyrejusterte action-knapper

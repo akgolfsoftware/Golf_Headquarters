@@ -1,5 +1,5 @@
 /**
- * CoachHQ · AgencyOS — Caddie-aktivitet
+ * AgencyOS · AgencyOS — Caddie-aktivitet
  *
  * Sentral oversikt over AI-Caddie sin aktivitet i akademiet. Tidslinje med
  * hendelser (forslag, analyser, eskaleringer, flagg), KPI-strip, mest aktive

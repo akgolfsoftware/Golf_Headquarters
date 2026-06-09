@@ -1,5 +1,5 @@
 /**
- * /admin/gjennomfore — CoachHQ Gjennomføre hub
+ * /admin/gjennomfore — AgencyOS Gjennomføre hub
  * Design: docs/design-handoff/2026-05-24-hubs/project/manglende-hubs/hubs-coach.jsx (CoachGjennomfore)
  */
 

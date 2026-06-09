@@ -1,6 +1,6 @@
 "use client";
 
-// CoachHQ — Ny drill-skjema. Speiler felt-settet i rediger-skjemaet, men
+// AgencyOS — Ny drill-skjema. Speiler felt-settet i rediger-skjemaet, men
 // starter blankt og kaller createDrill. Holder seg til de viktigste feltene;
 // resten finjusteres på drill-detaljen etter opprettelse.
 

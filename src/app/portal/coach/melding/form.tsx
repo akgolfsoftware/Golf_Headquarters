@@ -104,7 +104,7 @@ export function MeldingForm({ coacher }: { coacher: Coach[] }) {
             </div>
             <div className="font-mono text-[11px] text-muted-foreground">
               {/* TODO: hent reell svartid og online-status */}
-              Direkte melding via CoachHQ
+              Direkte melding via AgencyOS
             </div>
           </div>
         </div>

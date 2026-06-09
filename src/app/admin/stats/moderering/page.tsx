@@ -18,7 +18,7 @@ import { ModeringClient } from "./client";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Stats moderering | CoachHQ",
+  title: "Stats moderering | AgencyOS",
   description: "Modereringskø for AK Golf Stats.",
   robots: { index: false },
 };

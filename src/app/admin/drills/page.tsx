@@ -1,5 +1,5 @@
 /**
- * /admin/drills — CoachHQ Drill-bibliotek (samme UI som /portal/drills)
+ * /admin/drills — AgencyOS Drill-bibliotek (samme UI som /portal/drills)
  * Design: plan Del 6
  *
  * Coach-versjon: grid + slide-in panel med "Ny drill". Data hentes fra ekte

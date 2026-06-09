@@ -162,7 +162,7 @@ export default async function TilstanderPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="CoachHQ · Design-system · Tilstander"
+        eyebrow="AgencyOS · Design-system · Tilstander"
         titleLead="Tilstander"
         titleItalic="· økt-kort"
         sub="Et kort gjennom hele øktens liv — fra plan til etter. 9 tilstander."
@@ -209,7 +209,7 @@ export default async function TilstanderPage() {
       </div>
 
       <footer className="mt-4 flex flex-col items-start justify-between gap-2 border-t border-border pt-4 text-[12px] text-muted-foreground sm:flex-row sm:items-center">
-        <span>AK Golf Platform · CoachHQ · /admin/tilstander</span>
+        <span>AK Golf Platform · AgencyOS · /admin/tilstander</span>
         <span className="font-mono">9 tilstander · design-system v2</span>
       </footer>
     </div>

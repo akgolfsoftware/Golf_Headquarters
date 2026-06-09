@@ -38,7 +38,7 @@ export function CoachSpillerTesterTabScreen({
             Stall
           </Link>
           <div style={{ fontFamily: "var(--font-mono)", fontSize: "11px", color: "var(--muted)", letterSpacing: "0.04em" }}>
-            CoachHQ &nbsp;/&nbsp; Stall &nbsp;/&nbsp; <span style={{ color: "var(--ink)", fontWeight: 700 }}>{playerName}</span>
+            AgencyOS &nbsp;/&nbsp; Stall &nbsp;/&nbsp; <span style={{ color: "var(--ink)", fontWeight: 700 }}>{playerName}</span>
           </div>
           <div className="player">
             <div className="avatar">AK</div>

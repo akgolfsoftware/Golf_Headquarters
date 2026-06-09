@@ -1,5 +1,5 @@
 /**
- * CoachHQ · Turneringer · Dubletter
+ * AgencyOS · Turneringer · Dubletter
  *
  * Coach gjennomgår potensielle dubletter mellom MANUAL-turneringer
  * (lagt til av spillere via PlayerHQ) og synkroniserte DATAGOLF/NGF-turneringer.
@@ -138,7 +138,7 @@ export default async function DubletterPage() {
       </div>
 
       <PageHeader
-        eyebrow="CoachHQ · Turneringer"
+        eyebrow="AgencyOS · Turneringer"
         titleLead="Vurder"
         titleItalic="dubletter"
         sub={`${manuals.length} ${manuals.length === 1 ? "manuell turnering" : "manuelle turneringer"} venter på vurdering. Merge når kilden matcher.`}

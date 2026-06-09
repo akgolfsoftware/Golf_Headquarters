@@ -18,7 +18,7 @@ export default async function NyMal() {
       </Link>
 
       <PageHeader
-        eyebrow="CoachHQ · Treningsplaner · Maler"
+        eyebrow="AgencyOS · Treningsplaner · Maler"
         titleLead="Ny"
         titleItalic="mal"
         titleTrail="fra bunn"

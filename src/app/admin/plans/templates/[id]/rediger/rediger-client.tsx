@@ -202,7 +202,7 @@ export function TemplateEditor({ initial }: { initial: EditorInitialData }) {
       <header className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4 sm:p-6 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0 flex-1 space-y-2">
           <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            CoachHQ · Treningsplaner · Mal-editor
+            AgencyOS · Treningsplaner · Mal-editor
           </div>
           <h1 className="font-display text-2xl font-semibold leading-tight tracking-tight md:text-3xl">
             Rediger{" "}

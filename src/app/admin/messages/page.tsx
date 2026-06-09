@@ -106,7 +106,7 @@ export default async function AdminMessages({
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="CoachHQ · Meldinger"
+        eyebrow="AgencyOS · Meldinger"
         titleLead="Min"
         titleItalic="innboks"
         sub={

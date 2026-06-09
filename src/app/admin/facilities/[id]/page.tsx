@@ -226,7 +226,7 @@ async function UkeView({
       </Link>
 
       <PageHeader
-        eyebrow={`CoachHQ · ${facility.location.name}`}
+        eyebrow={`AgencyOS · ${facility.location.name}`}
         titleLead={facility.name}
         titleItalic={`· uke ${ukeNr}`}
         sub={`${dagFormatter.format(dager[0])} – ${dagFormatter.format(dager[6])} ${ukeStart.getFullYear()} · Kapasitet ${facility.capacity}`}
@@ -460,7 +460,7 @@ async function MndView({
       </Link>
 
       <PageHeader
-        eyebrow={`CoachHQ · ${facility.location.name}`}
+        eyebrow={`AgencyOS · ${facility.location.name}`}
         titleLead={facility.name}
         titleItalic={`· ${MND_NAVN[month]} ${year}`}
         sub={`Måneds-oversikt · Kapasitet ${facility.capacity}`}

@@ -1,5 +1,5 @@
 /**
- * CoachHQ · Tester · Foreslåtte tester
+ * AgencyOS · Tester · Foreslåtte tester
  *
  * Viser custom-tester laget av spillere som ønsker coach-godkjenning
  * (visibility: COACH, isCoachApproved: false). Coach kan godkjenne (gjør
@@ -57,7 +57,7 @@ export default async function ForeslatteTesterPage() {
       </div>
 
       <PageHeader
-        eyebrow="CoachHQ · /admin/tester/foreslatte"
+        eyebrow="AgencyOS · /admin/tester/foreslatte"
         titleLead="Foreslåtte"
         titleItalic="tester"
         sub="Spillere har sendt inn egne tester for godkjenning. Godkjente tester blir tilgjengelige for hele akademi."

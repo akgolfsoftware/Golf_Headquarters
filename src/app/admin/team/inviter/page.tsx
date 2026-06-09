@@ -1,5 +1,5 @@
 /**
- * CoachHQ — Inviter coach
+ * AgencyOS — Inviter coach
  * Enkelt invitasjonsskjema. Bruker eksisterende server action
  * `inviterCoach` i `src/app/admin/team/actions.ts`.
  */
@@ -14,7 +14,7 @@ export default async function InviterCoachPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="CoachHQ · /admin/team/inviter"
+        eyebrow="AgencyOS · /admin/team/inviter"
         titleLead="Inviter"
         titleItalic="coach"
         sub="Coachen får en e-post med innloggingslink og kan logge inn umiddelbart med samme e-post."

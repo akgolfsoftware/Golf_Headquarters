@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Push-varsler-toggle for PlayerHQ / CoachHQ.
+ * Push-varsler-toggle for PlayerHQ / AgencyOS.
  *
  * Flyt når brukeren skrur PÅ:
  *  1. Request permission via Notification.requestPermission()

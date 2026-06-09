@@ -1,5 +1,5 @@
 /**
- * /admin/analysere — CoachHQ Innsikt hub
+ * /admin/analysere — AgencyOS Innsikt hub
  * Design: hubs-coach.jsx (CoachInnsikt)
  */
 

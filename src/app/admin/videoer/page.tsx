@@ -37,7 +37,7 @@ export default async function VideoerPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="CoachHQ · Coaching-videoer"
+        eyebrow="AgencyOS · Coaching-videoer"
         titleLead="Last opp og"
         titleItalic="del"
         titleTrail="med spillerne"

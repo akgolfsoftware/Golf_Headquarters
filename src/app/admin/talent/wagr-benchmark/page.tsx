@@ -53,7 +53,7 @@ export default async function WagrBenchmarkPage() {
   return (
     <div className="space-y-8">
       <PageHeader
-        eyebrow="CoachHQ · Talent · WAGR-benchmark"
+        eyebrow="AgencyOS · Talent · WAGR-benchmark"
         titleLead="Kalibrer mot"
         titleItalic="verdens beste"
         sub={`Snapshot fra wagr.com · uke ${getIsoWeek(snapshotDato)}/${snapshotDato.getFullYear()}. NGF-kategori (A-L) beregnes fra Pts Avg.`}

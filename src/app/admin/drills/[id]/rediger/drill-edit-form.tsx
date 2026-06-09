@@ -1,6 +1,6 @@
 "use client";
 
-// CoachHQ — Drill edit-skjema.
+// AgencyOS — Drill edit-skjema.
 // Stort form med alle 27 felt på ExerciseDefinition.
 // Mobile: stack alt vertikalt. Desktop: 2-kol-grid for kompakte felt.
 

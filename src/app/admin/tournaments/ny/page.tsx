@@ -1,5 +1,5 @@
 /**
- * CoachHQ · Ny turnering — wizard
+ * AgencyOS · Ny turnering — wizard
  *
  * Full-page multi-stegs wizard (5 steg) for å opprette en ny Tournament.
  * Server-component som henter kursliste og delegerer til klient-komponent.
@@ -23,7 +23,7 @@ export default async function NyTurneringPage() {
   return (
     <div className="mx-auto flex w-full max-w-[880px] flex-col gap-6 px-4 py-6 sm:gap-8 sm:px-6 sm:py-12 md:py-16">
       <PageHeader
-        eyebrow="CoachHQ · /admin/tournaments/ny"
+        eyebrow="AgencyOS · /admin/tournaments/ny"
         titleLead="Opprett en"
         titleItalic="ny"
         titleTrail="turnering."

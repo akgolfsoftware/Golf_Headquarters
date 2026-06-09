@@ -1,5 +1,5 @@
 /**
- * CoachHQ — Anlegg (samle-side).
+ * AgencyOS — Anlegg (samle-side).
  *
  * Tabs:
  *  - grid        : Anlegg-kort-grid (AnleggGrid)
@@ -90,7 +90,7 @@ export default async function AnleggPage({
   return (
     <div className="mx-auto max-w-[1240px] space-y-6">
       <PageHeader
-        eyebrow="CoachHQ · Drift"
+        eyebrow="AgencyOS · Drift"
         titleLead="Anlegg og"
         titleItalic="tilgjengelighet"
         sub="Lokasjoner, fasiliteter og trener-tilgjengelighet samlet."

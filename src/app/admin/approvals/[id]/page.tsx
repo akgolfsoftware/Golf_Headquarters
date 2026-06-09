@@ -1,5 +1,5 @@
 /**
- * CoachHQ — Godkjenning detaljvisning
+ * AgencyOS — Godkjenning detaljvisning
  *
  * Detalj-side for én PlanAction. Coach kan godkjenne, avslå med begrunnelse,
  * be om mer info, eller åpne meldingstråd. Designet er migrert fra

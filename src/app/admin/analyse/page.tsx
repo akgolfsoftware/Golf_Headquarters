@@ -128,7 +128,7 @@ export default async function AnalysePage({
     return (
       <div className="space-y-6">
         <PageHeader
-          eyebrow={`CoachHQ · stall-analyse · ${periode.label}`}
+          eyebrow={`AgencyOS · stall-analyse · ${periode.label}`}
           titleLead="Hele stallen"
           titleItalic="i ett blikk"
           sub="Hit-rate per spiller × pyramide-område. Klikk en celle for drill-down."
@@ -144,7 +144,7 @@ export default async function AnalysePage({
     return (
       <div className="space-y-6">
         <PageHeader
-          eyebrow="CoachHQ · treningsanalyse"
+          eyebrow="AgencyOS · treningsanalyse"
           titleLead="Krysstabuler"
           titleItalic="all aktivitet"
           sub="Ingen spillere funnet. Opprett en spiller for å begynne."
@@ -212,7 +212,7 @@ export default async function AnalysePage({
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow={`CoachHQ · treningsanalyse · ${periode.label}`}
+        eyebrow={`AgencyOS · treningsanalyse · ${periode.label}`}
         titleLead="Krysstabuler"
         titleItalic="all aktivitet"
         sub={`Hva har ${valgtSpiller.name} faktisk trent på — i hvilken signatur?`}

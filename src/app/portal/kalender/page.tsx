@@ -7,7 +7,7 @@
 //   - Default tier-gating: GRATIS låser Avansert
 //
 // Standard skjuler ÅR-vyen + periodemodal. Avansert eksponerer alt — samme
-// komponenter som CoachHQ-versjonen.
+// komponenter som AgencyOS-versjonen.
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";

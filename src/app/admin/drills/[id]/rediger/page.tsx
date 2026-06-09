@@ -1,5 +1,5 @@
 /**
- * CoachHQ — Drill-redaktør (edit form)
+ * AgencyOS — Drill-redaktør (edit form)
  * Loader drill + alle andre drills (til prerequisites-multiselect).
  */
 
@@ -41,7 +41,7 @@ export default async function DrillEditPage({
 
       <header>
         <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          CoachHQ · Rediger drill
+          AgencyOS · Rediger drill
         </span>
         <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
           <em className="font-normal text-primary md:italic">Rediger</em>{" "}

@@ -2,7 +2,7 @@
  * <TabBar> — lime-accent tabs med URL-state (?tab=X)
  *
  * Plan-IA: brukes i alle hovedseksjoner (Planlegge/Gjennomføre/Analysere/Coach
- * + CoachHQ-tilsvarende). Pille-knapper med count-badge per Q1-CSS-spec.
+ * + AgencyOS-tilsvarende). Pille-knapper med count-badge per Q1-CSS-spec.
  */
 
 "use client";

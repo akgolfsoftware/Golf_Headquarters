@@ -1,5 +1,5 @@
 /**
- * CoachHQ — Kalender (måneds-vy).
+ * AgencyOS — Kalender (måneds-vy).
  *
  * Bygd fra src/app/kalender-maaned-demo/page.tsx, koblet til Prisma:
  *  - prisma.booking.findMany() for hele måned + buffer-uker
@@ -166,7 +166,7 @@ export default async function KalenderManedPage({
   return (
     <div className="flex flex-col gap-6 px-6 py-8 md:px-10 md:py-10">
       <PageHeader
-        eyebrow="CoachHQ · Kalender"
+        eyebrow="AgencyOS · Kalender"
         titleLead="Kalender"
         titleItalic="måned"
         sub="Zoom ut. Se hvor måneden tetner."

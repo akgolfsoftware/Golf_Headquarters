@@ -42,7 +42,7 @@ export default async function CalendarSettings({
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="CoachHQ · Innstillinger · Google Calendar"
+        eyebrow="AgencyOS · Innstillinger · Google Calendar"
         titleLead="Google"
         titleItalic="Calendar"
         titleTrail="2-way sync"

@@ -151,7 +151,7 @@ export function CoachTesterStallScreen() {
       <main className="main">
         <header className="topbar">
           <div style={{ fontFamily: "var(--font-mono)", fontSize: "11px", color: "var(--muted)", letterSpacing: "0.04em" }}>
-            CoachHQ &nbsp;/&nbsp; Innsikt &nbsp;/&nbsp;{" "}
+            AgencyOS &nbsp;/&nbsp; Innsikt &nbsp;/&nbsp;{" "}
             <span style={{ color: "var(--ink)", fontWeight: 700 }}>Tester · stall</span>
           </div>
           <div className="player">
@@ -166,7 +166,7 @@ export function CoachTesterStallScreen() {
         <div className="page" style={{ maxWidth: "1480px" }}>
           <section className="hero coach-hero">
             <div>
-              <div className="eyebrow">CoachHQ · Innsikt · Tester · Hele stallen</div>
+              <div className="eyebrow">AgencyOS · Innsikt · Tester · Hele stallen</div>
               <h1>
                 Tester <em>på tvers</em> av stallen
               </h1>

@@ -1,5 +1,5 @@
 /**
- * /admin/workspace/tildelt-meg — CoachHQ "Tildelt meg"
+ * /admin/workspace/tildelt-meg — AgencyOS "Tildelt meg"
  *
  * Enkel innboks-stil med kort over oppgaver tildelt deg.
  */

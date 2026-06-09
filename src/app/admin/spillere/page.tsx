@@ -1,5 +1,5 @@
 /**
- * CoachHQ / AgencyOS — Stallen (spilleroversikt).
+ * AgencyOS / AgencyOS — Stallen (spilleroversikt).
  *
  * Default view ("tabell") er den pixel-portede AgencyOS-spillertabellen
  * (public/design-handover/agencyos/components-agency-player-table.html):

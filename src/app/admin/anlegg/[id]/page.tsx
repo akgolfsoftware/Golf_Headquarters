@@ -1,5 +1,5 @@
 /**
- * CoachHQ — Anlegg-detalj per lokasjon (KART + KALENDER).
+ * AgencyOS — Anlegg-detalj per lokasjon (KART + KALENDER).
  *
  * URL: /admin/anlegg/[id]
  *   - [id] = Location.id (cuid)

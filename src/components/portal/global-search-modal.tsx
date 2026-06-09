@@ -184,7 +184,7 @@ const ACTIONS: Action[] = [
   {
     id: "view-mode-coach",
     label: "Bytt til Coach-view",
-    description: "Hopp tilbake til CoachHQ (kun for coach/admin)",
+    description: "Hopp tilbake til AgencyOS (kun for coach/admin)",
     keywords: ["coach", "coachhq", "admin", "bytt", "view"],
     icon: UserCog,
     kind: { type: "view-mode-coach" },

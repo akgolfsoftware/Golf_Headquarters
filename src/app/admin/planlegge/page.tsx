@@ -1,5 +1,5 @@
 /**
- * /admin/planlegge — CoachHQ Planlegge hub
+ * /admin/planlegge — AgencyOS Planlegge hub
  * Design: docs/design-handoff/2026-05-24-hubs/project/manglende-hubs/hubs-coach.jsx (CoachPlanlegge)
  */
 

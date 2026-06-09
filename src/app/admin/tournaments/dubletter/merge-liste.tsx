@@ -126,7 +126,7 @@ function DublettKort({ kandidat }: { kandidat: MergeKandidat }) {
       <div className="divide-y divide-border">
         {kandidat.forslag.length === 0 ? (
           <div className="px-6 py-6 text-sm text-muted-foreground">
-            Ingen automatiske match-forslag. Du kan velge fra full liste i CoachHQ.
+            Ingen automatiske match-forslag. Du kan velge fra full liste i AgencyOS.
           </div>
         ) : (
           kandidat.forslag.map((f) => (

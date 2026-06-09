@@ -51,7 +51,7 @@ export default async function WorkspaceNotionPage({
   return (
     <div className="space-y-6">
       <header className="-mx-4 -mt-4 border-b border-border bg-gradient-to-b from-[#FBFAF5] to-background px-4 py-8 md:-mx-8 md:-mt-8 md:px-8">
-        <AthleticEyebrow>CoachHQ · Workspace · Notion</AthleticEyebrow>
+        <AthleticEyebrow>AgencyOS · Workspace · Notion</AthleticEyebrow>
         <h1 className="font-display mt-2 text-3xl font-bold leading-tight tracking-tight md:text-4xl">
           Notion-{" "}
           <em
@@ -165,7 +165,7 @@ function EmptyState({
               Kun ADMIN kan koble til Notion
             </h2>
             <p className="mt-2 text-[13.5px] leading-relaxed text-muted-foreground">
-              Snakk med Anders hvis du vil at en database skal synkes til CoachHQ.
+              Snakk med Anders hvis du vil at en database skal synkes til AgencyOS.
             </p>
           </div>
         </div>
@@ -200,7 +200,7 @@ function EmptyState({
               i Vercel for å koble til
             </h2>
             <p className="mt-2 text-[13.5px] leading-relaxed text-muted-foreground">
-              CoachHQ bruker en Notion Internal Integration. Tokenet ligger som
+              AgencyOS bruker en Notion Internal Integration. Tokenet ligger som
               env-var i Vercel — ingen OAuth-flyt nødvendig.
             </p>
           </div>
@@ -429,7 +429,7 @@ function ConnectedState({
         </div>
         <div className="rounded-2xl border border-border bg-card p-6">
           <div className="font-mono grid grid-cols-[180px_1fr_110px] gap-4 border-b border-border pb-2 text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
-            <div>CoachHQ-felt</div>
+            <div>AgencyOS-felt</div>
             <div>Notion-property</div>
             <div>Type</div>
           </div>

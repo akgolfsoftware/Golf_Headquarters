@@ -1,6 +1,6 @@
 "use client";
 
-// Global Cmd+K søk-modal for CoachHQ.
+// Global Cmd+K søk-modal for AgencyOS.
 //
 // Trigger: Cmd+K (Mac) / Ctrl+K (Win) hvor som helst i admin-shell.
 // Lytter på keydown globalt og mountes én gang fra AdminShell.
@@ -42,7 +42,7 @@ import {
 
 const ICON_STROKE = 1.5;
 
-// Hurtig-handlinger for CoachHQ. Disse er statiske, filtreres lokalt på
+// Hurtig-handlinger for AgencyOS. Disse er statiske, filtreres lokalt på
 // label + description + keywords (alle case-insensitive). De vises ALLTID
 // øverst i modalen — også når query er tom — som onboarding-/discoverability-hint.
 //
@@ -620,7 +620,7 @@ export function GlobalSearchModal() {
             aria-hidden
           />
           <label htmlFor="global-search-input" className="sr-only">
-            Søk i CoachHQ
+            Søk i AgencyOS
           </label>
           <input
             id="global-search-input"

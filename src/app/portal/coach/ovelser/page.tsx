@@ -51,7 +51,7 @@ export default async function CoachOvelserPage({
     <div className="mx-auto max-w-[1240px] space-y-6 px-4 pb-20 sm:px-6 md:space-y-8 md:pb-0">
       <div className="flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:justify-between">
         <PageHeader
-          eyebrow="CoachHQ · Bibliotek"
+          eyebrow="AgencyOS · Bibliotek"
           titleLead="Drills og"
           titleItalic="øvelser"
           sub={`${exercises.length} øvelse${exercises.length === 1 ? "" : "r"} i biblioteket`}

@@ -3,7 +3,7 @@
 /**
  * NotaterPanel — Coach-private notater om en enkelt spiller.
  *
- * Pure presentational komponent. Brukes i Coach Workbench (CoachHQ Individuelt)
+ * Pure presentational komponent. Brukes i Coach Workbench (AgencyOS Individuelt)
  * for å vise notater coach har skrevet om spilleren. Inkluderer søkefelt for å
  * filtrere på tittel, innhold eller tag.
  *

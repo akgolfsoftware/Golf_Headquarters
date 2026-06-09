@@ -1,5 +1,5 @@
 /**
- * CoachHQ · Live-økt summary — coach-perspektiv
+ * AgencyOS · Live-økt summary — coach-perspektiv
  *
  * Post-økt sammendrag: coach vurderer øktens kvalitet,
  * skriver observasjoner og lagrer til spillerprofilen.

@@ -5,7 +5,7 @@
  *
  * Holder hvilken visningsmodus en innlogget spiller har valgt for kalender-
  * og analyse-sidene i /portal. Standard skjuler taksonomi-koder og avanserte
- * visninger; Avansert eksponerer alt — samme som CoachHQ-versjonen.
+ * visninger; Avansert eksponerer alt — samme som AgencyOS-versjonen.
  *
  * Persisteres i localStorage under nøkkelen `playerhq_view_mode` slik at
  * valget overlever sidereload. Lytter også på `storage`-event, slik at en

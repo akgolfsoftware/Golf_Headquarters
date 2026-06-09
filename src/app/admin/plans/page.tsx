@@ -1,5 +1,5 @@
 /**
- * CoachHQ — Treningsplaner
+ * AgencyOS — Treningsplaner
  * Design migrert fra wireframe/design-files-v2/final/01-treningsplaner.html.
  *
  * Kanban-view med 3 kolonner: Aktiv / Pause / Arkivert. Plan-kort inneholder
@@ -149,7 +149,7 @@ export default async function AdminPlansList({
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="CoachHQ · /admin/plans"
+        eyebrow="AgencyOS · /admin/plans"
         titleLead="Treningsplaner —"
         titleItalic={`${aktivCount} aktive`}
         sub={`${totalSpillere} spillere · ${forfaller} forfaller denne uka · ${arkivCount} arkivert`}

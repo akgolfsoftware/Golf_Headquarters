@@ -1,5 +1,5 @@
 /**
- * CoachHQ — Klubb-innstillinger (multi-club setup)
+ * AgencyOS — Klubb-innstillinger (multi-club setup)
  *
  * ADMIN-only side hvor Anders kan se og redigere alle klubbene
  * (Locations). Hver klubb-card viser spillere, coacher, default-fasilitet
@@ -132,7 +132,7 @@ export default async function KlubbInnstillingerPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="CoachHQ · /admin/klubb/innstillinger"
+        eyebrow="AgencyOS · /admin/klubb/innstillinger"
         titleLead="Klubb-"
         titleItalic="innstillinger"
         titleTrail={`· ${klubber.length} klubber`}

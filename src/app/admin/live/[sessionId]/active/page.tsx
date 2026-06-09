@@ -1,5 +1,5 @@
 /**
- * CoachHQ · Live-økt active — coach-perspektiv
+ * AgencyOS · Live-økt active — coach-perspektiv
  *
  * Coach følger spillerens pågående økt i sanntid.
  * Kan sende raske meldinger og se øktens status.

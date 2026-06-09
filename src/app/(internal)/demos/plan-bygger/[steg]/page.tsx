@@ -1,5 +1,5 @@
 /**
- * PILOT — CoachHQ Plan-bygger · Wizard (6 steg)
+ * PILOT — AgencyOS Plan-bygger · Wizard (6 steg)
  * Dynamic route: /demos/plan-bygger/[1..6] (under (internal) → ADMIN-only)
  * Bygd direkte fra wireframe/design-files-v2/coachhq-A/02-plan-bygger-steg-{1,2,3,5,6}.html + 02-plan-bygger.html
  *

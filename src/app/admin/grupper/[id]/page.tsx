@@ -1,5 +1,5 @@
 /**
- * CoachHQ — Gruppe-detalj (PR9 · Skjerm 9.2)
+ * AgencyOS — Gruppe-detalj (PR9 · Skjerm 9.2)
  *
  * Pixel-perfekt detaljvisning for én treningsgruppe:
  * - Hero med gruppe-navn (Inter Tight italic) + spillere-count + coach

@@ -66,7 +66,7 @@ export default async function WorkspaceOppgaverPage({
       <header className="-mx-4 -mt-4 border-b border-border bg-gradient-to-b from-secondary/40 to-background px-4 py-8 md:-mx-8 md:-mt-8 md:px-8">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
-            <AthleticEyebrow>CoachHQ · Workspace · Oppgaver</AthleticEyebrow>
+            <AthleticEyebrow>AgencyOS · Workspace · Oppgaver</AthleticEyebrow>
             <h1 className="font-display mt-2 text-3xl font-bold leading-tight tracking-[-0.02em] md:text-4xl">
               Alle{" "}
               <em

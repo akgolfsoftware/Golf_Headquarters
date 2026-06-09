@@ -1,5 +1,5 @@
 /**
- * CoachHQ — Rediger spiller (`/admin/spillere/[id]/rediger`)
+ * AgencyOS — Rediger spiller (`/admin/spillere/[id]/rediger`)
  *
  * Pixel-perfekt v2 (sesjon-1, skjerm 5).
  * 2-kol form med sticky save-bar topp + bunn. Endrings-historikk høyre.
