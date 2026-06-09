@@ -8,8 +8,10 @@
 import { Icon } from "./icon";
 import {
   PERIOD_BAND,
+  selectedFromWeek,
   WEEK_DAYS,
   WEEK_HEAD,
+  type SelectedSession,
   type WeekDay,
   type WeekEvent,
 } from "./data";
@@ -26,9 +28,13 @@ const heightFor = (mins: number) => (mins * ROW_H) / 60;
 type WeekViewProps = {
   head?: { dow: string; date: string; today: boolean; sub: string }[];
   days?: WeekDay[];
+  /** nøkkel for økten som er markert (fra Workbench-state). */
+  selectedKey?: string | null;
+  /** klikk på en økt-blokk → velg den (oppdaterer inspektøren). */
+  onSelectSession?: (s: SelectedSession) => void;
 };
 
-export function WeekView({ head, days }: WeekViewProps = {}) {
+export function WeekView({ head, days, selectedKey, onSelectSession }: WeekViewProps = {}) {
   const weekHead = head ?? WEEK_HEAD;
   const weekDays = days ?? WEEK_DAYS;
   return (
@@ -67,9 +73,21 @@ export function WeekView({ head, days }: WeekViewProps = {}) {
         {weekDays.map((day) => (
           <DayCol key={day.dow} today={day.today}>
             {day.nowLine && <NowLine top={topPx(day.nowLine.h, day.nowLine.m)} />}
-            {day.events.map((ev, i) => (
-              <EventBlock key={i} ev={ev} />
-            ))}
+            {day.events.map((ev, i) => {
+              const key = `${day.dow}-${ev.h}`;
+              // Markert når Workbench-state peker hit; fall tilbake til
+              // demoens egen `selected`-flagg når ingen state er satt.
+              const isSelected =
+                selectedKey != null ? selectedKey === key : !!ev.selected;
+              return (
+                <EventBlock
+                  key={i}
+                  ev={ev}
+                  selected={isSelected}
+                  onSelect={onSelectSession ? () => onSelectSession(selectedFromWeek(day, ev)) : undefined}
+                />
+              );
+            })}
           </DayCol>
         ))}
       </div>
@@ -93,15 +111,37 @@ function DayCol({ children, today }: { children: React.ReactNode; today?: boolea
 }
 
 // Event block
-function EventBlock({ ev }: { ev: WeekEvent }) {
+function EventBlock({
+  ev,
+  selected,
+  onSelect,
+}: {
+  ev: WeekEvent;
+  selected?: boolean;
+  onSelect?: () => void;
+}) {
   const cls = ["event", ev.ax];
-  if (ev.selected) cls.push("is-selected");
+  if (selected) cls.push("is-selected");
   if (ev.group) cls.push("group");
   if (ev.tournament) cls.push("tournament");
   return (
     <div
       className={cls.join(" ")}
       style={{ top: `${topPx(ev.h, ev.m ?? 0)}px`, height: `${heightFor(ev.durMin)}px` }}
+      role={onSelect ? "button" : undefined}
+      tabIndex={onSelect ? 0 : undefined}
+      aria-pressed={onSelect ? !!selected : undefined}
+      onClick={onSelect}
+      onKeyDown={
+        onSelect
+          ? (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onSelect();
+              }
+            }
+          : undefined
+      }
     >
       <span className="eb">
         <span className={"ax " + ev.ax} />

@@ -392,6 +392,27 @@
   height: 12px;
 }
 
+/* ----- Disabled topbar-kontroller (kommer-tilstand) ----- */
+/* Kontroller uten client-handling ennå: dempes og blokkeres for klikk
+   så de ikke ser ut som døde knapper. Hover-effekter nøytraliseres. */
+.akwb .wb-ai .chip:disabled,
+.akwb .seg-group .s:disabled,
+.akwb .wb-nav-btn:disabled,
+.akwb .wb-btn-ghost:disabled,
+.akwb .wb-bell:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.akwb .wb-ai .chip:disabled:hover {
+  color: var(--muted-foreground);
+  border-color: var(--border);
+}
+.akwb .wb-nav-btn:disabled:hover,
+.akwb .wb-btn-ghost:disabled:hover {
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
 /* Search field (coach) */
 .akwb .wb-search {
   display: inline-flex;

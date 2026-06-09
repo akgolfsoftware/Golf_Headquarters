@@ -36,6 +36,7 @@ import { DayView } from "./day-view";
 import { KanbanView } from "./kanban-view";
 import { DashboardView } from "./dashboard-view";
 import { ListShell } from "./list-shell";
+import { defaultSelectedSession, WEEK_DAYS, type SelectedSession } from "./data";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
 import "./workbench.css";
 
@@ -50,6 +51,10 @@ type WorkbenchProps = {
   role?: Role;
   /** Ekte data fra loadWorkbenchData. Mangler/tom → v10-demo. */
   data?: WorkbenchData;
+  /** spiller-id (coach-rute) — gir kontekst til coach-handlinger. */
+  playerId?: string;
+  /** spillernavn (coach-rute) — etiketter i coach-handlinger. */
+  playerName?: string;
   /** initial mode — used by the preview route to land on a specific
       screen for screenshots. Default = "UKE" (A) / "TIDSLINJE" (B). */
   initialMode?: Mode;
@@ -82,12 +87,19 @@ function resolveInitialView(initialView?: View): View {
 export function Workbench({
   role = "player",
   data,
+  playerId,
+  playerName,
   initialMode,
   initialView,
   initialDrill = false,
 }: WorkbenchProps) {
   // view: 'A' = kalender (default) | 'B' = liste.
   const [view, setView] = useState<View>(() => resolveInitialView(initialView));
+  // Valgt økt for inspektøren — start på demoens standardøkt (ONS · 14:00).
+  // Klikk på en økt-blokk i uke-kalenderen oppdaterer denne.
+  const [selectedSession, setSelectedSession] = useState<SelectedSession | null>(
+    () => defaultSelectedSession(WEEK_DAYS),
+  );
   // Unified mode across both vocabularies. An explicit initialMode wins;
   // otherwise the default depends on the resolved view (UKE for A,
   // TIDSLINJE for B).
@@ -141,7 +153,12 @@ export function Workbench({
     ) : mode === "DASHBOARD" ? (
       <DashboardView axisHours={data?.axisHours} summary={data?.summary} />
     ) : (
-      <WeekView head={data?.weekHead} days={data?.weekDays} />
+      <WeekView
+        head={data?.weekHead}
+        days={data?.weekDays}
+        selectedKey={selectedSession?.key ?? null}
+        onSelectSession={setSelectedSession}
+      />
     );
 
   return (
@@ -159,7 +176,12 @@ export function Workbench({
         <div className="wb-main">
           <WBSidebar tournaments={data?.tournaments} goals={data?.goals} pyramid={data?.pyramid} />
           {viewEl}
-          <WBInspector role={role} />
+          <WBInspector
+            role={role}
+            selected={selectedSession}
+            playerId={playerId}
+            playerName={playerName}
+          />
         </div>
         <WBStatusbar axisHours={data?.axisHours} summary={data?.summary} />
       </div>

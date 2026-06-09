@@ -1,16 +1,35 @@
 // ============================================================
 // WBInspector — ported 1:1 from v10 workbench-chrome.jsx
 // Fixed right column (320px). Coach-variant adds 6 coach actions.
+//
+// Hodet (eyebrow/tittel/akse+tid) speiler økten som er valgt i uke-
+// kalenderen (`selected`-prop fra Workbench-state). Mangler valg →
+// v10-demoens standardøkt (ONS · 14:00). Coach-handlingene er flyttet
+// til CoachActions (egen client-fil) så de er interaktive.
 // ============================================================
+import Link from "next/link";
 import { Icon } from "./icon";
 import type { Role } from "./workbench";
-import { INSPECTOR_COACH_ACTIONS, INSPECTOR_PERIODE, INSPECTOR_TESTS } from "./data";
+import { INSPECTOR_PERIODE, INSPECTOR_TESTS, type SelectedSession } from "./data";
+import { CoachActions } from "./_coach-actions";
 
 type InspectorProps = {
   role: Role;
+  /** valgt økt fra uke-kalender. null → demo-standard. */
+  selected?: SelectedSession | null;
+  /** spiller-id (coach-rute) for kontekst i coach-handlinger. */
+  playerId?: string;
+  /** spillernavn for handlingsetiketter. */
+  playerName?: string;
 };
 
-export function WBInspector({ role }: InspectorProps) {
+export function WBInspector({ role, selected, playerId, playerName }: InspectorProps) {
+  // Standardverdier matcher v10-demoen (ONS · 14:00) når ingen økt er valgt.
+  const ttl = selected?.ttl ?? "Innspill 50–80 m · presisjon";
+  const ax = selected?.ax ?? "slag";
+  const when = selected?.when ?? "Ons 28/5 · 14:00–15:00";
+  const axLabel = selected?.axLabel ?? "SLAG";
+
   return (
     <aside className="insp">
       <div className="insp-head">
@@ -18,10 +37,10 @@ export function WBInspector({ role }: InspectorProps) {
           <span>VALGT · ØKT</span>
           <span>UKE 22</span>
         </div>
-        <div className="ttl">Innspill 50–80 m · presisjon</div>
+        <div className="ttl">{ttl}</div>
         <div className="sub">
-          <span className="ax slag" />
-          SLAG · Ons 28/5 · 14:00–15:00
+          <span className={"ax " + ax} />
+          {axLabel} · {when}
         </div>
       </div>
 
@@ -78,24 +97,18 @@ export function WBInspector({ role }: InspectorProps) {
             </div>
           ))}
         </div>
-        <a className="insp-link" href="#">
+        <Link className="insp-link" href="/admin/tester">
           Alle 8 tester <Icon n="arrow-right" w={12} h={12} />
-        </a>
+        </Link>
       </div>
 
-      {/* Coach-handlinger */}
+      {/* Coach-handlinger (kun coach) — interaktive via CoachActions */}
       {role === "coach" && (
-        <div className="insp-sec">
-          <div className="sec-lbl">COACH-HANDLINGER</div>
-          <div className="coach-actions">
-            {INSPECTOR_COACH_ACTIONS.map((a) => (
-              <button type="button" className={"coach-act" + (a.pri ? " pri" : "")} key={a.label}>
-                <Icon n={a.icon} w={a.pri ? 14 : 14} h={a.pri ? 14 : 14} />
-                {a.label}
-              </button>
-            ))}
-          </div>
-        </div>
+        <CoachActions
+          playerId={playerId}
+          playerName={playerName ?? "Øyvind"}
+          sessionTitle={ttl}
+        />
       )}
     </aside>
   );

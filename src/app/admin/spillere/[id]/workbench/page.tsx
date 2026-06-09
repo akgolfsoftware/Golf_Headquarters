@@ -9,6 +9,7 @@
 
 import { notFound, redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { prisma } from "@/lib/prisma";
 import { Workbench } from "@/components/workbench/workbench";
 import { loadWorkbenchData } from "@/lib/workbench/load-workbench";
 
@@ -30,5 +31,12 @@ export default async function CoachWorkbenchPage({ params }: Props) {
   const data = await loadWorkbenchData(id);
   if (data === null) notFound();
 
-  return <Workbench role="coach" data={data} />;
+  // Spillernavn for coach-handlingenes etiketter (fornavn holder).
+  const spiller = await prisma.user.findUnique({
+    where: { id },
+    select: { name: true },
+  });
+  const fornavn = spiller?.name?.split(/\s+/)[0] ?? "spilleren";
+
+  return <Workbench role="coach" data={data} playerId={id} playerName={fornavn} />;
 }
