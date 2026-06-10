@@ -301,6 +301,31 @@ async function main() {
     ],
   });
 
+
+  // 13. Shots (hull-for-hull) på de 2 siste rundene — så runde-detalj viser scorecard
+  const PAR18 = [4, 3, 5, 4, 4, 3, 4, 5, 4, 4, 4, 3, 5, 4, 4, 5, 3, 4];
+  const sisteRunder = await prisma.round.findMany({ where: { userId: player.id }, orderBy: { playedAt: "desc" }, take: 2, select: { id: true } });
+  for (const r of sisteRunder) {
+    await prisma.shot.deleteMany({ where: { roundId: r.id } });
+    const shots: { roundId: string; holeNumber: number; holePar: number; shotNumber: number; club: string | null; lie: "TEE" | "FAIRWAY" | "GREEN"; distanceToPin: number | null; distanceHit: number | null; shotType: "DRIVE" | "APPROACH" | "PUTT" }[] = [];
+    for (let h = 1; h <= 18; h++) {
+      const par = PAR18[h - 1];
+      const score = Math.max(2, par + [(-1), 0, 0, 0, 1, 1, 2][Math.floor(rand(0, 7))]);
+      for (let n = 1; n <= score; n++) {
+        const erSiste2 = n > score - Math.min(2, score - 1);
+        shots.push({
+          roundId: r.id, holeNumber: h, holePar: par, shotNumber: n,
+          club: n === 1 ? (par === 3 ? "7i" : "Driver") : erSiste2 ? "Putter" : "8i",
+          lie: n === 1 ? "TEE" : erSiste2 ? "GREEN" : "FAIRWAY",
+          distanceToPin: erSiste2 ? roundTo(rand(0, 4), 1) : roundTo(rand(20, 160), 1),
+          distanceHit: roundTo(rand(2, 260), 1),
+          shotType: n === 1 && par !== 3 ? "DRIVE" : erSiste2 ? "PUTT" : "APPROACH",
+        });
+      }
+    }
+    await prisma.shot.createMany({ data: shots });
+  }
+
   console.log(`\n✓ Ferdig. Login: ${EMAIL} / ${PASSWORD}`);
   await prisma.$disconnect();
 }
