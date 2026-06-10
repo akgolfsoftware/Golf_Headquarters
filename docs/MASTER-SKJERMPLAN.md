@@ -57,14 +57,14 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Hjem (Workbench-hjem) ★ | `/portal` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
-| Varsler ★ | `/portal/varsler` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
+| Hjem (Workbench-hjem) ★ | `/portal` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| Varsler ★ | `/portal/varsler` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 
 ### Planlegge
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Planlegge (= Workbench mobil) ★ | `/portal/planlegge` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
+| Planlegge (= Workbench mobil) ★ | `/portal/planlegge` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | **Workbench (planlegging)** ★ | `/portal/planlegge/workbench` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
 | Årsplan | `/portal/tren/aarsplan` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
 | · Rediger periode | `/portal/tren/aarsplan/periode/[id]/rediger` | – | --- | ✓ | – | – | ~ |
@@ -79,7 +79,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Mål-detalj | `/portal/mal/goal/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Milepæler | `/portal/mal/milepaeler` | – | --- | ✓ | ~ | ~ | ~ |
 | · Leaderboard | `/portal/mal/leaderboard` | – | --- | ✓ | ~ | ~ | ~ |
-| Turneringer (mine) ★ | `/portal/tren/turneringer` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
+| Turneringer (mine) ★ | `/portal/tren/turneringer` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | · Turnering-detalj | `/portal/tren/turneringer/[id]` | ~ | ✓✓– | ~ | ~ | – | ~ |
 | · Ny turnering | `/portal/tren/turneringer/ny` | – | --- | ✓ | ~ | ~ | ~ |
 | Utfordringer | `/portal/utfordringer` | – | --- | ✓ | ~ | ~ | ~ |
@@ -93,7 +93,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Gjennomføre (I dag/Kalender/Booking) ★ | `/portal/gjennomfore` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
+| Gjennomføre (I dag/Kalender/Booking) ★ | `/portal/gjennomfore` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | Kalender | `/portal/kalender` | – | --- | ✓ | ~ | ~ | ✓ |
 | Kalender (alt. adresse) | `/portal/tren/kalender` | – | --- | ✓ | ~ | ~ | ✓ |
 | Ny økt (handlingsvalg) | `/portal/ny-okt` | – | --- | ✓ | ~ | ~ | ✓ |
@@ -114,7 +114,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Analysere (Les tallene · faner) ★ | `/portal/analysere` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
+| Analysere (Les tallene · faner) ★ | `/portal/analysere` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | · Hull-analyse | `/portal/analysere/hull` | ~ | ✓✓– | ✓ | ~ | ✓ | ✓ |
 | Statistikk (oversikt) | `/portal/statistikk` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
 | · Metrikk-detalj | `/portal/statistikk/[metric]` | – | --- | ✓ | ~ | ~ | ~ |
@@ -132,9 +132,9 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Coach: kølle | `/portal/mal/sg-hub/coach/[spillerId]/[club]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Coach: utstyr | `/portal/mal/sg-hub/coach/[spillerId]/equipment` | – | --- | ✓ | ~ | ~ | ~ |
 | Runder (liste) | `/portal/mal/runder` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
-| · Runde-detalj ★ | `/portal/mal/runder/[id]` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
+| · Runde-detalj ★ | `/portal/mal/runder/[id]` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | · Slag-for-slag | `/portal/mal/runder/[id]/shot-by-shot` | – | --- | ✓ | ~ | ~ | ~ |
-| · Logg ny runde ★ | `/portal/mal/runder/ny` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
+| · Logg ny runde ★ | `/portal/mal/runder/ny` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | TrackMan (liste) | `/portal/mal/trackman` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
 | · TrackMan-sesjon | `/portal/mal/trackman/[id]` | ~ | ✓✓– | ✓ | ~ | ~ | ~ |
 | · TrackMan (alt. adresse) | `/portal/trackman/[sessionId]` | ~ | ✓✓– | ✓ | ~ | ~ | ~ |
@@ -176,9 +176,9 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Meg (profil) ★ | `/portal/meg` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
-| Rediger profil ★ | `/portal/meg/profil` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
-| Abonnement ★ | `/portal/meg/abonnement` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
+| Meg (profil) ★ | `/portal/meg` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| Rediger profil ★ | `/portal/meg/profil` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| Abonnement ★ | `/portal/meg/abonnement` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | · Oppgrader | `/portal/meg/abonnement/oppgrader` | – | --- | ✓ | ~ | ~ | ~ |
 | · Oppgrader-flyt | `/portal/meg/abonnement/oppgrader/flyt` | – | --- | ✓ | ~ | ~ | ~ |
 | · Avbestill | `/portal/meg/abonnement/avbestill` | – | --- | ✓ | ~ | ~ | ~ |
@@ -186,9 +186,9 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Faktura-detalj | `/portal/meg/abonnement/faktura/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | Mine bookinger | `/portal/meg/bookinger` | – | --- | ✓ | ~ | ~ | ~ |
 | · Endre tid | `/portal/meg/bookinger/reschedule/[bookingId]` | – | --- | ✓ | ~ | ~ | ~ |
-| Helse ★ | `/portal/meg/helse` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
+| Helse ★ | `/portal/meg/helse` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | · Nytt symptom | `/portal/meg/helse/symptom/ny` | – | --- | ✓ | ~ | ~ | ~ |
-| Innstillinger ★ | `/portal/meg/innstillinger` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
+| Innstillinger ★ | `/portal/meg/innstillinger` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | · Varsler | `/portal/meg/innstillinger/varsler` | – | --- | ✓ | ~ | ~ | ~ |
 | · Personvern | `/portal/meg/innstillinger/personvern` | – | --- | ✓ | ~ | ~ | ~ |
 | · Sikkerhet | `/portal/meg/innstillinger/sikkerhet` | – | --- | ✓ | ~ | ~ | ~ |
@@ -199,11 +199,11 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Økter | `/portal/meg/innstillinger/okter` | – | --- | ✓ | ~ | ~ | ~ |
 | Sikkerhet | `/portal/meg/sikkerhet` | – | --- | ✓ | ~ | ~ | ~ |
 | · To-faktor (2FA) | `/portal/meg/sikkerhet/2fa` | – | --- | ✓ | ~ | ~ | ~ |
-| Utstyrsbag ★ | `/portal/meg/utstyrsbag` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
-| Dokumenter ★ | `/portal/meg/dokumenter` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
+| Utstyrsbag ★ | `/portal/meg/utstyrsbag` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| Dokumenter ★ | `/portal/meg/dokumenter` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | Foreldre (foresatt-info) | `/portal/meg/foreldre` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
 | Feedback | `/portal/meg/feedback` | – | --- | ✓ | ~ | ~ | ~ |
-| Hjelpesenter ★ | `/portal/meg/help` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
+| Hjelpesenter ★ | `/portal/meg/help` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | · Hjelp-artikkel | `/portal/meg/help/artikkel/[slug]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Hjelp-kategori | `/portal/meg/help/kategori/[slug]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Kontakt | `/portal/meg/help/kontakt` | – | --- | ✓ | ~ | ~ | ~ |
@@ -434,12 +434,12 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Logg inn ★ | `/auth/login` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
-| Registrer ★ | `/auth/signup` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
-| Glemt passord ★ | `/auth/forgot-password` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
+| Logg inn ★ | `/auth/login` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| Registrer ★ | `/auth/signup` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| Glemt passord ★ | `/auth/forgot-password` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | Tilbakestill passord | `/auth/reset-password` | – | --- | ✓ | ~ | ~ | ~ |
 | Sjekk e-post | `/auth/check-email` | – | --- | ✓ | ~ | ~ | ~ |
-| BankID ★ | `/auth/bankid` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
+| BankID ★ | `/auth/bankid` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | Onboarding (spiller, 8 steg) | `/auth/onboarding` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
 | Onboarding (forelder) | `/auth/onboarding/forelder` | – | --- | ✓ | ~ | ~ | ~ |
 | Foreldresamtykke (token) | `/auth/guardian-consent/[token]` | – | --- | ✓ | ~ | ~ | ~ |
@@ -655,6 +655,8 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 ---
 
 ## Endringslogg
+
+- 10. juni (Fase 6): **iPad-sveip fullført — 0 brudd.** 21 portede ruter sjekket på 834px; 5 responsive brudd funnet og lukket (Planlegge mode-rail < 1280, Hjem/Meg én kolonne på iPad, runde-ny 6-kol hull-grid for touch). Alle portede PlayerHQ-skjermer + forsiden står nå med Mob/Desk/iPad ✓✓✓. PlayerHQ-sporet + marketing-forsiden er KOMPLETT; gjenstår: AgencyOS (Fase 3+4, egen sesjon) + bevisst utsatt (live-økt, coach-panel, marketing-undersider).
 
 - 10. juni (Fase 5): **Marketing-forsiden portet til fersk fasit** (ui_kits/marketing, 8 seksjoner + footer), kritiker-loop 9→0. Ekte priser/org-nr/booking-data beholdt (fasitens 3 900/7 200-priser er demo — ev. prisendring er Anders-beslutning). Resten av marketing-sidene har ikke fersk fasit — uendret.
 
