@@ -28,6 +28,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { NivaaBadge, type NivaaBadgeData } from "./nivaa-badge";
 
 // ── Typer ──────────────────────────────────────────────────────────────────
 
@@ -60,6 +61,8 @@ export type Cell = {
   overdue?: boolean;
   /** Fargekoding relativt til mål (kun når mål er definert). */
   scoreTone?: "over" | "near" | "under";
+  /** Nivå-badge mot DataGolf-fasit (kun for tester med benchmarks). */
+  benchmark?: NivaaBadgeData;
 };
 
 export type PlayerRow = {
@@ -108,6 +111,10 @@ export type TesterOversiktData = {
   legendNote?: string;
   /** Vis full fargekode-legende (over/nær/under) i stedet for målt/ikke testet. */
   showColorLegend?: boolean;
+  /** Vis nivå-badge-legende (DataGolf-fasiter). Har forrang over showColorLegend. */
+  levelLegend?: boolean;
+  /** Attribusjonstekst i footer, f.eks. "Data powered by DataGolf" (lisenskrav). */
+  attribution?: string;
   columns: TestColumn[];
   rows: PlayerRow[];
   /** Footer-hint til høyre. */
@@ -223,13 +230,16 @@ function ScoreCell({ cell }: { cell: Cell }) {
           className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-destructive shadow-[0_0_4px_rgba(163,45,45,0.5)]"
         />
       )}
-      <span
-        className={cn(
-          "font-mono text-[15px] font-extrabold leading-none tracking-[-0.01em] tabular-nums",
-          valueColor,
-        )}
-      >
-        {cell.value}
+      <span className="flex items-center justify-center gap-1">
+        <span
+          className={cn(
+            "font-mono text-[15px] font-extrabold leading-none tracking-[-0.01em] tabular-nums",
+            valueColor,
+          )}
+        >
+          {cell.value}
+        </span>
+        {cell.benchmark && <NivaaBadge badge={cell.benchmark} />}
       </span>
       {cell.delta && (
         <span
@@ -390,7 +400,21 @@ export function TesterOversikt({ data }: { data: TesterOversiktData }) {
         {/* LEGEND */}
         <div className="flex flex-wrap items-center gap-x-3.5 gap-y-1 border-b border-border bg-secondary/40 px-5 py-2 font-mono text-[10px] font-bold tracking-[0.04em] text-muted-foreground">
           <span className="font-extrabold uppercase tracking-[0.12em] text-foreground">Legende</span>
-          {data.showColorLegend ? (
+          {data.levelLegend ? (
+            <>
+              <LegendSwatch className="border-border bg-secondary" label="Målt" />
+              <LegendSwatch striped className="border-border" label="Ikke testet" />
+              <span className="inline-flex items-center gap-1.5">
+                <span className="inline-flex h-[14px] items-center rounded-[3px] bg-primary/10 px-1 font-mono text-[8px] font-extrabold uppercase tracking-[0.06em] text-primary">
+                  PGA
+                </span>
+                Nivå-badge = beste oppnådde tour-nivå
+              </span>
+              <span className="ml-auto">
+                HOLD OVER BADGE FOR <b className="font-extrabold text-foreground">HELE NIVÅSTIGEN</b>
+              </span>
+            </>
+          ) : data.showColorLegend ? (
             <>
               <LegendSwatch className="border-primary/40 bg-primary/[0.14]" label="Over mål" />
               <LegendSwatch className="border-warning/40 bg-warning/[0.16]" label="Nær (±5 %)" />
@@ -522,7 +546,10 @@ export function TesterOversikt({ data }: { data: TesterOversiktData }) {
             <b className="text-foreground">{data.meta.measured} målt</b> ·{" "}
             <b className="text-foreground">{data.meta.missing} mangler</b>
           </span>
-          <span>{data.footerHint}</span>
+          <span className="inline-flex flex-wrap items-center gap-x-4 gap-y-1">
+            {data.attribution && <span className="text-foreground">{data.attribution}</span>}
+            <span>{data.footerHint}</span>
+          </span>
         </div>
       </div>
 

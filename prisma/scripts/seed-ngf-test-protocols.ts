@@ -12,6 +12,9 @@
  * Kjør: npx tsx prisma/scripts/seed-ngf-test-protocols.ts
  */
 
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { config as loadEnv } from "dotenv";
 loadEnv({ path: ".env.local" });
 
@@ -89,7 +92,7 @@ const PROTOCOLS: Record<string, { name: string; pyramidArea: "FYS" | "TEK" | "SL
           ],
         },
       ],
-      pgaBenchmark: "PGA Top 40 avg PEI < 0.06",
+      pgaBenchmark: "Carry: PGA topp 40 ≈ 273 m, PGA-snitt ≈ 268 m. PEI ≈ 6 % er PGA-snitt (topp 40 ≈ 5 %).",
       notes: "PEI = avstand til mål / total carry. Lavere er bedre.",
     },
   },
@@ -148,7 +151,7 @@ const PROTOCOLS: Record<string, { name: string; pyramidArea: "FYS" | "TEK" | "SL
           ],
         },
       ],
-      pgaBenchmark: "PGA: 100-150m PEI 0.055, 150-200m PEI 0.059",
+      pgaBenchmark: "PEI: PGA-snitt 5,7 % — topp 40 5,0 %",
     },
   },
 
@@ -176,7 +179,7 @@ const PROTOCOLS: Record<string, { name: string; pyramidArea: "FYS" | "TEK" | "SL
           ],
         },
       ],
-      pgaBenchmark: "PGA snitt PEI ≈ 0.055 (≈ 6.6m fra hull)",
+      pgaBenchmark: "PGA-snitt PEI ≈ 5,8 % — topp 40 ≈ 5,0 %",
     },
   },
 
@@ -204,7 +207,7 @@ const PROTOCOLS: Record<string, { name: string; pyramidArea: "FYS" | "TEK" | "SL
           ],
         },
       ],
-      pgaBenchmark: "PGA snitt PEI ≈ 0.059 (≈ 9.4m fra hull)",
+      pgaBenchmark: "PGA-snitt PEI ≈ 5,5 % — topp 40 ≈ 4,8 %",
     },
   },
 
@@ -263,7 +266,7 @@ const PROTOCOLS: Record<string, { name: string; pyramidArea: "FYS" | "TEK" | "SL
           ],
         },
       ],
-      pgaBenchmark: "PEI 20-60m: 0.099 (Top 40)",
+      pgaBenchmark: "PEI 20-60m: PGA-snitt 7,0 % — topp 40 6,0 %",
     },
   },
 
@@ -347,7 +350,7 @@ const PROTOCOLS: Record<string, { name: string; pyramidArea: "FYS" | "TEK" | "SL
           ],
         },
       ],
-      pgaBenchmark: "PEI 0-20m: 0.125 (Top 40)",
+      pgaBenchmark: "PEI 0-20m: PGA-snitt 8,0 % — topp 40 7,4 %",
     },
   },
 
@@ -435,7 +438,7 @@ const PROTOCOLS: Record<string, { name: string; pyramidArea: "FYS" | "TEK" | "SL
           inputFields: [{ key: "sunket", label: "Sunket", type: "checkbox" }],
         },
       ],
-      pgaBenchmark: "PGA avg 3-5 fot: ~65% sink",
+      pgaBenchmark: "PGA-snitt 1-3m: ~60 % sink",
     },
   },
 
@@ -773,11 +776,72 @@ const PROTOCOLS: Record<string, { name: string; pyramidArea: "FYS" | "TEK" | "SL
           ],
         },
       ],
-      pgaBenchmark: "PGA Top 40 snitt PEI: 0.060",
+      pgaBenchmark: "PGA-snitt PEI 5,7 % — topp 40 5,0 %",
       notes: "Bruk eksisterende runde — ingen ekstra slag. Bare logg innspill-data.",
     },
   },
 };
+
+// ---------------------------------------------------------------------------
+// Benchmarks (DataGolf-fasiter v1) — merges fra prisma/seed-data/ngf-test-battery.json
+// inn i protocol-JSON før lagring. Matches på test-id (samme id-sett begge steder).
+// ---------------------------------------------------------------------------
+
+type BatteryEntry = {
+  id: string;
+  name: string;
+  benchmarks?: {
+    unit: string;
+    direction: "lower" | "higher";
+    source: string;
+    levels: { id: string; label: string; value: number; confidence: string }[];
+  } | null;
+  benchmarks_note?: string;
+  benchmarks_detail?: unknown;
+};
+
+const BATTERY_PATH = join(
+  dirname(fileURLToPath(import.meta.url)),
+  "../seed-data/ngf-test-battery.json",
+);
+const BATTERY: BatteryEntry[] = JSON.parse(readFileSync(BATTERY_PATH, "utf8"));
+const BATTERY_BY_ID = new Map(BATTERY.map((t) => [t.id, t]));
+
+/** Validerer batteriet: kjente id-er + monotont ordnet nivåstige (beste → svakeste). */
+function validateBattery(): void {
+  for (const t of BATTERY) {
+    if (!PROTOCOLS[t.id]) {
+      throw new Error(`ngf-test-battery.json: ukjent test-id "${t.id}" (ingen protokoll)`);
+    }
+    const b = t.benchmarks;
+    if (!b) continue;
+    if (!["lower", "higher"].includes(b.direction) || b.levels.length === 0) {
+      throw new Error(`ngf-test-battery.json: ${t.id} — ugyldig benchmarks-struktur`);
+    }
+    for (let i = 1; i < b.levels.length; i += 1) {
+      const prev = b.levels[i - 1].value;
+      const curr = b.levels[i].value;
+      const ok = b.direction === "higher" ? curr <= prev : curr >= prev;
+      if (!ok) {
+        throw new Error(
+          `ngf-test-battery.json: ${t.id} — nivåstigen er ikke monotont ordnet (${prev} → ${curr})`,
+        );
+      }
+    }
+  }
+}
+
+/** Slår benchmarks-feltene fra batteriet inn i protokollen. */
+function withBenchmarks(ngfId: string, protocol: TestProtocol): object {
+  const entry = BATTERY_BY_ID.get(ngfId);
+  if (!entry) return protocol as unknown as object;
+  return {
+    ...protocol,
+    benchmarks: entry.benchmarks ?? null,
+    ...(entry.benchmarks_note ? { benchmarks_note: entry.benchmarks_note } : {}),
+    ...(entry.benchmarks_detail ? { benchmarks_detail: entry.benchmarks_detail } : {}),
+  };
+}
 
 // ---------------------------------------------------------------------------
 // Existing-test mapping (name match → NGF-ID)
@@ -810,6 +874,10 @@ const NEW_TESTS = ["chs", "pei_bane", "inspill_120", "inspill_160", "inspill_var
 // ---------------------------------------------------------------------------
 
 async function main() {
+  console.log("[0/3] Validerer benchmarks i ngf-test-battery.json…");
+  validateBattery();
+  console.log(`  ✓ ${BATTERY.length} tester validert.\n`);
+
   console.log("[1/3] Update existing test-protokoller…");
   let updated = 0;
   for (const [dbName, ngfId] of Object.entries(EXISTING_MAP)) {
@@ -821,7 +889,7 @@ async function main() {
     const r = await prisma.testDefinition.updateMany({
       where: { name: dbName },
       data: {
-        protocol: proto.protocol as unknown as object,
+        protocol: withBenchmarks(ngfId, proto.protocol),
         description: proto.description,
         scoringRule: proto.scoringRule,
       },
@@ -849,7 +917,7 @@ async function main() {
       await prisma.testDefinition.update({
         where: { id: existing.id },
         data: {
-          protocol: proto.protocol as unknown as object,
+          protocol: withBenchmarks(ngfId, proto.protocol),
           description: proto.description,
           scoringRule: proto.scoringRule,
         },
@@ -861,7 +929,7 @@ async function main() {
           description: proto.description,
           pyramidArea: proto.pyramidArea,
           scoringRule: proto.scoringRule,
-          protocol: proto.protocol as unknown as object,
+          protocol: withBenchmarks(ngfId, proto.protocol),
         },
       });
       console.log(`  ✓ Opprettet: ${proto.name} (${proto.pyramidArea})`);

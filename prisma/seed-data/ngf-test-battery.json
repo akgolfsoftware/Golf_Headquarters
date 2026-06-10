@@ -11,7 +11,21 @@
       "pei"
     ],
     "scoring": "PEI = avstand til hull / avstand til mål. Lavere er bedre.",
-    "pga_benchmark": "PEI < 0.06 (Top 40 avg)"
+    "pga_benchmark": "Carry: PGA topp 40 ≈ 273 m, PGA-snitt ≈ 268 m. PEI ≈ 6 % er PGA-snitt (topp 40 ≈ 5 %).",
+    "benchmarks": {
+      "unit": "meters",
+      "direction": "higher",
+      "source": "datagolf-v1-2026-06",
+      "levels": [
+        { "id": "pga_top40", "label": "PGA topp 40", "value": 273, "confidence": "measured" },
+        { "id": "pga_avg", "label": "PGA-snitt", "value": 268, "confidence": "measured" },
+        { "id": "dpw_kft", "label": "DP World / Korn Ferry", "value": 266, "confidence": "measured" },
+        { "id": "challenge", "label": "Challenge Tour", "value": 262, "confidence": "estimated" },
+        { "id": "nordic", "label": "Nordic League", "value": 258, "confidence": "estimated" },
+        { "id": "elite_junior", "label": "Norsk elitejunior", "value": 256, "confidence": "estimated" },
+        { "id": "scratch", "label": "Scratch", "value": 246, "confidence": "estimated" }
+      ]
+    }
   },
   {
     "id": "inspill_basic",
@@ -25,7 +39,21 @@
       "pei"
     ],
     "scoring": "PEI = avstand til hull / avstand til mål",
-    "pga_benchmark": "PEI 100-150m: 0.055, 150-200m: 0.059"
+    "pga_benchmark": "PEI: PGA-snitt 5,7 % — topp 40 5,0 %",
+    "benchmarks": {
+      "unit": "pei_percent",
+      "direction": "lower",
+      "source": "datagolf-v1-2026-06",
+      "levels": [
+        { "id": "pga_top40", "label": "PGA topp 40", "value": 5.0, "confidence": "reference" },
+        { "id": "pga_avg", "label": "PGA-snitt", "value": 5.7, "confidence": "reference" },
+        { "id": "dpw_kft", "label": "DP World / Korn Ferry", "value": 6.1, "confidence": "estimated" },
+        { "id": "challenge", "label": "Challenge Tour", "value": 6.8, "confidence": "estimated" },
+        { "id": "nordic", "label": "Nordic League", "value": 7.7, "confidence": "estimated" },
+        { "id": "elite_junior", "label": "Norsk elitejunior", "value": 8.2, "confidence": "estimated" },
+        { "id": "scratch", "label": "Scratch", "value": 9.0, "confidence": "estimated" }
+      ]
+    }
   },
   {
     "id": "wedge_variation",
@@ -38,7 +66,21 @@
       "pei"
     ],
     "scoring": "PEI-basert med variasjonsfaktor",
-    "pga_benchmark": "PEI 20-60m: 0.109 (avg), 0.099 (Top 40)"
+    "pga_benchmark": "PEI 20-60m: PGA-snitt 7,0 % — topp 40 6,0 %",
+    "benchmarks": {
+      "unit": "pei_percent",
+      "direction": "lower",
+      "source": "datagolf-v1-2026-06",
+      "levels": [
+        { "id": "pga_top40", "label": "PGA topp 40", "value": 6.0, "confidence": "reference" },
+        { "id": "pga_avg", "label": "PGA-snitt", "value": 7.0, "confidence": "reference" },
+        { "id": "dpw_kft", "label": "DP World / Korn Ferry", "value": 7.5, "confidence": "estimated" },
+        { "id": "challenge", "label": "Challenge Tour", "value": 8.5, "confidence": "estimated" },
+        { "id": "nordic", "label": "Nordic League", "value": 9.7, "confidence": "estimated" },
+        { "id": "elite_junior", "label": "Norsk elitejunior", "value": 10.3, "confidence": "estimated" },
+        { "id": "scratch", "label": "Scratch", "value": 11.3, "confidence": "estimated" }
+      ]
+    }
   },
   {
     "id": "eight_ball_variation",
@@ -51,7 +93,35 @@
       "poeng"
     ],
     "scoring": "Poeng 0-4 per slag. Maks 96 poeng.",
-    "pga_benchmark": "PEI 0-20m: 0.136 (avg), 0.125 (Top 40)"
+    "pga_benchmark": "PEI 0-20m: PGA-snitt 8,0 % — topp 40 7,4 %",
+    "benchmarks": {
+      "unit": "pei_percent",
+      "direction": "lower",
+      "source": "datagolf-v1-2026-06",
+      "levels": [
+        { "id": "pga_top40", "label": "PGA topp 40", "value": 7.4, "confidence": "estimated" },
+        { "id": "pga_avg", "label": "PGA-snitt", "value": 8.0, "confidence": "reference" },
+        { "id": "dpw_kft", "label": "DP World / Korn Ferry", "value": 8.3, "confidence": "estimated" },
+        { "id": "challenge", "label": "Challenge Tour", "value": 9.0, "confidence": "estimated" },
+        { "id": "nordic", "label": "Nordic League", "value": 9.8, "confidence": "estimated" },
+        { "id": "elite_junior", "label": "Norsk elitejunior", "value": 10.4, "confidence": "estimated" },
+        { "id": "scratch", "label": "Scratch", "value": 11.2, "confidence": "estimated" }
+      ]
+    },
+    "benchmarks_detail": {
+      "label": "PGA-forventning per slag",
+      "unit": "pei_percent",
+      "values": {
+        "Chip10": 12.0,
+        "Chip30": 5.1,
+        "Wedge20": 7.1,
+        "Wedge40": 6.5,
+        "Lobb15": 8.8,
+        "Lobb25": 5.9,
+        "Bunker10": 14.4,
+        "Bunker20": 7.8
+      }
+    }
   },
   {
     "id": "putt_1_3m",
@@ -63,7 +133,30 @@
       "avstand_etter"
     ],
     "scoring": "Antall sunket / totalt",
-    "pga_benchmark": "3-5 fot: ~65% sink (PGA avg)"
+    "pga_benchmark": "1-3m: ~60 % sink (PGA-snitt)",
+    "benchmarks": {
+      "unit": "percent",
+      "direction": "higher",
+      "source": "datagolf-v1-2026-06",
+      "levels": [
+        { "id": "pga_top40", "label": "PGA topp 40", "value": 62, "confidence": "estimated" },
+        { "id": "pga_avg", "label": "PGA-snitt", "value": 60, "confidence": "reference" },
+        { "id": "dpw_kft", "label": "DP World / Korn Ferry", "value": 59, "confidence": "estimated" },
+        { "id": "challenge", "label": "Challenge Tour", "value": 57, "confidence": "estimated" },
+        { "id": "nordic", "label": "Nordic League", "value": 55, "confidence": "estimated" },
+        { "id": "elite_junior", "label": "Norsk elitejunior", "value": 53, "confidence": "estimated" },
+        { "id": "scratch", "label": "Scratch", "value": 51, "confidence": "estimated" }
+      ]
+    },
+    "benchmarks_detail": {
+      "label": "PGA hullprosent per avstand",
+      "unit": "percent",
+      "values": {
+        "1m": 87,
+        "2m": 55,
+        "3m": 39
+      }
+    }
   },
   {
     "id": "driver_gate",
@@ -75,7 +168,21 @@
       "total_6"
     ],
     "scoring": "Antall gjennom gate / 6",
-    "pga_benchmark": "Spredning < 5% av avstand"
+    "pga_benchmark": "Spredning < 5% av avstand",
+    "benchmarks": {
+      "unit": "percent",
+      "direction": "higher",
+      "source": "datagolf-v1-2026-06",
+      "levels": [
+        { "id": "pga_top40", "label": "PGA topp 40", "value": 65, "confidence": "reference" },
+        { "id": "pga_avg", "label": "PGA-snitt", "value": 61, "confidence": "measured" },
+        { "id": "dpw_kft", "label": "DP World / Korn Ferry", "value": 60, "confidence": "measured" },
+        { "id": "challenge", "label": "Challenge Tour", "value": 57, "confidence": "estimated" },
+        { "id": "nordic", "label": "Nordic League", "value": 55, "confidence": "estimated" },
+        { "id": "elite_junior", "label": "Norsk elitejunior", "value": 53, "confidence": "estimated" },
+        { "id": "scratch", "label": "Scratch", "value": 52, "confidence": "estimated" }
+      ]
+    }
   },
   {
     "id": "putt_gate",
@@ -88,7 +195,9 @@
       "v_h"
     ],
     "scoring": "Antall gjennom gate / 10",
-    "pga_benchmark": "Start line accuracy > 90%"
+    "pga_benchmark": "Start line accuracy > 90%",
+    "benchmarks": null,
+    "benchmarks_note": "Teknisk test uten tour-motstykke. Intern norm settes fra elevdata og Team Norway junior-elite-referanser i v2."
   },
   {
     "id": "naerspill_gate",
@@ -101,7 +210,9 @@
       "poeng"
     ],
     "scoring": "Poeng per treff i riktig zone",
-    "pga_benchmark": "Scrambling > 60%"
+    "pga_benchmark": "Scrambling > 60%",
+    "benchmarks": null,
+    "benchmarks_note": "Teknisk test uten tour-motstykke. Intern norm settes fra elevdata og Team Norway junior-elite-referanser i v2."
   },
   {
     "id": "visa_express",
@@ -113,7 +224,9 @@
       "poeng"
     ],
     "scoring": "Poeng per treff i riktig speed zone",
-    "pga_benchmark": "Speed control within 5%"
+    "pga_benchmark": "Speed control within 5%",
+    "benchmarks": null,
+    "benchmarks_note": "Teknisk test uten tour-motstykke. Intern norm settes fra elevdata og Team Norway junior-elite-referanser i v2."
   },
   {
     "id": "putt_speed",
@@ -126,7 +239,9 @@
       "lang_kort"
     ],
     "scoring": "Avstand fra hull etter putt",
-    "pga_benchmark": "Leave < 0.5m fra hull"
+    "pga_benchmark": "Leave < 0.5m fra hull",
+    "benchmarks": null,
+    "benchmarks_note": "Teknisk test uten tour-motstykke. Intern norm settes fra elevdata og Team Norway junior-elite-referanser i v2."
   },
   {
     "id": "wedge_gate",
@@ -139,7 +254,21 @@
       "poeng"
     ],
     "scoring": "Poeng per treff i riktig zone og launch angle",
-    "pga_benchmark": "Launch control within 2 degrees"
+    "pga_benchmark": "Launch control within 2 degrees",
+    "benchmarks": {
+      "unit": "pei_percent",
+      "direction": "lower",
+      "source": "datagolf-v1-2026-06",
+      "levels": [
+        { "id": "pga_top40", "label": "PGA topp 40", "value": 6.0, "confidence": "reference" },
+        { "id": "pga_avg", "label": "PGA-snitt", "value": 7.0, "confidence": "reference" },
+        { "id": "dpw_kft", "label": "DP World / Korn Ferry", "value": 7.5, "confidence": "estimated" },
+        { "id": "challenge", "label": "Challenge Tour", "value": 8.5, "confidence": "estimated" },
+        { "id": "nordic", "label": "Nordic League", "value": 9.7, "confidence": "estimated" },
+        { "id": "elite_junior", "label": "Norsk elitejunior", "value": 10.3, "confidence": "estimated" },
+        { "id": "scratch", "label": "Scratch", "value": 11.3, "confidence": "estimated" }
+      ]
+    }
   },
   {
     "id": "trapbar_deadlift",
@@ -148,7 +277,9 @@
     "unit": "kg",
     "weight": 1,
     "description": "Maksimal styrke i underkropp og rygg. Korrelerer med rotasjonskraft.",
-    "correlation_to_golf": "Direkte kobling til rotasjonskraft og stabilitet i svingen. Høyere markløft = mer kraft tilgjengelig for CHS."
+    "correlation_to_golf": "Direkte kobling til rotasjonskraft og stabilitet i svingen. Høyere markløft = mer kraft tilgjengelig for CHS.",
+    "benchmarks": null,
+    "benchmarks_note": "Fysisk norm hentes fra NGF/Olympiatoppen i v2."
   },
   {
     "id": "bench_press",
@@ -157,7 +288,9 @@
     "unit": "kg",
     "weight": 1,
     "description": "Overkroppsstyrke. Viktig for stabilitet og kraftoverføring.",
-    "correlation_to_golf": "Stabiliserer overkroppen i svingen. Bidrar til konsistent treffpunkt."
+    "correlation_to_golf": "Stabiliserer overkroppen i svingen. Bidrar til konsistent treffpunkt.",
+    "benchmarks": null,
+    "benchmarks_note": "Fysisk norm hentes fra NGF/Olympiatoppen i v2."
   },
   {
     "id": "standing_long_jump",
@@ -166,7 +299,9 @@
     "unit": "cm",
     "weight": 0.5,
     "description": "Eksplosiv kraft i underkropp. Måler power output.",
-    "correlation_to_golf": "Eksplosivitet i bakkekontakt under nedsvingen. Korrelerer med CHS."
+    "correlation_to_golf": "Eksplosivitet i bakkekontakt under nedsvingen. Korrelerer med CHS.",
+    "benchmarks": null,
+    "benchmarks_note": "Fysisk norm hentes fra NGF/Olympiatoppen i v2."
   },
   {
     "id": "ball_throw_kneeling",
@@ -175,7 +310,9 @@
     "unit": "cm",
     "weight": 0.166,
     "description": "Rotasjonskraft i overkropp fra knestående posisjon.",
-    "correlation_to_golf": "Direkte mål på rotasjonskraft som brukes i golfsving. Isolerer overkropp-rotasjon."
+    "correlation_to_golf": "Direkte mål på rotasjonskraft som brukes i golfsving. Isolerer overkropp-rotasjon.",
+    "benchmarks": null,
+    "benchmarks_note": "Fysisk norm hentes fra NGF/Olympiatoppen i v2."
   },
   {
     "id": "chs",
@@ -184,7 +321,21 @@
     "unit": "mph",
     "weight": 1,
     "description": "Klubbhodehastighet med driver innendørs (Trackman).",
-    "correlation_to_golf": "Mest direkte mål på slagkraft. 1 mph CHS ≈ 2.5 yards carry. PGA avg: 114 mph."
+    "correlation_to_golf": "Mest direkte mål på slagkraft. 1 mph CHS ≈ 2.5 yards carry. PGA avg: 114 mph.",
+    "benchmarks": {
+      "unit": "mph",
+      "direction": "higher",
+      "source": "datagolf-v1-2026-06",
+      "levels": [
+        { "id": "pga_top40", "label": "PGA topp 40", "value": 121, "confidence": "reference" },
+        { "id": "pga_avg", "label": "PGA-snitt", "value": 115, "confidence": "reference" },
+        { "id": "dpw_kft", "label": "DP World / Korn Ferry", "value": 113, "confidence": "estimated" },
+        { "id": "challenge", "label": "Challenge Tour", "value": 111, "confidence": "estimated" },
+        { "id": "nordic", "label": "Nordic League", "value": 109, "confidence": "estimated" },
+        { "id": "elite_junior", "label": "Norsk elitejunior", "value": 108, "confidence": "estimated" },
+        { "id": "scratch", "label": "Scratch", "value": 102, "confidence": "estimated" }
+      ]
+    }
   },
   {
     "id": "pei_bane",
@@ -196,21 +347,77 @@
       "lengde",
       "till_hull",
       "pei"
-    ]
+    ],
+    "benchmarks": {
+      "unit": "pei_percent",
+      "direction": "lower",
+      "source": "datagolf-v1-2026-06",
+      "levels": [
+        { "id": "pga_top40", "label": "PGA topp 40", "value": 5.0, "confidence": "reference" },
+        { "id": "pga_avg", "label": "PGA-snitt", "value": 5.7, "confidence": "reference" },
+        { "id": "dpw_kft", "label": "DP World / Korn Ferry", "value": 6.1, "confidence": "estimated" },
+        { "id": "challenge", "label": "Challenge Tour", "value": 6.8, "confidence": "estimated" },
+        { "id": "nordic", "label": "Nordic League", "value": 7.7, "confidence": "estimated" },
+        { "id": "elite_junior", "label": "Norsk elitejunior", "value": 8.2, "confidence": "estimated" },
+        { "id": "scratch", "label": "Scratch", "value": 9.0, "confidence": "estimated" }
+      ]
+    }
   },
   {
     "id": "inspill_120",
     "name": "Inspill 120m",
-    "description": "5 slag fra 120m. Benchmark: PGA avg PEI ≈ 0.055"
+    "description": "5 slag fra 120m. Benchmark: PGA-snitt PEI ≈ 5,8 % (topp 40 ≈ 5,0 %)",
+    "benchmarks": {
+      "unit": "pei_percent",
+      "direction": "lower",
+      "source": "datagolf-v1-2026-06",
+      "levels": [
+        { "id": "pga_top40", "label": "PGA topp 40", "value": 5.0, "confidence": "reference" },
+        { "id": "pga_avg", "label": "PGA-snitt", "value": 5.8, "confidence": "reference" },
+        { "id": "dpw_kft", "label": "DP World / Korn Ferry", "value": 6.2, "confidence": "estimated" },
+        { "id": "challenge", "label": "Challenge Tour", "value": 7.0, "confidence": "estimated" },
+        { "id": "nordic", "label": "Nordic League", "value": 7.9, "confidence": "estimated" },
+        { "id": "elite_junior", "label": "Norsk elitejunior", "value": 8.4, "confidence": "estimated" },
+        { "id": "scratch", "label": "Scratch", "value": 9.2, "confidence": "estimated" }
+      ]
+    }
   },
   {
     "id": "inspill_160",
     "name": "Inspill 160m",
-    "description": "5 slag fra 160m. Benchmark: PGA avg PEI ≈ 0.059"
+    "description": "5 slag fra 160m. Benchmark: PGA-snitt PEI ≈ 5,5 % (topp 40 ≈ 4,8 %)",
+    "benchmarks": {
+      "unit": "pei_percent",
+      "direction": "lower",
+      "source": "datagolf-v1-2026-06",
+      "levels": [
+        { "id": "pga_top40", "label": "PGA topp 40", "value": 4.8, "confidence": "reference" },
+        { "id": "pga_avg", "label": "PGA-snitt", "value": 5.5, "confidence": "reference" },
+        { "id": "dpw_kft", "label": "DP World / Korn Ferry", "value": 5.8, "confidence": "estimated" },
+        { "id": "challenge", "label": "Challenge Tour", "value": 6.4, "confidence": "estimated" },
+        { "id": "nordic", "label": "Nordic League", "value": 7.1, "confidence": "estimated" },
+        { "id": "elite_junior", "label": "Norsk elitejunior", "value": 7.4, "confidence": "estimated" },
+        { "id": "scratch", "label": "Scratch", "value": 8.0, "confidence": "estimated" }
+      ]
+    }
   },
   {
     "id": "inspill_variation",
     "name": "Inspill Variation",
-    "description": "Varierende avstander (100-130m). Tester tilpasningsevne."
+    "description": "Varierende avstander (100-130m). Tester tilpasningsevne.",
+    "benchmarks": {
+      "unit": "pei_percent",
+      "direction": "lower",
+      "source": "datagolf-v1-2026-06",
+      "levels": [
+        { "id": "pga_top40", "label": "PGA topp 40", "value": 5.0, "confidence": "reference" },
+        { "id": "pga_avg", "label": "PGA-snitt", "value": 5.7, "confidence": "reference" },
+        { "id": "dpw_kft", "label": "DP World / Korn Ferry", "value": 6.1, "confidence": "estimated" },
+        { "id": "challenge", "label": "Challenge Tour", "value": 6.8, "confidence": "estimated" },
+        { "id": "nordic", "label": "Nordic League", "value": 7.7, "confidence": "estimated" },
+        { "id": "elite_junior", "label": "Norsk elitejunior", "value": 8.2, "confidence": "estimated" },
+        { "id": "scratch", "label": "Scratch", "value": 9.0, "confidence": "estimated" }
+      ]
+    }
   }
 ]

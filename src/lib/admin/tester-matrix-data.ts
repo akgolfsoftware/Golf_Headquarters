@@ -6,76 +6,59 @@
  *   - Kolonner = TestDefinition-er som har minst én registrert måling
  *   - Celle  = siste TestResult + delta vs forrige + relativ dato
  *
- * VIKTIG om mål/fargekoding (over/nær/under):
- *   TestDefinition har INGEN strukturert numerisk mål-kolonne. `scoringRule` er
- *   fritekst og `protocol.baselineNormal` er null for alle tester i databasen.
- *   Vi finner derfor IKKE opp mål — målte celler vises i en nøytral "målt"-tilstand
- *   (verdi + delta + dato), og ikke-testede celler vises som skravert tom-tilstand.
- *   Retning (høyere/lavere bedre) og enhet utledes ærlig fra `protocol.scoringMode`
- *   / `protocol.unit` / `scoringRule`-tekst — disse finnes reelt.
+ * Nivå-fargekoding (DataGolf-fasiter v1):
+ *   Tester seedet med `protocol.benchmarks` (zod-validert i test-benchmarks.ts)
+ *   får beregnet beste oppnådde nivå per målt celle (retningsbevisst mot
+ *   nivåstigen PGA topp 40 → Scratch) — vises som kompakt nivå-badge.
+ *   Tester UTEN benchmarks beholder nøytral "målt"-tilstand, og `noTargets`
+ *   settes kun når INGEN tester har benchmarks (fallback for gammel DB-state).
+ *   Retning/enhet hentes fra benchmarks når de finnes, ellers utledes de ærlig
+ *   fra `protocol.scoringMode` / `protocol.unit` / `scoringRule`-tekst.
  */
 
 import { prisma } from "@/lib/prisma";
 import type { PyramidArea } from "@/generated/prisma/client";
+import {
+  DISPLAY_UNIT,
+  achievedLevel,
+  ladderText,
+  parseBenchmarks,
+  type Benchmarks,
+} from "./test-benchmarks";
+import {
+  formatDelta,
+  formatScore,
+  initials,
+  relativeWhen,
+  shortClub,
+  unitAndDirection,
+  unitLineFor,
+} from "./tester-matrix-format";
 
-export type TesterAxis = "fys" | "tek" | "slag" | "spill" | "turn";
-export type CellTone = "measured" | "untested";
-export type DeltaTone = "up" | "down" | "flat";
+import type {
+  CellBenchmark,
+  DeltaTone,
+  MatrixCell,
+  MatrixColumn,
+  MatrixRow,
+  GroupFilter,
+  TesterAxis,
+  TesterMatrixData,
+} from "./tester-matrix-types";
 
-export type MatrixCell = {
-  tone: CellTone;
-  /** Formatert måleverdi, f.eks. "54", "1,78", "72 %". `null` når ikke testet. */
-  value: string | null;
-  delta: { text: string; tone: DeltaTone } | null;
-  /** Relativ dato, f.eks. "14 d", "i går". `null` når ikke testet. */
-  when: string | null;
-  /** Lenke til måle-detalj (TestResult) når den finnes. */
-  href: string | null;
-};
-
-export type MatrixColumn = {
-  testId: string;
-  axis: TesterAxis;
-  name: string;
-  /** Enhet + retning, f.eks. "MPH · HØYERE BEDRE". */
-  unitLine: string;
-  /** Antall målinger for denne testen (på tvers av synlige spillere). */
-  measuredCount: number;
-};
-
-export type MatrixRow = {
-  playerId: string;
-  initials: string;
-  name: string;
-  avatarTone: "default" | "primary" | "accent";
-  /** Sekundær linje, f.eks. "GFGK · HCP 4,2" eller "INGEN MÅLINGER". */
-  sub: string;
-  group: string | null;
-  /** Antall manglende/ikke-testede celler i denne raden. */
-  missingCount: number;
-  cells: MatrixCell[];
-  tildelHref: string;
-};
-
-export type GroupFilter = { label: string; count: number };
-
-export type TrendSummary = { improving: number; flat: number; declining: number };
-
-export type TesterMatrixData = {
-  rows: MatrixRow[];
-  columns: MatrixColumn[];
-  groups: GroupFilter[];
-  /** Header-tall. */
-  playerCount: number;
-  testCount: number;
-  measurementCount: number;
-  missingCount: number;
-  /** Bunn-KPI: gruppe-snitt (per test) + trender. */
-  groupAverages: { testId: string; name: string; avg: string; unit: string }[];
-  trends: TrendSummary;
-  /** Datagap-flagg — settes når mål-fargekoding ikke er mulig. */
-  noTargets: boolean;
-};
+// Re-eksport så eksisterende importer fra denne fila fortsatt virker.
+export type {
+  CellBenchmark,
+  CellTone,
+  DeltaTone,
+  GroupFilter,
+  MatrixCell,
+  MatrixColumn,
+  MatrixRow,
+  TesterAxis,
+  TesterMatrixData,
+  TrendSummary,
+} from "./tester-matrix-types";
 
 const AXIS_MAP: Record<PyramidArea, TesterAxis> = {
   FYS: "fys",
@@ -85,86 +68,25 @@ const AXIS_MAP: Record<PyramidArea, TesterAxis> = {
   TURN: "turn",
 };
 
-function initials(name: string | null | undefined): string {
-  if (!name) return "—";
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return "—";
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-}
-
-/** "Gamle Fredrikstad Golfklubb" → "GFGK"-aktig kort form for chip. */
-function shortClub(club: string | null): string | null {
-  if (!club) return null;
-  const t = club.trim();
-  if (!t) return null;
-  if (/fredrikstad/i.test(t)) return "GFGK";
-  // Initialer av de første ordene (maks 4 tegn).
-  const init = t
-    .split(/\s+/)
-    .filter((w) => /[a-zA-ZæøåÆØÅ]/.test(w))
-    .map((w) => w[0].toUpperCase())
-    .join("")
-    .slice(0, 4);
-  return init || t.slice(0, 4).toUpperCase();
-}
-
-function formatScore(n: number): string {
-  // Heltall uten desimal, ellers én desimal med komma (norsk).
-  if (Number.isInteger(n)) return String(n);
-  return n.toFixed(1).replace(".", ",");
-}
-
-function formatDelta(diff: number): string {
-  const abs = Math.abs(diff);
-  const s = Number.isInteger(abs) ? String(abs) : abs.toFixed(1).replace(".", ",");
-  if (diff > 0) return `+${s}`;
-  if (diff < 0) return `−${s}`;
-  return "±0";
-}
-
-function relativeWhen(d: Date, now: Date): string {
-  const days = Math.floor((now.getTime() - d.getTime()) / 86_400_000);
-  if (days <= 0) return "i dag";
-  if (days === 1) return "i går";
-  return `${days} d`;
-}
-
-type ProtocolShape = { unit?: unknown; scoringMode?: unknown };
-
-/** Utleder enhet + retning ÆRLIG fra protocol-JSON og scoringRule-tekst. */
-function unitAndDirection(
+/** Enhet + retning: benchmarks vinner når de finnes, ellers ærlig utledning. */
+function resolveUnitDirection(
+  bm: Benchmarks | undefined,
   protocol: unknown,
   scoringRule: string,
 ): { unit: string; lowerBetter: boolean } {
-  const p = (protocol ?? {}) as ProtocolShape;
-  const mode = typeof p.scoringMode === "string" ? p.scoringMode.toLowerCase() : "";
-  const rule = scoringRule.toLowerCase();
-
-  // Retning fra scoringMode (mest pålitelig).
-  let lowerBetter: boolean;
-  if (["lowest", "pei", "average"].includes(mode)) lowerBetter = true;
-  else if (["max", "hit-rate", "sum", "distance"].includes(mode)) lowerBetter = false;
-  else {
-    // Fallback: tekst-signaler ("lavere", "tid", "spredning", "avstand til hull").
-    lowerBetter = /lavere|tid i sekunder|spredning|avstand til hull|standardavvik/.test(rule);
-  }
-
-  let unit = typeof p.unit === "string" && p.unit.trim() ? p.unit.trim() : "";
-  if (!unit) {
-    const m = rule.match(/\(([^)]+)\)/); // "Maks vekt (kg)" → "kg"
-    if (m) unit = m[1].trim();
-    else if (/prosent|sink/.test(rule)) unit = "%";
-    else if (/sekunder|tid/.test(rule)) unit = "sek";
-  }
-
-  return { unit, lowerBetter };
+  if (bm) return { unit: DISPLAY_UNIT[bm.unit], lowerBetter: bm.direction === "lower" };
+  return unitAndDirection(protocol, scoringRule);
 }
 
-function unitLineFor(unit: string, lowerBetter: boolean): string {
-  const dir = lowerBetter ? "LAVERE BEDRE" : "HØYERE BEDRE";
-  const u = unit ? unit.toUpperCase() : "VERDI";
-  return `${u} · ${dir}`;
+/** Nivå-badge for en målt verdi, eller `null` når testen mangler benchmarks. */
+function cellBenchmark(bm: Benchmarks | undefined, score: number): CellBenchmark | null {
+  if (!bm) return null;
+  const lvl = achievedLevel(bm, score);
+  const ladder = ladderText(bm);
+  if (!lvl) {
+    return { short: "U/SCR", label: "Under Scratch-nivå", index: bm.levels.length, achieved: false, ladder };
+  }
+  return { short: lvl.short, label: lvl.label, index: lvl.index, achieved: true, ladder };
 }
 
 export async function loadTesterMatrix(): Promise<TesterMatrixData> {
@@ -202,10 +124,21 @@ export async function loadTesterMatrix(): Promise<TesterMatrixData> {
     testsWithResults.add(r.testId);
   }
 
+  // Benchmarks per test (zod-validert fra protocol-JSON). Tom map = ingen fasiter seedet.
+  const benchmarksByTest = new Map<string, Benchmarks>();
+  for (const t of testDefs) {
+    const bm = parseBenchmarks(t.protocol);
+    if (bm) benchmarksByTest.set(t.id, bm);
+  }
+
   // Kolonner = tester som faktisk har minst én måling (ellers blir matrisen tom-støy).
   const columnsRaw = testDefs.filter((t) => testsWithResults.has(t.id));
   const columns: MatrixColumn[] = columnsRaw.map((t) => {
-    const { unit, lowerBetter } = unitAndDirection(t.protocol, t.scoringRule);
+    const { unit, lowerBetter } = resolveUnitDirection(
+      benchmarksByTest.get(t.id),
+      t.protocol,
+      t.scoringRule,
+    );
     const measuredCount = players.reduce(
       (acc, p) => acc + (byKey.has(`${p.id}::${t.id}`) ? 1 : 0),
       0,
@@ -222,7 +155,10 @@ export async function loadTesterMatrix(): Promise<TesterMatrixData> {
   // Per-test enhet (for KPI-snitt-formatering).
   const unitByTest = new Map<string, string>();
   for (const t of columnsRaw) {
-    unitByTest.set(t.id, unitAndDirection(t.protocol, t.scoringRule).unit);
+    unitByTest.set(
+      t.id,
+      resolveUnitDirection(benchmarksByTest.get(t.id), t.protocol, t.scoringRule).unit,
+    );
   }
 
   // Bygg rader.
@@ -235,7 +171,7 @@ export async function loadTesterMatrix(): Promise<TesterMatrixData> {
       const hist = byKey.get(`${p.id}::${col.testId}`);
       if (!hist || hist.length === 0) {
         rowMissing += 1;
-        return { tone: "untested", value: null, delta: null, when: null, href: null };
+        return { tone: "untested", value: null, delta: null, when: null, href: null, benchmark: null };
       }
       rowMeasured += 1;
       const last = hist[hist.length - 1];
@@ -249,6 +185,7 @@ export async function loadTesterMatrix(): Promise<TesterMatrixData> {
         delta,
         when: relativeWhen(last.takenAt, now),
         href: `/admin/tester/${last.id}`,
+        benchmark: cellBenchmark(benchmarksByTest.get(col.testId), last.score),
       };
     });
     measurementCount += rowMeasured;
@@ -344,7 +281,8 @@ export async function loadTesterMatrix(): Promise<TesterMatrixData> {
     missingCount: missingCountTotal,
     groupAverages,
     trends: { improving, flat, declining },
-    noTargets: true,
+    // Fallback: kun når INGEN tester har benchmarks (f.eks. før seed er kjørt).
+    noTargets: benchmarksByTest.size === 0,
   };
 }
 
