@@ -1,7 +1,7 @@
 import { chromium } from "playwright";
 import { mkdir } from "node:fs/promises";
 const DEVICE = process.argv[2] || "mobil";
-const vp = DEVICE === "desktop" ? { width: 1280, height: 900, m: false } : { width: 430, height: 932, m: true };
+const vp = DEVICE === "ipad" ? { width: 834, height: 1112, m: true } : DEVICE === "desktop" ? { width: 1280, height: 900, m: false } : { width: 430, height: 932, m: true };
 const OUT = `/tmp/akhq-app-shots-${DEVICE}`;
 await mkdir(OUT, { recursive: true });
 const b = await chromium.launch({ headless: true });

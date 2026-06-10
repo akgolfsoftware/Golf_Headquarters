@@ -432,7 +432,7 @@ function HoleGrid({
   onStep: (i: number, delta: number) => void;
 }) {
   return (
-    <div className="grid grid-cols-3 gap-2 md:grid-cols-9">
+    <div className="grid grid-cols-3 gap-2 md:grid-cols-6 lg:grid-cols-9">
       {pars.map((par, i) => {
         const idx = startIdx + i;
         const score = scores[i];

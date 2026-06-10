@@ -204,7 +204,7 @@ export function MegProfilDesktop({ data }: { data: MegProfilData }) {
         </div>
       </header>
 
-      <div className="mt-6 grid grid-cols-[1fr_1fr] items-start gap-6">
+      <div className="mt-6 grid items-start gap-6 lg:grid-cols-2">
         {/* Venstre: sesong + konto + logg ut */}
         <div className="space-y-6">
           <section className="space-y-2">

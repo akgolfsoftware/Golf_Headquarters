@@ -354,7 +354,7 @@ export function PlayerHomeDesktop({ data }: { data: HjemData }) {
       )}
 
       {/* 2-kolonne grid */}
-      <div className="mt-6 grid grid-cols-[1.6fr_1fr] gap-6">
+      <div className="mt-6 grid gap-6 lg:grid-cols-[1.6fr_1fr]">
         <div className="space-y-6">
           <DagensFokus data={data} />
           {data.dagensProgram.length > 0 && (

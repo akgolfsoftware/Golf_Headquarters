@@ -34,7 +34,7 @@ export default async function PlanleggePage() {
   return (
     <>
       {/* Mobil: mode-rail-Workbench */}
-      <div className="mx-auto w-full max-w-[460px] px-4 pb-8 pt-3 sm:px-5 md:hidden">
+      <div className="mx-auto w-full max-w-[460px] px-4 pb-8 pt-3 sm:px-5 xl:hidden">
         <div className="mb-4">
           <AthleticEyebrow tone="lime">PLANLEGGE · WORKBENCH</AthleticEyebrow>
           <h1 className="mt-1.5 font-display text-2xl font-bold leading-tight tracking-[-0.015em] text-foreground">
@@ -46,7 +46,7 @@ export default async function PlanleggePage() {
       </div>
 
       {/* Desktop: den komplette Workbenchen (fasit) */}
-      <div className="hidden md:block">
+      <div className="hidden xl:block">
         <Workbench role="player" data={wbData} />
       </div>
     </>
