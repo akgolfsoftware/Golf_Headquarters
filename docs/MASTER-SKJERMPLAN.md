@@ -132,9 +132,9 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Coach: kølle | `/portal/mal/sg-hub/coach/[spillerId]/[club]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Coach: utstyr | `/portal/mal/sg-hub/coach/[spillerId]/equipment` | – | --- | ✓ | ~ | ~ | ~ |
 | Runder (liste) | `/portal/mal/runder` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
-| · Runde-detalj | `/portal/mal/runder/[id]` | – | --- | ✓ | ~ | ~ | ✓ |
+| · Runde-detalj ★ | `/portal/mal/runder/[id]` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
 | · Slag-for-slag | `/portal/mal/runder/[id]/shot-by-shot` | – | --- | ✓ | ~ | ~ | ~ |
-| · Logg ny runde | `/portal/mal/runder/ny` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| · Logg ny runde ★ | `/portal/mal/runder/ny` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
 | TrackMan (liste) | `/portal/mal/trackman` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
 | · TrackMan-sesjon | `/portal/mal/trackman/[id]` | ~ | ✓✓– | ✓ | ~ | ~ | ~ |
 | · TrackMan (alt. adresse) | `/portal/trackman/[sessionId]` | ~ | ✓✓– | ✓ | ~ | ~ | ~ |
@@ -655,6 +655,8 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 ---
 
 ## Endringslogg
+
+- 10. juni (pulje 4): **Runde-detalj + Loggfør runde portet — Fase 2 fullført for de fasit-dekkede skjermene.** Scorecard fra ekte Shot-data (seedet), live to-par-logging m/ realistisk par-miks, 11 kritiker-funn lukket. **Bevisst utsatt fra Fase 2:** live-økt (dual-track Spor A/B — rør ikke uoppfordret) + coach-panel (overlay-IA, egen sak). Neste: Fase 3/4 AgencyOS (egen sesjon), Fase 5 marketing, Fase 6 iPad-sveip.
 
 - 10. juni (pulje 3): **Varsler + Turneringer + hele auth-flyten portet (Fase 2 pulje 2–3).** Varsler/Turneringer: fasit-struktur på ekte data, kritiker-loop (kort-container-funn lukket). Auth login/signup/glemt: ph-auth-fasit, KUN presentasjon (logikk/selektorer urørt, innlogging funksjonstestet etter porting); bankid/samtykke-venter/onboarding: fasit-chrome m/ dokumenterte avvik (BankID-flyt avventer ekte BankID-integrasjon; GDPR-grense 16; appens 7 onboarding-steg). Gate-unntak nedfelt: pill/mono-knappestil + global shell-topbar. NB: samtykke-venter/onboarding er flyt-låste (krever spesial-state) — bilde-diff utestår til E2E; kode-verifisert mot fasit.
 - 10. juni (pulje 2): **Alle 7 Meg-undersider portet til paritet (mobil + desktop) — Fase 2 pulje 1.** Profil (NY side, ekte lagring), Abonnement (gratis-logikk RETTET: coaching-pakke ⇒ gratis; «PlayerHQ Pro» fjernet), Innstillinger (ekte preferences-toggles), Helse (ekte HealthEntry; Readiness «—» til FYS-formel låses), Utstyrsbag/Dokumenter (seedet + ekte data), Hjelp. 4 uavhengige kritikere → 0 avvik på alt. **App-bred KRITISK fiks:** ulaget `* { border-color }` i globals.css drepte alle border-farge-klasser (lime venstrekanter m.m.) — flyttet til @layer base; tokens rettet mot dokumentert hex (#005840/#F1EEE5/#E5E3DD). Delte primitiver: `meg-sub.tsx` + `toggle.tsx`.
