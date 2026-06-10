@@ -55,8 +55,8 @@ const nextConfig: NextConfig = {
       { source: "/admin/facilities", destination: "/admin/anlegg", permanent: true },
       { source: "/admin/facilities/:id", destination: "/admin/anlegg/:id", permanent: true },
       { source: "/admin/approvals", destination: "/admin/godkjenninger", permanent: true },
-      { source: "/admin/plan-templates", destination: "/admin/plans/templates", permanent: true },
-      { source: "/admin/plan-templates/:path*", destination: "/admin/plans/templates/:path*", permanent: true },
+      // /admin/plan-templates er nå kanonisk skjerm (fasit-port juni 2026) —
+      // redirecten til /admin/plans/templates er fjernet.
       { source: "/admin/notion-prosjekter", destination: "/admin/workspace/notion", permanent: true },
       { source: "/admin/notion-prosjekter/:path*", destination: "/admin/workspace/notion/:path*", permanent: true },
       { source: "/admin/notion-oppgaver", destination: "/admin/workspace/oppgaver", permanent: true },

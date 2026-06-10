@@ -50,9 +50,10 @@ for (const s of SCREENS) {
   try {
     await page.goto(`${BASE}${s.path}`, { waitUntil: "networkidle", timeout: 30000 });
     await page.waitForTimeout(1200);
+    await page.mouse.move(0, 0); // hover-artefakter (Playwright-pekeren hviler midt på siden)
     await page.evaluate(() => window.scrollTo(0, 0));
     // Mobil: skjul fixed bunn-nav (overlapper full-page). Desktop: sidebar er del av fasiten — behold.
-    const hideNav = DEVICE === "mobil" ? " nav[aria-label='Hovednavigasjon']{display:none!important}" : "";
+    const hideNav = DEVICE === "mobil" ? " nav[aria-label='Hovednavigasjon']{display:none!important}" : " aside{height:auto!important;min-height:100vh!important;position:static!important} aside nav{overflow:visible!important}";
     await page.addStyleTag({ content: "nextjs-portal,[data-nextjs-toast],#__next-dev-tools-indicator{display:none!important}" + hideNav }).catch(() => {});
     await page.waitForTimeout(200);
     await page.screenshot({ path: `${OUT}/${s.name}.png`, fullPage: true });

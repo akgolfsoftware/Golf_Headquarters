@@ -95,7 +95,7 @@ export function AgChip({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-[5px] rounded-full px-2 py-[3px] font-mono text-[9px] font-extrabold uppercase tracking-[0.06em]",
+        "inline-flex items-center gap-[5px] rounded-full px-2 py-[3px] font-mono text-[9px] font-extrabold uppercase leading-none tracking-[0.06em]",
         chipTones[tone],
         className,
       )}

@@ -1,265 +1,191 @@
-import { CalendarClock, Plane, AlertCircle, Save } from "lucide-react";
+/**
+ * AgencyOS — Tilgjengelighet (GJENNOMFØRE · TILGJENGELIGHET), /admin/availability.
+ *
+ * Port av fasit `agencyos-app/screens-ops.jsx` → AvailabilityScreen (mørkt
+ * tema, desktop 1280): PageHead («Din måned, åpen for booking.» + Synk),
+ * måned-kalender man-først med grønne «åpen for booking»-dager (tidsrom i
+ * cellen), accent-dot på i dag, måned-navigasjon og tegnforklaring.
+ *
+ * Datakilde: prisma.coachAvailability (ukentlige vinduer per coach) projisert
+ * på datoene i valgt måned — ekte data, ingen per-dato-overstyringer i modellen
+ * ennå. Visningen er statisk: fasitens klikk-og-rediger-panel er ikke koblet
+ * (CRUD finnes i ./slot-form.tsx + ./actions.ts — uendret). Måned-navigasjon
+ * via ?m=YYYY-MM. Synk-knappen er no-op som i fasit-demoen.
+ */
+
+import Link from "next/link";
+import { ChevronLeft, ChevronRight, RefreshCw } from "lucide-react";
+
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
-import { EmptyState } from "@/components/shared/empty-state";
-import { CoachFilter } from "@/components/admin/coach-filter";
-import { SlotForm } from "./slot-form";
+import { AgPage, AgPageHead, agBtnClass } from "@/components/admin/agencyos/ui";
+import { cn } from "@/lib/utils";
 
-const DAGER = [
-  "Mandag",
-  "Tirsdag",
-  "Onsdag",
-  "Torsdag",
-  "Fredag",
-  "Lørdag",
-  "Søndag",
+export const dynamic = "force-dynamic";
+
+const MND_NB = [
+  "Januar", "Februar", "Mars", "April", "Mai", "Juni",
+  "Juli", "August", "September", "Oktober", "November", "Desember",
 ];
+const UKEDAGER_NB = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
 
-type SearchParams = Promise<{ coach?: string }>;
+type SearchParams = Promise<{ m?: string }>;
 
-export default async function AvailabilityAdmin({
+/** ?m=YYYY-MM → {y, m(0-11)}, ellers inneværende måned. */
+function parseMnd(param: string | undefined): { y: number; m: number } {
+  if (param && /^\d{4}-\d{2}$/.test(param)) {
+    const y = Number(param.slice(0, 4));
+    const m = Number(param.slice(5, 7)) - 1;
+    if (m >= 0 && m <= 11) return { y, m };
+  }
+  const naa = new Date();
+  return { y: naa.getFullYear(), m: naa.getMonth() };
+}
+
+function mndParam(y: number, m: number): string {
+  return `${y}-${String(m + 1).padStart(2, "0")}`;
+}
+
+function skift(y: number, m: number, delta: number): { y: number; m: number } {
+  let nm = m + delta;
+  let ny = y;
+  if (nm < 0) { nm = 11; ny--; }
+  if (nm > 11) { nm = 0; ny++; }
+  return { y: ny, m: nm };
+}
+
+export default async function AvailabilityPage({
   searchParams,
 }: {
   searchParams: SearchParams;
 }) {
-  const { coach: coachParam } = await searchParams;
-  const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const { m: mParam } = await searchParams;
+  const { y, m } = parseMnd(mParam);
 
-  // ADMIN: filter via ?coach=<id>. COACH: alltid kun egne slots.
-  const valgtCoachId =
-    coach.role === "COACH"
-      ? coach.id
-      : coachParam && coachParam !== "alle"
-        ? coachParam
-        : null;
-
+  // Egne aktive uke-vinduer → tidsrom per ukedag (0 = mandag).
   const slots = await prisma.coachAvailability.findMany({
-    where: valgtCoachId ? { coachId: valgtCoachId } : {},
-    include: { coach: { select: { name: true } } },
-    orderBy: [{ coachId: "asc" }, { weekday: "asc" }, { startTime: "asc" }],
+    where: { coachId: user.id, active: true },
+    orderBy: [{ weekday: "asc" }, { startTime: "asc" }],
+    select: { weekday: true, startTime: true, endTime: true },
   });
-
-  // Hent coach-liste for filter-dropdown
-  const coachListe =
-    coach.role === "ADMIN"
-      ? await prisma.user.findMany({
-          where: { role: { in: ["COACH", "ADMIN"] } },
-          select: { id: true, name: true },
-          orderBy: { name: "asc" },
-        })
-      : [];
-
-  const grupper = new Map<string, typeof slots>();
+  const perUkedag = new Map<number, string>();
   for (const s of slots) {
-    const navn = s.coach.name;
-    grupper.set(navn, [...(grupper.get(navn) ?? []), s]);
+    const range = `${s.startTime}–${s.endTime}`;
+    perUkedag.set(s.weekday, perUkedag.has(s.weekday) ? `${perUkedag.get(s.weekday)} · ${range}` : range);
   }
 
-  const minSlots = slots.filter((s) => s.coachId === coach.id);
-  const aktiveMin = minSlots.filter((s) => s.active).length;
+  // Måned-grid, mandag først.
+  const dagerIMnd = new Date(y, m + 1, 0).getDate();
+  const innrykk = (new Date(y, m, 1).getDay() + 6) % 7;
+  const celler: Array<number | null> = [];
+  for (let i = 0; i < innrykk; i++) celler.push(null);
+  for (let d = 1; d <= dagerIMnd; d++) celler.push(d);
+  while (celler.length % 7) celler.push(null);
+
+  const naa = new Date();
+  const erIdag = (d: number) =>
+    y === naa.getFullYear() && m === naa.getMonth() && d === naa.getDate();
+
+  const forrige = skift(y, m, -1);
+  const neste = skift(y, m, 1);
 
   return (
-    <div className="space-y-8">
-      <PageHeader
-        eyebrow="AgencyOS · Tilgjengelighet"
-        titleLead="Når er du"
-        titleItalic="bookbar"
-        sub={
-          minSlots.length > 0
-            ? `${aktiveMin} aktive tidsvinduer i uka · spillere kan booke innenfor disse.`
-            : "Ukentlige tidsvinduer for når spillere kan booke deg."
+    <AgPage>
+      <AgPageHead
+        eyebrow="Gjennomføre · Tilgjengelighet"
+        title="Din måned,"
+        italic="åpen for booking."
+        lead="Klikk en dato og skriv inn tidsrommet du er tilgjengelig, f.eks. 10:00 – 18:00. Grønne dager er åpne for spiller-booking."
+        actions={
+          <button type="button" className={agBtnClass("ghost")}>
+            <RefreshCw size={16} strokeWidth={1.5} /> Synk
+          </button>
         }
-        actions={<SlotForm triggerLabel="+ Legg til tidsvindu" />}
       />
 
-      {coach.role === "ADMIN" && coachListe.length > 0 && (
-        <div className="rounded-lg border border-border bg-card p-4">
-          <CoachFilter
-            coaches={coachListe.map((c) => ({ id: c.id, navn: c.name }))}
-          />
-        </div>
-      )}
-
-      {slots.length === 0 ? (
-        <EmptyState
-          icon={CalendarClock}
-          titleItalic="Ingen"
-          titleTrail="tidsvinduer ennå"
-          sub="Legg til ukentlige tidsvinduer — for eksempel «Tirsdag 16:00–20:00» — så kan spillere booke seg inn der."
-        />
-      ) : (
-        <>
-          {minSlots.length > 0 && (
-            <section className="space-y-4">
-              <h2 className="font-display text-lg font-semibold tracking-tight text-foreground">
-                Min uke
-              </h2>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-7">
-                {DAGER.map((dag, i) => {
-                  const slotter = minSlots.filter((s) => s.weekday === i);
-                  return (
-                    <div
-                      key={i}
-                      className="rounded-lg border border-border bg-card p-4"
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                          {dag}
-                        </span>
-                        <SlotForm defaultWeekday={i} triggerLabel="+" />
-                      </div>
-                      {slotter.length === 0 ? (
-                        <p className="mt-4 text-xs text-muted-foreground">—</p>
-                      ) : (
-                        <ul className="mt-4 space-y-2">
-                          {slotter.map((s) => (
-                            <li
-                              key={s.id}
-                              className="flex items-center justify-between gap-2 text-xs"
-                            >
-                              <span
-                                className={`font-mono tabular-nums ${
-                                  s.active
-                                    ? "text-foreground"
-                                    : "text-muted-foreground line-through"
-                                }`}
-                              >
-                                {s.startTime}–{s.endTime}
-                              </span>
-                              <SlotForm
-                                initial={{
-                                  id: s.id,
-                                  weekday: s.weekday,
-                                  startTime: s.startTime,
-                                  endTime: s.endTime,
-                                  active: s.active,
-                                }}
-                                triggerLabel="Endre"
-                              />
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </section>
-          )}
-
-          {/* Exception-rader (visuell mock) */}
-          <section className="space-y-2">
-            <h2 className="font-display text-lg font-semibold tracking-tight text-foreground">
-              Unntak og avbrudd
-            </h2>
-            <div className="space-y-2">
-              <ExceptionRow icon={Plane} title="Ferie" sub="12.–19. juli" tone="muted" />
-              <ExceptionRow icon={AlertCircle} title="Bortre uke" sub="3.–7. september · Kurs i Stockholm" tone="warn" />
-            </div>
-          </section>
-
-          {/* Sticky save-bar */}
-          <div className="sticky bottom-4 z-10 mt-6 flex items-center justify-between gap-4 rounded-2xl border border-border bg-card p-4 shadow-lg">
-            <div className="flex items-center gap-2">
-              <span className="inline-flex h-2 w-2 rounded-full bg-warning" />
-              <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                {aktiveMin} aktive tidsvinduer · {minSlots.length - aktiveMin} inaktive
-              </span>
-            </div>
-            <button
-              type="button"
-              className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90"
-            >
-              <Save size={14} />
-              Lagre endringer
-            </button>
+      <div className="rounded-xl border border-border bg-card p-[18px]">
+        {/* Måned-navigasjon */}
+        <div className="mb-[14px] flex items-center justify-between">
+          <div className="font-display text-lg font-bold tracking-[-0.015em] text-foreground">
+            {MND_NB[m]} {y}
           </div>
+          <div className="flex gap-[6px]">
+            <Link
+              href={`/admin/availability?m=${mndParam(forrige.y, forrige.m)}`}
+              className={agBtnClass("ghost", "sm")}
+              aria-label="Forrige måned"
+            >
+              <ChevronLeft size={16} strokeWidth={1.5} />
+            </Link>
+            <Link
+              href={`/admin/availability?m=${mndParam(neste.y, neste.m)}`}
+              className={agBtnClass("ghost", "sm")}
+              aria-label="Neste måned"
+            >
+              <ChevronRight size={16} strokeWidth={1.5} />
+            </Link>
+          </div>
+        </div>
 
-          {coach.role === "ADMIN" && grupper.size > 1 && (
-            <section className="space-y-4">
-              <h2 className="font-display text-lg font-semibold tracking-tight text-foreground">
-                Andre coacher
-                <span className="ml-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                  Admin-view
+        {/* Ukedager */}
+        <div className="mb-[6px] grid grid-cols-7 gap-[6px]">
+          {UKEDAGER_NB.map((w) => (
+            <span
+              key={w}
+              className="text-center font-mono text-[9px] font-extrabold tracking-[0.08em] text-muted-foreground"
+            >
+              {w}
+            </span>
+          ))}
+        </div>
+
+        {/* Dato-ruter */}
+        <div className="grid grid-cols-7 gap-[6px]">
+          {celler.map((d, i) => {
+            if (d == null) return <span key={`tom-${i}`} />;
+            const range = perUkedag.get((new Date(y, m, d).getDay() + 6) % 7);
+            return (
+              <div
+                key={d}
+                className={cn(
+                  "flex min-h-[72px] flex-col gap-1 rounded-[10px] border px-[9px] py-2 text-left",
+                  range ? "border-success/25 bg-success/[0.08]" : "border-border bg-background",
+                )}
+              >
+                <span className="flex items-center justify-between">
+                  <span className="font-mono text-[13px] font-bold text-foreground">{d}</span>
+                  {erIdag(d) && (
+                    <span className="h-[6px] w-[6px] rounded-full bg-accent shadow-[0_0_6px_rgba(209,248,67,0.7)]" />
+                  )}
                 </span>
-              </h2>
-              <div className="space-y-4">
-                {Array.from(grupper.entries())
-                  .filter(([, items]) => items[0].coachId !== coach.id)
-                  .map(([navn, items]) => (
-                    <div
-                      key={navn}
-                      className="rounded-lg border border-border bg-card p-6"
-                    >
-                      <div className="font-display text-base font-semibold text-foreground">
-                        {navn}
-                      </div>
-                      <ul className="mt-4 space-y-2 text-sm">
-                        {items.map((s) => (
-                          <li
-                            key={s.id}
-                            className="flex items-center gap-4 font-mono tabular-nums text-muted-foreground"
-                          >
-                            <span className="text-foreground">
-                              {DAGER[s.weekday]}
-                            </span>
-                            <span>
-                              {s.startTime}–{s.endTime}
-                            </span>
-                            {!s.active && (
-                              <span className="rounded-full bg-secondary px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                                Inaktiv
-                              </span>
-                            )}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
+                {range ? (
+                  <span className="font-mono text-[10px] font-bold tracking-[0.01em] text-success">
+                    {range}
+                  </span>
+                ) : (
+                  <span className="font-mono text-[10px] text-muted-foreground">—</span>
+                )}
               </div>
-            </section>
-          )}
-        </>
-      )}
-    </div>
-  );
-}
+            );
+          })}
+        </div>
 
-function ExceptionRow({
-  icon: Icon,
-  title,
-  sub,
-  tone,
-}: {
-  icon: React.ElementType;
-  title: string;
-  sub: string;
-  tone: "muted" | "warn";
-}) {
-  return (
-    <div
-      className={`flex items-center gap-4 rounded-lg border p-4 ${
-        tone === "warn" ? "border-warning/30 bg-warning/5" : "border-border bg-card"
-      }`}
-    >
-      <span
-        className={`inline-flex h-9 w-9 items-center justify-center rounded-full ${
-          tone === "warn" ? "bg-warning/20 text-warning" : "bg-secondary text-muted-foreground"
-        }`}
-      >
-        <Icon size={16} />
-      </span>
-      <div className="flex-1">
-        <div className="font-display text-sm font-semibold text-foreground">{title}</div>
-        <div className="font-mono text-[11px] text-muted-foreground">{sub}</div>
+        {/* Tegnforklaring */}
+        <div className="mt-[14px] flex flex-wrap gap-[18px]">
+          <span className="inline-flex items-center gap-[7px] font-mono text-[9px] font-bold tracking-[0.06em] text-muted-foreground">
+            <span className="h-3 w-3 rounded-[4px] border border-success/25 bg-success/[0.08]" />{" "}
+            ÅPEN FOR BOOKING
+          </span>
+          <span className="inline-flex items-center gap-[7px] font-mono text-[9px] font-bold tracking-[0.06em] text-muted-foreground">
+            <span className="h-3 w-3 rounded-[4px] border border-border bg-background" /> INGEN TID
+            SATT
+          </span>
+          <span className="inline-flex items-center gap-[7px] font-mono text-[9px] font-bold tracking-[0.06em] text-muted-foreground">
+            <span className="h-[6px] w-[6px] rounded-full bg-accent" /> I DAG
+          </span>
+        </div>
       </div>
-      <button
-        type="button"
-        className="rounded-full border border-border px-4 py-1 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground hover:bg-secondary hover:text-foreground"
-      >
-        Endre
-      </button>
-    </div>
+    </AgPage>
   );
 }

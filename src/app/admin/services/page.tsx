@@ -1,195 +1,104 @@
 /**
- * AgencyOS — Tjenester / priser (/admin/services)
+ * AgencyOS — Tjenester (GJENNOMFØRE · TJENESTER), /admin/services.
  *
- * Bookbar katalog: KPI-strip + filtrer-/sorter-bar + tjeneste-liste. Re-stylet
- * til AgencyOS-DNA (mono-eyebrows, lime-aksent-KPI, rounded-xl, DS-tokens). All
- * data er ekte Prisma (serviceType + bookings-telling). ServicesListe og
- * ServiceForm (client) + actions.ts er uendret — kun presentasjonen er oppdatert.
+ * Port av fasit `agencyos-app/screens-ops.jsx` → ServicesScreen (mørkt tema,
+ * desktop 1280): PageHead («Fem tjenester.» + «Ny tjeneste») og tabell
+ * Tjeneste/Varighet/Pris/Status. Aktiv = chip-ok, inaktiv = «Skjult» (neu) —
+ * som fasit. Demo-stall-tjenestene ligger inactive og vises dermed som Skjult.
+ *
+ * Datakilde: prisma.serviceType (priceOre/durationMin/active — ekte tall).
+ * «Ny tjeneste» gjenbruker eksisterende ServiceForm (ekte CRUD, urørt).
  */
 
-import {
-  Boxes,
-  Layers,
-  Tag,
-  TrendingUp,
-  type LucideIcon,
-} from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
-import { cn } from "@/lib/utils";
-import { ServiceForm } from "./service-form";
 import {
-  ServicesListe,
-  type ServiceListItem,
-} from "@/components/admin/services-liste";
+  AgChip,
+  AgPage,
+  AgPageHead,
+  AgTable,
+  AgTd,
+  AgTh,
+  agTrClass,
+} from "@/components/admin/agencyos/ui";
+import { ServiceForm } from "./service-form";
 
-type Category = "coach" | "studio" | "green" | "group" | "event";
+export const dynamic = "force-dynamic";
 
-// Deriverer kategori fra navn — i v1 har vi ikke kategori-felt i schema.
-function deriveCategory(name: string): Category {
-  const n = name.toLowerCase();
-  if (n.includes("studio") || n.includes("trackman") || n.includes("range")) {
-    return "studio";
-  }
-  if (n.includes("green") || n.includes("18 hull") || n.includes("9 hull")) {
-    return "green";
-  }
-  if (n.includes("grupp") || n.includes("wang") || n.includes("dame")) {
-    return "group";
-  }
-  if (n.includes("camp") || n.includes("event") || n.includes("turnering")) {
-    return "event";
-  }
-  return "coach";
+const TALLORD = [
+  "Null", "Én", "To", "Tre", "Fire", "Fem", "Seks",
+  "Sju", "Åtte", "Ni", "Ti", "Elleve", "Tolv",
+];
+
+function prisLabel(priceOre: number): string {
+  const kr = priceOre / 100;
+  return `${kr.toLocaleString("nb-NO", {
+    maximumFractionDigits: priceOre % 100 === 0 ? 0 : 2,
+  })} kr`;
 }
 
-export default async function ServicesAdmin() {
+export default async function ServicesPage() {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
-  const services = await prisma.serviceType.findMany({
+  const tjenester = await prisma.serviceType.findMany({
     orderBy: [{ active: "desc" }, { name: "asc" }],
-    include: {
-      _count: { select: { bookings: true } },
+    select: {
+      id: true,
+      name: true,
+      durationMin: true,
+      priceOre: true,
+      active: true,
     },
   });
 
-  const aktive = services.filter((s) => s.active).length;
-  const totalCount = services.length;
-
-  const snittPris =
-    services.length > 0
-      ? Math.round(
-          services.reduce((acc, s) => acc + s.priceOre, 0) / services.length / 100,
-        )
-      : 0;
-  const mestBooket = [...services].sort(
-    (a, b) => b._count.bookings - a._count.bookings,
-  )[0];
-
-  const kategorier = new Set(services.map((s) => deriveCategory(s.name))).size;
-
-  const items: ServiceListItem[] = services.map((s) => ({
-    id: s.id,
-    name: s.name,
-    description: s.description,
-    priceOre: s.priceOre,
-    durationMin: s.durationMin,
-    active: s.active,
-    _count: { bookings: s._count.bookings },
-  }));
+  const tittel =
+    tjenester.length < TALLORD.length ? TALLORD[tjenester.length] : String(tjenester.length);
 
   return (
-    <div className="mx-auto max-w-[1240px] space-y-6">
-      <PageHeader
-        eyebrow="AgencyOS · Tjenester og priser"
-        titleLead={String(totalCount)}
-        titleItalic="tjenester"
-        titleTrail={`· ${kategorier} kategori${kategorier === 1 ? "" : "er"}`}
-        sub="Endringer her oppdaterer booking.akgolf.no umiddelbart."
+    <AgPage>
+      <AgPageHead
+        eyebrow="Gjennomføre · Tjenester"
+        title={tittel}
+        italic={tjenester.length === 1 ? "tjeneste." : "tjenester."}
+        lead="Det spillere kan booke. Pris og varighet styrer booking-flyten og faktureringen."
         actions={<ServiceForm triggerLabel="+ Ny tjeneste" />}
       />
 
-      {/* KPI-strip */}
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Kpi
-          label="Aktive tjenester"
-          value={String(aktive)}
-          unit={`/ ${totalCount}`}
-          icon={Boxes}
-          sub={
-            totalCount > 0 && aktive === totalCount
-              ? "Alle synlige i booking"
-              : `${totalCount - aktive} skjult`
-          }
-          accent
-        />
-        <Kpi
-          label="Snitt-pris"
-          value={snittPris > 0 ? snittPris.toLocaleString("nb-NO") : "—"}
-          unit={snittPris > 0 ? "kr" : undefined}
-          icon={Tag}
-          sub={services.length > 0 ? `Over ${services.length} tjenester` : "Ingen tjenester"}
-        />
-        <Kpi
-          label="Mest bookede"
-          value={mestBooket ? mestBooket.name : "—"}
-          icon={TrendingUp}
-          sub={
-            mestBooket
-              ? `${mestBooket._count.bookings} bookinger totalt`
-              : "Ingen data"
-          }
-          displayValue
-        />
-        <Kpi
-          label="Kategorier"
-          value={String(kategorier)}
-          icon={Layers}
-          sub={`${aktive} aktive tjenester`}
-        />
+      <div className="overflow-hidden rounded-xl border border-border bg-card">
+        <AgTable>
+          <thead>
+            <tr>
+              <AgTh>Tjeneste</AgTh>
+              <AgTh>Varighet</AgTh>
+              <AgTh num>Pris</AgTh>
+              <AgTh>Status</AgTh>
+            </tr>
+          </thead>
+          <tbody>
+            {tjenester.length === 0 && (
+              <tr>
+                <td colSpan={4} className="px-[14px] py-10 text-center text-[13px] text-muted-foreground">
+                  Ingen tjenester ennå — opprett den første.
+                </td>
+              </tr>
+            )}
+            {tjenester.map((s) => (
+              <tr key={s.id} className={`${agTrClass} leading-[1.3]`}>
+                <AgTd className="font-semibold">{s.name}</AgTd>
+                <AgTd>
+                  <span className="font-mono text-xs text-muted-foreground">
+                    {s.durationMin} min
+                  </span>
+                </AgTd>
+                <AgTd num>{prisLabel(s.priceOre)}</AgTd>
+                <AgTd>
+                  <AgChip tone={s.active ? "ok" : "neu"}>{s.active ? "Aktiv" : "Skjult"}</AgChip>
+                </AgTd>
+              </tr>
+            ))}
+          </tbody>
+        </AgTable>
       </div>
-
-      <ServicesListe services={items} />
-    </div>
-  );
-}
-
-// ----------------- Komponenter -----------------
-
-function Kpi({
-  label,
-  value,
-  unit,
-  sub,
-  icon: Icon,
-  displayValue,
-  accent,
-}: {
-  label: string;
-  value: string;
-  unit?: string;
-  sub?: string;
-  icon: LucideIcon;
-  displayValue?: boolean;
-  accent?: boolean;
-}) {
-  return (
-    <div
-      className={cn(
-        "relative flex flex-col gap-2 overflow-hidden rounded-xl border bg-card px-[18px] py-4",
-        accent ? "border-accent/40" : "border-border",
-      )}
-    >
-      <div className="flex items-center justify-between">
-        <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
-          {label}
-        </span>
-        <span
-          className={cn(
-            "inline-flex h-6 w-6 items-center justify-center rounded-md",
-            accent ? "bg-accent text-primary" : "bg-secondary text-muted-foreground",
-          )}
-        >
-          <Icon className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden />
-        </span>
-      </div>
-      <div
-        className={cn(
-          "leading-none text-foreground",
-          displayValue
-            ? "font-display text-base font-bold tracking-[-0.015em]"
-            : "font-mono text-[26px] font-bold tracking-[-0.02em] tabular-nums",
-        )}
-      >
-        {value}
-        {unit && !displayValue && (
-          <span className="ml-1 text-[13px] font-bold text-muted-foreground">{unit}</span>
-        )}
-      </div>
-      {sub && (
-        <div className="font-mono text-[11px] tracking-[0.04em] text-muted-foreground">{sub}</div>
-      )}
-    </div>
+    </AgPage>
   );
 }

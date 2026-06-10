@@ -56,6 +56,13 @@ Dokumenteres her så diff-agenten måler mot riktig fasit:
 - **Tildelt meg-ikon:** topp-/venstrejustert i 36px-felt (fasit-PNG-utseende; fasit-JSX hadde sentrert boks).
 - **Knappebredder ±2-7 css px:** next/font-rendret Inter Tight måler marginalt smalere enn fasitens
   CDN-font på identisk tekst/da samme cap-høyde — godtatt font-pipeline-avvik, ikke design-avvik.
+- **Drill-filterchips følger fasit-settet (6), kategoriene kommer fra ekte bibliotek:** drills med
+  kategorier utenfor fasit-settet (f.eks. «Spill») vises i grid men har ingen egen chip — data, ikke design.
+- **Tekst-wrap-punkter kan avvike ±1 linje:** next/font-bredden gjør at lange lead-/delta-tekster
+  bryter på andre steder enn fasitens CDN-font (samme rotårsak som knappebredde-unntaket). Innholds-
+  forskyvningen som følger (~20css) er font-pipeline, ikke design-avvik.
+- **Plan-kanban er statisk (ingen drag-and-drop):** status-flyt skjer i Workbench/plan-detalj
+  (låst beslutning: planlegging bor i Workbench). Kolonne-strukturen følger fasit; flytting gjør ikke.
 - **Status uten aktivitetsdata viser «Inaktiv» (warn):** fasit-vokabularet «N dg inaktiv» krever
   kjent siste-aktivitet; spillere helt uten innlogging/booking-historikk kan ikke dateres. Data-grense.
 - **KPI-korthøyde følger delta-wrap:** fasitens «Økter i dag»-delta wrapper til 2 linjer (smalere
