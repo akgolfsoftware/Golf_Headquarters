@@ -256,6 +256,35 @@ async function main() {
     create: { userId: player.id, tier: "PRO", status: "ACTIVE", monthlyCredits: 4, creditsRemaining: 3 },
   });
 
+  // 10. Utstyrsbag (Meg → Utstyrsbag)
+  await prisma.equipmentBag.upsert({
+    where: { userId: player.id },
+    update: {
+      driver: "TSR3 · 9,5° · Stiff · 45,75\"", fairwayWoods: "TSR2 · 15° · Stiff", hybrids: "T-hybrid · 19°",
+      irons: "T100 · 4–PW · Stiff", wedges: "Vokey SM10 · 50° · 54° · 58°", putter: "Newport 2 · 34\"",
+      ball: "Pro V1x · 2024", bag: "Stand-bag · sort", notes: "Loft-justert driver −0,5° (mai)",
+    },
+    create: {
+      userId: player.id,
+      driver: "TSR3 · 9,5° · Stiff · 45,75\"", fairwayWoods: "TSR2 · 15° · Stiff", hybrids: "T-hybrid · 19°",
+      irons: "T100 · 4–PW · Stiff", wedges: "Vokey SM10 · 50° · 54° · 58°", putter: "Newport 2 · 34\"",
+      ball: "Pro V1x · 2024", bag: "Stand-bag · sort", notes: "Loft-justert driver −0,5° (mai)",
+    },
+  });
+
+  // 11. Dokumenter (Meg → Dokumenter)
+  await prisma.document.deleteMany({ where: { userId: player.id } });
+  await prisma.document.createMany({
+    data: [
+      { userId: player.id, title: "Coaching-avtale 2026", url: "#", kind: "CONTRACT" },
+      { userId: player.id, title: "Foreldresamtykke", url: "#", kind: "CONSENT" },
+      { userId: player.id, title: "Personvern & GDPR", url: "#", kind: "PRIVACY" },
+      { userId: player.id, title: "Faktura · mai 2026", url: "#", kind: "RECEIPT" },
+      { userId: player.id, title: "Faktura · april 2026", url: "#", kind: "RECEIPT" },
+      { userId: player.id, title: "Forbundslisens 2026", url: "#", kind: "LICENSE" },
+    ],
+  });
+
   console.log(`\n✓ Ferdig. Login: ${EMAIL} / ${PASSWORD}`);
   await prisma.$disconnect();
 }

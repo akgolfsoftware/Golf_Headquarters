@@ -31,6 +31,9 @@ Dokumenteres her så diff-agenten måler mot riktig fasit:
   selv om designet har dato-eyebrow + vær der. Resten av hero (greeting + samlet headline) følger designet.
 - **Tier-pill-tekst (alle hero-pills, mobil + desktop):** viser **«PlayerHQ · {tier}»** (+ «· HCP {hcp}» på desktop),
   IKKE designets «Performance Pro». Performance/Performance Pro er **coaching-pakker, ikke app-nivåer** (CLAUDE.md låst beslutning) — skal aldri vises som app-nivå. Vær-linje i hero-topp utelates der appen ikke har vær-data.
+- **Undersider mobil-topbar (2026-06-10):** appen bruker den globale PortalShell-topbaren (hamburger + PLAYERHQ) på
+  undersider, IKKE fasitens sub-topbar med tilbake-pil + sidetittel. Delt shell-chrome-unntak (samme linje som
+  hovedskjermene); tilbake-navigasjon skjer via nettleser/bunn-nav. Diff-agenter skal ikke flagge dette.
 
 ## Hvorfor dette (ikke bare «vær nøye»)
 

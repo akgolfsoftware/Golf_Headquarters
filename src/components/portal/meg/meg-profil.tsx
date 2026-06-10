@@ -53,7 +53,7 @@ const KONTO = [
   { ikon: LifeBuoy, tittel: "Hjelp", meta: "FAQ, support, kontakt", href: "/portal/meg/help" },
 ] as const;
 
-function Abonnementskort({ a }: { a: MegProfilData["abonnement"] }) {
+export function Abonnementskort({ a }: { a: MegProfilData["abonnement"] }) {
   return (
     <div className="relative overflow-hidden rounded-[20px] bg-gradient-to-br from-primary to-emerald-900 p-5 text-white">
       <div aria-hidden className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-accent opacity-15 blur-sm" />
@@ -64,7 +64,7 @@ function Abonnementskort({ a }: { a: MegProfilData["abonnement"] }) {
         </span>
       </div>
       <div className="relative mt-3 font-display text-[22px] font-bold tracking-[-0.015em]">
-        {a.gratis ? "Inkludert i coaching" : "PlayerHQ Pro"}
+        {a.gratis ? "Inkludert i coaching" : "PlayerHQ-abonnement"}
       </div>
       <p className="relative mt-1.5 font-mono text-[11px] leading-relaxed text-white/85">
         {a.gratis ? (

@@ -19,15 +19,15 @@
   --popover-foreground: 157 53% 8%;
 
   /* Brand */
-  --primary: 159 100% 17%;         /* #005840 */
+  --primary: 164 100% 17.3%;       /* #005840 (rettet 2026-06-10 — var 159 → #005738) */
   --primary-foreground: 72 92% 62%;/* #D1F843 — lime som tekst på primary */
   --accent: 72 92% 62%;            /* #D1F843 */
-  --accent-foreground: 159 100% 17%;
+  --accent-foreground: 164 100% 17.3%;
 
   /* Neutrals */
-  --secondary: 45 18% 94%;
+  --secondary: 45 30% 92%;         /* #F1EEE5 varm sand (rettet — var 45 18% 94% → #F2F1ED) */
   --secondary-foreground: 157 53% 8%;
-  --muted: 45 18% 94%;
+  --muted: 45 30% 92%;             /* #F1EEE5 */
   --muted-foreground: 60 4% 37%;
 
   /* Feedback */
@@ -49,9 +49,9 @@
   --chart-6: 280 50% 50%;          /* purple */
 
   /* Form og fokus */
-  --border: 60 8% 90%;
-  --input: 60 8% 88%;
-  --ring: 159 100% 17%;
+  --border: 45 13% 88%;            /* #E5E3DD (rettet — var 60 8% 90% → #E8E8E3) */
+  --input: 45 13% 86%;
+  --ring: 164 100% 17.3%;
 
   /* Radius (16px = card, 20px = pill håndteres via rounded-full) */
   --radius: 1rem;
@@ -246,8 +246,13 @@
 }
 
 /* ---------- Base ---------- */
-* {
-  border-color: hsl(var(--border));
+/* MÅ ligge i @layer base: ulaget CSS vinner over alle utilities i Tailwind v4,
+   og overstyrte dermed HVER border-farge-klasse (border-primary, border-l-accent …)
+   app-bredt. Funnet av diff-agent 2026-06-10. */
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
 }
 
 html {
