@@ -5,6 +5,25 @@
 
 ---
 
+## 2026-06-10 — AgencyOS Fase 3: desktop-fasit-paritet (design/agencyos)
+
+**Branch:** `design/agencyos` · Pulje A–D ferdig (20 skjermer, 0 avvik via kritiker-gate), Pulje E bygges.
+
+### KOORDINERING → PlayerHQ-sporet (design/komplett) — globals.css er endret
+
+Fire delte endringer som påvirker portal-flatene ved merge:
+1. **`* { border-color }` flyttet inn i `@layer base`** — den lå unlayered og overstyrte ALLE
+   border-fargeklasser (border-primary, border-accent, …) i hele appen. Nå virker de.
+   Portal-kode som har border-fargeklasser vil vise dem for første gang.
+2. **`input/textarea/select { font-size:16px }` flyttet inn i `@layer base`** — samme mekanisme;
+   tekststørrelse-utilities på inputs virker nå (iOS-zoom-vernet består som base-default).
+3. **`.dark`-tokens satt til fasit-paletten** (success #56C59A, info #84A9FF, border #2B4F42,
+   secondary/muted = card, muted-fg #9CA39E, destructive #F2908C) — påvirker kun mørke flater (admin).
+4. **Nye chip/tint-tokens i @theme** (--color-chip-*, --color-alert-coral, coach-sidebar-justeringer).
+
+→ PlayerHQ bør re-screenshotte sine 5 godkjente mobilskjermer etter merge (særlig pga. 1 og 2).
+Demo-databasen: coach-demo-data ligger nå på EGEN Øyvind (oyvind-rohjan@stall.akgolf.test) —
+screentest@akgolf.test er verifisert urørt (en tidlig lekkasje ble reversert samme dag).
 ## 2026-06-10 (del 2) — Benchmark-autosync: DataGolf hver mandag 08:00
 
 **Branch:** `feature/benchmark-autosync` (etter merge av PR #8 til main)

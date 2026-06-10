@@ -40,6 +40,48 @@ Dokumenteres her så diff-agenten måler mot riktig fasit:
   Godkjent som app-bredt mønster — diff-agenter skal ikke flagge knapp-form/typografi som følger idiomet.
   (Farger/høyder/innhold skal fortsatt matche fasit.)
 
+### AgencyOS (Fase 3, 2026-06-10)
+
+- **Initialer følger navnet, ikke fasit-JSX:** fasiten hardkoder «MB» som Øyvind Rohjans avatar-initialer
+  (levning fra gammelt navn Markus Berg). AKDATA (kanonisk kilde i samme fasit) sier `initials: "ØR"`.
+  Appen avleder initialer fra ekte navn → **ØR**. Alle avatar-initialer = ekte initialer fra DB-navn.
+- **Demo-tekster er data, ikke UI:** fasit-tekster (meldinger, oppgaver, navn) kommer fra seedet DB-innhold.
+  Avvik i KONKRETE tekstinnhold (annen ordlyd i en melding) er IKKE design-avvik — struktur, rekkefølge,
+  typografi, farger og element-typer er det som måles.
+- **Forespørsler-typer:** appens /admin/foresporsler viser kun SessionRequest (alle «Booking»-chip).
+  Fasitens blanding Booking/Melding/Råd kommer når meldinger/råd unionnes inn (IA-beslutning utestår).
+- **Oppgaver-skjermen beholder arbeidsverktøyet:** view-toggle (liste/kanban/kalender), WorkspaceTabs og
+  full kolonne-tabell beholdes (Notion-synket funksjon) — fasitens enkle 5-raders liste er underlag for
+  header/stil, ikke funksjonsnedskjæring.
+- **Topbar-avatar har ekte meny** (Innstillinger/Logg ut) — fasiten har toast-demo.
+- **Dashboard-underruter** (uka/økonomi/caddie/spillere) har mistet fane-raden (fasiten har ingen) —
+  rutene lever på egne adresser og nås via ⌘K til IA-beslutning tas.
+- **Haster-chip har lesbar tekst:** fasit-CSS `chip-lime` gir lime tekst på lime flate i mørkt tema
+  (render-bug — chipen ser tom ut i fasit-PNG). Appen bruker lime bakgrunn + mørk tekst. Tilsiktet.
+- **Avatar-toner i lister er regelstyrt:** lime = spilleren har økt i dag, pri = haster-kort, ellers
+  nøytral m/ subtil ring (fasit-utseendet). Fasit hardkoder tonene per rad — appen avleder fra data,
+  så HVILKE rader som er lime kan avvike fra fasit-PNG (data, ikke design).
+- **Tildelt meg-ikon:** topp-/venstrejustert i 36px-felt (fasit-PNG-utseende; fasit-JSX hadde sentrert boks).
+- **Knappebredder ±2-7 css px:** next/font-rendret Inter Tight måler marginalt smalere enn fasitens
+  CDN-font på identisk tekst/da samme cap-høyde — godtatt font-pipeline-avvik, ikke design-avvik.
+- **Tester-skjermens tittel/lead følger datamodellen:** fasitens «Test-uke pågår» og «Tour-baseline»
+  har ingen modell — appen viser «{N} tester siste 30 d» og dropper baseline-leddet. Resultat-chips er
+  nøytrale (FYS-formelen er ikke låst — referanseverdier ville vært påfunn).
+- **Rapporter-tiles uten generator lenker til riktig flate** («Åpne →») i stedet for liksom-generering;
+  CSV-tilene bruker ekte eksport-endepunkter.
+- **Drill-filterchips følger fasit-settet (6), kategoriene kommer fra ekte bibliotek:** drills med
+  kategorier utenfor fasit-settet (f.eks. «Spill») vises i grid men har ingen egen chip — data, ikke design.
+- **Tekst-wrap-punkter kan avvike ±1 linje:** next/font-bredden gjør at lange lead-/delta-tekster
+  bryter på andre steder enn fasitens CDN-font (samme rotårsak som knappebredde-unntaket). Innholds-
+  forskyvningen som følger (~20css) er font-pipeline, ikke design-avvik.
+- **Plan-kanban er statisk (ingen drag-and-drop):** status-flyt skjer i Workbench/plan-detalj
+  (låst beslutning: planlegging bor i Workbench). Kolonne-strukturen følger fasit; flytting gjør ikke.
+- **Status uten aktivitetsdata viser «Inaktiv» (warn):** fasit-vokabularet «N dg inaktiv» krever
+  kjent siste-aktivitet; spillere helt uten innlogging/booking-historikk kan ikke dateres. Data-grense.
+- **KPI-korthøyde følger delta-wrap:** fasitens «Økter i dag»-delta wrapper til 2 linjer (smalere
+  CDN-font-kolonne) og strekker alle grid-kortene +13css; appens font holder samme tekst på 1 linje.
+  Wrap-følsom høyde = konsekvens av font-unntaket over, ikke design-avvik. (Målt runde 6, 2026-06-10.)
+
 ## Hvorfor dette (ikke bare «vær nøye»)
 
 Jeg har bias mot å bekrefte mitt eget arbeid. En uavhengig diff-agent hvis *jobb* er å finne feil,

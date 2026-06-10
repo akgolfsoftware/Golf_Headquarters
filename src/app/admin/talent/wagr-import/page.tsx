@@ -1,85 +1,137 @@
 /**
- * /admin/talent/wagr-import — WAGR-import-side
+ * AgencyOS — Talent · WAGR-import (TALENT · WAGR-IMPORT)
  *
- * Enkel oppsummering + import-knapp for WAGR (World Amateur Golf Ranking).
+ * Port av fasit `agencyos-app/screens-stable.jsx` → WagrScreen (mørkt, desktop).
+ * Datakilde: WagrSnapshot (matchede spillere = snapshot med userId-kobling) +
+ * antall PLAYER-brukere for stallen. «Sist synket» = nyeste snapshotAt.
+ * Ingen oppdiktede tall — tomme tilstander vises ærlig.
+ *
+ * Bevisste avvik fra fasit (mangler backend, rapportert i porting-retur):
+ *  - «Synk nå» har ingen automatisk synk-action ennå (import skjer manuelt via
+ *    importerWagrSpiller i ./actions.ts) — knappen rendres uten handler.
+ *  - Fasit har én rad «Trenger bekreftelse»; WagrSnapshot mangler felt for
+ *    match-konfidens, så alle koblede rader vises som «Sikker match».
+ *
+ * Roller: COACH, ADMIN.
  */
 
-import { Download, RefreshCw, Trophy, Users } from "lucide-react";
+import Link from "next/link";
+import { Globe, RefreshCw } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { HubFrame, HubHeader, HubStatSep, HubCard, HubPill } from "@/components/hubs";
+import { prisma } from "@/lib/prisma";
+import {
+  AgChip,
+  AgPage,
+  AgPageHead,
+  AgPlayerCell,
+  AgTable,
+  AgTd,
+  AgTh,
+  agBtnClass,
+  agTrClass,
+} from "@/components/admin/agencyos/ui";
 
 export const dynamic = "force-dynamic";
+
+function initials(name: string): string {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
+function fmtSynket(d: Date): string {
+  const dato = d.toLocaleDateString("nb-NO", { day: "numeric", month: "long" });
+  const tid = d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" });
+  return `${dato} ${tid}`;
+}
 
 export default async function WagrImportPage() {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
-  return (
-    <HubFrame>
-      <HubHeader
-        eyebrow="COACHHQ · TALENT · WAGR"
-        title="WAGR"
-        titleItalic="-import"
-        sub="World Amateur Golf Ranking — importer norske spillere og benchmark mot kohort."
-        actions={
-          <>
-            <button className="hub-btn btn-outline" type="button">
-              <RefreshCw size={13} strokeWidth={1.75} aria-hidden /> Oppdater
-            </button>
-            <button className="hub-btn btn-forest" type="button">
-              <Download size={13} strokeWidth={2} aria-hidden /> Kjør import
-            </button>
-          </>
-        }
-        stats={
-          <>
-            <span>
-              <strong>87</strong> hits sist import
-            </span>
-            <HubStatSep />
-            <span>
-              <strong>14</strong> norske matchet
-            </span>
-            <HubStatSep />
-            <span className="ok-dot">
-              <span />
-              <strong>Sist 23. mai</strong>
-            </span>
-          </>
-        }
-      />
+  const [snapshots, antallSpillere] = await Promise.all([
+    prisma.wagrSnapshot.findMany({
+      orderBy: { rank: "asc" },
+      select: {
+        id: true,
+        rank: true,
+        snapshotAt: true,
+        fullName: true,
+        user: { select: { id: true, name: true } },
+      },
+    }),
+    prisma.user.count({ where: { role: "PLAYER", deletedAt: null } }),
+  ]);
 
-      <section className="hub-grid">
-        <HubCard
-          icon={Trophy}
-          eyebrow="01 · STATUS"
-          title="Siste import"
-          data="23. mai · 14:32"
-          sub="87 spillere · 14 norske · 9 matchet stall"
-          statusPill={
-            <HubPill kind="ok" dot="d-ok">
-              SUCCESS
-            </HubPill>
-          }
-          cta="Se logger →"
-        />
-        <HubCard
-          href="/admin/talent/wagr-benchmark"
-          icon={Users}
-          eyebrow="02 · KOHORT"
-          title="Benchmark"
-          data="A1-klassen · 87 spillere"
-          sub="Norske gjennomsnitt vs WAGR top 100"
-          cta="Se sammenligning →"
-        />
-        <HubCard
-          icon={Download}
-          eyebrow="03 · EKSPORT"
-          title="Eksporter data"
-          data="CSV · JSON · Excel"
-          sub="Full ranking-data + posisjons-historikk"
-          cta="Eksporter →"
-        />
-      </section>
-    </HubFrame>
+  const koblede = snapshots.flatMap((s) =>
+    s.user ? [{ id: s.id, rank: s.rank, user: s.user }] : [],
+  );
+  const sistSynket = snapshots.length
+    ? snapshots.reduce(
+        (maks, s) => (s.snapshotAt > maks ? s.snapshotAt : maks),
+        snapshots[0].snapshotAt,
+      )
+    : null;
+
+  return (
+    <AgPage>
+      <AgPageHead
+        eyebrow="Talent · WAGR-import"
+        title="Synk mot"
+        italic="verdensrankingen."
+        lead="Hent World Amateur Golf Ranking for stallen din. Vi matcher på navn og fødselsdato."
+      />
+      <div className="flex flex-wrap items-center gap-4 rounded-xl border border-border bg-card p-[18px]">
+        <span className="inline-flex h-[38px] w-[38px] items-center justify-center rounded-[10px] bg-secondary text-primary">
+          <Globe size={20} aria-hidden />
+        </span>
+        <div className="min-w-[180px] flex-1">
+          <div className="text-[15px] font-bold text-foreground">
+            {koblede.length} av {antallSpillere} spillere har WAGR-profil
+          </div>
+          <div className="mt-[3px] font-mono text-[11px] text-muted-foreground">
+            {sistSynket ? `Sist synket ${fmtSynket(sistSynket)}` : "Aldri synket"}
+          </div>
+        </div>
+        <button type="button" className={agBtnClass("primary")}>
+          <RefreshCw size={16} aria-hidden /> Synk nå
+        </button>
+      </div>
+      <div className="mb-[14px] mt-7 flex items-center gap-[10px] font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-foreground after:h-px after:flex-1 after:bg-border after:content-['']">
+        Matchede spillere <span className="font-bold text-muted-foreground">· {koblede.length}</span>
+      </div>
+      <div className="overflow-hidden rounded-xl border border-border bg-card">
+        <AgTable>
+          <thead>
+            <tr>
+              <AgTh>Spiller</AgTh>
+              <AgTh num>WAGR</AgTh>
+              <AgTh>Match</AgTh>
+            </tr>
+          </thead>
+          <tbody>
+            {koblede.length === 0 && (
+              <tr>
+                <td colSpan={3} className="px-[14px] py-10 text-center text-sm text-muted-foreground">
+                  Ingen spillere koblet til WAGR ennå — importer fra wagr.com via Talent-modulen.
+                </td>
+              </tr>
+            )}
+            {koblede.map((s) => (
+              <tr key={s.id} className={agTrClass}>
+                <AgTd>
+                  <Link href={`/admin/spillere/${s.user.id}`} className="block">
+                    <AgPlayerCell initials={initials(s.user.name)} name={s.user.name} size={28} />
+                  </Link>
+                </AgTd>
+                <AgTd num>#{s.rank.toLocaleString("nb-NO")}</AgTd>
+                <AgTd>
+                  <AgChip tone="ok">Sikker match</AgChip>
+                </AgTd>
+              </tr>
+            ))}
+          </tbody>
+        </AgTable>
+      </div>
+    </AgPage>
   );
 }

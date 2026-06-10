@@ -2,9 +2,12 @@
 
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Check, X } from "lucide-react";
 import { acceptPlanAction, rejectPlanAction } from "@/lib/agents/actions";
+import { agBtnClass } from "@/components/admin/agencyos/ui";
 
-export function ApprovalActions({ actionId }: { actionId: string }) {
+export function ApprovalActions({ actionId, playerId }: { actionId: string; playerId: string }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
 
@@ -17,23 +20,26 @@ export function ApprovalActions({ actionId }: { actionId: string }) {
   }
 
   return (
-    <div className="flex gap-2">
+    <div className="mt-[14px] flex gap-2">
       <button
         type="button"
         onClick={() => handle(true)}
         disabled={pending}
-        className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60"
+        className={`${agBtnClass("primary", "sm")} disabled:opacity-60`}
       >
-        Godkjenn
+        <Check className="h-4 w-4" strokeWidth={2} /> Godkjenn
       </button>
       <button
         type="button"
         onClick={() => handle(false)}
         disabled={pending}
-        className="rounded-md border border-input bg-card px-4 py-2 text-sm font-medium text-foreground hover:border-border disabled:opacity-60"
+        className={`${agBtnClass("ghost", "sm")} disabled:opacity-60`}
       >
-        Avvis
+        <X className="h-4 w-4" strokeWidth={2} /> Avvis
       </button>
+      <Link href={`/admin/spillere/${playerId}`} className={agBtnClass("ghost", "sm")}>
+        Se profil
+      </Link>
     </div>
   );
 }

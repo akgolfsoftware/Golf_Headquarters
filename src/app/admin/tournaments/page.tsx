@@ -1,166 +1,209 @@
 /**
- * AgencyOS Turneringer (/admin/tournaments) — v10-design.
+ * AgencyOS — Turneringer (/admin/tournaments).
  *
- * Rendrer <Turneringer> (v10-fasit fra agencyos-preview) med EKTE data fra Prisma.
- * Uke/Måned/År-visning, auto-populert «Denne helgen» + kommende, og
- * «Send fellesmelding»-modal per turnering. Tom-tilstand når data mangler —
- * aldri liksom-tall.
+ * Port av fasit `agencyos-app/screens-ops.jsx` → TournamentsScreen (mørkt
+ * tema, desktop 1280): PageHead («PLANLEGGE · TURNERINGER» / «Sesong {år}.» /
+ * lead + «Ny turnering») og tabell Turnering · Dato · Anlegg · Påmeldte ·
+ * Status · Fellesmelding-knapp per rad (åpner komponer-panel, fasit-flyt).
  *
- * Server component. Auth-guard via requirePortalUser({ allow: ["COACH","ADMIN"] }).
- * AdminShell (layout) eier sidebar/topbar — denne siden rendrer kun innholdet.
- *
- * Port (3. juni): byttet fra gammel filter-tabell-visning til v10 <Turneringer>.
- * mapTurneringer oversetter Prisma-radene til TurneringerData-shapen.
+ * Datakilde: prisma.tournamentEntry gruppert per turnering — viser KUN
+ * turneringer stallen er påmeldt i (fasit: «Turneringene stallen din
+ * spiller»), kommende fra inneværende uke. Turneringskatalogen for søk/
+ * påmelding bor i turnering-detalj/ny-flyten. Status-chip avledes av
+ * entry-statusene: alle bekreftet → «Bekreftet», noen påmeldt (ubekreftet)
+ * → «Påmelding åpen», kun trukket → «Trukket». Anlegg uten bane = «—».
  */
+
+import Link from "next/link";
+import { Plus, Trophy } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { startOfWeek } from "@/lib/uke-helpers";
 import {
-  Turneringer,
-  type Tournament,
-  type TurneringerData,
-} from "@/components/admin/turneringer/turneringer";
+  AgChip,
+  AgPage,
+  AgPageHead,
+  AgTable,
+  AgTd,
+  AgTh,
+  agBtnClass,
+  agTrClass,
+} from "@/components/admin/agencyos/ui";
+import { FellesmeldingKnapp } from "./_fellesmelding-knapp";
 
 export const dynamic = "force-dynamic";
 
-type Meta = { tour?: string };
-
-const TOUR_LABEL: Record<string, string> = {
-  olyo: "Olyo Juniortour",
-  srixon: "Srixon Tour",
-  ostlandstour: "Titleist Østlandstour",
-  garmin: "Garmin Norges Cup",
-};
-
-function parseTour(notes: string | null): string | undefined {
-  if (!notes) return undefined;
-  try {
-    const m = JSON.parse(notes) as Meta;
-    if (m && typeof m === "object" && typeof m.tour === "string") return m.tour;
-  } catch {
-    // ignore
-  }
-  return undefined;
-}
-
-function formatDateRange(start: Date, end: Date | null): string {
-  const opts: Intl.DateTimeFormatOptions = { day: "numeric", month: "long" };
-  if (!end || start.toDateString() === end.toDateString()) {
-    return start.toLocaleDateString("nb-NO", opts);
-  }
-  const endStr = end.toLocaleDateString("nb-NO", opts);
-  return `${start.getDate()} – ${endStr}`;
-}
-
-function initials(name: string): string {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return "?";
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-}
-
-/** Mandag i samme ISO-uke som `d` (lokal tid, 00:00). */
-function startOfWeek(d: Date): Date {
-  const x = new Date(d);
-  x.setHours(0, 0, 0, 0);
-  const day = (x.getDay() + 6) % 7; // 0 = mandag
-  x.setDate(x.getDate() - day);
-  return x;
-}
-
-type TournamentRow = {
-  id: string;
+type Rad = {
+  key: string;
+  href: string | null;
   name: string;
-  startDate: Date;
-  endDate: Date | null;
-  notes: string | null;
-  format: string;
-  course: { name: string } | null;
+  start: Date;
+  end: Date | null;
+  venue: string | null;
+  paameldte: number;
+  chip: { label: string; tone: "ok" | "warn" | "neu" | "lime" } | null;
 };
 
-type EntryRow = {
-  tournamentId: string | null;
-  user: { name: string | null };
-};
-
-/** Oversetter Prisma-rader → v10 TurneringerData. Tom-tilstander bevares ([]). */
-function mapTurneringer(
-  rows: TournamentRow[],
-  entries: EntryRow[],
-): TurneringerData {
-  const participantsByTournament = new Map<
-    string,
-    { id: string; initials: string; name: string }[]
-  >();
-  for (const e of entries) {
-    if (!e.tournamentId) continue;
-    const name = e.user.name ?? "(uten navn)";
-    const liste = participantsByTournament.get(e.tournamentId) ?? [];
-    liste.push({
-      id: `${e.tournamentId}-${liste.length}`,
-      initials: initials(name),
-      name,
-    });
-    participantsByTournament.set(e.tournamentId, liste);
+/** «9.–10. jun» / «21. jun» / «14. aug – 16. sep» (nb-NO, uten år). */
+function datoSpenn(start: Date, end: Date | null): string {
+  const mnd = (d: Date) =>
+    d.toLocaleDateString("nb-NO", { month: "short" }).replace(/\.$/, "");
+  if (!end || start.toDateString() === end.toDateString()) {
+    return `${start.getDate()}. ${mnd(start)}`;
   }
+  if (start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear()) {
+    return `${start.getDate()}.–${end.getDate()}. ${mnd(start)}`;
+  }
+  return `${start.getDate()}. ${mnd(start)} – ${end.getDate()}. ${mnd(end)}`;
+}
 
-  const toTournament = (t: TournamentRow): Tournament => {
-    const tour = parseTour(t.notes);
-    return {
-      id: t.id,
-      name: t.name,
-      venue: t.course?.name ?? t.format,
-      dates: formatDateRange(t.startDate, t.endDate),
-      startISO: t.startDate.toISOString().slice(0, 10),
-      category: tour ? (TOUR_LABEL[tour] ?? tour).toUpperCase() : undefined,
-      href: `/admin/tournaments/${t.id}`,
-      participants: participantsByTournament.get(t.id) ?? [],
-    };
-  };
+/** Chip fra entry-statusene til stallens påmeldinger. */
+function statusChip(statuser: string[]): Rad["chip"] {
+  const aktive = statuser.filter((s) => s === "PLANNED" || s === "CONFIRMED");
+  if (aktive.length === 0) {
+    if (statuser.some((s) => s === "COMPLETED" || s === "DNF")) {
+      return { label: "Gjennomført", tone: "neu" };
+    }
+    if (statuser.some((s) => s === "WITHDRAWN")) {
+      return { label: "Trukket", tone: "neu" };
+    }
+    return null;
+  }
+  if (aktive.every((s) => s === "CONFIRMED")) return { label: "Bekreftet", tone: "ok" };
+  return { label: "Påmelding åpen", tone: "lime" };
+}
 
-  const weekStart = startOfWeek(new Date());
-  const weekEnd = new Date(weekStart);
-  weekEnd.setDate(weekEnd.getDate() + 7); // mandag neste uke
+export default async function TurneringerPage() {
+  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
-  const thisWeekend: Tournament[] = [];
-  const upcoming: Tournament[] = [];
+  const now = new Date();
+  const ukeStart = startOfWeek(now);
 
-  for (const t of rows) {
-    if (t.startDate >= weekStart && t.startDate < weekEnd) {
-      thisWeekend.push(toTournament(t));
-    } else if (t.startDate >= weekEnd) {
-      upcoming.push(toTournament(t));
+  const entries = await prisma.tournamentEntry.findMany({
+    select: {
+      entryStatus: true,
+      tournamentId: true,
+      manualName: true,
+      manualDate: true,
+      manualEndDate: true,
+      tournament: {
+        select: {
+          id: true,
+          name: true,
+          startDate: true,
+          endDate: true,
+          location: true,
+          course: { select: { name: true } },
+        },
+      },
+    },
+  });
+
+  // Grupper stallens påmeldinger per turnering (katalog-koblet eller manuell).
+  const perTurnering = new Map<string, Rad & { statuser: string[] }>();
+  for (const e of entries) {
+    const t = e.tournament;
+    const key = t ? t.id : `manuell:${e.manualName ?? "?"}:${e.manualDate?.toISOString() ?? "?"}`;
+    const start = t?.startDate ?? e.manualDate;
+    if (!start) continue;
+    const eksisterende = perTurnering.get(key);
+    if (eksisterende) {
+      eksisterende.statuser.push(e.entryStatus);
+    } else {
+      perTurnering.set(key, {
+        key,
+        href: t ? `/admin/tournaments/${t.id}` : null,
+        name: t?.name ?? e.manualName ?? "(uten navn)",
+        start,
+        end: t?.endDate ?? e.manualEndDate ?? null,
+        venue: t ? (t.course?.name ?? (t.location || null)) : null,
+        paameldte: 0,
+        chip: null,
+        statuser: [e.entryStatus],
+      });
     }
   }
 
-  return {
-    thisWeekend,
-    upcoming,
-    newHref: "/admin/tournaments/ny",
-  };
-}
+  const rader: Rad[] = [...perTurnering.values()]
+    .filter((r) => r.start.getTime() >= ukeStart.getTime())
+    .sort((a, b) => a.start.getTime() - b.start.getTime())
+    .map((r) => ({
+      ...r,
+      paameldte: r.statuser.filter((s) => s !== "WITHDRAWN").length,
+      chip: statusChip(r.statuser),
+    }));
 
-export default async function AdminTurneringerPage() {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  return (
+    <AgPage>
+      <AgPageHead
+        eyebrow="Planlegge · Turneringer"
+        title="Sesong"
+        italic={`${now.getFullYear()}.`}
+        lead="Turneringene stallen din spiller. Send fellesmelding til alle påmeldte med ett klikk."
+        actions={
+          <Link href="/admin/tournaments/ny" className={agBtnClass("primary")}>
+            <Plus size={16} strokeWidth={1.5} /> Ny turnering
+          </Link>
+        }
+      />
 
-  const weekStart = startOfWeek(new Date());
-
-  const [rows, entries] = await Promise.all([
-    prisma.tournament.findMany({
-      where: { mergedIntoId: null, startDate: { gte: weekStart } },
-      include: { course: { select: { name: true } } },
-      orderBy: { startDate: "asc" },
-    }),
-    prisma.tournamentEntry.findMany({
-      where: { tournamentId: { not: null } },
-      select: {
-        tournamentId: true,
-        user: { select: { name: true } },
-      },
-    }),
-  ]);
-
-  const data = mapTurneringer(rows, entries);
-
-  return <Turneringer data={data} />;
+      <div className="overflow-hidden rounded-xl border border-border bg-card">
+        <AgTable>
+          <thead>
+            <tr>
+              <AgTh>Turnering</AgTh>
+              <AgTh>Dato</AgTh>
+              <AgTh>Anlegg</AgTh>
+              <AgTh num>Påmeldte</AgTh>
+              <AgTh>Status</AgTh>
+              <AgTh />
+            </tr>
+          </thead>
+          <tbody>
+            {rader.length === 0 && (
+              <tr>
+                <td colSpan={6} className="px-[14px] py-10 text-center text-[13px] text-muted-foreground">
+                  Ingen kommende turneringer med påmeldte fra stallen.
+                </td>
+              </tr>
+            )}
+            {rader.map((r) => (
+              <tr key={r.key} className={agTrClass}>
+                <AgTd>
+                  <span className="flex items-center gap-[10px]">
+                    <span className="inline-flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-[10px] bg-secondary text-primary">
+                      <Trophy size={16} strokeWidth={1.5} />
+                    </span>
+                    {r.href ? (
+                      <Link href={r.href} className="font-semibold text-foreground hover:underline">
+                        {r.name}
+                      </Link>
+                    ) : (
+                      <span className="font-semibold text-foreground">{r.name}</span>
+                    )}
+                  </span>
+                </AgTd>
+                <AgTd>
+                  <span className="font-mono text-xs">{datoSpenn(r.start, r.end)}</span>
+                </AgTd>
+                <AgTd>
+                  <span className="font-mono text-xs text-muted-foreground">
+                    {r.venue ?? "—"}
+                  </span>
+                </AgTd>
+                <AgTd num>{r.paameldte}</AgTd>
+                <AgTd>
+                  {r.chip ? <AgChip tone={r.chip.tone}>{r.chip.label}</AgChip> : "—"}
+                </AgTd>
+                <AgTd className="text-right">
+                  <FellesmeldingKnapp navn={r.name} mottakere={r.paameldte} />
+                </AgTd>
+              </tr>
+            ))}
+          </tbody>
+        </AgTable>
+      </div>
+    </AgPage>
+  );
 }

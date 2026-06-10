@@ -9,7 +9,7 @@
 import { Plus, Search, Flame, List, LayoutGrid, Calendar } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { AthleticButton, AthleticEyebrow } from "@/components/athletic";
+import { AgPage, AgPageHead, agBtnClass } from "@/components/admin/agencyos/ui";
 import {
   AvatarStack,
   DueDate,
@@ -61,38 +61,27 @@ export default async function WorkspaceOppgaverPage({
   const prosjekter = new Set(tasks.map((t) => t.project.name ?? t.project.company))
     .size;
 
+  const åpne = counts.alle - counts.done;
+  const TALLORD = ["Ingen", "Én", "To", "Tre", "Fire", "Fem", "Seks", "Sju", "Åtte", "Ni", "Ti"];
+  const åpneTekst = TALLORD[åpne] ?? String(åpne);
+  const hasterIdag = tasks.filter((t) => !t.done && t.today).length;
+
   return (
-    <div className="space-y-6">
-      <header className="-mx-4 -mt-4 border-b border-border bg-gradient-to-b from-secondary/40 to-background px-4 py-8 md:-mx-8 md:-mt-8 md:px-8">
-        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div>
-            <AthleticEyebrow>AgencyOS · Workspace · Oppgaver</AthleticEyebrow>
-            <h1 className="font-display mt-2 text-3xl font-bold leading-tight tracking-[-0.02em] md:text-4xl">
-              Alle{" "}
-              <em
-                className="font-normal not-italic"
-                style={{
-                  fontFamily: "'Inter Tight', sans-serif",
-                  fontStyle: "italic",
-                  color: "hsl(var(--primary))",
-                }}
-              >
-                oppgaver
-              </em>
-            </h1>
-            <div className="font-mono mt-2.5 text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-              {counts.alle} OPPGAVER · {delt} DELT MED COACHES · {prosjekter}{" "}
-              {prosjekter === 1 ? "PROSJEKT" : "PROSJEKTER"}
-            </div>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
+    <AgPage>
+      <AgPageHead
+        eyebrow="Min uke · Oppgaver"
+        title={åpneTekst}
+        italic={åpne === 1 ? "gjenstår." : "gjenstår."}
+        lead={`Dine oppgaver på tvers av stallen.${hasterIdag ? ` ${TALLORD[hasterIdag] ?? hasterIdag} haster i dag.` : ""}`}
+        actions={
+          <>
             <ViewToggle current={view} />
-            <AthleticButton variant="lime" size="sm">
-              <Plus className="h-3.5 w-3.5" /> Ny oppgave
-            </AthleticButton>
-          </div>
-        </div>
-      </header>
+            <button type="button" className={agBtnClass("primary")}>
+              <Plus className="h-4 w-4" strokeWidth={2} /> Ny oppgave
+            </button>
+          </>
+        }
+      />
 
       <WorkspaceTabs active="oppgaver" />
 
@@ -109,7 +98,7 @@ export default async function WorkspaceOppgaverPage({
           </>
         )}
       </div>
-    </div>
+    </AgPage>
   );
 }
 
@@ -201,7 +190,7 @@ function FilterPill({
       type="button"
       className={`font-mono inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10.5px] font-semibold uppercase tracking-[0.06em] transition ${
         active
-          ? "border-primary bg-primary text-accent"
+          ? "border-primary bg-primary text-primary-foreground"
           : "border-border bg-card text-muted-foreground hover:text-foreground"
       }`}
     >
@@ -209,7 +198,7 @@ function FilterPill({
       {typeof count === "number" ? (
         <span
           className={`rounded-full px-1.5 py-px tabular-nums ${
-            active ? "bg-accent/25 text-accent" : "bg-secondary"
+            active ? "bg-primary-foreground/15 text-primary-foreground" : "bg-secondary"
           }`}
         >
           {count}
@@ -521,9 +510,9 @@ function EmptyTasks() {
             oppgave manuelt.
           </p>
         </div>
-        <AthleticButton variant="lime" size="sm">
-          <Plus className="h-3.5 w-3.5" /> Ny oppgave
-        </AthleticButton>
+        <button type="button" className={agBtnClass("primary", "sm")}>
+          <Plus className="h-3.5 w-3.5" strokeWidth={2} /> Ny oppgave
+        </button>
       </div>
     </div>
   );

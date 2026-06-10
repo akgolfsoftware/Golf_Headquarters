@@ -30,6 +30,7 @@ Tegnforklaring: ✓ = ferdig · ~ = delvis / i arbeid · – = ikke startet.
 - **Skjermer totalt vi sporer:** ca. 182 hovedskjermer (pluss mange små undersider — alle er med i lista under). To nye kom inn 4. juni: «Logg treningsøkt» (spiller) og «Fremgang» (coach), begge på ekte data.
 - **Helt ferdige (alle seks haker grønne):** 2 — begge Workbench-variantene (spiller + coach). Det er foreløpig de eneste med ekte data hele veien.
 - **PlayerHQ-hovedskjermer på MOBIL-paritet med ekte data (9. juni):** 5 — Hjem, Planlegge, Gjennomføre, Analysere, Meg. Disse er bygd om fra den FERSKE Claude Design-fasiten (4. juni), kjører på ekte Prisma-data (testspiller Øyvind Rohjan), ligger på ekte adresse, og er verifisert av uavhengig kritiker-agent til **0 avvik** mot fasiten på 430px. Eneste gjenstående hake er desktop/iPad-utgaven (mobil-fasit er portet, ikke desktop-layoutene).
+- **AgencyOS HELE FASE 3 på DESKTOP-paritet med ekte data (10.–11. juni):** 25 skjermer + skallet — alle ~26 fasit-skjermer gjennom kritiker-gaten til 0 avvik (Workbench-punktet dekkes av den allerede helgrønne coach-Workbenchen). Gjenstår for AgencyOS: Fase 4 mobil (net-new) + iPad-sveip. — Cockpit/dashboard, Oppgaver, Tildelt meg, Forespørsler, Godkjenninger — pluss hele AgencyOS-SKALLET (fasit-sidebar m/ live badge-tall, topbar m/ spiller↔gruppe-veksler, mørkt tema håndhevet). Portet fra fersk fasit (agencyos-app), ekte Prisma-data (38 spillere-stall seedet), kritiker-loop over 6 runder til 0 reelle avvik (rester er dokumenterte unntak i design-porting-gate.md). Underveis ble tre systemfeil som rammet ALLE skjermer fikset: unlayered `* { border-color }` som drepte alle border-fargeklasser, statiske `--color-success/-warning`-tokens som ignorerte mørkt tema, og `.dark`-tokens som avvek fra fasit-paletten (success/info/border/secondary/muted/destructive).
 - **Nytt design ferdig i forhåndsvisning (men venter på ekte data + ekte adresse):** ca. 43 skjermer. Disse fikk nytt v10-utseende i natt, men kjører fortsatt på liksom-tall og ligger i en forhåndsvisning — ikke på sin ekte nettadresse ennå. De er altså «pene, men ikke ferdig koblet».
 - **Ikke startet / fortsatt gammelt design:** flertallet av de ca. 180 — de finnes som adresse i appen, men er ikke pusset opp til nytt design ennå.
 - **Ting designeren har tegnet, men som IKKE har funnet en plass i appen ennå (drop-off):** se egen liste lenger ned. Dette er det viktigste å passe på.
@@ -259,7 +260,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| **Cockpit (hjem)** ★ | `/admin/agencyos` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| **Cockpit (hjem)** ★ | `/admin/agencyos` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Uka (kanban) | `/admin/agencyos/uka` | – | --- | ✓ | ~ | ~ | ~ |
 | · Spillere (snarvei) | `/admin/agencyos/spillere` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ |
 | · Økonomi | `/admin/agencyos/okonomi` | – | --- | ✓ | ~ | ~ | ~ |
@@ -280,8 +281,8 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | Workspace-hub | `/admin/workspace` | – | --- | ✓ | ~ | ~ | ~ |
-| · Tildelt meg | `/admin/workspace/tildelt-meg` | – | --- | ✓ | ~ | ~ | ~ |
-| · Oppgaver | `/admin/workspace/oppgaver` | – | --- | ✓ | ~ | ~ | ~ |
+| · Tildelt meg | `/admin/workspace/tildelt-meg` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
+| · Oppgaver | `/admin/workspace/oppgaver` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Oppgave-detalj | `/admin/workspace/oppgaver/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Prosjekter | `/admin/workspace/prosjekter` | – | --- | ✓ | ~ | ~ | ~ |
 | · Notion-sync | `/admin/workspace/notion` | – | --- | ✓ | ~ | ~ | ~ |
@@ -291,9 +292,9 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | Stall-oversikt | `/admin/stall` | – | --- | ✓ | ~ | ~ | ✓ |
-| **Spillere (alle)** ★ | `/admin/spillere` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| **Spillere (alle)** ★ | `/admin/spillere` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Ny spiller | `/admin/spillere/ny` | – | --- | ✓ | ~ | ~ | ~ |
-| **Spiller-detalj** ★ | `/admin/spillere/[id]` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| **Spiller-detalj** ★ | `/admin/spillere/[id]` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Profil | `/admin/spillere/[id]/profil` | – | --- | ✓ | ~ | ~ | ~ |
 | · **Workbench (coach-i-spiller)** ★ | `/admin/spillere/[id]/workbench` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
 | · Plan-detalj | `/admin/spillere/[id]/plan/[planId]` | – | --- | ✓ | ~ | ~ | ~ |
@@ -301,42 +302,42 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Tester | `/admin/spillere/[id]/tester` | – | --- | ✓ | ~ | ~ | ~ |
 | · Tildel test | `/admin/spillere/[id]/tildel-test` | – | --- | ✓ | ~ | ~ | ~ |
 | · Rediger | `/admin/spillere/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
-| Grupper | `/admin/grupper` | – | --- | ✓ | ~ | ~ | ~ |
+| Grupper | `/admin/grupper` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Gruppe-detalj | `/admin/grupper/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | Talent-hub | `/admin/talent` | – | --- | ✓ | ~ | ~ | ~ |
 | · Talent-detalj | `/admin/talent/[playerId]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Discovery | `/admin/talent/discovery` | – | --- | ✓ | ~ | ~ | ~ |
-| · Radar | `/admin/talent/radar` | – | --- | ✓ | ~ | ~ | ~ |
+| · Radar | `/admin/talent/radar` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Radar per spiller | `/admin/talent/radar/[playerId]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Kohort | `/admin/talent/kohort` | – | --- | ✓ | ~ | ~ | ~ |
 | · Region | `/admin/talent/region` | – | --- | ✓ | ~ | ~ | ~ |
 | · Ressurser | `/admin/talent/ressurser` | – | --- | ✓ | ~ | ~ | ~ |
-| · Sammenligning | `/admin/talent/sammenligning` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| · Sammenligning | `/admin/talent/sammenligning` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · WAGR-benchmark | `/admin/talent/wagr-benchmark` | – | --- | ✓ | ~ | ~ | ~ |
-| · WAGR-import | `/admin/talent/wagr-import` | – | --- | ✓ | ~ | ~ | ~ |
+| · WAGR-import | `/admin/talent/wagr-import` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
 
 ### Planlegge (lage planer FOR spillerne)
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | Plan-sentral (hub) | `/admin/planlegge` | – | --- | ✓ | ~ | ~ | ~ |
-| Planer (alle) | `/admin/plans` | – | --- | ✓ | ~ | ~ | ✓ |
+| Planer (alle) | `/admin/plans` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Ny plan (AI-wizard) | `/admin/plans/new` | – | --- | ✓ | ~ | ~ | ~ |
 | · Plan-detalj | `/admin/plans/[planId]` | – | --- | ✓ | ~ | ~ | ✓ |
 | · Maler | `/admin/plans/templates` | – | --- | ✓ | ~ | ~ | ~ |
 | · Ny mal | `/admin/plans/templates/ny` | – | --- | ✓ | ~ | ~ | ~ |
 | · Rediger mal | `/admin/plans/templates/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
 | · Mal-effektivitet | `/admin/plans/templates/[id]/effectiveness` | – | --- | ✓ | ~ | ~ | ~ |
-| Plan-maler (alt.) | `/admin/plan-templates` | – | --- | ✓ | ~ | ~ | ~ |
+| Plan-maler (alt.) | `/admin/plan-templates` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Plan-mal detalj | `/admin/plan-templates/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Ny plan-mal | `/admin/plan-templates/ny` | – | --- | ✓ | ~ | ~ | ~ |
 | · Rediger plan-mal | `/admin/plan-templates/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
-| Drills (bibliotek) | `/admin/drills` | – | --- | ✓ | ~ | ~ | ✓ |
+| Drills (bibliotek) | `/admin/drills` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Drill-detalj | `/admin/drills/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Rediger drill | `/admin/drills/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
 | Teknisk plan | `/admin/teknisk-plan` | – | --- | ✓ | ~ | ~ | ~ |
 | · Per spiller | `/admin/teknisk-plan/[spillerId]` | – | --- | ✓ | ~ | ~ | ~ |
-| **Turneringer** ★ | `/admin/tournaments` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| **Turneringer** ★ | `/admin/tournaments` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Turnering-detalj | `/admin/tournaments/[id]` | ~ | ✓✓– | ✓ | ~ | ~ | ~ |
 | · Ny turnering | `/admin/tournaments/ny` | – | --- | ✓ | ~ | ~ | ~ |
 | · Dubletter (rydd) | `/admin/tournaments/dubletter` | – | --- | ✓ | ~ | ~ | ~ |
@@ -350,18 +351,18 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 |---|---|---|---|---|---|---|---|
 | Daglig drift (hub) | `/admin/gjennomfore` | – | --- | ✓ | ~ | ~ | ~ |
 | · Økt-detalj | `/admin/gjennomfore/okter/[id]` | – | --- | ✓ | ~ | ~ | ~ |
-| Kalender | `/admin/kalender` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| Kalender | `/admin/kalender` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Uke | `/admin/kalender/uke` | ~ | ✓✓– | ✓ | ~ | ~ | ~ |
 | · Måned | `/admin/kalender/maned` | ~ | ✓✓– | ✓ | ~ | ~ | ~ |
 | Kalender (alt.) | `/admin/calendar` | – | --- | ✓ | ~ | ~ | ~ |
 | · Måned (alt.) | `/admin/calendar/maned` | – | --- | ✓ | ~ | ~ | ~ |
-| **Bookinger** ★ | `/admin/bookinger` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| **Bookinger** ★ | `/admin/bookinger` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Ny booking | `/admin/bookinger/ny` | – | --- | ✓ | ~ | ~ | ~ |
-| Anlegg | `/admin/anlegg` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| Anlegg | `/admin/anlegg` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Anlegg-detalj | `/admin/anlegg/[id]` | – | --- | ✓ | ~ | ~ | ~ |
-| Tilgjengelighet | `/admin/availability` | – | --- | ✓ | ~ | ~ | ~ |
+| Tilgjengelighet | `/admin/availability` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
 | Kapasitet | `/admin/kapasitet` | – | --- | ✓ | ~ | ~ | ~ |
-| Tjenester/priser | `/admin/services` | – | --- | ✓ | ~ | ~ | ~ |
+| Tjenester/priser | `/admin/services` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
 | Fasiliteter (alt.) | `/admin/facilities` | – | --- | ✓ | ~ | ~ | ~ |
 | · Fasilitet-detalj | `/admin/facilities/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | Lokasjoner | `/admin/locations` | – | --- | ✓ | ~ | ~ | ~ |
@@ -377,20 +378,20 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 |---|---|---|---|---|---|---|---|
 | Innsikt-hub | `/admin/analysere` | – | --- | ✓ | ~ | ~ | ~ |
 | · Compliance | `/admin/analysere/compliance` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
-| Stall-analyse | `/admin/analyse` | – | --- | ✓ | ~ | ~ | ~ |
+| Stall-analyse | `/admin/analyse` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
 | Analytics | `/admin/analytics` | – | --- | ✓ | ~ | ~ | ~ |
-| Lag-snitt | `/admin/lag-snitt` | – | --- | ✓ | ~ | ~ | ~ |
+| Lag-snitt | `/admin/lag-snitt` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Fasiter (autosync) | `/admin/tester/benchmarks` | ~ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
-| Tester (på tvers) | `/admin/tester` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| Tester (på tvers) | `/admin/tester` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Test-detalj | `/admin/tester/[id]` | ~ | ✓✓– | ✓ | ~ | ~ | ~ |
 | · Foreslåtte tester | `/admin/tester/foreslatte` | – | --- | ✓ | ~ | ~ | ~ |
 | · Tildel test | `/admin/tester/tildel/[spillerId]` | – | --- | ✓ | ~ | ~ | ~ |
-| Økt-forespørsler | `/admin/foresporsler` | – | --- | ✓ | ~ | ~ | ~ |
-| Godkjenninger | `/admin/godkjenninger` | – | --- | ✓ | ~ | ~ | ~ |
+| Økt-forespørsler | `/admin/foresporsler` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
+| Godkjenninger | `/admin/godkjenninger` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Godkjenning-detalj | `/admin/godkjenninger/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | Godkjenninger (alt.) | `/admin/approvals` | – | --- | ✓ | ~ | ~ | ~ |
 | · Approval-detalj | `/admin/approvals/[id]` | – | --- | ✓ | ~ | ~ | ~ |
-| Rapporter | `/admin/reports` | – | --- | ✓ | ~ | ~ | ~ |
+| Rapporter | `/admin/reports` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
 | Runder (på tvers) | `/admin/runder` | – | --- | ✓ | ~ | ~ | ~ |
 | Skader/sykdom (tilstander) | `/admin/tilstander` | – | --- | ✓ | ~ | ~ | ~ |
 | Finans (MRR/utestående) | `/admin/finance` | – | --- | ✓ | ~ | ~ | ~ |
@@ -405,7 +406,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Organisasjon-hub | `/admin/organisasjon` | – | --- | ✓ | ~ | ~ | ~ |
 | Klubb-innstillinger | `/admin/klubb/innstillinger` | – | --- | ✓ | ~ | ~ | ~ |
 | Integrasjoner | `/admin/integrasjoner` | – | --- | ✓ | ~ | ~ | ~ |
-| Innstillinger | `/admin/settings` | – | --- | ✓ | ~ | ~ | ✓ |
+| Innstillinger | `/admin/settings` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · API | `/admin/settings/api` | – | --- | ✓ | ~ | ~ | ~ |
 | · Kalender | `/admin/settings/calendar` | – | --- | ✓ | ~ | ~ | ~ |
 | · Sikkerhet | `/admin/settings/security` | – | --- | ✓ | ~ | ~ | ~ |
@@ -684,6 +685,10 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   - **Logg treningsøkt** (`/portal/trening/logg`) — spiller logger treningstid per SG-område; lenket fra PlayerHQ-sidemenyen under «Planlegge».
   - **Fremgang** (`/admin/spillere/[id]/fremgang`) — coach-fane med SG-grafer, treningsvolum og korrelasjon trening↔SG; coach-beskyttet.
   - Begge: Design ✓ · `✓✓–` · Adresse ✓ · Flyt ✓ · Data ✓ · Funker `~` (tsc + build grønt, ikke nettleser-testet ende-til-ende ennå). Database-tabell `training_logs` opprettet i prod (RLS deny-all). Også: training-gap-cron-agent (varsler coach når svakeste SG-område får <20 % treningstid). De fire øvrige gamle feature-branchene ble forkastet som utdaterte.
+- 11. juni (natt): **AgencyOS Fase 3, Pulje E (desktop) — FASE 3 KOMPLETT** — siste 5 skjermer til 0 avvik (4 kritiker-runder): Stall-analyse (ekte KPI-er + pyramide + per gruppe), Lag-snitt (pyramide per gruppe), Tester (FYS-plassholder-regel håndhevet — nøytrale chips, ingen normverdier), Rapporter (ekte CSV-endepunkter, «Åpne →» der generator mangler), Admin/Innstillinger (org/team/tilgang-faner på ekte data). Redirect /admin/analyse→analysere fjernet (skygget ruta). Full produksjonsbygg grønn. PlayerHQ-koordineringsnotat i WORKLOG (globals.css-endringene krever re-screenshot på deres flater ved merge).
+- 10. juni (sen kveld): **AgencyOS Fase 3, Pulje C+D (desktop)** — 9 skjermer til 0 avvik (3 kritiker-runder): Treningsplaner (kanban; «Ny plan»→Workbench per låst beslutning, wizard ulenket), Plan-maler (redirect i next.config fjernet — ruta rendrer nå), Drill-bibliotek (930 drills, pyr-fargede kategorier), Turneringer (m/ Fellesmelding-panel), Kalender (uke-grid m/ akse-kanter; Innspill-regex-bug fikset), Bookinger (ekte Bekreft/Avvis-actions), Anlegg, Tilgjengelighet (ekte coachAvailability), Tjenester. Verktøy-funn: Playwright-pekeren ga hover-artefakter (flyttes nå til 0,0); sticky sidebar kuttet Admin-punktet i full-page (unwrappes nå). Seed: turnerings-entries (6/14/4/2), availability-vinduer, PENDING-bookinger.
+- 10. juni (kveld): **AgencyOS Fase 3, Pulje B (desktop)** — 6 stall/talent-skjermer portet til 0 avvik (3 kritiker-runder): Alle spillere (tabell m/ SG-sparkline, status-heuristikk, bulk-bar, CSV-eksport), Spiller-detalj (hero + coach-flagg + pyramide + runder/tester + aktiv plan), Grupper (tiles m/ ekte aktivitetsbar), Talent-radar (0 avvik første måling), Sammenligning, WAGR-import. Talent-feature-gaten fjernet (skjermene er ekte). Nye systemfunn fikset: unlayered `input{font-size:16px}` overstyrte tekst-utilities (→ @layer base); chip-ok/warn/alert bruker nå fasitens lyse tint-tokens. Seed: planer/runder/SG/tester for navngitte stall-spillere + WAGR-koblinger + talent-tracking (screentest urørt). Nye primitiver: AgTable-familien, AgSectionHead, AgSpark, AgPlayerCell, AgStatusDot, AgSeg.
+- 10. juni: **AgencyOS Fase 3, Pulje A (desktop)** — skall + 5 skjermer portet fra fersk fasit til 0 reelle avvik (6 kritiker-runder). Nye delte primitiver i `src/components/admin/agencyos/ui.tsx` (AgPage/AgPageHead/AgChip/AgTypeChip/AgAvatar/agBtnClass). Coach-seed: 38 spillere, 4 grupper, dagens 4 økter, 4 forespørsler, 3 godkjenninger, 5 oppgaver (idempotent; demo-Øyvind er EGEN bruker `oyvind-rohjan@stall.akgolf.test` — aldri screentest-spilleren, etter en lekkasje som midlertidig endret PlayerHQ-sporets godkjente skjermer og ble reversert). Globale fikser: border-color inn i @layer base (vekket alle border-utilities), dynamiske success/warning-tokens, fasit-verdier i `.dark` (success #56C59A, info #84A9FF, border #2B4F42, secondary=card, muted-fg #9CA39E, destructive #F2908C). Verktøy: agencyos-shot (fasit-screenshots via #hash-deeplink), app-shot 2x + coach-login, restart-protokoll (kald .next + token-probe før gate-shots — Turbopack kunne serve stale CSS). Dashboard-underrutene (uka/økonomi/caddie/spillere) mistet fane-raden (fasiten har ingen) — nås via ⌘K til IA-beslutning.
 - 3. juni (Bolk 1, workflow): 42 preview-skjermer kjørt gjennom port → adversarisk review. Resultat: **29 portet til ekte adresse med ekte data** (mapper-mønster fra pilot-Hjem), 5 allerede koblet, 8 blokkert. tsc + build grønn samlet. 41/42 godkjent av review.
   - **Krever oppfølging (komponent-fiks, ikke data):** `drill-detalj` — v10-komponenten mangler «Trinn»-liste + «Coach-notat», har feil primærknapp og en fabrikkert feedback-seksjon vs v10-fasit. Loaderen gir steps+coachNotes, men komponenten bruker dem ikke. Data-koblingen er teknisk OK; komponenten må utvides til full v10-fasit (egen oppgave, ikke Bolk 1).
   - **Blokkert (trenger mer enn data-kobling):** auth-login/signup/forgot (skjema-flyt), marketing-forside, runde-ny, booking-ny, forelder, trackman. Disse rørte agentene ikke — flagget for manuell/sekvensiell port.

@@ -46,7 +46,8 @@ const nextConfig: NextConfig = {
       { source: "/admin/capacity/:path*", destination: "/admin/kapasitet/:path*", permanent: true },
       { source: "/admin/analytics", destination: "/admin/analysere", permanent: true },
       { source: "/admin/analytics/:path*", destination: "/admin/analysere/:path*", permanent: true },
-      { source: "/admin/analyse", destination: "/admin/analysere", permanent: true },
+      // /admin/analyse: Stall-analyse-skjermen (fasit-port juni 2026) — redirecten
+      // til /admin/analysere er fjernet (sidebar «Stall-analyse» peker hit).
       { source: "/admin/audit", destination: "/admin/audit-log", permanent: true },
       { source: "/admin/audit/:path*", destination: "/admin/audit-log/:path*", permanent: true },
 
@@ -55,8 +56,8 @@ const nextConfig: NextConfig = {
       { source: "/admin/facilities", destination: "/admin/anlegg", permanent: true },
       { source: "/admin/facilities/:id", destination: "/admin/anlegg/:id", permanent: true },
       { source: "/admin/approvals", destination: "/admin/godkjenninger", permanent: true },
-      { source: "/admin/plan-templates", destination: "/admin/plans/templates", permanent: true },
-      { source: "/admin/plan-templates/:path*", destination: "/admin/plans/templates/:path*", permanent: true },
+      // /admin/plan-templates er nå kanonisk skjerm (fasit-port juni 2026) —
+      // redirecten til /admin/plans/templates er fjernet.
       { source: "/admin/notion-prosjekter", destination: "/admin/workspace/notion", permanent: true },
       { source: "/admin/notion-prosjekter/:path*", destination: "/admin/workspace/notion/:path*", permanent: true },
       { source: "/admin/notion-oppgaver", destination: "/admin/workspace/oppgaver", permanent: true },
