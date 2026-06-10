@@ -21,10 +21,7 @@ export function PlayerHQMockup() {
         aria-hidden="true"
       />
 
-      <div
-        className="relative overflow-hidden rounded-xl border border-border shadow-[0_32px_72px_rgba(0,0,0,0.18)]"
-        style={{ transform: "rotateX(4deg) rotateY(-5deg)" }}
-      >
+      <div className="relative overflow-hidden rounded-xl border border-border shadow-[0_32px_72px_rgba(0,0,0,0.18)] sm:[transform:rotateX(4deg)_rotateY(-5deg)]">
         {/* Browser chrome */}
         <div className="flex items-center gap-1.5 bg-[#1c1c1e] px-4 py-2">
           <span className="h-3 w-3 rounded-full bg-[#FF5F57]" aria-hidden="true" />
@@ -40,7 +37,7 @@ export function PlayerHQMockup() {
         {/* App shell */}
         <div className="flex h-[500px] overflow-hidden bg-background">
           {/* Sidebar */}
-          <aside className="flex w-48 flex-shrink-0 flex-col bg-[#061210] text-white">
+          <aside className="hidden w-48 flex-shrink-0 flex-col bg-foreground text-white sm:flex">
             <div className="px-6 py-6">
               <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/30">
                 AK Golf
@@ -51,10 +48,10 @@ export function PlayerHQMockup() {
             <nav className="flex-1 space-y-0.5 px-4">
               {[
                 { label: "Hjem", aktiv: true },
-                { label: "Tren" },
-                { label: "Mål" },
-                { label: "Coach" },
-                { label: "Bookinger" },
+                { label: "Planlegge" },
+                { label: "Gjennomføre" },
+                { label: "Analysere" },
+                { label: "Meg" },
               ].map((item) => (
                 <div
                   key={item.label}
@@ -71,8 +68,8 @@ export function PlayerHQMockup() {
 
             <div className="border-t border-white/10 px-4 py-4">
               <div className="flex items-center gap-2.5">
-                <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-accent font-mono text-[10px] font-bold text-[#061210]">
-                  M
+                <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-accent font-mono text-[10px] font-bold text-accent-foreground">
+                  ØR
                 </div>
                 <div>
                   <p className="text-[11px] font-medium text-white">Øyvind R.</p>
@@ -83,22 +80,22 @@ export function PlayerHQMockup() {
           </aside>
 
           {/* Main */}
-          <main className="flex flex-1 flex-col gap-4 overflow-hidden p-6">
+          <main className="flex min-w-0 flex-1 flex-col gap-4 overflow-hidden p-4 sm:p-6">
             {/* Greeting */}
-            <div className="flex items-start justify-between">
-              <div>
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0">
                 <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
                   Torsdag 15. mai 2026
                 </p>
-                <h2 className="mt-0.5 font-[var(--font-instrument-serif)] text-[22px] font-semibold text-foreground">
+                <h2 className="mt-0.5 font-display text-[22px] font-semibold text-foreground">
                   God morgen,{" "}
                   <em className="italic text-primary">Øyvind</em>
                 </h2>
                 <p className="mt-0.5 text-[11px] text-muted-foreground">
-                  Neste økt: fredag 16. mai · 14:00 · Golfhuset Fredrikstad
+                  Neste økt: fredag 16. mai · 14:00 · Mulligan Sarpsborg
                 </p>
               </div>
-              <span className="flex-shrink-0 rounded-full bg-accent px-4 py-1 font-mono text-[10px] font-bold text-[#061210]">
+              <span className="flex-shrink-0 rounded-full bg-accent px-4 py-1 font-mono text-[10px] font-bold text-accent-foreground">
                 HCP −2,4
               </span>
             </div>
@@ -112,9 +109,9 @@ export function PlayerHQMockup() {
               ].map((s) => (
                 <div
                   key={s.label}
-                  className="rounded-lg border border-border bg-white p-4"
+                  className="min-w-0 rounded-lg border border-border bg-white p-2.5 sm:p-4"
                 >
-                  <p className="font-mono text-[9px] uppercase tracking-[0.10em] text-muted-foreground">
+                  <p className="font-mono text-[9px] uppercase leading-snug tracking-[0.10em] text-muted-foreground">
                     {s.label}
                   </p>
                   <p className="mt-1 font-mono text-[18px] font-semibold tabular-nums text-foreground">
@@ -128,7 +125,7 @@ export function PlayerHQMockup() {
             {/* Bottom row: plan + SG */}
             <div className="grid flex-1 grid-cols-2 gap-2 overflow-hidden">
               {/* Plan */}
-              <div className="flex flex-col rounded-lg border border-border bg-white p-4">
+              <div className="flex min-w-0 flex-col rounded-lg border border-border bg-white p-2.5 sm:p-4">
                 <div className="flex items-center justify-between">
                   <p className="font-mono text-[9px] uppercase tracking-[0.10em] text-muted-foreground">
                     Denne uken
@@ -139,7 +136,7 @@ export function PlayerHQMockup() {
                 </div>
                 <div className="mt-2 flex-1 space-y-2.5">
                   {drills.map((d) => (
-                    <div key={d.tekst} className="flex items-center gap-2">
+                    <div key={d.tekst} className="flex min-w-0 items-center gap-2">
                       <div
                         className={`flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full border-2 ${
                           d.ferdig
@@ -166,7 +163,7 @@ export function PlayerHQMockup() {
               </div>
 
               {/* SG chart */}
-              <div className="flex flex-col rounded-lg border border-border bg-white p-4">
+              <div className="flex min-w-0 flex-col rounded-lg border border-border bg-white p-2.5 sm:p-4">
                 <p className="font-mono text-[9px] uppercase tracking-[0.10em] text-muted-foreground">
                   Strokes Gained
                 </p>
@@ -184,7 +181,7 @@ export function PlayerHQMockup() {
                           style={{ color: farge }}
                         >
                           {b.verdi > 0 ? "+" : ""}
-                          {b.verdi}
+                          {String(b.verdi).replace(".", ",")}
                         </span>
                         <div
                           className="w-full rounded-sm"

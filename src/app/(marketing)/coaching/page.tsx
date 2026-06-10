@@ -3,6 +3,7 @@ import { Check } from "lucide-react";
 import { SubscribeButton } from "@/components/marketing/subscribe-button";
 import {
   CtaLime,
+  CtaOutlineLys,
   Em,
   HeroEm,
   MarketingHero,
@@ -168,12 +169,13 @@ export default function Coaching() {
             <CtaLime href="/booking" withArrow>
               Se ledige tider
             </CtaLime>
+            <CtaOutlineLys href="/kontakt">Kontakt oss</CtaOutlineLys>
           </div>
           <p className="relative z-10 mt-6 text-[13px] text-white/70">
             Spørsmål om hvilken pakke som passer for deg?{" "}
             <a
               href="mailto:post@akgolf.no"
-              className="font-medium text-accent hover:underline"
+              className="font-medium text-white underline underline-offset-2 hover:text-white/80"
             >
               post@akgolf.no
             </a>

@@ -14,7 +14,7 @@ import { KontaktForm } from "./form";
 export const metadata: Metadata = {
   title: "Kontakt — AK Golf Academy",
   description:
-    "Ta kontakt med AK Golf Academy. Personlig coaching, booking og spørsmål — vi svarer som regel samme dag.",
+    "Ta kontakt med AK Golf Academy. Personlig coaching, booking og spørsmål — vi svarer innen 1 virkedag.",
 };
 
 type Hours = { day: string; coaching: string; mulligan: string };
@@ -32,7 +32,7 @@ const HOURS: Hours[] = [
 const FAQ = [
   {
     q: "Hvor raskt får jeg svar?",
-    a: "Vi svarer på alle henvendelser innen 1 virkedag, ofte samme dag. Coaching-forespørsler prioriteres.",
+    a: "Vi svarer på alle henvendelser innen 1 virkedag. Coaching-forespørsler prioriteres.",
   },
   {
     q: "Trenger jeg medlemskap for å booke?",
@@ -60,7 +60,7 @@ export default function KontaktSide() {
           </h1>
           <p className="mt-6 max-w-[48ch] text-[17px] leading-[1.55] text-muted-foreground">
             Spørsmål om coaching, junior-program eller bedriftsevent? Skriv noen
-            ord under, eller ring oss direkte. Vi svarer innen 24 timer.
+            ord under, eller ring oss direkte. Vi svarer innen 1 virkedag.
           </p>
         </div>
       </section>
@@ -92,7 +92,7 @@ export default function KontaktSide() {
               </p>
               <div className="mt-6">
                 <Quick label="Anders Kristiansen" value="+47 482 16 540" first />
-                <Quick label="Bedriftshenvendelser" value="bedrift@akgolf.no" />
+                <Quick label="Bedriftshenvendelser" value="post@akgolf.no" />
                 <Quick label="E-post · alt annet" value="post@akgolf.no" />
               </div>
             </div>
@@ -138,7 +138,7 @@ export default function KontaktSide() {
             Icon={Mail}
             label="E-post"
             value="post@akgolf.no"
-            note="Vi svarer innen 24 timer."
+            note="Vi svarer innen 1 virkedag."
             href="mailto:post@akgolf.no"
           />
           <InfoCard
@@ -158,8 +158,8 @@ export default function KontaktSide() {
       </section>
 
       {/* ========== ÅPNINGSTIDER · hairline-strip ========== */}
-      <section className="border-y border-border bg-card">
-        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-6 py-24 md:grid-cols-2 md:px-8">
+      <section>
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-6 pb-24 md:grid-cols-2 md:px-8">
           <div>
             <SectionEyebrow>Åpningstider</SectionEyebrow>
             <SectionH2>
@@ -169,13 +169,13 @@ export default function KontaktSide() {
               Mulligan Indoor Golf er åpent 07–00 alle dager i Fredrikstad og
               Sarpsborg. Coaching-timer må bookes innenfor coachenes arbeidstid.
             </p>
-            <div className="mt-8 inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-[13px] text-foreground">
+            <div className="mt-8 inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-[13px] text-foreground">
               <Clock className="h-4 w-4 text-primary" strokeWidth={1.5} />
               <span>Helligdager: se oppdatert info i appen</span>
             </div>
           </div>
 
-          <div className="overflow-x-auto rounded-[20px] border border-border bg-background">
+          <div className="overflow-x-auto rounded-[20px] border border-border bg-card">
             <table className="w-full min-w-[480px] border-collapse text-left text-[14px]">
               <thead>
                 <tr className="border-b border-border bg-secondary/50">
@@ -218,7 +218,7 @@ export default function KontaktSide() {
       </section>
 
       {/* ========== KART ========== */}
-      <section className="mx-auto max-w-7xl px-6 py-24 md:px-8">
+      <section className="mx-auto max-w-7xl px-6 pb-24 md:px-8">
         <SectionEyebrow>Anlegg · Øst</SectionEyebrow>
         <SectionH2>
           Finn <Em>frem</Em> til oss.
@@ -249,8 +249,8 @@ export default function KontaktSide() {
       </section>
 
       {/* ========== FAQ ========== */}
-      <section className="border-t border-border bg-card">
-        <div className="mx-auto max-w-7xl px-6 py-24 md:px-8">
+      <section>
+        <div className="mx-auto max-w-7xl px-6 pb-24 md:px-8">
           <SectionEyebrow>FAQ</SectionEyebrow>
           <SectionH2>
             Korte svar på <Em>vanlige spørsmål</Em>.
@@ -259,7 +259,7 @@ export default function KontaktSide() {
             {FAQ.map((f) => (
               <div
                 key={f.q}
-                className="rounded-[20px] border border-border bg-background p-8"
+                className="rounded-[20px] border border-border bg-card p-8"
               >
                 <h3 className="font-display text-[22px] font-bold leading-[1.1] tracking-[-0.015em]">
                   {f.q}
@@ -269,6 +269,47 @@ export default function KontaktSide() {
                 </p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ========== CLOSING CTA ========== */}
+      <section className="mx-auto max-w-7xl px-6 pb-24 md:px-8">
+        <div
+          className="relative overflow-hidden rounded-3xl px-6 py-16 text-center text-white sm:px-12 lg:px-16 lg:py-20"
+          style={{
+            background:
+              "linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(168 72% 11%) 100%)",
+          }}
+        >
+          <div
+            aria-hidden
+            className="absolute -top-[120px] left-1/2 h-[480px] w-[480px] -translate-x-1/2 rounded-full bg-accent opacity-[0.12] blur-[4px]"
+          />
+          <span className="relative z-10 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">
+            Klar når du er
+          </span>
+          <h2 className="relative z-10 mx-auto mt-4 max-w-[20ch] text-balance font-display text-[clamp(36px,5vw,56px)] font-bold leading-[1.05] tracking-[-0.025em]">
+            Heller bare <Em dark>komme i gang</Em>?
+          </h2>
+          <p className="relative z-10 mx-auto mt-4 max-w-[56ch] text-[16px] leading-[1.55] text-white/85">
+            Du trenger ikke vente på svar — book en økt direkte, eller send oss
+            en e-post om du vil ta det skriftlig først.
+          </p>
+          <div className="relative z-10 mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <Link
+              href="/booking"
+              className="inline-flex h-[52px] items-center justify-center gap-1.5 rounded-full bg-accent px-6 font-display text-[16px] font-bold tracking-[-0.005em] text-accent-foreground shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition hover:-translate-y-px hover:brightness-105 hover:shadow-[0_10px_28px_rgba(209,248,67,0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            >
+              Book en økt
+              <ArrowRight className="h-[18px] w-[18px]" strokeWidth={1.5} />
+            </Link>
+            <a
+              href="mailto:post@akgolf.no"
+              className="inline-flex h-[52px] items-center justify-center gap-1.5 rounded-xl px-6 font-display text-[16px] font-bold tracking-[-0.005em] text-secondary ring-1 ring-inset ring-secondary/45 transition hover:bg-secondary/10 hover:ring-secondary/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              Send oss en e-post
+            </a>
           </div>
         </div>
       </section>
@@ -294,9 +335,19 @@ function SectionH2({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Em({ children }: { children: React.ReactNode }) {
+function Em({
+  children,
+  dark = false,
+}: {
+  children: React.ReactNode;
+  dark?: boolean;
+}) {
   return (
-    <em className="font-display font-normal italic text-primary">{children}</em>
+    <em
+      className={`font-display font-normal italic ${dark ? "text-accent" : "text-primary"}`}
+    >
+      {children}
+    </em>
   );
 }
 

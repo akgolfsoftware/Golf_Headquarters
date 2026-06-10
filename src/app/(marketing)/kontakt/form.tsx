@@ -26,8 +26,8 @@ function SubmitKnapp() {
       disabled={pending}
       className="inline-flex h-[52px] items-center justify-center gap-1.5 rounded-full bg-accent px-6 font-display text-[16px] font-bold tracking-[-0.005em] text-accent-foreground shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition hover:-translate-y-px hover:brightness-105 hover:shadow-[0_10px_28px_rgba(209,248,67,0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
     >
-      <Send className="h-[18px] w-[18px]" strokeWidth={1.5} aria-hidden="true" />
       {pending ? "Sender ..." : "Send melding"}
+      <Send className="h-[18px] w-[18px]" strokeWidth={1.5} aria-hidden="true" />
     </button>
   );
 }

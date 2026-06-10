@@ -4,6 +4,9 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import {
+  CtaLime,
+  CtaOutlineLys,
+  Em,
   HeroEm,
   MarketingHero,
 } from "@/components/marketing/marketing-sections";
@@ -27,7 +30,7 @@ const FALLBACK_COACHER: CoachKort[] = [
   {
     slug: "anders",
     navn: "Anders Kristiansen",
-    tittel: "Head Coach · CEO",
+    tittel: "Head Coach · PGA Pro",
     bio: "Bygger Academy rundt målbar fremgang. Mer enn et tiår med spillere på alle nivåer — fra første time til turneringsspill.",
     initialer: "AK",
     foto: null,
@@ -52,33 +55,20 @@ function utledSlug(navn: string): string {
 }
 
 export default async function CoacherSide() {
-  // Hentes som dokumentasjon — vi viser kuraterte kort uavhengig av om
-  // databasen er fylt ut. Coacher i DB brukes hvis tilgjengelig.
+  // Kuratert liste er fasit for HVEM som vises (Anders først, så Markus) —
+  // Anders ligger som ADMIN i DB, derfor hentes både COACH og ADMIN.
+  // DB-treff beriker kun kortet med profilbilde; andre DB-brukere vises aldri.
   const dbCoacher = await prisma.user.findMany({
-    where: { role: "COACH" },
+    where: { role: { in: ["COACH", "ADMIN"] } },
     select: { id: true, name: true, avatarUrl: true },
   });
 
-  const coacher: CoachKort[] =
-    dbCoacher.length > 0
-      ? dbCoacher.map((u) => {
-          const fallback = FALLBACK_COACHER.find(
-            (f) => utledSlug(u.name) === f.slug,
-          );
-          return {
-            slug: utledSlug(u.name),
-            navn: u.name,
-            tittel: fallback?.tittel ?? "Coach",
-            bio: fallback?.bio ?? "Coach i AK Golf Academy.",
-            initialer: u.name
-              .split(" ")
-              .slice(0, 2)
-              .map((n) => n.charAt(0).toUpperCase())
-              .join(""),
-            foto: u.avatarUrl,
-          };
-        })
-      : FALLBACK_COACHER;
+  const coacher: CoachKort[] = FALLBACK_COACHER.map((f) => {
+    const db = dbCoacher.find(
+      (u) => u.name === f.navn || utledSlug(u.name) === f.slug,
+    );
+    return db?.avatarUrl ? { ...f, foto: db.avatarUrl } : f;
+  });
 
   return (
     <div className="bg-background text-foreground">
@@ -103,6 +93,38 @@ export default async function CoacherSide() {
             {coacher.map((c) => (
               <CoachCard key={c.slug} c={c} />
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ========== CLOSING CTA (forsidens closing-mønster) ========== */}
+      <section className="mx-auto max-w-7xl px-6 pb-24 md:px-8">
+        <div
+          className="relative overflow-hidden rounded-3xl px-6 py-16 text-center text-white sm:px-12 lg:px-16 lg:py-20"
+          style={{
+            background:
+              "linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(168 72% 11%) 100%)",
+          }}
+        >
+          <div
+            aria-hidden
+            className="absolute -top-[120px] left-1/2 h-[480px] w-[480px] -translate-x-1/2 rounded-full bg-accent opacity-[0.12] blur-[4px]"
+          />
+          <span className="relative z-10 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">
+            Coaching · 2026-sesongen
+          </span>
+          <h2 className="relative z-10 mx-auto mt-4 max-w-[20ch] text-balance font-display text-[clamp(36px,5vw,56px)] font-bold leading-[1.05] tracking-[-0.025em]">
+            Tren med <Em dark>oss</Em>.
+          </h2>
+          <p className="relative z-10 mx-auto mt-4 max-w-[56ch] text-[16px] leading-[1.55] text-white/85">
+            Book en økt med Anders eller Markus — eller ta kontakt hvis du er
+            usikker på hvor du bør starte.
+          </p>
+          <div className="relative z-10 mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <CtaLime href="/booking" withArrow>
+              Book en økt
+            </CtaLime>
+            <CtaOutlineLys href="/kontakt">Kontakt oss</CtaOutlineLys>
           </div>
         </div>
       </section>

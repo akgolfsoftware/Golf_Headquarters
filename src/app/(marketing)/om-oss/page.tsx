@@ -95,6 +95,25 @@ export default function OmOss() {
               gründer og CEO i AK Golf Group AS. Tett personlig oppfølging,
               målbar fremgang.
             </p>
+
+            <div
+              className="mkt-hero-in mt-8 flex flex-wrap gap-3"
+              style={{ animationDelay: "320ms" }}
+            >
+              <Link
+                href="/booking"
+                className="inline-flex h-[52px] items-center justify-center gap-1.5 rounded-full bg-accent px-6 font-display text-[16px] font-bold tracking-[-0.005em] text-accent-foreground shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition hover:-translate-y-px hover:brightness-105 hover:shadow-[0_10px_28px_rgba(209,248,67,0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              >
+                Book første time
+                <ArrowRight className="h-[18px] w-[18px]" strokeWidth={1.5} />
+              </Link>
+              <Link
+                href="/coacher"
+                className="inline-flex h-[52px] items-center justify-center gap-1.5 rounded-xl px-6 font-display text-[16px] font-bold tracking-[-0.005em] text-secondary ring-1 ring-inset ring-secondary/45 transition hover:bg-secondary/10 hover:ring-secondary/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                Møt coachene
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -138,14 +157,13 @@ export default function OmOss() {
 
           <div className="mt-10 max-w-[62ch] space-y-6 text-[16px] leading-[1.6] text-foreground">
             <p>
-              AK Golf Academy drives av Anders Kristiansen — golfcoach, gründer
-              og CEO i AK Golf Group AS. Etter mer enn et tiår med spillere på
-              alle nivåer, fra klubbamatører til konkurranseutøvere, har Anders
-              bygget en coaching-praksis som kombinerer tett personlig
-              oppfølging med målbar fremgang.
+              Anders har brukt mer enn et tiår på spillere på alle nivåer —
+              fra klubbamatører til konkurranseutøvere. Underveis vokste det
+              frem en praksis der personlig oppfølging og målbare resultater
+              ikke er motsetninger, men to sider av samme metode.
             </p>
 
-            <blockquote className="border-l-2 border-accent pl-6 font-display text-[clamp(20px,2.5vw,26px)] font-normal italic leading-[1.45] text-primary">
+            <blockquote className="border-l-2 border-primary pl-6 font-display text-[clamp(20px,2.5vw,26px)] font-normal italic leading-[1.45] text-primary">
               «Coaching skal ikke være magi. Det skal være tydelig: hva vi
               jobber med, hvorfor vi jobber med det, og hvordan du ser at det
               virker. Det er det Academy er bygget rundt.»
@@ -193,13 +211,23 @@ export default function OmOss() {
           <h2 className="relative z-10 mx-auto mt-4 max-w-[20ch] text-balance font-display text-[clamp(36px,5vw,56px)] font-bold leading-[1.05] tracking-[-0.025em]">
             Klar for <Em dark>første time</Em>?
           </h2>
-          <div className="relative z-10 mt-8 flex justify-center">
+          <p className="relative z-10 mx-auto mt-4 max-w-[56ch] text-[16px] leading-[1.55] text-white/85">
+            Start med en enkelt time — så ser vi sammen hva som er riktig vei
+            videre for spillet ditt.
+          </p>
+          <div className="relative z-10 mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
               href="/booking"
               className="inline-flex h-[52px] items-center justify-center gap-1.5 rounded-full bg-accent px-6 font-display text-[16px] font-bold tracking-[-0.005em] text-accent-foreground shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition hover:-translate-y-px hover:brightness-105 hover:shadow-[0_10px_28px_rgba(209,248,67,0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               Book første time
               <ArrowRight className="h-[18px] w-[18px]" strokeWidth={1.5} />
+            </Link>
+            <Link
+              href="/kontakt"
+              className="inline-flex h-[52px] items-center justify-center gap-1.5 rounded-xl px-6 font-display text-[16px] font-bold tracking-[-0.005em] text-secondary ring-1 ring-inset ring-secondary/45 transition hover:bg-secondary/10 hover:ring-secondary/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              Ta kontakt
             </Link>
           </div>
         </div>

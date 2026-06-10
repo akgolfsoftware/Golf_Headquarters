@@ -3,12 +3,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Building2, MapPin, Trees } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import {
+  CtaLime,
+  CtaOutlineLys,
+} from "@/components/marketing/marketing-sections";
 import { PulseDot } from "@/components/athletic/pulse-dot";
 
 export const metadata: Metadata = {
   title: "Anlegg — AK Golf Academy",
   description:
-    "Hovedanleggene våre — Gamle Fredrikstad Golfklubb og Miklagard Golfklubb.",
+    "Hovedanleggene våre — Gamle Fredrikstad Golfklubb, Miklagard Golfklubb og Mulligan Indoor Golf.",
 };
 
 function slugify(name: string) {
@@ -21,13 +25,29 @@ function slugify(name: string) {
     .replace(/^-+|-+$/g, "");
 }
 
+// Unike kort-fotoer per anlegg (aldri walking-bag.jpg — den er priser-hero)
 const HERO_IMAGES: Record<string, string> = {
-  default: "/images/akademy/walking-bag.jpg",
+  "gamle-fredrikstad-gk": "/images/anlegg/gfgk-1.jpg",
+  "miklagard-golfklubb": "/images/anlegg/miklagard-1.jpg",
+  default: "/images/akademy/utslag-fairway.jpg",
 };
 
 // Kun disse anleggene vises i marketing — andre lokasjoner finnes i admin men er ikke
-// hovedanlegg for AK Golf Academy
+// hovedanlegg for AK Golf Academy. Mulligan Indoor Golf vises som kuratert kort
+// (innhold under), uavhengig av DB — se MULLIGAN nedenfor.
 const MARKETING_LOCATIONS = ["Gamle Fredrikstad GK", "Miklagard Golfklubb"];
+
+// Mulligan Indoor Golf — fjerde treningsanlegg (forsidens «Fire steder å trene»).
+// To innendørs-lokasjoner med TrackMan-simulatorer; ingen egen detaljside ennå.
+const MULLIGAN = {
+  navn: "Mulligan Indoor Golf",
+  foto: "/images/akademy/putting-data.jpg",
+  fotoAlt: "Datadrevet trening med målepinner og instrumenter",
+  steder: [
+    { navn: "Produksjonsveien 21", by: "Fredrikstad" },
+    { navn: "Bjørnstadveien 12", by: "Sarpsborg" },
+  ],
+};
 
 export default async function AnleggListe() {
   const locations = await prisma.location.findMany({
@@ -92,7 +112,7 @@ export default async function AnleggListe() {
             >
               Hjemmebaner —{" "}
               <em className="mkt-hero-em font-normal italic text-accent">
-                GFGK og Miklagard
+                ute og inne
               </em>
               .
             </h1>
@@ -101,9 +121,9 @@ export default async function AnleggListe() {
               className="mkt-hero-in mt-6 max-w-[48ch] text-[17px] leading-[1.55] text-secondary/85"
               style={{ animationDelay: "200ms" }}
             >
-              To tradisjonsrike anlegg på Østlandet — Gamle Fredrikstad
-              Golfklubb og Miklagard Golfklubb. Samme coach, samme plan, sømløs
-              booking.
+              Gamle Fredrikstad Golfklubb og Miklagard Golfklubb ute —
+              Mulligan Indoor Golf med TrackMan-simulatorer inne. Samme coach,
+              samme plan, sømløs booking.
             </p>
 
             <div
@@ -136,19 +156,7 @@ export default async function AnleggListe() {
             Velg ditt <Em>anlegg</Em>.
           </SectionH2>
 
-          {locations.length === 0 ? (
-            <div className="mt-12 rounded-[20px] border border-border bg-card p-12 text-center text-muted-foreground">
-              Ingen anlegg er publisert ennå. Ta kontakt på{" "}
-              <a
-                href="mailto:post@akgolf.no"
-                className="text-primary underline"
-              >
-                post@akgolf.no
-              </a>
-              .
-            </div>
-          ) : (
-            <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {locations.map((loc) => {
                 const slug = slugify(loc.name);
                 return (
@@ -159,7 +167,7 @@ export default async function AnleggListe() {
                   >
                     <div className="relative aspect-[16/10] w-full overflow-hidden bg-secondary">
                       <Image
-                        src={HERO_IMAGES[slug] ?? "/images/akademy/walking-bag.jpg"}
+                        src={HERO_IMAGES[slug] ?? HERO_IMAGES.default}
                         alt={`Bilde fra ${loc.name}`}
                         fill
                         sizes="(max-width: 768px) 100vw, 50vw"
@@ -222,9 +230,102 @@ export default async function AnleggListe() {
                     </div>
                   </Link>
                 );
-              })}
-            </div>
-          )}
+            })}
+
+            {/* Mulligan Indoor Golf — kuratert kort (ingen detaljside ennå) */}
+            <article className="group overflow-hidden rounded-[20px] border border-border bg-card transition-colors hover:border-primary">
+              <div className="relative aspect-[16/10] w-full overflow-hidden bg-secondary">
+                <Image
+                  src={MULLIGAN.foto}
+                  alt={MULLIGAN.fotoAlt}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              </div>
+              <div className="flex flex-col gap-3 p-7">
+                <span className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground">
+                  <Building2 className="h-3.5 w-3.5" strokeWidth={1.5} />
+                  Inne · TrackMan-simulatorer
+                </span>
+                <h3 className="font-display text-[22px] font-bold tracking-[-0.015em]">
+                  {MULLIGAN.navn}
+                </h3>
+                <p className="flex items-center gap-2 text-sm leading-[1.55] text-muted-foreground">
+                  <MapPin
+                    className="h-3.5 w-3.5 shrink-0 text-primary"
+                    strokeWidth={1.5}
+                  />
+                  Fredrikstad og Sarpsborg — årsåpent
+                </p>
+                <div className="mt-1 flex flex-col gap-1.5">
+                  {MULLIGAN.steder.map((sted, i) => (
+                    <div
+                      key={sted.navn}
+                      className={`flex items-center gap-2 py-2 text-[13px] font-medium ${
+                        i === 0 ? "" : "border-t border-border"
+                      }`}
+                    >
+                      <Building2
+                        className="h-3.5 w-3.5 shrink-0 text-primary"
+                        strokeWidth={1.5}
+                      />
+                      {sted.navn} · {sted.by}
+                      <span className="ml-auto font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground">
+                        Inne
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <Link
+                  href="/booking"
+                  className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-primary transition-all hover:gap-4"
+                >
+                  Book simulatortid
+                  <ArrowRight
+                    className="h-4 w-4 transition-transform"
+                    strokeWidth={1.5}
+                  />
+                </Link>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      {/* ========== 03 CLOSING CTA (forsidens closing-mønster) ========== */}
+      <section className="mx-auto max-w-7xl px-6 pb-24 md:px-8">
+        <div
+          className="relative overflow-hidden rounded-3xl px-6 py-16 text-center text-white sm:px-12 lg:px-16 lg:py-20"
+          style={{
+            background:
+              "linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(168 72% 11%) 100%)",
+          }}
+        >
+          <div
+            aria-hidden
+            className="absolute -top-[120px] left-1/2 h-[480px] w-[480px] -translate-x-1/2 rounded-full bg-accent opacity-[0.12] blur-[4px]"
+          />
+          <span className="relative z-10 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">
+            Anlegg · Booking
+          </span>
+          <h2 className="relative z-10 mx-auto mt-4 max-w-[20ch] text-balance font-display text-[clamp(36px,5vw,56px)] font-bold leading-[1.05] tracking-[-0.025em]">
+            Klar til å{" "}
+            <em className="font-display font-normal italic text-accent">
+              trene
+            </em>
+            ?
+          </h2>
+          <p className="relative z-10 mx-auto mt-4 max-w-[56ch] text-[16px] leading-[1.55] text-white/85">
+            Book en økt på GFGK, Miklagard eller hos Mulligan — samme coach og
+            samme plan uansett hvor du trener.
+          </p>
+          <div className="relative z-10 mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <CtaLime href="/booking" withArrow>
+              Book en økt
+            </CtaLime>
+            <CtaOutlineLys href="/kontakt">Kontakt oss</CtaOutlineLys>
+          </div>
         </div>
       </section>
     </div>

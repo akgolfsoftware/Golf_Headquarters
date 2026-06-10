@@ -39,7 +39,7 @@ const TJENESTER = [
     price: "1 200",
     featured: true,
     items: [
-      "4 timer 1:1 coaching pr. mnd",
+      "2 × 20 min per måned",
       "Periodisert treningsplan",
       "Månedlig SG-rapport",
       "PlayerHQ-app inkludert",
@@ -54,7 +54,7 @@ const TJENESTER = [
     price: "2 220",
     featured: false,
     items: [
-      "Ubegrenset 1:1 med Anders",
+      "4 × 20 min per måned",
       "Full SG-analyse pr. runde",
       "Fysisk-program integrert i planen",
       "Turneringspriming + bane-prep",

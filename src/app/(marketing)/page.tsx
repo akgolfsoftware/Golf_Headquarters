@@ -33,7 +33,7 @@ const TJENESTER = [
     price: "1 200",
     featured: true,
     items: [
-      "4 timer 1:1 coaching pr. mnd",
+      "2 × 20 min per måned",
       "Periodisert treningsplan",
       "Månedlig SG-rapport",
       "PlayerHQ-app inkludert",
@@ -48,7 +48,7 @@ const TJENESTER = [
     price: "2 220",
     featured: false,
     items: [
-      "Ubegrenset 1:1 med Anders",
+      "4 × 20 min per måned",
       "Full SG-analyse pr. runde",
       "Fysisk-program integrert i planen",
       "Turneringspriming + bane-prep",
@@ -166,7 +166,7 @@ export default function Hjem() {
       {/* ========== 04 TJENESTER · månedspriser ========== */}
       <section id="tjenester" className="scroll-mt-20 py-24">
         <div className="mx-auto max-w-7xl px-6 md:px-8">
-          <SectionEyebrow>Medlemskap · Månedlig</SectionEyebrow>
+          <SectionEyebrow>Coaching · Månedlig</SectionEyebrow>
           <SectionH2>
             Tre veier til <Em>neste nivå</Em>.
           </SectionH2>
@@ -264,8 +264,8 @@ export default function Hjem() {
                 vinterhalvåret.
               </p>
               <div className="mt-1 flex flex-col gap-1.5">
-                <LocRow sted="Stadion 1" by="Fredrikstad" first />
-                <LocRow sted="Hannestadveien 2" by="Sarpsborg" />
+                <LocRow sted="Produksjonsveien 21" by="Fredrikstad" first />
+                <LocRow sted="Bjørnstadveien 12" by="Sarpsborg" />
               </div>
             </div>
 

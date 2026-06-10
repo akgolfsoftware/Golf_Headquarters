@@ -23,11 +23,11 @@ const FAQ: { kategori: string; punkter: Sporsmal[] }[] = [
       },
       {
         q: "Hvem passer Academy for?",
-        a: "Spillere som er klare for tett oppfølging — typisk fra HCP 36 og oppover. Vi tar imot juniorer, voksne mosjonister og turneringsspillere. Felles for alle er at de vil ha struktur og fremgang.",
+        a: "Spillere som er klare for tett oppfølging — uansett handicap, fra nybegynner til elite. Vi tar imot juniorer, voksne mosjonister og turneringsspillere. Felles for alle er at de vil ha struktur og fremgang.",
       },
       {
         q: "Hvor mange timer trenger jeg?",
-        a: "De fleste begynner med 4–8 timer over en sesong. Vi tilpasser frekvens etter mål, tilgjengelig tid og treningsvilje. Pro-abonnementet inkluderer 4 credits per måned.",
+        a: "De fleste begynner med 4–8 timer over en sesong. Vi tilpasser frekvens etter mål, tilgjengelig tid og treningsvilje. Vil du ha fast oppfølging, velger du en coaching-pakke — Performance gir 2 økter per måned, Performance Pro gir 4.",
       },
     ],
   },
@@ -36,7 +36,7 @@ const FAQ: { kategori: string; punkter: Sporsmal[] }[] = [
     punkter: [
       {
         q: "Hvordan booker jeg time?",
-        a: "Via /booking eller direkte fra PlayerHQ-profilen din. Du velger coach, tjeneste, dato og tid. Bekreftelse kommer på e-post umiddelbart.",
+        a: "På bookingsiden (akgolf.no/booking) eller direkte fra PlayerHQ-profilen din. Du velger coach, tjeneste, dato og tid. Bekreftelse kommer på e-post umiddelbart.",
       },
       {
         q: "Kan jeg avbestille?",
@@ -44,7 +44,7 @@ const FAQ: { kategori: string; punkter: Sporsmal[] }[] = [
       },
       {
         q: "Betaler jeg per time eller med abonnement?",
-        a: "Begge deler er mulig. Enkelttimer betales via Stripe ved booking. Pro-abonnement (kr 300/mnd) gir 4 credits som kan brukes som du vil.",
+        a: "Begge deler er mulig. Enkelttimer betales via Stripe ved booking. Med en coaching-pakke (Performance eller Performance Pro) er øktene inkludert — 2 eller 4 per måned — og bookes innenfor pakken.",
       },
     ],
   },
@@ -53,11 +53,11 @@ const FAQ: { kategori: string; punkter: Sporsmal[] }[] = [
     punkter: [
       {
         q: "Hva er PlayerHQ?",
-        a: "Din digitale spillerportal. Her finner du treningsplaner, runder, tester, AI-coach og fremdriftsdata. Gratis å bruke på basisnivå, Pro gir full tilgang.",
+        a: "Din digitale spillerportal. Her finner du treningsplaner, runder, tester, AI-coach og fremdriftsdata. Appen er gratis med aktiv coaching-pakke (Performance eller Performance Pro), i prøvemåneden, eller om du trener i gruppe gjennom AK Golf — ellers koster den 300 kr/mnd.",
       },
       {
         q: "Trenger jeg å være kunde for å bruke PlayerHQ?",
-        a: "Nei. Du kan opprette en gratis konto og bruke verktøyene uten å være Academy-kunde. Coaching låses opp når du booker første time.",
+        a: "Nei. Alle kan opprette konto og prøve PlayerHQ gratis i én måned uten å være Academy-kunde. Etter prøvemåneden er appen gratis så lenge du har en aktiv coaching-pakke eller trener i gruppe gjennom AK Golf — ellers 300 kr/mnd.",
       },
     ],
   },
@@ -98,7 +98,7 @@ export default function FaqSide() {
           {FAQ.map((kat) => (
             <div key={kat.kategori}>
               <SectionEyebrow>{kat.kategori}</SectionEyebrow>
-              <div className="mt-3 overflow-hidden rounded-2xl border border-border bg-card">
+              <div className="mt-3 overflow-hidden rounded-[20px] border border-border bg-card">
                 {kat.punkter.map((p) => (
                   <details
                     key={p.q}
@@ -153,8 +153,8 @@ export default function FaqSide() {
               href="mailto:post@akgolf.no"
               className="inline-flex h-[52px] items-center justify-center gap-1.5 rounded-full bg-accent px-6 font-display text-[16px] font-bold tracking-[-0.005em] text-accent-foreground shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition hover:-translate-y-px hover:brightness-105 hover:shadow-[0_10px_28px_rgba(209,248,67,0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
-              <Mail className="h-[18px] w-[18px]" strokeWidth={1.5} aria-hidden="true" />
               post@akgolf.no
+              <Mail className="h-[18px] w-[18px]" strokeWidth={1.5} aria-hidden="true" />
             </a>
             <Link
               href="/kontakt"

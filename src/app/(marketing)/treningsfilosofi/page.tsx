@@ -58,35 +58,38 @@ export default function Treningsfilosofi() {
   return (
     <div className="bg-background text-foreground">
       {/* ========== HERO ========== */}
-      <section className="mx-auto max-w-7xl px-6 pt-16 md:px-8 md:pt-24">
-        <SectionEyebrow>Slik trener vi</SectionEyebrow>
-        <h1 className="mt-4 max-w-[20ch] text-balance font-display text-[clamp(44px,6vw,80px)] font-semibold leading-[0.98] tracking-[-0.03em]">
-          <Em>Trening</Em> som er balansert, målbar og din egen.
-        </h1>
-        <p className="mt-6 max-w-[52ch] text-[17px] leading-[1.55] text-muted-foreground">
-          Vi tror ikke på trening-flavor-of-the-week. Hver spiller får en plan
-          basert på tre prinsipper: balansert pyramide, data-drevet retning, og
-          individualisering på alvor.
-        </p>
+      {/* Lys utility-hero (kontakt/faq/filosofi) — bevisst variant uten foto */}
+      <section className="border-b border-border">
+        <div className="mx-auto max-w-7xl px-6 pb-16 pt-16 md:px-8 md:pt-24">
+          <SectionEyebrow>Slik trener vi</SectionEyebrow>
+          <h1 className="mt-4 max-w-[16ch] text-balance font-display text-[clamp(44px,6vw,80px)] font-semibold leading-[0.98] tracking-[-0.03em]">
+            <Em>Trening</Em> som er balansert, målbar og din egen.
+          </h1>
+          <p className="mt-6 max-w-[52ch] text-[17px] leading-[1.55] text-muted-foreground">
+            Vi tror ikke på trening-flavor-of-the-week. Hver spiller får en plan
+            basert på tre prinsipper: balansert pyramide, data-drevet retning, og
+            individualisering på alvor.
+          </p>
 
-        <div className="relative mt-14 overflow-hidden rounded-3xl">
-          <Image
-            src="/images/akademy/putting-vann.jpg"
-            alt="To spillere på putting-grønn med vann-refleksjon i forgrunnen"
-            width={1920}
-            height={1280}
-            priority
-            sizes="(max-width: 1280px) 100vw, 1216px"
-            className="h-auto w-full object-cover"
-          />
-          <div
-            aria-hidden
-            className="absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(180deg, transparent 60%, hsl(var(--foreground) / 0.5) 100%)",
-            }}
-          />
+          <div className="relative mt-14 overflow-hidden rounded-3xl">
+            <Image
+              src="/images/akademy/putting-vann.jpg"
+              alt="To spillere på putting-grønn med vann-refleksjon i forgrunnen"
+              width={1920}
+              height={1280}
+              priority
+              sizes="(max-width: 1280px) 100vw, 1216px"
+              className="h-auto w-full object-cover"
+            />
+            <div
+              aria-hidden
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(180deg, transparent 60%, hsl(var(--foreground) / 0.5) 100%)",
+              }}
+            />
+          </div>
         </div>
       </section>
 

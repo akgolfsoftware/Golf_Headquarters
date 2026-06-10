@@ -66,7 +66,7 @@ export default function PlayerHQ() {
       <section className="relative overflow-hidden bg-foreground">
         <div aria-hidden className="absolute inset-0 z-0">
           <Image
-            src="/images/akademy/coaching-tripod.jpg"
+            src="/images/akademy/putting-data.jpg"
             alt=""
             fill
             priority
@@ -93,7 +93,7 @@ export default function PlayerHQ() {
           <div className="flex max-w-[720px] flex-col justify-center pb-16 pt-12 lg:min-h-[520px] lg:py-16">
             <span className="mkt-hero-in inline-flex items-center gap-2.5 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">
               <PulseDot size="md" />
-              PlayerHQ · Beta · Gratis frem til 1. juni 2026
+              PlayerHQ · Beta
             </span>
 
             <h1
@@ -262,8 +262,8 @@ export default function PlayerHQ() {
 
             <div className="relative aspect-[4/5] overflow-hidden rounded-3xl lg:order-first">
               <Image
-                src="/images/akademy/putting-data.jpg"
-                alt="Putting med målepinner og data-instrumenter på greenen"
+                src="/images/akademy/bunker-shot.jpg"
+                alt="Spiller slår bunkerslag under trening"
                 fill
                 sizes="(max-width: 1024px) 100vw, 600px"
                 className="object-cover"

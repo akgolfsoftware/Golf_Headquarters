@@ -72,7 +72,7 @@ export default function JuniorSide() {
       <section className="relative overflow-hidden bg-foreground">
         <div aria-hidden className="absolute inset-0 z-0">
           <Image
-            src="/images/akademy/coach-observerer.jpg"
+            src="/images/akademy/utslag-fairway.jpg"
             alt=""
             fill
             priority
@@ -189,11 +189,11 @@ export default function JuniorSide() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                <Sesongrad periode="Januar–april" fokus="Innendørs teknikk og fysikk" sted="Mulligan Borre" />
-                <Sesongrad periode="Mai–juni" fokus="Overgang utendørs, kortspill" sted="GFGK Bossum" />
+                <Sesongrad periode="Januar–april" fokus="Innendørs teknikk og fysikk" sted="Mulligan Fredrikstad / Sarpsborg" />
+                <Sesongrad periode="Mai–juni" fokus="Overgang utendørs, kortspill" sted="GFGK (Torsnesveien)" />
                 <Sesongrad periode="Juli–august" fokus="Turneringer og runde-spilling" sted="Baner i regionen" />
-                <Sesongrad periode="September–oktober" fokus="Avslutning sesong, evaluering" sted="GFGK Bossum" />
-                <Sesongrad periode="November–desember" fokus="Styrke, kondisjon, individuelle mål" sted="Mulligan Borre" />
+                <Sesongrad periode="September–oktober" fokus="Avslutning sesong, evaluering" sted="GFGK (Torsnesveien)" />
+                <Sesongrad periode="November–desember" fokus="Styrke, kondisjon, individuelle mål" sted="Mulligan Fredrikstad / Sarpsborg" />
               </tbody>
             </table>
           </div>
@@ -244,7 +244,7 @@ export default function JuniorSide() {
               </p>
               <a
                 href="mailto:post@akgolf.no?subject=Junior-p%C3%A5melding&body=Hei!%0A%0ANavn%20p%C3%A5%20junior%3A%20%0AAlder%3A%20%0AE-post%20foresatte%3A%20%0ATelefon%3A%20%0A%0AHilsen"
-                className="relative z-10 mt-8 inline-flex h-[52px] w-full items-center justify-center gap-1.5 rounded-full bg-accent px-6 font-display text-[16px] font-bold tracking-[-0.005em] text-accent-foreground shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition hover:-translate-y-px hover:brightness-105 hover:shadow-[0_10px_28px_rgba(209,248,67,0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                className="relative z-10 mt-8 inline-flex h-[52px] items-center justify-center gap-1.5 rounded-full bg-accent px-6 font-display text-[16px] font-bold tracking-[-0.005em] text-accent-foreground shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition hover:-translate-y-px hover:brightness-105 hover:shadow-[0_10px_28px_rgba(209,248,67,0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 Send e-post til post@akgolf.no
                 <ArrowRight className="h-[18px] w-[18px]" strokeWidth={1.5} />
