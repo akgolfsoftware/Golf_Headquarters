@@ -51,7 +51,7 @@ export default async function AdminApiKeysPage() {
         eyebrow="Innstillinger · API"
         titleItalic="API-nøkler"
         titleTrail="og integrasjoner"
-        sub={`Generer nøkler for eksterne verktøy som skal lese eller skrive data fra CoachHQ. ${aktive} aktiv${aktive === 1 ? "" : "e"} · ${keys.length} totalt.`}
+        sub={`Generer nøkler for eksterne verktøy som skal lese eller skrive data fra AgencyOS. ${aktive} aktiv${aktive === 1 ? "" : "e"} · ${keys.length} totalt.`}
       />
 
       <section className="rounded-lg border border-border bg-card">
@@ -60,7 +60,7 @@ export default async function AdminApiKeysPage() {
             API-nøkler
           </h2>
           <span className="text-[12px] text-muted-foreground">
-            Brukes av eksterne verktøy for å lese data fra CoachHQ
+            Brukes av eksterne verktøy for å lese data fra AgencyOS
           </span>
           <div className="ml-auto">
             <CreateApiKeyModal />
@@ -74,7 +74,7 @@ export default async function AdminApiKeysPage() {
             </p>
             <p className="mt-2 text-[13px] text-muted-foreground">
               Generer en nøkkel for å la et eksternt verktøy lese eller skrive
-              data fra CoachHQ.
+              data fra AgencyOS.
             </p>
           </div>
         ) : (

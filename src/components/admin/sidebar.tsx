@@ -23,11 +23,11 @@ type NavItem = {
 };
 
 // ---------------------------------------------------------------------------
-// Navigation — CoachHQ 7-seksjons IA (master-plan 2026-05-22)
+// Navigation — AgencyOS 7-seksjons IA (master-plan 2026-05-22)
 // Oversikt · Stall · Planlegge · Gjennomføre · Analysere · Kommunikasjon · Organisasjon
 // ---------------------------------------------------------------------------
 
-// CoachHQ 6-seksjons IA (konsolidert 2026-05-23 — Forslag A)
+// AgencyOS 6-seksjons IA (konsolidert 2026-05-23 — Forslag A)
 // Oversikt · Stall · Planlegge · Gjennomføre · Innsikt · Admin
 const MAIN_ITEMS: NavItem[] = [
   {
@@ -119,8 +119,8 @@ const MAIN_ITEMS: NavItem[] = [
       "/admin/innboks",
       "/admin/email-templates",
       "/admin/agents",
-      "/admin/notion-prosjekter",
-      "/admin/notion-oppgaver",
+      "/admin/workspace/notion",
+      "/admin/workspace/notion",
       "/admin/team",
       "/admin/finance",
       "/admin/integrasjoner",
@@ -168,7 +168,7 @@ export function AdminSidebar() {
 
   return (
     <aside
-      aria-label="CoachHQ sidemeny"
+      aria-label="AgencyOS sidemeny"
       className="flex w-52 shrink-0 flex-col bg-[var(--color-coach-sidebar)] text-white lg:w-64"
     >
       {/* Logo */}
@@ -263,7 +263,7 @@ export function AdminSidebar() {
 
       {/* Rolle-badge */}
       <div
-        aria-label="CoachHQ"
+        aria-label="AgencyOS"
         className="m-4 rounded-md bg-accent/10 px-4 py-2 text-center font-mono text-[10px] uppercase tracking-[0.10em] text-accent"
       >
         COACHHQ

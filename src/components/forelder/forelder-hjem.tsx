@@ -18,7 +18,7 @@ import { ArrowRight, UserRound } from "lucide-react";
 
 export type ForelderBarn = {
   id: string;
-  /** Visningsnavn, f.eks. "Markus Pedersen". Fornavnet rendres i italic primary. */
+  /** Visningsnavn, f.eks. "Øyvind Rohjan". Fornavnet rendres i italic primary. */
   navn: string;
   /** Relasjon + HCP-linje, f.eks. "Sønn · HCP 12,4". */
   meta: string;

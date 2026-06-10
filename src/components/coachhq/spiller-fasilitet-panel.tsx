@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * SpillerFasilitetPanel — CoachHQ-versjon av fasilitetsprofil-editoren.
+ * SpillerFasilitetPanel — AgencyOS-versjon av fasilitetsprofil-editoren.
  *
  * Brukes i /admin/spillere/[id] for at coach kan se og justere
  * hvilke fasiliteter en spiller har tilgang til.

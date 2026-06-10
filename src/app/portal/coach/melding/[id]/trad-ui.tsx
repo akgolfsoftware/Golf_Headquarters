@@ -35,7 +35,7 @@ export function TradUi({
   const [draft, setDraft] = useState("");
   const [pending, startTransition] = useTransition();
 
-  const meFornavn = "Markus";
+  const meFornavn = "Øyvind";
 
   function send() {
     if (!draft.trim()) return;

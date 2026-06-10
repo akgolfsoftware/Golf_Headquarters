@@ -1,5 +1,5 @@
 /**
- * CoachHQ · AgencyOS — Caddie-aktivitet
+ * AgencyOS · AgencyOS — Caddie-aktivitet
  *
  * Sentral oversikt over AI-Caddie sin aktivitet i akademiet. Tidslinje med
  * hendelser (forslag, analyser, eskaleringer, flagg), KPI-strip, mest aktive
@@ -24,7 +24,7 @@ function buildDummyEvents(nowMs: number): ReadonlyArray<CaddieEvent> {
     type: "suggest",
     statusKind: "wait",
     playerInitials: "MR",
-    playerName: "Markus R.P.",
+    playerName: "Øyvind R.",
     pillLabel: "Foreslo økt",
     title: "Foreslo Putt 5×6 fra 3 m for onsdag 21.5 · 14:00",
     italicSpan: "Putt 5×6 fra 3 m",
@@ -50,7 +50,7 @@ function buildDummyEvents(nowMs: number): ReadonlyArray<CaddieEvent> {
     type: "suggest",
     statusKind: "wait",
     playerInitials: "MR",
-    playerName: "Markus R.P.",
+    playerName: "Øyvind R.",
     pillLabel: "Foreslo plan-endring",
     title:
       "Anbefalte å flytte tirsdag-økt 16:00 → 18:00 · skole-prøve detektert",
@@ -131,7 +131,7 @@ function buildDummyEvents(nowMs: number): ReadonlyArray<CaddieEvent> {
     type: "suggest",
     statusKind: "rej",
     playerInitials: "MR",
-    playerName: "Markus R.P.",
+    playerName: "Øyvind R.",
     pillLabel: "Drill-match",
     title: 'Anbefalte drill "Hofte-skifte med medisinball" · nedsving-fokus',
     confidence: 0.72,

@@ -7,6 +7,8 @@ type FeaturedCardProps = {
   eyebrow?: string;
   showPulse?: boolean;
   title: string;
+  /** Editorial italic-aksent (lime) etter tittelen — samme mønster som hero-headline. */
+  italic?: string;
   description?: string;
   imageSrc?: string;
   imageAlt?: string;
@@ -20,6 +22,7 @@ export function FeaturedCard({
   eyebrow,
   showPulse = false,
   title,
+  italic,
   description,
   imageSrc,
   imageAlt = "",
@@ -60,6 +63,12 @@ export function FeaturedCard({
         )}
         <h3 className="font-display max-w-[22ch] text-xl font-bold leading-tight tracking-[-0.015em] md:text-2xl">
           {title}
+          {italic && (
+            <>
+              {" "}
+              <em className="font-normal italic text-accent">{italic}</em>
+            </>
+          )}
         </h3>
         {description && (
           <p className="mt-2 max-w-[36ch] font-mono text-xs leading-relaxed text-white/85 md:text-[13px]">

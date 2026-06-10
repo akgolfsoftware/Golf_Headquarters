@@ -1,5 +1,5 @@
 /**
- * CoachHQ — Økter (uke-oversikt over treningsøkter)
+ * AgencyOS — Økter (uke-oversikt over treningsøkter)
  * Design migrert fra wireframe/design-files-v2/final/05-okter.html.
  *
  * Viser denne ukas TrainingPlanSession-instanser med pyramide-stripes per økt.
@@ -167,7 +167,7 @@ export default async function OkterAdmin() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow={`CoachHQ · /admin/okter · uke ${ukenr}`}
+        eyebrow={`AgencyOS · /admin/okter · uke ${ukenr}`}
         titleLead={String(totalCount)}
         titleItalic="økter"
         titleTrail={`· uke ${ukenr}`}

@@ -497,7 +497,7 @@ export default async function SpillerProfilPage({
             spillere i databasen. Gratis å starte.
           </p>
           <div className="spillere-mersalg-ctas">
-            <Link href="/registrer">
+            <Link href="/auth/signup">
               <StatsBtn variant="outline" icon="ArrowRight">
                 Start gratis
               </StatsBtn>

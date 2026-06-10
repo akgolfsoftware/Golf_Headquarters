@@ -24,7 +24,7 @@ Master-skjermplanen er den autoritative lista over HVER skjerm i appen + status 
 | **Marketing** (akgolf.no) | `/` + `/akgolf-*` | `src/app/(marketing)/` og `src/app/akgolf-*` |
 | **Booking** | `/booking/*` | `src/app/booking/` |
 | **PlayerHQ** (spillerportal) | `/portal/*` | `src/app/portal/` |
-| **CoachHQ** (admin) | `/admin/*` | `src/app/admin/` |
+| **AgencyOS** (admin — het tidligere CoachHQ) | `/admin/*` | `src/app/admin/` |
 
 Alle fire deler:
 - Designsystem-tokens i `src/app/globals.css`
@@ -33,6 +33,21 @@ Alle fire deler:
 - Prisma-schema mot felles Postgres
 
 Splittingen til separate repos er ikke aktuell før etter lansering. **Du jobber i dette ene repoet med alt.**
+
+---
+
+## Låste beslutninger (juni 2026 — gjelder til Anders endrer dem)
+
+Disse er bestemt og overstyrer eldre dokumenter/design. Bygg etter disse, ikke etter det du finner i gammelt materiale.
+
+- **App-navn:** Coach-appen heter **AgencyOS** (`/admin`). «CoachHQ» er gammelt navn — ikke bruk det i ny UI-tekst.
+- **Tema per produkt:** PlayerHQ alltid **lyst**, AgencyOS alltid **mørkt** (`.dark`). **Ingen tema-toggle** — det er fast, ikke et valg.
+- **Navne-kanon (demo):** spiller = **Øyvind Rohjan**, coach = **Anders Kristiansen**. Alltid fulle navn. (Gamle: Magnus / Markus R.P. / Markus Berg / Anders Berg / Andreas Kragerud — skal bort.) NB: en EKTE coach «Markus Røinås Pedersen» finnes på markedssidene — IKKE bytt han ut med demo-spilleren.
+- **Planlegge → Workbench:** All planlegging går gjennom Workbench. Planlegge er **ett trykkpunkt** dit, ikke en meny av 6 kort. Samme mønster i coachens spiller-Workbench.
+- **Analyse samlet:** Analysere + TrackMan + Runder + SG er én flate med faner — ikke separate moduler. Mål bor i Oversikt og redigeres i Workbench.
+- **Abonnement (ingen tier-nivåer):** PlayerHQ-tilgang er enten gratis eller 300 kr/mnd. **Gratis** hvis: 1 mnd prøveperiode, ELLER har coaching-pakke (Performance / Performance Pro), ELLER er i en gruppe gjennom AK Golf. **300 kr/mnd** for alle andre. «Performance / Performance Pro» er **coaching-pakker** (antall økter), IKKE app-nivåer. **ELITE finnes ikke** (dødt enum i Prisma — vis det aldri i UI).
+- **FYS-resultatformel avventer:** Bygg testskjermer med plassholder-tall. Ikke hardkod referanseverdier før Anders gir grønt lys.
+- **Ferskt design:** `public/design-handover/AK Golf HQ Design System/` (4. juni) er gjeldende. `docs/design-handoff-komplett/` (mai) er arkiv.
 
 ---
 
@@ -174,7 +189,7 @@ akgolf-hq/
 │   │   └── supabase/
 │   └── proxy.ts              # Next.js 16 proxy
 ├── docs/
-│   └── design-handoff-komplett/   # Master design docs (les disse)
+│   └── design-handoff-komplett/   # ARKIV (mai 2026) — IKKE fasit. Fersk design: public/design-handover/
 ├── prisma.config.ts
 └── CLAUDE.md
 ```

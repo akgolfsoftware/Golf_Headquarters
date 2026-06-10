@@ -1,5 +1,5 @@
 /**
- * CoachHQ — Tjenester / priser (/admin/services)
+ * AgencyOS — Tjenester / priser (/admin/services)
  *
  * Bookbar katalog: KPI-strip + filtrer-/sorter-bar + tjeneste-liste. Re-stylet
  * til AgencyOS-DNA (mono-eyebrows, lime-aksent-KPI, rounded-xl, DS-tokens). All
@@ -82,7 +82,7 @@ export default async function ServicesAdmin() {
   return (
     <div className="mx-auto max-w-[1240px] space-y-6">
       <PageHeader
-        eyebrow="CoachHQ · Tjenester og priser"
+        eyebrow="AgencyOS · Tjenester og priser"
         titleLead={String(totalCount)}
         titleItalic="tjenester"
         titleTrail={`· ${kategorier} kategori${kategorier === 1 ? "" : "er"}`}

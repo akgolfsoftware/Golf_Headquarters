@@ -24,13 +24,14 @@ const convRowSchema = z.object({
 
 export type ConvRow = z.infer<typeof convRowSchema>;
 
-/** Henter de siste N logg-oppføringer fra me_log. */
-export async function hentNylige(limit = 10, kind?: string): Promise<LogRow[]> {
+/** Henter de siste N logg-oppføringer fra me_log for én person (subject). */
+export async function hentNylige(subject: string, limit = 10, kind?: string): Promise<LogRow[]> {
   const db = megSupabase();
   if (!db) return [];
   let q = db
     .from("me_log")
     .select("id, kind, text, value_num, value_unit, tags, source, created_at")
+    .eq("subject", subject)
     .order("created_at", { ascending: false })
     .limit(limit);
   if (kind) q = q.eq("kind", kind);
@@ -62,13 +63,14 @@ const pendingRowSchema = z.object({
 
 export type PendingRow = z.infer<typeof pendingRowSchema>;
 
-/** Henter de siste N briefene (me_brief), nyeste først. */
-export async function hentBriefer(limit = 10, kind?: string): Promise<BriefRow[]> {
+/** Henter de siste N briefene (me_brief) for én person, nyeste først. */
+export async function hentBriefer(subject: string, limit = 10, kind?: string): Promise<BriefRow[]> {
   const db = megSupabase();
   if (!db) return [];
   let q = db
     .from("me_brief")
     .select("id, kind, content, sent, created_at")
+    .eq("subject", subject)
     .order("created_at", { ascending: false })
     .limit(limit);
   if (kind) q = q.eq("kind", kind);
@@ -80,13 +82,14 @@ export async function hentBriefer(limit = 10, kind?: string): Promise<BriefRow[]
   });
 }
 
-/** Henter ventende skrive-handlinger (me_pending_action) som ikke er utløpt. */
-export async function hentVentende(limit = 10): Promise<PendingRow[]> {
+/** Henter ventende skrive-handlinger (me_pending_action) for én person, ikke utløpt. */
+export async function hentVentende(subject: string, limit = 10): Promise<PendingRow[]> {
   const db = megSupabase();
   if (!db) return [];
   const { data, error } = await db
     .from("me_pending_action")
     .select("id, tool_name, summary, status, created_at")
+    .eq("subject", subject)
     .eq("status", "pending")
     .gt("expires_at", new Date().toISOString())
     .order("created_at", { ascending: false })
@@ -98,13 +101,14 @@ export async function hentVentende(limit = 10): Promise<PendingRow[]> {
   });
 }
 
-/** Henter de siste N meldinger i samtale-historikken (me_conversation). */
-export async function hentSamtaleHistorikk(limit = 20): Promise<ConvRow[]> {
+/** Henter de siste N meldinger i samtale-historikken (me_conversation) for én person. */
+export async function hentSamtaleHistorikk(subject: string, limit = 20): Promise<ConvRow[]> {
   const db = megSupabase();
   if (!db) return [];
   const { data, error } = await db
     .from("me_conversation")
     .select("id, role, content, created_at")
+    .eq("subject", subject)
     .order("created_at", { ascending: false })
     .limit(limit);
   if (error || !data) return [];

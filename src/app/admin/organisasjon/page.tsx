@@ -1,5 +1,5 @@
 /**
- * /admin/organisasjon — CoachHQ Admin hub
+ * /admin/organisasjon — AgencyOS Admin hub
  * Design: hubs-coach.jsx (CoachAdmin)
  */
 

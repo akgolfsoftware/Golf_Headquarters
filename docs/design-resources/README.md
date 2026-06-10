@@ -1,5 +1,7 @@
 # Design-resources for AK Golf HQ
 
+> **KUN INSPIRASJON — ALDRI KILDE.** Disse eksterne design-systemene/stilene skal ALDRI brukes til å bygge eller prototype AK Golf HQ. Designsystemet vårt er LÅST. Eneste gyldige design-kilde: `src/app/globals.css` (tokens), `src/components/athletic/`, skill-en `ak-golf-hq-design`, og `public/design-handover/AK Golf HQ Design System/`. Ikke dra fremmede stiler (claymorphism, cosmic, brutalism osv.) inn herfra.
+
 Klonet fra 3 åpne repoer for å gi rask referanse til ulike design-systemer og stiler.
 
 ## Innhold

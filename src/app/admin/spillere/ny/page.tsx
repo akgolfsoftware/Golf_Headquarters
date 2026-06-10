@@ -1,5 +1,5 @@
 /**
- * CoachHQ — Spiller-onboarding (multi-stegs wizard).
+ * AgencyOS — Spiller-onboarding (multi-stegs wizard).
  *
  * Server-component som mounter klient-wizard. Wizarden gjør all UX,
  * server action createSpiller utfører persisten i ../ny/actions.ts.

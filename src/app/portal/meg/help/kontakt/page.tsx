@@ -39,7 +39,7 @@ export default async function KontaktSupportPage({
 
       <KontaktSupportForm
         bruker={{
-          navn: user.name ?? "Markus Røinås Pedersen",
+          navn: user.name ?? "Øyvind Rohjan",
           epost: user.email ?? "markus.rp@example.com",
         }}
       />

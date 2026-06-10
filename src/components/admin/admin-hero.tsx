@@ -1,5 +1,5 @@
 /**
- * AdminHero — delt hero-komponent for alle CoachHQ-sub-sider.
+ * AdminHero — delt hero-komponent for alle AgencyOS-sub-sider.
  * Drop-in erstatning for PageHeader. Samme props.
  */
 

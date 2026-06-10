@@ -93,7 +93,7 @@ export function MessagesInbox({
           filtrert.map((t) => (
             <Link
               key={t.id}
-              href={`/admin/messages?thread=${t.id}${aktivtFilter !== "alle" ? `&filter=${aktivtFilter}` : ""}`}
+              href={`/admin/innboks?thread=${t.id}${aktivtFilter !== "alle" ? `&filter=${aktivtFilter}` : ""}`}
               scroll={false}
               className={`relative grid grid-cols-[36px_1fr] gap-4 border-b border-border px-4 py-4 transition-colors hover:bg-secondary ${
                 t.id === aktivId
@@ -161,7 +161,7 @@ function FilterLink({
   const active = aktivt === filter;
   return (
     <Link
-      href={filter === "alle" ? "/admin/messages" : `/admin/messages?filter=${filter}`}
+      href={filter === "alle" ? "/admin/innboks" : `/admin/innboks?filter=${filter}`}
       scroll={false}
       className={`flex-1 rounded-md py-1.5 text-center text-[12px] font-medium transition-colors ${
         active

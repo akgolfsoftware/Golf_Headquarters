@@ -4,7 +4,7 @@
  * ViewModeToggle (Standard/Avansert) — for PlayerHQ kalender + analyse.
  *
  * NB: Ikke å forveksle med <ViewModeToggle/> i `view-mode-toggle.tsx` som
- * bytter mellom CoachHQ- og PlayerHQ-perspektiv. Denne styrer kompleksitets-
+ * bytter mellom AgencyOS- og PlayerHQ-perspektiv. Denne styrer kompleksitets-
  * nivå (skjul/vis avanserte visninger og taksonomi-koder) for én spiller.
  *
  * Brukes som sticky pill øverst på portal-sider. Hvis brukeren er på GRATIS-

@@ -79,7 +79,7 @@ export default async function ForelderInnstillinger() {
             Kontaktinformasjon
           </h2>
           <Link
-            href="/portal/meg/profil"
+            href="/portal/meg"
             className="font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-primary hover:underline"
           >
             Rediger

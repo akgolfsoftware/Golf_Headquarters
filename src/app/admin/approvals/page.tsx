@@ -1,5 +1,5 @@
 /**
- * CoachHQ — Godkjenninger (agent-inbox)
+ * AgencyOS — Godkjenninger (agent-inbox)
  * Design migrert fra wireframe/design-files-v2/final/03-godkjenninger.html.
  *
  * Inbox-style: hver rad har severity-pill, spiller-avatar+navn, action-celle
@@ -96,7 +96,7 @@ export default async function Approvals() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="CoachHQ · /admin/approvals"
+        eyebrow="AgencyOS · /admin/approvals"
         titleLead={String(totalCount)}
         titleItalic="venter"
         sub={`${urgCount} urgent · ${warnCount} warning · ${infoCount} info`}

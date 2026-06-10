@@ -14,63 +14,10 @@
 
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { getHjemData, type HjemData } from "@/lib/portal-hjem/hjem-data";
-import {
-  PlayerHome,
-  type PlayerHomeData,
-} from "@/components/portal/home/player-home";
+import { getHjemData } from "@/lib/portal-hjem/hjem-data";
+import { PlayerHome, PlayerHomeDesktop } from "@/components/portal/home/player-home";
 
 export const dynamic = "force-dynamic";
-
-/** Oversetter ekte HjemData → v10 PlayerHomeData. Tom-tilstander bevares (null/[]). */
-function mapHjemData(data: HjemData): PlayerHomeData {
-  return {
-    user: {
-      fornavn: data.user.fornavn,
-      initialer: data.user.initialer,
-      tier: data.user.tier,
-      avatarUrl: data.user.avatarUrl ?? undefined,
-    },
-    heroImageId: data.heroImageId,
-    datoEyebrow: data.datoEyebrow,
-    // headlineNormal er "God morgen, " — strip trailing komma/space til ren hilsen.
-    hilsen: data.headlineNormal.replace(/,\s*$/, ""),
-    dagensOkt: data.dagensOkt
-      ? {
-          eyebrow: data.dagensOkt.pyramide,
-          tittel: data.dagensOkt.tittel,
-          meta: `${data.dagensOkt.tidsrom} · ${data.dagensOkt.meta}`,
-          href: data.dagensOkt.href,
-        }
-      : null,
-    kpi: data.kpi,
-    pyramide: data.pyramide,
-    pyramideNote: data.pyramideNote ?? undefined,
-    nesteTurnering: data.nesteTee
-      ? {
-          dagKort: data.nesteTee.dagKort,
-          datoTall: data.nesteTee.datoTall,
-          naar: data.nesteTee.naar,
-          navn: data.nesteTee.navn,
-          sted: data.nesteTee.sted,
-          href: data.nesteTee.href,
-        }
-      : null,
-    caddie: data.innsikt
-      ? {
-          type: data.innsikt.type,
-          eyebrow: data.innsikt.eyebrow,
-          body: data.innsikt.body,
-          cta: data.innsikt.cta ?? { label: "Åpne Coach", href: "/portal/coach" },
-        }
-      : null,
-    hrefs: {
-      planlegge: "/portal/planlegge",
-      sgHub: "/portal/mal/sg-hub",
-      turneringer: "/portal/tren/turneringer",
-    },
-  };
-}
 
 export default async function PortalHjemPage() {
   const user = await requirePortalUser();
@@ -79,5 +26,10 @@ export default async function PortalHjemPage() {
 
   const data = await getHjemData(user.id);
 
-  return <PlayerHome data={mapHjemData(data)} />;
+  return (
+    <>
+      <PlayerHome data={data} />
+      <PlayerHomeDesktop data={data} />
+    </>
+  );
 }

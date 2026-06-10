@@ -1,5 +1,5 @@
 /**
- * CoachHQ — Økt-forespørsler
+ * AgencyOS — Økt-forespørsler
  *
  * Viser alle SessionRequest-oppføringer fra spillere (via /portal/onskeligokt).
  * Coach kan kvittere ut som planlagt eller avslå.
@@ -88,7 +88,7 @@ export default async function ForespørslerPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="CoachHQ · Daglig"
+        eyebrow="AgencyOS · Daglig"
         titleLead="Økt-"
         titleItalic="forespørsler"
         sub="Spillere som har bedt om økt. Kvitter ut ved å booke time eller avslå."

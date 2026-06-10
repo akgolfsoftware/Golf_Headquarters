@@ -1,5 +1,5 @@
 /**
- * CoachHQ · Live-økt brief — coach-perspektiv
+ * AgencyOS · Live-økt brief — coach-perspektiv
  *
  * Coach ser sesjonens detaljer og kan legge til et fokuspunkt
  * som vises til spilleren før økten starter.
@@ -9,7 +9,8 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, MessageSquare, Target, Clock } from "lucide-react";
+import { ArrowLeft, Target, Clock } from "lucide-react";
+import { BriefSend } from "./_brief-send";
 
 export const dynamic = "force-dynamic";
 
@@ -54,6 +55,21 @@ export default async function CoachLiveBriefPage({ params }: Props) {
     timeStyle: "short",
   }).format(session.endTime);
 
+  // Les ev. tidligere sendt brief-melding fra completedSummary.coachBrief.
+  const rawSummary: unknown = session.completedSummary;
+  const summaryObj =
+    rawSummary && typeof rawSummary === "object" && !Array.isArray(rawSummary)
+      ? (rawSummary as Record<string, unknown>)
+      : {};
+  const briefObj =
+    summaryObj.coachBrief &&
+    typeof summaryObj.coachBrief === "object" &&
+    !Array.isArray(summaryObj.coachBrief)
+      ? (summaryObj.coachBrief as Record<string, unknown>)
+      : {};
+  const initialBrief =
+    typeof briefObj.melding === "string" ? briefObj.melding : "";
+
   return (
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-3xl px-6 py-10">
@@ -96,28 +112,7 @@ export default async function CoachLiveBriefPage({ params }: Props) {
           </div>
         )}
 
-        <div className="rounded-lg border border-border bg-card p-6">
-          <h2 className="font-mono text-xs uppercase tracking-widest text-muted-foreground mb-4">
-            <MessageSquare className="inline h-3.5 w-3.5 mr-1" />
-            Coach-kommentar til spilleren
-          </h2>
-          <textarea
-            rows={4}
-            placeholder="Skriv en kommentar eller fokuspunkt til spilleren før økten starter..."
-            className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-          />
-          <div className="mt-4 flex items-center justify-between">
-            <p className="text-xs text-muted-foreground">
-              Vises til spiller i brief-skjermen
-            </p>
-            <button
-              type="button"
-              className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-            >
-              Send til spiller
-            </button>
-          </div>
-        </div>
+        <BriefSend sessionId={sessionId} initialMelding={initialBrief} />
 
         <div className="mt-6">
           <Link

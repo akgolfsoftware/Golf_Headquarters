@@ -205,7 +205,7 @@ export default async function ArtikkelPage({
               </div>
             ))}
             <p className="mt-2 text-center font-mono text-[10.5px] uppercase tracking-[0.08em] text-muted-foreground">
-              Markus, mai 2026 — pyramide-treff <strong className="text-foreground">72%</strong>
+              Øyvind, mai 2026 — pyramide-treff <strong className="text-foreground">72%</strong>
             </p>
           </div>
 

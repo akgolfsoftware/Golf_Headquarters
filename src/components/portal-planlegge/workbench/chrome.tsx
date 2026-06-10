@@ -46,9 +46,9 @@ export function WBP_Topbar() {
           <span className="r">Coach</span>
         </div>
         <div className="player-picker">
-          <div className="av">MR</div>
+          <div className="av">ØR</div>
           <div className="nm">
-            Markus R.P.<span className="meta">A1 · HCP −2,1</span>
+            Øyvind R.<span className="meta">A1 · HCP −2,1</span>
           </div>
           <WBPIc id="ic-chevdown" size={12} />
         </div>

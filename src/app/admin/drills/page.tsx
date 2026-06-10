@@ -1,5 +1,5 @@
 /**
- * /admin/drills — CoachHQ Drill-bibliotek (samme UI som /portal/drills)
+ * /admin/drills — AgencyOS Drill-bibliotek (samme UI som /portal/drills)
  * Design: plan Del 6
  *
  * Coach-versjon: grid + slide-in panel med "Ny drill". Data hentes fra ekte
@@ -10,7 +10,7 @@
  */
 
 import Link from "next/link";
-import { Layers } from "lucide-react";
+import { Layers, Plus } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import {
@@ -231,6 +231,12 @@ export default async function CoachDrillsPage({
             >
               <Layers size={13} strokeWidth={1.75} aria-hidden /> Maler
             </Link>
+            <Link
+              href="/admin/drills/ny"
+              className="inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-4 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-primary-foreground transition-opacity hover:opacity-90"
+            >
+              <Plus size={13} strokeWidth={1.75} aria-hidden /> Ny drill
+            </Link>
           </div>
         </header>
 
@@ -261,7 +267,7 @@ export default async function CoachDrillsPage({
             <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
               {harAktivtFilter
                 ? "Juster eller tilbakestill filteret for å se flere drills."
-                : "Drill-biblioteket er tomt. Drills opprettes via plan-byggeren og økt-malene."}
+                : "Drill-biblioteket er tomt. Klikk «Ny drill» øverst for å legge til den første øvelsen."}
             </p>
           </div>
         ) : (

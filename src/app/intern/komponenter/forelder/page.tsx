@@ -5,9 +5,9 @@ import { ApprovalCard, type ApprovalRequest } from "@/components/forelder/approv
 import { MessageComposer, ReadReceiptList, type Receipt } from "@/components/forelder/parent-comm";
 
 const approvals: ApprovalRequest[] = [
-  { kind: "payment", who: "AK Golf Academy", what: "Mars-faktura for Markus — coaching-abonnement Pro", meta: "1 200 kr · forfall 5. juni" },
+  { kind: "payment", who: "AK Golf Academy", what: "Mars-faktura for Øyvind — coaching-abonnement Pro", meta: "1 200 kr · forfall 5. juni" },
   { kind: "booking", who: "Coach Andreas", what: "Avbestilling av økt fredag 30/5 (mindre enn 24t — krever samtykke)", meta: "Credit returneres ved godkjenning" },
-  { kind: "video", who: "Coach Andreas", what: "Vil dele en treningsvideo av Markus' innspill med stallen", meta: "00:42 · GFGK TM 3" },
+  { kind: "video", who: "Coach Andreas", what: "Vil dele en treningsvideo av Øyvind' innspill med stallen", meta: "00:42 · GFGK TM 3" },
 ];
 
 const receipts: Receipt[] = [

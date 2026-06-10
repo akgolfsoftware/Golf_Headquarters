@@ -385,7 +385,7 @@ export default async function KlubbDetaljPage({
             din klubb.
           </p>
           <div className="klubber-mersalg-ctas">
-            <Link href="/registrer">
+            <Link href="/auth/signup">
               <StatsBtn variant="outline" icon="ArrowRight">
                 Start gratis
               </StatsBtn>

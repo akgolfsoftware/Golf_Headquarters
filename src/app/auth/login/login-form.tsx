@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Eye, EyeOff } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { safeRedirectPath } from "@/lib/security/safe-redirect-client";
 import { AthleticButton } from "@/components/athletic/button";
@@ -82,40 +82,52 @@ export function LoginForm() {
       onSubmit={handleSubmit}
       noValidate
       aria-describedby={error ? errorId : undefined}
-      className="space-y-4"
+      className="flex flex-col"
     >
-      <div>
+      <div className="mb-4">
         <label
           htmlFor="email"
-          className="mb-2 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
+          className="mb-2 block font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground"
         >
           E-post
         </label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          autoComplete="email"
-          inputMode="email"
-          required
-          aria-required="true"
-          aria-invalid={error ? true : undefined}
-          aria-describedby={error ? errorId : undefined}
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full rounded-md border border-input bg-card px-4 py-4 text-base sm:text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30 focus-visible:ring-2 focus-visible:ring-ring"
-          placeholder="navn@eksempel.no"
-        />
+        <div className="flex h-12 items-center gap-2 rounded-xl border border-input bg-card px-4 transition-colors focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/30">
+          <Mail
+            className="h-4 w-4 shrink-0 text-muted-foreground"
+            strokeWidth={1.5}
+            aria-hidden
+          />
+          <input
+            id="email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            inputMode="email"
+            required
+            aria-required="true"
+            aria-invalid={error ? true : undefined}
+            aria-describedby={error ? errorId : undefined}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="h-full w-full bg-transparent text-base text-foreground outline-none placeholder:text-muted-foreground/60 sm:text-sm"
+            placeholder="navn@klubb.no"
+          />
+        </div>
       </div>
 
-      <div>
+      <div className="mb-2">
         <label
           htmlFor="password"
-          className="mb-2 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
+          className="mb-2 block font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground"
         >
           Passord
         </label>
-        <div className="relative">
+        <div className="flex h-12 items-center gap-2 rounded-xl border border-input bg-card pl-4 pr-2 transition-colors focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/30">
+          <Lock
+            className="h-4 w-4 shrink-0 text-muted-foreground"
+            strokeWidth={1.5}
+            aria-hidden
+          />
           <input
             id="password"
             name="password"
@@ -127,14 +139,15 @@ export function LoginForm() {
             aria-describedby={error ? errorId : undefined}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-md border border-input bg-card px-4 py-4 pr-12 text-base sm:text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30 focus-visible:ring-2 focus-visible:ring-ring"
+            className="h-full w-full bg-transparent text-base text-foreground outline-none placeholder:text-muted-foreground/60 sm:text-sm"
+            placeholder="Passord"
           />
           <button
             type="button"
             onClick={() => setShowPassword((v) => !v)}
             aria-label={showPassword ? "Skjul passord" : "Vis passord"}
             aria-pressed={showPassword}
-            className="absolute right-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+            className="grid h-9 w-9 shrink-0 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {showPassword ? (
               <EyeOff className="h-4 w-4" strokeWidth={1.75} aria-hidden />
@@ -145,8 +158,11 @@ export function LoginForm() {
         </div>
       </div>
 
-      <div className="flex items-center justify-between pt-2 text-xs">
-        <label htmlFor="remember-me" className="inline-flex items-center gap-2 text-muted-foreground">
+      <div className="mb-4 flex items-center justify-between">
+        <label
+          htmlFor="remember-me"
+          className="inline-flex items-center gap-2 text-xs text-muted-foreground"
+        >
           <input
             id="remember-me"
             name="remember-me"
@@ -157,7 +173,7 @@ export function LoginForm() {
         </label>
         <Link
           href="/auth/forgot-password"
-          className="font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:rounded-sm"
+          className="rounded-sm font-mono text-[11px] font-bold uppercase tracking-[0.06em] text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           Glemt passord?
         </Link>
@@ -165,7 +181,7 @@ export function LoginForm() {
 
       <div role="alert" aria-live="polite" aria-atomic="true" id={errorId}>
         {error && (
-          <div className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-4">
+          <div className="mb-4 flex items-start gap-2 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-4">
             <AthleticBadge variant="urgent">Feil</AthleticBadge>
             <span className="text-sm text-destructive">{error}</span>
           </div>
@@ -175,26 +191,27 @@ export function LoginForm() {
       <AthleticButton
         type="submit"
         variant="primary"
-        size="md"
+        size="lg"
         disabled={loading}
         aria-busy={loading || undefined}
         className="w-full"
       >
-        {loading ? "Logger inn…" : "Logg inn"}
+        {loading ? (
+          "Logger inn…"
+        ) : (
+          <>
+            Logg inn{" "}
+            <ArrowRight className="h-4 w-4" strokeWidth={2} aria-hidden />
+          </>
+        )}
       </AthleticButton>
 
-      <div className="relative pt-2">
-        <div aria-hidden="true" className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-border" />
-        </div>
-        <div className="relative flex justify-center">
-          <span
-            aria-hidden="true"
-            className="bg-card px-4 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
-          >
-            eller
-          </span>
-        </div>
+      <div className="my-4 flex items-center gap-4" aria-hidden="true">
+        <span className="h-px flex-1 bg-border" />
+        <span className="font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+          eller
+        </span>
+        <span className="h-px flex-1 bg-border" />
       </div>
 
       <button
@@ -203,19 +220,21 @@ export function LoginForm() {
         disabled={loading}
         aria-busy={loading || undefined}
         aria-label="Logg inn med Google"
-        className="flex w-full items-center justify-center gap-4 rounded-md border border-input bg-card px-4 py-4 text-sm font-medium text-foreground transition-colors hover:border-border disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        className="flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-input bg-card text-sm font-medium text-foreground transition-colors hover:border-border disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       >
         <GoogleLogo />
         Logg inn med Google
       </button>
 
-      <p className="pt-4 text-center text-sm text-muted-foreground">
-        Har du ikke konto?{" "}
+      <p className="mt-auto pt-6 text-center">
+        <span className="font-mono text-xs text-muted-foreground">
+          Ny spiller?{" "}
+        </span>
         <Link
           href="/auth/signup"
-          className="font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:rounded-sm"
+          className="rounded-sm font-mono text-xs font-bold text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
-          Registrer deg
+          Opprett konto
         </Link>
       </p>
     </form>

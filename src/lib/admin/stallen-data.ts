@@ -96,7 +96,7 @@ function initials(name: string | null | undefined): string {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-/** Forkortet visningsnavn: "Markus Roinaas Pedersen" → "Markus R.P." */
+/** Forkortet visningsnavn: "Øyvind Rohjan" → "Øyvind R." */
 function shortName(name: string): string {
   const parts = name.trim().split(/\s+/).filter(Boolean);
   if (parts.length <= 1) return name;

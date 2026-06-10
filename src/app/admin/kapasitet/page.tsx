@@ -121,7 +121,7 @@ export default async function KapasitetPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow={`CoachHQ · Kapasitet · uke ${ukeNr}`}
+        eyebrow={`AgencyOS · Kapasitet · uke ${ukeNr}`}
         titleLead="Kapasitet"
         titleItalic="· denne uka"
         sub="Belegg per fasilitet × time, lokasjons-aggregert."
@@ -296,7 +296,7 @@ export default async function KapasitetPage() {
       </div>
 
       <footer className="mt-4 flex flex-col items-start justify-between gap-2 border-t border-border pt-4 text-[12px] text-muted-foreground sm:flex-row sm:items-center">
-        <span>AK Golf Platform · CoachHQ · /admin/kapasitet</span>
+        <span>AK Golf Platform · AgencyOS · /admin/kapasitet</span>
         <span className="font-mono">
           Uke {ukeNr}/52 · {bookinger.length} bookinger denne uka
         </span>

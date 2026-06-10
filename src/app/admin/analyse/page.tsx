@@ -121,14 +121,14 @@ export default async function AnalysePage({
       ? spillere.map((s) => ({ id: s.id, name: s.name ?? "Uten navn", hcp: s.hcp, avatarUrl: s.avatarUrl }))
       : Array.from({ length: 8 }, (_, i) => ({
           id: `demo-${i}`,
-          name: ["Markus R-P", "Thea L", "Oliver K", "Emma S", "Noah B", "Sofia H", "Lucas A", "Iben M"][i],
+          name: ["Øyvind R.", "Thea L", "Oliver K", "Emma S", "Noah B", "Sofia H", "Lucas A", "Iben M"][i],
           hcp: [5.4, 8.1, 12.3, 3.7, 9.8, 6.2, 11.0, 14.5][i] ?? null,
           avatarUrl: null,
         }));
     return (
       <div className="space-y-6">
         <PageHeader
-          eyebrow={`CoachHQ · stall-analyse · ${periode.label}`}
+          eyebrow={`AgencyOS · stall-analyse · ${periode.label}`}
           titleLead="Hele stallen"
           titleItalic="i ett blikk"
           sub="Hit-rate per spiller × pyramide-område. Klikk en celle for drill-down."
@@ -144,7 +144,7 @@ export default async function AnalysePage({
     return (
       <div className="space-y-6">
         <PageHeader
-          eyebrow="CoachHQ · treningsanalyse"
+          eyebrow="AgencyOS · treningsanalyse"
           titleLead="Krysstabuler"
           titleItalic="all aktivitet"
           sub="Ingen spillere funnet. Opprett en spiller for å begynne."
@@ -212,7 +212,7 @@ export default async function AnalysePage({
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow={`CoachHQ · treningsanalyse · ${periode.label}`}
+        eyebrow={`AgencyOS · treningsanalyse · ${periode.label}`}
         titleLead="Krysstabuler"
         titleItalic="all aktivitet"
         sub={`Hva har ${valgtSpiller.name} faktisk trent på — i hvilken signatur?`}

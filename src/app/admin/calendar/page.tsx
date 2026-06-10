@@ -1,5 +1,5 @@
 /**
- * /admin/calendar — CoachHQ uke-kalender
+ * /admin/calendar — AgencyOS uke-kalender
  *
  * Designet hentet fra src/app/kalender-demo/page.tsx.
  * Henter Prisma-data:
@@ -380,7 +380,7 @@ export default async function AdminCalendar({
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow={`CoachHQ · Uke ${ukeNr}`}
+        eyebrow={`AgencyOS · Uke ${ukeNr}`}
         titleLead="Min"
         titleItalic="kalender"
         sub={`${periodeTekst} · ${totalEvents} ${totalEvents === 1 ? "økt" : "økter"} denne uka`}
@@ -395,7 +395,7 @@ export default async function AdminCalendar({
             </button>
             {kanBooke && (
               <Link
-                href="/admin/bookings/ny"
+                href="/admin/bookinger/ny"
                 className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
               >
                 <Plus className="h-4 w-4" /> Ny økt
@@ -550,7 +550,7 @@ export default async function AdminCalendar({
           cta={
             kanBooke ? (
               <Link
-                href="/admin/bookings/ny"
+                href="/admin/bookinger/ny"
                 className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
               >
                 <Plus className="h-4 w-4" /> Opprett ny økt

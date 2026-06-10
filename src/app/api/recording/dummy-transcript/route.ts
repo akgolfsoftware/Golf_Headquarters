@@ -14,7 +14,7 @@ const Body = z.object({
   recordingId: z.string().min(1),
 });
 
-const DUMMY = `Markus, vi starter med basic-setup. Setup ser bra ut, men venstre handledd er litt boyd. Prov a rette det opp - tenk pa at handleddet skal vaere flatt med underarmen ved adressen.
+const DUMMY = `Øyvind, vi starter med basic-setup. Setup ser bra ut, men venstre handledd er litt boyd. Prov a rette det opp - tenk pa at handleddet skal vaere flatt med underarmen ved adressen.
 
 OK, na har du tatt et par swinger. Jeg ser at swing-pathen er litt over-the-top. Klubben kommer for langt utenfor pa veien ned, og det gir deg en fade som du ikke vil ha. La oss jobbe med a slippe klubben mer fra innsiden.
 

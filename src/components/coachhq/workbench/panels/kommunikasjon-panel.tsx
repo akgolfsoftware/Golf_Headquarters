@@ -3,7 +3,7 @@
 /**
  * KommunikasjonPanel — Meldingshistorikk mellom coach og spiller.
  *
- * Pure presentational komponent. Brukes i Coach Workbench (CoachHQ Individuelt)
+ * Pure presentational komponent. Brukes i Coach Workbench (AgencyOS Individuelt)
  * for å vise all kommunikasjon med en spiller: spørsmål, beskjeder,
  * plan-godkjenninger, og system-varsler. Støtter trådvisning hvis en melding
  * har oppfølgende svar.

@@ -28,7 +28,7 @@ function initials(name: string | null | undefined): string {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-/** "Markus Roinaas Pedersen" → "Markus R.P." (tabell-tett visning). */
+/** "Øyvind Rohjan" → "Øyvind R." (tabell-tett visning). */
 function shortName(name: string | null | undefined): string {
   if (!name) return "Gjest";
   const parts = name.trim().split(/\s+/);

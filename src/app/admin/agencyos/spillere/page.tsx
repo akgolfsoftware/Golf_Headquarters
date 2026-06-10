@@ -52,7 +52,8 @@ export default async function SpillereTabPage({
         take: 8,
         select: { sgTotal: true },
       },
-      _count: { select: { bookings: true } },
+      // «Skylder» = minst én feilet betaling (charge gikk ikke gjennom).
+      _count: { select: { bookings: true, payments: { where: { status: "FAILED" } } } },
     },
     orderBy: { name: "asc" },
     take: 200,
@@ -96,7 +97,7 @@ export default async function SpillereTabPage({
       pakkeAktiv,
       sistMott: s.bookings[0]?.startAt ?? null,
       totaltOkter: s._count.bookings,
-      skylder: false, // TODO: koble til Payment.status=PENDING når relevant
+      skylder: s._count.payments > 0, // minst én FAILED Payment = utestående
       sgTotal: sgVerdier[0] ?? null,
       sgTrend,
     };

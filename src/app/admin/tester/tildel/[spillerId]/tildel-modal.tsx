@@ -94,7 +94,7 @@ export function TildelModal({
         >
           <header className="tester-modal-head">
             <div>
-              <div className="eye">CoachHQ · Stall · Spillere</div>
+              <div className="eye">AgencyOS · Stall · Spillere</div>
               <h2>
                 Tildel test til <strong>{spiller.name}</strong>
               </h2>

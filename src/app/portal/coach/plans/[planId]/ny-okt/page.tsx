@@ -37,7 +37,7 @@ export default async function NyOktPage({
       </Link>
 
       <PageHeader
-        eyebrow="CoachHQ · Ny økt"
+        eyebrow="AgencyOS · Ny økt"
         titleLead="Legg til"
         titleItalic="økt"
       />

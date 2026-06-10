@@ -129,7 +129,7 @@ export default async function PlanTemplates({
       </Link>
 
       <PageHeader
-        eyebrow="CoachHQ · Treningsplaner · Maler"
+        eyebrow="AgencyOS · Treningsplaner · Maler"
         titleLead=""
         titleItalic="Maler"
         titleTrail="for treningsplaner"

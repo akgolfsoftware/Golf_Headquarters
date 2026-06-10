@@ -1,5 +1,5 @@
 /**
- * CoachHQ — Spiller-detalj (`/admin/spillere/[id]`) — v10-design.
+ * AgencyOS — Spiller-detalj (`/admin/spillere/[id]`) — v10-design.
  *
  * Rendrer <SpillerDetalj> (v10-fasit fra ag-spiller) med EKTE data:
  *   - Identitet (navn/HCP/gruppe/tier/coach) fra User + aktiv enrolling.

@@ -44,7 +44,7 @@ const MOCK_APPROVALS = [
   },
   {
     id: "ap_2",
-    title: "Purring · Markus #2026-0094",
+    title: "Purring · Øyvind #2026-0094",
     type: "Faktura",
     age: "1 t",
   },

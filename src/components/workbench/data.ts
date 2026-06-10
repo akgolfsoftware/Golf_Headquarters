@@ -1,6 +1,6 @@
 // ============================================================
 // Workbench demo data — frozen 1:1 from the v10 design.
-// Week 22 · MAN 26 – FRE 30 mai 2026 · player "Markus R.P."
+// Week 22 · MAN 26 – FRE 30 mai 2026 · player "Øyvind R."
 // These literals must match v10 exactly so the adversarial diff
 // against the v10 screenshot lands on 0 deviations.
 // ============================================================
@@ -347,6 +347,79 @@ export const SIDEBAR_PYRAMIDE: {
   { lbl: "FYS", ax: "fys", sg: "+0,45", sgCls: "pos", side: "left", width: "30%" },
 ];
 
+// ───────── Valgt økt (inspector-hode) ─────────
+// Lett identitet for økten som er markert i uke-kalenderen. Uke-event
+// har ingen id, så vi nøkler på dag+klokkeslett (unikt i uke-rutenettet).
+// Inspektørens hode (eyebrow/tittel/akse+tid) speiler denne; de øvrige
+// inspektør-seksjonene har ingen per-økt-kilde og forblir demo.
+export type SelectedSession = {
+  /** stabil nøkkel: `${dow}-${h}` */
+  key: string;
+  ax: Axis;
+  /** eyebrow, f.eks. "SLAG · INNSPILL" */
+  eb: string;
+  ttl: string;
+  /** akse-label, f.eks. "SLAG" */
+  axLabel: string;
+  /** "Ons 28/5 · 14:00–15:00" */
+  when: string;
+};
+
+const DOW_FULL: Record<string, string> = {
+  MAN: "Man",
+  TIR: "Tir",
+  ONS: "Ons",
+  TOR: "Tor",
+  FRE: "Fre",
+  LØR: "Lør",
+  SØN: "Søn",
+};
+
+const MONTH_NUM: Record<string, string> = {
+  jan: "1",
+  feb: "2",
+  mar: "3",
+  apr: "4",
+  mai: "5",
+  jun: "6",
+  jul: "7",
+  aug: "8",
+  sep: "9",
+  okt: "10",
+  nov: "11",
+  des: "12",
+};
+
+const pad2 = (n: number) => String(n).padStart(2, "0");
+
+/** Bygg `SelectedSession` fra en uke-dag + event (uke-kalender-klikk). */
+export function selectedFromWeek(day: WeekDay, ev: WeekEvent): SelectedSession {
+  const startH = ev.h;
+  const startM = ev.m ?? 0;
+  const total = startH * 60 + startM + ev.durMin;
+  const endH = Math.floor(total / 60);
+  const endM = total % 60;
+  const mn = MONTH_NUM[day.sub] ?? "5";
+  const dowShort = DOW_FULL[day.dow] ?? day.dow;
+  return {
+    key: `${day.dow}-${ev.h}`,
+    ax: ev.ax,
+    eb: ev.eb,
+    ttl: ev.ttl,
+    axLabel: ev.ax.toUpperCase(),
+    when: `${dowShort} ${day.date}/${mn} · ${pad2(startH)}:${pad2(startM)}–${pad2(endH)}:${pad2(endM)}`,
+  };
+}
+
+/** Standard-valgt økt = event markert `selected` i demo-dataen (ONS · 14:00). */
+export function defaultSelectedSession(days: WeekDay[]): SelectedSession | null {
+  for (const day of days) {
+    const ev = day.events.find((e) => e.selected);
+    if (ev) return selectedFromWeek(day, ev);
+  }
+  return null;
+}
+
 // ───────── Inspector data ─────────
 export const INSPECTOR_PERIODE: { l: string; ax: Axis; width: string; v: string }[] = [
   { l: "TURN", ax: "turn", width: "38%", v: "10 / 10 t" },
@@ -369,14 +442,8 @@ export const INSPECTOR_TESTS: {
   { tlbl: "SPILL", tnm: "HCP-måling 10 hull", due: "7 d igjen", dueIcon: "clock" },
 ];
 
-export const INSPECTOR_COACH_ACTIONS: { icon: string; label: string; pri?: boolean }[] = [
-  { icon: "pencil-line", label: "Legg til notat på økt", pri: true },
-  { icon: "video", label: "Legg til video / link" },
-  { icon: "check-square", label: "Opprett oppgave til Markus" },
-  { icon: "send", label: "Send melding" },
-  { icon: "check-circle-2", label: "Godkjenn plan-endring" },
-  { icon: "arrow-up-right", label: "Løft til hovedcoach" },
-];
+// (INSPECTOR_COACH_ACTIONS fjernet — coach-handlingene er nå interaktive
+//  og definert i _coach-actions.tsx, ikke som demo-data.)
 
 // ───────── Statusbar data ─────────
 export const STATUSBAR_AXES: { lbl: string; ax: Axis; hrs: string }[] = [

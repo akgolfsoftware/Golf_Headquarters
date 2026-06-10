@@ -5,8 +5,8 @@ import { TrendingUp, Clock, Flag } from "lucide-react";
 import { PlayerDetailPanel, type PlayerDetail } from "@/components/admin/player/player-detail-panel";
 
 const player: PlayerDetail = {
-  initials: "MB",
-  name: "Markus Berg",
+  initials: "ØR",
+  name: "Øyvind Rohjan",
   meta: "WANG · KONK · 12 dg til Srixon #2",
   presence: "online",
   avatarClass: "bg-primary text-accent",
@@ -34,7 +34,7 @@ const player: PlayerDetail = {
   ],
   nextBooking: { day: "FRE", date: "30", title: "Innspill 50–80 m · presisjon", type: "1-til-1 · GFGK TM 3" },
   lastComm: [
-    { initials: "MB", name: "Markus", preview: "foreslår å bytte fre-økt til lør", when: "07:42" },
+    { initials: "ØR", name: "Øyvind", preview: "foreslår å bytte fre-økt til lør", when: "07:42" },
     { initials: "AK", name: "Du", preview: "godkjente plan-endring uke 21", when: "i går" },
   ],
 };

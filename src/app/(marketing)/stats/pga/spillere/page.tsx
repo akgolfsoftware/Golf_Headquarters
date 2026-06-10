@@ -174,7 +174,7 @@ export default async function PGASpillerbasePage() {
                 Prøv SG-sammenlign
               </StatsBtn>
             </Link>
-            <Link href="/registrer">
+            <Link href="/auth/signup">
               <StatsBtn variant="ghost" icon="ArrowRight">
                 Lag konto
               </StatsBtn>

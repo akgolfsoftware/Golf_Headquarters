@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getOnboardingState, getResumeStep } from "@/lib/auth/onboarding-state";
-import { OnboardingShell } from "@/components/onboarding/onboarding-shell";
 import { OnboardingWizard } from "./onboarding-wizard";
 
 export const dynamic = "force-dynamic";
@@ -26,9 +25,11 @@ export default async function OnboardingPage() {
 
   const resumeStep = getResumeStep(user);
 
+  // Fersk fasit (ph-auth.jsx → AOnboarding): wizard direkte på cream-flate,
+  // uten mørk gradient-ramme. Forelder-flyten beholder OnboardingShell.
   return (
-    <OnboardingShell>
+    <main className="min-h-svh bg-background pb-6">
       <OnboardingWizard initialStep={resumeStep} />
-    </OnboardingShell>
+    </main>
   );
 }

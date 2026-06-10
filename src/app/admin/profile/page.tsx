@@ -58,7 +58,7 @@ export default async function AdminProfilePage() {
       <header className="flex flex-wrap items-end justify-between gap-6">
         <div>
           <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            CoachHQ · Konto · Profil
+            AgencyOS · Konto · Profil
           </span>
           <h1 className="mt-2 font-display text-[22px] sm:text-[28px] md:text-[36px] font-medium italic leading-[1.1] tracking-tight">
             Profilen din.{" "}

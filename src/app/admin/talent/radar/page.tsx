@@ -1,5 +1,5 @@
 /**
- * CoachHQ — Talent · Radar-oversikt
+ * AgencyOS — Talent · Radar-oversikt
  *
  * Design: 06 Talent-modul.html · Skjerm 3 (Sammenligning) + radar-plot
  * Liste over alle spillere med radar-score + kvartil-plots per akse
@@ -125,7 +125,7 @@ export default async function TalentRadarPage() {
   return (
     <div className="space-y-8">
       <PageHeader
-        eyebrow="CoachHQ · /admin/talent/radar"
+        eyebrow="AgencyOS · /admin/talent/radar"
         titleLead="Radar-"
         titleItalic="oversikt"
         titleTrail={` — ${spillere.length} spillere`}

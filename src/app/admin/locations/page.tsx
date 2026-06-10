@@ -1,5 +1,5 @@
 /**
- * CoachHQ — Lokasjoner
+ * AgencyOS — Lokasjoner
  * Design migrert fra wireframe/design-files-v2/final/07-lokasjoner.html.
  *
  * Foundation-fasen viser kun lokasjon-kortene (kart-panelet er v2-feature).
@@ -75,7 +75,7 @@ export default async function LocationsAdmin() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="CoachHQ · /admin/locations"
+        eyebrow="AgencyOS · /admin/locations"
         titleLead={String(locations.length)}
         titleItalic="lokasjoner"
         titleTrail={`· ${totaltFacilities} fasiliteter`}

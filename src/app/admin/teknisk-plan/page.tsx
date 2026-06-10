@@ -57,7 +57,7 @@ export default async function TekniskPlanOversikt() {
         sub={`${spillere.length} spillere · ${maler.length} maler tilgjengelig`}
         actions={
           <Link
-            href="/admin/teknisk-plan/mal/ny"
+            href="/admin/plans/templates/ny"
             className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
           >
             <Plus size={14} strokeWidth={1.5} />

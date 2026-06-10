@@ -122,7 +122,7 @@ export function ProfileMenu({ name, email, avatarUrl, hcp }: Props) {
               Mitt abonnement
             </MenuLink>
             <MenuLink
-              href="/portal/meg/settings"
+              href="/portal/meg/innstillinger"
               icon={<Settings width={16} height={16} strokeWidth={1.75} aria-hidden />}
               onClick={() => setOpen(false)}
             >

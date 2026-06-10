@@ -3,7 +3,7 @@
  * Dynamic route: /demos/ny-okt/[1..6] (under (internal) → ADMIN-only)
  * Bygd direkte fra wireframe/design-files-v2/playerhq-C/{01-06}-ny-okt-steg-*.html
  *
- * Mock-data for Markus R. Pedersen som lager en egen TEK-økt på Mulligan Studio 2.
+ * Mock-data for Øyvind Rohjan som lager en egen TEK-økt på Mulligan Studio 2.
  * Bytt til Prisma-henting senere.
  */
 

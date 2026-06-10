@@ -42,7 +42,7 @@ export default function Vilkar() {
               Bossumveien 6, 1605 Fredrikstad («vi», «oss», «AK Golf»).
             </p>
             <p>
-              Tjenesten omfatter blant annet PlayerHQ (spillerportal), CoachHQ
+              Tjenesten omfatter blant annet PlayerHQ (spillerportal), AgencyOS
               (coach-portal), AI-coach, treningsplaner, booking, og tilhørende
               data- og analyseverktøy.
             </p>

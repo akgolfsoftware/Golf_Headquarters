@@ -44,7 +44,7 @@ export default function AdminError({ error, reset }: Props) {
           onClick={() => reset()}
           className="font-display inline-flex items-center justify-center gap-1.5 rounded-full bg-accent px-6 py-2 text-sm font-bold tracking-[-0.005em] text-primary shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
-          Tilbake til CoachHQ
+          Tilbake til AgencyOS
         </button>
         <Link
           href="/admin/messages"

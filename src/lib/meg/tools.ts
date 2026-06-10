@@ -320,7 +320,15 @@ type DiskOpprettInput = { navn: string; innhold: string };
 // Executor-tabell
 // ────────────────────────────────────────────────────────────────────────────
 
-export const MEG_EXEC_BY_NAME: Record<string, (args: unknown) => Promise<string>> = {
+/**
+ * Bygger executor-tabellen bundet til én person (subject). All lagring og
+ * henting skjer mot denne personens data — boten kan aldri lese eller skrive
+ * på tvers av personer.
+ */
+export function megExecutorsFor(
+  subject: string,
+): Record<string, (args: unknown) => Promise<string>> {
+  return {
   logg: async (raw) => {
     const args = raw as LoggInput;
     const classification: Classification = {
@@ -330,14 +338,14 @@ export const MEG_EXEC_BY_NAME: Record<string, (args: unknown) => Promise<string>
       value_unit: args.value_unit,
       tags: args.tags ?? [],
     };
-    await storeLog(args.summary, classification, "telegram_text");
+    await storeLog(args.summary, classification, "telegram_text", subject);
     return `Logget (${args.kind}): ${args.summary}`;
   },
 
   hent_nylige: async (raw) => {
     const args = raw as HentNyligeInput;
     const limit = Math.min(Math.max(args.limit ?? 10, 1), 30);
-    const rader = await hentNylige(limit, args.kind);
+    const rader = await hentNylige(subject, limit, args.kind);
     if (rader.length === 0) return "Ingen oppføringer funnet.";
     return rader
       .map((r) => `[${r.created_at.slice(0, 10)} ${r.kind}] ${r.text}`)
@@ -378,14 +386,14 @@ export const MEG_EXEC_BY_NAME: Record<string, (args: unknown) => Promise<string>
   notion_opprett_oppgave: async (raw) => {
     const args = raw as NotionOpprettOppgaveInput;
     const summary = `Opprette oppgave i Notion: "${args.tittel}"${args.forfaller ? ` (forfaller ${args.forfaller})` : ""}`;
-    await createPending("notion_opprett_oppgave", args, summary);
+    await createPending("notion_opprett_oppgave", args, summary, subject);
     return `Forslag klart: ${summary}. Be Anders svare BEKREFT for å utføre.`;
   },
 
   notion_fullfor_oppgave: async (raw) => {
     const args = raw as NotionFullforOppgaveInput;
     const summary = `Sette Notion-oppgave til status "${args.status}"`;
-    await createPending("notion_fullfor_oppgave", args, summary);
+    await createPending("notion_fullfor_oppgave", args, summary, subject);
     return `Forslag klart: ${summary}. Be Anders svare BEKREFT for å utføre.`;
   },
 
@@ -411,7 +419,7 @@ export const MEG_EXEC_BY_NAME: Record<string, (args: unknown) => Promise<string>
     const args = raw as GmailLagUtkastInput;
     const preview = args.tekst.length > 200 ? `${args.tekst.slice(0, 200)}…` : args.tekst;
     const summary = `Sende e-post til ${args.til} — "${args.emne}":\n${preview}`;
-    await createPending("gmail_send", args, summary);
+    await createPending("gmail_send", args, summary, subject);
     return `Forslag klart:\n${summary}\n\nBe Anders svare BEKREFT for å sende.`;
   },
 
@@ -436,7 +444,12 @@ export const MEG_EXEC_BY_NAME: Record<string, (args: unknown) => Promise<string>
   disk_opprett: async (raw) => {
     const args = raw as DiskOpprettInput;
     const summary = `Opprette fil "${args.navn}" i Disk`;
-    await createPending("disk_opprett", args, summary);
+    await createPending("disk_opprett", args, summary, subject);
     return `Forslag klart: ${summary}. Be Anders svare BEKREFT for å utføre.`;
   },
-};
+  };
+}
+
+// Bakoverkompatibel referanse for tester. Runtime bruker megExecutorsFor(subject)
+// med faktisk avsender — denne bindingen kalles aldri i produksjon.
+export const MEG_EXEC_BY_NAME = megExecutorsFor("");

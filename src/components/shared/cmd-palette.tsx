@@ -40,7 +40,7 @@ const ITEMS: ReadonlyArray<PaletteItem> = [
   { id: "p-6", kategori: "Sider", label: "Min profil", href: "/portal/meg" },
   { id: "p-6", kategori: "Sider", label: "Varsler", href: "/portal/varsler" },
   // Spillere (dummy)
-  { id: "sp-1", kategori: "Spillere", label: "Markus Roinås Pedersen", hint: "Hcp 4.2", href: "/portal/coach" },
+  { id: "sp-1", kategori: "Spillere", label: "Øyvind Rohjan", hint: "Hcp 4.2", href: "/portal/coach" },
   { id: "sp-2", kategori: "Spillere", label: "Emma Lien", hint: "Hcp 8.7", href: "/portal/coach" },
   // Drills (dummy)
   { id: "d-1", kategori: "Drills", label: "Tempo-drill 3:1", hint: "Slag", href: "/portal/drills" },

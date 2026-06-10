@@ -20,8 +20,8 @@ import type {
 
 /**
  * Genererer mulige navne-varianter for tekst-match mot Notion `tildeltNavn`.
- * Eksempel: "Markus Røinås Pedersen" →
- *   ["Markus Røinås Pedersen", "Markus Pedersen", "Markus R. Pedersen"]
+ * Eksempel: "Øyvind Rohjan" →
+ *   ["Øyvind Rohjan", "Øyvind Rohjan", "Øyvind Rohjan"]
  */
 export function getNameVariants(name: string): string[] {
   const trimmed = name.trim();

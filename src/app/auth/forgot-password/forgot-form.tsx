@@ -2,9 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { Mail, MailCheck, Send } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { AthleticButton } from "@/components/athletic/button";
 import { AthleticBadge } from "@/components/athletic/badge";
+import { AthleticEyebrow } from "@/components/athletic/eyebrow";
+import { buttonClasses } from "@/components/ui/button";
 
 export function ForgotForm() {
   const supabase = createClient();
@@ -31,19 +34,26 @@ export function ForgotForm() {
 
   if (sent) {
     return (
-      <div className="space-y-4 text-center">
-        <div className="flex justify-center">
-          <AthleticBadge variant="ok">E-POST SENDT</AthleticBadge>
-        </div>
-        <p className="font-display text-xl font-semibold leading-tight">
-          <em className="font-normal italic text-primary">Sjekk</em> innboksen
-        </p>
-        <p className="text-sm text-muted-foreground">
-          Vi har sendt en lenke til {email}. Klikk på den for å sette nytt passord.
+      <div className="flex flex-col items-center pt-2 text-center">
+        <span
+          aria-hidden
+          className="mb-4 grid h-[60px] w-[60px] place-items-center rounded-2xl bg-accent text-primary"
+        >
+          <MailCheck className="h-8 w-8" strokeWidth={1.5} />
+        </span>
+        <h1 className="font-display text-3xl font-bold leading-[1.05] tracking-[-0.025em] text-balance text-foreground">
+          Sjekk <em className="font-normal italic text-primary">innboksen.</em>
+        </h1>
+        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+          Vi har sendt en lenke for å nullstille passordet til {email}.
         </p>
         <Link
           href="/auth/login"
-          className="font-display mt-2 inline-flex h-11 items-center justify-center gap-1.5 rounded-md bg-transparent px-6 text-sm font-bold tracking-[-0.005em] text-foreground transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className={buttonClasses({
+            variant: "secondary",
+            size: "md",
+            className: "mt-6 w-full",
+          })}
         >
           Tilbake til innlogging
         </Link>
@@ -52,24 +62,42 @@ export function ForgotForm() {
   }
 
   return (
-    <form onSubmit={send} className="space-y-4">
-      <label className="block">
-        <span className="mb-2 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+    <form onSubmit={send} className="flex flex-col">
+      <div className="mb-6">
+        <AthleticEyebrow>GLEMT PASSORD</AthleticEyebrow>
+        <h1 className="mt-2 font-display text-3xl font-bold leading-[1.05] tracking-[-0.025em] text-balance text-foreground">
+          Nullstill <em className="font-normal italic text-primary">passord.</em>
+        </h1>
+        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+          Skriv inn e-posten din, så sender vi deg en lenke.
+        </p>
+      </div>
+
+      <label className="mb-4 block">
+        <span className="mb-2 block font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
           E-post
         </span>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          className="w-full rounded-md border border-input bg-card px-4 py-4 text-base sm:text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
-        />
+        <span className="flex h-12 items-center gap-2 rounded-xl border border-input bg-card px-4 transition-colors focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/30">
+          <Mail
+            className="h-4 w-4 shrink-0 text-muted-foreground"
+            strokeWidth={1.5}
+            aria-hidden
+          />
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            placeholder="navn@klubb.no"
+            className="h-full w-full bg-transparent text-base text-foreground outline-none placeholder:text-muted-foreground/60 sm:text-sm"
+          />
+        </span>
       </label>
 
       {error && (
         <div
           role="alert"
-          className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2"
+          className="mb-4 flex items-start gap-2 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-2"
         >
           <AthleticBadge variant="urgent">Feil</AthleticBadge>
           <span className="text-sm text-destructive">{error}</span>
@@ -79,19 +107,18 @@ export function ForgotForm() {
       <AthleticButton
         type="submit"
         variant="primary"
-        size="md"
+        size="lg"
         disabled={pending}
         className="w-full"
       >
-        {pending ? "Sender…" : "Send reset-lenke"}
+        {pending ? (
+          "Sender…"
+        ) : (
+          <>
+            Send lenke <Send className="h-4 w-4" strokeWidth={1.75} aria-hidden />
+          </>
+        )}
       </AthleticButton>
-
-      <p className="pt-2 text-center text-sm text-muted-foreground">
-        Husket passordet?{" "}
-        <Link href="/auth/login" className="font-medium text-primary hover:underline">
-          Logg inn
-        </Link>
-      </p>
     </form>
   );
 }

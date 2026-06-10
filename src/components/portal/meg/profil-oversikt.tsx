@@ -141,7 +141,7 @@ export function ProfilOversiktView({ data }: { data: ProfilOversikt }) {
           countTone="lime"
         />
         <ProfilRow
-          href="/portal/meg/fakturaer"
+          href="/portal/meg/abonnement"
           icon={Receipt}
           title="Fakturaer"
           meta={fakturaMeta}

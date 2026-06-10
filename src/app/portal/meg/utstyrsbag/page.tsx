@@ -1,14 +1,17 @@
 /**
- * PlayerHQ · Meg · Utstyrsbag (/portal/meg/utstyrsbag). Mobil-først (430px).
+ * PlayerHQ · Meg · Utstyrsbag (/portal/meg/utstyrsbag).
  *
- * Spillerens kølle-utstyr fra EquipmentBag-modellen. Server component henter
- * ekte data og sender inn — visning/redigering i UtstyrsbagView (client).
- * Behold auth-guard (PLAYER/COACH/ADMIN) og server-action (lagreUtstyrsbag).
+ * Portet fra fersk Claude Design-fasit (ph-screens.jsx · UtstyrScreen):
+ * MeSub-skall ("Utstyrs bag.") → kølle-rader (set-group) → BALL & ØVRIG →
+ * knapperad (primær «Legg til kølle» + sekundær «Se TrackMan-tall»).
+ *
+ * Server component henter EKTE EquipmentBag-data og sender inn —
+ * visning/redigering i UtstyrsbagView (client, gjenbruker UtstyrsbagForm +
+ * lagreUtstyrsbag-action). Auth-guard (PLAYER/COACH/ADMIN) beholdt.
  */
-import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { MeSub } from "@/components/portal/meg/meg-sub";
 import { UtstyrsbagView } from "./utstyrsbag-view";
 import type { UtstyrsbagInput } from "./actions";
 
@@ -34,28 +37,13 @@ export default async function UtstyrsbagPage() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-[480px] pb-8">
-      {/* topbar — tilbake + tittel */}
-      <div className="flex items-center gap-3 border-b border-border px-2 py-3">
-        <Link
-          href="/portal/meg"
-          className="inline-flex items-center gap-1.5 px-1 py-1.5 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground transition-colors hover:text-foreground"
-        >
-          <ChevronLeft className="h-[13px] w-[13px]" strokeWidth={2} aria-hidden />
-          Profil
-        </Link>
-        <h1 className="font-display text-[17px] font-bold tracking-[-0.015em] text-foreground">
-          Utstyrsbag
-        </h1>
-      </div>
-
-      <div className="px-2 pb-4 pt-3">
-        <p className="mb-3 px-1 text-[13px] leading-relaxed text-muted-foreground">
-          Logg kølle-utstyret ditt slik at coach kan tilpasse anbefalinger og
-          fitting. Alle felter er valgfrie.
-        </p>
-        <UtstyrsbagView initial={initial} finnes={bag != null} />
-      </div>
-    </div>
+    <MeSub
+      eyebrow="MEG · UTSTYRSBAG"
+      title="Utstyrs"
+      italic="bag."
+      lead="Køllesett, ball og spesifikasjoner. Brukes til TrackMan-kalibrering."
+    >
+      <UtstyrsbagView initial={initial} />
+    </MeSub>
   );
 }

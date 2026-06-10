@@ -7,6 +7,7 @@ import { anthropic, MEG_MODEL_SMART, AI_MAX_TOKENS, isAiEnabled } from "@/lib/ai
 import { readMegEnv } from "@/lib/meg/env";
 import { megSupabase } from "@/lib/meg/supabase";
 import { sendTelegramMessage } from "@/lib/meg/telegram";
+import { adminSubject } from "@/lib/meg/access";
 import { hentNylige } from "@/lib/meg/read";
 import { helseHent } from "@/lib/meg/connectors/health";
 import { notionOppgaver } from "@/lib/meg/connectors/notion";
@@ -49,8 +50,9 @@ async function lagreOgSend(kind: BriefKind, content: string): Promise<BriefResul
   }
   let stored = false;
   const db = megSupabase();
-  if (db) {
-    const { error } = await db.from("me_brief").insert({ kind, content, sent });
+  const subject = adminSubject();
+  if (db && subject) {
+    const { error } = await db.from("me_brief").insert({ kind, content, sent, subject });
     stored = !error;
   }
   return { kind, sent, stored };
@@ -97,7 +99,7 @@ export async function runMorgenbrief(): Promise<BriefResult> {
 
 // ── Kveldsjournal ────────────────────────────────────────────────────────────
 export async function runKveldsjournal(): Promise<BriefResult> {
-  const nylige = await hentNylige(15);
+  const nylige = await hentNylige(adminSubject() ?? "", 15);
   const logg = nylige.length
     ? nylige.map((r) => `- [${r.kind}] ${r.text}`).join("\n")
     : "Ingen logg i dag.";
@@ -112,7 +114,7 @@ export async function runKveldsjournal(): Promise<BriefResult> {
 
 // ── Løftesjekk ───────────────────────────────────────────────────────────────
 export async function runLoftesjekk(): Promise<BriefResult> {
-  const [oppgaver, nylige] = await Promise.all([notionOppgaver(15), hentNylige(30)]);
+  const [oppgaver, nylige] = await Promise.all([notionOppgaver(15), hentNylige(adminSubject() ?? "", 30)]);
   const lovet = nylige
     .filter((r) => r.kind === "task" || r.tags.includes("lovet") || r.tags.includes("promise"))
     .map((r) => `- ${r.text}`)
@@ -132,7 +134,7 @@ export async function runLoftesjekk(): Promise<BriefResult> {
 
 // ── CRM-nudge ────────────────────────────────────────────────────────────────
 export async function runCrmNudge(): Promise<BriefResult> {
-  const personer = await hentNylige(40, "person");
+  const personer = await hentNylige(adminSubject() ?? "", 40, "person");
   const logg = personer.length
     ? personer.map((r) => `- ${r.text} (${r.created_at.slice(0, 10)})`).join("\n")
     : "Ingen person-logg.";

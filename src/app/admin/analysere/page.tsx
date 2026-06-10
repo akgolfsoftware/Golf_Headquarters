@@ -1,5 +1,5 @@
 /**
- * /admin/analysere — CoachHQ Innsikt hub
+ * /admin/analysere — AgencyOS Innsikt hub
  * Design: hubs-coach.jsx (CoachInnsikt)
  */
 
@@ -7,12 +7,10 @@ import {
   BarChart3,
   CheckCheck,
   ClipboardCheck,
-  Download,
   FileBarChart,
   Flag,
   HeartPulse,
   MessageSquare,
-  Plus,
   Wallet,
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -25,6 +23,7 @@ import {
   PyramidMini,
   HubSparkline,
 } from "@/components/hubs";
+import { HubActions } from "./_hub-actions";
 
 export const dynamic = "force-dynamic";
 
@@ -39,14 +38,14 @@ export default async function AnalyserePage() {
         titleItalic="stallen"
         sub="Stall-statistikk, tester, godkjenninger og rapporter."
         actions={
-          <>
-            <button className="hub-btn btn-outline" type="button">
-              <Download size={13} strokeWidth={1.75} aria-hidden /> Eksporter
-            </button>
-            <button className="hub-btn btn-forest" type="button">
-              <Plus size={13} strokeWidth={2} aria-hidden /> Generer rapport
-            </button>
-          </>
+          <HubActions
+            stats={[
+              { label: "Spillere", value: "38" },
+              { label: "Overdue tester", value: "7" },
+              { label: "Godkjenninger venter", value: "8" },
+              { label: "Endring mot forrige mnd", value: "+12%" },
+            ]}
+          />
         }
         stats={
           <>

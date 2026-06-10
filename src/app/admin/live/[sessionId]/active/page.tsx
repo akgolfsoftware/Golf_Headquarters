@@ -1,5 +1,5 @@
 /**
- * CoachHQ · Live-økt active — coach-perspektiv
+ * AgencyOS · Live-økt active — coach-perspektiv
  *
  * Coach følger spillerens pågående økt i sanntid.
  * Kan sende raske meldinger og se øktens status.
@@ -10,6 +10,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Activity, ArrowLeft, CheckCircle2, MessageSquare } from "lucide-react";
+import { LiveMelding } from "./_live-melding";
 
 export const dynamic = "force-dynamic";
 
@@ -107,19 +108,7 @@ export default async function CoachLiveActivePage({ params }: Props) {
             <MessageSquare className="inline h-3.5 w-3.5 mr-1" />
             Send melding til spiller
           </h2>
-          <div className="flex gap-2">
-            <input
-              type="text"
-              placeholder="Skriv en rask melding..."
-              className="flex-1 rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-            />
-            <button
-              type="button"
-              className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-            >
-              Send
-            </button>
-          </div>
+          <LiveMelding sessionId={sessionId} />
         </div>
 
         <div className="mt-6">

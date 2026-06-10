@@ -60,7 +60,7 @@ export default async function MeldingstradPage({ params }: RouteProps) {
           {
             id: "m-1",
             role: "coach" as const,
-            body: "God observasjon, Markus. Se på P2–P3: hoftene roterer ca. 0,06 s tidligere enn referansen. Prøv 'door-jam drill' 3×8 før neste økt, og film fra DTL.",
+            body: "God observasjon, Øyvind. Se på P2–P3: hoftene roterer ca. 0,06 s tidligere enn referansen. Prøv 'door-jam drill' 3×8 før neste økt, og film fra DTL.",
             ts: "2026-05-18T21:02:00.000Z",
           },
         ];

@@ -203,7 +203,7 @@ export function NyManuellTurneringForm() {
 
       <p className="rounded-md bg-muted/50 px-4 py-2 text-xs text-muted-foreground">
         Turneringen blir umiddelbart synlig på{" "}
-        <code className="font-mono">/turneringer</code> og i CoachHQ. Den merkes som
+        <code className="font-mono">/turneringer</code> og i AgencyOS. Den merkes som
         manuelt opprettet av deg, og coachen kan senere koble den til en kjent
         DataGolf/NGF-turnering hvis det er en match.
       </p>

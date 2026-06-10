@@ -5,7 +5,7 @@
  *   - Auth: PLAYER (kun egen data) eller COACH/ADMIN (egen profil)
  *   - Ingen spillervelger — innlogget bruker er låst som studentId
  *   - Standard-modus: skjuler Krysstabell, Fys og Plan-faktisk (Avansert-only)
- *   - Avansert-modus: alle 6 visninger som i CoachHQ
+ *   - Avansert-modus: alle 6 visninger som i AgencyOS
  *   - Tier-gate: GRATIS låser Avansert-toggle (men fortsatt synlig som upgrade-CTA)
  */
 import { redirect } from "next/navigation";

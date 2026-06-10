@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * CoachHQ — Stall-oversikt (klient)
+ * AgencyOS — Stall-oversikt (klient)
  *
  * Tre tabs som deler den samme spiller-snapshoten:
  *  - Aktivitet:  Heat-map siste 30d (alle spillere × dager)

@@ -1,9 +1,9 @@
 /**
- * PILOT — CoachHQ Plan-bygger · Wizard (6 steg)
+ * PILOT — AgencyOS Plan-bygger · Wizard (6 steg)
  * Dynamic route: /demos/plan-bygger/[1..6] (under (internal) → ADMIN-only)
  * Bygd direkte fra wireframe/design-files-v2/coachhq-A/02-plan-bygger-steg-{1,2,3,5,6}.html + 02-plan-bygger.html
  *
- * Mock-data for Markus Roinås Pedersen mot Sørlandsåpent 2026. Bytt til Prisma-henting senere.
+ * Mock-data for Øyvind Rohjan mot Sørlandsåpent 2026. Bytt til Prisma-henting senere.
  */
 
 import Link from "next/link";
@@ -22,7 +22,7 @@ type StegMeta = {
 };
 
 const STEPS: readonly StegMeta[] = [
-  { num: "1", name: "Spiller", shortSub: "Markus R.", navSub: "Velg nå" },
+  { num: "1", name: "Spiller", shortSub: "Øyvind R.", navSub: "Velg nå" },
   { num: "2", name: "Periode", shortSub: "8 uker", navSub: "8 ukers default" },
   { num: "3", name: "Faser", shortSub: "5 faser", navSub: "Auto-foreslås" },
   { num: "4", name: "Pyramide", shortSub: "Allokert", navSub: "Drag-allokering" },
@@ -73,7 +73,7 @@ function PageHead({ current }: { current: StegId }) {
         "Hvem skal planen lages for? Du kan filtrere etter kategori eller søke direkte. Periodiserings-agent leser spillerens 30-dagers historikk når du velger.",
     },
     "2": {
-      eyebrow: "Treningsplaner · Ny plan · Markus R. Pedersen · Steg 2 av 6",
+      eyebrow: "Treningsplaner · Ny plan · Øyvind Rohjan · Steg 2 av 6",
       title: (
         <>
           <em className="font-medium italic">Sett periode</em> og hovedmål
@@ -83,17 +83,17 @@ function PageHead({ current }: { current: StegId }) {
         "Start, slutt og peak. Periodiserings-agent foreslår 8 ukers periode mot første turnering i kalenderen.",
     },
     "3": {
-      eyebrow: "Treningsplaner · Ny plan · Markus R. Pedersen · Steg 3 av 6",
+      eyebrow: "Treningsplaner · Ny plan · Øyvind Rohjan · Steg 3 av 6",
       title: (
         <>
           <em className="font-medium italic">Strukturér faser</em> for perioden
         </>
       ),
       lede:
-        "Periodiserings-agent har foreslått 5 faser basert på Markus' 30-dagers historikk og peak 2. juni. Dra for å justere lengder, eller godta forslaget.",
+        "Periodiserings-agent har foreslått 5 faser basert på Øyvind' 30-dagers historikk og peak 2. juni. Dra for å justere lengder, eller godta forslaget.",
     },
     "4": {
-      eyebrow: "Treningsplaner · Ny plan · Markus R. Pedersen · Kategori A · HCP +2,4",
+      eyebrow: "Treningsplaner · Ny plan · Øyvind Rohjan · Kategori A · HCP +2,4",
       title: (
         <>
           <em className="font-medium italic">Bygg ny plan</em> · Sørlandsåpent 2026
@@ -103,7 +103,7 @@ function PageHead({ current }: { current: StegId }) {
         "Wizard med 6 steg. Periodiserings-agent foreslår faser og pyramide-allokasjon basert på turneringsdato, kursprofil og spillerens SG-trender.",
     },
     "5": {
-      eyebrow: "Treningsplaner · Ny plan · Markus R. Pedersen · Steg 5 av 6",
+      eyebrow: "Treningsplaner · Ny plan · Øyvind Rohjan · Steg 5 av 6",
       title: (
         <>
           <em className="font-medium italic">Økt-skjelett</em> — 24 økter generert
@@ -113,14 +113,14 @@ function PageHead({ current }: { current: StegId }) {
         "Periodiserings-agent har bygd 24 økter fordelt over 8 uker. Hver økt er allokert pyramidefokus i tråd med fasen. Du kan redigere enkeltøkter eller godkjenne hele skjelettet.",
     },
     "6": {
-      eyebrow: "Treningsplaner · Ny plan · Markus R. Pedersen · Steg 6 av 6",
+      eyebrow: "Treningsplaner · Ny plan · Øyvind Rohjan · Steg 6 av 6",
       title: (
         <>
-          <em className="font-medium italic">Gjennomgå og send</em> til Markus
+          <em className="font-medium italic">Gjennomgå og send</em> til Øyvind
         </>
       ),
       lede:
-        "Siste sjekk før planen aktiveres. Markus får varsel i appen og en kort beskjed via e-post. Plan-status: utkast.",
+        "Siste sjekk før planen aktiveres. Øyvind får varsel i appen og en kort beskjed via e-post. Plan-status: utkast.",
     },
   };
   const h = heads[current];
@@ -253,7 +253,7 @@ function FooterBar({ current }: { current: StegId }) {
         ) : (
           <button className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90">
             <Send className="h-3.5 w-3.5" strokeWidth={1.8} />
-            Send til Markus
+            Send til Øyvind
           </button>
         )}
       </div>
@@ -303,7 +303,7 @@ function Step1() {
         Foreslått — mangler aktiv plan
       </div>
       <div className="mb-6 grid grid-cols-3 gap-2">
-        <PlayerPickCard initial="M" name="Markus R. Pedersen" pill="Kat A" sub="HCP +2,4" selected />
+        <PlayerPickCard initial="Ø" name="Øyvind Rohjan" pill="Kat A" sub="HCP +2,4" selected />
         <PlayerPickCard initial="H" name="Henrik Nilsen" pill="Pro" sub="HCP 8,7" />
         <PlayerPickCard initial="A" name="Anna Karlsen" pill="Free" sub="HCP 16,8" bg="hsl(var(--warning))" />
       </div>
@@ -312,7 +312,7 @@ function Step1() {
         Alle elever — kategori A og B
       </div>
       <div className="grid grid-cols-3 gap-2">
-        <PlayerPickCard initial="M" name="Mads Rønning" pill="Pro" sub="HCP 9,4" bg="hsl(var(--success))" />
+        <PlayerPickCard initial="Ø" name="Mads Rønning" pill="Pro" sub="HCP 9,4" bg="hsl(var(--success))" />
         <PlayerPickCard initial="L" name="Lise Sandberg" pill="Free" sub="HCP 19,5" bg="hsl(var(--muted-foreground))" />
         <PlayerPickCard
           initial="J"
@@ -401,7 +401,7 @@ function Step2() {
         body={
           <>
             <b className="font-semibold">Foreslår 8 ukers periode</b> — Sørlandsåpent 2.–4. juni er
-            Markus&apos; første A-turnering. Anbefaler peak 2. juni med 2 ukers base + 1
+            Øyvind&apos; første A-turnering. Anbefaler peak 2. juni med 2 ukers base + 1
             forberedelse + 3 spesifikk + 3 d taper.
           </>
         }
@@ -801,7 +801,7 @@ function Step4() {
           </div>
           <p className="mt-1 max-w-[720px] text-[13px] leading-[1.5] text-foreground">
             <b className="font-semibold">Foreslår SLAG 35 % i Spesifikk-fase</b> — Bjaavann har
-            sandbase med dyp bunkersand, og Markus&apos; SG-arg er −0,1 siste 30 d. Reduser FYS til
+            sandbase med dyp bunkersand, og Øyvind&apos; SG-arg er −0,1 siste 30 d. Reduser FYS til
             10 % og TEK til 15 % for å gi rom.
           </p>
         </div>
@@ -824,7 +824,7 @@ function Step4() {
                 Hvordan tid fordeles i fase 3
               </h3>
               <p className="mt-1 max-w-[500px] text-[12px] leading-[1.5] text-muted-foreground">
-                Sum må være 100 %. Subtil bar under hver slider viser hva Markus har faktisk trent
+                Sum må være 100 %. Subtil bar under hver slider viser hva Øyvind har faktisk trent
                 siste 4 uker — for kontekst.
               </p>
             </div>
@@ -1247,7 +1247,7 @@ function Step6() {
       <div className="grid grid-cols-2 gap-4">
         <SumBlock title="Plan-detaljer" editHref="/demos/plan-bygger/2">
           <SumRow label="Navn" value="Sørlandsåpent-prep" />
-          <SumRow label="Spiller" value="Markus R. Pedersen" />
+          <SumRow label="Spiller" value="Øyvind Rohjan" />
           <SumRow label="Coach" value="Anders K." />
           <SumRow label="Start" value="9. mai 2026" />
           <SumRow label="Slutt" value="30. juni 2026" />
@@ -1283,7 +1283,7 @@ function Step6() {
 
       <section className="mt-6">
         <div className="mb-2.5 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-          Varselforhåndsvisning — det Markus vil se
+          Varselforhåndsvisning — det Øyvind vil se
         </div>
         <div className="rounded-xl border border-border bg-card p-6">
           <div className="mb-2 text-[11px] leading-none text-muted-foreground">
@@ -1294,7 +1294,7 @@ function Step6() {
             <em className="font-medium italic">Sørlandsåpent-prep</em>
           </div>
           <p className="text-[13px] leading-[1.6] text-foreground">
-            Hei Markus — jeg har bygd en 8-ukers plan mot Sørlandsåpent 2. juni. Vi starter med to
+            Hei Øyvind — jeg har bygd en 8-ukers plan mot Sørlandsåpent 2. juni. Vi starter med to
             ukers base for å bygge volum etter off-season, deretter forberedelse og en tre ukers
             spesifikk turneringsblokk. 24 økter totalt. Si fra hvis noe ikke passer, så justerer vi.
           </p>
@@ -1401,7 +1401,7 @@ function PlayerMini() {
         M
       </div>
       <div>
-        <div className="text-[14px] font-semibold leading-tight">Markus R. Pedersen</div>
+        <div className="text-[14px] font-semibold leading-tight">Øyvind Rohjan</div>
         <div className="mt-1 text-[11px] leading-[1.3] text-muted-foreground">
           Kategori A · 17 år · WANG
         </div>

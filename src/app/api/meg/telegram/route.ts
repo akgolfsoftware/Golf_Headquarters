@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
 import { readMegEnv } from "@/lib/meg/env";
-import { isAuthorizedUpdate, sendTelegramMessage } from "@/lib/meg/telegram";
+import { webhookSecretOk, sendTelegramMessage } from "@/lib/meg/telegram";
+import { parsePersoner, finnPerson } from "@/lib/meg/access";
 import { storeConversation } from "@/lib/meg/store";
 import { hentSamtaleHistorikk } from "@/lib/meg/read";
 import { runMegAgent } from "@/lib/meg/agent";
 import { handleConfirmation } from "@/lib/meg/confirm";
+import { tryLocalFastPath } from "@/lib/meg/router";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -29,40 +31,60 @@ export async function POST(req: Request) {
   const chatId = update.message?.chat?.id ?? null;
   const text = update.message?.text?.trim() ?? "";
 
-  const authInput = { headerSecret, chatId };
-  if (!isAuthorizedUpdate(authInput, {
-    webhookSecret: env.telegramWebhookSecret,
-    allowedChatId: env.allowedChatId,
-  })) {
-    console.warn("[meg/webhook] uautorisert request", { chatId });
+  // 1) Webhook-secret må stemme. 2) Avsender må være i allowlisten.
+  if (!webhookSecretOk(headerSecret, env.telegramWebhookSecret)) {
+    console.warn("[meg/webhook] uautorisert request (secret)", { chatId });
     return NextResponse.json({ ok: true });
   }
+  const person = finnPerson(chatId, parsePersoner());
+  if (!person) {
+    console.warn("[meg/webhook] ukjent avsender", { chatId });
+    return NextResponse.json({ ok: true });
+  }
+
+  const subject = person.chatId;
 
   if (!text) {
-    await sendTelegramMessage(env.telegramBotToken, authInput.chatId, "Tom melding — send tekst.");
+    await sendTelegramMessage(env.telegramBotToken, subject, "Tom melding — send tekst.");
     return NextResponse.json({ ok: true });
   }
 
-  await storeConversation("user", text);
+  await storeConversation("user", text, subject);
 
-  // Bekreftelsesflyt: hvis en ventende skrive-handling finnes og dette er
-  // BEKREFT/avbryt, utfør/forkast den her — uten å gå via agenten.
-  const confirmReply = await handleConfirmation(text);
+  // Bekreftelsesflyt: hvis en ventende skrive-handling finnes for denne personen
+  // og dette er BEKREFT/avbryt, utfør/forkast den her — uten å gå via agenten.
+  const confirmReply = await handleConfirmation(text, subject);
   if (confirmReply !== null) {
-    await storeConversation("assistant", confirmReply);
-    await sendTelegramMessage(env.telegramBotToken, authInput.chatId, confirmReply);
+    await storeConversation("assistant", confirmReply, subject);
+    await sendTelegramMessage(env.telegramBotToken, subject, confirmReply);
     return NextResponse.json({ ok: true });
   }
 
-  const history = await hentSamtaleHistorikk(20);
+  // Lokal snarvei: enkle logg-meldinger håndteres billig (Ollama/Haiku) uten
+  // å vekke den dyre Claude-agenten. Faller gjennom til agenten ved null.
+  const fastPath = await tryLocalFastPath({ text, subject });
+  if (fastPath !== null) {
+    console.info("[meg/webhook] lokal snarvei", { engine: fastPath.engine });
+    await storeConversation("assistant", fastPath.reply, subject);
+    await sendTelegramMessage(env.telegramBotToken, subject, fastPath.reply);
+    return NextResponse.json({ ok: true });
+  }
+
+  const history = await hentSamtaleHistorikk(subject, 20);
   // Fjern siste user-melding fra historikk (er lagt til rett over, sendes separat til agenten)
   const trimmedHistory = history.filter((_, i) => i < history.length - 1);
 
-  const result = await runMegAgent({ text, history: trimmedHistory });
+  const result = await runMegAgent({
+    text,
+    history: trimmedHistory,
+    subject,
+    navn: person.navn,
+    rolle: person.rolle,
+  });
 
   const reply = result.ok ? result.text : "Noe gikk galt. Prøv igjen.";
   if (!result.ok) console.error("[meg/webhook] agent-feil:", result.error);
 
-  await sendTelegramMessage(env.telegramBotToken, authInput.chatId, reply);
+  await sendTelegramMessage(env.telegramBotToken, subject, reply);
   return NextResponse.json({ ok: true });
 }

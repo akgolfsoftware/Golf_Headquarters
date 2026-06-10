@@ -1,5 +1,5 @@
 /**
- * /admin/stall — CoachHQ Stall hub
+ * /admin/stall — AgencyOS Stall hub
  * Design: matches HubFrame-pattern fra Manglende hubs.html
  * Innhold per plan Del 3 — utvider hub-suite til 10 toppnivå-sider
  */

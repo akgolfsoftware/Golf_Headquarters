@@ -44,7 +44,7 @@ const STRAT_NOTES: Array<{
   },
   {
     tag: "Hull 6 · Egen note",
-    who: "Markus · egen note",
+    who: "Øyvind · egen note",
     when: "2. mai 2026",
     self: true,
     body: (

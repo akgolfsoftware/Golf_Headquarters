@@ -1,5 +1,5 @@
 /**
- * CoachHQ — Godkjenning detaljvisning
+ * AgencyOS — Godkjenning detaljvisning
  *
  * Detalj-side for én PlanAction. Coach kan godkjenne, avslå med begrunnelse,
  * be om mer info, eller åpne meldingstråd. Designet er migrert fra
@@ -32,7 +32,7 @@ export type ApprovalDetail = {
   title: {
     lead: string; // "Putt-drill 5×6"
     italic?: string; // " fra 3 m"
-    trail?: string; // " · Markus"
+    trail?: string; // " · Øyvind"
   };
   proposed: ReadonlyArray<{ k: string; v: string; tone?: "highlight" | "ok" }>;
   current: ReadonlyArray<{ k: string; v: string; tone?: "dim" | "warn" }>;
@@ -56,14 +56,14 @@ const DUMMY_DETAIL: ApprovalDetail = {
   createdAt: new Date(Date.now() - 18 * 60 * 1000),
   player: {
     id: "demo-markus",
-    name: "Markus Røinås Pedersen",
-    initials: "MR",
+    name: "Øyvind Rohjan",
+    initials: "ØR",
     meta: "HCP +3,5 · A1 · 16 ÅR · AK ACADEMY",
   },
   title: {
     lead: "Putt-drill 5×6",
     italic: " fra 3 m",
-    trail: " · Markus",
+    trail: " · Øyvind",
   },
   proposed: [
     { k: "Dato", v: "Onsdag 21.5" },
@@ -85,11 +85,11 @@ const DUMMY_DETAIL: ApprovalDetail = {
     validation: "Validert mot kalender · tilgjengelighet 100%",
   },
   aiReasoning: {
-    headlineLead: "Markus mister ",
+    headlineLead: "Øyvind mister ",
     headlineItalic: "0,4 SG",
     headlineTrail: " på putt fra 3 m — volum er for lavt",
     body: [
-      "Strokes Gained-data viser at putt fra 3 m er Markus' svakeste område siste 14 dager (SG·Putt −0,4 vs base). Volum siste 4 uker er kun 8 putt-økter — anbefalt nivå er 12—16 for et HCP +3,5-nivå frem mot Sørlandsåpent.",
+      "Strokes Gained-data viser at putt fra 3 m er Øyvind' svakeste område siste 14 dager (SG·Putt −0,4 vs base). Volum siste 4 uker er kun 8 putt-økter — anbefalt nivå er 12—16 for et HCP +3,5-nivå frem mot Sørlandsåpent.",
       "Forslagets timing (onsdag) treffer en lavt-volum-dag og oppretter ikke pyramide-ubalanse. Drillen 5×6 fra 3 m matcher Anders' eksisterende mal for korte putts og kan flettes inn i tirsdag-økten dersom du foretrekker.",
     ],
     confidence: 0.87,
@@ -97,7 +97,7 @@ const DUMMY_DETAIL: ApprovalDetail = {
   },
   playerQuote: {
     text: "Mest fokus på putt denne uken — føler at jeg er nære, men de korte putts faller ikke under press.",
-    meta: "Fra Markus' melding 17.5 · 20:14",
+    meta: "Fra Øyvind' melding 17.5 · 20:14",
   },
 };
 

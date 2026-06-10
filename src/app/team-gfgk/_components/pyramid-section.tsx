@@ -21,8 +21,8 @@ const layers: Layer[] = [
     tier: "Nederste lag · bredest",
     color: "var(--pyr-fys)",
     labelDark: false,
-    desc: "Kroppen må tåle å spille mye golf. Vi bygger styrke og bevegelighet, tilpasset alder.",
-    ex: "Bli sterk og smidig · unngå skader · bevege seg godt.",
+    desc: "Allsidighet, motorikk, bevegelighet og fysisk kapasitet. Grunnmuren alt annet hviler på.",
+    ex: "Koordinasjon · styrke tilpasset alder · skadeforebygging · god bevegelseskvalitet.",
   },
   {
     id: "tek",
@@ -31,8 +31,8 @@ const layers: Layer[] = [
     tier: "Andre lag",
     color: "var(--pyr-tek)",
     labelDark: false,
-    desc: "En god og stabil sving som tåler press. Grunnlaget i alle slag.",
-    ex: "Grep og oppsett · putting og chipping · treffe ballen rent.",
+    desc: "Solid, repeterbar svingteknikk og godt grunnlag i alle slagtyper. Teknikken som tåler press senere.",
+    ex: "Grep, oppsett og sving · putting- og chip-teknikk · ballkontakt · konsistens i grunnslagene.",
   },
   {
     id: "slag",
@@ -41,8 +41,8 @@ const layers: Layer[] = [
     tier: "Midtre lag",
     color: "var(--pyr-slag)",
     labelDark: false,
-    desc: "Treffe der man sikter. Riktig lengde, og en ball som flyr som planlagt.",
-    ex: "Treffe rett lengde · styre ballen · sikte mot flagget.",
+    desc: "Ballflukt, avstandskontroll og kvalitet på det enkelte slaget — å treffe det du sikter på.",
+    ex: "Avstandskontroll · ballflukt og kurve · spinn og landing · presisjon mot flagg.",
   },
   {
     id: "spill",
@@ -51,8 +51,8 @@ const layers: Layer[] = [
     tier: "Fjerde lag",
     color: "var(--pyr-spill)",
     labelDark: true,
-    desc: "Sette slagene sammen til lave runder. Velge smart hele veien rundt 18 hull.",
-    ex: "Velge riktig kølle og mål · spille smart · score lavt.",
+    desc: "Å sette slagene sammen til lave scorer: banestrategi, valg og temperatur gjennom 18 hull.",
+    ex: "Course management · valg av kølle og mål · scoring · spill under varierende forhold.",
   },
   {
     id: "turn",
@@ -61,8 +61,8 @@ const layers: Layer[] = [
     tier: "Øverste lag · smalest",
     color: "var(--pyr-turn)",
     labelDark: false,
-    desc: "Prestere når det gjelder, i konkurranse. Holde roen og spille sitt beste på dagen.",
-    ex: "Faste rutiner · holde roen · prestere når det teller.",
+    desc: "Konkurranse: rutiner, nerver og prestasjon når det gjelder. Toppen — som krever alt under seg.",
+    ex: "Konkurranserutiner · mental ro · turneringsplan · prestere på dagen det teller.",
   },
 ];
 

@@ -30,7 +30,7 @@ type Props = {
   /**
    * Standard skjuler AAR-vyen (årsplan) — den brukes hovedsakelig av
    * trenere for periodisering. Avansert eksponerer alle vyene.
-   * Default "advanced" for bakoverkompatibilitet med CoachHQ.
+   * Default "advanced" for bakoverkompatibilitet med AgencyOS.
    */
   viewMode?: "standard" | "advanced";
   /** Slot for ekstra knapper helt til høyre i topbar (f.eks. modus-toggle). */

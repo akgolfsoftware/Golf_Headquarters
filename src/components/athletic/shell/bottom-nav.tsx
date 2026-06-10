@@ -40,7 +40,7 @@ const BOTTOM_NAV: NavItem[] = [
     ),
   },
   {
-    id: "/profil",
+    id: "/portal/meg",
     label: "Meg",
     icon: (active) => (
       <User size={20} strokeWidth={active ? 2.25 : 1.75} />

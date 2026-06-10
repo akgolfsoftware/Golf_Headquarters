@@ -3,7 +3,7 @@
 /**
  * Venstre sidebar for /portal/analyse.
  *
- * Forskjell fra <AnalyseSidebar/> (CoachHQ):
+ * Forskjell fra <AnalyseSidebar/> (AgencyOS):
  *   - Ingen spillervelger — innlogget spiller er alltid valgt
  *   - Visningslisten respekterer Standard/Avansert-modus
  *   - Navigerer til /portal/analyse (ikke /admin/analyse)

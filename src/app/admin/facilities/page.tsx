@@ -144,7 +144,7 @@ export default async function FacilitiesAdmin({
   return (
     <div className="space-y-8">
       <PageHeader
-        eyebrow="CoachHQ · Fasiliteter"
+        eyebrow="AgencyOS · Fasiliteter"
         titleLead="Bookbare"
         titleItalic="fasiliteter"
         sub={`${facilities.length} fasiliteter på ${lokasjoner} lokasjoner — ${aktive} aktive. Studio, range, putting, simulatorer.`}

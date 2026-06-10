@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Eksport-modal — gjenbrukbar modal for CoachHQ-eksporter.
+ * Eksport-modal — gjenbrukbar modal for AgencyOS-eksporter.
  *
  * Tre varianter via `kind`-prop:
  *   - "brief"        Eksporter brief-rapport (/admin/brief)

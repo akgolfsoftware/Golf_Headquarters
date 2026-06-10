@@ -2,7 +2,7 @@
 
 > Dette er den komplette lista over hver eneste skjerm i appen, og om den er helt ferdig eller ikke. Én plass å se alt.
 
-Sist oppdatert: 4. juni 2026.
+Sist oppdatert: 9. juni 2026.
 
 ---
 
@@ -29,6 +29,7 @@ Tegnforklaring: ✓ = ferdig · ~ = delvis / i arbeid · – = ikke startet.
 
 - **Skjermer totalt vi sporer:** ca. 182 hovedskjermer (pluss mange små undersider — alle er med i lista under). To nye kom inn 4. juni: «Logg treningsøkt» (spiller) og «Fremgang» (coach), begge på ekte data.
 - **Helt ferdige (alle seks haker grønne):** 2 — begge Workbench-variantene (spiller + coach). Det er foreløpig de eneste med ekte data hele veien.
+- **PlayerHQ-hovedskjermer på MOBIL-paritet med ekte data (9. juni):** 5 — Hjem, Planlegge, Gjennomføre, Analysere, Meg. Disse er bygd om fra den FERSKE Claude Design-fasiten (4. juni), kjører på ekte Prisma-data (testspiller Øyvind Rohjan), ligger på ekte adresse, og er verifisert av uavhengig kritiker-agent til **0 avvik** mot fasiten på 430px. Eneste gjenstående hake er desktop/iPad-utgaven (mobil-fasit er portet, ikke desktop-layoutene).
 - **Nytt design ferdig i forhåndsvisning (men venter på ekte data + ekte adresse):** ca. 43 skjermer. Disse fikk nytt v10-utseende i natt, men kjører fortsatt på liksom-tall og ligger i en forhåndsvisning — ikke på sin ekte nettadresse ennå. De er altså «pene, men ikke ferdig koblet».
 - **Ikke startet / fortsatt gammelt design:** flertallet av de ca. 180 — de finnes som adresse i appen, men er ikke pusset opp til nytt design ennå.
 - **Ting designeren har tegnet, men som IKKE har funnet en plass i appen ennå (drop-off):** se egen liste lenger ned. Dette er det viktigste å passe på.
@@ -56,14 +57,14 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Hjem (Workbench-hjem) ★ | `/portal` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
-| Varsler | `/portal/varsler` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| Hjem (Workbench-hjem) ★ | `/portal` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| Varsler ★ | `/portal/varsler` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 
 ### Planlegge
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Planlegge-hub | `/portal/planlegge` | – | --- | ✓ | – | – | ~ |
+| Planlegge (= Workbench mobil) ★ | `/portal/planlegge` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | **Workbench (planlegging)** ★ | `/portal/planlegge/workbench` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
 | Årsplan | `/portal/tren/aarsplan` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
 | · Rediger periode | `/portal/tren/aarsplan/periode/[id]/rediger` | – | --- | ✓ | – | – | ~ |
@@ -78,7 +79,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Mål-detalj | `/portal/mal/goal/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Milepæler | `/portal/mal/milepaeler` | – | --- | ✓ | ~ | ~ | ~ |
 | · Leaderboard | `/portal/mal/leaderboard` | – | --- | ✓ | ~ | ~ | ~ |
-| Turneringer (mine) | `/portal/tren/turneringer` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| Turneringer (mine) ★ | `/portal/tren/turneringer` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | · Turnering-detalj | `/portal/tren/turneringer/[id]` | ~ | ✓✓– | ~ | ~ | – | ~ |
 | · Ny turnering | `/portal/tren/turneringer/ny` | – | --- | ✓ | ~ | ~ | ~ |
 | Utfordringer | `/portal/utfordringer` | – | --- | ✓ | ~ | ~ | ~ |
@@ -92,7 +93,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Gjennomføre-hub | `/portal/gjennomfore` | – | --- | ✓ | ~ | ~ | ✓ |
+| Gjennomføre (I dag/Kalender/Booking) ★ | `/portal/gjennomfore` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | Kalender | `/portal/kalender` | – | --- | ✓ | ~ | ~ | ✓ |
 | Kalender (alt. adresse) | `/portal/tren/kalender` | – | --- | ✓ | ~ | ~ | ✓ |
 | Ny økt (handlingsvalg) | `/portal/ny-okt` | – | --- | ✓ | ~ | ~ | ✓ |
@@ -113,7 +114,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Analyse-hub | `/portal/analysere` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| Analysere (Les tallene · faner) ★ | `/portal/analysere` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | · Hull-analyse | `/portal/analysere/hull` | ~ | ✓✓– | ✓ | ~ | ✓ | ✓ |
 | Statistikk (oversikt) | `/portal/statistikk` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
 | · Metrikk-detalj | `/portal/statistikk/[metric]` | – | --- | ✓ | ~ | ~ | ~ |
@@ -131,14 +132,15 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Coach: kølle | `/portal/mal/sg-hub/coach/[spillerId]/[club]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Coach: utstyr | `/portal/mal/sg-hub/coach/[spillerId]/equipment` | – | --- | ✓ | ~ | ~ | ~ |
 | Runder (liste) | `/portal/mal/runder` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
-| · Runde-detalj | `/portal/mal/runder/[id]` | – | --- | ✓ | ~ | ~ | ✓ |
+| · Runde-detalj ★ | `/portal/mal/runder/[id]` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | · Slag-for-slag | `/portal/mal/runder/[id]/shot-by-shot` | – | --- | ✓ | ~ | ~ | ~ |
-| · Logg ny runde | `/portal/mal/runder/ny` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| · Logg ny runde ★ | `/portal/mal/runder/ny` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | TrackMan (liste) | `/portal/mal/trackman` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
 | · TrackMan-sesjon | `/portal/mal/trackman/[id]` | ~ | ✓✓– | ✓ | ~ | ~ | ~ |
 | · TrackMan (alt. adresse) | `/portal/trackman/[sessionId]` | ~ | ✓✓– | ✓ | ~ | ~ | ~ |
-| Tester (oversikt) | `/portal/tren/tester` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
-| · Test-detalj | `/portal/tren/tester/[testId]` | ~ | ✓✓– | ✓ | ~ | ~ | ~ |
+| Tester (oversikt) ★ | `/portal/tren/tester` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
+| · Test-detalj ★ | `/portal/tren/tester/[testId]` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
+| · Test-gjennomføring (scorekort) ★ | `/portal/tren/tester/[testId]/gjennomfor` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
 | · Test-katalog (NGF) | `/portal/tren/tester/katalog` | – | --- | ✓ | ~ | ~ | ~ |
 | · Ny test | `/portal/tren/tester/ny` | – | --- | ✓ | ~ | ~ | ~ |
 | · Ny egen test | `/portal/tren/tester/ny/egen` | – | --- | ✓ | ~ | ~ | ~ |
@@ -175,9 +177,9 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Meg (profil) | `/portal/meg` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
-| · Rediger profil | `/portal/meg/profil/rediger` | – | --- | ✓ | ~ | ~ | ~ |
-| Abonnement | `/portal/meg/abonnement` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| Meg (profil) ★ | `/portal/meg` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| Rediger profil ★ | `/portal/meg/profil` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| Abonnement ★ | `/portal/meg/abonnement` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | · Oppgrader | `/portal/meg/abonnement/oppgrader` | – | --- | ✓ | ~ | ~ | ~ |
 | · Oppgrader-flyt | `/portal/meg/abonnement/oppgrader/flyt` | – | --- | ✓ | ~ | ~ | ~ |
 | · Avbestill | `/portal/meg/abonnement/avbestill` | – | --- | ✓ | ~ | ~ | ~ |
@@ -185,9 +187,9 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Faktura-detalj | `/portal/meg/abonnement/faktura/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | Mine bookinger | `/portal/meg/bookinger` | – | --- | ✓ | ~ | ~ | ~ |
 | · Endre tid | `/portal/meg/bookinger/reschedule/[bookingId]` | – | --- | ✓ | ~ | ~ | ~ |
-| Helse | `/portal/meg/helse` | – | --- | ✓ | ~ | ~ | ~ |
+| Helse ★ | `/portal/meg/helse` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | · Nytt symptom | `/portal/meg/helse/symptom/ny` | – | --- | ✓ | ~ | ~ | ~ |
-| Innstillinger | `/portal/meg/innstillinger` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| Innstillinger ★ | `/portal/meg/innstillinger` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | · Varsler | `/portal/meg/innstillinger/varsler` | – | --- | ✓ | ~ | ~ | ~ |
 | · Personvern | `/portal/meg/innstillinger/personvern` | – | --- | ✓ | ~ | ~ | ~ |
 | · Sikkerhet | `/portal/meg/innstillinger/sikkerhet` | – | --- | ✓ | ~ | ~ | ~ |
@@ -198,11 +200,11 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Økter | `/portal/meg/innstillinger/okter` | – | --- | ✓ | ~ | ~ | ~ |
 | Sikkerhet | `/portal/meg/sikkerhet` | – | --- | ✓ | ~ | ~ | ~ |
 | · To-faktor (2FA) | `/portal/meg/sikkerhet/2fa` | – | --- | ✓ | ~ | ~ | ~ |
-| Utstyrsbag | `/portal/meg/utstyrsbag` | – | --- | ✓ | ~ | ~ | ~ |
-| Dokumenter | `/portal/meg/dokumenter` | – | --- | ✓ | ~ | ~ | ~ |
+| Utstyrsbag ★ | `/portal/meg/utstyrsbag` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| Dokumenter ★ | `/portal/meg/dokumenter` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | Foreldre (foresatt-info) | `/portal/meg/foreldre` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
 | Feedback | `/portal/meg/feedback` | – | --- | ✓ | ~ | ~ | ~ |
-| Hjelpesenter | `/portal/meg/help` | – | --- | ✓ | ~ | ~ | ~ |
+| Hjelpesenter ★ | `/portal/meg/help` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | · Hjelp-artikkel | `/portal/meg/help/artikkel/[slug]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Hjelp-kategori | `/portal/meg/help/kategori/[slug]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Kontakt | `/portal/meg/help/kontakt` | – | --- | ✓ | ~ | ~ | ~ |
@@ -268,7 +270,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Coaching-board | `/admin/board` | – | --- | ✓ | ~ | ~ | ~ |
 | Oppfølging | `/admin/oppfolging` | – | --- | ✓ | ~ | ~ | ~ |
 | Oppgave-kø | `/admin/queue` | – | --- | ✓ | ~ | ~ | ~ |
-| **Innboks** ★ | `/admin/innboks` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| **Innboks** ★ | `/admin/innboks` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
 | Meldinger (alt.) | `/admin/messages` | – | --- | ✓ | ~ | ~ | ~ |
 | Kommunikasjon-hub | `/admin/kommunikasjon` | – | --- | ✓ | ~ | ~ | ~ |
 | Reach | `/admin/reach` | – | --- | ✓ | ~ | ~ | ~ |
@@ -364,9 +366,9 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Fasilitet-detalj | `/admin/facilities/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | Lokasjoner | `/admin/locations` | – | --- | ✓ | ~ | ~ | ~ |
 | TrackMan (på tvers) | `/admin/trackman` | – | --- | ✓ | ~ | ~ | ~ |
-| Live-økt: brief (coach) | `/admin/live/[sessionId]/brief` | – | --- | ✓ | ~ | ~ | ✓ |
-| Live-økt: aktiv (coach) | `/admin/live/[sessionId]/active` | – | --- | ✓ | ~ | ~ | ✓ |
-| Live-økt: oppsummering (coach) | `/admin/live/[sessionId]/summary` | – | --- | ✓ | ~ | ~ | ✓ |
+| Live-økt: brief (coach) | `/admin/live/[sessionId]/brief` | – | --- | ✓ | ✓ | ✓ | ✓ |
+| Live-økt: aktiv (coach) | `/admin/live/[sessionId]/active` | – | --- | ✓ | ✓ | ✓ | ✓ |
+| Live-økt: oppsummering (coach) | `/admin/live/[sessionId]/summary` | – | --- | ✓ | ✓ | ✓ | ✓ |
 | Coach-workbench (prototype) | `/admin/coach-workbench` | – | --- | ✓ | – | ~ | ~ |
 
 ### Innsikt (analyse på tvers)
@@ -378,8 +380,8 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Stall-analyse | `/admin/analyse` | – | --- | ✓ | ~ | ~ | ~ |
 | Analytics | `/admin/analytics` | – | --- | ✓ | ~ | ~ | ~ |
 | Lag-snitt | `/admin/lag-snitt` | – | --- | ✓ | ~ | ~ | ~ |
-| Tester (på tvers) | `/admin/tester` | ✓ | ✓✓– | ~ | ~ | ~ | ✓ |
 | · Fasiter (autosync) | `/admin/tester/benchmarks` | ~ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
+| Tester (på tvers) | `/admin/tester` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
 | · Test-detalj | `/admin/tester/[id]` | ~ | ✓✓– | ✓ | ~ | ~ | ~ |
 | · Foreslåtte tester | `/admin/tester/foreslatte` | – | --- | ✓ | ~ | ~ | ~ |
 | · Tildel test | `/admin/tester/tildel/[spillerId]` | – | --- | ✓ | ~ | ~ | ~ |
@@ -434,12 +436,12 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Logg inn | `/auth/login` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
-| Registrer | `/auth/signup` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
-| Glemt passord | `/auth/forgot-password` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| Logg inn ★ | `/auth/login` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| Registrer ★ | `/auth/signup` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| Glemt passord ★ | `/auth/forgot-password` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | Tilbakestill passord | `/auth/reset-password` | – | --- | ✓ | ~ | ~ | ~ |
 | Sjekk e-post | `/auth/check-email` | – | --- | ✓ | ~ | ~ | ~ |
-| BankID | `/auth/bankid` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| BankID ★ | `/auth/bankid` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | Onboarding (spiller, 8 steg) | `/auth/onboarding` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
 | Onboarding (forelder) | `/auth/onboarding/forelder` | – | --- | ✓ | ~ | ~ | ~ |
 | Foreldresamtykke (token) | `/auth/guardian-consent/[token]` | – | --- | ✓ | ~ | ~ | ~ |
@@ -656,8 +658,28 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 ## Endringslogg
 
-- 10. juni (del 2): **Benchmark-autosync live.** Seed kjørt mot prod (fasitene er aktive i matrisen). Ny cron-agent `benchmark-sync` (mandager 08:00 norsk sommertid) henter ferske DataGolf skill ratings og driver nivåstigene: Driver Basic + Driver Gate har egne ankere, CHS følger driver-lengden, PEI-/putt-testene er referanse-stabile. Endring ≤ 3 % skrives automatisk; større utslag venter på godkjenning på ny skjerm **Fasiter** (`/admin/tester/benchmarks`) med godkjenn/avvis + «Kjør synk nå». Telegram-rapport til Anders etter hver kjøring. Kalibrering + uendret-løp + pending-guardrail verifisert live mot prod-DB.
 - 10. juni: **Tester-matrisen** (`/admin/tester`) fikk DataGolf-fasiter v1: 12 av 20 tester i NGF-batteriet har nå strukturert nivåstige (PGA topp 40 → Scratch) i `protocol.benchmarks`; matrisen viser nivå-badge per målt celle med hele stigen i tooltip + «Data powered by DataGolf»-attribusjon i footer. Data-haken `–` → `~`: fasitene ligger klare i seed (`npx tsx prisma/scripts/seed-ngf-test-protocols.ts`), men seed-kjøring mot databasen gjenstår som bevisst eget steg. 8 tester (gates/speed + fysiske) venter på interne/NGF-normer i v2.
+
+- 10. juni (del 2): **Benchmark-autosync live.** Seed kjørt mot prod (fasitene er aktive i matrisen). Ny cron-agent `benchmark-sync` (mandager 08:00 norsk sommertid) henter ferske DataGolf skill ratings og driver nivåstigene: Driver Basic + Driver Gate har egne ankere, CHS følger driver-lengden, PEI-/putt-testene er referanse-stabile. Endring ≤ 3 % skrives automatisk; større utslag venter på godkjenning på ny skjerm **Fasiter** (`/admin/tester/benchmarks`) med godkjenn/avvis + «Kjør synk nå». Telegram-rapport til Anders etter hver kjøring. Kalibrering + uendret-løp + pending-guardrail verifisert live mot prod-DB.
+
+- 10. juni (test-modul): **Komplett test-flyt for spiller bygd fra Team Norway IUP-arket** (Drive/Data/team-norway-iup-2025.xlsx): katalog (36 tester per pyramide-område m/ søk), detalj (protokoll-steg, scoring, historikk m/ trend, NGF-lenke), gjennomføring m/ scorekort-motor (zod-parset protocol → Treff/Bom/steppere/tallfelt, per-forsøk lagret i TestResult.details). E2E-verifisert m/ ekte lagring. FYS-vekting fra IUP (1/1/0,5/0,166/1) vises som «foreslått» — formel fortsatt ikke låst. Ref-arket = SG-putting-baseline (0–18 m) — kandidat for SG-putt-rekalibreringen (kjent feilkalibrering).
+
+- 10. juni (Fase 6): **iPad-sveip fullført — 0 brudd.** 21 portede ruter sjekket på 834px; 5 responsive brudd funnet og lukket (Planlegge mode-rail < 1280, Hjem/Meg én kolonne på iPad, runde-ny 6-kol hull-grid for touch). Alle portede PlayerHQ-skjermer + forsiden står nå med Mob/Desk/iPad ✓✓✓. PlayerHQ-sporet + marketing-forsiden er KOMPLETT; gjenstår: AgencyOS (Fase 3+4, egen sesjon) + bevisst utsatt (live-økt, coach-panel, marketing-undersider).
+
+- 10. juni (Fase 5): **Marketing-forsiden portet til fersk fasit** (ui_kits/marketing, 8 seksjoner + footer), kritiker-loop 9→0. Ekte priser/org-nr/booking-data beholdt (fasitens 3 900/7 200-priser er demo — ev. prisendring er Anders-beslutning). Resten av marketing-sidene har ikke fersk fasit — uendret.
+
+- 10. juni (pulje 4): **Runde-detalj + Loggfør runde portet — Fase 2 fullført for de fasit-dekkede skjermene.** Scorecard fra ekte Shot-data (seedet), live to-par-logging m/ realistisk par-miks, 11 kritiker-funn lukket. **Bevisst utsatt fra Fase 2:** live-økt (dual-track Spor A/B — rør ikke uoppfordret) + coach-panel (overlay-IA, egen sak). Neste: Fase 3/4 AgencyOS (egen sesjon), Fase 5 marketing, Fase 6 iPad-sveip.
+
+- 10. juni (pulje 3): **Varsler + Turneringer + hele auth-flyten portet (Fase 2 pulje 2–3).** Varsler/Turneringer: fasit-struktur på ekte data, kritiker-loop (kort-container-funn lukket). Auth login/signup/glemt: ph-auth-fasit, KUN presentasjon (logikk/selektorer urørt, innlogging funksjonstestet etter porting); bankid/samtykke-venter/onboarding: fasit-chrome m/ dokumenterte avvik (BankID-flyt avventer ekte BankID-integrasjon; GDPR-grense 16; appens 7 onboarding-steg). Gate-unntak nedfelt: pill/mono-knappestil + global shell-topbar. NB: samtykke-venter/onboarding er flyt-låste (krever spesial-state) — bilde-diff utestår til E2E; kode-verifisert mot fasit.
+- 10. juni (pulje 2): **Alle 7 Meg-undersider portet til paritet (mobil + desktop) — Fase 2 pulje 1.** Profil (NY side, ekte lagring), Abonnement (gratis-logikk RETTET: coaching-pakke ⇒ gratis; «PlayerHQ Pro» fjernet), Innstillinger (ekte preferences-toggles), Helse (ekte HealthEntry; Readiness «—» til FYS-formel låses), Utstyrsbag/Dokumenter (seedet + ekte data), Hjelp. 4 uavhengige kritikere → 0 avvik på alt. **App-bred KRITISK fiks:** ulaget `* { border-color }` i globals.css drepte alle border-farge-klasser (lime venstrekanter m.m.) — flyttet til @layer base; tokens rettet mot dokumentert hex (#005840/#F1EEE5/#E5E3DD). Delte primitiver: `meg-sub.tsx` + `toggle.tsx`.
+- 10. juni: **De 5 PlayerHQ-hovedskjermene bygd til DESKTOP-paritet (Fase 1 av komplett-planen).** Mobil var ferdig 9. juni; nå er desktop-layoutene bygd fra desktop-fasiten (HomeDesktop/ExecuteScreen/AnalyzeScreen/MeScreen + full Workbench): hero med inline avatar+knapper + 5-KPI + 2-kol grid (Hjem), h1+lead + faner (Gjennomføre/Analysere), 2-kol header+konto+abonnement (Meg), full Workbench (Planlegge). Mobil-layout bevart urørt (md:hidden), desktop via egne komponenter/md:-breakpoints. Verktøy (`design-shot.mjs`/`app-shot.mjs`) utvidet til desktop+iPad. Kritiker: Hjem 0 avvik; Gjennomføre/Analysere/Meg rettet etter kritiker (fane-typografi sans/Title-Case/primary-underline matcher nå `.tab-btn`-fasit — gjaldt også mobil). Hakene: Mob/Desk/iPad nå `✓✓~` (iPad-responsiv-sjekk gjenstår i Fase 6). **Gjenstår:** PlayerHQ-undersider, AgencyOS (desktop + net-new mobil), marketing, iPad-sveip. Plan: `docs/plan-komplett-skjermer-2026-06-10.md`.
+- 9. juni: **De 5 PlayerHQ-hovedskjermene portet til paritet mot den ferske Claude Design-fasiten (mobil 430px), via porting-gaten med uavhengig kritiker-agent per skjerm.** Avdekket at alle 5 fortsatt kjørte gammelt design/IA («feil skjerm»). Bygd om fra design-kilden, koblet til ekte data, kritiker-loop til 0 avvik hver (Hjem 14→0, Planlegge 8→0, Gjennomføre 11→0, Analysere 11→0, Meg 11→0).
+  - **Hjem** (`/portal`): hero+display-headline, 3-KPI, Dagens fokus, Planlegg-i-Workbench, pyramide (5 rader), Resten av dagen, Neste tee, Neste turnering. Utvidet `getHjemData`. Slettet utdatert `hjem-oversikt.tsx`.
+  - **Planlegge** (`/portal/planlegge`): mode-rail-Workbench (Treningsplan-tidslinje default, pyramide-fargede venstrekanter) — erstattet gammel hub-av-kort.
+  - **Gjennomføre** (`/portal/gjennomfore`): faner (I dag/Kalender/Booking) + accent-kort med «Start nå» + dagens program med status-chips — erstattet modul-launcher.
+  - **Analysere** (`/portal/analysere`): «Les tallene»-fane-flate (SG/Runder/TrackMan/Tester/Innsikt) + sesong-header — erstattet treningstimer-hub (feil skjerm).
+  - **Meg** (`/portal/meg`): header + abonnement-kort + 3-KPI + KONTO-lenkeliste (7) + Logg ut — fjernet fane-rad (SubNav).
+  - Verktøy: `app-shot.mjs` (login + per-rute mobil-shots), `design-shot.mjs` (fersk prototyp klikk-nav), `seed-screentest.ts` (innloggbar Øyvind Rohjan med rik data). Alle 5 committet på `design/komplett`. **Gjenstår:** desktop/iPad-paritet for de samme 5; resten av PlayerHQ + AgencyOS.
 - 4. juni: To nye skjermer lagt til på ekte data (port av sprint3-arbeid):
   - **Logg treningsøkt** (`/portal/trening/logg`) — spiller logger treningstid per SG-område; lenket fra PlayerHQ-sidemenyen under «Planlegge».
   - **Fremgang** (`/admin/spillere/[id]/fremgang`) — coach-fane med SG-grafer, treningsvolum og korrelasjon trening↔SG; coach-beskyttet.

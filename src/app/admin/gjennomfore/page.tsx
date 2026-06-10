@@ -1,5 +1,5 @@
 /**
- * /admin/gjennomfore — CoachHQ Gjennomføre hub
+ * /admin/gjennomfore — AgencyOS Gjennomføre hub
  * Design: docs/design-handoff/2026-05-24-hubs/project/manglende-hubs/hubs-coach.jsx (CoachGjennomfore)
  */
 
@@ -144,7 +144,7 @@ export default async function GjennomforePage() {
           eyebrow="07 · UTSTYR"
           title="TrackMan"
           data="1 aktiv sesjon"
-          sub="Markus R.P. · GFGK Bay 3"
+          sub="Øyvind R. · GFGK Bay 3"
           statusPill={
             <HubPill kind="accent" dot="d-pulse">
               LIVE

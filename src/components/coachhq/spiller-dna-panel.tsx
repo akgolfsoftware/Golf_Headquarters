@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * SpillerDNAPanel — CoachHQ-komponent for å vise og redigere spillerens
+ * SpillerDNAPanel — AgencyOS-komponent for å vise og redigere spillerens
  * DNA-profil: dominant feilretning, SG-breakdown, prioriterte fokusområder
  * og svakhetsprofil med styrke-sliders.
  *

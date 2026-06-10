@@ -1,5 +1,5 @@
 /**
- * CoachHQ — Treningsplaner
+ * AgencyOS — Treningsplaner
  * Design migrert fra wireframe/design-files-v2/final/01-treningsplaner.html.
  *
  * Kanban-view med 3 kolonner: Aktiv / Pause / Arkivert. Plan-kort inneholder
@@ -31,6 +31,8 @@ import {
   PlanSplitView,
   type SplitPlanRow,
 } from "@/components/coachhq/plan-split-view";
+import { PlanCardMenu } from "./_plan-card-menu";
+import { QuickPlanModal, type QuickPlanSpiller } from "./_quick-plan-modal";
 
 type Search = { q?: string; status?: string; view?: string; planId?: string };
 
@@ -123,6 +125,15 @@ export default async function AdminPlansList({
       : 0;
   const totalSpillere = await prisma.user.count({ where: { role: "PLAYER" } });
 
+  // Minimal spillerliste til Hurtigplan-modalen (createPlan).
+  const spillereForQuick: QuickPlanSpiller[] = (
+    await prisma.user.findMany({
+      where: { role: "PLAYER" },
+      orderBy: { name: "asc" },
+      select: { id: true, name: true, hcp: true },
+    })
+  ).map((s) => ({ id: s.id, name: s.name, hcp: s.hcp }));
+
   // Forfaller denne uka
   const enUkeFram = new Date();
   enUkeFram.setDate(enUkeFram.getDate() + 7);
@@ -138,13 +149,14 @@ export default async function AdminPlansList({
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="CoachHQ · /admin/plans"
+        eyebrow="AgencyOS · /admin/plans"
         titleLead="Treningsplaner —"
         titleItalic={`${aktivCount} aktive`}
         sub={`${totalSpillere} spillere · ${forfaller} forfaller denne uka · ${arkivCount} arkivert`}
         actions={
           <>
             <PlanViewToggle active={activeView} q={params.q} />
+            <QuickPlanModal spillere={spillereForQuick} />
             <Link
               href="/admin/plans/templates"
               className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
@@ -373,7 +385,11 @@ function PlanCard({ plan }: { plan: PlanCardData }) {
         <span className="flex-1 text-[13px] font-medium text-foreground">
           {plan.user.name}
         </span>
-        <span className="text-muted-foreground" aria-hidden="true">⋯</span>
+        <PlanCardMenu
+          planId={plan.id}
+          planNavn={plan.name}
+          isActive={plan._status === "aktiv"}
+        />
       </header>
       <h4 className="font-display text-[14px] italic leading-tight text-foreground">
         {plan.name}

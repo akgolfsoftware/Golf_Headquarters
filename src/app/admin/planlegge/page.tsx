@@ -1,5 +1,5 @@
 /**
- * /admin/planlegge — CoachHQ Planlegge hub
+ * /admin/planlegge — AgencyOS Planlegge hub
  * Design: docs/design-handoff/2026-05-24-hubs/project/manglende-hubs/hubs-coach.jsx (CoachPlanlegge)
  */
 
@@ -82,7 +82,7 @@ export default async function PlanleggePage() {
           eyebrow="02 · BIBLIOTEK"
           title="Plan-maler"
           data="28 maler"
-          sub="Sist brukt: 21. mai · Markus R.P."
+          sub="Sist brukt: 21. mai · Øyvind R."
           cta="Bla i bibliotek →"
         />
         <HubCard
@@ -170,7 +170,7 @@ export default async function PlanleggePage() {
             <span className="rc-kind">
               <CalendarRange size={13} strokeWidth={1.75} aria-hidden />
             </span>
-            <span className="rc-ttl">Plan · Markus R.P. — Periode 2</span>
+            <span className="rc-ttl">Plan · Øyvind R. — Periode 2</span>
             <span className="rc-meta">justert 18. mai · 11:02</span>
           </li>
         </ul>

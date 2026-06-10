@@ -58,7 +58,7 @@ export default async function CoachPerioderPage() {
   return (
     <div className="mx-auto max-w-[1240px] space-y-8 px-4 sm:px-6">
       <PageHeader
-        eyebrow="CoachHQ · Perioder"
+        eyebrow="AgencyOS · Perioder"
         titleLead="Sesong"
         titleItalic="perioder"
         sub="Planlegg GRUNN / SPESIALISERING / TURNERING for hver spiller"

@@ -2,7 +2,8 @@
 
 /**
  * Onboarding-wizard — mobil-først felt- og valg-byggeklosser (430px).
- * Pixel-port av public/design-handover/playerhq/components-onboarding.html.
+ * Valg-kort portet til fersk fasit: public/design-handover/AK Golf HQ Design
+ * System/playerhq-app (ph-auth.jsx AOnboarding + app.css .opt-card).
  *
  * Editorial sport-analytics: mono-caps labels, lime-accent på valgt tilstand,
  * card-bg + 3px lime venstrekant på info-banner. 44px touch-targets.
@@ -101,17 +102,19 @@ export function FieldGroupLabel({ children }: { children: React.ReactNode }) {
   );
 }
 
-// ── Radio-option-rad (nivå/mål/profil-undertype) ────────────────
+// ── Valg-kort (fasit opt-card: ikon-kvadrat + tittel + check-sirkel) ─
 export function OptionRow({
   label,
   sub,
   trailing,
+  icon: Icon,
   selected,
   onClick,
 }: {
   label: string;
   sub?: string;
   trailing?: string;
+  icon?: LucideIcon;
   selected: boolean;
   onClick: () => void;
 }) {
@@ -121,24 +124,28 @@ export function OptionRow({
       onClick={onClick}
       aria-pressed={selected}
       className={cn(
-        "flex min-h-[44px] w-full items-center gap-2.5 rounded-lg border px-3 py-2 text-left transition-colors",
-        selected ? "border-primary bg-primary/5" : "border-input bg-card hover:bg-secondary",
+        "flex w-full items-center gap-3.5 rounded-[14px] border bg-card p-4 text-left transition-[border-color,box-shadow]",
+        selected
+          ? "border-primary shadow-[inset_0_0_0_1px_hsl(var(--primary))]"
+          : "border-border hover:border-primary",
       )}
     >
-      <span
-        className={cn(
-          "inline-flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full border-[1.5px]",
-          selected ? "border-primary bg-primary" : "border-input",
-        )}
-      >
-        {selected && <span className="h-1.5 w-1.5 rounded-full bg-accent" />}
-      </span>
-      <span className="flex-1 leading-tight">
-        <span className="text-xs font-semibold tracking-[-0.005em] text-foreground">
+      {Icon && (
+        <span
+          className={cn(
+            "inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl",
+            selected ? "bg-primary text-accent" : "bg-secondary text-primary",
+          )}
+        >
+          <Icon className="h-[22px] w-[22px]" strokeWidth={1.75} aria-hidden />
+        </span>
+      )}
+      <span className="min-w-0 flex-1 leading-tight">
+        <span className="block text-[15px] font-semibold tracking-[-0.01em] text-foreground">
           {label}
         </span>
         {sub && (
-          <span className="mt-0.5 block font-mono text-[9px] font-semibold tracking-[0.02em] text-muted-foreground">
+          <span className="mt-0.5 block font-mono text-[11px] text-muted-foreground">
             {sub}
           </span>
         )}
@@ -153,6 +160,14 @@ export function OptionRow({
           {trailing}
         </span>
       )}
+      <span
+        className={cn(
+          "inline-flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full border-[1.5px]",
+          selected ? "border-primary bg-primary text-accent" : "border-border text-transparent",
+        )}
+      >
+        {selected && <Check className="h-3.5 w-3.5" strokeWidth={2.5} aria-hidden />}
+      </span>
     </button>
   );
 }
@@ -238,7 +253,7 @@ export function ImplicationBanner({ children }: { children: React.ReactNode }) {
   );
 }
 
-// ── Fasilitet-rad (ikon + navn + checkbox) ──────────────────────
+// ── Fasilitet-rad (fasit opt-card-utseende, multi-select) ───────
 export function FacilityRow({
   name,
   sub,
@@ -258,33 +273,37 @@ export function FacilityRow({
       onClick={onClick}
       aria-pressed={selected}
       className={cn(
-        "grid min-h-[44px] w-full grid-cols-[28px_1fr_18px] items-center gap-2.5 rounded-lg border px-3 py-2 text-left transition-colors",
-        selected ? "border-primary bg-primary/5" : "border-border bg-card hover:bg-secondary",
+        "flex w-full items-center gap-3.5 rounded-[14px] border bg-card p-4 text-left transition-[border-color,box-shadow]",
+        selected
+          ? "border-primary shadow-[inset_0_0_0_1px_hsl(var(--primary))]"
+          : "border-border hover:border-primary",
       )}
     >
       <span
         className={cn(
-          "inline-flex h-[26px] w-[26px] items-center justify-center rounded-md transition-colors",
-          selected ? "bg-primary text-accent" : "bg-secondary text-muted-foreground",
+          "inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl",
+          selected ? "bg-primary text-accent" : "bg-secondary text-primary",
         )}
       >
-        <Icon className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden />
+        <Icon className="h-[22px] w-[22px]" strokeWidth={1.75} aria-hidden />
       </span>
-      <span className="leading-tight">
-        <span className="text-xs font-semibold text-foreground">{name}</span>
+      <span className="min-w-0 flex-1 leading-tight">
+        <span className="block text-[15px] font-semibold tracking-[-0.01em] text-foreground">
+          {name}
+        </span>
         {sub && (
-          <span className="mt-0.5 block font-mono text-[9px] font-semibold tracking-[0.02em] text-muted-foreground">
+          <span className="mt-0.5 block font-mono text-[11px] text-muted-foreground">
             {sub}
           </span>
         )}
       </span>
       <span
         className={cn(
-          "inline-flex h-4 w-4 items-center justify-center rounded border-[1.5px]",
-          selected ? "border-primary bg-primary text-accent" : "border-input text-transparent",
+          "inline-flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full border-[1.5px]",
+          selected ? "border-primary bg-primary text-accent" : "border-border text-transparent",
         )}
       >
-        {selected && <Check className="h-[11px] w-[11px]" strokeWidth={3} aria-hidden />}
+        {selected && <Check className="h-3.5 w-3.5" strokeWidth={2.5} aria-hidden />}
       </span>
     </button>
   );

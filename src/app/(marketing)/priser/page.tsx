@@ -1,126 +1,178 @@
-import Link from "next/link";
 import type { Metadata } from "next";
-import { Check, CircleDot } from "lucide-react";
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
+import Link from "next/link";
+import { Check } from "lucide-react";
+import {
+  CtaLime,
+  CtaOutlineLys,
+  Em,
+  HeroEm,
+  MarketingHero,
+  SectionEyebrow,
+  SectionH2,
+} from "@/components/marketing/marketing-sections";
 
 export const metadata: Metadata = {
   title: "Priser — AK Golf Academy",
   description:
-    "Velg mellom gratis PlayerHQ-tilgang eller PRO-abonnement med ubegrenset coaching. Ingen binding.",
+    "Flex drop-in 0 kr/mnd, Performance 1 200 kr/mnd, Performance Pro 2 220 kr/mnd. PlayerHQ-appen er gratis med coaching — ellers 300 kr/mnd. Ingen binding.",
 };
 
-type Tier = {
-  navn: string;
-  pris: string;
-  prisEnhet: string;
-  beskrivelse: string;
-  funksjoner: string[];
-  anbefalt: boolean;
-  ctaTekst: string;
-  ctaHref: string;
-};
-
-const TIERS: Tier[] = [
+/* Tjenester — samme priser og kort-anatomi som forsiden */
+const TJENESTER = [
   {
-    navn: "GRATIS",
-    pris: "0 kr",
-    prisEnhet: "/mnd",
-    beskrivelse:
-      "Kom i gang uten kostnad. Perfekt for spillere som vil teste PlayerHQ og spore runder og statistikk.",
-    funksjoner: [
-      "Treningslogg og øktregistrering",
-      "Runderegistrering og historikk",
-      "SG-statistikk og grunnanalyse",
-      "1 TrackMan-økt per måned",
-      "Tilgang til PlayerHQ-portalen",
+    eb: "Drop-in",
+    title: "Flex",
+    price: "0",
+    featured: false,
+    items: [
+      "Book enkelttimer ved behov",
+      "20 min med Markus · 300 kr",
+      "50 min med Anders · 1 300 kr",
+      "Tilgang til Mulligan + GFGK",
     ],
-    anbefalt: false,
-    ctaTekst: "Kom i gang gratis",
-    ctaHref: "/registrer",
+    cta: "Book drop-in",
+    href: "/booking",
   },
   {
-    navn: "PRO",
-    pris: "300 kr",
-    prisEnhet: "/mnd",
-    beskrivelse:
-      "For spillere som vil ha tett oppfølging, analyse og direkte tilgang til coach. Alt i GRATIS, pluss.",
-    funksjoner: [
-      "Alt i GRATIS",
-      "Ubegrenset TrackMan-tilgang",
-      "Personlige coaching-planer",
-      "SG Hub — dybdeanalyser",
-      "Coach-chat og direkte oppfølging",
+    eb: "Anbefalt · 80 % velger denne",
+    title: "Performance",
+    price: "1 200",
+    featured: true,
+    items: [
+      "2 × 20 min per måned",
       "Periodisert treningsplan",
-      "Prioritert booking",
+      "Månedlig SG-rapport",
+      "PlayerHQ-app inkludert",
+      "Fri tilgang til alle anlegg",
     ],
-    anbefalt: true,
-    ctaTekst: "Start PRO",
-    ctaHref: "/registrer?plan=pro",
+    cta: "Start Performance",
+    href: "/coaching",
   },
+  {
+    eb: "For ambisjon · Korn Ferry-spor",
+    title: "Performance Pro",
+    price: "2 220",
+    featured: false,
+    items: [
+      "4 × 20 min per måned",
+      "Full SG-analyse pr. runde",
+      "Fysisk-program integrert i planen",
+      "Turneringspriming + bane-prep",
+      "Hjemmebase Mulligan Sarpsborg",
+    ],
+    cta: "Søk opptak",
+    href: "/kontakt",
+  },
+] as const;
+
+/* App-tilgang — gratis via coaching, ellers 300 kr/mnd. Ingen nivåer. */
+const APP_GRATIS = [
+  "Inkludert i Performance og Performance Pro",
+  "Gratis i én måneds prøveperiode",
+  "Gratis for spillere i grupper gjennom AK Golf",
+];
+
+const APP_BETALT = [
+  "Full tilgang til PlayerHQ-portalen",
+  "Treningslogg og øktregistrering",
+  "Runderegistrering og historikk",
+  "SG-statistikk og dybdeanalyser",
+  "Treningsplan og kalender",
 ];
 
 const FAQ_PRISER = [
   {
     q: "Kan jeg oppgradere når som helst?",
-    a: "Ja. Du kan oppgradere fra GRATIS til PRO når det passer deg — endringen trer i kraft umiddelbart og du faktureres for resten av måneden.",
+    a: "Ja. Du kan legge til en coaching-pakke eller endre abonnementet når det passer deg — endringen trer i kraft umiddelbart.",
   },
   {
     q: "Er det binding?",
-    a: "Nei. PRO-abonnementet er månedlig og kan sies opp uten varsel. Du beholder tilgangen ut inneværende måned.",
+    a: "Nei. Alt er månedlig og kan sies opp uten varsel. Du beholder tilgangen ut inneværende måned.",
   },
   {
-    q: "Hva skjer med data ved nedgradering?",
-    a: "All historikk, runder og statistikk bevares. Du mister tilgang til PRO-funksjoner, men kan alltid oppgradere igjen for å hente dem frem.",
+    q: "Hva skjer med dataene mine hvis jeg sier opp?",
+    a: "All historikk, runder og statistikk bevares. Du kan når som helst komme tilbake — alt ligger der du slapp.",
   },
 ];
 
 export default function PriserSide() {
   return (
     <div className="bg-background text-foreground">
-      {/* Hero */}
-      <section className="border-b border-border">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 pt-12 pb-12 sm:pt-20 sm:pb-16 md:pt-28 md:pb-20 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1">
-            <CircleDot className="h-3 w-3 text-primary" strokeWidth={2} />
-            <AthleticEyebrow>Priser</AthleticEyebrow>
+      {/* ========== HERO · full-bleed foto + forest-scrim ========== */}
+      <MarketingHero
+        foto="/images/akademy/walking-bag.jpg"
+        eyebrow="Priser · Ingen binding"
+        tittel={
+          <>
+            Enkelt og <HeroEm>ærlig</HeroEm> prising.
+          </>
+        }
+        ingress="Start gratis — oppgrader når du er klar. Ingen skjulte avgifter, ingen binding."
+        primaer={{ href: "#pakker", label: "Se pakkene" }}
+        sekundaer={{ href: "/kontakt", label: "Snakk med oss" }}
+      />
+
+      {/* ========== TJENESTER · samme kort som forsiden ========== */}
+      <section id="pakker" className="scroll-mt-20 py-24">
+        <div className="mx-auto max-w-7xl px-6 md:px-8">
+          <SectionEyebrow>Coaching · Månedlig</SectionEyebrow>
+          <SectionH2>
+            Tre veier til <Em>neste nivå</Em>.
+          </SectionH2>
+
+          <div className="mt-14 grid grid-cols-1 gap-4 md:grid-cols-3">
+            {TJENESTER.map((t) => (
+              <TjenesteCard key={t.title} {...t} />
+            ))}
           </div>
-          <h1 className="mt-6 font-display text-4xl sm:text-5xl font-semibold leading-[1.05] tracking-tight md:text-7xl">
-            Enkelt og{" "}
-            <em className="font-display font-normal italic text-primary">
-              ærlig
-            </em>{" "}
-            prising
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-[18px] leading-[1.6] text-muted-foreground md:text-[20px]">
-            Start gratis — oppgrader når du er klar. Ingen skjulte avgifter,
-            ingen binding.
+        </div>
+      </section>
+
+      {/* ========== PLAYERHQ-PRIS · gratis via coaching / 300 kr ========== */}
+      <section id="app" className="scroll-mt-20 py-24">
+        <div className="mx-auto max-w-7xl px-6 md:px-8">
+          <SectionEyebrow>PlayerHQ · App-tilgang</SectionEyebrow>
+          <SectionH2>
+            Gratis med coaching. <Em>300 kr uten</Em>.
+          </SectionH2>
+          <p className="mt-4 max-w-[56ch] text-[16px] leading-[1.6] text-muted-foreground">
+            PlayerHQ er inkludert i alle coaching-pakker, i én måneds
+            prøveperiode og for spillere i grupper gjennom AK Golf. Alle andre
+            betaler 300 kr i måneden — uten binding.
           </p>
-        </div>
-      </section>
 
-      {/* Tier-kort */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 py-16 sm:py-24">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 max-w-4xl mx-auto">
-          {TIERS.map((tier) => (
-            <TierCard key={tier.navn} tier={tier} />
-          ))}
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className="border-t border-border bg-card">
-        <div className="mx-auto max-w-3xl px-4 sm:px-6 py-16 sm:py-24">
-          <div className="text-center">
-            <AthleticEyebrow>Spørsmål og svar</AthleticEyebrow>
-            <h2 className="mt-4 font-display text-3xl sm:text-4xl font-semibold leading-[1.1] tracking-tight">
-              Ofte stilte spørsmål om{" "}
-              <em className="font-display font-normal italic text-primary">
-                priser
-              </em>
-            </h2>
+          <div className="mt-12 grid max-w-4xl grid-cols-1 gap-4 md:grid-cols-2">
+            <TjenesteCard
+              eb="Anbefalt · Gratis via coaching"
+              title="PlayerHQ — inkludert"
+              price="0"
+              items={APP_GRATIS}
+              cta="Se coaching-pakkene"
+              href="/coaching"
+              featured
+            />
+            <TjenesteCard
+              eb="Uten coaching · Ingen binding"
+              title="PlayerHQ"
+              price="300"
+              items={APP_BETALT}
+              cta="Opprett konto"
+              href="/auth/signup"
+              featured={false}
+            />
           </div>
+        </div>
+      </section>
 
-          <div className="mt-10 divide-y divide-border rounded-2xl border border-border bg-background overflow-hidden">
+      {/* ========== FAQ ========== */}
+      <section className="py-24">
+        <div className="mx-auto max-w-7xl px-6 md:px-8">
+          <SectionEyebrow>Spørsmål og svar</SectionEyebrow>
+          <SectionH2>
+            Ofte stilte <Em>spørsmål</Em>.
+          </SectionH2>
+
+          <div className="mt-12 max-w-3xl divide-y divide-border overflow-hidden rounded-[20px] border border-border bg-card">
             {FAQ_PRISER.map((item) => (
               <FaqItem key={item.q} q={item.q} a={item.a} />
             ))}
@@ -128,36 +180,33 @@ export default function PriserSide() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 pb-16 sm:pb-24">
-        <div className="relative overflow-hidden rounded-2xl bg-primary px-6 py-10 sm:px-8 sm:py-16 text-primary-foreground md:px-16 md:py-20 text-center">
+      {/* ========== CLOSING CTA ========== */}
+      <section className="mx-auto max-w-7xl px-6 pb-24 md:px-8">
+        <div
+          className="relative overflow-hidden rounded-3xl px-6 py-16 text-center text-white sm:px-12 lg:px-16 lg:py-20"
+          style={{
+            background:
+              "linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(168 72% 11%) 100%)",
+          }}
+        >
           <div
             aria-hidden
-            className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full"
-            style={{ background: "rgba(209,248,67,0.18)" }}
+            className="absolute -top-[120px] left-1/2 h-[480px] w-[480px] -translate-x-1/2 rounded-full bg-accent opacity-[0.12] blur-[4px]"
           />
-          <div className="relative max-w-2xl mx-auto">
-            <AthleticEyebrow tone="light">Kom i gang</AthleticEyebrow>
-            <h2 className="mt-4 font-display text-3xl sm:text-4xl font-semibold leading-[1.1] tracking-tight md:text-5xl">
-              Klar til å ta neste steg?
-            </h2>
-            <p className="mt-6 text-[16px] leading-[1.6] opacity-90">
-              Start med GRATIS-kontoen i dag. Ingen kredittkort nødvendig.
-            </p>
-            <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-center gap-2 sm:gap-4">
-              <Link
-                href="/registrer"
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-accent px-6 text-[15px] font-bold text-accent-foreground shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition-opacity hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              >
-                Opprett gratis konto
-              </Link>
-              <Link
-                href="/kontakt"
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/20 bg-transparent px-6 text-[15px] font-semibold transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                Snakk med oss
-              </Link>
-            </div>
+          <span className="relative z-10 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">
+            Kom i gang
+          </span>
+          <h2 className="relative z-10 mx-auto mt-4 max-w-[20ch] text-balance font-display text-[clamp(36px,5vw,56px)] font-bold leading-[1.05] tracking-[-0.025em]">
+            Klar til å ta <Em dark>neste steg</Em>?
+          </h2>
+          <p className="relative z-10 mx-auto mt-4 max-w-[56ch] text-[16px] leading-[1.55] text-white/85">
+            Opprett en gratis konto i dag — ingen kredittkort nødvendig.
+          </p>
+          <div className="relative z-10 mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <CtaLime href="/auth/signup" withArrow>
+              Opprett gratis konto
+            </CtaLime>
+            <CtaOutlineLys href="/kontakt">Snakk med oss</CtaOutlineLys>
           </div>
         </div>
       </section>
@@ -165,48 +214,90 @@ export default function PriserSide() {
   );
 }
 
-function TierCard({ tier }: { tier: Tier }) {
+/* ---------- Tjeneste-kort (forsidens anatomi, featured = mørk) ---------- */
+
+function TjenesteCard({
+  eb,
+  title,
+  price,
+  items,
+  cta,
+  href,
+  featured,
+}: {
+  eb: string;
+  title: string;
+  price: string;
+  items: readonly string[];
+  cta: string;
+  href: string;
+  featured: boolean;
+}) {
   return (
     <div
-      className={`relative flex flex-col rounded-2xl border bg-card p-6 sm:p-8 ${
-        tier.anbefalt ? "ring-2 ring-primary border-primary/40" : "border-border"
+      className={`flex flex-col rounded-[20px] border p-8 ${
+        featured
+          ? "dark border-transparent bg-background"
+          : "border-border bg-card"
       }`}
     >
-      {tier.anbefalt && (
-        <span className="absolute -top-3 left-8 inline-flex items-center gap-1 rounded-full bg-accent px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-accent-foreground">
-          Anbefalt
+      <span
+        className={`font-mono text-[10px] font-semibold uppercase tracking-[0.14em] ${
+          featured ? "text-accent" : "text-muted-foreground"
+        }`}
+      >
+        {eb}
+      </span>
+      <h4
+        className={`mt-3 font-display text-[28px] font-bold leading-[1.05] tracking-[-0.02em] ${
+          featured ? "text-white" : "text-foreground"
+        }`}
+      >
+        {title}
+      </h4>
+      <div
+        className={`mt-6 flex items-baseline gap-1.5 border-t pt-5 ${
+          featured ? "border-white/15" : "border-border"
+        }`}
+      >
+        <span
+          className={`font-mono text-4xl font-semibold leading-none tracking-[-0.025em] tabular-nums ${
+            featured ? "text-white" : "text-foreground"
+          }`}
+        >
+          {price}
         </span>
-      )}
-
-      <AthleticEyebrow>{tier.navn}</AthleticEyebrow>
-      <p className="mt-4 text-4xl font-semibold tabular-nums">
-        {tier.pris}
-        <span className="text-lg font-normal text-muted-foreground">
-          {tier.prisEnhet}
-        </span>
-      </p>
-      <p className="mt-4 text-[14px] leading-[1.6] text-muted-foreground">
-        {tier.beskrivelse}
-      </p>
-
-      <ul className="mt-6 space-y-2 flex-1">
-        {tier.funksjoner.map((f) => (
-          <li key={f} className="flex items-center gap-2 text-sm">
-            <Check className="h-4 w-4 text-primary shrink-0" strokeWidth={2} />
-            {f}
+        <small
+          className={`font-mono text-xs ${featured ? "text-white/70" : "text-muted-foreground"}`}
+        >
+          kr / mnd
+        </small>
+      </div>
+      <ul className="mt-6 flex flex-col gap-2.5">
+        {items.map((item) => (
+          <li
+            key={item}
+            className={`flex items-start gap-2.5 text-sm leading-[1.45] ${
+              featured ? "text-white/90" : "text-foreground"
+            }`}
+          >
+            <Check
+              className={`mt-0.5 h-4 w-4 shrink-0 ${featured ? "text-accent" : "text-primary"}`}
+              strokeWidth={1.5}
+            />
+            {item}
           </li>
         ))}
       </ul>
-
       <Link
-        href={tier.ctaHref}
-        className={`mt-8 block rounded-full px-6 py-2 text-center text-sm font-medium transition-opacity hover:opacity-90 ${
-          tier.anbefalt
-            ? "bg-primary text-primary-foreground"
-            : "border border-border bg-background text-foreground hover:bg-secondary"
+        href={href}
+        className={`mt-7 inline-flex h-11 items-center justify-center gap-1.5 font-display text-sm font-semibold tracking-[-0.005em] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
+          featured
+            ? "rounded-full bg-accent [--primary:164_100%_17.3%] text-primary shadow-[0_6px_14px_rgba(209,248,67,0.25)] hover:brightness-105"
+            : "rounded-xl text-primary ring-1 ring-inset ring-primary hover:bg-primary/5"
         }`}
       >
-        {tier.ctaTekst}
+        {cta}
       </Link>
     </div>
   );
@@ -215,10 +306,10 @@ function TierCard({ tier }: { tier: Tier }) {
 function FaqItem({ q, a }: { q: string; a: string }) {
   return (
     <div className="px-8 py-6">
-      <h3 className="font-display text-lg font-semibold tracking-tight">
+      <h3 className="font-display text-lg font-semibold tracking-[-0.015em]">
         {q}
       </h3>
-      <p className="mt-2 text-sm text-muted-foreground">{a}</p>
+      <p className="mt-2 text-sm leading-[1.55] text-muted-foreground">{a}</p>
     </div>
   );
 }

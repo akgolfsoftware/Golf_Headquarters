@@ -249,7 +249,7 @@ export function OversiktSlim({
             </div>
           </Link>
           <Link
-            href="/portal/analysere/runder/ny"
+            href="/portal/analysere"
             className="group rounded-2xl border border-border bg-card p-4 transition hover:border-[var(--color-accent-deep)] hover:shadow-[var(--shadow-card-hover)]"
           >
             <div className="flex items-center gap-2">

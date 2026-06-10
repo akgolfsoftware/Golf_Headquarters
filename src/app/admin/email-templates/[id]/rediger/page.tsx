@@ -1,5 +1,5 @@
 /**
- * CoachHQ — Rediger e-postmal
+ * AgencyOS — Rediger e-postmal
  *
  * 2-pane editor med live preview. Tilgang: COACH og ADMIN.
  * Trigger fra /admin/email-templates ved klikk på rad.

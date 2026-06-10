@@ -105,7 +105,7 @@ export function KlubbInnstillingerClient({ klubber }: Props) {
                 Legg til klubb
               </span>
               <span className="max-w-[240px] text-center text-xs text-muted-foreground">
-                Multi-club lar deg drifte flere anlegg fra samme CoachHQ.
+                Multi-club lar deg drifte flere anlegg fra samme AgencyOS.
               </span>
             </button>
           </div>

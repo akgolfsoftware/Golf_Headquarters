@@ -1,5 +1,5 @@
 /**
- * CoachHQ — Audit-log detalj.
+ * AgencyOS — Audit-log detalj.
  *
  * Viser én audit-event i full detalj:
  *   - Hero: action + tidsstempel + aktør

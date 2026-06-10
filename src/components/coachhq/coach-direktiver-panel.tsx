@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * CoachDirektiverPanel — CoachHQ-komponent for å vise og administrere
+ * CoachDirektiverPanel — AgencyOS-komponent for å vise og administrere
  * coach-drill-direktiver (PIN / BLOCK / PRIORITER) per spiller.
  *
  * Henter alle direktiver fra server som prop og håndterer legg-til / slett

@@ -1,5 +1,5 @@
 /**
- * /admin/audit-log — CoachHQ Audit log
+ * /admin/audit-log — AgencyOS Audit log
  *
  * Ekte hendelse-liste fra AuditLog (siste 50). Kategori/ikon utledes av action-prefiks
  * (f.eks. "booking.created"). Ingen fabrikerte hendelser — tomstate når loggen er tom.

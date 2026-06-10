@@ -18,7 +18,7 @@ import { ModeringClient } from "./client";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Stats moderering | CoachHQ",
+  title: "Stats moderering | AgencyOS",
   description: "Modereringskø for AK Golf Stats.",
   robots: { index: false },
 };
@@ -63,7 +63,7 @@ const STUB_TURNERINGER = [
 ];
 
 const STUB_SLETT = {
-  spiller: "Markus R. Pedersen",
+  spiller: "Øyvind Rohjan",
   forespurAv: "markus.pedersen@gmail.com",
   mottatt: "22. mai 2026 kl. 14:38",
   grunn: "Ønsker ikke å være registrert i basen lenger",

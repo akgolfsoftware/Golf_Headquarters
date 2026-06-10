@@ -1,160 +1,76 @@
 /**
- * MarketingFooter — forest-grønn footer med 4 kolonner.
- * Premium-feel matching Claude Design.
+ * MarketingFooter — mørk forest footer med 4-kolonners lenke-grid.
+ * Portet fra design-fasit (ui_kits/marketing, footer).
  */
 
 import Link from "next/link";
-import { Mail, MapPin, Send } from "lucide-react";
 import { AkGolfLogo } from "@/components/shared/ak-golf-logo";
 
-const ACADEMY = [
-  { href: "/coaching", label: "Coaching" },
-  { href: "/treningsfilosofi", label: "Slik trener vi" },
-  { href: "/booking", label: "Book tid" },
+const TJENESTER = [
+  { href: "/coaching", label: "Performance" },
+  { href: "/coaching", label: "Performance Pro" },
+  { href: "/booking", label: "Drop-in Flex" },
   { href: "/playerhq", label: "PlayerHQ" },
-  { href: "/turneringer", label: "Turneringer" },
-  { href: "/junior", label: "Junior" },
-  { href: "/priser", label: "Priser" },
 ];
 
-const SELSKAP = [
-  { href: "/om-oss", label: "Om oss" },
+const AK_GOLF = [
+  { href: "/coacher", label: "Coachene" },
   { href: "/anlegg", label: "Anlegg" },
-  { href: "/coacher", label: "Coacher" },
-  { href: "/suksess", label: "Suksesshistorier" },
-  { href: "/cases", label: "Cases" },
-  { href: "/blogg", label: "Blogg" },
-  { href: "/jobb", label: "Jobb hos oss" },
+  { href: "/#partnere", label: "Partnere" },
+  { href: "/jobb", label: "Karriere" },
 ];
 
-const SUPPORT = [
-  { href: "/faq", label: "FAQ" },
-  { href: "/kontakt", label: "Kontakt" },
-  { href: "mailto:support@akgolf.no", label: "Support" },
+const KONTAKT = [
+  { href: "mailto:post@akgolf.no", label: "post@akgolf.no" },
+  { href: "/kontakt", label: "Fredrikstad · Sarpsborg" },
 ];
 
 export function MarketingFooter() {
   return (
-    <footer className="bg-primary text-white">
-      <div className="relative overflow-hidden">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -left-20 -top-32 h-80 w-80 rounded-full"
-          style={{
-            background:
-              "radial-gradient(circle, rgba(209,248,67,0.12), transparent 70%)",
-          }}
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -right-20 top-20 h-72 w-72 rounded-full"
-          style={{
-            background:
-              "radial-gradient(circle, rgba(209,248,67,0.08), transparent 70%)",
-          }}
-        />
-
-        <div className="relative mx-auto max-w-7xl px-6 py-16">
-          <div className="grid gap-10 border-b border-white/10 pb-12 md:grid-cols-[1.2fr_1fr_1fr_1fr]">
-            <div>
-              <Link href="/" aria-label="AK Golf — hjem" className="inline-flex">
-                <AkGolfLogo width={80} variant="white" />
-              </Link>
-              <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/70">
-                Prestasjonsgolf-coaching for ambisiøse spillere. Bygd på data,
-                drevet av relasjon.
-              </p>
-              <div className="mt-6 flex items-center gap-2">
-                <a
-                  href="https://instagram.com/akgolfacademy"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Instagram"
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition hover:bg-accent hover:text-accent-foreground"
-                >
-                  <Send className="h-4 w-4" strokeWidth={1.75} />
-                </a>
-                <a
-                  href="mailto:post@akgolf.no"
-                  aria-label="E-post"
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition hover:bg-accent hover:text-accent-foreground"
-                >
-                  <Mail className="h-4 w-4" strokeWidth={1.75} />
-                </a>
-              </div>
-            </div>
-
-            <FooterColumn title="Academy" links={ACADEMY} />
-            <FooterColumn title="Selskap" links={SELSKAP} />
-            <FooterColumn title="Support" links={SUPPORT} />
+    <footer className="dark bg-background pb-8 pt-16 text-foreground/70">
+      <div className="mx-auto max-w-7xl px-6 md:px-8">
+        <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 md:grid-cols-[2fr_1fr_1fr_1fr]">
+          <div>
+            <Link href="/" aria-label="AK Golf — hjem" className="inline-flex">
+              <AkGolfLogo variant="white" width={41} />
+            </Link>
+            <p className="mt-4 max-w-[32ch] font-mono text-[11px] leading-[1.6] text-white/60">
+              Bygd på data, drevet av relasjon. Personlig coaching for golfere
+              som vil ha en plan, ikke bare et tips.
+            </p>
           </div>
 
-          <div className="grid gap-6 border-b border-white/10 py-10 md:grid-cols-2">
-            <div className="flex items-start gap-2">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10">
-                <Mail className="h-4 w-4 text-accent" strokeWidth={1.75} />
-              </span>
-              <div>
-                <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-accent">
-                  E-post
-                </div>
-                <a
-                  href="mailto:post@akgolf.no"
-                  className="font-display mt-1 block text-base font-medium text-white hover:text-accent"
-                >
-                  post@akgolf.no
-                </a>
-                <div className="font-mono mt-1 text-[10px] tracking-[0.06em] text-white/50">
-                  SVAR INNEN 1 VIRKEDAG
-                </div>
-              </div>
-            </div>
-            <div className="flex items-start gap-2">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10">
-                <MapPin className="h-4 w-4 text-accent" strokeWidth={1.75} />
-              </span>
-              <div>
-                <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-accent">
-                  Anlegg
-                </div>
-                <Link
-                  href="/anlegg"
-                  className="font-display mt-1 block text-base font-medium text-white hover:text-accent"
-                >
-                  Gamle Fredrikstad GK · Mulligan Indoor
-                </Link>
-                <div className="font-mono mt-1 text-[10px] tracking-[0.06em] text-white/50">
-                  KLIKK FOR ÅPNINGSTIDER
-                </div>
-              </div>
-            </div>
-          </div>
+          <FooterColumn title="Tjenester" links={TJENESTER} />
+          <FooterColumn title="AK Golf" links={AK_GOLF} />
+          <FooterColumn title="Kontakt" links={KONTAKT} />
+        </div>
 
-          <div className="flex flex-col gap-4 pt-8 text-xs text-white/60 sm:flex-row sm:items-center sm:justify-between">
-            <span>
-              © {new Date().getFullYear()} AK Golf Group AS · Org.nr 927 248 581
-            </span>
-            <div className="flex gap-6">
-              <Link
-                href="/personvern"
-                className="hover:text-accent focus-visible:underline focus-visible:outline-none"
-              >
-                Personvern
-              </Link>
-              <Link
-                href="/vilkar"
-                className="hover:text-accent focus-visible:underline focus-visible:outline-none"
-              >
-                Vilkår
-              </Link>
-              <Link
-                href="/cookies"
-                className="hover:text-accent focus-visible:underline focus-visible:outline-none"
-              >
-                Cookies
-              </Link>
-            </div>
-          </div>
+        <div className="mt-14 flex flex-col gap-2 border-t border-white/10 pt-6 font-mono text-[10px] uppercase tracking-[0.12em] text-white/40 sm:flex-row sm:items-center sm:justify-between">
+          <span>
+            © {new Date().getFullYear()} AK Golf Group AS · Org. 927 248 581
+          </span>
+          <span className="flex gap-2">
+            <Link
+              href="/personvern"
+              className="transition hover:text-accent focus-visible:underline focus-visible:outline-none"
+            >
+              Personvern
+            </Link>
+            <span aria-hidden>·</span>
+            <Link
+              href="/vilkar"
+              className="transition hover:text-accent focus-visible:underline focus-visible:outline-none"
+            >
+              Vilkår
+            </Link>
+            <span aria-hidden>·</span>
+            <Link
+              href="/cookies"
+              className="transition hover:text-accent focus-visible:underline focus-visible:outline-none"
+            >
+              Cookies
+            </Link>
+          </span>
         </div>
       </div>
     </footer>
@@ -170,21 +86,20 @@ function FooterColumn({
 }) {
   return (
     <div>
-      <h4 className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-accent">
+      <h5 className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-white/50">
         {title}
-      </h4>
-      <ul className="mt-4 space-y-2.5 text-sm">
+      </h5>
+      <div className="mt-4 flex flex-col gap-2.5">
         {links.map((l) => (
-          <li key={l.href}>
-            <Link
-              href={l.href}
-              className="text-white/80 transition hover:text-white focus-visible:underline focus-visible:outline-none"
-            >
-              {l.label}
-            </Link>
-          </li>
+          <Link
+            key={`${l.href}-${l.label}`}
+            href={l.href}
+            className="text-sm text-white/85 transition hover:text-accent focus-visible:underline focus-visible:outline-none"
+          >
+            {l.label}
+          </Link>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }

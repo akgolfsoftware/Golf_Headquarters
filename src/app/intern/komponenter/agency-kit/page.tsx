@@ -49,7 +49,7 @@ type Player = {
 };
 
 const PLAYERS: Player[] = [
-  { id: "1", initials: "MB", name: "Markus Berg", group: "WANG", okter: 12, sg: 0.42, status: { tone: "behind", label: "2 økter bak" }, sev: "hi", periode: "TURN" },
+  { id: "1", initials: "ØR", name: "Øyvind Rohjan", group: "WANG", okter: 12, sg: 0.42, status: { tone: "behind", label: "2 økter bak" }, sev: "hi", periode: "TURN" },
   { id: "2", initials: "SK", name: "Sofie K.", group: "GFGK", okter: 8, sg: -0.18, status: { tone: "guide", label: "Ønsker veiledning" }, sev: "md", periode: "SPES" },
   { id: "3", initials: "KL", name: "Karl Ludvig", group: "GFGK", okter: 15, sg: 0.31, status: { tone: "active", label: "Aktiv" }, sev: "ok", periode: "TURN" },
   { id: "4", initials: "EB", name: "Emilie B.", group: "AKA", okter: 6, sg: 0.05, status: { tone: "active", label: "Aktiv" }, sev: "lo", periode: "GRUNN" },

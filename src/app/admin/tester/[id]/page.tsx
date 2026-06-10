@@ -1,5 +1,5 @@
 /**
- * CoachHQ — Test-resultat detalj (coach-view)
+ * AgencyOS — Test-resultat detalj (coach-view)
  *
  * Henter ett TestResult med historikk for samme test+spiller, og sender
  * det videre til client-komponenten som tegner trend-graf og bench-marking.

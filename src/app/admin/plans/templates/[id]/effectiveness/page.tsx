@@ -1,5 +1,5 @@
 /**
- * CoachHQ — Effekt-detalj for én PlanTemplate.
+ * AgencyOS — Effekt-detalj for én PlanTemplate.
  *
  * Viser alle PlanEffectiveness-rader for denne malen, med SG-deltas,
  * completion-rate, ratings og notater. KPI-strip og trend-graf hjelper coach
@@ -151,7 +151,7 @@ export default async function TemplateEffectiveness({
       </Link>
 
       <PageHeader
-        eyebrow={`CoachHQ · Maler · ${template.kategori} · ${template.lPhase}`}
+        eyebrow={`AgencyOS · Maler · ${template.kategori} · ${template.lPhase}`}
         titleLead="Effekt av mal"
         titleItalic={template.name}
         sub={

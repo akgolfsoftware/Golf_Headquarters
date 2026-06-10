@@ -117,7 +117,7 @@ export default async function BanedatabasePage() {
             strokes på. Automatisk baneanalyse inkludert.
           </p>
           <div className="baner-mersalg-ctas">
-            <Link href="/registrer">
+            <Link href="/auth/signup">
               <StatsBtn variant="outline" icon="ArrowRight">
                 Start gratis
               </StatsBtn>

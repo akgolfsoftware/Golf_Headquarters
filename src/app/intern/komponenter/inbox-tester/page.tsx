@@ -27,7 +27,7 @@ const pills: FilterPill[] = [
 ];
 
 const inbox: InboxItem[] = [
-  { id: "1", type: "appr", name: "Markus R.P.", initials: "MR", avatarClass: "bg-primary text-accent", subject: "Plan-endring uke 22", preview: "Foreslår å bytte fre-økt til lørdag før Srixon Tour #2 · spørsmål om range-tilgang", when: "07:42", hasAttachment: true, severity: "hi", unread: true },
+  { id: "1", type: "appr", name: "Øyvind R.", initials: "ØR", avatarClass: "bg-primary text-accent", subject: "Plan-endring uke 22", preview: "Foreslår å bytte fre-økt til lørdag før Srixon Tour #2 · spørsmål om range-tilgang", when: "07:42", hasAttachment: true, severity: "hi", unread: true },
   { id: "2", type: "appr", name: "Sofie K.", initials: "SK", subject: "Plan B-utkast", preview: "Vil bytte til Plan B (turn-uke) før Nordic League · forhåndsvisning klar", when: "06:18", severity: "md", unread: true },
   { id: "3", type: "req", name: "Emilie B.", initials: "EB", subject: "Ekstra TrackMan-time", preview: "Kan jeg booke ekstra TrackMan-time tirsdag 14:00? Vil sjekke wedge etter gripp-bytte.", when: "05:55", severity: "lo", unread: true },
   { id: "4", type: "msg", name: "Karl Ludvig", initials: "KL", avatarClass: "bg-accent text-primary", subject: "Video fra runden i går", preview: "Sender video fra runden i går — ser noe på driveren, lavpunktet vandrer på random-mix", when: "i går", hasAttachment: true, severity: "lo" },
@@ -42,7 +42,7 @@ const columns: TestColumn[] = [
 ];
 
 const players: MatrixPlayer[] = [
-  { id: "mr", initials: "MR", name: "Markus R.P.", group: "WANG", sub: "KONK · BAK PLAN", avatarClass: "bg-primary text-accent", assign: { label: "Tildel", badge: 2 } },
+  { id: "mr", initials: "ØR", name: "Øyvind R.", group: "WANG", sub: "KONK · BAK PLAN", avatarClass: "bg-primary text-accent", assign: { label: "Tildel", badge: 2 } },
   { id: "sk", initials: "SK", name: "Sofie K.", group: "GFGK", sub: "MOSJONIST · ØNSKER VEIL.", assign: { label: "Tildel" } },
   { id: "kl", initials: "KL", name: "Karl Ludvig", group: "AKA", sub: "ELIT · 12 CR.", avatarClass: "bg-accent text-primary", assign: { label: "Komplett", done: true } },
   { id: "eb", initials: "EB", name: "Emilie B.", group: "GFGK", sub: "KONK · TEST-UKE", assign: { label: "Tildel" } },

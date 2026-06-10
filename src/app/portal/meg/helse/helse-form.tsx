@@ -2,6 +2,8 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { lagreHelseEntry } from "./actions";
 
 type Initial = {
@@ -12,8 +14,13 @@ type Initial = {
   notes: string | null;
 };
 
+/**
+ * Logg-form bak fasitens primary-knapp «Logg søvn / status» (HelseScreen):
+ * knappen åpner skjemaet inline; lagre-flyten (lagreHelseEntry) er uendret.
+ */
 export function HelseForm({ initial }: { initial: Initial }) {
   const router = useRouter();
+  const [open, setOpen] = useState(false);
   const [date, setDate] = useState(initial.date);
   const [restingHr, setRestingHr] = useState(
     initial.restingHr != null ? String(initial.restingHr) : "",
@@ -51,10 +58,19 @@ export function HelseForm({ initial }: { initial: Initial }) {
     });
   }
 
+  if (!open) {
+    return (
+      <Button variant="primary" onClick={() => setOpen(true)}>
+        <Plus className="h-4 w-4" strokeWidth={2} aria-hidden />
+        Logg søvn / status
+      </Button>
+    );
+  }
+
   return (
     <form
       onSubmit={lagre}
-      className="space-y-4 rounded-lg border border-border bg-card p-6"
+      className="space-y-4 rounded-2xl border border-border bg-card p-4 sm:p-6"
     >
       <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
         Manuelt — én logg per dato
@@ -123,6 +139,9 @@ export function HelseForm({ initial }: { initial: Initial }) {
         >
           {pending ? "Lagrer…" : "Lagre"}
         </button>
+        <Button type="button" variant="ghost-light" size="sm" onClick={() => setOpen(false)}>
+          Lukk
+        </Button>
         {lagret && (
           <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-primary">
             Lagret

@@ -15,10 +15,10 @@ import { cn } from "@/lib/utils";
 
 const TABS = [
   { href: "/portal/stats", label: "Oversikt" },
-  { href: "/portal/stats/sg", label: "Strokes Gained" },
-  { href: "/portal/stats/trackman", label: "TrackMan" },
-  { href: "/portal/stats/tester", label: "Tester" },
-  { href: "/portal/stats/runder", label: "Runder" },
+  { href: "/portal/analysere", label: "Strokes Gained" },
+  { href: "/portal/analysere", label: "TrackMan" },
+  { href: "/portal/analysere", label: "Tester" },
+  { href: "/portal/analysere", label: "Runder" },
 ] as const;
 
 export function StatsTabs() {

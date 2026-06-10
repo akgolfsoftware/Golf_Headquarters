@@ -187,7 +187,7 @@ export function SpillerOnboardingWizard() {
             aria-hidden="true"
             className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
           >
-            CoachHQ · Stallen · Onboarding
+            AgencyOS · Stallen · Onboarding
           </span>
           <h1 className="mt-2 font-display text-2xl sm:text-3xl font-semibold leading-tight tracking-tight">
             Ny{" "}
@@ -417,7 +417,7 @@ function Steg1Identitet({
           label="Fullt navn"
           value={navn}
           onChange={setNavn}
-          placeholder="F.eks. Markus Roinås Pedersen"
+          placeholder="F.eks. Øyvind Rohjan"
           paakrevd
           error={fieldErrors.navn}
         />

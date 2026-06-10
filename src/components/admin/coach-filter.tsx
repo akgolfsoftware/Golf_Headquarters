@@ -13,7 +13,7 @@ type Props = {
 };
 
 /**
- * Coach-velger for ADMIN i CoachHQ. Setter ?coach=<id> i URL.
+ * Coach-velger for ADMIN i AgencyOS. Setter ?coach=<id> i URL.
  * 'alle' = ingen filter (default for ADMIN).
  * Brukes på /admin/{calendar,bookings,availability}.
  */

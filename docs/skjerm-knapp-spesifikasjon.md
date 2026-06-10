@@ -2,7 +2,7 @@
 
 > Fasit etter beslutningene 4. juni 2026. Reflekterer ny struktur: Workbench = master for planlegging, Analysere samlet, ingen duplikater. Bruk denne som referanse for bygging og som mål for opprydding.
 
-**Gjennomgående regler:** Tema — PlayerHQ lyst, AgencyOS mørkt (ingen toggle). Navn — spiller «Markus Berg», coach «Anders Kristiansen». Ikoner — Lucide, ingen emoji. Ingen duplikatsider; én adresse per funksjon.
+**Gjennomgående regler:** Tema — PlayerHQ lyst, AgencyOS mørkt (ingen toggle). Navn — spiller «Øyvind Rohjan», coach «Anders Kristiansen». Ikoner — Lucide, ingen emoji. Ingen duplikatsider; én adresse per funksjon.
 
 ---
 

@@ -511,13 +511,13 @@ model User {
 // 410 Gone fra push-service (gammel/avregistrert).
 model PushSubscription {
   id         String    @id @default(cuid())
-  userId     String
+  userId     String    @map("user_id")
   endpoint   String    @unique
   p256dh     String
   auth       String
-  userAgent  String?
-  createdAt  DateTime  @default(now())
-  lastUsedAt DateTime?
+  userAgent  String?   @map("user_agent")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  lastUsedAt DateTime? @map("last_used_at")
   user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
@@ -3785,7 +3785,7 @@ model FysOvelseRad {
   exercise ExerciseDefinition? @relation(fields: [exerciseId], references: [id], onDelete: SetNull)
 
   @@index([oktId, sortOrder])
-  @@map("fys_ovelserader")
+  @@map("fys_ovelse_rader")
 }
 
 // ============================================================================

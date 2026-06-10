@@ -49,7 +49,7 @@ export default async function KoblingerPage({
         <header className="mb-8 flex items-end justify-between border-b border-border pb-6">
           <div>
             <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-              CoachHQ · Godkjenning
+              AgencyOS · Godkjenning
             </p>
             <h1 className="mt-2 font-display text-3xl font-semibold text-foreground">
               Design-koblinger

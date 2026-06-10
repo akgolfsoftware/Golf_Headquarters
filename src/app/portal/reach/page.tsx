@@ -98,7 +98,7 @@ const CONNECTIONS: Connection[] = [
   },
   {
     id: "c-003",
-    navn: "Markus Pedersen",
+    navn: "Øyvind Rohjan",
     initialer: "MP",
     rolle: "venn",
     rolleLabel: "Treningskompis",
@@ -136,7 +136,7 @@ const ACTIVITY: Activity[] = [
   {
     id: "a-003",
     type: "sett",
-    hvem: "Markus Pedersen",
+    hvem: "Øyvind Rohjan",
     initialer: "MP",
     hva: "mål-side",
     naar: "i går kl 19:42",

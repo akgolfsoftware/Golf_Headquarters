@@ -10,7 +10,7 @@ type Props = {
 };
 
 /**
- * Toggle for ADMIN/COACH til å bytte mellom CoachHQ og PlayerHQ-visning.
+ * Toggle for ADMIN/COACH til å bytte mellom AgencyOS og PlayerHQ-visning.
  * Krever at brukeren er innlogget med rolle ADMIN eller COACH.
  */
 export function ViewModeToggle({ current, className = "" }: Props) {
@@ -33,7 +33,7 @@ export function ViewModeToggle({ current, className = "" }: Props) {
 
   const Icon = current === "coach" ? Eye : Briefcase;
   const label =
-    current === "coach" ? "Vis som spiller" : "Tilbake til CoachHQ";
+    current === "coach" ? "Vis som spiller" : "Tilbake til AgencyOS";
 
   return (
     <button

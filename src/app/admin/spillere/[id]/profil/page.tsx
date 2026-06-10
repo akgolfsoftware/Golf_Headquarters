@@ -1,5 +1,5 @@
 /**
- * CoachHQ — Full spiller-profil (`/admin/spillere/[id]/profil`)
+ * AgencyOS — Full spiller-profil (`/admin/spillere/[id]/profil`)
  *
  * Pixel-perfekt v2 (sesjon-1, skjerm 4).
  * Vertikal stack med personalia, forelder, spiller-DNA (radar), aktive mål,

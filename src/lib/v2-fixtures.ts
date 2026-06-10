@@ -382,7 +382,7 @@ export const AI_INSIGHTS: Insight[] = [
     eyebrow: "Mål Q2",
     body: "Du ligger 60% mot målet HCP -2.5 før sesongstart. Tre runder til kreves for offisiell justering. Carry-snitt har økt med 8m siden mars.",
     cta: "Se mål",
-    href: "/profil",
+    href: "/portal/meg",
     icon: "Target",
   },
 ];
@@ -410,7 +410,7 @@ export const QUICK_ACTIONS_LIST: QuickAction[] = [
   { id: "qa5", label: "Video-opp.", icon: "Video", href: "/drill/swing-video", tone: "default" },
   { id: "qa6", label: "Spør coach", icon: "MessageSquare", href: "/coach", tone: "default" },
   { id: "qa7", label: "Kalender", icon: "Calendar", href: "/kalender", tone: "default" },
-  { id: "qa8", label: "Innstilling", icon: "Settings", href: "/profil", tone: "default" },
+  { id: "qa8", label: "Innstilling", icon: "Settings", href: "/portal/meg", tone: "default" },
 ];
 
 export const TRAINING_PARTNERS: Partner[] = [
@@ -432,8 +432,8 @@ export const TRAINING_PARTNERS: Partner[] = [
   },
   {
     id: "p3",
-    name: "Markus R. P.",
-    initials: "MP",
+    name: "Øyvind R.",
+    initials: "ØR",
     hcp: 4.2,
     akademi: "GFGK U19",
     lastSession: "Mandag · FYS",
@@ -629,7 +629,7 @@ export const DEMO_IMPORT_ROWS: ImportRow[] = [
     __row: 2,
     __status: "OK",
     __errors: [],
-    name: "Markus R.P.",
+    name: "Øyvind R.",
     email: "markus@example.com",
     hcp: 3.5,
     homeClub: "GFGK",
@@ -795,7 +795,7 @@ export const DEMO_AUDIT_EVENTS: AuditEvent[] = [
     actor: { id: "ak", name: "Anders Kristiansen", initials: "AK", role: "Head Coach" },
     action: "DELETE",
     actionLabel: "slettet booking",
-    target: { type: "booking", id: "b99", label: "Markus R.P. — 25. mai 10:00" },
+    target: { type: "booking", id: "b99", label: "Øyvind R. — 25. mai 10:00" },
   },
 ];
 

@@ -1,5 +1,5 @@
 /**
- * CoachHQ / AgencyOS — Stallen (spilleroversikt).
+ * AgencyOS / AgencyOS — Stallen (spilleroversikt).
  *
  * Default view ("tabell") er den pixel-portede AgencyOS-spillertabellen
  * (public/design-handover/agencyos/components-agency-player-table.html):
@@ -356,7 +356,7 @@ async function KortOgTavleView({
         sub="Legg til din første spiller for å komme i gang. Du kan invitere via e-post eller opprette manuelt."
         cta={
           <Link
-            href="/admin/elever/ny"
+            href="/admin/spillere/ny"
             className="inline-flex items-center gap-1.5 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
           >
             <UserPlus size={16} strokeWidth={1.75} />

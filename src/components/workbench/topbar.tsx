@@ -1,6 +1,16 @@
+"use client";
+
 // ============================================================
-// WBTopbar — ported 1:1 from v10 workbench-chrome.jsx (variant A)
+// WBTopbar — ported fra v10 workbench-chrome.jsx (variant A).
+//
+// Tidligere var flere kontroller døde `type="button"` uten handler.
+// Nå: PLAN A/B er en ekte client-toggle (lokal state). Kontroller som
+// ennå ikke har en client-handling (AI-chips, uke-nav, «Del plan»,
+// bjelle, ÅR/MND-zoom) er satt `disabled` med en «kommer»-tittel i
+// stedet for å se klikkbare ut. Zoom UKE/DAG + visningsmodus
+// (Tidslinje/Kanban/Dashboard) er allerede koblet via onMode.
 // ============================================================
+import { useState } from "react";
 import { Icon } from "./icon";
 import type { Role, Mode } from "./workbench";
 
@@ -17,6 +27,9 @@ type TopbarProps = {
 const ZOOMS: ("ÅR" | "MND" | "UKE" | "DAG")[] = ["ÅR", "MND", "UKE", "DAG"];
 
 export function WBTopbar({ role, activeMode, activeZoom, onVis, onMode }: TopbarProps) {
+  // PLAN A/B — lokal visnings-toggle. (Plan A/B-innholdet er foreløpig
+  // demo; togglen gir en ekte, ærlig client-interaksjon på segmentene.)
+  const [plan, setPlan] = useState<"A" | "B">("A");
   return (
     <div className="wb-top">
       {/* Left */}
@@ -29,11 +42,21 @@ export function WBTopbar({ role, activeMode, activeZoom, onVis, onMode }: Topbar
           WORKBENCH · <span className="cur">PLANLEGGING</span> · PRO
         </div>
         <div className="wb-plan-toggle" role="tablist" aria-label="Plan">
-          <button type="button" className="seg is-active">
+          <button
+            type="button"
+            className={"seg" + (plan === "A" ? " is-active" : "")}
+            aria-pressed={plan === "A"}
+            onClick={() => setPlan("A")}
+          >
             <span className="dot" />
             PLAN A
           </button>
-          <button type="button" className="seg">
+          <button
+            type="button"
+            className={"seg" + (plan === "B" ? " is-active" : "")}
+            aria-pressed={plan === "B"}
+            onClick={() => setPlan("B")}
+          >
             <span className="dot" />
             PLAN B
           </button>
@@ -75,16 +98,18 @@ export function WBTopbar({ role, activeMode, activeZoom, onVis, onMode }: Topbar
             <span className="kbd">⌘K</span>
           </div>
           <div className="chips">
-            <button type="button" className="chip is-on">
+            {/* AI-snarveier — kobles til generatoren senere. Disablet
+                så de ikke ser klikkbare ut før de gjør noe. */}
+            <button type="button" className="chip" disabled title="Kommer">
               Generér uke
             </button>
-            <button type="button" className="chip">
+            <button type="button" className="chip" disabled title="Kommer">
               Balansér
             </button>
-            <button type="button" className="chip">
+            <button type="button" className="chip" disabled title="Kommer">
               Foreslå taper
             </button>
-            <button type="button" className="chip">
+            <button type="button" className="chip" disabled title="Kommer">
               Fyll standardøkter
             </button>
           </div>
@@ -97,25 +122,29 @@ export function WBTopbar({ role, activeMode, activeZoom, onVis, onMode }: Topbar
           <>
             <div className="wb-search">
               <Icon n="search" w={14} h={14} />
-              <input type="text" defaultValue="Markus R.P." />
+              <input type="text" defaultValue="Øyvind R." />
             </div>
             <CoachBell />
           </>
         )}
 
         <div className="seg-group" role="tablist" aria-label="Zoom">
-          {ZOOMS.map((z) => (
-            <button
-              key={z}
-              type="button"
-              className={"s" + (activeZoom === z ? " is-on" : "")}
-              onClick={() => {
-                if (z === "UKE" || z === "DAG") onMode?.(z);
-              }}
-            >
-              {z}
-            </button>
-          ))}
+          {ZOOMS.map((z) => {
+            // Kun UKE/DAG har en visning ennå; ÅR/MND disables til de finnes.
+            const enabled = z === "UKE" || z === "DAG";
+            return (
+              <button
+                key={z}
+                type="button"
+                className={"s" + (activeZoom === z ? " is-on" : "")}
+                disabled={!enabled}
+                title={enabled ? undefined : "Kommer"}
+                onClick={enabled ? () => onMode?.(z) : undefined}
+              >
+                {z}
+              </button>
+            );
+          })}
         </div>
 
         <div className="seg-group" role="tablist" aria-label="Visningsmodus">
@@ -142,16 +171,29 @@ export function WBTopbar({ role, activeMode, activeZoom, onVis, onMode }: Topbar
           </button>
         </div>
 
+        {/* Uke-nav — krever uke-til-uke-data (ikke koblet ennå) → disabled. */}
         <div className="wb-nav-btns">
-          <button type="button" className="wb-nav-btn" aria-label="Forrige uke">
+          <button
+            type="button"
+            className="wb-nav-btn"
+            aria-label="Forrige uke"
+            disabled
+            title="Kommer"
+          >
             <Icon n="chevron-left" />
           </button>
-          <button type="button" className="wb-nav-btn" aria-label="Neste uke">
+          <button
+            type="button"
+            className="wb-nav-btn"
+            aria-label="Neste uke"
+            disabled
+            title="Kommer"
+          >
             <Icon n="chevron-right" />
           </button>
         </div>
 
-        <button type="button" className="wb-btn-ghost">
+        <button type="button" className="wb-btn-ghost" disabled title="Kommer">
           <Icon n="share-2" />
           Del plan
         </button>
@@ -161,9 +203,16 @@ export function WBTopbar({ role, activeMode, activeZoom, onVis, onMode }: Topbar
 }
 
 function CoachBell() {
+  // Varsel-panel kommer senere — disabled så ikonet ikke er en død knapp.
   return (
     <div style={{ position: "relative" }}>
-      <button type="button" className="wb-bell" aria-label="Varsler">
+      <button
+        type="button"
+        className="wb-bell"
+        aria-label="Varsler (kommer)"
+        disabled
+        title="Varsler kommer"
+      >
         <Icon n="bell" w={14} h={14} />
         <span className="badge">3</span>
       </button>
