@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, GraduationCap } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import {
+  HeroEm,
+  MarketingHero,
+} from "@/components/marketing/marketing-sections";
 
 export const metadata: Metadata = {
   title: "Coachene våre — AK Golf Academy",
@@ -15,6 +20,7 @@ type CoachKort = {
   tittel: string;
   bio: string;
   initialer: string;
+  foto: string | null;
 };
 
 const FALLBACK_COACHER: CoachKort[] = [
@@ -24,6 +30,7 @@ const FALLBACK_COACHER: CoachKort[] = [
     tittel: "Head Coach · CEO",
     bio: "Bygger Academy rundt målbar fremgang. Mer enn et tiår med spillere på alle nivåer — fra første time til turneringsspill.",
     initialer: "AK",
+    foto: null,
   },
   {
     slug: "markus",
@@ -31,6 +38,7 @@ const FALLBACK_COACHER: CoachKort[] = [
     tittel: "Assistent",
     bio: "Jobber tett med juniorprogrammet og spillere som vil ta neste steg. Sterk på korte slag og putting.",
     initialer: "MR",
+    foto: null,
   },
 ];
 
@@ -67,57 +75,102 @@ export default async function CoacherSide() {
               .slice(0, 2)
               .map((n) => n.charAt(0).toUpperCase())
               .join(""),
+            foto: u.avatarUrl,
           };
         })
       : FALLBACK_COACHER;
 
   return (
-    <div>
-      <section className="bg-gradient-to-b from-background to-secondary/40 px-4 sm:px-6 py-12 sm:py-20 md:py-28">
-        <div className="mx-auto max-w-4xl text-center">
-          <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
-            Coacher
-          </span>
-          <h1 className="mt-6 font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl">
-            Møt{" "}
-            <em className="font-normal italic text-primary">coachene</em>
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
-            To trenere med komplementære styrker — felles plattform, samme
-            forventning til kvalitet og oppfølging.
-          </p>
-        </div>
-      </section>
+    <div className="bg-background text-foreground">
+      {/* ========== HERO · full-bleed foto + forest-scrim ========== */}
+      <MarketingHero
+        foto="/images/akademy/coach-observerer.jpg"
+        eyebrow="Coachene · AK Golf Academy"
+        tittel={
+          <>
+            Møt <HeroEm>coachene</HeroEm>.
+          </>
+        }
+        ingress="To trenere med komplementære styrker — felles plattform, samme forventning til kvalitet og oppfølging."
+        primaer={{ href: "/booking", label: "Book tid med en coach" }}
+        sekundaer={{ href: "/coaching", label: "Se coaching-pakkene" }}
+      />
 
-      <section className="px-4 sm:px-6 py-12 sm:py-16">
-        <div className="mx-auto grid max-w-5xl gap-6 sm:gap-8 sm:grid-cols-2">
-          {coacher.map((c) => (
-            <Link
-              key={c.slug}
-              href={`/coacher/${c.slug}`}
-              className="group rounded-2xl border border-border bg-card p-6 sm:p-8 transition-colors hover:border-primary"
-            >
-              <div className="flex h-24 w-24 items-center justify-center rounded-full bg-secondary text-2xl font-semibold text-primary">
-                {c.initialer}
-              </div>
-              <h2 className="mt-6 font-display text-2xl font-semibold tracking-tight">
-                {c.navn}
-              </h2>
-              <p className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
-                <GraduationCap className="h-4 w-4" aria-hidden="true" />
-                {c.tittel}
-              </p>
-              <p className="mt-4 text-base leading-relaxed text-foreground">
-                {c.bio}
-              </p>
-              <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary group-hover:gap-4">
-                Les mer
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </span>
-            </Link>
-          ))}
+      {/* ========== COACH-KORT (fasit: .coach — foto, rolle-tag, info) ========== */}
+      <section className="py-24">
+        <div className="mx-auto max-w-7xl px-6 md:px-8">
+          <div className="mx-auto grid max-w-4xl grid-cols-1 gap-4 sm:grid-cols-2">
+            {coacher.map((c) => (
+              <CoachCard key={c.slug} c={c} />
+            ))}
+          </div>
         </div>
       </section>
     </div>
+  );
+}
+
+/* ---------- Coach-kort (fasit: .coach / .coach-photo / .coach-info) ---------- */
+
+function CoachCard({ c }: { c: CoachKort }) {
+  const rolleKort = c.tittel.split("·")[0]?.trim() ?? c.tittel;
+  return (
+    <Link
+      href={`/coacher/${c.slug}`}
+      className="group flex flex-col overflow-hidden rounded-[20px] border border-border bg-card transition hover:border-primary hover:shadow-[0_4px_14px_rgba(10,31,23,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+    >
+      <div className="relative aspect-[3/4] overflow-hidden">
+        {c.foto ? (
+          <Image
+            src={c.foto}
+            alt={c.navn}
+            fill
+            sizes="(max-width: 640px) 100vw, 440px"
+            className="object-cover"
+          />
+        ) : (
+          /* Brandet fallback når profilbilde mangler i DB */
+          <div
+            className="absolute inset-0 flex items-center justify-center"
+            style={{
+              background:
+                "linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(168 72% 11%) 100%)",
+            }}
+          >
+            <span className="font-display text-[64px] font-bold tracking-[-0.02em] text-accent">
+              {c.initialer}
+            </span>
+          </div>
+        )}
+        {/* Bunn-scrim + rolle-tag (fasit: .coach-photo::after + .tag) */}
+        <div
+          aria-hidden
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(180deg, transparent 50%, hsl(var(--foreground) / 0.6) 100%)",
+          }}
+        />
+        <span className="absolute bottom-4 left-4 inline-flex items-center rounded-full bg-accent px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.05em] text-accent-foreground">
+          {rolleKort}
+        </span>
+      </div>
+
+      <div className="flex flex-1 flex-col p-6">
+        <h2 className="font-display text-xl font-bold tracking-[-0.015em]">
+          {c.navn}
+        </h2>
+        <span className="mt-1 font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+          {c.tittel}
+        </span>
+        <p className="mt-3 text-sm leading-[1.55] text-muted-foreground">
+          {c.bio}
+        </p>
+        <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-all group-hover:gap-3">
+          Les mer
+          <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
+        </span>
+      </div>
+    </Link>
   );
 }
