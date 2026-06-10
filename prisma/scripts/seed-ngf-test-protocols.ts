@@ -837,6 +837,8 @@ function withBenchmarks(ngfId: string, protocol: TestProtocol): object {
   if (!entry) return protocol as unknown as object;
   return {
     ...protocol,
+    // Stabil nøkkel for benchmark-autosync (DB-navn kan avvike fra batteri-navn).
+    benchmarks_key: ngfId,
     benchmarks: entry.benchmarks ?? null,
     ...(entry.benchmarks_note ? { benchmarks_note: entry.benchmarks_note } : {}),
     ...(entry.benchmarks_detail ? { benchmarks_detail: entry.benchmarks_detail } : {}),

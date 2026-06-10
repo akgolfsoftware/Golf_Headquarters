@@ -5,6 +5,59 @@
 
 ---
 
+## 2026-06-10 (del 2) — Benchmark-autosync: DataGolf hver mandag 08:00
+
+**Branch:** `feature/benchmark-autosync` (etter merge av PR #8 til main)
+
+### Go-live av v1-fasitene
+- PR #8 merget til main.
+- Seed KJØRT mot prod: `npx tsx prisma/scripts/seed-ngf-test-protocols.ts` — 21 tester
+  oppdatert, benchmarks aktive i tester-matrisen. Seed utvidet med `benchmarks_key`
+  i protocol (stabil id for autosync; DB-navn avviker fra batteri-navn).
+
+### Autosync-motor
+- 🆕 `src/lib/admin/benchmark-sync.ts` — cron-agent `benchmark-sync`:
+  henter DataGolf skill ratings (PGA + Korn Ferry) via eksisterende
+  `@/lib/datagolf/client`, regner ankere (PGA topp 40 etter SG total, PGA-snitt,
+  KFT-snitt) og skalerer nivåstigene med drift fra kalibrert baseline.
+  - **Auto:** Driver Basic (driving_dist) + Driver Gate (driving_acc)
+  - **Følger:** CHS skygger driver-lengde-driften (~1:1)
+  - **Statisk:** PEI-/putt-testene (referanseverdier uten ukentlig kilde) røres ikke
+  - Første kjøring per test = kalibrering (baseline lagres, ingenting endres).
+    Drift ≤ 3 % → skrives automatisk med kilde-stempel `datagolf-auto-<dato>`.
+    Drift > 3 % eller brutt stige → `benchmarks_pending` i protocol, venter godkjenning.
+  - Telegram-rapport til Anders etter hver kjøring (MEG_TELEGRAM_*-env, gjenbruk av
+    Meg-botens kanal). Bevisst egen liten send-funksjon — `@/lib/meg/telegram` er
+    `server-only` og kan ikke importeres fra tsx-scripts.
+- 🆕 `src/lib/admin/benchmark-sync-schema.ts` — zod for `benchmarks_sync` (baseline,
+  baselineLevels, lastRun) og `benchmarks_pending`; monotoni-validering; avrunding.
+- Cron registrert: `src/app/api/cron/[agent]/route.ts` + `vercel.json`
+  `0 6 * * 1` UTC = mandag **08:00 norsk sommertid** (07:00 vintertid — Vercel-cron
+  følger UTC, ikke norsk klokke).
+- 🆕 `scripts/run-benchmark-sync.ts` — manuell kjøring fra terminal (import "./_env").
+
+### Godkjenningsside i CoachHQ
+- 🆕 `/admin/tester/benchmarks` (`page.tsx` + `actions.ts`) — viser alle fasit-tester
+  med synk-modus (AUTO / FØLGER DRIVER / REFERANSE), kilde-stempel og nivåstige;
+  ventende justeringer vises med gammel → ny per nivå + Godkjenn / Avvis;
+  «Kjør synk nå»-knapp bruker samme motor som cronen. Auth: COACH/ADMIN.
+  - Godkjenn = skriv foreslåtte nivåer + re-kalibrer baseline.
+  - Avvis = behold dagens nivåer, re-kalibrer mot nye råverdier (ellers ville samme
+    forslag kommet tilbake hver mandag).
+
+### Verifisert live mot prod-DB
+- Kalibreringskjøring: 3 tester kalibrert, Telegram levert ✓
+- Andre kjøring: «unchanged» på alle (ratio 1,0) ✓
+- Guardrail-test: baseline kunstig forskjøvet 10 % → `pending (9,84 %)`, live fasit
+  URØRT, Telegram varslet ✓ — deretter nullstilt og rekalibrert rent
+- `npx tsc --noEmit` 0 feil · ESLint 0 feil · `npm run build` grønn
+
+### Drift
+- DataGolf nede en mandag → kjøringen feiler trygt, forrige fasit gjelder, feil synlig
+  i Telegram-melding/cron-logg. Ingen handling nødvendig.
+
+---
+
 ## 2026-06-10 — Benchmarks i NGF-testbatteriet (DataGolf-fasiter v1)
 
 **Branch:** `feature/test-benchmarks`

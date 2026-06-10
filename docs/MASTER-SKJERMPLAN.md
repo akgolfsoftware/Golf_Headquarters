@@ -379,6 +379,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Analytics | `/admin/analytics` | – | --- | ✓ | ~ | ~ | ~ |
 | Lag-snitt | `/admin/lag-snitt` | – | --- | ✓ | ~ | ~ | ~ |
 | Tester (på tvers) | `/admin/tester` | ✓ | ✓✓– | ~ | ~ | ~ | ✓ |
+| · Fasiter (autosync) | `/admin/tester/benchmarks` | ~ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
 | · Test-detalj | `/admin/tester/[id]` | ~ | ✓✓– | ✓ | ~ | ~ | ~ |
 | · Foreslåtte tester | `/admin/tester/foreslatte` | – | --- | ✓ | ~ | ~ | ~ |
 | · Tildel test | `/admin/tester/tildel/[spillerId]` | – | --- | ✓ | ~ | ~ | ~ |
@@ -655,6 +656,7 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 ## Endringslogg
 
+- 10. juni (del 2): **Benchmark-autosync live.** Seed kjørt mot prod (fasitene er aktive i matrisen). Ny cron-agent `benchmark-sync` (mandager 08:00 norsk sommertid) henter ferske DataGolf skill ratings og driver nivåstigene: Driver Basic + Driver Gate har egne ankere, CHS følger driver-lengden, PEI-/putt-testene er referanse-stabile. Endring ≤ 3 % skrives automatisk; større utslag venter på godkjenning på ny skjerm **Fasiter** (`/admin/tester/benchmarks`) med godkjenn/avvis + «Kjør synk nå». Telegram-rapport til Anders etter hver kjøring. Kalibrering + uendret-løp + pending-guardrail verifisert live mot prod-DB.
 - 10. juni: **Tester-matrisen** (`/admin/tester`) fikk DataGolf-fasiter v1: 12 av 20 tester i NGF-batteriet har nå strukturert nivåstige (PGA topp 40 → Scratch) i `protocol.benchmarks`; matrisen viser nivå-badge per målt celle med hele stigen i tooltip + «Data powered by DataGolf»-attribusjon i footer. Data-haken `–` → `~`: fasitene ligger klare i seed (`npx tsx prisma/scripts/seed-ngf-test-protocols.ts`), men seed-kjøring mot databasen gjenstår som bevisst eget steg. 8 tester (gates/speed + fysiske) venter på interne/NGF-normer i v2.
 - 4. juni: To nye skjermer lagt til på ekte data (port av sprint3-arbeid):
   - **Logg treningsøkt** (`/portal/trening/logg`) — spiller logger treningstid per SG-område; lenket fra PlayerHQ-sidemenyen under «Planlegge».
