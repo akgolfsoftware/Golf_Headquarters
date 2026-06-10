@@ -56,6 +56,11 @@ Dokumenteres her så diff-agenten måler mot riktig fasit:
 - **Tildelt meg-ikon:** topp-/venstrejustert i 36px-felt (fasit-PNG-utseende; fasit-JSX hadde sentrert boks).
 - **Knappebredder ±2-7 css px:** next/font-rendret Inter Tight måler marginalt smalere enn fasitens
   CDN-font på identisk tekst/da samme cap-høyde — godtatt font-pipeline-avvik, ikke design-avvik.
+- **Tester-skjermens tittel/lead følger datamodellen:** fasitens «Test-uke pågår» og «Tour-baseline»
+  har ingen modell — appen viser «{N} tester siste 30 d» og dropper baseline-leddet. Resultat-chips er
+  nøytrale (FYS-formelen er ikke låst — referanseverdier ville vært påfunn).
+- **Rapporter-tiles uten generator lenker til riktig flate** («Åpne →») i stedet for liksom-generering;
+  CSV-tilene bruker ekte eksport-endepunkter.
 - **Drill-filterchips følger fasit-settet (6), kategoriene kommer fra ekte bibliotek:** drills med
   kategorier utenfor fasit-settet (f.eks. «Spill») vises i grid men har ingen egen chip — data, ikke design.
 - **Tekst-wrap-punkter kan avvike ±1 linje:** next/font-bredden gjør at lange lead-/delta-tekster

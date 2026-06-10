@@ -1,113 +1,221 @@
 /**
- * /admin/settings — AgencyOS Drift (Innstillinger og team) — v10-design.
+ * AgencyOS — Admin (SYSTEM · ADMIN), /admin/settings.
  *
- * Rendrer <Drift> (v10-fasit fra ag-drift) med EKTE data fra loadDriftData
- * (Prisma: team-brukere + plan-maler). mapDriftData oversetter den eksisterende
- * loaderens shape (LoaderDriftData) til v10-komponentens prop-shape (DriftData).
- * Tom-tilstander bevares: tomt team/maler gir tomme lister, aldri liksom-tall.
+ * Port av fasit `agencyos-app/screens-analyze.jsx` → AdminScreen (mørkt tema,
+ * desktop 1280): PageHead («Organisasjon & tilgang.») + seg-faner
+ * Organisasjon / Team & roller / Tilgang (?tab=, server component — fasit
+ * bruker useState).
  *
- * Server component. Auth-guard via requirePortalUser({ allow: ["COACH","ADMIN"] }).
+ * Datakilder (ekte verdier eller «—»):
+ *   - Organisasjon: prisma.location (aktive klubber/anlegg) + fasilitetstall.
+ *     Spillere-per-klubb er ikke modellert — vises ikke (aldri liksom-tall).
+ *   - Team & roller: prisma.user (ADMIN/COACH) + antall unike spillere i
+ *     coachens grupper. ADMIN → «Eier»-chip (fasit), COACH → «Coach».
+ *   - Tilgang: org-innstillinger har ingen DB-modell ennå — fasit-radene
+ *     vises med «—» i stedet for toggles (ingen påfunnede tilstander), med
+ *     lenke til den ekte CBAC-matrisen på /admin/settings/tilgang.
  *
- * Byttet fra DriftPanel (gammelt design) til Drift (v10) — kobler kun data + adresse.
+ * Undersider (settings/api, /calendar, /security, /tilgang) er urørt.
  */
 
+import Link from "next/link";
+
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { prisma } from "@/lib/prisma";
 import {
-  loadDriftData,
-  type DriftData as LoaderDriftData,
-  type TeamMember as LoaderTeamMember,
-  type PlanTemplateCard as LoaderTemplate,
-} from "@/lib/admin/drift-data";
-import {
-  Drift,
-  type DriftData,
-  type TeamMember,
-  type PlanTemplate,
-  type PyramidDist,
-} from "@/components/admin/drift/drift";
+  AgAvatar,
+  AgChip,
+  AgPage,
+  AgPageHead,
+  AgPlayerCell,
+  AgTable,
+  AgTd,
+  AgTh,
+  agTrClass,
+} from "@/components/admin/agencyos/ui";
+import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
-/** Loader avatarTone ("default"|"primary"|"accent") → v10 ("primary"|"lime"|"neutral"). */
-function mapTone(tone: LoaderTeamMember["avatarTone"]): TeamMember["avatarTone"] {
-  if (tone === "primary") return "primary";
-  if (tone === "accent") return "lime";
-  return "neutral";
+type Tab = "org" | "team" | "tilgang";
+
+const TABS: { key: Tab; label: string }[] = [
+  { key: "org", label: "Organisasjon" },
+  { key: "team", label: "Team & roller" },
+  { key: "tilgang", label: "Tilgang" },
+];
+
+/** Fasit-radene i Tilgang-fanen. Ingen org-innstillingsmodell → verdi «—». */
+const TILGANGSRADER = [
+  "Spillere ser egen data",
+  "Foreldre-tilgang (junior)",
+  "Coacher ser hele stallen",
+  "WAGR-synk automatisk",
+  "Faktura synlig for spiller",
+];
+
+function initials(name: string): string {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-/** Loader-segmenter (axis/pct) → v10 fast 5-akse dist-objekt. */
-function mapDist(segs: LoaderTemplate["segs"]): PyramidDist {
-  const dist: PyramidDist = { fys: 0, tek: 0, slag: 0, spill: 0, turn: 0 };
-  for (const s of segs) dist[s.axis] = s.pct;
-  return dist;
-}
+export default async function AdminSettingsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tab?: string }>;
+}) {
+  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
-function mapMember(m: LoaderTeamMember): TeamMember {
-  return {
-    id: m.id,
-    initials: m.initials,
-    avatarTone: mapTone(m.avatarTone),
-    presence: m.presence,
-    name: m.name,
-    email: m.email,
-    role: {
-      label: m.roleLabel,
-      kind: m.role === "ADMIN" ? "admin" : "instruktor",
-    },
-    scopes: m.capabilities,
-    scopeNote: m.scopeMain,
-    seen: m.lastSeen,
-    href: m.href,
-  };
-}
+  const sp = await searchParams;
+  const tab: Tab = TABS.some((t) => t.key === sp.tab) ? (sp.tab as Tab) : "org";
 
-function mapTemplate(t: LoaderTemplate): PlanTemplate {
-  return {
-    id: t.id,
-    periode: { label: t.periodeLabel, kind: t.periode },
-    shared: t.shared,
-    name: t.name,
-    meta: t.meta.toUpperCase(),
-    dist: mapDist(t.segs),
-    uses: t.usageCount,
-    editedBy: t.editedBy,
-    href: t.href,
-  };
-}
+  const [klubber, coacher] = await Promise.all([
+    prisma.location.findMany({
+      where: { active: true },
+      select: { id: true, name: true, _count: { select: { facilities: true } } },
+      orderBy: { name: "asc" },
+    }),
+    prisma.user.findMany({
+      where: { role: { in: ["ADMIN", "COACH"] }, deletedAt: null },
+      select: {
+        id: true,
+        name: true,
+        role: true,
+        coachedGroups: { select: { members: { select: { userId: true } } } },
+      },
+      orderBy: [{ role: "asc" }, { name: "asc" }],
+    }),
+  ]);
 
-/** Oversetter ekte LoaderDriftData → v10 DriftData. Tom-tilstander bevares ([]). */
-function mapDriftData(data: LoaderDriftData): DriftData {
-  return {
-    eyebrow: "DRIFT",
-    title: "Innstillinger og team",
-    ownerName: data.ownerName,
-    createdAt: data.createdLabel,
+  const teamRader = coacher.map((c) => {
+    const unike = new Set<string>();
+    for (const g of c.coachedGroups) for (const m of g.members) unike.add(m.userId);
+    return {
+      id: c.id,
+      navn: c.name,
+      rolle: c.role === "ADMIN" ? "Head coach" : "Coach",
+      spillere: unike.size,
+      eier: c.role === "ADMIN",
+    };
+  });
 
-    team: {
-      memberCount: data.team.length,
-      summary: `${data.teamActive} aktive · ${data.teamTotalLabel}`,
-      members: data.team.map(mapMember),
-      rollMatrixHref: "/admin/organisasjon/roller",
-      inviteHref: "/admin/organisasjon/inviter",
-    },
+  return (
+    <AgPage>
+      <AgPageHead
+        eyebrow="System · Admin"
+        title="Organisasjon"
+        italic="& tilgang."
+        lead="Klubber, coacher og rolletilgang. Eierrollen styrer hvem som ser hva."
+      />
 
-    templates: {
-      count: data.templatesTotal,
-      summary: `${data.templatesTotal} ${data.templatesTotal === 1 ? "mal" : "maler"} · sortert på bruk`,
-      items: data.templates.map(mapTemplate),
-      importHref: "/admin/plan-maler/import",
-      newHref: "/admin/plans/templates/ny",
-    },
+      {/* Seg-faner (fasit .seg) — ?tab= i stedet for useState (server component) */}
+      <div className="mb-4 inline-flex gap-[2px] rounded-lg bg-secondary p-[3px]">
+        {TABS.map((t) =>
+          t.key === tab ? (
+            <span
+              key={t.key}
+              className="inline-flex h-[26px] items-center rounded-md bg-card px-[11px] font-mono text-[10px] font-bold uppercase tracking-[0.06em] text-primary shadow-sm"
+            >
+              {t.label}
+            </span>
+          ) : (
+            <Link
+              key={t.key}
+              href={`/admin/settings?tab=${t.key}`}
+              className="inline-flex h-[26px] items-center rounded-md px-[11px] font-mono text-[10px] font-bold uppercase tracking-[0.06em] text-muted-foreground transition-colors hover:text-foreground"
+            >
+              {t.label}
+            </Link>
+          ),
+        )}
+      </div>
 
-    settingsHref: "/admin/organisasjon/innstillinger",
-    availabilityHref: "/admin/anlegg?tab=tilgjengelighet",
-    auditHref: "/admin/audit-log",
-    wagrHref: "/admin/organisasjon/wagr-import",
-  };
-}
+      {tab === "org" && (
+        <div className="grid grid-cols-3 gap-3">
+          {klubber.length === 0 && (
+            <div className="col-span-3 rounded-xl border border-border bg-card px-[18px] py-10 text-center text-sm text-muted-foreground">
+              Ingen klubber/anlegg registrert ennå — legg til under Anlegg.
+            </div>
+          )}
+          {klubber.map((k, i) => (
+            <div key={k.id} className="rounded-xl border border-border bg-card p-[18px]">
+              <div className="flex items-center gap-3">
+                <AgAvatar initials={initials(k.name)} size={40} tone={i === 0 ? "lime" : "neu"} />
+                <div>
+                  <div className="text-[15px] font-bold text-foreground">{k.name}</div>
+                  <div className="mt-[2px] font-mono text-[10px] text-muted-foreground">
+                    {k._count.facilities}{" "}
+                    {k._count.facilities === 1 ? "fasilitet" : "fasiliteter"} · aktiv
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
-export default async function SettingsPage() {
-  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
-  const data = await loadDriftData({ id: user.id, name: user.name });
-  return <Drift data={mapDriftData(data)} />;
+      {tab === "team" && (
+        <div className="overflow-hidden rounded-xl border border-border bg-card">
+          <AgTable>
+            <thead>
+              <tr>
+                <AgTh>Coach</AgTh>
+                <AgTh>Rolle</AgTh>
+                <AgTh num>Spillere</AgTh>
+                <AgTh>Status</AgTh>
+              </tr>
+            </thead>
+            <tbody>
+              {teamRader.length === 0 && (
+                <tr>
+                  <td colSpan={4} className="px-[14px] py-10 text-center text-[13px] text-muted-foreground">
+                    Ingen coacher registrert ennå.
+                  </td>
+                </tr>
+              )}
+              {teamRader.map((c) => (
+                <tr key={c.id} className={agTrClass}>
+                  <AgTd>
+                    <AgPlayerCell initials={initials(c.navn)} name={c.navn} size={28} tone={c.eier ? "pri" : "neu"} />
+                  </AgTd>
+                  <AgTd>{c.rolle}</AgTd>
+                  <AgTd num>{c.spillere}</AgTd>
+                  <AgTd>
+                    <AgChip tone={c.eier ? "lime" : "neu"}>{c.eier ? "Eier" : "Coach"}</AgChip>
+                  </AgTd>
+                </tr>
+              ))}
+            </tbody>
+          </AgTable>
+        </div>
+      )}
+
+      {tab === "tilgang" && (
+        <div className="max-w-[640px]">
+          <div className="rounded-xl border border-border bg-card px-[18px] py-1">
+            {TILGANGSRADER.map((label, i) => (
+              <div
+                key={label}
+                className={cn(
+                  "flex items-center justify-between py-[15px]",
+                  i > 0 && "border-t border-border",
+                )}
+              >
+                <span className="text-sm font-medium text-foreground">{label}</span>
+                {/* Org-innstillinger er ikke modellert ennå — ingen påfunnet av/på-tilstand */}
+                <span className="font-mono text-[11px] font-bold text-muted-foreground">—</span>
+              </div>
+            ))}
+          </div>
+          <Link
+            href="/admin/settings/tilgang"
+            className="mt-3 inline-block font-mono text-[10px] font-bold uppercase tracking-[0.1em] text-primary hover:underline"
+          >
+            Full tilgangsmatrise per rolle →
+          </Link>
+        </div>
+      )}
+    </AgPage>
+  );
 }

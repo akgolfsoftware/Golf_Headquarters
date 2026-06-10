@@ -46,7 +46,8 @@ const nextConfig: NextConfig = {
       { source: "/admin/capacity/:path*", destination: "/admin/kapasitet/:path*", permanent: true },
       { source: "/admin/analytics", destination: "/admin/analysere", permanent: true },
       { source: "/admin/analytics/:path*", destination: "/admin/analysere/:path*", permanent: true },
-      { source: "/admin/analyse", destination: "/admin/analysere", permanent: true },
+      // /admin/analyse: Stall-analyse-skjermen (fasit-port juni 2026) — redirecten
+      // til /admin/analysere er fjernet (sidebar «Stall-analyse» peker hit).
       { source: "/admin/audit", destination: "/admin/audit-log", permanent: true },
       { source: "/admin/audit/:path*", destination: "/admin/audit-log/:path*", permanent: true },
 
