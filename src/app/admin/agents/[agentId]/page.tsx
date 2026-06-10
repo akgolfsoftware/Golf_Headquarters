@@ -215,7 +215,7 @@ export default async function AgentDetaljPage({
                     </div>
                     {a.status === "PENDING" && (
                       <div className="shrink-0">
-                        <ApprovalActions actionId={a.id} />
+                        <ApprovalActions actionId={a.id} playerId={a.user.id} />
                       </div>
                     )}
                   </div>

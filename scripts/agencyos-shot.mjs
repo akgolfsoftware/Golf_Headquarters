@@ -37,7 +37,7 @@ const KEYS = [
 
 // Strekk scroll-containere så fullPage fanger alt; skjul tweaks-panel + dev-toggle.
 const UNWRAP_CSS = `
-  .tweaks, .tweaks-panel, [class*='tweak'], .tb-toggle { display: none !important; }
+  .tweaks, .tweaks-panel, [class*='tweak'] { display: none !important; }
   html, body { height: auto !important; overflow: visible !important; }
   .app { min-height: 0 !important; align-items: flex-start !important; }
   .sidebar { height: auto !important; min-height: 100vh !important; position: static !important; }

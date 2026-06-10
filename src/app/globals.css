@@ -70,18 +70,18 @@
   --accent: 72 92% 62%;
   --accent-foreground: 157 53% 8%;
 
-  --secondary: 157 39% 18%;
+  --secondary: 157 39% 14%;        /* #163027 — fasit .dark (forest-600, = card) */
   --secondary-foreground: 60 8% 96%;
-  --muted: 157 39% 18%;
-  --muted-foreground: 60 8% 68%;
+  --muted: 157 39% 14%;
+  --muted-foreground: 137 4% 63%;  /* #9CA39E — fasit .dark */
 
-  --destructive: 0 56% 60%;
-  --destructive-foreground: 60 8% 96%;
-  --success: 154 50% 50%;
+  --destructive: 2 80% 75%;        /* #F2908C — fasit .dark */
+  --destructive-foreground: 157 53% 8%;
+  --success: 157 49% 56%;          /* #56C59A — fasit .dark */
   --success-foreground: 157 53% 8%;
   --warning: 34 80% 60%;
   --warning-foreground: 157 53% 8%;
-  --info: 207 85% 65%;
+  --info: 222 100% 76%;            /* #84A9FF — fasit .dark */
   --info-foreground: 157 53% 8%;
 
   --chart-1: 72 92% 62%;
@@ -91,8 +91,8 @@
   --chart-5: 207 85% 65%;
   --chart-6: 280 60% 65%;
 
-  --border: 157 39% 22%;
-  --input: 157 39% 22%;
+  --border: 158 30% 24%;           /* #2B4F42 — fasit .dark (forest-300) */
+  --input: 158 30% 24%;
   --ring: 72 92% 62%;
 }
 
@@ -172,8 +172,13 @@
   --radius-btn: 8px;
   --radius-tier: 10px;
 
-  /* Sidebar-bakgrunner per overflate */
-  --color-coach-sidebar: #0F2A22;
+  /* Sidebar-bakgrunner per overflate.
+   * Coach-verdier = fasit-paletten (colors_and_type.css):
+   * sidebar forest-900 #0A1F17 · border forest-300 #2B4F42 · innhold forest-700 (.dark --background). */
+  --color-coach-sidebar: #0A1F17;
+  --color-coach-sidebar-border: #2B4F42;
+  --color-alert-coral: #FF6B6B;
+  --color-chip-req-bg: rgba(37, 99, 235, 0.1); /* fasit .type.req-flate (mode-invariant) */
   --color-player-sidebar: #0F2A22;
   --color-coach-content: #F0F2F0;
   --color-player-content: #F5F7F5;
@@ -223,9 +228,9 @@
   --color-line: #E5E3DD;
   --color-line-soft: #EFEDE6;
 
-  --color-success: #1A7D56;
+  --color-success: hsl(var(--success));
   --color-success-bg: #E5F1EA;
-  --color-warning: #B8852A;
+  --color-warning: hsl(var(--warning));
   --color-warning-bg: #FFF0D6;
   --color-danger: #A32D2D;
   --color-danger-bg: #FAE3E3;
@@ -245,9 +250,13 @@
   --duration-long: 320ms;
 }
 
-/* ---------- Base ---------- */
-* {
-  border-color: hsl(var(--border));
+/* ---------- Base ----------
+ * NB: i @layer base — unlayered CSS ville slått ut ALLE border-fargeklasser
+ * (border-primary, border-accent, …) siden unlayered vinner over @layer utilities. */
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
 }
 
 html {

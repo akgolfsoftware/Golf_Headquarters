@@ -16,7 +16,7 @@ const PASSWORD = process.env.SHOT_PASSWORD || "Screentest123!";
 const VIEWPORTS = {
   mobil: { width: 430, height: 932, isMobile: true, hasTouch: true, deviceScaleFactor: 2 },
   ipad: { width: 834, height: 1112, isMobile: true, hasTouch: true, deviceScaleFactor: 2 },
-  desktop: { width: 1280, height: 900, isMobile: false, hasTouch: false, deviceScaleFactor: 1 },
+  desktop: { width: 1280, height: 900, isMobile: false, hasTouch: false, deviceScaleFactor: 2 },
 };
 const vp = VIEWPORTS[DEVICE] || VIEWPORTS.mobil;
 const SCREENS = PATHS_CSV.split(",").map((s) => { const [name, path] = s.split(":"); return { name, path }; });
@@ -51,7 +51,9 @@ for (const s of SCREENS) {
     await page.goto(`${BASE}${s.path}`, { waitUntil: "networkidle", timeout: 30000 });
     await page.waitForTimeout(1200);
     await page.evaluate(() => window.scrollTo(0, 0));
-    await page.addStyleTag({ content: "nextjs-portal,[data-nextjs-toast],#__next-dev-tools-indicator{display:none!important} nav[aria-label='Hovednavigasjon']{display:none!important}" }).catch(() => {});
+    // Mobil: skjul fixed bunn-nav (overlapper full-page). Desktop: sidebar er del av fasiten — behold.
+    const hideNav = DEVICE === "mobil" ? " nav[aria-label='Hovednavigasjon']{display:none!important}" : "";
+    await page.addStyleTag({ content: "nextjs-portal,[data-nextjs-toast],#__next-dev-tools-indicator{display:none!important}" + hideNav }).catch(() => {});
     await page.waitForTimeout(200);
     await page.screenshot({ path: `${OUT}/${s.name}.png`, fullPage: true });
     const h = await page.evaluate(() => document.body.innerText.slice(0, 50).replace(/\n/g, " "));
