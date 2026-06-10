@@ -30,6 +30,10 @@
       "schedule": "0 3 * * 1"
     },
     {
+      "path": "/api/cron/benchmark-sync",
+      "schedule": "0 6 * * 1"
+    },
+    {
       "path": "/api/cron/check-stuck-bookings",
       "schedule": "*/15 * * * *"
     },

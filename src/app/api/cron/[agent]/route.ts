@@ -10,6 +10,7 @@ import { runTrainingGap } from "@/lib/agents/training-gap";
 import { runSgInsights } from "@/lib/sg-hub/insight-engine";
 import { syncDataGolf } from "@/lib/sg-hub/datagolf-sync";
 import { runClubTrends } from "@/lib/sg-hub/club-trend-aggregator";
+import { runBenchmarkSync } from "@/lib/admin/benchmark-sync";
 import {
   syncDataGolfSchedules,
   syncNorwegianPlayers,
@@ -36,6 +37,8 @@ const AGENTS: Record<string, () => Promise<unknown>> = {
   "sg-insights": runSgInsights,
   "datagolf-sync": syncDataGolf,
   "club-trends": runClubTrends,
+  // NGF-testfasiter — ukentlig DataGolf-drift (mandager 08:00 norsk tid)
+  "benchmark-sync": runBenchmarkSync,
   // /turneringer-syncs
   "turneringer-schedule": syncDataGolfSchedules,
   "turneringer-players": syncNorwegianPlayers,
