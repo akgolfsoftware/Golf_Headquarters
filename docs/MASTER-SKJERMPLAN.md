@@ -378,7 +378,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Stall-analyse | `/admin/analyse` | – | --- | ✓ | ~ | ~ | ~ |
 | Analytics | `/admin/analytics` | – | --- | ✓ | ~ | ~ | ~ |
 | Lag-snitt | `/admin/lag-snitt` | – | --- | ✓ | ~ | ~ | ~ |
-| Tester (på tvers) | `/admin/tester` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| Tester (på tvers) | `/admin/tester` | ✓ | ✓✓– | ~ | ~ | ~ | ✓ |
 | · Test-detalj | `/admin/tester/[id]` | ~ | ✓✓– | ✓ | ~ | ~ | ~ |
 | · Foreslåtte tester | `/admin/tester/foreslatte` | – | --- | ✓ | ~ | ~ | ~ |
 | · Tildel test | `/admin/tester/tildel/[spillerId]` | – | --- | ✓ | ~ | ~ | ~ |
@@ -655,6 +655,7 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 ## Endringslogg
 
+- 10. juni: **Tester-matrisen** (`/admin/tester`) fikk DataGolf-fasiter v1: 12 av 20 tester i NGF-batteriet har nå strukturert nivåstige (PGA topp 40 → Scratch) i `protocol.benchmarks`; matrisen viser nivå-badge per målt celle med hele stigen i tooltip + «Data powered by DataGolf»-attribusjon i footer. Data-haken `–` → `~`: fasitene ligger klare i seed (`npx tsx prisma/scripts/seed-ngf-test-protocols.ts`), men seed-kjøring mot databasen gjenstår som bevisst eget steg. 8 tester (gates/speed + fysiske) venter på interne/NGF-normer i v2.
 - 4. juni: To nye skjermer lagt til på ekte data (port av sprint3-arbeid):
   - **Logg treningsøkt** (`/portal/trening/logg`) — spiller logger treningstid per SG-område; lenket fra PlayerHQ-sidemenyen under «Planlegge».
   - **Fremgang** (`/admin/spillere/[id]/fremgang`) — coach-fane med SG-grafer, treningsvolum og korrelasjon trening↔SG; coach-beskyttet.

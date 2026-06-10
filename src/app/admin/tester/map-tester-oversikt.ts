@@ -44,6 +44,7 @@ function mapCell(c: TesterMatrixData["rows"][number]["cells"][number]): Cell {
     when: c.when ?? undefined,
     delta: c.delta?.text,
     deltaTone: c.delta?.tone,
+    benchmark: c.benchmark ?? undefined,
   };
 }
 
@@ -100,7 +101,11 @@ export function mapTesterOversikt(data: TesterMatrixData): TesterOversiktData {
     legendNote: data.noTargets
       ? "Mål-fargekoding krever definerte mål — ikke satt ennå"
       : undefined,
-    showColorLegend: !data.noTargets,
+    // Nivå-badge-legende (DataGolf) — ikke over/nær/under-fargekoding, som
+    // krever per-test mål vi ikke har. Badge per celle viser oppnådd tour-nivå.
+    showColorLegend: false,
+    levelLegend: !data.noTargets,
+    attribution: data.noTargets ? undefined : "Data powered by DataGolf",
     columns,
     rows,
     footerHint: "Klikk en celle for historikk · Klikk Tildel for å planlegge ny test",

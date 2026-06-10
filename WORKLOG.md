@@ -5,6 +5,61 @@
 
 ---
 
+## 2026-06-10 — Benchmarks i NGF-testbatteriet (DataGolf-fasiter v1)
+
+**Branch:** `feature/test-benchmarks`
+
+### Hva ble gjort
+- `prisma/seed-data/ngf-test-battery.json` — 12 av 20 tester fikk strukturert `benchmarks`-felt
+  (unit/direction/source + 7-nivås stige PGA topp 40 → Scratch, med confidence
+  measured/reference/estimated per DataGolf-fasittabellen). 8 tester (Nærspill Gate,
+  VISA Express, Putt Gate, Putt Speed Control + de 4 fysiske) fikk `benchmarks: null` +
+  `benchmarks_note` (norm kommer i v2). `benchmarks_detail` lagt på 8-Ball Variation
+  (PGA-forventning per slagtype) og Putt 1-3m (PGA hullprosent per avstand).
+- Fritekst-korreksjon: «PEI < 0.06 (Top 40 avg)» var feil — 6 % er PGA-SNITT, ikke topp 40.
+  `pga_benchmark`-tekster oppdatert i JSON + seed-protokollene så de samsvarer med fasit-tallene.
+- `prisma/scripts/seed-ngf-test-protocols.ts` — leser nå batteriet fra JSON, validerer
+  (kjente id-er + monotont ordnet nivåstige, kaster ved feil) og merger
+  `benchmarks`/`benchmarks_note`/`benchmarks_detail` inn i `protocol`-JSON ved alle tre
+  skrivesteder. NB: matching skjer på test-**id** (identisk id-sett i JSON og PROTOCOLS) —
+  name-feltene avviker bevisst mellom filene ("Inspill Basic" vs DB-navnet "Inspill Basis").
+- 🆕 `src/lib/admin/test-benchmarks.ts` — zod-validert lesing av `protocol.benchmarks`
+  (JSON-blob-gotcha: aldri blind cast), retningsbevisst nivåberegning (`achievedLevel`),
+  tooltip-stige (`ladderText`), norsk tallformat. PEI-ratio (≤ 1,5) normaliseres til prosent
+  før sammenligning siden gamle scores kan være lagret som 0,057 i stedet for 5,7.
+- `src/lib/admin/tester-matrix-data.ts` — `MatrixCell` har nå `benchmark` (beste oppnådde
+  nivå + ladder); enhet/retning hentes fra benchmarks når de finnes; `noTargets` settes kun
+  når INGEN tester har benchmarks (fallback). For å holde fila under 300 linjer ble hjelpere
+  flyttet mekanisk ut: 🆕 `tester-matrix-format.ts` (format/utledning) og
+  🆕 `tester-matrix-types.ts` (typer, re-eksportert fra data-fila så importer ikke brekker).
+- 🆕 `src/components/admin/tester/nivaa-badge.tsx` — kompakt nivå-chip (PGA fremhevet,
+  «U/SCR» dempet), tooltip med hele nivåstigen. Registrert i `docs/component-library.md`.
+- `src/components/admin/tester/tester-oversikt.tsx` + `src/app/admin/tester/map-tester-oversikt.ts`
+  — badge rendres ved siden av verdien i målte celler, ny nivå-legende (erstatter
+  over/nær/under-legenden som ville vært misvisende uten per-test mål), footer-attribusjon
+  **«Data powered by DataGolf»** (lisenskrav). Umålte celler uendret. Den eldre, ukoblede
+  `tester-matrix.tsx` er bevisst ikke endret (siden bruker v10 `TesterOversikt`).
+
+### Seed — IKKE kjørt i denne sesjonen (bevisst)
+Kjøres som eget, bevisst steg når branchen er godkjent:
+```bash
+npx tsx prisma/scripts/seed-ngf-test-protocols.ts
+```
+Scriptet validerer batteriet før det skriver, og er idempotent (update på navn-match).
+Før seed er kjørt viser matrisen fallback-tilstanden (nøytral «målt», noTargets-varsel).
+
+### Verifikasjon
+- `npx prisma validate` ✓ · `npx prisma generate` ✓ · `npx tsc --noEmit` 0 feil ·
+  ESLint 0 feil på endrede filer · `npm run build` grønn
+- Logikk-test (tsx): alle 12 benchmarks validerer mot zod; CHS 118→PGA-snitt, 121→topp 40,
+  95→U/SCR; Inspill 6,5→CHA, ratio 0,055→PGA; Putt 58→CHA, 63→PGA — retning + normalisering OK
+- Nettleser-test av badge krever seedet DB + coach-innlogging — gjøres etter seed-kjøring
+
+### Commit
+`feat: benchmarks i NGF-testbatteriet (DataGolf-fasiter v1)`
+
+---
+
 ## 2026-05-16 — Fase 2: Admin-konsolidering
 
 **Branch:** `feat/admin-konsolidering`
