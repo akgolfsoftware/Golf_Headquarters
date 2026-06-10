@@ -138,8 +138,9 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | TrackMan (liste) | `/portal/mal/trackman` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
 | · TrackMan-sesjon | `/portal/mal/trackman/[id]` | ~ | ✓✓– | ✓ | ~ | ~ | ~ |
 | · TrackMan (alt. adresse) | `/portal/trackman/[sessionId]` | ~ | ✓✓– | ✓ | ~ | ~ | ~ |
-| Tester (oversikt) | `/portal/tren/tester` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
-| · Test-detalj | `/portal/tren/tester/[testId]` | ~ | ✓✓– | ✓ | ~ | ~ | ~ |
+| Tester (oversikt) ★ | `/portal/tren/tester` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
+| · Test-detalj ★ | `/portal/tren/tester/[testId]` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
+| · Test-gjennomføring (scorekort) ★ | `/portal/tren/tester/[testId]/gjennomfor` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
 | · Test-katalog (NGF) | `/portal/tren/tester/katalog` | – | --- | ✓ | ~ | ~ | ~ |
 | · Ny test | `/portal/tren/tester/ny` | – | --- | ✓ | ~ | ~ | ~ |
 | · Ny egen test | `/portal/tren/tester/ny/egen` | – | --- | ✓ | ~ | ~ | ~ |
@@ -655,6 +656,8 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 ---
 
 ## Endringslogg
+
+- 10. juni (test-modul): **Komplett test-flyt for spiller bygd fra Team Norway IUP-arket** (Drive/Data/team-norway-iup-2025.xlsx): katalog (36 tester per pyramide-område m/ søk), detalj (protokoll-steg, scoring, historikk m/ trend, NGF-lenke), gjennomføring m/ scorekort-motor (zod-parset protocol → Treff/Bom/steppere/tallfelt, per-forsøk lagret i TestResult.details). E2E-verifisert m/ ekte lagring. FYS-vekting fra IUP (1/1/0,5/0,166/1) vises som «foreslått» — formel fortsatt ikke låst. Ref-arket = SG-putting-baseline (0–18 m) — kandidat for SG-putt-rekalibreringen (kjent feilkalibrering).
 
 - 10. juni (Fase 6): **iPad-sveip fullført — 0 brudd.** 21 portede ruter sjekket på 834px; 5 responsive brudd funnet og lukket (Planlegge mode-rail < 1280, Hjem/Meg én kolonne på iPad, runde-ny 6-kol hull-grid for touch). Alle portede PlayerHQ-skjermer + forsiden står nå med Mob/Desk/iPad ✓✓✓. PlayerHQ-sporet + marketing-forsiden er KOMPLETT; gjenstår: AgencyOS (Fase 3+4, egen sesjon) + bevisst utsatt (live-økt, coach-panel, marketing-undersider).
 
