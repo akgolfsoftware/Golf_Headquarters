@@ -285,6 +285,22 @@ async function main() {
     ],
   });
 
+
+  // 12. Varsler (Varsler-skjermen) — blanding i dag / tidligere, noen uleste
+  await prisma.notification.deleteMany({ where: { userId: player.id } });
+  const naa = new Date();
+  const minus = (t: number) => new Date(naa.getTime() - t);
+  await prisma.notification.createMany({
+    data: [
+      { userId: player.id, type: "melding", title: "Anders Kristiansen", body: "«Bra økt i dag — se klippet jeg la i Videoer»", link: "/portal/coach", createdAt: minus(2 * 3600_000) },
+      { userId: player.id, type: "plan", title: "Ny treningsplan · denne uka", body: "Anders la til 4 økter i planen din", link: "/portal/planlegge", createdAt: minus(5 * 3600_000) },
+      { userId: player.id, type: "drill", title: "Putt-test torsdag kl 10", body: "Lagt i kalenderen din", link: "/portal/analysere", createdAt: minus(6 * 3600_000), readAt: minus(3600_000) },
+      { userId: player.id, type: "turnering", title: "Klubbmesterskap — påmelding bekreftet", body: "Oslo GK", link: "/portal/tren/turneringer", createdAt: minus(30 * 3600_000), readAt: minus(20 * 3600_000) },
+      { userId: player.id, type: "runde", title: "Ny innsikt klar", body: "3 funn fra siste 5 runder", link: "/portal/analysere", createdAt: minus(50 * 3600_000), readAt: minus(40 * 3600_000) },
+      { userId: player.id, type: "booking", title: "Booking bekreftet", body: "Pro-time fredag 11:00", link: "/portal/booking", createdAt: minus(76 * 3600_000), readAt: minus(70 * 3600_000) },
+    ],
+  });
+
   console.log(`\n✓ Ferdig. Login: ${EMAIL} / ${PASSWORD}`);
   await prisma.$disconnect();
 }

@@ -1,22 +1,22 @@
 "use client";
 
 /**
- * Onboarding-wizard — mobil-først chrome (430px).
- * Pixel-port av public/design-handover/playerhq/components-onboarding.html.
+ * Onboarding-wizard — felles chrome (mobil-først, 430px).
+ * Visuelt skall fra fersk fasit: public/design-handover/AK Golf HQ Design
+ * System/playerhq-app/ph-auth.jsx → AOnboarding (StepsRail + AHead + CTA-rad).
  *
- * Felles ramme rundt hvert wizard-steg:
- *   - Progress-prikker (done / now / todo) — én per steg, forutsigbar utfylling
- *   - Header: "← Tilbake" + "STEG N AV M" (mono-caps), jf. design-prompt
- *   - CTA-rad nederst (primær + valgfri sekundær/skip)
+ *   - Steps-rail: tynne baner — fullført = lime, aktiv = grønn, gjenstår = border
+ *   - AHead-typografi: eyebrow (mono-caps) → 30px display-tittel → ingress
+ *   - CTA-rad: valgfri spøkelses-tilbakeknapp + primær (52px, display-font, pil)
  *
- * Ren presentasjon — all steg-logikk og lagre-actions bor i onboarding-wizard.tsx.
+ * Ren presentasjon — all steg-logikk og lagre-actions bor i wizardene.
  * Ingen hardkodet hex, kun DS-token-klasser. Ingen emoji — kun lucide-react.
  */
 
-import { ArrowRight, ChevronLeft, type LucideIcon } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronLeft, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// ── Progress-prikker ────────────────────────────────────────────
+// ── Steps-rail (fasit: done=accent, aktiv=primary, gjenstår=border) ──
 export function ProgressDots({
   total,
   current,
@@ -25,7 +25,7 @@ export function ProgressDots({
   current: number;
 }) {
   return (
-    <div className="flex gap-1" role="presentation">
+    <div className="flex gap-1.5" role="presentation">
       {Array.from({ length: total }, (_, i) => {
         const n = i + 1;
         const done = n < current;
@@ -34,10 +34,10 @@ export function ProgressDots({
           <span
             key={n}
             className={cn(
-              "h-[3px] flex-1 rounded-full",
-              done && "bg-primary",
-              now && "bg-accent",
-              !done && !now && "bg-secondary",
+              "h-1 flex-1 rounded-full",
+              done && "bg-accent",
+              now && "bg-primary",
+              !done && !now && "bg-border",
             )}
           />
         );
@@ -46,7 +46,7 @@ export function ProgressDots({
   );
 }
 
-// ── Steg-header ─────────────────────────────────────────────────
+// ── Steg-header (brukes av forelder-wizarden) ───────────────────
 export function StepHeader({
   step,
   total,
@@ -86,61 +86,86 @@ export function StepHeader({
   );
 }
 
-// ── Tittel + ingress ────────────────────────────────────────────
+// ── Tittel + ingress (fasit AHead) ──────────────────────────────
 export function StepHeading({
   eyebrow,
   title,
   emphasis,
   titleAfter,
   deck,
+  center,
 }: {
   eyebrow?: string;
   title: string;
   emphasis?: string;
   titleAfter?: string;
   deck?: React.ReactNode;
+  center?: boolean;
 }) {
   return (
-    <div>
+    <div className={cn(center && "text-center")}>
       {eyebrow && (
-        <span className="mb-1.5 block font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
+        <span className="block font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
           {eyebrow}
         </span>
       )}
-      <h2 className="font-display text-[26px] font-bold leading-[1.1] tracking-[-0.02em] text-foreground">
+      <h2
+        className={cn(
+          "font-display text-[30px] font-bold leading-[1.05] tracking-[-0.025em] text-foreground [text-wrap:balance]",
+          eyebrow && "mt-2",
+        )}
+      >
         {title}{" "}
         {emphasis && <em className="font-normal italic text-primary">{emphasis}</em>}
         {titleAfter}
       </h2>
       {deck && (
-        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{deck}</p>
+        <p className="mt-3 text-[14.5px] leading-[1.55] text-muted-foreground">{deck}</p>
       )}
     </div>
   );
 }
 
-// ── Primær CTA ──────────────────────────────────────────────────
+// ── CTA-rad: valgfri spøkelses-tilbake + primær (fasit .btn-primary .btn-lg) ──
 export function PrimaryCta({
   children,
   onClick,
   disabled,
   icon: Icon = ArrowRight,
+  onBack,
+  backDisabled,
 }: {
   children: React.ReactNode;
   onClick: () => void;
   disabled?: boolean;
   icon?: LucideIcon;
+  /** Vis spøkelses-tilbakeknapp til venstre (fasitens CTA-rad). */
+  onBack?: () => void;
+  backDisabled?: boolean;
 }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 text-sm font-bold text-primary-foreground shadow-[0_0_0_1px_hsl(var(--primary))] transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-    >
-      {children}
-      <Icon className="h-[15px] w-[15px]" strokeWidth={2} aria-hidden />
-    </button>
+    <div className="flex gap-2.5">
+      {onBack && (
+        <button
+          type="button"
+          onClick={onBack}
+          disabled={backDisabled}
+          aria-label="Tilbake"
+          className="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-xl text-primary transition-colors hover:bg-primary/5 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <ArrowLeft className="h-4 w-4" strokeWidth={2} aria-hidden />
+        </button>
+      )}
+      <button
+        type="button"
+        onClick={onClick}
+        disabled={disabled}
+        className="flex h-[52px] flex-1 items-center justify-center gap-2 rounded-xl bg-primary px-6 font-display text-[15px] font-semibold tracking-[-0.005em] text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        {children}
+        <Icon className="h-[18px] w-[18px]" strokeWidth={2} aria-hidden />
+      </button>
+    </div>
   );
 }
 

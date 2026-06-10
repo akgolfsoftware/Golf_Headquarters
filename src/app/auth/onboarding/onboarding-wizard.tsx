@@ -2,7 +2,10 @@
 
 /**
  * Onboarding-wizard (spiller) — MOBIL-FØRST 430px.
- * Pixel-port av public/design-handover/playerhq/components-onboarding.html.
+ * Chrome portet til fersk fasit (juni 2026): public/design-handover/
+ * AK Golf HQ Design System/playerhq-app/ph-auth.jsx → AOnboarding
+ * (steps-rail, TRINN-eyebrow + AHead, opt-card-valg, CTA-rad m/tilbake).
+ * NB: fasitens 5 steg ≠ appens låste 7-stegs state-maskin — stegene beholdes.
  *
  * 7-stegs velkomst (state-maskinen i lib/auth/onboarding-state.ts er låst til 7):
  *   1 Velkommen · 2 Om deg + fødselsdato (GDPR <16 gate) · 3 Golf-erfaring ·
@@ -16,6 +19,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
+  Check,
   Coffee,
   CircleDot,
   Dumbbell,
@@ -38,7 +42,6 @@ import {
 } from "./actions";
 import {
   ProgressDots,
-  StepHeader,
   StepHeading,
   PrimaryCta,
   SecondaryLink,
@@ -46,7 +49,6 @@ import {
 import {
   Field,
   TextField,
-  HeroIllo,
   InfoNote,
   FieldGroupLabel,
   OptionRow,
@@ -93,8 +95,8 @@ const FREKVENS_VALG = [3, 4, 5, 6, 7];
 type Profiltype = "MOSJON" | "KONKURRANSE";
 
 const KONKURRANSE_NIVAA = [
-  { id: "KLUBB", label: "Klubbgolfer", sub: "turneringer i klubb" },
-  { id: "TOUR", label: "Tour-aspirant", sub: "NM, Korn Ferry, sikte mot proff" },
+  { id: "KLUBB", label: "Klubbgolfer", sub: "turneringer i klubb", icon: Flag },
+  { id: "TOUR", label: "Tour-aspirant", sub: "NM, Korn Ferry, sikte mot proff", icon: Trophy },
 ];
 
 // Fasilitet-valg for steg 4 — speiler design-HTMLs fasilitets-rader.
@@ -272,60 +274,49 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
     });
   }
 
+  // Fasit-format: «TRINN N AV M» som mono-caps eyebrow rett over tittelen.
   const eyebrowFor: Record<number, string> = {
-    1: "1 av 7 · Velkommen",
-    2: "2 av 7 · Om deg",
-    3: "3 av 7 · Golf-erfaring",
-    4: "4 av 7 · GolfBox",
-    5: "5 av 7 · TrackMan",
-    6: "6 av 7 · Coach og abonnement",
-    7: "7 av 7 · Siste sjekk",
+    1: "VELKOMMEN",
+    2: "TRINN 2 AV 7",
+    3: "TRINN 3 AV 7",
+    4: "TRINN 4 AV 7",
+    5: "TRINN 5 AV 7",
+    6: "TRINN 6 AV 7",
+    7: "TRINN 7 AV 7",
   };
 
   return (
     <div className="w-full">
-      {/* progress + header (felles chrome) */}
-      <div className="mx-auto w-full max-w-[430px] px-4 pt-4">
-        <ProgressDots total={TOTAL_STEPS} current={step} />
-        <div className="mt-3">
-          <StepHeader
-            step={step}
-            total={TOTAL_STEPS}
-            eyebrow={eyebrowFor[step]}
-            onBack={tilbake}
-            canGoBack={step > 1}
-            disabled={pending}
-          />
+      {/* steps-rail (fasit: skjult på velkomst-steget) */}
+      {step > 1 && (
+        <div className="mx-auto w-full max-w-[430px] px-4 pt-5">
+          <ProgressDots total={TOTAL_STEPS} current={step} />
         </div>
-      </div>
+      )}
 
-      {/* ── STEG 1 — Velkommen ─────────────────────────────────── */}
+      {/* ── STEG 1 — Velkommen (fasit: sentrert logo + AHead + CTA) ── */}
       {step === 1 && (
         <StepBody>
-          <HeroIllo label="Velkommen" />
-          <StepHeading
-            title="Vi"
-            emphasis="gleder oss"
-            titleAfter=" til å jobbe med deg."
-            deck="Coach Anders har invitert deg inn i AK Golf Academy. De neste minuttene tar vi en kort gjennomgang for å sette opp profilen din."
-          />
-          <div className="rounded-xl bg-accent px-4 py-4">
-            <blockquote className="font-display text-[15px] italic leading-snug text-accent-foreground">
-              Vi tenker langsiktig. Du blir bedre ved å gjøre de små tingene riktig — hver dag,
-              i 3 år, i 5 år. Vi bygger karriere, ikke quick fixes.
-            </blockquote>
-            <cite className="mt-2 block font-mono text-[10px] font-bold uppercase not-italic tracking-[0.10em] text-primary">
-              Anders Kristiansen · Head Coach
-            </cite>
+          <div className="pt-2">
+            <div className="mb-5 flex justify-center">
+              <span
+                aria-hidden
+                className="grid h-14 w-14 place-items-center rounded-[14px] bg-accent font-display text-2xl font-extrabold leading-none text-primary"
+              >
+                ak
+              </span>
+            </div>
+            <StepHeading
+              center
+              eyebrow={eyebrowFor[1]}
+              title="Vi"
+              emphasis="gleder oss"
+              titleAfter=" til å jobbe med deg."
+              deck="Coach Anders har invitert deg inn i AK Golf Academy. De neste minuttene tar vi en kort gjennomgang for å sette opp profilen din."
+            />
           </div>
-          <p className="text-xs leading-relaxed text-muted-foreground">
-            Du kan når som helst gå tilbake, lagre og fortsette senere.{" "}
-            <strong className="font-semibold text-foreground">
-              Ingenting er låst før du bekrefter siste steg.
-            </strong>
-          </p>
           <PrimaryCta onClick={neste} disabled={pending}>
-            La oss starte
+            Kom i gang
           </PrimaryCta>
         </StepBody>
       )}
@@ -334,6 +325,7 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
       {step === 2 && (
         <StepBody>
           <StepHeading
+            eyebrow={eyebrowFor[2]}
             title="La oss bli"
             emphasis="kjent"
             titleAfter="."
@@ -396,8 +388,13 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
               fortsette gjennom alle steg, men booking og logging åpnes først etter bekreftelse.
             </InfoNote>
           )}
-          <PrimaryCta onClick={nesteSteg2} disabled={pending}>
-            {pending ? "Lagrer…" : "Neste — Golf-erfaring"}
+          <PrimaryCta
+            onClick={nesteSteg2}
+            disabled={pending}
+            onBack={tilbake}
+            backDisabled={pending}
+          >
+            {pending ? "Lagrer…" : "Neste"}
           </PrimaryCta>
         </StepBody>
       )}
@@ -406,6 +403,7 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
       {step === 3 && (
         <StepBody>
           <StepHeading
+            eyebrow={eyebrowFor[3]}
             title="Fortell om"
             emphasis="spillet ditt"
             titleAfter="."
@@ -476,12 +474,13 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
               <ImplicationBanner>
                 Dette betyr: periodisert årsplan · testuke · resultatmål
               </ImplicationBanner>
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col gap-2.5">
                 {KONKURRANSE_NIVAA.map((n) => (
                   <OptionRow
                     key={n.id}
                     label={n.label}
                     sub={n.sub}
+                    icon={n.icon}
                     selected={konkurranseNivaa === n.id}
                     onClick={() => setKonkurranseNivaa(n.id)}
                   />
@@ -492,7 +491,7 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
 
           {/* Fasiliteter */}
           <FieldGroupLabel>Hvor trener du?</FieldGroupLabel>
-          <div className="flex flex-col gap-1.5">
+          <div className="flex flex-col gap-2.5">
             {FASILITETER.map((f) => (
               <FacilityRow
                 key={f.id}
@@ -553,8 +552,13 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
             ))}
           </div>
 
-          <PrimaryCta onClick={neste} disabled={pending}>
-            {pending ? "Lagrer…" : "Neste — Koble GolfBox"}
+          <PrimaryCta
+            onClick={neste}
+            disabled={pending}
+            onBack={tilbake}
+            backDisabled={pending}
+          >
+            {pending ? "Lagrer…" : "Neste"}
           </PrimaryCta>
         </StepBody>
       )}
@@ -563,6 +567,7 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
       {step === 4 && (
         <StepBody>
           <StepHeading
+            eyebrow={eyebrowFor[4]}
             title="Koble til"
             emphasis="GolfBox"
             titleAfter="."
@@ -601,8 +606,13 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
           <SecurityStrip>
             Vi følger GDPR og lagrer kun det vi trenger for å hjelpe deg utvikle deg som spiller.
           </SecurityStrip>
-          <PrimaryCta onClick={neste} disabled={pending}>
-            {pending ? "Lagrer…" : "Neste — TrackMan"}
+          <PrimaryCta
+            onClick={neste}
+            disabled={pending}
+            onBack={tilbake}
+            backDisabled={pending}
+          >
+            {pending ? "Lagrer…" : "Neste"}
           </PrimaryCta>
           <SecondaryLink onClick={neste} disabled={pending}>
             Hopp over — jeg kobler til senere
@@ -614,6 +624,7 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
       {step === 5 && (
         <StepBody>
           <StepHeading
+            eyebrow={eyebrowFor[5]}
             title="Koble til"
             emphasis="TrackMan"
             titleAfter="."
@@ -645,8 +656,13 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
             <strong className="font-semibold">Bruker du Performance Studio på GFGK?</strong> Da er
             TrackMan automatisk koblet på via klubb-abonnementet.
           </SecurityStrip>
-          <PrimaryCta onClick={neste} disabled={pending}>
-            {pending ? "Lagrer…" : "Neste — Coach og abonnement"}
+          <PrimaryCta
+            onClick={neste}
+            disabled={pending}
+            onBack={tilbake}
+            backDisabled={pending}
+          >
+            {pending ? "Lagrer…" : "Neste"}
           </PrimaryCta>
           <SecondaryLink onClick={neste} disabled={pending}>
             Hopp over — jeg har ikke TrackMan-konto
@@ -658,6 +674,7 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
       {step === 6 && (
         <StepBody>
           <StepHeading
+            eyebrow={eyebrowFor[6]}
             title="Din"
             emphasis="coach"
             titleAfter=" og ditt opplegg."
@@ -708,8 +725,13 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
             />
           </div>
 
-          <PrimaryCta onClick={neste} disabled={pending}>
-            {pending ? "Lagrer…" : "Neste — Siste sjekk"}
+          <PrimaryCta
+            onClick={neste}
+            disabled={pending}
+            onBack={tilbake}
+            backDisabled={pending}
+          >
+            {pending ? "Lagrer…" : "Neste"}
           </PrimaryCta>
         </StepBody>
       )}
@@ -718,6 +740,7 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
       {step === 7 && (
         <StepBody>
           <StepHeading
+            eyebrow={eyebrowFor[7]}
             title="Nesten"
             emphasis="ferdig"
             titleAfter=" — siste sjekk."
@@ -761,9 +784,11 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
           <PrimaryCta
             onClick={fullfor}
             disabled={pending || !acceptedTerms || !acceptedPrivacy}
-            icon={Flag}
+            onBack={tilbake}
+            backDisabled={pending}
+            icon={Check}
           >
-            {pending ? "Lagrer…" : "Fullfør registrering"}
+            {pending ? "Lagrer…" : "Fullfør"}
           </PrimaryCta>
         </StepBody>
       )}

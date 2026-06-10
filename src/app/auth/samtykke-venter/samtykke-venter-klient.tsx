@@ -1,8 +1,25 @@
 "use client";
 
+/**
+ * Samtykke-venterom (spiller under 16) — visuelt skall fra fersk fasit:
+ * public/design-handover/AK Golf HQ Design System/playerhq-app/ph-auth.jsx
+ *   → ASamtykke (klokke-badge → «Venter på samtykke»-chip → «Nesten i mål.»
+ *     → STATUS-kort med tre rader → sekundær påminnelses-CTA → logg ut-lenke).
+ *
+ * Bevisste avvik fra fasit:
+ * - Fasit sier «under 18» — appens GDPR-gate er 16 år (art. 8) → teksten sier 16.
+ * - Fasitens «Send påminnelse» er én knapp; appen trenger e-postfeltet for å
+ *   resende/endre foresatt-adresse (eksisterende logikk beholdt urørt).
+ * - Fasitens demo-«hopp over og fortsett»-kort er demo-chrome → utelatt.
+ * - chip-warn-fargene (#FBEFD4/#6B4D11) er ikke DS-tokens → warning-token brukes.
+ * - Topp-logo + kort-ramme beholdt (frittstående side, konsistent med søsken).
+ *
+ * KUN presentasjon endret — resend-action, logout og all state er uendret.
+ */
+
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { Clock, Mail, LogOut, RefreshCw } from "lucide-react";
+import { Check, Clock, Mail } from "lucide-react";
 import { resendGuardianInvitation } from "@/app/auth/onboarding/actions";
 import { logout } from "@/lib/auth/logout";
 import { AkGolfLogo } from "@/components/shared/ak-golf-logo";
@@ -32,41 +49,76 @@ export function SamtykkeVenterKlient({ spillerNavn, invitasjonEmail }: Props) {
     });
   }
 
+  // STATUS-kortets rader (fasit) — avledet av eksisterende props/state.
+  const epostSendt = Boolean(invitasjonEmail) || Boolean(status?.ok);
+  const statusRader: { label: string; done: boolean }[] = [
+    { label: "Konto opprettet", done: true },
+    { label: "E-post til forelder sendt", done: epostSendt },
+    { label: "Foreldre-samtykke", done: false },
+  ];
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-gradient-to-b from-background to-secondary/40 p-4 sm:p-8">
-      <div className="w-full max-w-[430px] rounded-2xl border border-border bg-card p-6 sm:p-10 shadow-sm">
-        {/* Logo + eyebrow + tittel */}
-        <div className="mb-8 flex flex-col items-center text-center">
+      <div className="w-full max-w-[430px] rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-10">
+        {/* Logo + klokke-badge + chip + tittel (fasit-hode) */}
+        <div className="mb-6 flex flex-col items-center text-center">
           <Link href="/" aria-label="AK Golf — hjem" className="mb-6 inline-flex">
             <AkGolfLogo width={56} />
           </Link>
 
-          <span className="mb-6 grid h-14 w-14 place-items-center rounded-full bg-warning/15">
-            <Clock className="h-7 w-7 text-warning" strokeWidth={1.75} aria-hidden />
+          <span
+            aria-hidden
+            className="mb-4 grid h-16 w-16 place-items-center rounded-2xl bg-secondary text-primary"
+          >
+            <Clock className="h-8 w-8" strokeWidth={1.5} />
           </span>
 
-          <AthleticEyebrow tone="lime">AK GOLF · FORELDRESAMTYKKE</AthleticEyebrow>
-          <h1 className="mt-4 font-display text-2xl sm:text-3xl font-semibold leading-tight tracking-tight">
-            Venter på <em className="font-normal italic text-primary">samtykke</em>
+          <span className="mb-3 inline-flex rounded-full bg-warning/15 px-2.5 py-1 font-mono text-[9px] font-extrabold uppercase tracking-[0.06em] text-warning">
+            Venter på samtykke
+          </span>
+
+          <h1 className="font-display text-[30px] font-bold leading-[1.05] tracking-[-0.025em] text-foreground [text-wrap:balance]">
+            Nesten <em className="font-normal italic text-primary">i mål.</em>
           </h1>
-          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-            Hei {spillerNavn || "der"}! Du er under 16 år og trenger foreldresamtykke
-            for å bruke AK Golf-plattformen (GDPR art.&nbsp;8).
+          <p className="mt-3 text-[14.5px] leading-[1.55] text-muted-foreground">
+            Hei {spillerNavn || "der"}! Du er under 16 år, så en forelder må godkjenne
+            kontoen din.
+            {epostSendt ? " Vi har sendt en e-post til forelderen du oppga." : ""}
           </p>
         </div>
 
-        {/* Status for sendt invitasjon */}
-        {invitasjonEmail && !status && (
-          <div className="mb-6 flex items-start gap-2 rounded-lg border border-border border-l-[3px] border-l-accent bg-secondary px-4 py-3 text-[13px] leading-relaxed text-foreground">
-            <Mail className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" strokeWidth={1.75} aria-hidden />
-            <span>
-              Invitasjon sendt til <strong className="font-semibold">{invitasjonEmail}</strong>.
-              Be forelderen sjekke innboksen og klikke lenken.
-            </span>
+        {/* STATUS-kort — tre rader med check/klokke (fasit) */}
+        <div className="mb-4 rounded-2xl border border-border bg-card p-[18px] text-left">
+          <AthleticEyebrow>STATUS</AthleticEyebrow>
+          <div className="mt-2.5">
+            {statusRader.map((rad) => (
+              <div key={rad.label} className="flex items-center gap-2.5 py-[7px]">
+                <span
+                  className={`grid h-[22px] w-[22px] shrink-0 place-items-center rounded-full ${
+                    rad.done
+                      ? "bg-accent text-primary"
+                      : "bg-secondary text-muted-foreground"
+                  }`}
+                >
+                  {rad.done ? (
+                    <Check className="h-[13px] w-[13px]" strokeWidth={2.5} aria-hidden />
+                  ) : (
+                    <Clock className="h-3 w-3" strokeWidth={2} aria-hidden />
+                  )}
+                </span>
+                <span
+                  className={`text-[13px] font-medium ${
+                    rad.done ? "text-foreground" : "text-muted-foreground"
+                  }`}
+                >
+                  {rad.label}
+                </span>
+              </div>
+            ))}
           </div>
-        )}
+        </div>
 
-        {/* Resend / legg til forelder */}
+        {/* Resend / legg til forelder — eksisterende logikk, fasit-felt + sekundær-CTA */}
         <form onSubmit={onSend} className="flex flex-col gap-2">
           <label
             htmlFor="guardian-email"
@@ -74,7 +126,7 @@ export function SamtykkeVenterKlient({ spillerNavn, invitasjonEmail }: Props) {
           >
             {invitasjonEmail ? "Send til annen e-post" : "Legg til forelder"}
           </label>
-          <div className="flex h-11 items-center gap-2 rounded-md border border-input bg-background px-3 focus-within:ring-2 focus-within:ring-ring">
+          <div className="flex h-12 items-center gap-2.5 rounded-xl border border-input bg-card px-3.5 transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/20">
             <Mail className="h-4 w-4 shrink-0 text-muted-foreground" strokeWidth={1.75} aria-hidden />
             <input
               id="guardian-email"
@@ -84,16 +136,15 @@ export function SamtykkeVenterKlient({ spillerNavn, invitasjonEmail }: Props) {
               placeholder="forelder@example.com"
               autoComplete="email"
               required
-              className="h-full flex-1 border-none bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground focus-visible:outline-none"
+              className="h-full flex-1 border-none bg-transparent text-[15px] text-foreground outline-none placeholder:text-muted-foreground focus-visible:outline-none"
             />
           </div>
           <button
             type="submit"
             disabled={isPending || !nyEmail.trim()}
-            className="font-display mt-1 inline-flex h-11 items-center justify-center gap-1.5 rounded-md bg-primary px-6 text-sm font-bold tracking-[-0.005em] text-accent transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+            className="font-display mt-1 inline-flex h-11 w-full items-center justify-center rounded-xl text-sm font-semibold tracking-[-0.005em] text-primary shadow-[inset_0_0_0_1px_hsl(var(--primary))] transition-colors hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            <RefreshCw className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
-            {isPending ? "Sender…" : "Send invitasjon"}
+            {isPending ? "Sender…" : invitasjonEmail ? "Send påminnelse" : "Send invitasjon"}
           </button>
 
           {status && (
@@ -116,14 +167,13 @@ export function SamtykkeVenterKlient({ spillerNavn, invitasjonEmail }: Props) {
           </a>
         </p>
 
-        {/* Logg ut — server action (ingen /auth/logout-rute finnes) */}
-        <div className="mt-8 border-t border-border pt-6 text-center">
+        {/* Logg ut — server action (fasit: dempet mono-caps lenke) */}
+        <div className="mt-6 text-center">
           <form action={logout}>
             <button
               type="submit"
-              className="inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors hover:text-foreground"
+              className="font-mono text-[11px] font-bold uppercase tracking-[0.06em] text-muted-foreground transition-colors hover:text-foreground"
             >
-              <LogOut className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden />
               Logg ut
             </button>
           </form>

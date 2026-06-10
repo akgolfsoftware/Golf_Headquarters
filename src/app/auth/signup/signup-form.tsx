@@ -3,8 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { ArrowRight, Check, Lock, Mail, User } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { UserRole, Tier } from "@/generated/prisma/client";
+import { AthleticButton } from "@/components/athletic/button";
+import { AthleticBadge } from "@/components/athletic/badge";
 
 type RoleOption = { value: UserRole; label: string };
 const ROLES: RoleOption[] = [
@@ -116,7 +119,7 @@ export function SignupForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <label className="mb-2 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+        <label className="mb-2 block font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
           Velg medlemskap
         </label>
         <div className="space-y-2">
@@ -128,16 +131,19 @@ export function SignupForm() {
                 type="button"
                 onClick={() => setPkg(p.value)}
                 aria-pressed={aktiv}
-                className={`relative block w-full rounded-md border p-4 text-left transition-colors ${
+                className={`relative block w-full rounded-xl border p-4 text-left transition-colors ${
                   aktiv
                     ? "border-primary bg-primary/5 ring-2 ring-primary/20"
                     : "border-input bg-card hover:border-border"
                 }`}
               >
                 {p.featured && (
-                  <span className="absolute -top-2 right-3 inline-flex items-center rounded-full bg-accent px-2 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-[0.10em] text-accent-foreground">
+                  <AthleticBadge
+                    variant="lime"
+                    className="absolute -top-2 right-4"
+                  >
                     Mest populær
-                  </span>
+                  </AthleticBadge>
                 )}
                 <div className="flex items-baseline justify-between gap-2">
                   <div className="font-display text-sm font-semibold">{p.name}</div>
@@ -146,9 +152,9 @@ export function SignupForm() {
                   </div>
                 </div>
                 {p.trialHint && (
-                  <div className="mt-1 inline-block rounded bg-accent/30 px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-accent-foreground">
+                  <AthleticBadge variant="lime" className="mt-2">
                     {p.trialHint}
-                  </div>
+                  </AthleticBadge>
                 )}
                 <div className="mt-1 text-[12px] leading-snug text-muted-foreground">
                   {p.desc}
@@ -167,6 +173,7 @@ export function SignupForm() {
           onChange={setFirstName}
           required
           autoComplete="given-name"
+          icon={<User className="h-4 w-4 shrink-0 text-muted-foreground" strokeWidth={1.5} aria-hidden />}
         />
         <Felt
           label="Etternavn"
@@ -175,6 +182,7 @@ export function SignupForm() {
           onChange={setLastName}
           required
           autoComplete="family-name"
+          icon={<User className="h-4 w-4 shrink-0 text-muted-foreground" strokeWidth={1.5} aria-hidden />}
         />
       </div>
 
@@ -186,6 +194,8 @@ export function SignupForm() {
         onChange={setEmail}
         required
         autoComplete="email"
+        placeholder="navn@klubb.no"
+        icon={<Mail className="h-4 w-4 shrink-0 text-muted-foreground" strokeWidth={1.5} aria-hidden />}
       />
 
       <div className="grid grid-cols-2 gap-4">
@@ -197,6 +207,8 @@ export function SignupForm() {
           onChange={setPassword}
           required
           autoComplete="new-password"
+          placeholder="Minst 8 tegn"
+          icon={<Lock className="h-4 w-4 shrink-0 text-muted-foreground" strokeWidth={1.5} aria-hidden />}
         />
         <Felt
           label="Bekreft passord"
@@ -206,11 +218,12 @@ export function SignupForm() {
           onChange={setConfirm}
           required
           autoComplete="new-password"
+          icon={<Lock className="h-4 w-4 shrink-0 text-muted-foreground" strokeWidth={1.5} aria-hidden />}
         />
       </div>
 
       <div>
-        <label className="mb-2 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+        <label className="mb-2 block font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
           Jeg er
         </label>
         <div className="flex gap-2">
@@ -221,7 +234,7 @@ export function SignupForm() {
                 key={r.value}
                 type="button"
                 onClick={() => setRole(r.value)}
-                className={`flex-1 rounded-md border px-4 py-2 text-sm transition-colors ${
+                className={`flex-1 rounded-xl border px-4 py-2 text-sm transition-colors ${
                   aktiv
                     ? "border-primary bg-primary/5 font-semibold text-primary"
                     : "border-input bg-card text-foreground hover:border-border"
@@ -234,21 +247,28 @@ export function SignupForm() {
         </div>
       </div>
 
-      <label className="flex items-start gap-2 text-xs text-muted-foreground">
+      <label className="flex cursor-pointer items-start gap-2.5 text-xs text-muted-foreground">
         <input
           type="checkbox"
           checked={accept}
           onChange={(e) => setAccept(e.target.checked)}
-          className="mt-0.5 accent-primary"
+          className="peer sr-only"
         />
+        {/* Fasit-checkbox: 20px, radius 6, primary-fylt med lime hake når huket */}
+        <span
+          aria-hidden
+          className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-md border-[1.5px] border-border bg-card transition-colors peer-checked:border-primary peer-checked:bg-primary peer-focus-visible:ring-2 peer-focus-visible:ring-ring [&>svg]:opacity-0 peer-checked:[&>svg]:opacity-100"
+        >
+          <Check className="h-[13px] w-[13px] text-accent" strokeWidth={3} />
+        </span>
         <span>
           Jeg godtar{" "}
-          <Link href="/vilkar" className="text-primary hover:underline">
-            vilkårene
+          <Link href="/vilkar" className="font-semibold text-primary hover:underline">
+            vilkår
           </Link>{" "}
           og{" "}
-          <Link href="/personvern" className="text-primary hover:underline">
-            personvernerklæringen
+          <Link href="/personvern" className="font-semibold text-primary hover:underline">
+            personvern
           </Link>
           .
         </span>
@@ -257,23 +277,38 @@ export function SignupForm() {
       {error && (
         <div
           role="alert"
-          className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-4 text-sm text-destructive"
+          className="rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-4 text-sm text-destructive"
         >
           {error}
         </div>
       )}
 
-      <button
+      <AthleticButton
         type="submit"
+        variant="primary"
+        size="lg"
         disabled={loading}
-        className="w-full rounded-md bg-primary px-4 py-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
+        aria-busy={loading || undefined}
+        className="w-full"
       >
-        {loading ? "Oppretter konto…" : "Opprett konto"}
-      </button>
+        {loading ? (
+          "Oppretter…"
+        ) : (
+          <>
+            Opprett konto{" "}
+            <ArrowRight className="h-4 w-4" strokeWidth={2} aria-hidden />
+          </>
+        )}
+      </AthleticButton>
 
-      <p className="pt-2 text-center text-sm text-muted-foreground">
-        Har du allerede konto?{" "}
-        <Link href="/auth/login" className="font-medium text-primary hover:underline">
+      <p className="pt-2 text-center">
+        <span className="font-mono text-xs text-muted-foreground">
+          Har du konto?{" "}
+        </span>
+        <Link
+          href="/auth/login"
+          className="rounded-sm font-mono text-xs font-bold text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        >
           Logg inn
         </Link>
       </p>
@@ -289,6 +324,8 @@ function Felt({
   onChange,
   required,
   autoComplete,
+  placeholder,
+  icon,
 }: {
   label: string;
   id: string;
@@ -297,24 +334,30 @@ function Felt({
   onChange: (v: string) => void;
   required?: boolean;
   autoComplete?: string;
+  placeholder?: string;
+  icon?: React.ReactNode;
 }) {
   return (
     <div>
       <label
         htmlFor={id}
-        className="mb-2 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
+        className="mb-2 block font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground"
       >
         {label}
       </label>
-      <input
-        id={id}
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        required={required}
-        autoComplete={autoComplete}
-        className="w-full rounded-md border border-input bg-card px-4 py-4 text-base sm:text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30"
-      />
+      <div className="flex h-12 items-center gap-2 rounded-xl border border-input bg-card px-4 transition-colors focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/30">
+        {icon}
+        <input
+          id={id}
+          type={type}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          required={required}
+          autoComplete={autoComplete}
+          placeholder={placeholder}
+          className="h-full w-full min-w-0 bg-transparent text-base text-foreground outline-none placeholder:text-muted-foreground/60 sm:text-sm"
+        />
+      </div>
     </div>
   );
 }

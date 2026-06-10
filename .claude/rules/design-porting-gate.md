@@ -35,6 +35,11 @@ Dokumenteres her så diff-agenten måler mot riktig fasit:
   undersider, IKKE fasitens sub-topbar med tilbake-pil + sidetittel. Delt shell-chrome-unntak (samme linje som
   hovedskjermene); tilbake-navigasjon skjer via nettleser/bunn-nav. Diff-agenter skal ikke flagge dette.
 
+- **Knappestil (2026-06-10):** appens etablerte knapp-idiom er **rounded-full pill + mono 12px bold uppercase**
+  (samme på alle portede skjermer), der fasit-CSS har radius-12 + display-font 14px sentence-case.
+  Godkjent som app-bredt mønster — diff-agenter skal ikke flagge knapp-form/typografi som følger idiomet.
+  (Farger/høyder/innhold skal fortsatt matche fasit.)
+
 ## Hvorfor dette (ikke bare «vær nøye»)
 
 Jeg har bias mot å bekrefte mitt eget arbeid. En uavhengig diff-agent hvis *jobb* er å finne feil,
