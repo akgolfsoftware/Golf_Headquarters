@@ -12,7 +12,7 @@
  *
  * Totalen er summen av SG-verdier per kategori.
  *
- * Referanse: Mark Broadie, "Every Shot Counts" (2014).
+ * Referanser: Team Norway IUP Ref-ark 2025 (putting) + Mark Broadie, "Every Shot Counts" (2014).
  */
 
 // ---------------------------------------------------------------------------
@@ -55,8 +55,7 @@ export type SgResultat = {
  * Forventet antall slag for å fullføre hullet fra gitt posisjon.
  * 8 distansegrupper per kategori, basert på PGA Top 40-snitt.
  *
- * Alle distanser i meter — PUTT-terskler er oppgitt i fot i Broadie (2014)
- * og konvertert her med konstanten FT_M (1 fot = 0,3048 m).
+ * Alle distanser i meter.
  */
 type BenchmarkGroup = {
   /** Øvre grense for distanse-gruppen (meter), inklusiv */
@@ -65,51 +64,69 @@ type BenchmarkGroup = {
   forventet: number;
 };
 
-/** 1 fot i meter */
-const FT_M = 0.3048;
+/*
+ * KALIBRERING (2026-06-10, Anders-godkjent):
+ *  - PUTT: Team Norway IUP Ref-ark (team-norway-iup-2025.xlsx · «Ref») —
+ *    meter-intervaller 0–18 m, NGF/Team Norway-fasit. 1 m → 1,13 (var 1,85!).
+ *  - OTT/APP/ARG: Mark Broadie, "Every Shot Counts" (2014), PGA Tour-baseline,
+ *    interpolert fra yards til meter-gruppene under.
+ */
 
 const BENCHMARK_OTT: ReadonlyArray<BenchmarkGroup> = [
-  { maxMeters: 180, forventet: 3.7 },
-  { maxMeters: 220, forventet: 3.8 },
-  { maxMeters: 260, forventet: 3.85 },
-  { maxMeters: 300, forventet: 3.95 },
-  { maxMeters: 340, forventet: 4.05 },
-  { maxMeters: 380, forventet: 4.15 },
-  { maxMeters: 430, forventet: 4.3 },
-  { maxMeters: Infinity, forventet: 4.5 },
+  { maxMeters: 120, forventet: 3.0 },
+  { maxMeters: 150, forventet: 3.1 },
+  { maxMeters: 180, forventet: 3.22 },
+  { maxMeters: 220, forventet: 3.36 },
+  { maxMeters: 260, forventet: 3.55 },
+  { maxMeters: 300, forventet: 3.74 },
+  { maxMeters: 340, forventet: 3.9 },
+  { maxMeters: 380, forventet: 4.06 },
+  { maxMeters: 430, forventet: 4.33 },
+  { maxMeters: Infinity, forventet: 4.7 },
 ];
 
 const BENCHMARK_APP: ReadonlyArray<BenchmarkGroup> = [
-  { maxMeters: 50, forventet: 2.55 },
-  { maxMeters: 90, forventet: 2.75 },
-  { maxMeters: 120, forventet: 2.9 },
-  { maxMeters: 150, forventet: 3.0 },
-  { maxMeters: 180, forventet: 3.15 },
-  { maxMeters: 210, forventet: 3.3 },
-  { maxMeters: 240, forventet: 3.5 },
-  { maxMeters: Infinity, forventet: 3.75 },
+  { maxMeters: 30, forventet: 2.5 },
+  { maxMeters: 50, forventet: 2.66 },
+  { maxMeters: 70, forventet: 2.74 },
+  { maxMeters: 90, forventet: 2.79 },
+  { maxMeters: 110, forventet: 2.85 },
+  { maxMeters: 130, forventet: 2.9 },
+  { maxMeters: 150, forventet: 2.99 },
+  { maxMeters: 170, forventet: 3.11 },
+  { maxMeters: 190, forventet: 3.22 },
+  { maxMeters: 210, forventet: 3.36 },
+  { maxMeters: 240, forventet: 3.53 },
+  { maxMeters: Infinity, forventet: 3.7 },
 ];
 
 const BENCHMARK_ARG: ReadonlyArray<BenchmarkGroup> = [
-  { maxMeters: 3, forventet: 2.2 },
-  { maxMeters: 6, forventet: 2.35 },
-  { maxMeters: 10, forventet: 2.5 },
-  { maxMeters: 15, forventet: 2.6 },
-  { maxMeters: 20, forventet: 2.7 },
-  { maxMeters: 25, forventet: 2.8 },
-  { maxMeters: 30, forventet: 2.9 },
-  { maxMeters: Infinity, forventet: 3.05 },
+  { maxMeters: 3, forventet: 2.18 },
+  { maxMeters: 6, forventet: 2.28 },
+  { maxMeters: 10, forventet: 2.36 },
+  { maxMeters: 15, forventet: 2.45 },
+  { maxMeters: 20, forventet: 2.51 },
+  { maxMeters: 25, forventet: 2.57 },
+  { maxMeters: 30, forventet: 2.62 },
+  { maxMeters: Infinity, forventet: 2.75 },
 ];
 
-/** Broadie oppgir putt-terskler i fot; faktoren foran FT_M er fot-verdien. */
+/** Team Norway IUP Ref-ark — forventede slag per putt-avstand (meter). */
 const BENCHMARK_PUTT: ReadonlyArray<BenchmarkGroup> = [
-  { maxMeters: 1 * FT_M, forventet: 1.05 },
-  { maxMeters: 2 * FT_M, forventet: 1.45 },
-  { maxMeters: 3 * FT_M, forventet: 1.7 },
-  { maxMeters: 5 * FT_M, forventet: 1.85 },
-  { maxMeters: 8 * FT_M, forventet: 1.95 },
-  { maxMeters: 12 * FT_M, forventet: 2.05 },
-  { maxMeters: 18 * FT_M, forventet: 2.15 },
+  { maxMeters: 0.9, forventet: 1.04 },
+  { maxMeters: 1.2, forventet: 1.13 },
+  { maxMeters: 1.5, forventet: 1.23 },
+  { maxMeters: 1.8, forventet: 1.34 },
+  { maxMeters: 2.1, forventet: 1.42 },
+  { maxMeters: 2.4, forventet: 1.5 },
+  { maxMeters: 2.7, forventet: 1.56 },
+  { maxMeters: 3.0, forventet: 1.61 },
+  { maxMeters: 4.5, forventet: 1.78 },
+  { maxMeters: 6.0, forventet: 1.87 },
+  { maxMeters: 9.0, forventet: 1.98 },
+  { maxMeters: 12.0, forventet: 2.06 },
+  { maxMeters: 15.0, forventet: 2.14 },
+  { maxMeters: 18.0, forventet: 2.21 },
   { maxMeters: Infinity, forventet: 2.3 },
 ];
 
