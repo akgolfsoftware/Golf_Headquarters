@@ -177,8 +177,8 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | Meg (profil) ★ | `/portal/meg` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
-| · Rediger profil | `/portal/meg/profil/rediger` | – | --- | ✓ | ~ | ~ | ~ |
-| Abonnement | `/portal/meg/abonnement` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| Rediger profil ★ | `/portal/meg/profil` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
+| Abonnement ★ | `/portal/meg/abonnement` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
 | · Oppgrader | `/portal/meg/abonnement/oppgrader` | – | --- | ✓ | ~ | ~ | ~ |
 | · Oppgrader-flyt | `/portal/meg/abonnement/oppgrader/flyt` | – | --- | ✓ | ~ | ~ | ~ |
 | · Avbestill | `/portal/meg/abonnement/avbestill` | – | --- | ✓ | ~ | ~ | ~ |
@@ -186,9 +186,9 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Faktura-detalj | `/portal/meg/abonnement/faktura/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | Mine bookinger | `/portal/meg/bookinger` | – | --- | ✓ | ~ | ~ | ~ |
 | · Endre tid | `/portal/meg/bookinger/reschedule/[bookingId]` | – | --- | ✓ | ~ | ~ | ~ |
-| Helse | `/portal/meg/helse` | – | --- | ✓ | ~ | ~ | ~ |
+| Helse ★ | `/portal/meg/helse` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
 | · Nytt symptom | `/portal/meg/helse/symptom/ny` | – | --- | ✓ | ~ | ~ | ~ |
-| Innstillinger | `/portal/meg/innstillinger` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| Innstillinger ★ | `/portal/meg/innstillinger` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
 | · Varsler | `/portal/meg/innstillinger/varsler` | – | --- | ✓ | ~ | ~ | ~ |
 | · Personvern | `/portal/meg/innstillinger/personvern` | – | --- | ✓ | ~ | ~ | ~ |
 | · Sikkerhet | `/portal/meg/innstillinger/sikkerhet` | – | --- | ✓ | ~ | ~ | ~ |
@@ -199,11 +199,11 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Økter | `/portal/meg/innstillinger/okter` | – | --- | ✓ | ~ | ~ | ~ |
 | Sikkerhet | `/portal/meg/sikkerhet` | – | --- | ✓ | ~ | ~ | ~ |
 | · To-faktor (2FA) | `/portal/meg/sikkerhet/2fa` | – | --- | ✓ | ~ | ~ | ~ |
-| Utstyrsbag | `/portal/meg/utstyrsbag` | – | --- | ✓ | ~ | ~ | ~ |
-| Dokumenter | `/portal/meg/dokumenter` | – | --- | ✓ | ~ | ~ | ~ |
+| Utstyrsbag ★ | `/portal/meg/utstyrsbag` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
+| Dokumenter ★ | `/portal/meg/dokumenter` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
 | Foreldre (foresatt-info) | `/portal/meg/foreldre` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
 | Feedback | `/portal/meg/feedback` | – | --- | ✓ | ~ | ~ | ~ |
-| Hjelpesenter | `/portal/meg/help` | – | --- | ✓ | ~ | ~ | ~ |
+| Hjelpesenter ★ | `/portal/meg/help` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
 | · Hjelp-artikkel | `/portal/meg/help/artikkel/[slug]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Hjelp-kategori | `/portal/meg/help/kategori/[slug]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Kontakt | `/portal/meg/help/kontakt` | – | --- | ✓ | ~ | ~ | ~ |
@@ -656,6 +656,7 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 ## Endringslogg
 
+- 10. juni (pulje 2): **Alle 7 Meg-undersider portet til paritet (mobil + desktop) — Fase 2 pulje 1.** Profil (NY side, ekte lagring), Abonnement (gratis-logikk RETTET: coaching-pakke ⇒ gratis; «PlayerHQ Pro» fjernet), Innstillinger (ekte preferences-toggles), Helse (ekte HealthEntry; Readiness «—» til FYS-formel låses), Utstyrsbag/Dokumenter (seedet + ekte data), Hjelp. 4 uavhengige kritikere → 0 avvik på alt. **App-bred KRITISK fiks:** ulaget `* { border-color }` i globals.css drepte alle border-farge-klasser (lime venstrekanter m.m.) — flyttet til @layer base; tokens rettet mot dokumentert hex (#005840/#F1EEE5/#E5E3DD). Delte primitiver: `meg-sub.tsx` + `toggle.tsx`.
 - 10. juni: **De 5 PlayerHQ-hovedskjermene bygd til DESKTOP-paritet (Fase 1 av komplett-planen).** Mobil var ferdig 9. juni; nå er desktop-layoutene bygd fra desktop-fasiten (HomeDesktop/ExecuteScreen/AnalyzeScreen/MeScreen + full Workbench): hero med inline avatar+knapper + 5-KPI + 2-kol grid (Hjem), h1+lead + faner (Gjennomføre/Analysere), 2-kol header+konto+abonnement (Meg), full Workbench (Planlegge). Mobil-layout bevart urørt (md:hidden), desktop via egne komponenter/md:-breakpoints. Verktøy (`design-shot.mjs`/`app-shot.mjs`) utvidet til desktop+iPad. Kritiker: Hjem 0 avvik; Gjennomføre/Analysere/Meg rettet etter kritiker (fane-typografi sans/Title-Case/primary-underline matcher nå `.tab-btn`-fasit — gjaldt også mobil). Hakene: Mob/Desk/iPad nå `✓✓~` (iPad-responsiv-sjekk gjenstår i Fase 6). **Gjenstår:** PlayerHQ-undersider, AgencyOS (desktop + net-new mobil), marketing, iPad-sveip. Plan: `docs/plan-komplett-skjermer-2026-06-10.md`.
 - 9. juni: **De 5 PlayerHQ-hovedskjermene portet til paritet mot den ferske Claude Design-fasiten (mobil 430px), via porting-gaten med uavhengig kritiker-agent per skjerm.** Avdekket at alle 5 fortsatt kjørte gammelt design/IA («feil skjerm»). Bygd om fra design-kilden, koblet til ekte data, kritiker-loop til 0 avvik hver (Hjem 14→0, Planlegge 8→0, Gjennomføre 11→0, Analysere 11→0, Meg 11→0).
   - **Hjem** (`/portal`): hero+display-headline, 3-KPI, Dagens fokus, Planlegg-i-Workbench, pyramide (5 rader), Resten av dagen, Neste tee, Neste turnering. Utvidet `getHjemData`. Slettet utdatert `hjem-oversikt.tsx`.
