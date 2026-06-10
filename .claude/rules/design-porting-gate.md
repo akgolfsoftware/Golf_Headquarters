@@ -56,6 +56,8 @@ Dokumenteres her så diff-agenten måler mot riktig fasit:
 - **Tildelt meg-ikon:** topp-/venstrejustert i 36px-felt (fasit-PNG-utseende; fasit-JSX hadde sentrert boks).
 - **Knappebredder ±2-7 css px:** next/font-rendret Inter Tight måler marginalt smalere enn fasitens
   CDN-font på identisk tekst/da samme cap-høyde — godtatt font-pipeline-avvik, ikke design-avvik.
+- **Status uten aktivitetsdata viser «Inaktiv» (warn):** fasit-vokabularet «N dg inaktiv» krever
+  kjent siste-aktivitet; spillere helt uten innlogging/booking-historikk kan ikke dateres. Data-grense.
 - **KPI-korthøyde følger delta-wrap:** fasitens «Økter i dag»-delta wrapper til 2 linjer (smalere
   CDN-font-kolonne) og strekker alle grid-kortene +13css; appens font holder samme tekst på 1 linje.
   Wrap-følsom høyde = konsekvens av font-unntaket over, ikke design-avvik. (Målt runde 6, 2026-06-10.)

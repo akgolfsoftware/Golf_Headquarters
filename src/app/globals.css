@@ -179,6 +179,12 @@
   --color-coach-sidebar-border: #2B4F42;
   --color-alert-coral: #FF6B6B;
   --color-chip-req-bg: rgba(37, 99, 235, 0.1); /* fasit .type.req-flate (mode-invariant) */
+  --color-chip-ok-bg: #C8EBDC;      /* fasit --success-tint-bg (mode-invariant) */
+  --color-chip-ok-fg: #075440;      /* fasit --success-foreground på tint */
+  --color-chip-warn-bg: #FBEFD4;
+  --color-chip-warn-fg: #6B4D11;
+  --color-chip-alert-bg: #FAD7D7;
+  --color-chip-alert-fg: #7F1D1D;
   --color-player-sidebar: #0F2A22;
   --color-coach-content: #F0F2F0;
   --color-player-content: #F5F7F5;
@@ -264,11 +270,14 @@ html {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* iOS Safari: forhindre auto-zoom på input-fokus */
-input,
-textarea,
-select {
-  font-size: 16px;
+/* iOS Safari: forhindre auto-zoom på input-fokus.
+ * I @layer base så utilities (text-xs m.fl.) kan overstyre på desktop-flater. */
+@layer base {
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
 }
 
 body {

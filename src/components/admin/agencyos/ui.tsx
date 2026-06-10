@@ -76,9 +76,9 @@ export function agBtnClass(
 }
 
 const chipTones = {
-  ok: "bg-success/15 text-success",
-  warn: "bg-warning/15 text-warning",
-  alert: "bg-destructive/15 text-destructive",
+  ok: "bg-chip-ok-bg text-chip-ok-fg",
+  warn: "bg-chip-warn-bg text-chip-warn-fg",
+  alert: "bg-chip-alert-bg text-chip-alert-fg",
   neu: "bg-secondary text-muted-foreground",
   lime: "bg-accent text-accent-foreground",
 } as const;
@@ -168,5 +168,220 @@ export function AgAvatar({
     >
       {initials}
     </span>
+  );
+}
+
+/* ---------- Tabell-primitiver — fasit `table.tbl` + tilbehør ---------- */
+
+export function AgTable({ children, className }: { children: ReactNode; className?: string }) {
+  return <table className={cn("w-full border-collapse", className)}>{children}</table>;
+}
+
+export function AgTh({
+  num,
+  children,
+  className,
+}: {
+  num?: boolean;
+  children?: ReactNode;
+  className?: string;
+}) {
+  return (
+    <th
+      className={cn(
+        "whitespace-nowrap border-b border-border px-[14px] py-[10px] font-mono text-[9px] font-extrabold uppercase tracking-[0.1em] text-muted-foreground",
+        num ? "text-right" : "text-left",
+        className,
+      )}
+    >
+      {children}
+    </th>
+  );
+}
+
+export function AgTd({
+  num,
+  children,
+  className,
+}: {
+  num?: boolean;
+  children?: ReactNode;
+  className?: string;
+}) {
+  return (
+    <td
+      className={cn(
+        "px-[14px] py-[11px] align-middle text-[13px]",
+        num && "text-right font-mono font-semibold tabular-nums",
+        className,
+      )}
+    >
+      {children}
+    </td>
+  );
+}
+
+/** Rad med hover + skillelinje (fasit `table.tbl tbody tr`). Bruk i <tbody>. */
+export const agTrClass =
+  "cursor-pointer transition-colors hover:bg-secondary [&+tr>td]:border-t [&+tr>td]:border-border";
+
+/** Spiller-celle: avatar 30 + navn + mono-undertekst (fasit `.cell-player`). */
+export function AgPlayerCell({
+  initials,
+  name,
+  sub,
+  tone = "neu",
+  size = 30,
+}: {
+  initials: string;
+  name: string;
+  sub?: string;
+  tone?: "pri" | "lime" | "neu";
+  size?: number;
+}) {
+  return (
+    <span className="flex items-center gap-[10px]">
+      <AgAvatar initials={initials} size={size} tone={tone} />
+      <span className="min-w-0">
+        <span className="block truncate text-[13px] font-semibold leading-[1.25] tracking-[-0.005em] text-foreground">
+          {name}
+        </span>
+        {sub && (
+          <span className="mt-px block font-mono text-[10px] leading-[1.2] text-muted-foreground">{sub}</span>
+        )}
+      </span>
+    </span>
+  );
+}
+
+/** Status-dot m/ mono-tekst (fasit `.status-dot`). */
+export function AgStatusDot({
+  tone = "neu",
+  children,
+}: {
+  tone?: "ok" | "warn" | "alert" | "neu";
+  children: ReactNode;
+}) {
+  const dot = {
+    ok: "before:bg-success",
+    warn: "before:bg-warning",
+    alert: "before:bg-destructive",
+    neu: "before:bg-muted-foreground",
+  } as const;
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center gap-[7px] font-mono text-[11px] font-semibold text-muted-foreground",
+        "before:h-[7px] before:w-[7px] before:rounded-full before:content-['']",
+        dot[tone],
+      )}
+    >
+      {children}
+    </span>
+  );
+}
+
+/** Mini-sparkline (fasit `Spark`): polyline av tallserie. */
+export function AgSpark({
+  points,
+  color = "hsl(var(--primary))",
+  w = 64,
+  h = 20,
+}: {
+  points: number[];
+  color?: string;
+  w?: number;
+  h?: number;
+}) {
+  if (points.length < 2) return null;
+  const max = Math.max(...points);
+  const min = Math.min(...points);
+  const rng = max - min || 1;
+  const d = points
+    .map((p, i) => `${(i / (points.length - 1)) * w},${h - ((p - min) / rng) * h}`)
+    .join(" ");
+  return (
+    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" className="block">
+      <polyline
+        points={d}
+        fill="none"
+        stroke={color}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+/** Toolbar over tabell: søk + filterchips (fasit `.tbl-toolbar`). */
+export function AgTableToolbar({ children }: { children: ReactNode }) {
+  return (
+    <div className="flex flex-wrap items-center gap-2 border-b border-border px-[14px] py-3">
+      {children}
+    </div>
+  );
+}
+
+export function AgFilterChip({ children }: { children: ReactNode }) {
+  return (
+    <button
+      type="button"
+      className="inline-flex h-8 cursor-pointer items-center gap-[6px] rounded-lg border border-border bg-card px-[11px] font-mono text-[10px] font-bold uppercase tracking-[0.06em] text-muted-foreground hover:bg-secondary"
+    >
+      {children}
+    </button>
+  );
+}
+
+/** Segmentert kontroll (fasit `.seg`): aktiv = card-bakgrunn + primary-tekst. */
+export function AgSeg({
+  options,
+  active,
+}: {
+  options: string[];
+  active: string;
+}) {
+  return (
+    <span className="inline-flex gap-[2px] rounded-lg bg-secondary p-[3px]">
+      {options.map((o) => (
+        <span
+          key={o}
+          className={cn(
+            "inline-flex h-[26px] items-center rounded-md px-[11px] font-mono text-[10px] font-bold uppercase tracking-[0.06em]",
+            o === active ? "bg-card text-primary shadow-sm" : "text-muted-foreground",
+          )}
+        >
+          {o}
+        </span>
+      ))}
+    </span>
+  );
+}
+
+/** Seksjonshode m/ teller og hairline (fasit `.sechead`). */
+export function AgSectionHead({
+  children,
+  count,
+  action,
+  className,
+}: {
+  children: ReactNode;
+  count?: ReactNode;
+  action?: ReactNode;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "mb-[14px] mt-7 flex items-center gap-[10px] font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-foreground",
+        "after:h-px after:flex-1 after:bg-border after:content-['']",
+        className,
+      )}
+    >
+      {children}
+      {count != null && <span className="font-bold text-muted-foreground">· {count}</span>}
+      {action}
+    </div>
   );
 }
