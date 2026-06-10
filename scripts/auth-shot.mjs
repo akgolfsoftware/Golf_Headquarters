@@ -7,7 +7,7 @@ await mkdir(OUT, { recursive: true });
 const b = await chromium.launch({ headless: true });
 const p = await b.newPage({ viewport: { width: vp.width, height: vp.height }, deviceScaleFactor: 2, isMobile: vp.m, hasTouch: vp.m });
 await p.addInitScript(() => { try { localStorage.setItem("ak_cookie_consent", "all"); } catch {} });
-for (const [name, path] of [["auth-login","/auth/login"],["auth-signup","/auth/signup"],["auth-glemt","/auth/forgot-password"],["auth-bankid","/auth/bankid"]]) {
+for (const [name, path] of [["auth-login","/auth/login"],["auth-signup","/auth/signup"],["auth-glemt","/auth/forgot-password"],["auth-bankid","/auth/bankid"],["forside","/"]]) {
   await p.goto(`http://localhost:3000${path}`, { waitUntil: "networkidle", timeout: 30000 });
   await p.waitForTimeout(900);
   await p.addStyleTag({ content: "nextjs-portal,[data-nextjs-toast],#__next-dev-tools-indicator{display:none!important}" }).catch(()=>{});
