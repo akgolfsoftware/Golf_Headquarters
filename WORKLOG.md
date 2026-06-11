@@ -5,6 +5,56 @@
 
 ---
 
+## 2026-06-11 — Meg tilbakeskrivings-pipeline (feature/meg-tilbakeskriving)
+
+**Branch:** `feature/meg-tilbakeskriving`
+
+### Hva ble gjort
+
+Daglig pipeline som destillerer Meg-Telegram-logger og skriver dem tilbake til Anders' kunnskapslagre.
+
+- 🆕 `scripts/meg-tilbakeskriving/run.ts` — orkestrering: henter uprosesserte rader fra Meg-Supabase,
+  grupperer per dag (Oslo-tid), destillerer via Claude, skriver til begge hjernelagrene,
+  markerer rader prosessert (aldri ved feil), skriver kjøre-rapport.
+- 🆕 `scripts/meg-tilbakeskriving/destiller.ts` — Claude API-kall med tool_use:
+  returnerer `dagsnotat` (maks 200 ord), `varige_monstre` (array tema+innhold) og `stoy_antall`.
+  Bruker `MEG_MODEL_SMART` (default: `claude-sonnet-4-6`).
+- 🆕 `scripts/meg-tilbakeskriving/skriv-ak-brain.ts` — appender `## Fra Meg`-seksjon til
+  `$AK_BRAIN_PATH/YYYY-MM-DD.md`. Idempotent: hopper over hvis seksjonen allerede finnes.
+- 🆕 `scripts/meg-tilbakeskriving/skriv-second-brain.ts` — skriver markdown-filer med YAML-frontmatter
+  til `$AK_SECOND_BRAIN_PATH/meg-monstre/`, kjører `git add + commit + push`.
+  Håndterer "nothing to commit" trygt. Kaster ved git push-feil.
+- 🆕 `scripts/meg-tilbakeskriving/migration.sql` — `ALTER TABLE me_log ADD COLUMN IF NOT EXISTS destilled_at TIMESTAMPTZ`
+  + sparse index. Kjøres én gang i Supabase SQL Editor.
+- 🆕 `scripts/meg-tilbakeskriving/launchagent/no.akgolf.meg-tilbakeskriving.plist` — LaunchAgent
+  kl. 21:30, logg til `scripts/meg-tilbakeskriving.log`.
+- 🆕 `scripts/meg-tilbakeskriving/README.md` — installasjonssteg for Anders (ikke-teknisk).
+- `package.json` — nytt script `"meg:tilbakeskriv": "tsx scripts/meg-tilbakeskriving/run.ts"`.
+
+### Idempotens-garanti
+
+- Rader med `destilled_at != NULL` hentes aldri.
+- Ved enhver feil i destillering eller skriving: raden forblir uprosessert til neste kjøring.
+- ak-brain: sjekker `## Fra Meg` før skriving — dobbelt-kjøring safe.
+- second-brain: `git commit` med "nothing to commit" er en OK-tilstand, ikke feil.
+
+### Env-variabler (ingen nye — alt finnes i .env.local)
+
+Bruker `MEG_SUPABASE_URL`, `MEG_SUPABASE_SERVICE_ROLE_KEY`, `ANTHROPIC_API_KEY`.
+Valgfritt: `AK_BRAIN_PATH`, `AK_SECOND_BRAIN_PATH`, `MEG_MODEL_SMART`.
+
+### Verifikasjon
+
+- `npx tsc --noEmit` — 0 feil
+
+### Installasjonssteg gjenstår (Anders gjør selv)
+
+1. Kjør `migration.sql` i Supabase SQL Editor
+2. Test: `npm run meg:tilbakeskriv`
+3. Installer LaunchAgent (se README.md)
+
+---
+
 ## 2026-06-10 — AgencyOS Fase 3: desktop-fasit-paritet (design/agencyos)
 
 **Branch:** `design/agencyos` · Pulje A–D ferdig (20 skjermer, 0 avvik via kritiker-gate), Pulje E bygges.

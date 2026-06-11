@@ -17,7 +17,8 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
     "test:all": "npm test && npm run test:e2e",
-    "prepare": "husky"
+    "prepare": "husky",
+    "meg:tilbakeskriv": "tsx scripts/meg-tilbakeskriving/run.ts"
   },
   "dependencies": {
     "@ai-sdk/gateway": "^3.0.115",
