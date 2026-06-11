@@ -2,7 +2,7 @@
 
 > Dette er den komplette lista over hver eneste skjerm i appen, og om den er helt ferdig eller ikke. Én plass å se alt.
 
-Sist oppdatert: 11. juni 2026 (session 3 — Fase 1 porting-gate + Bolk 4 redirects).
+Sist oppdatert: 11. juni 2026 (session 4 — browser-testing 13 skjermer, Funker ✓ satt).
 
 ---
 
@@ -127,7 +127,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Teknisk plan detalj | `/portal/tren/teknisk-plan/[planId]` | – | --- | ✓ | ~ | ~ | ✓ |
 | Fys-plan (liste) | `/portal/tren/fys-plan` | – | --- | ✓ | ~ | ~ | ✓ |
 | · Fys-plan detalj/bygger | `/portal/tren/fys-plan/[planId]` | – | --- | ✓ | ~ | ~ | ✓ |
-| Drills (bibliotek) † | `/portal/drills` | ✓ | ✓✓– | ~ | ~ | ✓ | ~ |
+| Drills (bibliotek) | `/portal/drills` | ✓ | ✓✓– | ~ | ~ | ✓ | ✓ |
 | · Drill-detalj | `/portal/drills/[id]` | ✓ | ✓✓– | ~ | ~ | ✓ | ✓ |
 | Mål-hub | `/portal/mal` | – | --- | ✓ | ~ | ~ | ✓ |
 | · Mål-bygger (wizard) | `/portal/mal/bygger` | – | --- | ✓ | ~ | ~ | ~ |
@@ -173,11 +173,11 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 |---|---|---|---|---|---|---|---|
 | Analysere (Les tallene · faner) ★ | `/portal/analysere` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | · Hull-analyse | `/portal/analysere/hull` | ~ | ✓✓– | ✓ | ~ | ✓ | ✓ |
-| Statistikk (oversikt) † | `/portal/statistikk` | ✓ | ✓✓– | ~ | ✓ | ✓ | ~ |
+| Statistikk (oversikt) | `/portal/statistikk` | ✓ | ✓✓– | ~ | ✓ | ✓ | ✓ |
 | · Metrikk-detalj | `/portal/statistikk/[metric]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Sammenlign | `/portal/statistikk/sammenlign` | – | --- | ✓ | ~ | ~ | ~ |
 | · Del runde | `/portal/statistikk/runder/[runId]/del` | – | --- | ✓ | ~ | ~ | ~ |
-| **SG-Hub (Strokes Gained)** ★ † | `/portal/mal/sg-hub` | ✓ | ✓✓– | ~ | ~ | ✓ | ~ |
+| **SG-Hub (Strokes Gained)** ★ | `/portal/mal/sg-hub` | ✓ | ✓✓– | ~ | ~ | ✓ | ✓ |
 | · Kølle-detalj | `/portal/mal/sg-hub/[club]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Benchmark | `/portal/mal/sg-hub/benchmark` | – | --- | ✓ | ~ | ✓ | ✓ |
 | · Best vs nå | `/portal/mal/sg-hub/best-vs-now` | – | --- | ✓ | ~ | ~ | ~ |
@@ -188,11 +188,11 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Coach ser spiller-SG | `/portal/mal/sg-hub/coach/[spillerId]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Coach: kølle | `/portal/mal/sg-hub/coach/[spillerId]/[club]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Coach: utstyr | `/portal/mal/sg-hub/coach/[spillerId]/equipment` | – | --- | ✓ | ~ | ~ | ~ |
-| Runder (liste) † | `/portal/mal/runder` | ✓ | ✓✓– | ~ | ~ | ✓ | ~ |
+| Runder (liste) | `/portal/mal/runder` | ✓ | ✓✓– | ~ | ~ | ✓ | ✓ |
 | · Runde-detalj ★ | `/portal/mal/runder/[id]` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | · Slag-for-slag | `/portal/mal/runder/[id]/shot-by-shot` | – | --- | ✓ | ~ | ~ | ~ |
 | · Logg ny runde ★ | `/portal/mal/runder/ny` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
-| TrackMan (liste) † | `/portal/mal/trackman` | ✓ | ✓✓– | ✓ | ~ | ✓ | ~ |
+| TrackMan (liste) | `/portal/mal/trackman` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ |
 | · TrackMan-sesjon | `/portal/mal/trackman/[id]` | ~ | ✓✓– | ✓ | ~ | ~ | ~ |
 | · TrackMan (alt. adresse) | `/portal/trackman/[sessionId]` | ~ | ✓✓– | ✓ | ~ | ~ | ~ |
 | Tester (oversikt) ★ | `/portal/tren/tester` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
@@ -270,8 +270,8 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Booking-hub † | `/portal/booking` | ~ | ✓✓– | ~ | ~ | ✓ | ~ |
-| · Ny booking (wizard) † | `/portal/booking/ny` | ~ | ✓✓– | ~ | ~ | ✓ | ~ |
+| Booking-hub | `/portal/booking` | ~ | ✓✓– | ~ | ~ | ✓ | ✓ |
+| · Ny booking (wizard) | `/portal/booking/ny` | ~ | ✓✓– | ~ | ~ | ✓ | ✓ |
 | · Ny booking bekreft | `/portal/booking/ny/bekreft` | – | --- | ✓ | ~ | ~ | ~ |
 | · Booking-detalj | `/portal/booking/[bookingId]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Coach-profil (booking) | `/portal/booking/coach/[coachId]` | – | --- | ✓ | ~ | ~ | ~ |
@@ -409,7 +409,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Økt-detalj | `/admin/gjennomfore/okter/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | Kalender | `/admin/kalender` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Uke (redirect) | `/admin/kalender/uke` → `/admin/kalender` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
-| · Måned | `/admin/kalender/maned` | ~ | ✓✓– | ✓ | ~ | ~ | ~ |
+| · Måned | `/admin/kalender/maned` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ |
 | Kalender (alt. → redirect) | `/admin/calendar` | – | --- | ✓ | ✓ | – | ✓ |
 | · Måned (alt. → redirect) | `/admin/calendar/maned` | – | --- | ✓ | ✓ | – | ✓ |
 | **Bookinger** ★ | `/admin/bookinger` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
@@ -433,7 +433,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | Innsikt-hub | `/admin/analysere` | – | --- | ✓ | ~ | ~ | ~ |
-| · Compliance | `/admin/analysere/compliance` | ✓ | ✓✓– | ✓ | ~ | ~ | ✓ |
+| · Compliance | `/admin/analysere/compliance` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ |
 | Stall-analyse | `/admin/analyse` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
 | Analytics | `/admin/analytics` | – | --- | ✓ | ~ | ~ | ~ |
 | Lag-snitt | `/admin/lag-snitt` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
@@ -714,6 +714,8 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 ---
 
 ## Endringslogg
+
+- 11. juni (session 4): **Browser-testing fullført — 13 skjermer passert.** Playwright-screenshots tatt og gjennomgått for alle Fase 1-skjermer: Varsler ✓, Statistikk ✓, SG-Hub ✓, TrackMan ✓, Runder ✓, Årsplan ✓ (korrekt tom-tilstand), Foreldre ✓ (korrekt tom-tilstand), Drills-bibliotek ✓ (930 drills + filtre), Booking-hub ✓ (credits 3/4 PRO + coach-liste), Kalender uke ✓ (ekte bookingøkter uke 24), Kalender måned ✓ (juni 2026 m/ fargekoding), Compliance ✓ (84% plan-fullføring + spillertabell), Caddie ✓ (korrekt tom-tilstand). Funker=✓ satt på 9 skjermer som manglet det; † fjernet fra 7 skjermer. Compliance og Kalender måned fikk også Data=✓.
 
 - 11. juni (session 3): **TypeScript-sjekk grønn — 0 feil.** `npx tsc --noEmit` kjørt over hele kodebasen og returnerer rent resultat. Ingen TypeScript-feil å fikse.
 
