@@ -2,7 +2,7 @@
 
 > Dette er den komplette lista over hver eneste skjerm i appen, og om den er helt ferdig eller ikke. Én plass å se alt.
 
-Sist oppdatert: 9. juni 2026.
+Sist oppdatert: 11. juni 2026.
 
 ---
 
@@ -30,7 +30,7 @@ Tegnforklaring: ✓ = ferdig · ~ = delvis / i arbeid · – = ikke startet.
 - **Skjermer totalt vi sporer:** ca. 182 hovedskjermer (pluss mange små undersider — alle er med i lista under). To nye kom inn 4. juni: «Logg treningsøkt» (spiller) og «Fremgang» (coach), begge på ekte data.
 - **Helt ferdige (alle seks haker grønne):** 2 — begge Workbench-variantene (spiller + coach). Det er foreløpig de eneste med ekte data hele veien.
 - **PlayerHQ-hovedskjermer på MOBIL-paritet med ekte data (9. juni):** 5 — Hjem, Planlegge, Gjennomføre, Analysere, Meg. Disse er bygd om fra den FERSKE Claude Design-fasiten (4. juni), kjører på ekte Prisma-data (testspiller Øyvind Rohjan), ligger på ekte adresse, og er verifisert av uavhengig kritiker-agent til **0 avvik** mot fasiten på 430px. Eneste gjenstående hake er desktop/iPad-utgaven (mobil-fasit er portet, ikke desktop-layoutene).
-- **AgencyOS HELE FASE 3 på DESKTOP-paritet med ekte data (10.–11. juni):** 25 skjermer + skallet — alle ~26 fasit-skjermer gjennom kritiker-gaten til 0 avvik (Workbench-punktet dekkes av den allerede helgrønne coach-Workbenchen). Gjenstår for AgencyOS: Fase 4 mobil (net-new) + iPad-sveip. — Cockpit/dashboard, Oppgaver, Tildelt meg, Forespørsler, Godkjenninger — pluss hele AgencyOS-SKALLET (fasit-sidebar m/ live badge-tall, topbar m/ spiller↔gruppe-veksler, mørkt tema håndhevet). Portet fra fersk fasit (agencyos-app), ekte Prisma-data (38 spillere-stall seedet), kritiker-loop over 6 runder til 0 reelle avvik (rester er dokumenterte unntak i design-porting-gate.md). Underveis ble tre systemfeil som rammet ALLE skjermer fikset: unlayered `* { border-color }` som drepte alle border-fargeklasser, statiske `--color-success/-warning`-tokens som ignorerte mørkt tema, og `.dark`-tokens som avvek fra fasit-paletten (success/info/border/secondary/muted/destructive).
+- **AgencyOS HELE FASE 3 på DESKTOP-paritet med ekte data (10.–11. juni):** 25 skjermer + skallet — alle ~26 fasit-skjermer gjennom kritiker-gaten til 0 avvik (Workbench-punktet dekkes av den allerede helgrønne coach-Workbenchen). AgencyOS Fase 4 mobil M1+M2+M3 gjennomført (11. juni): M1 = AgPage px-4 på alle ~75 admin-sider, M2 = WorkbenchMobile (År/Mnd/Uke/Dag kalendervisninger), M3 = dedikerte mobilkortlister for Tester + Turneringer + overflow-x-auto/responsivt grid for Drills, Analyse, Spiller-detalj, Lag-snitt, Talent/Sammenligning. Gjenstår: fullverdig mobilvisning for de øvrige ~20 AgencyOS-skjermene + iPad-sveip-sjekk. — Cockpit/dashboard, Oppgaver, Tildelt meg, Forespørsler, Godkjenninger — pluss hele AgencyOS-SKALLET (fasit-sidebar m/ live badge-tall, topbar m/ spiller↔gruppe-veksler, mørkt tema håndhevet). Portet fra fersk fasit (agencyos-app), ekte Prisma-data (38 spillere-stall seedet), kritiker-loop over 6 runder til 0 reelle avvik (rester er dokumenterte unntak i design-porting-gate.md). Underveis ble tre systemfeil som rammet ALLE skjermer fikset: unlayered `* { border-color }` som drepte alle border-fargeklasser, statiske `--color-success/-warning`-tokens som ignorerte mørkt tema, og `.dark`-tokens som avvek fra fasit-paletten (success/info/border/secondary/muted/destructive).
 - **Nytt design ferdig i forhåndsvisning (men venter på ekte data + ekte adresse):** ca. 43 skjermer. Disse fikk nytt v10-utseende i natt, men kjører fortsatt på liksom-tall og ligger i en forhåndsvisning — ikke på sin ekte nettadresse ennå. De er altså «pene, men ikke ferdig koblet».
 - **Ikke startet / fortsatt gammelt design:** flertallet av de ca. 180 — de finnes som adresse i appen, men er ikke pusset opp til nytt design ennå.
 - **Ting designeren har tegnet, men som IKKE har funnet en plass i appen ennå (drop-off):** se egen liste lenger ned. Dette er det viktigste å passe på.
@@ -293,7 +293,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Stall-oversikt | `/admin/stall` | – | --- | ✓ | ~ | ~ | ✓ |
 | **Spillere (alle)** ★ | `/admin/spillere` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Ny spiller | `/admin/spillere/ny` | – | --- | ✓ | ~ | ~ | ~ |
-| **Spiller-detalj** ★ | `/admin/spillere/[id]` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
+| **Spiller-detalj** ★ | `/admin/spillere/[id]` | ✓ | ~✓– | ✓ | ✓ | ✓ | ✓ |
 | · Profil | `/admin/spillere/[id]/profil` | – | --- | ✓ | ~ | ~ | ~ |
 | · **Workbench (coach-i-spiller)** ★ | `/admin/spillere/[id]/workbench` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
 | · Plan-detalj | `/admin/spillere/[id]/plan/[planId]` | – | --- | ✓ | ~ | ~ | ~ |
@@ -311,7 +311,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Kohort | `/admin/talent/kohort` | – | --- | ✓ | ~ | ~ | ~ |
 | · Region | `/admin/talent/region` | – | --- | ✓ | ~ | ~ | ~ |
 | · Ressurser | `/admin/talent/ressurser` | – | --- | ✓ | ~ | ~ | ~ |
-| · Sammenligning | `/admin/talent/sammenligning` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
+| · Sammenligning | `/admin/talent/sammenligning` | ✓ | ~✓– | ✓ | ✓ | ✓ | ✓ |
 | · WAGR-benchmark | `/admin/talent/wagr-benchmark` | – | --- | ✓ | ~ | ~ | ~ |
 | · WAGR-import | `/admin/talent/wagr-import` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
 
@@ -331,12 +331,12 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Plan-mal detalj | `/admin/plan-templates/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Ny plan-mal | `/admin/plan-templates/ny` | – | --- | ✓ | ~ | ~ | ~ |
 | · Rediger plan-mal | `/admin/plan-templates/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
-| Drills (bibliotek) | `/admin/drills` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
+| Drills (bibliotek) | `/admin/drills` | ✓ | ~✓– | ✓ | ✓ | ✓ | ✓ |
 | · Drill-detalj | `/admin/drills/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Rediger drill | `/admin/drills/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
 | Teknisk plan | `/admin/teknisk-plan` | – | --- | ✓ | ~ | ~ | ~ |
 | · Per spiller | `/admin/teknisk-plan/[spillerId]` | – | --- | ✓ | ~ | ~ | ~ |
-| **Turneringer** ★ | `/admin/tournaments` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
+| **Turneringer** ★ | `/admin/tournaments` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
 | · Turnering-detalj | `/admin/tournaments/[id]` | ~ | ✓✓– | ✓ | ~ | ~ | ~ |
 | · Ny turnering | `/admin/tournaments/ny` | – | --- | ✓ | ~ | ~ | ~ |
 | · Dubletter (rydd) | `/admin/tournaments/dubletter` | – | --- | ✓ | ~ | ~ | ~ |
@@ -377,10 +377,10 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 |---|---|---|---|---|---|---|---|
 | Innsikt-hub | `/admin/analysere` | – | --- | ✓ | ~ | ~ | ~ |
 | · Compliance | `/admin/analysere/compliance` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
-| Stall-analyse | `/admin/analyse` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
+| Stall-analyse | `/admin/analyse` | ✓ | ~✓– | ✓ | ✓ | ✓ | ✓ |
 | Analytics | `/admin/analytics` | – | --- | ✓ | ~ | ~ | ~ |
-| Lag-snitt | `/admin/lag-snitt` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
-| Tester (på tvers) | `/admin/tester` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
+| Lag-snitt | `/admin/lag-snitt` | ✓ | ~✓– | ✓ | ✓ | ✓ | ✓ |
+| Tester (på tvers) | `/admin/tester` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
 | · Test-detalj | `/admin/tester/[id]` | ~ | ✓✓– | ✓ | ~ | ~ | ~ |
 | · Foreslåtte tester | `/admin/tester/foreslatte` | – | --- | ✓ | ~ | ~ | ~ |
 | · Tildel test | `/admin/tester/tildel/[spillerId]` | – | --- | ✓ | ~ | ~ | ~ |
@@ -656,6 +656,11 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 ---
 
 ## Endringslogg
+
+- 11. juni: **AgencyOS Fase 4 mobil M1+M2+M3 — alle overflow-problemer løst, Workbench mobil ferdig.**
+  M1: `AgPage` fikk `px-4 md:px-7` — riktig sidemargin på alle ~75 admin-sider.
+  M2: `WorkbenchMobile` ny komponent med 4 kalendervisninger (År/Mnd/Uke/Dag), pyramide-fargede sessjonskort, sticky visningsveksler. `layout.tsx` gjort responsiv (`md:fixed`) så bunnbaren vises på mobil. Workbench-sidens Mob-hake: `✓✓–`.
+  M3: Tester + Turneringer fikk dedikerte mobilkortlister (< md kortliste, md+ tabell). Drills-seg-kontroll scrollbar. Stall-analyse, Spiller-detalj, Lag-snitt, Talent/Sammenligning fikk `overflow-x-auto` og responsivt grid. Gjenstår: fullverdig mobilvisning for øvrige ~20 AgencyOS-sider + iPad.
 
 - 10. juni: **De 5 PlayerHQ-hovedskjermene bygd til DESKTOP-paritet (Fase 1 av komplett-planen).** Mobil var ferdig 9. juni; nå er desktop-layoutene bygd fra desktop-fasiten (HomeDesktop/ExecuteScreen/AnalyzeScreen/MeScreen + full Workbench): hero med inline avatar+knapper + 5-KPI + 2-kol grid (Hjem), h1+lead + faner (Gjennomføre/Analysere), 2-kol header+konto+abonnement (Meg), full Workbench (Planlegge). Mobil-layout bevart urørt (md:hidden), desktop via egne komponenter/md:-breakpoints. Verktøy (`design-shot.mjs`/`app-shot.mjs`) utvidet til desktop+iPad. Kritiker: Hjem 0 avvik; Gjennomføre/Analysere/Meg rettet etter kritiker (fane-typografi sans/Title-Case/primary-underline matcher nå `.tab-btn`-fasit — gjaldt også mobil). Hakene: Mob/Desk/iPad nå `✓✓~` (iPad-responsiv-sjekk gjenstår i Fase 6). **Gjenstår:** PlayerHQ-undersider, AgencyOS (desktop + net-new mobil), marketing, iPad-sveip. Plan: `docs/plan-komplett-skjermer-2026-06-10.md`.
 - 9. juni: **De 5 PlayerHQ-hovedskjermene portet til paritet mot den ferske Claude Design-fasiten (mobil 430px), via porting-gaten med uavhengig kritiker-agent per skjerm.** Avdekket at alle 5 fortsatt kjørte gammelt design/IA («feil skjerm»). Bygd om fra design-kilden, koblet til ekte data, kritiker-loop til 0 avvik hver (Hjem 14→0, Planlegge 8→0, Gjennomføre 11→0, Analysere 11→0, Meg 11→0).
