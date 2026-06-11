@@ -1,8 +1,14 @@
 /**
  * PlayerHQ · Drill-bibliotek · data-loader
  *
- * Henter SYSTEM-drills fra ExerciseDefinition og mapper til en flat, UI-vennlig
+ * Henter drills fra ExerciseDefinition og mapper til en flat, UI-vennlig
  * `DrillCard`-type for mobil-biblioteket (/portal/drills).
+ *
+ * Tilgangskontroll:
+ *   SYSTEM   — alltid synlig for alle
+ *   COACH    — synlig hvis visibility=COACH_PLAYERS og coach er spillerens coach,
+ *              ELLER PRIVATE og drill ble opprettet av spillerens coach
+ *   PLAYER   — kun spillerens egne drills (createdBy = userId)
  *
  * Ærlige felter — alt kommer fra ekte kolonner:
  *   axis          ← pyramidArea (FYS/TEK/SLAG/SPILL/TURN)
@@ -103,12 +109,52 @@ function buildMeta(d: {
 }
 
 /**
- * Alle system-drills, sortert akse → navn. Returnerer flate kort klare for UI.
+ * Hent coach-IDer spilleren er enrollert under (aktive enrolleringer).
+ * Returnerer tom liste hvis spilleren ikke har noen aktiv coach.
+ */
+async function getMyCoachIds(userId: string): Promise<string[]> {
+  const enrollments = await prisma.playerEnrollment.findMany({
+    where: { userId, endedAt: null, coachId: { not: null } },
+    select: { coachId: true },
+  });
+  return enrollments
+    .map((e) => e.coachId)
+    .filter((id): id is string => id !== null);
+}
+
+/**
+ * Alle drills spilleren har tilgang til, sortert akse → navn.
+ * Inkluderer SYSTEM + relevante COACH + egne PLAYER-drills.
  * Tom database gir tom liste (UI viser ærlig tom-tilstand).
  */
-export async function getDrillLibrary(): Promise<DrillCard[]> {
+export async function getDrillLibrary(userId: string): Promise<DrillCard[]> {
+  const coachIds = await getMyCoachIds(userId);
+
   const rows = await prisma.exerciseDefinition.findMany({
-    where: { source: "SYSTEM" },
+    where: {
+      OR: [
+        // Alle system-drills er alltid synlige.
+        { source: "SYSTEM" },
+        // Coach-drills: enten delt med alle coachens spillere,
+        // eller privat men coachen er spillerens coach.
+        ...(coachIds.length > 0
+          ? [
+              {
+                source: "COACH" as const,
+                visibility: "COACH_PLAYERS" as const,
+                createdBy: { in: coachIds },
+              },
+              {
+                source: "COACH" as const,
+                visibility: "PRIVATE" as const,
+                createdBy: { in: coachIds },
+              },
+            ]
+          : []),
+        // Spillerens egne drills.
+        { source: "PLAYER", createdBy: userId },
+      ],
+    },
     orderBy: [{ pyramidArea: "asc" }, { name: "asc" }],
     select: {
       id: true,
@@ -123,6 +169,7 @@ export async function getDrillLibrary(): Promise<DrillCard[]> {
       csMin: true,
       csMax: true,
       fasilitetKrav: true,
+      source: true,
     },
   });
 

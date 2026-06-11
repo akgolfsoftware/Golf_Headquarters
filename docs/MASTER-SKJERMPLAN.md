@@ -2,7 +2,58 @@
 
 > Dette er den komplette lista over hver eneste skjerm i appen, og om den er helt ferdig eller ikke. Én plass å se alt.
 
-Sist oppdatert: 9. juni 2026.
+Sist oppdatert: 11. juni 2026.
+
+---
+
+## Dagens arbeidsplan — 11. juni 2026
+
+Tre parallelle spor i dag:
+
+### Spor A — Claude Design (du kjører dette)
+Prompt: `My Drive/AK Golf Group/prompt/felles/alle-manglende-skjermer-2026-06-11.md`
+Dekker alle ~60 skjermer uten design ennå. Leveranse: 12 JSX-filer.
+Når ferdig: lever filene til `public/design-handover/AK Golf HQ Design System/` → port til kode.
+
+### Spor B — Data-tilkobling (Claude Code gjør dette NÅ)
+Skjermer som har ferdig design men viser demo-tall. Prioritert rekkefølge:
+
+| Prioritet | Skjerm | Adresse | Jobb |
+|---|---|---|---|
+| ★1 | Live-økt brief/aktiv/summary (PlayerHQ) | `/portal/(fullscreen)/live/[sessionId]/*` | Koble ekte TrainingPlanSession + SessionDrill |
+| ★2 | Drill-bibliotek (PlayerHQ) | `/portal/drills` + `/portal/drills/[id]` | Koble ExerciseDefinition fra DB |
+| ★3 | Workbench: opprett plan + økt | `/portal/planlegge/workbench` | Server actions + sheets |
+| ★4 | SG-Hub (hoved) | `/portal/mal/sg-hub` | Koble ekte SG-beregninger |
+| ★5 | Runder (liste) | `/portal/mal/runder` | Koble Round fra DB |
+| ★6 | TrackMan (liste) | `/portal/mal/trackman` | Koble TrackManSession fra DB |
+| ★7 | Statistikk (oversikt) | `/portal/statistikk` | Koble SG-aggregater |
+| ★8 | Booking-hub + ny | `/portal/booking` + `/portal/booking/ny` | Koble Facility + Availability |
+| ★9 | Onboarding (ekte flyt) | `/auth/onboarding` | Ekte DB-skriving |
+| ★10 | Compliance (AgencyOS) | `/admin/analysere/compliance` | Koble ekte data |
+
+### Spor C — Design-porting etter Claude Design
+Skjermer som får ny JSX fra Spor A → porte til kode samme dag via design-porting-gate.
+Batch-rekkefølge (etter Claude Design leverer):
+1. Coach-skuff + Meldingstråd (høy beta-verdi)
+2. Booking komplett flyt
+3. Mål-hub + Mål-bygger
+4. Plan-detalj (AgencyOS)
+5. Ny spiller + Tildel test (AgencyOS)
+6. Forelder-portal
+7. Auth sub-flyter
+8. Innstillinger sub-sider
+9. Marketing-sider
+10. Resterende sub-sider
+
+### Kvalitetssikring (ETTER hver skjerm)
+Følger design-porting-gaten i `.claude/rules/design-porting-gate.md`:
+1. Bygg fra design-kilden
+2. Screenshot
+3. Adversarial diff-agent
+4. Fiks til 0 avvik
+5. Oppdater hakene i denne planen
+
+---
 
 ---
 

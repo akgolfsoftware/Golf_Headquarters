@@ -5,6 +5,8 @@
 // mode-icons, Del, + coach bell). The VIS-toggle drives onVis; the
 // mode-icons drive onMode. PLAN A/B is presentational (matches v10).
 // ============================================================
+"use client";
+
 import { Icon } from "./icon";
 import type { Role, Mode } from "./workbench";
 
@@ -14,9 +16,13 @@ type DirBTopbarProps = {
   mode: "TIDSLINJE" | "KANBAN" | "DASHBOARD";
   onVis?: (v: "A" | "B") => void;
   onMode?: (m: Mode) => void;
+  /** Åpne sheet for å opprette ny treningsplan. */
+  onNewPlan?: () => void;
+  /** Åpne sheet for å opprette ny treningsøkt. */
+  onNewSession?: () => void;
 };
 
-export function DirBTopbar({ variant, mode, onVis, onMode }: DirBTopbarProps) {
+export function DirBTopbar({ variant, mode, onVis, onMode, onNewPlan, onNewSession }: DirBTopbarProps) {
   return (
     <div className="wbb-top">
       {/* Left — minimal */}
@@ -79,6 +85,24 @@ export function DirBTopbar({ variant, mode, onVis, onMode }: DirBTopbarProps) {
             <span className="dot" />B
           </button>
         </div>
+        <button
+          type="button"
+          className="wbb-share"
+          title="Ny treningsøkt"
+          onClick={onNewSession}
+        >
+          <Icon n="calendar-plus" w={13} h={13} />
+          Ny økt
+        </button>
+        <button
+          type="button"
+          className="wbb-share"
+          title="Ny treningsplan"
+          onClick={onNewPlan}
+        >
+          <Icon n="plus" w={13} h={13} />
+          Ny plan
+        </button>
         <div className="wbb-mode">
           <button
             type="button"

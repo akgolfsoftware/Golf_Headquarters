@@ -44,9 +44,13 @@ type ListShellProps = {
   onMode?: (m: Mode) => void;
   /** Open the drill-overlay on first render (preview ?drill=1). */
   initialDrill?: boolean;
+  /** Åpne sheet for å opprette ny treningsplan. */
+  onNewPlan?: () => void;
+  /** Åpne sheet for å opprette ny treningsøkt. */
+  onNewSession?: () => void;
 };
 
-export function ListShell({ variant, mode, data, onVis, onMode, initialDrill = false }: ListShellProps) {
+export function ListShell({ variant, mode, data, onVis, onMode, initialDrill = false, onNewPlan, onNewSession }: ListShellProps) {
   const isTidslinje = mode === "TIDSLINJE";
   const [drillOpen, setDrillOpen] = useState(initialDrill && isTidslinje);
 
@@ -78,7 +82,7 @@ export function ListShell({ variant, mode, data, onVis, onMode, initialDrill = f
 
   return (
     <div className="wb-b" data-screen-label={`Workbench · B · ${mode}`}>
-      <DirBTopbar variant={variant} mode={mode} onVis={onVis} onMode={onMode} />
+      <DirBTopbar variant={variant} mode={mode} onVis={onVis} onMode={onMode} onNewPlan={onNewPlan} onNewSession={onNewSession} />
 
       <div className="wbb-main">
         <DirBRail />

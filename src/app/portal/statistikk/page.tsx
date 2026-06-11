@@ -27,6 +27,7 @@ export default async function StatistikkDashboard() {
     where: { userId: user.id },
     orderBy: { playedAt: "asc" },
     select: {
+      score: true,
       sgTotal: true,
       sgOtt: true,
       sgApp: true,

@@ -61,7 +61,7 @@ export interface HubBooking {
   durationMin: number;
   /** Trukket fra credits. */
   fromCredits: boolean;
-  status: "PENDING" | "CONFIRMED";
+  status: "PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELLED";
 }
 
 export interface HubCoach {
@@ -78,6 +78,8 @@ export interface HubCoach {
 export interface BookingHubProps {
   credits: HubCredits;
   upcoming: HubBooking[];
+  /** Siste 10 fullførte eller avbestilte bookinger. */
+  past: HubBooking[];
   coaches: HubCoach[];
   /** Wizard-rute for ny booking. Default: /portal/booking/ny. */
   bookHref?: string;
@@ -373,10 +375,103 @@ function CoachesCard({
   );
 }
 
+// ── 5. Historiske bookinger ──────────────────────────────────────
+function PastBookingsCard({ past }: { past: HubBooking[] }) {
+  if (past.length === 0) return null;
+
+  return (
+    <section>
+      <div className="mb-2 flex items-baseline justify-between">
+        <h2 className="font-display text-[18px] font-semibold -tracking-[0.01em] text-foreground">
+          Historikk
+        </h2>
+        <span className="font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
+          {past.length} {past.length === 1 ? "økt" : "økter"}
+        </span>
+      </div>
+
+      <ul className="overflow-hidden rounded-2xl border border-border bg-card">
+        {past.map((b, i) => {
+          const { day, time } = formatBookingTime(b.startIso);
+          const cancelled = b.status === "CANCELLED";
+          return (
+            <li key={b.id} className={i > 0 ? "border-t border-border" : ""}>
+              <Link
+                href={`/portal/booking/${b.id}`}
+                className="flex items-center gap-3.5 px-4 py-3.5 transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+              >
+                <div
+                  className={cn(
+                    "flex w-[52px] shrink-0 flex-col items-center rounded-xl py-2",
+                    cancelled ? "bg-destructive/10" : "bg-secondary",
+                  )}
+                >
+                  <span
+                    className={cn(
+                      "font-mono text-[14px] font-bold leading-none tabular-nums",
+                      cancelled ? "text-destructive" : "text-foreground",
+                    )}
+                  >
+                    {time}
+                  </span>
+                  <span className="mt-1 font-mono text-[9px] font-semibold uppercase tracking-[0.04em] text-muted-foreground">
+                    {b.durationMin} m
+                  </span>
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={cn(
+                        "truncate font-display text-[14.5px] font-semibold -tracking-[0.005em]",
+                        cancelled
+                          ? "text-muted-foreground line-through"
+                          : "text-foreground",
+                      )}
+                    >
+                      {b.serviceName}
+                    </span>
+                    {cancelled ? (
+                      <AthleticBadge variant="warn">Avbestilt</AthleticBadge>
+                    ) : (
+                      <AthleticBadge variant="ok">Gjennomført</AthleticBadge>
+                    )}
+                  </div>
+                  <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 font-mono text-[10.5px] tracking-[0.02em] text-muted-foreground">
+                    <span className="inline-flex items-center gap-1">
+                      <CalendarClock className="h-3 w-3" strokeWidth={1.5} aria-hidden />
+                      {day}
+                    </span>
+                    <span className="inline-flex items-center gap-1">
+                      <MapPin className="h-3 w-3" strokeWidth={1.5} aria-hidden />
+                      {b.locationName}
+                    </span>
+                    {b.coachName && (
+                      <span className="inline-flex items-center gap-1">
+                        <UserIcon className="h-3 w-3" strokeWidth={1.5} aria-hidden />
+                        {b.coachName}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <ArrowRight
+                  className="h-4 w-4 shrink-0 text-muted-foreground"
+                  strokeWidth={2}
+                  aria-hidden
+                />
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
+}
+
 // ── Hovedkomponent ───────────────────────────────────────────────
 export function BookingHub({
   credits,
   upcoming,
+  past,
   coaches,
   bookHref = DEFAULT_BOOK_HREF,
   allBookingsHref = DEFAULT_ALL_HREF,
@@ -417,6 +512,9 @@ export function BookingHub({
 
       {/* 4. BOOK DIREKTE MED COACH */}
       <CoachesCard coaches={coaches} bookHref={bookHref} />
+
+      {/* 5. HISTORIKK */}
+      <PastBookingsCard past={past} />
     </div>
   );
 }

@@ -102,7 +102,7 @@ export async function hentStatsOverview(userId: string): Promise<StatsOverview> 
     totalRunder,
   ] = await Promise.all([
     prisma.user.findUnique({ where: { id: userId }, select: { hcp: true } }),
-    // Full Round-rader (aggregateSg krever Round-typen). Antall begrenset av 90 d-vindu.
+    // Full Round-rader. Antall begrenset av 90 d-vindu.
     prisma.round.findMany({
       where: { userId, playedAt: { gte: dag90Siden } },
       orderBy: { playedAt: "desc" },

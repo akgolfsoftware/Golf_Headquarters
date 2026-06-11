@@ -36,6 +36,8 @@ import { DayView } from "./day-view";
 import { KanbanView } from "./kanban-view";
 import { DashboardView } from "./dashboard-view";
 import { ListShell } from "./list-shell";
+import { CreatePlanSheet } from "./create-plan-sheet";
+import { CreateSessionSheet } from "./create-session-sheet";
 import { defaultSelectedSession, WEEK_DAYS, type SelectedSession } from "./data";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
 import "./workbench.css";
@@ -47,10 +49,25 @@ export type Mode = "UKE" | "DAG" | "KANBAN" | "DASHBOARD" | "TIDSLINJE";
 
 const STORE_KEY = "akgolf.wb.view";
 
+/** Minimal plan-rad som page.tsx sender ned — nok til å vise liste og sende id til sheet. */
+export type WorkbenchPlan = {
+  id: string;
+  name: string;
+  status: string;
+  isActive: boolean;
+  startDate: Date;
+  endDate: Date | null;
+  _count: { sessions: number };
+};
+
 type WorkbenchProps = {
   role?: Role;
   /** Ekte data fra loadWorkbenchData. Mangler/tom → v10-demo. */
   data?: WorkbenchData;
+  /** Aktiv TrainingPlan-id. Brukes av CreateSessionSheet. */
+  activePlanId?: string | null;
+  /** Liste over brukerens planer — vises i topbar plan-toggle. */
+  plans?: WorkbenchPlan[];
   /** spiller-id (coach-rute) — gir kontekst til coach-handlinger. */
   playerId?: string;
   /** spillernavn (coach-rute) — etiketter i coach-handlinger. */
@@ -87,6 +104,8 @@ function resolveInitialView(initialView?: View): View {
 export function Workbench({
   role = "player",
   data,
+  activePlanId = null,
+  plans = [],
   playerId,
   playerName,
   initialMode,
@@ -108,6 +127,10 @@ export function Workbench({
     return resolveInitialView(initialView) === "B" ? "TIDSLINJE" : "UKE";
   });
 
+  // Sheet-state: ny plan og ny økt.
+  const [planSheetOpen, setPlanSheetOpen] = useState(false);
+  const [sessionSheetOpen, setSessionSheetOpen] = useState(false);
+
   // Liste/Kalender toggle — switch formspråk + persist + map mode.
   const onVis = (v: View) => {
     if (v === view) return;
@@ -126,6 +149,19 @@ export function Workbench({
 
   const onMode = (m: Mode) => setMode(m);
 
+  // Felles sheets — monteres utenfor begge view-grener slik at de ikke
+  // mister state ved visning-bytte.
+  const sheets = (
+    <>
+      <CreatePlanSheet open={planSheetOpen} onOpenChange={setPlanSheetOpen} />
+      <CreateSessionSheet
+        open={sessionSheetOpen}
+        onOpenChange={setSessionSheetOpen}
+        planId={activePlanId ?? null}
+      />
+    </>
+  );
+
   if (view === "B") {
     // Guard: a B-only mode must never leak into A's vocabulary and vice
     // versa. In B, DAG/UKE collapse to TIDSLINJE for the shell switch.
@@ -140,7 +176,10 @@ export function Workbench({
           onVis={onVis}
           onMode={onMode}
           initialDrill={initialDrill}
+          onNewPlan={() => setPlanSheetOpen(true)}
+          onNewSession={() => setSessionSheetOpen(true)}
         />
+        {sheets}
       </div>
     );
   }
@@ -172,6 +211,10 @@ export function Workbench({
           activeZoom={mode === "DAG" ? "DAG" : "UKE"}
           onVis={onVis}
           onMode={onMode}
+          activePlanId={activePlanId ?? null}
+          plans={plans}
+          onNewPlan={() => setPlanSheetOpen(true)}
+          onNewSession={() => setSessionSheetOpen(true)}
         />
         <div className="wb-main">
           <WBSidebar tournaments={data?.tournaments} goals={data?.goals} pyramid={data?.pyramid} />
@@ -185,6 +228,7 @@ export function Workbench({
         </div>
         <WBStatusbar axisHours={data?.axisHours} summary={data?.summary} />
       </div>
+      {sheets}
     </div>
   );
 }

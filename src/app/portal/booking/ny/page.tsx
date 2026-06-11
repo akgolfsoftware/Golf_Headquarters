@@ -21,6 +21,7 @@ import {
   Clock,
   Coins,
   Lock,
+  MapPin,
   Ticket,
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -73,6 +74,23 @@ export default async function NyBookingPage({ searchParams }: Props) {
     orderBy: { durationMin: "asc" },
   });
 
+  // Aktive lokasjoner med tilhørende fasiliteter — brukes til å vise
+  // lokasjonsnavn i oppsummeringssteget og steg 1-kortene.
+  const locations = await prisma.location.findMany({
+    where: { active: true },
+    orderBy: { name: "asc" },
+    select: {
+      id: true,
+      name: true,
+      address: true,
+      facilities: {
+        where: { active: true },
+        orderBy: { name: "asc" },
+        select: { id: true, name: true, type: true, isIndoor: true },
+      },
+    },
+  });
+
   if (services.length === 0) {
     return (
       <div className="mx-auto max-w-[480px] px-4 py-6">
@@ -96,6 +114,15 @@ export default async function NyBookingPage({ searchParams }: Props) {
   // Aktivt steg utledet av query-params: service valgt → steg 2, dato valgt → steg 3.
   const aktivtSteg = !serviceParam ? 1 : !datoParam ? 2 : 3;
   const isFree = user.tier === "GRATIS";
+
+  // Lokasjonsnavn som credit-booking.ts vil bruke for valgt tjeneste
+  // (speiler logikken i src/lib/booking/credit-booking.ts linje 83-89).
+  const resolvedLocationName = valgtService.slug.includes("trackman")
+    ? "Mulligan Indoor Golf"
+    : "Gamle Fredrikstad GK";
+  const resolvedLocation = locations.find((l) =>
+    l.name.toLowerCase().includes(resolvedLocationName.toLowerCase()),
+  ) ?? locations[0] ?? null;
   const saldoEtter = subscription.creditsRemaining - 1;
   const sisteCredit = subscription.creditsRemaining === 1;
 
@@ -242,8 +269,24 @@ export default async function NyBookingPage({ searchParams }: Props) {
                       {s.description}
                     </p>
                   )}
-                  <div className="mt-1.5 font-mono text-[11px] font-bold tabular-nums text-foreground">
-                    {s.priceOre > 0 ? `${s.priceOre / 100} kr` : "1 credit"}
+                  <div className="mt-1.5 flex items-center justify-between gap-2">
+                    <span className="font-mono text-[11px] font-bold tabular-nums text-foreground">
+                      {s.priceOre > 0 ? `${s.priceOre / 100} kr` : "1 credit"}
+                    </span>
+                    {(() => {
+                      const locName = s.slug.includes("trackman")
+                        ? "Mulligan Indoor Golf"
+                        : "Gamle Fredrikstad GK";
+                      const loc = locations.find((l) =>
+                        l.name.toLowerCase().includes(locName.toLowerCase()),
+                      );
+                      return loc ? (
+                        <span className="inline-flex items-center gap-1 font-mono text-[10px] tracking-[0.02em] text-muted-foreground">
+                          <MapPin className="h-3 w-3" strokeWidth={1.5} aria-hidden />
+                          {loc.name}
+                        </span>
+                      ) : null;
+                    })()}
                   </div>
                 </div>
               </Link>
@@ -350,6 +393,9 @@ export default async function NyBookingPage({ searchParams }: Props) {
               })}
               mono
             />
+            {resolvedLocation !== null && (
+              <SummaryRow label="Sted" value={resolvedLocation.name} />
+            )}
             <SummaryRow label="Kostnad" value="1 credit" mono last />
           </div>
 

@@ -19,7 +19,7 @@ export const metadata = {
 
 export default async function BookingHubPage() {
   const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
-  const { credits, upcoming, coaches } = await getBookingHubData(user.id);
+  const { credits, upcoming, past, coaches } = await getBookingHubData(user.id);
 
-  return <BookingHub credits={credits} upcoming={upcoming} coaches={coaches} />;
+  return <BookingHub credits={credits} upcoming={upcoming} past={past} coaches={coaches} />;
 }

@@ -41,9 +41,9 @@ function mapDrills(rows: LoaderDrillCard[]): DrillCard[] {
 }
 
 export default async function DrillBibliotekPage() {
-  await requirePortalUser();
+  const user = await requirePortalUser();
 
-  const drills = await getDrillLibrary();
+  const drills = await getDrillLibrary(user.id);
 
   return (
     <div className="py-4">

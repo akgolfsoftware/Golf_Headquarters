@@ -71,6 +71,8 @@ export type RunderData = {
   fornavn: string;
   /** Subtekst under headline. */
   subtittel: string;
+  /** Spillerens nåværende HCP (fra brukerprofil), eller null hvis ikke satt. */
+  hcp: number | null;
   /** Loggede runder (tom liste ⇒ tom-tilstand vises). */
   runder: RundeRow[];
   /** Navigasjons-lenker. */

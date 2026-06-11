@@ -1,6 +1,14 @@
 // Strokes Gained (SG) — aggregat-helpers fra Round-rader.
 
-import type { Round } from "@/generated/prisma/client";
+/** Minimalt snitt av felter aggregateSg faktisk bruker. */
+export type RoundForSgAggregate = {
+  score: number;
+  sgTotal: number | null;
+  sgOtt: number | null;
+  sgApp: number | null;
+  sgArg: number | null;
+  sgPutt: number | null;
+};
 
 export type SgAggregate = {
   total: number | null;
@@ -12,11 +20,19 @@ export type SgAggregate = {
   snittScore: number | null;
 };
 
+type SgFelt = keyof Pick<
+  RoundForSgAggregate,
+  "sgTotal" | "sgOtt" | "sgApp" | "sgArg" | "sgPutt"
+>;
+
 /**
  * Returnerer snitt SG per område fra en liste runder.
  * null hvis ingen runder har data for det området.
+ *
+ * Aksepterer hvilken som helst shape som inneholder de nødvendige SG-feltene
+ * (f.eks. et Prisma-select-delsett), ikke bare full Round-type.
  */
-export function aggregateSg(rounds: Round[]): SgAggregate {
+export function aggregateSg(rounds: RoundForSgAggregate[]): SgAggregate {
   if (rounds.length === 0) {
     return {
       total: null,
@@ -29,7 +45,7 @@ export function aggregateSg(rounds: Round[]): SgAggregate {
     };
   }
 
-  const snitt = (felt: keyof Pick<Round, "sgTotal" | "sgOtt" | "sgApp" | "sgArg" | "sgPutt">) => {
+  const snitt = (felt: SgFelt) => {
     const verdier = rounds
       .map((r) => r[felt])
       .filter((v): v is number => v != null);

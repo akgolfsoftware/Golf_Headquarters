@@ -24,7 +24,30 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { aggregateSg, formatSg } from "@/lib/sg";
 import { extractClubs } from "@/lib/sg-hub/extract-shots";
+import { ENVIRONMENT_LABELS } from "@/lib/sg-hub/environment-labels";
 import { SgHub, type SgHubData } from "@/components/portal/sg-hub/sg-hub";
+import type { TrackManEnvironment } from "@/generated/prisma/client";
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Hjelpere for siste TrackMan-økt
+// ──────────────────────────────────────────────────────────────────────────────
+
+/** Norsk visningsnavn for TrackMan-miljø via kanonisk tabell. */
+function miljoeLabel(env: TrackManEnvironment | null | undefined): string {
+  return env ? (ENVIRONMENT_LABELS[env] ?? env) : "Ukjent miljø";
+}
+
+/** Datoformat: "12. jun. 2026" */
+function kortDato(d: Date): string {
+  return d.toLocaleDateString("nb-NO", { day: "numeric", month: "short", year: "numeric" });
+}
+
+type SisteSession = {
+  recordedAt: Date;
+  shotCount: number;
+  environment: TrackManEnvironment | null;
+  source: string;
+};
 
 type DisiplinDef = {
   eyebrow: string;
@@ -63,8 +86,9 @@ function mapSgHubData(args: {
   sessionsCount: number;
   insightCount: number;
   clubsCount: number;
+  sisteSession: SisteSession | null;
 }): SgHubData {
-  const { sg, rundeAntall90d, sessionsCount, insightCount, clubsCount } = args;
+  const { sg, rundeAntall90d, sessionsCount, insightCount, clubsCount, sisteSession } = args;
   const rundeOrd = rundeAntall90d === 1 ? "runde" : "runder";
 
   const disipliner = DISIPLINER.map((d) => {
@@ -78,7 +102,16 @@ function mapSgHubData(args: {
     };
   });
 
-  const importTom = (
+  // Bygg body-innhold for "Sist TrackMan-økt"-kortet basert på ekte data.
+  const trackmanBody = sisteSession ? (
+    <>
+      <strong className="font-semibold text-foreground">
+        {kortDato(sisteSession.recordedAt)}
+      </strong>{" "}
+      · {sisteSession.shotCount} slag · {miljoeLabel(sisteSession.environment)}
+      {sisteSession.source === "csv-import" ? " · CSV-import" : null}
+    </>
+  ) : (
     <>
       Ingen TrackMan-økter ennå.{" "}
       <Link href="/portal/mal/trackman" className="font-medium text-primary hover:opacity-80">
@@ -88,6 +121,24 @@ function mapSgHubData(args: {
     </>
   );
 
+  // disiplinNote: tom når vi har ekte data, veiledende tekst kun ved 0 runder.
+  const disiplinNote =
+    sg.rundeAntall === 0
+      ? "Ingen data ennå — logg runder for å aktivere"
+      : sg.rundeAntall < 3
+        ? `Bygd på ${sg.rundeAntall} runde${sg.rundeAntall === 1 ? "" : "r"} — mer data gir bedre presisjon`
+        : "";
+
+  // prioriteringer: veiledende tekst skalerer med antall runder.
+  const prioriteringerBody =
+    sg.rundeAntall === 0
+      ? "Vi trenger runder for å rangere prioriteringer. Logg din første runde."
+      : sg.rundeAntall < 3
+        ? `Vi har ${sg.rundeAntall} runde${sg.rundeAntall === 1 ? "" : "r"} så langt — logg minst 3 for å låse opp topp-3-analysen.`
+        : insightCount > 0
+          ? `${insightCount} aktiv${insightCount === 1 ? "t" : "e"} innsikt${insightCount === 1 ? "" : "er"} er klar til gjennomgang.`
+          : "Ingen aktive prioriteringer akkurat nå — fortsett å logge for løpende analyse.";
+
   return {
     eyebrow: "PLAYERHQ · /PORTAL/MAL/SG-HUB",
     subtittel:
@@ -96,7 +147,7 @@ function mapSgHubData(args: {
         : `Snitt siste ${sg.rundeAntall} runder · ${rundeAntall90d} totalt`,
 
     totalEyebrow: "SG TOTAL · 90 D",
-    totalPill: `${sessionsCount} TrackMan-økter`,
+    totalPill: `${sessionsCount} TrackMan-${sessionsCount === 1 ? "økt" : "økter"}`,
     totalBody: `SG-pipelinen viser hvor du tjener eller taper strokes mot benchmark. Bygd på ${rundeAntall90d} ${rundeOrd} siste 90 dager.`,
     totalValue: formatSg(sg.total),
     totalNegativ: sg.total != null && sg.total < 0,
@@ -107,7 +158,7 @@ function mapSgHubData(args: {
       {
         eyebrow: "Snitt-score",
         value: sg.snittScore == null ? "—" : sg.snittScore.toFixed(1).replace(".", ","),
-        footnote: `${sg.rundeAntall} runder 90 d`,
+        footnote: sg.rundeAntall === 0 ? "ingen runder ennå" : `${sg.rundeAntall} runder 90 d`,
       },
       { eyebrow: "Benchmark", value: "PGA Tour", footnote: "kategori A1" },
     ],
@@ -124,17 +175,17 @@ function mapSgHubData(args: {
       knapp: { label: "Logg runde", href: "/portal/mal/runder" },
     },
 
-    disiplinNote: sg.rundeAntall === 0 ? "dummy-tall vises til du har 3+ runder" : "",
+    disiplinNote,
     disipliner,
 
     prioriteringer: {
       eyebrow: "TOPP 3 PRIORITERINGER FOR NESTE TURNERING",
-      body: "Vi trenger flere runder for å rangere prioriteringer. Logg minst 3 runder.",
+      body: prioriteringerBody,
     },
 
     trackman: {
       eyebrow: "SIST TRACKMAN-ØKT",
-      body: importTom,
+      body: trackmanBody,
     },
 
     perKolleTom:
@@ -166,10 +217,20 @@ export default async function SgHubPage() {
   const naa = new Date();
   const ninetiDagSiden = new Date(naa.getTime() - 90 * 24 * 60 * 60 * 1000);
 
-  const [sessions, runder, insightCount] = await Promise.all([
+  const [sessions, sisteSessionRad, runder, insightCount] = await Promise.all([
     prisma.trackManSession.findMany({
       where: { userId: user.id },
       select: { rawJson: true },
+    }),
+    prisma.trackManSession.findFirst({
+      where: { userId: user.id },
+      orderBy: { recordedAt: "desc" },
+      select: {
+        recordedAt: true,
+        shotCount: true,
+        environment: true,
+        source: true,
+      },
     }),
     prisma.round.findMany({
       where: { userId: user.id, playedAt: { gte: ninetiDagSiden } },
@@ -189,12 +250,22 @@ export default async function SgHubPage() {
     }
   }
 
+  const sisteSession: SisteSession | null = sisteSessionRad
+    ? {
+        recordedAt: sisteSessionRad.recordedAt,
+        shotCount: sisteSessionRad.shotCount,
+        environment: sisteSessionRad.environment ?? null,
+        source: sisteSessionRad.source,
+      }
+    : null;
+
   const data = mapSgHubData({
     sg,
     rundeAntall90d: runder.length,
     sessionsCount: sessions.length,
     insightCount,
     clubsCount: clubSet.size,
+    sisteSession,
   });
 
   return <SgHub data={data} />;
