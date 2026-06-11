@@ -1,19 +1,16 @@
 // src/lib/meg/connectors/notion.ts
-// Notion-kobling for Meg. Gjenbruker golf-appens OAuth: ADMIN-brukerens
-// NotionConnection gir dekryptert klient. Les-funksjoner kjøres direkte;
-// skrive-funksjoner kalles KUN via bekreftelsesflyt (se confirm.ts).
+// Notion-connector for Meg. Kobler mot Anders' Second Brain i Notion:
+// - Tasks-database  (NOTION_SB_TASKS_DB_ID)
+// - Projects-database (NOTION_SB_PROJECTS_DB_ID)
+// Les-funksjoner kjøres direkte; skrive kalles KUN via bekreftelsesflyt (confirm.ts).
 import "server-only";
-import type { Client } from "@notionhq/client";
 import { prisma } from "@/lib/prisma";
 import { getNotionClient } from "@/lib/notion/client";
+import type { Client } from "@notionhq/client";
 
-type OppgaveLink = {
-  notionDatabaseId: string;
-  notionDataSourceId: string | null;
-  propTittel: string;
-  propStatus: string | null;
-  propForfaller: string | null;
-};
+// Env: plain UUID — prepend "collection://" for dataSources.query
+const TASKS_UUID = process.env.NOTION_SB_TASKS_DB_ID ?? "";
+const PROJECTS_UUID = process.env.NOTION_SB_PROJECTS_DB_ID ?? "";
 
 async function getOwnerNotionClient(): Promise<Client | null> {
   const conn = await prisma.notionConnection.findFirst({
@@ -24,46 +21,36 @@ async function getOwnerNotionClient(): Promise<Client | null> {
   return getNotionClient(conn.userId);
 }
 
-async function getOwnerOppgaveLink(): Promise<OppgaveLink | null> {
-  const link = await prisma.notionDatabaseLink.findFirst({
-    where: { type: "OPPGAVER", connection: { user: { role: "ADMIN" } } },
-    select: {
-      notionDatabaseId: true,
-      notionDataSourceId: true,
-      propTittel: true,
-      propStatus: true,
-      propForfaller: true,
-    },
-  });
-  return link;
-}
+type RawProp = Record<string, unknown>;
 
-async function dataSourceId(klient: Client, databaseId: string): Promise<string | null> {
-  try {
-    const db = await klient.databases.retrieve({ database_id: databaseId });
-    if (!("data_sources" in db) || !Array.isArray(db.data_sources)) return null;
-    const first = db.data_sources[0];
-    if (!first || typeof first !== "object" || !("id" in first)) return null;
-    return String((first as { id: string }).id);
-  } catch {
-    return null;
-  }
-}
-
-function titleOf(page: unknown): string {
-  if (!page || typeof page !== "object" || !("properties" in page)) return "(uten tittel)";
-  const props = (page as { properties: Record<string, unknown> }).properties;
-  for (const v of Object.values(props)) {
-    if (v && typeof v === "object" && "type" in v && (v as { type: string }).type === "title" && "title" in v) {
-      const arr = (v as { title: { plain_text?: string }[] }).title;
-      const txt = arr.map((t) => t.plain_text ?? "").join("").trim();
+function titleOf(properties: RawProp): string {
+  for (const prop of Object.values(properties)) {
+    const p = prop as RawProp;
+    if (p?.type === "title" && Array.isArray(p.title)) {
+      const txt = (p.title as { plain_text?: string }[])
+        .map((t) => t.plain_text ?? "")
+        .join("")
+        .trim();
       if (txt) return txt;
     }
   }
   return "(uten tittel)";
 }
 
-// ── Les-verktøy (kjøres direkte) ─────────────────────────────────────────────
+function statusNameOf(properties: RawProp, name: string): string {
+  const prop = (properties[name] ?? {}) as RawProp;
+  if (prop.type === "status") return ((prop.status as { name?: string } | null)?.name ?? "");
+  if (prop.type === "select") return ((prop.select as { name?: string } | null)?.name ?? "");
+  return "";
+}
+
+function dateOf(properties: RawProp, name: string): string {
+  const prop = (properties[name] ?? {}) as RawProp;
+  if (prop.type === "date") return ((prop.date as { start?: string } | null)?.start ?? "");
+  return "";
+}
+
+// ── Generelt søk (direkte) ───────────────────────────────────────────────────
 
 export async function notionSok(query: string, limit = 5): Promise<string> {
   const klient = await getOwnerNotionClient();
@@ -73,9 +60,9 @@ export async function notionSok(query: string, limit = 5): Promise<string> {
     if (res.results.length === 0) return `Ingen Notion-treff for "${query}".`;
     return res.results
       .map((r) => {
-        const id = "id" in r ? r.id : "";
         const url = "url" in r && typeof r.url === "string" ? r.url : "";
-        return `- ${titleOf(r)}${url ? ` (${url})` : ` [${id}]`}`;
+        const props = "properties" in r ? (r.properties as RawProp) : {};
+        return `- ${titleOf(props)}${url ? ` (${url})` : ` [${r.id}]`}`;
       })
       .join("\n");
   } catch (err) {
@@ -99,52 +86,101 @@ export async function notionLesSide(pageId: string): Promise<string> {
         if (tekst) linjer.push(tekst);
       }
     }
-    if (linjer.length === 0) return "Siden har ingen lesbar tekst.";
-    return linjer.join("\n");
+    return linjer.length ? linjer.join("\n") : "Siden har ingen lesbar tekst.";
   } catch (err) {
     return `Kunne ikke lese siden: ${err instanceof Error ? err.message : String(err)}`;
   }
 }
 
-export async function notionOppgaver(limit = 10): Promise<string> {
+// ── Oppgaver: les (direkte) ──────────────────────────────────────────────────
+
+export async function notionOppgaver(limit = 15): Promise<string> {
   const klient = await getOwnerNotionClient();
-  const link = await getOwnerOppgaveLink();
   if (!klient) return "Notion er ikke koblet (ingen ADMIN-tilkobling).";
-  if (!link) return "Ingen oppgave-database er koblet i Notion-oppsettet.";
-  const dsId = link.notionDataSourceId ?? (await dataSourceId(klient, link.notionDatabaseId));
-  if (!dsId) return "Fant ikke data source for oppgave-databasen.";
+  if (!TASKS_UUID) return "NOTION_SB_TASKS_DB_ID mangler i miljøvariabler.";
   try {
     const res = await klient.dataSources.query({
-      data_source_id: dsId,
+      data_source_id: `collection://${TASKS_UUID}`,
+      filter: { property: "Status", status: { does_not_equal: "Completed" } },
+      sorts: [{ property: "Date", direction: "ascending" }],
       page_size: Math.min(Math.max(limit, 1), 30),
     });
-    if (res.results.length === 0) return "Ingen oppgaver funnet.";
-    return res.results.map((p) => `- ${titleOf(p)}${"id" in p ? ` [${p.id}]` : ""}`).join("\n");
+    if (res.results.length === 0) return "Ingen aktive oppgaver i Second Brain.";
+    return res.results
+      .map((p) => {
+        if (!("properties" in p)) return null;
+        const props = p.properties as RawProp;
+        const tittel = titleOf(props);
+        const status = statusNameOf(props, "Status");
+        const prioritet = statusNameOf(props, "Priority");
+        const dato = dateOf(props, "Date");
+        const deler = [tittel];
+        if (status) deler.push(status);
+        if (prioritet) deler.push(prioritet);
+        if (dato) deler.push(dato);
+        return `- ${deler.join(" · ")} [${p.id}]`;
+      })
+      .filter(Boolean)
+      .join("\n");
   } catch (err) {
     return `Kunne ikke hente oppgaver: ${err instanceof Error ? err.message : String(err)}`;
   }
 }
 
-// ── Skrive-verktøy (KUN via bekreftelsesflyt) ────────────────────────────────
+// ── Prosjekter: les (direkte) ────────────────────────────────────────────────
+
+export async function notionProsjekter(limit = 10): Promise<string> {
+  const klient = await getOwnerNotionClient();
+  if (!klient) return "Notion er ikke koblet (ingen ADMIN-tilkobling).";
+  if (!PROJECTS_UUID) return "NOTION_SB_PROJECTS_DB_ID mangler i miljøvariabler.";
+  try {
+    const res = await klient.dataSources.query({
+      data_source_id: `collection://${PROJECTS_UUID}`,
+      filter: { property: "Status", status: { does_not_equal: "Completed" } },
+      sorts: [{ property: "Priority", direction: "descending" }],
+      page_size: Math.min(Math.max(limit, 1), 20),
+    });
+    if (res.results.length === 0) return "Ingen aktive prosjekter i Second Brain.";
+    return res.results
+      .map((p) => {
+        if (!("properties" in p)) return null;
+        const props = p.properties as RawProp;
+        const tittel = titleOf(props);
+        const status = statusNameOf(props, "Status");
+        const prioritet = statusNameOf(props, "Priority");
+        const dato = dateOf(props, "Timeline");
+        const deler = [tittel];
+        if (status) deler.push(status);
+        if (prioritet) deler.push(prioritet);
+        if (dato) deler.push(dato);
+        return `- ${deler.join(" · ")} [${p.id}]`;
+      })
+      .filter(Boolean)
+      .join("\n");
+  } catch (err) {
+    return `Kunne ikke hente prosjekter: ${err instanceof Error ? err.message : String(err)}`;
+  }
+}
+
+// ── Oppgaver: opprett (KUN via bekreftelse) ───────────────────────────────────
 
 export async function notionOpprettOppgave(args: {
   tittel: string;
+  prioritet?: string;
   forfaller?: string;
 }): Promise<string> {
   const klient = await getOwnerNotionClient();
-  const link = await getOwnerOppgaveLink();
   if (!klient) return "Notion er ikke koblet (ingen ADMIN-tilkobling).";
-  if (!link) return "Ingen oppgave-database er koblet i Notion-oppsettet.";
-
-  const properties: Record<string, unknown> = {
-    [link.propTittel]: { title: [{ type: "text", text: { content: args.tittel } }] },
-  };
-  if (args.forfaller && link.propForfaller) {
-    properties[link.propForfaller] = { date: { start: args.forfaller } };
-  }
+  if (!TASKS_UUID) return "NOTION_SB_TASKS_DB_ID mangler i miljøvariabler.";
   try {
+    const properties: Record<string, unknown> = {
+      Name: { title: [{ type: "text", text: { content: args.tittel } }] },
+      Status: { status: { name: "Next Action" } },
+    };
+    if (args.prioritet) properties["Priority"] = { select: { name: args.prioritet } };
+    if (args.forfaller) properties["Date"] = { date: { start: args.forfaller } };
     const created = await klient.pages.create({
-      parent: { database_id: link.notionDatabaseId },
+      parent: { database_id: TASKS_UUID },
       properties: properties as Parameters<Client["pages"]["create"]>[0]["properties"],
     });
     const url = "url" in created && typeof created.url === "string" ? created.url : "";
@@ -154,27 +190,46 @@ export async function notionOpprettOppgave(args: {
   }
 }
 
+// ── Prosjekter: opprett (KUN via bekreftelse) ────────────────────────────────
+
+export async function notionOpprettProsjekt(args: {
+  navn: string;
+  prioritet?: string;
+}): Promise<string> {
+  const klient = await getOwnerNotionClient();
+  if (!klient) return "Notion er ikke koblet (ingen ADMIN-tilkobling).";
+  if (!PROJECTS_UUID) return "NOTION_SB_PROJECTS_DB_ID mangler i miljøvariabler.";
+  try {
+    const properties: Record<string, unknown> = {
+      Name: { title: [{ type: "text", text: { content: args.navn } }] },
+      Status: { status: { name: "Not Started" } },
+    };
+    if (args.prioritet) properties["Priority"] = { select: { name: args.prioritet } };
+    const created = await klient.pages.create({
+      parent: { database_id: PROJECTS_UUID },
+      properties: properties as Parameters<Client["pages"]["create"]>[0]["properties"],
+    });
+    const url = "url" in created && typeof created.url === "string" ? created.url : "";
+    return `Opprettet prosjekt "${args.navn}"${url ? ` (${url})` : ""}.`;
+  } catch (err) {
+    return `Kunne ikke opprette prosjekt: ${err instanceof Error ? err.message : String(err)}`;
+  }
+}
+
+// ── Oppgaver: endre status (KUN via bekreftelse) ─────────────────────────────
+
 export async function notionFullforOppgave(args: {
   pageId: string;
   status: string;
 }): Promise<string> {
   const klient = await getOwnerNotionClient();
-  const link = await getOwnerOppgaveLink();
   if (!klient) return "Notion er ikke koblet (ingen ADMIN-tilkobling).";
-  if (!link?.propStatus) return "Oppgave-databasen har ingen status-property satt opp.";
   try {
-    const page = await klient.pages.retrieve({ page_id: args.pageId });
-    const props = "properties" in page ? (page.properties as Record<string, { type?: string }>) : {};
-    const propType = props[link.propStatus]?.type;
-    const value =
-      propType === "select"
-        ? { select: { name: args.status } }
-        : propType === "checkbox"
-          ? { checkbox: true }
-          : { status: { name: args.status } };
     await klient.pages.update({
       page_id: args.pageId,
-      properties: { [link.propStatus]: value } as Parameters<Client["pages"]["update"]>[0]["properties"],
+      properties: {
+        Status: { status: { name: args.status } },
+      } as Parameters<Client["pages"]["update"]>[0]["properties"],
     });
     return `Markerte oppgaven som "${args.status}".`;
   } catch (err) {

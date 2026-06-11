@@ -9,6 +9,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { z } from "zod";
 
 // ============================================================================
 // PERIODE
@@ -178,6 +179,139 @@ export async function generateWeekWithCaddie(periodId: string, weekNumber: numbe
     message:
       "Caddie-integrasjon kommer post-launch. Krever ANTHROPIC_API_KEY i prod-miljø.",
   };
+}
+
+// ============================================================================
+// TRENINGSPLAN (TrainingPlan)
+// ============================================================================
+
+const createTrainingPlanSchema = z.object({
+  name: z.string().min(1, "Navn er påkrevd").max(120),
+  startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Ugyldig dato"),
+  endDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Ugyldig dato")
+    .nullable()
+    .optional(),
+});
+
+export async function createTrainingPlan(formData: FormData): Promise<{
+  ok: boolean;
+  planId?: string;
+  error?: string;
+}> {
+  const user = await requirePortalUser();
+
+  const raw = {
+    name: String(formData.get("name") ?? "").trim(),
+    startDate: String(formData.get("startDate") ?? ""),
+    endDate: formData.get("endDate") ? String(formData.get("endDate")) : null,
+  };
+
+  const parsed = createTrainingPlanSchema.safeParse(raw);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Ugyldig inndata" };
+  }
+
+  const { name, startDate, endDate } = parsed.data;
+
+  const plan = await prisma.trainingPlan.create({
+    data: {
+      userId: user.id,
+      name,
+      startDate: new Date(startDate),
+      endDate: endDate ? new Date(endDate) : null,
+      status: "DRAFT",
+      isActive: false,
+    },
+    select: { id: true },
+  });
+
+  revalidatePath("/portal/planlegge/workbench");
+  return { ok: true, planId: plan.id };
+}
+
+export async function listTrainingPlans() {
+  const user = await requirePortalUser();
+  return prisma.trainingPlan.findMany({
+    where: { userId: user.id },
+    orderBy: [{ isActive: "desc" }, { updatedAt: "desc" }],
+    take: 10,
+    select: {
+      id: true,
+      name: true,
+      status: true,
+      isActive: true,
+      startDate: true,
+      endDate: true,
+      _count: { select: { sessions: true } },
+    },
+  });
+}
+
+// ============================================================================
+// TRENINGSØKT (TrainingPlanSession)
+// ============================================================================
+
+const createTrainingPlanSessionSchema = z.object({
+  planId: z.string().min(1),
+  title: z.string().min(1, "Tittel er påkrevd").max(120),
+  scheduledAt: z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/, "Ugyldig dato/tid"),
+  durationMin: z.coerce.number().int().min(5).max(480),
+  pyramidArea: z.enum(["FYS", "TEK", "SLAG", "SPILL", "TURN"]),
+  environment: z
+    .enum(["RANGE", "BANE", "STUDIO", "HJEM", "SIMULATOR", "GYM"])
+    .nullable()
+    .optional(),
+});
+
+export async function createTrainingPlanSession(formData: FormData): Promise<{
+  ok: boolean;
+  sessionId?: string;
+  error?: string;
+}> {
+  const user = await requirePortalUser();
+
+  const raw = {
+    planId: String(formData.get("planId") ?? "").trim(),
+    title: String(formData.get("title") ?? "").trim(),
+    scheduledAt: String(formData.get("scheduledAt") ?? ""),
+    durationMin: formData.get("durationMin"),
+    pyramidArea: String(formData.get("pyramidArea") ?? ""),
+    environment: formData.get("environment") ? String(formData.get("environment")) : null,
+  };
+
+  const parsed = createTrainingPlanSessionSchema.safeParse(raw);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Ugyldig inndata" };
+  }
+
+  const { planId, title, scheduledAt, durationMin, pyramidArea, environment } = parsed.data;
+
+  // Sjekk at planen tilhører innlogget bruker
+  const plan = await prisma.trainingPlan.findUnique({
+    where: { id: planId },
+    select: { id: true, userId: true },
+  });
+  if (!plan || plan.userId !== user.id) {
+    return { ok: false, error: "Plan ikke funnet" };
+  }
+
+  const session = await prisma.trainingPlanSession.create({
+    data: {
+      planId,
+      title,
+      scheduledAt: new Date(scheduledAt),
+      durationMin,
+      pyramidArea,
+      environment: environment ?? null,
+      status: "PLANNED",
+    },
+    select: { id: true },
+  });
+
+  revalidatePath("/portal/planlegge/workbench");
+  return { ok: true, sessionId: session.id };
 }
 
 // ============================================================================

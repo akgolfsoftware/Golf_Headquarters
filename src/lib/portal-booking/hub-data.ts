@@ -37,7 +37,7 @@ export type HubBooking = {
   durationMin: number;
   /** True hvis trukket fra abonnement (credit-booking), false = betalt. */
   fromCredits: boolean;
-  status: "PENDING" | "CONFIRMED";
+  status: "PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELLED";
 };
 
 export type HubCoach = {
@@ -53,6 +53,8 @@ export type HubCoach = {
 export type BookingHubData = {
   credits: HubCredits;
   upcoming: HubBooking[];
+  /** Siste 10 fullførte eller avbestilte bookinger (COMPLETED + CANCELLED). */
+  past: HubBooking[];
   coaches: HubCoach[];
 };
 
@@ -66,7 +68,7 @@ function initialsFromName(name: string): string {
 export async function getBookingHubData(userId: string): Promise<BookingHubData> {
   const now = new Date();
 
-  const [subscription, upcomingRows, coachRows] = await Promise.all([
+  const [subscription, upcomingRows, pastRows, coachRows] = await Promise.all([
     prisma.subscription.findUnique({ where: { userId } }),
     prisma.booking.findMany({
       where: {
@@ -76,6 +78,19 @@ export async function getBookingHubData(userId: string): Promise<BookingHubData>
       },
       orderBy: { startAt: "asc" },
       take: 8,
+      include: {
+        serviceType: { select: { name: true, durationMin: true } },
+        location: { select: { name: true } },
+        coach: { select: { name: true } },
+      },
+    }),
+    prisma.booking.findMany({
+      where: {
+        userId,
+        status: { in: ["COMPLETED", "CANCELLED"] },
+      },
+      orderBy: { startAt: "desc" },
+      take: 10,
       include: {
         serviceType: { select: { name: true, durationMin: true } },
         location: { select: { name: true } },
@@ -119,7 +134,18 @@ export async function getBookingHubData(userId: string): Promise<BookingHubData>
     startIso: b.startAt.toISOString(),
     durationMin: b.serviceType.durationMin,
     fromCredits: b.subscriptionId !== null,
-    status: b.status as "PENDING" | "CONFIRMED",
+    status: b.status as HubBooking["status"],
+  }));
+
+  const past: HubBooking[] = pastRows.map((b) => ({
+    id: b.id,
+    serviceName: b.serviceType.name,
+    locationName: b.location.name,
+    coachName: b.coach?.name ?? null,
+    startIso: b.startAt.toISOString(),
+    durationMin: b.serviceType.durationMin,
+    fromCredits: b.subscriptionId !== null,
+    status: b.status as HubBooking["status"],
   }));
 
   const coaches: HubCoach[] = coachRows.map((c) => {
@@ -134,5 +160,5 @@ export async function getBookingHubData(userId: string): Promise<BookingHubData>
     };
   });
 
-  return { credits, upcoming, coaches };
+  return { credits, upcoming, past, coaches };
 }

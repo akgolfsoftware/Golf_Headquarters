@@ -4,7 +4,7 @@ import { storeLog } from "@/lib/meg/store";
 import { hentNylige } from "@/lib/meg/read";
 import { sokMinne } from "@/lib/meg/search";
 import type { Classification } from "@/lib/meg/classify-schema";
-import { notionSok, notionLesSide, notionOppgaver } from "@/lib/meg/connectors/notion";
+import { notionSok, notionLesSide, notionOppgaver, notionProsjekter } from "@/lib/meg/connectors/notion";
 import { helseHent } from "@/lib/meg/connectors/health";
 import { gmailSok, gmailLesTraad, diskSok, diskLesFil, kalenderAgenda } from "@/lib/meg/connectors/google";
 import { stripeSaldo, stripeBetalinger, stripeAbonnementer, stripeFakturaer, stripeKundeSok } from "@/lib/meg/connectors/stripe";
@@ -137,9 +137,36 @@ export const notionFullforOppgaveTool: Tool = {
     type: "object",
     properties: {
       pageId: { type: "string", description: "Notion side-id for oppgaven" },
-      status: { type: "string", description: "Statusverdi, f.eks. 'Ferdig'" },
+      status: { type: "string", description: "Statusverdi: Completed, Next Action, Waiting On, Someday/Maybe, Inbox" },
     },
     required: ["pageId", "status"],
+  },
+};
+
+export const notionProsjekterTool: Tool = {
+  name: "notion_prosjekter",
+  description:
+    "Henter aktive prosjekter fra Anders' Second Brain i Notion. Bruk når han spør om " +
+    "prosjektlista eller vil se hva som er i gang. Returnerer prosjektnavn, status, prioritet + id.",
+  input_schema: {
+    type: "object",
+    properties: { limit: { type: "number", description: "Antall (default 10, maks 20)" } },
+    required: [],
+  },
+};
+
+export const notionOpprettProsjektTool: Tool = {
+  name: "notion_opprett_prosjekt",
+  description:
+    "Foreslår å opprette et prosjekt i Notion Second Brain. Utfører IKKE direkte — " +
+    "lager et forslag som Anders må bekrefte med BEKREFT.",
+  input_schema: {
+    type: "object",
+    properties: {
+      navn: { type: "string", description: "Prosjektets navn" },
+      prioritet: { type: "string", description: "Prioritet: Urgent, High, Medium, Low (valgfritt)" },
+    },
+    required: ["navn"],
   },
 };
 
@@ -322,6 +349,8 @@ export const MEG_ALL_TOOLS: Tool[] = [
   notionOppgaverTool,
   notionOpprettOppgaveTool,
   notionFullforOppgaveTool,
+  notionProsjekterTool,
+  notionOpprettProsjektTool,
   helseHentTool,
   gmailSokTool,
   gmailLesTraadTool,
@@ -362,8 +391,10 @@ type SokMinneInput = {
 type NotionSokInput = { query: string; limit?: number };
 type NotionLesSideInput = { pageId: string };
 type NotionOppgaverInput = { limit?: number };
-type NotionOpprettOppgaveInput = { tittel: string; forfaller?: string };
+type NotionOpprettOppgaveInput = { tittel: string; prioritet?: string; forfaller?: string };
 type NotionFullforOppgaveInput = { pageId: string; status: string };
+type NotionProsjekterInput = { limit?: number };
+type NotionOpprettProsjektInput = { navn: string; prioritet?: string };
 type HelseHentInput = { metric?: string; dager?: number };
 type GmailSokInput = { query: string; limit?: number };
 type GmailLesTraadInput = { threadId: string };
@@ -442,7 +473,10 @@ export function megExecutorsFor(
   // ── Notion: skrive-verktøy (lager KUN ventende handling) ──
   notion_opprett_oppgave: async (raw) => {
     const args = raw as NotionOpprettOppgaveInput;
-    const summary = `Opprette oppgave i Notion: "${args.tittel}"${args.forfaller ? ` (forfaller ${args.forfaller})` : ""}`;
+    const deler = [`"${args.tittel}"`];
+    if (args.prioritet) deler.push(args.prioritet);
+    if (args.forfaller) deler.push(`forfaller ${args.forfaller}`);
+    const summary = `Opprette oppgave i Notion: ${deler.join(", ")}`;
     await createPending("notion_opprett_oppgave", args, summary, subject);
     return `Forslag klart: ${summary}. Be Anders svare BEKREFT for å utføre.`;
   },
@@ -451,6 +485,20 @@ export function megExecutorsFor(
     const args = raw as NotionFullforOppgaveInput;
     const summary = `Sette Notion-oppgave til status "${args.status}"`;
     await createPending("notion_fullfor_oppgave", args, summary, subject);
+    return `Forslag klart: ${summary}. Be Anders svare BEKREFT for å utføre.`;
+  },
+
+  notion_prosjekter: async (raw) => {
+    const args = raw as NotionProsjekterInput;
+    return notionProsjekter(args.limit ?? 10);
+  },
+
+  notion_opprett_prosjekt: async (raw) => {
+    const args = raw as NotionOpprettProsjektInput;
+    const deler = [`"${args.navn}"`];
+    if (args.prioritet) deler.push(args.prioritet);
+    const summary = `Opprette prosjekt i Notion: ${deler.join(", ")}`;
+    await createPending("notion_opprett_prosjekt", args, summary, subject);
     return `Forslag klart: ${summary}. Be Anders svare BEKREFT for å utføre.`;
   },
 

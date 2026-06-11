@@ -32,11 +32,13 @@ function formatDato(d: Date): string {
 function mapRunderData(
   model: Awaited<ReturnType<typeof getRunderListModel>>,
   fornavn: string,
+  hcp: number | null,
 ): RunderData {
   const total = model.kpis.total;
   return {
     eyebrow: "PlayerHQ · /portal/mal/runder",
     fornavn,
+    hcp,
     subtittel:
       total === 0
         ? "Ingen registrerte runder ennå. Logg din første runde for å se trender."
@@ -64,5 +66,5 @@ export default async function RunderPage() {
   const model = await getRunderListModel(user.id);
   const fornavn = user.name ? user.name.split(" ")[0] : "";
 
-  return <RundeListeSide data={mapRunderData(model, fornavn)} />;
+  return <RundeListeSide data={mapRunderData(model, fornavn, user.hcp)} />;
 }
