@@ -2,7 +2,7 @@
 
 > Dette er den komplette lista over hver eneste skjerm i appen, og om den er helt ferdig eller ikke. Én plass å se alt.
 
-Sist oppdatert: 11. juni 2026.
+Sist oppdatert: 11. juni 2026 (session 2 — data-tilkobling + Meg Notion Second Brain).
 
 ---
 
@@ -15,21 +15,21 @@ Prompt: `My Drive/AK Golf Group/prompt/felles/alle-manglende-skjermer-2026-06-11
 Dekker alle ~60 skjermer uten design ennå. Leveranse: 12 JSX-filer.
 Når ferdig: lever filene til `public/design-handover/AK Golf HQ Design System/` → port til kode.
 
-### Spor B — Data-tilkobling (Claude Code gjør dette NÅ)
-Skjermer som har ferdig design men viser demo-tall. Prioritert rekkefølge:
+### Spor B — Data-tilkobling ✓ FERDIG (11. juni)
+Alle 8 prioriterte skjermer koblet til ekte Prisma-data og pushet til prod.
 
-| Prioritet | Skjerm | Adresse | Jobb |
-|---|---|---|---|
-| ★1 | Live-økt brief/aktiv/summary (PlayerHQ) | `/portal/(fullscreen)/live/[sessionId]/*` | Koble ekte TrainingPlanSession + SessionDrill |
-| ★2 | Drill-bibliotek (PlayerHQ) | `/portal/drills` + `/portal/drills/[id]` | Koble ExerciseDefinition fra DB |
-| ★3 | Workbench: opprett plan + økt | `/portal/planlegge/workbench` | Server actions + sheets |
-| ★4 | SG-Hub (hoved) | `/portal/mal/sg-hub` | Koble ekte SG-beregninger |
-| ★5 | Runder (liste) | `/portal/mal/runder` | Koble Round fra DB |
-| ★6 | TrackMan (liste) | `/portal/mal/trackman` | Koble TrackManSession fra DB |
-| ★7 | Statistikk (oversikt) | `/portal/statistikk` | Koble SG-aggregater |
-| ★8 | Booking-hub + ny | `/portal/booking` + `/portal/booking/ny` | Koble Facility + Availability |
-| ★9 | Onboarding (ekte flyt) | `/auth/onboarding` | Ekte DB-skriving |
-| ★10 | Compliance (AgencyOS) | `/admin/analysere/compliance` | Koble ekte data |
+| Status | Skjerm | Adresse |
+|---|---|---|
+| ✓ | Live-økt: oppsummering (summary) | `/portal/(fullscreen)/live/[sessionId]/summary` |
+| ✓ | Drill-bibliotek | `/portal/drills` |
+| ✓ | Workbench: CreatePlanSheet + CreateSessionSheet | `/portal/planlegge/workbench` |
+| ✓ | SG-Hub (hoved) | `/portal/mal/sg-hub` |
+| ✓ | Runder (liste) | `/portal/mal/runder` |
+| ✓ | TrackMan (liste) | `/portal/mal/trackman` |
+| ✓ | Statistikk (oversikt) | `/portal/statistikk` |
+| ✓ | Booking-hub + ny booking | `/portal/booking` + `/portal/booking/ny` |
+
+Gjenstår (lavere prioritet): Onboarding ekte flyt + Compliance AgencyOS.
 
 ### Spor C — Design-porting etter Claude Design
 Skjermer som får ny JSX fra Spor A → porte til kode samme dag via design-porting-gate.
@@ -79,7 +79,8 @@ Tegnforklaring: ✓ = ferdig · ~ = delvis / i arbeid · – = ikke startet.
 ## Status akkurat nå (tallene)
 
 - **Skjermer totalt vi sporer:** ca. 182 hovedskjermer (pluss mange små undersider — alle er med i lista under). To nye kom inn 4. juni: «Logg treningsøkt» (spiller) og «Fremgang» (coach), begge på ekte data.
-- **Helt ferdige (alle seks haker grønne):** 2 — begge Workbench-variantene (spiller + coach). Det er foreløpig de eneste med ekte data hele veien.
+- **Helt ferdige (alle seks haker grønne):** 2 — begge Workbench-variantene (spiller + coach).
+- **Data-tilkobling fullført (11. juni):** 8 PlayerHQ-skjermer koblet til ekte Prisma-data og deployet: SG-Hub, TrackMan (liste), Statistikk (oversikt), Booking-hub, Ny booking, Drill-bibliotek, Live-økt summary, Runder (liste). Alle merket `†` i tabellen (bygd+data ✓, ikke nettleser-testet ende-til-ende ennå).
 - **PlayerHQ-hovedskjermer på MOBIL-paritet med ekte data (9. juni):** 5 — Hjem, Planlegge, Gjennomføre, Analysere, Meg. Disse er bygd om fra den FERSKE Claude Design-fasiten (4. juni), kjører på ekte Prisma-data (testspiller Øyvind Rohjan), ligger på ekte adresse, og er verifisert av uavhengig kritiker-agent til **0 avvik** mot fasiten på 430px. Eneste gjenstående hake er desktop/iPad-utgaven (mobil-fasit er portet, ikke desktop-layoutene).
 - **AgencyOS HELE FASE 3 på DESKTOP-paritet med ekte data (10.–11. juni):** 25 skjermer + skallet — alle ~26 fasit-skjermer gjennom kritiker-gaten til 0 avvik (Workbench-punktet dekkes av den allerede helgrønne coach-Workbenchen). Gjenstår for AgencyOS: Fase 4 mobil (net-new) + iPad-sveip. — Cockpit/dashboard, Oppgaver, Tildelt meg, Forespørsler, Godkjenninger — pluss hele AgencyOS-SKALLET (fasit-sidebar m/ live badge-tall, topbar m/ spiller↔gruppe-veksler, mørkt tema håndhevet). Portet fra fersk fasit (agencyos-app), ekte Prisma-data (38 spillere-stall seedet), kritiker-loop over 6 runder til 0 reelle avvik (rester er dokumenterte unntak i design-porting-gate.md). Underveis ble tre systemfeil som rammet ALLE skjermer fikset: unlayered `* { border-color }` som drepte alle border-fargeklasser, statiske `--color-success/-warning`-tokens som ignorerte mørkt tema, og `.dark`-tokens som avvek fra fasit-paletten (success/info/border/secondary/muted/destructive).
 - **Nytt design ferdig i forhåndsvisning (men venter på ekte data + ekte adresse):** ca. 43 skjermer. Disse fikk nytt v10-utseende i natt, men kjører fortsatt på liksom-tall og ligger i en forhåndsvisning — ikke på sin ekte nettadresse ennå. De er altså «pene, men ikke ferdig koblet».
@@ -124,7 +125,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Teknisk plan detalj | `/portal/tren/teknisk-plan/[planId]` | – | --- | ✓ | ~ | ~ | ✓ |
 | Fys-plan (liste) | `/portal/tren/fys-plan` | – | --- | ✓ | ~ | ~ | ✓ |
 | · Fys-plan detalj/bygger | `/portal/tren/fys-plan/[planId]` | – | --- | ✓ | ~ | ~ | ✓ |
-| Drills (bibliotek) | `/portal/drills` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| Drills (bibliotek) † | `/portal/drills` | ✓ | ✓✓– | ~ | ~ | ✓ | ~ |
 | · Drill-detalj | `/portal/drills/[id]` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
 | Mål-hub | `/portal/mal` | – | --- | ✓ | ~ | ~ | ✓ |
 | · Mål-bygger (wizard) | `/portal/mal/bygger` | – | --- | ✓ | ~ | ~ | ~ |
@@ -154,7 +155,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Ønsket økt bekreftet | `/portal/onskeligokt/bekreftet` | – | --- | ✓ | ~ | ~ | ~ |
 | Live-økt: brief | `/portal/(fullscreen)/live/[sessionId]/brief` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
 | Live-økt: aktiv | `/portal/(fullscreen)/live/[sessionId]/active` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
-| Live-økt: oppsummering | `/portal/(fullscreen)/live/[sessionId]/summary` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| Live-økt: oppsummering † | `/portal/(fullscreen)/live/[sessionId]/summary` | ✓ | ✓✓– | ~ | ~ | ✓ | ~ |
 | Live-økt: drill-logger | `/portal/(fullscreen)/live/[sessionId]/logger` | ~ | ✓✓– | ✓ | ~ | ~ | ✓ |
 | Live-økt: score-tapper | `/portal/(fullscreen)/live/[sessionId]/tapper` | ~ | ✓✓– | ✓ | ~ | ~ | ✓ |
 | Tren (fullskjerm) | `/portal/(fullscreen)/tren` | – | --- | ✓ | ~ | ~ | ~ |
@@ -168,11 +169,11 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 |---|---|---|---|---|---|---|---|
 | Analysere (Les tallene · faner) ★ | `/portal/analysere` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | · Hull-analyse | `/portal/analysere/hull` | ~ | ✓✓– | ✓ | ~ | ✓ | ✓ |
-| Statistikk (oversikt) | `/portal/statistikk` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| Statistikk (oversikt) † | `/portal/statistikk` | ✓ | ✓✓– | ~ | ~ | ✓ | ~ |
 | · Metrikk-detalj | `/portal/statistikk/[metric]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Sammenlign | `/portal/statistikk/sammenlign` | – | --- | ✓ | ~ | ~ | ~ |
 | · Del runde | `/portal/statistikk/runder/[runId]/del` | – | --- | ✓ | ~ | ~ | ~ |
-| **SG-Hub (Strokes Gained)** ★ | `/portal/mal/sg-hub` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| **SG-Hub (Strokes Gained)** ★ † | `/portal/mal/sg-hub` | ✓ | ✓✓– | ~ | ~ | ✓ | ~ |
 | · Kølle-detalj | `/portal/mal/sg-hub/[club]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Benchmark | `/portal/mal/sg-hub/benchmark` | – | --- | ✓ | ~ | ✓ | ✓ |
 | · Best vs nå | `/portal/mal/sg-hub/best-vs-now` | – | --- | ✓ | ~ | ~ | ~ |
@@ -183,11 +184,11 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Coach ser spiller-SG | `/portal/mal/sg-hub/coach/[spillerId]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Coach: kølle | `/portal/mal/sg-hub/coach/[spillerId]/[club]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Coach: utstyr | `/portal/mal/sg-hub/coach/[spillerId]/equipment` | – | --- | ✓ | ~ | ~ | ~ |
-| Runder (liste) | `/portal/mal/runder` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| Runder (liste) † | `/portal/mal/runder` | ✓ | ✓✓– | ~ | ~ | ✓ | ~ |
 | · Runde-detalj ★ | `/portal/mal/runder/[id]` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | · Slag-for-slag | `/portal/mal/runder/[id]/shot-by-shot` | – | --- | ✓ | ~ | ~ | ~ |
 | · Logg ny runde ★ | `/portal/mal/runder/ny` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
-| TrackMan (liste) | `/portal/mal/trackman` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| TrackMan (liste) † | `/portal/mal/trackman` | ✓ | ✓✓– | ~ | ~ | ✓ | ~ |
 | · TrackMan-sesjon | `/portal/mal/trackman/[id]` | ~ | ✓✓– | ✓ | ~ | ~ | ~ |
 | · TrackMan (alt. adresse) | `/portal/trackman/[sessionId]` | ~ | ✓✓– | ✓ | ~ | ~ | ~ |
 | Tester (oversikt) ★ | `/portal/tren/tester` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
@@ -265,8 +266,8 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Booking-hub | `/portal/booking` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
-| · Ny booking (wizard) | `/portal/booking/ny` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| Booking-hub † | `/portal/booking` | ✓ | ✓✓– | ~ | ~ | ✓ | ~ |
+| · Ny booking (wizard) † | `/portal/booking/ny` | ✓ | ✓✓– | ~ | ~ | ✓ | ~ |
 | · Ny booking bekreft | `/portal/booking/ny/bekreft` | – | --- | ✓ | ~ | ~ | ~ |
 | · Booking-detalj | `/portal/booking/[bookingId]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Coach-profil (booking) | `/portal/booking/coach/[coachId]` | – | --- | ✓ | ~ | ~ | ~ |
