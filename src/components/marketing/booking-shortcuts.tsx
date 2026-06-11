@@ -9,8 +9,10 @@ import { PulseDot } from "@/components/athletic/pulse-dot";
 
 type Shortcut = {
   slug: string;
+  /** Full eyebrow-override — brukes i stedet for prefiks/varighet/suffiks. */
+  eyebrow?: string;
   /** Eyebrow-prefiks før varighet, f.eks. "Drop-in" → "Drop-in · 20 min" */
-  eyebrowPrefiks: string;
+  eyebrowPrefiks?: string;
   /** Eyebrow-suffiks etter varighet, f.eks. " · SG-analyse" */
   eyebrowSuffiks?: string;
   featured?: boolean;
@@ -18,12 +20,8 @@ type Shortcut = {
 
 const SHORTCUTS: readonly Shortcut[] = [
   { slug: "markus-flex-20", eyebrowPrefiks: "Drop-in" },
-  { slug: "anders-performance", eyebrowPrefiks: "1:1", featured: true },
-  {
-    slug: "anders-performance-pro",
-    eyebrowPrefiks: "1:1",
-    eyebrowSuffiks: " · SG-analyse",
-  },
+  { slug: "anders-performance", eyebrow: "2 × 20 min", featured: true },
+  { slug: "anders-performance-pro", eyebrow: "4 × 20 min" },
 ];
 
 const SOEK_DAGER_FREMOVER = 14;
@@ -139,7 +137,7 @@ export async function BookingShortcuts() {
 
 function BkCard({ item }: { item: ServiceMedNesteLedig }) {
   const featured = item.shortcut.featured ?? false;
-  const eyebrow = `${item.shortcut.eyebrowPrefiks} · ${item.varighetMin} min${item.shortcut.eyebrowSuffiks ?? ""}`;
+  const eyebrow = item.shortcut.eyebrow ?? `${item.shortcut.eyebrowPrefiks ?? ""} · ${item.varighetMin} min${item.shortcut.eyebrowSuffiks ?? ""}`;
 
   return (
     <div
