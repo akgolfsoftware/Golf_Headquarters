@@ -133,7 +133,30 @@ export default async function TesterPage() {
         }
       />
 
-      <div className="overflow-hidden rounded-xl border border-border bg-card">
+      {/* Mobil (<md): kortliste */}
+      <div className="flex flex-col divide-y divide-border overflow-hidden rounded-xl border border-border bg-card md:hidden">
+        {rader.length === 0 && (
+          <p className="px-4 py-10 text-center text-[13px] text-muted-foreground">
+            Ingen tester registrert ennå.
+          </p>
+        )}
+        {rader.map((r) => (
+          <Link
+            key={r.key}
+            href={`/admin/spillere/${r.spillerId}`}
+            className="flex min-h-[60px] items-center gap-3 px-4 py-3 transition-colors hover:bg-secondary active:bg-secondary"
+          >
+            <AgPlayerCell initials={initials(r.navn)} name={r.navn} sub={r.naar} size={32} />
+            <div className="ml-auto flex shrink-0 flex-col items-end gap-1">
+              <AgChip tone="neu">{r.chip}</AgChip>
+              <span className="font-mono text-[10px] text-muted-foreground">{r.test}</span>
+            </div>
+          </Link>
+        ))}
+      </div>
+
+      {/* Desktop (md+): tabell */}
+      <div className="hidden overflow-x-auto rounded-xl border border-border bg-card md:block">
         <AgTable>
           <thead>
             <tr>

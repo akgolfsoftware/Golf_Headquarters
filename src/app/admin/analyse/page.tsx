@@ -354,7 +354,7 @@ export default async function StallAnalysePage() {
         </div>
         <div>
           <AgSectionHead className="mb-[12px] mt-0 leading-none">Per gruppe</AgSectionHead>
-          <div className="overflow-hidden rounded-xl border border-border bg-card">
+          <div className="overflow-x-auto rounded-xl border border-border bg-card">
             <AgTable>
               <thead>
                 <tr>

@@ -141,7 +141,8 @@ export default async function DrillBibliotekPage({
       />
 
       {/* Seg-kontroll (fasit .seg) — interaktiv via ?kat= */}
-      <div className="mb-4 inline-flex gap-[2px] rounded-lg bg-secondary p-[3px]">
+      <div className="mb-4 overflow-x-auto pb-1">
+        <div className="inline-flex gap-[2px] rounded-lg bg-secondary p-[3px] whitespace-nowrap">
         {KATEGORIER.map((k) => (
           <Link
             key={k.param}
@@ -156,6 +157,7 @@ export default async function DrillBibliotekPage({
             {k.label}
           </Link>
         ))}
+        </div>
       </div>
 
       <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">

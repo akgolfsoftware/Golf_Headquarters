@@ -513,7 +513,7 @@ export default async function SpillerProfilPage({
           >
             Siste runder & tester
           </Sechead>
-          <div className="overflow-hidden rounded-xl border border-border bg-card">
+          <div className="overflow-x-auto rounded-xl border border-border bg-card">
             <AgTable>
               <thead>
                 <tr>

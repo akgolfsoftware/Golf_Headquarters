@@ -148,7 +148,45 @@ export default async function TurneringerPage() {
         }
       />
 
-      <div className="overflow-hidden rounded-xl border border-border bg-card">
+      {/* Mobil (<md): kortliste */}
+      <div className="flex flex-col divide-y divide-border overflow-hidden rounded-xl border border-border bg-card md:hidden">
+        {rader.length === 0 && (
+          <p className="px-4 py-10 text-center text-[13px] text-muted-foreground">
+            Ingen kommende turneringer med påmeldte fra stallen.
+          </p>
+        )}
+        {rader.map((r) => (
+          <div key={r.key} className="px-4 py-3">
+            <div className="flex items-start gap-3">
+              <span className="mt-0.5 inline-flex h-[32px] w-[32px] shrink-0 items-center justify-center rounded-[10px] bg-secondary text-primary">
+                <Trophy size={15} strokeWidth={1.5} />
+              </span>
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  {r.href ? (
+                    <Link href={r.href} className="text-[13px] font-semibold text-foreground hover:underline">
+                      {r.name}
+                    </Link>
+                  ) : (
+                    <span className="text-[13px] font-semibold text-foreground">{r.name}</span>
+                  )}
+                  {r.chip && <AgChip tone={r.chip.tone}>{r.chip.label}</AgChip>}
+                </div>
+                <div className="mt-[3px] flex flex-wrap items-center gap-[6px] font-mono text-[10px] text-muted-foreground">
+                  <span>{datoSpenn(r.start, r.end)}</span>
+                  {r.venue && <><span>·</span><span>{r.venue}</span></>}
+                  <span>·</span>
+                  <span>{r.paameldte} påmeldt</span>
+                </div>
+              </div>
+              <FellesmeldingKnapp navn={r.name} mottakere={r.paameldte} />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Desktop (md+): tabell */}
+      <div className="hidden overflow-x-auto rounded-xl border border-border bg-card md:block">
         <AgTable>
           <thead>
             <tr>
