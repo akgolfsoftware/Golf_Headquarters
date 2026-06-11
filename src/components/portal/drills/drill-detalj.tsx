@@ -3,29 +3,30 @@
 /**
  * PlayerHQ · Drill-detalj — presentasjonskomponent (props-drevet).
  *
- * Pixel-port av public/design-handover/_screens/pl-drill.png, mobile-first
- * (≤640px = primær-fasit). Hele drillen på én flate:
- *   topbar (← Bibliotek + DRILL) · hero (akse-farge venstrekant + eyebrow med
- *   farget dot + tittel italic + CS-badge) · Beskrivelse · Media (tom-ramme
- *   med diagonal-hatch + «Media kommer»-pille) · Parametere (nøkkel/verdi-tabell)
- *   · CS-score-input (valgfri) · Kommentar-textarea (valgfri) · Registrer-knapp
- *   · feedback-chips («Hva synes du om denne drillen?») · sticky bunn-bar
- *   (Start økt med denne drill · Legg til kalender · Del).
+ * Pixel-port av public/design-handover/preview/components-drill-detalj.html.
+ * Mobile-first (≤640px = primær-fasit). Hele drillen på én flate:
+ *   topbar (← Bibliotek + DRILL #N) · hero (akse-farge venstrekant + eyebrow
+ *   med farget dot + tittel italic + meta-chips: varighet/trinn/CS) ·
+ *   Beskrivelse · Media (media-faner + hatch-ramme) · Trinn (avkryssbare med
+ *   live-progresjon) · Parametere (nøkkel/verdi-tabell) · Coach-notat (lime
+ *   venstrekant + avatar) · sticky CTA-bar (bokmerke + «Legg til i plan»).
  *
- * Lokal state KUN for skjema/chips (ingen DB/Prisma). DS-tokens kun — ingen
+ * Lokal state KUN for skjema (ingen DB/Prisma). DS-tokens kun — ingen
  * hardkodet hex (akse-farge via bg-pyr-*), ingen emoji.
  */
 
 import { useState } from "react";
 import Link from "next/link";
 import {
+  Bookmark,
   CalendarPlus,
-  CheckCircle2,
   ChevronLeft,
+  Check,
+  Clock,
+  List,
   Play,
-  PlayCircle,
-  Share2,
   Target,
+  Video,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -33,29 +34,39 @@ export type DrillAxis = "fys" | "tek" | "slag" | "spill" | "turn";
 
 export type DrillParam = { key: string; value: string };
 
+export type DrillMetaChip = {
+  icon: "clock" | "list" | "target";
+  text: string;
+};
+
 export type DrillDetaljData = {
-  /** Tag øverst til høyre i topbar, f.eks. "DRILL". */
+  /** Tag øverst til høyre i topbar, f.eks. "DRILL #142". */
   topbarTag: string;
   axis: DrillAxis;
-  /** Eyebrow-tekst ved farget dot, f.eks. "SLAG". */
+  /** Eyebrow-tekst ved farget dot, f.eks. "SLAG · INNSPILL". */
   eyebrow: string;
   /** Drill-navn (rendres italic i primary). */
   name: string;
-  /** CS-badge i hero, f.eks. "CS 45". null = skjul. */
-  csBadge: string | null;
+  /** Hero-meta chips (varighet, trinn, CS). */
+  meta: DrillMetaChip[];
+  /** @deprecated Beholdt for bakoverkompatibilitet med page.tsx. Bruk meta[]. */
+  csBadge?: string | null;
   description: string | null;
-  /** Utførelse-trinn (nummerert). Tom array = skjul seksjon. */
+  /** Utførelse-trinn (avkryssbar liste). Tom array = skjul seksjon. */
   steps: { n: number; text: string }[];
-  /** Coach-notat (vises med lime venstrekant). null = skjul seksjon. */
+  /** Coach-notat (vises med lime venstrekant + avatar). null = skjul seksjon. */
   coachNotes: string | null;
-  /** Media-URL hvis lastet opp. null/undefined = tom-tilstand med «Media kommer». */
+  /** Coach-initialer for avatar, f.eks. "AK". */
+  coachInitials?: string;
+  /** Media-elementer. Tom = vis placeholder. */
+  media?: { kind: "video" | "foto"; label: string; url: string }[];
+  /** @deprecated Bruk media[]. Beholdt for bakoverkompatibilitet. */
   mediaUrl?: string | null;
   params: DrillParam[];
-  /** Valgbare feedback-etiketter (chips). Første = forhåndsvalgt i demo. */
-  feedbackOptions: string[];
   hrefs: {
     bibliotek: string;
-    startOkt: string;
+    /** Mål for «Legg til i plan»-knappen (Workbench). */
+    leggTilIPlan: string;
   };
 };
 
@@ -68,20 +79,51 @@ const AXIS_BAR: Record<DrillAxis, string> = {
   turn: "bg-pyr-turn",
 };
 
-function SectionLabel({ children }: { children: React.ReactNode }) {
+const META_ICON_MAP = {
+  clock: Clock,
+  list: List,
+  target: Target,
+} as const;
+
+function SectionLabel({
+  children,
+  right,
+}: {
+  children: React.ReactNode;
+  right?: React.ReactNode;
+}) {
   return (
-    <h2 className="mb-2.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
-      {children}
-    </h2>
+    <div className="mb-2.5 flex items-center justify-between">
+      <h2 className="font-mono text-[9px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
+        {children}
+      </h2>
+      {right && (
+        <span className="font-mono text-[9px] font-extrabold uppercase tracking-[0.12em] text-primary">
+          {right}
+        </span>
+      )}
+    </div>
   );
 }
 
 export function DrillDetalj({ data }: { data: DrillDetaljData }) {
-  const [csScore, setCsScore] = useState("");
-  const [kommentar, setKommentar] = useState("");
-  const [valgtFeedback, setValgtFeedback] = useState<string | null>(
-    data.feedbackOptions[0] ?? null,
-  );
+  const mediaItems = data.media ?? (data.mediaUrl ? [{ kind: "video" as const, label: "Video", url: data.mediaUrl }] : []);
+  const [activeMedia, setActiveMedia] = useState<string>(mediaItems[0]?.kind ?? "video");
+  const [doneSteps, setDoneSteps] = useState<Set<number>>(new Set());
+
+  const toggleStep = (n: number) => {
+    setDoneSteps((prev) => {
+      const next = new Set(prev);
+      if (next.has(n)) next.delete(n);
+      else next.add(n);
+      return next;
+    });
+  };
+
+  const doneCount = doneSteps.size;
+  const totalSteps = data.steps.length;
+
+  const activeMediaItem = mediaItems.find((m) => m.kind === activeMedia);
 
   return (
     <article className="overflow-hidden rounded-2xl border border-border bg-card pb-[84px] sm:pb-0">
@@ -112,12 +154,21 @@ export function DrillDetalj({ data }: { data: DrillDetaljData }) {
         <h1 className="font-display mt-2 text-[22px] font-bold leading-[1.15] tracking-[-0.02em] text-foreground">
           <em className="font-normal italic text-primary">{data.name}</em>
         </h1>
-        {data.csBadge && (
+        {/* Meta chips */}
+        {data.meta.length > 0 && (
           <div className="mt-2 flex flex-wrap gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-2.5 py-1 font-mono text-[9.5px] font-bold tracking-[0.04em] text-foreground">
-              <Target className="h-[11px] w-[11px] text-muted-foreground" strokeWidth={1.75} aria-hidden />
-              {data.csBadge}
-            </span>
+            {data.meta.map((chip) => {
+              const Icon = META_ICON_MAP[chip.icon];
+              return (
+                <span
+                  key={chip.icon}
+                  className="inline-flex items-center gap-[5px] rounded-full bg-secondary px-2.5 py-1 font-mono text-[9.5px] font-bold tracking-[0.04em] text-foreground"
+                >
+                  <Icon className="h-[11px] w-[11px] text-muted-foreground" strokeWidth={1.75} aria-hidden />
+                  {chip.text}
+                </span>
+              );
+            })}
           </div>
         )}
       </header>
@@ -126,64 +177,116 @@ export function DrillDetalj({ data }: { data: DrillDetaljData }) {
       {data.description && (
         <section className="border-b border-border px-[18px] py-4">
           <SectionLabel>Beskrivelse</SectionLabel>
-          <p className="text-sm leading-relaxed tracking-[-0.005em] text-foreground">
+          <p className="text-[14px] leading-[1.6] tracking-[-0.005em] text-foreground">
             {data.description}
           </p>
         </section>
       )}
 
-      {/* Trinn — nummerert utførelse-liste (v10-fasit) */}
-      {data.steps.length > 0 && (
-        <section className="border-b border-border px-[18px] py-4">
-          <SectionLabel>Trinn · {data.steps.length} totalt</SectionLabel>
-          <ol className="space-y-2.5">
-            {data.steps.map((s) => (
-              <li key={s.n} className="flex gap-3">
-                <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-primary font-mono text-[11px] font-bold text-primary-foreground">
-                  {s.n}
-                </span>
-                <span className="pt-0.5 text-sm leading-relaxed text-foreground">
-                  {s.text}
-                </span>
-              </li>
-            ))}
-          </ol>
-        </section>
-      )}
-
-      {/* Coach-notat — lime venstrekant (v10-fasit) */}
-      {data.coachNotes && (
-        <section className="border-b border-border px-[18px] py-4">
-          <SectionLabel>Coach-notat</SectionLabel>
-          <div className="rounded-xl border border-border border-l-[3px] border-l-accent bg-secondary/30 p-3.5">
-            <p className="text-sm leading-relaxed text-foreground">
-              {data.coachNotes}
-            </p>
-          </div>
-        </section>
-      )}
-
-      {/* Media — tom-ramme (diagonal-hatch) med «Media kommer»-pille */}
+      {/* Media */}
       <section className="border-b border-border px-[18px] py-4">
         <SectionLabel>Media</SectionLabel>
+        {/* Media tabs — vis kun hvis to eller flere medier */}
+        {mediaItems.length > 1 && (
+          <div className="mb-2.5 inline-flex gap-[3px] rounded-[10px] bg-secondary p-[3px]">
+            {mediaItems.map((m) => (
+              <button
+                key={m.kind}
+                type="button"
+                onClick={() => setActiveMedia(m.kind)}
+                className={cn(
+                  "rounded-[8px] px-3 py-[6px] font-mono text-[10px] font-extrabold uppercase tracking-[0.06em] transition-colors",
+                  activeMedia === m.kind
+                    ? "bg-card text-foreground shadow-sm"
+                    : "bg-transparent text-muted-foreground hover:text-foreground",
+                )}
+              >
+                {m.label}
+              </button>
+            ))}
+          </div>
+        )}
+        {/* Media frame */}
         <div
           className="relative flex h-[188px] items-center justify-center overflow-hidden rounded-xl border border-border"
           style={{
             backgroundImage:
-              "repeating-linear-gradient(135deg, hsl(var(--foreground) / 0.05) 0 12px, hsl(var(--foreground) / 0.02) 12px 24px)",
-            backgroundColor: "hsl(var(--secondary) / 0.4)",
+              "repeating-linear-gradient(135deg, rgba(10,31,23,0.05) 0 12px, rgba(10,31,23,0.02) 12px 24px)",
+            backgroundColor: "hsl(var(--background))",
           }}
         >
-          {data.mediaUrl ? (
-            <video src={data.mediaUrl} controls className="h-full w-full object-cover" />
+          {activeMediaItem ? (
+            <span className="inline-flex items-center gap-[7px] rounded-full border border-border bg-card px-3 py-1.5 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground">
+              <Play className="h-3.5 w-3.5 text-primary" strokeWidth={1.75} aria-hidden />
+              {activeMediaItem.label.toUpperCase()} · AVSPILL
+            </span>
           ) : (
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground">
-              <PlayCircle className="h-3.5 w-3.5 text-primary" strokeWidth={1.75} aria-hidden />
+            <span className="inline-flex items-center gap-[7px] rounded-full border border-border bg-card px-3 py-1.5 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground">
+              <Video className="h-3.5 w-3.5 text-primary" strokeWidth={1.75} aria-hidden />
               Media kommer · coach laster opp
             </span>
           )}
         </div>
       </section>
+
+      {/* Trinn — avkryssbar liste med live-progresjon */}
+      {data.steps.length > 0 && (
+        <section className="border-b border-border px-[18px] py-4">
+          <SectionLabel
+            right={
+              totalSteps > 0
+                ? `${doneCount} / ${totalSteps} fullført`
+                : undefined
+            }
+          >
+            Trinn
+          </SectionLabel>
+          <ol className="flex flex-col gap-2">
+            {data.steps.map((s) => {
+              const done = doneSteps.has(s.n);
+              return (
+                <li key={s.n}>
+                  <button
+                    type="button"
+                    role="checkbox"
+                    aria-checked={done}
+                    onClick={() => toggleStep(s.n)}
+                    className={cn(
+                      "grid w-full grid-cols-[28px_1fr] items-start gap-3 rounded-xl border border-border bg-card p-2.5 pl-3 text-left transition-colors hover:bg-secondary",
+                      done && "opacity-75",
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-mono text-[12px] font-extrabold transition-colors",
+                        done
+                          ? "bg-primary text-accent"
+                          : "border-2 border-border text-muted-foreground",
+                      )}
+                    >
+                      {done ? (
+                        <Check className="h-3.5 w-3.5" strokeWidth={2.5} aria-hidden />
+                      ) : (
+                        <span>{s.n}</span>
+                      )}
+                    </span>
+                    <div>
+                      <span
+                        className={cn(
+                          "block text-[13.5px] font-semibold leading-[1.3] tracking-[-0.005em] text-foreground",
+                          done && "line-through text-muted-foreground",
+                        )}
+                      >
+                        {s.text}
+                      </span>
+                    </div>
+                  </button>
+                </li>
+              );
+            })}
+          </ol>
+        </section>
+      )}
 
       {/* Parametere */}
       {data.params.length > 0 && (
@@ -198,7 +301,7 @@ export function DrillDetalj({ data }: { data: DrillDetaljData }) {
                   i < data.params.length - 1 && "border-b border-border",
                 )}
               >
-                <dt className="flex items-center border-r border-border bg-secondary/40 px-3 py-2.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.08em] text-muted-foreground">
+                <dt className="flex items-center border-r border-border bg-background px-3 py-2.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.08em] text-muted-foreground">
                   {p.key}
                 </dt>
                 <dd className="px-3 py-2.5 font-mono text-[13px] font-bold tabular-nums tracking-[-0.005em] text-foreground">
@@ -210,94 +313,40 @@ export function DrillDetalj({ data }: { data: DrillDetaljData }) {
         </section>
       )}
 
-      {/* CS-score (valgfri) */}
-      <section className="border-b border-border px-[18px] py-4">
-        <SectionLabel>CS-score (valgfri)</SectionLabel>
-        <input
-          type="text"
-          inputMode="decimal"
-          value={csScore}
-          onChange={(e) => setCsScore(e.target.value)}
-          placeholder="f.eks. 8'"
-          className="flex h-11 w-full rounded-md border border-input bg-secondary/40 px-4 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
-        />
-      </section>
+      {/* Coach-notat — lime venstrekant + avatar */}
+      {data.coachNotes && (
+        <section className="border-b border-border px-[18px] py-4">
+          <SectionLabel>Coach-notat</SectionLabel>
+          <div className="flex gap-[11px] rounded-xl border border-border border-l-[3px] border-l-accent bg-card p-3.5">
+            <span
+              className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full bg-primary font-display text-[11px] font-bold text-accent"
+              aria-hidden
+            >
+              {data.coachInitials ?? "AK"}
+            </span>
+            <p className="text-[13px] leading-[1.5] tracking-[-0.005em] text-foreground">
+              {data.coachNotes}
+            </p>
+          </div>
+        </section>
+      )}
 
-      {/* Kommentar (valgfri) */}
-      <section className="border-b border-border px-[18px] py-4">
-        <SectionLabel>Kommentar (valgfri)</SectionLabel>
-        <textarea
-          value={kommentar}
-          onChange={(e) => setKommentar(e.target.value)}
-          placeholder="Hva gikk bra? Hva kan bli bedre?"
-          rows={3}
-          className="flex w-full resize-none rounded-md border border-input bg-secondary/40 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
-        />
-      </section>
-
-      {/* Registrer */}
-      <section className="border-b border-border px-[18px] py-4">
+      {/* Sticky CTA-bar */}
+      <div className="sticky bottom-0 left-0 right-0 flex items-center gap-2 border-t border-border bg-gradient-to-t from-card via-card/95 to-transparent px-4 py-3 backdrop-blur supports-[backdrop-filter]:from-card/80">
         <button
           type="button"
-          className="font-display inline-flex h-12 w-full items-center justify-center gap-2 rounded-md bg-primary text-sm font-bold text-accent transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          aria-label="Bokmerke drill"
+          className="inline-flex h-[50px] w-[52px] shrink-0 items-center justify-center rounded-xl border border-border bg-card text-muted-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
         >
-          <CheckCircle2 className="h-4 w-4" strokeWidth={2} aria-hidden />
-          Registrer
+          <Bookmark className="h-4 w-4" strokeWidth={1.75} aria-hidden />
         </button>
-      </section>
-
-      {/* Feedback */}
-      <section className="px-[18px] py-4">
-        <SectionLabel>Hva synes du om denne drillen?</SectionLabel>
-        <p className="mb-3 text-[13px] leading-relaxed text-muted-foreground">
-          Din tilbakemelding hjelper Anders å velge riktige drills for deg.
-        </p>
-        <div className="flex flex-wrap gap-2">
-          {data.feedbackOptions.map((opt) => {
-            const active = valgtFeedback === opt;
-            return (
-              <button
-                key={opt}
-                type="button"
-                aria-pressed={active}
-                onClick={() => setValgtFeedback(active ? null : opt)}
-                className={cn(
-                  "rounded-full px-3.5 py-2 text-[13px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
-                  active
-                    ? "bg-accent text-accent-foreground"
-                    : "bg-secondary text-foreground hover:bg-secondary/70",
-                )}
-              >
-                {opt}
-              </button>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Sticky bunn-bar */}
-      <div className="sticky bottom-0 left-0 right-0 flex items-center gap-2.5 border-t border-border bg-card/95 px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-card/80">
         <Link
-          href={data.hrefs.startOkt}
-          className="font-display inline-flex h-12 flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-accent px-4 text-[13px] font-bold text-accent-foreground shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          href={data.hrefs.leggTilIPlan}
+          className="inline-flex h-[50px] flex-1 items-center justify-center gap-2 rounded-xl bg-primary font-mono text-[11px] font-extrabold uppercase tracking-[0.08em] text-accent shadow-[0_8px_20px_rgba(0,88,64,0.18)] transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
-          <Play className="h-4 w-4" strokeWidth={2} aria-hidden />
-          Start økt med denne drill
+          <CalendarPlus className="h-[15px] w-[15px]" strokeWidth={2} aria-hidden />
+          Legg til i plan
         </Link>
-        <button
-          type="button"
-          className="inline-flex h-12 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-md border border-border bg-card px-3.5 text-[13px] font-semibold text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
-        >
-          <CalendarPlus className="h-4 w-4 text-muted-foreground" strokeWidth={1.75} aria-hidden />
-          Legg til kalender
-        </button>
-        <button
-          type="button"
-          className="inline-flex h-12 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-md border border-border bg-card px-3.5 text-[13px] font-semibold text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
-        >
-          <Share2 className="h-4 w-4 text-muted-foreground" strokeWidth={1.75} aria-hidden />
-          Del
-        </button>
       </div>
     </article>
   );

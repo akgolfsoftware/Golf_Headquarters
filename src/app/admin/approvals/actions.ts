@@ -72,9 +72,9 @@ export async function approveRequestDetailed(
     },
   });
 
-  revalidatePath("/admin/approvals");
-  revalidatePath(`/admin/approvals/${actionId}`);
-  redirect("/admin/approvals");
+  revalidatePath("/admin/godkjenninger");
+  revalidatePath(`/admin/godkjenninger/${actionId}`);
+  redirect("/admin/godkjenninger");
 }
 
 export async function declineRequestDetailed(actionId: string, reason: string) {
@@ -103,9 +103,9 @@ export async function declineRequestDetailed(actionId: string, reason: string) {
     },
   });
 
-  revalidatePath("/admin/approvals");
-  revalidatePath(`/admin/approvals/${actionId}`);
-  redirect("/admin/approvals");
+  revalidatePath("/admin/godkjenninger");
+  revalidatePath(`/admin/godkjenninger/${actionId}`);
+  redirect("/admin/godkjenninger");
 }
 
 export async function requestMoreInfo(actionId: string, question: string) {
@@ -145,6 +145,6 @@ export async function requestMoreInfo(actionId: string, question: string) {
     },
   });
 
-  revalidatePath("/admin/approvals");
-  revalidatePath(`/admin/approvals/${actionId}`);
+  revalidatePath("/admin/godkjenninger");
+  revalidatePath(`/admin/godkjenninger/${actionId}`);
 }

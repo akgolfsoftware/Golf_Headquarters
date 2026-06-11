@@ -273,7 +273,13 @@
       "mcp__72351f58-4d83-4538-8807-8f01835b16a1__search_files",
       "mcp__72351f58-4d83-4538-8807-8f01835b16a1__list_recent_files",
       "mcp__claude_ai_Supabase__list_projects",
-      "mcp__claude_ai_Supabase__execute_sql"
+      "mcp__claude_ai_Supabase__execute_sql",
+      "Skill(code-review)",
+      "Skill(code-review:*)",
+      "mcp__visualize__read_me",
+      "mcp__visualize__show_widget",
+      "Skill(claude-api)",
+      "Skill(claude-api:*)"
     ]
   }
 }

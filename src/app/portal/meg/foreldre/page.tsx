@@ -1,15 +1,14 @@
 /**
- * PlayerHQ · Foreldre (/portal/meg/foreldre) — v10-design.
+ * PlayerHQ · Foresatte (/portal/meg/foreldre)
  *
- * Rendrer <ForeldreInfo> (v10-fasit fra pl-forelder) med EKTE data fra Prisma
- * (parentRelation). Tom-tilstand (stiplet kort) når ingen foresatte er koblet —
- * aldri liksom-data.
+ * Viser spillerens egne foresatte/verger koblet via parentRelation-tabellen.
+ * Tom-tilstand (stiplet kort) når ingen foresatte er koblet — aldri dummy-data.
  *
  * Server component. Auth-guard via requirePortalUser({ allow: ["PLAYER"] }).
  * PortalShell (layout) eier sidebar/topbar/bunn-nav — denne siden rendrer kun
  * innholdet.
  *
- * mapForeldreData oversetter Prisma-radene til ForeldreInfoData (barn-lista).
+ * mapForeldreData oversetter Prisma parentRelation-rader til ForeldreInfoData.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";

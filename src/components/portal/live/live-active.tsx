@@ -338,7 +338,7 @@ export function LiveActive({ data }: { data: LiveSessionData }) {
     <Shell
       title={data.title}
       onCancel={handleCancel}
-      crumb={`DRILL ${active.index} AV ${drills.length}`}
+      crumb={`DRILL ${active.index} AV ${drills.length} · ${AXIS_SHORT[active.axis]}`}
       onPauseToggle={togglePause}
       paused={paused}
     >
@@ -372,7 +372,7 @@ export function LiveActive({ data }: { data: LiveSessionData }) {
               </span>
             )}
           </div>
-          <h1 className="mt-3 font-display text-[30px] font-bold leading-[1.08] -tracking-[0.02em] text-background">
+          <h1 className="mt-3 font-display text-[36px] font-bold italic leading-[1.08] -tracking-[0.02em] text-background">
             {active.name}
           </h1>
         </div>
@@ -386,7 +386,10 @@ export function LiveActive({ data }: { data: LiveSessionData }) {
           >
             {fmtMSS(drillSec)}
           </div>
-          <div className="mt-3 font-mono text-[14px] font-semibold tabular-nums text-background/60">
+          <div className="mt-2 font-mono text-[12px] font-semibold tabular-nums text-background/50">
+            av {String(data.durationMin).padStart(2, "0")}:00 · økt
+          </div>
+          <div className="mt-2 font-mono text-[14px] font-semibold tabular-nums text-background/60">
             TOTAL <span className="text-background">{fmtMSS(totalSec)}</span>
           </div>
         </div>
@@ -395,7 +398,7 @@ export function LiveActive({ data }: { data: LiveSessionData }) {
         <div className="flex flex-col gap-3">
           <div className="flex items-baseline justify-between">
             <span className="font-mono text-[12px] font-extrabold uppercase tracking-[0.10em] text-background/70">
-              Reps
+              REPS
             </span>
             <span
               className={`font-mono text-[22px] font-extrabold tabular-nums ${
@@ -542,8 +545,8 @@ function Transition({
               {AXIS_SHORT[finished.axis]} · {finished.name}
             </span>
           )}
-          <h1 className="mt-2 font-display text-[34px] font-bold leading-[1.05] -tracking-[0.02em] text-background">
-            <em className="font-normal not-italic">Ferdig</em> med drill {finished?.index ?? ""}
+          <h1 className="mt-2 font-display text-[40px] font-bold leading-[1.05] -tracking-[0.02em] text-background">
+            <em className="font-bold italic">Ferdig</em> med drill {finished?.index ?? ""}
           </h1>
         </div>
 
@@ -701,8 +704,8 @@ function Footer({
       }}
     >
       {next && (
-        <div className="mb-3 truncate font-mono text-[11px] font-bold uppercase tracking-[0.10em] text-background/55">
-          Neste: {AXIS_SHORT[next.axis]} · {next.name}
+        <div className="mb-3 truncate font-mono text-[11px] font-extrabold uppercase tracking-[0.10em] text-background/55">
+          NESTE: {AXIS_SHORT[next.axis]} · {next.name}
           {next.plannedReps > 0 ? ` · ${next.plannedReps} reps` : ""}
         </div>
       )}
@@ -724,7 +727,7 @@ function LogButton({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
     <button
       type="button"
-      className="flex h-[68px] flex-col items-center justify-center gap-1 rounded-xl bg-background/[0.07] text-background/80 transition-colors hover:bg-background/10 active:scale-[0.98]"
+      className="flex h-[48px] flex-col items-center justify-center gap-1 rounded-lg bg-background/[0.07] text-background/80 transition-colors hover:bg-background/10 active:scale-[0.98]"
     >
       {icon}
       <span className="font-mono text-[11px] font-bold uppercase tracking-[0.06em]">{label}</span>

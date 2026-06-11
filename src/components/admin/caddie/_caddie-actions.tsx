@@ -39,7 +39,7 @@ export function DraftActions() {
       <button
         type="button"
         onClick={() => setModal("approve")}
-        className="flex h-11 items-center justify-center gap-2 rounded-lg bg-primary text-sm font-bold tracking-[-0.005em] text-accent transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        className="flex h-11 items-center justify-center gap-2 rounded-lg bg-primary text-sm font-bold tracking-[-0.005em] text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       >
         <Check className="h-3.5 w-3.5" strokeWidth={2} aria-hidden /> Godkjenn og send
       </button>

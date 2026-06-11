@@ -5,15 +5,17 @@
  * med EKTE data fra loadDrillDetalj (Prisma · én ExerciseDefinition).
  * mapDrillData oversetter loader-output → v10 DrillDetaljData.
  *
- * Tom-tilstander bevares: csBadge=null når CS mangler, mediaUrl=null gir
- * «Media kommer»-placeholder, params=[] skjuler parameter-tabellen.
- * Ingen fabrikerte tall — alt utledes fra faktiske felter.
+ * Tom-tilstander bevares: meta=[] når ingen varighet/trinn/CS finnes,
+ * mediaItems=[] gir «Media kommer»-placeholder, params=[] skjuler
+ * parameter-tabellen. Ingen fabrikerte tall — alt utledes fra faktiske felter.
  *
  * Server component. Auth-guard: PLAYER + PARENT. Not-found-fallback beholdt.
  *
  * 3. juni: byttet fra @/components/portal/drill-detalj (gammelt design +
  * MestringsLoggClient/DrillDetailClient) til v10-komponenten i
  * @/components/portal/drills.
+ * 11. juni: oppdatert til full v10-fasit (meta-chips, checkable trinn,
+ * media-array, coach-avatar, «Legg til i plan» CTA).
  */
 
 import Link from "next/link";
@@ -29,15 +31,6 @@ import {
   type DrillDetaljData,
 } from "@/components/portal/drills/drill-detalj";
 
-/** Faste feedback-etiketter (UI-affordans, ikke spillerdata) — matcher v10. */
-const FEEDBACK_OPTIONS = [
-  "Aha!",
-  "Utfordrende",
-  "Passe",
-  "Kjedelig",
-  "For vanskelig",
-];
-
 /** Oversetter ekte loader-output → v10 DrillDetaljData. Tom-tilstander bevart. */
 function mapDrillData(d: LoaderDrillData): DrillDetaljData {
   return {
@@ -45,16 +38,23 @@ function mapDrillData(d: LoaderDrillData): DrillDetaljData {
     axis: d.axis,
     eyebrow: d.eyebrow,
     name: d.name,
-    csBadge: d.csForMeg !== null ? `CS ${d.csForMeg}` : null,
+    meta: d.meta.map((chip) => ({
+      icon: chip.icon as "clock" | "list" | "target",
+      text: chip.text,
+    })),
     description: d.description,
     steps: d.steps,
     coachNotes: d.coachNotes,
-    mediaUrl: d.media.find((m) => m.kind === "video")?.url ?? null,
+    coachInitials: "AK",
+    media: d.media.map((m) => ({
+      kind: m.kind,
+      label: m.label,
+      url: m.url,
+    })),
     params: d.params,
-    feedbackOptions: FEEDBACK_OPTIONS,
     hrefs: {
       bibliotek: "/portal/drills",
-      startOkt: "/portal/ny-okt",
+      leggTilIPlan: "/portal/planlegge/workbench",
     },
   };
 }

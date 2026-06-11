@@ -17,7 +17,7 @@ import {
   requestMoreInfo,
 } from "../actions";
 import { avatarBg } from "@/lib/avatar-colors";
-import type { ApprovalDetail } from "./page";
+import type { ApprovalDetail } from "@/app/admin/godkjenninger/[id]/page";
 
 type DialogMode = "none" | "decline" | "info" | "approve";
 
@@ -74,7 +74,7 @@ export function ApprovalDetailClient({ detail }: { detail: ApprovalDetail }) {
       {/* Eyebrow + tilbake */}
       <div className="flex items-center gap-2">
         <Link
-          href="/admin/approvals"
+          href="/admin/godkjenninger"
           className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-card text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
           aria-label="Tilbake til godkjenninger"
         >

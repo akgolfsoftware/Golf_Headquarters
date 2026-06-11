@@ -96,13 +96,6 @@ function formatTilPar(v: number): string {
   return v > 0 ? `+${v}` : `−${Math.abs(v)}`;
 }
 
-function tilParPillClass(v: number): string {
-  if (v < 0) return "bg-primary/12 text-primary";
-  if (v === 0) return "bg-secondary text-muted-foreground";
-  if (v <= 5) return "bg-accent/30 text-accent-foreground";
-  return "bg-destructive/15 text-destructive";
-}
-
 function sgClass(v: number | null): string {
   if (v == null || v === 0) return "text-muted-foreground";
   return v > 0 ? "text-success" : "text-destructive";
@@ -122,15 +115,15 @@ function NyRundeKnapp({ href, className }: { href: string; className?: string })
         className,
       )}
     >
-      Ny runde
+      Loggfør runde
     </Link>
   );
 }
 
 // ────────────────────────────────────────────────────────────────────────────
 // Tom-tilstand-kort — sentrert: flag-ikon (sirkel, secondary) + headline + body
-// + "Ny runde" + "eller" (ren tekst) + "Importer fra GolfBox" (outline).
-// Eksakt fra pl-runder.png.
+// + "Loggfør runde" + "eller" (ren tekst) + "Importer fra GolfBox" (outline).
+// Jf. pl-runder.png-mønsteret.
 // ────────────────────────────────────────────────────────────────────────────
 
 function TomTilstand({ data }: { data: RunderData }) {
@@ -198,7 +191,7 @@ function SnittStrip({ runder }: { runder: RundeRow[] }) {
   );
 
   return (
-    <div className="grid grid-cols-3 gap-3 rounded-2xl border border-border bg-card p-5">
+    <div className="grid grid-cols-3 gap-3 rounded-2xl border border-border bg-card p-4">
       {celle("Snitt-score", String(snittScore))}
       {celle("Snitt SG", formatSg(snittSg), sgClass(snittSg))}
       {celle("Runder", String(antall))}
@@ -207,8 +200,8 @@ function SnittStrip({ runder }: { runder: RundeRow[] }) {
 }
 
 // ────────────────────────────────────────────────────────────────────────────
-// Rundeliste — klikkbare rader. Mobil: dato | bane+inline-tall (2 linjer).
-// sm+: full kolonne-grid (dato · bane · score · til-par · SG · chevron).
+// Rundeliste — klikkbare rader. Layout: [score-boks 48×48] + [bane/dato/meta] + [chevron].
+// Score-boks er primary bg + accent tekst for beste runde, ellers secondary/foreground.
 // ────────────────────────────────────────────────────────────────────────────
 
 function RundeRad({ r, href }: { r: RundeRow; href: string }) {
@@ -216,14 +209,30 @@ function RundeRad({ r, href }: { r: RundeRow; href: string }) {
     <Link
       href={href}
       className={cn(
-        "group grid items-center gap-x-3 gap-y-1.5 px-4 py-3.5 transition-colors hover:bg-secondary",
-        "grid-cols-[1fr_auto]",
-        "sm:grid-cols-[1fr_64px_60px_64px_20px]",
+        "group flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-secondary",
         r.beste && "bg-accent/[0.06]",
       )}
     >
-      {/* Bane + dato (+ ★beste + inline-tall på mobil) */}
-      <div className="min-w-0">
+      {/* Score-boks — 48×48, rounded-xl, fasit-farge (jf. RoundsView i ph-screens.jsx) */}
+      <span
+        className={cn(
+          "flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-xl",
+          r.beste
+            ? "bg-primary text-accent"
+            : "bg-secondary text-foreground",
+        )}
+        aria-hidden
+      >
+        <span className="font-mono text-[17px] font-bold leading-none tabular-nums">
+          {r.score}
+        </span>
+        <span className="mt-0.5 font-mono text-[9px] tabular-nums opacity-70">
+          {formatTilPar(r.tilPar)}
+        </span>
+      </span>
+
+      {/* Bane + dato + meta (SG) */}
+      <div className="min-w-0 flex-1">
         <div className="flex items-center gap-1.5">
           <span className="truncate text-sm font-bold tracking-[-0.005em] text-foreground">
             {r.bane}
@@ -236,57 +245,13 @@ function RundeRad({ r, href }: { r: RundeRow; href: string }) {
           )}
         </div>
         <div className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
-          {r.dato} · Par {r.par}
-        </div>
-        {/* Mobil-rad: score + til-par + SG inline (skjult fra sm) */}
-        <div className="mt-1.5 flex items-center gap-2 sm:hidden">
-          <span className="font-mono text-base font-bold tabular-nums text-foreground">
-            {r.score}
-          </span>
-          <span
-            className={cn(
-              "inline-flex items-center rounded-sm px-1.5 py-0.5 font-mono text-[11px] font-semibold tabular-nums",
-              tilParPillClass(r.tilPar),
-            )}
-          >
-            {formatTilPar(r.tilPar)}
-          </span>
-          <span className={cn("font-mono text-xs font-semibold tabular-nums", sgClass(r.sgTotal))}>
-            SG {formatSg(r.sgTotal)}
-          </span>
+          {r.dato} · {r.sgTotal != null ? `SG ${formatSg(r.sgTotal)}` : `Par ${r.par}`}
         </div>
       </div>
 
-      {/* Score — sm+ */}
-      <span className="hidden text-right font-mono text-base font-bold tabular-nums text-foreground sm:block">
-        {r.score}
-      </span>
-
-      {/* Til par — sm+ */}
-      <span className="hidden justify-self-end sm:block">
-        <span
-          className={cn(
-            "inline-flex items-center rounded-sm px-2 py-1 font-mono text-xs font-semibold tabular-nums",
-            tilParPillClass(r.tilPar),
-          )}
-        >
-          {formatTilPar(r.tilPar)}
-        </span>
-      </span>
-
-      {/* SG — sm+ */}
-      <span
-        className={cn(
-          "hidden text-right font-mono text-sm font-semibold tabular-nums sm:block",
-          sgClass(r.sgTotal),
-        )}
-      >
-        {formatSg(r.sgTotal)}
-      </span>
-
       {/* Chevron */}
       <ChevronRight
-        className="h-4 w-4 shrink-0 justify-self-end text-muted-foreground transition-colors group-hover:text-foreground sm:col-start-5"
+        className="h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground"
         strokeWidth={1.5}
         aria-hidden
       />
@@ -297,18 +262,6 @@ function RundeRad({ r, href }: { r: RundeRow; href: string }) {
 function RundeListe({ data }: { data: RunderData }) {
   return (
     <div className="overflow-hidden rounded-xl border border-border bg-card">
-      {/* Kolonne-header — kun sm+ (mobil bruker rad-layout) */}
-      <div
-        className="hidden border-b border-border px-4 py-3 font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground sm:grid sm:items-center"
-        style={{ gridTemplateColumns: "1fr 64px 60px 64px 20px", gap: "12px" }}
-      >
-        <span>Bane</span>
-        <span className="text-right">Score</span>
-        <span className="text-right">Til par</span>
-        <span className="text-right">SG</span>
-        <span aria-hidden />
-      </div>
-
       <ul>
         {data.runder.map((r, idx) => (
           <li key={r.id} className={cn(idx > 0 && "border-t border-border")}>
@@ -331,7 +284,7 @@ export function RundeListeSide({ data }: { data: RunderData }) {
   return (
     <div className="mx-auto w-full max-w-[460px] space-y-6 px-4 py-6 sm:px-0 md:max-w-[720px]">
       {/* 1. Side-header */}
-      <header className="space-y-3">
+      <header className="space-y-4">
         <span className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
           {data.eyebrow}
         </span>

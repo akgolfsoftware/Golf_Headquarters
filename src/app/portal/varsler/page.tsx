@@ -74,7 +74,7 @@ function VarselRad({ n }: { n: Rad }) {
   const Ikon = n.ikon;
   const inner = (
     <>
-      <span className="relative grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-secondary text-primary">
+      <span className="relative grid h-10 w-10 shrink-0 place-items-center rounded-[11px] bg-secondary text-primary">
         <Ikon className="h-5 w-5" strokeWidth={1.5} aria-hidden />
         {n.ulest && (
           <span className="absolute -right-0.5 -top-0.5 h-[9px] w-[9px] rounded-full border-2 border-card bg-accent shadow-[0_0_6px_rgba(209,248,67,0.5)]" />
@@ -82,7 +82,7 @@ function VarselRad({ n }: { n: Rad }) {
       </span>
       <span className="min-w-0 flex-1">
         <span className="block truncate text-sm font-semibold tracking-[-0.005em] text-foreground">{n.tittel}</span>
-        {n.meta && <span className="mt-0.5 block truncate font-mono text-[10px] text-muted-foreground">{n.meta}</span>}
+        {n.meta && <span className="mt-[3px] block truncate font-mono text-[10px] text-muted-foreground">{n.meta}</span>}
       </span>
       <span className="shrink-0 font-mono text-[10px] text-muted-foreground">{n.tid}</span>
     </>
@@ -101,7 +101,7 @@ function VarselRad({ n }: { n: Rad }) {
 function Gruppe({ label, rader }: { label: string; rader: Rad[] }) {
   if (!rader.length) return null;
   return (
-    <section className="mb-2">
+    <section>
       <div className="mb-3 mt-7 flex items-baseline justify-between">
         <AthleticEyebrow>{label}</AthleticEyebrow>
       </div>
@@ -148,7 +148,7 @@ export default async function VarslerPage() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-[460px] px-1 pb-8 pt-3 sm:px-5 md:max-w-[860px] md:px-8 md:pt-6">
+    <div className="mx-auto w-full max-w-[460px] px-1 pb-10 pt-2 sm:px-5 md:max-w-[860px] md:px-8 md:pt-6">
       <div className="mb-1 flex items-center justify-between">
         <div>
           <AthleticEyebrow>PLAYERHQ · VARSLER</AthleticEyebrow>

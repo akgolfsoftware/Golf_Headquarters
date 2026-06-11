@@ -21,6 +21,13 @@
  *
  * Athletic-primitiver + DS-tokens (globals.css). Ingen hardkodet hex, ingen
  * emoji (kun lucide). All tekst norsk bokmaal.
+ *
+ * Porting-gate fikser (2026-06-11):
+ *   - Eyebrow tracking: 0.14em → 0.12em (fasit .eb: letter-spacing 0.12em)
+ *   - h1 tracking: -0.02em → -0.025em (fasit h1: letter-spacing -0.025em)
+ *   - CalendarDays ikon: h-7 (28px) → h-6 (24px) (DS-regel: 24px standard)
+ *   - TomTilstand py-14 (56px) → py-12 (48px) (8pt-grid: aldri py-14)
+ *   - Gantt container sm:p-5 (20px) → sm:p-6 (24px) (8pt-grid: aldri p-5)
  */
 
 import Link from "next/link";
@@ -104,10 +111,10 @@ function Header({ data }: { data: AarsplanData }) {
   const tom = data.faser.length === 0;
   return (
     <header>
-      <p className="font-mono text-[10px] font-extrabold uppercase tracking-[0.14em] text-muted-foreground">
+      <p className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
         PlayerHQ · Trening · Årsplan
       </p>
-      <h1 className="mt-2 font-display text-[30px] font-bold leading-[1.05] tracking-[-0.02em] text-foreground">
+      <h1 className="mt-2 font-display text-[30px] font-bold leading-[1.05] tracking-[-0.025em] text-foreground">
         Årsplan{" "}
         <em className="font-normal italic text-primary">{data.aar}</em>
       </h1>
@@ -130,10 +137,10 @@ function TomTilstand({ data }: { data: AarsplanData }) {
     <div
       role="status"
       aria-live="polite"
-      className="flex flex-col items-center rounded-2xl border border-border bg-card px-6 py-14 text-center sm:py-16"
+      className="flex flex-col items-center rounded-2xl border border-border bg-card px-6 py-12 text-center sm:py-16"
     >
       <CalendarDays
-        className="h-7 w-7 text-muted-foreground"
+        className="h-6 w-6 text-muted-foreground"
         strokeWidth={1.5}
         aria-hidden
       />
@@ -180,7 +187,7 @@ function GanttBar({ fase }: { fase: Fase }) {
 
 function Gantt({ data }: { data: AarsplanData }) {
   return (
-    <div className="overflow-x-auto rounded-2xl border border-border bg-card p-4 sm:p-5">
+    <div className="overflow-x-auto rounded-2xl border border-border bg-card p-4 sm:p-6">
       <div className="min-w-[640px]">
         {/* Maaneds-akse */}
         <div className="mb-3 grid grid-cols-[88px_repeat(12,minmax(0,1fr))] items-end gap-x-1.5">

@@ -179,7 +179,7 @@ function SgTotalHero({ data }: { data: SgHubData }) {
         <span
           className={cn(
             "font-mono text-4xl font-bold leading-none tabular-nums",
-            tom ? "text-accent/55" : data.totalNegativ ? "text-[#FF9C8A]" : "text-accent",
+            tom ? "text-accent/55" : data.totalNegativ ? "text-[color:var(--color-sg-negative-on-dark)]" : "text-accent",
           )}
         >
           {data.totalValue}
@@ -197,7 +197,7 @@ function SgTotalHero({ data }: { data: SgHubData }) {
 function SgKpiCard({ kpi }: { kpi: SgKpi }) {
   return (
     <div className="rounded-2xl border border-border bg-card p-5">
-      <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+      <span className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
         {kpi.eyebrow}
       </span>
       <div className="mt-2 font-mono text-3xl font-bold leading-none tracking-[-0.02em] text-foreground tabular-nums">

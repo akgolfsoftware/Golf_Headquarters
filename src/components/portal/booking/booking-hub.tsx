@@ -90,11 +90,11 @@ export interface BookingHubProps {
 }
 
 // Pen tier-etikett til badge (DB-enum → Title Case).
+// NB: ELITE er et dødt enum — skal aldri vises i UI (CLAUDE.md låst beslutning).
 function tierLabel(tier: string): string {
   const t = tier.toUpperCase();
   if (t === "PRO") return "Pro";
   if (t === "PERFORMANCE") return "Performance";
-  if (t === "ELITE") return "Elite";
   return "Pro";
 }
 
@@ -131,9 +131,25 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
   );
 }
 
-// ── Credit-meter (inline — segment per credit, maks 12) ───────────
+// ── Credit-meter (visuell bar — segment per credit, maks 12) ─────────
+// Farge-logikk per design-spec (components-credit-indicator.html):
+//   ≥ 50 % saldo → primary (forest green)
+//   0 < saldo < 50 % → warning (okker)
+//   0 saldo → destructive (rød)
+// Siste aktive segment alltid accent (forsterker «én igjen»),
+// unntatt ved 0 saldo (da er alle segmenter destructive).
 function CreditMeter({ remaining, total }: { remaining: number; total: number }) {
   if (total <= 0 || total > 12) return null;
+
+  const pct = remaining / total;
+  const segmentColor =
+    remaining === 0
+      ? "bg-destructive"
+      : pct < 0.5
+        ? "bg-warning"
+        : "bg-primary";
+  const lastSegmentColor = remaining === 0 ? "bg-destructive" : "bg-accent";
+
   return (
     <span className="inline-flex shrink-0 gap-[3px]" aria-hidden>
       {Array.from({ length: total }).map((_, i) => {
@@ -144,7 +160,7 @@ function CreditMeter({ remaining, total }: { remaining: number; total: number })
             key={i}
             className={cn(
               "h-1.5 w-[18px] rounded-full",
-              on ? (isLast ? "bg-accent" : "bg-primary") : "bg-foreground/[0.08]",
+              on ? (isLast ? lastSegmentColor : segmentColor) : "bg-foreground/[0.08]",
             )}
           />
         );
@@ -193,6 +209,15 @@ function CreditsCard({
   const brukt = Math.max(0, credits.monthlyCredits - credits.creditsRemaining);
   const renews = formatRenews(credits.renewsAtIso);
 
+  // Farge-logikk for hero-tall: matche CreditMeter-segmentfarger
+  const pct = credits.monthlyCredits > 0 ? credits.creditsRemaining / credits.monthlyCredits : 1;
+  const heroNumberColor =
+    credits.creditsRemaining === 0
+      ? "text-destructive"
+      : pct < 0.5
+        ? "text-warning"
+        : "text-foreground";
+
   return (
     <section className="rounded-2xl border border-border bg-card p-5">
       <div className="flex items-center justify-between gap-3">
@@ -201,7 +226,12 @@ function CreditsCard({
       </div>
 
       <div className="mt-3 flex items-baseline gap-2">
-        <span className="font-mono text-[40px] font-bold leading-none tracking-[-0.02em] tabular-nums text-foreground">
+        <span
+          className={cn(
+            "font-mono text-[40px] font-bold leading-none tracking-[-0.02em] tabular-nums",
+            heroNumberColor,
+          )}
+        >
           {credits.creditsRemaining}
         </span>
         <span className="font-mono text-[15px] font-semibold tabular-nums text-muted-foreground">

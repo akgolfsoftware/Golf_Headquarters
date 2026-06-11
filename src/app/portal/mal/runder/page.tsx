@@ -36,7 +36,7 @@ function mapRunderData(
 ): RunderData {
   const total = model.kpis.total;
   return {
-    eyebrow: "PlayerHQ · /portal/mal/runder",
+    eyebrow: "PLAYERHQ · RUNDER",
     fornavn,
     hcp,
     subtittel:

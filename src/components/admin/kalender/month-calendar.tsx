@@ -10,6 +10,8 @@
  * 6-rad måneds-grid: 7 dag-kolonner × 6 uker. Hver dag-celle viser maks 3
  * event-piller + "+N til"-overflow. Dager utenfor måneden er dempet.
  *
+ * Design-fasit: agencyos-app/screens-ops.jsx CalendarScreen (måned-tab).
+ * Eyebrow "GJENNOMFØRE · KALENDER" + lead tekst + seg-toggle (Uke/Måned).
  * DS-tokens kun — ingen hardkodet hex, ingen emoji (kun lucide).
  */
 
@@ -19,6 +21,7 @@ import {
   CalendarX2,
   ChevronLeft,
   ChevronRight,
+  Plus,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -56,7 +59,8 @@ export type MonthCalendarProps = {
   bookingCount: number;
 };
 
-const DOW = ["MAN", "TIR", "ONS", "TOR", "FRE", "LØR", "SØN"];
+// Fasit: enkeltbokstaver (screens-ops.jsx CalendarScreen måned-view: ["M","T","O","T","F","L","S"])
+const DOW = ["M", "T", "O", "T", "F", "L", "S"];
 
 // ── Event-strek per type (matcher week-calendar) ────────────────
 const kindStroke: Record<MonthEventKind, string> = {
@@ -71,28 +75,23 @@ const kindBg: Record<MonthEventKind, string> = {
   live: "bg-background",
 };
 
-// ── Vis-toggle (Uke / Måned aktiv / Liste) ──────────────────────
+// ── Vis-toggle (Uke / Måned aktiv) — fasit: .seg-stil fra agency.css ─────────
+// Design: ["uke", "måned"] (2 tabs, ingen "Liste"). Matcher hub-sidens seg-toggle.
 function ViewToggle() {
-  const item = (label: string, href: string | null, active: boolean) => {
-    const cls = cn(
-      "inline-flex h-8 items-center rounded-full px-3 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em]",
-      active ? "bg-accent text-primary" : "text-muted-foreground hover:text-foreground",
-    );
-    return href ? (
-      <Link href={href} className={cls}>
-        {label}
-      </Link>
-    ) : (
-      <span className={cls} aria-current="page">
-        {label}
-      </span>
-    );
-  };
   return (
-    <div className="inline-flex items-center gap-0.5 rounded-full border border-border bg-card p-0.5">
-      {item("Uke", "/admin/kalender/uke", false)}
-      {item("Måned", null, true)}
-      {item("Liste", "/admin/bookinger", false)}
+    <div className="mb-[14px] inline-flex gap-[2px] rounded-lg bg-secondary p-[3px]">
+      <Link
+        href="/admin/kalender"
+        className="inline-flex h-[26px] items-center rounded-md px-[11px] font-mono text-[10px] font-bold uppercase tracking-[0.06em] text-muted-foreground transition-colors hover:text-foreground"
+      >
+        Uke
+      </Link>
+      <span
+        aria-current="page"
+        className="inline-flex h-[26px] items-center rounded-md bg-card px-[11px] font-mono text-[10px] font-bold uppercase tracking-[0.06em] text-foreground shadow-sm"
+      >
+        Måned
+      </span>
     </div>
   );
 }
@@ -111,7 +110,7 @@ function NavRow({
   const navBtn =
     "inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-card text-foreground transition-colors hover:bg-secondary";
   return (
-    <div className="mb-4 mt-4 flex items-center justify-between gap-4">
+    <div className="mb-4 flex items-center justify-between gap-4">
       <div className="flex items-center gap-3">
         <Link
           href={`/admin/kalender/maned?mnd=${prevMonthParam}`}
@@ -153,7 +152,7 @@ function DayHeaders() {
     <div className="grid grid-cols-7 border-b border-border bg-card">
       {DOW.map((d, i) => (
         <div
-          key={d}
+          key={i}
           className={cn(
             "border-r border-border px-3 py-2.5 last:border-r-0",
             i >= 5 && "bg-foreground/[0.02]",
@@ -211,7 +210,8 @@ function MonthGrid({ days, events }: Pick<MonthCalendarProps, "days" | "events">
           <div
             key={d.dateKey}
             className={cn(
-              "flex min-h-[112px] flex-col gap-1 border-b border-r border-border p-1.5 last:border-r-0",
+              // fasit: minHeight 60px per dag-celle — app bruker 80px for å gi plass til event-piller
+              "flex min-h-[80px] flex-col gap-1 border-b border-r border-border p-1.5 last:border-r-0",
               (i + 1) % 7 === 0 && "border-r-0",
               lastRow && "border-b-0",
               d.weekend && d.inMonth && "bg-foreground/[0.02]",
@@ -295,7 +295,7 @@ function EmptyState() {
   );
 }
 
-// ── Topp-handling: Ny booking ───────────────────────────────────
+// ── Topp-handling (fasit: btn btn-primary, action-knapp i PageHead) ────────────
 function TopAction({ icon: Icon, label, href }: { icon: LucideIcon; label: string; href: string }) {
   return (
     <Link
@@ -309,18 +309,35 @@ function TopAction({ icon: Icon, label, href }: { icon: LucideIcon; label: strin
 }
 
 // ── Hovedkomponent ──────────────────────────────────────────────
+// Fasit: CalendarScreen i agencyos-app/screens-ops.jsx med PageHead:
+//   eyebrow "GJENNOMFØRE · KALENDER" + title + italic + lead + action "Ny økt"
 export function MonthCalendar(props: MonthCalendarProps) {
   return (
     <div className="mx-auto max-w-[1280px] px-6 py-6 lg:px-8">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="font-display text-[26px] font-bold leading-tight tracking-[-0.02em] text-foreground">
-          Kalender
-        </h1>
-        <div className="flex items-center gap-3">
-          <ViewToggle />
-          <TopAction icon={CalendarPlus} label="Ny booking" href="/admin/bookinger/ny" />
+      {/* PageHead — fasit: .page-head med eyebrow + h1 + lead + actions */}
+      <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <div className="font-mono text-[10px] font-bold uppercase leading-none tracking-[0.12em] text-muted-foreground">
+            Gjennomføre · Kalender
+          </div>
+          <h1 className="mt-2 font-display text-[28px] font-bold leading-[1.08] tracking-[-0.02em] text-foreground">
+            {props.monthLabel.split(" ")[0]}{" "}
+            <em className="font-normal italic text-primary">
+              · {props.monthLabel.split(" ")[1] ?? ""}
+            </em>
+          </h1>
+          <p className="mt-2 max-w-[60ch] text-sm leading-normal text-muted-foreground">
+            Alle øktene dine på tvers av stallen. Lime kant = pågår nå.
+          </p>
+        </div>
+        {/* Primærhandling: Ny økt → Workbench (fasit: btn btn-primary → workbench) */}
+        <div className="flex shrink-0 gap-2">
+          <TopAction icon={Plus} label="Ny økt" href="/admin/coach-workbench" />
         </div>
       </div>
+
+      {/* Seg-toggle (Uke / Måned aktiv) — fasit: .seg med 2 tabs */}
+      <ViewToggle />
 
       <NavRow
         monthLabel={props.monthLabel}

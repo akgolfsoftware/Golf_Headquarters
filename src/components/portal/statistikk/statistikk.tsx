@@ -78,7 +78,7 @@ export type StatistikkData = {
 };
 
 // ────────────────────────────────────────────────────────────────────────────
-// Seksjons-tabs — rute-baserte (ikke query-state). Fasit (pl-stats.png) viser
+// Seksjons-tabs — rute-baserte (ikke query-state). Fasit viser
 // ALLE faner i samme dempede grå: ingen aktiv-farge, ingen lime-underline.
 // Kompakt padding så alle 5 faner får plass på 430px uten avkutting; horisontal
 // scroll beholdes som sikkerhet på smalere skjermer. Aktiv tab markeres kun
@@ -86,7 +86,7 @@ export type StatistikkData = {
 // ────────────────────────────────────────────────────────────────────────────
 
 const TABS: { id: StatistikkTab; href: string; label: string }[] = [
-  { id: "oversikt", href: "/portal/stats", label: "Oversikt" },
+  { id: "oversikt", href: "/portal/statistikk", label: "Oversikt" },
   { id: "sg", href: "/portal/analysere", label: "Strokes Gained" },
   { id: "trackman", href: "/portal/analysere", label: "TrackMan" },
   { id: "tester", href: "/portal/analysere", label: "Tester" },
@@ -186,7 +186,7 @@ function MetrikkGrid({
   hrefs: StatistikkHrefs;
 }) {
   return (
-    <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
       {metrikker.map((m) => (
         <Link
           key={m.id}

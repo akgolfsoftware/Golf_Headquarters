@@ -1,18 +1,15 @@
 /**
- * ForeldreInfo — Foreldreportal · oversikt (foresatt-info), preview-variant.
+ * ForeldreInfo — PlayerHQ · Meg · Foresatte (foresatt-info).
  *
- * Visuell fasit: public/design-handover/_screens/pl-forelder.png.
- * Skjermen er foreldreportalens landing i TOM tilstand — en foresatt som
- * ennå ikke er koblet til noe barn. Mobil-først, selvstendig layout uten
- * spiller-/coach-sidebar (kun innhold i sentrert kolonne).
+ * Viser spillerens egne foresatte/verger koblet via parentRelation.
+ * Mobil-først, selvstendig layout (PortalShell eier sidebar/topbar/bunn-nav).
  *
- * Elementliste fra fasiten (rekkefølge oppe → ned):
- *   1. Eyebrow:   "FORELDREPORTAL · OVERSIKT" (mono, uppercase, muted).
- *   2. H1:        "Velkommen" (display, bold).
- *   3. Subtittel: "Du er ikke koblet til noen barn ennå." (muted).
- *   4. Tom-kort:  stiplet ramme, sentrert Bell-ikon + sentrert hjelpetekst
- *                 "Be spilleren sende en invitasjon fra sin profil, eller
- *                 kontakt support."
+ * Elementliste (rekkefølge oppe → ned):
+ *   1. Eyebrow:   "FORESATTE · OVERSIKT" (mono, uppercase, muted).
+ *   2. H1:        "Mine foresatte" (display, bold).
+ *   3. Subtittel: antall foresatte koblet, eller tom-melding (muted).
+ *   4. Innhold:   liste av foresatt-kort (BarnRad), eller tom-tilstand
+ *                 (stiplet ramme, sentrert Bell-ikon + hjelpetekst).
  *
  * Presentasjonell, props-drevet. Ingen Prisma/DB/auth — kun presentasjon.
  * DS-tokens + athletic/eyebrow + lucide. Ingen hardkodet hex, ingen emoji.
@@ -22,17 +19,17 @@ import Link from "next/link";
 import { Bell, ChevronRight, type LucideIcon } from "lucide-react";
 import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 
-/** Ett barn koblet til den foresatte (vises når lista ikke er tom). */
+/** Én foresatt/verge koblet til spilleren (vises når lista ikke er tom). */
 export type ForeldreBarn = {
   /** Stabil id for key + lenke. */
   id: string;
-  /** Barnets navn, f.eks. "Magnus Strand". */
+  /** Foresattens navn, f.eks. "Hanne Berg". */
   navn: string;
-  /** Relasjon, f.eks. "Forelder" eller "Foresatt". */
+  /** Relasjon til spilleren, f.eks. "Mor", "Far" eller "Verge". */
   relasjon: string;
-  /** Kort kontekst, f.eks. "Oslo GK · HCP 4,2". */
+  /** Kort kontekst, f.eks. e-post. */
   kontekst?: string;
-  /** Rute til barnets innsynsside. */
+  /** Rute til foresatt-detalj (kan peke til /portal/meg/foreldre for nå). */
   href: string;
 };
 
@@ -43,14 +40,14 @@ export type ForeldreInfoData = {
   tittel?: string;
   /** Hjelpetekst i tom-kortet. Default matcher fasiten. */
   tomHjelpetekst?: string;
-  /** Barn koblet til den foresatte. Tom liste → tom-tilstand (fasit). */
+  /** Foresatte koblet til spilleren. Tom liste → tom-tilstand. */
   barn?: ForeldreBarn[];
 };
 
-const STD_EYEBROW = "Foreldreportal · Oversikt";
-const STD_TITTEL = "Velkommen";
+const STD_EYEBROW = "Foresatte · Oversikt";
+const STD_TITTEL = "Mine foresatte";
 const STD_TOM_HJELP =
-  "Be spilleren sende en invitasjon fra sin profil, eller kontakt support.";
+  "Ingen foresatte er koblet til kontoen din ennå. Kontakt coach for å koble en foresatt.";
 
 /** Tom-tilstand: stiplet kort med sentrert ikon + hjelpetekst (fasit). */
 function TomTilstand({ Icon, tekst }: { Icon: LucideIcon; tekst: string }) {
@@ -68,7 +65,7 @@ function TomTilstand({ Icon, tekst }: { Icon: LucideIcon; tekst: string }) {
   );
 }
 
-/** Én barn-rad (vises når foresatt er koblet til minst ett barn). */
+/** Én foresatt-rad (vises når spilleren har minst én foresatt koblet). */
 function BarnRad({ navn, relasjon, kontekst, href }: ForeldreBarn) {
   return (
     <Link
@@ -110,8 +107,8 @@ export function ForeldreInfo({ data = {} }: { data?: ForeldreInfoData }) {
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
           {erTom
-            ? "Du er ikke koblet til noen barn ennå."
-            : `Du følger ${barn.length} ${barn.length === 1 ? "barn" : "barn"}.`}
+            ? "Ingen foresatte er koblet til kontoen din ennå."
+            : `${barn.length} ${barn.length === 1 ? "foresatt" : "foresatte"} er koblet til kontoen din.`}
         </p>
       </header>
 
@@ -131,7 +128,7 @@ export function ForeldreInfo({ data = {} }: { data?: ForeldreInfoData }) {
   );
 }
 
-/** Standard tom-tilstand som matcher v10-fasiten (ingen barn koblet). */
+/** Standard tom-tilstand (ingen foresatte koblet). */
 export const FORELDRE_INFO_DEFAULT: ForeldreInfoData = {
   eyebrow: STD_EYEBROW,
   tittel: STD_TITTEL,

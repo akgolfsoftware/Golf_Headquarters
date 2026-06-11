@@ -164,7 +164,7 @@ const fleetIcon: Record<FleetIconKey, LucideIcon> = {
 };
 
 const fleetIconToneClass: Record<FleetIconTone, string> = {
-  primary: "bg-primary text-accent",
+  primary: "bg-primary text-primary-foreground",
   warn: "bg-warning/15 text-warning",
   info: "bg-info/10 text-info",
   muted: "bg-secondary text-muted-foreground",
@@ -307,7 +307,7 @@ function DraftPanel({ draft }: { draft: CaddieDraft }) {
         <div className="overflow-hidden border-b border-border p-6 lg:border-b-0">
           <div className="mb-4 flex flex-wrap items-center gap-2.5">
             <span className="inline-flex gap-1">
-              <span className="rounded-full bg-primary px-2 py-[3px] font-mono text-[9px] font-extrabold uppercase tracking-[0.06em] text-accent">
+              <span className="rounded-full bg-primary px-2 py-[3px] font-mono text-[9px] font-extrabold uppercase tracking-[0.06em] text-primary-foreground">
                 Diff-visning
               </span>
               <span className="rounded-full border border-border bg-background px-2 py-[3px] font-mono text-[9px] font-extrabold uppercase tracking-[0.06em] text-muted-foreground">
@@ -368,7 +368,7 @@ function DraftPanel({ draft }: { draft: CaddieDraft }) {
         {/* høyre — handlinger */}
         <div className="flex flex-col gap-3 border-border p-6 lg:border-l">
           <div className="flex items-center gap-2.5 rounded-xl bg-primary px-3 py-2.5">
-            <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-accent font-display text-xs font-bold text-primary">
+            <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-accent font-display text-xs font-bold text-accent-foreground">
               {draft.agentInitials}
             </span>
             <div className="font-mono text-[10px] font-extrabold uppercase leading-tight tracking-[0.10em] text-accent">
@@ -646,7 +646,7 @@ function AuditPanel({ audit }: { audit: CaddieAuditRow[] }) {
               className={cn(
                 "inline-flex h-[26px] items-center gap-1.5 rounded-full px-2.5 font-mono text-[10px] font-bold tracking-[0.06em]",
                 i === 0
-                  ? "border border-primary bg-primary text-accent"
+                  ? "border border-primary bg-primary text-primary-foreground"
                   : "border border-border bg-card text-foreground",
               )}
             >

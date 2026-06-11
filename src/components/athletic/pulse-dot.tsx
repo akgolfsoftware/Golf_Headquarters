@@ -19,7 +19,7 @@ export function PulseDot({ size = "md", glow = true, className }: PulseDotProps)
         className,
       )}
     >
-      <span className="absolute inset-0 animate-ping rounded-full bg-accent opacity-60" />
+      <span className="absolute inset-0 animate-ping rounded-full bg-accent opacity-60 motion-reduce:animate-none" />
     </span>
   );
 }

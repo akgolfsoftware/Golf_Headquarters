@@ -158,7 +158,7 @@ const bandTagLabel: Record<ComplianceBand, string> = {
   bad: "BAK PLAN",
   warn: "UNDER",
   ok: "PÅ SPORET",
-  over: "OVER",
+  over: "UTFORDRE",
 };
 
 // ── Små byggeklosser ──────────────────────────────────────────────
@@ -367,7 +367,7 @@ function AxisBarRow({ bar }: { bar: AxisBar }) {
       <div className="relative h-6 overflow-hidden rounded-md bg-secondary">
         {/* planlagt-skygge (mål 100%) */}
         <div
-          className="absolute inset-y-0 left-0 bg-[var(--color-pyr-spill-track)]"
+          className="absolute inset-y-0 left-0 bg-border"
           style={{ width: "100%" }}
         />
         {/* mål-strek 100% */}
@@ -399,7 +399,7 @@ function AxisBarRow({ bar }: { bar: AxisBar }) {
 
 function PanelLegend() {
   const items: { sw: string; label: string }[] = [
-    { sw: "bg-[var(--color-pyr-spill-track)]", label: "planlagt" },
+    { sw: "bg-border", label: "planlagt" },
     { sw: "bg-primary", label: "på sporet" },
     { sw: "bg-warning", label: "under" },
     { sw: "bg-destructive", label: "bak plan" },
@@ -630,10 +630,15 @@ function StallTableRow({ row, alt }: { row: StallRow; alt: boolean }) {
         ) : (
           <div className="grid grid-cols-[44px_1fr_70px] items-center gap-2.5">
             <RingMini pct={row.pct} band={row.band} />
-            <div className="relative h-2 overflow-hidden rounded bg-secondary">
+            <div className="relative h-2 rounded bg-border" style={{ overflow: "visible" }}>
               <div
-                className={cn("absolute inset-y-0 left-0 rounded", bandFill[row.band])}
+                className={cn("absolute inset-y-0 left-0 overflow-hidden rounded", bandFill[row.band])}
                 style={{ width: `${Math.min(100, row.pct)}%` }}
+              />
+              {/* mål-strek 100% */}
+              <div
+                className="absolute -top-0.5 bottom-[-2px] right-0 w-0.5 bg-foreground"
+                aria-hidden
               />
             </div>
             <span
@@ -693,7 +698,7 @@ function StallSection({ data }: { data: ComplianceData }) {
 
         <div className="flex flex-wrap items-center gap-2.5 border-y border-border bg-background px-5 py-3">
           <span className="font-mono text-[9px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
-            FORDELING
+            SORTERT
           </span>
           <StallPill label="Bak plan" count={behind} active />
           <StallPill label="På sporet" count={onTrack} />
@@ -748,9 +753,10 @@ function StallSection({ data }: { data: ComplianceData }) {
         )}
 
         <FootRule>
-          <b className="font-bold text-foreground">Prinsipp.</b> Coach scanner én kolonne — fargen og sparkline
+          <b className="font-bold text-foreground">Prinsipp.</b> Coach scanner én kolonne — fargete tag og sparkline
           forteller på 200 ms. Sorter <b className="font-bold text-foreground">bak plan først</b> for å løfte
-          risikoen til topp.
+          risikoen til topp. Over-planere merkes{" "}
+          <b className="font-bold text-foreground">UTFORDRE</b> — planen er for lett.
         </FootRule>
       </div>
     </>
@@ -837,7 +843,7 @@ function DrillSection({ data }: { data: ComplianceData }) {
       <SectionHead
         index={3}
         title="Drill-fullføring i økt-detalj"
-        sub="planlagte drills · siste loggede økt"
+        sub="faktiske reps vs planlagt · per drill"
         count={ds ? `ØKT · ${ds.dateLabel.toUpperCase()}` : "INGEN LOGG"}
       />
       <div className="overflow-hidden rounded-2xl border border-border bg-card">
@@ -854,7 +860,7 @@ function DrillSection({ data }: { data: ComplianceData }) {
               </div>
               <MiniKpi label="PLANLAGT" value={`${ds.plannedCount} drills`} />
               <MiniKpi
-                label="GJENNOMFØRT"
+                label="LOGGET"
                 value={`${ds.doneCount} av ${ds.plannedCount}`}
                 tone={ds.doneCount === ds.plannedCount ? "ok" : "warn"}
               />

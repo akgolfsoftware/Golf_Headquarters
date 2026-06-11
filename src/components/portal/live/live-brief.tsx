@@ -44,8 +44,8 @@ export function LiveBrief({
     >
       {/* topbar */}
       <header
-        className="flex flex-shrink-0 items-center justify-between gap-3 px-4"
-        style={{ height: 60, paddingTop: "max(env(safe-area-inset-top), 8px)" }}
+        className="flex h-16 flex-shrink-0 items-center justify-between gap-3 px-4"
+        style={{ paddingTop: "max(env(safe-area-inset-top), 8px)" }}
       >
         <Link
           href={`/portal/tren/${data.sessionId}`}
@@ -161,12 +161,8 @@ export function LiveBrief({
 
       {/* footer CTA */}
       <footer
-        className="flex-shrink-0 px-5 pt-4"
-        style={{
-          paddingBottom: "max(env(safe-area-inset-bottom), 20px)",
-          borderTop: "1px solid hsl(var(--background) / 0.1)",
-          background: "hsl(var(--primary))",
-        }}
+        className="flex-shrink-0 border-t border-background/10 bg-primary px-5 pt-4"
+        style={{ paddingBottom: "max(env(safe-area-inset-bottom), 20px)" }}
       >
         {canStart ? (
           <>
@@ -176,7 +172,7 @@ export function LiveBrief({
               style={{ boxShadow: "0 4px 16px hsl(var(--accent) / 0.28)" }}
             >
               Start økt
-              <Zap className="h-4 w-4 fill-current" strokeWidth={2} aria-hidden />
+              <Zap className="h-4 w-4" strokeWidth={1.5} aria-hidden />
             </Link>
             <div className="mt-3 text-center font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-background/45">
               Spar batteri · wake-lock på
