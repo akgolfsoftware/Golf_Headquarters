@@ -20,12 +20,12 @@ export function ApprovalActions({ actionId, playerId }: { actionId: string; play
   }
 
   return (
-    <div className="mt-[14px] flex gap-2">
+    <div className="mt-[14px] flex flex-wrap gap-2">
       <button
         type="button"
         onClick={() => handle(true)}
         disabled={pending}
-        className={`${agBtnClass("primary", "sm")} disabled:opacity-60`}
+        className={`${agBtnClass("primary", "sm")} max-md:h-11 max-md:flex-1 disabled:opacity-60`}
       >
         <Check className="h-4 w-4" strokeWidth={2} /> Godkjenn
       </button>
@@ -33,11 +33,14 @@ export function ApprovalActions({ actionId, playerId }: { actionId: string; play
         type="button"
         onClick={() => handle(false)}
         disabled={pending}
-        className={`${agBtnClass("ghost", "sm")} disabled:opacity-60`}
+        className={`${agBtnClass("ghost", "sm")} max-md:h-11 max-md:flex-1 disabled:opacity-60`}
       >
         <X className="h-4 w-4" strokeWidth={2} /> Avvis
       </button>
-      <Link href={`/admin/spillere/${playerId}`} className={agBtnClass("ghost", "sm")}>
+      <Link
+        href={`/admin/spillere/${playerId}`}
+        className={`${agBtnClass("ghost", "sm")} max-md:h-11 max-md:flex-1`}
+      >
         Se profil
       </Link>
     </div>

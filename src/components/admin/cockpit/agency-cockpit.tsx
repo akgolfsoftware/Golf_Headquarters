@@ -353,21 +353,29 @@ export function AgencyCockpit({ data }: { data: CockpitData }) {
         </div>
       </div>
 
-      {/* 3-kolonne grid (fasit .grid3: 1.05fr 1.05fr 1fr) */}
+      {/* 3-kolonne grid (fasit .grid3: 1.05fr 1.05fr 1fr).
+          Mobil (< lg) stabler i prioritert rekkefølge: Fokus → Innboks → Timeline
+          (order-klassene nulles på lg så desktop er uendret). */}
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-[1.05fr_1.05fr_1fr]">
-        <TimelineCol
-          sessions={data.timeline}
-          now={data.now}
-          dateLabel={data.timelineDateLabel}
-        />
-        <InboxColumn
-          items={data.inbox}
-          totalCount={data.inboxCount}
-          tasks={data.tasks}
-          tasksDoneToday={data.tasksDoneToday}
-          tasksTotalToday={data.tasksTotalToday}
-        />
-        <FocusColumn players={data.focus} totalCount={data.focusCount} />
+        <div className="order-3 min-w-0 lg:order-none">
+          <TimelineCol
+            sessions={data.timeline}
+            now={data.now}
+            dateLabel={data.timelineDateLabel}
+          />
+        </div>
+        <div className="order-2 min-w-0 lg:order-none">
+          <InboxColumn
+            items={data.inbox}
+            totalCount={data.inboxCount}
+            tasks={data.tasks}
+            tasksDoneToday={data.tasksDoneToday}
+            tasksTotalToday={data.tasksTotalToday}
+          />
+        </div>
+        <div className="order-1 min-w-0 lg:order-none">
+          <FocusColumn players={data.focus} totalCount={data.focusCount} />
+        </div>
       </div>
 
       {/* KPI-strip */}

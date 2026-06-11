@@ -48,7 +48,8 @@ if (!/\/(portal|admin|forelder)/.test(url)) {
 const results = [];
 for (const s of SCREENS) {
   try {
-    await page.goto(`${BASE}${s.path}`, { waitUntil: "networkidle", timeout: 30000 });
+    await page.goto(`${BASE}${s.path}`, { waitUntil: "domcontentloaded", timeout: 45000 });
+    await page.waitForLoadState("networkidle", { timeout: 12000 }).catch(() => {}); // prod-streaming blir aldri idle
     await page.waitForTimeout(1200);
     await page.mouse.move(0, 0); // hover-artefakter (Playwright-pekeren hviler midt på siden)
     await page.evaluate(() => window.scrollTo(0, 0));

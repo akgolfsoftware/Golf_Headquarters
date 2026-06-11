@@ -74,6 +74,16 @@ Dokumenteres her så diff-agenten måler mot riktig fasit:
   CDN-font-kolonne) og strekker alle grid-kortene +13css; appens font holder samme tekst på 1 linje.
   Wrap-følsom høyde = konsekvens av font-unntaket over, ikke design-avvik. (Målt runde 6, 2026-06-10.)
 
+### AgencyOS mobil (Fase 4, net-new — 2026-06-11)
+
+- **Gate-form:** ingen fasit → brand-vokter-review (tokens/typografi/lucide/8pt/lime-disiplin/44px) i stedet for pikseldiff.
+- **Touch-mål:** alle knapper får 44px på mobil via «max-md:h-11» i agBtnClass + komponent-løft — desktop-høyder (fasit) uendret.
+- **Fasit-arvet lime på delte komponenter** (Caddie-brødtekst, avatar-toner, flere fylte lime-knapper på cockpit/spiller/innboks)
+  aksepteres på mobil inntil en egen mobil-designrunde i Claude Design — å stramme dem ville brutt desktop-fasit-pariteten.
+  Mobil-NYE flater (bunnbar, Mer) håndhever streng lime-disiplin (kun aktiv/NÅ).
+- **Kjent skjørhet:** i .dark er primary=accent (begge lime) — par som «bg-primary text-accent» rendres riktig i dag,
+  men er flaks; ny kode skal bruke -foreground-parene.
+
 ## Hvorfor dette (ikke bare «vær nøye»)
 
 Jeg har bias mot å bekrefte mitt eget arbeid. En uavhengig diff-agent hvis *jobb* er å finne feil,

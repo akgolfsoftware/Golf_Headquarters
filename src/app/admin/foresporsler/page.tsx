@@ -71,7 +71,7 @@ export default async function ForespørslerPage() {
           return (
             <div
               key={r.id}
-              className={`grid grid-cols-[36px_1fr_auto] items-center gap-[14px] py-[13px] ${
+              className={`grid grid-cols-[36px_1fr] items-start gap-x-[14px] gap-y-2.5 py-[13px] md:grid-cols-[36px_1fr_auto] md:items-center ${
                 i ? "border-t border-border" : ""
               } ${erÅpen ? "" : "opacity-50"}`}
             >
@@ -88,11 +88,13 @@ export default async function ForespørslerPage() {
                   {r.reason || "Ønsker økt — ingen begrunnelse oppgitt."}
                 </div>
               </div>
-              {erÅpen ? (
-                <ForespørselActions requestId={r.id} />
-              ) : (
-                <AgChip tone="ok">Behandlet</AgChip>
-              )}
+              <span className="col-start-2 md:col-start-auto">
+                {erÅpen ? (
+                  <ForespørselActions requestId={r.id} />
+                ) : (
+                  <AgChip tone="ok">Behandlet</AgChip>
+                )}
+              </span>
             </div>
           );
         })}
