@@ -7,6 +7,7 @@ import type { Classification } from "@/lib/meg/classify-schema";
 import { notionSok, notionLesSide, notionOppgaver } from "@/lib/meg/connectors/notion";
 import { helseHent } from "@/lib/meg/connectors/health";
 import { gmailSok, gmailLesTraad, diskSok, diskLesFil, kalenderAgenda } from "@/lib/meg/connectors/google";
+import { stripeSaldo, stripeBetalinger, stripeAbonnementer, stripeFakturaer, stripeKundeSok } from "@/lib/meg/connectors/stripe";
 import { createPending } from "@/lib/meg/pending";
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -261,6 +262,57 @@ export const diskOpprettTool: Tool = {
   },
 };
 
+// ── Stripe ───────────────────────────────────────────────────────────────────
+
+export const stripeSaldoTool: Tool = {
+  name: "stripe_saldo",
+  description: "Viser nåværende Stripe-saldo (tilgjengelig + ventende). Bruk ved 'hva er saldo' / 'penger i Stripe'.",
+  input_schema: { type: "object", properties: {}, required: [] },
+};
+
+export const stripeBetalingerTool: Tool = {
+  name: "stripe_betalinger",
+  description: "Viser nylige Stripe-betalinger. Bruk ved 'hva har kommet inn', 'betalinger i dag/uka'.",
+  input_schema: {
+    type: "object",
+    properties: {
+      dager: { type: "number", description: "Antall dager bakover (default 7)" },
+      limit: { type: "number", description: "Maks antall (default 10)" },
+    },
+    required: [],
+  },
+};
+
+export const stripeAbonnementerTool: Tool = {
+  name: "stripe_abonnementer",
+  description: "Viser alle aktive Stripe-abonnementer med kunde og pris. Bruk ved 'hvem abonnerer', 'aktive kunder'.",
+  input_schema: {
+    type: "object",
+    properties: { limit: { type: "number", description: "Maks antall (default 20)" } },
+    required: [],
+  },
+};
+
+export const stripeFakturaerTool: Tool = {
+  name: "stripe_fakturaer",
+  description: "Viser nylige Stripe-fakturaer med status (betalt/åpen). Bruk ved 'fakturaer', 'ubetalte'.",
+  input_schema: {
+    type: "object",
+    properties: { limit: { type: "number", description: "Antall (default 10)" } },
+    required: [],
+  },
+};
+
+export const stripeKundeSokTool: Tool = {
+  name: "stripe_kunde_sok",
+  description: "Søker opp en kunde i Stripe på e-post eller navn. Returnerer kunde-id, e-post, opprettelsesdato.",
+  input_schema: {
+    type: "object",
+    properties: { query: { type: "string", description: "E-post eller navn" } },
+    required: ["query"],
+  },
+};
+
 export const MEG_ALL_TOOLS: Tool[] = [
   loggTool,
   hentNyligeTool,
@@ -278,6 +330,11 @@ export const MEG_ALL_TOOLS: Tool[] = [
   diskSokTool,
   diskLesFilTool,
   diskOpprettTool,
+  stripeSaldoTool,
+  stripeBetalingerTool,
+  stripeAbonnementerTool,
+  stripeFakturaerTool,
+  stripeKundeSokTool,
 ];
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -446,6 +503,25 @@ export function megExecutorsFor(
     const summary = `Opprette fil "${args.navn}" i Disk`;
     await createPending("disk_opprett", args, summary, subject);
     return `Forslag klart: ${summary}. Be Anders svare BEKREFT for å utføre.`;
+  },
+
+  // ── Stripe (alle direkte — kun les) ──
+  stripe_saldo: async () => stripeSaldo(),
+  stripe_betalinger: async (raw) => {
+    const args = raw as { dager?: number; limit?: number };
+    return stripeBetalinger(args.dager ?? 7, args.limit ?? 10);
+  },
+  stripe_abonnementer: async (raw) => {
+    const args = raw as { limit?: number };
+    return stripeAbonnementer(args.limit ?? 20);
+  },
+  stripe_fakturaer: async (raw) => {
+    const args = raw as { limit?: number };
+    return stripeFakturaer(args.limit ?? 10);
+  },
+  stripe_kunde_sok: async (raw) => {
+    const args = raw as { query: string };
+    return stripeKundeSok(args.query);
   },
   };
 }
