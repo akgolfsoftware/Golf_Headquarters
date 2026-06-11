@@ -100,9 +100,9 @@ export default async function LagSnittPage() {
         lead="Slik fordeler treningsbalansen seg i hver gruppe. Bruk det til å justere gruppeprogrammene."
       />
 
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
         {lag.length === 0 && (
-          <div className="col-span-3 rounded-xl border border-border bg-card px-[18px] py-10 text-center text-sm text-muted-foreground">
+          <div className="md:col-span-3 rounded-xl border border-border bg-card px-[18px] py-10 text-center text-sm text-muted-foreground">
             Ingen grupper opprettet ennå — opprett en gruppe under Stall for å sammenligne lag-snitt.
           </div>
         )}

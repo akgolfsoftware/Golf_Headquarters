@@ -77,7 +77,7 @@ export default async function TalentSammenligningPage({
           </Link>
         }
       />
-      <div className="rounded-xl border border-border bg-card p-[18px]">
+      <div className="overflow-x-auto rounded-xl border border-border bg-card p-[18px]">
         {n === 0 ? (
           <div className="py-8 text-center text-sm text-muted-foreground">
             Ingen spillere å sammenligne ennå — legg til spillere fra stallen.
