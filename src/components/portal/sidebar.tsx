@@ -50,6 +50,7 @@ const MAIN_ITEMS: NavItem[] = [
       { href: "/portal/drills", label: "Drills" },
       { href: "/portal/trening/logg", label: "Logg treningsøkt" },
       { href: "/portal/trening/putte-laboratoriet", label: "Putte-laboratoriet" },
+      { href: "/portal/trening/break-tabell", label: "Break-tabell" },
     ],
   },
   {
