@@ -101,23 +101,37 @@ export async function kalenderAgenda(dager = 1): Promise<string> {
     const cal = getCalendarApi(conn);
     const naa = new Date();
     const til = new Date(naa.getTime() + Math.min(Math.max(dager, 1), 30) * 24 * 60 * 60 * 1000);
-    const res = await cal.events.list({
-      calendarId: "primary",
-      timeMin: naa.toISOString(),
-      timeMax: til.toISOString(),
-      singleEvents: true,
-      orderBy: "startTime",
-      maxResults: 20,
-    });
-    const events = res.data.items ?? [];
-    if (events.length === 0) return `Ingen hendelser de neste ${dager} dagene.`;
-    return events
-      .map((e) => {
-        const start = e.start?.dateTime ?? e.start?.date ?? "";
-        const naar = start.length > 10 ? start.slice(0, 16).replace("T", " ") : start;
-        return `- ${naar}: ${e.summary ?? "(uten tittel)"}${e.location ? ` @ ${e.location}` : ""}`;
-      })
-      .join("\n");
+
+    // Hent alle kalendere og spørr hver enkelt — "primary" er bare én av mange
+    const kalListRes = await cal.calendarList.list({ maxResults: 50 });
+    const kalenderIds = (kalListRes.data.items ?? [])
+      .map((k) => k.id)
+      .filter((id): id is string => !!id);
+
+    type EventItem = { start: string; tekst: string };
+    const alle: EventItem[] = [];
+
+    await Promise.all(
+      kalenderIds.map(async (calendarId) => {
+        const res = await cal.events.list({
+          calendarId,
+          timeMin: naa.toISOString(),
+          timeMax: til.toISOString(),
+          singleEvents: true,
+          orderBy: "startTime",
+          maxResults: 20,
+        });
+        for (const e of res.data.items ?? []) {
+          const start = e.start?.dateTime ?? e.start?.date ?? "";
+          const naar = start.length > 10 ? start.slice(0, 16).replace("T", " ") : start;
+          alle.push({ start, tekst: `- ${naar}: ${e.summary ?? "(uten tittel)"}${e.location ? ` @ ${e.location}` : ""}` });
+        }
+      }),
+    );
+
+    if (alle.length === 0) return `Ingen hendelser de neste ${dager} dagene.`;
+    alle.sort((a, b) => a.start.localeCompare(b.start));
+    return alle.map((e) => e.tekst).join("\n");
   } catch (err) {
     return `Kunne ikke lese kalender: ${err instanceof Error ? err.message : String(err)}`;
   }
