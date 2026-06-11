@@ -123,7 +123,7 @@ export async function createBookingCheckout(
             currency: "nok",
             product_data: {
               name: service.name,
-              description: `${startAt.toLocaleString("nb-NO", { dateStyle: "full", timeStyle: "short" })} hos ${lokasjon.name}`,
+              description: `${startAt.toLocaleString("nb-NO", { dateStyle: "full", timeStyle: "short", timeZone: "Europe/Oslo" })} hos ${lokasjon.name}`,
             },
             unit_amount: service.priceOre,
           },
