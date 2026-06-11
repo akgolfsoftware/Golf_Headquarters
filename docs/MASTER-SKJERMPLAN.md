@@ -151,6 +151,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Kalender (alt. adresse) | `/portal/tren/kalender` | – | --- | ✓ | ~ | ~ | ✓ |
 | Ny økt (handlingsvalg) | `/portal/ny-okt` | – | --- | ✓ | ~ | ~ | ✓ |
 | Logg treningsøkt (volum per SG) † | `/portal/trening/logg` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ~ |
+| **Putte-laboratoriet** (3 verktøy) | `/portal/trening/putte-laboratoriet` | ✓ | ✓✓– | ✓ | ✓ | – | ✓ |
 | Ønsket økt (be coach) | `/portal/onskeligokt` | – | --- | ✓ | ~ | ~ | ~ |
 | · Ønsket økt bekreftet | `/portal/onskeligokt/bekreftet` | – | --- | ✓ | ~ | ~ | ~ |
 | Live-økt: brief | `/portal/(fullscreen)/live/[sessionId]/brief` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
@@ -650,7 +651,7 @@ Designeren har levert en egen elite-mappe (spredningsverktøy for utslag — «d
 
 - `elite/DispersionTool.html`, `elite/Utslag-spredning.html`, `elite/components-trackman-dispersion.html`.
 - `Break-tabell.html` — putting green-reading-/break-tabell. Tegnet, men IKKE dekket noe sted i appen eller planen (funnet ved ZIP-gjennomgang 3. juni). Hører hjemme i putting-/SG-putt- eller elite-delen. Ikke bygget.
-- `Putte-verktoy.html` — putting-verktøy (henger sammen med Break-tabell). Ny i utvidet leveranse 3. juni. Ikke dekket i appen/planen. Hører hjemme i putting-/elite-delen. Ikke bygget.
+- `Putte-verktoy.html` — putting-verktøy (**BYGGET 11. juni** → `/portal/trening/putte-laboratoriet`). Alle tre retninger (Greenen/Kjeden/Kontroll) portert med ekte fysikkberegninger fra putt-core.ts. Desktop-verifisert.
 
 Dette hører hjemme i elite-/talent-delen (f.eks. shot-map/dispersjon: `/portal/statistikk/shot-map` eller talent-radar). **Bevisst utsatt** — «Elite Fase 2» er parkert. Det er greit at den ligger ubrukt nå, men den må ikke glemmes når Elite Fase 2 starter.
 
@@ -710,6 +711,8 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 ---
 
 ## Endringslogg
+
+- 11. juni: **Putte-laboratoriet** (`/portal/trening/putte-laboratoriet`) bygget fra `putting/Putte-verktoy.html`-fasiten. Tre interaktive verktøy: Greenen (SVG drag-simulator med break-at-speed-fysikk, putt-animasjon, in/miss-resultat), Kjeden (probability waterfall med range-sliders, svakeste-ledd-diagnose), Kontroll (SVG-sirkelskive med prosess-score + «ti putter»-simulering). Ekte TypeScript-port av `putt-core.js` i `src/lib/putt-core.ts`. Lenket fra PlayerHQ-sidebar under Planlegge. Verifisert alle tre verktøy på desktop 1280px.
 
 - 10. juni: **Tester-matrisen** (`/admin/tester`) fikk DataGolf-fasiter v1: 12 av 20 tester i NGF-batteriet har nå strukturert nivåstige (PGA topp 40 → Scratch) i `protocol.benchmarks`; matrisen viser nivå-badge per målt celle med hele stigen i tooltip + «Data powered by DataGolf»-attribusjon i footer. Data-haken `–` → `~`: fasitene ligger klare i seed (`npx tsx prisma/scripts/seed-ngf-test-protocols.ts`), men seed-kjøring mot databasen gjenstår som bevisst eget steg. 8 tester (gates/speed + fysiske) venter på interne/NGF-normer i v2.
 
