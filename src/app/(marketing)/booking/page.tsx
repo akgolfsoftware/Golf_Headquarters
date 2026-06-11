@@ -18,6 +18,10 @@ function getLocationForService(slug: string): string {
   return "gfgk";
 }
 
+function erAbonnement(name: string): boolean {
+  return name.toLowerCase().includes("performance");
+}
+
 // Coach-display-info per User-ID. Brukes for tittel/beskrivelse i UI.
 // Navn hentes fra DB via ServiceType.coach.
 const COACH_BIOS: Record<string, { tittel: string }> = {
@@ -241,67 +245,95 @@ export default async function BookingLanding({
         )}
 
         {/* Steg 3: Velg tjeneste */}
-        {lokasjon && trener && (
-          <section className="mt-10">
-            <div className="flex items-baseline justify-between gap-4">
-              <h2 className="font-display text-2xl font-semibold tracking-tight">
-                3. Velg tjeneste
-              </h2>
-              <Link
-                href={`/booking?lokasjon=${lokasjon}`}
-                className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground"
-              >
-                ← Endre trener
-              </Link>
-            </div>
+        {lokasjon && trener && (() => {
+          const filtrerte = services.filter((s) => {
+            if (getLocationForService(s.slug) !== lokasjon) return false;
+            if (trener === "alle") return s.coach === null;
+            return s.coach?.id === trener;
+          });
+          const flexTjenester = filtrerte.filter((s) => !erAbonnement(s.name));
+          const abonnementTjenester = filtrerte.filter((s) => erAbonnement(s.name));
 
-            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {services
-                .filter((s) => {
-                  if (getLocationForService(s.slug) !== lokasjon) return false;
-                  if (trener === "alle") return s.coach === null;
-                  return s.coach?.id === trener;
-                })
-                .map((s) => (
-                  <Link
-                    key={s.id}
-                    href={`/booking/${s.slug}`}
-                    className="group flex flex-col rounded-2xl border border-border bg-card p-6 transition-colors hover:border-primary/40"
-                  >
-                    <h3 className="font-display text-xl font-semibold leading-tight tracking-tight text-foreground group-hover:text-primary">
-                      {s.name}
-                    </h3>
-                    {s.description && (
-                      <p className="mt-2 text-sm text-muted-foreground">
-                        {s.description}
-                      </p>
-                    )}
-                    <div className="mt-auto flex items-end justify-between pt-6">
-                      <div>
-                        <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                          Pris
-                        </div>
-                        <div className="mt-1 font-display text-2xl font-semibold tabular-nums">
-                          {formaterPris(s.priceOre)}
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                          Varighet
-                        </div>
-                        <div className="mt-1 font-mono text-sm tabular-nums text-muted-foreground">
-                          {s.durationMin} min
-                        </div>
-                      </div>
-                    </div>
-                    <span className="mt-6 inline-block text-sm font-semibold text-primary">
-                      Velg tid →
-                    </span>
-                  </Link>
-                ))}
-            </div>
-          </section>
-        )}
+          const TjenesteKort = ({ s }: { s: typeof services[number] }) => (
+            <Link
+              key={s.id}
+              href={`/booking/${s.slug}`}
+              className="group flex flex-col rounded-2xl border border-border bg-card p-6 transition-colors hover:border-primary/40"
+            >
+              <h3 className="font-display text-xl font-semibold leading-tight tracking-tight text-foreground group-hover:text-primary">
+                {s.name}
+              </h3>
+              {s.description && (
+                <p className="mt-2 text-sm text-muted-foreground">
+                  {s.description}
+                </p>
+              )}
+              <div className="mt-auto flex items-end justify-between pt-6">
+                <div>
+                  <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                    Pris
+                  </div>
+                  <div className="mt-1 font-display text-2xl font-semibold tabular-nums">
+                    {formaterPris(s.priceOre)}
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                    Varighet
+                  </div>
+                  <div className="mt-1 font-mono text-sm tabular-nums text-muted-foreground">
+                    {s.durationMin} min
+                  </div>
+                </div>
+              </div>
+              <span className="mt-6 inline-block text-sm font-semibold text-primary">
+                Velg tid →
+              </span>
+            </Link>
+          );
+
+          return (
+            <section className="mt-10">
+              <div className="flex items-baseline justify-between gap-4">
+                <h2 className="font-display text-2xl font-semibold tracking-tight">
+                  3. Velg tjeneste
+                </h2>
+                <Link
+                  href={`/booking?lokasjon=${lokasjon}`}
+                  className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground"
+                >
+                  ← Endre trener
+                </Link>
+              </div>
+
+              {flexTjenester.length > 0 && (
+                <div className="mt-6">
+                  <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
+                    Flex
+                  </p>
+                  <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {flexTjenester.map((s) => (
+                      <TjenesteKort key={s.id} s={s} />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {abonnementTjenester.length > 0 && (
+                <div className="mt-10">
+                  <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
+                    Abonnement
+                  </p>
+                  <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {abonnementTjenester.map((s) => (
+                      <TjenesteKort key={s.id} s={s} />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </section>
+          );
+        })()}
 
         {services.length === 0 && (
           <div className="mt-12 rounded-lg border border-dashed border-border bg-muted/40 p-12 text-center text-sm text-muted-foreground">
