@@ -20,6 +20,7 @@
  */
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { Mail, Lock, ArrowRight } from "lucide-react";
 import { AthleticEyebrow } from "@/components/athletic/eyebrow";
@@ -67,14 +68,15 @@ export function LoginSkjerm({
           <Link
             href={hjemHref}
             aria-label="AK Golf — hjem"
-            className="mb-6 inline-flex rounded-[11px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            className="mb-6 inline-flex focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
-            <span
-              aria-hidden
-              className="grid h-12 w-12 place-items-center rounded-[11px] bg-accent font-display text-xl font-extrabold leading-none text-primary"
-            >
-              ak
-            </span>
+            <Image
+              src="/logos/ak-golf-logo-primary-on-light.svg"
+              alt="AK Golf"
+              width={64}
+              height={40}
+              className="h-10 w-auto"
+            />
           </Link>
           <AthleticEyebrow>LOGG INN</AthleticEyebrow>
           <h1 className="mt-2 font-display text-2xl font-semibold leading-tight tracking-tight text-foreground sm:text-3xl">

@@ -51,7 +51,11 @@ export default async function ServiceBookingPage({ params, searchParams }: Props
     valgtDato.setDate(valgtDato.getDate() + 1);
   }
 
-  const slots = await getAvailableSlots(service.id, valgtDato);
+  const alleSlots = await getAvailableSlots(service.id, valgtDato);
+  // Filtrer på service sin coach — Markus-tjenester skal ikke vise Anders' tider.
+  const slots = service.coachUserId
+    ? alleSlots.filter((s) => s.coachId === service.coachUserId)
+    : alleSlots;
 
   // 7 dager fremover som dato-velger
   const idag = new Date();

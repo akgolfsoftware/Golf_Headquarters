@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 import { LoginForm } from "./login-form";
@@ -17,18 +18,20 @@ export default function LoginPage() {
           <Link
             href="/"
             aria-label="AK Golf — hjem"
-            className="inline-flex rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            className="inline-flex focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
-            <span
-              aria-hidden
-              className="grid h-12 w-12 place-items-center rounded-xl bg-accent font-display text-xl font-extrabold leading-none text-foreground"
-            >
-              ak
-            </span>
+            <Image
+              src="/logos/ak-golf-logo-primary-on-light.svg"
+              alt="AK Golf"
+              width={120}
+              height={48}
+              className="h-12 w-auto"
+              priority
+            />
           </Link>
         </div>
 
-        <div className="mb-6">
+        <div className="mb-6 text-center">
           <AthleticEyebrow>LOGG INN</AthleticEyebrow>
           <h1 className="mt-2 font-display text-3xl font-bold leading-[1.05] tracking-[-0.025em] text-balance text-foreground">
             Velkommen{" "}
