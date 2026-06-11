@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 /* Tjenester — samme priser og kort-anatomi som forsiden */
 const TJENESTER = [
   {
-    eb: "Drop-in",
+    eb: "Flex",
     title: "Flex",
     price: "0",
     featured: false,
@@ -34,7 +34,7 @@ const TJENESTER = [
     href: "/booking",
   },
   {
-    eb: "Anbefalt · 80 % velger denne",
+    eb: "Anbefalt",
     title: "Performance",
     price: "1 200",
     featured: true,
@@ -49,7 +49,7 @@ const TJENESTER = [
     href: "/coaching",
   },
   {
-    eb: "For ambisjon · Korn Ferry-spor",
+    eb: "For ambisjon",
     title: "Performance Pro",
     price: "2 220",
     featured: false,

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Building2, Check, MapPin, Trees } from "lucide-react";
+import { ArrowRight, Check, MapPin, Trees } from "lucide-react";
 import { BookingShortcuts } from "@/components/marketing/booking-shortcuts";
 import { PulseDot } from "@/components/athletic/pulse-dot";
 
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 /* Tjenester — månedspriser fra design-fasit (ui_kits/marketing, 04 Tjenester) */
 const TJENESTER = [
   {
-    eb: "Drop-in",
+    eb: "Flex",
     title: "Flex",
     price: "0",
     featured: false,
@@ -28,7 +28,7 @@ const TJENESTER = [
     href: "/booking",
   },
   {
-    eb: "Anbefalt · 80 % velger denne",
+    eb: "Anbefalt",
     title: "Performance",
     price: "1 200",
     featured: true,
@@ -43,7 +43,7 @@ const TJENESTER = [
     href: "/coaching",
   },
   {
-    eb: "For ambisjon · Korn Ferry-spor",
+    eb: "For ambisjon",
     title: "Performance Pro",
     price: "2 220",
     featured: false,
@@ -247,28 +247,10 @@ export default function Hjem() {
         <div className="mx-auto max-w-7xl px-6 md:px-8">
           <SectionEyebrow>Anlegg · Øst</SectionEyebrow>
           <SectionH2>
-            Fire steder å <Em>trene</Em>.
+            Lokasjoner
           </SectionH2>
 
-          <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="flex flex-col gap-3 rounded-[20px] border border-border bg-card p-7">
-              <span className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground">
-                <Building2 className="h-3.5 w-3.5" strokeWidth={1.5} />
-                Indoor · Årsåpent
-              </span>
-              <h4 className="font-display text-[22px] font-bold tracking-[-0.015em]">
-                Mulligan Indoor
-              </h4>
-              <p className="text-sm leading-[1.55] text-muted-foreground">
-                TrackMan-simulatorer, kameraanalyse og puttegreen. Hjemmebasen
-                vinterhalvåret.
-              </p>
-              <div className="mt-1 flex flex-col gap-1.5">
-                <LocRow sted="Produksjonsveien 21" by="Fredrikstad" first />
-                <LocRow sted="Bjørnstadveien 12" by="Sarpsborg" />
-              </div>
-            </div>
-
+          <div className="mt-12 max-w-xl">
             <div className="flex flex-col gap-3 rounded-[20px] border border-border bg-card p-7">
               <span className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground">
                 <Trees className="h-3.5 w-3.5" strokeWidth={1.5} />
