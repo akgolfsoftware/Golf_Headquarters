@@ -108,8 +108,9 @@ export async function stripeFakturaer(limit = 10): Promise<string> {
 export async function stripeKundeSok(query: string, limit = 5): Promise<string> {
   return sikkerStripe(async () => {
     const s = stripeKlient();
+    const safe = query.replace(/"/g, "");
     const res = await s.customers.search({
-      query: `email:"${query}" OR name:"${query}"`,
+      query: `email:"${safe}" OR name:"${safe}"`,
       limit: Math.min(limit, 10),
     });
     if (res.data.length === 0) {

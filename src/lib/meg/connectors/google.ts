@@ -108,10 +108,11 @@ export async function kalenderAgenda(dager = 1): Promise<string> {
       .map((k) => k.id)
       .filter((id): id is string => !!id);
 
-    type EventItem = { start: string; tekst: string };
+    type EventItem = { start: string; tekst: string; eid: string };
     const alle: EventItem[] = [];
 
-    await Promise.all(
+    // allSettled: én 403 (delt kalender) kansellerer ikke de andre
+    await Promise.allSettled(
       kalenderIds.map(async (calendarId) => {
         const res = await cal.events.list({
           calendarId,
@@ -123,15 +124,38 @@ export async function kalenderAgenda(dager = 1): Promise<string> {
         });
         for (const e of res.data.items ?? []) {
           const start = e.start?.dateTime ?? e.start?.date ?? "";
-          const naar = start.length > 10 ? start.slice(0, 16).replace("T", " ") : start;
-          alle.push({ start, tekst: `- ${naar}: ${e.summary ?? "(uten tittel)"}${e.location ? ` @ ${e.location}` : ""}` });
+          const naar =
+            start.length > 10
+              ? new Date(start).toLocaleString("sv-SE", {
+                  timeZone: "Europe/Oslo",
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })
+              : start;
+          alle.push({
+            start,
+            tekst: `- ${naar}: ${e.summary ?? "(uten tittel)"}${e.location ? ` @ ${e.location}` : ""}`,
+            eid: e.iCalUID ?? e.id ?? "",
+          });
         }
       }),
     );
 
-    if (alle.length === 0) return `Ingen hendelser de neste ${dager} dagene.`;
-    alle.sort((a, b) => a.start.localeCompare(b.start));
-    return alle.map((e) => e.tekst).join("\n");
+    // Dedup: samme hendelse kan dukke opp fra primary + delte kalendere
+    const seenIds = new Set<string>();
+    const deduped = alle.filter((e) => {
+      if (!e.eid) return true;
+      if (seenIds.has(e.eid)) return false;
+      seenIds.add(e.eid);
+      return true;
+    });
+
+    if (deduped.length === 0) return `Ingen hendelser de neste ${dager} dagene.`;
+    deduped.sort((a, b) => a.start.localeCompare(b.start));
+    return deduped.map((e) => e.tekst).join("\n");
   } catch (err) {
     return `Kunne ikke lese kalender: ${err instanceof Error ? err.message : String(err)}`;
   }

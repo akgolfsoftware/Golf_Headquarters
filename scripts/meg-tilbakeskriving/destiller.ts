@@ -12,6 +12,7 @@ export type LogRad = {
   value_num: number | null;
   value_unit: string | null;
   tags: string[];
+  source?: string;
   created_at: string;
 };
 
@@ -84,7 +85,7 @@ export async function destiller(rader: LogRad[]): Promise<Destillert> {
 
   const res = await client.messages.create({
     model: MEG_MODEL,
-    max_tokens: 1024,
+    max_tokens: 4096,
     system: SYSTEM,
     tools: [
       {

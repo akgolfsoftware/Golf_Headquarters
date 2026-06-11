@@ -73,7 +73,8 @@ async function hentUprosesserte(db: SupabaseClient): Promise<LogRad[]> {
     .from("me_log")
     .select("id, kind, text, value_num, value_unit, tags, source, created_at")
     .is("destilled_at", null)
-    .order("created_at", { ascending: true });
+    .order("created_at", { ascending: true })
+    .limit(500);
   if (error) throw new Error(`Supabase-feil ved henting: ${error.message}`);
   return (data ?? []) as LogRad[];
 }
@@ -92,7 +93,8 @@ async function markerProsessert(
 
 async function skrivRapport(dato: string, linjer: string[]): Promise<void> {
   await mkdir(ARBEIDSLOGG_PATH, { recursive: true });
-  const filsti = path.join(ARBEIDSLOGG_PATH, `meg-tilbakeskriving-${dato}.md`);
+  const ts = new Date().toISOString().slice(11, 16).replace(":", "");
+  const filsti = path.join(ARBEIDSLOGG_PATH, `meg-tilbakeskriving-${dato}-${ts}.md`);
   const innhold = `# Meg tilbakeskrivings-rapport ${dato}\n\n${linjer.join("\n")}\n`;
   await writeFile(filsti, innhold, "utf-8");
   console.log(`[rapport] skrevet → ${filsti}`);
@@ -133,7 +135,13 @@ async function main() {
       await skrivAkBrain(dato, destillert.dagsnotat, AK_BRAIN_PATH);
 
       if (destillert.varige_monstre.length > 0) {
-        await skrivSecondBrain(dato, destillert.varige_monstre, AK_SECOND_BRAIN_PATH);
+        try {
+          await skrivSecondBrain(dato, destillert.varige_monstre, AK_SECOND_BRAIN_PATH);
+        } catch (sbErr) {
+          const msg = sbErr instanceof Error ? sbErr.message : String(sbErr);
+          console.warn(`[${dato}] ⚠️ second-brain feilet (ak-brain OK, markeres prosessert): ${msg}`);
+          rapportLinjer.push(`## ${dato}`, `- ⚠️ second-brain-feil: ${msg}`, "");
+        }
       }
 
       await markerProsessert(db, dagsRader.map((r) => r.id));
