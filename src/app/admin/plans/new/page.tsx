@@ -1,47 +1,32 @@
-import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PlanWizard } from "./wizard";
-import { AiPlanPanel } from "./ai-panel";
+import { PlanBuilderClient } from "./plan-builder-client";
+
+export const dynamic = "force-dynamic";
 
 export default async function NyPlanPage() {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
-  const [spillere, maler] = await Promise.all([
+  const [spillere, grupper] = await Promise.all([
     prisma.user.findMany({
       where: { role: "PLAYER" },
       select: { id: true, name: true, hcp: true },
       orderBy: { name: "asc" },
     }),
-    prisma.planTemplate.findMany({
-      where: { approved: true },
-      select: { id: true, name: true, description: true, varighetUker: true },
-      orderBy: { createdAt: "desc" },
+    prisma.group.findMany({
+      select: {
+        id: true,
+        name: true,
+        _count: { select: { members: true } },
+      },
+      orderBy: { name: "asc" },
     }),
   ]);
 
-  // Map til MalListeElement-format (backward-compat: weeks-alias for varighetUker)
-  const malerMapped = maler.map((m) => ({
-    id: m.id,
-    name: m.name,
-    description: m.description,
-    weeks: m.varighetUker,
-  }));
-
   return (
-    <div className="space-y-6">
-      <Link
-        href="/admin/plans"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-      >
-        <ChevronLeft className="h-3.5 w-3.5" strokeWidth={1.8} />
-        Plans
-      </Link>
-
-      <AiPlanPanel spillere={spillere} />
-
-      <PlanWizard spillere={spillere} maler={malerMapped} />
-    </div>
+    <PlanBuilderClient
+      spillere={spillere}
+      grupper={grupper.map((g) => ({ id: g.id, name: g.name, memberCount: g._count.members }))}
+    />
   );
 }

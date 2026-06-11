@@ -334,6 +334,89 @@ const DAG_TIL_OFFSET: Record<string, number> = {
   SON: 6,
 };
 
+/* =========================================================
+   Visuell plan-bygger — opprett plan fra drag-drop-raster
+   ========================================================= */
+
+export type VisuellByggSession = {
+  ax: "fys" | "tek" | "slag" | "spill" | "turn";
+  ttl: string;
+  mins: number;
+  weekNumber: number;
+  dayIndex: number; // 0 = mandag, 6 = søndag
+};
+
+export type OpprettPlanFraByggInput = {
+  spillerId: string;
+  navn: string;
+  sessions: VisuellByggSession[];
+};
+
+const AX_TIL_PYRAMID: Record<VisuellByggSession["ax"], PyramidArea> = {
+  fys:   "FYS",
+  tek:   "TEK",
+  slag:  "SLAG",
+  spill: "SPILL",
+  turn:  "TURN",
+};
+
+function weekStartDate(weekNumber: number): Date {
+  // Uke N: start = 1. jan 2026 + (N-1) * 7 dager (matcher prototype-formel)
+  return new Date(2026, 0, 1 + (weekNumber - 1) * 7);
+}
+
+export async function opprettPlanFraByggere(
+  input: OpprettPlanFraByggInput,
+): Promise<{ ok: true; planId: string } | { ok: false; feil: string }> {
+  const user = await getCurrentUser();
+  if (!user) return { ok: false, feil: "unauthenticated" };
+  if (user.role !== "COACH" && user.role !== "ADMIN") {
+    return { ok: false, feil: "forbidden" };
+  }
+
+  if (!input.spillerId) return { ok: false, feil: "Mangler spillerId." };
+  if (!input.navn || input.navn.trim().length < 2) {
+    return { ok: false, feil: "Plan-navn må være minst 2 tegn." };
+  }
+
+  // Beregn dato-range fra sessions (eller bruk hele 2026 som fallback)
+  let startDate = new Date(2026, 0, 1);
+  let endDate = new Date(2026, 11, 31);
+  if (input.sessions.length > 0) {
+    const dates = input.sessions.map((s) => {
+      const ws = weekStartDate(s.weekNumber);
+      return ws.getTime() + s.dayIndex * 86400000;
+    });
+    startDate = new Date(Math.min(...dates));
+    endDate = new Date(Math.max(...dates) + 86400000);
+  }
+
+  const plan = await prisma.trainingPlan.create({
+    data: {
+      userId: input.spillerId,
+      name: input.navn.trim(),
+      startDate,
+      endDate,
+      isActive: true,
+      status: "PENDING_PLAYER",
+      createdById: user.id,
+      sessions: {
+        create: input.sessions.map((s) => ({
+          scheduledAt: new Date(weekStartDate(s.weekNumber).getTime() + s.dayIndex * 86400000),
+          durationMin: s.mins,
+          title: s.ttl,
+          pyramidArea: AX_TIL_PYRAMID[s.ax],
+          status: "PLANNED" as const,
+        })),
+      },
+    },
+  });
+
+  revalidatePath("/admin/plans");
+  revalidatePath(`/admin/plans/${plan.id}`);
+  return { ok: true, planId: plan.id };
+}
+
 export async function opprettPlanFraAiForslag(
   input: OpprettAiPlanInput,
 ): Promise<ValideringResultat> {
