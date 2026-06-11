@@ -1,3 +1,6 @@
+# OBLIGATORISK LES FØRST
+`docs/platform/AGENT-BRIEF.md` — full plattformkontekst på 5 min. Les dette før du rører en eneste fil.
+
 <!-- BEGIN:nextjs-agent-rules -->
 # This is NOT the Next.js you know
 

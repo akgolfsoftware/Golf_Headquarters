@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgencyOS — Coachens arbeidsdag</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0d1117;
+    color: #e6edf3;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 13px;
+    min-height: 100vh;
+    padding: 24px;
+  }
+  h1 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #e6edf3;
+    margin-bottom: 4px;
+    letter-spacing: -0.3px;
+  }
+  .subtitle {
+    color: #8b949e;
+    font-size: 12px;
+    margin-bottom: 28px;
+  }
+  .legend {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: #8b949e;
+  }
+  .legend-dot { width: 12px; height: 12px; border-radius: 3px; }
+  .dot-morning { background: #0f2d1a; border: 1.5px solid #3fb950; }
+  .dot-stall   { background: #2d1b00; border: 1.5px solid #d29922; }
+  .dot-analyse { background: #1a1432; border: 1.5px solid #8b5cf6; }
+  .dot-plan    { background: #001a2d; border: 1.5px solid #2563EB; }
+  .dot-hub     { border: 2px solid #e6edf3; background: #161b22; }
+
+  .flow-container { position: relative; width: 100%; overflow-x: auto; }
+
+  .node { cursor: pointer; }
+  .node rect { transition: filter 0.15s; }
+  .node:hover rect { filter: brightness(1.3); }
+  .node text { pointer-events: none; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+
+  #panel {
+    position: fixed; top: 0; right: -360px; width: 340px; height: 100vh;
+    background: #161b22; border-left: 1px solid #21262d;
+    padding: 24px 20px; transition: right 0.25s ease; z-index: 100; overflow-y: auto;
+  }
+  #panel.open { right: 0; }
+  #panel-close {
+    position: absolute; top: 16px; right: 16px;
+    background: none; border: none; color: #8b949e; cursor: pointer;
+    font-size: 20px; line-height: 1; padding: 4px 8px; border-radius: 4px;
+  }
+  #panel-close:hover { background: #21262d; color: #e6edf3; }
+  #panel-title { font-size: 15px; font-weight: 700; color: #e6edf3; margin-bottom: 6px; padding-right: 32px; line-height: 1.3; }
+  #panel-route { font-family: 'SF Mono', 'Cascadia Code', monospace; font-size: 11px; color: #3fb950; background: #0d1117; padding: 8px 10px; border-radius: 6px; margin-bottom: 12px; word-break: break-all; border: 1px solid #21262d; }
+  #panel-desc { font-size: 12px; color: #8b949e; line-height: 1.6; margin-bottom: 12px; }
+  .panel-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; padding: 3px 8px; border-radius: 12px; font-weight: 600; margin: 2px; }
+  .tag-done    { background: #0f2d1a; color: #3fb950; border: 1px solid #238636; }
+  .tag-partial { background: #2d2000; color: #d29922; border: 1px solid #9e6a03; }
+  .tag-pending { background: #1c1c1c; color: #8b949e; border: 1px solid #30363d; }
+  .panel-divider { height: 1px; background: #21262d; margin: 14px 0; }
+  .panel-section-title { font-size: 10px; font-weight: 700; color: #8b949e; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
+  .panel-hacks { font-size: 11px; color: #8b949e; line-height: 1.5; }
+
+  .flow-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; opacity: 0.85; font-family: system-ui; }
+</style>
+</head>
+<body>
+<h1>AgencyOS — Coachens arbeidsdag</h1>
+<p class="subtitle">Interaktivt flytkar — klikk en boks for detaljer · AgencyOS er alltid mørkt tema</p>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot dot-hub"></div> Cockpit (startpunkt)</div>
+  <div class="legend-item"><div class="legend-dot dot-morning"></div> Morgenrutine (grønn)</div>
+  <div class="legend-item"><div class="legend-dot dot-stall"></div> Stall-styring (gul)</div>
+  <div class="legend-item"><div class="legend-dot dot-analyse"></div> Analyse (lilla)</div>
+  <div class="legend-item"><div class="legend-dot dot-plan"></div> Planlegging (blå)</div>
+</div>
+
+<div class="flow-container">
+<svg class="flow-svg" viewBox="0 0 1100 540" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrowGreen2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#3fb950"/>
+    </marker>
+    <marker id="arrowYellow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#d29922"/>
+    </marker>
+    <marker id="arrowPurple" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#8b5cf6"/>
+    </marker>
+    <marker id="arrowBlue2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#2563EB"/>
+    </marker>
+  </defs>
+
+  <!-- ===== SECTION LABELS ===== -->
+  <text x="20" y="18" class="flow-label" fill="#3fb950">MORGENRUTINE</text>
+  <text x="20" y="178" class="flow-label" fill="#d29922">STALL-STYRING</text>
+  <text x="20" y="338" class="flow-label" fill="#8b5cf6">ANALYSE</text>
+  <text x="20" y="448" class="flow-label" fill="#2563EB">PLANLEGGING</text>
+
+  <!-- ===== COCKPIT HUB (center-left) ===== -->
+  <g class="node" onclick="showPanel('cockpit')">
+    <rect x="20" y="74" width="148" height="70" rx="8" fill="#161b22" stroke="#e6edf3" stroke-width="2"/>
+    <text x="94" y="97" text-anchor="middle" font-size="12" font-weight="700" fill="#e6edf3" font-family="system-ui">Cockpit</text>
+    <text x="94" y="113" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/admin/agencyos</text>
+    <text x="94" y="128" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">★ Fullt ferdig · Desktop ✓</text>
+    <text x="94" y="141" text-anchor="middle" font-size="9" fill="#8b949e" font-family="system-ui">Utgangspunkt for alt</text>
+  </g>
+
+  <!-- ===== MORNING: Cockpit → Innboks → Forespørsler → Godkjenninger ===== -->
+  <line x1="168" y1="109" x2="268" y2="60" stroke="#3fb950" stroke-width="2" marker-end="url(#arrowGreen2)"/>
+  <line x1="168" y1="109" x2="268" y2="109" stroke="#3fb950" stroke-width="2" marker-end="url(#arrowGreen2)"/>
+  <line x1="168" y1="109" x2="268" y2="158" stroke="#3fb950" stroke-width="2" marker-end="url(#arrowGreen2)"/>
+
+  <!-- Innboks -->
+  <g class="node" onclick="showPanel('innboks')">
+    <rect x="268" y="34" width="130" height="52" rx="8" fill="#0f2d1a" stroke="#3fb950" stroke-width="1.5"/>
+    <text x="333" y="55" text-anchor="middle" font-size="11" font-weight="700" fill="#3fb950" font-family="system-ui">Innboks</text>
+    <text x="333" y="70" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/admin/innboks</text>
+    <text x="333" y="83" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">★ Fullt ferdig</text>
+  </g>
+
+  <!-- Forespørsler -->
+  <g class="node" onclick="showPanel('foresporsler')">
+    <rect x="268" y="83" width="130" height="52" rx="8" fill="#0f2d1a" stroke="#3fb950" stroke-width="1.5"/>
+    <text x="333" y="103" text-anchor="middle" font-size="11" font-weight="700" fill="#3fb950" font-family="system-ui">Foresporsler</text>
+    <text x="333" y="118" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/admin/foresporsler</text>
+    <text x="333" y="131" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">★ Fullt ferdig</text>
+  </g>
+
+  <!-- Godkjenninger -->
+  <g class="node" onclick="showPanel('godkjenninger')">
+    <rect x="268" y="132" width="130" height="52" rx="8" fill="#0f2d1a" stroke="#3fb950" stroke-width="1.5"/>
+    <text x="333" y="152" text-anchor="middle" font-size="11" font-weight="700" fill="#3fb950" font-family="system-ui">Godkjenninger</text>
+    <text x="333" y="167" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/admin/godkjenninger</text>
+    <text x="333" y="180" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">★ Fullt ferdig</text>
+  </g>
+
+  <!-- Arrows Innboks → Forespørsler → Godkjenninger (chain) -->
+  <line x1="398" y1="60" x2="450" y2="60" stroke="#3fb950" stroke-width="1.5" marker-end="url(#arrowGreen2)"/>
+  <line x1="450" y1="60" x2="450" y2="109" stroke="#3fb950" stroke-width="1.5"/>
+  <line x1="450" y1="109" x2="398" y2="109" stroke="#3fb950" stroke-width="1.5" marker-end="url(#arrowGreen2)"/>
+  <line x1="398" y1="158" x2="450" y2="158" stroke="#3fb950" stroke-width="1.5" marker-end="url(#arrowGreen2)"/>
+  <line x1="450" y1="109" x2="450" y2="158" stroke="#3fb950" stroke-width="1.5"/>
+
+  <!-- Workspace/Tildelt meg node -->
+  <g class="node" onclick="showPanel('tildelt')">
+    <rect x="455" y="34" width="140" height="52" rx="8" fill="#0f2d1a" stroke="#3fb950" stroke-width="1.5"/>
+    <text x="525" y="55" text-anchor="middle" font-size="11" font-weight="700" fill="#3fb950" font-family="system-ui">Tildelt meg</text>
+    <text x="525" y="70" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/workspace/tildelt-meg</text>
+    <text x="525" y="83" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">★ Fullt ferdig</text>
+  </g>
+
+  <!-- Oppgaver -->
+  <g class="node" onclick="showPanel('oppgaver')">
+    <rect x="455" y="132" width="140" height="52" rx="8" fill="#0f2d1a" stroke="#3fb950" stroke-width="1.5"/>
+    <text x="525" y="152" text-anchor="middle" font-size="11" font-weight="700" fill="#3fb950" font-family="system-ui">Oppgaver</text>
+    <text x="525" y="167" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/workspace/oppgaver</text>
+    <text x="525" y="180" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">★ Fullt ferdig</text>
+  </g>
+
+  <!-- ===== STALL: Cockpit → Spillere → Spiller-detalj → Workbench ===== -->
+  <line x1="94" y1="144" x2="94" y2="196" stroke="#d29922" stroke-width="2" marker-end="url(#arrowYellow)"/>
+
+  <!-- Spillere -->
+  <g class="node" onclick="showPanel('spillere')">
+    <rect x="20" y="196" width="148" height="52" rx="8" fill="#2d1b00" stroke="#d29922" stroke-width="1.5"/>
+    <text x="94" y="217" text-anchor="middle" font-size="11" font-weight="700" fill="#f0c070" font-family="system-ui">Spillere (alle)</text>
+    <text x="94" y="232" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/admin/spillere</text>
+    <text x="94" y="245" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">★ Fullt ferdig</text>
+  </g>
+
+  <line x1="168" y1="222" x2="268" y2="222" stroke="#d29922" stroke-width="2" marker-end="url(#arrowYellow)"/>
+
+  <!-- Spiller-detalj -->
+  <g class="node" onclick="showPanel('spiller-detalj')">
+    <rect x="268" y="196" width="148" height="52" rx="8" fill="#2d1b00" stroke="#d29922" stroke-width="1.5"/>
+    <text x="342" y="217" text-anchor="middle" font-size="11" font-weight="700" fill="#f0c070" font-family="system-ui">Spiller-detalj</text>
+    <text x="342" y="232" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/spillere/[id]</text>
+    <text x="342" y="245" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">★ Fullt ferdig</text>
+  </g>
+
+  <line x1="416" y1="222" x2="504" y2="222" stroke="#d29922" stroke-width="2" marker-end="url(#arrowYellow)"/>
+
+  <!-- Workbench (coach) -->
+  <g class="node" onclick="showPanel('workbench-coach')">
+    <rect x="504" y="196" width="156" height="52" rx="8" fill="#2d1b00" stroke="#d29922" stroke-width="2"/>
+    <text x="582" y="214" text-anchor="middle" font-size="11" font-weight="700" fill="#f0c070" font-family="system-ui">Workbench</text>
+    <text x="582" y="229" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/[id]/workbench</text>
+    <text x="582" y="243" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">★ Fullt ferdig</text>
+  </g>
+
+  <!-- Workbench → Fremgang -->
+  <line x1="660" y1="222" x2="740" y2="222" stroke="#d29922" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowYellow)"/>
+
+  <g class="node" onclick="showPanel('fremgang')">
+    <rect x="740" y="196" width="130" height="52" rx="8" fill="#2d1b00" stroke="#d29922" stroke-width="1.5"/>
+    <text x="805" y="217" text-anchor="middle" font-size="11" font-weight="700" fill="#f0c070" font-family="system-ui">Fremgang</text>
+    <text x="805" y="232" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/[id]/fremgang</text>
+    <text x="805" y="245" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">† Data ✓</text>
+  </g>
+
+  <!-- Grupper side branch -->
+  <line x1="342" y1="248" x2="342" y2="280" stroke="#d29922" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowYellow)"/>
+  <g class="node" onclick="showPanel('grupper')">
+    <rect x="268" y="280" width="148" height="44" rx="7" fill="#1e1500" stroke="#d29922" stroke-width="1"/>
+    <text x="342" y="299" text-anchor="middle" font-size="11" font-weight="600" fill="#f0c070" font-family="system-ui">Grupper</text>
+    <text x="342" y="313" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/admin/grupper</text>
+    <text x="342" y="321" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">★ Fullt ferdig</text>
+  </g>
+
+  <!-- ===== ANALYSE: Cockpit → Tester → Benchmarks ===== -->
+  <line x1="94" y1="144" x2="94" y2="356" stroke="#8b5cf6" stroke-width="2" stroke-dasharray="6,3"/>
+  <line x1="94" y1="356" x2="200" y2="356" stroke="#8b5cf6" stroke-width="2" marker-end="url(#arrowPurple)"/>
+
+  <!-- Tester -->
+  <g class="node" onclick="showPanel('tester-admin')">
+    <rect x="200" y="330" width="148" height="52" rx="8" fill="#1a1432" stroke="#8b5cf6" stroke-width="1.5"/>
+    <text x="274" y="351" text-anchor="middle" font-size="11" font-weight="700" fill="#c4b5fd" font-family="system-ui">Tester (admin)</text>
+    <text x="274" y="366" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/admin/tester</text>
+    <text x="274" y="379" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">★ Fullt ferdig</text>
+  </g>
+
+  <line x1="348" y1="356" x2="440" y2="356" stroke="#8b5cf6" stroke-width="1.5" marker-end="url(#arrowPurple)"/>
+
+  <!-- Benchmarks -->
+  <g class="node" onclick="showPanel('benchmarks')">
+    <rect x="440" y="330" width="156" height="52" rx="8" fill="#1a1432" stroke="#8b5cf6" stroke-width="1.5"/>
+    <text x="518" y="351" text-anchor="middle" font-size="11" font-weight="700" fill="#c4b5fd" font-family="system-ui">Fasiter (autosync)</text>
+    <text x="518" y="366" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/tester/benchmarks</text>
+    <text x="518" y="379" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">Live DataGolf-sync</text>
+  </g>
+
+  <!-- Stall-analyse -->
+  <line x1="596" y1="356" x2="660" y2="356" stroke="#8b5cf6" stroke-width="1.5" marker-end="url(#arrowPurple)"/>
+  <g class="node" onclick="showPanel('stall-analyse')">
+    <rect x="660" y="330" width="148" height="52" rx="8" fill="#1a1432" stroke="#8b5cf6" stroke-width="1.5"/>
+    <text x="734" y="351" text-anchor="middle" font-size="11" font-weight="700" fill="#c4b5fd" font-family="system-ui">Stall-analyse</text>
+    <text x="734" y="366" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/admin/analyse</text>
+    <text x="734" y="379" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">★ Fullt ferdig</text>
+  </g>
+
+  <!-- Rapporter -->
+  <line x1="808" y1="356" x2="880" y2="356" stroke="#8b5cf6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowPurple)"/>
+  <g class="node" onclick="showPanel('rapporter')">
+    <rect x="880" y="330" width="120" height="52" rx="8" fill="#1a1432" stroke="#8b5cf6" stroke-width="1.5"/>
+    <text x="940" y="351" text-anchor="middle" font-size="11" font-weight="700" fill="#c4b5fd" font-family="system-ui">Rapporter</text>
+    <text x="940" y="366" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/admin/reports</text>
+    <text x="940" y="379" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">★ Fullt ferdig</text>
+  </g>
+
+  <!-- ===== PLANLEGGING: Cockpit → Kalender → Bookinger ===== -->
+  <line x1="94" y1="144" x2="94" y2="466" stroke="#2563EB" stroke-width="2" stroke-dasharray="6,3"/>
+  <line x1="94" y1="466" x2="200" y2="466" stroke="#2563EB" stroke-width="2" marker-end="url(#arrowBlue2)"/>
+
+  <!-- Kalender -->
+  <g class="node" onclick="showPanel('kalender')">
+    <rect x="200" y="440" width="140" height="52" rx="8" fill="#001a2d" stroke="#2563EB" stroke-width="1.5"/>
+    <text x="270" y="461" text-anchor="middle" font-size="11" font-weight="700" fill="#84A9FF" font-family="system-ui">Kalender</text>
+    <text x="270" y="476" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/admin/kalender</text>
+    <text x="270" y="489" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">★ Fullt ferdig</text>
+  </g>
+
+  <line x1="340" y1="466" x2="420" y2="466" stroke="#2563EB" stroke-width="1.5" marker-end="url(#arrowBlue2)"/>
+
+  <!-- Bookinger -->
+  <g class="node" onclick="showPanel('bookinger')">
+    <rect x="420" y="440" width="140" height="52" rx="8" fill="#001a2d" stroke="#2563EB" stroke-width="1.5"/>
+    <text x="490" y="461" text-anchor="middle" font-size="11" font-weight="700" fill="#84A9FF" font-family="system-ui">Bookinger</text>
+    <text x="490" y="476" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/admin/bookinger</text>
+    <text x="490" y="489" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">★ Fullt ferdig</text>
+  </g>
+
+  <!-- Tilgjengelighet -->
+  <line x1="560" y1="466" x2="640" y2="466" stroke="#2563EB" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowBlue2)"/>
+  <g class="node" onclick="showPanel('tilgjengelighet')">
+    <rect x="640" y="440" width="160" height="52" rx="8" fill="#001a2d" stroke="#2563EB" stroke-width="1.5"/>
+    <text x="720" y="461" text-anchor="middle" font-size="11" font-weight="700" fill="#84A9FF" font-family="system-ui">Tilgjengelighet</text>
+    <text x="720" y="476" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/admin/availability</text>
+    <text x="720" y="489" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">★ Fullt ferdig</text>
+  </g>
+
+  <!-- Planer -->
+  <line x1="800" y1="466" x2="880" y2="466" stroke="#2563EB" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowBlue2)"/>
+  <g class="node" onclick="showPanel('planer')">
+    <rect x="880" y="440" width="140" height="52" rx="8" fill="#001a2d" stroke="#2563EB" stroke-width="1.5"/>
+    <text x="950" y="461" text-anchor="middle" font-size="11" font-weight="700" fill="#84A9FF" font-family="system-ui">Treningsplaner</text>
+    <text x="950" y="476" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/admin/plans</text>
+    <text x="950" y="489" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">★ Fullt ferdig</text>
+  </g>
+
+</svg>
+</div>
+
+<div id="panel">
+  <button id="panel-close" onclick="closePanel()">×</button>
+  <div id="panel-title">Velg en skjerm</div>
+  <div id="panel-route"></div>
+  <div id="panel-desc"></div>
+  <div id="panel-tags"></div>
+  <div class="panel-divider"></div>
+  <div class="panel-section-title">Status</div>
+  <div id="panel-status" class="panel-hacks"></div>
+</div>
+
+<script>
+const screens = {
+  cockpit: {
+    title: 'Cockpit (AgencyOS hjem)',
+    route: '/admin/agencyos',
+    desc: 'Coachens startside. Viser stall-status, dagens program, fokus-spiller og KPI-er. Alltid mørkt tema (.dark). Portet fra fersk fasit via adversarisk kritiker-loop til 0 avvik.',
+    tags: ['done'],
+    status: '★ Fullt ferdig — Design ✓ · Desktop ✓ · Adresse ✓ · Flyt ✓ · Data ✓ · Funker ✓. Mobil (Fase 4) gjenstår.'
+  },
+  innboks: {
+    title: 'Innboks',
+    route: '/admin/innboks',
+    desc: 'Coach leser meldinger fra spillere. Tråd-visning med prioritering. Koblet til ekte data (sesjonsforespørsler).',
+    tags: ['done'],
+    status: '★ Fullt ferdig — Design ✓ · Desktop ✓ · Adresse ✓ · Flyt ✓ · Data ✓ · Funker ✓'
+  },
+  foresporsler: {
+    title: 'Økt-forespørsler',
+    route: '/admin/foresporsler',
+    desc: 'Viser alle SessionRequest fra spillere. Kun «Booking»-chip foreløpig — meldinger/råd kommer når de unionnes inn.',
+    tags: ['done'],
+    status: '★ Fullt ferdig — Design ✓ · Desktop ✓ · Adresse ✓ · Flyt ✓ · Data ✓ · Funker ✓'
+  },
+  godkjenninger: {
+    title: 'Godkjenninger',
+    route: '/admin/godkjenninger',
+    desc: 'Coach godkjenner eller avviser spillerforespørsler. Ekte Bekreft/Avvis-server-actions.',
+    tags: ['done'],
+    status: '★ Fullt ferdig — Design ✓ · Desktop ✓ · Adresse ✓ · Flyt ✓ · Data ✓ · Funker ✓'
+  },
+  tildelt: {
+    title: 'Tildelt meg',
+    route: '/admin/workspace/tildelt-meg',
+    desc: 'Oppgaver tildelt til coachen. Topp-/venstrejustert ikon i 36px-felt (fasit-PNG-utseende).',
+    tags: ['done'],
+    status: '★ Fullt ferdig — Design ✓ · Desktop ✓ · Adresse ✓ · Flyt ✓ · Data ✓ · Funker ✓'
+  },
+  oppgaver: {
+    title: 'Oppgaver',
+    route: '/admin/workspace/oppgaver',
+    desc: 'Arbeidsverktøy med view-toggle (liste/kanban/kalender), WorkspaceTabs og full kolonne-tabell. Notion-synket funksjon beholdes.',
+    tags: ['done'],
+    status: '★ Fullt ferdig — Design ✓ · Desktop ✓ · Adresse ✓ · Flyt ✓ · Data ✓ · Funker ✓'
+  },
+  spillere: {
+    title: 'Spillere (alle)',
+    route: '/admin/spillere',
+    desc: 'Tabell med SG-sparkline, status-heuristikk, bulk-bar og CSV-eksport. 38 spillere i stallen (seeded). Status beregnes fra data — avvik fra fasit-PNG er data, ikke design.',
+    tags: ['done'],
+    status: '★ Fullt ferdig — Design ✓ · Desktop ✓ · Adresse ✓ · Flyt ✓ · Data ✓ · Funker ✓'
+  },
+  'spiller-detalj': {
+    title: 'Spiller-detalj',
+    route: '/admin/spillere/[id]',
+    desc: 'Hero + coach-flagg + pyramide + runder/tester + aktiv plan. Spiller = Øyvind Rohjan (demo). Initialer = ØR (avledet fra ekte navn, ikke hardkodet MB).',
+    tags: ['done'],
+    status: '★ Fullt ferdig — Design ✓ · Desktop ✓ · Adresse ✓ · Flyt ✓ · Data ✓ · Funker ✓'
+  },
+  'workbench-coach': {
+    title: 'Workbench (coach-i-spiller)',
+    route: '/admin/spillere/[id]/workbench',
+    desc: 'Coach ser spillerens Workbench og kan redigere planer. Endringer propagerer til spillerens PlayerHQ. Eneste 2 skjermer (spiller + coach) som er 100% ferdig.',
+    tags: ['done'],
+    status: '★ Fullt ferdig — Design ✓ · Mob/Desk ✓✓ · Adresse ✓ · Flyt ✓ · Data ✓ · Funker ✓'
+  },
+  fremgang: {
+    title: 'Fremgang (trening vs SG)',
+    route: '/admin/spillere/[id]/fremgang',
+    desc: 'Coach-fane med SG-grafer, treningsvolum og korrelasjon trening↔SG. Bygd 4. juni. training_logs-tabell i prod (RLS deny-all).',
+    tags: ['partial'],
+    status: '† Bygd og data-koblet — Design ✓ · Mob/Desk ✓✓ · Adresse ✓ · Flyt ✓ · Data ✓ · Funker ~ (ikke nettleser-testet)'
+  },
+  grupper: {
+    title: 'Grupper',
+    route: '/admin/grupper',
+    desc: 'Tiles med ekte aktivitetsbar. 4 grupper seeded. Viser spillertall og siste aktivitet.',
+    tags: ['done'],
+    status: '★ Fullt ferdig — Design ✓ · Desktop ✓ · Adresse ✓ · Flyt ✓ · Data ✓ · Funker ✓'
+  },
+  'tester-admin': {
+    title: 'Tester (admin)',
+    route: '/admin/tester',
+    desc: '20 tester i NGF-batteriet. 12 har strukturert nivåstige (PGA topp 40 → Scratch) i protocol.benchmarks. Matrisen viser nivå-badge + hele stigen i tooltip. «Data powered by DataGolf».',
+    tags: ['done'],
+    status: '★ Fullt ferdig — Design ✓ · Desktop ✓ · Data ✓ · Funker ✓. FYS-formel avventer — nøytrale chips, ingen normverdier.'
+  },
+  benchmarks: {
+    title: 'Fasiter (autosync)',
+    route: '/admin/tester/benchmarks',
+    desc: 'Godkjenn/avvis DataGolf-oppdateringer. Endring ≤ 3 % skrives automatisk; større utslag venter her. «Kjør synk nå»-knapp. Telegram-rapport til Anders etter hver kjøring. Cron kjører mandager 08:00.',
+    tags: ['partial'],
+    status: 'Design ~ · Data ✓ (live DataGolf-sync). Skjerm-design ikke fullportet til fasit.'
+  },
+  'stall-analyse': {
+    title: 'Stall-analyse',
+    route: '/admin/analyse',
+    desc: 'Ekte KPI-er + pyramide + per-gruppe-oversikt. Koblet til ekte Prisma-data for hele stallen.',
+    tags: ['done'],
+    status: '★ Fullt ferdig — Design ✓ · Desktop ✓ · Adresse ✓ · Flyt ✓ · Data ✓ · Funker ✓'
+  },
+  rapporter: {
+    title: 'Rapporter',
+    route: '/admin/reports',
+    desc: 'Ekte CSV-endepunkter for dataeksport. Tiles uten ferdig generator-funksjon bruker «Åpne →» i stedet for liksom-generering.',
+    tags: ['done'],
+    status: '★ Fullt ferdig — Design ✓ · Desktop ✓ · Adresse ✓ · Flyt ✓ · Data ✓ · Funker ✓'
+  },
+  kalender: {
+    title: 'Kalender',
+    route: '/admin/kalender',
+    desc: 'Uke-grid med akse-kanter. Innspill-regex-bug fikset. Sub-ruter: /uke og /maned. Ekte coach-data.',
+    tags: ['done'],
+    status: '★ Fullt ferdig — Design ✓ · Desktop ✓ · Adresse ✓ · Flyt ✓ · Data ✓ · Funker ✓'
+  },
+  bookinger: {
+    title: 'Bookinger',
+    route: '/admin/bookinger',
+    desc: 'Ekte Bekreft/Avvis-server-actions. PENDING-bookinger seeded. Coach håndterer spillernes booking-forespørsler herfra.',
+    tags: ['done'],
+    status: '★ Fullt ferdig — Design ✓ · Desktop ✓ · Adresse ✓ · Flyt ✓ · Data ✓ · Funker ✓'
+  },
+  tilgjengelighet: {
+    title: 'Tilgjengelighet',
+    route: '/admin/availability',
+    desc: 'Coach setter sine tilgjengelige tidsvinduer (coachAvailability fra DB). Spillere kan bare booke innenfor disse vinduene.',
+    tags: ['done'],
+    status: '★ Fullt ferdig — Design ✓ · Desktop ✓ · Adresse ✓ · Flyt ✓ · Data ✓ · Funker ✓'
+  },
+  planer: {
+    title: 'Treningsplaner',
+    route: '/admin/plans',
+    desc: 'Kanban over alle planer. «Ny plan» → Workbench (wizard er ulenket per låst beslutning). Plan-bygger (/plans/new) portet 11. juni: Gantt-bånd, uke-chips, drag-and-drop-raster.',
+    tags: ['done'],
+    status: '★ Fullt ferdig — Design ✓ · Desktop ✓ · Adresse ✓ · Flyt ✓ · Data ✓ · Funker ✓'
+  }
+};
+
+function showPanel(id) {
+  const s = screens[id];
+  if (!s) return;
+  document.getElementById('panel-title').textContent = s.title;
+  document.getElementById('panel-route').textContent = s.route;
+  document.getElementById('panel-desc').textContent = s.desc;
+  const tagsEl = document.getElementById('panel-tags');
+  tagsEl.innerHTML = s.tags.map(t => {
+    if (t === 'done') return '<span class="panel-tag tag-done">Fullt ferdig</span>';
+    if (t === 'partial') return '<span class="panel-tag tag-partial">Delvis ferdig</span>';
+    return '<span class="panel-tag tag-pending">Ikke startet</span>';
+  }).join('');
+  document.getElementById('panel-status').textContent = s.status;
+  document.getElementById('panel').classList.add('open');
+}
+function closePanel() { document.getElementById('panel').classList.remove('open'); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
+</script>
+</body>
+</html>

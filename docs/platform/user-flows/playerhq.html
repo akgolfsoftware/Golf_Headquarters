@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PlayerHQ — Spillerreisen</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0d1117;
+    color: #e6edf3;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 13px;
+    min-height: 100vh;
+    padding: 24px;
+  }
+  h1 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #e6edf3;
+    margin-bottom: 4px;
+    letter-spacing: -0.3px;
+  }
+  .subtitle {
+    color: #8b949e;
+    font-size: 12px;
+    margin-bottom: 28px;
+  }
+  .legend {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: #8b949e;
+  }
+  .legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+  }
+  .dot-primary { background: #238636; border: 1.5px solid #3fb950; }
+  .dot-secondary { background: #161b22; border: 1.5px solid #30363d; }
+  .dot-sub { background: #1a2332; border: 1.5px solid #2563EB; }
+
+  .flow-container {
+    position: relative;
+    width: 100%;
+    overflow-x: auto;
+  }
+  svg.flow-svg {
+    display: block;
+  }
+
+  /* Node styles */
+  .node {
+    cursor: pointer;
+  }
+  .node rect {
+    transition: filter 0.15s;
+  }
+  .node:hover rect {
+    filter: brightness(1.25);
+  }
+  .node text {
+    pointer-events: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  /* Side panel */
+  #panel {
+    position: fixed;
+    top: 0;
+    right: -360px;
+    width: 340px;
+    height: 100vh;
+    background: #161b22;
+    border-left: 1px solid #21262d;
+    padding: 24px 20px;
+    transition: right 0.25s ease;
+    z-index: 100;
+    overflow-y: auto;
+  }
+  #panel.open {
+    right: 0;
+  }
+  #panel-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: #8b949e;
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  #panel-close:hover { background: #21262d; color: #e6edf3; }
+  #panel-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #e6edf3;
+    margin-bottom: 6px;
+    padding-right: 32px;
+    line-height: 1.3;
+  }
+  #panel-route {
+    font-family: 'SF Mono', 'Cascadia Code', monospace;
+    font-size: 11px;
+    color: #3fb950;
+    background: #0d1117;
+    padding: 8px 10px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    word-break: break-all;
+    border: 1px solid #21262d;
+  }
+  #panel-desc {
+    font-size: 12px;
+    color: #8b949e;
+    line-height: 1.6;
+    margin-bottom: 12px;
+  }
+  .panel-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-weight: 600;
+    margin: 2px;
+  }
+  .tag-done { background: #0f2d1a; color: #3fb950; border: 1px solid #238636; }
+  .tag-partial { background: #2d2000; color: #d29922; border: 1px solid #9e6a03; }
+  .tag-pending { background: #1c1c1c; color: #8b949e; border: 1px solid #30363d; }
+  .panel-divider { height: 1px; background: #21262d; margin: 14px 0; }
+  .panel-section-title { font-size: 10px; font-weight: 700; color: #8b949e; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
+  .panel-hacks { font-size: 11px; color: #8b949e; line-height: 1.5; }
+</style>
+</head>
+<body>
+<h1>PlayerHQ — Spillerreisen</h1>
+<p class="subtitle">Interaktivt flytkar — klikk en boks for detaljer om ruten</p>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot dot-primary"></div> Primærsti (godkjent design + ekte data)</div>
+  <div class="legend-item"><div class="legend-dot dot-secondary"></div> Sekundærsti (andre seksjoner)</div>
+  <div class="legend-item"><div class="legend-dot dot-sub"></div> Sub-ruter (undersider)</div>
+</div>
+
+<div class="flow-container">
+<svg class="flow-svg" viewBox="0 0 1180 560" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrowGreen" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#3fb950"/>
+    </marker>
+    <marker id="arrowGray" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#30363d"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#2563EB"/>
+    </marker>
+  </defs>
+
+  <!-- ===== SECTION LABELS ===== -->
+  <text x="20" y="18" font-size="10" font-weight="700" fill="#3fb950" font-family="system-ui" letter-spacing="1" opacity="0.8">PRIMÆRSTI</text>
+  <text x="20" y="200" font-size="10" font-weight="700" fill="#8b949e" font-family="system-ui" letter-spacing="1" opacity="0.8">ANALYSERE</text>
+  <text x="20" y="330" font-size="10" font-weight="700" fill="#8b949e" font-family="system-ui" letter-spacing="1" opacity="0.8">MEG</text>
+  <text x="20" y="450" font-size="10" font-weight="700" fill="#8b949e" font-family="system-ui" letter-spacing="1" opacity="0.8">GJENNOMFORE</text>
+
+  <!-- ===== PRIMARY PATH ARROWS ===== -->
+  <!-- login → onboarding -->
+  <line x1="148" y1="80" x2="218" y2="80" stroke="#3fb950" stroke-width="2" marker-end="url(#arrowGreen)"/>
+  <!-- onboarding → portal -->
+  <line x1="358" y1="80" x2="418" y2="80" stroke="#3fb950" stroke-width="2" marker-end="url(#arrowGreen)"/>
+  <!-- portal → workbench -->
+  <line x1="518" y1="80" x2="598" y2="80" stroke="#3fb950" stroke-width="2" marker-end="url(#arrowGreen)"/>
+  <!-- workbench → live active -->
+  <line x1="748" y1="80" x2="818" y2="80" stroke="#3fb950" stroke-width="2" marker-end="url(#arrowGreen)"/>
+  <!-- live active → summary -->
+  <line x1="948" y1="80" x2="1018" y2="80" stroke="#3fb950" stroke-width="2" marker-end="url(#arrowGreen)"/>
+
+  <!-- ===== PRIMARY NODES ===== -->
+  <!-- /auth/login -->
+  <g class="node" onclick="showPanel('login')">
+    <rect x="20" y="52" width="128" height="56" rx="8" fill="#0f2d1a" stroke="#3fb950" stroke-width="1.5"/>
+    <text x="84" y="75" text-anchor="middle" font-size="11" font-weight="700" fill="#3fb950" font-family="system-ui">Logg inn</text>
+    <text x="84" y="91" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/auth/login</text>
+    <text x="84" y="104" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">✓ ✓ ✓</text>
+  </g>
+
+  <!-- /auth/onboarding -->
+  <g class="node" onclick="showPanel('onboarding')">
+    <rect x="220" y="52" width="136" height="56" rx="8" fill="#0f2d1a" stroke="#3fb950" stroke-width="1.5"/>
+    <text x="288" y="75" text-anchor="middle" font-size="11" font-weight="700" fill="#3fb950" font-family="system-ui">Onboarding</text>
+    <text x="288" y="91" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/auth/onboarding</text>
+    <text x="288" y="104" text-anchor="middle" font-size="9" fill="#d29922" font-family="system-ui">✓ ✓ – · Data –</text>
+  </g>
+
+  <!-- /portal (Hjem) -->
+  <g class="node" onclick="showPanel('portal')">
+    <rect x="420" y="52" width="96" height="56" rx="8" fill="#0f2d1a" stroke="#3fb950" stroke-width="2"/>
+    <text x="468" y="75" text-anchor="middle" font-size="11" font-weight="700" fill="#3fb950" font-family="system-ui">Hjem</text>
+    <text x="468" y="91" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/portal</text>
+    <text x="468" y="104" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">★ Fullt ferdig</text>
+  </g>
+
+  <!-- /portal/planlegge/workbench -->
+  <g class="node" onclick="showPanel('workbench')">
+    <rect x="600" y="52" width="146" height="56" rx="8" fill="#0f2d1a" stroke="#3fb950" stroke-width="1.5"/>
+    <text x="673" y="72" text-anchor="middle" font-size="11" font-weight="700" fill="#3fb950" font-family="system-ui">Workbench</text>
+    <text x="673" y="87" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/planlegge/workbench</text>
+    <text x="673" y="102" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">★ Fullt ferdig</text>
+  </g>
+
+  <!-- /portal/(fullscreen)/live/[id]/active -->
+  <g class="node" onclick="showPanel('live-active')">
+    <rect x="820" y="52" width="126" height="56" rx="8" fill="#0f2d1a" stroke="#3fb950" stroke-width="1.5"/>
+    <text x="883" y="73" text-anchor="middle" font-size="11" font-weight="700" fill="#3fb950" font-family="system-ui">Live: Aktiv</text>
+    <text x="883" y="88" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/live/[id]/active</text>
+    <text x="883" y="103" text-anchor="middle" font-size="9" fill="#d29922" font-family="system-ui">Design ✓ · Data –</text>
+  </g>
+
+  <!-- /portal/(fullscreen)/live/[id]/summary -->
+  <g class="node" onclick="showPanel('live-summary')">
+    <rect x="1020" y="52" width="140" height="56" rx="8" fill="#0f2d1a" stroke="#3fb950" stroke-width="1.5"/>
+    <text x="1090" y="73" text-anchor="middle" font-size="11" font-weight="700" fill="#3fb950" font-family="system-ui">Live: Summary</text>
+    <text x="1090" y="88" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/live/[id]/summary</text>
+    <text x="1090" y="103" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">† Data ✓</text>
+  </g>
+
+  <!-- ===== PORTAL HUB DOWNWARD BRANCHES ===== -->
+  <!-- portal down to Analysere hub -->
+  <line x1="468" y1="108" x2="468" y2="190" stroke="#30363d" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowGray)"/>
+  <!-- portal down to Meg hub -->
+  <line x1="468" y1="108" x2="468" y2="320" stroke="#30363d" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <!-- portal down to Gjennomfore hub -->
+  <line x1="468" y1="108" x2="468" y2="440" stroke="#30363d" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+  <!-- Vertical connector line -->
+  <line x1="468" y1="108" x2="468" y2="480" stroke="#21262d" stroke-width="1" stroke-dasharray="2,4"/>
+
+  <!-- ===== ANALYSERE SECTION ===== -->
+  <!-- Analysere hub -->
+  <g class="node" onclick="showPanel('analysere')">
+    <rect x="360" y="193" width="216" height="52" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+    <text x="468" y="215" text-anchor="middle" font-size="11" font-weight="700" fill="#e6edf3" font-family="system-ui">Analysere</text>
+    <text x="468" y="231" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/portal/analysere</text>
+    <text x="468" y="244" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">★ Fullt ferdig</text>
+  </g>
+
+  <!-- Analysere → sub tabs arrows -->
+  <line x1="360" y1="219" x2="220" y2="219" stroke="#30363d" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+  <line x1="576" y1="219" x2="640" y2="219" stroke="#30363d" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+  <line x1="576" y1="219" x2="640" y2="264" stroke="#30363d" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+  <line x1="360" y1="219" x2="220" y2="264" stroke="#30363d" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+
+  <!-- SG-Hub -->
+  <g class="node" onclick="showPanel('sg-hub')">
+    <rect x="110" y="195" width="110" height="48" rx="7" fill="#1a2332" stroke="#2563EB" stroke-width="1.5"/>
+    <text x="165" y="215" text-anchor="middle" font-size="11" font-weight="700" fill="#84A9FF" font-family="system-ui">SG-Hub</text>
+    <text x="165" y="229" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/mal/sg-hub</text>
+    <text x="165" y="242" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">† Data ✓</text>
+  </g>
+
+  <!-- Runder -->
+  <g class="node" onclick="showPanel('runder')">
+    <rect x="110" y="248" width="110" height="48" rx="7" fill="#1a2332" stroke="#2563EB" stroke-width="1.5"/>
+    <text x="165" y="268" text-anchor="middle" font-size="11" font-weight="700" fill="#84A9FF" font-family="system-ui">Runder</text>
+    <text x="165" y="282" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/mal/runder</text>
+    <text x="165" y="295" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">† Data ✓</text>
+  </g>
+
+  <!-- TrackMan -->
+  <g class="node" onclick="showPanel('trackman')">
+    <rect x="640" y="195" width="120" height="48" rx="7" fill="#1a2332" stroke="#2563EB" stroke-width="1.5"/>
+    <text x="700" y="215" text-anchor="middle" font-size="11" font-weight="700" fill="#84A9FF" font-family="system-ui">TrackMan</text>
+    <text x="700" y="229" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/mal/trackman</text>
+    <text x="700" y="242" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">† Data ✓</text>
+  </g>
+
+  <!-- Tester -->
+  <g class="node" onclick="showPanel('tester')">
+    <rect x="640" y="248" width="120" height="48" rx="7" fill="#1a2332" stroke="#2563EB" stroke-width="1.5"/>
+    <text x="700" y="268" text-anchor="middle" font-size="11" font-weight="700" fill="#84A9FF" font-family="system-ui">Tester</text>
+    <text x="700" y="282" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/tren/tester</text>
+    <text x="700" y="295" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">★ Fullt ferdig</text>
+  </g>
+
+  <!-- ===== MEG SECTION ===== -->
+  <!-- Meg hub -->
+  <g class="node" onclick="showPanel('meg')">
+    <rect x="368" y="320" width="200" height="52" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+    <text x="468" y="342" text-anchor="middle" font-size="11" font-weight="700" fill="#e6edf3" font-family="system-ui">Meg (profil)</text>
+    <text x="468" y="358" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/portal/meg</text>
+    <text x="468" y="370" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">★ Fullt ferdig</text>
+  </g>
+
+  <!-- Meg → sub arrows -->
+  <line x1="368" y1="346" x2="248" y2="346" stroke="#30363d" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+  <line x1="568" y1="346" x2="640" y2="346" stroke="#30363d" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+  <line x1="568" y1="346" x2="640" y2="396" stroke="#30363d" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+  <line x1="368" y1="346" x2="248" y2="396" stroke="#30363d" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+
+  <!-- Profil -->
+  <g class="node" onclick="showPanel('profil')">
+    <rect x="120" y="320" width="128" height="48" rx="7" fill="#1a2332" stroke="#2563EB" stroke-width="1.5"/>
+    <text x="184" y="341" text-anchor="middle" font-size="11" font-weight="700" fill="#84A9FF" font-family="system-ui">Profil</text>
+    <text x="184" y="355" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/meg/profil</text>
+    <text x="184" y="367" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">★ Fullt ferdig</text>
+  </g>
+
+  <!-- Abonnement -->
+  <g class="node" onclick="showPanel('abonnement')">
+    <rect x="120" y="373" width="128" height="48" rx="7" fill="#1a2332" stroke="#2563EB" stroke-width="1.5"/>
+    <text x="184" y="394" text-anchor="middle" font-size="11" font-weight="700" fill="#84A9FF" font-family="system-ui">Abonnement</text>
+    <text x="184" y="408" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/meg/abonnement</text>
+    <text x="184" y="420" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">★ Fullt ferdig</text>
+  </g>
+
+  <!-- Helse -->
+  <g class="node" onclick="showPanel('helse')">
+    <rect x="640" y="320" width="120" height="48" rx="7" fill="#1a2332" stroke="#2563EB" stroke-width="1.5"/>
+    <text x="700" y="341" text-anchor="middle" font-size="11" font-weight="700" fill="#84A9FF" font-family="system-ui">Helse</text>
+    <text x="700" y="355" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/meg/helse</text>
+    <text x="700" y="367" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">★ Fullt ferdig</text>
+  </g>
+
+  <!-- Innstillinger -->
+  <g class="node" onclick="showPanel('innstillinger')">
+    <rect x="640" y="373" width="120" height="48" rx="7" fill="#1a2332" stroke="#2563EB" stroke-width="1.5"/>
+    <text x="700" y="394" text-anchor="middle" font-size="11" font-weight="700" fill="#84A9FF" font-family="system-ui">Innstillinger</text>
+    <text x="700" y="408" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/meg/innstillinger</text>
+    <text x="700" y="420" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">★ Fullt ferdig</text>
+  </g>
+
+  <!-- ===== GJENNOMFORE SECTION ===== -->
+  <!-- Gjennomfore hub -->
+  <g class="node" onclick="showPanel('gjennomfore')">
+    <rect x="340" y="447" width="256" height="52" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+    <text x="468" y="469" text-anchor="middle" font-size="11" font-weight="700" fill="#e6edf3" font-family="system-ui">Gjennomfore</text>
+    <text x="468" y="485" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/portal/gjennomfore</text>
+    <text x="468" y="497" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">★ Fullt ferdig</text>
+  </g>
+
+  <!-- Gjennomfore → Booking -->
+  <line x1="596" y1="473" x2="680" y2="473" stroke="#30363d" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+
+  <!-- Booking hub -->
+  <g class="node" onclick="showPanel('booking')">
+    <rect x="680" y="447" width="140" height="52" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+    <text x="750" y="469" text-anchor="middle" font-size="11" font-weight="700" fill="#e6edf3" font-family="system-ui">Booking-hub</text>
+    <text x="750" y="485" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/portal/booking</text>
+    <text x="750" y="497" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">† Data ✓</text>
+  </g>
+
+  <!-- Booking → Ny booking -->
+  <line x1="820" y1="473" x2="900" y2="473" stroke="#30363d" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+
+  <!-- Ny booking -->
+  <g class="node" onclick="showPanel('booking-ny')">
+    <rect x="900" y="447" width="140" height="52" rx="8" fill="#1a2332" stroke="#2563EB" stroke-width="1.5"/>
+    <text x="970" y="469" text-anchor="middle" font-size="11" font-weight="700" fill="#84A9FF" font-family="system-ui">Ny booking</text>
+    <text x="970" y="485" text-anchor="middle" font-size="9.5" fill="#8b949e" font-family="monospace">/booking/ny</text>
+    <text x="970" y="497" text-anchor="middle" font-size="9" fill="#3fb950" font-family="system-ui">† Data ✓</text>
+  </g>
+
+  <!-- Live brief (branch from workbench) -->
+  <line x1="673" y1="108" x2="673" y2="130" stroke="#3fb950" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <line x1="673" y1="130" x2="820" y2="130" stroke="#3fb950" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <g class="node" onclick="showPanel('live-brief')">
+    <rect x="820" y="115" width="126" height="40" rx="7" fill="#1a1e14" stroke="#3fb950" stroke-width="1" stroke-dasharray="4,3"/>
+    <text x="883" y="131" text-anchor="middle" font-size="10" font-weight="600" fill="#3fb950" font-family="system-ui">Live: Brief</text>
+    <text x="883" y="147" text-anchor="middle" font-size="9" fill="#8b949e" font-family="monospace">/live/[id]/brief</text>
+  </g>
+
+</svg>
+</div>
+
+<!-- SIDE PANEL -->
+<div id="panel">
+  <button id="panel-close" onclick="closePanel()">×</button>
+  <div id="panel-title">Velg en skjerm</div>
+  <div id="panel-route"></div>
+  <div id="panel-desc"></div>
+  <div id="panel-tags"></div>
+  <div class="panel-divider"></div>
+  <div class="panel-section-title">Status</div>
+  <div id="panel-status" class="panel-hacks"></div>
+</div>
+
+<script>
+const screens = {
+  login: {
+    title: 'Logg inn',
+    route: '/auth/login',
+    desc: 'Innloggingsside med e-post + passord. BankID-lenke. Omdirigerer til /portal etter innlogging.',
+    tags: ['done'],
+    status: 'Fullt ferdig — Design ✓ · Mob/Desk/iPad ✓✓✓ · Adresse ✓ · Flyt ✓ · Data ✓ · Funker ✓'
+  },
+  onboarding: {
+    title: 'Onboarding (8 steg)',
+    route: '/auth/onboarding',
+    desc: 'Ny spiller fyller inn profil, mål, handicap, utstyr og foreldre-samtykke. 8 steg totalt.',
+    tags: ['partial'],
+    status: 'Design ✓ · Mob ✓ · Data mangler (ekte Supabase-flyt ikke koblet). Adresse delvis.'
+  },
+  portal: {
+    title: 'Hjem (PlayerHQ)',
+    route: '/portal',
+    desc: 'Spillerens startside. Hero med profilbilde + tier-pill, 3 KPI-er, Dagens fokus, Planlegg-i-Workbench, pyramide (5 rader), Resten av dagen, Neste tee og Neste turnering.',
+    tags: ['done'],
+    status: 'Fullt ferdig — Design ✓ · Mob/Desk/iPad ✓✓✓ · Adresse ✓ · Flyt ✓ · Data ✓ · Funker ✓'
+  },
+  workbench: {
+    title: 'Workbench (planlegging)',
+    route: '/portal/planlegge/workbench',
+    desc: 'Spillerens planleggingsverktøy. Treningsplan-tidslinje med pyramide-fargede venstrekanter. Eneste inngang til planlegging — ett trykkpunkt, ikke meny av 6 kort.',
+    tags: ['done'],
+    status: 'Fullt ferdig — Design ✓ · Mob/Desk ✓✓ · Adresse ✓ · Flyt ✓ · Data ✓ · Funker ✓'
+  },
+  'live-brief': {
+    title: 'Live-økt: Brief',
+    route: '/portal/(fullscreen)/live/[sessionId]/brief',
+    desc: 'Fullskjerm. Oppsummering av hva som skal skje FØR økten starter. Drilloversikt og mål.',
+    tags: ['partial'],
+    status: 'Design ✓ · Mob/Desk ✓✓ · Adresse ~ · Data mangler'
+  },
+  'live-active': {
+    title: 'Live-økt: Aktiv',
+    route: '/portal/(fullscreen)/live/[sessionId]/active',
+    desc: 'Fullskjerm. Spilleren gjennomfører økt — logger slag, treff og notater i sanntid.',
+    tags: ['partial'],
+    status: 'Design ✓ · Mob/Desk ✓✓ · Adresse ~ · Data – (ikke koblet ennå)'
+  },
+  'live-summary': {
+    title: 'Live-økt: Oppsummering',
+    route: '/portal/(fullscreen)/live/[sessionId]/summary',
+    desc: 'Fullskjerm. Etter at en økt er gjennomført — viser totaler, SG-bidrag og coach-kommentar.',
+    tags: ['partial'],
+    status: '† Bygd og koblet — Design ✓ · Data ✓ · Funker ~ (ikke nettleser-testet ende-til-ende)'
+  },
+  analysere: {
+    title: 'Analysere (faner)',
+    route: '/portal/analysere',
+    desc: 'Les tallene-flate med faner: SG / Runder / TrackMan / Tester / Innsikt. Sesong-header øverst. Erstatter gammel treningstimer-hub.',
+    tags: ['done'],
+    status: 'Fullt ferdig — Design ✓ · Mob/Desk/iPad ✓✓✓ · Adresse ✓ · Flyt ✓ · Data ✓ · Funker ✓'
+  },
+  'sg-hub': {
+    title: 'SG-Hub (Strokes Gained)',
+    route: '/portal/mal/sg-hub',
+    desc: 'Spillerens Strokes Gained-oversikt. Kalibrert mot Broadie og Team Norway IUP (0–18m for putt). Sub-ruter: benchmark, best-vs-now, yardage, equipment, conditions, strategy.',
+    tags: ['partial'],
+    status: '† Data-koblet (11. juni) — Design ✓ · Data ✓ · Funker ~ (ikke nettleser-testet)'
+  },
+  runder: {
+    title: 'Runder (liste)',
+    route: '/portal/mal/runder',
+    desc: 'Liste over alle registrerte runder. Runde-detalj (★) og Logg ny runde (★) er fullt ferdige sub-ruter.',
+    tags: ['partial'],
+    status: '† Data-koblet — Design ✓ · Data ✓ · Funker ~ · Adresse ~ · Runde-detalj ★ = fullt ferdig'
+  },
+  trackman: {
+    title: 'TrackMan (liste)',
+    route: '/portal/mal/trackman',
+    desc: 'Liste over TrackMan-sesjoner med klubb-data, carry-snitt og trend-graf. Sub-rute [id] for detalj.',
+    tags: ['partial'],
+    status: '† Data-koblet — Design ✓ · Data ✓ · Funker ~ · Adresse ~'
+  },
+  tester: {
+    title: 'Tester (oversikt)',
+    route: '/portal/tren/tester',
+    desc: '36 tester per pyramide-område. Katalog med søk, detalj med protokoll-steg og scorekort-motor (zod-parset). E2E-verifisert med ekte lagring.',
+    tags: ['done'],
+    status: '★ Fullt ferdig — Design ✓ · Mob/Desk ✓✓~ · Adresse ✓ · Flyt ✓ · Data ✓ · Funker ✓'
+  },
+  meg: {
+    title: 'Meg (profil)',
+    route: '/portal/meg',
+    desc: 'Spillerens profilside. Header + abonnement-kort + 3 KPI-er + KONTO-lenkeliste (7 poenger) + Logg ut. Fjernet gammel fane-rad (SubNav).',
+    tags: ['done'],
+    status: 'Fullt ferdig — Design ✓ · Mob/Desk/iPad ✓✓✓ · Adresse ✓ · Flyt ✓ · Data ✓ · Funker ✓'
+  },
+  profil: {
+    title: 'Rediger profil',
+    route: '/portal/meg/profil',
+    desc: 'Spiller redigerer navn, bilde, kontaktinfo og preferanser. Ekte lagring til Supabase.',
+    tags: ['done'],
+    status: '★ Fullt ferdig — Design ✓ · Mob/Desk/iPad ✓✓✓ · Data ✓ · Funker ✓'
+  },
+  abonnement: {
+    title: 'Abonnement',
+    route: '/portal/meg/abonnement',
+    desc: 'Gratis hvis: 1 mnd prøveperiode / har coaching-pakke (Performance eller Performance Pro) / er i gruppe via AK Golf. Ellers 300 kr/mnd. ELITE finnes ikke.',
+    tags: ['done'],
+    status: '★ Fullt ferdig — Gratis-logikk RETTET (coaching-pakke ⇒ gratis). «PlayerHQ Pro» fjernet. ✓✓✓'
+  },
+  helse: {
+    title: 'Helse',
+    route: '/portal/meg/helse',
+    desc: 'Spiller logger helse-entries (symptomer, restitusjon, søvn). Readiness viser «—» til FYS-formelen er låst.',
+    tags: ['done'],
+    status: '★ Fullt ferdig — Design ✓ · Mob/Desk/iPad ✓✓✓ · Data ✓ · Funker ✓'
+  },
+  innstillinger: {
+    title: 'Innstillinger',
+    route: '/portal/meg/innstillinger',
+    desc: 'Varsler, personvern, sikkerhet, språk, anlegg, integrasjoner, eksport og økt-preferanser. Ekte preferences-toggles.',
+    tags: ['done'],
+    status: '★ Fullt ferdig — Design ✓ · Mob/Desk/iPad ✓✓✓ · Data ✓ · Funker ✓'
+  },
+  gjennomfore: {
+    title: 'Gjennomfore (I dag)',
+    route: '/portal/gjennomfore',
+    desc: 'Faner: I dag / Kalender / Booking. Accent-kort med «Start nå» + dagens program med status-chips. Erstatter gammel modul-launcher.',
+    tags: ['done'],
+    status: '★ Fullt ferdig — Design ✓ · Mob/Desk/iPad ✓✓✓ · Adresse ✓ · Flyt ✓ · Data ✓ · Funker ✓'
+  },
+  booking: {
+    title: 'Booking-hub',
+    route: '/portal/booking',
+    desc: 'Oversikt over eksisterende bookinger, credit-indikator og snarvei til ny booking. Bruker Prisma-data.',
+    tags: ['partial'],
+    status: '† Data-koblet (11. juni) — Design ✓ · Data ✓ · Funker ~ · Adresse ~'
+  },
+  'booking-ny': {
+    title: 'Ny booking (wizard)',
+    route: '/portal/booking/ny',
+    desc: 'Spiller velger coach, tjeneste og tid. Wizard-flyt med bekreftelse. Koblet til ekte Prisma-data.',
+    tags: ['partial'],
+    status: '† Data-koblet (11. juni) — Design ✓ · Data ✓ · Funker ~ · Adresse ~'
+  }
+};
+
+function showPanel(id) {
+  const s = screens[id];
+  if (!s) return;
+  document.getElementById('panel-title').textContent = s.title;
+  document.getElementById('panel-route').textContent = s.route;
+  document.getElementById('panel-desc').textContent = s.desc;
+  const tagsEl = document.getElementById('panel-tags');
+  tagsEl.innerHTML = s.tags.map(t => {
+    if (t === 'done') return '<span class="panel-tag tag-done">Fullt ferdig</span>';
+    if (t === 'partial') return '<span class="panel-tag tag-partial">Delvis ferdig</span>';
+    return '<span class="panel-tag tag-pending">Ikke startet</span>';
+  }).join('');
+  document.getElementById('panel-status').textContent = s.status;
+  document.getElementById('panel').classList.add('open');
+}
+function closePanel() {
+  document.getElementById('panel').classList.remove('open');
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
+</script>
+</body>
+</html>
