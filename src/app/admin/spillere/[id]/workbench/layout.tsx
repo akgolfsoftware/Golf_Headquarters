@@ -1,5 +1,7 @@
 /**
- * Coach workbench-layout — full-screen, ingen admin-shell.
+ * Coach workbench-layout.
+ * Desktop (md+): full-screen overlay (fixed inset-0 z-50).
+ * Mobil (<md): normal page-flow inni AdminShell (WorkbenchMobile vises).
  */
 
 import type { Metadata } from "next";
@@ -13,5 +15,9 @@ export default function CoachWorkbenchLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <div className="fixed inset-0 z-50 bg-background">{children}</div>;
+  return (
+    <div className="md:fixed md:inset-0 md:z-50 md:bg-background">
+      {children}
+    </div>
+  );
 }
