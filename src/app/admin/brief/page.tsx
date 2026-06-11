@@ -24,9 +24,10 @@ import {
   Mail,
   Settings,
   Sparkles,
-  Star,
   type LucideIcon,
 } from "lucide-react";
+import { z } from "zod";
+import { FokusSpillerPanel, type FokusSpillerData } from "./_fokus-spiller";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PrintButton } from "@/components/shared/print-button";
@@ -71,6 +72,36 @@ export default async function DagligBrief() {
     orderBy: { createdAt: "desc" },
     take: 5,
   });
+
+  const suggSchema = z.object({ forklaring: z.string() }).partial().nullable();
+  const seenUserIds = new Set<string>();
+  const fokusSpillere: FokusSpillerData[] = [];
+  for (const a of ferskeForslag) {
+    if (seenUserIds.has(a.user.id)) continue;
+    seenUserIds.add(a.user.id);
+    const name = a.user.name ?? "Ukjent spiller";
+    const parts = name.split(" ").filter(Boolean);
+    const initials =
+      parts.length >= 2
+        ? (parts[0][0] + parts.at(-1)![0]).toUpperCase()
+        : (parts[0]?.[0] ?? "?").toUpperCase();
+    const isEscalation = a.actionType === "ESCALATION";
+    const isWarn = ["TAPER_ENGAGE", "WITHDRAW", "DELOAD"].includes(a.actionType);
+    const parsed = suggSchema.safeParse(a.suggestion);
+    const forklaring = parsed.success ? parsed.data?.forklaring : undefined;
+    fokusSpillere.push({
+      id: a.user.id,
+      name,
+      initials,
+      tone: "neu" as const,
+      meta: ACTION_LABEL[a.actionType] ?? a.actionType,
+      signal: isEscalation ? "Haster" : isWarn ? "Plan-justering" : "Forslag venter",
+      signalType: isEscalation ? "alert" : isWarn ? "warn" : "info",
+      reason:
+        forklaring ??
+        `${ACTION_LABEL[a.actionType] ?? a.actionType} — foreslått av ${a.agentName}`,
+    });
+  }
 
   let aiBrief: string | null = null;
   let aiFeil: string | null = null;
@@ -367,34 +398,7 @@ export default async function DagligBrief() {
 
         <div>
           <SectionNum num="04" title="Krever oppmerksomhet" />
-          <div className="rounded-xl border border-border bg-card px-4">
-            {data.ubesvarteMeldinger > 0 ? (
-              <AttnRow
-                icon={Mail}
-                title={`${data.ubesvarteMeldinger} ubesvarte meldinger`}
-                meta="Direkte-meldinger fra spillere eller foresatte"
-                linkText="Åpne →"
-                linkHref="/admin/messages"
-              />
-            ) : (
-              <AttnRow
-                icon={Star}
-                title="Alt under kontroll"
-                meta="Ingen ubesvarte meldinger eller forfalte oppgaver akkurat nå."
-                last
-              />
-            )}
-            {data.ventendeGodkjenninger > 0 && (
-              <AttnRow
-                icon={ClipboardCheck}
-                title={`${data.ventendeGodkjenninger} forslag til godkjenning`}
-                meta="Agentene har forslag som venter på din avgjørelse."
-                linkText="Gjennomgå →"
-                linkHref="/admin/approvals"
-                last
-              />
-            )}
-          </div>
+          <FokusSpillerPanel spillere={fokusSpillere} />
         </div>
       </section>
 
@@ -504,46 +508,6 @@ function Rec({
   );
 }
 
-function AttnRow({
-  icon: Icon,
-  title,
-  meta,
-  linkText,
-  linkHref,
-  last,
-}: {
-  icon: LucideIcon;
-  title: string;
-  meta: string;
-  linkText?: string;
-  linkHref?: string;
-  last?: boolean;
-}) {
-  return (
-    <div
-      className={cn(
-        "flex items-center gap-3 py-3.5",
-        last ? "" : "border-b border-border",
-      )}
-    >
-      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-secondary text-muted-foreground">
-        <Icon className="h-4 w-4" strokeWidth={1.75} aria-hidden />
-      </span>
-      <div className="min-w-0 flex-1">
-        <div className="mb-0.5 text-[13.5px] font-semibold text-foreground">{title}</div>
-        <div className="text-[12px] text-muted-foreground">{meta}</div>
-      </div>
-      {linkText && linkHref && (
-        <Link
-          href={linkHref}
-          className="shrink-0 text-[13px] font-medium text-primary hover:underline"
-        >
-          {linkText}
-        </Link>
-      )}
-    </div>
-  );
-}
 
 function EmptyRow({
   icon: Icon,
