@@ -29,6 +29,7 @@ import {
   Activity,
   ArrowRight,
   ArrowUpRight,
+  ChevronRight,
   Plus,
   Sparkles,
   Zap,
@@ -107,6 +108,26 @@ export type SgHubData = {
   perKolleTom: React.ReactNode;
   /** Verktøy-kortene. */
   verktoy: SgVerktoy[];
+  /** Gap-to-drill: svakeste SG-kategori → anbefalt drill. null = ikke nok data. */
+  gapToDrill?: SgGapToDrill | null;
+};
+
+/** Én drill i gap-to-drill-seksjonen. */
+export type SgGapDrill = {
+  id: string;
+  title: string;
+  axisLabel: string;
+  meta: string[];
+};
+
+/** Data for gap-to-drill-seksjonen: svakhet → anbefalt drill + alternativer. */
+export type SgGapToDrill = {
+  kategori: "APP" | "OTT" | "ARG" | "PUTT";
+  kategoriLabel: string;
+  /** Formatert SG-verdi, f.eks. "−0,42". */
+  sgFormatert: string;
+  /** Første element er primær drill, resten er alternativer (maks 3 alt.). */
+  drills: SgGapDrill[];
 };
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -353,6 +374,240 @@ function VerktoyKort({ v }: { v: SgVerktoy }) {
 }
 
 // ────────────────────────────────────────────────────────────────────────────
+// Gap-to-drill — SG-svakhet → anbefalt drill. Vises kun når det finnes data.
+// ────────────────────────────────────────────────────────────────────────────
+
+const KATEGORI_BESKRIVELSE: Record<SgGapToDrill["kategori"], string> = {
+  APP: "Drill-biblioteket inneholder slag- og teknikk-øvelser som direkte angriper variasjon i innspill 50–180 m.",
+  OTT: "Disse drillene styrker slag-teknikk, rotasjon og konsistens fra tee.",
+  ARG: "Chipping, bunkerspill og korte innspill — disse drillene bygger feel og variasjon rundt green.",
+  PUTT: "Teknikk- og distansekontroll-driller som trener slag-rytme og startlinje.",
+};
+
+function ChainStap({
+  num,
+  label,
+  name,
+  meta,
+  aktiv,
+  negativ,
+}: {
+  num: number;
+  label: string;
+  name: string;
+  meta: string;
+  aktiv?: boolean;
+  negativ?: boolean;
+}) {
+  return (
+    <div className="flex min-w-0 flex-col gap-1 px-2 py-1">
+      <div className="flex items-center gap-1.5">
+        <span
+          className={cn(
+            "inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full font-mono text-[9px] font-extrabold",
+            aktiv ? "bg-accent text-primary" : "bg-primary text-accent",
+          )}
+        >
+          {num}
+        </span>
+        <span className="font-mono text-[9px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
+          {label}
+        </span>
+      </div>
+      <span
+        className={cn(
+          "truncate font-display text-[13px] font-bold leading-[1.15] tracking-[-0.015em]",
+          aktiv ? "text-primary" : "text-foreground",
+        )}
+      >
+        {name}
+      </span>
+      <span
+        className={cn(
+          "font-mono text-[10px] font-bold leading-none tabular-nums",
+          negativ ? "text-destructive" : "text-muted-foreground",
+        )}
+      >
+        {meta}
+      </span>
+    </div>
+  );
+}
+
+function GapToDrillSeksjon({ gtd }: { gtd: SgGapToDrill }) {
+  const primær = gtd.drills[0];
+  const alternativer = gtd.drills.slice(1, 3);
+
+  if (!primær) return null;
+
+  return (
+    <section aria-labelledby="gap-drill-heading" className="space-y-4">
+      <SeksjonTittel id="gap-drill-heading" italic="Gap" rest="til drill" />
+
+      <div className="overflow-hidden rounded-[20px] border border-border bg-card">
+        {/* Kjede-strip */}
+        <div className="grid grid-cols-[1fr_20px_1fr_20px_1fr] items-start border-b border-border bg-secondary/50 px-2 py-3">
+          <ChainStap
+            num={1}
+            label="DATA"
+            name="Strokes Gained"
+            meta={`${gtd.sgFormatert} SG · ${gtd.kategori}`}
+            negativ
+          />
+          <div className="flex items-center justify-center pt-3">
+            <ChevronRight className="h-4 w-4 text-muted-foreground/40" strokeWidth={2} aria-hidden />
+          </div>
+          <ChainStap
+            num={2}
+            label="DRILL"
+            name={primær.title}
+            meta={primær.axisLabel}
+            aktiv
+          />
+          <div className="flex items-center justify-center pt-3">
+            <ChevronRight className="h-4 w-4 text-muted-foreground/40" strokeWidth={2} aria-hidden />
+          </div>
+          <ChainStap num={3} label="PLAN" name="Workbench" meta="Legg til økt" />
+        </div>
+
+        {/* Kropp */}
+        <div className="grid lg:grid-cols-2">
+          {/* Venstre: svakhet */}
+          <div className="p-5">
+            <div className="mb-2 font-mono text-[9px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
+              SG-SVAKHET
+            </div>
+            <h3 className="font-display text-[22px] font-bold leading-[1.1] tracking-[-0.02em] text-foreground">
+              Du taper{" "}
+              <span className="font-normal italic text-destructive">{gtd.sgFormatert} SG</span>{" "}
+              på {gtd.kategoriLabel.toLowerCase()}
+            </h3>
+            <p className="mt-2 text-[13px] leading-[1.5] text-muted-foreground">
+              {KATEGORI_BESKRIVELSE[gtd.kategori]}
+            </p>
+
+            {/* SG-verdi display */}
+            <div className="mt-4 flex items-center justify-between rounded-xl border border-border bg-background p-3">
+              <div>
+                <div className="font-mono text-[12px] font-extrabold uppercase tracking-[0.08em] text-foreground">
+                  {gtd.kategori}
+                </div>
+                <div className="font-mono text-[9px] tracking-[0.06em] text-muted-foreground">
+                  {gtd.kategoriLabel}
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="font-mono text-[26px] font-extrabold tabular-nums leading-none text-destructive">
+                  {gtd.sgFormatert}
+                </div>
+                <div className="mt-1 font-mono text-[9px] text-muted-foreground">vs PGA Tour</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Høyre: drill-kort */}
+          <div className="border-t border-border p-5 lg:border-l lg:border-t-0">
+            <div className="mb-2 flex items-center gap-2 font-mono text-[9px] font-extrabold uppercase tracking-[0.12em] text-primary">
+              <span
+                className="inline-block h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_6px_rgba(209,248,67,0.7)]"
+                aria-hidden
+              />
+              ANBEFALT DRILL
+            </div>
+
+            <div className="rounded-[14px] border-2 border-accent shadow-[0_0_0_4px_rgba(209,248,67,0.10)]">
+              <div className="p-4">
+                <span className="inline-flex h-[18px] items-center rounded px-2 bg-info/10 font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] text-info">
+                  {primær.axisLabel}
+                </span>
+                <h4 className="mt-2 font-display text-[18px] font-bold leading-[1.15] tracking-[-0.02em] text-foreground">
+                  {primær.title}
+                </h4>
+                <p className="mt-1.5 text-[13px] leading-[1.5] text-muted-foreground">
+                  Trener direkte på din svakeste SG-kategori —{" "}
+                  {gtd.kategoriLabel.toLowerCase()}.
+                </p>
+
+                {primær.meta.length > 0 && (
+                  <div
+                    className={cn(
+                      "mt-3 grid gap-2",
+                      primær.meta.length >= 3 ? "grid-cols-3" : "grid-cols-2",
+                    )}
+                  >
+                    {primær.meta.map((m) => (
+                      <div
+                        key={m}
+                        className="rounded-lg border border-border bg-secondary/40 p-2 text-center"
+                      >
+                        <span className="font-mono text-[12px] font-extrabold tabular-nums text-foreground">
+                          {m}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Link
+                    href="/portal/planlegge"
+                    className="inline-flex h-9 items-center gap-2 rounded-full bg-accent px-4 font-mono text-[11px] font-extrabold uppercase tracking-[0.10em] text-primary shadow-[0_4px_12px_rgba(209,248,67,0.25)] transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    <Plus className="h-3 w-3" strokeWidth={2.5} aria-hidden />
+                    Legg til i Workbench
+                  </Link>
+                  <Link
+                    href="/portal/drills"
+                    className="inline-flex h-9 items-center gap-2 rounded-full border border-border bg-card px-4 font-mono text-[11px] font-extrabold uppercase tracking-[0.10em] text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    Se alle drills
+                  </Link>
+                </div>
+              </div>
+
+              {alternativer.length > 0 && (
+                <div className="border-t border-border p-3">
+                  <div className="mb-2 font-mono text-[9px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
+                    {alternativer.length} ALTERNATIV{alternativer.length > 1 ? "E" : ""} DRILL
+                    {alternativer.length > 1 ? "S" : ""}
+                  </div>
+                  <div className="space-y-1.5">
+                    {alternativer.map((d, i) => (
+                      <Link
+                        key={d.id}
+                        href="/portal/drills"
+                        className="group flex items-center gap-3 rounded-lg border border-border bg-card p-2.5 transition-colors hover:bg-secondary"
+                      >
+                        <span className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-secondary font-mono text-[11px] font-extrabold text-foreground group-hover:bg-card">
+                          {i + 2}
+                        </span>
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate text-[12px] font-bold leading-snug text-foreground">
+                            {d.title}
+                          </span>
+                          <span className="block font-mono text-[9px] uppercase tracking-[0.06em] text-muted-foreground">
+                            {d.axisLabel}
+                          </span>
+                        </span>
+                        {d.meta[0] && (
+                          <span className="shrink-0 font-mono text-[10px] font-extrabold text-muted-foreground">
+                            {d.meta[0]}
+                          </span>
+                        )}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ────────────────────────────────────────────────────────────────────────────
 // Hovedkomponent — sentrert lesbar kolonne. Skall (sidebar/bunn-nav) leveres av
 // preview/portal-laget; her er det rene innholdet.
 // ────────────────────────────────────────────────────────────────────────────
@@ -398,6 +653,9 @@ export function SgHub({ data }: { data: SgHubData }) {
           ))}
         </div>
       </section>
+
+      {/* Gap-to-drill (vises kun når det er negative SG-data og drills finnes) */}
+      {data.gapToDrill && <GapToDrillSeksjon gtd={data.gapToDrill} />}
 
       {/* 6. Topp 3 prioriteringer */}
       <PrioriteringerBanner data={data} />

@@ -25,7 +25,8 @@ import { prisma } from "@/lib/prisma";
 import { aggregateSg, formatSg } from "@/lib/sg";
 import { extractClubs } from "@/lib/sg-hub/extract-shots";
 import { ENVIRONMENT_LABELS } from "@/lib/sg-hub/environment-labels";
-import { SgHub, type SgHubData } from "@/components/portal/sg-hub/sg-hub";
+import { SgHub, type SgHubData, type SgGapToDrill } from "@/components/portal/sg-hub/sg-hub";
+import { getDrillLibrary, type DrillCard } from "@/lib/portal-drills/drills-data";
 import type { TrackManEnvironment } from "@/generated/prisma/client";
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -79,6 +80,13 @@ const VERKTOY: VerktoyDef[] = [
   { ikon: Box, tittel: "Equipment Fit", badge: "FASE 5", href: "/portal/mal/sg-hub/equipment" },
 ];
 
+const SG_TIL_DRILL_AKSE: Record<"APP" | "OTT" | "ARG" | "PUTT", DrillCard["axis"]> = {
+  APP: "slag",
+  OTT: "slag",
+  ARG: "spill",
+  PUTT: "tek",
+};
+
 /** Oversetter ekte loader-output → v10 SgHubData. Tom-tilstander bevares. */
 function mapSgHubData(args: {
   sg: ReturnType<typeof aggregateSg>;
@@ -87,8 +95,9 @@ function mapSgHubData(args: {
   insightCount: number;
   clubsCount: number;
   sisteSession: SisteSession | null;
+  alleDrills: DrillCard[];
 }): SgHubData {
-  const { sg, rundeAntall90d, sessionsCount, insightCount, clubsCount, sisteSession } = args;
+  const { sg, rundeAntall90d, sessionsCount, insightCount, clubsCount, sisteSession, alleDrills } = args;
   const rundeOrd = rundeAntall90d === 1 ? "runde" : "runder";
 
   const disipliner = DISIPLINER.map((d) => {
@@ -138,6 +147,37 @@ function mapSgHubData(args: {
         : insightCount > 0
           ? `${insightCount} aktiv${insightCount === 1 ? "t" : "e"} innsikt${insightCount === 1 ? "" : "er"} er klar til gjennomgang.`
           : "Ingen aktive prioriteringer akkurat nå — fortsett å logge for løpende analyse.";
+
+  // Beregn svakeste SG-kategori og finn matchende drills
+  type SgKat = { slug: "APP" | "OTT" | "ARG" | "PUTT"; verdi: number | null; label: string };
+  const sgKategorier: SgKat[] = [
+    { slug: "APP", verdi: sg.app, label: "Innspill" },
+    { slug: "OTT", verdi: sg.ott, label: "Fra tee" },
+    { slug: "ARG", verdi: sg.arg, label: "Nærspill" },
+    { slug: "PUTT", verdi: sg.putt, label: "Putting" },
+  ];
+  const negativeMedData = sgKategorier.filter((k) => k.verdi != null && k.verdi < 0);
+  let gapToDrill: SgGapToDrill | null = null;
+  if (negativeMedData.length > 0) {
+    const svakest = negativeMedData.reduce((prev, curr) =>
+      curr.verdi! < prev.verdi! ? curr : prev,
+    );
+    const akse = SG_TIL_DRILL_AKSE[svakest.slug];
+    const matchende = alleDrills.filter((d) => d.axis === akse).slice(0, 4);
+    if (matchende.length > 0) {
+      gapToDrill = {
+        kategori: svakest.slug,
+        kategoriLabel: svakest.label,
+        sgFormatert: formatSg(svakest.verdi),
+        drills: matchende.map((d) => ({
+          id: d.id,
+          title: d.title,
+          axisLabel: d.axisLabel,
+          meta: d.meta,
+        })),
+      };
+    }
+  }
 
   return {
     eyebrow: "PLAYERHQ · /PORTAL/MAL/SG-HUB",
@@ -208,6 +248,7 @@ function mapSgHubData(args: {
       ),
 
     verktoy: VERKTOY,
+    gapToDrill,
   };
 }
 
@@ -217,7 +258,7 @@ export default async function SgHubPage() {
   const naa = new Date();
   const ninetiDagSiden = new Date(naa.getTime() - 90 * 24 * 60 * 60 * 1000);
 
-  const [sessions, sisteSessionRad, runder, insightCount] = await Promise.all([
+  const [sessions, sisteSessionRad, runder, insightCount, alleDrills] = await Promise.all([
     prisma.trackManSession.findMany({
       where: { userId: user.id },
       select: { rawJson: true },
@@ -239,6 +280,7 @@ export default async function SgHubPage() {
     prisma.sgInsight.count({
       where: { userId: user.id, resolvedAt: null, acknowledgedAt: null },
     }),
+    getDrillLibrary(user.id),
   ]);
 
   const sg = aggregateSg(runder);
@@ -266,6 +308,7 @@ export default async function SgHubPage() {
     insightCount,
     clubsCount: clubSet.size,
     sisteSession,
+    alleDrills,
   });
 
   return <SgHub data={data} />;
