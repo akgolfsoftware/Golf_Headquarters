@@ -622,7 +622,7 @@ Designeren leverte 47 ferdige komponent-design (HTML-biter). Mange er brukt i sk
 | Tegnet komponent | Hva det er | Hører hjemme på |
 |---|---|---|
 | `components-voice-input.html` | Snakk-inn-tall (stemme-logging) | Live-økt-logger / score-tapper — la spilleren si tallene i stedet for å taste. Ikke bygget. |
-| `components-credit-indicator.html` | «Du har X klipp igjen»-måler | Booking-hub (`/portal/booking`) — vise credits. Tegnet, ikke tydelig brukt. |
+| `components-credit-indicator.html` | «Du har X klipp igjen»-måler | ✅ Bygget i Booking-hub (`/portal/booking`) som `CreditMeter` — segment-søyle med warn/danger-logikk + saldo/brukt/gjenstår. |
 | `components-gap-to-drill.html` | «Din svakhet → denne øvelsen»-bro | ✅ Bygget i SG-Hub (`/portal/mal/sg-hub`) — kjede-strip DATA→DRILL→PLAN + drill-kort med lime-border + alternativer. Vises kun ved negative SG-data. |
 | `components-insight-narrative.html` | AI-fortelling i ord om formen din | Hjem (AI-innsikt) / analyse. Delvis. |
 | `components-season-timeline.html` | Tidslinje for hele sesongen | Årsplan (`/portal/tren/aarsplan`). Delvis. |
@@ -637,7 +637,7 @@ Designeren leverte 47 ferdige komponent-design (HTML-biter). Mange er brukt i sk
 | Tegnet komponent | Hva det er | Hører hjemme på |
 |---|---|---|
 | `components-co-agent.html` | Coachens AI-medhjelper-panel | Caddie (`/admin/agencyos/caddie`). Ikke bygget. |
-| `components-multi-compare.html` | Sammenlign flere spillere side om side | `/admin/talent/sammenligning`. Ikke bygget. |
+| `components-multi-compare.html` | Sammenlign flere spillere side om side | ✅ Bygget og koblet til `/admin/talent/sammenligning` — v10 full 4-panel-komponent (side-om-side · pyramide · kohort-rangering · region-fordeling) via `mapCompareData`-mapper. |
 | `components-coach-mobile.html` | Coach-visning på mobil | Mobil-utgave av AgencyOS. Ikke bygget (AgencyOS er laget for data/desktop først). |
 | `components-foreldre.html` | Foreldre-komponent for coach | Coachens foreldre-/kommunikasjonsside. Ikke tydelig brukt. |
 | `components-cmdk.html` | Hurtigsøk-boks (⌘K) | Søk i hele AgencyOS. Delvis — søkefeltet finnes, men hurtig-paletten er ikke bekreftet koblet. |
