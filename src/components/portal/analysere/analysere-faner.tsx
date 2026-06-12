@@ -10,6 +10,7 @@ import Link from "next/link";
 import { Plus, ChevronRight, ClipboardCheck } from "lucide-react";
 import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 import { AthleticBadge } from "@/components/athletic/badge";
+import { InsightNarrativeCard } from "@/components/portal/insight/insight-narrative-card";
 import type { AnalysereData, SgRad } from "@/lib/portal-analysere/analysere-data";
 
 type Trend = { value: string; tone: "positive" | "negative" | "neutral" } | null;
@@ -219,16 +220,12 @@ function TesterFane({ data }: { data: AnalysereData }) {
 }
 
 function InnsiktFane({ data }: { data: AnalysereData }) {
-  const bar = (t: "pos" | "neg" | "neutral") =>
-    t === "pos" ? "border-l-success" : t === "neg" ? "border-l-destructive" : "border-l-accent";
-  if (!data.innsikt.length) return <p className="py-6 text-sm text-muted-foreground">Ingen innsikt ennå.</p>;
+  if (!data.innsikt.length)
+    return <p className="py-6 text-sm text-muted-foreground">Ingen innsikt ennå.</p>;
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {data.innsikt.map((x, i) => (
-        <div key={i} className={"rounded-xl border border-border border-l-[3px] bg-card p-4 " + bar(x.tone)}>
-          <div className="font-display text-base font-bold tracking-[-0.01em] text-foreground">{x.tittel}</div>
-          <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground">{x.body}</p>
-        </div>
+        <InsightNarrativeCard key={i} {...x} />
       ))}
     </div>
   );
