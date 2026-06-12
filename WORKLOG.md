@@ -5,6 +5,44 @@
 
 ---
 
+## 2026-06-12 — UX-arkitektur med konsolideringsanalyse (docs/ux-arkitektur)
+
+**Branch:** `docs/ux-arkitektur`
+
+### Hva ble gjort
+
+Komplett UX-arkitekturdokument for hele plattformen — ~800 linjer analyse.
+
+- 🆕 `docs/ux-arkitektur.md` — 5-delt arkitekturdokument:
+  - **DEL 1: Rutesammendrag** — ~360 skjermer kartlagt på tvers av Marketing, PlayerHQ,
+    CoachHQ/AgencyOS og Foreldreportal. Hver rute med jobb, primærhandling,
+    informasjonstetthet, auth-krav og datakilder.
+  - **DEL 2: Brukerflyter med trykkbudsjett** — 4 personas (Spiller, Coach, Forelder,
+    Besøkende) med ASCII-flytdiagrammer og faktisk tap-telling. Definerte mål:
+    logg økt ≤ 2 trykk, sjekk fremgang ≤ 1 trykk, tildel økt ≤ 3 trykk.
+  - **DEL 3: Gap-analyse** — identifiserte blindsoner (foreldreportal ufullstendig,
+    onboarding mangler), foreldreløse sider (standalone wizards), manglende states
+    (empty/error/skeleton), og navigasjonsinkonsistenser.
+  - **DEL 4: Konsolideringsanalyse** — 17 % reduksjon foreslått (360 → 298 skjermer).
+    Kategorier: navigasjons-mellomledd (→ tabs), bekreftelsessider (→ toast),
+    innstillinger-undersider (→ accordion), hub-duplikater (→ slå sammen).
+  - **DEL 5: Måltilstand** — før/etter-trær, skjermbudsjett per flate, og topp 5
+    prioriteter med konkrete tiltak.
+
+### Nøkkelfunn
+
+- PlayerHQ har 72 skjermer, kan reduseres til ~60 med tab-konsolidering
+- CoachHQ har 248 skjermer, kan reduseres til ~206 med hub-sammenslåing
+- Foreldreportalen er skissert men ikke implementert (6 planlagte skjermer)
+- Live Session er korrekt isolert og skal IKKE slås sammen med andre flater
+- SG-modulen har 4 separate skjermer som bør bli 1 med tabs
+
+### Ingen kodeendringer
+
+Kun dokumentasjon — ingen endringer i src/ eller komponenter.
+
+---
+
 ## 2026-06-11 — Meg tilbakeskrivings-pipeline (feature/meg-tilbakeskriving)
 
 **Branch:** `feature/meg-tilbakeskriving`
