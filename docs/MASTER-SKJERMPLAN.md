@@ -621,7 +621,7 @@ Designeren leverte 47 ferdige komponent-design (HTML-biter). Mange er brukt i sk
 
 | Tegnet komponent | Hva det er | Hører hjemme på |
 |---|---|---|
-| `components-voice-input.html` | Snakk-inn-tall (stemme-logging) | Live-økt-logger / score-tapper — la spilleren si tallene i stedet for å taste. Ikke bygget. |
+| `components-voice-input.html` | Snakk-inn-tall (stemme-logging) | ✅ Bygget som `MicButton` (`src/components/shared/mic-button.tsx`): standalone + suffix-variant, Web Speech API norsk, 4 tilstander (idle/recording/transcribing/done). Integrert i live-meldingsfeltet (`/admin/live/[sessionId]/active`) — coach kan diktere meldinger. |
 | `components-credit-indicator.html` | «Du har X klipp igjen»-måler | ✅ Bygget i Booking-hub (`/portal/booking`) som `CreditMeter` — segment-søyle med warn/danger-logikk + saldo/brukt/gjenstår. |
 | `components-gap-to-drill.html` | «Din svakhet → denne øvelsen»-bro | ✅ Bygget i SG-Hub (`/portal/mal/sg-hub`) — kjede-strip DATA→DRILL→PLAN + drill-kort med lime-border + alternativer. Vises kun ved negative SG-data. |
 | `components-insight-narrative.html` | AI-fortelling i ord om formen din | Hjem (AI-innsikt) / analyse. Delvis. |
@@ -714,6 +714,8 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 ---
 
 ## Endringslogg
+
+- 12. juni (session 8): **MicButton-komponent bygget (Bolk 3).** `MicButton` (`src/components/shared/mic-button.tsx`) — standalone (48px sirkel m/ waveform + hint-tekst) og suffix-variant (liten knapp inne i inputfelt). Web Speech API norsk (nb-NO), 4 tilstander: idle/recording/transcribing/done. Støtte-sjekk ved init (lazy state). Integrert som suffix-knapp i live-melding-feltet (`/admin/live/[sessionId]/active`) — coach kan diktere til spiller direkte. `components-voice-input.html` drop-off-mark → ✅.
 
 - 12. juni (session 7): **TrackMan stabilitet-seksjon bygget (Bolk 3).** `StabilitetSeksjon`-komponent lagt til på `/portal/mal/trackman/[id]`: varians-heatmap (køller × 6 parametere, fargeskala v=1–5 med mode-invariante hex-farger), stabilitets-score 1–10 per kølle, callouts (mest stødig / trenger jobbing) og bias/spredning SVG-minikart. Server-side beregning fra rawJson.shots (stddev per parameter per kølle). `components-trackman-stability.html` drop-off-mark → ✅.
 
