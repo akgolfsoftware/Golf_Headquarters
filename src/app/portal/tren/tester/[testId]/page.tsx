@@ -19,6 +19,7 @@ import { CircleCheck, ExternalLink, Play, Ruler } from "lucide-react";
 import type { PyramidArea } from "@/generated/prisma/client";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { testTilgangWhere } from "@/lib/portal-tester/test-tilgang";
 import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 import { SetGroup, SetRow, SetVal } from "@/components/portal/meg/meg-sub";
 import { lavereErBedre, parseProtokoll, protokollEnhet, protokollSteg } from "../protokoll";
@@ -56,7 +57,10 @@ export default async function TestDetaljSpillerPage({
   const [{ testId }, sp] = await Promise.all([params, searchParams]);
   const lagret = sp.lagret === "1";
 
-  const test = await prisma.testDefinition.findUnique({ where: { id: testId } });
+  // Tilgang: samme regel som katalogen — andres private tester gir 404 (K6).
+  const test = await prisma.testDefinition.findFirst({
+    where: { id: testId, AND: [testTilgangWhere(user.id)] },
+  });
   if (!test) notFound();
 
   const resultater = await prisma.testResult.findMany({

@@ -126,7 +126,7 @@ function ukenummer(d: Date): number {
 }
 
 function tid(d: Date): string {
-  return d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit", hour12: false });
+  return d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Europe/Oslo" });
 }
 
 function initialerAv(navn: string): string {

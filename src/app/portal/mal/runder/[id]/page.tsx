@@ -11,9 +11,12 @@
  *
  * Ekte Prisma-data. Lead (tee/spilletid) utelatt — Round-modellen har ikke
  * feltene. Server component, auth-guard via requirePortalUser.
+ *
+ * Slag-registrering (B3): scorecard-blokken lenker til ./slag (SlagWizard +
+ * UpGame-import) — kun for rundens eier. Detaljsiden forblir ren visning.
  */
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Pencil } from "lucide-react";
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
@@ -154,6 +157,7 @@ export default async function RundeDetalj({
     else hull.set(s.holeNumber, { par: s.holePar, score: 1 });
   }
   const harHullData = hull.size > 0;
+  const erEier = runde.userId === user.id;
 
   const sgTotal = runde.sgTotal;
   const sgTotalTekst =
@@ -219,11 +223,30 @@ export default async function RundeDetalj({
           <div className="space-y-3">
             <NiHull label="UT · 1–9" fra={1} hull={hull} />
             <NiHull label="INN · 10–18" fra={10} hull={hull} />
+            {erEier && (
+              <Link
+                href={`/portal/mal/runder/${id}/slag`}
+                className="inline-flex items-center gap-1 font-mono text-[11px] font-bold uppercase tracking-[0.06em] text-primary transition-opacity hover:opacity-80"
+              >
+                <Pencil className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden />
+                Rediger slag
+              </Link>
+            )}
           </div>
         ) : (
-          <p className="text-sm text-muted-foreground">
-            Hull-for-hull mangler for denne runden.
-          </p>
+          <div>
+            <p className="text-sm text-muted-foreground">
+              Hull-for-hull mangler for denne runden.
+            </p>
+            {erEier && (
+              <Link
+                href={`/portal/mal/runder/${id}/slag`}
+                className="mt-3 inline-flex h-10 items-center rounded-full bg-primary px-4 font-mono text-[12px] font-bold uppercase tracking-[0.06em] text-primary-foreground transition-opacity hover:opacity-90"
+              >
+                Registrer slag-for-slag
+              </Link>
+            )}
+          </div>
         )}
       </div>
 

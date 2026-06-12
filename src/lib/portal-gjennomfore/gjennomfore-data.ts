@@ -38,7 +38,7 @@ const PRACTICE_TO_PYRAMID: Record<string, PyramidArea> = {
 const TEMA_LABEL: Record<PyramidArea, string> = { FYS: "Fysisk", TEK: "Teknisk", SLAG: "Golfslag", SPILL: "Spill", TURN: "Turnering" };
 
 function tid(d: Date): string {
-  return d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit", hour12: false });
+  return d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Europe/Oslo" });
 }
 
 export async function getGjennomforeData(userId: string): Promise<GjennomforeData> {
@@ -81,7 +81,7 @@ export async function getGjennomforeData(userId: string): Promise<GjennomforeDat
     statusTekst = `${fokusOmr ? `${fokusOmr}-fokus · ` : ""}${deler.join(", ")}`;
   }
 
-  const datoTekst = now.toLocaleDateString("nb-NO", { weekday: "long", day: "numeric", month: "long" });
+  const datoTekst = now.toLocaleDateString("nb-NO", { weekday: "long", day: "numeric", month: "long", timeZone: "Europe/Oslo" });
 
   return {
     datoTekst: datoTekst.charAt(0).toUpperCase() + datoTekst.slice(1),

@@ -32,7 +32,7 @@ const TAG: Record<PyrKey, string> = { fys: "Fysisk", tek: "Teknisk", slag: "Golf
 const UKEDAG = ["Søn", "Man", "Tir", "Ons", "Tor", "Fre", "Lør"];
 
 function tid(d: Date): string {
-  return d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit", hour12: false });
+  return d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Europe/Oslo" });
 }
 function ukenummer(d: Date): number {
   const t = new Date(d.valueOf());

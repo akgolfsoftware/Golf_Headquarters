@@ -12,6 +12,7 @@
  */
 
 import { prisma } from "@/lib/prisma";
+import { testTilgangWhere } from "@/lib/portal-tester/test-tilgang";
 import type { PyramidArea, TestSessionStatus } from "@/generated/prisma/client";
 
 export type Axis = "fys" | "tek" | "slag" | "spill" | "turn";
@@ -145,14 +146,7 @@ export async function loadTesterScreen(user: {
   const [definitions, results, sessions] = await Promise.all([
     // Spillerens test-univers: standard + egne + delt med akademi/coach-godkjent.
     prisma.testDefinition.findMany({
-      where: {
-        OR: [
-          { isCustom: false },
-          { createdById: user.id },
-          { isCustom: true, visibility: "ACADEMY" },
-          { isCustom: true, isCoachApproved: true },
-        ],
-      },
+      where: testTilgangWhere(user.id),
       select: { id: true, name: true, pyramidArea: true, scoringRule: true },
       orderBy: { name: "asc" },
     }),

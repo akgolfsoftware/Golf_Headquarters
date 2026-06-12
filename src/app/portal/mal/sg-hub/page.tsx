@@ -29,7 +29,13 @@ import { SgHub, type SgHubData, type SgGapToDrill } from "@/components/portal/sg
 import { SgTrainingScatter } from "@/components/sg-hub/SgTrainingScatter";
 import { computeScatterData } from "@/lib/sg-scatter/compute";
 import { getDrillLibrary, type DrillCard } from "@/lib/portal-drills/drills-data";
-import type { TrackManEnvironment } from "@/generated/prisma/client";
+import type { TrackManEnvironment, InsightCategory } from "@/generated/prisma/client";
+import {
+  InsightNarrativeCard,
+  type InsightNarrativeCardProps,
+  type NarrativePivot,
+  type NarrativeRec,
+} from "@/components/portal/insight/insight-narrative-card";
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Hjelpere for siste TrackMan-økt
@@ -43,6 +49,125 @@ function miljoeLabel(env: TrackManEnvironment | null | undefined): string {
 /** Datoformat: "12. jun. 2026" */
 function kortDato(d: Date): string {
   return d.toLocaleDateString("nb-NO", { day: "numeric", month: "short", year: "numeric" });
+}
+
+// ── SgInsight → InsightNarrativeCard mapper ────────────────────────────────────
+
+type SgInsightRow = {
+  id: string;
+  category: InsightCategory;
+  severity: number;
+  title: string;
+  body: string;
+  payload: unknown;
+  createdAt: Date;
+};
+
+type InsightJsonPayload = {
+  domain?: string;
+  age?: string;
+  pivots?: Array<{ label: string; value: string; ctx: string; positive?: boolean }>;
+  reason?: string;
+  rec?: { label?: string; text: string };
+  footnote?: { dataPoints?: string | number; period?: string; confidence?: string };
+};
+
+function parseInsightPayload(raw: unknown): InsightJsonPayload {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {};
+  const p = raw as Record<string, unknown>;
+  return {
+    domain: typeof p.domain === "string" ? p.domain : undefined,
+    age: typeof p.age === "string" ? p.age : undefined,
+    pivots: Array.isArray(p.pivots)
+      ? (p.pivots as Array<{ label: string; value: string; ctx: string; positive?: boolean }>)
+      : undefined,
+    reason: typeof p.reason === "string" ? p.reason : undefined,
+    rec:
+      p.rec && typeof p.rec === "object" && !Array.isArray(p.rec)
+        ? (p.rec as { label?: string; text: string })
+        : undefined,
+    footnote:
+      p.footnote && typeof p.footnote === "object" && !Array.isArray(p.footnote)
+        ? (p.footnote as { dataPoints?: string | number; period?: string; confidence?: string })
+        : undefined,
+  };
+}
+
+function relativeInsightAge(d: Date, now: Date): string {
+  const days = Math.floor((now.getTime() - d.getTime()) / 86_400_000);
+  if (days === 0) return "i dag";
+  if (days === 1) return "i går";
+  if (days < 7) return `${days} d siden`;
+  if (days < 14) return "1 uke siden";
+  if (days < 30) return `${Math.floor(days / 7)} uker siden`;
+  return `${Math.floor(days / 30)} mnd siden`;
+}
+
+const INSIGHT_DOMAIN: Record<InsightCategory, string> = {
+  DISTANCE_GAPPING: "DISTANSE · GAP",
+  CONSISTENCY_LEAK: "KONSISTENS",
+  TRAINING_GAP: "PLAN · COMPLIANCE",
+  D_PLANE_DRIFT: "D-PLANE",
+  STRIKE_QUALITY: "STRIKE",
+  FATIGUE_PATTERN: "FATIGUE",
+  EQUIPMENT_FIT: "UTSTYR",
+  TEMPO_VARIANCE: "TEMPO",
+  PROGRESSION_TREND: "FREMGANG",
+  SAME_DISTANCE_OPPORTUNITY: "MULIGHET",
+};
+
+const INSIGHT_STRIP: Record<InsightCategory, InsightNarrativeCardProps["strip"]> = {
+  PROGRESSION_TREND: "pos",
+  SAME_DISTANCE_OPPORTUNITY: "pos",
+  D_PLANE_DRIFT: "neg",
+  STRIKE_QUALITY: "neg",
+  FATIGUE_PATTERN: "neg",
+  DISTANCE_GAPPING: "warn",
+  CONSISTENCY_LEAK: "warn",
+  TRAINING_GAP: "warn",
+  EQUIPMENT_FIT: "lime",
+  TEMPO_VARIANCE: "warn",
+};
+
+function mapInsightToCard(ins: SgInsightRow, now: Date): InsightNarrativeCardProps {
+  const p = parseInsightPayload(ins.payload);
+  const confidence = p.footnote?.confidence;
+  const strip: InsightNarrativeCardProps["strip"] =
+    confidence === "lav" ? "low" : (INSIGHT_STRIP[ins.category] ?? "lime");
+
+  const domain = p.domain ?? INSIGHT_DOMAIN[ins.category];
+  const age = p.age ?? relativeInsightAge(ins.createdAt, now);
+
+  const pivots: NarrativePivot[] | undefined = p.pivots?.map((pv) => ({
+    label: pv.label,
+    value: pv.value,
+    ctx: pv.ctx,
+    tone: pv.positive === true ? "pos" : pv.positive === false ? "neg" : null,
+  }));
+
+  const rec: NarrativeRec | undefined = p.rec
+    ? {
+        eyebrow: p.rec.label,
+        text: p.rec.text,
+        icon: strip === "low" ? "hourglass" : "lightbulb",
+      }
+    : undefined;
+
+  const footnoteParts: string[] = [];
+  if (p.footnote?.dataPoints != null) footnoteParts.push(String(p.footnote.dataPoints));
+  if (p.footnote?.period) footnoteParts.push(p.footnote.period);
+  if (p.footnote?.confidence) footnoteParts.push(`konfidens ${p.footnote.confidence}`);
+
+  return {
+    strip,
+    kicker: `${domain} · ${age}`,
+    title: ins.title,
+    lede: ins.body,
+    pivots,
+    reason: p.reason,
+    rec,
+    footnote: footnoteParts.length > 0 ? footnoteParts.join(" · ") : undefined,
+  };
 }
 
 type SisteSession = {
@@ -260,7 +385,7 @@ export default async function SgHubPage() {
   const naa = new Date();
   const ninetiDagSiden = new Date(naa.getTime() - 90 * 24 * 60 * 60 * 1000);
 
-  const [sessions, sisteSessionRad, runder, insightCount, alleDrills, trainingLogs, alleRunder] =
+  const [sessions, sisteSessionRad, runder, insightCount, alleDrills, trainingLogs, alleRunder, insights] =
     await Promise.all([
       prisma.trackManSession.findMany({
         where: { userId: user.id },
@@ -295,6 +420,21 @@ export default async function SgHubPage() {
         where: { userId: user.id },
         select: { playedAt: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
         orderBy: { playedAt: "asc" },
+      }),
+      // Narrative insights — topp 3 uløste, sortert etter alvorlighet
+      prisma.sgInsight.findMany({
+        where: { userId: user.id, resolvedAt: null },
+        orderBy: [{ severity: "desc" }, { createdAt: "desc" }],
+        take: 3,
+        select: {
+          id: true,
+          category: true,
+          severity: true,
+          title: true,
+          body: true,
+          payload: true,
+          createdAt: true,
+        },
       }),
     ]);
 
@@ -339,6 +479,23 @@ export default async function SgHubPage() {
     <div className="space-y-12">
       <SgHub data={data} />
       <SgTrainingScatter data={scatterData} />
+      {insights.length > 0 && (
+        <section className="space-y-4">
+          <div>
+            <p className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
+              Innsikter
+            </p>
+            <p className="mt-0.5 text-[13px] text-muted-foreground">
+              AI-observasjoner basert på dataene dine — sortert etter prioritet.
+            </p>
+          </div>
+          <div className="space-y-3">
+            {insights.map((ins) => (
+              <InsightNarrativeCard key={ins.id} {...mapInsightToCard(ins, naa)} />
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

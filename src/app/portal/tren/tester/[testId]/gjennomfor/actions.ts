@@ -11,6 +11,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { testTilgangWhere } from "@/lib/portal-tester/test-tilgang";
 import { triggerTestAgent } from "@/lib/agents/triggers";
 
 const VerdiSchema = z.union([z.number().finite(), z.boolean(), z.null()]);
@@ -52,8 +53,10 @@ export async function lagreTestResultat(
   }
   const { testId, score, notes, details } = parsed.data;
 
-  const test = await prisma.testDefinition.findUnique({
-    where: { id: testId },
+  // Tilgang: samme regel som katalogen — kan ikke lagre mot andres
+  // private tester (K6).
+  const test = await prisma.testDefinition.findFirst({
+    where: { id: testId, AND: [testTilgangWhere(user.id)] },
     select: { id: true },
   });
   if (!test) return { ok: false, error: "Testen finnes ikke." };

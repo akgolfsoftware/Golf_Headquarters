@@ -52,12 +52,12 @@ function relTid(d: Date, now: Date): string {
   const startIdag = new Date(now);
   startIdag.setHours(0, 0, 0, 0);
   if (d >= startIdag) {
-    return d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit", hour12: false });
+    return d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Europe/Oslo" });
   }
   const dager = Math.floor((startIdag.getTime() - d.getTime()) / 86_400_000) + 1;
   if (dager === 1) return "I går";
   if (dager < 7) return `${dager} dager`;
-  return d.toLocaleDateString("nb-NO", { day: "numeric", month: "short" });
+  return d.toLocaleDateString("nb-NO", { day: "numeric", month: "short", timeZone: "Europe/Oslo" });
 }
 
 type Rad = {

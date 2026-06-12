@@ -10,6 +10,7 @@
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { testTilgangWhere } from "@/lib/portal-tester/test-tilgang";
 import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 import { fallbackScorekortSpec, parseProtocol } from "@/lib/portal-tester/protocol";
 import { ScorekortKlient } from "./scorekort-klient";
@@ -21,11 +22,12 @@ export default async function GjennomforTestPage({
 }: {
   params: Promise<{ testId: string }>;
 }) {
-  await requirePortalUser();
+  const user = await requirePortalUser();
   const { testId } = await params;
 
-  const test = await prisma.testDefinition.findUnique({
-    where: { id: testId },
+  // Tilgang: samme regel som katalogen — andres private tester gir 404 (K6).
+  const test = await prisma.testDefinition.findFirst({
+    where: { id: testId, AND: [testTilgangWhere(user.id)] },
     select: {
       id: true,
       name: true,

@@ -14,11 +14,16 @@
  *      (ingen ekte verifisering i schema → neutral «Ikke verifisert») ·
  *      Aktive enheter («—» — ingen ekte enhetsliste ennå, aldri liksom-tall)
  *
+ *   6. PERSONVERN (IKKE i fasit-JSX — bevisst funksjons-tilføyelse, review-funn B1):
+ *      GDPR-inngangene (dataeksport art. 15 + sletting art. 17) er lovpålagte og
+ *      mistet eneste UI-inngang i porting-omskrivingen. Lenker til eksisterende
+ *      /innstillinger/personvern + /innstillinger/eksport.
+ *
  * Server component. Auth-guard beholdt (requirePortalUser).
  */
 
 import Link from "next/link";
-import { Flag, Globe, Lock, Moon, Radar, Ruler, Shield, Smartphone, Watch } from "lucide-react";
+import { Download, Flag, Globe, Lock, Moon, Radar, Ruler, Shield, ShieldCheck, Smartphone, Watch } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { lesPreferences } from "@/lib/preferences";
 import { prisma } from "@/lib/prisma";
@@ -46,7 +51,7 @@ export default async function InnstillingerPage() {
     <MeSub
       eyebrow="MEG · INNSTILLINGER"
       title="Innstillinger"
-      lead="Varsler, integrasjoner, enheter og sikkerhet."
+      lead="Varsler, integrasjoner, enheter, sikkerhet og personvern."
     >
       <VarslerToggles initial={prefs.notif} />
 
@@ -129,6 +134,35 @@ export default async function InnstillingerPage() {
           title="Aktive enheter"
           meta="Full enhetsliste kommer senere"
           right={<SetVal>—</SetVal>}
+        />
+      </SetGroup>
+
+      <SetGroup label="PERSONVERN">
+        <SetRow
+          icon={ShieldCheck}
+          title="Personvern og data"
+          meta="GDPR-rettigheter, datadeling og kontosletting"
+          right={
+            <Link
+              href="/portal/meg/innstillinger/personvern"
+              className={buttonClasses({ variant: "secondary", size: "sm" })}
+            >
+              Åpne
+            </Link>
+          }
+        />
+        <SetRow
+          icon={Download}
+          title="Last ned mine data"
+          meta="Kopi av alt vi har lagret om deg"
+          right={
+            <Link
+              href="/portal/meg/innstillinger/eksport"
+              className={buttonClasses({ variant: "secondary", size: "sm" })}
+            >
+              Åpne
+            </Link>
+          }
         />
       </SetGroup>
     </MeSub>
