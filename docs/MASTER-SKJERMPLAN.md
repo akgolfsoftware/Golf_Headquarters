@@ -630,7 +630,7 @@ Designeren leverte 47 ferdige komponent-design (HTML-biter). Mange er brukt i sk
 | `components-course-heatmap.html` | Varmekart over banen | Hull-analyse (`/portal/analysere/hull`). Delvis. |
 | `components-trackman-stability.html` | TrackMan stabilitet-graf | ✅ Bygget i `/portal/mal/trackman/[id]` som `StabilitetSeksjon`: varians-heatmap (6 param × N køller, 5-nivå fargeskala), stabilitets-score 1-10, callouts + bias/spredning SVG-minikart. |
 | `components-trackman-trend.html` | TrackMan trend-graf | ✅ Bygget i `/portal/mal/trackman` som `TrackManTrendSeksjon` (KPI-strip avg. carry + klubbhastighet m/ sparklines, per-kølle carry-trender fra CLUB_AVG-signaler). |
-| `components-sg-training-scatter.html` | SG vs trening punktsky | SG-Hub / analyse. Ikke tydelig brukt. |
+| `components-sg-training-scatter.html` | SG vs trening punktsky | ✅ Bygget i `/portal/mal/sg-hub` som `SgTrainingScatter`: hero scatter (APP/innspill) + 4 mini-multiples per kategori, lineær regresjon, R², 95 %-konfidensband beregnet server-side fra TrainingLog + Round. Tom-tilstand når < 4 datapunkter. |
 
 **AgencyOS-komponenter som ennå ikke er synlig brukt:**
 
@@ -714,6 +714,8 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 ---
 
 ## Endringslogg
+
+- 12. juni (session 9): **SgTrainingScatter bygget (Bolk 3).** `SgTrainingScatter`-komponent på `/portal/mal/sg-hub`: hero scatter (timer trent per uke × SG-endring 90 d for innspill/APP) + 4 mini-multiples per SG-kategori. Server-side lineær regresjon, Pearson r, R², hellning, terskel og 95 %-konfidensband fra TrainingLog + Round-data. Vises kun ved ≥ 4 datapunkter, ellers ingen rendering. `components-sg-training-scatter.html` drop-off → ✅.
 
 - 12. juni (session 8): **MicButton-komponent bygget (Bolk 3).** `MicButton` (`src/components/shared/mic-button.tsx`) — standalone (48px sirkel m/ waveform + hint-tekst) og suffix-variant (liten knapp inne i inputfelt). Web Speech API norsk (nb-NO), 4 tilstander: idle/recording/transcribing/done. Støtte-sjekk ved init (lazy state). Integrert som suffix-knapp i live-melding-feltet (`/admin/live/[sessionId]/active`) — coach kan diktere til spiller direkte. `components-voice-input.html` drop-off-mark → ✅.
 
