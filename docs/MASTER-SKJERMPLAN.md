@@ -2,7 +2,7 @@
 
 > Dette er den komplette lista over hver eneste skjerm i appen, og om den er helt ferdig eller ikke. Én plass å se alt.
 
-Sist oppdatert: 11. juni 2026 (session 4 — browser-testing 13 skjermer, Funker ✓ satt).
+Sist oppdatert: 12. juni 2026 (session 5 — Bolk 4 ferdigstilt + Adresse ✓ oppdatert).
 
 ---
 
@@ -121,14 +121,14 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 |---|---|---|---|---|---|---|---|
 | Planlegge (= Workbench mobil) ★ | `/portal/planlegge` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | **Workbench (planlegging)** ★ | `/portal/planlegge/workbench` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
-| Årsplan | `/portal/tren/aarsplan` | ✓ | ✓✓– | ~ | ~ | ✓ | ✓ |
+| Årsplan | `/portal/tren/aarsplan` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ |
 | · Rediger periode | `/portal/tren/aarsplan/periode/[id]/rediger` | – | --- | ✓ | – | – | ~ |
 | Teknisk plan (liste) | `/portal/tren/teknisk-plan` | – | --- | ✓ | ~ | ~ | ✓ |
 | · Teknisk plan detalj | `/portal/tren/teknisk-plan/[planId]` | – | --- | ✓ | ~ | ~ | ✓ |
 | Fys-plan (liste) | `/portal/tren/fys-plan` | – | --- | ✓ | ~ | ~ | ✓ |
 | · Fys-plan detalj/bygger | `/portal/tren/fys-plan/[planId]` | – | --- | ✓ | ~ | ~ | ✓ |
-| Drills (bibliotek) | `/portal/drills` | ✓ | ✓✓– | ~ | ~ | ✓ | ✓ |
-| · Drill-detalj | `/portal/drills/[id]` | ✓ | ✓✓– | ~ | ~ | ✓ | ✓ |
+| Drills (bibliotek) | `/portal/drills` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ |
+| · Drill-detalj | `/portal/drills/[id]` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ |
 | Mål-hub | `/portal/mal` | – | --- | ✓ | ~ | ~ | ✓ |
 | · Mål-bygger (wizard) | `/portal/mal/bygger` | – | --- | ✓ | ~ | ~ | ~ |
 | · Mål-detalj | `/portal/mal/goal/[id]` | – | --- | ✓ | ~ | ~ | ~ |
@@ -173,11 +173,11 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 |---|---|---|---|---|---|---|---|
 | Analysere (Les tallene · faner) ★ | `/portal/analysere` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | · Hull-analyse | `/portal/analysere/hull` | ~ | ✓✓– | ✓ | ~ | ✓ | ✓ |
-| Statistikk (oversikt) | `/portal/statistikk` | ✓ | ✓✓– | ~ | ✓ | ✓ | ✓ |
+| Statistikk (oversikt) | `/portal/statistikk` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
 | · Metrikk-detalj | `/portal/statistikk/[metric]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Sammenlign | `/portal/statistikk/sammenlign` | – | --- | ✓ | ~ | ~ | ~ |
 | · Del runde | `/portal/statistikk/runder/[runId]/del` | – | --- | ✓ | ~ | ~ | ~ |
-| **SG-Hub (Strokes Gained)** ★ | `/portal/mal/sg-hub` | ✓ | ✓✓– | ~ | ~ | ✓ | ✓ |
+| **SG-Hub (Strokes Gained)** ★ | `/portal/mal/sg-hub` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ |
 | · Kølle-detalj | `/portal/mal/sg-hub/[club]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Benchmark | `/portal/mal/sg-hub/benchmark` | – | --- | ✓ | ~ | ✓ | ✓ |
 | · Best vs nå | `/portal/mal/sg-hub/best-vs-now` | – | --- | ✓ | ~ | ~ | ~ |
@@ -188,7 +188,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Coach ser spiller-SG | `/portal/mal/sg-hub/coach/[spillerId]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Coach: kølle | `/portal/mal/sg-hub/coach/[spillerId]/[club]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Coach: utstyr | `/portal/mal/sg-hub/coach/[spillerId]/equipment` | – | --- | ✓ | ~ | ~ | ~ |
-| Runder (liste) | `/portal/mal/runder` | ✓ | ✓✓– | ~ | ~ | ✓ | ✓ |
+| Runder (liste) | `/portal/mal/runder` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ |
 | · Runde-detalj ★ | `/portal/mal/runder/[id]` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | · Slag-for-slag | `/portal/mal/runder/[id]/shot-by-shot` | – | --- | ✓ | ~ | ~ | ~ |
 | · Logg ny runde ★ | `/portal/mal/runder/ny` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
@@ -296,7 +296,7 @@ Disse finnes i appen, men er enten eldre kortadresser som peker videre, eller sm
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Stats (kortadresse → statistikk) | `/portal/stats` | – | --- | ✓ | ~ | ~ | ~ |
+| Stats (alt. → redirect) | `/portal/stats` | – | --- | ✓ | ✓ | – | ✓ |
 | Analyse (alt. → redirect) | `/portal/analyse` | – | --- | ✓ | ✓ | – | ✓ |
 | Reach (oppsøk-verktøy) | `/portal/reach` | – | --- | ✓ | ~ | ~ | ~ |
 | Agent-pipeline (AI internt) | `/portal/agent-pipeline` | – | --- | ✓ | ~ | ~ | ~ |
@@ -450,8 +450,8 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Rapporter | `/admin/reports` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
 | Runder (på tvers) | `/admin/runder` | – | --- | ✓ | ~ | ~ | ~ |
 | Skader/sykdom (tilstander) | `/admin/tilstander` | – | --- | ✓ | ~ | ~ | ~ |
-| Finans (MRR/utestående) | `/admin/finance` | – | --- | ✓ | ~ | ~ | ~ |
-| Finans (alt. adresse) | `/admin/okonomi` | – | --- | ✓ | ~ | ~ | ~ |
+| Finans (alt. → redirect) | `/admin/finance` | – | --- | ✓ | ✓ | – | ✓ |
+| **Økonomi (MRR/betalinger)** | `/admin/okonomi` | ~ | –✓– | ✓ | ~ | ✓ | ~ |
 | Stats-oversikt | `/admin/stats/overview` | – | --- | ✓ | ~ | ~ | ~ |
 | Stats-moderering | `/admin/stats/moderering` | – | --- | ✓ | ~ | ~ | ~ |
 
@@ -714,6 +714,8 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 ---
 
 ## Endringslogg
+
+- 12. juni (session 5): **Bolk 4 ferdigstilt — alle 8 dobbeltadresser ryddet.** `/portal/stats` → `permanentRedirect("/portal/statistikk")`. `/admin/finance` → innhold flyttet til `/admin/okonomi` (kanonisk), `finance` er nå ren redirect. Adresse=✓ satt på Statistikk, SG-Hub, Runder, Drills (bibliotek + detalj), Årsplan — disse er nå entydig kanoniske etter at alias-rutene er ryddet.
 
 - 11. juni (session 4): **Browser-testing fullført — 13 skjermer passert.** Playwright-screenshots tatt og gjennomgått for alle Fase 1-skjermer: Varsler ✓, Statistikk ✓, SG-Hub ✓, TrackMan ✓, Runder ✓, Årsplan ✓ (korrekt tom-tilstand), Foreldre ✓ (korrekt tom-tilstand), Drills-bibliotek ✓ (930 drills + filtre), Booking-hub ✓ (credits 3/4 PRO + coach-liste), Kalender uke ✓ (ekte bookingøkter uke 24), Kalender måned ✓ (juni 2026 m/ fargekoding), Compliance ✓ (84% plan-fullføring + spillertabell), Caddie ✓ (korrekt tom-tilstand). Funker=✓ satt på 9 skjermer som manglet det; † fjernet fra 7 skjermer. Compliance og Kalender måned fikk også Data=✓.
 
