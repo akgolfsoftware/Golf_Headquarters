@@ -149,6 +149,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | Gjennomføre (I dag/Kalender/Booking) ★ | `/portal/gjennomfore` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| · Økt-detalj (V2-økt fra coach) | `/portal/gjennomfore/[id]` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | Kalender | `/portal/kalender` | – | --- | ✓ | ~ | ~ | ✓ |
 | Kalender (alt. adresse) | `/portal/tren/kalender` | – | --- | ✓ | ~ | ~ | ✓ |
 | Ny økt (handlingsvalg) | `/portal/ny-okt` | – | --- | ✓ | ~ | ~ | ✓ |
@@ -714,6 +715,8 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 ---
 
 ## Endringslogg
+
+- 12. juni (session 11): **Kritiske review-funn fikset (kodegjennomgang 2026-06-11).** (1) Ny side `/portal/gjennomfore/[id]` — alle «Start økt»-lenker fra Hjem/Planlegge/Gjennomføre pekte på en rute som ikke fantes (404). Viser V2-økt: dato, tid, status-chip, coach-brief («Fra coach»), notater, drill-liste, Kontakt coach/Se i planen. Eierskap håndhevet (fremmed økt → 404, bevist i browser). Mobil+desktop+iPad verifisert. (2) IDOR tettet i 3 coach-live-actions (brief/active/summary): oppslag scopet til `coachId = me.id` (ADMIN ser alle) + redirect-svelging i try/catch erstattet med direkte rolle-sjekk. (3) Brief/sluttrapport-kollisjon løst: spillerens freeze-guard validerer nå med zod (coach-brief gjør ikke lenger at snapshot aldri beregnes) og frysingen MERGER inn i completedSummary i stedet for å slette coachens brief/meldinger; tomt coach-notat nuller ikke lenger .notes.
 
 - 12. juni (session 10): **TestUkeKommende + TestUkeTrigger bygget (Bolk 3).** `TestUkeKommende` (spiller countdown: SVG-ring, pyra-ikon per test, sted/tid) i `src/components/portal/tester/` og `TestUkeTrigger` (coach ukeribbon + berørte spillere + handlinger) i `src/components/admin/tester/`. Begge returnerer null inntil TestWeek-modell kobles — kobling lagt inn i `/portal/tren/tester/page.tsx` + `/admin/tester/page.tsx`. `components-test-week.html` drop-off → ✅. Gjenstår: `components-co-agent.html`.
 

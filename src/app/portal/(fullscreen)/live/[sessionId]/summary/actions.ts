@@ -38,6 +38,30 @@ export type SessionSummaryShape = {
   drills: SummaryDrillSnapshot[];
 };
 
+// Zod-validering av JSON-blobben (CLAUDE.md-regel: aldri rå `as` på Prisma-Json).
+// Brukes til å avgjøre om completedSummary inneholder et EKTE spiller-snapshot —
+// coach-feltene (coachBrief/coachMessages fra /admin/live) gjør feltet truthy
+// uten at snapshot finnes, så truthiness alene er ikke nok.
+const SummarySchema = z.object({
+  frozenAt: z.string(),
+  totalReps: z.number(),
+  totalDrills: z.number(),
+  completedDrills: z.number(),
+  skippedDrills: z.number(),
+  varighetMin: z.number().nullable(),
+  drills: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      pyramide: z.string().nullable(),
+      plannedSets: z.number().nullable(),
+      completedSets: z.number(),
+      totalReps: z.number(),
+      skipped: z.boolean(),
+    }),
+  ),
+});
+
 export async function freezeSessionSummary(
   input: z.infer<typeof FreezeInput>,
 ): Promise<ActionResult<{ summary: SessionSummaryShape }>> {
@@ -83,11 +107,16 @@ export async function freezeSessionSummary(
       return { error: "Ikke tilgang" };
     }
 
-    // Allerede fryst — returnér eksisterende snapshot.
-    if (session.completedSummary) {
-      const rawSummary: unknown = session.completedSummary;
-      const cached = rawSummary as SessionSummaryShape;
-      return { success: true, data: { summary: cached } };
+    // Allerede fryst — returnér eksisterende snapshot. Validert med zod:
+    // et objekt som bare har coach-felt (brief sendt før økten) er IKKE fryst.
+    const rawSummary: unknown = session.completedSummary;
+    const eksisterende =
+      rawSummary && typeof rawSummary === "object" && !Array.isArray(rawSummary)
+        ? (rawSummary as Record<string, unknown>)
+        : {};
+    const frosset = SummarySchema.safeParse(eksisterende);
+    if (frosset.success) {
+      return { success: true, data: { summary: frosset.data } };
     }
 
     let totalReps = 0;
@@ -142,7 +171,9 @@ export async function freezeSessionSummary(
 
     await prisma.trainingSessionV2.update({
       where: { id: parsed.data.sessionId },
-      data: { completedSummary: summary as unknown as object },
+      // Merge: coach-felt (coachBrief/coachMessages) som allerede ligger i
+      // completedSummary skal overleve frysingen — ikke erstatt hele objektet.
+      data: { completedSummary: { ...eksisterende, ...summary } as object },
     });
 
     return { success: true, data: { summary } };

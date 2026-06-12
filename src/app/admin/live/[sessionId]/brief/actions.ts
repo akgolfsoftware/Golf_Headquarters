@@ -8,7 +8,8 @@
 
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { hasRole } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 
 const BriefSchema = z.object({
@@ -27,18 +28,19 @@ export async function sendBriefTilSpiller(
     return { ok: false, error: parsed.error.issues[0]?.message ?? "Ugyldig input" };
   }
 
-  let me;
-  try {
-    me = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
-  } catch {
+  // Direkte rolle-sjekk i stedet for requirePortalUser: den kaster redirect(),
+  // som try/catch her ville svelget — en action skal svare { ok: false }.
+  const me = await getCurrentUser();
+  if (!me || !hasRole(me.role, ["COACH", "ADMIN"])) {
     return { ok: false, error: "Ikke tilgang" };
   }
 
   const trimmet = parsed.data.melding.trim();
 
   try {
-    const session = await prisma.trainingSessionV2.findUnique({
-      where: { id: parsed.data.sessionId },
+    // Eierskap: coach når kun egne økter; ADMIN (Anders) når alle.
+    const session = await prisma.trainingSessionV2.findFirst({
+      where: { id: parsed.data.sessionId, ...(me.role === "ADMIN" ? {} : { coachId: me.id }) },
       select: { id: true, completedSummary: true },
     });
     if (!session) return { ok: false, error: "Økt ikke funnet" };

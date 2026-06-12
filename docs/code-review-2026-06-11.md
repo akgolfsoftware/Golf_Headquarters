@@ -1,5 +1,7 @@
 # Kodegjennomgang 2026-06-11 — hele dagens prod-leveranse (72 commits)
 
+> **Status 2026-06-12:** De 3 KRITISKE funnene er fikset og verifisert (ny rute `/portal/gjennomfore/[id]` m/ eierskap + coach-brief-visning; coachId-scoping i brief/active/summary-actions; zod-guard + merge i freezeSessionSummary). Se endringslogg i MASTER-SKJERMPLAN (session 11).
+
 > Max-effort review: 9 finder-vinkler + sikkerhetsvinkel → 51 kandidater →
 > uavhengig verifisering (CONFIRMED/PLAUSIBLE/REFUTED) → gap-sweep.
 > 6 kandidater REFUTED og fjernet. Funn under er verifisert med siterte linjer.
