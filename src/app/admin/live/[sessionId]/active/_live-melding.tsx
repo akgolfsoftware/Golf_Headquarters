@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { Check, Loader2 } from "lucide-react";
 import { sendLiveMelding } from "./actions";
+import { MicButton } from "@/components/shared/mic-button";
 
 type Props = {
   sessionId: string;
@@ -36,23 +37,32 @@ export function LiveMelding({ sessionId }: Props) {
   return (
     <div className="flex flex-col gap-2">
       <div className="flex gap-2">
-        <input
-          type="text"
-          value={tekst}
-          onChange={(e) => {
-            setTekst(e.target.value);
-            setSendt(false);
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !isPending) {
-              e.preventDefault();
-              håndterSend();
-            }
-          }}
-          disabled={isPending}
-          placeholder="Skriv en rask melding..."
-          className="flex-1 rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:opacity-50"
-        />
+        <div className="relative flex flex-1 items-center">
+          <input
+            type="text"
+            value={tekst}
+            onChange={(e) => {
+              setTekst(e.target.value);
+              setSendt(false);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !isPending) {
+                e.preventDefault();
+                håndterSend();
+              }
+            }}
+            disabled={isPending}
+            placeholder="Skriv en rask melding..."
+            className="flex-1 rounded-md border border-border bg-background py-2 pl-3 pr-12 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:opacity-50"
+          />
+          <span className="absolute right-1.5">
+            <MicButton
+              variant="suffix"
+              onResult={(t) => setTekst((prev) => (prev ? prev + " " + t : t))}
+              disabled={isPending}
+            />
+          </span>
+        </div>
         <button
           type="button"
           onClick={håndterSend}
