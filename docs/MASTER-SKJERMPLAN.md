@@ -628,7 +628,7 @@ Designeren leverte 47 ferdige komponent-design (HTML-biter). Mange er brukt i sk
 | `components-season-timeline.html` | Tidslinje for hele sesongen | Årsplan (`/portal/tren/aarsplan`). Delvis. |
 | `components-test-week.html` | «Testuke»-oppsett | Tester (`/portal/tren/tester`). Ikke tydelig brukt. |
 | `components-course-heatmap.html` | Varmekart over banen | Hull-analyse (`/portal/analysere/hull`). Delvis. |
-| `components-trackman-stability.html` | TrackMan stabilitet-graf | TrackMan-skjermene. Ikke tydelig brukt. |
+| `components-trackman-stability.html` | TrackMan stabilitet-graf | ✅ Bygget i `/portal/mal/trackman/[id]` som `StabilitetSeksjon`: varians-heatmap (6 param × N køller, 5-nivå fargeskala), stabilitets-score 1-10, callouts + bias/spredning SVG-minikart. |
 | `components-trackman-trend.html` | TrackMan trend-graf | ✅ Bygget i `/portal/mal/trackman` som `TrackManTrendSeksjon` (KPI-strip avg. carry + klubbhastighet m/ sparklines, per-kølle carry-trender fra CLUB_AVG-signaler). |
 | `components-sg-training-scatter.html` | SG vs trening punktsky | SG-Hub / analyse. Ikke tydelig brukt. |
 
@@ -714,6 +714,8 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 ---
 
 ## Endringslogg
+
+- 12. juni (session 7): **TrackMan stabilitet-seksjon bygget (Bolk 3).** `StabilitetSeksjon`-komponent lagt til på `/portal/mal/trackman/[id]`: varians-heatmap (køller × 6 parametere, fargeskala v=1–5 med mode-invariante hex-farger), stabilitets-score 1–10 per kølle, callouts (mest stødig / trenger jobbing) og bias/spredning SVG-minikart. Server-side beregning fra rawJson.shots (stddev per parameter per kølle). `components-trackman-stability.html` drop-off-mark → ✅.
 
 - 12. juni (session 7): **TrackMan trend-seksjon bygget (Bolk 3).** `TrackManTrendSeksjon`-komponent lagt til på `/portal/mal/trackman`-lista: KPI-strip (avg. carry + klubbhastighet m/ delta-chips og sparklines), per-kølle carry-trend fra `CLUB_AVG`-signaler. Vises kun ved ≥ 2 sesjoner. Alle tall fra ekte DB (rawJson.summary + Signal). `components-trackman-trend.html` drop-off-mark oppdatert → ✅.
 
