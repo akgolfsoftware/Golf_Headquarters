@@ -21,6 +21,7 @@ import { loadTesterScreen, type Axis } from "@/lib/portal-tester/tester-data";
 import { MeSub, SetGroup, SetRow, SetVal } from "@/components/portal/meg/meg-sub";
 import { TesterKatalog, type KatalogGruppe } from "./tester-katalog";
 import { parseProtokoll, protokollEnhet } from "./protokoll";
+import { TestUkeKommende } from "@/components/portal/tester/test-uke-kommende";
 
 export const dynamic = "force-dynamic";
 
@@ -96,10 +97,14 @@ export default async function TesterPage() {
   return (
     <MeSub
       eyebrow="TRENING · TESTER"
+      /* TestUkeKommende: klar for aktivering når TestWeek-modell kobles til */
       title=""
       italic="Tester."
       lead="NGF- og Team Norway-protokoller for hele pyramiden. Se hvordan hver test gjennomføres, og følg resultatene dine over tid."
     >
+      {/* Aktiveres når TestWeek-modell er på plass — vises kun ≤14 dager før testuke */}
+      <TestUkeKommende countdown={null} tester={[]} />
+
       <SetGroup label="SISTE RESULTATER">
         {siste.length === 0 ? (
           <p className="px-[18px] py-6 text-center text-sm text-muted-foreground">

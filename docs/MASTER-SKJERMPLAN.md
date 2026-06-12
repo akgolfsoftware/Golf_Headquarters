@@ -626,7 +626,7 @@ Designeren leverte 47 ferdige komponent-design (HTML-biter). Mange er brukt i sk
 | `components-gap-to-drill.html` | «Din svakhet → denne øvelsen»-bro | ✅ Bygget i SG-Hub (`/portal/mal/sg-hub`) — kjede-strip DATA→DRILL→PLAN + drill-kort med lime-border + alternativer. Vises kun ved negative SG-data. |
 | `components-insight-narrative.html` | AI-fortelling i ord om formen din | Hjem (AI-innsikt) / analyse. Delvis. |
 | `components-season-timeline.html` | Tidslinje for hele sesongen | Årsplan (`/portal/tren/aarsplan`). Delvis. |
-| `components-test-week.html` | «Testuke»-oppsett | Tester (`/portal/tren/tester`). Ikke tydelig brukt. |
+| `components-test-week.html` | «Testuke»-oppsett | ✅ Bygget som `TestUkeKommende` (spiller) + `TestUkeTrigger` (coach/admin). Aktiveres når TestWeek-modell kobles — returnerer null til da. Kobling: `/portal/tren/tester` + `/admin/tester`. |
 | `components-course-heatmap.html` | Varmekart over banen | Hull-analyse (`/portal/analysere/hull`). Delvis. |
 | `components-trackman-stability.html` | TrackMan stabilitet-graf | ✅ Bygget i `/portal/mal/trackman/[id]` som `StabilitetSeksjon`: varians-heatmap (6 param × N køller, 5-nivå fargeskala), stabilitets-score 1-10, callouts + bias/spredning SVG-minikart. |
 | `components-trackman-trend.html` | TrackMan trend-graf | ✅ Bygget i `/portal/mal/trackman` som `TrackManTrendSeksjon` (KPI-strip avg. carry + klubbhastighet m/ sparklines, per-kølle carry-trender fra CLUB_AVG-signaler). |
@@ -636,7 +636,7 @@ Designeren leverte 47 ferdige komponent-design (HTML-biter). Mange er brukt i sk
 
 | Tegnet komponent | Hva det er | Hører hjemme på |
 |---|---|---|
-| `components-co-agent.html` | Coachens AI-medhjelper-panel | Caddie (`/admin/agencyos/caddie`). Ikke bygget. |
+| `components-co-agent.html` | Coachens AI-medhjelper-panel | ✅ Bygget på `/admin/caddie` som `CoAgent` — utkast/godkjenning, agent-fleet-tabell, audit-log. Kobler til `loadCoAgent` Prisma-data. |
 | `components-multi-compare.html` | Sammenlign flere spillere side om side | ✅ Bygget og koblet til `/admin/talent/sammenligning` — v10 full 4-panel-komponent (side-om-side · pyramide · kohort-rangering · region-fordeling) via `mapCompareData`-mapper. |
 | `components-coach-mobile.html` | Coach-visning på mobil | Mobil-utgave av AgencyOS. Ikke bygget (AgencyOS er laget for data/desktop først). |
 | `components-foreldre.html` | Foreldre-komponent for coach | Coachens foreldre-/kommunikasjonsside. Ikke tydelig brukt. |
@@ -714,6 +714,8 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 ---
 
 ## Endringslogg
+
+- 12. juni (session 10): **TestUkeKommende + TestUkeTrigger bygget (Bolk 3).** `TestUkeKommende` (spiller countdown: SVG-ring, pyra-ikon per test, sted/tid) i `src/components/portal/tester/` og `TestUkeTrigger` (coach ukeribbon + berørte spillere + handlinger) i `src/components/admin/tester/`. Begge returnerer null inntil TestWeek-modell kobles — kobling lagt inn i `/portal/tren/tester/page.tsx` + `/admin/tester/page.tsx`. `components-test-week.html` drop-off → ✅. Gjenstår: `components-co-agent.html`.
 
 - 12. juni (session 9): **SgTrainingScatter bygget (Bolk 3).** `SgTrainingScatter`-komponent på `/portal/mal/sg-hub`: hero scatter (timer trent per uke × SG-endring 90 d for innspill/APP) + 4 mini-multiples per SG-kategori. Server-side lineær regresjon, Pearson r, R², hellning, terskel og 95 %-konfidensband fra TrainingLog + Round-data. Vises kun ved ≥ 4 datapunkter, ellers ingen rendering. `components-sg-training-scatter.html` drop-off → ✅.
 

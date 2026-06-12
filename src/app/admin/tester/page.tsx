@@ -30,6 +30,7 @@ import {
   agBtnClass,
   agTrClass,
 } from "@/components/admin/agencyos/ui";
+import { TestUkeTrigger } from "@/components/admin/tester/test-uke-trigger";
 
 export const dynamic = "force-dynamic";
 
@@ -121,6 +122,9 @@ export default async function TesterPage() {
 
   return (
     <AgPage>
+      {/* Aktiveres når TestWeek-modell kobles til — vises kun når testuke nærmer seg */}
+      <TestUkeTrigger countdown={null} weeks={[]} players={[]} />
+
       <AgPageHead
         eyebrow="Analysere · Tester"
         title={`${tall} tester`}
