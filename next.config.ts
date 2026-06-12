@@ -76,13 +76,12 @@ const nextConfig: NextConfig = {
       { source: "/portal/profil/:path*", destination: "/portal/meg/:path*", permanent: true },
       { source: "/portal/coach/notater", destination: "/portal/coach/notes", permanent: true },
       { source: "/portal/coach/notater/:path*", destination: "/portal/coach/notes/:path*", permanent: true },
-      { source: "/portal/statistikk", destination: "/portal/analysere?tab=statistikk", permanent: true },
-      { source: "/portal/statistikk/:path*", destination: "/portal/analysere?tab=statistikk", permanent: true },
+      // /portal/statistikk: v10-side m/ full implementasjon (juni 2026) — redirect fjernet.
       // IA 2026-06-01 (dedikerte sider): skyggende redirects fjernet — menyen peker nå rett på de
       // ekte sidene. /portal/mal (930l), /portal/kalender, /portal/tren/teknisk-plan (419l) og
       // /portal/tren/turneringer er nå direkte tilgjengelige (var skjult bak ?tab=-redirects).
-      { source: "/portal/tren/ovelser", destination: "/portal/planlegge?tab=drills", permanent: true },
-      { source: "/portal/tren/ovelser/:path*", destination: "/portal/planlegge?tab=drills", permanent: true },
+      { source: "/portal/tren/ovelser", destination: "/portal/drills", permanent: true },
+      { source: "/portal/tren/ovelser/:path*", destination: "/portal/drills/:path*", permanent: true },
       // /portal/tren/tester: dedikert test-batteri-skjerm (redesign 2026-06-01) — loop-redirect fjernet.
       { source: "/portal/tren/kalender", destination: "/portal/gjennomfore?tab=kalender", permanent: true },
       { source: "/portal/tren/kalender/:path*", destination: "/portal/gjennomfore?tab=kalender", permanent: true },

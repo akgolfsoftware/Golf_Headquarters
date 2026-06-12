@@ -715,6 +715,8 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 ## Endringslogg
 
+- 12. juni (session 6): **`next.config.ts` stale-redirect fjernet.** Linje 79-80 (`/portal/statistikk` → `/portal/analysere?tab=statistikk`) blokkerte v10-siden fra å være nåbar — redirect ble lagt inn i mai 2026 før statistikk ble en egen side. Nå fjernet; `/portal/statistikk` returnerer HTTP 200 ✓. `/portal/tren/ovelser`-redirect oppdatert til `/portal/drills` (harmonisert med page.tsx). TypeScript 0 feil.
+
 - 12. juni (session 5): **Bolk 4 ferdigstilt — alle 8 dobbeltadresser ryddet.** `/portal/stats` → `permanentRedirect("/portal/statistikk")`. `/admin/finance` → innhold flyttet til `/admin/okonomi` (kanonisk), `finance` er nå ren redirect. Adresse=✓ satt på Statistikk, SG-Hub, Runder, Drills (bibliotek + detalj), Årsplan — disse er nå entydig kanoniske etter at alias-rutene er ryddet.
 
 - 11. juni (session 4): **Browser-testing fullført — 13 skjermer passert.** Playwright-screenshots tatt og gjennomgått for alle Fase 1-skjermer: Varsler ✓, Statistikk ✓, SG-Hub ✓, TrackMan ✓, Runder ✓, Årsplan ✓ (korrekt tom-tilstand), Foreldre ✓ (korrekt tom-tilstand), Drills-bibliotek ✓ (930 drills + filtre), Booking-hub ✓ (credits 3/4 PRO + coach-liste), Kalender uke ✓ (ekte bookingøkter uke 24), Kalender måned ✓ (juni 2026 m/ fargekoding), Compliance ✓ (84% plan-fullføring + spillertabell), Caddie ✓ (korrekt tom-tilstand). Funker=✓ satt på 9 skjermer som manglet det; † fjernet fra 7 skjermer. Compliance og Kalender måned fikk også Data=✓.
