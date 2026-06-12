@@ -629,7 +629,7 @@ Designeren leverte 47 ferdige komponent-design (HTML-biter). Mange er brukt i sk
 | `components-test-week.html` | «Testuke»-oppsett | Tester (`/portal/tren/tester`). Ikke tydelig brukt. |
 | `components-course-heatmap.html` | Varmekart over banen | Hull-analyse (`/portal/analysere/hull`). Delvis. |
 | `components-trackman-stability.html` | TrackMan stabilitet-graf | TrackMan-skjermene. Ikke tydelig brukt. |
-| `components-trackman-trend.html` | TrackMan trend-graf | TrackMan-skjermene. Ikke tydelig brukt. |
+| `components-trackman-trend.html` | TrackMan trend-graf | ✅ Bygget i `/portal/mal/trackman` som `TrackManTrendSeksjon` (KPI-strip avg. carry + klubbhastighet m/ sparklines, per-kølle carry-trender fra CLUB_AVG-signaler). |
 | `components-sg-training-scatter.html` | SG vs trening punktsky | SG-Hub / analyse. Ikke tydelig brukt. |
 
 **AgencyOS-komponenter som ennå ikke er synlig brukt:**
@@ -714,6 +714,8 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 ---
 
 ## Endringslogg
+
+- 12. juni (session 7): **TrackMan trend-seksjon bygget (Bolk 3).** `TrackManTrendSeksjon`-komponent lagt til på `/portal/mal/trackman`-lista: KPI-strip (avg. carry + klubbhastighet m/ delta-chips og sparklines), per-kølle carry-trend fra `CLUB_AVG`-signaler. Vises kun ved ≥ 2 sesjoner. Alle tall fra ekte DB (rawJson.summary + Signal). `components-trackman-trend.html` drop-off-mark oppdatert → ✅.
 
 - 12. juni (session 6): **`next.config.ts` stale-redirect fjernet.** Linje 79-80 (`/portal/statistikk` → `/portal/analysere?tab=statistikk`) blokkerte v10-siden fra å være nåbar — redirect ble lagt inn i mai 2026 før statistikk ble en egen side. Nå fjernet; `/portal/statistikk` returnerer HTTP 200 ✓. `/portal/tren/ovelser`-redirect oppdatert til `/portal/drills` (harmonisert med page.tsx). TypeScript 0 feil.
 

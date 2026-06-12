@@ -15,6 +15,7 @@ import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { EmptyState } from "@/components/shared/empty-state";
 import { FEATURES } from "@/lib/features";
 import { DispersionPlot } from "./dispersion-plot";
+import { StabilitetSeksjon, beregnStabilitet } from "./stability-seksjon";
 
 export default async function TrackManDetalj({
   params,
@@ -64,6 +65,8 @@ export default async function TrackManDetalj({
   const rader = Array.isArray(sesjon.rawJson)
     ? (sesjon.rawJson as Record<string, string>[])
     : [];
+
+  const stabilitetData = beregnStabilitet(sesjon.rawJson);
 
   const datoTekst = sesjon.recordedAt.toLocaleDateString("nb-NO", {
     day: "2-digit",
@@ -131,6 +134,11 @@ export default async function TrackManDetalj({
           </ul>
         )}
       </section>
+
+      {/* Stabilitet-analyse (vises kun hvis sessions har shots-data) */}
+      {stabilitetData.klubber.length > 0 && (
+        <StabilitetSeksjon data={stabilitetData} />
+      )}
     </div>
   );
 }
