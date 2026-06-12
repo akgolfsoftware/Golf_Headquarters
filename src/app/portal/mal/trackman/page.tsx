@@ -6,6 +6,7 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { TrackmanImportModal } from "@/components/shared/trackman-import-modal";
 import { CsvImportModal } from "./csv-import-modal";
 import { HtmlImportModal } from "./html-import-modal";
+import { TrackManTrendSeksjon, byggTrendData } from "./trend-seksjon";
 import type { TrackManEnvironment } from "@/generated/prisma/client";
 
 // ---------------------------------------------------------------------------
@@ -32,17 +33,25 @@ const SOURCE_LABEL: Record<string, string> = {
 export default async function TrackManListePage() {
   const user = await requirePortalUser();
 
-  const okter = await prisma.trackManSession.findMany({
-    where: { userId: user.id },
-    orderBy: { recordedAt: "desc" },
-    select: {
-      id: true,
-      recordedAt: true,
-      source: true,
-      shotCount: true,
-      environment: true,
-    },
-  });
+  const [okter, clubSignaler] = await Promise.all([
+    prisma.trackManSession.findMany({
+      where: { userId: user.id },
+      orderBy: { recordedAt: "desc" },
+      select: {
+        id: true,
+        recordedAt: true,
+        source: true,
+        shotCount: true,
+        environment: true,
+        rawJson: true,
+      },
+    }),
+    prisma.signal.findMany({
+      where: { userId: user.id, kind: "CLUB_AVG" },
+      select: { value: true, payload: true, computedAt: true },
+      orderBy: { computedAt: "asc" },
+    }),
+  ]);
 
   if (okter.length === 0) {
     return (
@@ -104,6 +113,9 @@ export default async function TrackManListePage() {
         <CsvImportModal />
         <HtmlImportModal />
       </div>
+
+      {/* Trend-seksjon (vises kun ved ≥ 2 sesjoner) */}
+      <TrackManTrendSeksjon data={byggTrendData(okter, clubSignaler)} />
 
       {/* Sesjonsliste */}
       <div className="overflow-hidden rounded-xl border border-border bg-card">
