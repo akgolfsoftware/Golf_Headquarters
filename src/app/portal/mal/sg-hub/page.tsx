@@ -26,6 +26,8 @@ import { aggregateSg, formatSg } from "@/lib/sg";
 import { extractClubs } from "@/lib/sg-hub/extract-shots";
 import { ENVIRONMENT_LABELS } from "@/lib/sg-hub/environment-labels";
 import { SgHub, type SgHubData, type SgGapToDrill } from "@/components/portal/sg-hub/sg-hub";
+import { SgTrainingScatter } from "@/components/sg-hub/SgTrainingScatter";
+import { computeScatterData } from "@/lib/sg-scatter/compute";
 import { getDrillLibrary, type DrillCard } from "@/lib/portal-drills/drills-data";
 import type { TrackManEnvironment } from "@/generated/prisma/client";
 
@@ -258,30 +260,43 @@ export default async function SgHubPage() {
   const naa = new Date();
   const ninetiDagSiden = new Date(naa.getTime() - 90 * 24 * 60 * 60 * 1000);
 
-  const [sessions, sisteSessionRad, runder, insightCount, alleDrills] = await Promise.all([
-    prisma.trackManSession.findMany({
-      where: { userId: user.id },
-      select: { rawJson: true },
-    }),
-    prisma.trackManSession.findFirst({
-      where: { userId: user.id },
-      orderBy: { recordedAt: "desc" },
-      select: {
-        recordedAt: true,
-        shotCount: true,
-        environment: true,
-        source: true,
-      },
-    }),
-    prisma.round.findMany({
-      where: { userId: user.id, playedAt: { gte: ninetiDagSiden } },
-      orderBy: { playedAt: "desc" },
-    }),
-    prisma.sgInsight.count({
-      where: { userId: user.id, resolvedAt: null, acknowledgedAt: null },
-    }),
-    getDrillLibrary(user.id),
-  ]);
+  const [sessions, sisteSessionRad, runder, insightCount, alleDrills, trainingLogs, alleRunder] =
+    await Promise.all([
+      prisma.trackManSession.findMany({
+        where: { userId: user.id },
+        select: { rawJson: true },
+      }),
+      prisma.trackManSession.findFirst({
+        where: { userId: user.id },
+        orderBy: { recordedAt: "desc" },
+        select: {
+          recordedAt: true,
+          shotCount: true,
+          environment: true,
+          source: true,
+        },
+      }),
+      prisma.round.findMany({
+        where: { userId: user.id, playedAt: { gte: ninetiDagSiden } },
+        orderBy: { playedAt: "desc" },
+      }),
+      prisma.sgInsight.count({
+        where: { userId: user.id, resolvedAt: null, acknowledgedAt: null },
+      }),
+      getDrillLibrary(user.id),
+      // For scatter: alle treningslogger
+      prisma.trainingLog.findMany({
+        where: { userId: user.id },
+        select: { date: true, sgArea: true, minutes: true },
+        orderBy: { date: "asc" },
+      }),
+      // For scatter: alle runder med SG-data
+      prisma.round.findMany({
+        where: { userId: user.id },
+        select: { playedAt: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
+        orderBy: { playedAt: "asc" },
+      }),
+    ]);
 
   const sg = aggregateSg(runder);
 
@@ -311,5 +326,19 @@ export default async function SgHubPage() {
     alleDrills,
   });
 
-  return <SgHub data={data} />;
+  const scatterData = computeScatterData(
+    trainingLogs.map((l) => ({
+      date: l.date,
+      sgArea: l.sgArea as "OTT" | "APP" | "ARG" | "PUTT",
+      minutes: l.minutes,
+    })),
+    alleRunder,
+  );
+
+  return (
+    <div className="space-y-12">
+      <SgHub data={data} />
+      <SgTrainingScatter data={scatterData} />
+    </div>
+  );
 }
