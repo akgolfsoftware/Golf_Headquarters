@@ -5,41 +5,46 @@
 
 ---
 
-## 2026-06-12 — UX-arkitektur med konsolideringsanalyse (docs/ux-arkitektur)
+## 2026-06-12 — UX-arkitektur: full kartlegging + konsolideringsanalyse (docs/ux-arkitektur)
 
-**Branch:** `docs/ux-arkitektur`
+**Branch:** `docs/ux-arkitektur` · Ingen kodeendringer — kun dokumentasjon.
 
 ### Hva ble gjort
+Komplett UX-/IA-kartlegging av hele plattformen (~403 `page.tsx` på 6 overflater), bygd på faktisk
+kodelesing via 7 parallelle kartleggingsagenter + egen verifikasjon av strukturpåstander.
+**v2.0 — erstatter en tidligere grunnere v1.0 (anslåtte tall, «forelder ikke implementert» — feil).**
 
-Komplett UX-arkitekturdokument for hele plattformen — ~800 linjer analyse.
+- 🆕 `docs/ux-arkitektur.md` (v2.0) — beslutningsklar plan: Del 1 (skjermtelling per overflate),
+  Del 2 (4 persona-flyter med trykktelling + feilveier), Del 3 (gap-analyse), Del 4 (konsolidering:
+  7 mekaniske M1–M7 + 10 design-D1–D10), Del 5 (målbilde: nav-tre før/etter, skjermtall 403→~307,
+  trykkbudsjett-tabell, topp-5 prioriterte endringer).
+- 🆕 `docs/ux/0{1-4}-kartlegging-*.md` — fulle rutetabeller per overflate (marketing+stats, playerhq,
+  coachhq, forelder+auth+live).
 
-- 🆕 `docs/ux-arkitektur.md` — 5-delt arkitekturdokument:
-  - **DEL 1: Rutesammendrag** — ~360 skjermer kartlagt på tvers av Marketing, PlayerHQ,
-    CoachHQ/AgencyOS og Foreldreportal. Hver rute med jobb, primærhandling,
-    informasjonstetthet, auth-krav og datakilder.
-  - **DEL 2: Brukerflyter med trykkbudsjett** — 4 personas (Spiller, Coach, Forelder,
-    Besøkende) med ASCII-flytdiagrammer og faktisk tap-telling. Definerte mål:
-    logg økt ≤ 2 trykk, sjekk fremgang ≤ 1 trykk, tildel økt ≤ 3 trykk.
-  - **DEL 3: Gap-analyse** — identifiserte blindsoner (foreldreportal ufullstendig,
-    onboarding mangler), foreldreløse sider (standalone wizards), manglende states
-    (empty/error/skeleton), og navigasjonsinkonsistenser.
-  - **DEL 4: Konsolideringsanalyse** — 17 % reduksjon foreslått (360 → 298 skjermer).
-    Kategorier: navigasjons-mellomledd (→ tabs), bekreftelsessider (→ toast),
-    innstillinger-undersider (→ accordion), hub-duplikater (→ slå sammen).
-  - **DEL 5: Måltilstand** — før/etter-trær, skjermbudsjett per flate, og topp 5
-    prioriteter med konkrete tiltak.
+### Fem strukturfunn (verifisert i kode)
+1. **Rute-konsolidering halvferdig:** `next.config.ts` har ~50 redirects som har valgt kanon, men
+   skyggefilene ligger igjen (`admin/facilities`, `admin/locations`, `portal/tren/kalender`,
+   `portal/trackman`, `admin/analytics`). Mekanisk opprydding, null UX-risiko.
+2. **AgencyOS nav-brudd:** desktop-sidebar (`agencyos-sidebar.tsx`) ≠ mobil-skuff (`mobile-drawer.tsx`)
+   → 13 ruter usynlige på desktop. `admin/sidebar.tsx` er død. `_tab-nav.tsx` rendres ikke → 5 skjermer
+   uoppnåelige. Hub-sider sidebaren hopper forbi → ~10 verktøy foreldreløse.
+3. **Dobbeltimplementert kjerne:** Live Session i 2 versjoner på samme URL (monolitt 1755 l vs
+   rute-splittet med ekte PAUSED/ABANDONED) — hovedinngangen bruker monolitten som ikke persisterer
+   avbrudd → hengende ACTIVE-økter. TrackMan ×3, statistikk ×3, innstillinger ×3.
+4. **Stripe-hull i begge ender:** gjestebooking→kvittering = login-blindvei; cancel→marketing;
+   ekte checkout-wizard foreldreløs; suksess/feil fanges ikke.
+5. **Stats (45 skjermer) mangler nav-skjelett** — hub lenker ~13, resten foreldreløse.
 
-### Nøkkelfunn
+### Happy-path-budsjetter (alle truffet i dag)
+spiller start-økt 2✓, logg resultat 1✓, coach godkjenn 2✓, forelder neste-økt 0✓, besøkende betalt
+booking 4 skjermer✓. Gjelden ligger i nav-reachability og feilveiene, ikke i trykktallene.
 
-- PlayerHQ har 72 skjermer, kan reduseres til ~60 med tab-konsolidering
-- CoachHQ har 248 skjermer, kan reduseres til ~206 med hub-sammenslåing
-- Foreldreportalen er skissert men ikke implementert (6 planlagte skjermer)
-- Live Session er korrekt isolert og skal IKKE slås sammen med andre flater
-- SG-modulen har 4 separate skjermer som bør bli 1 med tabs
+### Merk
+Regelfila Anders refererte til (`.claude/rules/design-system.md`) finnes ikke — vurdert mot faktisk
+fasit: CLAUDE.md-tokens + `docs/design-system-lint.md` + `.claude/rules/design-porting-gate.md`.
 
-### Ingen kodeendringer
-
-Kun dokumentasjon — ingen endringer i src/ eller komponenter.
+### Commit
+`docs: ux-arkitektur med konsolideringsanalyse og trykkbudsjett`
 
 ---
 
