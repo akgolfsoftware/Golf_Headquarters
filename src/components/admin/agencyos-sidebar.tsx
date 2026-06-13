@@ -4,40 +4,15 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  BarChart3,
-  CalendarCheck,
-  CheckCheck,
-  ChevronRight,
-  ChevronsUpDown,
-  ClipboardList,
-  FileBarChart,
-  Inbox,
-  LayoutDashboard,
-  LayoutTemplate,
-  MoreHorizontal,
-  Play,
-  Radar,
-  Settings,
-  Users,
-  type LucideIcon,
-} from "lucide-react";
+import { ChevronRight, ChevronsUpDown, MoreHorizontal } from "lucide-react";
+import { buildAdminNav, leafActive, type SidebarCounts } from "@/lib/admin-nav";
 
 /**
  * AgencyOS-sidebar — port av fasit `agencyos-app/core.jsx` (Sidebar + NAV).
- * Mørk forest-900-flate med 5 seksjoner, ekspanderbare grupper og live badge-tall.
- * Badge-tallene kommer fra AdminShell (ekte Prisma-tellinger).
+ * Mørk forest-900-flate med ekspanderbare grupper og live badge-tall.
+ * Nav-strukturen kommer fra delt config i `@/lib/admin-nav` (samme kilde
+ * som mobil-skuffen). Badge-tallene kommer fra AdminShell (ekte Prisma-tellinger).
  */
-
-export type SidebarCounts = {
-  tasks: number;
-  assigned: number;
-  players: number;
-  groups: number;
-  bookings: number;
-  requests: number;
-  approvals: number;
-};
 
 type Props = {
   counts: SidebarCounts;
@@ -46,171 +21,6 @@ type Props = {
   org: { name: string; players: number; tier: string };
   workbenchHref: string;
 };
-
-type NavLeaf = {
-  key: string;
-  label: string;
-  href: string;
-  /** Ekstra prefikser som også regnes som aktiv (alias-ruter). */
-  match?: string[];
-  badge?: keyof SidebarCounts;
-  badgeCls?: "alert" | "lime";
-};
-
-type NavEntry =
-  | (NavLeaf & { type: "item"; icon: LucideIcon; primary?: boolean })
-  | {
-      type: "group";
-      key: string;
-      label: string;
-      icon: LucideIcon;
-      primary?: boolean;
-      children: NavLeaf[];
-    };
-
-type NavSection = { label: string; items: NavEntry[] };
-
-function buildNav(workbenchHref: string): NavSection[] {
-  return [
-    {
-      label: "Daglig",
-      items: [
-        {
-          type: "item",
-          key: "dashboard",
-          label: "Oversikt",
-          href: "/admin/agencyos",
-          match: ["/admin"],
-          icon: LayoutDashboard,
-          primary: true,
-        },
-        {
-          type: "group",
-          key: "g-week",
-          label: "Min uke",
-          icon: CalendarCheck,
-          children: [
-            { key: "tasks", label: "Oppgaver", href: "/admin/workspace/oppgaver", badge: "tasks" },
-            { key: "assigned", label: "Tildelt meg", href: "/admin/workspace/tildelt-meg", badge: "assigned" },
-          ],
-        },
-      ],
-    },
-    {
-      label: "Stall & talent",
-      items: [
-        {
-          type: "group",
-          key: "g-stable",
-          label: "Stall",
-          icon: Users,
-          primary: true,
-          children: [
-            { key: "players", label: "Alle spillere", href: "/admin/spillere", badge: "players" },
-            { key: "groups", label: "Grupper", href: "/admin/grupper", badge: "groups" },
-          ],
-        },
-        {
-          type: "group",
-          key: "g-talent",
-          label: "Talent",
-          icon: Radar,
-          children: [
-            { key: "talent-radar", label: "Talent-radar", href: "/admin/talent/radar", match: ["/admin/talent"] },
-            { key: "comparison", label: "Sammenligning", href: "/admin/talent/sammenligning" },
-            { key: "wagr", label: "WAGR-import", href: "/admin/talent/wagr-import" },
-          ],
-        },
-      ],
-    },
-    {
-      label: "Operasjon",
-      items: [
-        {
-          type: "item",
-          key: "workbench",
-          label: "Workbench",
-          href: workbenchHref,
-          match: ["/admin/coach-workbench"],
-          icon: LayoutTemplate,
-          primary: true,
-        },
-        {
-          type: "group",
-          key: "g-plan",
-          label: "Planlegge",
-          icon: ClipboardList,
-          children: [
-            { key: "training-plans", label: "Treningsplaner", href: "/admin/plans" },
-            { key: "plan-templates", label: "Plan-maler", href: "/admin/plan-templates" },
-            { key: "drills", label: "Drill-bibliotek", href: "/admin/drills" },
-            { key: "tournaments", label: "Turneringer", href: "/admin/tournaments" },
-          ],
-        },
-        {
-          type: "group",
-          key: "g-do",
-          label: "Gjennomføre",
-          icon: Play,
-          children: [
-            { key: "calendar", label: "Kalender", href: "/admin/kalender" },
-            { key: "bookings", label: "Bookinger", href: "/admin/bookinger", badge: "bookings" },
-            { key: "facilities", label: "Anlegg", href: "/admin/anlegg" },
-            { key: "availability", label: "Tilgjengelighet", href: "/admin/availability" },
-            { key: "services", label: "Tjenester", href: "/admin/services" },
-          ],
-        },
-        {
-          type: "group",
-          key: "g-analyze",
-          label: "Analysere",
-          icon: BarChart3,
-          children: [
-            { key: "stable-analysis", label: "Stall-analyse", href: "/admin/analyse" },
-            { key: "team-average", label: "Lag-snitt", href: "/admin/lag-snitt" },
-            { key: "tests", label: "Tester", href: "/admin/tester" },
-          ],
-        },
-      ],
-    },
-    {
-      label: "Innboks",
-      items: [
-        {
-          type: "item",
-          key: "requests",
-          label: "Forespørsler",
-          href: "/admin/foresporsler",
-          icon: Inbox,
-          badge: "requests",
-          badgeCls: "alert",
-        },
-        {
-          type: "item",
-          key: "approvals",
-          label: "Godkjenninger",
-          href: "/admin/godkjenninger",
-          icon: CheckCheck,
-          badge: "approvals",
-          badgeCls: "lime",
-        },
-      ],
-    },
-    {
-      label: "System",
-      items: [
-        { type: "item", key: "reports", label: "Rapporter", href: "/admin/reports", icon: FileBarChart },
-        { type: "item", key: "admin", label: "Admin", href: "/admin/settings", icon: Settings },
-      ],
-    },
-  ];
-}
-
-function leafActive(path: string, leaf: NavLeaf): boolean {
-  if (path === leaf.href) return true;
-  if (leaf.href !== "/admin" && path.startsWith(leaf.href + "/")) return true;
-  return (leaf.match ?? []).some((m) => path === m || path.startsWith(m + "/"));
-}
 
 function Badge({ value, cls }: { value: number; cls?: "alert" | "lime" }) {
   if (!value) return null;
@@ -231,7 +41,7 @@ function Badge({ value, cls }: { value: number; cls?: "alert" | "lime" }) {
 
 export function AgencyosSidebar({ counts, sessionsToday, coach, org, workbenchHref }: Props) {
   const path = usePathname();
-  const nav = buildNav(workbenchHref);
+  const nav = buildAdminNav(workbenchHref);
 
   // Finn gruppen som eier aktiv rute — den starter ekspandert (fasit-oppførsel).
   const activeGroup = (() => {

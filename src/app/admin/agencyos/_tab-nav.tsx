@@ -20,7 +20,9 @@ export function AgencyOSTabNav() {
       className="flex items-center gap-1 overflow-x-auto rounded-md border border-border bg-card p-1 sm:flex-wrap"
     >
       {TABS.map((t) => {
-        const aktiv = path === t.href;
+        const aktiv =
+          path === t.href ||
+          (t.href !== "/admin/agencyos" && path.startsWith(t.href + "/"));
         return (
           <Link
             key={t.href}

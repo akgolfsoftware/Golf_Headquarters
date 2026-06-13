@@ -34,5 +34,7 @@ export async function cancelPro(): Promise<void> {
   });
 
   revalidatePath("/portal/meg/abonnement");
-  redirect("/portal/meg/abonnement?cancelled=1");
+  // ?avbestilt=1 — egen banner for avbestilt abonnement.
+  // (?cancelled=1 er reservert for avbrutt Stripe Checkout.)
+  redirect("/portal/meg/abonnement?avbestilt=1");
 }

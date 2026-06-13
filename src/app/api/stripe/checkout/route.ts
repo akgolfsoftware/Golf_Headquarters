@@ -95,7 +95,7 @@ export async function POST(req: Request) {
     mode: "subscription",
     line_items: [{ price: priceId, quantity: 1 }],
     success_url: `${origin}/portal/meg/abonnement?ok=1&plan=${plan}`,
-    cancel_url: `${origin}/coaching?cancelled=1`,
+    cancel_url: `${origin}/portal/meg/abonnement?cancelled=1`,
     locale: "nb",
     metadata: { userId: user.id, plan },
     subscription_data: { metadata: { userId: user.id, plan } },

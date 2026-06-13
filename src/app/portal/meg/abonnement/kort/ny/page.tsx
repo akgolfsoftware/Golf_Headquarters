@@ -34,7 +34,10 @@ export default async function NyttKortPage() {
     select: { currentPeriodEnd: true, status: true },
   });
 
-  if (!subscription || subscription.status !== "ACTIVE") {
+  // PAST_DUE og TRIALING slipper også inn — «Endre kort» er nettopp veien
+  // ut av en feilet betaling, og PAST_DUE-abonnementer har stripeCustomerId.
+  const TILLATTE_STATUSER = new Set(["ACTIVE", "PAST_DUE", "TRIALING"]);
+  if (!subscription || !TILLATTE_STATUSER.has(subscription.status)) {
     redirect("/portal/meg/abonnement");
   }
 

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { PendingRefresh } from "./pending-refresh";
 
 export const metadata: Metadata = {
@@ -25,6 +26,13 @@ export default async function Kvittering({ params }: Props) {
   });
 
   if (!booking) notFound();
+
+  // Innlogget → «Mine bestillinger». Gjest → onboarding-bro til gratis konto
+  // med e-post prefilt fra bookingen. (Gjør siden per-request-dynamisk — OK.)
+  const user = await getCurrentUser();
+  const signupHref = booking.guestEmail
+    ? `/auth/signup?epost=${encodeURIComponent(booking.guestEmail)}`
+    : "/auth/signup";
 
   const dato = booking.startAt.toLocaleDateString("nb-NO", {
     weekday: "long",
@@ -96,12 +104,21 @@ export default async function Kvittering({ params }: Props) {
         </section>
 
         <div className="mt-8 flex flex-wrap justify-center gap-4">
-          <Link
-            href="/portal/meg/bookinger"
-            className="rounded-full bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground hover:opacity-90"
-          >
-            Mine bestillinger
-          </Link>
+          {user ? (
+            <Link
+              href="/portal/meg/bookinger"
+              className="rounded-full bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground hover:opacity-90"
+            >
+              Mine bestillinger
+            </Link>
+          ) : (
+            <Link
+              href={signupHref}
+              className="rounded-full bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground hover:opacity-90"
+            >
+              Opprett konto
+            </Link>
+          )}
           <Link
             href="/booking"
             className="rounded-full border border-input bg-card px-6 py-4 text-sm font-semibold hover:border-border"
@@ -109,6 +126,11 @@ export default async function Kvittering({ params }: Props) {
             Book en til
           </Link>
         </div>
+        {!user && (
+          <p className="mt-4 text-center text-sm text-muted-foreground">
+            Opprett gratis konto for å se og endre bestillingene dine.
+          </p>
+        )}
       </div>
     </div>
   );

@@ -54,8 +54,9 @@ Dokumenteres her så diff-agenten måler mot riktig fasit:
   full kolonne-tabell beholdes (Notion-synket funksjon) — fasitens enkle 5-raders liste er underlag for
   header/stil, ikke funksjonsnedskjæring.
 - **Topbar-avatar har ekte meny** (Innstillinger/Logg ut) — fasiten har toast-demo.
-- **Dashboard-underruter** (uka/økonomi/caddie/spillere) har mistet fane-raden (fasiten har ingen) —
-  rutene lever på egne adresser og nås via ⌘K til IA-beslutning tas.
+- **Dashboard-underruter** (live/uka/økonomi/caddie/spillere) har fane-rad rendret fra
+  `src/app/admin/agencyos/layout.tsx` (fasiten har ingen) — IA-beslutning tatt (docs/ux-arkitektur.md
+  Del 5). Diff-agenter skal ikke flagge fane-raden som avvik.
 - **Haster-chip har lesbar tekst:** fasit-CSS `chip-lime` gir lime tekst på lime flate i mørkt tema
   (render-bug — chipen ser tom ut i fasit-PNG). Appen bruker lime bakgrunn + mørk tekst. Tilsiktet.
 - **Avatar-toner i lister er regelstyrt:** lime = spilleren har økt i dag, pri = haster-kort, ellers

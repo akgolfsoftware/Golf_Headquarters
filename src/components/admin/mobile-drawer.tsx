@@ -2,7 +2,8 @@
 
 /**
  * Mobile drawer for AgencyOS — hamburger-knapp + slide-in fra venstre.
- * Vises kun på < lg. Speiler AdminSidebar med samme nav-grupper.
+ * Vises kun på < md. Rendrer samme nav-struktur som desktop-sidebaren
+ * fra delt config i `@/lib/admin-nav` (tekstlenker, ingen ikoner/badges).
  */
 
 import { useEffect, useState } from "react";
@@ -10,80 +11,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { SidebarBrand } from "@/components/shared/sidebar-brand";
+import { buildAdminNav, leafActive } from "@/lib/admin-nav";
 
-type NavItem = { href: string; label: string };
-
-// AgencyOS 7-seksjons IA — speiler AdminSidebar med container-URL per gruppe
-const NAV_GROUPS: { label: string; href: string; items: NavItem[] }[] = [
-  { label: "Oversikt", href: "/admin/agencyos", items: [] },
-  {
-    label: "Stall",
-    href: "/admin/stall",
-    items: [
-      { href: "/admin/spillere", label: "Alle spillere" },
-      { href: "/admin/talent", label: "Talent-radar" },
-      { href: "/admin/talent/sammenligning", label: "Sammenligning" },
-      { href: "/admin/talent/wagr-import", label: "WAGR" },
-    ],
-  },
-  {
-    label: "Planlegge",
-    href: "/admin/planlegge",
-    items: [
-      { href: "/admin/plans", label: "Treningsplaner" },
-      { href: "/admin/plan-templates", label: "Plan-maler" },
-      { href: "/admin/grupper", label: "Grupper" },
-      { href: "/admin/tournaments", label: "Turneringer" },
-      { href: "/admin/drills", label: "Drill-bibliotek" },
-    ],
-  },
-  {
-    label: "Gjennomføre",
-    href: "/admin/gjennomfore",
-    items: [
-      { href: "/admin/kalender", label: "Kalender" },
-      { href: "/admin/bookinger", label: "Bookinger" },
-      { href: "/admin/anlegg", label: "Anlegg" },
-      { href: "/admin/availability", label: "Tilgjengelighet" },
-      { href: "/admin/services", label: "Tjenester" },
-    ],
-  },
-  {
-    label: "Analysere",
-    href: "/admin/analysere",
-    items: [
-      { href: "/admin/analyse", label: "Stall-analyse" },
-      { href: "/admin/lag-snitt", label: "Lag-snitt" },
-      { href: "/admin/foresporsler", label: "Forespørsler" },
-      { href: "/admin/godkjenninger", label: "Godkjenninger" },
-      { href: "/admin/reports", label: "Rapporter" },
-    ],
-  },
-  {
-    label: "Kommunikasjon",
-    href: "/admin/kommunikasjon",
-    items: [
-      { href: "/admin/innboks", label: "Innboks" },
-      { href: "/admin/email-templates", label: "E-postmaler" },
-      { href: "/admin/workspace/notion", label: "Notion-prosjekter" },
-      { href: "/admin/workspace/notion", label: "Notion-oppgaver" },
-    ],
-  },
-  {
-    label: "Organisasjon",
-    href: "/admin/organisasjon",
-    items: [
-      { href: "/admin/team", label: "Team" },
-      { href: "/admin/finance", label: "Økonomi" },
-      { href: "/admin/agents", label: "AI-agenter" },
-      { href: "/admin/integrasjoner", label: "Integrasjoner" },
-      { href: "/admin/audit-log", label: "Audit-log" },
-      { href: "/admin/settings", label: "Innstillinger" },
-    ],
-  },
-];
-
-export function AdminMobileDrawer() {
+export function AdminMobileDrawer({ workbenchHref }: { workbenchHref: string }) {
   const path = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -138,32 +68,18 @@ export function AdminMobileDrawer() {
               aria-label="Hovednavigasjon"
               className="flex-1 space-y-6 overflow-y-auto px-4 pb-6"
             >
-              {NAV_GROUPS.map((group) => {
-                const groupActive =
-                  path === group.href || path.startsWith(group.href + "/");
-                return (
-                <div key={group.label}>
-                  <Link
-                    href={group.href}
-                    onClick={() => setOpen(false)}
-                    aria-current={groupActive ? "page" : undefined}
-                    className={`relative mb-1 flex items-center justify-between rounded-md px-4 py-2.5 text-base font-semibold transition-colors ${
-                      groupActive
-                        ? "bg-[var(--color-accent-fill)] text-white before:absolute before:left-0 before:top-1/2 before:h-6 before:w-[3px] before:-translate-y-1/2 before:rounded-r before:bg-[var(--color-brand-accent)]"
-                        : "text-white hover:bg-white/5"
-                    }`}
-                  >
-                    {group.label}
-                  </Link>
-                  <div className="ml-4 space-y-0.5 border-l border-white/10 pl-1">
-                    {group.items.map((n) => {
-                      const aktiv =
-                        path === n.href ||
-                        (n.href !== "/admin" && path.startsWith(n.href + "/"));
+              {buildAdminNav(workbenchHref).map((section) => (
+                <div key={section.label}>
+                  <div className="px-4 pb-1 pt-2 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-white/50">
+                    {section.label}
+                  </div>
+                  {section.items.map((it) => {
+                    if (it.type === "item") {
+                      const aktiv = leafActive(path, it);
                       return (
                         <Link
-                          key={n.href}
-                          href={n.href}
+                          key={it.key}
+                          href={it.href}
                           onClick={() => setOpen(false)}
                           aria-current={aktiv ? "page" : undefined}
                           className={`relative block min-h-11 rounded-md px-4 py-2.5 text-base transition-colors ${
@@ -172,14 +88,40 @@ export function AdminMobileDrawer() {
                               : "text-white/70 hover:bg-white/5 hover:text-white"
                           }`}
                         >
-                          {n.label}
+                          {it.label}
                         </Link>
                       );
-                    })}
-                  </div>
+                    }
+                    return (
+                      <div key={it.key}>
+                        <div className="mb-1 flex items-center px-4 py-2.5 text-base font-semibold text-white">
+                          {it.label}
+                        </div>
+                        <div className="ml-4 space-y-0.5 border-l border-white/10 pl-1">
+                          {it.children.map((c) => {
+                            const aktiv = leafActive(path, c);
+                            return (
+                              <Link
+                                key={c.key}
+                                href={c.href}
+                                onClick={() => setOpen(false)}
+                                aria-current={aktiv ? "page" : undefined}
+                                className={`relative block min-h-11 rounded-md px-4 py-2.5 text-base transition-colors ${
+                                  aktiv
+                                    ? "bg-[var(--color-accent-fill)] font-semibold text-white before:absolute before:left-0 before:top-1/2 before:h-6 before:w-[3px] before:-translate-y-1/2 before:rounded-r before:bg-[var(--color-brand-accent)]"
+                                    : "text-white/70 hover:bg-white/5 hover:text-white"
+                                }`}
+                              >
+                                {c.label}
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-                );
-              })}
+              ))}
             </nav>
           </aside>
         </div>

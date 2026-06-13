@@ -177,6 +177,13 @@ export async function abandonLiveSession(
 export async function completeSession(input: SessionLogInput) {
   const { session } = await verifyEierskap(input.sessionId);
 
+  // Idempotens: er økta allerede COMPLETED er snapshot nullet — et nytt kall
+  // ville overskrevet den frosne loggen (totalReps/drillAggregates → null) og
+  // satt ny completedAt. Send heller videre til økt-detalj uten å skrive.
+  if (session.status === "COMPLETED") {
+    redirect(`/portal/tren/${input.sessionId}`);
+  }
+
   // Frys aggregat fra liveSnapshot (ny flyt). Legacy-kallere uten snapshot får
   // null-aggregat, som før — bakoverkompatibelt.
   const snap = parseLiveSnapshot(session.liveSnapshot);

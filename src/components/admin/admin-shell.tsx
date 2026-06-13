@@ -1,6 +1,7 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { AgencyosSidebar, type SidebarCounts } from "./agencyos-sidebar";
+import type { SidebarCounts } from "@/lib/admin-nav";
+import { AgencyosSidebar } from "./agencyos-sidebar";
 import { AgencyosTopbar, type ScopeGroup, type ScopePlayer } from "./agencyos-topbar";
 import { AdminMobileDrawer } from "./mobile-drawer";
 import { GlobalSearchModal } from "./global-search-modal";
@@ -141,7 +142,7 @@ export async function AdminShell({ children }: { children: React.ReactNode }) {
       </div>
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="flex items-center gap-2 border-b border-border px-4 py-2 md:hidden">
-          <AdminMobileDrawer />
+          <AdminMobileDrawer workbenchHref={workbenchHref} />
           <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             AgencyOS
           </span>

@@ -13,14 +13,21 @@
  * Finnes ingen snapshot (direkte navigasjon) vises planen — ALDRI falske tall.
  */
 
-import { useMemo, useSyncExternalStore, useTransition } from "react";
+import { useMemo, useState, useSyncExternalStore, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Check, Send, Star, Trophy, Video, X } from "lucide-react";
+import { ArrowRight, Check, Frown, Meh, Send, SmilePlus, Star, Trophy, Video, X } from "lucide-react";
 import type { LiveSessionData } from "@/lib/portal-live/types";
 import { fmtMSS, formatDateEyebrow, AXIS_LABEL } from "@/lib/portal-live/format";
 import { AXIS_SHORT, axisDotColor } from "./axis";
 import { liveSnapshotKey, type LiveSnapshot } from "./snapshot";
 import { completeSession } from "@/app/portal/(fullscreen)/live/[sessionId]/actions";
+
+// Mood-velger for feedback til coach — blir til notes/rating i økt-loggen.
+const MOODS = [
+  { id: "good", icon: SmilePlus, aria: "Bra økt", label: "God økt", rating: 5 },
+  { id: "ok", icon: Meh, aria: "Helt grei", label: "Grei økt", rating: 3 },
+  { id: "tough", icon: Frown, aria: "Tøff økt", label: "Tøff økt", rating: 2 },
+] as const;
 
 export function LiveSummary({ data }: { data: LiveSessionData }) {
   const router = useRouter();
@@ -94,17 +101,23 @@ export function LiveSummary({ data }: { data: LiveSessionData }) {
   const heroTitle = lowCompliance ? "Økt loggført" : "Økt fullført";
 
   const [pending, startTransition] = useTransition();
+  const [mood, setMood] = useState<"good" | "ok" | "tough" | null>(null);
+  const [note, setNote] = useState("");
 
   // Fullfør økta: fryser aggregat til DB og nuller snapshot (completeSession
-  // redirigerer til økt-detalj eller feiring).
+  // redirigerer til økt-detalj eller feiring). Mood + kommentar blir til
+  // notes/rating i loggen — uten valgt mood sendes ingenting (aldri påfunne tall).
   function handleComplete() {
+    const valgt = MOODS.find((m) => m.id === mood);
+    const notes = [valgt?.label, note.trim()].filter(Boolean).join(" — ") || undefined;
+    const rating = valgt?.rating;
     try {
       sessionStorage.removeItem(liveSnapshotKey(data.sessionId));
     } catch {
       /* ignore */
     }
     startTransition(async () => {
-      await completeSession({ sessionId: data.sessionId });
+      await completeSession({ sessionId: data.sessionId, notes, rating });
     });
   }
 
@@ -283,6 +296,39 @@ export function LiveSummary({ data }: { data: LiveSessionData }) {
             </div>
           </Section>
         )}
+
+        {/* FEEDBACK TIL COACH (valgfritt — sendes med loggen) */}
+        <Section label="Feedback til coach">
+          <div className="flex items-center justify-center gap-3">
+            {MOODS.map((m) => {
+              const aktiv = mood === m.id;
+              const Icon = m.icon;
+              return (
+                <button
+                  key={m.id}
+                  type="button"
+                  onClick={() => setMood(aktiv ? null : m.id)}
+                  aria-label={m.aria}
+                  aria-pressed={aktiv}
+                  className={`grid h-14 w-14 place-items-center rounded-full border transition-colors ${
+                    aktiv
+                      ? "border-accent bg-accent/20 text-accent"
+                      : "border-background/15 bg-background/[0.07] text-background/60"
+                  }`}
+                >
+                  <Icon className="h-6 w-6" strokeWidth={1.5} aria-hidden />
+                </button>
+              );
+            })}
+          </div>
+          <input
+            type="text"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            placeholder="Kommentar (valgfritt)"
+            className="mt-3 h-12 w-full rounded-xl border border-background/15 bg-background/[0.07] px-4 text-[14px] text-background placeholder:text-background/40 focus:border-accent focus:outline-none"
+          />
+        </Section>
       </div>
 
       {/* footer CTA */}
