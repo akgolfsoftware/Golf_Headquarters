@@ -76,14 +76,14 @@ export function CreateSessionSheet({ open, onOpenChange, planId }: Props) {
           <div className="font-mono text-[10px] font-bold uppercase leading-none tracking-[0.12em] text-muted-foreground">
             Ny treningsøkt
           </div>
-          <SheetTitle className="mt-2 font-display text-[17px] font-bold tracking-[-0.01em]">
+          <SheetTitle className="mt-2 font-display text-lg font-bold tracking-[-0.01em]">
             Planlegg økt
           </SheetTitle>
         </SheetHeader>
 
         {!planId ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-4 p-8 text-center">
-            <CalendarPlus size={32} strokeWidth={1.25} className="text-muted-foreground" />
+            <CalendarPlus size={32} strokeWidth={1.5} className="text-muted-foreground" />
             <p className="font-sans text-sm text-muted-foreground">
               Du har ingen aktiv treningsplan. Opprett en plan først, så kan du legge til økter.
             </p>
@@ -103,9 +103,9 @@ export function CreateSessionSheet({ open, onOpenChange, planId }: Props) {
           >
             <input type="hidden" name="planId" value={planId} />
 
-            <div className="flex flex-col gap-5 p-5">
-              <label className="flex flex-col gap-[7px]">
-                <span className="font-mono text-[9px] font-extrabold uppercase tracking-[0.1em] text-muted-foreground">
+            <div className="flex flex-col gap-6 p-6">
+              <label className="flex flex-col gap-2">
+                <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.1em] text-muted-foreground">
                   Tittel
                 </span>
                 <Input
@@ -116,8 +116,8 @@ export function CreateSessionSheet({ open, onOpenChange, planId }: Props) {
                 />
               </label>
 
-              <label className="flex flex-col gap-[7px]">
-                <span className="font-mono text-[9px] font-extrabold uppercase tracking-[0.1em] text-muted-foreground">
+              <label className="flex flex-col gap-2">
+                <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.1em] text-muted-foreground">
                   Dato og tid
                 </span>
                 <Input
@@ -128,8 +128,8 @@ export function CreateSessionSheet({ open, onOpenChange, planId }: Props) {
                 />
               </label>
 
-              <label className="flex flex-col gap-[7px]">
-                <span className="font-mono text-[9px] font-extrabold uppercase tracking-[0.1em] text-muted-foreground">
+              <label className="flex flex-col gap-2">
+                <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.1em] text-muted-foreground">
                   Varighet (minutter)
                 </span>
                 <Input
@@ -142,8 +142,8 @@ export function CreateSessionSheet({ open, onOpenChange, planId }: Props) {
                 />
               </label>
 
-              <label className="flex flex-col gap-[7px]">
-                <span className="font-mono text-[9px] font-extrabold uppercase tracking-[0.1em] text-muted-foreground">
+              <label className="flex flex-col gap-2">
+                <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.1em] text-muted-foreground">
                   Pyramideområde
                 </span>
                 <select
@@ -159,8 +159,8 @@ export function CreateSessionSheet({ open, onOpenChange, planId }: Props) {
                 </select>
               </label>
 
-              <label className="flex flex-col gap-[7px]">
-                <span className="font-mono text-[9px] font-extrabold uppercase tracking-[0.1em] text-muted-foreground">
+              <label className="flex flex-col gap-2">
+                <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.1em] text-muted-foreground">
                   Sted (valgfri)
                 </span>
                 <select
@@ -176,13 +176,13 @@ export function CreateSessionSheet({ open, onOpenChange, planId }: Props) {
               </label>
 
               {error && (
-                <p className="rounded-lg bg-destructive/10 px-4 py-3 font-mono text-xs text-destructive">
+                <p className="rounded-lg bg-destructive/10 p-4 font-mono text-xs text-destructive">
                   {error}
                 </p>
               )}
             </div>
 
-            <div className="mt-auto flex gap-[10px] border-t border-border px-5 py-[14px]">
+            <div className="mt-auto flex gap-4 border-t border-border px-6 py-4">
               <button
                 type="button"
                 className="flex-1 rounded-full border border-border bg-transparent px-4 py-2 font-mono text-xs font-bold uppercase tracking-[0.08em] text-foreground transition-colors hover:bg-secondary disabled:opacity-50"

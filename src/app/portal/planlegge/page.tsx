@@ -9,10 +9,10 @@ import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getViewMode } from "@/lib/view-mode";
 import { getPlanleggeData } from "@/lib/portal-planlegge/planlegge-data";
+import { getWorkbenchData } from "@/app/portal/planlegge/actions";
 import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 import { PlanleggeWorkbench } from "@/components/portal/planlegge/planlegge-workbench";
-import { Workbench } from "@/components/workbench/workbench";
-import { loadWorkbenchData } from "@/lib/workbench/load-workbench";
+import { WorkbenchShell } from "@/components/portal/workbench/WorkbenchShell";
 
 export const dynamic = "force-dynamic";
 
@@ -28,7 +28,7 @@ export default async function PlanleggePage() {
 
   const [data, wbData] = await Promise.all([
     getPlanleggeData(user.id),
-    loadWorkbenchData(user.id).then((d) => d ?? undefined),
+    getWorkbenchData().catch(() => null),
   ]);
 
   return (
@@ -45,9 +45,15 @@ export default async function PlanleggePage() {
         <PlanleggeWorkbench data={data} />
       </div>
 
-      {/* Desktop: den komplette Workbenchen (fasit) */}
-      <div className="hidden xl:block">
-        <Workbench role="player" data={wbData} />
+      {/* Desktop: ny PlayerHQ Workbench */}
+      <div className="hidden h-full xl:block">
+        {wbData ? (
+          <WorkbenchShell data={wbData} />
+        ) : (
+          <div className="rounded-2xl border border-dashed border-border bg-card p-8 text-center">
+            <p className="text-muted-foreground">Kunne ikke laste Workbench-data.</p>
+          </div>
+        )}
       </div>
     </>
   );

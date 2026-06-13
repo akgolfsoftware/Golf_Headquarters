@@ -97,10 +97,10 @@ export default async function HullAnalysePage() {
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="mx-auto max-w-[440px]">
-        <div className="mb-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+        <div className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
           PlayerHQ · hull-analyse
         </div>
-        <h1 className="mb-5 font-display text-2xl font-bold tracking-tight text-foreground">
+        <h1 className="mb-4 font-display text-2xl font-bold tracking-tight text-foreground">
           Hvor taper du <em className="font-normal italic text-primary">slag</em>?
         </h1>
 

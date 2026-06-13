@@ -37,16 +37,16 @@
   --success-foreground: 0 0% 100%;
   --warning: 34 64% 44%;           /* #B8852A */
   --warning-foreground: 0 0% 100%;
-  --info: 207 90% 54%;             /* #1F8AE3 */
+  --info: 221 83% 53%;             /* #2563EB */
   --info-foreground: 0 0% 100%;
 
   /* Chart-tokens (data-viz) */
-  --chart-1: 159 100% 17%;         /* primary green */
-  --chart-2: 154 64% 30%;          /* teal */
-  --chart-3: 72 92% 62%;           /* lime */
-  --chart-4: 34 64% 44%;           /* ochre */
-  --chart-5: 207 90% 54%;          /* info blue */
-  --chart-6: 280 50% 50%;          /* purple */
+  --chart-1: 164 100% 17%;         /* #005840 — FYS/primary */
+  --chart-2: 38 63% 44%;           /* #B8852A — TEK/warning */
+  --chart-3: 221 83% 53%;          /* #2563EB — SLAG/info */
+  --chart-4: 73 93% 62%;           /* #D1F843 — SPILL/accent */
+  --chart-5: 0 57% 41%;            /* #A32D2D — TURN/destructive */
+  --chart-6: 43 4% 35%;            /* #5E5C57 — benchmark/neutral */
 
   /* Form og fokus */
   --border: 45 13% 88%;            /* #E5E3DD (rettet — var 60 8% 90% → #E8E8E3) */

@@ -377,6 +377,8 @@ model User {
   // Workbench v2 — Sprint 1
   planAdjustmentsAsPlayer PlanAdjustment[]        @relation("PlanAdjustmentUser")
   planAdjustmentsAsCoach  PlanAdjustment[]        @relation("PlanAdjustmentCoach")
+  planChangeRequestsAsPlayer PlanChangeRequest[]  @relation("PlanChangePlayer")
+  planChangeRequestsAsCoach  PlanChangeRequest[]  @relation("PlanChangeCoach")
   tournamentPreparations  TournamentPreparation[]
 
   // CoachHQ-relasjoner (Fase 2.1)
@@ -1141,9 +1143,10 @@ model Round {
   notes        String?
   createdAt    DateTime @default(now())
 
-  user   User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  course CourseDefinition @relation(fields: [courseId], references: [id])
-  shots  Shot[]
+  user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course     CourseDefinition @relation(fields: [courseId], references: [id])
+  shots      Shot[]
+  holeScores HoleScore[]
 
   @@index([userId, playedAt])
   @@map("rounds")
@@ -1199,11 +1202,37 @@ model Shot {
   notes         String?
   createdAt     DateTime @default(now())
 
+  // For shot-map og runde-statistikk
+  startX        Float?
+  startY        Float?
+  endX          Float?
+  endY          Float?
+  mentalScore   Int?     @db.SmallInt // 1-5
+
   round Round @relation(fields: [roundId], references: [id], onDelete: Cascade)
 
   @@unique([roundId, holeNumber, shotNumber])
   @@index([roundId, holeNumber])
   @@map("shots")
+}
+
+model HoleScore {
+  id         String   @id @default(cuid())
+  roundId    String
+  holeNumber Int
+  par        Int
+  strokes    Int
+  putts      Int?
+  fairway    Boolean?
+  gir        Boolean?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  round Round @relation(fields: [roundId], references: [id], onDelete: Cascade)
+
+  @@unique([roundId, holeNumber])
+  @@index([roundId])
+  @@map("hole_scores")
 }
 
 model TestDefinition {
@@ -2475,13 +2504,20 @@ model TrainingDrillV2 {
 }
 
 model DrillLogV2 {
-  id          String          @id @default(cuid())
-  drillId     String
-  drill       TrainingDrillV2 @relation(fields: [drillId], references: [id], onDelete: Cascade)
-  loggedBy    String
-  successRate Int
-  notes       String?
-  loggedAt    DateTime        @default(now())
+  id                String          @id @default(cuid())
+  drillId           String
+  drill             TrainingDrillV2 @relation(fields: [drillId], references: [id], onDelete: Cascade)
+  loggedBy          String
+  successRate       Int
+  notes             String?
+  loggedAt          DateTime        @default(now())
+
+  // Rep-kategorier for live-økt-logging
+  repsTotal         Int             @default(0)
+  repsWithoutBall   Int             @default(0)
+  repsLowSpeed      Int             @default(0)
+  repsAutomatic     Int             @default(0)
+  repsHit           Int             @default(0)
 
   @@index([drillId])
   @@map("drill_logs_v2")
@@ -2992,6 +3028,27 @@ model PlanAdjustment {
 }
 
 // "Forbered meg"-plan for én spiller mot én turnering.
+model PlanChangeRequest {
+  id          String   @id @default(cuid())
+  playerId    String
+  planId      String?
+  sessionId   String?
+  changeType  String   // MOVE / DELETE / EDIT / CREATE
+  payload     Json
+  status      String   @default("PENDING") // PENDING / APPROVED / REJECTED
+  coachId     String?
+  coachNote   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  player  User   @relation("PlanChangePlayer", fields: [playerId], references: [id], onDelete: Cascade)
+  coach   User?  @relation("PlanChangeCoach", fields: [coachId], references: [id], onDelete: SetNull)
+
+  @@index([playerId, status])
+  @@index([coachId, status])
+  @@map("plan_change_requests")
+}
+
 model TournamentPreparation {
   id           String @id @default(cuid())
   userId       String

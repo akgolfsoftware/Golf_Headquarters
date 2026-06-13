@@ -1,11 +1,15 @@
 /**
- * PlayerHQ · Live-økt — forest-fullscreen komponentfamilie.
+ * PlayerHQ · Live-økt V2 — komponentfamilie for TrainingSessionV2.
  *
- * Skjerm 1 brief · skjerm 2 aktiv + skjerm 3 overgang (LiveActive) · skjerm 4
- * oppsummering. Bygget mot DS-tokens (bg-primary forest, text-background cream,
- * text-accent lime). Ingen hardkodet hex, ingen emoji (kun lucide).
+ * Bygget mot TrainingSessionV2 + TrainingDrillV2 + DrillLogV2.
+ * Full-screen mørk modus (foreground-bakgrunn / accent-aksent), store touch-mål.
  */
 
-export { LiveBrief } from "./live-brief";
-export { LiveActive } from "./live-active";
-export { LiveSummary } from "./live-summary";
+export * from "./types";
+export { LiveSessionShell } from "./LiveSessionShell";
+export { SessionTimer } from "./SessionTimer";
+export { RepCounter } from "./RepCounter";
+export { DrillLogger } from "./DrillLogger";
+export { SessionSummary } from "./SessionSummary";
+export { LiveBrief } from "./LiveBrief";
+export { LiveActive } from "./LiveActive";

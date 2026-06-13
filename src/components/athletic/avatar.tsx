@@ -32,8 +32,8 @@ export function AthleticAvatar({
     <span
       className={cn(
         "relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary text-accent",
-        borderColor === "white" ? "border-2 border-white" : "border-2 border-card",
-        "shadow-[0_4px_14px_rgba(0,0,0,0.12)]",
+        borderColor === "white" ? "border-2 border-background" : "border-2 border-card",
+        "shadow-md",
         dims.wrap,
         className,
       )}
@@ -49,7 +49,7 @@ export function AthleticAvatar({
         <span
           aria-hidden
           className={cn(
-            "absolute bottom-0.5 right-0.5 rounded-full border-2 border-white bg-accent shadow-[0_0_6px_rgba(209,248,67,0.45)]",
+            "absolute bottom-0.5 right-0.5 rounded-full border-2 border-background bg-accent shadow-[0_0_6px_hsl(var(--accent)/0.45)]",
             dims.status,
           )}
         />
@@ -58,7 +58,7 @@ export function AthleticAvatar({
         <span
           aria-hidden
           className={cn(
-            "absolute bottom-0.5 right-0.5 rounded-full border-2 border-white bg-muted-foreground",
+            "absolute bottom-0.5 right-0.5 rounded-full border-2 border-background bg-muted-foreground",
             dims.status,
           )}
         />

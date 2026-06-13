@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Plus, ChevronDown, UserCircle } from "lucide-react";
+import { Plus, ChevronDown } from "lucide-react";
 import type { Tier } from "@/generated/prisma/client";
+import { cn } from "@/lib/utils";
+import { buttonClasses } from "@/components/ui/button";
 import { SidebarBrand } from "@/components/shared/sidebar-brand";
-import { FEATURES } from "@/lib/features";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -28,8 +29,8 @@ type NavItem = {
 // Navigation
 // ---------------------------------------------------------------------------
 
-// PlayerHQ 5-seksjons IA (validerings-runde 2026-05-22)
-// Plan-IA: Oversikt · Planlegge · Gjennomføre · Analysere · Coach
+// PlayerHQ 5-seksjons IA — forenklet meny
+// Plan-IA: Oversikt · Planlegge · Analysere · Coach · Meg
 const MAIN_ITEMS: NavItem[] = [
   { href: "/portal", label: "Oversikt" },
   {
@@ -40,6 +41,8 @@ const MAIN_ITEMS: NavItem[] = [
       "/portal/tren",
       "/portal/trening",
       "/portal/mal",
+      "/portal/drills",
+      "/portal/turneringer",
     ],
     children: [
       { href: "/portal/tren/aarsplan", label: "Årsplan" },
@@ -51,21 +54,6 @@ const MAIN_ITEMS: NavItem[] = [
       { href: "/portal/trening/logg", label: "Logg treningsøkt" },
       { href: "/portal/trening/putte-laboratoriet", label: "Putte-laboratoriet" },
       { href: "/portal/trening/break-tabell", label: "Break-tabell" },
-    ],
-  },
-  {
-    href: "/portal/gjennomfore",
-    label: "Gjennomføre",
-    matchPrefixes: [
-      "/portal/gjennomfore",
-      "/portal/kalender",
-      "/portal/booking",
-      "/portal/ny-okt",
-      "/portal/onskeligokt",
-    ],
-    children: [
-      { href: "/portal/kalender", label: "Kalender" },
-      { href: "/portal/booking", label: "Booking" },
     ],
   },
   {
@@ -97,13 +85,8 @@ const MAIN_ITEMS: NavItem[] = [
       { href: "/portal/coach/plans", label: "Planer" },
     ],
   },
+  { href: "/portal/meg", label: "Meg", matchPrefixes: ["/portal/meg"] },
 ];
-
-const TALENT_ITEM: NavItem = {
-  href: "/portal/talent",
-  label: "Talent",
-  matchPrefixes: ["/portal/talent"],
-};
 
 // ---------------------------------------------------------------------------
 // Active-link helpers
@@ -135,14 +118,12 @@ export function PortalSidebar({
 }) {
   const path = usePathname();
 
-  const items: NavItem[] = FEATURES.TALENT
-    ? [...MAIN_ITEMS, TALENT_ITEM]
-    : MAIN_ITEMS;
+  const items: NavItem[] = MAIN_ITEMS;
 
   return (
     <aside
       aria-label="PlayerHQ sidemeny"
-      className="flex w-52 shrink-0 flex-col bg-[var(--color-player-sidebar)] text-white lg:w-64"
+      className="flex w-52 shrink-0 flex-col bg-[var(--color-player-sidebar)] text-background lg:w-64"
     >
       {/* Logo */}
       <div className="flex justify-center px-4 py-6">
@@ -156,9 +137,9 @@ export function PortalSidebar({
       <div className="px-4 pb-4">
         <Link
           href="/portal/ny-okt"
-          className="flex items-center justify-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+          className={cn(buttonClasses({ variant: "primary", size: "md" }), "w-full")}
         >
-          <Plus className="h-4 w-4" strokeWidth={2} />
+          <Plus className="h-4 w-4" strokeWidth={1.5} />
           Ny økt
         </Link>
       </div>
@@ -182,8 +163,8 @@ export function PortalSidebar({
                   aria-current={aktiv && !hasChildren ? "page" : undefined}
                   className={`relative flex items-center justify-between rounded-md px-4 py-2.5 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-player-sidebar)] ${
                     aktiv
-                      ? "bg-[var(--color-accent-fill)] font-semibold text-white before:absolute before:left-0 before:top-1/2 before:h-6 before:w-[3px] before:-translate-y-1/2 before:rounded-r before:bg-[var(--color-brand-accent)]"
-                      : "text-white/70 hover:bg-white/5 hover:text-white"
+                      ? "bg-[var(--color-accent-fill)] font-semibold text-background before:absolute before:left-0 before:top-1/2 before:h-6 before:w-[3px] before:-translate-y-1/2 before:rounded-r before:bg-[var(--color-brand-accent)]"
+                      : "text-background/70 hover:bg-background/5 hover:text-background"
                   }`}
                 >
                   <span>{item.label}</span>
@@ -197,8 +178,8 @@ export function PortalSidebar({
                   )}
                   {hasChildren && (
                     <ChevronDown
-                      className={`h-3.5 w-3.5 transition-transform ${expanded ? "rotate-180" : ""} ${aktiv ? "text-white/60" : "text-white/40"}`}
-                      strokeWidth={2}
+                      className={`h-3.5 w-3.5 transition-transform ${expanded ? "rotate-180" : ""} ${aktiv ? "text-background/60" : "text-background/40"}`}
+                      strokeWidth={1.5}
                     />
                   )}
                 </Link>
@@ -215,8 +196,8 @@ export function PortalSidebar({
                           aria-current={childAktiv ? "page" : undefined}
                           className={`block rounded-md px-4 py-2 text-[13px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-player-sidebar)] ${
                             childAktiv
-                              ? "font-medium text-white"
-                              : "text-white/50 hover:text-white/80"
+                              ? "font-medium text-background"
+                              : "text-background/50 hover:text-background/80"
                           }`}
                         >
                           {child.label}
@@ -230,21 +211,6 @@ export function PortalSidebar({
           })}
         </div>
       </nav>
-
-      {/* Profil-lenke */}
-      <div className="px-4 pb-2">
-        <Link
-          href="/portal/meg"
-          className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm transition-colors ${
-            path === "/portal/meg"
-              ? "bg-[var(--color-accent-fill)] font-semibold text-white"
-              : "text-white/50 hover:bg-white/5 hover:text-white"
-          }`}
-        >
-          <UserCircle className="h-4 w-4" strokeWidth={1.75} />
-          Min profil
-        </Link>
-      </div>
 
       {/* Tier-badge */}
       <div

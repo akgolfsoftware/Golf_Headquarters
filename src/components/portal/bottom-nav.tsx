@@ -5,9 +5,9 @@ import { usePathname } from "next/navigation";
 import {
   Home,
   CalendarRange,
-  Play,
   BarChart3,
   MessageSquare,
+  UserCircle,
 } from "lucide-react";
 
 type NavItemDef = {
@@ -17,13 +17,13 @@ type NavItemDef = {
   exact: boolean;
 };
 
-// PlayerHQ 5-seksjons IA — master-plan Q5 (mobile bottom-nav)
+// PlayerHQ 5-seksjons IA — forenklet mobil bottom-nav
 const NAV: ReadonlyArray<NavItemDef> = [
   { href: "/portal", label: "Oversikt", icon: Home, exact: true },
   { href: "/portal/planlegge", label: "Planlegg", icon: CalendarRange, exact: false },
-  { href: "/portal/gjennomfore", label: "Gjør", icon: Play, exact: false },
   { href: "/portal/analysere", label: "Analyser", icon: BarChart3, exact: false },
   { href: "/portal/coach", label: "Coach", icon: MessageSquare, exact: false },
+  { href: "/portal/meg", label: "Meg", icon: UserCircle, exact: false },
 ];
 
 function erAktiv(path: string, item: NavItemDef): boolean {
@@ -36,7 +36,7 @@ export function BottomNav() {
 
   return (
     <nav
-      aria-label="Hovednavigasjon"
+      aria-label="Mobilnavigasjon"
       className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card md:hidden"
       style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
@@ -49,16 +49,15 @@ export function BottomNav() {
               <Link
                 href={item.href}
                 aria-current={aktiv ? "page" : undefined}
-                className={`flex min-h-14 flex-col items-center justify-center gap-1 px-2 py-2 text-[10px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset ${
+                className={`flex min-h-16 flex-col items-center justify-center gap-1 px-2 py-2 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset ${
                   aktiv
                     ? "text-primary"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 <Icon
-                  width={22}
-                  height={22}
-                  strokeWidth={aktiv ? 2 : 1.5}
+                  size={24}
+                  strokeWidth={1.5}
                   aria-hidden
                 />
                 <span className="leading-none">{item.label}</span>

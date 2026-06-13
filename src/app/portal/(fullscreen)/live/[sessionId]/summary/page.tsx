@@ -1,21 +1,17 @@
 /**
- * PlayerHQ · Live-økt oppsummering (skjerm 4) — forest-fullscreen.
+ * PlayerHQ · Live-økt oppsummering V2 — TrainingSessionV2.
  *
- * Henter ekte data via loadLiveSession (trainingPlanSession + drills + neste
- * økt). Faktiske reps/tid leses klient-side fra sessionStorage-snapshot lagt
- * av aktiv-skjermen. Auth-guard + eierskap beholdt.
- *
- * Status-guard: kun COMPLETED (og ACTIVE/PAUSED for umiddelbar retur etter
- * goToSummary) vises her. ABANDONED → brief med avbrutt-notis. Alle andre
- * terminale statuser → tren-oversikt.
+ * Viser fullført økt med total reps, tid, drills fullført og pyramide-fordeling.
  */
 
 import { notFound, redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { loadLiveSession } from "@/lib/portal-live/data";
-import { LiveSummary } from "@/components/portal/live";
+import { loadLiveSession } from "@/app/portal/(fullscreen)/live/[sessionId]/actions";
+import { LiveSessionShell, SessionSummary } from "@/components/portal/live";
+import type { LiveV2Summary } from "@/components/portal/live";
+import type { PyramidArea } from "@/generated/prisma/client";
 
-export default async function SummaryPage({
+export default async function LiveSummaryPage({
   params,
 }: {
   params: Promise<{ sessionId: string }>;
@@ -27,26 +23,62 @@ export default async function SummaryPage({
   const result = await loadLiveSession(sessionId, user.id, isCoach);
   if (!result.ok) {
     if (result.reason === "notfound") notFound();
-    redirect("/portal/tren");
+    redirect("/portal/planlegge");
   }
 
-  const { status } = result.data;
+  const { data } = result;
 
-  // ABANDONED → brief med avbrutt-banner.
-  if (status === "ABANDONED") {
-    redirect(`/portal/live/${sessionId}/brief?avbrutt=1`);
+  // Ikke-fullførte økter skal ikke vise sammendrag (unntatt race-vindu).
+  if (data.status !== "COMPLETED") {
+    redirect(`/portal/live/${sessionId}/active`);
   }
 
-  // Ikke-aktive statuser som ikke er COMPLETED eller ACTIVE/PAUSED → tren.
-  // ACTIVE/PAUSED tillates fordi completeSession kaller redirect *etter* DB-skriv,
-  // og status kan leses som ACTIVE i et race-vindu fra goToSummary-overgangen.
-  if (
-    status !== "COMPLETED" &&
-    status !== "ACTIVE" &&
-    status !== "PAUSED"
-  ) {
-    redirect("/portal/tren");
-  }
+  // Les lagret duration fra completedSummary hvis tilgjengelig.
+  const storedSummary =
+    data.completedSummary && typeof data.completedSummary === "object" && !Array.isArray(data.completedSummary)
+      ? (data.completedSummary as Record<string, unknown>).liveSummary
+      : null;
+  const storedDurationSec =
+    storedSummary && typeof storedSummary === "object" && !Array.isArray(storedSummary)
+      ? Number((storedSummary as Record<string, unknown>).durationSec)
+      : NaN;
 
-  return <LiveSummary data={result.data} />;
+  // Beregn sammendrag fra loggene.
+  const totalReps = data.existingLogs.reduce((sum, l) => sum + l.repsTotal, 0);
+  const drillsCompleted = data.existingLogs.length;
+  const pyramidSummary = data.drills.reduce<Record<PyramidArea, number>>(
+    (acc, drill) => {
+      const log = data.existingLogs.find((l) => l.drillId === drill.id);
+      acc[drill.pyramide] = (acc[drill.pyramide] ?? 0) + (log?.repsTotal ?? 0);
+      return acc;
+    },
+    { FYS: 0, TEK: 0, SLAG: 0, SPILL: 0, TURN: 0 },
+  );
+
+  const firstLog = data.existingLogs[0];
+  const lastLog = data.existingLogs[data.existingLogs.length - 1];
+  const computedDurationSec =
+    firstLog && lastLog
+      ? Math.max(
+          0,
+          Math.round(
+            (new Date(lastLog.loggedAt).getTime() - new Date(firstLog.loggedAt).getTime()) / 1000,
+          ),
+        )
+      : 0;
+  const durationSec = Number.isFinite(storedDurationSec) ? storedDurationSec : computedDurationSec;
+
+  const summaryData: LiveV2Summary = {
+    ...data,
+    durationSec,
+    totalReps,
+    drillsCompleted,
+    pyramidSummary,
+  };
+
+  return (
+    <LiveSessionShell title={data.title} subtitle="Oppsummering" closeHref="/portal/planlegge">
+      <SessionSummary data={summaryData} />
+    </LiveSessionShell>
+  );
 }

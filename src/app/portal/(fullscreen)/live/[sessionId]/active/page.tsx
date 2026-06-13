@@ -1,14 +1,13 @@
 /**
- * PlayerHQ · Live-økt aktiv (skjerm 2 + overgang skjerm 3) — forest-fullscreen.
+ * PlayerHQ · Live-økt aktiv V2 — TrainingSessionV2.
  *
- * Det viktigste skjermbildet. Henter ekte data via loadLiveSession
- * (trainingPlanSession + drills). Auth-guard + eierskap/tier-gating beholdt.
- * Faktiske reps/tid logges klient-side (offline-først) i LiveActive.
+ * Henter økt + drills og rendrer LiveActive-komponenten som styrer timer,
+ * rep-logging og drill-fremdrift.
  */
 
 import { notFound, redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { loadLiveSession } from "@/lib/portal-live/data";
+import { loadLiveSession } from "@/app/portal/(fullscreen)/live/[sessionId]/actions";
 import { LiveActive } from "@/components/portal/live";
 
 export default async function LiveActivePage({
@@ -19,7 +18,6 @@ export default async function LiveActivePage({
   const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
   const { sessionId } = await params;
 
-  // Live-logging krever PRO (coach/admin slipper gjennom for innsyn/test).
   const isCoach = user.role === "COACH" || user.role === "ADMIN";
   if (user.tier === "GRATIS" && !isCoach) {
     redirect("/portal/meg/abonnement");
@@ -28,12 +26,19 @@ export default async function LiveActivePage({
   const result = await loadLiveSession(sessionId, user.id, isCoach);
   if (!result.ok) {
     if (result.reason === "notfound") notFound();
-    redirect("/portal/tren");
+    redirect("/portal/planlegge");
   }
 
-  // Terminal-statuser: ikke vis aktiv-UI.
+  // Terminal-statuser: coach kan fortsatt se; spiller sendes videre.
   if (result.data.status === "COMPLETED") redirect(`/portal/live/${sessionId}/summary`);
-  if (result.data.status === "ABANDONED") redirect(`/portal/live/${sessionId}/brief?avbrutt=1`);
+  if (result.data.status === "CANCELLED" || result.data.status === "SKIPPED") {
+    redirect("/portal/planlegge");
+  }
+
+  // Coach ser read-only aktiv skjerm; for MVP sender vi likevel til brief.
+  if (isCoach) {
+    redirect(`/portal/live/${sessionId}/brief`);
+  }
 
   return <LiveActive data={result.data} />;
 }

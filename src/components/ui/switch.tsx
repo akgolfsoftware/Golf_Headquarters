@@ -43,7 +43,7 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(function Switch(
       />
       <span
         className={cn(
-          "pointer-events-none inline-block rounded-full bg-card shadow",
+          "pointer-events-none inline-block rounded-full bg-card shadow-sm",
           "transition-transform duration-200",
           s.thumb,
           "translate-x-1",

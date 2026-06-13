@@ -40,7 +40,7 @@ export function AthleticHero({
           sizes="100vw"
         />
       ) : (
-        <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/90 to-emerald-900" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/90 to-foreground" />
       )}
 
       <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/40 to-transparent z-[1]" />
@@ -50,7 +50,7 @@ export function AthleticHero({
         <div className="absolute left-5 right-5 top-12 z-[5] flex items-center justify-between">
           {eyebrow ? <AthleticEyebrow tone="light">{eyebrow}</AthleticEyebrow> : <span />}
           {weather && (
-            <span className="flex items-center gap-1.5 font-mono text-[10px] tracking-[0.06em] text-white/90 [text-shadow:0_1px_4px_rgba(0,0,0,0.4)]">
+            <span className="flex items-center gap-1.5 font-mono text-[10px] tracking-[0.06em] text-background/90 [text-shadow:0_1px_4px_hsl(var(--foreground)/0.4)]">
               {weather.pulse && <PulseDot size="sm" />}
               {weather.label}
             </span>

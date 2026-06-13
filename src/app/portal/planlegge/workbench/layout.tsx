@@ -15,5 +15,9 @@ export default function WorkbenchLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <div className="fixed inset-0 z-50 bg-background">{children}</div>;
+  return (
+    <div className="fixed inset-0 z-50 overflow-auto bg-background">
+      <div className="min-h-full">{children}</div>
+    </div>
+  );
 }

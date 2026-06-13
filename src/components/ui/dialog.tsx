@@ -136,7 +136,7 @@ export function DialogContent({
       >
         {showCloseButton && (
           <DialogClose
-            className="absolute right-4 top-4 z-10 grid h-9 w-9 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+            className="absolute right-4 top-4 z-10 grid h-10 w-10 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
             aria-label="Lukk"
           >
             <X size={20} aria-hidden />
@@ -157,7 +157,7 @@ export function DialogHeader({ className, children }: DialogHeaderProps) {
   return (
     <header
       className={cn(
-        "flex flex-col gap-1 border-b border-border px-6 py-4 shrink-0",
+        "flex flex-col gap-2 border-b border-border px-6 py-4 shrink-0",
         className,
       )}
     >

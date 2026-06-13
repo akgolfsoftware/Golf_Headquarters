@@ -1,0 +1,18 @@
+/**
+ * PlayerHQ Workbench — scoped utility styles.
+ * Bruker kun design-tokens fra globals.css (ingen hardkodede farger).
+ */
+
+.ph-workbench {
+  --shadow-card: 0 1px 2px rgba(15, 31, 24, 0.04), 0 4px 12px rgba(15, 31, 24, 0.04);
+}
+
+.ph-workbench .shadow-card {
+  box-shadow: var(--shadow-card);
+}
+
+/* Sikre at sidebar og statusbar får riktig mørk PlayerHQ-farge */
+.ph-workbench [data-player-dark] {
+  background-color: var(--color-player-sidebar);
+  color: var(--color-surface);
+}

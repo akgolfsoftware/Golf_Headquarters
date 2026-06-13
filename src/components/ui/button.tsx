@@ -36,13 +36,13 @@ export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 const variantClasses: Record<ButtonVariant, string> = {
-  lime: "bg-accent text-primary shadow-[0_6px_14px_rgba(209,248,67,0.25)] hover:brightness-105",
+  lime: "bg-accent text-primary shadow-[0_6px_14px_var(--color-accent-fill)] hover:brightness-105",
   primary: "bg-primary text-accent hover:bg-primary/90",
   secondary:
     "bg-transparent border border-primary text-primary hover:bg-primary/5",
   "ghost-light": "bg-transparent text-foreground hover:bg-muted",
   "ghost-dark":
-    "bg-white/10 text-white hover:bg-white/15 border border-white/15",
+    "bg-background/10 text-background hover:bg-background/15 border border-background/15",
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
