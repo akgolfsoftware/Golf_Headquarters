@@ -1,5 +1,5 @@
 /**
- * SidebarBrand — sentrert merkevare-block for ALLE sidebars og mobile-drawer.
+ * SidebarBrand — sentrert merkevare-block for ALLE sidebars.
  *
  * Mønster:
  *   [ak-logo med lime-prikk]

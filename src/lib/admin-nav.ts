@@ -29,7 +29,7 @@ import {
 
 /**
  * Delt nav-config for AgencyOS — ÉN kilde for desktop-sidebar
- * (agencyos-sidebar.tsx) og mobil-skuff (mobile-drawer.tsx).
+ * (agencyos-sidebar.tsx) og mobil-bunn-nav (agencyos-mobile-nav.tsx).
  * Ren TS-modul: ingen React, ingen server-kode. Badge-tallene
  * (SidebarCounts) bygges av AdminShell fra ekte Prisma-tellinger.
  */
