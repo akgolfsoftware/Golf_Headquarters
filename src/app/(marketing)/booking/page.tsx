@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { MapPin, User, CalendarDays, CreditCard, UserCheck } from "lucide-react";
+import { MapPin, User, CalendarDays, CreditCard, UserCheck, ArrowRight } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 
@@ -55,6 +55,10 @@ function formaterPris(ore: number): string {
 // er på plass. Forhindrer dobbel-booking mot Anders sin private kalender.
 // Sett BOOKING_ACTIVE=true i Vercel når sync er live.
 const BOOKING_ACTIVE = process.env.BOOKING_ACTIVE === "true";
+
+// Frem til AK Golf HQ-bookingen lanseres bookes alt via Acuity (akgolfgroup.as.me).
+// Når BOOKING_ACTIVE=true settes i Vercel, overtar den innebygde flyten automatisk.
+const BOOKING_ACUITY_URL = process.env.NEXT_PUBLIC_ACUITY_URL ?? "https://akgolfgroup.as.me";
 
 export default async function BookingLanding({
   searchParams,
@@ -410,23 +414,24 @@ function BookingPaused() {
         <div className="text-center">
           <AthleticEyebrow tone="lime">Booking</AthleticEyebrow>
           <h1 className="mt-4 font-display text-3xl font-semibold leading-[1.1] tracking-tight sm:text-4xl md:text-5xl">
-            Booking er midlertidig{" "}
-            <em className="font-normal italic text-primary">pauset</em>
+            <em className="font-normal italic text-primary">Book</em> en økt
           </h1>
           <p className="mt-6 text-base text-muted-foreground">
-            Vi gjør klar Google Calendar-integrasjon slik at du aldri risikerer
-            å booke en time som ikke er ledig. Bookingen åpner igjen om kort
-            tid.
-          </p>
-          <p className="mt-4 text-base text-muted-foreground">
-            Vil du booke en time akkurat nå? Send oss en e-post:
+            Book Pro-time, TrackMan-analyse eller gruppe-økt direkte i
+            bookingkalenderen vår. Velg ledig tid og bekreft på sekunder.
           </p>
           <a
-            href="mailto:post@akgolf.no?subject=Booking-foresp%C3%B8rsel"
+            href={BOOKING_ACUITY_URL}
+            target="_blank"
+            rel="noopener noreferrer"
             className="font-display mt-6 inline-flex h-11 items-center justify-center gap-1.5 rounded-full bg-accent px-6 text-sm font-bold tracking-[-0.005em] text-primary shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
-            Skriv til post@akgolf.no
+            Book time nå
+            <ArrowRight size={16} strokeWidth={2} />
           </a>
+          <p className="mt-4 text-xs text-muted-foreground">
+            Du sendes til bookingsiden vår (akgolfgroup.as.me).
+          </p>
         </div>
         <SlikFungererDet />
       </div>

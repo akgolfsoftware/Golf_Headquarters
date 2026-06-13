@@ -2,7 +2,7 @@
 
 > Dette er den komplette lista over hver eneste skjerm i appen, og om den er helt ferdig eller ikke. Én plass å se alt.
 
-Sist oppdatert: 13. juni 2026 (lansering — AgencyOS Fase 4 mobil flettet inn på main).
+Sist oppdatert: 13. juni 2026 (lansering-dag — AgencyOS Fase 4 mobil + KimiCode PlayerHQ-design flettet inn; abonnement-regler (betaling fra 1. juli) + Acuity-booking + GDPR-fikser; restanse-review). **Booking: Acuity (akgolfgroup.as.me) er midlertidig booking-vei frem til AK Golf HQ-bookingen lanseres — alle «Book»-knapper peker dit. Sett BOOKING_ACTIVE=true i Vercel for å aktivere den innebygde flyten.**
 
 ---
 
@@ -716,6 +716,17 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 ---
 
 ## Endringslogg
+
+- 13. juni (lansering-dag): **Stor konsolidering + lansering-klargjøring.**
+  - **AgencyOS Fase 4 mobil** flettet til main (mobilskall + WorkbenchMobile + mobilkortlister).
+  - **KimiCode PlayerHQ-design** flettet inn (live-økt, workbench, analysere, portal-shell, tokens, ui-primitiver) + additiv DB-migrasjon (hole_scores, plan_change_requests, Shot-koordinater, drill-rep-felt) anvendt på prod med RLS. Data-blokkerte items DELVIS opplåst: scorecard hull-for-hull (`HoleScore`) + shot-map (Shot-koordinater) har nå lagringsplass i DB — gjenstår datafangst + visning i turnerings-scorecard/shot-map-skjerm.
+  - **Abonnement-regler kodet** (`beregnEffektivTier`, betaling fra 1. juli): gratis for alle frem til 1. juli 2026, deretter coaching-pakke/gruppe/prøveperiode = gratis, ellers 300 kr/mnd. Beregnes sentralt i getCurrentUser — fikset «kalde gates» da PRO-for-alle-kampanjen utløp 1. juni.
+  - **GDPR-fikser:** soft-slettet konto blokkeres fra innlogging (getCurrentUser→null); eksport-plassholder fjernet — `/innstillinger/eksport` redirecter til ekte eksport på `/personvern`.
+  - **Booking via Acuity (midlertidig):** alle «Book»-knapper funnel-er til `/booking` → branded side med «Book time nå →» til `akgolfgroup.as.me` frem til AK Golf HQ-bookingen lanseres. Innebygd flyt parkert bak `BOOKING_ACTIVE`-flagget (portal credit-booking urørt).
+  - **Opprydding:** slettet gamle design-arkiver (mai-handoff, wireframes) + død kode (mobile-drawer) + research-cache; arkivert 8 daterte planer til `docs/_arkiv`.
+  - **Synlighet:** `npm run design-index` → klikkbar skjerm-oversikt (`public/design-handover/index.html`, lokal). Løser «jobbe i blinde».
+  - **Restanse-review:** `docs/restanse-review-2026-06-13.md` — komplett gjennomgang av gjenstående arbeid utenom skjermer (data/sikkerhet/betaling/infra/juridisk/testing).
+  - Alt deployet til prod (akgolf-hq.vercel.app), 177/177 tester grønne, sikkerhetsadvisor 0 ERROR.
 
 - 12. juni (session 12): **InsightNarrative strip-fix + sg-hub-kobling.** `InsightNarrativeCard` hadde top-strip; rettet til left-strip (4px, `absolute left-0 top-0 h-full w-1`) + `pl-6` i container — matcher design-fasiten. Ny integrering: `InsightNarrativeCard` rendres nå også på `/portal/mal/sg-hub` (topp 3 uløste SgInsights, sortert etter severity). Payload-mapper (`mapInsightToCard`) inline i sg-hub/page.tsx. `components-insight-narrative.html` drop-off oppdatert med sg-hub-nevning.
 
