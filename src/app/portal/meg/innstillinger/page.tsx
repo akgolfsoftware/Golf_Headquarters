@@ -157,7 +157,7 @@ export default async function InnstillingerPage() {
           meta="Kopi av alt vi har lagret om deg"
           right={
             <Link
-              href="/portal/meg/innstillinger/eksport"
+              href="/portal/meg/innstillinger/personvern"
               className={buttonClasses({ variant: "secondary", size: "sm" })}
             >
               Åpne

@@ -18,6 +18,9 @@ export const getCurrentUser = cache(async (): Promise<User | null> => {
   const user = await prisma.user.findUnique({
     where: { authId: authUser.id },
   });
+  // GDPR (P20): soft-slettet konto (deletedAt satt) behandles som utlogget —
+  // brukeren kan ikke bruke appen i 30-dagers angrevinduet. Gjenoppretting via support.
+  if (user?.deletedAt) return null;
   if (user) return withEffektivTilgang(user);
 
   // Supabase-bruker finnes, men Prisma-rad mangler — opprett via metadata.

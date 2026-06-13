@@ -125,7 +125,7 @@ export const PORTAL_ROUTES: RouteEntry[] = [
   { route: "/portal/meg/helse/symptom/ny", label: "Nytt symptom", category: "Min profil" },
   { route: "/portal/meg/innstillinger", label: "Innstillinger", category: "Min profil" },
   { route: "/portal/meg/innstillinger/anlegg", label: "Innst. · Anlegg", category: "Min profil" },
-  { route: "/portal/meg/innstillinger/eksport", label: "Innst. · Eksport", category: "Min profil" },
+  { route: "/portal/meg/innstillinger/personvern", label: "Innst. · Personvern & eksport", category: "Min profil" },
   { route: "/portal/meg/innstillinger/integrasjoner", label: "Innst. · Integrasjoner", category: "Min profil" },
   { route: "/portal/meg/innstillinger/okter", label: "Innst. · Økter", category: "Min profil" },
   { route: "/portal/meg/innstillinger/personvern", label: "Innst. · Personvern", category: "Min profil" },
