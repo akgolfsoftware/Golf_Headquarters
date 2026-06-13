@@ -2,8 +2,8 @@ import { Gift } from "lucide-react";
 import { PRO_KAMPANJE_INFO } from "@/lib/feature-flags";
 
 /**
- * Banner som varsler at alle har Pro-tilgang frem til 1. juni.
- * Returnerer null hvis kampanjen er utløpt.
+ * Banner som varsler at alle har gratis Pro-tilgang frem til betaling starter
+ * (1. juli 2026). Returnerer null når lanserings-vinduet er over.
  */
 export function ProKampanjeBanner() {
   if (!PRO_KAMPANJE_INFO.aktiv) return null;
@@ -19,7 +19,7 @@ export function ProKampanjeBanner() {
           </div>
           <p className="mt-0.5 text-xs text-muted-foreground">
             AI-coach, egne økter, direkte kontakt med trener — alt er åpent for
-            alle i denne perioden. Ingen handling nødvendig.
+            alle frem til da. Ingen handling nødvendig før betaling starter.
           </p>
         </div>
       </div>

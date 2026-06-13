@@ -5,7 +5,7 @@ import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { ensureUser } from "./ensureUser";
-import { effektivTier } from "@/lib/feature-flags";
+import { beregnEffektivTier } from "@/lib/feature-flags";
 import type { User } from "@/generated/prisma/client";
 
 export const getCurrentUser = cache(async (): Promise<User | null> => {
@@ -18,18 +18,31 @@ export const getCurrentUser = cache(async (): Promise<User | null> => {
   const user = await prisma.user.findUnique({
     where: { authId: authUser.id },
   });
-  if (user) return withEffektivTier(user);
+  if (user) return withEffektivTilgang(user);
 
   // Supabase-bruker finnes, men Prisma-rad mangler — opprett via metadata.
   const ny = await ensureUser(authUser);
-  return ny ? withEffektivTier(ny) : null;
+  return ny ? withEffektivTilgang(ny) : null;
 });
 
-// Overstyrer `tier`-feltet i samsvar med PRO-kampanjen (se lib/feature-flags.ts).
-// /portal/meg/abonnement må fortsatt vise FAKTISK tier — den henter direkte
-// fra `prisma.user` ved behov.
-function withEffektivTier(user: User): User {
-  const overstyrt = effektivTier(user.tier);
-  if (overstyrt === user.tier) return user;
-  return { ...user, tier: overstyrt };
+// Overskriver `tier` med EFFEKTIV tier etter de låste reglene (se lib/feature-flags.ts):
+// PRO = har PlayerHQ-tilgang (gratis ELLER betalt), GRATIS = må betale 300 kr/mnd.
+// Laster coaching-pakke (Subscription) + gruppemedlemskap for å avgjøre gratis-tilgang.
+// /portal/meg/abonnement viser FAKTISK tier ved å lese prisma.user direkte.
+async function withEffektivTilgang(user: User): Promise<User> {
+  const [sub, gruppeCount] = await Promise.all([
+    prisma.subscription
+      .findUnique({ where: { userId: user.id }, select: { monthlyCredits: true, status: true } })
+      .catch(() => null),
+    prisma.groupMember.count({ where: { userId: user.id } }).catch(() => 0),
+  ]);
+  const effektiv = beregnEffektivTier({
+    tier: user.tier,
+    createdAt: user.createdAt,
+    coachingMonthlyCredits: sub?.monthlyCredits ?? 0,
+    subscriptionActive: sub?.status === "ACTIVE",
+    iGruppe: gruppeCount > 0,
+  });
+  if (effektiv === user.tier) return user;
+  return { ...user, tier: effektiv };
 }
