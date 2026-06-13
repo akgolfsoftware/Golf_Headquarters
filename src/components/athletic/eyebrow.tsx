@@ -14,9 +14,9 @@ export function AthleticEyebrow({
   return (
     <span
       className={cn(
-        "font-mono text-[10px] font-semibold uppercase tracking-[0.12em]",
+        "font-mono text-[10px] font-bold uppercase tracking-[0.10em]",
         tone === "default" && "text-muted-foreground",
-        tone === "light" && "text-white/90 [text-shadow:0_1px_4px_rgba(0,0,0,0.4)]",
+        tone === "light" && "text-background/90 [text-shadow:0_1px_4px_hsl(var(--foreground)/0.4)]",
         tone === "lime" && "text-accent",
         className,
       )}

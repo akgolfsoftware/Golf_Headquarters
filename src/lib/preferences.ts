@@ -16,6 +16,8 @@ export type UserPreferences = {
   };
   spraak: "nb" | "en";
   sgHubMode: "simple" | "advanced";
+  /** Måleenhet for lengder i appen. */
+  enhet: "meter" | "yards";
 };
 
 export const DEFAULT_PREFERENCES: UserPreferences = {
@@ -31,6 +33,7 @@ export const DEFAULT_PREFERENCES: UserPreferences = {
   },
   spraak: "nb",
   sgHubMode: "simple",
+  enhet: "meter",
 };
 
 function boolPref(val: unknown, defaultVal: boolean): boolean {
@@ -49,6 +52,7 @@ export function lesPreferences(user: Pick<User, "preferences">): UserPreferences
       : {};
   const spraak = obj.spraak === "en" ? "en" : "nb";
   const sgHubMode = obj.sgHubMode === "advanced" ? "advanced" : "simple";
+  const enhet = obj.enhet === "yards" ? "yards" : "meter";
   const d = DEFAULT_PREFERENCES.notif;
 
   return {
@@ -64,5 +68,6 @@ export function lesPreferences(user: Pick<User, "preferences">): UserPreferences
     },
     spraak,
     sgHubMode,
+    enhet,
   };
 }

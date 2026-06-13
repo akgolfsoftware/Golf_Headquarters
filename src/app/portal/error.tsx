@@ -24,14 +24,14 @@ export default function PortalError({ error, reset }: Props) {
             strokeWidth={1.5}
             aria-hidden
           />
-          <h1 className="font-display text-4xl font-bold leading-tight tracking-tight text-white md:text-5xl">
+          <h1 className="font-display text-4xl font-bold leading-tight tracking-tight text-background md:text-5xl">
             Noe <em className="font-normal italic text-accent">gikk galt</em>
           </h1>
-          <p className="mt-2 max-w-md text-sm text-white/80">
+          <p className="mt-2 max-w-md text-sm text-background/80">
             Vi støtte på en uventet feil. Prøv igjen, eller gå tilbake til hjem.
           </p>
           {error.digest && (
-            <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.12em] text-white/60">
+            <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.10em] text-background/60">
               ref {error.digest}
             </p>
           )}
@@ -42,7 +42,7 @@ export default function PortalError({ error, reset }: Props) {
         <button
           type="button"
           onClick={() => reset()}
-          className="font-display inline-flex items-center justify-center gap-1.5 rounded-full bg-accent px-6 py-2 text-sm font-bold tracking-[-0.005em] text-primary shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="font-display inline-flex items-center justify-center gap-1.5 rounded-full bg-accent px-6 py-2 text-sm font-bold tracking-[-0.005em] text-primary shadow-[0_6px_14px_var(--color-accent-fill)] transition hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           Tilbake til hjem
         </button>

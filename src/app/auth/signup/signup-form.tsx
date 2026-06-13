@@ -51,14 +51,14 @@ const PACKAGES: PackageOption[] = [
   },
 ];
 
-export function SignupForm() {
+export function SignupForm({ defaultEmail }: { defaultEmail?: string } = {}) {
   const router = useRouter();
   const supabase = createClient();
   const [pkg, setPkg] = useState<PackageValue>("PERFORMANCE_PRO");
   const [role, setRole] = useState<UserRole>("PLAYER");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(defaultEmail ?? "");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [accept, setAccept] = useState(false);

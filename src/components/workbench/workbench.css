@@ -3256,3 +3256,41 @@
   position: relative;
 }
 .akwb .dr-body .cal { height: 100%; }
+
+/* ============================================================
+   Analytics scope reset
+   ------------------------------------------------------------
+   Workbench bruker semantiske farger som komplette farger
+   (f.eks. --card: #ffffff). Tailwind v4 sine utilities forventer
+   derimot HSL-tripler (f.eks. bg-card → hsl(var(--card))).
+   Denne resetten gjelder kun for .analytics-scope (innholdspaneler
+   i Analytics Workbench) og gjenoppretter HSL-tripler slik at
+   Tailwind-utilities rendres korrekt uten å påvirke toppbar/
+   sidebar som bruker workbench-klassene direkte.
+   ============================================================ */
+
+.akwb .analytics-scope {
+  --background: 45 18% 97%;
+  --foreground: 157 53% 8%;
+  --card: 0 0% 100%;
+  --popover: 0 0% 100%;
+  --primary: 164 100% 17.3%;
+  --primary-foreground: 72 92% 62%;
+  --secondary: 45 30% 92%;
+  --secondary-foreground: 157 53% 8%;
+  --muted: 45 30% 92%;
+  --muted-foreground: 60 4% 37%;
+  --accent: 72 92% 62%;
+  --accent-foreground: 164 100% 17.3%;
+  --destructive: 0 56% 41%;
+  --destructive-foreground: 0 0% 98%;
+  --success: 154 64% 30%;
+  --success-foreground: 0 0% 100%;
+  --warning: 34 64% 44%;
+  --warning-foreground: 0 0% 100%;
+  --info: 221 83% 53%;
+  --info-foreground: 0 0% 100%;
+  --border: 45 13% 88%;
+  --input: 45 13% 86%;
+  --ring: 164 100% 17.3%;
+}

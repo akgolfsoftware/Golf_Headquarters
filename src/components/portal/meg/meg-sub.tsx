@@ -6,11 +6,13 @@
  *   Mobil: page-pad-kolonne. Desktop: samme innhold, innhold maks 680px.
  * SetGroup: card-gruppe med avrundede hjørner og delelinjer.
  * SetRow: rad med ikon-chip (38px, secondary/primary), tittel + mono-meta, høyre-slot.
+ * SetLinkRow: SetRow som <Link> med chevron — for navigerbare rader.
  *
  * Server-vennlige (ingen state). Tokens fra globals.css — ingen hardkodet hex.
  */
 
-import type { LucideIcon } from "lucide-react";
+import Link from "next/link";
+import { ChevronRight, type LucideIcon } from "lucide-react";
 import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 
 export function MeSub({
@@ -86,6 +88,40 @@ export function SetRow({
       </span>
       {right}
     </div>
+  );
+}
+
+/** SetRow som lenke — samme indre struktur som SetRow, pluss hover/fokus og chevron. */
+export function SetLinkRow({
+  href,
+  icon: Icon,
+  title,
+  meta,
+  right,
+}: {
+  href: string;
+  icon?: LucideIcon;
+  title: string;
+  meta?: string;
+  right?: React.ReactNode;
+}) {
+  return (
+    <Link
+      href={href}
+      className="flex items-center gap-3.5 border-b border-border px-[18px] py-[15px] last:border-b-0 transition-colors hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
+    >
+      {Icon && (
+        <span className="grid h-[38px] w-[38px] shrink-0 place-items-center rounded-[11px] bg-secondary text-primary">
+          <Icon className="h-[19px] w-[19px]" strokeWidth={1.75} aria-hidden />
+        </span>
+      )}
+      <span className="min-w-0 flex-1">
+        <span className="block text-[14.5px] font-semibold tracking-[-0.005em] text-foreground">{title}</span>
+        {meta && <span className="mt-0.5 block font-mono text-[11px] text-muted-foreground">{meta}</span>}
+      </span>
+      {right}
+      <ChevronRight className="h-[18px] w-[18px] shrink-0 text-muted-foreground" strokeWidth={1.75} aria-hidden />
+    </Link>
   );
 }
 

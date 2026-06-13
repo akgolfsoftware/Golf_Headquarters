@@ -48,7 +48,7 @@ export function CreatePlanSheet({ open, onOpenChange }: Props) {
           <div className="font-mono text-[10px] font-bold uppercase leading-none tracking-[0.12em] text-muted-foreground">
             Ny treningsplan
           </div>
-          <SheetTitle className="mt-2 font-display text-[17px] font-bold tracking-[-0.01em]">
+          <SheetTitle className="mt-2 font-display text-lg font-bold tracking-[-0.01em]">
             Opprett plan
           </SheetTitle>
         </SheetHeader>
@@ -58,16 +58,16 @@ export function CreatePlanSheet({ open, onOpenChange }: Props) {
           onSubmit={handleSubmit}
           className="flex flex-1 flex-col overflow-y-auto"
         >
-          <div className="flex flex-col gap-5 p-5">
-            <label className="flex flex-col gap-[7px]">
-              <span className="font-mono text-[9px] font-extrabold uppercase tracking-[0.1em] text-muted-foreground">
+          <div className="flex flex-col gap-6 p-6">
+            <label className="flex flex-col gap-2">
+              <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.1em] text-muted-foreground">
                 Navn
               </span>
               <Input name="name" placeholder="Høstsesong 2026" required maxLength={120} />
             </label>
 
-            <label className="flex flex-col gap-[7px]">
-              <span className="font-mono text-[9px] font-extrabold uppercase tracking-[0.1em] text-muted-foreground">
+            <label className="flex flex-col gap-2">
+              <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.1em] text-muted-foreground">
                 Startdato
               </span>
               <Input
@@ -78,21 +78,21 @@ export function CreatePlanSheet({ open, onOpenChange }: Props) {
               />
             </label>
 
-            <label className="flex flex-col gap-[7px]">
-              <span className="font-mono text-[9px] font-extrabold uppercase tracking-[0.1em] text-muted-foreground">
+            <label className="flex flex-col gap-2">
+              <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.1em] text-muted-foreground">
                 Sluttdato (valgfri)
               </span>
               <Input name="endDate" type="date" />
             </label>
 
             {error && (
-              <p className="rounded-lg bg-destructive/10 px-4 py-3 font-mono text-xs text-destructive">
+              <p className="rounded-lg bg-destructive/10 p-4 font-mono text-xs text-destructive">
                 {error}
               </p>
             )}
           </div>
 
-          <div className="mt-auto flex gap-[10px] border-t border-border px-5 py-[14px]">
+          <div className="mt-auto flex gap-4 border-t border-border px-6 py-4">
             <button
               type="button"
               className="flex-1 rounded-full border border-border bg-transparent px-4 py-2 font-mono text-xs font-bold uppercase tracking-[0.08em] text-foreground transition-colors hover:bg-secondary disabled:opacity-50"

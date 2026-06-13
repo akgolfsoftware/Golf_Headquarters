@@ -6,6 +6,8 @@
  * betaling og bekreftelse som åpner Stripe Checkout.
  *
  * Auth-guard beholdt. Er brukeren allerede PRO, sendes hen til abonnement-siden.
+ * PAST_DUE sendes også dit — ny checkout oppå feilet abonnement gir dobbelt-
+ * abonnement i Stripe; hubben viser «Endre kort» som riktig vei.
  * Tier-modell: kun GRATIS + PRO (300 kr/mnd) — ELITE finnes ikke i UI.
  */
 
@@ -19,8 +21,11 @@ export const dynamic = "force-dynamic";
 export default async function OppgraderFlytPage() {
   const user = await requirePortalUser();
 
-  const { erPro } = await getAbonnementData(user.id);
+  const { erPro, status } = await getAbonnementData(user.id);
   if (erPro) {
+    redirect("/portal/meg/abonnement");
+  }
+  if (status === "PAST_DUE") {
     redirect("/portal/meg/abonnement");
   }
 

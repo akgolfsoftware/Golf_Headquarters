@@ -7,8 +7,14 @@ import { SignupForm } from "./signup-form";
  * Skall: sentrert kolonne (max-w 396px) rett på cream-bakgrunn, sentrert
  * ak-logo øverst + venstrestilt eyebrow/tittel/lead — som fasiten.
  * All registreringslogikk bevart uendret i SignupForm.
+ * ?epost=… prefiller e-postfeltet (gjeste-bro fra booking-kvittering).
  */
-export default function SignupPage() {
+export default async function SignupPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ epost?: string }>;
+}) {
+  const { epost } = await searchParams;
   return (
     <main className="flex min-h-svh items-start justify-center bg-background px-6 py-10 sm:items-center sm:py-16">
       <div className="flex w-full max-w-[396px] flex-col">
@@ -38,7 +44,7 @@ export default function SignupPage() {
           </p>
         </div>
 
-        <SignupForm />
+        <SignupForm defaultEmail={epost} />
       </div>
     </main>
   );

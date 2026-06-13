@@ -69,7 +69,7 @@ export async function PortalShell({
             />
             <div
               aria-label="PlayerHQ"
-              className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground"
+              className="font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground"
             >
               PlayerHQ
             </div>

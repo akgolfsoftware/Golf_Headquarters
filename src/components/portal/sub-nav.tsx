@@ -13,7 +13,7 @@ export function SubNav({ items }: { items: SubNavItem[] }) {
 
   return (
     <nav className="mb-6 -mx-4 sm:mx-0">
-      <div className="flex gap-1 overflow-x-auto border-b border-border px-4 sm:px-0 scrollbar-none">
+      <div className="flex gap-2 overflow-x-auto border-b border-border px-4 sm:px-0 scrollbar-none">
         {items.map((item) => {
           const aktiv =
             path === item.href ||
@@ -30,7 +30,7 @@ export function SubNav({ items }: { items: SubNavItem[] }) {
             >
               {item.label}
               {aktiv && (
-                <span className="absolute inset-x-3 -bottom-px h-0.5 bg-primary" />
+                <span className="absolute inset-x-4 -bottom-px h-0.5 bg-primary" />
               )}
             </Link>
           );

@@ -259,16 +259,15 @@ type DGApproachResponse = {
   data?: DGApproachRow[];
 };
 
-// Yardage-bøtter vi samler data i (midpoint i yards → bucket-label)
+// Yardage-bøtter vi samler data i (nøyaktig de 5 granulære APP-båndene fra MasterBrain / SG-spes)
+// Brukes for å utvide SgBaseline og PgaApproachDistance med DG /preds/approach-skill data.
+// Label matches de nye SG kategoriene: Approach 200+, Approach 150-200, Approach 100-150, Approach 50-100, Approach <50
 const APPROACH_BUCKETS: { label: string; minYards: number; maxYards: number }[] = [
-  { label: "50-75",  minYards: 50,  maxYards: 75  },
-  { label: "75-100", minYards: 75,  maxYards: 100 },
-  { label: "100-125",minYards: 100, maxYards: 125 },
-  { label: "125-150",minYards: 125, maxYards: 150 },
-  { label: "150-175",minYards: 150, maxYards: 175 },
-  { label: "175-200",minYards: 175, maxYards: 200 },
-  { label: "200-225",minYards: 200, maxYards: 225 },
-  { label: "225+",   minYards: 225, maxYards: 9999 },
+  { label: "200+",    minYards: 200, maxYards: 9999 },
+  { label: "150-200", minYards: 150, maxYards: 200 },
+  { label: "100-150", minYards: 100, maxYards: 150 },
+  { label: "50-100",  minYards: 50,  maxYards: 100 },
+  { label: "<50",     minYards: 0,   maxYards: 50  },
 ];
 
 /**
@@ -287,14 +286,13 @@ const APPROACH_BUCKETS: { label: string; minYards: number; maxYards: number }[] 
  * ikke som proximity i meter. Vi bruker en kalibrert konvertering.
  */
 const SG_TO_PROXIMITY_METERS: Record<string, number> = {
-  "50-75":   4.5,
-  "75-100":  5.5,
-  "100-125": 6.5,
-  "125-150": 7.5,
-  "150-175": 8.8,
-  "175-200": 10.2,
-  "200-225": 12.0,
-  "225+":    14.5,
+  // Oppdatert til de 5 granulære APP-båndene (fra MasterBrain / SG-spes 2026)
+  // Verdier approksimert fra tidligere Broadie/DG kalibrering for fairway-lie (kan finjusteres med nye DG samples)
+  "200+":    12.0,
+  "150-200": 10.2,
+  "100-150": 7.5,
+  "50-100":  5.0,
+  "<50":     3.0,
 };
 
 export async function syncPgaApproach(): Promise<{ updated: number }> {

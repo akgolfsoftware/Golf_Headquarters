@@ -1,286 +1,368 @@
 "use server";
 
 /**
- * PlayerHQ · Live-økt (Spor A: TrainingPlanSession) — server actions for
- * persistens. Live-fremdrift lagres løpende i `TrainingPlanSession.liveSnapshot`
- * (auto-save via API-route + ved pause), og fryses til `TrainingPlanSessionLog`
- * ved fullføring/avbrudd. Snapshot nulles når økta avsluttes.
+ * PlayerHQ · Live-økt V2 — server actions for TrainingSessionV2.
+ *
+ * Henter økt + drills, logger reps per drill (DrillLogV2), og fullfører økta.
  */
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
-import { computeEffectiveness } from "@/lib/ai-plan/effectiveness";
-import { notify } from "@/lib/notifications";
-import { parseLiveSnapshot } from "@/lib/portal-live/data";
-import type { LiveSnapshotData } from "@/lib/portal-live/types";
 import { Prisma } from "@/generated/prisma/client";
-
-export type SessionLogInput = {
-  sessionId: string;
-  /** ISO. Valgfri — leses fra liveSnapshot hvis utelatt (ny flyt). */
-  startedAt?: string;
-  csAchieved?: number;
-  notes?: string;
-  rating?: number;
-};
-
-async function verifyEierskap(sessionId: string) {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
-
-  const session = await prisma.trainingPlanSession.findUnique({
-    where: { id: sessionId },
-    include: { plan: { select: { userId: true } } },
-  });
-  if (!session) throw new Error("not-found");
-  if (session.plan.userId !== user.id && user.role !== "ADMIN" && user.role !== "COACH") {
-    throw new Error("forbidden");
-  }
-  return { user, session };
-}
-
-/** Frys per-drill aggregat + sum-reps + starttid fra et snapshot (eller tomt). */
-function freezeFromSnapshot(snap: LiveSnapshotData | null) {
-  const drills = snap?.drills ?? [];
-  const totalReps = drills.reduce((sum, d) => sum + (d.reps ?? 0), 0);
-  const drillAggregates = drills.map((d) => ({
-    drillId: d.drillId,
-    reps: d.reps,
-    elapsedSec: d.elapsedSec,
-    status: d.status,
-  }));
-  const startedAt = snap?.startedAtISO ? new Date(snap.startedAtISO) : new Date();
-  return { totalReps, drillAggregates, startedAt };
-}
+import type { PyramidArea, SessionStatusV2 } from "@/generated/prisma/client";
+import type { LiveV2Drill, LiveV2DrillLog, LiveV2Session } from "@/components/portal/live";
 
 export type StartSessionResult =
   | { state: "active" }
-  | { state: "paused" }
   | { state: "completed"; redirectTo: string }
-  | { state: "abandoned"; redirectTo: string; toast: string };
+  | { state: "unavailable"; redirectTo: string };
 
-/**
- * Aktiverer økta ved overgang brief→active. Håndterer alle statuser eksplisitt:
- * PLANNED→ACTIVE (init snapshot) · ACTIVE forblir ACTIVE (idempotent re-mount) ·
- * PAUSED forblir PAUSED (kun resumeLiveSession endrer) · COMPLETED→/summary ·
- * ABANDONED→/brief med toast. Klienten navigerer basert på resultatet.
- */
+export type CompleteDrillInput = {
+  sessionId: string;
+  drillId: string;
+  repsTotal: number;
+  repsWithoutBall: number;
+  repsLowSpeed: number;
+  repsAutomatic: number;
+  repsHit: number;
+  successRate?: number;
+  notes?: string;
+};
+
+type AccessResult =
+  | { ok: true; data: LiveV2Session }
+  | { ok: false; reason: "notfound" | "forbidden" };
+
+const AXIS_FOR_SESSION: PyramidArea = "TEK";
+
+const MILJO_LABEL: Record<string, string> = {
+  M0: "Innendørs",
+  M1: "Driving range",
+  M2: "Korte banen",
+  M3: "Banen",
+  M4: "Turnering",
+  M5: "Simulator",
+};
+
+const PRACTICE_LABEL: Record<string, string> = {
+  BLOKK: "Blokkpraksis",
+  RANDOM: "Tilfeldig praksis",
+  KONKURRANSE: "Konkurranse",
+  SPILL_TEST: "Spilltest",
+};
+
+/** Les coach-kommentar fra completedSummary.coachBrief.melding, fallback til notes. */
+function readCoachComment(session: {
+  notes: string | null;
+  completedSummary: Prisma.JsonValue;
+}): string | null {
+  const raw = session.completedSummary;
+  if (raw && typeof raw === "object" && !Array.isArray(raw)) {
+    const coachBrief = (raw as Record<string, unknown>).coachBrief;
+    if (coachBrief && typeof coachBrief === "object" && !Array.isArray(coachBrief)) {
+      const melding = (coachBrief as Record<string, unknown>).melding;
+      if (typeof melding === "string" && melding.trim()) return melding;
+    }
+  }
+  if (session.notes) return session.notes;
+  return null;
+}
+
+/** Sjekk at brukeren har tilgang til økta (spiller, coach, admin, eller deltaker). */
+async function verifyAccess(sessionId: string) {
+  const user = await getCurrentUser();
+  if (!user) throw new Error("unauthenticated");
+
+  const session = await prisma.trainingSessionV2.findUnique({
+    where: { id: sessionId },
+    include: {
+      drills: { orderBy: { sortOrder: "asc" } },
+      participants: { where: { userId: user.id } },
+    },
+  });
+  if (!session) throw new Error("not-found");
+
+  const isAdmin = user.role === "ADMIN";
+  const isCoach = user.role === "COACH";
+  const isOwner =
+    session.studentId === user.id ||
+    session.hostId === user.id ||
+    session.coachId === user.id;
+  const isParticipant = session.participants.some(
+    (p) => p.userId === user.id && ["ACCEPTED", "ATTENDED"].includes(p.status),
+  );
+
+  if (!isAdmin && !isCoach && !isOwner && !isParticipant) {
+    throw new Error("forbidden");
+  }
+
+  return { user, session };
+}
+
+/** Mapper en TrainingDrillV2 til live-view. */
+function mapDrill(drill: {
+  id: string;
+  sortOrder: number;
+  name: string;
+  description: string | null;
+  durationMinutes: number;
+  repetitions: number | null;
+  pyramide: PyramidArea;
+  lFase: string | null;
+  notes: string | null;
+}): LiveV2Drill {
+  return {
+    id: drill.id,
+    index: drill.sortOrder + 1,
+    name: drill.name,
+    description: drill.description,
+    durationMinutes: drill.durationMinutes,
+    plannedReps: drill.repetitions ?? 0,
+    pyramide: drill.pyramide,
+    lFase: drill.lFase,
+    notes: drill.notes,
+  };
+}
+
+/** Mapper DrillLogV2 til live-view. */
+function mapLog(log: {
+  drillId: string;
+  repsTotal: number;
+  repsWithoutBall: number;
+  repsLowSpeed: number;
+  repsAutomatic: number;
+  repsHit: number;
+  successRate: number;
+  notes: string | null;
+  loggedAt: Date;
+}): LiveV2DrillLog {
+  return {
+    drillId: log.drillId,
+    repsTotal: log.repsTotal,
+    repsWithoutBall: log.repsWithoutBall,
+    repsLowSpeed: log.repsLowSpeed,
+    repsAutomatic: log.repsAutomatic,
+    repsHit: log.repsHit,
+    successRate: log.successRate,
+    notes: log.notes,
+    loggedAt: log.loggedAt.toISOString(),
+  };
+}
+
+/** Henter sesjon + drills + eksisterende logger for live-økt. */
+export async function loadLiveSession(
+  sessionId: string,
+  userId: string,
+  isCoach: boolean,
+): Promise<AccessResult> {
+  const session = await prisma.trainingSessionV2.findUnique({
+    where: { id: sessionId },
+    include: {
+      drills: { orderBy: { sortOrder: "asc" } },
+      participants: true,
+    },
+  });
+  if (!session) return { ok: false, reason: "notfound" };
+
+  const isOwner =
+    session.studentId === userId ||
+    session.hostId === userId ||
+    session.coachId === userId;
+  const isParticipant = session.participants.some((p) =>
+    ["ACCEPTED", "ATTENDED"].includes(p.status),
+  );
+
+  if (!isOwner && !isParticipant && !isCoach) {
+    return { ok: false, reason: "forbidden" };
+  }
+
+  const student = session.studentId
+    ? await prisma.user.findUnique({
+        where: { id: session.studentId },
+        select: { name: true },
+      })
+    : null;
+
+  const existingLogs = await prisma.drillLogV2.findMany({
+    where: { drill: { sessionId } },
+    orderBy: { loggedAt: "asc" },
+  });
+
+  // Økt-pyramide utledes fra drills (majoritet), ellers TEK.
+  const pyramideCounts = session.drills.reduce<Record<string, number>>((acc, d) => {
+    acc[d.pyramide] = (acc[d.pyramide] ?? 0) + 1;
+    return acc;
+  }, {});
+  const pyramide =
+    (Object.entries(pyramideCounts).sort(([, a], [, b]) => b - a)[0]?.[0] as PyramidArea) ??
+    AXIS_FOR_SESSION;
+
+  const data: LiveV2Session = {
+    sessionId: session.id,
+    title: session.title,
+    coachComment: readCoachComment(session),
+    focus: `${MILJO_LABEL[session.miljo] ?? session.miljo} · ${PRACTICE_LABEL[session.practiceType] ?? session.practiceType}`,
+    status: session.status as SessionStatusV2,
+    scheduledAtISO: session.startTime.toISOString(),
+    completed: session.status === "COMPLETED",
+    studentName: student?.name ?? null,
+    pyramide,
+    drills: session.drills.map(mapDrill),
+    existingLogs: existingLogs.map(mapLog),
+    completedSummary: session.completedSummary,
+  };
+
+  return { ok: true, data };
+}
+
+/** Finn pågående økt (IN_PROGRESS) for spilleren. */
+export async function findOngoingSession(userId: string): Promise<{
+  sessionId: string;
+  title: string;
+} | null> {
+  const ongoing = await prisma.trainingSessionV2.findFirst({
+    where: {
+      OR: [
+        { studentId: userId },
+        { participants: { some: { userId, status: { in: ["ACCEPTED", "ATTENDED"] } } } },
+      ],
+      status: "IN_PROGRESS",
+    },
+    orderBy: { updatedAt: "desc" },
+    select: { id: true, title: true },
+  });
+  if (!ongoing) return null;
+  return { sessionId: ongoing.id, title: ongoing.title };
+}
+
+/** Starter økta (PLANNED → IN_PROGRESS). */
 export async function startSession(sessionId: string): Promise<StartSessionResult> {
-  const { session } = await verifyEierskap(sessionId);
+  const { session } = await verifyAccess(sessionId);
 
   switch (session.status) {
-    case "PLANNED": {
-      const now = new Date();
-      const initial: LiveSnapshotData = {
-        startedAtISO: now.toISOString(),
-        totalSec: 0,
-        updatedAtISO: now.toISOString(),
-        drills: [],
-      };
-      await prisma.trainingPlanSession.update({
+    case "PLANNED":
+      await prisma.trainingSessionV2.update({
         where: { id: sessionId },
-        data: { status: "ACTIVE", liveSnapshot: initial as unknown as Prisma.InputJsonValue },
+        data: { status: "IN_PROGRESS" },
       });
       revalidatePath(`/portal/live/${sessionId}`);
       return { state: "active" };
-    }
-    case "ACTIVE":
+    case "IN_PROGRESS":
       return { state: "active" };
-    case "PAUSED":
-      return { state: "paused" };
     case "COMPLETED":
       return { state: "completed", redirectTo: `/portal/live/${sessionId}/summary` };
-    case "ABANDONED":
-      return {
-        state: "abandoned",
-        redirectTo: `/portal/live/${sessionId}/brief?avbrutt=1`,
-        toast: "Økten ble avbrutt",
-      };
-    default: // SKIPPED | CANCELLED
-      return {
-        state: "abandoned",
-        redirectTo: "/portal/tren",
-        toast: "Økten er ikke aktiv lenger",
-      };
+    case "CANCELLED":
+    case "SKIPPED":
+    default:
+      return { state: "unavailable", redirectTo: "/portal/planlegge" };
   }
 }
 
-/** Pause: persister siste snapshot og sett status PAUSED. Idempotent. */
-export async function pauseLiveSession(
-  sessionId: string,
-  snapshot: LiveSnapshotData,
-): Promise<{ ok: boolean }> {
-  const { session } = await verifyEierskap(sessionId);
-  if (session.status !== "ACTIVE" && session.status !== "PAUSED") return { ok: false };
-  await prisma.trainingPlanSession.update({
-    where: { id: sessionId },
-    data: { status: "PAUSED", liveSnapshot: snapshot as unknown as Prisma.InputJsonValue },
+/** Logger reps for en drill (upsert på drillId + loggedBy). */
+export async function logDrillReps(input: CompleteDrillInput): Promise<{ ok: boolean }> {
+  const { user } = await verifyAccess(input.sessionId);
+
+  const successRate =
+    input.successRate ??
+    (input.repsTotal > 0 ? Math.round((input.repsHit / input.repsTotal) * 100) : 0);
+
+  await prisma.drillLogV2.upsert({
+    where: {
+      // Prisma støtter ikke unik sammensatt nøkkel uten @unique; vi bruker id-en
+      // via drillId + loggedBy lookup i stedet.
+      id: await findExistingLogId(input.drillId, user.id),
+    },
+    create: {
+      drillId: input.drillId,
+      loggedBy: user.id,
+      repsTotal: input.repsTotal,
+      repsWithoutBall: input.repsWithoutBall,
+      repsLowSpeed: input.repsLowSpeed,
+      repsAutomatic: input.repsAutomatic,
+      repsHit: input.repsHit,
+      successRate,
+      notes: input.notes ?? null,
+    },
+    update: {
+      repsTotal: input.repsTotal,
+      repsWithoutBall: input.repsWithoutBall,
+      repsLowSpeed: input.repsLowSpeed,
+      repsAutomatic: input.repsAutomatic,
+      repsHit: input.repsHit,
+      successRate,
+      notes: input.notes ?? null,
+      loggedAt: new Date(),
+    },
   });
-  revalidatePath(`/portal/live/${sessionId}`);
+
+  revalidatePath(`/portal/live/${input.sessionId}`);
+  revalidatePath(`/portal/live/${input.sessionId}/active`);
+  revalidatePath(`/portal/live/${input.sessionId}/summary`);
   return { ok: true };
 }
 
-/** Gjenoppta: sett status ACTIVE (kun fra PAUSED) og returner lagret snapshot. */
-export async function resumeLiveSession(
-  sessionId: string,
-): Promise<{ ok: boolean; snapshot: LiveSnapshotData | null }> {
-  const { session } = await verifyEierskap(sessionId);
-  if (session.status === "PAUSED") {
-    await prisma.trainingPlanSession.update({
-      where: { id: sessionId },
-      data: { status: "ACTIVE" },
-    });
-    revalidatePath(`/portal/live/${sessionId}`);
-  }
-  return { ok: true, snapshot: parseLiveSnapshot(session.liveSnapshot) };
-}
-
-/** Avbryt: frys delvis logg + sett status ABANDONED med valgfri årsak. */
-export async function abandonLiveSession(
-  sessionId: string,
-  reason?: string,
-): Promise<void> {
-  const { session } = await verifyEierskap(sessionId);
-  const snap = parseLiveSnapshot(session.liveSnapshot);
-  const { totalReps, drillAggregates, startedAt } = freezeFromSnapshot(snap);
-
-  // Frys delvis logg + sett ABANDONED/null snapshot ATOMISK (se completeSession).
-  await prisma.$transaction([
-    prisma.trainingPlanSessionLog.upsert({
-      where: { sessionId },
-      create: {
-        sessionId,
-        startedAt,
-        completedAt: null,
-        totalReps,
-        drillAggregates: drillAggregates as unknown as Prisma.InputJsonValue,
-        abandonReason: reason ?? null,
-      },
-      update: {
-        totalReps,
-        drillAggregates: drillAggregates as unknown as Prisma.InputJsonValue,
-        abandonReason: reason ?? null,
-      },
-    }),
-    prisma.trainingPlanSession.update({
-      where: { id: sessionId },
-      data: { status: "ABANDONED", liveSnapshot: Prisma.JsonNull },
-    }),
-  ]);
-
-  revalidatePath("/portal/tren");
-  revalidatePath(`/portal/live/${sessionId}`);
-}
-
-export async function completeSession(input: SessionLogInput) {
-  const { session } = await verifyEierskap(input.sessionId);
-
-  // Frys aggregat fra liveSnapshot (ny flyt). Legacy-kallere uten snapshot får
-  // null-aggregat, som før — bakoverkompatibelt.
-  const snap = parseLiveSnapshot(session.liveSnapshot);
-  const { totalReps, drillAggregates, startedAt: snapStartedAt } = freezeFromSnapshot(snap);
-  const startedAt = input.startedAt ? new Date(input.startedAt) : snapStartedAt;
-  const hasSnapshot = snap !== null;
-
-  // Frys logg + sett COMPLETED/null snapshot ATOMISK. Uten transaksjon kunne
-  // et avbrudd mellom skrivingene gi inkonsistens (logg fullført, men status
-  // fortsatt ACTIVE og snapshot ikke nullet → økta ser pågående ut).
-  const completedAt = new Date();
-  await prisma.$transaction([
-    prisma.trainingPlanSessionLog.upsert({
-      where: { sessionId: input.sessionId },
-      create: {
-        sessionId: input.sessionId,
-        startedAt,
-        completedAt,
-        csAchieved: input.csAchieved ?? null,
-        notes: input.notes ?? null,
-        rating: input.rating ?? null,
-        totalReps: hasSnapshot ? totalReps : null,
-        drillAggregates: hasSnapshot
-          ? (drillAggregates as unknown as Prisma.InputJsonValue)
-          : Prisma.JsonNull,
-      },
-      update: {
-        completedAt,
-        csAchieved: input.csAchieved ?? null,
-        notes: input.notes ?? null,
-        rating: input.rating ?? null,
-        totalReps: hasSnapshot ? totalReps : null,
-        drillAggregates: hasSnapshot
-          ? (drillAggregates as unknown as Prisma.InputJsonValue)
-          : Prisma.JsonNull,
-      },
-    }),
-    prisma.trainingPlanSession.update({
-      where: { id: input.sessionId },
-      data: { status: "COMPLETED", liveSnapshot: Prisma.JsonNull },
-    }),
-  ]);
-
-  // Sjekk om alle økter i planen nå er ferdige — i så fall auto-arkiver planen,
-  // beregn effectiveness og opprett celebration-notifikasjon. Sender også
-  // spilleren til feiringssiden i stedet for økt-detalj.
-  let redirectMal = `/portal/tren/${input.sessionId}`;
-  const sesjonMedPlan = await prisma.trainingPlanSession.findUnique({
-    where: { id: input.sessionId },
-    select: { planId: true },
+/** Hjelper for å finne eksisterende logg-id ved upsert. */
+async function findExistingLogId(drillId: string, userId: string): Promise<string> {
+  const existing = await prisma.drillLogV2.findFirst({
+    where: { drillId, loggedBy: userId },
+    select: { id: true },
+    orderBy: { loggedAt: "desc" },
   });
-  if (sesjonMedPlan) {
-    const planId = sesjonMedPlan.planId;
-    const teller = await prisma.trainingPlanSession.groupBy({
-      by: ["status"],
-      where: { planId },
-      _count: { _all: true },
-    });
-    const total = teller.reduce((sum, t) => sum + t._count._all, 0);
-    const completed = teller.find((t) => t.status === "COMPLETED")?._count._all ?? 0;
-    const planFortsattAapen = await prisma.trainingPlan.findUnique({
-      where: { id: planId },
-      select: { id: true, status: true, userId: true, name: true },
-    });
-    if (
-      planFortsattAapen &&
-      planFortsattAapen.status !== "ARCHIVED" &&
-      total > 0 &&
-      completed === total
-    ) {
-      const now = new Date();
-      await prisma.trainingPlan.update({
-        where: { id: planId },
-        data: { status: "ARCHIVED", isActive: false, endDate: now },
-      });
+  // Upsert krever en gyldig where. Hvis ingen logg finnes bruker vi en dummy-id
+  // som garantert ikke finnes, slik at create kjøres.
+  return existing?.id ?? "__new__";
+}
 
-      try {
-        await computeEffectiveness(planId);
-      } catch (err) {
-        // Ikke-blokkerende: planen er allerede arkivert. Logg med full kontekst
-        // så manglende effectiveness kan oppdages og kjøres på nytt.
-        // (verify-live-session.ts <sessionId> flagger også manglende PlanEffectiveness.)
-        console.error(
-          `[completeSession] computeEffectiveness FEILET for planId=${planId} ` +
-            `(userId=${planFortsattAapen.userId}). Planen er arkivert uten ` +
-            `effektivitets-analyse — må kjøres på nytt manuelt.`,
-          err,
-        );
-      }
+/** Markerer en drill som fullført ved å logge reps. Alias for logDrillReps. */
+export async function completeDrill(input: CompleteDrillInput): Promise<{ ok: boolean }> {
+  return logDrillReps(input);
+}
 
-      await notify({
-        userId: planFortsattAapen.userId,
-        type: "achievement",
-        title: `Du fullførte planen: ${planFortsattAapen.name}`,
-        body: "Se hvordan du har utviklet deg og be om ny plan.",
-        link: `/portal/tren/feiring/${planId}`,
-      });
+/** Fullfører økta: setter COMPLETED, lagrer sammendrag, redirect til summary. */
+export async function completeSession(sessionId: string, clientDurationSec?: number): Promise<void> {
+  const { user, session } = await verifyAccess(sessionId);
 
-      redirectMal = `/portal/tren/feiring/${planId}`;
-    }
+  if (session.status === "COMPLETED") {
+    redirect(`/portal/live/${sessionId}/summary`);
   }
 
-  revalidatePath("/portal");
-  revalidatePath("/portal/tren");
-  revalidatePath(`/portal/tren/${input.sessionId}`);
-  redirect(redirectMal);
+  const logs = await prisma.drillLogV2.findMany({
+    where: { drill: { sessionId } },
+    orderBy: { loggedAt: "asc" },
+  });
+
+  const totalReps = logs.reduce((sum, l) => sum + l.repsTotal, 0);
+  const drillsCompleted = logs.length;
+  const startedAt = logs.length > 0 ? logs[0].loggedAt : session.startTime;
+  const lastLoggedAt = logs.length > 0 ? logs[logs.length - 1].loggedAt : new Date();
+  const computedDurationSec = Math.max(
+    0,
+    Math.round((lastLoggedAt.getTime() - startedAt.getTime()) / 1000),
+  );
+  const durationSec = clientDurationSec ?? computedDurationSec;
+
+  const summary = {
+    liveSummary: {
+      startedAt: startedAt.toISOString(),
+      completedAt: new Date().toISOString(),
+      durationSec,
+      totalReps,
+      drillsCompleted,
+      loggedBy: user.id,
+    },
+  };
+
+  await prisma.trainingSessionV2.update({
+    where: { id: sessionId },
+    data: {
+      status: "COMPLETED",
+      completedSummary: summary as unknown as Prisma.InputJsonValue,
+    },
+  });
+
+  revalidatePath("/portal/planlegge");
+  revalidatePath(`/portal/live/${sessionId}`);
+  redirect(`/portal/live/${sessionId}/summary`);
 }
