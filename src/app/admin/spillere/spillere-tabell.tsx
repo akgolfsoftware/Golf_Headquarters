@@ -28,6 +28,8 @@ import {
 
 import { cn } from "@/lib/utils";
 import {
+  AgAvatar,
+  AgMobileRow,
   AgPage,
   AgPageHead,
   AgPlayerCell,
@@ -194,7 +196,7 @@ export function SpillereTabell({
           </div>
         ) : (
           <AgTableToolbar>
-            <span className="flex h-8 min-w-[200px] items-center gap-2 rounded-lg border border-border bg-background px-3 text-muted-foreground">
+            <span className="flex h-8 max-md:h-11 min-w-[200px] max-md:w-full items-center gap-2 rounded-lg border border-border bg-background px-3 text-muted-foreground">
               <Search size={14} strokeWidth={1.5} />
               <input
                 className="flex-1 border-0 bg-transparent text-xs text-foreground outline-none placeholder:text-muted-foreground"
@@ -209,7 +211,7 @@ export function SpillereTabell({
                   key={g}
                   type="button"
                   className={cn(
-                    "inline-flex h-[26px] cursor-pointer items-center rounded-md border-0 px-[11px] font-mono text-[10px] font-bold uppercase tracking-[0.06em] transition-colors",
+                    "inline-flex h-[26px] max-md:h-11 cursor-pointer items-center rounded-md border-0 px-[11px] font-mono text-[10px] font-bold uppercase tracking-[0.06em] transition-colors",
                     group === g
                       ? "bg-card text-primary shadow-sm"
                       : "bg-transparent text-muted-foreground",
@@ -223,7 +225,7 @@ export function SpillereTabell({
             <button
               type="button"
               className={cn(
-                "inline-flex h-8 cursor-pointer items-center gap-[6px] rounded-lg border bg-card px-[11px] font-mono text-[10px] font-bold uppercase tracking-[0.06em] hover:bg-secondary",
+                "inline-flex h-8 max-md:h-11 cursor-pointer items-center gap-[6px] rounded-lg border bg-card px-[11px] font-mono text-[10px] font-bold uppercase tracking-[0.06em] hover:bg-secondary",
                 att ? "border-primary text-primary" : "border-border text-muted-foreground",
               )}
               onClick={() => setAtt((a) => !a)}
@@ -241,6 +243,27 @@ export function SpillereTabell({
           </AgTableToolbar>
         )}
 
+        {/* Mobil (< md): kort-rader — avatar, navn, gruppe-sub, status-dot, chevron */}
+        <div className="divide-y divide-border md:hidden">
+          {filtered.length === 0 && (
+            <div className="px-4 py-10 text-center text-[13px] text-muted-foreground">
+              Ingen spillere matcher filteret.
+            </div>
+          )}
+          {filtered.map((p) => (
+            <AgMobileRow
+              key={p.id}
+              href={`/admin/spillere/${p.id}`}
+              leading={<AgAvatar initials={p.initials} size={36} />}
+              title={p.name}
+              sub={p.groupLabel}
+              trailing={<AgStatusDot tone={p.status}>{p.statusLbl}</AgStatusDot>}
+            />
+          ))}
+        </div>
+
+        {/* Desktop (md+): full tabell */}
+        <div className="hidden md:block">
         <AgTable>
           <thead>
             <tr>
@@ -329,6 +352,7 @@ export function SpillereTabell({
             ))}
           </tbody>
         </AgTable>
+        </div>
       </div>
     </AgPage>
   );

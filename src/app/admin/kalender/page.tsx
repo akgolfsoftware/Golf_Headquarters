@@ -16,7 +16,7 @@ import { Plus } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { loadWeekCalendar } from "@/lib/admin-kalender/week-data";
-import { AgPage, AgPageHead, agBtnClass } from "@/components/admin/agencyos/ui";
+import { AgChip, AgPage, AgPageHead, agBtnClass } from "@/components/admin/agencyos/ui";
 import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -71,6 +71,16 @@ export default async function KalenderPage({
     (e) => e.dayIndex <= 4 && e.endMin > VINDU_START_MIN && e.startMin < VINDU_SLUTT_MIN,
   );
 
+  // Mobil-dagsliste: alle 7 dager, i dag først når uka er inneværende
+  // (rotert rekkefølge), ellers man→søn. Ingen tidsvindu-kutt på mobil.
+  const startIdx = props.nowDayIndex ?? 0;
+  const dagsliste = Array.from({ length: 7 }, (_, i) => (startIdx + i) % 7).map((di) => ({
+    dag: props.days[di],
+    okter: props.events
+      .filter((e) => e.dayIndex === di)
+      .sort((a, b) => a.startMin - b.startMin),
+  }));
+
   return (
     <AgPage>
       <AgPageHead
@@ -85,6 +95,63 @@ export default async function KalenderPage({
         }
       />
 
+      {/* Mobil (< md): dagsliste — i dag først, så resten av uka */}
+      <div className="flex flex-col gap-5 md:hidden">
+        {dagsliste.map(({ dag, okter }) => (
+          <section key={`${dag.dow}-${dag.date}`}>
+            <div className="mb-2 flex items-center gap-2 font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-foreground after:h-px after:flex-1 after:bg-border after:content-['']">
+              {dagLabel(dag.dow, String(dag.date))}. {dag.month}
+              {dag.isToday && <AgChip tone="lime">I dag</AgChip>}
+            </div>
+            {okter.length === 0 ? (
+              <p className="px-1 py-2 text-[13px] text-muted-foreground">Ingen økter.</p>
+            ) : (
+              <div className="flex flex-col gap-2">
+                {okter.map((e) => {
+                  const akse = akseFra(e.serviceLabel);
+                  return (
+                    <Link
+                      key={e.id}
+                      href={e.href}
+                      className={cn(
+                        "relative flex min-h-[56px] items-center gap-3 rounded-[10px] border border-border bg-background py-2 pl-4 pr-3 transition-colors hover:bg-secondary active:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                        e.kind === "live" && "bg-card ring-2 ring-accent",
+                        e.isCompleted && "opacity-60",
+                      )}
+                    >
+                      <span
+                        className={cn(
+                          "absolute bottom-2 left-0 top-2 w-[3px] rounded-full",
+                          AKSE_BAR[akse],
+                        )}
+                        aria-hidden
+                      />
+                      <span className="w-[44px] shrink-0 font-mono text-xs font-extrabold leading-[1.2] tabular-nums text-foreground">
+                        {e.timeLabel}
+                        <span className="mt-0.5 block font-mono text-[9px] font-semibold text-muted-foreground">
+                          {e.endMin - e.startMin} m
+                        </span>
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-[13px] font-semibold leading-[1.25] tracking-[-0.005em] text-foreground">
+                          {e.serviceLabel}
+                        </span>
+                        <span className="mt-px block truncate font-mono text-[10px] leading-[1.3] text-muted-foreground">
+                          {e.title}
+                          {e.location ? ` · ${e.location}` : ""}
+                        </span>
+                      </span>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+          </section>
+        ))}
+      </div>
+
+      {/* Desktop (md+): UKE/MÅNED-seg + uke-grid */}
+      <div className="hidden md:block">
       {/* UKE/MÅNED-seg (fasit .seg) — MÅNED er lenke til eksisterende underside */}
       <div className="mb-[14px] inline-flex gap-[2px] rounded-lg bg-secondary p-[3px]">
         <span className="inline-flex h-[26px] items-center rounded-md bg-card px-[11px] font-mono text-[10px] font-bold uppercase tracking-[0.06em] text-primary shadow-sm">
@@ -170,6 +237,7 @@ export default async function KalenderPage({
             </div>
           ))}
         </div>
+      </div>
       </div>
     </AgPage>
   );

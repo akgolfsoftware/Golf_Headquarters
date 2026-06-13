@@ -372,7 +372,7 @@ export function InboxColumn({
                   onClick={() =>
                     setHandled((h) => ({ ...h, [it.id]: action.done }))
                   }
-                  className="inline-flex h-[26px] shrink-0 items-center gap-[5px] whitespace-nowrap rounded-[7px] border border-border bg-card px-2.5 font-mono text-[9px] font-bold uppercase tracking-[0.06em] text-foreground hover:border-primary hover:bg-secondary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="inline-flex h-[26px] max-md:h-11 shrink-0 items-center gap-[5px] whitespace-nowrap rounded-[7px] border border-border bg-card px-2.5 font-mono text-[9px] font-bold uppercase tracking-[0.06em] text-foreground hover:border-primary hover:bg-secondary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <ActionIcon className="h-3 w-3" strokeWidth={2} aria-hidden />
                   {action.label}
@@ -644,7 +644,7 @@ function PinButton({
       aria-pressed={active}
       onClick={onClick}
       className={cn(
-        "inline-flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-lg border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        "inline-flex h-[30px] max-md:h-11 w-[30px] shrink-0 items-center justify-center rounded-lg border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         active
           ? "border-accent bg-accent text-accent-foreground"
           : "border-border bg-card text-muted-foreground hover:bg-secondary hover:text-foreground",
@@ -729,7 +729,7 @@ export function FocusColumn({
           <button
             type="button"
             onClick={() => undoResolved(f.id)}
-            className="inline-flex h-[30px] items-center gap-1.5 rounded-lg border border-border bg-card px-2.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] text-foreground hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="inline-flex h-[30px] max-md:h-11 items-center gap-1.5 rounded-lg border border-border bg-card px-2.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] text-foreground hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             Angre
           </button>
@@ -744,7 +744,7 @@ export function FocusColumn({
         {f.actions.map((a: CockpitFocusAction, i: number) => {
           const ActionIcon = COCKPIT_ICONS[a.icon];
           const cls = cn(
-            "inline-flex h-[30px] items-center gap-1.5 rounded-lg border px-2.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+            "inline-flex h-[30px] max-md:h-11 items-center gap-1.5 rounded-lg border px-2.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
             a.primary
               ? "border-primary bg-primary text-primary-foreground hover:bg-primary/90"
               : "border-border bg-card text-foreground hover:bg-secondary",

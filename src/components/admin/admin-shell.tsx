@@ -1,9 +1,12 @@
+import Image from "next/image";
+import Link from "next/link";
+import { Bell } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import type { SidebarCounts } from "@/lib/admin-nav";
 import { AgencyosSidebar } from "./agencyos-sidebar";
+import type { SidebarCounts } from "@/lib/admin-nav";
 import { AgencyosTopbar, type ScopeGroup, type ScopePlayer } from "./agencyos-topbar";
-import { AdminMobileDrawer } from "./mobile-drawer";
+import { AgencyosMobileNav } from "./agencyos-mobile-nav";
 import { GlobalSearchModal } from "./global-search-modal";
 
 function initialsOf(name: string): string {
@@ -141,11 +144,27 @@ export async function AdminShell({ children }: { children: React.ReactNode }) {
         />
       </div>
       <div className="flex min-w-0 flex-1 flex-col">
-        <div className="flex items-center gap-2 border-b border-border px-4 py-2 md:hidden">
-          <AdminMobileDrawer workbenchHref={workbenchHref} />
-          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+        {/* Mobil-topbar (< md): brand-mark + AGENCYOS + varselklokke */}
+        <div className="flex items-center gap-2.5 border-b border-[var(--color-coach-sidebar-border)] bg-[var(--color-coach-sidebar)] px-4 py-2 md:hidden">
+          <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-accent">
+            <Image src="/logos/ak-golf-logo-primary-mono.svg" alt="AK" width={20} height={20} />
+          </span>
+          <span className="font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-foreground">
             AgencyOS
           </span>
+          <Link
+            href="/admin/foresporsler"
+            aria-label="Varsler"
+            className="relative ml-auto inline-flex h-11 w-11 items-center justify-center rounded-[10px] text-foreground transition-colors hover:bg-foreground/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <Bell className="h-[18px] w-[18px]" strokeWidth={1.5} aria-hidden />
+            {unreadNotifications > 0 && (
+              <span
+                className="absolute right-[11px] top-[10px] h-[7px] w-[7px] rounded-full border-2 border-[var(--color-coach-sidebar)] bg-[var(--color-alert-coral)]"
+                aria-hidden
+              />
+            )}
+          </Link>
         </div>
         <div className="hidden md:block">
           <AgencyosTopbar
@@ -158,11 +177,12 @@ export async function AdminShell({ children }: { children: React.ReactNode }) {
         <main
           id="admin-main"
           tabIndex={-1}
-          className="flex-1 focus:outline-none focus-visible:outline-none"
+          className="flex-1 pb-24 focus:outline-none focus-visible:outline-none md:pb-0"
         >
           {children}
         </main>
       </div>
+      <AgencyosMobileNav inboxPending={requestCount + approvalCount} />
       <GlobalSearchModal />
     </div>
   );

@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
+import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -8,7 +10,7 @@ import { cn } from "@/lib/utils";
  */
 
 export function AgPage({ children, className }: { children: ReactNode; className?: string }) {
-  return <div className={cn("mx-auto max-w-[1320px] px-7 pb-14 pt-6", className)}>{children}</div>;
+  return <div className={cn("mx-auto max-w-[1320px] px-4 pb-14 pt-5 md:px-7 md:pt-6", className)}>{children}</div>;
 }
 
 export function AgPageHead({
@@ -70,7 +72,7 @@ export function agBtnClass(
 ): string {
   return cn(
     "inline-flex cursor-pointer items-center justify-center gap-[7px] whitespace-nowrap rounded-[10px] border-0 font-display font-semibold tracking-[-0.005em] transition-all",
-    size === "sm" ? "h-8 px-[11px] text-xs" : size === "lg" ? "h-11 px-5 text-sm" : "h-[38px] px-[15px] text-[13px]",
+    size === "sm" ? "h-8 max-md:h-11 px-[11px] text-xs" : size === "lg" ? "h-11 px-5 text-sm" : "h-[38px] max-md:h-11 px-[15px] text-[13px]",
     btnVariants[variant],
   );
 }
@@ -383,5 +385,59 @@ export function AgSectionHead({
       {count != null && <span className="font-bold text-muted-foreground">· {count}</span>}
       {action}
     </div>
+  );
+}
+
+/* ================================================================
+ * MOBIL-PRIMITIVER (Fase 4 — AgencyOS mobil, < md)
+ * Brukes av mobil-listene (Stall, Mer). Rør ikke primitivene over.
+ * ================================================================ */
+
+/**
+ * Trykkbar liste-rad for mobil: leading (avatar/ikon) + tittel/sub +
+ * valgfri trailing + chevron. Min-høyde 56px (touch-mål ≥ 44px).
+ * Forelderen styrer skillelinjer (f.eks. `divide-y divide-border`).
+ */
+export function AgMobileRow({
+  href,
+  leading,
+  title,
+  sub,
+  trailing,
+  className,
+}: {
+  href: string;
+  leading?: ReactNode;
+  title: ReactNode;
+  sub?: ReactNode;
+  trailing?: ReactNode;
+  className?: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className={cn(
+        "flex min-h-[56px] items-center gap-3 px-4 py-2.5 transition-colors hover:bg-secondary active:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
+        className,
+      )}
+    >
+      {leading}
+      <span className="min-w-0 flex-1">
+        <span className="block truncate text-[13px] font-semibold leading-[1.25] tracking-[-0.005em] text-foreground">
+          {title}
+        </span>
+        {sub && (
+          <span className="mt-px block truncate font-mono text-[10px] leading-[1.3] text-muted-foreground">
+            {sub}
+          </span>
+        )}
+      </span>
+      {trailing}
+      <ChevronRight
+        className="h-4 w-4 shrink-0 text-muted-foreground"
+        strokeWidth={1.5}
+        aria-hidden
+      />
+    </Link>
   );
 }
