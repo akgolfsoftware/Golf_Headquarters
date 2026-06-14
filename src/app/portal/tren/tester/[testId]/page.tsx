@@ -22,7 +22,21 @@ import { prisma } from "@/lib/prisma";
 import { testTilgangWhere } from "@/lib/portal-tester/test-tilgang";
 import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 import { SetGroup, SetRow, SetVal } from "@/components/portal/meg/meg-sub";
-import { lavereErBedre, parseProtokoll, protokollEnhet, protokollSteg } from "../protokoll";
+import { parseProtocol, type ScorekortForsok } from "@/lib/portal-tester/protocol";
+import { parseForScoring, lavereErBedre } from "@/lib/portal-tester/test-scoring";
+
+/** Grupper forsøk på label → steg-liste (erstatter gamle protokollSteg). */
+function grupperSteg(
+  forsok: ScorekortForsok[],
+): { label: string; antall: number; target: string | null }[] {
+  const m = new Map<string, { label: string; antall: number; target: string | null }>();
+  for (const f of forsok) {
+    const ex = m.get(f.label);
+    if (ex) ex.antall += 1;
+    else m.set(f.label, { label: f.label, antall: 1, target: f.target ?? null });
+  }
+  return [...m.values()];
+}
 
 export const dynamic = "force-dynamic";
 
@@ -69,10 +83,12 @@ export default async function TestDetaljSpillerPage({
     select: { id: true, score: true, takenAt: true },
   });
 
-  const protokoll = parseProtokoll(test.protocol);
-  const steg = protokoll ? protokollSteg(protokoll) : [];
-  const enhet = protokollEnhet(protokoll);
-  const lavere = protokoll ? lavereErBedre(protokoll) : null;
+  const spec = parseProtocol(test.protocol);
+  const scoringSpec = parseForScoring(test.protocol);
+  const steg = spec ? grupperSteg(spec.forsok) : [];
+  const enhet = scoringSpec.unit;
+  // Retning fra scoring-typen (motoren). Ukjent (fallback/uten protokoll) → nøytral trend.
+  const lavere = scoringSpec.kind === "fallback" ? null : lavereErBedre(scoringSpec.kind);
   const omrade = OMRADE[test.pyramidArea];
 
   return (
@@ -114,11 +130,7 @@ export default async function TestDetaljSpillerPage({
               <SetRow
                 key={s.label}
                 title={s.label}
-                meta={
-                  s.target != null
-                    ? `Mål ${fmtNum(s.target)} m`
-                    : (s.category ?? undefined)
-                }
+                meta={s.target != null ? `Mål ${s.target}` : undefined}
                 right={<SetVal>× {s.antall}</SetVal>}
               />
             ))
@@ -144,10 +156,9 @@ export default async function TestDetaljSpillerPage({
           </div>
           <div className="rounded-xl border border-border border-l-[3px] border-l-accent bg-card px-4 py-3.5">
             <p className="text-[13px] leading-[1.55] text-foreground">{test.scoringRule}</p>
-            {(protokoll?.scoringDescription || enhet) && (
+            {enhet && (
               <p className="mt-1.5 font-mono text-[11px] text-muted-foreground">
-                {protokoll?.scoringDescription}
-                {enhet ? ` · Enhet: ${enhet}` : ""}
+                Enhet: {enhet}
               </p>
             )}
           </div>
