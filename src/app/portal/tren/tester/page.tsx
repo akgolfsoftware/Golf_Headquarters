@@ -20,7 +20,7 @@ import { prisma } from "@/lib/prisma";
 import { loadTesterScreen, type Axis } from "@/lib/portal-tester/tester-data";
 import { MeSub, SetGroup, SetRow, SetVal } from "@/components/portal/meg/meg-sub";
 import { TesterKatalog, type KatalogGruppe } from "./tester-katalog";
-import { parseProtokoll, protokollEnhet } from "./protokoll";
+import { parseForScoring } from "@/lib/portal-tester/test-scoring";
 import { TestUkeKommende } from "@/components/portal/tester/test-uke-kommende";
 
 export const dynamic = "force-dynamic";
@@ -112,7 +112,7 @@ export default async function TesterPage() {
           </p>
         ) : (
           siste.map((r) => {
-            const enhet = protokollEnhet(parseProtokoll(r.test.protocol));
+            const enhet = parseForScoring(r.test.protocol).unit;
             return (
               <SetRow
                 key={r.id}

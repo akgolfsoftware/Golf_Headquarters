@@ -53,6 +53,7 @@ export default async function GjennomforTestPage({
           beskrivelse={test.description}
           scoringRule={test.scoringRule}
           spec={spec}
+          protocol={test.protocol}
         />
       </div>
     </div>

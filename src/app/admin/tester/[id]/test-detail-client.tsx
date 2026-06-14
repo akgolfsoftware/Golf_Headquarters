@@ -1,14 +1,15 @@
 "use client";
 
 /**
- * Test-detalj · trend-graf + tabell + coach-notater
+ * Test-detalj · trend-graf + nivå-stige + historikk + coach-notater.
  *
- * Trend-grafen tegnes som SVG fra Prismas TestResult-historikk. Punktet
- * for "denne testen" markeres med en avvikende ring slik at coach raskt
- * ser hvor i forløpet han er.
+ * Nivå/benchmark vises KUN når testen har ekte referanse (test-benchmarks).
+ * Tester uten (f.eks. FYS — formel ikke låst) viser rå score + egen progresjon,
+ * aldri et fabrikkert nivå. «Din snitt»-linjen er spillerens egen historikk-snitt.
  */
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Pencil, Save, X } from "lucide-react";
+import { lagreCoachNotat } from "./actions";
 
 export type TestPoint = {
   id: string;
@@ -20,39 +21,64 @@ export type TestPoint = {
   isCurrent: boolean;
 };
 
+/** Ekte referanse-nivå for en test (fra test-benchmarks). null = ingen referanse. */
+export type BenchmarkView = {
+  eliteValue: number;
+  eliteLabel: string;
+  achievedLabel: string | null;
+  lowerBetter: boolean;
+  unitSuffix: string;
+  ladder: string;
+};
+
 type Props = {
   points: TestPoint[];
   currentIso: string;
-  benchmark: { snitt: number; elite: number; enhet: string };
+  resultId: string;
+  egetSnitt: number;
+  benchmark: BenchmarkView | null;
   coachNotes: string | null;
 };
 
-export function TestDetailClient({
-  points,
-  benchmark,
-  coachNotes,
-}: Props) {
+function fmt(n: number): string {
+  return n.toFixed(1).replace(".", ",").replace(/,0$/, "");
+}
+
+export function TestDetailClient({ points, resultId, egetSnitt, benchmark, coachNotes }: Props) {
   const [redigerer, setRedigerer] = useState(false);
+  const [lagret, setLagret] = useState(coachNotes ?? "");
   const [notater, setNotater] = useState(coachNotes ?? "");
+  const [pending, startTransition] = useTransition();
+  const [feil, setFeil] = useState<string | null>(null);
+
+  const current = points.find((p) => p.isCurrent) ?? points[points.length - 1] ?? null;
+
+  function lagreNotat() {
+    setFeil(null);
+    startTransition(async () => {
+      const res = await lagreCoachNotat({ resultId, notes: notater });
+      if (res.ok) {
+        setLagret(notater.trim());
+        setRedigerer(false);
+      } else {
+        setFeil(res.error ?? "Kunne ikke lagre notatet.");
+      }
+    });
+  }
 
   return (
     <div className="space-y-6">
-      {/* Trend-chart */}
-      <TrendChart points={points} benchmark={benchmark} />
+      <TrendChart points={points} egetSnitt={egetSnitt} eliteValue={benchmark?.eliteValue} />
 
-      {/* Benchmark-skala */}
-      <BenchmarkScale points={points} benchmark={benchmark} />
+      {benchmark && current && <BenchmarkScale current={current} benchmark={benchmark} />}
 
-      {/* Historikk-tabell */}
       <Historikk points={points} />
 
       {/* Coach-notater */}
       <section className="overflow-hidden rounded-lg border border-border bg-card">
         <header className="flex items-center justify-between border-b border-border bg-secondary/40 px-4 py-2">
           <div>
-            <h2 className="font-display text-base font-semibold tracking-tight">
-              Coach-notater
-            </h2>
+            <h2 className="font-display text-base font-semibold tracking-tight">Coach-notater</h2>
             <p className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
               Privat — kun synlig for coach-teamet
             </p>
@@ -70,22 +96,25 @@ export function TestDetailClient({
             <div className="flex gap-1.5">
               <button
                 type="button"
+                disabled={pending}
                 onClick={() => {
                   setRedigerer(false);
-                  setNotater(coachNotes ?? "");
+                  setNotater(lagret);
+                  setFeil(null);
                 }}
-                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-1.5 text-[12px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-1.5 text-[12px] font-medium text-muted-foreground transition-colors hover:text-foreground disabled:opacity-50"
               >
                 <X size={12} strokeWidth={1.75} />
                 Avbryt
               </button>
               <button
                 type="button"
-                onClick={() => setRedigerer(false)}
-                className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-[12px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
+                disabled={pending}
+                onClick={lagreNotat}
+                className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-[12px] font-medium text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
               >
                 <Save size={12} strokeWidth={1.75} />
-                Lagre
+                {pending ? "Lagrer…" : "Lagre"}
               </button>
             </div>
           )}
@@ -94,16 +123,17 @@ export function TestDetailClient({
           {redigerer ? (
             <textarea
               value={notater}
-              onChange={(e) => setNotater(e.target.value)}
+              onChange={(e) => setNotater(e.target.value.slice(0, 2000))}
               rows={4}
               placeholder="Skriv en kort observasjon — fokus-områder, protokoll-avvik, neste steg…"
               className="w-full resize-none rounded-md border border-border bg-background px-4 py-2 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground focus:border-primary"
             />
           ) : (
             <p className="text-sm text-muted-foreground">
-              {coachNotes ?? "Ingen notater registrert ennå."}
+              {lagret ? lagret : "Ingen notater registrert ennå."}
             </p>
           )}
+          {feil && <p className="mt-2 text-sm text-destructive">{feil}</p>}
         </div>
       </section>
     </div>
@@ -114,10 +144,12 @@ export function TestDetailClient({
 
 function TrendChart({
   points,
-  benchmark,
+  egetSnitt,
+  eliteValue,
 }: {
   points: TestPoint[];
-  benchmark: { snitt: number; elite: number };
+  egetSnitt: number;
+  eliteValue?: number;
 }) {
   if (points.length === 0) {
     return (
@@ -138,23 +170,20 @@ function TrendChart({
   const innerW = w - padL - padR;
   const innerH = h - padT - padB;
 
-  const allScores = points.map((p) => p.score);
-  const min = Math.min(...allScores, benchmark.snitt) * 0.95;
-  const max = Math.max(...allScores, benchmark.elite) * 1.05;
+  const refValues = [...points.map((p) => p.score), egetSnitt, ...(eliteValue != null ? [eliteValue] : [])];
+  const min = Math.min(...refValues) * 0.95;
+  const max = Math.max(...refValues) * 1.05;
   const range = max - min || 1;
 
-  const toX = (i: number) =>
-    padL + (i / Math.max(1, points.length - 1)) * innerW;
+  const toX = (i: number) => padL + (i / Math.max(1, points.length - 1)) * innerW;
   const toY = (v: number) => padT + innerH - ((v - min) / range) * innerH;
 
   const path = points
     .map((p, i) => `${i === 0 ? "M" : "L"} ${toX(i).toFixed(1)} ${toY(p.score).toFixed(1)}`)
     .join(" ");
 
-  const eliteY = toY(benchmark.elite);
-  const snittY = toY(benchmark.snitt);
-
-  // Y-ticks
+  const snittY = toY(egetSnitt);
+  const eliteY = eliteValue != null ? toY(eliteValue) : null;
   const ticks = [min, min + range * 0.25, min + range * 0.5, min + range * 0.75, max];
 
   return (
@@ -165,7 +194,7 @@ function TrendChart({
             Trend · {points.length} målinger
           </h2>
           <p className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
-            Mørk linje = spiller · stiplet = kategori-snitt + elite
+            Mørk linje = spiller · stiplet = din snitt{eliteValue != null ? " + referanse" : ""}
           </p>
         </div>
         <div className="flex flex-wrap gap-2 font-mono text-[10px] uppercase tracking-[0.04em] text-muted-foreground">
@@ -175,7 +204,7 @@ function TrendChart({
           </span>
           <span className="flex items-center gap-1.5">
             <span className="h-0.5 w-4 border-t border-dashed border-muted-foreground" />
-            Snitt / elite
+            {eliteValue != null ? "Snitt / referanse" : "Din snitt"}
           </span>
           <span className="flex items-center gap-1.5">
             <span className="h-2 w-2 rounded-full bg-accent ring-2 ring-primary" />
@@ -192,133 +221,51 @@ function TrendChart({
           style={{ maxHeight: 320 }}
           aria-label="Trend-graf"
         >
-          {/* Y-tick-linjer */}
           {ticks.map((t, i) => {
             const y = toY(t);
             return (
               <g key={i}>
-                <line
-                  x1={padL}
-                  y1={y}
-                  x2={w - padR}
-                  y2={y}
-                  stroke="currentColor"
-                  strokeWidth="0.5"
-                  className="text-border"
-                  opacity="0.5"
-                />
-                <text
-                  x={padL - 6}
-                  y={y + 3}
-                  textAnchor="end"
-                  className="fill-muted-foreground"
-                  fontFamily="JetBrains Mono"
-                  fontSize="9"
-                >
+                <line x1={padL} y1={y} x2={w - padR} y2={y} stroke="currentColor" strokeWidth="0.5" className="text-border" opacity="0.5" />
+                <text x={padL - 6} y={y + 3} textAnchor="end" className="fill-muted-foreground" fontFamily="JetBrains Mono" fontSize="9">
                   {t.toFixed(1).replace(".", ",").replace(/,0$/, "")}
                 </text>
               </g>
             );
           })}
 
-          {/* Elite-linje */}
-          <line
-            x1={padL}
-            y1={eliteY}
-            x2={w - padR}
-            y2={eliteY}
-            stroke="currentColor"
-            strokeDasharray="4 4"
-            strokeWidth="1.25"
-            className="text-primary/40"
-          />
-          <text
-            x={w - padR}
-            y={eliteY - 4}
-            textAnchor="end"
-            className="fill-primary"
-            fontFamily="JetBrains Mono"
-            fontSize="9"
-            fontWeight="700"
-            opacity="0.7"
-          >
-            ELITE
+          {eliteY != null && (
+            <>
+              <line x1={padL} y1={eliteY} x2={w - padR} y2={eliteY} stroke="currentColor" strokeDasharray="4 4" strokeWidth="1.25" className="text-primary/40" />
+              <text x={w - padR} y={eliteY - 4} textAnchor="end" className="fill-primary" fontFamily="JetBrains Mono" fontSize="9" fontWeight="700" opacity="0.7">
+                REFERANSE
+              </text>
+            </>
+          )}
+
+          <line x1={padL} y1={snittY} x2={w - padR} y2={snittY} stroke="currentColor" strokeDasharray="3 5" strokeWidth="1" className="text-muted-foreground" opacity="0.5" />
+          <text x={w - padR} y={snittY - 4} textAnchor="end" className="fill-muted-foreground" fontFamily="JetBrains Mono" fontSize="9" fontWeight="700">
+            DIN SNITT
           </text>
 
-          {/* Snitt-linje */}
-          <line
-            x1={padL}
-            y1={snittY}
-            x2={w - padR}
-            y2={snittY}
-            stroke="currentColor"
-            strokeDasharray="3 5"
-            strokeWidth="1"
-            className="text-muted-foreground"
-            opacity="0.5"
-          />
-          <text
-            x={w - padR}
-            y={snittY - 4}
-            textAnchor="end"
-            className="fill-muted-foreground"
-            fontFamily="JetBrains Mono"
-            fontSize="9"
-            fontWeight="700"
-          >
-            SNITT
-          </text>
+          <path d={path} fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary" />
 
-          {/* Trendlinje */}
-          <path
-            d={path}
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="text-primary"
-          />
-
-          {/* Punkter */}
           {points.map((p, i) => {
             const x = toX(i);
             const y = toY(p.score);
             if (p.isCurrent) {
               return (
-                <g key={p.id}>
-                  <circle
-                    cx={x}
-                    cy={y}
-                    r="7"
-                    className="fill-accent"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                  />
-                </g>
+                <circle key={p.id} cx={x} cy={y} r="7" className="fill-accent" stroke="currentColor" strokeWidth="2.5" />
               );
             }
             return (
-              <circle
-                key={p.id}
-                cx={x}
-                cy={y}
-                r="3.5"
-                className="fill-card"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeOpacity={0.9}
-              />
+              <circle key={p.id} cx={x} cy={y} r="3.5" className="fill-card" stroke="currentColor" strokeWidth="2" strokeOpacity={0.9} />
             );
           })}
         </svg>
 
-        {/* X-akse */}
         <div className="ml-[36px] mr-[24px] mt-1 flex justify-between font-mono text-[9px] uppercase tracking-[0.04em] text-muted-foreground">
           {points.length > 8
-            ? points
-                .filter((_, i) => i % Math.ceil(points.length / 6) === 0)
-                .map((p) => <span key={p.id}>{p.date.slice(3, 8)}</span>)
+            ? points.filter((_, i) => i % Math.ceil(points.length / 6) === 0).map((p) => <span key={p.id}>{p.date.slice(3, 8)}</span>)
             : points.map((p) => <span key={p.id}>{p.date.slice(3, 8)}</span>)}
         </div>
       </div>
@@ -326,101 +273,43 @@ function TrendChart({
   );
 }
 
-// --------- Benchmark-skala ---------
+// --------- Nivå-stige (kun med ekte referanse) ---------
 
-function BenchmarkScale({
-  points,
-  benchmark,
-}: {
-  points: TestPoint[];
-  benchmark: { snitt: number; elite: number };
-}) {
-  const current = points.find((p) => p.isCurrent) ?? points[points.length - 1];
-  if (!current) return null;
-
-  const minScale = Math.min(benchmark.snitt * 0.6, current.score * 0.8);
-  const maxScale = Math.max(benchmark.elite * 1.15, current.score * 1.15);
-  const range = maxScale - minScale || 1;
-  const pct = (v: number) => ((v - minScale) / range) * 100;
-
-  const overElite = current.score >= benchmark.elite;
-  const overSnitt = current.score >= benchmark.snitt;
-
+function BenchmarkScale({ current, benchmark }: { current: TestPoint; benchmark: BenchmarkView }) {
+  const ladderLinjer = benchmark.ladder.split("\n").filter(Boolean);
   return (
-    <section className="grid gap-6 rounded-lg border border-primary/15 bg-gradient-to-br from-primary/5 to-card p-4 sm:p-6 sm:grid-cols-[1fr_1.4fr] sm:items-center">
+    <section className="grid gap-6 rounded-lg border border-primary/15 bg-gradient-to-br from-primary/5 to-card p-4 sm:p-6 sm:grid-cols-[1fr_1.4fr] sm:items-start">
       <div>
         <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-primary">
-          Benchmark · kategori-elite
+          Nivå · referanse
         </span>
         <h3 className="mt-2 font-display text-lg font-semibold tracking-tight">
-          {overElite
-            ? "På elite-nivå"
-            : overSnitt
-              ? "Over gjennomsnittet"
-              : "Under gjennomsnittet"}
+          {benchmark.achievedLabel ? `På ${benchmark.achievedLabel}-nivå` : "Under laveste referansenivå"}
         </h3>
         <p className="mt-1 text-sm text-muted-foreground">
           Spiller ligger på <strong className="text-foreground">{current.scoreLabel}</strong>.
-          Snitt for kategori er <strong className="text-foreground">{benchmark.snitt.toFixed(1).replace(".", ",")}</strong>,
-          elite ligger på <strong className="text-foreground">{benchmark.elite.toFixed(1).replace(".", ",")}</strong>.
+          Referanse-topp ({benchmark.eliteLabel}):{" "}
+          <strong className="text-foreground">{fmt(benchmark.eliteValue)}{benchmark.unitSuffix}</strong>.
         </p>
       </div>
 
-      <div className="relative pb-12 pt-8">
-        <div className="relative h-2 rounded-full bg-gradient-to-r from-destructive/30 via-accent/60 to-primary">
-          <Pin
-            value={benchmark.snitt}
-            label="Snitt"
-            pct={pct(benchmark.snitt)}
-          />
-          <Pin value={current.score} label="Spiller" pct={pct(current.score)} highlight />
-          <Pin value={benchmark.elite} label="Elite" pct={pct(benchmark.elite)} />
-        </div>
-        <div className="mt-2 flex justify-between font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
-          <span>{minScale.toFixed(0)}</span>
-          <span>{maxScale.toFixed(0)}</span>
-        </div>
-      </div>
+      <ul className="space-y-1">
+        {ladderLinjer.map((linje) => {
+          const aktiv = benchmark.achievedLabel != null && linje.startsWith(`${benchmark.achievedLabel}:`);
+          return (
+            <li
+              key={linje}
+              className={`flex items-baseline justify-between gap-3 rounded-md px-2.5 py-1.5 font-mono text-[12px] tabular-nums ${
+                aktiv ? "bg-primary/10 text-foreground" : "text-muted-foreground"
+              }`}
+            >
+              <span>{linje.split(":")[0]}</span>
+              <span>{linje.split(":").slice(1).join(":").trim()}</span>
+            </li>
+          );
+        })}
+      </ul>
     </section>
-  );
-}
-
-function Pin({
-  value,
-  label,
-  pct,
-  highlight,
-}: {
-  value: number;
-  label: string;
-  pct: number;
-  highlight?: boolean;
-}) {
-  return (
-    <div
-      className="absolute -top-7 flex -translate-x-1/2 flex-col items-center gap-1"
-      style={{ left: `${Math.max(0, Math.min(100, pct))}%` }}
-    >
-      <span
-        className={`font-mono text-[12px] font-semibold tabular-nums ${
-          highlight ? "text-primary" : "text-foreground"
-        }`}
-      >
-        {value.toFixed(1).replace(".", ",").replace(/,0$/, "")}
-      </span>
-      <span
-        className={`font-mono text-[8px] font-semibold uppercase tracking-[0.10em] ${
-          highlight ? "text-primary" : "text-muted-foreground"
-        }`}
-      >
-        {label}
-      </span>
-      <span
-        className={`absolute top-full mt-0.5 h-3 w-0.5 ${
-          highlight ? "bg-primary" : "bg-muted-foreground/50"
-        }`}
-      />
-    </div>
   );
 }
 
@@ -434,12 +323,8 @@ function Historikk({ points }: { points: TestPoint[] }) {
   return (
     <section className="overflow-hidden rounded-lg border border-border bg-card">
       <header className="flex items-baseline justify-between border-b border-border bg-secondary/40 px-4 py-2">
-        <h2 className="font-display text-base font-semibold tracking-tight">
-          Historikk · alle målinger
-        </h2>
-        <span className="font-mono text-[11px] text-muted-foreground">
-          {points.length} målinger
-        </span>
+        <h2 className="font-display text-base font-semibold tracking-tight">Historikk · alle målinger</h2>
+        <span className="font-mono text-[11px] text-muted-foreground">{points.length} målinger</span>
       </header>
       <ul className="divide-y divide-border">
         {reversed.map((p, i) => {
@@ -448,13 +333,9 @@ function Historikk({ points }: { points: TestPoint[] }) {
           return (
             <li
               key={p.id}
-              className={`grid grid-cols-[110px_100px_100px_1fr] items-center gap-4 px-4 py-2 ${
-                p.isCurrent ? "bg-accent/10" : ""
-              }`}
+              className={`grid grid-cols-[110px_100px_100px_1fr] items-center gap-4 px-4 py-2 ${p.isCurrent ? "bg-accent/10" : ""}`}
             >
-              <span className="font-mono text-[12px] tabular-nums text-foreground">
-                {p.date}
-              </span>
+              <span className="font-mono text-[12px] tabular-nums text-foreground">{p.date}</span>
               <span className="font-mono text-[14px] font-semibold tabular-nums text-foreground">
                 {p.scoreLabel}
                 {p.isCurrent && (
@@ -474,13 +355,9 @@ function Historikk({ points }: { points: TestPoint[] }) {
                         : "text-muted-foreground"
                 }`}
               >
-                {delta == null
-                  ? "—"
-                  : `${delta > 0 ? "+" : ""}${delta.toFixed(1).replace(".", ",").replace(/,0$/, "")}`}
+                {delta == null ? "—" : `${delta > 0 ? "+" : ""}${delta.toFixed(1).replace(".", ",").replace(/,0$/, "")}`}
               </span>
-              <span className="truncate text-[12px] text-muted-foreground">
-                {p.notes ?? "—"}
-              </span>
+              <span className="truncate text-[12px] text-muted-foreground">{p.notes ?? "—"}</span>
             </li>
           );
         })}
