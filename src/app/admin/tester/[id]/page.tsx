@@ -13,7 +13,8 @@ import { prisma } from "@/lib/prisma";
 import { DetailShell } from "@/components/shared/detail-shell";
 import { KPICard } from "@/components/ui";
 import { AthleticBadge, AthleticButton } from "@/components/athletic";
-import { TestDetailClient, type TestPoint } from "./test-detail-client";
+import { TestDetailClient, type TestPoint, type BenchmarkView } from "./test-detail-client";
+import { parseBenchmarks, achievedLevel, ladderText, DISPLAY_UNIT } from "@/lib/admin/test-benchmarks";
 
 const PYR_LABEL: Record<string, string> = {
   FYS: "Fysisk · styrke & eksplosivitet",
@@ -91,8 +92,20 @@ export default async function TestDetaljPage({
       : null;
   const deltaForrige = forrige ? sisteVerdi - forrige.score : null;
 
-  // Benchmark — bruk hardkodet U18-norm hvis testen er CMJ-lignende
-  const benchmark = { snitt: snitt * 0.92, elite: pr * 1.04, enhet: "" };
+  // Benchmark/nivå — KUN fra ekte referanse (test-benchmarks). Tester uten
+  // benchmarks (f.eks. FYS — formel ikke låst) får ingen nivå-verdikt.
+  const bm = parseBenchmarks(result.test.protocol);
+  const achieved = bm ? achievedLevel(bm, sisteVerdi) : null;
+  const benchmark: BenchmarkView | null = bm
+    ? {
+        eliteValue: bm.levels[0].value,
+        eliteLabel: bm.levels[0].label,
+        achievedLabel: achieved?.label ?? null,
+        lowerBetter: bm.direction === "lower",
+        unitSuffix: ` ${DISPLAY_UNIT[bm.unit]}`,
+        ladder: ladderText(bm),
+      }
+    : null;
 
   const kategoriLabel =
     PYR_LABEL[result.test.pyramidArea] ?? result.test.pyramidArea;
@@ -186,18 +199,29 @@ export default async function TestDetaljPage({
                 : "—"
             }
           />
-          <KPICard
-            eyebrow="Benchmark elite"
-            value={formatScore(benchmark.elite)}
-            variant="default"
-            footnote={`Snitt: ${formatScore(benchmark.snitt)}`}
-          />
+          {benchmark ? (
+            <KPICard
+              eyebrow={`Referanse · ${benchmark.eliteLabel}`}
+              value={`${formatScore(benchmark.eliteValue)}${benchmark.unitSuffix}`}
+              variant="default"
+              footnote={benchmark.achievedLabel ? `Nå: ${benchmark.achievedLabel}` : "Under referansenivå"}
+            />
+          ) : (
+            <KPICard
+              eyebrow="Målinger"
+              value={String(history.length)}
+              variant="default"
+              footnote="Ingen referansenivå ennå"
+            />
+          )}
         </div>
       }
     >
       <TestDetailClient
         points={points}
         currentIso={result.takenAt.toISOString()}
+        resultId={result.id}
+        egetSnitt={snitt}
         benchmark={benchmark}
         coachNotes={result.notes ?? null}
       />
