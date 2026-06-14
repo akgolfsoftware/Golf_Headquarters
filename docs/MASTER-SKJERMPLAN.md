@@ -357,7 +357,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · **Workbench (coach-i-spiller)** ★ | `/admin/spillere/[id]/workbench` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
 | · Plan-detalj | `/admin/spillere/[id]/plan/[planId]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Fremgang (trening vs SG) † | `/admin/spillere/[id]/fremgang` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ~ |
-| · Tester | `/admin/spillere/[id]/tester` | – | --- | ✓ | ~ | ~ | ~ |
+| · Tester | `/admin/spillere/[id]/tester` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ~ |
 | · Tildel test | `/admin/spillere/[id]/tildel-test` | – | --- | ✓ | ~ | ~ | ~ |
 | · Rediger | `/admin/spillere/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
 | Grupper | `/admin/grupper` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
@@ -441,9 +441,9 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Lag-snitt | `/admin/lag-snitt` | ✓ | ~✓– | ✓ | ✓ | ✓ | ✓ |
 | · Fasiter (autosync) | `/admin/tester/benchmarks` | ~ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
 | Tester (på tvers) | `/admin/tester` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
-| · Test-detalj | `/admin/tester/[id]` | ~ | ✓✓– | ✓ | ~ | ~ | ~ |
+| · Test-detalj | `/admin/tester/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ~ |
 | · Foreslåtte tester | `/admin/tester/foreslatte` | – | --- | ✓ | ~ | ~ | ~ |
-| · Tildel test | `/admin/tester/tildel/[spillerId]` | – | --- | ✓ | ~ | ~ | ~ |
+| · Tildel test | `/admin/tester/tildel/[spillerId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ~ |
 | Økt-forespørsler | `/admin/foresporsler` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
 | Godkjenninger | `/admin/godkjenninger` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Godkjenning-detalj | `/admin/godkjenninger/[id]` | – | --- | ✓ | ~ | ~ | ~ |
@@ -717,6 +717,13 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 ## Endringslogg
 
+- 14. juni: **Testbatteriet koblet ende-til-ende (steg 1–6).**
+  - **Server-side scoring-motor** (`src/lib/portal-tester/test-scoring.ts`): riktig formel per test (PEI = nærhet ÷ lengde, carry+side→avstand for fullslag; spread/maks/snitt/poeng/tid osv.), 16 enhetstester. Score regnes nå som fasit på server; klient-preview bruker samme motor. Lagring krever resultat på alle slag; kontekst (dato/lokasjon/vanskelighet/vær/greenfart/fasthet) fanges.
+  - **Død dublett-flyt fjernet** (mockup `(fullscreen)/test/.../live|summary`, `live-test-runner`, foreldreløs `session-actions`, gammel `protokoll.ts`-parser). Gjennomfør-flyten flyttet til lyst, chrome-løst fullskjerm-lag.
+  - **Spiller-progresjon** riktig for alle 30 tester (ny parser + motor-retning). **«Tildelt deg»-liste** på tester-katalogen.
+  - **Coach-analyse ekte:** `/admin/tester/[id]` bruker ekte benchmark-nivåer (`test-benchmarks`) i stedet for sirkulær faktor; FYS-gate (ingen nivå uten benchmark); coach-notater lagres. `/admin/spillere/[id]/tester` fra hardkodet demo → ekte data (dekning per disiplin).
+  - **`TestAssignment`-modell** + additiv prod-migrasjon (`20260614180000`): coach tildeler test (ekte, m/frist + notat) → spiller varsles → fullføring markerer tildeling COMPLETED + varsler coach. Forbedrings-loop (svakeste område → drill) dekkes av eksisterende `loadWeaknessSignals`→`foresla-drill`, nå på korrekt scoring.
+  - Verifisert: 193/193 lib-tester, tsc 0 feil, full build grønn. Funker-haken ~ på de tre coach-radene = bygget+grønt, ikke ende-til-ende nettleser-testet ennå.
 - 13. juni (lansering-dag): **Stor konsolidering + lansering-klargjøring.**
   - **AgencyOS Fase 4 mobil** flettet til main (mobilskall + WorkbenchMobile + mobilkortlister).
   - **KimiCode PlayerHQ-design** flettet inn (live-økt, workbench, analysere, portal-shell, tokens, ui-primitiver) + additiv DB-migrasjon (hole_scores, plan_change_requests, Shot-koordinater, drill-rep-felt) anvendt på prod med RLS. Data-blokkerte items DELVIS opplåst: scorecard hull-for-hull (`HoleScore`) + shot-map (Shot-koordinater) har nå lagringsplass i DB — gjenstår datafangst + visning i turnerings-scorecard/shot-map-skjerm.

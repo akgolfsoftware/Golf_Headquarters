@@ -17,6 +17,7 @@ const Schema = z.object({
   spillerId: z.string().min(1),
   testId: z.string().min(1),
   note: z.string().max(2000).optional(),
+  dueDate: z.string().max(40).optional(),
 });
 
 export async function tildelTest(
@@ -26,7 +27,7 @@ export async function tildelTest(
 
   const parsed = Schema.safeParse(input);
   if (!parsed.success) return { ok: false, error: "Ugyldig tildeling — sjekk valgene." };
-  const { spillerId, testId, note } = parsed.data;
+  const { spillerId, testId, note, dueDate } = parsed.data;
 
   const [player, test] = await Promise.all([
     prisma.user.findFirst({ where: { id: spillerId, deletedAt: null }, select: { id: true } }),
@@ -35,12 +36,14 @@ export async function tildelTest(
   if (!player || !test) return { ok: false, error: "Fant ikke spiller eller test." };
 
   const trimmet = note?.trim();
+  const due = dueDate ? new Date(dueDate) : null;
   await prisma.testAssignment.create({
     data: {
       playerId: player.id,
       coachId: coach.id,
       testId: test.id,
       note: trimmet ? trimmet : null,
+      dueDate: due && !Number.isNaN(due.getTime()) ? due : null,
     },
   });
 
