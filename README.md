@@ -7,7 +7,7 @@ Hele plattformen for AK Golf Group — ett monorepo, ett Next.js-prosjekt, fire 
 | **Marketing** (akgolf.no) | `/`, `/(marketing)` | Offentlige sider |
 | **Booking** | `/booking` | Booking av coaching/fasiliteter |
 | **PlayerHQ** | `/portal` | Spillerportal |
-| **CoachHQ** | `/admin` | Coach/admin-grensesnitt |
+| **AgencyOS** | `/admin` | Coach/admin-grensesnitt (het tidligere «CoachHQ») |
 
 ## Stack
 
@@ -40,12 +40,17 @@ npm run build
 
 ## Dokumentasjon
 
-- **`CLAUDE.md`** — arbeidsregler, designsystem, gotchas (les denne først)
-- **`PLATFORM.md`** — autoritativ arkitekturbeskrivelse
-- **`LAUNCH-CHECKLIST.md`** + `docs/go-live-sjekkliste.md` — go-live
-- **`docs/mvp-audit-2026-06-02.md`** — siste fullstendige audit + backlog
-- **`docs/todo.md`** — levende backlog
+**START HER (kanon):** [`docs/platform/AGENT-BRIEF.md`](docs/platform/AGENT-BRIEF.md) — full plattformkontekst på 5 min. Les FØR du rører kode.
+
+- **`docs/platform/BUSINESS-RULES.md`** — låste produktbeslutninger (eneste fasit)
+- **`docs/platform/PLATFORM-PRD.md`** + **`docs/platform/DATA-MODEL.md`** — produkt- og dataspec
+- **`docs/MASTER-SKJERMPLAN.md`** — autoritativ skjermstatus (les før skjerm-arbeid)
+- **`docs/STATUS-NÅ.md`** — hvor vi er akkurat nå (oppdatert snapshot)
+- **`docs/AAPNE-SPORSMAAL.md`** — uavklarte beslutninger (ÅPEN / LØST / PARKERT)
+- **`CLAUDE.md`** — arbeidsregler, designsystem, gotchas
 - **`SECURITY.md`** — sikkerhetsprinsipper og RLS
+- **`docs/go-live-sjekkliste.md`** + `LAUNCH-CHECKLIST.md` — go-live
+- Historikk og superseterte planer: **`docs/_arkiv/`** (inkl. tidligere `PLATFORM.md`)
 
 ## Test
 
