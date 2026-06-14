@@ -7,9 +7,10 @@
  * (test-modul/tildel-test-modal.html).
  */
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Calendar, Check, Search, X, Zap } from "lucide-react";
+import { tildelTest } from "./actions";
 
 type Spiller = { id: string; name: string; initials: string; hcp: string };
 
@@ -54,9 +55,9 @@ export function TildelModal({
   const [activeFilter, setActiveFilter] = useState<(typeof PYRAMID_FILTERS)[number]>("SLAG");
   const [selectedTestId, setSelectedTestId] = useState<string>(allTests[0]?.id ?? "");
   const [selectedDate, setSelectedDate] = useState<number>(27);
-  const [notat, setNotat] = useState(
-    "Vi tar Putt 1–3m som baseline før vi øker volum til 90 putt/uke. Fokuser på pre-shot rutinen — 7 sekunder fra setup til putt. Lykke til.",
-  );
+  const [notat, setNotat] = useState("");
+  const [feil, setFeil] = useState<string | null>(null);
+  const [pending, startTransition] = useTransition();
 
   const filteredTests = useMemo(() => {
     return allTests.filter((t) => {
@@ -73,14 +74,16 @@ export function TildelModal({
   }
 
   function handleSend() {
-    // I prod: server action → opprett TestAssignment + send notif
-    console.info("[tildel-test]", {
-      spillerId: spiller.id,
-      testId: selectedTestId,
-      dato: `2026-05-${selectedDate}`,
-      notat,
+    setFeil(null);
+    startTransition(async () => {
+      const res = await tildelTest({
+        spillerId: spiller.id,
+        testId: selectedTestId,
+        note: notat,
+      });
+      if (res.ok) router.push("/admin/tester");
+      else setFeil(res.error ?? "Kunne ikke tildele testen.");
     });
-    router.push("/admin/tester");
   }
 
   return (
@@ -281,32 +284,32 @@ export function TildelModal({
                   marginTop: 4,
                 }}
               >
-                Spilleren får varsel på mobil + e-post · {notat.length} / 280 tegn
+                Spilleren får varsel i appen · {notat.length} / 280 tegn
               </div>
             </div>
           </div>
 
           <footer className="tester-modal-foot">
+            {feil && (
+              <span className="font-mono text-[11px] text-destructive" style={{ marginRight: "auto" }}>
+                {feil}
+              </span>
+            )}
             <button
               type="button"
               onClick={handleClose}
-              className="font-mono rounded-full bg-transparent px-4 py-2 text-xs font-semibold text-muted-foreground hover:text-foreground"
+              disabled={pending}
+              className="font-mono rounded-full bg-transparent px-4 py-2 text-xs font-semibold text-muted-foreground hover:text-foreground disabled:opacity-50"
             >
               Avbryt
             </button>
             <button
               type="button"
-              className="font-mono rounded-full border border-border bg-card px-4 py-2 text-xs font-semibold"
-            >
-              Lagre som utkast
-            </button>
-            <button
-              type="button"
               onClick={handleSend}
-              className="font-display inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-bold text-white"
-              disabled={!selectedTestId}
+              className="font-display inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-bold text-white disabled:opacity-60"
+              disabled={!selectedTestId || pending}
             >
-              Send forespørsel
+              {pending ? "Tildeler…" : "Tildel test"}
               <ArrowRight className="h-3 w-3" />
             </button>
           </footer>

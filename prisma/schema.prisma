@@ -352,6 +352,8 @@ model User {
   rounds           Round[]
   testResults      TestResult[]
   testSessions     TestSession[]
+  testAssignments       TestAssignment[] @relation("PlayerTestAssignments")
+  coachTestAssignments  TestAssignment[] @relation("CoachTestAssignments")
   trackManSessions TrackManSession[]
   subscription     Subscription?
 
@@ -1255,6 +1257,7 @@ model TestDefinition {
 
   results  TestResult[]
   sessions TestSession[]
+  assignments TestAssignment[]
 
   @@index([createdById, isCustom])
   @@index([visibility, isCustom])
@@ -1314,6 +1317,36 @@ model TestSession {
   @@index([userId, status])
   @@index([testId, status])
   @@map("test_sessions")
+}
+
+/// Tildeling av en test fra coach til spiller. Spiller varsles ved opprettelse;
+/// coach varsles når spilleren fullfører (resultatet kobles via completedResultId).
+enum TestAssignmentStatus {
+  OPEN
+  COMPLETED
+  CANCELLED
+}
+
+model TestAssignment {
+  id                String               @id @default(cuid())
+  playerId          String
+  coachId           String
+  testId            String
+  note              String?
+  dueDate           DateTime?
+  status            TestAssignmentStatus @default(OPEN)
+  completedResultId String?
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @default(now()) @updatedAt
+
+  player User           @relation("PlayerTestAssignments", fields: [playerId], references: [id], onDelete: Cascade)
+  coach  User           @relation("CoachTestAssignments", fields: [coachId], references: [id], onDelete: Cascade)
+  test   TestDefinition @relation(fields: [testId], references: [id], onDelete: Cascade)
+
+  @@index([playerId, status])
+  @@index([coachId, status])
+  @@index([testId])
+  @@map("test_assignments")
 }
 
 model TrackManSession {

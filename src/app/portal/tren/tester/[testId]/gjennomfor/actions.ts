@@ -20,6 +20,7 @@ import { prisma } from "@/lib/prisma";
 import { testTilgangWhere } from "@/lib/portal-tester/test-tilgang";
 import { triggerTestAgent } from "@/lib/agents/triggers";
 import { scoreTest } from "@/lib/portal-tester/test-scoring";
+import { notify } from "@/lib/notifications";
 
 const VerdiSchema = z.union([z.number().finite(), z.boolean(), z.null()]);
 
@@ -74,7 +75,7 @@ export async function lagreTestResultat(
   // Tilgang: samme regel som katalogen — kan ikke lagre mot andres private tester (K6).
   const test = await prisma.testDefinition.findFirst({
     where: { id: testId, AND: [testTilgangWhere(user.id)] },
-    select: { id: true, protocol: true },
+    select: { id: true, name: true, protocol: true },
   });
   if (!test) return { ok: false, error: "Testen finnes ikke." };
 
@@ -84,7 +85,7 @@ export async function lagreTestResultat(
   const trimmedNotes = notes?.trim();
   const takenAt = kontekst?.dato ? new Date(kontekst.dato) : new Date();
 
-  await prisma.testResult.create({
+  const created = await prisma.testResult.create({
     data: {
       userId: user.id,
       testId,
@@ -93,7 +94,28 @@ export async function lagreTestResultat(
       notes: trimmedNotes ? trimmedNotes : null,
       details: { ...details, ...(kontekst ? { kontekst } : {}) },
     },
+    select: { id: true },
   });
+
+  // Lukk en evt. åpen coach-tildeling for denne testen + varsle coachen.
+  const assignment = await prisma.testAssignment.findFirst({
+    where: { playerId: user.id, testId, status: "OPEN" },
+    orderBy: { createdAt: "asc" },
+    select: { id: true, coachId: true },
+  });
+  if (assignment) {
+    await prisma.testAssignment.update({
+      where: { id: assignment.id },
+      data: { status: "COMPLETED", completedResultId: created.id },
+    });
+    await notify({
+      userId: assignment.coachId,
+      type: "melding",
+      title: "Test fullført",
+      body: `${user.name} fullførte «${test.name}».`,
+      link: `/admin/tester/${created.id}`,
+    });
+  }
 
   // AI-/achievement-oppfølging (eksisterende krok).
   triggerTestAgent(user.id);
