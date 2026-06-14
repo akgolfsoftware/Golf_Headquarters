@@ -1,7 +1,9 @@
 # AK Golf HQ — Business Rules
 
+**Dette er ENESTE fasit for låste produktbeslutninger.** Andre dokumenter (`CLAUDE.md`, `AGENT-BRIEF.md`, `PLATFORM-PRD.md`) gir kun et sammendrag og peker hit. Ved konflikt vinner denne fila. Nye låste regler legges KUN her — ikke dupliser til andre filer.
+
 Dokumenterer forretningsregler som ikke kan utledes fra kode alene.
-Sist oppdatert: 2026-06-11.
+Sist oppdatert: 2026-06-14.
 
 ---
 
@@ -122,6 +124,11 @@ To separate live-systemer sameksisterer **bevisst** og skal **ikke merges uoppfo
 
 - **Navn:** Anders Kristiansen (Anders selv)
 - Brukes i demo-kontekst og AI-genererte planeksempler.
+
+### Avatar-initialer
+
+- Initialer (f.eks. «ØR» for Øyvind Rohjan) **avledes fra ekte navn i DB** — aldri hardkodet.
+- Designfasiten hardkoder «MB» (levning fra gammelt navn Markus Berg) — det skal IKKE kopieres til kode.
 
 ### Ekte coach på markedssider
 

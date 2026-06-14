@@ -4,6 +4,8 @@
 
 Dette er **hele plattformen** for AK Golf Group. Ett monorepo, ett Next.js-prosjekt, fire produkter under samme tak.
 
+> **Kanon / start her:** [`docs/platform/AGENT-BRIEF.md`](docs/platform/AGENT-BRIEF.md). Nåstatus: `docs/STATUS-NÅ.md`. Uavklart: `docs/AAPNE-SPORSMAAL.md`. Den gamle `PLATFORM.md` er arkivert (`docs/_arkiv/`) — ikke bruk den.
+
 ---
 
 ## FØR DU RØRER EN SKJERM — `docs/MASTER-SKJERMPLAN.md` (LÅST regel)
@@ -37,6 +39,8 @@ Splittingen til separate repos er ikke aktuell før etter lansering. **Du jobber
 ---
 
 ## Låste beslutninger (juni 2026 — gjelder til Anders endrer dem)
+
+> **Fasit-kilde:** `docs/platform/BUSINESS-RULES.md`. Listen under er et sammendrag — ved tvil eller konflikt vinner BUSINESS-RULES.md. Ikke dupliser nye regler hit; legg dem i BUSINESS-RULES.md.
 
 Disse er bestemt og overstyrer eldre dokumenter/design. Bygg etter disse, ikke etter det du finner i gammelt materiale.
 
@@ -158,7 +162,7 @@ akgolf-hq/
 │   ├── app/
 │   │   ├── (marketing)/      # Marketing-sider
 │   │   ├── akgolf-*/         # Marketing-sider (eldre URL-struktur)
-│   │   ├── admin/            # CoachHQ (intern admin)
+│   │   ├── admin/            # AgencyOS (intern admin)
 │   │   ├── portal/           # PlayerHQ (spillerportal)
 │   │   ├── booking/          # Booking-flyt
 │   │   ├── auth/             # Auth-flyter
@@ -179,7 +183,7 @@ akgolf-hq/
 │   │   │                     # NB: Modal/PageHeader/OverviewShell er thin-wrappers
 │   │   │                     # for bakoverkompatibilitet — ny kode bruker
 │   │   │                     # ui/Dialog og athletic/-mønstre direkte.
-│   │   ├── admin*/           # CoachHQ-spesifikke
+│   │   ├── admin*/           # AgencyOS-spesifikke
 │   │   ├── portal*/          # PlayerHQ-spesifikke
 │   │   └── booking/          # Booking-spesifikke
 │   ├── lib/
