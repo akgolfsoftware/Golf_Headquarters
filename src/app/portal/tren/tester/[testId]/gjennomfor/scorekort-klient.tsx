@@ -3,16 +3,12 @@
 /**
  * PlayerHQ · Tren · Tester · Gjennomfør — scorekort-klient.
  *
- * Tre steg: Brief → Scorekort → Oppsummering. Visuelt språk fra
- * runde-ny-form.tsx (accent-kort med live-score, kort-grid med store
- * touch-knapper, primær full-bredde CTA) + meg-sub.tsx (kort-grupper).
+ * Tre steg: Brief (m/kontekst) → Scorekort → Oppsummering.
  *
- * Score per felt-type (primærfelt = første felt per forsøk):
- *   checkbox → antall treff av M · meter → snitt · poeng → sum ·
- *   number → verdi (1 forsøk) / snitt (flere).
- * Enheter og målverdier kommer ALLTID fra protokollen (ScorekortSpec) —
- * ingen hardkodede referanseverdier (FYS-formel ikke låst; mål er
- * foreslått fra IUP).
+ * Scoren regnes via den FELLES motoren (test-scoring.ts) — samme funksjon
+ * serveren bruker som fasit. Klienten sender kun rå slag-verdier + kontekst;
+ * live-preview og lagret score kan derfor aldri avvike. Enheter/mål kommer
+ * alltid fra protokollen (ingen hardkodede referanseverdier).
  */
 
 import { useEffect, useMemo, useState, useTransition } from "react";
@@ -30,13 +26,24 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ScorekortFelt, ScorekortForsok, ScorekortSpec } from "@/lib/portal-tester/protocol";
-import { lagreTestResultat, type LagreTestResultatInput } from "./actions";
+import { scoreTest } from "@/lib/portal-tester/test-scoring";
+import { lagreTestResultat } from "./actions";
 
 type Steg = "brief" | "scorekort" | "oppsummering";
-type Beregning = "antall" | "snitt" | "sum" | "verdi";
 
 /** Verdi-state: tallfelt lagres som rå streng (norsk komma), checkbox som boolean. */
 type Verdier = Record<number, Record<string, string | boolean>>;
+
+type Vanskelighet = "lett" | "middels" | "vanskelig";
+type Fasthet = "myk" | "medium" | "hard";
+type Kontekst = {
+  dato: string;
+  lokasjon: string;
+  vanskelighet: Vanskelighet | "";
+  vaer: string;
+  greenfart: string;
+  greenfasthet: Fasthet | "";
+};
 
 const MAKS_HISTORIKK = 50;
 const MAKS_POENG = 999;
@@ -58,16 +65,39 @@ function parseNorsk(raw: string): number | null {
 
 const fmt = new Intl.NumberFormat("nb-NO", { maximumFractionDigits: 2 });
 
+function iDagISO(): string {
+  // Lokalt datostempel (YYYY-MM-DD) uten å dra inn tidssone-skjevhet.
+  const d = new Date();
+  const m = `${d.getMonth() + 1}`.padStart(2, "0");
+  const dag = `${d.getDate()}`.padStart(2, "0");
+  return `${d.getFullYear()}-${m}-${dag}`;
+}
+
+/** Stripper tomme kontekst-felter; returnerer undefined hvis alt er tomt. */
+function renKontekst(k: Kontekst): Record<string, string> | undefined {
+  const ut: Record<string, string> = {};
+  if (k.dato) ut.dato = k.dato;
+  if (k.lokasjon.trim()) ut.lokasjon = k.lokasjon.trim();
+  if (k.vanskelighet) ut.vanskelighet = k.vanskelighet;
+  if (k.vaer.trim()) ut.vaer = k.vaer.trim();
+  if (k.greenfart.trim()) ut.greenfart = k.greenfart.trim();
+  if (k.greenfasthet) ut.greenfasthet = k.greenfasthet;
+  return Object.keys(ut).length > 0 ? ut : undefined;
+}
+
 export function ScorekortKlient({
   testId,
   beskrivelse,
   scoringRule,
   spec,
+  protocol,
 }: {
   testId: string;
   beskrivelse: string | null;
   scoringRule: string;
   spec: ScorekortSpec;
+  /** Rå protokoll-JSON — sendes til motoren for live-score (samme som server). */
+  protocol: unknown;
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -77,6 +107,14 @@ export function ScorekortKlient({
   const [historikk, setHistorikk] = useState<Verdier[]>([]);
   const [notat, setNotat] = useState("");
   const [feil, setFeil] = useState<string | null>(null);
+  const [kontekst, setKontekst] = useState<Kontekst>({
+    dato: iDagISO(),
+    lokasjon: "",
+    vanskelighet: "",
+    vaer: "",
+    greenfart: "",
+    greenfasthet: "",
+  });
 
   useEffect(() => {
     window.scrollTo({ top: 0 });
@@ -84,114 +122,48 @@ export function ScorekortKlient({
 
   const antallForsok = spec.forsok.length;
 
-  // Score-felt for testen — feltet totalscoren beregnes fra. Prioritet
-  // (verifisert mot alle 36 protokoller i DB):
-  // 1) tallfelt med enhet lik protokollens enhet (Benkpress kg, CHS mph)
-  // 2) poeng-felt (gate-/poengtester → sum)
-  // 3) checkbox når protokoll-enheten er tellende («/ 6», «%», «poeng»)
-  // 4) første numeriske felt (hopper over rene oppvarmings-checkboxer)
-  // 5) checkbox (rene treff/bom-tester) → beregning «antall».
-  const alleFelter = useMemo(() => {
-    const ut: ScorekortFelt[] = [];
-    for (const f of spec.forsok) {
-      for (const felt of f.felter) {
-        if (!ut.some((x) => x.key === felt.key)) ut.push(felt);
-      }
-    }
-    return ut;
-  }, [spec]);
-
-  const tellendeEnhet =
-    spec.unit !== undefined &&
-    (spec.unit.includes("/") || spec.unit === "%" || spec.unit === "poeng");
-
-  const scoreFelt: ScorekortFelt | undefined =
-    (spec.unit !== undefined
-      ? alleFelter.find((f) => f.type !== "checkbox" && f.unit === spec.unit)
-      : undefined) ??
-    alleFelter.find((f) => f.type === "poeng") ??
-    (tellendeEnhet ? alleFelter.find((f) => f.type === "checkbox") : undefined) ??
-    alleFelter.find((f) => f.type !== "checkbox") ??
-    alleFelter[0];
-
-  /** Forsøkene som har score-feltet (CHS: kun maks-slagene, ikke oppvarmingen). */
-  const scoreForsok = useMemo(
-    () =>
-      scoreFelt === undefined
-        ? []
-        : spec.forsok.filter((f) => f.felter.some((x) => x.key === scoreFelt.key)),
-    [spec, scoreFelt],
-  );
-
-  const beregning: Beregning =
-    scoreFelt === undefined || scoreFelt.type === "checkbox"
-      ? "antall"
-      : scoreFelt.type === "poeng"
-        ? "sum"
-        : scoreFelt.type === "meter"
-          ? "snitt"
-          : scoreForsok.length === 1
-            ? "verdi"
-            : "snitt";
-
-  const beregningLabel: Record<Beregning, string> = {
-    antall: "Antall",
-    snitt: "Snitt",
-    sum: "Sum poeng",
-    verdi: "Verdi",
-  };
-
-  /** Score-feltets navn i sublinjen når det trengs for å forstå tallet. */
-  const feltLabelSuffix =
-    scoreFelt !== undefined && (beregning === "antall" || alleFelter.length > 1)
-      ? ` ${scoreFelt.label}`
-      : "";
-
-  /** Enhet for totalscore-visning. Antall vises som «av M». */
-  const scoreEnhet =
-    beregning === "antall" ? `av ${scoreForsok.length}` : (scoreFelt?.unit ?? spec.unit ?? null);
-  /** Enhet i Brief-protokollkortet — protokollens egen. */
-  const protokollEnhet = spec.unit ?? scoreFelt?.unit ?? null;
-  /** Lagres i details — aldri visningsformen «av M». */
-  const detaljEnhet = beregning === "antall" ? (spec.unit ?? null) : scoreEnhet;
-
-  // ── Live-beregninger ───────────────────────────────────────────
-  function scoreVerdi(f: ScorekortForsok): string | boolean | undefined {
-    if (scoreFelt === undefined) return undefined;
-    return verdier[f.nr]?.[scoreFelt.key];
+  /** Rå verdi til JSON: tallfelt → tall (norsk komma), checkbox → boolean, ellers null. */
+  function tilJsonVerdi(
+    v: string | boolean | undefined,
+    type: ScorekortFelt["type"],
+  ): number | boolean | null {
+    if (type === "checkbox") return typeof v === "boolean" ? v : null;
+    return typeof v === "string" ? parseNorsk(v) : null;
   }
 
-  /** Et forsøk er «ført» når minst ett felt har gyldig verdi. */
-  const antallFort = useMemo(
+  /** Rå forsøk-liste — samme kontrakt som server-action og motoren får. */
+  const forsokData = useMemo(
     () =>
-      spec.forsok.filter((f) =>
-        f.felter.some((felt) => {
-          const v = verdier[f.nr]?.[felt.key];
-          if (felt.type === "checkbox") return typeof v === "boolean";
-          return typeof v === "string" && parseNorsk(v) !== null;
-        }),
-      ).length,
+      spec.forsok.map((f) => ({
+        nr: f.nr,
+        label: f.label,
+        verdier: Object.fromEntries(
+          f.felter.map((felt) => [felt.key, tilJsonVerdi(verdier[f.nr]?.[felt.key], felt.type)]),
+        ),
+      })),
     [verdier, spec],
   );
 
-  const score = useMemo<number | null>(() => {
-    if (beregning === "antall") {
-      const besvart = scoreForsok.filter((f) => typeof scoreVerdi(f) === "boolean");
-      if (besvart.length === 0) return null;
-      return scoreForsok.filter((f) => scoreVerdi(f) === true).length;
-    }
-    const tall = scoreForsok
-      .map((f) => {
-        const v = scoreVerdi(f);
-        return typeof v === "string" ? parseNorsk(v) : null;
-      })
-      .filter((n): n is number => n !== null);
-    if (tall.length === 0) return null;
-    if (beregning === "sum") return tall.reduce((a, b) => a + b, 0);
-    if (beregning === "verdi") return tall[0];
-    return tall.reduce((a, b) => a + b, 0) / tall.length;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [verdier, scoreForsok, beregning]);
+  /** Antall slag som er ført (minst én gyldig verdi). */
+  const antallFort = useMemo(
+    () => forsokData.filter((f) => Object.values(f.verdier).some((v) => v !== null)).length,
+    [forsokData],
+  );
+
+  // Live-score via SAMME motor som serveren → preview kan ikke avvike fra fasit.
+  const motor = useMemo(() => scoreTest(protocol, forsokData), [protocol, forsokData]);
+  const score = antallFort === 0 ? null : motor.score;
+  const scoringKind = motor.details.scoring;
+
+  /** Enhet for totalscore-visning. Telle-tester vises som «av M». */
+  const scoreEnhet =
+    scoringKind === "count_ok"
+      ? `av ${antallForsok}`
+      : (motor.details.unit ?? spec.unit ?? null);
+  /** Enhet i Brief-protokollkortet — protokollens egen. */
+  const protokollEnhet = spec.unit ?? motor.details.unit ?? null;
+
+  const alleFort = antallFort === antallForsok;
 
   // ── State-oppdatering med angre-historikk ──────────────────────
   function pushHistorikk() {
@@ -210,40 +182,20 @@ export function ScorekortKlient({
   }
 
   // ── Lagring ────────────────────────────────────────────────────
-  function tilJsonVerdi(
-    v: string | boolean | undefined,
-    type: ScorekortFelt["type"],
-  ): number | boolean | null {
-    if (type === "checkbox") return typeof v === "boolean" ? v : null;
-    return typeof v === "string" ? parseNorsk(v) : null;
-  }
-
   function lagre() {
-    if (score === null) {
-      setFeil("Før minst ett forsøk før du lagrer.");
+    if (!alleFort) {
+      setFeil("Alle slag må føres før du kan lagre.");
       return;
     }
     setFeil(null);
-    const details: LagreTestResultatInput["details"] = {
-      versjon: 1,
-      beregning,
-      forsok: spec.forsok.map((f) => ({
-        nr: f.nr,
-        label: f.label,
-        verdier: Object.fromEntries(
-          f.felter.map((felt) => [felt.key, tilJsonVerdi(verdier[f.nr]?.[felt.key], felt.type)]),
-        ),
-      })),
-    };
-    if (detaljEnhet) details.unit = detaljEnhet;
-
+    const kontekstInn = renKontekst(kontekst);
     startTransition(async () => {
       try {
         const res = await lagreTestResultat({
           testId,
-          score,
           notes: notat.trim() === "" ? undefined : notat.trim(),
-          details,
+          ...(kontekstInn ? { kontekst: kontekstInn } : {}),
+          forsok: forsokData,
         });
         // Ved suksess redirecter action til testsiden (?lagret=1).
         if (res && !res.ok) setFeil(res.error);
@@ -290,6 +242,8 @@ export function ScorekortKlient({
           </p>
         )}
 
+        <KontekstForm kontekst={kontekst} onSett={(k, v) => setKontekst((prev) => ({ ...prev, [k]: v }))} />
+
         <button type="button" onClick={() => setSteg("scorekort")} className={cn(ctaCls, "mt-6")}>
           <Play className="h-[18px] w-[18px]" strokeWidth={2} aria-hidden />
           Start test
@@ -311,7 +265,7 @@ export function ScorekortKlient({
         <ScoreKort
           score={score}
           scoreEnhet={scoreEnhet}
-          subline={`${beregningLabel[beregning]}${feltLabelSuffix} · Forsøk ${antallFort} av ${antallForsok}`}
+          subline={`Forsøk ${antallFort} av ${antallForsok}`}
         />
 
         <SectionHead>{fellesLabel ?? "Scorekort"}</SectionHead>
@@ -363,7 +317,7 @@ export function ScorekortKlient({
       <ScoreKort
         score={score}
         scoreEnhet={scoreEnhet}
-        subline={`${beregningLabel[beregning]}${feltLabelSuffix} · ${antallFort} av ${antallForsok} forsøk ført`}
+        subline={`${antallFort} av ${antallForsok} slag ført`}
       />
 
       <SectionHead>Per forsøk</SectionHead>
@@ -397,6 +351,12 @@ export function ScorekortKlient({
         />
       </div>
 
+      {!alleFort && (
+        <p className="mt-3 text-[11px] leading-relaxed text-warning">
+          Før resultat på alle {antallForsok} slag før du lagrer ({antallFort} ført).
+        </p>
+      )}
+
       {feil && (
         <div
           role="alert"
@@ -406,7 +366,7 @@ export function ScorekortKlient({
         </div>
       )}
 
-      <button type="button" onClick={lagre} disabled={pending} className={cn(ctaCls, "mt-6")}>
+      <button type="button" onClick={lagre} disabled={pending || !alleFort} className={cn(ctaCls, "mt-6")}>
         <Check className="h-[18px] w-[18px]" strokeWidth={2} aria-hidden />
         {pending ? "Lagrer…" : "Lagre resultat"}
       </button>
@@ -451,6 +411,123 @@ function BriefRad({ label, verdi }: { label: string; verdi: string }) {
       <span className="min-w-0 text-right text-[13px] font-semibold leading-snug text-foreground">
         {verdi}
       </span>
+    </div>
+  );
+}
+
+/* ── Kontekst-header (dato/lokasjon/vanskelighet/vær/green) ───────── */
+
+function KontekstForm({
+  kontekst,
+  onSett,
+}: {
+  kontekst: Kontekst;
+  onSett: <K extends keyof Kontekst>(key: K, verdi: Kontekst[K]) => void;
+}) {
+  const inputCls =
+    "h-11 w-full rounded-xl border border-input bg-card px-3 font-mono text-[13px] text-foreground outline-none transition-colors placeholder:text-muted-foreground/50 focus:border-primary focus:ring-[3px] focus:ring-ring/20";
+  return (
+    <>
+      <SectionHead>Kontekst</SectionHead>
+      <div className="grid grid-cols-2 gap-2.5">
+        <Felt label="Dato">
+          <input
+            type="date"
+            value={kontekst.dato}
+            onChange={(e) => onSett("dato", e.target.value)}
+            className={inputCls}
+          />
+        </Felt>
+        <Felt label="Lokasjon">
+          <input
+            type="text"
+            value={kontekst.lokasjon}
+            onChange={(e) => onSett("lokasjon", e.target.value)}
+            placeholder="Bane / anlegg"
+            className={inputCls}
+          />
+        </Felt>
+        <Felt label="Vanskelighetsgrad">
+          <PillValg
+            verdier={[
+              ["lett", "Lett"],
+              ["middels", "Middels"],
+              ["vanskelig", "Vanskelig"],
+            ]}
+            valgt={kontekst.vanskelighet}
+            onVelg={(v) => onSett("vanskelighet", kontekst.vanskelighet === v ? "" : (v as Vanskelighet))}
+          />
+        </Felt>
+        <Felt label="Vær">
+          <input
+            type="text"
+            value={kontekst.vaer}
+            onChange={(e) => onSett("vaer", e.target.value)}
+            placeholder="Vind, sol, regn…"
+            className={inputCls}
+          />
+        </Felt>
+        <Felt label="Fart på greener">
+          <input
+            type="text"
+            value={kontekst.greenfart}
+            onChange={(e) => onSett("greenfart", e.target.value)}
+            placeholder="Stimp / rask–treig"
+            className={inputCls}
+          />
+        </Felt>
+        <Felt label="Green-fasthet">
+          <PillValg
+            verdier={[
+              ["myk", "Myk"],
+              ["medium", "Medium"],
+              ["hard", "Hard"],
+            ]}
+            valgt={kontekst.greenfasthet}
+            onVelg={(v) => onSett("greenfasthet", kontekst.greenfasthet === v ? "" : (v as Fasthet))}
+          />
+        </Felt>
+      </div>
+    </>
+  );
+}
+
+function Felt({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <span className={lblCls}>{label}</span>
+      {children}
+    </div>
+  );
+}
+
+function PillValg({
+  verdier,
+  valgt,
+  onVelg,
+}: {
+  verdier: Array<[string, string]>;
+  valgt: string;
+  onVelg: (v: string) => void;
+}) {
+  return (
+    <div className="grid grid-cols-3 gap-1.5">
+      {verdier.map(([v, label]) => (
+        <button
+          key={v}
+          type="button"
+          onClick={() => onVelg(v)}
+          aria-pressed={valgt === v}
+          className={cn(
+            "inline-flex h-11 items-center justify-center rounded-lg border font-mono text-[10px] font-bold uppercase tracking-[0.05em] transition-colors",
+            valgt === v
+              ? "border-primary bg-primary text-primary-foreground"
+              : "border-border bg-background text-muted-foreground active:bg-secondary",
+          )}
+        >
+          {label}
+        </button>
+      ))}
     </div>
   );
 }

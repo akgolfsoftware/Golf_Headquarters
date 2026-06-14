@@ -6,6 +6,7 @@ import {
   parseForScoring,
   type Forsok,
 } from "../portal-tester/test-scoring";
+import { parseProtocol } from "../portal-tester/protocol";
 
 /* Hjelper: bygg variant B-protokoll (Team Norway, `scoring`). */
 function protB(scoring: string, shots: Array<{ nr: number; target?: number }>, unit = "m") {
@@ -163,6 +164,27 @@ test("ingen protokoll → fallback enkeltverdi", () => {
   const { score, details } = scoreTest(null, [{ nr: 1, verdier: { score: 42 } }]);
   assert.equal(score, 42);
   assert.equal(details.scoring, "fallback");
+});
+
+test("parseProtocol og parseForScoring er enige om antall slag (klient=server)", () => {
+  // Variant B (Team Norway). Slag har alltid label i ekte seed — derfor med her.
+  const b = {
+    shots: [
+      { nr: 1, label: "Slag 1", target: 100 },
+      { nr: 2, label: "Slag 2", target: 120 },
+      { nr: 3, label: "Slag 3", target: 90 },
+    ],
+    inputFields: [{ key: "resultatM", label: "Resultat", unit: "m" }],
+    scoring: "pei_average",
+  };
+  assert.equal(parseProtocol(b)?.forsok.length, parseForScoring(b).shots.length);
+
+  // Variant A (NGF-batteri)
+  const a = {
+    scoringMode: "hit-rate",
+    steps: [{ id: "g", label: "Gate", shots: 6, inputFields: [{ key: "ok", label: "OK", unit: "ja/nei" }] }],
+  };
+  assert.equal(parseProtocol(a)?.forsok.length, parseForScoring(a).shots.length);
 });
 
 test("lavereErBedre stemmer per kind", () => {

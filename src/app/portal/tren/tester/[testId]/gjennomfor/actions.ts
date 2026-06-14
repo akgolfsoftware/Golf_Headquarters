@@ -2,8 +2,14 @@
 
 /**
  * Server action for lagring av test-resultat fra scorekort-gjennomføringen.
- * Input valideres med zod safeParse før skriving (jf. CLAUDE.md JSON-regel).
- * Ved suksess: redirect til testsiden med ?lagret=1 (kvittering vises der).
+ *
+ * Scoren regnes ALLTID server-side via den felles motoren (test-scoring.ts) —
+ * klienten sender kun rå slag-verdier + kontekst. Da kan ikke klient-preview
+ * og lagret fasit være uenige.
+ *
+ * En test lagres KUN når den er fullført med resultat på alle slag (jf. Anders:
+ * halvferdig test lagres aldri). Input valideres med zod safeParse før skriving.
+ * Ved suksess: redirect til testsiden med ?lagret=1.
  */
 
 import { z } from "zod";
@@ -13,34 +19,41 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { testTilgangWhere } from "@/lib/portal-tester/test-tilgang";
 import { triggerTestAgent } from "@/lib/agents/triggers";
+import { scoreTest } from "@/lib/portal-tester/test-scoring";
 
 const VerdiSchema = z.union([z.number().finite(), z.boolean(), z.null()]);
 
-/** Per-forsøk-detaljer slik scorekort-klienten bygger dem. */
-const DetaljerSchema = z.object({
-  versjon: z.literal(1),
-  unit: z.string().max(40).optional(),
-  beregning: z.enum(["antall", "snitt", "sum", "verdi"]),
-  forsok: z
-    .array(
-      z.object({
-        nr: z.number().int().min(1),
-        label: z.string().max(200),
-        verdier: z.record(z.string(), VerdiSchema),
-      }),
-    )
-    .min(1)
-    .max(200),
+/** Per-slag-verdier slik scorekortet fører dem (rå — ingen forhåndsregnet score). */
+const ForsokSchema = z.object({
+  nr: z.number().int().min(1),
+  label: z.string().max(200).optional(),
+  verdier: z.record(z.string(), VerdiSchema),
 });
+
+/** Test-kontekst (header) — påvirker tolkning, lagres med resultatet. */
+const KontekstSchema = z
+  .object({
+    dato: z.string().max(40).optional(),
+    lokasjon: z.string().max(120).optional(),
+    vanskelighet: z.enum(["lett", "middels", "vanskelig"]).optional(),
+    vaer: z.string().max(120).optional(),
+    greenfart: z.string().max(60).optional(),
+    greenfasthet: z.enum(["myk", "medium", "hard"]).optional(),
+  })
+  .partial();
 
 const InputSchema = z.object({
   testId: z.string().min(1),
-  score: z.number().finite(),
   notes: z.string().max(2000).optional(),
-  details: DetaljerSchema,
+  kontekst: KontekstSchema.optional(),
+  forsok: z.array(ForsokSchema).min(1).max(200),
 });
 
 export type LagreTestResultatInput = z.infer<typeof InputSchema>;
+
+function harVerdi(verdier: Record<string, number | boolean | null>): boolean {
+  return Object.values(verdier).some((v) => v !== null);
+}
 
 export async function lagreTestResultat(
   input: LagreTestResultatInput,
@@ -51,29 +64,38 @@ export async function lagreTestResultat(
   if (!parsed.success) {
     return { ok: false, error: "Ugyldig resultat — sjekk feltene og prøv igjen." };
   }
-  const { testId, score, notes, details } = parsed.data;
+  const { testId, notes, kontekst, forsok } = parsed.data;
 
-  // Tilgang: samme regel som katalogen — kan ikke lagre mot andres
-  // private tester (K6).
+  // Krav: resultat på ALLE slag — halvferdig test lagres aldri.
+  if (!forsok.every((f) => harVerdi(f.verdier))) {
+    return { ok: false, error: "Alle slag må føres før du kan lagre." };
+  }
+
+  // Tilgang: samme regel som katalogen — kan ikke lagre mot andres private tester (K6).
   const test = await prisma.testDefinition.findFirst({
     where: { id: testId, AND: [testTilgangWhere(user.id)] },
-    select: { id: true },
+    select: { id: true, protocol: true },
   });
   if (!test) return { ok: false, error: "Testen finnes ikke." };
 
+  // Fasit-score regnes server-side fra protokollen + de rå slag-verdiene.
+  const { score, details } = scoreTest(test.protocol, forsok);
+
   const trimmedNotes = notes?.trim();
+  const takenAt = kontekst?.dato ? new Date(kontekst.dato) : new Date();
+
   await prisma.testResult.create({
     data: {
       userId: user.id,
       testId,
-      takenAt: new Date(),
+      takenAt: Number.isNaN(takenAt.getTime()) ? new Date() : takenAt,
       score,
       notes: trimmedNotes ? trimmedNotes : null,
-      details,
+      details: { ...details, ...(kontekst ? { kontekst } : {}) },
     },
   });
 
-  // Samme oppfølging som eksisterende registrerResultat (tester/actions.ts).
+  // AI-/achievement-oppfølging (eksisterende krok).
   triggerTestAgent(user.id);
 
   revalidatePath(`/portal/tren/tester/${testId}`);
