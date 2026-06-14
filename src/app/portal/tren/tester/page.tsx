@@ -12,6 +12,7 @@
  * pluss én ekstra spørring for de 5 siste resultatene.
  */
 
+import Link from "next/link";
 import { Crosshair, Dumbbell, Flag, Target, Trophy } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { PyramidArea } from "@/generated/prisma/client";
@@ -61,7 +62,7 @@ function kortRegel(rule: string): string {
 export default async function TesterPage() {
   const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
 
-  const [screen, siste] = await Promise.all([
+  const [screen, siste, tildelinger] = await Promise.all([
     loadTesterScreen({
       id: user.id,
       name: user.name,
@@ -77,6 +78,17 @@ export default async function TesterPage() {
         score: true,
         takenAt: true,
         test: { select: { name: true, pyramidArea: true, protocol: true } },
+      },
+    }),
+    prisma.testAssignment.findMany({
+      where: { playerId: user.id, status: "OPEN" },
+      orderBy: { createdAt: "desc" },
+      take: 10,
+      select: {
+        id: true,
+        dueDate: true,
+        test: { select: { id: true, name: true, pyramidArea: true } },
+        coach: { select: { name: true } },
       },
     }),
   ]);
@@ -104,6 +116,35 @@ export default async function TesterPage() {
     >
       {/* Aktiveres når TestWeek-modell er på plass — vises kun ≤14 dager før testuke */}
       <TestUkeKommende countdown={null} tester={[]} />
+
+      {tildelinger.length > 0 && (
+        <SetGroup label="TILDELT DEG">
+          {tildelinger.map((a) => (
+            <Link
+              key={a.id}
+              href={`/portal/tren/tester/${a.test.id}`}
+              className="flex items-center gap-3.5 border-b border-border px-[18px] py-[15px] transition-colors last:border-b-0 hover:bg-secondary/40"
+            >
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary">
+                {(() => {
+                  const Ikon = OMRADE_IKON[a.test.pyramidArea];
+                  return <Ikon className="h-4 w-4 text-foreground" strokeWidth={1.5} aria-hidden />;
+                })()}
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-[14px] font-semibold text-foreground">
+                  {a.test.name}
+                </span>
+                <span className="mt-0.5 block truncate font-mono text-[11px] text-muted-foreground">
+                  {a.coach.name}
+                  {a.dueDate ? ` · frist ${fmtDato(a.dueDate)}` : ""}
+                </span>
+              </span>
+              <SetVal>Start</SetVal>
+            </Link>
+          ))}
+        </SetGroup>
+      )}
 
       <SetGroup label="SISTE RESULTATER">
         {siste.length === 0 ? (

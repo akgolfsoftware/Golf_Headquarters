@@ -9,7 +9,7 @@
 
 import { useState, useMemo, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Calendar, Check, Search, X, Zap } from "lucide-react";
+import { ArrowRight, Check, Search, X } from "lucide-react";
 import { tildelTest } from "./actions";
 
 type Spiller = { id: string; name: string; initials: string; hcp: string };
@@ -54,7 +54,7 @@ export function TildelModal({
   const [search, setSearch] = useState("putt");
   const [activeFilter, setActiveFilter] = useState<(typeof PYRAMID_FILTERS)[number]>("SLAG");
   const [selectedTestId, setSelectedTestId] = useState<string>(allTests[0]?.id ?? "");
-  const [selectedDate, setSelectedDate] = useState<number>(27);
+  const [dato, setDato] = useState<string>("");
   const [notat, setNotat] = useState("");
   const [feil, setFeil] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
@@ -80,6 +80,7 @@ export function TildelModal({
         spillerId: spiller.id,
         testId: selectedTestId,
         note: notat,
+        dueDate: dato || undefined,
       });
       if (res.ok) router.push("/admin/tester");
       else setFeil(res.error ?? "Kunne ikke tildele testen.");
@@ -211,58 +212,25 @@ export function TildelModal({
               </div>
             </div>
 
-            {/* Date picker */}
+            {/* Frist (valgfritt) */}
             <div>
-              <div className="te-field-lbl">
-                Planlagt dato <span className="req">*</span>
-              </div>
-
-              <div
+              <div className="te-field-lbl">Frist (valgfritt)</div>
+              <input
+                type="date"
+                value={dato}
+                onChange={(e) => setDato(e.target.value)}
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  marginBottom: 8,
+                  width: "100%",
+                  height: 40,
+                  borderRadius: 10,
+                  border: "1px solid var(--border)",
+                  background: "var(--card)",
+                  padding: "0 12px",
+                  fontFamily: "var(--font-mono)",
+                  fontSize: 13,
+                  color: "var(--ink)",
                 }}
-              >
-                <div
-                  style={{
-                    fontFamily: "var(--font-display)",
-                    fontSize: 15,
-                    fontWeight: 600,
-                  }}
-                >
-                  <Calendar
-                    className="mr-1.5 inline h-3 w-3"
-                    strokeWidth={1.75}
-                  />
-                  Mai 2026
-                </div>
-                <div style={{ display: "flex", gap: 4 }}>
-                  <button
-                    type="button"
-                    className="font-mono rounded-full border border-border bg-card px-2.5 py-1 text-[10px]"
-                  >
-                    ← Apr
-                  </button>
-                  <button
-                    type="button"
-                    className="font-mono rounded-full border border-border bg-card px-2.5 py-1 text-[10px]"
-                  >
-                    Jun →
-                  </button>
-                </div>
-              </div>
-
-              <DatePicker selected={selectedDate} onSelect={setSelectedDate} />
-
-              <div className="te-suggested">
-                <Zap className="h-3.5 w-3.5 shrink-0 text-primary" fill="currentColor" />
-                <div>
-                  <strong>Foreslått: onsdag 27. mai · 16:00</strong> — {spiller.name.split(" ")[0]} har Teknisk-økt
-                  planlagt; passer å koble på testen før økten.
-                </div>
-              </div>
+              />
             </div>
 
             {/* Notat */}
@@ -319,51 +287,3 @@ export function TildelModal({
   );
 }
 
-// ─────────────────────────────────────────────────────────── DatePicker ──
-
-function DatePicker({
-  selected,
-  onSelect,
-}: {
-  selected: number;
-  onSelect: (day: number) => void;
-}) {
-  // Mai 2026 starter onsdag (1. mai = onsdag). Padding fra apr: 27,28,29,30.
-  const dayHeaders = ["M", "T", "O", "T", "F", "L", "S"];
-  const padding = [27, 28, 29, 30]; // siste 4 dager i apr
-  const days = Array.from({ length: 31 }, (_, i) => i + 1);
-  // Onsdag 27. mai er TODAY i designet, has-aktivitet på 24/25/28
-  const hasActivity = new Set([24, 25, 28]);
-  const TODAY = 23;
-
-  return (
-    <div className="te-date-pick">
-      {dayHeaders.map((d, i) => (
-        <div key={i} className="dh">
-          {d}
-        </div>
-      ))}
-      {padding.map((d) => (
-        <div key={`pad-${d}`} className="dc dim">
-          {d}
-        </div>
-      ))}
-      {days.map((d) => {
-        const classes = ["dc"];
-        if (d === TODAY) classes.push("today");
-        if (hasActivity.has(d)) classes.push("has");
-        if (d === selected) classes.push("sel");
-        return (
-          <button
-            key={d}
-            type="button"
-            className={classes.join(" ")}
-            onClick={() => onSelect(d)}
-          >
-            {d}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
