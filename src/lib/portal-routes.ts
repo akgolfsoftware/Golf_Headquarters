@@ -149,8 +149,6 @@ export const PORTAL_ROUTES: RouteEntry[] = [
   { route: "/portal/(fullscreen)/live/[sessionId]/logger", label: "Live · Logger", category: "Live" },
   { route: "/portal/(fullscreen)/live/[sessionId]/summary", label: "Live · Summary", category: "Live" },
   { route: "/portal/(fullscreen)/live/[sessionId]/tapper", label: "Live · Tapper", category: "Live" },
-  { route: "/portal/(fullscreen)/test/[testId]/live", label: "Test · Live", category: "Live" },
-  { route: "/portal/(fullscreen)/test/[testId]/summary", label: "Test · Summary", category: "Live" },
   { route: "/portal/(fullscreen)/tren", label: "Fullscreen · Tren", category: "Live" },
 
   // Annet
