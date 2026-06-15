@@ -78,7 +78,7 @@ wireframe/               ARKIV — ikke les eller importer herfra
 
 - **App-navn:** Coach-appen heter **AgencyOS** (`/admin`). «CoachHQ» er gammelt navn — aldri i ny UI-tekst.
 - **Tema:** PlayerHQ alltid **lyst**, AgencyOS alltid **mørkt** (`.dark`). Ingen toggle.
-- **Planlegging → Workbench:** ÉN inngangspunkt. Ikke en meny av 6 kort.
+- **Planlegging → Workbench:** ÉN inngangspunkt. Ikke en meny av 6 kort. Workbench har **fem nivå**: årsplan → periodisering → måned → uke → økt.
 - **Analyse samlet:** Analysere + TrackMan + Runder + SG er én flate med faner.
 - **Demo-navn:** Spiller = **Øyvind Rohjan**, coach = **Anders Kristiansen**. Fulle navn alltid. Gamle navn (Markus Berg, Magnus, Andreas Kragerud) skal bort. NB: ekte coach «Markus Røinås Pedersen» på markedssider beholdes.
 - **ELITE vises aldri i UI** — dødt Prisma-enum.

@@ -4,7 +4,7 @@
 >
 > Status: **ÅPEN** (trenger beslutning) · **PARKERT** (bevisst, ikke rør uoppfordret) · **LØST** (avklart — ikke flagg på nytt).
 >
-> **Sist oppdatert:** 2026-06-14. Råmateriale: tidligere `PLATFORM.md` §14 (arkivert) + kodeverifisering 2026-06-14.
+> **Sist oppdatert:** 2026-06-15. Råmateriale: tidligere `PLATFORM.md` §14 (arkivert) + kodeverifisering 2026-06-14.
 
 ---
 
@@ -15,10 +15,8 @@ Disse kan en agent IKKE løse selv — de er produkt-/metodikkvalg.
 | # | Spørsmål | Kode i dag (fasit) | Hva som trengs |
 |---|---|---|---|
 | A1 | **Metodikk-avvik kode ↔ wiki.** Flere AK/MORAD-detaljer er ulike mellom kode og kunnskaps-wiki. | `src/lib/taxonomy.ts` + `src/lib/portal/training/ak-taxonomy.ts` | Bekreft hvilken som er kanon, per punkt: |
-| A1a | A–K-kategorier: antall | Kode bruker ~7 koder (HCP-basert); `NgfKategori`-enum har A–L | 7 eller 11 nivåer? |
 | A1b | CS-nivåer: skala | Kode `CSNivaa` = CS50–CS100 | Skal CS20/CS40 finnes? |
 | A1c | CS-navn | Kode bruker «CS» (Club Speed implisitt) | «Club Speed» eller «Confidence Score»? |
-| A1d | P-posisjoner: nummerering | Kode P6 = Treff | Wiki/MORAD sier P7 = Impact. Hvilken? |
 | A1e | LIFE-koder: nøkler | Kode: RESILIENS/FOKUS/SELVTILLIT/KOMMUNIKASJON/ANSVAR | Wiki bruker andre nøkler. Hvilke er fasit? |
 | A2 | **CBAC-modell.** Skill `cbac-matrix` beskriver 43 capabilities/12 grupper/roller INSTRUCTOR/INVITED/STUDENT. | `src/lib/auth/cbac.ts` = 5 roller (ADMIN/COACH/PLAYER/PARENT/GUEST) + 10 capabilities, rolle-basert gating | Skal koden bygges opp til skillen, eller nedskaleres skillen til koden? |
 | A3 | **Agent-systemets dybde.** `acceptPlanAction` (`src/lib/agents/actions.ts`) bytter kun status, gjør ingen faktisk planendring. Ingen coach-godkjenningsinnboks. | `src/lib/agents/` (6 deterministiske) + `src/lib/ai/agents/` (6 LLM) | Skal `acceptPlanAction` faktisk endre planen? Bygges coach-innboks/turnering-agent? |
@@ -46,3 +44,5 @@ Disse kan en agent IKKE løse selv — de er produkt-/metodikkvalg.
 | C6 | Radius-inkonsistens i skills | Avklart: 8/12/16/20/24/full — matcher `globals.css` + designsystem-README. |
 | C7 | `UserGolfId`/`HandicapEntry`/`DegradationTracking` (modeller etterlyst) | Dekkes av `User.hcp` + `WagrSnapshot` (handicap) og `TrackStatus` + `Signal` (degradering). Ingen egen modell trengs. |
 | C8 | SG-kalibrering | Ferdig kalibrert + godkjent 2026-06-10. Se `BUSINESS-RULES.md`. |
+| C9 | A–K-kategorier: antall + grunnlag | **11 nivåer A–K** basert på **snittscore** (ikke HCP). L utgår (dødt enum, vises aldri). Beslutning Anders 2026-06-15. |
+| C10 | P-posisjoner: nummerering | **P7 = Impact** (standard MORAD 10-trinns). `taxonomy.ts` rettet til å matche `teknisk-plan/constants.ts`. Beslutning Anders 2026-06-15. |
