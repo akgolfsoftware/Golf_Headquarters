@@ -125,21 +125,19 @@ export const L_FASER = [
 
 export type LFaseKode = (typeof L_FASER)[number]["kode"];
 
+// Standard 10-trinns P-system (MORAD). P7 = Impact (treff). Holdes konsistent med
+// P_POSITIONS i src/components/teknisk-plan/constants.ts — samme posisjoner, samme nummerering.
 export const P_POSISJONER = [
-  { kode: "P1.0",  label: "P1 — Address" },
-  { kode: "P2.0",  label: "P2 — Takeaway" },
-  { kode: "P3.0",  label: "P3 — Arm parallell (BS)" },
-  { kode: "P4.0",  label: "P4 — Topp" },
-  { kode: "P4.5",  label: "P4.5 — Transition" },
-  { kode: "P5.0",  label: "P5 — Arm parallell (DS)" },
-  { kode: "P5.5",  label: "P5.5 — Shaft parallell (DS)" },
-  { kode: "P6.0",  label: "P6 — Treff" },
-  { kode: "P6.5",  label: "P6.5 — Shaft parallell (FT)" },
-  { kode: "P7.0",  label: "P7 — Arm parallell (FT)" },
-  { kode: "P7.5",  label: "P7.5 — Arm over skulder" },
-  { kode: "P8.0",  label: "P8 — Finish" },
-  { kode: "P9.0",  label: "P9 — Rebalance" },
-  { kode: "P10.0", label: "P10 — Hold finish" },
+  { kode: "P1.0",  label: "P1 — Adresse" },
+  { kode: "P2.0",  label: "P2 — Takeaway (kølle parallell)" },
+  { kode: "P3.0",  label: "P3 — Halvveis tilbake (venstre arm parallell)" },
+  { kode: "P4.0",  label: "P4 — Topp-posisjon" },
+  { kode: "P5.0",  label: "P5 — Transisjon" },
+  { kode: "P6.0",  label: "P6 — Halvveis ned (kølle parallell)" },
+  { kode: "P7.0",  label: "P7 — Impact" },
+  { kode: "P8.0",  label: "P8 — Tidlig oppfølging" },
+  { kode: "P9.0",  label: "P9 — Kølle parallell etter impact" },
+  { kode: "P10.0", label: "P10 — Finish" },
 ] as const;
 
 export type PPosisjonsKode = (typeof P_POSISJONER)[number]["kode"];
