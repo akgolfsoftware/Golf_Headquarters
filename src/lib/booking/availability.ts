@@ -9,6 +9,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { getCalendarBusy } from "@/lib/google-calendar";
+import { kalenderBlokkererSlot, type CalendarBusyResult } from "@/lib/booking/calendar-result";
 
 export type Slot = {
   start: Date;
@@ -69,11 +70,11 @@ export async function getAvailableSlots(
         .map((av) => av.coach.id),
     ),
   );
-  const busyPerCoach = new Map<string, { start: Date; end: Date }[]>();
+  const busyPerCoach = new Map<string, CalendarBusyResult>();
   await Promise.all(
     uniqueCoachIds.map(async (coachId) => {
-      const busy = await getCalendarBusy(coachId, dayStart, dayEnd);
-      busyPerCoach.set(coachId, busy);
+      const result = await getCalendarBusy(coachId, dayStart, dayEnd);
+      busyPerCoach.set(coachId, result);
     }),
   );
 
@@ -84,7 +85,10 @@ export async function getAvailableSlots(
     if (!av.coach || (av.coach.role !== "COACH" && av.coach.role !== "ADMIN")) {
       continue;
     }
-    const coachBusy = busyPerCoach.get(av.coach.id) ?? [];
+    const kalender = busyPerCoach.get(av.coach.id);
+    // Fail-closed: kunne ikke sjekke coachens kalender ⇒ vis ingen slots for
+    // den coachen (unngå dobbeltbooking mot private avtaler).
+    if (!kalender || !kalender.ok) continue;
 
     const [startH, startM] = av.startTime.split(":").map(Number);
     const [endH, endM] = av.endTime.split(":").map(Number);
@@ -105,11 +109,7 @@ export async function getAvailableSlots(
             cursor.getTime() < b.endAt.getTime() &&
             slotEnd.getTime() > b.startAt.getTime(),
         );
-        const calendarConflict = coachBusy.some(
-          (cb) =>
-            cursor.getTime() < cb.end.getTime() &&
-            slotEnd.getTime() > cb.start.getTime(),
-        );
+        const calendarConflict = kalenderBlokkererSlot(kalender, cursor, slotEnd);
         const conflict = bookingConflict || calendarConflict;
         if (!conflict) {
           slots.push({
@@ -154,9 +154,10 @@ export async function isSlotStillAvailable(
   });
   if (conflict) return false;
 
-  // Sjekk også Google Calendar for ekstern busy-time (privat avtale)
-  const busy = await getCalendarBusy(coachId, startAt, endAt);
-  if (busy.some((b) => startAt < b.end && endAt > b.start)) {
+  // Sjekk også Google Calendar. Fail-closed: hvis sjekken ikke kunne utføres
+  // (ok:false) blokkeres slotet av kalenderBlokkererSlot.
+  const kalender = await getCalendarBusy(coachId, startAt, endAt);
+  if (kalenderBlokkererSlot(kalender, startAt, endAt)) {
     return false;
   }
 

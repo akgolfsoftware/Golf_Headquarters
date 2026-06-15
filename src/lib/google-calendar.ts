@@ -24,6 +24,9 @@ import {
 } from "node:crypto";
 import { prisma } from "@/lib/prisma";
 import type { GoogleCalendarConnection } from "@/generated/prisma/client";
+import { notify } from "@/lib/notifications";
+import { logError } from "@/lib/error-tracking";
+import type { CalendarBusyResult, Interval } from "@/lib/booking/calendar-result";
 
 const CLIENT_ID = process.env.GOOGLE_OAUTH_CLIENT_ID;
 const CLIENT_SECRET = process.env.GOOGLE_OAUTH_CLIENT_SECRET;
@@ -138,24 +141,35 @@ async function getActiveConnection(userId: string): Promise<GoogleCalendarConnec
 
 /**
  * Hent travle tidsperioder fra alle PULL-kalendere coachen har aktivert.
- * Returnerer kombinert liste — duplikater er OK (filtreres ikke).
+ *
+ * Returnerer et CalendarBusyResult som skiller «sjekket OK» fra «klarte IKKE å
+ * sjekke». Kallere (booking-tilgjengelighet) skal aldri anta coachen ledig på
+ * grunnlag av en mislykket sjekk (fail-closed) — det ville dobbeltbooke mot
+ * private avtaler.
  */
 export async function getCalendarBusy(
   userId: string,
   from: Date,
   to: Date,
-): Promise<{ start: Date; end: Date }[]> {
-  const conn = await getActiveConnection(userId);
-  if (!conn) return [];
+): Promise<CalendarBusyResult> {
+  // Hent connection direkte (ikke via getActiveConnection): en connection i
+  // status ERROR skal fortsatt forsøkes/rapporteres, ikke maskeres som «ingen
+  // kalender» — det ville fail-open-et igjen ved neste kall.
+  const conn = await prisma.googleCalendarConnection.findUnique({
+    where: { userId },
+  });
+  // Ingen tilkobling, eller bevisst pauset = ingen kalender-beskyttelse (legitimt).
+  if (!conn || conn.status === "PAUSED") return { ok: true, busy: [] };
 
   const subs = await prisma.googleCalendarSubscription.findMany({
     where: { connectionId: conn.id, syncPull: true, active: true },
   });
-  if (subs.length === 0) return [];
+  if (subs.length === 0) return { ok: true, busy: [] };
 
   const calendar = getCalendarApi(conn);
-  const all: { start: Date; end: Date }[] = [];
-  let nokenSuksess = false;
+  const all: Interval[] = [];
+  let feiletAntall = 0;
+  let sisteFeil = "unknown";
 
   for (const sub of subs) {
     try {
@@ -172,29 +186,59 @@ export async function getCalendarBusy(
           all.push({ start: new Date(b.start), end: new Date(b.end) });
         }
       }
-      nokenSuksess = true;
       await prisma.googleCalendarSubscription.update({
         where: { id: sub.id },
         data: { lastSyncAt: new Date(), lastError: null },
       });
     } catch (err) {
-      const melding = err instanceof Error ? err.message : "unknown";
-      console.error(`[google-calendar] freebusy failed for ${sub.googleCalendarId}`, melding);
+      feiletAntall++;
+      sisteFeil = err instanceof Error ? err.message : "unknown";
+      console.error(`[google-calendar] freebusy failed for ${sub.googleCalendarId}`, sisteFeil);
       await prisma.googleCalendarSubscription.update({
         where: { id: sub.id },
-        data: { lastError: melding.slice(0, 500) },
+        data: { lastError: sisteFeil.slice(0, 500) },
       });
     }
   }
 
-  if (nokenSuksess) {
-    await prisma.googleCalendarConnection.update({
-      where: { id: conn.id },
-      data: { lastSyncAt: new Date(), lastError: null, status: "ACTIVE" },
+  // Konservativt: minst én pull-kalender feilet ⇒ ufullstendig bilde ⇒ fail-closed.
+  if (feiletAntall > 0) {
+    // Atomisk overgang: kun kallet som faktisk flytter ACTIVE → ERROR varsler.
+    // Hindrer duplikat-varsling når flere kall feiler samtidig (de øvrige får count 0).
+    const overgang = await prisma.googleCalendarConnection.updateMany({
+      where: { id: conn.id, status: "ACTIVE" },
+      data: { status: "ERROR", lastError: sisteFeil.slice(0, 500) },
     });
+    if (overgang.count === 0) {
+      // Allerede i ERROR (eller satt av et samtidig kall) — oppdater kun feiltekst.
+      await prisma.googleCalendarConnection.update({
+        where: { id: conn.id },
+        data: { lastError: sisteFeil.slice(0, 500) },
+      });
+    } else {
+      await notify({
+        userId,
+        type: "system",
+        title: "Kalender-beskyttelse er nede",
+        body: "Vi kunne ikke sjekke Google Calendar. Koble til på nytt så bookinger ikke kolliderer med private avtaler.",
+        link: "/admin/settings/calendar",
+      });
+      await logError({
+        context: "booking.availability.calendar",
+        error: sisteFeil,
+        severity: "error",
+        meta: { coachId: userId, feiletAntall },
+        userId,
+      });
+    }
+    return { ok: false, reason: sisteFeil, busy: all };
   }
 
-  return all;
+  await prisma.googleCalendarConnection.update({
+    where: { id: conn.id },
+    data: { lastSyncAt: new Date(), lastError: null, status: "ACTIVE" },
+  });
+  return { ok: true, busy: all };
 }
 
 /**
