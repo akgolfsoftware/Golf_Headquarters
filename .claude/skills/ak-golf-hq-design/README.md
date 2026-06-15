@@ -17,9 +17,27 @@ AK Golf HQ er én Next.js 16-monorepo med fire moduler, ett designsystem:
 | **Marketing**  | `akgolf.no`      | Offentlig              | Landingssider, akkvisisjon |
 | **Booking**    | `/booking`       | Spillere + besøkende   | Time-booking, betaling |
 | **PlayerHQ**   | `/portal`        | Spillere               | Treningsplan, økt-logg, profil, fakturaer |
-| **CoachHQ**    | `/admin`         | Coacher (intern)       | Dagens økter, spillerliste, planlegging, fakturering |
+| **AgencyOS**   | `/admin`         | Coacher (intern)       | Dagens økter, spillerliste, planlegging, fakturering |
+
+> **App-navn:** coach-appen heter **AgencyOS** (het tidligere «CoachHQ» — bruk aldri det i ny UI-tekst). UI-kit-mappen `ui_kits/coachhq/` beholder mappenavnet, men flaten er AgencyOS.
 
 Stack: **Next.js 16 · Tailwind v4 (CSS-first via `@theme`) · shadcn/ui · Inter + Inter Tight + JetBrains Mono.**
+
+## Låste beslutninger (juni 2026)
+
+- **Tema per produkt:** PlayerHQ alltid lyst, AgencyOS alltid mørkt (`.dark`). Ingen tema-toggle.
+- **Navne-kanon (demo):** spiller **Øyvind Rohjan**, coach **Anders Kristiansen**. (Ekte coach «Markus Røinås Pedersen» på markedssider — ikke bytt.)
+- **Abonnement:** gratis eller 300 kr/mnd — ingen tier-nivåer. Performance/Performance Pro = coaching-pakker, ikke app-nivåer. **ELITE finnes ikke** (vis aldri).
+- **Planlegging bor i Workbench** (ett trykkpunkt). **Analysere + TrackMan + Runder + SG = én flate med faner.**
+- Full liste: prosjektets `docs/platform/BUSINESS-RULES.md`.
+
+## Følge-artefakter (sannhet ved siden av skillen)
+
+- **Komponent-galleri (83):** kode `src/components/athletic/` · Drive `software/akgolf-hq/komponenter-2026-06-15/index.html`.
+- **Skjerm-spec-modell:** repo `docs/skjermplan/` · Drive `software/akgolf-hq/skjermplan-2026-06-15/` — hver skjerm + tilstander/modaler/handlinger.
+- **Brand guide (visuell):** Drive `software/akgolf-hq/akgolf-hq-designsystem-2026-06-15.html`.
+- **Tokens i kode:** `src/app/globals.css` speiler `colors_and_type.css`.
+- **Metode + flyt + kvalitet:** `flyt-og-kvalitet.md` (i denne skillen).
 
 ---
 
@@ -179,7 +197,7 @@ Knappesystemet er strengt — fire varianter, alle med spesifikk semantikk:
 - 8pt-grid er hellig. Hvis du finner deg selv å skrive `p-3`, `p-5`, `p-7`, `p-9` — stopp. Du har tapt.
 - Kort-tetthet er Bloomberg-ish. KPI-strip kan ha 4–5 kolonner på desktop. Vi gjør ikke "luftig spacing" som SaaS-marketing.
 - **Max-width content:** 1280px (`max-w-7xl`). Marketing kan gå til 1440px på fullt-bredde hero.
-- Mobile-first for PlayerHQ og Booking. Desktop-first for CoachHQ. Marketing er ekte responsive.
+- Mobile-first for PlayerHQ og Booking. Desktop-first for AgencyOS. Marketing er ekte responsive.
 
 ### Imagery-stil
 

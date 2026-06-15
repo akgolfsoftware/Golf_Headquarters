@@ -1,60 +1,98 @@
 ---
 name: ak-golf-hq-design
-description: Use this skill to generate well-branded interfaces and assets for AK Golf HQ — the golfcoaching-plattform for AK Golf Group (PlayerHQ /portal, CoachHQ /admin, Marketing akgolf.no, Booking). Editorial sport-analytics aesthetic with forest #005840 + lime #D1F843 + cream #FAFAF7. Norsk bokmål copy. Contains locked design tokens, brand assets, typography, and UI-kit components for prototyping and production.
+description: Use this skill to generate well-branded interfaces and assets for AK Golf HQ — the golf-coaching platform for AK Golf Group (PlayerHQ /portal, AgencyOS /admin, Marketing akgolf.no, Booking). Editorial sport-analytics aesthetic — forest #005840 + lime #D1F843 + cream #FAFAF7, Inter / Inter Tight / JetBrains Mono, norsk bokmål. Contains locked design tokens (layered primitives→semantic), brand assets, typography, flow-efficiency rules, a quality bar, the 83-component catalogue and the screen spec-model. Use for prototyping and production.
 user-invocable: true
 ---
 
 # AK Golf HQ — Design Skill
 
-This skill packages the AK Golf HQ design system. It's locked: never invent new fonts, colors, or spacing trinn outside what's defined here.
+Ett designsystem, fire produkter. **Låst.** Aldri finn opp nye fonter, hex-verdier eller spacing-trinn utenfor det som er definert her.
 
-## What to read
+*DataGolf møter The Athletic, hvis de møttes på Linear.*
 
-1. **`README.md`** — the master reference. Read this first. Covers content fundamentals (norsk bokmål tone, casing, forbidden språk), visual foundations (palette, type, motion, imagery), and iconography.
-2. **`colors_and_type.css`** — the locked design tokens as CSS custom properties. Import this in any HTML prototype.
-3. **`assets/`** — 7 SVG logo variants (mono / on-light / on-dark / on-green).
-4. **`fonts/`** — self-hosted brand fonts (Inter, Inter Tight, JetBrains Mono).
-5. **`ui_kits/<product>/index.html`** — high-fidelity React-port for each surface. Read these for component patterns.
-6. **`preview/*.html`** — small cards demonstrating individual tokens and components. Use as visual reference.
+## Les i denne rekkefølgen
 
-## How to use this skill
+1. **`SKILL.md`** (her) — låste beslutninger, produkter, token-metode, bruk, kvalitetsbar, harde regler.
+2. **`README.md`** — de visuelle fundamentene (palett-rytme, typografi, knapper, ikoner, bevegelse, imagery). Master-referansen — les den før du bygger.
+3. **`colors_and_type.css`** — de låste tokens som CSS-variabler, lagdelt (primitiver → semantikk → bruk). Importer i enhver HTML-prototype.
+4. **`flyt-og-kvalitet.md`** — flyt-effektivitet (8 regler), strukturelle mønstre (sjekkliste), kvalitetsbar + AI-slop-test.
+5. **Følge-artefakter** (sannhet ved siden av skillen — se egen seksjon).
 
-**If creating a throwaway visual artifact** (slide, mock, exploration HTML):
-- Import `colors_and_type.css` at the top of your file
-- Copy logos from `assets/` into your output if needed
-- Use the locked semantic tokens (`var(--primary)`, `var(--accent)`, etc.) — never inline new hex values
-- Follow the conventions in the relevant `ui_kits/<product>/` for the surface you're imitating
-- Write Norwegian bokmål copy by default; English for golf jargon (Strokes Gained, Tour, etc.)
+## De fire produktene
 
-**If working on production code in the AK Golf monorepo**:
-- The CSS tokens here mirror the Tailwind v4 `@theme` block. Components in `src/components/athletic/` are the source of truth — gjenbruk dem.
-- Lucide-react is the only icon library. 1.5px stroke. No emoji.
-- 8pt-grid is strict — `p-3`, `p-5`, `p-7` are forbudt.
-- Editorial italic via `<em className="font-normal italic text-primary">` inside Inter Tight headings. Never serif.
+| Produkt | Rute | Tema | Tone | Tetthet |
+|---|---|---|---|---|
+| **Marketing** | `akgolf.no` | Lyst | Editorial, foto-ledet | Romslig |
+| **Booking** | `/booking` + `/portal/booking` | Lyst | Funksjonell, fokusert | Kompakt |
+| **PlayerHQ** | `/portal` | **Alltid lyst** | Personlig, mobil-først | Tett |
+| **AgencyOS** | `/admin` | **Alltid mørkt** (`.dark`) | Bloomberg / Linear | Maksimalt tett |
 
-## Surface decisions
+Stack: Next.js 16 · Tailwind v4 (CSS-first via `@theme`) · shadcn/ui · Inter + Inter Tight + JetBrains Mono.
 
-| Surface         | Where           | Tone           | Density        |
-|-----------------|-----------------|----------------|----------------|
-| Marketing       | `akgolf.no`     | Editorial, photo-led | Generous |
-| Booking         | `/booking`      | Functional, focused  | Compact  |
-| PlayerHQ        | `/portal`       | Personal, mobile     | Dense    |
-| CoachHQ         | `/admin`        | Bloomberg / Linear   | Maximally dense |
+## Låste beslutninger (juni 2026 — gjelder til Anders endrer dem)
 
-## When the user asks for something
+- **App-navn:** coach-appen heter **AgencyOS** (`/admin`). «CoachHQ» er gammelt — bruk aldri i ny UI-tekst.
+- **Tema per produkt:** PlayerHQ alltid **lyst**, AgencyOS alltid **mørkt**. **Ingen tema-toggle.**
+- **Navne-kanon (demo):** spiller = **Øyvind Rohjan**, coach = **Anders Kristiansen**. Alltid fulle navn. (Ekte coach «Markus Røinås Pedersen» på markedssidene — ikke bytt han ut.)
+- **Abonnement:** PlayerHQ-tilgang er **gratis eller 300 kr/mnd** — **ingen tier-nivåer**. «Performance / Performance Pro» er **coaching-pakker** (antall økter), IKKE app-nivåer. **ELITE finnes ikke** (dødt enum — vis aldri i UI).
+- **Planlegging bor i Workbench** — ett trykkpunkt dit, ikke en meny av kort. Samme i coachens spiller-Workbench.
+- **Analyse samlet:** Analysere + TrackMan + Runder + SG er **én flate med faner**.
 
-If the request is concrete (e.g. "make a hero for [section]") — just build it. Pull patterns from the matching UI kit and the visual-foundations section of README.
+## Token-arkitektur (lagdelt — allerede i `colors_and_type.css`)
 
-If the request is vague — ask:
-1. Which surface (Marketing / Booking / PlayerHQ / CoachHQ)?
-2. Mobile or desktop first?
-3. What real data should the artifact show (vs. demo data)?
+Tre lag, samme robuste metode som modne designsystemer bruker:
 
-## Hard rules — never break
+1. **Primitiver** — rå skala: `--forest-500`, `--lime-500`, `--cream-50` … **Bruk aldri direkte i komponenter.**
+2. **Semantiske aliaser** — `--primary`, `--accent`, `--background`, `--border` … definert to ganger (lyst + `.dark`). Det er disse komponenter bygger mot.
+3. **Bruk** — Tailwind-utilities (`bg-primary`, `text-foreground`) eller `var(--primary)`. I koden speiler `src/app/globals.css` nøyaktig disse.
 
-1. No new fonts. Inter / Inter Tight / JetBrains Mono. Period.
-2. No new hex values. Only the semantic tokens or the named primitives.
-3. No emoji in UI. Use Lucide.
-4. No multiple variants of the same thing. Levér én løsning.
-5. No serif italic. Inter Tight italic is the signature.
-6. No `p-3`/`p-5`/`p-7`/`p-9`. 8pt-grid only.
+Trenger du en farge som ikke finnes: legg den inn som token først, og spør Anders. Aldri hardkod hex i en komponent.
+
+## Slik bruker du skillen
+
+**Throwaway visuelt artefakt** (mockup, utforsknings-HTML, slide):
+- Importer `colors_and_type.css` øverst. Bruk semantiske tokens — aldri ny hex.
+- Kopier logoer fra `assets/` ved behov. Norsk bokmål-copy; engelsk for golf-sjargong (Strokes Gained, Tour).
+
+**Produksjonskode i monorepoet:**
+- `src/components/athletic/` er sannhet — **gjenbruk**. `globals.css` speiler disse tokens.
+- Lucide-react eneste ikon-bibliotek (1.5px stroke, ingen emoji). 8pt-grid (`p-3/p-5/p-7` forbudt).
+- Editorial italic via `<em className="font-normal italic text-primary">` i Inter Tight-overskrifter. Aldri serif.
+
+**Designe / planlegge en skjerm:**
+- Slå opp skjermen i **skjerm-spec-modellen** (`docs/skjermplan/`) for tilstander, modaler og handlinger.
+- Bygg fra **komponent-katalogen** (de 83 athletic-komponentene) — ikke nye byggeklosser uten grunn.
+
+## Følge-artefakter (sannhet ved siden av skillen)
+
+| Artefakt | Hvor | Hva |
+|---|---|---|
+| **Komponent-galleri** (83) | Kode: `src/components/athletic/` · Drive: `software/akgolf-hq/komponenter-2026-06-15/index.html` | Hver byggekloss, tro gjengitt |
+| **Skjerm-spec-modell** | Repo: `docs/skjermplan/` · Drive: `software/akgolf-hq/skjermplan-2026-06-15/` | Hver skjerm + tilstander/modaler/handlinger |
+| **Brand guide** (visuell) | Drive: `software/akgolf-hq/akgolf-hq-designsystem-2026-06-15.html` | Farger/fonter/spacing å se |
+| **Tokens i kode** | `src/app/globals.css` | Speiler `colors_and_type.css` |
+
+## Kvalitetsbar (ekstern smak, AK-tilpasset)
+
+- **AI-slop-testen:** hvis noen kan se grensesnittet og si «AI laget dette» uten tvil — stryk og bygg om. MEN: AK sine **låste signaturer** (mono-eyebrow, lime venstrekant på event-kort, cream-bg + hvite kort, editorial Inter Tight-italic) er **bevisst merkevarestemme** — de er *svaret* på «ikke vær generisk», ikke brudd på det. Der generelle smaks-regler (f.eks. impeccable) forbyr disse på tvers — **AK-kanon vinner**, fordi de er en forpliktet, navngitt brand-stemme.
+- **Kontrast:** brødtekst ≥ 4,5:1. Aldri lysegrå «for eleganse».
+- **Bevegelse:** ease-out, 150–250 ms, `prefers-reduced-motion` alltid gated. Ingen bounce/elastic.
+- **Lever én løsning, produksjonsklar.** Ikke to varianter, ikke prototype.
+- Mer i `flyt-og-kvalitet.md`.
+
+## Harde regler — aldri bryt
+
+1. Ingen nye fonter. Inter / Inter Tight / JetBrains Mono. Punktum.
+2. Ingen nye hex-verdier. Kun semantiske tokens eller navngitte primitiver.
+3. Ingen emoji i UI. Bruk Lucide.
+4. Ingen to varianter av samme ting. Lever én løsning, lås.
+5. Ingen serif-italic. Inter Tight italic er signaturen.
+6. Ingen `p-3`/`p-5`/`p-7`/`p-9`. 8pt-grid only.
+7. Ingen store flate lime-flater. Lime er aksent (aktiv/valgt/NÅ), ikke kanvas.
+8. PlayerHQ alltid lyst, AgencyOS alltid mørkt. Ingen tier-nivåer i UI. ELITE vises aldri.
+
+## Når forespørselen er vag — spør
+
+1. Hvilket produkt (Marketing / Booking / PlayerHQ / AgencyOS)?
+2. Mobil eller desktop først?
+3. Ekte data eller demo-data?
