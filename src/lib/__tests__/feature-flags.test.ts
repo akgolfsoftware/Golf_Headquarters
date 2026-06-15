@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { beregnEffektivTier, gratisForAlle } from "@/lib/feature-flags";
+import { resolveTier, gratisForAlle } from "@/lib/feature-flags";
 
 const FOR_BETALING = new Date("2026-06-15T12:00:00+02:00"); // før 1. juli
 const ETTER_BETALING = new Date("2026-07-15T12:00:00+02:00"); // etter 1. juli
@@ -8,9 +8,8 @@ const ETTER_BETALING = new Date("2026-07-15T12:00:00+02:00"); // etter 1. juli
 const ingenTilgang = {
   tier: "GRATIS" as const,
   createdAt: new Date("2026-01-01T00:00:00+02:00"), // > 30 dager gammel
-  coachingMonthlyCredits: 0,
-  subscriptionActive: false,
-  iGruppe: false,
+  subscription: null,
+  groupMembershipsCount: 0,
 };
 
 describe("gratisForAlle (lanserings-vindu)", () => {
@@ -22,26 +21,25 @@ describe("gratisForAlle (lanserings-vindu)", () => {
   });
 });
 
-describe("beregnEffektivTier — lanserings-vindu", () => {
+describe("resolveTier — lanserings-vindu", () => {
   it("gir ALLE PRO før betaling starter, uansett tier/pakke/gruppe", () => {
-    assert.equal(beregnEffektivTier({ ...ingenTilgang, now: FOR_BETALING }), "PRO");
+    assert.equal(resolveTier({ ...ingenTilgang, now: FOR_BETALING }), "PRO");
   });
 });
 
-describe("beregnEffektivTier — etter 1. juli (reglene gjelder)", () => {
+describe("resolveTier — etter 1. juli (reglene gjelder)", () => {
   it("betaler (tier PRO) ⇒ PRO", () => {
     assert.equal(
-      beregnEffektivTier({ ...ingenTilgang, tier: "PRO", now: ETTER_BETALING }),
+      resolveTier({ ...ingenTilgang, tier: "PRO", now: ETTER_BETALING }),
       "PRO",
     );
   });
 
   it("aktiv coaching-pakke (monthlyCredits > 0) ⇒ PRO", () => {
     assert.equal(
-      beregnEffektivTier({
+      resolveTier({
         ...ingenTilgang,
-        coachingMonthlyCredits: 2,
-        subscriptionActive: true,
+        subscription: { status: "ACTIVE", monthlyCredits: 2 },
         now: ETTER_BETALING,
       }),
       "PRO",
@@ -50,10 +48,9 @@ describe("beregnEffektivTier — etter 1. juli (reglene gjelder)", () => {
 
   it("inaktiv coaching-pakke gir IKKE gratis tilgang ⇒ GRATIS", () => {
     assert.equal(
-      beregnEffektivTier({
+      resolveTier({
         ...ingenTilgang,
-        coachingMonthlyCredits: 4,
-        subscriptionActive: false,
+        subscription: { status: "CANCELLED", monthlyCredits: 4 },
         now: ETTER_BETALING,
       }),
       "GRATIS",
@@ -62,14 +59,14 @@ describe("beregnEffektivTier — etter 1. juli (reglene gjelder)", () => {
 
   it("gruppemedlemskap ⇒ PRO", () => {
     assert.equal(
-      beregnEffektivTier({ ...ingenTilgang, iGruppe: true, now: ETTER_BETALING }),
+      resolveTier({ ...ingenTilgang, groupMembershipsCount: 1, now: ETTER_BETALING }),
       "PRO",
     );
   });
 
   it("prøveperiode (< 30 dager fra registrering) ⇒ PRO", () => {
     assert.equal(
-      beregnEffektivTier({
+      resolveTier({
         ...ingenTilgang,
         createdAt: new Date("2026-07-10T00:00:00+02:00"), // 5 dager før now
         now: ETTER_BETALING,
@@ -79,6 +76,6 @@ describe("beregnEffektivTier — etter 1. juli (reglene gjelder)", () => {
   });
 
   it("utløpt prøveperiode + ingen pakke/gruppe/betaling ⇒ GRATIS (må betale)", () => {
-    assert.equal(beregnEffektivTier({ ...ingenTilgang, now: ETTER_BETALING }), "GRATIS");
+    assert.equal(resolveTier({ ...ingenTilgang, now: ETTER_BETALING }), "GRATIS");
   });
 });

@@ -20,6 +20,10 @@ type Options = {
 
 export async function requirePortalUser(options: Options = {}) {
   const { allow, redirectTo = "/auth/login", allowAwaitingConsent = false } = options;
+  // P0-4 (GDPR): getCurrentUser er eneste innloggings-sti for portal/admin og
+  // returnerer null for soft-slettet konto (deletedAt satt) — så !user-redirecten
+  // under stenger slettede kontoer ute. Ikke dupliser deletedAt-sjekken her: user
+  // kan aldri ha deletedAt satt på dette punktet (ville vært død kode).
   const user = await getCurrentUser();
   if (!user) redirect(redirectTo);
   if (allow && !hasRole(user.role, allow)) {

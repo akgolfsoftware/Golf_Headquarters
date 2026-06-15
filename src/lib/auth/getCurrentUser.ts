@@ -5,7 +5,7 @@ import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { ensureUser } from "./ensureUser";
-import { beregnEffektivTier } from "@/lib/feature-flags";
+import { resolveTier } from "@/lib/feature-flags";
 import type { User } from "@/generated/prisma/client";
 
 export const getCurrentUser = cache(async (): Promise<User | null> => {
@@ -39,12 +39,11 @@ async function withEffektivTilgang(user: User): Promise<User> {
       .catch(() => null),
     prisma.groupMember.count({ where: { userId: user.id } }).catch(() => 0),
   ]);
-  const effektiv = beregnEffektivTier({
+  const effektiv = resolveTier({
     tier: user.tier,
     createdAt: user.createdAt,
-    coachingMonthlyCredits: sub?.monthlyCredits ?? 0,
-    subscriptionActive: sub?.status === "ACTIVE",
-    iGruppe: gruppeCount > 0,
+    subscription: sub,
+    groupMembershipsCount: gruppeCount,
   });
   if (effektiv === user.tier) return user;
   return { ...user, tier: effektiv };
