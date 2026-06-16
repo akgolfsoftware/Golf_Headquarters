@@ -14,7 +14,7 @@ import { CADDIE_TOOLS } from "@/lib/caddie/tools";
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
-const MODEL_ID = "anthropic/claude-sonnet-4.6" as const;
+const MODEL_ID = "anthropic/claude-sonnet-4-6" as const;
 
 type ChatRequestBody = {
   messages?: unknown;
