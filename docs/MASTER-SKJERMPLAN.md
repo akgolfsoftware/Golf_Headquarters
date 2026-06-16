@@ -1,106 +1,103 @@
 # Master-skjermplan — AK Golf HQ
 
-> Dette er den komplette lista over hver eneste skjerm i appen, og om den er helt ferdig eller ikke. Én plass å se alt.
+> Autoritativ oversikt over alle skjermer i plattformen. Én plass å se alt. **Sist oppdatert: 17. juni 2026.**
 
-Sist oppdatert: 13. juni 2026 (lansering-dag — AgencyOS Fase 4 mobil + KimiCode PlayerHQ-design flettet inn; abonnement-regler (betaling fra 1. juli) + Acuity-booking + GDPR-fikser; restanse-review). **Booking: Acuity (akgolfgroup.as.me) er midlertidig booking-vei frem til AK Golf HQ-bookingen lanseres — alle «Book»-knapper peker dit. Sett BOOKING_ACTIVE=true i Vercel for å aktivere den innebygde flyten.**
-
----
-
-## Dagens arbeidsplan — 11. juni 2026
-
-Tre parallelle spor i dag:
-
-### Spor A — Claude Design (du kjører dette)
-Prompt: `My Drive/AK Golf Group/prompt/felles/alle-manglende-skjermer-2026-06-11.md`
-Dekker alle ~60 skjermer uten design ennå. Leveranse: 12 JSX-filer.
-Når ferdig: lever filene til `public/design-handover/AK Golf HQ Design System/` → port til kode.
-
-### Spor B — Data-tilkobling ✓ FERDIG (11. juni)
-Alle 8 prioriterte skjermer koblet til ekte Prisma-data og pushet til prod.
-
-| Status | Skjerm | Adresse |
-|---|---|---|
-| ✓ | Live-økt: oppsummering (summary) | `/portal/(fullscreen)/live/[sessionId]/summary` |
-| ✓ | Drill-bibliotek | `/portal/drills` |
-| ✓ | Workbench: CreatePlanSheet + CreateSessionSheet | `/portal/planlegge/workbench` |
-| ✓ | SG-Hub (hoved) | `/portal/mal/sg-hub` |
-| ✓ | Runder (liste) | `/portal/mal/runder` |
-| ✓ | TrackMan (liste) | `/portal/mal/trackman` |
-| ✓ | Statistikk (oversikt) | `/portal/statistikk` |
-| ✓ | Booking-hub + ny booking | `/portal/booking` + `/portal/booking/ny` |
-
-Gjenstår (lavere prioritet): Onboarding ekte flyt + Compliance AgencyOS.
-
-### Spor C — Design-porting etter Claude Design
-Skjermer som får ny JSX fra Spor A → porte til kode samme dag via design-porting-gate.
-Batch-rekkefølge (etter Claude Design leverer):
-1. Coach-skuff + Meldingstråd (høy beta-verdi)
-2. Booking komplett flyt
-3. Mål-hub + Mål-bygger
-4. Plan-detalj (AgencyOS)
-5. Ny spiller + Tildel test (AgencyOS)
-6. Forelder-portal
-7. Auth sub-flyter
-8. Innstillinger sub-sider
-9. Marketing-sider
-10. Resterende sub-sider
-
-### Kvalitetssikring (ETTER hver skjerm)
-Følger design-porting-gaten i `.claude/rules/design-porting-gate.md`:
-1. Bygg fra design-kilden
-2. Screenshot
-3. Adversarial diff-agent
-4. Fiks til 0 avvik
-5. Oppdater hakene i denne planen
-
----
+**Booking:** Acuity (`akgolfgroup.as.me`) er midlertidig booking frem til HQ-bookingen lanseres. Sett `BOOKING_ACTIVE=true` i Vercel for å aktivere den innebygde flyten.
 
 ---
 
 ## Slik bruker vi denne (regel)
 
-Før noen — du eller en hjelper — rører en skjerm: finn raden her først, og oppdater de seks hakene i samme slengen. En skjerm er ikke ferdig før alle seks hakene er grønne (✓). Og ingen ting som designeren (Claude Design) har tegnet får bli liggende ubrukt — alt tegnet skal til slutt ende opp som en ekte skjerm i appen. Lista nederst («Tegnet, men ikke brukt ennå») er sjekklista for akkurat det.
+Før noen rører en skjerm: finn raden her, jobb mot den, oppdater hakene i samme commit. En skjerm er ikke ferdig før alle seks haker er grønne (✓). Alt Claude Design har tegnet skal kobles — sjekk «drop-off»-lista.
 
-**De seks hakene (det som må til for at en skjerm er «ferdig»):**
+**De seks hakene:**
+1. **Design** — ser ut som den skal (riktig utseende, riktig oppsett)
+2. **Mob/Desk/iPad** — fungerer fint på tre størrelser. Tre tegn, f.eks. `✓✓–` = mobil og desktop OK, iPad ikke sjekket
+3. **Adresse-ok** — riktig nettadresse, ikke bare forhåndsvisning
+4. **Flyt** — knappene tar deg dit de skal
+5. **Data** — viser ekte tall fra databasen
+6. **Funker** — testet, knekker ikke
 
-1. **Design** — ser ut som den skal (riktig utseende, riktig oppsett).
-2. **Mob/Desk/iPad** — fungerer fint på de tre skjermstørrelsene: mobil, datamaskin og iPad. Skrives som tre tegn, f.eks. `✓✓–` betyr mobil og data OK, iPad ikke sjekket.
-3. **Adresse-ok** — ligger på riktig nettadresse i appen (ikke bare i en test/forhåndsvisning).
-4. **Flyt** — knappene tar deg dit de skal (slik planen vår sier).
-5. **Data** — viser ekte tall fra databasen, ikke liksom-tall.
-6. **Funker** — testet, og den knekker ikke.
+Tegnforklaring: ✓ = ferdig · ~ = delvis / i arbeid · – = ikke startet
 
-Tegnforklaring: ✓ = ferdig · ~ = delvis / i arbeid · – = ikke startet.
+† = bygd + koblet til ekte data + tsc/build grønt — men ikke nettleser-testet ende-til-ende ennå
 
-† = bygd, koblet og kjører på ekte data; tsc + build grønt — men ikke nettleser-testet ende-til-ende ennå (derfor «Funker» = ~).
+★ = kjerneskjerm (høy prioritet for design og data)
 
 ---
 
-## Status akkurat nå (tallene) — 11. juni 2026
+## Status akkurat nå — 17. juni 2026
 
-- **Skjermer totalt vi sporer:** ca. 182 hovedskjermer (pluss mange små undersider — alle er med i lista under). To nye kom inn 4. juni: «Logg treningsøkt» (spiller) og «Fremgang» (coach), begge på ekte data.
-- **Helt ferdige (alle seks haker grønne):** 2 — begge Workbench-variantene (spiller + coach).
-- **Data-tilkobling fullført (11. juni):** 8 PlayerHQ-skjermer koblet til ekte Prisma-data og deployet: SG-Hub, TrackMan (liste), Statistikk (oversikt), Booking-hub, Ny booking, Drill-bibliotek, Live-økt summary, Runder (liste). Alle merket `†` i tabellen (bygd+data ✓, ikke nettleser-testet ende-til-ende ennå).
-- **PlayerHQ-hovedskjermer på MOBIL-paritet med ekte data (9. juni):** 5 — Hjem, Planlegge, Gjennomføre, Analysere, Meg. Disse er bygd om fra den FERSKE Claude Design-fasiten (4. juni), kjører på ekte Prisma-data (testspiller Øyvind Rohjan), ligger på ekte adresse, og er verifisert av uavhengig kritiker-agent til **0 avvik** mot fasiten på 430px. Eneste gjenstående hake er desktop/iPad-utgaven (mobil-fasit er portet, ikke desktop-layoutene).
-- **AgencyOS HELE FASE 3 på DESKTOP-paritet med ekte data (10.–11. juni):** 25 skjermer + skallet — alle ~26 fasit-skjermer gjennom kritiker-gaten til 0 avvik (Workbench-punktet dekkes av den allerede helgrønne coach-Workbenchen). AgencyOS Fase 4 mobil M1–M3 gjennomført (flettet inn 13. juni): mobilskall (AgPage px-4 på alle admin-sider) + WorkbenchMobile (År/Mnd/Uke/Dag) + mobilkortlister (Tester/Turneringer) + responsivt grid; gjenstår fullverdig mobil for øvrige ~20 AgencyOS-sider + iPad-sveip. — Cockpit/dashboard, Oppgaver, Tildelt meg, Forespørsler, Godkjenninger — pluss hele AgencyOS-SKALLET (fasit-sidebar m/ live badge-tall, topbar m/ spiller↔gruppe-veksler, mørkt tema håndhevet). Portet fra fersk fasit (agencyos-app), ekte Prisma-data (38 spillere-stall seedet), kritiker-loop over 6 runder til 0 reelle avvik (rester er dokumenterte unntak i design-porting-gate.md). Underveis ble tre systemfeil som rammet ALLE skjermer fikset: unlayered `* { border-color }` som drepte alle border-fargeklasser, statiske `--color-success/-warning`-tokens som ignorerte mørkt tema, og `.dark`-tokens som avvek fra fasit-paletten (success/info/border/secondary/muted/destructive).
-- **Fase 1 porting-gate fullført (11. juni, session 3):** 14 skjermer kjørt gjennom design-porting-gate: Årsplan, Drill-detalj, Live-økt brief/aktiv, Foreldre, Varsler, Statistikk, SG-Hub, Runder, TrackMan, Booking-hub, Ny booking, Caddie, Compliance, Kalender uke/måned, Onboarding, Logget ut, Forelder-hjem, Forelder-barn. Hakene i planen under er oppdatert basert på gate-resultatene. Gjenstående: browser-test (Funker), iPad-layout, Adresse-ok og Flyt-verifikasjon for skjermer med `~`.
-- **Bolk 4 redirects fullført (11. juni, session 3):** 6 dobbeltadresser ryddet — alias-ruter som pekte på feil (eller seg selv) er nå rene redirect-stubs: `/admin/calendar` → `/admin/kalender`, `/admin/messages` → `/admin/innboks`, `/admin/approvals(+[id])` → `/admin/godkjenninger`, `/admin/plans/templates(+sub)` → `/admin/plan-templates`, `/portal/analyse` → `/portal/analysere`, `/portal/tren/ovelser(+[id])` → `/portal/drills`. Disse er nå merket Flyt=✓ / Funker=✓ i tabellen.
-- **Nytt design ferdig i forhåndsvisning (men venter på ekte data + ekte adresse):** ca. 43 skjermer. Disse fikk nytt v10-utseende, men kjører fortsatt på liksom-tall og ligger i en forhåndsvisning — ikke på sin ekte nettadresse ennå. De er altså «pene, men ikke ferdig koblet».
-- **Ikke startet / fortsatt gammelt design:** flertallet av de ca. 180 — de finnes som adresse i appen, men er ikke pusset opp til nytt design ennå.
-- **Ting designeren har tegnet, men som IKKE har funnet en plass i appen ennå (drop-off):** se egen liste lenger ned. Dette er det viktigste å passe på.
+### Kodebase (kartlagt 17. juni)
 
-Kort sagt: nesten alle portede skjermer har Design ✓ og Data ✓. Bolk 4-aliasene er ryddet. Resterende svake punkt: Adresse-ok og Flyt er `~` på mange skjermer (ikke browser-testet ende-til-ende ennå), og Funker er `~` på de fleste (mangler Playwright-kjøring). Bare de 2 Workbench-skjermene er helt i mål.
+**404 sider implementert i Next.js App Router:**
 
-### Hva som er bygget i natt (status å sette inn)
+| Type | Antall | Forklaring |
+|---|---|---|
+| FULL | 383 | Ekte innhold, koblet til data |
+| STUB | 17 | Minimal placeholder — trenger ferdigstilling |
+| SHELL | 3 | Tomt skall — trenger bygging |
+| REDIRECT | 1 | `/admin/spillere/[id]/fremgang` → redirect |
 
-I natt ble 43 skjermer bygget med nytt v10-design i en forhåndsvisning med liksom-tall. De får derfor:
-Design ✓ · Mob/Desk/iPad `✓✓–` (iPad ikke sjekket) · Adresse-ok `~` (kun forhåndsvisning, ikke ekte adresse ennå) · Flyt `~` · Data `–` (liksom-tall) · Funker ✓ (i forhåndsvisning).
+**Backend:** 48 API-endepunkter · 23 cron-agenter (Vercel Cron) · 120+ server-action-filer · ~170 Prisma-modeller
 
-- **PlayerHQ (pulje 1 + 2):** Hjem, SG-Hub, Live-økt (brief / aktiv / oppsummering), Runder, Statistikk, Analyse, Meg, Abonnement, Drills (bibliotek + detalj), Tester, Årsplan, Booking (hub + ny), Logg ny runde, TrackMan, Turneringer, Varsler, Innstillinger, Forelder-side, Onboarding.
-- **AgencyOS (pulje 1 + 2):** Cockpit (hjem), Spillere/Stallen, Innboks, Spiller-detalj, Kalender, Bookinger, Tester, Turneringer, Caddie, Sammenlign spillere, Compliance, Drift/anlegg.
-- **Auth + forelder + marketing:** Logg inn, Registrer, Glemt passord, BankID, Logget ut, Forelder ser barn, Marketing-forside.
+### Design-status
 
-**Workbench er spesiell:** de eneste 2 skjermene som er helt ferdige hele veien, inkludert ekte data (jobben kalt «W5b» er gjort) og ekte adresse. Både spiller- og coach-utgaven.
+Kjerne-skjermer gjennom design-porting-gaten (Design=✓):
+- **PlayerHQ:** De fem hovedskjermene (Hjem, Planlegge, Gjennomføre, Analysere, Meg) + Workbench + Tester + Drills + Runder + SG-Hub + TrackMan + Årsplan + Statistikk + Varsler + Meg-undersider + Utstyrsbag + Helse + Turneringer + Logg treningsøkt + Live-økt (brief/aktiv/summary) + Break-tabell + Putte-laboratoriet
+- **AgencyOS:** Cockpit + Innboks + Spillere + Spiller-detalj + Spiller-Workbench + Kalender + Bookinger + Anlegg + Availability + Tjenester + Tester + Lag-snitt + Stall-analyse + Rapporter + Turneringer + Forespørsler + Godkjenninger + Compliance + Innstillinger + Grupper + Talent-radar + Talent-sammenligning + WAGR-import + Plans + Planer ny + Plan-maler + Drills + Fremgang + Tildel test + Økonomi (delvis)
+- **Auth:** Alle (login, signup, BankID, reset, onboarding)
+- **Forelder:** Alle (10 sider FULL)
+
+**Mangler design (–):** de fleste sub-sider og sekundærskjermer — se tabellene nedenfor.
+
+---
+
+## Design-fokus for neste sprint
+
+Skjermer som er implementert i kode men IKKE ferdig gjennom design-porting-gaten. Prioritert rekkefølge for Claude Design-arbeid.
+
+### Prioritet 1 — Sub-sider til allerede portede kjerneskjermer
+
+| Område | Skjermer (–) | Data tilgjengelig i Prisma |
+|---|---|---|
+| PlayerHQ Planlegge | Mål-hub, Mål-bygger, Teknisk plan, Fys-plan, Utfordringer, AI-assistenter | `Goal`, `TechnicalPlan`, `FysiskPlan`, `DrillChallenge`, `SeasonPlan`, `PeriodBlock` |
+| PlayerHQ Analysere | SG-Hub sub-sider (equipment/yardage/strategy/conditions/benchmark), Slag-for-slag, TrackMan-sesjon-detalj, Statistikk sub-sider | `Shot`, `HoleScore`, `BrukerSgInput`, `SgInsight`, `ClubMetricTrend`, `TrackManSession`, `TrackManShot` |
+| PlayerHQ Gjennomføre | Ny økt (handlingsvalg), Ønsket økt, Økt-detalj, Kalender, Feiring | `TrainingSessionV2`, `SessionParticipant`, `TrainingPlanSessionLog` |
+| PlayerHQ Booking | Booking-detalj, Ny booking bekreft, Coach-profil (booking), Anlegg-detalj | `Booking`, `CoachingSession`, `ServiceType`, `Facility`, `Payment` |
+| AgencyOS Stall | Spiller-profil, Ny spiller, Tildel test (skjema), Gruppe-detalj | `User`, `Group`, `GroupMember`, `TestAssignment`, `TalentTracking` |
+| AgencyOS Planlegge | Plan-detalj, Plan-mal detalj, Drill-detalj, Teknisk plan, Ny turnering | `TrainingPlan`, `PlanTemplate`, `PlanEffectiveness`, `TechnicalPlan`, `Tournament` |
+
+### Prioritet 2 — Coach-seksjonen (PlayerHQ) — hele seksjonen mangler design
+
+Spillerens kontakt med coachen er implementert i kode men har **Design=– på samtlige skjermer**.
+
+| Skjerm | Adresse | Data |
+|---|---|---|
+| Coach-hub | `/portal/coach` | `CoachingSession`, `SessionRequest`, `Document` |
+| Meldinger (innboks) | `/portal/coach/melding` | `CaddieMessage`, `Notification` |
+| Meldingstråd | `/portal/coach/melding/[id]` | `CaddieMessage`, `Document` |
+| Coach-planer | `/portal/coach/plans/[planId]` | `TrainingPlan`, `PeriodBlock`, `PlanSession` |
+| Coach-øvelser | `/portal/coach/ovelser` | `ExerciseDefinition`, `CoachDrillDirectiv`, `DrillMal` |
+| Coach-videoer | `/portal/coach/videoer` | `SessionVideo`, `SessionRecording` |
+| Spørsmål til coach | `/portal/coach/sporsmal/[id]` | `CoachNote`, `Document` |
+
+### Prioritet 3 — AgencyOS sekundærskjermer
+
+| Område | Mangler design | Data |
+|---|---|---|
+| Innsikt | Innsikt-hub, Runder, Tilstander, Analytics | `SgInsight`, `Signal`, `Round`, `HealthEntry` |
+| Admin/org | Team, AI-agenter, E-postmaler, Audit-log, Klubb-innstillinger | `ApiKey`, `AuditLog`, `AgentRun`, `EmailTemplate` |
+| Gjennomføre | Daglig drift-hub, Økt-detalj, Ny booking, TrackMan på tvers | `TrainingSessionV2`, `TrackManSession` |
+| Workspace | Workspace-hub, Prosjekter, Notion-sync | `OppgaveCache`, `ProsjektCache`, `NotionConnection` |
+
+### Prioritet 4 — Booking-flyt (selvstendig)
+
+`/booking/[slug]` (ekstern booking via slug) + full intern booking-flyt i portal. Egne server actions for kreditbooking.
+
+### Prioritet 5 — Marketing-sider
+
+`/om-oss` · `/coaching` · `/priser` · `/playerhq` · `/cases` · `/suksess` · `/treningsfilosofi` · blogg-layout · coacher-profil
 
 ---
 
