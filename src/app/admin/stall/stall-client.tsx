@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { avatarBg } from "@/lib/avatar-colors";
 
-type Tier = "GRATIS" | "PRO" | "ELITE";
+type Tier = "GRATIS" | "PRO" | "ELITE"; // ELITE er dødt enum — håndteres i render
 type Category = "A1" | "A2" | "B1" | "B2";
 type Tab = "aktivitet" | "fremgang" | "risiko";
 
@@ -71,7 +71,7 @@ const CAT_STYLE: Record<Category, string> = {
 const TIER_STYLE: Record<Tier, string> = {
   GRATIS: "bg-secondary text-muted-foreground",
   PRO: "bg-primary/15 text-primary",
-  ELITE: "bg-foreground text-accent",
+  ELITE: "bg-secondary text-muted-foreground", // ELITE finnes ikke — vis som Gratis
 };
 
 function initials(name: string): string {
@@ -410,11 +410,7 @@ function Fremgang({ players }: { players: StallPlayer[] }) {
               <span
                 className={`inline-flex items-center rounded-full px-2 py-0.5 font-semibold ${TIER_STYLE[p.tier]}`}
               >
-                {p.tier === "GRATIS"
-                  ? "Free"
-                  : p.tier === "PRO"
-                    ? "Pro"
-                    : "Elite"}
+                {p.tier === "PRO" ? "Pro" : "Gratis"}
               </span>
               <span className="text-muted-foreground">{p.sistAktivLabel}</span>
             </div>
