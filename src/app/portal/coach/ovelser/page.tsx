@@ -1,10 +1,19 @@
+/**
+ * PlayerHQ Coach Øvelser (/portal/coach/ovelser) — hybrid-design 2026-06-17.
+ *
+ * Viser øvelsesbiblioteket som et 2-kolonners grid (etter design-fasit "Innhold").
+ * Filter-chips per pyramideområde. Data-henting uendret.
+ *
+ * NB: denne ruten krever COACH/ADMIN-rolle — spillere ser øvelsene via
+ * /portal/tren/ovelser (som har eget bibliotek).
+ */
+
 import Link from "next/link";
-import { Dumbbell, Plus } from "lucide-react";
+import { ArrowLeft, Dumbbell, Plus } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { ExerciseCard } from "@/components/portal/exercise-card";
 import { ExerciseCardActions } from "@/components/portal/exercise-card-actions";
-import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { EmptyState } from "@/components/shared/empty-state";
 import { PyramidArea, type Prisma } from "@/generated/prisma/client";
 
@@ -12,7 +21,7 @@ type Search = { area?: string; phase?: string };
 
 const PYR_OMRADER: { value: PyramidArea | "ALLE"; label: string }[] = [
   { value: "ALLE", label: "Alle" },
-  { value: "FYS", label: "Fysisk" },
+  { value: "FYS", label: "FYS" },
   { value: "TEK", label: "Teknisk" },
   { value: "SLAG", label: "Slag" },
   { value: "SPILL", label: "Spill" },
@@ -48,38 +57,51 @@ export default async function CoachOvelserPage({
   }
 
   return (
-    <div className="mx-auto max-w-[1240px] space-y-6 px-4 pb-20 sm:px-6 md:space-y-8 md:pb-0">
-      <div className="flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:justify-between">
-        <PageHeader
-          eyebrow="AgencyOS · Bibliotek"
-          titleLead="Drills og"
-          titleItalic="øvelser"
-          sub={`${exercises.length} øvelse${exercises.length === 1 ? "" : "r"} i biblioteket`}
-        />
+    <div className="mx-auto max-w-[430px] pb-24 pt-2 md:max-w-[1240px] md:pb-8">
+      {/* Tilbake */}
+      <div className="mb-3 px-4 md:px-0">
+        <Link
+          href="/portal/coach"
+          className="inline-flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" />
+          Coach
+        </Link>
+      </div>
+
+      {/* Header */}
+      <div className="mb-4 flex items-start justify-between px-4 md:px-0">
+        <div>
+          <h1 className="font-display text-[20px] font-bold leading-[1.06] tracking-[-0.02em] text-foreground">
+            Øvelser fra{" "}
+            <em className="font-medium italic text-primary">Anders</em>
+          </h1>
+          <p className="mt-1 font-mono text-[10px] text-muted-foreground">
+            {exercises.length} øvelse{exercises.length === 1 ? "" : "r"} i biblioteket
+          </p>
+        </div>
         <Link
           href="/portal/coach/ovelser/ny"
-          className="inline-flex min-h-11 items-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90"
+          className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 font-mono text-[10.5px] font-bold uppercase tracking-[0.06em] transition hover:brightness-95"
+          style={{ background: "#005840", color: "#D1F843" }}
         >
-          <Plus className="h-4 w-4" strokeWidth={2} />
+          <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />
           Ny øvelse
         </Link>
       </div>
 
-      {/* Filter-strip */}
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Område:
-        </span>
+      {/* Filter-chips */}
+      <div className="mb-4 flex gap-2 overflow-x-auto px-4 pb-1 md:px-0">
         {PYR_OMRADER.map((o) => {
           const aktiv = o.value === valgtArea;
           return (
             <Link
               key={o.value}
               href={bygglenke(o.value)}
-              className={`inline-flex min-h-9 items-center rounded-full px-4 py-1 text-xs font-medium transition-colors ${
+              className={`inline-flex shrink-0 items-center rounded-full border px-3 py-1.5 font-mono text-[10.5px] font-semibold uppercase tracking-[0.04em] transition-colors ${
                 aktiv
-                  ? "bg-primary text-primary-foreground"
-                  : "border border-input bg-card text-foreground hover:border-border hover:bg-secondary"
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "border-border bg-card text-muted-foreground hover:border-primary/40"
               }`}
             >
               {o.label}
@@ -88,33 +110,37 @@ export default async function CoachOvelserPage({
         })}
       </div>
 
-      {exercises.length === 0 ? (
-        <EmptyState
-          icon={Dumbbell}
-          titleItalic="Ingen øvelser"
-          titleTrail="ennå"
-          sub="Opprett den første øvelsen for å begynne å bygge treningsbiblioteket."
-          cta={
-            <Link
-              href="/portal/coach/ovelser/ny"
-              className="inline-flex items-center rounded-full bg-primary px-6 py-2.5 text-[13px] font-semibold text-primary-foreground hover:opacity-90"
-            >
-              Opprett øvelse
-            </Link>
-          }
-        />
-      ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {exercises.map((e) => (
-            <ExerciseCard
-              key={e.id}
-              exercise={e}
-              href={`/portal/tren/ovelser/${e.id}`}
-              actions={<ExerciseCardActions id={e.id} />}
-            />
-          ))}
-        </div>
-      )}
+      {/* Grid */}
+      <div className="px-3 md:px-0">
+        {exercises.length === 0 ? (
+          <EmptyState
+            icon={Dumbbell}
+            titleItalic="Ingen øvelser"
+            titleTrail="ennå"
+            sub="Opprett den første øvelsen for å begynne å bygge treningsbiblioteket."
+            cta={
+              <Link
+                href="/portal/coach/ovelser/ny"
+                className="inline-flex items-center rounded-full px-6 py-2.5 font-mono text-[13px] font-bold uppercase tracking-[0.06em] transition hover:brightness-95"
+                style={{ background: "#005840", color: "#D1F843" }}
+              >
+                Opprett øvelse
+              </Link>
+            }
+          />
+        ) : (
+          <div className="grid grid-cols-2 gap-2.5 md:grid-cols-3 lg:grid-cols-4">
+            {exercises.map((e) => (
+              <ExerciseCard
+                key={e.id}
+                exercise={e}
+                href={`/portal/tren/ovelser/${e.id}`}
+                actions={<ExerciseCardActions id={e.id} />}
+              />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
