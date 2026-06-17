@@ -39,10 +39,14 @@ Komponent-laben (interaktive eksempler) ligger som kort «E · Komponent-lab» p
 |---|---|
 | `00-LES-FORST.md` | Denne — reglene + valgt retning |
 | `10-MASTER-BRIEF.md` | Full design-spec: produkter, filosofi, tema, flyter, låste beslutninger |
+| `15-DESIGN-SPRAK-TOKENS.md` | **Eksakte tokens** (farger, type, spacing, radius, motion) fra hybrid |
 | `20-KOMPONENT-SPEC.md` | Komplett komponent-bibliotek (eksisterende + nye data-visninger + gamification) |
 | `30-PROMPT-PAKKE.md` | Ferdige prompts per spor (PlayerHQ/AgencyOS/Forelder/Auth/Marketing) |
 | `40-SKJERM-INVENTAR.md` | Det rene skjermsettet (404 ruter → ~150–180 unike) |
 | `50-FLYT-DODE-KNAPPER.md` | Knapp-kartlegging + døde knapper som MÅ løses |
+| `60-WORKBENCH-NOTAT.md` | Workbench er Anders' — ikke overstyr, kun skinn visuelt |
+| `visuell-referanse/` | Hybrid-mockup (`D-hybrid.html`) + interaktiv komponent-lab (`E-komponent-lab.html`) — åpne i nettleser |
+| `referanser/` | Inspirasjonsbilder + dagens komponenter (smaks-kalibrering) |
 
 ---
 
