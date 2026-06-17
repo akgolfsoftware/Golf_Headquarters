@@ -5,6 +5,19 @@
 
 ---
 
+> ⚠️ **KORREKSJON (17. juni 2026) — les dette før du bruker tallene i «Sammendrag»:**
+>
+> **`/portal/mal/*` er LEVENDE — skal PORTES, ikke kuttes.**
+> Grep-verifisert: 84 referanser til `/portal/mal` i kodebasen (komponenter, navigasjon, lenker). Treet er aktivt i bruk og inngår i det konsoliderte designscopet. Den opprinnelige påstanden «pensjoner HELE `/portal/mal/*`-treet (27 ruter)» i avsnitt «De viktigste konsoliderings-beslutningene» var feil — disse rutene skal **designes og portes** i redesignet, ikke fjernes.
+> Konsekvens: antallet «Legacy/redirect/dublett (kuttes)» (~49) og «Ekte produkt-ruter igjen» (~340) i sammendragstabellen er feil. Korrekt scope inkluderer `/portal/mal/*`-rutene som ekte produkt-ruter.
+>
+> **`/admin/anlegg` er den levende ruten.**
+> `/admin/locations` og `/admin/facilities` 301-redirecter til `/admin/anlegg` — ikke omvendt. Statuskolonnen for `/admin/anlegg` i tabellen under er derfor feil; den skal stå som **EKTE**, ikke LEGACY-DUP.
+>
+> Kilde: `docs/redesign-2026-06/audit/00-OPPSUMMERING.md`
+
+---
+
 ## Sammendrag i tall
 
 | | Antall | Kommentar |
@@ -120,7 +133,7 @@ Fem produkt-spor, prioritert:
 | `/portal/(fullscreen)/tren` | Fullskjerm-workbench | EKTE |
 | `/portal/(fullscreen-test)/tren/tester/[testId]/gjennomfor` | Test-gjennomføring fullskjerm | EKTE |
 
-### PlayerHQ — `/portal/mal/*` (LEGACY — kuttes, 27 ruter)
+### PlayerHQ — `/portal/mal/*` (⚠️ KORREKSJON: LEVENDE — skal PORTES, ikke kuttes. Se korreksjons-notat øverst. 84 referanser i kodebasen.)
 | Rute | Erstattet av | Status |
 |---|---|---|
 | `/portal/mal` | `/portal/statistikk` + `/portal/analysere` | LEGACY |
@@ -150,7 +163,7 @@ Fem produkt-spor, prioritert:
 | `/admin/bookinger` + `/ny` | Bookingtabell + manuell booking | EKTE |
 | `/admin/availability` · `/kapasitet` | Tilgjengelighet + kapasitet-heatmap | EKTE |
 | `/admin/locations` · `/facilities` + `/[id]` | Lokasjon (forelder) + fasilitet (barn) | EKTE |
-| `/admin/anlegg` + `/[id]` | → norsk dublett av facilities | LEGACY-DUP |
+| `/admin/anlegg` + `/[id]` | Levende rute for anlegg (⚠️ KORREKSJON: locations/facilities redirecter hit — ikke omvendt. Se korreksjons-notat øverst.) | EKTE |
 | `/admin/services` | Tjenester | EKTE |
 | `/admin/gjennomfore` + `/okter/[id]` | Gjennomføre-hub | EKTE |
 | `/admin/okter` | Uke-oversikt økter | EKTE |

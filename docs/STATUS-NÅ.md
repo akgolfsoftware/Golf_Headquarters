@@ -2,7 +2,7 @@
 
 > **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg. Detaljert skjermstatus bor i `docs/MASTER-SKJERMPLAN.md`; låste regler i `docs/platform/BUSINESS-RULES.md`; uavklarte beslutninger i `docs/AAPNE-SPORSMAAL.md`.
 
-**Sist oppdatert:** 2026-06-15
+**Sist oppdatert:** 2026-06-17
 
 ---
 
@@ -25,19 +25,24 @@ Appen er **deployet og kjører** på `akgolf-hq.vercel.app`. Kjernen (PlayerHQ +
 - **Foreldreportal (`/forelder`):** bygget (11 ruter), datakvalitet ikke fullverifisert.
 - **Kjent regresjon (forenklingsplan 13. juni):** spiller kan ikke starte «dagens økt» (knapp fører til read-only side). Mobil-nav i AgencyOS er ennå ikke samlet med desktop-nav.
 
-## Blokkert — 8 P0 før ekte/betalende brukere
-Kilde: `docs/restanse-review-2026-06-13.md`. Disse må lukkes før reelle brukere slippes inn:
+## Blokkert — P0 før ekte/betalende brukere
+Kilde og detaljert status: `docs/redesign-2026-06/P0-status.md` (re-verifisert mot kode 17. juni). Betaling åpner **1. juli** — koden gir bevisst gratis tilgang til alle frem til da (`gratisForAlle()` i `src/lib/feature-flags.ts`).
 
-1. **Abonnements-/gratis-logikk matcher ikke løftene** — ingen kode setter PRO fra prøveperiode / coaching-pakke / gruppe. *(kode)*
-2. **PRO-for-alle-kampanjen utløp 1. juni** — gatene er nå «kalde» og live; kvalifiserte gratis-brukere kan møte oppgrader-vegg nå. *(kode + beslutning)*
-3. **Live Stripe-nøkler ligger i `.env.local`** — verifiser at lokal dev bruker TEST-nøkler, live kun i Vercel. *(panel + kode)*
-4. **Soft-slettet konto kan fortsatt logge inn** — `deletedAt` sjekkes ikke i auth. GDPR-eksponering. *(kode, liten fiks)*
-5. **Dataeksport: én flate er placeholder** — kan se ut som GDPR-eksport mangler. *(kode, liten fiks)*
-6. **E-postleveranse ikke verifisert** (Resend SPF/DKIM for akgolf.no) — ellers havner signup/reset i spam. *(panel/DNS)*
-7. **`NEXT_PUBLIC_APP_URL` feil i prod** (peker på Vercel-URL, ikke akgolf.no). *(panel)*
+### Løst i kode — trenger kun bekreftelse
+1. ~~**Abonnements-/gratis-logikk**~~ — **LØST.** `resolveTier()` i `src/lib/feature-flags.ts` implementerer alle fire gratis-veiene (lanserings-vindu, coaching-pakke, gruppemedlemskap, 30-dagers prøveperiode). Dekket av tester. Gammel påstand «ingen kode setter PRO» er utdatert.
+2. ~~**PRO-for-alle-kampanjen «kald»**~~ — **IKKE ET PROBLEM.** `gratisForAlle()` gir alle PRO frem til `BETALING_STARTER` (1. juli). Ingen «kald vegg» før da. Bekreft kun at 1. juli-datoen er riktig.
+4. ~~**Soft-slettet konto kan fortsatt logge inn**~~ — **LØST.** `getCurrentUser.ts:23` returnerer `null` når `deletedAt` er satt.
+
+### Gjenstår (kode)
+5. **Dataeksport: eksport-stub forvirrende** — GDPR-eksporten virker i `/portal/meg/innstillinger/personvern`, men den separate `/portal/meg/innstillinger/eksport` er en «kommer snart»-stub. Fix: redirect stub → personvern-siden. *(liten fiks, kan gjøres nå)*
+
+### Krever Anders (panel/DNS/beslutning)
+3. **Live Stripe-nøkler** — verifiser at `.env.local` har TEST-nøkler, live kun i Vercel. *(Stripe + Vercel-panel)*
+6. **E-postleveranse** — Resend SPF/DKIM for akgolf.no ikke verifisert; signup/reset kan havne i spam. *(DNS + Resend-panel)*
+7. **`NEXT_PUBLIC_APP_URL` feil i prod** — peker på Vercel-URL, ikke akgolf.no. *(Vercel-panel)*
 8. **Deploy-rutinen uavklart** — push til main = ikke live; kun manuell `vercel deploy --prod`. *(beslutning)*
 
-> P1/P2 og «hvem gjør hva» (kode vs. dine paneler): se `docs/restanse-review-2026-06-13.md`.
+> Detaljer, kode-stier og anbefalt rekkefølge: `docs/redesign-2026-06/P0-status.md`.
 
 ## Verifisert vs. antatt
 - **Verifisert** mot fil/kode denne økten: P0-lista, SG-kalibrering, deploy-fakta, dokument-hierarkiet, skjermtall fra MASTER-SKJERMPLAN.
