@@ -1,0 +1,98 @@
+<!-- @dsCard group="Identitet" -->
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Section Header — Identitet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:ital,wght@0,500;0,600;0,700;1,500&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../tokens.css">
+<style>
+  body { font-family: var(--sans); background: var(--cream); color: var(--ink); margin: 0; padding: 28px; }
+  h2 { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 0 0 14px; }
+  .group { margin-bottom: 38px; }
+
+  /* Enkel rad: tittel + se alle */
+  .sh-simple { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+  .sh-title { font-family: var(--disp); font-size: 24px; font-weight: 700; letter-spacing: -0.025em; margin: 0; }
+  .sh-title em { font-style: italic; color: var(--forest); font-weight: 500; }
+  .see-all {
+    font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--forest); text-decoration: none;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .see-all svg { width: 14px; height: 14px; }
+
+  /* Stor seksjons-label */
+  .sh-big { display: flex; align-items: center; gap: 16px; }
+  .idx { font-family: var(--mono); font-weight: 700; font-size: 13px; color: var(--forest);
+    background: var(--lime); padding: 6px 11px; border-radius: 6px; flex: none; }
+  .big-h2 { font-family: var(--disp); font-size: clamp(30px, 4vw, 52px); font-weight: 700;
+    letter-spacing: -0.035em; margin: 0; line-height: 1; flex: none; }
+  .big-h2 em { font-style: italic; color: var(--forest); font-weight: 500; }
+  .rule { flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
+  .meta { font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--muted-2); flex: none; }
+
+  .dark { background: var(--t-bg); padding: 22px; border-radius: var(--r-lg); }
+  .dark h2 { color: var(--t-fg-3); }
+  .dark .sh-title { color: var(--t-fg); }
+  .dark .sh-title em, .dark .big-h2 em { color: var(--lime); }
+  .dark .big-h2 { color: var(--t-fg); }
+  .dark .see-all { color: var(--lime); }
+  .dark .rule { background: linear-gradient(90deg, var(--t-line-2), transparent); }
+  .dark .meta { color: var(--t-fg-3); }
+</style>
+</head>
+<body>
+
+<div class="group">
+  <h2>Enkel rad · tittel + se alle</h2>
+  <div class="sh-simple">
+    <p class="sh-title">Dagens <em>spillere</em></p>
+    <a class="see-all" href="#">Se alle
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+    </a>
+  </div>
+</div>
+
+<div class="group">
+  <h2>Stor seksjons-label · idx + rule + meta</h2>
+  <div class="sh-big">
+    <span class="idx">01</span>
+    <h2 class="big-h2" style="font-family:var(--disp)">Hvem trenger <em>meg</em></h2>
+    <span class="rule"></span>
+    <span class="meta">4 spillere</span>
+  </div>
+</div>
+
+<div class="group">
+  <h2>Stor variant 2</h2>
+  <div class="sh-big">
+    <span class="idx">02</span>
+    <h2 class="big-h2" style="font-family:var(--disp)">Strokes <em>gained</em></h2>
+    <span class="rule"></span>
+    <span class="meta">Sist 30 d</span>
+  </div>
+</div>
+
+<div class="dark">
+  <h2>Mørkt (AgencyOS)</h2>
+  <div class="sh-simple" style="margin-bottom:22px">
+    <p class="sh-title">Dagens <em>økter</em></p>
+    <a class="see-all" href="#">Se alle
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+    </a>
+  </div>
+  <div class="sh-big">
+    <span class="idx">03</span>
+    <h2 class="big-h2" style="font-family:var(--disp)">Dagens <em>økt</em></h2>
+    <span class="rule"></span>
+    <span class="meta">6 planlagt</span>
+  </div>
+</div>
+
+</body>
+</html>

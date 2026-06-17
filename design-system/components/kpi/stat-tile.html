@@ -1,0 +1,66 @@
+<!-- @dsCard group="Tall/KPI" -->
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stat-flis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../tokens.css">
+<style>
+  body{ font-family:var(--sans); background:var(--cream); color:var(--ink); margin:0; padding:28px; }
+  h2{ font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin:0 0 12px; }
+  .grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:26px; }
+  @media(max-width:760px){ .grid{ grid-template-columns:repeat(2,1fr); } }
+
+  .bm{ background:var(--sand); border-radius:var(--r-md); padding:12px 11px; border:1px solid var(--border-soft); text-align:center; }
+  .bm-lbl{ font-family:var(--mono); font-size:8.5px; font-weight:500; letter-spacing:.1em; text-transform:uppercase; color:var(--muted-2); margin:0 0 7px; }
+  .bm-val{ font-family:var(--mono); font-size:20px; font-weight:600; letter-spacing:-.02em; line-height:1; font-variant-numeric:tabular-nums; }
+  .bm-tag{ font-family:var(--mono); font-size:9.5px; font-weight:500; color:var(--muted-2); margin-top:7px; font-variant-numeric:tabular-nums; }
+  .bm.me{ background:var(--forest); border-color:transparent; }
+  .bm.me .bm-lbl{ color:var(--lime); }
+  .bm.me .bm-val{ color:#fff; }
+  .bm.me .bm-tag{ color:var(--lime); }
+
+  .dark-wrap{ background:var(--t-bg); padding:22px; border-radius:var(--r-lg); }
+  .dark-wrap .bm{ background:var(--t-bg-3); border-color:var(--t-line); }
+  .dark-wrap .bm-lbl{ color:var(--t-fg-3); }
+  .dark-wrap .bm-val{ color:var(--t-fg); }
+  .dark-wrap .bm-tag{ color:var(--t-fg-3); }
+  .dark-wrap .bm.me{ background:var(--lime-bg); border-color:rgba(209,248,67,.2); }
+  .dark-wrap .bm.me .bm-lbl{ color:var(--lime-dim); }
+  .dark-wrap .bm.me .bm-val{ color:var(--lime); }
+  .dark-wrap .bm.me .bm-tag{ color:var(--lime-dim); }
+</style>
+</head>
+<body>
+  <h2>Lyst tema — benchmark-grid (P25 · snitt · topp · du)</h2>
+  <div class="grid">
+    <div class="bm"><p class="bm-lbl">P25 tour</p><div class="bm-val">74,8</div><div class="bm-tag">snittscore</div></div>
+    <div class="bm"><p class="bm-lbl">Snitt gruppe</p><div class="bm-val">73,1</div><div class="bm-tag">snittscore</div></div>
+    <div class="bm"><p class="bm-lbl">Topp 5 %</p><div class="bm-val">70,2</div><div class="bm-tag">snittscore</div></div>
+    <div class="bm me"><p class="bm-lbl">Du</p><div class="bm-val">72,4</div><div class="bm-tag">over snitt</div></div>
+  </div>
+
+  <h2>Lyst tema — 6 fliser</h2>
+  <div class="grid" style="grid-template-columns:repeat(6,1fr)">
+    <div class="bm"><p class="bm-lbl">Carry</p><div class="bm-val">258</div><div class="bm-tag">m</div></div>
+    <div class="bm"><p class="bm-lbl">Ball speed</p><div class="bm-val">241</div><div class="bm-tag">km/t</div></div>
+    <div class="bm"><p class="bm-lbl">Spin</p><div class="bm-val">2640</div><div class="bm-tag">rpm</div></div>
+    <div class="bm"><p class="bm-lbl">Launch</p><div class="bm-val">13,2</div><div class="bm-tag">grader</div></div>
+    <div class="bm"><p class="bm-lbl">AoA</p><div class="bm-val">+2,1</div><div class="bm-tag">grader</div></div>
+    <div class="bm me"><p class="bm-lbl">Smash</p><div class="bm-val">1,49</div><div class="bm-tag">faktor</div></div>
+  </div>
+
+  <h2>Mørk terminal</h2>
+  <div class="dark-wrap dark">
+    <div class="grid" style="margin-bottom:0">
+      <div class="bm"><p class="bm-lbl">P25 tour</p><div class="bm-val">74,8</div><div class="bm-tag">snittscore</div></div>
+      <div class="bm"><p class="bm-lbl">Snitt</p><div class="bm-val">73,1</div><div class="bm-tag">snittscore</div></div>
+      <div class="bm"><p class="bm-lbl">Topp 5 %</p><div class="bm-val">70,2</div><div class="bm-tag">snittscore</div></div>
+      <div class="bm me"><p class="bm-lbl">Øyvind</p><div class="bm-val">72,4</div><div class="bm-tag">over snitt</div></div>
+    </div>
+  </div>
+</body>
+</html>

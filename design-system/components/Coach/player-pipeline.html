@@ -1,0 +1,108 @@
+<!-- @dsCard group="Coach" -->
+<!doctype html>
+<html lang="no" class="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PlayerPipeline · AgencyOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:ital,wght@0,600;0,700;1,500;1,600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../tokens.css">
+<style>
+*{ box-sizing:border-box; margin:0; padding:0; }
+body{ font-family:var(--sans); background:var(--t-bg); color:var(--t-fg); padding:28px; line-height:1.5; -webkit-font-smoothing:antialiased; }
+.mono{ font-family:var(--mono); font-variant-numeric:tabular-nums; }
+.lc{ max-width:640px; background:var(--t-bg-2); border:1px solid var(--t-line-2); border-radius:var(--r-lg); padding:22px; box-shadow:var(--sh-lg); position:relative; overflow:hidden; }
+.lc::before{ content:''; position:absolute; inset:0; pointer-events:none; background-image:linear-gradient(var(--t-line-soft) 1px,transparent 1px),linear-gradient(90deg,var(--t-line-soft) 1px,transparent 1px); background-size:26px 26px; }
+.lc-h{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:4px; position:relative; }
+.lc-h .ti{ font-family:var(--disp); font-size:19px; font-weight:700; letter-spacing:-.02em; color:var(--t-fg); }
+.lc-h .ti em{ font-style:italic; color:var(--lime); font-weight:500; }
+.lc-num{ font-family:var(--mono); font-size:10px; font-weight:600; color:var(--t-fg-3); border:1px solid var(--t-line-2); padding:3px 7px; border-radius:5px; letter-spacing:.04em; flex-shrink:0; }
+.lc-sub{ font-size:12.5px; color:var(--t-fg-2); margin-bottom:18px; position:relative; }
+.lc-sub b{ color:var(--t-fg); font-weight:600; }
+.hint{ font-family:var(--mono); font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--t-fg-3); display:inline-flex; align-items:center; gap:5px; margin-top:14px; position:relative; }
+.hint::before{ content:''; width:5px; height:5px; border-radius:50%; background:var(--lime-deep); }
+
+/* ============= PLAYER PIPELINE (term) ============= */
+.pp-cols{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; position:relative; }
+.pp-col{ background:var(--t-bg-3); border:1px solid var(--t-line); border-radius:6px; padding:10px; min-height:130px; transition:.15s; }
+.pp-col.drag-over{ border-color:var(--lime-dim); background:var(--lime-bg); }
+.pp-col-h{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.pp-col-h .ct{ font-family:var(--mono); font-size:9.5px; letter-spacing:.08em; text-transform:uppercase; font-weight:600; }
+.pp-col-h .ct.ok{ color:var(--t-up); } .pp-col-h .ct.wn{ color:var(--t-warn); } .pp-col-h .ct.ur{ color:var(--t-down); }
+.pp-col-h .cn{ font-family:var(--mono); font-size:9.5px; font-weight:700; color:var(--t-fg-3); border:1px solid var(--t-line-2); border-radius:var(--r-full); padding:1px 7px; }
+.pp-card{ background:var(--t-bg-2); border:1px solid var(--t-line-2); border-radius:5px; padding:9px; margin-bottom:7px; cursor:grab; display:flex; align-items:center; gap:9px; transition:transform .14s; }
+.pp-card:hover{ transform:translateY(-2px); border-color:var(--t-line-2); }
+.pp-card.dragging{ opacity:.4; }
+.pp-av{ width:26px; height:26px; border-radius:var(--r-full); flex-shrink:0; display:grid; place-items:center; font-family:var(--mono); font-size:9px; font-weight:700; }
+.pp-av.lime{ background:var(--forest-deep); color:var(--lime); box-shadow:0 0 0 1.5px var(--lime); }
+.pp-av.pri{ background:var(--t-down-bg); color:var(--t-down); box-shadow:0 0 0 1.5px rgba(240,104,62,.4); }
+.pp-av.neu{ background:var(--t-bg-4); color:var(--t-fg-2); }
+.pp-card .pn{ flex:1; min-width:0; }
+.pp-card .pn .nm{ font-size:11.5px; font-weight:500; color:var(--t-fg); }
+.pp-card .pn .mt{ font-family:var(--mono); font-size:9px; color:var(--t-fg-3); }
+.pp-card .pv{ font-family:var(--mono); font-size:10.5px; font-weight:600; }
+.pp-card .pv.u{ color:var(--t-up); } .pp-card .pv.d{ color:var(--t-down); } .pp-card .pv.li{ color:var(--lime); }
+
+@media(max-width:680px){
+  body{ padding:14px; }
+  .pp-cols{ grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="lc">
+  <div class="lc-h"><span class="ti">Player<em>Pipeline</em></span><span class="lc-num">17 · 12 SPILLERE</span></div>
+  <div class="lc-sub">Stallen som board per risiko. <b>Dra en spiller</b> mellom kolonner — antall teller. Lime-ring = trent i dag.</div>
+  <div class="pp-cols" id="pipeline">
+    <div class="pp-col" data-col="ok">
+      <div class="pp-col-h"><span class="ct ok">På sporet</span><span class="cn">3</span></div>
+      <div class="pp-card" draggable="true"><span class="pp-av lime">ØR</span><span class="pn"><span class="nm">Øyvind Rohjan</span><span class="mt">trent i dag · HCP 4,2</span></span><span class="pv li">+1,7</span></div>
+      <div class="pp-card" draggable="true"><span class="pp-av neu">IK</span><span class="pn"><span class="nm">Ida Kvalheim</span><span class="mt">2 økter denne uka</span></span><span class="pv u">+0,9</span></div>
+      <div class="pp-card" draggable="true"><span class="pp-av neu">EH</span><span class="pn"><span class="nm">Emma Haugen</span><span class="mt">plan på skjema</span></span><span class="pv u">+0,4</span></div>
+    </div>
+    <div class="pp-col" data-col="watch">
+      <div class="pp-col-h"><span class="ct wn">Følg med</span><span class="cn">2</span></div>
+      <div class="pp-card" draggable="true"><span class="pp-av neu">JL</span><span class="pn"><span class="nm">Jonas Lund</span><span class="mt">4 dg siden økt</span></span><span class="pv d">−0,3</span></div>
+      <div class="pp-card" draggable="true"><span class="pp-av neu">SM</span><span class="pn"><span class="nm">Sara Moen</span><span class="mt">SG faller 2 uker</span></span><span class="pv d">−0,6</span></div>
+    </div>
+    <div class="pp-col" data-col="risk">
+      <div class="pp-col-h"><span class="ct ur">Haster</span><span class="cn">1</span></div>
+      <div class="pp-card" draggable="true"><span class="pp-av pri">TB</span><span class="pn"><span class="nm">Tobias Berg</span><span class="mt">9 dg inaktiv · svarer ikke</span></span><span class="pv d">−1,1</span></div>
+    </div>
+  </div>
+  <div class="hint" style="color:var(--t-fg-3)">Dra en spiller mellom kolonner</div>
+</div>
+
+<script>
+/* ===== PLAYER PIPELINE (drag-drop) ===== */
+function wirePipeline(rootId, cardSel){
+  const root=document.getElementById(rootId);
+  let dragged=null;
+  root.querySelectorAll(cardSel).forEach(makeDraggable);
+  function makeDraggable(card){
+    card.addEventListener('dragstart', ()=>{ dragged=card; card.classList.add('dragging'); });
+    card.addEventListener('dragend', ()=>{ card.classList.remove('dragging'); dragged=null; recount(); });
+  }
+  root.querySelectorAll('[data-col]').forEach(col=>{
+    col.addEventListener('dragover', e=>{ e.preventDefault(); col.classList.add('drag-over'); });
+    col.addEventListener('dragleave', ()=> col.classList.remove('drag-over'));
+    col.addEventListener('drop', e=>{
+      e.preventDefault(); col.classList.remove('drag-over');
+      if(dragged) col.appendChild(dragged);
+      recount();
+    });
+  });
+  function recount(){
+    root.querySelectorAll('[data-col]').forEach(col=>{
+      const n=col.querySelectorAll(cardSel).length;
+      col.querySelector('.cn').textContent=n;
+    });
+  }
+}
+wirePipeline('pipeline', '.pp-card');
+</script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!-- @dsCard group="Coach" -->
+<!doctype html>
+<html lang="no" class="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>StableMatrix · AgencyOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:ital,wght@0,600;0,700;1,500;1,600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../tokens.css">
+<style>
+*{ box-sizing:border-box; margin:0; padding:0; }
+body{ font-family:var(--sans); background:var(--t-bg); color:var(--t-fg); padding:28px; line-height:1.5; -webkit-font-smoothing:antialiased; }
+.mono{ font-family:var(--mono); font-variant-numeric:tabular-nums; }
+.lc{ max-width:640px; background:var(--t-bg-2); border:1px solid var(--t-line-2); border-radius:var(--r-lg); padding:22px; box-shadow:var(--sh-lg); position:relative; overflow:hidden; }
+.lc::before{ content:''; position:absolute; inset:0; pointer-events:none; background-image:linear-gradient(var(--t-line-soft) 1px,transparent 1px),linear-gradient(90deg,var(--t-line-soft) 1px,transparent 1px); background-size:26px 26px; }
+.lc-h{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:4px; position:relative; }
+.lc-h .ti{ font-family:var(--disp); font-size:19px; font-weight:700; letter-spacing:-.02em; color:var(--t-fg); }
+.lc-h .ti em{ font-style:italic; color:var(--lime); font-weight:500; }
+.lc-num{ font-family:var(--mono); font-size:10px; font-weight:600; color:var(--t-fg-3); border:1px solid var(--t-line-2); padding:3px 7px; border-radius:5px; letter-spacing:.04em; flex-shrink:0; }
+.lc-sub{ font-size:12.5px; color:var(--t-fg-2); margin-bottom:18px; position:relative; }
+.lc-sub b{ color:var(--t-fg); font-weight:600; }
+.hint{ font-family:var(--mono); font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--t-fg-3); display:inline-flex; align-items:center; gap:5px; margin-top:14px; position:relative; }
+.hint::before{ content:''; width:5px; height:5px; border-radius:50%; background:var(--lime-deep); }
+
+/* tooltip */
+.tip{ position:fixed; z-index:500; pointer-events:none; opacity:0; transform:translateY(4px); transition:opacity .12s, transform .12s; background:var(--t-bg-1); color:var(--t-fg); border:1px solid var(--t-line-2); border-radius:8px; padding:9px 11px; box-shadow:var(--sh-lg); font-size:11.5px; max-width:230px; line-height:1.45; }
+.tip.show{ opacity:1; transform:translateY(0); }
+.tip .tt-h{ font-family:var(--mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--lime); margin-bottom:4px; }
+.tip .tt-r{ display:flex; justify-content:space-between; gap:14px; font-family:var(--mono); font-size:10.5px; color:var(--t-fg-2); }
+.tip .tt-r b{ color:var(--t-fg); }
+
+/* ============= STABLE MATRIX (term) ============= */
+.sm-wrap{ border:1px solid var(--t-line-2); border-radius:var(--r-md); overflow:hidden; position:relative; }
+.sm{ width:100%; border-collapse:collapse; font-size:12.5px; }
+.sm thead th{ position:sticky; top:0; z-index:2; background:var(--t-bg-3); font-family:var(--mono); font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--t-fg-3); text-align:left; padding:10px; border-bottom:1px solid var(--t-line-2); font-weight:600; cursor:pointer; user-select:none; white-space:nowrap; }
+.sm thead th.r{ text-align:right; }
+.sm thead th .sort{ display:inline-flex; align-items:center; gap:4px; }
+.sm thead th .arr{ opacity:0; transition:.12s; } .sm thead th.sorted .arr{ opacity:1; color:var(--lime); }
+.sm tbody td{ padding:9px 10px; border-bottom:1px solid var(--t-line); }
+.sm tbody tr:last-child td{ border-bottom:0; }
+.sm tbody tr.row:hover{ background:var(--lime-bg); }
+.sm td.r{ text-align:right; font-family:var(--mono); font-variant-numeric:tabular-nums; }
+.sm .av{ width:24px; height:24px; border-radius:var(--r-full); display:inline-grid; place-items:center; font-family:var(--mono); font-size:8.5px; font-weight:700; background:var(--forest-deep); color:var(--lime); margin-right:8px; vertical-align:middle; }
+.sm .nm{ font-weight:600; color:var(--t-fg); }
+.sm .pos{ color:var(--t-up); } .sm .neg{ color:var(--t-down); }
+.sm .last{ font-family:var(--mono); font-size:10.5px; color:var(--t-fg-2); }
+.sm-chip{ font-family:var(--mono); font-size:9px; font-weight:700; letter-spacing:.04em; padding:3px 8px; border-radius:var(--r-full); cursor:default; display:inline-block; }
+.sm-chip.ok{ background:var(--lime-bg-2); color:var(--lime); }
+.sm-chip.wn{ background:rgba(232,180,60,.16); color:var(--t-warn); }
+.sm-chip.ur{ background:var(--t-down-bg); color:var(--t-down); }
+
+@media(max-width:680px){
+  body{ padding:14px; }
+  .sm-wrap{ overflow-x:auto; }
+  .sm{ min-width:540px; }
+}
+</style>
+</head>
+<body>
+
+<div class="lc">
+  <div class="lc-h"><span class="ti">Stable<em>Matrix</em></span><span class="lc-num">STALLEN · 6</span></div>
+  <div class="lc-sub">Hele stallen i ett blikk. <b>Klikk en kolonne-overskrift</b> for å sortere. Hover en status-chip for begrunnelsen.</div>
+  <div class="sm-wrap">
+    <table class="sm" id="sm">
+      <thead><tr>
+        <th data-key="name" data-type="str"><span class="sort">Spiller<span class="arr">↕</span></span></th>
+        <th data-key="sg" data-type="num" class="r"><span class="sort">SG tot<span class="arr">↕</span></span></th>
+        <th data-key="hcp" data-type="num" class="r"><span class="sort">HCP<span class="arr">↕</span></span></th>
+        <th data-key="okter" data-type="num" class="r"><span class="sort">Økter<span class="arr">↕</span></span></th>
+        <th data-key="lastD" data-type="num" class="r"><span class="sort">Siste økt<span class="arr">↕</span></span></th>
+        <th data-key="statusRank" data-type="num"><span class="sort">Status<span class="arr">↕</span></span></th>
+      </tr></thead>
+      <tbody id="smBody"></tbody>
+    </table>
+  </div>
+  <div class="hint">Klikk en header to ganger for å snu retning</div>
+</div>
+
+<div class="tip" id="tip"></div>
+
+<script>
+/* ===== SHARED TOOLTIP ===== */
+const tip=document.getElementById('tip');
+function showTip(html,e){ tip.innerHTML=html; tip.classList.add('show'); positionTip(e); }
+function positionTip(e){ const pad=14,r=tip.getBoundingClientRect(); let x=e.clientX+pad,y=e.clientY+pad; if(x+r.width>window.innerWidth-8)x=e.clientX-r.width-pad; if(y+r.height>window.innerHeight-8)y=e.clientY-r.height-pad; tip.style.left=x+'px'; tip.style.top=y+'px'; }
+function hideTip(){ tip.classList.remove('show'); }
+
+function nf(v,d=1){ return v.toLocaleString('nb-NO',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+function initials(n){ return n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase(); }
+
+/* statusRank: 0 ok, 1 watch, 2 urgent — for sorting */
+const STATUS={
+  ok:{cls:'ok', label:'På sporet', rank:0},
+  wn:{cls:'wn', label:'Følg med', rank:1},
+  ur:{cls:'ur', label:'Haster', rank:2},
+};
+const players=[
+  {name:'Øyvind Rohjan', sg:1.7, hcp:4.2, okter:5, lastD:0, lastTxt:'I dag', status:'ok', reason:'Trent i dag · SG stiger 3 uker på rad.'},
+  {name:'Ida Kvalheim', sg:0.9, hcp:5.1, okter:4, lastD:1, lastTxt:'I går', status:'ok', reason:'2 økter denne uka · plan på skjema.'},
+  {name:'Emma Haugen', sg:0.4, hcp:6.0, okter:3, lastD:2, lastTxt:'2 dg siden', status:'ok', reason:'Følger plan · jevn fremgang.'},
+  {name:'Jonas Lund', sg:-0.3, hcp:9.4, okter:2, lastD:4, lastTxt:'4 dg siden', status:'wn', reason:'4 dg siden siste økt · SG flatt.'},
+  {name:'Sara Moen', sg:-0.6, hcp:11.2, okter:2, lastD:5, lastTxt:'5 dg siden', status:'wn', reason:'SG faller 2 uker · trenger oppfølging.'},
+  {name:'Tobias Berg', sg:-1.1, hcp:15.0, okter:0, lastD:9, lastTxt:'9 dg siden', status:'ur', reason:'9 dg inaktiv · svarer ikke på melding.'},
+];
+let smSort={key:'sg', dir:-1};
+
+function rankOf(p){ return STATUS[p.status].rank; }
+
+function render(){
+  const arr=[...players].map(p=>({...p, statusRank:rankOf(p)}));
+  arr.sort((a,b)=>{
+    let av=a[smSort.key], bv=b[smSort.key];
+    if(typeof av==='string') return av.localeCompare(bv,'nb')*smSort.dir;
+    return (av-bv)*smSort.dir;
+  });
+  const tbody=document.getElementById('smBody'); tbody.innerHTML='';
+  arr.forEach(p=>{
+    const s=STATUS[p.status];
+    const tr=document.createElement('tr'); tr.className='row';
+    tr.innerHTML=`
+      <td><span class="av">${initials(p.name)}</span><span class="nm">${p.name}</span></td>
+      <td class="r ${p.sg>=0?'pos':'neg'}">${p.sg>=0?'+':''}${nf(p.sg)}</td>
+      <td class="r">${nf(p.hcp)}</td>
+      <td class="r">${p.okter}</td>
+      <td class="r"><span class="last">${p.lastTxt}</span></td>
+      <td><span class="sm-chip ${s.cls}" data-reason="${p.reason}" data-label="${s.label}">${s.label}</span></td>`;
+    tbody.appendChild(tr);
+  });
+  // chip tooltips
+  tbody.querySelectorAll('.sm-chip').forEach(chip=>{
+    chip.addEventListener('mousemove', e=> showTip(
+      `<div class="tt-h">${chip.dataset.label}</div><div style="font-size:11.5px;color:var(--t-fg)">${chip.dataset.reason}</div>`, e));
+    chip.addEventListener('mouseleave', hideTip);
+  });
+  document.querySelectorAll('#sm thead th').forEach(th=>{
+    const on=th.dataset.key===smSort.key;
+    th.classList.toggle('sorted', on);
+    const arrEl=th.querySelector('.arr');
+    if(arrEl) arrEl.textContent = on ? (smSort.dir>0?'↑':'↓') : '↕';
+  });
+}
+document.querySelectorAll('#sm thead th').forEach(th=>{
+  th.addEventListener('click', ()=>{
+    const k=th.dataset.key;
+    if(smSort.key===k) smSort.dir*=-1; else { smSort.key=k; smSort.dir = th.dataset.type==='str'?1:-1; }
+    render();
+  });
+});
+render();
+</script>
+</body>
+</html>

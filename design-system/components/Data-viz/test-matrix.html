@@ -1,0 +1,82 @@
+<!-- @dsCard group="Data-viz" -->
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TestMatrix</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:ital,wght@0,600;0,700;1,500;1,600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../tokens.css">
+<style>
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{ font-family:var(--sans); background:var(--cream); color:var(--ink); padding:28px; line-height:1.5; -webkit-font-smoothing:antialiased; }
+  .mono{ font-family:var(--mono); font-variant-numeric:tabular-nums; }
+  .lc{ max-width:560px; background:var(--paper); border:1px solid var(--border); border-radius:var(--r-lg); padding:22px; box-shadow:var(--sh-md); }
+  .lc-h{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:4px; }
+  .lc-h .ti{ font-family:var(--disp); font-size:19px; font-weight:700; letter-spacing:-.02em; }
+  .lc-h .ti em{ font-style:italic; color:var(--forest); font-weight:500; }
+  .lc-num{ font-family:var(--mono); font-size:10px; font-weight:600; color:var(--muted-2); border:1px solid var(--border); padding:3px 7px; border-radius:5px; letter-spacing:.04em; flex-shrink:0; }
+  .lc-sub{ font-size:12.5px; color:var(--muted); margin-bottom:18px; }
+  .lc-sub b{ color:var(--ink); font-weight:600; }
+  .hint{ font-family:var(--mono); font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted-2); display:inline-flex; align-items:center; gap:5px; margin-top:14px; }
+  .hint::before{ content:''; width:5px; height:5px; border-radius:50%; background:var(--lime-deep); }
+
+  table.tm{ width:100%; border-collapse:collapse; font-size:12.5px; }
+  table.tm th{ font-family:var(--mono); font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted-2); text-align:left; padding:8px 10px; border-bottom:1px solid var(--border); font-weight:600; }
+  table.tm th.r, table.tm td.r{ text-align:right; }
+  table.tm td{ padding:9px 10px; border-bottom:1px solid var(--border-soft); }
+  table.tm tr:last-child td{ border-bottom:0; }
+  table.tm .nm{ font-weight:600; }
+  table.tm .num{ font-family:var(--mono); font-variant-numeric:tabular-nums; }
+  table.tm .ref{ font-family:var(--mono); color:var(--muted-2); font-size:11px; }
+  .tm-chip{ font-family:var(--mono); font-size:9.5px; font-weight:600; letter-spacing:.04em; padding:3px 9px; border-radius:var(--r-full); border:1px solid var(--border); background:var(--sand); color:var(--muted); white-space:nowrap; }
+  .tm-chip.over{ border-color:var(--border); color:var(--muted); }
+  .tm-chip.under{ border-color:var(--border); color:var(--muted-2); }
+  .tm-note{ margin-top:14px; padding:10px 12px; background:var(--cream-2); border:1px solid var(--border-soft); border-radius:var(--r-md); border-left:3px solid var(--warn); font-size:11.5px; color:var(--muted); }
+  .tm-note b{ color:var(--ink); font-weight:600; }
+</style>
+</head>
+<body>
+  <div class="lc">
+    <div class="lc-h"><span class="ti">Test<em>Matrix</em></span><span class="lc-num">FYS · PLASSHOLDER</span></div>
+    <div class="lc-sub">FYS- og ferdighetstester med <b>resultat, referanse og status</b>. Nøytrale chips inntil resultatformelen er låst.</div>
+    <table class="tm">
+      <thead><tr>
+        <th>Test</th>
+        <th class="r">Resultat</th>
+        <th class="r">Referanse</th>
+        <th class="r">Status</th>
+      </tr></thead>
+      <tbody id="tmBody"></tbody>
+    </table>
+    <div class="tm-note"><b>Merk:</b> alle verdier og statuser er plassholdere. FYS-resultatformelen er ikke låst — referanseverdier er illustrative.</div>
+    <div class="hint">Status er nøytral til formelen låses</div>
+  </div>
+
+<script>
+function nf(v,d=1){ return v.toLocaleString('nb-NO',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+(function(){
+  const tests=[
+    {nm:'CMJ (spenst)', res:'42,5 cm', ref:'40 cm', st:'over'},
+    {nm:'Sprint 20 m', res:'3,02 s', ref:'2,95 s', st:'under'},
+    {nm:'Sit-and-reach', res:'+8 cm', ref:'+6 cm', st:'over'},
+    {nm:'Grep-styrke', res:'48 kg', ref:'50 kg', st:'under'},
+    {nm:'Rotasjon', res:'52°', ref:'52°', st:'paa'},
+    {nm:'Balanse', res:'31 s', ref:'30 s', st:'paa'},
+  ];
+  const label={over:'Over', under:'Under', paa:'På nivå'};
+  const root=document.getElementById('tmBody');
+  tests.forEach(t=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td class="nm">${t.nm}</td>
+      <td class="r num">${t.res}</td>
+      <td class="r ref">${t.ref}</td>
+      <td class="r"><span class="tm-chip ${t.st}">${label[t.st]}</span></td>`;
+    root.appendChild(tr);
+  });
+})();
+</script>
+</body>
+</html>

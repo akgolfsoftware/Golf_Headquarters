@@ -1,0 +1,153 @@
+<!-- @dsCard group="Kort" -->
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wellness Card — AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../tokens.css">
+<style>
+  body { font-family:var(--sans); background:var(--cream); color:var(--ink); margin:0; padding:28px; }
+  .grouphead { font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted-2); margin:0 0 14px; }
+  .grouphead:not(:first-child) { margin-top:36px; }
+  .wrap { max-width:420px; }
+  .grid { display:grid; grid-template-columns:repeat(2, 1fr); gap:14px; }
+
+  .met {
+    background:var(--paper); border:1px solid var(--border);
+    border-radius:var(--r-lg); padding:16px; box-shadow:var(--sh-sm);
+  }
+  .met .top { display:flex; align-items:center; justify-content:space-between; }
+  .met .lbl { font-family:var(--mono); font-size:9.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted-2); }
+  .met .ic { width:26px; height:26px; border-radius:var(--r-sm); display:flex; align-items:center; justify-content:center; }
+  .ic-info { background:rgba(37,99,235,.1); color:var(--info); }
+  .ic-lime { background:var(--lime-dim); color:var(--forest-deep); }
+  .ic-warn { background:rgba(184,133,42,.14); color:var(--warn); }
+  .ic-ok { background:rgba(26,125,86,.12); color:var(--ok); }
+
+  .met .val { font-family:var(--mono); font-size:30px; font-weight:700; font-variant-numeric:tabular-nums; line-height:1; margin-top:14px; }
+  .met .val .u { font-size:13px; font-weight:500; color:var(--muted-2); margin-left:2px; }
+  .met .trend { font-family:var(--mono); font-size:10px; font-weight:700; margin-top:8px; display:flex; align-items:center; gap:4px; }
+  .t-up { color:var(--up); } .t-down { color:var(--down); } .t-flat { color:var(--muted-2); }
+
+  /* form-score samlet */
+  .score {
+    grid-column:1 / -1; display:flex; align-items:center; gap:18px;
+    background:var(--paper); border:1px solid var(--border); border-left:3px solid var(--lime);
+    border-radius:var(--r-lg); padding:18px; box-shadow:var(--sh-sm);
+  }
+  .ring { flex:none; }
+  .score .meta { flex:1; }
+  .score .meta .lbl { font-family:var(--mono); font-size:9.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted-2); }
+  .score .meta h3 { font-family:var(--disp); font-size:18px; font-weight:700; letter-spacing:-0.02em; margin:4px 0 0; }
+  .score .meta h3 em { font-style:italic; color:var(--forest); }
+  .bar { height:7px; border-radius:var(--r-full); background:var(--sand-deep); margin-top:12px; overflow:hidden; }
+  .bar > span { display:block; height:100%; background:var(--lime-deep); border-radius:var(--r-full); }
+
+  /* dark */
+  .dark .met, .dark .score { background:var(--t-bg-3); border:1px solid var(--t-line-2); box-shadow:none; }
+  .dark .score { border-left:3px solid var(--lime); }
+  .dark .met .lbl, .dark .score .meta .lbl { color:var(--t-fg-3); }
+  .dark .met .val { color:var(--t-fg); }
+  .dark .met .val .u { color:var(--t-fg-3); }
+  .dark .t-up { color:var(--t-up); } .dark .t-down { color:var(--t-down); } .dark .t-flat { color:var(--t-fg-3); }
+  .dark .score .meta h3 { color:var(--t-fg); }
+  .dark .score .meta h3 em { color:var(--lime); }
+  .dark .bar { background:var(--t-bg-4); }
+</style>
+</head>
+<body>
+
+<p class="grouphead">Wellness Card · form & belastning (lyst · PlayerHQ)</p>
+<div class="wrap">
+<div class="grid">
+  <div class="met">
+    <div class="top"><span class="lbl">Søvn</span>
+      <span class="ic ic-info"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></span>
+    </div>
+    <div class="val">7.8<span class="u">t</span></div>
+    <div class="trend t-up"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>+0.6 t</div>
+  </div>
+
+  <div class="met">
+    <div class="top"><span class="lbl">Hvilepuls</span>
+      <span class="ic ic-ok"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></span>
+    </div>
+    <div class="val">48<span class="u">bpm</span></div>
+    <div class="trend t-down"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>−2 bpm</div>
+  </div>
+
+  <div class="met">
+    <div class="top"><span class="lbl">Form</span>
+      <span class="ic ic-lime"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg></span>
+    </div>
+    <div class="val">86<span class="u">%</span></div>
+    <div class="trend t-up"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>+4</div>
+  </div>
+
+  <div class="met">
+    <div class="top"><span class="lbl">Belastning</span>
+      <span class="ic ic-warn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><path d="M10.363 3.591 2.257 17.125a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636-2.87L13.637 3.59a1.914 1.914 0 0 0-3.274 0Z"/><path d="M12 16h.01"/></svg></span>
+    </div>
+    <div class="val">Høy</div>
+    <div class="trend t-flat">monitorer hvile</div>
+  </div>
+
+  <div class="score">
+    <div class="ring">
+      <svg width="64" height="64" viewBox="0 0 64 64">
+        <circle cx="32" cy="32" r="27" fill="none" stroke="var(--sand-deep)" stroke-width="7"/>
+        <circle cx="32" cy="32" r="27" fill="none" stroke="var(--lime-deep)" stroke-width="7" stroke-linecap="round" stroke-dasharray="170" stroke-dashoffset="36" transform="rotate(-90 32 32)"/>
+        <text x="32" y="37" text-anchor="middle" font-family="var(--mono)" font-size="16" font-weight="700" fill="var(--ink)">79</text>
+      </svg>
+    </div>
+    <div class="meta">
+      <span class="lbl">Samlet form-score</span>
+      <h3>Klar for <em>hard økt</em></h3>
+      <div class="bar"><span style="width:79%"></span></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<p class="grouphead">Wellness Card · terminal mørk (AgencyOS)</p>
+<div class="wrap dark">
+<div class="grid">
+  <div class="met">
+    <div class="top"><span class="lbl">Søvn</span>
+      <span class="ic ic-info"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></span>
+    </div>
+    <div class="val">6.2<span class="u">t</span></div>
+    <div class="trend t-down"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>−1.1 t</div>
+  </div>
+
+  <div class="met">
+    <div class="top"><span class="lbl">Belastning</span>
+      <span class="ic ic-warn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><path d="M10.363 3.591 2.257 17.125a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636-2.87L13.637 3.59a1.914 1.914 0 0 0-3.274 0Z"/><path d="M12 16h.01"/></svg></span>
+    </div>
+    <div class="val">Svært høy</div>
+    <div class="trend t-flat">anbefal hviledag</div>
+  </div>
+
+  <div class="score">
+    <div class="ring">
+      <svg width="64" height="64" viewBox="0 0 64 64">
+        <circle cx="32" cy="32" r="27" fill="none" stroke="var(--t-bg-4)" stroke-width="7"/>
+        <circle cx="32" cy="32" r="27" fill="none" stroke="var(--lime)" stroke-width="7" stroke-linecap="round" stroke-dasharray="170" stroke-dashoffset="92" transform="rotate(-90 32 32)"/>
+        <text x="32" y="37" text-anchor="middle" font-family="var(--mono)" font-size="16" font-weight="700" fill="var(--t-fg)">46</text>
+      </svg>
+    </div>
+    <div class="meta">
+      <span class="lbl">Øyvind Rohjan · form</span>
+      <h3>Trenger <em>restitusjon</em></h3>
+      <div class="bar"><span style="width:46%"></span></div>
+    </div>
+  </div>
+</div>
+</div>
+
+</body>
+</html>

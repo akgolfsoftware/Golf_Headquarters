@@ -1,0 +1,115 @@
+<!-- @dsCard group="Data-viz" -->
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DataTable</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:ital,wght@0,600;0,700;1,500;1,600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../tokens.css">
+<style>
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{ font-family:var(--sans); background:var(--cream); color:var(--ink); padding:28px; line-height:1.5; -webkit-font-smoothing:antialiased; }
+  .mono{ font-family:var(--mono); font-variant-numeric:tabular-nums; }
+  .lc{ max-width:560px; background:var(--paper); border:1px solid var(--border); border-radius:var(--r-lg); padding:22px; box-shadow:var(--sh-md); }
+  .lc-h{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:4px; }
+  .lc-h .ti{ font-family:var(--disp); font-size:19px; font-weight:700; letter-spacing:-.02em; }
+  .lc-h .ti em{ font-style:italic; color:var(--forest); font-weight:500; }
+  .lc-num{ font-family:var(--mono); font-size:10px; font-weight:600; color:var(--muted-2); border:1px solid var(--border); padding:3px 7px; border-radius:5px; letter-spacing:.04em; flex-shrink:0; }
+  .lc-sub{ font-size:12.5px; color:var(--muted); margin-bottom:18px; }
+  .lc-sub b{ color:var(--ink); font-weight:600; }
+  .hint{ font-family:var(--mono); font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted-2); display:inline-flex; align-items:center; gap:5px; margin-top:14px; }
+  .hint::before{ content:''; width:5px; height:5px; border-radius:50%; background:var(--lime-deep); }
+
+  .dt-wrap{ max-height:280px; overflow-y:auto; border:1px solid var(--border); border-radius:var(--r-md); }
+  .dt-wrap::-webkit-scrollbar{ width:8px; } .dt-wrap::-webkit-scrollbar-thumb{ background:var(--border); border-radius:4px; }
+  .dt{ width:100%; border-collapse:collapse; font-size:12.5px; }
+  .dt thead th{ position:sticky; top:0; z-index:2; background:var(--paper); font-family:var(--mono); font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted-2); text-align:left; padding:10px; border-bottom:1px solid var(--border); font-weight:600; cursor:pointer; user-select:none; white-space:nowrap; }
+  .dt thead th.r{ text-align:right; } .dt td.r{ text-align:right; font-family:var(--mono); font-variant-numeric:tabular-nums; }
+  .dt thead th .sort{ display:inline-flex; align-items:center; gap:4px; }
+  .dt thead th .arr{ opacity:0; transition:.12s; } .dt thead th.sorted .arr{ opacity:1; color:var(--forest); }
+  .dt .grp td{ background:var(--cream-2); font-family:var(--mono); font-size:9.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted-2); padding:7px 10px; border-bottom:1px solid var(--border-soft); position:sticky; }
+  .dt tbody td{ padding:9px 10px; border-bottom:1px solid var(--border-soft); }
+  .dt tbody tr.row:hover{ background:var(--lime-bg, rgba(209,248,67,.10)); }
+  .dt tbody tr.me{ background:var(--lime-bg, rgba(209,248,67,.10)); }
+  .dt .av{ width:24px; height:24px; border-radius:var(--r-full); display:inline-grid; place-items:center; font-family:var(--mono); font-size:8.5px; font-weight:700; background:var(--forest); color:var(--lime); margin-right:8px; vertical-align:middle; }
+  .dt .nm{ font-weight:600; }
+  .dt .pos{ color:var(--up); } .dt .neg{ color:var(--down); }
+</style>
+</head>
+<body>
+  <div class="lc">
+    <div class="lc-h"><span class="ti">Data<em>Table</em></span><span class="lc-num">STALLEN</span></div>
+    <div class="lc-sub">Klikk en kolonne-overskrift for å <b>sortere ekte</b>. Gruppert på nivå, sticky header, Øyvind uthevet.</div>
+    <div class="dt-wrap">
+      <table class="dt" id="dtPro">
+        <thead><tr>
+          <th data-key="name" data-type="str"><span class="sort">Spiller<span class="arr">↕</span></span></th>
+          <th data-key="hcp" data-type="num" class="r"><span class="sort">HCP<span class="arr">↕</span></span></th>
+          <th data-key="sg" data-type="num" class="r"><span class="sort">SG tot<span class="arr">↕</span></span></th>
+          <th data-key="snitt" data-type="num" class="r"><span class="sort">Snitt<span class="arr">↕</span></span></th>
+          <th data-key="okter" data-type="num" class="r"><span class="sort">Økter<span class="arr">↕</span></span></th>
+        </tr></thead>
+        <tbody id="dtBody"></tbody>
+      </table>
+    </div>
+    <div class="hint">Klikk en header to ganger for å snu retning</div>
+  </div>
+
+<script>
+function nf(v,d=1){ return v.toLocaleString('nb-NO',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+const players=[
+  {name:'Øyvind Rohjan', lvl:'Elite', hcp:4.2, sg:1.7, snitt:70.8, okter:5, me:true},
+  {name:'Ida Kvalheim', lvl:'Elite', hcp:5.1, sg:0.9, snitt:72.3, okter:4},
+  {name:'Emma Haugen', lvl:'Elite', hcp:6.0, sg:0.4, snitt:73.1, okter:3},
+  {name:'Jonas Lund', lvl:'Utvikling', hcp:9.4, sg:-0.3, snitt:78.0, okter:2},
+  {name:'Sara Moen', lvl:'Utvikling', hcp:11.2, sg:-0.6, snitt:80.4, okter:2},
+  {name:'Mathias Vik', lvl:'Utvikling', hcp:8.8, sg:0.1, snitt:77.2, okter:3},
+  {name:'Tobias Berg', lvl:'Bredde', hcp:15.0, sg:-1.1, snitt:85.3, okter:0},
+  {name:'Live Sætre', lvl:'Bredde', hcp:18.4, sg:-1.8, snitt:89.1, okter:1},
+];
+let dtSort={key:'hcp', dir:1};
+function initials(n){ return n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase(); }
+function renderDT(){
+  const sorted=[...players].sort((a,b)=>{
+    let av=a[dtSort.key], bv=b[dtSort.key];
+    if(typeof av==='string') return av.localeCompare(bv,'nb')*dtSort.dir;
+    return (av-bv)*dtSort.dir;
+  });
+  const tbody=document.getElementById('dtBody'); tbody.innerHTML='';
+  let curGroup=null;
+  sorted.forEach(p=>{
+    if(p.lvl!==curGroup){
+      curGroup=p.lvl;
+      const gr=document.createElement('tr'); gr.className='grp';
+      gr.innerHTML=`<td colspan="5">${p.lvl}</td>`;
+      tbody.appendChild(gr);
+    }
+    const tr=document.createElement('tr'); tr.className='row'+(p.me?' me':'');
+    tr.innerHTML=`
+      <td><span class="av">${initials(p.name)}</span><span class="nm">${p.name}</span></td>
+      <td class="r">${nf(p.hcp)}</td>
+      <td class="r ${p.sg>=0?'pos':'neg'}">${p.sg>=0?'+':''}${nf(p.sg)}</td>
+      <td class="r">${nf(p.snitt)}</td>
+      <td class="r">${p.okter}</td>`;
+    tbody.appendChild(tr);
+  });
+  document.querySelectorAll('#dtPro thead th').forEach(th=>{
+    const on=th.dataset.key===dtSort.key;
+    th.classList.toggle('sorted', on);
+    const arr=th.querySelector('.arr');
+    if(arr) arr.textContent = on ? (dtSort.dir>0?'↑':'↓') : '↕';
+  });
+}
+document.querySelectorAll('#dtPro thead th').forEach(th=>{
+  th.addEventListener('click', ()=>{
+    const k=th.dataset.key;
+    if(dtSort.key===k) dtSort.dir*=-1; else { dtSort.key=k; dtSort.dir = th.dataset.type==='str'?1:-1; }
+    renderDT();
+  });
+});
+renderDT();
+</script>
+</body>
+</html>
