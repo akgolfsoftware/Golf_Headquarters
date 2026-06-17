@@ -58,30 +58,30 @@
 }
 
 .dark {
-  --background: 157 47% 11%;       /* #0F2A22 — løftet fra v1 #0A1F18 */
-  --foreground: 60 8% 96%;
-  --card: 157 39% 14%;             /* #163027 — surface-lag */
-  --card-foreground: 60 8% 96%;
-  --popover: 157 39% 14%;
-  --popover-foreground: 60 8% 96%;
+  --background: 153 39% 5%;        /* #07100C — terminal-paletten */
+  --foreground: 135 24% 93%;       /* #EAF2EC — terminal-paletten */
+  --card: 152 33% 10%;             /* #11221A — terminal-paletten */
+  --card-foreground: 135 24% 93%;
+  --popover: 152 33% 10%;          /* #11221A — terminal-paletten */
+  --popover-foreground: 135 24% 93%;
 
-  --primary: 72 92% 62%;           /* I dark mode er lime primary */
+  --primary: 72 92% 62%;           /* I dark mode er lime primary — uendret */
   --primary-foreground: 157 53% 8%;
   --accent: 72 92% 62%;
   --accent-foreground: 157 53% 8%;
 
-  --secondary: 157 39% 14%;        /* #163027 — fasit .dark (forest-600, = card) */
-  --secondary-foreground: 60 8% 96%;
-  --muted: 157 39% 14%;
-  --muted-foreground: 137 4% 63%;  /* #9CA39E — fasit .dark */
+  --secondary: 152 33% 10%;        /* #11221A — terminal-paletten */
+  --secondary-foreground: 135 24% 93%;
+  --muted: 152 33% 10%;            /* #11221A — terminal-paletten */
+  --muted-foreground: 142 11% 65%; /* #9DB0A4 — terminal-paletten */
 
-  --destructive: 2 80% 75%;        /* #F2908C — fasit .dark */
+  --destructive: 14 86% 59%;       /* #F0683E — terminal-paletten */
   --destructive-foreground: 157 53% 8%;
-  --success: 157 49% 56%;          /* #56C59A — fasit .dark */
+  --success: 147 58% 56%;          /* #4FD08A — terminal-paletten */
   --success-foreground: 157 53% 8%;
-  --warning: 34 80% 60%;
+  --warning: 42 79% 57%;           /* #E8B43C — terminal-paletten */
   --warning-foreground: 157 53% 8%;
-  --info: 222 100% 76%;            /* #84A9FF — fasit .dark */
+  --info: 208 83% 65%;             /* #5AA9F0 — terminal-paletten */
   --info-foreground: 157 53% 8%;
 
   --chart-1: 72 92% 62%;
@@ -91,8 +91,8 @@
   --chart-5: 207 85% 65%;
   --chart-6: 280 60% 65%;
 
-  --border: 158 30% 24%;           /* #2B4F42 — fasit .dark (forest-300) */
-  --input: 158 30% 24%;
+  --border: 147 23% 18%;           /* #243A2E — terminal-paletten */
+  --input: 147 23% 18%;            /* #243A2E — terminal-paletten */
   --ring: 72 92% 62%;
 }
 
