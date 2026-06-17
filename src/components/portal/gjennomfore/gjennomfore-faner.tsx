@@ -1,198 +1,237 @@
 "use client";
 
 /**
- * Gjennomføre-faner (ExecuteScreen) — I dag / Kalender / Booking.
- * Default "I dag" matcher fasitens TodayView. Client pga fane-state.
+ * Gjennomfore — hybrid-design 2026-06-17.
+ *
+ * Tre seksjoner (ingen faner):
+ *   1. Neste økt  — featured forest card med drill-chips + "Start økt"
+ *   2. Resten av dagen — kompakte rader med "Start"-knapp
+ *   3. Fullført i dag  — rader med check + "Logg"-knapp eller resultat
  */
 
-import { useState } from "react";
 import Link from "next/link";
-import { Sun, Play, ArrowRight, CalendarCheck } from "lucide-react";
-import { AthleticBadge } from "@/components/athletic/badge";
+import { Play, ArrowRight, Pencil, Check } from "lucide-react";
 import type { GjennomforeData, GjennomforeOkt } from "@/lib/portal-gjennomfore/gjennomfore-data";
 
-const TABS = [
-  { key: "idag", label: "I dag" },
-  { key: "kalender", label: "Kalender" },
-  { key: "booking", label: "Booking" },
-] as const;
+// ── Neste økt — featured forest card ──────────────────────────────
 
-function OktRad({ o }: { o: GjennomforeOkt }) {
-  const chip =
-    o.status === "now"
-      ? { variant: "lime" as const, label: "Nå" }
-      : o.status === "done"
-        ? { variant: "ok" as const, label: "Logget" }
-        : { variant: "neutral" as const, label: "Kommer" };
+function NesteCard({ o }: { o: GjennomforeOkt }) {
+  const isActive = o.status === "now";
+  const label = isActive
+    ? `Pågår · ${o.tid}`
+    : `Neste · ${o.tid} · ${o.relTidTekst}`;
+
   return (
-    <Link
-      href={o.href}
-      className="flex items-center gap-3.5 border-b border-border py-3 last:border-b-0 transition-colors hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+    <div
+      className="relative overflow-hidden rounded-[20px] p-[18px] text-white shadow-[0_14px_40px_-12px_rgba(0,88,64,0.45)]"
+      style={{ background: "linear-gradient(150deg, #005840, #00402F)" }}
     >
-      <span className="w-[50px] shrink-0 text-right font-mono text-[13px] font-semibold text-foreground">{o.tid}</span>
-      <span className={"h-9 w-[3px] shrink-0 rounded-full " + (o.status === "now" ? "bg-accent" : "bg-border")} />
-      <span className="min-w-0 flex-1">
-        <span className="block truncate text-sm font-semibold tracking-[-0.005em] text-foreground">{o.tittel}</span>
-        <span className="mt-0.5 block truncate font-mono text-[10px] text-muted-foreground">{o.meta}</span>
+      {/* lime radial glow */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-8 -top-12 h-[190px] w-[190px] rounded-full"
+        style={{ background: "radial-gradient(circle, rgba(209,248,67,.20), transparent 68%)" }}
+      />
+
+      <div className="relative z-10">
+        {/* header row */}
+        <div className="mb-3 flex items-center justify-between">
+          <span className="font-mono text-[10px] font-bold tracking-[0.16em] uppercase text-accent">
+            {label}
+          </span>
+          <span className="whitespace-nowrap rounded-full bg-accent px-2.5 py-1 font-mono text-[11px] font-bold text-accent-foreground">
+            {o.varighet} min
+          </span>
+        </div>
+
+        {/* title */}
+        <h2 className="mb-3.5 font-display text-[21px] font-bold leading-tight tracking-[-0.02em]">
+          {o.tittel}{" "}
+          <em className="font-medium not-italic opacity-75">med {o.coachNavn}</em>
+        </h2>
+
+        {/* meta cols */}
+        <div className="mb-4 flex gap-[22px]">
+          <div>
+            <div className="mb-0.5 font-mono text-[9px] uppercase tracking-[0.1em] text-white/50">
+              Coach
+            </div>
+            <div className="font-mono text-[14px] font-bold text-white">{o.coachNavn}</div>
+          </div>
+          <div>
+            <div className="mb-0.5 font-mono text-[9px] uppercase tracking-[0.1em] text-white/50">
+              Sted
+            </div>
+            <div className="font-mono text-[14px] font-bold text-white">{o.sted}</div>
+          </div>
+          <div>
+            <div className="mb-0.5 font-mono text-[9px] uppercase tracking-[0.1em] text-white/50">
+              Drills
+            </div>
+            <div className="font-mono text-[14px] font-bold text-white">{o.antallDrills}</div>
+          </div>
+        </div>
+
+        {/* drill chips */}
+        {o.drillNavn.length > 0 && (
+          <div className="mb-4 flex flex-wrap gap-1.5">
+            {o.drillNavn.slice(0, 3).map((navn) => (
+              <span
+                key={navn}
+                className="rounded-[4px] border border-accent/30 px-[7px] py-1 font-mono text-[9px] font-bold uppercase tracking-[0.06em] text-accent"
+              >
+                {navn}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* CTA */}
+        <Link
+          href={o.href}
+          className="flex w-full items-center justify-center gap-2 rounded-full bg-accent py-[13px] font-mono text-[12px] font-bold uppercase tracking-[0.08em] text-accent-foreground transition-opacity hover:opacity-90"
+        >
+          {isActive ? "Fortsett økt" : "Start økt"}
+          <Play className="h-[15px] w-[15px]" fill="currentColor" strokeWidth={0} aria-hidden />
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+// ── Resten av dagen — kompakt rad ──────────────────────────────────
+
+const PYR_CSS: Record<string, string> = {
+  FYS: "var(--pyr-fys)",
+  TEK: "var(--pyr-tek)",
+  SLAG: "var(--pyr-slag)",
+  SPILL: "var(--pyr-spill)",
+  TURN: "var(--pyr-turn)",
+};
+
+function ResteRad({ o }: { o: GjennomforeOkt }) {
+  const borderColor = PYR_CSS[o.pyramidArea] ?? "var(--border)";
+  return (
+    <div
+      className="mb-[9px] flex items-center gap-3 rounded-[12px] border border-border border-l-[3px] bg-card p-3 pl-[14px]"
+      style={{ borderLeftColor: borderColor }}
+    >
+      <div className="min-w-0 flex-1">
+        <div className="text-[13.5px] font-bold text-foreground">{o.tittel}</div>
+        <div className="mt-[3px] font-mono text-[10.5px] text-muted-foreground">{o.meta}</div>
+      </div>
+      <Link
+        href={o.href}
+        className="flex shrink-0 items-center gap-1.5 rounded-full border border-border bg-secondary px-[13px] py-2 font-mono text-[10.5px] font-bold text-foreground transition-colors hover:bg-secondary/70"
+      >
+        <Play className="h-3 w-3" fill="currentColor" strokeWidth={0} aria-hidden />
+        Start
+      </Link>
+    </div>
+  );
+}
+
+// ── Fullført i dag — rad ───────────────────────────────────────────
+
+function FullfortRad({ o }: { o: GjennomforeOkt }) {
+  return (
+    <div className="mb-[9px] flex items-center gap-3 rounded-[12px] border border-border bg-card p-3 pl-[14px]">
+      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-success/14">
+        <Check
+          className="h-[13px] w-[13px] text-success"
+          strokeWidth={2.8}
+          aria-hidden
+        />
       </span>
-      <AthleticBadge variant={chip.variant}>{chip.label}</AthleticBadge>
-    </Link>
-  );
-}
-
-function IDag({ data }: { data: GjennomforeData }) {
-  if (data.antall === 0) {
-    return (
-      <div className="mt-5 rounded-2xl border border-dashed border-border bg-card p-8 text-center">
-        <p className="text-sm text-muted-foreground">Ingen økter planlagt i dag.</p>
-        <Link href="/portal/planlegge" className="mt-3 inline-flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.1em] text-primary">
-          Planlegg i Workbench <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.5} aria-hidden />
-        </Link>
+      <div className="min-w-0 flex-1">
+        <div className="text-[13px] font-semibold text-foreground">{o.tittel}</div>
+        <div className="mt-0.5 font-mono text-[10px] text-muted-foreground">
+          {o.tid} · {o.varighet} min
+        </div>
       </div>
-    );
-  }
-  return (
-    <div className="mt-5">
-      {/* Accent-kort: editorial card + lime venstrekant */}
-      <div className="mb-4 flex items-center gap-3.5 rounded-2xl border border-border border-l-[3px] border-l-accent bg-card p-4">
-        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-primary text-accent">
-          <Sun className="h-[22px] w-[22px]" strokeWidth={2} aria-hidden />
+      {o.trengerLogg ? (
+        <Link
+          href={`${o.href}?logg=1`}
+          className="inline-flex shrink-0 items-center gap-1 rounded-full border border-accent/40 bg-accent/16 px-3 py-[7px] font-mono text-[10px] font-bold text-primary transition-opacity hover:opacity-80 whitespace-nowrap"
+        >
+          <Pencil className="h-[9px] w-[9px]" strokeWidth={2.5} aria-hidden />
+          Logg
+        </Link>
+      ) : (
+        <span className="inline-flex shrink-0 items-center gap-1 font-mono text-[11px] font-bold text-success whitespace-nowrap">
+          <Check className="h-[10px] w-[10px]" strokeWidth={3} aria-hidden />
+          Logget
         </span>
-        <div className="min-w-0 flex-1">
-          <div className="text-[15px] font-bold tracking-[-0.01em] text-foreground">
-            {data.datoTekst} · {data.antall} {data.antall === 1 ? "økt" : "økter"}
-          </div>
-          {data.statusTekst && (
-            <div className="mt-0.5 font-mono text-[11px] text-muted-foreground">{data.statusTekst}</div>
-          )}
-        </div>
-        {data.startHref && (
-          <Link
-            href={data.startHref}
-            className="inline-flex h-11 shrink-0 items-center gap-2 rounded-full bg-primary px-4 font-mono text-[12px] font-bold uppercase tracking-[0.1em] text-primary-foreground transition-opacity hover:opacity-90"
-          >
-            <Play className="h-4 w-4" strokeWidth={2.5} aria-hidden />
-            Start nå
-          </Link>
-        )}
-      </div>
-
-      <div>
-        {data.okter.map((o) => (
-          <OktRad key={o.id} o={o} />
-        ))}
-      </div>
-
-      <p className="mt-3.5 font-mono text-[11px] text-muted-foreground">
-        Endre rekkefølge eller legg til økter i{" "}
-        <Link href="/portal/planlegge" className="font-bold text-primary hover:underline">
-          Workbench →
-        </Link>
-      </p>
+      )}
     </div>
   );
 }
 
-function Kalender({ data }: { data: GjennomforeData }) {
-  const now = new Date();
-  const dag = (now.getDay() + 6) % 7; // 0 = mandag
-  const mandag = new Date(now);
-  mandag.setDate(now.getDate() - dag);
-  const navn = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
-  const dager = navn.map((n, i) => {
-    const d = new Date(mandag);
-    d.setDate(mandag.getDate() + i);
-    return { n, dato: d.getDate(), erIdag: i === dag };
-  });
+// ── Tom-tilstand ───────────────────────────────────────────────────
+
+function TomTilstand() {
   return (
-    <div className="mt-5 space-y-4">
-      <div className="grid grid-cols-7 gap-2">
-        {dager.map((d) => (
-          <div
-            key={d.n}
-            className={
-              "rounded-xl py-2.5 text-center " +
-              (d.erIdag ? "bg-primary text-accent" : "border border-border bg-card text-foreground")
-            }
-          >
-            <div className="font-mono text-[9px] font-bold uppercase opacity-70">{d.n}</div>
-            <div className="mt-1 font-display text-lg font-bold">{d.dato}</div>
-          </div>
-        ))}
-      </div>
-      <div>
-        <div className="mb-1 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
-          I dag
-        </div>
-        {data.okter.length > 0 ? (
-          data.okter.map((o) => <OktRad key={o.id} o={o} />)
-        ) : (
-          <p className="py-4 text-sm text-muted-foreground">Ingen økter i dag.</p>
-        )}
-      </div>
+    <div className="mt-5 rounded-2xl border border-dashed border-border bg-card p-8 text-center">
+      <p className="text-sm text-muted-foreground">Ingen økter planlagt i dag.</p>
+      <Link
+        href="/portal/planlegge"
+        className="mt-3 inline-flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.1em] text-primary"
+      >
+        Planlegg i Workbench
+        <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.5} aria-hidden />
+      </Link>
     </div>
   );
 }
 
-const BOOKING_TYPER = [
-  { tittel: "Pro-time", meta: "1:1 med coach · 60 min" },
-  { tittel: "TrackMan-bay", meta: "Innendørs · 60 min" },
-  { tittel: "Tee-time", meta: "Bana · 18 hull" },
-  { tittel: "Gruppe-clinic", meta: "Junior · 90 min" },
-];
-
-function Booking() {
-  return (
-    <div className="mt-5 space-y-4">
-      <div className="font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
-        Hva vil du booke?
-      </div>
-      <div className="grid gap-2.5">
-        {BOOKING_TYPER.map((b) => (
-          <Link
-            key={b.tittel}
-            href="/portal/booking"
-            className="flex items-center gap-3 rounded-2xl border border-border bg-card p-4 transition-colors hover:bg-secondary/40"
-          >
-            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-secondary text-primary">
-              <CalendarCheck className="h-5 w-5" strokeWidth={1.75} aria-hidden />
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block text-sm font-semibold text-foreground">{b.tittel}</span>
-              <span className="mt-0.5 block font-mono text-[10px] text-muted-foreground">{b.meta}</span>
-            </span>
-            <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground/60" strokeWidth={2} aria-hidden />
-          </Link>
-        ))}
-      </div>
-    </div>
-  );
-}
+// ── Root ───────────────────────────────────────────────────────────
 
 export function GjennomforeFaner({ data }: { data: GjennomforeData }) {
-  const [tab, setTab] = useState<(typeof TABS)[number]["key"]>("idag");
+  const { nesteOkt, resteAvDagen, fullfortIdag, antall, datoTekst, totalMin } = data;
+
+  if (antall === 0) {
+    return <TomTilstand />;
+  }
+
+  const totalTekst =
+    totalMin >= 60
+      ? `${Math.floor(totalMin / 60)} t ${totalMin % 60 > 0 ? `${totalMin % 60} min` : ""}`.trim()
+      : `${totalMin} min`;
+
   return (
-    <div>
-      {/* Fane-rad: underline-aktiv */}
-      <div className="flex gap-1 border-b border-border">
-        {TABS.map((t) => (
-          <button
-            key={t.key}
-            onClick={() => setTab(t.key)}
-            className={
-              "relative -mb-px mr-4 px-1 py-3 text-sm font-semibold tracking-[-0.01em] transition-colors " +
-              (tab === t.key
-                ? "text-primary after:absolute after:inset-x-0 after:-bottom-px after:h-0.5 after:bg-primary"
-                : "text-muted-foreground hover:text-foreground")
-            }
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
-      {tab === "idag" && <IDag data={data} />}
-      {tab === "kalender" && <Kalender data={data} />}
-      {tab === "booking" && <Booking />}
+    <div className="mt-4 space-y-5">
+      {/* dato + antall + total */}
+      <p className="text-[13px] text-muted-foreground">
+        {datoTekst} · {antall} {antall === 1 ? "økt" : "økter"} · {totalTekst} totalt
+      </p>
+
+      {/* Neste økt */}
+      {nesteOkt && <NesteCard o={nesteOkt} />}
+
+      {/* Resten av dagen */}
+      {resteAvDagen.length > 0 && (
+        <div>
+          <span className="mb-[9px] block font-mono text-[9.5px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
+            Resten av dagen
+          </span>
+          {resteAvDagen.map((o) => (
+            <ResteRad key={o.id} o={o} />
+          ))}
+        </div>
+      )}
+
+      {/* Fullført i dag */}
+      {fullfortIdag.length > 0 && (
+        <div>
+          <span className="mb-[9px] block font-mono text-[9.5px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
+            Fullført i dag
+          </span>
+          {fullfortIdag.map((o) => (
+            <FullfortRad key={o.id} o={o} />
+          ))}
+        </div>
+      )}
+
     </div>
   );
 }
