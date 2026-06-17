@@ -598,7 +598,7 @@ export async function getAllTodaysSessions(userId: string): Promise<TodaySession
 // ── Composed dashboard data ───────────────────────────────────────
 
 export type DashboardData = {
-  user: { id: string; name: string; fornavn: string; initialer: string; avatarUrl: string | null; hcp: number | null };
+  user: { id: string; name: string; fornavn: string; initialer: string; avatarUrl: string | null; hcp: number | null; tier: "GRATIS" | "PRO" };
   greeting: string;
   weekNumber: number;
   today: TodaySession | null;
@@ -618,7 +618,7 @@ export type DashboardData = {
 export async function getDashboardData(userId: string): Promise<DashboardData> {
   const user = await prisma.user.findUniqueOrThrow({
     where: { id: userId },
-    select: { id: true, name: true, avatarUrl: true, hcp: true },
+    select: { id: true, name: true, avatarUrl: true, hcp: true, tier: true },
   });
 
   const [todayAll, week, recentActivity, goals, { count: unreadCount, notifications }, coachMessage, stats, kpiStats, nextTournament, weekProgress] =
@@ -636,7 +636,7 @@ export async function getDashboardData(userId: string): Promise<DashboardData> {
     ]);
 
   return {
-    user: { id: user.id, name: user.name, fornavn: fornavn(user.name), initialer: initialer(user.name), avatarUrl: user.avatarUrl, hcp: user.hcp },
+    user: { id: user.id, name: user.name, fornavn: fornavn(user.name), initialer: initialer(user.name), avatarUrl: user.avatarUrl, hcp: user.hcp, tier: user.tier === "GRATIS" ? "GRATIS" : "PRO" },
     greeting: greeting(),
     weekNumber: ukenummer(new Date()),
     today: todayAll[0] ?? null,

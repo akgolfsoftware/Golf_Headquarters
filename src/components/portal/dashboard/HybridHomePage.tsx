@@ -385,38 +385,6 @@ function NoCoachNote() {
   );
 }
 
-// ── Quick action bar (under today card) ──────────────────────────
-
-function QuickActionBar({ nextTournament }: { nextTournament: DashboardData["nextTournament"] }) {
-  return (
-    <div className="flex gap-2 flex-wrap">
-      <Link href="/portal/mal/runder/ny">
-        <button className="flex items-center gap-1.5 bg-secondary text-foreground border border-border rounded-full px-3.5 py-2 font-mono text-[10px] font-bold tracking-[0.06em] uppercase cursor-pointer hover:bg-border transition-colors">
-          <Flag size={13} aria-hidden />
-          Logg runde
-        </button>
-      </Link>
-      <Link href="/portal/mal">
-        <button className="flex items-center gap-1.5 bg-secondary text-foreground border border-border rounded-full px-3.5 py-2 font-mono text-[10px] font-bold tracking-[0.06em] uppercase cursor-pointer hover:bg-border transition-colors">
-          Alle mål
-        </button>
-      </Link>
-      <Link href="/portal/mal/bygger">
-        <button className="flex items-center gap-1.5 bg-secondary text-foreground border border-border rounded-full px-3.5 py-2 font-mono text-[10px] font-bold tracking-[0.06em] uppercase cursor-pointer hover:bg-border transition-colors">
-          Nytt mål
-        </button>
-      </Link>
-      {nextTournament && (
-        <Link href={nextTournament.href}>
-          <button className="flex items-center gap-1.5 bg-secondary text-foreground border border-border rounded-full px-3.5 py-2 font-mono text-[10px] font-bold tracking-[0.06em] uppercase cursor-pointer hover:bg-border transition-colors">
-            Se turnering
-          </button>
-        </Link>
-      )}
-    </div>
-  );
-}
-
 // ── Root component ────────────────────────────────────────────────
 
 export type HybridHomePageProps = {
@@ -424,7 +392,7 @@ export type HybridHomePageProps = {
 };
 
 export function HybridHomePage({ data }: HybridHomePageProps) {
-  const { user, greeting, weekNumber, today, todayAll, coachMessage, kpiStats, nextTournament } = data;
+  const { user, greeting, weekNumber, today, todayAll, coachMessage, kpiStats } = data;
 
   // Extra sessions today (beyond the first/primary)
   const extraSessions = todayAll.length > 1 ? todayAll.slice(1) : [];
@@ -466,6 +434,9 @@ export function HybridHomePage({ data }: HybridHomePageProps) {
     <div className="max-w-[460px] mx-auto space-y-4 px-0">
       {/* ── 1. Greeting section ── */}
       <div className="pt-1">
+        <span className="inline-flex items-center font-mono text-[10px] font-bold tracking-[0.08em] uppercase bg-primary text-accent rounded-full px-2.5 py-1 mb-3">
+          PlayerHQ · {user.tier}
+        </span>
         <span className="font-mono text-[11px] font-semibold tracking-[0.16em] uppercase text-muted-foreground block mb-2.5">
           {dateEyebrow}
         </span>
@@ -504,9 +475,6 @@ export function HybridHomePage({ data }: HybridHomePageProps) {
           ))}
         </div>
       )}
-
-      {/* ── Quick actions (dead buttons fixed) ── */}
-      <QuickActionBar nextTournament={nextTournament} />
 
       {/* ── 5. Coach-notat ── */}
       {coachMessage ? (

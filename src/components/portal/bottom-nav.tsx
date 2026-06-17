@@ -5,8 +5,8 @@ import { usePathname } from "next/navigation";
 import {
   Home,
   CalendarRange,
+  Dumbbell,
   BarChart3,
-  MessageSquare,
   UserCircle,
 } from "lucide-react";
 
@@ -19,10 +19,10 @@ type NavItemDef = {
 
 // PlayerHQ 5-seksjons IA — forenklet mobil bottom-nav
 const NAV: ReadonlyArray<NavItemDef> = [
-  { href: "/portal", label: "Oversikt", icon: Home, exact: true },
-  { href: "/portal/planlegge", label: "Planlegg", icon: CalendarRange, exact: false },
-  { href: "/portal/analysere", label: "Analyser", icon: BarChart3, exact: false },
-  { href: "/portal/coach", label: "Coach", icon: MessageSquare, exact: false },
+  { href: "/portal", label: "Hjem", icon: Home, exact: true },
+  { href: "/portal/planlegge", label: "Planlegge", icon: CalendarRange, exact: false },
+  { href: "/portal/gjennomfore", label: "Gjennomføre", icon: Dumbbell, exact: false },
+  { href: "/portal/analysere", label: "Analyse", icon: BarChart3, exact: false },
   { href: "/portal/meg", label: "Meg", icon: UserCircle, exact: false },
 ];
 
