@@ -9,14 +9,12 @@ import {
   Flame,
   MessageCircle,
   Send,
-  Sparkles,
   TrendingUp,
   Users,
 } from "lucide-react";
 import { avatarBg, initialsFromName } from "@/lib/avatar-colors";
 
 export type ReachData = {
-  isDummy: boolean;
   totalPlayers: number;
   active7d: number;
   active30d: number;
@@ -94,12 +92,6 @@ export function ReachClient({ data }: { data: ReachData }) {
             trenger oppmerksomhet?
           </p>
         </div>
-        {data.isDummy && (
-          <div className="inline-flex items-center gap-2 rounded-full border border-warning/40 bg-warning/10 px-4 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-warning">
-            <Sparkles size={12} strokeWidth={1.75} aria-hidden />
-            Eksempeldata
-          </div>
-        )}
       </header>
 
       {/* KPI-STRIP */}

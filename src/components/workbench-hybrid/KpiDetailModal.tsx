@@ -15,8 +15,9 @@ type DetailRow = { label: string; value: string; pct: number; color: string };
 type Detail = { title: string; sub: string; rows: DetailRow[]; note: string };
 
 /**
- * Bygg detalj-innholdet per KPI (fasit `kpiDetailVals`). Volum + pyramide bruker
- * ekte uke-totaler; adherence + SG har ingen datamodell ennå → fasit-demo-tall.
+ * Bygg detalj-innholdet per KPI. Volum + pyramide bruker ekte uke-totaler;
+ * adherence + SG har ingen datamodell ennå → ærlig tomtilstand (ingen rader,
+ * forklarende notat), aldri oppdiktede tall.
  */
 function buildDetail(key: KpiKey, totals: Record<Cat, number>, grand: number): Detail {
   const distRows: DetailRow[] = CAT_ORDER.map((c) => {
@@ -42,26 +43,17 @@ function buildDetail(key: KpiKey, totals: Record<Cat, number>, grand: number): D
     case "adherence":
       return {
         title: "Plan-adherence",
-        sub: "82% gjennomført siste 4 uker · demo-tall",
-        rows: [
-          { label: "Gjennomført som planlagt", value: "82%", pct: 82, color: WB.ok },
-          { label: "Endret underveis", value: "11%", pct: 11, color: WB.warn },
-          { label: "Ikke gjennomført", value: "7%", pct: 7, color: WB.err },
-        ],
-        note: "Ikke-gjennomførte økter flagges automatisk og varsler coach. (Demo — adherence har ingen datamodell ennå.)",
+        sub: "Ingen data ennå",
+        rows: [],
+        note: "Plan-adherence (planlagt vs gjennomført) har ingen datamodell ennå. Tallene kommer når gjennomførte økter spores mot planen.",
       };
     case "sg":
     default:
       return {
         title: "Strokes Gained",
-        sub: "+1.8 siste 5 runder vs A1 · demo-tall",
-        rows: [
-          { label: "SG-OTT", value: "+0.6", pct: 60, color: WB.ok },
-          { label: "SG-APP", value: "+0.9", pct: 90, color: WB.ok },
-          { label: "SG-ARG", value: "−0.2", pct: 20, color: WB.err },
-          { label: "SG-PUTT", value: "+0.5", pct: 50, color: WB.ok },
-        ],
-        note: "Svakeste kategori styrer treningsforslagene. (Demo — SG-tall er ikke koblet til runde-data her.)",
+        sub: "Ingen data ennå",
+        rows: [],
+        note: "Strokes Gained er ikke koblet til runde-data i Workbench ennå. SG-tallene vises her når kilden er på plass.",
       };
   }
 }

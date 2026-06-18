@@ -169,12 +169,14 @@ function TodayFeaturedCard({ session }: { session: TodaySession }) {
 
         {/* meta row */}
         <div className="flex gap-6 mb-4">
-          <div>
-            <div className="font-mono text-[9.5px] tracking-[0.1em] uppercase text-white/55 mb-0.5">
-              Sted
+          {session.sted && (
+            <div>
+              <div className="font-mono text-[9.5px] tracking-[0.1em] uppercase text-white/55 mb-0.5">
+                Sted
+              </div>
+              <div className="font-mono text-[14px] font-bold text-white">{session.sted}</div>
             </div>
-            <div className="font-mono text-[14px] font-bold text-white">Studio</div>
-          </div>
+          )}
           <div>
             <div className="font-mono text-[9.5px] tracking-[0.1em] uppercase text-white/55 mb-0.5">
               Drills

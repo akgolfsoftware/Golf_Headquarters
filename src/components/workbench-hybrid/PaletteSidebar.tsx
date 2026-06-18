@@ -232,6 +232,11 @@ export function PaletteSidebar({
           {groupHeader("Testbatteri", testCount, open.tests, () => onToggle("tests"))}
           {open.tests && (
             <div style={{ padding: "8px 2px 4px", display: "flex", flexDirection: "column", gap: 6 }}>
+              {sideTests.length === 0 && (
+                <div style={{ fontSize: 11.5, lineHeight: 1.5, color: "#7c8a82", padding: "2px 4px" }}>
+                  Ingen tester ennå.
+                </div>
+              )}
               {sideTests.map((t) => (
                 <div
                   key={t}

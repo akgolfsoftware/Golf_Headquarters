@@ -127,122 +127,13 @@ export default async function HandlingssenterPage() {
   const openCount = oppgaver.filter((o) => o.col !== "done").length;
   const doneToday = oppgaver.filter((o) => o.col === "done").length;
 
-  // Fallback til demo-data om Notion ikkje er koblet til.
-  const data: OppgaveRad[] =
-    oppgaver.length > 0
-      ? oppgaver
-      : [
-          {
-            id: "d0",
-            title: "Send ukesplan til Øyvind",
-            player: "Øyvind Rohjan",
-            av: "ØR",
-            pri: "Haster",
-            priKey: "high",
-            tag: "ARG",
-            due: "i dag",
-            status: "Å gjøre",
-            col: "todo",
-            desc: "Ukesplan for uke 25 inkl. wedge-stige og banespill.",
-          },
-          {
-            id: "d1",
-            title: "Gjennomgå TrackMan — Emma",
-            player: "Emma Haugen",
-            av: "EH",
-            pri: "Høy",
-            priKey: "high",
-            tag: "OTT",
-            due: "i dag",
-            status: "Å gjøre",
-            col: "todo",
-            desc: "Session fra 17. juni. Se etter angle of attack og smash factor.",
-          },
-          {
-            id: "d2",
-            title: "Skriv coach-notat etter økt",
-            player: "Jonas Strand",
-            av: "JS",
-            pri: "Normal",
-            priKey: "mid",
-            tag: "PUTT",
-            due: "i dag",
-            status: "Pågår",
-            col: "doing",
-            desc: "Fullfør notat fra tirsdagsøkt. Fokus: distance control 50–80 m.",
-          },
-          {
-            id: "d3",
-            title: "Book test-uke for stallen",
-            player: "Alle",
-            av: "AK",
-            pri: "Normal",
-            priKey: "mid",
-            tag: "PLAN",
-            due: "20. jun",
-            status: "Ferdig",
-            col: "done",
-            desc: "Koordiner med NGF-anlegg. 8–12 spillere, varighet 2 dager.",
-          },
-          {
-            id: "d4",
-            title: "Oppfølging — Mathilde inaktiv",
-            player: "Mathilde Ruud",
-            av: "MR",
-            pri: "Haster",
-            priKey: "high",
-            tag: "FYS",
-            due: "i dag",
-            status: "Å gjøre",
-            col: "todo",
-            desc: "7 dager uten aktivitet. Ring og sjekk status.",
-          },
-          {
-            id: "d5",
-            title: "Planlegg Q3-perioden",
-            player: "Alle",
-            av: "AK",
-            pri: "Lav",
-            priKey: "low",
-            tag: "PLAN",
-            due: "25. jun",
-            status: "Kø",
-            col: "backlog",
-            desc: "Årsplan Q3: turneringer, treningsleir og FYS-test.",
-          },
-          {
-            id: "d6",
-            title: "Oppdater SG-mål for Øyvind",
-            player: "Øyvind Rohjan",
-            av: "ØR",
-            pri: "Normal",
-            priKey: "mid",
-            tag: "SG",
-            due: "22. jun",
-            status: "Kø",
-            col: "backlog",
-            desc: "Revider SG-mål basert på siste 10 runder. OTT +0,8 → +1,0.",
-          },
-          {
-            id: "d7",
-            title: "TrackMan-kalibrering studio",
-            player: "Alle",
-            av: "AK",
-            pri: "Lav",
-            priKey: "low",
-            tag: "TM",
-            due: "24. jun",
-            status: "Kø",
-            col: "backlog",
-            desc: "Bestill tekniker. Siste kalibrering: 3 mnd siden.",
-          },
-        ];
-
+  // Ekte OppgaveCache-data. Når Notion ikke er koblet til / cachen er tom,
+  // viser klienten en ærlig tom tilstand («Ingen oppgaver») — ingen demo-data.
   return (
     <HandlingssenterClient
-      oppgaver={data}
-      openCount={openCount || data.filter((o) => o.col !== "done").length}
-      doneToday={doneToday || data.filter((o) => o.col === "done").length}
+      oppgaver={oppgaver}
+      openCount={openCount}
+      doneToday={doneToday}
     />
   );
 }

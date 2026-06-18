@@ -25,9 +25,8 @@ const PHASE_LABEL: Record<SeasonPhaseType, string> = {
 
 const PYR_ORDER: Cat[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
 
-// Den ekte/aktive uka (uke 24) ligger i juni og dekker datoene 9–15.
-const ACTIVE_WEEK_MONTH = 5;
-const ACTIVE_WEEK_DATES = { from: 9, to: 15 };
+// Mandag-først ukedag-nøkler (0 = søn .. 6 = lør → man-først indeks).
+const WEEK_KEY_BY_DOW: WeekKey[] = ["son", "man", "tir", "ons", "tor", "fre", "lor"];
 
 // Måned-index → periodetype (sekvensielt fra periodenes month-spenn).
 function phaseTypeForMonth(phases: SeasonPhase[], monthIdx: number): SeasonPhaseType {
@@ -46,10 +45,10 @@ function parseDmy(s: string): { day: number; month1: number } | null {
   return { day: parseInt(m[1], 10), month1: parseInt(m[2], 10) };
 }
 
-// Mandag-først ukedag for en gitt dato i 2026.
-function dayKeyForDate(monthIdx: number, date: number): WeekKey {
-  const wd = new Date(2026, monthIdx, date).getDay(); // 0 søn .. 6 lør
-  return (["son", "man", "tir", "ons", "tor", "fre", "lor"] as WeekKey[])[wd];
+// Mandag-først ukedag for en gitt dato.
+function dayKeyForDate(year: number, monthIdx: number, date: number): WeekKey {
+  const wd = new Date(year, monthIdx, date).getDay(); // 0 søn .. 6 lør
+  return WEEK_KEY_BY_DOW[wd];
 }
 
 type ManedViewProps = {
@@ -60,10 +59,6 @@ type ManedViewProps = {
   /** minutter per kategori (live) — driver pyramidefordelingen */
   totals: Record<Cat, number>;
   tournaments: WbTournament[];
-  /** dato (1-basert) → kategorier (demo for dager utenfor den aktive uka) */
-  sampleMonth: Record<number, Cat[]>;
-  /** faste demo-stat-tiles (planlagte økter, trenerøkter) */
-  baseStats: { label: string; value: string }[];
   onPrev: () => void;
   onNext: () => void;
   onDayClick: (date: number) => void;
@@ -75,18 +70,26 @@ export function ManedView({
   week,
   totals,
   tournaments,
-  sampleMonth,
-  baseStats,
   onPrev,
   onNext,
   onDayClick,
 }: ManedViewProps): ReactElement {
+  // Inneværende dato styrer hvilken måned/uke som markeres "nå" (ingen hardkodet demo-uke).
+  const today = new Date();
+  const year = today.getFullYear();
+  const phaseType = phaseTypeForMonth(phases, monthIndex);
+  const hasPhases = phases.length > 0;
   const monthName = MONTH_NAMES[monthIndex];
   const monthLower = MONTH_LOWER[monthIndex];
-  const phaseType = phaseTypeForMonth(phases, monthIndex);
-  const numDays = new Date(2026, monthIndex + 1, 0).getDate();
-  const firstWd = (new Date(2026, monthIndex, 1).getDay() + 6) % 7; // mandag-først offset
-  const isActiveWeekMonth = monthIndex === ACTIVE_WEEK_MONTH;
+  const numDays = new Date(year, monthIndex + 1, 0).getDate();
+  const firstWd = (new Date(year, monthIndex, 1).getDay() + 6) % 7; // mandag-først offset
+
+  // Den aktive uka = uka som inneholder dagens dato (kun når vi ser på inneværende måned/år).
+  const isActiveWeekMonth = monthIndex === today.getMonth() && year === today.getFullYear();
+  const todayDate = today.getDate();
+  const todayDow = (today.getDay() + 6) % 7; // 0 = man .. 6 = søn
+  const activeWeekFrom = todayDate - todayDow;
+  const activeWeekTo = activeWeekFrom + 6;
 
   // Turneringer i denne måneden (ekte data der den finnes).
   const monthTours = tournaments
@@ -111,10 +114,15 @@ export function ManedView({
   // Pyramidefordeling fra live-totals.
   const pyrTotal = PYR_ORDER.reduce((a, c) => a + totals[c], 0) || 1;
 
-  // Stat-tiles: turneringer + samlinger fylles dynamisk, resten er demo.
+  // Antall planlagte økter vi faktisk kjenner: kun den aktive uka har ekte
+  // måned-datoer her. For andre måneder finnes ingen kilde → "—".
+  const weekSessionCount = (Object.keys(week) as WeekKey[]).reduce((n, k) => n + week[k].length, 0);
+
+  // Stat-tiles: kun verdier vi har ekte kilde for. Ingen oppdiktede tall
+  // (tidligere demo-tiles "Planlagte økter 38" / "Trenerøkter 6" er fjernet).
   const stats = [
     { label: "Konkurranser", value: String(monthTours.length) },
-    ...baseStats.filter((s) => s.label !== "Konkurranser" && s.label !== "Samlinger"),
+    { label: "Planlagte økter", value: isActiveWeekMonth ? String(weekSessionCount) : "—" },
     { label: "Samlinger", value: String(Object.keys(samlingByDate).length) },
   ];
 
@@ -127,12 +135,14 @@ export function ManedView({
       cells.push({ key: i, date: null, dots: [], samling: null, isToday: false, isWeekend: false, inActiveWeek: false });
       continue;
     }
-    const inActiveWeek = isActiveWeekMonth && date >= ACTIVE_WEEK_DATES.from && date <= ACTIVE_WEEK_DATES.to;
-    const isToday = isActiveWeekMonth && date === 11;
+    const inActiveWeek = isActiveWeekMonth && date >= activeWeekFrom && date <= activeWeekTo;
+    const isToday = isActiveWeekMonth && date === todayDate;
     const isWeekend = i % 7 >= 5;
-    let dots: Cat[] = [];
-    if (inActiveWeek) dots = (week[dayKeyForDate(monthIndex, date)] ?? []).map((s) => s.cat);
-    else if (sampleMonth[date]) dots = sampleMonth[date];
+    // Kun den aktive uka har ekte måned-datoer for økter. Andre dager: ingen
+    // oppdiktede dots (tidligere demo-sampleMonth er fjernet).
+    const dots: Cat[] = inActiveWeek
+      ? (week[dayKeyForDate(year, monthIndex, date)] ?? []).map((s) => s.cat)
+      : [];
     cells.push({ key: i, date, dots: dots.slice(0, 4), samling: samlingByDate[date] ?? null, isToday, isWeekend, inActiveWeek });
   }
 
@@ -141,8 +151,8 @@ export function ManedView({
       {/* header + nav */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 18px 8px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <span style={{ fontFamily: FONT.display, fontWeight: 700, fontSize: 18, color: WB.text }}>{monthName} 2026</span>
-          <span style={{ fontSize: 12, color: WB.muted }}>{PHASE_LABEL[phaseType]}</span>
+          <span style={{ fontFamily: FONT.display, fontWeight: 700, fontSize: 18, color: WB.text }}>{monthName} {year}</span>
+          {hasPhases && <span style={{ fontSize: 12, color: WB.muted }}>{PHASE_LABEL[phaseType]}</span>}
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
           <button

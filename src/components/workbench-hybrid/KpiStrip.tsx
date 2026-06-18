@@ -23,18 +23,18 @@ type KpiStripProps = {
   grand: number;
   /** antall planlagte økter (ekte når data finnes) */
   sessionCount: number;
-  /** plan-adherence (fasit-demo — ingen modell ennå) */
-  adherence: string;
-  /** strokes gained (fasit-demo — ingen modell ennå) */
-  sg: string;
+  /** plan-adherence (ingen datamodell ennå — null = ærlig tomtilstand "—") */
+  adherence: string | null;
+  /** strokes gained (ingen datamodell ennå — null = ærlig tomtilstand "—") */
+  sg: string | null;
   onOpen: (key: KpiKey) => void;
 };
 
 /**
  * KPI-stripa øverst i senterområdet (over alle zoom-visninger). Mono-etiketter +
- * stat/bar-kort, 1:1 fra fasitens `kpis`. Volum + pyramide-balanse er avledet av
- * ekte uke-data (totals/grand). Adherence og SG har ingen datamodell ennå →
- * fasit-demo-verdier (markert i propene fra shell-en).
+ * stat/bar-kort. Volum + pyramide-balanse er avledet av ekte uke-data
+ * (totals/grand). Adherence og SG har ingen datamodell ennå → vises som ærlig
+ * tomtilstand ("—") når propen er null, aldri oppdiktede tall.
  */
 export function KpiStrip({ totals, grand, sessionCount, adherence, sg, onOpen }: KpiStripProps): ReactElement {
   const pyrTotal = grand || 1;
@@ -68,22 +68,22 @@ export function KpiStrip({ totals, grand, sessionCount, adherence, sg, onOpen }:
         <div style={subStyle}>FYS·TEK·SLAG·SPILL·TURN</div>
       </KpiCard>
 
-      {/* Plan-adherence (stat) — fasit-demo */}
+      {/* Plan-adherence (stat) — ingen datamodell ennå → ærlig "—" */}
       <KpiCard label="Plan-adherence" dot="#56C59A" onClick={() => onOpen("adherence")}>
         <div style={{ display: "flex", alignItems: "baseline", gap: 5 }}>
-          <span style={statValue(WB.ok)}>{adherence}</span>
-          <span style={{ fontSize: 10.5, fontWeight: 600, color: WB.ok }}>▲</span>
+          <span style={statValue(adherence ? WB.ok : WB.muted3)}>{adherence ?? "—"}</span>
+          {adherence && <span style={{ fontSize: 10.5, fontWeight: 600, color: WB.ok }}>▲</span>}
         </div>
-        <div style={subStyle}>planlagt vs gjennomført</div>
+        <div style={subStyle}>{adherence ? "planlagt vs gjennomført" : "ingen data ennå"}</div>
       </KpiCard>
 
-      {/* Strokes Gained (stat) — fasit-demo */}
+      {/* Strokes Gained (stat) — ingen datamodell ennå → ærlig "—" */}
       <KpiCard label="Strokes Gained" dot="#56C59A" onClick={() => onOpen("sg")}>
         <div style={{ display: "flex", alignItems: "baseline", gap: 5 }}>
-          <span style={statValue(WB.ok)}>{sg}</span>
-          <span style={{ fontSize: 10.5, fontWeight: 600, color: WB.ok }}>▲ siste 5</span>
+          <span style={statValue(sg ? WB.ok : WB.muted3)}>{sg ?? "—"}</span>
+          {sg && <span style={{ fontSize: 10.5, fontWeight: 600, color: WB.ok }}>▲ siste 5</span>}
         </div>
-        <div style={subStyle}>vs A1-benchmark</div>
+        <div style={subStyle}>{sg ? "vs A1-benchmark" : "ingen data ennå"}</div>
       </KpiCard>
     </div>
   );

@@ -10,7 +10,7 @@
  *     HØY: Utviklingssteg / milepæl-tidslinje
  *
  * Henter ekte data fra SeasonPlan + PeriodBlock + TournamentEntry + TrainingPlan.
- * Faller tilbake til statisk demo-data når ingen aktiv sesongplan finnes.
+ * Når ingen aktiv sesongplan finnes vises ærlige tomme tilstander — ingen demo-tall.
  */
 
 import Link from "next/link";
@@ -41,12 +41,9 @@ type PeriodKpi = {
   valueCls: string; // Tailwind-klasse for farge
 };
 
-type MilestoneNode = {
-  time: string;
-  heading: string;
-  description: string;
-  state: "done" | "active" | "upcoming";
-  pill?: string;
+type ActivePeriod = {
+  label: string;
+  monthRange: string;
 };
 
 // ── Data-henting ─────────────────────────────────────────────────────────────
@@ -89,18 +86,48 @@ async function loadPlanData(coachId: string) {
     totalSessions > 0 ? Math.round((completedSessions / totalSessions) * 100) : 0;
   const tournamentCount = seasonPlan?.tournamentEntries.length ?? 0;
 
+  // Aktiv periodeblokk (den som omslutter dagens dato)
+  const activeBlock =
+    seasonPlan?.periodBlocks.find((b) => b.startDate <= now && b.endDate >= now) ?? null;
+
   return {
     player: activePlan?.user ?? null,
     seasonPlan,
+    activeBlock,
     kpis: { totalSessions, completedSessions, pctComplete, tournamentCount },
   };
 }
 
 // ── Hjelpefunksjoner ─────────────────────────────────────────────────────────
 
+const MONTH_LABELS = [
+  "jan","feb","mar","apr","mai","jun",
+  "jul","aug","sep","okt","nov","des",
+] as const;
+
 function monthPos(date: Date): number {
   // Måneds-posisjon som andel av året (0-1)
   return (date.getMonth() + date.getDate() / 31) / 12;
+}
+
+const PHASE_LABEL: Record<string, string> = {
+  GRUNN: "Grunntrening",
+  SPESIAL: "Oppbygging",
+  TURNERING: "Sesong",
+};
+
+/** Bygger label + måned-spenn for den aktive periodeblokken. */
+function activePeriodFrom(block: {
+  lPhase: string;
+  startDate: Date;
+  endDate: Date;
+}): ActivePeriod {
+  const from = MONTH_LABELS[block.startDate.getMonth()].toUpperCase();
+  const to = MONTH_LABELS[block.endDate.getMonth()].toUpperCase();
+  return {
+    label: PHASE_LABEL[block.lPhase] ?? "Periode",
+    monthRange: from === to ? from : `${from} – ${to}`,
+  };
 }
 
 /** Konverterer PeriodBlock til GanttBand. Brukes kun om SeasonPlan finnes. */
@@ -126,66 +153,6 @@ function blocksToGanttBands(
     active: b.lPhase === activePhase,
   }));
 }
-
-// ── Statiske demo-data (fallback) ─────────────────────────────────────────────
-
-const DEMO_GANTT: GanttBand[] = [
-  { label: "Grunntrening", startMonth: 0, endMonth: 2, phase: "fys" },
-  { label: "Oppbygging", startMonth: 2, endMonth: 4, phase: "tek" },
-  { label: "Sesong", startMonth: 4, endMonth: 7, phase: "konkurranse", active: true },
-  { label: "Topping", startMonth: 7, endMonth: 8, phase: "topping" },
-  { label: "Hvile", startMonth: 10, endMonth: 11, phase: "hvile" },
-];
-
-const DEMO_MARKS: TournamentMark[] = [
-  { pos: 0.46 },
-  { pos: 0.55 },
-  { pos: 0.63 },
-  { pos: 0.71 },
-];
-
-const DEMO_KPIS: PeriodKpi[] = [
-  { label: "Turneringer", value: "4", valueCls: "text-foreground" },
-  { label: "Planlagte økter", value: "48", valueCls: "text-foreground" },
-  { label: "Fullført", value: "62 %", valueCls: "text-primary" },
-  { label: "SG mål", value: "+2,0", valueCls: "text-success" },
-];
-
-const DEMO_TIMELINE: MilestoneNode[] = [
-  {
-    time: "jan 2026",
-    heading: "Vintergrunnlag",
-    description: "12 ukers fysisk base + teknisk reset. SG-baseline satt.",
-    state: "done",
-    pill: "Ferdig",
-  },
-  {
-    time: "apr 2026",
-    heading: "Sesongåpning",
-    description: "Første tellende runder. HCP ned fra 2,4 til 1,8.",
-    state: "done",
-    pill: "Ferdig",
-  },
-  {
-    time: "jun 2026",
-    heading: "Konkurranseperiode",
-    description: "Aktiv turneringssesong. Ukentlig SG-oppfølging og spilløkter på GFGK.",
-    state: "active",
-    pill: "Pågår",
-  },
-  {
-    time: "aug 2026",
-    heading: "Toppingsfase mot NM",
-    description: "Volum ned, intensitet og spillsimulering opp.",
-    state: "upcoming",
-  },
-  {
-    time: "okt 2026",
-    heading: "Sesongevaluering",
-    description: "Full SG-gjennomgang og plan for neste vintergrunnlag.",
-    state: "upcoming",
-  },
-];
 
 // ── Phase → klasser ───────────────────────────────────────────────────────────
 
@@ -261,89 +228,33 @@ function TournamentRow({ marks }: { marks: TournamentMark[] }) {
   );
 }
 
-function MilestoneTimeline({ nodes }: { nodes: MilestoneNode[] }) {
-  return (
-    <div className="relative pl-[22px]">
-      {/* Vertikal linje */}
-      <div className="absolute left-[5px] top-1.5 bottom-1.5 w-[1.5px] bg-border" />
-
-      {nodes.map((node, i) => {
-        const dotCls =
-          node.state === "done"
-            ? "bg-primary border-primary"
-            : node.state === "active"
-              ? "bg-card border-card shadow-[0_0_0_4px_hsl(var(--primary)/0.15)]"
-              : "bg-card border-border";
-
-        return (
-          <div
-            key={i}
-            className="relative pb-[18px] last:pb-0"
-          >
-            {/* Node-dot */}
-            <div
-              className={`absolute -left-[19px] top-[3px] w-[11px] h-[11px] rounded-full border-2 box-border ${dotCls}`}
-            />
-
-            <div className="font-mono text-[10.5px] font-semibold tracking-[0.06em] uppercase text-muted-foreground">
-              {node.time}
-            </div>
-
-            <div className="flex items-center gap-2 my-[3px]">
-              <span
-                className={`font-semibold text-[14px] ${
-                  node.state === "active" ? "text-primary" : "text-foreground"
-                }`}
-              >
-                {node.heading}
-              </span>
-              {node.pill && (
-                <span
-                  className={`font-mono text-[9px] font-semibold tracking-[0.06em] uppercase rounded-full px-2 py-0.5 ${
-                    node.state === "done"
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-card border border-primary text-primary"
-                  }`}
-                >
-                  {node.pill}
-                </span>
-              )}
-            </div>
-
-            <div className="text-[13px] text-muted-foreground leading-[1.5] pb-[18px]">
-              {node.description}
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
 // ── Hoved-komponent ───────────────────────────────────────────────────────────
 
 export default async function PlanleggePage() {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
-  // Last ekte data — fanger eventuelle DB-feil stille (viser demo-data)
+  // Last ekte data — fanger eventuelle DB-feil stille (viser tom tilstand)
   let planData: Awaited<ReturnType<typeof loadPlanData>> | null = null;
   try {
     planData = await loadPlanData(user.id);
   } catch {
-    // Faller tilbake til demo-data
+    // Ved DB-feil: behandle som om ingen plan finnes (tom tilstand)
   }
 
-  const playerName = planData?.player?.name ?? "Øyvind Rohjan";
+  const playerName = planData?.player?.name ?? null;
   const playerInitials = playerName
-    .split(" ")
-    .map((w) => w[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
+    ? playerName
+        .split(" ")
+        .map((w) => w[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2)
+    : "–";
 
   const year = new Date().getFullYear();
+  const activePhase = planData?.activeBlock?.lPhase ?? null;
 
-  // Bygg Gantt-data
+  // Bygg Gantt-data fra ekte periodeblokker (ingen demo-fallback)
   const ganttBands: GanttBand[] =
     planData?.seasonPlan?.periodBlocks && planData.seasonPlan.periodBlocks.length > 0
       ? blocksToGanttBands(
@@ -352,19 +263,17 @@ export default async function PlanleggePage() {
             startDate: Date;
             endDate: Date;
           }>,
-          null
+          activePhase
         )
-      : DEMO_GANTT;
+      : [];
 
-  // Turneringsmarkeringer
+  // Turneringsmarkeringer fra ekte oppføringer (ingen demo-fallback)
   const tournamentMarks: TournamentMark[] =
-    planData?.seasonPlan?.tournamentEntries && planData.seasonPlan.tournamentEntries.length > 0
-      ? planData.seasonPlan.tournamentEntries
-          .filter((e) => e.manualDate)
-          .map((e) => ({ pos: monthPos(e.manualDate!) }))
-      : DEMO_MARKS;
+    planData?.seasonPlan?.tournamentEntries
+      ?.filter((e) => e.manualDate)
+      .map((e) => ({ pos: monthPos(e.manualDate!) })) ?? [];
 
-  // KPI-data
+  // KPI-data — kun ekte tall (turneringer + planlagte/fullførte økter). SG mål har ingen kilde ennå.
   const kpis: PeriodKpi[] =
     planData && planData.kpis.totalSessions > 0
       ? [
@@ -383,9 +292,13 @@ export default async function PlanleggePage() {
             value: `${planData.kpis.pctComplete} %`,
             valueCls: "text-primary",
           },
-          { label: "SG mål", value: "+2,0", valueCls: "text-success" },
         ]
-      : DEMO_KPIS;
+      : [];
+
+  // Aktiv periode (label + måned-spenn) fra ekte periodeblokk
+  const activePeriod: ActivePeriod | null = planData?.activeBlock
+    ? activePeriodFrom(planData.activeBlock)
+    : null;
 
   const months = [
     "jan","feb","mar","apr","mai","jun",
@@ -410,10 +323,12 @@ export default async function PlanleggePage() {
 
         {/* Spiller-velger */}
         <div className="flex items-center gap-2 bg-card border border-border rounded-md px-3 py-2 cursor-pointer">
-          <span className="w-[22px] h-[22px] rounded-full bg-card border border-primary text-primary flex items-center justify-center font-mono text-[9px] font-bold flex-shrink-0">
+          <span className="w-[22px] h-[22px] rounded-full bg-card border border-border text-muted-foreground flex items-center justify-center font-mono text-[9px] font-bold flex-shrink-0">
             {playerInitials}
           </span>
-          <span className="text-[12.5px] font-semibold text-foreground">{playerName}</span>
+          <span className="text-[12.5px] font-semibold text-foreground">
+            {playerName ?? "Ingen aktiv spiller"}
+          </span>
           <ChevronDown size={13} className="text-muted-foreground" />
         </div>
 
@@ -449,52 +364,68 @@ export default async function PlanleggePage() {
                 </span>
               </div>
 
-              {/* Månedsoverskrift */}
-              <div className="grid gap-3 mb-3" style={{ gridTemplateColumns: "120px 1fr" }}>
-                <span />
-                <div className="grid grid-cols-12 font-mono text-[9px] font-semibold tracking-[0.06em] uppercase text-muted-foreground">
-                  {months.map((m) => (
-                    <span key={m} className="text-center">{m}</span>
+              {ganttBands.length > 0 ? (
+                <>
+                  {/* Månedsoverskrift */}
+                  <div className="grid gap-3 mb-3" style={{ gridTemplateColumns: "120px 1fr" }}>
+                    <span />
+                    <div className="grid grid-cols-12 font-mono text-[9px] font-semibold tracking-[0.06em] uppercase text-muted-foreground">
+                      {months.map((m) => (
+                        <span key={m} className="text-center">{m}</span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Gantt-rader */}
+                  {ganttBands.map((band, i) => (
+                    <GanttRow key={i} label={band.label} band={band} />
                   ))}
-                </div>
-              </div>
 
-              {/* Gantt-rader */}
-              {ganttBands.map((band, i) => (
-                <GanttRow key={i} label={band.label} band={band} />
-              ))}
-
-              {/* Turnerings-markering */}
-              <TournamentRow marks={tournamentMarks} />
+                  {/* Turnerings-markering */}
+                  {tournamentMarks.length > 0 && <TournamentRow marks={tournamentMarks} />}
+                </>
+              ) : (
+                <p className="py-8 text-center text-[13px] text-muted-foreground">
+                  Ingen sesongplan for {year} ennå.
+                </p>
+              )}
             </div>
 
             {/* Aktiv periode KPI-strip */}
             <div className="bg-card border border-border rounded-xl p-[16px]">
               <div className="flex items-center justify-between mb-[14px]">
                 <span className="font-mono text-[10px] font-bold tracking-[0.08em] uppercase text-muted-foreground">
-                  Aktiv periode · Sesong
+                  {activePeriod ? `Aktiv periode · ${activePeriod.label}` : "Aktiv periode"}
                 </span>
-                <span className="font-mono text-[9.5px] font-bold bg-card border border-primary text-primary px-3 py-1 rounded-full">
-                  MAI – AUG {year}
-                </span>
+                {activePeriod && (
+                  <span className="font-mono text-[9.5px] font-bold bg-card border border-primary text-primary px-3 py-1 rounded-full">
+                    {activePeriod.monthRange} {year}
+                  </span>
+                )}
               </div>
-              <div className="grid grid-cols-4 gap-2.5">
-                {kpis.map((kpi) => (
-                  <div
-                    key={kpi.label}
-                    className="bg-background border border-border rounded-sm p-[11px_12px]"
-                  >
-                    <div className="font-mono text-[8.5px] font-semibold tracking-[0.1em] uppercase text-muted-foreground mb-[7px]">
-                      {kpi.label}
-                    </div>
+              {kpis.length > 0 ? (
+                <div className="grid grid-cols-3 gap-2.5">
+                  {kpis.map((kpi) => (
                     <div
-                      className={`font-mono text-[20px] font-semibold tabular-nums leading-none ${kpi.valueCls}`}
+                      key={kpi.label}
+                      className="bg-background border border-border rounded-sm p-[11px_12px]"
                     >
-                      {kpi.value}
+                      <div className="font-mono text-[8.5px] font-semibold tracking-[0.1em] uppercase text-muted-foreground mb-[7px]">
+                        {kpi.label}
+                      </div>
+                      <div
+                        className={`font-mono text-[20px] font-semibold tabular-nums leading-none ${kpi.valueCls}`}
+                      >
+                        {kpi.value}
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="py-4 text-center text-[13px] text-muted-foreground">
+                  Ingen aktiv plan med planlagte økter ennå.
+                </p>
+              )}
             </div>
           </div>
 
@@ -503,7 +434,9 @@ export default async function PlanleggePage() {
             <div className="font-mono text-[10px] font-bold tracking-[0.08em] uppercase text-muted-foreground mb-4">
               Utviklingssteg · milepæler
             </div>
-            <MilestoneTimeline nodes={DEMO_TIMELINE} />
+            <p className="py-4 text-[13px] text-muted-foreground leading-[1.5]">
+              Ingen milepæler registrert ennå.
+            </p>
           </div>
 
         </div>

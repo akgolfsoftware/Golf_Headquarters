@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import {
   ArrowLeft,
   Check,
   CreditCard,
   Download,
+  FileX,
   Mail,
   Printer,
 } from "lucide-react";
@@ -29,12 +29,13 @@ export default async function FakturaDetaljPage({
   const user = await requirePortalUser();
   const { id } = await params;
 
-  // Forsøk å hente faktisk Payment fra DB. Hvis ikke finnes, fall tilbake til eksempel-data.
+  // Hent faktisk Payment fra DB (kun brukerens egne).
   const payment = await prisma.payment.findFirst({
     where: { id, userId: user.id },
     select: {
       id: true,
       amountOre: true,
+      status: true,
       paidAt: true,
       createdAt: true,
       type: true,
@@ -44,16 +45,49 @@ export default async function FakturaDetaljPage({
     },
   });
 
-  // Hvis id er "demo" eller payment mangler — render eksempel basert på batch3-HTML.
-  const erDemo = id === "demo" || !payment;
-  if (!erDemo && !payment) notFound();
+  // Ingen ekte faktura med denne id-en på brukeren — vis ærlig "ikke funnet".
+  if (!payment) {
+    return (
+      <div className="mx-auto w-full max-w-[640px] px-4 py-16 text-center sm:px-6">
+        <span className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-secondary text-muted-foreground">
+          <FileX className="h-5 w-5" strokeWidth={1.75} />
+        </span>
+        <h1 className="mt-4 font-display text-2xl font-semibold tracking-tight">
+          Faktura ikke funnet
+        </h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Vi fant ingen faktura med denne ID-en på kontoen din.
+        </p>
+        <Link
+          href="/portal/meg/abonnement"
+          className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2} />
+          Tilbake til abonnement
+        </Link>
+      </div>
+    );
+  }
 
-  const fakturaNr = erDemo ? "2026-0247" : (payment!.stripeInvoiceId ?? payment!.id.slice(-7));
-  const fakturadato = erDemo ? new Date("2026-05-19") : (payment!.paidAt ?? payment!.createdAt);
+  const fakturaNr = payment.stripeInvoiceId ?? payment.id.slice(-7);
+  const fakturadato = payment.paidAt ?? payment.createdAt;
   const forfallsdato = new Date(fakturadato.getTime() + 14 * 24 * 60 * 60 * 1000);
-  const beloepOre = erDemo ? 30000 : payment!.amountOre;
+  const beloepOre = payment.amountOre;
   const netto = Math.round(beloepOre * 0.8);
   const mva = beloepOre - netto;
+
+  const erBetalt =
+    payment.status === "SUCCEEDED" || payment.status === "PARTIALLY_REFUNDED";
+  const statusLabel =
+    payment.status === "SUCCEEDED"
+      ? "Betalt"
+      : payment.status === "PARTIALLY_REFUNDED"
+        ? "Delvis refundert"
+        : payment.status === "REFUNDED"
+          ? "Refundert"
+          : payment.status === "FAILED"
+            ? "Feilet"
+            : "Venter";
 
   return (
     <div className="mx-auto w-full max-w-[820px] space-y-8 px-4 sm:px-6">
@@ -79,9 +113,15 @@ export default async function FakturaDetaljPage({
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-[color:rgb(44_125_82)]/15 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-[0.06em] text-[color:rgb(44_125_82)]">
-            <Check className="h-3 w-3" strokeWidth={2.5} />
-            Betalt
+          <span
+            className={
+              erBetalt
+                ? "inline-flex items-center gap-1.5 rounded-full bg-[color:rgb(44_125_82)]/15 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-[0.06em] text-[color:rgb(44_125_82)]"
+                : "inline-flex items-center gap-1.5 rounded-full bg-secondary px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-[0.06em] text-muted-foreground"
+            }
+          >
+            {erBetalt && <Check className="h-3 w-3" strokeWidth={2.5} />}
+            {statusLabel}
           </span>
           <ActionBtn Icon={Printer}>Skriv ut</ActionBtn>
           <ActionBtn Icon={Mail}>Send på e-post</ActionBtn>
@@ -95,28 +135,24 @@ export default async function FakturaDetaljPage({
       <section className="grid gap-4 sm:grid-cols-2">
         <MetaBlock label="Fakturert til">
           <div className="font-display text-base font-semibold text-foreground">
-            {user.name ?? "Øyvind Rohjan"}
+            {user.name ?? "—"}
           </div>
-          <div className="text-sm text-muted-foreground">
-            Storgata 14<br />
-            1606 Fredrikstad<br />
-            Norge
-          </div>
+          {user.email && (
+            <div className="text-sm text-muted-foreground">{user.email}</div>
+          )}
         </MetaBlock>
         <MetaBlock label="Fakturert fra">
           <div className="font-display text-base font-semibold text-foreground">
             AK Golf Academy AS
           </div>
-          <div className="text-sm text-muted-foreground">
-            Skedsmovollen 2<br />
-            2007 Kjeller<br />
-            Org.nr 999 888 777 MVA
-          </div>
         </MetaBlock>
         <div className="grid grid-cols-3 gap-4 sm:col-span-2">
           <MetaMini label="Fakturadato" value={formatDato(fakturadato)} />
           <MetaMini label="Forfallsdato" value={formatDato(forfallsdato)} />
-          <MetaMini label="KID-nummer" value="1234 5678 90123" />
+          <MetaMini
+            label="Faktura-ID"
+            value={payment.stripeInvoiceId ?? payment.id.slice(-12)}
+          />
         </div>
       </section>
 
@@ -147,10 +183,7 @@ export default async function FakturaDetaljPage({
             <tr className="border-t border-border">
               <td className="px-6 py-4">
                 <div className="font-display text-sm font-semibold text-foreground">
-                  {payment?.description ?? `Pro-abonnement — ${fakturadato.toLocaleDateString("nb-NO", { month: "long", year: "numeric" })}`}
-                </div>
-                <div className="mt-0.5 text-xs text-muted-foreground">
-                  PlayerHQ Pro · Månedlig fakturering
+                  {payment.description ?? `Abonnement — ${fakturadato.toLocaleDateString("nb-NO", { month: "long", year: "numeric" })}`}
                 </div>
               </td>
               <td className="px-6 py-4 text-right font-mono text-sm tabular-nums">1</td>
@@ -181,17 +214,24 @@ export default async function FakturaDetaljPage({
         </div>
       </section>
 
-      {/* Betalingsinfo */}
-      <section className="flex items-center gap-4 rounded-xl border border-[color:rgb(44_125_82)]/20 bg-[color:rgb(44_125_82)]/[0.04] border-l-4 border-l-[color:rgb(44_125_82)] p-6">
-        <span className="grid h-9 w-9 flex-shrink-0 place-items-center rounded-md bg-[color:rgb(44_125_82)]/15 text-[color:rgb(44_125_82)]">
-          <CreditCard className="h-4 w-4" strokeWidth={1.75} />
-        </span>
-        <div className="text-sm">
-          <strong>Betalt {formatLang(fakturadato)} kl. 11:42</strong> via{" "}
-          <span className="font-mono">Visa ···· 4242</span>. Transaksjons-ID{" "}
-          <span className="font-mono">{payment?.stripeChargeId ?? "stripe_3O6sLk"}</span>.
-        </div>
-      </section>
+      {/* Betalingsinfo — kun ekte data */}
+      {erBetalt && payment.paidAt && (
+        <section className="flex items-center gap-4 rounded-xl border border-[color:rgb(44_125_82)]/20 bg-[color:rgb(44_125_82)]/[0.04] border-l-4 border-l-[color:rgb(44_125_82)] p-6">
+          <span className="grid h-9 w-9 flex-shrink-0 place-items-center rounded-md bg-[color:rgb(44_125_82)]/15 text-[color:rgb(44_125_82)]">
+            <CreditCard className="h-4 w-4" strokeWidth={1.75} />
+          </span>
+          <div className="text-sm">
+            <strong>Betalt {formatLang(payment.paidAt)}</strong>
+            {payment.stripeChargeId && (
+              <>
+                . Transaksjons-ID{" "}
+                <span className="font-mono">{payment.stripeChargeId}</span>
+              </>
+            )}
+            .
+          </div>
+        </section>
+      )}
 
       {/* Footer */}
       <footer className="flex flex-wrap items-center justify-between gap-4 border-t border-dashed border-border pt-6">

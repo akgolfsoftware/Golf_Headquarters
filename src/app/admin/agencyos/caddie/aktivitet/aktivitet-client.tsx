@@ -8,7 +8,6 @@ import {
   Clock,
   Info,
   Search,
-  Sparkles,
   X,
 } from "lucide-react";
 import { avatarBg } from "@/lib/avatar-colors";
@@ -41,12 +40,12 @@ type FilterDate = "today" | "yesterday" | "7d" | "all";
 export function CaddieAktivitetClient({
   events: initialEvents,
   nowMs,
-  isDummy = false,
+  loadError = false,
   aiErrors = [],
 }: {
   events: ReadonlyArray<CaddieEvent>;
   nowMs: number;
-  isDummy?: boolean;
+  loadError?: boolean;
   aiErrors?: AiError[];
 }) {
   const [search, setSearch] = useState("");
@@ -180,10 +179,10 @@ export function CaddieAktivitetClient({
         sub={`I dag · ${stats.total} hendelser · ${stats.ok} godkjent · ${stats.rej} avvist · ${stats.wait} venter · snitt-konfidens ${(stats.conf * 100).toFixed(0)} %`}
         actions={
           <div className="flex items-center gap-2">
-            {isDummy && (
-              <span className="inline-flex items-center gap-2 rounded-full border border-warning/40 bg-warning/10 px-4 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-warning">
-                <Sparkles size={12} strokeWidth={1.75} aria-hidden />
-                Eksempeldata
+            {loadError && (
+              <span className="inline-flex items-center gap-2 rounded-full border border-destructive/40 bg-destructive/10 px-4 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-destructive">
+                <AlertTriangle size={12} strokeWidth={1.75} aria-hidden />
+                Kunne ikke laste
               </span>
             )}
             <span className="inline-flex items-center gap-2 rounded-full bg-accent/40 px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-accent-foreground">
@@ -272,9 +271,26 @@ export function CaddieAktivitetClient({
           </div>
 
           <div className="max-h-[760px] overflow-y-auto px-2 pb-2">
-            {grouped.length === 0 ? (
+            {loadError ? (
+              <div className="flex flex-col items-center gap-2 px-6 py-16 text-center">
+                <AlertTriangle
+                  size={20}
+                  strokeWidth={1.75}
+                  className="text-destructive"
+                  aria-hidden
+                />
+                <p className="text-sm text-foreground">
+                  Kunne ikke laste Caddie-aktivitet.
+                </p>
+                <p className="font-mono text-[11px] text-muted-foreground">
+                  Prøv å laste siden på nytt.
+                </p>
+              </div>
+            ) : grouped.length === 0 ? (
               <div className="px-6 py-16 text-center text-sm text-muted-foreground">
-                Ingen hendelser matcher filtrene.
+                {initialEvents.length === 0
+                  ? "Ingen Caddie-aktivitet ennå."
+                  : "Ingen hendelser matcher filtrene."}
               </div>
             ) : (
               grouped.map((g) => (

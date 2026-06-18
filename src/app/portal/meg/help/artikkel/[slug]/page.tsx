@@ -1,3 +1,6 @@
+// NB: Innholdet i hjelpe-artiklene under (brødtekst + eventuelle eksempeltall)
+// er redaksjonelt illustrasjonsmateriale for hjelpesenteret — ikke spillerens
+// egne data. Det er bevisst statisk og skal ikke forveksles med ekte tall.
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {

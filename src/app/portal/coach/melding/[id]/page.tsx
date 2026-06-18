@@ -41,29 +41,13 @@ export default async function MeldingstradPage({ params }: RouteProps) {
     ? (session.messages as ChatMelding[])
     : [];
 
-  // Hardkod eksempel-data hvis tråden er tom, slik at vi alltid har noe å vise.
-  const items =
-    meldinger.length > 0
-      ? meldinger.map((m, i) => ({
-          id: `m-${i}`,
-          role: (m.role === "user" ? "me" : "coach") as "me" | "coach",
-          body: m.content ?? "",
-          ts: m.ts ?? new Date().toISOString(),
-        }))
-      : [
-          {
-            id: "m-0",
-            role: "me" as const,
-            body: "Hei Hans, jeg så på videoen fra i går og lurer på posisjonen ved P3 — det ser ut som hoftene roterer tidligere enn vi snakket om sist uke.",
-            ts: "2026-05-18T19:24:00.000Z",
-          },
-          {
-            id: "m-1",
-            role: "coach" as const,
-            body: "God observasjon, Øyvind. Se på P2–P3: hoftene roterer ca. 0,06 s tidligere enn referansen. Prøv 'door-jam drill' 3×8 før neste økt, og film fra DTL.",
-            ts: "2026-05-18T21:02:00.000Z",
-          },
-        ];
+  // Vis kun ekte meldinger. Tom tråd = ærlig tom tråd (ingen fabrikkert historikk).
+  const items = meldinger.map((m, i) => ({
+    id: `m-${i}`,
+    role: (m.role === "user" ? "me" : "coach") as "me" | "coach",
+    body: m.content ?? "",
+    ts: m.ts ?? session.createdAt.toISOString(),
+  }));
 
   const coachInitials = session.coach.name
     .split(" ")
