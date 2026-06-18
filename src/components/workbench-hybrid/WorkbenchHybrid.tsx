@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useReducer, useRef, type ReactElement } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState, type ReactElement } from "react";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
 import { FONT, WB, type Cat } from "./theme";
 import type { DimField } from "./taxonomy";
@@ -31,7 +31,8 @@ import {
   DEMO_YEAR_MARKERS,
 } from "./demo-data";
 import { mapGoals, mapTournaments, mapWarningBanner, mapWeek, mapWeekHead } from "./map-data";
-import { Topbar } from "./Topbar";
+import { Topbar, type RosterPlayer } from "./Topbar";
+import { CoachSkillWizard } from "./CoachSkillWizard";
 import { PaletteSidebar } from "./PaletteSidebar";
 import { UkeView } from "./UkeView";
 import { DagView } from "./DagView";
@@ -337,11 +338,16 @@ function totalsOf(week: WeekState): { totals: Record<Cat, number>; grand: number
 }
 
 export type WorkbenchHybridProps = {
-  /** Coach-ekstra kommer i en senere fase — propen aksepteres allerede nå. */
   role?: WorkbenchRole;
   data?: WorkbenchData;
   playerName?: string;
   initials?: string;
+  /** Coach-modus: coachens navn (vist i Coach-Skill-veiviseren). */
+  coachName?: string;
+  /** Coach-modus: spiller-roster for topbar-velgeren. */
+  players?: RosterPlayer[];
+  /** Coach-modus: id på spilleren Workbench står på nå. */
+  currentPlayerId?: string;
 };
 
 export function WorkbenchHybrid({
@@ -349,8 +355,14 @@ export function WorkbenchHybrid({
   data,
   playerName = "Øyvind Rohjan",
   initials = "ØR",
+  coachName = "Anders Kristiansen",
+  players,
+  currentPlayerId,
 }: WorkbenchHybridProps): ReactElement {
-  void role; // reservert for senere coach-faser
+  const isCoach = role === "coach";
+
+  // Coach-Skill-veiviseren (kun coach-modus) — åpen/lukket-tilstand.
+  const [coachSkillOpen, setCoachSkillOpen] = useState(false);
 
   // Ekte data der den finnes; ellers fasit-demo (alltid renderbar).
   const realWeek = useMemo(() => mapWeek(data), [data]);
@@ -507,31 +519,48 @@ export function WorkbenchHybrid({
         ? [(editTarget as Record<string, unknown>)[state.dimPicker] as string].filter(Boolean)
         : [];
 
-  return (
-    <div
-      style={{
+  // Coach-modus er innleiret i AdminShell (mørk side-chrome finnes alt) → ingen
+  // sand-bakgrunn / egen 100vh-wrapper. Spiller-modus beholder standalone-flaten.
+  const wrapperStyle: React.CSSProperties = isCoach
+    ? {
+        padding: "24px 28px 40px",
+        fontFamily: FONT.sans,
+        color: WB.text,
+        WebkitFontSmoothing: "antialiased",
+      }
+    : {
         background: WB.pageBg,
         minHeight: "100vh",
         padding: "36px 28px 64px",
         fontFamily: FONT.sans,
         color: WB.limeDark,
         WebkitFontSmoothing: "antialiased",
-      }}
-    >
+      };
+
+  // Mørk header på card-bakgrunn passer inn i AdminShell; sand-header på lyst.
+  const eyebrowColor = isCoach ? WB.lime : WB.forest;
+  const eyebrowText = isCoach
+    ? `AK Golf HQ · Workbench · ${coachName} · Head Coach`
+    : "AK Golf HQ · Workbench · All planlegging skjer her";
+  const titleColor = isCoach ? WB.text : WB.limeDark;
+  const subColor = isCoach ? WB.muted : WB.subText;
+
+  return (
+    <div style={wrapperStyle}>
       <style>{`.wb-scroll::-webkit-scrollbar{width:0;height:0}`}</style>
 
       {/* above-panel header */}
       <div style={{ maxWidth: 1340, margin: "0 auto 18px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-          <div style={{ width: 9, height: 9, borderRadius: "50%", background: WB.forest }} />
-          <span style={{ fontFamily: FONT.mono, fontSize: 11, fontWeight: 600, letterSpacing: "0.16em", textTransform: "uppercase", color: WB.forest }}>
-            AK Golf HQ · Workbench · All planlegging skjer her
+          <div style={{ width: 9, height: 9, borderRadius: "50%", background: eyebrowColor }} />
+          <span style={{ fontFamily: FONT.mono, fontSize: 11, fontWeight: 600, letterSpacing: "0.16em", textTransform: "uppercase", color: eyebrowColor }}>
+            {eyebrowText}
           </span>
         </div>
-        <h1 style={{ fontFamily: FONT.display, fontWeight: 800, fontSize: 30, lineHeight: 1.05, letterSpacing: "-0.02em", margin: "0 0 4px" }}>
+        <h1 style={{ fontFamily: FONT.display, fontWeight: 800, fontSize: 30, lineHeight: 1.05, letterSpacing: "-0.02em", margin: "0 0 4px", color: titleColor }}>
           {headTitle}
         </h1>
-        <p style={{ fontSize: 14, color: WB.subText, margin: 0 }}>{headSub}</p>
+        <p style={{ fontSize: 14, color: subColor, margin: 0 }}>{headSub}</p>
       </div>
 
       {/* panel */}
@@ -556,6 +585,10 @@ export function WorkbenchHybrid({
           playerName={playerName}
           initials={initials}
           onAddSession={() => dispatch({ type: "addSession" })}
+          role={role}
+          players={players}
+          currentPlayerId={currentPlayerId}
+          onOpenCoachSkill={isCoach ? () => setCoachSkillOpen(true) : undefined}
         />
 
         {/* body */}
@@ -717,6 +750,17 @@ export function WorkbenchHybrid({
           />
         )}
       </div>
+
+      {/* Coach-Skill-veiviser (kun coach-modus) */}
+      {isCoach && coachSkillOpen && (
+        <CoachSkillWizard
+          coachName={coachName}
+          currentPlayerName={playerName}
+          currentInitials={initials}
+          players={players ?? []}
+          onClose={() => setCoachSkillOpen(false)}
+        />
+      )}
     </div>
   );
 }

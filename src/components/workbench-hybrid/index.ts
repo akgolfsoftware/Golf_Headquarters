@@ -7,4 +7,5 @@
 
 export { WorkbenchHybrid } from "./WorkbenchHybrid";
 export type { WorkbenchHybridProps } from "./WorkbenchHybrid";
+export type { RosterPlayer } from "./Topbar";
 export type { WorkbenchRole } from "./types";

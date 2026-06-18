@@ -2,13 +2,13 @@
  * /admin/spillere/[id]/workbench — Coach-Workbench.
  *
  * Mobil (<md): WorkbenchMobile (år/måned/uke/dag planvisning).
- * Desktop (md+): full-screen Workbench med WeekView, DayView, Kanban osv.
+ * Desktop (md+): delt WorkbenchHybrid i coach-modus (spiller-velger + Coach-Skill).
  */
 
 import { notFound, redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
-import { Workbench } from "@/components/workbench/workbench";
+import { WorkbenchHybrid, type RosterPlayer } from "@/components/workbench-hybrid";
 import { WorkbenchMobile, type MobileSession } from "@/components/admin/workbench-mobile";
 import { loadWorkbenchData } from "@/lib/workbench/load-workbench";
 
@@ -17,6 +17,13 @@ export const dynamic = "force-dynamic";
 type Props = {
   params: Promise<{ id: string }>;
 };
+
+function initialsOf(name: string): string {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "—";
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
 
 export default async function CoachWorkbenchPage({ params }: Props) {
   const me = await getCurrentUser();
@@ -34,6 +41,22 @@ export default async function CoachWorkbenchPage({ params }: Props) {
     select: { name: true },
   });
   const fornavn = spiller?.name?.split(/\s+/)[0] ?? "spilleren";
+  const fulltNavn = spiller?.name ?? fornavn;
+  const initialer = initialsOf(fulltNavn);
+
+  // Coachens spiller-roster for topbar-velgeren (samme spørring som /admin/stall).
+  const rosterRows = await prisma.user
+    .findMany({
+      where: { role: "PLAYER", deletedAt: null },
+      select: { id: true, name: true },
+      orderBy: { name: "asc" },
+      take: 400,
+    })
+    .catch(() => []);
+  const roster: RosterPlayer[] = rosterRows.map((p) => {
+    const navn = p.name ?? "Uten navn";
+    return { id: p.id, name: navn, initials: initialsOf(navn) };
+  });
 
   // Mobil: last alle planlagte økter (alle aktive planer, hele planperioden)
   const mobileSessions = await loadMobileSessions(id);
@@ -49,9 +72,17 @@ export default async function CoachWorkbenchPage({ params }: Props) {
         />
       </div>
 
-      {/* Desktop (md+) — full Workbench */}
+      {/* Desktop (md+) — delt WorkbenchHybrid i coach-modus */}
       <div className="hidden md:block">
-        <Workbench role="coach" data={data} playerId={id} playerName={fornavn} />
+        <WorkbenchHybrid
+          role="coach"
+          data={data}
+          currentPlayerId={id}
+          playerName={fulltNavn}
+          initials={initialer}
+          coachName={me.name ?? "Anders Kristiansen"}
+          players={roster}
+        />
       </div>
     </>
   );
