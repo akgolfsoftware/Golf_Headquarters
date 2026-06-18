@@ -13,7 +13,7 @@
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
 import type { Axis, WeekDay, WeekEvent } from "@/components/workbench/data";
 import type { Cat } from "./theme";
-import type { WbGoal, WbSession, WeekKey, WeekState } from "./types";
+import type { WbGoal, WbSession, WbTournament, WeekKey, WeekState } from "./types";
 
 const AXIS_TO_CAT: Record<Axis, Cat> = {
   fys: "FYS",
@@ -75,6 +75,18 @@ export function mapGoals(data: WorkbenchData | undefined): WbGoal[] | null {
   const g = data?.goals;
   if (!g || g.length === 0) return null;
   return g.map((x) => ({ gn: x.gn, gm: x.gm, ax: AXIS_TO_CAT[x.ax] }));
+}
+
+/**
+ * Turneringer for Årsplan/Måned-tidslinja. Disse trenger eksakt dato (DMY) og
+ * turneringstype for å plasseres i kalenderen — WorkbenchData modellerer kun
+ * "om N dager"-tekst (`td`) uten konkret dato eller type. Vi har derfor ingen
+ * brukbar kilde her og returnerer null → komponenten faller tilbake til
+ * fasit-demo-turneringene (tydelig demo, ingen oppdiktede datoer).
+ */
+export function mapTournaments(_data: WorkbenchData | undefined): WbTournament[] | null {
+  void _data;
+  return null;
 }
 
 /** Uke-header (uke-nr fra summary). */

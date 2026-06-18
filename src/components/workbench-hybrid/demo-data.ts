@@ -3,7 +3,8 @@
  * Tatt 1:1 fra fasitens initial-state (week / palette / tournaments / goals).
  */
 
-import type { PaletteItem, WbGoal, WbTournament, WeekState } from "./types";
+import type { Cat } from "./theme";
+import type { PaletteItem, SeasonPhase, WbGoal, WbTournament, WeekState } from "./types";
 
 export const DEMO_PALETTE: PaletteItem[] = [
   { pid: "p1", title: "Putting-grunntrening", dur: 30, cat: "SPILL", omr: "PUTT0_3", m: "M2", pr: "PR2", cs: "CS80", lfase: "L_BALL", praksis: "BLOKK" },
@@ -61,3 +62,51 @@ export const DEMO_WEEK_HEAD = {
   weekLabel: "Uke 24",
   range: "9.–15. juni 2026",
 };
+
+/**
+ * Sesong-perioder (fasit `seasonPhases`, linje 1198–1204). Ingen Prisma-kilde
+ * ennå — disse er demo-verdier for Årsplan/periodisering, mirror av fasiten.
+ */
+export const DEMO_SEASON_PHASES: SeasonPhase[] = [
+  { type: "GRUNN", months: 2, span: "Jan–Feb", weekly: { TEK: 3, FYS: 4, SLAG: 2, SPILL: 1, TURN: 0 }, samlinger: [] },
+  { type: "SPESIALISERING", months: 2, span: "Mar–Apr", weekly: { TEK: 2, FYS: 3, SLAG: 3, SPILL: 2, TURN: 1 }, samlinger: [{ title: "Klubbsamling påske", date: "14.04.2026", time: "10:00", org: "Klubb" }] },
+  { type: "TURNERING", months: 4, span: "Mai–Aug", weekly: { TEK: 1, FYS: 2, SLAG: 2, SPILL: 2, TURN: 2 }, samlinger: [{ title: "NM Junior-leir", date: "20.06.2026", time: "09:00", org: "Team Norway" }] },
+  { type: "EVALUERING", months: 1, span: "Sep", weekly: { TEK: 1, FYS: 1, SLAG: 1, SPILL: 3, TURN: 2 }, samlinger: [] },
+  { type: "FERIE", months: 1, span: "Okt", weekly: { TEK: 0, FYS: 3, SLAG: 0, SPILL: 0, TURN: 0 }, samlinger: [] },
+  { type: "GRUNN", months: 2, span: "Nov–Des", weekly: { TEK: 3, FYS: 4, SLAG: 2, SPILL: 1, TURN: 0 }, samlinger: [] },
+];
+
+/** Planlagt belastning per måned (fasit `loadVals`, prosent-høyder). Demo. */
+export const DEMO_YEAR_LOAD: number[] = [40, 48, 58, 66, 72, 90, 82, 86, 28, 44, 56, 64];
+
+/**
+ * Turnerings/test-markører per måned-index (fasit `markerDefs`). [label, farge].
+ * Fargene er fasit-rådata; mappes ikke til CAT-tokens. Demo.
+ */
+export const DEMO_YEAR_MARKERS: Record<number, [string, string]> = {
+  5: ["NM Junior", "#D1F843"],
+  7: ["Norgescup", "#84A9FF"],
+  8: ["Sesongtopp", "#D1F843"],
+  10: ["Vintertest", "#56C59A"],
+};
+
+/** Antall økter per måned (fasit `counts`). Demo. */
+export const DEMO_MONTH_COUNTS: number[] = [16, 15, 18, 20, 19, 22, 14, 21, 9, 17, 18, 16];
+
+/**
+ * Måned-kalender prøvedager (fasit `sampleMonth`): dato → kategorier som har
+ * planlagte økter. Brukt for dager utenfor den ekte/aktive uka. Demo.
+ */
+export const DEMO_SAMPLE_MONTH: Record<number, Cat[]> = {
+  2: ["FYS"], 3: ["TEK", "SLAG"], 4: ["SPILL"], 5: ["FYS"], 6: ["SLAG"],
+  17: ["TEK"], 18: ["FYS", "TEK"], 19: ["SLAG"], 20: ["TURN"], 22: ["FYS"],
+  23: ["TEK"], 24: ["SLAG", "SPILL"], 25: ["FYS"], 26: ["TEK"], 27: ["SLAG", "TURN"],
+};
+
+/** Måned-statistikk-tiles (fasit `monthStats`, faste demo-tall). */
+export const DEMO_MONTH_STATS: { label: string; value: string }[] = [
+  { label: "Konkurranser", value: "—" }, // erstattes av faktisk antall turneringer
+  { label: "Planlagte økter", value: "38" },
+  { label: "Trenerøkter", value: "6" },
+  { label: "Samlinger", value: "—" }, // erstattes av faktisk antall samlinger
+];

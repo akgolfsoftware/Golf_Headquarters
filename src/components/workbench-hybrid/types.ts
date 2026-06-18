@@ -64,3 +64,22 @@ export type WbTournament = {
 
 /** Sesongmål (sidebar). */
 export type WbGoal = { gn: string; gm: string; ax: Cat };
+
+/** Treningssamling i en periode (fasit `samlinger`). */
+export type WbSamling = { title: string; date: string; time: string; org: string };
+
+/** Periodetype (fasit `seasonPhases.type`). */
+export type SeasonPhaseType = "GRUNN" | "SPESIALISERING" | "TURNERING" | "EVALUERING" | "FERIE";
+
+/**
+ * En sesong-periode i Årsplan/periodisering (fasit `seasonPhases`). `months` er
+ * antall måneder periodens band spenner over; `weekly` er ukentlige økter per akse.
+ */
+export type SeasonPhase = {
+  type: SeasonPhaseType;
+  months: number;
+  /** "Jan–Feb" */
+  span: string;
+  weekly: Record<Cat, number>;
+  samlinger: WbSamling[];
+};

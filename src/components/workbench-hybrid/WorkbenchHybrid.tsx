@@ -16,18 +16,27 @@ import type {
 } from "./types";
 import {
   DEMO_GOALS,
+  DEMO_MONTH_COUNTS,
+  DEMO_MONTH_STATS,
   DEMO_PALETTE,
+  DEMO_SAMPLE_MONTH,
+  DEMO_SEASON_PHASES,
   DEMO_SIDE_TESTS,
+  DEMO_TOURNAMENTS,
   DEMO_WARNING_BANNER,
   DEMO_WEEK,
   DEMO_WEEK_HEAD,
+  DEMO_YEAR_LOAD,
+  DEMO_YEAR_MARKERS,
 } from "./demo-data";
-import { mapGoals, mapWarningBanner, mapWeek, mapWeekHead } from "./map-data";
+import { mapGoals, mapTournaments, mapWarningBanner, mapWeek, mapWeekHead } from "./map-data";
 import { Topbar } from "./Topbar";
 import { PaletteSidebar } from "./PaletteSidebar";
 import { UkeView } from "./UkeView";
 import { DagView } from "./DagView";
-import { StubView } from "./StubView";
+import { ArsplanView } from "./ArsplanView";
+import { ArView } from "./ArView";
+import { ManedView } from "./ManedView";
 import { Statusbar } from "./Statusbar";
 import { Inspector, type InspectorMode } from "./Inspector";
 import { DimPickerModal } from "./DimPickerModal";
@@ -70,11 +79,15 @@ type State = {
   hoverDay: WeekKey | null;
   panels: Record<PanelKey, boolean>;
   dimPicker: DimField | null;
+  /** valgt måned-index (0–11) for Måned-visningen */
+  selectedMonth: number;
   nextId: number;
 };
 
 type Action =
   | { type: "setLevel"; level: ZoomLevel }
+  | { type: "openMonth"; month: number }
+  | { type: "setMonth"; month: number }
   | { type: "togglePanel"; key: PanelKey }
   | { type: "selectSession"; id: string }
   | { type: "selectPalette"; pid: string }
@@ -111,6 +124,10 @@ function reducer(state: State, action: Action): State {
   switch (action.type) {
     case "setLevel":
       return { ...state, level: action.level, editScope: "session", selectedPaletteId: null };
+    case "openMonth":
+      return { ...state, level: "maned", selectedMonth: action.month, editScope: "session", selectedPaletteId: null };
+    case "setMonth":
+      return { ...state, selectedMonth: Math.max(0, Math.min(11, action.month)) };
     case "togglePanel":
       return { ...state, panels: { ...state.panels, [action.key]: !state.panels[action.key] } };
     case "selectSession":
@@ -252,6 +269,9 @@ export function WorkbenchHybrid({
   const goals: WbGoal[] = useMemo(() => mapGoals(data) ?? DEMO_GOALS, [data]);
   const weekHead = useMemo(() => mapWeekHead(data) ?? DEMO_WEEK_HEAD, [data]);
   const banner = useMemo(() => mapWarningBanner(data) ?? DEMO_WARNING_BANNER, [data]);
+  // Periodisering + turnerings-tidslinje har ingen Prisma-kilde ennå → fasit-demo.
+  const tournaments = useMemo(() => mapTournaments(data) ?? DEMO_TOURNAMENTS, [data]);
+  const seasonPhases = DEMO_SEASON_PHASES;
 
   const [state, dispatch] = useReducer(reducer, undefined, (): State => ({
     level: "uke",
@@ -263,6 +283,7 @@ export function WorkbenchHybrid({
     hoverDay: null,
     panels: { palette: true, goals: false, tests: false, tech: false },
     dimPicker: null,
+    selectedMonth: 5, // juni — fasitens demo-måned
     nextId: 100,
   }));
 
@@ -469,9 +490,37 @@ export function WorkbenchHybrid({
                 onTimelineDrop={onTimelineDrop}
               />
             )}
-            {state.level === "arsplan" && <StubView label="Årsplan med periodisering" />}
-            {state.level === "ar" && <StubView label="Årsvisning" />}
-            {state.level === "maned" && <StubView label="Månedsvisning" />}
+            {state.level === "arsplan" && (
+              <ArsplanView
+                phases={seasonPhases}
+                load={DEMO_YEAR_LOAD}
+                markers={DEMO_YEAR_MARKERS}
+                onPhaseClick={() => {
+                  /* Periode-inspektør er en senere fase — no-op for nå. */
+                }}
+              />
+            )}
+            {state.level === "ar" && (
+              <ArView
+                phases={seasonPhases}
+                counts={DEMO_MONTH_COUNTS}
+                onMonthClick={(month) => dispatch({ type: "openMonth", month })}
+              />
+            )}
+            {state.level === "maned" && (
+              <ManedView
+                monthIndex={state.selectedMonth}
+                phases={seasonPhases}
+                week={state.week}
+                totals={totals}
+                tournaments={tournaments}
+                sampleMonth={DEMO_SAMPLE_MONTH}
+                baseStats={DEMO_MONTH_STATS}
+                onPrev={() => dispatch({ type: "setMonth", month: state.selectedMonth - 1 })}
+                onNext={() => dispatch({ type: "setMonth", month: state.selectedMonth + 1 })}
+                onDayClick={() => setLevel("dag")}
+              />
+            )}
           </div>
 
           {inspectorMode && (
