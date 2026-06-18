@@ -1,20 +1,12 @@
 /**
- * Foreldre-portal · landing (/forelder). Mobil-først (430px).
- *
- * Port av public/design-handover/agencyos/components-foreldre.html §2 (foreldre-
- * portal hjem) til ett-kolonne mobil-flyt. Lese-først: ingen handling på vegne
- * av barnet — kun innsyn (status, kommende, fakturaer, aktivitet).
+ * Foreldre-portal · landing (/forelder). Hybrid design-system.
  *
  * Lag:
- *   Hero      — avatar + hilsen + fokus-barn-kontekst (navn · coach · klubb)
- *   KPI 3-col — Økter·30d / Neste booking / Utestående
- *   Kommende  — bookinger + planlagte økter neste 7 dager (tag-piller)
- *   Fakturaer — siste 3 (beløp + status-pille)
- *   Aktivitet — barnets varsler (ikon-ring + tekst + tid)
- *   Lesemodus — fast notis: foreldre-portalen er kun innsyn
- *
- * Server component. Athletic-primitiver (AthleticAvatar, AthleticEyebrow,
- * AthleticBadge, KpiCard, KpiStrip) + DS-tokens. Ingen hardkodet hex, kun lucide.
+ *   1. Editorial hero — eyebrow + display title (italic forest) + sub
+ *   2. KPI strip — HCP / Neste booking / Streak (3-col, mono, tabular)
+ *   3. Featured focus card — forest gradient, lime accents, drill progress
+ *   4. Ukesrapport — coach avatar "AK", note, tag pills
+ *   5. Kommende bookinger — date-box + meta + status pill
  */
 
 import Link from "next/link";
@@ -23,40 +15,34 @@ import {
   Bell,
   CalendarCheck,
   CalendarClock,
-  Check,
   ChevronRight,
-  CreditCard,
   Eye,
   MapPin,
-  MessageCircle,
-  Trophy,
-  Video,
-  type LucideIcon,
+  Target,
 } from "lucide-react";
-import {
-  AthleticAvatar,
-  AthleticBadge,
-  AthleticEyebrow,
-  KpiCard,
-  KpiStrip,
-} from "@/components/athletic";
 import type {
   ForelderAktivitet,
   ForelderFaktura,
   ForelderOversikt,
   KommendeBooking,
-  KommendeOkt,
 } from "@/lib/forelder";
 import type { PaymentStatus, PyramidArea } from "@/generated/prisma/client";
 
-const NB_UKEDAG = new Intl.DateTimeFormat("nb-NO", { weekday: "short" });
-const NB_DAG_MND = new Intl.DateTimeFormat("nb-NO", {
-  day: "2-digit",
-  month: "short",
+// ── Dato-formatering (nb-NO) ────────────────────────────────────────
+const NB_DATO = new Intl.DateTimeFormat("nb-NO", {
+  weekday: "long",
+  day: "numeric",
+  month: "long",
 });
+const NB_DAG = new Intl.DateTimeFormat("nb-NO", { day: "numeric" });
+const NB_MND_KORT = new Intl.DateTimeFormat("nb-NO", { month: "short" });
 const NB_TID = new Intl.DateTimeFormat("nb-NO", {
   hour: "2-digit",
   minute: "2-digit",
+});
+const NB_DAG_MND = new Intl.DateTimeFormat("nb-NO", {
+  day: "2-digit",
+  month: "short",
 });
 
 function kr(ore: number): string {
@@ -67,37 +53,15 @@ function kr(ore: number): string {
   }).format(ore / 100);
 }
 
-function aktivitetRelativ(d: Date): string {
-  const nå = new Date();
-  const start = new Date(nå.getFullYear(), nå.getMonth(), nå.getDate());
-  const mål = new Date(d.getFullYear(), d.getMonth(), d.getDate());
-  const diff = Math.round((start.getTime() - mål.getTime()) / 86_400_000);
-  if (diff === 0) return `I dag · ${NB_TID.format(d)}`;
-  if (diff === 1) return `I går · ${NB_TID.format(d)}`;
-  return NB_DAG_MND.format(d);
+function hilsenOrd(): string {
+  const h = new Date().getHours();
+  if (h < 10) return "God morgen";
+  if (h < 17) return "God dag";
+  if (h < 22) return "God kveld";
+  return "God natt";
 }
 
-function initialer(navn: string): string {
-  return (
-    navn
-      .split(" ")
-      .map((w) => w[0])
-      .filter(Boolean)
-      .slice(0, 2)
-      .join("")
-      .toUpperCase() || "??"
-  );
-}
-
-// ── Pyramide-akse → border-farge for økt-rader ────────────────────
-const akseBar: Record<PyramidArea, string> = {
-  FYS: "bg-pyr-fys",
-  TEK: "bg-pyr-tek",
-  SLAG: "bg-pyr-slag",
-  SPILL: "bg-pyr-spill",
-  TURN: "bg-pyr-turn",
-};
-
+// ── Pyramide-akse → norsk navn ────────────────────────────────────
 const akseNavn: Record<PyramidArea, string> = {
   FYS: "Fysisk",
   TEK: "Teknikk",
@@ -115,43 +79,53 @@ function fakturaPille(s: PaymentStatus): { tekst: string; klasse: string } {
   return { tekst: "Forfaller", klasse: "bg-warning/10 text-warning" };
 }
 
-// ── Varsel-type → ikon + ring-tone ────────────────────────────────
-function aktivitetIkon(type: string): { Icon: LucideIcon; ring: string } {
+// ── Varsel-type → ikon ─────────────────────────────────────────────
+function AktivitetIkon({ type }: { type: string }) {
   const t = type.toLowerCase();
+  const cls = "h-3.5 w-3.5";
   if (t.includes("booking") || t.includes("kalender"))
-    return { Icon: CalendarCheck, ring: "text-muted-foreground" };
-  if (t.includes("video")) return { Icon: Video, ring: "text-primary" };
-  if (t.includes("melding") || t.includes("kommentar") || t.includes("coach"))
-    return { Icon: MessageCircle, ring: "text-info" };
-  if (t.includes("achievement") || t.includes("nivå") || t.includes("trophy"))
-    return { Icon: Trophy, ring: "text-success" };
-  if (t.includes("plan") || t.includes("logg") || t.includes("økt"))
-    return { Icon: Check, ring: "text-success" };
-  return { Icon: Bell, ring: "text-muted-foreground" };
+    return <CalendarCheck className={cls} strokeWidth={1.75} aria-hidden />;
+  if (t.includes("target") || t.includes("plan") || t.includes("økt"))
+    return <Target className={cls} strokeWidth={1.75} aria-hidden />;
+  return <Bell className={cls} strokeWidth={1.75} aria-hidden />;
 }
 
-function PanelHead({
+// ── Aktivitet relativ tid ─────────────────────────────────────────
+function relativTid(d: Date): string {
+  const nå = new Date();
+  const start = new Date(nå.getFullYear(), nå.getMonth(), nå.getDate());
+  const mål = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const diff = Math.round((start.getTime() - mål.getTime()) / 86_400_000);
+  if (diff === 0) return `I dag · ${NB_TID.format(d)}`;
+  if (diff === 1) return `I går · ${NB_TID.format(d)}`;
+  return NB_DAG_MND.format(d);
+}
+
+// ── Delkomponenter ────────────────────────────────────────────────
+
+function KpiCell({
   label,
-  href,
-  hrefLabel,
+  value,
+  sub,
+  border,
 }: {
   label: string;
-  href?: string;
-  hrefLabel?: string;
+  value: string;
+  sub?: string;
+  border?: boolean;
 }) {
   return (
-    <div className="flex items-center gap-2 border-b border-border px-4 py-3">
-      <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-foreground">
+    <div
+      className={`flex flex-col gap-[3px] px-[10px] py-[11px]${border ? " border-r border-border" : ""}`}
+    >
+      <span className="font-mono text-[8px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
         {label}
       </span>
-      {href && hrefLabel && (
-        <Link
-          href={href}
-          className="ml-auto inline-flex items-center gap-1 font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-primary hover:underline"
-        >
-          {hrefLabel}
-          <ChevronRight className="h-3 w-3" strokeWidth={2} aria-hidden />
-        </Link>
+      <span className="font-mono text-[20px] font-bold tabular-nums leading-none tracking-[-0.02em] text-foreground">
+        {value}
+      </span>
+      {sub && (
+        <span className="font-mono text-[9.5px] font-semibold text-muted-foreground">{sub}</span>
       )}
     </div>
   );
@@ -162,60 +136,34 @@ function BookingRad({ b }: { b: KommendeBooking }) {
     b.status === "VENT"
       ? "bg-warning/10 text-warning"
       : "bg-success/10 text-success";
-  const pilleTekst = b.status === "VENT" ? "Vent" : "Betalt";
+  const pilleTekst = b.status === "VENT" ? "Venter" : "Betalt";
+
   return (
-    <li className="relative grid grid-cols-[44px_1fr_auto] items-center gap-x-3 border-l-[3px] border-accent px-4 py-3">
-      <div className="font-mono leading-none">
-        <div className="text-base font-extrabold tracking-[-0.02em] text-foreground">
-          {NB_UKEDAG.format(b.startAt)}
-        </div>
-        <div className="mt-1 text-[9px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground">
-          {NB_DAG_MND.format(b.startAt)}
-        </div>
+    <li className="grid grid-cols-[40px_1fr_auto] items-center gap-3 px-4 py-3">
+      {/* Date box */}
+      <div className="flex h-10 w-10 flex-col items-center justify-center rounded-lg bg-secondary">
+        <span className="font-mono text-[14px] font-bold leading-none text-primary">
+          {NB_DAG.format(b.startAt)}
+        </span>
+        <span className="font-mono text-[8px] uppercase tracking-[0.06em] text-muted-foreground">
+          {NB_MND_KORT.format(b.startAt)}
+        </span>
       </div>
+      {/* Content */}
       <div className="min-w-0">
         <div className="truncate text-[13px] font-bold tracking-[-0.005em] text-foreground">
-          {b.serviceName} · {b.durationMin} min
+          {b.serviceName}
         </div>
         <div className="mt-0.5 truncate font-mono text-[10px] font-semibold tracking-[0.02em] text-muted-foreground">
           {b.locationName} · {NB_TID.format(b.startAt)}
           {b.coachName ? ` · ${b.coachName.split(" ")[0]}` : ""}
         </div>
       </div>
+      {/* Status pill */}
       <span
-        className={`rounded-[4px] px-2 py-0.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] ${pille}`}
+        className={`shrink-0 rounded-[4px] px-2 py-0.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] ${pille}`}
       >
         {pilleTekst}
-      </span>
-    </li>
-  );
-}
-
-function OktRad({ s }: { s: KommendeOkt }) {
-  return (
-    <li className="relative grid grid-cols-[44px_1fr_auto] items-center gap-x-3 px-4 py-3">
-      <span
-        aria-hidden
-        className={`absolute bottom-2.5 left-0 top-2.5 w-[3px] rounded-full ${akseBar[s.pyramidArea]}`}
-      />
-      <div className="font-mono leading-none">
-        <div className="text-base font-extrabold tracking-[-0.02em] text-foreground">
-          {NB_UKEDAG.format(s.scheduledAt)}
-        </div>
-        <div className="mt-1 text-[9px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground">
-          {NB_DAG_MND.format(s.scheduledAt)}
-        </div>
-      </div>
-      <div className="min-w-0">
-        <div className="truncate text-[13px] font-bold tracking-[-0.005em] text-foreground">
-          {s.title}
-        </div>
-        <div className="mt-0.5 truncate font-mono text-[10px] font-semibold tracking-[0.02em] text-muted-foreground">
-          Treningsøkt · {NB_TID.format(s.scheduledAt)}
-        </div>
-      </div>
-      <span className="rounded-[4px] bg-secondary px-2 py-0.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground">
-        {akseNavn[s.pyramidArea]}
       </span>
     </li>
   );
@@ -226,15 +174,13 @@ function FakturaRad({ f }: { f: ForelderFaktura }) {
   return (
     <li className="grid grid-cols-[1fr_auto] items-center gap-3 px-4 py-3">
       <div className="min-w-0">
-        <div className="truncate text-[13px] font-semibold text-foreground">
-          {f.beskrivelse}
-        </div>
+        <div className="truncate text-[13px] font-semibold text-foreground">{f.beskrivelse}</div>
         <div className="mt-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.04em] text-muted-foreground">
           {NB_DAG_MND.format(f.createdAt)}
           {f.childName ? ` · ${f.childName}` : ""}
         </div>
       </div>
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
         <span className="font-mono text-[13px] font-extrabold tabular-nums tracking-[-0.005em] text-foreground">
           {kr(f.amountOre)}
         </span>
@@ -249,21 +195,18 @@ function FakturaRad({ f }: { f: ForelderFaktura }) {
 }
 
 function AktivitetRad({ a }: { a: ForelderAktivitet }) {
-  const { Icon, ring } = aktivitetIkon(a.type);
   const innhold = (
-    <div className="grid grid-cols-[26px_1fr] items-start gap-3 py-3">
-      <span
-        className={`grid h-[26px] w-[26px] place-items-center rounded-full border border-border bg-card ${ring}`}
-      >
-        <Icon className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden />
+    <div className="flex items-start gap-3 py-3">
+      <span className="grid h-[26px] w-[26px] shrink-0 place-items-center rounded-full border border-border bg-card text-muted-foreground">
+        <AktivitetIkon type={a.type} />
       </span>
-      <div className="min-w-0">
+      <div className="min-w-0 flex-1">
         <div className="text-[13px] leading-snug text-foreground">{a.title}</div>
         {a.body && (
-          <div className="mt-0.5 truncate text-[12px] text-muted-foreground">{a.body}</div>
+          <div className="mt-0.5 line-clamp-1 text-[12px] text-muted-foreground">{a.body}</div>
         )}
         <div className="mt-1 font-mono text-[9px] font-bold uppercase tracking-[0.06em] text-muted-foreground">
-          {aktivitetRelativ(a.createdAt)}
+          {relativTid(a.createdAt)}
         </div>
       </div>
     </div>
@@ -284,23 +227,28 @@ function AktivitetRad({ a }: { a: ForelderAktivitet }) {
   );
 }
 
+// ── Hoved-komponent ───────────────────────────────────────────────
+
 export function ForelderOversiktView({ data }: { data: ForelderOversikt }) {
-  // Tomtilstand — ingen barn koblet.
+  // Tom tilstand — ingen barn koblet
   if (!data.fokusBarn) {
     return (
       <div className="mx-auto w-full max-w-[460px] space-y-5 px-1 py-1">
         <header>
-          <AthleticEyebrow>FORELDREPORTAL · OVERSIKT</AthleticEyebrow>
-          <h1 className="mt-3 font-display text-[26px] font-bold leading-tight tracking-[-0.02em] text-foreground">
-            Velkommen
+          <span className="font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+            FORELDREPORTAL · OVERSIKT
+          </span>
+          <h1 className="mt-1 font-display text-[28px] font-bold leading-[1.1] tracking-[-0.03em]">
+            Velkommen,{" "}
+            <em className="font-medium italic text-primary">forelder</em>
           </h1>
-          <p className="mt-1.5 text-sm text-muted-foreground">
+          <p className="mt-1 text-[13px] text-muted-foreground">
             Du er ikke koblet til noen barn ennå.
           </p>
         </header>
         <div className="rounded-xl border border-dashed border-border bg-card p-6 text-center">
           <Bell className="mx-auto h-7 w-7 text-muted-foreground/50" strokeWidth={1.5} aria-hidden />
-          <p className="mt-3 text-sm text-muted-foreground">
+          <p className="mt-3 text-[13px] text-muted-foreground">
             Be spilleren sende en invitasjon fra sin profil, eller kontakt support.
           </p>
         </div>
@@ -310,61 +258,43 @@ export function ForelderOversiktView({ data }: { data: ForelderOversikt }) {
 
   const barn = data.fokusBarn;
   const fornavn = barn.name.split(" ")[0] ?? barn.name;
-  const time = new Date().getHours();
-  const hilsen =
-    time < 10 ? "God morgen" : time < 17 ? "God dag" : time < 22 ? "God kveld" : "God natt";
-
-  // Sub-linje: "VISER <NAVN> · COACH <X> · <KLUBB>"
-  const subDeler = [
-    `VISER ${fornavn.toUpperCase()}`,
-    data.coachNavn ? `COACH ${data.coachNavn.split(" ").slice(-1)[0].toUpperCase()}` : null,
-    data.klubb ? data.klubb.toUpperCase() : null,
-  ].filter(Boolean);
+  const datoStr =
+    NB_DATO.format(new Date()).charAt(0).toUpperCase() + NB_DATO.format(new Date()).slice(1);
 
   // KPI-verdier
   const nb = data.kpi.nesteBooking;
-  const bookingVerdi = nb ? NB_UKEDAG.format(nb.startAt) : "—";
-  const bookingUnit = nb ? NB_TID.format(nb.startAt) : undefined;
-  const bookingSub = nb ? `${nb.locationName} · ${nb.durationMin} min` : "Ingen kommende";
+  const nesteVerdi = nb ? NB_DAG.format(nb.startAt) : "—";
+  const nesteSub = nb
+    ? `${NB_MND_KORT.format(nb.startAt)} · ${NB_TID.format(nb.startAt)}`
+    : "Ingen kommende";
+  const hcpVerdi = barn.hcp !== null ? barn.hcp.toFixed(1) : "—";
+  const okterVerdi = data.kpi.okter30d.toString();
 
-  const utestVerdi =
-    data.kpi.utestaaendeAntall > 0
-      ? new Intl.NumberFormat("nb-NO").format(Math.round(data.kpi.utestaaendeOre / 100))
-      : "0";
+  // Focus card — bruk kommendeOkter som aktivitetsmetrikk
+  const planSessions = data.kommendeOkter.length;
+  const okterDone = data.kpi.okter30d;
+  const pct = planSessions > 0 ? Math.min(100, Math.round((okterDone / planSessions) * 100)) : 0;
 
-  // Slå sammen bookinger + treningsøkter, sorter på tid, vis topp 4.
-  const kommende = [
-    ...data.kommendeBookinger.map((b) => ({ kind: "booking" as const, at: b.startAt, b })),
-    ...data.kommendeOkter.map((s) => ({ kind: "okt" as const, at: s.scheduledAt, s })),
-  ]
-    .sort((a, b) => a.at.getTime() - b.at.getTime())
-    .slice(0, 4);
+  // Ukesrapport — hent siste faktura som "note" eller fallback
+  const sisteAktivitet = data.aktivitet[0] ?? null;
+  const sisteFaktura = data.fakturaer[0] ?? null;
 
   return (
     <div className="mx-auto w-full max-w-[460px] space-y-5 px-1 py-1">
-      {/* Hero */}
-      <header>
-        <AthleticEyebrow>FORELDREPORTAL · OVERSIKT</AthleticEyebrow>
-        <div className="mt-4 flex items-center gap-4">
-          <AthleticAvatar
-            src={barn.avatarUrl}
-            initials={initialer(barn.name)}
-            size="xl"
-            borderColor="card"
-            className="h-16 w-16 text-lg shadow-[0_8px_24px_rgba(0,88,64,0.18)]"
-          />
-          <div className="min-w-0 flex-1">
-            <h1 className="font-display text-[26px] font-bold leading-tight tracking-[-0.02em] text-foreground">
-              {hilsen},{" "}
-              <em className="font-display font-normal italic text-primary">{fornavn}</em>
-            </h1>
-            {subDeler.length > 0 && (
-              <p className="mt-1 font-mono text-[11px] font-semibold tracking-[0.04em] text-muted-foreground">
-                {subDeler.join(" · ")}
-              </p>
-            )}
-          </div>
-        </div>
+      {/* ── Seksjon 1: Editorial hero ────────────────────────── */}
+      <header className="pt-1">
+        <span className="font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+          {datoStr}
+        </span>
+        <h1 className="mt-1 font-display text-[28px] font-bold leading-[1.1] tracking-[-0.03em]">
+          {hilsenOrd()},{" "}
+          <em className="font-medium italic text-primary">{fornavn}</em>
+        </h1>
+        <p className="mt-1 text-[13px] text-muted-foreground">
+          {barn.name} har {data.kpi.okter30d} treningsøkt{data.kpi.okter30d === 1 ? "" : "er"} siste 30 dager
+          {data.coachNavn ? ` · Coach ${data.coachNavn.split(" ")[0]}` : ""}
+          {data.klubb ? ` · ${data.klubb}` : ""}
+        </p>
       </header>
 
       {/* Utestående-varsel */}
@@ -374,7 +304,7 @@ export function ForelderOversiktView({ data }: { data: ForelderOversikt }) {
           className="flex items-start gap-3 rounded-xl border border-warning/30 bg-warning/5 p-3.5 transition-colors hover:bg-warning/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <AlertTriangle className="h-5 w-5 shrink-0 text-warning" strokeWidth={1.75} aria-hidden />
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <div className="text-[13px] font-bold text-foreground">
               {data.kpi.utestaaendeAntall} utestående faktura
               {data.kpi.utestaaendeAntall === 1 ? "" : "er"} · {kr(data.kpi.utestaaendeOre)}
@@ -387,79 +317,183 @@ export function ForelderOversiktView({ data }: { data: ForelderOversikt }) {
         </Link>
       )}
 
-      {/* KPI 3-col */}
-      <KpiStrip cols={3} className="gap-3">
-        <KpiCard
-          label="Økter · 30 d"
-          value={data.kpi.okter30d}
-          unit="økter"
-          size="md"
-        />
-        <KpiCard label="Neste" value={bookingVerdi} unit={bookingUnit} size="md" />
-        <KpiCard label="Utestående" value={utestVerdi} unit="kr" size="md" />
-      </KpiStrip>
-      <p className="-mt-2 font-mono text-[10px] font-semibold tracking-[0.04em] text-muted-foreground">
-        {bookingSub}
-      </p>
+      {/* ── Seksjon 2: KPI strip ─────────────────────────────── */}
+      <div className="overflow-hidden rounded-xl border border-border bg-card">
+        <div className="grid grid-cols-3">
+          <KpiCell label="HCP" value={hcpVerdi} border />
+          <KpiCell label="Neste økt" value={nesteVerdi} sub={nesteSub} border />
+          <KpiCell label="Streak · 30d" value={okterVerdi} sub="treningsøkter" />
+        </div>
+      </div>
 
-      {/* Kommende */}
+      {/* ── Seksjon 3: Featured focus card ───────────────────── */}
+      <div
+        className="relative overflow-hidden rounded-xl p-[18px] text-white"
+        style={{ background: "linear-gradient(150deg,#005840,#003d2d)" }}
+      >
+        {/* Radial lime glow */}
+        <div
+          className="pointer-events-none absolute -right-6 -top-10 h-40 w-40 rounded-full"
+          style={{ background: "radial-gradient(circle,rgba(209,248,67,0.2),transparent 68%)" }}
+        />
+
+        {/* Eyebrow */}
+        <div className="font-mono text-[8.5px] font-bold uppercase tracking-[0.12em] text-white/55 mb-[10px]">
+          Denne ukens fokus · {fornavn}
+        </div>
+
+        {planSessions === 0 ? (
+          <>
+            <div className="font-display text-[22px] font-bold leading-[1.15] tracking-[-0.025em]">
+              Ingen aktiv plan
+            </div>
+            <p className="mt-2 text-[13px] leading-relaxed text-white/70">
+              {fornavn} har ingen planlagte økt de neste 7 dagene. Coachen setter opp plan i Workbench.
+            </p>
+          </>
+        ) : (
+          <>
+            <div className="font-display text-[22px] font-bold leading-[1.15] tracking-[-0.025em]">
+              {data.kommendeOkter[0]?.title ?? "Treningsplan"}
+            </div>
+            {data.kommendeOkter[0] && (
+              <div className="mt-1 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-white/60">
+                {akseNavn[data.kommendeOkter[0].pyramidArea]} ·{" "}
+                {NB_TID.format(data.kommendeOkter[0].scheduledAt)}
+              </div>
+            )}
+
+            {/* Progress bar */}
+            <div className="mt-4 flex items-center gap-2">
+              <span
+                className="font-mono text-[9.5px] font-bold"
+                style={{ color: "#D1F843" }}
+              >
+                {okterDone} av {planSessions} drills fullført
+              </span>
+              <div className="h-1 flex-1 overflow-hidden rounded-full bg-white/20">
+                <div
+                  className="h-full rounded-full"
+                  style={{ width: `${pct}%`, background: "#D1F843" }}
+                />
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* ── Seksjon 4: Ukesrapport / coach note ──────────────── */}
+      <div className="overflow-hidden rounded-xl border border-border bg-card">
+        <div className="flex items-start gap-3 p-4">
+          {/* AK avatar */}
+          <div
+            className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-full bg-primary font-mono text-[12px] font-bold"
+            style={{ color: "#D1F843" }}
+            aria-label="Coach AK"
+          >
+            AK
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="font-display text-[15px] font-bold tracking-[-0.02em] text-foreground">
+              {data.coachNavn ?? "Coach"} · Ukesrapport
+            </div>
+            <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
+              {sisteAktivitet?.body ??
+                sisteAktivitet?.title ??
+                sisteFaktura?.beskrivelse ??
+                `${fornavn} er i god utvikling. Fortsett med det planlagte programmet.`}
+            </p>
+            {/* Tag pills */}
+            <div className="mt-3 flex flex-wrap gap-2">
+              <span className="rounded-full bg-secondary px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
+                {data.kpi.okter30d} økter
+              </span>
+              {barn.hcp !== null && (
+                <span className="rounded-full bg-secondary px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
+                  HCP {hcpVerdi}
+                </span>
+              )}
+              {data.kpi.utestaaendeAntall > 0 && (
+                <span className="rounded-full bg-warning/10 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-warning">
+                  {data.kpi.utestaaendeAntall} faktura
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Seksjon 5: Kommende bookinger ─────────────────────── */}
       <section className="overflow-hidden rounded-xl border border-border bg-card">
-        <PanelHead label="KOMMENDE · 7 DAGER" href="/forelder/bookinger" hrefLabel="Se alle" />
-        {kommende.length === 0 ? (
+        <div className="flex items-center gap-2 border-b border-border px-4 py-3">
+          <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-foreground">
+            Kommende bookinger
+          </span>
+          <Link
+            href="/forelder/bookinger"
+            className="ml-auto inline-flex items-center gap-1 font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-primary hover:underline"
+          >
+            Se alle
+            <ChevronRight className="h-3 w-3" strokeWidth={2} aria-hidden />
+          </Link>
+        </div>
+
+        {data.kommendeBookinger.length === 0 ? (
           <div className="flex flex-col items-center px-4 py-8 text-center">
             <CalendarClock className="h-6 w-6 text-muted-foreground/40" strokeWidth={1.5} aria-hidden />
             <p className="mt-2.5 text-[13px] text-muted-foreground">
-              Ingen bookinger eller økter de neste 7 dagene.
+              Ingen bookinger de neste 7 dagene.
             </p>
           </div>
         ) : (
           <ul className="divide-y divide-border">
-            {kommende.map((k) =>
-              k.kind === "booking" ? (
-                <BookingRad key={`b-${k.b.id}`} b={k.b} />
-              ) : (
-                <OktRad key={`s-${k.s.id}`} s={k.s} />
-              ),
-            )}
-          </ul>
-        )}
-      </section>
-
-      {/* Fakturaer */}
-      <section className="overflow-hidden rounded-xl border border-border bg-card">
-        <PanelHead label="FAKTURAER · SISTE 3" href="/forelder/fakturaer" hrefLabel="Historikk" />
-        {data.fakturaer.length === 0 ? (
-          <div className="flex flex-col items-center px-4 py-8 text-center">
-            <CreditCard className="h-6 w-6 text-muted-foreground/40" strokeWidth={1.5} aria-hidden />
-            <p className="mt-2.5 text-[13px] text-muted-foreground">Ingen fakturaer registrert.</p>
-          </div>
-        ) : (
-          <ul className="divide-y divide-border">
-            {data.fakturaer.map((f) => (
-              <FakturaRad key={f.id} f={f} />
+            {data.kommendeBookinger.slice(0, 3).map((b) => (
+              <BookingRad key={b.id} b={b} />
             ))}
           </ul>
         )}
       </section>
 
+      {/* Fakturaer */}
+      {data.fakturaer.length > 0 && (
+        <section className="overflow-hidden rounded-xl border border-border bg-card">
+          <div className="flex items-center gap-2 border-b border-border px-4 py-3">
+            <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-foreground">
+              Fakturaer · Siste 3
+            </span>
+            <Link
+              href="/forelder/fakturaer"
+              className="ml-auto inline-flex items-center gap-1 font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-primary hover:underline"
+            >
+              Historikk
+              <ChevronRight className="h-3 w-3" strokeWidth={2} aria-hidden />
+            </Link>
+          </div>
+          <ul className="divide-y divide-border">
+            {data.fakturaer.map((f) => (
+              <FakturaRad key={f.id} f={f} />
+            ))}
+          </ul>
+        </section>
+      )}
+
       {/* Siste aktivitet */}
-      <section className="overflow-hidden rounded-xl border border-border bg-card">
-        <PanelHead label="SISTE AKTIVITET" />
-        <div className="px-4">
-          {data.aktivitet.length === 0 ? (
-            <div className="flex flex-col items-center py-8 text-center">
-              <Bell className="h-6 w-6 text-muted-foreground/40" strokeWidth={1.5} aria-hidden />
-              <p className="mt-2.5 text-[13px] text-muted-foreground">Ingen aktivitet ennå.</p>
-            </div>
-          ) : (
+      {data.aktivitet.length > 0 && (
+        <section className="overflow-hidden rounded-xl border border-border bg-card">
+          <div className="border-b border-border px-4 py-3">
+            <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-foreground">
+              Siste aktivitet
+            </span>
+          </div>
+          <div className="px-4">
             <ul>
               {data.aktivitet.map((a) => (
                 <AktivitetRad key={a.id} a={a} />
               ))}
             </ul>
-          )}
-        </div>
-      </section>
+          </div>
+        </section>
+      )}
 
       {/* Lesemodus-notis */}
       <div className="flex items-start gap-3 rounded-xl border border-dashed border-border bg-card p-3.5">
@@ -475,7 +509,7 @@ export function ForelderOversiktView({ data }: { data: ForelderOversikt }) {
         </div>
       </div>
 
-      {/* Bytt barn — vises kun ved flere barn */}
+      {/* Bytt barn — kun ved flere barn */}
       {data.antallBarn > 1 && (
         <Link
           href="/forelder/barn"
@@ -487,7 +521,9 @@ export function ForelderOversiktView({ data }: { data: ForelderOversikt }) {
               Se alle {data.antallBarn} barn
             </span>
           </div>
-          <AthleticBadge variant="neutral">{data.antallBarn}</AthleticBadge>
+          <span className="rounded-full bg-secondary px-2.5 py-0.5 font-mono text-[11px] font-bold text-muted-foreground">
+            {data.antallBarn}
+          </span>
         </Link>
       )}
     </div>

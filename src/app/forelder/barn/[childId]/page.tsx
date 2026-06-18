@@ -1,5 +1,5 @@
 // Read-only barn-profil for forelder. Tab-navigasjon: oversikt / uke / mål / økonomi.
-// Bruker URL-tab via ?tab= for server-render uten klient-state.
+// Hybrid design: forest-gradient hero + white cards. URL-tab via ?tab= for server-render.
 
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -11,11 +11,11 @@ import {
   TrendingUp,
   CreditCard,
   Activity,
+  Flag,
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { assertBarnTilhorerForelder } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
-import { ForelderHero } from "@/components/forelder/forelder-hero";
 import type { PaymentStatus } from "@/generated/prisma/client";
 
 const NB_DATO = new Intl.DateTimeFormat("nb-NO", {
@@ -46,21 +46,37 @@ function paymentStatusLabel(s: PaymentStatus): {
   if (s === "REFUNDED" || s === "PARTIALLY_REFUNDED")
     return { tekst: "Refundert", klasse: "bg-muted text-muted-foreground" };
   if (s === "FAILED")
-    return {
-      tekst: "Feilet",
-      klasse: "bg-destructive/10 text-destructive",
-    };
+    return { tekst: "Feilet", klasse: "bg-destructive/10 text-destructive" };
   return { tekst: "Ubetalt", klasse: "bg-accent/30 text-accent-foreground" };
 }
 
 type Tab = "oversikt" | "uke" | "mal" | "okonomi";
 
 const TABS: { key: Tab; label: string }[] = [
-  { key: "oversikt", label: "Oversikt" },
-  { key: "uke", label: "Uke" },
-  { key: "mal", label: "Mål" },
-  { key: "okonomi", label: "Økonomi" },
+  { key: "oversikt", label: "OVERSIKT" },
+  { key: "uke", label: "UKE" },
+  { key: "mal", label: "MÅL" },
+  { key: "okonomi", label: "ØKONOMI" },
 ];
+
+const PYRAMID_AREAS = ["FYS", "TEK", "SLAG", "SPILL", "TURN"] as const;
+type PyramidArea = (typeof PYRAMID_AREAS)[number];
+
+const PYRAMID_COLORS: Record<PyramidArea, string> = {
+  FYS: "bg-pyr-fys",
+  TEK: "bg-pyr-tek",
+  SLAG: "bg-pyr-slag",
+  SPILL: "bg-pyr-spill",
+  TURN: "bg-pyr-turn",
+};
+
+const PYRAMID_LABELS: Record<PyramidArea, string> = {
+  FYS: "Fysisk",
+  TEK: "Teknikk",
+  SLAG: "Slagspill",
+  SPILL: "Spill",
+  TURN: "Turnering",
+};
 
 export default async function BarnProfil({
   params,
@@ -128,6 +144,7 @@ export default async function BarnProfil({
       )
     );
   }, 0);
+
   const snittRating = (() => {
     const ratings = ukeLogger
       .map((l) => l.rating)
@@ -139,29 +156,196 @@ export default async function BarnProfil({
     );
   })();
 
-  const fornavn = barn.name.split(" ")[0] ?? barn.name;
-  const etternavn = barn.name.split(" ").slice(1).join(" ");
+  // Initialer
+  const navnDeler = barn.name.trim().split(" ");
+  const initialer =
+    navnDeler.length >= 2
+      ? `${navnDeler[0][0]}${navnDeler[navnDeler.length - 1][0]}`.toUpperCase()
+      : barn.name.slice(0, 2).toUpperCase();
+
+  // HCP-visning
+  const hcpStr = barn.hcp != null ? barn.hcp.toFixed(1) : "—";
+
+  // Tier fra første aktive plan (eller «PlayerHQ»)
+  const tierLabel = "PlayerHQ";
+
+  // Antall runder
+  const antallRunder = barn.rounds.length;
+
+  // Gjennomsnitt SG
+  const sgRunder = barn.rounds.filter((r) => r.sgTotal != null);
+  const avgSg =
+    sgRunder.length > 0
+      ? (
+          sgRunder.reduce((s, r) => s + (r.sgTotal ?? 0), 0) / sgRunder.length
+        ).toFixed(2)
+      : "—";
+
+  // Pyramide-data
+  const sessionsPerArea = new Map<string, number>();
+  for (const s of aktivPlan?.sessions ?? []) {
+    sessionsPerArea.set(
+      s.pyramidArea,
+      (sessionsPerArea.get(s.pyramidArea) ?? 0) + 1,
+    );
+  }
+  const totSessions = Math.max(aktivPlan?.sessions.length ?? 0, 1);
+
+  const pyramidData = PYRAMID_AREAS.map((area) => ({
+    area,
+    pct: Math.round(((sessionsPerArea.get(area) ?? 0) / totSessions) * 100),
+  }));
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
+      {/* Tilbake-lenke */}
       <Link
         href="/forelder/barn"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.10em] text-muted-foreground transition-colors hover:text-foreground"
       >
-        <ArrowLeft className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+        <ArrowLeft className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden="true" />
         Mine barn
       </Link>
 
-      <ForelderHero
-        eyebrow="Foreldreportal · Profil"
-        titleLead={fornavn}
-        titleItalic={etternavn || "profil"}
-        sub={`HCP ${barn.hcp ?? "—"} · ${barn.homeClub ?? "Ingen hjemmeklubb"}`}
-      />
+      {/* Hero forest card */}
+      <div
+        className="rounded-2xl p-6"
+        style={{ background: "linear-gradient(150deg,#005840,#003d2d)" }}
+      >
+        {/* Avatar + navn */}
+        <div className="flex items-center gap-4">
+          <div
+            className="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full"
+            style={{
+              background: "#003d2d",
+              border: "2px solid #D1F843",
+            }}
+          >
+            <span
+              className="font-mono text-base font-bold"
+              style={{ color: "#D1F843" }}
+            >
+              {initialer}
+            </span>
+          </div>
+          <div>
+            <div className="font-display text-lg font-bold text-white">
+              {barn.name}
+            </div>
+            <div
+              className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.10em]"
+              style={{ color: "rgba(255,255,255,0.6)" }}
+            >
+              HCP {hcpStr} · {tierLabel} · {barn.homeClub ?? "Ingen hjemmeklubb"}
+            </div>
+          </div>
+        </div>
 
-      {/* Tabs */}
+        {/* KPI-grid */}
+        <div className="mt-6 grid grid-cols-3 gap-3">
+          {[
+            { label: "HCP", value: hcpStr },
+            { label: "Runder", value: String(antallRunder) },
+            { label: "Snitt SG", value: avgSg },
+          ].map(({ label, value }) => (
+            <div
+              key={label}
+              className="rounded-xl px-3 py-3 text-center"
+              style={{ background: "rgba(0,0,0,0.25)" }}
+            >
+              <div
+                className="font-mono text-[9px] uppercase tracking-[0.10em]"
+                style={{ color: "rgba(255,255,255,0.5)" }}
+              >
+                {label}
+              </div>
+              <div
+                className="mt-1 font-mono text-xl font-bold tabular-nums"
+                style={{ color: "#D1F843" }}
+              >
+                {value}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Pyramide-balanse */}
+      <div className="rounded-2xl border border-border bg-card p-6">
+        <h2 className="font-display text-[15px] font-bold text-foreground">
+          Pyramide-balanse
+        </h2>
+        <div className="mt-4 space-y-3">
+          {pyramidData.map(({ area, pct }) => (
+            <div key={area}>
+              <div className="mb-1 flex items-center justify-between">
+                <span className="font-mono text-[9px] uppercase tracking-[0.10em] text-muted-foreground">
+                  {PYRAMID_LABELS[area]}
+                </span>
+                <span className="font-mono text-[10px] tabular-nums text-muted-foreground">
+                  {pct}%
+                </span>
+              </div>
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-secondary">
+                <div
+                  className={`h-full rounded-full ${PYRAMID_COLORS[area]} transition-all`}
+                  style={{ width: `${pct}%` }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+        {aktivPlan === null && (
+          <p className="mt-3 font-mono text-[10px] text-muted-foreground">
+            Ingen aktiv plan — data ikke tilgjengelig
+          </p>
+        )}
+      </div>
+
+      {/* Sesongmål · fremdrift */}
+      {barn.goals.length > 0 && (
+        <div className="rounded-2xl border border-border bg-card p-6">
+          <h2 className="font-display text-[15px] font-bold text-foreground">
+            Sesongmål · fremdrift
+          </h2>
+          <div className="mt-4 space-y-4">
+            {barn.goals.slice(0, 5).map((g) => (
+              <div key={g.id}>
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <div className="text-sm font-semibold text-foreground">
+                      {g.title}
+                    </div>
+                    <div className="mt-0.5 font-mono text-[9px] uppercase tracking-[0.10em] text-muted-foreground">
+                      {g.type}
+                      {g.targetValue != null ? ` · mål ${g.targetValue}` : ""}
+                    </div>
+                  </div>
+                  <Flag
+                    className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground"
+                    strokeWidth={1.5}
+                    aria-hidden="true"
+                  />
+                </div>
+                {/* Fremdrifts-bar — placeholder (ingen currentValue i modellen) */}
+                <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
+                  <div
+                    className="h-full rounded-full"
+                    style={{
+                      width: "40%",
+                      background: "linear-gradient(90deg,#005840,#8db000)",
+                    }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Tab-navigasjon */}
       <nav aria-label="Profilseksjoner" className="border-b border-border">
-        <ul className="flex flex-wrap gap-1">
+        <ul className="flex gap-0">
           {TABS.map((t) => {
             const aktiv = t.key === tab;
             return (
@@ -169,7 +353,7 @@ export default async function BarnProfil({
                 <Link
                   href={`/forelder/barn/${barn.id}?tab=${t.key}`}
                   aria-current={aktiv ? "page" : undefined}
-                  className={`inline-flex items-center px-4 py-2 text-sm font-medium transition-colors ${
+                  className={`inline-flex items-center px-4 py-3 font-mono text-[10px] tracking-[0.10em] transition-colors ${
                     aktiv
                       ? "border-b-2 border-primary text-foreground"
                       : "border-b-2 border-transparent text-muted-foreground hover:text-foreground"
@@ -185,15 +369,11 @@ export default async function BarnProfil({
 
       {/* Oversikt */}
       {tab === "oversikt" && (
-        <div className="space-y-8">
-          <section className="rounded-xl border border-border bg-card">
-            <div className="border-b border-border px-6 py-4">
-              <h2 className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                <Calendar
-                  className="h-3 w-3"
-                  strokeWidth={1.5}
-                  aria-hidden="true"
-                />
+        <div className="space-y-6">
+          <div className="rounded-2xl border border-border bg-card">
+            <div className="flex items-center gap-2 border-b border-border px-6 py-4">
+              <Calendar className="h-3.5 w-3.5 text-muted-foreground" strokeWidth={1.5} aria-hidden="true" />
+              <h2 className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                 Aktiv plan
               </h2>
             </div>
@@ -203,29 +383,27 @@ export default async function BarnProfil({
               </div>
             ) : (
               <div className="px-6 py-4">
-                <div className="font-display text-lg font-semibold">
+                <div className="font-display text-base font-semibold text-foreground">
                   {aktivPlan.name}
                 </div>
                 <ul className="mt-4 divide-y divide-border">
                   {aktivPlan.sessions.map((s) => (
                     <li
                       key={s.id}
-                      className="flex items-center justify-between gap-4 py-2 text-sm"
+                      className="flex items-center justify-between gap-4 py-3 text-sm"
                     >
                       <div>
-                        <div className="font-semibold">{s.title}</div>
-                        <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                        <div className="font-semibold text-foreground">
+                          {s.title}
+                        </div>
+                        <div className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                           {NB_DATO.format(s.scheduledAt)} · {s.pyramidArea} ·{" "}
                           {s.status}
                         </div>
                       </div>
                       {s.log?.rating != null ? (
-                        <span className="inline-flex items-center gap-1 text-xs font-semibold text-primary">
-                          <Star
-                            className="h-3.5 w-3.5"
-                            strokeWidth={1.5}
-                            aria-hidden="true"
-                          />
+                        <span className="inline-flex items-center gap-1 font-mono text-xs font-semibold text-primary">
+                          <Star className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden="true" />
                           {s.log.rating}/5
                         </span>
                       ) : null}
@@ -234,16 +412,12 @@ export default async function BarnProfil({
                 </ul>
               </div>
             )}
-          </section>
+          </div>
 
-          <section className="rounded-xl border border-border bg-card">
-            <div className="border-b border-border px-6 py-4">
-              <h2 className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                <TrendingUp
-                  className="h-3 w-3"
-                  strokeWidth={1.5}
-                  aria-hidden="true"
-                />
+          <div className="rounded-2xl border border-border bg-card">
+            <div className="flex items-center gap-2 border-b border-border px-6 py-4">
+              <TrendingUp className="h-3.5 w-3.5 text-muted-foreground" strokeWidth={1.5} aria-hidden="true" />
+              <h2 className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                 Siste runder
               </h2>
             </div>
@@ -256,50 +430,48 @@ export default async function BarnProfil({
                 {barn.rounds.map((r) => (
                   <li
                     key={r.id}
-                    className="flex items-center justify-between gap-4 px-6 py-4 text-sm"
+                    className="flex items-center justify-between gap-4 px-6 py-3 text-sm"
                   >
-                    <div className="font-semibold">
+                    <div className="font-semibold text-foreground">
                       {NB_DATO.format(r.playedAt)}
                     </div>
                     <div className="font-mono text-xs tabular-nums text-muted-foreground">
                       Score {r.score}
-                      {r.sgTotal != null
-                        ? ` · SG ${r.sgTotal.toFixed(1)}`
-                        : ""}
+                      {r.sgTotal != null ? ` · SG ${r.sgTotal.toFixed(1)}` : ""}
                     </div>
                   </li>
                 ))}
               </ul>
             )}
-          </section>
+          </div>
         </div>
       )}
 
       {/* Uke */}
       {tab === "uke" && (
         <div className="space-y-6">
-          <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <Kpi
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <HybridKpi
               icon={Activity}
               label="Økter · siste 28 dgr"
               value={String(ukeLogger.length)}
             />
-            <Kpi
+            <HybridKpi
               icon={Calendar}
               label="Treningstid"
               value={`${Math.round(totalMinutter / 60)} t`}
               sub={`${totalMinutter} min totalt`}
             />
-            <Kpi
+            <HybridKpi
               icon={Star}
               label="Snitt-rating"
               value={snittRating != null ? `${snittRating}/5` : "—"}
             />
-          </section>
+          </div>
 
-          <section className="rounded-xl border border-border bg-card">
+          <div className="rounded-2xl border border-border bg-card">
             <div className="border-b border-border px-6 py-4">
-              <h2 className="font-display text-base font-semibold tracking-tight">
+              <h2 className="font-display text-[15px] font-bold text-foreground">
                 Logg{" "}
                 <em className="font-normal italic text-muted-foreground">
                   · siste 4 uker
@@ -327,9 +499,9 @@ export default async function BarnProfil({
                   return (
                     <li
                       key={i}
-                      className="flex items-center justify-between gap-4 px-6 py-4 text-sm"
+                      className="flex items-center justify-between gap-4 px-6 py-3 text-sm"
                     >
-                      <span className="font-mono text-xs tabular-nums">
+                      <span className="font-mono text-xs tabular-nums text-foreground">
                         {l.completedAt ? NB_KORT.format(l.completedAt) : "—"}
                       </span>
                       <span className="font-mono text-xs tabular-nums text-muted-foreground">
@@ -341,20 +513,16 @@ export default async function BarnProfil({
                 })}
               </ul>
             )}
-          </section>
+          </div>
         </div>
       )}
 
       {/* Mål */}
       {tab === "mal" && (
-        <section className="rounded-xl border border-border bg-card">
-          <div className="border-b border-border px-6 py-4">
-            <h2 className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-              <Target
-                className="h-3 w-3"
-                strokeWidth={1.5}
-                aria-hidden="true"
-              />
+        <div className="rounded-2xl border border-border bg-card">
+          <div className="flex items-center gap-2 border-b border-border px-6 py-4">
+            <Target className="h-3.5 w-3.5 text-muted-foreground" strokeWidth={1.5} aria-hidden="true" />
+            <h2 className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               Aktive mål
             </h2>
           </div>
@@ -366,7 +534,7 @@ export default async function BarnProfil({
             <ul className="divide-y divide-border">
               {barn.goals.map((g) => (
                 <li key={g.id} className="px-6 py-4 text-sm">
-                  <div className="font-semibold">{g.title}</div>
+                  <div className="font-semibold text-foreground">{g.title}</div>
                   <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                     {g.type}
                     {g.targetValue != null ? ` · mål ${g.targetValue}` : ""}
@@ -375,21 +543,19 @@ export default async function BarnProfil({
               ))}
             </ul>
           )}
-        </section>
+        </div>
       )}
 
       {/* Økonomi */}
       {tab === "okonomi" && (
-        <section className="rounded-xl border border-border bg-card">
-          <div className="flex items-baseline justify-between border-b border-border px-6 py-4">
-            <h2 className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-              <CreditCard
-                className="h-3 w-3"
-                strokeWidth={1.5}
-                aria-hidden="true"
-              />
-              Betalinger
-            </h2>
+        <div className="rounded-2xl border border-border bg-card">
+          <div className="flex items-center justify-between border-b border-border px-6 py-4">
+            <div className="flex items-center gap-2">
+              <CreditCard className="h-3.5 w-3.5 text-muted-foreground" strokeWidth={1.5} aria-hidden="true" />
+              <h2 className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                Betalinger
+              </h2>
+            </div>
             <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               {barn.payments.length} totalt
             </span>
@@ -408,19 +574,19 @@ export default async function BarnProfil({
                     className="flex items-center justify-between gap-4 px-6 py-4 text-sm"
                   >
                     <div className="min-w-0">
-                      <div className="truncate font-semibold">
+                      <div className="truncate font-semibold text-foreground">
                         {p.description ?? p.type}
                       </div>
                       <div className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
                         {NB_KORT.format(p.createdAt)}
                       </div>
                     </div>
-                    <div className="flex items-center gap-4">
-                      <span className="font-mono text-sm font-semibold tabular-nums">
+                    <div className="flex shrink-0 items-center gap-3">
+                      <span className="font-mono text-sm font-semibold tabular-nums text-foreground">
                         {ore(p.amountOre)}
                       </span>
                       <span
-                        className={`rounded-full px-4 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] ${st.klasse}`}
+                        className={`rounded-full px-3 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] ${st.klasse}`}
                       >
                         {st.tekst}
                       </span>
@@ -430,13 +596,13 @@ export default async function BarnProfil({
               })}
             </ul>
           )}
-        </section>
+        </div>
       )}
     </div>
   );
 }
 
-function Kpi({
+function HybridKpi({
   icon: Icon,
   label,
   value,
@@ -448,12 +614,12 @@ function Kpi({
   sub?: string;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-4">
+    <div className="rounded-2xl border border-border bg-card p-4">
       <div className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-        <Icon className="h-3 w-3" strokeWidth={1.5} aria-hidden="true" />
+        <Icon className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden="true" />
         {label}
       </div>
-      <div className="mt-2 font-mono text-2xl font-semibold tabular-nums">
+      <div className="mt-2 font-mono text-2xl font-bold tabular-nums text-foreground">
         {value}
       </div>
       {sub && (
