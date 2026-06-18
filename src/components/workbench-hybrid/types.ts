@@ -5,6 +5,21 @@
 
 import type { Cat } from "./theme";
 
+/** Gjentakelse (Google-kalender-stil). Lever kun i komponent-state. */
+export type RecurFreq = "none" | "daily" | "weekly" | "monthly";
+export type RecurEnd = "never" | "count" | "date";
+export type Recur = {
+  freq: RecurFreq;
+  /** "hver N." */
+  interval: number;
+  /** ukedager (kun weekly) */
+  days: WeekKey[];
+  endType: RecurEnd;
+  endCount: number;
+  /** "31.08.2026" */
+  endDate: string;
+};
+
 /** En økt slik fasiten modellerer den (mer detaljert enn WorkbenchData). */
 export type WbSession = {
   id: string;
@@ -23,6 +38,8 @@ export type WbSession = {
   praksis?: string;
   fysType?: string;
   sone?: string;
+  /** Gjentakelse — null/undefined = kun denne uka. */
+  recur?: Recur | null;
 };
 
 /** Ukens 7 dager (man..son). */

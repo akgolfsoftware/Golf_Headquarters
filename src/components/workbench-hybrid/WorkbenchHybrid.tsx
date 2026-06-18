@@ -7,6 +7,7 @@ import type { DimField } from "./taxonomy";
 import { omrArr } from "./helpers";
 import type {
   PaletteItem,
+  Recur,
   WbGoal,
   WbSession,
   WeekKey,
@@ -40,6 +41,11 @@ import { ManedView } from "./ManedView";
 import { Statusbar } from "./Statusbar";
 import { Inspector, type InspectorMode } from "./Inspector";
 import { DimPickerModal } from "./DimPickerModal";
+import { KpiStrip, type KpiKey } from "./KpiStrip";
+import { KpiDetailModal } from "./KpiDetailModal";
+import { OktplanOverlay, type PlanMode } from "./OktplanOverlay";
+import { RecurrenceEditor } from "./RecurrenceEditor";
+import { OvelsesbankModal } from "./OvelsesbankModal";
 
 const LS_KEY = "akgolf.wb.level";
 const VALID_LEVELS: ZoomLevel[] = ["arsplan", "ar", "maned", "uke", "dag"];
@@ -68,6 +74,17 @@ const DAY_NAMES: Record<WeekKey, string> = {
 type PanelKey = "palette" | "goals" | "tests" | "tech";
 type EditScope = "session" | "palette";
 type DragState = { kind: "palette"; pid: string } | { kind: "move"; sid: string; from: WeekKey } | null;
+/** Hvilken overlay/modal er åpen (én om gangen, rendres på shell-nivå). */
+type ModalKind = "oktplan" | "recurrence" | "ovelsesbank" | "kpi" | null;
+
+const DEFAULT_RECUR = (day: WeekKey): Recur => ({
+  freq: "weekly",
+  interval: 1,
+  days: [day],
+  endType: "count",
+  endCount: 8,
+  endDate: "31.08.2026",
+});
 
 type State = {
   level: ZoomLevel;
@@ -81,6 +98,14 @@ type State = {
   dimPicker: DimField | null;
   /** valgt måned-index (0–11) for Måned-visningen */
   selectedMonth: number;
+  /** åpen overlay/modal */
+  modal: ModalKind;
+  /** Øktplan: Bane vs Range */
+  planMode: PlanMode;
+  /** Gjentakelse-editorens arbeidskopi (skrives tilbake ved Lagre) */
+  recurDraft: Recur | null;
+  /** valgt KPI for detalj-modalen */
+  kpiKey: KpiKey | null;
   nextId: number;
 };
 
@@ -101,7 +126,16 @@ type Action =
   | { type: "patchPaletteDur"; delta: number }
   | { type: "openDim"; field: DimField }
   | { type: "closeDim" }
-  | { type: "writeField"; field: DimField; value: string | string[] };
+  | { type: "writeField"; field: DimField; value: string | string[] }
+  | { type: "openPlan" }
+  | { type: "setPlanMode"; mode: PlanMode }
+  | { type: "openRecur" }
+  | { type: "patchRecur"; patch: Partial<Recur> }
+  | { type: "saveRecur" }
+  | { type: "openBank" }
+  | { type: "pickBankItem"; title: string; meta: string }
+  | { type: "openKpi"; key: KpiKey }
+  | { type: "closeModal" };
 
 function cloneWeek(w: WeekState): WeekState {
   const out = {} as WeekState;
@@ -116,6 +150,14 @@ function findInWeek(w: WeekState, id: string | null): WbSession | null {
   for (const k of Object.keys(w) as WeekKey[]) {
     const s = w[k].find((x) => x.id === id);
     if (s) return s;
+  }
+  return null;
+}
+
+function dayKeyOf(w: WeekState, id: string | null): WeekKey | null {
+  if (!id) return null;
+  for (const k of Object.keys(w) as WeekKey[]) {
+    if (w[k].some((s) => s.id === id)) return k;
   }
   return null;
 }
@@ -231,6 +273,52 @@ function reducer(state: State, action: Action): State {
       }
       return { ...state, week: w };
     }
+    case "openPlan":
+      return { ...state, modal: "oktplan" };
+    case "setPlanMode":
+      return { ...state, planMode: action.mode };
+    case "openRecur": {
+      const sel = findInWeek(state.week, state.selectedId);
+      const day = dayKeyOf(state.week, state.selectedId) ?? "ons";
+      const seed = sel?.recur ? { ...sel.recur } : DEFAULT_RECUR(day);
+      return { ...state, modal: "recurrence", recurDraft: seed };
+    }
+    case "patchRecur":
+      return { ...state, recurDraft: state.recurDraft ? { ...state.recurDraft, ...action.patch } : state.recurDraft };
+    case "saveRecur": {
+      const d = state.recurDraft;
+      const w = cloneWeek(state.week);
+      for (const k of Object.keys(w) as WeekKey[]) {
+        const idx = w[k].findIndex((s) => s.id === state.selectedId);
+        if (idx > -1) {
+          w[k][idx] = { ...w[k][idx], recur: d && d.freq !== "none" ? d : null };
+          break;
+        }
+      }
+      return { ...state, week: w, modal: null, recurDraft: null };
+    }
+    case "openBank":
+      return { ...state, modal: "ovelsesbank" };
+    case "pickBankItem": {
+      // Plukk fra øvelsesbanken → ny økt på samme dag som den valgte (arver cat).
+      const sel = findInWeek(state.week, state.selectedId);
+      const day = dayKeyOf(state.week, state.selectedId) ?? "ons";
+      const w = cloneWeek(state.week);
+      const id = `s${state.nextId}`;
+      const ns: WbSession = {
+        id,
+        title: action.title,
+        dur: 45,
+        cat: sel?.cat ?? "TEK",
+        time: "—",
+      };
+      w[day].push(ns);
+      return { ...state, week: w, modal: null, selectedId: id, editScope: "session", selectedPaletteId: null, nextId: state.nextId + 1 };
+    }
+    case "openKpi":
+      return { ...state, modal: "kpi", kpiKey: action.key };
+    case "closeModal":
+      return { ...state, modal: null, recurDraft: null, kpiKey: null };
     default:
       return state;
   }
@@ -284,6 +372,10 @@ export function WorkbenchHybrid({
     panels: { palette: true, goals: false, tests: false, tech: false },
     dimPicker: null,
     selectedMonth: 5, // juni — fasitens demo-måned
+    modal: null,
+    planMode: "BANE",
+    recurDraft: null,
+    kpiKey: null,
     nextId: 100,
   }));
 
@@ -308,6 +400,18 @@ export function WorkbenchHybrid({
       /* ignore */
     }
   }, []);
+
+  // Escape lukker det øverste laget: dim-picker → modal → inspektør.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      if (state.dimPicker) dispatch({ type: "closeDim" });
+      else if (state.modal) dispatch({ type: "closeModal" });
+      else dispatch({ type: "closeInspector" });
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [state.dimPicker, state.modal]);
 
   // Hva som dras (palette-mal eller flytting av en eksisterende økt) holdes i en
   // ref — det er forbigående DnD-tilstand som ikke skal trigge re-render.
@@ -367,6 +471,11 @@ export function WorkbenchHybrid({
 
   const { totals, grand } = totalsOf(state.week);
   const selectedSession = findInWeek(state.week, state.selectedId);
+
+  // KPI "antall økter": ekte summary-tall der det finnes, ellers ukens egne økter.
+  const kpiSessionCount =
+    data?.summary?.sessionCount ??
+    (Object.keys(state.week) as WeekKey[]).reduce((n, k) => n + state.week[k].length, 0);
 
   // Inspektør-modus
   let inspectorMode: InspectorMode | null = null;
@@ -466,6 +575,16 @@ export function WorkbenchHybrid({
 
           {/* center */}
           <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
+            {/* KPI-stripe — over alle zoom-visninger. Volum/pyramide fra ekte
+                uke-data; adherence/SG er fasit-demo (ingen modell ennå). */}
+            <KpiStrip
+              totals={totals}
+              grand={grand}
+              sessionCount={kpiSessionCount}
+              adherence="82%"
+              sg="+1.8"
+              onOpen={(key) => dispatch({ type: "openKpi", key })}
+            />
             {state.level === "uke" && (
               <UkeView
                 week={state.week}
@@ -535,6 +654,9 @@ export function WorkbenchHybrid({
               onStart={() => {
                 /* Live-økt er en senere fase — no-op for nå. */
               }}
+              onOpenPlan={inspectorMode.kind === "session" ? () => dispatch({ type: "openPlan" }) : undefined}
+              onOpenRecur={inspectorMode.kind === "session" ? () => dispatch({ type: "openRecur" }) : undefined}
+              onOpenBank={inspectorMode.kind === "session" ? () => dispatch({ type: "openBank" }) : undefined}
             />
           )}
         </div>
@@ -548,6 +670,50 @@ export function WorkbenchHybrid({
             multi={state.dimPicker === "omr"}
             onPick={onDimPick}
             onClose={() => dispatch({ type: "closeDim" })}
+          />
+        )}
+
+        {/* Øktplan-overlay */}
+        {state.modal === "oktplan" && selectedSession && (
+          <OktplanOverlay
+            session={selectedSession}
+            dayKey={dayKeyOf(state.week, selectedSession.id) ?? "ons"}
+            mode={state.planMode}
+            onMode={(mode) => dispatch({ type: "setPlanMode", mode })}
+            onClose={() => dispatch({ type: "closeModal" })}
+            onStart={() => {
+              /* Live-økt er en senere fase — lukk overlay for nå. */
+              dispatch({ type: "closeModal" });
+            }}
+          />
+        )}
+
+        {/* Gjentakelse-editor */}
+        {state.modal === "recurrence" && state.recurDraft && (
+          <RecurrenceEditor
+            draft={state.recurDraft}
+            onPatch={(patch) => dispatch({ type: "patchRecur", patch })}
+            onSave={() => dispatch({ type: "saveRecur" })}
+            onClose={() => dispatch({ type: "closeModal" })}
+          />
+        )}
+
+        {/* Øvelsesbank */}
+        {state.modal === "ovelsesbank" && selectedSession && (
+          <OvelsesbankModal
+            isFys={selectedSession.cat === "FYS"}
+            onClose={() => dispatch({ type: "closeModal" })}
+            onPick={(title, meta) => dispatch({ type: "pickBankItem", title, meta })}
+          />
+        )}
+
+        {/* KPI-detalj */}
+        {state.modal === "kpi" && state.kpiKey && (
+          <KpiDetailModal
+            kpiKey={state.kpiKey}
+            totals={totals}
+            grand={grand}
+            onClose={() => dispatch({ type: "closeModal" })}
           />
         )}
       </div>

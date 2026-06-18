@@ -1,10 +1,10 @@
 "use client";
 
 import type { ReactElement } from "react";
-import { Clock, Play, List, Minus, Plus, Trash2, X } from "lucide-react";
+import { Clock, Play, List, Minus, Plus, Repeat, Trash2, X } from "lucide-react";
 import { CAT_COLORS, FONT, WB } from "./theme";
 import type { DimField } from "./taxonomy";
-import { buildDimensions, durLabel, type DimRow } from "./helpers";
+import { buildDimensions, durLabel, recurSummary, type DimRow } from "./helpers";
 import type { PaletteItem, WbSession } from "./types";
 
 const chipBase = (color: string): React.CSSProperties => ({
@@ -150,6 +150,8 @@ type InspectorProps = {
   onRemoveSession?: () => void;
   onStart?: () => void;
   onOpenPlan?: () => void;
+  onOpenRecur?: () => void;
+  onOpenBank?: () => void;
 };
 
 export function Inspector({
@@ -162,6 +164,8 @@ export function Inspector({
   onRemoveSession,
   onStart,
   onOpenPlan,
+  onOpenRecur,
+  onOpenBank,
 }: InspectorProps): ReactElement {
   return (
     <div
@@ -301,6 +305,74 @@ export function Inspector({
 
           {formelHeader("AK-formel · kodet")}
           <DimensionRows dims={buildDimensions(mode.session)} cat={mode.session.cat} onDimClick={onDimClick} onRemoveOmr={onRemoveOmr} />
+
+          {/* GJENTA UKENTLIG */}
+          {(() => {
+            const on = !!mode.session.recur && mode.session.recur.freq !== "none";
+            return (
+              <div
+                onClick={onOpenRecur}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 11,
+                  background: WB.cardBg,
+                  border: `1px solid ${WB.panelBorder}`,
+                  borderRadius: 10,
+                  padding: "11px 12px",
+                  marginBottom: 12,
+                  cursor: onOpenRecur ? "pointer" : "default",
+                }}
+              >
+                <Repeat size={16} color={on ? WB.lime : WB.muted3} strokeWidth={1.9} />
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 12.5, fontWeight: 600, color: WB.text }}>Gjenta ukentlig</div>
+                  <div style={{ fontSize: 10.5, color: WB.muted }}>{recurSummary(mode.session.recur)}</div>
+                </div>
+                <span
+                  style={{
+                    width: 38,
+                    height: 22,
+                    borderRadius: 9999,
+                    padding: 2,
+                    display: "flex",
+                    alignItems: "center",
+                    background: on ? WB.lime : WB.panelBorder,
+                    justifyContent: on ? "flex-end" : "flex-start",
+                  }}
+                >
+                  <span style={{ width: 18, height: 18, borderRadius: "50%", background: on ? WB.limeDark : WB.muted }} />
+                </span>
+              </div>
+            );
+          })()}
+
+          {/* ØVELSESBANK */}
+          <button
+            type="button"
+            onClick={onOpenBank}
+            disabled={!onOpenBank}
+            style={{
+              width: "100%",
+              marginBottom: 9,
+              border: `1px solid ${WB.panelBorder}`,
+              background: WB.cardBg,
+              color: WB.muted2,
+              borderRadius: 10,
+              padding: 11,
+              cursor: onOpenBank ? "pointer" : "not-allowed",
+              opacity: onOpenBank ? 1 : 0.5,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
+              fontSize: 12.5,
+              fontWeight: 600,
+            }}
+          >
+            <Plus size={15} color={WB.lime} strokeWidth={2} />
+            {mode.session.cat === "FYS" ? "Legg til øvelse" : "Legg til drill"}
+          </button>
 
           <div style={{ display: "flex", gap: 9 }}>
             <button
