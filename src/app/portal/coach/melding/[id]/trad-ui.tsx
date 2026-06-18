@@ -24,18 +24,22 @@ export function TradUi({
   threadId,
   coachName,
   coachInitials,
+  meName,
+  meInitials,
   initialMeldinger,
 }: {
   threadId: string;
   coachName: string;
   coachInitials: string;
+  meName: string;
+  meInitials: string;
   initialMeldinger: TradMelding[];
 }) {
   const [meldinger, setMeldinger] = useState<TradMelding[]>(initialMeldinger);
   const [draft, setDraft] = useState("");
   const [pending, startTransition] = useTransition();
 
-  const meFornavn = "Øyvind";
+  const meFornavn = meName.split(" ")[0];
 
   function send() {
     if (!draft.trim()) return;
@@ -91,23 +95,12 @@ export function TradUi({
                 msg={m}
                 coachInitials={coachInitials}
                 coachName={coachName}
+                meInitials={meInitials}
                 meFornavn={meFornavn}
               />
             </div>
           );
         })}
-
-        <div className="flex items-center gap-2 pl-2 pt-2 text-[11px] text-muted-foreground">
-          <div className="grid h-7 w-7 place-items-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground">
-            {coachInitials}
-          </div>
-          <div className="flex gap-1">
-            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground [animation-delay:-0.3s]" />
-            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground [animation-delay:-0.15s]" />
-            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground" />
-          </div>
-          <span>{coachName.split(" ")[0]} skriver…</span>
-        </div>
       </main>
 
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card/95 backdrop-blur">
@@ -165,11 +158,13 @@ function Bubble({
   msg,
   coachInitials,
   coachName,
+  meInitials,
   meFornavn,
 }: {
   msg: TradMelding;
   coachInitials: string;
   coachName: string;
+  meInitials: string;
   meFornavn: string;
 }) {
   const isMe = msg.role === "me";
@@ -209,7 +204,7 @@ function Bubble({
       </div>
       {isMe && (
         <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-accent text-[11px] font-semibold text-foreground">
-          MR
+          {meInitials}
         </div>
       )}
     </div>

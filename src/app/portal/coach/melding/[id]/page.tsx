@@ -56,6 +56,13 @@ export default async function MeldingstradPage({ params }: RouteProps) {
     .join("")
     .toUpperCase();
 
+  const meInitials = user.name
+    .split(" ")
+    .map((p) => p[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+
   return (
     <div className="min-h-screen bg-background pb-40 text-foreground">
       <nav className="flex flex-wrap items-center gap-2 border-b border-border bg-card px-4 py-2 sm:gap-4 sm:px-8 sm:py-[18px]">
@@ -115,6 +122,8 @@ export default async function MeldingstradPage({ params }: RouteProps) {
         threadId={id}
         coachName={session.coach.name}
         coachInitials={coachInitials}
+        meName={user.name}
+        meInitials={meInitials}
         initialMeldinger={items}
       />
     </div>
