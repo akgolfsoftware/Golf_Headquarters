@@ -1,29 +1,24 @@
 /**
- * AgencyOS — Kalender (GJENNOMFØRE · KALENDER), /admin/kalender.
+ * AgencyOS — Kalender, /admin/kalender  (hybrid terminal design 2026-06-17).
  *
- * Port av fasit `agencyos-app/screens-ops.jsx` → CalendarScreen (mørkt tema,
- * desktop 1280): PageHead («Uke N · din uke.» + «Ny økt»), UKE/MÅNED-seg og
- * uke-grid man–fre 08–20 med økt-blokker. Venstre kant farges etter pyramide-
- * akse (best-effort fra tjenestenavn), lime ring = økt pågår nå.
- *
- * Datakilde: loadWeekCalendar (Prisma booking, gjenbrukt fra forrige versjon).
- * ?uke=YYYY-MM-DD støttes fortsatt for dyplenker. MÅNED-seg lenker til
- * eksisterende /admin/kalender/maned (urørt underside).
+ * Layout: left panel (320px) = mini week-grid + kommende-liste.
+ *         right panel = dag-visning med tid-slot-blokker.
+ * Datakilde: loadWeekCalendar (Prisma booking). ?uke=YYYY-MM-DD støttes.
  */
 
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { Plus, ChevronLeft, ChevronRight } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { loadWeekCalendar } from "@/lib/admin-kalender/week-data";
-import { AgChip, AgPage, AgPageHead, agBtnClass } from "@/components/admin/agencyos/ui";
+import { AgChip, agBtnClass } from "@/components/admin/agencyos/ui";
 import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
 type SearchParams = Promise<{ uke?: string }>;
 
-/** Pyramide-akse, best-effort fra tjenestenavn (fasit farger økter per akse). */
+/* ───────────── akse-farger ───────────── */
 type Akse = "fys" | "tek" | "slag" | "spill" | "turn";
 
 function akseFra(serviceLabel: string): Akse {
@@ -35,7 +30,6 @@ function akseFra(serviceLabel: string): Akse {
   return "tek";
 }
 
-/** Literal-klasser så Tailwind plukker dem opp (aldri template-interpolering). */
 const AKSE_BAR: Record<Akse, string> = {
   fys: "bg-pyr-fys",
   tek: "bg-pyr-tek",
@@ -44,16 +38,28 @@ const AKSE_BAR: Record<Akse, string> = {
   turn: "bg-pyr-turn",
 };
 
-/* Fasit-grid: 6 rader à 93px = vindu 08:00–20:00 (120 min per rad). */
-const VINDU_START_MIN = 8 * 60;
-const VINDU_SLUTT_MIN = 20 * 60;
-const RAD_PX = 93;
-const PX_PER_MIN = RAD_PX / 120;
-const GRID_PX = 6 * RAD_PX;
+/* Dag/Slot constants */
+const VINDU_START_MIN = 7 * 60;   // 07:00
 
-function dagLabel(dow: string, date: string): string {
-  return `${dow.charAt(0)}${dow.slice(1).toLowerCase()} ${date}`;
+
+const DOW_SHORT = ["Ma", "Ti", "On", "To", "Fr", "Lø", "Sø"];
+const MND_NB = ["jan", "feb", "mar", "apr", "mai", "jun", "jul", "aug", "sep", "okt", "nov", "des"];
+
+function hhmm(min: number) {
+  return `${String(Math.floor(min / 60)).padStart(2, "0")}:${String(min % 60).padStart(2, "0")}`;
 }
+
+/* slot-type: forest = live coaching, lime = trackman/slag, bg3 = other */
+type SlotKind = "forest" | "lime" | "bg3";
+
+function kindFra(serviceLabel: string, isLive: boolean): SlotKind {
+  if (isLive) return "forest";
+  const t = serviceLabel.toLowerCase();
+  if (/(trackman|slag|sg|putting|putt)/.test(t)) return "lime";
+  return "bg3";
+}
+
+/* ───────────── page ───────────── */
 
 export default async function KalenderPage({
   searchParams,
@@ -65,180 +71,369 @@ export default async function KalenderPage({
   const { uke } = await searchParams;
   const props = await loadWeekCalendar(uke);
 
-  // Fasit viser man–fre. Økter utenfor kolonnene/tidsvinduet vises ikke her.
-  const dager = props.days.slice(0, 5);
-  const synlige = props.events.filter(
-    (e) => e.dayIndex <= 4 && e.endMin > VINDU_START_MIN && e.startMin < VINDU_SLUTT_MIN,
-  );
+  const now = new Date();
+  const todayDow = (now.getDay() + 6) % 7; // 0=man … 6=søn
+  const nowMin = now.getHours() * 60 + now.getMinutes();
 
-  // Mobil-dagsliste: alle 7 dager, i dag først når uka er inneværende
-  // (rotert rekkefølge), ellers man→søn. Ingen tidsvindu-kutt på mobil.
-  const startIdx = props.nowDayIndex ?? 0;
-  const dagsliste = Array.from({ length: 7 }, (_, i) => (startIdx + i) % 7).map((di) => ({
-    dag: props.days[di],
-    okter: props.events
-      .filter((e) => e.dayIndex === di)
-      .sort((a, b) => a.startMin - b.startMin),
+  // Today's events for day-view (right panel)
+  const todayEvents = props.events
+    .filter((e) => e.dayIndex === todayDow || (props.nowDayIndex !== null && e.dayIndex === props.nowDayIndex))
+    .sort((a, b) => a.startMin - b.startMin);
+
+  // Upcoming events across the week (kommende panel)
+  const kommendeEvents = props.events
+    .filter((e) => {
+      if (!props.isCurrentWeek) return true;
+      const todayIdx = props.nowDayIndex ?? 0;
+      return e.dayIndex > todayIdx || (e.dayIndex === todayIdx && e.startMin > nowMin);
+    })
+    .sort((a, b) => {
+      if (a.dayIndex !== b.dayIndex) return a.dayIndex - b.dayIndex;
+      return a.startMin - b.startMin;
+    })
+    .slice(0, 5);
+
+  // Time slots 07:00–17:00 (hourly)
+  const timeSlots = Array.from({ length: 11 }, (_, i) => ({
+    min: VINDU_START_MIN + i * 60,
+    label: hhmm(VINDU_START_MIN + i * 60),
   }));
 
-  return (
-    <AgPage>
-      <AgPageHead
-        eyebrow="Gjennomføre · Kalender"
-        title={`Uke ${props.weekNumber}`}
-        italic="· din uke."
-        lead="Alle øktene dine på tvers av stallen. Lime kant = pågår nå."
-        actions={
-          <Link href="/admin/coach-workbench" className={agBtnClass("primary")}>
-            <Plus size={16} strokeWidth={1.5} /> Ny økt
-          </Link>
-        }
-      />
+  // Day header label for right panel
+  const todayDate = now.getDate();
+  const todayMnd = MND_NB[now.getMonth()];
+  const todayDowLabel = DOW_SHORT[todayDow];
 
-      {/* Mobil (< md): dagsliste — i dag først, så resten av uka */}
-      <div className="flex flex-col gap-5 md:hidden">
-        {dagsliste.map(({ dag, okter }) => (
-          <section key={`${dag.dow}-${dag.date}`}>
-            <div className="mb-2 flex items-center gap-2 font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-foreground after:h-px after:flex-1 after:bg-border after:content-['']">
-              {dagLabel(dag.dow, String(dag.date))}. {dag.month}
-              {dag.isToday && <AgChip tone="lime">I dag</AgChip>}
-            </div>
-            {okter.length === 0 ? (
-              <p className="px-1 py-2 text-[13px] text-muted-foreground">Ingen økter.</p>
+  // Prev/next week URLs
+  const prevHref = `/admin/kalender?uke=${props.prevWeekParam}`;
+  const nextHref = `/admin/kalender?uke=${props.nextWeekParam}`;
+
+  return (
+    <div className="flex flex-col" style={{ minHeight: "calc(100vh - 64px)" }}>
+
+      {/* ── Topbar ── */}
+      <div className="flex items-center gap-3 border-b border-border bg-background/50 px-5 py-3 backdrop-blur-sm">
+        <div>
+          <div className="font-display text-[19px] font-bold leading-tight tracking-tight text-foreground">
+            Kalender
+          </div>
+          <div className="font-mono text-[10.5px] text-muted-foreground">
+            Uke {props.weekNumber} · {props.rangeLabel}
+          </div>
+        </div>
+
+        {/* View tabs Dag / Uke / Måned */}
+        <div className="ml-2 flex gap-[3px] rounded-[10px] border border-border bg-card p-[3px]">
+          {[
+            { label: "Dag", href: `/admin/kalender?uke=${uke ?? ""}`, active: true },
+            { label: "Uke", href: `/admin/kalender?uke=${uke ?? ""}`, active: false },
+            { label: "Måned", href: "/admin/kalender/maned", active: false },
+          ].map((v) => (
+            <Link
+              key={v.label}
+              href={v.href}
+              className={cn(
+                "rounded-[8px] px-[11px] py-[6px] font-mono text-[10px] font-bold tracking-wide transition-colors",
+                v.active
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              {v.label}
+            </Link>
+          ))}
+        </div>
+
+        <div className="ml-auto flex items-center gap-2">
+          <Link
+            href={prevHref}
+            className="flex h-[34px] w-[34px] items-center justify-center rounded-[8px] border border-border bg-card text-muted-foreground transition-colors hover:text-foreground"
+            aria-label="Forrige uke"
+          >
+            <ChevronLeft size={14} strokeWidth={1.8} />
+          </Link>
+          <Link
+            href={nextHref}
+            className="flex h-[34px] w-[34px] items-center justify-center rounded-[8px] border border-border bg-card text-muted-foreground transition-colors hover:text-foreground"
+            aria-label="Neste uke"
+          >
+            <ChevronRight size={14} strokeWidth={1.8} />
+          </Link>
+          <Link href="/admin/coach-workbench" className={agBtnClass("primary", "sm")}>
+            <Plus size={13} strokeWidth={2.4} />
+            Ny økt
+          </Link>
+        </div>
+      </div>
+
+      {/* ── Body: left panel + right day-view ── */}
+      <div className="flex flex-1 overflow-hidden">
+
+        {/* ── Left panel: mini week grid + kommende ── */}
+        <div className="hidden w-[300px] shrink-0 flex-col gap-3 overflow-y-auto border-r border-border p-4 md:flex">
+
+          {/* Week label */}
+          <div className="font-mono text-[9.5px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
+            Uke {props.weekNumber} · {MND_NB[now.getMonth()]} {now.getFullYear()}
+          </div>
+
+          {/* 7-day mini grid */}
+          <div className="grid grid-cols-7 gap-1.5">
+            {DOW_SHORT.map((d) => (
+              <div
+                key={d}
+                className="pb-1 text-center font-mono text-[9px] font-semibold uppercase tracking-[0.1em] text-muted-foreground"
+              >
+                {d.slice(0, 2).toLowerCase()}
+              </div>
+            ))}
+            {props.days.map((day, i) => {
+              const hasEvents = props.events.some((e) => e.dayIndex === i);
+              const isFull = props.events.filter((e) => e.dayIndex === i).length >= 4;
+              return (
+                <div
+                  key={i}
+                  className={cn(
+                    "relative flex aspect-square flex-col items-center justify-center rounded-[6px] border font-mono text-[13px] font-semibold",
+                    day.isToday
+                      ? "border-primary bg-primary/10 text-primary"
+                      : isFull
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border bg-card text-foreground",
+                    day.weekend && !day.isToday && !isFull && "text-muted-foreground opacity-50",
+                  )}
+                >
+                  {day.date}
+                  {hasEvents && !isFull && (
+                    <span
+                      aria-hidden
+                      className="absolute bottom-1.5 left-1/2 h-[5px] w-[5px] -translate-x-1/2 rounded-full bg-primary"
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Legend */}
+          <div className="flex flex-wrap gap-2 font-mono text-[9px] uppercase tracking-[0.06em] text-muted-foreground">
+            <span className="flex items-center gap-[5px]">
+              <span className="h-[5px] w-[5px] rounded-full bg-primary" />Økt
+            </span>
+            <span className="flex items-center gap-[5px]">
+              <span className="h-[5px] w-[5px] rounded-full bg-primary" />Turnering
+            </span>
+          </div>
+
+          {/* Kommende */}
+          <div className="mt-1 font-mono text-[9.5px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
+            Kommende
+          </div>
+          <div className="flex flex-col gap-2">
+            {kommendeEvents.length === 0 ? (
+              <p className="font-mono text-[11px] text-muted-foreground">Ingen kommende økter.</p>
             ) : (
-              <div className="flex flex-col gap-2">
-                {okter.map((e) => {
-                  const akse = akseFra(e.serviceLabel);
-                  return (
+              kommendeEvents.map((e) => {
+                const day = props.days[e.dayIndex];
+                return (
+                  <Link
+                    key={e.id}
+                    href={e.href}
+                    className="flex items-center gap-2.5 rounded-[8px] border border-border bg-card p-[9px] transition-colors hover:bg-secondary"
+                  >
+                    {/* Date badge */}
+                    <div className="flex h-[30px] w-[30px] shrink-0 flex-col items-center justify-center rounded-[6px] bg-background">
+                      <span className="font-mono text-[13px] font-bold leading-none text-foreground">
+                        {day.date}
+                      </span>
+                      <span className="font-mono text-[7.5px] text-muted-foreground">
+                        {DOW_SHORT[e.dayIndex].toLowerCase()}
+                      </span>
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate text-[12.5px] font-semibold text-foreground">
+                        {e.serviceLabel}
+                      </div>
+                      <div className="mt-px font-mono text-[9.5px] text-muted-foreground">
+                        {e.timeLabel} · {e.title}
+                      </div>
+                    </div>
+                    <AgChip tone={e.kind === "live" ? "lime" : "neu"}>
+                      {e.kind === "live" ? "Live" : "Planlagt"}
+                    </AgChip>
+                  </Link>
+                );
+              })
+            )}
+          </div>
+        </div>
+
+        {/* ── Right: day view ── */}
+        <div className="flex-1 overflow-y-auto p-5">
+
+          {/* Day heading */}
+          <div className="mb-4 flex items-center gap-3">
+            <span className="font-display text-[18px] font-bold text-foreground">
+              I dag · {todayDowLabel.toLowerCase()}dag {todayDate}. {todayMnd}
+            </span>
+            {props.isCurrentWeek && (
+              <span className="flex items-center gap-1.5 font-mono text-[9.5px] font-bold text-primary">
+                <span
+                  aria-hidden
+                  className="h-[6px] w-[6px] rounded-full bg-primary motion-safe:animate-pulse"
+                />
+                Live nå
+              </span>
+            )}
+          </div>
+
+          {/* Time slots */}
+          <div className="flex flex-col gap-px">
+            {timeSlots.map(({ min, label }) => {
+              const slotEvents = todayEvents.filter(
+                (e) => e.startMin >= min && e.startMin < min + 60,
+              );
+              return (
+                <div
+                  key={label}
+                  className="grid min-h-[48px] items-start gap-[10px]"
+                  style={{ gridTemplateColumns: "48px 1fr" }}
+                >
+                  {/* Time label */}
+                  <div className="pt-[10px] text-right font-mono text-[11px] text-muted-foreground">
+                    {label}
+                  </div>
+                  {/* Slot content */}
+                  <div className="border-t border-border py-2">
+                    <div className="flex flex-col gap-1.5">
+                      {slotEvents.map((e) => {
+                        const kind = kindFra(e.serviceLabel, e.kind === "live");
+                        const akse = akseFra(e.serviceLabel);
+                        const duration = e.endMin - e.startMin;
+                        return (
+                          <Link
+                            key={e.id}
+                            href={e.href}
+                            className={cn(
+                              "flex items-center gap-[9px] rounded-[8px] px-[11px] py-[9px] transition-colors",
+                              kind === "forest"
+                                ? "bg-primary/10 text-foreground hover:bg-primary/15"
+                                : kind === "lime"
+                                  ? "bg-primary/20 text-foreground hover:bg-primary/25"
+                                  : "bg-card text-foreground hover:bg-secondary",
+                              e.isCompleted && "opacity-60",
+                            )}
+                          >
+                            {/* Icon box */}
+                            <span
+                              className={cn(
+                                "flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-[6px]",
+                                kind === "forest"
+                                  ? "bg-primary/20 text-primary"
+                                  : kind === "lime"
+                                    ? "bg-primary/30 text-primary-foreground"
+                                    : "bg-secondary text-muted-foreground",
+                              )}
+                              aria-hidden
+                            >
+                              <span
+                                className={cn(
+                                  "block h-[3px] w-[14px] rounded-full",
+                                  AKSE_BAR[akse],
+                                )}
+                              />
+                            </span>
+                            <div className="min-w-0 flex-1">
+                              <div className="truncate text-[13.5px] font-semibold leading-tight text-foreground">
+                                {e.serviceLabel}
+                              </div>
+                              <div className="mt-px font-mono text-[10.5px] text-muted-foreground">
+                                {e.timeLabel}–{hhmm(e.endMin)} · {e.title}
+                                {e.location ? ` · ${e.location}` : ""}
+                              </div>
+                            </div>
+                            {e.kind === "live" && (
+                              <AgChip tone="lime">LIVE</AgChip>
+                            )}
+                            <span className="ml-1 shrink-0 font-mono text-[9px] text-muted-foreground">
+                              {duration} m
+                            </span>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {todayEvents.length === 0 && (
+            <p className="mt-8 text-center font-mono text-[12px] text-muted-foreground">
+              Ingen økter planlagt i dag.
+            </p>
+          )}
+        </div>
+
+      </div>
+
+      {/* ── Mobile fallback: week list ── */}
+      <div className="flex flex-col gap-4 p-4 md:hidden">
+        {props.days.map((day, di) => {
+          const okter = props.events
+            .filter((e) => e.dayIndex === di)
+            .sort((a, b) => a.startMin - b.startMin);
+          return (
+            <section key={di}>
+              <div className="mb-2 flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground after:h-px after:flex-1 after:bg-border after:content-['']">
+                {DOW_SHORT[di]} {day.date}. {day.month}
+                {day.isToday && <AgChip tone="lime">I dag</AgChip>}
+              </div>
+              {okter.length === 0 ? (
+                <p className="px-1 py-1 text-[13px] text-muted-foreground">Ingen økter.</p>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  {okter.map((e) => (
                     <Link
                       key={e.id}
                       href={e.href}
                       className={cn(
-                        "relative flex min-h-[56px] items-center gap-3 rounded-[10px] border border-border bg-background py-2 pl-4 pr-3 transition-colors hover:bg-secondary active:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                        e.kind === "live" && "bg-card ring-2 ring-accent",
+                        "relative flex min-h-[52px] items-center gap-3 rounded-[10px] border border-border bg-card py-2 pl-4 pr-3 transition-colors hover:bg-secondary",
+                        e.kind === "live" && "ring-1 ring-primary",
                         e.isCompleted && "opacity-60",
                       )}
                     >
                       <span
                         className={cn(
                           "absolute bottom-2 left-0 top-2 w-[3px] rounded-full",
-                          AKSE_BAR[akse],
+                          AKSE_BAR[akseFra(e.serviceLabel)],
                         )}
                         aria-hidden
                       />
-                      <span className="w-[44px] shrink-0 font-mono text-xs font-extrabold leading-[1.2] tabular-nums text-foreground">
+                      <span className="w-[44px] shrink-0 font-mono text-[11px] font-bold leading-[1.2] tabular-nums text-foreground">
                         {e.timeLabel}
                         <span className="mt-0.5 block font-mono text-[9px] font-semibold text-muted-foreground">
                           {e.endMin - e.startMin} m
                         </span>
                       </span>
                       <span className="min-w-0 flex-1">
-                        <span className="block truncate text-[13px] font-semibold leading-[1.25] tracking-[-0.005em] text-foreground">
+                        <span className="block truncate text-[13px] font-semibold text-foreground">
                           {e.serviceLabel}
                         </span>
-                        <span className="mt-px block truncate font-mono text-[10px] leading-[1.3] text-muted-foreground">
-                          {e.title}
-                          {e.location ? ` · ${e.location}` : ""}
+                        <span className="mt-px block truncate font-mono text-[10px] text-muted-foreground">
+                          {e.title}{e.location ? ` · ${e.location}` : ""}
                         </span>
                       </span>
+                      {e.kind === "live" && <AgChip tone="lime">Live</AgChip>}
                     </Link>
-                  );
-                })}
-              </div>
-            )}
-          </section>
-        ))}
-      </div>
-
-      {/* Desktop (md+): UKE/MÅNED-seg + uke-grid */}
-      <div className="hidden md:block">
-      {/* UKE/MÅNED-seg (fasit .seg) — MÅNED er lenke til eksisterende underside */}
-      <div className="mb-[14px] inline-flex gap-[2px] rounded-lg bg-secondary p-[3px]">
-        <span className="inline-flex h-[26px] items-center rounded-md bg-card px-[11px] font-mono text-[10px] font-bold uppercase tracking-[0.06em] text-primary shadow-sm">
-          Uke
-        </span>
-        <Link
-          href="/admin/kalender/maned"
-          className="inline-flex h-[26px] items-center rounded-md px-[11px] font-mono text-[10px] font-bold uppercase tracking-[0.06em] text-muted-foreground transition-colors hover:text-foreground"
-        >
-          Måned
-        </Link>
-      </div>
-
-      <div className="overflow-hidden rounded-xl border border-border bg-card">
-        {/* Dag-header */}
-        <div className="grid grid-cols-[56px_repeat(5,1fr)]">
-          <div className="border-b border-r border-border" />
-          {dager.map((d) => (
-            <div
-              key={`${d.dow}-${d.date}`}
-              className={cn(
-                "border-b border-r border-border py-3 text-center font-mono text-[11px] font-bold",
-                d.isToday ? "text-primary" : "text-foreground",
+                  ))}
+                </div>
               )}
-            >
-              {dagLabel(d.dow, String(d.date))}
-            </div>
-          ))}
-        </div>
+            </section>
+          );
+        })}
+      </div>
 
-        {/* Tids-grid */}
-        <div className="relative grid grid-cols-[56px_repeat(5,1fr)]" style={{ height: GRID_PX + 2 }}>
-          <div>
-            {["08", "10", "12", "14", "16", "18"].map((h) => (
-              <div
-                key={h}
-                className="h-[93px] border-r border-border px-2 py-1 text-right font-mono text-[9px] text-muted-foreground"
-              >
-                {h}:00
-              </div>
-            ))}
-          </div>
-          {[0, 1, 2, 3, 4].map((di) => (
-            <div key={di} className="relative border-r border-border">
-              {[0, 1, 2, 3, 4, 5].map((r) => (
-                <div key={r} className="h-[93px] border-b border-border" />
-              ))}
-              {synlige
-                .filter((e) => e.dayIndex === di)
-                .map((e) => {
-                  const topPx = (Math.max(e.startMin, VINDU_START_MIN) - VINDU_START_MIN) * PX_PER_MIN;
-                  const bunnPx = (Math.min(e.endMin, VINDU_SLUTT_MIN) - VINDU_START_MIN) * PX_PER_MIN;
-                  const hoydePx = Math.max(bunnPx - topPx, 28);
-                  const akse = akseFra(e.serviceLabel);
-                  return (
-                    <div
-                      key={e.id}
-                      className="absolute left-1 right-1"
-                      style={{ top: topPx, height: hoydePx }}
-                    >
-                      <span
-                        className={cn(
-                          "relative block h-full overflow-hidden rounded-[7px] border border-border bg-background py-[6px] pl-3 pr-2",
-                          e.kind === "live" && "bg-card ring-2 ring-accent",
-                        )}
-                      >
-                        <span
-                          className={cn(
-                            "absolute bottom-2 left-0 top-2 w-[3px] rounded-full",
-                            AKSE_BAR[akse],
-                          )}
-                        />
-                        <span className="block truncate text-[11px] font-bold text-foreground">
-                          {e.title}
-                        </span>
-                        <span className="mt-[2px] block truncate font-mono text-[9px] text-muted-foreground">
-                          {e.timeLabel} · {e.serviceLabel}
-                        </span>
-                      </span>
-                    </div>
-                  );
-                })}
-            </div>
-          ))}
-        </div>
-      </div>
-      </div>
-    </AgPage>
+    </div>
   );
 }

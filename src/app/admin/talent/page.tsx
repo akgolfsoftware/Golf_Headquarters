@@ -1,422 +1,445 @@
 /**
- * /admin/talent — Talent-oversikt (M13 K2)
+ * /admin/talent — Talent Coach (hybrid terminal design)
  *
- * Design: 06 Talent-modul.html · Skjerm 4 (Coach 2D-kart)
- * KPI-strip + 2D SVG talent-kart + nivå-fordeling + spillertabell
- *
+ * Design: AgencyOS Talent Coach (hybrid).dc.html
+ * Tre paneler: SkillRadar · PercentileGauge · PyramidProgress + H2H
+ * Datakilde: TalentTracking (Prisma). Spiller-selector fra URL-param.
  * Roller: ADMIN, COACH.
  */
 
 import Link from "next/link";
-import { Search, Sparkles, TrendingUp, Users } from "lucide-react";
+import { Search } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
+import { AgPage, AgPageHead, agBtnClass } from "@/components/admin/agencyos/ui";
 import { EmptyState } from "@/components/shared/empty-state";
-import "@/components/talent/talent.css";
+import { Users } from "lucide-react";
 
-const NIVAA_REKKEFOLGE = ["U10", "U12", "U14", "U16", "U18", "Senior"] as const;
+type PageProps = {
+  searchParams: Promise<{ spiller?: string }>;
+};
 
-type Search = { niva?: string; region?: string };
+// Pyramide-akse-definisjon
+const PYR_AKSER = [
+  { key: "fysisk" as const, label: "FYS", color: "hsl(var(--color-pyr-fys, #005840))", track: "rgba(0,88,64,.12)" },
+  { key: "teknikk" as const, label: "TEK", color: "hsl(var(--color-pyr-tek, #B8852A))", track: "rgba(184,133,42,.14)" },
+  { key: "taktikk" as const, label: "SLAG", color: "hsl(var(--color-pyr-slag, #2563EB))", track: "rgba(37,99,235,.12)" },
+  { key: "mental" as const, label: "SPILL", color: "hsl(var(--color-pyr-spill, #D1F843))", track: "rgba(209,248,67,.20)" },
+  { key: "motivasjon" as const, label: "TURN", color: "hsl(var(--color-pyr-turn, #A32D2D))", track: "rgba(163,45,45,.12)" },
+] as const;
+
+type PyrKey = typeof PYR_AKSER[number]["key"];
+
+type TalentRow = {
+  id: string;
+  userId: string;
+  niva: string;
+  klubb: string | null;
+  region: string | null;
+  fysisk: number | null;
+  teknikk: number | null;
+  taktikk: number | null;
+  mental: number | null;
+  motivasjon: number | null;
+  updatedAt: Date;
+  user: { id: string; name: string; hcp: number | null };
+};
 
 function initials(name: string): string {
   const parts = name.trim().split(/\s+/);
-  return parts.length === 1 ? parts[0].slice(0, 2).toUpperCase() : (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-function radarSum(t: {
-  fysisk: number | null;
-  teknikk: number | null;
-  taktikk: number | null;
-  mental: number | null;
-  motivasjon: number | null;
-}): number {
-  return (
-    (t.fysisk ?? 0) +
-    (t.teknikk ?? 0) +
-    (t.taktikk ?? 0) +
-    (t.mental ?? 0) +
-    (t.motivasjon ?? 0)
+function akseverdi(t: TalentRow, key: PyrKey): number {
+  return (t[key] ?? 0) * 10; // skaler 0-10 → 0-100
+}
+
+/** Beregner gjennomsnitt for en akse på tvers av alle spillere */
+function aksesnitt(alle: TalentRow[], key: PyrKey): number {
+  const vals = alle.map((t) => t[key] ?? 0).filter((v) => v > 0);
+  if (vals.length === 0) return 0;
+  return (vals.reduce((a, b) => a + b, 0) / vals.length) * 10;
+}
+
+/** Beregner SG-percentil (proxy: basert på snitt radar-score vs. alle i stall) */
+function percentilRank(t: TalentRow, alle: TalentRow[]): number {
+  const min_score = PYR_AKSER.map((a) => t[a.key] ?? 0).reduce((a, b) => a + b, 0) / PYR_AKSER.length;
+  const alle_scores = alle.map((row) =>
+    PYR_AKSER.map((a) => row[a.key] ?? 0).reduce((a, b) => a + b, 0) / PYR_AKSER.length
   );
+  const under = alle_scores.filter((s) => s < min_score).length;
+  return alle.length <= 1 ? 0.85 : under / (alle.length - 1);
 }
 
-function radarSnitt(t: {
-  fysisk: number | null;
-  teknikk: number | null;
-  taktikk: number | null;
-  mental: number | null;
-  motivasjon: number | null;
-}): number | null {
-  const verdier = [t.fysisk, t.teknikk, t.taktikk, t.mental, t.motivasjon].filter(
-    (v): v is number => typeof v === "number",
-  );
-  if (verdier.length === 0) return null;
-  return verdier.reduce((a, b) => a + b, 0) / verdier.length;
+/** SVG-radar: returner path-string for et sett med verdier (0-100) */
+function radarPoints(vals: number[], cx: number, cy: number, R: number, n: number): string {
+  return vals
+    .map((v, i) => {
+      const angle = -Math.PI / 2 + (2 * Math.PI * i) / n;
+      const r = (R * v) / 100;
+      return `${(cx + Math.cos(angle) * r).toFixed(1)},${(cy + Math.sin(angle) * r).toFixed(1)}`;
+    })
+    .join(" ");
 }
 
-function fmtDato(d: Date | null): string {
-  if (!d) return "—";
-  return d.toLocaleDateString("nb-NO", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
+/** Radar-ring-punkter for en gitt radius */
+function ringPoints(R: number, cx: number, cy: number, n: number): string {
+  return Array.from({ length: n }, (_, i) => {
+    const angle = -Math.PI / 2 + (2 * Math.PI * i) / n;
+    return `${(cx + Math.cos(angle) * R).toFixed(1)},${(cy + Math.sin(angle) * R).toFixed(1)}`;
+  }).join(" ");
 }
 
-export default async function TalentOversikt({
-  searchParams,
-}: {
-  searchParams: Promise<Search>;
-}) {
+export default async function TalentCoachPage({ searchParams }: PageProps) {
   await requirePortalUser({ allow: ["ADMIN", "COACH"] });
 
-  const params = await searchParams;
-  const valgtNiva = params.niva ?? null;
-  const valgtRegion = params.region ?? null;
+  const { spiller: valgtSpillerId } = await searchParams;
 
   const alle = await prisma.talentTracking.findMany({
     include: { user: { select: { id: true, name: true, hcp: true } } },
     orderBy: { updatedAt: "desc" },
-  });
+  }) as TalentRow[];
 
-  const filtrert = alle.filter((t) => {
-    if (valgtNiva && t.niva !== valgtNiva) return false;
-    if (valgtRegion && t.region !== valgtRegion) return false;
-    return true;
-  });
-
-  // KPI-tall
-  const totalt = alle.length;
-  const fordelingPerNiva: Record<string, number> = {};
-  for (const n of NIVAA_REKKEFOLGE) fordelingPerNiva[n] = 0;
-  for (const t of alle) {
-    if (fordelingPerNiva[t.niva] !== undefined) {
-      fordelingPerNiva[t.niva] += 1;
-    }
-  }
-
-  const snittScorer = alle
-    .map((t) => radarSnitt(t))
-    .filter((v): v is number => v !== null);
-  const snittRadar =
-    snittScorer.length > 0
-      ? snittScorer.reduce((a, b) => a + b, 0) / snittScorer.length
-      : null;
-
-  const sistOppdatert = alle[0]?.updatedAt ?? null;
-
-  // Regioner i datasettet
-  const regioner = Array.from(
-    new Set(alle.map((t) => t.region).filter((r): r is string => Boolean(r))),
-  ).sort();
-
-  function lenke(extra: { niva?: string | null; region?: string | null }) {
-    const sp = new URLSearchParams();
-    const niva = extra.niva !== undefined ? extra.niva : valgtNiva;
-    const region = extra.region !== undefined ? extra.region : valgtRegion;
-    if (niva) sp.set("niva", niva);
-    if (region) sp.set("region", region);
-    const q = sp.toString();
-    return q ? `/admin/talent?${q}` : "/admin/talent";
-  }
-
-  return (
-    <div className="space-y-8">
-      <PageHeader
-        eyebrow="Talent · M13"
-        titleLead="Talent-"
-        titleItalic="programmet"
-        sub={`${totalt} spillere i tracking. Filtrer på nivå og region for å fokusere oppfølgingen.`}
-        actions={
-          <div className="flex items-center gap-2">
-            <Link
-              href="/admin/talent/discovery"
-              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
-            >
-              <Search className="h-4 w-4" strokeWidth={1.5} />
-              Discovery
-            </Link>
-          </div>
-        }
-      />
-
-      {/* KPI-strip */}
-      <section className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <KpiKort
-          icon={Users}
-          label="I tracking"
-          verdi={totalt.toString()}
-          sub="aktive spillere"
+  if (alle.length === 0) {
+    return (
+      <AgPage>
+        <AgPageHead
+          eyebrow="AgencyOS · Talent"
+          title="Talent"
+          italic="Coach"
+          lead="Radar · percentil · sammenligning"
         />
-        <KpiKort
-          icon={TrendingUp}
-          label="Snitt radar"
-          verdi={snittRadar ? snittRadar.toFixed(1).replace(".", ",") : "—"}
-          sub="av 10 mulige"
-        />
-        <KpiKort
-          icon={Sparkles}
-          label="Nivåer aktive"
-          verdi={Object.values(fordelingPerNiva)
-            .filter((v) => v > 0)
-            .length.toString()}
-          sub={`av ${NIVAA_REKKEFOLGE.length}`}
-        />
-        <KpiKort
-          icon={TrendingUp}
-          label="Sist oppdatert"
-          verdi={fmtDato(sistOppdatert)}
-          sub="tracking-rad"
-        />
-      </section>
-
-      {/* 2D Talent-kart */}
-      {alle.length > 0 && (() => {
-        const hcpVals = alle.map((s) => s.user.hcp ?? 10);
-        const hcpMin2 = Math.min(...hcpVals, -5);
-        const hcpMax2 = Math.max(...hcpVals, 30);
-        const hcpSpan2 = Math.max(hcpMax2 - hcpMin2, 1);
-        const MAP_W = 900;
-        const MAP_H = 420;
-        const PAD = 40;
-        const mapX2 = (hcp: number) => PAD + ((hcp - hcpMin2) / hcpSpan2) * (MAP_W - 2 * PAD);
-        const mapY2 = (score: number) => (MAP_H - PAD) - (score / 10) * (MAP_H - 2 * PAD);
-        const yTicks2 = [2, 4, 6, 8, 10];
-
-        return (
-          <section className="overflow-hidden rounded-xl border border-border bg-card p-6">
-            <div className="mb-1 flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <h3 className="font-display text-base font-semibold">
-                  Stall-<em className="font-display italic font-normal text-primary">talent</em> — 2D-kart
-                </h3>
-                <p className="font-mono text-[10px] text-muted-foreground">
-                  X-akse: HCP · Y-akse: Talent-score · Boble = spiller
-                </p>
-              </div>
-              <div className="flex gap-2">
-                <Link href="/admin/talent/kohort" className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-1.5 text-xs font-semibold text-muted-foreground hover:border-primary hover:text-primary">
-                  Kohort
-                </Link>
-                <Link href="/admin/talent/radar" className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-90">
-                  Radar
-                </Link>
-              </div>
-            </div>
-
-            <div className="mt-4 w-full overflow-x-auto">
-              <svg viewBox={`0 0 ${MAP_W} ${MAP_H}`} className="h-auto w-full min-w-[560px]" aria-label="2D talent-kart">
-                <rect x="0" y="0" width={MAP_W} height={MAP_H} fill="hsl(var(--background))" rx="8" />
-                {yTicks2.map((t) => (
-                  <g key={t}>
-                    <line x1={PAD} y1={mapY2(t)} x2={MAP_W - PAD} y2={mapY2(t)} stroke="var(--color-border)" strokeWidth="1" />
-                    <text x={PAD - 6} y={mapY2(t) + 4} textAnchor="end" fontFamily="monospace" fontSize="10" fill="var(--color-muted-foreground)">{t}</text>
-                  </g>
-                ))}
-                <text x={MAP_W / 2} y={MAP_H - 4} textAnchor="middle" fontFamily="monospace" fontSize="11" fontWeight="700" fill="var(--color-foreground)">HCP</text>
-                <text x={14} y={MAP_H / 2} textAnchor="middle" fontFamily="monospace" fontSize="11" fontWeight="700" fill="var(--color-foreground)" transform={`rotate(-90 14 ${MAP_H / 2})`}>TALENT</text>
-                {alle.map((s) => {
-                  const hcp = s.user.hcp ?? 10;
-                  const score = radarSnitt(s) ?? 0;
-                  const x = mapX2(hcp);
-                  const y = mapY2(score);
-                  const fill = "var(--color-accent)";
-                  const stroke = "var(--color-primary)";
-                  return (
-                    <g key={s.id} aria-label={`${s.user.name} HCP ${hcp}`}>
-                      <circle cx={x} cy={y} r="16" fill={fill} stroke={stroke} strokeWidth="2" />
-                      <text x={x} y={y + 4} textAnchor="middle" fontFamily="var(--font-inter-tight,sans-serif)" fontSize="9" fontWeight="700" fill="var(--color-foreground)">
-                        {initials(s.user.name)}
-                      </text>
-                    </g>
-                  );
-                })}
-              </svg>
-            </div>
-          </section>
-        );
-      })()}
-
-      {/* Nivå-fordeling */}
-      <section>
-        <div className="mb-4 flex items-center justify-between">
-          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            Fordeling per nivå
-          </span>
-        </div>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-6">
-          {NIVAA_REKKEFOLGE.map((n) => {
-            const aktiv = valgtNiva === n;
-            return (
-              <Link
-                key={n}
-                href={lenke({ niva: aktiv ? null : n })}
-                className={`rounded-lg border p-6 transition-colors ${
-                  aktiv
-                    ? "border-primary/40 bg-primary text-primary-foreground"
-                    : "border-border bg-card hover:border-primary/40"
-                }`}
-              >
-                <div
-                  className={`font-mono text-[10px] uppercase tracking-[0.10em] ${
-                    aktiv ? "text-accent" : "text-muted-foreground"
-                  }`}
-                >
-                  {n}
-                </div>
-                <div className="mt-2 font-mono text-[28px] font-semibold leading-none tabular-nums">
-                  {fordelingPerNiva[n]}
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Region-chips */}
-      {regioner.length > 0 && (
-        <section>
-          <div className="mb-4">
-            <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-              Region
-            </span>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <Link
-              href={lenke({ region: null })}
-              className={`rounded-full px-4 py-1.5 text-[12px] font-medium transition-colors ${
-                !valgtRegion
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-secondary text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              Alle
-            </Link>
-            {regioner.map((r) => {
-              const aktiv = valgtRegion === r;
-              return (
-                <Link
-                  key={r}
-                  href={lenke({ region: aktiv ? null : r })}
-                  className={`rounded-full px-4 py-1.5 text-[12px] font-medium transition-colors ${
-                    aktiv
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-secondary text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {r}
-                </Link>
-              );
-            })}
-          </div>
-        </section>
-      )}
-
-      {/* Tabell */}
-      {filtrert.length === 0 ? (
         <EmptyState
           icon={Users}
           titleItalic="Ingen spillere"
-          titleTrail="i tracking ennå"
-          sub="Bruk Discovery-siden for å legge til spillere i talent-programmet."
+          titleTrail="i talent-programmet ennå"
+          sub="Bruk Discovery-siden for å legge til spillere."
           cta={
-            <Link
-              href="/admin/talent/discovery"
-              className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
-            >
+            <Link href="/admin/talent/discovery" className={agBtnClass("primary")}>
               Åpne Discovery
             </Link>
           }
         />
-      ) : (
-        <section className="overflow-x-auto rounded-lg border border-border bg-card">
-          <div className="border-b border-border bg-secondary px-6 py-4">
-            <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-              {filtrert.length} spillere
-            </span>
-          </div>
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-border text-left font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                <th className="px-6 py-4 font-medium">Spiller</th>
-                <th className="px-4 py-4 font-medium">Nivå</th>
-                <th className="px-4 py-4 font-medium">Klubb</th>
-                <th className="px-4 py-4 font-medium">Region</th>
-                <th className="px-4 py-4 text-right font-medium">Radar (sum)</th>
-                <th className="px-4 py-4 font-medium">Sist møtt</th>
-                <th className="px-6 py-4 font-medium">Profil</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtrert.map((t) => {
-                const sum = radarSum(t);
-                return (
-                  <tr
-                    key={t.id}
-                    className="border-b border-border last:border-b-0 hover:bg-secondary/40"
-                  >
-                    <td className="px-6 py-4">
-                      <div className="text-[13px] font-semibold leading-tight">
-                        {t.user.name}
-                      </div>
-                      <div className="mt-1 text-[11px] text-muted-foreground">
-                        HCP {t.user.hcp?.toFixed(1).replace(".", ",") ?? "—"}
-                      </div>
-                    </td>
-                    <td className="px-4 py-4 text-[12px]">{t.niva}</td>
-                    <td className="px-4 py-4 text-[12px] text-muted-foreground">
-                      {t.klubb ?? "—"}
-                    </td>
-                    <td className="px-4 py-4 text-[12px] text-muted-foreground">
-                      {t.region ?? "—"}
-                    </td>
-                    <td className="px-4 py-4 text-right font-mono text-[13px] tabular-nums">
-                      {sum > 0 ? `${sum}/50` : "—"}
-                    </td>
-                    <td className="px-4 py-4 font-mono text-[11px] text-muted-foreground">
-                      {fmtDato(t.updatedAt)}
-                    </td>
-                    <td className="px-6 py-4">
-                      <Link
-                        href={`/admin/talent/radar/${t.user.id}`}
-                        className="text-[12px] font-medium text-primary hover:underline"
-                      >
-                        Åpne radar
-                      </Link>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </section>
-      )}
-    </div>
-  );
-}
+      </AgPage>
+    );
+  }
 
-function KpiKort({
-  icon: Icon,
-  label,
-  verdi,
-  sub,
-}: {
-  icon: typeof Users;
-  label: string;
-  verdi: string;
-  sub: string;
-}) {
+  // Valgt spiller — default til første
+  const valgt = alle.find((t) => t.userId === valgtSpillerId) ?? alle[0];
+
+  // Radar-verdier for valgt spiller (0–100)
+  const radarVals = PYR_AKSER.map((a) => akseverdi(valgt, a.key));
+
+  // Percentil
+  const percentil = percentilRank(valgt, alle);
+
+  // H2H: spiller vs. stall-snitt per akse (SG-format)
+  const h2h = [
+    { label: "FYS", val: valgt.fysisk?.toFixed(1) ?? "—", avg: (aksesnitt(alle, "fysisk") / 10).toFixed(1), positive: (valgt.fysisk ?? 0) >= aksesnitt(alle, "fysisk") / 10 },
+    { label: "TEK", val: valgt.teknikk?.toFixed(1) ?? "—", avg: (aksesnitt(alle, "teknikk") / 10).toFixed(1), positive: (valgt.teknikk ?? 0) >= aksesnitt(alle, "teknikk") / 10 },
+    { label: "MENTAL", val: valgt.mental?.toFixed(1) ?? "—", avg: (aksesnitt(alle, "mental") / 10).toFixed(1), positive: (valgt.mental ?? 0) >= aksesnitt(alle, "mental") / 10 },
+    { label: "MOT.", val: valgt.motivasjon?.toFixed(1) ?? "—", avg: (aksesnitt(alle, "motivasjon") / 10).toFixed(1), positive: (valgt.motivasjon ?? 0) >= aksesnitt(alle, "motivasjon") / 10 },
+  ];
+
+  // SVG radar-konstanter
+  const CX = 100;
+  const CY = 100;
+  const R = 72;
+  const N = 5;
+
+  // Gauge-konstanter (halvmåne)
+  const GCX = 100;
+  const GCY = 95;
+  const GR = 72;
+  const GAUGE_STEPS = 40;
+
+  // Gauge-segments som path-strenger (fargeskalaen: rød→gul→grøn→lime)
+  function gaugeSegColor(p: number): string {
+    if (p < 0.5) return "hsl(var(--destructive))";
+    if (p < 0.7) return "hsl(var(--warning))";
+    if (p < 0.85) return "#005840";
+    return "hsl(var(--primary))";
+  }
+
+  function gaugePoint(p: number): [number, number] {
+    const a = Math.PI - p * Math.PI;
+    return [GCX + Math.cos(a) * GR, GCY - Math.sin(a) * GR];
+  }
+
+  const needleAngleDeg = -90 + percentil * 180;
+  const needleRad = (needleAngleDeg * Math.PI) / 180;
+  const needleTipX = (GCX + Math.cos(needleRad) * (GR - 10)).toFixed(1);
+  const needleTipY = (GCY + Math.sin(needleRad) * (GR - 10)).toFixed(1);
+  const topPercentil = Math.round((1 - percentil) * 100);
+
   return (
-    <div className="rounded-lg border border-border bg-card p-6">
-      <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-        <Icon className="h-3 w-3" strokeWidth={1.5} />
-        {label}
+    <AgPage>
+      {/* Side-hode */}
+      <AgPageHead
+        eyebrow="AgencyOS · Talent"
+        title="Talent"
+        italic="Coach"
+        lead="Radar · percentil · sammenligning"
+        actions={
+          <Link href="/admin/talent/discovery" className={agBtnClass("secondary", "sm")}>
+            <Search className="h-3.5 w-3.5" strokeWidth={1.5} />
+            Discovery
+          </Link>
+        }
+      />
+
+      {/* Spiller-selector */}
+      <div className="mb-5 flex flex-wrap gap-2">
+        {alle.map((t) => {
+          const aktiv = t.userId === valgt.userId;
+          return (
+            <Link
+              key={t.userId}
+              href={`/admin/talent?spiller=${t.userId}`}
+              className={`rounded-full border px-3 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] transition-colors ${
+                aktiv
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-foreground"
+              }`}
+            >
+              {t.user.name.split(" ")[0]}
+            </Link>
+          );
+        })}
       </div>
-      <div className="mt-2 font-mono text-[24px] font-semibold tabular-nums leading-none">
-        {verdi}
+
+      {/* 3-kolonne grid */}
+      <div className="grid grid-cols-1 gap-3.5 md:grid-cols-3">
+        {/* Skill Radar */}
+        <div className="relative overflow-hidden rounded-[14px] border border-border bg-card p-5">
+          {/* Subtil grid-bakgrunn */}
+          <div
+            className="pointer-events-none absolute inset-0 opacity-[0.035]"
+            style={{
+              backgroundImage:
+                "linear-gradient(hsl(var(--foreground)) 1px,transparent 1px),linear-gradient(90deg,hsl(var(--foreground)) 1px,transparent 1px)",
+              backgroundSize: "26px 26px",
+            }}
+          />
+          <div className="relative mb-3 font-mono text-[9.5px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
+            Skill<em className="font-normal not-italic text-primary" style={{ fontStyle: "italic" }}>Radar</em>
+            {" · "}{valgt.user.name.split(" ")[0]}
+          </div>
+          <svg viewBox="0 0 200 200" className="relative w-full">
+            {/* Ringer */}
+            {[0.2, 0.4, 0.6, 0.8, 1].map((f) => (
+              <polygon
+                key={f}
+                points={ringPoints(R * f, CX, CY, N)}
+                fill="none"
+                stroke="hsl(var(--border))"
+                strokeWidth="0.5"
+              />
+            ))}
+            {/* Eiker */}
+            {PYR_AKSER.map((_, i) => {
+              const angle = -Math.PI / 2 + (2 * Math.PI * i) / N;
+              const x2 = (CX + Math.cos(angle) * R).toFixed(1);
+              const y2 = (CY + Math.sin(angle) * R).toFixed(1);
+              return (
+                <line
+                  key={i}
+                  x1={CX}
+                  y1={CY}
+                  x2={x2}
+                  y2={y2}
+                  stroke="hsl(var(--border))"
+                  strokeWidth="0.5"
+                />
+              );
+            })}
+            {/* Dataflate */}
+            <polygon
+              points={radarPoints(radarVals, CX, CY, R, N)}
+              fill="hsl(var(--primary) / 0.1)"
+              stroke="hsl(var(--primary))"
+              strokeWidth="1.5"
+            />
+            {/* Punkter + label */}
+            {PYR_AKSER.map((a, i) => {
+              const angle = -Math.PI / 2 + (2 * Math.PI * i) / N;
+              const r = (R * radarVals[i]) / 100;
+              const dx = (CX + Math.cos(angle) * r).toFixed(1);
+              const dy = (CY + Math.sin(angle) * r).toFixed(1);
+              const lx = (CX + Math.cos(angle) * (R + 16)).toFixed(1);
+              const ly = (CY + Math.sin(angle) * (R + 16) + 4).toFixed(1);
+              return (
+                <g key={a.key}>
+                  <circle cx={dx} cy={dy} r="3.5" fill={a.color} />
+                  <text
+                    x={lx}
+                    y={ly}
+                    textAnchor="middle"
+                    fontFamily="var(--font-jetbrains-mono, monospace)"
+                    fontSize="9"
+                    fill={a.color}
+                  >
+                    {a.label}
+                  </text>
+                </g>
+              );
+            })}
+          </svg>
+        </div>
+
+        {/* Percentile Gauge */}
+        <div className="relative overflow-hidden rounded-[14px] border border-border bg-card p-5">
+          <div
+            className="pointer-events-none absolute inset-0 opacity-[0.035]"
+            style={{
+              backgroundImage:
+                "linear-gradient(hsl(var(--foreground)) 1px,transparent 1px),linear-gradient(90deg,hsl(var(--foreground)) 1px,transparent 1px)",
+              backgroundSize: "26px 26px",
+            }}
+          />
+          <div className="relative mb-2 font-mono text-[9.5px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
+            Percentile<em className="font-normal not-italic text-primary" style={{ fontStyle: "italic" }}>Gauge</em>
+          </div>
+          <svg viewBox="0 0 200 120" className="relative mx-auto w-full max-w-[240px]">
+            {/* Gauge-segmenter */}
+            {Array.from({ length: GAUGE_STEPS }, (_, i) => {
+              const p0 = i / GAUGE_STEPS;
+              const p1 = (i + 1) / GAUGE_STEPS;
+              const [x0, y0] = gaugePoint(p0);
+              const [x1, y1] = gaugePoint(p1);
+              return (
+                <path
+                  key={i}
+                  d={`M${x0.toFixed(1)} ${y0.toFixed(1)} A${GR} ${GR} 0 0 1 ${x1.toFixed(1)} ${y1.toFixed(1)}`}
+                  stroke={gaugeSegColor(p0)}
+                  strokeWidth="10"
+                  fill="none"
+                  opacity="0.9"
+                />
+              );
+            })}
+            {/* Nål */}
+            <line
+              x1={GCX}
+              y1={GCY}
+              x2={needleTipX}
+              y2={needleTipY}
+              stroke="hsl(var(--foreground))"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            />
+            <circle cx={GCX} cy={GCY} r="5" fill="hsl(var(--foreground))" />
+            <circle cx={GCX} cy={GCY} r="2" fill="hsl(var(--primary))" />
+          </svg>
+          <div className="relative mt-1 text-center">
+            <div className="font-mono text-[28px] font-bold leading-none text-primary">
+              {alle.length > 1 ? `topp ${topPercentil} %` : "—"}
+            </div>
+            <div className="mt-1 font-mono text-[9px] uppercase tracking-[0.1em] text-muted-foreground">
+              Talent-score · vs stall
+            </div>
+          </div>
+        </div>
+
+        {/* Pyramid + H2H */}
+        <div className="rounded-[14px] border border-border bg-card p-5">
+          <div className="mb-4 font-mono text-[9.5px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
+            Pyramide-balanse
+          </div>
+          {/* Barer — bunn→topp (column-reverse) */}
+          <div className="flex flex-col-reverse gap-2">
+            {PYR_AKSER.map((a) => {
+              const pct = akseverdi(valgt, a.key);
+              return (
+                <div key={a.key} className="flex items-center gap-2.5">
+                  <span className="w-10 flex-shrink-0 font-mono text-[9px] text-muted-foreground">
+                    {a.label}
+                  </span>
+                  <div
+                    className="flex-1 rounded-full"
+                    style={{ height: 8, background: a.track }}
+                  >
+                    <div
+                      className="h-full rounded-full"
+                      style={{ width: `${pct}%`, background: a.color, transition: "width .8s" }}
+                    />
+                  </div>
+                  <span className="w-8 text-right font-mono text-[10px] text-muted-foreground">
+                    {pct > 0 ? `${pct}%` : "—"}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* H2H vs. stall-snitt */}
+          <div className="mt-4 border-t border-border pt-3.5">
+            <div className="mb-2.5 font-mono text-[9px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
+              H2H · vs stall-snitt
+            </div>
+            {h2h.map((h) => (
+              <div
+                key={h.label}
+                className="mb-1.5 grid items-center gap-1.5"
+                style={{ gridTemplateColumns: "42px 1fr 42px" }}
+              >
+                <span
+                  className={`text-right font-mono text-[10px] font-semibold ${h.positive ? "text-success" : "text-destructive"}`}
+                >
+                  {h.val}
+                </span>
+                <span className="text-center font-mono text-[8px] text-muted-foreground">
+                  {h.label}
+                </span>
+                <span className="font-mono text-[10px] text-muted-foreground">
+                  {h.avg}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* Link til full talent-rad */}
+          <div className="mt-4 border-t border-border pt-3">
+            <Link
+              href={`/admin/talent/radar/${valgt.userId}`}
+              className="font-mono text-[11px] font-semibold text-primary hover:underline"
+            >
+              Åpne full radar →
+            </Link>
+          </div>
+        </div>
       </div>
-      <div className="mt-2 text-[11px] text-muted-foreground">{sub}</div>
-    </div>
+
+      {/* Spiller-info-rad */}
+      <div className="mt-4 rounded-[14px] border border-border bg-card px-5 py-3.5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary font-mono text-[12px] font-bold text-primary-foreground">
+              {initials(valgt.user.name)}
+            </span>
+            <div>
+              <div className="text-[13px] font-semibold text-foreground">{valgt.user.name}</div>
+              <div className="font-mono text-[10px] text-muted-foreground">
+                {valgt.niva}{valgt.user.hcp !== null ? ` · HCP ${valgt.user.hcp.toFixed(1).replace(".", ",")}` : ""}{valgt.klubb ? ` · ${valgt.klubb}` : ""}
+              </div>
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <Link
+              href="/admin/talent/discovery"
+              className={agBtnClass("secondary", "sm")}
+            >
+              <Search className="h-3.5 w-3.5" strokeWidth={1.5} />
+              Discovery
+            </Link>
+            <Link href="/admin/talent/radar" className={agBtnClass("primary", "sm")}>
+              Alle radar
+            </Link>
+          </div>
+        </div>
+      </div>
+    </AgPage>
   );
 }
