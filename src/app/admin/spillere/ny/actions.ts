@@ -20,19 +20,15 @@ import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import type { Prisma, PlayerProgram } from "@/generated/prisma/client";
+import {
+  SPILLER_KATEGORIER,
+  SPILLER_TIERS,
+  type SpillerKategori,
+  type SpillerTier,
+} from "./constants";
 
-export const ALL_PROGRAMS: PlayerProgram[] = [
-  "WANG_TOPPIDRETT", "WANG_UNG",
-  "GFGK_MINI", "GFGK_BREDDE", "GFGK_JENTER", "GFGK_ELITE",
-  "AK_ACADEMY", "AK_ACADEMY_JUNIOR",
-  "PLATFORM_ONLY",
-];
-
-export const SPILLER_KATEGORIER = ["A1", "A2", "B1", "B2", "C"] as const;
-export type SpillerKategori = (typeof SPILLER_KATEGORIER)[number];
-
-export const SPILLER_TIERS = ["GRATIS", "PRO"] as const;
-export type SpillerTier = (typeof SPILLER_TIERS)[number];
+// Re-eksporter typer for bakoverkompat (typer er compile-time, lov i use-server).
+export type { SpillerKategori, SpillerTier };
 
 const OpprettSpillerSchema = z
   .object({

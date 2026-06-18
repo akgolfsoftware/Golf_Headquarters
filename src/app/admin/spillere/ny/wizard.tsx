@@ -11,15 +11,14 @@ import {
   UserPlus,
 } from "lucide-react";
 
+import { createSpiller, type OpprettSpillerInput } from "./actions";
 import {
-  createSpiller,
   SPILLER_KATEGORIER,
   SPILLER_TIERS,
   ALL_PROGRAMS,
-  type OpprettSpillerInput,
   type SpillerKategori,
   type SpillerTier,
-} from "./actions";
+} from "./constants";
 import type { PlayerProgram } from "@/generated/prisma/client";
 
 const PROGRAM_LABEL: Record<PlayerProgram, string> = {
