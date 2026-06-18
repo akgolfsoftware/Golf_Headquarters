@@ -38,28 +38,28 @@ export default async function ClubDetailPage({
 
   if (allShots.length === 0) {
     return (
-      <div className="space-y-6">
+      <div className="mx-auto max-w-[760px] space-y-6 px-4 pb-20 sm:px-6 md:pb-0">
         <Link
           href="/portal/mal/sg-hub"
-          className="inline-flex items-center gap-1.5 font-mono text-[12.5px] text-muted-foreground transition-colors hover:text-foreground"
+          className="inline-flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
-          SG Hub
+          SG-hub
         </Link>
-        <div className="rounded-xl border border-dashed border-border bg-card p-8 text-center">
-          <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
+        <div className="rounded-2xl border border-dashed border-border bg-card p-8 text-center shadow-sm">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
             {decoded}
           </p>
-          <h2 className="mt-2 font-display text-2xl font-semibold">
+          <h2 className="mt-2 font-display text-2xl font-bold tracking-[-0.02em] text-foreground">
             Ingen data funnet
           </h2>
-          <p className="mt-2 text-sm text-muted-foreground max-w-sm mx-auto">
+          <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">
             Ingen TrackMan-slag registrert for {decoded}. Importer en
             TrackMan-økt som inkluderer denne køllen.
           </p>
           <Link
             href="/portal/mal/trackman"
-            className="mt-6 inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+            className="mt-6 inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 font-mono text-[12px] font-bold uppercase tracking-[0.08em] text-primary-foreground transition-opacity hover:opacity-90"
           >
             Importer TrackMan-data
           </Link>
@@ -128,30 +128,33 @@ export default async function ClubDetailPage({
   }
 
   return (
-    <div className="space-y-8">
+    <div className="mx-auto max-w-[760px] space-y-6 px-4 pb-20 sm:px-6 md:pb-0">
       <Link
         href="/portal/mal/sg-hub"
-        className="inline-flex items-center gap-1.5 font-mono text-[12.5px] text-muted-foreground transition-colors hover:text-foreground"
+        className="inline-flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground transition-colors hover:text-foreground"
       >
         <ArrowLeft className="h-3.5 w-3.5" />
-        SG Hub
+        SG-hub
       </Link>
 
-      <div>
-        <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
+      {/* Editorial header */}
+      <div className="space-y-1">
+        <p className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
           Per-kølle analyse
         </p>
-        <h1 className="mt-1 font-display text-3xl font-semibold">
-          <em className="font-normal italic">{decoded}</em>
+        <h1 className="font-display text-3xl font-bold leading-tight tracking-[-0.02em] text-foreground">
+          <em className="font-medium italic" style={{ color: "#005840" }}>
+            {decoded}
+          </em>
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="pt-1 text-sm text-muted-foreground">
           {allShots.length} slag · {sessions.length} økt
           {sessions.length !== 1 ? "er" : ""}
         </p>
       </div>
 
       {/* Summary cards */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-3">
         <SummaryCard
           icon={Crosshair}
           label="D-Plane"
@@ -177,9 +180,11 @@ export default async function ClubDetailPage({
       </div>
 
       {/* D-Plane */}
-      <section className="rounded-xl border border-border bg-card p-6">
+      <section className="rounded-2xl border border-border bg-card p-6 shadow-sm">
         <div className="mb-4">
-          <h2 className="font-semibold">D-Plane · Kurve-mønster</h2>
+          <h2 className="font-display text-[15px] font-bold tracking-[-0.01em] text-foreground">
+            D-Plane · Kurve-mønster
+          </h2>
           {!advanced && (
             <p className="mt-1 text-sm text-muted-foreground">
               Dominerende mønster:{" "}
@@ -194,9 +199,11 @@ export default async function ClubDetailPage({
       </section>
 
       {/* Strike Heatmap */}
-      <section className="rounded-xl border border-border bg-card p-6">
+      <section className="rounded-2xl border border-border bg-card p-6 shadow-sm">
         <div className="mb-4">
-          <h2 className="font-semibold">Strike Heatmap · Kontaktpunkt</h2>
+          <h2 className="font-display text-[15px] font-bold tracking-[-0.01em] text-foreground">
+            Strike Heatmap · Kontaktpunkt
+          </h2>
           {!advanced && (
             <p className="mt-1 text-sm text-muted-foreground">
               {strike.sweetPct}% sweet spot · Snitt Smash Factor{" "}
@@ -210,9 +217,11 @@ export default async function ClubDetailPage({
       </section>
 
       {/* Smash Curve */}
-      <section className="rounded-xl border border-border bg-card p-6">
+      <section className="rounded-2xl border border-border bg-card p-6 shadow-sm">
         <div className="mb-4">
-          <h2 className="font-semibold">Smash Curve · Effektivitets-optimum</h2>
+          <h2 className="font-display text-[15px] font-bold tracking-[-0.01em] text-foreground">
+            Smash Curve · Effektivitets-optimum
+          </h2>
           {!advanced && smash.optimumSpeed > 0 && (
             <p className="mt-1 text-sm text-muted-foreground">
               Optimalt Club Speed:{" "}
@@ -232,10 +241,12 @@ export default async function ClubDetailPage({
       <TempoRibbon shots={allShots} advanced={advanced} />
 
       {/* Fatigue Curve */}
-      <section className="rounded-xl border border-border bg-card p-6">
+      <section className="rounded-2xl border border-border bg-card p-6 shadow-sm">
         <div className="mb-4 flex items-center gap-2">
           <Activity className="h-4 w-4 text-muted-foreground" />
-          <h2 className="font-semibold">Fatigue Curve · Club Speed over tid</h2>
+          <h2 className="font-display text-[15px] font-bold tracking-[-0.01em] text-foreground">
+            Fatigue Curve · Club Speed over tid
+          </h2>
         </div>
         {!advanced && (
           <p className="mb-2 text-sm text-muted-foreground">
@@ -249,8 +260,10 @@ export default async function ClubDetailPage({
 
       {/* Advanced: slag-tabell med annotasjoner for siste økt */}
       {advanced && (
-        <section className="rounded-xl border border-border bg-card p-6">
-          <h2 className="mb-1 font-semibold">Slag-statistikk</h2>
+        <section className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+          <h2 className="mb-1 font-display text-[15px] font-bold tracking-[-0.01em] text-foreground">
+            Slag-statistikk
+          </h2>
           {latestSession && (
             <p className="mb-4 text-xs text-muted-foreground">
               Siste økt:{" "}
@@ -410,15 +423,19 @@ function SummaryCard({
   sub: string;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-6">
+    <div className="rounded-2xl border border-border bg-card p-4 shadow-sm sm:p-5">
       <div className="mb-2 flex items-center gap-2">
-        <Icon className="h-3.5 w-3.5 text-muted-foreground" />
-        <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+        <Icon className="h-3.5 w-3.5 text-primary" />
+        <p className="font-mono text-[9.5px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
           {label}
         </p>
       </div>
-      <p className="text-xl font-semibold tabular-nums">{value}</p>
-      <p className="mt-0.5 text-xs text-muted-foreground">{sub}</p>
+      <p className="font-mono text-xl font-bold tabular-nums leading-none tracking-[-0.01em] text-foreground">
+        {value}
+      </p>
+      <p className="mt-1.5 font-mono text-[11px] tracking-[0.02em] text-muted-foreground">
+        {sub}
+      </p>
     </div>
   );
 }
