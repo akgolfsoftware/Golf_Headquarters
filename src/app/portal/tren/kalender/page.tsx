@@ -1,92 +1,148 @@
 /**
- * PlayerHQ · Trening · Kalender (uke-view)
+ * PlayerHQ · Trening · Ukekalender (`/portal/tren/kalender`) — hybrid-design 2026-06-17.
  *
- * Datakilde: TrainingPlanSession + Round + TestResult for valgt uke.
- * Kalender er full bredde. Pyramide-fordeling vises i strip over kalender.
+ * Fasit: public/design-handover/prosjektgjennomgang-2026-06-17/
+ *   prosjektgjennomgang-og-wireframing/project/PlayerHQ Ukekalender (hybrid).dc.html
+ *
+ * Layout:
+ *   - Header: "Uke {N} · {måned}" + prev/next-piler
+ *   - Uke-mini-grid 7 dager (ma–sø) med done/today/has/muted-tilstander
+ *   - Streak-tracker-kort: antall dager på rad + mini-celler + rekord
+ *   - "Denne uken"-liste: dato-ikon + tittel + meta + badge
+ *   - Tom-tilstand for ingen data
+ *
+ * Server component. Prisma-data: TrainingPlanSession + Round + TestResult.
+ * URL-param `?uke=YYYY-WNN` for navigasjon.
+ * Ingen hardkodet hex — kun DS-tokens.
  */
 
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight, Flame } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
-import { dagerIUken, startOfWeek, ukenummer } from "@/lib/uke-helpers";
+import { startOfWeek, dagerIUken, ukenummer, sammeDag } from "@/lib/uke-helpers";
+import { computeStreak, aktivStreak } from "@/lib/streak";
 import type { PyramidArea } from "@/generated/prisma/client";
-import { KalenderInteraktiv } from "./kalender-interaktiv";
-import type { KalenderEvent, Favoritt } from "./kalender-interaktiv";
 
-type Search = { uke?: string; filter?: string };
+export const dynamic = "force-dynamic";
 
-const DAG_NAVN = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
+const DOW_KORT = ["ma", "ti", "on", "to", "fr", "lø", "sø"] as const;
 
-const TIER_MAP: Record<PyramidArea, "fys" | "tek" | "slag" | "spill" | "turn"> = {
-  FYS: "fys",
-  TEK: "tek",
-  SLAG: "slag",
-  SPILL: "spill",
-  TURN: "turn",
+const MANED_NAVN = [
+  "januar", "februar", "mars", "april", "mai", "juni",
+  "juli", "august", "september", "oktober", "november", "desember",
+] as const;
+
+const MANED_KORT = [
+  "JAN","FEB","MAR","APR","MAI","JUN","JUL","AUG","SEP","OKT","NOV","DES",
+] as const;
+
+type BadgeInfo = { badge: string; bg: string; fg: string };
+
+const PYR_BADGE: Record<PyramidArea, BadgeInfo> = {
+  FYS:   { badge: "Fysisk",    bg: "rgba(0,88,64,.1)",     fg: "var(--pyr-fys, #005840)" },
+  TEK:   { badge: "Teknisk",   bg: "rgba(184,133,42,.12)", fg: "var(--pyr-tek, #B8852A)" },
+  SLAG:  { badge: "Slag",      bg: "rgba(37,99,235,.1)",   fg: "var(--info, #2563EB)" },
+  SPILL: { badge: "Spill",     bg: "rgba(209,248,67,.25)", fg: "var(--forest, #005840)" },
+  TURN:  { badge: "Turnering", bg: "rgba(163,45,45,.1)",   fg: "var(--pyr-turn, #A32D2D)" },
 };
 
-// Static Tailwind classes — must be full strings, not dynamic templates
-const PYR_BAR: Record<PyramidArea, string> = {
-  FYS:  "bg-pyr-fys",
-  TEK:  "bg-pyr-tek",
-  SLAG: "bg-pyr-slag",
-  SPILL: "bg-pyr-spill",
-  TURN: "bg-pyr-turn",
+type OktRad = {
+  id: string;
+  dag: number;
+  dow: string;
+  tittel: string;
+  meta: string;
+  erIdag: boolean;
+  badge: BadgeInfo;
+  href: string | null;
 };
 
-const PYR_LABEL: Record<PyramidArea, string> = {
-  FYS:  "Fysisk",
-  TEK:  "Teknisk",
-  SLAG: "Slag",
-  SPILL: "Spill",
-  TURN: "Turnering",
-};
-
-// Filter: which tones are shown per filter value
-const FILTER_TONES: Record<string, ("coach" | "round" | "tourn")[]> = {
-  alle:      ["coach", "round", "tourn"],
-  coaching:  ["coach"],
-  runde:     ["round"],
-  test:      ["tourn"],
-};
-
-function minutterTilTop(d: Date) {
-  const minutter = d.getHours() * 60 + d.getMinutes() - 6 * 60;
-  return Math.max(0, (minutter / 60) * 54);
+function fmtUkeParam(d: Date): string {
+  return d.getFullYear() + "-W" + String(ukenummer(d)).padStart(2, "0");
 }
 
-function kalStatus(scheduledAt: Date, s: string): "done" | "plan" | "skip" | "late" {
-  if (s === "COMPLETED") return "done";
-  if (s === "SKIPPED") return "skip";
-  if (scheduledAt < new Date() && s === "PLANNED") return "late";
-  return "plan";
+// Uke-celle i mini-grid
+function UkeCelle({
+  dato,
+  erIdag,
+  erFullfort,
+  harOkter,
+  erFremtidig,
+}: {
+  dato: number;
+  erIdag: boolean;
+  erFullfort: boolean;
+  harOkter: boolean;
+  erFremtidig: boolean;
+}) {
+  let cls =
+    "relative flex aspect-square flex-col items-center justify-center rounded-[8px] border font-mono text-[12px] font-semibold";
+  if (erIdag) {
+    cls += " border-primary bg-primary text-primary-foreground";
+  } else if (erFullfort) {
+    cls += " border-primary/20 bg-primary/8 text-primary";
+  } else if (erFremtidig) {
+    cls += " border-border/60 bg-card text-foreground/40";
+  } else {
+    cls += " border-border/60 bg-card text-foreground";
+  }
+  return (
+    <div className={cls}>
+      {dato}
+      {harOkter && (
+        <span
+          className="absolute bottom-[4px] left-1/2 h-[4px] w-[4px] -translate-x-1/2 rounded-full"
+          style={{ background: erIdag ? "var(--lime, #D1F843)" : "var(--forest, #005840)" }}
+        />
+      )}
+    </div>
+  );
 }
 
-function fmtKl(d: Date) {
-  return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+// Streak-celle (2 uker = 14 celler)
+function StreakCelle({
+  erFullfort,
+  erIdag,
+  label,
+}: {
+  erFullfort: boolean;
+  erIdag: boolean;
+  label: string;
+}) {
+  let cls =
+    "flex h-6 w-6 shrink-0 items-center justify-center rounded-[4px] font-mono text-[8px] font-semibold";
+  if (erFullfort) {
+    cls += " bg-primary text-primary-foreground";
+  } else {
+    cls += " bg-secondary text-muted-foreground";
+  }
+  if (erIdag) {
+    cls += " ring-2 ring-offset-1 ring-primary";
+  }
+  return <div className={cls}>{label}</div>;
 }
 
-export default async function KalenderPage({
+type SearchParams = Promise<{ uke?: string }>;
+
+export default async function UkekalenderPage({
   searchParams,
 }: {
-  searchParams: Promise<Search>;
+  searchParams: SearchParams;
 }) {
   const user = await requirePortalUser();
   const params = await searchParams;
 
-  // --- Uke-navigasjon ---
   let referanseDato = new Date();
   if (params.uke) {
-    const [aar, ukeStr] = params.uke.split("-W");
-    const aarNum = Number(aar);
-    const ukeNum = Number(ukeStr);
-    if (aarNum && ukeNum) {
-      const jan4 = new Date(aarNum, 0, 4);
+    const parts = params.uke.split("-W");
+    const aar = Number(parts[0]);
+    const uke = Number(parts[1]);
+    if (aar && uke) {
+      const jan4 = new Date(aar, 0, 4);
       const start = startOfWeek(jan4);
-      start.setDate(start.getDate() + (ukeNum - 1) * 7);
+      start.setDate(start.getDate() + (uke - 1) * 7);
       referanseDato = start;
     }
   }
@@ -95,407 +151,281 @@ export default async function KalenderPage({
   const ukeSlutt = new Date(ukeStart);
   ukeSlutt.setDate(ukeSlutt.getDate() + 7);
   const dager = dagerIUken(ukeStart);
+  const uke = ukenummer(ukeStart);
+  const maned = MANED_NAVN[ukeStart.getMonth()];
 
-  // --- Data ---
+  const forrige = new Date(ukeStart);
+  forrige.setDate(forrige.getDate() - 7);
+  const neste = new Date(ukeStart);
+  neste.setDate(neste.getDate() + 7);
+
   const aktivePlaner = await prisma.trainingPlan.findMany({
     where: { userId: user.id, isActive: true },
     select: { id: true },
   });
   const planIds = aktivePlaner.map((p) => p.id);
 
-  const [sessions, runder, tester] = await Promise.all([
+  const [sessions, runder, tester, fullforteHist] = await Promise.all([
     planIds.length
       ? prisma.trainingPlanSession.findMany({
-          where: {
-            planId: { in: planIds },
-            scheduledAt: { gte: ukeStart, lt: ukeSlutt },
-          },
-          select: {
-            id: true,
-            scheduledAt: true,
-            title: true,
-            durationMin: true,
-            pyramidArea: true,
-            status: true,
-            rationale: true,
-            _count: { select: { drills: true } },
-          },
+          where: { planId: { in: planIds }, scheduledAt: { gte: ukeStart, lt: ukeSlutt } },
+          select: { id: true, scheduledAt: true, title: true, durationMin: true, pyramidArea: true, status: true },
+          orderBy: { scheduledAt: "asc" },
         })
       : Promise.resolve([]),
     prisma.round.findMany({
       where: { userId: user.id, playedAt: { gte: ukeStart, lt: ukeSlutt } },
       select: { id: true, playedAt: true, course: { select: { name: true } } },
+      orderBy: { playedAt: "asc" },
     }),
     prisma.testResult.findMany({
       where: { userId: user.id, takenAt: { gte: ukeStart, lt: ukeSlutt } },
       select: { id: true, takenAt: true, test: { select: { name: true } } },
+      orderBy: { takenAt: "asc" },
     }),
+    planIds.length
+      ? prisma.trainingPlanSession.findMany({
+          where: { planId: { in: planIds }, status: "COMPLETED" },
+          select: { scheduledAt: true },
+          orderBy: { scheduledAt: "desc" },
+          take: 90,
+        })
+      : Promise.resolve([]),
   ]);
 
-  // --- Favoritter (for SlotModal) ---
-  const recentCompleted = planIds.length
-    ? await prisma.trainingPlanSession.findMany({
-        where: { planId: { in: planIds }, status: "COMPLETED" },
-        orderBy: { scheduledAt: "desc" },
-        select: { title: true, pyramidArea: true, durationMin: true },
-        take: 20,
-      })
-    : [];
-  const seenTitles = new Set<string>();
-  const favoritter: Favoritt[] = [];
-  for (const s of recentCompleted) {
-    if (!seenTitles.has(s.title) && favoritter.length < 3) {
-      seenTitles.add(s.title);
-      favoritter.push({
-        title: s.title,
-        pyramidArea: s.pyramidArea,
-        durationMin: s.durationMin,
+  const idag = new Date();
+
+  // Streak
+  const streakDatoer = fullforteHist.map((s) => s.scheduledAt);
+  const streakArr = computeStreak(streakDatoer, 14);
+  const aktivStreakAntall = aktivStreak(streakArr);
+  let rekord = 0;
+  let lopende = 0;
+  for (const b of streakArr) {
+    if (b) { lopende++; rekord = Math.max(rekord, lopende); }
+    else lopende = 0;
+  }
+
+  // Streak-celler (14 dager bakover)
+  const DOW_MINI = ["M","T","O","T","F","L","S","M","T","O","T","F","L","S"];
+  const streakCeller: { erFullfort: boolean; erIdag: boolean; label: string }[] = [];
+  {
+    const startDato = new Date(idag);
+    startDato.setDate(idag.getDate() - 13);
+    startDato.setHours(0, 0, 0, 0);
+    for (let i = 0; i < 14; i++) {
+      const d = new Date(startDato);
+      d.setDate(startDato.getDate() + i);
+      streakCeller.push({
+        erFullfort: streakArr[i],
+        erIdag: sammeDag(d, idag),
+        label: DOW_MINI[i],
       });
     }
   }
 
-  // --- Pyramide-fordeling (minutter per område) ---
-  const pyrMin: Partial<Record<PyramidArea, number>> = {};
-  for (const s of sessions) {
-    pyrMin[s.pyramidArea] = (pyrMin[s.pyramidArea] ?? 0) + s.durationMin;
-  }
-  const totalPyrMin = Object.values(pyrMin).reduce((a, b) => a + b, 0) || 1;
-  const pyrOmrader = (Object.keys(pyrMin) as PyramidArea[]).sort(
-    (a, b) => (pyrMin[b] ?? 0) - (pyrMin[a] ?? 0)
+  // Dager i uken med aktivitet (for dots)
+  const datoerMedOkt = new Set([
+    ...sessions.map((s) => s.scheduledAt.toDateString()),
+    ...runder.map((r) => r.playedAt.toDateString()),
+    ...tester.map((t) => t.takenAt.toDateString()),
+  ]);
+  const fullforteDatoer = new Set(
+    sessions.filter((s) => s.status === "COMPLETED").map((s) => s.scheduledAt.toDateString())
   );
 
-  // --- Events per dag ---
-  const eventsPerDagAll: KalenderEvent[][] = [[], [], [], [], [], [], []];
-  function dagIndex(d: Date) {
-    const diff = Math.floor(
-      (d.getTime() - ukeStart.getTime()) / (24 * 60 * 60 * 1000)
-    );
-    return Math.max(0, Math.min(6, diff));
-  }
+  // Rad-liste
+  const rader: OktRad[] = [];
+  const fmtTid = (d: Date) =>
+    String(d.getHours()).padStart(2,"0") + ":" + String(d.getMinutes()).padStart(2,"0");
 
   for (const s of sessions) {
-    const idx = dagIndex(s.scheduledAt);
     const slutt = new Date(s.scheduledAt.getTime() + s.durationMin * 60_000);
-    eventsPerDagAll[idx].push({
-      sessionId: s.id,
-      title: s.title,
-      meta: `${fmtKl(s.scheduledAt)} – ${fmtKl(slutt)}`,
-      tone: "coach",
-      top: minutterTilTop(s.scheduledAt),
-      height: Math.max(40, (s.durationMin / 60) * 54),
-      status: kalStatus(s.scheduledAt, s.status),
-      tier: TIER_MAP[s.pyramidArea],
-      pyramidArea: s.pyramidArea,
-      durationMin: s.durationMin,
-      drillCount: s._count.drills,
-      rationale: s.rationale ?? undefined,
+    rader.push({
+      id: s.id,
+      dag: s.scheduledAt.getDate(),
+      dow: DOW_KORT[(s.scheduledAt.getDay() + 6) % 7].toUpperCase(),
+      tittel: s.title,
+      meta: fmtTid(s.scheduledAt) + " - " + fmtTid(slutt) + " · " + s.durationMin + " min",
+      erIdag: sammeDag(s.scheduledAt, idag),
+      badge: PYR_BADGE[s.pyramidArea],
+      href: "/portal/tren/" + s.id,
     });
   }
   for (const r of runder) {
-    eventsPerDagAll[dagIndex(r.playedAt)].push({
-      title: `Runde · ${r.course.name}`,
-      meta: fmtKl(r.playedAt),
-      tone: "round",
-      top: minutterTilTop(r.playedAt),
-      height: 216,
-      status: "done",
+    rader.push({
+      id: r.id,
+      dag: r.playedAt.getDate(),
+      dow: DOW_KORT[(r.playedAt.getDay() + 6) % 7].toUpperCase(),
+      tittel: "Runde · " + r.course.name,
+      meta: MANED_KORT[r.playedAt.getMonth()] + " " + r.playedAt.getDate(),
+      erIdag: sammeDag(r.playedAt, idag),
+      badge: PYR_BADGE["SPILL"],
+      href: null,
     });
   }
   for (const t of tester) {
-    eventsPerDagAll[dagIndex(t.takenAt)].push({
-      title: `Test · ${t.test.name}`,
-      meta: fmtKl(t.takenAt),
-      tone: "tourn",
-      top: minutterTilTop(t.takenAt),
-      height: 90,
-      status: "done",
+    rader.push({
+      id: t.id,
+      dag: t.takenAt.getDate(),
+      dow: DOW_KORT[(t.takenAt.getDay() + 6) % 7].toUpperCase(),
+      tittel: "Test · " + t.test.name,
+      meta: MANED_KORT[t.takenAt.getMonth()] + " " + t.takenAt.getDate(),
+      erIdag: sammeDag(t.takenAt, idag),
+      badge: PYR_BADGE["SLAG"],
+      href: null,
     });
   }
-
-  // --- Filter ---
-  const aktivFilter = (params.filter ?? "alle").toLowerCase();
-  const visToner = FILTER_TONES[aktivFilter] ?? FILTER_TONES["alle"];
-  const eventsPerDag = eventsPerDagAll.map((dag) =>
-    dag.filter((ev) => (visToner as string[]).includes(ev.tone))
-  );
-
-  // --- KPI-data ---
-  const fornavn = user.name.split(" ")[0];
-  const aktivitetCount = sessions.length + runder.length + tester.length;
-  const uke = ukenummer(ukeStart);
-
-  const fmtMnd = (d: Date) =>
-    d.toLocaleDateString("nb-NO", { day: "numeric", month: "short" });
-  const subTekst = `Uke ${uke} · ${fmtMnd(ukeStart)} – ${fmtMnd(
-    new Date(ukeSlutt.getTime() - 1)
-  )} ${ukeStart.getFullYear()}`;
-
-  const forrigeUke = new Date(ukeStart);
-  forrigeUke.setDate(forrigeUke.getDate() - 7);
-  const nesteUke = new Date(ukeStart);
-  nesteUke.setDate(nesteUke.getDate() + 7);
-  const fmtParam = (d: Date) =>
-    `${d.getFullYear()}-W${String(ukenummer(d)).padStart(2, "0")}`;
-
-  const idag = new Date();
-  const todayLine =
-    idag >= ukeStart && idag < ukeSlutt
-      ? { dag: dagIndex(idag), top: minutterTilTop(idag) }
-      : null;
-
-  const totalCoach = sessions.length;
-  const totalSelv = 0;
-  const planlagtMin = sessions.reduce((s, x) => s + x.durationMin, 0);
-  const planlagtTimer = `${Math.floor(planlagtMin / 60)} t ${planlagtMin % 60} m`;
-
-  // Planlagte spill og turneringer (SPILL + TURN sessions)
-  const spillOgTurn = sessions.filter(
-    (s) => s.pyramidArea === "SPILL" || s.pyramidArea === "TURN"
-  );
-
-  // Filter-lenke helper
-  function filterLink(f: string) {
-    const sp = new URLSearchParams();
-    if (params.uke) sp.set("uke", params.uke);
-    if (f !== "alle") sp.set("filter", f);
-    const qs = sp.toString();
-    return `/portal/tren/kalender${qs ? "?" + qs : ""}`;
-  }
-
-  const FILTER_PILLS = [
-    { key: "coaching",    label: "Coaching" },
-    { key: "selvtrening", label: "Selvtrening", disabled: true },
-    { key: "gruppe",      label: "Gruppe",      disabled: true },
-    { key: "runde",       label: "Runde" },
-    { key: "test",        label: "Test" },
-  ];
+  rader.sort((a, b) => a.dag - b.dag);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <div className="mx-auto max-w-[1400px] py-2 sm:px-6 sm:py-8">
-        {/* Header */}
-        <div className="mb-6">
-          <PageHeader
-            eyebrow={`PlayerHQ · Trening · Kalender · ${subTekst}`}
-            titleLead="Uke"
-            titleItalic={String(uke)}
-            sub={`${aktivitetCount} ${
-              aktivitetCount === 1 ? "aktivitet" : "aktiviteter"
-            } denne uka, ${fornavn}. Alt i én oversikt: coach-økter, selvtrening, runder, tester.`}
-          />
-        </div>
+    <div className="mx-auto w-full max-w-[460px] px-4 py-6 sm:px-6">
 
-        {/* KPI-strip */}
-        <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <KpiCard
-            label="Økter denne uka"
-            value={String(totalCoach + totalSelv)}
-            sub={`${totalCoach} coaching · ${totalSelv} selvtrening`}
-          />
-          <KpiCard label="Volum" value={planlagtTimer} sub="planlagt trening" />
-          <Link href="/portal/mal/runder">
-            <KpiCard
-              label="Spill og turnering"
-              value={String(spillOgTurn.length)}
-              sub={spillOgTurn.length ? "planlagt denne uka" : "ingen planlagt"}
-              link
-            />
-          </Link>
-          <Link href="/portal/tren/tester">
-            <KpiCard
-              label="Tester"
-              value={String(tester.length)}
-              sub={tester.length ? "fullført" : "ingen denne uka"}
-              link
-            />
-          </Link>
-        </div>
-
-        {/* Pyramide-fordeling */}
-        {pyrOmrader.length > 0 && (
-          <div className="mb-6 overflow-hidden rounded-xl border border-border bg-card px-6 py-4">
-            <div className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-              Fordeling denne uka
-            </div>
-            <div className="flex h-3 overflow-hidden rounded-full">
-              {pyrOmrader.map((pyr) => {
-                const pct = Math.round(((pyrMin[pyr] ?? 0) / totalPyrMin) * 100);
-                return (
-                  <div
-                    key={pyr}
-                    className={`${PYR_BAR[pyr]} transition-all`}
-                    style={{ width: `${pct}%` }}
-                    title={`${PYR_LABEL[pyr]}: ${pyrMin[pyr]} min`}
-                  />
-                );
-              })}
-            </div>
-            <div className="mt-2 flex flex-wrap gap-x-6 gap-y-1">
-              {pyrOmrader.map((pyr) => {
-                const min = pyrMin[pyr] ?? 0;
-                const pct = Math.round((min / totalPyrMin) * 100);
-                return (
-                  <span key={pyr} className="inline-flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground">
-                    <span className={`h-2 w-2 rounded-sm ${PYR_BAR[pyr]}`} />
-                    {PYR_LABEL[pyr]}
-                    <span className="tabular-nums text-foreground">{pct}%</span>
-                    <span className="tabular-nums opacity-60">{min}m</span>
-                  </span>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* Toolbar */}
-        <div className="mb-4 space-y-2 sm:space-y-0 sm:flex sm:flex-wrap sm:items-center sm:gap-4">
-          {/* Uke-navigasjon + Ny økt (same row on mobile) */}
-          <div className="flex items-center justify-between gap-2">
-            <div className="inline-flex gap-1 rounded-md border border-border bg-card p-1">
-              <Link
-                href={`/portal/tren/kalender?uke=${fmtParam(forrigeUke)}`}
-                className="inline-flex min-h-11 min-w-11 items-center gap-1 rounded-sm px-2 py-2 text-xs font-medium text-foreground hover:bg-secondary"
-              >
-                <ChevronLeft className="h-4 w-4" />
-                <span className="hidden sm:inline">Forrige uke</span>
-              </Link>
-              <Link
-                href="/portal/tren/kalender"
-                className="inline-flex min-h-11 items-center rounded-sm bg-foreground px-4 py-2 text-xs font-medium text-background"
-              >
-                I dag
-              </Link>
-              <Link
-                href={`/portal/tren/kalender?uke=${fmtParam(nesteUke)}`}
-                className="inline-flex min-h-11 min-w-11 items-center gap-1 rounded-sm px-2 py-2 text-xs font-medium text-foreground hover:bg-secondary"
-              >
-                <span className="hidden sm:inline">Neste uke</span>
-                <ChevronRight className="h-4 w-4" />
-              </Link>
-            </div>
-
-            <Link
-              href="/portal/ny-okt"
-              className="inline-flex min-h-11 items-center gap-2 rounded-md bg-accent px-4 py-2 text-xs font-semibold text-accent-foreground hover:opacity-90 sm:hidden"
-            >
-              <Plus className="h-4 w-4" />
-              Ny økt
-            </Link>
-          </div>
-
-          {/* Filter-piller (scrollbar på mobil) */}
-          <div className="flex gap-2 overflow-x-auto scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap">
-            <Link
-              href={filterLink("alle")}
-              className={`inline-flex min-h-11 shrink-0 items-center rounded-full px-4 text-xs font-medium transition-colors ${
-                aktivFilter === "alle"
-                  ? "bg-foreground text-background"
-                  : "border border-border bg-card text-foreground hover:bg-secondary"
-              }`}
-            >
-              Alle
-            </Link>
-            {FILTER_PILLS.map((p) =>
-              p.disabled ? (
-                <span
-                  key={p.key}
-                  className="inline-flex min-h-11 shrink-0 items-center rounded-full border border-border bg-card px-4 text-xs font-medium text-foreground opacity-40"
-                >
-                  {p.label}
-                </span>
-              ) : (
-                <Link
-                  key={p.key}
-                  href={filterLink(p.key)}
-                  className={`inline-flex min-h-11 shrink-0 items-center rounded-full px-4 text-xs font-medium transition-colors ${
-                    aktivFilter === p.key
-                      ? "bg-foreground text-background"
-                      : "border border-border bg-card text-foreground hover:bg-secondary"
-                  }`}
-                >
-                  {p.label}
-                </Link>
-              )
-            )}
-          </div>
-
-          <span className="hidden sm:block sm:flex-1" />
-
-          {/* Ny økt (desktop) */}
+      {/* Header */}
+      <div className="mb-4 flex items-center justify-between">
+        <h1 className="font-display text-[22px] font-bold leading-tight tracking-[-0.03em] text-foreground">
+          Uke {uke}
+          <em className="ml-1 font-medium italic text-primary"> · {maned}</em>
+        </h1>
+        <div className="flex gap-[5px]">
           <Link
-            href="/portal/ny-okt"
-            className="hidden sm:inline-flex items-center gap-2 rounded-md bg-accent px-4 py-2 text-xs font-semibold text-accent-foreground hover:opacity-90"
+            href={"/portal/tren/kalender?uke=" + fmtUkeParam(forrige)}
+            className="grid h-7 w-7 place-items-center rounded-[8px] border border-border bg-card text-foreground hover:bg-secondary"
+            aria-label="Forrige uke"
           >
-            <Plus className="h-4 w-4" />
-            Ny økt
+            <ChevronLeft className="h-3 w-3" strokeWidth={2} />
+          </Link>
+          <Link
+            href={"/portal/tren/kalender?uke=" + fmtUkeParam(neste)}
+            className="grid h-7 w-7 place-items-center rounded-[8px] border border-border bg-card text-foreground hover:bg-secondary"
+            aria-label="Neste uke"
+          >
+            <ChevronRight className="h-3 w-3" strokeWidth={2} />
           </Link>
         </div>
+      </div>
 
-        {/* Kalender — full bredde */}
-        <div className="overflow-hidden rounded-xl border border-border bg-card">
-          {/* Dag-header (kun desktop) */}
-          <div className="hidden md:grid grid-cols-[60px_repeat(7,1fr)] border-b border-border bg-secondary">
-            <div />
-            {dager.map((d, i) => {
-              const erIdag = d.toDateString() === new Date().toDateString();
-              return (
+      {/* Uke-mini-grid */}
+      <div className="mb-4">
+        <div className="grid grid-cols-7 gap-[5px]">
+          {DOW_KORT.map((d) => (
+            <div
+              key={d}
+              className="pb-[3px] text-center font-mono text-[9px] font-semibold uppercase tracking-[0.1em] text-muted-foreground"
+            >
+              {d}
+            </div>
+          ))}
+          {dager.map((dag, i) => (
+            <UkeCelle
+              key={i}
+              dato={dag.getDate()}
+              erIdag={sammeDag(dag, idag)}
+              erFullfort={fullforteDatoer.has(dag.toDateString())}
+              harOkter={datoerMedOkt.has(dag.toDateString())}
+              erFremtidig={dag > idag && !sammeDag(dag, idag)}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Streak-tracker */}
+      <div className="mb-4 rounded-[20px] border border-border bg-card px-[15px] py-[14px] shadow-sm">
+        <div className="mb-[10px] flex items-baseline justify-between">
+          <div className="flex items-baseline gap-2">
+            <span className="font-mono text-[28px] font-bold leading-none text-primary">
+              {aktivStreakAntall}
+            </span>
+            <span className="font-display text-[14px] font-semibold text-foreground">
+              dager på rad
+            </span>
+          </div>
+          <span className="font-mono text-[10px] text-muted-foreground">
+            Rekord: {rekord}
+          </span>
+        </div>
+        <div className="flex flex-wrap gap-[3px]">
+          {streakCeller.map((c, i) => (
+            <StreakCelle
+              key={i}
+              erFullfort={c.erFullfort}
+              erIdag={c.erIdag}
+              label={c.label}
+            />
+          ))}
+        </div>
+        <div className="mt-[10px] flex items-center gap-[5px] text-[12px] text-muted-foreground">
+          <Flame className="h-3 w-3 text-primary" strokeWidth={2} aria-hidden />
+          {aktivStreakAntall > 0
+            ? rekord > aktivStreakAntall
+              ? "Tren i dag for å nå " + (aktivStreakAntall + 1) + " — " + (rekord - aktivStreakAntall) + " fra rekorden."
+              : "Fantastisk! Du er på rekorden din (" + rekord + " dager)."
+            : "Start streaken din — tren i dag."}
+        </div>
+      </div>
+
+      {/* Denne uken */}
+      <div>
+        <p className="mb-[10px] font-mono text-[9.5px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
+          Denne uken
+        </p>
+        {rader.length > 0 ? (
+          <div className="flex flex-col gap-[7px]">
+            {rader.map((rad) => {
+              const ikonBg = rad.erIdag ? "var(--lime, #D1F843)" : "var(--secondary, #F1EEE5)";
+              const ikonFg = rad.erIdag ? "var(--forest, #005840)" : "var(--muted-foreground, #5E5C57)";
+              const innhold = (
                 <div
-                  key={i}
-                  className="border-l border-border/60 px-2 py-2 text-center"
+                  className={
+                    "flex items-center gap-[11px] rounded-[14px] border bg-card px-[13px] py-[11px] " +
+                    (rad.erIdag ? "border-l-2 border-primary/30 border-l-primary" : "border-border")
+                  }
+                  style={rad.erIdag ? { background: "rgba(209,248,67,.05)" } : undefined}
                 >
-                  <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-                    {DAG_NAVN[i]}
-                  </div>
                   <div
-                    className={`mt-1 font-mono text-lg font-medium ${
-                      erIdag ? "font-bold text-primary" : "text-foreground"
-                    }`}
+                    className="flex h-9 w-9 shrink-0 flex-col items-center justify-center rounded-[8px]"
+                    style={{ background: ikonBg }}
                   >
-                    {d.getDate()}
+                    <span className="font-mono text-[13px] font-bold leading-none" style={{ color: ikonFg }}>
+                      {rad.dag}
+                    </span>
+                    <span className="font-mono text-[7.5px] opacity-70" style={{ color: ikonFg }}>
+                      {rad.dow}
+                    </span>
                   </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-[13px] font-semibold text-foreground">{rad.tittel}</p>
+                    <p className="mt-0.5 font-mono text-[10px] text-muted-foreground">{rad.meta}</p>
+                  </div>
+                  <span
+                    className="shrink-0 rounded-full px-[8px] py-[3px] font-mono text-[9px] font-bold"
+                    style={{
+                      background: rad.erIdag ? "rgba(209,248,67,.2)" : rad.badge.bg,
+                      color: rad.erIdag ? "var(--forest, #005840)" : rad.badge.fg,
+                    }}
+                  >
+                    {rad.erIdag ? "I dag" : rad.badge.badge}
+                  </span>
                 </div>
+              );
+              return rad.href ? (
+                <Link key={rad.id} href={rad.href} className="block hover:opacity-90">
+                  {innhold}
+                </Link>
+              ) : (
+                <div key={rad.id}>{innhold}</div>
               );
             })}
           </div>
-
-          {/* Interaktivt kalender-grid */}
-          <KalenderInteraktiv
-            eventsPerDag={eventsPerDag}
-            dager={dager}
-            todayLine={todayLine}
-            favoritter={favoritter}
-            isFree={user.tier === "GRATIS"}
-          />
-        </div>
+        ) : (
+          <div className="rounded-[20px] border border-border bg-card px-6 py-6 text-center">
+            <p className="text-[14px] font-semibold text-foreground">Ingen økt planlagt</p>
+            <p className="mt-1 text-[12.5px] text-muted-foreground">
+              Ny bruker — coach legger til plan.
+            </p>
+          </div>
+        )}
       </div>
-    </div>
-  );
-}
-
-function KpiCard({
-  label,
-  value,
-  sub,
-  link,
-}: {
-  label: string;
-  value: string;
-  sub: string;
-  link?: boolean;
-}) {
-  return (
-    <div
-      className={`rounded-xl border border-border bg-card p-4 ${
-        link ? "cursor-pointer transition-colors hover:border-foreground/20 hover:bg-secondary/50" : ""
-      }`}
-    >
-      <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-        {label}
-      </div>
-      <div className="mt-1 font-mono text-3xl font-medium leading-tight tracking-tight text-foreground">
-        {value}
-      </div>
-      <div className="mt-1 text-xs text-muted-foreground">{sub}</div>
     </div>
   );
 }

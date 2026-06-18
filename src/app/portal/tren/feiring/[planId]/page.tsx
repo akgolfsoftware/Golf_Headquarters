@@ -11,8 +11,7 @@ import { notFound, redirect } from "next/navigation";
 import {
   ArrowLeft,
   ArrowRight,
-  CheckCircle2,
-  Sparkles,
+  Star,
   TrendingDown,
   TrendingUp,
 } from "lucide-react";
@@ -20,7 +19,6 @@ import {
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { computeEffectiveness } from "@/lib/ai-plan/effectiveness";
-import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 
 type Params = Promise<{ planId: string }>;
 
@@ -32,7 +30,7 @@ function formatDelta(v: number | null): string {
 
 function deltaKlasse(v: number | null): string {
   if (v === null) return "text-muted-foreground";
-  if (v > 0.05) return "text-primary";
+  if (v > 0.05) return "text-success";
   if (v < -0.05) return "text-destructive";
   return "text-muted-foreground";
 }
@@ -87,6 +85,13 @@ export default async function PlanFeiring({ params }: { params: Params }) {
     (s) => s.status === "COMPLETED",
   ).length;
 
+  const prosent =
+    totalSesjoner > 0 ? Math.round((ferdigeSesjoner / totalSesjoner) * 100) : 0;
+
+  // Ring SVG — circumference for r=50: 2π×50 ≈ 314
+  const circumference = 314;
+  const dashoffset = circumference - (circumference * prosent) / 100;
+
   // Personlig rekord — sammenlign SG-Total-delta med tidligere planer.
   const tidligere = await prisma.planEffectiveness.findMany({
     where: { userId: plan.userId, planId: { not: planId } },
@@ -98,9 +103,7 @@ export default async function PlanFeiring({ params }: { params: Params }) {
     .map((t) => t.sgTotalDelta)
     .filter((v): v is number => v !== null);
   const personligRekord =
-    tidligereSgTotal.length === 0
-      ? null
-      : Math.max(...tidligereSgTotal);
+    tidligereSgTotal.length === 0 ? null : Math.max(...tidligereSgTotal);
   const erRekord =
     eff?.sgTotalDelta !== null &&
     eff?.sgTotalDelta !== undefined &&
@@ -108,196 +111,220 @@ export default async function PlanFeiring({ params }: { params: Params }) {
     eff.sgTotalDelta > personligRekord;
 
   return (
-    <div className="space-y-8">
-      <Link
-        href="/portal/tren"
-        className="inline-flex min-h-11 items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
-      >
-        <ArrowLeft size={14} strokeWidth={1.5} />
-        Tilbake til trening
-      </Link>
+    <div className="min-h-screen flex flex-col">
+      {/* Dark hero section — bg-primary (deep forest) with lime text */}
+      <section className="bg-primary text-primary-foreground px-5 pb-10 pt-16 text-center flex flex-col items-center">
+        {/* Completion ring */}
+        <svg viewBox="0 0 120 120" className="h-28 w-28 mb-6">
+          {/* Track */}
+          <circle
+            cx="60"
+            cy="60"
+            r="50"
+            fill="none"
+            stroke="currentColor"
+            strokeOpacity="0.2"
+            strokeWidth="10"
+          />
+          {/* Fill */}
+          <circle
+            cx="60"
+            cy="60"
+            r="50"
+            fill="none"
+            stroke="#D1F843"
+            strokeWidth="10"
+            strokeLinecap="round"
+            strokeDasharray={circumference}
+            strokeDashoffset={dashoffset}
+            transform="rotate(-90 60 60)"
+          />
+          {/* Labels */}
+          <text
+            x="60"
+            y="56"
+            textAnchor="middle"
+            fill="#D1F843"
+            fontFamily="'JetBrains Mono', monospace"
+            fontSize="8"
+            fontWeight="600"
+            letterSpacing="0.12em"
+          >
+            PERIODE
+          </text>
+          <text
+            x="60"
+            y="76"
+            textAnchor="middle"
+            fill="#D1F843"
+            fontFamily="'JetBrains Mono', monospace"
+            fontSize="20"
+            fontWeight="700"
+          >
+            {prosent}%
+          </text>
+        </svg>
 
-      <PageHeader
-        eyebrow="PlayerHQ · Trening · Fullført"
-        titleLead="Du fullførte"
-        titleItalic={plan.name}
-        sub={
-          erRekord
-            ? "Ny personlig rekord på SG-Total-delta. Bygg videre på dette."
-            : "Se hvordan du har utviklet deg gjennom planen og ta neste steg."
-        }
-      />
-
-      {/* Hovedkort — fullført */}
-      <section className="overflow-hidden rounded-2xl border border-primary/40 bg-card">
-        <div className="bg-primary/8 px-6 py-8 sm:px-10">
-          <div className="flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-primary">
-            <CheckCircle2 className="h-4 w-4" strokeWidth={1.75} />
-            Fullført treningsplan
-          </div>
-          <div className="mt-4 flex flex-wrap items-end gap-6">
-            <div>
-              <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                Økter gjennomført
-              </div>
-              <div className="mt-1 font-mono text-[40px] font-semibold leading-none tabular-nums">
-                {ferdigeSesjoner}
-                <span className="text-[18px] text-muted-foreground">
-                  /{totalSesjoner}
-                </span>
-              </div>
-            </div>
-            <div>
-              <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                Completion-rate
-              </div>
-              <div className="mt-1 font-mono text-[40px] font-semibold leading-none tabular-nums">
-                {totalSesjoner > 0
-                  ? Math.round((ferdigeSesjoner / totalSesjoner) * 100)
-                  : 0}
-                <span className="text-[18px] text-muted-foreground"> %</span>
-              </div>
-            </div>
-            {erRekord && (
-              <div className="rounded-full border border-accent bg-accent/20 px-4 py-2 font-mono text-[11px] font-semibold text-accent-foreground">
-                <Sparkles className="mr-1 inline h-3.5 w-3.5" strokeWidth={1.75} />
-                Personlig rekord
-              </div>
-            )}
-          </div>
+        {/* Eyebrow */}
+        <div className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-accent mb-3">
+          Periode fullført
         </div>
+
+        {/* h1 */}
+        <h1 className="font-display text-[28px] font-semibold leading-tight text-primary-foreground mb-3">
+          Utrolig{" "}
+          <em className="text-accent not-italic font-semibold">gjennomkjøring!</em>
+        </h1>
+
+        {/* Subtitle */}
+        <p className="text-[14px] text-primary-foreground/70 max-w-xs">
+          {plan.name} er fullført.{" "}
+          {ferdigeSesjoner} av {totalSesjoner} økter gjennomført.
+        </p>
       </section>
 
-      {/* SG-deltas som progress-rings */}
-      {eff ? (
-        <section className="rounded-lg border border-border bg-card p-6">
-          <h2 className="mb-4 font-display text-[18px] font-semibold leading-tight">
-            Din utvikling — Strokes Gained
-          </h2>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
-            <SgRing label="Total" v={eff.sgTotalDelta} />
-            <SgRing label="OTT" v={eff.sgOttDelta} />
-            <SgRing label="APP" v={eff.sgAppDelta} />
-            <SgRing label="ARG" v={eff.sgArgDelta} />
-            <SgRing label="PUTT" v={eff.sgPuttDelta} />
+      {/* PersonalBest card — overlaps hero bottom */}
+      {erRekord && (
+        <div className="mx-4 -mt-4 rounded-2xl bg-accent p-4 shadow-sm">
+          <div className="flex items-center gap-3">
+            <Star
+              className="h-5 w-5 text-accent-foreground shrink-0"
+              strokeWidth={1.75}
+            />
+            <div>
+              <div className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-accent-foreground">
+                Personlig rekord
+              </div>
+              <div className="text-[13px] text-accent-foreground/80 mt-0.5">
+                Beste SG-Total-delta hittil — bygg videre på dette.
+              </div>
+            </div>
           </div>
-          <p className="mt-4 text-[12px] text-muted-foreground">
-            Sammenligning av snitt-SG fra de 5 rundene før og etter planen.
-          </p>
-        </section>
-      ) : (
-        <section className="rounded-lg border border-dashed border-border bg-card p-6 text-center text-[13px] text-muted-foreground">
-          Vi har ikke nok runde-data ennå til å beregne SG-deltaer. Spill noen
-          runder så regner vi dette automatisk.
-        </section>
+        </div>
       )}
 
-      {/* Personlig rekord — sammenligning med tidligere planer */}
+      {/* GoalProgress card */}
+      <div className={`mx-4 rounded-2xl border border-border bg-card p-4 ${erRekord ? "mt-3" : "mt-4"}`}>
+        <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground mb-2">
+          Planfremgang
+        </div>
+        <div className="font-mono text-[28px] font-bold tabular-nums text-success leading-none mb-3">
+          {ferdigeSesjoner}
+          <span className="text-[16px] text-muted-foreground font-medium">
+            /{totalSesjoner} fullført
+          </span>
+        </div>
+        {/* Progress bar */}
+        <div className="h-2 w-full rounded-full bg-secondary overflow-hidden mb-2">
+          <div
+            className="h-full rounded-full bg-gradient-to-r from-primary to-accent transition-all"
+            style={{ width: `${prosent}%` }}
+          />
+        </div>
+        <div className="text-[12px] text-muted-foreground">
+          {plan.name} · {totalSesjoner} {totalSesjoner === 1 ? "uke" : "uker"}
+        </div>
+      </div>
+
+      {/* SG data card */}
+      {eff ? (
+        <div className="mx-4 mt-3 rounded-2xl border border-border bg-card p-4">
+          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground mb-3">
+            Strokes Gained — utvikling
+          </div>
+          <div className="grid grid-cols-5 gap-2">
+            <SgCell label="Total" v={eff.sgTotalDelta} />
+            <SgCell label="OTT" v={eff.sgOttDelta} />
+            <SgCell label="APP" v={eff.sgAppDelta} />
+            <SgCell label="ARG" v={eff.sgArgDelta} />
+            <SgCell label="PUTT" v={eff.sgPuttDelta} />
+          </div>
+          <p className="mt-3 text-[11px] text-muted-foreground">
+            Snitt SG — 5 runder før vs. etter planen.
+          </p>
+        </div>
+      ) : (
+        <div className="mx-4 mt-3 rounded-2xl border border-dashed border-border bg-card p-4 text-center text-[13px] text-muted-foreground">
+          Ikke nok runde-data ennå til å beregne SG-deltaer. Spill noen runder
+          så regner vi dette automatisk.
+        </div>
+      )}
+
+      {/* Tidligere planer */}
       {personligRekord !== null && eff?.sgTotalDelta !== null && (
-        <section className="rounded-lg border border-border bg-card p-6">
-          <h2 className="mb-2 font-display text-[16px] font-semibold leading-tight">
-            Sammenlignet med tidligere planer
-          </h2>
-          <div className="flex flex-wrap items-center gap-6 font-mono">
+        <div className="mx-4 mt-3 rounded-2xl border border-border bg-card p-4">
+          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground mb-3">
+            Mot tidligere planer
+          </div>
+          <div className="flex gap-6">
             <div>
-              <div className="text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+              <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground mb-1">
                 Denne planen
               </div>
               <div
-                className={`mt-1 text-[24px] font-semibold tabular-nums ${deltaKlasse(eff?.sgTotalDelta ?? null)}`}
+                className={`font-mono text-[22px] font-semibold tabular-nums ${deltaKlasse(eff?.sgTotalDelta ?? null)}`}
               >
                 {formatDelta(eff?.sgTotalDelta ?? null)}
               </div>
             </div>
             <div>
-              <div className="text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+              <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground mb-1">
                 Beste tidligere
               </div>
               <div
-                className={`mt-1 text-[24px] font-semibold tabular-nums ${deltaKlasse(personligRekord)}`}
+                className={`font-mono text-[22px] font-semibold tabular-nums ${deltaKlasse(personligRekord)}`}
               >
                 {formatDelta(personligRekord)}
               </div>
             </div>
             <div>
-              <div className="text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                Antall fullførte planer
+              <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground mb-1">
+                Planer totalt
               </div>
-              <div className="mt-1 text-[24px] font-semibold tabular-nums text-foreground">
+              <div className="font-mono text-[22px] font-semibold tabular-nums text-foreground">
                 {tidligere.length + 1}
               </div>
             </div>
           </div>
-        </section>
+        </div>
       )}
 
-      {/* CTA */}
-      <section className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+      {/* CTAs */}
+      <div className="mx-4 mt-4 flex flex-col gap-3 pb-16">
         <Link
           href="/portal/tren"
-          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
-        >
-          <ArrowLeft className="h-3.5 w-3.5" strokeWidth={1.75} />
-          Til trening
-        </Link>
-        <Link
-          href="/portal/tren/kalender"
-          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+          className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-full bg-accent px-6 font-mono text-[12px] font-bold uppercase tracking-[0.10em] text-accent-foreground transition-opacity hover:opacity-90"
         >
           Be om ny plan
-          <ArrowRight className="h-3.5 w-3.5" strokeWidth={1.75} />
+          <ArrowRight className="h-4 w-4" strokeWidth={1.75} />
         </Link>
-      </section>
+        <Link
+          href="/portal"
+          className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-full border border-border bg-transparent px-6 font-mono text-[12px] font-bold uppercase tracking-[0.10em] text-foreground transition-colors hover:bg-secondary"
+        >
+          <ArrowLeft className="h-4 w-4" strokeWidth={1.75} />
+          Tilbake til hjem
+        </Link>
+      </div>
     </div>
   );
 }
 
-function SgRing({ label, v }: { label: string; v: number | null }) {
-  const positiv = v !== null && v >= 0;
-  const Ikon = v === null ? null : positiv ? TrendingUp : TrendingDown;
+function SgCell({ label, v }: { label: string; v: number | null }) {
+  const Ikon = v === null ? null : v >= 0 ? TrendingUp : TrendingDown;
   const farge = deltaKlasse(v);
 
-  // Ring-progress: prosent basert på absoluttverdi (kapret på 1.0 SG).
-  const prosent =
-    v === null ? 0 : Math.min(100, Math.round((Math.abs(v) / 1.0) * 100));
-  const stroke = positiv ? "stroke-primary" : "stroke-destructive";
-
   return (
-    <article className="flex flex-col items-center gap-2 rounded-md border border-border bg-background/40 p-4">
-      <div className="relative h-20 w-20">
-        <svg viewBox="0 0 100 100" className="h-full w-full -rotate-90">
-          <circle
-            cx="50"
-            cy="50"
-            r="42"
-            fill="none"
-            className="stroke-border"
-            strokeWidth="6"
-          />
-          <circle
-            cx="50"
-            cy="50"
-            r="42"
-            fill="none"
-            className={stroke}
-            strokeWidth="6"
-            strokeLinecap="round"
-            strokeDasharray={2 * Math.PI * 42}
-            strokeDashoffset={(2 * Math.PI * 42 * (100 - prosent)) / 100}
-          />
-        </svg>
-        <div className="absolute inset-0 flex items-center justify-center">
-          {Ikon && <Ikon className={`h-4 w-4 ${farge}`} strokeWidth={1.75} />}
-        </div>
-      </div>
-      <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+    <div className="flex flex-col items-center gap-1 rounded-xl border border-border bg-background/60 py-3 px-1">
+      <div className="font-mono text-[9px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
         {label}
       </div>
-      <div
-        className={`font-mono text-[16px] font-semibold tabular-nums ${farge}`}
-      >
+      {Ikon && (
+        <Ikon className={`h-3.5 w-3.5 ${farge}`} strokeWidth={1.75} />
+      )}
+      <div className={`font-mono text-[13px] font-semibold tabular-nums ${farge}`}>
         {formatDelta(v)}
       </div>
-    </article>
+    </div>
   );
 }

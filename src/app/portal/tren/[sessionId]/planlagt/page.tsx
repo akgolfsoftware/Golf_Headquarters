@@ -3,17 +3,14 @@
  *
  * Pre-økt-visning med drills, beskrivelse og varighet. Henter ekte data fra
  * TrainingSessionV2 + TrainingDrillV2. Tom-state hvis økt mangler eller
- * ikke finnes.
+ * ikke finnes. Portet til hybrid design system 2026-06-17.
  */
 import Link from "next/link";
 import {
+  ArrowLeft,
   Clock,
-  MapPin,
-  Pencil,
-  Play,
   Target,
   Users,
-  X,
 } from "lucide-react";
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -38,6 +35,18 @@ function formatDateLong(d: Date): string {
 
 function minutesBetween(start: Date, end: Date): number {
   return Math.max(0, Math.round((end.getTime() - start.getTime()) / 60000));
+}
+
+function relativeTime(date: Date): string {
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  if (diffDays === 0) return "i dag";
+  if (diffDays === 1) return "i går";
+  if (diffDays > 1) return `${diffDays} dager siden`;
+  const futureDays = Math.ceil(-diffMs / (1000 * 60 * 60 * 24));
+  if (futureDays === 1) return "i morgen";
+  return `om ${futureDays} dager`;
 }
 
 export default async function OktPlanlagtPage({
@@ -82,6 +91,16 @@ export default async function OktPlanlagtPage({
     (sum, d) => sum + (d.durationMinutes ?? 0),
     0,
   );
+
+  // Timing-logikk
+  const now = new Date();
+  const sessionDay = new Date(session.startTime);
+  sessionDay.setHours(0, 0, 0, 0);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const isToday = sessionDay.getTime() === today.getTime();
+  const isOverdue = session.startTime < now && !isToday;
+  const isFuture = session.startTime > now && !isToday;
 
   // Trene sammen-data: er denne brukeren host og kan invitere?
   const erHost = session.hostId === user.id;
@@ -129,190 +148,193 @@ export default async function OktPlanlagtPage({
   }
 
   return (
-    <div className="space-y-8 pb-32">
-      {/* Hero */}
-      <section className="space-y-2">
-        <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-primary">
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
-          </span>
-          Planlagt {formatTime(session.startTime)} ·{" "}
-          {formatDateLong(session.startTime)}
-        </span>
-        <h1 className="font-display text-4xl font-semibold leading-tight tracking-tight">
-          <em className="italic text-primary">{session.title}</em>
-        </h1>
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
-          <span className="inline-flex items-center rounded-full bg-foreground px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-accent">
-            {session.practiceType}
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <Clock size={13} strokeWidth={1.75} />
-            <strong className="font-mono uppercase tracking-[0.06em] text-foreground">
-              {varighet} min
-            </strong>
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <MapPin size={13} strokeWidth={1.75} />
-            <strong className="font-mono uppercase tracking-[0.06em] text-foreground">
-              {session.miljo}
-            </strong>
-          </span>
-        </div>
-      </section>
+    <div className="min-h-screen bg-background">
+      <div className="mx-auto max-w-xl px-4 py-6 space-y-6 pb-12">
 
-      {/* Notater fra coach */}
-      {session.notes && (
-        <section>
-          <h2 className="mb-2 font-display text-xl font-semibold tracking-tight">
-            Notater
-          </h2>
-          <div className="rounded-lg border border-border border-l-[3px] border-l-primary bg-card p-6">
-            <p className="whitespace-pre-wrap italic text-foreground">
-              &ldquo;{session.notes}&rdquo;
-            </p>
-          </div>
-        </section>
-      )}
+        {/* Tilbake-knapp */}
+        <Link
+          href="/portal/tren"
+          className="inline-flex items-center gap-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <ArrowLeft size={14} strokeWidth={1.75} />
+          Tilbake
+        </Link>
 
-      {/* Trene sammen — kun for delte økter */}
-      {session.isShared && (
-        <section>
-          <div className="mb-2 flex items-center justify-between gap-2">
-            <h2 className="font-display text-xl font-semibold tracking-tight">
-              Trene sammen{" "}
-              <span className="font-mono text-sm font-normal text-muted-foreground">
-                ·{" "}
-                {session.participants.length}
-                {session.maxParticipants != null
-                  ? ` av ${session.maxParticipants}`
-                  : ""}
-              </span>
-            </h2>
-            {kanInvitere && (
-              <InviteFriendTrigger
-                sessionId={session.id}
-                hostId={user.id}
-                maxParticipants={session.maxParticipants ?? 8}
-                currentParticipants={session.participants.length}
-                spillere={inviterbareSpillere}
-                label="Inviter kompis"
-              />
-            )}
-          </div>
-          {session.participants.length === 0 ? (
-            <div className="flex items-center gap-2 rounded-md border border-dashed border-border bg-card/40 p-6 text-sm text-muted-foreground">
-              <Users size={16} strokeWidth={1.5} aria-hidden />
-              Ingen er invitert ennå.
-              {erHost && " Trykk «Inviter kompis» for å invitere noen."}
-            </div>
-          ) : (
-            <ParticipantsList
-              participants={session.participants.map((p) => ({
-                participantId: p.id,
-                user: {
-                  id: p.user.id,
-                  name: p.user.name,
-                  avatarUrl: p.user.avatarUrl,
-                },
-                status: p.status,
-              }))}
-            />
-          )}
-        </section>
-      )}
-
-      {/* Drills */}
-      <section>
-        <h2 className="mb-2 font-display text-xl font-semibold tracking-tight">
-          Øvelser{" "}
-          {session.drills.length > 0 && (
-            <span className="font-mono text-sm font-normal text-muted-foreground">
-              · {session.drills.length} drills · {totalDrillMin} min
+        {/* Hero */}
+        <section className="space-y-3">
+          {/* Eyebrow — timing-avhengig */}
+          {isToday && (
+            <span className="inline-flex items-center gap-2 rounded-full bg-accent/15 text-primary px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.10em]">
+              I dag · {formatDateLong(session.startTime)}
             </span>
           )}
-        </h2>
-        {session.drills.length === 0 ? (
-          <div className="flex items-center gap-2 rounded-md border border-dashed border-border bg-card/40 p-6 text-sm text-muted-foreground">
+          {isFuture && (
+            <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+              Planlagt · {formatDateLong(session.startTime)}
+            </span>
+          )}
+          {isOverdue && (
+            <span className="inline-flex items-center gap-2 rounded-full bg-warning/15 text-warning px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.10em]">
+              Ikke startet · {formatDateLong(session.startTime)}
+            </span>
+          )}
+
+          <h1 className="font-display text-[26px] font-semibold leading-tight tracking-tight text-foreground">
+            {session.title}
+          </h1>
+
+          {/* Meta-rad */}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
+            <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground">
+              <Clock size={13} strokeWidth={1.75} />
+              {varighet} min · {formatTime(session.startTime)}
+            </span>
+            {session.drills.length > 0 && (
+              <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground">
+                <Target size={13} strokeWidth={1.75} />
+                {session.drills.length} drills
+              </span>
+            )}
+            {session.miljo && (
+              <span className="inline-flex items-center rounded-full bg-primary/10 text-primary px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.08em]">
+                {session.miljo}
+              </span>
+            )}
+          </div>
+        </section>
+
+        {/* Coach InsightCard — kun hvis det finnes notater */}
+        {session.notes && (
+          <div className="rounded-xl border border-border border-l-[3px] border-l-accent bg-card p-4 space-y-2.5">
+            <div className="flex items-center gap-2.5">
+              {/* Coach avatar */}
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary">
+                <span className="font-mono text-[10px] font-bold text-accent">AK</span>
+              </div>
+              <div className="min-w-0">
+                <p className="font-display text-[14px] font-bold leading-tight text-foreground">
+                  Anders Kristiansen
+                </p>
+                <p className="font-mono text-[10px] text-muted-foreground">
+                  Coach-notat · {relativeTime(session.updatedAt ?? session.startTime)}
+                </p>
+              </div>
+            </div>
+            <p className="text-[13.5px] leading-[1.55] text-foreground whitespace-pre-wrap">
+              {session.notes}
+            </p>
+          </div>
+        )}
+
+        {/* Drill-liste */}
+        {session.drills.length > 0 && (
+          <div className="rounded-xl border border-border bg-card overflow-hidden">
+            <div className="px-4 pt-4 pb-2">
+              <span className="font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
+                Drills i planen
+                {totalDrillMin > 0 && (
+                  <span className="ml-2 text-muted-foreground/60">· {totalDrillMin} min</span>
+                )}
+              </span>
+            </div>
+            <div className="divide-y divide-border">
+              {session.drills.map((drill) => (
+                <div key={drill.id} className="flex items-start gap-3 px-4 py-3">
+                  {/* Dot */}
+                  <span className="mt-[5px] h-2 w-2 shrink-0 rounded-full bg-primary" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[13.5px] font-semibold leading-snug text-foreground">
+                      {drill.name}
+                    </p>
+                    <p className="mt-0.5 font-mono text-[10px] text-muted-foreground">
+                      {drill.durationMinutes && `${drill.durationMinutes} min`}
+                      {drill.repetitions ? ` · ${drill.repetitions} reps` : ""}
+                    </p>
+                  </div>
+                  {drill.pyramide && (
+                    <span className="shrink-0 rounded-full bg-primary/8 px-2.5 py-0.5 font-mono text-[10px] font-semibold text-primary">
+                      {drill.pyramide}
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Tom drill-state */}
+        {session.drills.length === 0 && (
+          <div className="flex items-center gap-2 rounded-xl border border-dashed border-border bg-card/40 p-6 text-sm text-muted-foreground">
             <Target size={16} strokeWidth={1.5} />
             Ingen drills er lagt til denne økten ennå.
           </div>
-        ) : (
-          <div className="space-y-2">
-            {session.drills.map((drill, idx) => (
-              <details
-                key={drill.id}
-                open={idx === 0}
-                className="group rounded-lg border border-border bg-card"
-              >
-                <summary className="flex cursor-pointer items-center gap-2 px-4 py-2 [&::-webkit-details-marker]:hidden">
-                  <span className="font-mono text-[10px] font-semibold text-muted-foreground">
-                    {String(idx + 1).padStart(2, "0")}
-                  </span>
-                  <span className="flex-1 font-display text-sm font-semibold">
-                    {drill.name}
-                  </span>
-                  <span className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
-                    {drill.durationMinutes} min
-                    {drill.repetitions ? ` · ${drill.repetitions} reps` : ""}
-                  </span>
-                  <span className="inline-flex items-center rounded-full bg-secondary px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
-                    {drill.pyramide}
-                  </span>
-                </summary>
-                {drill.description && (
-                  <div className="grid grid-cols-1 gap-4 border-t border-border px-4 py-4 sm:grid-cols-[120px_1fr]">
-                    <div className="flex h-20 items-center justify-center rounded-md bg-primary/10 text-primary">
-                      <Play size={20} strokeWidth={1.5} />
-                    </div>
-                    <p className="text-sm leading-relaxed text-foreground">
-                      {drill.description}
-                    </p>
-                  </div>
-                )}
-              </details>
-            ))}
-          </div>
         )}
-      </section>
 
-      {/* Action bar */}
-      <footer
-        className="fixed bottom-0 left-0 right-0 z-10 border-t border-border bg-card px-4 py-2 sm:px-6"
-        style={{ paddingBottom: "max(env(safe-area-inset-bottom), 0.75rem)" }}
-      >
-        <div className="mx-auto flex max-w-4xl flex-col items-stretch gap-2 sm:flex-row sm:items-center">
-          <span className="hidden font-mono text-[11px] uppercase tracking-[0.06em] text-muted-foreground sm:inline">
-            Starter{" "}
-            <strong className="text-foreground">
-              {formatTime(session.startTime)} · {formatDateLong(session.startTime)}
-            </strong>
-          </span>
-          <div className="flex flex-wrap items-center gap-2 sm:ml-auto">
-            <button
-              type="button"
-              disabled
-              className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-xs font-semibold text-muted-foreground opacity-60"
-            >
-              <Pencil size={12} strokeWidth={1.75} /> Endre tid
-            </button>
-            <button
-              type="button"
-              disabled
-              className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-destructive/30 bg-card px-4 py-2 text-xs font-semibold text-destructive opacity-60"
-            >
-              <X size={12} strokeWidth={1.75} /> Avlys
-            </button>
-            <Link
-              href={`/portal/tren/${sessionId}`}
-              className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-full bg-accent px-6 py-2 text-sm font-semibold text-accent-foreground hover:opacity-90 sm:flex-initial"
-            >
-              <Play size={14} strokeWidth={2} /> Start økt
-            </Link>
-          </div>
+        {/* Trene sammen — kun for delte økter */}
+        {session.isShared && (
+          <section>
+            <div className="mb-2 flex items-center justify-between gap-2">
+              <h2 className="font-display text-[18px] font-semibold tracking-tight text-foreground">
+                Trene sammen{" "}
+                <span className="font-mono text-sm font-normal text-muted-foreground">
+                  ·{" "}
+                  {session.participants.length}
+                  {session.maxParticipants != null
+                    ? ` av ${session.maxParticipants}`
+                    : ""}
+                </span>
+              </h2>
+              {kanInvitere && (
+                <InviteFriendTrigger
+                  sessionId={session.id}
+                  hostId={user.id}
+                  maxParticipants={session.maxParticipants ?? 8}
+                  currentParticipants={session.participants.length}
+                  spillere={inviterbareSpillere}
+                  label="Inviter kompis"
+                />
+              )}
+            </div>
+            {session.participants.length === 0 ? (
+              <div className="flex items-center gap-2 rounded-xl border border-dashed border-border bg-card/40 p-6 text-sm text-muted-foreground">
+                <Users size={16} strokeWidth={1.5} aria-hidden />
+                Ingen er invitert ennå.
+                {erHost && " Trykk «Inviter kompis» for å invitere noen."}
+              </div>
+            ) : (
+              <ParticipantsList
+                participants={session.participants.map((p) => ({
+                  participantId: p.id,
+                  user: {
+                    id: p.user.id,
+                    name: p.user.name,
+                    avatarUrl: p.user.avatarUrl,
+                  },
+                  status: p.status,
+                }))}
+              />
+            )}
+          </section>
+        )}
+
+        {/* CTA-knapper */}
+        <div className="space-y-3 pt-2">
+          <Link
+            href={`/portal/tren/${sessionId}`}
+            className="flex w-full items-center justify-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-semibold text-accent-foreground hover:opacity-90 transition-opacity"
+          >
+            Start økt
+          </Link>
+          <button
+            type="button"
+            disabled
+            className="flex w-full items-center justify-center gap-2 rounded-full border border-border bg-card px-6 py-3.5 text-sm font-semibold text-muted-foreground opacity-50 cursor-not-allowed"
+          >
+            Utsett til i morgen
+          </button>
         </div>
-      </footer>
+
+      </div>
     </div>
   );
 }

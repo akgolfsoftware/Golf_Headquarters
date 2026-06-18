@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, ArrowDown, Minus, Pin } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowDown, Minus, Pin, Star } from "lucide-react";
 import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
@@ -18,6 +18,11 @@ const numberFmt = (decimals: number) =>
 
 const dateFmt = new Intl.DateTimeFormat("nb-NO", {
   day: "2-digit",
+  month: "short",
+  year: "numeric",
+});
+
+const monthFmt = new Intl.DateTimeFormat("nb-NO", {
   month: "short",
   year: "numeric",
 });
@@ -58,29 +63,49 @@ export default async function BestVsNowPage({
       })
     : null;
 
+  // Build PersonalBest banner description from best session date
+  const bestBannerLabel = bestSession
+    ? `${monthFmt.format(bestSession.recordedAt)} · best ever`
+    : null;
+
   return (
-    <div className="space-y-6">
+    <div className="mx-auto max-w-[760px] space-y-6 px-4 pb-20 sm:px-6 md:pb-0">
+      {/* Back link */}
       <Link
         href="/portal/mal/sg-hub"
-        className="inline-flex items-center gap-1.5 font-mono text-[12.5px] text-muted-foreground transition-colors hover:text-foreground"
+        className="inline-flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="h-3.5 w-3.5" />
         SG Hub
       </Link>
 
-      <header>
-        <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
-          Best vs Today
+      {/* Editorial header */}
+      <div className="space-y-1">
+        <h1 className="font-display text-3xl font-bold leading-tight text-foreground">
+          Beste form{" "}
+          <em className="italic text-primary">vs nå</em>
+        </h1>
+        <p className="font-mono text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+          TrackMan · Best ever sammenligning
         </p>
-        <h2 className="mt-1 font-display text-2xl font-semibold leading-tight tracking-tight">
-          Beste økt mot{" "}
-          <em className="font-normal text-primary md:italic">dagens</em>
-        </h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Speilet sammenligning av aggregat-metrikker. Grønn = bedre, rød =
-          verre.
-        </p>
-      </header>
+      </div>
+
+      {/* PersonalBest banner — only when a best session is pinned */}
+      {bestSession && bestBannerLabel && (
+        <div className="flex items-center gap-3 rounded-2xl bg-accent px-4 py-3">
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/15">
+            <Star className="h-4 w-4 text-accent-foreground" />
+          </div>
+          <div className="min-w-0">
+            <p className="font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-accent-foreground">
+              Beste periode
+            </p>
+            <p className="text-[13.5px] font-semibold leading-snug text-accent-foreground">
+              {bestBannerLabel}
+            </p>
+          </div>
+        </div>
+      )}
 
       {!currentSession ? (
         <EmptyState />
@@ -123,12 +148,12 @@ export default async function BestVsNowPage({
 
 function EmptyState() {
   return (
-    <div className="rounded-xl border border-dashed border-border bg-card/50 p-8 text-center">
+    <div className="rounded-2xl border border-dashed border-border bg-card/50 p-8 text-center">
       <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
         Ingen TrackMan-data
       </p>
       <p className="mt-2 text-sm text-muted-foreground">
-        Importer din første økt for å bruke Best vs Today-sammenligning.
+        Importer din første økt for å bruke Best vs nå-sammenligning.
       </p>
       <Link
         href="/portal/mal/trackman"
@@ -149,18 +174,18 @@ function NoPinnedState({
   recordedAt: Date;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-6">
-      <div className="flex items-start gap-2">
+    <div className="rounded-2xl border border-border bg-card p-6">
+      <div className="flex items-start gap-3">
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
           <Pin className="h-4 w-4" />
         </div>
         <div className="flex-1">
-          <h3 className="text-sm font-semibold">
+          <h3 className="font-display text-[14px] font-semibold">
             Ingen pinnet best ever-økt ennå
           </h3>
           <p className="mt-1 text-sm text-muted-foreground">
-            Pin en økt som referanse for å aktivere sammenligning. Dagens
-            valgte økt er fra {dateFmt.format(recordedAt)}.
+            Pin en økt som referanse for å aktivere sammenligning. Valgt økt er
+            fra {dateFmt.format(recordedAt)}.
           </p>
         </div>
       </div>
@@ -217,7 +242,7 @@ function Comparison({
           metrics={bestSummary.metrics}
         />
         <SessionColumn
-          tag={isCurrentPinned ? "Best ever (denne)" : "Dagens"}
+          tag={isCurrentPinned ? "Best ever (denne)" : "Nå"}
           recordedAt={current.recordedAt}
           shotCount={currentSummary.shotCount}
           metrics={currentSummary.metrics}
@@ -249,8 +274,8 @@ function SessionColumn({
 }) {
   return (
     <article
-      className={`rounded-xl border bg-card p-6 ${
-        accent ? "border-primary/30" : "border-border"
+      className={`rounded-2xl border bg-card p-6 ${
+        accent ? "border-primary/30 bg-primary/5" : "border-border"
       }`}
     >
       <header className="mb-4">
@@ -351,8 +376,10 @@ function SessionPicker({
   activeId: string;
 }) {
   return (
-    <section className="rounded-xl border border-border bg-card p-6">
-      <h3 className="mb-2 text-sm font-semibold">Velg dagens økt</h3>
+    <section className="rounded-2xl border border-border bg-card p-6">
+      <h3 className="mb-3 font-display text-[14px] font-semibold">
+        Velg økt å sammenligne
+      </h3>
       <div className="flex flex-wrap gap-2">
         {sessions.map((s) => {
           const aktiv = s.id === activeId;

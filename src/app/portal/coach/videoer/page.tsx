@@ -1,13 +1,12 @@
 /**
  * PlayerHQ Coach Videoer (/portal/coach/videoer) — hybrid-design 2026-06-17.
  *
- * Data-henting uendret. Visuell re-styling til hybrid-mønster:
- *   - Mono eyebrow + display-tittel
- *   - Videokort med forest-header, lime play-knapp, mono-meta
+ * Videokort med forest-gradient header, lime play-ikon, mono-meta.
+ * Matcher fasit B5 · Innhold (Videoer-fane). Data-henting uendret.
  */
 
 import Link from "next/link";
-import { ArrowLeft, Video } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PlayerVideoCard } from "./player-video-card";
@@ -27,6 +26,7 @@ export default async function VideoerPage() {
 
   return (
     <div className="mx-auto max-w-[430px] pb-24 pt-2 md:max-w-[860px] md:pb-8">
+
       {/* Tilbake */}
       <div className="mb-3 px-4 md:px-0">
         <Link
@@ -41,35 +41,38 @@ export default async function VideoerPage() {
       {/* Header */}
       <div className="mb-4 px-4 md:px-0">
         <h1 className="font-display text-[20px] font-bold leading-[1.06] tracking-[-0.02em] text-foreground">
-          Videoer fra{" "}
-          <em className="font-medium italic text-primary">Anders</em>
+          Videoer fra
+          <em className="font-medium italic text-primary"> Anders</em>
         </h1>
       </div>
 
       {/* Liste */}
       {videos.length === 0 ? (
         <div className="mx-3 rounded-xl border border-dashed border-border bg-card p-8 text-center md:mx-0">
-          <Video className="mx-auto mb-3 h-8 w-8 text-muted-foreground/40" strokeWidth={1.5} />
-          <p className="font-display text-[15px] font-semibold text-foreground">Ingen videoer ennå</p>
+          {/* Forest-gradient placeholder — tomt state */}
+          <div
+            className="relative mx-auto mb-4 flex h-[60px] w-[60px] items-center justify-center rounded-xl"
+            style={{ background: "linear-gradient(150deg,#2f5a2c,#0a2417)" }}
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden
+            >
+              <polygon points="5 3 19 12 5 21 5 3" fill="#D1F843" />
+            </svg>
+          </div>
+          <p className="font-display text-[15px] font-semibold text-foreground">
+            Ingen videoer ennå
+          </p>
           <p className="mt-1 text-[13px] text-muted-foreground">
             Coachen din kan dele swing-analyser, drill-demo og kamp-feedback her.
           </p>
         </div>
       ) : (
         <div className="px-3 md:px-0">
-          {/* Kolonne-header */}
-          <div className="mb-2 flex items-center gap-2 border-b border-border pb-2.5">
-            <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-foreground">
-              Alle videoer
-            </span>
-            <span className="font-mono text-[10px] font-bold tracking-[0.04em] text-muted-foreground">
-              {videos.length}
-            </span>
-            <span className="ml-auto font-mono text-[9px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
-              Åpnes i ny fane
-            </span>
-          </div>
-
           <ul className="flex flex-col gap-2.5">
             {videos.map((v) => (
               <PlayerVideoCard

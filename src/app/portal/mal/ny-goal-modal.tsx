@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { Plus } from "lucide-react";
 import { createGoal } from "./goals-actions";
 
 const TYPER = [
@@ -66,9 +67,14 @@ export function NyGoalModal() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="rounded-md border border-input bg-card px-4 py-2 text-sm font-medium text-foreground hover:border-border"
+        className="flex flex-shrink-0 items-center gap-[6px] rounded-full border-none px-[14px] py-[9px] font-mono text-[11px] font-bold uppercase tracking-[0.06em] transition-opacity hover:opacity-90"
+        style={{
+          background: "var(--lime, #D1F843)",
+          color: "var(--forest, #005840)",
+        }}
       >
-        + Nytt mål
+        <Plus className="h-[13px] w-[13px]" strokeWidth={2.4} />
+        Nytt mål
       </button>
 
       <dialog
