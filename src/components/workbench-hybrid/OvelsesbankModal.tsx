@@ -33,7 +33,7 @@ export function OvelsesbankModal({ isFys, onClose, onPick }: OvelsesbankModalPro
     <div
       onClick={onClose}
       style={{
-        position: "absolute", inset: 0, zIndex: 78, background: "rgba(7,16,12,0.74)",
+        position: "fixed", inset: 0, zIndex: 78, background: "rgba(7,16,12,0.74)",
         backdropFilter: "blur(5px)", display: "flex", alignItems: "center", justifyContent: "center", padding: 32,
         fontFamily: FONT.sans,
       }}

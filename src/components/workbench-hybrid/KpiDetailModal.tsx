@@ -79,7 +79,7 @@ export function KpiDetailModal({ kpiKey, totals, grand, onClose }: KpiDetailModa
     <div
       onClick={onClose}
       style={{
-        position: "absolute",
+        position: "fixed",
         inset: 0,
         zIndex: 60,
         background: "rgba(7,16,12,0.74)",

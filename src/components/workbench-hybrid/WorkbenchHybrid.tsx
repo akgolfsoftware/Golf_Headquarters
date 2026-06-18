@@ -47,6 +47,11 @@ import { KpiDetailModal } from "./KpiDetailModal";
 import { OktplanOverlay, type PlanMode } from "./OktplanOverlay";
 import { RecurrenceEditor } from "./RecurrenceEditor";
 import { OvelsesbankModal } from "./OvelsesbankModal";
+import { MobileTopbar, MobileZoomRail } from "./MobileTopbar";
+import { MobilePaletteSheet } from "./MobilePaletteSheet";
+import { MobileInspectorSheet } from "./MobileInspectorSheet";
+import { MobileStatusbar } from "./MobileStatusbar";
+import { useMediaQuery, WB_MOBILE_QUERY } from "./use-media-query";
 
 const LS_KEY = "akgolf.wb.level";
 const VALID_LEVELS: ZoomLevel[] = ["arsplan", "ar", "maned", "uke", "dag"];
@@ -364,6 +369,12 @@ export function WorkbenchHybrid({
   // Coach-Skill-veiviseren (kun coach-modus) — åpen/lukket-tilstand.
   const [coachSkillOpen, setCoachSkillOpen] = useState(false);
 
+  // Mobil-tilstand (kun under lg). Palette + inspektør er bunn-ark på mobil;
+  // tap-to-add legger en standardøkt på valgt dag (touch-fallback for DnD).
+  const isMobile = useMediaQuery(WB_MOBILE_QUERY);
+  const [mobilePaletteOpen, setMobilePaletteOpen] = useState(false);
+  const [mobileTargetDay, setMobileTargetDay] = useState<WeekKey>("ons");
+
   // Ekte data der den finnes; ellers fasit-demo (alltid renderbar).
   const realWeek = useMemo(() => mapWeek(data), [data]);
   const goals: WbGoal[] = useMemo(() => mapGoals(data) ?? DEMO_GOALS, [data]);
@@ -444,6 +455,17 @@ export function WorkbenchHybrid({
     dragRef.current = null;
   }, []);
 
+  // Mobil tap-to-add: legg en standardøkt på valgt dag (Dag-visning → "ons").
+  // Gjenbruker drop-reduceren med en syntetisk palette-drag — ingen ny logikk.
+  const onMobileAddToDay = useCallback(
+    (pid: string) => {
+      const day = state.level === "dag" ? "ons" : mobileTargetDay;
+      dispatch({ type: "drop", day, drag: { kind: "palette", pid } });
+      setMobilePaletteOpen(false);
+    },
+    [state.level, mobileTargetDay],
+  );
+
   // Dimensjon-velger-handlere (skiller multi/omr fra single).
   const editTarget: WbSession | PaletteItem | null =
     state.editScope === "palette" && state.selectedPaletteId
@@ -521,6 +543,7 @@ export function WorkbenchHybrid({
 
   // Coach-modus er innleiret i AdminShell (mørk side-chrome finnes alt) → ingen
   // sand-bakgrunn / egen 100vh-wrapper. Spiller-modus beholder standalone-flaten.
+  // Player-modus: padding styres av .wb-player-klassen (trang på mobil, fasit på lg).
   const wrapperStyle: React.CSSProperties = isCoach
     ? {
         padding: "24px 28px 40px",
@@ -531,7 +554,6 @@ export function WorkbenchHybrid({
     : {
         background: WB.pageBg,
         minHeight: "100vh",
-        padding: "36px 28px 64px",
         fontFamily: FONT.sans,
         color: WB.limeDark,
         WebkitFontSmoothing: "antialiased",
@@ -545,211 +567,311 @@ export function WorkbenchHybrid({
   const titleColor = isCoach ? WB.text : WB.limeDark;
   const subColor = isCoach ? WB.muted : WB.subText;
 
-  return (
-    <div style={wrapperStyle}>
-      <style>{`.wb-scroll::-webkit-scrollbar{width:0;height:0}`}</style>
+  // Senter-zoom-visningen — én definisjon, gjenbrukt i desktop-panelet og i
+  // mobil-layoutet (begge bruker samme view-komponenter og handlere).
+  const centerView = (
+    <>
+      {state.level === "uke" && (
+        <UkeView
+          week={state.week}
+          selectedId={state.editScope === "session" ? state.selectedId : null}
+          hoverDay={state.hoverDay}
+          weekLabel={weekHead.weekLabel}
+          weekRange={weekHead.range}
+          warningTitle={banner.title}
+          warningMeta={banner.meta}
+          onSessionClick={(id) => dispatch({ type: "selectSession", id })}
+          onSessionDragStart={onSessionDragStart}
+          onDayDragOver={(day) => dispatch({ type: "setHoverDay", day })}
+          onDayDragLeave={(day) => state.hoverDay === day && dispatch({ type: "setHoverDay", day: null })}
+          onDayDrop={onDayDrop}
+        />
+      )}
+      {state.level === "dag" && (
+        <DagView
+          daySessions={state.week.ons}
+          selectedId={state.editScope === "session" ? state.selectedId : null}
+          onSessionClick={(id) => dispatch({ type: "selectSession", id })}
+          onTimelineDrop={onTimelineDrop}
+        />
+      )}
+      {state.level === "arsplan" && (
+        <ArsplanView
+          phases={seasonPhases}
+          load={DEMO_YEAR_LOAD}
+          markers={DEMO_YEAR_MARKERS}
+          onPhaseClick={() => {
+            /* Periode-inspektør er en senere fase — no-op for nå. */
+          }}
+        />
+      )}
+      {state.level === "ar" && (
+        <ArView phases={seasonPhases} counts={DEMO_MONTH_COUNTS} onMonthClick={(month) => dispatch({ type: "openMonth", month })} />
+      )}
+      {state.level === "maned" && (
+        <ManedView
+          monthIndex={state.selectedMonth}
+          phases={seasonPhases}
+          week={state.week}
+          totals={totals}
+          tournaments={tournaments}
+          sampleMonth={DEMO_SAMPLE_MONTH}
+          baseStats={DEMO_MONTH_STATS}
+          onPrev={() => dispatch({ type: "setMonth", month: state.selectedMonth - 1 })}
+          onNext={() => dispatch({ type: "setMonth", month: state.selectedMonth + 1 })}
+          onDayClick={() => setLevel("dag")}
+        />
+      )}
+    </>
+  );
 
-      {/* above-panel header */}
-      <div style={{ maxWidth: 1340, margin: "0 auto 18px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-          <div style={{ width: 9, height: 9, borderRadius: "50%", background: eyebrowColor }} />
-          <span style={{ fontFamily: FONT.mono, fontSize: 11, fontWeight: 600, letterSpacing: "0.16em", textTransform: "uppercase", color: eyebrowColor }}>
-            {eyebrowText}
-          </span>
+  const kpiStrip = (
+    <KpiStrip
+      totals={totals}
+      grand={grand}
+      sessionCount={kpiSessionCount}
+      adherence="82%"
+      sg="+1.8"
+      onOpen={(key) => dispatch({ type: "openKpi", key })}
+    />
+  );
+
+  // Mobil-inspektør vises kun når noe er valgt OG vi er på mobil.
+  const mobileInspectorOpen = isMobile && inspectorMode !== null;
+
+  return (
+    <div style={wrapperStyle} className={isCoach ? "wb-root" : "wb-root wb-player"}>
+      <style>{`
+        .wb-scroll::-webkit-scrollbar{width:0;height:0}
+        /* Desktop-panelet (fast 820px/1340px) vises kun fra lg (1024px) og opp. */
+        .wb-desktop{display:none}
+        .wb-mobile{display:flex;flex-direction:column}
+        @media (min-width:1024px){
+          .wb-desktop{display:block}
+          .wb-mobile{display:none}
+        }
+        /* Spiller-modus: trang sidepadding på mobil, fasit-padding fra lg. */
+        .wb-root.wb-player{padding:16px 14px 40px}
+        @media (min-width:1024px){.wb-root.wb-player{padding:36px 28px 64px}}
+      `}</style>
+
+      {/* ───────── DESKTOP (lg+) ───────── */}
+      <div className="wb-desktop">
+        {/* above-panel header */}
+        <div style={{ maxWidth: 1340, margin: "0 auto 18px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+            <div style={{ width: 9, height: 9, borderRadius: "50%", background: eyebrowColor }} />
+            <span style={{ fontFamily: FONT.mono, fontSize: 11, fontWeight: 600, letterSpacing: "0.16em", textTransform: "uppercase", color: eyebrowColor }}>
+              {eyebrowText}
+            </span>
+          </div>
+          <h1 style={{ fontFamily: FONT.display, fontWeight: 800, fontSize: 30, lineHeight: 1.05, letterSpacing: "-0.02em", margin: "0 0 4px", color: titleColor }}>
+            {headTitle}
+          </h1>
+          <p style={{ fontSize: 14, color: subColor, margin: 0 }}>{headSub}</p>
         </div>
-        <h1 style={{ fontFamily: FONT.display, fontWeight: 800, fontSize: 30, lineHeight: 1.05, letterSpacing: "-0.02em", margin: "0 0 4px", color: titleColor }}>
-          {headTitle}
-        </h1>
-        <p style={{ fontSize: 14, color: subColor, margin: 0 }}>{headSub}</p>
+
+        {/* panel */}
+        <div
+          style={{
+            position: "relative",
+            maxWidth: 1340,
+            margin: "0 auto",
+            background: WB.panelBg,
+            border: `1px solid ${WB.panelBorder}`,
+            borderRadius: 18,
+            overflow: "hidden",
+            boxShadow: "0 30px 60px -24px rgba(15,42,34,0.55)",
+            display: "flex",
+            flexDirection: "column",
+            height: 820,
+          }}
+        >
+          <Topbar
+            level={state.level}
+            onLevel={setLevel}
+            playerName={playerName}
+            initials={initials}
+            onAddSession={() => dispatch({ type: "addSession" })}
+            role={role}
+            players={players}
+            currentPlayerId={currentPlayerId}
+            onOpenCoachSkill={isCoach ? () => setCoachSkillOpen(true) : undefined}
+          />
+
+          {/* body */}
+          <div style={{ flex: 1, display: "flex", minHeight: 0 }}>
+            <PaletteSidebar
+              open={state.panels}
+              onToggle={(k) => dispatch({ type: "togglePanel", key: k })}
+              palette={state.palette}
+              selectedPaletteId={state.editScope === "palette" ? state.selectedPaletteId : null}
+              goals={goals}
+              sideTests={DEMO_SIDE_TESTS}
+              testCount="30"
+              onPaletteClick={(pid) => dispatch({ type: "selectPalette", pid })}
+              onPaletteDragStart={onPaletteDragStart}
+              onAddPalette={() => dispatch({ type: "addPalette" })}
+            />
+
+            {/* center */}
+            <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
+              {/* KPI-stripe — over alle zoom-visninger. Volum/pyramide fra ekte
+                  uke-data; adherence/SG er fasit-demo (ingen modell ennå). */}
+              {kpiStrip}
+              {centerView}
+            </div>
+
+            {/* Desktop-inspektør (høyre-kolonne) — kun når noe er valgt OG vi ikke
+                er på mobil (mobil viser inspektøren som bunn-ark i stedet). */}
+            {inspectorMode && !isMobile && (
+              <Inspector
+                mode={inspectorMode}
+                onClose={() => dispatch({ type: "closeInspector" })}
+                onDimClick={(field) => dispatch({ type: "openDim", field })}
+                onRemoveOmr={onRemoveOmr}
+                onPaletteTitle={(title) => dispatch({ type: "patchPalette", patch: { title } })}
+                onPaletteDur={(delta) => dispatch({ type: "patchPaletteDur", delta })}
+                onRemoveSession={() => dispatch({ type: "removeSelected" })}
+                onStart={() => {
+                  /* Live-økt er en senere fase — no-op for nå. */
+                }}
+                onOpenPlan={inspectorMode.kind === "session" ? () => dispatch({ type: "openPlan" }) : undefined}
+                onOpenRecur={inspectorMode.kind === "session" ? () => dispatch({ type: "openRecur" }) : undefined}
+                onOpenBank={inspectorMode.kind === "session" ? () => dispatch({ type: "openBank" }) : undefined}
+              />
+            )}
+          </div>
+
+          <Statusbar totals={totals} grand={grand} weekLabel={weekHead.weekLabel} />
+        </div>
       </div>
 
-      {/* panel */}
+      {/* ───────── MOBIL (<lg) ───────── */}
       <div
+        className="wb-mobile"
         style={{
-          position: "relative",
-          maxWidth: 1340,
-          margin: "0 auto",
           background: WB.panelBg,
           border: `1px solid ${WB.panelBorder}`,
-          borderRadius: 18,
+          borderRadius: 16,
           overflow: "hidden",
-          boxShadow: "0 30px 60px -24px rgba(15,42,34,0.55)",
-          display: "flex",
-          flexDirection: "column",
-          height: 820,
+          minHeight: "calc(100dvh - 56px)",
         }}
       >
-        <Topbar
-          level={state.level}
-          onLevel={setLevel}
+        <MobileTopbar
           playerName={playerName}
           initials={initials}
           onAddSession={() => dispatch({ type: "addSession" })}
+          onOpenPalette={() => setMobilePaletteOpen(true)}
           role={role}
           players={players}
           currentPlayerId={currentPlayerId}
           onOpenCoachSkill={isCoach ? () => setCoachSkillOpen(true) : undefined}
         />
-
-        {/* body */}
-        <div style={{ flex: 1, display: "flex", minHeight: 0 }}>
-          <PaletteSidebar
-            open={state.panels}
-            onToggle={(k) => dispatch({ type: "togglePanel", key: k })}
-            palette={state.palette}
-            selectedPaletteId={state.editScope === "palette" ? state.selectedPaletteId : null}
-            goals={goals}
-            sideTests={DEMO_SIDE_TESTS}
-            testCount="30"
-            onPaletteClick={(pid) => dispatch({ type: "selectPalette", pid })}
-            onPaletteDragStart={onPaletteDragStart}
-            onAddPalette={() => dispatch({ type: "addPalette" })}
-          />
-
-          {/* center */}
-          <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
-            {/* KPI-stripe — over alle zoom-visninger. Volum/pyramide fra ekte
-                uke-data; adherence/SG er fasit-demo (ingen modell ennå). */}
-            <KpiStrip
-              totals={totals}
-              grand={grand}
-              sessionCount={kpiSessionCount}
-              adherence="82%"
-              sg="+1.8"
-              onOpen={(key) => dispatch({ type: "openKpi", key })}
-            />
-            {state.level === "uke" && (
-              <UkeView
-                week={state.week}
-                selectedId={state.editScope === "session" ? state.selectedId : null}
-                hoverDay={state.hoverDay}
-                weekLabel={weekHead.weekLabel}
-                weekRange={weekHead.range}
-                warningTitle={banner.title}
-                warningMeta={banner.meta}
-                onSessionClick={(id) => dispatch({ type: "selectSession", id })}
-                onSessionDragStart={onSessionDragStart}
-                onDayDragOver={(day) => dispatch({ type: "setHoverDay", day })}
-                onDayDragLeave={(day) => state.hoverDay === day && dispatch({ type: "setHoverDay", day: null })}
-                onDayDrop={onDayDrop}
-              />
-            )}
-            {state.level === "dag" && (
-              <DagView
-                daySessions={state.week.ons}
-                selectedId={state.editScope === "session" ? state.selectedId : null}
-                onSessionClick={(id) => dispatch({ type: "selectSession", id })}
-                onTimelineDrop={onTimelineDrop}
-              />
-            )}
-            {state.level === "arsplan" && (
-              <ArsplanView
-                phases={seasonPhases}
-                load={DEMO_YEAR_LOAD}
-                markers={DEMO_YEAR_MARKERS}
-                onPhaseClick={() => {
-                  /* Periode-inspektør er en senere fase — no-op for nå. */
-                }}
-              />
-            )}
-            {state.level === "ar" && (
-              <ArView
-                phases={seasonPhases}
-                counts={DEMO_MONTH_COUNTS}
-                onMonthClick={(month) => dispatch({ type: "openMonth", month })}
-              />
-            )}
-            {state.level === "maned" && (
-              <ManedView
-                monthIndex={state.selectedMonth}
-                phases={seasonPhases}
-                week={state.week}
-                totals={totals}
-                tournaments={tournaments}
-                sampleMonth={DEMO_SAMPLE_MONTH}
-                baseStats={DEMO_MONTH_STATS}
-                onPrev={() => dispatch({ type: "setMonth", month: state.selectedMonth - 1 })}
-                onNext={() => dispatch({ type: "setMonth", month: state.selectedMonth + 1 })}
-                onDayClick={() => setLevel("dag")}
-              />
-            )}
+        <MobileZoomRail level={state.level} onLevel={setLevel} />
+        {kpiStrip}
+        {/* Én visning om gangen. Uke-rutenettet (8 kolonner) scroller horisontalt
+            via en min-bredde; Dag-tidslinja og Årsplan/År/Måned reflow-er til full bredde. */}
+        <div className="wb-scroll" style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", overflowX: state.level === "uke" ? "auto" : "hidden" }}>
+          <div style={{ flex: 1, minWidth: state.level === "uke" ? 680 : 0, display: "flex", flexDirection: "column", minHeight: 0 }}>
+            {centerView}
           </div>
-
-          {inspectorMode && (
-            <Inspector
-              mode={inspectorMode}
-              onClose={() => dispatch({ type: "closeInspector" })}
-              onDimClick={(field) => dispatch({ type: "openDim", field })}
-              onRemoveOmr={onRemoveOmr}
-              onPaletteTitle={(title) => dispatch({ type: "patchPalette", patch: { title } })}
-              onPaletteDur={(delta) => dispatch({ type: "patchPaletteDur", delta })}
-              onRemoveSession={() => dispatch({ type: "removeSelected" })}
-              onStart={() => {
-                /* Live-økt er en senere fase — no-op for nå. */
-              }}
-              onOpenPlan={inspectorMode.kind === "session" ? () => dispatch({ type: "openPlan" }) : undefined}
-              onOpenRecur={inspectorMode.kind === "session" ? () => dispatch({ type: "openRecur" }) : undefined}
-              onOpenBank={inspectorMode.kind === "session" ? () => dispatch({ type: "openBank" }) : undefined}
-            />
-          )}
         </div>
-
-        <Statusbar totals={totals} grand={grand} weekLabel={weekHead.weekLabel} />
-
-        {state.dimPicker && (
-          <DimPickerModal
-            field={state.dimPicker}
-            selected={dimSelected}
-            multi={state.dimPicker === "omr"}
-            onPick={onDimPick}
-            onClose={() => dispatch({ type: "closeDim" })}
-          />
-        )}
-
-        {/* Øktplan-overlay */}
-        {state.modal === "oktplan" && selectedSession && (
-          <OktplanOverlay
-            session={selectedSession}
-            dayKey={dayKeyOf(state.week, selectedSession.id) ?? "ons"}
-            mode={state.planMode}
-            onMode={(mode) => dispatch({ type: "setPlanMode", mode })}
-            onClose={() => dispatch({ type: "closeModal" })}
-            onStart={() => {
-              /* Live-økt er en senere fase — lukk overlay for nå. */
-              dispatch({ type: "closeModal" });
-            }}
-          />
-        )}
-
-        {/* Gjentakelse-editor */}
-        {state.modal === "recurrence" && state.recurDraft && (
-          <RecurrenceEditor
-            draft={state.recurDraft}
-            onPatch={(patch) => dispatch({ type: "patchRecur", patch })}
-            onSave={() => dispatch({ type: "saveRecur" })}
-            onClose={() => dispatch({ type: "closeModal" })}
-          />
-        )}
-
-        {/* Øvelsesbank */}
-        {state.modal === "ovelsesbank" && selectedSession && (
-          <OvelsesbankModal
-            isFys={selectedSession.cat === "FYS"}
-            onClose={() => dispatch({ type: "closeModal" })}
-            onPick={(title, meta) => dispatch({ type: "pickBankItem", title, meta })}
-          />
-        )}
-
-        {/* KPI-detalj */}
-        {state.modal === "kpi" && state.kpiKey && (
-          <KpiDetailModal
-            kpiKey={state.kpiKey}
-            totals={totals}
-            grand={grand}
-            onClose={() => dispatch({ type: "closeModal" })}
-          />
-        )}
+        <MobileStatusbar totals={totals} grand={grand} weekLabel={weekHead.weekLabel} />
       </div>
+
+      {/* ───────── DELTE OVERLAYS (begge layouts) ───────── */}
+
+      {/* Mobil palette-ark */}
+      <MobilePaletteSheet
+        open={mobilePaletteOpen}
+        onClose={() => setMobilePaletteOpen(false)}
+        palette={state.palette}
+        goals={goals}
+        sideTests={DEMO_SIDE_TESTS}
+        testCount="30"
+        targetDay={mobileTargetDay}
+        onTargetDay={setMobileTargetDay}
+        onAddToDay={onMobileAddToDay}
+        onPaletteDragStart={onPaletteDragStart}
+        onAddPalette={() => {
+          dispatch({ type: "addPalette" });
+          setMobilePaletteOpen(false);
+        }}
+      />
+
+      {/* Mobil inspektør-ark (gjenbruker Inspector i sheet-variant) */}
+      {mobileInspectorOpen && inspectorMode && (
+        <MobileInspectorSheet
+          mode={inspectorMode}
+          onClose={() => dispatch({ type: "closeInspector" })}
+          onDimClick={(field) => dispatch({ type: "openDim", field })}
+          onRemoveOmr={onRemoveOmr}
+          onPaletteTitle={(title) => dispatch({ type: "patchPalette", patch: { title } })}
+          onPaletteDur={(delta) => dispatch({ type: "patchPaletteDur", delta })}
+          onRemoveSession={() => dispatch({ type: "removeSelected" })}
+          onStart={() => {
+            /* Live-økt er en senere fase — no-op for nå. */
+          }}
+          onOpenPlan={inspectorMode.kind === "session" ? () => dispatch({ type: "openPlan" }) : undefined}
+          onOpenRecur={inspectorMode.kind === "session" ? () => dispatch({ type: "openRecur" }) : undefined}
+          onOpenBank={inspectorMode.kind === "session" ? () => dispatch({ type: "openBank" }) : undefined}
+        />
+      )}
+
+      {state.dimPicker && (
+        <DimPickerModal
+          field={state.dimPicker}
+          selected={dimSelected}
+          multi={state.dimPicker === "omr"}
+          onPick={onDimPick}
+          onClose={() => dispatch({ type: "closeDim" })}
+        />
+      )}
+
+      {/* Øktplan-overlay */}
+      {state.modal === "oktplan" && selectedSession && (
+        <OktplanOverlay
+          session={selectedSession}
+          dayKey={dayKeyOf(state.week, selectedSession.id) ?? "ons"}
+          mode={state.planMode}
+          onMode={(mode) => dispatch({ type: "setPlanMode", mode })}
+          onClose={() => dispatch({ type: "closeModal" })}
+          onStart={() => {
+            /* Live-økt er en senere fase — lukk overlay for nå. */
+            dispatch({ type: "closeModal" });
+          }}
+        />
+      )}
+
+      {/* Gjentakelse-editor */}
+      {state.modal === "recurrence" && state.recurDraft && (
+        <RecurrenceEditor
+          draft={state.recurDraft}
+          onPatch={(patch) => dispatch({ type: "patchRecur", patch })}
+          onSave={() => dispatch({ type: "saveRecur" })}
+          onClose={() => dispatch({ type: "closeModal" })}
+        />
+      )}
+
+      {/* Øvelsesbank */}
+      {state.modal === "ovelsesbank" && selectedSession && (
+        <OvelsesbankModal
+          isFys={selectedSession.cat === "FYS"}
+          onClose={() => dispatch({ type: "closeModal" })}
+          onPick={(title, meta) => dispatch({ type: "pickBankItem", title, meta })}
+        />
+      )}
+
+      {/* KPI-detalj */}
+      {state.modal === "kpi" && state.kpiKey && (
+        <KpiDetailModal
+          kpiKey={state.kpiKey}
+          totals={totals}
+          grand={grand}
+          onClose={() => dispatch({ type: "closeModal" })}
+        />
+      )}
 
       {/* Coach-Skill-veiviser (kun coach-modus) */}
       {isCoach && coachSkillOpen && (

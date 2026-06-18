@@ -21,7 +21,7 @@ export function DimPickerModal({ field, selected, multi, onPick, onClose }: DimP
     <div
       onClick={onClose}
       style={{
-        position: "absolute",
+        position: "fixed",
         inset: 0,
         zIndex: 70,
         background: "rgba(7,16,12,0.74)",

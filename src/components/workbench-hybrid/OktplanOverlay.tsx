@@ -51,7 +51,7 @@ export function OktplanOverlay({ session: s, dayKey, mode, onMode, onClose, onSt
     <div
       onClick={onClose}
       style={{
-        position: "absolute",
+        position: "fixed",
         inset: 0,
         zIndex: 64,
         background: "rgba(7,16,12,0.74)",

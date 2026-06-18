@@ -57,7 +57,7 @@ export function RecurrenceEditor({ draft: d, onPatch, onSave, onClose }: Recurre
     <div
       onClick={onClose}
       style={{
-        position: "absolute", inset: 0, zIndex: 70, background: "rgba(7,16,12,0.74)",
+        position: "fixed", inset: 0, zIndex: 70, background: "rgba(7,16,12,0.74)",
         backdropFilter: "blur(5px)", display: "flex", alignItems: "center", justifyContent: "center", padding: 24,
       }}
     >

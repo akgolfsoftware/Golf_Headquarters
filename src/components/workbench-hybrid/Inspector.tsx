@@ -143,6 +143,8 @@ type InspectorProps = {
   onClose: () => void;
   onDimClick: (field: DimField) => void;
   onRemoveOmr: (value: string) => void;
+  /** "rail" (desktop høyre-kolonne) | "sheet" (mobil bunn-ark). */
+  variant?: "rail" | "sheet";
   // palette editor
   onPaletteTitle?: (title: string) => void;
   onPaletteDur?: (delta: number) => void;
@@ -159,6 +161,7 @@ export function Inspector({
   onClose,
   onDimClick,
   onRemoveOmr,
+  variant = "rail",
   onPaletteTitle,
   onPaletteDur,
   onRemoveSession,
@@ -167,19 +170,29 @@ export function Inspector({
   onOpenRecur,
   onOpenBank,
 }: InspectorProps): ReactElement {
+  // Mobil bunn-ark: full bredde, ingen venstre-kant, runde topp-hjørner.
+  const containerStyle: React.CSSProperties =
+    variant === "sheet"
+      ? {
+          width: "100%",
+          background: WB.railBg,
+          padding: 18,
+          overflowY: "auto",
+          position: "relative",
+          maxHeight: "100%",
+        }
+      : {
+          width: 300,
+          borderLeft: `1px solid ${WB.panelBorder}`,
+          background: WB.railBg,
+          padding: 18,
+          flexShrink: 0,
+          overflowY: "auto",
+          position: "relative",
+        };
+
   return (
-    <div
-      className="wb-scroll"
-      style={{
-        width: 300,
-        borderLeft: `1px solid ${WB.panelBorder}`,
-        background: WB.railBg,
-        padding: 18,
-        flexShrink: 0,
-        overflowY: "auto",
-        position: "relative",
-      }}
-    >
+    <div className="wb-scroll" style={containerStyle}>
       <button
         type="button"
         onClick={onClose}
