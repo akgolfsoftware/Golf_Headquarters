@@ -10,6 +10,7 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import type { PyramidArea, PracticeType, SessionStatusV2 } from "@/generated/prisma/client";
+import { translateMiljo } from "@/lib/portal/translate-taxonomy";
 
 // ── Types ─────────────────────────────────────────────────────────
 
@@ -22,6 +23,8 @@ export type TodaySession = {
   practiceType: PracticeType;
   pyramidArea: PyramidArea;
   durationMin: number;
+  /** Treningsmiljø (Sted) — null hvis ikke satt på økten. */
+  sted: string | null;
   drills: { id: string; name: string; durationMinutes: number }[];
   href: string;
 };
@@ -187,6 +190,7 @@ export async function getTodaysSession(userId: string): Promise<TodaySession | n
       endTime: true,
       status: true,
       practiceType: true,
+      miljo: true,
       drills: { select: { id: true, name: true, durationMinutes: true }, orderBy: { sortOrder: "asc" } },
     },
     take: 1,
@@ -204,6 +208,7 @@ export async function getTodaysSession(userId: string): Promise<TodaySession | n
     practiceType: s.practiceType,
     pyramidArea: PRACTICE_TO_PYRAMID[s.practiceType] ?? "TEK",
     durationMin: Math.max(0, Math.round((s.endTime.getTime() - s.startTime.getTime()) / 60_000)),
+    sted: s.miljo ? translateMiljo(s.miljo) : null,
     drills: s.drills,
     href: `/portal/gjennomfore/${s.id}`,
   };
@@ -577,6 +582,7 @@ export async function getAllTodaysSessions(userId: string): Promise<TodaySession
       endTime: true,
       status: true,
       practiceType: true,
+      miljo: true,
       drills: { select: { id: true, name: true, durationMinutes: true }, orderBy: { sortOrder: "asc" } },
     },
   });
@@ -590,6 +596,7 @@ export async function getAllTodaysSessions(userId: string): Promise<TodaySession
     practiceType: s.practiceType,
     pyramidArea: PRACTICE_TO_PYRAMID[s.practiceType] ?? "TEK",
     durationMin: Math.max(0, Math.round((s.endTime.getTime() - s.startTime.getTime()) / 60_000)),
+    sted: s.miljo ? translateMiljo(s.miljo) : null,
     drills: s.drills,
     href: `/portal/gjennomfore/${s.id}`,
   }));

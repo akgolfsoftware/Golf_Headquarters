@@ -72,16 +72,6 @@ let _sid = 1000;
 const newSid = () => "s" + (++_sid);
 const mk = (ax: AxKey, ttl: string, mins: number): Session => ({ id: newSid(), ax, ttl, mins });
 
-/* Uke 22 (Srixon-uka) forhåndsfylt */
-const SEED_WEEK_22: DayMap = {
-  0: [mk("fys", "Morgenmobilitet", 30), mk("slag", "Lengdekontroll 50–80 m", 75)],
-  1: [mk("tek", "Sekvens P4–P8", 60), mk("fys", "Rotasjonsstyrke + core", 45)],
-  2: [mk("fys", "Aktiv oppvarming", 30), mk("slag", "Innspill 50–80 m · presisjon", 60), mk("spill", "9-hulls spillsimulering", 90)],
-  3: [mk("fys", "Morgenmobilitet", 20), mk("tek", "Putt-konsistens 4 m", 60), mk("slag", "Fulle slag · matte → gress", 75)],
-  4: [mk("turn", "Pre-shot rutine + range", 90)],
-  5: [], 6: [],
-};
-
 const DRILLS = [
   { ax: "slag" as AxKey, ttl: "Lengdekontroll 50/65/80", mins: 45 },
   { ax: "slag" as AxKey, ttl: "Wedge-matrise 30–90 m", mins: 40 },
@@ -565,10 +555,10 @@ export function PlanBuilderClient({
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
-  const [planName, setPlanName] = useState("Topping mot Srixon #2");
+  const [planName, setPlanName] = useState("");
   const [selId, setSelId] = useState("p-spec");
   const [selWeek, setSelWeek] = useState(22);
-  const [weeks, setWeeks] = useState<WeeksState>({ 22: SEED_WEEK_22 });
+  const [weeks, setWeeks] = useState<WeeksState>({});
   const [overDay, setOverDay] = useState<number | null>(null);
   const [dragSess, setDragSess] = useState<{ id: string; from: number } | null>(null);
   const [modal, setModal] = useState<"assign" | null>(null);
@@ -749,6 +739,7 @@ export function PlanBuilderClient({
         </span>
         <input
           className="flex-1 bg-transparent font-display text-[15px] font-semibold text-foreground outline-none placeholder:text-muted-foreground"
+          placeholder="Gi planen et navn"
           value={planName}
           onChange={(e) => setPlanName(e.target.value)}
         />

@@ -11,7 +11,7 @@
  */
 
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Target } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
@@ -43,21 +43,10 @@ type GoalView = {
   abandonReason: string | null;
 };
 
-const DUMMY: GoalView = {
-  id: "dummy",
-  title: "HCP til 3,5",
-  goalType: "HCP_TARGET",
-  typeLabel: "HCP-MÅL",
-  deadline: new Date("2026-10-01"),
-  status: "ACTIVE",
-  currentValue: 4.2,
-  targetValue: 3.5,
-  unit: "HCP",
-  progressPct: 78,
-  etaWeeks: 6,
-  history: [],
-  abandonReason: null,
-};
+// Modulnivå-helper: Date.now() kan ikke kalles i render-body (react-hooks/purity).
+function nowMs(): number {
+  return Date.now();
+}
 
 function daysUntil(d: Date | null): number | null {
   if (!d) return null;
@@ -96,97 +85,122 @@ export default async function GoalDetailPage({
   const user = await requirePortalUser();
   const { id } = await params;
 
-  let data: GoalView = DUMMY;
-  let isOwnGoal = true;
+  const goal = await prisma.goal.findUnique({ where: { id } });
+  const isOwner =
+    !!goal &&
+    (goal.userId === user.id ||
+      user.role === "ADMIN" ||
+      user.role === "COACH");
 
-  try {
-    const goal = await prisma.goal.findUnique({ where: { id } });
-    if (goal) {
-      const isOwner =
-        goal.userId === user.id ||
-        user.role === "ADMIN" ||
-        user.role === "COACH";
-      isOwnGoal = goal.userId === user.id;
-
-      if (isOwner) {
-        const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
-        const rounds = await prisma.round.findMany({
-          where: { userId: goal.userId, playedAt: { gte: ninetyDaysAgo } },
-          include: { course: { select: { name: true } } },
-          orderBy: { playedAt: "desc" },
-          take: 30,
-        });
-
-        const isResult =
-          goal.type === "HCP_TARGET" || goal.type === "ROUNDS_PER_MONTH";
-
-        const history: RoundRow[] = rounds.map((r) => ({
-          id: r.id,
-          date: r.playedAt.toISOString(),
-          label: r.course?.name ?? "Runde",
-          value: r.score,
-          sgTotal: r.sgTotal ?? null,
-        }));
-
-        const currentValue =
-          goal.type === "HCP_TARGET" && user.hcp != null
-            ? user.hcp
-            : history[0]?.value ?? DUMMY.currentValue;
-
-        const startValue = history[history.length - 1]?.value ?? currentValue;
-        const targetValue = goal.targetValue ?? DUMMY.targetValue;
-
-        const progressPct =
-          isResult
-            ? Math.max(
-                0,
-                Math.min(
-                  100,
-                  ((startValue - currentValue) /
-                    Math.max(0.001, startValue - targetValue)) *
-                    100,
-                ),
-              )
-            : 50;
-
-        // Simple ETA estimate: weeks at current rate
-        let etaWeeks: number | null = null;
-        if (goal.targetDate) {
-          const ms = goal.targetDate.getTime() - Date.now();
-          etaWeeks = Math.max(0, Math.ceil(ms / (1000 * 60 * 60 * 24 * 7)));
-        }
-
-        const payloadObj =
-          goal.payload &&
-          typeof goal.payload === "object" &&
-          !Array.isArray(goal.payload)
-            ? (goal.payload as Record<string, unknown>)
-            : {};
-        const abandonReason =
-          typeof payloadObj.abandonReason === "string"
-            ? payloadObj.abandonReason
-            : null;
-
-        data = {
-          id: goal.id,
-          title: goal.title,
-          goalType: goal.type,
-          typeLabel: goalTypeLabelNorsk(goal.type),
-          deadline: goal.targetDate,
-          status: (goal.status as GoalStatus) ?? "ACTIVE",
-          currentValue,
-          targetValue,
-          unit: goalTypeUnit(goal.type),
-          progressPct,
-          etaWeeks,
-          history,
-          abandonReason,
-        };
-      }
-    }
-  } catch {
-    // DB not available — use dummy
+  // Ingen ekte mål — eller ikke tilgang. Vis ærlig "ikke funnet", aldri demo-mål.
+  if (!goal || !isOwner) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="border-b border-border bg-card px-4 pt-4 pb-6 sm:px-6">
+          <Link
+            href="/portal/mal"
+            className="inline-flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.04em] text-muted-foreground hover:text-foreground"
+          >
+            <ArrowLeft className="h-3 w-3" strokeWidth={1.75} />
+            Mine mål
+          </Link>
+        </div>
+        <div className="px-4 py-16 text-center sm:px-6">
+          <span className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-secondary text-muted-foreground">
+            <Target className="h-5 w-5" strokeWidth={1.75} />
+          </span>
+          <h1 className="mt-4 font-display text-[22px] font-bold tracking-[-0.02em] text-foreground">
+            Mål ikke funnet
+          </h1>
+          <p className="mt-2 text-[13px] text-muted-foreground">
+            Vi fant ingen mål med denne ID-en på kontoen din.
+          </p>
+          <Link
+            href="/portal/mal"
+            className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2} />
+            Tilbake til mine mål
+          </Link>
+        </div>
+      </div>
+    );
   }
+
+  const isOwnGoal = goal.userId === user.id;
+
+  const ninetyDaysAgo = new Date(nowMs() - 90 * 24 * 60 * 60 * 1000);
+  const rounds = await prisma.round.findMany({
+    where: { userId: goal.userId, playedAt: { gte: ninetyDaysAgo } },
+    include: { course: { select: { name: true } } },
+    orderBy: { playedAt: "desc" },
+    take: 30,
+  });
+
+  const isResult =
+    goal.type === "HCP_TARGET" || goal.type === "ROUNDS_PER_MONTH";
+
+  const history: RoundRow[] = rounds.map((r) => ({
+    id: r.id,
+    date: r.playedAt.toISOString(),
+    label: r.course?.name ?? "Runde",
+    value: r.score,
+    sgTotal: r.sgTotal ?? null,
+  }));
+
+  const currentValue =
+    goal.type === "HCP_TARGET" && user.hcp != null
+      ? user.hcp
+      : history[0]?.value ?? 0;
+
+  const startValue = history[history.length - 1]?.value ?? currentValue;
+  const targetValue = goal.targetValue ?? 0;
+
+  const progressPct = isResult
+    ? Math.max(
+        0,
+        Math.min(
+          100,
+          ((startValue - currentValue) /
+            Math.max(0.001, startValue - targetValue)) *
+            100,
+        ),
+      )
+    : 0;
+
+  // Simple ETA estimate: weeks at current rate
+  let etaWeeks: number | null = null;
+  if (goal.targetDate) {
+    const ms = goal.targetDate.getTime() - nowMs();
+    etaWeeks = Math.max(0, Math.ceil(ms / (1000 * 60 * 60 * 24 * 7)));
+  }
+
+  const payloadObj =
+    goal.payload &&
+    typeof goal.payload === "object" &&
+    !Array.isArray(goal.payload)
+      ? (goal.payload as Record<string, unknown>)
+      : {};
+  const abandonReason =
+    typeof payloadObj.abandonReason === "string"
+      ? payloadObj.abandonReason
+      : null;
+
+  const data: GoalView = {
+    id: goal.id,
+    title: goal.title,
+    goalType: goal.type,
+    typeLabel: goalTypeLabelNorsk(goal.type),
+    deadline: goal.targetDate,
+    status: (goal.status as GoalStatus) ?? "ACTIVE",
+    currentValue,
+    targetValue,
+    unit: goalTypeUnit(goal.type),
+    progressPct,
+    etaWeeks,
+    history,
+    abandonReason,
+  };
 
   const daysLeft = daysUntil(data.deadline);
   // Snittscore-stige — computed from HCP
@@ -339,7 +353,6 @@ export default async function GoalDetailPage({
         {isOwnGoal && (
           <GoalDetailClient
             goalId={data.id}
-            isDummy={data.id === "dummy"}
             initial={{
               title: data.title,
               type: data.goalType,

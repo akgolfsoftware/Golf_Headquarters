@@ -1,25 +1,21 @@
-// Workbench Unified (TSX-portering av /public/design/workbench-unified.html).
-// Plassert i `(fullscreen)`-gruppen for å unngå dobbel sidebar/topbar
-// fra `PortalShell` — denne siden har sin egen chrome (sidebar + topbar
-// + sticky footer) som matcher HTML-prototypen.
+// /portal/tren — historisk URL for den gamle, statiske demo-workbenchen
+// ("Øyvind R · uke 21" med oppdiktet uke/mål/streak/coach-chat). Den flaten
+// hadde ingen ekte datakobling og er fjernet. All planlegging går nå gjennom
+// den delte, data-koblede Workbench-kjernen på /portal/planlegge
+// (WorkbenchHybrid med ekte Prisma-data + auth-guards).
 //
-// Én vertikal flow med 7 seksjoner: sidebar + hero + årsplan-gantt
-// + 3-pane workbench + mål-tracker + insight + trackman + sticky footer.
-//
-// URL: /portal/tren
+// Vi beholder ruten byggbar ved å redirecte hit, slik at alle eksisterende
+// lenker til /portal/tren lander på den ekte planleggingsflaten i stedet for
+// fabrikkerte spillerdata.
 
+import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { WorkbenchClient } from "./workbench-client";
-
-// Italic-accents på hero og insight-sitater bruker Inter Tight italic
-// (font-display + italic), ikke en egen serif-font. Designsystem v2 tillater
-// kun Inter, Inter Tight og JetBrains Mono.
 
 export const metadata = {
-  title: "Min workbench",
+  title: "Planlegge",
 };
 
 export default async function WorkbenchPage() {
   await requirePortalUser();
-  return <WorkbenchClient />;
+  redirect("/portal/planlegge");
 }

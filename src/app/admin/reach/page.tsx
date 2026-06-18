@@ -80,9 +80,6 @@ export default async function ReachPage() {
     }),
   ]);
 
-  const totalPlayers = spillere.length;
-  const fallback = totalPlayers === 0;
-
   // Bygg per-spiller-aggregater
   const playersMap = new Map<string, PlayerAggregate>();
   for (const s of spillere) {
@@ -152,10 +149,17 @@ export default async function ReachPage() {
       Math.min(p.goalsTouched, 5) * 1.5;
   }
 
-  // Bruk dummy-data hvis ingen ekte spillere
-  const realData: ReachData = fallback
-    ? buildFallbackData(now)
-    : buildRealData(playersMap, notifikasjoner, treningsPlanSesjoner, aiSesjoner, runder, goals, now);
+  // Ekte data. Når DB er tom rendrer klienten ærlige tomme tilstander
+  // (0-tall, tomme lister) — ingen fabrikkerte spillere.
+  const realData: ReachData = buildRealData(
+    playersMap,
+    notifikasjoner,
+    treningsPlanSesjoner,
+    aiSesjoner,
+    runder,
+    goals,
+    now,
+  );
 
   return <ReachClient data={realData} />;
 }
@@ -256,7 +260,6 @@ function buildRealData(
     .slice(0, 3);
 
   return {
-    isDummy: false,
     totalPlayers,
     active7d,
     active30d,
@@ -305,160 +308,4 @@ function statusFromCompliance(
   if (pct >= 75 && dagerSiden <= 7) return "green";
   if (pct >= 50 || dagerSiden <= 14) return "amber";
   return "red";
-}
-
-function buildFallbackData(now: Date): ReachData {
-  // Realistic dummy-data — 38 spillere
-  const playerNames = [
-    "Øyvind R.",
-    "Joachim Therkelsen",
-    "Emma Solberg",
-    "Henrik Bakke",
-    "Maria Kristoffersen",
-    "Tobias Sørensen",
-    "Aksel Berg",
-    "Mathilde Holm",
-    "Filip Olsen",
-    "Sofie Lund",
-    "Oliver Dahl",
-    "Nora Andersen",
-    "Sander Iversen",
-    "Ida Pedersen",
-    "Magnus Eriksen",
-    "Linnea Hansen",
-    "Theodor Nilsen",
-    "Vilde Karlsen",
-    "Jonas Larsen",
-    "Frida Strand",
-    "Kasper Moen",
-    "Selma Aune",
-    "William Vik",
-    "Hedda Berge",
-    "Lucas Foss",
-    "Amalie Lie",
-    "Isak Holmen",
-    "Tuva Bjørk",
-    "Mikkel Sand",
-    "Maja Ruud",
-    "Adrian Tveit",
-    "Live Stene",
-    "Sebastian Røed",
-    "Astrid Vold",
-    "Daniel Bråten",
-    "Iben Krogh",
-    "Noah Tønnessen",
-    "Olivia Sæther",
-  ];
-
-  const players = playerNames.map((name, i) => {
-    // Spre compliance: noen lave, noen middels, noen høye
-    let compliancePct: number;
-    if (i < 3) compliancePct = 95 - i * 5; // topp
-    else if (i >= playerNames.length - 3) compliancePct = 25 + (playerNames.length - 1 - i) * 8; // bunn
-    else compliancePct = 50 + ((i * 37) % 35); // midten
-
-    const dagerSidenLogin = (i * 3) % 30;
-    const lastSeen = new Date(now);
-    lastSeen.setDate(lastSeen.getDate() - dagerSidenLogin);
-    lastSeen.setHours(lastSeen.getHours() - (i % 12));
-
-    return {
-      id: `dummy-${i}`,
-      name,
-      avatarUrl: null,
-      sessions7d: Math.max(0, Math.round((compliancePct / 100) * 5) - (i % 3)),
-      compliancePct,
-      lastSeen: lastSeen.toISOString(),
-      status: statusFromCompliance(compliancePct, lastSeen, now),
-    };
-  });
-
-  // Daily active users — opp/ned-trend
-  const daily: { date: string; active: number }[] = [];
-  for (let i = 29; i >= 0; i--) {
-    const day = new Date(now);
-    day.setHours(0, 0, 0, 0);
-    day.setDate(day.getDate() - i);
-    const wave = Math.sin((i / 30) * Math.PI * 2) * 4;
-    const trend = (30 - i) * 0.15;
-    const base = 14 + Math.round(wave + trend + ((i * 7) % 5));
-    daily.push({
-      date: day.toISOString().slice(0, 10),
-      active: Math.max(8, Math.min(30, base)),
-    });
-  }
-
-  const topEngaged = [
-    {
-      id: "dummy-0",
-      name: "Øyvind R.",
-      avatarUrl: null,
-      compliancePct: 95,
-      readRatePct: 100,
-      aiCaddieThreads: 12,
-    },
-    {
-      id: "dummy-1",
-      name: "Joachim Therkelsen",
-      avatarUrl: null,
-      compliancePct: 90,
-      readRatePct: 96,
-      aiCaddieThreads: 9,
-    },
-    {
-      id: "dummy-2",
-      name: "Emma Solberg",
-      avatarUrl: null,
-      compliancePct: 85,
-      readRatePct: 92,
-      aiCaddieThreads: 8,
-    },
-  ];
-
-  const needsFollowup = [
-    {
-      id: "dummy-37",
-      name: "Olivia Sæther",
-      avatarUrl: null,
-      compliancePct: 25,
-      readRatePct: 40,
-      lastSeen: new Date(now.getTime() - 12 * 24 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-      id: "dummy-36",
-      name: "Noah Tønnessen",
-      avatarUrl: null,
-      compliancePct: 33,
-      readRatePct: 50,
-      lastSeen: new Date(now.getTime() - 9 * 24 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-      id: "dummy-35",
-      name: "Iben Krogh",
-      avatarUrl: null,
-      compliancePct: 41,
-      readRatePct: 62,
-      lastSeen: new Date(now.getTime() - 6 * 24 * 60 * 60 * 1000).toISOString(),
-    },
-  ];
-
-  return {
-    isDummy: true,
-    totalPlayers: 38,
-    active7d: 28,
-    active30d: 35,
-    avgCompliance: 78,
-    messageReadRate: 92,
-    daily,
-    players: players.sort((a, b) => a.compliancePct - b.compliancePct),
-    topEngaged,
-    needsFollowup,
-    featureUsage: [
-      { label: "Live Logger", count: 31 },
-      { label: "Goals", count: 27 },
-      { label: "SG-Hub", count: 22 },
-      { label: "Coach-meldinger", count: 35 },
-      { label: "AI-Caddie", count: 19 },
-    ],
-  };
 }

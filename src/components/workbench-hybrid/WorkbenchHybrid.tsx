@@ -8,6 +8,7 @@ import { omrArr } from "./helpers";
 import type {
   PaletteItem,
   Recur,
+  SeasonPhase,
   WbGoal,
   WbSession,
   WeekKey,
@@ -15,21 +16,7 @@ import type {
   WorkbenchRole,
   ZoomLevel,
 } from "./types";
-import {
-  DEMO_GOALS,
-  DEMO_MONTH_COUNTS,
-  DEMO_MONTH_STATS,
-  DEMO_PALETTE,
-  DEMO_SAMPLE_MONTH,
-  DEMO_SEASON_PHASES,
-  DEMO_SIDE_TESTS,
-  DEMO_TOURNAMENTS,
-  DEMO_WARNING_BANNER,
-  DEMO_WEEK,
-  DEMO_WEEK_HEAD,
-  DEMO_YEAR_LOAD,
-  DEMO_YEAR_MARKERS,
-} from "./demo-data";
+import { PALETTE_LIBRARY } from "./demo-data";
 import { mapGoals, mapTournaments, mapWarningBanner, mapWeek, mapWeekHead } from "./map-data";
 import { Topbar, type RosterPlayer } from "./Topbar";
 import { CoachSkillWizard } from "./CoachSkillWizard";
@@ -56,15 +43,24 @@ import { useMediaQuery, WB_MOBILE_QUERY } from "./use-media-query";
 const LS_KEY = "akgolf.wb.level";
 const VALID_LEVELS: ZoomLevel[] = ["arsplan", "ar", "maned", "uke", "dag"];
 
+/** Tom uke når spilleren ennå ikke har planlagte økter (ingen oppdiktede økter). */
+const EMPTY_WEEK: WeekState = { man: [], tir: [], ons: [], tor: [], fre: [], lor: [], son: [] };
+
+/** Tom uke-header når data mangler — ingen oppdiktet uke-nr/datointervall. */
+const EMPTY_WEEK_HEAD = { weekLabel: "Denne uka", range: "" };
+
+/** Ingen sesong-periodisering ennå — Årsplan/År/Måned viser tomtilstand. */
+const EMPTY_SEASON_PHASES: SeasonPhase[] = [];
+
 const HEADS: Record<ZoomLevel, [string, string]> = {
   arsplan: [
     "Årsplan med periodisering",
     "Makro-planen for hele sesongen — perioder, belastning og turneringer. All planlegging skjer i Workbench.",
   ],
-  ar: ["Årsvisning 2026", "Oversikt over alle 12 månedene. Klikk en måned for å gå inn i den."],
-  maned: ["Månedsvisning — juni 2026", "Hele måneden. Klikk en dag for å åpne dagsvisningen."],
-  uke: ["Uke 24 — dra økter inn", "Dra fra standardøkter, flytt mellom dager, klikk for detaljer."],
-  dag: ["Dagsvisning — onsdag 11. juni", "Tidslinje for dagen. Dra en økt inn for å plassere den på klokkeslett."],
+  ar: ["Årsvisning", "Oversikt over alle 12 månedene. Klikk en måned for å gå inn i den."],
+  maned: ["Månedsvisning", "Hele måneden. Klikk en dag for å åpne dagsvisningen."],
+  uke: ["Denne uka — dra økter inn", "Dra fra standardøkter, flytt mellom dager, klikk for detaljer."],
+  dag: ["Dagsvisning", "Tidslinje for dagen. Dra en økt inn for å plassere den på klokkeslett."],
 };
 
 const DAY_NAMES: Record<WeekKey, string> = {
@@ -375,26 +371,28 @@ export function WorkbenchHybrid({
   const [mobilePaletteOpen, setMobilePaletteOpen] = useState(false);
   const [mobileTargetDay, setMobileTargetDay] = useState<WeekKey>("ons");
 
-  // Ekte data der den finnes; ellers fasit-demo (alltid renderbar).
+  // Ekte data der den finnes; ellers tomme/ærlige tomtilstander (ingen oppdiktede tall).
   const realWeek = useMemo(() => mapWeek(data), [data]);
-  const goals: WbGoal[] = useMemo(() => mapGoals(data) ?? DEMO_GOALS, [data]);
-  const weekHead = useMemo(() => mapWeekHead(data) ?? DEMO_WEEK_HEAD, [data]);
-  const banner = useMemo(() => mapWarningBanner(data) ?? DEMO_WARNING_BANNER, [data]);
-  // Periodisering + turnerings-tidslinje har ingen Prisma-kilde ennå → fasit-demo.
-  const tournaments = useMemo(() => mapTournaments(data) ?? DEMO_TOURNAMENTS, [data]);
-  const seasonPhases = DEMO_SEASON_PHASES;
+  const goals: WbGoal[] = useMemo(() => mapGoals(data) ?? [], [data]);
+  const weekHead = useMemo(() => mapWeekHead(data) ?? EMPTY_WEEK_HEAD, [data]);
+  const banner = useMemo(() => mapWarningBanner(data), [data]);
+  // Turnerings-tidslinje har ingen Prisma-kilde med dato/type ennå → tom liste.
+  const tournaments = useMemo(() => mapTournaments(data) ?? [], [data]);
+  // Sesong-periodisering har ingen datamodell ennå → tom (Årsplan/År/Måned viser tomtilstand).
+  const seasonPhases: SeasonPhase[] = EMPTY_SEASON_PHASES;
 
   const [state, dispatch] = useReducer(reducer, undefined, (): State => ({
     level: "uke",
-    week: realWeek ?? DEMO_WEEK,
-    palette: DEMO_PALETTE,
+    week: realWeek ?? EMPTY_WEEK,
+    palette: PALETTE_LIBRARY,
     selectedId: null,
     selectedPaletteId: null,
     editScope: "session",
     hoverDay: null,
     panels: { palette: true, goals: false, tests: false, tech: false },
     dimPicker: null,
-    selectedMonth: 5, // juni — fasitens demo-måned
+    // Naviger til inneværende måned (lazy-init, kjører kun ved montering — ikke i render).
+    selectedMonth: new Date().getMonth(),
     modal: null,
     planMode: "BANE",
     recurDraft: null,
@@ -578,8 +576,8 @@ export function WorkbenchHybrid({
           hoverDay={state.hoverDay}
           weekLabel={weekHead.weekLabel}
           weekRange={weekHead.range}
-          warningTitle={banner.title}
-          warningMeta={banner.meta}
+          warningTitle={banner?.title ?? null}
+          warningMeta={banner?.meta ?? null}
           onSessionClick={(id) => dispatch({ type: "selectSession", id })}
           onSessionDragStart={onSessionDragStart}
           onDayDragOver={(day) => dispatch({ type: "setHoverDay", day })}
@@ -598,15 +596,13 @@ export function WorkbenchHybrid({
       {state.level === "arsplan" && (
         <ArsplanView
           phases={seasonPhases}
-          load={DEMO_YEAR_LOAD}
-          markers={DEMO_YEAR_MARKERS}
           onPhaseClick={() => {
             /* Periode-inspektør er en senere fase — no-op for nå. */
           }}
         />
       )}
       {state.level === "ar" && (
-        <ArView phases={seasonPhases} counts={DEMO_MONTH_COUNTS} onMonthClick={(month) => dispatch({ type: "openMonth", month })} />
+        <ArView phases={seasonPhases} onMonthClick={(month) => dispatch({ type: "openMonth", month })} />
       )}
       {state.level === "maned" && (
         <ManedView
@@ -615,8 +611,6 @@ export function WorkbenchHybrid({
           week={state.week}
           totals={totals}
           tournaments={tournaments}
-          sampleMonth={DEMO_SAMPLE_MONTH}
-          baseStats={DEMO_MONTH_STATS}
           onPrev={() => dispatch({ type: "setMonth", month: state.selectedMonth - 1 })}
           onNext={() => dispatch({ type: "setMonth", month: state.selectedMonth + 1 })}
           onDayClick={() => setLevel("dag")}
@@ -630,8 +624,9 @@ export function WorkbenchHybrid({
       totals={totals}
       grand={grand}
       sessionCount={kpiSessionCount}
-      adherence="82%"
-      sg="+1.8"
+      // Adherence + SG har ingen datamodell ennå → ærlig tomtilstand ("—"), ikke oppdiktede tall.
+      adherence={null}
+      sg={null}
       onOpen={(key) => dispatch({ type: "openKpi", key })}
     />
   );
@@ -707,8 +702,8 @@ export function WorkbenchHybrid({
               palette={state.palette}
               selectedPaletteId={state.editScope === "palette" ? state.selectedPaletteId : null}
               goals={goals}
-              sideTests={DEMO_SIDE_TESTS}
-              testCount="30"
+              sideTests={[]}
+              testCount=""
               onPaletteClick={(pid) => dispatch({ type: "selectPalette", pid })}
               onPaletteDragStart={onPaletteDragStart}
               onAddPalette={() => dispatch({ type: "addPalette" })}
@@ -788,8 +783,8 @@ export function WorkbenchHybrid({
         onClose={() => setMobilePaletteOpen(false)}
         palette={state.palette}
         goals={goals}
-        sideTests={DEMO_SIDE_TESTS}
-        testCount="30"
+        sideTests={[]}
+        testCount=""
         targetDay={mobileTargetDay}
         onTargetDay={setMobileTargetDay}
         onAddToDay={onMobileAddToDay}

@@ -57,7 +57,7 @@ export function ModeringClient({
   stats,
 }: {
   turneringer: Turnering[];
-  slett: Slett;
+  slett: Slett | null;
   stats: Stats;
 }) {
   const [aktivTab, setAktivTab] = useState<Tab>("turneringer");
@@ -219,7 +219,9 @@ export function ModeringClient({
           </div>
         )}
 
-        {aktivTab === "slett" && (
+        {aktivTab === "slett" && !slett && <EmptyTab kind="slett" />}
+
+        {aktivTab === "slett" && slett && (
           <div className="max-w-[640px] rounded-2xl border border-destructive/30 bg-destructive/5 p-8">
             <div className="mb-3 inline-flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-destructive">
               <ShieldCheck className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
