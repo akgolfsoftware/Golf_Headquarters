@@ -18,6 +18,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
+  ArrowLeft,
   ArrowRight,
   ClipboardList,
   Clock,
@@ -27,7 +28,6 @@ import {
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import type { PyramidArea } from "@/generated/prisma/client";
 
 const PERIODS = ["7 d", "30 d", "90 d", "Sesong", "Alle"];
@@ -324,53 +324,96 @@ export default async function MetricDrillDownPage({
 
   return (
     <div className="mx-auto max-w-[1240px] space-y-6 px-4 pb-20 sm:px-6 md:space-y-8 md:pb-16">
-      <PageHeader
-        eyebrow={`PlayerHQ · Statistikk · ${info.slug.toUpperCase()}`}
-        titleLead={info.title}
-        titleItalic={info.italic}
-        titleTrail="30 d"
-        sub={info.unit}
-        actions={
-          <div className="-mx-4 overflow-x-auto px-4 md:mx-0 md:overflow-x-visible md:px-0">
-            <div className="flex gap-1 rounded-full border border-border bg-card p-1">
-              {PERIODS.map((p, i) => (
-                <button
-                  key={p}
-                  type="button"
-                  disabled
-                  className={`whitespace-nowrap rounded-full px-4 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] ${
-                    i === 2
-                      ? "bg-foreground text-accent"
-                      : "text-muted-foreground"
-                  }`}
-                >
-                  {p}
-                </button>
-              ))}
-            </div>
+      {/* Editorial light header */}
+      <header role="banner" className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <Link
+            href="/portal/analysere"
+            className="inline-flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <ArrowLeft size={12} strokeWidth={1.75} /> Analyse
+          </Link>
+          <div className="mt-2 font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+            {`PlayerHQ · Statistikk · ${info.slug.toUpperCase()}`}
           </div>
-        }
-      />
+          <h1 className="font-display mt-1.5 text-3xl font-bold leading-tight tracking-tight md:text-4xl">
+            {info.title}{" "}
+            <em
+              className="font-normal not-italic"
+              style={{
+                fontFamily: "'Inter Tight', sans-serif",
+                fontStyle: "italic",
+                color: "#005840",
+              }}
+            >
+              {info.italic}
+            </em>{" "}
+            30 d
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground md:text-base">{info.unit}</p>
+        </div>
+        <div className="-mx-4 overflow-x-auto px-4 md:mx-0 md:overflow-x-visible md:px-0">
+          <div className="flex gap-1 rounded-full border border-border bg-card p-1">
+            {PERIODS.map((p, i) => (
+              <button
+                key={p}
+                type="button"
+                disabled
+                className={`whitespace-nowrap rounded-full px-4 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] ${
+                  i === 2
+                    ? "bg-foreground text-accent"
+                    : "text-muted-foreground"
+                }`}
+              >
+                {p}
+              </button>
+            ))}
+          </div>
+        </div>
+      </header>
 
       {!harData ? (
         <EmptyForDiscipline kind={info.kind} title={info.title} />
       ) : (
         <>
-          {/* Hero stat */}
+          {/* Hero stat — forest gradient detalj-kort + terminal-tall */}
           <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-            <div className="col-span-1 rounded-2xl border border-primary bg-primary p-4 text-primary-foreground sm:col-span-2 sm:p-6 md:col-span-1">
-              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] opacity-80">
-                Snitt 30 d
-              </div>
-              <div className="mt-2 font-mono text-4xl font-semibold tabular-nums md:text-5xl">
-                {info.format(verdi30d)}
-              </div>
-              <div className="mt-2 font-mono text-xs opacity-90">
-                {forrige30d === 0 && info.kind === "sg"
-                  ? "ny baseline"
-                  : `${delta >= 0 ? "↑ +" : "↓ "}${info.format(Math.abs(delta))} vs forrige 30 d`}
+            {/* DetailHero (forest gradient) */}
+            <div
+              className="relative col-span-1 overflow-hidden rounded-2xl p-6 text-white sm:col-span-2 md:col-span-1"
+              style={{
+                background: "linear-gradient(150deg, #005840, #0A1F17)",
+              }}
+            >
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -right-6 -top-10 h-32 w-32 rounded-full"
+                style={{
+                  background:
+                    "radial-gradient(circle, rgba(209,248,67,.2), transparent 65%)",
+                }}
+              />
+              <div className="relative z-10">
+                <div
+                  className="font-mono text-[9.5px] font-bold uppercase tracking-[0.12em]"
+                  style={{ color: "#D1F843" }}
+                >
+                  Snitt 30 d
+                </div>
+                <div
+                  className="mt-3 font-mono text-4xl font-bold leading-none tabular-nums md:text-5xl"
+                  style={{ color: "#D1F843" }}
+                >
+                  {info.format(verdi30d)}
+                </div>
+                <div className="mt-3 font-mono text-[10.5px] text-white/65">
+                  {forrige30d === 0 && info.kind === "sg"
+                    ? "ny baseline"
+                    : `${delta >= 0 ? "▲ +" : "▼ "}${info.format(Math.abs(delta))} vs forrige 30 d`}
+                </div>
               </div>
             </div>
+            {/* vs kategori-snitt */}
             <div className="rounded-2xl border border-border bg-card p-6">
               <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                 vs kategori-snitt
@@ -387,6 +430,7 @@ export default async function MetricDrillDownPage({
                 Snitt A1 = {info.format(info.benchmark)}
               </div>
             </div>
+            {/* Total tid / Beste */}
             <div className="rounded-2xl border border-border bg-card p-6">
               <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
                 {info.kind === "pyramid" ? "Total tid 90 d" : "Beste 90 d"}
@@ -402,7 +446,7 @@ export default async function MetricDrillDownPage({
                 </>
               ) : (
                 <>
-                  <div className="mt-2 font-mono text-3xl font-semibold tabular-nums">
+                  <div className="mt-2 font-mono text-3xl font-semibold tabular-nums text-primary">
                     {sgBest ? info.format(sgBest.verdi) : "—"}
                   </div>
                   <div className="mt-2 font-mono text-[11px] text-muted-foreground">
@@ -418,18 +462,15 @@ export default async function MetricDrillDownPage({
             </div>
           </section>
 
-          {/* Trend-chart */}
-          <section className="rounded-2xl border border-border bg-card p-4 md:p-6">
-            <div className="mb-2 flex items-baseline justify-between">
-              <h2 className="font-display text-base font-semibold tracking-tight">
-                {info.title} {info.italic} · 90 dager
+          {/* TrendBand — utvikling */}
+          <section className="rounded-2xl border border-border bg-card p-4 shadow-sm md:p-6">
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="font-display text-base font-bold tracking-tight">
+                Utvikling
               </h2>
-              <div className="flex gap-4 font-mono text-[10px] text-muted-foreground">
-                <span className="inline-flex items-center gap-1.5">
-                  <span className="h-2 w-2 rounded-sm bg-primary/30" />
-                  {info.kind === "pyramid" ? "Treningstimer (ukentlig)" : "SG kumulativt"}
-                </span>
-              </div>
+              <span className="rounded border border-border px-2 py-0.5 font-mono text-[9.5px] uppercase tracking-[0.06em] text-muted-foreground">
+                Siste 90 d
+              </span>
             </div>
             <TrendChart
               values={trendpunkter}
@@ -437,11 +478,21 @@ export default async function MetricDrillDownPage({
               yMax={info.yMax}
               kind={info.kind}
             />
-            <div className="mt-2 flex justify-between font-mono text-[10px] text-muted-foreground">
+            <div className="mt-3 flex justify-between font-mono text-[10px] text-muted-foreground">
               <span>90 d</span>
               <span>60 d</span>
               <span>30 d</span>
               <span>i dag</span>
+            </div>
+            <div className="mt-2 flex gap-4 font-mono text-[9.5px] text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5">
+                <span className="inline-block h-[3px] w-2.5 rounded-sm bg-primary/15" />
+                {info.kind === "pyramid" ? "Mål-nivå" : "Team Norway"}
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="inline-block h-[3px] w-2.5 rounded-sm bg-primary" />
+                Din linje
+              </span>
             </div>
           </section>
 
@@ -591,9 +642,9 @@ export default async function MetricDrillDownPage({
         </div>
         <Link
           href={`/portal/coach/melding?type=fokus&omrade=${info.slug}`}
-          className="inline-flex h-11 items-center gap-1.5 rounded-full bg-accent px-4 py-2 text-xs font-semibold text-accent-foreground hover:opacity-90"
+          className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-primary px-5 font-mono text-xs font-bold uppercase tracking-[0.08em] text-primary-foreground transition-opacity hover:opacity-90"
         >
-          <MessageSquare size={12} strokeWidth={1.75} /> Be om mer fokus
+          <MessageSquare size={14} strokeWidth={1.75} /> Be om mer fokus
         </Link>
       </section>
     </div>
@@ -628,10 +679,10 @@ function EmptyForDiscipline({
             ? "/portal/tren"
             : "/portal/mal/runder"
         }
-        className="mt-6 inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:opacity-90"
+        className="mt-6 inline-flex h-11 items-center gap-2 rounded-full bg-primary px-5 font-mono text-xs font-bold uppercase tracking-[0.08em] text-primary-foreground transition-opacity hover:opacity-90"
       >
         {kind === "pyramid" ? "Til treningsplan" : "Logg runde"}
-        <ArrowRight size={12} strokeWidth={1.75} />
+        <ArrowRight size={14} strokeWidth={1.75} />
       </Link>
     </div>
   );

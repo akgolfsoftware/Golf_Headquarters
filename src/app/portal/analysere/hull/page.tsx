@@ -2,6 +2,8 @@
 // SG- og treningsdata per sone (Tee → Innspill → Nærspill → Putt).
 // SG: BrukerSgInput. Trening: TrainingPlanSession per skillArea (siste 30 d).
 
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { HoleAnalysis, type HoleZone } from "@/components/hole-analysis/hole-analysis";
@@ -95,33 +97,50 @@ export default async function HullAnalysePage() {
   const harData = sgInputs.length > 0;
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="mx-auto max-w-[440px]">
-        <div className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+    <div className="mx-auto max-w-[440px] space-y-5 px-4 pb-20 pt-2 md:pb-6">
+      {/* Back link */}
+      <Link
+        href="/portal/analysere"
+        className="inline-flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground hover:text-foreground"
+      >
+        <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2} />
+        Analyse
+      </Link>
+
+      {/* Editorial header */}
+      <div className="space-y-1.5">
+        <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
           PlayerHQ · hull-analyse
         </div>
-        <h1 className="mb-4 font-display text-2xl font-bold tracking-tight text-foreground">
-          Hvor taper du <em className="font-normal italic text-primary">slag</em>?
+        <h1 className="font-display text-2xl font-bold leading-tight tracking-tight text-foreground">
+          Hvor taper du{" "}
+          <em className="font-medium italic" style={{ color: "#005840" }}>
+            slag
+          </em>
+          ?
         </h1>
-
-        <HoleAnalysis
-          fairway={zones}
-          putting={[]}
-          green={null}
-          holeLabel="Min SG-analyse"
-          holeMeta={`${sgInputs.length} registreringer`}
-          caption="Kartet er illustrativt — tallene er dine faktiske SG- og treningsdata per sone. Trykk en sone."
-        />
-
-        {!harData && (
-          <div className="mx-auto mt-4 max-w-[440px] rounded-lg border border-border bg-card p-4">
-            <p className="text-sm text-muted-foreground">
-              Ingen SG-registreringer ennå. Logg en runde med Strokes Gained, så fylles sonene
-              med dine faktiske tall.
-            </p>
-          </div>
-        )}
+        <p className="text-[12.5px] text-muted-foreground">
+          Trykk en sone for SG- og treningsdata.
+        </p>
       </div>
+
+      <HoleAnalysis
+        fairway={zones}
+        putting={[]}
+        green={null}
+        holeLabel="Min SG-analyse"
+        holeMeta={`${sgInputs.length} registreringer`}
+        caption="Kartet er illustrativt — tallene er dine faktiske SG- og treningsdata per sone. Trykk en sone."
+      />
+
+      {!harData && (
+        <div className="rounded-lg border border-border bg-card p-4 shadow-card">
+          <p className="text-sm leading-[1.5] text-muted-foreground">
+            Ingen SG-registreringer ennå. Logg en runde med Strokes Gained, så fylles sonene
+            med dine faktiske tall.
+          </p>
+        </div>
+      )}
     </div>
   );
 }

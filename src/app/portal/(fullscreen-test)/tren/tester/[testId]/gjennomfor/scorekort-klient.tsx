@@ -12,6 +12,7 @@
  */
 
 import { useEffect, useMemo, useState, useTransition } from "react";
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -54,6 +55,14 @@ const pillCls =
   "inline-flex h-11 items-center justify-center gap-1.5 rounded-full border border-border bg-card px-4 font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-foreground transition-colors active:bg-secondary disabled:pointer-events-none disabled:opacity-40";
 const ctaCls =
   "inline-flex h-[52px] w-full items-center justify-center gap-2 rounded-full bg-primary font-mono text-[12px] font-bold uppercase tracking-[0.08em] text-primary-foreground shadow-[0_8px_20px_rgba(0,88,64,0.18)] transition hover:bg-primary/90 disabled:pointer-events-none disabled:opacity-60";
+
+/** Stegene i flyten — drives status-stripens teller (jf. Live Test «Øvelse N av M»). */
+const STEG_REKKE: Steg[] = ["brief", "scorekort", "oppsummering"];
+const STEG_LABEL: Record<Steg, string> = {
+  brief: "Klargjøring",
+  scorekort: "Live nå",
+  oppsummering: "Oppsummering",
+};
 
 /** Norsk desimal-parsing: «12,4» / «−3» → tall. Tom/ugyldig → null. */
 function parseNorsk(raw: string): number | null {
@@ -221,9 +230,11 @@ export function ScorekortKlient({
 
   if (steg === "brief") {
     return (
-      <div className="mt-4">
+      <div>
+        <StatusStrip steg="brief" progressPct={0} live={false} />
+
         {beskrivelse && (
-          <p className="mb-4 max-w-[62ch] text-sm leading-relaxed text-muted-foreground">
+          <p className="mb-4 mt-5 max-w-[62ch] text-sm leading-relaxed text-muted-foreground">
             {beskrivelse}
           </p>
         )}
@@ -254,19 +265,29 @@ export function ScorekortKlient({
         >
           Tilbake til testen
         </Link>
+
+        <FysPlassholderNote />
       </div>
     );
   }
 
   if (steg === "scorekort") {
     return (
-      <div className="mt-4">
-        {/* Accent-kort — løpende score (jf. runde-ny) */}
-        <ScoreKort
-          score={score}
-          scoreEnhet={scoreEnhet}
-          subline={`Forsøk ${antallFort} av ${antallForsok}`}
+      <div>
+        <StatusStrip
+          steg="scorekort"
+          progressPct={antallForsok === 0 ? 0 : (antallFort / antallForsok) * 100}
+          live
         />
+
+        {/* Accent-kort — løpende score (jf. runde-ny) */}
+        <div className="mt-5">
+          <ScoreKort
+            score={score}
+            scoreEnhet={scoreEnhet}
+            subline={`Forsøk ${antallFort} av ${antallForsok}`}
+          />
+        </div>
 
         <SectionHead>{fellesLabel ?? "Scorekort"}</SectionHead>
         <div className={cn("grid gap-2", enkel ? "grid-cols-2 md:grid-cols-3" : "grid-cols-1 md:grid-cols-2")}>
@@ -307,18 +328,24 @@ export function ScorekortKlient({
           Til oppsummering
           <ArrowRight className="h-[18px] w-[18px]" strokeWidth={2} aria-hidden />
         </button>
+
+        <FysPlassholderNote />
       </div>
     );
   }
 
   // ── Steg C — Oppsummering ──────────────────────────────────────
   return (
-    <div className="mt-4">
-      <ScoreKort
-        score={score}
-        scoreEnhet={scoreEnhet}
-        subline={`${antallFort} av ${antallForsok} slag ført`}
-      />
+    <div>
+      <StatusStrip steg="oppsummering" progressPct={100} live={false} />
+
+      <div className="mt-5">
+        <ScoreKort
+          score={score}
+          scoreEnhet={scoreEnhet}
+          subline={`${antallFort} av ${antallForsok} slag ført`}
+        />
+      </div>
 
       <SectionHead>Per forsøk</SectionHead>
       <div className="overflow-hidden rounded-2xl border border-border bg-card">
@@ -389,13 +416,72 @@ export function ScorekortKlient({
           Forkast
         </button>
       </div>
+
+      <FysPlassholderNote />
     </div>
   );
 }
 
 /* ── Sub-komponenter ──────────────────────────────────────────── */
 
-function SectionHead({ children }: { children: React.ReactNode }) {
+/** Bunn-note fra Live Test-fasit — gjør FYS-plassholder-status eksplisitt. */
+function FysPlassholderNote() {
+  return (
+    <p className="mt-7 border-t border-border pt-4 text-center font-mono text-[9px] font-semibold uppercase tracking-[0.08em] text-muted-foreground/70">
+      FYS-resultater er plassholderverdier · formelen er ikke låst
+    </p>
+  );
+}
+
+/**
+ * Terminal status-stripe (Live Test-idiom, oversatt til lyst tema).
+ * Venstre: live-puls + stegstatus. Høyre: «Steg N av 3». Under: framdriftslinje.
+ */
+function StatusStrip({
+  steg,
+  progressPct,
+  live,
+}: {
+  steg: Steg;
+  progressPct: number;
+  live: boolean;
+}) {
+  const stegNr = STEG_REKKE.indexOf(steg) + 1;
+  return (
+    <div className="mt-4 rounded-2xl border border-border bg-card p-3.5">
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <span
+            className={cn(
+              "h-2 w-2 shrink-0 rounded-full",
+              live ? "animate-pulse bg-accent ring-2 ring-accent/30" : "bg-muted-foreground/40",
+            )}
+            aria-hidden
+          />
+          <span
+            className={cn(
+              "font-mono text-[10px] font-bold uppercase tracking-[0.1em]",
+              live ? "text-primary" : "text-muted-foreground",
+            )}
+          >
+            {STEG_LABEL[steg]}
+          </span>
+        </div>
+        <span className="font-mono text-[11px] font-bold tabular-nums text-muted-foreground">
+          Steg {stegNr} av {STEG_REKKE.length}
+        </span>
+      </div>
+      <div className="mt-3 h-[3px] overflow-hidden rounded-full bg-secondary">
+        <div
+          className="h-full rounded-full bg-primary transition-[width] duration-500"
+          style={{ width: `${Math.max(0, Math.min(100, progressPct))}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function SectionHead({ children }: { children: ReactNode }) {
   return (
     <div className="mb-2.5 mt-5 flex items-baseline gap-2.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground">
       <span>{children}</span>
@@ -492,7 +578,7 @@ function KontekstForm({
   );
 }
 
-function Felt({ label, children }: { label: string; children: React.ReactNode }) {
+function Felt({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="flex flex-col gap-1.5">
       <span className={lblCls}>{label}</span>
