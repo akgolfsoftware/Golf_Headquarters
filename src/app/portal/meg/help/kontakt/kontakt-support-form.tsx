@@ -34,16 +34,9 @@ export function KontaktSupportForm({
   bruker: { navn: string; epost: string };
 }) {
   const [kategori, setKategori] = useState<Kategori>("app-feil");
-  const [emne, setEmne] = useState("Live-økt fryser når jeg starter time-på");
-  const [beskrivelse, setBeskrivelse] = useState(
-    `I går kveld krasjet appen tre ganger når jeg trykket Start på en putting-økt. Jeg fikk valgt drill og sett opp settene, men i det jeg trykket «Start time-på» frøs hele skjermen i ca. 5 sekunder før appen lukket seg.
-
-Skjedde på iPhone 15 Pro, iOS 18.4. App-versjon 0.9.4. Wifi tilkoblet hjemme.`,
-  );
-  const [vedlegg, setVedlegg] = useState<{ navn: string; storrelse: string }[]>([
-    { navn: "skjermbilde-1.png", storrelse: "847 KB" },
-    { navn: "skjermbilde-2.png", storrelse: "1,2 MB" },
-  ]);
+  const [emne, setEmne] = useState("");
+  const [beskrivelse, setBeskrivelse] = useState("");
+  const [vedlegg, setVedlegg] = useState<{ navn: string; storrelse: string }[]>([]);
   const [tillatInnsyn, setTillatInnsyn] = useState(false);
   const [techOpen, setTechOpen] = useState(false);
   const [pending, startTransition] = useTransition();
@@ -122,6 +115,7 @@ Skjedde på iPhone 15 Pro, iOS 18.4. App-versjon 0.9.4. Wifi tilkoblet hjemme.`,
               required
               value={emne}
               onChange={(e) => setEmne(e.target.value)}
+              placeholder="Kort tittel på problemet"
               className={inputCss}
             />
             <MetaRow
@@ -137,6 +131,7 @@ Skjedde på iPhone 15 Pro, iOS 18.4. App-versjon 0.9.4. Wifi tilkoblet hjemme.`,
               rows={6}
               value={beskrivelse}
               onChange={(e) => setBeskrivelse(e.target.value)}
+              placeholder="Beskriv hva som skjedde, hvilke steg du tok, hvilken side du var på, og tid/dato."
               className={inputCss}
             />
             <MetaRow
@@ -226,7 +221,7 @@ Skjedde på iPhone 15 Pro, iOS 18.4. App-versjon 0.9.4. Wifi tilkoblet hjemme.`,
                 <RefreshCw className="h-3.5 w-3.5" strokeWidth={1.75} />
               </span>
               <span className="font-display text-sm font-semibold text-foreground">
-                Tekniske detaljer
+                Kontaktinfo
               </span>
               <span className="font-mono text-[10px] text-muted-foreground">
                 Automatisk vedlagt
@@ -238,13 +233,8 @@ Skjedde på iPhone 15 Pro, iOS 18.4. App-versjon 0.9.4. Wifi tilkoblet hjemme.`,
             </summary>
             <div className="grid grid-cols-[140px_1fr] gap-x-4 gap-y-1.5 border-t border-border px-4 py-4 font-mono text-xs">
               {[
-                ["App-versjon", "0.9.4 (build 2026.05.18)"],
-                ["Plattform", "iOS 18.4 · iPhone 15 Pro"],
-                ["Sist innlogget", "19.05.2026 · 14:12"],
-                ["Brukerkonto", `${bruker.navn} · A1`],
-                ["Klubb", "Søgne & Mandal GK · medlem #4082"],
-                ["Region", "eu-north-1 · Oslo"],
-                ["Session-ID", "sess_8a2f4c91e7d6"],
+                ["Navn", bruker.navn],
+                ["E-post", bruker.epost],
               ].map(([k, v]) => (
                 <div key={k} className="contents">
                   <span className="tracking-[0.06em] text-muted-foreground">{k}</span>
