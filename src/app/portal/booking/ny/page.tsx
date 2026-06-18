@@ -139,7 +139,7 @@ export default async function NyBookingPage({ searchParams }: Props) {
         </Eyebrow>
         <h1 className="mt-2 font-display text-[30px] font-semibold leading-[1.05] -tracking-[0.02em] text-foreground">
           Bruk{" "}
-          <em className="font-normal italic text-muted-foreground">månedens</em>{" "}
+          <em className="font-normal italic text-primary">månedens</em>{" "}
           timer
         </h1>
         <p className="mt-2 font-sans text-[14px] leading-[1.5] text-muted-foreground">
@@ -448,7 +448,7 @@ function BruktOppView({ resetAt }: { resetAt: Date | null }) {
         </Eyebrow>
         <h1 className="mt-2 font-display text-[30px] font-semibold leading-[1.05] -tracking-[0.02em] text-foreground">
           Du har brukt{" "}
-          <em className="font-normal italic text-muted-foreground">opp</em>{" "}
+          <em className="font-normal italic text-primary">opp</em>{" "}
           månedens timer
         </h1>
         <p className="mt-2 font-sans text-[14px] leading-[1.5] text-muted-foreground">

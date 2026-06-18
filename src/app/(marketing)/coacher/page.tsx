@@ -24,6 +24,7 @@ type CoachKort = {
   bio: string;
   initialer: string;
   foto: string | null;
+  tags: string[];
 };
 
 const FALLBACK_COACHER: CoachKort[] = [
@@ -34,6 +35,7 @@ const FALLBACK_COACHER: CoachKort[] = [
     bio: "Bygger Academy rundt målbar fremgang. Mer enn et tiår med spillere på alle nivåer — fra første time til turneringsspill.",
     initialer: "AK",
     foto: null,
+    tags: ["Plan & struktur", "Trackman", "Mental"],
   },
   {
     slug: "markus",
@@ -42,6 +44,32 @@ const FALLBACK_COACHER: CoachKort[] = [
     bio: "Jobber tett med juniorprogrammet og spillere som vil ta neste steg. Sterk på korte slag og putting.",
     initialer: "MR",
     foto: null,
+    tags: ["Kortspill", "Putting", "Junior"],
+  },
+];
+
+type Fasilitet = {
+  type: string;
+  navn: string;
+  beskrivelse: string;
+  feats: string[];
+};
+
+// Reelle anlegg AK Golf Academy trener på (samme som /anlegg-siden).
+const FASILITETER: Fasilitet[] = [
+  {
+    type: "Innendørs",
+    navn: "Mulligan Indoor Golf",
+    beskrivelse:
+      "TrackMan-simulatorer i Fredrikstad og Sarpsborg. Datadrevet trening og videoanalyse — årsåpent.",
+    feats: ["TrackMan", "Videoanalyse", "Årsåpent"],
+  },
+  {
+    type: "Utendørs",
+    navn: "Gamle Fredrikstad GK",
+    beskrivelse:
+      "Driving range, kortspill-områder og bane. Hovedanlegg for AK Golf Academy gjennom sesongen.",
+    feats: ["Driving range", "Kortspill", "Bane"],
   },
 ];
 
@@ -94,6 +122,65 @@ export default async function CoacherSide() {
               <CoachCard key={c.slug} c={c} />
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ========== ANLEGG & FASILITETER (fasit: 2-kol anlegg-kort) ========== */}
+      <section className="bg-secondary/40 py-24">
+        <div className="mx-auto max-w-7xl px-6 md:px-8">
+          <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+            Hvor vi trener
+          </span>
+          <h2 className="mt-4 max-w-[22ch] text-balance font-display text-[clamp(32px,4.5vw,48px)] font-bold leading-[1.05] tracking-[-0.025em]">
+            Anlegg &amp; <Em>fasiliteter</Em>.
+          </h2>
+
+          <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-2">
+            {FASILITETER.map((f) => (
+              <article
+                key={f.navn}
+                className="flex overflow-hidden rounded-[20px] border border-border bg-card transition hover:border-primary hover:shadow-[0_4px_14px_rgba(10,31,23,0.08)]"
+              >
+                <div
+                  aria-hidden
+                  className="w-[120px] shrink-0"
+                  style={{
+                    background:
+                      "linear-gradient(160deg, hsl(var(--primary)) 0%, hsl(168 72% 11%) 100%)",
+                  }}
+                />
+                <div className="p-6">
+                  <span className="font-mono text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
+                    {f.type}
+                  </span>
+                  <h3 className="mt-1.5 font-display text-lg font-bold tracking-[-0.015em]">
+                    {f.navn}
+                  </h3>
+                  <p className="mt-2 text-[13px] leading-[1.55] text-muted-foreground">
+                    {f.beskrivelse}
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    {f.feats.map((feat) => (
+                      <span
+                        key={feat}
+                        className="inline-flex items-center rounded-full bg-secondary px-2 py-0.5 font-mono text-[9px] font-medium text-muted-foreground"
+                      >
+                        {feat}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <Link
+            href="/anlegg"
+            className="mt-8 inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-all hover:gap-3"
+          >
+            Se alle anlegg
+            <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
+          </Link>
         </div>
       </section>
 
@@ -188,6 +275,18 @@ function CoachCard({ c }: { c: CoachKort }) {
         <p className="mt-3 text-sm leading-[1.55] text-muted-foreground">
           {c.bio}
         </p>
+        {c.tags.length > 0 && (
+          <div className="mt-4 flex flex-wrap gap-1.5">
+            {c.tags.map((tag) => (
+              <span
+                key={tag}
+                className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.04em] text-primary"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
         <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-all group-hover:gap-3">
           Les mer
           <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
