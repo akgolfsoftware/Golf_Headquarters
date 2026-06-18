@@ -1,20 +1,29 @@
 /**
  * /portal/planlegge — PlayerHQ Planlegge = Workbench.
- * Mobil (ph-workbench.jsx · WorkbenchScreen mobil): mode-rail + Treningsplan-tidslinje.
- * Desktop (fasit): den komplette Workbenchen (samme som /portal/planlegge/workbench).
- * All planlegging går gjennom Workbench — ett trykkpunkt.
+ * Ett trykkpunkt inn i den delte Workbench-kjernen (WorkbenchHybrid), som er
+ * responsiv: mode-rail + sheets på mobil, full panel-flate på desktop.
+ * Samme flate som /portal/planlegge/workbench.
  */
 
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getViewMode } from "@/lib/view-mode";
-import { getPlanleggeData } from "@/lib/portal-planlegge/planlegge-data";
-import { getWorkbenchData } from "@/app/portal/planlegge/actions";
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
-import { PlanleggeWorkbench } from "@/components/portal/planlegge/planlegge-workbench";
-import { WorkbenchShell } from "@/components/portal/workbench/WorkbenchShell";
+import { WorkbenchHybrid } from "@/components/workbench-hybrid";
+import { loadWorkbenchData } from "@/lib/workbench/load-workbench";
 
 export const dynamic = "force-dynamic";
+
+function utledInitialer(navn: string): string {
+  return (
+    navn
+      .split(" ")
+      .map((d) => d[0])
+      .filter(Boolean)
+      .slice(0, 2)
+      .join("")
+      .toUpperCase() || "??"
+  );
+}
 
 export default async function PlanleggePage() {
   const user = await requirePortalUser();
@@ -26,35 +35,14 @@ export default async function PlanleggePage() {
   if (user.role === "GUEST") redirect("/admin/kalender");
   if (user.role === "PARENT") redirect("/forelder");
 
-  const [data, wbData] = await Promise.all([
-    getPlanleggeData(user.id),
-    getWorkbenchData().catch(() => null),
-  ]);
+  const data = (await loadWorkbenchData(user.id)) ?? undefined;
 
   return (
-    <>
-      {/* Mobil: mode-rail-Workbench */}
-      <div className="mx-auto w-full max-w-[460px] px-4 pb-8 pt-3 sm:px-5 xl:hidden">
-        <div className="mb-4">
-          <AthleticEyebrow tone="lime">PLANLEGGE · WORKBENCH</AthleticEyebrow>
-          <h1 className="mt-1.5 font-display text-2xl font-bold leading-tight tracking-[-0.015em] text-foreground">
-            Workbench
-          </h1>
-          <p className="mt-0.5 font-mono text-[11px] text-muted-foreground">{data.ukeLabel}</p>
-        </div>
-        <PlanleggeWorkbench data={data} />
-      </div>
-
-      {/* Desktop: ny PlayerHQ Workbench */}
-      <div className="hidden h-full xl:block">
-        {wbData ? (
-          <WorkbenchShell data={wbData} />
-        ) : (
-          <div className="rounded-2xl border border-dashed border-border bg-card p-8 text-center">
-            <p className="text-muted-foreground">Kunne ikke laste Workbench-data.</p>
-          </div>
-        )}
-      </div>
-    </>
+    <WorkbenchHybrid
+      role="player"
+      data={data}
+      playerName={user.name}
+      initials={utledInitialer(user.name)}
+    />
   );
 }
