@@ -72,26 +72,31 @@ export async function EquipmentView({
     .filter((r) => r.shotCount > 0 && r.category !== "putter");
 
   return (
-    <div className="space-y-8">
+    <div className="mx-auto max-w-[760px] space-y-6 px-4 pb-20 sm:px-6 md:pb-0">
+      {/* Back link */}
       <Link
         href={backHref}
-        className="inline-flex items-center gap-1.5 font-mono text-[12.5px] text-muted-foreground transition-colors hover:text-foreground"
+        className="inline-flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="h-3.5 w-3.5" />
-        SG Hub
+        SG-hub
       </Link>
 
-      <div>
-        <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
-          Equipment Fit Indicators
+      {/* Editorial header */}
+      <div className="space-y-1">
+        <p className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+          Fase 5 · equipment fit
         </p>
-        <h1 className="mt-1 font-display text-3xl font-semibold">
-          <em className="font-normal italic">Helsesjekk</em> per kølle
+        <h1 className="font-display text-3xl font-bold leading-tight tracking-[-0.02em] text-foreground">
+          Utstyr
+          <em className="italic font-medium" style={{ color: "#005840" }}>
+            -helsesjekk
+          </em>
           {spillerNavn ? (
             <span className="text-muted-foreground"> · {spillerNavn}</span>
           ) : null}
         </h1>
-        <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+        <p className="max-w-2xl pt-1 text-sm text-muted-foreground">
           Launch, spin og smash sjekkes mot optimale target-vinduer per
           kølletype. Avvik kan tyde på feil køllevalg, oppsett eller
           ball-fitting — og er ofte raskere å fikse enn teknikk.
@@ -99,7 +104,7 @@ export async function EquipmentView({
       </div>
 
       {/* Legend */}
-      <div className="flex flex-wrap items-center gap-4 rounded-xl border border-border bg-card p-4 text-xs">
+      <div className="flex flex-wrap items-center gap-4 rounded-2xl border border-border bg-card p-4 text-xs shadow-sm">
         <LegendItem status="ok" label="I target" />
         <LegendItem status="warn" label="Utenfor target" />
         <LegendItem status="critical" label="Kritisk avvik" />
@@ -107,7 +112,7 @@ export async function EquipmentView({
       </div>
 
       {reports.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border bg-card p-8 text-center">
+        <div className="rounded-2xl border border-dashed border-border bg-card p-8 text-center shadow-sm">
           <p className="text-sm text-muted-foreground">
             Ingen TrackMan-data ennå.{" "}
             <Link
@@ -132,13 +137,15 @@ export async function EquipmentView({
 
 function ClubFitCard({ report }: { report: ClubFitReport }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-6">
+    <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
       <div className="mb-4 flex items-center justify-between gap-2">
         <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+          <p className="font-mono text-[9.5px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
             {categoryLabel(report.category)}
           </p>
-          <p className="mt-1 font-mono text-lg font-semibold">{report.clubId}</p>
+          <p className="mt-1 font-display text-lg font-bold tracking-[-0.01em] text-foreground">
+            {report.clubId}
+          </p>
         </div>
         <StatusBadge status={report.overall} large />
       </div>
@@ -152,16 +159,16 @@ function ClubFitCard({ report }: { report: ClubFitReport }) {
           report.metrics.map((m, i) => (
             <div
               key={i}
-              className="flex items-center justify-between gap-2 rounded-md bg-muted/40 px-4 py-2"
+              className="flex items-center justify-between gap-2 rounded-lg border border-border bg-secondary/40 px-3.5 py-2.5"
             >
               <div className="flex items-center gap-2">
                 <StatusBadge status={m.status} />
-                <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground">
+                <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
                   {m.label}
                 </span>
               </div>
               <div className="text-right">
-                <p className="font-mono text-sm tabular-nums">
+                <p className="font-mono text-sm font-semibold tabular-nums text-foreground">
                   {m.value === null ? "—" : `${formatValue(m.value, m.unit)}${m.unit}`}
                 </p>
                 {m.target && (
@@ -176,7 +183,7 @@ function ClubFitCard({ report }: { report: ClubFitReport }) {
         )}
       </div>
 
-      <p className="mt-4 font-mono text-[10px] text-muted-foreground">
+      <p className="mt-4 font-mono text-[10px] tracking-[0.04em] text-muted-foreground">
         Basert på {report.shotCount} slag
       </p>
     </div>
@@ -219,7 +226,7 @@ function StatusBadge({
     case "ok":
       return <CheckCircle2 className={`${size} text-primary`} />;
     case "warn":
-      return <AlertCircle className={`${size} text-amber-600`} />;
+      return <AlertCircle className={`${size} text-warning`} />;
     case "critical":
       return <XCircle className={`${size} text-destructive`} />;
     case "missing":

@@ -1,15 +1,13 @@
 /**
- * PlayerHQ · Trening · Tester (/portal/tren/tester) — oversikt.
+ * PlayerHQ · Trening · Tester (/portal/tren/tester)
  *
- * MeSub-skall (TRENING · TESTER / «Tester.») →
- *   SISTE RESULTATER: 5 siste TestResult med testnavn, dato og score+enhet
- *   (enhet zod-parses fra protocol — aldri rå JSON). Tomstate uten liksom-tall.
- *   KATALOG: klient-søkefelt + én gruppe per pyramide-område (alle tester i
- *   spillerens univers), rad → /portal/tren/tester/[testId].
+ * Hybrid-design (2026-06-17): editorial header + filter-chips + 2-kolonne
+ * kortgrid (TesterKatalogGrid). Beholder:
+ *   - «Tildelt deg» seksjon (TestAssignment OPEN)
+ *   - «Siste resultater» seksjon (5 siste TestResult)
+ * Kortgridet erstatter den gamle TesterKatalog-listen.
  *
- * Server component. Auth-guard og datahenting beholdt: requirePortalUser
- * (PLAYER/COACH/ADMIN) + loadTesterScreen (samme test-univers som før),
- * pluss én ekstra spørring for de 5 siste resultatene.
+ * Server component. Auth-guard via requirePortalUser.
  */
 
 import Link from "next/link";
@@ -18,22 +16,13 @@ import type { LucideIcon } from "lucide-react";
 import type { PyramidArea } from "@/generated/prisma/client";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { loadTesterScreen, type Axis } from "@/lib/portal-tester/tester-data";
+import { loadTesterScreen } from "@/lib/portal-tester/tester-data";
 import { MeSub, SetGroup, SetRow, SetVal } from "@/components/portal/meg/meg-sub";
-import { TesterKatalog, type KatalogGruppe } from "./tester-katalog";
+import { TesterKatalogGrid, type KatalogKort } from "./tester-katalog-grid";
 import { parseForScoring } from "@/lib/portal-tester/test-scoring";
 import { TestUkeKommende } from "@/components/portal/tester/test-uke-kommende";
 
 export const dynamic = "force-dynamic";
-
-/** Gruppe-labels per task-spek (eyebrow rendrer uppercase). */
-const OMRADE_LABEL: Record<Axis, string> = {
-  fys: "Fysisk",
-  tek: "Teknisk",
-  slag: "Golfslag",
-  spill: "Spill",
-  turn: "Turnering",
-};
 
 const OMRADE_IKON: Record<PyramidArea, LucideIcon> = {
   FYS: Dumbbell,
@@ -45,11 +34,17 @@ const OMRADE_IKON: Record<PyramidArea, LucideIcon> = {
 
 /** Norsk tall-format: maks 2 desimaler, komma som desimalskille. */
 function fmtNum(n: number): string {
-  return (Math.round(n * 100) / 100).toLocaleString("nb-NO", { maximumFractionDigits: 2 });
+  return (Math.round(n * 100) / 100).toLocaleString("nb-NO", {
+    maximumFractionDigits: 2,
+  });
 }
 
 function fmtDato(d: Date): string {
-  return d.toLocaleDateString("nb-NO", { day: "numeric", month: "short", year: "numeric" });
+  return d.toLocaleDateString("nb-NO", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
 }
 
 /** Første setning av scoringRule som kort rad-meta. */
@@ -93,30 +88,34 @@ export default async function TesterPage() {
     }),
   ]);
 
-  const grupper: KatalogGruppe[] = screen.groups
-    .filter((g) => g.rows.length > 0)
-    .map((g) => ({
+  /** ID-set for tildelte tester — for å merke kort i grid. */
+  const tildeltIds = new Set(tildelinger.map((a) => a.test.id));
+
+  /** Bygg kortliste fra screen.groups — alle tester i spillerens univers. */
+  const kortliste: KatalogKort[] = screen.groups.flatMap((g) =>
+    g.rows.map((r) => ({
+      id: r.id,
+      name: r.name,
       axis: g.axis,
-      label: OMRADE_LABEL[g.axis],
-      rows: g.rows.map((r) => ({
-        id: r.id,
-        name: r.name,
-        meta: kortRegel(r.rule),
-        href: r.href,
-      })),
-    }));
+      meta: kortRegel(r.rule),
+      attempts: r.attempts,
+      latestDate: r.latestDate,
+      href: r.href,
+      tildelt: tildeltIds.has(r.id),
+    }))
+  );
 
   return (
     <MeSub
-      eyebrow="TRENING · TESTER"
-      /* TestUkeKommende: klar for aktivering når TestWeek-modell kobles til */
-      title=""
-      italic="Tester."
-      lead="NGF- og Team Norway-protokoller for hele pyramiden. Se hvordan hver test gjennomføres, og følg resultatene dine over tid."
+      eyebrow="TREN · TESTER"
+      title="Test"
+      italic="katalog"
+      lead="NGF- og Team Norway-protokoller for hele pyramiden. Finn en test, gjennomfør og følg fremgangen din over tid."
     >
-      {/* Aktiveres når TestWeek-modell er på plass — vises kun ≤14 dager før testuke */}
+      {/* Aktiveres når TestWeek-modell er på plass */}
       <TestUkeKommende countdown={null} tester={[]} />
 
+      {/* Tildelt deg */}
       {tildelinger.length > 0 && (
         <SetGroup label="TILDELT DEG">
           {tildelinger.map((a) => (
@@ -128,7 +127,13 @@ export default async function TesterPage() {
               <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary">
                 {(() => {
                   const Ikon = OMRADE_IKON[a.test.pyramidArea];
-                  return <Ikon className="h-4 w-4 text-foreground" strokeWidth={1.5} aria-hidden />;
+                  return (
+                    <Ikon
+                      className="h-4 w-4 text-foreground"
+                      strokeWidth={1.5}
+                      aria-hidden
+                    />
+                  );
                 })()}
               </span>
               <span className="min-w-0 flex-1">
@@ -146,6 +151,7 @@ export default async function TesterPage() {
         </SetGroup>
       )}
 
+      {/* Siste resultater */}
       <SetGroup label="SISTE RESULTATER">
         {siste.length === 0 ? (
           <p className="px-[18px] py-6 text-center text-sm text-muted-foreground">
@@ -172,7 +178,8 @@ export default async function TesterPage() {
         )}
       </SetGroup>
 
-      <TesterKatalog grupper={grupper} />
+      {/* Kortgrid med filter-chips — erstatter gammel TesterKatalog-liste */}
+      <TesterKatalogGrid kort={kortliste} />
     </MeSub>
   );
 }

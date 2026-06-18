@@ -2,13 +2,17 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Mail, MailCheck, Send } from "lucide-react";
+import { CheckCircle } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { AthleticButton } from "@/components/athletic/button";
 import { AthleticBadge } from "@/components/athletic/badge";
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
-import { buttonClasses } from "@/components/ui/button";
 
+/**
+ * ForgotForm — hybrid design (2026-06-17).
+ * Fasit: Auth Reset Passord (hybrid).dc.html.
+ *
+ * Steg 1: Lock-ikon i sirkel, heading, e-post-input, pill CTA, tilbake-lenke.
+ * Steg 2: Checkmark-ikon, bekreftelse med e-postadresse, tips-boks, send-pa-nytt.
+ */
 export function ForgotForm() {
   const supabase = createClient();
   const [email, setEmail] = useState("");
@@ -34,91 +38,122 @@ export function ForgotForm() {
 
   if (sent) {
     return (
-      <div className="flex flex-col items-center pt-2 text-center">
-        <span
-          aria-hidden
-          className="mb-4 grid h-[60px] w-[60px] place-items-center rounded-2xl bg-accent text-primary"
-        >
-          <MailCheck className="h-8 w-8" strokeWidth={1.5} />
-        </span>
-        <h1 className="font-display text-3xl font-bold leading-[1.05] tracking-[-0.025em] text-balance text-foreground">
-          Sjekk <em className="font-normal italic text-primary">innboksen.</em>
+      <div className="w-full rounded-2xl border border-border bg-card px-7 py-8 shadow-lg text-center">
+        <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-success/10">
+          <CheckCircle
+            className="h-[26px] w-[26px] text-success"
+            strokeWidth={1.5}
+            aria-hidden
+          />
+        </div>
+
+        <h1 className="mb-2 font-display text-[22px] font-bold leading-tight tracking-[-0.02em] text-foreground">
+          Sjekk e-posten
         </h1>
-        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-          Vi har sendt en lenke for å nullstille passordet til {email}.
+        <p className="mb-5 text-[13.5px] leading-relaxed text-muted-foreground">
+          Vi har sendt en lenke til{" "}
+          <strong className="font-semibold text-foreground">{email}</strong>.
+          Lenken er gyldig i 30 minutter.
         </p>
-        <Link
-          href="/auth/login"
-          className={buttonClasses({
-            variant: "secondary",
-            size: "md",
-            className: "mt-6 w-full",
-          })}
+
+        <div className="mb-5 rounded-xl bg-secondary px-[14px] py-[14px] text-left">
+          <p className="mb-[6px] font-mono text-[9.5px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
+            Ikke fatt e-posten?
+          </p>
+          <p className="text-[13px] leading-relaxed text-muted-foreground">
+            Sjekk soppelpost-mappen. Fremdeles ingenting? Kontakt{" "}
+            <a
+              href="mailto:anders@akgolf.no"
+              className="font-medium text-primary hover:underline"
+            >
+              anders@akgolf.no
+            </a>
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setSent(false)}
+          className="rounded-full border-[1.5px] border-border bg-transparent px-6 py-[11px] font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground transition-colors hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
-          Tilbake til innlogging
-        </Link>
+          Send pa nytt
+        </button>
       </div>
     );
   }
 
   return (
-    <form onSubmit={send} className="flex flex-col">
-      <div className="mb-6">
-        <AthleticEyebrow>GLEMT PASSORD</AthleticEyebrow>
-        <h1 className="mt-2 font-display text-3xl font-bold leading-[1.05] tracking-[-0.025em] text-balance text-foreground">
-          Nullstill <em className="font-normal italic text-primary">passord.</em>
-        </h1>
-        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-          Skriv inn e-posten din, så sender vi deg en lenke.
-        </p>
+    <div className="w-full rounded-2xl border border-border bg-card px-7 py-8 shadow-lg">
+      <div className="mb-6 flex justify-center">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+            className="text-primary"
+          >
+            <rect x="3" y="11" width="18" height="11" rx="2" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
+        </div>
       </div>
 
-      <label className="mb-4 block">
-        <span className="mb-2 block font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
-          E-post
-        </span>
-        <span className="flex h-12 items-center gap-2 rounded-xl border border-input bg-card px-4 transition-colors focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/30">
-          <Mail
-            className="h-4 w-4 shrink-0 text-muted-foreground"
-            strokeWidth={1.5}
-            aria-hidden
-          />
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            placeholder="navn@klubb.no"
-            className="h-full w-full bg-transparent text-base text-foreground outline-none placeholder:text-muted-foreground/60 sm:text-sm"
-          />
-        </span>
-      </label>
+      <h1 className="mb-1 text-center font-display text-[22px] font-bold leading-tight tracking-[-0.02em] text-foreground">
+        Glemt passordet?
+      </h1>
+      <p className="mb-6 text-center text-[13.5px] leading-relaxed text-muted-foreground">
+        Skriv inn e-postadressen din, sa sender vi deg en lenke for a opprette
+        nytt passord.
+      </p>
 
-      {error && (
-        <div
-          role="alert"
-          className="mb-4 flex items-start gap-2 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-2"
+      <form onSubmit={send} className="flex flex-col">
+        <label
+          htmlFor="forgot-email"
+          className="mb-[5px] block font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground"
         >
-          <AthleticBadge variant="urgent">Feil</AthleticBadge>
-          <span className="text-sm text-destructive">{error}</span>
-        </div>
-      )}
+          E-post
+        </label>
+        <input
+          id="forgot-email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          placeholder="oyvind@akgolf.no"
+          className="mb-[14px] w-full rounded-xl border border-border bg-secondary px-[14px] py-[11px] text-sm text-foreground outline-none placeholder:text-muted-foreground/60 transition-[border-color,box-shadow] focus:border-primary focus:shadow-[0_0_0_3px_rgba(0,88,64,0.10)]"
+        />
 
-      <AthleticButton
-        type="submit"
-        variant="primary"
-        size="lg"
-        disabled={pending}
-        className="w-full"
-      >
-        {pending ? (
-          "Sender…"
-        ) : (
-          <>
-            Send lenke <Send className="h-4 w-4" strokeWidth={1.75} aria-hidden />
-          </>
+        {error && (
+          <div
+            role="alert"
+            className="mb-4 flex items-start gap-2 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3"
+          >
+            <AthleticBadge variant="urgent">Feil</AthleticBadge>
+            <span className="text-sm text-destructive">{error}</span>
+          </div>
         )}
-      </AthleticButton>
-    </form>
+
+        <button
+          type="submit"
+          disabled={pending}
+          className="mb-3 w-full rounded-full bg-primary py-[13px] font-mono text-[12px] font-bold uppercase tracking-[0.10em] text-accent transition-opacity hover:opacity-90 disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        >
+          {pending ? "Sender..." : "Send tilbakestillingslenke"}
+        </button>
+
+        <Link
+          href="/auth/login"
+          className="block text-center text-[13px] font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
+        >
+          Tilbake til innlogging
+        </Link>
+      </form>
+    </div>
   );
 }

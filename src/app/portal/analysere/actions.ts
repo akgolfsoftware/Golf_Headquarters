@@ -15,16 +15,6 @@ import type {
   ShotType,
 } from "@/generated/prisma/client";
 
-const MND = ["jan", "feb", "mar", "apr", "mai", "jun", "jul", "aug", "sep", "okt", "nov", "des"];
-
-function nb(n: number, des = 1): string {
-  return n.toLocaleString("nb-NO", { minimumFractionDigits: des, maximumFractionDigits: des });
-}
-
-function fmtDate(d: Date): string {
-  return `${d.getDate()}. ${MND[d.getMonth()]} ${d.getFullYear()}`;
-}
-
 function startOfPeriod(period: "7d" | "30d" | "90d" | "1y" | "all"): Date | null {
   const now = new Date();
   switch (period) {
@@ -144,6 +134,16 @@ export type CourseOption = {
   par: number;
 };
 
+export type SgBreakdown = {
+  sgTotal: number | null;
+  sgOtt: number | null;
+  sgApp: number | null;
+  sgArg: number | null;
+  sgPutt: number | null;
+  /** Number of rounds used for the average */
+  roundCount: number;
+};
+
 export type AnalyticsWorkbenchData = {
   training: TrainingStats;
   rounds: RoundStats;
@@ -152,6 +152,7 @@ export type AnalyticsWorkbenchData = {
   trackman: TrackManData;
   goals: GoalListItem[];
   courses: CourseOption[];
+  sgBreakdown: SgBreakdown;
 };
 
 // ── Training stats ──────────────────────────────────────────────────────────
@@ -505,12 +506,38 @@ export async function getGoals(userId: string): Promise<GoalListItem[]> {
   }));
 }
 
+// ── SG breakdown ─────────────────────────────────────────────────────────────
+
+async function getSgBreakdown(userId: string): Promise<SgBreakdown> {
+  const recent = await prisma.round.findMany({
+    where: { userId },
+    orderBy: { playedAt: "desc" },
+    take: 10,
+    select: { sgTotal: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
+  });
+
+  function avgOf(vals: (number | null)[]): number | null {
+    const filtered = vals.filter((v): v is number => v != null);
+    if (!filtered.length) return null;
+    return Math.round((filtered.reduce((a, b) => a + b, 0) / filtered.length) * 10) / 10;
+  }
+
+  return {
+    roundCount: recent.length,
+    sgTotal: avgOf(recent.map((r) => r.sgTotal)),
+    sgOtt: avgOf(recent.map((r) => r.sgOtt)),
+    sgApp: avgOf(recent.map((r) => r.sgApp)),
+    sgArg: avgOf(recent.map((r) => r.sgArg)),
+    sgPutt: avgOf(recent.map((r) => r.sgPutt)),
+  };
+}
+
 // ── Combined loader ─────────────────────────────────────────────────────────
 
 export async function loadAnalyticsWorkbenchData(
   userId: string,
 ): Promise<AnalyticsWorkbenchData> {
-  const [training, rounds, tournaments, tests, trackman, goals, courses] = await Promise.all([
+  const [training, rounds, tournaments, tests, trackman, goals, courses, sgBreakdown] = await Promise.all([
     getTrainingStats(userId, "30d"),
     getRoundStats(userId, "all"),
     getTournamentResults(userId, "all"),
@@ -522,9 +549,10 @@ export async function loadAnalyticsWorkbenchData(
       orderBy: { name: "asc" },
       take: 100,
     }),
+    getSgBreakdown(userId),
   ]);
 
-  return { training, rounds, tournaments, tests, trackman, goals, courses };
+  return { training, rounds, tournaments, tests, trackman, goals, courses, sgBreakdown };
 }
 
 // ── Save round stats ────────────────────────────────────────────────────────

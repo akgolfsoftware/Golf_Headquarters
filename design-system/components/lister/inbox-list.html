@@ -1,0 +1,252 @@
+<!-- @dsCard group="Lister" -->
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>InboxList — Lister</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:ital,wght@0,500;0,600;0,700;1,500&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../tokens.css">
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: var(--sans); background: var(--cream); color: var(--ink); margin: 0; padding: 28px; }
+  h2 { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted-2); margin: 0 0 14px; }
+  .panels { display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start; }
+
+  .inbox-panel {
+    width: 400px; max-width: 100%;
+    background: var(--paper); border: 1px solid var(--border);
+    border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--sh-sm);
+  }
+  .inbox-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px 12px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .inbox-header-title {
+    font-family: var(--disp); font-size: 15px; font-weight: 700; letter-spacing: -.01em; color: var(--ink);
+  }
+  .inbox-header-count {
+    font-family: var(--mono); font-size: 10px; font-weight: 700;
+    background: var(--lime); color: var(--forest-deep);
+    padding: 2px 7px; border-radius: var(--r-full);
+  }
+
+  .inbox-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 13px 16px; border-bottom: 1px solid var(--border-soft);
+    cursor: pointer; transition: background .14s ease-out; position: relative;
+  }
+  .inbox-row:last-child { border-bottom: none; }
+  .inbox-row:hover { background: var(--sand); }
+  .inbox-row.unread { background: rgba(209,248,67,.06); }
+  .inbox-row.unread:hover { background: rgba(209,248,67,.12); }
+
+  .avatar {
+    width: 36px; height: 36px; border-radius: var(--r-full);
+    background: var(--forest); color: var(--lime);
+    font-family: var(--mono); font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; letter-spacing: .04em;
+  }
+  .avatar.neutral { background: var(--sand-deep); color: var(--muted); }
+
+  .row-body { flex: 1; min-width: 0; }
+  .row-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px; }
+  .sender { font-size: 13.5px; font-weight: 600; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .inbox-row.unread .sender { font-weight: 700; }
+  .time { font-family: var(--mono); font-size: 10px; color: var(--muted-2); flex-shrink: 0; margin-left: 8px; }
+  .snippet { font-size: 12.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .inbox-row.unread .snippet { color: var(--ink); }
+
+  .row-meta { display: flex; align-items: center; gap: 6px; margin-top: 5px; }
+  .chip {
+    font-family: var(--mono); font-size: 9.5px; font-weight: 700; letter-spacing: .04em;
+    text-transform: uppercase; padding: 2px 7px; border-radius: var(--r-full);
+  }
+  .chip-ok { background: rgba(26,125,86,.12); color: var(--ok); }
+  .chip-warn { background: rgba(184,133,42,.14); color: var(--warn); }
+  .chip-info { background: rgba(37,99,235,.12); color: var(--info); }
+  .chip-neu { background: var(--sand); color: var(--muted); }
+
+  .unread-dot {
+    position: absolute; top: 16px; right: 14px;
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--lime); border: 1px solid var(--paper);
+  }
+
+  /* Mørkt tema */
+  .dark {
+    background: var(--t-bg); border-radius: var(--r-xl); padding: 22px;
+  }
+  .dark .inbox-panel {
+    background: var(--t-bg-3); border-color: var(--t-line-2);
+    box-shadow: 0 4px 20px rgba(0,0,0,.3);
+  }
+  .dark .inbox-header { border-color: var(--t-line); }
+  .dark .inbox-header-title { color: var(--t-fg); }
+  .dark .inbox-row { border-color: var(--t-line); }
+  .dark .inbox-row:hover { background: var(--t-bg-4); }
+  .dark .inbox-row.unread { background: var(--lime-bg); }
+  .dark .inbox-row.unread:hover { background: var(--lime-bg-2); }
+  .dark .sender { color: var(--t-fg); }
+  .dark .snippet { color: var(--t-fg-2); }
+  .dark .inbox-row.unread .snippet { color: var(--t-fg); }
+  .dark .time { color: var(--t-fg-3); }
+  .dark .avatar.neutral { background: var(--t-bg-4); color: var(--t-fg-2); }
+  .dark .unread-dot { border-color: var(--t-bg-3); }
+  .dark .chip-neu { background: var(--t-bg-4); color: var(--t-fg-2); border: 1px solid var(--t-line-2); }
+  .dark h2 { color: var(--t-fg-3); }
+</style>
+</head>
+<body>
+
+<h2>Innboks · lys</h2>
+<div class="panels">
+  <div class="inbox-panel">
+    <div class="inbox-header">
+      <span class="inbox-header-title">Innboks</span>
+      <span class="inbox-header-count">3 uleste</span>
+    </div>
+
+    <!-- Ulest -->
+    <div class="inbox-row unread">
+      <div class="avatar">AK</div>
+      <div class="row-body">
+        <div class="row-top">
+          <span class="sender">Anders Kristiansen</span>
+          <span class="time">09:14</span>
+        </div>
+        <div class="snippet">Ny treningsplan for Øyvind er klar til gjennomgang.</div>
+        <div class="row-meta">
+          <span class="chip chip-info">Coaching</span>
+        </div>
+      </div>
+      <div class="unread-dot"></div>
+    </div>
+
+    <!-- Ulest -->
+    <div class="inbox-row unread">
+      <div class="avatar neutral">ØR</div>
+      <div class="row-body">
+        <div class="row-top">
+          <span class="sender">Øyvind Rohjan</span>
+          <span class="time">08:52</span>
+        </div>
+        <div class="snippet">Hei, kan vi flytte tirsdagsøkten til kl. 10?</div>
+        <div class="row-meta">
+          <span class="chip chip-warn">Venter svar</span>
+        </div>
+      </div>
+      <div class="unread-dot"></div>
+    </div>
+
+    <!-- Ulest -->
+    <div class="inbox-row unread">
+      <div class="avatar neutral">AK</div>
+      <div class="row-body">
+        <div class="row-top">
+          <span class="sender">AK Golf Academy</span>
+          <span class="time">i går</span>
+        </div>
+        <div class="snippet">Påmelding bekreftet: Trackman-analyse 20. juni.</div>
+        <div class="row-meta">
+          <span class="chip chip-ok">Bekreftet</span>
+        </div>
+      </div>
+      <div class="unread-dot"></div>
+    </div>
+
+    <!-- Lest -->
+    <div class="inbox-row">
+      <div class="avatar neutral">ML</div>
+      <div class="row-body">
+        <div class="row-top">
+          <span class="sender">Magnus Lie</span>
+          <span class="time">i går</span>
+        </div>
+        <div class="snippet">Takk for gjennomgangen. Jobber med putting-drill.</div>
+        <div class="row-meta">
+          <span class="chip chip-neu">Spiller</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lest -->
+    <div class="inbox-row">
+      <div class="avatar neutral">SB</div>
+      <div class="row-body">
+        <div class="row-top">
+          <span class="sender">Sara Bakke</span>
+          <span class="time">man</span>
+        </div>
+        <div class="snippet">Er det ledig time fredag morgen?</div>
+        <div class="row-meta">
+          <span class="chip chip-neu">Booking</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<br><br>
+<h2>Innboks · mørk (AgencyOS)</h2>
+<div class="dark">
+  <div class="panels">
+    <div class="inbox-panel">
+      <div class="inbox-header">
+        <span class="inbox-header-title">Innboks</span>
+        <span class="inbox-header-count">2 uleste</span>
+      </div>
+
+      <div class="inbox-row unread">
+        <div class="avatar">ØR</div>
+        <div class="row-body">
+          <div class="row-top">
+            <span class="sender">Øyvind Rohjan</span>
+            <span class="time">10:02</span>
+          </div>
+          <div class="snippet">Fullførte alle drills fra i går. SG-putting +0,4.</div>
+          <div class="row-meta">
+            <span class="chip chip-ok">Rapport</span>
+          </div>
+        </div>
+        <div class="unread-dot"></div>
+      </div>
+
+      <div class="inbox-row unread">
+        <div class="avatar neutral">ML</div>
+        <div class="row-body">
+          <div class="row-top">
+            <span class="sender">Magnus Lie</span>
+            <span class="time">09:38</span>
+          </div>
+          <div class="snippet">Trenger hjelp med utslagsdrillet. Kan vi ta det onsdag?</div>
+          <div class="row-meta">
+            <span class="chip chip-warn">Venter svar</span>
+          </div>
+        </div>
+        <div class="unread-dot"></div>
+      </div>
+
+      <div class="inbox-row">
+        <div class="avatar neutral">SB</div>
+        <div class="row-body">
+          <div class="row-top">
+            <span class="sender">Sara Bakke</span>
+            <span class="time">i går</span>
+          </div>
+          <div class="snippet">Turnering Hvaler GK, 22. juni. Påmeldt.</div>
+          <div class="row-meta">
+            <span class="chip chip-neu">Info</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

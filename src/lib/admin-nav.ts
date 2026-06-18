@@ -1,5 +1,6 @@
 import {
   Activity,
+  AlertTriangle,
   Banknote,
   BarChart3,
   Bot,
@@ -12,6 +13,7 @@ import {
   Inbox,
   LayoutDashboard,
   LayoutTemplate,
+  ListChecks,
   Mail,
   MessageSquare,
   Play,
@@ -116,6 +118,13 @@ export function buildAdminNav(workbenchHref: string): NavSection[] {
         },
         {
           type: "item",
+          key: "stall",
+          label: "Stall",
+          href: "/admin/stall",
+          icon: UsersRound,
+        },
+        {
+          type: "item",
           key: "groups",
           label: "Grupper",
           href: "/admin/grupper",
@@ -146,6 +155,15 @@ export function buildAdminNav(workbenchHref: string): NavSection[] {
           match: ["/admin/coach-workbench"],
           icon: LayoutTemplate,
           primary: true,
+        },
+        {
+          type: "item",
+          key: "handlingssenter",
+          label: "Handlingssenter",
+          href: "/admin/handlingssenter",
+          icon: ListChecks,
+          badge: "tasks",
+          badgeCls: "alert",
         },
         {
           type: "group",
@@ -183,6 +201,7 @@ export function buildAdminNav(workbenchHref: string): NavSection[] {
       label: "Analyse",
       items: [
         { type: "item", key: "stable-analysis", label: "Stall-analyse", href: "/admin/analyse", icon: BarChart3 },
+        { type: "item", key: "risiko", label: "Risiko", href: "/admin/risiko", icon: AlertTriangle },
         { type: "item", key: "team-average", label: "Lag-snitt", href: "/admin/lag-snitt", icon: TrendingUp },
         { type: "item", key: "tests", label: "Tester", href: "/admin/tester", icon: FlaskConical },
         { type: "item", key: "rounds", label: "Runder", href: "/admin/runder", icon: Flag },

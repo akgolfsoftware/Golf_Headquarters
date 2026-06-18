@@ -1,90 +1,61 @@
 /**
- * PlayerHQ · Trening · Turnering — Detalj (/portal/tren/turneringer/[id]) — v10-design.
+ * PlayerHQ · Trening · Turnering — Detalj (/portal/tren/turneringer/[id])
  *
- * Rendrer <TurneringDetalj> (v10-fasit fra pl-turnering) med EKTE data fra
- * loadTurneringDetalj (Prisma: Tournament + spillerens TournamentEntry +
- * TournamentResult-historikk). mapTurneringData oversetter den eksisterende
- * TurneringDetalj-loader-shapen til v10-komponentens TurneringDetaljData.
- *
- * Tom-tilstander bevares (null/[]) — aldri liksom-tall:
- *  - `starttid`: ingen tee/starttid-felt i schemaet → utelates (undefined).
- *  - `dinStatus`: kun når påmeldt og felt finnes (kategori/status).
- *  - `forberedelse`: ingen persisteringsmodell for huskelista → [] (komponenten
- *    viser "0 / 0 klart", ingen fabrikerte punkter).
- *  - `tidligere`: fra spillerens TournamentResult — [] når ingen historikk.
+ * Hybrid design: forest-green gradient hero + terminal data cards.
+ * Bygget fra hybrid design-source (PlayerHQ Turneringsdetalj (hybrid).dc.html).
  *
  * Server component. Auth-guard via requirePortalUser (PLAYER/COACH/ADMIN).
- * Not-found-branch beholdt (EmptyState).
- *
- * Bolk (3. juni): byttet fra TurneringDetaljScreen (gammelt design) til
- * TurneringDetalj (v10).
+ * Not-found-branch beholdt med EmptyState.
  */
 
 import Link from "next/link";
-import { ChevronLeft, Trophy } from "lucide-react";
+import {
+  ChevronLeft,
+  MapPin,
+  Calendar,
+  Trophy,
+  Target,
+  Clock,
+  CheckCircle,
+  XCircle,
+} from "lucide-react";
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import {
   loadTurneringDetalj,
   type TurneringDetalj as TurneringDetaljLoad,
 } from "@/lib/portal-turnering/turnering-detalj-data";
-import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { EmptyState } from "@/components/shared/empty-state";
-import {
-  TurneringDetalj,
-  type TurneringDetaljData,
-  type DinStatusFelt,
-  type TidligereResultat,
-} from "@/components/portal/turneringer/turnering-detalj";
 
 export const dynamic = "force-dynamic";
 
-/** Oversetter ekte TurneringDetalj (loader) → v10 TurneringDetaljData. */
-function mapTurneringData(
-  data: TurneringDetaljLoad,
-  id: string,
-): TurneringDetaljData {
-  const pameldt = data.entry?.state.active === true;
-
-  // Din status — kun ekte felt. Kategori (Klasse) + status-label når de finnes.
-  const dinStatus: DinStatusFelt[] = [];
-  if (data.entry?.category) {
-    dinStatus.push({ key: "Klasse", value: data.entry.category });
+/** Tone → badge klasser for status-badge i hero */
+function statusBadgeClass(tone: string): string {
+  switch (tone) {
+    case "live":
+      return "bg-accent text-accent-foreground";
+    case "done":
+      return "bg-white/20 text-white";
+    case "cancelled":
+      return "bg-destructive/80 text-white";
+    default:
+      // upcoming
+      return "bg-white/15 text-white";
   }
-  if (data.status) {
-    dinStatus.push({ key: "Status", value: data.status.label });
+}
+
+/** Tone → tekst-farge for entry state badge */
+function entryBadgeClass(tone: string): string {
+  switch (tone) {
+    case "ok":
+      return "bg-accent/20 text-accent-foreground";
+    case "warn":
+      return "bg-warning/20 text-warning";
+    case "urgent":
+      return "bg-destructive/10 text-destructive";
+    default:
+      return "bg-secondary text-muted-foreground";
   }
-
-  // Historikk → tidligere år. Plassering hvis registrert, ellers score.
-  const tidligere: TidligereResultat[] = data.history.map((h) => {
-    if (h.position != null) {
-      return { ar: String(h.year), label: "plass", value: String(h.position) };
-    }
-    if (h.score != null) {
-      return { ar: String(h.year), label: "score", value: String(h.score) };
-    }
-    return { ar: String(h.year), label: "spilt", value: "—" };
-  });
-
-  const detaljHref = `/portal/tren/turneringer/${id}`;
-
-  return {
-    eyebrow: data.tour ?? "Turnering",
-    tittel: data.name,
-    meta: data.dateCompact,
-    pameldt,
-    // Ingen starttid-felt i schemaet → utelates (aldri falsk verdi).
-    dinStatus: dinStatus.length > 0 ? dinStatus : undefined,
-    // Ingen persisteringsmodell for forberedelse-huskelista → tom-tilstand.
-    forberedelse: [],
-    tidligere,
-    hrefs: {
-      tilbake: "/portal/tren/turneringer",
-      plan: detaljHref,
-      starttid: detaljHref,
-      avmeld: detaljHref,
-    },
-  };
 }
 
 export default async function TurneringDetaljPage({
@@ -99,22 +70,17 @@ export default async function TurneringDetaljPage({
 
   const data = await loadTurneringDetalj(user.id, id);
 
+  // Not-found branch — bevarer opprinnelig EmptyState-mønster
   if (!data) {
     return (
       <div className="space-y-6 pb-20">
         <Link
           href="/portal/tren/turneringer"
-          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+          className="inline-flex items-center gap-1 font-mono text-xs font-bold uppercase tracking-[0.08em] text-muted-foreground hover:text-foreground"
         >
           <ChevronLeft size={14} strokeWidth={1.5} />
-          Tilbake til turneringer
+          Turneringer
         </Link>
-        <PageHeader
-          eyebrow="PlayerHQ · Tren · Turnering"
-          titleLead="Turnering"
-          titleItalic="ikke funnet"
-          sub="Vi fant ingen turnering med denne ID-en."
-        />
         <EmptyState
           icon={Trophy}
           titleItalic="Ingen"
@@ -123,7 +89,7 @@ export default async function TurneringDetaljPage({
           cta={
             <Link
               href="/portal/tren/turneringer"
-              className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2 text-[13px] font-semibold text-primary-foreground hover:opacity-90"
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2 font-mono text-xs font-bold uppercase tracking-[0.08em] text-primary-foreground hover:opacity-90"
             >
               Se alle turneringer
             </Link>
@@ -133,5 +99,237 @@ export default async function TurneringDetaljPage({
     );
   }
 
-  return <TurneringDetalj data={mapTurneringData(data, id)} />;
+  const pameldt = data.entry?.state.active === true;
+
+  return (
+    <div className="space-y-6 pb-20">
+      {/* Back link */}
+      <Link
+        href="/portal/tren/turneringer"
+        className="inline-flex items-center gap-1 font-mono text-xs font-bold uppercase tracking-[0.08em] text-muted-foreground hover:text-foreground"
+      >
+        <ChevronLeft size={14} strokeWidth={1.5} />
+        Turneringer
+      </Link>
+
+      {/* Forest gradient hero */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-primary/90 to-[#003d2b] px-6 py-8">
+        {/* Status badge — top right */}
+        {data.status && (
+          <span
+            className={`absolute right-4 top-4 rounded-full px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.10em] ${statusBadgeClass(data.status.tone)}`}
+          >
+            {data.status.label}
+          </span>
+        )}
+
+        {/* Tour type label */}
+        {data.tour && (
+          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-white/60">
+            {data.tour}
+          </p>
+        )}
+
+        {/* Tournament name */}
+        <h1 className="font-display mt-2 text-2xl font-bold leading-tight tracking-tight text-white md:text-3xl">
+          {data.name}
+        </h1>
+
+        {/* Meta: date + venue */}
+        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1">
+          <span className="inline-flex items-center gap-1.5 text-sm text-white/70">
+            <Calendar size={13} strokeWidth={1.5} />
+            {data.dateLong}
+          </span>
+          {data.venue && (
+            <span className="inline-flex items-center gap-1.5 text-sm text-white/70">
+              <MapPin size={13} strokeWidth={1.5} />
+              {data.venue}
+            </span>
+          )}
+          {data.format && (
+            <span className="rounded-full bg-white/10 px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-white/80">
+              {data.format}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Coach note card */}
+      <CoachNoteCard notes={data.entry?.notes ?? null} />
+
+      {/* Entry / goal card */}
+      <EntryCard data={data} />
+
+      {/* History */}
+      {data.history.length > 0 && <HistoryCard data={data} />}
+
+      {/* CTA */}
+      <div className="flex gap-3">
+        {pameldt ? (
+          <form action={`/api/portal/turneringer/${id}/avmeld`} method="POST">
+            <button
+              type="submit"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-transparent px-6 py-2 font-mono text-xs font-bold uppercase tracking-[0.08em] text-muted-foreground hover:border-destructive/60 hover:text-destructive"
+            >
+              <XCircle size={14} strokeWidth={1.5} />
+              Meld av
+            </button>
+          </form>
+        ) : (
+          <form action={`/api/portal/turneringer/${id}/pamelding`} method="POST">
+            <button
+              type="submit"
+              className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-2 font-mono text-xs font-bold uppercase tracking-[0.08em] text-accent-foreground hover:opacity-90"
+            >
+              <CheckCircle size={14} strokeWidth={1.5} />
+              Meld på
+            </button>
+          </form>
+        )}
+        {data.officialUrl && (
+          <a
+            href={data.officialUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 font-mono text-xs font-bold uppercase tracking-[0.08em] text-muted-foreground hover:text-foreground"
+          >
+            Offisiell side
+            <ChevronLeft size={12} strokeWidth={1.5} className="rotate-180" />
+          </a>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/** Coach note card with lime left border */
+function CoachNoteCard({ notes }: { notes: string | null }) {
+  return (
+    <div className="rounded-xl border border-border bg-card p-5" style={{ borderLeftWidth: 3, borderLeftColor: "hsl(var(--accent))" }}>
+      <div className="flex items-start gap-3">
+        {/* Coach avatar */}
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary font-mono text-xs font-bold text-primary-foreground">
+          AK
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
+            Coach-notat
+          </p>
+          <p className="text-xs text-muted-foreground">Anders Kristiansen</p>
+          <p className="mt-2 text-sm text-foreground">
+            {notes ?? "Ingen coach-notat ennå."}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Entry/goal card */
+function EntryCard({ data }: { data: TurneringDetaljLoad }) {
+  const entry = data.entry;
+
+  return (
+    <div className="rounded-xl border border-border bg-card p-5">
+      <div className="flex items-center justify-between gap-4">
+        <p className="font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
+          Ditt mål
+        </p>
+        <Target size={14} strokeWidth={1.5} className="text-muted-foreground" />
+      </div>
+
+      {entry ? (
+        <div className="mt-3 space-y-3">
+          {/* Entry state */}
+          <div className="flex items-center gap-2">
+            <span
+              className={`rounded-full px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.10em] ${entryBadgeClass(entry.state.tone)}`}
+            >
+              {entry.state.label}
+            </span>
+            {entry.category && (
+              <span className="rounded-full bg-secondary px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
+                {entry.category}
+              </span>
+            )}
+          </div>
+
+          {/* Goal progress bar placeholder */}
+          <div>
+            <div className="mb-1 flex items-center justify-between">
+              <span className="font-mono text-[10px] text-muted-foreground">
+                Fremgang
+              </span>
+              <span className="font-mono text-[10px] text-muted-foreground">—</span>
+            </div>
+            <div className="h-1.5 w-full overflow-hidden rounded-full bg-secondary">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-primary to-accent"
+                style={{ width: "0%" }}
+              />
+            </div>
+          </div>
+
+          {/* Registered date */}
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <Clock size={11} strokeWidth={1.5} />
+            Påmeldt {entry.registeredLong}
+          </div>
+
+          {/* Player notes if any */}
+          {entry.notes && (
+            <p className="border-t border-border pt-3 text-sm text-foreground">
+              {entry.notes}
+            </p>
+          )}
+        </div>
+      ) : (
+        <p className="mt-3 text-sm text-muted-foreground">
+          Du er ikke påmeldt denne turneringen.
+        </p>
+      )}
+    </div>
+  );
+}
+
+/** History results card */
+function HistoryCard({ data }: { data: TurneringDetaljLoad }) {
+  return (
+    <div className="rounded-xl border border-border bg-card p-5">
+      <p className="font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
+        Resultater · historikk
+      </p>
+      <div className="mt-3 divide-y divide-border">
+        {data.history.map((h) => (
+          <div key={h.id} className="flex items-center justify-between gap-4 py-2.5">
+            <span className="font-mono text-xs text-muted-foreground">
+              {h.year}
+            </span>
+            {h.position != null ? (
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-sm font-bold tabular-nums text-foreground">
+                  #{h.position}
+                </span>
+                <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
+                  plass
+                </span>
+              </div>
+            ) : h.score != null ? (
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-sm font-bold tabular-nums text-foreground">
+                  {h.score}
+                </span>
+                <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
+                  slag
+                </span>
+              </div>
+            ) : (
+              <span className="font-mono text-sm text-muted-foreground">—</span>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }

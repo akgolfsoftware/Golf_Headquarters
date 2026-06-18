@@ -1,576 +1,394 @@
-import type { LucideIcon } from "lucide-react";
-import {
-  AlertCircle,
-  Banknote,
-  CreditCard,
-  Users,
-} from "lucide-react";
+/**
+ * AgencyOS — Økonomi, /admin/okonomi  (hybrid terminal design 2026-06-17).
+ *
+ * Layout: KPI-stripe (4 kort) + fakturaer/betalinger-tabell.
+ * Periode-filter via ?p=mai|jun|q2 — server-side (ingen klient-JS for tabs).
+ * Datakilde: Prisma Payment-modell.
+ */
+
+import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { EmptyState } from "@/components/shared/empty-state";
-import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
+import {
+  AgTable,
+  AgTh,
+  AgTd,
+  AgChip,
+  AgPage,
+  AgPageHead,
+  agBtnClass,
+  agTrClass,
+  AgPlayerCell,
+} from "@/components/admin/agencyos/ui";
+import { cn } from "@/lib/utils";
+import { Plus } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
-export default async function FinanceAdmin() {
+type SearchParams = Promise<{ p?: string }>;
+
+/* ───────── periode-helpers ───────── */
+
+type PeriodeKey = "mai" | "jun" | "q2";
+
+function periodeRange(key: PeriodeKey): { fra: Date; til: Date; label: string } {
+  const now = new Date();
+  const yr = now.getFullYear();
+  if (key === "mai") {
+    return {
+      fra: new Date(yr, 4, 1),
+      til: new Date(yr, 5, 1),
+      label: `mai ${yr}`,
+    };
+  }
+  if (key === "jun") {
+    return {
+      fra: new Date(yr, 5, 1),
+      til: new Date(yr, 6, 1),
+      label: `juni ${yr}`,
+    };
+  }
+  // q2: april–juni
+  return {
+    fra: new Date(yr, 3, 1),
+    til: new Date(yr, 6, 1),
+    label: `Q2 ${yr}`,
+  };
+}
+
+function normalisePeriode(raw: string | undefined): PeriodeKey {
+  if (raw === "mai" || raw === "q2") return raw;
+  return "jun";
+}
+
+/* ───────── helpers ───────── */
+
+function kroner(ore: number): string {
+  return (ore / 100).toLocaleString("nb-NO", { maximumFractionDigits: 0 }) + " kr";
+}
+
+function initials(name: string | null): string {
+  if (!name) return "??";
+  return name
+    .split(" ")
+    .map((w) => w[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+}
+
+function formatDate(d: Date | null): string {
+  if (!d) return "—";
+  return d.toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit" });
+}
+
+/* ───────── status chip ───────── */
+
+function PaymentChip({ status }: { status: string }) {
+  const map: Record<string, { tone: "ok" | "warn" | "neu" | "alert" | "lime"; label: string }> = {
+    SUCCEEDED: { tone: "lime", label: "Betalt" },
+    PENDING: { tone: "warn", label: "Venter" },
+    FAILED: { tone: "alert", label: "Feilet" },
+    REFUNDED: { tone: "neu", label: "Refundert" },
+    PARTIALLY_REFUNDED: { tone: "warn", label: "Del.refund." },
+  };
+  const cfg = map[status] ?? { tone: "neu" as const, label: status };
+  return <AgChip tone={cfg.tone}>{cfg.label}</AgChip>;
+}
+
+/* ───────── KPI kort ───────── */
+
+function KpiCard({
+  label,
+  value,
+  delta,
+  hot = false,
+  warnTone = false,
+}: {
+  label: string;
+  value: string;
+  delta: string;
+  hot?: boolean;
+  warnTone?: boolean;
+}) {
+  return (
+    <div
+      className={cn(
+        "rounded-[10px] border p-[14px] pb-3",
+        hot
+          ? "border-primary/20 bg-primary/10"
+          : "border-border bg-card",
+      )}
+    >
+      <div className="font-mono text-[8.5px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
+        {label}
+      </div>
+      <div
+        className={cn(
+          "mt-[7px] font-mono text-[24px] font-semibold leading-none tabular-nums",
+          hot ? "text-primary" : warnTone ? "text-warning" : "text-foreground",
+        )}
+      >
+        {value}
+      </div>
+      <div
+        className={cn(
+          "mt-[6px] font-mono text-[10px]",
+          hot ? "text-success" : warnTone ? "text-warning" : "text-muted-foreground",
+        )}
+      >
+        {delta}
+      </div>
+    </div>
+  );
+}
+
+/* ───────── page ───────── */
+
+export default async function OkonomiPage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
-  const trettiDagerSiden = new Date();
-  trettiDagerSiden.setDate(trettiDagerSiden.getDate() - 30);
+  const { p } = await searchParams;
+  const periodeKey = normalisePeriode(p);
+  const { fra, til, label: periodeLabel } = periodeRange(periodeKey);
 
+  // Hent data for valgt periode
   const [
-    aktive,
-    pastDue,
-    cancelled,
-    alleSubs,
-    totalProBrukere,
-    inntektSiste30Agg,
-    antallTransaksjoner30,
-    failedCount,
-    refundedAgg,
-    sistePayments,
+    inntektAgg,
+    utestaaende,
+    betalte,
+    aktiveSubs,
+    allePayments,
+    // forrige periode for delta-beregning
+    forrigeAgg,
   ] = await Promise.all([
-    prisma.subscription.count({ where: { status: "ACTIVE", tier: "PRO" } }),
-    prisma.subscription.count({ where: { status: "PAST_DUE" } }),
-    prisma.subscription.count({ where: { status: "CANCELLED" } }),
-    prisma.subscription.findMany({
-      include: { user: { select: { name: true, email: true } } },
-      orderBy: { updatedAt: "desc" },
-      take: 50,
-    }),
-    prisma.user.count({ where: { role: "PLAYER", tier: "PRO" } }),
+    // Inntekt i perioden (netto)
     prisma.payment.aggregate({
       where: {
         status: { in: ["SUCCEEDED", "PARTIALLY_REFUNDED"] },
-        paidAt: { gte: trettiDagerSiden },
+        paidAt: { gte: fra, lt: til },
+      },
+      _sum: { amountOre: true, amountRefundedOre: true },
+      _count: true,
+    }),
+    // Utestående (PENDING i perioden)
+    prisma.payment.aggregate({
+      where: {
+        status: "PENDING",
+        createdAt: { gte: fra, lt: til },
+      },
+      _sum: { amountOre: true },
+      _count: true,
+    }),
+    // Antall betalte i perioden
+    prisma.payment.count({
+      where: {
+        status: { in: ["SUCCEEDED", "PARTIALLY_REFUNDED"] },
+        paidAt: { gte: fra, lt: til },
+      },
+    }),
+    // Aktive Pro-abonnenter
+    prisma.subscription.count({ where: { status: "ACTIVE", tier: "PRO" } }),
+    // Alle betalinger i perioden (tabell)
+    prisma.payment.findMany({
+      where: {
+        createdAt: { gte: fra, lt: til },
+        status: { in: ["SUCCEEDED", "PENDING", "FAILED", "REFUNDED", "PARTIALLY_REFUNDED"] },
+      },
+      include: { user: { select: { name: true } } },
+      orderBy: [{ paidAt: "desc" }, { createdAt: "desc" }],
+      take: 50,
+    }),
+    // Forrige tilsvarende periode for delta (simple: én periode tilbake)
+    prisma.payment.aggregate({
+      where: {
+        status: { in: ["SUCCEEDED", "PARTIALLY_REFUNDED"] },
+        paidAt: {
+          gte: new Date(fra.getTime() - (til.getTime() - fra.getTime())),
+          lt: fra,
+        },
       },
       _sum: { amountOre: true, amountRefundedOre: true },
     }),
-    prisma.payment.count({
-      where: {
-        status: { in: ["SUCCEEDED", "PARTIALLY_REFUNDED"] },
-        paidAt: { gte: trettiDagerSiden },
-      },
-    }),
-    prisma.payment.count({
-      where: { status: "FAILED", createdAt: { gte: trettiDagerSiden } },
-    }),
-    prisma.payment.aggregate({
-      where: {
-        status: { in: ["REFUNDED", "PARTIALLY_REFUNDED"] },
-        refundedAt: { gte: trettiDagerSiden },
-      },
-      _sum: { amountRefundedOre: true },
-      _count: true,
-    }),
-    prisma.payment.findMany({
-      where: { status: { in: ["SUCCEEDED", "REFUNDED", "PARTIALLY_REFUNDED"] } },
-      include: { user: { select: { name: true, email: true } } },
-      orderBy: { paidAt: "desc" },
-      take: 25,
-    }),
   ]);
 
-  const bruttoOre = inntektSiste30Agg._sum.amountOre ?? 0;
-  const refundOre = inntektSiste30Agg._sum.amountRefundedOre ?? 0;
-  const nettoOre30 = bruttoOre - refundOre;
-  const inntekt30Kr = Math.round(nettoOre30 / 100);
+  // Kalkuler KPI-verdier
+  const bruttoOre = inntektAgg._sum.amountOre ?? 0;
+  const refundOre = inntektAgg._sum.amountRefundedOre ?? 0;
+  const nettoOre = bruttoOre - refundOre;
 
-  // MRR fra aktive Pro × 300 kr (samme antagelse som før — alle Pro = 300/mnd)
-  const monthlyRevenue = aktive * 300;
-  const yearlyRevenue = monthlyRevenue * 12;
-  const snittPerSpiller =
-    totalProBrukere > 0 ? Math.round(monthlyRevenue / totalProBrukere) : 0;
-  const refundCount = refundedAgg._count ?? 0;
+  const forrigeBrutto = forrigeAgg._sum.amountOre ?? 0;
+  const forrigeRefund = forrigeAgg._sum.amountRefundedOre ?? 0;
+  const forrigeNetto = forrigeBrutto - forrigeRefund;
+  const deltaProc =
+    forrigeNetto > 0
+      ? Math.round(((nettoOre - forrigeNetto) / forrigeNetto) * 100)
+      : null;
 
-  const eyebrowMonth = new Date().toLocaleDateString("nb-NO", {
-    month: "long",
-    year: "numeric",
-  });
+  const utestaaendeOre = utestaaende._sum.amountOre ?? 0;
+  const utestaaendeAntall = utestaaende._count ?? 0;
+
+  const period_tabs: { key: PeriodeKey; label: string }[] = [
+    { key: "mai", label: "Mai" },
+    { key: "jun", label: "Juni" },
+    { key: "q2", label: "Q2" },
+  ];
 
   return (
-    <div className="space-y-8">
-      {/* HERO */}
-      <PageHeader
-        eyebrow={`Økonomi · ${eyebrowMonth}`}
-        titleLead="Økonomi —"
-        titleItalic="pulsen"
-        titleTrail="i driften."
-        sub="Estimater basert på aktive abonnement · Faktiske beløp i Stripe"
+    <AgPage>
+      <AgPageHead
+        eyebrow="Økonomi"
+        title="Fakturaer"
+        italic="og betalinger"
+        lead="Fakturaer · betalinger · abonnement"
         actions={
-          <div className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-sm">
-            <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-              Periode
-            </span>
-            <span className="font-medium">Inneværende måned</span>
+          <div className="flex items-center gap-2">
+            {/* Periode-tabs (server-side navigation) */}
+            <div className="flex gap-[3px] rounded-[10px] border border-border bg-card p-[3px]">
+              {period_tabs.map((t) => (
+                <Link
+                  key={t.key}
+                  href={`/admin/okonomi?p=${t.key}`}
+                  className={cn(
+                    "rounded-[8px] px-[11px] py-[6px] font-mono text-[10px] font-bold transition-colors",
+                    periodeKey === t.key
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  {t.label}
+                </Link>
+              ))}
+            </div>
+            <button
+              type="button"
+              className={cn(agBtnClass("primary", "sm"), "cursor-not-allowed opacity-60")}
+              title="Faktura-generering kommer"
+            >
+              <Plus size={13} strokeWidth={2.4} />
+              Ny faktura
+            </button>
           </div>
         }
       />
 
-      {/* KPI STRIP */}
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <HeroKpi
-          icon={Banknote}
-          label="MRR (Pro abo)"
-          value={`${monthlyRevenue.toLocaleString("nb-NO")}`}
-          unit="kr"
-          sub={`${aktive} aktive Pro · ${yearlyRevenue.toLocaleString(
-            "nb-NO",
-          )} kr / år`}
+      {/* ── KPI strip ── */}
+      <div className="mb-[18px] grid grid-cols-2 gap-[10px] lg:grid-cols-4">
+        <KpiCard
+          label={`Inntekt ${periodeLabel}`}
+          value={kroner(nettoOre)}
+          delta={
+            deltaProc !== null
+              ? `${deltaProc >= 0 ? "+" : ""}${deltaProc} % vs forrige`
+              : `${inntektAgg._count} betalinger`
+          }
+          hot={nettoOre > 0}
         />
-        <Kpi
-          icon={CreditCard}
-          label="Inntekt 30d (netto)"
-          value={`${inntekt30Kr.toLocaleString("nb-NO")}`}
-          unit="kr"
-          sub={`${antallTransaksjoner30} transaksjoner · ${Math.round(refundOre / 100).toLocaleString("nb-NO")} kr refundert`}
+        <KpiCard
+          label="Utestående"
+          value={kroner(utestaaendeOre)}
+          delta={`${utestaaendeAntall} faktura${utestaaendeAntall === 1 ? "" : "er"}`}
+          warnTone={utestaaendeOre > 0}
         />
-        <Kpi
-          icon={Users}
-          label="Snitt per Pro-spiller"
-          value={`${snittPerSpiller.toLocaleString("nb-NO")}`}
-          unit="kr"
-          sub={`${totalProBrukere} Pro-spillere totalt`}
+        <KpiCard
+          label={`Betalte ${periodeLabel}`}
+          value={String(betalte)}
+          delta="fakturaer betalt"
         />
-        <Kpi
-          icon={AlertCircle}
-          label="Failed / refund 30d"
-          value={`${failedCount} / ${refundCount}`}
-          sub={`${pastDue} past due · ${cancelled} kansellert`}
-          tone={failedCount > 0 || pastDue > 0 ? "warn" : "neutral"}
+        <KpiCard
+          label="Aktive abonnenter"
+          value={String(aktiveSubs)}
+          delta="PRO-spillere"
         />
-      </section>
+      </div>
 
-      {/* SISTE BETALINGER */}
-      <section className="space-y-4">
-        <div className="flex flex-wrap items-baseline justify-between gap-4">
-          <h3 className="font-display text-lg font-semibold tracking-tight">
-            Siste{" "}
-            <em className="font-normal italic text-primary">betalinger</em>
-          </h3>
-          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            {sistePayments.length} rader · fra Stripe via Payment-modell
+      {/* ── Betalingstabell ── */}
+      <div className="overflow-hidden rounded-[10px] border border-border bg-card">
+        {/* Tabell-header */}
+        <div className="flex items-center justify-between border-b border-border px-4 py-3">
+          <span className="font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
+            Fakturaer · {periodeLabel}
+          </span>
+          <span className="font-mono text-[10px] text-muted-foreground">
+            {allePayments.length} rader
           </span>
         </div>
 
-        {sistePayments.length === 0 ? (
-          <EmptyState
-            icon={Banknote}
-            titleItalic="Ingen betalinger"
-            titleTrail="enda"
-            sub="Stripe-events sendes automatisk via webhook. Kjør scripts/reimport-stripe.ts for historikk."
-          />
-        ) : (
-          <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
-            <div className="overflow-x-auto">
-            <table className="w-full min-w-[640px] text-sm">
-              <thead className="border-b border-border bg-secondary/40 text-left">
+        {/* Scrollable table */}
+        <div className="overflow-x-auto">
+          <AgTable>
+            <thead>
+              <tr>
+                <AgTh>Spiller</AgTh>
+                <AgTh>Beskrivelse</AgTh>
+                <AgTh>Type</AgTh>
+                <AgTh num>Beløp</AgTh>
+                <AgTh num>Dato</AgTh>
+                <AgTh>Status</AgTh>
+              </tr>
+            </thead>
+            <tbody>
+              {allePayments.length === 0 ? (
                 <tr>
-                  <Th>Dato</Th>
-                  <Th>Bruker</Th>
-                  <Th>Type</Th>
-                  <Th>Beløp</Th>
-                  <Th>Status</Th>
+                  <td
+                    colSpan={6}
+                    className="px-4 py-12 text-center font-mono text-[12px] text-muted-foreground"
+                  >
+                    Ingen betalinger i perioden.
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {sistePayments.map((p) => {
-                  const beloepKr = (p.amountOre / 100).toLocaleString("no-NO");
-                  const refundKr =
+              ) : (
+                allePayments.map((p) => {
+                  const refund =
                     p.amountRefundedOre > 0
-                      ? ` (− ${(p.amountRefundedOre / 100).toLocaleString("no-NO")})`
+                      ? ` (− ${(p.amountRefundedOre / 100).toLocaleString("nb-NO")} kr)`
                       : "";
                   return (
-                    <tr
-                      key={p.id}
-                      className="border-b border-border/60 last:border-0 hover:bg-secondary/30"
-                    >
-                      <Td className="font-mono text-xs text-muted-foreground">
-                        {(p.paidAt ?? p.createdAt).toLocaleDateString("nb-NO", {
-                          day: "2-digit",
-                          month: "2-digit",
-                          year: "2-digit",
-                        })}
-                      </Td>
-                      <Td>
-                        {p.user ? (
-                          <div className="min-w-0">
-                            <div className="truncate font-medium text-foreground">
-                              {p.user.name}
-                            </div>
-                            <div className="truncate font-mono text-[10px] text-muted-foreground">
-                              {p.user.email}
-                            </div>
-                          </div>
-                        ) : (
-                          <span className="font-mono text-[11px] text-muted-foreground">
-                            ukjent kunde
-                          </span>
-                        )}
-                      </Td>
-                      <Td>
+                    <tr key={p.id} className={agTrClass}>
+                      <AgTd>
+                        <AgPlayerCell
+                          initials={initials(p.user?.name ?? null)}
+                          name={p.user?.name ?? "Ukjent"}
+                          sub={p.description ?? undefined}
+                          tone="neu"
+                        />
+                      </AgTd>
+                      <AgTd>
+                        <span className="text-[12.5px] text-muted-foreground">
+                          {p.description ?? "—"}
+                        </span>
+                      </AgTd>
+                      <AgTd>
                         <span className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
                           {p.type.toLowerCase()}
                         </span>
-                      </Td>
-                      <Td className="font-mono tabular-nums">
-                        {beloepKr} kr
-                        <span className="text-muted-foreground">
-                          {refundKr}
+                      </AgTd>
+                      <AgTd num>
+                        {kroner(p.amountOre)}
+                        {refund && (
+                          <span className="text-muted-foreground">{refund}</span>
+                        )}
+                      </AgTd>
+                      <AgTd num>
+                        <span className="font-mono text-[11px] text-muted-foreground">
+                          {formatDate(p.paidAt ?? p.createdAt)}
                         </span>
-                      </Td>
-                      <Td>
-                        <PaymentStatusPill status={p.status} />
-                      </Td>
+                      </AgTd>
+                      <AgTd>
+                        <PaymentChip status={p.status} />
+                      </AgTd>
                     </tr>
                   );
-                })}
-              </tbody>
-            </table>
-            </div>
-          </div>
-        )}
-      </section>
-
-      {/* TABELL */}
-      <section className="space-y-4">
-        <div className="flex flex-wrap items-baseline justify-between gap-4">
-          <h3 className="font-display text-lg font-semibold tracking-tight">
-            Siste{" "}
-            <em className="font-normal italic text-primary">
-              abonnement-endringer
-            </em>
-          </h3>
-          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            {alleSubs.length} rader · sortert nyest først
-          </span>
+                })
+              )}
+            </tbody>
+          </AgTable>
         </div>
-
-        {alleSubs.length === 0 ? (
-          <EmptyState
-            icon={CreditCard}
-            titleItalic="Ingen abonnementer"
-            titleTrail="ennå"
-            sub="Når spillere starter Pro-abonnement vises endringene her."
-          />
-        ) : (
-          <>
-            {/* Desktop tabell */}
-            <div className="hidden overflow-hidden rounded-xl border border-border bg-card shadow-sm md:block">
-              <table className="w-full text-sm">
-                <thead className="border-b border-border bg-secondary/40 text-left">
-                  <tr>
-                    <Th>Spiller</Th>
-                    <Th>Tier</Th>
-                    <Th>Status</Th>
-                    <Th>Neste betaling</Th>
-                    <Th>Oppdatert</Th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {alleSubs.map((s) => (
-                    <tr
-                      key={s.id}
-                      className="border-b border-border/60 last:border-0 hover:bg-secondary/30"
-                    >
-                      <Td>
-                        <div className="flex items-center gap-4">
-                          <Avatar name={s.user.name} />
-                          <div className="min-w-0">
-                            <div className="truncate font-medium text-foreground">
-                              {s.user.name}
-                            </div>
-                            <div className="truncate font-mono text-[10px] text-muted-foreground">
-                              {s.user.email}
-                            </div>
-                          </div>
-                        </div>
-                      </Td>
-                      <Td>
-                        <TierPill tier={s.tier} />
-                      </Td>
-                      <Td>
-                        <StatusPill status={s.status} />
-                      </Td>
-                      <Td className="font-mono text-xs text-muted-foreground">
-                        {s.currentPeriodEnd
-                          ? s.currentPeriodEnd.toLocaleDateString("nb-NO", {
-                              day: "2-digit",
-                              month: "2-digit",
-                              year: "numeric",
-                            })
-                          : "—"}
-                      </Td>
-                      <Td className="font-mono text-xs text-muted-foreground">
-                        {s.updatedAt.toLocaleDateString("nb-NO", {
-                          day: "2-digit",
-                          month: "2-digit",
-                        })}
-                      </Td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Mobile-liste */}
-            <ul className="space-y-2 md:hidden">
-              {alleSubs.map((s) => (
-                <li
-                  key={s.id}
-                  className="flex flex-col gap-2 rounded-lg border border-border bg-card p-4 shadow-sm"
-                >
-                  <div className="flex items-start gap-4">
-                    <Avatar name={s.user.name} />
-                    <div className="min-w-0 flex-1">
-                      <div className="truncate font-medium text-foreground">
-                        {s.user.name}
-                      </div>
-                      <div className="truncate font-mono text-[10px] text-muted-foreground">
-                        {s.user.email}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <TierPill tier={s.tier} />
-                    <StatusPill status={s.status} />
-                    {s.currentPeriodEnd && (
-                      <span className="font-mono text-[10px] text-muted-foreground">
-                        Neste:{" "}
-                        {s.currentPeriodEnd.toLocaleDateString("nb-NO", {
-                          day: "2-digit",
-                          month: "2-digit",
-                        })}
-                      </span>
-                    )}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
-      </section>
-    </div>
-  );
-}
-
-// ---------- helpers ----------
-
-function HeroKpi({
-  icon: Icon,
-  label,
-  value,
-  unit,
-  sub,
-}: {
-  icon: LucideIcon;
-  label: string;
-  value: string;
-  unit?: string;
-  sub?: string;
-}) {
-  // Mørk hero-KPI med gradient — én av de tre "lime" highlight-punktene.
-  return (
-    <div
-      className="relative overflow-hidden rounded-xl border border-foreground/40 bg-foreground p-6 shadow-sm sm:col-span-2 lg:col-span-1 dark:bg-card"
-    >
-      <div
-        className="flex items-center gap-2 font-mono text-[10px] font-semibold uppercase tracking-[0.06em]"
-        style={{ color: "rgba(209,248,67,0.7)" }}
-      >
-        <Icon size={14} strokeWidth={1.75} />
-        {label}
       </div>
-      <div className="mt-2 flex items-baseline gap-2">
-        <span
-          className="font-mono text-4xl font-semibold tabular-nums text-background"
-        >
-          {value}
-        </span>
-        {unit && (
-          <span
-            className="text-sm font-medium"
-            style={{ color: "rgba(245,244,238,0.65)" }}
-          >
-            {unit}
-          </span>
-        )}
-      </div>
-      {sub && (
-        <p
-          className="mt-2 font-mono text-[11px]"
-          style={{ color: "rgba(245,244,238,0.65)" }}
-        >
-          {sub}
-        </p>
-      )}
-    </div>
+    </AgPage>
   );
-}
-
-function Kpi({
-  icon: Icon,
-  label,
-  value,
-  unit,
-  sub,
-  tone = "neutral",
-}: {
-  icon: LucideIcon;
-  label: string;
-  value: string;
-  unit?: string;
-  sub?: string;
-  tone?: "neutral" | "warn";
-}) {
-  return (
-    <div className="flex flex-col gap-1 rounded-xl border border-border bg-card p-4 shadow-sm">
-      <div className="flex items-center gap-2 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
-        <Icon
-          size={14}
-          strokeWidth={1.75}
-          className={
-            tone === "warn" ? "text-destructive" : "text-muted-foreground"
-          }
-        />
-        {label}
-      </div>
-      <div
-        className={`mt-1 flex items-baseline gap-2 font-mono text-3xl font-semibold tabular-nums ${
-          tone === "warn" ? "text-destructive" : "text-foreground"
-        }`}
-      >
-        <span>{value}</span>
-        {unit && (
-          <span className="text-sm font-medium text-muted-foreground">
-            {unit}
-          </span>
-        )}
-      </div>
-      {sub && (
-        <p className="mt-1 font-mono text-[11px] text-muted-foreground">
-          {sub}
-        </p>
-      )}
-    </div>
-  );
-}
-
-function Avatar({ name }: { name: string | null }) {
-  const initials = name
-    ? name
-        .split(" ")
-        .map((w) => w[0])
-        .slice(0, 2)
-        .join("")
-        .toUpperCase()
-    : "??";
-  return (
-    <div
-      aria-hidden="true"
-      className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/70 font-display text-[11px] font-semibold text-white"
-    >
-      {initials}
-    </div>
-  );
-}
-
-function TierPill({ tier }: { tier: string }) {
-  const isPro = tier === "PRO";
-  return (
-    <span
-      className={`inline-flex items-center rounded-full px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] ${
-        isPro
-          ? "bg-primary/10 text-primary"
-          : "bg-secondary text-muted-foreground"
-      }`}
-    >
-      {tier}
-    </span>
-  );
-}
-
-function StatusPill({ status }: { status: string }) {
-  const config: Record<
-    string,
-    { label: string; className: string }
-  > = {
-    ACTIVE: {
-      label: "Aktiv",
-      className: "bg-primary/10 text-primary",
-    },
-    PAST_DUE: {
-      label: "Forfalt",
-      className: "bg-destructive/15 text-destructive",
-    },
-    CANCELLED: {
-      label: "Kansellert",
-      className: "bg-secondary text-muted-foreground",
-    },
-    PAUSED: {
-      label: "Pauset",
-      className: "bg-secondary text-muted-foreground",
-    },
-  };
-  const c = config[status] ?? {
-    label: status,
-    className: "bg-secondary text-muted-foreground",
-  };
-  return (
-    <span
-      className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] ${c.className}`}
-    >
-      <span
-        aria-hidden="true"
-        className="h-1.5 w-1.5 rounded-full bg-current opacity-70"
-      />
-      {c.label}
-    </span>
-  );
-}
-
-function PaymentStatusPill({ status }: { status: string }) {
-  const config: Record<string, { label: string; className: string }> = {
-    SUCCEEDED: { label: "Betalt", className: "bg-primary/10 text-primary" },
-    PENDING: { label: "Venter", className: "bg-secondary text-muted-foreground" },
-    FAILED: { label: "Feilet", className: "bg-destructive/15 text-destructive" },
-    REFUNDED: { label: "Refundert", className: "bg-secondary text-muted-foreground" },
-    PARTIALLY_REFUNDED: {
-      label: "Delvis refundert",
-      className: "bg-accent/30 text-accent-foreground",
-    },
-  };
-  const c = config[status] ?? {
-    label: status,
-    className: "bg-secondary text-muted-foreground",
-  };
-  return (
-    <span
-      className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] ${c.className}`}
-    >
-      <span
-        aria-hidden="true"
-        className="h-1.5 w-1.5 rounded-full bg-current opacity-70"
-      />
-      {c.label}
-    </span>
-  );
-}
-
-function Th({ children }: { children: React.ReactNode }) {
-  return (
-    <th className="px-4 py-4 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-      {children}
-    </th>
-  );
-}
-
-function Td({
-  children,
-  className = "",
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return <td className={`px-4 py-4 ${className}`}>{children}</td>;
 }

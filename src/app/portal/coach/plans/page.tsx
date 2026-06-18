@@ -1,6 +1,12 @@
+/**
+ * PlayerHQ Coach Planer — hub (/portal/coach/plans) — hybrid-design 2026-06-17.
+ *
+ * Kanban-kolonne-visning: Aktiv · Fullført · Pause.
+ * Progress-bar per plan (forest→lime gradient). Matches fasit B5 · Planer (Hub-fane).
+ */
+
 import Link from "next/link";
 import { ArrowUpRight, ClipboardList } from "lucide-react";
-import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { EmptyState } from "@/components/shared/empty-state";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
@@ -10,13 +16,13 @@ export default async function CoachPlans() {
 
   if (user.tier === "GRATIS") {
     return (
-      <div className="space-y-6">
-        <PageHeader
-          eyebrow="PlayerHQ · Coach"
-          titleLead="Krever"
-          titleItalic="Pro"
-          sub="Coach-laget plan er en del av Pro-abonnementet."
-        />
+      <div className="mx-auto max-w-[430px] pb-24 pt-2 px-4 md:max-w-[1240px] md:px-0 md:pb-8">
+        <h1 className="font-display text-[20px] font-bold leading-[1.06] tracking-[-0.02em] text-foreground">
+          Mine<em className="font-medium italic text-primary"> planer</em>
+        </h1>
+        <p className="mt-2 text-[13px] text-muted-foreground">
+          Coach-laget plan er en del av Pro-abonnementet.
+        </p>
       </div>
     );
   }
@@ -27,179 +33,157 @@ export default async function CoachPlans() {
       createdById: { not: null },
     },
     include: {
-      sessions: {
-        select: { id: true, status: true },
-      },
+      sessions: { select: { id: true, status: true } },
     },
     orderBy: { startDate: "desc" },
   });
 
-  const aktiv = planer.filter((p) => p.isActive);
-  const ferdig = planer.filter((p) => !p.isActive);
+  const aktiv  = planer.filter((p) => p.isActive);
+  const fullfort = planer.filter((p) => !p.isActive && p.sessions.some((s) => s.status === "COMPLETED"));
+  const pause  = planer.filter((p) => !p.isActive && !fullfort.includes(p));
+
+  const cols = [
+    { title: "Aktiv",     headColor: "text-primary",          plans: aktiv },
+    { title: "Fullført",  headColor: "text-muted-foreground", plans: fullfort },
+    { title: "Pause",     headColor: "text-warning",          plans: pause },
+  ];
 
   return (
-    <div className="mx-auto max-w-[1240px] space-y-6 px-4 pb-20 sm:px-6 md:space-y-8 md:pb-0">
-      <PageHeader
-        eyebrow="PlayerHQ · Coach · Planer"
-        titleLead={aktiv.length === 0 ? "Ingen" : `${aktiv.length} aktiv`}
-        titleItalic={aktiv.length === 0 ? "aktiv plan" : aktiv.length === 1 ? "plan" : "planer"}
-        sub={
-          planer.length === 0
-            ? "Når en coach lager en plan til deg, vises den her."
-            : `${planer.length} ${planer.length === 1 ? "plan" : "planer"} totalt`
-        }
-      />
+    <div className="mx-auto max-w-[430px] pb-24 pt-2 md:max-w-[1240px] md:pb-8">
+
+      {/* Header */}
+      <div className="mb-4 flex items-start justify-between px-4 md:px-0">
+        <div>
+          <h1 className="font-display text-[20px] font-bold leading-[1.06] tracking-[-0.02em] text-foreground">
+            Mine<em className="font-medium italic text-primary"> planer</em>
+          </h1>
+          <p className="mt-1 text-[13px] text-muted-foreground">
+            Fra Anders Kristiansen
+          </p>
+        </div>
+        <Link
+          href="/portal/onskeligokt"
+          className="shrink-0 rounded-full border border-border px-3.5 py-[7px] font-mono text-[10px] font-bold uppercase tracking-[0.04em] text-muted-foreground transition hover:border-primary/40 hover:text-foreground"
+        >
+          Be om plan
+        </Link>
+      </div>
 
       {planer.length === 0 ? (
-        <EmptyState
-          icon={ClipboardList}
-          titleItalic="Ingen planer"
-          titleTrail="fra coach"
-          sub="Egne ad-hoc-økter ligger på /portal/tren. Når coachen lager en plan til deg, dukker den opp her."
-          cta={
-            <Link
-              href="/portal/tren"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
-            >
-              Til mine økter
-              <ArrowUpRight size={14} strokeWidth={1.5} />
-            </Link>
-          }
-        />
+        <div className="px-3 md:px-0">
+          <EmptyState
+            icon={ClipboardList}
+            titleItalic="Ingen planer"
+            titleTrail="fra coach"
+            sub="Egne ad-hoc-økter ligger på /portal/tren. Når coachen lager en plan til deg, dukker den opp her."
+            cta={
+              <Link
+                href="/portal/tren"
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 font-mono text-[12px] font-medium text-foreground transition-colors hover:bg-secondary"
+              >
+                Til mine økter
+                <ArrowUpRight size={14} strokeWidth={1.5} />
+              </Link>
+            }
+          />
+        </div>
       ) : (
-        <div className="space-y-8">
-          {aktiv.length > 0 && (
-            <PlanColumn title="Aktiv" tone="primary" description="Følger disse nå">
-              {aktiv.map((p) => (
-                <PlanCardEl key={p.id} plan={p} />
-              ))}
-            </PlanColumn>
-          )}
-
-          {ferdig.length > 0 && (
-            <PlanColumn
-              title="Ferdig"
-              tone="muted"
-              description="Arkiv siste 12 mnd"
-            >
-              {ferdig.map((p) => (
-                <PlanCardEl key={p.id} plan={p} />
-              ))}
-            </PlanColumn>
-          )}
+        /* Kanban — horisontalt scroll på mobil */
+        <div className="flex gap-2 overflow-x-auto px-4 pb-2 [-webkit-overflow-scrolling:touch] [scrollbar-width:none] md:px-0">
+          {cols.map((col) => (
+            <KanbanCol key={col.title} title={col.title} headColor={col.headColor}>
+              {col.plans.map((p) => {
+                const fullfort = p.sessions.filter((s) => s.status === "COMPLETED").length;
+                const total = p.sessions.length;
+                const pct = total > 0 ? Math.round((fullfort / total) * 100) : 0;
+                return (
+                  <PlanKCard
+                    key={p.id}
+                    id={p.id}
+                    name={p.name}
+                    startDate={p.startDate}
+                    endDate={p.endDate}
+                    isActive={p.isActive}
+                    pct={pct}
+                  />
+                );
+              })}
+            </KanbanCol>
+          ))}
         </div>
       )}
     </div>
   );
 }
 
-function PlanColumn({
+// ─── Kanban-kolonne ────────────────────────────────────────────────────────
+
+function KanbanCol({
   title,
-  tone,
-  description,
+  headColor,
   children,
 }: {
   title: string;
-  tone: "primary" | "muted";
-  description: string;
+  headColor: string;
   children: React.ReactNode;
 }) {
-  const dotCls = tone === "primary" ? "bg-primary" : "bg-muted-foreground/50";
   return (
-    <section>
-      <header className="mb-4 flex items-center gap-4">
-        <span className={`h-2.5 w-2.5 rounded-full ${dotCls}`} />
-        <div>
-          <h2 className="font-display text-base font-semibold leading-none">
-            {title}
-          </h2>
-          <p className="mt-1 text-[11px] text-muted-foreground">
-            {description}
-          </p>
-        </div>
-      </header>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">{children}</div>
-    </section>
+    <div className="flex w-[180px] shrink-0 flex-col gap-2 rounded-xl border border-border bg-secondary/50 p-2.5 md:w-[220px]">
+      <div className={`font-mono text-[9px] font-bold uppercase tracking-[0.08em] ${headColor}`}>
+        {title}
+      </div>
+      {children}
+    </div>
   );
 }
 
-type Plan = {
+// ─── Plan-kort ─────────────────────────────────────────────────────────────
+
+function fmtDato(d: Date): string {
+  return d.toLocaleDateString("nb-NO", { month: "short", year: "2-digit" });
+}
+
+function PlanKCard({
+  id,
+  name,
+  startDate,
+  endDate,
+  isActive,
+  pct,
+}: {
   id: string;
   name: string;
-  isActive: boolean;
   startDate: Date;
   endDate: Date | null;
-  sessions: { id: string; status: string }[];
-};
-
-function PlanCardEl({ plan }: { plan: Plan }) {
-  const fullført = plan.sessions.filter((s) => s.status === "COMPLETED").length;
-  const total = plan.sessions.length;
-  const progress = total > 0 ? Math.round((fullført / total) * 100) : 0;
+  isActive: boolean;
+  pct: number;
+}) {
+  const meta = endDate
+    ? `${fmtDato(startDate)} – ${fmtDato(endDate)}`
+    : `Fra ${fmtDato(startDate)}`;
 
   return (
-    <article className="rounded-lg border border-border bg-card p-4 transition-shadow hover:shadow-md">
-      <div className="flex items-center gap-2">
-        <span
-          className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${
-            plan.isActive
-              ? "bg-primary/10 text-primary"
-              : "bg-secondary text-muted-foreground"
-          }`}
-        >
-          {plan.isActive ? "Aktiv" : "Ferdig"}
-        </span>
+    <Link
+      href={`/portal/coach/plans/${id}`}
+      className={
+        "block rounded-lg border bg-card p-2.5 transition-[transform,box-shadow] hover:-translate-y-0.5 hover:shadow-sm " +
+        (isActive ? "border-l-2 border-l-accent border-border bg-accent/[0.04]" : "border-border")
+      }
+    >
+      <div className="text-[12px] font-semibold leading-[1.3] text-foreground">
+        {name}
       </div>
-
-      <h3 className="mt-4 font-display text-lg italic font-medium leading-snug text-foreground">
-        <Link href={`/portal/coach/plans/${plan.id}`} className="hover:text-primary">
-          {plan.name}
-        </Link>
-      </h3>
-      <p className="mt-1 font-mono text-[11px] tabular-nums text-muted-foreground">
-        {plan.startDate.toLocaleDateString("nb-NO", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-        })}
-        {plan.endDate &&
-          ` – ${plan.endDate.toLocaleDateString("nb-NO", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-          })}`}
-      </p>
-
-      {plan.isActive && total > 0 ? (
-        <div className="mt-4">
-          <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-            <span>Fremdrift</span>
-            <span className="font-mono font-semibold tabular-nums text-foreground">
-              {progress} %
-            </span>
-          </div>
-          <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-secondary">
-            <div
-              className="h-full bg-accent"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-        </div>
-      ) : (
-        <p className="mt-4 text-sm text-foreground">
-          {fullført} / {total} økter fullført
-        </p>
-      )}
-
-      <footer className="mt-4 flex items-center border-t border-border pt-4">
-        <Link
-          href={`/portal/coach/plans/${plan.id}`}
-          className="inline-flex items-center gap-1 text-xs font-medium text-foreground hover:underline"
-        >
-          Detaljer
-          <ArrowUpRight size={12} strokeWidth={1.5} />
-        </Link>
-      </footer>
-    </article>
+      <div className="mt-1 font-mono text-[9px] text-muted-foreground">{meta}</div>
+      {/* Progress-bar */}
+      <div className="mt-2 h-[5px] overflow-hidden rounded-full bg-secondary">
+        <div
+          className="h-full rounded-full"
+          style={{
+            width: `${pct}%`,
+            background: "linear-gradient(90deg,#005840,#b5d629)",
+          }}
+        />
+      </div>
+    </Link>
   );
 }

@@ -1,0 +1,231 @@
+<!-- @dsCard group="Auth" -->
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AuthCard — Auth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:ital,wght@0,500;0,600;0,700;1,500&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../tokens.css">
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: var(--sans); background: var(--cream); color: var(--ink); margin: 0; padding: 28px; }
+  h2 { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted-2); margin: 0 0 16px; }
+  h2:not(:first-child) { margin-top: 36px; }
+  .row { display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start; }
+
+  /* ---- PlayerHQ-innlogging (lys) ---- */
+  .auth-wrap {
+    display: flex; align-items: center; justify-content: center;
+    padding: 32px 16px;
+    background: var(--cream); border-radius: var(--r-xl);
+    border: 1px solid var(--border-soft); min-width: 360px;
+  }
+  .auth-card {
+    width: 360px; max-width: 100%;
+    background: var(--paper); border: 1px solid var(--border);
+    border-radius: var(--r-xl); padding: 32px 28px 28px;
+    box-shadow: var(--sh-lg);
+  }
+
+  .auth-logo {
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 24px;
+  }
+  .auth-logo-mark {
+    width: 44px; height: 44px; border-radius: var(--r-md);
+    background: var(--forest); display: flex; align-items: center; justify-content: center;
+  }
+  .auth-logo-mark svg { width: 26px; height: 26px; stroke: var(--lime); }
+
+  .auth-headline {
+    font-family: var(--disp); font-size: 22px; font-weight: 700;
+    letter-spacing: -.02em; text-align: center; color: var(--ink); margin: 0 0 4px;
+  }
+  .auth-sub {
+    font-size: 13.5px; color: var(--muted); text-align: center; margin: 0 0 24px;
+  }
+
+  .field-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+  .field-label {
+    font-family: var(--mono); font-size: 10px; font-weight: 700;
+    letter-spacing: .10em; text-transform: uppercase; color: var(--muted);
+    margin-bottom: 5px;
+  }
+  .field-input {
+    width: 100%; padding: 11px 14px;
+    background: var(--sand); border: 1px solid var(--border);
+    border-radius: var(--r-md); font-size: 14px; font-family: var(--sans);
+    color: var(--ink); outline: none;
+    transition: border-color .15s ease-out, box-shadow .15s ease-out;
+  }
+  .field-input:focus { border-color: var(--forest); box-shadow: 0 0 0 3px rgba(0,88,64,.10); }
+  .field-input::placeholder { color: var(--muted-2); }
+
+  .forgot {
+    font-size: 12px; color: var(--forest); text-decoration: none;
+    display: block; text-align: right; margin-top: -6px; margin-bottom: 20px;
+    font-weight: 500;
+  }
+
+  .auth-cta {
+    width: 100%; padding: 13px;
+    background: var(--forest); color: var(--lime);
+    font-family: var(--mono); font-size: 12px; font-weight: 700;
+    letter-spacing: .10em; text-transform: uppercase;
+    border: none; border-radius: var(--r-full); cursor: pointer;
+    transition: background .15s ease-out, transform .12s ease-out;
+    margin-bottom: 16px;
+  }
+  .auth-cta:hover { background: var(--forest-deep); transform: translateY(-1px); }
+
+  .auth-divider {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+  }
+  .auth-divider-line { flex: 1; height: 1px; background: var(--border-soft); }
+  .auth-divider-text {
+    font-family: var(--mono); font-size: 9.5px; letter-spacing: .10em;
+    text-transform: uppercase; color: var(--muted-2);
+  }
+
+  .auth-alt-btn {
+    width: 100%; padding: 11px;
+    background: transparent; color: var(--ink);
+    font-size: 13.5px; font-weight: 500; font-family: var(--sans);
+    border: 1px solid var(--border); border-radius: var(--r-full); cursor: pointer;
+    transition: background .14s ease-out;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    margin-bottom: 10px;
+  }
+  .auth-alt-btn:hover { background: var(--sand); }
+  .auth-alt-btn svg { width: 18px; height: 18px; }
+
+  .auth-footer {
+    text-align: center; font-size: 12.5px; color: var(--muted); margin-top: 18px;
+  }
+  .auth-footer a { color: var(--forest); font-weight: 600; text-decoration: none; }
+
+  /* ---- AgencyOS innlogging (mørk) ---- */
+  .dark { background: var(--t-bg); border-radius: var(--r-xl); padding: 32px 16px; }
+  .dark .auth-card {
+    background: var(--t-bg-3); border-color: var(--t-line-2);
+    box-shadow: 0 24px 60px rgba(0,0,0,.5);
+  }
+  .dark .auth-headline { color: var(--t-fg); }
+  .dark .auth-sub { color: var(--t-fg-2); }
+  .dark .field-label { color: var(--t-fg-3); }
+  .dark .field-input {
+    background: var(--t-bg-2); border-color: var(--t-line-2);
+    color: var(--t-fg);
+  }
+  .dark .field-input::placeholder { color: var(--t-fg-4); }
+  .dark .field-input:focus { border-color: var(--lime); box-shadow: 0 0 0 3px rgba(209,248,67,.10); }
+  .dark .forgot { color: var(--lime); }
+  .dark .auth-cta { background: var(--lime); color: var(--forest-deep); }
+  .dark .auth-cta:hover { background: var(--lime-deep); }
+  .dark .auth-divider-line { background: var(--t-line); }
+  .dark .auth-divider-text { color: var(--t-fg-3); }
+  .dark .auth-alt-btn { border-color: var(--t-line-2); color: var(--t-fg); }
+  .dark .auth-alt-btn:hover { background: var(--t-bg-4); }
+  .dark .auth-footer { color: var(--t-fg-2); }
+  .dark .auth-footer a { color: var(--lime); }
+  .dark h2 { color: var(--t-fg-3); }
+</style>
+</head>
+<body>
+
+<h2>Innlogging · PlayerHQ (lys)</h2>
+<div class="row">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <div class="auth-logo-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l4.5 4.5"/></svg>
+        </div>
+      </div>
+      <h1 class="auth-headline">Logg inn på PlayerHQ</h1>
+      <p class="auth-sub">Din trenings- og utviklingsportal</p>
+
+      <div class="field-group">
+        <div>
+          <div class="field-label">E-post</div>
+          <input class="field-input" type="email" placeholder="oyvind@akgolf.no">
+        </div>
+        <div>
+          <div class="field-label">Passord</div>
+          <input class="field-input" type="password" placeholder="••••••••">
+        </div>
+      </div>
+
+      <a href="#" class="forgot">Glemt passordet?</a>
+
+      <button class="auth-cta">Logg inn</button>
+
+      <div class="auth-divider">
+        <div class="auth-divider-line"></div>
+        <span class="auth-divider-text">eller</span>
+        <div class="auth-divider-line"></div>
+      </div>
+
+      <button class="auth-alt-btn">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        Fortsett med Google
+      </button>
+
+      <div class="auth-footer">
+        Ikke bruker? <a href="#">Registrer deg</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<br>
+<h2>Innlogging · AgencyOS (mørk)</h2>
+<div class="dark">
+  <div class="row">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <div class="auth-logo-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l4.5 4.5"/></svg>
+        </div>
+      </div>
+      <h1 class="auth-headline">AgencyOS</h1>
+      <p class="auth-sub">Coach-plattform · AK Golf Academy</p>
+
+      <div class="field-group">
+        <div>
+          <div class="field-label">E-post</div>
+          <input class="field-input" type="email" placeholder="anders@akgolf.no">
+        </div>
+        <div>
+          <div class="field-label">Passord</div>
+          <input class="field-input" type="password" placeholder="••••••••">
+        </div>
+      </div>
+
+      <a href="#" class="forgot">Glemt passordet?</a>
+
+      <button class="auth-cta">Logg inn</button>
+
+      <div class="auth-divider">
+        <div class="auth-divider-line"></div>
+        <span class="auth-divider-text">eller</span>
+        <div class="auth-divider-line"></div>
+      </div>
+
+      <button class="auth-alt-btn">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        Fortsett med Google
+      </button>
+
+      <div class="auth-footer">
+        Trenger tilgang? <a href="#">Kontakt Anders</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

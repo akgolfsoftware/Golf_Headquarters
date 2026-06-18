@@ -9,6 +9,11 @@ export type SessionTimerProps = {
   onTogglePause: () => void;
   /** Valgfri etikett over tiden. */
   label?: string;
+  /**
+   * "dark"  — hvit tekst / bakgrunns-tokens (brukes i dark live-shell).
+   * "light" — foreground-tekst / card-bakgrunn (brukes i lys aktiv-økt).
+   */
+  variant?: "dark" | "light";
 };
 
 function fmtMSS(totalSec: number): string {
@@ -20,18 +25,32 @@ function fmtMSS(totalSec: number): string {
 /**
  * Stor timer for live-økt.
  *
- * JetBrains Mono for tall, tydelig pause/fortsett-knapp.
+ * Variant "dark": hvit tekst, brukes i forest-mørk shell.
+ * Variant "light": foreground-tekst, brukes i lys aktiv-økt.
  */
 export function SessionTimer({
   seconds,
   paused,
   onTogglePause,
   label = "Økt-tid",
+  variant = "dark",
 }: SessionTimerProps) {
+  const isDark = variant === "dark";
+
   return (
-    <div className="flex items-center justify-between gap-4 rounded-2xl border border-background/10 bg-background/5 px-4 py-4">
+    <div
+      className={`flex items-center justify-between gap-4 rounded-[14px] border px-4 py-4 ${
+        isDark
+          ? "border-background/10 bg-background/5"
+          : "border-border bg-card shadow-sm"
+      }`}
+    >
       <div>
-        <div className="font-mono text-[10px] font-extrabold uppercase tracking-[0.14em] text-background/55">
+        <div
+          className={`font-mono text-[9.5px] font-bold uppercase tracking-[0.14em] ${
+            isDark ? "text-background/55" : "text-muted-foreground"
+          }`}
+        >
           {label}
         </div>
         <div
@@ -46,7 +65,11 @@ export function SessionTimer({
         type="button"
         onClick={onTogglePause}
         aria-label={paused ? "Fortsett økt" : "Pause økt"}
-        className="grid h-14 w-14 place-items-center rounded-full border border-background/20 bg-background/10 text-background active:scale-95"
+        className={`grid h-14 w-14 place-items-center rounded-full border active:scale-95 ${
+          isDark
+            ? "border-background/20 bg-background/10 text-background"
+            : "border-border bg-secondary text-foreground"
+        }`}
       >
         {paused ? (
           <Play className="h-6 w-6 fill-current" strokeWidth={2} aria-hidden />

@@ -52,13 +52,29 @@ export default function KontaktSide() {
   return (
     <div className="bg-background text-foreground">
       {/* ========== HERO ========== */}
-      <section className="border-b border-border">
-        <div className="mx-auto max-w-7xl px-6 pb-16 pt-16 md:px-8 md:pt-24">
-          <SectionEyebrow>Kontakt</SectionEyebrow>
+      <section
+        className="relative overflow-hidden text-white"
+        style={{
+          background:
+            "linear-gradient(160deg, hsl(var(--primary)) 0%, hsl(168 72% 11%) 60%)",
+        }}
+      >
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-[120px] right-[-80px] h-[420px] w-[420px] rounded-full bg-accent opacity-[0.10] blur-[6px]"
+        />
+        <div className="relative z-10 mx-auto max-w-7xl px-6 pb-16 pt-16 md:px-8 md:pb-20 md:pt-24">
+          <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">
+            Kontakt
+          </span>
           <h1 className="mt-4 max-w-[16ch] text-balance font-display text-[clamp(44px,6vw,80px)] font-semibold leading-[0.98] tracking-[-0.03em]">
-            Vi vil gjerne <Em>høre fra deg</Em>.
+            Vi vil gjerne{" "}
+            <em className="font-display font-normal italic text-accent">
+              høre fra deg
+            </em>
+            .
           </h1>
-          <p className="mt-6 max-w-[48ch] text-[17px] leading-[1.55] text-muted-foreground">
+          <p className="mt-6 max-w-[48ch] text-[17px] leading-[1.55] text-white/70">
             Spørsmål om coaching, junior-program eller bedriftsevent? Skriv noen
             ord under, eller ring oss direkte. Vi svarer innen 1 virkedag.
           </p>
@@ -83,6 +99,16 @@ export default function KontaktSide() {
           </div>
 
           <aside className="space-y-4">
+            <div>
+              <h3 className="font-display text-[28px] font-bold leading-[1.05] tracking-[-0.02em]">
+                Om <Em>AK Golf</Em>
+              </h3>
+              <p className="mt-3 text-[15px] leading-[1.65] text-muted-foreground">
+                AK Golf Academy driver datadrevet coaching innendørs hos
+                Mulligan Indoor Golf og utendørs på Gamle Fredrikstad
+                Golfklubb. Vi hjelper spillere fra nybegynner til elite-nivå.
+              </p>
+            </div>
             <div className="rounded-[20px] border border-border bg-card p-6 sm:p-8">
               <h3 className="font-display text-[22px] font-bold leading-[1.1] tracking-[-0.015em]">
                 Foretrekker du å ringe?

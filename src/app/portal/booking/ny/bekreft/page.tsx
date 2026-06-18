@@ -1,8 +1,8 @@
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
+import { ArrowLeft, Coins, Shield } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { isSlotStillAvailable } from "@/lib/booking/availability";
 import { BekreftForm } from "./bekreft-form";
 
@@ -54,73 +54,102 @@ export default async function BekreftCreditBookingPage({
     weekday: "long",
     day: "numeric",
     month: "long",
-    year: "numeric",
   });
   const klokkeslett = startAt.toLocaleTimeString("nb-NO", {
     hour: "2-digit",
     minute: "2-digit",
   });
+  const datoTid = `${dato.charAt(0).toUpperCase()}${dato.slice(1)} · ${klokkeslett}`;
+
+  const saldoEtter = subscription.creditsRemaining - 1;
+
+  const summary = [
+    { label: "Økt-type", value: service.name },
+    { label: "Coach", value: coachUser.name ?? "Coach" },
+    { label: "Dato/tid", value: datoTid },
+    { label: "Varighet", value: `${service.durationMin} min` },
+    { label: "Kostnad", value: "1 av månedens timer" },
+  ];
 
   return (
-    <div className="mx-auto max-w-[1240px] space-y-6 px-4 sm:px-6">
+    <div className="mx-auto max-w-[480px] space-y-3 px-4 pb-24 pt-6">
+      {/* Tilbake-lenke */}
       <Link
         href={`/portal/booking/ny?service=${serviceSlug}&dato=${
           startAt.toISOString().split("T")[0]
         }`}
-        className="inline-flex min-h-11 items-center font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground"
+        className="inline-flex min-h-11 items-center gap-1.5 font-mono text-[11px] tracking-[0.04em] text-muted-foreground hover:text-foreground"
       >
-        ← Velg annen tid
+        <ArrowLeft className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden />
+        Velg annen tid
       </Link>
 
-      <PageHeader
-        eyebrow="PlayerHQ · Bekreft booking"
-        titleLead="Sjekk"
-        titleItalic="detaljene"
-        titleTrail="og bekreft"
-        sub={`Dette koster 1 credit. Du har ${subscription.creditsRemaining} credit${
-          subscription.creditsRemaining === 1 ? "" : "s"
-        } igjen.`}
-      />
+      {/* Editorial header */}
+      <h1 className="font-display text-[24px] font-bold leading-[1.05] -tracking-[0.02em] text-foreground">
+        Bekreft{" "}
+        <em className="font-medium italic text-primary">booking</em>
+      </h1>
 
       {!ledig && (
-        <div className="rounded-md border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive">
-          Tiden ble dessverre booket av noen andre. Gå tilbake og velg en
-          annen tid.
+        <div className="rounded-2xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-[13px] text-destructive">
+          Tiden ble dessverre booket av noen andre. Gå tilbake og velg en annen
+          tid.
         </div>
       )}
 
-      <section className="rounded-2xl border border-border bg-card p-4 sm:p-6">
-        <h2 className="font-display text-lg font-semibold tracking-tight">
+      {/* Oppsummering */}
+      <section className="rounded-2xl border border-border bg-card p-4 shadow-[0_1px_2px_rgba(10,31,23,0.05)]">
+        <div className="font-mono text-[9.5px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
           Oppsummering
-        </h2>
-        <dl className="mt-4 space-y-4 text-sm">
-          <Rad label="Tjeneste" value={service.name} />
-          <Rad label="Coach" value={coachUser.name ?? "Coach"} />
-          <Rad label="Dato" value={dato} />
-          <Rad label="Klokkeslett" value={klokkeslett} />
-          <Rad label="Varighet" value={`${service.durationMin} min`} />
-          <Rad label="Kostnad" value="1 credit" />
+        </div>
+        <dl className="mt-3 divide-y divide-border/60">
+          {summary.map((row) => (
+            <div key={row.label} className="flex items-center gap-3 py-3">
+              <dt className="w-20 shrink-0 font-mono text-[10px] text-muted-foreground">
+                {row.label}
+              </dt>
+              <dd className="text-[13.5px] font-semibold text-foreground">
+                {row.value}
+              </dd>
+            </div>
+          ))}
         </dl>
       </section>
 
+      {/* Betaling → credit-saldo (denne flyten bruker forhåndsbetalte timer) */}
+      <section className="rounded-2xl border border-primary/30 bg-primary/[0.04] p-4 shadow-[0_1px_2px_rgba(10,31,23,0.05)]">
+        <div className="font-mono text-[9.5px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
+          Betaling
+        </div>
+        <div className="mt-2.5 flex items-center gap-2.5 rounded-[14px] bg-card px-3 py-2.5">
+          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-primary text-accent">
+            <Coins className="h-4 w-4" strokeWidth={2} aria-hidden />
+          </span>
+          <span className="text-[13.5px] text-foreground">
+            Trekkes fra forhåndsbetalte timer
+          </span>
+          <span className="ml-auto font-mono text-[11px] font-bold tabular-nums text-muted-foreground">
+            {subscription.creditsRemaining} → {saldoEtter}
+          </span>
+        </div>
+      </section>
+
+      {/* Notater + bekreft-knapper */}
       {ledig && (
         <BekreftForm
           serviceTypeId={service.id}
           coachId={coachId}
           start={startAt.toISOString()}
+          backHref={`/portal/booking/ny?service=${serviceSlug}&dato=${
+            startAt.toISOString().split("T")[0]
+          }`}
         />
       )}
-    </div>
-  );
-}
 
-function Rad({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border/40 pb-4 last:border-0 last:pb-0">
-      <dt className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-        {label}
-      </dt>
-      <dd className="text-foreground">{value}</dd>
+      <p className="flex items-center justify-center gap-1.5 pt-1 text-center font-mono text-[10px] tracking-[0.02em] text-muted-foreground">
+        <Shield className="h-3 w-3" strokeWidth={1.75} aria-hidden />
+        Gratis avbestilling inntil 24 timer før
+      </p>
     </div>
   );
 }

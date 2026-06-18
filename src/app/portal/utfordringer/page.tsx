@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { Trophy } from "lucide-react";
+import { Clock, Trophy } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { EmptyState } from "@/components/shared/empty-state";
 
 export default async function UtfordringerListe() {
@@ -29,26 +28,45 @@ export default async function UtfordringerListe() {
   const tidligere = utfordringer.filter((u) => u.status === "ENDED");
 
   return (
-    <div className="space-y-6 pb-20 md:space-y-8 md:pb-0">
-      <PageHeader
-        eyebrow="PlayerHQ · Utfordringer"
-        titleLead="Mine"
-        titleItalic="utfordringer"
-        sub="Drill-challenges du har laget eller deltar i."
-        actions={
+    <div className="space-y-8 pb-20 md:pb-0">
+      {/* Editorial header */}
+      <header role="banner" className="px-0">
+        <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+          PlayerHQ · Utfordringer
+        </p>
+        <div className="mt-1.5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h1 className="font-display text-3xl font-bold leading-tight tracking-tight md:text-4xl">
+              Mine{" "}
+              <em
+                className="font-medium not-italic"
+                style={{
+                  fontFamily: "'Inter Tight', sans-serif",
+                  fontStyle: "italic",
+                  color: "#005840",
+                }}
+              >
+                utfordringer
+              </em>
+            </h1>
+            <p className="mt-2 text-sm text-muted-foreground">
+              {aktive.length} aktive · drill-challenges du har laget eller deltar i.
+            </p>
+          </div>
           <Link
             href="/portal/utfordringer/ny"
-            className="rounded-md bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 font-mono text-xs font-bold uppercase tracking-[0.06em] text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             + Ny utfordring
           </Link>
-        }
-      />
+        </div>
+      </header>
 
+      {/* Aktive */}
       <section aria-labelledby="aktive-tittel" className="space-y-4">
         <h2
           id="aktive-tittel"
-          className="font-display text-lg font-semibold tracking-tight"
+          className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground"
         >
           Aktive ({aktive.length})
         </h2>
@@ -61,14 +79,14 @@ export default async function UtfordringerListe() {
             cta={
               <Link
                 href="/portal/utfordringer/ny"
-                className="rounded-md bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+                className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 font-mono text-xs font-bold uppercase tracking-[0.06em] text-primary-foreground transition-opacity hover:opacity-90"
               >
                 + Ny utfordring
               </Link>
             }
           />
         ) : (
-          <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {aktive.map((u) => (
               <UtfordringKort key={u.id} u={u} brukerId={user.id} />
             ))}
@@ -76,15 +94,16 @@ export default async function UtfordringerListe() {
         )}
       </section>
 
+      {/* Tidligere */}
       {tidligere.length > 0 && (
         <section aria-labelledby="tidligere-tittel" className="space-y-4">
           <h2
             id="tidligere-tittel"
-            className="font-display text-lg font-semibold tracking-tight"
+            className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground"
           >
             Tidligere ({tidligere.length})
           </h2>
-          <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {tidligere.map((u) => (
               <UtfordringKort key={u.id} u={u} brukerId={user.id} />
             ))}
@@ -104,70 +123,108 @@ type UtfordringForKort = {
   status: string;
   ownerId: string;
   owner: { id: string; name: string | null };
-  participants: { id: string; userId: string; score: number | null; rank: number | null }[];
+  participants: {
+    id: string;
+    userId: string;
+    score: number | null;
+    rank: number | null;
+  }[];
 };
 
-function UtfordringKort({ u, brukerId }: { u: UtfordringForKort; brukerId: string }) {
+function UtfordringKort({
+  u,
+  brukerId,
+}: {
+  u: UtfordringForKort;
+  brukerId: string;
+}) {
   const minPlassering = u.participants.find((p) => p.userId === brukerId);
   const erEier = u.ownerId === brukerId;
+  const erAvsluttet = u.status === "ENDED";
   const sluttDato = u.endAt
     ? u.endAt.toLocaleDateString("nb-NO", { day: "2-digit", month: "short" })
     : null;
+  const deadlineTekst = erAvsluttet
+    ? "Avsluttet"
+    : sluttDato
+      ? `Slutter ${sluttDato}`
+      : "Ingen sluttdato";
 
   return (
     <li>
       <Link
         href={`/portal/utfordringer/${u.id}`}
-        className="block rounded-lg border border-border bg-card p-6 transition-colors hover:border-primary/40"
+        className="block overflow-hidden rounded-lg border border-border bg-card p-4 shadow-[0_1px_2px_rgba(10,31,23,.05)] transition-[transform,box-shadow] hover:-translate-y-0.5 hover:shadow-[0_10px_22px_rgba(10,31,23,.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
       >
-        <div className="flex items-start justify-between gap-4">
-          <h3 className="font-display text-base font-semibold leading-tight tracking-tight">
-            {u.name}
-          </h3>
+        {/* Eyebrow-rad: status-dot + label, + Eier-badge */}
+        <div className="flex items-center justify-between gap-2">
+          <span
+            className="inline-flex items-center gap-1.5 font-mono text-[9.5px] font-bold uppercase tracking-[0.10em]"
+            style={{ color: erAvsluttet ? undefined : "#005840" }}
+          >
+            <span
+              aria-hidden
+              className="inline-block h-1.5 w-1.5 rounded-full"
+              style={{ background: erAvsluttet ? "#5E5C57" : "#D1F843" }}
+            />
+            <span className={erAvsluttet ? "text-muted-foreground" : ""}>
+              {erAvsluttet ? "Fullført" : "Utfordring"}
+            </span>
+          </span>
           {erEier && (
-            <span className="rounded-full bg-accent/20 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-accent-foreground">
+            <span className="rounded-full bg-accent/20 px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.10em] text-accent-foreground">
               Eier
             </span>
           )}
         </div>
+
+        {/* Tittel */}
+        <h3 className="mt-2 font-display text-base font-bold leading-tight tracking-tight text-foreground">
+          {u.name}
+        </h3>
+
         {u.description && (
-          <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">
+          <p className="mt-1.5 line-clamp-2 text-[13px] text-muted-foreground">
             {u.description}
           </p>
         )}
-        <dl className="mt-4 grid grid-cols-2 gap-4 border-t border-border pt-4">
+
+        {/* Data-rad: deltakere + plassering */}
+        <dl className="mt-3.5 grid grid-cols-2 gap-3 border-t border-border pt-3.5">
           <div>
-            <dt className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            <dt className="font-mono text-[9px] uppercase tracking-[0.10em] text-muted-foreground">
               Deltakere
             </dt>
-            <dd className="mt-1 font-mono text-lg font-semibold tabular-nums">
+            <dd className="mt-1 font-mono text-lg font-bold tabular-nums text-foreground">
               {u.participants.length}
             </dd>
           </div>
           <div>
-            <dt className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-              {u.status === "ENDED" ? "Avsluttet" : "Slutter"}
+            <dt className="font-mono text-[9px] uppercase tracking-[0.10em] text-muted-foreground">
+              Min plassering
             </dt>
-            <dd className="mt-1 font-mono text-sm tabular-nums text-foreground">
-              {sluttDato ?? "—"}
+            <dd className="mt-1 font-mono text-lg font-bold tabular-nums">
+              {minPlassering?.rank != null ? (
+                <span style={{ color: "#005840" }}>
+                  #{minPlassering.rank}
+                  {minPlassering.score != null && (
+                    <span className="ml-1.5 text-sm font-medium text-muted-foreground">
+                      ({minPlassering.score})
+                    </span>
+                  )}
+                </span>
+              ) : (
+                <span className="text-muted-foreground">—</span>
+              )}
             </dd>
           </div>
-          {minPlassering?.rank != null && (
-            <div className="col-span-2">
-              <dt className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                Min plassering
-              </dt>
-              <dd className="mt-1 font-mono text-sm font-semibold tabular-nums text-primary">
-                #{minPlassering.rank}
-                {minPlassering.score != null && (
-                  <span className="ml-2 text-muted-foreground">
-                    ({minPlassering.score})
-                  </span>
-                )}
-              </dd>
-            </div>
-          )}
         </dl>
+
+        {/* Deadline-fot */}
+        <div className="mt-3 flex items-center gap-1.5 font-mono text-[10px] text-muted-foreground">
+          <Clock aria-hidden size={11} strokeWidth={1.5} />
+          {deadlineTekst}
+        </div>
       </Link>
     </li>
   );

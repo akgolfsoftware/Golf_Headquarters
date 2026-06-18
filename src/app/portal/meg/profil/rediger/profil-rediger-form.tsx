@@ -21,7 +21,7 @@ type Initial = {
   homeClub: string;
   ambition: string;
   avatarUrl: string | null;
-  tier: "GRATIS" | "PRO" | "ELITE";
+  tier: "GRATIS" | "PRO" | "ELITE"; // ELITE er dødt enum — håndteres i render
 };
 
 const KLUBBER = [
@@ -122,7 +122,7 @@ export function ProfilRedigerForm({ initial }: { initial: Initial }) {
           </h2>
           <div className="mt-1.5">
             <span className="rounded-md bg-primary px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.06em] text-accent">
-              {initial.tier}
+              {initial.tier === "PRO" ? "Pro" : "Gratis"}
             </span>
           </div>
         </div>

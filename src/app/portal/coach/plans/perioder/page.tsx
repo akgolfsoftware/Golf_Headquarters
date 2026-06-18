@@ -1,9 +1,12 @@
+/**
+ * PlayerHQ Coach Perioder (/portal/coach/plans/perioder) — hybrid-design 2026-06-17.
+ * Årsplan-tidslinje per spiller. Matcher fasit B5 · Planer (Perioder-fane).
+ */
 import Link from "next/link";
 import Image from "next/image";
 import { ChevronRight } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { PeriodeEditor } from "./periode-editor";
 
 export default async function CoachPerioderPage() {
@@ -56,21 +59,26 @@ export default async function CoachPerioderPage() {
   }));
 
   return (
-    <div className="mx-auto max-w-[1240px] space-y-8 px-4 sm:px-6">
-      <PageHeader
-        eyebrow="AgencyOS · Perioder"
-        titleLead="Sesong"
-        titleItalic="perioder"
-        sub="Planlegg GRUNN / SPESIALISERING / TURNERING for hver spiller"
-      />
+    <div className="mx-auto max-w-[430px] pb-24 pt-2 md:max-w-[1240px] md:pb-8">
+
+      {/* Header */}
+      <div className="mb-4 px-4 md:px-0">
+        <h1 className="font-display text-[20px] font-bold leading-[1.06] tracking-[-0.02em] text-foreground">
+          Periode
+          <em className="font-medium italic text-primary">-oversikt</em>
+        </h1>
+        <p className="mt-1 text-[13px] text-muted-foreground">
+          Sesongperioder per spiller
+        </p>
+      </div>
 
       {data.length === 0 ? (
-        <div className="rounded-xl border border-border bg-card p-8 text-center">
-          <p className="text-sm text-muted-foreground">
+        <div className="mx-3 rounded-xl border border-dashed border-border bg-card p-8 text-center md:mx-0">
+          <p className="text-[13px] text-muted-foreground">
             Ingen spillere har sesongplaner enda.
           </p>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Opprett en sesongplan for en spiller via{" "}
+          <p className="mt-2 text-[13px] text-muted-foreground">
+            Opprett en sesongplan via{" "}
             <Link
               href="/portal/coach/plans"
               className="font-medium text-primary underline underline-offset-4 hover:opacity-80"
@@ -81,13 +89,14 @@ export default async function CoachPerioderPage() {
           </p>
         </div>
       ) : (
-        <div className="space-y-8">
+        <div className="space-y-4 px-3 md:px-0">
           {data.map((d) => (
-            <section
+            <div
               key={d.spillerId}
-              className="rounded-xl border border-border bg-card p-6"
+              className="overflow-hidden rounded-xl border border-border bg-card shadow-sm"
             >
-              <div className="mb-4 flex items-center gap-2">
+              {/* Spiller-header */}
+              <div className="flex items-center gap-2.5 border-b border-border px-4 py-3">
                 {d.avatarUrl ? (
                   <Image
                     src={d.avatarUrl}
@@ -97,38 +106,42 @@ export default async function CoachPerioderPage() {
                     className="h-8 w-8 rounded-full object-cover"
                   />
                 ) : (
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary font-mono text-xs font-semibold text-muted-foreground">
+                  <div
+                    className="grid h-8 w-8 shrink-0 place-items-center rounded-full font-mono text-xs font-semibold"
+                    style={{ background: "#005840", color: "#D1F843" }}
+                  >
                     {d.spillerNavn.charAt(0)}
                   </div>
                 )}
-                <div>
-                  <h2 className="text-sm font-semibold text-foreground">
+                <div className="min-w-0 flex-1">
+                  <div className="text-[13.5px] font-semibold leading-tight text-foreground">
                     {d.spillerNavn}
-                  </h2>
+                  </div>
                   {d.plan && (
-                    <span className="font-mono text-[10px] text-muted-foreground">
-                      Sesong {d.plan.year} — {d.plan.periodBlocks.length} periode
+                    <div className="font-mono text-[10px] text-muted-foreground">
+                      Sesong {d.plan.year} &middot; {d.plan.periodBlocks.length} periode
                       {d.plan.periodBlocks.length !== 1 ? "r" : ""}
-                    </span>
+                    </div>
                   )}
                 </div>
                 <Link
-                  href={`/portal/coach/plans`}
-                  className="ml-auto inline-flex items-center gap-1 font-mono text-[11px] text-muted-foreground hover:text-foreground"
+                  href="/portal/coach/plans"
+                  className="inline-flex items-center gap-1 font-mono text-[10px] text-muted-foreground hover:text-foreground"
                 >
                   Alle planer
                   <ChevronRight size={12} strokeWidth={1.5} />
                 </Link>
               </div>
 
-              {d.plan ? (
-                <PeriodeEditor plan={d.plan} />
-              ) : (
-                <p className="text-sm text-muted-foreground">
-                  Ingen aktiv sesongplan.
-                </p>
-              )}
-            </section>
+              {/* PeriodeEditor eller tom-melding */}
+              <div className="px-4 py-4">
+                {d.plan ? (
+                  <PeriodeEditor plan={d.plan} />
+                ) : (
+                  <p className="text-[13px] text-muted-foreground">Ingen aktiv sesongplan.</p>
+                )}
+              </div>
+            </div>
           ))}
         </div>
       )}

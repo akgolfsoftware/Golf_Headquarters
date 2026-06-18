@@ -1,0 +1,99 @@
+<!-- @dsCard group="Data-viz" -->
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DispersionMap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:ital,wght@0,600;0,700;1,500;1,600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../tokens.css">
+<style>
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{ font-family:var(--sans); background:var(--cream); color:var(--ink); padding:28px; line-height:1.5; -webkit-font-smoothing:antialiased; }
+  .mono{ font-family:var(--mono); font-variant-numeric:tabular-nums; }
+  .lc{ max-width:560px; background:var(--paper); border:1px solid var(--border); border-radius:var(--r-lg); padding:22px; box-shadow:var(--sh-md); }
+  .lc-h{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:4px; }
+  .lc-h .ti{ font-family:var(--disp); font-size:19px; font-weight:700; letter-spacing:-.02em; }
+  .lc-h .ti em{ font-style:italic; color:var(--forest); font-weight:500; }
+  .lc-num{ font-family:var(--mono); font-size:10px; font-weight:600; color:var(--muted-2); border:1px solid var(--border); padding:3px 7px; border-radius:5px; letter-spacing:.04em; flex-shrink:0; }
+  .lc-sub{ font-size:12.5px; color:var(--muted); margin-bottom:18px; }
+  .lc-sub b{ color:var(--ink); font-weight:600; }
+  .hint{ font-family:var(--mono); font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted-2); display:inline-flex; align-items:center; gap:5px; margin-top:14px; }
+  .hint::before{ content:''; width:5px; height:5px; border-radius:50%; background:var(--lime-deep); }
+  .pillrow{ display:flex; gap:6px; flex-wrap:wrap; }
+  .pill{ font-family:var(--mono); font-size:10.5px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; padding:7px 12px; border-radius:var(--r-full); border:1px solid var(--border); color:var(--muted); background:var(--paper); white-space:nowrap; cursor:pointer; transition:.15s; user-select:none; }
+  .pill:hover{ border-color:var(--forest); color:var(--ink); }
+  .pill.on{ background:var(--forest); color:var(--lime); border-color:var(--forest); }
+
+  .disp-svg{ width:100%; height:auto; border-radius:var(--r-md); background:linear-gradient(180deg, color-mix(in srgb, var(--forest) 9%, var(--paper)), var(--paper)); border:1px solid var(--border); }
+  .disp-stat{ display:flex; gap:18px; margin-top:13px; }
+  .disp-stat .dsl{ font-family:var(--mono); font-size:9px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted-2); margin-bottom:4px; }
+  .disp-stat .dsv{ font-family:var(--mono); font-size:18px; font-weight:600; }
+  .disp-stat .dsv .u{ font-size:11px; color:var(--muted); }
+</style>
+</head>
+<body>
+  <div class="lc">
+    <div class="lc-h"><span class="ti">Dispersion<em>Map</em></span><span class="lc-num">SLAG-SPREDNING</span></div>
+    <div class="lc-sub">Filtrer per kølle — punktene og <b>sprednings-ellipsen</b> oppdateres. Treff-rate teller mot mål-sonen.</div>
+    <div class="pillrow" id="dispPills" style="margin-bottom:13px;">
+      <span class="pill on" data-club="driver">Driver</span>
+      <span class="pill" data-club="jern7">Jern 7</span>
+      <span class="pill" data-club="wedge">Wedge 56°</span>
+    </div>
+    <svg class="disp-svg" id="dispSvg" viewBox="0 0 360 220"></svg>
+    <div class="disp-stat">
+      <div class="ds"><div class="dsl">Treff i sone</div><div class="dsv" id="dispHit">—<span class="u"> %</span></div></div>
+      <div class="ds"><div class="dsl">Spredning</div><div class="dsv" id="dispSpread">—<span class="u"> m</span></div></div>
+      <div class="ds"><div class="dsl">Snitt-bæring</div><div class="dsv" id="dispCarry">—<span class="u"> m</span></div></div>
+    </div>
+    <div class="hint">Velg en kølle</div>
+  </div>
+
+<script>
+function nf(v,d=1){ return v.toLocaleString('nb-NO',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+(function(){
+  const svg=document.getElementById('dispSvg');
+  const data={
+    driver:{n:24, cx:180, cy:70, rx:62, ry:34, carry:268, spread:31, hit:71, zoneW:150, zoneH:90},
+    jern7:{n:20, cx:180, cy:96, rx:34, ry:24, carry:172, spread:17, hit:84, zoneW:90, zoneH:64},
+    wedge:{n:18, cx:180, cy:120, rx:22, ry:16, carry:88, spread:9, hit:92, zoneW:60, zoneH:46},
+  };
+  let seed;
+  function rnd(){ seed=(seed*9301+49297)%233280; return seed/233280; }
+  function gauss(){ return (rnd()+rnd()+rnd()+rnd()-2)/2; }
+  function draw(club){
+    const d=data[club]; seed=club.length*131+7;
+    let pts='';
+    let inZone=0;
+    const zx=d.cx-d.zoneW/2, zy=d.cy-d.zoneH/2;
+    for(let i=0;i<d.n;i++){
+      const x=d.cx+gauss()*d.rx, y=d.cy+gauss()*d.ry;
+      const inside = x>zx && x<zx+d.zoneW && y>zy && y<zy+d.zoneH;
+      if(inside) inZone++;
+      pts+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3" fill="${inside?'var(--lime-deep)':'var(--down)'}" opacity="${inside?0.95:0.6}"/>`;
+    }
+    svg.innerHTML=`
+      <rect x="${zx}" y="${zy}" width="${d.zoneW}" height="${d.zoneH}" rx="8" fill="rgba(209,248,67,.07)" stroke="var(--lime-dim)" stroke-width="1" stroke-dasharray="4 4"/>
+      <line x1="180" y1="6" x2="180" y2="170" stroke="var(--border)" stroke-width="1" stroke-dasharray="3 4"/>
+      <ellipse cx="${d.cx}" cy="${d.cy}" rx="${d.rx}" ry="${d.ry}" fill="var(--forest)" fill-opacity="0.10" stroke="var(--forest)" stroke-width="1.5" stroke-opacity="0.55"/>
+      <circle cx="${d.cx}" cy="${d.cy}" r="4.5" fill="none" stroke="var(--forest)" stroke-width="2"/>
+      <circle cx="${d.cx}" cy="${d.cy}" r="1.5" fill="var(--forest)"/>
+      ${pts}
+      <text x="186" y="186" font-family="var(--mono)" font-size="9" fill="var(--muted-2)">venstre ← center → høyre</text>`;
+    document.getElementById('dispHit').innerHTML=Math.round(inZone/d.n*100)+'<span class="u"> %</span>';
+    document.getElementById('dispSpread').innerHTML=d.spread+'<span class="u"> m</span>';
+    document.getElementById('dispCarry').innerHTML=d.carry+'<span class="u"> m</span>';
+  }
+  document.querySelectorAll('#dispPills .pill').forEach(p=>{
+    p.addEventListener('click', ()=>{
+      document.querySelectorAll('#dispPills .pill').forEach(x=>x.classList.remove('on'));
+      p.classList.add('on'); draw(p.dataset.club);
+    });
+  });
+  draw('driver');
+})();
+</script>
+</body>
+</html>

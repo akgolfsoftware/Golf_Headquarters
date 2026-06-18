@@ -1,0 +1,99 @@
+<!-- @dsCard group="Coach" -->
+<!doctype html>
+<html lang="no" class="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RiskHeatmap · AgencyOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:ital,wght@0,600;0,700;1,500;1,600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../tokens.css">
+<style>
+*{ box-sizing:border-box; margin:0; padding:0; }
+body{ font-family:var(--sans); background:var(--t-bg); color:var(--t-fg); padding:28px; line-height:1.5; -webkit-font-smoothing:antialiased; }
+.mono{ font-family:var(--mono); font-variant-numeric:tabular-nums; }
+.lc{ max-width:640px; background:var(--t-bg-2); border:1px solid var(--t-line-2); border-radius:var(--r-lg); padding:22px; box-shadow:var(--sh-lg); position:relative; overflow:hidden; }
+.lc::before{ content:''; position:absolute; inset:0; pointer-events:none; background-image:linear-gradient(var(--t-line-soft) 1px,transparent 1px),linear-gradient(90deg,var(--t-line-soft) 1px,transparent 1px); background-size:26px 26px; }
+.lc-h{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:4px; position:relative; }
+.lc-h .ti{ font-family:var(--disp); font-size:19px; font-weight:700; letter-spacing:-.02em; color:var(--t-fg); }
+.lc-h .ti em{ font-style:italic; color:var(--lime); font-weight:500; }
+.lc-num{ font-family:var(--mono); font-size:10px; font-weight:600; color:var(--t-fg-3); border:1px solid var(--t-line-2); padding:3px 7px; border-radius:5px; letter-spacing:.04em; flex-shrink:0; }
+.lc-sub{ font-size:12.5px; color:var(--t-fg-2); margin-bottom:18px; position:relative; }
+.lc-sub b{ color:var(--t-fg); font-weight:600; }
+.hint{ font-family:var(--mono); font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--t-fg-3); display:inline-flex; align-items:center; gap:5px; margin-top:14px; position:relative; }
+.hint::before{ content:''; width:5px; height:5px; border-radius:50%; background:var(--lime-deep); }
+
+/* tooltip */
+.tip{ position:fixed; z-index:500; pointer-events:none; opacity:0; transform:translateY(4px); transition:opacity .12s, transform .12s; background:var(--t-bg-1); color:var(--t-fg); border:1px solid var(--t-line-2); border-radius:8px; padding:9px 11px; box-shadow:var(--sh-lg); font-size:11.5px; max-width:230px; line-height:1.45; }
+.tip.show{ opacity:1; transform:translateY(0); }
+.tip .tt-h{ font-family:var(--mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--lime); margin-bottom:4px; }
+.tip .tt-r{ display:flex; justify-content:space-between; gap:14px; font-family:var(--mono); font-size:10.5px; color:var(--t-fg-2); }
+.tip .tt-r b{ color:var(--t-fg); }
+
+/* ============= RISK HEATMAP (term) ============= */
+.rh{ display:grid; grid-template-columns:repeat(8,1fr); gap:5px; position:relative; }
+.rh-cell{ aspect-ratio:1; border-radius:5px; border:1px solid var(--t-line); display:grid; place-items:center; font-family:var(--mono); font-size:9px; font-weight:600; cursor:pointer; transition:transform .1s; color:var(--t-fg-2); }
+.rh-cell:hover{ transform:scale(1.12); z-index:3; }
+.rh-cell.r0{ background:var(--t-bg-3); }
+.rh-cell.r1{ background:rgba(209,248,67,.5); color:#06100A; }
+.rh-cell.r2{ background:rgba(232,180,60,.42); color:#1a1505; }
+.rh-cell.r3{ background:rgba(240,104,62,.5); color:#fff; }
+.rh-cell.r4{ background:var(--t-down); color:#fff; }
+.rh-leg{ display:flex; align-items:center; gap:6px; justify-content:space-between; margin-top:13px; font-family:var(--mono); font-size:9px; color:var(--t-fg-3); }
+.rh-leg .scale{ display:flex; align-items:center; gap:4px; }
+.rh-leg i{ width:12px; height:12px; border-radius:2px; }
+
+@media(max-width:680px){
+  body{ padding:14px; }
+  .rh{ grid-template-columns:repeat(6,1fr); }
+}
+</style>
+</head>
+<body>
+
+<div class="lc">
+  <div class="lc-h"><span class="ti">Risk<em>Heatmap</em></span><span class="lc-num">18 · 24 SPILLERE</span></div>
+  <div class="lc-sub">Hele stallen som intensitets-rutenett. Rødt = høyest risiko. <b>Hover en celle</b> for spilleren.</div>
+  <div class="rh" id="riskHeat"></div>
+  <div class="rh-leg">
+    <span>Lav risiko</span>
+    <span class="scale"><i class="rh-cell r0" style="aspect-ratio:auto"></i><i class="rh-cell r1" style="aspect-ratio:auto"></i><i class="rh-cell r2" style="aspect-ratio:auto"></i><i class="rh-cell r3" style="aspect-ratio:auto"></i><i class="rh-cell r4" style="aspect-ratio:auto"></i></span>
+    <span>Høy</span>
+  </div>
+  <div class="hint" style="color:var(--t-fg-3)">Hover en celle for navn + status</div>
+</div>
+
+<div class="tip" id="tip"></div>
+
+<script>
+/* ===== SHARED TOOLTIP ===== */
+const tip=document.getElementById('tip');
+function showTip(html,e){ tip.innerHTML=html; tip.classList.add('show'); positionTip(e); }
+function positionTip(e){ const pad=14,r=tip.getBoundingClientRect(); let x=e.clientX+pad,y=e.clientY+pad; if(x+r.width>window.innerWidth-8)x=e.clientX-r.width-pad; if(y+r.height>window.innerHeight-8)y=e.clientY-r.height-pad; tip.style.left=x+'px'; tip.style.top=y+'px'; }
+function hideTip(){ tip.classList.remove('show'); }
+
+/* ===== RISK HEATMAP ===== */
+(function(){
+  const root=document.getElementById('riskHeat');
+  const firstNames=['Øyvind','Ida','Emma','Jonas','Sara','Mathias','Tobias','Live','Noah','Thea','Lars','Mia','Kasper','Vilde','Aksel','Nora','Filip','Hedda','Sander','Maja','Even','Tuva','Brage','Iris'];
+  const lasts=['R.','K.','H.','L.','M.','V.','B.','S.','A.','D.','N.','Ø.'];
+  let seed=42; function rnd(){ seed=(seed*9301+49297)%233280; return seed/233280; }
+  const statuses=['trent i dag','2 økter denne uka','plan på skjema','3 dg siden økt','SG faller','7 dg inaktiv','9 dg inaktiv · stille'];
+  for(let i=0;i<24;i++){
+    const r=rnd(); let lvl = r<0.4?0 : r<0.62?1 : r<0.8?2 : r<0.93?3 : 4;
+    if(i===0) lvl=0; if(i===6) lvl=4;
+    const cell=document.createElement('div'); cell.className='rh-cell r'+lvl;
+    const nm=firstNames[i]+' '+lasts[Math.floor(rnd()*lasts.length)];
+    cell.textContent=(firstNames[i][0]+(lasts[i%lasts.length][0])).toUpperCase();
+    const st=statuses[Math.min(lvl + (r>0.5?1:0), statuses.length-1)];
+    const riskTxt=['Lav','Lav-moderat','Moderat','Høy','Kritisk'][lvl];
+    cell.addEventListener('mousemove', e=> showTip(
+      `<div class="tt-h">${nm}</div><div class="tt-r"><span>Risiko</span><b style="color:${['var(--t-up)','var(--lime)','var(--t-warn)','var(--t-down)','var(--t-down)'][lvl]}">${riskTxt}</b></div><div class="tt-r"><span>Status</span><b>${st}</b></div>`, e));
+    cell.addEventListener('mouseleave', hideTip);
+    root.appendChild(cell);
+  }
+})();
+</script>
+</body>
+</html>

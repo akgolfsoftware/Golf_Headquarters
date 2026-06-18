@@ -15,7 +15,7 @@
 
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CircleCheck, ExternalLink, Play, Ruler } from "lucide-react";
+import { CircleCheck, ExternalLink, Play, Ruler, Share2 } from "lucide-react";
 import type { PyramidArea } from "@/generated/prisma/client";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
@@ -91,18 +91,32 @@ export default async function TestDetaljSpillerPage({
   const lavere = scoringSpec.kind === "fallback" ? null : lavereErBedre(scoringSpec.kind);
   const omrade = OMRADE[test.pyramidArea];
 
+  const metaBiter = [
+    steg.length > 0 ? `${steg.length} ${steg.length === 1 ? "øvelse" : "øvelser"}` : null,
+    enhet ? `Enhet ${enhet}` : null,
+    resultater.length > 0
+      ? `${resultater.length} ${resultater.length === 1 ? "resultat" : "resultater"}`
+      : null,
+  ].filter((b): b is string => b !== null);
+
   return (
     <div className="mx-auto w-full max-w-[460px] px-1 pb-8 pt-3 sm:px-5 md:max-w-[860px] md:px-8 md:pt-6">
       {lagret && (
-        <div className="mb-5 flex items-center gap-3 rounded-xl border border-success/30 bg-success/10 px-4 py-3">
-          <CircleCheck className="h-5 w-5 shrink-0 text-success" strokeWidth={1.5} aria-hidden />
-          <span className="text-sm font-semibold text-success">Resultat lagret</span>
-          <Link
-            href="/portal/coach/melding"
-            className="ml-auto shrink-0 font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-success underline decoration-success/40 underline-offset-4 hover:decoration-success"
-          >
-            Del med coach
-          </Link>
+        <div className="mb-5 rounded-xl border border-success/30 bg-success/10 px-4 py-3.5">
+          <div className="flex items-center justify-between gap-3">
+            <span className="inline-flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-success">
+              <CircleCheck className="h-3.5 w-3.5 shrink-0" strokeWidth={2.5} aria-hidden />
+              Test fullført
+            </span>
+            <Link
+              href="/portal/coach/melding"
+              className="inline-flex shrink-0 items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-success underline decoration-success/40 underline-offset-4 hover:decoration-success"
+            >
+              <Share2 className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden />
+              Del med coach
+            </Link>
+          </div>
+          <p className="mt-1.5 text-sm font-semibold text-success">Resultat lagret</p>
         </div>
       )}
 
@@ -116,6 +130,11 @@ export default async function TestDetaljSpillerPage({
         <h1 className="mt-3 font-display text-[26px] font-bold leading-[1.04] tracking-[-0.025em] text-foreground md:text-[30px]">
           {test.name}
         </h1>
+        {metaBiter.length > 0 && (
+          <p className="mt-2.5 font-mono text-[10.5px] uppercase tracking-[0.06em] text-muted-foreground">
+            {metaBiter.join(" · ")}
+          </p>
+        )}
         {test.description && (
           <p className="mt-2.5 max-w-[62ch] text-sm leading-relaxed text-muted-foreground">
             {test.description}
@@ -167,9 +186,15 @@ export default async function TestDetaljSpillerPage({
         <SetGroup label="DIN HISTORIKK">
           {resultater.length === 0 ? (
             <p className="px-[18px] py-6 text-center text-sm text-muted-foreground">
-              Ingen resultater ennå.
+              Ingen resultater ennå. Ta testen for å starte historikken.
             </p>
           ) : (
+            <div className="flex items-center justify-between border-b border-border px-[18px] py-2.5 font-mono text-[9px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
+              <span>Resultat</span>
+              <span>Endring</span>
+            </div>
+          )}
+          {resultater.length > 0 &&
             resultater.map((r, i) => {
               const forrige = resultater[i + 1] ?? null;
               let trend: { tekst: string; klass: string } | null = null;
@@ -218,14 +243,15 @@ export default async function TestDetaljSpillerPage({
                   )}
                 </div>
               );
-            })
-          )}
+            })}
         </SetGroup>
 
         <div className="mb-[22px] flex items-center gap-3 rounded-xl border border-dashed border-border bg-card px-4 py-3.5">
           <Ruler className="h-4 w-4 shrink-0 text-muted-foreground" strokeWidth={1.5} aria-hidden />
           <p className="text-[13px] leading-[1.55] text-muted-foreground">
-            Referanseverdier: kommer (formel ikke låst).
+            {test.pyramidArea === "FYS"
+              ? "Referanseverdier kommer — FYS-resultatformelen er ikke låst ennå."
+              : "Referanseverdier: kommer (formel ikke låst)."}
           </p>
         </div>
 

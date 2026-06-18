@@ -23,11 +23,11 @@
  */
 
 import Link from "next/link";
-import { Download, Flag, Globe, Lock, Moon, Radar, Ruler, Shield, ShieldCheck, Smartphone, Watch } from "lucide-react";
+import { Download, Flag, Globe, Lock, Moon, Radar, Ruler, Shield, ShieldCheck, Smartphone, Sparkles, Watch } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { lesPreferences } from "@/lib/preferences";
 import { prisma } from "@/lib/prisma";
-import { MeSub, SetGroup, SetRow, SetVal } from "@/components/portal/meg/meg-sub";
+import { MeSub, SetGroup, SetLinkRow, SetRow, SetVal } from "@/components/portal/meg/meg-sub";
 import { Toggle } from "@/components/portal/meg/toggle";
 import { AthleticBadge } from "@/components/athletic/badge";
 import { buttonClasses } from "@/components/ui/button";
@@ -134,6 +134,15 @@ export default async function InnstillingerPage() {
           title="Aktive enheter"
           meta="Full enhetsliste kommer senere"
           right={<SetVal>—</SetVal>}
+        />
+      </SetGroup>
+
+      <SetGroup label="AI">
+        <SetLinkRow
+          href="/portal/meg/innstillinger/ai-coach"
+          icon={Sparkles}
+          title="AI-coach"
+          meta="Datadrevet assistent · Kommer snart (V2)"
         />
       </SetGroup>
 

@@ -1,13 +1,13 @@
 /**
- * Layout for /portal/analysere — full-bredde Analytics Workbench.
- * Fjerner portal-shell slik at Workbench-rammen fyller hele viewport.
+ * Layout for /portal/analysere — bruker standard PortalShell (via portal/layout.tsx).
+ * Hybrid-design 2026-06-17: mobil-første side innenfor shell-rammen.
  */
 
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Analytics Workbench · AK Golf",
-  description: "Analyse-senter for trening, runder, tester og TrackMan",
+  title: "Analyse · AK Golf",
+  description: "Strokes Gained, runder, TrackMan og tester",
 };
 
 export default function AnalysereLayout({
@@ -15,9 +15,5 @@ export default function AnalysereLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <div className="fixed inset-0 z-50 overflow-auto bg-background">
-      {children}
-    </div>
-  );
+  return <>{children}</>;
 }

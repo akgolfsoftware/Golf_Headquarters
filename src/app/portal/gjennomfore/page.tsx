@@ -1,8 +1,6 @@
 /**
- * /portal/gjennomfore — PlayerHQ Gjennomføre.
- * Portet fra fersk Claude Design-fasit (ph-screens.jsx · ExecuteScreen):
- * eyebrow + "Gjør jobben." → faner (I dag / Kalender / Booking).
- * "I dag" er default og viser dagens program fra ekte data.
+ * /portal/gjennomfore — PlayerHQ Gjennomføre (hybrid-design 2026-06-17).
+ * Tre seksjoner: Neste økt (featured) · Resten av dagen · Fullført i dag.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -18,13 +16,13 @@ export default async function GjennomforePage() {
 
   return (
     <div className="mx-auto w-full max-w-[460px] px-4 pb-8 pt-3 sm:px-5 md:max-w-[860px] md:px-8 md:pt-6">
-      <AthleticEyebrow tone="lime" className="md:hidden">PLAYERHQ · GJENNOMFØRE</AthleticEyebrow>
-      <h1 className="mt-2 mb-1 font-display text-[26px] font-bold leading-tight tracking-[-0.02em] text-foreground md:mt-0 md:text-[30px]">
-        Gjør <em className="font-normal italic text-primary">jobben.</em>
+      <AthleticEyebrow tone="default" className="mb-2.5">
+        Gjennomføre
+      </AthleticEyebrow>
+      <h1 className="font-display text-[29px] font-bold leading-[1.05] tracking-[-0.035em] text-foreground">
+        Dagens{" "}
+        <em className="font-medium italic text-primary">program</em>
       </h1>
-      <p className="mb-5 hidden text-sm leading-relaxed text-muted-foreground md:block">
-        Dagens program, kalenderen din, og booking av Pro-time, TrackMan-bay eller tee-time.
-      </p>
       <GjennomforeFaner data={data} />
     </div>
   );

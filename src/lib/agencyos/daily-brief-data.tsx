@@ -22,9 +22,9 @@ import type {
   CockpitAxis,
 } from "@/components/admin/cockpit/agency-cockpit";
 
-const DAGER = ["SØNDAG", "MANDAG", "TIRSDAG", "ONSDAG", "TORSDAG", "FREDAG", "LØRDAG"];
+const DAGER = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"];
 const DAGER_KORT = ["SØN", "MAN", "TIR", "ONS", "TOR", "FRE", "LØR"];
-const MND_KORT = ["JAN", "FEB", "MAR", "APR", "MAI", "JUN", "JUL", "AUG", "SEP", "OKT", "NOV", "DES"];
+const MND_KORT = ["jan", "feb", "mar", "apr", "mai", "jun", "jul", "aug", "sep", "okt", "nov", "des"];
 
 /** Kanonisk PRO-pris (kr/mnd) — samme som /admin/agencyos/okonomi. */
 const PRO_PRIS_KR = 300;
@@ -425,12 +425,23 @@ export async function loadDailyBrief(coach: {
 
   const oktOrd = dagensBookinger.length === 1 ? "ØKT" : "ØKTER";
 
+  // Antall live-pågående akkurat nå
+  const liveSessionsCount = dagensBookinger.filter(
+    (b) => minutesSinceMidnight(b.startAt) <= nowMin && minutesSinceMidnight(b.endAt) > nowMin,
+  ).length;
+
+  // Antall ventende forespørsler (sessionRequest PENDING)
+  const requestsCount = sessionReqs.length;
+
+  // Dag-label for hybrid topbar, f.eks. "Mandag 15. juni"
+  const dayLabel = `${DAGER[now.getDay()]} ${now.getDate()}. ${MND_KORT[now.getMonth()]}`;
+
   return {
     greeting: greetingFor(now.getHours()),
     coachFirstName: firstName(coach.name),
     aiContext,
-    liveLabel: `${DAGER[now.getDay()]} ${now.getDate()} ${MND_KORT[now.getMonth()]} · ${hhmm(now)}`,
-    timelineDateLabel: `${DAGER_KORT[now.getDay()]} ${now.getDate()} ${MND_KORT[now.getMonth()]} · ${dagensBookinger.length} ${oktOrd}`,
+    liveLabel: `${DAGER[now.getDay()].toUpperCase()} ${now.getDate()} ${MND_KORT[now.getMonth()].toUpperCase()} · ${hhmm(now)}`,
+    timelineDateLabel: `${DAGER_KORT[now.getDay()]} ${now.getDate()} ${MND_KORT[now.getMonth()].toUpperCase()} · ${dagensBookinger.length} ${oktOrd}`,
     now: nowMin,
     timeline,
     // Fasit: telleren ved «Siste 24 t» = antall viste rader (SE ALLE for resten).
@@ -442,5 +453,9 @@ export async function loadDailyBrief(coach: {
     focus,
     focusCount: focus.length,
     kpis,
+    activePlayersCount: aktiveSpillereCount,
+    requestsCount,
+    liveSessionsCount,
+    dayLabel,
   };
 }

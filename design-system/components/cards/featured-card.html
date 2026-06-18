@@ -1,0 +1,105 @@
+<!-- @dsCard group="Kort" -->
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Featured Card — AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../tokens.css">
+<style>
+  body { font-family:var(--sans); background:var(--cream); color:var(--ink); margin:0; padding:28px; }
+  .grouphead { font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted-2); margin:0 0 14px; }
+  .grouphead:not(:first-child) { margin-top:36px; }
+  .row { display:flex; flex-wrap:wrap; gap:18px; align-items:flex-start; }
+
+  .fc {
+    position:relative; overflow:hidden;
+    width:400px; max-width:100%;
+    border-radius:var(--r-lg); padding:19px; color:#fff;
+    background:linear-gradient(150deg, var(--forest) 0%, var(--forest-deep) 100%);
+    box-shadow:var(--sh-forest);
+  }
+  .fc::after {
+    content:""; position:absolute; top:-60px; right:-40px; width:220px; height:220px;
+    background:radial-gradient(circle, rgba(209,248,67,.22), transparent 70%);
+    pointer-events:none;
+  }
+  .fc > * { position:relative; z-index:1; }
+
+  .sc-top { display:flex; align-items:center; justify-content:space-between; }
+  .sc-eyebrow { font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--lime); }
+  .sc-time { font-family:var(--mono); font-size:11px; font-weight:700; background:var(--lime); color:var(--forest-deep); padding:4px 10px; border-radius:var(--r-full); }
+
+  .fc h3 { font-family:var(--disp); font-size:22px; font-weight:700; letter-spacing:-0.02em; margin:14px 0 0; }
+  .fc h3 em { font-style:italic; color:var(--lime); font-weight:600; }
+
+  .meta { display:flex; gap:26px; margin:16px 0 4px; }
+  .meta .lbl { font-family:var(--mono); font-size:9.5px; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.55); }
+  .meta .val { font-family:var(--mono); font-size:16px; font-weight:700; font-variant-numeric:tabular-nums; color:#fff; margin-top:3px; }
+
+  .chips { display:flex; flex-wrap:wrap; gap:6px; margin:16px 0 18px; }
+  .chip { font-family:var(--mono); font-size:9px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--lime); border:1px solid rgba(209,248,67,.3); border-radius:4px; padding:4px 7px; }
+
+  .cta {
+    display:flex; align-items:center; justify-content:center; gap:8px; width:100%;
+    background:var(--lime); color:var(--forest-deep);
+    border:none; border-radius:var(--r-full); padding:13px 0;
+    font-family:var(--mono); font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; cursor:pointer;
+  }
+</style>
+</head>
+<body>
+
+<p class="grouphead">Featured Card · dagens økt (signatur)</p>
+<div class="row">
+  <div class="fc">
+    <div class="sc-top">
+      <span class="sc-eyebrow">Dagens økt</span>
+      <span class="sc-time">16:00</span>
+    </div>
+    <h3>Nærspill & <em>scoring</em> på Performance Studio</h3>
+    <div class="meta">
+      <div><div class="lbl">Varighet</div><div class="val">90 min</div></div>
+      <div><div class="lbl">Coach</div><div class="val">A. Kristiansen</div></div>
+      <div><div class="lbl">Intensitet</div><div class="val">Høy</div></div>
+    </div>
+    <div class="chips">
+      <span class="chip">Pitch 30–50 m</span>
+      <span class="chip">Bunker</span>
+      <span class="chip">Putt 1–3 m</span>
+      <span class="chip">Spillsim</span>
+    </div>
+    <button class="cta">
+      Start økt
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+    </button>
+  </div>
+
+  <div class="fc">
+    <div class="sc-top">
+      <span class="sc-eyebrow">Neste turnering</span>
+      <span class="sc-time">3 dg</span>
+    </div>
+    <h3>Srixon Tour — <em>Losby</em> GK</h3>
+    <div class="meta">
+      <div><div class="lbl">Par</div><div class="val">72</div></div>
+      <div><div class="lbl">Mål</div><div class="val">−4</div></div>
+      <div><div class="lbl">Form</div><div class="val">68.2</div></div>
+    </div>
+    <div class="chips">
+      <span class="chip">36 hull</span>
+      <span class="chip">Påmeldt</span>
+      <span class="chip">Tee 08:40</span>
+    </div>
+    <button class="cta">
+      Se forberedelse
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+    </button>
+  </div>
+</div>
+
+</body>
+</html>

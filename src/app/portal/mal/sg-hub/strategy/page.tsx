@@ -1,4 +1,4 @@
-import { ArrowLeft, MapPin } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -25,36 +25,35 @@ export default async function StrategyPage() {
   const rows = buildYardageRows(sessions);
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto max-w-[760px] space-y-6 px-4 pb-20 sm:px-6 md:pb-0">
+      {/* Back link */}
       <Link
         href="/portal/mal/sg-hub"
-        className="inline-flex items-center gap-1.5 font-mono text-[12.5px] text-muted-foreground transition-colors hover:text-foreground"
+        className="inline-flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="h-3.5 w-3.5" />
-        SG Hub
+        SG-hub
       </Link>
 
-      <header className="rounded-xl border border-border bg-card p-6">
-        <div className="flex items-start gap-2">
-          <MapPin className="mt-1 h-5 w-5 text-primary" />
-          <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
-              Fase 3 · Distance and Strategy
-            </p>
-            <h2 className="mt-1 font-display text-2xl font-semibold leading-tight">
-              <em className="font-normal italic text-primary">Same-Distance</em>{" "}
-              strategi
-            </h2>
-            <p className="mt-2 max-w-xl text-sm text-muted-foreground">
-              For en gitt mål-distanse: hvilken kølle gir best Strokes Gained?
-              Rangerer kandidater etter presisjon, apex og PGA Tour-benchmark.
-            </p>
-          </div>
-        </div>
-      </header>
+      {/* Editorial header */}
+      <div className="space-y-1">
+        <p className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+          Fase 3 · distanse og strategi
+        </p>
+        <h1 className="font-display text-3xl font-bold leading-tight tracking-[-0.02em] text-foreground">
+          Same-Distance{" "}
+          <em className="italic font-medium" style={{ color: "#005840" }}>
+            strategi
+          </em>
+        </h1>
+        <p className="max-w-xl pt-1 text-sm text-muted-foreground">
+          For en gitt mål-distanse: hvilken kølle gir best Strokes Gained?
+          Rangerer kandidater etter presisjon, apex og PGA Tour-benchmark.
+        </p>
+      </div>
 
       {rows.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border bg-card/50 p-8 text-center">
+        <div className="rounded-2xl border border-dashed border-border bg-card p-8 text-center shadow-sm">
           <p className="text-sm text-muted-foreground">
             Ingen TrackMan-data ennå.{" "}
             <Link

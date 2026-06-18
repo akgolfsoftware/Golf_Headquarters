@@ -1,13 +1,13 @@
 /**
- * /portal/analysere — PlayerHQ Analytics Workbench.
- * Visuelt lik Planlegg-Workbench med egen analytics-sidebar og innhold.
+ * /portal/analysere — PlayerHQ Analyse (hybrid-design 2026-06-17)
+ * Faner: Strokes Gained · Runder · TrackMan · Tester
  */
 
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getViewMode } from "@/lib/view-mode";
 import { loadAnalyticsWorkbenchData } from "./actions";
-import { AnalyticsWorkbenchShell } from "@/components/portal/analytics/AnalyticsWorkbenchShell";
+import { HybridAnalysePage } from "@/components/portal/analytics/HybridAnalysePage";
 
 export const dynamic = "force-dynamic";
 
@@ -23,5 +23,5 @@ export default async function AnalyserePage() {
 
   const data = await loadAnalyticsWorkbenchData(user.id);
 
-  return <AnalyticsWorkbenchShell data={data} />;
+  return <HybridAnalysePage data={data} />;
 }

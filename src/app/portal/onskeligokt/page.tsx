@@ -1,14 +1,14 @@
 /**
  * PlayerHQ · Be om økt
  *
- * Endelig design fra wireframe/design-files-v2/playerhq-C/07-onskeligokt.html.
- * Datakilde: User (coacher fra DB). Plassholdere markert med // TODO for
- * fasilitet-katalog, økt-typer (CoachingSession-typer) og pris-info.
+ * Hybrid design (2026-06-17). Header bruker back-button + display h1 + subtitle.
+ * Datakilde: User (coacher fra DB).
  */
 
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { OnskeligOktForm } from "./form";
 
 type Search = { sent?: string };
@@ -28,32 +28,27 @@ export default async function OnskeligOktPage({
   });
 
   const standardCoach = coacher[0] ?? null;
-  const standardFornavn = standardCoach
-    ? standardCoach.name.split(" ")[0]
-    : "coachen";
-  const initials = standardCoach
-    ? standardCoach.name
-        .split(/\s+/)
-        .map((p) => p[0]?.toUpperCase() ?? "")
-        .join("")
-        .slice(0, 2)
-    : "AK";
+  const coachName = standardCoach?.name ?? "coachen";
 
   return (
     <div className="min-h-screen bg-background pb-20 text-foreground md:pb-0">
       <div className="mx-auto max-w-[820px] px-4 py-6 sm:px-6 sm:py-8">
+        {/* Hybrid header */}
         <div className="mb-8">
-          <PageHeader
-            eyebrow="PlayerHQ · Ønskelig økt"
-            titleLead="Be om økt med"
-            titleItalic={standardFornavn}
-            sub={`${standardFornavn} svarer typisk innen 4 timer på hverdager.`}
-            actions={
-              standardCoach ? (
-                <CoachPill name={standardCoach.name} initials={initials} />
-              ) : undefined
-            }
-          />
+          <Link
+            href="/portal/gjennomfore"
+            className="mb-6 inline-flex items-center gap-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" aria-hidden />
+            Tilbake
+          </Link>
+          <h1 className="font-display text-[32px] font-semibold leading-[1.1] tracking-[-0.015em] text-foreground sm:text-[36px]">
+            Be om{" "}
+            <em className="font-normal italic text-primary">økt</em>
+          </h1>
+          <p className="mt-2 text-[15px] leading-relaxed text-muted-foreground">
+            {coachName} svarer innen 24 timer.
+          </p>
         </div>
 
         {params.sent === "1" && (
@@ -64,23 +59,6 @@ export default async function OnskeligOktPage({
 
         <OnskeligOktForm coacher={coacher} />
       </div>
-    </div>
-  );
-}
-
-function CoachPill({ name, initials }: { name: string; initials: string }) {
-  const fornavn = name.split(" ")[0];
-  return (
-    <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-2 py-2">
-      <div className="grid h-8 w-8 place-items-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
-        {initials}
-      </div>
-      <div className="text-xs leading-tight">
-        <div className="font-semibold text-foreground">{fornavn}</div>
-        <div className="text-[10px] text-muted-foreground">Hovedcoach</div>
-      </div>
-      <span className="h-2 w-2 rounded-full bg-primary" aria-label="Online" />
-      <span className="pr-2 text-[10px] font-semibold text-primary">Online</span>
     </div>
   );
 }

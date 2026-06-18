@@ -1,17 +1,13 @@
 /**
- * /portal/drills — PlayerHQ Drill-bibliotek (v10-design).
+ * /portal/drills — PlayerHQ Drill-galleri (hybrid design 2026-06-17).
  *
- * Rendrer <DrillBibliotek> (v10-fasit fra pl-drills) med EKTE data fra
- * getDrillLibrary() (Prisma · ExerciseDefinition, source=SYSTEM).
- * mapDrills oversetter loaderens DrillCard-shape til v10-komponentens prop-shape.
+ * Server component: henter drills via getDrillLibrary (Prisma), mapper til
+ * DrillCard-shape og sender til <DrillGallery> (klientkomponent).
  *
- * Tom database → tom liste; komponenten viser ærlig tom-tilstand. Ingen falske
- * tall: stjerne-rating finnes ikke i databasen og utelates bevisst.
+ * Layout: 2-kol grid med forest-gradient thumbnail, filter-pills (Alle/FYS/TEK/SLAG/SPILL/TURN),
+ * vanskelighetsgrad-badge. Klikk → /portal/drills/[id].
  *
- * Server component. Auth-guard via requirePortalUser. Klikk på et kort åpner
- * /portal/drills/[id].
- *
- * Bolk (3. juni): byttet fra DrillLibrary (eldre design) til DrillBibliotek (v10).
+ * Beholder all eksisterende data-henting fra getDrillLibrary. Tom database → tom liste.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -20,13 +16,13 @@ import {
   type DrillCard as LoaderDrillCard,
 } from "@/lib/portal-drills/drills-data";
 import {
-  DrillBibliotek,
+  DrillGallery,
   type DrillCard,
-} from "@/components/portal/drills/drill-bibliotek";
+} from "@/components/portal/drills/drill-gallery";
 
 export const dynamic = "force-dynamic";
 
-/** Oversetter loaderens DrillCard → v10 DrillCard. Fasilitet-enum → string[]. */
+/** Oversetter loaderens DrillCard → DrillGallery DrillCard. */
 function mapDrills(rows: LoaderDrillCard[]): DrillCard[] {
   return rows.map((d) => ({
     id: d.id,
@@ -40,14 +36,14 @@ function mapDrills(rows: LoaderDrillCard[]): DrillCard[] {
   }));
 }
 
-export default async function DrillBibliotekPage() {
+export default async function DrillGalleryPage() {
   const user = await requirePortalUser();
 
   const drills = await getDrillLibrary(user.id);
 
   return (
     <div className="py-4">
-      <DrillBibliotek drills={mapDrills(drills)} />
+      <DrillGallery drills={mapDrills(drills)} />
     </div>
   );
 }

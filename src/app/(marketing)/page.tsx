@@ -101,6 +101,23 @@ export default function Hjem() {
                 "linear-gradient(180deg, hsl(var(--foreground) / 0.78) 0%, hsl(var(--foreground) / 0.55) 30%, hsl(var(--foreground) / 0.40) 70%, hsl(var(--foreground) / 0.55) 100%)",
             }}
           />
+          {/* Hybrid radial-glow aksenter (lime topp-høyre, forest bunn-venstre) */}
+          <div
+            aria-hidden
+            className="absolute -right-32 -top-20 h-[600px] w-[600px]"
+            style={{
+              background:
+                "radial-gradient(circle, hsl(var(--accent) / 0.12), transparent 65%)",
+            }}
+          />
+          <div
+            aria-hidden
+            className="absolute -bottom-16 -left-16 h-[400px] w-[400px]"
+            style={{
+              background:
+                "radial-gradient(circle, hsl(var(--primary) / 0.35), transparent 65%)",
+            }}
+          />
         </div>
 
         <div className="relative z-10 mx-auto w-full max-w-7xl px-6 md:px-8">
@@ -433,28 +450,38 @@ function TjenesteCard({
 }) {
   return (
     <div
-      className={`flex flex-col rounded-[20px] border p-8 ${
+      className={`relative flex flex-col overflow-hidden rounded-[20px] border p-8 ${
         featured
           ? "dark border-transparent bg-background"
           : "border-border bg-card"
       }`}
     >
+      {featured && (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-10 -top-10 h-[220px] w-[220px]"
+          style={{
+            background:
+              "radial-gradient(circle, hsl(var(--accent) / 0.15), transparent 65%)",
+          }}
+        />
+      )}
       <span
-        className={`font-mono text-[10px] font-semibold uppercase tracking-[0.14em] ${
+        className={`relative z-10 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] ${
           featured ? "text-accent" : "text-muted-foreground"
         }`}
       >
         {eb}
       </span>
       <h4
-        className={`mt-3 font-display text-[28px] font-bold leading-[1.05] tracking-[-0.02em] ${
+        className={`relative z-10 mt-3 font-display text-[28px] font-bold leading-[1.05] tracking-[-0.02em] ${
           featured ? "text-white" : "text-foreground"
         }`}
       >
         {title}
       </h4>
       <div
-        className={`mt-6 flex items-baseline gap-1.5 border-t pt-5 ${
+        className={`relative z-10 mt-6 flex items-baseline gap-1.5 border-t pt-5 ${
           featured ? "border-white/15" : "border-border"
         }`}
       >
@@ -471,7 +498,7 @@ function TjenesteCard({
           kr / mnd
         </small>
       </div>
-      <ul className="mt-6 flex flex-col gap-2.5">
+      <ul className="relative z-10 mt-6 flex flex-col gap-2.5">
         {items.map((item) => (
           <li
             key={item}
@@ -489,7 +516,7 @@ function TjenesteCard({
       </ul>
       <Link
         href={href}
-        className={`mt-7 inline-flex h-11 items-center justify-center gap-1.5 font-display text-sm font-semibold tracking-[-0.005em] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
+        className={`relative z-10 mt-7 inline-flex h-11 items-center justify-center gap-1.5 font-display text-sm font-semibold tracking-[-0.005em] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
           featured
             ? "rounded-full bg-accent [--primary:164_100%_17.3%] text-primary shadow-[0_6px_14px_rgba(209,248,67,0.25)] hover:brightness-105"
             : "rounded-xl text-primary ring-1 ring-inset ring-primary hover:bg-primary/5"

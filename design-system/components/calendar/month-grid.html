@@ -1,0 +1,164 @@
+<!-- @dsCard group="Kalender" -->
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Month-grid · Kalender</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../../tokens.css">
+<style>
+  body{font-family:var(--sans);background:var(--cream);color:var(--ink);margin:0;padding:28px;}
+  .vh{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-2);margin:0 0 12px;}
+  .stack{max-width:560px;margin:0 0 36px;}
+  .cal{background:var(--paper);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--sh-sm);padding:18px;}
+  .chead{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .chead .m{font-family:var(--disp);font-size:20px;font-weight:600;}
+  .nav{display:flex;gap:6px;}
+  .nav button{width:32px;height:32px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--cream);color:var(--ink);display:grid;place-items:center;cursor:pointer;}
+  .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
+  .dow{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);text-align:center;padding-bottom:4px;}
+  .cell{aspect-ratio:1;border-radius:var(--r-md);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+    font-family:var(--mono);font-weight:600;font-size:13px;color:var(--ink);position:relative;}
+  .cell.out{color:var(--muted-2);opacity:.42;}
+  .cell.today{background:var(--forest);color:var(--lime);}
+  .cell.sel{outline:2px solid var(--forest);outline-offset:-2px;border-radius:var(--r-md);}
+  .dots{display:flex;gap:3px;height:5px;}
+  .dots i{width:5px;height:5px;border-radius:var(--r-full);}
+  .dots .tr{background:var(--forest);}.dots .bk{background:var(--info);}.dots .tu{background:var(--lime-deep);}
+  .today .dots .tr{background:var(--lime);}
+  .legend{display:flex;gap:16px;margin-top:14px;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);}
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .legend i{width:7px;height:7px;border-radius:var(--r-full);}
+  svg{width:16px;height:16px;stroke-width:1.5;fill:none;stroke:currentColor;}
+
+  .dark{background:var(--t-bg);}
+  .dark .cal{background:var(--t-bg-3);border-color:var(--t-line-2);}
+  .dark .chead .m{color:var(--t-fg);}
+  .dark .nav button{background:var(--t-bg-2);border-color:var(--t-line-2);color:var(--t-fg-2);}
+  .dark .dow{color:var(--t-fg-3);}
+  .dark .cell{color:var(--t-fg);}
+  .dark .cell.out{color:var(--t-fg-4);}
+  .dark .cell.today{background:var(--forest);color:var(--lime);}
+  .dark .cell.sel{outline-color:var(--lime);}
+  .dark .legend{color:var(--t-fg-2);}
+</style>
+</head>
+<body>
+
+<div class="stack">
+  <p class="vh">Month-grid · juni 2026 (lys)</p>
+  <div class="cal">
+    <div class="chead">
+      <span class="m">Juni 2026</span>
+      <span class="nav">
+        <button aria-label="Forrige"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <button aria-label="Neste"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+      </span>
+    </div>
+    <div class="grid">
+      <div class="dow">man</div><div class="dow">tir</div><div class="dow">ons</div><div class="dow">tor</div><div class="dow">fre</div><div class="dow">lør</div><div class="dow">søn</div>
+      <div class="cell">1<div class="dots"><i class="tr"></i></div></div>
+      <div class="cell">2<div class="dots"></div></div>
+      <div class="cell">3<div class="dots"><i class="tr"></i><i class="bk"></i></div></div>
+      <div class="cell">4<div class="dots"></div></div>
+      <div class="cell">5<div class="dots"><i class="tr"></i></div></div>
+      <div class="cell">6<div class="dots"><i class="tu"></i></div></div>
+      <div class="cell out">7<div class="dots"></div></div>
+      <div class="cell">8<div class="dots"><i class="tr"></i></div></div>
+      <div class="cell">9<div class="dots"><i class="bk"></i></div></div>
+      <div class="cell">10<div class="dots"><i class="tr"></i></div></div>
+      <div class="cell">11<div class="dots"></div></div>
+      <div class="cell">12<div class="dots"><i class="tr"></i><i class="bk"></i></div></div>
+      <div class="cell">13<div class="dots"><i class="tu"></i></div></div>
+      <div class="cell out">14<div class="dots"></div></div>
+      <div class="cell">15<div class="dots"><i class="tr"></i></div></div>
+      <div class="cell">16<div class="dots"><i class="tr"></i></div></div>
+      <div class="cell today">17<div class="dots"><i class="tr"></i><i class="bk"></i></div></div>
+      <div class="cell">18<div class="dots"><i class="tr"></i></div></div>
+      <div class="cell">19<div class="dots"></div></div>
+      <div class="cell sel">20<div class="dots"><i class="tu"></i></div></div>
+      <div class="cell out">21<div class="dots"></div></div>
+      <div class="cell">22<div class="dots"><i class="tr"></i></div></div>
+      <div class="cell">23<div class="dots"><i class="bk"></i></div></div>
+      <div class="cell">24<div class="dots"><i class="tr"></i></div></div>
+      <div class="cell">25<div class="dots"><i class="tr"></i></div></div>
+      <div class="cell">26<div class="dots"><i class="tu"></i></div></div>
+      <div class="cell">27<div class="dots"><i class="tu"></i></div></div>
+      <div class="cell out">28<div class="dots"></div></div>
+      <div class="cell">29<div class="dots"><i class="tr"></i></div></div>
+      <div class="cell">30<div class="dots"><i class="bk"></i></div></div>
+      <div class="cell out">1<div class="dots"></div></div>
+      <div class="cell out">2<div class="dots"></div></div>
+      <div class="cell out">3<div class="dots"></div></div>
+      <div class="cell out">4<div class="dots"></div></div>
+      <div class="cell out">5<div class="dots"></div></div>
+    </div>
+    <div class="legend">
+      <span><i class="tr" style="background:var(--forest)"></i>Trening</span>
+      <span><i class="bk" style="background:var(--info)"></i>Booking</span>
+      <span><i class="tu" style="background:var(--lime-deep)"></i>Turnering</span>
+    </div>
+  </div>
+</div>
+
+<div class="dark" style="background:var(--t-bg);padding:22px;border-radius:var(--r-lg)">
+  <p class="vh" style="color:var(--t-fg-3)">Month-grid · juni 2026 (mørk terminal)</p>
+  <div class="cal">
+    <div class="chead">
+      <span class="m">Juni 2026</span>
+      <span class="nav">
+        <button aria-label="Forrige"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <button aria-label="Neste"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+      </span>
+    </div>
+    <div class="grid">
+      <div class="dow">man</div><div class="dow">tir</div><div class="dow">ons</div><div class="dow">tor</div><div class="dow">fre</div><div class="dow">lør</div><div class="dow">søn</div>
+      <div class="cell">1<div class="dots"><i class="tr"></i></div></div>
+      <div class="cell">2<div class="dots"></div></div>
+      <div class="cell">3<div class="dots"><i class="tr"></i><i class="bk"></i></div></div>
+      <div class="cell">4<div class="dots"></div></div>
+      <div class="cell">5<div class="dots"><i class="tr"></i></div></div>
+      <div class="cell">6<div class="dots"><i class="tu"></i></div></div>
+      <div class="cell out">7<div class="dots"></div></div>
+      <div class="cell">8<div class="dots"><i class="tr"></i></div></div>
+      <div class="cell">9<div class="dots"><i class="bk"></i></div></div>
+      <div class="cell">10<div class="dots"><i class="tr"></i></div></div>
+      <div class="cell">11<div class="dots"></div></div>
+      <div class="cell">12<div class="dots"><i class="tr"></i><i class="bk"></i></div></div>
+      <div class="cell">13<div class="dots"><i class="tu"></i></div></div>
+      <div class="cell out">14<div class="dots"></div></div>
+      <div class="cell">15<div class="dots"><i class="tr"></i></div></div>
+      <div class="cell">16<div class="dots"><i class="tr"></i></div></div>
+      <div class="cell today">17<div class="dots"><i class="tr"></i><i class="bk"></i></div></div>
+      <div class="cell">18<div class="dots"><i class="tr"></i></div></div>
+      <div class="cell">19<div class="dots"></div></div>
+      <div class="cell sel">20<div class="dots"><i class="tu"></i></div></div>
+      <div class="cell out">21<div class="dots"></div></div>
+      <div class="cell">22<div class="dots"><i class="tr"></i></div></div>
+      <div class="cell">23<div class="dots"><i class="bk"></i></div></div>
+      <div class="cell">24<div class="dots"><i class="tr"></i></div></div>
+      <div class="cell">25<div class="dots"><i class="tr"></i></div></div>
+      <div class="cell">26<div class="dots"><i class="tu"></i></div></div>
+      <div class="cell">27<div class="dots"><i class="tu"></i></div></div>
+      <div class="cell out">28<div class="dots"></div></div>
+      <div class="cell">29<div class="dots"><i class="tr"></i></div></div>
+      <div class="cell">30<div class="dots"><i class="bk"></i></div></div>
+      <div class="cell out">1<div class="dots"></div></div>
+      <div class="cell out">2<div class="dots"></div></div>
+      <div class="cell out">3<div class="dots"></div></div>
+      <div class="cell out">4<div class="dots"></div></div>
+      <div class="cell out">5<div class="dots"></div></div>
+    </div>
+    <div class="legend">
+      <span><i style="background:var(--forest)"></i>Trening</span>
+      <span><i style="background:var(--info)"></i>Booking</span>
+      <span><i style="background:var(--lime-deep)"></i>Turnering</span>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

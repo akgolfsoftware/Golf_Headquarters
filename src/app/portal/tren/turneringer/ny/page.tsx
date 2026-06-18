@@ -48,26 +48,36 @@ export default async function NyTurneringPage() {
       <div>
         <Link
           href="/portal/tren/turneringer"
-          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+          className="inline-flex items-center gap-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground hover:text-foreground"
         >
-          <ChevronLeft className="h-4 w-4" />
+          <ChevronLeft className="h-3.5 w-3.5" strokeWidth={2.2} />
           Tilbake til turneringer
         </Link>
       </div>
 
       {remainingQuota === 0 ? (
-        <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-6 text-sm text-destructive-foreground">
-          <p className="font-semibold">Du har nådd månedsgrensen</p>
-          <p className="mt-1 text-muted-foreground">
-            Du har allerede lagt til 10 manuelle turneringer denne måneden.
+        <div className="rounded-xl border border-destructive/30 bg-destructive/10 p-6">
+          <div className="font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-destructive">
+            Månedsgrense nådd
+          </div>
+          <p className="mt-2 text-[15px] font-semibold text-foreground">
+            Du har lagt til 10 manuelle turneringer denne måneden
+          </p>
+          <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
             Vent til neste måned, eller spør coachen din om å legge til turneringen
             i hovedkatalogen.
           </p>
         </div>
       ) : (
         <>
-          <div className="rounded-md border border-border bg-secondary/40 p-4 text-sm text-muted-foreground">
-            Du kan legge til {remainingQuota} {remainingQuota === 1 ? "turnering" : "turneringer"} til denne måneden.
+          <div className="flex items-center justify-between gap-4 rounded-xl border border-border bg-secondary/40 px-4 py-3">
+            <span className="text-sm text-muted-foreground">
+              Manuelle turneringer igjen denne måneden
+            </span>
+            <span className="font-mono text-[15px] font-bold tabular-nums text-foreground">
+              {remainingQuota}
+              <span className="text-muted-foreground">/10</span>
+            </span>
           </div>
           <NyManuellTurneringForm />
         </>

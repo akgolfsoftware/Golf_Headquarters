@@ -1,17 +1,16 @@
 /**
- * PlayerHQ · Meg · Abonnement (/portal/meg/abonnement) — portet FRA fersk
- * Claude Design-fasit: ph-screens.jsx (AbonnementScreen) via MeSub-skallet.
+ * PlayerHQ · Meg · Abonnement (/portal/meg/abonnement) — hybrid redesign
+ * mot designfasit: "PlayerHQ Meg Abonnement (hybrid).dc.html".
  *
  * Ingen tier-nivåer: appen er gratis via aktiv coaching-pakke (Performance /
  * Performance Pro = credits), ellers 300 kr/mnd. ELITE vises ALDRI.
  *
- * Struktur: status-banners (ok/cancelled/avbestilt fra searchParams +
- * PAST_DUE fra DB) → Abonnementskort (delt med /portal/meg) → STATUS
- * (4 SetRow med EKTE data fra getAbonnementData) → HVA SOM INNGÅR (5 SetRow)
- * → HANDLINGER (oppgrader/endre kort/avbestill, betinget av status) →
- * FAKTURAER (inntil 5 + «Alle dokumenter») → «Administrer pakke».
- *
- * Server component (alle CTA-er er <Link>). Auth-guard via requirePortalUser.
+ * Hybrid-kart (øverst):
+ *   - Gratis-bruker/kan-oppgradere: ProUpgradeCard (forest-gradient, PRO-pris,
+ *     feature-liste, lime-CTA → checkout-flyt).
+ *   - Aktiv PRO uten pakke: ProStatusCard (forest-gradient, pris + fornyes-dato).
+ *   - Gratis via pakke: GratisCard (secondary-bakgrunn, pakkenavn, ingen CTA).
+ * Nedenfor hybrid-kortet: STATUS, HVA SOM INNGÅR, HANDLINGER, FAKTURAER.
  */
 
 import Link from "next/link";
@@ -32,11 +31,19 @@ import {
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getAbonnementData } from "@/lib/portal-abonnement/abonnement-data";
 import { MeSub, SetGroup, SetLinkRow, SetRow, SetVal } from "@/components/portal/meg/meg-sub";
-import { Abonnementskort } from "@/components/portal/meg/meg-profil";
 import { AthleticBadge } from "@/components/athletic/badge";
 
 export const dynamic = "force-dynamic";
 
+// Features that are included with PRO (from design HTML)
+const PRO_FEATURES = [
+  "Video-feedback fra coach",
+  "Prioritert booking",
+  "Avansert SG-rapport",
+  "AI-coach (V2)",
+] as const;
+
+// Features included for free
 const INNGAAR = [
   "Treningsplan & Workbench",
   "Live-økter & logging",
@@ -55,6 +62,103 @@ function formatDato(d: Date | null): string | null {
     month: "long",
     year: "numeric",
   });
+}
+
+/** Forest-gradient PRO-oppgraderingskort — vises når bruker kan oppgradere. */
+function ProUpgradeCard() {
+  return (
+    <div className="relative overflow-hidden rounded-[20px] bg-gradient-to-br from-primary to-emerald-900 p-5">
+      {/* Bakgrunns-glow */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-8 -top-8 h-40 w-40 rounded-full blur-2xl"
+        style={{ background: "radial-gradient(circle, rgba(209,248,67,0.20), transparent 65%)" }}
+      />
+      <div className="relative z-10">
+        {/* Eyebrow */}
+        <div className="mb-2 font-mono text-[9.5px] font-bold uppercase tracking-[0.12em] text-accent">
+          PLAYERHQ PRO
+        </div>
+        {/* Pris */}
+        <div className="flex items-baseline gap-1.5">
+          <span className="font-mono text-[36px] font-bold leading-none text-white tabular-nums">
+            300
+          </span>
+          <span className="font-mono text-base font-medium text-white/60">kr/mnd</span>
+        </div>
+        {/* Inkluderer */}
+        <p className="mt-3 text-[13px] text-white/75">Inkluderer:</p>
+        <ul className="mt-2 flex flex-col gap-1.5">
+          {PRO_FEATURES.map((f) => (
+            <li key={f} className="flex items-start gap-2 text-[12.5px] text-white">
+              <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent" strokeWidth={2.5} aria-hidden />
+              {f}
+            </li>
+          ))}
+        </ul>
+        {/* CTA */}
+        <div className="mt-5 flex flex-col gap-2">
+          <Link
+            href="/portal/meg/abonnement/oppgrader/flyt"
+            className="flex h-[50px] w-full items-center justify-center rounded-full bg-accent font-mono text-[13px] font-bold uppercase tracking-[0.08em] text-accent-foreground transition-opacity hover:opacity-90"
+          >
+            Start PRO · 300 kr/mnd
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Forest-gradient PRO-statuskort — vises når bruker allerede er PRO. */
+function ProStatusCard({ fornyes }: { fornyes: string | null }) {
+  return (
+    <div className="relative overflow-hidden rounded-[20px] bg-gradient-to-br from-primary to-emerald-900 p-5">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-8 -top-8 h-40 w-40 rounded-full blur-2xl"
+        style={{ background: "radial-gradient(circle, rgba(209,248,67,0.20), transparent 65%)" }}
+      />
+      <div className="relative z-10">
+        <div className="mb-2 flex items-center justify-between">
+          <div className="font-mono text-[9.5px] font-bold uppercase tracking-[0.12em] text-accent">
+            PLAYERHQ PRO
+          </div>
+          <span className="rounded-full bg-accent px-2.5 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.10em] text-accent-foreground">
+            Aktiv
+          </span>
+        </div>
+        <div className="flex items-baseline gap-1.5">
+          <span className="font-mono text-[36px] font-bold leading-none text-white tabular-nums">
+            300
+          </span>
+          <span className="font-mono text-base font-medium text-white/60">kr/mnd</span>
+        </div>
+        {fornyes && (
+          <p className="mt-2 font-mono text-[11px] text-white/70">Fornyes {fornyes}</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/** Sekundær statuskort — gratis via coaching-pakke. */
+function GratisCard({ planNavn }: { planNavn: string | null }) {
+  return (
+    <div className="rounded-[20px] border border-border bg-secondary/60 p-5">
+      <div className="mb-1 font-mono text-[9.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+        APP-ABONNEMENT
+      </div>
+      <div className="font-display text-[22px] font-bold tracking-[-0.015em] text-foreground">
+        Inkludert i coaching
+      </div>
+      <p className="mt-2 font-mono text-[11px] leading-relaxed text-muted-foreground">
+        Du har{" "}
+        <span className="font-bold text-primary">{planNavn ?? "coaching-pakke"}</span> hos AK
+        Golf — app-tilgang følger med så lenge coaching-pakken er aktiv.
+      </p>
+    </div>
+  );
 }
 
 export default async function AbonnementPage({
@@ -154,8 +258,15 @@ export default async function AbonnementPage({
         </div>
       )}
 
+      {/* Hybrid abonnementskort — velger riktig visning basert på tilstand */}
       <div className="mb-[22px]">
-        <Abonnementskort a={{ gratis, planNavn }} />
+        {kanOppgradere ? (
+          <ProUpgradeCard />
+        ) : data.erPro && !harPakke ? (
+          <ProStatusCard fornyes={fornyes} />
+        ) : (
+          <GratisCard planNavn={planNavn} />
+        )}
       </div>
 
       <SetGroup label="STATUS">

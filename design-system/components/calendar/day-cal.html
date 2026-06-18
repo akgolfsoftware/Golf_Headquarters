@@ -1,0 +1,118 @@
+<!-- @dsCard group="Kalender" -->
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day-cal · Kalender</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:ital,wght@0,500;0,600;0,700;1,500&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../../tokens.css">
+<style>
+  body{font-family:var(--sans);background:var(--cream);color:var(--ink);margin:0;padding:28px;}
+  .vh{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-2);margin:0 0 12px;}
+  .stack{max-width:560px;margin:0 0 36px;}
+  .panel{background:var(--paper);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--sh-sm);overflow:hidden;}
+  .phead{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--border-soft);}
+  .phead .d{font-family:var(--disp);font-size:18px;font-weight:600;}
+  .phead .sub{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted-2);}
+
+  /* (1) Lys dag-planner */
+  .planner{padding:8px 18px 18px;}
+  .slot{display:grid;grid-template-columns:52px 1fr;gap:14px;align-items:start;position:relative;min-height:54px;}
+  .slot .t{font-family:var(--mono);font-size:12px;color:var(--muted-2);padding-top:10px;text-align:right;}
+  .slot .lane{border-top:1px solid var(--border-soft);padding:8px 0;}
+  .blk{border-radius:var(--r-md);padding:10px 12px;display:flex;align-items:center;gap:10px;}
+  .blk .ic{width:32px;height:32px;border-radius:var(--r-sm);display:grid;place-items:center;flex:none;}
+  .blk .ttl{font-weight:600;font-size:14px;}
+  .blk .ms{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:2px;}
+  .blk.forest{background:var(--forest);color:#fff;}
+  .blk.forest .ic{background:rgba(255,255,255,.14);color:var(--lime);}
+  .blk.forest .ms{color:rgba(255,255,255,.7);}
+  .blk.lime{background:var(--lime);color:var(--forest-deep);}
+  .blk.lime .ic{background:rgba(0,64,47,.12);color:var(--forest-deep);}
+  .blk.lime .ms{color:var(--forest-deep);opacity:.75;}
+  .blk.sand{background:var(--sand);color:var(--ink);}
+  .blk.sand .ic{background:var(--paper);color:var(--forest);}
+  .now{position:relative;}
+  .now .line{display:grid;grid-template-columns:52px 1fr;gap:14px;align-items:center;margin:2px 0;}
+  .now .lbl{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.12em;color:var(--urgent);text-align:right;}
+  .now .bar{height:2px;background:var(--urgent);border-radius:var(--r-full);position:relative;}
+  .now .bar::before{content:"";position:absolute;left:-4px;top:50%;transform:translateY(-50%);width:8px;height:8px;border-radius:var(--r-full);background:var(--urgent);}
+
+  /* (2) Mørk terminal-tidslinje */
+  .dark{background:var(--t-bg);}
+  .tl{padding:6px 18px 16px;}
+  .tl-row{display:grid;grid-template-columns:52px 1fr;gap:14px;align-items:start;padding:11px 0;border-top:1px solid var(--t-line);}
+  .tl-row:first-child{border-top:none;}
+  .tl-row.active{background:var(--lime-bg);margin:0 -12px;padding-left:12px;padding-right:12px;border-radius:var(--r-md);border-top-color:transparent;}
+  .tl-time{font-family:var(--mono);font-size:12px;color:var(--t-fg-3);padding-top:1px;text-align:right;}
+  .tl-row.live .tl-time{color:var(--lime);}
+  .tl-item .top{display:flex;align-items:center;gap:8px;}
+  .tl-item .nm{font-weight:600;font-size:14px;color:var(--t-fg);}
+  .tl-item .sub{font-family:var(--mono);font-size:11px;color:var(--t-fg-3);margin-top:3px;letter-spacing:.04em;}
+  .dot{width:7px;height:7px;border-radius:var(--r-full);background:var(--lime);flex:none;box-shadow:0 0 0 0 rgba(209,248,67,.5);animation:pulse 1.8s ease-out infinite;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(209,248,67,.5);}70%{box-shadow:0 0 0 7px rgba(209,248,67,0);}100%{box-shadow:0 0 0 0 rgba(209,248,67,0);}}
+  .prog{height:3px;background:var(--t-line-2);border-radius:var(--r-full);margin-top:9px;overflow:hidden;}
+  .prog>i{display:block;height:100%;background:var(--lime);border-radius:var(--r-full);}
+  .dark .phead{border-bottom-color:var(--t-line);}
+  .dark .phead .d{color:var(--t-fg);}
+  svg{width:17px;height:17px;stroke-width:1.5;fill:none;stroke:currentColor;}
+</style>
+</head>
+<body>
+
+<div class="stack">
+  <p class="vh">Day-cal · lys dag-planner</p>
+  <div class="panel">
+    <div class="phead"><span class="d">I dag · tirsdag</span><span class="sub">17. juni · 4 økter</span></div>
+    <div class="planner">
+      <div class="slot"><div class="t">07:00</div><div class="lane">
+        <div class="blk sand"><div class="ic"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div><div><div class="ttl">Mobilitet &amp; oppvarming</div><div class="ms">07:00–07:30 · egentrening</div></div></div>
+      </div></div>
+      <div class="slot"><div class="t">09:00</div><div class="lane">
+        <div class="blk forest"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div><div class="ttl">Teknisk · jernspill</div><div class="ms">09:00–10:30 · Øyvind Rohjan</div></div></div>
+      </div></div>
+      <div class="now"><div class="line"><div class="lbl">NÅ</div><div class="bar"></div></div></div>
+      <div class="slot"><div class="t">11:00</div><div class="lane">
+        <div class="blk lime"><div class="ic"><svg viewBox="0 0 24 24"><path d="M3 12h18M12 3v18"/></svg></div><div><div class="ttl">SG-økt · putting</div><div class="ms">11:00–12:00 · TrackMan</div></div></div>
+      </div></div>
+      <div class="slot"><div class="t">14:00</div><div class="lane">
+        <div class="blk sand"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 4v16h16"/><path d="M4 14l5-5 4 4 6-7"/></svg></div><div><div class="ttl">Spilløkt · 9 hull</div><div class="ms">14:00–16:00 · GFGK</div></div></div>
+      </div></div>
+    </div>
+  </div>
+</div>
+
+<div class="dark" style="background:var(--t-bg);padding:22px;border-radius:var(--r-lg)">
+  <p class="vh" style="color:var(--t-fg-3)">Day-cal · mørk terminal-tidslinje</p>
+  <div class="panel" style="background:var(--t-bg-3);border-color:var(--t-line-2)">
+    <div class="phead"><span class="d">Dagens spor</span><span class="sub" style="color:var(--t-fg-3)">17.06 · live</span></div>
+    <div class="tl">
+      <div class="tl-row"><div class="tl-time">07:00</div><div class="tl-item">
+        <div class="top"><span class="nm">Mobilitet &amp; oppvarming</span></div>
+        <div class="sub">FULLFØRT · 30 MIN</div>
+        <div class="prog"><i style="width:100%"></i></div>
+      </div></div>
+      <div class="tl-row live active"><div class="tl-time">09:00</div><div class="tl-item">
+        <div class="top"><span class="dot"></span><span class="nm">Teknisk · jernspill</span></div>
+        <div class="sub">PÅGÅR · ØYVIND ROHJAN</div>
+        <div class="prog"><i style="width:62%"></i></div>
+      </div></div>
+      <div class="tl-row"><div class="tl-time">11:00</div><div class="tl-item">
+        <div class="top"><span class="nm">SG-økt · putting</span></div>
+        <div class="sub">PLANLAGT · 60 MIN · TRACKMAN</div>
+        <div class="prog"><i style="width:0"></i></div>
+      </div></div>
+      <div class="tl-row"><div class="tl-time">14:00</div><div class="tl-item">
+        <div class="top"><span class="nm">Spilløkt · 9 hull</span></div>
+        <div class="sub">PLANLAGT · 120 MIN · GFGK</div>
+        <div class="prog"><i style="width:0"></i></div>
+      </div></div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

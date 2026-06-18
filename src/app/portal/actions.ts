@@ -9,7 +9,6 @@
 
 import "server-only";
 import { prisma } from "@/lib/prisma";
-import { getWeekProgress } from "@/components/portal/workbench/get-week-progress";
 import type { PyramidArea, PracticeType, SessionStatusV2 } from "@/generated/prisma/client";
 
 // ── Types ─────────────────────────────────────────────────────────
@@ -172,14 +171,6 @@ function greeting(): string {
 
 function initialer(name: string): string {
   return name.trim().split(/\s+/).slice(0, 2).map((w) => w[0]?.toUpperCase() ?? "").join("") || "?";
-}
-
-function formatTime(d: Date): string {
-  return d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Europe/Oslo" });
-}
-
-function formatDateDayMonth(d: Date): string {
-  return d.toLocaleDateString("nb-NO", { day: "numeric", month: "short", timeZone: "Europe/Oslo" });
 }
 
 // ── Today's session ───────────────────────────────────────────────
@@ -533,13 +524,85 @@ export async function getWeekPlanProgress(userId: string): Promise<WeekPlanProgr
   );
 }
 
+// ── KPI stats (avg score + SG total from recent rounds) ──────────
+
+export type KpiStats = {
+  avgScore: number | null;   // snitt bruttoscore siste 10 runder
+  sgTotal: number | null;    // snitt SG total siste 10 runder
+  sessionsThisWeek: number;  // treningsøkter denne uken
+};
+
+export async function getKpiStats(userId: string): Promise<KpiStats> {
+  const now = new Date();
+  const weekStart = startOfWeek(now);
+
+  const [rounds, weekSessions] = await Promise.all([
+    prisma.round.findMany({
+      where: { userId },
+      orderBy: { playedAt: "desc" },
+      take: 10,
+      select: { score: true, sgTotal: true },
+    }),
+    prisma.trainingSessionV2.count({
+      where: { studentId: userId, startTime: { gte: weekStart, lte: now } },
+    }),
+  ]);
+
+  const scoresWithValue = rounds.filter((r) => r.score > 0);
+  const avgScore =
+    scoresWithValue.length > 0
+      ? Math.round((scoresWithValue.reduce((s, r) => s + r.score, 0) / scoresWithValue.length) * 10) / 10
+      : null;
+
+  const sgValues = rounds.filter((r) => r.sgTotal != null).map((r) => r.sgTotal as number);
+  const sgTotal =
+    sgValues.length > 0
+      ? Math.round((sgValues.reduce((s, v) => s + v, 0) / sgValues.length) * 10) / 10
+      : null;
+
+  return { avgScore, sgTotal, sessionsThisWeek: weekSessions };
+}
+
+// ── All today's sessions (for second-session compact row) ─────────
+
+export async function getAllTodaysSessions(userId: string): Promise<TodaySession[]> {
+  const now = new Date();
+  const sessions = await prisma.trainingSessionV2.findMany({
+    where: { studentId: userId, startTime: { gte: startOfDay(now), lte: endOfDay(now) } },
+    orderBy: { startTime: "asc" },
+    select: {
+      id: true,
+      title: true,
+      startTime: true,
+      endTime: true,
+      status: true,
+      practiceType: true,
+      drills: { select: { id: true, name: true, durationMinutes: true }, orderBy: { sortOrder: "asc" } },
+    },
+  });
+
+  return sessions.map((s) => ({
+    id: s.id,
+    title: s.title,
+    startTime: s.startTime,
+    endTime: s.endTime,
+    status: s.status,
+    practiceType: s.practiceType,
+    pyramidArea: PRACTICE_TO_PYRAMID[s.practiceType] ?? "TEK",
+    durationMin: Math.max(0, Math.round((s.endTime.getTime() - s.startTime.getTime()) / 60_000)),
+    drills: s.drills,
+    href: `/portal/gjennomfore/${s.id}`,
+  }));
+}
+
 // ── Composed dashboard data ───────────────────────────────────────
 
 export type DashboardData = {
-  user: { id: string; name: string; fornavn: string; initialer: string; avatarUrl: string | null; hcp: number | null };
+  user: { id: string; name: string; fornavn: string; initialer: string; avatarUrl: string | null; hcp: number | null; tier: "GRATIS" | "PRO" };
   greeting: string;
   weekNumber: number;
   today: TodaySession | null;
+  todayAll: TodaySession[];
   week: WeekDay[];
   recentActivity: RecentActivityItem[];
   goals: GoalItem[];
@@ -547,6 +610,7 @@ export type DashboardData = {
   notifications: NotificationItem[];
   coachMessage: CoachMessageItem | null;
   stats: StatsSnapshot;
+  kpiStats: KpiStats;
   nextTournament: NextTournament | null;
   weekProgress: WeekPlanProgress;
 };
@@ -554,27 +618,29 @@ export type DashboardData = {
 export async function getDashboardData(userId: string): Promise<DashboardData> {
   const user = await prisma.user.findUniqueOrThrow({
     where: { id: userId },
-    select: { id: true, name: true, avatarUrl: true, hcp: true },
+    select: { id: true, name: true, avatarUrl: true, hcp: true, tier: true },
   });
 
-  const [today, week, recentActivity, goals, { count: unreadCount, notifications }, coachMessage, stats, nextTournament, weekProgress] =
+  const [todayAll, week, recentActivity, goals, { count: unreadCount, notifications }, coachMessage, stats, kpiStats, nextTournament, weekProgress] =
     await Promise.all([
-      getTodaysSession(userId),
+      getAllTodaysSessions(userId),
       getWeekOverview(userId),
       getRecentActivity(userId, 5),
       getGoals(userId, 3),
       getUnreadNotifications(userId, 5),
       getLatestCoachMessage(userId),
       getStatsSnapshot(userId),
+      getKpiStats(userId),
       getNextTournament(userId),
       getWeekPlanProgress(userId),
     ]);
 
   return {
-    user: { id: user.id, name: user.name, fornavn: fornavn(user.name), initialer: initialer(user.name), avatarUrl: user.avatarUrl, hcp: user.hcp },
+    user: { id: user.id, name: user.name, fornavn: fornavn(user.name), initialer: initialer(user.name), avatarUrl: user.avatarUrl, hcp: user.hcp, tier: user.tier === "GRATIS" ? "GRATIS" : "PRO" },
     greeting: greeting(),
     weekNumber: ukenummer(new Date()),
-    today,
+    today: todayAll[0] ?? null,
+    todayAll,
     week,
     recentActivity,
     goals,
@@ -582,6 +648,7 @@ export async function getDashboardData(userId: string): Promise<DashboardData> {
     notifications,
     coachMessage,
     stats,
+    kpiStats,
     nextTournament,
     weekProgress,
   };
