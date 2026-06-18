@@ -1,18 +1,31 @@
 /**
- * /portal/planlegge/workbench — PlayerHQ Workbench (mobil-først 430px).
+ * /portal/planlegge/workbench — PlayerHQ Workbench (delt planleggings-kjerne).
  *
- * Delt kjerne: spiller-versjon. Coach-versjonen ligger i
- * /admin/spillere/[id]/workbench. Spilleren ser SIN egen plan — ekte data fra
- * loadWorkbenchData (TrainingPlan + TrainingPlanSession + Goal + TournamentEntry).
+ * Hybrid-design (fase 1–3, desktop): WorkbenchHybrid — Anders' egen Workbench-
+ * fasit portet visuelt. Spiller-versjon. Coach-versjonen ligger i
+ * /admin/spillere/[id]/workbench. Ekte data fra loadWorkbenchData
+ * (TrainingPlan + TrainingPlanSession + Goal + TournamentEntry).
  */
 
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getViewMode } from "@/lib/view-mode";
-import { Workbench } from "@/components/workbench/workbench";
+import { WorkbenchHybrid } from "@/components/workbench-hybrid";
 import { loadWorkbenchData } from "@/lib/workbench/load-workbench";
 
 export const dynamic = "force-dynamic";
+
+function utledInitialer(navn: string): string {
+  return (
+    navn
+      .split(" ")
+      .map((d) => d[0])
+      .filter(Boolean)
+      .slice(0, 2)
+      .join("")
+      .toUpperCase() || "??"
+  );
+}
 
 export default async function WorkbenchPage() {
   const user = await requirePortalUser();
@@ -24,8 +37,15 @@ export default async function WorkbenchPage() {
   if (user.role === "GUEST") redirect("/admin/kalender");
   if (user.role === "PARENT") redirect("/forelder");
 
-  // W5b: ekte data for innlogget spiller. Mangler/tom → v10-demo i komponenten.
+  // Ekte data for innlogget spiller. Mangler/tom → fasit-demo i komponenten.
   const data = (await loadWorkbenchData(user.id)) ?? undefined;
 
-  return <Workbench role="player" data={data} />;
+  return (
+    <WorkbenchHybrid
+      role="player"
+      data={data}
+      playerName={user.name}
+      initials={utledInitialer(user.name)}
+    />
+  );
 }
