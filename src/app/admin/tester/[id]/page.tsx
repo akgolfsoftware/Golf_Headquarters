@@ -7,14 +7,15 @@
  * Migrert fra public/design/batch4/test-detalj-cmj.html.
  */
 import { notFound } from "next/navigation";
-import { Activity, Download, FileText, Send } from "lucide-react";
+import { Activity } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { DetailShell } from "@/components/shared/detail-shell";
 import { KPICard } from "@/components/ui";
-import { AthleticBadge, AthleticButton } from "@/components/athletic";
+import { AthleticBadge } from "@/components/athletic";
 import { TestDetailClient, type TestPoint, type BenchmarkView } from "./test-detail-client";
 import { parseBenchmarks, achievedLevel, ladderText, DISPLAY_UNIT } from "@/lib/admin/test-benchmarks";
+import { TesterDetailActions } from "./tester-detail-actions";
 
 const PYR_LABEL: Record<string, string> = {
   FYS: "Fysisk · styrke & eksplosivitet",
@@ -137,34 +138,7 @@ export default async function TestDetaljPage({
           {kategoriLabel}
         </AthleticBadge>
       }
-      actions={
-        <>
-          <AthleticButton
-            variant="ghost-light"
-            size="sm"
-            type="button"
-          >
-            <Send size={14} strokeWidth={1.75} />
-            Del med spiller
-          </AthleticButton>
-          <AthleticButton
-            variant="ghost-light"
-            size="sm"
-            type="button"
-          >
-            <FileText size={14} strokeWidth={1.75} />
-            Eksporter PDF
-          </AthleticButton>
-          <AthleticButton
-            variant="lime"
-            size="sm"
-            type="button"
-          >
-            <Download size={14} strokeWidth={1.75} />
-            Logg ny test
-          </AthleticButton>
-        </>
-      }
+      actions={<TesterDetailActions />}
       kpiRow={
         <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
           <KPICard

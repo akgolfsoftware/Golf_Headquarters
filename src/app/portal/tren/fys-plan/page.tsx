@@ -14,6 +14,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { AthleticEyebrow } from "@/components/athletic";
 import { cn } from "@/lib/utils";
+import { NyPlanKnapp } from "./ny-plan-knapp";
 
 export const dynamic = "force-dynamic";
 
@@ -115,13 +116,7 @@ export default async function FysPlanListePage() {
             Plassholderverdier · formelen ikke låst
           </p>
         </div>
-        <Link
-          href="/portal/tren/fys-plan/ny"
-          className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-primary px-3.5 py-2 font-mono text-[10.5px] font-bold uppercase tracking-[0.06em] text-accent transition-opacity hover:opacity-90"
-        >
-          <Plus className="h-3 w-3" strokeWidth={2.4} aria-hidden />
-          Ny test
-        </Link>
+        <NyPlanKnapp variant="header" />
       </header>
 
       {/* ── Mastery rings — FYS-score per område (plassholder) ── */}
@@ -179,13 +174,7 @@ export default async function FysPlanListePage() {
               Lag din første fysiske treningsplan for å begynne å logge styrke- og kondisjonsøkter.
             </p>
           </div>
-          <Link
-            href="/portal/tren/fys-plan/ny"
-            className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 font-mono text-[10.5px] font-bold uppercase tracking-[0.06em] text-accent transition-opacity hover:opacity-90"
-          >
-            <Plus className="h-3.5 w-3.5" strokeWidth={2.4} aria-hidden />
-            Lag din første plan
-          </Link>
+          <NyPlanKnapp variant="empty-state" />
         </div>
       )}
     </div>

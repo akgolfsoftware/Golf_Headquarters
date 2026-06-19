@@ -2,6 +2,7 @@ import Link from "next/link";
 import { AlertTriangle, ExternalLink, ImagePlus } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { EditProfileForm } from "./edit-form";
+import { SkjulProfilButton } from "./profile-actions";
 
 type Field = { label: string; value: string; mono?: boolean };
 
@@ -289,12 +290,7 @@ function DangerZone() {
             Spillere kan fortsatt finne deg via direkte lenke
           </div>
         </div>
-        <button
-          type="button"
-          className="rounded-sm border border-destructive/40 px-4 py-2 text-[12px] font-medium text-destructive"
-        >
-          Skjul
-        </button>
+        <SkjulProfilButton />
       </div>
     </section>
   );

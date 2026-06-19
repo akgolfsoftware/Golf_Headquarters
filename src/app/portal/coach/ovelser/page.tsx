@@ -160,7 +160,7 @@ function OvelseCard({
 
   return (
     <Link
-      href={`/portal/tren/ovelser/${exercise.id}`}
+      href={`/portal/drills/${exercise.id}`}
       className="group overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-[transform,box-shadow] hover:-translate-y-0.5 hover:shadow-md"
     >
       {/* Forest-gradient placeholder med lime grid-overlay */}

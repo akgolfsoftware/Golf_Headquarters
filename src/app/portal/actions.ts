@@ -485,7 +485,7 @@ export async function getNextTournament(userId: string): Promise<NextTournament 
     endDate,
     location,
     daysLeft,
-    href: entry.tournamentId ? `/portal/turneringer/${entry.tournamentId}` : "/portal/tren/turneringer",
+    href: entry.tournamentId ? `/portal/tren/turneringer/${entry.tournamentId}` : "/portal/tren/turneringer",
   };
 }
 

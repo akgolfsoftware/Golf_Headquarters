@@ -52,12 +52,12 @@ export function AnalyticsSidebar({ active, onSelect }: AnalyticsSidebarProps) {
   return (
     <aside className="sb">
       <div className="grp is-open">
-        <button type="button" className="grp-head">
+        <div className="grp-head">
           <BarChart3 className="h-3.5 w-3.5" strokeWidth={1.5} />
           <span className="lbl">Analysekategorier</span>
           <span className="ct">{CATEGORIES.length}</span>
           <ChevronRight className="h-3 w-3" strokeWidth={1.5} />
-        </button>
+        </div>
         <div className="grp-body">
           {CATEGORIES.map((cat) => {
             const Icon = ICON_MAP[cat.icon] ?? Activity;
@@ -90,12 +90,12 @@ export function AnalyticsSidebar({ active, onSelect }: AnalyticsSidebarProps) {
       </div>
 
       <div className="grp">
-        <button type="button" className="grp-head">
+        <div className="grp-head">
           <Settings className="h-3.5 w-3.5" strokeWidth={1.5} />
           <span className="lbl">Rapporter</span>
           <span className="ct">V2</span>
           <ChevronRight className="h-3 w-3" strokeWidth={1.5} />
-        </button>
+        </div>
       </div>
     </aside>
   );

@@ -8,6 +8,7 @@
  */
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Plus, Search, SendHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -239,6 +240,7 @@ function Panel360({ spiller }: { spiller: StallSpiller }) {
 // ─────────────────────────────────────────────── Main ──
 
 export function StallClient({ spillere }: { spillere: StallSpiller[] }) {
+  const router = useRouter();
   const [filter, setFilter] = useState<Filter>("alle");
   const [q, setQ] = useState("");
   const [selId, setSelId] = useState<string | null>(spillere[0]?.id ?? null);
@@ -293,6 +295,7 @@ export function StallClient({ spillere }: { spillere: StallSpiller[] }) {
               </label>
               <button
                 type="button"
+                onClick={() => router.push("/admin/spillere/ny")}
                 className="flex items-center gap-[6px] rounded-[8px] bg-accent px-[13px] py-2 font-mono text-[10.5px] font-bold uppercase text-accent-foreground transition hover:opacity-90"
               >
                 <Plus className="h-[13px] w-[13px]" strokeWidth={2.4} />

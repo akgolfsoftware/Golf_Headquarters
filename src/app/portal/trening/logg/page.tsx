@@ -43,7 +43,7 @@ export default function TreningLoggPage() {
         }),
       });
       if (!res.ok) throw new Error("Kunne ikke lagre");
-      router.push("/portal/tren");
+      router.push("/portal/gjennomfore");
     } catch {
       setFeil("Noe gikk galt. Prøv igjen.");
     } finally {

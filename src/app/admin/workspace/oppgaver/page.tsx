@@ -6,10 +6,17 @@
  * ingen hardkodede tall. View-state lagres i URL via ?view=liste|kanban|kalender.
  */
 
-import { Plus, Search, Flame, List, LayoutGrid, Calendar } from "lucide-react";
+import { Search, Flame, List, LayoutGrid, Calendar } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { AgPage, AgPageHead, agBtnClass } from "@/components/admin/agencyos/ui";
+import { AgPage, AgPageHead } from "@/components/admin/agencyos/ui";
+import {
+  NyOppgaveButton,
+  NyOppgaveButtonSm,
+  KanbanPlusButton,
+  KanbanNyButton,
+  FilterPillInteractive,
+} from "./oppgaver-actions";
 import {
   AvatarStack,
   DueDate,
@@ -54,13 +61,6 @@ export default async function WorkspaceOppgaverPage({
     done: tasks.filter((t) => t.done).length,
     blokkert: tasks.filter((t) => t.status === "BLOKKERT").length,
   };
-  // Avledede header-tall fra ekte data
-  const delt = tasks.filter(
-    (t) => t.vis === "ALLE" || t.vis === "SELSKAP" || t.vis === "JUNIOR",
-  ).length;
-  const prosjekter = new Set(tasks.map((t) => t.project.name ?? t.project.company))
-    .size;
-
   const åpne = counts.alle - counts.done;
   const TALLORD = ["Ingen", "Én", "To", "Tre", "Fire", "Fem", "Seks", "Sju", "Åtte", "Ni", "Ti"];
   const åpneTekst = TALLORD[åpne] ?? String(åpne);
@@ -76,9 +76,7 @@ export default async function WorkspaceOppgaverPage({
         actions={
           <>
             <ViewToggle current={view} />
-            <button type="button" className={agBtnClass("primary")}>
-              <Plus className="h-4 w-4" strokeWidth={2} /> Ny oppgave
-            </button>
+            <NyOppgaveButton />
           </>
         }
       />
@@ -148,6 +146,7 @@ function FilterBar({
         <input
           type="search"
           placeholder="Søk i oppgaver …"
+          readOnly
           className="flex-1 bg-transparent text-[12.5px] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground"
         />
       </label>
@@ -162,9 +161,9 @@ function FilterBar({
 
       <span className="mx-1 h-5 w-px bg-border" />
 
-      <FilterPill label="Prosjekt" />
-      <FilterPill label="Synlighet · Mine" />
-      <FilterPill label="Prioritet" />
+      <FilterPillInteractive label="Prosjekt" />
+      <FilterPillInteractive label="Synlighet · Mine" />
+      <FilterPillInteractive label="Prioritet" />
 
       <a
         href="?"
@@ -341,22 +340,12 @@ function KanbanCol({
         <span className="font-mono text-[11.5px] font-bold tracking-[0.04em] text-muted-foreground">
           {tasks.length}
         </span>
-        <button
-          type="button"
-          className="ml-auto text-muted-foreground hover:text-foreground"
-        >
-          <Plus className="h-4 w-4" />
-        </button>
+        <KanbanPlusButton />
       </div>
       {tasks.map((t) => (
         <KanbanCard key={t.id} task={t} />
       ))}
-      <button
-        type="button"
-        className="font-mono rounded-xl border border-dashed border-border px-4 py-2 text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground hover:bg-secondary/40"
-      >
-        + NY
-      </button>
+      <KanbanNyButton />
     </div>
   );
 }
@@ -510,9 +499,7 @@ function EmptyTasks() {
             oppgave manuelt.
           </p>
         </div>
-        <button type="button" className={agBtnClass("primary", "sm")}>
-          <Plus className="h-3.5 w-3.5" strokeWidth={2} /> Ny oppgave
-        </button>
+        <NyOppgaveButtonSm />
       </div>
     </div>
   );

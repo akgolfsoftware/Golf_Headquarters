@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useToast } from "@/components/shared/toast-provider";
 import { Target, Users, Trophy, UserPlus, Search, CalendarDays, ChevronDown, ChevronUp } from "lucide-react";
 
 type Comp = "hcp" | "age" | "top" | "friend";
@@ -34,6 +35,7 @@ const KPI_ROWS: KpiRow[] = [
 ];
 
 export function SammenlignClient({ userName }: { userName: string }) {
+  const toast = useToast();
   const [comp, setComp] = useState<Comp>("top");
 
   return (
@@ -74,7 +76,8 @@ export function SammenlignClient({ userName }: { userName: string }) {
           />
           <input
             type="search"
-            placeholder="Søk i venner og klubbmedlemmer …"
+            readOnly
+            placeholder="Spillersøk kommer snart …"
             className="w-full rounded-md border border-border bg-card py-2.5 pl-10 pr-4 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-primary"
           />
         </div>
@@ -220,7 +223,11 @@ export function SammenlignClient({ userName }: { userName: string }) {
         Viser data fra{" "}
         <strong className="text-foreground">siste 90 dager</strong> · 23 av dine
         runder · 42 spillere i benchmark{" "}
-        <button className="ml-2 text-primary underline">
+        <button
+          type="button"
+          onClick={() => toast.info("Datofilter kommer snart")}
+          className="ml-2 text-primary underline"
+        >
           Vis bare siste 30 dager
         </button>
       </div>

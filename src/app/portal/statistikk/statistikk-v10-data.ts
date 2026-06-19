@@ -69,7 +69,7 @@ export function mapStatistikkData(runder: RundeForStats[]): StatistikkData {
     aktivTab: "oversikt",
     metrikker,
     hrefs: {
-      loggRunde: "/portal/mal/runder/ny",
+      loggRunde: "/portal/analysere",
       metrikk: (id) => `/portal/statistikk/${id}`,
     },
   };

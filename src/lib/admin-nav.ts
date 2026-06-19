@@ -187,7 +187,7 @@ export function buildAdminNav(workbenchHref: string): NavSection[] {
           children: [
             { key: "calendar", label: "Kalender", href: "/admin/kalender" },
             { key: "bookings", label: "Bookinger", href: "/admin/bookinger", badge: "bookings" },
-            { key: "facilities", label: "Anlegg", href: "/admin/anlegg" },
+            { key: "facilities", label: "Anlegg", href: "/admin/locations" },
             { key: "availability", label: "Tilgjengelighet", href: "/admin/availability" },
             { key: "services", label: "Tjenester", href: "/admin/services" },
             { key: "trackman", label: "TrackMan", href: "/admin/trackman" },

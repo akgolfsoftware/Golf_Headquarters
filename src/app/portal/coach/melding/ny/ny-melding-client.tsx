@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/components/shared/toast-provider";
 import {
   Bold,
   Check,
@@ -33,6 +35,8 @@ const SNIPPETS = [
 ];
 
 export function NyMeldingClient({ mottakere }: { mottakere: Mottaker[] }) {
+  const router = useRouter();
+  const toast = useToast();
   const [recipientId, setRecipientId] = useState(mottakere[0]?.id ?? "");
   const [subject, setSubject] = useState("Spørsmål om gårsdagens videoanalyse");
   const [body, setBody] = useState(
@@ -201,6 +205,7 @@ export function NyMeldingClient({ mottakere }: { mottakere: Mottaker[] }) {
           <div className="flex gap-2">
             <button
               type="button"
+              onClick={() => toast.info("Galleri-opplasting kommer snart")}
               className="inline-flex items-center gap-1.5 rounded-full border border-border bg-transparent px-4 py-1.5 text-[12px] font-semibold text-foreground hover:border-primary"
             >
               <ImageIcon className="h-3.5 w-3.5" strokeWidth={1.75} />
@@ -208,6 +213,7 @@ export function NyMeldingClient({ mottakere }: { mottakere: Mottaker[] }) {
             </button>
             <button
               type="button"
+              onClick={() => toast.info("Filopplasting kommer snart")}
               className="rounded-full bg-primary px-4 py-1.5 text-[12px] font-bold text-primary-foreground hover:opacity-90"
             >
               Velg filer
@@ -270,12 +276,14 @@ export function NyMeldingClient({ mottakere }: { mottakere: Mottaker[] }) {
           <div className="ml-auto flex gap-2">
             <button
               type="button"
+              onClick={() => router.push("/portal/coach/melding")}
               className="rounded-full border-0 bg-transparent px-4 py-2 text-[13px] font-semibold text-muted-foreground hover:text-foreground"
             >
               Avbryt
             </button>
             <button
               type="button"
+              onClick={() => toast.info("Forhåndsvisning kommer snart")}
               className="rounded-full border border-border bg-transparent px-4 py-2 text-[13px] font-semibold text-foreground hover:border-primary"
             >
               Forhåndsvis

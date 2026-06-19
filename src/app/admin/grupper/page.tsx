@@ -12,11 +12,12 @@
  */
 
 import Link from "next/link";
-import { Plus, Users } from "lucide-react";
+import { Users } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { AgChip, AgPage, AgPageHead, agBtnClass } from "@/components/admin/agencyos/ui";
+import { NyGruppeButton } from "./grupper-actions";
 
 export const dynamic = "force-dynamic";
 
@@ -76,11 +77,7 @@ export default async function GrupperPage() {
         title={tittel}
         italic="grupper."
         lead="Treningsgrupper på tvers av klubbene dine. Klikk for å se medlemmer og lag-snitt."
-        actions={
-          <Link href="/admin/grupper" className={agBtnClass("primary")}>
-            <Plus size={16} strokeWidth={1.5} /> Ny gruppe
-          </Link>
-        }
+        actions={<NyGruppeButton className={agBtnClass("primary")} />}
       />
 
       <div className="grid gap-3 md:grid-cols-2">

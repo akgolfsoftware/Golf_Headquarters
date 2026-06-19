@@ -184,7 +184,7 @@ export default async function StatistikkDashboard() {
       {
         label: "SG-hub",
         sub: "9 undersider",
-        href: "/portal/mal/sg-hub",
+        href: "/portal/analysere",
         icon: BarChart2,
       },
       {
@@ -208,7 +208,7 @@ export default async function StatistikkDashboard() {
       {
         label: "Baner",
         sub: "Banehistorikk",
-        href: "/portal/mal/baner",
+        href: "/portal/analysere",
         icon: MapPin,
       },
       {

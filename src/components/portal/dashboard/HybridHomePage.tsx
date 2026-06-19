@@ -16,9 +16,7 @@
  * Knapper koblet til riktige ruter (ingen døde lenker):
  *   - "Start økt" / "Fortsett økt" → /portal/gjennomfore/[id]
  *   - "Se plan" → /portal/planlegge
- *   - "Logg runde" → /portal/mal/runder/ny
- *   - "Alle mål" → /portal/mal
- *   - "Nytt mål" → /portal/mal/bygger
+ *   - "Logg runde" → toast.info("Logg runde kommer snart")
  *   - "Se turnering" → tournament.href (settes av server-action)
  *   - Coach-notat lenke → /portal/coach/melding/[id]
  */
@@ -32,6 +30,7 @@ import {
   MessageSquare,
   ChevronRight,
 } from "lucide-react";
+import { useToast } from "@/components/shared/toast-provider";
 import { cn } from "@/lib/utils";
 import type { DashboardData, TodaySession } from "@/app/portal/actions";
 
@@ -233,6 +232,7 @@ function TodayFeaturedCard({ session }: { session: TodaySession }) {
 // ── Empty today state ─────────────────────────────────────────────
 
 function NoSessionCard() {
+  const toast = useToast();
   return (
     <div
       className="relative overflow-hidden rounded-[20px] p-5 text-white shadow-[0_14px_40px_-12px_rgba(0,88,64,0.45)]"
@@ -258,12 +258,14 @@ function NoSessionCard() {
               <ArrowRight size={13} aria-hidden />
             </button>
           </Link>
-          <Link href="/portal/mal/runder/ny">
-            <button className="flex items-center gap-2 bg-white/15 text-white border border-white/25 rounded-full px-5 py-2.5 font-mono text-[11px] font-bold tracking-[0.08em] uppercase cursor-pointer">
-              <Flag size={13} aria-hidden />
-              Logg runde
-            </button>
-          </Link>
+          <button
+            type="button"
+            onClick={() => toast.info("Logg runde kommer snart")}
+            className="flex items-center gap-2 bg-white/15 text-white border border-white/25 rounded-full px-5 py-2.5 font-mono text-[11px] font-bold tracking-[0.08em] uppercase cursor-pointer"
+          >
+            <Flag size={13} aria-hidden />
+            Logg runde
+          </button>
         </div>
       </div>
     </div>

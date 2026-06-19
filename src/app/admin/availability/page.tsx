@@ -14,12 +14,13 @@
  */
 
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, RefreshCw } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { AgPage, AgPageHead, agBtnClass } from "@/components/admin/agencyos/ui";
 import { cn } from "@/lib/utils";
+import { SynkButton } from "./availability-actions";
 
 export const dynamic = "force-dynamic";
 
@@ -97,11 +98,7 @@ export default async function AvailabilityPage({
         title="Din måned,"
         italic="åpen for booking."
         lead="Klikk en dato og skriv inn tidsrommet du er tilgjengelig, f.eks. 10:00 – 18:00. Grønne dager er åpne for spiller-booking."
-        actions={
-          <button type="button" className={agBtnClass("ghost")}>
-            <RefreshCw size={16} strokeWidth={1.5} /> Synk
-          </button>
-        }
+        actions={<SynkButton />}
       />
 
       <div className="rounded-xl border border-border bg-card p-[18px]">

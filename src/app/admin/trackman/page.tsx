@@ -7,7 +7,6 @@
  */
 import Link from "next/link";
 import {
-  ChevronDown,
   ChevronRight,
   Radar,
   Search,
@@ -16,6 +15,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { EmptyState } from "@/components/shared/empty-state";
 import { avatarBg } from "@/lib/avatar-colors";
+import { TrackmanFilterChip } from "./trackman-actions";
 
 export const dynamic = "force-dynamic";
 
@@ -121,9 +121,9 @@ export default async function TrackmanPage() {
             aria-label="Søk spiller"
           />
         </div>
-        <FilterChip label="Spiller" />
-        <FilterChip label="Miljø" />
-        <FilterChip label="Kilde" />
+        <TrackmanFilterChip label="Spiller" />
+        <TrackmanFilterChip label="Miljø" />
+        <TrackmanFilterChip label="Kilde" />
         <span className="ml-auto font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
           Sortert · nyeste
         </span>
@@ -214,18 +214,6 @@ export default async function TrackmanPage() {
   );
 }
 
-// ── byggeklosser ─────────────────────────────────────────────────
-function FilterChip({ label }: { label: string }) {
-  return (
-    <button
-      type="button"
-      className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3.5 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground transition-colors hover:border-primary hover:text-primary"
-    >
-      {label}
-      <ChevronDown className="h-3 w-3" strokeWidth={2} aria-hidden />
-    </button>
-  );
-}
 
 function KpiDark({ label, value, foot }: { label: string; value: string; foot: string }) {
   return (

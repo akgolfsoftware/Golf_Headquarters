@@ -23,6 +23,7 @@ import {
   TeamStrip,
   IntStrip,
 } from "@/components/hubs";
+import { InnstillingerButton } from "./organisasjon-actions";
 
 export const dynamic = "force-dynamic";
 
@@ -36,9 +37,7 @@ export default async function OrganisasjonPage() {
         title="Organisasjon"
         sub="Klubb, team, integrasjoner og innstillinger."
         actions={
-          <button className="hub-btn btn-outline" type="button">
-            <Settings size={13} strokeWidth={1.75} aria-hidden /> Innstillinger
-          </button>
+          <InnstillingerButton />
         }
         stats={
           <>

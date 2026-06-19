@@ -15,7 +15,6 @@ import { notFound } from "next/navigation";
 import {
   CalendarClock,
   MapPin,
-  Plus,
   Repeat,
   Trophy,
   Users,
@@ -27,6 +26,13 @@ import { KPICard } from "@/components/ui/kpi-card";
 import { AthleticBadge } from "@/components/athletic/badge";
 import { EmptyState } from "@/components/shared/empty-state";
 import { avatarBg } from "@/lib/avatar-colors";
+import {
+  StartOktButton,
+  LeggTilSpillerButton,
+  SeAlleTimePlanButton,
+  DetaljerButton,
+  AapneButton,
+} from "./gruppe-actions";
 
 const NB_DATE = new Intl.DateTimeFormat("nb-NO", {
   day: "numeric",
@@ -158,19 +164,13 @@ export default async function GruppeDetalj({
       actions={
         <>
           <Link
-            href={`/admin/bookings/ny?groupId=${gruppe.id}`}
+            href={`/admin/bookinger/ny?groupId=${gruppe.id}`}
             className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:border-primary"
           >
             <CalendarClock className="h-3.5 w-3.5" strokeWidth={1.75} />
             Planlegg samling
           </Link>
-          <Link
-            href={`/admin/grupper/${gruppe.id}/rediger`}
-            className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-[13px] font-semibold text-accent transition-opacity hover:opacity-90"
-          >
-            <Plus className="h-3.5 w-3.5" strokeWidth={1.75} />
-            Legg til spiller
-          </Link>
+          <LeggTilSpillerButton />
         </>
       }
       kpiRow={
@@ -210,12 +210,7 @@ export default async function GruppeDetalj({
               Gruppeplan · neste samling
             </span>
           </div>
-          <Link
-            href={`/admin/grupper/${gruppe.id}/kalender`}
-            className="font-mono text-[11px] font-semibold text-primary hover:underline"
-          >
-            Se alle →
-          </Link>
+          <SeAlleTimePlanButton />
         </div>
 
         {nesteSamling ? (
@@ -253,18 +248,8 @@ export default async function GruppeDetalj({
                 )}
               </div>
               <div className="flex gap-2">
-                <Link
-                  href={`/admin/grupper/${gruppe.id}/samling/${nesteSamling.id}`}
-                  className="rounded-md border border-border bg-card px-4 py-1.5 text-xs font-medium text-foreground transition-colors hover:border-primary"
-                >
-                  Detaljer
-                </Link>
-                <button
-                  type="button"
-                  className="rounded-md bg-primary px-4 py-1.5 text-xs font-semibold text-primary-foreground transition-opacity hover:opacity-90"
-                >
-                  Start økt
-                </button>
+                <DetaljerButton />
+                <StartOktButton />
               </div>
             </div>
 
@@ -281,12 +266,7 @@ export default async function GruppeDetalj({
                         {s.location && ` · ${s.location}`}
                       </div>
                     </div>
-                    <Link
-                      href={`/admin/grupper/${gruppe.id}/samling/${s.id}`}
-                      className="font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground hover:text-primary"
-                    >
-                      Åpne →
-                    </Link>
+                    <AapneButton />
                   </li>
                 ))}
               </ul>
@@ -424,7 +404,7 @@ export default async function GruppeDetalj({
           </div>
           <p className="mt-2 text-sm text-muted-foreground">
             Detaljert utvikling per spiller vises i {" "}
-            <Link href={`/admin/grupper/${gruppe.id}/analyse`} className="font-medium text-primary hover:underline">
+            <Link href="/admin/analyse" className="font-medium text-primary hover:underline">
               gruppe-analyse
             </Link>
             .

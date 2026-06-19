@@ -11,7 +11,6 @@ import {
   CreditCard,
   Gauge,
   MapPin,
-  Plus,
   Radio,
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -25,6 +24,7 @@ import {
   WeekStrip,
   CalMini,
 } from "@/components/hubs";
+import { IDagButton, NyBookingButton } from "./gjennomfore-actions";
 
 export const dynamic = "force-dynamic";
 
@@ -40,12 +40,8 @@ export default async function GjennomforePage() {
         sub="Kalender, bookinger, anlegg, tilgjengelighet og live-økter."
         actions={
           <>
-            <button className="hub-btn btn-outline" type="button">
-              <Calendar size={13} strokeWidth={1.75} aria-hidden /> I dag
-            </button>
-            <button className="hub-btn btn-forest" type="button">
-              <Plus size={13} strokeWidth={2} aria-hidden /> Ny booking
-            </button>
+            <IDagButton />
+            <NyBookingButton />
           </>
         }
         stats={
@@ -96,7 +92,7 @@ export default async function GjennomforePage() {
           cta="Behandle →"
         />
         <HubCard
-          href="/admin/anlegg"
+          href="/admin/locations"
           icon={MapPin}
           eyebrow="03 · LOKASJONER"
           title="Anlegg"
@@ -153,6 +149,7 @@ export default async function GjennomforePage() {
           cta="Se live →"
         />
         <HubCard
+          href="/admin/kalender"
           icon={Activity}
           eyebrow="08 · ØYEBLIKK"
           title="Live-økter"

@@ -69,7 +69,7 @@ export function VideoCard({
           </h3>
           <div className="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
             <Link
-              href={`/admin/elever/${playerId}`}
+              href={`/admin/spillere/${playerId}`}
               className="hover:text-primary"
             >
               {playerName}

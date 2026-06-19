@@ -16,7 +16,7 @@
  */
 
 import Link from "next/link";
-import { Globe, RefreshCw } from "lucide-react";
+import { Globe } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import {
@@ -27,9 +27,9 @@ import {
   AgTable,
   AgTd,
   AgTh,
-  agBtnClass,
   agTrClass,
 } from "@/components/admin/agencyos/ui";
+import { SynkNaaButton } from "./wagr-actions";
 
 export const dynamic = "force-dynamic";
 
@@ -92,9 +92,7 @@ export default async function WagrImportPage() {
             {sistSynket ? `Sist synket ${fmtSynket(sistSynket)}` : "Aldri synket"}
           </div>
         </div>
-        <button type="button" className={agBtnClass("primary")}>
-          <RefreshCw size={16} aria-hidden /> Synk nå
-        </button>
+        <SynkNaaButton />
       </div>
       <div className="mb-[14px] mt-7 flex items-center gap-[10px] font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-foreground after:h-px after:flex-1 after:bg-border after:content-['']">
         Matchede spillere <span className="font-bold text-muted-foreground">· {koblede.length}</span>

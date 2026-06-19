@@ -296,7 +296,7 @@ export default async function CoachPlanDetalj({
                     )}
                   </div>
                   <Link
-                    href={`/portal/tren/${d.sessionId}`}
+                    href={`/portal/gjennomfore/${d.sessionId}`}
                     className="shrink-0 rounded-full px-3 py-[6px] font-mono text-[10px] font-bold uppercase tracking-[0.06em] transition hover:brightness-95"
                     style={{ background: "#005840", color: "#D1F843" }}
                   >
@@ -340,7 +340,7 @@ export default async function CoachPlanDetalj({
                   <div className="flex min-w-0 flex-1 items-center gap-1.5">
                     <TypeTag type={s.pyramidArea} />
                     <Link
-                      href={`/portal/tren/${s.id}`}
+                      href={`/portal/gjennomfore/${s.id}`}
                       className="truncate text-[13px] font-medium text-foreground hover:text-primary"
                     >
                       {s.title}

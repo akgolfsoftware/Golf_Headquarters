@@ -86,7 +86,7 @@ export default async function AgentsAdmin() {
           label="Venter på godkjenning"
           value={String(pendingCount)}
           highlight={pendingCount > 0}
-          link="/admin/approvals"
+          link="/admin/godkjenninger"
           linkLabel="Se alle"
         />
       </div>

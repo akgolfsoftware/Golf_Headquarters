@@ -13,13 +13,13 @@ import {
   Calendar,
   Check,
   ChevronRight,
-  Plus,
   type LucideIcon,
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PlayerHero } from "@/components/portal/player-hero";
 import { cn } from "@/lib/utils";
+import { PlanHandlinger } from "./plan-handlinger";
 
 export const dynamic = "force-dynamic";
 
@@ -153,20 +153,7 @@ export default async function TekniskPlanListePage() {
         sub="Strukturerte utviklingsplaner per periodefase, knyttet til P-posisjoner i svingen."
       />
 
-      <div className="flex gap-2">
-        <button
-          type="button"
-          className="inline-flex h-11 items-center gap-1.5 rounded-xl border border-border bg-card px-4 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-foreground transition-colors hover:bg-secondary"
-        >
-          <Calendar className="h-3.5 w-3.5" strokeWidth={2} aria-hidden /> Periodisering
-        </button>
-        <button
-          type="button"
-          className="inline-flex h-11 flex-1 items-center justify-center gap-1.5 rounded-xl bg-primary px-4 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-accent transition-opacity hover:opacity-90"
-        >
-          <Plus className="h-3.5 w-3.5" strokeWidth={2.5} aria-hidden /> Ny plan
-        </button>
-      </div>
+      <PlanHandlinger />
 
       <div className="space-y-7">
         {groups.map((g) => (

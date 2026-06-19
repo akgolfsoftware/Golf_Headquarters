@@ -16,7 +16,6 @@ import Link from "next/link";
 import {
   Banknote,
   CalendarCheck,
-  Plus,
   TrendingUp,
   Trophy,
   User,
@@ -27,6 +26,7 @@ import {
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { AgPage, AgPageHead, agBtnClass } from "@/components/admin/agencyos/ui";
+import { NyRapportButton } from "./reports-actions";
 
 export const dynamic = "force-dynamic";
 
@@ -111,11 +111,7 @@ export default async function RapporterPage() {
         title="Seks"
         italic="rapporter."
         lead="Generer rapporter for spillere, foreldre, klubb eller forbund. Eksport til PDF."
-        actions={
-          <Link href="/admin/reports" className={agBtnClass("primary")}>
-            <Plus size={16} strokeWidth={1.5} /> Ny rapport
-          </Link>
-        }
+        actions={<NyRapportButton className={agBtnClass("primary")} />}
       />
 
       <div className="grid grid-cols-3 gap-3">

@@ -75,10 +75,10 @@ export default async function CoachPlans() {
             icon={ClipboardList}
             titleItalic="Ingen planer"
             titleTrail="fra coach"
-            sub="Egne ad-hoc-økter ligger på /portal/tren. Når coachen lager en plan til deg, dukker den opp her."
+            sub="Når coachen lager en plan til deg, dukker den opp her."
             cta={
               <Link
-                href="/portal/tren"
+                href="/portal/gjennomfore"
                 className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 font-mono text-[12px] font-medium text-foreground transition-colors hover:bg-secondary"
               >
                 Til mine økter

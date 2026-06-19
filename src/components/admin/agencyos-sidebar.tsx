@@ -78,9 +78,8 @@ export function AgencyosSidebar({ counts, sessionsToday, coach, org, workbenchHr
       </div>
 
       {/* Org-velger */}
-      <button
-        type="button"
-        className="mx-3 mb-2 mt-[2px] flex cursor-pointer items-center gap-[9px] rounded-[9px] border border-[var(--color-coach-sidebar-border)] bg-foreground/[0.04] px-[11px] py-[9px] text-left hover:bg-foreground/[0.07]"
+      <div
+        className="mx-3 mb-2 mt-[2px] flex items-center gap-[9px] rounded-[9px] border border-[var(--color-coach-sidebar-border)] bg-foreground/[0.04] px-[11px] py-[9px] text-left"
       >
         <span className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-[7px] bg-accent font-display text-[11px] font-bold text-accent-foreground">
           {org.name.slice(0, 2).toUpperCase()}
@@ -92,7 +91,7 @@ export function AgencyosSidebar({ counts, sessionsToday, coach, org, workbenchHr
           </span>
         </span>
         <ChevronsUpDown className="h-[13px] w-[13px] shrink-0 text-foreground/50" strokeWidth={1.5} />
-      </button>
+      </div>
 
       {/* Nav */}
       <nav aria-label="Hovednavigasjon" className="flex-1 overflow-y-auto px-[10px] pb-[14px] pt-[6px]">

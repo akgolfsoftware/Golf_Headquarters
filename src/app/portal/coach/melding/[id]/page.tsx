@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { ArrowLeft, MoreVertical, Paperclip, Search } from "lucide-react";
+import { ArrowLeft, Paperclip } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { TradUi } from "./trad-ui";
+import { MeldingHeaderKnapper } from "./melding-header-knapper";
 
 type RouteProps = {
   params: Promise<{ id: string }>;
@@ -101,20 +102,7 @@ export default async function MeldingstradPage({ params }: RouteProps) {
           >
             <Paperclip className="h-4 w-4" strokeWidth={1.75} />
           </Link>
-          <button
-            type="button"
-            className="grid h-11 w-11 place-items-center rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground"
-            title="Søk"
-          >
-            <Search className="h-4 w-4" strokeWidth={1.75} />
-          </button>
-          <button
-            type="button"
-            className="grid h-11 w-11 place-items-center rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground"
-            title="Mer"
-          >
-            <MoreVertical className="h-4 w-4" strokeWidth={1.75} />
-          </button>
+          <MeldingHeaderKnapper />
         </div>
       </header>
 

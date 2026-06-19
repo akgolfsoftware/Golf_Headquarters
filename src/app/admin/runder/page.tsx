@@ -7,7 +7,6 @@
  */
 import Link from "next/link";
 import {
-  ChevronDown,
   ChevronRight,
   Flag,
   Search,
@@ -22,6 +21,7 @@ import { Sparkline } from "@/components/athletic";
 import { EmptyState } from "@/components/shared/empty-state";
 import { avatarBg } from "@/lib/avatar-colors";
 import { cn } from "@/lib/utils";
+import { RunderFilterChip } from "./runder-actions";
 
 export const dynamic = "force-dynamic";
 
@@ -147,9 +147,9 @@ export default async function RunderPage() {
             aria-label="Søk spiller eller bane"
           />
         </div>
-        <FilterChip label="Spiller" />
-        <FilterChip label="Bane" />
-        <FilterChip label="Periode" />
+        <RunderFilterChip label="Spiller" />
+        <RunderFilterChip label="Bane" />
+        <RunderFilterChip label="Periode" />
         <span className="ml-auto font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
           Sortert · nyeste
         </span>
@@ -249,18 +249,6 @@ export default async function RunderPage() {
 }
 
 // ── byggeklosser ─────────────────────────────────────────────────
-function FilterChip({ label }: { label: string }) {
-  return (
-    <button
-      type="button"
-      className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3.5 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground transition-colors hover:border-primary hover:text-primary"
-    >
-      {label}
-      <ChevronDown className="h-3 w-3" strokeWidth={2} aria-hidden />
-    </button>
-  );
-}
-
 function KpiDark({ label, value, foot }: { label: string; value: string; foot: string }) {
   return (
     <div className="flex flex-col gap-2 rounded-xl bg-primary px-[18px] py-4 text-primary-foreground">

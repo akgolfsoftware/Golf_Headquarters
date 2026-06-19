@@ -5,11 +5,16 @@
  * samt maler som kan brukes som utgangspunkt.
  */
 import Link from "next/link";
-import { ChevronRight, ClipboardList, Plus, Settings2 } from "lucide-react";
+import { ChevronRight, ClipboardList, Settings2 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 import { EmptyState } from "@/components/shared/empty-state";
+import {
+  NyTekniskPlanMalButton,
+  SeAllePlanMalerLink,
+  BrukMalLink,
+} from "./teknisk-plan-actions";
 
 export const dynamic = "force-dynamic";
 
@@ -55,15 +60,7 @@ export default async function TekniskPlanOversikt() {
         eyebrow="Verktøy"
         titleItalic="Teknisk Plan"
         sub={`${spillere.length} spillere · ${maler.length} maler tilgjengelig`}
-        actions={
-          <Link
-            href="/admin/plans/templates/ny"
-            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
-          >
-            <Plus size={14} strokeWidth={1.5} />
-            Ny teknisk plan-mal
-          </Link>
-        }
+        actions={<NyTekniskPlanMalButton />}
       />
 
       {/* Aktive planer per spiller */}
@@ -187,12 +184,7 @@ export default async function TekniskPlanOversikt() {
           <h2 className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
             Maler · {maler.length}
           </h2>
-          <Link
-            href="/admin/plans/templates"
-            className="font-mono text-[10px] uppercase tracking-[0.10em] text-primary hover:underline"
-          >
-            Se alle plan-maler
-          </Link>
+          <SeAllePlanMalerLink />
         </div>
 
         {maler.length === 0 ? (
@@ -203,13 +195,7 @@ export default async function TekniskPlanOversikt() {
             <p className="text-[13px] text-muted-foreground">
               Ingen plan-maler ennå.
             </p>
-            <Link
-              href="/admin/plans/templates/ny"
-              className="mt-4 inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
-            >
-              <Plus size={14} strokeWidth={1.5} />
-              Ny teknisk plan-mal
-            </Link>
+            <NyTekniskPlanMalButton className="mt-4 inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90" />
           </div>
         ) : (
           <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -234,13 +220,7 @@ export default async function TekniskPlanOversikt() {
                   </div>
                 </div>
                 <div className="mt-4">
-                  <Link
-                    href={`/admin/plans/templates`}
-                    className="inline-flex items-center gap-1 text-[12px] font-medium text-primary hover:underline"
-                  >
-                    Bruk mal
-                    <ChevronRight size={12} strokeWidth={1.5} />
-                  </Link>
+                  <BrukMalLink />
                 </div>
               </li>
             ))}
