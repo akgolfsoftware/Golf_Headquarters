@@ -676,12 +676,12 @@ function EmptyForDiscipline({
       <Link
         href={
           kind === "pyramid"
-            ? "/portal/tren"
-            : "/portal/mal/runder"
+            ? "/portal/gjennomfore"
+            : "/portal/analysere"
         }
         className="mt-6 inline-flex h-11 items-center gap-2 rounded-full bg-primary px-5 font-mono text-xs font-bold uppercase tracking-[0.08em] text-primary-foreground transition-opacity hover:opacity-90"
       >
-        {kind === "pyramid" ? "Til treningsplan" : "Logg runde"}
+        {kind === "pyramid" ? "Til gjennomfør" : "Til analyse"}
         <ArrowRight size={14} strokeWidth={1.75} />
       </Link>
     </div>
