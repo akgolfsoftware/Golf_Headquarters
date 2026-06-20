@@ -94,6 +94,35 @@
   --border: 147 23% 18%;           /* #243A2E — terminal-paletten */
   --input: 147 23% 18%;            /* #243A2E — terminal-paletten */
   --ring: 72 92% 62%;
+
+  /* ---- Terminal mørk stack — AgencyOS (.dark på html) ---- */
+  --t-bg:        #07100C;
+  --t-bg-1:      #0A1410;
+  --t-bg-2:      #0D1A14;
+  --t-bg-3:      #11221A;
+  --t-bg-4:      #16291F;
+  --t-line:      #1C2C23;
+  --t-line-2:    #243A2E;
+  --t-line-soft: rgba(180,225,195,.035);
+  --t-fg:        #EAF2EC;
+  --t-fg-2:      #9DB0A4;
+  --t-fg-3:      #5E726A;
+  --t-fg-4:      #3D4F47;
+  --t-up:        #4FD08A;
+  --t-up-bg:     rgba(79,208,138,.10);
+  --t-down:      #F0683E;
+  --t-down-bg:   rgba(240,104,62,.10);
+  --t-warn:      #E8B43C;
+  --t-info:      #5AA9F0;
+  --lime-bg:     rgba(209,248,67,.10);
+  --lime-bg-2:   rgba(209,248,67,.16);
+  --paper:       var(--t-bg-3);
+  --border-soft: var(--t-line);
+  --ink:         var(--t-fg);
+  --muted-2:     var(--t-fg-3);
+  --forest:      #005840;
+  --forest-deep: #00402F;
+  --lime:        #D1F843;
 }
 
 /* ---------- Tailwind v4 token-mapping ----------
@@ -255,6 +284,36 @@
   --duration-micro: 120ms;
   --duration-short: 200ms;
   --duration-long: 320ms;
+
+  /* ---- Terminal-lys named aliases (ds/tokens.css kanonisk kilde) ----
+   * Disse er hex-aliaser for design-system-komponentene. Shadcn-tokens
+   * over beholdes uendret — ikke overskriv dem.
+   * NB: --muted overlapper med shadcn (bg), bruk --color-ink-muted for muted tekst. */
+  --cream:        #FAFAF7;
+  --cream-2:      #F4F2EB;
+  --sand:         #F1EEE5;
+  --sand-deep:    #E8E4D8;
+  --paper:        #FFFFFF;
+  --border-soft:  #EDEBE4;
+  --ink:          #0A1F17;
+  --muted-2:      #8A877F;
+  --forest:       #005840;
+  --forest-deep:  #00402F;
+  --lime:         #D1F843;
+  --lime-deep:    #B9E022;
+  --lime-dim:     #A9CF2E;
+  --ok:           #1A7D56;
+  --up:           #1A7D56;
+  --warn:         #B8852A;
+  --urgent:       #A32D2D;
+  --down:         #A32D2D;
+  /* Radius */
+  --r-sm: 8px; --r-md: 14px; --r-lg: 20px; --r-xl: 28px; --r-full: 999px;
+  /* Skygger */
+  --sh-sm:     0 1px 2px rgba(10,31,23,.05);
+  --sh-md:     0 4px 16px -4px rgba(10,31,23,.08), 0 1px 3px rgba(10,31,23,.05);
+  --sh-lg:     0 18px 48px -12px rgba(10,31,23,.18);
+  --sh-forest: 0 14px 40px -12px rgba(0,88,64,.45);
 }
 
 /* ---------- Base ----------

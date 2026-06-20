@@ -8,6 +8,7 @@ type AthleticAvatarProps = {
   size?: "sm" | "md" | "lg" | "xl";
   status?: "online" | "offline" | "none";
   borderColor?: "white" | "card";
+  ring?: "lime" | "none";
   className?: string;
 };
 
@@ -25,14 +26,17 @@ export function AthleticAvatar({
   size = "md",
   status = "none",
   borderColor = "white",
+  ring = "none",
   className,
 }: AthleticAvatarProps) {
   const dims = sizeMap[size];
-  return (
+
+  const inner = (
     <span
       className={cn(
         "relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary text-accent",
-        borderColor === "white" ? "border-2 border-background" : "border-2 border-card",
+        ring === "none" && (borderColor === "white" ? "border-2 border-background" : "border-2 border-card"),
+        ring === "lime" && "ring-2 ring-offset-1 ring-[var(--lime)]",
         "shadow-md",
         dims.wrap,
         className,
@@ -65,4 +69,6 @@ export function AthleticAvatar({
       )}
     </span>
   );
+
+  return inner;
 }
