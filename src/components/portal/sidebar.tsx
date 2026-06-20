@@ -29,13 +29,13 @@ type NavItem = {
 // Navigation
 // ---------------------------------------------------------------------------
 
-// PlayerHQ 5-seksjons IA — forenklet meny
-// Plan-IA: Oversikt · Planlegge · Analysere · Coach · Meg
+// PlayerHQ 5-seksjons IA — Hjem · Plan · Gjør · Analyse · Meg
+// Samme fem seksjoner som bunn-nav på mobil.
 const MAIN_ITEMS: NavItem[] = [
-  { href: "/portal", label: "Oversikt" },
+  { href: "/portal", label: "Hjem" },
   {
     href: "/portal/planlegge",
-    label: "Planlegge",
+    label: "Plan",
     matchPrefixes: [
       "/portal/planlegge",
       "/portal/tren",
@@ -43,6 +43,7 @@ const MAIN_ITEMS: NavItem[] = [
       "/portal/mal",
       "/portal/drills",
       "/portal/turneringer",
+      "/portal/coach",
     ],
     children: [
       { href: "/portal/tren/aarsplan", label: "Årsplan" },
@@ -51,14 +52,29 @@ const MAIN_ITEMS: NavItem[] = [
       { href: "/portal/mal", label: "Mål" },
       { href: "/portal/tren/turneringer", label: "Turneringer" },
       { href: "/portal/drills", label: "Drills" },
-      { href: "/portal/trening/logg", label: "Logg treningsøkt" },
-      { href: "/portal/trening/putte-laboratoriet", label: "Putte-laboratoriet" },
-      { href: "/portal/trening/break-tabell", label: "Break-tabell" },
+      { href: "/portal/coach/plans", label: "Coach-planer" },
+      { href: "/portal/coach/melding", label: "Coach-meldinger" },
+    ],
+  },
+  {
+    href: "/portal/gjennomfore",
+    label: "Gjør",
+    matchPrefixes: [
+      "/portal/gjennomfore",
+      "/portal/ny-okt",
+      "/portal/onskeligokt",
+      "/portal/tren/feiring",
+      "/portal/tren/kalender",
+    ],
+    children: [
+      { href: "/portal/ny-okt", label: "Ny økt" },
+      { href: "/portal/gjennomfore", label: "Øktlogg" },
+      { href: "/portal/trening/logg", label: "Treningslogg" },
     ],
   },
   {
     href: "/portal/analysere",
-    label: "Analysere",
+    label: "Analyse",
     matchPrefixes: [
       "/portal/analysere",
       "/portal/innsikt",
@@ -73,16 +89,6 @@ const MAIN_ITEMS: NavItem[] = [
       { href: "/portal/mal/trackman", label: "TrackMan" },
       { href: "/portal/tren/tester", label: "Tester" },
       { href: "/portal/analysere/hull", label: "Innsikt" },
-    ],
-  },
-  {
-    href: "/portal/coach",
-    label: "Coach",
-    matchPrefixes: ["/portal/coach"],
-    children: [
-      { href: "/portal/coach/melding", label: "Meldinger" },
-      { href: "/portal/coach/melding/ny", label: "Ny melding" },
-      { href: "/portal/coach/plans", label: "Planer" },
     ],
   },
   { href: "/portal/meg", label: "Meg", matchPrefixes: ["/portal/meg"] },

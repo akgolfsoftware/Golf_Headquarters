@@ -20,8 +20,8 @@ type NavItemDef = {
 // PlayerHQ 5-seksjons IA — forenklet mobil bottom-nav
 const NAV: ReadonlyArray<NavItemDef> = [
   { href: "/portal", label: "Hjem", icon: Home, exact: true },
-  { href: "/portal/planlegge", label: "Planlegge", icon: CalendarRange, exact: false },
-  { href: "/portal/gjennomfore", label: "Gjennomføre", icon: Dumbbell, exact: false },
+  { href: "/portal/planlegge", label: "Plan", icon: CalendarRange, exact: false },
+  { href: "/portal/gjennomfore", label: "Gjør", icon: Dumbbell, exact: false },
   { href: "/portal/analysere", label: "Analyse", icon: BarChart3, exact: false },
   { href: "/portal/meg", label: "Meg", icon: UserCircle, exact: false },
 ];
