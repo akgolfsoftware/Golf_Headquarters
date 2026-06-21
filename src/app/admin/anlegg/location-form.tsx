@@ -9,7 +9,7 @@ import {
   createFacility,
   updateFacility,
   deleteFacility,
-} from "./actions";
+} from "./location-actions";
 
 type LocationProps = {
   initial?: {

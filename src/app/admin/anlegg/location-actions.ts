@@ -33,7 +33,7 @@ export async function createLocation(input: LocationInput) {
     action: "location.created",
     target: `Location:${ny.id}`,
   });
-  revalidatePath("/admin/locations");
+  revalidatePath("/admin/anlegg");
 }
 
 export async function updateLocation(id: string, input: LocationInput) {
@@ -47,15 +47,15 @@ export async function updateLocation(id: string, input: LocationInput) {
     },
   });
   await audit({ actorId: user.id, action: "location.updated", target: `Location:${id}` });
-  revalidatePath("/admin/locations");
+  revalidatePath("/admin/anlegg");
 }
 
 export async function deleteLocation(id: string) {
   const user = await krevCoach();
   await prisma.location.delete({ where: { id } });
   await audit({ actorId: user.id, action: "location.deleted", target: `Location:${id}` });
-  revalidatePath("/admin/locations");
-  redirect("/admin/locations");
+  revalidatePath("/admin/anlegg");
+  redirect("/admin/anlegg");
 }
 
 export type FacilityInput = {
@@ -80,8 +80,7 @@ export async function createFacility(input: FacilityInput) {
     action: "facility.created",
     target: `Facility:${ny.id}`,
   });
-  revalidatePath("/admin/locations");
-  revalidatePath("/admin/facilities");
+  revalidatePath("/admin/anlegg");
 }
 
 export async function updateFacility(id: string, input: Omit<FacilityInput, "locationId">) {
@@ -95,14 +94,12 @@ export async function updateFacility(id: string, input: Omit<FacilityInput, "loc
     },
   });
   await audit({ actorId: user.id, action: "facility.updated", target: `Facility:${id}` });
-  revalidatePath("/admin/locations");
-  revalidatePath("/admin/facilities");
+  revalidatePath("/admin/anlegg");
 }
 
 export async function deleteFacility(id: string) {
   const user = await krevCoach();
   await prisma.facility.delete({ where: { id } });
   await audit({ actorId: user.id, action: "facility.deleted", target: `Facility:${id}` });
-  revalidatePath("/admin/locations");
-  revalidatePath("/admin/facilities");
+  revalidatePath("/admin/anlegg");
 }

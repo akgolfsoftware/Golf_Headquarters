@@ -26,7 +26,7 @@ import {
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { AgPage, AgPageHead } from "@/components/admin/agencyos/ui";
-import { LocationForm } from "@/app/admin/locations/location-form";
+import { LocationForm } from "./location-form";
 import type { FacilityType } from "@/generated/prisma/client";
 
 export const dynamic = "force-dynamic";
