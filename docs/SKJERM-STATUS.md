@@ -300,7 +300,7 @@
 
 | Rute | Referanse | Bygget | Knapper | 375 | 768 | 1280 | 4-states | DoD |
 |---|---|---|---|---|---|---|---|---|
-| /auth/login | Auth Innlogging | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /auth/login | Auth Innlogging | ✅ | ✅ | ✅ | ⚠ | ⚠ | ~ | ⚠ |
 | /auth/forgot-password | Auth Registrering og passord | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /auth/reset-password | Auth Registrering og passord | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /onboard/spiller | PlayerHQ Onboarding | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |

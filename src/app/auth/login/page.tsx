@@ -2,55 +2,52 @@ import { Suspense } from "react";
 import { LoginForm } from "./login-form";
 
 /**
- * /auth/login — hybrid design (2026-06-17).
- * Fasit: Auth Innlogging (hybrid).dc.html — PlayerHQ-tab.
- * Forest logo-mark (44×44 square + lime flag-icon), sentrert card på cream,
- * heading "Logg inn på PlayerHQ", mono-etiketter, pill CTA + Google-knapp.
- * All form-logikk (Supabase e-post/passord + Google OAuth) er uendret i LoginForm.
+ * /auth/login — terminal-lys-fasit «Auth Innlogging (terminal-lys).dc.html».
+ * Mørk terminal-flate (forest + svakt grid), «ak»-lettermerke i lime, hero
+ * «Tren på det du trenger», skjema rett på flaten (ingen hvitt kort).
+ * `.dark` flipper de semantiske tokenene så LoginForm-inputene blir mørke.
+ * All form-logikk (Supabase e-post/passord + Google OAuth) uendret i LoginForm.
  */
 export default function LoginPage() {
   return (
-    <main className="flex min-h-svh items-start justify-center bg-background px-5 py-8 sm:items-center sm:py-16">
-      <div className="flex w-full max-w-[440px] flex-col items-center gap-6">
-        {/* Logo mark */}
-        <div className="flex h-11 w-11 items-center justify-center rounded-[var(--radius)] bg-primary">
-          <FlagIcon />
+    <main
+      className="dark relative flex min-h-svh items-center justify-center overflow-hidden px-5 py-10"
+      style={{ background: "linear-gradient(160deg, #0A1410, #07100C)" }}
+    >
+      {/* Svakt terminal-grid */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-60"
+        style={{
+          backgroundImage:
+            "linear-gradient(var(--t-line-soft,rgba(180,225,195,.035)) 1px,transparent 1px),linear-gradient(90deg,var(--t-line-soft,rgba(180,225,195,.035)) 1px,transparent 1px)",
+          backgroundSize: "30px 30px",
+        }}
+      />
+      <div className="relative z-10 flex w-full max-w-[400px] flex-col items-center gap-7">
+        {/* «ak»-lettermerke */}
+        <div className="font-display text-[40px] font-bold leading-none tracking-[-0.045em] text-accent">
+          ak
         </div>
 
-        {/* Card */}
-        <div className="w-full rounded-2xl border border-border bg-card px-7 py-8 shadow-lg">
-          <h1 className="mb-1 text-center font-display text-[22px] font-bold leading-tight tracking-[-0.02em] text-foreground">
-            Logg inn på PlayerHQ
+        {/* Hero */}
+        <div className="text-center">
+          <h1 className="font-display text-[26px] font-bold leading-tight tracking-[-0.02em] text-[var(--t-fg,#EAF2EC)]">
+            Tren på det du{" "}
+            <em className="font-medium italic text-accent">trenger</em>
           </h1>
-          <p className="mb-6 text-center text-[13.5px] text-muted-foreground">
-            Din trenings- og utviklingsportal
+          <p className="mt-2 text-[13.5px] text-[var(--t-fg-2,#9DB0A4)]">
+            Strokes gained, plan og coach i samme flate.
           </p>
+        </div>
 
+        {/* Skjema — rett på flaten */}
+        <div className="w-full">
           <Suspense fallback={<div className="h-64" aria-hidden />}>
             <LoginForm />
           </Suspense>
         </div>
       </div>
     </main>
-  );
-}
-
-/** Golf-flagg-ikon fra design-fasiten (lik flag-of-the-hole). */
-function FlagIcon() {
-  return (
-    <svg
-      width="26"
-      height="26"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="var(--color-accent)"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M6 22V4" />
-      <path d="M6 4l11 2.6a1 1 0 0 1 .1 1.9L6 11.5" />
-    </svg>
   );
 }
