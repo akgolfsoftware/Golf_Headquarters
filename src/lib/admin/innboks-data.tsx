@@ -205,8 +205,8 @@ export async function loadInboxScreen(
       },
     ];
 
-    const tierLabel =
-      spiller.tier === "PRO" ? "PRO" : spiller.tier === "ELITE" ? "ELITE" : "GRATIS";
+    // ELITE er dødt enum → vis som PRO (betalt). Kun GRATIS vises som gratis.
+    const tierLabel = spiller.tier === "GRATIS" ? "GRATIS" : "PRO";
     const metaParts = [spiller.homeClub, `${tierLabel}-medlem`].filter(Boolean) as string[];
 
     conversation = {

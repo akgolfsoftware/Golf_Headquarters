@@ -226,7 +226,8 @@ export function AssignPlanToPlayerModal({
       cls: "bg-secondary text-muted-foreground",
     },
     PRO: { label: "PRO", cls: "bg-accent text-accent-foreground" },
-    ELITE: { label: "ELITE", cls: "bg-primary/10 text-primary" },
+    // ELITE er dødt enum (CLAUDE.md: vises aldri) — vis som PRO (betalt tier).
+    ELITE: { label: "PRO", cls: "bg-accent text-accent-foreground" },
   };
 
   return (

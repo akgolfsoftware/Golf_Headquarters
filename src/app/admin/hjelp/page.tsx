@@ -64,14 +64,6 @@ const ARTICLES: ReadonlyArray<HelpArticle> = [
       "Be om bytte fra profilsiden. Nåværende coach får varsel, ny coach matcher etter tilgjengelighet og sertifisering.",
   },
   {
-    id: "pro-vs-elite",
-    title: "Pro vs Elite — hva er forskjellen?",
-    category: "Konto",
-    readMin: 4,
-    snippet:
-      "Pro inkluderer 4 credits/mnd og digital coaching. Elite-tier er pauset — kontakt support for skreddersydd opplegg.",
-  },
-  {
     id: "live-session",
     title: "Slik bruker du Live Session",
     category: "Coaching",

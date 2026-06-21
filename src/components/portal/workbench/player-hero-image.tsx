@@ -87,7 +87,7 @@ export function PlayerHeroImage({
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-center gap-2">
             <span className="rounded-full bg-accent px-4 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-accent-foreground">
-              {user.tier === "PRO" ? "PRO" : user.tier === "ELITE" ? "ELITE" : "GRATIS"}
+              {user.tier === "GRATIS" ? "GRATIS" : "PRO"}
             </span>
             <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-white/70">
               PLAYERHQ · SESONG 2026

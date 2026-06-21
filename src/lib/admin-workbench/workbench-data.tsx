@@ -36,9 +36,8 @@ function calcAge(dob: Date | null): number | null {
 }
 
 function tierLabel(t: string): string {
-  if (t === "PRO") return "PRO";
-  if (t === "ELITE") return "ELITE";
-  return "GRATIS";
+  // ELITE er dødt enum (CLAUDE.md: vises aldri) → vis som PRO (betalt tier).
+  return t === "GRATIS" ? "GRATIS" : "PRO";
 }
 
 function hhmm(d: Date): string {
