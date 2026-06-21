@@ -6,13 +6,6 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { updateSession } from "@/lib/supabase/proxy";
 
-// Permanent redirects fra gamle ruter til ny samle-side /admin/innboks.
-const INNBOKS_REDIRECTS: Record<string, string> = {
-  "/admin/queue": "oppfolging",
-  "/admin/approvals": "godkjennelser",
-  "/admin/messages": "meldinger",
-};
-
 // Stats-sider som fortsatt har hardkodede design-/prototypedata (fabrikkerte
 // spillere). Skjules i PRODUKSJON (redirect → /stats) til de er wired til ekte
 // data. Lokalt/dev forblir de tilgjengelige for utvikling. Ekte sider beholdes:
@@ -74,15 +67,6 @@ function buildCsp(nonce: string): string {
 
 export async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
-
-  // Innboks-redirects trenger ikke CSP (redirect-responses rendrer ingen HTML).
-  const innboksTab = INNBOKS_REDIRECTS[path];
-  if (innboksTab) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/admin/innboks";
-    url.searchParams.set("tab", innboksTab);
-    return NextResponse.redirect(url);
-  }
 
   // Skjul prototype-stats-sider (hardkodede fake-spillere) i PRODUKSJON til de
   // er wired til ekte data. Redirect → /stats. Gjelder også /stats/aargang/<aar>
