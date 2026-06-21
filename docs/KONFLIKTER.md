@@ -62,7 +62,9 @@ Fem ulike flater (ikke ren dublett): `analyse` (Stall-analyse, ekte) · `lag-sni
 - `proxy.ts` (kjører først): `/admin/queue`→`innboks?tab=oppfolging`, `/admin/approvals`→`innboks?tab=godkjennelser`, `/admin/messages`→`innboks?tab=meldinger`.
 - `next.config.ts` (nås aldri): `/admin/approvals`→`godkjenninger`, `/admin/messages`→`innboks`. **Motstridende → de ekte sidene `godkjenninger` + `queue` er uoppnåelige via engelske URL-er** (queue kun nåbar via `admin/oppfolging` som re-eksporterer).
 - Ekte filer: `innboks` (193 l), `godkjenninger`(+[id]), `queue` (492 l), `foresporsler` (kun SessionRequest), `kommunikasjon` (foreldreløs), `handlingssenter` (Notion-kanban, foreldreløs).
-- **Anbefaling:** `handlingssenter` = kanon, REDIRECT de andre dit, og fjern ett av de to redirect-lagene for queue/approvals/messages.
+**✅ REDIRECT-BUG FIKSET (commit 4a0dc736) + KORRIGERT FUNN:** `innboks/page.tsx` leser **ikke `?tab`** — den viser kun meldingstråder. Proxy-redirectene var derfor *aktivt ødelagte*: `/admin/queue` + `/admin/approvals` havnet på meldings-innboksen (oppfølgingskø + 6 «venter på godkjenning»-lenker pekte feil). Fjernet proxy-blokken → `/admin/approvals` → `/admin/godkjenninger` (next.config), `/admin/messages` → `/admin/innboks`, `/admin/queue` når sin ekte 492-l side. Build grønn.
+
+**KORREKSJON av anbefalingen:** `innboks` ER den fungerende samle-flaten (ikke `handlingssenter`, som er en *separat* Notion-oppgave-kanban). I nav er «Innboks» allerede en gruppe (Forespørsler + Godkjenninger + Meldinger). **GJENSTÅR (Fase 4 skjermbygg):** den fulle «Handlingssenter som én skjerm» fra design-fasit `Flyt - AgencyOS Handlingssenter` — der avgjøres `handlingssenter`(Notion) vs `kommunikasjon`(foreldreløs) vs `innboks`. Ikke en rute-fiks.
 
 ## K-19 · Fysisk-trening egne sider → ett Workbench-kort (Høy · Design)
 `portal/tren/fys-plan/page.tsx` + `[planId]/page.tsx` + `actions.ts`. **Anbefaling:** behold serverlogikk/data, fjern egne FYS-nav-punkter, eksponer som ett «generelt»-kort i Workbench (MASTER §5). NB: FYS-formel parkert (K-12).
