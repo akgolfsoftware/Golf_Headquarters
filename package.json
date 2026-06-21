@@ -10,6 +10,7 @@
     "postinstall": "prisma generate",
     "db:seed": "tsx prisma/seed.ts",
     "kart": "tsx scripts/skjerm-kart.ts",
+    "qa:drills": "tsx scripts/drill-qa.ts",
     "design-index": "node scripts/design-index.mjs",
     "e2e": "playwright test",
     "e2e:headed": "playwright test --headed",
