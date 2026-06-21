@@ -17,6 +17,12 @@
 - **Trenger fra deg:** (a) de 11 A–K-grensene, (b) grønt lys til å bygge nivå/neste-nivå-motoren (stort, egen oppgave). Til da kan ikke diagnose-først-skjermen fullføres.
 - **Sannsynlig bredere:** flere PlayerHQ-skjermer (Statistikk, evt. Dashboard-nivåhint, talent) bruker samme nivå-stige → samme blokkering.
 
+### B-2 · Onboarding steg 6 «Her er du nå» blokkert på A–K-nivåsystem
+- **Skjerm:** `/onboard` (Fase 3/5). Fasit: «PlayerHQ Onboarding» — 6-stegs wizard.
+- **Buildbart:** steg 1 (profil: alder/klubb/HCP/snittscore) + steg 2 (mål: Til neste nivå/Lavere HCP/Turneringsklar) er rene skjemaer.
+- **Blokkert:** steg 6 «Klar · Her er du nå» viser nivå-diagnose («snittscore 73-78» + nivå/kohort) — samme A-K-nivåsystem som B-1. Ikke fabrikert.
+- **Verifiseringsgrense:** testspilleren er allerede onboardet → `/onboard` redirecter, så app-shot kan ikke fange wizard-stegene uten en fersk ikke-onboardet bruker. Trenger egen test-bruker for å verifisere onboarding-flyten.
+
 ---
 
 ## DATA-GRENSER (bygd det mulige, utelatt fabrikert data)
