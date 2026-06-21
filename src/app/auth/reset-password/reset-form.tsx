@@ -129,7 +129,7 @@ export function ResetForm() {
       <button
         type="submit"
         disabled={pending}
-        className="mt-1 w-full rounded-full bg-primary py-[13px] font-mono text-[12px] font-bold uppercase tracking-[0.10em] text-accent transition-opacity hover:opacity-90 disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        className="mt-1 w-full rounded-full bg-accent py-[13px] font-mono text-[12px] font-bold uppercase tracking-[0.10em] text-accent-foreground transition-opacity hover:opacity-90 disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       >
         {pending ? "Lagrer..." : "Lagre nytt passord"}
       </button>

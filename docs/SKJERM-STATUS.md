@@ -303,7 +303,7 @@
 | /auth/login | Auth Innlogging | ✅ | ✅ | ✅ | ⚠ | ⚠ | ~ | ⚠ |
 | /auth/signup | Auth Registrering og passord | ✅ | ✅ | ✅ | ⚠ | ⚠ | ~ | ⚠ | mørk port (.dark) ferdig |
 | /auth/forgot-password | Auth Glemt passord | ✅ | ✅ | ✅ | ⚠ | ⚠ | ~ | ⚠ | mørk port (.dark) ferdig |
-| /auth/reset-password | Auth Registrering og passord | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /auth/reset-password | Auth Reset passord | ✅ | ✅ | ✅ | ⚠ | ⚠ | ~ | ⚠ | mørk port (.dark) ferdig |
 | /onboard/spiller | PlayerHQ Onboarding | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
 ---
