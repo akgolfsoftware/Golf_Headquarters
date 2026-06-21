@@ -61,6 +61,15 @@
 
 ---
 
+## AGENCYOS (mørkt, verifisert bygd fra tidligere faser)
+
+### A-1 · AgencyOS-hovedskjermer verifisert — to cockpit-KPI mangler aggregat
+- **Verifisert mørk 1280px som ADMIN (coachtest@akgolf.test):** cockpit `/admin/agencyos`, stall `/admin/stall`, forespørsler `/admin/foresporsler`, gjennomføre `/admin/gjennomfore`, kalender `/admin/kalender`, handlingssenter `/admin/handlingssenter`. Alle bygd, mørke, kalibrert i tidligere faser — matcher fasit + dokumenterte design-porting-gate-unntak (sidebar/fane-rad/innboks-tillegg, Booking-kun-forespørsler, full oppgave-arbeidsverktøy). Markert ✅ i SKJERM-STATUS.
+- **Datagap (ikke fabrikert):** cockpit-KPIene **STALL-SG** og **PLAN-ADHERENCE** viser «—» — stall-bredt SG-snitt + plan-adherence-aggregat er ikke beregnet i datalaget. Fasiten viser «SG-SNITT STALL +0,9». Krever en aggregat-spørring over alle stall-spilleres runder/planer; kan kobles senere uten ny beslutning. Ikke fabrikert et tall.
+- **Gjenstår å verifisere (AgencyOS long-tail):** spiller-detalj `/admin/spillere/[id]`, workbench, tester, runder, økonomi, caddie/agenter, live-økt, innstillinger-undersider, grupper + agencyos-underruter (caddie/live/okonomi/spillere/uka). Tas i påfølgende iterasjoner.
+
+---
+
 ## CONTENT-REVIEW (skjerm bygd & verifisert, men innhold må godkjennes før prod)
 
 ### C-1 · Marketing testimonial-/case-tall må bekreftes ekte før lansering

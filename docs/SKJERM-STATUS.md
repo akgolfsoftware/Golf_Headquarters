@@ -158,7 +158,7 @@
 
 | Rute | Referanse | Bygget | Knapper | 375 | 768 | 1280 | 4-states | DoD |
 |---|---|---|---|---|---|---|---|---|
-| /admin/agencyos | AgencyOS Cockpit | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /admin/agencyos | AgencyOS Cockpit | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd+kalibrert tidligere fase. Verifisert mørk 1280px som ADMIN: ticker + 4 KPI + Dagens timeline + Hvem trenger meg nå + innboks. Bevisste IA-tillegg (sidebar/faner/innboks) per design-porting-gate. Mobil = egen Fase 4 net-new |
 | /admin/agencyos/caddie | AI-Caddie og Agenter | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/agencyos/caddie/aktivitet | AI-Caddie og Agenter | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/agencyos/live | Live-okt coach | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
@@ -174,7 +174,7 @@
 | /admin/spillere/[id]/tester | Spiller-detalj | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/spillere/[id]/tildel-test | Spiller-detalj | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/spillere/ny | Stall v2 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /admin/stall | Stall responsiv | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /admin/stall | Stall responsiv | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd+kalibrert. Verifisert mørk 1280px: spiller-tabell (HCP/SG/status) + filterchips + spiller-panel (360°/SG/adherence/pyramide). Ekte data |
 | /admin/grupper | Stall v2 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/grupper/[id] | Stall v2 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/planlegge | Plans og Maler | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
@@ -197,7 +197,7 @@
 | /admin/tester/benchmarks | Test-bygger | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/tester/foreslatte | Test-bygger | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/tester/tildel/[spillerId] | Test-bygger | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /admin/kalender | Kalender | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /admin/kalender | Kalender | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd+kalibrert. Verifisert mørk 1280px: dag/uke/mnd-toggles + agenda-liste + dag-timeline m/ øktblokker. Ekte data |
 | /admin/kalender/maned | Kalender | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/bookinger | Bookinger og kapasitet | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/bookinger/ny | Bookinger og kapasitet | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
@@ -207,7 +207,7 @@
 | /admin/facilities | Bookinger og kapasitet | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/facilities/[id] | Bookinger og kapasitet | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/services | Bookinger og kapasitet | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /admin/gjennomfore | Gjennomfore-hub | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /admin/gjennomfore | Gjennomfore-hub | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd+kalibrert. Verifisert mørk 1280px: «Daglig drift»-hub (Coach-kalender/Bookinger/Anlegg/Tilgjengelighet/Kapasitet/Tjenester/TrackMan/Live-økter). Ekte data |
 | /admin/gjennomfore/okter/[id] | Gjennomfore-hub | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/live/[sessionId]/active | Live-okt coach | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/live/[sessionId]/brief | Live-okt coach | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
@@ -218,10 +218,10 @@
 | /admin/innboks | Flyt - AgencyOS Handlingssenter | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/kommunikasjon | Flyt - AgencyOS Handlingssenter | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/queue | Flyt - AgencyOS Handlingssenter | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /admin/foresporsler | Flyt - AgencyOS Handlingssenter | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /admin/foresporsler | Flyt - AgencyOS Handlingssenter | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd+kalibrert. Verifisert mørk 1280px: forespørsel-liste m/ Godta/Avvis. Kun SessionRequest (Booking-chip) per dokumentert IA-beslutning (melding/råd-union utestår) |
 | /admin/godkjenninger | Flyt - AgencyOS Handlingssenter | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/godkjenninger/[id] | Flyt - AgencyOS Handlingssenter | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /admin/handlingssenter | Flyt - AgencyOS Handlingssenter | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /admin/handlingssenter | Flyt - AgencyOS Handlingssenter | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd+kalibrert. Verifisert mørk 1280px: Kanban/Tabell/Liste-toggles + oppgave-kolonner + oppgave-detalj-panel. Beholder full arbeidsverktøy per gate-regel |
 | /admin/analyse | Analyse-rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/analysere | Analyse-rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/analysere/compliance | Analyse-rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
