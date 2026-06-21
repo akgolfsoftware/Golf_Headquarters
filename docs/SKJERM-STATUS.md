@@ -322,26 +322,26 @@
 
 | Rute | Referanse | Bygget | Knapper | 375 | 768 | 1280 | 4-states | DoD |
 |---|---|---|---|---|---|---|---|---|
-| /(marketing) | Marketing Hjem | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /(marketing)/coaching | Marketing Undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /(marketing) | Marketing Hjem | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Allerede bygd lyst editorial (forrige fase); verifisert desktop+mobil mot fasit-idiom. Korrekt 300 kr/mnd + ekte coacher/lokasjoner |
+| /(marketing)/coaching | Marketing Undersider | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Verifisert desktop+mobil; Performance/Performance Pro = coaching-pakker (låst regel) |
 | /(marketing)/playerhq | Marketing Undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /(marketing)/priser | Marketing Undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /(marketing)/om-oss | Marketing Undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /(marketing)/coacher | Marketing Rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /(marketing)/priser | Marketing Undersider | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Verifisert desktop+mobil; fasit «299/PRO» overstyrt av låst 300 kr/mnd, rikere enn mockup |
+| /(marketing)/om-oss | Marketing Undersider | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Verifisert desktop+mobil |
+| /(marketing)/coacher | Marketing Rester | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Verifisert desktop+mobil; ekte coach Markus Røinås Pedersen bevart (låst regel) |
 | /(marketing)/coacher/[slug] | Marketing Rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /(marketing)/anlegg | Marketing Rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /(marketing)/anlegg/[slug] | Marketing Rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /(marketing)/blogg | Marketing Rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /(marketing)/blogg/[slug] | Marketing Rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /(marketing)/cases | Marketing Rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /(marketing)/faq | Marketing Rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /(marketing)/faq | Marketing Rester | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Verifisert desktop+mobil; gruppert accordion (Coaching/Booking/PlayerHQ/Praktisk) |
 | /(marketing)/jobb | Marketing Rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /(marketing)/junior | Marketing Rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /(marketing)/kontakt | Marketing Rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /(marketing)/junior | Marketing Rester | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Verifisert desktop+mobil; U10/U14/U16/Talent + årshjul |
+| /(marketing)/kontakt | Marketing Rester | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Verifisert desktop+mobil; skjema + åpningstider + anleggskort |
 | /(marketing)/cookies | Marketing Rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /(marketing)/personvern | Marketing Rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /(marketing)/vilkar | Marketing Rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /(marketing)/treningsfilosofi | Marketing Rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /(marketing)/treningsfilosofi | Marketing Rester | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Verifisert desktop+mobil; «Fem områder — samtidig» + data-seksjoner |
 | /(marketing)/turneringer | Marketing Rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /(marketing)/suksess | Marketing Rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
