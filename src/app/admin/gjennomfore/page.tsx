@@ -34,7 +34,7 @@ export default async function GjennomforePage() {
   return (
     <HubFrame>
       <HubHeader
-        eyebrow="COACHHQ · COACH"
+        eyebrow="AGENCYOS · COACH"
         title="Daglig"
         titleItalic="drift"
         sub="Kalender, bookinger, anlegg, tilgjengelighet og live-økter."

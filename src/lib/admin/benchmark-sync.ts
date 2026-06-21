@@ -180,7 +180,7 @@ function statusLine(r: TestSyncResult): string {
     case "applied":
       return `· ${r.label}: oppdatert automatisk${pct}`;
     case "pending":
-      return `· ${r.label}: VENTER GODKJENNING${pct} — godkjenn i CoachHQ → Tester → Fasiter`;
+      return `· ${r.label}: VENTER GODKJENNING${pct} — godkjenn i AgencyOS → Tester → Fasiter`;
     case "skipped":
       return `· ${r.label}: hoppet over — ${r.detail ?? "mangler data"}`;
     case "error":

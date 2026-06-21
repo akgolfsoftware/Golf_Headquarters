@@ -33,7 +33,7 @@ export default async function OrganisasjonPage() {
   return (
     <HubFrame>
       <HubHeader
-        eyebrow="COACHHQ · HEAD COACH"
+        eyebrow="AGENCYOS · HEAD COACH"
         title="Organisasjon"
         sub="Klubb, team, integrasjoner og innstillinger."
         actions={

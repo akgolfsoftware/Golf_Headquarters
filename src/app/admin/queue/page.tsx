@@ -175,7 +175,7 @@ export default async function OppfolgingsKo() {
       {/* Hero */}
       <header className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <AthleticEyebrow>COACHHQ · OPPFØLGINGSKØ</AthleticEyebrow>
+          <AthleticEyebrow>AGENCYOS · OPPFØLGINGSKØ</AthleticEyebrow>
           <h1 className="mt-1.5 font-display text-3xl font-bold leading-tight tracking-tight md:text-[34px]">
             Hvem trenger en{" "}
             <em

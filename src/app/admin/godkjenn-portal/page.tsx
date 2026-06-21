@@ -56,7 +56,7 @@ export default async function GodkjennPortalPage() {
       {/* Header */}
       <header className="space-y-4">
         <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-primary">
-          COACHHQ · KVALITETSSIKRING
+          AGENCYOS · KVALITETSSIKRING
         </p>
         <h1 className="font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl">
           Godkjenn <em className="font-normal italic text-primary">PlayerHQ</em>

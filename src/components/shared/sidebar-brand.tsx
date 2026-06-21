@@ -35,7 +35,7 @@ interface SidebarBrandProps {
 
 const APP_LABEL: Record<SidebarBrandVariant, string> = {
   player: "PLAYERHQ",
-  coach: "COACHHQ",
+  coach: "AGENCYOS",
   parent: "FORELDREPORTAL",
 };
 

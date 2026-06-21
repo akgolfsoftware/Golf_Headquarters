@@ -759,7 +759,7 @@ export function KlubbWizard({
           </h2>
           <p className="ob-ingress">
             Valgfri integrasjoner som gjør hverdagen smidigere. Alle kan settes
-            opp senere fra Coach HQ &rsaquo; Innstillinger &rsaquo; Integrasjoner.
+            opp senere fra AgencyOS &rsaquo; Innstillinger &rsaquo; Integrasjoner.
           </p>
 
           <button
@@ -870,7 +870,7 @@ export function KlubbWizard({
               onClick={fullfor}
               disabled={pending}
             >
-              {pending ? "Lagrer…" : "Fullfør og gå til Coach HQ"}
+              {pending ? "Lagrer…" : "Fullfør og gå til AgencyOS"}
               <Flag size={15} />
             </button>
           </div>

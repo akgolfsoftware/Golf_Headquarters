@@ -33,7 +33,7 @@ export default async function AnalyserePage() {
   return (
     <HubFrame>
       <HubHeader
-        eyebrow="COACHHQ · COACH"
+        eyebrow="AGENCYOS · COACH"
         title="Innsikt over"
         titleItalic="stallen"
         sub="Stall-statistikk, tester, godkjenninger og rapporter."

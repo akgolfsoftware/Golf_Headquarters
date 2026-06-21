@@ -37,7 +37,7 @@ export default async function KommunikasjonPage({ searchParams }: Props) {
           <Mail className="h-6 w-6" strokeWidth={1.75} />
         </span>
         <div>
-          <AthleticEyebrow>COACHHQ · KOMMUNIKASJON</AthleticEyebrow>
+          <AthleticEyebrow>AGENCYOS · KOMMUNIKASJON</AthleticEyebrow>
           <h1 className="font-display text-3xl font-bold leading-tight tracking-tight md:text-4xl">
             Holde{" "}
             <em

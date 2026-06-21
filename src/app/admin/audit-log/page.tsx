@@ -77,7 +77,7 @@ export default async function AuditLogPage() {
       <div className="hub-page">
         <header className="hub-head">
           <div className="hub-head-left">
-            <div className="eyebrow">COACHHQ · SIKKERHET</div>
+            <div className="eyebrow">AGENCYOS · SIKKERHET</div>
             <h1>
               Audit <em>-log</em>
             </h1>

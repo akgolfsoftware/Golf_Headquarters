@@ -184,7 +184,7 @@ export const EVENTS_MORE = 9; // 14 avtaler totalt; 5 vist
 
 const MODULES_RAW: LauncherModule[] = [
   { key: "playerhq", label: "PlayerHQ", icon: "users", app: true, href: "/portal" },
-  { key: "coachhq", label: "CoachHQ", icon: "shield", app: true, href: "/admin" },
+  { key: "coachhq", label: "AgencyOS", icon: "shield", app: true, href: "/admin" },
   { key: "booking", label: "Booking", icon: "clock", app: true, href: "/booking" },
   { key: "marketing", label: "Marketing", icon: "globe", app: true, href: "/" },
   { key: "notion", label: "Notion", icon: "book-open", app: false },

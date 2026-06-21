@@ -585,7 +585,7 @@ export function CoachWizard({
               onClick={fullfor}
               disabled={pending}
             >
-              {pending ? "Lagrer…" : "Fullfør og gå til Coach HQ"}
+              {pending ? "Lagrer…" : "Fullfør og gå til AgencyOS"}
               <Flag size={15} />
             </button>
           </div>

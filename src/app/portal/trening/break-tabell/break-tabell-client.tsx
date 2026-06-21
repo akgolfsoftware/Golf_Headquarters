@@ -69,7 +69,7 @@ function VHead({ num, title, desc }: { num: string; title: string; desc: string 
 function MatriksView() {
   return (
     <section className="mt-14">
-      <VHead num="VARIANT 01" title="Komplett matrise" desc="Hele veggkartet · CoachHQ-referanse. Fyll koder break-mengde." />
+      <VHead num="VARIANT 01" title="Komplett matrise" desc="Hele veggkartet · AgencyOS-referanse. Fyll koder break-mengde." />
       <div className="bg-card border border-border rounded-xl p-6">
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {C.LEN.map((L, li) => (
