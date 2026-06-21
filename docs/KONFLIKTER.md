@@ -50,7 +50,7 @@ Fire ekte ruter: `admin/anlegg`(+[id]), `admin/facilities`(+[id]), `admin/locati
 - `facilities/[id]/page.tsx` (868 l) er **IKKE CRUD** — en read-only uke/måned-kalender på *lokasjons*-nivå bookinger (Booking mangler facilityId, demo-kommentar linje 393) + **hardkodet demo-gruppedata** (WANG/GFGK). Unik kapabilitet (uke/måned-grid) overlapper `/admin/kalender`. **Anbefaling: DROPP (ikke port) — porting ville dratt demo-cruft inn i kanon-flaten.**
 - `facilities/page.tsx` + `facility-quick-add` + `multi-facility-week` = gammel fasilitet-liste; ikke importert utenfor `facilities/`.
 
-**GJENSTÅR (eget steg):** (1) flytt `locations/actions.ts` + `location-form.tsx` → `anlegg/` (oppdater import i anlegg/page:29), (2) bekreft/port fasilitet-add-UI inn i anlegg-flaten, (3) slett `locations/page.tsx` + `facilities/` (page+[id]+helpers). Krever build-verifisert CRUD-bevaring — derfor ikke gjort i samme commit som nav-repek.
+**✅ FERDIG (commit f77438a4):** Flyttet `locations/actions.ts` → `anlegg/location-actions.ts` + `location-form.tsx` → `anlegg/location-form.tsx` (CRUD bevart; LocationForm gir fasilitet-add i anlegg-flaten). Slettet `locations/page.tsx` + hele `facilities/` (liste + [id]-demokalender + helpers). revalidatePath/redirect → `/admin/anlegg`. next.config-redirects beholdt (`/locations`+`/facilities` → `/anlegg`). Build grønn. **K-09 lukket.**
 
 ## K-02 · Plan-maler-dublett (Høy · **Anders**) — se STOPP #3
 `admin/plan-templates/*` (ekte) er kanon. `admin/plans/templates/page.tsx` er redirect-stub, men `plans/templates/[id]/effectiveness|rediger|ny` finnes fortsatt som ekte filer. **REPEK inbound:** `admin/spillere/[id]/effekt-tab.tsx:153`, `plans/[planId]/actions.ts:933`. Flytt/fjern resten.
