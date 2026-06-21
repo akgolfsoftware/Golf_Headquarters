@@ -92,7 +92,7 @@ export default async function GjennomforePage() {
           cta="Behandle →"
         />
         <HubCard
-          href="/admin/locations"
+          href="/admin/anlegg"
           icon={MapPin}
           eyebrow="03 · LOKASJONER"
           title="Anlegg"

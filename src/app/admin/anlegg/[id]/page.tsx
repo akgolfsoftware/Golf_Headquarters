@@ -164,7 +164,7 @@ export default async function AnleggDetailPage({
       }
       actions={
         <Link
-          href={`/admin/bookings/ny?locationId=${location.id}`}
+          href={`/admin/bookinger/ny?locationId=${location.id}`}
           className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-accent hover:brightness-110"
         >
           <Building2 size={14} strokeWidth={1.75} aria-hidden />

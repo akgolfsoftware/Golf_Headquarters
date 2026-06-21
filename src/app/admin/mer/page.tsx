@@ -78,7 +78,7 @@ const SEKSJONER: MerSeksjon[] = [
       { href: "/admin/drills", label: "Drill-bibliotek", icon: Dumbbell },
       { href: "/admin/tournaments", label: "Turneringer", icon: Trophy },
       { href: "/admin/bookinger", label: "Bookinger", icon: CalendarClock },
-      { href: "/admin/locations", label: "Anlegg", icon: MapPin },
+      { href: "/admin/anlegg", label: "Anlegg", icon: MapPin },
       { href: "/admin/availability", label: "Tilgjengelighet", icon: Clock },
       { href: "/admin/services", label: "Tjenester", icon: Briefcase },
     ],
