@@ -1,13 +1,11 @@
-import Link from "next/link";
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 import { SignupForm } from "./signup-form";
 
 /**
- * /auth/signup — portet mot fersk Claude Design-fasit (ph-auth.jsx · ASignup).
- * Skall: sentrert kolonne (max-w 396px) rett på cream-bakgrunn, sentrert
- * ak-logo øverst + venstrestilt eyebrow/tittel/lead — som fasiten.
- * All registreringslogikk bevart uendret i SignupForm.
- * ?epost=… prefiller e-postfeltet (gjeste-bro fra booking-kvittering).
+ * /auth/signup — terminal-lys-fasit «Auth Registrering og passord (terminal-lys).dc.html».
+ * Mørk terminal-flate (forest + svakt grid), «ak»-lettermerke i lime, hero
+ * «Lag konto» + «Start gratis. Ingen binding.», skjema rett på flaten.
+ * `.dark` flipper de semantiske tokenene → mørke inputs. Registreringslogikk
+ * uendret i SignupForm. ?epost=… prefiller e-postfeltet (gjeste-bro fra booking).
  */
 export default async function SignupPage({
   searchParams,
@@ -16,35 +14,40 @@ export default async function SignupPage({
 }) {
   const { epost } = await searchParams;
   return (
-    <main className="flex min-h-svh items-start justify-center bg-background px-6 py-10 sm:items-center sm:py-16">
-      <div className="flex w-full max-w-[396px] flex-col">
-        <div className="mb-6 flex justify-center">
-          <Link
-            href="/"
-            aria-label="AK Golf — hjem"
-            className="inline-flex rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-          >
-            <span
-              aria-hidden
-              className="grid h-12 w-12 place-items-center rounded-xl bg-accent font-display text-xl font-extrabold leading-none text-foreground"
-            >
-              ak
-            </span>
-          </Link>
+    <main
+      className="dark relative flex min-h-svh items-center justify-center overflow-hidden px-5 py-10"
+      style={{ background: "linear-gradient(160deg, #0A1410, #07100C)" }}
+    >
+      {/* Svakt terminal-grid */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-60"
+        style={{
+          backgroundImage:
+            "linear-gradient(var(--t-line-soft,rgba(180,225,195,.035)) 1px,transparent 1px),linear-gradient(90deg,var(--t-line-soft,rgba(180,225,195,.035)) 1px,transparent 1px)",
+          backgroundSize: "30px 30px",
+        }}
+      />
+      <div className="relative z-10 flex w-full max-w-[400px] flex-col items-center gap-7">
+        {/* «ak»-lettermerke */}
+        <div className="font-display text-[40px] font-bold leading-none tracking-[-0.045em] text-accent">
+          ak
         </div>
 
-        <div className="mb-6">
-          <AthleticEyebrow>NY KONTO</AthleticEyebrow>
-          <h1 className="mt-2 font-display text-3xl font-bold leading-[1.05] tracking-[-0.025em] text-balance text-foreground">
-            Bli med i{" "}
-            <em className="font-normal italic text-primary">stallen.</em>
+        {/* Hero */}
+        <div className="text-center">
+          <h1 className="font-display text-[26px] font-bold leading-tight tracking-[-0.02em] text-[var(--t-fg,#EAF2EC)]">
+            Lag konto
           </h1>
-          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-            Opprett spillerkonto. Coachen din kobler deg til en plan etterpå.
+          <p className="mt-2 text-[13.5px] text-[var(--t-fg-2,#9DB0A4)]">
+            Start gratis. Ingen binding.
           </p>
         </div>
 
-        <SignupForm defaultEmail={epost} />
+        {/* Skjema — rett på flaten */}
+        <div className="w-full">
+          <SignupForm defaultEmail={epost} />
+        </div>
       </div>
     </main>
   );

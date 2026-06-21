@@ -36,8 +36,8 @@ export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 const variantClasses: Record<ButtonVariant, string> = {
-  lime: "bg-accent text-primary shadow-[0_6px_14px_var(--color-accent-fill)] hover:brightness-105",
-  primary: "bg-primary text-accent hover:bg-primary/90",
+  lime: "bg-accent text-accent-foreground shadow-[0_6px_14px_var(--color-accent-fill)] hover:brightness-105",
+  primary: "bg-primary text-primary-foreground hover:bg-primary/90",
   secondary:
     "bg-transparent border border-primary text-primary hover:bg-primary/5",
   "ghost-light": "bg-transparent text-foreground hover:bg-muted",
