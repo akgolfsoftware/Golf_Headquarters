@@ -40,8 +40,17 @@ Bekreftet baneguide som skal bort i V1 (MASTER §5):
 - Ekte: `admin/kalender/` (uke) + `kalender/maned/` + `kalender/uke/` (redirect). Stubs `admin/calendar/*` redirecter allerede.
 - **REPEK:** `src/components/admin/calendar-view-toggle.tsx:12` og `admin/kalender/kalender.tsx:204` lenker «Måned» → `/admin/calendar/maned` (ekstra hopp). Repek → `/admin/kalender/maned`, så kan `admin/calendar/*`-stubbene fjernes.
 
-## K-09 · Anlegg-dublett — MOTSTRID (Høy · **Anders**) — se STOPP #1
-Fire ekte ruter: `admin/anlegg`(+[id]), `admin/facilities`(+[id], 868 l!), `admin/locations` (319 l), `admin/services` (egen ting, behold). `next.config.ts:55-57` → alt til `/admin/anlegg`; men `admin-nav.ts:190`, `gjennomfore:95`, `mer:81`, `facilities:209`, `api/admin/search/route.ts:66` → `/admin/locations` (dobbel-hopp). **`facilities/[id]` blir uoppnåelig.** REPEK nav til valgt kanon + port `facilities/[id]`-funksjon før sletting.
+## K-09 · Anlegg-dublett (Høy · **Anders** → /admin/anlegg)
+Fire ekte ruter: `admin/anlegg`(+[id]), `admin/facilities`(+[id]), `admin/locations`, `admin/services` (egen ting, behold).
+
+**✅ GJORT (commit 824b990c):** Nav repeket til `/admin/anlegg` (admin-nav:190, gjennomfore:95, mer:81, search:66-67 → én Anlegg-rad). Typo `/admin/bookings`→`/admin/bookinger` i anlegg/[id] (K-20). next.config redirecter allerede `/locations`+`/facilities` → `/anlegg` — dobbel-hopp borte.
+
+**KORRIGERT FUNN (motsier «868 l mest komplette CRUD»):**
+- Ekte **Facility-CRUD** (`createFacility`/`updateFacility`/`deleteFacility`) + Location-CRUD bor i **`locations/actions.ts` + `locations/location-form.tsx`** — DELT infrastruktur brukt av anlegg/page (LocationForm) + facilities/page. **Kan IKKE slettes** — må flyttes.
+- `facilities/[id]/page.tsx` (868 l) er **IKKE CRUD** — en read-only uke/måned-kalender på *lokasjons*-nivå bookinger (Booking mangler facilityId, demo-kommentar linje 393) + **hardkodet demo-gruppedata** (WANG/GFGK). Unik kapabilitet (uke/måned-grid) overlapper `/admin/kalender`. **Anbefaling: DROPP (ikke port) — porting ville dratt demo-cruft inn i kanon-flaten.**
+- `facilities/page.tsx` + `facility-quick-add` + `multi-facility-week` = gammel fasilitet-liste; ikke importert utenfor `facilities/`.
+
+**GJENSTÅR (eget steg):** (1) flytt `locations/actions.ts` + `location-form.tsx` → `anlegg/` (oppdater import i anlegg/page:29), (2) bekreft/port fasilitet-add-UI inn i anlegg-flaten, (3) slett `locations/page.tsx` + `facilities/` (page+[id]+helpers). Krever build-verifisert CRUD-bevaring — derfor ikke gjort i samme commit som nav-repek.
 
 ## K-02 · Plan-maler-dublett (Høy · **Anders**) — se STOPP #3
 `admin/plan-templates/*` (ekte) er kanon. `admin/plans/templates/page.tsx` er redirect-stub, men `plans/templates/[id]/effectiveness|rediger|ny` finnes fortsatt som ekte filer. **REPEK inbound:** `admin/spillere/[id]/effekt-tab.tsx:153`, `plans/[planId]/actions.ts:933`. Flytt/fjern resten.
