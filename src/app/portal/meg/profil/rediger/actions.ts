@@ -66,7 +66,6 @@ export async function updateProfile(input: UpdateProfileInput): Promise<void> {
 
   if (editingOther) {
     revalidatePath(`/admin/spillere/${target.id}`);
-    revalidatePath(`/admin/elever/${target.id}`);
   } else {
     revalidatePath("/portal/meg");
     revalidatePath("/portal/meg/profil/rediger");

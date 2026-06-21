@@ -177,7 +177,7 @@ export function Conversation({
           <div className="mt-0.5 text-[12px] text-muted-foreground">
             {spillerTier === "PRO" ? "PRO-medlem" : "Gratis-medlem"} ·{" "}
             <a
-              href={`/admin/elever/${spillerId}`}
+              href={`/admin/spillere/${spillerId}`}
               className="text-foreground hover:text-primary"
             >
               Åpne profil

@@ -89,7 +89,7 @@ export async function endreSpillerStatus(
   });
 
   revalidatePath("/admin/board");
-  revalidatePath(`/admin/elever/${userId}`);
+  revalidatePath(`/admin/spillere/${userId}`);
 
   return { ok: true };
 }

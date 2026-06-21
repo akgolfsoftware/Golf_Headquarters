@@ -61,7 +61,7 @@ export function ContextPanel({
           <Stat k="Meldinger i tråd" v={String(meldingerAntall)} />
         </div>
         <Link
-          href={`/admin/elever/${spiller.id}`}
+          href={`/admin/spillere/${spiller.id}`}
           className="mt-4 inline-flex w-full items-center justify-center gap-1.5 rounded-md border border-border bg-card px-4 py-2 text-[12px] font-medium text-foreground transition-colors hover:bg-secondary"
         >
           Åpne profil
@@ -106,7 +106,7 @@ export function ContextPanel({
         </h3>
         <div className="flex flex-col gap-2">
           <Shortcut
-            href={`/admin/elever/${spiller.id}`}
+            href={`/admin/spillere/${spiller.id}`}
             icon={<FileText size={14} strokeWidth={1.5} />}
           >
             Spiller-profil
@@ -118,7 +118,7 @@ export function ContextPanel({
             Book økt
           </Shortcut>
           <Shortcut
-            href={`/admin/elever/${spiller.id}/plan`}
+            href={`/admin/spillere/${spiller.id}/workbench`}
             icon={<ClipboardCheck size={14} strokeWidth={1.5} />}
           >
             Treningsplan

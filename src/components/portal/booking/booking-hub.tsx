@@ -85,7 +85,7 @@ export interface BookingHubProps {
   bookHref?: string;
   /** Rute til full bookingoversikt. Default: /portal/meg/bookinger. */
   allBookingsHref?: string;
-  /** Rute til oppgradering. Default: /portal/abonnement. */
+  /** Rute til oppgradering. Default: /portal/meg/abonnement. */
   upgradeHref?: string;
 }
 
@@ -120,7 +120,7 @@ function formatBookingTime(iso: string): { day: string; time: string } {
 
 const DEFAULT_BOOK_HREF = "/portal/booking/ny";
 const DEFAULT_ALL_HREF = "/portal/meg/bookinger";
-const DEFAULT_UPGRADE_HREF = "/portal/abonnement";
+const DEFAULT_UPGRADE_HREF = "/portal/meg/abonnement";
 
 // ── Eyebrow ───────────────────────────────────────────────────────
 function Eyebrow({ children }: { children: React.ReactNode }) {

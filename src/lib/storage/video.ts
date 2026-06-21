@@ -114,7 +114,7 @@ export async function uploadVideo(formData: FormData): Promise<UploadVideoResult
 
   revalidatePath("/admin/recording");
   revalidatePath("/portal/coach/notes");
-  revalidatePath(`/admin/elever/${player.id}`);
+  revalidatePath(`/admin/spillere/${player.id}`);
 
   return { ok: true, videoId: video.id };
 }
@@ -170,7 +170,7 @@ export async function deleteVideo(videoId: string): Promise<{ ok: true }> {
 
   revalidatePath("/admin/recording");
   revalidatePath("/portal/coach/notes");
-  revalidatePath(`/admin/elever/${video.playerId}`);
+  revalidatePath(`/admin/spillere/${video.playerId}`);
 
   return { ok: true };
 }

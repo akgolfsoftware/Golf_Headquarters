@@ -73,7 +73,7 @@ async function notifyCoachOnBooking(bookingId: string): Promise<void> {
       type: "booking",
       title: "Ny booking bekreftet",
       body: tidStr,
-      link: "/admin/bookings",
+      link: "/admin/bookinger",
     });
   }
 

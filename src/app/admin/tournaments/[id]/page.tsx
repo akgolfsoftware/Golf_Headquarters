@@ -247,7 +247,7 @@ export default async function TurneringDetalj({
                     </span>
                     <div className="min-w-0 flex-1">
                       <Link
-                        href={`/admin/elever/${e.userId}`}
+                        href={`/admin/spillere/${e.userId}`}
                         className="block truncate text-sm font-medium text-foreground hover:text-primary"
                       >
                         {navn}
@@ -258,7 +258,7 @@ export default async function TurneringDetalj({
                     </div>
                     <PriorityPill priority={e.priority} />
                     <Link
-                      href={`/admin/elever/${e.userId}`}
+                      href={`/admin/spillere/${e.userId}`}
                       className="font-mono text-[10px] uppercase tracking-[0.06em] text-primary hover:underline"
                     >
                       Profil →

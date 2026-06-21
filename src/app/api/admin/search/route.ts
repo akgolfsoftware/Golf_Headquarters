@@ -147,7 +147,7 @@ export async function GET(req: Request) {
     name: p.name,
     email: p.email,
     avatarUrl: p.avatarUrl,
-    href: `/admin/elever/${p.id}`,
+    href: `/admin/spillere/${p.id}`,
   }));
 
   const plans: SearchPlan[] = plansRaw.map((p) => ({

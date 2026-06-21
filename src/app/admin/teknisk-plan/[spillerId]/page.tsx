@@ -336,7 +336,7 @@ export default async function TekniskPlanSpiller({
               Se full 360-profil for treningshistorikk, runder og TrackMan-data.
             </p>
             <Link
-              href={`/admin/elever/${spiller.id}?tab=plan`}
+              href={`/admin/spillere/${spiller.id}?tab=plan`}
               className="shrink-0 rounded-md border border-border bg-transparent px-4 py-1.5 text-[12px] font-medium text-foreground transition-colors hover:bg-secondary"
             >
               Åpne 360-profil

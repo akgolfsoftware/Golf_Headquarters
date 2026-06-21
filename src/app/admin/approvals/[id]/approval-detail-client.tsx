@@ -194,7 +194,7 @@ export function ApprovalDetailClient({ detail }: { detail: ApprovalDetail }) {
             Be om mer info
           </button>
           <Link
-            href={`/admin/elever/${detail.player.id}?compose=1`}
+            href={`/admin/spillere/${detail.player.id}?compose=1`}
             className="ml-auto inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
             <MessageCircle size={14} strokeWidth={1.75} />
@@ -209,7 +209,7 @@ export function ApprovalDetailClient({ detail }: { detail: ApprovalDetail }) {
             {STATUS_LABEL[detail.status] ?? detail.status}.
           </span>
           <Link
-            href={`/admin/elever/${detail.player.id}?compose=1`}
+            href={`/admin/spillere/${detail.player.id}?compose=1`}
             className="ml-auto inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
             <MessageCircle size={14} strokeWidth={1.75} />

@@ -34,7 +34,7 @@ export function DagensTimerCard({ timer }: { timer: DagensTime[] }) {
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0 flex-1">
                   <Link
-                    href={`/admin/elever/${t.userId}`}
+                    href={`/admin/spillere/${t.userId}`}
                     className="font-medium text-foreground hover:text-primary active:text-primary/80 focus-visible:underline focus-visible:outline-none"
                   >
                     {t.userName}

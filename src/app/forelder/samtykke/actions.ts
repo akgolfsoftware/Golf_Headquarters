@@ -45,7 +45,7 @@ export async function lagreSamtykker(
   });
 
   revalidatePath("/forelder/samtykke");
-  revalidatePath(`/admin/elever/${childId}`);
+  revalidatePath(`/admin/spillere/${childId}`);
 
   return { ok: true };
 }
