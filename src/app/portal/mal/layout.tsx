@@ -7,7 +7,6 @@ const ITEMS = [
   { href: "/portal/mal/milepaeler", label: "Milepæler" },
   { href: "/portal/mal/trackman", label: "TrackMan" },
   { href: "/portal/mal/sg-hub", label: "SG Hub" },
-  { href: "/portal/mal/baner", label: "Baner" },
   { href: "/portal/mal/leaderboard", label: "Leaderboard" },
 ];
 

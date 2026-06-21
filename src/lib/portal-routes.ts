@@ -35,9 +35,7 @@ export const PORTAL_ROUTES: RouteEntry[] = [
   { route: "/portal/kalender", label: "Kalender", category: "Hovedmeny" },
   { route: "/portal/drills", label: "Drills", category: "Hovedmeny", designPath: "/design-handover/playerhq/drill-bibliotek.html" },
 
-  // Mål-modul
-  { route: "/portal/mal/baner", label: "Baner", category: "Mål" },
-  { route: "/portal/mal/baner/[id]", label: "Bane-detalj", category: "Mål", designPath: "/design-handover/playerhq/bane-detalj.html" },
+  // Mål-modul (baneguide/banekart fjernet i V1 — MASTER §5)
   { route: "/portal/mal/bygger", label: "Mål-bygger", category: "Mål" },
   { route: "/portal/mal/goal/[id]", label: "Mål-detalj", category: "Mål" },
   { route: "/portal/mal/leaderboard", label: "Leaderboard", category: "Mål" },

@@ -200,8 +200,6 @@ export const ALL_ROUTES: AllRouteEntry[] = [
   { route: "/portal/live/[sessionId]/summary", label: "Summary", category: "PlayerHQ", filePath: "src/app/portal/(fullscreen)/live/[sessionId]/summary/page.tsx" },
   { route: "/portal/live/[sessionId]/tapper", label: "Tapper", category: "PlayerHQ", filePath: "src/app/portal/(fullscreen)/live/[sessionId]/tapper/page.tsx" },
   { route: "/portal/mal", label: "Mal", category: "PlayerHQ · Mål", filePath: "src/app/portal/mal/page.tsx" },
-  { route: "/portal/mal/baner", label: "Baner", category: "PlayerHQ · Mål", filePath: "src/app/portal/mal/baner/page.tsx" },
-  { route: "/portal/mal/baner/[id]", label: "baner · detalj", category: "PlayerHQ · Mål", filePath: "src/app/portal/mal/baner/[id]/page.tsx" },
   { route: "/portal/mal/bygger", label: "Bygger", category: "PlayerHQ · Mål", filePath: "src/app/portal/mal/bygger/page.tsx" },
   { route: "/portal/mal/goal/[id]", label: "goal · detalj", category: "PlayerHQ · Mål", filePath: "src/app/portal/mal/goal/[id]/page.tsx" },
   { route: "/portal/mal/leaderboard", label: "Leaderboard", category: "PlayerHQ · Mål", filePath: "src/app/portal/mal/leaderboard/page.tsx" },
