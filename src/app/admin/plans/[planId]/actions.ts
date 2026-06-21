@@ -930,7 +930,7 @@ export async function lagreSomMal(
     },
   });
 
-  revalidatePath("/admin/plans/templates");
+  revalidatePath("/admin/plan-templates");
   return { ok: true, templateId: template.id };
 }
 

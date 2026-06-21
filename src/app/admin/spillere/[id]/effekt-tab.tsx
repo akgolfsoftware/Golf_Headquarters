@@ -150,7 +150,7 @@ function EffektKort({ rad }: { rad: EffektRad }) {
               <>
                 <span aria-hidden>·</span>
                 <Link
-                  href={`/admin/plans/templates/${rad.templateId}/effectiveness`}
+                  href={`/admin/plan-templates/${rad.templateId}/effectiveness`}
                   className="hover:text-foreground hover:underline"
                 >
                   Mal: {rad.templateName}
