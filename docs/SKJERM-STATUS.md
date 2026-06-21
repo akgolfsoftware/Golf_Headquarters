@@ -28,7 +28,7 @@
 | /portal | PlayerHQ Dashboard | ✅ | ✅ | ✅ | ⚠ | ⚠ | ~ | ⚠ |
 | /portal/analysere | PlayerHQ Analyse | 🔨 | ✅ | ~ | ⚠ | ⚠ | ~ | ⚠ |
 | /portal/analysere/hull | Analyse Hull Sammenlign Putting | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /portal/statistikk | Statistikk-SG | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /portal/statistikk | Statistikk-SG | ⚠ | ⚠ | ⚠ | ⚠ | ⚠ | ⚠ | ⚠ | BLOKKERT på A–K-nivåsystem (BYGGELOGG-FLAGG B-1) — diagnose-først krever parkert nivå/neste-nivå-motor |
 | /portal/statistikk/[metric] | Statistikk-SG (metric-variant) | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/statistikk/sammenlign | Statistikk-SG | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/statistikk/runder/[runId]/del | Statistikk-SG | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
