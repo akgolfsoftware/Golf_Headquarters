@@ -67,7 +67,7 @@
 | /portal/tren/fys-plan/[planId] | Teknisk plan | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/tren/teknisk-plan | Teknisk plan | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/tren/teknisk-plan/[planId] | Teknisk plan | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /portal/gjennomfore | PlayerHQ Gjennomføre | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /portal/gjennomfore | PlayerHQ Gjennomføre | 🔨 | ✅ | ~ | ⚠ | ⚠ | ~ | ⚠ | hub allerede ren terminal-lys; «Gjennomføre»-fasit = live-drill (Spor A/B, K-05) = egen skjerm i live-cluster |
 | /portal/gjennomfore/[id] | PlayerHQ Gjennomføre | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/tren/[sessionId]/planlagt | Start-okt L-faser | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/(fullscreen-test)/tren/tester/[testId]/gjennomfor | Start-okt L-faser | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
