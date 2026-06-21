@@ -45,6 +45,17 @@
 
 ---
 
+## FORELDER (verifisering opplåst — re-port pågår)
+
+### F-1 · Test-forelder-konto opprettet → forelder-klyngen kan verifiseres
+- **Problem:** Foreldreportalen (`/forelder/*`, PARENT-auth-guard) kunne ikke app-shottes — DB hadde 0 PARENT-brukere, og å seede falsk forelder-data ville brutt «aldri fabrikér».
+- **Løsning (ikke fabrikering):** `scripts/seed-screentest-parent.ts` lager en test-FORELDER (`screentest-parent@akgolf.test` / `Screentest123!`, «Kari Rohjan») + `parent_relations`-kobling til den eksisterende test-spilleren (Øyvind Rohjan). Forelderen ser spillerens EKTE data via koblingen — kun selve test-kontoen opprettes, samme prinsipp som screentest-spilleren.
+- **App-shot:** `SHOT_EMAIL=screentest-parent@akgolf.test SHOT_PASSWORD='Screentest123!' node scripts/app-shot.mjs mobil "forelder:/forelder" /tmp/akhq-forelder`.
+- **Funn 1 (re-port nødvendig):** Dagens `/forelder` er det GAMLE hybrid-designet (spiller-stil hero «God morgen Øyvind» + «denne ukens fokus»-kort + KPI-strip). Den nye fasiten «Forelderportal (terminal-lys)» er omstrukturert read-only: (a) **samtykke-status-kort øverst** (prominent GDPR, ikke en note nederst), (b) **narrativ ukerapport** («trente 5 av 5 planlagte økter denne uka, jobbet mest med nærspill…») + 3 KPI (oppmøte/SG-trend/streak), (c) **8-ukers fremgang-søylediagram** (mangler i dag). Re-port krever datalag-utvidelse i `src/lib/forelder.ts`: ukentlig SG-aggregat (fra spillerens ekte runder) + planlagt-vs-fullført-økter for narrativen. Ingen fabrikering — alt avledes fra ekte data.
+- **Funn 2 (rolle-redirect, lavt):** Innlogging som PARENT redirecter til `/portal` (ikke `/forelder`) — auth-guarden slipper likevel PARENT inn på `/forelder/*` ved direkte navigasjon. Verdt å rette post-login-redirect til rolle-riktig landing før go-live (ikke en blokker for skjermbygg).
+
+---
+
 ## CONTENT-REVIEW (skjerm bygd & verifisert, men innhold må godkjennes før prod)
 
 ### C-1 · Marketing testimonial-/case-tall må bekreftes ekte før lansering

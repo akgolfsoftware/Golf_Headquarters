@@ -287,12 +287,13 @@
 
 | Rute | Referanse | Bygget | Knapper | 375 | 768 | 1280 | 4-states | DoD |
 |---|---|---|---|---|---|---|---|---|
-| /forelder | Forelderportal | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /forelder/barn/[childId] | Forelderportal | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /forelder/bookinger | Forelderportal | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /forelder/fakturaer | Forelderportal | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /forelder/samtykke | Forelderportal | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /forelder/ukerapport | Forelderportal | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /forelder | Forelderportal | ✅ | ✅ | 🔨 | ❌ | ❌ | ~ | 🔨 | Bygd (gammelt hybrid-design, ekte data). Verifisering OPPLÅST via test-forelder (scripts/seed-screentest-parent.ts). Terminal-lys re-port gjenstår: lede med samtykke-status + narrativ ukerapport + 8-ukers SG-chart (fasit «Forelderportal (terminal-lys)») |
+| /forelder/barn/[childId] | Forelderportal | ✅ | ✅ | 🔨 | ❌ | ❌ | ~ | 🔨 | Bygd; terminal-lys re-port gjenstår |
+| /forelder/bookinger | Forelderportal | ✅ | ✅ | 🔨 | ❌ | ❌ | ~ | 🔨 | Bygd; terminal-lys re-port gjenstår |
+| /forelder/fakturaer | Forelderportal | ✅ | ✅ | 🔨 | ❌ | ❌ | ~ | 🔨 | Bygd (= fasit «Betaling»); terminal-lys re-port gjenstår |
+| /forelder/samtykke | Forelderportal | ✅ | ✅ | 🔨 | ❌ | ❌ | ~ | 🔨 | Bygd (GDPR-samtykke); terminal-lys re-port gjenstår |
+| /forelder/ukerapport | Forelderportal | ✅ | ✅ | 🔨 | ❌ | ❌ | ~ | 🔨 | Bygd (= fasit «Ukerapport/rapport[id]»); terminal-lys re-port gjenstår |
+| /forelder/okonomi · /coach · /varsler · /innstillinger | Forelderportal | ✅ | ✅ | 🔨 | ❌ | ❌ | ~ | 🔨 | Øvrige 4 ruter bygd; terminal-lys re-port gjenstår (manglet i tabellen) |
 
 ---
 
