@@ -26,7 +26,7 @@
 | Rute | Referanse | Bygget | Knapper | 375 | 768 | 1280 | 4-states | DoD |
 |---|---|---|---|---|---|---|---|---|
 | /portal | PlayerHQ Dashboard | ✅ | ✅ | ✅ | ⚠ | ⚠ | ~ | ⚠ |
-| /portal/analysere | PlayerHQ Analyse | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /portal/analysere | PlayerHQ Analyse | 🔨 | ✅ | ~ | ⚠ | ⚠ | ~ | ⚠ |
 | /portal/analysere/hull | Analyse Hull Sammenlign Putting | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/statistikk | Statistikk-SG | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/statistikk/[metric] | Statistikk-SG (metric-variant) | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |

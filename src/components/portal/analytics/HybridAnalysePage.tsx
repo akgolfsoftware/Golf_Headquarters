@@ -107,22 +107,18 @@ function TabBar({
 
 // ── SG hero card ─────────────────────────────────────────────────────
 
-function SgHeroCard({
+// Kombinert mørk modul (fasit "SG PER KATEGORI"): stort SG-tall + 4 kategori-barer.
+function SgCategoryModule({
   sgTotal,
   roundCount,
+  rows,
 }: {
   sgTotal: number | null;
   roundCount: number;
+  rows: SgRowData[];
 }) {
   const positive = (sgTotal ?? 0) >= 0;
-  const label =
-    roundCount > 0
-      ? `SG TOTALT · SISTE ${roundCount} RUNDER`
-      : "SG TOTALT · INGEN DATA";
-  const valStr =
-    sgTotal != null
-      ? (sgTotal >= 0 ? "+" : "") + fmtNb(sgTotal)
-      : "–";
+  const valStr = sgTotal != null ? (sgTotal >= 0 ? "+" : "−") + fmtNb(Math.abs(sgTotal)) : "–";
 
   return (
     <div
@@ -135,10 +131,15 @@ function SgHeroCard({
         style={{ background: "radial-gradient(circle, rgba(209,248,67,.20), transparent 68%)" }}
       />
       <div className="relative z-10">
-        <div className="font-mono text-[9px] font-bold tracking-[0.10em] uppercase text-white/60">
-          {label}
+        <div className="mb-3 flex items-start justify-between">
+          <span className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-accent">
+            SG per kategori
+          </span>
+          <span className="font-mono text-[9px] uppercase tracking-[0.1em] text-white/45">
+            {roundCount > 0 ? `Siste ${roundCount} runder` : "Ingen data"}
+          </span>
         </div>
-        <div className="mt-1.5 font-mono text-[46px] font-semibold leading-none tracking-[-0.025em] tabular-nums text-white">
+        <div className="font-mono text-[46px] font-semibold leading-none tracking-[-0.025em] tabular-nums text-white">
           {valStr}
         </div>
         {sgTotal != null && (
@@ -147,6 +148,40 @@ function SgHeroCard({
             {positive ? "Over baseline · A1-benchmark" : "Under baseline · A1-benchmark"}
           </div>
         )}
+        <div className="mt-5 flex flex-col gap-3">
+          {rows.map((r) => {
+            const pos = (r.value ?? 0) >= 0;
+            const pct = r.value != null ? Math.min(50, (Math.abs(r.value) / 1.0) * 50) : 0;
+            const vStr = r.value != null ? (pos ? "+" : "−") + fmtNb(Math.abs(r.value)) : "–";
+            return (
+              <div key={r.key} className="flex items-center gap-3">
+                <span className="w-28 flex-none font-mono text-[11px] text-white/85">{r.name}</span>
+                <div className="relative h-2 flex-1 rounded-full bg-white/[0.08]">
+                  <span aria-hidden className="absolute left-1/2 top-0 h-full w-px bg-white/20" />
+                  {r.value != null && (
+                    <span
+                      className="absolute top-0 h-full rounded-full"
+                      style={{
+                        width: `${pct}%`,
+                        ...(pos
+                          ? { left: "50%", background: "linear-gradient(90deg,#005840,var(--lime,#D1F843))" }
+                          : { right: "50%", background: "var(--t-down,#F0683E)" }),
+                      }}
+                    />
+                  )}
+                </div>
+                <span
+                  className={cn(
+                    "w-12 flex-none text-right font-mono text-[12px] font-bold tabular-nums",
+                    r.value == null ? "text-white/40" : pos ? "text-[var(--t-up,#4FD08A)]" : "text-[var(--t-down,#F0683E)]",
+                  )}
+                >
+                  {vStr}
+                </span>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
@@ -159,90 +194,6 @@ type SgRowData = {
   name: string;
   value: number | null;
 };
-
-function SgBreakdownCard({ rows }: { rows: SgRowData[] }) {
-  return (
-    <div className="rounded-[var(--radius)] border border-border bg-card p-5 shadow-[0_1px_2px_rgba(10,31,23,.05)]">
-      <div className="mb-1 flex items-start justify-between">
-        <div className="font-display text-[17px] font-bold tracking-[-0.02em] text-foreground">
-          Sg<em className="font-medium italic text-primary">Breakdown</em>
-        </div>
-        <span className="rounded-[5px] border border-border px-1.5 py-0.5 font-mono text-[10px] font-semibold tracking-[0.04em] text-muted-foreground">
-          SISTE 10 RND
-        </span>
-      </div>
-      <p className="mb-4 text-[12.5px] text-muted-foreground">
-        Grønn = over baseline · rød = under · null-akse midt
-      </p>
-      <div className="flex flex-col gap-3">
-        {rows.map((r) => {
-          const positive = (r.value ?? 0) >= 0;
-          const pct =
-            r.value != null
-              ? Math.min(50, (Math.abs(r.value) / 1.0) * 50)
-              : 0;
-          const valStr =
-            r.value != null
-              ? (positive ? "+" : "") + fmtNb(r.value)
-              : "–";
-
-          return (
-            <div key={r.key}>
-              <div className="mb-1.5 flex items-center justify-between">
-                <span className="flex items-center gap-1.5 text-[12.5px] font-semibold text-foreground">
-                  {r.key}
-                  <span className="text-[11px] font-normal text-muted-foreground">
-                    · {r.name}
-                  </span>
-                </span>
-                <span
-                  className="font-mono text-[12.5px] font-semibold"
-                  style={{
-                    color: r.value == null
-                      ? "var(--color-muted-foreground)"
-                      : positive
-                        ? "hsl(var(--success))"
-                        : "hsl(var(--destructive))",
-                  }}
-                >
-                  {valStr}
-                </span>
-              </div>
-              {/* Symmetric center-axis bar */}
-              <div
-                className="relative h-[11px] overflow-hidden rounded-full border border-border bg-secondary"
-              >
-                {/* Center axis */}
-                <span
-                  aria-hidden
-                  className="absolute bottom-0 top-0 z-10 w-px bg-muted-foreground opacity-35"
-                  style={{ left: "50%" }}
-                />
-                {r.value != null && (
-                  <span
-                    className="absolute top-px bottom-px rounded-full"
-                    style={{
-                      width: `${pct}%`,
-                      ...(positive
-                        ? {
-                            left: "50%",
-                            background: "linear-gradient(90deg, #005840, hsl(var(--success)))",
-                          }
-                        : {
-                            right: "50%",
-                            background: "linear-gradient(90deg, hsl(var(--destructive)), #d98f8f)",
-                          }),
-                    }}
-                  />
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
 
 // ── HCP TrendBand card ───────────────────────────────────────────────
 
@@ -640,11 +591,11 @@ export function HybridAnalysePage({ data }: HybridAnalysePageProps) {
       {/* ── SG tab ── */}
       {tab === "sg" && (
         <div className="flex flex-col gap-3">
-          <SgHeroCard
+          <SgCategoryModule
             sgTotal={data.sgBreakdown.sgTotal}
             roundCount={data.sgBreakdown.roundCount}
+            rows={sgRows}
           />
-          <SgBreakdownCard rows={sgRows} />
           <TrendBandCard rounds={data.rounds.rounds} />
           <AiCaddieCard sgBreakdown={data.sgBreakdown} />
         </div>
