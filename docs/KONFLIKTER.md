@@ -84,6 +84,8 @@ Verifisert nå-status per repek-par:
 
 `src/lib/all-routes.ts` er auto-generert og lister stale `/portal/workbench-v2` (finnes ikke) — regenereres med `scripts/extract-routes.ts`.
 
+**✅ GJORT (commit 6485b5e9):** 18 `/admin/elever`→`/admin/spillere` (alle href + revalidatePath); `/elever/[id]/plan` (404) → `/admin/spillere/[id]/workbench`; stripe-webhook `/admin/bookings`→`/admin/bookinger`; `booking-hub.tsx` `DEFAULT_UPGRADE_HREF /portal/abonnement`→`/portal/meg/abonnement`. **KORREKSJON:** `booking-hub.tsx` er IKKE død — `booking-hub-hybrid` importerer typene (HubBooking/HubCredits/HubCoach). Beholdt (fikset lenken i stedet for å slette). Build grønn. **K-20 lukket.**
+
 ## K-21 · Døde knapper — ~12 toast-stubs gjenstår (Lav · Design)
 Opprydding 18. juni fikset forside + drill-kort + sidebar-pekere. **Gjenstående bekreftet døde** (bevisste «kommer snart»-toasts, ikke 404):
 - `admin/grupper/[id]` (`gruppe-actions.tsx`): 4 av 5 («Legg til spiller», «Se alle», «Detaljer», «Åpne»).
