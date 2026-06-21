@@ -113,7 +113,7 @@
 | /portal/tren/tester/ny/egen | mønster + skjermkart | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/drills | mønster + skjermkart | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/drills/[id] | mønster + skjermkart | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /portal/meg | Meg-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /portal/meg | Meg long-tail komplett | ✅ | ✅ | ✅ | ⚠ | ⚠ | ~ | ⚠ |
 | /portal/meg/profil | Meg-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/meg/profil/rediger | Meg-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/meg/abonnement | Meg-abonnement | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |

@@ -11,11 +11,17 @@
 import Link from "next/link";
 import {
   AlertCircle,
+  Backpack,
   Bell,
+  CalendarDays,
   ChevronRight,
   CircleDollarSign,
+  FileText,
+  HeartPulse,
+  LifeBuoy,
   Lock,
   Mail,
+  Settings,
   User as UserIcon,
 } from "lucide-react";
 import { useState, useTransition } from "react";
@@ -265,7 +271,8 @@ export function MegHybrid({
         <LinkRow
           href="/portal/meg/sikkerhet"
           icon={<Lock className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden />}
-          label="Passord"
+          label="Sikkerhet"
+          sub="Passord, 2FA, aktive økter"
         />
       </div>
 
@@ -288,6 +295,52 @@ export function MegHybrid({
           sub="Ukessammendrag"
           checked={notifState.epost}
           onChange={toggleEpost}
+        />
+      </div>
+
+      {/* ── Trening ─────────────────────────────────────────────────────── */}
+      <div className="overflow-hidden rounded-xl border border-border bg-card">
+        <SectionHeader>Trening</SectionHeader>
+        <LinkRow
+          href="/portal/meg/utstyrsbag"
+          icon={<Backpack className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden />}
+          iconVariant="forest"
+          label="Utstyrsbag"
+          sub="Køller og baller"
+        />
+        <LinkRow
+          href="/portal/meg/helse"
+          icon={<HeartPulse className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden />}
+          iconVariant="lime"
+          label="Helse"
+          sub="Skader, søvn, puls"
+        />
+        <LinkRow
+          href="/portal/meg/dokumenter"
+          icon={<FileText className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden />}
+          label="Dokumenter"
+        />
+        <LinkRow
+          href="/portal/meg/bookinger"
+          icon={<CalendarDays className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden />}
+          label="Bookinger"
+        />
+      </div>
+
+      {/* ── Mer ─────────────────────────────────────────────────────────── */}
+      <div className="overflow-hidden rounded-xl border border-border bg-card">
+        <SectionHeader>Mer</SectionHeader>
+        <LinkRow
+          href="/portal/meg/innstillinger"
+          icon={<Settings className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden />}
+          iconVariant="forest"
+          label="Innstillinger"
+          sub="Personvern, språk, integrasjoner"
+        />
+        <LinkRow
+          href="/portal/meg/help"
+          icon={<LifeBuoy className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden />}
+          label="Hjelp & support"
         />
       </div>
 
