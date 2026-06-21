@@ -66,7 +66,8 @@
 ### A-1 · AgencyOS-hovedskjermer verifisert — to cockpit-KPI mangler aggregat
 - **Verifisert mørk 1280px som ADMIN (coachtest@akgolf.test):** cockpit `/admin/agencyos`, stall `/admin/stall`, forespørsler `/admin/foresporsler`, gjennomføre `/admin/gjennomfore`, kalender `/admin/kalender`, handlingssenter `/admin/handlingssenter`. Alle bygd, mørke, kalibrert i tidligere faser — matcher fasit + dokumenterte design-porting-gate-unntak (sidebar/fane-rad/innboks-tillegg, Booking-kun-forespørsler, full oppgave-arbeidsverktøy). Markert ✅ i SKJERM-STATUS.
 - **Datagap (ikke fabrikert):** cockpit-KPIene **STALL-SG** og **PLAN-ADHERENCE** viser «—» — stall-bredt SG-snitt + plan-adherence-aggregat er ikke beregnet i datalaget. Fasiten viser «SG-SNITT STALL +0,9». Krever en aggregat-spørring over alle stall-spilleres runder/planer; kan kobles senere uten ny beslutning. Ikke fabrikert et tall.
-- **Gjenstår å verifisere (AgencyOS long-tail):** spiller-detalj `/admin/spillere/[id]`, workbench, tester, runder, økonomi, caddie/agenter, live-økt, innstillinger-undersider, grupper + agencyos-underruter (caddie/live/okonomi/spillere/uka). Tas i påfølgende iterasjoner.
+- **Long-tail VERIFISERT (runde 2):** spiller-detalj `/admin/spillere/[id]`, `/admin/coach-workbench` (kun visuell skin), `/admin/tester`, `/admin/runder`, `/admin/okonomi`, `/admin/caddie`, `/admin/agents` — alle bygd, mørke, kalibrert med ekte data. Markert ✅. (coach-workbench manglet i SKJERM-STATUS-tabellen — lagt til.)
+- **Gjenstår å verifisere:** spiller-detalj-underruter (/fremgang,/profil,/tester,/plan/[planId],/rediger,/tildel-test), tester-underruter (/[id],/benchmarks,/foreslatte), `/admin/agencyos/live` (Live-okt coach), `/admin/innstillinger`-undersider, `/admin/grupper`, `/admin/agencyos`-underruter (caddie/live/okonomi/spillere/uka), `/admin/kalender/maned`, `/admin/gjennomfore/okter/[id]`. Tas i påfølgende iterasjoner.
 
 ---
 

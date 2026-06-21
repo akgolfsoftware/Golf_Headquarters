@@ -166,7 +166,8 @@
 | /admin/agencyos/spillere | Stall responsiv | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/agencyos/uka | Cockpit v2 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/spillere | Stall responsiv / Stall v2 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /admin/spillere/[id] | Spiller-detalj | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /admin/spillere/[id] | Spiller-detalj | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd+kalibrert. Verifisert mørk 1280px (Øyvind): header + coach-flagg + aktiv plan + treningspyramide + hurtighandlinger + siste runder/tester + meldinger. Ekte data |
+| /admin/coach-workbench | Workbench (coach-modus) | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd. Verifisert mørk 1280px (kun visuell skin — logikk urørt): spiller-header + 4 KPI + CADDIE AI-panel + faner (I dag/Plan/Analyse/Notater/Kommunikasjon). Manglet i tabellen |
 | /admin/spillere/[id]/fremgang | Spiller-detalj | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/spillere/[id]/plan/[planId] | Spiller-detalj | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/spillere/[id]/profil | Spiller-detalj | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
@@ -192,7 +193,7 @@
 | /admin/drills/[id] | mønster | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/drills/[id]/rediger | mønster | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/drills/ny | mønster | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /admin/tester | Test-bygger | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /admin/tester | Test-bygger | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd+kalibrert. Verifisert mørk 1280px: «FYS & teknikk» + 4 KPI + testresultat-tabell (ALLE/FYS/TEKNIKK/TRACKMAN). Nøytral delta «—» per FYS-formel-ikke-låst-unntak |
 | /admin/tester/[id] | Test-bygger | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/tester/benchmarks | Test-bygger | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/tester/foreslatte | Test-bygger | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
@@ -227,7 +228,7 @@
 | /admin/analysere/compliance | Analyse-rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/analytics | Analyse-rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/lag-snitt | Analyse-rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /admin/runder | Analyse-rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /admin/runder | Analyse-rester | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd+kalibrert. Verifisert mørk 1280px: «Hele stallen, én kolonne for score» + KPI + runde-tabell (SG-deltaer). Ekte data |
 | /admin/tilstander | Analyse-rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/reports | Analyse-rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/talent | DataGolf-verktoy | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
@@ -241,8 +242,8 @@
 | /admin/talent/sammenligning | DataGolf-verktoy | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/talent/wagr-benchmark | DataGolf-verktoy | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/talent/wagr-import | DataGolf-verktoy | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /admin/caddie | AI-Caddie og Agenter | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /admin/agents | AI-Caddie og Agenter | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /admin/caddie | AI-Caddie og Agenter | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd+kalibrert. Verifisert mørk 1280px: caddie-hero + eskaleringer + status-kort + audit-loggføring |
+| /admin/agents | AI-Caddie og Agenter | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd+kalibrert. Verifisert mørk 1280px: «Agent pipeline» + 6 registrerte agenter + manuell trigger + siste 30 kjøringer (cron-logg). Ekte data |
 | /admin/agents/[agentId] | AI-Caddie og Agenter | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/workspace | Workspace | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/workspace/notion | Workspace | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
@@ -250,7 +251,7 @@
 | /admin/workspace/oppgaver/[id] | Workspace | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/workspace/prosjekter | Workspace | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/workspace/tildelt-meg | Workspace | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /admin/okonomi | mønster + KPI-primitiver | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /admin/okonomi | mønster + KPI-primitiver | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd+kalibrert. Verifisert mørk 1280px: «Fakturaer og betalinger» + KPI + faktura/betalings-tabell m/ status-piller |
 | /admin/organisasjon | Admin-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/settings | Innstillinger-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/settings/api | Innstillinger-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
