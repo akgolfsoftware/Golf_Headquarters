@@ -290,10 +290,11 @@
 | /forelder | Forelderportal | ✅ | ✅ | ✅ | ~ | ~ | ✅ | ✅ | TERMINAL-LYS RE-PORT FERDIG (0 avvik, adversarial diff). Samtykke-kort + narrativ ukerapport + 8-ukers SG-chart + coach-notat — alt avledet fra ekte data (hentForelderUkerapport). Verifisert mobil 430px som test-forelder. 768/1280 = sentrert max-w-440 (samme innhold). Empty-week håndtert |
 | /forelder/barn/[childId] | Forelderportal | ✅ | ✅ | 🔨 | ❌ | ❌ | ~ | 🔨 | Bygd; terminal-lys re-port gjenstår |
 | /forelder/bookinger | Forelderportal | ✅ | ✅ | 🔨 | ❌ | ❌ | ~ | 🔨 | Bygd; terminal-lys re-port gjenstår |
-| /forelder/fakturaer | Forelderportal | ✅ | ✅ | 🔨 | ❌ | ❌ | ~ | 🔨 | Bygd (= fasit «Betaling»); terminal-lys re-port gjenstår |
+| /forelder/fakturaer | Forelderportal | ✅ | ✅ | 🔨 | ❌ | ❌ | ~ | ⚠ | Bygd (= fasit «Betaling»). DELVIS DATABLOKKERT (BYGGELOGG F-2): abonnement ekte, men betalingsmetode (Visa-kort) = Stripe-data bak harde stoppet, kvitteringer = ingen Payment-records |
 | /forelder/samtykke | Forelderportal | ✅ | ✅ | 🔨 | ❌ | ❌ | ~ | 🔨 | Bygd (GDPR-samtykke); terminal-lys re-port gjenstår |
-| /forelder/ukerapport | Forelderportal | ✅ | ✅ | 🔨 | ❌ | ❌ | ~ | 🔨 | Bygd (= fasit «Ukerapport/rapport[id]»); terminal-lys re-port gjenstår |
-| /forelder/okonomi · /coach · /varsler · /innstillinger | Forelderportal | ✅ | ✅ | 🔨 | ❌ | ❌ | ~ | 🔨 | Øvrige 4 ruter bygd; terminal-lys re-port gjenstår (manglet i tabellen) |
+| /forelder/ukerapport | Forelderportal | ✅ | ✅ | ✅ | ~ | ~ | ✅ | ✅ | TERMINAL-LYS RE-PORT FERDIG (= fasit «rapport/[id]»): Denne uka 3-stat + coachens kommentar + høydepunkt. Alt ekte data (hentForelderUkerapport utvidet). Persentil utelatt (TestResult mangler felt). Verifisert mobil 430px |
+| /forelder/varsler | Forelderportal | ✅ | ✅ | 🔨 | ❌ | ❌ | ~ | ⚠ | Bygd. DATABLOKKERT (BYGGELOGG F-2): fasitens 4 toggles krever en NotificationPreference-modell som ikke finnes — ville vært ikke-persisterende pynt. Venter på Anders' grønt lys til modell + migrasjon |
+| /forelder/okonomi · /coach · /innstillinger | Forelderportal | ✅ | ✅ | 🔨 | ❌ | ❌ | ~ | 🔨 | Øvrige 3 ruter bygd; terminal-lys re-port gjenstår (manglet i tabellen) |
 
 ---
 

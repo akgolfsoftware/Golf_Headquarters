@@ -310,6 +310,12 @@ export type ForelderUkerapport = {
   /** 8 søylehøyder (0–100) for ukentlig SG-total, eldst først. */
   trend8uker: number[];
   coachNote: { author: string; body: string } | null;
+  /** Timer trent denne uka (sum av fullførte øktvarigheter). */
+  trentTimer: number;
+  /** Snitt SG-total for runder denne uka (null = ingen runder). */
+  ukeSg: number | null;
+  /** Beste testresultat (navn + score) — null hvis ingen tester. */
+  hoydepunkt: { testNavn: string; score: number } | null;
 };
 
 const AKSE_NAVN: Record<PyramidArea, string> = {
@@ -338,15 +344,21 @@ export async function hentForelderUkerapport(
   const for8uker = new Date(now);
   for8uker.setDate(for8uker.getDate() - 7 * 8);
 
-  const [child, ukeOkter, streakLogger, runder, coachVarsel] = await Promise.all([
+  const [child, ukeOkter, streakLogger, runder, coachVarsel, besteTest] =
+    await Promise.all([
     prisma.user.findUnique({
       where: { id: childId },
       select: { dateOfBirth: true, guardianConsentGivenAt: true },
     }),
-    // Øktene denne uka (status + drill-områder for fokus + oppmøte).
+    // Øktene denne uka (status + varighet + drill-områder for fokus + oppmøte).
     prisma.trainingSessionV2.findMany({
       where: { studentId: childId, startTime: { gte: ukeStart, lte: ukeSlutt } },
-      select: { status: true, drills: { select: { pyramide: true } } },
+      select: {
+        status: true,
+        startTime: true,
+        endTime: true,
+        drills: { select: { pyramide: true } },
+      },
     }),
     // Fullførte økter siste 14 dager (for streak).
     prisma.trainingSessionV2.findMany({
@@ -365,6 +377,12 @@ export async function hentForelderUkerapport(
       orderBy: { createdAt: "desc" },
       select: { title: true, body: true },
     }),
+    // Beste testresultat (høydepunkt).
+    prisma.testResult.findFirst({
+      where: { userId: childId },
+      orderBy: { score: "desc" },
+      select: { score: true, test: { select: { name: true } } },
+    }),
   ]);
 
   // Alder fra fødselsdato (kun hvis kjent — aldri gjettet).
@@ -376,9 +394,17 @@ export async function hentForelderUkerapport(
 
   // Økter denne uka.
   const oktPlanlagt = ukeOkter.length;
-  const oktFullfort = ukeOkter.filter((o) => o.status === "COMPLETED").length;
+  const fullforte = ukeOkter.filter((o) => o.status === "COMPLETED");
+  const oktFullfort = fullforte.length;
   const oppmotePct =
     oktPlanlagt > 0 ? Math.round((oktFullfort / oktPlanlagt) * 100) : null;
+
+  // Timer trent denne uka (sum av fullførte øktvarigheter).
+  const trentMs = fullforte.reduce(
+    (s, o) => s + (o.endTime.getTime() - o.startTime.getTime()),
+    0
+  );
+  const trentTimer = Math.round((trentMs / 3_600_000) * 10) / 10;
 
   // Fokus-område: hyppigste pyramide blant denne ukas drills.
   const omradeTelling = new Map<PyramidArea, number>();
@@ -437,6 +463,19 @@ export async function hentForelderUkerapport(
     sgRetning = "stabil";
   }
 
+  // SG denne uka (snitt sgTotal for runder spilt etter ukestart).
+  const ukeRunder = runder.filter(
+    (r) => r.playedAt >= ukeStart && r.sgTotal != null
+  );
+  const ukeSg =
+    ukeRunder.length > 0
+      ? Math.round(
+          (ukeRunder.reduce((s, r) => s + (r.sgTotal ?? 0), 0) /
+            ukeRunder.length) *
+            10
+        ) / 10
+      : null;
+
   return {
     childFirstName,
     childName,
@@ -453,6 +492,11 @@ export async function hentForelderUkerapport(
     trend8uker,
     coachNote: coachVarsel
       ? { author: coachVarsel.title, body: coachVarsel.body ?? "" }
+      : null,
+    trentTimer,
+    ukeSg,
+    hoydepunkt: besteTest
+      ? { testNavn: besteTest.test.name, score: besteTest.score }
       : null,
   };
 }
