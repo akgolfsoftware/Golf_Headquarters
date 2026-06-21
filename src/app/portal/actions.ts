@@ -535,22 +535,31 @@ export type KpiStats = {
   avgScore: number | null;   // snitt bruttoscore siste 10 runder
   sgTotal: number | null;    // snitt SG total siste 10 runder
   sessionsThisWeek: number;  // treningsøkter denne uken
+  roundsCount: number;       // antall runder siste 90 dager
+  sgBreakdown: {             // snitt SG per kategori siste 10 runder
+    ott: number | null;
+    app: number | null;
+    arg: number | null;
+    putt: number | null;
+  };
 };
 
 export async function getKpiStats(userId: string): Promise<KpiStats> {
   const now = new Date();
   const weekStart = startOfWeek(now);
+  const since90 = new Date(now.getTime() - 90 * 86_400_000);
 
-  const [rounds, weekSessions] = await Promise.all([
+  const [rounds, weekSessions, roundsCount] = await Promise.all([
     prisma.round.findMany({
       where: { userId },
       orderBy: { playedAt: "desc" },
       take: 10,
-      select: { score: true, sgTotal: true },
+      select: { score: true, sgTotal: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
     }),
     prisma.trainingSessionV2.count({
       where: { studentId: userId, startTime: { gte: weekStart, lte: now } },
     }),
+    prisma.round.count({ where: { userId, playedAt: { gte: since90 } } }),
   ]);
 
   const scoresWithValue = rounds.filter((r) => r.score > 0);
@@ -559,13 +568,20 @@ export async function getKpiStats(userId: string): Promise<KpiStats> {
       ? Math.round((scoresWithValue.reduce((s, r) => s + r.score, 0) / scoresWithValue.length) * 10) / 10
       : null;
 
-  const sgValues = rounds.filter((r) => r.sgTotal != null).map((r) => r.sgTotal as number);
-  const sgTotal =
-    sgValues.length > 0
-      ? Math.round((sgValues.reduce((s, v) => s + v, 0) / sgValues.length) * 10) / 10
+  const avg = (key: "sgTotal" | "sgOtt" | "sgApp" | "sgArg" | "sgPutt"): number | null => {
+    const vals = rounds.filter((r) => r[key] != null).map((r) => r[key] as number);
+    return vals.length > 0
+      ? Math.round((vals.reduce((s, v) => s + v, 0) / vals.length) * 10) / 10
       : null;
+  };
 
-  return { avgScore, sgTotal, sessionsThisWeek: weekSessions };
+  return {
+    avgScore,
+    sgTotal: avg("sgTotal"),
+    sessionsThisWeek: weekSessions,
+    roundsCount,
+    sgBreakdown: { ott: avg("sgOtt"), app: avg("sgApp"), arg: avg("sgArg"), putt: avg("sgPutt") },
+  };
 }
 
 // ── All today's sessions (for second-session compact row) ─────────
