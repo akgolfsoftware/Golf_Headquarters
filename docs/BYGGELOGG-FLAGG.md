@@ -32,5 +32,10 @@
 
 - **Analyse-faner:** app har 4 (SG/Runder/TrackMan/Tester), fasit viser 5 (Analyse/TrackMan/Runder/SG/Tester). Bygd som 4 per låst «Analyse = én flate med faner» — «ANALYSE» vs «SG» som separate faner virker redundant i fasiten. Ikke restrukturert unilateralt.
 
+### I-2 · SG-import: fokusert wizard-steg vs full runde-logger
+- **Fasit:** «PlayerHQ SG-import» = «LOGG RUNDE · STEG 2 AV 3» — fokusert SG-inntasting (DETALJNIVÅ RASK/PRESIS, snittscore + antall putt + 4 SG-kategorier som kort, SG TOTALT-sum → Lagre runde). Del av en 3-stegs runde-logge-wizard.
+- **App:** `/portal/mal/runder/ny` (`runde-ny-form.tsx`) er ÉN full hull-for-hull-logger (18 hull +/- + bane/dato + SG-seksjon «valgfritt» nederst + notat). **Funksjonelt dekker den SG-inntasting** (OTT/APP/ARG/PUTT-felt finnes), men er ikke fasitens fokuserte wizard.
+- **Flagget (ikke restrukturert):** Skal runde-logging bli en 3-stegs wizard (steg 1 score → steg 2 SG-import → steg 3 …) med en egen fokusert SG-import-flate, eller beholde dagens enkelt-skjema? Flyt-/IA-beslutning. App-en virker i mellomtiden. Anbefaling: avklar med Anders før flyt-restrukturering.
+
 ---
 *Loopen fortsetter med skjermer som IKKE er blokkert. Blokkerte/parkerte føres her til du tar stilling.*
