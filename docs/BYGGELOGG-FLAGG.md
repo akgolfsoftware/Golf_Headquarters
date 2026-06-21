@@ -44,4 +44,13 @@
 - **Flagget (ikke restrukturert):** Skal runde-logging bli en 3-stegs wizard (steg 1 score → steg 2 SG-import → steg 3 …) med en egen fokusert SG-import-flate, eller beholde dagens enkelt-skjema? Flyt-/IA-beslutning. App-en virker i mellomtiden. Anbefaling: avklar med Anders før flyt-restrukturering.
 
 ---
+
+## CONTENT-REVIEW (skjerm bygd & verifisert, men innhold må godkjennes før prod)
+
+### C-1 · Marketing testimonial-/case-tall må bekreftes ekte før lansering
+- **Skjermer:** `/(marketing)/suksess` (Lars H. HCP 28→16, Emma S. 18→6, Geir T. 22→14) + `/(marketing)/cases` (Marius B. −6,3 SG, Emma L. −4,5). Bygd & verifisert (lyst editorial, responsiv) — strukturen er fasit-riktig.
+- **Flagg:** Dette er konkrete navn + tallforbedringer presentert som ekte spillerresultater. Eksisterende marketing-innhold (ikke generert av loopen denne økten), men før prod-deploy bør Anders bekrefte at testimonials er ekte/godkjente (samtykke) eller merke dem tydelig som illustrative eksempler. Ikke en build-blokker; et content/juridisk go-live-punkt.
+- **Beslektet:** `/(marketing)/personvern` + `/vilkar` + `/cookies` er selv-flagget «Utkast — godkjennes med advokat før Q3 2026» i egen UI. Juridisk gjennomgang er allerede et kjent go-live-punkt.
+
+---
 *Loopen fortsetter med skjermer som IKKE er blokkert. Blokkerte/parkerte føres her til du tar stilling.*

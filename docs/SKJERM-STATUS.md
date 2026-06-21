@@ -324,26 +324,26 @@
 |---|---|---|---|---|---|---|---|---|
 | /(marketing) | Marketing Hjem | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Allerede bygd lyst editorial (forrige fase); verifisert desktop+mobil mot fasit-idiom. Korrekt 300 kr/mnd + ekte coacher/lokasjoner |
 | /(marketing)/coaching | Marketing Undersider | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Verifisert desktop+mobil; Performance/Performance Pro = coaching-pakker (låst regel) |
-| /(marketing)/playerhq | Marketing Undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /(marketing)/playerhq | Marketing Undersider | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Verifisert desktop+mobil; app-mockup + «Med coaching 0 / Run aapen 300» korrekt |
 | /(marketing)/priser | Marketing Undersider | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Verifisert desktop+mobil; fasit «299/PRO» overstyrt av låst 300 kr/mnd, rikere enn mockup |
 | /(marketing)/om-oss | Marketing Undersider | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Verifisert desktop+mobil |
 | /(marketing)/coacher | Marketing Rester | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Verifisert desktop+mobil; ekte coach Markus Røinås Pedersen bevart (låst regel) |
-| /(marketing)/coacher/[slug] | Marketing Rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /(marketing)/anlegg | Marketing Rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /(marketing)/anlegg/[slug] | Marketing Rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /(marketing)/blogg | Marketing Rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /(marketing)/blogg/[slug] | Marketing Rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /(marketing)/cases | Marketing Rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /(marketing)/coacher/[slug] | Marketing Rester | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Verifisert /coacher/anders desktop+mobil; profil + erfaring/spesialiteter + book-CTA |
+| /(marketing)/anlegg | Marketing Rester | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Verifisert desktop+mobil; 3 anleggskort (GFGK/Miklagard/Mulligan) |
+| /(marketing)/anlegg/[slug] | Marketing Rester | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Verifisert /anlegg/gamle-fredrikstad-gk desktop; foto-hero + features + kontakt |
+| /(marketing)/blogg | Marketing Rester | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Verifisert desktop+mobil; featured + nyere artikler (ekte forfattere Anders/Markus) |
+| /(marketing)/blogg/[slug] | Marketing Rester | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Verifisert /blogg/hvorfor-struktur-slar-talent desktop; artikkel-hero + body |
+| /(marketing)/cases | Marketing Rester | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Verifisert desktop+mobil; case-kort + kommende turneringer 2026. NB content-flagg C-1 (testimonial-tall) |
 | /(marketing)/faq | Marketing Rester | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Verifisert desktop+mobil; gruppert accordion (Coaching/Booking/PlayerHQ/Praktisk) |
-| /(marketing)/jobb | Marketing Rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /(marketing)/jobb | Marketing Rester | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Verifisert desktop+mobil; verdiprop + 2 stillingsannonser |
 | /(marketing)/junior | Marketing Rester | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Verifisert desktop+mobil; U10/U14/U16/Talent + årshjul |
 | /(marketing)/kontakt | Marketing Rester | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Verifisert desktop+mobil; skjema + åpningstider + anleggskort |
-| /(marketing)/cookies | Marketing Rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /(marketing)/personvern | Marketing Rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /(marketing)/vilkar | Marketing Rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /(marketing)/cookies | Marketing Rester | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Verifisert desktop; juridisk prosa (responsiv by default) |
+| /(marketing)/personvern | Marketing Rester | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Verifisert desktop; full erklæring, selv-flagget «Utkast — godkjennes med advokat før Q3 2026» |
+| /(marketing)/vilkar | Marketing Rester | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Verifisert desktop; juridisk prosa (responsiv by default) |
 | /(marketing)/treningsfilosofi | Marketing Rester | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Verifisert desktop+mobil; «Fem områder — samtidig» + data-seksjoner |
-| /(marketing)/turneringer | Marketing Rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /(marketing)/suksess | Marketing Rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /(marketing)/turneringer | Marketing Rester | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Verifisert desktop+mobil; «Nordmenn denne uka» + turneringsgrid (data fra sync) |
+| /(marketing)/suksess | Marketing Rester | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Verifisert desktop+mobil; 3 testimonial-kort. NB content-flagg C-1 (testimonial-tall) |
 
 ---
 
