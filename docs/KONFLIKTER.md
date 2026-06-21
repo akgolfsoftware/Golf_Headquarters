@@ -56,7 +56,11 @@ Fire ekte ruter: `admin/anlegg`(+[id]), `admin/facilities`(+[id]), `admin/locati
 `admin/plan-templates/*` (ekte) er kanon. `admin/plans/templates/page.tsx` er redirect-stub, men `plans/templates/[id]/effectiveness|rediger|ny` finnes fortsatt som ekte filer. **REPEK inbound:** `admin/spillere/[id]/effekt-tab.tsx:153`, `plans/[planId]/actions.ts:933`. Flytt/fjern resten.
 
 ## K-18 · Analyse-flater — én er død kode (Høy · Design + Anders)
-Fem ulike flater (ikke ren dublett): `analyse` (Stall-analyse, ekte) · `lag-snitt` (Pyramide/gruppe, ekte) · `analysere` (innsikt-HUB, hardkodede header-tall) · `analytics` (**848 l, redirectet bort av `next.config.ts:47`, 0 inbound = DØD KODE**) · `reports` (ekte CSV). Redesignet samler analyse til én fane-flate. **Anbefaling: FJERN `analytics` (død); behold analyse+lag-snitt+reports+tester+runder som byggeklosser; `analysere`-hub blir overflødig når alt er én fane-flate (REDIRECT inn).**
+Fem ulike flater (ikke ren dublett): `analyse` (Stall-analyse, ekte) · `lag-snitt` (Pyramide/gruppe, ekte) · `analysere` (innsikt-HUB) · `analytics` (848 l, redirectet) · `reports` (ekte CSV).
+
+**✅ analytics FJERNET (commit 6e524a3f):** `analytics/page.tsx` (848 l, redirectet av next.config:47) + `loading.tsx` slettet. Den ene inbound-lenken «Se effekt-historikk» (`template-detail:179`, `/admin/analytics?templateId=X` — templateId tapt i redirecten) → `/admin/plan-templates/[id]/effectiveness` (ekte side). **KORREKSJON:** `analytics/actions.ts` var IKKE død — `eksport-modal` importerer `exportAnalyticsReport` derfra. Beholdt (kun server-actions-modul nå, ingen rute). next.config-redirects beholdt.
+
+**GJENSTÅR (Fase 4):** samle `analyse`+`lag-snitt`+`reports`+`tester`+`runder` til én fane-flate; `analysere`-hub blir overflødig (REDIRECT inn) når fane-flaten finnes. Skjermbygg, ikke rute-fiks.
 
 ## K-14 · Handlingssenter + dobbel-redirect (Blokkerende · **Anders**) — se STOPP #2
 - `proxy.ts` (kjører først): `/admin/queue`→`innboks?tab=oppfolging`, `/admin/approvals`→`innboks?tab=godkjennelser`, `/admin/messages`→`innboks?tab=meldinger`.
