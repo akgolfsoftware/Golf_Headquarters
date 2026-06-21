@@ -84,26 +84,6 @@ export function ForgotForm() {
 
   return (
     <div className="w-full rounded-2xl border border-border bg-card px-7 py-8 shadow-lg">
-      <div className="mb-6 flex justify-center">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-            className="text-primary"
-          >
-            <rect x="3" y="11" width="18" height="11" rx="2" />
-            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-          </svg>
-        </div>
-      </div>
-
       <h1 className="mb-1 text-center font-display text-[22px] font-bold leading-tight tracking-[-0.02em] text-foreground">
         Glemt passordet?
       </h1>
@@ -142,7 +122,7 @@ export function ForgotForm() {
         <button
           type="submit"
           disabled={pending}
-          className="mb-3 w-full rounded-full bg-primary py-[13px] font-mono text-[12px] font-bold uppercase tracking-[0.10em] text-accent transition-opacity hover:opacity-90 disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="mb-3 w-full rounded-full bg-accent py-[13px] font-mono text-[12px] font-bold uppercase tracking-[0.10em] text-accent-foreground transition-opacity hover:opacity-90 disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           {pending ? "Sender..." : "Send tilbakestillingslenke"}
         </button>
