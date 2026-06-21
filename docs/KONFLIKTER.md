@@ -110,7 +110,9 @@ Opprydding 18. juni fikset forside + drill-kort + sidebar-pekere. **Gjenstående
 ## K-03 · Tier.ELITE eksisterer + LEKKER til UI (Høy · Design + Kode)
 Enum `Tier { GRATIS PRO ELITE }` beholdes teknisk (kan ikke slettes uten migrasjon — koden vinner). **MEN ELITE vises 6 steder (skal aldri):**
 - `admin/plans/[planId]/assign-plan-modal.tsx:223` (egen ELITE-pill) · `lib/admin/stallen-data.ts:122` (`TIER_MAP.ELITE`) · `lib/admin/innboks-data.tsx:209` · `lib/admin-workbench/workbench-data.tsx:40` · `components/portal/workbench/player-hero-image.tsx:90` (ELITE-pill i PlayerHQ-hero) · **`admin/hjelp/page.tsx:68` hjelpeartikkel «Pro vs Elite — hva er forskjellen?»** (markedsfører ELITE som nivå — slett).
-- Også rå `{tier}` uten klamping: `components/portal/sidebar.tsx:222` + flere hero-pills → kan rendre «ELITE». **Anbefaling: klamp alle tier-visninger til GRATIS/PRO; slett hjelpeartikkelen.**
+- Også rå `{tier}` uten klamping: `components/portal/sidebar.tsx:222`.
+
+**✅ GJORT (commit 4729283b):** Alle tier-visninger klampet → **PRO** (ELITE var betalt; feature-flags behandler det som betalt): assign-plan-modal-pill, stallen-data TIER_MAP, innboks-data, workbench-data tierLabel(), player-hero-image-pill, sidebar tier-badge (kun GRATIS→GRATIS, ellers PRO). Hjelp-artikkelen «Pro vs Elite» slettet. Build grønn. **K-03 lukket** (enum beholdes teknisk, men aldri synlig). player-hero-v2/spiller-hero/portal-avatar-button gated allerede på PRO/GRATIS (rendret aldri ELITE). meg-hybrid/profil-rediger klamper ELITE→GRATIS (compliant, urørt — liten visnings-inkonsistens for et tier som aldri forekommer).
 - OK (annen betydning, behold): ELITE som coaching-spesialitet (`coach-wizard:54`), HCP-klasse (`domain/hcp.ts`), gruppenavn (GFGK Elite).
 
 ## K-15 · Pris 300 vs 299 (Høy · **Anders**) — se STOPP #5
