@@ -84,6 +84,18 @@ async function main() {
   });
   console.log(`Kobling: ${PARENT_NAME} → ${child.name} (${child.id})`);
 
+  // 3. GDPR-samtykke gitt av forelderen (modellerer den ekte samtykke-handlingen,
+  //    ikke fabrikert metrikk) — så Foreldreportalen viser «Samtykke aktivt».
+  await prisma.user.update({
+    where: { id: child.id },
+    data: {
+      requiresGuardianConsent: true,
+      guardianConsentGivenAt: new Date(),
+      guardianConsentByUserId: parent.id,
+    },
+  });
+  console.log(`Samtykke registrert for ${child.name} (gitt av ${PARENT_NAME}).`);
+
   console.log(`\n✓ Ferdig. Login: ${PARENT_EMAIL} / ${PARENT_PASSWORD}`);
   await prisma.$disconnect();
 }

@@ -287,7 +287,7 @@
 
 | Rute | Referanse | Bygget | Knapper | 375 | 768 | 1280 | 4-states | DoD |
 |---|---|---|---|---|---|---|---|---|
-| /forelder | Forelderportal | ✅ | ✅ | 🔨 | ❌ | ❌ | ~ | 🔨 | Bygd (gammelt hybrid-design, ekte data). Verifisering OPPLÅST via test-forelder (scripts/seed-screentest-parent.ts). Terminal-lys re-port gjenstår: lede med samtykke-status + narrativ ukerapport + 8-ukers SG-chart (fasit «Forelderportal (terminal-lys)») |
+| /forelder | Forelderportal | ✅ | ✅ | ✅ | ~ | ~ | ✅ | ✅ | TERMINAL-LYS RE-PORT FERDIG (0 avvik, adversarial diff). Samtykke-kort + narrativ ukerapport + 8-ukers SG-chart + coach-notat — alt avledet fra ekte data (hentForelderUkerapport). Verifisert mobil 430px som test-forelder. 768/1280 = sentrert max-w-440 (samme innhold). Empty-week håndtert |
 | /forelder/barn/[childId] | Forelderportal | ✅ | ✅ | 🔨 | ❌ | ❌ | ~ | 🔨 | Bygd; terminal-lys re-port gjenstår |
 | /forelder/bookinger | Forelderportal | ✅ | ✅ | 🔨 | ❌ | ❌ | ~ | 🔨 | Bygd; terminal-lys re-port gjenstår |
 | /forelder/fakturaer | Forelderportal | ✅ | ✅ | 🔨 | ❌ | ❌ | ~ | 🔨 | Bygd (= fasit «Betaling»); terminal-lys re-port gjenstår |
