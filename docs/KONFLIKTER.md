@@ -53,7 +53,7 @@ Fire ekte ruter: `admin/anlegg`(+[id]), `admin/facilities`(+[id]), `admin/locati
 **✅ FERDIG (commit f77438a4):** Flyttet `locations/actions.ts` → `anlegg/location-actions.ts` + `location-form.tsx` → `anlegg/location-form.tsx` (CRUD bevart; LocationForm gir fasilitet-add i anlegg-flaten). Slettet `locations/page.tsx` + hele `facilities/` (liste + [id]-demokalender + helpers). revalidatePath/redirect → `/admin/anlegg`. next.config-redirects beholdt (`/locations`+`/facilities` → `/anlegg`). Build grønn. **K-09 lukket.**
 
 ## K-02 · Plan-maler-dublett (Høy · **Anders**) — se STOPP #3
-`admin/plan-templates/*` (ekte) er kanon. `admin/plans/templates/page.tsx` er redirect-stub, men `plans/templates/[id]/effectiveness|rediger|ny` finnes fortsatt som ekte filer. **REPEK inbound:** `admin/spillere/[id]/effekt-tab.tsx:153`, `plans/[planId]/actions.ts:933`. Flytt/fjern resten.
+`admin/plan-templates/*` (ekte) er kanon. **✅ GJORT (commit a51bc1ae):** repeket begge inbound-lenker (`effekt-tab.tsx:153`, `plans/[planId]/actions.ts:933`) → `/admin/plan-templates`. **K-02 lukket.** Rester `plans/templates/[id]/*` er nå foreldreløse (redirect-stub + ingen inbound) — kan slettes i en hygiene-runde senere; ufarlige nå.
 
 ## K-18 · Analyse-flater — én er død kode (Høy · Design + Anders)
 Fem ulike flater (ikke ren dublett): `analyse` (Stall-analyse, ekte) · `lag-snitt` (Pyramide/gruppe, ekte) · `analysere` (innsikt-HUB) · `analytics` (848 l, redirectet) · `reports` (ekte CSV).
@@ -118,15 +118,15 @@ Enum `Tier { GRATIS PRO ELITE }` beholdes teknisk (kan ikke slettes uten migrasj
 ## K-15 · Pris 300 vs 299 (Høy · **Anders**) — se STOPP #5
 Koden bruker `300` konsekvent (`feature-flags.ts:8`, `admin/agencyos/okonomi/page.tsx:26`, marketing). BYGGEORDRE/MASTER sier 299/mnd + 2690/år. **Avklar — påvirker Stripe + all pris-UI.**
 
-## K-01 · PlayerHQ nav-etiketter (Lav · Design) — uendret
-Bunn-nav viser «Planlegge/Gjennomføre»; BYGGEORDRE vil ha «Plan/Gjør». Ruter uendret, kun visningsnavn. `src/components/portal/bottom-nav.tsx:23-24`. Fikses i Fase 2.
+## K-01 · PlayerHQ nav-etiketter (Lav · Design) — ✅ ALLEREDE GJORT
+Bunn-nav + sidebar viser allerede «Plan»/«Gjør» (`bottom-nav.tsx:23-24`, `sidebar.tsx:38,61`). Ingen handling. (Tidligere note om «Planlegge/Gjennomføre» var basert på eldre agent-info.) **K-01 lukket.**
 
 ## K-23 · PlayerHQ-nav er ALLEREDE forent (Løst — ingen handling)
 Re-verifisert: `portal-shell.tsx` rendrer samme `MAIN_ITEMS` (Hjem·Plan·Gjør·Analyse·Meg) på bunn-nav (`md:hidden`), desktop-sidebar (`hidden md:flex`) og hamburger-drawer. **Ingen mobil≠desktop-avvik lenger; ingen kuttede `/portal/mal/*`-lenker i sidebar.** BYGGEORDRE/BRIEF antar dette må fikses — det er allerede gjort (utover etikett-forkortingen i K-01).
 
 ## K-06 · AgencyOS-skall matcher 54px-modellen + død nav-kode (Lav · Kode)
 - AgencyOS: `agencyos-sidebar.tsx:70` (`w-[54px]`-rail → 244px hover) + `agencyos-mobile-nav.tsx:32` (bunn-nav Oversikt·Stall·Kalender·Innboks·Mer). ✅ matcher låst modell.
-- **Død kode:** `components/shared/mobile-bottom-nav.tsx` + `athletic/shell/bottom-nav.tsx` importeres ingen steder. Kanonisk PlayerHQ-bunn-nav = `components/portal/bottom-nav.tsx`. **Anbefaling: slett de to døde** (arkitektur-doc er utdatert her).
+- **✅ GJORT (commit a51bc1ae):** Slettet `components/shared/mobile-bottom-nav.tsx` (genuint ubrukt). **KORREKSJON:** `athletic/shell/bottom-nav.tsx` er IKKE død — `shell-wrapper.tsx:9` importerer + rendrer den (`BottomNav`). Beholdt. Kanonisk PlayerHQ-bunn-nav = `components/portal/bottom-nav.tsx`. **K-06 lukket.**
 
 ## K-22b · Gamle demo-navn (Lav · Design)
 Seed/fixtures er **rene** (kun ekte «Markus Røinås Pedersen» — behold). Gjenstår i intern komponent-galleri: «Andreas Kragerud» (`intern/komponenter/agency-kit:107`, `team-bookinger:9,64`), «Andreas» (`daglig-brief:131`, `forelder:9`), «MARKUS R.P.» (`inbox-tester:132`); + `admin/agencyos/live/data.ts:117` («Andreas P.», demo-melding). **Anbefaling:** bytt til kanon (Anders Kristiansen / Øyvind Rohjan) i Fase 7 — lav prio (kun `/intern/*`).
