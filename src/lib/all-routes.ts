@@ -22,7 +22,6 @@ export const ALL_ROUTES: AllRouteEntry[] = [
   { route: "/admin/agents/[agentId]", label: "agents · detalj", category: "AgencyOS", filePath: "src/app/admin/agents/[agentId]/page.tsx" },
   { route: "/admin/analyse", label: "Analyse", category: "AgencyOS", filePath: "src/app/admin/analyse/page.tsx" },
   { route: "/admin/analysere", label: "Analysere", category: "AgencyOS", filePath: "src/app/admin/analysere/page.tsx" },
-  { route: "/admin/analytics", label: "Analytics", category: "AgencyOS", filePath: "src/app/admin/analytics/page.tsx" },
   { route: "/admin/anlegg", label: "Anlegg", category: "AgencyOS", filePath: "src/app/admin/anlegg/page.tsx" },
   { route: "/admin/anlegg/[id]", label: "anlegg · detalj", category: "AgencyOS", filePath: "src/app/admin/anlegg/[id]/page.tsx" },
   { route: "/admin/approvals", label: "Approvals", category: "AgencyOS", filePath: "src/app/admin/approvals/page.tsx" },
