@@ -116,20 +116,20 @@
 | /portal/meg | Meg long-tail komplett | ✅ | ✅ | ✅ | ⚠ | ⚠ | ~ | ⚠ |
 | /portal/meg/profil | Meg-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/meg/profil/rediger | Meg-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /portal/meg/abonnement | Meg-abonnement | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /portal/meg/abonnement | Meg-abonnement | ✅ | ✅ | ✅ | ~ | ~ | ✅ | ✅ | Bygd, lyst, verifisert mobil 430px. LÅST-DECISION-KORREKT (overstyrer fasit): «300 kr/mnd» ikke fasitens 299, «ingen nivåer», ærlig Stripe («kortdata lagres aldri»), INGEN fabrikert «PRO årlig 2690». Status/Hva inngår/Handlinger. Ekte Subscription |
 | /portal/meg/abonnement/avbestill | Meg-abonnement | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/meg/abonnement/faktura/[id] | Meg-abonnement | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/meg/bookinger | Meg-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /portal/meg/dokumenter | Meg Utstyr Dokumenter Innstillinger | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /portal/meg/dokumenter | Meg Utstyr Dokumenter Innstillinger | ✅ | ✅ | ✅ | ~ | ~ | ✅ | ✅ | Bygd, lyst, verifisert mobil 430px: «Avtaler & dokumenter» (coaching-avtale/foreldresamtykke/GDPR/fakturaer/lisens m/ status-piller). Ekte Document-data |
 | /portal/meg/feedback | Meg-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/meg/foreldre | Meg-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /portal/meg/helse | Meg Helse og Sikkerhet | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /portal/meg/helse | Meg Helse og Sikkerhet | ✅ | ✅ | ✅ | ~ | ~ | ✅ | ✅ | Bygd, lyst, verifisert mobil 430px: «Helse & readiness» + KPI/uke/skade. FYS-FORMEL-KORREKT: «—» + «Formel ikke låst» + «plassholdere fram til readiness-formelen er låst» (respekterer parkert FYS-formel) |
 | /portal/meg/helse/symptom/ny | Meg Helse og Sikkerhet | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/meg/help | Meg-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/meg/help/artikkel/[slug] | Meg-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/meg/help/kategori/[slug] | Meg-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/meg/help/kontakt | Meg-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /portal/meg/innstillinger | Meg Utstyr Dokumenter Innstillinger | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /portal/meg/innstillinger | Meg Utstyr Dokumenter Innstillinger | ✅ | ✅ | ✅ | ~ | ~ | ✅ | ✅ | Bygd, lyst, verifisert mobil 430px: Varsler/Integrasjoner (TrackMan/Garmin/Golfbox)/App/Sikkerhet (BankID)/AI/Personvern |
 | /portal/meg/innstillinger/ai-coach | Meg Utstyr Dokumenter Innstillinger | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/meg/innstillinger/anlegg | Meg Utstyr Dokumenter Innstillinger | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/meg/innstillinger/integrasjoner | Meg Utstyr Dokumenter Innstillinger | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
@@ -140,7 +140,7 @@
 | /portal/meg/innstillinger/varsler | Meg Utstyr Dokumenter Innstillinger | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/meg/sikkerhet | Meg Helse og Sikkerhet | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/meg/sikkerhet/2fa | Meg Helse og Sikkerhet | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /portal/meg/utstyrsbag | Meg Utstyr Dokumenter Innstillinger | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /portal/meg/utstyrsbag | Meg Utstyr Dokumenter Innstillinger | ✅ | ✅ | ✅ | ~ | ~ | ✅ | ✅ | Bygd, lyst, verifisert mobil 430px: «Utstyrs bag» (Driver/Fairway/Hybrider/Jernsett/Wedger/Putter + Ball & øvrig). Ekte EquipmentBag-data |
 | /portal/varsler | mønster | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/booking | Flyt - Booking | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/booking/[bookingId] | Flyt - Booking | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
