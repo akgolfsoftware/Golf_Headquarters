@@ -468,10 +468,11 @@ function CockpitTopbar({ data }: { data: CockpitData }) {
   return (
     <div className="flex items-center gap-4 border-b border-border bg-background/50 px-6 py-4">
       <div>
-        <div className="font-display text-[19px] font-bold tracking-[-0.01em] text-foreground">
-          Kontrolltårnet
+        <div className="font-display text-[22px] font-bold leading-[1.05] tracking-[-0.015em] text-foreground">
+          {data.greeting},{" "}
+          <em className="font-medium italic text-primary">{data.coachFirstName}</em>
         </div>
-        <div className="mt-[2px] font-mono text-[10.5px] text-muted-foreground">
+        <div className="mt-[3px] font-mono text-[10.5px] text-muted-foreground">
           {data.dayLabel} · {data.activePlayersCount} aktive spillere ·{" "}
           {data.requestsCount > 0
             ? `${data.requestsCount} forespørsler venter`

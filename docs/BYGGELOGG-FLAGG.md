@@ -77,6 +77,10 @@ Opprinnelig flagg (historikk):
   - **Spørsmål til deg:** (a) Greit å bruke 30-dagers vindu + alle PLAYER-brukere? (b) Skal junior/mosjonist telle med, eller kun elite? Si fra, så kobler jeg på neste runde (liten endring: utvid loadDailyBrief + erstatt de to placeholderne).
 - **Long-tail VERIFISERT (runde 2):** spiller-detalj `/admin/spillere/[id]`, `/admin/coach-workbench` (kun visuell skin), `/admin/tester`, `/admin/runder`, `/admin/okonomi`, `/admin/caddie`, `/admin/agents` — alle bygd, mørke, kalibrert med ekte data. Markert ✅. (coach-workbench manglet i SKJERM-STATUS-tabellen — lagt til.)
 - **Long-tail VERIFISERT (runde 3):** spiller-detalj-faner (/fremgang,/profil,/tester), `/admin/agencyos/live`,`/uka`,`/caddie`,`/okonomi`,`/spillere` (cockpit-faner), `/admin/grupper`, `/admin/godkjenninger`, `/admin/messages`, `/admin/kalender/maned`, `/admin/tester/benchmarks`. Alle bygd, mørke, ekte data. Markert ✅. **AgencyOS samlet: ~26 skjermer verifisert.**
+### A-3 · Cockpit-sweep 2026-06-22 — hero fikset, SG-ticker mangler
+- **FIKSET:** cockpit-hero «Kontrolltårnet» → greeting-hero «God morgen, {coachFirstName}» (display italic, matcher fasit). Bruker eksisterende data.greeting + coachFirstName.
+- **GJENSTÅR (lav-middels):** fasiten har en lime SG-ticker-stripe under topbaren (per-spiller SG-chips + GODKJENN + STALL-SG). Appen mangler den (har fane-rad der i stedet). Kan bygges fra focus-players SG + stall-SG + godkjenninger-count — placement-spørsmål (under fane-rad?). Caddie-panel i høyre kolonne = bevisst app-tillegg (ikke i fasit), beholdes.
+
 - **Gjenstår å verifisere (lav rest):** spiller-detalj /plan/[planId],/rediger,/tildel-test; tester /[id],/foreslatte; `/admin/grupper/[id]`; innstillinger/«Drift» (rute = topbar-meny → finn href); `/admin/gjennomfore/okter/[id]`; diverse admin long-tail (/audit-log,/reach,/compliance,/risiko,/lag-snitt,/team,/integrasjoner,/email-templates). Tas i påfølgende iterasjoner — alle ser ut til å være bygd fra tidligere faser.
 
 ---

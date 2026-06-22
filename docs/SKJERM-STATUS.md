@@ -159,7 +159,7 @@
 
 | Rute | Referanse | Bygget | Knapper | 375 | 768 | 1280 | 4-states | DoD |
 |---|---|---|---|---|---|---|---|---|
-| /admin/agencyos | AgencyOS Cockpit | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd+kalibrert tidligere fase. Verifisert mørk 1280px som ADMIN: ticker + 4 KPI + Dagens timeline + Hvem trenger meg nå + innboks. Bevisste IA-tillegg (sidebar/faner/innboks) per design-porting-gate. Mobil = egen Fase 4 net-new |
+| /admin/agencyos | AgencyOS Cockpit | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | FASIT-SWEEP 2026-06-22: adversarial diff → FIKSET hero «Kontrolltårnet»→greeting-hero «God morgen, {coach}» (display italic, matcher fasit). REST flagget: lime SG-ticker-stripe mangler (A-3), Caddie-panel = bevisst tillegg. 4 KPI (m/ ekte stall-SG/adherence) + Dagens timeline + Hvem trenger meg nå. IA-tillegg (sidebar/faner) dokumentert |
 | /admin/agencyos/caddie | AI-Caddie og Agenter | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd. Verifisert mørk 1280px (CADDIE-fane av cockpit) |
 | /admin/messages | Flyt - AgencyOS Handlingssenter | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd. Verifisert mørk 1280px: «Min innboks» 3-kolonne (samtaleliste + tråd + profilpanel). Ekte data. Manglet i tabellen |
 | /admin/agencyos/caddie/aktivitet | AI-Caddie og Agenter | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
