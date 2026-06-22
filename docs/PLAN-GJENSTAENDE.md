@@ -17,9 +17,9 @@ Disse er produkt-/design-/IA-valg. Jeg vil ikke gjette.
 | ~~D1.1~~ ✅ | **Analyse «Hull»** — LØST 2026-06-22 (commit 62be389f) | **Begge:** sone-kart beholdt + «Hull for hull»-tabell lagt til som fane. | Ferdig |
 | ~~D1.2~~ ✅ | **AgencyOS Bookinger** — LØST 2026-06-22 (commit 62be389f) | **Slått sammen:** ett «Bookinger & kapasitet»-dashbord; /admin/kapasitet redirecter. | Ferdig |
 | ~~D1.3~~ ✅ | **AgencyOS Planer** — LØST 2026-06-22 | **Behold kanban-board** (ingen endring). | Ferdig |
-| D1.4 | **CBAC-modell** (AAPNE A2) | **3 capability-hull LUKKET 2026-06-22:** finans (`VIEW_FINANCE`), anlegg (`MANAGE_FACILITIES`) og team/organisasjon (`MANAGE_USERS`) gates nå på capability (ADMIN-only) via `requireCapability`, og nav-lenkene skjules for COACH. Håndhevingen matcher nå matrisen i `/admin/settings/tilgang` for alle tre. **Gjenstår (din beslutning):** skal CBAC bygges opp til 43 capabilities (skill-spec), eller beholdes dagens 10 + capability-gating? | Hull lukket · modell-valg står |
+| ~~D1.4~~ ✅ | **CBAC-modell** (AAPNE A2) | **3 capability-hull LUKKET 2026-06-22:** finans (`VIEW_FINANCE`), anlegg (`MANAGE_FACILITIES`) og team/organisasjon (`MANAGE_USERS`) gates nå på capability (ADMIN-only) via `requireCapability`, og nav-lenkene skjules for COACH. **BESLUTTET 2026-06-23:** behold dagens 10 capabilities (ikke bygg ut til 43 — finmasking tas først når et reelt behov treffer). | Ferdig |
 | D1.5 | **Agent-systemets dybde** (AAPNE A3) | Skal «Godkjenn» på et AI-forslag faktisk endre planen? (i dag bytter `acceptPlanAction` kun status). Skal det bygges en coach-godkjenningsinnboks? | M–L |
-| D1.6 | **Booking ↔ live-økt-modell** | «Start økt» lager nå en frisk live-økt fra bookingen (defaults: innendørs/blokkpraksis). Skal en booking heller kobles til en allerede planlagt `TrainingSessionV2`? | M |
+| ~~D1.6~~ ✅ | **Booking ↔ live-økt-modell** | **LØST 2026-06-23:** «Start økt» foretrekker nå en allerede planlagt økt (PLANNED, samme spiller, i tidsvinduet) ved ENTYDIG treff — coachens forarbeid åpnes i konsollen. 0/flere treff → trygg fallback til frisk økt. Auto-utledning av *miljø* fra booket sted droppet (M0–M5 = metodikk-koder uten definert kobling → D1.7). | Ferdig |
 | D1.7 | **Metodikk-kanon** (AAPNE A1) | CS-skala (CS20/CS40?), CS-navn (Club Speed vs Confidence Score), LIFE-nøkler. Kode vs wiki er uenige. | S (bekreft) |
 
 ---
@@ -64,7 +64,7 @@ Render-korrekt i dag, men bør ryddes før/etter lansering.
 | D4.2 | **Ikke-brand custom hex** | ~15 steder med olive/warning-aktige hex (#4A5418, #B8852A, #7BA428) uten eksakt token. Krever nye tokens eller bevisst beholdes. |
 | D4.3 | **A–K drill-retag** (BYGGELOGG A-2) | `kategoriFraHcp` (gammel A–L) vs `kategoriFraSnittscore` (ny A–K) gir ulik bokstav. Drill-tagger (`minKategori`/`maxKategori`) ble satt under gammelt system. Trenger re-tag-beslutning. |
 | D4.4 | **Dublett-enums** (AAPNE B2) | `PRPress`/`PressureLevel`, `PracticeType`/`DrillPracticeType`, `SessionStatus`/`SessionStatusV2`. Rydd kun ved bevisst beslutning (migrasjons-risiko). |
-| D4.5 | **Live-økt-defaults** | «Start økt» bruker nøytrale defaults (innendørs/blokkpraksis) for nye økter. Vurder å utlede fra booking-serviceType. |
+| D4.5 | **Live-økt-defaults** | Frisk-økt-fallbacken bruker nøytrale defaults (M0/BLOKK). Auto-utledning fra booket sted er IKKE rent mulig: `ServiceType` har ingen miljø-felt, og `FacilityType` (STUDIO/COURSE…) → `MMiljo` (M0–M5) krever en metodikk-kobling som ikke finnes. Blokkert på D1.7, ikke serviceType. |
 
 ---
 
