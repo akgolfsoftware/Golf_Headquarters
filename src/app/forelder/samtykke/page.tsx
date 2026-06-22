@@ -7,16 +7,15 @@
 import {
   Activity,
   Check,
-  Download,
   Mail,
   Package,
   Shield,
-  Trash2,
   Video,
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { SamtykkeForm } from "./samtykke-form";
+import { DataActions } from "./data-actions";
 
 // Detailed form fields (existing server action expects these keys)
 const SAMTYKKER_FORM = [
@@ -62,6 +61,13 @@ export default async function SamtykkePage() {
       },
     },
     orderBy: { createdAt: "asc" },
+  });
+
+  // Siste slette-forespørsel for kvittering på data-handlinger.
+  const sisteSletting = await prisma.dataExportRequest.findFirst({
+    where: { userId: user.id, type: "DELETE" },
+    orderBy: { createdAt: "desc" },
+    select: { type: true, status: true, createdAt: true },
   });
 
   // Check if all required consents are active
@@ -180,20 +186,17 @@ export default async function SamtykkePage() {
       )}
 
       {/* Data actions */}
-      <div className="flex flex-col gap-2">
-        <button className="flex w-full items-center gap-[10px] rounded-xl border border-border bg-card p-[13px] text-[14px] font-medium text-foreground" type="button">
-          <Download className="h-4 w-4 text-primary" strokeWidth={1.5} aria-hidden />
-          Last ned alle data (GDPR-eksport)
-        </button>
-        <button
-          className="flex w-full items-center gap-[10px] rounded-xl p-[13px] text-[14px] font-medium text-destructive"
-          style={{ background: "rgba(163,45,45,0.06)", border: "1px solid rgba(163,45,45,0.2)" }}
-          type="button"
-        >
-          <Trash2 className="h-4 w-4" strokeWidth={1.5} aria-hidden />
-          Be om sletting av data
-        </button>
-      </div>
+      <DataActions
+        sisteSletting={
+          sisteSletting
+            ? {
+                type: sisteSletting.type,
+                status: sisteSletting.status,
+                createdAt: sisteSletting.createdAt.toISOString(),
+              }
+            : null
+        }
+      />
 
       {/* Data policy */}
       <section className="rounded-xl border border-border bg-card p-4 text-sm text-muted-foreground">

@@ -13,7 +13,6 @@
 import Link from "next/link";
 import {
   ChevronLeft,
-  RefreshCw,
   HelpCircle,
   Link2,
   Plug,
@@ -393,20 +392,18 @@ function IntegrationCard(props: IntegrationCardProps) {
               <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden />
               Tilkoblet
             </span>
-            <button
-              type="button"
+            {/*
+             * Tilkoblede kilder synkes automatisk (TrackMan fra studio-økter,
+             * kalender via coach-flyten). Spilleren har ingen egen
+             * re-synk-/administrasjons-action her ennå, så «Administrer» går
+             * ærlig til support i stedet for å være en død knapp.
+             */}
+            <Link
+              href="/portal/meg/help/kontakt"
               className="ml-auto inline-flex h-9 items-center rounded-[10px] border border-border bg-card px-3.5 font-mono text-[11px] font-extrabold uppercase tracking-[0.04em] text-foreground transition-colors hover:bg-secondary"
             >
               Administrer
-            </button>
-            <button
-              type="button"
-              aria-label="Synk på nytt"
-              title="Synk på nytt"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-[10px] border border-border bg-card text-muted-foreground transition-colors hover:bg-secondary"
-            >
-              <RefreshCw className="h-[15px] w-[15px]" strokeWidth={1.75} aria-hidden />
-            </button>
+            </Link>
           </>
         ) : (
           <>
@@ -414,13 +411,20 @@ function IntegrationCard(props: IntegrationCardProps) {
               <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/40" aria-hidden />
               Ikke tilkoblet
             </span>
-            <button
-              type="button"
+            {/*
+             * Spillere har foreløpig ingen ekte selvbetjent connect-flyt for
+             * disse kildene (Google Calendar-OAuth-en er coach-/admin-flyten —
+             * den pusher kun coachens kalender og lander på en admin-side, så
+             * den skal IKKE gjenbrukes her). Knappen er derfor en ærlig
+             * «be om tilgang»-lenke til support, ikke en falsk koble-til.
+             */}
+            <Link
+              href="/portal/meg/help/kontakt"
               className="ml-auto inline-flex h-9 items-center gap-1.5 rounded-[10px] bg-primary px-4 font-mono text-[11px] font-extrabold uppercase tracking-[0.04em] text-accent transition-opacity hover:opacity-90"
             >
               <Link2 className="h-[13px] w-[13px]" strokeWidth={2} aria-hidden />
-              Koble til
-            </button>
+              Be om tilgang
+            </Link>
           </>
         )}
       </div>

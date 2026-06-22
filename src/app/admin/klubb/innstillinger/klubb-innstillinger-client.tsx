@@ -12,9 +12,13 @@ import {
   Plus,
   Power,
   Star,
+  Hash,
+  Mail,
+  Phone,
 } from "lucide-react";
 import {
   addClub,
+  lagreClubSettings,
   removeClub,
   updateClubSettings,
 } from "./actions";
@@ -43,17 +47,37 @@ export type ClubItem = {
   };
 };
 
-type Props = {
-  klubber: ClubItem[];
+export type ClubSettingsData = {
+  clubName: string;
+  dagligLeder: string;
+  orgNr: string;
+  epost: string;
+  telefon: string;
+  adresse: string;
+  apningstider: {
+    hverdag: string;
+    helg: string;
+  };
 };
 
-export function KlubbInnstillingerClient({ klubber }: Props) {
+type Props = {
+  klubber: ClubItem[];
+  settings: ClubSettingsData;
+};
+
+export function KlubbInnstillingerClient({ klubber, settings }: Props) {
   const router = useRouter();
   const [addOpen, setAddOpen] = useState(false);
   const [edit, setEdit] = useState<ClubItem | null>(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   return (
     <>
+      <SettingsPanel
+        settings={settings}
+        onEdit={() => setSettingsOpen(true)}
+      />
+
       <div className="flex flex-col gap-4">
         {klubber.length === 0 ? (
           <div
@@ -133,7 +157,260 @@ export function KlubbInnstillingerClient({ klubber }: Props) {
           }}
         />
       )}
+
+      {settingsOpen && (
+        <SettingsDialog
+          settings={settings}
+          onClose={() => {
+            setSettingsOpen(false);
+            router.refresh();
+          }}
+        />
+      )}
     </>
+  );
+}
+
+// ----------------- Singleton org-innstillinger -----------------
+
+function SettingsPanel({
+  settings,
+  onEdit,
+}: {
+  settings: ClubSettingsData;
+  onEdit: () => void;
+}) {
+  const apningstider = [settings.apningstider.hverdag, settings.apningstider.helg]
+    .filter(Boolean)
+    .join(" · ");
+
+  const rader: { icon: typeof Building2; label: string; value: string }[] = [
+    { icon: Building2, label: "Klubbnavn", value: settings.clubName },
+    { icon: UserCog, label: "Daglig leder", value: settings.dagligLeder },
+    { icon: Hash, label: "Org.nr", value: settings.orgNr },
+    { icon: Mail, label: "E-post", value: settings.epost },
+    { icon: Phone, label: "Telefon", value: settings.telefon },
+    { icon: MapPin, label: "Adresse", value: settings.adresse },
+    { icon: Clock, label: "Åpningstider", value: apningstider },
+  ];
+
+  return (
+    <article className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-6">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            Org-innstillinger
+          </span>
+          <h3 className="mt-1 font-display text-base font-semibold leading-tight tracking-tight text-foreground">
+            Klubbinformasjon
+          </h3>
+        </div>
+        <button
+          type="button"
+          onClick={onEdit}
+          className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-4 py-2 text-xs font-medium text-foreground hover:border-primary hover:text-primary"
+        >
+          <Pencil size={12} strokeWidth={1.75} />
+          Rediger
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 gap-3 border-t border-border pt-4 sm:grid-cols-2 lg:grid-cols-3">
+        {rader.map((r) => (
+          <div key={r.label} className="flex items-center gap-2">
+            <r.icon size={14} strokeWidth={1.75} className="shrink-0 text-muted-foreground" />
+            <div className="min-w-0">
+              <div className="font-mono text-[9px] uppercase tracking-[0.06em] text-muted-foreground">
+                {r.label}
+              </div>
+              <div className="truncate text-[13px] font-medium text-foreground">
+                {r.value || "—"}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </article>
+  );
+}
+
+function SettingsDialog({
+  settings,
+  onClose,
+}: {
+  settings: ClubSettingsData;
+  onClose: () => void;
+}) {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const [pending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
+
+  const [clubName, setClubName] = useState(settings.clubName);
+  const [dagligLeder, setDagligLeder] = useState(settings.dagligLeder);
+  const [orgNr, setOrgNr] = useState(settings.orgNr);
+  const [epost, setEpost] = useState(settings.epost);
+  const [telefon, setTelefon] = useState(settings.telefon);
+  const [adresse, setAdresse] = useState(settings.adresse);
+  const [hverdag, setHverdag] = useState(settings.apningstider.hverdag);
+  const [helg, setHelg] = useState(settings.apningstider.helg);
+
+  useEffect(() => {
+    const node = dialogRef.current;
+    node?.showModal();
+    return () => node?.close();
+  }, []);
+
+  function lagre(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    startTransition(async () => {
+      try {
+        await lagreClubSettings({
+          clubName,
+          dagligLeder,
+          orgNr,
+          epost,
+          telefon,
+          adresse,
+          apningstider: { hverdag, helg },
+        });
+        onClose();
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Kunne ikke lagre");
+      }
+    });
+  }
+
+  return (
+    <dialog
+      ref={dialogRef}
+      onClose={onClose}
+      className="m-0 h-full max-h-full w-full max-w-full rounded-none border-0 bg-card p-0 shadow-xl backdrop:bg-foreground/40 sm:m-auto sm:h-auto sm:max-h-[90vh] sm:max-w-2xl sm:rounded-2xl sm:border sm:border-border"
+    >
+      <form onSubmit={lagre} className="p-4 sm:p-6">
+        <header>
+          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            Org-innstillinger
+          </span>
+          <h2 className="mt-1 font-display text-xl font-semibold leading-tight tracking-tight">
+            <em className="font-normal text-primary md:italic">Rediger</em>
+            {" · Klubbinformasjon"}
+          </h2>
+        </header>
+
+        <div className="mt-6 space-y-4">
+          <Felt label="Klubbnavn">
+            <input
+              type="text"
+              value={clubName}
+              onChange={(e) => setClubName(e.target.value)}
+              placeholder="Gamle Fredrikstad Golfklubb"
+              className={inputClass}
+            />
+          </Felt>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <Felt label="Daglig leder">
+              <input
+                type="text"
+                value={dagligLeder}
+                onChange={(e) => setDagligLeder(e.target.value)}
+                placeholder="Anders Kristiansen"
+                className={inputClass}
+              />
+            </Felt>
+            <Felt label="Org.nr">
+              <input
+                type="text"
+                value={orgNr}
+                onChange={(e) => setOrgNr(e.target.value)}
+                placeholder="912 345 678"
+                className={inputClass}
+              />
+            </Felt>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <Felt label="E-post">
+              <input
+                type="email"
+                value={epost}
+                onChange={(e) => setEpost(e.target.value)}
+                placeholder="post@gfgk.no"
+                className={inputClass}
+              />
+            </Felt>
+            <Felt label="Telefon">
+              <input
+                type="tel"
+                value={telefon}
+                onChange={(e) => setTelefon(e.target.value)}
+                placeholder="+47 69 00 00 00"
+                className={inputClass}
+              />
+            </Felt>
+          </div>
+
+          <Felt label="Adresse">
+            <input
+              type="text"
+              value={adresse}
+              onChange={(e) => setAdresse(e.target.value)}
+              placeholder="Bossumveien 1, 1632 Gamle Fredrikstad"
+              className={inputClass}
+            />
+          </Felt>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <Felt label="Åpningstider · hverdag">
+              <input
+                type="text"
+                value={hverdag}
+                onChange={(e) => setHverdag(e.target.value)}
+                placeholder="08:00 – 21:00"
+                className={inputClass}
+              />
+            </Felt>
+            <Felt label="Åpningstider · helg">
+              <input
+                type="text"
+                value={helg}
+                onChange={(e) => setHelg(e.target.value)}
+                placeholder="09:00 – 18:00"
+                className={inputClass}
+              />
+            </Felt>
+          </div>
+        </div>
+
+        {error && (
+          <div
+            role="alert"
+            className="mt-4 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive"
+          >
+            {error}
+          </div>
+        )}
+
+        <footer className="mt-6 flex items-center gap-2">
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={pending}
+            className="ml-auto rounded-md border border-input bg-card px-4 py-2 text-sm font-medium hover:border-border"
+          >
+            Avbryt
+          </button>
+          <button
+            type="submit"
+            disabled={pending}
+            className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60"
+          >
+            {pending ? "Lagrer…" : "Lagre"}
+          </button>
+        </footer>
+      </form>
+    </dialog>
   );
 }
 

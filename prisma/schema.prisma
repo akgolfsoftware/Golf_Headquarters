@@ -4010,3 +4010,54 @@ model CoachDrillDirectiv {
   @@index([drillId])
   @@map("coach_drill_directiv")
 }
+
+// ─────────────────────────────────────────────────────────────────────
+// Tillegg 2026-06-22 — isolerte additive tabeller (plain id-felt, ingen
+// relasjoner, så migrasjonen kun LEGGER TIL og ikke rører eksisterende.)
+// ─────────────────────────────────────────────────────────────────────
+
+/// Klubb-innstillinger (singleton — én rad). /admin/klubb/innstillinger.
+model ClubSettings {
+  id           String   @id @default(cuid())
+  clubName     String?
+  dagligLeder  String?
+  orgNr        String?
+  epost        String?
+  telefon      String?
+  adresse      String?
+  apningstider Json? // { man: "08:00-22:00", ... }
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("club_settings")
+}
+
+/// GDPR: dataeksport- og slette-forespørsler. /forelder/samtykke.
+model DataExportRequest {
+  id            String   @id @default(cuid())
+  userId        String // den som ber (forelder/bruker)
+  subjectUserId String? // hvem dataene gjelder (f.eks. barnet)
+  type          String // EXPORT | DELETE
+  status        String   @default("PENDING") // PENDING | COMPLETED | REJECTED
+  createdAt     DateTime @default(now())
+
+  @@index([userId, status])
+  @@map("data_export_requests")
+}
+
+/// Spiller → coach spørsmål (Q&A). /portal/coach/sporsmal/[id].
+model Question {
+  id          String    @id @default(cuid())
+  askerUserId String // spilleren som spør
+  coachUserId String? // coachen spørsmålet er rettet til
+  title       String
+  body        String
+  answer      String?
+  status      String    @default("OPEN") // OPEN | ANSWERED
+  createdAt   DateTime  @default(now())
+  answeredAt  DateTime?
+
+  @@index([coachUserId, status])
+  @@index([askerUserId])
+  @@map("questions")
+}

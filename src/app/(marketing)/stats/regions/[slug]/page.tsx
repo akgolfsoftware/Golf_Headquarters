@@ -38,8 +38,18 @@ export async function generateMetadata({
   };
 }
 
+// Bane.region lagres som norsk landsdel-navn ("Øst" | "Vest" | ...). Map slug → navn
+// for å aggregere ekte klubb-/banedata per region (samme kilde som /stats/regions).
+const SLUG_TIL_REGION_NAVN: Record<RegionSlug, string> = {
+  ost: "Øst",
+  vest: "Vest",
+  midt: "Midt",
+  nord: "Nord",
+  sor: "Sør",
+};
+
 // ---------------------------------------------------------------------------
-// Static region data
+// Fallback-data (vises KUN når banedatabasen ikke har baner for regionen)
 // ---------------------------------------------------------------------------
 
 const REGION_STATIC: Record<RegionSlug, {
@@ -193,10 +203,87 @@ export default async function RegionDetalj({
 
   if (!regionInfo) notFound();
 
-  const data = REGION_STATIC[slug as RegionSlug];
+  const fallback = REGION_STATIC[slug as RegionSlug];
   const andreRegioner = REGIONER.filter((r) => r.slug !== slug);
+  const regionNavn = SLUG_TIL_REGION_NAVN[slug as RegionSlug];
 
-  // Upcoming tournaments from DB
+  // ── EKTE AGGREGERING fra banedatabasen (Bane.region) ──
+  // Klubber/baner i regionen + klubb-liste kommer 100 % fra DB. Spillere/turneringer
+  // har ingen region-kolonne i schema, så de kan ikke regionaliseres uten gjetting —
+  // de hentes nasjonalt (kommende turneringer) eller faller tilbake til fallback-tall.
+  const baner = await prisma.bane
+    .findMany({
+      where: { region: regionNavn },
+      orderBy: [{ oppstartsaar: "asc" }, { navn: "asc" }],
+      select: {
+        navn: true,
+        klubb: true,
+        fylke: true,
+        kommune: true,
+        antallHull: true,
+        oppstartsaar: true,
+      },
+    })
+    .catch(() => [] as Array<{
+      navn: string;
+      klubb: string;
+      fylke: string | null;
+      kommune: string | null;
+      antallHull: number;
+      oppstartsaar: number | null;
+    }>);
+
+  const harBaneData = baner.length > 0;
+
+  // Klubber: ekte antall baner i regionen, ellers fallback-tall.
+  const antallKlubber = harBaneData ? baner.length : fallback.klubber;
+
+  // Klubb-liste sortert etter etableringsår (eldste først) — kun ekte felter.
+  // Tom-DB-fallback: vis kun klubbnavn fra demo (per-klubb-tall finnes ikke i DB).
+  const klubberListe: Array<{
+    navn: string;
+    fylke: string;
+    kommune: string;
+    hull: number | null;
+    etablert: number | null;
+  }> = harBaneData
+    ? baner.map((b) => ({
+        navn: b.navn,
+        fylke: b.fylke ?? "—",
+        kommune: b.kommune ?? "—",
+        hull: b.antallHull,
+        etablert: b.oppstartsaar,
+      }))
+    : fallback.klubberListe.map((k) => ({
+        navn: k.navn,
+        fylke: "—",
+        kommune: "—",
+        hull: null,
+        etablert: null,
+      }));
+
+  // Avledede fakta fra ekte banedata.
+  const fylkerRepresentert = [...new Set(baner.map((b) => b.fylke).filter(Boolean))] as string[];
+  const eldste = baner.find((b) => b.oppstartsaar != null);
+  const faktaEkte = harBaneData
+    ? [
+        `Klubber i banedatabasen: ${antallKlubber}`,
+        eldste?.oppstartsaar
+          ? `Eldste klubb: ${eldste.navn} (${eldste.oppstartsaar})`
+          : null,
+        fylkerRepresentert.length > 0
+          ? `Fylker representert: ${fylkerRepresentert.join(", ")}`
+          : null,
+      ].filter((x): x is string => Boolean(x))
+    : fallback.fakta;
+
+  // KPI-tall: spillere/pro per region finnes ikke i schema → fallback (umulig å
+  // utlede uten å fabrikere). Turneringer-KPI bruker også fallback av samme grunn.
+  const kpiSpillere = fallback.spillere;
+  const kpiTurneringer = fallback.turneringer;
+  const kpiPro = fallback.pro;
+
+  // Upcoming tournaments from DB (nasjonalt — Tournament har ingen region-kolonne)
   const kommendeTurneringer = await prisma.tournament
     .findMany({
       where: {
@@ -266,25 +353,25 @@ export default async function RegionDetalj({
         <div className="stats-kpi">
           <div className="stats-kpi-eyebrow">Klubber</div>
           <div className="stats-kpi-value">
-            <CountUp value={data.klubber} />
+            <CountUp value={antallKlubber} />
           </div>
         </div>
         <div className="stats-kpi">
           <div className="stats-kpi-eyebrow">Spillere</div>
           <div className="stats-kpi-value">
-            <CountUp value={data.spillere} />
+            <CountUp value={kpiSpillere} />
           </div>
         </div>
         <div className="stats-kpi">
           <div className="stats-kpi-eyebrow">Turneringer</div>
           <div className="stats-kpi-value">
-            <CountUp value={data.turneringer} />
+            <CountUp value={kpiTurneringer} />
           </div>
         </div>
         <div className="stats-kpi">
           <div className="stats-kpi-eyebrow">Pro-spillere</div>
           <div className="stats-kpi-value">
-            <CountUp value={data.pro} />
+            <CountUp value={kpiPro} />
           </div>
         </div>
       </div>
@@ -297,7 +384,7 @@ export default async function RegionDetalj({
               <StatsEyebrow>Klubber i {regionInfo.navn}</StatsEyebrow>
               <h2>
                 Golfklubber,{" "}
-                <em className="stats-italic-accent">sortert etter størrelse</em>.
+                <em className="stats-italic-accent">sortert etter etableringsår</em>.
               </h2>
             </div>
           </div>
@@ -321,41 +408,70 @@ export default async function RegionDetalj({
                     background: "var(--s-secondary)",
                   }}
                 >
-                  {["Klubb", "Antall", "Pro", "College", "Turn.", "Junior-rank"].map(
-                    (h) => (
-                      <th
-                        key={h}
-                        style={{
-                          padding: "12px 16px",
-                          textAlign: h === "Klubb" ? "left" : "center",
-                          fontFamily: "var(--font-mono)",
-                          fontSize: 10,
-                          fontWeight: 500,
-                          letterSpacing: "0.1em",
-                          textTransform: "uppercase",
-                          color: "var(--s-muted-fg)",
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        {h}
-                      </th>
-                    ),
-                  )}
+                  {["Klubb", "Fylke", "Kommune", "Hull", "Etablert"].map((h) => (
+                    <th
+                      key={h}
+                      style={{
+                        padding: "12px 16px",
+                        textAlign:
+                          h === "Klubb" || h === "Fylke" || h === "Kommune"
+                            ? "left"
+                            : "center",
+                        fontFamily: "var(--font-mono)",
+                        fontSize: 10,
+                        fontWeight: 500,
+                        letterSpacing: "0.1em",
+                        textTransform: "uppercase",
+                        color: "var(--s-muted-fg)",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {h}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
-                {data.klubberListe.map((k, i) => (
+                {klubberListe.map((k, i) => (
                   <tr
                     key={i}
                     style={{
                       borderBottom:
-                        i < data.klubberListe.length - 1
+                        i < klubberListe.length - 1
                           ? "1px dashed var(--s-border)"
                           : "none",
                     }}
                   >
                     <td style={{ padding: "12px 16px", fontWeight: i === 0 ? 600 : 500 }}>
                       {k.navn}
+                    </td>
+                    <td
+                      style={{
+                        padding: "12px 16px",
+                        fontSize: 12,
+                        color: "var(--s-muted-fg)",
+                      }}
+                    >
+                      {k.fylke}
+                    </td>
+                    <td
+                      style={{
+                        padding: "12px 16px",
+                        fontSize: 12,
+                        color: "var(--s-muted-fg)",
+                      }}
+                    >
+                      {k.kommune}
+                    </td>
+                    <td
+                      style={{
+                        padding: "12px 16px",
+                        textAlign: "center",
+                        fontFamily: "var(--font-mono)",
+                        fontVariantNumeric: "tabular-nums",
+                      }}
+                    >
+                      {k.hull ?? "—"}
                     </td>
                     <td
                       style={{
@@ -367,48 +483,7 @@ export default async function RegionDetalj({
                         fontWeight: i === 0 ? 600 : 400,
                       }}
                     >
-                      {k.spillere}
-                    </td>
-                    <td
-                      style={{
-                        padding: "12px 16px",
-                        textAlign: "center",
-                        fontFamily: "var(--font-mono)",
-                        fontVariantNumeric: "tabular-nums",
-                      }}
-                    >
-                      {k.pro}
-                    </td>
-                    <td
-                      style={{
-                        padding: "12px 16px",
-                        textAlign: "center",
-                        fontFamily: "var(--font-mono)",
-                        fontVariantNumeric: "tabular-nums",
-                      }}
-                    >
-                      {k.college}
-                    </td>
-                    <td
-                      style={{
-                        padding: "12px 16px",
-                        textAlign: "center",
-                        fontFamily: "var(--font-mono)",
-                        fontVariantNumeric: "tabular-nums",
-                      }}
-                    >
-                      {k.turneringer}
-                    </td>
-                    <td
-                      style={{
-                        padding: "12px 16px",
-                        textAlign: "center",
-                        fontSize: 12,
-                        color: k.juniorRank !== "—" ? "var(--s-primary)" : "var(--s-muted-fg)",
-                        fontWeight: k.juniorRank !== "—" ? 500 : 400,
-                      }}
-                    >
-                      {k.juniorRank}
+                      {k.etablert ?? "—"}
                     </td>
                   </tr>
                 ))}
@@ -470,12 +545,12 @@ export default async function RegionDetalj({
                 </tr>
               </thead>
               <tbody>
-                {data.toppSpillere.map((s, i) => (
+                {fallback.toppSpillere.map((s, i) => (
                   <tr
                     key={i}
                     style={{
                       borderBottom:
-                        i < data.toppSpillere.length - 1
+                        i < fallback.toppSpillere.length - 1
                           ? "1px dashed var(--s-border)"
                           : "none",
                     }}
@@ -563,7 +638,7 @@ export default async function RegionDetalj({
         </Reveal>
 
         <div className="stats-grid-3">
-          {data.watchList.map((s, i) => (
+          {fallback.watchList.map((s, i) => (
             <Reveal key={i} delay={i * 80}>
               <div
                 style={{
@@ -640,7 +715,7 @@ export default async function RegionDetalj({
             navn: t.name,
             klubb: t.location ?? "Ukjent bane",
             pameldte: 0,
-          })) : data.kommende).map((t, i) => (
+          })) : fallback.kommende).map((t, i) => (
             <Reveal key={i} delay={i * 60}>
               <div
                 style={{
@@ -699,7 +774,7 @@ export default async function RegionDetalj({
           >
             <StatsEyebrow>{regionInfo.navn} i tall</StatsEyebrow>
             <div style={{ marginTop: 20, display: "flex", flexDirection: "column", gap: 12 }}>
-              {data.fakta.map((f, i) => (
+              {faktaEkte.map((f, i) => (
                 <div
                   key={i}
                   style={{
@@ -729,10 +804,10 @@ export default async function RegionDetalj({
           <div className="stats-mersalg" style={{ textAlign: "center", padding: "64px 48px" }}>
             <StatsEyebrow tone="lime">PlayerHQ</StatsEyebrow>
             <h2 style={{ marginTop: 16, maxWidth: 520, margin: "16px auto" }}>
-              <em className="stats-italic-accent">{data.mersalg.split("?")[0]}?</em>
+              <em className="stats-italic-accent">{fallback.mersalg.split("?")[0]}?</em>
             </h2>
             <p style={{ marginTop: 16, maxWidth: 480, margin: "16px auto 32px", opacity: 0.8 }}>
-              {data.mersalg.split("?")[1]}
+              {fallback.mersalg.split("?")[1]}
             </p>
             <Link href="/portal">
               <StatsBtn variant="primary" icon="ArrowRight">

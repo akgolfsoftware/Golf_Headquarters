@@ -3,7 +3,9 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@/generated/prisma/client";
 import { audit } from "@/lib/audit";
 
 async function krevAdmin() {
@@ -35,8 +37,25 @@ const clubSettingsSchema = z.object({
     .optional(),
 });
 
+// Singleton org-innstillinger (ClubSettings-tabellen — én rad).
+const apningstiderSchema = z.object({
+  hverdag: z.string().trim(),
+  helg: z.string().trim(),
+});
+
+const klubbSettingsSchema = z.object({
+  clubName: z.string().trim().max(120).optional().or(z.literal("")),
+  dagligLeder: z.string().trim().max(120).optional().or(z.literal("")),
+  orgNr: z.string().trim().max(40).optional().or(z.literal("")),
+  epost: z.string().trim().email().optional().or(z.literal("")),
+  telefon: z.string().trim().max(40).optional().or(z.literal("")),
+  adresse: z.string().trim().max(200).optional().or(z.literal("")),
+  apningstider: apningstiderSchema.optional(),
+});
+
 export type ClubInput = z.infer<typeof clubInputSchema>;
 export type ClubSettingsInput = z.infer<typeof clubSettingsSchema>;
+export type KlubbSettingsInput = z.infer<typeof klubbSettingsSchema>;
 
 // ----------------- Actions -----------------
 
@@ -84,6 +103,51 @@ export async function updateClubSettings(id: string, raw: unknown) {
       daglig_leder_email: parsed.data.daglig_leder_email ?? null,
       apningstider: parsed.data.apningstider ?? null,
     },
+  });
+  revalidatePath("/admin/klubb/innstillinger");
+}
+
+/**
+ * Lagre singleton-klubbinnstillinger (ClubSettings — én rad).
+ * Upsert: oppdater eksisterende rad, eller opprett hvis ingen finnes.
+ * Tomme felter lagres som null (ingen fabrikerte verdier).
+ */
+export async function lagreClubSettings(raw: unknown) {
+  const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+  const parsed = klubbSettingsSchema.safeParse(raw);
+  if (!parsed.success) {
+    throw new Error(parsed.error.issues[0]?.message ?? "Ugyldig input");
+  }
+  const d = parsed.data;
+  const tomTilNull = (v: string | undefined) => (v && v.trim() ? v.trim() : null);
+  const apningstider =
+    d.apningstider && (d.apningstider.hverdag || d.apningstider.helg)
+      ? { hverdag: d.apningstider.hverdag, helg: d.apningstider.helg }
+      : null;
+
+  const felter = {
+    clubName: tomTilNull(d.clubName),
+    dagligLeder: tomTilNull(d.dagligLeder),
+    orgNr: tomTilNull(d.orgNr),
+    epost: tomTilNull(d.epost),
+    telefon: tomTilNull(d.telefon),
+    adresse: tomTilNull(d.adresse),
+    // JsonNull (ikke undefined) så tømming faktisk nuller feltet ved update.
+    apningstider: apningstider ?? Prisma.JsonNull,
+  };
+
+  const eksisterende = await prisma.clubSettings.findFirst();
+  const rad = eksisterende
+    ? await prisma.clubSettings.update({
+        where: { id: eksisterende.id },
+        data: felter,
+      })
+    : await prisma.clubSettings.create({ data: felter });
+
+  await audit({
+    actorId: user.id,
+    action: "club-settings.saved",
+    target: `ClubSettings:${rad.id}`,
   });
   revalidatePath("/admin/klubb/innstillinger");
 }

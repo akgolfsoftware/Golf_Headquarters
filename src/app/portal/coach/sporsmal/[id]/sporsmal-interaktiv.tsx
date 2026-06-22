@@ -1,13 +1,71 @@
 "use client";
 
+import { useState, useTransition } from "react";
 import { useToast } from "@/components/shared/toast-provider";
-import { Check, ThumbsDown, ThumbsUp } from "lucide-react";
+import { Check, Send, ThumbsDown, ThumbsUp } from "lucide-react";
+import { svarPaSporsmal } from "../actions";
 
 const RELATERTE = [
   "Hvor mye skal venstre håndledd flektes ved topp?",
   "Hvordan beholde balanse gjennom finish?",
   "Bør tempo være likt på iron og driver?",
 ] as const;
+
+export function SvarSkjema({ questionId }: { questionId: string }) {
+  const toast = useToast();
+  const [answer, setAnswer] = useState("");
+  const [pending, startTransition] = useTransition();
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const trimmed = answer.trim();
+    if (!trimmed) {
+      toast.info("Skriv et svar før du sender.");
+      return;
+    }
+    startTransition(async () => {
+      try {
+        await svarPaSporsmal(questionId, trimmed);
+        toast.info("Svaret er sendt til spilleren.");
+      } catch {
+        toast.info("Kunne ikke sende svaret. Prøv igjen.");
+      }
+    });
+  }
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-3 rounded-2xl border border-primary/30 bg-card p-4 md:p-6"
+    >
+      <label
+        htmlFor="svar"
+        className="font-mono text-[11px] uppercase tracking-[0.10em] text-muted-foreground"
+      >
+        Skriv svar til spilleren
+      </label>
+      <textarea
+        id="svar"
+        value={answer}
+        onChange={(e) => setAnswer(e.target.value)}
+        disabled={pending}
+        rows={6}
+        placeholder="Svar konkret — gjerne med sjekkpunkter spilleren kan teste på neste økt."
+        className="w-full resize-y rounded-xl border border-border bg-background px-4 py-3 text-[14.5px] leading-relaxed text-foreground outline-none focus:border-primary disabled:opacity-60"
+      />
+      <div className="flex justify-end">
+        <button
+          type="submit"
+          disabled={pending}
+          className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2.5 text-[13px] font-bold text-primary-foreground hover:opacity-90 disabled:opacity-60"
+        >
+          <Send className="h-3.5 w-3.5" strokeWidth={1.75} />
+          {pending ? "Sender…" : "Send svar"}
+        </button>
+      </div>
+    </form>
+  );
+}
 
 export function SporsmalReaksjoner() {
   const toast = useToast();

@@ -6,55 +6,34 @@
  * og daglig leder. Klikk "Detaljer" for åpningstider, fasiliteter og drift.
  */
 
-import { Building2 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 import {
   KlubbInnstillingerClient,
   type ClubItem,
+  type ClubSettingsData,
 } from "./klubb-innstillinger-client";
 
-// Eksempel-data for felter som ikke ligger i schema enda (åpningstider,
-// daglig leder). I produksjon vil disse migreres til en `ClubSettings`-tabell.
-const KLUBB_META: Record<
-  string,
-  {
-    dagligLederNavn: string;
-    dagligLederEmail: string;
-    apningstider: { hverdag: string; helg: string };
-    defaultFacilityHint?: string;
-  }
-> = {
-  gfgk: {
-    dagligLederNavn: "Anders Kristiansen",
-    dagligLederEmail: "anders@akgolf.no",
-    apningstider: { hverdag: "08:00 – 21:00", helg: "09:00 – 18:00" },
-    defaultFacilityHint: "performance",
-  },
-  mulligan: {
-    dagligLederNavn: "Mulligan Drift",
-    dagligLederEmail: "drift@mulligangolf.no",
-    apningstider: { hverdag: "06:00 – 23:00", helg: "08:00 – 22:00" },
-    defaultFacilityHint: "studio",
-  },
-};
+// Tom plassholder når et felt mangler — vis aldri fabrikerte verdier.
+const TOM = "—";
 
-function metaFor(name: string) {
-  const n = name.toLowerCase();
-  if (n.includes("gfgk") || n.includes("fredrikstad")) return KLUBB_META.gfgk;
-  if (n.includes("mulligan")) return KLUBB_META.mulligan;
-  return {
-    dagligLederNavn: "Ikke tildelt",
-    dagligLederEmail: "—",
-    apningstider: { hverdag: "08:00 – 21:00", helg: "09:00 – 18:00" },
-  };
+type Apningstider = { hverdag: string; helg: string };
+
+function parseApningstider(raw: unknown): Apningstider | null {
+  if (raw && typeof raw === "object" && !Array.isArray(raw)) {
+    const o = raw as Record<string, unknown>;
+    const hverdag = typeof o.hverdag === "string" ? o.hverdag : "";
+    const helg = typeof o.helg === "string" ? o.helg : "";
+    if (hverdag || helg) return { hverdag, helg };
+  }
+  return null;
 }
 
 export default async function KlubbInnstillingerPage() {
   await requirePortalUser({ allow: ["ADMIN"] });
 
-  const [locations, spillereTotal, coacherTotal] = await Promise.all([
+  const [locations, settingsRow] = await Promise.all([
     prisma.location.findMany({
       include: {
         facilities: {
@@ -63,17 +42,25 @@ export default async function KlubbInnstillingerPage() {
       },
       orderBy: { name: "asc" },
     }),
-    prisma.user.count({ where: { role: "PLAYER" } }),
-    prisma.user.count({ where: { role: "COACH" } }),
+    prisma.clubSettings.findFirst(),
   ]);
 
-  // Fordel spillere/coacher per klubb. Schema har ikke User.locationId enda,
-  // så vi bruker `homeClub`-feltet (fritekst) som tilnærming, og fordeler
-  // resten proporsjonalt.
+  // Singleton org-innstillinger (ClubSettings). Mangler rad → tomme felter.
+  const apningstider = parseApningstider(settingsRow?.apningstider);
+  const settings: ClubSettingsData = {
+    clubName: settingsRow?.clubName ?? "",
+    dagligLeder: settingsRow?.dagligLeder ?? "",
+    orgNr: settingsRow?.orgNr ?? "",
+    epost: settingsRow?.epost ?? "",
+    telefon: settingsRow?.telefon ?? "",
+    adresse: settingsRow?.adresse ?? "",
+    apningstider: apningstider ?? { hverdag: "", helg: "" },
+  };
+
+  // Spillere/coacher per klubb fra ekte tall. Schema har ikke User.locationId
+  // enda, så vi bruker `homeClub`-feltet (fritekst) som kobling.
   const klubber: ClubItem[] = await Promise.all(
     locations.map(async (l) => {
-      const meta = metaFor(l.name);
-
       const [spillereCount, coacherCount] = await Promise.all([
         prisma.user.count({
           where: {
@@ -89,18 +76,7 @@ export default async function KlubbInnstillingerPage() {
         }),
       ]);
 
-      // Eksempel-tall hvis ingen kobling: GFGK 38 spillere / 5 coacher
-      const isGfgk = l.name.toLowerCase().includes("gfgk") ||
-        l.name.toLowerCase().includes("fredrikstad");
-      const fallbackSpillere = isGfgk ? 38 : Math.max(0, Math.round(spillereTotal / Math.max(1, locations.length)));
-      const fallbackCoacher = isGfgk ? 5 : Math.max(0, Math.round(coacherTotal / Math.max(1, locations.length)));
-
-      const defaultFacility =
-        l.facilities.find((f) =>
-          meta.defaultFacilityHint
-            ? f.name.toLowerCase().includes(meta.defaultFacilityHint)
-            : false,
-        ) ?? l.facilities[0] ?? null;
+      const defaultFacility = l.facilities[0] ?? null;
 
       return {
         id: l.id,
@@ -113,12 +89,15 @@ export default async function KlubbInnstillingerPage() {
           capacity: f.capacity,
           active: f.active,
         })),
-        spillereCount: spillereCount > 0 ? spillereCount : fallbackSpillere,
-        coacherCount: coacherCount > 0 ? coacherCount : fallbackCoacher,
+        spillereCount,
+        coacherCount,
         defaultFacilityId: defaultFacility?.id ?? null,
-        dagligLederNavn: meta.dagligLederNavn,
-        dagligLederEmail: meta.dagligLederEmail,
-        apningstider: meta.apningstider,
+        dagligLederNavn: settings.dagligLeder || TOM,
+        dagligLederEmail: settings.epost || TOM,
+        apningstider: {
+          hverdag: settings.apningstider.hverdag || TOM,
+          helg: settings.apningstider.helg || TOM,
+        },
       } satisfies ClubItem;
     }),
   );
@@ -155,18 +134,8 @@ export default async function KlubbInnstillingerPage() {
         />
       </div>
 
-      {klubber.length === 0 ? (
-        <div className="flex flex-col items-center gap-4 rounded-lg border border-dashed border-border bg-card/40 px-6 py-16 text-center">
-          <div className="grid h-12 w-12 place-items-center rounded-full bg-secondary text-muted-foreground">
-            <Building2 size={24} strokeWidth={1.75} />
-          </div>
-          <p className="font-display text-base">
-            <em className="italic text-primary">Ingen klubber</em> registrert
-          </p>
-        </div>
-      ) : (
-        <KlubbInnstillingerClient klubber={klubber} />
-      )}
+      <KlubbInnstillingerClient klubber={klubber} settings={settings} />
+
     </div>
   );
 }
