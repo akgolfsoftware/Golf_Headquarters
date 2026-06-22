@@ -7,7 +7,7 @@
 
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, Check, ChevronLeft, ChevronRight } from "lucide-react";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { PORTAL_ROUTES } from "@/lib/portal-routes";
@@ -162,7 +162,8 @@ export default async function ReviewPage({ searchParams }: Props) {
               value="APPROVED"
               className="inline-flex items-center gap-1 rounded-md bg-success px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
             >
-              ✓ Godkjent
+              <Check className="h-4 w-4" />
+              Godkjent
             </button>
             <button
               type="submit"

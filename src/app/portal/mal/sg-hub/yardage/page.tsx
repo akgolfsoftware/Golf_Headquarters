@@ -37,7 +37,7 @@ export default async function YardagePage() {
         </p>
         <h1 className="font-display text-3xl font-bold leading-tight tracking-[-0.02em] text-foreground">
           Stock{" "}
-          <em className="italic font-medium" style={{ color: "#005840" }}>
+          <em className="italic font-medium text-primary">
             yardage
           </em>
         </h1>

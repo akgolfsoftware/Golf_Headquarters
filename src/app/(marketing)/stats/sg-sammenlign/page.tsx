@@ -192,8 +192,8 @@ export default async function SgSammenlignLanding() {
             <Reveal key={i} delay={i * 100}>
               <div
                 style={{
-                  background: "#FFFFFF",
-                  border: "1px solid #E5E3DD",
+                  background: "hsl(var(--card))",
+                  border: "1px solid hsl(var(--border))",
                   borderRadius: 16,
                   padding: 28,
                   display: "flex",
@@ -285,8 +285,8 @@ export default async function SgSammenlignLanding() {
               <Reveal key={i} delay={i * 100}>
                 <div
                   style={{
-                    background: "#FFFFFF",
-                    border: "1px solid #E5E3DD",
+                    background: "hsl(var(--card))",
+                    border: "1px solid hsl(var(--border))",
                     borderRadius: 16,
                     padding: 28,
                   }}

@@ -602,13 +602,13 @@ export function MissionControl() {
                     </button>
                   ))}
                   {!ql && (
-                    <button
-                      type="button"
+                    <Link
+                      href="/admin/kalender"
                       className="mt-1.5 inline-flex w-full items-center justify-center gap-1.5 rounded-[10px] border border-dashed border-border py-[9px] font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground hover:border-muted-foreground hover:text-foreground"
                     >
                       <ChevronDown size={13} strokeWidth={1.5} /> +{EVENTS_MORE}{" "}
                       flere avtaler i dag
-                    </button>
+                    </Link>
                   )}
                 </div>
               </section>

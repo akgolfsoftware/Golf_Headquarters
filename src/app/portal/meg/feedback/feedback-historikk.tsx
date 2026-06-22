@@ -137,7 +137,7 @@ const STATUS_INFO: Record<Status, { navn: string; tone: string }> = {
   lest: {
     navn: "Lest",
     tone:
-      "bg-[color:rgb(217_119_6)]/10 text-[color:rgb(217_119_6)] border-[color:rgb(217_119_6)]/30",
+      "bg-warning/10 text-warning border-warning/30",
   },
   besvart: {
     navn: "Besvart",
@@ -147,7 +147,7 @@ const STATUS_INFO: Record<Status, { navn: string; tone: string }> = {
 
 function npsTone(v: number): string {
   if (v >= 9) return "bg-primary text-primary-foreground";
-  if (v >= 7) return "bg-[color:rgb(217_119_6)] text-white";
+  if (v >= 7) return "bg-warning text-white";
   return "bg-destructive text-destructive-foreground";
 }
 

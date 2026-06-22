@@ -90,8 +90,9 @@ export default async function MeldingstradPage({ params }: RouteProps) {
         </div>
         <div className="min-w-0">
           <div className="text-[15px] font-semibold">{session.coach.name}</div>
-          <div className="font-mono text-[10.5px] uppercase tracking-[0.06em] text-muted-foreground">
-            <span className="text-success">●</span> Pålogget · hovedcoach · GFGK
+          <div className="flex items-center gap-1.5 font-mono text-[10.5px] uppercase tracking-[0.06em] text-muted-foreground">
+            <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-success" aria-hidden />
+            Pålogget · hovedcoach · GFGK
           </div>
         </div>
         <div className="flex items-center gap-1">

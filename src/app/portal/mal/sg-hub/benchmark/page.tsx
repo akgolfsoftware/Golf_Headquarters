@@ -49,7 +49,7 @@ export default async function BenchmarkPage() {
       <div className="space-y-1">
         <h1 className="font-display text-3xl font-bold leading-tight text-foreground">
           Benchmark{" "}
-          <em className="italic" style={{ color: "#005840" }}>
+          <em className="italic text-primary">
             sammenligning
           </em>
         </h1>
@@ -67,8 +67,7 @@ export default async function BenchmarkPage() {
           </p>
           <Link
             href="/portal/mal/sg-hub"
-            className="mt-4 inline-flex items-center gap-1.5 font-mono text-[11px] font-semibold uppercase tracking-wider"
-            style={{ color: "#005840" }}
+            className="mt-4 inline-flex items-center gap-1.5 font-mono text-[11px] font-semibold uppercase tracking-wider text-primary"
           >
             <ArrowLeft className="h-3 w-3" />
             Tilbake til SG-Hub
@@ -107,7 +106,7 @@ export default async function BenchmarkPage() {
                             ? "font-mono text-[12px] font-semibold"
                             : "font-mono text-[12px] font-semibold text-destructive"
                       }
-                      style={val != null && isPositive ? { color: "#005840" } : undefined}
+                      style={val != null && isPositive ? { color: "var(--primary)" } : undefined}
                     >
                       {deltaLabel}
                     </span>
@@ -118,14 +117,14 @@ export default async function BenchmarkPage() {
                     {/* Player bar */}
                     <span
                       className="absolute inset-y-0 left-0 rounded-full"
-                      style={{ width: `${playerPct}%`, backgroundColor: "#005840" }}
+                      style={{ width: `${playerPct}%`, backgroundColor: "var(--primary)" }}
                     />
                     {/* Benchmark reference at 50% */}
                     <span
                       className="absolute inset-y-0 left-0 rounded-full"
                       style={{
                         width: "50%",
-                        backgroundColor: "#D1F843",
+                        backgroundColor: "var(--accent)",
                         opacity: 0.5,
                       }}
                     />

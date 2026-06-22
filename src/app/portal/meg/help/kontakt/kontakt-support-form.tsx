@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import {
   CreditCard,
   MessageSquare,
@@ -40,6 +41,7 @@ export function KontaktSupportForm({
   const [tillatInnsyn, setTillatInnsyn] = useState(false);
   const [techOpen, setTechOpen] = useState(false);
   const [pending, startTransition] = useTransition();
+  const router = useRouter();
 
   function fjernVedlegg(navn: string) {
     setVedlegg((v) => v.filter((f) => f.navn !== navn));
@@ -259,6 +261,7 @@ export function KontaktSupportForm({
         </div>
         <button
           type="button"
+          onClick={() => router.push("/portal/meg/help")}
           className="ml-auto rounded-full border border-border px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted"
         >
           Avbryt

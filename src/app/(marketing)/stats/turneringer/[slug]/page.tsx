@@ -797,11 +797,14 @@ export default async function StatsTurneringDetalj({ params }: Props) {
                             <span
                               style={{
                                 marginLeft: 6,
-                                fontSize: 11,
+                                fontFamily: "var(--font-mono)",
+                                fontSize: 9.5,
+                                fontWeight: 700,
+                                letterSpacing: "0.08em",
                                 color: "var(--s-primary)",
                               }}
                             >
-                              🇳🇴
+                              NOR
                             </span>
                           </Link>
                         ) : (
@@ -811,11 +814,14 @@ export default async function StatsTurneringDetalj({ params }: Props) {
                               <span
                                 style={{
                                   marginLeft: 6,
-                                  fontSize: 11,
+                                  fontFamily: "var(--font-mono)",
+                                  fontSize: 9.5,
+                                  fontWeight: 700,
+                                  letterSpacing: "0.08em",
                                   color: "var(--s-primary)",
                                 }}
                               >
-                                🇳🇴
+                                NOR
                               </span>
                             )}
                           </>

@@ -201,10 +201,7 @@ export default async function CoachPlanDetalj({
       <div className="space-y-3 px-3 md:px-0">
 
         {/* Coach-notat — lime left-border */}
-        <div
-          className="rounded-xl border border-border bg-card p-3.5 shadow-sm"
-          style={{ borderLeft: "3px solid #D1F843" }}
-        >
+        <div className="rounded-xl border border-border border-l-[3px] border-l-accent bg-card p-3.5 shadow-sm">
           <div className="mb-1.5 font-display text-[13px] font-bold text-foreground">
             Coach-notat
           </div>
@@ -215,8 +212,7 @@ export default async function CoachPlanDetalj({
           </p>
           <div className="mt-2.5 flex items-center gap-2">
             <div
-              className="grid h-7 w-7 shrink-0 place-items-center rounded-full font-mono text-[10px] font-semibold"
-              style={{ background: "#005840", color: "#D1F843" }}
+              className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-primary font-mono text-[10px] font-semibold text-primary-foreground"
             >
               {initialer(coachNavn)}
             </div>
@@ -285,10 +281,7 @@ export default async function CoachPlanDetalj({
             <div className="divide-y divide-border">
               {alleDrills.map((d) => (
                 <div key={d.id} className="flex items-center gap-2.5 py-2">
-                  <span
-                    className="h-2 w-2 shrink-0 rounded-full"
-                    style={{ background: "#005840" }}
-                  />
+                  <span className="h-2 w-2 shrink-0 rounded-full bg-primary" />
                   <div className="min-w-0 flex-1">
                     <div className="text-[13px] font-semibold text-foreground">{d.title}</div>
                     {d.meta && (
@@ -297,8 +290,7 @@ export default async function CoachPlanDetalj({
                   </div>
                   <Link
                     href={`/portal/gjennomfore/${d.sessionId}`}
-                    className="shrink-0 rounded-full px-3 py-[6px] font-mono text-[10px] font-bold uppercase tracking-[0.06em] transition hover:brightness-95"
-                    style={{ background: "#005840", color: "#D1F843" }}
+                    className="shrink-0 rounded-full bg-primary px-3 py-[6px] font-mono text-[10px] font-bold uppercase tracking-[0.06em] text-primary-foreground transition hover:brightness-95"
                   >
                     Utfør
                   </Link>
@@ -413,8 +405,7 @@ export default async function CoachPlanDetalj({
         <div className="pb-2">
           <Link
             href={`/portal/coach/plans/${plan.id}/ny-okt`}
-            className="flex w-full items-center justify-center rounded-full py-3.5 font-mono text-[13px] font-bold uppercase tracking-[0.08em] transition hover:brightness-95"
-            style={{ background: "#D1F843", color: "#0A1F17" }}
+            className="flex w-full items-center justify-center rounded-full bg-accent py-3.5 font-mono text-[13px] font-bold uppercase tracking-[0.08em] text-foreground transition hover:brightness-95"
           >
             Start ny økt fra plan
           </Link>

@@ -36,7 +36,7 @@ export default async function ConditionsPage() {
         </p>
         <h1 className="font-display text-3xl font-bold leading-tight tracking-[-0.02em] text-foreground">
           Værjustert{" "}
-          <em className="italic font-medium" style={{ color: "#005840" }}>
+          <em className="italic font-medium text-primary">
             distanse
           </em>
         </h1>

@@ -57,7 +57,7 @@ export default async function SgStartPage({ searchParams }: Props) {
       <div
         style={{
           padding: "12px 32px",
-          borderBottom: "1px solid #E5E3DD",
+          borderBottom: "1px solid var(--s-border)",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
@@ -104,7 +104,7 @@ export default async function SgStartPage({ searchParams }: Props) {
             style={{
               textAlign: "center",
               padding: 64,
-              border: "1px dashed #E5E3DD",
+              border: "1px dashed var(--s-border)",
               borderRadius: 16,
             }}
           >

@@ -107,8 +107,7 @@ export default async function CoachPerioderPage() {
                   />
                 ) : (
                   <div
-                    className="grid h-8 w-8 shrink-0 place-items-center rounded-full font-mono text-xs font-semibold"
-                    style={{ background: "#005840", color: "#D1F843" }}
+                    className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-primary font-mono text-xs font-semibold text-primary-foreground"
                   >
                     {d.spillerNavn.charAt(0)}
                   </div>

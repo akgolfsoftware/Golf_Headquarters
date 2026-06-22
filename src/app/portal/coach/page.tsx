@@ -97,17 +97,13 @@ export default async function CoachPage() {
       </div>
 
       {/* ── 2. Coach insight card ───────────────────────────────── */}
-      <div className="mx-3 mb-3.5 overflow-hidden rounded-xl border border-border bg-card shadow-sm md:mx-0"
-           style={{ borderLeft: "3px solid #D1F843" }}>
+      <div className="mx-3 mb-3.5 overflow-hidden rounded-xl border border-l-[3px] border-border border-l-accent bg-card shadow-sm md:mx-0">
         <div className="p-4">
           {coach ? (
             <>
               {/* Avatar + navn */}
               <div className="mb-3 flex items-center gap-2.5">
-                <div
-                  className="grid h-[42px] w-[42px] shrink-0 place-items-center rounded-full font-mono text-[13px] font-bold"
-                  style={{ background: "#005840", color: "#D1F843" }}
-                >
+                <div className="grid h-[42px] w-[42px] shrink-0 place-items-center rounded-full bg-primary font-mono text-[13px] font-bold text-primary-foreground">
                   {coach.initials}
                 </div>
                 <div>
@@ -123,7 +119,7 @@ export default async function CoachPage() {
               {/* Ukes-fokus (bruker nyeste coach-notat som fokustekst, eller placeholder) */}
               {coachNotes.length > 0 ? (
                 <p className="mb-3 text-[13.5px] leading-[1.55] text-foreground">
-                  <em className="font-medium italic" style={{ color: "#005840" }}>
+                  <em className="font-medium italic text-primary">
                     {coachNotes[0].title ?? "Fokus fra coach:"}
                   </em>{" "}
                   {coachNotes[0].content.slice(0, 140)}
@@ -139,8 +135,7 @@ export default async function CoachPage() {
               <div className="flex gap-2">
                 <Link
                   href="/portal/coach/melding"
-                  className="flex flex-1 items-center justify-center rounded-lg px-3 py-2.5 font-mono text-[10.5px] font-bold uppercase tracking-[0.06em] transition hover:brightness-95"
-                  style={{ background: "#005840", color: "#D1F843" }}
+                  className="flex flex-1 items-center justify-center rounded-lg bg-primary px-3 py-2.5 font-mono text-[10.5px] font-bold uppercase tracking-[0.06em] text-primary-foreground transition hover:brightness-95"
                 >
                   Send melding
                 </Link>
@@ -204,9 +199,9 @@ export default async function CoachPage() {
                     className="absolute left-[-13px] top-[3px] h-[9px] w-[9px] rounded-full"
                     style={
                       isToday
-                        ? { background: "#D1F843", border: "2px solid #005840" }
+                        ? { background: "var(--accent)", border: "2px solid var(--primary)" }
                         : isSoon
-                          ? { background: "white", border: "2px solid #005840" }
+                          ? { background: "white", border: "2px solid var(--primary)" }
                           : { background: "white", border: "2px solid var(--border)" }
                     }
                     aria-hidden
@@ -243,10 +238,7 @@ export default async function CoachPage() {
               Meldinger
             </span>
             {messages.filter((m) => m.role === "coach").length > 0 && (
-              <span
-                className="rounded-full px-1.5 py-0.5 font-mono text-[9px] font-bold"
-                style={{ background: "#D1F843", color: "#0A1F17" }}
-              >
+              <span className="rounded-full bg-accent px-1.5 py-0.5 font-mono text-[9px] font-bold text-foreground">
                 {messages.filter((m) => m.role === "coach").length} nye
               </span>
             )}
@@ -271,8 +263,8 @@ export default async function CoachPage() {
                       className="grid h-[26px] w-[26px] shrink-0 place-items-center rounded-full font-mono text-[9px] font-bold"
                       style={
                         isMe
-                          ? { background: "#E5E3DD", color: "#5E5C57" }
-                          : { background: "#005840", color: "#D1F843" }
+                          ? { background: "var(--border)", color: "var(--muted-foreground)" }
+                          : { background: "var(--primary)", color: "var(--primary-foreground)" }
                       }
                     >
                       {isMe ? meInitials : coach.initials}
@@ -284,12 +276,12 @@ export default async function CoachPage() {
                         isMe
                           ? {
                               borderRadius: "14px 14px 4px 14px",
-                              background: "#005840",
-                              color: "#D1F843",
+                              background: "var(--primary)",
+                              color: "var(--primary-foreground)",
                             }
                           : {
                               borderRadius: "14px 14px 14px 4px",
-                              background: "#F1EEE5",
+                              background: "var(--secondary)",
                               color: "#0A1F18",
                             }
                       }
@@ -312,11 +304,10 @@ export default async function CoachPage() {
             </Link>
             <Link
               href="/portal/coach/melding"
-              className="grid h-9 w-9 shrink-0 place-items-center rounded-full"
-              style={{ background: "#005840" }}
+              className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary"
               aria-label="Gå til meldinger"
             >
-              <Send className="h-3.5 w-3.5" style={{ color: "#D1F843" }} strokeWidth={2} />
+              <Send className="h-3.5 w-3.5 text-primary-foreground" strokeWidth={2} />
             </Link>
           </div>
         </div>

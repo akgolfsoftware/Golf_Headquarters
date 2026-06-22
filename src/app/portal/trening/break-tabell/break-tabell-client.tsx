@@ -125,7 +125,7 @@ function RefCard() {
     <div className="border border-border rounded-md overflow-hidden bg-card flex flex-col">
       <div className="flex items-center gap-2 px-3.5 py-2.5 bg-primary border-b-[3px] border-accent">
         <Ruler className="h-3.5 w-3.5 text-accent" strokeWidth={2} />
-        <span className="font-display font-bold text-[15px] text-[#FAFAF7] tracking-snug">Referanse</span>
+        <span className="font-display font-bold text-[15px] text-background tracking-snug">Referanse</span>
       </div>
       <div className="p-3.5 flex flex-col gap-3 flex-1">
         <RefRow icon={<CircleDot className="h-3.5 w-3.5 text-muted-foreground" strokeWidth={2} />} label="Hullkant" value="5,4 cm" />
@@ -209,7 +209,7 @@ function KalkulatorView() {
           {/* Answer panel */}
           <div className="bg-primary rounded-xl p-6 flex flex-col relative overflow-hidden">
             <span className="font-mono text-[10px] font-bold tracking-[0.12em] uppercase text-accent">SIKT UTENFOR HULLET</span>
-            <div className="font-mono font-bold leading-[0.9] tracking-[-0.04em] text-[88px] text-[#FAFAF7] tabular-nums mt-2">
+            <div className="font-mono font-bold leading-[0.9] tracking-[-0.04em] text-[88px] text-background tabular-nums mt-2">
               {adj}<span className="text-[30px] font-semibold text-accent">&#8239;cm</span>
             </div>
             <DeltaBadge dCm={dCm} dPct={dPct} dir={g.dir} />
@@ -274,7 +274,7 @@ function EffText({ base, g, effStimp }: { base: number; g: typeof GRADES[number]
 function ConvBlock({ n, label }: { n: string; label: string }) {
   return (
     <div className="flex flex-col gap-1">
-      <span className="font-mono text-[22px] font-extrabold text-[#FAFAF7] tabular-nums leading-none">{n}</span>
+      <span className="font-mono text-[22px] font-extrabold text-background tabular-nums leading-none">{n}</span>
       <span className="font-mono text-[9px] font-bold tracking-[0.08em] uppercase text-[rgba(245,250,238,0.6)]">{label}</span>
     </div>
   );

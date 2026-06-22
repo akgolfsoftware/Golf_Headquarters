@@ -265,23 +265,13 @@ function CaseKort({ case_: c }: { case_: Case }) {
           «{c.sitat}»
         </blockquote>
 
-        <div className="mt-3.5 flex items-center gap-2">
+        <div className="mt-auto flex items-center gap-2 pt-4">
           <span className="font-mono text-[22px] font-bold tabular-nums text-primary">
             -{forbedring}
           </span>
           <span className="text-[12px] text-muted-foreground">
             HCP-forbedring · {c.handicap_fra} → {c.handicap_til}
           </span>
-        </div>
-
-        <div className="mt-auto pt-4">
-          <Link
-            href={`/cases/${c.slug}`}
-            className="inline-flex items-center gap-2 text-[14px] font-semibold text-primary transition-all hover:gap-3"
-          >
-            Les historien
-            <ArrowRight className="h-4 w-4" strokeWidth={1.75} />
-          </Link>
         </div>
       </div>
     </article>

@@ -145,7 +145,7 @@ export default async function SgResultatPage({ params }: Props) {
     <div className="bg-background text-foreground">
 
       {/* ── BREADCRUMB ────────────────────────────────────────────── */}
-      <div style={{ padding: "12px 32px", borderBottom: "1px solid #E5E3DD" }}>
+      <div style={{ padding: "12px 32px", borderBottom: "1px solid var(--s-border)" }}>
         <Link
           href="/stats/sg-sammenlign"
           style={{
@@ -166,7 +166,7 @@ export default async function SgResultatPage({ params }: Props) {
       <section
         style={{
           padding: "56px 40px 48px",
-          borderBottom: "1px solid #E5E3DD",
+          borderBottom: "1px solid var(--s-border)",
           background: "linear-gradient(180deg, #FAFAF7 0%, #F1EEE5 100%)",
         }}
       >
@@ -343,7 +343,7 @@ export default async function SgResultatPage({ params }: Props) {
       {/* ── RADAR CHART ─────────────────────────────────────────── */}
       <section
         className="stats-section stats-section-divider"
-        style={{ background: "#FFFFFF" }}
+        style={{ background: "var(--s-card)" }}
       >
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <Reveal>
@@ -568,7 +568,7 @@ export default async function SgResultatPage({ params }: Props) {
                   </div>
                   <div
                     style={{
-                      borderTop: "1px solid #E5E3DD",
+                      borderTop: "1px solid var(--s-border)",
                       margin: "28px 0",
                     }}
                   />
@@ -706,8 +706,8 @@ export default async function SgResultatPage({ params }: Props) {
                 >
                   <div
                     style={{
-                      background: "#FFFFFF",
-                      border: "1px solid #E5E3DD",
+                      background: "var(--s-card)",
+                      border: "1px solid var(--s-border)",
                       borderRadius: 16,
                       padding: 24,
                       height: "100%",
@@ -891,7 +891,7 @@ export default async function SgResultatPage({ params }: Props) {
       <div
         style={{
           padding: "20px 40px",
-          borderTop: "1px solid #E5E3DD",
+          borderTop: "1px solid var(--s-border)",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",

@@ -814,7 +814,7 @@ export function PutteLaboratorietClient() {
             }`}
           >
             <span className={`font-mono text-[10px] font-extrabold tracking-[0.12em] ${activeDir === k ? "text-accent" : "text-muted-foreground"}`}>{n}</span>
-            <span className={`font-display font-bold text-[17px] tracking-snug ${activeDir === k ? "text-[#FAFAF7]" : "text-foreground"}`}>{tt}</span>
+            <span className={`font-display font-bold text-[17px] tracking-snug ${activeDir === k ? "text-background" : "text-foreground"}`}>{tt}</span>
             <span className={`text-[11.5px] leading-[1.35] ${activeDir === k ? "text-white/70" : "text-muted-foreground"}`}>{dd}</span>
           </button>
         ))}

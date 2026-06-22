@@ -39,11 +39,10 @@ export default async function UtfordringerListe() {
             <h1 className="font-display text-3xl font-bold leading-tight tracking-tight md:text-4xl">
               Mine{" "}
               <em
-                className="font-medium not-italic"
+                className="font-medium not-italic text-primary"
                 style={{
                   fontFamily: "'Inter Tight', sans-serif",
                   fontStyle: "italic",
-                  color: "#005840",
                 }}
               >
                 utfordringer
@@ -159,13 +158,15 @@ function UtfordringKort({
         {/* Eyebrow-rad: status-dot + label, + Eier-badge */}
         <div className="flex items-center justify-between gap-2">
           <span
-            className="inline-flex items-center gap-1.5 font-mono text-[9.5px] font-bold uppercase tracking-[0.10em]"
-            style={{ color: erAvsluttet ? undefined : "#005840" }}
+            className={`inline-flex items-center gap-1.5 font-mono text-[9.5px] font-bold uppercase tracking-[0.10em] ${
+              erAvsluttet ? "" : "text-primary"
+            }`}
           >
             <span
               aria-hidden
-              className="inline-block h-1.5 w-1.5 rounded-full"
-              style={{ background: erAvsluttet ? "#5E5C57" : "#D1F843" }}
+              className={`inline-block h-1.5 w-1.5 rounded-full ${
+                erAvsluttet ? "bg-muted-foreground" : "bg-accent"
+              }`}
             />
             <span className={erAvsluttet ? "text-muted-foreground" : ""}>
               {erAvsluttet ? "Fullført" : "Utfordring"}
@@ -205,7 +206,7 @@ function UtfordringKort({
             </dt>
             <dd className="mt-1 font-mono text-lg font-bold tabular-nums">
               {minPlassering?.rank != null ? (
-                <span style={{ color: "#005840" }}>
+                <span className="text-primary">
                   #{minPlassering.rank}
                   {minPlassering.score != null && (
                     <span className="ml-1.5 text-sm font-medium text-muted-foreground">

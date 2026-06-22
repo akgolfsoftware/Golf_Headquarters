@@ -221,10 +221,7 @@ export default async function BarnProfil({
               border: "2px solid #D1F843",
             }}
           >
-            <span
-              className="font-mono text-base font-bold"
-              style={{ color: "#D1F843" }}
-            >
+            <span className="font-mono text-base font-bold text-accent">
               {initialer}
             </span>
           </div>
@@ -259,10 +256,7 @@ export default async function BarnProfil({
               >
                 {label}
               </div>
-              <div
-                className="mt-1 font-mono text-xl font-bold tabular-nums"
-                style={{ color: "#D1F843" }}
-              >
+              <div className="mt-1 font-mono text-xl font-bold tabular-nums text-accent">
                 {value}
               </div>
             </div>

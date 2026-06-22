@@ -105,8 +105,7 @@ export default async function CoachSgHubPage() {
             <div className="flex gap-3 font-mono text-[9px] text-muted-foreground">
               <span className="flex items-center gap-1.5">
                 <span
-                  className="inline-block h-[3px] w-2.5 rounded-[1px]"
-                  style={{ background: "#005840" }}
+                  className="inline-block h-[3px] w-2.5 rounded-[1px] bg-primary"
                 />
                 {user.name.split(" ")[0]}
               </span>
@@ -145,8 +144,7 @@ export default async function CoachSgHubPage() {
                     </span>
 
                     <div
-                      className="relative h-3 overflow-hidden rounded-full border border-border"
-                      style={{ background: "#F1EEE5" }}
+                      className="relative h-3 overflow-hidden rounded-full border border-border bg-secondary"
                     >
                       <span
                         className="absolute inset-y-0 z-10 w-px opacity-35"
@@ -199,10 +197,7 @@ export default async function CoachSgHubPage() {
 
         {/* Insight — lime left-border */}
         {!ingenData && storsteGapVerdi > 0 && (
-          <div
-            className="rounded-xl border border-border bg-card p-4 shadow-sm"
-            style={{ borderLeft: "3px solid #D1F843" }}
-          >
+          <div className="rounded-xl border border-border border-l-[3px] border-l-accent bg-card p-4 shadow-sm">
             <div className="mb-1.5 font-display text-[13px] font-bold text-foreground">
               Hva du jobber mot
             </div>

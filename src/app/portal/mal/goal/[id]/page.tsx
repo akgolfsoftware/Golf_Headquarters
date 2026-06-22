@@ -218,20 +218,14 @@ export default async function GoalDetailPage({
           Mine mål
         </Link>
 
-        <div
-          className="font-mono text-[9px] font-bold uppercase tracking-[0.10em] mb-1"
-          style={{ color: "#005840" }}
-        >
+        <div className="font-mono text-[9px] font-bold uppercase tracking-[0.10em] mb-1 text-primary">
           {data.typeLabel}
         </div>
 
         <h1 className="font-display text-[26px] font-bold tracking-[-0.03em] text-foreground leading-tight">
           {data.title.split(" til ")[0] + " til "}
           {data.title.includes(" til ") ? (
-            <em
-              className="font-display italic font-medium"
-              style={{ color: "#005840" }}
-            >
+            <em className="font-display italic font-medium text-primary">
               {data.title.split(" til ").slice(1).join(" til ")}
             </em>
           ) : null}
@@ -257,10 +251,10 @@ export default async function GoalDetailPage({
               className="rounded-full px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.06em]"
               style={
                 data.status === "ACHIEVED"
-                  ? { background: "#D1F843", color: "#0A1F17" }
+                  ? { background: "var(--accent)", color: "var(--foreground)" }
                   : data.status === "ABANDONED"
-                    ? { background: "#F1EEE5", color: "#5E5C57" }
-                    : { background: "rgba(0,88,64,.10)", color: "#005840" }
+                    ? { background: "var(--secondary)", color: "var(--muted-foreground)" }
+                    : { background: "rgba(0,88,64,.10)", color: "var(--primary)" }
               }
             >
               {data.status === "ACHIEVED"
@@ -312,9 +306,9 @@ export default async function GoalDetailPage({
                   className="flex items-center gap-3 rounded-lg px-3 py-2"
                   style={
                     step.state === "here"
-                      ? { background: "#005840", color: "#D1F843" }
+                      ? { background: "var(--primary)", color: "var(--primary-foreground)" }
                       : step.state === "next"
-                        ? { border: "1px dashed #005840" }
+                        ? { border: "1px dashed var(--primary)" }
                         : { background: "transparent" }
                   }
                 >

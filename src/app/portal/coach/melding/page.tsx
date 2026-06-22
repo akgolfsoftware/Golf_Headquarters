@@ -46,8 +46,7 @@ export default async function CoachMeldingPage() {
         </div>
         <Link
           href="/portal/meg/abonnement"
-          className="inline-flex items-center gap-2 rounded-full px-6 py-3.5 font-mono text-[13px] font-bold uppercase tracking-[0.08em] transition hover:brightness-95"
-          style={{ background: "#005840", color: "#D1F843" }}
+          className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 font-mono text-[13px] font-bold uppercase tracking-[0.08em] text-primary-foreground transition hover:brightness-95"
         >
           Oppgrader til Pro
         </Link>
@@ -120,10 +119,7 @@ export default async function CoachMeldingPage() {
             Til
           </div>
           <div className="flex items-center gap-2.5">
-            <div
-              className="grid h-8 w-8 shrink-0 place-items-center rounded-full font-mono text-[10px] font-bold"
-              style={{ background: "#005840", color: "#D1F843" }}
-            >
+            <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-primary font-mono text-[10px] font-bold text-primary-foreground">
               {hovedcoach.name
                 .split(" ")
                 .map((d) => d[0])
@@ -195,8 +191,7 @@ export default async function CoachMeldingPage() {
           </p>
           <Link
             href="/portal/coach/melding"
-            className="mt-3 inline-flex items-center gap-2 rounded-full px-4 py-2.5 font-mono text-[11px] font-bold uppercase tracking-[0.08em] transition hover:brightness-95"
-            style={{ background: "#005840", color: "#D1F843" }}
+            className="mt-3 inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2.5 font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-primary-foreground transition hover:brightness-95"
           >
             <Send className="h-3.5 w-3.5" strokeWidth={2} />
             Still spørsmål

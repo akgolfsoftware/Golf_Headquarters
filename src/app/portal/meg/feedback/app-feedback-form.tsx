@@ -75,7 +75,7 @@ export function AppFeedbackForm() {
                     ? seg === "promoter"
                       ? "border-primary bg-primary text-primary-foreground"
                       : seg === "passive"
-                        ? "border-[color:rgb(217_119_6)] bg-[color:rgb(217_119_6)] text-white"
+                        ? "border-warning bg-warning text-white"
                         : "border-destructive bg-destructive text-destructive-foreground"
                     : inSeg
                       ? "border-primary/30 bg-primary/5 text-foreground"
@@ -96,7 +96,7 @@ export function AppFeedbackForm() {
                 seg === "promoter"
                   ? "bg-primary/15 text-primary"
                   : seg === "passive"
-                    ? "bg-[color:rgb(217_119_6)]/15 text-[color:rgb(217_119_6)]"
+                    ? "bg-warning/15 text-warning"
                     : "bg-destructive/15 text-destructive"
               }`}
             >

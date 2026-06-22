@@ -89,7 +89,7 @@ export async function EquipmentView({
         </p>
         <h1 className="font-display text-3xl font-bold leading-tight tracking-[-0.02em] text-foreground">
           Utstyr
-          <em className="italic font-medium" style={{ color: "#005840" }}>
+          <em className="italic font-medium text-primary">
             -helsesjekk
           </em>
           {spillerNavn ? (

@@ -313,7 +313,16 @@ function TurneringKort({ t }: { t: TurneringListeRad }) {
               letterSpacing: "0.06em",
             }}
           >
-            🇳🇴 {t.norskeAntall} norsk{t.norskeAntall === 1 ? "" : "e"}
+            <span
+              style={{
+                fontWeight: 700,
+                letterSpacing: "0.08em",
+                opacity: 0.85,
+              }}
+            >
+              NOR
+            </span>{" "}
+            {t.norskeAntall} norsk{t.norskeAntall === 1 ? "" : "e"}
           </span>
         </div>
       )}
@@ -513,7 +522,9 @@ export default async function TurneringerPage({ searchParams }: Props) {
               letterSpacing: "0.04em",
             }}
           >
-            🇳🇴{" "}
+            <span style={{ fontWeight: 700, letterSpacing: "0.08em" }}>
+              NOR
+            </span>{" "}
             {totaltNorske} norske spiller{totaltNorske === 1 ? "" : "e"} i
             aksjon denne uken på {antallTurneringerMedNorske} turnering
             {antallTurneringerMedNorske === 1 ? "" : "er"}

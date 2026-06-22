@@ -143,7 +143,7 @@ export default async function ClubDetailPage({
           Per-kølle analyse
         </p>
         <h1 className="font-display text-3xl font-bold leading-tight tracking-[-0.02em] text-foreground">
-          <em className="font-medium italic" style={{ color: "#005840" }}>
+          <em className="font-medium italic text-primary">
             {decoded}
           </em>
         </h1>

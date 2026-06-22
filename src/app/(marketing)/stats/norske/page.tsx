@@ -209,7 +209,7 @@ export default async function NorskePage() {
       <div
         style={{
           padding: "12px 32px",
-          borderBottom: "1px solid #E5E3DD",
+          borderBottom: "1px solid var(--s-border)",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
@@ -488,7 +488,23 @@ function TurnGruppeKort({ gruppe }: { gruppe: TurnGruppe }) {
               letterSpacing: "-0.015em",
             }}
           >
-            🇳🇴{" "}
+            <span
+              style={{
+                display: "inline-block",
+                marginRight: 8,
+                padding: "1px 6px",
+                borderRadius: 4,
+                fontFamily: "var(--font-mono)",
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: "0.08em",
+                verticalAlign: "middle",
+                background: "var(--s-secondary)",
+                color: "var(--s-muted-fg)",
+              }}
+            >
+              NOR
+            </span>
             {gruppe.turnering.slug ? (
               <Link
                 href={`/stats/turneringer/${gruppe.turnering.slug}`}

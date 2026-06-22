@@ -103,10 +103,7 @@ export default async function SamtykkePage() {
       </p>
 
       {alleAktive && (
-        <div
-          className="flex items-center gap-[10px] rounded-xl p-3"
-          style={{ background: "rgba(26,125,86,0.08)", border: "1px solid rgba(26,125,86,0.2)" }}
-        >
+        <div className="flex items-center gap-[10px] rounded-xl border border-success/20 bg-success/[0.08] p-3">
           <Check className="h-[18px] w-[18px] flex-shrink-0 text-success" strokeWidth={1.5} aria-hidden />
           <span className="text-[13.5px] font-semibold text-foreground">
             Alle samtykker aktive og oppdatert
@@ -144,10 +141,7 @@ export default async function SamtykkePage() {
       </div>
 
       {/* Guardian info */}
-      <div
-        className="flex items-start gap-4 rounded-xl p-4"
-        style={{ background: "rgba(0,88,64,0.05)", border: "1px solid rgba(0,88,64,0.2)" }}
-      >
+      <div className="flex items-start gap-4 rounded-xl border border-primary/20 bg-primary/5 p-4">
         <Shield className="mt-0.5 h-5 w-5 flex-shrink-0 text-primary" strokeWidth={1.75} aria-hidden />
         <div className="text-sm">
           <p className="font-semibold text-foreground">

@@ -563,9 +563,11 @@ export default async function PgaStatsHub() {
                 PGA Tour-snittet fra 3 meter er 48 %. Du hadde gjettet høyere, hadde du ikke?
                 Putt Explorer lar deg utforske hver avstand, og se hvor amatøren faller bak proffen.
               </p>
-              <StatsBtn variant="outline" icon="ArrowRight">
-                Lek deg med putt-data
-              </StatsBtn>
+              <Link href="/stats/pga/putt-explorer" style={{ display: "inline-block" }}>
+                <StatsBtn variant="outline" icon="ArrowRight">
+                  Lek deg med putt-data
+                </StatsBtn>
+              </Link>
             </div>
             <div>
               <PuttPreview data={PUTT_DATA} height={220} />

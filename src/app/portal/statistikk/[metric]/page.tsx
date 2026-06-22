@@ -339,11 +339,10 @@ export default async function MetricDrillDownPage({
           <h1 className="font-display mt-1.5 text-3xl font-bold leading-tight tracking-tight md:text-4xl">
             {info.title}{" "}
             <em
-              className="font-normal not-italic"
+              className="font-normal not-italic text-primary"
               style={{
                 fontFamily: "'Inter Tight', sans-serif",
                 fontStyle: "italic",
-                color: "#005840",
               }}
             >
               {info.italic}
@@ -394,16 +393,10 @@ export default async function MetricDrillDownPage({
                 }}
               />
               <div className="relative z-10">
-                <div
-                  className="font-mono text-[9.5px] font-bold uppercase tracking-[0.12em]"
-                  style={{ color: "#D1F843" }}
-                >
+                <div className="font-mono text-[9.5px] font-bold uppercase tracking-[0.12em] text-accent">
                   Snitt 30 d
                 </div>
-                <div
-                  className="mt-3 font-mono text-4xl font-bold leading-none tabular-nums md:text-5xl"
-                  style={{ color: "#D1F843" }}
-                >
+                <div className="mt-3 font-mono text-4xl font-bold leading-none tabular-nums text-accent md:text-5xl">
                   {info.format(verdi30d)}
                 </div>
                 <div className="mt-3 font-mono text-[10.5px] text-white/65">

@@ -77,8 +77,7 @@ export default async function CoachOvelserPage({
         </div>
         <Link
           href="/portal/coach/ovelser/ny"
-          className="flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-[7px] font-mono text-[10px] font-bold uppercase tracking-[0.04em] transition hover:brightness-95"
-          style={{ background: "#005840", color: "#D1F843" }}
+          className="flex shrink-0 items-center gap-1.5 rounded-full bg-primary px-3.5 py-[7px] font-mono text-[10px] font-bold uppercase tracking-[0.04em] text-primary-foreground transition hover:brightness-95"
         >
           <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />
           Ny øvelse
@@ -117,8 +116,7 @@ export default async function CoachOvelserPage({
             cta={
               <Link
                 href="/portal/coach/ovelser/ny"
-                className="inline-flex items-center rounded-full px-6 py-2.5 font-mono text-[13px] font-bold uppercase tracking-[0.06em] transition hover:brightness-95"
-                style={{ background: "#005840", color: "#D1F843" }}
+                className="inline-flex items-center rounded-full bg-primary px-6 py-2.5 font-mono text-[13px] font-bold uppercase tracking-[0.06em] text-primary-foreground transition hover:brightness-95"
               >
                 Opprett øvelse
               </Link>
@@ -180,8 +178,8 @@ function OvelseCard({
         />
         {/* Kategori-chip */}
         <span
-          className="absolute bottom-1.5 left-2.5 rounded-full px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase"
-          style={{ background: "rgba(0,0,0,.4)", color: "#D1F843" }}
+          className="absolute bottom-1.5 left-2.5 rounded-full px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase text-accent"
+          style={{ background: "rgba(0,0,0,.4)" }}
         >
           {cat}
         </span>

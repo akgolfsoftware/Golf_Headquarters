@@ -114,9 +114,7 @@ export default async function HullAnalysePage() {
         </div>
         <h1 className="font-display text-2xl font-bold leading-tight tracking-tight text-foreground">
           Hvor taper du{" "}
-          <em className="font-medium italic" style={{ color: "#005840" }}>
-            slag
-          </em>
+          <em className="font-medium italic text-primary">slag</em>
           ?
         </h1>
         <p className="text-[12.5px] text-muted-foreground">
