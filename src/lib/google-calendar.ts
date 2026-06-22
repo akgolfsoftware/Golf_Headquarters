@@ -427,7 +427,6 @@ export async function syncCalendarList(connectionId: string): Promise<{
       skipped++;
       continue;
     }
-    const isOwner = item.accessRole === "owner";
     await prisma.googleCalendarSubscription.upsert({
       where: {
         connectionId_googleCalendarId: {
@@ -441,9 +440,12 @@ export async function syncCalendarList(connectionId: string): Promise<{
         calendarName: item.summary ?? item.id,
         description: item.description ?? null,
         color: item.backgroundColor ?? null,
-        syncPush: isOwner,
-        syncPull: true,
-        active: true,
+        // Nye kalendere starter alltid av — coach velger push/pull manuelt i
+        // innstillingene. Hindrer at alle kalendere aktiveres automatisk ved
+        // første tilkobling (roten til "8 hendelser per booking"-problemet).
+        syncPush: false,
+        syncPull: false,
+        active: false,
       },
       update: {
         // Behold bruker-toggler, oppdater kun visningsdata
