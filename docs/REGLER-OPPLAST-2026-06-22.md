@@ -58,7 +58,8 @@ står; skjermer som er innholds-korrekte men visuelt ulike (f.eks. abonnement) s
   - **Implikasjon (krever datamodell):** trengs en per-sesong snittscore-lagring (ny `SeasonStat`-tabell ELLER JSON-felt på User: {sesongÅr → snittscore, antallRunder}). I dag finnes kun `User.prevSeasonAvgScore` (ett felt). Schema-beslutning utestår — bekreft tilnærming før migrasjon.
   - **Byggeplan:** (a) STRAKS: diagnose-skjerm («SITT NIVÅ NÅ») bruker inneværende-sesong snittscore = snitt brutto score fra runder spilt i år → `kategoriFraSnittscore`. Funker nå for spillere med runder. (b) FØLGER: SeasonStat-modell + onboarding 3-sesong-innlasting + progresjons-visning.
 
-- **FYS: VENTER FORTSATT på Anders' formel.** Helse-tall forblir «—» til FYS-resultatformelen (rå testresultat → score/nivå) kommer.
+- **FYS: MOTTATT + FORMEL BYGD ✅ (2026-06-22).** Anders ga vektene (markløft 100% · benkpress 100% · stille lengde 50% · ballkast 16,6% · CHS 100%) + 2 valg: styrkeløft relativt til kroppsvekt, poeng relativt til stallen (beste=100). Formel: `src/lib/domain/fys-score.ts` (justertVerdi + delscore + fysScore + byggStallSpenn), 7 node:test grønne. Ingen hardkodede referanser (stall-relativ, selvkalibrerende).
+  - **GJENSTÅR (wiring):** (a) koble inn på Helse-skjermen (`/portal/meg/helse` — erstatt «—» readiness/KPI med fysScore når FYS-tester finnes; ellers ærlig «—»), (b) FYS-test-resultatene må lagre RÅverdiene (kg/cm/mph) + spillerens kroppsvekt — verifiser at TestResult/seed bærer dette, ellers seed/utvid. (c) v1 er stall-relativ; faste mål-verdier (per test el. A–K-kategori) kan erstatte normaliseringen senere uten å endre vektene.
 
 ## 4. Cockpit stall-SG + plan-etterlevelse  ·  STATUS: låst opp, venter scope-bekreftelse
 - **Var låst som:** placeholders «—» («til formelen er låst»).
