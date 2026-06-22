@@ -23,7 +23,8 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { requireCapability } from "@/lib/auth/requireCapability";
+import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { AgPage, AgPageHead } from "@/components/admin/agencyos/ui";
 import { LocationForm } from "./location-form";
@@ -50,7 +51,7 @@ const TYPE_IKON: Record<FacilityType, LucideIcon> = {
 };
 
 export default async function AnleggPage() {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  await requireCapability(Capability.MANAGE_FACILITIES);
 
   const naa = new Date();
   const ukeStart = new Date(naa);

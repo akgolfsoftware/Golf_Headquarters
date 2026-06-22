@@ -15,7 +15,8 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Building2, MapPin } from "lucide-react";
 
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { requireCapability } from "@/lib/auth/requireCapability";
+import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { DetailShell } from "@/components/shared/detail-shell";
 import { KPICard } from "@/components/ui/kpi-card";
@@ -32,7 +33,7 @@ export default async function AnleggDetailPage({
   params: Params;
   searchParams?: SearchParams;
 }) {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  await requireCapability(Capability.MANAGE_FACILITIES);
   const { id } = await params;
   const q = searchParams ? await searchParams : {};
 

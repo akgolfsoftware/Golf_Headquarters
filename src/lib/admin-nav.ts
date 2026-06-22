@@ -73,6 +73,17 @@ export type NavEntry =
 
 export type NavSection = { label: string; items: NavEntry[] };
 
+/**
+ * Nav-lenker (etter `key`) som krever en CBAC-capability. Skjules for roller
+ * uten den — samme policy som /admin/settings/tilgang viser. Gjelder både
+ * toppnivå-items og gruppe-barn.
+ */
+const LEAF_CAPABILITY: Record<string, Capability> = {
+  finance: Capability.VIEW_FINANCE,
+  facilities: Capability.MANAGE_FACILITIES,
+  team: Capability.MANAGE_USERS,
+};
+
 export function leafActive(path: string, leaf: NavLeaf): boolean {
   if (path === leaf.href) return true;
   if (leaf.exact) return false;
@@ -252,12 +263,22 @@ export function buildAdminNav(
     },
   ];
 
-  // Skjul «Økonomi»-lenken for roller uten VIEW_FINANCE (samme policy som
+  // Skjul capability-gatede nav-lenker for roller uten tilgang (samme policy som
   // /admin/settings/tilgang viser). Uten oppgitt rolle (legacy) vises alt.
-  if (role && !can(role, Capability.VIEW_FINANCE)) {
+  if (role) {
+    const blokkert = (key: string) => {
+      const cap = LEAF_CAPABILITY[key];
+      return cap !== undefined && !can(role, cap);
+    };
     return sections.map((s) => ({
       ...s,
-      items: s.items.filter((it) => it.key !== "finance"),
+      items: s.items
+        .filter((it) => !blokkert(it.key))
+        .map((it) =>
+          it.type === "group"
+            ? { ...it, children: it.children.filter((c) => !blokkert(c.key)) }
+            : it,
+        ),
     }));
   }
   return sections;

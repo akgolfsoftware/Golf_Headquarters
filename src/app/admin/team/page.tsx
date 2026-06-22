@@ -8,7 +8,8 @@
 
 import Link from "next/link";
 import { Mail, Search, UserPlus, Users } from "lucide-react";
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { requireCapability } from "@/lib/auth/requireCapability";
+import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 import { EmptyState } from "@/components/shared/empty-state";
@@ -19,7 +20,7 @@ type TeamMember = UserGetPayload<{
 }>;
 
 export default async function TeamAdmin() {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  await requireCapability(Capability.MANAGE_USERS);
 
   const team = await prisma.user.findMany({
     where: { role: { in: ["COACH", "ADMIN"] } },

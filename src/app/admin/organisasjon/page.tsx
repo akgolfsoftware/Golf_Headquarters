@@ -13,7 +13,8 @@ import {
   User,
   Users,
 } from "lucide-react";
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { requireCapability } from "@/lib/auth/requireCapability";
+import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import {
   HubFrame,
@@ -29,7 +30,7 @@ import { InnstillingerButton } from "./organisasjon-actions";
 export const dynamic = "force-dynamic";
 
 export default async function OrganisasjonPage() {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  await requireCapability(Capability.MANAGE_USERS);
 
   // Ekte tall fra DB — coach/admin-antall og antall e-postmaler.
   const [coacherCount, adminCount, malerCount] = await Promise.all([
