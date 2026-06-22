@@ -7,6 +7,16 @@ og besluttede verdier (fylles inn).
 
 > Loopen er PÅ PAUSE til verdiene er satt — å bygge videre mot gamle antakelser ville vært bortkastet.
 
+## FASIT-SWEEP STATUS (2026-06-22) — høyverdi-arbeid FERDIG
+Adversarial diff per mest-sett skjerm. FIKSET reelle avvik: PlayerHQ Hjem («Hva er nytt»-feed),
+PlayerHQ Analyse (SG-stripe), AgencyOS cockpit (greeting-hero «God morgen, {coach}»), AgencyOS stall
+(tittel «Stallen»). VERIFISERT korrekte (ingen fiks — dokumenterte unntak): PlayerHQ Gjennomføre
+(program-hub korrekt; drill-runner=live-rute L-1), PlayerHQ Meg (undersider M-1, settings-IA-forskjell
+akseptert), Marketing/priser (300 ikke fasitens 299, rikere enn mockup). Skjønn brukt: bevisste
+app-forbedringer (stall 360°-panel, Caddie-panel) beholdt, ikke fjernet for å matche enklere fasit.
+GJENSTÅR (flagget, lav-prio/venter Anders): A-3 cockpit SG-ticker (krever per-spiller SG-query, dekorativ),
+L-1 drill-runner-re-port, Planlegge/Workbench (kun visuell skin). Sweepens hovedmål er nådd.
+
 ## STYRENDE REGEL (Anders 2026-06-22): ALLE SIDER SÅ LIK HANDOVER SOM MULIG
 Ny hovedinstruks: bygg/strammer HVER skjerm til å være **visuelt så lik Claude Design-handover-fasiten
 som mulig** — layout, kort-stil, farger, typografi, rekkefølge. MEN bruk alltid **korrekte
