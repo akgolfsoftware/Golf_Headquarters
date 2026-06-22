@@ -8,11 +8,12 @@
 
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Trash2 } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { lagreSpiller } from "./actions";
+import { SlettSpillerKnapp } from "./slett-spiller-knapp";
 
 const NB_DT = new Intl.DateTimeFormat("nb-NO", {
   day: "2-digit",
@@ -245,13 +246,7 @@ export default async function RedigerSpiller({
       {/* Sticky bunn-bar */}
       <div className="sticky bottom-0 z-20 -mx-4 border-t border-border bg-background/95 px-4 py-2 backdrop-blur sm:-mx-6 sm:px-6">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <button
-            type="button"
-            className="inline-flex items-center gap-2 rounded-full border border-destructive/40 bg-transparent px-4 py-2 text-sm font-medium text-destructive hover:bg-destructive/10"
-          >
-            <Trash2 size={14} strokeWidth={1.75} />
-            Slett spiller
-          </button>
+          <SlettSpillerKnapp spillerId={player.id} spillerNavn={player.name} />
           <div className="flex items-center gap-2">
             <Link
               href={`/admin/spillere/${id}`}

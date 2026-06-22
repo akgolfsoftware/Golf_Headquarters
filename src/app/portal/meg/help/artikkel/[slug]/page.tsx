@@ -7,13 +7,12 @@ import {
   ArrowLeft,
   Clock,
   Calendar,
-  Share2,
-  ThumbsUp,
-  ThumbsDown,
   Sparkles,
   MessageSquare,
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { DelKnapp } from "./del-knapp";
+import { ArtikkelFeedback } from "./feedback";
 
 type Artikkel = {
   slug: string;
@@ -102,13 +101,7 @@ export default async function ArtikkelPage({
             <Calendar className="h-3 w-3" strokeWidth={2} />
             OPPDATERT <strong className="text-foreground">{a.oppdatert}</strong>
           </span>
-          <button
-            type="button"
-            className="ml-auto inline-flex items-center gap-1.5 text-xs font-semibold text-primary underline underline-offset-2 hover:opacity-80"
-          >
-            <Share2 className="h-3 w-3" strokeWidth={2} />
-            Del
-          </button>
+          <DelKnapp tittel={`${a.tittelLead} ${a.tittelItalic}?`} />
         </div>
 
         <div className="prose-content space-y-6 text-base leading-relaxed text-foreground/90">
@@ -236,22 +229,7 @@ export default async function ArtikkelPage({
           <h3 className="font-display text-base font-semibold text-foreground">
             Var dette nyttig?
           </h3>
-          <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              className="inline-flex items-center gap-2 rounded-full border border-primary bg-primary/10 px-4 py-2 text-sm font-medium text-primary"
-            >
-              <ThumbsUp className="h-3.5 w-3.5" strokeWidth={2} />
-              Ja, fikk svar <span className="font-mono text-[11px] text-primary/70">143</span>
-            </button>
-            <button
-              type="button"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-muted-foreground hover:border-primary/40"
-            >
-              <ThumbsDown className="h-3.5 w-3.5" strokeWidth={2} />
-              Nei, savner noe <span className="font-mono text-[11px]">8</span>
-            </button>
-          </div>
+          <ArtikkelFeedback />
         </section>
 
         {/* Coach CTA */}

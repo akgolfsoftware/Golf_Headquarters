@@ -91,3 +91,38 @@ export async function lagreSpiller(formData: FormData): Promise<void> {
 
   redirect(`/admin/spillere/${data.id}`);
 }
+
+/**
+ * GDPR soft-delete av spiller (P20). KUN admin kan slette.
+ * Setter User.deletedAt = now() — spilleren forsvinner fra stallen (alt
+ * filtreres på deletedAt: null) men dataene beholdes og er reversible.
+ * IKKE hard delete, IKKE kaskade.
+ */
+export async function slettSpiller(
+  userId: string,
+): Promise<{ ok: boolean; error?: string }> {
+  const actor = await requirePortalUser({ allow: ["ADMIN"] });
+
+  if (!userId) return { ok: false, error: "Mangler spiller-id" };
+
+  try {
+    await prisma.user.update({
+      where: { id: userId },
+      data: { deletedAt: new Date() },
+    });
+
+    await audit({
+      actorId: actor.id,
+      action: "PLAYER_DELETED",
+      target: `user:${userId}`,
+    });
+
+    revalidatePath("/admin/spillere");
+    revalidatePath(`/admin/spillere/${userId}`);
+    revalidatePath(`/admin/spillere/${userId}/rediger`);
+
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Ukjent feil" };
+  }
+}

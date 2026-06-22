@@ -13,6 +13,7 @@ import { ArrowLeft, PenSquare } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { avatarBg, initialsFromName } from "@/lib/avatar-colors";
+import { InviteParentButton } from "./invite-parent-button";
 
 const NB_LONG = new Intl.DateTimeFormat("nb-NO", {
   day: "numeric",
@@ -158,12 +159,7 @@ export default async function SpillerProfilSide({
               Foresatte
             </h2>
           </div>
-          <button
-            type="button"
-            className="font-mono text-[10px] uppercase tracking-[0.08em] text-primary hover:underline"
-          >
-            + Legg til forelder
-          </button>
+          <InviteParentButton playerId={player.id} playerName={player.name} />
         </div>
         {player.childRelations.length === 0 ? (
           <p className="rounded-md border border-dashed border-border bg-background p-4 text-sm text-muted-foreground">
