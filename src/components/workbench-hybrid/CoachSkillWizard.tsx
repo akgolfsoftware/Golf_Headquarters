@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useReducer, type CSSProperties, type ReactElement } from "react";
+import { useMemo, useReducer, useState, type CSSProperties, type ReactElement } from "react";
 import { Check, ChevronRight, Sparkles, Star, X } from "lucide-react";
+import { sendCoachSkillPlan } from "@/lib/workbench/coach-skill-actions";
 import { FONT, WB } from "./theme";
 import type { RosterPlayer } from "./Topbar";
 
@@ -209,6 +210,8 @@ export type CoachSkillWizardProps = {
   /** Spilleren Workbench står på nå (forhåndsvelges som mottaker). */
   currentPlayerName: string;
   currentInitials: string;
+  /** userId for «denne Workbench-spilleren» — løser opp «__current__»-mottakeren ved lagring. */
+  currentPlayerId: string;
   /** Coachens øvrige spillere — øvrige mottakere i steg 3. */
   players: RosterPlayer[];
   onClose: () => void;
@@ -218,6 +221,7 @@ export function CoachSkillWizard({
   coachName,
   currentPlayerName,
   currentInitials,
+  currentPlayerId,
   players,
   onClose,
 }: CoachSkillWizardProps): ReactElement {
@@ -231,6 +235,39 @@ export function CoachSkillWizard({
     recipients: ["__current__"],
     pyrDist: { FYS: 2, TEK: 1, SLAG: 1, SPILL: 1, TURN: 0 },
   }));
+
+  // «Send nå»: lagre konfigurasjonen som periode-blokk hos hver mottaker.
+  const [sender, setSender] = useState(false);
+  async function handleSend(): Promise<void> {
+    if (sender) return;
+    // «__current__» → denne spilleren; «__group__» droppes (gruppe-send ikke koblet ennå).
+    const recipientUserIds = [
+      ...new Set(
+        s.recipients
+          .map((r) => (r === "__current__" ? currentPlayerId : r))
+          .filter((r): r is string => Boolean(r) && r !== "__group__"),
+      ),
+    ];
+    if (recipientUserIds.length === 0) {
+      onClose();
+      return;
+    }
+    setSender(true);
+    try {
+      await sendCoachSkillPlan({
+        recipientUserIds,
+        level: s.level,
+        period: s.period,
+        perWeek: s.perWeek,
+        timeMin: s.timeMin,
+        pyrDist: s.pyrDist,
+        facilities: s.facilities,
+      });
+    } finally {
+      setSender(false);
+      onClose();
+    }
+  }
 
   const tier = tierOf(s.level);
   const tf = TIER_FORMULA[tier];
@@ -512,14 +549,15 @@ export function CoachSkillWizard({
           <div style={{ flex: 1 }} />
           {s.step === 3 ? (
             <span style={{ fontSize: 11.5, color: WB.muted3 }}>
-              Stub — coach godkjenner alltid før reell sending (ingen lagring i denne versjonen).
+              Lagres som spillerens periode-blokk ved sending (coach godkjenner alltid først).
             </span>
           ) : (
             <span style={{ fontSize: 12, color: WB.muted }}>{navHint[s.step]}</span>
           )}
           <button
             type="button"
-            onClick={() => (s.step === 3 ? onClose() : dispatch({ type: "next" }))}
+            disabled={sender}
+            onClick={() => (s.step === 3 ? handleSend() : dispatch({ type: "next" }))}
             style={{
               display: "flex",
               alignItems: "center",
@@ -529,12 +567,13 @@ export function CoachSkillWizard({
               border: "none",
               borderRadius: 10,
               padding: "11px 22px",
-              cursor: "pointer",
+              cursor: sender ? "wait" : "pointer",
+              opacity: sender ? 0.6 : 1,
               fontSize: 13,
               fontWeight: 700,
             }}
           >
-            {s.step === 3 ? "Send nå" : "Neste"}
+            {s.step === 3 ? (sender ? "Sender…" : "Send nå") : "Neste"}
           </button>
         </div>
       </div>

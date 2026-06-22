@@ -874,6 +874,7 @@ export function WorkbenchHybrid({
           coachName={coachName}
           currentPlayerName={playerName}
           currentInitials={initials}
+          currentPlayerId={currentPlayerId ?? ""}
           players={players ?? []}
           onClose={() => setCoachSkillOpen(false)}
         />
