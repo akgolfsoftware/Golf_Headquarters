@@ -63,12 +63,18 @@ export default async function SpillerProfilSide({
         orderBy: { startAt: "desc" },
         take: 10,
       },
+      coachNotesAbout: {
+        orderBy: { updatedAt: "desc" },
+        take: 1,
+        include: { coach: { select: { name: true } } },
+      },
     },
   });
 
   if (!player || player.role !== "PLAYER") notFound();
 
   const ageYears = calcAge(player.dateOfBirth);
+  const coachNote = player.coachNotesAbout[0] ?? null;
 
   // Spiller-DNA fra preferences-JSON (sample dersom mangler)
   type DnaShape = { fys: number; tek: number; slag: number; spill: number; turn: number };
@@ -352,16 +358,20 @@ export default async function SpillerProfilSide({
           <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
             Coachens vurdering
           </div>
-          <blockquote
-            className="mt-4 font-display italic text-xl leading-relaxed text-foreground sm:text-2xl"
-          >
-            &laquo;{player.name.split(" ")[0]} har stor teknisk progresjon, men
-            trenger fortsatt mental robusthet i turnerings-press. Fokus til vinter:
-            pre-shot rutine 7 sek + putting under 2,5 m.&raquo;
-          </blockquote>
-          <div className="mt-4 font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground">
-            Anders Kvam · oppdatert 21. mai
-          </div>
+          {coachNote ? (
+            <>
+              <blockquote className="mt-4 font-display italic text-xl leading-relaxed text-foreground sm:text-2xl">
+                &laquo;{coachNote.content}&raquo;
+              </blockquote>
+              <div className="mt-4 font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground">
+                {coachNote.coach.name} · oppdatert {NB_DATE.format(coachNote.updatedAt)}
+              </div>
+            </>
+          ) : (
+            <p className="mt-4 text-sm text-muted-foreground">
+              Ingen vurdering registrert ennå.
+            </p>
+          )}
         </div>
       </section>
     </div>

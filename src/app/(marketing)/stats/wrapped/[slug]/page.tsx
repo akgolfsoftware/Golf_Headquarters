@@ -85,6 +85,22 @@ export default async function WrappedPage({ params }: Props) {
   const unikeKlubber = Object.keys(klubbCount);
   const mestSpilte = Object.entries(klubbCount).sort((a, b) => b[1] - a[1])[0];
 
+  // --- Previous-year stats (real DB data) for year-over-year sammenligning ---
+  const fjoraarsEntries = await getEntries(player.id, aar - 1);
+  const fjoraarsScores = fjoraarsEntries
+    .map((e) => e.totalScore)
+    .filter((s): s is number => s !== null);
+  const fjoraarsAntall = fjoraarsScores.length;
+  const fjoraarsSnitt =
+    fjoraarsAntall > 0
+      ? fjoraarsScores.reduce((a, b) => a + b, 0) / fjoraarsAntall
+      : 0;
+  const harFjoraar = fjoraarsAntall > 0 && antallRunder > 0;
+  // Negativ = forbedring (lavere snittscore).
+  const forbedring = harFjoraar
+    ? parseFloat((snittScore - fjoraarsSnitt).toFixed(1))
+    : 0;
+
   // Estimated HCP (simplified WHS formula)
   const estimertHcp = snittScore > 0 ? Math.max(0, ((snittScore - 70) * 0.93)).toFixed(1) : "N/A";
   const fodselsAar = player.birthYear ?? 1990;
@@ -103,7 +119,8 @@ export default async function WrappedPage({ params }: Props) {
       type: "runder",
       bgVariant: "forest-dark",
       antall: antallRunder,
-      fjoraarsAntall: Math.max(0, antallRunder - 3), // fallback — no prev year data
+      // Ekte fjorårstall fra DB. Mangler fjorårsdata → samme som i år (0 diff).
+      fjoraarsAntall: harFjoraar ? fjoraarsAntall : antallRunder,
       norskSnitt: 28,
     },
     {
@@ -135,13 +152,16 @@ export default async function WrappedPage({ params }: Props) {
     {
       type: "utvikling",
       bgVariant: "forest",
-      forbedring: -1.2,
+      // Ekte år-over-år-endring fra DB. 0 når fjorårsdata mangler.
+      forbedring,
       betterThanPercent: 68,
-      data: [
-        { aar: aar - 2, snitt: parseFloat((snittScore + 2.8).toFixed(1)) },
-        { aar: aar - 1, snitt: parseFloat((snittScore + 1.2).toFixed(1)) },
-        { aar, snitt: parseFloat(snittScore.toFixed(1)) },
-      ],
+      // Kun ekte datapunkter: i fjor + i år (når begge finnes).
+      data: harFjoraar
+        ? [
+            { aar: aar - 1, snitt: parseFloat(fjoraarsSnitt.toFixed(1)) },
+            { aar, snitt: parseFloat(snittScore.toFixed(1)) },
+          ]
+        : [{ aar, snitt: parseFloat(snittScore.toFixed(1)) }],
     },
     {
       type: "streak",

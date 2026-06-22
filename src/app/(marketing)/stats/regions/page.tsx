@@ -47,13 +47,35 @@ const FAKTA = [
   "Nord-Norge har landets lengste golfdag — midnattssol i juni",
 ];
 
+// Bane.region lagres som norsk navn ("Øst" | "Vest" | ...) — map til region-slug.
+const REGION_NAVN_TIL_SLUG: Record<string, string> = {
+  Øst: "ost",
+  Vest: "vest",
+  Midt: "midt",
+  Nord: "nord",
+  Sør: "sor",
+};
+
 async function hentNorgeTotalt() {
-  const [totalSpillere, totalTurneringer] = await Promise.all([
+  const [totalSpillere, totalTurneringer, klubbPerRegion] = await Promise.all([
     prisma.publicPlayer.count({ where: { country: "NO", isActive: true } }).catch(() => 0),
     prisma.tournament.count({ where: { country: "NO", status: "COMPLETED" } }).catch(() => 0),
+    prisma.bane
+      .groupBy({ by: ["region"], _count: { _all: true } })
+      .catch(() => [] as Array<{ region: string; _count: { _all: number } }>),
   ]);
+
+  // Ekte klubb-antall per region-slug (tom = tabell mangler / ingen baner).
+  const klubberPerSlug: Record<string, number> = {};
+  for (const row of klubbPerRegion) {
+    const slug = REGION_NAVN_TIL_SLUG[row.region];
+    if (slug) klubberPerSlug[slug] = (klubberPerSlug[slug] ?? 0) + row._count._all;
+  }
+  const totalKlubber = Object.values(klubberPerSlug).reduce((s, n) => s + n, 0);
+
   return {
-    klubber: 88,
+    klubber: totalKlubber > 0 ? totalKlubber : 88,
+    klubberPerSlug,
     spillere: totalSpillere > 0 ? totalSpillere : 1498,
     pro: 12,
     college: 22,
@@ -63,6 +85,12 @@ async function hentNorgeTotalt() {
 
 export default async function RegionsPage() {
   const norge = await hentNorgeTotalt();
+
+  // Overstyr klubb-antallet per region med ekte tall fra banedatabasen når det finnes.
+  const regionData = REGION_DATA.map((r) => ({
+    ...r,
+    klubber: norge.klubberPerSlug[r.slug] ?? r.klubber,
+  }));
 
   return (
     <div>
@@ -132,7 +160,7 @@ export default async function RegionsPage() {
           </div>
         </Reveal>
 
-        <RegionCards regions={REGION_DATA} />
+        <RegionCards regions={regionData} />
       </section>
 
       {/* ── "HVEM DOMINERER HVOR?" ── */}

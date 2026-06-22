@@ -14,6 +14,7 @@ import {
   Radio,
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { prisma } from "@/lib/prisma";
 import {
   HubFrame,
   HubHeader,
@@ -31,6 +32,33 @@ export const dynamic = "force-dynamic";
 export default async function GjennomforePage() {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
+  // Ekte tall fra databasen. Resten av kort-teksten (anlegg-navn, kapasitet,
+  // Stripe-status, abonnenter) mangler ren kilde og står som design-seed.
+  const naa = new Date();
+  const dagStart = new Date(naa);
+  dagStart.setHours(0, 0, 0, 0);
+  const dagSlutt = new Date(dagStart);
+  dagSlutt.setDate(dagSlutt.getDate() + 1);
+  // Mandag-start for inneværende uke (man=0 .. søn=6)
+  const ukeStart = new Date(dagStart);
+  ukeStart.setDate(ukeStart.getDate() - ((ukeStart.getDay() + 6) % 7));
+  const ukeSlutt = new Date(ukeStart);
+  ukeSlutt.setDate(ukeSlutt.getDate() + 7);
+
+  const [okterIDag, okterDenneUka, antallAnlegg, ventendeBookinger] =
+    await Promise.all([
+      prisma.booking
+        .count({ where: { startAt: { gte: dagStart, lt: dagSlutt } } })
+        .catch(() => 0),
+      prisma.booking
+        .count({ where: { startAt: { gte: ukeStart, lt: ukeSlutt } } })
+        .catch(() => 0),
+      prisma.location.count({ where: { active: true } }).catch(() => 0),
+      prisma.booking
+        .count({ where: { status: "PENDING" } })
+        .catch(() => 0),
+    ]);
+
   return (
     <HubFrame>
       <HubHeader
@@ -47,11 +75,11 @@ export default async function GjennomforePage() {
         stats={
           <>
             <span>
-              <strong>5</strong> økter i dag
+              <strong>{okterIDag}</strong> økter i dag
             </span>
             <HubStatSep />
             <span>
-              <strong>23</strong> denne uka
+              <strong>{okterDenneUka}</strong> denne uka
             </span>
             <HubStatSep />
             <span className="ok-dot">
@@ -60,7 +88,7 @@ export default async function GjennomforePage() {
             </span>
             <HubStatSep />
             <span>
-              <strong>3</strong> anlegg
+              <strong>{antallAnlegg}</strong> anlegg
             </span>
           </>
         }
@@ -72,8 +100,8 @@ export default async function GjennomforePage() {
           icon={Calendar}
           eyebrow="01 · DAGENS DRIFT"
           title="Coach-kalender"
-          data="5 økter i dag"
-          sub="23 denne uka · 4 venter input"
+          data={`${okterIDag} økter i dag`}
+          sub={`${okterDenneUka} denne uka`}
           visual={<CalMini marked={[0, 2]} nowPct={38} />}
           cta="Åpne →"
         />
@@ -82,11 +110,11 @@ export default async function GjennomforePage() {
           icon={CalendarCheck}
           eyebrow="02 · INNKOMMENDE"
           title="Bookinger"
-          data="4 kommende"
-          sub="1 venter på bekreft · 12 historikk"
+          data={`${ventendeBookinger} venter svar`}
+          sub="Pro-timer, bays og tee-times"
           statusPill={
             <HubPill kind="warn" dot="d-warn">
-              1 PENDING
+              {ventendeBookinger} PENDING
             </HubPill>
           }
           cta="Behandle →"
@@ -96,7 +124,7 @@ export default async function GjennomforePage() {
           icon={MapPin}
           eyebrow="03 · LOKASJONER"
           title="Anlegg"
-          data="3 anlegg"
+          data={`${antallAnlegg} anlegg`}
           sub="GFGK · Bjaavann · Hellerudsletta"
           cta="Administrer →"
         />

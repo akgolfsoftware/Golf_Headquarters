@@ -77,7 +77,7 @@ export default async function SpillerPlanDetaljPage({
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
             <AthleticEyebrow>
-              Coach · {spiller.name.split(" ")[0]} {spiller.name.split(" ").slice(-1)[0][0]}.P. · Utviklingsplan
+              Coach · {spiller.name} · Utviklingsplan
             </AthleticEyebrow>
             <h1 className="font-display mt-2 text-3xl font-bold leading-tight tracking-tight md:text-4xl">
               {plan.navn.split(" ").slice(0, -1).join(" ")}{" "}

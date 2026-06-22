@@ -14,6 +14,7 @@ import {
   Wallet,
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { prisma } from "@/lib/prisma";
 import {
   HubFrame,
   HubHeader,
@@ -30,6 +31,21 @@ export const dynamic = "force-dynamic";
 export default async function AnalyserePage() {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
+  // Ekte tall fra databasen (header + matchende kort). Resten av kort-
+  // teksten (breakdowns, +12%-trend) mangler kilde og står som design-seed.
+  const [antallSpillere, overdueTester, ventendeGodkjenninger] =
+    await Promise.all([
+      prisma.user.count({ where: { role: "PLAYER" } }).catch(() => 0),
+      prisma.testAssignment
+        .count({
+          where: { status: "OPEN", dueDate: { lt: new Date() } },
+        })
+        .catch(() => 0),
+      prisma.planAction
+        .count({ where: { status: "PENDING" } })
+        .catch(() => 0),
+    ]);
+
   return (
     <HubFrame>
       <HubHeader
@@ -40,9 +56,12 @@ export default async function AnalyserePage() {
         actions={
           <HubActions
             stats={[
-              { label: "Spillere", value: "38" },
-              { label: "Overdue tester", value: "7" },
-              { label: "Godkjenninger venter", value: "8" },
+              { label: "Spillere", value: String(antallSpillere) },
+              { label: "Overdue tester", value: String(overdueTester) },
+              {
+                label: "Godkjenninger venter",
+                value: String(ventendeGodkjenninger),
+              },
               { label: "Endring mot forrige mnd", value: "+12%" },
             ]}
           />
@@ -50,17 +69,17 @@ export default async function AnalyserePage() {
         stats={
           <>
             <span>
-              <strong>38</strong> spillere
+              <strong>{antallSpillere}</strong> spillere
             </span>
             <HubStatSep />
             <span className="warn-dot">
               <span />
-              <strong>7 overdue</strong> tester
+              <strong>{overdueTester} overdue</strong> tester
             </span>
             <HubStatSep />
             <span className="warn-dot">
               <span />
-              <strong>8</strong> godkjenninger venter
+              <strong>{ventendeGodkjenninger}</strong> godkjenninger venter
             </span>
             <HubStatSep />
             <span>
@@ -86,11 +105,11 @@ export default async function AnalyserePage() {
           icon={ClipboardCheck}
           eyebrow="02 · MÅLINGER"
           title="Tester"
-          data="7 overdue · 12 snart"
+          data={`${overdueTester} overdue`}
           sub="CMJ · Squat · 5-iron · Wedge"
           statusPill={
             <HubPill kind="danger" dot="d-danger">
-              7 OVERDUE
+              {overdueTester} OVERDUE
             </HubPill>
           }
           cta="Behandle →"
@@ -100,11 +119,11 @@ export default async function AnalyserePage() {
           icon={CheckCheck}
           eyebrow="03 · INNBOKS"
           title="Godkjenninger"
-          data="8 venter"
+          data={`${ventendeGodkjenninger} venter`}
           sub="3 plan-revisjon · 4 runder · 1 utstyr"
           statusPill={
             <HubPill kind="warn" dot="d-warn">
-              8 VENTER
+              {ventendeGodkjenninger} VENTER
             </HubPill>
           }
           cta="Gå gjennom →"

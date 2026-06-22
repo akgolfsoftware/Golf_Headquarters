@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, TrendingDown } from "lucide-react";
+import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
   title: "Suksesshistorier — AK Golf Academy",
@@ -52,52 +53,54 @@ type Tournament = {
   tagTone: "kommende" | "apent" | "pamelding";
 };
 
-const TOURNAMENTS: Tournament[] = [
-  {
-    day: "20",
-    mon: "JUN",
-    name: "Hvaler GK Åpent",
-    venue: "Hvaler GK",
-    format: "18 hull · stroke play",
-    tag: "Kommende",
-    tagTone: "kommende",
-  },
-  {
-    day: "28",
-    mon: "JUN",
-    name: "Srixon Tour Vestfold",
-    venue: "Tønsberg GK",
-    format: "54 hull · tour",
-    tag: "Kommende",
-    tagTone: "kommende",
-  },
-  {
-    day: "15",
-    mon: "AUG",
-    name: "NM Junior",
-    venue: "Miklagard GK",
-    format: "72 hull · NM",
-    tag: "Åpent",
-    tagTone: "apent",
-  },
-  {
-    day: "02",
-    mon: "SEP",
-    name: "Nordisk U21",
-    venue: "Sverige",
-    format: "Lagsturnering",
-    tag: "Påmelding åpner",
-    tagTone: "pamelding",
-  },
-];
-
 const TAG_TONE: Record<Tournament["tagTone"], string> = {
   kommende: "bg-primary/10 text-primary",
   apent: "bg-info/10 text-info",
   pamelding: "bg-secondary text-muted-foreground",
 };
 
-export default function CasesSide() {
+const MND = ["JAN", "FEB", "MAR", "APR", "MAI", "JUN", "JUL", "AUG", "SEP", "OKT", "NOV", "DES"];
+
+function formaterFormat(format: string | null): string {
+  switch ((format ?? "").toUpperCase()) {
+    case "STROKE": return "Slagspill";
+    case "MATCH": return "Match play";
+    case "STABLEFORD": return "Stableford";
+    default: return "Turnering";
+  }
+}
+
+/** Henter kommende turneringer fra DB (samme kilde som /turneringer). */
+async function hentKommendeTurneringer(): Promise<Tournament[]> {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const in90 = new Date(today.getTime() + 90 * 24 * 60 * 60 * 1000);
+
+  const rows = await prisma.tournament.findMany({
+    where: {
+      startDate: { gte: today, lte: in90 },
+      status: { in: ["UPCOMING", "IN_PROGRESS"] },
+      mergedIntoId: null,
+    },
+    orderBy: { startDate: "asc" },
+    take: 6,
+    select: { id: true, name: true, startDate: true, location: true, format: true, status: true },
+  });
+
+  return rows.map((r) => ({
+    day: String(r.startDate.getDate()).padStart(2, "0"),
+    mon: MND[r.startDate.getMonth()],
+    name: r.name,
+    venue: r.location ?? "—",
+    format: formaterFormat(r.format),
+    tag: r.status === "IN_PROGRESS" ? "Pågår" : "Kommende",
+    tagTone: r.status === "IN_PROGRESS" ? "apent" : "kommende",
+  }));
+}
+
+export default async function CasesSide() {
+  const tournaments = await hentKommendeTurneringer();
+
   return (
     <div className="bg-background text-foreground">
       {/* Hero — forest gradient */}
@@ -143,7 +146,16 @@ export default function CasesSide() {
               </em>
             </h2>
             <div className="mt-5 flex flex-col gap-2.5">
-              {TOURNAMENTS.map((t) => (
+              {tournaments.length === 0 ? (
+                <p className="rounded-[14px] border border-dashed border-border bg-background px-3.5 py-6 text-center text-[13px] text-muted-foreground">
+                  Ingen kommende turneringer akkurat nå. Se hele kalenderen på{" "}
+                  <Link href="/turneringer" className="font-semibold text-primary">
+                    /turneringer
+                  </Link>
+                  .
+                </p>
+              ) : null}
+              {tournaments.map((t) => (
                 <div
                   key={`${t.day}-${t.name}`}
                   className="flex items-center gap-3.5 rounded-[14px] border border-border bg-background px-3.5 py-3"

@@ -38,13 +38,9 @@ export function NyMeldingClient({ mottakere }: { mottakere: Mottaker[] }) {
   const router = useRouter();
   const toast = useToast();
   const [recipientId, setRecipientId] = useState(mottakere[0]?.id ?? "");
-  const [subject, setSubject] = useState("Spørsmål om gårsdagens videoanalyse");
-  const [body, setBody] = useState(
-    "Hei Hans,\n\nJeg så på videoen fra i går og lurer på posisjonen ved P3 — det ser ut som hoftene roterer tidligere enn vi snakket om sist uke. Skal jeg justere oppvarmingen, eller er dette en effekt av at jeg har testet en ny grep-trykk?\n\nBilde lagt ved fra TrackMan kl 14:22 — sammenligning mot referanse-swing.\n\nTakk!\nØyvind",
-  );
-  const [attachments, setAttachments] = useState<{ name: string; size: string }[]>([
-    { name: "screenshot-trackman-1422.png", size: "240 KB · BILDE" },
-  ]);
+  const [subject, setSubject] = useState("");
+  const [body, setBody] = useState("");
+  const [attachments, setAttachments] = useState<{ name: string; size: string }[]>([]);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 

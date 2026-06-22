@@ -12,6 +12,7 @@ import { notFound } from "next/navigation";
 import { Pause, ChevronsRight, GripVertical, Star } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { calculateAge } from "@/lib/auth/minor";
 import { prisma } from "@/lib/prisma";
 import { AthleticButton } from "@/components/athletic";
 import { AthleticBadge } from "@/components/athletic/badge";
@@ -50,7 +51,15 @@ export default async function OktDetaljPage({
   const booking = await prisma.booking.findUnique({
     where: { id },
     include: {
-      user: { select: { id: true, name: true, hcp: true } },
+      user: {
+        select: {
+          id: true,
+          name: true,
+          hcp: true,
+          dateOfBirth: true,
+          wagrSnapshot: { select: { rank: true } },
+        },
+      },
     },
   });
 
@@ -94,6 +103,17 @@ export default async function OktDetaljPage({
 
   const statusBadgeVariant: "warn" | "lime" | "neutral" =
     status === "OM 2 TIMER" ? "warn" : status === "AKTIV NÅ" ? "lime" : "neutral";
+
+  // Spiller-meta fra ekte kilder (dateOfBirth + WagrSnapshot). «—» når mangler.
+  const alder = calculateAge(spiller.dateOfBirth);
+  const wagrRank = spiller.wagrSnapshot?.rank ?? null;
+  const spillerMeta = [
+    `HCP ${spiller.hcp != null ? spiller.hcp : "—"}`,
+    wagrRank != null ? `WAGR ${wagrRank.toLocaleString("nb-NO")}` : null,
+    alder != null ? `${alder} år` : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
 
   const heroTitle = (
     <>
@@ -297,7 +317,7 @@ export default async function OktDetaljPage({
               <div>
                 <div className="font-display text-base font-semibold">{spiller.name}</div>
                 <div className="font-mono mt-0.5 text-[11px] uppercase tracking-[0.04em] text-muted-foreground">
-                  HCP {spiller.hcp != null ? spiller.hcp : "—"} · WAGR 2 142 · 17 år
+                  {spillerMeta}
                 </div>
               </div>
             </div>

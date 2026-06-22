@@ -496,7 +496,7 @@ function RowEl({ r }: { r: Rad }) {
         <Badge type="momentum" />
       </div>
       <Link
-        href={`/portal/coach/${r.id}`}
+        href={`/portal/spiller/${r.id}`}
         aria-label={`Vis ${r.name}`}
         className="grid h-8 w-8 place-items-center rounded-sm text-muted-foreground hover:bg-secondary hover:text-foreground"
       >
@@ -517,7 +517,7 @@ function MobileRow({ r }: { r: Rad }) {
           : "";
   return (
     <Link
-      href={`/portal/coach/${r.id}`}
+      href={`/portal/spiller/${r.id}`}
       className={`flex items-center gap-4 px-4 py-4 transition-colors ${
         r.me ? "bg-accent/20" : "hover:bg-secondary"
       }`}

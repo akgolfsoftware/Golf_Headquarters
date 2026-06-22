@@ -25,14 +25,13 @@ type Props = {
   params: Promise<{ bookingId: string }>;
 };
 
-// Deterministisk hash for å unngå Math.random i render
-function hashId(id: string): number {
-  let h = 0;
-  for (let i = 0; i < id.length; i++) {
-    h = (h * 31 + id.charCodeAt(i)) >>> 0;
-  }
-  return h;
-}
+// Ekte booking-status → lesbar etikett (samme vokabular som Mine bookinger).
+const STATUS_LABEL: Record<string, string> = {
+  PENDING: "Behandler",
+  CONFIRMED: "Bekreftet",
+  CANCELLED: "Avbestilt",
+  COMPLETED: "Gjennomført",
+};
 
 function formatTid(d: Date): string {
   return d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" });
@@ -73,9 +72,9 @@ export default async function OktDetalj({ params }: Props) {
   const startTid = formatTid(booking.startAt);
   const sluttTid = formatTid(booking.endAt);
 
-  // Deterministisk "status" basert på bookingId (unngår Math.random)
-  const h = hashId(bookingId);
-  const statusOk = h % 3 !== 0;
+  // Ekte status fra DB. "Behandler" (PENDING) markeres som ikke-bekreftet.
+  const statusOk = booking.status !== "PENDING";
+  const statusLabel = STATUS_LABEL[booking.status] ?? "Planlagt";
 
   // Generer timeline-punkter
   const TIMELINE: { tid: string; tittel: string; meta: string; varig: string }[] = [
@@ -131,7 +130,7 @@ export default async function OktDetalj({ params }: Props) {
             className={`bk-status-badge ${statusOk ? "" : "border-accent bg-accent/10 text-[#4A5418]"}`}
           >
             <span className="bk-dot" />
-            {statusOk ? "Planlagt" : "Bekreftet"}
+            {statusLabel}
           </div>
 
           <h1 className="font-display text-2xl font-semibold leading-tight tracking-tight sm:text-4xl">

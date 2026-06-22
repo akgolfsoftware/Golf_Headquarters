@@ -30,10 +30,8 @@ import {
   TaskCheck,
   VisibilityPill,
 } from "@/components/workspace/primitives";
-import {
-  SAMPLE_TASKS,
-  SAMPLE_PEOPLE,
-} from "@/components/workspace/sample-data";
+import { SAMPLE_PEOPLE } from "@/components/workspace/sample-data";
+import { getTasksForUser } from "@/lib/notion/queries";
 
 export const dynamic = "force-dynamic";
 
@@ -65,8 +63,10 @@ export default async function TaskDetaljPage({
   const viewer = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const { id } = await params;
 
-  // Mock: task #3 brukes som default. Sample-data er statisk inntil OppgaveCache.
-  const task = SAMPLE_TASKS.find((t) => String(t.id) === id) ?? SAMPLE_TASKS[2];
+  // Ekte data fra OppgaveCache via getTasksForUser (samme loader som oppgaver-lista).
+  // Faller tilbake til sample-data i dev (loaderen håndterer det selv).
+  const tasks = await getTasksForUser(viewer.id);
+  const task = tasks.find((t) => String(t.id) === id) ?? tasks[0];
 
   if (!task) notFound();
 

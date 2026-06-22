@@ -21,10 +21,12 @@ import {
 } from "lucide-react";
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { prisma } from "@/lib/prisma";
 import {
   loadTurneringDetalj,
   type TurneringDetalj as TurneringDetaljLoad,
 } from "@/lib/portal-turnering/turnering-detalj-data";
+import { meldDegPa, meldDegAv } from "../actions";
 import { EmptyState } from "@/components/shared/empty-state";
 
 export const dynamic = "force-dynamic";
@@ -101,6 +103,21 @@ export default async function TurneringDetaljPage({
 
   const pameldt = data.entry?.state.active === true;
 
+  async function pameldAction() {
+    "use server";
+    await meldDegPa(id);
+  }
+
+  async function avmeldAction() {
+    "use server";
+    const me = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
+    const entry = await prisma.tournamentEntry.findFirst({
+      where: { userId: me.id, tournamentId: id },
+      select: { id: true },
+    });
+    if (entry) await meldDegAv(entry.id);
+  }
+
   return (
     <div className="space-y-6 pb-20">
       {/* Back link */}
@@ -167,7 +184,7 @@ export default async function TurneringDetaljPage({
       {/* CTA */}
       <div className="flex gap-3">
         {pameldt ? (
-          <form action={`/api/portal/turneringer/${id}/avmeld`} method="POST">
+          <form action={avmeldAction}>
             <button
               type="submit"
               className="inline-flex items-center gap-2 rounded-full border border-border bg-transparent px-6 py-2 font-mono text-xs font-bold uppercase tracking-[0.08em] text-muted-foreground hover:border-destructive/60 hover:text-destructive"
@@ -177,7 +194,7 @@ export default async function TurneringDetaljPage({
             </button>
           </form>
         ) : (
-          <form action={`/api/portal/turneringer/${id}/pamelding`} method="POST">
+          <form action={pameldAction}>
             <button
               type="submit"
               className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-2 font-mono text-xs font-bold uppercase tracking-[0.08em] text-accent-foreground hover:opacity-90"

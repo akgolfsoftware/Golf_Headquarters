@@ -6,10 +6,10 @@ import {
   Download,
   FileX,
   Mail,
-  Printer,
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { PrintButton } from "@/components/shared/print-button";
 
 const NOK = new Intl.NumberFormat("nb-NO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -123,7 +123,10 @@ export default async function FakturaDetaljPage({
             {erBetalt && <Check className="h-3 w-3" strokeWidth={2.5} />}
             {statusLabel}
           </span>
-          <ActionBtn Icon={Printer}>Skriv ut</ActionBtn>
+          <PrintButton
+            label="Skriv ut"
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-xs font-semibold text-foreground transition-colors hover:bg-muted"
+          />
           <ActionBtn Icon={Mail}>Send på e-post</ActionBtn>
           <ActionBtn Icon={Download} primary>
             Last ned PDF

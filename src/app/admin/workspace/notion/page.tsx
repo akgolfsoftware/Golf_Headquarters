@@ -48,6 +48,13 @@ export default async function WorkspaceNotionPage({
         : "empty"
       : realState;
 
+  // Header-subtittel for tilkoblet state — avledet fra ekte connection-data.
+  const dbCount = connection?.databases.length ?? 0;
+  const pageCount = connection?.databases.reduce((sum, d) => sum + d.pagesCount, 0) ?? 0;
+  const connectedSubtitle = connection
+    ? `AKTIV TILKOBLING · ${dbCount} ${dbCount === 1 ? "DATABASE" : "DATABASER"} · ${pageCount} SIDER SYNKET`
+    : "AKTIV TILKOBLING";
+
   return (
     <div className="space-y-6">
       <header className="-mx-4 -mt-4 border-b border-border bg-gradient-to-b from-[#FBFAF5] to-background px-4 py-8 md:-mx-8 md:-mt-8 md:px-8">
@@ -67,7 +74,7 @@ export default async function WorkspaceNotionPage({
         </h1>
         <div className="font-mono mt-2.5 flex items-center gap-2 text-[11.5px] uppercase tracking-[0.04em] text-muted-foreground">
           {state === "connected"
-            ? "AKTIV TILKOBLING · 4 DATABASER · 461 SIDER SYNKET"
+            ? connectedSubtitle
             : "IKKE TILKOBLET · KOBLE TIL FOR Å BEGYNNE"}
           {/* State-toggle bare i dev */}
           {process.env.NODE_ENV !== "production" ? (

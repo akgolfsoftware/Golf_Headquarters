@@ -37,23 +37,37 @@ export default async function WorkspaceMinUkePage() {
 
   const todayDone = today.filter((t) => t.done).length;
 
+  // Avledede teller — ingen hardkodede tall (samme mønster som oppgaver/page.tsx).
+  const åpneTotalt = tasks.filter((t) => !t.done).length;
+  const forfallerIDag = today.filter((t) => !t.done).length;
+  const denneUkaAntall = tasks.filter((t) => !t.today && !t.done).length;
+  const doingAntall = tasks.filter((t) => t.status === "DOING").length;
+  const todoAntall = tasks.filter((t) => t.status === "TODO" && !t.done).length;
+  const blokkertAntall = tasks.filter((t) => t.status === "BLOKKERT").length;
+  const deltAntall = tasks.filter((t) => t.assigned.length > 1).length;
+
+  // Kolonne-subtittel for «I dag» — dagens dato.
+  const now = new Date();
+  const ukedager = ["SØN", "MAN", "TIR", "ONS", "TOR", "FRE", "LØR"];
+  const todaySub = `${ukedager[now.getDay()]} ${String(now.getDate()).padStart(2, "0")}.${String(now.getMonth() + 1).padStart(2, "0")}`;
+
   return (
     <div className="space-y-6">
       <WorkspaceHero
         eyebrow="AgencyOS · Workspace"
         title="Min"
         titleItalic="uke"
-        sub="23 OPPGAVER · 5 FORFALLER I DAG · 3 BRENNER"
+        sub={`${åpneTotalt} OPPGAVER · ${forfallerIDag} FORFALLER I DAG · ${brenner.length} BRENNER`}
         actions={<WorkspaceHeaderActions />}
         kpis={[
           { label: "I DAG", value: today.length, delta: `${todayDone} fullført`, deltaTone: "success" },
-          { label: "DENNE UKA", value: 12, delta: "4 doing · 8 todo", deltaTone: "muted" },
-          { label: "BLOKKERT", value: 2, delta: "venter på spiller", deltaTone: "warning" },
-          { label: "DELT MED MARKUS", value: 4, delta: "1 ny i dag", deltaTone: "success" },
+          { label: "DENNE UKA", value: denneUkaAntall, delta: `${doingAntall} doing · ${todoAntall} todo`, deltaTone: "muted" },
+          { label: "BLOKKERT", value: blokkertAntall, delta: blokkertAntall > 0 ? "venter" : "ingen", deltaTone: "warning" },
+          { label: "DELT", value: deltAntall, delta: "flere tildelt", deltaTone: "success" },
         ]}
       />
 
-      <WorkspaceTabs active="uke" counts={{ tildelt: 4 }} />
+      <WorkspaceTabs active="uke" counts={{ tildelt: deltAntall }} />
 
       <div className="space-y-6 pb-12">
         {/* Brenner-strip */}
@@ -63,7 +77,7 @@ export default async function WorkspaceMinUkePage() {
         <div className="grid gap-6 lg:grid-cols-[1.1fr_1fr_0.95fr]">
           {/* Kol 1: I dag */}
           <section>
-            <ColumnHeader title="I dag" sub="TIR 27.05" count={today.length} accent />
+            <ColumnHeader title="I dag" sub={todaySub} count={today.length} accent />
             <div className="space-y-2">
               {today.map((t) => (
                 <TaskRow key={t.id} task={t} />
@@ -90,7 +104,7 @@ export default async function WorkspaceMinUkePage() {
               href="/admin/workspace/oppgaver"
               className="font-mono mt-2.5 inline-block text-[11px] font-bold uppercase tracking-[0.04em] text-primary"
             >
-              VIS ALLE 38 →
+              VIS ALLE {tasks.length} →
             </Link>
 
             <EmptyStatePreview />

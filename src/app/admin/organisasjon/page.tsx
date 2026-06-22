@@ -14,6 +14,7 @@ import {
   Users,
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { prisma } from "@/lib/prisma";
 import {
   HubFrame,
   HubHeader,
@@ -29,6 +30,14 @@ export const dynamic = "force-dynamic";
 
 export default async function OrganisasjonPage() {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+
+  // Ekte tall fra DB — coach/admin-antall og antall e-postmaler.
+  const [coacherCount, adminCount, malerCount] = await Promise.all([
+    prisma.user.count({ where: { role: "COACH" } }),
+    prisma.user.count({ where: { role: "ADMIN" } }),
+    prisma.emailTemplate.count(),
+  ]);
+  const teamData = `${coacherCount} coacher · ${adminCount} admin`;
 
   return (
     <HubFrame>
@@ -46,7 +55,7 @@ export default async function OrganisasjonPage() {
             </span>
             <HubStatSep />
             <span>
-              <strong>4</strong> coacher · <strong>2</strong> admin
+              <strong>{coacherCount}</strong> coacher · <strong>{adminCount}</strong> admin
             </span>
             <HubStatSep />
             <span>
@@ -76,7 +85,7 @@ export default async function OrganisasjonPage() {
           icon={Users}
           eyebrow="02 · TEAM"
           title="Team"
-          data="4 coacher · 2 admin"
+          data={teamData}
           sub="AK · MWA · TLO · JBR · 2 admin-roller"
           visual={
             <TeamStrip
@@ -146,7 +155,7 @@ export default async function OrganisasjonPage() {
           icon={Mail}
           eyebrow="06 · MAL"
           title="E-postmaler"
-          data="12 maler"
+          data={`${malerCount} ${malerCount === 1 ? "mal" : "maler"}`}
           sub="Velkomst · Faktura · Booking · Reminder"
           cta="Bla →"
         />

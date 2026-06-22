@@ -144,8 +144,16 @@ export default async function CoachWorkbenchPage({
       aktivePlan.sessions.length
     : null;
 
-  // Tester overdue (skjelett — TODO: ekte query)
-  const testerOverdue = 0;
+  // Tester overdue: åpne tildelinger med forfalt frist
+  const testerOverdue = await prisma.testAssignment
+    .count({
+      where: {
+        playerId: spillerId,
+        status: "OPEN",
+        dueDate: { lt: new Date() },
+      },
+    })
+    .catch(() => 0);
 
   // Goals
   const aktiveMaal = await prisma.goal

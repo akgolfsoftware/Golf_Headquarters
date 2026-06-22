@@ -106,6 +106,38 @@ async function hentKohortData(aar: number): Promise<KohortData> {
     }),
   );
 
+  // Tour-slug → lesbar label (presentasjon, ikke fabrikerte tall).
+  const TOUR_LABEL: Record<string, string> = {
+    "junior-no": "Junior-tour (NO)",
+    "amateur-no": "Amatør-tour (NO)",
+    lokal: "Lokale turneringer",
+    klubb: "Klubbturneringer",
+    pga: "PGA Tour",
+    dp: "DP World Tour",
+    lpga: "LPGA",
+    let: "Ladies European Tour",
+    "korn-ferry": "Korn Ferry",
+    challenge: "Challenge Tour",
+    college: "College",
+    ukjent: "Ukjent",
+  };
+  const TOUR_COLORS = [
+    "var(--s-primary)",
+    "var(--s-accent)",
+    "rgba(0,88,64,0.4)",
+    "rgba(0,88,64,0.2)",
+  ];
+
+  // Ekte tour-fordeling fra entries — mest aktive tour først, topp 4.
+  const tourFordelingEkte = Object.entries(tourCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 4)
+    .map(([slug, value], i) => ({
+      label: TOUR_LABEL[slug] ?? slug,
+      value,
+      color: TOUR_COLORS[i] ?? "rgba(0,88,64,0.2)",
+    }));
+
   // Fallback data for when DB is empty
   const fallbackTopp10 = [
     { rank: 1, navn: "Anders Halvorsen", slug: "anders-halvorsen", klubb: "Oslo GK", snitt: 68.5, antall: 28 },
@@ -160,12 +192,15 @@ async function hentKohortData(aar: number): Promise<KohortData> {
       { label: "Bergen GK", value: 4 },
       { label: "Andre", value: 49 },
     ],
-    tourFordeling: [
-      { label: "Srixon Tour", value: 47, color: "var(--s-primary)" },
-      { label: "OLYO Øst", value: 32, color: "var(--s-accent)" },
-      { label: "Østlandstour", value: 22, color: "rgba(0,88,64,0.4)" },
-      { label: "NGC", value: 8, color: "rgba(0,88,64,0.2)" },
-    ],
+    tourFordeling:
+      tourFordelingEkte.length > 0
+        ? tourFordelingEkte
+        : [
+            { label: "Srixon Tour", value: 47, color: "var(--s-primary)" },
+            { label: "OLYO Øst", value: 32, color: "var(--s-accent)" },
+            { label: "Østlandstour", value: 22, color: "rgba(0,88,64,0.4)" },
+            { label: "NGC", value: 8, color: "rgba(0,88,64,0.2)" },
+          ],
     college: [
       { navn: "Anders Halvorsen", universitet: "University of Denver", div: "NCAA Division I" },
       { navn: "Maria Olsen", universitet: "Stanford University", div: "NCAA Division I" },
