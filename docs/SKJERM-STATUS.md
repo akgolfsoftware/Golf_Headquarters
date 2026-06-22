@@ -161,22 +161,22 @@
 | /admin/agencyos | AgencyOS Cockpit | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd+kalibrert tidligere fase. Verifisert mørk 1280px som ADMIN: ticker + 4 KPI + Dagens timeline + Hvem trenger meg nå + innboks. Bevisste IA-tillegg (sidebar/faner/innboks) per design-porting-gate. Mobil = egen Fase 4 net-new |
 | /admin/agencyos/caddie | AI-Caddie og Agenter | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/agencyos/caddie/aktivitet | AI-Caddie og Agenter | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /admin/agencyos/live | Live-okt coach | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /admin/agencyos/live | Live-okt coach | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd. Verifisert mørk 1280px: LIVE-fane av cockpit (fane-rad fra layout.tsx) — KPI + Scan-app/Følg-opp-actions + varsler + agent-pipeline-preview |
 | /admin/agencyos/okonomi | Cockpit v2 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/agencyos/spillere | Stall responsiv | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /admin/agencyos/uka | Cockpit v2 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /admin/agencyos/uka | Cockpit v2 | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd. Verifisert mørk 1280px: UKA-fane av cockpit (fane-rad fra layout.tsx) |
 | /admin/spillere | Stall responsiv / Stall v2 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/spillere/[id] | Spiller-detalj | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd+kalibrert. Verifisert mørk 1280px (Øyvind): header + coach-flagg + aktiv plan + treningspyramide + hurtighandlinger + siste runder/tester + meldinger. Ekte data |
 | /admin/coach-workbench | Workbench (coach-modus) | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd. Verifisert mørk 1280px (kun visuell skin — logikk urørt): spiller-header + 4 KPI + CADDIE AI-panel + faner (I dag/Plan/Analyse/Notater/Kommunikasjon). Manglet i tabellen |
-| /admin/spillere/[id]/fremgang | Spiller-detalj | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /admin/spillere/[id]/fremgang | Spiller-detalj | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd. Verifisert mørk 1280px: SG per område (sparklines) + treningsvolum + korrelasjon. Ekte data, ærlige «For lite data»-tomtilstander |
 | /admin/spillere/[id]/plan/[planId] | Spiller-detalj | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /admin/spillere/[id]/profil | Spiller-detalj | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /admin/spillere/[id]/profil | Spiller-detalj | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd. Verifisert mørk 1280px (spiller-detalj fane-tab) |
 | /admin/spillere/[id]/rediger | Spiller-detalj | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /admin/spillere/[id]/tester | Spiller-detalj | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /admin/spillere/[id]/tester | Spiller-detalj | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd. Verifisert mørk 1280px: radar-chart 5 disipliner + test-dekning per område (FYS/TEK/SLAG/SPILL/TURN). Ekte data |
 | /admin/spillere/[id]/tildel-test | Spiller-detalj | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/spillere/ny | Stall v2 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/stall | Stall responsiv | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd+kalibrert. Verifisert mørk 1280px: spiller-tabell (HCP/SG/status) + filterchips + spiller-panel (360°/SG/adherence/pyramide). Ekte data |
-| /admin/grupper | Stall v2 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /admin/grupper | Stall v2 | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd. Verifisert mørk 1280px: 9 gruppe-kort m/ HCP-snitt + type-tags (SELEKTERT/KLUBB/SKOLE). Ekte data |
 | /admin/grupper/[id] | Stall v2 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/planlegge | Plans og Maler | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/plans | Plans og Maler | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
@@ -220,7 +220,7 @@
 | /admin/kommunikasjon | Flyt - AgencyOS Handlingssenter | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/queue | Flyt - AgencyOS Handlingssenter | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/foresporsler | Flyt - AgencyOS Handlingssenter | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd+kalibrert. Verifisert mørk 1280px: forespørsel-liste m/ Godta/Avvis. Kun SessionRequest (Booking-chip) per dokumentert IA-beslutning (melding/råd-union utestår) |
-| /admin/godkjenninger | Flyt - AgencyOS Handlingssenter | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /admin/godkjenninger | Flyt - AgencyOS Handlingssenter | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd. Verifisert mørk 1280px: «18 venter på deg» + godkjenn/avvis/skjul-kort fra agentene (AI-genererte plan-forslag). Ekte data |
 | /admin/godkjenninger/[id] | Flyt - AgencyOS Handlingssenter | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/handlingssenter | Flyt - AgencyOS Handlingssenter | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd+kalibrert. Verifisert mørk 1280px: Kanban/Tabell/Liste-toggles + oppgave-kolonner + oppgave-detalj-panel. Beholder full arbeidsverktøy per gate-regel |
 | /admin/analyse | Analyse-rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
