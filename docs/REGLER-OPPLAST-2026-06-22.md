@@ -36,7 +36,10 @@ står; skjermer som er innholds-korrekte men visuelt ulike (f.eks. abonnement) s
 - **Var låst som:** FYS-resultatformel + A–K 11 snittscore-grenser parkert → «—»-plassholdere.
 - **Designkonsekvens av låsen:** Helse viser «—»; Statistikk-diagnose + Onboarding steg 6 ikke bygd som fasit; nivå/neste-nivå-motor frakoblet.
 - **Trenger fra Anders:** (a) de **11 A–K snittscore-grensene** (tallene), (b) **FYS-resultatformelen** (hvordan rå testresultat → score/nivå). Disse kan ikke gjettes — Claude kan hjelpe å designe dem hvis ønsket.
-- **A–K: MOTTATT + BYGD ✅ (2026-06-22).** Anders ga tabellen (snittscore → kategori A–K). Formel: `src/lib/domain/ak-kategori.ts` (AK_BANDS + kategoriFraSnittscore + nesteKategori + prosentTilNesteNiva), 6 node:test grønne. Grense-konvensjon [min,max): 72→C, 80→G, 100→K (bekreftes av Anders — «fine gøre»). Primær nøkkel = snittscore; alder = kontekst. GJENSTÅR: kable inn i Statistikk-diagnose, Onboarding steg 6, nivå/talent-hint (loop bygger).
+- **A–K: MOTTATT + BYGD ✅ (2026-06-22).** Anders ga tabellen. Formel: `src/lib/domain/ak-kategori.ts` (6 node:test grønne). Grense [min,max): 72→C, 80→G, 100→K.
+  - **✅ Statistikk diagnose-først FERDIG** (B-1 løst): «SITT NIVÅ NÅ» + «LUKK DISSE» live, snittscore fra inneværende-sesong runder. Brukervendt — uavhengig av drill-backend.
+  - **⚠ BACKEND-INTEGRASJON FLAGGET (A-2, BYGGELOGG):** context.ts/drill-filtering (`kategoriFraHcp`→snittscore) IKKE gjort — gammelt HCP-A–L og nytt snittscore-A–K gir ulik bokstav (Øyvind E vs B), og drill min/maxKategori-tagger er satt under gammel betydning. Krever Anders' beslutning om drill-retag før migrering. AI-plan står trygt på HCP til da.
+  - **GJENSTÅR:** Onboarding steg 6 nivå (trenger SeasonStat-modell + test-bruker), nivå/talent-hint.
 - **SNITTSCORE-KILDE — BESLUTTET (Anders 2026-06-22): SESONG-BASERT.**
   - Inneværende sesong (kalenderår) er rammen → bestemmer dagens A–K-kategori.
   - Onboarding lar spiller laste inn historikk **opptil 3 sesonger tilbake** (forrige sesong + hittil i år + eldre hvis data finnes). Manuell innlasting ved profil-opprettelse.

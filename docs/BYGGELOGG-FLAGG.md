@@ -90,6 +90,16 @@ Opprinnelig flagg (historikk):
 
 ---
 
+## A–K BACKEND-INTEGRASJON (krever Anders' beslutning — IKKE rørt autonomt)
+
+### A-2 · context.ts/drill-filtering A–K-migrasjon — drill-retag-beslutning kreves
+- **Funn:** Gammelt `kategoriFraHcp` (A–L, HCP-basert) og nytt `kategoriFraSnittscore` (A–K, snittscore) gir ULIK bokstav for samme spiller. Eks: Øyvind HCP 4,2 → **E** (gammelt), snittscore 70,9 → **B** (nytt). Bokstavene betyr ikke det samme i de to systemene.
+- **Risiko:** `kategoriFraHcp` brukes 4 steder (`src/lib/ai-plan/context.ts:460`, `mal/bygger/actions.ts:188/243`, `drills/[id]/actions.ts:56/118`, `drill-detalj-data.tsx:109`) til å FILTRERE/målrette drills via drill-feltene `minKategori`/`maxKategori`. Disse drill-taggene ble satt under GAMMEL (HCP A–L) betydning. Bytter vi spillerens kategori til ny (snittscore A–K) betydning mens taggene er gamle → drill-utvelgelsen blir feil.
+- **Trenger fra Anders:** beslutning om hvordan eksisterende drill `minKategori`/`maxKategori` skal tolkes/re-tagges under det nye A–K-systemet (re-tag alle drills? mapping gammelt→nytt? eller er taggene allerede ment som snittscore-bånd?). Til da: AI-plan/drill-filtering står på HCP-utledning (fungerer), og den brukervendte diagnose-skjermen (B-1, ferdig) bruker korrekt snittscore-A–K uavhengig. Diagnose-skjermen er IKKE påvirket av dette.
+- **NB:** se også separat minKategori/maxKategori-omvendt-bug (minne project_drill_qa) — ikke bland.
+
+---
+
 ## CONTENT-REVIEW (skjerm bygd & verifisert, men innhold må godkjennes før prod)
 
 ### C-1 · Marketing testimonial-/case-tall må bekreftes ekte før lansering
