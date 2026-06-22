@@ -120,7 +120,12 @@ Sjekket de tre «nye» (`isNew: true` i rute-registeret) skjermene som deler fas
 | `/portal/trening/putte-laboratoriet` | Interaktiv putte-simulator (6-ledd-pedagogikk + break-fysikk + lengde/fall/stimp-kontroller + grønn-viz) | Enkel «Putting logg» (14/20-test-liste) | App RIKERE → behold |
 
 - **STRATEGISK KONSEKVENS (viktig for Anders):** Sweep-premisset «match app til handover» er INVERTERT for mange skjermer. Den ferske handover-en (juni) er på flere flater enklere SKISSER, mens appen allerede har rikere implementasjoner (bygd fra tidligere faser). Mekanisk matching ville regredere appen. Mønsteret holder på tvers av AgencyOS (A-5: bookinger/plans/workspace) OG PlayerHQ (P-1). **Kun ekte kosmetisk drift (samme skjerm, små avvik — som kalender A-4) er trygg autonom sweep.** Resten krever Anders' design-valg (hvilken vinner: bygd app eller handover-skisse).
-- **Uswepte gjenstående (ikke sjekket):** `/portal/booking`, tren-undersider, `/portal/drills` + `/portal/drill/[id]`, Workbench-skin. Kan inneholde 0–2 ekte drift-vinn, men yield er lav (1 av 6 sjekkede skjermer var ren drift).
+- **Siste runde sjekket (2026-06-22) — ingen ren drift igjen:**
+  - `/portal/booking`: app = enkel én-skjerms slot-booking (dag + ledig tid + BOOK). Fasit «Flyt - Booking» = 6-stegs wizard (oversikt → velg anlegg → velg coach → velg tid → **Bekreft & BETAL** → bekreftet). Strukturell divergens + betalingssteg (Stripe = hard stopp). IKKE rørt — Anders' valg: enkel slot-modell (nåværende) eller full coach/anlegg/betal-wizard (fasit)?
+  - `/portal/trening/break-tabell`: app = rik multi-variant break-verktøy (komplett matrise + break-kalkulator + hastighets-sammenligning). App RIKERE → behold.
+  - `/portal/trening/logg`: rent funksjonelt skjema (dato/område/varighet/kvalitet/notater). Ingen dedikert fasit. Mindre brand-nit: native range-slider er nettleser-blå (bør få `accent-color: var(--primary)` el. brand-token) — egen brand-guardian-oppgave, ikke fasit-sweep.
+  - `/portal/drills`: drill-bibliotek (lang kort-liste), ingen dedikert PlayerHQ-drills-fasit → app-innhold, ikke sweep-mål.
+- **KONKLUSJON:** Kosmetisk fasit-sweep UTTØMT på tvers av AgencyOS + PlayerHQ. Kalender (A-4) var eneste rene drift av ~10 sjekkede skjermer. Resten er app-rikere (behold) eller strukturelle/IA-/design-gafler som venter på Anders. Loopen pauset 2026-06-22.
 
 ---
 
