@@ -240,7 +240,8 @@ export function CoachSkillWizard({
   const [sender, setSender] = useState(false);
   async function handleSend(): Promise<void> {
     if (sender) return;
-    // «__current__» → denne spilleren; «__group__» droppes (gruppe-send ikke koblet ennå).
+    // «__current__» → denne spilleren; «__group__» utvides server-side til spillerens gruppe.
+    const harGruppe = s.recipients.includes("__group__");
     const recipientUserIds = [
       ...new Set(
         s.recipients
@@ -248,7 +249,7 @@ export function CoachSkillWizard({
           .filter((r): r is string => Boolean(r) && r !== "__group__"),
       ),
     ];
-    if (recipientUserIds.length === 0) {
+    if (recipientUserIds.length === 0 && !harGruppe) {
       onClose();
       return;
     }
@@ -256,6 +257,7 @@ export function CoachSkillWizard({
     try {
       await sendCoachSkillPlan({
         recipientUserIds,
+        includeGroupOfUserId: harGruppe && currentPlayerId ? currentPlayerId : undefined,
         level: s.level,
         period: s.period,
         perWeek: s.perWeek,

@@ -65,8 +65,10 @@ async function hentEllerOpprettSeasonPlan(userId: string, dato: Date): Promise<s
 }
 
 export type CoachSkillInput = {
-  /** Mottaker-userId-er (sentinel-er som «__current__»/«__group__» er allerede løst opp av klienten). */
+  /** Mottaker-userId-er (sentinel-er som «__current__» er allerede løst opp av klienten). */
   recipientUserIds: string[];
+  /** «Gruppe via AK Golf»: utvid til alle PLAYER-medlemmer i gruppen(e) denne spilleren er i. */
+  includeGroupOfUserId?: string;
   level: string; // A–K
   period: string; // GRUNN | SPESIAL | TURNERING | EVAL
   perWeek: number;
@@ -80,7 +82,24 @@ export type CoachSkillResultat = { ok: true; count: number } | { ok: false; feil
 export async function sendCoachSkillPlan(input: CoachSkillInput): Promise<CoachSkillResultat> {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
-  const ids = [...new Set(input.recipientUserIds)].filter(Boolean);
+  const rawIds = [...input.recipientUserIds];
+
+  // «Gruppe via AK Golf» → alle PLAYER-medlemmer i gruppen(e) spilleren tilhører.
+  if (input.includeGroupOfUserId) {
+    const mineGrupper = await prisma.groupMember.findMany({
+      where: { userId: input.includeGroupOfUserId },
+      select: { groupId: true },
+    });
+    if (mineGrupper.length > 0) {
+      const medlemmer = await prisma.groupMember.findMany({
+        where: { groupId: { in: mineGrupper.map((g) => g.groupId) }, role: "PLAYER" },
+        select: { userId: true },
+      });
+      rawIds.push(...medlemmer.map((m) => m.userId));
+    }
+  }
+
+  const ids = [...new Set(rawIds)].filter(Boolean);
   if (ids.length === 0) return { ok: false, feil: "Ingen gyldige mottakere" };
 
   // Bekreft at mottakerne finnes (unngå skriving til ikke-eksisterende kontoer).
