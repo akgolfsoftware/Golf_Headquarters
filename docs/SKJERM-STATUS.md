@@ -57,8 +57,8 @@
 | /portal/mal/trackman | TrackMan-okt | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/mal/trackman/[id] | TrackMan-okt | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/mal/bygger | Plan-Workbench | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /portal/planlegge | Plan-Workbench | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /portal/planlegge/workbench | Plan-Workbench | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /portal/planlegge | Plan-Workbench | ~ | ~ | ✅ | ~ | ~ | ✅ | ✅ | 2026-06-22 (korrigert fra feilaktig all-❌): WorkbenchHybrid — den delte Workbench-kjernen (~4100 linjer) — bygd + verifisert desktop 1280px med EKTE data (TrainingPlan+Session+Goal+Tournament). Årsplan/Måned/Uke/Dag-visninger, dra-og-slipp, palette, inspector, KPI-strip+modaler, øvelsesbank, gjentakelse-editor, mobil-varianter. Volum-mål nå koblet til PeriodBlock.weeklyVolMin/Max (var hardkodet plassholder). GJENSTÅR: Coach-Skill-wizard er UI-stub (ingen DB-lagring) — venter flyt-beslutning; full adversarial design-gate + mobil/iPad ikke kjørt |
+| /portal/planlegge/workbench | Plan-Workbench (alias → /portal/planlegge) | ~ | ~ | ✅ | ~ | ~ | ✅ | ✅ | Samme WorkbenchHybrid-kjerne som /portal/planlegge (se den raden) |
 | /portal/tren/aarsplan | Plan-Workbench | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/tren/aarsplan/periode/[id]/rediger | Plan-Workbench | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/tren/kalender | Plan-Workbench | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |

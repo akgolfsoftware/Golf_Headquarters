@@ -6,14 +6,17 @@ import { durLabel } from "./helpers";
 
 const ORDER: Cat[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
 
-// Samme PLASSHOLDER-tak som desktop-Statusbar (FYS-formelen er ikke låst).
-const VOL_MIN_PLACEHOLDER = 240;
-const VOL_MAX_PLACEHOLDER = 480;
+// Default-volumtak når aktiv PeriodBlock ikke har satt weeklyVolMin/Max.
+const VOL_MIN_DEFAULT = 240;
+const VOL_MAX_DEFAULT = 480;
 
 type MobileStatusbarProps = {
   totals: Record<Cat, number>;
   grand: number;
   weekLabel: string;
+  /** Ukevolum-mål fra spillerens aktive PeriodBlock (min/max minutter). */
+  volMin?: number | null;
+  volMax?: number | null;
 };
 
 /**
@@ -21,10 +24,12 @@ type MobileStatusbarProps = {
  * desktop-Statusbar-en. Samlet volum + volumtak-gauge øverst, kategori-chips i
  * en horisontalt scrollbar rad under.
  */
-export function MobileStatusbar({ totals, grand, weekLabel }: MobileStatusbarProps): ReactElement {
-  const volPct = Math.min(100, Math.round((grand / VOL_MAX_PLACEHOLDER) * 100));
-  const inBand = grand >= VOL_MIN_PLACEHOLDER && grand <= VOL_MAX_PLACEHOLDER;
-  const over = grand > VOL_MAX_PLACEHOLDER;
+export function MobileStatusbar({ totals, grand, weekLabel, volMin, volMax }: MobileStatusbarProps): ReactElement {
+  const vMin = volMin ?? VOL_MIN_DEFAULT;
+  const vMax = volMax ?? VOL_MAX_DEFAULT;
+  const volPct = Math.min(100, Math.round((grand / vMax) * 100));
+  const inBand = grand >= vMin && grand <= vMax;
+  const over = grand > vMax;
   const gaugeColor = over ? WB.err : inBand ? WB.ok : WB.warn;
 
   return (

@@ -58,6 +58,8 @@ export type WorkbenchData = {
   pyramid?: { lbl: string; ax: Axis; hours: number; pct: number }[];
   /** Topp-tall: uke-nummer, antall økter, planlagte timer. */
   summary?: { weekNumber: number; sessionCount: number; plannedHours: number };
+  /** Ukevolum-mål fra spillerens aktive PeriodBlock (min/max minutter). Null-felt = ikke satt. */
+  volTarget?: { min: number | null; max: number | null };
 };
 
 // ───────── Konstanter ─────────
@@ -152,7 +154,7 @@ export async function loadWorkbenchData(userId: string): Promise<WorkbenchData |
   const tretti = new Date(now);
   tretti.setDate(tretti.getDate() - 30);
 
-  const [weekSessions, last30Sessions, goals, entries] = await Promise.all([
+  const [weekSessions, last30Sessions, goals, entries, activePeriod] = await Promise.all([
     prisma.trainingPlanSession.findMany({
       where: { plan: { userId }, scheduledAt: { gte: weekStart, lt: weekEnd } },
       orderBy: { scheduledAt: "asc" },
@@ -183,7 +185,17 @@ export async function loadWorkbenchData(userId: string): Promise<WorkbenchData |
         tournament: { select: { name: true, startDate: true, location: true } },
       },
     }),
+    // Aktiv periode-blokk (dagens dato innenfor start/slutt) → ukevolum-mål.
+    prisma.periodBlock.findFirst({
+      where: { seasonPlan: { userId }, startDate: { lte: now }, endDate: { gte: now } },
+      select: { weeklyVolMin: true, weeklyVolMax: true },
+    }),
   ]);
+
+  const volTarget =
+    activePeriod && (activePeriod.weeklyVolMin != null || activePeriod.weeklyVolMax != null)
+      ? { min: activePeriod.weeklyVolMin, max: activePeriod.weeklyVolMax }
+      : undefined;
 
   // Tom DB for denne brukeren → returner {} så komponentene viser ren v10-demo.
   if (
@@ -333,6 +345,7 @@ export async function loadWorkbenchData(userId: string): Promise<WorkbenchData |
     goals: goalRows.length > 0 ? goalRows : undefined,
     pyramid,
     summary,
+    volTarget,
   };
 }
 

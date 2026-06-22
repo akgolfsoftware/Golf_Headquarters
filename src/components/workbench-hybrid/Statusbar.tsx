@@ -7,24 +7,29 @@ import type { Cat } from "./theme";
 
 const ORDER: Cat[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
 
-// PLASSHOLDER volumtak — FYS-formelen er IKKE låst (CLAUDE.md). Disse er bevisst
-// midlertidige referansetall for turneringsperioden og må ikke tolkes som fasit.
-const VOL_MIN_PLACEHOLDER = 240;
-const VOL_MAX_PLACEHOLDER = 480;
+// Default-volumtak når aktiv PeriodBlock ikke har satt weeklyVolMin/Max.
+// Reelle tall kommer fra spillerens periode-blokk (SeasonPlan) via props.
+const VOL_MIN_DEFAULT = 240;
+const VOL_MAX_DEFAULT = 480;
 
 type StatusbarProps = {
   /** minutter per kategori */
   totals: Record<Cat, number>;
   grand: number;
   weekLabel: string;
+  /** Ukevolum-mål fra spillerens aktive PeriodBlock (min/max minutter). */
+  volMin?: number | null;
+  volMax?: number | null;
 };
 
-export function Statusbar({ totals, grand, weekLabel }: StatusbarProps): ReactElement {
-  const volPct = Math.min(100, Math.round((grand / VOL_MAX_PLACEHOLDER) * 100));
-  const inBand = grand >= VOL_MIN_PLACEHOLDER && grand <= VOL_MAX_PLACEHOLDER;
-  const over = grand > VOL_MAX_PLACEHOLDER;
+export function Statusbar({ totals, grand, weekLabel, volMin, volMax }: StatusbarProps): ReactElement {
+  const vMin = volMin ?? VOL_MIN_DEFAULT;
+  const vMax = volMax ?? VOL_MAX_DEFAULT;
+  const volPct = Math.min(100, Math.round((grand / vMax) * 100));
+  const inBand = grand >= vMin && grand <= vMax;
+  const over = grand > vMax;
   const gaugeColor = over ? WB.err : inBand ? WB.ok : WB.warn;
-  const volTakLabel = `mål ${durLabel(VOL_MIN_PLACEHOLDER)}–${durLabel(VOL_MAX_PLACEHOLDER)}`;
+  const volTakLabel = `mål ${durLabel(vMin)}–${durLabel(vMax)}`;
   const volTakStatus = over
     ? "Over volumtaket — trim uka"
     : inBand

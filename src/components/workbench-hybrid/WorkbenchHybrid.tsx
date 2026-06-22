@@ -738,7 +738,7 @@ export function WorkbenchHybrid({
             )}
           </div>
 
-          <Statusbar totals={totals} grand={grand} weekLabel={weekHead.weekLabel} />
+          <Statusbar totals={totals} grand={grand} weekLabel={weekHead.weekLabel} volMin={data?.volTarget?.min} volMax={data?.volTarget?.max} />
         </div>
       </div>
 
@@ -772,7 +772,7 @@ export function WorkbenchHybrid({
             {centerView}
           </div>
         </div>
-        <MobileStatusbar totals={totals} grand={grand} weekLabel={weekHead.weekLabel} />
+        <MobileStatusbar totals={totals} grand={grand} weekLabel={weekHead.weekLabel} volMin={data?.volTarget?.min} volMax={data?.volTarget?.max} />
       </div>
 
       {/* ───────── DELTE OVERLAYS (begge layouts) ───────── */}
