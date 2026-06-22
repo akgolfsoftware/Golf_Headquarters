@@ -26,7 +26,7 @@
 | Rute | Referanse | Bygget | Knapper | 375 | 768 | 1280 | 4-states | DoD |
 |---|---|---|---|---|---|---|---|---|
 | /portal | PlayerHQ Dashboard | ✅ | ✅ | ✅ | ⚠ | ⚠ | ~ | ⚠ |
-| /portal/analysere | PlayerHQ Analyse | 🔨 | ✅ | ~ | ⚠ | ⚠ | ~ | ⚠ |
+| /portal/analysere | PlayerHQ Analyse | ✅ | ✅ | ✅ | ~ | ~ | ✅ | ✅ | VERIFISERT terminal-lys mobil 430px: «Strokes Gained i dybden» + faner (SG/Runder/TrackMan) + SG-per-kategori forest-kort + TrendBand + AI Caddie. Ekte data. D-1 (4-KPI-grid GIR/PUTTS/UP&DOWN) gjenstår som dokumentert utvidelse, ikke blokker |
 | /portal/analysere/hull | Analyse Hull Sammenlign Putting | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/statistikk | Statistikk-SG | ⚠ | ⚠ | ⚠ | ⚠ | ⚠ | ⚠ | ⚠ | BLOKKERT på A–K-nivåsystem (BYGGELOGG-FLAGG B-1) — diagnose-først krever parkert nivå/neste-nivå-motor |
 | /portal/statistikk/[metric] | Statistikk-SG (metric-variant) | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
@@ -67,7 +67,7 @@
 | /portal/tren/fys-plan/[planId] | Teknisk plan | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/tren/teknisk-plan | Teknisk plan | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/tren/teknisk-plan/[planId] | Teknisk plan | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /portal/gjennomfore | PlayerHQ Gjennomføre | 🔨 | ✅ | ~ | ⚠ | ⚠ | ~ | ⚠ | hub allerede ren terminal-lys; «Gjennomføre»-fasit = live-drill (Spor A/B, K-05) = egen skjerm i live-cluster |
+| /portal/gjennomfore | PlayerHQ Gjennomføre | ✅ | ✅ | ✅ | ~ | ~ | ✅ | ✅ | VERIFISERT terminal-lys mobil 430px: «Dagens program» + pågår-økt forest-kort (Fortsett økt) + resten av dagen + fullført i dag. Ekte data. «Live-drill»-fasit (Spor A/B, K-05) = egen skjerm i live-cluster |
 | /portal/gjennomfore/[id] | PlayerHQ Gjennomføre | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/tren/[sessionId]/planlagt | Start-okt L-faser | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/(fullscreen-test)/tren/tester/[testId]/gjennomfor | Start-okt L-faser | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
