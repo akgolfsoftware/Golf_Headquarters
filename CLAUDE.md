@@ -21,6 +21,15 @@ dashboard-tallene + endringsloggen når du fullfører/endrer skjermer.
 ## Låste beslutninger (juni 2026 — gjelder til Anders endrer dem)
 > **Fasit-kilde:** `docs/platform/BUSINESS-RULES.md`. Listen under er sammendrag — ved konflikt vinner BUSINESS-RULES.md. Ikke dupliser nye regler hit.
 
+> ⚠ **2026-06-22 — ANDERS HAR LÅST OPP 4 REGEL-KLYNGER.** Disse gjelder IKKE lenger som hard
+> constraint — de blokkerte designet fra å bli slik Anders ville. Verdier under avklaring, se
+> `docs/REGLER-OPPLAST-2026-06-22.md`:
+> 1. **Tema-toggle** (var: ingen toggle, fast lys/mørk per produkt)
+> 2. **Abonnement & pris** (var: kun 300 kr/mnd, ingen nivåer, ingen Stripe-kort-visning)
+> 3. **FYS-formel + A–K-nivåtall** (var: «—»-plassholdere til formel låst)
+> 4. **Cockpit stall-SG + plan-etterlevelse** (var: «—»-plassholdere)
+> Ikke håndhev de fire som låst før nye verdier er bekreftet. De andre punktene under står.
+
 - **App-navn:** Coach-appen heter **AgencyOS** (`/admin`). «CoachHQ» er gammelt — ikke bruk i ny UI-tekst.
 - **Tema per produkt:** PlayerHQ alltid **lyst**, AgencyOS alltid **mørkt** (`.dark`). **Ingen tema-toggle.**
 - **Navne-kanon (demo):** spiller = **Øyvind Rohjan**, coach = **Anders Kristiansen**. Alltid fulle navn. (Gamle: Magnus / Markus R.P. / Markus Berg / Anders Berg / Andreas Kragerud — skal bort.) NB: EKTE coach «Markus Røinås Pedersen» på markedssidene — IKKE bytt han ut med demo-spilleren.

@@ -5,6 +5,11 @@
 Dokumenterer forretningsregler som ikke kan utledes fra kode alene.
 Sist oppdatert: 2026-06-14.
 
+> ⚠ **2026-06-22 — 4 REGLER LÅST OPP AV ANDERS.** Følgende er IKKE lenger låst (de blokkerte
+> designet): (1) tema-toggle, (2) abonnement/pris-modell, (3) FYS-formel + A–K-nivåtall,
+> (4) cockpit stall-SG + plan-etterlevelse. Nye verdier under avklaring — se
+> `docs/REGLER-OPPLAST-2026-06-22.md`. Ikke håndhev disse fire som låst før nye verdier er bekreftet.
+
 ---
 
 ## Abonnement og tilgang til PlayerHQ
