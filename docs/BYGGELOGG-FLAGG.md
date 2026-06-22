@@ -110,6 +110,18 @@ Etter kalender-vinnet (A-4) sjekket jeg de neste drift-kandidatene (komponenter 
 - **Abonnement — BEVISST AVVIK FRA FASIT (låst beslutning overstyrer, diff-agenter skal IKKE flagge):** fasit «PlayerHQ Meg-abonnement» viser «PRO 299 kr» + «Stripe ···· 4242» + «PRO årlig 2690». Appen viser i stedet det LÅSTE: «300 kr/mnd» (ikke 299), «ingen nivåer», ærlig Stripe («kortdata lagres aldri hos oss» — intet fabrikert kortnr.), og INGEN «PRO årlig» (finnes ikke i den låste gratis/300-modellen). Samme prinsipp som Marketing/Priser. Appen er MER korrekt enn fasiten.
 - **Helse — FYS-formel NÅ WIRET ✅ (2026-06-22, Anders ga formelen):** Readiness-plassholder-KPIen er erstattet med ekte **FYS-score** (0–100, «{n}/5 tester», stall-relativ) fra `src/lib/fys-data.ts` → `src/lib/domain/fys-score.ts`. RÅverdier i `TestResult.score` (kg/cm/mph) + kroppsvekt `HealthEntry.weightKg`; seed `scripts/seed-fys-testdata.ts` ga 5 spillere realistiske baselines. «Formel ikke låst»-tekst fjernet; ny disclaimer forklarer FYS-score + at kun Belastning/HRV fortsatt er plassholdere (de formlene er ikke låst). Verifisert mobil 430px (FYS-SCORE 100 for Øyvind). Hvilepuls/Søvn = ærlig «—» uten logger.
 
+### P-1 · PlayerHQ analyse/stats-skjermer — APPEN ER RIKERE ENN HANDOVER-SKISSENE (sweep-premiss invertert, 2026-06-22)
+Sjekket de tre «nye» (`isNew: true` i rute-registeret) skjermene som deler fasiten «PlayerHQ Analyse Hull Sammenlign Putting (terminal-lys)». Funn: for 2 av 3 er APPEN allerede vesentlig RIKERE enn fasit-skissen, og den tredje er en design-gaffel. Å «matche fasiten» ville REGREDERE sofistikert arbeid — i strid med regelen «behold bevisst rikere app-design». INGEN endring gjort:
+
+| Rute | App i dag | Fasit-skisse | Vurdering |
+|---|---|---|---|
+| `/portal/analysere/hull` | SG-sone-kart «Hvor taper du slag?» (putt/nærspill/innspill/tee over hull-foto, ekte SG/trening per sone) | «Hull for hull» score-tabell (18 hull, score, ± par) | **Design-gaffel** — to ulike konsepter. Anders' valg: sone-kart (nåværende) ELLER hull-tabell (fasit)? Begge kunne sameksistere. |
+| `/portal/statistikk/sammenlign` | Radarprofil + kohort-velgere + INSIGHT-kort + full SG-nedbrytning m/ benchmark-delta | Enkle kategori-barer + «topp 14%»-kort | App RIKERE → behold |
+| `/portal/trening/putte-laboratoriet` | Interaktiv putte-simulator (6-ledd-pedagogikk + break-fysikk + lengde/fall/stimp-kontroller + grønn-viz) | Enkel «Putting logg» (14/20-test-liste) | App RIKERE → behold |
+
+- **STRATEGISK KONSEKVENS (viktig for Anders):** Sweep-premisset «match app til handover» er INVERTERT for mange skjermer. Den ferske handover-en (juni) er på flere flater enklere SKISSER, mens appen allerede har rikere implementasjoner (bygd fra tidligere faser). Mekanisk matching ville regredere appen. Mønsteret holder på tvers av AgencyOS (A-5: bookinger/plans/workspace) OG PlayerHQ (P-1). **Kun ekte kosmetisk drift (samme skjerm, små avvik — som kalender A-4) er trygg autonom sweep.** Resten krever Anders' design-valg (hvilken vinner: bygd app eller handover-skisse).
+- **Uswepte gjenstående (ikke sjekket):** `/portal/booking`, tren-undersider, `/portal/drills` + `/portal/drill/[id]`, Workbench-skin. Kan inneholde 0–2 ekte drift-vinn, men yield er lav (1 av 6 sjekkede skjermer var ren drift).
+
 ---
 
 ## A–K BACKEND-INTEGRASJON (krever Anders' beslutning — IKKE rørt autonomt)
