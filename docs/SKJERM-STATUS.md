@@ -13,9 +13,9 @@
 
 | Verdict | Audit | Etter fiks-runder | **Etter BLOCKED-runde** |
 |---|---|---|---|
-| ✅ **FERDIG** | 304 | 323 | **334 (92 %)** |
+| ✅ **FERDIG** | 304 | 323 | **335 (93 %)** |
 | 🔨 DELVIS | 50 | 0 | 0 |
-| ⛔ BLOCKED | — | 13 | **1** (kun vedlegg — Supabase Storage) |
+| ⛔ BLOCKED | — | 13 | **0** — alle 13 løst |
 | 🅿 INTENTIONAL (bevisst plassholder) | 18 | 18 | 18 |
 | ❌ STUB (kommer-snart/uferdig) | 9 | 9 | 9 |
 | — REDIRECT | 24 | 24 | 24 |
@@ -40,7 +40,7 @@
 | /portal/booking/coach/[coachId] | ✅ Bygd — ekte User+serviceType → booking-wizard |
 | /portal/meg/innstillinger/integrasjoner | ✅ Knapper koblet ærlig — spiller-OAuth flagget (backend) |
 | /portal/statistikk/sammenlign | ❌ Fjernet (Anders' valg) |
-| /portal/coach/melding/[id]/vedlegg | ⛔ Utsatt — MessageAttachment + Supabase Storage (fil-opplasting) |
+| /portal/coach/melding/[id]/vedlegg | ✅ Bygd — MessageAttachment + Supabase Storage (ekte fil-opplasting, e2e-verifisert) |
 
 ### ⛔ Opprinnelig BLOCKED-detalj (pre-runde — historikk)
 
