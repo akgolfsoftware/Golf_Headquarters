@@ -258,7 +258,6 @@ export const ALL_ROUTES: AllRouteEntry[] = [
   { route: "/portal/statistikk", label: "Statistikk", category: "PlayerHQ", filePath: "src/app/portal/statistikk/page.tsx" },
   { route: "/portal/statistikk/[metric]", label: "statistikk · detalj", category: "PlayerHQ", filePath: "src/app/portal/statistikk/[metric]/page.tsx" },
   { route: "/portal/statistikk/runder/[runId]/del", label: "Del", category: "PlayerHQ", filePath: "src/app/portal/statistikk/runder/[runId]/del/page.tsx" },
-  { route: "/portal/statistikk/sammenlign", label: "Sammenlign", category: "PlayerHQ", filePath: "src/app/portal/statistikk/sammenlign/page.tsx" },
   { route: "/portal/stats", label: "Stats", category: "PlayerHQ", filePath: "src/app/portal/stats/page.tsx" },
   { route: "/portal/talent", label: "Talent", category: "PlayerHQ · Talent", filePath: "src/app/portal/talent/page.tsx" },
   { route: "/portal/talent/min-plan", label: "Min plan", category: "PlayerHQ · Talent", filePath: "src/app/portal/talent/min-plan/page.tsx" },

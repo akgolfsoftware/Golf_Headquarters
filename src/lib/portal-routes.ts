@@ -159,7 +159,6 @@ export const PORTAL_ROUTES: RouteEntry[] = [
   { route: "/portal/spiller/[spillerId]", label: "Spiller-profil", category: "Annet" },
   { route: "/portal/statistikk/[metric]", label: "Statistikk · metric", category: "Annet", designPath: "/design-handover/playerhq/statistikk-drill-down.html" },
   { route: "/portal/statistikk/runder/[runId]/del", label: "Del runde", category: "Annet" },
-  { route: "/portal/statistikk/sammenlign", label: "Sammenlign statistikk", category: "Annet", designPath: "/design-handover/playerhq/sammenlign-statistikk.html" },
   { route: "/portal/stats", label: "Stats (legacy)", category: "Annet" },
   { route: "/portal/talent/min-plan", label: "Min talent-plan", category: "Annet" },
   { route: "/portal/talent/mitt-niva", label: "Mitt nivå", category: "Annet" },
