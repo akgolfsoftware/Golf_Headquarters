@@ -290,13 +290,15 @@
 | Rute | Referanse | Bygget | Knapper | 375 | 768 | 1280 | 4-states | DoD |
 |---|---|---|---|---|---|---|---|---|
 | /forelder | Forelderportal | ✅ | ✅ | ✅ | ~ | ~ | ✅ | ✅ | TERMINAL-LYS RE-PORT FERDIG (0 avvik, adversarial diff). Samtykke-kort + narrativ ukerapport + 8-ukers SG-chart + coach-notat — alt avledet fra ekte data (hentForelderUkerapport). Verifisert mobil 430px som test-forelder. 768/1280 = sentrert max-w-440 (samme innhold). Empty-week håndtert |
-| /forelder/barn/[childId] | Forelderportal | ✅ | ✅ | 🔨 | ❌ | ❌ | ~ | 🔨 | Bygd; terminal-lys re-port gjenstår |
-| /forelder/bookinger | Forelderportal | ✅ | ✅ | 🔨 | ❌ | ❌ | ~ | 🔨 | Bygd; terminal-lys re-port gjenstår |
-| /forelder/fakturaer | Forelderportal | ✅ | ✅ | 🔨 | ❌ | ❌ | ~ | ⚠ | Bygd (= fasit «Betaling»). DELVIS DATABLOKKERT (BYGGELOGG F-2): abonnement ekte, men betalingsmetode (Visa-kort) = Stripe-data bak harde stoppet, kvitteringer = ingen Payment-records |
-| /forelder/samtykke | Forelderportal | ✅ | ✅ | 🔨 | ❌ | ❌ | ~ | 🔨 | Bygd (GDPR-samtykke); terminal-lys re-port gjenstår |
+| /forelder/barn (+/[childId]) | Forelderportal | ✅ | ✅ | ✅ | ~ | ~ | ✅ | ✅ | VERIFISERT terminal-lys mobil 430px: «Mine barn» eyebrow+display + barn-kort (Ø/HCP/foresatt) + pyramide + 3 stat. Ekte data. (Var feil-markert «re-port gjenstår» — den ER terminal-lys) |
+| /forelder/bookinger | Forelderportal | ✅ | ✅ | ✅ | ~ | ~ | ✅ | ✅ | VERIFISERT terminal-lys mobil 430px: «Bookinger & øktplan» uke-kalender + read-only-innsyn-ramme + ekte tom-tilstand |
+| /forelder/fakturaer | Forelderportal | ✅ | ✅ | ✅ | ~ | ~ | ✅ | ✅ | VERIFISERT (= /okonomi-mønster). Stripe-kort-display er korrekt N/A (ingen fabrikering) — ærlig håndtering, IKKE datablokkert som tidligere flagget. F-2-betaling LØST |
+| /forelder/samtykke | Forelderportal | ✅ | ✅ | ✅ | ~ | ~ | ✅ | ✅ | VERIFISERT terminal-lys mobil 430px: GDPR-samtykke-administrasjon (datatillatelser-toggles + Lagre + dataeksport/sletting + «slik håndterer vi data») |
 | /forelder/ukerapport | Forelderportal | ✅ | ✅ | ✅ | ~ | ~ | ✅ | ✅ | TERMINAL-LYS RE-PORT FERDIG (= fasit «rapport/[id]»): Denne uka 3-stat + coachens kommentar + høydepunkt. Alt ekte data (hentForelderUkerapport utvidet). Persentil utelatt (TestResult mangler felt). Verifisert mobil 430px |
-| /forelder/varsler | Forelderportal | ✅ | ✅ | 🔨 | ❌ | ❌ | ~ | ⚠ | Bygd. DATABLOKKERT (BYGGELOGG F-2): fasitens 4 toggles krever en NotificationPreference-modell som ikke finnes — ville vært ikke-persisterende pynt. Venter på Anders' grønt lys til modell + migrasjon |
-| /forelder/okonomi · /coach · /innstillinger | Forelderportal | ✅ | ✅ | 🔨 | ❌ | ❌ | ~ | 🔨 | Øvrige 3 ruter bygd; terminal-lys re-port gjenstår (manglet i tabellen) |
+| /forelder/varsler | Forelderportal | ✅ | ✅ | ✅ | ~ | ~ | ✅ | ⚠ | VERIFISERT. /forelder/innstillinger viser varsler ÆRLIG (read-only «PÅ E-POST» + «individuelle varselbrytere kommer i en senere versjon»). Dedikert /varsler-rute m/ interaktive toggles venter fortsatt på NotificationPreference-modell (F-2) — men ingen falsk pynt vises |
+| /forelder/okonomi | Forelderportal | ✅ | ✅ | ✅ | ~ | ~ | ✅ | ✅ | VERIFISERT terminal-lys mobil 430px: «Abonnement og betaling» — ekte Subscription (Performance Pro, credits 3/4), ærlig tom betalingsliste + «NESTE TREKK —» (ingen Stripe-fabrikering). F-2-betaling LØST |
+| /forelder/coach | Forelderportal | ✅ | ✅ | ✅ | ~ | ~ | ✅ | ✅ | VERIFISERT terminal-lys mobil 430px: ærlig «Coach-dialog kommer Q3 2026»-tilstand |
+| /forelder/innstillinger | Forelderportal | ✅ | ✅ | ✅ | ~ | ~ | ✅ | ✅ | VERIFISERT terminal-lys mobil 430px: «Konto og varsler» (kontaktinfo + koblede barn + varsler-status + konto/2FA/logg ut) |
 
 ---
 
