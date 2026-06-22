@@ -20,6 +20,7 @@ import { AthleticBadge } from "@/components/athletic/badge";
 import { buttonClasses } from "@/components/ui/button";
 import { DetailShell } from "@/components/shared/detail-shell";
 import { AvlysOktKnapp } from "./avlys-okt-knapp";
+import { StartOktKnapp } from "./start-okt-knapp";
 
 export const dynamic = "force-dynamic";
 
@@ -162,12 +163,13 @@ export default async function OktDetaljPage({
                   Reschedule
                 </Link>
                 <AvlysOktKnapp bookingId={booking.id} spillerNavn={spiller.name} />
-                {/* Start økt / Åpne live-konsoll: live-konsollen (/admin/live)
-                    kjører på TrainingSessionV2, ikke Booking — ingen kobling
-                    finnes. Deaktivert til relasjonen bygges. */}
-                <AthleticButton variant="lime" size="sm" disabled>
-                  {status === "AKTIV NÅ" ? "Åpne live-konsoll" : "Start økt"}
-                </AthleticButton>
+                {/* Start økt / Åpne live-konsoll: kobler Booking til en
+                    TrainingSessionV2 (Booking↔live-konsoll-broen) og navigerer
+                    til /admin/live/[sessionId]/brief. */}
+                <StartOktKnapp
+                  bookingId={booking.id}
+                  label={status === "AKTIV NÅ" ? "Åpne live-konsoll" : "Start økt"}
+                />
               </>
             ) : (
               <>
@@ -175,11 +177,21 @@ export default async function OktDetaljPage({
                 <AthleticButton variant="ghost-light" size="sm" disabled>
                   Eksporter
                 </AthleticButton>
-                {/* Skriv oppfølging: coach-feedback (sendOktFeedback) bor på
-                    TrainingPlanSession, ikke Booking — ingen kobling finnes. */}
-                <AthleticButton variant="lime" size="sm" disabled>
-                  Skriv oppfølging
-                </AthleticButton>
+                {/* Skriv oppfølging: coach-oppsummering/feedback bor i live-
+                    konsollens summary. Lenker dit hvis økten er koblet til en
+                    TrainingSessionV2 — ellers deaktivert (ingen økt å skrive på). */}
+                {booking.trainingSessionV2Id ? (
+                  <Link
+                    href={`/admin/live/${booking.trainingSessionV2Id}/summary`}
+                    className={buttonClasses({ variant: "lime", size: "sm" })}
+                  >
+                    Skriv oppfølging
+                  </Link>
+                ) : (
+                  <AthleticButton variant="lime" size="sm" disabled>
+                    Skriv oppfølging
+                  </AthleticButton>
+                )}
               </>
             )}
           </div>
@@ -371,13 +383,28 @@ export default async function OktDetaljPage({
               >
                 Reschedule
               </Link>
-              {/* Live-konsoll går på TrainingSessionV2, ikke Booking — deaktivert. */}
-              <AthleticButton variant="lime" size="md" className="flex-1" disabled>
-                {status === "AKTIV NÅ" ? "Åpne live" : "Start"}
-              </AthleticButton>
+              {/* Kobler Booking til en TrainingSessionV2 og åpner live-konsollen. */}
+              <StartOktKnapp
+                bookingId={booking.id}
+                label={status === "AKTIV NÅ" ? "Åpne live" : "Start"}
+                size="md"
+                fullWidth
+              />
             </>
+          ) : booking.trainingSessionV2Id ? (
+            // Lenker til live-konsollens summary der coach-oppfølgingen bor.
+            <Link
+              href={`/admin/live/${booking.trainingSessionV2Id}/summary`}
+              className={buttonClasses({
+                variant: "lime",
+                size: "md",
+                className: "w-full",
+              })}
+            >
+              Skriv oppfølging
+            </Link>
           ) : (
-            // Coach-feedback bor på TrainingPlanSession, ikke Booking — deaktivert.
+            // Ingen koblet økt — ingenting å skrive oppfølging på ennå.
             <AthleticButton variant="lime" size="md" className="w-full" disabled>
               Skriv oppfølging
             </AthleticButton>

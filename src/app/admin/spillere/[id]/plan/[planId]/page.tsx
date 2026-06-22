@@ -10,12 +10,14 @@
 
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Edit, Copy, ChevronRight, Plus, Sparkles, GripVertical } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { AthleticEyebrow, AthleticButton } from "@/components/athletic";
+import { AthleticEyebrow } from "@/components/athletic";
 import { TabBar } from "@/components/athletic/tab-bar";
+import { PlanToolbar } from "./plan-toolbar";
+import { DrillsPanel } from "./drills-panel";
 
 export const dynamic = "force-dynamic";
 
@@ -68,7 +70,6 @@ export default async function SpillerPlanDetaljPage({
   }
 
   const drillsTotal = DRILLS.length;
-  const totalMin = DRILLS.reduce((sum, d) => sum + parseInt(d.mins, 10), 0);
 
   return (
     <div className="space-y-6">
@@ -102,15 +103,11 @@ export default async function SpillerPlanDetaljPage({
                 : ""}
             </div>
           </div>
-          <div className="flex flex-wrap gap-2">
-            <AthleticButton variant="ghost-light" size="sm">
-              <Edit className="h-3.5 w-3.5" /> Rediger
-            </AthleticButton>
-            <AthleticButton variant="ghost-light" size="sm">
-              <Copy className="h-3.5 w-3.5" /> Dupliser
-            </AthleticButton>
-            <AthleticButton variant="lime" size="sm">Publiser endring</AthleticButton>
-          </div>
+          <PlanToolbar
+            planId={plan.id}
+            drillsHref={`/admin/spillere/${id}/plan/${planId}?tab=drills`}
+            isPublished={plan.status === "ACTIVE"}
+          />
         </div>
 
         {/* KPI-strip */}
@@ -209,92 +206,7 @@ export default async function SpillerPlanDetaljPage({
         </div>
       ) : null}
 
-      {tab === "drills" ? (
-        <div className="space-y-4">
-          <div className="flex flex-wrap items-center gap-2">
-            <FilterChip label="Alle" count={drillsTotal} active />
-            <FilterChip label="PUTT" count={2} />
-            <FilterChip label="SLAG" count={2} />
-            <FilterChip label="TEK" count={1} />
-            <FilterChip label="FYS" count={1} />
-            <FilterChip label="SPILL" count={1} />
-            <div className="ml-auto flex gap-2">
-              <Link href="/portal/ai/foresla-drill">
-                <AthleticButton variant="ghost-light" size="sm">
-                  <Sparkles className="h-3.5 w-3.5" /> AI-foreslå
-                </AthleticButton>
-              </Link>
-              <AthleticButton variant="lime" size="sm">
-                <Plus className="h-3.5 w-3.5" /> Legg til drill
-              </AthleticButton>
-            </div>
-          </div>
-
-          <div className="rounded-2xl border border-border bg-card p-6">
-            <header className="mb-4 flex items-baseline justify-between">
-              <div>
-                <h2 className="font-display text-base font-semibold">
-                  {drillsTotal} drills · ~{totalMin} min / uke
-                </h2>
-                <div className="font-mono mt-1 text-[10.5px] uppercase tracking-[0.04em] text-muted-foreground">
-                  Dra for å endre rekkefølge · klikk → for detalj
-                </div>
-              </div>
-            </header>
-            <ul className="divide-y divide-border">
-              {DRILLS.map((d, i) => (
-                <li
-                  key={d.name}
-                  className="grid grid-cols-[20px_32px_1fr_auto_auto_auto] items-center gap-2 py-2"
-                >
-                  <GripVertical className="h-4 w-4 text-muted-foreground" />
-                  <div className="font-mono text-sm font-bold text-muted-foreground">{i + 1}</div>
-                  <div>
-                    <div className="mb-1 flex items-center gap-2">
-                      <span
-                        className={`font-mono rounded-full px-2 py-0.5 text-[9.5px] font-bold uppercase tracking-[0.08em] ${d.color}`}
-                      >
-                        {d.category}
-                      </span>
-                      <span className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
-                        {d.mins}
-                      </span>
-                      {d.tm ? (
-                        <span className="font-mono rounded-sm bg-orange-100 px-1.5 py-0.5 text-[9px] font-bold tracking-[0.08em] text-orange-700">
-                          TM
-                        </span>
-                      ) : null}
-                    </div>
-                    <div className="font-display text-sm font-semibold">{d.name}</div>
-                  </div>
-                  <div className="text-right">
-                    <div className="font-mono text-[9px] uppercase tracking-[0.10em] text-muted-foreground">
-                      REP-MÅL
-                    </div>
-                    <div className="font-mono text-xs font-semibold">{d.reps}</div>
-                  </div>
-                  <div className="text-right">
-                    <div className="font-mono text-[9px] uppercase tracking-[0.10em] text-muted-foreground">
-                      HIT-RATE
-                    </div>
-                    <div
-                      className={`font-mono text-sm font-bold ${d.rate === "—" ? "text-muted-foreground" : "text-emerald-700"}`}
-                    >
-                      {d.rate}
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-muted-foreground"
-                  >
-                    <ChevronRight className="h-3.5 w-3.5" />
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      ) : null}
+      {tab === "drills" ? <DrillsPanel planId={plan.id} drills={DRILLS} /> : null}
 
       {tab === "hit-rate" ? (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -366,33 +278,5 @@ function KpiBox({ label, value }: { label: string; value: React.ReactNode }) {
       </div>
       <div className="font-display mt-1.5 text-base font-bold">{value}</div>
     </div>
-  );
-}
-
-function FilterChip({
-  label,
-  count,
-  active,
-}: {
-  label: string;
-  count: number;
-  active?: boolean;
-}) {
-  return (
-    <button
-      type="button"
-      className={`font-mono inline-flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.06em] transition ${
-        active
-          ? "border-primary bg-primary text-primary-foreground"
-          : "border-border bg-card text-muted-foreground"
-      }`}
-    >
-      {label}
-      <span
-        className={`rounded-full px-1.5 py-px tabular-nums ${active ? "bg-white/20" : "bg-muted"}`}
-      >
-        {count}
-      </span>
-    </button>
   );
 }

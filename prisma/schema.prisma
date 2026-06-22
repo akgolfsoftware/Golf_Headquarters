@@ -754,6 +754,9 @@ model Booking {
   // Sletting av brukerkonto skal ikke slette historiske bookinger — sett userId til null.
   createdAt               DateTime      @default(now())
   updatedAt               DateTime      @updatedAt
+  // Live-økt: settes når coach trykker «Start økt» — kobler bookingen til den
+  // opprettede TrainingSessionV2 (live-konsoll). Plain id (ingen relasjon — isolert).
+  trainingSessionV2Id     String?
 
   user         User?              @relation(fields: [userId], references: [id])
   coach        User?              @relation("BookingCoach", fields: [coachId], references: [id], onDelete: SetNull)
