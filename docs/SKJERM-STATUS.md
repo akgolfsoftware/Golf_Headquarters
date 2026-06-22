@@ -11,19 +11,38 @@
 
 > Per-rad-tabellen lenger ned er fra Phase 0 (2026-06-20) og er UTDATERT — den underrapporterer kraftig (mange ❌-rader er faktisk bygd). Denne seksjonen er fasit: 14 parallelle agenter klassifiserte hver `page.tsx` mot koden.
 
-| Verdict | Pre-fiks | **Post-fiks (2026-06-22)** |
-|---|---|---|
-| ✅ **FERDIG** | 304 | **323 (89 %)** |
-| 🔨 DELVIS | 50 | **0** — alle 50 behandlet |
-| ⛔ BLOCKED (trenger ny datamodell/feature/beslutning) | — | **13** |
-| 🅿 INTENTIONAL (bevisst plassholder) | — | **18** |
-| ❌ STUB (kommer-snart/uferdig) | 9 | 9 |
-| — REDIRECT (ikke en skjerm) | 24 | 24 |
-| **Reelle skjermer (ekskl. redirect)** | 363 | **323 ferdige** |
+| Verdict | Audit | Etter fiks-runder | **Etter BLOCKED-runde** |
+|---|---|---|---|
+| ✅ **FERDIG** | 304 | 323 | **334 (92 %)** |
+| 🔨 DELVIS | 50 | 0 | 0 |
+| ⛔ BLOCKED | — | 13 | **1** (kun vedlegg — Supabase Storage) |
+| 🅿 INTENTIONAL (bevisst plassholder) | 18 | 18 | 18 |
+| ❌ STUB (kommer-snart/uferdig) | 9 | 9 | 9 |
+| — REDIRECT | 24 | 24 | 24 |
+| **Reelle skjermer (ekskl. redirect)** | 363 | 363 | **362** (sammenlign fjernet) |
 
-> **Fiks-runde 2026-06-22 (agent-team, commit 97173c18):** 13 parallelle agenter behandlet alle 50 DELVIS-skjermer med harde regler (kun verifisert ekte data, aldri fabrikert, kun egne rute-filer). Resultat: **19 FIKSET** (ekte prisma-data/loadere wiret, døde knapper koblet — tsc+build grønne), **18 BEVISST** plassholder (urørt), **13 BLOKKERT** (krever ny datamodell/feature/beslutning — lista under). DELVIS-tabellen lenger ned er pre-fiks-øyeblikksbilde.
+> **Fiks-runde 1 (commit 97173c18):** 19 av 50 DELVIS fikset med ekte data; 18 bevisst, 13 blokkert.
+> **BLOCKED-runde (2026-06-22, commits a3509a3a · d65410fc):** av de 13 blokkerte: **11 bygd** (4 m/ eksisterende modeller, 7 m/ 3 nye tabeller ClubSettings/DataExportRequest/Question + eksisterende Location/User/Bane), **1 fjernet** (kohort-sammenligning — Anders' valg), **1 utsatt** (vedlegg — krever Supabase Storage). Ingen fabrikering — manglende datakilder utelatt + flagget per skjerm.
 
-### ⛔ BLOCKED (13) — trenger din beslutning / ny datamodell / feature
+### BLOCKED-13 — sluttstatus
+
+| Rute | Status |
+|---|---|
+| /admin/grupper/[id] | ✅ Bygd — legg-til/fjern-medlem (GroupMember) |
+| /admin/kapasitet | ✅ Bygd — CSV-eksport (bulk-blokker gjenstår) |
+| /admin/spillere/[id]/tildel-test | ✅ Bygd — ekte tildelTest-action |
+| /portal/tren/teknisk-plan/[planId] | ✅ Bygd — oppgave-modal → createTask |
+| /admin/klubb/innstillinger | ✅ Bygd — ClubSettings (ny tabell) |
+| /forelder/samtykke | ✅ Bygd — ekte GDPR-eksport + slette-forespørsel |
+| /portal/coach/sporsmal/[id] | ✅ Bygd — Question (ny tabell) + liste (spiller-ask gjenstår) |
+| /stats/regions/[slug] | ✅ Bygd — ekte Bane-aggregering (spillertall nasjonal fallback) |
+| /portal/booking/anlegg/[anleggId] | ✅ Bygd — ekte Location (rikt innhold mangler kilde) |
+| /portal/booking/coach/[coachId] | ✅ Bygd — ekte User+serviceType → booking-wizard |
+| /portal/meg/innstillinger/integrasjoner | ✅ Knapper koblet ærlig — spiller-OAuth flagget (backend) |
+| /portal/statistikk/sammenlign | ❌ Fjernet (Anders' valg) |
+| /portal/coach/melding/[id]/vedlegg | ⛔ Utsatt — MessageAttachment + Supabase Storage (fil-opplasting) |
+
+### ⛔ Opprinnelig BLOCKED-detalj (pre-runde — historikk)
 
 | Rute | Hva som mangler |
 |---|---|
