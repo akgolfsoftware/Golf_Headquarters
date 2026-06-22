@@ -100,6 +100,15 @@ Opprinnelig flagg (historikk):
 
 ---
 
+## LIVE-CLUSTER (drill-runner — visuell re-port krever forsiktighet)
+
+### L-1 · Live drill-runner design avviker fra «Gjennomføre (terminal-lys)»-fasit
+- **Funn (sweep 2026-06-22):** fasiten «PlayerHQ Gjennomføre (terminal-lys)» er en DRILL-RUNNER (full mørk terminal: «ØKT 1 AV 2», enkelt-drill «Putting — avstandskontroll», 3/4-ring, rep-stepper «− 7 +» = treff innenfor mål, VIDEO/FOTO/NOTAT-logg, segment-progresjon, «NESTE DRILL»). Appens drill-runner finnes på `/portal/(fullscreen)/live/[sessionId]/active` og ER bygd + funksjonell, men har et ANNET design: timer (ØKT-TID) + aktiv drill-kort + «Logg rep» + kommende drills (dimmet) + «Fullfør drill». Mer session-runner enn single-drill-runner.
+- **`/portal/gjennomfore` (program-huben) er IKKE feil** — den er korrekt; agenten sammenlignet feil skjerm mot drill-runner-fasiten.
+- **Hvorfor flagget, ikke bygd:** dette er det dobbeltsporede live-systemet (Spor A `/portal/live` + Spor B `/admin/live`, se minne project_live_session_dual_track). Å re-porte drill-runneren til fasitens single-drill+stepper-design ville rørt live-session-LOGIKKEN (rep-logging, drill-progresjon, timer). Låst regel: live = kun visuell skin, flagg funksjons-kollisjon. Trenger fra Anders: skal app-drill-runneren (session-liste-stil) erstattes av fasitens single-drill-stepper-stil, eller er dagens runner bevisst? Hvis re-port: egen forsiktig oppgave, ikke autonom sweep.
+
+---
+
 ## CONTENT-REVIEW (skjerm bygd & verifisert, men innhold må godkjennes før prod)
 
 ### C-1 · Marketing testimonial-/case-tall må bekreftes ekte før lansering

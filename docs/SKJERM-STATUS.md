@@ -67,7 +67,8 @@
 | /portal/tren/fys-plan/[planId] | Teknisk plan | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/tren/teknisk-plan | Teknisk plan | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/tren/teknisk-plan/[planId] | Teknisk plan | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /portal/gjennomfore | PlayerHQ Gjennomføre | ✅ | ✅ | ✅ | ~ | ~ | ✅ | ✅ | VERIFISERT terminal-lys mobil 430px: «Dagens program» + pågår-økt forest-kort (Fortsett økt) + resten av dagen + fullført i dag. Ekte data. «Live-drill»-fasit (Spor A/B, K-05) = egen skjerm i live-cluster |
+| /portal/gjennomfore | PlayerHQ Gjennomføre | ✅ | ✅ | ✅ | ~ | ~ | ✅ | ✅ | KORREKT program-hub (Dagens program: pågår/resten/fullført). FASIT-MAPPING (sweep 2026-06-22): fasiten «Gjennomføre (terminal-lys)» er DRILL-RUNNEREN → maps til /portal/live/[sessionId]/active (egen fullscreen-rute), IKKE denne huben. Ikke bygg om huben |
+| /portal/live/[sessionId]/active | Gjennomføre (drill-runner) | ✅ | ✅ | 🔨 | ❌ | ❌ | ~ | ⚠ | Bygd + funksjonell (timer + aktiv drill + Logg rep + Fullfør drill + kommende drills). DESIGN AVVIKER fra fasit (app=timer+drill-liste; fasit=enkelt-drill+rep-stepper+VIDEO/FOTO/NOTAT, full mørk terminal). Visuell re-port flagget (BYGGELOGG L-1) — live-cluster Spor A/B, krever forsiktighet (ikke bryt live-logikk) |
 | /portal/gjennomfore/[id] | PlayerHQ Gjennomføre | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/tren/[sessionId]/planlagt | Start-okt L-faser | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/(fullscreen-test)/tren/tester/[testId]/gjennomfor | Start-okt L-faser | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
