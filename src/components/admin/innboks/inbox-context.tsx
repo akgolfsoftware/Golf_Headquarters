@@ -130,7 +130,7 @@ function QuickAction({
       className={cn(
         "inline-flex h-[34px] items-center justify-center gap-2 rounded-lg px-3 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] transition-colors",
         primary
-          ? "border border-primary bg-primary text-accent hover:opacity-90"
+          ? "border border-primary bg-primary text-primary-foreground hover:opacity-90"
           : "border border-border bg-card text-foreground hover:bg-secondary",
       )}
     >

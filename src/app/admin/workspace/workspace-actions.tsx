@@ -67,7 +67,7 @@ export function BrennerStrip({ tasks }: { tasks: SampleTask[] }) {
             <button
               type="button"
               onClick={() => toast.info("Bruk Notion for å fullføre oppgaven")}
-              className="font-mono inline-flex h-7 items-center gap-1 rounded-full bg-primary px-2.5 text-[10px] font-bold uppercase tracking-[0.06em] text-accent"
+              className="font-mono inline-flex h-7 items-center gap-1 rounded-full bg-primary px-2.5 text-[10px] font-bold uppercase tracking-[0.06em] text-primary-foreground"
             >
               <Check className="h-3 w-3" /> Fullfør
             </button>

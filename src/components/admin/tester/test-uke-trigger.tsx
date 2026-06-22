@@ -114,7 +114,7 @@ export function TestUkeTrigger({ countdown, triggeredAt, weeks, players }: Props
                 <span
                   className={`mt-1.5 rounded px-1.5 py-0.5 font-mono text-[8px] font-extrabold uppercase tracking-[0.08em] ${
                     w.role === "test"
-                      ? "bg-primary text-accent"
+                      ? "bg-primary text-primary-foreground"
                       : w.role === "now"
                         ? "bg-warning/20 text-warning"
                         : "bg-secondary text-muted-foreground"

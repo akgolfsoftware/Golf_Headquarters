@@ -106,7 +106,7 @@ export default async function OkonomiTabPage() {
             href="https://dashboard.stripe.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex h-9 items-center gap-2 rounded-lg bg-primary px-3.5 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-accent transition-opacity hover:opacity-90"
+            className="inline-flex h-9 items-center gap-2 rounded-lg bg-primary px-3.5 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-primary-foreground transition-opacity hover:opacity-90"
           >
             Åpne Stripe <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
           </a>

@@ -150,7 +150,7 @@ function NavRow({
           "inline-flex h-8 items-center rounded-lg border px-3 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] transition-colors",
           isCurrentWeek
             ? "border-border bg-secondary text-muted-foreground"
-            : "border-primary bg-card text-primary hover:bg-primary hover:text-accent",
+            : "border-primary bg-card text-primary hover:bg-primary hover:text-primary-foreground",
         )}
         aria-disabled={isCurrentWeek}
       >
@@ -344,7 +344,7 @@ function EmptyState() {
       <p className="mt-3 text-sm text-muted-foreground">Ingen timer denne uka.</p>
       <Link
         href="/admin/bookinger/ny"
-        className="mt-4 inline-flex h-9 items-center gap-2 rounded-lg bg-primary px-3.5 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-accent transition-opacity hover:opacity-90"
+        className="mt-4 inline-flex h-9 items-center gap-2 rounded-lg bg-primary px-3.5 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-primary-foreground transition-opacity hover:opacity-90"
       >
         <CalendarPlus className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
         Book første time
@@ -358,7 +358,7 @@ function TopAction({ icon: Icon, label, href }: { icon: LucideIcon; label: strin
   return (
     <Link
       href={href}
-      className="inline-flex h-9 items-center gap-2 rounded-lg bg-primary px-3.5 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-accent transition-opacity hover:opacity-90"
+      className="inline-flex h-9 items-center gap-2 rounded-lg bg-primary px-3.5 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-primary-foreground transition-opacity hover:opacity-90"
     >
       <Icon className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
       {label}

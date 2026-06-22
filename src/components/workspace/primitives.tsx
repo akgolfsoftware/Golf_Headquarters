@@ -177,7 +177,7 @@ export function TaskCheck({
       type="button"
       onClick={onClick}
       className={`inline-flex shrink-0 items-center justify-center rounded-full transition ${
-        done ? "border-0 bg-primary text-accent" : "border-[1.5px] border-input bg-card"
+        done ? "border-0 bg-primary text-primary-foreground" : "border-[1.5px] border-input bg-card"
       }`}
       style={{ width: size, height: size }}
       aria-pressed={done}
@@ -234,7 +234,7 @@ export function AvatarStack({
       {visible.map((p, i) => (
         <div
           key={i}
-          className="inline-flex items-center justify-center rounded-full border-2 border-card bg-primary font-bold text-accent"
+          className="inline-flex items-center justify-center rounded-full border-2 border-card bg-primary font-bold text-primary-foreground"
           style={{
             width: size,
             height: size,

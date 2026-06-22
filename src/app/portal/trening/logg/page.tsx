@@ -53,7 +53,9 @@ export default function TreningLoggPage() {
 
   return (
     <div className="container mx-auto py-8 max-w-md">
-      <h1 className="text-xl font-semibold mb-6">Logg treningsøkt</h1>
+      <h1 className="font-display text-[28px] font-bold leading-[1.1] tracking-tight mb-6">
+        Logg treningsøkt
+      </h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium mb-1">Dato</label>
@@ -100,7 +102,7 @@ export default function TreningLoggPage() {
             onChange={(e) =>
               setForm((f) => ({ ...f, minutes: Number(e.target.value) }))
             }
-            className="w-full"
+            className="w-full accent-primary"
           />
           <div className="flex justify-between text-xs text-muted-foreground">
             <span>5 min</span>

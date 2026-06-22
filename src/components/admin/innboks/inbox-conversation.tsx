@@ -127,7 +127,7 @@ export function InboxConversation({
               type="button"
               onClick={håndterSend}
               disabled={pending || tekst.trim().length === 0}
-              className="inline-flex h-[34px] items-center gap-1.5 rounded-lg bg-primary px-4 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-accent transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+              className="inline-flex h-[34px] items-center gap-1.5 rounded-lg bg-primary px-4 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
             >
               {pending ? (
                 <Loader2 className="h-[13px] w-[13px] animate-spin" aria-hidden />

@@ -575,14 +575,14 @@ function StallPill({ label, count, active }: { label: string; count: number; act
     <span
       className={cn(
         "inline-flex h-[26px] items-center gap-1.5 rounded-full border px-2.5 font-mono text-[10px] font-bold tracking-[0.04em]",
-        active ? "border-primary bg-primary text-accent" : "border-border bg-card text-foreground",
+        active ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card text-foreground",
       )}
     >
       {label}
       <span
         className={cn(
           "rounded-full px-1.5 text-[9px] font-extrabold",
-          active ? "bg-accent/30 text-accent" : "bg-primary/10 text-primary",
+          active ? "bg-accent/30 text-primary-foreground" : "bg-primary/10 text-primary",
         )}
       >
         {count}
@@ -601,7 +601,7 @@ function StallTableRow({ row, alt }: { row: StallRow; alt: boolean }) {
           <span
             className={cn(
               "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-display text-[11px] font-bold",
-              alt ? "bg-secondary text-foreground" : "bg-primary text-accent",
+              alt ? "bg-secondary text-foreground" : "bg-primary text-primary-foreground",
             )}
           >
             {row.initials}
@@ -769,7 +769,7 @@ function DrillStatusPill({ done }: { done: boolean }) {
     <span
       className={cn(
         "inline-flex h-7 w-7 items-center justify-center rounded-full",
-        done ? "bg-primary text-accent" : "bg-secondary text-muted-foreground",
+        done ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground",
       )}
     >
       {done ? (
@@ -883,7 +883,7 @@ function DrillSection({ data }: { data: ComplianceData }) {
               </div>
               <Link
                 href="/admin/innboks"
-                className="inline-flex h-8 items-center gap-1.5 rounded-full bg-primary px-3.5 text-xs font-bold text-accent transition-opacity hover:opacity-90"
+                className="inline-flex h-8 items-center gap-1.5 rounded-full bg-primary px-3.5 text-xs font-bold text-primary-foreground transition-opacity hover:opacity-90"
               >
                 Send som notat
                 <ArrowRight className="h-3 w-3 text-accent" strokeWidth={2} aria-hidden />

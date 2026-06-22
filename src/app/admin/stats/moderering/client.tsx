@@ -137,7 +137,7 @@ export function ModeringClient({
                   className={`rounded-full px-1.5 py-px font-mono text-[10px] font-extrabold tabular-nums ${
                     t.id === "slett"
                       ? "bg-destructive text-white"
-                      : "bg-primary text-accent"
+                      : "bg-primary text-primary-foreground"
                   }`}
                 >
                   {count}
@@ -274,7 +274,7 @@ export function ModeringClient({
 
       {/* Sticky batch-bar */}
       {valgte.length > 0 && (
-        <div className="sticky bottom-4 z-20 flex items-center gap-4 rounded-full bg-primary px-6 py-3 text-accent shadow-[0_12px_32px_hsl(var(--primary)/0.3)]">
+        <div className="sticky bottom-4 z-20 flex items-center gap-4 rounded-full bg-primary px-6 py-3 text-primary-foreground shadow-[0_12px_32px_hsl(var(--primary)/0.3)]">
           <span className="font-mono text-[13px] font-bold uppercase tracking-[0.08em]">
             {valgte.length} VALGT
           </span>

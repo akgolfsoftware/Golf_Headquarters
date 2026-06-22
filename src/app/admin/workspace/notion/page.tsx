@@ -74,13 +74,13 @@ export default async function WorkspaceNotionPage({
             <span className="ml-2 inline-flex gap-1 rounded-full border border-border bg-card p-0.5">
               <a
                 href="?state=empty"
-                className={`rounded-full px-2.5 py-0.5 text-[10px] ${state === "empty" ? "bg-primary text-accent" : "text-muted-foreground"}`}
+                className={`rounded-full px-2.5 py-0.5 text-[10px] ${state === "empty" ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}
               >
                 empty
               </a>
               <a
                 href="?state=connected"
-                className={`rounded-full px-2.5 py-0.5 text-[10px] ${state === "connected" ? "bg-primary text-accent" : "text-muted-foreground"}`}
+                className={`rounded-full px-2.5 py-0.5 text-[10px] ${state === "connected" ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}
               >
                 connected
               </a>
@@ -232,7 +232,7 @@ function EmptyState({
                 key={s.n}
                 className="flex flex-col gap-2.5 rounded-2xl border border-border bg-card p-6"
               >
-                <span className="font-display inline-flex h-9 w-9 items-center justify-center rounded-full bg-primary text-base font-bold text-accent">
+                <span className="font-display inline-flex h-9 w-9 items-center justify-center rounded-full bg-primary text-base font-bold text-primary-foreground">
                   {s.n}
                 </span>
                 <h3 className="font-display text-[15px] font-semibold">{s.title}</h3>

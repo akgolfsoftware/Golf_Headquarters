@@ -420,7 +420,7 @@ function CommSection({
               <span
                 className={cn(
                   "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-display text-[10px] font-bold",
-                  c.coach ? "bg-primary text-accent" : "bg-secondary text-foreground",
+                  c.coach ? "bg-primary text-primary-foreground" : "bg-secondary text-foreground",
                 )}
               >
                 {c.initials}
@@ -456,7 +456,7 @@ function ActionFooter({ config }: { config: SpillerDetaljOversiktConfig }) {
       <div className="flex gap-2">
         <Link
           href={config.workbenchHref}
-          className="inline-flex h-9 flex-1 items-center justify-center gap-1.5 rounded-full bg-primary px-3.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.06em] text-accent hover:opacity-90"
+          className="inline-flex h-9 flex-1 items-center justify-center gap-1.5 rounded-full bg-primary px-3.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.06em] text-primary-foreground hover:opacity-90"
         >
           <ArrowUpRight className="h-[11px] w-[11px]" strokeWidth={2} aria-hidden />
           Åpne i Workbench

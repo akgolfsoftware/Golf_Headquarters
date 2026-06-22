@@ -50,7 +50,7 @@ export function ActionBar({ id, playerName }: { id: string; playerName: string }
       <div className="flex flex-col gap-2 sm:flex-row">
         <Link
           href={`/admin/spillere/${id}/workbench`}
-          className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-full bg-primary px-4 font-mono text-[11px] font-extrabold uppercase tracking-[0.08em] text-accent transition-colors hover:bg-[var(--color-brand-primary-hover)]"
+          className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-full bg-primary px-4 font-mono text-[11px] font-extrabold uppercase tracking-[0.08em] text-primary-foreground transition-colors hover:bg-[var(--color-brand-primary-hover)]"
         >
           <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
           Åpne i Workbench

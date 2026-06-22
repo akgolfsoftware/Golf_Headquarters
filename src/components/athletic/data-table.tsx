@@ -192,7 +192,7 @@ function CheckBox({
       onClick={onChange}
       className={cn(
         "inline-flex h-4 w-4 items-center justify-center rounded border-[1.5px]",
-        checked ? "border-primary bg-primary text-accent" : "border-input bg-card text-transparent",
+        checked ? "border-primary bg-primary text-primary-foreground" : "border-input bg-card text-transparent",
       )}
     >
       {checked && <Check className="h-[11px] w-[11px]" strokeWidth={2.5} />}

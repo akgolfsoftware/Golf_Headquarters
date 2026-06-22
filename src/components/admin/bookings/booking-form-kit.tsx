@@ -162,7 +162,7 @@ export function InlineBookingForm({
         <button type="button" onClick={onCancel} className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground hover:bg-secondary hover:text-foreground">
           <X className="h-3 w-3" strokeWidth={2} />Avbryt
         </button>
-        <button type="button" onClick={onSubmit} className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-accent">
+        <button type="button" onClick={onSubmit} className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-primary-foreground">
           <Check className="h-3 w-3" strokeWidth={2} />Opprett booking
         </button>
       </div>

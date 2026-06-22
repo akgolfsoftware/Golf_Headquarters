@@ -386,7 +386,7 @@ function PreviewCard({
         <div className="relative z-10 flex items-center gap-2">
           <div
             className={`grid h-9 w-9 place-items-center rounded-full font-display text-[12px] font-bold ${
-              erMork ? "bg-accent text-foreground" : "bg-primary text-accent"
+              erMork ? "bg-accent text-foreground" : "bg-primary text-primary-foreground"
             }`}
           >
             {spiller.initialer}
@@ -429,7 +429,7 @@ function PreviewCard({
             >
               <span
                 className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${
-                  erMork ? "bg-accent/20 text-accent" : "bg-primary/15 text-primary"
+                  erMork ? "bg-accent/20 text-primary-foreground" : "bg-primary/15 text-primary"
                 }`}
               >
                 {runde.vsPar >= 0 ? "+" : ""}
@@ -514,7 +514,7 @@ function FormatButton({
     >
       <span
         className={`grid h-7 w-7 place-items-center rounded-md ${
-          aktiv ? "bg-primary text-accent" : "bg-secondary text-muted-foreground"
+          aktiv ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"
         }`}
       >
         <Icon size={13} strokeWidth={1.75} />
@@ -581,7 +581,7 @@ function Toggle({
       <span
         className={`grid h-4 w-4 place-items-center rounded-sm border ${
           aktiv
-            ? "border-primary bg-primary text-accent"
+            ? "border-primary bg-primary text-primary-foreground"
             : "border-border bg-card"
         }`}
       >

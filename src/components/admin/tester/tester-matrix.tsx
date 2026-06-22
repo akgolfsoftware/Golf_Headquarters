@@ -46,7 +46,7 @@ const axisDotClass: Record<TesterAxis, string> = {
 
 const avatarToneClass = {
   default: "bg-secondary text-foreground",
-  primary: "bg-primary text-accent",
+  primary: "bg-primary text-primary-foreground",
   accent: "bg-accent text-primary",
 } as const;
 
@@ -131,7 +131,7 @@ function TbButton({
       className={cn(
         "inline-flex h-7 items-center gap-1.5 rounded-full px-3 font-mono text-[10px] font-extrabold uppercase tracking-[0.1em]",
         primary
-          ? "border border-primary bg-primary text-accent hover:opacity-90"
+          ? "border border-primary bg-primary text-primary-foreground hover:opacity-90"
           : "border border-border bg-card text-foreground hover:bg-secondary",
       )}
     >
@@ -194,7 +194,7 @@ export function TesterMatrix({ data }: { data: TesterMatrixData }) {
               className={cn(
                 "inline-flex h-7 cursor-default items-center gap-1.5 rounded-full px-3 font-mono text-[10px] font-bold uppercase tracking-[0.1em]",
                 i === 0
-                  ? "border border-primary bg-primary text-accent"
+                  ? "border border-primary bg-primary text-primary-foreground"
                   : "border border-border bg-card text-foreground",
               )}
             >
@@ -202,7 +202,7 @@ export function TesterMatrix({ data }: { data: TesterMatrixData }) {
               <span
                 className={cn(
                   "inline-flex items-center rounded-full px-1.5 py-px font-mono text-[9px] font-extrabold",
-                  i === 0 ? "bg-accent/30 text-accent" : "bg-primary/10 text-muted-foreground",
+                  i === 0 ? "bg-accent/30 text-primary-foreground" : "bg-primary/10 text-muted-foreground",
                 )}
               >
                 {g.count}
@@ -324,7 +324,7 @@ export function TesterMatrix({ data }: { data: TesterMatrixData }) {
                         className={cn(
                           "inline-flex h-[30px] items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.06em]",
                           r.missingCount > 0
-                            ? "border border-primary bg-primary text-accent hover:opacity-90"
+                            ? "border border-primary bg-primary text-primary-foreground hover:opacity-90"
                             : "border border-border bg-card text-foreground hover:bg-secondary",
                         )}
                       >

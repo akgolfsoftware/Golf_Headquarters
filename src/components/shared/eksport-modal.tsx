@@ -726,7 +726,7 @@ function Toggle({
       <span
         className={`grid h-4 w-4 place-items-center rounded-sm border ${
           aktiv
-            ? "border-primary bg-primary text-accent"
+            ? "border-primary bg-primary text-primary-foreground"
             : "border-border bg-card"
         }`}
       >

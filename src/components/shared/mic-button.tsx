@@ -243,7 +243,7 @@ export function MicButton({
           state === "recording"
             ? "mic-btn-recording bg-accent text-primary"
             : state === "done"
-              ? "bg-primary text-accent"
+              ? "bg-primary text-primary-foreground"
               : state === "unsupported"
                 ? "cursor-not-allowed bg-secondary text-muted-foreground opacity-50"
                 : "bg-secondary text-muted-foreground hover:bg-card hover:text-foreground"
@@ -287,9 +287,9 @@ export function MicButton({
             : state === "recording"
               ? "mic-btn-recording border-accent bg-accent text-primary"
               : state === "transcribing"
-                ? "border-primary bg-primary text-accent"
+                ? "border-primary bg-primary text-primary-foreground"
                 : state === "done"
-                  ? "border-primary bg-primary text-accent"
+                  ? "border-primary bg-primary text-primary-foreground"
                   : "cursor-not-allowed border-border bg-secondary text-muted-foreground opacity-50"
         }`}
         style={

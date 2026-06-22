@@ -225,7 +225,7 @@ function WorkbenchSidebar({
     <aside className="flex h-[760px] w-[280px] shrink-0 flex-col overflow-hidden rounded-2xl border border-border bg-card">
       {/* Header */}
       <div className="flex items-center gap-2 border-b border-border px-3 py-3.5">
-        <span className="relative inline-flex h-7 w-7 items-center justify-center rounded-lg bg-primary font-display text-[13px] font-bold tracking-[-0.02em] text-accent">
+        <span className="relative inline-flex h-7 w-7 items-center justify-center rounded-lg bg-primary font-display text-[13px] font-bold tracking-[-0.02em] text-primary-foreground">
           ak
           <span className="absolute right-[5px] top-[5px] h-1 w-1 rounded-full bg-accent" />
         </span>
@@ -611,7 +611,7 @@ function Inspector({
                 <div className="mt-2.5 flex gap-1.5">
                   <Link
                     href={`/admin/spillere/${playerId}/plan`}
-                    className="inline-flex h-[30px] flex-1 items-center justify-center gap-1.5 rounded-lg border border-primary bg-primary px-2.5 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-accent hover:opacity-90"
+                    className="inline-flex h-[30px] flex-1 items-center justify-center gap-1.5 rounded-lg border border-primary bg-primary px-2.5 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-primary-foreground hover:opacity-90"
                   >
                     <Check className="h-3 w-3" strokeWidth={2.5} aria-hidden />
                     Godkjenn

@@ -142,14 +142,14 @@ export default async function SpillereTabPage({
                   href={`/admin/agencyos/spillere?filter=${f.key}${q ? `&q=${encodeURIComponent(q)}` : ""}`}
                   className={`inline-flex h-7 items-center gap-1.5 rounded-full border px-3 font-mono text-[10px] font-bold uppercase tracking-[0.10em] transition-colors ${
                     on
-                      ? "border-primary bg-primary text-accent"
+                      ? "border-primary bg-primary text-primary-foreground"
                       : "border-border bg-card text-foreground hover:bg-secondary"
                   }`}
                 >
                   {f.label}
                   <span
                     className={`rounded-full px-[5px] py-0.5 font-mono text-[9px] font-extrabold tabular-nums ${
-                      on ? "bg-accent/30 text-accent" : "bg-primary/[0.08] text-muted-foreground"
+                      on ? "bg-accent/30 text-primary-foreground" : "bg-primary/[0.08] text-muted-foreground"
                     }`}
                   >
                     {f.count}

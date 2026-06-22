@@ -134,7 +134,7 @@ function presenceClass(p: Presence): string {
 }
 
 function avatarClass(tone: AvatarTone): string {
-  if (tone === "primary") return "bg-primary text-accent";
+  if (tone === "primary") return "bg-primary text-primary-foreground";
   if (tone === "lime") return "bg-accent text-primary";
   return "bg-secondary text-foreground";
 }
@@ -171,7 +171,7 @@ function btnClass(primary?: boolean): string {
     "inline-flex h-[30px] items-center gap-1.5 whitespace-nowrap rounded-full px-2.5",
     "font-mono text-[9px] font-extrabold uppercase tracking-[0.06em] transition-colors",
     primary
-      ? "border border-primary bg-primary text-accent hover:bg-[var(--color-brand-primary-hover)]"
+      ? "border border-primary bg-primary text-primary-foreground hover:bg-[var(--color-brand-primary-hover)]"
       : "border border-border bg-card text-foreground hover:bg-secondary",
   ].join(" ");
 }
@@ -369,7 +369,7 @@ function periodeTagClass(kind: PeriodeTag): string {
     case "spes":
       return "bg-success/10 text-success";
     case "turn":
-      return "bg-primary text-accent";
+      return "bg-primary text-primary-foreground";
     case "skade":
       return "bg-destructive/10 text-destructive";
     case "test":

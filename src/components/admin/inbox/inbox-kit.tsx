@@ -71,7 +71,7 @@ export function InboxRow({
         onClick={(e) => { e.stopPropagation(); onToggleSelect?.(); }}
         className={cn(
           "inline-flex h-4 w-4 items-center justify-center rounded border-[1.5px]",
-          selected ? "border-primary bg-primary text-accent" : "border-input bg-card text-transparent",
+          selected ? "border-primary bg-primary text-primary-foreground" : "border-input bg-card text-transparent",
         )}
       >
         {selected && <Check className="h-[11px] w-[11px]" strokeWidth={2.5} />}
@@ -128,7 +128,7 @@ export function BatchActionBar({
       </span>
       {summary && <span className="font-mono text-[10px] tracking-[0.04em] text-muted-foreground">· {summary}</span>}
       <div className="ml-auto flex items-center gap-1.5">
-        <button type="button" onClick={onApprove} className={cn(btn, "bg-primary text-accent")}>
+        <button type="button" onClick={onApprove} className={cn(btn, "bg-primary text-primary-foreground")}>
           <Check className="h-[11px] w-[11px]" strokeWidth={2} />Godkjenn alle
         </button>
         <button type="button" onClick={onReject} className={cn(btn, "bg-card text-foreground hover:bg-secondary")}>
@@ -197,7 +197,7 @@ export function InboxExpand({
         )}
 
         <div className="flex items-center gap-2">
-          <button type="button" onClick={onApprove} className={cn(btn, "border-primary bg-primary text-accent")}>
+          <button type="button" onClick={onApprove} className={cn(btn, "border-primary bg-primary text-primary-foreground")}>
             <Check className="h-[11px] w-[11px]" strokeWidth={2} />Godkjenn
           </button>
           <button type="button" onClick={onEdit} className={cn(btn, "border-border bg-card text-foreground hover:bg-secondary")}>

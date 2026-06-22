@@ -210,7 +210,7 @@ function Avatar({
         size <= 26 ? "text-[11px]" : "text-sm",
         tone === "alt"
           ? "bg-secondary text-foreground"
-          : "bg-primary text-accent",
+          : "bg-primary text-primary-foreground",
         tagged && "ring-2 ring-accent",
       )}
     >

@@ -167,7 +167,7 @@ export function NyBookingWizard({ spillere, tjenester, lokasjoner }: NyBookingWi
                 className={cn(
                   "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em]",
                   aktiv
-                    ? "border-primary bg-primary text-accent"
+                    ? "border-primary bg-primary text-primary-foreground"
                     : ferdig
                       ? "border-accent/50 bg-accent/15 text-primary"
                       : "border-border bg-card text-muted-foreground",
@@ -340,7 +340,7 @@ export function NyBookingWizard({ spillere, tjenester, lokasjoner }: NyBookingWi
                             className={cn(
                               "inline-flex items-center rounded-full border px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.06em]",
                               fasilitetId === null
-                                ? "border-primary bg-primary text-accent"
+                                ? "border-primary bg-primary text-primary-foreground"
                                 : "border-border bg-card text-muted-foreground hover:bg-secondary",
                             )}
                           >
@@ -354,7 +354,7 @@ export function NyBookingWizard({ spillere, tjenester, lokasjoner }: NyBookingWi
                               className={cn(
                                 "inline-flex items-center rounded-full border px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.06em]",
                                 fasilitetId === f.id
-                                  ? "border-primary bg-primary text-accent"
+                                  ? "border-primary bg-primary text-primary-foreground"
                                   : "border-border bg-card text-muted-foreground hover:bg-secondary",
                               )}
                             >
@@ -468,7 +468,7 @@ export function NyBookingWizard({ spillere, tjenester, lokasjoner }: NyBookingWi
               type="button"
               onClick={neste}
               disabled={!kanVidere || pending}
-              className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-primary px-3.5 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-accent transition-opacity hover:opacity-90 disabled:opacity-40"
+              className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-primary px-3.5 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-40"
             >
               Neste
               <ArrowRight className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
@@ -478,7 +478,7 @@ export function NyBookingWizard({ spillere, tjenester, lokasjoner }: NyBookingWi
               type="button"
               onClick={opprett}
               disabled={pending}
-              className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-primary px-3.5 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-accent transition-opacity hover:opacity-90 disabled:opacity-60"
+              className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-primary px-3.5 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
             >
               <Check className="h-3.5 w-3.5" strokeWidth={2.5} aria-hidden />
               {pending ? "Oppretter…" : "Opprett booking"}

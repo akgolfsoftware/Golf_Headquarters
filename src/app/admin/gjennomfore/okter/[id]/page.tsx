@@ -291,7 +291,7 @@ export default async function OktDetaljPage({
         <aside className="flex flex-col gap-6">
           <section className="rounded-2xl border border-border bg-card p-6">
             <div className="mb-4 flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-base font-bold text-accent">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-base font-bold text-primary-foreground">
                 {initials}
               </div>
               <div>

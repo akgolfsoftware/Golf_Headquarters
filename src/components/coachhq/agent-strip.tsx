@@ -24,7 +24,7 @@ export function AgentStrip({
           "linear-gradient(135deg, rgba(0,88,64,0.06) 0%, rgba(209,248,67,0.10) 100%)",
       }}
     >
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary font-mono text-[11px] font-bold leading-none text-accent">
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary font-mono text-[11px] font-bold leading-none text-primary-foreground">
         {initials}
       </div>
       <div className="flex-1">

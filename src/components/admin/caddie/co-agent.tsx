@@ -62,7 +62,7 @@ const fleetIcon: Record<FleetAgent["icon"], LucideIcon> = {
 };
 
 const fleetIconToneClass: Record<FleetAgent["iconTone"], string> = {
-  primary: "bg-primary text-accent",
+  primary: "bg-primary text-primary-foreground",
   warn: "bg-warning/15 text-warning",
   info: "bg-info/10 text-info",
   muted: "bg-secondary text-muted-foreground",
@@ -205,7 +205,7 @@ function DraftPanel({ draft }: { draft: CoAgentDraft }) {
         <div className="overflow-hidden border-b border-border p-6 lg:border-b-0">
           <div className="mb-4 flex items-center gap-2.5">
             <span className="inline-flex gap-1">
-              <span className="rounded-full bg-primary px-2 py-[3px] font-mono text-[9px] font-extrabold uppercase tracking-[0.06em] text-accent">
+              <span className="rounded-full bg-primary px-2 py-[3px] font-mono text-[9px] font-extrabold uppercase tracking-[0.06em] text-primary-foreground">
                 Diff-visning
               </span>
               <span className="rounded-full border border-border bg-background px-2 py-[3px] font-mono text-[9px] font-extrabold uppercase tracking-[0.06em] text-muted-foreground">
@@ -309,7 +309,7 @@ function DraftPanel({ draft }: { draft: CoAgentDraft }) {
 
           <button
             type="button"
-            className="flex h-11 items-center justify-center gap-2 rounded-lg bg-primary text-sm font-bold tracking-[-0.005em] text-accent transition-opacity hover:opacity-90"
+            className="flex h-11 items-center justify-center gap-2 rounded-lg bg-primary text-sm font-bold tracking-[-0.005em] text-primary-foreground transition-opacity hover:opacity-90"
           >
             <Check className="h-3.5 w-3.5" strokeWidth={2} aria-hidden /> Godkjenn og send
           </button>
@@ -563,7 +563,7 @@ function AuditPanel({ audit }: { audit: AuditRow[] }) {
               className={cn(
                 "inline-flex h-[26px] items-center gap-1.5 rounded-full px-2.5 font-mono text-[10px] font-bold tracking-[0.06em]",
                 i === 0
-                  ? "border border-primary bg-primary text-accent"
+                  ? "border border-primary bg-primary text-primary-foreground"
                   : "border border-border bg-card text-foreground",
               )}
             >

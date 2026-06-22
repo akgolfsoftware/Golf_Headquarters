@@ -158,7 +158,7 @@ export function TestMatrix({
                   onClick={() => onAssign?.(p.id)}
                   className={cn(
                     "inline-flex items-center gap-1 rounded-md border px-2 py-1 font-mono text-[9px] font-extrabold uppercase tracking-[0.08em]",
-                    p.assign?.done ? "border-border bg-card text-foreground hover:bg-secondary" : "border-primary bg-primary text-accent",
+                    p.assign?.done ? "border-border bg-card text-foreground hover:bg-secondary" : "border-primary bg-primary text-primary-foreground",
                   )}
                 >
                   {p.assign?.done ? <Check className="h-2.5 w-2.5" strokeWidth={2} /> : <Plus className="h-2.5 w-2.5" strokeWidth={2} />}

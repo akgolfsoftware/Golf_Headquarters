@@ -88,7 +88,7 @@ function RadCheckbox({
         className={cn(
           "inline-flex h-[17px] w-[17px] items-center justify-center rounded-[5px] border-[1.5px] transition-colors",
           on
-            ? "border-primary bg-primary text-accent"
+            ? "border-primary bg-primary text-primary-foreground"
             : "border-input bg-card text-transparent hover:border-primary",
         )}
       >

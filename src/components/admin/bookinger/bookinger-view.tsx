@@ -145,7 +145,7 @@ function Avatar({
         "inline-flex shrink-0 items-center justify-center rounded-full font-display font-bold",
         size === "md" ? "h-7 w-7 text-[10px]" : "h-[18px] w-[18px] text-[8px]",
         tone === "pri"
-          ? "bg-primary text-accent"
+          ? "bg-primary text-primary-foreground"
           : tone === "lime"
             ? "bg-accent text-primary"
             : "bg-secondary text-foreground",
@@ -231,7 +231,7 @@ function FilterDrop({
       className={cn(
         "inline-flex h-7 items-center gap-1.5 rounded-full border py-0 pl-3 pr-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.10em]",
         active
-          ? "border-primary bg-primary text-accent"
+          ? "border-primary bg-primary text-primary-foreground"
           : "border-border bg-card text-foreground hover:bg-secondary",
       )}
     >
@@ -412,7 +412,7 @@ function NewBookingForm({
             <button
               type="button"
               disabled={!selected || (!creditsOk && hasCredits)}
-              className="inline-flex h-9 items-center gap-1.5 rounded-full border border-primary bg-primary px-3 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-accent hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-40"
+              className="inline-flex h-9 items-center gap-1.5 rounded-full border border-primary bg-primary px-3 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-primary-foreground hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-40"
             >
               <Check className="h-3 w-3" strokeWidth={2.5} aria-hidden />
               Bekreft
@@ -565,7 +565,7 @@ export function BookingerView({
               onClick={() => setPeriodR(key)}
               className={cn(
                 "h-6 rounded-full px-2.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.10em]",
-                period === key ? "bg-primary text-accent" : "text-muted-foreground hover:text-foreground",
+                period === key ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground",
               )}
             >
               {label}
@@ -620,7 +620,7 @@ export function BookingerView({
           <button
             type="button"
             onClick={() => setFormOpen((v) => !v)}
-            className="inline-flex h-7 items-center gap-1.5 rounded-full border border-primary bg-primary px-3 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-accent hover:bg-primary/90"
+            className="inline-flex h-7 items-center gap-1.5 rounded-full border border-primary bg-primary px-3 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-primary-foreground hover:bg-primary/90"
           >
             <Plus className="h-3 w-3" strokeWidth={2} aria-hidden />
             Ny booking
@@ -671,7 +671,7 @@ export function BookingerView({
                   <button
                     type="button"
                     onClick={() => setFormOpen(true)}
-                    className="mt-4 inline-flex h-8 items-center gap-1.5 rounded-full border border-primary bg-primary px-3 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-accent hover:bg-primary/90"
+                    className="mt-4 inline-flex h-8 items-center gap-1.5 rounded-full border border-primary bg-primary px-3 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-primary-foreground hover:bg-primary/90"
                   >
                     <Plus className="h-3 w-3" strokeWidth={2} aria-hidden />
                     Opprett første booking
@@ -719,7 +719,7 @@ export function BookingerView({
                 className={cn(
                   "inline-flex h-[26px] min-w-[26px] items-center justify-center rounded-md border px-2 font-mono text-[11px] font-extrabold",
                   i === safePage
-                    ? "border-primary bg-primary text-accent"
+                    ? "border-primary bg-primary text-primary-foreground"
                     : "border-border bg-card text-foreground hover:bg-secondary",
                 )}
               >

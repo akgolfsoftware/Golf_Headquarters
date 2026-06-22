@@ -125,7 +125,7 @@ export type DailyBriefProps = {
 
 const avatarToneClass: Record<AvatarTone, string> = {
   default: "bg-secondary text-foreground",
-  primary: "bg-primary text-accent",
+  primary: "bg-primary text-primary-foreground",
   accent: "bg-accent text-primary",
 };
 
@@ -476,7 +476,7 @@ function InboxCol({
             <span
               className={cn(
                 "inline-flex h-4 w-4 items-center justify-center rounded border-[1.5px]",
-                t.done ? "border-primary bg-primary text-accent" : "border-input bg-card text-transparent",
+                t.done ? "border-primary bg-primary text-primary-foreground" : "border-input bg-card text-transparent",
               )}
             >
               {t.done && <Check className="h-[11px] w-[11px]" strokeWidth={3} aria-hidden />}
@@ -559,7 +559,7 @@ function FocusCol({ focus }: { focus: FocusPlayer[] }) {
                       className={cn(
                         "inline-flex h-[30px] cursor-pointer items-center gap-1.5 rounded-lg px-2.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.10em]",
                         a.primary
-                          ? "border border-primary bg-primary text-accent hover:opacity-90"
+                          ? "border border-primary bg-primary text-primary-foreground hover:opacity-90"
                           : "border border-border bg-card text-foreground hover:bg-secondary",
                       )}
                     >

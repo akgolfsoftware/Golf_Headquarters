@@ -126,7 +126,7 @@ const tierLabel: Record<TierKind, string> = {
 
 const avatarToneClass: Record<AvatarTone, string> = {
   default: "bg-secondary text-foreground",
-  pri: "bg-primary text-accent",
+  pri: "bg-primary text-primary-foreground",
   lime: "bg-accent text-primary",
 };
 
@@ -476,7 +476,7 @@ export function SpillerListe({ data }: { data: SpillerListeData }) {
                 className={cn(
                   "inline-flex h-7 items-center gap-1.5 rounded-full border px-3 font-mono text-[10px] font-bold uppercase tracking-[0.10em] transition-colors",
                   on
-                    ? "border-primary bg-primary text-accent"
+                    ? "border-primary bg-primary text-primary-foreground"
                     : "border-border bg-card text-foreground hover:bg-secondary",
                 )}
               >
@@ -484,7 +484,7 @@ export function SpillerListe({ data }: { data: SpillerListeData }) {
                 <span
                   className={cn(
                     "rounded-full px-1.5 py-0.5 font-mono text-[9px] font-extrabold tabular-nums",
-                    on ? "bg-accent/30 text-accent" : "bg-primary/[0.08] text-muted-foreground",
+                    on ? "bg-accent/30 text-primary-foreground" : "bg-primary/[0.08] text-muted-foreground",
                   )}
                 >
                   {groupCounts[tab.key]}
@@ -526,7 +526,7 @@ export function SpillerListe({ data }: { data: SpillerListeData }) {
           </button>
           <Link
             href={newHref}
-            className="inline-flex h-7 items-center gap-1.5 rounded-full border border-primary bg-primary px-3 font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-accent transition-colors hover:bg-[var(--color-brand-primary-hover)]"
+            className="inline-flex h-7 items-center gap-1.5 rounded-full border border-primary bg-primary px-3 font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-primary-foreground transition-colors hover:bg-[var(--color-brand-primary-hover)]"
           >
             <Plus className="h-3 w-3" strokeWidth={2.5} aria-hidden />
             Ny spiller
@@ -538,7 +538,7 @@ export function SpillerListe({ data }: { data: SpillerListeData }) {
       {selectedCount > 0 && (
         <div className="flex flex-wrap items-center gap-x-3.5 gap-y-2 border-b border-border bg-accent/[0.13] px-5 py-2.5">
           <span className="inline-flex items-center gap-1.5 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-primary">
-            <b className="inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-primary px-1.5 text-[10px] font-extrabold text-accent">
+            <b className="inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-primary px-1.5 text-[10px] font-extrabold text-primary-foreground">
               {selectedCount}
             </b>
             valgt
@@ -839,7 +839,7 @@ export function SpillerListe({ data }: { data: SpillerListeData }) {
                   className={cn(
                     "inline-flex h-[26px] min-w-[26px] items-center justify-center rounded-md px-2 font-mono text-[11px] font-extrabold tabular-nums",
                     n === 1
-                      ? "border border-primary bg-primary text-accent"
+                      ? "border border-primary bg-primary text-primary-foreground"
                       : "bg-transparent text-foreground hover:bg-secondary",
                   )}
                 >

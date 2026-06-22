@@ -7,7 +7,7 @@ type AthleticBadgeProps = {
 };
 
 const variantClasses: Record<NonNullable<AthleticBadgeProps["variant"]>, string> = {
-  primary: "bg-primary text-accent",
+  primary: "bg-primary text-primary-foreground",
   lime: "bg-accent text-primary",
   neutral: "bg-secondary text-secondary-foreground",
   warn: "bg-warning/15 text-warning",

@@ -142,7 +142,7 @@ const axisDot: Record<TestAxis, string> = {
 };
 
 const avatarTone: Record<NonNullable<PlayerRow["avatarTone"]>, string> = {
-  primary: "bg-primary text-accent",
+  primary: "bg-primary text-primary-foreground",
   lime: "bg-accent text-primary",
   default: "bg-secondary text-foreground",
 };
@@ -294,7 +294,7 @@ function AssignButton({ row }: { row: PlayerRow }) {
   const classes = cn(
     "inline-flex h-[30px] items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.06em] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
     isPrimary
-      ? "bg-primary text-accent hover:opacity-90"
+      ? "bg-primary text-primary-foreground hover:opacity-90"
       : "border border-border bg-card text-foreground hover:bg-secondary",
   );
 
@@ -366,7 +366,7 @@ export function TesterOversikt({ data }: { data: TesterOversiktData }) {
                 <span
                   className={cn(
                     "rounded-full px-1.5 py-0.5 font-mono text-[9px] font-extrabold",
-                    f.active ? "bg-accent/30 text-accent" : "bg-primary/[0.08] text-muted-foreground",
+                    f.active ? "bg-accent/30 text-primary-foreground" : "bg-primary/[0.08] text-muted-foreground",
                   )}
                 >
                   {f.count}
@@ -376,7 +376,7 @@ export function TesterOversikt({ data }: { data: TesterOversiktData }) {
             const cls = cn(
               "inline-flex h-7 items-center gap-1.5 rounded-full px-3 font-mono text-[10px] font-bold uppercase tracking-[0.1em] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               f.active
-                ? "border border-primary bg-primary text-accent"
+                ? "border border-primary bg-primary text-primary-foreground"
                 : "border border-border bg-card text-foreground hover:bg-secondary",
             );
             return f.href ? (
@@ -639,7 +639,7 @@ function ToolbarButton({
   const cls = cn(
     "inline-flex h-7 items-center gap-1.5 rounded-full px-3 font-mono text-[10px] font-extrabold uppercase tracking-[0.1em] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
     primary
-      ? "border border-primary bg-primary text-accent hover:opacity-90"
+      ? "border border-primary bg-primary text-primary-foreground hover:opacity-90"
       : "border border-border bg-card text-foreground hover:bg-secondary",
   );
   const inner = (

@@ -135,7 +135,7 @@ function NavRow({
           "inline-flex h-8 items-center rounded-lg border px-3 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] transition-colors",
           isCurrentMonth
             ? "border-border bg-secondary text-muted-foreground"
-            : "border-primary bg-card text-primary hover:bg-primary hover:text-accent",
+            : "border-primary bg-card text-primary hover:bg-primary hover:text-primary-foreground",
         )}
         aria-disabled={isCurrentMonth}
       >

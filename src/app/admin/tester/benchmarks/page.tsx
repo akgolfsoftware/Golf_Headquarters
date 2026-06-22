@@ -86,7 +86,7 @@ export default async function BenchmarksAdminPage() {
         <form action={runBenchmarkSyncNow}>
           <button
             type="submit"
-            className="inline-flex h-8 items-center gap-1.5 rounded-full border border-primary bg-primary px-4 font-mono text-[10px] font-extrabold uppercase tracking-[0.1em] text-accent hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="inline-flex h-8 items-center gap-1.5 rounded-full border border-primary bg-primary px-4 font-mono text-[10px] font-extrabold uppercase tracking-[0.1em] text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <RefreshCw className="h-3 w-3" strokeWidth={2} aria-hidden />
             Kjør synk nå
@@ -143,7 +143,7 @@ export default async function BenchmarksAdminPage() {
               <form action={approveBenchmarkPending.bind(null, id)}>
                 <button
                   type="submit"
-                  className="inline-flex h-8 items-center gap-1.5 rounded-full border border-primary bg-primary px-4 font-mono text-[10px] font-extrabold uppercase tracking-[0.1em] text-accent hover:opacity-90"
+                  className="inline-flex h-8 items-center gap-1.5 rounded-full border border-primary bg-primary px-4 font-mono text-[10px] font-extrabold uppercase tracking-[0.1em] text-primary-foreground hover:opacity-90"
                 >
                   <Check className="h-3 w-3" strokeWidth={2.5} aria-hidden />
                   Godkjenn

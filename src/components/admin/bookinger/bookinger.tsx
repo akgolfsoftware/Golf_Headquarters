@@ -128,7 +128,7 @@ export type BookingerData = {
 
 const avatarToneCls: Record<AvatarTone, string> = {
   neutral: "bg-secondary text-foreground",
-  primary: "bg-primary text-accent",
+  primary: "bg-primary text-primary-foreground",
   lime: "bg-accent text-primary",
 };
 
@@ -286,7 +286,7 @@ function PeriodTabs({
             onClick={() => onSelect(t.key)}
             className={cn(
               "inline-flex h-6 items-center rounded-full px-2.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] transition-colors",
-              on ? "bg-primary text-accent" : "text-muted-foreground hover:text-foreground",
+              on ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground",
             )}
           >
             {t.label}
@@ -306,7 +306,7 @@ function FilterDrop({ filter }: { filter: FilterDropdown }) {
       className={cn(
         "inline-flex h-7 items-center gap-1.5 rounded-full border py-0 pl-3 pr-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.10em] transition-colors",
         active
-          ? "border-primary bg-primary text-accent"
+          ? "border-primary bg-primary text-primary-foreground"
           : "border-border bg-card text-foreground hover:bg-secondary",
       )}
     >
@@ -380,7 +380,7 @@ function NewBookingForm({ onClose }: { onClose: () => void }) {
             </button>
             <button
               type="button"
-              className="inline-flex h-9 items-center gap-1.5 rounded-full border border-primary bg-primary px-3 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-accent transition-colors hover:bg-[var(--color-brand-primary-hover)]"
+              className="inline-flex h-9 items-center gap-1.5 rounded-full border border-primary bg-primary px-3 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-primary-foreground transition-colors hover:bg-[var(--color-brand-primary-hover)]"
             >
               <Check className="h-3 w-3" strokeWidth={2} aria-hidden />
               Bekreft
@@ -671,7 +671,7 @@ export function Bookinger({ data }: { data: BookingerData }) {
               type="button"
               onClick={() => setNewOpen((v) => !v)}
               aria-expanded={newOpen}
-              className="inline-flex h-7 items-center gap-1.5 rounded-full border border-primary bg-primary px-3 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-accent transition-colors hover:bg-[var(--color-brand-primary-hover)]"
+              className="inline-flex h-7 items-center gap-1.5 rounded-full border border-primary bg-primary px-3 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-primary-foreground transition-colors hover:bg-[var(--color-brand-primary-hover)]"
             >
               <Plus className="h-3 w-3 shrink-0" strokeWidth={2} aria-hidden />
               Ny booking
@@ -777,7 +777,7 @@ export function Bookinger({ data }: { data: BookingerData }) {
                   className={cn(
                     "inline-flex h-[26px] min-w-[26px] items-center justify-center rounded-md border px-2 font-mono text-[11px] font-extrabold tabular-nums transition-colors",
                     on
-                      ? "border-primary bg-primary text-accent"
+                      ? "border-primary bg-primary text-primary-foreground"
                       : "border-border bg-card text-foreground hover:bg-secondary",
                   )}
                 >

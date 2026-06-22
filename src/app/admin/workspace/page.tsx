@@ -127,7 +127,7 @@ function ColumnHeader({
       <span
         className={`font-mono rounded-full px-2 py-0.5 text-[10px] font-bold tabular-nums ${
           accent
-            ? "bg-primary text-accent"
+            ? "bg-primary text-primary-foreground"
             : "bg-muted/60 text-muted-foreground"
         }`}
       >

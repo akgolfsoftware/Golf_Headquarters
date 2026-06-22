@@ -128,7 +128,7 @@ function SideBySide({
                   <span
                     className={cn(
                       "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-display text-sm font-bold",
-                      i % 2 === 0 ? "bg-primary text-accent" : "bg-secondary text-foreground",
+                      i % 2 === 0 ? "bg-primary text-primary-foreground" : "bg-secondary text-foreground",
                     )}
                   >
                     {p.initials}
@@ -511,7 +511,7 @@ function CohortRowItem({ c, rank, scale }: { c: CohortRow; rank: number; scale: 
         <span
           className={cn(
             "inline-flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full font-display text-[11px] font-bold",
-            rank % 2 === 1 ? "bg-primary text-accent" : "bg-secondary text-foreground",
+            rank % 2 === 1 ? "bg-primary text-primary-foreground" : "bg-secondary text-foreground",
             c.selected && "ring-2 ring-accent",
           )}
         >
@@ -624,7 +624,7 @@ function NoSelection({ cohort }: { cohort: CohortRow[] }) {
       {suggestions.length >= 2 && (
         <Link
           href={`/admin/talent/sammenligning?ids=${suggestions.map((s) => s.userId).join(",")}`}
-          className="mt-5 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 font-mono text-[11px] font-extrabold uppercase tracking-[0.08em] text-accent transition-opacity hover:opacity-90"
+          className="mt-5 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 font-mono text-[11px] font-extrabold uppercase tracking-[0.08em] text-primary-foreground transition-opacity hover:opacity-90"
         >
           <Trophy className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
           Sammenlign topp {suggestions.length}

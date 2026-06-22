@@ -244,7 +244,7 @@ export default async function TaskDetaljPage({
               })}
             </ul>
             <div className="mt-6 flex items-start gap-2.5 rounded-xl border border-border bg-card p-4">
-              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-[11px] font-bold text-accent">
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-[11px] font-bold text-primary-foreground">
                 AK
               </div>
               <textarea
@@ -329,7 +329,7 @@ export default async function TaskDetaljPage({
                     key={p.key}
                     className="flex items-center gap-1.5 rounded-full border border-border bg-muted/40 py-0.5 pl-0.5 pr-2"
                   >
-                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[9px] font-bold text-accent">
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[9px] font-bold text-primary-foreground">
                       {p.initials}
                     </span>
                     <span className="font-display text-xs font-semibold">{p.name}</span>

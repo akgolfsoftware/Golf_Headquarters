@@ -199,7 +199,7 @@ export function AgentPipeline({
               key={ag.id}
               className={`absolute right-0 flex h-[88px] w-[88px] flex-col items-center justify-center gap-0.5 rounded-full border-2 ${
                 ag.active
-                  ? "border-accent bg-secondary text-accent shadow-[0_0_0_6px_rgba(209,248,67,0.08),0_0_24px_rgba(209,248,67,0.35)]"
+                  ? "border-accent bg-secondary text-primary shadow-[0_0_0_6px_rgba(209,248,67,0.08),0_0_24px_rgba(209,248,67,0.35)]"
                   : "border-border bg-secondary text-foreground"
               }`}
               style={{ top }}

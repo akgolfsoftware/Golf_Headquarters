@@ -59,7 +59,7 @@ export function Pagination({ page, pageSize, total, onPage, className }: Paginat
               className={cn(
                 btn,
                 n === page
-                  ? "bg-primary text-accent"
+                  ? "bg-primary text-primary-foreground"
                   : "text-foreground hover:bg-secondary",
               )}
             >

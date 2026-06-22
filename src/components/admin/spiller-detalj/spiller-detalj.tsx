@@ -222,7 +222,7 @@ function DetailHeader({ data }: { data: SpillerDetaljData }) {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         {/* Identitet */}
         <div className="flex items-start gap-4">
-          <span className="relative inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-primary font-display text-xl font-bold tracking-[-0.02em] text-accent">
+          <span className="relative inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-primary font-display text-xl font-bold tracking-[-0.02em] text-primary-foreground">
             {data.initials}
             <span
               className="absolute bottom-px right-0.5 h-3 w-3 rounded-full border-[2.5px] border-card bg-success"
@@ -312,7 +312,7 @@ function TabRow({ id }: { id: string }) {
             <span
               key={t.label}
               aria-current="page"
-              className="relative inline-flex shrink-0 items-center whitespace-nowrap rounded-full bg-primary px-4 py-2 font-mono text-[11px] font-extrabold uppercase tracking-[0.08em] text-accent"
+              className="relative inline-flex shrink-0 items-center whitespace-nowrap rounded-full bg-primary px-4 py-2 font-mono text-[11px] font-extrabold uppercase tracking-[0.08em] text-primary-foreground"
             >
               {t.label}
             </span>
@@ -562,7 +562,7 @@ function LastComm({ comms, id }: { comms: SpillerComm[]; id: string }) {
               <span
                 className={cn(
                   "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-display text-[10px] font-bold",
-                  c.coach ? "bg-primary text-accent" : "bg-secondary text-foreground",
+                  c.coach ? "bg-primary text-primary-foreground" : "bg-secondary text-foreground",
                 )}
               >
                 {c.initials}

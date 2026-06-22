@@ -136,7 +136,7 @@ function FilterChip({
       {...(href ? { href } : { type: "button" })}
       className={`font-mono inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10.5px] font-semibold uppercase tracking-[0.06em] transition ${
         active
-          ? "border-primary bg-primary text-accent"
+          ? "border-primary bg-primary text-primary-foreground"
           : "border-border bg-card text-muted-foreground hover:text-foreground"
       }`}
     >

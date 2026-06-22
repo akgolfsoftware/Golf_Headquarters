@@ -164,7 +164,7 @@ export function PlayerDetailPanel({
 
         {/* Footer */}
         <div className="mt-auto flex gap-2 border-t border-border px-5 py-4">
-          <button type="button" className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-primary px-3 py-2 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-accent">
+          <button type="button" className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-primary px-3 py-2 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-primary-foreground">
             <Plus className="h-3 w-3" strokeWidth={2} />Legg til økt
           </button>
           <button type="button" className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-foreground hover:bg-secondary">

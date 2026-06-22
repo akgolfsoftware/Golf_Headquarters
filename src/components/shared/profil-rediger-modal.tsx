@@ -161,7 +161,7 @@ export function ProfilRedigerModal({
           {/* Avatar */}
           <div className="grid grid-cols-[96px_1fr] items-center gap-4">
             <div className="relative h-24 w-24">
-              <div className="grid h-24 w-24 place-items-center rounded-full bg-primary font-display text-[32px] font-bold text-accent">
+              <div className="grid h-24 w-24 place-items-center rounded-full bg-primary font-display text-[32px] font-bold text-primary-foreground">
                 {initialer || "?"}
               </div>
               <button

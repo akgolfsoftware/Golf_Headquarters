@@ -21,7 +21,7 @@ export function LeggTilSpillerButton() {
     <button
       type="button"
       onClick={() => toast.info("Legg til spiller i gruppe kommer snart")}
-      className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-[13px] font-semibold text-accent transition-opacity hover:opacity-90"
+      className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
     >
       Legg til spiller
     </button>

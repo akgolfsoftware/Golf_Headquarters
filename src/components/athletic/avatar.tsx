@@ -34,7 +34,7 @@ export function AthleticAvatar({
   const inner = (
     <span
       className={cn(
-        "relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary text-accent",
+        "relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary text-primary-foreground",
         ring === "none" && (borderColor === "white" ? "border-2 border-background" : "border-2 border-card"),
         ring === "lime" && "ring-2 ring-offset-1 ring-[var(--lime)]",
         "shadow-md",

@@ -94,7 +94,7 @@ export function InboxThreadList({
                 className={cn(
                   "inline-flex h-7 items-center gap-1.5 rounded-full px-3 font-mono text-[10px] font-bold uppercase tracking-[0.08em] transition-colors",
                   on
-                    ? "border border-primary bg-primary text-accent"
+                    ? "border border-primary bg-primary text-primary-foreground"
                     : "border border-border bg-card text-muted-foreground hover:bg-secondary hover:text-foreground",
                 )}
               >
