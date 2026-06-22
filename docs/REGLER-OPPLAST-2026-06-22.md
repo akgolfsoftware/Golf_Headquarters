@@ -40,7 +40,8 @@ står; skjermer som er innholds-korrekte men visuelt ulike (f.eks. abonnement) s
 - **Var låst som:** placeholders «—» («til formelen er låst»).
 - **Designkonsekvens av låsen:** cockpit-KPIene STALL-SG + PLAN-ADHERENCE tomme.
 - **Trenger fra Anders:** bekreft beregning: stall-SG = snitt sgTotal alle aktive spilleres runder siste 30 d (gjenbruk av /admin/runder-tallet); plan-etterlevelse = fullførte/planlagte økter siste 30 d. Spm: 30-dagers vindu OK? Alle spillere eller kun elite?
-- **BESLUTTET (2026-06-22):** **30 dager, ALLE spillere.** Stall-SG = snitt sgTotal alle spilleres runder siste 30 d (gjenbruk /admin/runder-definisjonen). Plan-etterlevelse = fullførte/planlagte TrainingPlanSession siste 30 d. Bygg fra ekte data, erstatt «—» i cockpit. KLAR TIL Å BYGGE.
+- **BESLUTTET (2026-06-22):** **30 dager, ALLE spillere.** Stall-SG = snitt sgTotal alle spilleres runder siste 30 d (gjenbruk /admin/runder-definisjonen). Plan-etterlevelse = fullførte/planlagte TrainingPlanSession siste 30 d.
+- **BYGD + VERIFISERT ✅:** cockpit viser nå «STALL-SG +0,8» + «PLAN-ADHERENCE 52 %» (ekte data). «—» kun hvis ingen data. Kode: daily-brief-data.tsx (3 spørringer) + agency-cockpit.tsx (kpis5).
 
 ---
 

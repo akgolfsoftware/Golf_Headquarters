@@ -136,6 +136,9 @@ export async function loadDailyBrief(coach: {
     hasterApprovalsCount,
     proAboCount,
     nyeProAbo30d,
+    stallSgAgg,
+    planScheduledCount,
+    planCompletedCount,
   ] = await Promise.all([
     prisma.booking.findMany({
       where: { startAt: { gte: dagStart, lt: dagSlutt }, status: { in: ["CONFIRMED", "PENDING"] } },
@@ -190,7 +193,33 @@ export async function loadDailyBrief(coach: {
         createdAt: { gte: tretti },
       },
     }),
+    // STALL-SG (Anders 2026-06-22): snitt sgTotal alle runder siste 30 d
+    // (samme definisjon som /admin/runder — «ingen falske tall»).
+    prisma.round.aggregate({
+      _avg: { sgTotal: true },
+      where: { playedAt: { gte: tretti }, sgTotal: { not: null } },
+    }),
+    // PLAN-ETTERLEVELSE: planlagte vs fullførte plan-økter siste 30 d (forfalt i vinduet).
+    prisma.trainingPlanSession.count({
+      where: { scheduledAt: { gte: tretti, lte: now } },
+    }),
+    prisma.trainingPlanSession.count({
+      where: { scheduledAt: { gte: tretti, lte: now }, status: "COMPLETED" },
+    }),
   ]);
+
+  // STALL-SG + PLAN-ETTERLEVELSE → KPI-strenger (null/0 → «—», ingen fabrikering).
+  const stallSgAvg = stallSgAgg._avg.sgTotal;
+  const stallSgKpi =
+    stallSgAvg == null
+      ? "—"
+      : `${stallSgAvg > 0 ? "+" : ""}${(Math.round(stallSgAvg * 10) / 10)
+          .toString()
+          .replace(".", ",")}`;
+  const planAdherenceKpi =
+    planScheduledCount > 0
+      ? `${Math.round((planCompletedCount / planScheduledCount) * 100)} %`
+      : "—";
 
   // ── Header ─────────────────────────────────────────────
   const aktivBk = dagensBookinger.find(
@@ -454,6 +483,8 @@ export async function loadDailyBrief(coach: {
     focusCount: focus.length,
     kpis,
     activePlayersCount: aktiveSpillereCount,
+    stallSgKpi,
+    planAdherenceKpi,
     requestsCount,
     liveSessionsCount,
     dayLabel,

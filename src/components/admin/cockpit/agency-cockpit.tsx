@@ -133,6 +133,10 @@ export type CockpitData = {
   kpis: CockpitKpi[];
   /** For topbar-subtitle og KPI (hybrid-design). */
   activePlayersCount: number;
+  /** Stall-SG: snitt sgTotal alle runder siste 30 d («—» hvis ingen data). */
+  stallSgKpi: string;
+  /** Plan-etterlevelse: fullført/planlagt plan-økter siste 30 d («—» hvis ingen). */
+  planAdherenceKpi: string;
   /** Antall ventende forespørsler (sessionRequest PENDING). */
   requestsCount: number;
   /** Antall live-pågående økter akkurat nå. */
@@ -171,19 +175,25 @@ function KpiStrip({ data }: { data: CockpitData }) {
       icon: "help-circle" as CockpitIconName,
     },
     data.kpis[1], // Økter i dag
-    // Stall-SG — placeholder til Stall-SG-beregning er låst
+    // Stall-SG — snitt sgTotal alle runder siste 30 d (Anders 2026-06-22, ekte data).
     {
       label: "Stall-SG",
-      value: "—",
-      delta: undefined,
+      value: data.stallSgKpi,
+      delta:
+        data.stallSgKpi === "—"
+          ? { text: "ingen runder 30 d", tone: "flat" as const }
+          : { text: "snitt siste 30 d", tone: "flat" as const },
       icon: "activity" as CockpitIconName,
-      lime: false,
+      lime: data.stallSgKpi.startsWith("+"),
     },
-    // Plan-adherence — placeholder til formelen er låst
+    // Plan-etterlevelse — fullført/planlagt plan-økter siste 30 d (ekte data).
     {
       label: "Plan-adherence",
-      value: "—",
-      delta: undefined,
+      value: data.planAdherenceKpi,
+      delta:
+        data.planAdherenceKpi === "—"
+          ? { text: "ingen planlagt 30 d", tone: "flat" as const }
+          : { text: "fullført siste 30 d", tone: "flat" as const },
       icon: "clipboard-check" as CockpitIconName,
     },
   ];
