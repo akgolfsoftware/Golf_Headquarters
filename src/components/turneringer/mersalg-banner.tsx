@@ -17,7 +17,7 @@ export function MersalgBanner() {
         style={{ background: "rgba(209,248,67,0.18)" }}
       />
       <div className="relative max-w-3xl">
-        <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/15 px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-accent">
+        <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/15 px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-primary">
           <Sparkles className="h-3 w-3" strokeWidth={2} />
           PlayerHQ
         </div>

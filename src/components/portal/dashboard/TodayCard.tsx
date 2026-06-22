@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { Play, Clock, Target, Calendar, ArrowRight } from "lucide-react";
+import { Play, Clock, Target, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { AthleticCard, AthleticEyebrow } from "@/components/athletic";
+import { AthleticCard } from "@/components/athletic";
 import type { TodaySession } from "@/app/portal/actions";
 
 const PYRAMIDE_LABEL: Record<string, string> = {
@@ -74,7 +74,7 @@ export function TodayCard({ session, className }: TodayCardProps) {
 
       <div className="relative z-10">
         <div className="mb-4 flex flex-wrap items-center gap-2">
-          <span className="rounded-full bg-accent/20 px-2.5 py-1 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-accent">
+          <span className="rounded-full bg-accent/20 px-2.5 py-1 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-primary">
             Dagens økt
           </span>
           <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-primary-foreground/75">

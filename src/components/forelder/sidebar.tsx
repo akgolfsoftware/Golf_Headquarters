@@ -60,7 +60,7 @@ export function ForelderSidebar() {
       </nav>
       <div
         aria-label="Foreldreportal"
-        className="m-4 rounded-md bg-accent/20 px-4 py-2 text-center font-mono text-[10px] uppercase tracking-[0.10em] text-accent"
+        className="m-4 rounded-md bg-accent/20 px-4 py-2 text-center font-mono text-[10px] uppercase tracking-[0.10em] text-primary"
       >
         FORELDER
       </div>

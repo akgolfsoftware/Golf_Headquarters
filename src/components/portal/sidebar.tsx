@@ -221,7 +221,7 @@ export function PortalSidebar({
       {/* Tier-badge */}
       <div
         aria-label={`Abonnement: ${tier === "GRATIS" ? "GRATIS" : "PRO"}`}
-        className="m-4 rounded-md bg-accent/10 px-4 py-2 text-center font-mono text-[10px] uppercase tracking-[0.10em] text-accent"
+        className="m-4 rounded-md bg-accent/10 px-4 py-2 text-center font-mono text-[10px] uppercase tracking-[0.10em] text-primary"
       >
         {tier === "GRATIS" ? "GRATIS" : "PRO"}
       </div>
