@@ -29,6 +29,7 @@ import { avatarBg } from "@/lib/avatar-colors";
 import {
   StartOktButton,
   LeggTilSpillerButton,
+  FjernMedlemButton,
   SeAlleTimePlanButton,
   DetaljerButton,
   AapneButton,
@@ -131,6 +132,17 @@ export default async function GruppeDetalj({
   const runderMap = new Map(runderPerMedlem.map((r) => [r.userId, r]));
   const planMap = new Map(planerPerMedlem.map((p) => [p.userId, p]));
 
+  // Kandidater til «Legg til spiller»: aktive spillere som ikke alt er medlem.
+  const kandidater = await prisma.user.findMany({
+    where: {
+      role: "PLAYER",
+      deletedAt: null,
+      id: { notIn: memberIds },
+    },
+    select: { id: true, name: true, hcp: true, homeClub: true },
+    orderBy: { name: "asc" },
+  });
+
   const nesteSamling = gruppe.schedules.find((s) => s.startAt > naa) ?? gruppe.schedules[0] ?? null;
   const kommendeSamlinger = gruppe.schedules.filter((s) => s.startAt > naa).slice(0, 5);
 
@@ -170,7 +182,7 @@ export default async function GruppeDetalj({
             <CalendarClock className="h-3.5 w-3.5" strokeWidth={1.75} />
             Planlegg samling
           </Link>
-          <LeggTilSpillerButton />
+          <LeggTilSpillerButton groupId={gruppe.id} kandidater={kandidater} />
         </>
       }
       kpiRow={
@@ -343,6 +355,11 @@ export default async function GruppeDetalj({
                         PRO
                       </span>
                     )}
+                    <FjernMedlemButton
+                      groupId={gruppe.id}
+                      userId={m.userId}
+                      navn={m.user.name}
+                    />
                   </Link>
 
                   {/* Mini-stats */}

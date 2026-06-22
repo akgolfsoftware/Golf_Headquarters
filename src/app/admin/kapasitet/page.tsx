@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { Download, Grid3X3, Lightbulb } from "lucide-react";
+import { Grid3X3, Lightbulb } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
+import { EksporterKnapp } from "./eksporter-knapp";
 
 export const dynamic = "force-dynamic";
 
@@ -127,14 +128,16 @@ export default async function KapasitetPage() {
         sub="Belegg per fasilitet × time, lokasjons-aggregert."
         actions={
           <>
-            <button
-              type="button"
-              disabled
-              className="inline-flex cursor-not-allowed items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground opacity-50"
-            >
-              <Download className="h-4 w-4" />
-              Eksporter
-            </button>
+            <EksporterKnapp
+              rader={rader.map((r) => ({
+                fasilitet: r.f.name,
+                lokasjon: r.f.location.name,
+                pcts: r.pcts,
+                snitt: r.snitt,
+              }))}
+              timer={TIMER}
+              ukeNr={ukeNr}
+            />
             <button
               type="button"
               disabled

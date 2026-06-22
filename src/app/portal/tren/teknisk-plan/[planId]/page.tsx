@@ -11,7 +11,7 @@
 
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Plus, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHead } from "@/components/teknisk-plan/page-head";
@@ -25,8 +25,9 @@ import {
   type ClubTargetRow,
   type ActivityItem,
 } from "@/components/teknisk-plan/sidebar";
-import type { PyramidArea } from "@/components/teknisk-plan/constants";
+import { type PyramidArea, P_POSITIONS } from "@/components/teknisk-plan/constants";
 import "@/components/teknisk-plan/teknisk-plan.css";
+import { OppgaveLauncher, type PositionTarget } from "./oppgave-launcher";
 
 export const dynamic = "force-dynamic";
 
@@ -147,6 +148,12 @@ export default async function PlanBuilderPage({ params }: PageProps) {
 
   const periodLabel = formatPeriode(plan.startDato);
 
+  // Standard mål-posisjon for de generiske "Ny oppgave"-knappene: planens
+  // hovedfokus/første posisjon, ellers P1.0 fra den kanoniske P-listen.
+  const defaultTarget: PositionTarget = sortedPositions[0]
+    ? { pNummer: sortedPositions[0].pNummer, pName: sortedPositions[0].navn }
+    : { pNummer: P_POSITIONS[0].num, pName: P_POSITIONS[0].name };
+
   return (
     <div className="tp-scope">
       <PageHead
@@ -170,9 +177,12 @@ export default async function PlanBuilderPage({ params }: PageProps) {
         actions={
           <>
             <Link className="tp-btn outline" href="/portal/tren/teknisk-plan">Tilbake</Link>
-            <button className="tp-btn primary" type="button">
-              <Plus size={13} aria-hidden /> Ny oppgave
-            </button>
+            <OppgaveLauncher
+              planId={plan.id}
+              target={defaultTarget}
+              variant="primary"
+              label="Ny oppgave"
+            />
           </>
         }
       />
@@ -190,9 +200,12 @@ export default async function PlanBuilderPage({ params }: PageProps) {
                   Legg til P-posisjoner (P1.0 – P10.0) som du vil fokusere på i denne perioden.
                 </span>
               </div>
-              <button className="tp-btn primary" type="button">
-                <Plus size={13} aria-hidden /> Legg til P-posisjon
-              </button>
+              <OppgaveLauncher
+                planId={plan.id}
+                target={defaultTarget}
+                variant="primary"
+                label="Legg til oppgave"
+              />
             </div>
           ) : null}
 
@@ -252,17 +265,12 @@ export default async function PlanBuilderPage({ params }: PageProps) {
                   />
                 ))}
                 {tasks.length === 0 ? (
-                  <button
-                    type="button"
-                    className="tp-btn ghost"
-                    style={{
-                      justifyContent: "center",
-                      border: "1px dashed hsl(var(--border))",
-                      width: "100%",
-                    }}
-                  >
-                    <Plus size={13} aria-hidden /> Legg til oppgave i {position.pNummer}
-                  </button>
+                  <OppgaveLauncher
+                    planId={plan.id}
+                    target={{ pNummer: position.pNummer, pName: position.navn }}
+                    variant="ghost-dashed"
+                    label={`Legg til oppgave i ${position.pNummer}`}
+                  />
                 ) : null}
               </PRow>
             );

@@ -1,22 +1,76 @@
+"use client";
+
 /**
- * /admin/spillere/[id]/tildel-test — pixel-perfekt port av
+ * /admin/spillere/[id]/tildel-test — port av
  * docs/design-handoff/test-modul/tildel-test-modal.html
  *
  * Renderet som full-page modal med fadet coach-bakgrunn.
+ * Koblet til ekte test-tildeling via tildelTest-action
+ * (samme som /admin/tester/tildel/[spillerId]).
  */
 
 import "../planlegge-v2/styles.css";
-import Link from "next/link";
+import { useMemo, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { PlanleggeSprite } from "../planlegge-v2/icons";
+import { tildelTest } from "@/app/admin/tester/tildel/[spillerId]/actions";
 
-const TESTS = [
-  { kind: "slag", title: "Putt 1–3 m", sub: "30 putt · 1m, 2m, 3m · % sunket · ~12 min", selected: true },
-  { kind: "slag", title: "Putt 4–8 m", sub: "20 putt · 4m, 6m, 8m · proximity til hull · ~10 min" },
-  { kind: "slag", title: "Putt langdistanse 10–20 m", sub: "15 putt · proximity 3-putt unngåelse · ~12 min" },
-  { kind: "slag", title: "Chip landingsone 15 m", sub: "10 chip · 3m landingsone · % i sone · ~8 min" },
-];
+type TestItem = {
+  id: string;
+  name: string;
+  description: string;
+  pyramidArea: "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";
+};
 
-export function TildelTestModalScreen({ playerName = "Øyvind Rohjan", playerInitials = "ØR" }: { playerName?: string; playerInitials?: string }) {
+const PYRAMID_FILTERS = ["Alle", "FYS", "TEK", "SLAG", "SPILL", "TURN"] as const;
+
+export function TildelTestModalScreen({
+  playerId,
+  playerName = "Øyvind Rohjan",
+  playerInitials = "ØR",
+  tester,
+  pyrCounts,
+}: {
+  playerId: string;
+  playerName?: string;
+  playerInitials?: string;
+  tester: TestItem[];
+  pyrCounts: Record<string, number>;
+}) {
+  const router = useRouter();
+  const [search, setSearch] = useState("");
+  const [activeFilter, setActiveFilter] =
+    useState<(typeof PYRAMID_FILTERS)[number]>("Alle");
+  const [selectedTestId, setSelectedTestId] = useState<string>(tester[0]?.id ?? "");
+  const [dato, setDato] = useState<string>("");
+  const [notat, setNotat] = useState("");
+  const [feil, setFeil] = useState<string | null>(null);
+  const [pending, startTransition] = useTransition();
+
+  const filteredTests = useMemo(() => {
+    return tester.filter((t) => {
+      if (activeFilter !== "Alle" && t.pyramidArea !== activeFilter) return false;
+      if (search && !t.name.toLowerCase().includes(search.toLowerCase())) return false;
+      return true;
+    });
+  }, [tester, activeFilter, search]);
+
+  const totalCount = tester.length;
+
+  function handleSend() {
+    setFeil(null);
+    startTransition(async () => {
+      const res = await tildelTest({
+        spillerId: playerId,
+        testId: selectedTestId,
+        note: notat,
+        dueDate: dato || undefined,
+      });
+      if (res.ok) router.push(`/admin/spillere/${playerId}/tester`);
+      else setFeil(res.error ?? "Kunne ikke tildele testen.");
+    });
+  }
+
   return (
     <div className="planlegge-scope">
       <PlanleggeSprite />
@@ -40,9 +94,14 @@ export function TildelTestModalScreen({ playerName = "Øyvind Rohjan", playerIni
                 Tildel test til <strong>{playerName}</strong>
               </h2>
             </div>
-            <Link href="/admin/spillere" className="modal-close" aria-label="Lukk">
+            <button
+              type="button"
+              className="modal-close"
+              aria-label="Lukk"
+              onClick={() => router.back()}
+            >
               <svg fill="none" stroke="currentColor"><use href="#i-x" /></svg>
-            </Link>
+            </button>
           </div>
 
           <div className="modal-body">
@@ -66,114 +125,90 @@ export function TildelTestModalScreen({ playerName = "Øyvind Rohjan", playerIni
 
               <div className="search-input">
                 <svg fill="none" stroke="currentColor"><use href="#i-search" /></svg>
-                <input placeholder="Søk test, disiplin, mål …" defaultValue="putt" />
+                <input
+                  placeholder="Søk test, disiplin, mål …"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
                 <kbd>⌘K</kbd>
               </div>
 
               <div className="pyr-filters">
-                <button className="pyr-filter">
-                  Alle <span className="ct">36</span>
-                </button>
-                <button className="pyr-filter">
-                  FYS <span className="ct">8</span>
-                </button>
-                <button className="pyr-filter">
-                  TEK <span className="ct">6</span>
-                </button>
-                <button className="pyr-filter active">
-                  SLAG <span className="ct">9</span>
-                </button>
-                <button className="pyr-filter">
-                  SPILL <span className="ct">5</span>
-                </button>
-                <button className="pyr-filter">
-                  TURN <span className="ct">4</span>
-                </button>
+                {PYRAMID_FILTERS.map((f) => {
+                  const count = f === "Alle" ? totalCount : pyrCounts[f] ?? 0;
+                  return (
+                    <button
+                      key={f}
+                      type="button"
+                      onClick={() => setActiveFilter(f)}
+                      className={`pyr-filter${activeFilter === f ? " active" : ""}`}
+                    >
+                      {f} <span className="ct">{count}</span>
+                    </button>
+                  );
+                })}
               </div>
 
               <div className="test-results">
-                {TESTS.map((t, i) => (
-                  <div key={i} className={`test-row${t.selected ? " selected" : ""}`}>
-                    <div className="pyr-cell">
-                      <span className={`pyr pyr-${t.kind}`}>{t.kind.toUpperCase()}</span>
+                {filteredTests.map((t) => {
+                  const isSelected = t.id === selectedTestId;
+                  const kind = t.pyramidArea.toLowerCase();
+                  return (
+                    <div
+                      key={t.id}
+                      className={`test-row${isSelected ? " selected" : ""}`}
+                      onClick={() => setSelectedTestId(t.id)}
+                    >
+                      <div className="pyr-cell">
+                        <span className={`pyr pyr-${kind}`}>{t.pyramidArea}</span>
+                      </div>
+                      <div>
+                        <div className="ttl">{t.name}</div>
+                        <div className="sub">{t.description}</div>
+                      </div>
+                      <div className="check">
+                        {isSelected && (
+                          <svg fill="none" stroke="currentColor" strokeWidth="2.5"><use href="#i-check" /></svg>
+                        )}
+                      </div>
                     </div>
-                    <div>
-                      <div className="ttl">{t.title}</div>
-                      <div className="sub">{t.sub}</div>
-                    </div>
-                    <div className="check">
-                      {t.selected && <svg fill="none" stroke="currentColor" strokeWidth="2.5"><use href="#i-check" /></svg>}
-                    </div>
+                  );
+                })}
+                {filteredTests.length === 0 && (
+                  <div
+                    style={{
+                      fontFamily: "var(--font-mono)",
+                      fontSize: "12px",
+                      color: "var(--muted)",
+                      padding: "24px",
+                      textAlign: "center",
+                    }}
+                  >
+                    Ingen tester matcher
                   </div>
-                ))}
+                )}
               </div>
             </div>
 
-            {/* date picker */}
+            {/* frist (valgfritt) */}
             <div className="field">
-              <div className="field-lbl">
-                Planlagt dato <span className="req">*</span>
-              </div>
-
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
-                <div style={{ fontFamily: "var(--font-display)", fontSize: "15px", fontWeight: 600 }}>Mai 2026</div>
-                <div style={{ display: "flex", gap: "4px" }}>
-                  <button className="btn btn-outline btn-xs" style={{ padding: "4px 10px" }}>← Apr</button>
-                  <button className="btn btn-outline btn-xs" style={{ padding: "4px 10px" }}>Jun →</button>
-                </div>
-              </div>
-
-              <div className="date-pick">
-                {["M", "T", "O", "T", "F", "L", "S"].map((d, i) => (
-                  <div key={i} className="dh">{d}</div>
-                ))}
-                {[
-                  ["27", "dim"],
-                  ["28", "dim"],
-                  ["29", "dim"],
-                  ["30", "dim"],
-                  ["1", ""],
-                  ["2", ""],
-                  ["3", ""],
-                  ["4", ""],
-                  ["5", ""],
-                  ["6", ""],
-                  ["7", ""],
-                  ["8", ""],
-                  ["9", ""],
-                  ["10", ""],
-                  ["11", ""],
-                  ["12", ""],
-                  ["13", ""],
-                  ["14", ""],
-                  ["15", ""],
-                  ["16", ""],
-                  ["17", ""],
-                  ["18", ""],
-                  ["19", ""],
-                  ["20", ""],
-                  ["21", ""],
-                  ["22", ""],
-                  ["23", "today"],
-                  ["24", "has"],
-                  ["25", "has"],
-                  ["26", ""],
-                  ["27", "sel"],
-                  ["28", "has"],
-                  ["29", ""],
-                  ["30", ""],
-                  ["31", ""],
-                ].map(([d, cls], i) => (
-                  <div key={`d${i}`} className={`dc${cls ? ` ${cls}` : ""}`}>{d}</div>
-                ))}
-              </div>
-
-              <div className="suggested">
-                <svg fill="none" stroke="currentColor"><use href="#i-zap" /></svg>
-                <div>
-                  <strong>Foreslått: onsdag 27. mai · 16:00</strong> — Øyvind har Teknisk-økt planlagt; passer å koble på testen før økten.
-                </div>
-              </div>
+              <div className="field-lbl">Frist (valgfritt)</div>
+              <input
+                type="date"
+                value={dato}
+                onChange={(e) => setDato(e.target.value)}
+                style={{
+                  width: "100%",
+                  height: "40px",
+                  borderRadius: "10px",
+                  border: "1px solid var(--border)",
+                  background: "var(--card)",
+                  padding: "0 12px",
+                  fontFamily: "var(--font-mono)",
+                  fontSize: "13px",
+                  color: "var(--ink)",
+                }}
+              />
             </div>
 
             {/* notat */}
@@ -181,20 +216,35 @@ export function TildelTestModalScreen({ playerName = "Øyvind Rohjan", playerIni
               <div className="field-lbl">Notat til spiller</div>
               <textarea
                 className="textarea"
-                placeholder="Hva skal Øyvind ha i tankene før testen?"
-                defaultValue="Vi tar Putt 1–3m som baseline før vi øker volum til 90 putt/uke. Fokuser på pre-shot rutinen — 7 sekunder fra setup til putt. Lykke til."
+                placeholder={`Hva skal ${playerName.split(" ")[0]} ha i tankene før testen?`}
+                value={notat}
+                onChange={(e) => setNotat(e.target.value)}
               />
               <div style={{ fontFamily: "var(--font-mono)", fontSize: "10px", color: "var(--subtle)", letterSpacing: "0.04em", marginTop: "4px" }}>
-                Spilleren får varsel på mobil + e-post · 187 / 280 tegn
+                Spilleren får varsel i appen · {notat.length} / 280 tegn
               </div>
             </div>
           </div>
 
           <div className="modal-foot">
-            <button className="btn btn-ghost ghost">Avbryt</button>
-            <button className="btn btn-outline">Lagre som utkast</button>
-            <button className="btn btn-primary">
-              Send forespørsel
+            {feil && (
+              <span
+                className="ghost"
+                style={{ fontFamily: "var(--font-mono)", fontSize: "11px", color: "var(--destructive, #A32D2D)" }}
+              >
+                {feil}
+              </span>
+            )}
+            <button type="button" className="btn btn-ghost ghost" onClick={() => router.back()} disabled={pending}>
+              Avbryt
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={handleSend}
+              disabled={!selectedTestId || pending}
+            >
+              {pending ? "Tildeler…" : "Tildel test"}
               <svg fill="none" stroke="currentColor"><use href="#i-arrow-right" /></svg>
             </button>
           </div>
