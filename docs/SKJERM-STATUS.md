@@ -228,7 +228,7 @@
 | /admin/analysere | Analyse-rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/analysere/compliance | Analyse-rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/analytics | Analyse-rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /admin/lag-snitt | Analyse-rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /admin/lag-snitt | Analyse-rester | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd+kalibrert. Verifisert mørk 1280px: «Pyramide per gruppe» m/ pyramide-fordeling per gruppe. Ekte data |
 | /admin/runder | Analyse-rester | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd+kalibrert. Verifisert mørk 1280px: «Hele stallen, én kolonne for score» + KPI + runde-tabell (SG-deltaer). Ekte data |
 | /admin/tilstander | Analyse-rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/reports | Analyse-rester | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
@@ -263,18 +263,18 @@
 | /admin/mer | Admin-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/hjelp | Admin-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/brief | Admin-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /admin/reach | Admin-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /admin/team | Admin-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /admin/reach | Admin-undersider | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd+kalibrert. Verifisert mørk 1280px: «Plattform-engasjement» KPI + daglig aktive + topp/trenger-oppfølging + compliance-poeng-tabell. Ekte data |
+| /admin/team | Admin-undersider | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd+kalibrert. Verifisert mørk 1280px: «5 coacher · 41 spillere fordelt» + coach-kort (grupper/tildelinger/e-post). Ekte data |
 | /admin/team/inviter | Admin-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /admin/integrasjoner | Admin-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /admin/audit-log | Admin-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /admin/integrasjoner | Admin-undersider | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd+kalibrert. Verifisert mørk 1280px: «Tilkoblede tjenester» (Google Calendar/Stripe/Notion/Anthropic/Resend/Supabase m/ status). Ekte konfig-status |
+| /admin/audit-log | Admin-undersider | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd+kalibrert. Verifisert mørk 1280px (lastet OK, AgencyOS-mørk) |
 | /admin/audit-log/[id] | Admin-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/stats/moderering | Admin-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/stats/overview | Admin-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /admin/risiko | Admin-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /admin/oppfolging | Admin-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /admin/risiko | Admin-undersider | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd+kalibrert. Verifisert mørk 1280px: «Risiko · stall-kart» risiko-heatmap (41 spillere) + trenger-oppfølging-panel. Ekte data |
+| /admin/oppfolging | Admin-undersider | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd+kalibrert. Verifisert mørk 1280px (lastet OK, AgencyOS-mørk) |
 | /admin/okter | Admin-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /admin/email-templates | Admin-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /admin/email-templates | Admin-undersider | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd+kalibrert. Verifisert mørk 1280px (lastet OK, AgencyOS-mørk; Resend-integrasjon) |
 | /admin/email-templates/[id]/rediger | Admin-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/anlegg | K-09: avklar vs /admin/locations | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/anlegg/[id] | K-09: avklar vs /admin/facilities | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
