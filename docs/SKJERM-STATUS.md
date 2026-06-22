@@ -116,7 +116,7 @@
 | /portal/meg | Meg long-tail komplett | ✅ | ✅ | ✅ | ⚠ | ⚠ | ~ | ⚠ |
 | /portal/meg/profil | Meg-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/meg/profil/rediger | Meg-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /portal/meg/abonnement | Meg-abonnement | ✅ | ✅ | ✅ | ~ | ~ | ✅ | ✅ | Bygd, lyst, verifisert mobil 430px. LÅST-DECISION-KORREKT (overstyrer fasit): «300 kr/mnd» ikke fasitens 299, «ingen nivåer», ærlig Stripe («kortdata lagres aldri»), INGEN fabrikert «PRO årlig 2690». Status/Hva inngår/Handlinger. Ekte Subscription |
+| /portal/meg/abonnement | Meg-abonnement | ✅ | ✅ | ✅ | ~ | ~ | ✅ | ✅ | VISUELT RE-PORTET mot fasit (2026-06-22): forest «DITT ABONNEMENT»-kort (Aktiv + Inkludert via Performance Pro + Administrer/Kvitteringer) + PLANER-liste (Gratis «Nå» / Kun PlayerHQ 300). Korrekte verdier: 300 ikke 299, ingen «PRO årlig», ingen fabrikert Stripe-kort. Ekte Subscription |
 | /portal/meg/abonnement/avbestill | Meg-abonnement | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/meg/abonnement/faktura/[id] | Meg-abonnement | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/meg/bookinger | Meg-undersider | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |

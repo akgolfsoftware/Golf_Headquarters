@@ -16,21 +16,18 @@
 import Link from "next/link";
 import {
   AlertTriangle,
-  Calendar,
   Check,
   CheckCircle2,
   CreditCard,
   FileText,
   Info,
-  Package,
   Receipt,
   Sparkles,
-  Tag,
   XCircle,
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getAbonnementData } from "@/lib/portal-abonnement/abonnement-data";
-import { MeSub, SetGroup, SetLinkRow, SetRow, SetVal } from "@/components/portal/meg/meg-sub";
+import { MeSub, SetGroup, SetLinkRow, SetRow } from "@/components/portal/meg/meg-sub";
 import { AthleticBadge } from "@/components/athletic/badge";
 
 export const dynamic = "force-dynamic";
@@ -142,21 +139,88 @@ function ProStatusCard({ fornyes }: { fornyes: string | null }) {
   );
 }
 
-/** Sekundær statuskort — gratis via coaching-pakke. */
+/** «Ditt abonnement»-kort — gratis via coaching-pakke. Forest-gradient som fasiten
+ *  (fasit «PlayerHQ Meg-abonnement»: alltid forest «Ditt abonnement»-kort med Aktiv-pill). */
 function GratisCard({ planNavn }: { planNavn: string | null }) {
   return (
-    <div className="rounded-[20px] border border-border bg-secondary/60 p-5">
-      <div className="mb-1 font-mono text-[9.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-        APP-ABONNEMENT
+    <div className="relative overflow-hidden rounded-[20px] bg-gradient-to-br from-primary to-emerald-900 p-5">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-8 -top-8 h-40 w-40 rounded-full blur-2xl"
+        style={{ background: "radial-gradient(circle, rgba(209,248,67,0.20), transparent 65%)" }}
+      />
+      <div className="relative z-10">
+        <div className="mb-3 flex items-center justify-between">
+          <div className="font-mono text-[9.5px] font-bold uppercase tracking-[0.12em] text-accent">
+            DITT ABONNEMENT
+          </div>
+          <span className="rounded-full bg-accent px-2.5 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.10em] text-accent-foreground">
+            Aktiv
+          </span>
+        </div>
+        <div className="font-display text-[28px] font-bold leading-none tracking-[-0.015em] text-white">
+          Inkludert
+        </div>
+        <p className="mt-2 font-mono text-[11px] leading-relaxed text-white/70">
+          via <span className="font-bold text-accent">{planNavn ?? "coaching-pakke"}</span> ·
+          gratis app-tilgang så lenge pakken er aktiv
+        </p>
+        <div className="mt-4 flex gap-2.5">
+          <Link
+            href="/portal/booking"
+            className="flex h-11 flex-1 items-center justify-center rounded-full bg-accent font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-accent-foreground transition-opacity hover:opacity-90"
+          >
+            Administrer
+          </Link>
+          <Link
+            href="/portal/meg/dokumenter"
+            className="flex h-11 flex-1 items-center justify-center rounded-full bg-white/10 font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-white transition-colors hover:bg-white/15"
+          >
+            Kvitteringer
+          </Link>
+        </div>
       </div>
-      <div className="font-display text-[22px] font-bold tracking-[-0.015em] text-foreground">
-        Inkludert i coaching
+    </div>
+  );
+}
+
+/** «Planer»-liste (fasit: GRATIS / PRO / PRO årlig). Korrekt modell (Anders 2026-06-22):
+ *  KUN to app-tilgangs-nivåer — gratis via coaching, ellers 300 kr/mnd. Ingen «PRO årlig». */
+function PlanerListe({ gratis }: { gratis: boolean }) {
+  const planer = [
+    { navn: "Gratis", sub: "Med coaching-pakke, prøveperiode el. gruppe", pris: "0 kr", current: gratis },
+    { navn: "Kun PlayerHQ", sub: "Uten coaching-pakke", pris: "300 kr", current: !gratis },
+  ];
+  return (
+    <div className="mb-[22px]">
+      <div className="mb-[9px] font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
+        Planer
       </div>
-      <p className="mt-2 font-mono text-[11px] leading-relaxed text-muted-foreground">
-        Du har{" "}
-        <span className="font-bold text-primary">{planNavn ?? "coaching-pakke"}</span> hos AK
-        Golf — app-tilgang følger med så lenge coaching-pakken er aktiv.
-      </p>
+      <div className="flex flex-col gap-[9px]">
+        {planer.map((p) => (
+          <div
+            key={p.navn}
+            className={`flex items-center gap-3 rounded-xl border px-[14px] py-3 ${
+              p.current ? "border-primary bg-accent/15" : "border-border bg-card"
+            }`}
+          >
+            <div className="flex-1">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-semibold text-foreground">{p.navn}</span>
+                {p.current && (
+                  <span className="rounded-full bg-accent/20 px-[7px] py-0.5 font-mono text-[8.5px] font-bold uppercase tracking-[0.05em] text-primary">
+                    Nå
+                  </span>
+                )}
+              </div>
+              <div className="mt-[3px] font-mono text-[10.5px] text-muted-foreground">{p.sub}</div>
+            </div>
+            <span className="font-mono text-[15px] font-semibold tabular-nums text-foreground">
+              {p.pris}
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -269,45 +333,9 @@ export default async function AbonnementPage({
         )}
       </div>
 
-      <SetGroup label="STATUS">
-        <SetRow
-          icon={CheckCircle2}
-          title="App-tilgang"
-          meta={
-            betalingFeilet
-              ? "Betaling utestår"
-              : gratis
-                ? harPakke
-                  ? "Aktiv via coaching-pakke"
-                  : "Aktiv"
-                : "Eget abonnement"
-          }
-          right={
-            betalingFeilet ? (
-              <AthleticBadge variant="urgent">Betaling feilet</AthleticBadge>
-            ) : (
-              <AthleticBadge variant={gratis ? "ok" : "neutral"}>
-                {gratis ? "Gratis" : "300 kr/mnd"}
-              </AthleticBadge>
-            )
-          }
-        />
-        <SetRow
-          icon={Package}
-          title="Coaching-pakke"
-          meta={planNavn ?? "Ingen aktiv pakke"}
-          right={<SetVal>{harPakke ? "Aktiv" : "—"}</SetVal>}
-        />
-        {fornyes && (
-          <SetRow icon={Calendar} title="Fornyes" meta={fornyes} right={<SetVal>Auto</SetVal>} />
-        )}
-        <SetRow
-          icon={Tag}
-          title="Egen app-pris uten pakke"
-          meta="Om coaching avsluttes"
-          right={<SetVal>300 kr/mnd</SetVal>}
-        />
-      </SetGroup>
+      {/* Planer (fasit-layout) — erstatter den gamle STATUS-lista; kortet + Planer
+          dekker app-tilgang-status. Korrekt modell: gratis via coaching ellers 300. */}
+      <PlanerListe gratis={gratis} />
 
       <SetGroup label="HVA SOM INNGÅR">
         {INNGAAR.map((f) => (

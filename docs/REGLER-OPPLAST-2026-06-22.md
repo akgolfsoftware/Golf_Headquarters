@@ -28,7 +28,8 @@ står; skjermer som er innholds-korrekte men visuelt ulike (f.eks. abonnement) s
 - **Var låst som:** kun «gratis eller 300 kr/mnd», ingen nivåer, «PRO årlig» finnes ikke, ingen Stripe-kort-visning, ELITE forbudt.
 - **Designkonsekvens av låsen:** Priser/Abonnement viser IKKE fasitens «299 kr + PRO årlig 2 690 + Visa ••• 4242».
 - **Trenger fra Anders:** (a) månedspris (299 eller 300?), (b) årspris + skal årlig finnes (2 690?), (c) skal app-planer (Gratis/PRO/PRO-årlig) vises som i fasiten, (d) Stripe-kort/last4-visning (krever live Stripe — bak hardt stopp).
-- **BESLUTTET (2026-06-22):** Modellen = **dagens app** (ikke fasitens 299/årlig): **Performance** = 2×20 min coaching + gratis PlayerHQ; **Performance Pro** = 4×20 min coaching + gratis PlayerHQ; **kun PlayerHQ** = **300 kr/mnd**. INGEN 299, INGEN «PRO årlig 2690», INGEN fabrikert Stripe-kort. → **Innholdet er allerede korrekt.** Eneste oppgave: stram det VISUELLE mot fasit-layouten (forest «DITT ABONNEMENT»-kort, plan-kort-stil) MED disse riktige verdiene.
+- **BESLUTTET (2026-06-22):** Modellen = **dagens app** (ikke fasitens 299/årlig): **Performance** = 2×20 min coaching + gratis PlayerHQ; **Performance Pro** = 4×20 min coaching + gratis PlayerHQ; **kun PlayerHQ** = **300 kr/mnd**. INGEN 299, INGEN «PRO årlig 2690», INGEN fabrikert Stripe-kort.
+- **VISUELT RE-PORTET ✅ (/portal/meg/abonnement):** forest «DITT ABONNEMENT»-kort (alltid forest nå, også for gratis-via-coaching) + PLANER-liste (Gratis «Nå» / Kun PlayerHQ 300 kr) — matcher fasitens layout med korrekte verdier. Verifisert mobil 430px. GJENSTÅR (lav): /(marketing)/priser + /forelder/okonomi er allerede korrekte; vurder visuell stramming ved fasit-sweep.
 
 ## 3. FYS-formel + A–K-nivåtall  ·  STATUS: låst opp, venter verdi (størst)
 - **Var låst som:** FYS-resultatformel + A–K 11 snittscore-grenser parkert → «—»-plassholdere.
