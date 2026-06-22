@@ -259,7 +259,7 @@ export function SgStartSkjema({
                 alignItems: "center",
                 gap: 10,
                 background: "#FFFFFF",
-                border: "1.5px solid #E5E3DD",
+                border: "1.5px solid var(--s-border)",
                 borderRadius: 12,
                 padding: "12px 16px",
                 boxShadow: "0 1px 3px rgba(10,31,23,0.06)",
@@ -308,7 +308,7 @@ export function SgStartSkjema({
                   left: 0,
                   right: 0,
                   background: "#FFFFFF",
-                  border: "1px solid #E5E3DD",
+                  border: "1px solid var(--s-border)",
                   borderRadius: 10,
                   boxShadow: "0 8px 24px rgba(10,31,23,0.1)",
                   zIndex: 50,
@@ -420,8 +420,8 @@ export function SgStartSkjema({
                     padding: "12px 14px",
                     background: selected ? "hsl(var(--primary))" : "#FFFFFF",
                     border: selected
-                      ? "1.5px solid #005840"
-                      : "1.5px solid #E5E3DD",
+                      ? "1.5px solid var(--forest)"
+                      : "1.5px solid var(--s-border)",
                     borderRadius: 12,
                     cursor: "pointer",
                     textAlign: "left",
@@ -578,7 +578,7 @@ export function SgStartSkjema({
                 background: "hsl(var(--secondary))",
                 borderRadius: 999,
                 padding: 3,
-                border: "1px solid #E5E3DD",
+                border: "1px solid var(--s-border)",
               }}
             >
               {(
@@ -617,7 +617,7 @@ export function SgStartSkjema({
             <div
               style={{
                 background: "#FFFFFF",
-                border: "1px solid #E5E3DD",
+                border: "1px solid var(--s-border)",
                 borderRadius: 16,
                 padding: "40px 48px",
                 textAlign: "center",
@@ -728,7 +728,7 @@ export function SgStartSkjema({
                         fontFamily: "var(--font-mono)",
                         fontSize: 28,
                         fontWeight: 500,
-                        border: "1px solid #E5E3DD",
+                        border: "1px solid var(--s-border)",
                         borderRadius: 8,
                         padding: "8px 12px",
                         background: "hsl(var(--background))",
@@ -810,7 +810,7 @@ export function SgStartSkjema({
             <div
               style={{
                 background: "#FFFFFF",
-                border: "1px solid #E5E3DD",
+                border: "1px solid var(--s-border)",
                 borderRadius: 16,
                 padding: "40px 48px",
                 maxWidth: 600,
@@ -871,7 +871,7 @@ export function SgStartSkjema({
                           fontFamily: "var(--font-mono)",
                           fontSize: 28,
                           fontWeight: 500,
-                          border: "1px solid #E5E3DD",
+                          border: "1px solid var(--s-border)",
                           borderRadius: 8,
                           padding: "8px 12px",
                           background: "hsl(var(--background))",
@@ -892,7 +892,7 @@ export function SgStartSkjema({
 
               <div
                 style={{
-                  borderTop: "1px solid #E5E3DD",
+                  borderTop: "1px solid var(--s-border)",
                   marginTop: 24,
                   paddingTop: 16,
                   display: "flex",
@@ -946,7 +946,7 @@ export function SgStartSkjema({
                 padding: "12px 20px",
                 background: "hsl(var(--secondary))",
                 color: "hsl(var(--foreground))",
-                border: "1px solid #E5E3DD",
+                border: "1px solid var(--s-border)",
                 borderRadius: 999,
                 fontFamily: "var(--font-sans)",
                 fontSize: 14,

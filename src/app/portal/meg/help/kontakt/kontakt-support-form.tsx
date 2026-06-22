@@ -176,7 +176,7 @@ export function KontaktSupportForm({
                     <div className="flex items-center gap-1 font-mono text-[10.5px] text-muted-foreground">
                       <span>{v.storrelse}</span>
                       <span>·</span>
-                      <span className="text-[color:rgb(44_125_82)]">Lastet opp</span>
+                      <span className="text-success">Lastet opp</span>
                     </div>
                   </div>
                   <button

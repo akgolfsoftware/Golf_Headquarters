@@ -9,7 +9,7 @@
  */
 
 import Link from "next/link";
-import { Dumbbell, Plus, ChevronRight } from "lucide-react";
+import { Dumbbell, ChevronRight } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { AthleticEyebrow } from "@/components/athletic";
@@ -125,10 +125,10 @@ export default async function FysPlanListePage() {
           FYS-score per område · plassholder
         </AthleticEyebrow>
         <div className="flex justify-around">
-          <MasteryRing label="Styrke" pct={62} color="#005840" />
+          <MasteryRing label="Styrke" pct={62} color="var(--forest)" />
           <MasteryRing label="Mobilitet" pct={78} color="#B8852A" />
           <MasteryRing label="Uthold." pct={55} color="#2563EB" />
-          <MasteryRing label="Spenst" pct={70} color="#D1F843" />
+          <MasteryRing label="Spenst" pct={70} color="var(--lime)" />
         </div>
       </section>
 
@@ -305,7 +305,7 @@ function PlanCard({
           style={{
             width: `${Math.max(2, plan.pct)}%`,
             background:
-              "linear-gradient(90deg, #005840, #B9E022)",
+              "linear-gradient(90deg, var(--forest), var(--lime-deep))",
           }}
         />
       </div>

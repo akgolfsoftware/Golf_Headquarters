@@ -21,8 +21,8 @@ export default async function KontaktSupportPage({
 
       <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 font-mono text-[11px] uppercase tracking-[0.06em] text-muted-foreground shadow-sm">
         <span className="relative inline-block h-2 w-2">
-          <span className="absolute inset-0 animate-ping rounded-full bg-[color:rgb(44_125_82)] opacity-60" />
-          <span className="absolute inset-0 rounded-full bg-[color:rgb(44_125_82)]" />
+          <span className="absolute inset-0 animate-ping rounded-full bg-success opacity-60" />
+          <span className="absolute inset-0 rounded-full bg-success" />
         </span>
         <span>Svartid</span>
         <span className="font-bold text-foreground">~4 timer</span>

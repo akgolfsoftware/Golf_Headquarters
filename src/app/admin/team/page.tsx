@@ -231,7 +231,7 @@ function Kpi({
     >
       <div
         className={`font-mono text-[10px] font-semibold uppercase tracking-[0.06em] ${
-          accent ? "text-[rgba(209,248,67,0.70)]" : "text-muted-foreground"
+          accent ? "text-lime/70" : "text-muted-foreground"
         }`}
       >
         {label}

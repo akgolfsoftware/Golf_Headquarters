@@ -210,7 +210,7 @@ export default async function BarnProfil({
       {/* Hero forest card */}
       <div
         className="rounded-2xl p-6"
-        style={{ background: "linear-gradient(150deg,#005840,#003d2d)" }}
+        style={{ background: "linear-gradient(150deg,var(--forest),#003d2d)" }}
       >
         {/* Avatar + navn */}
         <div className="flex items-center gap-4">
@@ -218,7 +218,7 @@ export default async function BarnProfil({
             className="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full"
             style={{
               background: "#003d2d",
-              border: "2px solid #D1F843",
+              border: "2px solid var(--lime)",
             }}
           >
             <span className="font-mono text-base font-bold text-accent">
@@ -327,7 +327,7 @@ export default async function BarnProfil({
                     className="h-full rounded-full"
                     style={{
                       width: "40%",
-                      background: "linear-gradient(90deg,#005840,#8db000)",
+                      background: "linear-gradient(90deg,var(--forest),#8db000)",
                     }}
                   />
                 </div>

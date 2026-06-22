@@ -180,7 +180,7 @@ function PlanKCard({
           className="h-full rounded-full"
           style={{
             width: `${pct}%`,
-            background: "linear-gradient(90deg,#005840,#b5d629)",
+            background: "linear-gradient(90deg,var(--forest),#b5d629)",
           }}
         />
       </div>

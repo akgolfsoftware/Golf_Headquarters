@@ -90,7 +90,7 @@ export default async function AnleggDetaljPage({ params }: Props) {
           className="relative h-44 sm:h-56"
           style={{
             background:
-              "linear-gradient(135deg, #003A2A 0%, #005840 40%, #1A7D56 80%, #2C7D52 100%)",
+              "linear-gradient(135deg, var(--forest-deep) 0%, var(--forest) 40%, #1A7D56 80%, #2C7D52 100%)",
           }}
         >
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_70%,rgba(209,248,67,0.18),transparent_60%)]" />

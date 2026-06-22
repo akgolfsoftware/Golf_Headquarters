@@ -181,13 +181,13 @@ export default async function SpillerPlanDetaljPage({
           <div className="relative h-12 rounded-lg bg-muted/40">
             <span
               className="font-mono absolute top-0 flex h-full items-center px-4 text-[10px] font-bold uppercase tracking-[0.08em] text-primary"
-              style={{ left: "0%", width: "33%", background: "rgba(0,88,64,0.18)", borderRadius: 8 }}
+              style={{ left: "0%", width: "33%", background: "color-mix(in srgb, var(--forest) 18%, transparent)", borderRadius: 8 }}
             >
               FUNDAMENT · TEKNIKK
             </span>
             <span
               className="font-mono absolute top-0 flex h-full items-center px-4 text-[10px] font-bold uppercase tracking-[0.08em] text-foreground"
-              style={{ left: "33%", width: "34%", background: "rgba(209,248,67,0.45)" }}
+              style={{ left: "33%", width: "34%", background: "color-mix(in srgb, var(--lime) 45%, transparent)" }}
             >
               SHORT GAME · PUTT
             </span>

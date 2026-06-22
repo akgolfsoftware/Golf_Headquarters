@@ -130,7 +130,7 @@ export default async function TurneringDetaljPage({
       </Link>
 
       {/* Forest gradient hero */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-primary/90 to-[#003d2b] px-6 py-8">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-primary/90 to-forest-deep px-6 py-8">
         {/* Status badge — top right */}
         {data.status && (
           <span

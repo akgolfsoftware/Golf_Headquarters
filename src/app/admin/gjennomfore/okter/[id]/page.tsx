@@ -377,7 +377,7 @@ function LiveProgressStrip({ drills }: { drills: typeof SESSION_DRILLS }) {
     <div
       className="relative overflow-hidden rounded-2xl p-6 text-white"
       style={{
-        background: "linear-gradient(135deg, #003A2A 0%, #005840 100%)",
+        background: "linear-gradient(135deg, var(--forest-deep) 0%, var(--forest) 100%)",
       }}
     >
       <div className="absolute -right-5 -top-10 h-44 w-44 rounded-full bg-accent/15 blur-2xl" />

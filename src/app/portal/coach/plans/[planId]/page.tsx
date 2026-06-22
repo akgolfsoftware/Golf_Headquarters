@@ -235,7 +235,7 @@ export default async function CoachPlanDetalj({
               className="h-full rounded-full"
               style={{
                 width: `${gjennomforing}%`,
-                background: "linear-gradient(90deg,#005840,#b5d629)",
+                background: "linear-gradient(90deg,var(--forest),#b5d629)",
               }}
             />
           </div>

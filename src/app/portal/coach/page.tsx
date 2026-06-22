@@ -282,7 +282,7 @@ export default async function CoachPage() {
                           : {
                               borderRadius: "14px 14px 14px 4px",
                               background: "var(--secondary)",
-                              color: "#0A1F18",
+                              color: "var(--foreground)",
                             }
                       }
                     >

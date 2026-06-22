@@ -170,7 +170,7 @@ export default async function CoachSgHubPage() {
                             ? {
                                 left: "50%",
                                 width: `${minePct}%`,
-                                background: "linear-gradient(90deg,#005840,#1A7D56)",
+                                background: "linear-gradient(90deg,var(--forest),#1A7D56)",
                               }
                             : {
                                 right: "50%",

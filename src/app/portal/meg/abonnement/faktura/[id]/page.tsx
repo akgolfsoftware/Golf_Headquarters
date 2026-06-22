@@ -116,7 +116,7 @@ export default async function FakturaDetaljPage({
           <span
             className={
               erBetalt
-                ? "inline-flex items-center gap-1.5 rounded-full bg-[color:rgb(44_125_82)]/15 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-[0.06em] text-[color:rgb(44_125_82)]"
+                ? "inline-flex items-center gap-1.5 rounded-full bg-success/15 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-[0.06em] text-success"
                 : "inline-flex items-center gap-1.5 rounded-full bg-secondary px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-[0.06em] text-muted-foreground"
             }
           >
@@ -219,8 +219,8 @@ export default async function FakturaDetaljPage({
 
       {/* Betalingsinfo — kun ekte data */}
       {erBetalt && payment.paidAt && (
-        <section className="flex items-center gap-4 rounded-xl border border-[color:rgb(44_125_82)]/20 bg-[color:rgb(44_125_82)]/[0.04] border-l-4 border-l-[color:rgb(44_125_82)] p-6">
-          <span className="grid h-9 w-9 flex-shrink-0 place-items-center rounded-md bg-[color:rgb(44_125_82)]/15 text-[color:rgb(44_125_82)]">
+        <section className="flex items-center gap-4 rounded-xl border border-success/20 bg-success/[0.04] border-l-4 border-l-success p-6">
+          <span className="grid h-9 w-9 flex-shrink-0 place-items-center rounded-md bg-success/15 text-success">
             <CreditCard className="h-4 w-4" strokeWidth={1.75} />
           </span>
           <div className="text-sm">

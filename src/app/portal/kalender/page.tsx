@@ -188,7 +188,7 @@ async function hentData(spillerId: string, spillerNavn: string, hcp: number | nu
       tittel: e.tournament?.name ?? e.manualName ?? "Turnering",
       meta: `${MANED_KORT[dato.getMonth()]} ${dato.getFullYear()}`,
       badge: erMajor ? "Major" : "Turnering",
-      badgeBg: erMajor ? "rgba(37,99,235,.1)" : "rgba(0,88,64,.1)",
+      badgeBg: erMajor ? "rgba(37,99,235,.1)" : "color-mix(in srgb, var(--forest) 10%, transparent)",
       badgeFg: erMajor ? "var(--info, #2563EB)" : "var(--forest, #005840)",
       ikonBg: erMajor ? "var(--sand, #F1EEE5)" : "var(--forest, #005840)",
       ikonFg: erMajor ? "var(--muted, #5E5C57)" : "var(--lime, #D1F843)",

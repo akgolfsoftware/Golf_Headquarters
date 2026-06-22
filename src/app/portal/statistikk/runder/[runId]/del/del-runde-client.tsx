@@ -153,7 +153,7 @@ export function DelRundeClient({ runde, spiller }: Props) {
               className="pointer-events-none absolute inset-0"
               style={{
                 background:
-                  "radial-gradient(ellipse 80% 50% at 90% 10%, rgba(209,248,67,0.20), transparent 60%)",
+                  "radial-gradient(ellipse 80% 50% at 90% 10%, color-mix(in srgb, var(--lime) 20%, transparent), transparent 60%)",
               }}
             />
           )}

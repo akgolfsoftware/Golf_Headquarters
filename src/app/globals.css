@@ -144,6 +144,12 @@
   --color-muted-foreground: hsl(var(--muted-foreground));
   --color-accent: hsl(var(--accent));
   --color-accent-foreground: hsl(var(--accent-foreground));
+  /* Faste brand-farger (flipper IKKE mellom lys/mørk) — for AgencyOS/admin der
+   * primary/accent-tokenene bytter verdi i mørkt tema. bg-forest/text-lime osv. */
+  --color-forest: var(--forest);
+  --color-forest-deep: var(--forest-deep);
+  --color-lime: var(--lime);
+  --color-ink: var(--ink);
   --color-destructive: hsl(var(--destructive));
   --color-destructive-foreground: hsl(var(--destructive-foreground));
   --color-success: hsl(var(--success));

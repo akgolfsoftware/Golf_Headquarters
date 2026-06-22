@@ -167,7 +167,7 @@ export default async function SgResultatPage({ params }: Props) {
         style={{
           padding: "56px 40px 48px",
           borderBottom: "1px solid var(--s-border)",
-          background: "linear-gradient(180deg, #FAFAF7 0%, #F1EEE5 100%)",
+          background: "linear-gradient(180deg, var(--s-bg) 0%, var(--s-secondary) 100%)",
         }}
       >
         <div style={{ maxWidth: 920, margin: "0 auto" }}>

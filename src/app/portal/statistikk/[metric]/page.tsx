@@ -381,7 +381,7 @@ export default async function MetricDrillDownPage({
             <div
               className="relative col-span-1 overflow-hidden rounded-2xl p-6 text-white sm:col-span-2 md:col-span-1"
               style={{
-                background: "linear-gradient(150deg, #005840, #0A1F17)",
+                background: "linear-gradient(150deg, var(--forest), var(--ink))",
               }}
             >
               <div
@@ -389,7 +389,7 @@ export default async function MetricDrillDownPage({
                 className="pointer-events-none absolute -right-6 -top-10 h-32 w-32 rounded-full"
                 style={{
                   background:
-                    "radial-gradient(circle, rgba(209,248,67,.2), transparent 65%)",
+                    "radial-gradient(circle, color-mix(in srgb, var(--lime) 20%, transparent), transparent 65%)",
                 }}
               />
               <div className="relative z-10">

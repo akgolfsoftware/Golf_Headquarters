@@ -254,7 +254,7 @@ export default async function GoalDetailPage({
                   ? { background: "var(--accent)", color: "var(--foreground)" }
                   : data.status === "ABANDONED"
                     ? { background: "var(--secondary)", color: "var(--muted-foreground)" }
-                    : { background: "rgba(0,88,64,.10)", color: "var(--primary)" }
+                    : { background: "color-mix(in srgb, var(--forest) 10%, transparent)", color: "var(--primary)" }
               }
             >
               {data.status === "ACHIEVED"
@@ -283,7 +283,7 @@ export default async function GoalDetailPage({
               className="h-full rounded-full transition-all duration-700"
               style={{
                 width: `${Math.round(data.progressPct)}%`,
-                background: "linear-gradient(90deg, #005840, #D1F843)",
+                background: "linear-gradient(90deg, var(--forest), var(--lime))",
               }}
             />
           </div>
