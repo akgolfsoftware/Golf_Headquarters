@@ -5,8 +5,8 @@
  *
  * Element-liste (fasit, topp → bunn):
  *   1. MeSub-header: MEG · HELSE + "Helse & readiness." + lead
- *   2. 3-KPI-grid: Readiness % («—» — formelen er IKKE låst, Anders-regel) ·
- *      Hvilepuls bpm · Søvn t (EKTE siste HealthEntry: restingHr/sleepHours)
+ *   2. 3-KPI-grid: FYS-score (stall-relativ testbatteri-form 0–100, Anders' formel 2026-06-22;
+ *      «—» hvis spilleren mangler FYS-tester) · Hvilepuls bpm · Søvn t (EKTE siste HealthEntry)
  *   3. DENNE UKA: Søvn (ekte snitt siste 7 døgn) · Belastning · HRV
  *      («—» der data/formel mangler — aldri liksom-tall)
  *   4. SKADE & STATUS: ekte Leave-data (isInjury); «Ingen aktive skader» ellers
@@ -20,6 +20,7 @@
 import { Activity, BatteryMedium, CircleCheck, Moon, Stethoscope } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { hentFysScore } from "@/lib/fys-data";
 import { MeSub, SetGroup, SetRow, SetVal } from "@/components/portal/meg/meg-sub";
 import { AthleticBadge } from "@/components/athletic/badge";
 import { KpiCard } from "@/components/athletic/kpi";
@@ -42,7 +43,7 @@ export default async function HelsePage() {
   since.setUTCDate(since.getUTCDate() - 13);
 
   const now = new Date();
-  const [entries, aktivSkade, tidligereSkader] = await Promise.all([
+  const [entries, aktivSkade, tidligereSkader, fys] = await Promise.all([
     prisma.healthEntry.findMany({
       where: { userId: user.id, date: { gte: since } },
       orderBy: { date: "desc" },
@@ -63,6 +64,7 @@ export default async function HelsePage() {
         OR: [{ returnedAt: { not: null } }, { endAt: { lt: now } }],
       },
     }),
+    hentFysScore(user.id),
   ]);
 
   const siste = entries[0];
@@ -93,15 +95,17 @@ export default async function HelsePage() {
       eyebrow="MEG · HELSE"
       title="Helse &"
       italic="readiness."
-      lead="Søvn, puls og belastning. Plassholder-tall der FYS-formelen ikke er låst."
+      lead="Søvn, puls, belastning og FYS-form. Noen tall er plassholdere til formlene er låst."
     >
       <div className="mb-[22px] grid grid-cols-3 gap-3">
-        {/* Readiness: formelen fra fysteamet er IKKE låst — merket plassholder. */}
+        {/* FYS-score: testbatteri → stall-relativ samlet form (Anders' formel 2026-06-22). */}
         <KpiCard
-          label="Readiness"
-          value="—"
-          unit="%"
-          trend={{ value: "Formel ikke låst", tone: "neutral" }}
+          label="FYS-score"
+          value={fys.harTester && fys.score != null ? String(fys.score) : "—"}
+          trend={{
+            value: fys.harTester ? `${fys.antallTester}/5 tester` : "Ingen FYS-tester",
+            tone: "neutral",
+          }}
         />
         <KpiCard
           label="Hvilepuls"
@@ -157,8 +161,9 @@ export default async function HelsePage() {
       </SetGroup>
 
       <div className="rounded-xl border border-border border-l-[3px] border-l-accent bg-card px-4 py-3.5 text-[13px] leading-[1.55] text-muted-foreground">
-        Tallene over er <b className="font-semibold text-foreground">plassholdere</b> fram til
-        readiness-formelen fra fysteamet er låst.
+        <b className="font-semibold text-foreground">FYS-score</b> er din samlede testbatteri-form
+        (0–100, relativt til stallen). <b className="font-semibold text-foreground">Belastning</b> og{" "}
+        <b className="font-semibold text-foreground">HRV</b> er fortsatt plassholdere til de formlene er låst.
       </div>
 
       <div className="mt-4">

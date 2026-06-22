@@ -90,7 +90,7 @@ Opprinnelig flagg (historikk):
 ### M-1 · Alle 5 Meg-undersider bygd, lyse, korrekte (bygd tidligere fase)
 - **Verifisert mobil 430px som spiller:** `/portal/meg/abonnement`, `/helse`, `/utstyrsbag`, `/dokumenter`, `/innstillinger`. Alle lyse, ekte data, markert ✅.
 - **Abonnement — BEVISST AVVIK FRA FASIT (låst beslutning overstyrer, diff-agenter skal IKKE flagge):** fasit «PlayerHQ Meg-abonnement» viser «PRO 299 kr» + «Stripe ···· 4242» + «PRO årlig 2690». Appen viser i stedet det LÅSTE: «300 kr/mnd» (ikke 299), «ingen nivåer», ærlig Stripe («kortdata lagres aldri hos oss» — intet fabrikert kortnr.), og INGEN «PRO årlig» (finnes ikke i den låste gratis/300-modellen). Samme prinsipp som Marketing/Priser. Appen er MER korrekt enn fasiten.
-- **Helse — FYS-formel-parkering korrekt realisert:** KPIene (readiness/hvilepuls/søvn) viser «—» + «Formel ikke låst» + «plassholdere fram til readiness-formelen fra fysteamet er låst». Riktig honest håndtering av parkert FYS-formel — ikke et avvik.
+- **Helse — FYS-formel NÅ WIRET ✅ (2026-06-22, Anders ga formelen):** Readiness-plassholder-KPIen er erstattet med ekte **FYS-score** (0–100, «{n}/5 tester», stall-relativ) fra `src/lib/fys-data.ts` → `src/lib/domain/fys-score.ts`. RÅverdier i `TestResult.score` (kg/cm/mph) + kroppsvekt `HealthEntry.weightKg`; seed `scripts/seed-fys-testdata.ts` ga 5 spillere realistiske baselines. «Formel ikke låst»-tekst fjernet; ny disclaimer forklarer FYS-score + at kun Belastning/HRV fortsatt er plassholdere (de formlene er ikke låst). Verifisert mobil 430px (FYS-SCORE 100 for Øyvind). Hvilepuls/Søvn = ærlig «—» uten logger.
 
 ---
 
