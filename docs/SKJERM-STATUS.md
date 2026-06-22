@@ -177,7 +177,7 @@
 | /admin/spillere/[id]/tester | Spiller-detalj | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd. Verifisert mørk 1280px: radar-chart 5 disipliner + test-dekning per område (FYS/TEK/SLAG/SPILL/TURN). Ekte data |
 | /admin/spillere/[id]/tildel-test | Spiller-detalj | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/spillere/ny | Stall v2 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /admin/stall | Stall responsiv | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd+kalibrert. Verifisert mørk 1280px: spiller-tabell (HCP/SG/status) + filterchips + spiller-panel (360°/SG/adherence/pyramide). Ekte data |
+| /admin/stall | Stall responsiv | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | FASIT-SWEEP 2026-06-22: adversarial diff → FIKSET tittel «Spillere»→«Stallen {N} spillere» (fasitens kanoniske navn). BEVISSTE app-forbedringer (beholdes, IKKE avvik): høyre spiller-detalj-panel (360°/SG/adherence/pyramide — fasit har flat tabell), chips Aktive/Trenger oppfølging (vs fasit Søk planen/Mine), SISTE ØKT-kolonne (adherence i panel). Elite-chip droppet = låst ELITE-død |
 | /admin/grupper | Stall v2 | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd. Verifisert mørk 1280px: 9 gruppe-kort m/ HCP-snitt + type-tags (SELEKTERT/KLUBB/SKOLE). Ekte data |
 | /admin/grupper/[id] | Stall v2 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/planlegge | Plans og Maler | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |

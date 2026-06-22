@@ -276,9 +276,9 @@ export function StallClient({ spillere }: { spillere: StallSpiller[] }) {
                 AgencyOS · Stall
               </span>
               <h1 className="font-display text-[18px] font-bold text-foreground">
-                Spillere{" "}
+                Stallen{" "}
                 <span className="font-normal text-muted-foreground">
-                  {spillere.length}
+                  {spillere.length} spillere
                 </span>
               </h1>
             </div>
