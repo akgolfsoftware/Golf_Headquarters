@@ -30,9 +30,15 @@ import { prisma } from "@/lib/prisma";
 import {
   StatistikkHub,
   type KpiTile,
+  type NivaaDiagnose,
   type StatistikkHybridData,
 } from "@/components/portal/statistikk/statistikk-hybrid";
 import { aggregateSg } from "@/lib/sg";
+import {
+  kategoriFraSnittscore,
+  nesteKategori,
+  prosentTilNesteNiva,
+} from "@/lib/domain/ak-kategori";
 
 export const dynamic = "force-dynamic";
 
@@ -54,6 +60,7 @@ function fmtHcp(hcp: number | null): string {
 
 type RundeRaw = {
   score: number;
+  playedAt: Date;
   sgTotal: number | null;
   sgOtt: number | null;
   sgApp: number | null;
@@ -61,6 +68,50 @@ type RundeRaw = {
   sgPutt: number | null;
   holeScores: { putts: number | null; gir: boolean | null }[];
 };
+
+// ── A–K nivå-diagnose (inneværende sesong) ──────────────────────────────────────
+// Snittscore-kilde = snitt brutto score for runder spilt inneværende kalenderår
+// (Anders 2026-06-22 — sesong-basert). null hvis ingen runder i år.
+
+const SG_OMRADER = [
+  { key: "sgOtt", navn: "Utslag" },
+  { key: "sgApp", navn: "Innspill" },
+  { key: "sgArg", navn: "Nærspill" },
+  { key: "sgPutt", navn: "Putting" },
+] as const;
+
+function snitt(tall: number[]): number | null {
+  return tall.length > 0 ? tall.reduce((s, v) => s + v, 0) / tall.length : null;
+}
+
+function buildNivaaDiagnose(runder: RundeRaw[], aar: number): NivaaDiagnose | null {
+  const sesong = runder.filter((r) => r.playedAt.getFullYear() === aar);
+  const snittscore = snitt(sesong.map((r) => r.score));
+  if (snittscore == null) return null; // ingen runder i år → ærlig tom-tilstand
+
+  const band = kategoriFraSnittscore(snittscore);
+  const neste = nesteKategori(band.kategori);
+
+  // SG-gap: snitt per område over ALLE runder med SG (mer robust), svakest først.
+  const gaps: { omrade: string; sgVerdi: number }[] = SG_OMRADER.map(({ key, navn }) => ({
+    omrade: navn as string,
+    sgVerdi: snitt(runder.map((r) => r[key]).filter((v): v is number => v != null)),
+  }))
+    .filter((g) => g.sgVerdi !== null)
+    .map((g) => ({ omrade: g.omrade, sgVerdi: g.sgVerdi as number }))
+    .sort((a, b) => a.sgVerdi - b.sgVerdi) // mest negativ (svakest) først
+    .slice(0, 3);
+
+  return {
+    kategori: band.kategori,
+    niva: band.niva,
+    snittscore: Math.round(snittscore * 10) / 10,
+    prosentTilNeste: prosentTilNesteNiva(snittscore),
+    nesteKategori: neste?.kategori ?? null,
+    nesteNiva: neste?.niva ?? null,
+    sgGaps: gaps,
+  };
+}
 
 function buildKpis(runder: RundeRaw[]): KpiTile[] {
   const n = runder.length;
@@ -158,6 +209,7 @@ export default async function StatistikkDashboard() {
     orderBy: { playedAt: "asc" },
     select: {
       score: true,
+      playedAt: true,
       sgTotal: true,
       sgOtt: true,
       sgApp: true,
@@ -170,6 +222,7 @@ export default async function StatistikkDashboard() {
   });
 
   const kpis = buildKpis(runder);
+  const nivaaDiagnose = buildNivaaDiagnose(runder, new Date().getFullYear());
   const trendScores = runder.slice(-10).map((r) => r.score);
 
   const hcp = user.hcp;
@@ -178,6 +231,7 @@ export default async function StatistikkDashboard() {
 
   const data: StatistikkHybridData = {
     identitetsLinje,
+    nivaaDiagnose,
     kpis,
     trendScores,
     hubs: [

@@ -45,9 +45,32 @@ export type HubShortcut = {
   icon: React.ElementType;
 };
 
+/** Ett rangert SG-gap («LUKK DISSE TIL NESTE NIVÅ»). */
+export type SgGap = {
+  /** Områdenavn, f.eks. "Nærspill". */
+  omrade: string;
+  /** Spillerens snitt-SG i området (negativ = svakhet). */
+  sgVerdi: number;
+};
+
+/** A–K nivå-diagnose for inneværende sesong (null hvis ingen runder i år). */
+export type NivaaDiagnose = {
+  kategori: string; // "B"
+  niva: string; // "National Elite"
+  snittscore: number;
+  /** Hvor langt mot neste (bedre) nivå, 0–100. null for A (toppen). */
+  prosentTilNeste: number | null;
+  nesteKategori: string | null; // "A"
+  nesteNiva: string | null; // "World Elite"
+  /** 3 svakeste SG-områder, rangert (svakest først). */
+  sgGaps: SgGap[];
+};
+
 export type StatistikkHybridData = {
   /** F.eks. "Øyvind Rohjan · HCP 4,2" */
   identitetsLinje: string;
+  /** A–K nivå-diagnose (inneværende sesong). null = ingen runder i år ennå. */
+  nivaaDiagnose: NivaaDiagnose | null;
   kpis: KpiTile[];
   /** Runde-scores for SVG-trend (nyeste sist, maks 10) */
   trendScores: number[];
@@ -236,22 +259,144 @@ function HubCard({ hub }: { hub: HubShortcut }) {
 
 // ── Rot-komponent ──────────────────────────────────────────────────────────────
 
+// ── A–K nivå-diagnose (Anders 2026-06-22) ──────────────────────────────────────
+
+const nf1 = (n: number) =>
+  n.toLocaleString("nb-NO", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+function NivaaDiagnoseSection({ d }: { d: NivaaDiagnose }) {
+  return (
+    <div className="space-y-[14px]">
+      {/* SITT NIVÅ NÅ — forest-kort */}
+      <div className="relative overflow-hidden rounded-[18px] bg-gradient-to-br from-primary to-emerald-900 p-5">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full blur-2xl"
+          style={{ background: "radial-gradient(circle, rgba(209,248,67,0.18), transparent 65%)" }}
+        />
+        <div className="relative z-10">
+          <div className="mb-2 flex items-center justify-between">
+            <span className="font-mono text-[9.5px] font-bold uppercase tracking-[0.12em] text-accent">
+              Ditt nivå nå
+            </span>
+            {d.prosentTilNeste != null && d.nesteKategori && (
+              <span className="font-mono text-[9.5px] font-bold uppercase tracking-[0.08em] text-white/70">
+                Til {d.nesteKategori} · {d.nesteNiva}
+              </span>
+            )}
+          </div>
+          <div className="flex items-end justify-between gap-3">
+            <div className="min-w-0">
+              <div className="truncate font-display text-[26px] font-bold leading-none tracking-[-0.02em] text-white">
+                {d.niva}
+              </div>
+              <div className="mt-1.5 font-mono text-[11px] text-white/70">
+                Kategori {d.kategori} · snittscore {nf1(d.snittscore)}
+              </div>
+            </div>
+            {d.prosentTilNeste != null && (
+              <div className="font-mono text-[28px] font-bold leading-none text-accent tabular-nums">
+                {d.prosentTilNeste}
+                <span className="text-[15px]"> %</span>
+              </div>
+            )}
+          </div>
+          {d.prosentTilNeste != null && (
+            <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/10">
+              <div
+                className="h-full rounded-full bg-accent"
+                style={{ width: `${d.prosentTilNeste}%` }}
+              />
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* LUKK DISSE TIL NESTE NIVÅ — rangerte SG-gap */}
+      {d.sgGaps.length > 0 && (
+        <div>
+          <div className="mb-2 flex items-center justify-between">
+            <span className="font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
+              Lukk disse til neste nivå
+            </span>
+            <span className="font-mono text-[9px] uppercase tracking-[0.06em] text-muted-foreground">
+              rangert · slag-gevinst
+            </span>
+          </div>
+          <div className="space-y-2">
+            {d.sgGaps.map((g, i) => {
+              const gevinst = g.sgVerdi < 0 ? -g.sgVerdi : 0;
+              return (
+                <div
+                  key={g.omrade}
+                  className="flex items-center gap-3 rounded-[14px] border border-border bg-card px-[14px] py-3"
+                >
+                  <span className="grid h-7 w-7 flex-none place-items-center rounded-full bg-accent font-mono text-[12px] font-bold text-accent-foreground">
+                    {i + 1}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-[13.5px] font-semibold text-foreground">{g.omrade}</div>
+                    <div className="mt-0.5 font-mono text-[10.5px] text-muted-foreground">
+                      SG nå {g.sgVerdi >= 0 ? "+" : "−"}
+                      {nf1(Math.abs(g.sgVerdi))}
+                    </div>
+                  </div>
+                  <span
+                    className={`font-mono text-[15px] font-bold tabular-nums ${
+                      gevinst > 0 ? "text-primary" : "text-muted-foreground"
+                    }`}
+                  >
+                    {gevinst > 0 ? `+${nf1(gevinst)}` : "—"}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function NivaaTomState() {
+  return (
+    <div className="rounded-[18px] border border-dashed border-border bg-card p-5 text-center">
+      <div className="mb-1 font-mono text-[9.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+        Ditt nivå nå
+      </div>
+      <p className="text-[13px] leading-relaxed text-muted-foreground">
+        Logg runder denne sesongen for å se nivået ditt (A–K) og hva som skal til for
+        neste nivå.
+      </p>
+    </div>
+  );
+}
+
 export function StatistikkHub({ data }: { data: StatistikkHybridData }) {
   return (
     <div className="mx-auto w-full max-w-[460px] space-y-[14px] px-4 pb-6 pt-[10px] sm:px-0">
 
       {/* 1. Hero */}
       <div className="px-0 pb-[0px]">
-        <h1 className="font-display text-[22px] font-bold leading-[1.1] tracking-[-0.03em] text-foreground">
-          Statistikk
-          <em className="font-medium italic text-primary">-hub</em>
+        <span className="block font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+          Analyse · Nivå-diagnose
+        </span>
+        <h1 className="mt-1 font-display text-[22px] font-bold leading-[1.1] tracking-[-0.03em] text-foreground">
+          Strokes gained <em className="font-medium italic text-primary">i dybden</em>
         </h1>
         <p className="mt-1 text-[13px] text-muted-foreground">
           {data.identitetsLinje}
         </p>
       </div>
 
-      {/* 2. KPI strip */}
+      {/* 2. A–K nivå-diagnose (SITT NIVÅ NÅ + LUKK DISSE) */}
+      {data.nivaaDiagnose ? (
+        <NivaaDiagnoseSection d={data.nivaaDiagnose} />
+      ) : (
+        <NivaaTomState />
+      )}
+
+      {/* 3. KPI strip */}
       <KpiStrip kpis={data.kpis} />
 
       {/* 3. TrendBand */}

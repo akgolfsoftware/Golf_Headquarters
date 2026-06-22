@@ -28,7 +28,7 @@
 | /portal | PlayerHQ Dashboard | ✅ | ✅ | ✅ | ~ | ~ | ✅ | ✅ | FASIT-SWEEP 2026-06-22: adversarial diff mot fasit «PlayerHQ Dashboard» fant 1 avvik (manglende «Hva er nytt»-feed) → FIKSET: getRecentActivity faller tilbake til varsler når drill-logger er tomme. Nå 0 reelle avvik (kun dokumenterte shell/tier-pill/data-unntak) |
 | /portal/analysere | PlayerHQ Analyse | ✅ | ✅ | ✅ | ~ | ~ | ✅ | ✅ | VERIFISERT terminal-lys mobil 430px: «Strokes Gained i dybden» + faner (SG/Runder/TrackMan) + SG-per-kategori forest-kort + TrendBand + AI Caddie. Ekte data. D-1 (4-KPI-grid GIR/PUTTS/UP&DOWN) gjenstår som dokumentert utvidelse, ikke blokker |
 | /portal/analysere/hull | Analyse Hull Sammenlign Putting | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /portal/statistikk | Statistikk-SG | ⚠ | ⚠ | ⚠ | ⚠ | ⚠ | ⚠ | ⚠ | BLOKKERT på A–K-nivåsystem (BYGGELOGG-FLAGG B-1) — diagnose-først krever parkert nivå/neste-nivå-motor |
+| /portal/statistikk | Statistikk-SG | ✅ | ✅ | ✅ | ~ | ~ | ✅ | ✅ | B-1 LØST 2026-06-22: diagnose-først bygd med A–K-formelen. «SITT NIVÅ NÅ» (kategori/nivå fra inneværende-sesong snittscore + prosentTilNesteNiva) + «LUKK DISSE TIL NESTE NIVÅ» (3 svakeste SG-områder). Ekte data, ærlig tom-tilstand. Verifisert mobil 430px (Øyvind → B National Elite, 27% til A) |
 | /portal/statistikk/[metric] | Statistikk-SG (metric-variant) | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/statistikk/sammenlign | Statistikk-SG | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/statistikk/runder/[runId]/del | Statistikk-SG | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |

@@ -8,7 +8,10 @@
 
 ## BLOKKERT på parkerte/ubygde funksjoner (krever Anders' input + ny logikk)
 
-### B-1 · Statistikk «diagnose-først» blokkert på A–K-nivåsystem
+### B-1 · LØST 2026-06-22 — Statistikk diagnose-først bygd
+> Anders ga A–K-tabellen. `/portal/statistikk` har nå «SITT NIVÅ NÅ» (A–K-kategori + nivå fra inneværende-sesong snittscore via `kategoriFraSnittscore` + `prosentTilNesteNiva`) + «LUKK DISSE TIL NESTE NIVÅ» (3 svakeste SG-områder fra ekte sgOtt/App/Arg/Putt). Forest-kort matcher fasiten; A–K-vokabular erstatter fasitens «Nordic/Challenge Tour». Ærlig tom-tilstand hvis ingen runder i år. Verifisert (Øyvind → B National Elite, 27% til A · World Elite). Kode: statistikk/page.tsx + statistikk-hybrid.tsx. Historikk under.
+
+### ~~B-1 (historikk) · Statistikk «diagnose-først» blokkert på A–K-nivåsystem~~
 - **Skjerm:** `/portal/statistikk` (Fase 3.3). Fasit: «PlayerHQ Statistikk-SG (terminal-lys).dc.html».
 - **Problem:** Ny fasit er «diagnose-først» — dominante elementer er **«SITT NIVÅ NÅ»** (nivå «Nordic», «82 % til neste · Challenge Tour», mot tour-baseline) + **«LUKK DISSE TIL NESTE NIVÅ»** (3 rangerte slag-gevinst-gap). Begge krever:
   1. **A–K snittscore-nivåstige** — PARKERT, 0 kode, venter på dine 11 grenser ([KONFLIKTER K-04]).
