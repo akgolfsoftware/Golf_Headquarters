@@ -5,6 +5,92 @@
 >
 > **Status-koder:** ✅ Ferdig · 🔨 Under arbeid · ⚠ Avvik/blokkert · ❌ Ikke startet · — Redirect/legacy
 
+---
+
+## FERSK AUDIT 2026-06-22 (agent-team, 387 skjermer mot faktisk kode)
+
+> Per-rad-tabellen lenger ned er fra Phase 0 (2026-06-20) og er UTDATERT — den underrapporterer kraftig (mange ❌-rader er faktisk bygd). Denne seksjonen er fasit: 14 parallelle agenter klassifiserte hver `page.tsx` mot koden.
+
+| Verdict | Antall | Andel av reelle skjermer |
+|---|---|---|
+| ✅ **FERDIG** | **304** | **84 %** |
+| 🔨 DELVIS (bygd, men plassholder-data/døde knapper) | 50 | 14 % |
+| ❌ STUB (kommer-snart/uferdig) | 9 | 2 % |
+| — REDIRECT (ikke en skjerm) | 24 | — |
+| **Reelle skjermer (ekskl. redirect)** | **363** | 304 ferdige |
+| Koblet til ekte data | 302 | |
+
+### STUB (9) — uferdig / bevisst utsatt
+
+| Rute | Merknad |
+|---|---|
+| /admin/agencyos/caddie | Tom-tilstand; ingen co-agent-datamodell ennå |
+| /admin/kommunikasjon | Kun tab-hub med statiske summary-kort |
+| /admin/stats/moderering | Modererings-kø finnes ikke i datamodellen |
+| /auth/bankid | Plassholder — BankID kommer post-beta |
+| /forelder/coach | «Coach-dialog kommer Q3 2026» — kun mailto |
+| /offline | Statisk offline-melding (ved design) |
+| /portal/meg/innstillinger/ai-coach | «Kommer snart V2», disabled CTA |
+| /portal/meg/innstillinger/okter | «Kommer Q3 2026», ingen enhetsliste |
+| /portal/reach | Ingen DB-modell; ærlig tom-tilstand |
+
+### DELVIS (50) — bygd, men har hardkodet demo-data eller døde knapper
+
+| Rute | Merknad |
+|---|---|
+| /admin/agencyos/live | Interaktiv Mission Control, men statisk seed (EMAILS/MESSAGES/TASKS) |
+| /admin/analysere | Innsikt-hub med kun hardkodede demo-tall |
+| /admin/coach-workbench | Ekte spiller/SG/plan, men paneler får tomme arrays + TODO |
+| /admin/gjennomfore | Hub med åtte kort, alle sub-tall hardkodet |
+| /admin/gjennomfore/okter/[id] | Ekte booking, men drills/notater/siste-økter hardkodet |
+| /admin/grupper/[id] | Ekte gruppe-data, men oppmøte-kort «—»-plassholder |
+| /admin/hjelp | Statisk, men hardkodet «sett 1 247 ganger» |
+| /admin/kapasitet | Ekte heatmap, men Eksporter/Bulk-knapper døde |
+| /admin/klubb/innstillinger | Ekte locations, men hardkodet KLUBB_META |
+| /admin/organisasjon | Hub med gjennomgående hardkodet demo-data |
+| /admin/plans/[planId] | Ekte plan, men SG-utvikling hardkodet «—» |
+| /admin/settings/security | Ekte bruker+2FA, men aktive økter/historikk TODO |
+| /admin/spillere/[id]/plan/[planId] | Plan-header ekte, men faner hardkodet mock |
+| /admin/spillere/[id]/profil | Ekte data, men DNA-radar/coach-quote/Stripe-chip hardkodet |
+| /admin/spillere/[id]/tildel-test | Ekte navn, men test-liste hardkodet, ingen tildel-action |
+| /admin/tilstander | Design-system-galleri (hardkodet, ved design) |
+| /admin/workspace | Ekte tasks, men KPI-strip + «VIS ALLE 38» hardkodet |
+| /admin/workspace/notion | Ekte tilkobling, men sync-historikk + AI-hint hardkodet |
+| /admin/workspace/oppgaver/[id] | SAMPLE_TASKS + hardkodet aktivitet inntil Notion-sync |
+| /cases | Hardkodet demo-CASES/TOURNAMENTS-arrays |
+| /forelder/innstillinger | Ekte data, men varselbrytere read-only, 2FA av |
+| /forelder/samtykke | Ekte samtykkeform, men GDPR-eksport/slett-knapper døde |
+| /forelder/varsler | Ekte feed, men toggles disabled (read-only) |
+| /portal/booking/[bookingId] | Ekte booking, men tidslinje/mål/utstyr hardkodet |
+| /portal/booking/anlegg/[anleggId] | Hele ANLEGG-record hardkodet, faux grid |
+| /portal/booking/coach/[coachId] | Hardkodet COACHES/SERVICES, døde bekreft-knapper |
+| /portal/coach/[coachId] | Ekte coach, men sertifiseringer/rating hardkodet |
+| /portal/coach/melding/[id]/vedlegg | Hardkodet ATTACHMENTS-array |
+| /portal/coach/melding/ny | Ekte coacher, men hardkodet fallback-mottakere |
+| /portal/coach/sg-hub | Ekte spiller-SG, men coach-referanseverdier hardkodet |
+| /portal/coach/sporsmal/[id] | Hele Q&A hardkodet |
+| /portal/mal/leaderboard | Ekte SG-rangering, men badges/volum/delta TODO |
+| /portal/meg/abonnement/faktura/[id] | Ekte Payment, men PDF/e-post/utskrift døde |
+| /portal/meg/help/artikkel/[slug] | Redaksjonell, men hardkodet ARTIKLER + dummy feedback |
+| /portal/meg/help/kategori/[slug] | Substansiell, men hardkodet KATEGORIER |
+| /portal/meg/helse | Ekte data, men Belastning/HRV «—» (venter formel — tilsiktet) |
+| /portal/meg/innstillinger/integrasjoner | Ekte TrackMan/GCal, men resten koble-knapper døde |
+| /portal/meg/innstillinger/sikkerhet | Ekte data, men øktliste «kommer snart» |
+| /portal/meg/sikkerhet | Ekte score, men økter/historikk «kommer snart» |
+| /portal/statistikk/sammenlign | Ekte skjerm, men KPI-rader + n-tall hardkodet |
+| /portal/talent | Ekte data, men statisk LevelLadder + PRE-BETA-banner |
+| /portal/tren/fys-plan | Planer fra Prisma, men MasteryRings hardkodet pct |
+| /portal/tren/teknisk-plan | Planer fra Prisma, men Turnering «Kommer 1. juli» |
+| /portal/tren/teknisk-plan/[planId] | Full builder, men Ny oppgave-knapper døde |
+| /portal/tren/turneringer/[id] | Ekte detalj, men fremgang-bar hardkodet 0% |
+| /stats/aargang/[aar] | Prisma, men topp10/klubb/tour/college hardkodet |
+| /stats/baner/[slug] | Ekte queries, men leaderboard/score-dist hardkodet |
+| /stats/regions | Hardkodet REGION_DATA, kun totaltall fra DB |
+| /stats/regions/[slug] | Stort hardkodet REGION_STATIC-demo |
+| /stats/wrapped/[slug] | Ekte spiller/runder, men mange placeholder-slidetall |
+
+---
+
 ## Forklaring kolonner
 
 | Kolonne | Beskrivelse |
