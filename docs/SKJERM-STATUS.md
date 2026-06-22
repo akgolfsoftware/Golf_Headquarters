@@ -25,7 +25,7 @@
 
 | Rute | Referanse | Bygget | Knapper | 375 | 768 | 1280 | 4-states | DoD |
 |---|---|---|---|---|---|---|---|---|
-| /portal | PlayerHQ Dashboard | ✅ | ✅ | ✅ | ⚠ | ⚠ | ~ | ⚠ |
+| /portal | PlayerHQ Dashboard | ✅ | ✅ | ✅ | ~ | ~ | ✅ | ✅ | FASIT-SWEEP 2026-06-22: adversarial diff mot fasit «PlayerHQ Dashboard» fant 1 avvik (manglende «Hva er nytt»-feed) → FIKSET: getRecentActivity faller tilbake til varsler når drill-logger er tomme. Nå 0 reelle avvik (kun dokumenterte shell/tier-pill/data-unntak) |
 | /portal/analysere | PlayerHQ Analyse | ✅ | ✅ | ✅ | ~ | ~ | ✅ | ✅ | VERIFISERT terminal-lys mobil 430px: «Strokes Gained i dybden» + faner (SG/Runder/TrackMan) + SG-per-kategori forest-kort + TrendBand + AI Caddie. Ekte data. D-1 (4-KPI-grid GIR/PUTTS/UP&DOWN) gjenstår som dokumentert utvidelse, ikke blokker |
 | /portal/analysere/hull | Analyse Hull Sammenlign Putting | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /portal/statistikk | Statistikk-SG | ⚠ | ⚠ | ⚠ | ⚠ | ⚠ | ⚠ | ⚠ | BLOKKERT på A–K-nivåsystem (BYGGELOGG-FLAGG B-1) — diagnose-først krever parkert nivå/neste-nivå-motor |

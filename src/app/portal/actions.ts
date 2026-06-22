@@ -51,7 +51,7 @@ export type RecentActivityItem = {
   sessionTitle: string;
   loggedAt: Date;
   repsTotal: number;
-  successRate: number;
+  successRate: number | null;
   href: string;
 };
 
@@ -284,14 +284,34 @@ export async function getRecentActivity(userId: string, limit = 5): Promise<Rece
     },
   });
 
-  return logs.map((log) => ({
-    id: log.id,
-    drillName: log.drill.name,
-    sessionTitle: log.drill.session.title,
-    loggedAt: log.loggedAt,
-    repsTotal: log.repsTotal,
-    successRate: log.successRate,
-    href: `/portal/gjennomfore/${log.drill.session.id}`,
+  if (logs.length > 0) {
+    return logs.map((log) => ({
+      id: log.id,
+      drillName: log.drill.name,
+      sessionTitle: log.drill.session.title,
+      loggedAt: log.loggedAt,
+      repsTotal: log.repsTotal,
+      successRate: log.successRate,
+      href: `/portal/gjennomfore/${log.drill.session.id}`,
+    }));
+  }
+
+  // Fallback (fasit «Hva er nytt»): ingen drill-logger ennå → vis siste varsler
+  // (coach-meldinger, ny plan, innsikt, booking osv.) som aktivitetsfeed. Ekte data.
+  const notifs = await prisma.notification.findMany({
+    where: { userId },
+    orderBy: { createdAt: "desc" },
+    take: limit,
+    select: { id: true, title: true, body: true, type: true, link: true, createdAt: true },
+  });
+  return notifs.map((n) => ({
+    id: n.id,
+    drillName: n.title,
+    sessionTitle: n.body ?? n.type,
+    loggedAt: n.createdAt,
+    repsTotal: 0,
+    successRate: null,
+    href: n.link ?? "/portal",
   }));
 }
 
