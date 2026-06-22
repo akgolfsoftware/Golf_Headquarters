@@ -6,6 +6,12 @@ Flyttet fra CLAUDE.md 2026-06-14. Les denne FØR du skriver kode. Når noe brekk
 ### JSON-blobs MÅ valideres med zod
 Alle `as unknown as <Type>` på JSON-felter fra Prisma er forbudt for forretningskritiske data. Bruk zod `safeParse` ved read.
 
+### Schema-endringer: `migrate dev` og `db push` er BEGGE blokkert — bruk kirurgisk `db execute`
+Oppdaget 2026-06-22 ved tillegg av 3 tabeller. To feller:
+- **`prisma migrate dev` feiler** på shadow-DB-replay: en gammel migrasjon (`20260510..._add_parent_role_and_tier_enum`) feiler når alle 80 migrasjoner replayes fra bunnen («type UserRole does not exist», P3018). Prod-DB er fin (`migrate status` = up to date), men shadow-replayen er ødelagt.
+- **`prisma db push` vil DROPPE data**: prod har en `datagolf_sync_state`-tabell som ikke finnes i `schema.prisma` (pre-eksisterende drift), så push krever `--accept-data-loss` og ville slettet den.
+- **Trygg vei for ADDITIVE endringer:** legg modellen i `schema.prisma`, og kjør `CREATE TABLE IF NOT EXISTS ...` direkte via tsx + `PrismaPg`-adapter (`prisma.$executeRawUnsafe`) mot `DIRECT_URL`. Da rører du KUN dine egne tabeller. Deretter `npx prisma generate`. Bruk plain `userId String` (ingen `@relation`) i nye modeller så du slipper å redigere `User` og holder endringen isolert.
+
 ### Prisma 7 — connection-strings i `prisma.config.ts`, ikke `schema.prisma`
 - Schema har bare `provider = "postgresql"`. Url ligger i `prisma.config.ts` → `datasource.url = env("DIRECT_URL")`.
 - Runtime krever `@prisma/adapter-pg` med `DATABASE_URL` (pgbouncer-pooler).
