@@ -8,6 +8,7 @@
  * Sticky CTA-bar nederst på mobile.
  */
 
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Pause, ChevronsRight, GripVertical, Star } from "lucide-react";
 
@@ -16,7 +17,9 @@ import { calculateAge } from "@/lib/auth/minor";
 import { prisma } from "@/lib/prisma";
 import { AthleticButton } from "@/components/athletic";
 import { AthleticBadge } from "@/components/athletic/badge";
+import { buttonClasses } from "@/components/ui/button";
 import { DetailShell } from "@/components/shared/detail-shell";
+import { AvlysOktKnapp } from "./avlys-okt-knapp";
 
 export const dynamic = "force-dynamic";
 
@@ -150,26 +153,31 @@ export default async function OktDetaljPage({
           <div className="hidden flex-wrap gap-2 md:flex">
             {status !== "GJENNOMFØRT" ? (
               <>
-                <AthleticButton variant="ghost-light" size="sm">
-                  Reschedule
-                </AthleticButton>
-                <AthleticButton
-                  variant="ghost-light"
-                  size="sm"
-                  className="text-destructive"
+                {/* Reschedule: ingen dedikert flytt-tid-UI for Booking finnes ennå.
+                    Lenker til Bookinger der økten faktisk forvaltes (avlys + ny). */}
+                <Link
+                  href="/admin/bookinger"
+                  className={buttonClasses({ variant: "ghost-light", size: "sm" })}
                 >
-                  Avlys
-                </AthleticButton>
-                <AthleticButton variant="lime" size="sm">
+                  Reschedule
+                </Link>
+                <AvlysOktKnapp bookingId={booking.id} spillerNavn={spiller.name} />
+                {/* Start økt / Åpne live-konsoll: live-konsollen (/admin/live)
+                    kjører på TrainingSessionV2, ikke Booking — ingen kobling
+                    finnes. Deaktivert til relasjonen bygges. */}
+                <AthleticButton variant="lime" size="sm" disabled>
                   {status === "AKTIV NÅ" ? "Åpne live-konsoll" : "Start økt"}
                 </AthleticButton>
               </>
             ) : (
               <>
-                <AthleticButton variant="ghost-light" size="sm">
+                {/* Eksporter: ingen eksport-generator for økt-detalj finnes. */}
+                <AthleticButton variant="ghost-light" size="sm" disabled>
                   Eksporter
                 </AthleticButton>
-                <AthleticButton variant="lime" size="sm">
+                {/* Skriv oppfølging: coach-feedback (sendOktFeedback) bor på
+                    TrainingPlanSession, ikke Booking — ingen kobling finnes. */}
+                <AthleticButton variant="lime" size="sm" disabled>
                   Skriv oppfølging
                 </AthleticButton>
               </>
@@ -353,15 +361,24 @@ export default async function OktDetaljPage({
         <div className="flex gap-2">
           {status !== "GJENNOMFØRT" ? (
             <>
-              <AthleticButton variant="ghost-light" size="md" className="flex-1">
+              <Link
+                href="/admin/bookinger"
+                className={buttonClasses({
+                  variant: "ghost-light",
+                  size: "md",
+                  className: "flex-1",
+                })}
+              >
                 Reschedule
-              </AthleticButton>
-              <AthleticButton variant="lime" size="md" className="flex-1">
+              </Link>
+              {/* Live-konsoll går på TrainingSessionV2, ikke Booking — deaktivert. */}
+              <AthleticButton variant="lime" size="md" className="flex-1" disabled>
                 {status === "AKTIV NÅ" ? "Åpne live" : "Start"}
               </AthleticButton>
             </>
           ) : (
-            <AthleticButton variant="lime" size="md" className="w-full">
+            // Coach-feedback bor på TrainingPlanSession, ikke Booking — deaktivert.
+            <AthleticButton variant="lime" size="md" className="w-full" disabled>
               Skriv oppfølging
             </AthleticButton>
           )}
