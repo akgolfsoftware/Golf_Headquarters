@@ -14,9 +14,9 @@ Disse er produkt-/design-/IA-valg. Jeg vil ikke gjette.
 
 | # | Oppgave | Valget | Innsats etter valg |
 |---|---|---|---|
-| D1.1 | **Analyse «Hull»** (`/portal/analysere/hull`) | SG-sone-kart (bygd nå) ELLER hull-for-hull-tabell (handover). Kan sameksistere. | S–M |
-| D1.2 | **AgencyOS Bookinger** | To ruter (liste + kapasitet, bygd) ELLER ett kombinert dashbord (handover). | M |
-| D1.3 | **AgencyOS Planer** | Kanban-board (bygd) ELLER liste (handover). | S–M |
+| ~~D1.1~~ ✅ | **Analyse «Hull»** — LØST 2026-06-22 (commit 62be389f) | **Begge:** sone-kart beholdt + «Hull for hull»-tabell lagt til som fane. | Ferdig |
+| ~~D1.2~~ ✅ | **AgencyOS Bookinger** — LØST 2026-06-22 (commit 62be389f) | **Slått sammen:** ett «Bookinger & kapasitet»-dashbord; /admin/kapasitet redirecter. | Ferdig |
+| ~~D1.3~~ ✅ | **AgencyOS Planer** — LØST 2026-06-22 | **Behold kanban-board** (ingen endring). | Ferdig |
 | D1.4 | **CBAC-modell** (AAPNE A2) | Bygge opp koden til 43 capabilities (skill-spec), ELLER nedskalere spec-en til dagens 10 + rolle-gating. Konkret hull i dag: COACH slipper inn på `/admin/okonomi` selv om finans skal være ADMIN. | M (opp) / S (ned) |
 | D1.5 | **Agent-systemets dybde** (AAPNE A3) | Skal «Godkjenn» på et AI-forslag faktisk endre planen? (i dag bytter `acceptPlanAction` kun status). Skal det bygges en coach-godkjenningsinnboks? | M–L |
 | D1.6 | **Booking ↔ live-økt-modell** | «Start økt» lager nå en frisk live-økt fra bookingen (defaults: innendørs/blokkpraksis). Skal en booking heller kobles til en allerede planlagt `TrainingSessionV2`? | M |
