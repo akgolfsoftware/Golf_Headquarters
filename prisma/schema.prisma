@@ -4061,3 +4061,19 @@ model Question {
   @@index([askerUserId])
   @@map("questions")
 }
+
+/// Vedlegg på en coaching-melding (CoachingSession). /portal/coach/melding/[id]/vedlegg.
+/// Filer ligger i privat Supabase-bucket "message-attachments"; signed URL ved read.
+model MessageAttachment {
+  id             String   @id @default(cuid())
+  sessionId      String // CoachingSession.id
+  uploaderUserId String
+  fileName       String
+  fileType       String? // MIME
+  fileSize       Int? // bytes
+  path           String // sti i bucket-en
+  createdAt      DateTime @default(now())
+
+  @@index([sessionId])
+  @@map("message_attachments")
+}

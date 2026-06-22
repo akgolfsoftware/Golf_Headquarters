@@ -19,6 +19,7 @@ export const STORAGE_BUCKETS = {
   INVOICES: "invoices", // privat
   REPORTS: "reports", // privat
   PLAYER_SWING_VIDEOS: "player-swing-videos", // privat
+  MESSAGE_ATTACHMENTS: "message-attachments", // privat
 } as const;
 
 export type StorageBucket =
@@ -43,6 +44,7 @@ export const MAX_FILE_SIZES: Record<StorageBucket, number> = {
   [STORAGE_BUCKETS.INVOICES]: 10 * 1024 * 1024, // 10 MB
   [STORAGE_BUCKETS.REPORTS]: 10 * 1024 * 1024, // 10 MB
   [STORAGE_BUCKETS.PLAYER_SWING_VIDEOS]: 50 * 1024 * 1024, // 50 MB (Supabase tier-limit)
+  [STORAGE_BUCKETS.MESSAGE_ATTACHMENTS]: 10 * 1024 * 1024, // 10 MB
 };
 
 // Tillatte MIME-typer per bucket. Bruker for valider opplasting.
@@ -76,6 +78,16 @@ export const ALLOWED_MIME_TYPES: Record<StorageBucket, readonly string[]> = {
     "video/mp4",
     "video/quicktime",
     "video/webm",
+  ],
+  [STORAGE_BUCKETS.MESSAGE_ATTACHMENTS]: [
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+    "application/pdf",
+    "audio/mpeg",
+    "audio/mp4",
+    "audio/wav",
+    "audio/webm",
   ],
 };
 

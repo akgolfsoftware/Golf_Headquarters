@@ -1,15 +1,46 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { VedleggUi } from "./vedlegg-ui";
+import { prisma } from "@/lib/prisma";
+import { getSignedUrl, STORAGE_BUCKETS } from "@/lib/storage/supabase-storage";
+import { VedleggUi, type VedleggItem } from "./vedlegg-ui";
 
 type RouteProps = {
   params: Promise<{ id: string }>;
 };
 
 export default async function VedleggGalleriPage({ params }: RouteProps) {
-  await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN", "PARENT"] });
+  const user = await requirePortalUser({
+    allow: ["PLAYER", "COACH", "ADMIN", "PARENT"],
+  });
   const { id } = await params;
+
+  // Access-sjekk: bruker MÅ være part i meldingen (spiller eller coach) eller ADMIN.
+  // Storage omgår RLS, så dette er eneste vern.
+  const session = await prisma.coachingSession.findUnique({
+    where: { id },
+    select: { id: true, userId: true, coachId: true },
+  });
+  if (!session) notFound();
+  const erPart = session.userId === user.id || session.coachId === user.id;
+  if (!erPart && user.role !== "ADMIN") notFound();
+
+  const rader = await prisma.messageAttachment.findMany({
+    where: { sessionId: id },
+    orderBy: { createdAt: "desc" },
+  });
+
+  const vedlegg: VedleggItem[] = await Promise.all(
+    rader.map(async (r) => ({
+      id: r.id,
+      fileName: r.fileName,
+      fileType: r.fileType,
+      fileSize: r.fileSize,
+      createdAt: r.createdAt.toISOString(),
+      url: await getSignedUrl(STORAGE_BUCKETS.MESSAGE_ATTACHMENTS, r.path),
+    })),
+  );
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -27,7 +58,7 @@ export default async function VedleggGalleriPage({ params }: RouteProps) {
         </span>
       </nav>
 
-      <VedleggUi />
+      <VedleggUi sessionId={id} vedlegg={vedlegg} />
     </div>
   );
 }
