@@ -6,7 +6,8 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { HoleAnalysis, type HoleZone } from "@/components/hole-analysis/hole-analysis";
+import { type HoleZone } from "@/components/hole-analysis/hole-analysis";
+import { HullTabs, type LastRound } from "./HullTabs";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +19,7 @@ export default async function HullAnalysePage() {
   const tretti = new Date();
   tretti.setDate(tretti.getDate() - 30);
 
-  const [sgInputs, sessions] = await Promise.all([
+  const [sgInputs, sessions, sisteRunde] = await Promise.all([
     prisma.brukerSgInput.findMany({
       where: { userId: user.id },
       orderBy: { dato: "desc" },
@@ -28,6 +29,19 @@ export default async function HullAnalysePage() {
     prisma.trainingPlanSession.findMany({
       where: { plan: { userId: user.id }, scheduledAt: { gte: tretti } },
       select: { skillArea: true, durationMin: true },
+    }),
+    // Siste runde (nyeste) for innlogget spiller, med hull-score.
+    prisma.round.findFirst({
+      where: { userId: user.id, holeScores: { some: {} } },
+      orderBy: { playedAt: "desc" },
+      select: {
+        score: true,
+        course: { select: { name: true } },
+        holeScores: {
+          orderBy: { holeNumber: "asc" },
+          select: { holeNumber: true, par: true, strokes: true },
+        },
+      },
     }),
   ]);
 
@@ -94,7 +108,24 @@ export default async function HullAnalysePage() {
     },
   ];
 
-  const harData = sgInputs.length > 0;
+  // Siste runde → hull-for-hull-tabell (ekte HoleScore-data, ingen fabrikkering).
+  const lastRound: LastRound | null = sisteRunde
+    ? {
+        courseName: sisteRunde.course.name,
+        totalScore: sisteRunde.score,
+        parDiff: sisteRunde.holeScores.reduce(
+          (sum, h) => sum + (h.strokes - h.par),
+          0,
+        ),
+        holeCount: sisteRunde.holeScores.length,
+        holes: sisteRunde.holeScores.map((h) => ({
+          holeNumber: h.holeNumber,
+          par: h.par,
+          strokes: h.strokes,
+          diff: h.strokes - h.par,
+        })),
+      }
+    : null;
 
   return (
     <div className="mx-auto max-w-[440px] space-y-5 px-4 pb-20 pt-2 md:pb-6">
@@ -117,28 +148,13 @@ export default async function HullAnalysePage() {
           <em className="font-medium italic text-primary">slag</em>
           ?
         </h1>
-        <p className="text-[12.5px] text-muted-foreground">
-          Trykk en sone for SG- og treningsdata.
-        </p>
       </div>
 
-      <HoleAnalysis
-        fairway={zones}
-        putting={[]}
-        green={null}
-        holeLabel="Min SG-analyse"
-        holeMeta={`${sgInputs.length} registreringer`}
-        caption="Kartet er illustrativt — tallene er dine faktiske SG- og treningsdata per sone. Trykk en sone."
+      <HullTabs
+        zones={zones}
+        sgRegistreringer={sgInputs.length}
+        lastRound={lastRound}
       />
-
-      {!harData && (
-        <div className="rounded-lg border border-border bg-card p-4 shadow-card">
-          <p className="text-sm leading-[1.5] text-muted-foreground">
-            Ingen SG-registreringer ennå. Logg en runde med Strokes Gained, så fylles sonene
-            med dine faktiske tall.
-          </p>
-        </div>
-      )}
     </div>
   );
 }

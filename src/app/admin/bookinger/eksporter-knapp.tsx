@@ -1,10 +1,11 @@
 "use client";
 
 /**
- * AgencyOS — Eksporter-knapp for /admin/kapasitet.
+ * AgencyOS — Eksporter-knapp for det kombinerte Bookinger & kapasitet-dashbordet
+ * (/admin/bookinger).
  *
  * Klient-side CSV-eksport av nøyaktig de tallene heatmapen viser
- * (fasilitet × time × belegg-% + snitt). Følger samme mønster som
+ * (rad × dag × belegg-% + snitt). Følger samme mønster som
  * `admin/spillere/spillere-tabell.tsx`: BOM-prefiks, «;»-separator,
  * text/csv-Blob og nedlasting via syntetisk <a>. Ingen tall fabrikeres
  * her — radene kommer ferdig beregnet fra page.tsx (server).

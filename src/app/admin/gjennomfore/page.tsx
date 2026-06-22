@@ -139,7 +139,7 @@ export default async function GjennomforePage() {
           cta="Sett →"
         />
         <HubCard
-          href="/admin/kapasitet"
+          href="/admin/bookinger"
           icon={Gauge}
           eyebrow="05 · BELASTNING"
           title="Kapasitet"
