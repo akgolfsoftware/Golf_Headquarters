@@ -70,6 +70,13 @@ const AGENT_KONFIG: Record<string, AgentKonfig> = {
     status: "aktiv",
     trigger: "Cron mandag 06:30",
   },
+  "calendar-sync": {
+    navn: "Calendar Sync",
+    beskrivelse:
+      "2-veis synkronisering med Google Calendar hvert 15. minutt. Pull: henter events oppdatert siden siste sync og reflekterer kansellering/tidsendring tilbake til Booking-tabellen. Push: reparerer bookinger som mangler googleEventId (missede push-forsøk).",
+    status: "aktiv",
+    trigger: "Cron hvert 15. min",
+  },
 };
 
 const STATUS_VARIANT: Record<

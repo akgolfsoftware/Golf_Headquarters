@@ -42,6 +42,11 @@ const AGENT_INFO: Record<string, { navn: string; trigger: string; beskrivelse: s
     trigger: "Cron mandag 06:30",
     beskrivelse: "Finner svakeste SG-område og genererer TRAINING_GAP-forslag hvis det får < 20 % av treningstid.",
   },
+  "calendar-sync": {
+    navn: "Calendar Sync",
+    trigger: "Cron hvert 15. min",
+    beskrivelse: "2-veis synkronisering med Google Calendar: henter endringer (pull) og pusher bookinger uten event-ID (repair).",
+  },
 };
 
 export default async function AgentsAdmin() {

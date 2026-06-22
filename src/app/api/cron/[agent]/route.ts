@@ -6,6 +6,7 @@ import { runPlanWatcher } from "@/lib/agents/plan-watcher";
 import { runBookingReminders } from "@/lib/agents/booking-reminders";
 import { runCleanupRecordings } from "@/lib/agents/cleanup-recordings";
 import { runRefreshCalendarWatches } from "@/lib/agents/refresh-calendar-watches";
+import { runCalendarSync } from "@/lib/agents/calendar-sync";
 import { runTrainingGap } from "@/lib/agents/training-gap";
 import { runSgInsights } from "@/lib/sg-hub/insight-engine";
 import { syncDataGolf } from "@/lib/sg-hub/datagolf-sync";
@@ -33,6 +34,7 @@ const AGENTS: Record<string, () => Promise<unknown>> = {
   "booking-reminders": runBookingReminders,
   "cleanup-recordings": runCleanupRecordings,
   "refresh-calendar-watches": runRefreshCalendarWatches,
+  "calendar-sync": runCalendarSync,
   "training-gap": runTrainingGap,
   "sg-insights": runSgInsights,
   "datagolf-sync": syncDataGolf,
