@@ -1,15 +1,9 @@
 import Link from "next/link";
-import {
-  ArrowLeft,
-  Check,
-  CreditCard,
-  Download,
-  FileX,
-  Mail,
-} from "lucide-react";
+import { ArrowLeft, Check, CreditCard, FileX } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PrintButton } from "@/components/shared/print-button";
+import { LastNedPdfKnapp, SendEpostKnapp } from "./faktura-actions";
 
 const NOK = new Intl.NumberFormat("nb-NO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -127,10 +121,8 @@ export default async function FakturaDetaljPage({
             label="Skriv ut"
             className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-xs font-semibold text-foreground transition-colors hover:bg-muted"
           />
-          <ActionBtn Icon={Mail}>Send på e-post</ActionBtn>
-          <ActionBtn Icon={Download} primary>
-            Last ned PDF
-          </ActionBtn>
+          <SendEpostKnapp paymentId={payment.id} />
+          <LastNedPdfKnapp paymentId={payment.id} />
         </div>
       </header>
 
@@ -245,37 +237,11 @@ export default async function FakturaDetaljPage({
           </Link>
         </span>
         <div className="flex gap-2">
-          <ActionBtn Icon={Mail}>Send på e-post</ActionBtn>
-          <ActionBtn Icon={Download} primary>
-            Last ned PDF
-          </ActionBtn>
+          <SendEpostKnapp paymentId={payment.id} />
+          <LastNedPdfKnapp paymentId={payment.id} />
         </div>
       </footer>
     </div>
-  );
-}
-
-function ActionBtn({
-  Icon,
-  children,
-  primary = false,
-}: {
-  Icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
-  children: React.ReactNode;
-  primary?: boolean;
-}) {
-  return (
-    <button
-      type="button"
-      className={`inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-semibold transition-colors ${
-        primary
-          ? "border-primary bg-primary text-primary-foreground hover:opacity-90"
-          : "border-border bg-card text-foreground hover:bg-muted"
-      }`}
-    >
-      <Icon className="h-3.5 w-3.5" strokeWidth={1.75} />
-      {children}
-    </button>
   );
 }
 
