@@ -36,7 +36,16 @@ står; skjermer som er innholds-korrekte men visuelt ulike (f.eks. abonnement) s
 - **Var låst som:** FYS-resultatformel + A–K 11 snittscore-grenser parkert → «—»-plassholdere.
 - **Designkonsekvens av låsen:** Helse viser «—»; Statistikk-diagnose + Onboarding steg 6 ikke bygd som fasit; nivå/neste-nivå-motor frakoblet.
 - **Trenger fra Anders:** (a) de **11 A–K snittscore-grensene** (tallene), (b) **FYS-resultatformelen** (hvordan rå testresultat → score/nivå). Disse kan ikke gjettes — Claude kan hjelpe å designe dem hvis ønsket.
-- **STATUS (2026-06-22): VENTER FORTSATT på Anders' faktiske tall.** Låst opp, men kan ikke bygges/matche fasitens tall uten (a) de 11 grensene + (b) FYS-formelen. Til de kommer: Statistikk-diagnose, Onboarding steg 6 og Helse-tall forblir «—»/plassholder. Anders gir tallene, eller ber Claude foreslå et utkast å reagere på.
+- **A–K: MOTTATT + BYGD ✅ (2026-06-22).** Anders ga tabellen (snittscore → kategori A–K). Formel: `src/lib/domain/ak-kategori.ts` (AK_BANDS + kategoriFraSnittscore + nesteKategori + prosentTilNesteNiva), 6 node:test grønne. Grense-konvensjon [min,max): 72→C, 80→G, 100→K (bekreftes av Anders — «fine gøre»). Primær nøkkel = snittscore; alder = kontekst. GJENSTÅR: kable inn i Statistikk-diagnose, Onboarding steg 6, nivå/talent-hint (loop bygger).
+- **SNITTSCORE-KILDE — BESLUTTET (Anders 2026-06-22): SESONG-BASERT.**
+  - Inneværende sesong (kalenderår) er rammen → bestemmer dagens A–K-kategori.
+  - Onboarding lar spiller laste inn historikk **opptil 3 sesonger tilbake** (forrige sesong + hittil i år + eldre hvis data finnes). Manuell innlasting ved profil-opprettelse.
+  - Inneværende sesong oppdateres automatisk når spiller logger runder i appen.
+  - Formålet: vise **progresjon over tid** (A–K/snittscore sesong-for-sesong — god/dårlig utvikling).
+  - **Implikasjon (krever datamodell):** trengs en per-sesong snittscore-lagring (ny `SeasonStat`-tabell ELLER JSON-felt på User: {sesongÅr → snittscore, antallRunder}). I dag finnes kun `User.prevSeasonAvgScore` (ett felt). Schema-beslutning utestår — bekreft tilnærming før migrasjon.
+  - **Byggeplan:** (a) STRAKS: diagnose-skjerm («SITT NIVÅ NÅ») bruker inneværende-sesong snittscore = snitt brutto score fra runder spilt i år → `kategoriFraSnittscore`. Funker nå for spillere med runder. (b) FØLGER: SeasonStat-modell + onboarding 3-sesong-innlasting + progresjons-visning.
+
+- **FYS: VENTER FORTSATT på Anders' formel.** Helse-tall forblir «—» til FYS-resultatformelen (rå testresultat → score/nivå) kommer.
 
 ## 4. Cockpit stall-SG + plan-etterlevelse  ·  STATUS: låst opp, venter scope-bekreftelse
 - **Var låst som:** placeholders «—» («til formelen er låst»).
