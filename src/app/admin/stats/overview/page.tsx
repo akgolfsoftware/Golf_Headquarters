@@ -20,7 +20,6 @@ import {
   ArrowRight,
   Check,
   GitCommitHorizontal,
-  Play,
   type LucideIcon,
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -28,6 +27,7 @@ import { prisma } from "@/lib/prisma";
 import { Reveal } from "@/components/stats/reveal";
 import { CountUp } from "@/components/stats/count-up";
 import { cn } from "@/lib/utils";
+import { RaskeHandlinger } from "./raske-handlinger";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 300;
@@ -447,24 +447,7 @@ export default async function AdminStatsOverviewPage() {
       {/* Raske handlinger */}
       <section className="mt-7 border-t border-border pb-2 pt-7">
         <SectionHead eyebrow="Raske handlinger" title="Cron + admin-snarveier." />
-        <div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
-          {[
-            "Kjør manuell sync av PGA-data",
-            "Send ukentlig roundup nå",
-            "Sjekk DB-helse",
-            "Roter CRON_SECRET",
-          ].map((tekst, i) => (
-            <Reveal key={i} delay={i * 40}>
-              <button
-                type="button"
-                className="flex w-full flex-col gap-2.5 rounded-xl border border-border bg-card p-5 text-left transition-colors hover:border-primary"
-              >
-                <Play className="h-4 w-4 text-primary" strokeWidth={1.75} aria-hidden />
-                <span className="text-[13px] font-medium leading-snug text-foreground">{tekst}</span>
-              </button>
-            </Reveal>
-          ))}
-        </div>
+        <RaskeHandlinger />
       </section>
     </div>
   );
