@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { UserMinus } from "lucide-react";
@@ -90,38 +91,54 @@ export function FjernMedlemButton({
   );
 }
 
-export function SeAlleTimePlanButton() {
+/** «Se alle» — hele gruppens timeplan (alle GroupSchedule-rader). */
+export function SeAlleTimePlanButton({ groupId }: { groupId: string }) {
   return (
-    <button
-      type="button"
-      onClick={() => toast.info("Gruppe-kalender kommer snart")}
+    <Link
+      href={`/admin/grupper/${groupId}/timeplan`}
       className="font-mono text-[11px] font-semibold text-primary hover:underline"
     >
       Se alle →
-    </button>
+    </Link>
   );
 }
 
-export function DetaljerButton() {
+/**
+ * «Detaljer» — åpner samlingen i gruppens timeplan, framhevet via ?focus.
+ * Appen har ingen egen samling-detaljskjerm; timeplan-raden viser samlingens
+ * fulle felter (ukedag, tid, varighet, sted, repetisjon, beskrivelse).
+ */
+export function DetaljerButton({
+  groupId,
+  scheduleId,
+}: {
+  groupId: string;
+  scheduleId: string;
+}) {
   return (
-    <button
-      type="button"
-      onClick={() => toast.info("Samling-detalj kommer snart")}
+    <Link
+      href={`/admin/grupper/${groupId}/timeplan?focus=${scheduleId}#s-${scheduleId}`}
       className="rounded-md border border-border bg-card px-4 py-1.5 text-xs font-medium text-foreground transition-colors hover:border-primary"
     >
       Detaljer
-    </button>
+    </Link>
   );
 }
 
-export function AapneButton() {
+/** «Åpne» — som «Detaljer», for en samling i den kommende-listen. */
+export function AapneButton({
+  groupId,
+  scheduleId,
+}: {
+  groupId: string;
+  scheduleId: string;
+}) {
   return (
-    <button
-      type="button"
-      onClick={() => toast.info("Samling-detalj kommer snart")}
+    <Link
+      href={`/admin/grupper/${groupId}/timeplan?focus=${scheduleId}#s-${scheduleId}`}
       className="font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground hover:text-primary"
     >
       Åpne →
-    </button>
+    </Link>
   );
 }

@@ -4,20 +4,21 @@
  * Drills-fanen for spiller-plan-detalj (coach-context).
  *
  * Eier:
- *   1. Klient-side kategori-filtrering via FilterChip (PUTT/SLAG/TEK/FYS/SPILL).
+ *   1. Klient-side kategori-filtrering via FilterChip (pyramide-aksene
+ *      FYS/TEK/SLAG/SPILL/TURN — fra ekte PositionTask.pyramide).
  *   2. "Legg til drill" — gjenbruker OppgaveModal → createTask (samme mønster
- *      som den spiller-vendte oppgave-launcher.tsx). Coachen får legge til
- *      oppgaver fordi createTask/ensurePlanAccess tillater COACH/ADMIN.
+ *      som den spiller-vendte oppgave-launcher.tsx).
+ *   3. Per-drill "Rediger" — OppgaveModal i edit-modus → updateTaskBasics.
+ *   4. Per-drill "Slett" — deleteTask.
  *
- * NB (datakobling): drill-lista (`drills`-propen) er fortsatt demo-data fra
- * page.tsx, ikke plan.positions[].tasks. "Legg til drill" skriver derimot ekte
- * oppgaver til DB. Filtrering virker mot demo-lista. Se rapport.
+ * Drill-lista (`drills`-propen) er nå planens EKTE positions[].tasks (mappet i
+ * page.tsx), ikke demo-data. Hver rad har en ekte taskId + ferdig OppgaveDraft.
  */
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Plus, Sparkles, ChevronRight, GripVertical } from "lucide-react";
+import { Plus, Sparkles, GripVertical, Pencil, Trash2 } from "lucide-react";
 import { AthleticButton } from "@/components/athletic";
 import { useToast } from "@/components/shared/toast-provider";
 import {
@@ -26,35 +27,52 @@ import {
   type TmGoalDraft,
   type HitRateGoalDraft,
 } from "@/components/teknisk-plan/oppgave-modal";
-import { SG_BUCKETS } from "@/components/teknisk-plan/constants";
-import { createTask, type TaskInput } from "@/app/portal/tren/teknisk-plan/actions";
+import { SG_BUCKETS, type PyramidArea } from "@/components/teknisk-plan/constants";
+import {
+  createTask,
+  updateTaskBasics,
+  deleteTask,
+  type TaskInput,
+} from "@/app/portal/tren/teknisk-plan/actions";
+
+/** Pyramide-aksene — kategori-chip-settet. Speiler PositionTask.pyramide. */
+const CATEGORIES: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
+
+/** Tailwind-tone per pyramide-akse (AgencyOS-lyst, samme palett som tag-radene). */
+const CATEGORY_COLOR: Record<PyramidArea, string> = {
+  FYS: "bg-purple-100 text-purple-800",
+  TEK: "bg-sky-100 text-sky-800",
+  SLAG: "bg-emerald-100 text-emerald-800",
+  SPILL: "bg-orange-100 text-orange-800",
+  TURN: "bg-amber-100 text-amber-800",
+};
 
 export interface DrillRow {
+  taskId: string;
   name: string;
-  category: string;
-  mins: string;
+  category: PyramidArea;
+  omraade: string;
+  minLabel: string;
   reps: string;
   rate: string;
   tm: boolean;
-  color: string;
+  /** Ferdig draft for edit-modal — speiler den lagrede oppgaven. */
+  draft: OppgaveDraft;
 }
 
 interface DrillsPanelProps {
   planId: string;
+  /** Default mål-posisjon for global "Legg til drill" — planens hovedfokus/første P. */
+  defaultTarget: { pNummer: string; pName: string };
   drills: DrillRow[];
 }
 
-/** Default P-posisjon for global "Legg til drill" (modal har ikke egen P-velger). */
-const DEFAULT_TARGET = { pNummer: "P7.0", pName: "Impact" };
-
-const CATEGORIES = ["PUTT", "SLAG", "TEK", "FYS", "SPILL"] as const;
-
-/** Tom draft — samme defaults som den spiller-vendte launcheren. */
-function emptyDraft(): OppgaveDraft {
+/** Tom draft for "Legg til drill". */
+function emptyDraft(target: { pNummer: string; pName: string }): OppgaveDraft {
   const omraadeTab = "Tee" as keyof typeof SG_BUCKETS;
   return {
-    pNummer: DEFAULT_TARGET.pNummer,
-    pName: DEFAULT_TARGET.pName,
+    pNummer: target.pNummer,
+    pName: target.pName,
     tittel: "",
     beskrivelse: "",
     pyramide: "TEK",
@@ -127,12 +145,36 @@ function draftToTaskInput(planId: string, draft: OppgaveDraft): TaskInput {
   };
 }
 
-export function DrillsPanel({ planId, drills }: DrillsPanelProps) {
+/** updateTaskBasics tar bare basis-feltene (ikke planId/P/tmGoals/hitRateGoals). */
+function draftToBasicsPatch(draft: OppgaveDraft) {
+  return {
+    tittel: draft.tittel,
+    beskrivelse: draft.beskrivelse || undefined,
+    pyramide: draft.pyramide,
+    omraade: draft.omraade,
+    koller: draft.koller,
+    lFase: draft.lFase ?? null,
+    cs: draft.cs ?? null,
+    miljo: draft.m ?? null,
+    prPress: draft.pr ?? null,
+    repsMaalDry: draft.repsMaalDry,
+    repsMaalLav: draft.repsMaalLav,
+    repsMaalFull: draft.repsMaalFull,
+  };
+}
+
+type ModalState =
+  | { mode: "create" }
+  | { mode: "edit"; taskId: string; draft: OppgaveDraft }
+  | null;
+
+export function DrillsPanel({ planId, defaultTarget, drills }: DrillsPanelProps) {
   const router = useRouter();
   const toast = useToast();
-  const [open, setOpen] = useState(false);
+  const [modal, setModal] = useState<ModalState>(null);
   const [openSeq, setOpenSeq] = useState(0);
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState<PyramidArea | null>(null);
+  const [busyTaskId, setBusyTaskId] = useState<string | null>(null);
 
   const counts = useMemo(() => {
     const map: Record<string, number> = {};
@@ -146,13 +188,18 @@ export function DrillsPanel({ planId, drills }: DrillsPanelProps) {
   );
 
   const totalMin = useMemo(
-    () => visible.reduce((sum, d) => sum + parseInt(d.mins, 10), 0),
+    () => visible.reduce((sum, d) => sum + (parseInt(d.minLabel, 10) || 0), 0),
     [visible],
   );
 
-  function openModal() {
+  function openCreate() {
     setOpenSeq((n) => n + 1);
-    setOpen(true);
+    setModal({ mode: "create" });
+  }
+
+  function openEdit(d: DrillRow) {
+    setOpenSeq((n) => n + 1);
+    setModal({ mode: "edit", taskId: d.taskId, draft: d.draft });
   }
 
   async function handleSubmit(draft: OppgaveDraft) {
@@ -161,12 +208,31 @@ export function DrillsPanel({ planId, drills }: DrillsPanelProps) {
       return;
     }
     try {
-      await createTask(draftToTaskInput(planId, draft));
-      setOpen(false);
-      toast.success("Drill lagt til.");
+      if (modal?.mode === "edit") {
+        await updateTaskBasics(modal.taskId, draftToBasicsPatch(draft));
+        toast.success("Drill oppdatert.");
+      } else {
+        await createTask(draftToTaskInput(planId, draft));
+        toast.success("Drill lagt til.");
+      }
+      setModal(null);
       router.refresh();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Kunne ikke lagre drillen.");
+    }
+  }
+
+  async function handleDelete(d: DrillRow) {
+    if (!window.confirm(`Slette drillen «${d.name}»? Dette kan ikke angres.`)) return;
+    setBusyTaskId(d.taskId);
+    try {
+      await deleteTask(d.taskId);
+      toast.success("Drill slettet.");
+      router.refresh();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Kunne ikke slette drillen.");
+    } finally {
+      setBusyTaskId(null);
     }
   }
 
@@ -194,7 +260,7 @@ export function DrillsPanel({ planId, drills }: DrillsPanelProps) {
               <Sparkles className="h-3.5 w-3.5" /> AI-foreslå
             </AthleticButton>
           </Link>
-          <AthleticButton variant="lime" size="sm" onClick={openModal}>
+          <AthleticButton variant="lime" size="sm" onClick={openCreate}>
             <Plus className="h-3.5 w-3.5" /> Legg til drill
           </AthleticButton>
         </div>
@@ -207,70 +273,109 @@ export function DrillsPanel({ planId, drills }: DrillsPanelProps) {
               {visible.length} drills · ~{totalMin} min / uke
             </h2>
             <div className="font-mono mt-1 text-[10.5px] uppercase tracking-[0.04em] text-muted-foreground">
-              Dra for å endre rekkefølge · klikk → for detalj
+              Klikk rediger for å endre · slett for å fjerne
             </div>
           </div>
         </header>
-        <ul className="divide-y divide-border">
-          {visible.map((d, i) => (
-            <li
-              key={d.name}
-              className="grid grid-cols-[20px_32px_1fr_auto_auto_auto] items-center gap-2 py-2"
-            >
-              <GripVertical className="h-4 w-4 text-muted-foreground" />
-              <div className="font-mono text-sm font-bold text-muted-foreground">{i + 1}</div>
-              <div>
-                <div className="mb-1 flex items-center gap-2">
-                  <span
-                    className={`font-mono rounded-full px-2 py-0.5 text-[9.5px] font-bold uppercase tracking-[0.08em] ${d.color}`}
-                  >
-                    {d.category}
-                  </span>
-                  <span className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
-                    {d.mins}
-                  </span>
-                  {d.tm ? (
-                    <span className="font-mono rounded-sm bg-orange-100 px-1.5 py-0.5 text-[9px] font-bold tracking-[0.08em] text-orange-700">
-                      TM
-                    </span>
-                  ) : null}
-                </div>
-                <div className="font-display text-sm font-semibold">{d.name}</div>
+
+        {visible.length === 0 ? (
+          <div className="rounded-xl border border-dashed border-border bg-muted/20 px-6 py-10 text-center">
+            <div className="font-display text-sm font-semibold">
+              {drills.length === 0
+                ? "Ingen drills i denne planen ennå"
+                : "Ingen drills i denne kategorien"}
+            </div>
+            <p className="mt-1.5 text-sm text-muted-foreground">
+              {drills.length === 0
+                ? "Legg til den første drillen for å bygge ut planen."
+                : "Velg en annen kategori eller legg til en ny drill."}
+            </p>
+            {drills.length === 0 ? (
+              <div className="mt-4 flex justify-center">
+                <AthleticButton variant="lime" size="sm" onClick={openCreate}>
+                  <Plus className="h-3.5 w-3.5" /> Legg til drill
+                </AthleticButton>
               </div>
-              <div className="text-right">
-                <div className="font-mono text-[9px] uppercase tracking-[0.10em] text-muted-foreground">
-                  REP-MÅL
-                </div>
-                <div className="font-mono text-xs font-semibold">{d.reps}</div>
-              </div>
-              <div className="text-right">
-                <div className="font-mono text-[9px] uppercase tracking-[0.10em] text-muted-foreground">
-                  HIT-RATE
-                </div>
-                <div
-                  className={`font-mono text-sm font-bold ${d.rate === "—" ? "text-muted-foreground" : "text-emerald-700"}`}
-                >
-                  {d.rate}
-                </div>
-              </div>
-              <button
-                type="button"
-                className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-muted-foreground"
+            ) : null}
+          </div>
+        ) : (
+          <ul className="divide-y divide-border">
+            {visible.map((d, i) => (
+              <li
+                key={d.taskId}
+                className="grid grid-cols-[20px_32px_1fr_auto_auto_auto] items-center gap-2 py-2"
               >
-                <ChevronRight className="h-3.5 w-3.5" />
-              </button>
-            </li>
-          ))}
-        </ul>
+                <GripVertical className="h-4 w-4 text-muted-foreground" />
+                <div className="font-mono text-sm font-bold text-muted-foreground">{i + 1}</div>
+                <div>
+                  <div className="mb-1 flex items-center gap-2">
+                    <span
+                      className={`font-mono rounded-full px-2 py-0.5 text-[9.5px] font-bold uppercase tracking-[0.08em] ${CATEGORY_COLOR[d.category]}`}
+                    >
+                      {d.category}
+                    </span>
+                    <span className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
+                      {d.omraade}
+                    </span>
+                    {d.tm ? (
+                      <span className="font-mono rounded-sm bg-orange-100 px-1.5 py-0.5 text-[9px] font-bold tracking-[0.08em] text-orange-700">
+                        TM
+                      </span>
+                    ) : null}
+                  </div>
+                  <div className="font-display text-sm font-semibold">{d.name}</div>
+                </div>
+                <div className="text-right">
+                  <div className="font-mono text-[9px] uppercase tracking-[0.10em] text-muted-foreground">
+                    REP-MÅL
+                  </div>
+                  <div className="font-mono text-xs font-semibold">{d.reps}</div>
+                </div>
+                <div className="text-right">
+                  <div className="font-mono text-[9px] uppercase tracking-[0.10em] text-muted-foreground">
+                    HIT-RATE
+                  </div>
+                  <div
+                    className={`font-mono text-sm font-bold ${d.rate === "—" ? "text-muted-foreground" : "text-emerald-700"}`}
+                  >
+                    {d.rate}
+                  </div>
+                </div>
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => openEdit(d)}
+                    aria-label={`Rediger ${d.name}`}
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition hover:text-foreground"
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(d)}
+                    disabled={busyTaskId === d.taskId}
+                    aria-label={`Slett ${d.name}`}
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition hover:border-destructive/40 hover:text-destructive disabled:opacity-50"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
-      <OppgaveModal
-        key={openSeq}
-        open={open}
-        onClose={() => setOpen(false)}
-        initial={emptyDraft()}
-        onSubmit={handleSubmit}
-      />
+      {modal ? (
+        <OppgaveModal
+          key={openSeq}
+          open
+          onClose={() => setModal(null)}
+          initial={modal.mode === "edit" ? modal.draft : emptyDraft(defaultTarget)}
+          isEditing={modal.mode === "edit"}
+          onSubmit={handleSubmit}
+        />
+      ) : null}
     </div>
   );
 }

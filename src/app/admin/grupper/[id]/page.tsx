@@ -222,7 +222,7 @@ export default async function GruppeDetalj({
               Gruppeplan · neste samling
             </span>
           </div>
-          <SeAlleTimePlanButton />
+          <SeAlleTimePlanButton groupId={gruppe.id} />
         </div>
 
         {nesteSamling ? (
@@ -260,7 +260,7 @@ export default async function GruppeDetalj({
                 )}
               </div>
               <div className="flex gap-2">
-                <DetaljerButton />
+                <DetaljerButton groupId={gruppe.id} scheduleId={nesteSamling.id} />
                 <StartOktButton />
               </div>
             </div>
@@ -278,7 +278,7 @@ export default async function GruppeDetalj({
                         {s.location && ` · ${s.location}`}
                       </div>
                     </div>
-                    <AapneButton />
+                    <AapneButton groupId={gruppe.id} scheduleId={s.id} />
                   </li>
                 ))}
               </ul>

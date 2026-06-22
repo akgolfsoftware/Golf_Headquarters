@@ -179,7 +179,7 @@ export default async function CoachMeldingPage() {
             Q&amp;A med {hovedcoach?.name.split(" ")[0] ?? "coach"}
           </span>
           <Link
-            href="/portal/coach/melding"
+            href="/portal/coach/sporsmal/ny"
             className="font-mono text-[9px] font-bold uppercase tracking-[0.06em] text-primary hover:underline"
           >
             Se alle →
@@ -190,7 +190,7 @@ export default async function CoachMeldingPage() {
             Still spørsmål direkte til coachen din. Coachen svarer typisk innen 4 timer på hverdager.
           </p>
           <Link
-            href="/portal/coach/melding"
+            href="/portal/coach/sporsmal/ny"
             className="mt-3 inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2.5 font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-primary-foreground transition hover:brightness-95"
           >
             <Send className="h-3.5 w-3.5" strokeWidth={2} />
