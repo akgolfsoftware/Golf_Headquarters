@@ -40,17 +40,17 @@ Bygd som plassholder — låses opp når du gir tallene (slik FYS-score ble).
 
 Klare features med eksisterende eller grei ny infra. Jeg kan ta disse autonomt.
 
-| # | Oppgave | Hva | Innsats |
+| # | Oppgave | Hva | Status |
 |---|---|---|---|
-| D3.1 | **Plan-skjerm: ekte drills** | Bytt hardkodet `DRILLS`-demo på `/admin/spillere/[id]/plan/[planId]` til planens ekte `positions[].tasks`. Låser opp per-drill «Rediger» (allerede halvkoblet). | S–M |
-| D3.2 | **Spillerens «still spørsmål»-skjema** | `Question`-modellen + coach-svar er bygd; mangler skjermen der spilleren faktisk stiller spørsmålet. | S |
-| D3.3 | **Gruppe-kalender** (`/admin/grupper/[id]`) | «Se alle / Detaljer / Åpne» peker på gruppe-time-plan-sider som ikke finnes. `GroupSchedule`-modell finnes. | M |
-| D3.4 | **Eksport-generering** | Døde «Last ned / Eksporter»-knapper (faktura-PDF, runde-del, shot-by-shot). Trenger PDF-/CSV-generator. CSV-mønster finnes alt (kapasitet). | M |
-| D3.5 | **Notion property-mapping** (`/admin/workspace/notion`) | «Ja, map nå»-knappen + felt-mapping-action mot ekte Notion-tilkobling. | M |
-| D3.6 | **Region-spillertall** (`/stats/regions`) | Spillere/turneringer per region mangler kilde (klubber er ekte). Krever region-felt på `PublicPlayer`/`Tournament` eller bio-parsing. | M |
-| D3.7 | **Anlegg rikt innhold** (`/portal/booking/anlegg/[id]`) | Specs/rating/bio finnes ikke på `Location`. Legg til felt → vis ekte. | S–M |
-| D3.8 | **Reps-persistering** (AAPNE B1) | Live-økt lagrer reps til `sessionStorage`, ikke DB — overlever ikke nettleser-sesjon. Wire til DB. | M |
-| D3.9 | **Raske handlinger** (`/admin/stats/overview`) | 4 knapper trigger cron/secret-rotasjon — trenger ekte trigger-actions. | S |
+| ~~D3.1~~ ✅ | **Plan-skjerm: ekte drills** | Hardkodet `DRILLS`-demo byttet til ekte `positions[].tasks`; «Rediger»/«Slett» låst opp. | Ferdig (5b424d13) |
+| ~~D3.2~~ ✅ | **Spillerens «still spørsmål»-skjema** | Ny `/portal/coach/sporsmal/ny` + `stillSporsmal`-action (coach via PlayerEnrollment). | Ferdig (5b424d13) |
+| ~~D3.3~~ ✅ | **Gruppe-kalender** | Ny `/admin/grupper/[id]/timeplan` (ekte GroupSchedule); 3 knapper koblet. | Ferdig (5b424d13) |
+| ~~D3.4~~ ✅ | **Eksport-generering** | Ekte faktura-PDF (`@react-pdf`) + e-post (Resend) fra ekte Payment-data. | Ferdig (4d851c95) |
+| ~~D3.9~~ ✅ | **Raske handlinger** | «Sjekk DB-helse» koblet (read-only ping). 3 andre (PGA-sync/roundup/CRON_SECRET) bevisst inaktive + merket — sensitive/utadvendte, kjøres fra ops. | Delvis (adb10c72) |
+| D3.5 | **Notion property-mapping** (`/admin/workspace/notion`) | Spesialisert: krever Notion-tilkoblingens database-skjema + felt-mapping-UI. Sync-infra finnes, men mapping-konfig er eget arbeid. | Venter (spesialisert) |
+| D3.6 | **Region-spillertall** (`/stats/regions`) | Trenger region-felt + EKTE kilde. Region-matching = gjetting i dag → ville vist tomme/gjettede tall. | Blokkert (mangler data) |
+| D3.7 | **Anlegg rikt innhold** (`/portal/booking/anlegg/[id]`) | Skjermen utelater ærlig specs/rating/bio i dag (ikke fabrikert). Å legge til felt gir tomme felt uten redigerings-UI + ditt innhold. | Blokkert (mangler innhold) |
+| D3.8 | **Reps-persistering** (AAPNE B1) | PARKERT — bevisst senere beslutning (to live-økt-spor sameksisterer med vilje). Rør ikke autonomt. | Parkert (din beslutning) |
 
 ---
 
@@ -104,5 +104,19 @@ De 9 stubbene + 18 plassholderne. De fleste venter med vilje.
 3. **Jeg kjører DEL 3** parallelt (D3.1 plan-drills + D3.2 spørsmål-skjema er raskest og lukker tråder fra i dag).
 4. **DEL 4 gjeld** ryddes løpende; **DEL 6** rett før lansering.
 5. **DEL 5** rører vi ikke uten ditt signal.
+
+## DEL 3 — status etter bygging (2026-06-22)
+
+**5 av 9 tatt** (D3.1–D3.4 ferdig + D3.9 delvis). De 4 gjenstående er IKKE «late
+oppgaver» — hver har en reell blokker som ikke skal løses ved å gjette eller
+fabrikere:
+- **D3.5 Notion-mapping** — spesialisert integrasjons-konfig (krever Notion-DB-skjemaet).
+- **D3.6 region-tall** — ingen ekte region-kilde; ville blitt gjettede tall.
+- **D3.7 anlegg-innhold** — ville lagt til tomme felt uten redigerings-UI + ditt innhold.
+- **D3.8 reps** — bevisst parkert beslutning (AAPNE B1).
+
+Si fra hvis du vil at jeg skal bygge scaffolding for D3.6/D3.7 (tomme-men-klare felt
++ admin-redigering) eller ta Notion-mappingen (D3.5) — de er byggbare, men gir ikke
+verdi før det finnes ekte data/innhold å vise.
 
 *Sist oppdatert 2026-06-22. Hold denne i sync med `SKJERM-STATUS.md` (skjerm-status) og `AAPNE-SPORSMAAL.md` (beslutninger).*
