@@ -1,6 +1,5 @@
 // Detalj-side per agent. Viser konfigurasjon, siste kjøringer (fra
-// AuditLog hvor action starter med `agent.<agentId>`) og lar coach
-// gi tommel opp/ned-feedback per kjøring.
+// AgentRun) og lar coach gi tommel opp/ned-feedback per kjøring.
 
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -18,44 +17,58 @@ type AgentKonfig = {
   navn: string;
   beskrivelse: string;
   status: "aktiv" | "beta" | "planlagt";
-  sistKjort: string;
+  trigger: string;
 };
 
 const AGENT_KONFIG: Record<string, AgentKonfig> = {
-  brief: {
-    navn: "Daglig brief-agent",
+  "round-agent": {
+    navn: "Round Agent",
     beskrivelse:
-      "Genererer dagens kort-brief til coach: hvem som spilte, hvilke signaler som krever oppfølging, og hva som ligger i kalenderen.",
+      "Beregner SG-snitt siste 30 dager og skriver SG_TOTAL/OTT/APP/ARG/PUTT til Signal-tabellen etter at spiller logger en ny runde.",
     status: "aktiv",
-    sistKjort: "I dag 06:00",
+    trigger: "Etter ny runde (event)",
   },
-  periodisering: {
+  "test-agent": {
+    navn: "Test Agent",
+    beskrivelse:
+      "Sammenligner siste testresultat mot snitt av forrige 3 og skriver TEST_TREND-signal. Krever minst 1 tidligere resultat.",
+    status: "aktiv",
+    trigger: "Etter ny test (event)",
+  },
+  "trackman-agent": {
+    navn: "TrackMan Agent",
+    beskrivelse:
+      "Grupperer slag per kølle fra rawJson etter CSV-import og skriver CLUB_AVG-signal per kølle.",
+    status: "aktiv",
+    trigger: "Etter CSV-import (event)",
+  },
+  "plan-watcher": {
+    navn: "Plan Watcher",
+    beskrivelse:
+      "Sjekker forrige ukes pyramide-fordeling mot måltall (FYS15/TEK20/SLAG35/SPILL20/TURN10). Genererer PYRAMID_ADJUST-forslag ved >8 pp avvik.",
+    status: "aktiv",
+    trigger: "Cron mandag 06:00",
+  },
+  periodiseringsagent: {
     navn: "Periodiseringsagent",
     beskrivelse:
-      "Foreslår uke-allokering for nye treningsplaner basert på spillerens fokusområder, turneringskalender og historisk belastning.",
+      "Foreslår initial uke-allokering for nye treningsplaner basert på MAL_PROSENT-fordeling. Kjører kun for planer uten eksisterende økter.",
     status: "aktiv",
-    sistKjort: "Ved ny TrainingPlan",
+    trigger: "Ved ny TrainingPlan (event)",
   },
-  "vinn-tilbake": {
-    navn: "Vinn-tilbake-agent",
+  "achievement-agent": {
+    navn: "Achievement Agent",
     beskrivelse:
-      "Identifiserer inaktive spillere (ingen runder/økter siste 30 dager) og foreslår personlig oppfølgings-melding.",
-    status: "beta",
-    sistKjort: "Ukentlig — mandag 08:00",
-  },
-  "win-back": {
-    navn: "Vinn-tilbake-agent",
-    beskrivelse:
-      "Identifiserer inaktive spillere (ingen runder/økter siste 30 dager) og foreslår personlig oppfølgings-melding.",
-    status: "beta",
-    sistKjort: "Ukentlig — mandag 08:00",
-  },
-  "ai-plan": {
-    navn: "AI-plan-agent",
-    beskrivelse:
-      "Genererer komplett treningsplan-forslag fra coach-prompt + spillerens kontekst (HCP, fokusområder, turneringer). Itereres med feedback.",
+      "Sjekker milepæler (FIRST_ROUND, FIRST_TEST, SG_POSITIVE_30D, STREAK_7/14) etter runde eller test. Dedup mot eksisterende achievements.",
     status: "aktiv",
-    sistKjort: "Ved manuell trigger fra plan-wizard",
+    trigger: "Etter runde/test (event)",
+  },
+  "training-gap": {
+    navn: "Training Gap",
+    beskrivelse:
+      "Finner svakeste SG-område og sjekker om spillere trener nok der. Genererer TRAINING_GAP-forslag hvis svakeste område får < 20 % av treningstid.",
+    status: "aktiv",
+    trigger: "Cron mandag 06:30",
   },
 };
 
@@ -70,6 +83,7 @@ const STATUS_VARIANT: Record<
 
 const ACTION_LABEL: Record<string, string> = {
   PYRAMID_ADJUST: "Juster pyramide",
+  TRAINING_GAP: "Treningsgap",
   SESSION_ADD: "Legg til økt",
   SESSION_REMOVE: "Fjern økt",
   INTENSITY_ADJUST: "Juster intensitet",
@@ -94,15 +108,10 @@ export default async function AgentDetaljPage({
   if (!konfig) notFound();
 
   const [kjoringer, planActions] = await Promise.all([
-    prisma.auditLog.findMany({
-      where: {
-        action: { startsWith: `agent.${agentId}` },
-      },
+    prisma.agentRun.findMany({
+      where: { agentName: agentId },
       orderBy: { createdAt: "desc" },
       take: 20,
-      include: {
-        actor: { select: { name: true } },
-      },
     }),
     prisma.planAction.findMany({
       where: { agentName: agentId },
@@ -113,6 +122,16 @@ export default async function AgentDetaljPage({
       },
     }),
   ]);
+
+  const sistKjort = kjoringer[0]?.createdAt
+    ? kjoringer[0].createdAt.toLocaleString("nb-NO", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    : "Ikke kjørt";
 
   return (
     <DetailShell
@@ -131,13 +150,13 @@ export default async function AgentDetaljPage({
       kpiRow={
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
           <KPICard
-            eyebrow="Status"
-            value={konfig.status.toUpperCase()}
+            eyebrow="Trigger"
+            value={konfig.trigger}
             variant="hero"
           />
-          <KPICard eyebrow="Sist kjørt" value={konfig.sistKjort} />
+          <KPICard eyebrow="Sist kjørt" value={sistKjort} />
           <KPICard
-            eyebrow="Kjøringer i loggen"
+            eyebrow="Kjøringer"
             value={String(kjoringer.length)}
           />
         </div>
@@ -153,7 +172,7 @@ export default async function AgentDetaljPage({
             </h3>
           </div>
           <Link
-            href="/admin/approvals"
+            href="/admin/godkjenninger"
             className="text-[12px] text-muted-foreground hover:text-foreground"
           >
             Se alle ventende →
@@ -230,7 +249,7 @@ export default async function AgentDetaljPage({
         <div className="mb-4 flex items-center gap-2">
           <Bot className="h-4 w-4 text-muted-foreground" strokeWidth={1.5} />
           <h3 className="font-display text-lg font-semibold tracking-tight">
-            Siste kjøringer (audit-logg)
+            Siste kjøringer
           </h3>
         </div>
         {kjoringer.length === 0 ? (
@@ -243,8 +262,9 @@ export default async function AgentDetaljPage({
         ) : (
           <div className="space-y-4">
             {kjoringer.map((k) => {
-              const meta = (k.metadata as Record<string, unknown> | null) ?? null;
-              const snippet = lagSnippet(meta);
+              const output = (k.output as Record<string, unknown> | null) ?? null;
+              const snippet = lagSnippet(output);
+              const erFeil = k.status === "ERROR";
               return (
                 <article
                   key={k.id}
@@ -252,17 +272,21 @@ export default async function AgentDetaljPage({
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                        {k.action}
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={`font-mono text-[10px] uppercase tracking-[0.10em] ${
+                            erFeil ? "text-destructive" : "text-primary"
+                          }`}
+                        >
+                          {erFeil ? "FEIL" : "OK"}
+                        </span>
+                        <span className="font-mono text-[10px] text-muted-foreground">
+                          {k.duration} ms
+                        </span>
                       </div>
-                      <div className="mt-1 text-sm font-semibold">
-                        {k.actor?.name ?? "System"}
-                        {k.target ? (
-                          <span className="ml-2 font-mono text-xs font-normal text-muted-foreground">
-                            → {k.target}
-                          </span>
-                        ) : null}
-                      </div>
+                      {erFeil && k.error && (
+                        <p className="mt-1 text-xs text-destructive">{k.error}</p>
+                      )}
                     </div>
                     <div className="text-right font-mono text-[10px] tabular-nums text-muted-foreground">
                       {k.createdAt.toLocaleString("nb-NO", {
@@ -274,7 +298,7 @@ export default async function AgentDetaljPage({
                       })}
                     </div>
                   </div>
-                  {snippet && (
+                  {!erFeil && snippet && (
                     <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-muted-foreground">
                       {snippet}
                     </p>
@@ -297,6 +321,8 @@ function lagSnippet(meta: Record<string, unknown> | null): string | null {
     "result",
     "summary",
     "snippet",
+    "signalsWritten",
+    "planActionsWritten",
     "brukerPrompt",
     "prompt",
     "feedback",
@@ -305,6 +331,9 @@ function lagSnippet(meta: Record<string, unknown> | null): string | null {
     const v = meta[k];
     if (typeof v === "string" && v.trim().length > 0) {
       return v.slice(0, 240);
+    }
+    if (typeof v === "number") {
+      return `${k}: ${v}`;
     }
   }
   const json = JSON.stringify(meta);

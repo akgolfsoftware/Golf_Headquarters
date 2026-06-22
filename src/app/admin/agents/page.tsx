@@ -37,6 +37,11 @@ const AGENT_INFO: Record<string, { navn: string; trigger: string; beskrivelse: s
     trigger: "Etter round/test",
     beskrivelse: "Sjekker streak/SG/first-time-milepæler.",
   },
+  "training-gap": {
+    navn: "Training Gap",
+    trigger: "Cron mandag 06:30",
+    beskrivelse: "Finner svakeste SG-område og genererer TRAINING_GAP-forslag hvis det får < 20 % av treningstid.",
+  },
 };
 
 export default async function AgentsAdmin() {
