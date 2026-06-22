@@ -11,14 +11,35 @@
 
 > Per-rad-tabellen lenger ned er fra Phase 0 (2026-06-20) og er UTDATERT — den underrapporterer kraftig (mange ❌-rader er faktisk bygd). Denne seksjonen er fasit: 14 parallelle agenter klassifiserte hver `page.tsx` mot koden.
 
-| Verdict | Antall | Andel av reelle skjermer |
+| Verdict | Pre-fiks | **Post-fiks (2026-06-22)** |
 |---|---|---|
-| ✅ **FERDIG** | **304** | **84 %** |
-| 🔨 DELVIS (bygd, men plassholder-data/døde knapper) | 50 | 14 % |
-| ❌ STUB (kommer-snart/uferdig) | 9 | 2 % |
-| — REDIRECT (ikke en skjerm) | 24 | — |
-| **Reelle skjermer (ekskl. redirect)** | **363** | 304 ferdige |
-| Koblet til ekte data | 302 | |
+| ✅ **FERDIG** | 304 | **323 (89 %)** |
+| 🔨 DELVIS | 50 | **0** — alle 50 behandlet |
+| ⛔ BLOCKED (trenger ny datamodell/feature/beslutning) | — | **13** |
+| 🅿 INTENTIONAL (bevisst plassholder) | — | **18** |
+| ❌ STUB (kommer-snart/uferdig) | 9 | 9 |
+| — REDIRECT (ikke en skjerm) | 24 | 24 |
+| **Reelle skjermer (ekskl. redirect)** | 363 | **323 ferdige** |
+
+> **Fiks-runde 2026-06-22 (agent-team, commit 97173c18):** 13 parallelle agenter behandlet alle 50 DELVIS-skjermer med harde regler (kun verifisert ekte data, aldri fabrikert, kun egne rute-filer). Resultat: **19 FIKSET** (ekte prisma-data/loadere wiret, døde knapper koblet — tsc+build grønne), **18 BEVISST** plassholder (urørt), **13 BLOKKERT** (krever ny datamodell/feature/beslutning — lista under). DELVIS-tabellen lenger ned er pre-fiks-øyeblikksbilde.
+
+### ⛔ BLOCKED (13) — trenger din beslutning / ny datamodell / feature
+
+| Rute | Hva som mangler |
+|---|---|
+| /admin/grupper/[id] | Add-group-member-action + gruppe-kalender/GroupSchedule-detalj (ny feature) |
+| /admin/kapasitet | Kapasitet-CSV-eksport + bulk-blokk-booking (nye features) |
+| /admin/klubb/innstillinger | Ny ClubSettings-tabell + User.locationId (schema-beslutning) |
+| /admin/spillere/[id]/tildel-test | Test-tildeling-datakilde + endring i delt test-modal (beslutning) |
+| /forelder/samtykke | GDPR-eksport-feature + data-slett-request-action (ny feature) |
+| /portal/booking/anlegg/[anleggId] | Anlegg-innhold-datamodell (specs/rating/bio) ELLER skjerm utgår til /booking/ny |
+| /portal/booking/coach/[coachId] | Rute slug→cuid + gjenbruk booking-loader ELLER skjerm utgår til /booking/ny |
+| /portal/coach/melding/[id]/vedlegg | Melding-vedlegg-datamodell + opplasting/lagring (ny feature) |
+| /portal/coach/sporsmal/[id] | Sporsmal/Q&A Prisma-modell + loader + liste-side (ny feature) |
+| /portal/meg/innstillinger/integrasjoner | Spiller-vendt connect/resync-action (dagens er ADMIN-gated) |
+| /portal/statistikk/sammenlign | Kohort/benchmark-motor på tvers av spillere (ny feature) |
+| /portal/tren/teknisk-plan/[planId] | Ny client-komponent for OppgaveModal→createTask (felt-mismatch) |
+| /stats/regions/[slug] | Region-aggregering: ingen Club-modell/region-felt (ny feature, eksplisitt utsatt) |
 
 ### STUB (9) — uferdig / bevisst utsatt
 
