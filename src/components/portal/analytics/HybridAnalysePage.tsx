@@ -548,6 +548,46 @@ export type HybridAnalysePageProps = {
   data: AnalyticsWorkbenchData;
 };
 
+// ── SG-stripe (fasit: mørk full-bredde SG-bar under headline) ─────────
+function SgStripe({ b }: { b: AnalyticsWorkbenchData["sgBreakdown"] }) {
+  const fmt = (v: number | null) =>
+    v == null ? "—" : (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(1).replace(".", ",");
+  const items: Array<[string, number | null]> = [
+    ["SG TOTALT", b.sgTotal],
+    ["OTT", b.sgOtt],
+    ["APP", b.sgApp],
+    ["ARG", b.sgArg],
+    ["PUTT", b.sgPutt],
+  ];
+  return (
+    <div
+      className="flex items-center gap-4 overflow-x-auto rounded-[12px] px-4 py-2.5 scrollbar-none"
+      style={{ background: "var(--forest-deep, #00402F)" }}
+      aria-label="Strokes gained per kategori"
+    >
+      <span className="h-1.5 w-1.5 flex-none rounded-full bg-accent animate-pulse" aria-hidden />
+      {items.map(([label, v]) => (
+        <span key={label} className="flex flex-none items-baseline gap-1.5">
+          <span className="font-mono text-[9px] font-medium uppercase tracking-[0.1em] text-white/55">
+            {label}
+          </span>
+          <span
+            className={`font-mono text-[12px] font-bold tabular-nums ${
+              v == null
+                ? "text-white/50"
+                : v >= 0
+                  ? "text-[var(--t-up,#4FD08A)]"
+                  : "text-[var(--t-down,#F0683E)]"
+            }`}
+          >
+            {fmt(v)}
+          </span>
+        </span>
+      ))}
+    </div>
+  );
+}
+
 export function HybridAnalysePage({ data }: HybridAnalysePageProps) {
   const [tab, setTab] = useState<TabKey>("sg");
 
@@ -584,6 +624,9 @@ export function HybridAnalysePage({ data }: HybridAnalysePageProps) {
           <em className="font-medium italic text-primary">i dybden</em>
         </h1>
       </div>
+
+      {/* ── SG-stripe (fasit: mørk full-bredde SG-bar) ── */}
+      <SgStripe b={data.sgBreakdown} />
 
       {/* ── Tab bar ── */}
       <TabBar active={tab} onChange={setTab} counts={counts} />
