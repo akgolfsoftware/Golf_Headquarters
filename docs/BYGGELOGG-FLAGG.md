@@ -83,6 +83,12 @@ Opprinnelig flagg (historikk):
 
 - **Gjenstår å verifisere (lav rest):** spiller-detalj /plan/[planId],/rediger,/tildel-test; tester /[id],/foreslatte; `/admin/grupper/[id]`; innstillinger/«Drift» (rute = topbar-meny → finn href); `/admin/gjennomfore/okter/[id]`; diverse admin long-tail (/audit-log,/reach,/compliance,/risiko,/lag-snitt,/team,/integrasjoner,/email-templates). Tas i påfølgende iterasjoner — alle ser ut til å være bygd fra tidligere faser.
 
+### A-4 · Kalender måned-sweep 2026-06-22 — re-portet mot fersk handover (0 avvik)
+- **Rot:** `/admin/kalender/maned` (`month-calendar.tsx`) var bygd fra ELDRE fasit (`screens-ops.jsx`) — avvek fra fersk handover «AgencyOS Kalender (terminal)». Fasiten mapper hit, IKKE til `/admin/kalender` (som er dag-timeline-visningen — bevisst rikere app-design, beholdt).
+- **FIKSET (commit a56686bc):** eyebrow «Gjennomføre · Kalender» → «Stallen · {N} spillere» (ekte count via ny `spillerCount` i `loadKalenderManed`); tittel «juni · 2026» (italic-splitt) → solid «Juni 2026»; dag-headere M/T/O → MAN/TIR/ONS; **lime-på-lime-bug** på «Ny økt»-knapp (`bg-primary text-accent` usynlig i .dark) → lesbar `bg-accent text-accent-foreground` lime-pill (+ samme fiks i EmptyState); fjernet lead-paragraf + bunn-legende (fasiten har ingen); NavRow dropp duplisert måned-label; grid 5 rader når 5 holder (ikke alltid 6) + blanke utenfor-måneden-celler.
+- **GATE:** adversarial diff-agent kildeverifiserte → 0 gjenstående avvik i innholdsområdet (shell-chrome + data ekskludert per design-porting-gate). tsc + build grønne.
+- **Lærdom:** sjekk om fasiten mapper til en ANNEN rute (her: /maned, ikke /kalender) FØR re-port; og `month-calendar.tsx`-kommentarer pekte selv på gammel fasit-kilde — en god drift-indikator.
+
 ---
 
 ## PLAYERHQ MEG-UNDERSIDER (verifisert ferdig — låst-decision-unntak dokumentert)

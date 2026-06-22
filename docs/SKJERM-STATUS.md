@@ -201,7 +201,7 @@
 | /admin/tester/foreslatte | Test-bygger | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/tester/tildel/[spillerId] | Test-bygger | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/kalender | Kalender | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd+kalibrert. Verifisert mørk 1280px: dag/uke/mnd-toggles + agenda-liste + dag-timeline m/ øktblokker. Ekte data |
-| /admin/kalender/maned | Kalender | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd. Verifisert mørk 1280px: full måned-grid (juni 2026) m/ fargekodede økter (lime=1-til-1/forest=gruppe/cream-gull=live) + I dag-markering |
+| /admin/kalender/maned | Kalender | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | FASIT-SWEEP 2026-06-22: portet på nytt mot fersk handover «AgencyOS Kalender (terminal)» (var bygd fra eldre screens-ops.jsx). Eyebrow «Stallen · N spillere», solid «Juni 2026», MAN/TIR-headere, lesbar «+ NY ØKT» lime-pill (fikset lime-på-lime-bug), 5-rad-grid m/ blanke padding-celler, ingen lead/legende. Adversarial diff: 0 avvik (shell+data ekskl.) |
 | /admin/bookinger | Bookinger og kapasitet | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/bookinger/ny | Bookinger og kapasitet | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/kapasitet | Bookinger og kapasitet | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
