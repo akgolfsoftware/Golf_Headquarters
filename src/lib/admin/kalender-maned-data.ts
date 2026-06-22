@@ -73,19 +73,29 @@ export async function loadKalenderManed(param?: string): Promise<MonthCalendarPr
   const gridSlutt = new Date(gridStart);
   gridSlutt.setDate(gridSlutt.getDate() + 42);
 
-  const bookinger = await prisma.booking.findMany({
-    where: {
-      startAt: { gte: gridStart, lt: gridSlutt },
-      status: { in: ["CONFIRMED", "PENDING", "COMPLETED"] },
-    },
-    orderBy: { startAt: "asc" },
-    include: {
-      user: { select: { name: true } },
-      serviceType: { select: { name: true, coachUserId: true } },
-    },
-  });
+  const [bookinger, spillerCount] = await Promise.all([
+    prisma.booking.findMany({
+      where: {
+        startAt: { gte: gridStart, lt: gridSlutt },
+        status: { in: ["CONFIRMED", "PENDING", "COMPLETED"] },
+      },
+      orderBy: { startAt: "asc" },
+      include: {
+        user: { select: { name: true } },
+        serviceType: { select: { name: true, coachUserId: true } },
+      },
+    }),
+    prisma.user.count({ where: { role: "PLAYER" } }),
+  ]);
 
-  const days: MonthDay[] = Array.from({ length: 42 }, (_, i) => {
+  // Fasit: vis kun antall uker måneden faktisk dekker (5 eller 6) — ingen
+  // hel ekstra rad med neste-måned-dager når 5 uker holder.
+  const leadingDays = (mndStart.getDay() + 6) % 7; // mandag-start-offset til den 1.
+  const daysInMonth = new Date(aar, mnd + 1, 0).getDate();
+  const weeksNeeded = Math.ceil((leadingDays + daysInMonth) / 7);
+  const cellCount = weeksNeeded * 7;
+
+  const days: MonthDay[] = Array.from({ length: cellCount }, (_, i) => {
     const d = new Date(gridStart);
     d.setDate(d.getDate() + i);
     const dow = (d.getDay() + 6) % 7;
@@ -140,5 +150,6 @@ export async function loadKalenderManed(param?: string): Promise<MonthCalendarPr
     days,
     events,
     bookingCount: iMaaneden,
+    spillerCount,
   };
 }

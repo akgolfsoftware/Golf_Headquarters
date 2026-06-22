@@ -53,14 +53,16 @@ export type MonthCalendarProps = {
   nextMonthParam: string;
   todayParam: string;
   isCurrentMonth: boolean;
-  /** 42 celler (6 uker × 7 dager), mandag-start. */
+  /** 35 eller 42 celler (5–6 uker × 7 dager), mandag-start. */
   days: MonthDay[];
   events: MonthEvent[];
   bookingCount: number;
+  /** Antall spillere i stallen (eyebrow "Stallen · N spillere"). */
+  spillerCount: number;
 };
 
-// Fasit: enkeltbokstaver (screens-ops.jsx CalendarScreen måned-view: ["M","T","O","T","F","L","S"])
-const DOW = ["M", "T", "O", "T", "F", "L", "S"];
+// Fasit (AgencyOS Kalender, terminal-handover): tre-bokstavs dag-headere MAN/TIR/...
+const DOW = ["MAN", "TIR", "ONS", "TOR", "FRE", "LØR", "SØN"];
 
 // ── Event-strek per type (matcher week-calendar) ────────────────
 const kindStroke: Record<MonthEventKind, string> = {
@@ -98,20 +100,20 @@ function ViewToggle() {
 
 // ── Nav-rad: ‹ Måned › + I dag ──────────────────────────────────
 function NavRow({
-  monthLabel,
   prevMonthParam,
   nextMonthParam,
   todayParam,
   isCurrentMonth,
 }: Pick<
   MonthCalendarProps,
-  "monthLabel" | "prevMonthParam" | "nextMonthParam" | "todayParam" | "isCurrentMonth"
+  "prevMonthParam" | "nextMonthParam" | "todayParam" | "isCurrentMonth"
 >) {
   const navBtn =
     "inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-card text-foreground transition-colors hover:bg-secondary";
   return (
     <div className="mb-4 flex items-center justify-between gap-4">
-      <div className="flex items-center gap-3">
+      {/* Fasit: kun ‹ › piler (måneden vises i tittelen, ikke duplisert her). */}
+      <div className="flex items-center gap-2">
         <Link
           href={`/admin/kalender/maned?mnd=${prevMonthParam}`}
           className={navBtn}
@@ -119,9 +121,6 @@ function NavRow({
         >
           <ChevronLeft className="h-4 w-4" strokeWidth={2} aria-hidden />
         </Link>
-        <div className="font-display text-xl font-bold capitalize leading-none tracking-[-0.015em] text-foreground">
-          {monthLabel}
-        </div>
         <Link
           href={`/admin/kalender/maned?mnd=${nextMonthParam}`}
           className={navBtn}
@@ -205,7 +204,7 @@ function MonthGrid({ days, events }: Pick<MonthCalendarProps, "days" | "events">
         const dayEvents = byDay.get(d.dateKey) ?? [];
         const visible = dayEvents.slice(0, 3);
         const overflow = dayEvents.length - visible.length;
-        const lastRow = i >= 35;
+        const lastRow = i >= days.length - 7;
         return (
           <div
             key={d.dateKey}
@@ -232,12 +231,13 @@ function MonthGrid({ days, events }: Pick<MonthCalendarProps, "days" | "events">
                         : "text-foreground",
                 )}
               >
-                {d.date}
+                {/* Fasit: utenfor-måneden-celler er blanke (ingen dag-tall). */}
+                {d.inMonth ? d.date : null}
                 {d.isToday && (
                   <span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_6px_hsl(var(--accent)/0.7)]" />
                 )}
               </span>
-              {dayEvents.length > 0 && (
+              {d.inMonth && dayEvents.length > 0 && (
                 <span className="font-mono text-[9px] font-semibold tabular-nums text-muted-foreground">
                   {dayEvents.length}
                 </span>
@@ -245,10 +245,8 @@ function MonthGrid({ days, events }: Pick<MonthCalendarProps, "days" | "events">
             </div>
 
             <div className="flex flex-1 flex-col gap-0.5">
-              {visible.map((ev) => (
-                <EventPill key={ev.id} ev={ev} />
-              ))}
-              {overflow > 0 && (
+              {d.inMonth && visible.map((ev) => <EventPill key={ev.id} ev={ev} />)}
+              {d.inMonth && overflow > 0 && (
                 <span className="mt-auto px-1 font-mono text-[9px] font-bold uppercase tracking-[0.06em] text-muted-foreground">
                   +{overflow} til
                 </span>
@@ -261,23 +259,6 @@ function MonthGrid({ days, events }: Pick<MonthCalendarProps, "days" | "events">
   );
 }
 
-// ── Legende (matcher week-calendar) ─────────────────────────────
-function Legend() {
-  const item = (strokeClass: string, label: string) => (
-    <span className="inline-flex items-center gap-2 text-[13px] text-foreground">
-      <span className={cn("inline-block h-3 w-[3px] rounded-full", strokeClass)} aria-hidden />
-      {label}
-    </span>
-  );
-  return (
-    <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 px-1">
-      {item("bg-accent", "Lime = 1-til-1")}
-      {item("bg-primary", "Forest = gruppe")}
-      {item("bg-warning", "Cream-gull = live-økt")}
-    </div>
-  );
-}
-
 // ── Tomstate ────────────────────────────────────────────────────
 function EmptyState() {
   return (
@@ -286,7 +267,7 @@ function EmptyState() {
       <p className="mt-3 text-sm text-muted-foreground">Ingen timer denne måneden.</p>
       <Link
         href="/admin/bookinger/ny"
-        className="mt-4 inline-flex h-9 items-center gap-2 rounded-lg bg-primary px-3.5 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-accent transition-opacity hover:opacity-90"
+        className="mt-4 inline-flex h-9 items-center gap-2 rounded-full bg-accent px-4 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-accent-foreground transition-opacity hover:opacity-90"
       >
         <CalendarPlus className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
         Book første time
@@ -300,7 +281,7 @@ function TopAction({ icon: Icon, label, href }: { icon: LucideIcon; label: strin
   return (
     <Link
       href={href}
-      className="inline-flex h-9 items-center gap-2 rounded-lg bg-primary px-3.5 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-accent transition-opacity hover:opacity-90"
+      className="inline-flex h-9 items-center gap-2 rounded-full bg-accent px-4 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-accent-foreground transition-opacity hover:opacity-90"
     >
       <Icon className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
       {label}
@@ -317,20 +298,16 @@ export function MonthCalendar(props: MonthCalendarProps) {
       {/* PageHead — fasit: .page-head med eyebrow + h1 + lead + actions */}
       <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
         <div>
+          {/* Fasit-eyebrow: "STALLEN · N SPILLERE" (uppercase via klasse). */}
           <div className="font-mono text-[10px] font-bold uppercase leading-none tracking-[0.12em] text-muted-foreground">
-            Gjennomføre · Kalender
+            Stallen · {props.spillerCount} spillere
           </div>
-          <h1 className="mt-2 font-display text-[28px] font-bold leading-[1.08] tracking-[-0.02em] text-foreground">
-            {props.monthLabel.split(" ")[0]}{" "}
-            <em className="font-normal italic text-primary">
-              · {props.monthLabel.split(" ")[1] ?? ""}
-            </em>
+          {/* Fasit-tittel: solid hvit "Juni 2026" (capitalize), ingen italic-splitt. */}
+          <h1 className="mt-2 font-display text-[28px] font-bold capitalize leading-[1.08] tracking-[-0.02em] text-foreground">
+            {props.monthLabel}
           </h1>
-          <p className="mt-2 max-w-[60ch] text-sm leading-normal text-muted-foreground">
-            Alle øktene dine på tvers av stallen. Lime kant = pågår nå.
-          </p>
         </div>
-        {/* Primærhandling: Ny økt → Workbench (fasit: btn btn-primary → workbench) */}
+        {/* Primærhandling: Ny økt → Workbench (fasit: "+ NY ØKT" lime-pill). */}
         <div className="flex shrink-0 gap-2">
           <TopAction icon={Plus} label="Ny økt" href="/admin/coach-workbench" />
         </div>
@@ -340,7 +317,6 @@ export function MonthCalendar(props: MonthCalendarProps) {
       <ViewToggle />
 
       <NavRow
-        monthLabel={props.monthLabel}
         prevMonthParam={props.prevMonthParam}
         nextMonthParam={props.nextMonthParam}
         todayParam={props.todayParam}
@@ -355,8 +331,6 @@ export function MonthCalendar(props: MonthCalendarProps) {
           <MonthGrid days={props.days} events={props.events} />
         )}
       </div>
-
-      <Legend />
     </div>
   );
 }
