@@ -159,11 +159,12 @@
 | Rute | Referanse | Bygget | Knapper | 375 | 768 | 1280 | 4-states | DoD |
 |---|---|---|---|---|---|---|---|---|
 | /admin/agencyos | AgencyOS Cockpit | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd+kalibrert tidligere fase. Verifisert mørk 1280px som ADMIN: ticker + 4 KPI + Dagens timeline + Hvem trenger meg nå + innboks. Bevisste IA-tillegg (sidebar/faner/innboks) per design-porting-gate. Mobil = egen Fase 4 net-new |
-| /admin/agencyos/caddie | AI-Caddie og Agenter | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /admin/agencyos/caddie | AI-Caddie og Agenter | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd. Verifisert mørk 1280px (CADDIE-fane av cockpit) |
+| /admin/messages | Flyt - AgencyOS Handlingssenter | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd. Verifisert mørk 1280px: «Min innboks» 3-kolonne (samtaleliste + tråd + profilpanel). Ekte data. Manglet i tabellen |
 | /admin/agencyos/caddie/aktivitet | AI-Caddie og Agenter | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/agencyos/live | Live-okt coach | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd. Verifisert mørk 1280px: LIVE-fane av cockpit (fane-rad fra layout.tsx) — KPI + Scan-app/Følg-opp-actions + varsler + agent-pipeline-preview |
-| /admin/agencyos/okonomi | Cockpit v2 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /admin/agencyos/spillere | Stall responsiv | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /admin/agencyos/okonomi | Cockpit v2 | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd. Verifisert mørk 1280px (ØKONOMI-fane av cockpit) |
+| /admin/agencyos/spillere | Stall responsiv | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd. Verifisert mørk 1280px (SPILLERE-fane av cockpit) |
 | /admin/agencyos/uka | Cockpit v2 | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd. Verifisert mørk 1280px: UKA-fane av cockpit (fane-rad fra layout.tsx) |
 | /admin/spillere | Stall responsiv / Stall v2 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/spillere/[id] | Spiller-detalj | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd+kalibrert. Verifisert mørk 1280px (Øyvind): header + coach-flagg + aktiv plan + treningspyramide + hurtighandlinger + siste runder/tester + meldinger. Ekte data |
@@ -195,11 +196,11 @@
 | /admin/drills/ny | mønster | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/tester | Test-bygger | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd+kalibrert. Verifisert mørk 1280px: «FYS & teknikk» + 4 KPI + testresultat-tabell (ALLE/FYS/TEKNIKK/TRACKMAN). Nøytral delta «—» per FYS-formel-ikke-låst-unntak |
 | /admin/tester/[id] | Test-bygger | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| /admin/tester/benchmarks | Test-bygger | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /admin/tester/benchmarks | Test-bygger | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd. Verifisert mørk 1280px: «DataGolf-fasiter — autosync»-tabell (12 tester, PGA→scratch-kolonner). Ekte DataGolf-data, auto-sync mandager |
 | /admin/tester/foreslatte | Test-bygger | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/tester/tildel/[spillerId] | Test-bygger | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/kalender | Kalender | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd+kalibrert. Verifisert mørk 1280px: dag/uke/mnd-toggles + agenda-liste + dag-timeline m/ øktblokker. Ekte data |
-| /admin/kalender/maned | Kalender | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| /admin/kalender/maned | Kalender | ✅ | ✅ | ~ | ~ | ✅ | ~ | ✅ | Bygd. Verifisert mørk 1280px: full måned-grid (juni 2026) m/ fargekodede økter (lime=1-til-1/forest=gruppe/cream-gull=live) + I dag-markering |
 | /admin/bookinger | Bookinger og kapasitet | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/bookinger/ny | Bookinger og kapasitet | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | /admin/kapasitet | Bookinger og kapasitet | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
