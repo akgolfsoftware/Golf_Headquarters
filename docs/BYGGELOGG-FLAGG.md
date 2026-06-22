@@ -89,6 +89,18 @@ Opprinnelig flagg (historikk):
 - **GATE:** adversarial diff-agent kildeverifiserte → 0 gjenstående avvik i innholdsområdet (shell-chrome + data ekskludert per design-porting-gate). tsc + build grønne.
 - **Lærdom:** sjekk om fasiten mapper til en ANNEN rute (her: /maned, ikke /kalender) FØR re-port; og `month-calendar.tsx`-kommentarer pekte selv på gammel fasit-kilde — en god drift-indikator.
 
+### A-5 · AgencyOS-sweep 2026-06-22 — gjenværende skjermer er STRUKTURELT divergerte (krever Anders' IA/produkt-beslutning)
+Etter kalender-vinnet (A-4) sjekket jeg de neste drift-kandidatene (komponenter som refererer gammel `screens-ops.jsx`-fasit). Funnet: de gjenværende AgencyOS-skjermene er IKKE kosmetisk drift som kalender var — de er **strukturelle divergenser** der appen bevisst valgte rikere design enn den nye handover-fasiten. Per regelen «behold bevisst rikere app-design, ikke gutt det til enklere fasit» skal disse IKKE force-fittes autonomt. Krever Anders' beslutning:
+
+| Skjerm | App i dag | Ny handover-fasit | Beslutning Anders må ta |
+|---|---|---|---|
+| `/admin/bookinger` + `/admin/kapasitet` | TO separate ruter (enkel ukes-liste + egen kapasitet-heatmap) | ÉN kombinert «Bookinger & kapasitet»-dashbord (4 KPIer + heatmap venstre + liste høyre) | Slå sammen til ett dashbord, eller behold delt? (IA — route-merge) |
+| `/admin/plans` | Kanban-board (UTKAST/AKTIV/FULLFØRT, «N planer i drift») | Flat liste «Planer · N aktive» m/ progress-barer | Board (rikere, nåværende) eller liste (fasit)? |
+| `/admin/workspace/oppgaver` | Rikt arbeidsverktøy (Liste/Kanban/Kalender-toggle + WorkspaceTabs + full kolonne-tabell) | Enkel kanban | ALLEREDE dekket av dokumentert gate-unntak — behold. Ingen handling. |
+
+- **Multi-variant-fasit-merknad:** «AgencyOS Workspace», «Plans og Maler», «Bookinger og kapasitet» er handover-DOKUMENTER som viser FLERE skjermer side-om-side med rute-annotasjoner (f.eks. «780px /admin/plans» + «560px /admin/plan-templates»). De mapper til flere sub-ruter, ikke én. Sjekk rute-annotasjonene i fasiten før porting.
+- **Konsekvens for sweepen:** AgencyOS' kosmetiske drift er i praksis uttømt (kalender var siste rene leftover). Videre AgencyOS-arbeid venter på Anders' IA-/produkt-valg over. Sweepen pivoterer til PlayerHQ-undersider (Planlegge/Workbench-skin, statistikk-undersider, drills, booking) + forelder/auth, der kalender-type kosmetisk drift er mer sannsynlig.
+
 ---
 
 ## PLAYERHQ MEG-UNDERSIDER (verifisert ferdig — låst-decision-unntak dokumentert)
