@@ -171,16 +171,33 @@ export async function getCalendarBusy(
   let feiletAntall = 0;
   let sisteFeil = "unknown";
 
-  for (const sub of subs) {
-    try {
-      const res = await calendar.freebusy.query({
-        requestBody: {
-          timeMin: from.toISOString(),
-          timeMax: to.toISOString(),
-          items: [{ id: sub.googleCalendarId }],
-        },
-      });
-      const busy = res.data.calendars?.[sub.googleCalendarId]?.busy ?? [];
+  try {
+    // Én batched kall med alle kalender-IDer — reduserer N→1 API-kall per
+    // tilgjengelighets-sjekk og unngår Google's "Queries per minute per user"-kvote.
+    // freebusy-APIet støtter opptil 50 items per kall.
+    const res = await calendar.freebusy.query({
+      requestBody: {
+        timeMin: from.toISOString(),
+        timeMax: to.toISOString(),
+        items: subs.map((sub) => ({ id: sub.googleCalendarId })),
+      },
+    });
+
+    const now = new Date();
+    for (const sub of subs) {
+      const calResult = res.data.calendars?.[sub.googleCalendarId];
+      const errors = calResult?.errors ?? [];
+      if (errors.length > 0) {
+        feiletAntall++;
+        sisteFeil = errors.map((e) => e.reason ?? "unknown").join(", ");
+        console.error(`[google-calendar] freebusy error for ${sub.googleCalendarId}`, sisteFeil);
+        await prisma.googleCalendarSubscription.update({
+          where: { id: sub.id },
+          data: { lastError: sisteFeil.slice(0, 500) },
+        });
+        continue;
+      }
+      const busy = calResult?.busy ?? [];
       for (const b of busy) {
         if (b.start && b.end) {
           all.push({ start: new Date(b.start), end: new Date(b.end) });
@@ -188,17 +205,18 @@ export async function getCalendarBusy(
       }
       await prisma.googleCalendarSubscription.update({
         where: { id: sub.id },
-        data: { lastSyncAt: new Date(), lastError: null },
-      });
-    } catch (err) {
-      feiletAntall++;
-      sisteFeil = err instanceof Error ? err.message : "unknown";
-      console.error(`[google-calendar] freebusy failed for ${sub.googleCalendarId}`, sisteFeil);
-      await prisma.googleCalendarSubscription.update({
-        where: { id: sub.id },
-        data: { lastError: sisteFeil.slice(0, 500) },
+        data: { lastSyncAt: now, lastError: null },
       });
     }
+  } catch (err) {
+    // Hele batch-kallet feilet (auth/nettverk) — alle subscriptions regnes som feilet.
+    feiletAntall = subs.length;
+    sisteFeil = err instanceof Error ? err.message : "unknown";
+    console.error(`[google-calendar] freebusy batch failed`, sisteFeil);
+    await prisma.googleCalendarSubscription.updateMany({
+      where: { id: { in: subs.map((s) => s.id) } },
+      data: { lastError: sisteFeil.slice(0, 500) },
+    });
   }
 
   // Konservativt: minst én pull-kalender feilet ⇒ ufullstendig bilde ⇒ fail-closed.

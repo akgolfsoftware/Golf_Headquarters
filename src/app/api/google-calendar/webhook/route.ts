@@ -68,7 +68,7 @@ export async function POST(request: Request) {
     const calendar = getCalendarApi(sub.connection);
     const updatedMin =
       sub.lastSyncAt?.toISOString() ??
-      new Date(Date.now() - 5 * 60_000).toISOString();
+      new Date(Date.now() - 24 * 60 * 60_000).toISOString();
 
     const { data } = await calendar.events.list({
       calendarId: sub.googleCalendarId,
