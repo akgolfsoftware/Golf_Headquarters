@@ -1,7 +1,7 @@
 // Capability-Based Access Control (CBAC).
 // Roller mappes til capabilities i kode; fremtidige tabeller kan overstyre.
 
-import { UserRole } from "@/generated/prisma/client";
+import type { UserRole } from "@/generated/prisma/client";
 
 export const Capability = {
   VIEW_OWN_PROFILE: "view_own_profile",

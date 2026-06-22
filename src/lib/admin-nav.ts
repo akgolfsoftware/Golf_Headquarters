@@ -28,6 +28,8 @@ import {
   UsersRound,
   type LucideIcon,
 } from "lucide-react";
+import type { UserRole } from "@/generated/prisma/client";
+import { can, Capability } from "@/lib/auth/cbac";
 
 /**
  * Delt nav-config for AgencyOS — ÉN kilde for desktop-sidebar
@@ -78,8 +80,11 @@ export function leafActive(path: string, leaf: NavLeaf): boolean {
   return (leaf.match ?? []).some((m) => path === m || path.startsWith(m + "/"));
 }
 
-export function buildAdminNav(workbenchHref: string): NavSection[] {
-  return [
+export function buildAdminNav(
+  workbenchHref: string,
+  role?: UserRole,
+): NavSection[] {
+  const sections: NavSection[] = [
     {
       label: "Daglig",
       items: [
@@ -246,4 +251,14 @@ export function buildAdminNav(workbenchHref: string): NavSection[] {
       ],
     },
   ];
+
+  // Skjul «Økonomi»-lenken for roller uten VIEW_FINANCE (samme policy som
+  // /admin/settings/tilgang viser). Uten oppgitt rolle (legacy) vises alt.
+  if (role && !can(role, Capability.VIEW_FINANCE)) {
+    return sections.map((s) => ({
+      ...s,
+      items: s.items.filter((it) => it.key !== "finance"),
+    }));
+  }
+  return sections;
 }

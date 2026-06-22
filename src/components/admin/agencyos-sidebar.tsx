@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronRight, MoreHorizontal } from "lucide-react";
 import { buildAdminNav, leafActive, type SidebarCounts } from "@/lib/admin-nav";
+import type { UserRole } from "@/generated/prisma/client";
 
 /**
  * AgencyOS desktop sidebar — 54px ikon-rail som ekspanderer til 244px på hover.
@@ -18,6 +19,7 @@ type Props = {
   coach: { name: string; role: string; initials: string };
   org: { name: string; players: number; tier: string };
   workbenchHref: string;
+  userRole: UserRole;
 };
 
 function Badge({ value, cls }: { value: number; cls?: "alert" | "lime" }) {
@@ -47,9 +49,9 @@ const ITEM_DEFAULT = "text-foreground/65 hover:bg-foreground/5 hover:text-foregr
 const TEXT_FADE =
   "opacity-0 transition-opacity duration-100 group-hover/sbar:opacity-100";
 
-export function AgencyosSidebar({ counts, sessionsToday, coach, org, workbenchHref }: Props) {
+export function AgencyosSidebar({ counts, sessionsToday, coach, org, workbenchHref, userRole }: Props) {
   const path = usePathname();
-  const nav = buildAdminNav(workbenchHref);
+  const nav = buildAdminNav(workbenchHref, userRole);
 
   const activeGroup = (() => {
     for (const section of nav)

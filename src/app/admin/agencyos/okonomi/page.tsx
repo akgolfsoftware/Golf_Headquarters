@@ -14,7 +14,8 @@
 
 import Link from "next/link";
 import { ArrowUpRight, Flag, Repeat, TrendingDown, TrendingUp, Users } from "lucide-react";
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { requireCapability } from "@/lib/auth/requireCapability";
+import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 import { cn } from "@/lib/utils";
@@ -35,7 +36,7 @@ function formatKr(kr: number): string {
 }
 
 export default async function OkonomiTabPage() {
-  await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+  await requireCapability(Capability.VIEW_FINANCE);
 
   const now = new Date();
   const mndStart = new Date(now.getFullYear(), now.getMonth(), 1);

@@ -17,7 +17,7 @@ Disse er produkt-/design-/IA-valg. Jeg vil ikke gjette.
 | ~~D1.1~~ ✅ | **Analyse «Hull»** — LØST 2026-06-22 (commit 62be389f) | **Begge:** sone-kart beholdt + «Hull for hull»-tabell lagt til som fane. | Ferdig |
 | ~~D1.2~~ ✅ | **AgencyOS Bookinger** — LØST 2026-06-22 (commit 62be389f) | **Slått sammen:** ett «Bookinger & kapasitet»-dashbord; /admin/kapasitet redirecter. | Ferdig |
 | ~~D1.3~~ ✅ | **AgencyOS Planer** — LØST 2026-06-22 | **Behold kanban-board** (ingen endring). | Ferdig |
-| D1.4 | **CBAC-modell** (AAPNE A2) | Bygge opp koden til 43 capabilities (skill-spec), ELLER nedskalere spec-en til dagens 10 + rolle-gating. Konkret hull i dag: COACH slipper inn på `/admin/okonomi` selv om finans skal være ADMIN. | M (opp) / S (ned) |
+| D1.4 | **CBAC-modell** (AAPNE A2) | **Finanshullet LUKKET 2026-06-22:** `/admin/okonomi` + `/admin/agencyos/okonomi` gates nå på `VIEW_FINANCE`-capability (ADMIN-only), og «Økonomi»-nav-lenken skjules for COACH — håndhevingen matcher nå matrisen i `/admin/settings/tilgang`. **Gjenstår (din beslutning):** skal CBAC bygges opp til 43 capabilities (skill-spec), eller beholdes dagens 10 + rolle/capability-gating? | Hull lukket · modell-valg står |
 | D1.5 | **Agent-systemets dybde** (AAPNE A3) | Skal «Godkjenn» på et AI-forslag faktisk endre planen? (i dag bytter `acceptPlanAction` kun status). Skal det bygges en coach-godkjenningsinnboks? | M–L |
 | D1.6 | **Booking ↔ live-økt-modell** | «Start økt» lager nå en frisk live-økt fra bookingen (defaults: innendørs/blokkpraksis). Skal en booking heller kobles til en allerede planlagt `TrainingSessionV2`? | M |
 | D1.7 | **Metodikk-kanon** (AAPNE A1) | CS-skala (CS20/CS40?), CS-navn (Club Speed vs Confidence Score), LIFE-nøkler. Kode vs wiki er uenige. | S (bekreft) |

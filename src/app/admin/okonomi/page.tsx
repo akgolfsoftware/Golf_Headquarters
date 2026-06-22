@@ -7,7 +7,8 @@
  */
 
 import Link from "next/link";
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { requireCapability } from "@/lib/auth/requireCapability";
+import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import {
   AgTable,
@@ -150,7 +151,7 @@ export default async function OkonomiPage({
 }: {
   searchParams: SearchParams;
 }) {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  await requireCapability(Capability.VIEW_FINANCE);
 
   const { p } = await searchParams;
   const periodeKey = normalisePeriode(p);

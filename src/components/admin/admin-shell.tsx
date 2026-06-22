@@ -155,6 +155,7 @@ export async function AdminShell({ children }: { children: React.ReactNode }) {
           coach={{ name: user.name, role: "Head coach · PGA Pro", initials: initialsOf(user.name) }}
           org={{ name: "GFGK Akademi", players: playerCount, tier: "PRO" }}
           workbenchHref={workbenchHref}
+          userRole={user.role}
         />
       </div>
       <div className="flex min-w-0 flex-1 flex-col">
