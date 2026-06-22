@@ -31,7 +31,7 @@ dashboard-tallene + endringsloggen når du fullfører/endrer skjermer.
 > Ikke håndhev de fire som låst før nye verdier er bekreftet. De andre punktene under står.
 
 - **App-navn:** Coach-appen heter **AgencyOS** (`/admin`). «CoachHQ» er gammelt — ikke bruk i ny UI-tekst.
-- **Tema per produkt:** PlayerHQ alltid **lyst**, AgencyOS alltid **mørkt** (`.dark`). **Ingen tema-toggle.**
+- **Tema (oppdatert 2026-06-22):** PlayerHQ alltid **lyst**. AgencyOS har **lys/mørk-toggle** (sol/måne i topbar, cookie `ak-admin-theme`, standard mørk) — Anders vil ha AgencyOS i begge moduser. (Var: «AgencyOS alltid mørkt, ingen toggle» — opphevet.)
 - **Navne-kanon (demo):** spiller = **Øyvind Rohjan**, coach = **Anders Kristiansen**. Alltid fulle navn. (Gamle: Magnus / Markus R.P. / Markus Berg / Anders Berg / Andreas Kragerud — skal bort.) NB: EKTE coach «Markus Røinås Pedersen» på markedssidene — IKKE bytt han ut med demo-spilleren.
 - **Planlegge → Workbench:** All planlegging går gjennom Workbench. Planlegge er **ett trykkpunkt** dit, ikke en meny av 6 kort. Samme i coachens spiller-Workbench.
 - **Analyse samlet:** Analysere + TrackMan + Runder + SG er én flate med faner — ikke separate moduler. Mål bor i Oversikt, redigeres i Workbench.

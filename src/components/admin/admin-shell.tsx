@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
+import { cookies } from "next/headers";
 import { Bell } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { AgencyosSidebar } from "./agencyos-sidebar";
@@ -8,6 +10,7 @@ import type { SidebarCounts } from "@/lib/admin-nav";
 import { AgencyosTopbar, type ScopeGroup, type ScopePlayer } from "./agencyos-topbar";
 import { AgencyosMobileNav } from "./agencyos-mobile-nav";
 import { GlobalSearchModal } from "./global-search-modal";
+import { AdminThemeToggle } from "./admin-theme-toggle";
 
 function initialsOf(name: string): string {
   return name
@@ -25,6 +28,10 @@ function initialsOf(name: string): string {
  */
 export async function AdminShell({ children }: { children: React.ReactNode }) {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+
+  // Tema (Anders 2026-06-22): AgencyOS kan være lys ELLER mørk. Standard = mørk.
+  // Leses fra cookie server-side → ingen flash; AdminThemeToggle flipper live.
+  const isDark = (await cookies()).get("ak-admin-theme")?.value !== "light";
 
   const dagStart = new Date();
   dagStart.setHours(0, 0, 0, 0);
@@ -127,7 +134,14 @@ export async function AdminShell({ children }: { children: React.ReactNode }) {
     : "/admin/coach-workbench";
 
   return (
-    <div className="dark flex min-h-screen min-h-dvh bg-background text-foreground antialiased [color-scheme:dark]">
+    <div
+      id="agencyos-root"
+      style={{ colorScheme: isDark ? "dark" : "light" }}
+      className={cn(
+        isDark && "dark",
+        "flex min-h-screen min-h-dvh bg-background text-foreground antialiased",
+      )}
+    >
       <a
         href="#admin-main"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-primary-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
@@ -165,6 +179,7 @@ export async function AdminShell({ children }: { children: React.ReactNode }) {
               />
             )}
           </Link>
+          <AdminThemeToggle initialDark={isDark} />
         </div>
         <div className="hidden md:block">
           <AgencyosTopbar
@@ -172,6 +187,7 @@ export async function AdminShell({ children }: { children: React.ReactNode }) {
             groups={groups}
             coachInitials={initialsOf(user.name)}
             hasUnread={unreadNotifications > 0}
+            initialDark={isDark}
           />
         </div>
         <main

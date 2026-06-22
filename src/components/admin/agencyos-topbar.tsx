@@ -16,6 +16,7 @@ import {
   Users,
 } from "lucide-react";
 import { logout } from "@/lib/auth/logout";
+import { AdminThemeToggle } from "./admin-theme-toggle";
 
 /**
  * AgencyOS-topbar — port av fasit `agencyos-app/core.jsx` (Topbar + ScopeSwitcher).
@@ -43,6 +44,7 @@ type Props = {
   groups: ScopeGroup[];
   coachInitials: string;
   hasUnread: boolean;
+  initialDark: boolean;
 };
 
 function AvatarBadge({ initials, size, tone = "neu" }: { initials: string; size: number; tone?: "pri" | "neu" }) {
@@ -314,7 +316,7 @@ function CoachMenu({ initials }: { initials: string }) {
   );
 }
 
-export function AgencyosTopbar({ players, groups, coachInitials, hasUnread }: Props) {
+export function AgencyosTopbar({ players, groups, coachInitials, hasUnread, initialDark }: Props) {
   const router = useRouter();
   const [, startTransition] = useTransition();
 
@@ -359,6 +361,7 @@ export function AgencyosTopbar({ players, groups, coachInitials, hasUnread }: Pr
         <Eye className="h-[15px] w-[15px]" strokeWidth={1.5} />
         <span className="underline underline-offset-1">Vis som spiller</span>
       </button>
+      <AdminThemeToggle initialDark={initialDark} />
       <Link
         href="/admin/foresporsler"
         aria-label="Varsler"

@@ -22,7 +22,7 @@ står; skjermer som er innholds-korrekte men visuelt ulike (f.eks. abonnement) s
 - **Var låst som:** PlayerHQ alltid lyst, AgencyOS alltid mørkt, INGEN toggle.
 - **Designkonsekvens av låsen:** ingen lys/mørk-bytte noe sted.
 - **Trenger fra Anders:** Vil du ha en bruker-toggle (lys/mørk) — og på begge produkter, eller bare ett? Eller bare bytte standard-temaet for et produkt?
-- **BESLUTTET (2026-06-22):** Behold fast standard (PlayerHQ lyst / AgencyOS mørkt) — men IKKE som ufravikelig låst regel. Ingen bruker-toggle nå. Dette matcher fasiten uansett (fasiten er lys PlayerHQ / mørk AgencyOS). **Ingen kodeendring nødvendig — kun regel-status endret.**
+- **BESLUTTET (2026-06-22, oppdatert):** Anders presiserte: **AgencyOS skal kunne være BÅDE lys OG mørk.** → BYGD: lys/mørk-toggle i AgencyOS-topbaren (sol/måne-ikon), tema persistert i cookie `ak-admin-theme` (leses server-side i AdminShell → ingen flash), standard = mørk. PlayerHQ forblir lyst (ikke endret). Coach-chrome-variablene (sidebar/topbar) er faste forest i `@theme inline` → lys AgencyOS = mørk forest-sidebar + lyst arbeidsområde (verifisert ren på cockpit/stall/handlingssenter). Mindre polish-punkt: handlingssenter-header-bånd litt flatt grått i lys (ikke ødelagt). Komponenter: src/components/admin/admin-theme-toggle.tsx + admin-shell.tsx + agencyos-topbar.tsx.
 
 ## 2. Abonnement & pris  ·  STATUS: låst opp, venter verdi
 - **Var låst som:** kun «gratis eller 300 kr/mnd», ingen nivåer, «PRO årlig» finnes ikke, ingen Stripe-kort-visning, ELITE forbudt.
