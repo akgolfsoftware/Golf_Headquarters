@@ -11,6 +11,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Activity,
+  AlertTriangle,
   Archive,
   ArrowUpRight,
   Bell,
@@ -347,6 +348,18 @@ export function MissionControl() {
   return (
     <div className="dark relative -mx-4 -mb-24 overflow-hidden rounded-2xl border border-border sm:-mx-8 md:-mb-6">
       <div className="mc-root min-h-[80vh] w-full font-sans text-foreground">
+        {/* DEMO-banner — visuelt skall, ikke ekte sanntidsdata (interim til live-wiring) */}
+        <div
+          role="note"
+          className="flex items-center gap-2.5 border-b border-warning/30 bg-warning/15 px-6 py-2.5 text-[12px] font-medium text-warning"
+        >
+          <AlertTriangle size={15} className="shrink-0" aria-hidden />
+          <span>
+            DEMO — visuelt skall, ikke ekte sanntidsdata. Tallene og hendelsene
+            er statiske eksempler; kobles til ekte kilder (Gmail · Beeper ·
+            Notion · Kalender) senere.
+          </span>
+        </div>
         {/* command bar */}
         <header className="sticky top-0 z-20 flex items-center gap-4 border-b border-border bg-background/55 px-6 py-3.5 backdrop-blur-md">
           <div className="flex shrink-0 items-center gap-3">

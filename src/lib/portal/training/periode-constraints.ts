@@ -146,7 +146,6 @@ function validerEnkeltOkt(
   const omrader: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
   for (const omr of omrader) {
     const pst = Math.round((fordeling[omr] / total) * 100);
-    const min = constraints.minPyramide[omr];
     const max = constraints.maxPyramide[omr];
     if (pst > max) {
       brudd.push(

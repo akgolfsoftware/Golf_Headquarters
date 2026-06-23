@@ -547,8 +547,10 @@ export function PlayerWorkbench({ data }: { data: PlayerWorkbenchData }) {
         <div className="ml-auto flex items-center gap-1.5">
           <button
             type="button"
-            aria-label="Forrige uke"
-            className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-border text-muted-foreground hover:bg-secondary hover:text-foreground"
+            disabled
+            title="Uke-navigasjon kommer"
+            aria-label="Forrige uke (kommer)"
+            className="inline-flex h-7 w-7 cursor-not-allowed items-center justify-center rounded-lg border border-border text-muted-foreground/40"
           >
             <ChevronLeft className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
           </button>
@@ -557,8 +559,10 @@ export function PlayerWorkbench({ data }: { data: PlayerWorkbenchData }) {
           </span>
           <button
             type="button"
-            aria-label="Neste uke"
-            className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-border text-muted-foreground hover:bg-secondary hover:text-foreground"
+            disabled
+            title="Uke-navigasjon kommer"
+            aria-label="Neste uke (kommer)"
+            className="inline-flex h-7 w-7 cursor-not-allowed items-center justify-center rounded-lg border border-border text-muted-foreground/40"
           >
             <ChevronRight className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
           </button>

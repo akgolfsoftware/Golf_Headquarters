@@ -306,7 +306,7 @@ export default async function SpillerdatabasePage({
       </div>
 
       {/* SØK + FILTER */}
-      <section className="spillere-search-section">
+      <section id="søk" className="spillere-search-section">
         <div style={{ maxWidth: 1280, margin: "0 auto" }}>
           {/* Stor søkeboks */}
           <form method="GET" style={{ maxWidth: 720 }}>
@@ -633,7 +633,6 @@ export default async function SpillerdatabasePage({
                 <a
                   href="#søk"
                   className="stats-btn stats-btn-outline stats-btn-md"
-                  onClick={undefined}
                 >
                   Sjekk om jeg er her
                 </a>

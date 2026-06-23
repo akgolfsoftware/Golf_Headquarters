@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import {
   Bold,
   Italic,
@@ -22,6 +22,54 @@ export function MeldingForm({ coacher }: { coacher: Coach[] }) {
   const [content, setContent] = useState("");
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  type MarkdownVerktoy = "fet" | "kursiv" | "liste" | "lenke";
+
+  function settInnMarkdown(verktoy: MarkdownVerktoy) {
+    const el = textareaRef.current;
+    if (!el) return;
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+    const valgt = content.slice(start, end);
+
+    let nyTekst: string;
+    let nyttMarkorStart: number;
+    let nyttMarkorSlutt: number;
+
+    if (verktoy === "fet" || verktoy === "kursiv") {
+      const wrap = verktoy === "fet" ? "**" : "*";
+      const tekst = valgt || (verktoy === "fet" ? "fet tekst" : "kursiv tekst");
+      const innsatt = `${wrap}${tekst}${wrap}`;
+      nyTekst = content.slice(0, start) + innsatt + content.slice(end);
+      // Marker tekst-delen mellom wrappene
+      nyttMarkorStart = start + wrap.length;
+      nyttMarkorSlutt = nyttMarkorStart + tekst.length;
+    } else if (verktoy === "liste") {
+      const tekst = valgt || "Listepunkt";
+      const linjer = tekst
+        .split("\n")
+        .map((linje) => (linje.startsWith("- ") ? linje : `- ${linje}`))
+        .join("\n");
+      nyTekst = content.slice(0, start) + linjer + content.slice(end);
+      nyttMarkorStart = start;
+      nyttMarkorSlutt = start + linjer.length;
+    } else {
+      // lenke
+      const tekst = valgt || "lenketekst";
+      const innsatt = `[${tekst}](url)`;
+      nyTekst = content.slice(0, start) + innsatt + content.slice(end);
+      // Marker «url»-plassholderen så coachen kan skrive over den
+      nyttMarkorStart = start + tekst.length + 3; // «[tekst](».length
+      nyttMarkorSlutt = nyttMarkorStart + 3; // «url».length
+    }
+
+    setContent(nyTekst.slice(0, 2000));
+    requestAnimationFrame(() => {
+      el.focus();
+      el.setSelectionRange(nyttMarkorStart, nyttMarkorSlutt);
+    });
+  }
 
   function send(e: React.FormEvent) {
     e.preventDefault();
@@ -126,30 +174,30 @@ export function MeldingForm({ coacher }: { coacher: Coach[] }) {
       {/* Toolbar + textarea */}
       <div className="overflow-hidden rounded-xl border border-border bg-card">
         <div className="flex items-center gap-0.5 border-b border-border bg-secondary px-4 py-2">
-          <ToolbarKnapp label="Fet">
+          <ToolbarKnapp label="Fet" onClick={() => settInnMarkdown("fet")}>
             <Bold className="h-4 w-4" />
           </ToolbarKnapp>
-          <ToolbarKnapp label="Kursiv">
+          <ToolbarKnapp label="Kursiv" onClick={() => settInnMarkdown("kursiv")}>
             <Italic className="h-4 w-4" />
           </ToolbarKnapp>
           <Skille />
-          <ToolbarKnapp label="Liste">
+          <ToolbarKnapp label="Liste" onClick={() => settInnMarkdown("liste")}>
             <List className="h-4 w-4" />
           </ToolbarKnapp>
           <Skille />
-          <ToolbarKnapp label="Lenke">
+          <ToolbarKnapp label="Lenke" onClick={() => settInnMarkdown("lenke")}>
             <LinkIcon className="h-4 w-4" />
           </ToolbarKnapp>
-          <ToolbarKnapp label="Bilde">
+          <ToolbarKnapp label="Bilde" disabled>
             <ImageIcon className="h-4 w-4" />
           </ToolbarKnapp>
-          <ToolbarKnapp label="Video">
+          <ToolbarKnapp label="Video" disabled>
             <Video className="h-4 w-4" />
           </ToolbarKnapp>
-          <ToolbarKnapp label="Vedlegg">
+          <ToolbarKnapp label="Vedlegg" disabled>
             <Paperclip className="h-4 w-4" />
           </ToolbarKnapp>
-          <ToolbarKnapp label="Emoji">
+          <ToolbarKnapp label="Emoji" disabled>
             <Smile className="h-4 w-4" />
           </ToolbarKnapp>
           <span className="ml-auto font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
@@ -157,6 +205,7 @@ export function MeldingForm({ coacher }: { coacher: Coach[] }) {
           </span>
         </div>
         <textarea
+          ref={textareaRef}
           value={content}
           onChange={(e) => setContent(e.target.value.slice(0, 2000))}
           rows={10}
@@ -205,16 +254,22 @@ export function MeldingForm({ coacher }: { coacher: Coach[] }) {
 function ToolbarKnapp({
   children,
   label,
+  onClick,
+  disabled,
 }: {
   children: React.ReactNode;
   label: string;
+  onClick?: () => void;
+  disabled?: boolean;
 }) {
   return (
     <button
       type="button"
-      title={label}
-      aria-label={label}
-      className="grid place-items-center rounded-md px-2 py-1.5 text-[13px] text-foreground transition-colors hover:bg-card"
+      title={disabled ? "Kommer" : label}
+      aria-label={disabled ? `${label} (kommer)` : label}
+      onClick={onClick}
+      disabled={disabled}
+      className="grid place-items-center rounded-md px-2 py-1.5 text-[13px] text-foreground transition-colors hover:bg-card disabled:cursor-not-allowed disabled:text-muted-foreground/40 disabled:hover:bg-transparent"
     >
       {children}
     </button>

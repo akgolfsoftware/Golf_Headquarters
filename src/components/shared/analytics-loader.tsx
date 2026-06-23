@@ -9,7 +9,7 @@
  */
 
 import { useEffect } from "react";
-import { CONSENT_KEY, CONSENT_ALL, getStoredConsent } from "./cookie-banner";
+import { CONSENT_ALL, getStoredConsent } from "./cookie-banner";
 
 type Props = {
   domain: string;

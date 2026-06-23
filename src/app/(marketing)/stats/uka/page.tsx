@@ -398,11 +398,8 @@ export default async function UkaPage() {
       {/* Arsiv-footer */}
       <section className="stats-section stats-section-divider">
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
-          {data && data.ukeNummer > 1 && (
-            <Link href={`/stats/uka/${data.aar}-${data.ukeNummer - 1}`} style={{ fontFamily: "var(--font-mono)", fontSize: 13, color: "var(--s-primary)", textDecoration: "none" }}>
-              ← Uke {data.ukeNummer - 1}
-            </Link>
-          )}
+          {/* Per-uke-arkiv (/stats/uka/{aar}-{uke}) finnes ikke som rute ennå —
+              droppet den døde «← Uke N»-lenken (404). Beholder Stats Hub-lenken. */}
           <Link href="/stats" style={{ fontFamily: "var(--font-mono)", fontSize: 13, color: "var(--s-muted-fg)", textDecoration: "none" }}>
             Tilbake til Stats Hub
           </Link>

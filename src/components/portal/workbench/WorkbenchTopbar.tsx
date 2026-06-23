@@ -124,31 +124,46 @@ export function WorkbenchTopbar({
       {/* Right */}
       <div className="flex items-center gap-2">
         <div className="hidden items-center gap-2 rounded-lg bg-white/10 px-3 py-1.5 lg:flex">
-          <button type="button" className="grid h-8 w-8 place-items-center rounded-lg text-white/60 hover:text-white" aria-label="Forrige uke">
+          <button
+            type="button"
+            disabled
+            title="Uke-navigasjon kommer"
+            className="grid h-8 w-8 cursor-not-allowed place-items-center rounded-lg text-white/30"
+            aria-label="Forrige uke (kommer)"
+          >
             <ChevronLeft size={16} strokeWidth={1.5} />
           </button>
           <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-white/90">
             Uke {weekNumber}
           </span>
-          <button type="button" className="grid h-8 w-8 place-items-center rounded-lg text-white/60 hover:text-white" aria-label="Neste uke">
+          <button
+            type="button"
+            disabled
+            title="Uke-navigasjon kommer"
+            className="grid h-8 w-8 cursor-not-allowed place-items-center rounded-lg text-white/30"
+            aria-label="Neste uke (kommer)"
+          >
             <ChevronRight size={16} strokeWidth={1.5} />
           </button>
         </div>
 
         <button
           type="button"
-          className="grid h-8 w-8 place-items-center rounded-lg text-white/70 hover:bg-white/10"
-          aria-label="Søk"
+          disabled
+          title="Søk kommer"
+          className="grid h-8 w-8 cursor-not-allowed place-items-center rounded-lg text-white/30"
+          aria-label="Søk (kommer)"
         >
           <Search size={16} strokeWidth={1.5} />
         </button>
         <button
           type="button"
-          className="relative grid h-8 w-8 place-items-center rounded-lg text-white/70 hover:bg-white/10"
-          aria-label="Varsler"
+          disabled
+          title="Varsler kommer"
+          className="relative grid h-8 w-8 cursor-not-allowed place-items-center rounded-lg text-white/30"
+          aria-label="Varsler (kommer)"
         >
           <Bell size={16} strokeWidth={1.5} />
-          <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-destructive" />
         </button>
 
         <Button
