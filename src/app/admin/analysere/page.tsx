@@ -1,6 +1,18 @@
 /**
  * /admin/analysere — AgencyOS Innsikt hub
  * Design: hubs-coach.jsx (CoachInnsikt)
+ *
+ * Server component: alle tall hentes fra Prisma. Metrikker uten ekte kilde
+ * vises som «—» eller utelates — aldri fabrikerte verdier (CLAUDE.md-regel).
+ *
+ * Kilder:
+ *   - Spillere          : User (role=PLAYER, ikke slettet)
+ *   - Overdue tester    : TestAssignment (OPEN, dueDate < nå)
+ *   - Godkjenninger     : PlanAction (PENDING) — samme som /admin/godkjenninger
+ *   - Forespørsler      : SessionRequest (PENDING) — samme som /admin/foresporsler
+ *   - Runder            : Round (totalt + denne mnd)
+ *   - Finance           : Payment (netto denne mnd + delta mot forrige mnd)
+ *   - Tilstander        : Leave (isInjury, pågående)
  */
 
 import {
@@ -21,69 +33,109 @@ import {
   HubStatSep,
   HubCard,
   HubPill,
-  PyramidMini,
   HubSparkline,
 } from "@/components/hubs";
 import { HubActions } from "./_hub-actions";
 
 export const dynamic = "force-dynamic";
 
+function kr(ore: number): string {
+  return `kr ${Math.round(ore / 100).toLocaleString("nb-NO")}`;
+}
+
 export default async function AnalyserePage() {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
-  // Ekte tall fra databasen (header + matchende kort). Resten av kort-
-  // teksten (breakdowns, +12%-trend) mangler kilde og står som design-seed.
-  const [antallSpillere, overdueTester, ventendeGodkjenninger] =
-    await Promise.all([
-      prisma.user.count({ where: { role: "PLAYER" } }).catch(() => 0),
-      prisma.testAssignment
-        .count({
-          where: { status: "OPEN", dueDate: { lt: new Date() } },
-        })
-        .catch(() => 0),
-      prisma.planAction
-        .count({ where: { status: "PENDING" } })
-        .catch(() => 0),
-    ]);
+  const now = new Date();
+  const mndStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const forrigeMndStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+
+  const [
+    spillere,
+    overdueTester,
+    godkjenningerVenter,
+    foresporslerVenter,
+    runderTotalt,
+    runderDenneMnd,
+    skader,
+    inntektDenneMnd,
+    inntektForrigeMnd,
+  ] = await Promise.all([
+    prisma.user.count({ where: { role: "PLAYER", deletedAt: null } }),
+    prisma.testAssignment.count({
+      where: { status: "OPEN", dueDate: { lt: now } },
+    }),
+    prisma.planAction.count({ where: { status: "PENDING" } }),
+    prisma.sessionRequest.count({ where: { status: "PENDING" } }),
+    prisma.round.count(),
+    prisma.round.count({ where: { playedAt: { gte: mndStart } } }),
+    prisma.leave.count({
+      where: {
+        isInjury: true,
+        startAt: { lte: now },
+        OR: [{ endAt: null }, { endAt: { gt: now } }],
+      },
+    }),
+    prisma.payment.aggregate({
+      where: {
+        status: { in: ["SUCCEEDED", "PARTIALLY_REFUNDED"] },
+        paidAt: { gte: mndStart, lt: now },
+      },
+      _sum: { amountOre: true, amountRefundedOre: true },
+      _count: true,
+    }),
+    prisma.payment.aggregate({
+      where: {
+        status: { in: ["SUCCEEDED", "PARTIALLY_REFUNDED"] },
+        paidAt: { gte: forrigeMndStart, lt: mndStart },
+      },
+      _sum: { amountOre: true, amountRefundedOre: true },
+    }),
+  ]);
+
+  // Finance: netto = brutto − refundert (samme som /admin/okonomi).
+  const nettoOre =
+    (inntektDenneMnd._sum.amountOre ?? 0) - (inntektDenneMnd._sum.amountRefundedOre ?? 0);
+  const forrigeNettoOre =
+    (inntektForrigeMnd._sum.amountOre ?? 0) - (inntektForrigeMnd._sum.amountRefundedOre ?? 0);
+  const inntektDelta =
+    forrigeNettoOre > 0
+      ? Math.round(((nettoOre - forrigeNettoOre) / forrigeNettoOre) * 100)
+      : null; // ingen forrige-mnd-grunnlag → ikke fabrikkér prosent
+  const deltaTekst =
+    inntektDelta != null ? `${inntektDelta >= 0 ? "+" : ""}${inntektDelta}%` : "—";
+  const antallFakturaer = inntektDenneMnd._count;
 
   return (
     <HubFrame>
       <HubHeader
-        eyebrow="AGENCYOS · COACH"
+        eyebrow="AGENCYOS · INNSIKT"
         title="Innsikt over"
         titleItalic="stallen"
         sub="Stall-statistikk, tester, godkjenninger og rapporter."
         actions={
           <HubActions
             stats={[
-              { label: "Spillere", value: String(antallSpillere) },
+              { label: "Spillere", value: String(spillere) },
               { label: "Overdue tester", value: String(overdueTester) },
-              {
-                label: "Godkjenninger venter",
-                value: String(ventendeGodkjenninger),
-              },
-              { label: "Endring mot forrige mnd", value: "+12%" },
+              { label: "Godkjenninger venter", value: String(godkjenningerVenter) },
             ]}
           />
         }
         stats={
           <>
             <span>
-              <strong>{antallSpillere}</strong> spillere
+              <strong>{spillere}</strong> spillere
             </span>
             <HubStatSep />
-            <span className="warn-dot">
-              <span />
+            <span className={overdueTester > 0 ? "warn-dot" : undefined}>
+              {overdueTester > 0 ? <span /> : null}
               <strong>{overdueTester} overdue</strong> tester
             </span>
             <HubStatSep />
-            <span className="warn-dot">
-              <span />
-              <strong>{ventendeGodkjenninger}</strong> godkjenninger venter
-            </span>
-            <HubStatSep />
-            <span>
-              <strong>+12%</strong> mot forrige mnd
+            <span className={godkjenningerVenter > 0 ? "warn-dot" : undefined}>
+              {godkjenningerVenter > 0 ? <span /> : null}
+              <strong>{godkjenningerVenter}</strong> godkjenninger venter
             </span>
           </>
         }
@@ -95,9 +147,8 @@ export default async function AnalyserePage() {
           icon={BarChart3}
           eyebrow="01 · OVERSIKT"
           title="Lag-snitt"
-          data="Pyramide-snitt · Q2 2026"
-          sub="Tek 32% · Slag 28% · Fys 18% · Spill 14% · Turn 8%"
-          visual={<PyramidMini />}
+          data="Pyramide-snitt"
+          sub="Tek · Slag · Fys · Spill · Turnering"
           cta="Se trender →"
         />
         <HubCard
@@ -105,12 +156,18 @@ export default async function AnalyserePage() {
           icon={ClipboardCheck}
           eyebrow="02 · MÅLINGER"
           title="Tester"
-          data={`${overdueTester} overdue`}
-          sub="CMJ · Squat · 5-iron · Wedge"
+          data={overdueTester > 0 ? `${overdueTester} overdue` : "Ingen overdue"}
+          sub="Tildelte tester forfalt uten resultat"
           statusPill={
-            <HubPill kind="danger" dot="d-danger">
-              {overdueTester} OVERDUE
-            </HubPill>
+            overdueTester > 0 ? (
+              <HubPill kind="danger" dot="d-danger">
+                {overdueTester} OVERDUE
+              </HubPill>
+            ) : (
+              <HubPill kind="ok" dot="d-ok">
+                AJOUR
+              </HubPill>
+            )
           }
           cta="Behandle →"
         />
@@ -119,12 +176,18 @@ export default async function AnalyserePage() {
           icon={CheckCheck}
           eyebrow="03 · INNBOKS"
           title="Godkjenninger"
-          data={`${ventendeGodkjenninger} venter`}
-          sub="3 plan-revisjon · 4 runder · 1 utstyr"
+          data={`${godkjenningerVenter} venter`}
+          sub="Plan-endringer foreslått av spillerne"
           statusPill={
-            <HubPill kind="warn" dot="d-warn">
-              {ventendeGodkjenninger} VENTER
-            </HubPill>
+            godkjenningerVenter > 0 ? (
+              <HubPill kind="warn" dot="d-warn">
+                {godkjenningerVenter} VENTER
+              </HubPill>
+            ) : (
+              <HubPill kind="ok" dot="d-ok">
+                TOMT
+              </HubPill>
+            )
           }
           cta="Gå gjennom →"
         />
@@ -133,14 +196,20 @@ export default async function AnalyserePage() {
           icon={MessageSquare}
           eyebrow="04 · DIALOG"
           title="Forespørsler"
-          data="0 ubehandlete"
-          sub="Sist: 24. mai · 11:48 — alt besvart"
+          data={`${foresporslerVenter} ubehandlede`}
+          sub="Booking-ønsker fra spillerne"
           statusPill={
-            <HubPill kind="ok" dot="d-ok">
-              INBOX 0
-            </HubPill>
+            foresporslerVenter > 0 ? (
+              <HubPill kind="warn" dot="d-warn">
+                {foresporslerVenter} VENTER
+              </HubPill>
+            ) : (
+              <HubPill kind="ok" dot="d-ok">
+                INBOX 0
+              </HubPill>
+            )
           }
-          tone="muted"
+          tone={foresporslerVenter > 0 ? "default" : "muted"}
           cta="Se historikk →"
         />
         <HubCard
@@ -148,31 +217,37 @@ export default async function AnalyserePage() {
           icon={FileBarChart}
           eyebrow="05 · EKSPORT"
           title="Rapporter"
-          data="Siste generert: 23. mai"
-          sub="Mnd-rapport mai · 38 spillere"
-          cta="Generer ny →"
+          data="Eksport"
+          sub="Generer og last ned stall-rapporter"
+          cta="Åpne →"
         />
         <HubCard
           href="/admin/runder"
           icon={Flag}
           eyebrow="06 · KONKURRANSE"
           title="Runder"
-          data="47 logget"
-          sub="12 denne mnd · snitt SG +0,8"
+          data={`${runderTotalt} logget`}
+          sub={`${runderDenneMnd} denne mnd`}
           visual={<HubSparkline variant="up" />}
           cta="Se runder →"
         />
         <HubCard
-          href="/admin/finance"
+          href="/admin/okonomi"
           icon={Wallet}
           eyebrow="07 · ØKONOMI"
           title="Finance"
-          data="kr 36 753"
-          sub="+12% mot forrige · 23 fakturaer"
+          data={antallFakturaer > 0 ? kr(nettoOre) : "—"}
+          sub={
+            antallFakturaer > 0
+              ? `${deltaTekst} mot forrige · ${antallFakturaer} ${antallFakturaer === 1 ? "betaling" : "betalinger"}`
+              : "Ingen betalinger denne måneden"
+          }
           statusPill={
-            <HubPill kind="ok" dot="d-ok">
-              +12%
-            </HubPill>
+            inntektDelta != null ? (
+              <HubPill kind={inntektDelta >= 0 ? "ok" : "warn"} dot={inntektDelta >= 0 ? "d-ok" : "d-warn"}>
+                {deltaTekst}
+              </HubPill>
+            ) : undefined
           }
           cta="Detaljer →"
         />
@@ -181,12 +256,18 @@ export default async function AnalyserePage() {
           icon={HeartPulse}
           eyebrow="08 · HELSE"
           title="Tilstander"
-          data="2 registrerte skader"
-          sub="Sondre H. — handledd · Iben L. — kne"
+          data={skader > 0 ? `${skader} ${skader === 1 ? "registrert skade" : "registrerte skader"}` : "Ingen skader"}
+          sub="Pågående skade-/permisjonssaker"
           statusPill={
-            <HubPill kind="warn" dot="d-warn">
-              2 SKADER
-            </HubPill>
+            skader > 0 ? (
+              <HubPill kind="warn" dot="d-warn">
+                {skader} {skader === 1 ? "SKADE" : "SKADER"}
+              </HubPill>
+            ) : (
+              <HubPill kind="ok" dot="d-ok">
+                FRISK
+              </HubPill>
+            )
           }
           cta="Se logger →"
         />

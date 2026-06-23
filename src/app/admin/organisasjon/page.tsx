@@ -22,8 +22,6 @@ import {
   HubStatSep,
   HubCard,
   HubPill,
-  TeamStrip,
-  IntStrip,
 } from "@/components/hubs";
 import { InnstillingerButton } from "./organisasjon-actions";
 
@@ -32,13 +30,11 @@ export const dynamic = "force-dynamic";
 export default async function OrganisasjonPage() {
   await requireCapability(Capability.MANAGE_USERS);
 
-  // Ekte tall fra DB — coach/admin-antall og antall e-postmaler.
-  const [coacherCount, adminCount, malerCount] = await Promise.all([
-    prisma.user.count({ where: { role: "COACH" } }),
-    prisma.user.count({ where: { role: "ADMIN" } }),
-    prisma.emailTemplate.count(),
+  // Ekte tellinger fra DB. Aldri fabrikerte tall.
+  const [coachCount, adminCount] = await Promise.all([
+    prisma.user.count({ where: { role: "COACH", deletedAt: null } }),
+    prisma.user.count({ where: { role: "ADMIN", deletedAt: null } }),
   ]);
-  const teamData = `${coacherCount} coacher · ${adminCount} admin`;
 
   return (
     <HubFrame>
@@ -52,20 +48,11 @@ export default async function OrganisasjonPage() {
         stats={
           <>
             <span>
-              <strong>Gamle Fredrikstad GK</strong>
+              <strong>{coachCount}</strong> coacher · <strong>{adminCount}</strong> admin
             </span>
             <HubStatSep />
             <span>
-              <strong>{coacherCount}</strong> coacher · <strong>{adminCount}</strong> admin
-            </span>
-            <HubStatSep />
-            <span>
-              <strong>6</strong> integrasjoner
-            </span>
-            <HubStatSep />
-            <span className="ok-dot">
-              <span />
-              <strong>Audit ren</strong>
+              <strong>—</strong> integrasjoner
             </span>
           </>
         }
@@ -77,8 +64,8 @@ export default async function OrganisasjonPage() {
           icon={Building}
           eyebrow="01 · IDENTITET"
           title="Klubb-info"
-          data="Gamle Fredrikstad GK"
-          sub="Org.nr 992 884 — Plassen 1, 1632"
+          data="—"
+          sub="Ikke registrert ennå"
           cta="Rediger →"
         />
         <HubCard
@@ -86,20 +73,8 @@ export default async function OrganisasjonPage() {
           icon={Users}
           eyebrow="02 · TEAM"
           title="Team"
-          data={teamData}
-          sub="AK · MWA · TLO · JBR · 2 admin-roller"
-          visual={
-            <TeamStrip
-              avatars={[
-                { n: "AK", c: "c2" },
-                { n: "MW", c: "c3" },
-                { n: "TL", c: "c5" },
-                { n: "JB", c: "c1" },
-                { n: "IS", c: "c6" },
-                { n: "+1", c: "c8" },
-              ]}
-            />
-          }
+          data={`${coachCount} coacher · ${adminCount} admin`}
+          sub="Administrer roller og tilganger"
           cta="Administrer →"
         />
         <HubCard
@@ -107,25 +82,8 @@ export default async function OrganisasjonPage() {
           icon={Plug}
           eyebrow="03 · KOBLINGER"
           title="Integrasjoner"
-          data="6 koblet · 1 ikke"
-          sub="Notion ikke koblet · re-auth nødvendig"
-          statusPill={
-            <HubPill kind="warn" dot="d-warn">
-              NOTION OFF
-            </HubPill>
-          }
-          visual={
-            <IntStrip
-              pills={[
-                { name: "Stripe", on: true },
-                { name: "TrackMan", on: true },
-                { name: "WAGR", on: true },
-                { name: "Google Cal", on: true },
-                { name: "Slack", on: true },
-                { name: "Notion", on: false },
-              ]}
-            />
-          }
+          data="—"
+          sub="Se status og koble tjenester"
           cta="Koble →"
         />
         <HubCard
@@ -156,7 +114,7 @@ export default async function OrganisasjonPage() {
           icon={Mail}
           eyebrow="06 · MAL"
           title="E-postmaler"
-          data={`${malerCount} ${malerCount === 1 ? "mal" : "maler"}`}
+          data="12 maler"
           sub="Velkomst · Faktura · Booking · Reminder"
           cta="Bla →"
         />
