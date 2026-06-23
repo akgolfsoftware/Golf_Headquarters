@@ -3,6 +3,14 @@
 Flyttet fra CLAUDE.md 2026-06-14. Les denne FØR du skriver kode. Når noe brekker, legg gotcha-en til her.
 (Eldre PRISMA-7- og Supabase-detaljer finnes også i git-historikken.)
 
+### AI Caddie — modell-tilgang + AI SDK-feller (oppdaget 2026-06-23)
+- **Vercel AI Gateway free-tier gir IKKE modell-tilgang** («Free tier users do not have access to this model»). Caddie-chat bruker derfor `@ai-sdk/anthropic` direkte (`ANTHROPIC_API_KEY`), ikke `@ai-sdk/gateway`.
+- **`ANTHROPIC_BASE_URL` i miljøet mangler `/v1`** (`https://api.anthropic.com`). Raw `@anthropic-ai/sdk` legger til `/v1/` selv, men `@ai-sdk/anthropic` bruker verdien som-den-er → `/messages` → 404 «Not Found». Løsning: normaliser baseURL i ruten (`createAnthropic({ baseURL: …endsWith("/v1") ? … : …+"/v1" })`). Ikke endre env-verdien — andre agenter bruker den.
+- **`useChat`/`DefaultChatTransport` krever `toUIMessageStreamResponse()`**, ikke `toTextStreamResponse()` (sistnevnte gir tom UI selv om svaret kommer).
+- **Tools trenger `stopWhen: stepCountIs(n)`** i `streamText`, ellers stopper modellen etter første tool-call uten å svare.
+- **AI SDK v6 tool-parts:** navnet ligger i `part.type` (`"tool-<navn>"`), ikke `part.toolName`; state er `output-available`/`output-error`/`input-*`, ikke «result».
+- **Gyldig Sonnet-id mot api.anthropic.com:** `claude-sonnet-4-6` (bekreftet via `anthropic.models.list()`).
+
 ### JSON-blobs MÅ valideres med zod
 Alle `as unknown as <Type>` på JSON-felter fra Prisma er forbudt for forretningskritiske data. Bruk zod `safeParse` ved read.
 
