@@ -23,6 +23,7 @@
     "meg:tilbakeskriv": "tsx scripts/meg-tilbakeskriving/run.ts"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^3.0.85",
     "@ai-sdk/gateway": "^3.0.115",
     "@ai-sdk/react": "^3.0.186",
     "@anthropic-ai/sdk": "^0.95.1",

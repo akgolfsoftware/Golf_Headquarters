@@ -1,10 +1,11 @@
 // POST /api/caddie/chat
-// Caddie chat-engine. Streamer responser fra Claude Sonnet 4.6 via Vercel AI
-// Gateway. Persisterer både bruker- og assistant-meldinger til CaddieMessage.
-// Krever ADMIN-rolle (canAccessMissionControl).
+// Caddie chat-engine. Streamer responser fra Claude Sonnet 4.6 direkte via
+// Anthropic-APIet (ANTHROPIC_API_KEY) — Vercel AI Gateway free-tier gir ikke
+// modell-tilgang. Persisterer både bruker- og assistant-meldinger til
+// CaddieMessage. Krever ADMIN-rolle (canAccessMissionControl).
 
-import { streamText, convertToModelMessages, type UIMessage } from "ai";
-import { gateway } from "@ai-sdk/gateway";
+import { streamText, convertToModelMessages, stepCountIs, type UIMessage } from "ai";
+import { createAnthropic } from "@ai-sdk/anthropic";
 import { canAccessMissionControl } from "@/lib/auth/canAccessMissionControl";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
@@ -14,7 +15,16 @@ import { CADDIE_TOOLS } from "@/lib/caddie/tools";
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
-const MODEL_ID = "anthropic/claude-sonnet-4-6" as const;
+const MODEL_ID = "claude-sonnet-4-6" as const;
+
+// ANTHROPIC_BASE_URL i miljøet peker på host uten "/v1" (funker for raw
+// @anthropic-ai/sdk, men @ai-sdk/anthropic forventer at baseURL inkluderer
+// "/v1"). Normaliser så provideren treffer riktig endepunkt.
+const ANTHROPIC_BASE = (process.env.ANTHROPIC_BASE_URL ?? "https://api.anthropic.com").replace(/\/+$/, "");
+const anthropic = createAnthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+  baseURL: ANTHROPIC_BASE.endsWith("/v1") ? ANTHROPIC_BASE : `${ANTHROPIC_BASE}/v1`,
+});
 
 type ChatRequestBody = {
   messages?: unknown;
@@ -106,10 +116,13 @@ export async function POST(req: Request) {
   const modelMessages = await convertToModelMessages(messages);
 
   const result = streamText({
-    model: gateway.languageModel(MODEL_ID),
+    model: anthropic(MODEL_ID),
     system: CADDIE_SYSTEM_PROMPT,
     messages: modelMessages,
     tools: CADDIE_TOOLS,
+    // La modellen fortsette etter at et lese-verktøy er kjørt, så den faktisk
+    // svarer (uten dette stopper streamText etter første tool-call).
+    stopWhen: stepCountIs(5),
     maxRetries: 2,
     onFinish: async ({ text, usage, toolCalls, toolResults }) => {
       if (!conversationId) return;
@@ -134,5 +147,5 @@ export async function POST(req: Request) {
     },
   });
 
-  return result.toTextStreamResponse();
+  return result.toUIMessageStreamResponse();
 }
