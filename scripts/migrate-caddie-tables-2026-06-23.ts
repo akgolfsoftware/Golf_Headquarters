@@ -1,0 +1,64 @@
+/**
+ * scripts/migrate-caddie-tables-2026-06-23.ts
+ *
+ * Additiv, kirurgisk migrasjon for AI Caddie Fase 1 (jf. gotchas.md):
+ * oppretter caddie_conversations + caddie_drafts via CREATE TABLE IF NOT EXISTS
+ * mot DIRECT_URL. Rører KUN egne tabeller — ingen drift på eksisterende skjema.
+ * Idempotent (IF NOT EXISTS).
+ *
+ * Kjøres med: npx tsx scripts/migrate-caddie-tables-2026-06-23.ts
+ */
+
+import { config as loadEnv } from "dotenv";
+loadEnv({ path: ".env.local" });
+
+import { PrismaClient } from "../src/generated/prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+
+const adapter = new PrismaPg({ connectionString: process.env.DIRECT_URL! });
+const prisma = new PrismaClient({ adapter });
+
+const STATEMENTS: string[] = [
+  `CREATE TABLE IF NOT EXISTS "caddie_conversations" (
+    "id" TEXT PRIMARY KEY,
+    "userId" TEXT NOT NULL,
+    "title" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
+  )`,
+  `CREATE INDEX IF NOT EXISTS "caddie_conversations_userId_updatedAt_idx"
+    ON "caddie_conversations" ("userId", "updatedAt")`,
+
+  `CREATE TABLE IF NOT EXISTS "caddie_drafts" (
+    "id" TEXT PRIMARY KEY,
+    "userId" TEXT NOT NULL,
+    "conversationId" TEXT NOT NULL,
+    "toolCallId" TEXT NOT NULL,
+    "toolName" TEXT NOT NULL,
+    "toolInput" JSONB NOT NULL,
+    "previewText" TEXT NOT NULL,
+    "status" TEXT NOT NULL DEFAULT 'PENDING',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "resolvedAt" TIMESTAMP(3)
+  )`,
+  `CREATE INDEX IF NOT EXISTS "caddie_drafts_userId_status_createdAt_idx"
+    ON "caddie_drafts" ("userId", "status", "createdAt")`,
+  `CREATE INDEX IF NOT EXISTS "caddie_drafts_conversationId_idx"
+    ON "caddie_drafts" ("conversationId")`,
+];
+
+async function main() {
+  if (!process.env.DIRECT_URL) throw new Error("DIRECT_URL mangler i .env.local");
+  for (const sql of STATEMENTS) {
+    await prisma.$executeRawUnsafe(sql);
+    console.log("OK:", sql.replace(/\s+/g, " ").slice(0, 70));
+  }
+  console.log("Ferdig — caddie_conversations + caddie_drafts klare.");
+}
+
+main()
+  .catch((e) => {
+    console.error("FEIL:", e);
+    process.exit(1);
+  })
+  .finally(() => prisma.$disconnect());

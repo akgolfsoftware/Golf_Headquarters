@@ -8,18 +8,19 @@ const TABS = [
   { href: "/admin/agencyos/live", label: "Live" },
   { href: "/admin/agencyos/uka", label: "Uka" },
   { href: "/admin/agencyos/spillere", label: "Spillere" },
-  { href: "/admin/agencyos/okonomi", label: "Økonomi" },
-  { href: "/admin/agencyos/caddie", label: "Caddie" },
+  { href: "/admin/agencyos/okonomi", label: "Økonomi", adminOnly: true },
+  { href: "/admin/agencyos/caddie", label: "Caddie", adminOnly: true },
 ];
 
-export function AgencyOSTabNav() {
+export function AgencyOSTabNav({ isAdmin = false }: { isAdmin?: boolean }) {
   const path = usePathname();
+  const tabs = TABS.filter((t) => !t.adminOnly || isAdmin);
   return (
     <nav
       aria-label="AgencyOS-faner"
       className="flex items-center gap-1 overflow-x-auto rounded-md border border-border bg-card p-1 sm:flex-wrap"
     >
-      {TABS.map((t) => {
+      {tabs.map((t) => {
         const aktiv =
           path === t.href ||
           (t.href !== "/admin/agencyos" && path.startsWith(t.href + "/"));

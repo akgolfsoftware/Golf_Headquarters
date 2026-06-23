@@ -3019,6 +3019,43 @@ model CaddieMessage {
   @@map("caddie_messages")
 }
 
+// ---------- AI Caddie — persistens (Fase 1, 2026-06-23) ----------
+// Nye modeller bruker plain String-FK (ingen @relation) for å holde
+// migrasjonen isolert (jf. gotchas.md — additiv CREATE TABLE via db execute).
+
+// Eksplisitt samtale-entity for Caddie-chat. CaddieMessage.conversationId
+// peker hit (plain string-kobling).
+model CaddieConversation {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, updatedAt])
+  @@map("caddie_conversations")
+}
+
+// Persistert forslag fra et write-verktøy (krever godkjenning). Lar utkast
+// overleve og vises i co-agent-innboksen (Fase 2).
+model CaddieDraft {
+  id             String    @id @default(cuid())
+  userId         String
+  conversationId String
+  toolCallId     String
+  toolName       String
+  toolInput      Json
+  previewText    String    @db.Text
+  // "PENDING" | "APPROVED" | "REJECTED"
+  status         String    @default("PENDING")
+  createdAt      DateTime  @default(now())
+  resolvedAt     DateTime?
+
+  @@index([userId, status, createdAt])
+  @@index([conversationId])
+  @@map("caddie_drafts")
+}
+
 // ---------- Workbench v2 — Sprint 1 (Live Session Logger + Plan/Turnering) ----------
 
 // Live Session Logger — én instans per drill i en konkret økt.
