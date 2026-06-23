@@ -5,7 +5,7 @@ import { ArrowRight, Star, Trophy, Users, Zap } from "lucide-react";
 import { PulseDot } from "@/components/athletic/pulse-dot";
 
 export const metadata: Metadata = {
-  title: "Junior — AK Golf Academy",
+  title: "Junior · AK Golf Academy",
   description:
     "Golf for unge talenter. AK Golf Academy tilbyr strukturert juniortrening for U10, U14, U18 og Talent-gruppen.",
 };
@@ -23,7 +23,7 @@ const GRUPPER: Aldersgruppe[] = [
   {
     gruppe: "U10",
     alder: "Under 10 år",
-    krav: "Ingen krav — nybegynnere hjertelig velkomne",
+    krav: "Ingen krav, nybegynnere hjertelig velkomne",
     frekvens: "1 gang per uke",
     sesong: "Mai–september (utendørs)",
     Icon: Star,
@@ -33,7 +33,7 @@ const GRUPPER: Aldersgruppe[] = [
     alder: "Under 14 år",
     krav: "Grunnleggende golferfaring, eget sett med køller",
     frekvens: "2 ganger per uke",
-    sesong: "Helårs — innendørs Mulligan om vinteren",
+    sesong: "Helårs, innendørs Mulligan om vinteren",
     Icon: Users,
   },
   {
@@ -118,7 +118,7 @@ export default function JuniorSide() {
               style={{ animationDelay: "200ms" }}
             >
               Vi tror på systematisk utvikling fra tidlig alder. AK Golf Academy
-              tilbyr strukturert juniortrening tilpasset hvert utviklingstrinn —
+              tilbyr strukturert juniortrening tilpasset hvert utviklingstrinn,
               fra de aller yngste til elitesatsing med WANG Toppidrett
               Fredrikstad.
             </p>
@@ -217,7 +217,7 @@ export default function JuniorSide() {
               <div className="mt-8 space-y-4 text-[14px] text-muted-foreground">
                 <InfoRad label="Sesongstart" verdi="1. mai (utendørs)" />
                 <InfoRad label="Vinterstudio" verdi="1. november (innendørs)" />
-                <InfoRad label="Påmeldingsfrist" verdi="Løpende — plass til det er fullt" />
+                <InfoRad label="Påmeldingsfrist" verdi="Løpende, plass til det er fullt" />
               </div>
             </div>
 
@@ -239,8 +239,8 @@ export default function JuniorSide() {
                 Meld interesse på <Em dark>e-post</Em>.
               </h3>
               <p className="relative z-10 mt-4 max-w-[48ch] text-[16px] leading-[1.55] text-white/85">
-                Send oss en e-post med navn på junior, alder og kontaktinfo —
-                vi tar kontakt innen 1 virkedag.
+                Send oss en e-post med navn på junior, alder og kontaktinfo,
+                så tar vi kontakt innen 1 virkedag.
               </p>
               <a
                 href="mailto:post@akgolf.no?subject=Junior-p%C3%A5melding&body=Hei!%0A%0ANavn%20p%C3%A5%20junior%3A%20%0AAlder%3A%20%0AE-post%20foresatte%3A%20%0ATelefon%3A%20%0A%0AHilsen"

@@ -12,9 +12,9 @@ import {
 } from "@/components/marketing/marketing-sections";
 
 export const metadata: Metadata = {
-  title: "Priser — AK Golf Academy",
+  title: "Priser · AK Golf Academy",
   description:
-    "Flex drop-in 0 kr/mnd, Performance 1 200 kr/mnd, Performance Pro 2 220 kr/mnd. PlayerHQ-appen er gratis med coaching — ellers 300 kr/mnd. Ingen binding.",
+    "Flex drop-in 0 kr/mnd, Performance 1 200 kr/mnd, Performance Pro 2 220 kr/mnd. PlayerHQ-appen er gratis med coaching, ellers 300 kr/mnd. Ingen binding.",
 };
 
 /* Tjenester — samme priser og kort-anatomi som forsiden */
@@ -83,7 +83,7 @@ const APP_BETALT = [
 const FAQ_PRISER = [
   {
     q: "Kan jeg oppgradere når som helst?",
-    a: "Ja. Du kan legge til en coaching-pakke eller endre abonnementet når det passer deg — endringen trer i kraft umiddelbart.",
+    a: "Ja. Du kan legge til en coaching-pakke eller endre abonnementet når det passer deg, og endringen trer i kraft umiddelbart.",
   },
   {
     q: "Er det binding?",
@@ -91,7 +91,7 @@ const FAQ_PRISER = [
   },
   {
     q: "Hva skjer med dataene mine hvis jeg sier opp?",
-    a: "All historikk, runder og statistikk bevares. Du kan når som helst komme tilbake — alt ligger der du slapp.",
+    a: "All historikk, runder og statistikk bevares. Du kan når som helst komme tilbake, og alt ligger der du slapp.",
   },
 ];
 
@@ -107,7 +107,7 @@ export default function PriserSide() {
             Enkelt og <HeroEm>ærlig</HeroEm> prising.
           </>
         }
-        ingress="Start gratis — oppgrader når du er klar. Ingen skjulte avgifter, ingen binding."
+        ingress="Start gratis, og oppgrader når du er klar. Ingen skjulte avgifter, ingen binding."
         primaer={{ href: "#pakker", label: "Se pakkene" }}
         sekundaer={{ href: "/kontakt", label: "Snakk med oss" }}
       />
@@ -138,13 +138,13 @@ export default function PriserSide() {
           <p className="mt-4 max-w-[56ch] text-[16px] leading-[1.6] text-muted-foreground">
             PlayerHQ er inkludert i alle coaching-pakker, i én måneds
             prøveperiode og for spillere i grupper gjennom AK Golf. Alle andre
-            betaler 300 kr i måneden — uten binding.
+            betaler 300 kr i måneden, uten binding.
           </p>
 
           <div className="mt-12 grid max-w-4xl grid-cols-1 gap-4 md:grid-cols-2">
             <TjenesteCard
               eb="Anbefalt · Gratis via coaching"
-              title="PlayerHQ — inkludert"
+              title="PlayerHQ inkludert"
               price="0"
               items={APP_GRATIS}
               cta="Se coaching-pakkene"
@@ -200,7 +200,7 @@ export default function PriserSide() {
             Klar til å ta <Em dark>neste steg</Em>?
           </h2>
           <p className="relative z-10 mx-auto mt-4 max-w-[56ch] text-[16px] leading-[1.55] text-white/85">
-            Opprett en gratis konto i dag — ingen kredittkort nødvendig.
+            Opprett en gratis konto i dag. Ingen kredittkort nødvendig.
           </p>
           <div className="relative z-10 mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <CtaLime href="/auth/signup" withArrow>

@@ -10,9 +10,9 @@ import {
 import { PulseDot } from "@/components/athletic/pulse-dot";
 
 export const metadata: Metadata = {
-  title: "Anlegg — AK Golf Academy",
+  title: "Anlegg hos AK Golf Academy",
   description:
-    "Hovedanleggene våre — Gamle Fredrikstad Golfklubb, Miklagard Golfklubb og Mulligan Indoor Golf.",
+    "Hovedanleggene våre: Gamle Fredrikstad Golfklubb, Miklagard Golfklubb og Mulligan Indoor Golf.",
 };
 
 function slugify(name: string) {
@@ -110,7 +110,7 @@ export default async function AnleggListe() {
               className="mkt-hero-in mt-5 max-w-[20ch] text-balance font-display text-[clamp(44px,6vw,80px)] font-semibold leading-[0.98] tracking-[-0.03em] text-secondary"
               style={{ animationDelay: "80ms" }}
             >
-              Hjemmebaner —{" "}
+              Hjemmebaner,{" "}
               <em className="mkt-hero-em font-normal italic text-accent">
                 ute og inne
               </em>
@@ -121,9 +121,9 @@ export default async function AnleggListe() {
               className="mkt-hero-in mt-6 max-w-[48ch] text-[17px] leading-[1.55] text-secondary/85"
               style={{ animationDelay: "200ms" }}
             >
-              Gamle Fredrikstad Golfklubb og Miklagard Golfklubb ute —
-              Mulligan Indoor Golf med TrackMan-simulatorer inne. Samme coach,
-              samme plan, sømløs booking.
+              Gamle Fredrikstad Golfklubb og Miklagard Golfklubb ute, Mulligan
+              Indoor Golf med TrackMan-simulatorer inne. Samme coach, samme
+              plan, sømløs booking.
             </p>
 
             <div
@@ -256,7 +256,7 @@ export default async function AnleggListe() {
                     className="h-3.5 w-3.5 shrink-0 text-primary"
                     strokeWidth={1.5}
                   />
-                  Fredrikstad og Sarpsborg — årsåpent
+                  Fredrikstad og Sarpsborg, årsåpent
                 </p>
                 <div className="mt-1 flex flex-col gap-1.5">
                   {MULLIGAN.steder.map((sted, i) => (
@@ -317,7 +317,7 @@ export default async function AnleggListe() {
             ?
           </h2>
           <p className="relative z-10 mx-auto mt-4 max-w-[56ch] text-[16px] leading-[1.55] text-white/85">
-            Book en økt på GFGK, Miklagard eller hos Mulligan — samme coach og
+            Book en økt på GFGK, Miklagard eller hos Mulligan. Samme coach og
             samme plan uansett hvor du trener.
           </p>
           <div className="relative z-10 mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">

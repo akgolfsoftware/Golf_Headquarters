@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Slik trener vi — AK Golf Academy",
+  title: "Slik trener vi · AK Golf Academy",
   description:
     "Pyramide-systemet, data-drevet trening og individualiserte planer. Slik bygger AK Golf Academy spillere som får fremgang.",
 };
@@ -15,35 +15,35 @@ const PYRAMIDE = [
     navn: "Fysisk",
     chip: "bg-pyr-fys text-white",
     tekst:
-      "Rotasjon, mobilitet og kjernemuskulatur er fundamentet alt annet bygger på. Har du ikke basen, fester ikke tekniske endringer seg — uansett antall repetisjoner.",
+      "Rotasjon, mobilitet og kjernemuskulatur er fundamentet alt annet bygger på. Har du ikke basen, fester ikke tekniske endringer seg, uansett hvor mange repetisjoner du tar.",
   },
   {
     kort: "TEK",
     navn: "Teknisk",
     chip: "bg-pyr-tek text-white",
     tekst:
-      "Sving, grep, impact og club-path — analysert med Trackman som fasit. Vi bygger en sving du kan stole på under press, ikke én som bare ser bra ut på video.",
+      "Sving, grep, impact og club-path, analysert med Trackman som fasit. Vi bygger en sving du kan stole på under press, ikke én som bare ser bra ut på video.",
   },
   {
     kort: "SLAG",
     navn: "Slag",
     chip: "bg-pyr-slag text-white",
     tekst:
-      "60–65 % av alle slag skjer innen 100 meter fra flagget. Chip, pitch, putt og bunkerspill trenes systematisk — det er her de fleste slag hentes.",
+      "60–65 % av alle slag skjer innen 100 meter fra flagget. Chip, pitch, putt og bunkerspill trenes systematisk, for det er her de fleste slag hentes.",
   },
   {
     kort: "SPILL",
     navn: "Spill",
     chip: "bg-pyr-spill text-primary",
     tekst:
-      "Riktig valg er like viktig som riktig utførelse. Vi trener beslutninger, risk/reward og banetilpasning — slik at du skårer lavere med svingene du allerede har.",
+      "Riktig valg er like viktig som riktig utførelse. Vi trener beslutninger, risk/reward og banetilpasning, slik at du skårer lavere med svingene du allerede har.",
   },
   {
     kort: "TURN",
     navn: "Turnering",
     chip: "bg-pyr-turn text-white",
     tekst:
-      "Alt du øver på må holde når det gjelder. Pre-shot rutine, fokusstrategi og press-håndtering — slik at du er den samme spilleren i runde to som i treningsrunden.",
+      "Alt du øver på må holde når det gjelder. Pre-shot rutine, fokusstrategi og press-håndtering, slik at du er den samme spilleren i runde to som i treningsrunden.",
   },
 ];
 
@@ -97,10 +97,10 @@ export default function Treningsfilosofi() {
       <section className="mx-auto max-w-7xl px-6 py-24 md:px-8">
         <SectionEyebrow>Prinsipp 1 · Pyramiden</SectionEyebrow>
         <SectionH2>
-          Fem områder — <Em>samtidig</Em>.
+          Fem områder, <Em>samtidig</Em>.
         </SectionH2>
         <p className="mt-4 max-w-[56ch] text-[15px] leading-[1.6] text-muted-foreground">
-          Fem områder må jobbes med samtidig — ikke ett etter et. Vi sørger for
+          Fem områder må jobbes med samtidig, ikke ett etter et. Vi sørger for
           at tiden din fordeles riktig.
         </p>
 
@@ -137,7 +137,7 @@ export default function Treningsfilosofi() {
         <p className="mt-4 max-w-[56ch] text-[15px] leading-[1.6] text-muted-foreground">
           Vi bruker Strokes Gained (SG) til å se nøyaktig hvor du taper slag
           mot ditt nivå. Det betyr at planen din peker på det som faktisk
-          koster deg slag — ikke det som føles dårligst.
+          koster deg slag, ikke det som føles dårligst.
         </p>
 
         <div className="mt-12 grid grid-cols-2 gap-4 lg:grid-cols-4">
@@ -163,7 +163,7 @@ export default function Treningsfilosofi() {
           Etter 3–5 registrerte runder ser vi et klart mønster. Kanskje driver
           du bedre enn du tror, men taper alt rundt grønnen. Kanskje er
           innspillene svakheten ingen har fortalt deg om. Planen peker dit
-          dataen peker — ikke dit magefølelsen peker.
+          dataen peker, ikke dit magefølelsen peker.
         </p>
 
         <div className="relative mt-14 overflow-hidden rounded-3xl">
@@ -193,7 +193,7 @@ export default function Treningsfilosofi() {
           Ingen plan er <Em>kopi</Em> av en annen.
         </SectionH2>
         <p className="mt-4 max-w-[62ch] text-[16px] leading-[1.6] text-muted-foreground">
-          Det som virker for en elite-junior virker ikke for en 50-åring som
+          Det som virker for en elite-junior, virker ikke for en 50-åring som
           spiller én gang i uken. Hver plan tar utgangspunkt i tre ting:{" "}
           <strong className="font-semibold text-foreground">målet ditt</strong>,{" "}
           <strong className="font-semibold text-foreground">
@@ -203,7 +203,7 @@ export default function Treningsfilosofi() {
           <strong className="font-semibold text-foreground">
             ferdighetene du allerede har
           </strong>
-          . Det er du som setter ambisjonen — vi sørger for at veien dit er
+          . Det er du som setter ambisjonen. Vi sørger for at veien dit er
           realistisk.
         </p>
       </section>

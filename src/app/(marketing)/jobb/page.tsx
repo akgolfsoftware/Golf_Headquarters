@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Jobb hos oss — AK Golf Academy",
+  title: "Jobb hos oss i AK Golf Academy",
   description:
     "Se ledige stillinger i AK Golf Academy og AK Golf Group. Send spontansøknad eller søk på aktive utlysninger.",
 };
@@ -55,7 +55,7 @@ export default function JobbSide() {
           </h1>
           <p className="mt-6 max-w-2xl text-[18px] leading-[1.6] text-muted-foreground md:text-[20px]">
             Vi er et lite team med store ambisjoner. Hos oss jobber du med de
-            beste verktøyene, tett på spillerne — og med rom til å vokse som
+            beste verktøyene, tett på spillerne, og med rom til å vokse som
             coach og fagperson.
           </p>
         </div>
@@ -71,7 +71,7 @@ export default function JobbSide() {
             />
             <VerdiKort
               tittel="Tett samarbeid"
-              tekst="Teamet er lite — du jobber direkte med Academy-ledelsen og har reell innflytelse på metoder og opplegg."
+              tekst="Teamet er lite, så du jobber direkte med Academy-ledelsen og har reell innflytelse på metoder og opplegg."
             />
             <VerdiKort
               tittel="Faglig utvikling"
@@ -116,7 +116,7 @@ export default function JobbSide() {
               </h2>
               <p className="mt-4 max-w-xl text-[15px] leading-[1.6] text-muted-foreground">
                 Send oss en spontansøknad. Fortell hvem du er, hva du brenner
-                for og hva du kan bidra med — vi leser alle henvendelser og svarer
+                for og hva du kan bidra med. Vi leser alle henvendelser og svarer
                 innen 3 virkedager.
               </p>
             </div>

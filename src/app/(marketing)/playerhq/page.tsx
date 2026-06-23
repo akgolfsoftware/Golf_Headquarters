@@ -6,9 +6,9 @@ import { PlayerHQMockup } from "@/components/marketing/playerhq-mockup";
 import { PulseDot } from "@/components/athletic/pulse-dot";
 
 export const metadata: Metadata = {
-  title: "PlayerHQ — AK Golf Academy",
+  title: "PlayerHQ · AK Golf Academy",
   description:
-    "PlayerHQ er spillerportalen til AK Golf Academy: treningsplaner, runde-registrering, statistikk og AI-coach. Gratis i beta — første betaling 1. juni 2026.",
+    "PlayerHQ er spillerportalen til AK Golf Academy: treningsplaner, runde-registrering, statistikk og AI-coach. Gratis i beta. Første betaling 1. juni 2026.",
 };
 
 /* Funksjoner — samme innhold som før, presentert som check-punkter (forsidens pitch-mønster) */
@@ -21,7 +21,7 @@ const TRENING = [
   {
     tittel: "Ukeplanen i lomma",
     tekst:
-      "Coachen din legger inn øktene — du ser hva som står for tur, kan starte fra mobil og logge ferdig på sekunder.",
+      "Coachen din legger inn øktene, så du ser hva som står for tur, kan starte fra mobil og logge ferdig på sekunder.",
   },
   {
     tittel: "Tapper-mode for hver økt",
@@ -39,7 +39,7 @@ const ANALYSE = [
   {
     tittel: "Personlig analyse 24/7",
     tekst:
-      "Spør AI-en om hva som helst — den kjenner HCP-en din, planen din og siste runder. Får konkrete råd, ikke generelt blabla.",
+      "Spør AI-en om hva som helst. Den kjenner HCP-en din, planen din og siste runder, og gir deg konkrete råd, ikke generelt blabla.",
   },
   {
     tittel: "Hold deg på planen",
@@ -110,7 +110,7 @@ export default function PlayerHQ() {
               className="mkt-hero-in mt-6 max-w-[48ch] text-[17px] leading-[1.55] text-secondary/85"
               style={{ animationDelay: "200ms" }}
             >
-              Treningsplaner, statistikk, runde-registrering og AI-coach — alt
+              Treningsplaner, statistikk, runde-registrering og AI-coach, alt
               samlet i én app. Bygget av AK Golf Academy for å støtte coaching
               mellom øktene.
             </p>
@@ -145,7 +145,7 @@ export default function PlayerHQ() {
             <Em>Hva</Em> får du.
           </SectionH2>
           <p className="mt-4 max-w-[48ch] text-[16px] leading-[1.6] text-muted-foreground">
-            Hele treningshverdagen i én flate — fra dagens økt til Strokes
+            Hele treningshverdagen i én flate, fra dagens økt til Strokes
             Gained-tallene etter runden.
           </p>
 
@@ -165,7 +165,7 @@ export default function PlayerHQ() {
                 Treningsplanen <Em>i lomma</Em>.
               </SectionH2>
               <p className="mt-4 max-w-[48ch] text-[16px] leading-[1.6] text-muted-foreground">
-                Alt du skal gjøre denne uka ligger klart i appen — fra dagens
+                Alt du skal gjøre denne uka ligger klart i appen, fra dagens
                 fokus til ferdig logget økt.
               </p>
               <div className="mt-6 flex flex-wrap gap-2">
@@ -228,7 +228,7 @@ export default function PlayerHQ() {
                 Tallene som viser <Em>fremgang</Em>.
               </SectionH2>
               <p className="mt-4 max-w-[48ch] text-[16px] leading-[1.6] text-muted-foreground">
-                Hver runde og hver økt blir til tall du kan handle på — regnet
+                Hver runde og hver økt blir til tall du kan handle på, regnet
                 ut for deg.
               </p>
               <div className="mt-6 flex flex-wrap gap-2">
@@ -310,7 +310,7 @@ export default function PlayerHQ() {
               featured={false}
               items={[
                 "1 måned gratis prøveperiode",
-                "Gratis under beta — første faktura 1. juni 2026",
+                "Gratis under beta, første faktura 1. juni 2026",
                 "Du kan avslutte når som helst",
               ]}
               cta="Prøv gratis nå"
@@ -319,7 +319,7 @@ export default function PlayerHQ() {
           </div>
 
           <p className="mt-8 max-w-[64ch] text-sm leading-[1.55] text-muted-foreground">
-            PlayerHQ er i beta — bugs kan forekomme. Academy-kunder beholder
+            PlayerHQ er i beta, så bugs kan forekomme. Academy-kunder beholder
             gratis tilgang også etter beta-perioden.
           </p>
         </div>

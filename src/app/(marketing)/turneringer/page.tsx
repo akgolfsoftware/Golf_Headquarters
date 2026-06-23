@@ -21,9 +21,9 @@ import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 export const revalidate = 1800; // 30 min
 
 export const metadata: Metadata = {
-  title: "Turneringer — alle norske spillere ett sted | AK Golf",
+  title: "Turneringer: alle norske spillere ett sted | AK Golf",
   description:
-    "Følg norske golfspillere på PGA, DP World, LPGA, amatør og junior — automatisk oppdatert hver dag. Gratis oversikt fra AK Golf.",
+    "Følg norske golfspillere på PGA, DP World, LPGA, amatør og junior, automatisk oppdatert hver dag. Gratis oversikt fra AK Golf.",
   alternates: { canonical: "https://akgolf.no/turneringer" },
 };
 
@@ -59,7 +59,7 @@ export default async function TurneringerPage({ searchParams }: Props) {
           </h1>
           <p className="mt-4 max-w-2xl text-[16px] leading-[1.6] text-muted-foreground md:text-[18px]">
             PGA, DP World, LPGA, LET, Challenge, Korn Ferry, norske amatør- og
-            junior-turneringer. Følg nordmenn live — ett sted, ingen logg-inn.
+            junior-turneringer. Følg nordmenn live på ett sted, ingen logg-inn.
           </p>
         </div>
       </section>
@@ -299,7 +299,7 @@ function TabLink({
 
 function TurneringKort({ t }: { t: TurneringKortData }) {
   const datoTekst = t.endDate
-    ? `${NB.format(t.startDate)} — ${NB.format(t.endDate)}`
+    ? `${NB.format(t.startDate)}–${NB.format(t.endDate)}`
     : NB.format(t.startDate);
   const tourLabel = formaterTour(t.tour);
   const erLive = t.status === "IN_PROGRESS";
@@ -353,7 +353,7 @@ function TomTilstand() {
         Ingen turneringer i denne kategorien
       </h3>
       <p className="mt-2 text-sm text-muted-foreground">
-        Vi henter data daglig — kom tilbake om en stund.
+        Vi henter data daglig. Kom tilbake om en stund.
       </p>
     </div>
   );

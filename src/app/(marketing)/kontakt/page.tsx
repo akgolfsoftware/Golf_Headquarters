@@ -12,9 +12,9 @@ import Link from "next/link";
 import { KontaktForm } from "./form";
 
 export const metadata: Metadata = {
-  title: "Kontakt — AK Golf Academy",
+  title: "Kontakt AK Golf Academy",
   description:
-    "Ta kontakt med AK Golf Academy. Personlig coaching, booking og spørsmål — vi svarer innen 1 virkedag.",
+    "Ta kontakt med AK Golf Academy. Personlig coaching, booking og spørsmål. Vi svarer innen 1 virkedag.",
 };
 
 type Hours = { day: string; coaching: string; mulligan: string };
@@ -114,7 +114,7 @@ export default function KontaktSide() {
                 Foretrekker du å ringe?
               </h3>
               <p className="mt-3 text-sm leading-[1.55] text-muted-foreground">
-                Ring eller send en SMS — du kan også booke direkte på akgolf.no.
+                Ring eller send en SMS. Du kan også booke direkte på akgolf.no.
               </p>
               <div className="mt-6">
                 <Quick label="Anders Kristiansen" value="+47 482 16 540" first />
@@ -250,7 +250,7 @@ export default function KontaktSide() {
           Finn <Em>frem</Em> til oss.
         </SectionH2>
         <p className="mt-4 max-w-[56ch] text-[15px] leading-[1.6] text-muted-foreground">
-          Vi holder til på tre anlegg — Mulligan Indoor Golf i Fredrikstad og
+          Vi holder til på tre anlegg: Mulligan Indoor Golf i Fredrikstad og
           Sarpsborg for innendørs trening hele året, og Gamle Fredrikstad
           Golfklubb for utendørs sesong.
         </p>
@@ -319,7 +319,7 @@ export default function KontaktSide() {
             Heller bare <Em dark>komme i gang</Em>?
           </h2>
           <p className="relative z-10 mx-auto mt-4 max-w-[56ch] text-[16px] leading-[1.55] text-white/85">
-            Du trenger ikke vente på svar — book en økt direkte, eller send oss
+            Du trenger ikke vente på svar. Book en økt direkte, eller send oss
             en e-post om du vil ta det skriftlig først.
           </p>
           <div className="relative z-10 mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">

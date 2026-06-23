@@ -4,7 +4,7 @@ import { POSTS } from "./posts";
 import { BloggListe, type PostWithMeta } from "./blogg-liste";
 
 export const metadata: Metadata = {
-  title: "Blogg — AK Golf Academy",
+  title: "Blogg fra AK Golf Academy",
   description:
     "Tanker, metoder og lærdom fra coaching-hverdagen i AK Golf Academy.",
 };

@@ -12,9 +12,9 @@ import {
 } from "@/components/marketing/marketing-sections";
 
 export const metadata: Metadata = {
-  title: "Coachene våre — AK Golf Academy",
+  title: "Coachene våre · AK Golf Academy",
   description:
-    "Møt coachene i AK Golf Academy — Anders Kristiansen og Markus Røinås Pedersen.",
+    "Møt coachene i AK Golf Academy: Anders Kristiansen og Markus Røinås Pedersen.",
 };
 
 type CoachKort = {
@@ -32,7 +32,7 @@ const FALLBACK_COACHER: CoachKort[] = [
     slug: "anders",
     navn: "Anders Kristiansen",
     tittel: "Head Coach · PGA Pro",
-    bio: "Bygger Academy rundt målbar fremgang. Mer enn et tiår med spillere på alle nivåer — fra første time til turneringsspill.",
+    bio: "Bygger Academy rundt målbar fremgang. Mer enn et tiår med spillere på alle nivåer, fra første time til turneringsspill.",
     initialer: "AK",
     foto: null,
     tags: ["Plan & struktur", "Trackman", "Mental"],
@@ -61,7 +61,7 @@ const FASILITETER: Fasilitet[] = [
     type: "Innendørs",
     navn: "Mulligan Indoor Golf",
     beskrivelse:
-      "TrackMan-simulatorer i Fredrikstad og Sarpsborg. Datadrevet trening og videoanalyse — årsåpent.",
+      "TrackMan-simulatorer i Fredrikstad og Sarpsborg. Datadrevet trening og videoanalyse, åpent hele året.",
     feats: ["TrackMan", "Videoanalyse", "Årsåpent"],
   },
   {
@@ -109,7 +109,7 @@ export default async function CoacherSide() {
             Møt <HeroEm>coachene</HeroEm>.
           </>
         }
-        ingress="To trenere med komplementære styrker — felles plattform, samme forventning til kvalitet og oppfølging."
+        ingress="To trenere som utfyller hverandre. Felles plattform, samme forventning til kvalitet og oppfølging."
         primaer={{ href: "/booking", label: "Book tid med en coach" }}
         sekundaer={{ href: "/coaching", label: "Se coaching-pakkene" }}
       />
@@ -204,8 +204,8 @@ export default async function CoacherSide() {
             Tren med <Em dark>oss</Em>.
           </h2>
           <p className="relative z-10 mx-auto mt-4 max-w-[56ch] text-[16px] leading-[1.55] text-white/85">
-            Book en økt med Anders eller Markus — eller ta kontakt hvis du er
-            usikker på hvor du bør starte.
+            Book en økt med Anders eller Markus. Er du usikker på hvor du bør
+            starte, så ta kontakt, så finner vi ut av det sammen.
           </p>
           <div className="relative z-10 mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <CtaLime href="/booking" withArrow>

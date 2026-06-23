@@ -3,9 +3,9 @@ import Link from "next/link";
 import { TrendingDown, ArrowRight, Quote } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Suksesshistorier — AK Golf Academy",
+  title: "Suksesshistorier · AK Golf Academy",
   description:
-    "Reelle resultater fra spillere som har trent hos AK Golf Academy — fra førsteslag til turneringsspill.",
+    "Reelle resultater fra spillere som har trent hos AK Golf Academy, fra førsteslag til turneringsspill.",
 };
 
 type Case = {
@@ -26,7 +26,7 @@ const CASES: Case[] = [
     hcpTil: 16,
     periode: "12 måneder",
     sitat:
-      "Jeg trodde aldri jeg skulle komme under 20. Med struktur og oppfølging mellom timene falt det på plass. Coachingen ga meg ikke bare bedre slag — den ga meg en plan jeg faktisk kunne følge.",
+      "Jeg trodde aldri jeg skulle komme under 20. Med struktur og oppfølging mellom timene falt det på plass. Coachingen ga meg ikke bare bedre slag, den ga meg en plan jeg faktisk kunne følge.",
     initialer: "LH",
   },
   {
@@ -36,7 +36,7 @@ const CASES: Case[] = [
     hcpTil: 6,
     periode: "2 sesonger",
     sitat:
-      "Anders behandlet meg som en utøver fra dag én. Treningsplanene var ikke generiske — de var bygd rundt det jeg trengte. Nå spiller jeg NM og trives med presset.",
+      "Anders behandlet meg som en utøver fra dag én. Treningsplanene var ikke generiske, de var bygd rundt det jeg trengte. Nå spiller jeg NM og trives med presset.",
     initialer: "ES",
   },
   {
@@ -46,7 +46,7 @@ const CASES: Case[] = [
     hcpTil: 14,
     periode: "9 måneder",
     sitat:
-      "Jeg ville bare slå bedre med jernene mine før pensjonsturneringene. Det jeg fikk var hele spillet løftet — putting, korte slag, og en mental ro jeg aldri har hatt på banen.",
+      "Jeg ville bare slå bedre med jernene mine før pensjonsturneringene. Det jeg fikk var hele spillet løftet: putting, korte slag, og en mental ro jeg aldri har hatt på banen.",
     initialer: "GT",
   },
 ];
