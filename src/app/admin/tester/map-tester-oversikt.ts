@@ -114,8 +114,8 @@ export function mapTesterOversikt(data: TesterMatrixData): TesterOversiktData {
     trendNote: hasTrend
       ? undefined
       : "Ingen spillere har nok historikk til å vise trend ennå (krever minst 2 målinger på samme test).",
-    exportHref: "/admin/tester/eksport",
-    templateHref: "/admin/tester/maler",
-    newTestHref: "/admin/tester/ny",
+    // Eksport / test-mal / ny test er ikke bygget ennå — ingen ruter finnes.
+    // Lar disse stå udefinert så toolbar-knappene vises som «Kommer» (disablet),
+    // ikke som lenker til /admin/tester/{eksport,maler,ny} (404).
   };
 }

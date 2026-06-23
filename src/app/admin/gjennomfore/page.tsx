@@ -14,13 +14,12 @@ import {
   Radio,
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { prisma } from "@/lib/prisma";
 import {
   HubFrame,
   HubHeader,
   HubStatSep,
   HubCard,
-  HubPill,
-  HubKpiBar,
   WeekStrip,
   CalMini,
 } from "@/components/hubs";
@@ -28,13 +27,52 @@ import { IDagButton, NyBookingButton } from "./gjennomfore-actions";
 
 export const dynamic = "force-dynamic";
 
+/**
+ * Dato-grenser beregnes utenfor render-body (react-hooks/purity: Date.now()
+ * kan ikke kalles i render). Kalles én gang per request fra server-funksjonen.
+ */
+function dagOgUkeVindu(): {
+  dagStart: Date;
+  dagSlutt: Date;
+  ukeStart: Date;
+  ukeSlutt: Date;
+} {
+  const dagStart = new Date();
+  dagStart.setHours(0, 0, 0, 0);
+
+  const dagSlutt = new Date(dagStart);
+  dagSlutt.setDate(dagStart.getDate() + 1);
+
+  const ukeStart = new Date(dagStart);
+  ukeStart.setDate(dagStart.getDate() - ((dagStart.getDay() + 6) % 7)); // mandag
+
+  const ukeSlutt = new Date(ukeStart);
+  ukeSlutt.setDate(ukeStart.getDate() + 7); // neste mandag
+
+  return { dagStart, dagSlutt, ukeStart, ukeSlutt };
+}
+
+const AKTIVE_STATUSER = ["CONFIRMED", "PENDING"] as const;
+
 export default async function GjennomforePage() {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+
+  const { dagStart, dagSlutt, ukeStart, ukeSlutt } = dagOgUkeVindu();
+
+  const [okterIDag, okterDenneUka, antallAnlegg] = await Promise.all([
+    prisma.booking.count({
+      where: { startAt: { gte: dagStart, lt: dagSlutt }, status: { in: [...AKTIVE_STATUSER] } },
+    }),
+    prisma.booking.count({
+      where: { startAt: { gte: ukeStart, lt: ukeSlutt }, status: { in: [...AKTIVE_STATUSER] } },
+    }),
+    prisma.location.count({ where: { active: true } }),
+  ]);
 
   return (
     <HubFrame>
       <HubHeader
-        eyebrow="COACHHQ · COACH"
+        eyebrow="AGENCYOS · COACH"
         title="Daglig"
         titleItalic="drift"
         sub="Kalender, bookinger, anlegg, tilgjengelighet og live-økter."
@@ -47,20 +85,15 @@ export default async function GjennomforePage() {
         stats={
           <>
             <span>
-              <strong>5</strong> økter i dag
+              <strong>{okterIDag}</strong> {okterIDag === 1 ? "økt" : "økter"} i dag
             </span>
             <HubStatSep />
             <span>
-              <strong>23</strong> denne uka
-            </span>
-            <HubStatSep />
-            <span className="ok-dot">
-              <span />
-              <strong>Stripe aktiv</strong>
+              <strong>{okterDenneUka}</strong> denne uka
             </span>
             <HubStatSep />
             <span>
-              <strong>3</strong> anlegg
+              <strong>{antallAnlegg}</strong> {antallAnlegg === 1 ? "anlegg" : "anlegg"}
             </span>
           </>
         }
@@ -72,8 +105,8 @@ export default async function GjennomforePage() {
           icon={Calendar}
           eyebrow="01 · DAGENS DRIFT"
           title="Coach-kalender"
-          data="5 økter i dag"
-          sub="23 denne uka · 4 venter input"
+          data={`${okterIDag} ${okterIDag === 1 ? "økt" : "økter"} i dag`}
+          sub={`${okterDenneUka} denne uka`}
           visual={<CalMini marked={[0, 2]} nowPct={38} />}
           cta="Åpne →"
         />
@@ -82,13 +115,8 @@ export default async function GjennomforePage() {
           icon={CalendarCheck}
           eyebrow="02 · INNKOMMENDE"
           title="Bookinger"
-          data="4 kommende"
-          sub="1 venter på bekreft · 12 historikk"
-          statusPill={
-            <HubPill kind="warn" dot="d-warn">
-              1 PENDING
-            </HubPill>
-          }
+          data={`${okterDenneUka} denne uka`}
+          sub="Behandle bekreftelser og avvisninger"
           cta="Behandle →"
         />
         <HubCard
@@ -96,8 +124,8 @@ export default async function GjennomforePage() {
           icon={MapPin}
           eyebrow="03 · LOKASJONER"
           title="Anlegg"
-          data="3 anlegg"
-          sub="GFGK · Bjaavann · Hellerudsletta"
+          data={`${antallAnlegg} ${antallAnlegg === 1 ? "anlegg" : "anlegg"}`}
+          sub="Aktive lokasjoner"
           cta="Administrer →"
         />
         <HubCard
@@ -105,8 +133,8 @@ export default async function GjennomforePage() {
           icon={Clock}
           eyebrow="04 · ÅPNE TIMER"
           title="Tilgjengelighet"
-          data="12 t denne uka"
-          sub="ti 09–14 · on 13–18 · to 10–15"
+          data="—"
+          sub="Sett åpne timer"
           visual={<WeekStrip onDays={[0, 1, 2, 3, 4]} meDay={1} />}
           cta="Sett →"
         />
@@ -115,9 +143,8 @@ export default async function GjennomforePage() {
           icon={Gauge}
           eyebrow="05 · BELASTNING"
           title="Kapasitet"
-          data="2% brukt denne uka"
-          sub="Mål: 75% · 23/40 t booket"
-          visual={<HubKpiBar pct={2} tone="ok" />}
+          data="—"
+          sub="Se kapasitet-trend"
           cta="Se trend →"
         />
         <HubCard
@@ -125,13 +152,8 @@ export default async function GjennomforePage() {
           icon={CreditCard}
           eyebrow="06 · ØKONOMI"
           title="Tjenester"
-          data="5 prislister"
-          sub="Stripe aktiv · 12 abonnenter"
-          statusPill={
-            <HubPill kind="ok" dot="d-pulse">
-              STRIPE OK
-            </HubPill>
-          }
+          data="—"
+          sub="Prislister og tjenester"
           cta="Åpne →"
         />
         <HubCard
@@ -139,13 +161,8 @@ export default async function GjennomforePage() {
           icon={Radio}
           eyebrow="07 · UTSTYR"
           title="TrackMan"
-          data="1 aktiv sesjon"
-          sub="Øyvind R. · GFGK Bay 3"
-          statusPill={
-            <HubPill kind="accent" dot="d-pulse">
-              LIVE
-            </HubPill>
-          }
+          data="—"
+          sub="Aktive sesjoner"
           cta="Se live →"
         />
         <HubCard
@@ -153,8 +170,8 @@ export default async function GjennomforePage() {
           icon={Activity}
           eyebrow="08 · ØYEBLIKK"
           title="Live-økter"
-          data="Ingen aktiv nå"
-          sub="Sist live: 23. mai · 16:00"
+          data="—"
+          sub="Start ny økt fra kalender"
           tone="empty"
           cta="Start ny økt →"
         />

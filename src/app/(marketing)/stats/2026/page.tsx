@@ -465,9 +465,11 @@ export default async function Sesong2026Page() {
       {/* Andre sesonger footer */}
       <section className="stats-section stats-section-divider">
         <div className="stats-sesong-footer-nav">
-          <Link href="/stats/sesong/2025" style={{ fontFamily: "var(--font-mono)", fontSize: 13, color: "var(--s-primary)", textDecoration: "none" }}>
+          {/* Tidligere sesonger har ingen egen arkiv-rute ennå — vis som inaktiv
+              tekst (samme som «Sesongen {AAR + 1} →») i stedet for en død lenke (404). */}
+          <span style={{ fontFamily: "var(--font-mono)", fontSize: 13, color: "var(--s-muted-fg)" }}>
             ← Sesongen 2025
-          </Link>
+          </span>
           <div style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--s-muted-fg)" }}>
             Alle sesonger 2016—{AAR}
           </div>

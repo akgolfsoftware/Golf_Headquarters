@@ -648,13 +648,27 @@ function ToolbarButton({
       {label}
     </>
   );
-  return href ? (
-    <Link href={href} className={cls}>
+  if (href) {
+    return (
+      <Link href={href} className={cls}>
+        {inner}
+      </Link>
+    );
+  }
+  // Ingen href = funksjonen er ikke bygget ennå. Vis disablet «Kommer»-knapp
+  // i stedet for en død lenke (404) eller en stille klikkbar knapp som ikke gjør noe.
+  return (
+    <button
+      type="button"
+      disabled
+      title="Kommer"
+      aria-disabled="true"
+      className={cn(cls, "cursor-not-allowed opacity-50")}
+    >
       {inner}
-    </Link>
-  ) : (
-    <button type="button" className={cls}>
-      {inner}
+      <span className="font-mono text-[9px] font-bold uppercase tracking-[0.1em] opacity-70">
+        Kommer
+      </span>
     </button>
   );
 }
