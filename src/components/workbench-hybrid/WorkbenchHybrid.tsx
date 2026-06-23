@@ -39,9 +39,27 @@ import { MobilePaletteSheet } from "./MobilePaletteSheet";
 import { MobileInspectorSheet } from "./MobileInspectorSheet";
 import { MobileStatusbar } from "./MobileStatusbar";
 import { useMediaQuery, WB_MOBILE_QUERY } from "./use-media-query";
+import {
+  moveWorkbenchSession,
+  addWorkbenchSession,
+  removeWorkbenchSession,
+} from "@/app/portal/planlegge/workbench/actions";
 
 const LS_KEY = "akgolf.wb.level";
 const VALID_LEVELS: ZoomLevel[] = ["arsplan", "ar", "maned", "uke", "dag"];
+
+/** WeekKey → dag-indeks (mandag = 0), for persistering til DB-dato. */
+const DAY_INDEX: Record<WeekKey, number> = {
+  man: 0, tir: 1, ons: 2, tor: 3, fre: 4, lor: 5, son: 6,
+};
+/** Ekte DB-id (cuid) vs syntetisk klient-id (demo / ennå-ikke-lagret økt). */
+const isPersisted = (id: string): boolean => /^c[a-z0-9]{20,}$/i.test(id);
+/** "HH:MM" → {hour, minute}; default 09:00 når tid mangler ("—"). */
+function parseTime(t: string | undefined): { hour: number; minute: number } {
+  const parts = t && /^\d{1,2}:\d{2}$/.test(t) ? t.split(":") : null;
+  if (!parts) return { hour: 9, minute: 0 };
+  return { hour: Number(parts[0]), minute: Number(parts[1]) };
+}
 
 /** Tom uke når spilleren ennå ikke har planlagte økter (ingen oppdiktede økter). */
 const EMPTY_WEEK: WeekState = { man: [], tir: [], ons: [], tor: [], fre: [], lor: [], son: [] };
@@ -137,6 +155,7 @@ type Action =
   | { type: "openBank" }
   | { type: "pickBankItem"; title: string; meta: string }
   | { type: "openKpi"; key: KpiKey }
+  | { type: "reconcileId"; oldId: string; newId: string }
   | { type: "closeModal" };
 
 function cloneWeek(w: WeekState): WeekState {
@@ -321,6 +340,23 @@ function reducer(state: State, action: Action): State {
       return { ...state, modal: "kpi", kpiKey: action.key };
     case "closeModal":
       return { ...state, modal: null, recurDraft: null, kpiKey: null };
+    case "reconcileId": {
+      // Bytt en syntetisk id ut med DB-id-en etter at en ny økt er lagret,
+      // så senere flytting/sletting av samme økt også persisterer.
+      const w = cloneWeek(state.week);
+      for (const k of Object.keys(w) as WeekKey[]) {
+        const idx = w[k].findIndex((s) => s.id === action.oldId);
+        if (idx > -1) {
+          w[k][idx] = { ...w[k][idx], id: action.newId };
+          break;
+        }
+      }
+      return {
+        ...state,
+        week: w,
+        selectedId: state.selectedId === action.oldId ? action.newId : state.selectedId,
+      };
+    }
     default:
       return state;
   }
@@ -444,24 +480,95 @@ export function WorkbenchHybrid({
   const onSessionDragStart = useCallback((sid: string, from: WeekKey) => {
     dragRef.current = { kind: "move", sid, from };
   }, []);
-  const onDayDrop = useCallback((day: WeekKey) => {
-    dispatch({ type: "drop", day, drag: dragRef.current });
-    dragRef.current = null;
-  }, []);
-  const onTimelineDrop = useCallback((time: string) => {
-    dispatch({ type: "drop", day: "ons", time, drag: dragRef.current });
-    dragRef.current = null;
-  }, []);
+
+  // Persister drag-drop til DB — KUN spiller-modus (coach-modus rører ikke
+  // spillerens lagrede plan herfra). Move = flytt eksisterende økt til ny dag;
+  // palette = opprett ny økt og bytt den syntetiske id-en mot DB-id-en.
+  const persistDrop = useCallback(
+    (drag: DragState, dayKey: WeekKey, time: string | undefined, expectedNewId: string) => {
+      if (isCoach || !drag) return;
+      const dayIndex = DAY_INDEX[dayKey];
+      if (drag.kind === "move") {
+        if (isPersisted(drag.sid)) void moveWorkbenchSession(drag.sid, dayIndex);
+        return;
+      }
+      const item = state.palette.find((p) => p.pid === drag.pid);
+      if (!item) return;
+      const { hour, minute } = parseTime(time);
+      void addWorkbenchSession({
+        dayIndex,
+        title: item.title,
+        durMin: item.dur,
+        area: item.cat,
+        hour,
+        minute,
+      }).then((res) => {
+        if (res?.ok && res.sessionId) {
+          dispatch({ type: "reconcileId", oldId: expectedNewId, newId: res.sessionId });
+        }
+      });
+    },
+    [isCoach, state.palette],
+  );
+
+  const onDayDrop = useCallback(
+    (day: WeekKey) => {
+      const drag = dragRef.current;
+      const expectedNewId = `s${state.nextId}`;
+      dispatch({ type: "drop", day, drag });
+      dragRef.current = null;
+      persistDrop(drag, day, undefined, expectedNewId);
+    },
+    [state.nextId, persistDrop],
+  );
+  const onTimelineDrop = useCallback(
+    (time: string) => {
+      const drag = dragRef.current;
+      const expectedNewId = `s${state.nextId}`;
+      dispatch({ type: "drop", day: "ons", time, drag });
+      dragRef.current = null;
+      persistDrop(drag, "ons", time, expectedNewId);
+    },
+    [state.nextId, persistDrop],
+  );
+
+  // "+"-knappen: reduceren legger "Ny økt" (60m TEK) på onsdag. Persister samme.
+  const handleAddSession = useCallback(() => {
+    const expectedNewId = `s${state.nextId}`;
+    dispatch({ type: "addSession" });
+    if (!isCoach) {
+      void addWorkbenchSession({
+        dayIndex: DAY_INDEX.ons,
+        title: "Ny økt",
+        durMin: 60,
+        area: "TEK",
+        hour: 9,
+        minute: 0,
+      }).then((res) => {
+        if (res?.ok && res.sessionId) {
+          dispatch({ type: "reconcileId", oldId: expectedNewId, newId: res.sessionId });
+        }
+      });
+    }
+  }, [state.nextId, isCoach]);
+
+  // Slett valgt økt: fjern optimistisk + persister hvis den allerede er lagret.
+  const handleRemoveSelected = useCallback(() => {
+    const id = state.selectedId;
+    dispatch({ type: "removeSelected" });
+    if (!isCoach && id && isPersisted(id)) void removeWorkbenchSession(id);
+  }, [state.selectedId, isCoach]);
 
   // Mobil tap-to-add: legg en standardøkt på valgt dag (Dag-visning → "ons").
-  // Gjenbruker drop-reduceren med en syntetisk palette-drag — ingen ny logikk.
   const onMobileAddToDay = useCallback(
     (pid: string) => {
       const day = state.level === "dag" ? "ons" : mobileTargetDay;
+      const expectedNewId = `s${state.nextId}`;
       dispatch({ type: "drop", day, drag: { kind: "palette", pid } });
       setMobilePaletteOpen(false);
+      persistDrop({ kind: "palette", pid }, day, undefined, expectedNewId);
     },
-    [state.level, mobileTargetDay],
+    [state.level, state.nextId, mobileTargetDay, persistDrop],
   );
 
   // Dimensjon-velger-handlere (skiller multi/omr fra single).
@@ -687,7 +794,7 @@ export function WorkbenchHybrid({
             onLevel={setLevel}
             playerName={playerName}
             initials={initials}
-            onAddSession={() => dispatch({ type: "addSession" })}
+            onAddSession={handleAddSession}
             role={role}
             players={players}
             currentPlayerId={currentPlayerId}
@@ -727,7 +834,7 @@ export function WorkbenchHybrid({
                 onRemoveOmr={onRemoveOmr}
                 onPaletteTitle={(title) => dispatch({ type: "patchPalette", patch: { title } })}
                 onPaletteDur={(delta) => dispatch({ type: "patchPaletteDur", delta })}
-                onRemoveSession={() => dispatch({ type: "removeSelected" })}
+                onRemoveSession={handleRemoveSelected}
                 onStart={() => {
                   /* Live-økt er en senere fase — no-op for nå. */
                 }}

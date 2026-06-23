@@ -360,6 +360,7 @@ function sessionToWeekEvent(s: WeekSessionRow): WeekEvent {
   if (s._count.drills > 0) meta.push(["layers", `${s._count.drills} drills`]);
   if (loc) meta.push(["map-pin", loc]);
   return {
+    id: s.id,
     h: start.getHours(),
     m: start.getMinutes(),
     durMin: s.durationMin,

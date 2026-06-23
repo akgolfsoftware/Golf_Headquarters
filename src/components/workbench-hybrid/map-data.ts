@@ -34,7 +34,9 @@ function eventToSession(ev: WeekEvent, dayKey: WeekKey, idx: number): WbSession 
   const h = ev.h;
   const m = ev.m ?? 0;
   return {
-    id: `wb-${dayKey}-${idx}`,
+    // Ekte DB-id når eventen kommer fra Prisma (brukes for persistering),
+    // ellers en syntetisk id (demo-data / ennå-ikke-lagrede økter).
+    id: ev.id ?? `wb-${dayKey}-${idx}`,
     title: ev.ttl,
     dur: ev.durMin,
     cat: AXIS_TO_CAT[ev.ax],
