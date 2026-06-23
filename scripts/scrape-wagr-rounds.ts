@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+ 
 /**
  * WAGR per-runde brutto-score scraper (STUB — krever Playwright)
  *

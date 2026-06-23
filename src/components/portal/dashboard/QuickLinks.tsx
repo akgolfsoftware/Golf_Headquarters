@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { CalendarRange, BarChart3, MessageSquare, User, Plus, Flag } from "lucide-react";
+import { BarChart3, MessageSquare, Plus, Flag } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type QuickLinksProps = {

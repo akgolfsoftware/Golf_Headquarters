@@ -58,7 +58,7 @@ function Filter() {
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+ 
 function Actions(_props: { sessionId: string; shotCount: number }) {
   const router = useRouter();
 

@@ -84,3 +84,9 @@ skills-lock.json
 # Ligger lokalt + i Google Drive — for stort/binært for git, og serveres ikke i prod
 # (kode refererer det kun i kommentarer som «fasit»). Besluttet 2026-06-04.
 public/design-handover/
+
+# Lokale data-eksporter / import-artefakter med persondata (navn på brukere/spillere).
+# Skal ALDRI til GitHub. data/spillere-mal.csv (tom mal) er trygt tracket og beholdes.
+data/beta-users-*.csv
+data/notion-spillere-*.json
+data/tournaments-import.json

@@ -9,7 +9,7 @@
  */
 
 import Link from "next/link";
-import { Dumbbell, Plus, ChevronRight } from "lucide-react";
+import { Dumbbell, ChevronRight } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { AthleticEyebrow } from "@/components/athletic";

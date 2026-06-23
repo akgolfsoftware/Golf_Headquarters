@@ -21,12 +21,15 @@ export function CaddieApprovalModal({ toolCall, onApprove, onReject, onClose }: 
   const [resultText, setResultText] = useState<string | null>(null);
 
   // Reset phase når modal åpnes med ny toolCall.
+  // Bevisst kun på toolCall?.id: effekten skal kun nullstille når en NY
+  // tool-call åpner modalen, ikke ved hver ny objekt-identitet på samme call.
   /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (toolCall) {
       setPhase("idle");
       setResultText(null);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toolCall?.id]);
   /* eslint-enable react-hooks/set-state-in-effect */
 

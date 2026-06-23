@@ -22,7 +22,6 @@ import { prisma } from "@/lib/prisma";
 import type {
   TrainingSessionV2,
   LockedAnchor,
-  RecurringPattern,
   PeriodVolumeRecipe,
   PeriodRecipeOkt,
   ConditionalRule,

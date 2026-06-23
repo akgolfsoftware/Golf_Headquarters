@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { Play, Clock, Target, Calendar, ArrowRight } from "lucide-react";
+import { Play, Clock, Target, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { AthleticCard, AthleticEyebrow } from "@/components/athletic";
+import { AthleticCard } from "@/components/athletic";
 import type { TodaySession } from "@/app/portal/actions";
 
 const PYRAMIDE_LABEL: Record<string, string> = {

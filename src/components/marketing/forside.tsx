@@ -25,7 +25,6 @@ import {
   ArrowUpRight,
   Building2,
   CalendarDays,
-  Check,
   Clock,
   Flag,
   GraduationCap,

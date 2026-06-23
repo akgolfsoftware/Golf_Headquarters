@@ -15,6 +15,21 @@ import nextTs from "eslint-config-next/typescript";
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
+  // Bevisst ubrukte variabler/argumenter prefikset med _ skal ikke advare
+  // (standard konvensjon — f.eks. destrukturering der elementer hoppes over,
+  // eller stub-funksjoner med ennå-ubrukte parametre).
+  {
+    rules: {
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
+    },
+  },
   // V2 drift-prevention — gjelder for src/components/v2/ + design-system-v2-rute
   {
     files: [

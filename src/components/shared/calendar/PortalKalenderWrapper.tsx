@@ -8,7 +8,6 @@
 import { useViewMode } from "@/components/shared/ViewModeContext";
 import {
   KalenderRoot,
-  type KalenderData,
   type KalenderRootProps,
 } from "./KalenderRoot";
 

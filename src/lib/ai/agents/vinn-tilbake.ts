@@ -6,7 +6,7 @@
 // og coachens navn — slik at den føles personlig og ekte.
 
 import "server-only";
-import { anthropic, AI_MODEL, AI_MAX_TOKENS, isAiEnabled } from "../client";
+import { anthropic, AI_MODEL, isAiEnabled } from "../client";
 import { prisma } from "@/lib/prisma";
 
 export const VINN_TILBAKE_SYSTEM = `
