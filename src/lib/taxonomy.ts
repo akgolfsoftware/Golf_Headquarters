@@ -269,12 +269,14 @@ export function getOmraaderForFokus(fokusKode: string): Treningsomrade[] {
 // LIFE-koder (livsferdigheter)
 // ---------------------------------------------------------------------------
 
+// Kanon: LIFE-rammeverkets 5 dimensjoner (bekreftet 2026-06-23, matcher
+// ak-second-brain/wiki/concepts/life-rammeverket.md). Mapper til NGF Impact.
 export const LIFE_KODER = [
-  { kode: "LIFE_RESILIENS",   label: "Resiliens" },
-  { kode: "LIFE_FOKUS",       label: "Fokus" },
-  { kode: "LIFE_SELVTILLIT",  label: "Selvtillit" },
-  { kode: "LIFE_KOMMUNIKASJON", label: "Kommunikasjon" },
-  { kode: "LIFE_ANSVAR",      label: "Eget ansvar" },
+  { kode: "LIFE_SELV", label: "Selvfølelse" },
+  { kode: "LIFE_SOS",  label: "Sosial" },
+  { kode: "LIFE_EMO",  label: "Emosjonell" },
+  { kode: "LIFE_KAR",  label: "Karakter" },
+  { kode: "LIFE_RES",  label: "Resiliens" },
 ] as const;
 
 // ---------------------------------------------------------------------------

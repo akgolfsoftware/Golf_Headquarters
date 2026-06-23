@@ -16,7 +16,7 @@ Critical fields: `role`, `tier` (GRATIS/PRO — ELITE is dead, never show in UI)
 
 `TrainingPlan` belongs to a player (`userId`). It has a `status` lifecycle: DRAFT → PENDING_PLAYER → ACCEPTED → ACTIVE → ARCHIVED. The plan contains many `TrainingPlanSession` records, each with a `scheduledAt`, `pyramidArea` (FYS/TEK/SLAG/SPILL/TURN), and optional `skillArea`.
 
-`SessionDrill` links a `TrainingPlanSession` to an `ExerciseDefinition` with reps/sets and a CS (Confidence Score) target.
+`SessionDrill` links a `TrainingPlanSession` to an `ExerciseDefinition` with reps/sets and a CS (Club Speed — % of max club speed) target.
 
 `TrainingPlanSessionLog` is written when the player completes a session. It holds `csAchieved`, `rating`, and `coachFeedback`.
 

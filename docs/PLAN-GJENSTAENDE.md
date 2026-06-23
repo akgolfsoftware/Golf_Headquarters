@@ -20,7 +20,7 @@ Disse er produkt-/design-/IA-valg. Jeg vil ikke gjette.
 | ~~D1.4~~ ✅ | **CBAC-modell** (AAPNE A2) | **3 capability-hull LUKKET 2026-06-22:** finans (`VIEW_FINANCE`), anlegg (`MANAGE_FACILITIES`) og team/organisasjon (`MANAGE_USERS`) gates nå på capability (ADMIN-only) via `requireCapability`, og nav-lenkene skjules for COACH. **BESLUTTET 2026-06-23:** behold dagens 10 capabilities (ikke bygg ut til 43 — finmasking tas først når et reelt behov treffer). | Ferdig |
 | D1.5 | **Agent-systemets dybde** (AAPNE A3) | Skal «Godkjenn» på et AI-forslag faktisk endre planen? (i dag bytter `acceptPlanAction` kun status). Skal det bygges en coach-godkjenningsinnboks? | M–L |
 | ~~D1.6~~ ✅ | **Booking ↔ live-økt-modell** | **LØST 2026-06-23:** «Start økt» foretrekker nå en allerede planlagt økt (PLANNED, samme spiller, i tidsvinduet) ved ENTYDIG treff — coachens forarbeid åpnes i konsollen. 0/flere treff → trygg fallback til frisk økt. Auto-utledning av *miljø* fra booket sted droppet (M0–M5 = metodikk-koder uten definert kobling → D1.7). | Ferdig |
-| D1.7 | **Metodikk-kanon** (AAPNE A1) | CS-skala (CS20/CS40?), CS-navn (Club Speed vs Confidence Score), LIFE-nøkler. Kode vs wiki er uenige. | S (bekreft) |
+| ~~D1.7~~ ✅ | **Metodikk-kanon** (AAPNE A1) | **BESLUTTET 2026-06-23:** (1) CS-skala = behold kode **CS50–CS100** (app); CS20/CS40-metodikk bevart i wiki som kjent app-grense. (2) CS = **Club Speed** (rettet «Confidence Score»-feil i DATA-MODEL.md). (3) LIFE = **wiki-nøklene** SELV/SOS/EMO/KAR/RES — `taxonomy.ts` rettet fra kodens gamle 5. | Ferdig |
 
 ---
 

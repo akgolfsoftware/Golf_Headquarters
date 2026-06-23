@@ -14,11 +14,11 @@ Disse kan en agent IKKE løse selv — de er produkt-/metodikkvalg.
 
 | # | Spørsmål | Kode i dag (fasit) | Hva som trengs |
 |---|---|---|---|
-| A1 | **Metodikk-avvik kode ↔ wiki.** Flere AK/MORAD-detaljer er ulike mellom kode og kunnskaps-wiki. | `src/lib/taxonomy.ts` + `src/lib/portal/training/ak-taxonomy.ts` | Bekreft hvilken som er kanon, per punkt: |
-| A1b | CS-nivåer: skala | Kode `CSNivaa` = CS50–CS100 | Skal CS20/CS40 finnes? |
-| A1c | CS-navn | Kode bruker «CS» (Club Speed implisitt) | «Club Speed» eller «Confidence Score»? |
-| A1e | LIFE-koder: nøkler | Kode: RESILIENS/FOKUS/SELVTILLIT/KOMMUNIKASJON/ANSVAR | Wiki bruker andre nøkler. Hvilke er fasit? |
-| A2 | **CBAC-modell.** Skill `cbac-matrix` beskriver 43 capabilities/12 grupper/roller INSTRUCTOR/INVITED/STUDENT. | `src/lib/auth/cbac.ts` = 5 roller (ADMIN/COACH/PLAYER/PARENT/GUEST) + 10 capabilities, rolle-basert gating | Skal koden bygges opp til skillen, eller nedskaleres skillen til koden? |
+| ~~A1~~ ✅ | **Metodikk-avvik kode ↔ wiki.** | LØST 2026-06-23 (D1.7) — per punkt under | — |
+| ~~A1b~~ ✅ | CS-nivåer: skala | **Behold kode CS50–CS100** | CS20/CS40-metodikk bevart i wiki som kjent app-grense, ikke lagt i app. |
+| ~~A1c~~ ✅ | CS-navn | **Club Speed** | «Confidence Score»-feil rettet i DATA-MODEL.md. |
+| ~~A1e~~ ✅ | LIFE-koder: nøkler | **Wiki-nøkler: SELV/SOS/EMO/KAR/RES** | `taxonomy.ts` rettet fra kodens gamle 5 (RESILIENS/FOKUS/…). |
+| ~~A2~~ ✅ | **CBAC-modell.** | LØST 2026-06-23 (D1.4) — **behold dagens 10 capabilities** (ikke bygg ut til 43). | Finanshull + anlegg + team/org nå gated på capability. |
 | A3 | **Agent-systemets dybde.** `acceptPlanAction` (`src/lib/agents/actions.ts`) bytter kun status, gjør ingen faktisk planendring. Ingen coach-godkjenningsinnboks. | `src/lib/agents/` (6 deterministiske) + `src/lib/ai/agents/` (6 LLM) | Skal `acceptPlanAction` faktisk endre planen? Bygges coach-innboks/turnering-agent? |
 | A4 | **13 invarianter.** Nevnt som konsept, finnes ikke som navngitt liste i kode/wiki. | — | Skal de skrives ned, eller utledes fra valideringsregler + junior-vern? |
 | A5 | **Forretningstall** (3 MNOK 2026 / 4 MNOK 2027 / AI Coach $10M ARR). | Kun i global CLAUDE.md — ikke i kode/regnskap | Bekreft eller korriger. |
