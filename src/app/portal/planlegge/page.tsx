@@ -1,29 +1,18 @@
 /**
- * /portal/planlegge — PlayerHQ Planlegge = Workbench.
- * Ett trykkpunkt inn i den delte Workbench-kjernen (WorkbenchHybrid), som er
- * responsiv: mode-rail + sheets på mobil, full panel-flate på desktop.
- * Samme flate som /portal/planlegge/workbench.
+ * /portal/planlegge — PlayerHQ Planlegge (lys mobil-fasit, terminal-lys).
+ *
+ * Spillerens ukeplan som LYS vertikal dag-liste (PlayerHQ-regel: alltid lyst).
+ * Den mørke delte Workbench-en brukes kun på coach-flatene (AgencyOS), aldri
+ * her. Detaljert workbench bor på /portal/planlegge/workbench.
  */
 
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getViewMode } from "@/lib/view-mode";
-import { WorkbenchHybrid } from "@/components/workbench-hybrid";
+import { PlayerPlanMobile } from "@/components/portal/plan/PlayerPlanMobile";
 import { loadWorkbenchData } from "@/lib/workbench/load-workbench";
 
 export const dynamic = "force-dynamic";
-
-function utledInitialer(navn: string): string {
-  return (
-    navn
-      .split(" ")
-      .map((d) => d[0])
-      .filter(Boolean)
-      .slice(0, 2)
-      .join("")
-      .toUpperCase() || "??"
-  );
-}
 
 export default async function PlanleggePage() {
   const user = await requirePortalUser();
@@ -37,12 +26,5 @@ export default async function PlanleggePage() {
 
   const data = (await loadWorkbenchData(user.id)) ?? undefined;
 
-  return (
-    <WorkbenchHybrid
-      role="player"
-      data={data}
-      playerName={user.name}
-      initials={utledInitialer(user.name)}
-    />
-  );
+  return <PlayerPlanMobile data={data} />;
 }
