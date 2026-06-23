@@ -367,7 +367,7 @@ function VerktoyKort({ v }: { v: SgVerktoy }) {
           Åpne
           <ArrowRight className="h-4 w-4" strokeWidth={2} aria-hidden />
         </span>
-        <Zap className="h-5 w-5 text-accent" strokeWidth={2} aria-hidden />
+        <Zap className="h-5 w-5 text-primary" strokeWidth={2} aria-hidden />
       </div>
     </Link>
   );
