@@ -33,7 +33,6 @@ import {
   HubStatSep,
   HubCard,
   HubPill,
-  PyramidMini,
   HubSparkline,
 } from "@/components/hubs";
 import { HubActions } from "./_hub-actions";
@@ -150,7 +149,6 @@ export default async function AnalyserePage() {
           title="Lag-snitt"
           data="Pyramide-snitt"
           sub="Tek · Slag · Fys · Spill · Turnering"
-          visual={<PyramidMini />}
           cta="Se trender →"
         />
         <HubCard

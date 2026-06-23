@@ -20,8 +20,6 @@ import {
   HubHeader,
   HubStatSep,
   HubCard,
-  WeekStrip,
-  CalMini,
 } from "@/components/hubs";
 import { IDagButton, NyBookingButton } from "./gjennomfore-actions";
 
@@ -107,7 +105,6 @@ export default async function GjennomforePage() {
           title="Coach-kalender"
           data={`${okterIDag} ${okterIDag === 1 ? "økt" : "økter"} i dag`}
           sub={`${okterDenneUka} denne uka`}
-          visual={<CalMini marked={[0, 2]} nowPct={38} />}
           cta="Åpne →"
         />
         <HubCard
@@ -135,7 +132,6 @@ export default async function GjennomforePage() {
           title="Tilgjengelighet"
           data="—"
           sub="Sett åpne timer"
-          visual={<WeekStrip onDays={[0, 1, 2, 3, 4]} meDay={1} />}
           cta="Sett →"
         />
         <HubCard
