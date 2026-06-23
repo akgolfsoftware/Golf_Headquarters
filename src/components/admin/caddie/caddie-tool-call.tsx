@@ -9,11 +9,23 @@ type Props = {
 };
 
 const TOOL_LABEL: Record<string, string> = {
+  // Lese-verktøy
   searchPlayers: "søkte i spillerlista",
+  getPlayer: "hentet spillerprofil",
+  getPlayerSessions: "hentet treningsøkter",
+  getPlayerStats: "hentet spillerstatistikk",
+  getUpcomingBookings: "hentet kommende bookinger",
   getOutstandingInvoices: "hentet utestående fakturaer",
-  sendEmail: "forberedte e-post",
-  searchCalendar: "leste kalender",
-  createInvoice: "opprettet faktura",
+  getRound: "hentet runde",
+  getTournaments: "hentet turneringer",
+  getActiveSubscriptions: "hentet abonnementer",
+  getPlayerLatestSession: "hentet siste økt",
+  // Skrive-verktøy (forslag)
+  draftPlayerMessage: "forberedte melding",
+  draftBookingProposal: "forberedte booking",
+  draftInvoiceReminder: "forberedte purring",
+  draftPlayerNote: "forberedte notat",
+  draftPlanAdjustment: "foreslo plan-endring",
 };
 
 function summarizeOutput(toolCall: CaddieToolCall): string {

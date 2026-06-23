@@ -75,7 +75,13 @@ function toCaddieMessage(m: UIMessage): CaddieMessage {
         state?: string;
       };
       const part = p as unknown as AiSdkToolPart;
-      if (part.type?.startsWith("tool-")) {
+      if (part.type?.startsWith("tool-") || part.type === "dynamic-tool") {
+        // AI SDK v6: statiske verktøy har type "tool-<navn>" (navnet i type-en,
+        // ikke i toolName); dynamic-tool har toolName-feltet.
+        const toolName =
+          part.type === "dynamic-tool"
+            ? part.toolName ?? "ukjent"
+            : part.type!.slice("tool-".length);
         const out = part.output ?? {};
         const needsApproval = out?.needsApproval === true;
         const approvalPreview = needsApproval
@@ -100,12 +106,19 @@ function toCaddieMessage(m: UIMessage): CaddieMessage {
                 typeof out.recipient === "string" ? out.recipient : undefined,
             }
           : undefined;
+        // v6-states: input-streaming | input-available | output-available | output-error
+        const state: CaddieToolCall["state"] =
+          part.state === "output-available"
+            ? "result"
+            : part.state === "output-error"
+              ? "error"
+              : "calling";
         const tc: CaddieToolCall = {
           id: part.toolCallId ?? `tc_${Date.now()}`,
-          toolName: part.toolName ?? "ukjent",
+          toolName,
           input: part.input ?? {},
           output: part.output,
-          state: (part.state === "result" ? "result" : part.state === "error" ? "error" : "calling") as CaddieToolCall["state"],
+          state,
           needsApproval,
           approvalPreview,
         };

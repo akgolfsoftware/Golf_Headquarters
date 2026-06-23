@@ -1,5 +1,7 @@
 "use client";
 
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { cn } from "@/lib/utils";
 import type { CaddieMessage } from "./types";
 import { CaddieToolCall } from "./caddie-tool-call";
@@ -10,95 +12,45 @@ type Props = {
 };
 
 /**
- * Minimal markdown-renderer for assistant-svar. Støtter:
- * - **bold**
- * - punktlister (linjer som starter med "- ")
- * - kodeblokker mellom ```
- *
- * Holdes bevisst enkel — vi unngår å installere react-markdown her.
+ * Markdown-rendering for Caddie-svar via react-markdown + remark-gfm.
+ * Støtter GFM-tabeller (Caddie presenterer tall i tabeller per systemprompt),
+ * lister, bold, lenker og kodeblokker. Tabeller bruker JetBrains Mono
+ * (tabulære tall, jf. designsystem).
  */
-function renderInline(text: string) {
-  const out: React.ReactNode[] = [];
-  const re = /\*\*([^*]+)\*\*/g;
-  let last = 0;
-  let m: RegExpExecArray | null;
-  let key = 0;
-  while ((m = re.exec(text)) !== null) {
-    if (m.index > last) out.push(text.slice(last, m.index));
-    out.push(
-      <strong key={`b${key++}`} className="font-semibold">
-        {m[1]}
-      </strong>
-    );
-    last = re.lastIndex;
-  }
-  if (last < text.length) out.push(text.slice(last));
-  return out;
-}
+const MD_CLASS = cn(
+  "space-y-2 break-words text-sm leading-relaxed",
+  "[&_p]:leading-relaxed [&_strong]:font-semibold [&_em]:italic",
+  "[&_ul]:my-1 [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-5",
+  "[&_ol]:my-1 [&_ol]:list-decimal [&_ol]:space-y-1 [&_ol]:pl-5",
+  "[&_a]:text-primary [&_a]:underline",
+  "[&_code]:rounded [&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-[12px]",
+  "[&_pre]:my-2 [&_pre]:overflow-x-auto [&_pre]:rounded [&_pre]:bg-muted [&_pre]:p-2 [&_pre]:font-mono [&_pre]:text-[12px]",
+  "[&_pre_code]:bg-transparent [&_pre_code]:p-0",
+  "[&_table]:my-2 [&_table]:block [&_table]:w-full [&_table]:overflow-x-auto [&_table]:border-collapse [&_table]:font-mono [&_table]:text-[12px]",
+  "[&_th]:border [&_th]:border-border [&_th]:bg-background/40 [&_th]:px-2 [&_th]:py-1 [&_th]:text-left [&_th]:font-semibold [&_th]:whitespace-nowrap",
+  "[&_td]:border [&_td]:border-border [&_td]:px-2 [&_td]:py-1 [&_td]:align-top",
+);
 
-function renderText(text: string) {
+function CaddieMarkdown({ text }: { text: string }) {
   if (!text) return null;
-  const blocks = text.split(/```/);
-  return blocks.map((block, idx) => {
-    if (idx % 2 === 1) {
-      return (
-        <pre
-          key={`code-${idx}`}
-          className="my-2 overflow-x-auto rounded-sm bg-muted px-2 py-2 font-mono text-[12px] text-foreground"
-        >
-          {block.trim()}
-        </pre>
-      );
-    }
-    const lines = block.split("\n");
-    const nodes: React.ReactNode[] = [];
-    let listBuffer: string[] = [];
-    const flushList = (k: string) => {
-      if (listBuffer.length === 0) return;
-      nodes.push(
-        <ul key={`ul-${k}`} className="my-2 list-disc space-y-1 pl-6">
-          {listBuffer.map((item, i) => (
-            <li key={i}>{renderInline(item)}</li>
-          ))}
-        </ul>
-      );
-      listBuffer = [];
-    };
-    lines.forEach((line, i) => {
-      if (/^\s*-\s+/.test(line)) {
-        listBuffer.push(line.replace(/^\s*-\s+/, ""));
-      } else {
-        flushList(`${idx}-${i}`);
-        if (line.trim().length > 0) {
-          nodes.push(
-            <p key={`p-${idx}-${i}`} className="leading-relaxed">
-              {renderInline(line)}
-            </p>
-          );
-        }
-      }
-    });
-    flushList(`${idx}-end`);
-    return <div key={`blk-${idx}`}>{nodes}</div>;
-  });
+  return (
+    <div className={MD_CLASS}>
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>{text}</ReactMarkdown>
+    </div>
+  );
 }
 
 export function CaddieMessage({ message, streaming }: Props) {
   const isUser = message.role === "user";
 
   return (
-    <div
-      className={cn(
-        "flex w-full",
-        isUser ? "justify-end" : "justify-start"
-      )}
-    >
+    <div className={cn("flex w-full", isUser ? "justify-end" : "justify-start")}>
       <div
         className={cn(
           "max-w-[80%] space-y-2 rounded-lg px-4 py-2 text-sm",
           isUser
             ? "bg-primary text-primary-foreground"
-            : "bg-secondary text-foreground"
+            : "bg-secondary text-foreground",
         )}
       >
         {!isUser && (
@@ -112,7 +64,7 @@ export function CaddieMessage({ message, streaming }: Props) {
           }
           return (
             <div key={i} className="space-y-1">
-              {renderText(part.text)}
+              <CaddieMarkdown text={part.text} />
               {streaming && i === message.parts.length - 1 && (
                 <span
                   className="ml-0.5 inline-block h-3 w-1.5 animate-pulse bg-current align-middle"
