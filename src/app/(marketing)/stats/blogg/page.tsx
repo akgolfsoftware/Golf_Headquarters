@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     "Datadrevne artikler om norsk og internasjonal golf. Skrevet av folk som faktisk forstår SG.",
   alternates: { canonical: "https://akgolf.no/stats/blogg" },
   openGraph: {
-    title: "Analyse — AK Golf Stats",
+    title: "Analyse: AK Golf Stats",
     description: "SG-analyse, juniordata, PGA Tour-tall. Gratis fra AK Golf.",
     url: "https://akgolf.no/stats/blogg",
     type: "website",

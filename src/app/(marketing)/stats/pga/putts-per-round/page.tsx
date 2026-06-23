@@ -17,12 +17,12 @@ import type { RelatertKategori } from "@/components/stats/pga-kategori-page";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Putts Per Round — PGA Tour 2026 | AK Golf Stats",
+  title: "Putts Per Round: PGA Tour 2026 | AK Golf Stats",
   description:
     "Hvem putter aller best på PGA Tour? Se topp 20 (færrest putter per runde), interaktiv percentile-analyse og sammenlign med din egen putting.",
   alternates: { canonical: "https://akgolf.no/stats/pga/putts-per-round" },
   openGraph: {
-    title: "Putts Per Round — PGA Tour 2026 | AK Golf Stats",
+    title: "Putts Per Round: PGA Tour 2026 | AK Golf Stats",
     description: "Interaktiv putting-sammenligning mot PGA Tour-spillere.",
     url: "https://akgolf.no/stats/pga/putts-per-round",
     siteName: "AK Golf Stats",
@@ -70,7 +70,7 @@ export default async function PuttsPerRoundPage() {
             </>
           ),
           heroSub:
-            "30 putter i runden bør ned til 28. PGA Tour-snittet er overraskende lavt — og det er en av de statistikkene du faktisk kan forbedre mest med øving.",
+            "30 putter i runden bør ned til 28. PGA Tour-snittet er overraskende lavt, og det er en av de statistikkene du faktisk kan forbedre mest med øving.",
           mersalgTekst:
             "30 putter i runden bør ned til 28. PlayerHQ regner ut SG Putting per runde og viser hvor du faktisk taper strokes.",
           mersalgKort: [

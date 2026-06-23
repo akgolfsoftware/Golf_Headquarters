@@ -20,12 +20,12 @@ import { KlubbdatabaseKlient } from "./klubb-klient";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Klubbdatabase — alle norske golfklubber | AK Golf Stats",
+  title: "Klubbdatabase: alle norske golfklubber | AK Golf Stats",
   description:
     "Spillere, pro-talent, juniorprogram og turneringshistorikk for alle norske golfklubber. Finn din klubb og se hvem som dominerer.",
   alternates: { canonical: "https://akgolf.no/stats/klubber" },
   openGraph: {
-    title: "Klubbdatabase — alle norske golfklubber | AK Golf Stats",
+    title: "Klubbdatabase: alle norske golfklubber | AK Golf Stats",
     description: "Pro-talent, college-commits og turneringsdata per klubb.",
     url: "https://akgolf.no/stats/klubber",
   },

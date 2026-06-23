@@ -17,13 +17,13 @@ import { RegionCards } from "./region-cards";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Regioner — AK Golf Stats",
+  title: "Regioner: AK Golf Stats",
   description:
     "Norsk golf region for region. Utforsk klubber, spillere og turneringer i Øst, Vest, Midt, Nord og Sør-Norge.",
   alternates: { canonical: "https://akgolf.no/stats/regions" },
   openGraph: {
-    title: "Regioner — AK Golf Stats",
-    description: "Golf i din region — spillere, klubber og turneringer.",
+    title: "Regioner: AK Golf Stats",
+    description: "Golf i din region: spillere, klubber og turneringer.",
     url: "https://akgolf.no/stats/regions",
   },
 };
@@ -44,7 +44,7 @@ const FAKTA = [
   "Mest pro-spillere kommer fra Øst (8 av 12)",
   "Vest har flest spillere per klubb (17 i snitt)",
   "Sør har høyest snitt-prestasjon på Srixon Tour",
-  "Nord-Norge har landets lengste golfdag — midnattssol i juni",
+  "Nord-Norge har landets lengste golfdag: midnattssol i juni",
 ];
 
 // Bane.region lagres som norsk navn ("Øst" | "Vest" | ...) — map til region-slug.

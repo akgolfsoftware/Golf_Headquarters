@@ -15,12 +15,12 @@ import { CountUp } from "@/components/stats/count-up";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Årganger — AK Golf Stats",
+  title: "Årganger | AK Golf Stats",
   description:
     "Utforsk norske golftaler per fødselsår. Hvem er de beste 2009-talentene? Kohort-explorer for 2000-2012.",
   alternates: { canonical: "https://akgolf.no/stats/aargang" },
   openGraph: {
-    title: "Årganger — AK Golf Stats",
+    title: "Årganger | AK Golf Stats",
     description: "Kohort-explorer for norske golftalenter, 2000-2012.",
     url: "https://akgolf.no/stats/aargang",
   },
@@ -229,8 +229,8 @@ export default async function AargangIndexPage() {
             </h2>
             <p style={{ marginTop: 16, maxWidth: 520, margin: "16px auto 32px" }}>
               Er ditt barn i en av disse årgangene og ikke i listen? Det betyr at
-              vi ikke har resultater fra dem. PlayerHQ logger runder automatisk
-              — ditt barn havner i statistikken fra første scorekort.
+              vi ikke har resultater fra dem. PlayerHQ logger runder automatisk,
+              så ditt barn havner i statistikken fra første scorekort.
             </p>
             <Link href="/portal">
               <StatsBtn variant="primary" icon="ArrowRight">

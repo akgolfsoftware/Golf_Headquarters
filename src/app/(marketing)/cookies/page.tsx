@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Cookies — AK Golf Academy",
+  title: "Cookies · AK Golf Academy",
   description:
     "Slik bruker AK Golf cookies. Oversikt over kategorier og hvordan du kan styre innstillingene dine.",
 };
@@ -21,7 +21,7 @@ export default function CookiesSide() {
             sporing
           </h1>
           <p className="mt-6 max-w-2xl text-base text-muted-foreground">
-            Slik bruker vi cookies — og hvordan du styrer innstillingene dine.
+            Slik bruker vi cookies, og hvordan du styrer innstillingene dine.
           </p>
           <p className="mt-6 font-mono text-xs text-muted-foreground">
             Sist oppdatert:{" "}
@@ -43,7 +43,7 @@ export default function CookiesSide() {
               1. Strengt nødvendige
             </h3>
             <p>
-              Kreves for at tjenesten skal fungere — pålogging,
+              Kreves for at tjenesten skal fungere: pålogging,
               sesjonshåndtering og sikkerhet. Disse kan ikke slås av.
             </p>
 
@@ -69,7 +69,7 @@ export default function CookiesSide() {
               4. Preferanser
             </h3>
             <p>
-              Brukes til å huske valg du har gjort — språk, tema (lyst/mørkt)
+              Brukes til å huske valg du har gjort: språk, tema (lyst/mørkt)
               og hvilke paneler du har åpne i PlayerHQ.
             </p>
           </Section>

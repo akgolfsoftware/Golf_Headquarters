@@ -6,7 +6,7 @@ import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { PendingRefresh } from "./pending-refresh";
 
 export const metadata: Metadata = {
-  title: "Bekreftet — AK Golf",
+  title: "Bekreftet · AK Golf",
   robots: { index: false, follow: false },
 };
 

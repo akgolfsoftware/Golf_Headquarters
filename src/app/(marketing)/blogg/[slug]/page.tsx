@@ -24,7 +24,7 @@ export async function generateMetadata({
   const post = POSTS.find((p) => p.slug === slug);
   if (!post) return { title: "Innlegg ikke funnet" };
   return {
-    title: `${post.tittel} — AK Golf Academy`,
+    title: `${post.tittel} | AK Golf Academy`,
     description: post.ingress,
   };
 }

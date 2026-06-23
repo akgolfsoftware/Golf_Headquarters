@@ -37,7 +37,7 @@ function SearchBox() {
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Søk i leaderboards — «drive», «sg total», «forbedring»…"
+          placeholder="Søk i leaderboards: «drive», «sg total», «forbedring»…"
           style={{
             flex: 1,
             background: "transparent",

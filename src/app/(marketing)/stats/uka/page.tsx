@@ -18,10 +18,10 @@ import { StatsInitialAvatar } from "@/components/stats/stats-initial-avatar";
 export const revalidate = 86400;
 
 export const metadata: Metadata = {
-  title: "Ukentlig roundup — AK Golf Stats",
+  title: "Ukentlig roundup: AK Golf Stats",
   description: "Norsk golf oppsummert fra forrige uke. Resultater, ukens spiller, kommende turneringer.",
   openGraph: {
-    title: "Ukentlig roundup — AK Golf Stats",
+    title: "Ukentlig roundup: AK Golf Stats",
     description: "Norsk golf på 60 sekunder. Oppdateres hver mandag.",
   },
 };
@@ -142,7 +142,7 @@ export default async function UkaPage() {
             </span>
             {data && (
               <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--s-muted-fg)" }}>
-                {formatDato(data.fra).toUpperCase()} — {formatDato(data.til).toUpperCase()}
+                {formatDato(data.fra).toUpperCase()}–{formatDato(data.til).toUpperCase()}
               </span>
             )}
           </div>
@@ -155,7 +155,7 @@ export default async function UkaPage() {
         </Reveal>
         <Reveal delay={120}>
           <p className="stats-uka-sub">
-            Alle norske resultater, ukens spiller og hva som venter neste uke — på 60 sekunder.
+            Alle norske resultater, ukens spiller og hva som venter neste uke, på 60 sekunder.
           </p>
         </Reveal>
       </section>
@@ -204,7 +204,7 @@ export default async function UkaPage() {
                   </em>
                 </div>
                 <p className="stats-uka-featured-desc">
-                  Beste norske i {data.bestEntry.tournament.name} — posisjon #{data.bestEntry.position ?? "—"} med totalscore{" "}
+                  Beste norske i {data.bestEntry.tournament.name}: posisjon #{data.bestEntry.position ?? "—"} med totalscore{" "}
                   {data.bestEntry.scoreToPar !== null && data.bestEntry.scoreToPar !== undefined
                     ? `${data.bestEntry.scoreToPar < 0 ? "" : "+"}${data.bestEntry.scoreToPar}`
                     : `${data.bestEntry.totalScore ?? "—"}`}.

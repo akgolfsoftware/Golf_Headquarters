@@ -177,7 +177,7 @@ function BkCard({ item }: { item: ServiceMedNesteLedig }) {
         <PulseDot size="sm" />
         {item.nesteLedig
           ? `Neste ledig · ${formaterNesteLedig(item.nesteLedig.dato)}`
-          : "Få ledige tider — se kalenderen"}
+          : "Få ledige tider, se kalenderen"}
       </span>
 
       <Link

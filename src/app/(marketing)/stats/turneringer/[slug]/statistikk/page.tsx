@@ -50,7 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const t = await prisma.tournament.findUnique({ where: { slug }, select: { name: true } });
   if (!t) return { title: "Turnering ikke funnet | AK Golf Stats" };
   return {
-    title: `${t.name} — statistikk | AK Golf Stats`,
+    title: `${t.name} · statistikk | AK Golf Stats`,
     description: `Scorefordeling, median og norske spilleres resultat i feltet for ${t.name}.`,
     alternates: { canonical: `https://akgolf.no/stats/turneringer/${slug}/statistikk` },
   };

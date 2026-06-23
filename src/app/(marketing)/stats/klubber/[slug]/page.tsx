@@ -41,11 +41,11 @@ export async function generateMetadata({
   if (!klubb) return { title: "Klubb ikke funnet" };
 
   return {
-    title: `${klubb.navn} — Klubbstatistikk | AK Golf Stats`,
+    title: `${klubb.navn}: Klubbstatistikk | AK Golf Stats`,
     description: `${klubb.spillere} spillere, ${klubb.pro} pro, ${klubb.junior} junior. ${klubb.turneringer} turneringer arrangert av ${klubb.navn}.`,
     alternates: { canonical: `https://akgolf.no/stats/klubber/${slug}` },
     openGraph: {
-      title: `${klubb.navn} — AK Golf Stats`,
+      title: `${klubb.navn} | AK Golf Stats`,
       description: `${klubb.spillere} spillere · ${klubb.turneringer} turneringer`,
       url: `https://akgolf.no/stats/klubber/${slug}`,
     },

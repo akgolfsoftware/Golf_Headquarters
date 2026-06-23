@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!player) return { title: "Spiller ikke funnet" };
   const aar = new Date().getFullYear();
   return {
-    title: `${player.name}s golfsesong ${aar} — AK Golf Stats`,
+    title: `${player.name}s golfsesong ${aar} | AK Golf Stats`,
     description: `Se ${player.name}s sesong ${aar} i tall: runder, snittscore, ranking og mer.`,
     openGraph: {
       title: `${player.name}s golfsesong ${aar}`,
@@ -167,7 +167,7 @@ export default async function WrappedPage({ params }: Props) {
       type: "streak",
       bgVariant: "lime",
       streak: 5,
-      kontekst: "I løpet av sommersesongen — turneringer rygg-i-rygg.",
+      kontekst: "I løpet av sommersesongen: turneringer rygg-i-rygg.",
     },
     {
       type: "ranking",

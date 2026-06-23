@@ -28,12 +28,12 @@ import {
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Turneringer — AK Golf Stats",
+  title: "Turneringer | AK Golf Stats",
   description:
     "PGA, DP World, Korn Ferry, norske amatør- og junior-turneringer. Live-data, norske spillere fremhevet.",
   alternates: { canonical: "https://akgolf.no/stats/turneringer" },
   openGraph: {
-    title: "Turneringer — AK Golf Stats",
+    title: "Turneringer | AK Golf Stats",
     description:
       "Alle golftturneringer samlet. Norske deltakere fremhevet på tvers av PGA Tour, DP World Tour, Korn Ferry og norske tourer.",
     url: "https://akgolf.no/stats/turneringer",

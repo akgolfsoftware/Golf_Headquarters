@@ -252,7 +252,7 @@ function genererSammendrag(
     return `${navn} er ${tierTekst} med ${antallTurneringer} registrerte turneringer i databasen vår. ${trend} (${formaterScoreToPar(sisteAar.snitt)} snitt over ${sisteAar.antall} runder) viser ${navn} en solid karrierekurve i norsk golf.`;
   }
 
-  return `${navn} er ${tierTekst} med ${antallTurneringer} registrerte turneringer. I ${sisteAar.aar} hadde ${navn} et snitt på ${formaterScoreToPar(sisteAar.snitt)} over ${sisteAar.antall} runder — en prestasjon som plasserer spilleren godt i det norske feltet.`;
+  return `${navn} er ${tierTekst} med ${antallTurneringer} registrerte turneringer. I ${sisteAar.aar} hadde ${navn} et snitt på ${formaterScoreToPar(sisteAar.snitt)} over ${sisteAar.antall} runder, en prestasjon som plasserer spilleren godt i det norske feltet.`;
 }
 
 // Tour-chips tilgjengelig
@@ -292,8 +292,8 @@ export async function generateMetadata({
   if (!spiller) return { title: "Spiller ikke funnet" };
 
   const tittel = spiller.birthYear
-    ? `${spiller.name} (f. ${spiller.birthYear}) — AK Golf Stats`
-    : `${spiller.name} — AK Golf Stats`;
+    ? `${spiller.name} (f. ${spiller.birthYear}): AK Golf Stats`
+    : `${spiller.name}: AK Golf Stats`;
   const tier = formaterTierLabel(spiller.tier);
   const beskrivelse =
     spiller.bio ??
@@ -826,7 +826,7 @@ export default async function SpillerProfilPage({
               </h2>
               <p>
                 Hvis du spiller på en av tourerne vi tracker, har du sannsynligvis allerede én.
-                Vil du følge utvikling, mål og runder over tid — det er PlayerHQ.
+                Vil du følge utvikling, mål og runder over tid: det er PlayerHQ.
               </p>
               <div className="stats-mersalg-ctas">
                 <Link

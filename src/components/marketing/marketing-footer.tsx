@@ -31,7 +31,7 @@ export function MarketingFooter() {
       <div className="mx-auto max-w-7xl px-6 md:px-8">
         <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 md:grid-cols-[2fr_1fr_1fr_1fr]">
           <div>
-            <Link href="/" aria-label="AK Golf — hjem" className="inline-flex">
+            <Link href="/" aria-label="AK Golf, hjem" className="inline-flex">
               <AkGolfLogo variant="white" width={41} />
             </Link>
             <p className="mt-4 max-w-[32ch] font-mono text-[11px] leading-[1.6] text-white/60">

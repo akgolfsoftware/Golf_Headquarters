@@ -882,7 +882,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
             <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
               <a
                 href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
-                  `${spillerA.name} vs ${spillerB.name} — se sammenligningen på AK Golf Stats`,
+                  `${spillerA.name} vs ${spillerB.name}: se sammenligningen på AK Golf Stats`,
                 )}&url=${encodeURIComponent(
                   `https://akgolf.no/stats/sammenlign-spillere?a=${spillerA.slug}&b=${spillerB.slug}`,
                 )}`}

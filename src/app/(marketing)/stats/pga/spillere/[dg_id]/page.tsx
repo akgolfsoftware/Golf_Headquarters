@@ -44,11 +44,11 @@ export async function generateMetadata({
   const navn = seed?.navn ?? "PGA-spiller";
 
   return {
-    title: `${navn} — Stats & SG | AK Golf Stats`,
+    title: `${navn}: Stats & SG | AK Golf Stats`,
     description: `SG Total, drive distance, fairway % og scoring average for ${navn}. Sammenlign med Tour-snittet.`,
     alternates: { canonical: `https://akgolf.no/stats/pga/spillere/${dg_id}` },
     openGraph: {
-      title: `${navn} — PGA Tour Stats`,
+      title: `${navn}: PGA Tour Stats`,
       description: `Interaktiv spillerprofil for ${navn}.`,
       url: `https://akgolf.no/stats/pga/spillere/${dg_id}`,
     },

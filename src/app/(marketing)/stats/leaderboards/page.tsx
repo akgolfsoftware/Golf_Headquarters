@@ -26,12 +26,12 @@ import { LeaderboardsSearchBox, LeaderboardsKategoriStrip } from "./leaderboards
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Leaderboards — AK Golf Stats",
+  title: "Leaderboards | AK Golf Stats",
   description:
-    "Alle topp-10-ene på ett sted. PGA Tour drive, GIR, putting, SG Total — og norske amatør-leaderboards for snittscore, forbedring og aktivitet.",
+    "Alle topp-10-ene på ett sted. PGA Tour drive, GIR, putting, SG Total, og norske amatør-leaderboards for snittscore, forbedring og aktivitet.",
   alternates: { canonical: "https://akgolf.no/stats/leaderboards" },
   openGraph: {
-    title: "Leaderboards — AK Golf Stats",
+    title: "Leaderboards | AK Golf Stats",
     description: "Tverrkategori topp-10 for PGA Tour og norske spillere.",
     url: "https://akgolf.no/stats/leaderboards",
   },
@@ -775,7 +775,7 @@ export default async function LeaderboardsPage() {
               <em className="stats-italic-accent">en av disse listene</em>?
             </h2>
             <p style={{ marginTop: 16, maxWidth: 480, margin: "16px auto 32px" }}>
-              Spill turneringer, logg i PlayerHQ — vi tracker resten. Spillere
+              Spill turneringer, logg i PlayerHQ, så tracker vi resten. Spillere
               som logger, kommer automatisk opp på de norske leaderboardene.
             </p>
             <Link href="/portal">

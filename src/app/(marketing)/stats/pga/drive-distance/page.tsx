@@ -21,12 +21,12 @@ import type { RelatertKategori } from "@/components/stats/pga-kategori-page";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Drive Distance — PGA Tour 2026 | AK Golf Stats",
+  title: "Drive Distance: PGA Tour 2026 | AK Golf Stats",
   description:
     "Hvor langt slår en PGA Tour-spiller? Interaktiv slider: se din percentile og nærmeste proff. Topp 20-liste + historisk fordeling.",
   alternates: { canonical: "https://akgolf.no/stats/pga/drive-distance" },
   openGraph: {
-    title: "Drive Distance — PGA Tour 2026 | AK Golf Stats",
+    title: "Drive Distance: PGA Tour 2026 | AK Golf Stats",
     description: "Interaktiv sammenligning av drive distance mot PGA Tour-spillere.",
     url: "https://akgolf.no/stats/pga/drive-distance",
     siteName: "AK Golf Stats",
@@ -77,7 +77,7 @@ export default async function DriveDistancePage() {
             </>
           ),
           heroSub:
-            "Drive distance er den mest synlige statistikken på Tour — og en av de største skillene mellom topp 10 og bunn 50. Lek deg med slideren og se hvor du står.",
+            "Drive distance er den mest synlige statistikken på Tour, og en av de største skillene mellom topp 10 og bunn 50. Lek deg med slideren og se hvor du står.",
           mersalgTekst:
             "Hvordan slår du i sommer? PlayerHQ logger drive distance på hver runde. Se utviklingen over sesongen og få AI-coach-tips for å slå lenger.",
           mersalgKort: [

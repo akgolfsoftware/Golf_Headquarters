@@ -29,10 +29,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const region = regionForSlug(slug);
-  if (!region) return { title: "Region — AK Golf Stats" };
+  if (!region) return { title: "Region: AK Golf Stats" };
 
   return {
-    title: `${region.navn} — AK Golf Stats`,
+    title: `${region.navn}: AK Golf Stats`,
     description: `Golf i ${region.navn}: ${region.fylker.join(", ")}. Spillere, klubber, turneringer og talenter.`,
     alternates: { canonical: `https://akgolf.no/stats/regions/${slug}` },
   };
@@ -118,7 +118,7 @@ const REGION_STATIC: Record<RegionSlug, {
     watchList: [
       { initialer: "PH", navn: "Petter Hagen", klubb: "Stavanger GK", grunn: "WAGR-inngang forventes i 2026." },
     ],
-    mersalg: "Spiller du i Vest-Norge? PlayerHQ fungerer på alle baner — logg rundt din hjemme-bane.",
+    mersalg: "Spiller du i Vest-Norge? PlayerHQ fungerer på alle baner. Logg rundt din hjemme-bane.",
   },
   midt: {
     klubber: 14, spillere: 198, turneringer: 54, pro: 1,
@@ -156,14 +156,14 @@ const REGION_STATIC: Record<RegionSlug, {
       { dato: "20. jun", navn: "Midnattsolturneringen", klubb: "Tromsø GK", pameldte: 18 },
     ],
     fakta: [
-      "Landets lengste golfdag — midnattssol i juni",
+      "Landets lengste golfdag: midnattssol i juni",
       "Tromsø GK arrangerer Midnattsolturneringen (unik)",
       "Nord-Norge har ingen pro-spillere i DB ennå",
     ],
     watchList: [
       { initialer: "KH", navn: "Karl Holm", klubb: "Tromsø GK", grunn: "Norges nordligste topp-amatør." },
     ],
-    mersalg: "Spiller du i Nord-Norge? PlayerHQ fungerer overalt — logg rundene dine og bli synlig nasjonalt.",
+    mersalg: "Spiller du i Nord-Norge? PlayerHQ fungerer overalt. Logg rundene dine og bli synlig nasjonalt.",
   },
   sor: {
     klubber: 12, spillere: 134, turneringer: 42, pro: 0,

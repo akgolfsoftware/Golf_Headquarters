@@ -19,7 +19,7 @@ import { SpillerTabell } from "./spiller-tabell";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "PGA Tour Spillerdatabase — alle spillere | AK Golf Stats",
+  title: "PGA Tour Spillerdatabase: alle spillere | AK Golf Stats",
   description:
     "Stats-database over alle aktive spillere på PGA Tour, European Tour og Korn Ferry. Søk, filtrer og sammenlign med norske spillere fremhevet.",
   alternates: { canonical: "https://akgolf.no/stats/pga/spillere" },

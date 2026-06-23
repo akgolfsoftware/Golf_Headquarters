@@ -37,7 +37,7 @@ function fmtSg(v: number | null | undefined): string {
 }
 
 const GAP_TEKST: Record<string, string> = {
-  ott: "Lengde er synlig, men ikke alltid mest verdifull. SG: OTT er en god start — speed-trening kan gi 15–20 yds på 12 uker.",
+  ott: "Lengde er synlig, men ikke alltid mest verdifull. SG: OTT er en god start, og speed-trening kan gi 15–20 yds på 12 uker.",
   app: "Innspill er den mest forutsigbare SG-kategorien. Strokene tapt her er strokes du kan vinne tilbake med målrettet trening.",
   arg: "Kort spill er gjort med trening, ikke talent. 30 chips à 10 min hver dag gir raske gevinster.",
   putt: "Putting er det mest tekniske. Speed control fra 5–10m er der amatører taper aller mest strokes.",
@@ -359,7 +359,7 @@ export default async function SgResultatPage({ params }: Props) {
                   lineHeight: 1.05,
                 }}
               >
-                Radar — du{" "}
+                Radar, du{" "}
                 <em
                   style={{
                     fontStyle: "italic",

@@ -593,7 +593,7 @@ export default async function MinProgresjonPage() {
             </h2>
             <p>
               Med PlayerHQ PRO logges SG automatisk fra Trackman og manuell runderegistrering.
-              Ingen manuell input — treneren din ser det samme som deg.
+              Ingen manuell input. Treneren din ser det samme som deg.
             </p>
             <div className="stats-mersalg-ctas">
               <Link href="/portal/meg/abonnement">

@@ -16,12 +16,12 @@ import { SokClient } from "./sok-client";
 export const revalidate = 0; // Aldri caches — søk er alltid live
 
 export const metadata: Metadata = {
-  title: "Søk — AK Golf Stats",
+  title: "Søk: AK Golf Stats",
   description:
     "Søk i hele AK Golf Stats. Finn norske spillere, PGA Tour-spillere, klubber, turneringer og artikler på ett sted.",
   alternates: { canonical: "https://akgolf.no/stats/sok" },
   openGraph: {
-    title: "Søk — AK Golf Stats",
+    title: "Søk: AK Golf Stats",
     url: "https://akgolf.no/stats/sok",
   },
   robots: { index: false }, // Søkesider skal ikke indekseres
@@ -96,7 +96,7 @@ export default async function SokPage({
             <em className="stats-italic-accent">alt</em>.
           </h1>
           <p className="stats-hero-sub" style={{ maxWidth: 520 }}>
-            Spillere, turneringer, klubber, artikler — alt i én søkeboks.
+            Spillere, turneringer, klubber, artikler: alt i én søkeboks.
           </p>
         </Reveal>
       </section>

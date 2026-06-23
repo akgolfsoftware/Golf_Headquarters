@@ -28,12 +28,12 @@ import { PuttExplorer } from "./explorer";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Putt Explorer — PGA Tour synkeprosent per avstand | AK Golf Stats",
+  title: "Putt Explorer: PGA Tour synkeprosent per avstand | AK Golf Stats",
   description:
-    "Selv proffer bommer fra 3 meter. PGA Tour synker 82% fra 3m — se hele fordelingen fra 1–20 meter og sammenlign med din egen putting.",
+    "Selv proffer bommer fra 3 meter. PGA Tour synker 82% fra 3m. Se hele fordelingen fra 1–20 meter og sammenlign med din egen putting.",
   alternates: { canonical: "https://akgolf.no/stats/pga/putt-explorer" },
   openGraph: {
-    title: "Putt Explorer — PGA Tour synkeprosent per avstand | AK Golf Stats",
+    title: "Putt Explorer: PGA Tour synkeprosent per avstand | AK Golf Stats",
     description:
       "Interaktiv putt-statistikk: se synkeprosent for PGA Tour, topp 10 putters og amatører på alle avstander.",
     url: "https://akgolf.no/stats/pga/putt-explorer",
@@ -123,7 +123,7 @@ export default async function PuttExplorerPage() {
             <div>
               <StatsEyebrow dot tone="default">Interaktivt</StatsEyebrow>
               <h2>
-                Velg avstand —{" "}
+                Velg avstand:{" "}
                 <em className="italic-accent">se hva proffer gjør</em>.
               </h2>
             </div>
@@ -189,7 +189,7 @@ export default async function PuttExplorerPage() {
             <div>
               <StatsEyebrow dot tone="default">Heatmap</StatsEyebrow>
               <h2>
-                Hele fordelingen —{" "}
+                Hele fordelingen:{" "}
                 <em className="italic-accent">avstand × nivå</em>.
               </h2>
             </div>
@@ -206,7 +206,7 @@ export default async function PuttExplorerPage() {
 
         <div className="putt-pull-quote">
           Amatører undervurderer 5-meteren og overvurderer 10-meteren.
-          Tour-spillerne vet at 5 meter er gjennombrudd-avstanden — den de
+          Tour-spillerne vet at 5 meter er gjennombrudd-avstanden, den de
           jobber hardest med.
           <div className="putt-pull-quote-credit">
             Mark Broadie · «Every Shot Counts»
@@ -236,7 +236,7 @@ export default async function PuttExplorerPage() {
               <p>
                 PlayerHQ logger antall putter per hull og regner ut din
                 synket-prosent per avstand. Sammenlign deg med PGA Tour på
-                hver avstand — automatisk.
+                hver avstand, automatisk.
               </p>
               <Link
                 href="/playerhq"
@@ -276,10 +276,10 @@ export default async function PuttExplorerPage() {
           </div>
           <div className="putt-crossref">
             <Link href="/stats/pga/drive-distance" className="putt-crossref-link">
-              Drive distance — hvor langt slår proffene? →
+              Drive distance: hvor langt slår proffene? →
             </Link>
             <Link href="/stats/pga/gir-pct" className="putt-crossref-link">
-              GIR forutsier scoring — sjekk hvordan du ligger an →
+              GIR forutsier scoring: sjekk hvordan du ligger an →
             </Link>
           </div>
         </Reveal>

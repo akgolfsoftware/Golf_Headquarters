@@ -60,11 +60,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const t = await prisma.tournament.findUnique({ where: { slug } });
   if (!t) return { title: "Turnering ikke funnet | AK Golf" };
   return {
-    title: `${t.name} — turneringsoversikt | AK Golf`,
+    title: `${t.name}: turneringsoversikt | AK Golf`,
     description: `Følg ${t.name} live. Norske spillere, leaderboard, info og resultater. Oppdatert automatisk.`,
     alternates: { canonical: `https://akgolf.no/turneringer/${slug}` },
     openGraph: {
-      title: `${t.name} — AK Golf`,
+      title: `${t.name} | AK Golf`,
       description: `Live oversikt over norske spillere i ${t.name}`,
       url: `https://akgolf.no/turneringer/${slug}`,
       type: "website",
@@ -506,7 +506,7 @@ export default async function TurneringDetalj({ params }: Props) {
               <div>
                 <StatsEyebrow>Leaderboard</StatsEyebrow>
                 <h2 className="font-display">
-                  Hele <em className="stats-italic-accent">feltet</em> —{" "}
+                  Hele <em className="stats-italic-accent">feltet</em>:{" "}
                   {alle.length} spillere.
                 </h2>
               </div>
@@ -666,7 +666,7 @@ const NB_TIME = new Intl.DateTimeFormat("nb-NO", { day: "numeric", month: "short
 function formaterDato(start: Date, slutt: Date | null): string {
   if (!slutt) return NB_DATE.format(start);
   if (start.toDateString() === slutt.toDateString()) return NB_DATE.format(start);
-  return `${NB_DATE.format(start)} — ${NB_DATE.format(slutt)}`;
+  return `${NB_DATE.format(start)} – ${NB_DATE.format(slutt)}`;
 }
 
 function formaterToPar(n: number): string {

@@ -15,9 +15,9 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const service = await prisma.serviceType.findUnique({ where: { slug } });
-  if (!service) return { title: "Booking — AK Golf" };
+  if (!service) return { title: "Booking · AK Golf" };
   return {
-    title: `Book ${service.name} — AK Golf`,
+    title: `Book ${service.name} · AK Golf`,
     description: service.description ?? undefined,
   };
 }

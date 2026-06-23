@@ -35,10 +35,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!t) return { title: "Turnering ikke funnet | AK Golf Stats" };
 
   const tourLabel = formaterTour(t.tour);
-  const description = `Se norske spillere, leaderboard og resultater fra ${t.name}. ${tourLabel} — oppdatert automatisk av AK Golf Stats.`;
+  const description = `Se norske spillere, leaderboard og resultater fra ${t.name}. ${tourLabel}, oppdatert automatisk av AK Golf Stats.`;
 
   return {
-    title: `${t.name} — ${tourLabel} | AK Golf Stats`,
+    title: `${t.name} · ${tourLabel} | AK Golf Stats`,
     description,
     alternates: { canonical: `https://akgolf.no/stats/turneringer/${slug}` },
     openGraph: {

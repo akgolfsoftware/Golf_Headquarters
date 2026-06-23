@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Personvern — AK Golf",
+  title: "Personvern · AK Golf",
   description: "Personvernerklæring for AK Golf-plattformen.",
 };
 
@@ -60,14 +60,14 @@ export default function Personvern() {
               </li>
               <li>
                 <strong>Helse-relatert data (frivillig):</strong> hvilepuls,
-                søvn — kun hvis du selv registrerer.
+                søvn, kun hvis du selv registrerer.
               </li>
               <li>
                 <strong>Tekniske data:</strong> IP-adresse, nettleser,
                 pålogging-tidspunkt, feillogger.
               </li>
               <li>
-                <strong>Betalingsdata:</strong> håndteres av Stripe — vi lagrer
+                <strong>Betalingsdata:</strong> håndteres av Stripe. Vi lagrer
                 kun ID og status, ikke kortinformasjon.
               </li>
             </ul>
@@ -83,11 +83,11 @@ export default function Personvern() {
               </li>
               <li>
                 <strong>Produktforbedring og analyse</strong> (berettiget
-                interesse, art. 6 nr. 1 f) — alltid med anonymisering når mulig
+                interesse, art. 6 nr. 1 f): alltid med anonymisering når mulig
               </li>
               <li>
                 <strong>Markedsføring til eksisterende kunder</strong> (berettiget
-                interesse — kan reservere deg fra i innstillinger)
+                interesse, kan reservere deg fra i innstillinger)
               </li>
               <li>
                 <strong>Etterleve regnskaps- og bokføringsplikt</strong>{" "}
@@ -103,24 +103,24 @@ export default function Personvern() {
             </p>
             <ul className="list-disc space-y-2 pl-6">
               <li>
-                <strong>Supabase</strong> (EU-region) — database, autentisering,
+                <strong>Supabase</strong> (EU-region): database, autentisering,
                 fillagring
               </li>
               <li>
-                <strong>Vercel</strong> (EU-region) — hosting og deploy
+                <strong>Vercel</strong> (EU-region): hosting og deploy
               </li>
               <li>
-                <strong>Stripe</strong> — betalingsbehandling
+                <strong>Stripe</strong>: betalingsbehandling
               </li>
               <li>
-                <strong>Resend</strong> — utsendelse av transaksjons-e-post
+                <strong>Resend</strong>: utsendelse av transaksjons-e-post
               </li>
               <li>
-                <strong>Anthropic</strong> — AI-coach (Claude). Anthropic
+                <strong>Anthropic</strong>: AI-coach (Claude). Anthropic
                 lagrer ikke prompts ut over kort retensjonsperiode for misbrukskontroll
               </li>
               <li>
-                <strong>Sentry</strong> — feilrapportering (PII filtrert ut)
+                <strong>Sentry</strong>: feilrapportering (PII filtrert ut)
               </li>
             </ul>
           </Section>
@@ -143,7 +143,7 @@ export default function Personvern() {
               </li>
               <li>
                 <strong>AI-chat-historikk:</strong> kan slettes av deg når som
-                helst — slettes uansett ved konto-sletting
+                helst, slettes uansett ved konto-sletting
               </li>
             </ul>
           </Section>
@@ -154,11 +154,11 @@ export default function Personvern() {
               <li>Innsyn i hvilke opplysninger vi har om deg</li>
               <li>Retting av feil eller ufullstendige opplysninger</li>
               <li>
-                Sletting («retten til å bli glemt») — gjelder ikke data vi er
+                Sletting («retten til å bli glemt»), gjelder ikke data vi er
                 lovpålagt å beholde
               </li>
               <li>Begrensning av behandling</li>
-              <li>Dataportabilitet — utlevering i maskinlesbart format</li>
+              <li>Dataportabilitet: utlevering i maskinlesbart format</li>
               <li>Innsigelse mot behandling basert på berettiget interesse</li>
               <li>
                 Klage til Datatilsynet (
@@ -177,8 +177,8 @@ export default function Personvern() {
               Send forespørsel til{" "}
               <a href="mailto:personvern@akgolf.no" className="text-primary underline">
                 personvern@akgolf.no
-              </a>{" "}
-              — vi svarer innen 30 dager.
+              </a>
+              . Vi svarer innen 30 dager.
             </p>
           </Section>
 
@@ -192,7 +192,7 @@ export default function Personvern() {
 
           <Section title="8. Cookies og analytics">
             <p>
-              Vi bruker minimalt med cookies — kun det som er nødvendig for
+              Vi bruker minimalt med cookies, kun det som er nødvendig for
               innlogging og sikkerhet. For analytics bruker vi{" "}
               <strong>Plausible</strong>, som er cookie-fri og GDPR-vennlig.
             </p>

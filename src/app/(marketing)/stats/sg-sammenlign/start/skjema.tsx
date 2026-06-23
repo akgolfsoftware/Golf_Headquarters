@@ -269,7 +269,7 @@ export function SgStartSkjema({
               <Search size={16} color="hsl(var(--muted-foreground))" />
               <input
                 type="text"
-                placeholder="Søk spiller — f.eks. «McIlroy» eller «Hovland»"
+                placeholder="Søk spiller, f.eks. «McIlroy» eller «Hovland»"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 style={{
@@ -506,7 +506,7 @@ export function SgStartSkjema({
                 transition: "all 0.18s",
               }}
             >
-              Neste — legg inn dine tall
+              Neste: legg inn dine tall
               <ArrowRight size={16} />
             </button>
           </div>
@@ -559,7 +559,7 @@ export function SgStartSkjema({
                 margin: "12px auto 0",
               }}
             >
-              Bruk snittscoren din — vi estimerer SG-fordelingen via
+              Bruk snittscoren din, vi estimerer SG-fordelingen via
               Broadie-tabellen.
             </p>
           </div>

@@ -17,12 +17,12 @@ import type { RelatertKategori } from "@/components/stats/pga-kategori-page";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Scoring Average — PGA Tour 2026 | AK Golf Stats",
+  title: "Scoring Average: PGA Tour 2026 | AK Golf Stats",
   description:
     "Hvem scorer lavest per runde på PGA Tour? Interaktiv slider, percentile-analyse og topp 20. Se hva som skiller de beste fra resten.",
   alternates: { canonical: "https://akgolf.no/stats/pga/scoring-avg" },
   openGraph: {
-    title: "Scoring Average — PGA Tour 2026 | AK Golf Stats",
+    title: "Scoring Average: PGA Tour 2026 | AK Golf Stats",
     description: "Interaktiv scoring average-sammenligning mot PGA Tour-spillere.",
     url: "https://akgolf.no/stats/pga/scoring-avg",
     siteName: "AK Golf Stats",
@@ -70,9 +70,9 @@ export default async function ScoringAvgPage() {
             </>
           ),
           heroSub:
-            "Snittscoren på PGA Tour er tettere enn du tror — de beste scorer bare 2–3 slag under de dårligste. Men de 2 slagene er alt. Se hvor du er.",
+            "Snittscoren på PGA Tour er tettere enn du tror. De beste scorer bare 2–3 slag under de dårligste, men de 2 slagene er alt. Se hvor du er.",
           mersalgTekst:
-            "Snittscoren din viser ikke hvor du taper strokes. PlayerHQ med SG-analyse gjør — og viser deg nøyaktig hva som må jobbes med.",
+            "Snittscoren din viser ikke hvor du taper strokes. PlayerHQ med SG-analyse gjør det, og viser deg nøyaktig hva som må jobbes med.",
           mersalgKort: [
             "Logger score per hull og runde",
             "Beregner SG mot referansespiller",

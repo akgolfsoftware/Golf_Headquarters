@@ -66,7 +66,7 @@ const TOUR_CONFIG = {
     erJuniorTour: false,
     faktaboks: [
       "Norges offisielle amateur Cup-tour (NGF)",
-      "Nasjonal dekning — alle 5 regioner",
+      "Nasjonal dekning: alle 5 regioner",
       "Åpen for alle amatørspillere (HCP 0-36)",
       "Gir nasjonale rankingpoeng",
     ],
@@ -109,10 +109,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const tour = TOUR_CONFIG[slug as TourSlug];
-  if (!tour) return { title: "Tour — AK Golf Stats" };
+  if (!tour) return { title: "Tour | AK Golf Stats" };
 
   return {
-    title: `${tour.navn} — AK Golf Stats`,
+    title: `${tour.navn} | AK Golf Stats`,
     description: `Alt om ${tour.navn}. ${tour.beskrivelse.slice(0, 140)}`,
     alternates: { canonical: `https://akgolf.no/stats/tour/${slug}` },
   };

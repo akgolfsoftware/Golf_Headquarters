@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Vilkår — AK Golf",
+  title: "Vilkår · AK Golf",
   description: "Brukervilkår for AK Golf-plattformen.",
 };
 
@@ -19,7 +19,7 @@ export default function Vilkar() {
             <em className="font-normal italic text-primary">Bruker</em>vilkår
           </h1>
           <p className="mt-6 max-w-2xl text-base text-muted-foreground">
-            Vilkår for bruk av AK Golf-tjenestene — booking, portal og coaching.
+            Vilkår for bruk av AK Golf-tjenestene: booking, portal og coaching.
           </p>
           <p className="mt-6 font-mono text-xs text-muted-foreground">
             Sist oppdatert:{" "}
