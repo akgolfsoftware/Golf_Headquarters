@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/shared/toast-provider";
 import {
@@ -47,6 +47,53 @@ export function NyMeldingClient({ mottakere }: { mottakere: Mottaker[] }) {
   ]);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const bodyRef = useRef<HTMLTextAreaElement>(null);
+
+  type MarkdownVerktoy = "fet" | "kursiv" | "liste" | "lenke" | "sitat";
+
+  function settInnMarkdown(verktoy: MarkdownVerktoy) {
+    const el = bodyRef.current;
+    if (!el) return;
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+    const valgt = body.slice(start, end);
+
+    let nyTekst: string;
+    let nyttMarkorStart: number;
+    let nyttMarkorSlutt: number;
+
+    if (verktoy === "fet" || verktoy === "kursiv") {
+      const wrap = verktoy === "fet" ? "**" : "*";
+      const tekst = valgt || (verktoy === "fet" ? "fet tekst" : "kursiv tekst");
+      const innsatt = `${wrap}${tekst}${wrap}`;
+      nyTekst = body.slice(0, start) + innsatt + body.slice(end);
+      nyttMarkorStart = start + wrap.length;
+      nyttMarkorSlutt = nyttMarkorStart + tekst.length;
+    } else if (verktoy === "liste" || verktoy === "sitat") {
+      const prefiks = verktoy === "liste" ? "- " : "> ";
+      const tekst = valgt || (verktoy === "liste" ? "Listepunkt" : "Sitat");
+      const linjer = tekst
+        .split("\n")
+        .map((linje) => (linje.startsWith(prefiks) ? linje : `${prefiks}${linje}`))
+        .join("\n");
+      nyTekst = body.slice(0, start) + linjer + body.slice(end);
+      nyttMarkorStart = start;
+      nyttMarkorSlutt = start + linjer.length;
+    } else {
+      // lenke
+      const tekst = valgt || "lenketekst";
+      const innsatt = `[${tekst}](url)`;
+      nyTekst = body.slice(0, start) + innsatt + body.slice(end);
+      nyttMarkorStart = start + tekst.length + 3; // «[tekst](».length
+      nyttMarkorSlutt = nyttMarkorStart + 3; // «url».length
+    }
+
+    setBody(nyTekst);
+    requestAnimationFrame(() => {
+      el.focus();
+      el.setSelectionRange(nyttMarkorStart, nyttMarkorSlutt);
+    });
+  }
 
   const canSend = recipientId && subject.trim().length >= 3 && body.trim().length >= 10;
 
@@ -162,19 +209,20 @@ export function NyMeldingClient({ mottakere }: { mottakere: Mottaker[] }) {
         </div>
         <div className="overflow-hidden rounded-xl border border-input bg-card">
           <div className="flex items-center gap-1 border-b border-border bg-secondary/30 px-4 py-2">
-            <ToolbarBtn icon={<Bold className="h-4 w-4" strokeWidth={1.75} />} title="Fet" />
-            <ToolbarBtn icon={<Italic className="h-4 w-4" strokeWidth={1.75} />} title="Kursiv" />
+            <ToolbarBtn icon={<Bold className="h-4 w-4" strokeWidth={1.75} />} title="Fet" onClick={() => settInnMarkdown("fet")} />
+            <ToolbarBtn icon={<Italic className="h-4 w-4" strokeWidth={1.75} />} title="Kursiv" onClick={() => settInnMarkdown("kursiv")} />
             <span className="mx-1 h-4 w-px bg-border" />
-            <ToolbarBtn icon={<List className="h-4 w-4" strokeWidth={1.75} />} title="Liste" />
-            <ToolbarBtn icon={<LinkIcon className="h-4 w-4" strokeWidth={1.75} />} title="Lenke" />
-            <ToolbarBtn icon={<Quote className="h-4 w-4" strokeWidth={1.75} />} title="Sitat" />
+            <ToolbarBtn icon={<List className="h-4 w-4" strokeWidth={1.75} />} title="Liste" onClick={() => settInnMarkdown("liste")} />
+            <ToolbarBtn icon={<LinkIcon className="h-4 w-4" strokeWidth={1.75} />} title="Lenke" onClick={() => settInnMarkdown("lenke")} />
+            <ToolbarBtn icon={<Quote className="h-4 w-4" strokeWidth={1.75} />} title="Sitat" onClick={() => settInnMarkdown("sitat")} />
             <span className="mx-1 h-4 w-px bg-border" />
-            <ToolbarBtn icon={<ImageIcon className="h-4 w-4" strokeWidth={1.75} />} title="Bilde" />
+            <ToolbarBtn icon={<ImageIcon className="h-4 w-4" strokeWidth={1.75} />} title="Bilde" disabled />
             <span className="ml-auto font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
               ⌘B / ⌘I
             </span>
           </div>
           <textarea
+            ref={bodyRef}
             value={body}
             onChange={(e) => setBody(e.target.value)}
             rows={10}
@@ -304,12 +352,25 @@ export function NyMeldingClient({ mottakere }: { mottakere: Mottaker[] }) {
   );
 }
 
-function ToolbarBtn({ icon, title }: { icon: React.ReactNode; title: string }) {
+function ToolbarBtn({
+  icon,
+  title,
+  onClick,
+  disabled,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  onClick?: () => void;
+  disabled?: boolean;
+}) {
   return (
     <button
       type="button"
-      title={title}
-      className="grid h-7 w-7 place-items-center rounded text-muted-foreground hover:bg-secondary hover:text-foreground"
+      title={disabled ? "Kommer" : title}
+      aria-label={disabled ? `${title} (kommer)` : title}
+      onClick={onClick}
+      disabled={disabled}
+      className="grid h-7 w-7 place-items-center rounded text-muted-foreground hover:bg-secondary hover:text-foreground disabled:cursor-not-allowed disabled:text-muted-foreground/40 disabled:hover:bg-transparent disabled:hover:text-muted-foreground/40"
     >
       {icon}
     </button>

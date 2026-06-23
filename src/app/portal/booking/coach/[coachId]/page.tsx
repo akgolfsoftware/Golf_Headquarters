@@ -399,19 +399,34 @@ export default async function BookingCoachPage({ params }: Props) {
                     </div>
                   </div>
                 </div>
-                <button className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 font-sans text-[14px] font-semibold text-primary-foreground hover:opacity-90">
-                  Bekreft med 2 credits
+                <Link
+                  href="/portal/booking/ny"
+                  className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 font-sans text-[14px] font-semibold text-primary-foreground hover:opacity-90"
+                >
+                  Bruk credits i bookingen
                   <ChevronRight className="h-4 w-4" strokeWidth={2} />
-                </button>
-                <button className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-md border border-border bg-background px-4 py-2.5 font-sans text-[12.5px] font-medium text-foreground hover:border-foreground/30">
-                  Betal med kort i stedet
+                </Link>
+                <button
+                  type="button"
+                  disabled
+                  aria-disabled="true"
+                  title="Kortbetaling kommer snart"
+                  className="mt-2 inline-flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-md border border-border bg-background px-4 py-2.5 font-sans text-[12.5px] font-medium text-muted-foreground opacity-50"
+                >
+                  Betal med kort i stedet · Kommer
                 </button>
               </div>
             ) : (
               <>
-                <button className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 font-sans text-[14px] font-semibold text-primary-foreground hover:opacity-90">
+                <button
+                  type="button"
+                  disabled
+                  aria-disabled="true"
+                  title="Kortbetaling kommer snart"
+                  className="mt-4 inline-flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 font-sans text-[14px] font-semibold text-primary-foreground opacity-50"
+                >
                   <CreditCard className="h-4 w-4" strokeWidth={2} />
-                  Betal med Stripe
+                  Betal med kort · Kommer
                 </button>
                 <Link
                   href="/portal/meg/abonnement/oppgrader"

@@ -16,7 +16,6 @@ import {
   ArrowLeft,
   ArrowRight,
   Calendar,
-  Check,
   Flag,
   MapPin,
   Minus,
@@ -298,7 +297,7 @@ export default async function AnleggDetaljPage({ params }: Props) {
             ))}
           </div>
 
-          {/* BOOKING-TILGJENGELIGHET */}
+          {/* BOOKING-TILGJENGELIGHET (oversikt — booking skjer via CTA-ene) */}
           <div className="mt-8">
             <div className="mb-2 flex items-baseline justify-between">
               <h2 className="font-display text-[18px] font-semibold -tracking-[0.01em] text-foreground">
@@ -308,6 +307,10 @@ export default async function AnleggDetaljPage({ params }: Props) {
                 Neste 7 dager
               </span>
             </div>
+            <p className="mb-2 font-sans text-[12.5px] leading-[1.5] text-muted-foreground">
+              Oversikt over når anlegget typisk er ledig. Velg tid når du booker
+              via «Book coach» eller «Drop-in TrackMan-bay».
+            </p>
             <div className="overflow-x-auto rounded-2xl border border-border bg-card">
               <div className="grid min-w-[640px] grid-cols-[80px_repeat(7,_1fr)] border-b border-border bg-secondary/40 text-center">
                 <div className="border-r border-border p-2 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
@@ -335,37 +338,28 @@ export default async function AnleggDetaljPage({ params }: Props) {
                   </div>
                   {uke.map((_, di) => {
                     const ledig = (ti + di) % 4 !== 0;
-                    const valgt = ti === 3 && di === 1;
                     return (
-                      <button
+                      <div
                         key={`${tid}-${di}`}
-                        disabled={!ledig}
-                        className={`m-0.5 rounded-md p-2 transition-colors ${
-                          valgt
-                            ? "bg-primary"
-                            : ledig
-                              ? "bg-[rgba(209,248,67,0.18)] hover:bg-[rgba(209,248,67,0.35)]"
-                              : "bg-secondary/30"
+                        className={`m-0.5 rounded-md p-2 ${
+                          ledig
+                            ? "bg-[rgba(209,248,67,0.18)]"
+                            : "bg-secondary/30"
                         }`}
+                        title={ledig ? "Ledig" : "Opptatt"}
                       >
                         <span
                           className={`flex items-center justify-center text-center font-mono text-[9.5px] font-bold ${
-                            valgt
-                              ? "text-primary-foreground"
-                              : ledig
-                                ? "text-primary"
-                                : "text-muted-foreground/30"
+                            ledig ? "text-primary" : "text-muted-foreground/30"
                           }`}
                         >
-                          {valgt ? (
-                            <Check className="h-3 w-3" strokeWidth={2.5} aria-hidden />
-                          ) : ledig ? (
-                            "Book"
+                          {ledig ? (
+                            "Ledig"
                           ) : (
                             <Minus className="h-3 w-3" strokeWidth={2} aria-hidden />
                           )}
                         </span>
-                      </button>
+                      </div>
                     );
                   })}
                 </div>
@@ -394,9 +388,13 @@ export default async function AnleggDetaljPage({ params }: Props) {
               Book coach
               <ArrowRight className="h-4 w-4" strokeWidth={2} />
             </Link>
-            <button className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-md border border-border bg-background px-4 py-2.5 font-sans text-[12.5px] font-medium text-foreground hover:border-foreground/30">
+            <Link
+              href="/portal/booking/ny"
+              className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-md border border-border bg-background px-4 py-2.5 font-sans text-[12.5px] font-medium text-foreground hover:border-foreground/30"
+            >
               Drop-in TrackMan-bay
-            </button>
+              <ArrowRight className="h-4 w-4" strokeWidth={2} />
+            </Link>
           </div>
 
           {anlegg.turneringer.length > 0 && (

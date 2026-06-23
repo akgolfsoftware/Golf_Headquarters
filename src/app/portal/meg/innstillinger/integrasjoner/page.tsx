@@ -395,15 +395,20 @@ function IntegrationCard(props: IntegrationCardProps) {
             </span>
             <button
               type="button"
-              className="ml-auto inline-flex h-9 items-center rounded-[10px] border border-border bg-card px-3.5 font-mono text-[11px] font-extrabold uppercase tracking-[0.04em] text-foreground transition-colors hover:bg-secondary"
+              disabled
+              aria-disabled="true"
+              title="Administrasjon i appen kommer snart"
+              className="ml-auto inline-flex h-9 cursor-not-allowed items-center rounded-[10px] border border-border bg-card px-3.5 font-mono text-[11px] font-extrabold uppercase tracking-[0.04em] text-muted-foreground opacity-50"
             >
-              Administrer
+              Administrer · Kommer
             </button>
             <button
               type="button"
-              aria-label="Synk på nytt"
-              title="Synk på nytt"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-[10px] border border-border bg-card text-muted-foreground transition-colors hover:bg-secondary"
+              disabled
+              aria-disabled="true"
+              aria-label="Synk på nytt — kommer snart"
+              title="Manuell synk kommer snart"
+              className="inline-flex h-9 w-9 cursor-not-allowed items-center justify-center rounded-[10px] border border-border bg-card text-muted-foreground opacity-50"
             >
               <RefreshCw className="h-[15px] w-[15px]" strokeWidth={1.75} aria-hidden />
             </button>
@@ -416,10 +421,13 @@ function IntegrationCard(props: IntegrationCardProps) {
             </span>
             <button
               type="button"
-              className="ml-auto inline-flex h-9 items-center gap-1.5 rounded-[10px] bg-primary px-4 font-mono text-[11px] font-extrabold uppercase tracking-[0.04em] text-accent transition-opacity hover:opacity-90"
+              disabled
+              aria-disabled="true"
+              title="Tilkobling kommer snart"
+              className="ml-auto inline-flex h-9 cursor-not-allowed items-center gap-1.5 rounded-[10px] bg-primary px-4 font-mono text-[11px] font-extrabold uppercase tracking-[0.04em] text-accent opacity-50"
             >
               <Link2 className="h-[13px] w-[13px]" strokeWidth={2} aria-hidden />
-              Koble til
+              Koble til · Kommer
             </button>
           </>
         )}

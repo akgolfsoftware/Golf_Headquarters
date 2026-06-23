@@ -167,9 +167,9 @@ function Hero({ data }: { data: StatistikkData }) {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <HeroAction icon={Download} label="Eksporter PDF" />
-          <HeroAction icon={Share2} label="Del" />
-          <HeroAction icon={GitCompareArrows} label="Sammenlign" />
+          <HeroAction icon={Download} label="Eksporter PDF" disabled title="Eksport kommer" />
+          <HeroAction icon={Share2} label="Del" disabled title="Deling kommer" />
+          <HeroAction icon={GitCompareArrows} label="Sammenlign" href="/portal/statistikk/sammenlign" />
           <Link
             href="/portal"
             className="inline-flex h-11 items-center gap-2 rounded-md border border-input bg-card px-4 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
@@ -186,14 +186,34 @@ function Hero({ data }: { data: StatistikkData }) {
 function HeroAction({
   icon: Icon,
   label,
+  href,
+  disabled,
+  title,
 }: {
   icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
   label: string;
+  href?: string;
+  disabled?: boolean;
+  title?: string;
 }) {
+  const baseClass =
+    "inline-flex h-11 items-center gap-2 rounded-md border border-input bg-card px-4 text-sm font-medium text-foreground transition-colors hover:bg-secondary";
+
+  if (href) {
+    return (
+      <Link href={href} className={baseClass}>
+        <Icon className="h-4 w-4" strokeWidth={1.75} />
+        {label}
+      </Link>
+    );
+  }
+
   return (
     <button
       type="button"
-      className="inline-flex h-11 items-center gap-2 rounded-md border border-input bg-card px-4 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+      disabled={disabled}
+      title={disabled ? title : undefined}
+      className={`${baseClass} disabled:cursor-not-allowed disabled:text-muted-foreground disabled:hover:bg-card`}
     >
       <Icon className="h-4 w-4" strokeWidth={1.75} />
       {label}
