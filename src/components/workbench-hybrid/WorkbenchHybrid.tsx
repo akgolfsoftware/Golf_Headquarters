@@ -20,6 +20,7 @@ import { PALETTE_LIBRARY } from "./demo-data";
 import { mapGoals, mapTournaments, mapWarningBanner, mapWeek, mapWeekHead } from "./map-data";
 import { Topbar, type RosterPlayer } from "./Topbar";
 import { CoachSkillWizard } from "./CoachSkillWizard";
+import { AiPlanPanel } from "./AiPlanPanel";
 import { PaletteSidebar } from "./PaletteSidebar";
 import { UkeView } from "./UkeView";
 import { DagView } from "./DagView";
@@ -400,6 +401,7 @@ export function WorkbenchHybrid({
 
   // Coach-Skill-veiviseren (kun coach-modus) — åpen/lukket-tilstand.
   const [coachSkillOpen, setCoachSkillOpen] = useState(false);
+  const [aiPlanOpen, setAiPlanOpen] = useState(false);
 
   // Mobil-tilstand (kun under lg). Palette + inspektør er bunn-ark på mobil;
   // tap-to-add legger en standardøkt på valgt dag (touch-fallback for DnD).
@@ -799,6 +801,7 @@ export function WorkbenchHybrid({
             players={players}
             currentPlayerId={currentPlayerId}
             onOpenCoachSkill={isCoach ? () => setCoachSkillOpen(true) : undefined}
+            onOpenAiPlan={isCoach && currentPlayerId ? () => setAiPlanOpen(true) : undefined}
           />
 
           {/* body */}
@@ -984,6 +987,15 @@ export function WorkbenchHybrid({
           currentPlayerId={currentPlayerId ?? ""}
           players={players ?? []}
           onClose={() => setCoachSkillOpen(false)}
+        />
+      )}
+
+      {/* AI-plan-panel (kun coach-modus, én spiller) */}
+      {isCoach && aiPlanOpen && currentPlayerId && (
+        <AiPlanPanel
+          playerId={currentPlayerId}
+          playerName={playerName}
+          onClose={() => setAiPlanOpen(false)}
         />
       )}
     </div>

@@ -37,11 +37,13 @@ export type RoundInput = {
   notes?: string;
 };
 
-export async function createRound(input: RoundInput) {
+export async function createRound(
+  input: RoundInput,
+): Promise<{ roundId: string; sgTotal: number | null }> {
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
 
-  await prisma.round.create({
+  const round = await prisma.round.create({
     data: {
       userId: user.id,
       courseId: input.courseId,
@@ -70,11 +72,39 @@ export async function createRound(input: RoundInput) {
       sgPutt40plus: input.sgPutt40plus ?? null,
       notes: input.notes ?? null,
     },
+    select: { id: true, sgTotal: true },
   });
 
   await triggerRoundAgent(user.id);
 
   revalidatePath("/portal/mal");
+  revalidatePath("/portal/mal/runder");
+
+  return { roundId: round.id, sgTotal: round.sgTotal };
+}
+
+/** Lagrer spillerens SG-diagnose som en prefiks i rundenes notes-felt. */
+export async function lagreSgDiagnose(
+  roundId: string,
+  diagnose: "TEKNIKK" | "STRATEGI" | "MENTAL",
+): Promise<void> {
+  const user = await getCurrentUser();
+  if (!user) throw new Error("unauthenticated");
+
+  const round = await prisma.round.findUnique({
+    where: { id: roundId, userId: user.id },
+    select: { id: true, notes: true },
+  });
+  if (!round) throw new Error("Runde ikke funnet.");
+
+  const prefix = `[SG-DIAGNOSE: ${diagnose}]`;
+  const nyNotes = round.notes ? `${prefix} ${round.notes}` : prefix;
+
+  await prisma.round.update({
+    where: { id: roundId },
+    data: { notes: nyNotes },
+  });
+
   revalidatePath("/portal/mal/runder");
 }
 
