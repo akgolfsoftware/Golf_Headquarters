@@ -7,6 +7,7 @@ import { isSlotStillAvailable } from "@/lib/booking/availability";
 import { audit } from "@/lib/audit";
 import { pushBookingToCalendar } from "@/lib/google-calendar";
 import { notify } from "@/lib/notifications";
+import { Prisma } from "@/generated/prisma/client";
 
 export type CreditBookingInput = {
   serviceTypeId: string;
@@ -94,34 +95,53 @@ export async function createCreditBooking(
   // Atomisk: dekrementer credits + opprett booking i samme transaksjon.
   // updateMany med where.creditsRemaining > 0 sikrer at vi ikke får negativ saldo
   // ved race condition (count = 0 betyr at noen andre tok siste credit).
-  const result = await prisma.$transaction(async (tx) => {
-    const updated = await tx.subscription.updateMany({
-      where: { id: subscription.id, creditsRemaining: { gt: 0 } },
-      data: { creditsRemaining: { decrement: 1 } },
+  const result = await prisma
+    .$transaction(async (tx) => {
+      const updated = await tx.subscription.updateMany({
+        where: { id: subscription.id, creditsRemaining: { gt: 0 } },
+        data: { creditsRemaining: { decrement: 1 } },
+      });
+
+      if (updated.count === 0) {
+        throw new Error(
+          "Kunne ikke trekke fra credit — saldoen er allerede tom. Last siden på nytt.",
+        );
+      }
+
+      // coachId settes med samme semantikk som drop-in (service.coachUserId) slik
+      // at unique-constraintet [coachId, startAt, serviceTypeId] hindrer at to
+      // abonnenter dobbeltbooker samme coach-slot. Gruppe-tjenester (coachUserId
+      // = null) tillates fortsatt med flere deltakere.
+      const booking = await tx.booking.create({
+        data: {
+          userId: user.id,
+          serviceTypeId: service.id,
+          coachId: service.coachUserId,
+          locationId: lokasjon.id,
+          startAt,
+          endAt,
+          status: "CONFIRMED",
+          priceOre: 0,
+          notes: input.notes?.trim() || null,
+          subscriptionId: subscription.id,
+        },
+      });
+
+      return booking;
+    })
+    .catch((err: unknown) => {
+      // Tap i et samtidighets-race fanges av unique-constraintet (P2002).
+      // Transaksjonen rulles tilbake, så crediten blir IKKE trukket.
+      if (
+        err instanceof Prisma.PrismaClientKnownRequestError &&
+        err.code === "P2002"
+      ) {
+        throw new Error(
+          "Tiden ble nettopp tatt av noen andre. Velg en annen tid.",
+        );
+      }
+      throw err;
     });
-
-    if (updated.count === 0) {
-      throw new Error(
-        "Kunne ikke trekke fra credit — saldoen er allerede tom. Last siden på nytt.",
-      );
-    }
-
-    const booking = await tx.booking.create({
-      data: {
-        userId: user.id,
-        serviceTypeId: service.id,
-        locationId: lokasjon.id,
-        startAt,
-        endAt,
-        status: "CONFIRMED",
-        priceOre: 0,
-        notes: input.notes?.trim() || null,
-        subscriptionId: subscription.id,
-      },
-    });
-
-    return booking;
-  });
 
   await audit({
     actorId: user.id,

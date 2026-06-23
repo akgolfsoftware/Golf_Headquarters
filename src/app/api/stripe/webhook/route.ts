@@ -77,6 +77,17 @@ async function notifyCoachOnBooking(bookingId: string): Promise<void> {
     });
   }
 
+  // Varsle spilleren selv (kun innlogget, ikke gjest) med spiller-vendt tekst/lenke.
+  if (booking.userId && !mottakere.has(booking.userId)) {
+    await notify({
+      userId: booking.userId,
+      type: "booking",
+      title: "Booking bekreftet",
+      body: `${booking.serviceType.name} · ${dato}`,
+      link: "/portal/meg/bookinger",
+    });
+  }
+
   // E-post til coach/admin (Anders sitt alias) — best-effort
   const adminEmails = admins.map((a) => a.email).filter(Boolean) as string[];
   if (adminEmails.length > 0) {
