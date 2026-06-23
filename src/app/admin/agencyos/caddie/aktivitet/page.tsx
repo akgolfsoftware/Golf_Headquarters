@@ -18,7 +18,7 @@ import type { CaddieEvent, AiError } from "./aktivitet-client";
 export const dynamic = "force-dynamic";
 
 export default async function CaddieAktivitetPage() {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  await requirePortalUser({ allow: ["ADMIN"] });
 
   const nowMs = new Date().getTime();
   let events: ReadonlyArray<CaddieEvent> = [];

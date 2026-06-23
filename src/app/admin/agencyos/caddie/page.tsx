@@ -21,9 +21,5 @@ export default async function CaddieTabPage() {
   const user = await requirePortalUser({ allow: ["ADMIN"] });
   const conversation = await getOrCreateActiveConversation(user.id);
 
-  return (
-    <div className="mx-auto max-w-[1320px] px-4 pb-8 pt-4 sm:px-7">
-      <CaddieChat conversationId={conversation.id} />
-    </div>
-  );
+  return <CaddieChat conversationId={conversation.id} />;
 }
