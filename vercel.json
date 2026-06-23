@@ -96,6 +96,10 @@
     {
       "path": "/api/cron/meg-crm-nudge",
       "schedule": "0 8 * * 1"
+    },
+    {
+      "path": "/api/cron/caddie-proactive",
+      "schedule": "0 7 * * 1"
     }
   ]
 }

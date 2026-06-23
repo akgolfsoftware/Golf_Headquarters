@@ -17,9 +17,14 @@ import { getOrCreateActiveConversation } from "@/lib/caddie/conversation";
 
 export const dynamic = "force-dynamic";
 
-export default async function CaddieTabPage() {
+export default async function CaddieTabPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ seed?: string }>;
+}) {
   const user = await requirePortalUser({ allow: ["ADMIN"] });
+  const { seed } = await searchParams;
   const conversation = await getOrCreateActiveConversation(user.id);
 
-  return <CaddieChat conversationId={conversation.id} />;
+  return <CaddieChat conversationId={conversation.id} initialSeed={seed} />;
 }

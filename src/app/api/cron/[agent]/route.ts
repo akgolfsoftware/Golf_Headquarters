@@ -25,6 +25,7 @@ import {
   runLoftesjekk,
   runCrmNudge,
 } from "@/lib/meg/briefs";
+import { runCaddieProactive } from "@/lib/agents/caddie-proactive";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -55,6 +56,8 @@ const AGENTS: Record<string, () => Promise<unknown>> = {
   "meg-kveldsjournal": runKveldsjournal,
   "meg-loftesjekk": runLoftesjekk,
   "meg-crm-nudge": runCrmNudge,
+  // Proaktiv Caddie (Fase 3) — inaktive spillere → forslag i Caddie-dashbordet
+  "caddie-proactive": runCaddieProactive,
 };
 
 export async function GET(
