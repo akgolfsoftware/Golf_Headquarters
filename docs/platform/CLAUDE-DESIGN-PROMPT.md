@@ -9,6 +9,11 @@
 > ikke fra et eldre plandokument. Det er derfor det stemmer med knappene som faktisk finnes.
 >
 > Bygget: 2026-06-24. Kilde-fasit: appens kode + `docs/ux-arkitektur.md` + `BUSINESS-RULES.md`.
+>
+> **Full rute-nivå-fasit:** Navigasjonskartet i del 3 er skjelettet. Det komplette, verifiserte
+> «knapp → skjerm»-kartet for alle 406 ruter (+ foreldreløse skjermer og fiks-liste) ligger i
+> [`SKJERM-KNAPP-KART.md`](SKJERM-KNAPP-KART.md). Ved konflikt vinner den, og begge holdes i sync med
+> appens nav-filer (`bottom-nav.tsx`, `portal/sidebar.tsx`, `admin-nav.ts`).
 
 ---
 
