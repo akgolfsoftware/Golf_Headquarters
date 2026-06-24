@@ -1,5 +1,22 @@
 # IA-ryddeplan — foreldreløse skjermer + dubletter (forslag)
 
+> ## ✅ STATUS 2026-06-25 (verifisert mot faktisk kode — «kjør alle»)
+> Ved kjøring viste det seg at planen var **delvis utdatert** — flere «🟢» var enten alt gjort eller
+> i konflikt med en bevisst fasit-flyt. Resultat etter verifisering:
+> - **B1 ✅ alt gjort** — `admin/calendar`/`finance`/`messages`/`board` ER redirects (kalender/okonomi/innboks/spillere?view=tavle).
+> - **B2 ✅ alt håndtert** — `admin/oppfolging` re-eksporterer `admin/queue` (alias, ikke dublett).
+> - **B3 ✅ = B1.**
+> - **A2 ✅ koblet** — `coach/videoer` lagt i coach sub-nav (commit 779a1ab).
+> - **A6 ✅ koblet** — `tester/foreslatte` + `tester/benchmarks` lagt som actions på Tester-siden (779a1ab).
+> - **A5 ⚠ BESLUTNING** — anlegg-tiles lenker bevisst til `/admin/availability` (dokumentert fasit-flyt).
+>   Å sende dem til `anlegg/[id]` ville bryte fasiten. Trenger Anders-valg: detalj som egen affordance, eller la stå.
+> - **A1 ⚠ BESLUTNING** — Innstillinger er en portet fasit-skjerm. `anlegg/okter/sprak/sikkerhet(218l)/varsler`
+>   finnes som egne skjermer; noen dublerer inline-seksjoner. Å legge 5 menyrader endrer fasit-designet → IA-valg, ikke mekanisk.
+> - **B6 ⚠ IKKE rør** — `portal/trackman/[sessionId]` er en **fullverdig 473-linjers portert skjerm**, ikke en stub.
+>   Ingenting lenker dit (ekte foreldreløs). Ikke auto-redirect (ville slettet en ekte skjerm). Beslutning: wire fra Workbench, eller pensjoner.
+> - Resten (A3/A4/A7–A12, B4/B5/B7–B9, C1) gjenstår — flere er 🟡/🔴 som krever per-rad-avklaring.
+
+
 > **Hva dette er:** forslag per skjerm for #3 (foreldreløse) + #4 (dubletter/stale), utledet fra det
 > kode-verifiserte `SKJERM-KNAPP-KART.md`. **Ingenting er gjort her** — dette er kartet, ikke jobben.
 > Hak av (✅ = kjør / ✋ = la stå) per rad, så utfører jeg de godkjente. «Pensjoner» = redirect til kanonisk
