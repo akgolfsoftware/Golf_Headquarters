@@ -14,9 +14,9 @@
 
 | Produkt | Ruter | Hovedfunn |
 |---|---|---|
-| PlayerHQ `/portal` | 150 | 5-fane-IA er sunn. ~15 foreldreløse, 1 TrackMan-duplikat, 3 «kalender»-innganger, Meg→Innstillinger mangler hub-meny. |
+| PlayerHQ `/portal` | 150 | 5-fane-IA er sunn. Coach-videoer + Innstillinger MER koblet, TrackMan-duplikat konsolidert (2026-06-25). Igjen: coach/booking-deep-links = beslutning. |
 | AgencyOS `/admin` | 141 | Gruppert sidebar godt koblet. **3 ekte 404-bugs**, ~7 «glemt å koble», ~9 utdaterte dublett-flater. |
-| Marketing `akgolf.no` | ~27 | 5 foreldreløse sider (footer viser dem ikke). `/priser` + `/turneringer` mangler i nav. |
+| Marketing `akgolf.no` | ~27 | `/priser` + `/faq` nå i header/mobil-meny (2026-06-25). `/blogg`,`/cases`,`/junior`,`/suksess` = IA-valg. `/turneringer` bevisst ute av v1. |
 | Stats `/stats` | ~45 | Strukturelt løst: nav-komponenten (`StatsCmdK`) er aldri montert + ingen stats-layout → ~15 foreldreløse. (Delvis bevisst: ikke i v1.) |
 | Forelder/Auth/Booking | ~35 | Forelder rent. 1 ekte 404-blindvei, 4 foreldreløse, 2 dublett-flyter. |
 
@@ -60,7 +60,7 @@ Oversikt `/forelder` · Mine barn `/forelder/barn` · Bookinger · Økonomi · F
 Login `/auth/login` (hub) → Signup → Sjekk e-post → Onboarding (`/auth/onboarding`, PARENT→`/onboarding/forelder`) → portal/forelder. Glemt/Reset passord (e-post). Foreldresamtykke `/auth/guardian-consent/[token]` (e-post).
 
 ### Marketing — `akgolf.no`
-Header: Coaching · Treningsfilosofi · PlayerHQ · Anlegg · Om oss · (CTA: Logg inn · Book tid). Footer: Coaching · Booking · PlayerHQ · Coacher · Anlegg · Jobb · Kontakt · Personvern · Vilkår · Cookies. Booking-flyt: `/booking` → `/booking/[slug]` → `/bekreft` → Stripe → `/kvittering/[id]`.
+Header (oppdatert 2026-06-25): Coaching · Treningsfilosofi · PlayerHQ · **Priser** · Anlegg · **FAQ** · Om oss · (CTA: Logg inn · Book tid). Footer: Coaching · Booking · PlayerHQ · Coacher · Anlegg · Jobb · Kontakt · Personvern · Vilkår · Cookies. (Turneringer + stats bevisst UTE av v1.) Booking-flyt: `/booking` → `/booking/[slug]` → `/bekreft` → Stripe → `/kvittering/[id]`.
 
 ### Stats — `/stats` (eget spor, ikke i v1-marketing-nav)
 Hub `/stats` → PGA-metrikker · Norske spillere/baner/turneringer · Verktøy · SG-sammenlign. Trenger egen layout-nav for å henge sammen (se DEL 2-C).
@@ -83,18 +83,20 @@ Hub `/stats` → PGA-metrikker · Norske spillere/baner/turneringer · Verktøy 
 
 ### B · FORELDRELØSE — koble eller pensjoner (bestem per rad)
 
-**PlayerHQ — «glemt å koble» (bygget, hører hjemme i nav):**
-- `Meg → Innstillinger` mangler hub-meny: `anlegg`, `okter`, `sprak`, `varsler`, `sikkerhet` er bygget men ikke lenket fra innstillinger-siden (kun ai-coach/integrasjoner/personvern vises). → legg dem i innstillinger-menyen.
-- `/portal/coach/videoer`, `/portal/coach/[coachId]` (coach-profil), `/portal/booking/coach/[coachId]`, `/portal/booking/anlegg/[anleggId]` → koble fra coach-/booking-hub, eller pensjoner.
+> **Synket med kode 2026-06-25** — flere rader er nå løst eller verifisert. ✅ = gjort, ÅPEN = beslutning.
 
-**PlayerHQ — sannsynlig dødt/eksperiment (vurder sletting):**
-- `/portal/reach`, `/portal/trening/break-tabell`, `/portal/trening/putte-laboratoriet`, `/portal/trackman/[sessionId]` (duplikat av `/portal/mal/trackman/[id]`).
+**PlayerHQ — «glemt å koble» (bygget, hører hjemme i nav):**
+- `Meg → Innstillinger`: ✅ **DONE (9ef691c)** — «MER»-gruppe lenker `anlegg` + `okter`. `sprak`/`varsler`/`sikkerhet` dekkes av inline-seksjoner (ikke duplisert).
+- `/portal/coach/videoer` ✅ **DONE (779a1ab)** (coach sub-nav). `/portal/coach/[coachId]`, `/portal/booking/coach/[coachId]`, `/portal/booking/anlegg/[anleggId]` → ÅPEN (arbeidende deep-link-skjermer; koble/pensjoner = flytarkitektur-valg, ikke auto-rørt).
+
+**PlayerHQ — verifisert (IKKE «dødt»):**
+- `/portal/trackman/[sessionId]` ✅ **konsolidert (c107593)** → redirect til kanon `mal/trackman/[id]` (identisk datakilde). `/portal/trening/putte-laboratoriet` (831 l) er en **ekte skjerm** — behold. `/portal/reach` + `/portal/trening/break-tabell` = foreldreløse uten rent redirect-mål → la stå (skader ingen sti).
 
 **AgencyOS — «glemt å koble» (bygget, mangler nav-inngang):**
-- `/admin/anlegg/[id]` (anlegg-lista har ingen rad-lenke), `/admin/tester/foreslatte`, `/admin/tester/benchmarks`, `/admin/organisasjon` (hub uten inngang), `/admin/stats/overview`+`/moderering`, `/admin/godkjenn-portal*`, `/admin/talent/[playerId]` (duplikat av radar-detalj).
+- `/admin/tester/foreslatte` + `/admin/tester/benchmarks` ✅ **DONE (779a1ab)**. `/admin/anlegg/[id]` → ÅPEN (tiles lenker bevisst til `/admin/availability`). `organisasjon`/`stats/*`/`godkjenn-portal*`/`talent/[playerId]` → ÅPEN.
 
-**Marketing (footeren viser dem ikke):**
-- `/blogg`, `/cases`, `/faq`, `/junior`, `/suksess` → legg i footer/header der de skal leve. `/priser` + `/turneringer` → vurder i header.
+**Marketing:**
+- `/priser` + `/faq` ✅ **DONE (9ef691c)** (header + mobil-meny). `/blogg`,`/cases`,`/junior`,`/suksess` → ÅPEN (marketing-IA-valg). `/turneringer` + stats = bevisst UTE av v1.
 
 **Auth/Onboarding:**
 - `/auth/logget-ut` (logout går til `/login` i stedet — koble eller arkiver), `/onboard/coach` + `/onboard/klubb` (parallelle, ukoblede wizards — sannsynlig duplikat av `/auth/onboarding`), `/auth/bankid` (bevisst post-beta).
