@@ -28,12 +28,12 @@ import { MiniRadar } from "@/components/stats/mini-radar";
 export const revalidate = 3600; // 1 time
 
 export const metadata: Metadata = {
-  title: "AK Golf Stats — gratis statistikk for norsk golf",
+  title: "AK Golf Stats: gratis statistikk for norsk golf",
   description:
-    "Følg norske golfspillere live, utforsk PGA Tour-statistikk og sammenlign din egen Strokes Gained med proffene. Gratis verktøy fra AK Golf — bygget for spillere, foreldre og trenere.",
+    "Følg norske golfspillere live, utforsk PGA Tour-statistikk og sammenlign din egen Strokes Gained med proffene. Gratis verktøy fra AK Golf, bygget for spillere, foreldre og trenere.",
   alternates: { canonical: "https://akgolf.no/stats" },
   openGraph: {
-    title: "AK Golf Stats — gratis statistikk for norsk golf",
+    title: "AK Golf Stats: gratis statistikk for norsk golf",
     description:
       "Norske spillere i aksjon, PGA Tour-tall, og din egen SG sammenlignet med Rory. Gratis fra AK Golf.",
     url: "https://akgolf.no/stats",
@@ -107,7 +107,7 @@ const TRENER_STEG = [
     n: "01",
     tittel: "Mål svakhet",
     tekst:
-      "SG-profilen viser nøyaktig hvor strokene tapes — fra teen, innspillet eller på greenen.",
+      "SG-profilen viser nøyaktig hvor strokene tapes: fra teen, innspillet eller på greenen.",
     icon: "Crosshair" as const,
   },
   {
@@ -131,7 +131,7 @@ const PLAYERHQ_FORDELER = [
   "Trenden over hele sesongen, ikke bare siste runde",
   "Sammenlign mot PGA Tour-snitt fra første scorekort",
   "Treningsdagbok med drill-bibliotek",
-  "Del med coach — én lenke, full innsikt",
+  "Del med coach: én lenke, full innsikt",
   "Eksporter rådata når du vil. Det er dine tall.",
 ];
 
@@ -282,7 +282,7 @@ export default async function StatsLandingPage() {
                     ? `${norskeIAksjon} norske spillere i aksjon`
                     : "Norske spillere"}
                 </div>
-                <div className="stats-norske-tour">Live leaderboards — oppdatert automatisk</div>
+                <div className="stats-norske-tour">Live leaderboards, oppdatert automatisk</div>
               </div>
             </div>
             <div className="stats-norske-event">
@@ -350,7 +350,7 @@ export default async function StatsLandingPage() {
                 </div>
                 <h3>PGA Tour Stats</h3>
                 <div className="stats-bento-desc">
-                  Drive distance, GIR, putter — alt målt mot Tour-snittet.
+                  Drive distance, GIR, putter: alt målt mot Tour-snittet.
                 </div>
 
                 <div className="stats-drive-bars-wrap">
@@ -392,7 +392,7 @@ export default async function StatsLandingPage() {
                 </div>
                 <h3>Norsk spillerbase</h3>
                 <div className="stats-bento-desc">
-                  2 500+ norske spillere — proffer, amatører, juniorer.
+                  2 500+ norske spillere: proffer, amatører, juniorer.
                   Søkbart.
                 </div>
 
@@ -474,7 +474,7 @@ export default async function StatsLandingPage() {
               <p>
                 PlayerHQ regner ut Strokes Gained automatisk fra hvert
                 scorekort. Du ser hvor strokene tapes, og om treningen virker.
-                Trenden over måneder — ikke synsing.
+                Trenden over måneder, ikke synsing.
               </p>
               <div className="stats-mersalg-ctas">
                 <Link href="/portal">
@@ -543,7 +543,7 @@ export default async function StatsLandingPage() {
               <strong>Vil du jobbe med en av våre coacher?</strong>
               <br />
               <span className="stats-muted">
-                Vi har plass til nye spillere på AK Golf Academy i 2026 —
+                Vi har plass til nye spillere på AK Golf Academy i 2026:
                 junior, amatør og proffspillere.
               </span>
             </div>

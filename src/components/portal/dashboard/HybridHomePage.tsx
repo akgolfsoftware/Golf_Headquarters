@@ -29,6 +29,7 @@ import {
   Activity,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { WeekProgress } from "./WeekProgress";
 import type { DashboardData, TodaySession } from "@/app/portal/actions";
 
 // ── helpers ───────────────────────────────────────────────────────
@@ -315,7 +316,7 @@ function CoachNoteCard({ message }: { message: DashboardData["coachMessage"] }) 
 export type HybridHomePageProps = { data: DashboardData };
 
 export function HybridHomePage({ data }: HybridHomePageProps) {
-  const { user, greeting, today, todayAll, coachMessage, kpiStats, recentActivity } = data;
+  const { user, greeting, today, todayAll, coachMessage, kpiStats, recentActivity, weekProgress, weekNumber } = data;
 
   const kpiItems = [
     { label: "SG totalt", value: fmtSg(kpiStats.sgTotal), hot: (kpiStats.sgTotal ?? 0) > 0 },
@@ -398,6 +399,9 @@ export function HybridHomePage({ data }: HybridHomePageProps) {
           </div>
         </div>
       )}
+
+      {/* 6b. Plan denne uka (fersk fasit — ekte ukeframdrift) */}
+      <WeekProgress progress={weekProgress} weekNumber={weekNumber} />
 
       {/* 7. Hva er nytt */}
       <HvaErNytt items={recentActivity} />

@@ -175,7 +175,7 @@ export function ScoringAvgExplorer({
           {/* Histogram-bar */}
           <div className="mt-10">
             <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-              Fordeling — {datapunkter.length} PGA-spillere
+              Fordeling: {datapunkter.length} PGA-spillere
             </p>
             <div className="mt-2 flex h-24 items-end gap-px">
               {histogram.buckets.map((b) => {

@@ -3,12 +3,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Check, MapPin, Trees } from "lucide-react";
 import { BookingShortcuts } from "@/components/marketing/booking-shortcuts";
+import { BookingAnbefaling } from "@/components/marketing/booking-anbefaling";
 import { PulseDot } from "@/components/athletic/pulse-dot";
 
 export const metadata: Metadata = {
   title: "AK Golf Academy | Personlig coaching, bygd på data",
   description:
-    "AK Golf Academy tilbyr prestasjonsgolf-coaching for ambisiøse spillere. Booking, treningsplaner og analyse — alt i ett system.",
+    "AK Golf Academy tilbyr prestasjonsgolf-coaching for ambisiøse spillere. Booking, treningsplaner og analyse i ett system.",
 };
 
 /* Tjenester — månedspriser fra design-fasit (ui_kits/marketing, 04 Tjenester) */
@@ -142,26 +143,23 @@ export default function Hjem() {
               style={{ animationDelay: "200ms" }}
             >
               Personlig coaching, periodiserte treningsplaner og målbar
-              fremgang — for spillere som vil mer enn å bare slå baller.
+              fremgang for spillere som vil mer enn å bare slå baller.
             </p>
 
             <div
               className="mkt-hero-in mt-8 flex flex-wrap gap-3"
               style={{ animationDelay: "320ms" }}
             >
+              <BookingAnbefaling
+                triggerLabel="Book coachingtime"
+                triggerClassName="inline-flex h-[52px] items-center justify-center gap-1.5 rounded-full bg-accent px-6 font-display text-[16px] font-bold tracking-[-0.005em] text-accent-foreground shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition hover:-translate-y-px hover:brightness-105 hover:shadow-[0_10px_28px_rgba(209,248,67,0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              />
               <Link
-                href="/booking"
-                className="inline-flex h-[52px] items-center justify-center gap-1.5 rounded-full bg-accent px-6 font-display text-[16px] font-bold tracking-[-0.005em] text-accent-foreground shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition hover:-translate-y-px hover:brightness-105 hover:shadow-[0_10px_28px_rgba(209,248,67,0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              >
-                Book gratis kartleggings-økt
-                <ArrowRight className="h-[18px] w-[18px]" strokeWidth={1.5} />
-              </Link>
-              <a
-                href="#tjenester"
+                href="/playerhq"
                 className="inline-flex h-[52px] items-center justify-center gap-1.5 rounded-xl px-6 font-display text-[16px] font-bold tracking-[-0.005em] text-secondary ring-1 ring-inset ring-secondary/45 transition hover:bg-secondary/10 hover:ring-secondary/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
-                Se tjenestene
-              </a>
+                Få PlayerHQ
+              </Link>
             </div>
           </div>
         </div>
@@ -203,12 +201,12 @@ export default function Hjem() {
             <div>
               <SectionEyebrow>Spillerportal</SectionEyebrow>
               <SectionH2>
-                PlayerHQ — spillerportalen <Em>du får på kjøpet</Em>.
+                PlayerHQ, <Em>spillerportalen din</Em>.
               </SectionH2>
               <p className="mt-4 max-w-[48ch] text-[16px] leading-[1.6] text-muted-foreground">
-                Treningsplanen din, SG-tallene fra hver runde, og
-                pyramide-fremgangen — alt i én app. Du logger økter med ett
-                trykk; vi gjør tallene synlige neste morgen.
+                Treningsplanen din, SG-tallene fra hver runde og
+                pyramide-fremgangen samlet i én app. Du logger økter med ett
+                trykk, og vi gjør tallene synlige neste morgen.
               </p>
               <div className="mt-6 flex flex-wrap gap-2">
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.1em] text-primary-foreground">
@@ -236,6 +234,20 @@ export default function Hjem() {
                   </li>
                 ))}
               </ul>
+
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+                <Link
+                  href="/auth/signup"
+                  className="inline-flex h-12 items-center justify-center gap-1.5 rounded-full bg-accent px-6 font-display text-[15px] font-bold tracking-[-0.005em] text-accent-foreground shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition hover:-translate-y-px hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                >
+                  Start gratis prøveperiode
+                  <ArrowRight className="h-[18px] w-[18px]" strokeWidth={1.5} />
+                </Link>
+                <span className="max-w-[30ch] text-[13px] leading-[1.45] text-muted-foreground">
+                  Gratis i prøveperioden, deretter 300 kr/mnd. Gratis så lenge du
+                  har en coaching-pakke.
+                </span>
+              </div>
             </div>
 
             <div className="relative aspect-[4/5] overflow-hidden rounded-3xl">
@@ -277,7 +289,7 @@ export default function Hjem() {
                 GFGK · Gamle Fredrikstad
               </h4>
               <p className="text-sm leading-[1.55] text-muted-foreground">
-                18-hulls par 72. Hjemmebanen sommerhalvåret —
+                18-hulls par 72. Hjemmebanen vår om sommeren, med
                 turneringsforberedelser og bane-strategi.
               </p>
               <div className="mt-1 flex flex-col gap-1.5">
@@ -351,17 +363,14 @@ export default function Hjem() {
           </h2>
           <p className="relative z-10 mx-auto mt-4 max-w-[56ch] text-[16px] leading-[1.55] text-white/85">
             Vi har plass til 20 nye spillere i 2026-sesongen. Start med en
-            gratis kartleggings-økt — vi ser hvor du er, snakker om hvor du
-            vil, og legger en plan om det er kjemi.
+            gratis kartleggings-økt. Vi ser hvor du er, snakker om hvor du vil,
+            og legger en plan om kjemien stemmer.
           </p>
           <div className="relative z-10 mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link
-              href="/booking"
-              className="inline-flex h-[52px] items-center justify-center gap-1.5 rounded-full bg-accent px-6 font-display text-[16px] font-bold tracking-[-0.005em] text-accent-foreground shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition hover:-translate-y-px hover:brightness-105 hover:shadow-[0_10px_28px_rgba(209,248,67,0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            >
-              Book gratis kartlegging
-              <ArrowRight className="h-[18px] w-[18px]" strokeWidth={1.5} />
-            </Link>
+            <BookingAnbefaling
+              triggerLabel="Book gratis kartlegging"
+              triggerClassName="inline-flex h-[52px] items-center justify-center gap-1.5 rounded-full bg-accent px-6 font-display text-[16px] font-bold tracking-[-0.005em] text-accent-foreground shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition hover:-translate-y-px hover:brightness-105 hover:shadow-[0_10px_28px_rgba(209,248,67,0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            />
             <Link
               href="/kontakt"
               className="inline-flex h-[52px] items-center justify-center gap-1.5 rounded-xl px-6 font-display text-[16px] font-bold tracking-[-0.005em] text-secondary ring-1 ring-inset ring-secondary/45 transition hover:bg-secondary/10 hover:ring-secondary/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"

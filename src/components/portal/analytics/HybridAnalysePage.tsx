@@ -54,7 +54,7 @@ function parLabel(score: number, par: number): string {
 type TabKey = "sg" | "runder" | "trackman" | "tester";
 
 const TABS: { key: TabKey; label: string }[] = [
-  { key: "sg", label: "Strokes Gained" },
+  { key: "sg", label: "SG" },
   { key: "runder", label: "Runder" },
   { key: "trackman", label: "TrackMan" },
   { key: "tester", label: "Tester" },
@@ -71,8 +71,10 @@ function TabBar({
   onChange: (k: TabKey) => void;
   counts: Record<TabKey, string>;
 }) {
+  // Fersk fasit: segment-kontroll (én bordet container) med lime-fylt aktiv-state,
+  // ikke scrollende chips med kontur. Badge-tall beholdt som subtil data.
   return (
-    <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+    <div className="inline-flex w-full rounded-full border border-border bg-card p-1">
       {TABS.map((t) => {
         const on = t.key === active;
         return (
@@ -80,20 +82,19 @@ function TabBar({
             key={t.key}
             type="button"
             onClick={() => onChange(t.key)}
+            aria-current={on ? "page" : undefined}
             className={cn(
-              "inline-flex flex-shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-2 text-[12.5px] font-semibold text-foreground transition-colors",
+              "flex flex-1 items-center justify-center gap-1.5 rounded-full px-2 py-2 text-[12px] font-semibold transition-colors",
               on
-                ? "border-accent bg-accent/16"
-                : "border-border bg-card hover:bg-secondary",
+                ? "bg-accent text-accent-foreground"
+                : "text-muted-foreground hover:text-foreground",
             )}
           >
             {t.label}
             <span
               className={cn(
-                "rounded-full px-1.5 py-0 font-mono text-[9px] font-bold",
-                on
-                  ? "bg-accent text-accent-foreground"
-                  : "bg-secondary text-muted-foreground",
+                "font-mono text-[9px] font-bold",
+                on ? "text-accent-foreground/70" : "text-muted-foreground/55",
               )}
             >
               {counts[t.key]}
@@ -218,95 +219,77 @@ function TrendBandCard({ rounds }: { rounds: { playedAt: Date; score: number; pa
     );
   }
 
-  const W = 318;
-  const H = 110;
-  const pL = 6;
-  const pR = 6;
-  const pT = 12;
-  const pB = 20;
   const scores = pts.map((p) => p.score);
-  const minS = Math.min(...scores) - 2;
-  const maxS = Math.max(...scores) + 2;
-  const xOf = (i: number) => pL + (i * (W - pL - pR)) / (pts.length - 1);
-  const yOf = (s: number) => pT + ((s - minS) / (maxS - minS)) * (H - pT - pB);
-
-  const linePath = pts
-    .map((p, i) => `${i === 0 ? "M" : "L"}${xOf(i).toFixed(1)} ${yOf(p.score).toFixed(1)}`)
-    .join(" ");
-
-  const areaPath =
-    pts
-      .map((p, i) => `${i === 0 ? "M" : "L"}${xOf(i).toFixed(1)} ${yOf(p.score).toFixed(1)}`)
-      .join(" ") +
-    ` L${xOf(pts.length - 1).toFixed(1)} ${H - pB} L${xOf(0).toFixed(1)} ${H - pB} Z`;
-
-  const pbIdx = scores.indexOf(Math.min(...scores));
-
-  const labels = pts.map((p, i) => {
-    const m = p.playedAt.getMonth() + 1;
-    const d = p.playedAt.getDate();
-    return `<text x="${xOf(i).toFixed(1)}" y="${H - 5}" text-anchor="middle" font-family="var(--font-jetbrains-mono,monospace)" font-size="8" fill="var(--color-muted-foreground)">${d}/${m}</text>`;
-  });
-
-  const dots = pts.map((p, i) => {
-    const isPb = i === pbIdx;
-    return `<circle cx="${xOf(i).toFixed(1)}" cy="${yOf(p.score).toFixed(1)}" r="${isPb ? 5 : 3}" fill="${isPb ? "#D1F843" : "white"}" stroke="${isPb ? "#005840" : "#1A7D56"}" stroke-width="2"/>`;
-  });
-
-  // Team Norway benchmark band: top-10% scores (lower is better in golf)
-  const sortedScores = [...scores].sort((a, b) => a - b);
-  const tnTop = sortedScores[Math.floor(sortedScores.length * 0.25)] ?? minS;
-  const tnBot = sortedScores[Math.floor(sortedScores.length * 0.65)] ?? maxS;
-  const tnY1 = Math.max(pT, yOf(tnTop)).toFixed(1);
-  const tnY2 = Math.min(H - pB, yOf(tnBot)).toFixed(1);
-
-  const svgHtml = `<svg viewBox="0 0 ${W} ${H}" width="100%" height="110" style="display:block;">
-    <defs>
-      <linearGradient id="tgA" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#D1F843" stop-opacity="0.18"/>
-        <stop offset="1" stop-color="#D1F843" stop-opacity="0"/>
-      </linearGradient>
-    </defs>
-    <!-- Team Norway band -->
-    <rect x="${pL}" y="${tnY1}" width="${W - pL - pR}" height="${(parseFloat(tnY2) - parseFloat(tnY1)).toFixed(1)}" fill="#005840" fill-opacity="0.10" rx="3"/>
-    <path d="${areaPath}" fill="url(#tgA)"/>
-    <path d="${linePath}" fill="none" stroke="#D1F843" stroke-width="2.3" stroke-linejoin="round" stroke-linecap="round"/>
-    ${dots.join("")}
-    ${pbIdx >= 0 ? `<text x="${xOf(pbIdx).toFixed(1)}" y="${(yOf(scores[pbIdx]) - 8).toFixed(1)}" text-anchor="middle" font-family="var(--font-jetbrains-mono,monospace)" font-size="8" font-weight="700" fill="#005840">PB</text>` : ""}
-    ${labels.join("")}
-  </svg>`;
+  const minS = Math.min(...scores);
+  const maxS = Math.max(...scores);
+  const range = maxS - minS || 1;
+  const bestIdx = scores.indexOf(minS); // lavest score = beste runde
+  // 32–100 % høyde, høyere stolpe = bedre (lavere score)
+  const heightPct = (s: number) => 32 + ((maxS - s) / range) * 68;
 
   return (
     <div className="rounded-[var(--radius)] border border-border bg-card p-5 shadow-[0_1px_2px_rgba(10,31,23,.05)]">
-      <div className="mb-1 flex items-start justify-between">
-        <div className="font-display text-[17px] font-bold tracking-[-0.02em] text-foreground">
-          Trend<em className="font-medium italic text-primary">Band</em>
+      <div className="mb-3 flex items-start justify-between">
+        <div className="font-mono text-[11px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
+          Score-trend · {pts.length} runder
         </div>
         <span className="rounded-[5px] border border-border px-1.5 py-0.5 font-mono text-[10px] font-semibold tracking-[0.04em] text-muted-foreground">
-          HCP
+          {minS} best
         </span>
       </div>
-      <p className="mb-3.5 text-[12.5px] text-muted-foreground">
-        <strong className="text-foreground">PB-punkt</strong> markert med lime. Grønt bånd = Team Norway-sone.
-      </p>
-      <div dangerouslySetInnerHTML={{ __html: svgHtml }} />
-      <div className="mt-3 flex gap-4 font-mono text-[10.5px] text-muted-foreground">
-        <span className="flex items-center gap-1.5">
-          <span className="h-2 w-3.5 rounded-sm" style={{ background: "rgba(0,88,64,.20)" }} />
-          Team Norway
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className="h-2 w-3.5 rounded-sm" style={{ background: "#D1F843", opacity: 0.7 }} />
-          Din linje
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span
-            className="h-2.5 w-2.5 rounded-full border-2 border-primary"
-            style={{ background: "#D1F843" }}
+      <div className="flex h-[110px] items-end gap-1.5" role="img" aria-label="Score-trend som stolpediagram">
+        {pts.map((p, i) => (
+          <div
+            key={i}
+            className={cn("flex-1 rounded-t-[3px]", i === bestIdx ? "bg-lime" : "bg-forest")}
+            style={{ height: `${heightPct(p.score)}%` }}
+            title={`${p.score} slag`}
           />
-          PB
-        </span>
+        ))}
       </div>
+      <div className="mt-2 flex justify-between font-mono text-[8.5px] text-muted-foreground">
+        <span>R1</span>
+        <span>R{pts.length}</span>
+      </div>
+    </div>
+  );
+}
+
+// ── 2×2 hairline KPI-grid (fersk fasit) ──────────────────────────────
+// Snittscore er ekte (data.rounds.avgScore). GIR%/Putts/Up&down har ingen
+// aggregat-kilde paa skjermnivaa ennaa → «—» (aldri fasitens demo-tall).
+function KpiGrid2x2({ avgScore }: { avgScore: number | null }) {
+  const cells = [
+    {
+      lab: "Snittscore",
+      val:
+        avgScore != null
+          ? avgScore.toLocaleString("nb-NO", { maximumFractionDigits: 1 })
+          : "—",
+    },
+    { lab: "GIR %", val: "—" },
+    { lab: "Putts / runde", val: "—" },
+    { lab: "Up & down", val: "—" },
+  ];
+  return (
+    <div className="grid grid-cols-2 overflow-hidden rounded-[var(--radius)] border border-border bg-card">
+      {cells.map((c, i) => (
+        <div
+          key={c.lab}
+          className={cn(
+            "px-4 py-3.5",
+            i % 2 === 0 && "border-r border-border",
+            i < 2 && "border-b border-border",
+          )}
+        >
+          <div className="font-mono text-[9px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
+            {c.lab}
+          </div>
+          <div className="mt-1 font-display text-[20px] font-bold tracking-[-0.02em] text-foreground">
+            {c.val}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
@@ -639,6 +622,7 @@ export function HybridAnalysePage({ data }: HybridAnalysePageProps) {
             roundCount={data.sgBreakdown.roundCount}
             rows={sgRows}
           />
+          <KpiGrid2x2 avgScore={data.rounds.avgScore} />
           <TrendBandCard rounds={data.rounds.rounds} />
           <AiCaddieCard sgBreakdown={data.sgBreakdown} />
         </div>

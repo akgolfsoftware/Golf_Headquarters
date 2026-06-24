@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 
 export const metadata: Metadata = {
-  title: "Book økt — AK Golf",
+  title: "Book økt | AK Golf",
   description: "Book Pro-time, Trackman-analyse eller gruppe-økt online.",
 };
 
@@ -114,7 +114,7 @@ export default async function BookingLanding({
             <em className="font-normal italic text-primary">Book</em> en økt
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
-            Velg lokasjon, trener og tjeneste — finn ledig tid og betal trygt
+            Velg lokasjon, trener og tjeneste, finn ledig tid og betal trygt
             via Stripe. Avbestilling senest 24 timer før gir full refusjon.
           </p>
         </header>
@@ -235,7 +235,7 @@ export default async function BookingLanding({
                       Gruppe-økt
                     </h3>
                     <p className="mt-1 text-sm text-muted-foreground">
-                      Felles økter med flere spillere — uten valg av spesifikk
+                      Felles økter med flere spillere, uten valg av spesifikk
                       trener.
                     </p>
                     <span className="mt-4 inline-block text-sm font-medium text-primary group-hover:underline">
@@ -446,7 +446,7 @@ function SlikFungererDet() {
       ikon: CalendarDays,
       tittel: "Velg tid",
       beskrivelse:
-        "Finn ledig tid hos din coach. Se tilgjengelighet i sanntid — ingen venteliste.",
+        "Finn ledig tid hos din coach. Se tilgjengelighet i sanntid, ingen venteliste.",
     },
     {
       nr: 2,

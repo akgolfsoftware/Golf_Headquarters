@@ -12,7 +12,7 @@ import {
 } from "@/components/marketing/marketing-sections";
 
 export const metadata: Metadata = {
-  title: "Coaching — AK Golf Academy",
+  title: "Coaching · AK Golf Academy",
   description:
     "Performance og Performance Pro: personlig golf-coaching med Anders Kristiansen. PlayerHQ inkludert. Fra 1 200 kr/mnd.",
 };
@@ -46,8 +46,8 @@ const PAKKER: Pakke[] = [
       "2 personlige treningsøkter à 20 min",
       "Skreddersydd treningsplan i PlayerHQ",
       "Oppfølging mellom øktene",
-      "Full tilgang til PlayerHQ — gratis",
-      "Trackman-data der relevant",
+      "Full tilgang til PlayerHQ, helt gratis",
+      "Trackman-data der det er relevant",
     ],
     cta: "Bli Performance-kunde",
     fremhevet: true,
@@ -59,14 +59,14 @@ const PAKKER: Pakke[] = [
     pris: "2 220",
     okter: "4 × 20 min per måned",
     beskrivelse:
-      "For deg med høye mål — klubblag, elite, eller turneringsspill. Tett oppfølging hver uke.",
+      "For deg med høye mål, enten det er klubblag, elite eller turneringsspill. Tett oppfølging hver uke.",
     egnet: "Konkurransespillere og spillere med klare mål",
     inkludert: [
       "4 personlige treningsøkter à 20 min",
       "Periodisert plan tilpasset turneringskalender",
       "Tett oppfølging mellom øktene",
-      "Full tilgang til PlayerHQ — gratis",
-      "Trackman-data + video-analyse der relevant",
+      "Full tilgang til PlayerHQ, helt gratis",
+      "Trackman-data og video-analyse der det er relevant",
       "Direkte kontakt på melding mellom økter",
     ],
     cta: "Bli Performance Pro-kunde",
@@ -93,7 +93,7 @@ export default function Coaching() {
             <HeroEm>Coaching</HeroEm> som gir fremgang.
           </>
         }
-        ingress="Som abonnent får du 2 eller 4 coaching-timer hver måned. Du booker dem selv fra PlayerHQ når det passer deg — og får en plan, statistikk og oppfølging mellom øktene."
+        ingress="Som abonnent får du 2 eller 4 coaching-timer hver måned. Du booker dem selv fra PlayerHQ når det passer deg, og får en plan, statistikk og oppfølging mellom øktene."
         primaer={{ href: "#pakker", label: "Se pakkene" }}
         sekundaer={{ href: "/booking", label: "Book enkelttime" }}
       />
@@ -163,7 +163,7 @@ export default function Coaching() {
           </h2>
           <p className="relative z-10 mx-auto mt-4 max-w-[56ch] text-[16px] leading-[1.55] text-white/85">
             Du kan også booke enkelt-timer uten binding. Pro-time 30 min eller
-            60 min, Trackman-økt eller gruppeøkt — se hva som er ledig.
+            60 min, Trackman-økt eller gruppeøkt. Se hva som er ledig.
           </p>
           <div className="relative z-10 mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <CtaLime href="/booking" withArrow>

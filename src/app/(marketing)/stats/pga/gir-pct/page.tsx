@@ -16,12 +16,12 @@ import type { RelatertKategori } from "@/components/stats/pga-kategori-page";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Greens in Regulation — PGA Tour 2026 | AK Golf Stats",
+  title: "Greens in Regulation: PGA Tour 2026 | AK Golf Stats",
   description:
     "Hvor mange greens i regulation klarer PGA Tour-spillerne? Interaktiv slider, percentile og topp 20. GIR er statistikken som forutsier nesten alt.",
   alternates: { canonical: "https://akgolf.no/stats/pga/gir-pct" },
   openGraph: {
-    title: "Greens in Regulation — PGA Tour 2026 | AK Golf Stats",
+    title: "Greens in Regulation: PGA Tour 2026 | AK Golf Stats",
     description: "Interaktiv GIR-sammenligning mot PGA Tour-spillere.",
     url: "https://akgolf.no/stats/pga/gir-pct",
     siteName: "AK Golf Stats",
@@ -70,9 +70,9 @@ export default async function GirPctPage() {
             </>
           ),
           heroSub:
-            "GIR er den ene statistikken som forutsier nesten alt — scoring average, SG approach og antall birdie-muligheter. Se hvor du ligger an mot proffer.",
+            "GIR er den ene statistikken som forutsier nesten alt: scoring average, SG approach og antall birdie-muligheter. Se hvor du ligger an mot proffer.",
           mersalgTekst:
-            "GIR er den ene statistikken som forutsier nesten alt. Logg den i PlayerHQ — se trenden over tid og forstå hvorfor du scorer som du gjør.",
+            "GIR er den ene statistikken som forutsier nesten alt. Logg den i PlayerHQ, se trenden over tid og forstå hvorfor du scorer som du gjør.",
           mersalgKort: [
             "Logger GIR per hull automatisk",
             "Beregner SG Approach fra GIR-data",

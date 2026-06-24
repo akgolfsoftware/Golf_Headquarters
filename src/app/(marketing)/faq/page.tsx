@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ChevronDown, Mail } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Ofte stilte spørsmål — AK Golf Academy",
+  title: "Ofte stilte spørsmål · AK Golf Academy",
   description:
     "Svar på de vanligste spørsmålene om coaching, booking, PlayerHQ og praktisk informasjon.",
 };
@@ -23,11 +23,11 @@ const FAQ: { kategori: string; punkter: Sporsmal[] }[] = [
       },
       {
         q: "Hvem passer Academy for?",
-        a: "Spillere som er klare for tett oppfølging — uansett handicap, fra nybegynner til elite. Vi tar imot juniorer, voksne mosjonister og turneringsspillere. Felles for alle er at de vil ha struktur og fremgang.",
+        a: "Spillere som er klare for tett oppfølging, uansett handicap, fra nybegynner til elite. Vi tar imot juniorer, voksne mosjonister og turneringsspillere. Felles for alle er at de vil ha struktur og fremgang.",
       },
       {
         q: "Hvor mange timer trenger jeg?",
-        a: "De fleste begynner med 4–8 timer over en sesong. Vi tilpasser frekvens etter mål, tilgjengelig tid og treningsvilje. Vil du ha fast oppfølging, velger du en coaching-pakke — Performance gir 2 økter per måned, Performance Pro gir 4.",
+        a: "De fleste begynner med 4–8 timer over en sesong. Vi tilpasser frekvens etter mål, tilgjengelig tid og treningsvilje. Vil du ha fast oppfølging, velger du en coaching-pakke: Performance gir 2 økter per måned, Performance Pro gir 4.",
       },
     ],
   },
@@ -44,7 +44,7 @@ const FAQ: { kategori: string; punkter: Sporsmal[] }[] = [
       },
       {
         q: "Betaler jeg per time eller med abonnement?",
-        a: "Begge deler er mulig. Enkelttimer betales via Stripe ved booking. Med en coaching-pakke (Performance eller Performance Pro) er øktene inkludert — 2 eller 4 per måned — og bookes innenfor pakken.",
+        a: "Begge deler er mulig. Enkelttimer betales via Stripe ved booking. Med en coaching-pakke (Performance eller Performance Pro) er øktene inkludert, 2 eller 4 per måned, og bookes innenfor pakken.",
       },
     ],
   },
@@ -53,11 +53,11 @@ const FAQ: { kategori: string; punkter: Sporsmal[] }[] = [
     punkter: [
       {
         q: "Hva er PlayerHQ?",
-        a: "Din digitale spillerportal. Her finner du treningsplaner, runder, tester, AI-coach og fremdriftsdata. Appen er gratis med aktiv coaching-pakke (Performance eller Performance Pro), i prøvemåneden, eller om du trener i gruppe gjennom AK Golf — ellers koster den 300 kr/mnd.",
+        a: "Din digitale spillerportal. Her finner du treningsplaner, runder, tester, AI-coach og fremdriftsdata. Appen er gratis med aktiv coaching-pakke (Performance eller Performance Pro), i prøvemåneden, eller om du trener i gruppe gjennom AK Golf. Ellers koster den 300 kr/mnd.",
       },
       {
         q: "Trenger jeg å være kunde for å bruke PlayerHQ?",
-        a: "Nei. Alle kan opprette konto og prøve PlayerHQ gratis i én måned uten å være Academy-kunde. Etter prøvemåneden er appen gratis så lenge du har en aktiv coaching-pakke eller trener i gruppe gjennom AK Golf — ellers 300 kr/mnd.",
+        a: "Nei. Alle kan opprette konto og prøve PlayerHQ gratis i én måned uten å være Academy-kunde. Etter prøvemåneden er appen gratis så lenge du har en aktiv coaching-pakke eller trener i gruppe gjennom AK Golf. Ellers 300 kr/mnd.",
       },
     ],
   },
@@ -69,8 +69,8 @@ const FAQ: { kategori: string; punkter: Sporsmal[] }[] = [
         a: "Vi holder til på Mulligan Indoor Golf i Fredrikstad (Produksjonsveien 21) og Sarpsborg (Bjørnstadveien 12), samt Gamle Fredrikstad Golfklubb (Torsnesveien 16) fra mai til oktober. Alle anlegg er fullt utstyrt for coaching.",
       },
       {
-        q: "Hva med utstyr — må jeg ha eget?",
-        a: "Vi har leieutstyr tilgjengelig for nybegynnere. For coachingforløp anbefaler vi at du etter hvert investerer i tilpassede køller — vi hjelper deg med valget når tiden er moden.",
+        q: "Hva med utstyr, må jeg ha eget?",
+        a: "Vi har leieutstyr tilgjengelig for nybegynnere. For coachingforløp anbefaler vi at du etter hvert investerer i tilpassede køller, og vi hjelper deg med valget når tiden er moden.",
       },
     ],
   },
@@ -146,7 +146,7 @@ export default function FaqSide() {
             Fant du ikke <Em dark>svar</Em>?
           </h2>
           <p className="relative z-10 mx-auto mt-4 max-w-[56ch] text-[16px] leading-[1.55] text-white/85">
-            Skriv til oss — vi svarer som regel samme dag.
+            Skriv til oss, så svarer vi som regel samme dag.
           </p>
           <div className="relative z-10 mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <a

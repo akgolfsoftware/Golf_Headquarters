@@ -17,7 +17,7 @@ export function MarketingHeader() {
       <div className="relative mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <div className="flex items-center gap-2">
           <MobileMenu />
-          <Link href="/" aria-label="AK Golf — hjem" className="inline-flex">
+          <Link href="/" aria-label="AK Golf, hjem" className="inline-flex">
             <AkGolfLogo width={56} />
           </Link>
         </div>

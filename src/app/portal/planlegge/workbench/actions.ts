@@ -374,3 +374,125 @@ export async function loadFacilities(): Promise<FacilityState> {
     video: prefs.video,
   };
 }
+
+// ============================================================================
+// WORKBENCH DRAG-DROP-PERSISTERING (spiller, inneværende uke)
+// ============================================================================
+//
+// WorkbenchHybrid rendrer inneværende ukes TrainingPlanSession-er (mandag–fredag).
+// Disse tre handlingene lagrer drag-drop: flytt en økt til en annen dag, legg til
+// en ny økt på en dag, og slett en valgt økt. Dag-indeks 0 = mandag i inneværende
+// uke; klokkeslettet beholdes ved flytting. Kun innlogget spillers egne økter
+// (eierskap sjekkes via plan.userId).
+
+const PYRAMID_AREAS = ["FYS", "TEK", "SLAG", "SPILL", "TURN"] as const;
+type WbPyramidArea = (typeof PYRAMID_AREAS)[number];
+
+/** Mandag 00:00 i uka som inneholder `d` (mandag = indeks 0). */
+function mondayOf(d: Date): Date {
+  const x = new Date(d);
+  const dow = (x.getDay() + 6) % 7;
+  x.setHours(0, 0, 0, 0);
+  x.setDate(x.getDate() - dow);
+  return x;
+}
+
+function dateForDayIndex(dayIndex: number, hour: number, minute: number): Date {
+  const target = mondayOf(new Date());
+  target.setDate(target.getDate() + dayIndex);
+  target.setHours(hour, minute, 0, 0);
+  return target;
+}
+
+export async function moveWorkbenchSession(
+  sessionId: string,
+  dayIndex: number,
+): Promise<{ ok: boolean; error?: string }> {
+  const user = await requirePortalUser();
+  if (dayIndex < 0 || dayIndex > 6) return { ok: false, error: "Ugyldig dag" };
+
+  const session = await prisma.trainingPlanSession.findUnique({
+    where: { id: sessionId },
+    select: { id: true, scheduledAt: true, plan: { select: { userId: true } } },
+  });
+  if (!session || session.plan.userId !== user.id) {
+    return { ok: false, error: "Økt ikke funnet" };
+  }
+
+  // Behold klokkeslett, bytt dag innenfor inneværende uke.
+  const target = dateForDayIndex(
+    dayIndex,
+    session.scheduledAt.getHours(),
+    session.scheduledAt.getMinutes(),
+  );
+
+  await prisma.trainingPlanSession.update({
+    where: { id: sessionId },
+    data: { scheduledAt: target },
+  });
+  revalidatePath("/portal/planlegge/workbench");
+  return { ok: true };
+}
+
+export async function addWorkbenchSession(input: {
+  dayIndex: number;
+  title: string;
+  durMin: number;
+  area: WbPyramidArea;
+  hour: number;
+  minute: number;
+}): Promise<{ ok: boolean; sessionId?: string; error?: string }> {
+  const user = await requirePortalUser();
+  if (input.dayIndex < 0 || input.dayIndex > 6) return { ok: false, error: "Ugyldig dag" };
+  const area = PYRAMID_AREAS.includes(input.area) ? input.area : "TEK";
+
+  // Heng økta på spillerens nyeste/aktive plan, eller opprett en hvis ingen finnes.
+  let plan = await prisma.trainingPlan.findFirst({
+    where: { userId: user.id },
+    orderBy: [{ isActive: "desc" }, { updatedAt: "desc" }],
+    select: { id: true },
+  });
+  if (!plan) {
+    plan = await prisma.trainingPlan.create({
+      data: {
+        userId: user.id,
+        name: "Min plan",
+        startDate: new Date(),
+        status: "ACTIVE",
+        isActive: true,
+      },
+      select: { id: true },
+    });
+  }
+
+  const created = await prisma.trainingPlanSession.create({
+    data: {
+      planId: plan.id,
+      title: input.title.trim().slice(0, 120) || "Ny økt",
+      scheduledAt: dateForDayIndex(input.dayIndex, input.hour, input.minute),
+      durationMin: Math.max(5, Math.min(480, Math.round(input.durMin))),
+      pyramidArea: area,
+      status: "PLANNED",
+    },
+    select: { id: true },
+  });
+
+  revalidatePath("/portal/planlegge/workbench");
+  return { ok: true, sessionId: created.id };
+}
+
+export async function removeWorkbenchSession(
+  sessionId: string,
+): Promise<{ ok: boolean; error?: string }> {
+  const user = await requirePortalUser();
+  const session = await prisma.trainingPlanSession.findUnique({
+    where: { id: sessionId },
+    select: { id: true, plan: { select: { userId: true } } },
+  });
+  if (!session || session.plan.userId !== user.id) {
+    return { ok: false, error: "Økt ikke funnet" };
+  }
+  await prisma.trainingPlanSession.delete({ where: { id: sessionId } });
+  revalidatePath("/portal/planlegge/workbench");
+  return { ok: true };
+}

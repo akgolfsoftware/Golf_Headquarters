@@ -217,6 +217,33 @@ export async function getCalendarBusy(
       where: { id: { in: subs.map((s) => s.id) } },
       data: { lastError: sisteFeil.slice(0, 500) },
     });
+
+    // Permanent auth-feil (refresh-token trukket tilbake, utløpt, eller utstedt
+    // under en gammel OAuth-klient) er IKKE forbigående. Da skal tilkoblingen
+    // PAUSES — ikke holdes ACTIVE og fail-close-e all booking i det uendelige.
+    // Coachen varsles om å koble til på nytt; booking fortsetter uten kalender-
+    // beskyttelse til det er gjort (unik-constraintet hindrer fortsatt intern
+    // dobbeltbooking — kun eksterne private avtaler sjekkes ikke).
+    if (/invalid_grant|invalid_client|unauthorized_client|invalid_token|Token has been expired or revoked/i.test(sisteFeil)) {
+      const overgang = await prisma.googleCalendarConnection.updateMany({
+        where: { id: conn.id, status: { not: "PAUSED" } },
+        data: {
+          status: "PAUSED",
+          lastError: `Token avvist (${sisteFeil.slice(0, 200)}). Koble til på nytt.`,
+        },
+      });
+      if (overgang.count > 0) {
+        await notify({
+          userId,
+          type: "system",
+          title: "Google Calendar må kobles til på nytt",
+          body: "Tilkoblingen til Google Calendar er utløpt. Koble til på nytt så bookinger igjen sjekkes mot kalenderen din. Booking fungerer som normalt i mellomtiden.",
+          link: "/admin/settings/calendar",
+        });
+      }
+      // Død tilkobling skal ikke stoppe booking: returner som «ingen kalender».
+      return { ok: true, busy: [] };
+    }
   }
 
   // Konservativt: minst én pull-kalender feilet ⇒ ufullstendig bilde ⇒ fail-closed.

@@ -48,11 +48,11 @@ export async function generateMetadata({
   if (!bane) return { title: "Bane ikke funnet" };
 
   return {
-    title: `${bane.navn} — Banestatistikk | AK Golf Stats`,
+    title: `${bane.navn}: Banestatistikk | AK Golf Stats`,
     description: `Slope ${bane.slope ?? "—"}, CR ${bane.courseRating ?? "—"}, ${bane.lengdeMeter ?? "—"} m. ${bane.totaltAntallTurneringer} turneringer arrangert på ${bane.navn}. Se leaderboard og score-distribusjon.`,
     alternates: { canonical: `https://akgolf.no/stats/baner/${slug}` },
     openGraph: {
-      title: `${bane.navn} — AK Golf Stats`,
+      title: `${bane.navn} | AK Golf Stats`,
       description: `Slope ${bane.slope ?? "—"} · CR ${bane.courseRating ?? "—"} · ${bane.totaltAntallTurneringer} turneringer`,
       url: `https://akgolf.no/stats/baner/${slug}`,
     },
@@ -306,7 +306,7 @@ export default async function BaneDetaljPage({
               <StatsEyebrow>Vår statistikk</StatsEyebrow>
               <h2>
                 <em className="italic-accent">{dbStats.antallTurneringer}</em>{" "}
-                turneringer — {dbStats.antallSpillere} spillere.
+                turneringer, {dbStats.antallSpillere} spillere.
               </h2>
             </div>
           </div>

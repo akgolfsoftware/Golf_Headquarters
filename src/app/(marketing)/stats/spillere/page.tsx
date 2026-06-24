@@ -19,12 +19,12 @@ import { StatsSpillerRad } from "@/components/stats/stats-spiller-rad";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Norsk spillerdatabase — AK Golf Stats",
+  title: "Norsk spillerdatabase: AK Golf Stats",
   description:
     "Søk opp norske golfspillere og se komplette turneringsresultater fra Srixon Tour, OLYO, Norges Cup og Østlandstour 2016–2026. 1 500+ spillere på ett sted.",
   alternates: { canonical: "https://akgolf.no/stats/spillere" },
   openGraph: {
-    title: "Norsk spillerdatabase — AK Golf Stats",
+    title: "Norsk spillerdatabase: AK Golf Stats",
     description:
       "1 500+ norske golfspillere. Komplett resultathistorikk fra 10 år med norsk golf.",
     url: "https://akgolf.no/stats/spillere",
@@ -322,7 +322,7 @@ export default async function SpillerdatabasePage({
                 type="search"
                 name="q"
                 defaultValue={q ?? ""}
-                placeholder="Søk etter navn — for eksempel «Hovland» eller «Bærum GK»…"
+                placeholder="Søk etter navn, for eksempel «Hovland» eller «Bærum GK»…"
                 autoComplete="off"
                 className="spillere-searchbox"
                 aria-label="Søk etter norsk golfspiller"

@@ -14,9 +14,9 @@ import "../stats.css";
 export const revalidate = 1800;
 
 export const metadata: Metadata = {
-  title: "Norske i aksjon — AK Golf Stats",
+  title: "Norske i aksjon | AK Golf Stats",
   description:
-    "Alle norske golfspillere i aksjon denne uken — live-posisjoner, resultater og turneringsoversikt.",
+    "Alle norske golfspillere i aksjon denne uken: live-posisjoner, resultater og turneringsoversikt.",
   alternates: { canonical: "https://akgolf.no/stats/norske" },
 };
 
@@ -387,7 +387,7 @@ export default async function NorskePage() {
               Ingen norske spillere i aksjon denne uken.
             </p>
             <p style={{ color: "var(--s-muted-fg)", fontSize: 14, margin: "0 0 32px" }}>
-              Neste oppdatering kl. 06:00 — kom tilbake da!
+              Neste oppdatering kl. 06:00, kom tilbake da!
             </p>
             <Link
               href="/stats/turneringer"

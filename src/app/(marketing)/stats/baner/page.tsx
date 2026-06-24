@@ -23,12 +23,12 @@ import {
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Banedatabase — alle norske golfbaner | AK Golf Stats",
+  title: "Banedatabase: alle norske golfbaner | AK Golf Stats",
   description:
     "Vanskelighetsgrad, slope, course rating og ekte turneringsstatistikk fra 50+ norske golfbaner. Finn din bane og se hvem som dominerer.",
   alternates: { canonical: "https://akgolf.no/stats/baner" },
   openGraph: {
-    title: "Banedatabase — alle norske golfbaner | AK Golf Stats",
+    title: "Banedatabase: alle norske golfbaner | AK Golf Stats",
     description:
       "Slope, CR, turneringsdata og score-distribusjon for norske golfbaner.",
     url: "https://akgolf.no/stats/baner",

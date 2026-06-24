@@ -261,7 +261,7 @@ export function SgEstimatorClient() {
                     strokes/runde vs Tour).
                   </p>
                   <p style={{ marginTop: 12, fontSize: 13, lineHeight: 1.5, color: "var(--s-muted-fg)" }}>
-                    Basert på Broadie (2014) «Every Shot Counts» — HCP-stratifiserte gjennomsnitt. Disse er estimater, ikke nøyaktige per-spiller-tall.
+                    Basert på Broadie (2014) «Every Shot Counts», HCP-stratifiserte gjennomsnitt. Disse er estimater, ikke nøyaktige per-spiller-tall.
                   </p>
                   <div style={{ marginTop: 24 }}>
                     <Link href="/stats/sg-sammenlign">

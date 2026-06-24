@@ -16,12 +16,12 @@ import type { RelatertKategori } from "@/components/stats/pga-kategori-page";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "SG Total — PGA Tour 2026 | AK Golf Stats",
+  title: "SG Total: PGA Tour 2026 | AK Golf Stats",
   description:
     "Hvem vinner mest strokes mot Tour-snittet? Interaktiv SG Total-analyse, percentile og topp 20. Strokes Gained er det presiseste målet på golf-ferdighet.",
   alternates: { canonical: "https://akgolf.no/stats/pga/sg-total" },
   openGraph: {
-    title: "SG Total — PGA Tour 2026 | AK Golf Stats",
+    title: "SG Total: PGA Tour 2026 | AK Golf Stats",
     description: "Interaktiv Strokes Gained Total-sammenligning mot PGA Tour-spillere.",
     url: "https://akgolf.no/stats/pga/sg-total",
     siteName: "AK Golf Stats",
@@ -73,7 +73,7 @@ export default async function SgTotalPage() {
           heroSub:
             "Strokes Gained Total er det mest presise målet på golf-ferdighet. Det forteller nøyaktig hvor mye bedre (eller dårligere) en spiller er enn Tour-snittet per runde.",
           mersalgTekst:
-            "Verdens beste vinner +3 SG per runde. Du? PlayerHQ måler det automatisk når du logger runder — og viser nøyaktig hvilke kategorier du taper strokes på.",
+            "Verdens beste vinner +3 SG per runde. Du? PlayerHQ måler det automatisk når du logger runder, og viser nøyaktig hvilke kategorier du taper strokes på.",
           mersalgKort: [
             "Automatisk SG-beregning per runde",
             "Breakdown: OTT, approach, putting",

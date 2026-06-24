@@ -9,6 +9,9 @@ export type Axis = "fys" | "tek" | "slag" | "spill" | "turn";
 
 // ───────── WeekView events ─────────
 export type WeekEvent = {
+  /** DB-id (TrainingPlanSession) når eventen kommer fra ekte data — brukes for
+   *  persistering av drag-drop. Udefinert for demo-data. */
+  id?: string;
   /** start hour (24h) */
   h: number;
   /** start minute */

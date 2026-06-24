@@ -200,7 +200,7 @@ function Nav({ data }: { data: ForsideData["nav"] }) {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur-md">
       <div className="mx-auto flex h-[72px] max-w-7xl items-center gap-6 px-6">
-        <Link href="/" aria-label="AK Golf — hjem" className="inline-flex shrink-0">
+        <Link href="/" aria-label="AK Golf, hjem" className="inline-flex shrink-0">
           <Image
             src="/logos/ak-golf-logo-primary-on-light.svg"
             alt="AK Golf"
@@ -678,7 +678,7 @@ function Footer({ data }: { data: ForsideData["footer"] }) {
         <div className="relative mx-auto max-w-7xl px-6 py-16">
           <div className="grid gap-10 border-b border-white/10 pb-12 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
             <div>
-              <Link href="/" aria-label="AK Golf — hjem" className="inline-flex">
+              <Link href="/" aria-label="AK Golf, hjem" className="inline-flex">
                 <Image
                   src="/logos/ak-golf-logo-white-on-dark.svg"
                   alt="AK Golf"
@@ -835,12 +835,12 @@ export const forsideDemo: ForsideData = {
     eyebrow: "Ny sesong · Plasser åpne fra 1. mai",
     titleLead: "Bli en bedre golfspiller.",
     titleAccent: "Sammen.",
-    body: "Personlig coaching, periodiserte treningsplaner og målbar fremgang — for spillere som vil mer enn å bare slå baller.",
+    body: "Personlig coaching, periodiserte treningsplaner og målbar fremgang, for spillere som vil mer enn å bare slå baller.",
     primary: { label: "Book gratis kartleggings-økt", href: "/booking" },
     secondary: { label: "Se tjenestene", href: "/coaching" },
     image: {
       src: "/images/akademy/utslag-fairway.jpg",
-      alt: "To golfere på fairway — én observerer mens den andre slår utslag",
+      alt: "To golfere på fairway, én observerer mens den andre slår utslag",
     },
   },
   kpis: [
@@ -851,13 +851,13 @@ export const forsideDemo: ForsideData = {
   ],
   booking: {
     eyebrow: "Book direkte",
-    titleLead: "Velg en time —",
+    titleLead: "Velg en time:",
     titleAccent: "få ledig allerede denne uka",
     body: "Hopp rett til kalenderen. Velg tid, betal og du er booket. Ingen abonnement, ingen binding.",
     cards: [
       {
         audience: "For nybegynnere",
-        title: "Flex 20 min — Markus",
+        title: "Flex 20 min, Markus",
         coach: "Med Markus Røinås Pedersen",
         blurb: "Kort fokus-økt med Markus. Ett tema, raskt inn og ut.",
         duration: "20 min",
@@ -867,7 +867,7 @@ export const forsideDemo: ForsideData = {
       },
       {
         audience: "Standardvalg",
-        title: "Performance — Anders",
+        title: "Performance, Anders",
         coach: "Med Anders Kristiansen",
         blurb: "2 coaching-økter à 20 min per måned med Anders. Trackman + analyse + plan.",
         duration: "40 min",
@@ -878,7 +878,7 @@ export const forsideDemo: ForsideData = {
       },
       {
         audience: "For ambisiøse",
-        title: "Performance Pro — Anders",
+        title: "Performance Pro, Anders",
         coach: "Med Anders Kristiansen",
         blurb:
           "4 coaching-økter à 20 min per måned med Anders. Trackman + video + dispersjon + skriftlig plan.",
@@ -893,7 +893,7 @@ export const forsideDemo: ForsideData = {
     eyebrow: "Tjenester",
     titleLead: "Tre veier til",
     titleAccent: "neste nivå",
-    body: "Velg det formatet som passer deg — alt henger sammen via samme app, samme plan, og samme coach.",
+    body: "Velg det formatet som passer deg. Alt henger sammen via samme app, samme plan, og samme coach.",
     cards: [
       {
         icon: "target",
@@ -910,7 +910,7 @@ export const forsideDemo: ForsideData = {
         eyebrow: "Performance Pro",
         title: "4 økter per måned",
         blurb:
-          "Fire 20-minutters økter per måned. PlayerHQ inkludert. For spillere med høye mål — klubb, elite, turnering.",
+          "Fire 20-minutters økter per måned. PlayerHQ inkludert. For spillere med høye mål: klubb, elite, turnering.",
         price: "2 220 kr",
         priceUnit: "/ mnd",
         href: "/coaching",
@@ -933,14 +933,14 @@ export const forsideDemo: ForsideData = {
       { label: "Inkludert", tone: "included" },
       { label: "Beta", tone: "muted" },
     ],
-    titleLeadA: "PlayerHQ —",
+    titleLeadA: "PlayerHQ:",
     titleAccent: "spillerportalen",
     titleLeadB: "du får på kjøpet",
-    body: "Treningsplaner, statistikk, runde-registrering og AI-coach i én app. Gratis for alle Academy-kunder. Ikke-kunder kan prøve gratis i beta-perioden — første betaling 1. juni 2026.",
+    body: "Treningsplaner, statistikk, runde-registrering og AI-coach i én app. Gratis for alle Academy-kunder. Ikke-kunder kan prøve gratis i beta-perioden. Første betaling 1. juni 2026.",
     link: { label: "Se hva PlayerHQ inneholder", href: "/playerhq" },
     image: {
       src: "/images/akademy/putting-data.jpg",
-      alt: "To golfere på greenen — én putter mens coachen leser linjen med treningshjelpemidler",
+      alt: "To golfere på greenen, én putter mens coachen leser linjen med treningshjelpemidler",
     },
   },
   facilities: {

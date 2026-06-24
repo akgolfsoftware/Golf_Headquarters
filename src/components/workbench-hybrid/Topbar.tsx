@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactElement } from "react";
 import Link from "next/link";
-import { ChevronDown, Plus, Sparkles } from "lucide-react";
+import { Bot, ChevronDown, Plus, Sparkles } from "lucide-react";
 import { FONT, WB } from "./theme";
 import type { WorkbenchRole, ZoomLevel } from "./types";
 
@@ -30,6 +30,8 @@ type TopbarProps = {
   currentPlayerId?: string;
   /** Coach-modus: åpne Coach-Skill-veiviseren. */
   onOpenCoachSkill?: () => void;
+  /** Coach-modus: åpne AI-plan-panel for denne spilleren. */
+  onOpenAiPlan?: () => void;
 };
 
 export function Topbar({
@@ -42,6 +44,7 @@ export function Topbar({
   players,
   currentPlayerId,
   onOpenCoachSkill,
+  onOpenAiPlan,
 }: TopbarProps): ReactElement {
   const isCoach = role === "coach";
 
@@ -173,6 +176,31 @@ export function Topbar({
       </div>
 
       <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 10 }}>
+        {isCoach && onOpenAiPlan && (
+          <button
+            type="button"
+            onClick={onOpenAiPlan}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 7,
+              background: `${WB.lime}18`,
+              color: WB.lime,
+              border: `1px solid ${WB.lime}44`,
+              borderRadius: 9999,
+              padding: "8px 14px",
+              cursor: "pointer",
+              fontFamily: FONT.mono,
+              fontSize: 11,
+              fontWeight: 700,
+              letterSpacing: "0.04em",
+              textTransform: "uppercase",
+            }}
+          >
+            <Bot size={15} strokeWidth={2} />
+            Generer plan
+          </button>
+        )}
         {isCoach && onOpenCoachSkill && (
           <button
             type="button"

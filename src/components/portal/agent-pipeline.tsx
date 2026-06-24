@@ -156,7 +156,7 @@ export function AgentPipeline({
               <span
                 className={`grid h-8 w-8 place-items-center rounded-full border bg-secondary ${
                   sig.active
-                    ? "border-accent text-accent shadow-[0_0_0_4px_rgba(209,248,67,0.08)]"
+                    ? "border-accent text-primary shadow-[0_0_0_4px_rgba(209,248,67,0.08)]"
                     : "border-border text-muted-foreground"
                 }`}
               >

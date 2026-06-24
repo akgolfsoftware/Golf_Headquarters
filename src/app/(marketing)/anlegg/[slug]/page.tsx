@@ -55,9 +55,9 @@ const ANLEGG_DATA: Record<string, AnleggData> = {
     name: "Miklagard Golf",
     adresse: "Sigurd Hagens vei 50, 2040 Kløfta",
     heroImage: "/images/anlegg/miklagard-hero.jpg",
-    heroAlt: "Luftfoto over Miklagard Golf — mesterskapsbanen fra drone",
+    heroAlt: "Luftfoto over Miklagard Golf, mesterskapsbanen fra drone",
     tagline:
-      "En av Nordens mest prestisjetunge mesterskapsbaner — designet for utfordring og data-drevet trening året rundt.",
+      "En av Nordens mest prestisjetunge mesterskapsbaner, designet for utfordring og data-drevet trening året rundt.",
     highlights: [
       {
         Icon: Trophy,
@@ -69,7 +69,7 @@ const ANLEGG_DATA: Record<string, AnleggData> = {
         Icon: Crosshair,
         title: "Trackman Range",
         description:
-          "2. etg. driving range med Trackman på alle utslag — data fra første ball.",
+          "2. etg. driving range med Trackman på alle utslag: data fra første ball.",
       },
       {
         Icon: Building2,
@@ -94,7 +94,7 @@ const ANLEGG_DATA: Record<string, AnleggData> = {
       epost: "post@miklagardgolf.no",
     },
     ctaBlurb:
-      "AK Golf Academy holder til på Miklagard. Book privat coaching med våre trenere — alt på ett av Nordens mest spektakulære anlegg.",
+      "AK Golf Academy holder til på Miklagard. Book privat coaching med våre trenere, alt på ett av Nordens mest spektakulære anlegg.",
     websiteUrl: "https://miklagardgolf.no",
     websiteHost: "miklagardgolf.no",
     greenfeeUrl: "https://miklagardgolf.no/greenfee",
@@ -109,9 +109,9 @@ const ANLEGG_DATA: Record<string, AnleggData> = {
     name: "Gamle Fredrikstad GK",
     adresse: "Vesterelvveien 100, 1605 Fredrikstad",
     heroImage: "/images/anlegg/gfgk-hero2.jpg",
-    heroAlt: "Utsikt over Gamle Fredrikstad Golfklubb — flaggstang på green",
+    heroAlt: "Utsikt over Gamle Fredrikstad Golfklubb, flaggstang på green",
     tagline:
-      "Klassisk links-inspirert design med 18+9 hull, kort fra historisk Gamlebyen — hjemmebanen til AK Golf Academy.",
+      "Klassisk links-inspirert design med 18+9 hull, kort fra historisk Gamlebyen. Hjemmebanen til AK Golf Academy.",
     highlights: [
       {
         Icon: Wind,
@@ -129,12 +129,12 @@ const ANLEGG_DATA: Record<string, AnleggData> = {
         Icon: Landmark,
         title: "Historisk beliggenhet",
         description:
-          "Få minutters kjøring fra Gamlebyen i Fredrikstad — Nordens best bevarte festningsby.",
+          "Få minutters kjøring fra Gamlebyen i Fredrikstad, Nordens best bevarte festningsby.",
       },
     ],
     gallery: {
       src: "/images/anlegg/gfgk-2.jpg",
-      alt: "Kongsten fort og golfbane — Gamle Fredrikstad GK",
+      alt: "Kongsten fort og golfbane, Gamle Fredrikstad GK",
       label: "Kongsten fort · Hull 14",
     },
     logo: {
@@ -148,7 +148,7 @@ const ANLEGG_DATA: Record<string, AnleggData> = {
       epost: "post@gfgk.no",
     },
     ctaBlurb:
-      "AK Golf Academy holder til på Gamle Fredrikstad Golfklubb. Book privat coaching med våre trenere — i et anlegg med 100 års historie.",
+      "AK Golf Academy holder til på Gamle Fredrikstad Golfklubb. Book privat coaching med våre trenere, i et anlegg med 100 års historie.",
     websiteUrl: "https://gfgk.no",
     websiteHost: "gfgk.no",
     greenfeeUrl: "https://gfgk.no/greenfee",
@@ -171,7 +171,7 @@ export async function generateMetadata({
   const data = ANLEGG_DATA[slug];
   if (!data) return { title: "Anlegg ikke funnet" };
   return {
-    title: `${data.name} — AK Golf Academy`,
+    title: `${data.name} | AK Golf Academy`,
     description: `Tren hos AK Golf Academy på ${data.name}, ${data.adresse}.`,
   };
 }

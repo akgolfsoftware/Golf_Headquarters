@@ -27,12 +27,12 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const { a, b } = await searchParams;
   if (a && b) {
     return {
-      title: `Sammenlign ${a} vs ${b} — AK Golf Stats`,
+      title: `Sammenlign ${a} vs ${b} | AK Golf Stats`,
       description: "Side-by-side sammenligning av to norske golfspillere. Snittscore over tid, beste resultater og tour-fordeling.",
     };
   }
   return {
-    title: "Sammenlign norske spillere — AK Golf Stats",
+    title: "Sammenlign norske spillere | AK Golf Stats",
     description: "Velg to norske golfspillere og sammenlign dem side-by-side. Snittscore, beste resultater og utvikling over tid.",
     alternates: { canonical: "https://akgolf.no/stats/sammenlign-spillere" },
   };
@@ -270,7 +270,7 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
                 maxWidth: 440,
               }}
             >
-              Logg dine egne runder i PlayerHQ — så kommer du automatisk inn i
+              Logg dine egne runder i PlayerHQ, så kommer du automatisk inn i
               databasen og kan sammenlignes med andre norske spillere.
             </p>
             <Link

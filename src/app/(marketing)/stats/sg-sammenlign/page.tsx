@@ -18,12 +18,12 @@ import "../stats.css";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "SG-sammenligning — sammenlign deg med Rory McIlroy",
+  title: "SG-sammenligning: sammenlign deg med Rory McIlroy",
   description:
     "Legg inn din egen Strokes Gained og se hvordan du ligger an mot verdens beste. Få et estimat på hva din norske snittscore tilsvarer på PGA Tour.",
   alternates: { canonical: "https://akgolf.no/stats/sg-sammenlign" },
   openGraph: {
-    title: "Sammenlign deg med Rory — SG-tool fra AK Golf",
+    title: "Sammenlign deg med Rory: SG-tool fra AK Golf",
     description:
       "Hvor mye taper du mot proffene? Få konkrete tall på din egen SG-profil.",
     url: "https://akgolf.no/stats/sg-sammenlign",
@@ -58,7 +58,7 @@ export default async function SgSammenlignLanding() {
               </h1>
               <p className="stats-hero-sub">
                 Legg inn snittscoren din. Vi estimerer din Strokes Gained og viser
-                hvor du står mot proffene — på 60 sekunder.
+                hvor du står mot proffene, på 60 sekunder.
               </p>
               <div className="stats-hero-ctas">
                 <Link
@@ -173,7 +173,7 @@ export default async function SgSammenlignLanding() {
             {
               n: "01",
               t: "Velg referanse",
-              d: "Pluk en av topp 100 PGA-spillere. Rory, Scottie, Hovland — eller en favoritt.",
+              d: "Pluk en av topp 100 PGA-spillere. Rory, Scottie, Hovland, eller en favoritt.",
               icon: <Trophy size={24} />,
             },
             {
@@ -279,7 +279,7 @@ export default async function SgSammenlignLanding() {
               {
                 tit: "HCP 25",
                 radar: [0.30, 0.25, 0.20, 0.35],
-                txt: "Du er på et tidlig nivå — størst gap er ARG (−2.1). Fokus her gir raskest forbedring.",
+                txt: "Du er på et tidlig nivå. Størst gap er ARG (−2.1). Fokus her gir raskest forbedring.",
               },
             ].map((c, i) => (
               <Reveal key={i} delay={i * 100}>
@@ -350,22 +350,22 @@ export default async function SgSammenlignLanding() {
           {[
             {
               tag: "SG: OTT",
-              forklar: "Off The Tee — hvor mange strokes du vinner/taper på drives, vs Tour-snittet.",
+              forklar: "Off The Tee: hvor mange strokes du vinner/taper på drives, vs Tour-snittet.",
               icon: <Crosshair size={22} />,
             },
             {
               tag: "SG: APP",
-              forklar: "Approach — fra fairway/rough mot greenen. Den mest forutsigbare SG-kategorien.",
+              forklar: "Approach: fra fairway/rough mot greenen. Den mest forutsigbare SG-kategorien.",
               icon: <Target size={22} />,
             },
             {
               tag: "SG: ARG",
-              forklar: "Around the Green — chips, pitches, bunker. Trent skill, ikke talent.",
+              forklar: "Around the Green: chips, pitches, bunker. Trent skill, ikke talent.",
               icon: <Flag size={22} />,
             },
             {
               tag: "SG: PUTT",
-              forklar: "Putting — fra hver avstand på greenen. Tour-snittet er definert som 0.",
+              forklar: "Putting: fra hver avstand på greenen. Tour-snittet er definert som 0.",
               icon: <Circle size={22} />,
             },
           ].map((sg, i) => (
@@ -418,7 +418,7 @@ export default async function SgSammenlignLanding() {
           >
             Strokes Gained ble utviklet av{" "}
             <strong style={{ color: "hsl(var(--foreground))" }}>Mark Broadie</strong> ved
-            Columbia Business School. Tour-snittet er definert som 0 — et
+            Columbia Business School. Tour-snittet er definert som 0: et
             positivt tall betyr at du vinner strokes mot snittet, et negativt at
             du taper.
           </p>

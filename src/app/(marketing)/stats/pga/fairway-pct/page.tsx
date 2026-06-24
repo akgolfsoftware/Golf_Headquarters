@@ -16,12 +16,12 @@ import type { RelatertKategori } from "@/components/stats/pga-kategori-page";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Fairway Accuracy — PGA Tour 2026 | AK Golf Stats",
+  title: "Fairway Accuracy: PGA Tour 2026 | AK Golf Stats",
   description:
     "Hvem treffer flesteparten av fairwayene på PGA Tour? Interaktiv slider, topp 20-liste og personlig percentile-analyse.",
   alternates: { canonical: "https://akgolf.no/stats/pga/fairway-pct" },
   openGraph: {
-    title: "Fairway Accuracy — PGA Tour 2026 | AK Golf Stats",
+    title: "Fairway Accuracy: PGA Tour 2026 | AK Golf Stats",
     description: "Interaktiv sammenligning av fairway-treff mot PGA Tour-spillere.",
     url: "https://akgolf.no/stats/pga/fairway-pct",
     siteName: "AK Golf Stats",

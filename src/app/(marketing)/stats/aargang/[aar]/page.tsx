@@ -33,7 +33,7 @@ export async function generateMetadata({
   const { aar } = await params;
   const alder = 2026 - parseInt(aar);
   return {
-    title: `${aar}-årgangen — AK Golf Stats`,
+    title: `${aar}-årgangen | AK Golf Stats`,
     description: `Alle norske golfspillere født i ${aar} (${alder} år). Topp 10, scoredistribusjon, klubbfordeling og tour-aktivitet.`,
     alternates: { canonical: `https://akgolf.no/stats/aargang/${aar}` },
   };
@@ -795,7 +795,7 @@ export default async function AargangDetalj({
             </h2>
             <p style={{ marginTop: 16, maxWidth: 480, margin: "16px auto 32px" }}>
               Er ditt barn i {aarNum}-årgangen og ikke i listen? Det betyr at vi
-              ikke har resultater fra dem. PlayerHQ logger runder automatisk — ditt
+              ikke har resultater fra dem. PlayerHQ logger runder automatisk, så ditt
               barn havner i statistikken fra første scorekort.
             </p>
             <Link href="/portal">

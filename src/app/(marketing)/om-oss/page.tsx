@@ -7,7 +7,7 @@ import { PulseDot } from "@/components/athletic/pulse-dot";
 export const metadata: Metadata = {
   title: "Om oss | AK Golf Academy",
   description:
-    "Les om Anders Kristiansen og filosofien bak AK Golf Academy — personlig coaching bygd på Mac O'Grady-metodikk og moderne data-analyse.",
+    "Les om Anders Kristiansen og filosofien bak AK Golf Academy: personlig coaching bygd på Mac O'Grady-metodikk og moderne data-analyse.",
 };
 
 /* Manifest — tre prinsipper destillert fra Academy-filosofien */
@@ -25,7 +25,7 @@ const MANIFEST = [
   {
     nr: "03",
     title: "Målbar, ikke synsing",
-    text: "PlayerHQ holder plan, runder og statistikk samlet på ett sted — fremgangen er synlig, ikke noe du må tro på.",
+    text: "PlayerHQ holder plan, runder og statistikk samlet på ett sted. Fremgangen er synlig, ikke noe du må tro på.",
   },
 ] as const;
 
@@ -91,7 +91,7 @@ export default function OmOss() {
               className="mkt-hero-in mt-6 max-w-[48ch] text-[17px] leading-[1.55] text-secondary/85"
               style={{ animationDelay: "200ms" }}
             >
-              AK Golf Academy drives av Anders Kristiansen — golfcoach,
+              AK Golf Academy drives av Anders Kristiansen: golfcoach,
               gründer og CEO i AK Golf Group AS. Tett personlig oppfølging,
               målbar fremgang.
             </p>
@@ -157,7 +157,7 @@ export default function OmOss() {
 
           <div className="mt-10 max-w-[62ch] space-y-6 text-[16px] leading-[1.6] text-foreground">
             <p>
-              Anders har brukt mer enn et tiår på spillere på alle nivåer —
+              Anders har brukt mer enn et tiår på spillere på alle nivåer,
               fra klubbamatører til konkurranseutøvere. Underveis vokste det
               frem en praksis der personlig oppfølging og målbare resultater
               ikke er motsetninger, men to sider av samme metode.
@@ -170,7 +170,7 @@ export default function OmOss() {
             </blockquote>
 
             <p>
-              Kjernen er AK Golf-pyramiden — et balansert system som sørger for
+              Kjernen er AK Golf-pyramiden, et balansert system som sørger for
               at treningstiden fordeles riktig mellom fysikk, teknikk, slag,
               spill og turneringserfaring. Til daglig støttes coachingen av
               PlayerHQ, spillerportalen som holder plan, runder og statistikk
@@ -212,7 +212,7 @@ export default function OmOss() {
             Klar for <Em dark>første time</Em>?
           </h2>
           <p className="relative z-10 mx-auto mt-4 max-w-[56ch] text-[16px] leading-[1.55] text-white/85">
-            Start med en enkelt time — så ser vi sammen hva som er riktig vei
+            Start med en enkelt time, så ser vi sammen hva som er riktig vei
             videre for spillet ditt.
           </p>
           <div className="relative z-10 mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">

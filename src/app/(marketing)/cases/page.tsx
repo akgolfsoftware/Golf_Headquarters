@@ -4,7 +4,7 @@ import { ArrowRight, TrendingDown } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
-  title: "Suksesshistorier — AK Golf Academy",
+  title: "Suksesshistorier · AK Golf Academy",
   description:
     "Les hvordan spillere i AK Golf Academy har senket handicapet sitt med data-drevet coaching.",
 };
@@ -91,7 +91,7 @@ async function hentKommendeTurneringer(): Promise<Tournament[]> {
     day: String(r.startDate.getDate()).padStart(2, "0"),
     mon: MND[r.startDate.getMonth()],
     name: r.name,
-    venue: r.location ?? "—",
+    venue: r.location ?? "Sted kommer",
     format: formaterFormat(r.format),
     tag: r.status === "IN_PROGRESS" ? "Pågår" : "Kommende",
     tagTone: r.status === "IN_PROGRESS" ? "apent" : "kommende",
@@ -122,7 +122,7 @@ export default async function CasesSide() {
             </em>
           </h1>
           <p className="mt-4 max-w-[52ch] text-[17px] leading-[1.55] text-white/70">
-            Dokumenterte resultater fra spillere i AK Golf-programmet — fra HCP
+            Dokumenterte resultater fra spillere i AK Golf-programmet, fra HCP
             12 til nasjonal elite.
           </p>
         </div>

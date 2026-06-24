@@ -71,7 +71,7 @@ export function SpillerTabell({ spillere }: Props) {
         <input
           type="search"
           className="spillere-searchbox"
-          placeholder="Søk spiller — «McIlroy», «Hovland»…"
+          placeholder="Søk spiller: «McIlroy», «Hovland»…"
           value={query}
           onChange={(e) => handleQuery(e.target.value)}
         />

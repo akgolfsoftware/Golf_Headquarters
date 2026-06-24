@@ -31,12 +31,12 @@ export const revalidate = 3600;
 
 // ─── Metadata ───────────────────────────────────────────────────────────────
 export const metadata: Metadata = {
-  title: "PGA Tour Stats — hva er snittet egentlig?",
+  title: "PGA Tour Stats: hva er snittet egentlig?",
   description:
     "Interaktiv PGA Tour-statistikk: drive distance, fairway %, GIR, putts, scoring og Strokes Gained. Sammenlign deg selv med proffene. Gratis fra AK Golf.",
   alternates: { canonical: "https://akgolf.no/stats/pga" },
   openGraph: {
-    title: "PGA Tour Stats — interaktiv playground",
+    title: "PGA Tour Stats: interaktiv playground",
     description:
       "Hva slår en proff langt? Hvor mange GIR? Sammenlign deg med toppen.",
     url: "https://akgolf.no/stats/pga",
@@ -224,7 +224,7 @@ export default async function PgaStatsHub() {
             Hva er <em className="italic-accent">snittet</em> egentlig?
           </h1>
           <p className="hero-sub">
-            Alt fra drive distance til putter per runde — hentet rett fra DataGolf,
+            Alt fra drive distance til putter per runde, hentet rett fra DataGolf,
             vektet mot Tour-snittet. Lek deg gjennom seks kategorier.
           </p>
           <div style={{ display: "flex", gap: 20, marginTop: 28, alignItems: "center", flexWrap: "wrap" }}>
@@ -523,7 +523,7 @@ export default async function PgaStatsHub() {
                       <div className="bento-icon"><StatsIcon name="Sparkles" size={22} /></div>
                       <h3>Strokes Gained · Total</h3>
                       <div className="bento-desc">
-                        Den enkleste måten å rangere golfere på. Høyere er bedre — vektet mot felt-snittet, ikke par.
+                        Den enkleste måten å rangere golfere på. Høyere er bedre, vektet mot felt-snittet, ikke par.
                       </div>
                     </div>
                     <div style={{ textAlign: "right" }}>
@@ -607,8 +607,8 @@ export default async function PgaStatsHub() {
                 hvordan <em className="italic-accent">du</em> ligger an?
               </h2>
               <p>
-                PlayerHQ regner ut din egen Strokes Gained fra hvert scorekort. Du ser hvor strokene tapes —
-                drive, innspill, putt — og hvor du står mot Tour-snittet over tid.
+                PlayerHQ regner ut din egen Strokes Gained fra hvert scorekort. Du ser hvor strokene tapes:
+                drive, innspill, putt, og hvor du står mot Tour-snittet over tid.
               </p>
               <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
                 <Link

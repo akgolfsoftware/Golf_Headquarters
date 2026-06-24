@@ -220,7 +220,7 @@ export default async function CoachNotes() {
         {/* Coach-quote (sidebar) */}
         <section className="col-span-12 lg:col-span-4">
           <div className="sticky top-6 rounded-lg border border-border bg-card p-4 md:p-6">
-            <Quote size={20} strokeWidth={1.5} className="text-accent" />
+            <Quote size={20} strokeWidth={1.5} className="text-primary" />
             <p className="mt-4 font-display text-[18px] italic leading-snug text-foreground">
               «{truncate(sisteNotat.content, 180)}»
             </p>

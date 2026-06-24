@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     "Estimer HCP fra din gjennomsnittlige brutto-score. Broadie-basert, øyeblikkelig resultat.",
   alternates: { canonical: "https://akgolf.no/stats/verktoy/score-til-hcp" },
   openGraph: {
-    title: "Score til HCP-kalkulator — AK Golf Stats",
+    title: "Score til HCP-kalkulator | AK Golf Stats",
     description: "Skriv inn snittscoren din, få estimert HCP basert på Broadie-data.",
     url: "https://akgolf.no/stats/verktoy/score-til-hcp",
   },

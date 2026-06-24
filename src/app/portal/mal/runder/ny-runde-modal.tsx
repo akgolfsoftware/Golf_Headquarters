@@ -2,9 +2,10 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { createRound } from "./actions";
+import { createRound, lagreSgDiagnose } from "./actions";
 
 type Course = { id: string; name: string; par: number };
+type SgDiagnose = "TEKNIKK" | "STRATEGI" | "MENTAL";
 
 export function NyRundeModal({ courses }: { courses: Course[] }) {
   const router = useRouter();
@@ -12,6 +13,9 @@ export function NyRundeModal({ courses }: { courses: Course[] }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  /** Etter lagring med SG-tap: roundId som venter på diagnose. */
+  const [diagnoseRoundId, setDiagnoseRoundId] = useState<string | null>(null);
+  const [diagnoseValgt, setDiagnoseValgt] = useState<SgDiagnose | null>(null);
 
   const today = new Date().toISOString().split("T")[0];
   const [playedAt, setPlayedAt] = useState(today);
@@ -79,6 +83,8 @@ export function NyRundeModal({ courses }: { courses: Course[] }) {
   function lukk() {
     setOpen(false);
     reset();
+    setDiagnoseRoundId(null);
+    setDiagnoseValgt(null);
   }
 
   function lagre(e: React.FormEvent) {
@@ -94,7 +100,7 @@ export function NyRundeModal({ courses }: { courses: Course[] }) {
     setError(null);
     startTransition(async () => {
       try {
-        await createRound({
+        const resultat = await createRound({
           courseId,
           playedAt,
           score: Number(score),
@@ -121,8 +127,14 @@ export function NyRundeModal({ courses }: { courses: Course[] }) {
           sgPutt40plus: num(sgPutt40plus),
           notes: notes || undefined,
         });
-        lukk();
         router.refresh();
+        // Vis SG-diagnose-steg hvis runden hadde SG-tap.
+        if (resultat.sgTotal !== null && resultat.sgTotal < 0) {
+          reset();
+          setDiagnoseRoundId(resultat.roundId);
+        } else {
+          lukk();
+        }
       } catch {
         setError("Kunne ikke lagre. Prøv igjen.");
       }
@@ -145,7 +157,71 @@ export function NyRundeModal({ courses }: { courses: Course[] }) {
         onClose={lukk}
         className="rounded-2xl border border-border bg-card p-0 shadow-xl backdrop:bg-foreground/40 max-w-lg w-full"
       >
-        <form onSubmit={lagre} className="p-6">
+        {/* SG-diagnose-steg — vises etter lagring med SG-tap */}
+        {diagnoseRoundId && (
+          <div className="p-6">
+            <h2 className="font-display text-xl font-semibold leading-tight tracking-tight">
+              <em className="font-normal text-warning md:italic">SG-tap</em> — hva tror du?
+            </h2>
+            <p className="mt-1 mb-6 text-sm text-muted-foreground">
+              Runden ble lagret. Du hadde SG-tap denne runden — hva er den mest sannsynlige årsaken?
+              Coachen ser svaret ditt og bruker det i planleggingen.
+            </p>
+            <div className="flex flex-col gap-3">
+              {(["TEKNIKK", "STRATEGI", "MENTAL"] as const).map((val) => {
+                const LABEL: Record<SgDiagnose, string> = {
+                  TEKNIKK: "Teknikk — noe i svinget eller bevegelsmønsteret",
+                  STRATEGI: "Strategi — valg på banen, banehåndtering",
+                  MENTAL: "Mental — fokus, nervøsitet, rutiner",
+                };
+                const selected = diagnoseValgt === val;
+                return (
+                  <button
+                    key={val}
+                    type="button"
+                    onClick={() => setDiagnoseValgt(val)}
+                    className={[
+                      "rounded-xl border px-4 py-3 text-left text-sm font-medium transition-colors",
+                      selected
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-border bg-card text-foreground hover:border-primary/50",
+                    ].join(" ")}
+                  >
+                    <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground block mb-1">
+                      {val}
+                    </span>
+                    {LABEL[val]}
+                  </button>
+                );
+              })}
+            </div>
+            <div className="mt-6 flex gap-4">
+              <button
+                type="button"
+                onClick={lukk}
+                className="rounded-md border border-input bg-card px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground"
+              >
+                Hopp over
+              </button>
+              <button
+                type="button"
+                disabled={!diagnoseValgt || pending}
+                onClick={() => {
+                  if (!diagnoseValgt || !diagnoseRoundId) return;
+                  startTransition(async () => {
+                    await lagreSgDiagnose(diagnoseRoundId, diagnoseValgt);
+                    lukk();
+                  });
+                }}
+                className="flex-1 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
+              >
+                {pending ? "Lagrer…" : "Send til coach"}
+              </button>
+            </div>
+          </div>
+        )}
+
+        <form onSubmit={lagre} className={diagnoseRoundId ? "hidden" : "p-6"}>
           <h2 className="font-display text-xl font-semibold leading-tight tracking-tight">
             <em className="font-normal text-primary md:italic">Registrer</em> ny runde
           </h2>

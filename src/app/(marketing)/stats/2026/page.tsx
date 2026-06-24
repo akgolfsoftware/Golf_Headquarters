@@ -19,11 +19,11 @@ export const revalidate = 86400;
 const AAR = 2026;
 
 export const metadata: Metadata = {
-  title: `Den norske golf-sesongen ${AAR} — AK Golf Stats`,
+  title: `Den norske golf-sesongen ${AAR}: AK Golf Stats`,
   description: `Alle turneringer, norske milepæler, rekorder og vinnere fra ${AAR}-sesongen i norsk golf.`,
   openGraph: {
     title: `Den norske golf-sesongen ${AAR}`,
-    description: `${AAR} i norsk golf — ${AAR} turneringer, spillere, rekorder og de store historiene.`,
+    description: `${AAR} i norsk golf: ${AAR} turneringer, spillere, rekorder og de store historiene.`,
     url: `https://akgolf.no/stats/${AAR}`,
   },
 };
@@ -128,10 +128,10 @@ async function getSesongData() {
 
 // Hardkodede milepæler og hovedhistorier (kuratert redaksjonelt)
 const MILEPAELER = [
-  { dato: "14. apr", beskrivelse: "Viktor Hovland T-5 i Masters — beste norske i 5 ar", type: "topp10" as const },
-  { dato: "3. mai", beskrivelse: "Anders Halvorsen vinner Srixon Tour 5 med −9 — laveste sluttsum noensinne", type: "vinst" as const },
-  { dato: "22. mai", beskrivelse: "Maria Olsen bekrefter Stanford-commit — forste norske pa 8 ar", type: "pro-debut" as const },
-  { dato: "28. mai", beskrivelse: "63 av Marius Larsen (Barum GK) — sesongens beste runde sa langt", type: "rekord" as const },
+  { dato: "14. apr", beskrivelse: "Viktor Hovland T-5 i Masters, beste norske i 5 ar", type: "topp10" as const },
+  { dato: "3. mai", beskrivelse: "Anders Halvorsen vinner Srixon Tour 5 med −9, laveste sluttsum noensinne", type: "vinst" as const },
+  { dato: "22. mai", beskrivelse: "Maria Olsen bekrefter Stanford-commit, forste norske pa 8 ar", type: "pro-debut" as const },
+  { dato: "28. mai", beskrivelse: "63 av Marius Larsen (Barum GK), sesongens beste runde sa langt", type: "rekord" as const },
 ];
 
 const HOVEDHISTORIER = [
@@ -141,7 +141,7 @@ const HOVEDHISTORIER = [
     dato: "Sesong 2026",
   },
   {
-    tittel: "Norsk golf vokser — rekord i deltakere",
+    tittel: "Norsk golf vokser: rekord i deltakere",
     beskrivelse: "Aldri for har sa mange nordmenn deltatt i registrerte turneringer. 1 287 unike spillere med resultater.",
     dato: "Sesong 2026",
   },
@@ -157,12 +157,12 @@ const HOVEDHISTORIER = [
   },
   {
     tittel: "Nytt rekordspill pa Barum GK",
-    beskrivelse: "Banen satte ny banerekord for Srixon Tour — 63 av Marius Larsen i rundt 4 timer uten pauser.",
+    beskrivelse: "Banen satte ny banerekord for Srixon Tour: 63 av Marius Larsen i rundt 4 timer uten pauser.",
     dato: "28. mai 2026",
   },
   {
     tittel: "OLYO Tour vokser til 42 turneringer",
-    beskrivelse: "OLYO Øst og Vest la til 8 nye arrangementer i 2026 — rekord for norsk amatørtur.",
+    beskrivelse: "OLYO Øst og Vest la til 8 nye arrangementer i 2026, rekord for norsk amatørtur.",
     dato: "Sesong 2026",
   },
 ];
@@ -197,7 +197,7 @@ export default async function Sesong2026Page() {
           <p className="stats-sesong-hero-sub">
             {data?.antallTurneringer
               ? `${data.antallTurneringer} turneringer · ${data.antallSpillere.toLocaleString("nb-NO")} spillere · ${data.antallEntries.toLocaleString("nb-NO")} resultater`
-              : "Sesongen pagar — oppdateres daglig."}
+              : "Sesongen pagar. Oppdateres daglig."}
           </p>
           <div style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--s-muted-fg)", marginTop: 8 }}>
             SESONGEN PAGAR · SIST OPPDATERT {new Date().toLocaleDateString("nb-NO", { day: "numeric", month: "long" }).toUpperCase()}
@@ -450,7 +450,7 @@ export default async function Sesong2026Page() {
             Logg dine egne runder i {AAR}.
           </h2>
           <p style={{ fontSize: 16, color: "rgba(250,250,247,0.7)", maxWidth: 480, margin: "0 auto 32px", lineHeight: 1.6 }}>
-            Sa er du med i neste ars sesongoversikt — og du kan folge din egen utvikling gjennom hele sesongen.
+            Sa er du med i neste ars sesongoversikt, og du kan folge din egen utvikling gjennom hele sesongen.
           </p>
           <Link
             href="/portal"
@@ -471,7 +471,7 @@ export default async function Sesong2026Page() {
             ← Sesongen 2025
           </span>
           <div style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--s-muted-fg)" }}>
-            Alle sesonger 2016—{AAR}
+            Alle sesonger 2016–{AAR}
           </div>
           <span style={{ fontFamily: "var(--font-mono)", fontSize: 13, color: "var(--s-muted-fg)" }}>
             Sesongen {AAR + 1} →

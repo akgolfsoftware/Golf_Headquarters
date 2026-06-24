@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     "Score til HCP, Tour-ekvivalent, WHS-kalkulator, SG-estimator og avstandskonverter. Gratis verktøy fra AK Golf.",
   alternates: { canonical: "https://akgolf.no/stats/verktoy" },
   openGraph: {
-    title: "Golf-verktøy — AK Golf Stats",
+    title: "Golf-verktøy | AK Golf Stats",
     description: "5 gratis verktøy: Score-til-HCP, Tour-ekvivalent, WHS, SG-estimator, avstand.",
     url: "https://akgolf.no/stats/verktoy",
   },
@@ -51,7 +51,7 @@ const TOOLS = [
   {
     id: "sg-estimator",
     navn: "SG-estimator",
-    desc: "Estimert SG-fordeling fra snittscoren din — basert på Broadie-tabell.",
+    desc: "Estimert SG-fordeling fra snittscoren din, basert på Broadie-tabell.",
     icon: Sparkles,
     farge: "var(--s-primary)",
   },
@@ -163,7 +163,7 @@ export default function VerktoyHubPage() {
               <em className="stats-italic-accent">automatisk</em>.
             </h2>
             <p>
-              Med PlayerHQ PRO logges SG automatisk fra Trackman. Ingen kalkulator nødvendig — treneren din ser det samme som deg.
+              Med PlayerHQ PRO logges SG automatisk fra Trackman. Ingen kalkulator nødvendig. Treneren din ser det samme som deg.
             </p>
             <div className="stats-mersalg-ctas">
               <Link href="/portal/meg/abonnement">
