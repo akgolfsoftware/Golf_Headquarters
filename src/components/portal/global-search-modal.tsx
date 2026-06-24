@@ -144,7 +144,7 @@ const ACTIONS: Action[] = [
     description: "SG-trend og innsikter",
     keywords: ["analyse", "sg", "innsikt", "tall", "stat"],
     icon: Activity,
-    kind: { type: "navigate", href: "/portal/analyse" },
+    kind: { type: "navigate", href: "/portal/analysere" },
   },
   {
     id: "stats",
