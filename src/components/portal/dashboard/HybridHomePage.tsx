@@ -353,9 +353,9 @@ export function HybridHomePage({ data }: HybridHomePageProps) {
       {/* 2. SG-ticker */}
       <SgTicker sgTotal={kpiStats.sgTotal} breakdown={kpiStats.sgBreakdown} />
 
-      {/* 3. Start dagens økt */}
+      {/* 3. Start dagens økt — til live-status-router (ikke read-only gjennomfore-detalj) */}
       {today && (
-        <Link href={today.href}>
+        <Link href={`/portal/live/${today.id}`}>
           <button
             type="button"
             className="flex w-full items-center justify-center gap-2 rounded-full bg-accent py-3.5 font-mono text-[12px] font-bold uppercase tracking-[0.08em] text-accent-foreground"
