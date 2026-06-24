@@ -1,20 +1,27 @@
 # IA-ryddeplan — foreldreløse skjermer + dubletter (forslag)
 
-> ## ✅ STATUS 2026-06-25 (verifisert mot faktisk kode — «kjør alle»)
-> Ved kjøring viste det seg at planen var **delvis utdatert** — flere «🟢» var enten alt gjort eller
-> i konflikt med en bevisst fasit-flyt. Resultat etter verifisering:
-> - **B1 ✅ alt gjort** — `admin/calendar`/`finance`/`messages`/`board` ER redirects (kalender/okonomi/innboks/spillere?view=tavle).
-> - **B2 ✅ alt håndtert** — `admin/oppfolging` re-eksporterer `admin/queue` (alias, ikke dublett).
-> - **B3 ✅ = B1.**
-> - **A2 ✅ koblet** — `coach/videoer` lagt i coach sub-nav (commit 779a1ab).
-> - **A6 ✅ koblet** — `tester/foreslatte` + `tester/benchmarks` lagt som actions på Tester-siden (779a1ab).
-> - **A5 ⚠ BESLUTNING** — anlegg-tiles lenker bevisst til `/admin/availability` (dokumentert fasit-flyt).
->   Å sende dem til `anlegg/[id]` ville bryte fasiten. Trenger Anders-valg: detalj som egen affordance, eller la stå.
-> - **A1 ⚠ BESLUTNING** — Innstillinger er en portet fasit-skjerm. `anlegg/okter/sprak/sikkerhet(218l)/varsler`
->   finnes som egne skjermer; noen dublerer inline-seksjoner. Å legge 5 menyrader endrer fasit-designet → IA-valg, ikke mekanisk.
-> - **B6 ⚠ IKKE rør** — `portal/trackman/[sessionId]` er en **fullverdig 473-linjers portert skjerm**, ikke en stub.
->   Ingenting lenker dit (ekte foreldreløs). Ikke auto-redirect (ville slettet en ekte skjerm). Beslutning: wire fra Workbench, eller pensjoner.
-> - Resten (A3/A4/A7–A12, B4/B5/B7–B9, C1) gjenstår — flere er 🟡/🔴 som krever per-rad-avklaring.
+> ## ✅ STATUS 2026-06-25 (verifisert mot faktisk kode — «kjør alle» + «koble alt additivt»)
+> Planen var **delvis utdatert** — flere «🟢» var alt gjort eller i konflikt med en bevisst fasit-flyt.
+> Endelig tilstand etter full verifisering + utførelse (11 commits):
+>
+> **KOBLET denne økten (additivt, null sletting):**
+> - **A1** — «MER»-gruppe lenker `anlegg` + `okter` (9ef691c). `sprak/sikkerhet/varsler` dekkes av inline-seksjoner.
+> - **A2** — `coach/videoer` i coach sub-nav (779a1ab).
+> - **A3** — «Se profil» → coach-profil i coach-hub (130b813).
+> - **A6** — `tester/foreslatte` + `benchmarks` actions (779a1ab).
+> - **A7/A8/A9** — `organisasjon`/`stats/overview`/`stats/moderering`/`godkjenn-portal` i ny **ADMIN-only «Intern»-seksjon** (6362476).
+> - **A10** — `blogg/cases/suksess/junior` i ny «Ressurser»-footerkolonne; `priser`+`faq` i header (9ef691c, c9772f65).
+> - **A12** — logout lander nå på den dedikerte `/auth/logget-ut`-skjermen (c9772f65).
+> - **B6** — `trackman/[sessionId]` konsolidert → redirect til kanon `mal/trackman/[id]` (c107593).
+>
+> **ALT HÅNDTERT FRA FØR (verifisert):** B1/B3 (redirects), B2 (`oppfolging`=alias), B4 (`caddie` redirect; `planlegge`/`komm`/`hjelp`/`videoer` er EKTE sider, ikke dubletter), B8 (`onboard/coach`+`klubb` er alt redirects).
+>
+> **VERIFISERT = IKKE EN DUBLETT (planen tok feil — rør IKKE):** B7 `putte-laboratoriet` (831l ekte) + `reach`/`break-tabell` (ingen rent redirect-mål). B9 `inviter/forelder` vs `auth/guardian-consent` = to DISTINKTE aktive flyter (forelder-invitasjon vs GDPR-mindreårig-samtykke), hver med egen link-generator.
+>
+> **GJENSTÅR (ekte beslutninger, ikke mekanisk):**
+> - **A4-anlegg / A5** — `booking/anlegg/[id]` + `admin/anlegg/[id]` krever en anlegg-velger-UI → hører til design-runden. (A4-coach dekket via `booking/ny?coachId`.)
+> - **B5** — to ~440-linjers EKTE kalender-sider; «hvilken er kanon?» = Anders-valg.
+> - **C1** — StatsCmdK: stats er bevisst ute av v1.
 
 
 > **Hva dette er:** forslag per skjerm for #3 (foreldreløse) + #4 (dubletter/stale), utledet fra det
