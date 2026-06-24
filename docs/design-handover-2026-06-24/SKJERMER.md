@@ -34,7 +34,7 @@ A17 · Turneringsdetalj — `/portal/turneringer/[id]` · `PlayerHQ Turneringsde
 A18 · Coach-dialog — `/portal/coach` · `PlayerHQ Coach-dialog-undersider (terminal-lys).dc.html` · meldinger, coach-notater, delt innhold.
 A19 · Varsler — `/portal/varsler` · `PlayerHQ Varsler (hybrid).dc.html` · varsel-hub: økt klar, coach-melding, bak planen, nivå-opprykk.
 A20 · Start-økt (L-faser) — `/portal/(fullscreen)/live/[id]/brief` · `PlayerHQ Start-okt L-faser (terminal-lys).dc.html` · brief: oppvarming → hovedfase → avslutning.
-A21 · Meg / Abonnement — `/portal/meg/abonnement` · `PlayerHQ Meg-abonnement (terminal-lys).dc.html` · GRATIS vs PRO (299 kr/mnd · 2 690 kr/år). Stripe. **«ELITE» vises aldri.**
+A21 · Meg / Abonnement — `/portal/meg/abonnement` · `PlayerHQ Meg-abonnement (terminal-lys).dc.html` · GRATIS vs PRO (**300 kr/mnd**, ingen årlig). Stripe. **«ELITE» vises aldri.** (Anders 2026-06-24: 300/mnd er fasit — design «299 / 2 690» er feil.)
 A22 · Talent — `/portal/talent` · `PlayerHQ Talent-undersider (terminal-lys).dc.html` · talent-spor: sammenligning, utfordringer.
 A23 · Putting / reach-drills — `/portal/drills` · `PlayerHQ Putting-reach-drills (terminal-lys).dc.html` · drill-bibliotek med reach/nærhet-måling.
 

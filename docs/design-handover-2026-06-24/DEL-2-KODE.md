@@ -41,7 +41,7 @@
 ## Lanserings-sjekkliste (backend/drift — krever beslutninger, ikke design)
 
 - [ ] **Betaling:** Full betaling flyttet til **1. august** (bekreftet). Stripe live-nøkler + webhooks før da.
-- [ ] **Abonnement:** GRATIS / PRO 299 kr/mnd · 2 690 kr/år. «ELITE» vises aldri. (Design verifisert OK.)
+- [ ] **Abonnement:** GRATIS / PRO **300 kr/mnd** (ingen årlig). «ELITE» vises aldri. (Anders 2026-06-24: 300/mnd er fasit — designets «299 / 2 690/år» er feil.)
 - [ ] **GDPR:** mindreårige → forelder-samtykke påkrevd (`/auth/guardian-consent/[token]`), forelderportal aktiv.
 - [ ] **Regresjon / mock-strategi / formler** (PEI, FYS): åpne — krever produkteier-avklaring.
 - [ ] **DNS / SPF / domene** (akgolf.no): åpne — drift.

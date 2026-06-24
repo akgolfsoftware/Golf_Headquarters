@@ -2,8 +2,8 @@
  * /portal/meg/abonnement/oppgrader/flyt — Oppgrader til PRO (checkout-flyt)
  *
  * Mobil-først (430px) flyt mot athletic-designsystemet. Erstatter den tidligere
- * redirect-stubben med en ekte oppgraderings-flyt: PRO-verdi, månedlig/årlig
- * betaling og bekreftelse som åpner Stripe Checkout.
+ * redirect-stubben med en ekte oppgraderings-flyt: PRO-verdi, fast pris
+ * 300 kr/mnd og bekreftelse som åpner Stripe Checkout.
  *
  * Auth-guard beholdt. Er brukeren allerede PRO, sendes hen til abonnement-siden.
  * PAST_DUE sendes også dit — ny checkout oppå feilet abonnement gir dobbelt-
