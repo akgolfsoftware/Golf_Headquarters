@@ -14,9 +14,9 @@
 
 | Produkt | Ruter | Hovedfunn |
 |---|---|---|
-| PlayerHQ `/portal` | 150 | 5-fane-IA er sunn. ~15 foreldreløse, 1 TrackMan-duplikat, 3 «kalender»-innganger, Meg→Innstillinger mangler hub-meny. |
-| AgencyOS `/admin` | 141 | Gruppert sidebar godt koblet. **3 ekte 404-bugs**, ~7 «glemt å koble», ~9 utdaterte dublett-flater. |
-| Marketing `akgolf.no` | ~27 | 5 foreldreløse sider (footer viser dem ikke). `/priser` + `/turneringer` mangler i nav. |
+| PlayerHQ `/portal` | 150 | 5-fane-IA er sunn. Coach-videoer + Innstillinger MER koblet (2026-06-25). Igjen: coach/booking-deep-links + trackman-orphan = beslutning. |
+| AgencyOS `/admin` | 141 | Gruppert sidebar godt koblet. 404-bugs fikset; Tester-actions koblet (2026-06-25). Igjen: anlegg/[id] (fasit-flyt) + QA-flater = beslutning. |
+| Marketing `akgolf.no` | ~27 | `/priser` + `/faq` nå i header/mobil-meny (2026-06-25). `/blogg`,`/cases`,`/junior`,`/suksess` = IA-valg. `/turneringer` bevisst ute av v1. |
 | Stats `/stats` | ~45 | Strukturelt løst: nav-komponenten (`StatsCmdK`) er aldri montert + ingen stats-layout → ~15 foreldreløse. (Delvis bevisst: ikke i v1.) |
 | Forelder/Auth/Booking | ~35 | Forelder rent. 1 ekte 404-blindvei, 4 foreldreløse, 2 dublett-flyter. |
 
@@ -84,17 +84,17 @@ Hub `/stats` → PGA-metrikker · Norske spillere/baner/turneringer · Verktøy 
 ### B · FORELDRELØSE — koble eller pensjoner (bestem per rad)
 
 **PlayerHQ — «glemt å koble» (bygget, hører hjemme i nav):**
-- `Meg → Innstillinger` mangler hub-meny: `anlegg`, `okter`, `sprak`, `varsler`, `sikkerhet` er bygget men ikke lenket fra innstillinger-siden (kun ai-coach/integrasjoner/personvern vises). → legg dem i innstillinger-menyen.
-- `/portal/coach/videoer`, `/portal/coach/[coachId]` (coach-profil), `/portal/booking/coach/[coachId]`, `/portal/booking/anlegg/[anleggId]` → koble fra coach-/booking-hub, eller pensjoner.
+- `Meg → Innstillinger`: ✅ **DONE 2026-06-25 (9ef691c)** — ny «MER»-gruppe lenker `anlegg` + `okter`. `sprak`/`varsler`/`sikkerhet` dekkes alt av inline-seksjonene (ikke duplisert).
+- `/portal/coach/videoer` ✅ **DONE (779a1ab)** — i coach sub-nav. `/portal/coach/[coachId]` (coach-profil), `/portal/booking/coach/[coachId]`, `/portal/booking/anlegg/[anleggId]` → ÅPEN beslutning (koble eller pensjoner — arbeidende skjermer, ikke auto-rørt).
 
-**PlayerHQ — sannsynlig dødt/eksperiment (vurder sletting):**
-- `/portal/reach`, `/portal/trening/break-tabell`, `/portal/trening/putte-laboratoriet`, `/portal/trackman/[sessionId]` (duplikat av `/portal/mal/trackman/[id]`).
+**PlayerHQ — verifisert 2026-06-25 (IKKE «dødt»):**
+- `/portal/trening/putte-laboratoriet` (831 l) + `/portal/trackman/[sessionId]` (473 l) er **fullverdige portede skjermer**, ikke stubber. Beslutning utestår: trackman = wire fra Workbench (krevende — ingen økt-liste der i dag) eller redirect → `mal/trackman/[id]`. `/portal/reach` + `/portal/trening/break-tabell` = ikke verifisert ennå.
 
 **AgencyOS — «glemt å koble» (bygget, mangler nav-inngang):**
-- `/admin/anlegg/[id]` (anlegg-lista har ingen rad-lenke), `/admin/tester/foreslatte`, `/admin/tester/benchmarks`, `/admin/organisasjon` (hub uten inngang), `/admin/stats/overview`+`/moderering`, `/admin/godkjenn-portal*`, `/admin/talent/[playerId]` (duplikat av radar-detalj).
+- `/admin/tester/foreslatte` + `/admin/tester/benchmarks` ✅ **DONE (779a1ab)** — Foreslåtte/Fasiter-actions på Tester. `/admin/anlegg/[id]` → ÅPEN (tiles lenker bevisst til `/admin/availability`, fasit-flyt). Resten (`organisasjon`, `stats/*`, `godkjenn-portal*`, `talent/[playerId]`) → åpne.
 
 **Marketing (footeren viser dem ikke):**
-- `/blogg`, `/cases`, `/faq`, `/junior`, `/suksess` → legg i footer/header der de skal leve. `/priser` + `/turneringer` → vurder i header.
+- `/priser` + `/faq` ✅ **DONE 2026-06-25 (9ef691c)** — i header + mobil-meny. `/blogg`, `/cases`, `/junior`, `/suksess` → ÅPEN (marketing-IA-valg). `/turneringer` + stats = bevisst UTE av v1.
 
 **Auth/Onboarding:**
 - `/auth/logget-ut` (logout går til `/login` i stedet — koble eller arkiver), `/onboard/coach` + `/onboard/klubb` (parallelle, ukoblede wizards — sannsynlig duplikat av `/auth/onboarding`), `/auth/bankid` (bevisst post-beta).
