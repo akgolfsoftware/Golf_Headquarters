@@ -87,13 +87,13 @@ Hub `/stats` → PGA-metrikker · Norske spillere/baner/turneringer · Verktøy 
 
 **PlayerHQ — «glemt å koble» (bygget, hører hjemme i nav):**
 - `Meg → Innstillinger`: ✅ **DONE (9ef691c)** — «MER»-gruppe lenker `anlegg` + `okter`. `sprak`/`varsler`/`sikkerhet` dekkes av inline-seksjoner (ikke duplisert).
-- `/portal/coach/videoer` ✅ **DONE (779a1ab)** (coach sub-nav). `/portal/coach/[coachId]`, `/portal/booking/coach/[coachId]`, `/portal/booking/anlegg/[anleggId]` → ÅPEN (arbeidende deep-link-skjermer; koble/pensjoner = flytarkitektur-valg, ikke auto-rørt).
+- `/portal/coach/videoer` ✅ **DONE (779a1ab)** (coach sub-nav). `/portal/coach/[coachId]` ✅ **DONE (130b813)** («Se profil» i coach-hub). `/portal/booking/coach/[coachId]` + `/portal/booking/anlegg/[anleggId]` = dekket via `booking/ny?coachId/anleggId`; separate sider nås via URL.
 
 **PlayerHQ — verifisert (IKKE «dødt»):**
 - `/portal/trackman/[sessionId]` ✅ **konsolidert (c107593)** → redirect til kanon `mal/trackman/[id]` (identisk datakilde). `/portal/trening/putte-laboratoriet` (831 l) er en **ekte skjerm** — behold. `/portal/reach` + `/portal/trening/break-tabell` = foreldreløse uten rent redirect-mål → la stå (skader ingen sti).
 
 **AgencyOS — «glemt å koble» (bygget, mangler nav-inngang):**
-- `/admin/tester/foreslatte` + `/admin/tester/benchmarks` ✅ **DONE (779a1ab)**. `/admin/anlegg/[id]` → ÅPEN (tiles lenker bevisst til `/admin/availability`). `organisasjon`/`stats/*`/`godkjenn-portal*`/`talent/[playerId]` → ÅPEN.
+- `/admin/tester/foreslatte` + `/admin/tester/benchmarks` ✅ **DONE (779a1ab)**. `organisasjon` + `stats/overview` + `stats/moderering` + `godkjenn-portal` ✅ **DONE (6362476)** (ADMIN-only «Intern»-seksjon). `/admin/anlegg/[id]` → ÅPEN (tiles → `/admin/availability`). `talent/[playerId]` → ÅPEN.
 
 **Marketing:**
 - `/priser` + `/faq` ✅ **DONE (9ef691c)** (header + mobil-meny). `/blogg`,`/cases`,`/junior`,`/suksess` → ÅPEN (marketing-IA-valg). `/turneringer` + stats = bevisst UTE av v1.

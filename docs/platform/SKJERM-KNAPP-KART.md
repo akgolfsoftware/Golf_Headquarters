@@ -85,13 +85,13 @@ Hub `/stats` → PGA-metrikker · Norske spillere/baner/turneringer · Verktøy 
 
 **PlayerHQ — «glemt å koble» (bygget, hører hjemme i nav):**
 - `Meg → Innstillinger`: ✅ **DONE 2026-06-25 (9ef691c)** — ny «MER»-gruppe lenker `anlegg` + `okter`. `sprak`/`varsler`/`sikkerhet` dekkes alt av inline-seksjonene (ikke duplisert).
-- `/portal/coach/videoer` ✅ **DONE (779a1ab)** — i coach sub-nav. `/portal/coach/[coachId]` (coach-profil), `/portal/booking/coach/[coachId]`, `/portal/booking/anlegg/[anleggId]` → ÅPEN beslutning (koble eller pensjoner — arbeidende skjermer, ikke auto-rørt).
+- `/portal/coach/videoer` ✅ **DONE (779a1ab)** — i coach sub-nav. `/portal/coach/[coachId]` ✅ **DONE (130b813)** — «Se profil» i coach-hub. `/portal/booking/coach/[coachId]` + `/portal/booking/anlegg/[anleggId]` = dekket via `booking/ny?coachId/anleggId` (kanonisk book-med-flyt); separate sider nås via URL.
 
 **PlayerHQ — verifisert 2026-06-25 (IKKE «dødt»):**
 - `/portal/trening/putte-laboratoriet` (831 l) + `/portal/trackman/[sessionId]` (473 l) er **fullverdige portede skjermer**, ikke stubber. Beslutning utestår: trackman = wire fra Workbench (krevende — ingen økt-liste der i dag) eller redirect → `mal/trackman/[id]`. `/portal/reach` + `/portal/trening/break-tabell` = ikke verifisert ennå.
 
 **AgencyOS — «glemt å koble» (bygget, mangler nav-inngang):**
-- `/admin/tester/foreslatte` + `/admin/tester/benchmarks` ✅ **DONE (779a1ab)** — Foreslåtte/Fasiter-actions på Tester. `/admin/anlegg/[id]` → ÅPEN (tiles lenker bevisst til `/admin/availability`, fasit-flyt). Resten (`organisasjon`, `stats/*`, `godkjenn-portal*`, `talent/[playerId]`) → åpne.
+- `/admin/tester/foreslatte` + `/admin/tester/benchmarks` ✅ **DONE (779a1ab)** — Foreslåtte/Fasiter-actions på Tester. `organisasjon` + `stats/overview` + `stats/moderering` + `godkjenn-portal` ✅ **DONE (6362476)** — ny ADMIN-only «Intern»-seksjon i sidebar. `/admin/anlegg/[id]` → ÅPEN (tiles → `/admin/availability`, fasit; detalj nås via URL). `talent/[playerId]` → ÅPEN (dublett av radar-detalj).
 
 **Marketing (footeren viser dem ikke):**
 - `/priser` + `/faq` ✅ **DONE 2026-06-25 (9ef691c)** — i header + mobil-meny. `/blogg`, `/cases`, `/junior`, `/suksess` → ÅPEN (marketing-IA-valg). `/turneringer` + stats = bevisst UTE av v1.
