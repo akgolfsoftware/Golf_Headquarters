@@ -7,7 +7,7 @@
 ---
 
 ## Kort sagt
-Appen er **deployet og kjører** på `akgolf-hq.vercel.app`. Kjernen (PlayerHQ + AgencyOS) er bygget og i stor grad portet fra designfasiten. **Den er IKKE klar for betalende/ekte brukere ennå** — det står 8 P0-blokkerere igjen (se nederst). Betaling starter etter plan **1. juli**. Booking går midlertidig via **Acuity** (`akgolfgroup.as.me`) til den innebygde HQ-bookingen lanseres.
+Appen er **deployet og kjører** på `akgolf-hq.vercel.app`. Kjernen (PlayerHQ + AgencyOS) er bygget og i stor grad portet fra designfasiten. **Den er IKKE klar for betalende/ekte brukere ennå** — det står 8 P0-blokkerere igjen (se nederst). Betaling starter etter plan **1. august** (flyttet fra 1. juli av Anders 2026-06-24). Booking går midlertidig via **Acuity** (`akgolfgroup.as.me`) til den innebygde HQ-bookingen lanseres.
 
 ## Ferdig / solid (verifisert)
 - **Deployet live:** prod på `akgolf-hq.vercel.app`. (NB: push til `main` deployer IKKE automatisk — kjør `vercel deploy --prod`.)
@@ -26,11 +26,11 @@ Appen er **deployet og kjører** på `akgolf-hq.vercel.app`. Kjernen (PlayerHQ +
 - **Kjent regresjon (forenklingsplan 13. juni):** spiller kan ikke starte «dagens økt» (knapp fører til read-only side). Mobil-nav i AgencyOS er ennå ikke samlet med desktop-nav.
 
 ## Blokkert — P0 før ekte/betalende brukere
-Kilde og detaljert status: `docs/redesign-2026-06/P0-status.md` (re-verifisert mot kode 17. juni). Betaling åpner **1. juli** — koden gir bevisst gratis tilgang til alle frem til da (`gratisForAlle()` i `src/lib/feature-flags.ts`).
+Kilde og detaljert status: `docs/redesign-2026-06/P0-status.md` (re-verifisert mot kode 17. juni). Betaling åpner **1. august** — koden gir bevisst gratis tilgang til alle frem til da (`gratisForAlle()` i `src/lib/feature-flags.ts`).
 
 ### Løst i kode — trenger kun bekreftelse
 1. ~~**Abonnements-/gratis-logikk**~~ — **LØST.** `resolveTier()` i `src/lib/feature-flags.ts` implementerer alle fire gratis-veiene (lanserings-vindu, coaching-pakke, gruppemedlemskap, 30-dagers prøveperiode). Dekket av tester. Gammel påstand «ingen kode setter PRO» er utdatert.
-2. ~~**PRO-for-alle-kampanjen «kald»**~~ — **IKKE ET PROBLEM.** `gratisForAlle()` gir alle PRO frem til `BETALING_STARTER` (1. juli). Ingen «kald vegg» før da. Bekreft kun at 1. juli-datoen er riktig.
+2. ~~**PRO-for-alle-kampanjen «kald»**~~ — **IKKE ET PROBLEM.** `gratisForAlle()` gir alle PRO frem til `BETALING_STARTER` (1. august). Ingen «kald vegg» før da. (Dato bekreftet til 1. august av Anders 2026-06-24.)
 4. ~~**Soft-slettet konto kan fortsatt logge inn**~~ — **LØST.** `getCurrentUser.ts:23` returnerer `null` når `deletedAt` er satt.
 
 ### Gjenstår (kode)
