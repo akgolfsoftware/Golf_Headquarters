@@ -263,6 +263,21 @@ export function buildAdminNav(
     },
   ];
 
+  // Intern / QA — admin-only tooling. Tidligere foreldreløse skjermer koblet
+  // inn 2026-06-25 (Anders «koble alt inn additivt»). Holdes UT av primær-nav
+  // for å ikke rote til coach-flaten; vises kun for ADMIN (eller legacy uten rolle).
+  if (!role || role === "ADMIN") {
+    sections.push({
+      label: "Intern",
+      items: [
+        { type: "item", key: "organisasjon", label: "Organisasjon", href: "/admin/organisasjon", icon: LayoutDashboard },
+        { type: "item", key: "stats-overview", label: "Stats-oversikt", href: "/admin/stats/overview", icon: BarChart3 },
+        { type: "item", key: "stats-moderering", label: "Moderering", href: "/admin/stats/moderering", icon: CheckCheck },
+        { type: "item", key: "godkjenn-portal", label: "Portal-godkjenning", href: "/admin/godkjenn-portal", icon: ShieldCheck },
+      ],
+    });
+  }
+
   // Skjul capability-gatede nav-lenker for roller uten tilgang (samme policy som
   // /admin/settings/tilgang viser). Uten oppgitt rolle (legacy) vises alt.
   if (role) {
