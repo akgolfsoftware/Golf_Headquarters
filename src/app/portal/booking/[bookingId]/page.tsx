@@ -245,7 +245,7 @@ export default async function OktDetalj({ params }: Props) {
         {/* ── Actions ── */}
         <div className="flex flex-wrap gap-2">
           <Link
-            href="/portal/booking/bekreftet"
+            href={`/portal/booking/bekreftet?bookingId=${bookingId}`}
             className="bk-btn-lime"
           >
             <Check className="h-4 w-4" strokeWidth={2} />

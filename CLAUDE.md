@@ -37,7 +37,7 @@ dashboard-tallene + endringsloggen når du fullfører/endrer skjermer.
 - **Analyse samlet:** Analysere + TrackMan + Runder + SG er én flate med faner — ikke separate moduler. Mål bor i Oversikt, redigeres i Workbench.
 - **Abonnement (ingen tier-nivåer):** PlayerHQ-tilgang er gratis eller 300 kr/mnd. **Gratis** hvis: 1 mnd prøveperiode, ELLER coaching-pakke (Performance / Performance Pro), ELLER gruppe via AK Golf. **300 kr/mnd** for alle andre. «Performance / Performance Pro» er **coaching-pakker** (antall økter), IKKE app-nivåer. **ELITE finnes ikke** (dødt Prisma-enum — vis aldri i UI).
 - **FYS-resultatformel avventer:** Bygg testskjermer med plassholder-tall. Ikke hardkod referanseverdier før Anders gir grønt lys.
-- **Ferskt design:** `public/design-handover/AK Golf HQ Design System/` (4. juni) er gjeldende. `docs/design-handoff-komplett/` (mai) er arkiv.
+- **Ferskt design:** `docs/design-handover-2026-06-24/` (Claude Design-handover, juni) er gjeldende — knapp→skjerm-kart (`NAVIGASJON-knapp-til-rute.md`), prompt, billedkatalog (`SKJERMER.md`), tokens. Interaktivt `NAV-DIAGRAM.html` + `screens/`-PNG-er på Google Drive («Final AK Golf HQ»). Eldre `public/design-handover/...` (4. juni) finnes ikke lenger; `docs/design-handoff-komplett/` (mai) er arkiv.
 
 ## Stack (eksakte versjoner — ikke oppgrader uten beslutning)
 - Next.js 16 (App Router, TypeScript strict, Turbopack), React 19
