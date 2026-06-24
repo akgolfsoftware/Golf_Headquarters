@@ -16,12 +16,11 @@
 >
 > **ALT HÅNDTERT FRA FØR (verifisert):** B1/B3 (redirects), B2 (`oppfolging`=alias), B4 (`caddie` redirect; `planlegge`/`komm`/`hjelp`/`videoer` er EKTE sider, ikke dubletter), B8 (`onboard/coach`+`klubb` er alt redirects).
 >
-> **VERIFISERT = IKKE EN DUBLETT (planen tok feil — rør IKKE):** B7 `putte-laboratoriet` (831l ekte) + `reach`/`break-tabell` (ingen rent redirect-mål). B9 `inviter/forelder` vs `auth/guardian-consent` = to DISTINKTE aktive flyter (forelder-invitasjon vs GDPR-mindreårig-samtykke), hver med egen link-generator.
+> **VERIFISERT = IKKE EN DUBLETT (planen tok feil — rør IKKE):** B7 `putte-laboratoriet` (831l ekte) + `reach`/`break-tabell` (ingen rent redirect-mål). B9 `inviter/forelder` vs `auth/guardian-consent` = to DISTINKTE aktive flyter (forelder-invitasjon vs GDPR-mindreårig-samtykke), hver med egen link-generator. **B5** `portal/kalender` = **Årskalender** vs `portal/tren/kalender` = **Ukekalender** = to distinkte kalendere, begge aktivt lenket — ikke «velg én kanon».
 >
-> **GJENSTÅR (ekte beslutninger, ikke mekanisk):**
-> - **A4-anlegg / A5** — `booking/anlegg/[id]` + `admin/anlegg/[id]` krever en anlegg-velger-UI → hører til design-runden. (A4-coach dekket via `booking/ny?coachId`.)
-> - **B5** — to ~440-linjers EKTE kalender-sider; «hvilken er kanon?» = Anders-valg.
-> - **C1** — StatsCmdK: stats er bevisst ute av v1.
+> **GJENSTÅR (1 ekte rad):**
+> - **A4-anlegg / A5** — `booking/anlegg/[id]` + `admin/anlegg/[id]` krever en anlegg-velger-UI (booking/ny tar `service`, ikke `anleggId`) → hører til design-runden. (A4-coach dekket via coach-profil → `booking/ny?coachId`.)
+> - **C1** — StatsCmdK: stats er bevisst ute av v1 (ikke en oppgave).
 
 
 > **Hva dette er:** forslag per skjerm for #3 (foreldreløse) + #4 (dubletter/stale), utledet fra det
