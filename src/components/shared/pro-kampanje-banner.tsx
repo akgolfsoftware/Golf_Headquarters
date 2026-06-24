@@ -3,7 +3,7 @@ import { PRO_KAMPANJE_INFO } from "@/lib/feature-flags";
 
 /**
  * Banner som varsler at alle har gratis Pro-tilgang frem til betaling starter
- * (1. juli 2026). Returnerer null når lanserings-vinduet er over.
+ * (1. august 2026). Returnerer null når lanserings-vinduet er over.
  */
 export function ProKampanjeBanner() {
   if (!PRO_KAMPANJE_INFO.aktiv) return null;
