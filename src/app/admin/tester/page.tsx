@@ -196,9 +196,17 @@ export default async function TesterPage() {
         italic="· FYS &amp; teknikk"
         lead="Ferdighetstester på tvers av stallen — resultater, delta og status."
         actions={
-          <Link href="/admin/tester/tildel" className={agBtnClass("primary")}>
-            <Plus size={14} strokeWidth={2.4} /> Registrer test
-          </Link>
+          <div className="flex flex-wrap items-center gap-2">
+            <Link href="/admin/tester/foreslatte" className={agBtnClass("ghost", "sm")}>
+              Foreslåtte
+            </Link>
+            <Link href="/admin/tester/benchmarks" className={agBtnClass("ghost", "sm")}>
+              Fasiter
+            </Link>
+            <Link href="/admin/tester/tildel" className={agBtnClass("primary")}>
+              <Plus size={14} strokeWidth={2.4} /> Registrer test
+            </Link>
+          </div>
         }
       />
 
