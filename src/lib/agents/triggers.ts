@@ -7,10 +7,23 @@ import { runTestAgent } from "./test-agent";
 import { runTrackManAgent } from "./trackman-agent";
 import { runPeriodiseringsAgent } from "./periodiserings-agent";
 import { runAchievementAgent } from "./achievement-agent";
+import { prisma } from "@/lib/prisma";
+import { runTurneringAgent } from "./turnering-agent";
+import { runPlanRevisionAgent } from "./plan-revision-actions";
 
 export async function triggerRoundAgent(userId: string): Promise<void> {
   try {
     await runRoundAgent(userId);
+    const plan = await prisma.trainingPlan.findFirst({
+      where: { userId, isActive: true },
+      select: { id: true },
+    });
+    if (plan) {
+      await runPlanRevisionAgent({
+        planId: plan.id,
+        trigger: "siste-runde",
+      });
+    }
     await runAchievementAgent(userId);
   } catch (err) {
     console.error("[trigger] round-agent feilet", err);
@@ -39,5 +52,13 @@ export async function triggerPeriodiseringsAgent(planId: string): Promise<void> 
     await runPeriodiseringsAgent(planId);
   } catch (err) {
     console.error("[trigger] periodiseringsagent feilet", err);
+  }
+}
+
+export async function triggerTurneringAgent(): Promise<void> {
+  try {
+    await runTurneringAgent();
+  } catch (err) {
+    console.error("[trigger] turnering-agent feilet", err);
   }
 }

@@ -7,7 +7,15 @@ import { Check, X } from "lucide-react";
 import { acceptPlanAction, rejectPlanAction } from "@/lib/agents/actions";
 import { agBtnClass } from "@/components/admin/agencyos/ui";
 
-export function ApprovalActions({ actionId, playerId }: { actionId: string; playerId: string }) {
+export function ApprovalActions({
+  actionId,
+  playerId,
+  detailHref,
+}: {
+  actionId: string;
+  playerId: string;
+  detailHref?: string;
+}) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
 
@@ -37,6 +45,14 @@ export function ApprovalActions({ actionId, playerId }: { actionId: string; play
       >
         <X className="h-4 w-4" strokeWidth={2} /> Avvis
       </button>
+      {detailHref && (
+        <Link
+          href={detailHref}
+          className={`${agBtnClass("ghost", "sm")} max-md:h-11 max-md:flex-1`}
+        >
+          Detaljer
+        </Link>
+      )}
       <Link
         href={`/admin/spillere/${playerId}`}
         className={`${agBtnClass("ghost", "sm")} max-md:h-11 max-md:flex-1`}

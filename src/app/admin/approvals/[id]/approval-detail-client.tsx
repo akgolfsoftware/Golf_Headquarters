@@ -125,6 +125,34 @@ export function ApprovalDetailClient({ detail }: { detail: ApprovalDetail }) {
         </span>
       </div>
 
+      {/* Signal + diff */}
+      {(detail.signalSnapshot || detail.diffPreview || detail.beforeSummary) && (
+        <section className="space-y-3 rounded-lg border border-border bg-card p-4 sm:p-6">
+          <h2 className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+            Analyse
+          </h2>
+          <p className="text-sm text-foreground">{detail.rationale}</p>
+          {detail.signalSnapshot && (
+            <p className="font-mono text-[11px] text-muted-foreground">
+              Signal: {detail.signalSnapshot.kind}
+              {detail.signalSnapshot.value != null
+                ? ` = ${detail.signalSnapshot.value}`
+                : ""}
+            </p>
+          )}
+          {detail.beforeSummary && (
+            <p className="font-mono text-[11px] text-muted-foreground">
+              Før: {detail.beforeSummary}
+            </p>
+          )}
+          {detail.diffPreview && (
+            <p className="rounded-md border border-border bg-secondary/40 px-3 py-2 font-mono text-[11px] text-foreground">
+              {detail.diffPreview}
+            </p>
+          )}
+        </section>
+      )}
+
       {/* Hero: spiller + tittel */}
       <header className="flex flex-col gap-6 rounded-lg border border-border bg-card p-4 sm:p-6 shadow-sm sm:flex-row sm:items-center">
         <div

@@ -2,17 +2,14 @@
 
 /**
  * Server actions for /admin/approvals/[id] — detalj-visningen.
- *
- * Disse handlerne utvider de eksisterende `acceptPlanAction`/`rejectPlanAction`
- * i `@/lib/agents/actions` ved å tillate ekstra metadata (coach-kommentar,
- * begrunnelse, spørsmål om mer info). De skriver til samme PlanAction-modell
- * og oppdaterer `suggestion.coachNote` så vi beholder revisjons-spor.
  */
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { acceptAndApplyPlanAction } from "@/lib/agents/accept-plan-action";
+import { LOW_RISK_ACTION_TYPES } from "@/lib/training/skills";
 
 type CoachNote = {
   kind: "approve" | "decline" | "info_request";
@@ -64,17 +61,37 @@ export async function approveRequestDetailed(
       })
     : undefined;
 
-  await prisma.planAction.update({
-    where: { id: actionId },
-    data: {
-      status: "ACCEPTED",
-      ...(suggestion ? { suggestion } : {}),
-    },
-  });
+  await acceptAndApplyPlanAction(
+    actionId,
+    suggestion as Record<string, unknown> | undefined,
+  );
 
   revalidatePath("/admin/godkjenninger");
   revalidatePath(`/admin/godkjenninger/${actionId}`);
   redirect("/admin/godkjenninger");
+}
+
+export async function batchApproveLowRisk() {
+  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+
+  const pending = await prisma.planAction.findMany({
+    where: { status: "PENDING" },
+    orderBy: { createdAt: "asc" },
+  });
+
+  let godkjent = 0;
+  for (const action of pending) {
+    if (!LOW_RISK_ACTION_TYPES.has(action.actionType)) continue;
+    try {
+      await acceptAndApplyPlanAction(action.id);
+      godkjent++;
+    } catch {
+      // Hopp over enkeltfeil — coach kan håndtere manuelt
+    }
+  }
+
+  revalidatePath("/admin/godkjenninger");
+  return { godkjent, coachId: user.id };
 }
 
 export async function declineRequestDetailed(actionId: string, reason: string) {
@@ -126,7 +143,6 @@ export async function requestMoreInfo(actionId: string, question: string) {
     at: new Date().toISOString(),
   });
 
-  // Behold PENDING — handler venter på respons.
   await prisma.planAction.update({
     where: { id: actionId },
     data: {
@@ -134,7 +150,6 @@ export async function requestMoreInfo(actionId: string, question: string) {
     },
   });
 
-  // Send notifikasjon til spilleren.
   await prisma.notification.create({
     data: {
       userId: action.userId,

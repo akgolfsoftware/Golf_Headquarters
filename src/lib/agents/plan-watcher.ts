@@ -48,6 +48,17 @@ export async function runPlanWatcher(): Promise<AgentResult> {
         const avvik = mal - faktisk;
         if (avvik <= 8) continue;
 
+        const eksisterende = await prisma.planAction.findFirst({
+          where: {
+            userId: plan.userId,
+            planId: plan.id,
+            actionType: "PYRAMID_ADJUST",
+            status: "PENDING",
+          },
+        });
+        const eksSugg = eksisterende?.suggestion as { omrade?: string } | null;
+        if (eksisterende && eksSugg?.omrade === omr) continue;
+
         await prisma.planAction.create({
           data: {
             userId: plan.userId,
@@ -60,6 +71,12 @@ export async function runPlanWatcher(): Promise<AgentResult> {
               faktiskProsent: faktisk,
               malProsent: mal,
               forklaring: `${PYR_LABEL[omr]} er ${avvik}% under mål. Vurder å legge inn flere ${omr}-økter.`,
+              signalSnapshot: {
+                kind: "PYRAMIDE_ADHERENCE",
+                omrade: omr,
+                faktiskProsent: faktisk,
+                malProsent: mal,
+              },
             },
           },
         });

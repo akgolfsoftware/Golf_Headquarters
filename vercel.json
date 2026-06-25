@@ -100,6 +100,10 @@
     {
       "path": "/api/cron/caddie-proactive",
       "schedule": "0 7 * * 1"
+    },
+    {
+      "path": "/api/cron/turnering-agent",
+      "schedule": "0 7 * * *"
     }
   ]
 }

@@ -1,16 +1,10 @@
 /**
  * AgencyOS — Godkjenning detaljvisning
- *
- * Detalj-side for én PlanAction. Coach kan godkjenne, avslå med begrunnelse,
- * be om mer info, eller åpne meldingstråd.
- *
- * Viser kun ekte felter fra PlanAction. Finnes ingen handling med gitt id,
- * vises en ærlig "ikke funnet"-tilstand (ingen oppdiktet sammenligning,
- * AI-begrunnelse eller spiller-sitat).
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { computeDelta, type PlanContext } from "@/lib/agents/plan-action-executor";
 import { ApprovalDetailClient } from "@/app/admin/approvals/[id]/approval-detail-client";
 import { ApprovalNotFound } from "@/app/admin/approvals/[id]/approval-detail-client";
 
@@ -31,22 +25,22 @@ export type ApprovalDetail = {
     lead: string;
     trail?: string;
   };
+  rationale: string;
+  signalSnapshot: { kind: string; value?: string | number } | null;
+  diffPreview: string | null;
+  beforeSummary: string | null;
 };
 
 const ACTION_LABEL: Record<string, string> = {
   PYRAMID_ADJUST: "Juster pyramide",
+  TRAINING_GAP: "Treningsgap",
   SESSION_ADD: "Legg til økt",
   SESSION_REMOVE: "Fjern økt",
   INTENSITY_ADJUST: "Juster intensitet",
-  TAPER_ENGAGE: "Start taper",
-  WITHDRAW: "Trekk fra",
-  DRILL_SUGGEST: "Drill-forslag",
-  TEST_SCHEDULE: "Planlegg test",
-  PEER_COMPARE: "Sammenlign",
-  RECOVERY_ADD: "Legg til hvile",
-  ESCALATION: "Eskalering",
-  DELOAD: "Pauseuke",
-  TRAINING_GAP: "Treningsgap",
+  FOCUS_CHANGE: "Endre fokus",
+  PERIOD_SWITCH: "Bytt periode",
+  DRILL_SWAP: "Bytt drill",
+  REST_DAY_ADD: "Hviledag",
 };
 
 function initials(name: string): string {
@@ -68,6 +62,7 @@ export default async function GodkjenningDetailPage({
     where: { id },
     include: {
       user: { select: { id: true, name: true } },
+      plan: { select: { id: true, name: true } },
     },
   });
 
@@ -84,6 +79,72 @@ export default async function GodkjenningDetailPage({
       ? suggestion.forklaring
       : ACTION_LABEL[action.actionType] ?? action.actionType;
 
+  const signalSnapshot =
+    suggestion.signalSnapshot &&
+    typeof suggestion.signalSnapshot === "object"
+      ? (suggestion.signalSnapshot as { kind: string; value?: string | number })
+      : null;
+
+  let diffPreview: string | null = null;
+  let beforeSummary: string | null = null;
+
+  const plan =
+    action.planId != null
+      ? await prisma.trainingPlan.findUnique({ where: { id: action.planId } })
+      : await prisma.trainingPlan.findFirst({
+          where: { userId: action.userId, isActive: true },
+          orderBy: { updatedAt: "desc" },
+        });
+
+  if (plan) {
+    const now = new Date();
+    const sessions = await prisma.trainingPlanSession.findMany({
+      where: {
+        planId: plan.id,
+        scheduledAt: { gte: now },
+        status: { in: ["PLANNED", "ACTIVE", "PAUSED"] },
+      },
+      orderBy: { scheduledAt: "asc" },
+      select: {
+        id: true,
+        pyramidArea: true,
+        skillArea: true,
+        scheduledAt: true,
+        status: true,
+        durationMin: true,
+        title: true,
+      },
+    });
+    const ukeSlutt = new Date(now);
+    ukeSlutt.setDate(ukeSlutt.getDate() + 7);
+    const ctx: PlanContext = {
+      planId: plan.id,
+      userId: action.userId,
+      futureSessions: sessions,
+      planlagteOkterNesteUke: sessions.filter(
+        (s) => s.scheduledAt <= ukeSlutt && s.status === "PLANNED",
+      ).length,
+    };
+    beforeSummary = `${sessions.filter((s) => s.status === "PLANNED").length} planlagte økter fremover`;
+    const delta = computeDelta(action.actionType, action.suggestion, ctx);
+    const parts: string[] = [];
+    if (delta.sessionsToAdd.length > 0) {
+      parts.push(
+        `Etter: +${delta.sessionsToAdd.length} økt(er) — ${delta.sessionsToAdd.map((s) => `${s.title} (${s.pyramidArea})`).join("; ")}`,
+      );
+    }
+    if (delta.sessionsToRemove.length > 0) {
+      parts.push(`Etter: fjerner ${delta.sessionsToRemove.length} planlagt(e) økt(er)`);
+    }
+    if (delta.sessionsToModify.length > 0) {
+      parts.push(`Etter: endrer ${delta.sessionsToModify.length} økt(er)`);
+    }
+    if (delta.planMeta?.periodNote) {
+      parts.push(`Periode-notat: ${delta.planMeta.periodNote}`);
+    }
+    diffPreview = parts.length > 0 ? parts.join(" · ") : delta.summary;
+  }
+
   const detail: ApprovalDetail = {
     id: action.id,
     actionType: action.actionType,
@@ -99,6 +160,10 @@ export default async function GodkjenningDetailPage({
       lead: forklaring,
       trail: ` · ${action.user.name.split(" ")[0]}`,
     },
+    rationale: forklaring,
+    signalSnapshot,
+    diffPreview,
+    beforeSummary,
   };
 
   return <ApprovalDetailClient detail={detail} />;

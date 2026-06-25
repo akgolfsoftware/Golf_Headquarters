@@ -42,6 +42,11 @@ const AGENT_INFO: Record<string, { navn: string; trigger: string; beskrivelse: s
     trigger: "Cron mandag 06:30",
     beskrivelse: "Finner svakeste SG-område og genererer TRAINING_GAP-forslag hvis det får < 20 % av treningstid.",
   },
+  "turnering-agent": {
+    navn: "Turnering-agent",
+    trigger: "Cron daglig 07:00",
+    beskrivelse: "Spillere med turnering innen 7 dager får PERIOD_SWITCH-forslag.",
+  },
   "calendar-sync": {
     navn: "Calendar Sync",
     trigger: "Cron hvert 15. min",
