@@ -2,7 +2,7 @@
 
 > **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg. Detaljert skjermstatus bor i `docs/MASTER-SKJERMPLAN.md`; låste regler i `docs/platform/BUSINESS-RULES.md`; uavklarte beslutninger i `docs/AAPNE-SPORSMAAL.md`.
 
-**Sist oppdatert:** 2026-06-25 kl. 20:00-lansering (Workbench hub ferdig: mal «Bruk» persisterer, design-gate PASS, 230/230 tester)
+**Sist oppdatert:** 2026-06-25 post-lansering (Bølge 0–1 ferdig: brutt main-build fikset (SGConsole), Workbench uke-navigasjon FORRIGE/NESTE koblet med riktig persistering, Maler-kort viser ekte PlanEffectiveness-SG; 244/244 tester. Evaluering-sløyfa + Økt SG-kobling parkert til egen Workbench-økt med Anders. Neste: Bølge 2 — PlayerHQ undersider.)
 
 ---
 
