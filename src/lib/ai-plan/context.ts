@@ -7,7 +7,6 @@
 import { prisma } from "@/lib/prisma";
 import type {
   DrillFasilitet,
-  LacFase,
   LPhase,
   NgfKategori,
   PyramidArea,
@@ -40,7 +39,6 @@ export type DrillKatalogEntry = {
   morad: boolean;
   environment: SessionEnvironment[];
   lPhases: LPhase[];
-  lacFaser: LacFase[];
   minKategori: NgfKategori | null;
   maxKategori: NgfKategori | null;
 };
@@ -262,7 +260,6 @@ async function hentTilgjengeligeDrills(
       environment: true,
       fasilitetKrav: true,
       lPhases: true,
-      lacFaser: true,
       minKategori: true,
       maxKategori: true,
     },
@@ -295,7 +292,6 @@ async function hentTilgjengeligeDrills(
     morad: d.morad,
     environment: d.environment,
     lPhases: d.lPhases,
-    lacFaser: d.lacFaser as LacFase[],
     minKategori: d.minKategori,
     maxKategori: d.maxKategori,
   }));
@@ -480,17 +476,12 @@ export async function byggSpillerKontekst(
       prisma.facilityPrefs.findUnique({
         where: { userId },
         select: {
-          maxPuttM: true,
-          maxChipM: true,
-          maxWedgeM: true,
-          trackmanHrsPerWeek: true,
-          canSwingAtHome: true,
-          hasBunker: true,
-          hasNetAndMat: true,
           trackman: true,
           range: true,
           course18: true,
           course9: true,
+          putting: true,
+          shortgame: true,
         },
       }),
     ]);
@@ -546,13 +537,14 @@ export async function byggSpillerKontekst(
       computedAt: s.computedAt.toISOString().slice(0, 10),
     })),
     fasilitetsGrenser: {
-      maxPuttM: facilityPrefs?.maxPuttM ?? null,
-      maxChipM: facilityPrefs?.maxChipM ?? null,
-      maxWedgeM: facilityPrefs?.maxWedgeM ?? null,
-      trackmanHrsPerWeek: facilityPrefs?.trackmanHrsPerWeek ?? null,
-      canSwingAtHome: facilityPrefs?.canSwingAtHome ?? false,
-      hasBunker: facilityPrefs?.hasBunker ?? false,
-      hasNetAndMat: facilityPrefs?.hasNetAndMat ?? false,
+      // Avstandsgrenser avventer schema — plassholdere til Anders låser verdier.
+      maxPuttM: null,
+      maxChipM: null,
+      maxWedgeM: null,
+      trackmanHrsPerWeek: null,
+      canSwingAtHome: false,
+      hasBunker: false,
+      hasNetAndMat: false,
       harRange: facilityPrefs?.range ?? true,
       harSimulator: facilityPrefs?.trackman ?? false,
       harBane: (facilityPrefs?.course18 || facilityPrefs?.course9) ?? true,

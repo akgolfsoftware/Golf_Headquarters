@@ -4,7 +4,11 @@
 
 import test from "node:test";
 import assert from "node:assert/strict";
-import { computeDelta, type PlanContext } from "./plan-action-executor";
+import {
+  actionErTekniskEndring,
+  computeDelta,
+  type PlanContext,
+} from "./plan-action-executor";
 
 const baseCtx: PlanContext = {
   planId: "plan-1",
@@ -64,4 +68,48 @@ test("computeDelta DRILL_SWAP endrer drill på session", () => {
   );
   assert.equal(delta.sessionsToModify[0].sessionId, "s1");
   assert.equal(delta.sessionsToModify[0].replaceDrillExerciseId, "ex-new");
+});
+
+test("actionErTekniskEndring — SESSION_ADD med pyramidArea TEK", () => {
+  const delta = computeDelta(
+    "SESSION_ADD",
+    {
+      title: "Teknikk",
+      pyramidArea: "TEK",
+      durationMin: 60,
+    },
+    baseCtx,
+  );
+  assert.equal(
+    actionErTekniskEndring("SESSION_ADD", { pyramidArea: "TEK" }, delta),
+    true,
+  );
+});
+
+test("actionErTekniskEndring — FOCUS_CHANGE med pyramidArea TEK", () => {
+  const delta = computeDelta(
+    "FOCUS_CHANGE",
+    { skillArea: "TILNAERMING", pyramidArea: "TEK" },
+    baseCtx,
+  );
+  assert.equal(
+    actionErTekniskEndring(
+      "FOCUS_CHANGE",
+      { skillArea: "TILNAERMING", pyramidArea: "TEK" },
+      delta,
+    ),
+    true,
+  );
+});
+
+test("actionErTekniskEndring — FYS er ikke teknisk", () => {
+  const delta = computeDelta(
+    "SESSION_ADD",
+    { title: "Fys", pyramidArea: "FYS", durationMin: 60 },
+    baseCtx,
+  );
+  assert.equal(
+    actionErTekniskEndring("SESSION_ADD", { pyramidArea: "FYS" }, delta),
+    false,
+  );
 });

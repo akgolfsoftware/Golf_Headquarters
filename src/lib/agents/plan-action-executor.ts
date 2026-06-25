@@ -379,13 +379,50 @@ async function loadPlanContext(
   };
 }
 
-async function resolveDrillsForSession(
-  skillArea: SkillArea | null,
-  _userId: string,
+const PYRAMID_TO_SKILL: Record<PyramidArea, SkillArea> = {
+  FYS: "SPILL",
+  TEK: "TILNAERMING",
+  SLAG: "TEE_TOTAL",
+  SPILL: "AROUND_GREEN",
+  TURN: "SPILL",
+};
+
+function pickDrillsFromCandidates(
+  skillArea: SkillArea,
+  drills: Array<{
+    id: string;
+    name: string;
+    skillArea: SkillArea | null;
+    lPhases: string[] | null;
+    csTargetByKategori: unknown;
+    durationMin: number | null;
+  }>,
+): string[] {
+  const { valgte } = runDrillSelectionSkill({
+    skillArea,
+    sisteDrillIds: [],
+    kandidater: drills.map((d) => ({
+      id: d.id,
+      name: d.name,
+      skillArea: d.skillArea,
+      lPhases: (d.lPhases ?? []).map(String),
+      csTargetByKategori:
+        d.csTargetByKategori && typeof d.csTargetByKategori === "object"
+          ? (d.csTargetByKategori as Record<string, number | null>)
+          : null,
+      varighetMin: d.durationMin,
+    })),
+    maxDrills: 2,
+    varighetMin: 60,
+  });
+  return valgte.map((v) => v.id);
+}
+
+async function fetchDrillCandidates(
+  where: { skillArea?: SkillArea; source?: "SYSTEM" },
 ): Promise<string[]> {
-  if (!skillArea) return [];
   const drills = await prisma.exerciseDefinition.findMany({
-    where: { skillArea, source: "SYSTEM" },
+    where,
     take: 10,
     orderBy: { name: "asc" },
     select: {
@@ -397,24 +434,67 @@ async function resolveDrillsForSession(
       durationMin: true,
     },
   });
-  const { valgte } = runDrillSelectionSkill({
+  if (drills.length === 0) return [];
+  const skill =
+    where.skillArea ??
+    drills.find((d) => d.skillArea)?.skillArea ??
+    "TILNAERMING";
+  return pickDrillsFromCandidates(skill, drills);
+}
+
+/** Eksportert for enhetstester — sjekker om action bryter teknisk-periode-guard. */
+export function actionErTekniskEndring(
+  actionType: string,
+  suggestion: unknown,
+  delta: ExecutorDelta,
+): boolean {
+  if (delta.sessionsToAdd.some((s) => s.pyramidArea === "TEK")) return true;
+
+  switch (actionType) {
+    case "PYRAMID_ADJUST": {
+      const s = pyramidAdjustSchema.safeParse(suggestion);
+      return s.success && s.data.omrade === "TEK";
+    }
+    case "SESSION_ADD": {
+      const s = sessionAddSchema.safeParse(suggestion);
+      return s.success && s.data.pyramidArea === "TEK";
+    }
+    case "FOCUS_CHANGE": {
+      const s = focusChangeSchema.safeParse(suggestion);
+      return s.success && s.data.pyramidArea === "TEK";
+    }
+    default:
+      return false;
+  }
+}
+
+async function resolveDrillsForSession(
+  skillArea: SkillArea | null,
+  pyramidArea: PyramidArea,
+): Promise<string[]> {
+  const targets = [
     skillArea,
-    sisteDrillIds: [],
-    kandidater: drills.map((d) => ({
-      id: d.id,
-      name: d.name,
-      skillArea: d.skillArea,
-      lPhases: (d.lPhases ?? []).map(String),
-      csTargetByKategori:
-        d.csTargetByKategori && typeof d.csTargetByKategori === "object"
-          ? (d.csTargetByKategori as Record<string, number>)
-          : null,
-      varighetMin: d.durationMin,
-    })),
-    maxDrills: 2,
-    varighetMin: 60,
+    PYRAMID_TO_SKILL[pyramidArea],
+    "TILNAERMING" as SkillArea,
+  ].filter((v, i, arr): v is SkillArea => v != null && arr.indexOf(v) === i);
+
+  for (const target of targets) {
+    const system = await fetchDrillCandidates({
+      skillArea: target,
+      source: "SYSTEM",
+    });
+    if (system.length > 0) return system;
+
+    const anySource = await fetchDrillCandidates({ skillArea: target });
+    if (anySource.length > 0) return anySource;
+  }
+
+  const fallback = await prisma.exerciseDefinition.findFirst({
+    where: { source: "SYSTEM" },
+    orderBy: { name: "asc" },
+    select: { id: true },
   });
-  return valgte.map((v) => v.id);
+  return fallback ? [fallback.id] : [];
 }
 
 export async function applyExecutorDelta(
@@ -490,7 +570,11 @@ export async function applyExecutorDelta(
       const drillIds =
         add.drillExerciseIds.length > 0
           ? add.drillExerciseIds
-          : await resolveDrillsForSession(add.skillArea, ctx.userId);
+          : await resolveDrillsForSession(add.skillArea, add.pyramidArea);
+
+      if (drillIds.length === 0) {
+        throw new Error("ingen-drill-tilgjengelig");
+      }
 
       const session = await tx.trainingPlanSession.create({
         data: {
@@ -573,12 +657,9 @@ export async function executePlanAction(actionId: string): Promise<ExecuteResult
 
   if (
     !period.tillatTekniskeEndringer &&
-    (action.actionType === "SESSION_ADD" || action.actionType === "PYRAMID_ADJUST")
+    actionErTekniskEndring(action.actionType, action.suggestion, delta)
   ) {
-    const sugg = action.suggestion as { omrade?: string } | null;
-    if (sugg?.omrade === "TEK") {
-      throw new Error("periodisering-blokkerer-tekniske-endringer");
-    }
+    throw new Error("periodisering-blokkerer-tekniske-endringer");
   }
 
   const guard = runJuniorGuardSkill({

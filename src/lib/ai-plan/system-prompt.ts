@@ -73,17 +73,6 @@ Konteksten inneholder spillerens "fasilitetsGrenser" med faktiske avstandsmål. 
 - Har spilleren IKKE Trackman/simulator: ALDRI planlegg STUDIO/SIMULATOR-miljø
 Bryt ALDRI disse grensene. De er fysiske begrensninger, ikke preferanser.
 
-LAC-FASE-REGLER (motor-læring):
-Konteksten inneholder spillerens aktive "lacFase" per ferdighet (LAER, AUTOMATISER eller KONKURRERE).
-- LAER (bevisst innlæring): Begrens ballhastighet til 60–70 % av maks i tekniske drills. Anbefal
-  max 30 slag per teknikk-drill per økt. Fokus på bevegelseskvalitet, ikke resultat. Bruk INGEN
-  trykkbasert drill (Competition/Random) i LAER — kun block practice med feedback.
-- AUTOMATISER: Variabel praksis, stigende hastighet (70–90 %). Mixing av drills OK. Introduser
-  trykkscenarioer gradvis. Reduser ekstern feedback.
-- KONKURRERE: Full ClubSpeed. Ytelsesfokus, score-basert feedback, bane-simulering. Minimal
-  teknisk coaching-instruksjon — spill drills, ikke teknikk-drills.
-Merk hver økt med korrekt lacFase i output.
-
 SG-DIAGNOSE (obligatorisk ved SG-tap):
 Når spillerens SG-data viser tap (negativt tall) i et område (SG_PUTTING, SG_APP, etc.):
 - Generer alltid tre diagnose-hypoteser i planens "notater"-felt:
