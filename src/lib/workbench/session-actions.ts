@@ -7,25 +7,11 @@
 import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { dateForDayIndex, executeSessionMove } from "@/lib/workbench/session-move";
 import { deleteV2ForPlanSession, upsertV2ForPlanSession } from "@/lib/workbench/v2-sync";
 
 const PYRAMID_AREAS = ["FYS", "TEK", "SLAG", "SPILL", "TURN"] as const;
 export type WbPyramidArea = (typeof PYRAMID_AREAS)[number];
-
-function mondayOf(d: Date): Date {
-  const x = new Date(d);
-  const dow = (x.getDay() + 6) % 7;
-  x.setHours(0, 0, 0, 0);
-  x.setDate(x.getDate() - dow);
-  return x;
-}
-
-function dateForDayIndex(dayIndex: number, hour: number, minute: number): Date {
-  const target = mondayOf(new Date());
-  target.setDate(target.getDate() + dayIndex);
-  target.setHours(hour, minute, 0, 0);
-  return target;
-}
 
 function revalidateWorkbench(playerId: string) {
   revalidatePath("/portal/planlegge/workbench");
@@ -55,41 +41,13 @@ export async function coachMoveWorkbenchSession(
   dayIndex: number,
 ): Promise<{ ok: boolean; error?: string }> {
   const coach = await ensureCoach();
-  if (dayIndex < 0 || dayIndex > 6) return { ok: false, error: "Ugyldig dag" };
-
-  const session = await sessionForPlayer(sessionId, playerId);
-  if (!session || session.plan.userId !== playerId) {
-    return { ok: false, error: "Økt ikke funnet" };
-  }
-
-  const target = dateForDayIndex(
-    dayIndex,
-    session.scheduledAt.getHours(),
-    session.scheduledAt.getMinutes(),
-  );
-
-  const updated = await prisma.trainingPlanSession.update({
-    where: { id: sessionId },
-    data: { scheduledAt: target },
-    select: {
-      id: true,
-      title: true,
-      scheduledAt: true,
-      durationMin: true,
-      pyramidArea: true,
-    },
-  });
-
-  await upsertV2ForPlanSession({
-    planSessionId: updated.id,
+  const result = await executeSessionMove(prisma, {
+    sessionId,
     playerId,
-    title: updated.title,
-    scheduledAt: updated.scheduledAt,
-    durationMin: updated.durationMin,
-    pyramidArea: updated.pyramidArea,
+    dayIndex,
     coachId: coach.id,
   });
-
+  if (!result.ok) return result;
   revalidateWorkbench(playerId);
   return { ok: true };
 }

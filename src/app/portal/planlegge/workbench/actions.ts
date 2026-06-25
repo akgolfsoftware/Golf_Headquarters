@@ -10,6 +10,7 @@ import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
+import { dateForDayIndex, executeSessionMove } from "@/lib/workbench/session-move";
 import { deleteV2ForPlanSession, upsertV2ForPlanSession } from "@/lib/workbench/v2-sync";
 
 // ============================================================================
@@ -389,65 +390,17 @@ export async function loadFacilities(): Promise<FacilityState> {
 const PYRAMID_AREAS = ["FYS", "TEK", "SLAG", "SPILL", "TURN"] as const;
 type WbPyramidArea = (typeof PYRAMID_AREAS)[number];
 
-/** Mandag 00:00 i uka som inneholder `d` (mandag = indeks 0). */
-function mondayOf(d: Date): Date {
-  const x = new Date(d);
-  const dow = (x.getDay() + 6) % 7;
-  x.setHours(0, 0, 0, 0);
-  x.setDate(x.getDate() - dow);
-  return x;
-}
-
-function dateForDayIndex(dayIndex: number, hour: number, minute: number): Date {
-  const target = mondayOf(new Date());
-  target.setDate(target.getDate() + dayIndex);
-  target.setHours(hour, minute, 0, 0);
-  return target;
-}
-
 export async function moveWorkbenchSession(
   sessionId: string,
   dayIndex: number,
 ): Promise<{ ok: boolean; error?: string }> {
   const user = await requirePortalUser();
-  if (dayIndex < 0 || dayIndex > 6) return { ok: false, error: "Ugyldig dag" };
-
-  const session = await prisma.trainingPlanSession.findUnique({
-    where: { id: sessionId },
-    select: { id: true, scheduledAt: true, plan: { select: { userId: true } } },
-  });
-  if (!session || session.plan.userId !== user.id) {
-    return { ok: false, error: "Økt ikke funnet" };
-  }
-
-  // Behold klokkeslett, bytt dag innenfor inneværende uke.
-  const target = dateForDayIndex(
-    dayIndex,
-    session.scheduledAt.getHours(),
-    session.scheduledAt.getMinutes(),
-  );
-
-  const updated = await prisma.trainingPlanSession.update({
-    where: { id: sessionId },
-    data: { scheduledAt: target },
-    select: {
-      id: true,
-      title: true,
-      scheduledAt: true,
-      durationMin: true,
-      pyramidArea: true,
-    },
-  });
-
-  await upsertV2ForPlanSession({
-    planSessionId: updated.id,
+  const result = await executeSessionMove(prisma, {
+    sessionId,
     playerId: user.id,
-    title: updated.title,
-    scheduledAt: updated.scheduledAt,
-    durationMin: updated.durationMin,
-    pyramidArea: updated.pyramidArea,
+    dayIndex,
   });
-
+  if (!result.ok) return result;
   revalidatePath("/portal/planlegge/workbench");
   return { ok: true };
 }

@@ -149,6 +149,18 @@ const consentInit = () => {
     await log("MALER_BRUK SKIP ingen mal-knapper");
   }
 
+  // DB move evidence (before publish — needs sessions on uke)
+  {
+    const r = spawnSync("npx", ["tsx", "scripts/workbench-move-evidence.ts", FLOW_LOG], {
+      cwd: process.cwd(),
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    const tail = (r.stdout || "").trim().split("\n").pop() || `exit=${r.status}`;
+    await log(`SCRIPT workbench-move-evidence.ts ${tail}`, GATE_LOG);
+    if (r.status !== 0) throw new Error(`workbench-move-evidence exit ${r.status}`);
+  }
+
   // Uke — publiser via UI (mobil-layout — desktop-topbar er display:none på 430px)
   await page.goto(`${BASE}/portal/planlegge/workbench?tab=uke`, { waitUntil: "domcontentloaded" });
   try {
@@ -196,9 +208,31 @@ const consentInit = () => {
   });
   const pageDesk = await ctxDesk.newPage();
   await pageDesk.goto(`${BASE}/portal/planlegge/workbench?tab=uke`, { waitUntil: "domcontentloaded" });
-  await pageDesk.waitForTimeout(1500);
+  await pageDesk.locator('[data-testid="wb-week-ready"]').waitFor({ state: "visible", timeout: 20000 }).catch(() => {});
+  await pageDesk.waitForTimeout(2000);
   await shot(pageDesk, path.join(OUT, "player-1280-uke.png"));
   await log("PLAYER_DESKTOP_1280 uke PASS");
+
+  // Desktop drag-and-drop: flytt første økt til tir-kolonne
+  const dragCard = pageDesk.locator("[data-sid]").first();
+  const dragTarget = pageDesk.locator('[data-day="tir"]').first();
+  if (
+    (await dragCard.isVisible().catch(() => false)) &&
+    (await dragTarget.isVisible().catch(() => false))
+  ) {
+    const sid = await dragCard.getAttribute("data-sid");
+    try {
+      await dragCard.dragTo(dragTarget, { timeout: 10000 });
+      await pageDesk.waitForTimeout(2000);
+      const inTir = await dragTarget.locator(`[data-sid="${sid}"]`).isVisible().catch(() => false);
+      await log(`MOVE_UI sid=${sid} target=tir visible=${inTir} ${inTir ? "PASS" : "FAIL"}`);
+    } catch (e) {
+      await log(`MOVE_UI sid=${sid} FAIL (${e.message})`);
+    }
+  } else {
+    await log("MOVE_UI SKIP ingen øktkort eller tir-kolonne");
+  }
+
   await ctxDesk.close();
 }
 
@@ -238,9 +272,13 @@ await browser.close();
 const restore = runPrep("restore-active");
 await log(`PLAN_PREP restore-active ok=${restore.ok} ${restore.out}`, GATE_LOG);
 
-// Locked + publish DB evidence
-for (const script of ["workbench-locked-evidence.ts", "workbench-publish-evidence.ts"]) {
-  const r = spawnSync("npx", ["tsx", `scripts/${script}`, FLOW_LOG], {
+// Locked + publish DB evidence (move runs earlier, after maler)
+const evidenceScripts = [
+  ["workbench-locked-evidence.ts", path.join(OUT, "locked-decisions.log")],
+  ["workbench-publish-evidence.ts", FLOW_LOG],
+];
+for (const [script, outPath] of evidenceScripts) {
+  const r = spawnSync("npx", ["tsx", `scripts/${script}`, outPath], {
     cwd: process.cwd(),
     encoding: "utf8",
     stdio: ["ignore", "pipe", "pipe"],

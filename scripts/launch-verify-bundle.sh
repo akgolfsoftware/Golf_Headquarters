@@ -66,11 +66,76 @@ rm -f "$SCRATCH/wb-gate/console-final.log" "$SCRATCH/wb-gate/wb-gate-run.log" "$
 echo "wb-gate EXIT:0" | tee -a "$SCRATCH/verification-manifest.log"
 
 echo "" | tee -a "$SCRATCH/verification-manifest.log"
-echo "## Step 5: locked decisions evidence" | tee -a "$SCRATCH/verification-manifest.log"
+echo "## Step 4b: adversarial diff (same bundle)" | tee -a "$SCRATCH/verification-manifest.log"
 {
-  echo "# CMD: npx tsx scripts/workbench-locked-evidence.ts"
-  npx tsx scripts/workbench-locked-evidence.ts "$SCRATCH/locked-decisions.log"
+  echo "# CMD: node scripts/workbench-adversarial-diff.mjs $SCRATCH/wb-gate $SCRATCH/verification-manifest.log"
+  node scripts/workbench-adversarial-diff.mjs "$SCRATCH/wb-gate" "$SCRATCH/verification-manifest.log"
   echo "EXIT:0"
-} >>"$SCRATCH/locked-decisions.log" 2>&1 || true
+} >>"$SCRATCH/wb-gate/adversarial-diff.log" 2>&1
+echo "adversarial-diff.md regenerated" | tee -a "$SCRATCH/verification-manifest.log"
+
+echo "" | tee -a "$SCRATCH/verification-manifest.log"
+echo "## Step 5: locked decisions evidence (from gate)" | tee -a "$SCRATCH/verification-manifest.log"
+if [[ -f "$SCRATCH/wb-gate/locked-decisions.log" ]]; then
+  cp "$SCRATCH/wb-gate/locked-decisions.log" "$SCRATCH/locked-decisions.log"
+  echo "locked-decisions.log copied from wb-gate EXIT:0" | tee -a "$SCRATCH/verification-manifest.log"
+else
+  echo "locked-decisions.log MISSING from wb-gate" | tee -a "$SCRATCH/verification-manifest.log"
+  exit 1
+fi
+
+echo "" | tee -a "$SCRATCH/verification-manifest.log"
+echo "## Manifest PASS/FAIL" | tee -a "$SCRATCH/verification-manifest.log"
+MANIFEST_FAIL=0
+FLOW_LOG="$SCRATCH/wb-gate/workbench-flow.log"
+
+require_file() {
+  if [[ ! -f "$1" ]]; then
+    echo "MANIFEST_MISSING file=$1" | tee -a "$SCRATCH/verification-manifest.log"
+    MANIFEST_FAIL=1
+  fi
+}
+
+require_pattern() {
+  local file="$1" pattern="$2" label="$3"
+  if [[ ! -f "$file" ]] || ! grep -qE "$pattern" "$file"; then
+    echo "MANIFEST_MISSING pattern=$label in $file" | tee -a "$SCRATCH/verification-manifest.log"
+    MANIFEST_FAIL=1
+  else
+    echo "MANIFEST_OK $label" | tee -a "$SCRATCH/verification-manifest.log"
+  fi
+}
+
+require_file "$SCRATCH/build-verify.log"
+require_file "$SCRATCH/smoke.log"
+require_file "$SCRATCH/unit-tests.log"
+require_file "$SCRATCH/locked-decisions.log"
+require_file "$SCRATCH/wb-gate/adversarial-diff.md"
+require_file "$FLOW_LOG"
+
+require_pattern "$FLOW_LOG" 'MOVE_BEFORE' 'MOVE_BEFORE'
+require_pattern "$FLOW_LOG" 'MOVE_AFTER.*PASS' 'MOVE_AFTER'
+require_pattern "$FLOW_LOG" 'PUBLISH_BEFORE|PUBLISH_AFTER' 'PUBLISH'
+require_pattern "$FLOW_LOG" 'PUBLISH_CLICK|PUBLISH_ACTION' 'PUBLISH_UI'
+
+PNG_COUNT="$(find "$SCRATCH/wb-gate" -maxdepth 1 -name '*.png' 2>/dev/null | wc -l | tr -d ' ')"
+if [[ "${PNG_COUNT:-0}" -lt 10 ]]; then
+  echo "MANIFEST_MISSING png_count=$PNG_COUNT (need >=10)" | tee -a "$SCRATCH/verification-manifest.log"
+  MANIFEST_FAIL=1
+else
+  echo "MANIFEST_OK png_count=$PNG_COUNT" | tee -a "$SCRATCH/verification-manifest.log"
+fi
+
+BUNDLE_TS="$(head -1 "$SCRATCH/verification-manifest.log" | sed 's/.*— //')"
+DIFF_TS="$(grep -m1 'step 4' "$SCRATCH/wb-gate/adversarial-diff.md" 2>/dev/null || true)"
+if [[ -n "$BUNDLE_TS" && -n "$DIFF_TS" && "$DIFF_TS" != *"$BUNDLE_TS"* ]]; then
+  echo "MANIFEST_WARN adversarial-diff timestamp may differ from bundle ($BUNDLE_TS)" | tee -a "$SCRATCH/verification-manifest.log"
+fi
+
+if [[ "$MANIFEST_FAIL" -ne 0 ]]; then
+  echo "MANIFEST:FAIL" | tee -a "$SCRATCH/verification-manifest.log"
+  exit 1
+fi
+echo "MANIFEST:PASS" | tee -a "$SCRATCH/verification-manifest.log"
 
 echo "DONE verification bundle → $SCRATCH" | tee -a "$SCRATCH/verification-manifest.log"
