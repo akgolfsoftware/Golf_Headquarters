@@ -4117,3 +4117,49 @@ model MessageAttachment {
   @@index([sessionId])
   @@map("message_attachments")
 }
+
+// ---------- AK Agency OS — Kommando (personlig kommandosenter, Etappe 1, 2026-06-25) ----------
+// Additive modeller med plain String-FK (ingen @relation) for å holde migrasjonen
+// isolert (jf. gotchas.md — CREATE TABLE via scripts/migrate-kommando-tables-2026-06-25.ts).
+
+model KommandoTask {
+  id        String    @id @default(cuid())
+  userId    String
+  projectId String? // reservert for Etappe 2 (Prosjekter)
+  title     String
+  // "open" | "done"
+  status    String    @default("open")
+  // "normal" | "haster"
+  priority  String    @default("normal")
+  dueAt     DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId, status, createdAt])
+  @@map("kommando_tasks")
+}
+
+model KommandoChat {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String?
+  model     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, updatedAt])
+  @@map("kommando_chats")
+}
+
+model KommandoMessage {
+  id             String   @id @default(cuid())
+  userId         String
+  conversationId String
+  // "user" | "assistant"
+  role           String
+  content        String   @db.Text
+  model          String?
+  createdAt      DateTime @default(now())
+
+  @@index([userId, conversationId, createdAt])
+  @@map("kommando_messages")
+}
