@@ -10,11 +10,13 @@ import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { WorkbenchHybrid, type RosterPlayer } from "@/components/workbench-hybrid";
 import { loadWorkbenchContext } from "@/lib/workbench/load-context";
+import { parseWeekOffset } from "@/lib/workbench/session-move-math";
 
 export const dynamic = "force-dynamic";
 
 type Props = {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ uke?: string }>;
 };
 
 function initialsOf(name: string): string {
@@ -24,15 +26,16 @@ function initialsOf(name: string): string {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-export default async function CoachWorkbenchPage({ params }: Props) {
+export default async function CoachWorkbenchPage({ params, searchParams }: Props) {
   const me = await getCurrentUser();
   if (!me || (me.role !== "ADMIN" && me.role !== "COACH")) {
     redirect("/auth/login");
   }
 
   const { id } = await params;
+  const weekOffset = parseWeekOffset((await searchParams).uke);
 
-  const ctx = await loadWorkbenchContext(id);
+  const ctx = await loadWorkbenchContext(id, weekOffset);
   if (ctx === null) notFound();
   const data = ctx.data;
 

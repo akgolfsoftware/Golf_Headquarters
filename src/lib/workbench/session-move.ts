@@ -9,10 +9,11 @@ import {
   dateForDayIndex,
   dayIndexFromScheduledAt,
   mondayOf,
+  weekRefDate,
 } from "@/lib/workbench/session-move-math";
 import { upsertV2ForPlanSession } from "@/lib/workbench/v2-sync";
 
-export { computeMoveTarget, dateForDayIndex, dayIndexFromScheduledAt, mondayOf };
+export { computeMoveTarget, dateForDayIndex, dayIndexFromScheduledAt, mondayOf, weekRefDate };
 
 export async function executeSessionMove(
   prisma: PrismaClient,

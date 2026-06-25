@@ -119,6 +119,10 @@ export type WorkbenchData = {
   groupSlots?: WorkbenchGroupSlot[];
   /** Om ukedata inkluderer TrainingSessionV2 (lanserings-spor B). */
   usesV2Sessions?: boolean;
+  /** Uke-offset denne dataen er hentet for (0 = inneværende uke). */
+  weekOffset?: number;
+  /** Mandag 00:00 (ISO) for uka dataen gjelder — UI utleder datotall + i-dag. */
+  weekStartISO?: string;
 };
 
 // ───────── Konstanter ─────────
@@ -192,14 +196,23 @@ const SESSION_SELECT = {
  * Kjernen: gitt en bruker-id, bygg `WorkbenchData` fra ekte Prisma-data.
  * Returnerer `null` hvis brukeren ikke finnes (coach-rute → notFound()).
  */
-export async function loadWorkbenchData(userId: string): Promise<WorkbenchData | null> {
+export async function loadWorkbenchData(
+  userId: string,
+  weekOffset = 0,
+): Promise<WorkbenchData | null> {
   const exists = await prisma.user.findUnique({ where: { id: userId }, select: { id: true } });
   if (!exists) return null;
 
+  const offset = Math.trunc(weekOffset);
   const now = new Date();
+  // Uka brukeren ser på: inneværende uke forskjøvet `offset` uker.
   const weekStart = mondayOf(now);
+  weekStart.setDate(weekStart.getDate() + offset * 7);
   const weekEnd = new Date(weekStart);
   weekEnd.setDate(weekEnd.getDate() + 7);
+  const weekStartISO = weekStart.toISOString();
+  // 30-dagers pyramide-vindu og «i dag» følger ALLTID dagens dato, ikke den
+  // navigerte uka — kun uke-spesifikke spørringer skifter med offset.
   const tretti = new Date(now);
   tretti.setDate(tretti.getDate() - 30);
 
@@ -367,7 +380,11 @@ export async function loadWorkbenchData(userId: string): Promise<WorkbenchData |
   }
 
   // Tom uke → eksplisitt tom tilstand, men behold maler/gruppetider.
+  // KUN for inneværende uke: når brukeren har navigert til en annen uke skal
+  // grid-en alltid rendres (med tomme dager) så hen kan dra inn økter / navigere
+  // tilbake — ellers ville en tom framtidsuke vist den globale «ingen plan»-flaten.
   if (
+    offset === 0 &&
     weekSessions.length === 0 &&
     v2WeekSessions.length === 0 &&
     last30Sessions.length === 0 &&
@@ -375,10 +392,12 @@ export async function loadWorkbenchData(userId: string): Promise<WorkbenchData |
     entries.length === 0
   ) {
     return {
-      summary: { weekNumber: isoWeek(now), sessionCount: 0, plannedHours: 0 },
+      summary: { weekNumber: isoWeek(weekStart), sessionCount: 0, plannedHours: 0 },
       planTemplates: templateRowsEarly.length > 0 ? templateRowsEarly : undefined,
       groupSlots: groupSlotsEarly.length > 0 ? groupSlotsEarly : undefined,
       usesV2Sessions: false,
+      weekOffset: offset,
+      weekStartISO,
     };
   }
 
@@ -387,7 +406,8 @@ export async function loadWorkbenchData(userId: string): Promise<WorkbenchData |
     v2WeekSessions as V2WeekSessionInput[],
   );
 
-  const todayDow = (now.getDay() + 6) % 7;
+  // «I dag» markeres kun når vi faktisk ser på inneværende uke. -1 = ingen.
+  const todayDow = offset === 0 ? (now.getDay() + 6) % 7 : -1;
 
   // ── A · WeekView: header + dag-kolonner med blokker ──────────────
   const weekHead = Array.from({ length: 5 }, (_, i) => {
@@ -538,7 +558,7 @@ export async function loadWorkbenchData(userId: string): Promise<WorkbenchData |
   // ── Topp-tall ───────────────────────────────────────────────────
   const plannedMin = mergedSessions.reduce((a, s) => a + s.durationMin, 0);
   const summary = {
-    weekNumber: isoWeek(now),
+    weekNumber: isoWeek(weekStart),
     sessionCount: mergedSessions.length,
     plannedHours: Math.round((plannedMin / 60) * 10) / 10,
   };
@@ -609,6 +629,8 @@ export async function loadWorkbenchData(userId: string): Promise<WorkbenchData |
     paletteItems: paletteItems.length > 0 ? paletteItems : undefined,
     groupSlots: groupSlots.length > 0 ? groupSlots : undefined,
     usesV2Sessions: v2WeekSessions.length > 0,
+    weekOffset: offset,
+    weekStartISO,
   };
 }
 

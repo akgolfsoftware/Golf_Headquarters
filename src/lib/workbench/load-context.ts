@@ -7,8 +7,11 @@ import { buildWorkbenchInsights } from "./insights";
 import type { WorkbenchContext } from "./types";
 
 /** Én loader for Workbench — data + innsikt + plan-status. */
-export async function loadWorkbenchContext(userId: string): Promise<WorkbenchContext | null> {
-  const data = await loadWorkbenchData(userId);
+export async function loadWorkbenchContext(
+  userId: string,
+  weekOffset = 0,
+): Promise<WorkbenchContext | null> {
+  const data = await loadWorkbenchData(userId, weekOffset);
   if (data === null) return null;
 
   const [insights, activePlan, tekniskPlan] = await Promise.all([

@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { WorkbenchHybrid } from "@/components/workbench-hybrid";
 import { loadWorkbenchContext } from "@/lib/workbench/load-context";
+import { parseWeekOffset } from "@/lib/workbench/session-move-math";
 
 export const dynamic = "force-dynamic";
 
@@ -22,13 +23,18 @@ function utledInitialer(navn: string): string {
   );
 }
 
-export default async function WorkbenchPage() {
+export default async function WorkbenchPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ uke?: string }>;
+}) {
   const user = await requirePortalUser();
 
   if (user.role === "GUEST") redirect("/admin/kalender");
   if (user.role === "PARENT") redirect("/forelder");
 
-  const ctx = await loadWorkbenchContext(user.id);
+  const weekOffset = parseWeekOffset((await searchParams).uke);
+  const ctx = await loadWorkbenchContext(user.id, weekOffset);
   const data = ctx?.data;
 
   return (

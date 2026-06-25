@@ -7,7 +7,7 @@
 import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { dateForDayIndex, executeSessionMove } from "@/lib/workbench/session-move";
+import { dateForDayIndex, executeSessionMove, weekRefDate } from "@/lib/workbench/session-move";
 import { deleteV2ForPlanSession, upsertV2ForPlanSession } from "@/lib/workbench/v2-sync";
 
 const PYRAMID_AREAS = ["FYS", "TEK", "SLAG", "SPILL", "TURN"] as const;
@@ -39,6 +39,7 @@ export async function coachMoveWorkbenchSession(
   playerId: string,
   sessionId: string,
   dayIndex: number,
+  weekOffset = 0,
 ): Promise<{ ok: boolean; error?: string }> {
   const coach = await ensureCoach();
   const result = await executeSessionMove(prisma, {
@@ -46,6 +47,7 @@ export async function coachMoveWorkbenchSession(
     playerId,
     dayIndex,
     coachId: coach.id,
+    refDate: weekRefDate(weekOffset),
   });
   if (!result.ok) return result;
   revalidateWorkbench(playerId);
@@ -61,6 +63,7 @@ export async function coachAddWorkbenchSession(
     area: WbPyramidArea;
     hour: number;
     minute: number;
+    weekOffset?: number;
   },
 ): Promise<{ ok: boolean; sessionId?: string; error?: string }> {
   const coach = await ensureCoach();
@@ -90,7 +93,12 @@ export async function coachAddWorkbenchSession(
     data: {
       planId: plan.id,
       title: input.title.trim().slice(0, 120) || "Ny økt",
-      scheduledAt: dateForDayIndex(input.dayIndex, input.hour, input.minute),
+      scheduledAt: dateForDayIndex(
+        input.dayIndex,
+        input.hour,
+        input.minute,
+        weekRefDate(input.weekOffset ?? 0),
+      ),
       durationMin: Math.max(5, Math.min(480, Math.round(input.durMin))),
       pyramidArea: area,
       status: "PLANNED",

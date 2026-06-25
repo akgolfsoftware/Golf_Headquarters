@@ -81,6 +81,12 @@ type UkeViewProps = {
   hoverDay: WeekKey | null;
   weekLabel: string;
   weekRange: string;
+  /** Mandag 00:00 (ISO) for uka som vises — gir ekte datotall + i-dag-markering. */
+  weekStartISO?: string;
+  onPrevWeek?: () => void;
+  onNextWeek?: () => void;
+  canPrev?: boolean;
+  canNext?: boolean;
   warningTitle: string | null;
   warningMeta: string | null;
   onSessionClick: (id: string) => void;
@@ -92,12 +98,37 @@ type UkeViewProps = {
   showPaletteHint?: boolean;
 };
 
+/** Datotall + i-dag per kolonne. Uten weekStartISO: v10-fallback (i dag = ons). */
+function dayMetaFor(weekStartISO: string | undefined): { num: number; isToday: boolean }[] {
+  if (!weekStartISO) {
+    return DAY_DEFS.map((d, i) => ({ num: d.num, isToday: i === 2 }));
+  }
+  const start = new Date(weekStartISO);
+  const now = new Date();
+  const ty = now.getFullYear();
+  const tm = now.getMonth();
+  const td = now.getDate();
+  return DAY_DEFS.map((_, i) => {
+    const d = new Date(start);
+    d.setDate(d.getDate() + i);
+    return {
+      num: d.getDate(),
+      isToday: d.getFullYear() === ty && d.getMonth() === tm && d.getDate() === td,
+    };
+  });
+}
+
 export function UkeView({
   week,
   selectedId,
   hoverDay,
   weekLabel,
   weekRange,
+  weekStartISO,
+  onPrevWeek,
+  onNextWeek,
+  canPrev = true,
+  canNext = true,
   warningTitle,
   warningMeta,
   onSessionClick,
@@ -108,6 +139,7 @@ export function UkeView({
   showPaletteHint = true,
 }: UkeViewProps): ReactElement {
   const [draggingId, setDraggingId] = useState<string | null>(null);
+  const dayMeta = dayMetaFor(weekStartISO);
   const startHour = earliestHour(week);
   const hours: string[] = [];
   for (let h = startHour; h <= END_HOUR; h++) hours.push(`${h < 10 ? "0" : ""}${h}:00`);
@@ -120,7 +152,8 @@ export function UkeView({
           <button
             type="button"
             aria-label="Forrige uke"
-            disabled
+            onClick={onPrevWeek}
+            disabled={!onPrevWeek || !canPrev}
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -134,9 +167,9 @@ export function UkeView({
               fontWeight: 700,
               letterSpacing: "0.06em",
               textTransform: "uppercase",
-              color: WB.muted3,
-              cursor: "not-allowed",
-              opacity: 0.55,
+              color: !onPrevWeek || !canPrev ? WB.muted3 : WB.text,
+              cursor: !onPrevWeek || !canPrev ? "not-allowed" : "pointer",
+              opacity: !onPrevWeek || !canPrev ? 0.55 : 1,
             }}
           >
             <ChevronLeft size={12} />
@@ -149,7 +182,8 @@ export function UkeView({
           <button
             type="button"
             aria-label="Neste uke"
-            disabled
+            onClick={onNextWeek}
+            disabled={!onNextWeek || !canNext}
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -163,9 +197,9 @@ export function UkeView({
               fontWeight: 700,
               letterSpacing: "0.06em",
               textTransform: "uppercase",
-              color: WB.muted3,
-              cursor: "not-allowed",
-              opacity: 0.55,
+              color: !onNextWeek || !canNext ? WB.muted3 : WB.text,
+              cursor: !onNextWeek || !canNext ? "not-allowed" : "pointer",
+              opacity: !onNextWeek || !canNext ? 0.55 : 1,
             }}
           >
             Neste
@@ -233,8 +267,8 @@ export function UkeView({
           </div>
 
           {/* day columns */}
-          {DAY_DEFS.map((d) => {
-            const isToday = d.key === "ons";
+          {DAY_DEFS.map((d, i) => {
+            const isToday = dayMeta[i].isToday;
             const isWeekend = d.key === "lor" || d.key === "son";
             const isHover = hoverDay === d.key;
             const list = week[d.key] ?? [];
@@ -298,7 +332,7 @@ export function UkeView({
                       color: isToday ? WB.lime : isWeekend ? "#b9c2bb" : WB.text,
                     }}
                   >
-                    {d.num}
+                    {dayMeta[i].num}
                   </div>
                 </div>
 

@@ -20,6 +20,11 @@ import type {
 } from "./types";
 import { buildWorkbenchSeed } from "./build-seed";
 import {
+  parseWeekOffset,
+  WEEK_OFFSET_MIN,
+  WEEK_OFFSET_MAX,
+} from "@/lib/workbench/session-move-math";
+import {
   mapGoals,
   mapGroupInsightLine,
   mapSeasonPhases,
@@ -197,6 +202,7 @@ type Action =
   | { type: "publishDone"; status?: PlanStatus }
   | { type: "publishFail" }
   | { type: "applyTemplateSessions"; sessions: AppliedTemplateSession[] }
+  | { type: "hydrate"; data?: WorkbenchData }
   | { type: "closeModal" };
 
 function cloneWeek(w: WeekState): WeekState {
@@ -384,6 +390,20 @@ function reducer(state: State, action: Action): State {
       w[day].push(ns);
       return { ...state, week: w, modal: null, selectedId: id, editScope: "session", selectedPaletteId: null, nextId: state.nextId + 1 };
     }
+    case "hydrate": {
+      // Uke-navigasjon: server har re-rendret med en ny ukes data. Bygg uke-grid-en
+      // på nytt fra den, men behold zoom/paneler/publiseringstilstand. Valgt økt
+      // nullstilles siden den kan tilhøre en annen uke.
+      const seed = buildWorkbenchSeed({ data: action.data, planStatus: state.planStatusDisplay });
+      return {
+        ...state,
+        week: seed.week,
+        selectedId: null,
+        selectedPaletteId: null,
+        editScope: "session",
+        hoverDay: null,
+      };
+    }
     case "openKpi":
       return { ...state, modal: "kpi", kpiKey: action.key };
     case "closeModal":
@@ -539,6 +559,10 @@ export function WorkbenchHybrid({
     return valid.includes(raw as WorkbenchHubTab) ? (raw as WorkbenchHubTab) : "uke";
   }, [searchParams]);
 
+  // Uke-navigasjon: 0 = inneværende uke, +1 = neste, −1 = forrige (fra ?uke=N).
+  // Persistering av drag-drop bruker dette så økter lagres til den uka som vises.
+  const weekOffset = useMemo(() => parseWeekOffset(searchParams.get("uke")), [searchParams]);
+
   // Coach-Skill-veiviseren (kun coach-modus) — åpen/lukket-tilstand.
   const [coachSkillOpen, setCoachSkillOpen] = useState(false);
   const [aiPlanOpen, setAiPlanOpen] = useState(false);
@@ -596,6 +620,33 @@ export function WorkbenchHybrid({
     [searchParams, router, isCoach, currentPlayerId, setLevel],
   );
 
+  // Når brukeren navigerer til en annen uke re-rendrer server-komponenten med ny
+  // `data`. Reduceren ble seedet ÉN gang ved mount, så vi bygger uke-grid-en på
+  // nytt ved faktisk offset-endring (ikke ved hver re-render).
+  const prevOffsetRef = useRef(weekOffset);
+  useEffect(() => {
+    if (prevOffsetRef.current === weekOffset) return;
+    prevOffsetRef.current = weekOffset;
+    dispatch({ type: "hydrate", data });
+  }, [weekOffset, data]);
+
+  const goToWeek = useCallback(
+    (delta: number) => {
+      const target = Math.max(WEEK_OFFSET_MIN, Math.min(WEEK_OFFSET_MAX, weekOffset + delta));
+      if (target === weekOffset) return;
+      const params = new URLSearchParams(searchParams.toString());
+      if (target === 0) params.delete("uke");
+      else params.set("uke", String(target));
+      const base =
+        isCoach && currentPlayerId
+          ? `/admin/spillere/${currentPlayerId}/workbench`
+          : "/portal/planlegge/workbench";
+      const qs = params.toString();
+      router.replace(qs ? `${base}?${qs}` : base, { scroll: false });
+    },
+    [weekOffset, searchParams, isCoach, currentPlayerId, router],
+  );
+
   const effectiveLevel = hubTabToZoom(hubTab) ?? state.level;
 
   // Hub-fanen «Økt» skal vise økt-detalj (fasit wb-10), ikke tom dag-tidslinje.
@@ -639,9 +690,9 @@ export function WorkbenchHybrid({
       if (drag.kind === "move") {
         if (!isPersisted(drag.sid)) return;
         if (isCoach && currentPlayerId) {
-          void coachMoveWorkbenchSession(currentPlayerId, drag.sid, dayIndex);
+          void coachMoveWorkbenchSession(currentPlayerId, drag.sid, dayIndex, weekOffset);
         } else if (!isCoach) {
-          void moveWorkbenchSession(drag.sid, dayIndex);
+          void moveWorkbenchSession(drag.sid, dayIndex, weekOffset);
         }
         return;
       }
@@ -655,6 +706,7 @@ export function WorkbenchHybrid({
         area: item.cat,
         hour,
         minute,
+        weekOffset,
       };
       const promise =
         isCoach && currentPlayerId
@@ -668,7 +720,7 @@ export function WorkbenchHybrid({
         }
       });
     },
-    [isCoach, currentPlayerId, state.palette],
+    [isCoach, currentPlayerId, state.palette, weekOffset],
   );
 
   const onDayDrop = useCallback(
@@ -711,6 +763,7 @@ export function WorkbenchHybrid({
       area: "TEK" as const,
       hour: 9,
       minute: 0,
+      weekOffset,
     };
     const promise =
       isCoach && currentPlayerId
@@ -723,7 +776,7 @@ export function WorkbenchHybrid({
         dispatch({ type: "reconcileId", oldId: expectedNewId, newId: res.sessionId });
       }
     });
-  }, [state.nextId, isCoach, currentPlayerId]);
+  }, [state.nextId, isCoach, currentPlayerId, weekOffset]);
 
   // Slett valgt økt: fjern optimistisk + persister hvis den allerede er lagret.
   const handleRemoveSelected = useCallback(() => {
@@ -916,7 +969,10 @@ export function WorkbenchHybrid({
   const centerView = (
     <>
       {effectiveLevel === "uke" &&
-        (weekIsEmpty ? (
+        // «Ingen plan»-onboarding kun på inneværende uke. Har brukeren navigert
+        // til en annen uke skal grid-en (med uke-navigasjon) alltid vises — ellers
+        // blir en tom framtidsuke en blindvei uten vei tilbake.
+        (weekIsEmpty && weekOffset === 0 ? (
           <EmptyPlanState role={role} />
         ) : (
           <div data-testid="wb-week-ready">
@@ -926,6 +982,11 @@ export function WorkbenchHybrid({
               hoverDay={state.hoverDay}
               weekLabel={weekHead.weekLabel}
               weekRange={weekHead.range}
+              weekStartISO={data?.weekStartISO}
+              onPrevWeek={() => goToWeek(-1)}
+              onNextWeek={() => goToWeek(1)}
+              canPrev={weekOffset > WEEK_OFFSET_MIN}
+              canNext={weekOffset < WEEK_OFFSET_MAX}
               warningTitle={banner?.title ?? null}
               warningMeta={banner?.meta ?? null}
               showPaletteHint={isCoach}

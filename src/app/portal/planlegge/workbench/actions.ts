@@ -10,7 +10,7 @@ import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
-import { dateForDayIndex, executeSessionMove } from "@/lib/workbench/session-move";
+import { dateForDayIndex, executeSessionMove, weekRefDate } from "@/lib/workbench/session-move";
 import { deleteV2ForPlanSession, upsertV2ForPlanSession } from "@/lib/workbench/v2-sync";
 
 // ============================================================================
@@ -393,12 +393,14 @@ type WbPyramidArea = (typeof PYRAMID_AREAS)[number];
 export async function moveWorkbenchSession(
   sessionId: string,
   dayIndex: number,
+  weekOffset = 0,
 ): Promise<{ ok: boolean; error?: string }> {
   const user = await requirePortalUser();
   const result = await executeSessionMove(prisma, {
     sessionId,
     playerId: user.id,
     dayIndex,
+    refDate: weekRefDate(weekOffset),
   });
   if (!result.ok) return result;
   revalidatePath("/portal/planlegge/workbench");
@@ -412,6 +414,7 @@ export async function addWorkbenchSession(input: {
   area: WbPyramidArea;
   hour: number;
   minute: number;
+  weekOffset?: number;
 }): Promise<{ ok: boolean; sessionId?: string; error?: string }> {
   const user = await requirePortalUser();
   if (input.dayIndex < 0 || input.dayIndex > 6) return { ok: false, error: "Ugyldig dag" };
@@ -440,7 +443,12 @@ export async function addWorkbenchSession(input: {
     data: {
       planId: plan.id,
       title: input.title.trim().slice(0, 120) || "Ny økt",
-      scheduledAt: dateForDayIndex(input.dayIndex, input.hour, input.minute),
+      scheduledAt: dateForDayIndex(
+        input.dayIndex,
+        input.hour,
+        input.minute,
+        weekRefDate(input.weekOffset ?? 0),
+      ),
       durationMin: Math.max(5, Math.min(480, Math.round(input.durMin))),
       pyramidArea: area,
       status: "PLANNED",
