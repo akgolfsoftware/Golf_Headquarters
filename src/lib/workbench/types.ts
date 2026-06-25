@@ -1,4 +1,5 @@
 import type { PlanStatus } from "@/generated/prisma/client";
+import type { TekniskPlanWorkbenchContext } from "@/lib/teknisk-plan/types";
 import type { WorkbenchData } from "./load-workbench";
 
 export type WorkbenchRole = "player" | "coach";
@@ -17,4 +18,5 @@ export type WorkbenchContext = {
   insights: WorkbenchInsights;
   hasWeekSessions: boolean;
   planStatus: PlanStatus | null;
+  tekniskPlan: TekniskPlanWorkbenchContext | null;
 };

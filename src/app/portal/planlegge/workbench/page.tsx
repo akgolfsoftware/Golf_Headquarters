@@ -2,6 +2,7 @@
  * /portal/planlegge/workbench — PlayerHQ Workbench (delt planleggings-kjerne).
  */
 
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getViewMode } from "@/lib/view-mode";
@@ -36,12 +37,15 @@ export default async function WorkbenchPage() {
   const data = ctx?.data;
 
   return (
-    <WorkbenchHybrid
-      role="player"
-      data={data}
-      insightsLine={ctx?.insights.line ?? null}
-      playerName={user.name}
-      initials={utledInitialer(user.name)}
-    />
+    <Suspense fallback={null}>
+      <WorkbenchHybrid
+        role="player"
+        data={data}
+        insightsLine={ctx?.insights.line ?? null}
+        tekniskPlan={ctx?.tekniskPlan ?? null}
+        playerName={user.name}
+        initials={utledInitialer(user.name)}
+      />
+    </Suspense>
   );
 }

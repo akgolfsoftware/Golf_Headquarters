@@ -1,15 +1,14 @@
 /**
  * /admin/spillere/[id]/workbench — Coach-Workbench.
  *
- * Mobil (<md): WorkbenchMobile (år/måned/uke/dag planvisning).
- * Desktop (md+): delt WorkbenchHybrid i coach-modus (spiller-velger + Coach-Skill).
+ * Full paritet mobil + desktop: delt WorkbenchHybrid i coach-modus.
  */
 
+import { Suspense } from "react";
 import { notFound, redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { WorkbenchHybrid, type RosterPlayer } from "@/components/workbench-hybrid";
-import { WorkbenchMobile, type MobileSession } from "@/components/admin/workbench-mobile";
 import { loadWorkbenchContext } from "@/lib/workbench/load-context";
 
 export const dynamic = "force-dynamic";
@@ -45,7 +44,6 @@ export default async function CoachWorkbenchPage({ params }: Props) {
   const fulltNavn = spiller?.name ?? fornavn;
   const initialer = initialsOf(fulltNavn);
 
-  // Coachens spiller-roster for topbar-velgeren (samme spørring som /admin/stall).
   const rosterRows = await prisma.user
     .findMany({
       where: { role: "PLAYER", deletedAt: null },
@@ -59,68 +57,19 @@ export default async function CoachWorkbenchPage({ params }: Props) {
     return { id: p.id, name: navn, initials: initialsOf(navn) };
   });
 
-  // Mobil: last alle planlagte økter (alle aktive planer, hele planperioden)
-  const mobileSessions = await loadMobileSessions(id);
-
   return (
-    <>
-      {/* Mobil (<md) — lett-versjon med kalendervisninger */}
-      <div className="md:hidden">
-        <WorkbenchMobile
-          sessions={mobileSessions}
-          playerName={spiller?.name ?? fornavn}
-          playerId={id}
-        />
-      </div>
-
-      {/* Desktop (md+) — delt WorkbenchHybrid i coach-modus */}
-      <div className="hidden md:block">
-        <WorkbenchHybrid
-          role="coach"
-          data={data}
-          insightsLine={ctx.insights.line}
-          currentPlayerId={id}
-          playerName={fulltNavn}
-          initials={initialer}
-          coachName={me.name ?? "Anders Kristiansen"}
-          players={roster}
-        />
-      </div>
-    </>
+    <Suspense fallback={null}>
+      <WorkbenchHybrid
+        role="coach"
+        data={data}
+        insightsLine={ctx.insights.line}
+        tekniskPlan={ctx.tekniskPlan}
+        currentPlayerId={id}
+        playerName={fulltNavn}
+        initials={initialer}
+        coachName={me.name ?? "Anders Kristiansen"}
+        players={roster}
+      />
+    </Suspense>
   );
-}
-
-async function loadMobileSessions(playerId: string): Promise<MobileSession[]> {
-  const plans = await prisma.trainingPlan
-    .findMany({
-      where: { userId: playerId, isActive: true },
-      select: { id: true },
-    })
-    .catch(() => []);
-
-  if (plans.length === 0) return [];
-
-  const sessions = await prisma.trainingPlanSession
-    .findMany({
-      where: { planId: { in: plans.map((p) => p.id) } },
-      select: {
-        id: true,
-        scheduledAt: true,
-        title: true,
-        pyramidArea: true,
-        status: true,
-        durationMin: true,
-      },
-      orderBy: { scheduledAt: "asc" },
-    })
-    .catch(() => []);
-
-  return sessions.map((s) => ({
-    id: s.id,
-    scheduledAt: s.scheduledAt.toISOString(),
-    title: s.title,
-    pyramidArea: s.pyramidArea as string,
-    status: s.status as string,
-    durationMin: s.durationMin,
-  }));
 }

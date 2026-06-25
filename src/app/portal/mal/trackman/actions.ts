@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { triggerTrackManAgent } from "@/lib/agents/triggers";
+import { matchShotToTask, mpsToMph } from "@/lib/teknisk-plan/match-shot";
+import { parseTrackManCsv } from "@/lib/trackman/parse-csv";
 import { parseTrackManHtmlReport } from "@/lib/trackman/parse-html-report";
 import type { TrackManEnvironment } from "@/generated/prisma/client";
 
@@ -21,50 +23,70 @@ export type TrackManCsvInput = {
   onBehalfOfUserId?: string;
 };
 
-type ParsedRow = Record<string, string>;
-
-function parseCsv(text: string): ParsedRow[] {
-  const linjer = text.replace(/\r\n/g, "\n").split("\n").filter((l) => l.trim());
-  if (linjer.length < 2) return [];
-
-  const header = linjer[0].split(",").map((h) => h.trim());
-  return linjer.slice(1).map((linje) => {
-    const verdier = linje.split(",").map((v) => v.trim());
-    const rad: ParsedRow = {};
-    header.forEach((h, i) => {
-      rad[h] = verdier[i] ?? "";
-    });
-    return rad;
-  });
-}
-
 export async function importTrackManCsv(input: TrackManCsvInput) {
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
 
   const targetUserId = await resolveTargetUserId(user, input.onBehalfOfUserId);
 
-  const rader = parseCsv(input.csvContent);
-  if (rader.length === 0) {
-    throw new Error("Ingen rader funnet i CSV. Sjekk at filen har header + data.");
+  const parsed = parseTrackManCsv(input.csvContent);
+  if (!parsed.ok) {
+    throw new Error(parsed.error);
+  }
+  if (parsed.sessions.length === 0) {
+    throw new Error("Ingen slag funnet i CSV. Sjekk at filen har header + data.");
   }
 
-  await prisma.trackManSession.create({
-    data: {
-      userId: targetUserId,
-      recordedAt: new Date(input.recordedAt),
-      source: "csv-import",
-      shotCount: rader.length,
-      rawJson: rader,
-      environment: input.environment,
-    },
-  });
+  const recordedAtOverride = new Date(input.recordedAt);
+
+  for (const session of parsed.sessions) {
+    const recordedAt = recordedAtOverride;
+    const created = await prisma.trackManSession.create({
+      data: {
+        userId: targetUserId,
+        recordedAt,
+        source: "csv-import",
+        shotCount: session.shotCount,
+        rawJson: session.rawJson as import("@/generated/prisma/client").Prisma.JsonObject,
+        environment: input.environment,
+      },
+    });
+
+    const shots = session.rawJson.shots;
+    for (let i = 0; i < shots.length; i++) {
+      const shot = shots[i];
+      const club = shot.club?.trim() || "Ukjent";
+      const match = await matchShotToTask(targetUserId, club);
+
+      await prisma.trackManShot.create({
+        data: {
+          sessionId: created.id,
+          shotNumber: i + 1,
+          club,
+          clubSpeed: mpsToMph(shot.clubSpeedMps),
+          ballSpeed: mpsToMph(shot.ballSpeedMps),
+          smashFactor: shot.smashFactor,
+          carryDistance: shot.carryMeters,
+          totalDistance: shot.totalMeters,
+          launchAngle: shot.launchAngleDeg,
+          spinRate: shot.spinRateRpm,
+          side: shot.sideMeters,
+          positionTaskId: match.taskId,
+          matchSource: match.matchSource,
+          matchConfidence: match.matchConfidence,
+          recordedAt,
+        },
+      });
+    }
+  }
 
   await triggerTrackManAgent(targetUserId);
 
   revalidatePath("/portal/mal/trackman");
+  revalidatePath("/portal/planlegge/workbench");
   if (targetUserId !== user.id) {
     revalidatePath(`/admin/spillere/${targetUserId}`);
+    revalidatePath(`/admin/spillere/${targetUserId}/workbench`);
   }
 }
 

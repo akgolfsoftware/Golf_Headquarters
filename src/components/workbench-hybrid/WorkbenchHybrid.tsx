@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState, type ReactElement } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import type { TekniskPlanWorkbenchContext } from "@/lib/teknisk-plan/types";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
 import { FONT, WB, type Cat } from "./theme";
 import type { DimField } from "./taxonomy";
@@ -54,6 +55,15 @@ import {
 } from "@/lib/workbench/session-actions";
 import { InsightsStripe } from "./InsightsStripe";
 import { EmptyPlanState } from "./EmptyPlanState";
+import {
+  HubTabRail,
+  hubTabToZoom,
+  isPlanningHubTab,
+  zoomToHubTab,
+  type WorkbenchHubTab,
+} from "./HubTabRail";
+import { TekniskPlanTab } from "./TekniskPlanTab";
+import { SesongmalTab } from "./SesongmalTab";
 
 const LS_KEY = "akgolf.wb.level";
 const VALID_LEVELS: ZoomLevel[] = ["arsplan", "ar", "maned", "uke", "dag"];
@@ -397,6 +407,8 @@ export type WorkbenchHybridProps = {
   currentPlayerId?: string;
   /** «Hvorfor denne uken» — fra loadWorkbenchContext. */
   insightsLine?: string | null;
+  /** Aktiv teknisk plan — for hub-fanen Teknisk plan. */
+  tekniskPlan?: TekniskPlanWorkbenchContext | null;
 };
 
 export function WorkbenchHybrid({
@@ -408,9 +420,17 @@ export function WorkbenchHybrid({
   players,
   currentPlayerId,
   insightsLine,
+  tekniskPlan,
 }: WorkbenchHybridProps): ReactElement {
   const isCoach = role === "coach";
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const hubTab = useMemo((): WorkbenchHubTab => {
+    const raw = searchParams.get("tab");
+    const valid: WorkbenchHubTab[] = ["tek", "seson", "maler", "std", "gantt", "uke", "okt"];
+    return valid.includes(raw as WorkbenchHubTab) ? (raw as WorkbenchHubTab) : "uke";
+  }, [searchParams]);
 
   // Coach-Skill-veiviseren (kun coach-modus) — åpen/lukket-tilstand.
   const [coachSkillOpen, setCoachSkillOpen] = useState(false);
@@ -472,6 +492,22 @@ export function WorkbenchHybrid({
       /* ignore */
     }
   }, []);
+
+  const setHubTabWithUrl = useCallback(
+    (tab: WorkbenchHubTab) => {
+      const zoom = hubTabToZoom(tab);
+      if (zoom) setLevel(zoom);
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("tab", tab);
+      const base = isCoach && currentPlayerId
+        ? `/admin/spillere/${currentPlayerId}/workbench`
+        : "/portal/planlegge/workbench";
+      router.replace(`${base}?${params.toString()}`, { scroll: false });
+    },
+    [searchParams, router, isCoach, currentPlayerId, setLevel],
+  );
+
+  const effectiveLevel = hubTabToZoom(hubTab) ?? state.level;
 
   // Escape lukker det øverste laget: dim-picker → modal → inspektør.
   useEffect(() => {
@@ -681,9 +717,9 @@ export function WorkbenchHybrid({
   }
 
   // Header-tittel: uke bruker ekte ukenr når data finnes.
-  const [headTitleRaw, headSub] = HEADS[state.level];
+  const [headTitleRaw, headSub] = HEADS[effectiveLevel];
   const headTitle =
-    state.level === "uke" ? `${weekHead.weekLabel} — dra økter inn` : headTitleRaw;
+    effectiveLevel === "uke" ? `${weekHead.weekLabel} — dra økter inn` : headTitleRaw;
 
   // omr valgte verdier til dim-picker
   const dimSelected =
@@ -723,7 +759,7 @@ export function WorkbenchHybrid({
   // mobil-layoutet (begge bruker samme view-komponenter og handlere).
   const centerView = (
     <>
-      {state.level === "uke" &&
+      {effectiveLevel === "uke" &&
         (weekIsEmpty ? (
           <EmptyPlanState role={role} />
         ) : (
@@ -742,7 +778,7 @@ export function WorkbenchHybrid({
             onDayDrop={onDayDrop}
           />
         ))}
-      {state.level === "dag" && (
+      {effectiveLevel === "dag" && (
         <DagView
           daySessions={state.week.ons}
           selectedId={state.editScope === "session" ? state.selectedId : null}
@@ -750,7 +786,7 @@ export function WorkbenchHybrid({
           onTimelineDrop={onTimelineDrop}
         />
       )}
-      {state.level === "arsplan" && (
+      {effectiveLevel === "arsplan" && (
         <ArsplanView
           phases={seasonPhases}
           onPhaseClick={() => {
@@ -758,10 +794,10 @@ export function WorkbenchHybrid({
           }}
         />
       )}
-      {state.level === "ar" && (
+      {effectiveLevel === "ar" && (
         <ArView phases={seasonPhases} onMonthClick={(month) => dispatch({ type: "openMonth", month })} />
       )}
-      {state.level === "maned" && (
+      {effectiveLevel === "maned" && (
         <ManedView
           monthIndex={state.selectedMonth}
           phases={seasonPhases}
@@ -787,6 +823,63 @@ export function WorkbenchHybrid({
       onOpen={(key) => dispatch({ type: "openKpi", key })}
     />
   );
+
+  const showPlanningTab = isPlanningHubTab(hubTab);
+
+  const hubContent = showPlanningTab ? (
+    <>
+      {hubTab === "tek" && (
+        <TekniskPlanTab
+          ctx={tekniskPlan ?? null}
+          playerId={currentPlayerId}
+          isCoach={isCoach}
+          onGoToSession={() => setHubTabWithUrl("uke")}
+        />
+      )}
+      {hubTab === "seson" && <SesongmalTab goals={goals} />}
+      {hubTab === "maler" && (
+        <div className="wb-scroll" style={{ flex: 1, overflow: "auto", padding: 16 }}>
+          <p style={{ fontFamily: FONT.mono, fontSize: 10, color: WB.muted, margin: "0 0 12px" }}>
+            Planmaler · velg fra biblioteket eller opprett ny mal i AgencyOS.
+          </p>
+          <a
+            href={isCoach ? "/admin/plan-templates" : "/portal/planlegge/workbench?tab=std"}
+            style={{ fontFamily: FONT.mono, fontSize: 10, fontWeight: 700, color: WB.lime, textTransform: "uppercase" }}
+          >
+            Åpne mal-bibliotek →
+          </a>
+        </div>
+      )}
+      {hubTab === "std" && (
+        <div className="wb-scroll" style={{ flex: 1, overflow: "auto", padding: 16, display: "grid", gap: 8 }}>
+          {state.palette.map((p) => (
+            <button
+              key={p.pid}
+              type="button"
+              onClick={() => {
+                setHubTabWithUrl("uke");
+                dispatch({ type: "selectPalette", pid: p.pid });
+              }}
+              style={{
+                textAlign: "left",
+                background: WB.cardBg,
+                border: `1px solid ${WB.innerBorder}`,
+                borderRadius: 10,
+                padding: "12px 14px",
+                cursor: "pointer",
+                color: WB.text,
+              }}
+            >
+              <div style={{ fontSize: 13, fontWeight: 600 }}>{p.title}</div>
+              <div style={{ fontFamily: FONT.mono, fontSize: 9, color: WB.muted3, marginTop: 4 }}>
+                {p.dur} min · {p.cat}
+              </div>
+            </button>
+          ))}
+        </div>
+      )}
+    </>
+  ) : null;
 
   // Mobil-inspektør vises kun når noe er valgt OG vi er på mobil.
   const mobileInspectorOpen = isMobile && inspectorMode !== null;
@@ -840,8 +933,11 @@ export function WorkbenchHybrid({
           }}
         >
           <Topbar
-            level={state.level}
-            onLevel={setLevel}
+            level={effectiveLevel}
+            onLevel={(l) => {
+              setLevel(l);
+              setHubTabWithUrl(zoomToHubTab(l));
+            }}
             playerName={playerName}
             initials={initials}
             onAddSession={handleAddSession}
@@ -851,9 +947,11 @@ export function WorkbenchHybrid({
             onOpenCoachSkill={isCoach ? () => setCoachSkillOpen(true) : undefined}
             onOpenAiPlan={isCoach && currentPlayerId ? () => setAiPlanOpen(true) : undefined}
           />
+          <HubTabRail tab={hubTab} onTab={setHubTabWithUrl} />
 
           {/* body */}
           <div style={{ flex: 1, display: "flex", minHeight: 0 }}>
+            {!showPlanningTab && (
             <PaletteSidebar
               open={state.panels}
               onToggle={(k) => dispatch({ type: "togglePanel", key: k })}
@@ -866,19 +964,22 @@ export function WorkbenchHybrid({
               onPaletteDragStart={onPaletteDragStart}
               onAddPalette={() => dispatch({ type: "addPalette" })}
             />
+            )}
 
             {/* center */}
             <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
-              {/* KPI-stripe — over alle zoom-visninger. Volum/pyramide fra ekte
-                  uke-data; adherence/SG er fasit-demo (ingen modell ennå). */}
-              <InsightsStripe line={insightsLine ?? null} />
-              {kpiStrip}
-              {centerView}
+              {!showPlanningTab && (
+                <>
+                  <InsightsStripe line={insightsLine ?? null} />
+                  {kpiStrip}
+                </>
+              )}
+              {showPlanningTab ? hubContent : centerView}
             </div>
 
             {/* Desktop-inspektør (høyre-kolonne) — kun når noe er valgt OG vi ikke
                 er på mobil (mobil viser inspektøren som bunn-ark i stedet). */}
-            {inspectorMode && !isMobile && (
+            {!showPlanningTab && inspectorMode && !isMobile && (
               <Inspector
                 mode={inspectorMode}
                 onClose={() => dispatch({ type: "closeInspector" })}
@@ -920,14 +1021,44 @@ export function WorkbenchHybrid({
           currentPlayerId={currentPlayerId}
           onOpenCoachSkill={isCoach ? () => setCoachSkillOpen(true) : undefined}
         />
-        <MobileZoomRail level={state.level} onLevel={setLevel} />
-        <InsightsStripe line={insightsLine ?? null} />
-        {kpiStrip}
+        <HubTabRail tab={hubTab} onTab={setHubTabWithUrl} />
+        {!showPlanningTab && (
+          <MobileZoomRail
+            level={effectiveLevel}
+            onLevel={(l) => {
+              setLevel(l);
+              setHubTabWithUrl(zoomToHubTab(l));
+            }}
+          />
+        )}
+        {!showPlanningTab && (
+          <>
+            <InsightsStripe line={insightsLine ?? null} />
+            {kpiStrip}
+          </>
+        )}
         {/* Én visning om gangen. Uke-rutenettet (8 kolonner) scroller horisontalt
             via en min-bredde; Dag-tidslinja og Årsplan/År/Måned reflow-er til full bredde. */}
-        <div className="wb-scroll" style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", overflowX: state.level === "uke" ? "auto" : "hidden" }}>
-          <div style={{ flex: 1, minWidth: state.level === "uke" ? 680 : 0, display: "flex", flexDirection: "column", minHeight: 0 }}>
-            {centerView}
+        <div
+          className="wb-scroll"
+          style={{
+            flex: 1,
+            minHeight: 0,
+            display: "flex",
+            flexDirection: "column",
+            overflowX: !showPlanningTab && effectiveLevel === "uke" ? "auto" : "hidden",
+          }}
+        >
+          <div
+            style={{
+              flex: 1,
+              minWidth: !showPlanningTab && effectiveLevel === "uke" ? 680 : 0,
+              display: "flex",
+              flexDirection: "column",
+              minHeight: 0,
+            }}
+          >
+            {showPlanningTab ? hubContent : centerView}
           </div>
         </div>
         <MobileStatusbar totals={totals} grand={grand} weekLabel={weekHead.weekLabel} volMin={data?.volTarget?.min} volMax={data?.volTarget?.max} />

@@ -116,6 +116,9 @@ const nextConfig: NextConfig = {
 
       // PlayerHQ Planlegge
       { source: "/portal/planlegge/turnering/:id", destination: "/portal/tren/turneringer/:id", permanent: false },
+      // Teknisk plan-liste → Workbench hub (detalj/[planId] beholdes)
+      { source: "/portal/tren/teknisk-plan", destination: "/portal/planlegge/workbench?tab=tek", permanent: false },
+      { source: "/portal/teknisk", destination: "/portal/planlegge/workbench?tab=tek", permanent: false },
 
       // CoachHQ sub-routes
       { source: "/admin/planlegge/grupper/:id", destination: "/admin/grupper/:id", permanent: false },
