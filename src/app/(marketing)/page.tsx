@@ -1,581 +1,357 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Check, MapPin, Trees } from "lucide-react";
-import { BookingShortcuts } from "@/components/marketing/booking-shortcuts";
+import { ArrowRight, Check } from "lucide-react";
+import { SGConsole } from "@/components/marketing/sg-console";
+import { PlayerHQMockup } from "@/components/marketing/playerhq-mockup";
 import { BookingAnbefaling } from "@/components/marketing/booking-anbefaling";
-import { PulseDot } from "@/components/athletic/pulse-dot";
 
 export const metadata: Metadata = {
-  title: "AK Golf Academy | Personlig coaching, bygd på data",
+  title: "AK Golf | Hver slag teller. Nå kan du bevise det.",
   description:
-    "AK Golf Academy tilbyr prestasjonsgolf-coaching for ambisiøse spillere. Booking, treningsplaner og analyse i ett system.",
+    "Norges datadrevne golfakademi. Strokes gained, periodiserte planer, PlayerHQ og coach-terminal i ett system. For spillere som vil til toppen.",
 };
 
-/* Tjenester — månedspriser fra design-fasit (ui_kits/marketing, 04 Tjenester) */
-const TJENESTER = [
+/* Enkel data for bento og band — moderne stil */
+const BENTO = [
   {
-    eb: "Flex",
-    title: "Flex",
-    price: "0",
-    featured: false,
-    items: [
-      "Book enkelttimer ved behov",
-      "20 min med Markus · 300 kr",
-      "50 min med Anders · 1 300 kr",
-      "Tilgang til Mulligan + GFGK",
-    ],
-    cta: "Book drop-in",
-    href: "/booking",
+    icon: "📈",
+    title: "Strokes gained i dybden",
+    desc: "Se nøyaktig hvor slagene tapes og vinnes — per kategori, mot tour-snitt. Samme modell som proffene bruker.",
+    span: "col-span-1 md:col-span-3",
+    dark: false as const,
   },
   {
-    eb: "Anbefalt",
-    title: "Performance",
-    price: "1 200",
-    featured: true,
-    items: [
-      "2 × 20 min per måned",
-      "Periodisert treningsplan",
-      "Månedlig SG-rapport",
-      "PlayerHQ-app inkludert",
-      "Fri tilgang til alle anlegg",
-    ],
-    cta: "Start Performance",
-    href: "/coaching",
+    icon: "📋",
+    title: "Plan & Workbench",
+    desc: "År, periode, uke og økt i én flate. Coach tildeler — du gjennomfører med ett trykk.",
+    span: "col-span-1 md:col-span-3",
+    dark: false as const,
   },
   {
-    eb: "For ambisjon",
-    title: "Performance Pro",
-    price: "2 220",
-    featured: false,
-    items: [
-      "4 × 20 min per måned",
-      "Full SG-analyse pr. runde",
-      "Fysisk-program integrert i planen",
-      "Turneringspriming + bane-prep",
-      "Hjemmebase Mulligan Sarpsborg",
-    ],
-    cta: "Søk opptak",
-    href: "/kontakt",
+    icon: "💬",
+    title: "Coach i lomma",
+    desc: "Direktemelding, video-feedback og notater fra coachen din — i sanntid.",
+    span: "col-span-1 md:col-span-3",
+    dark: true as const,
+  },
+  {
+    icon: "🧪",
+    title: "FYS & tester",
+    desc: "Utviklingspyramiden — fra fysisk base til turneringsforberedelse.",
+    span: "col-span-1 md:col-span-2",
+    dark: false as const,
+  },
+  {
+    icon: "⭐",
+    title: "Talent-løype",
+    desc: "For juniorer som skal til toppen — steg-for-steg program.",
+    span: "col-span-1 md:col-span-2",
+    dark: false as const,
+  },
+  {
+    icon: "📡",
+    title: "TrackMan",
+    desc: "Hvert slag målt. Dispersjon, ballflukt, køllesnitt og spin.",
+    span: "col-span-1 md:col-span-2",
+    dark: false as const,
   },
 ] as const;
 
-export default function Hjem() {
+const BAND = [
+  { num: "2.8", label: "SNITT SG PER RUNDE", suffix: "" },
+  { num: "41", label: "AKTIVE SPILLERE", suffix: "" },
+  { num: "14", label: "ÅR ERFARING", suffix: "" },
+  { num: "2200", label: "TIMER COACHING", suffix: "+" },
+] as const;
+
+const PRISER = [
+  {
+    tier: "Gratis",
+    price: "0",
+    sub: "kr / mnd",
+    desc: "Logg runder, se egen utvikling, enkel tilgang til drills.",
+    features: [
+      "Spillerprofil & historikk",
+      "Enkel SG-oversikt",
+      "Drills-bibliotek",
+      "Booking av drop-in",
+    ],
+    cta: "Start gratis",
+    href: "/auth/signup",
+    featured: false,
+  },
+  {
+    tier: "Performance",
+    price: "1 200",
+    sub: "kr / mnd",
+    desc: "Full treningsplan + PlayerHQ. Anbefalt for seriøse amatører.",
+    features: [
+      "Periodisert plan + Workbench",
+      "Månedlig SG-rapport",
+      "PlayerHQ full tilgang",
+      "2× coaching pr. måned",
+      "Fri tilgang alle anlegg",
+    ],
+    cta: "Start Performance",
+    href: "/coaching",
+    featured: true,
+  },
+  {
+    tier: "Performance Pro",
+    price: "2 220",
+    sub: "kr / mnd",
+    desc: "For de som sikter høyt. Full analyse, fysikk og turnering.",
+    features: [
+      "Alt i Performance",
+      "Full SG per runde + innsikt",
+      "Fysisk program + tester",
+      "4× coaching pr. måned",
+      "Turneringsforberedelse",
+    ],
+    cta: "Søk opptak",
+    href: "/kontakt",
+    featured: false,
+  },
+] as const;
+
+export default function NyLanding() {
   return (
     <div className="bg-background text-foreground">
-      {/* Hero entry-animasjon (fra fasit marketing.css) — stagger + reduced motion */}
-      <style>{`
-        @keyframes mktHeroIn { to { opacity: 1; transform: translateY(0); } }
-        @keyframes mktHeroEm { to { opacity: 1; } }
-        .mkt-hero-in { opacity: 0; transform: translateY(8px); animation: mktHeroIn 600ms cubic-bezier(0.2, 0.7, 0.3, 1) both; }
-        .mkt-hero-em { opacity: 0; animation: mktHeroEm 700ms cubic-bezier(0.2, 0.7, 0.3, 1) 480ms forwards; }
-        @media (prefers-reduced-motion: reduce) {
-          .mkt-hero-in, .mkt-hero-em { animation: none; opacity: 1; transform: none; }
-        }
-      `}</style>
+      {/* ========== HERO — Moderne (tekst + SG-konsoll) ========== */}
+      <section className="relative overflow-hidden border-b border-border/60">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-6 pb-16 pt-14 md:grid-cols-12 md:gap-8 lg:pt-16">
+          {/* Left text */}
+          <div className="md:col-span-7">
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-70" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
+              </span>
+              Norges datadrevne golfakademi
+            </div>
 
-      {/* ========== 01 HERO · full-bleed foto + forest-scrim ========== */}
-      <section className="relative overflow-hidden bg-foreground">
-        {/* Foto (hero-right) — ligger bak innholdet i full bredde */}
-        <div aria-hidden className="absolute inset-0 z-0">
-          <Image
-            src="/images/akgolf/hero-bunker-shot.jpg"
-            alt=""
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover"
-          />
-          {/* Forest-scrim — brand-tonet: lesbarhet venstre, fade mot høyre (desktop) */}
-          <div
-            className="absolute inset-0 hidden lg:block"
-            style={{
-              background:
-                "linear-gradient(90deg, hsl(var(--foreground) / 0.78) 0%, hsl(var(--foreground) / 0.55) 35%, hsl(var(--foreground) / 0.10) 70%, transparent 100%), linear-gradient(180deg, hsl(var(--foreground) / 0.30) 0%, transparent 30%, transparent 70%, hsl(var(--foreground) / 0.45) 100%)",
-            }}
-          />
-          {/* Vertikal scrim (mobil, fasit <900px) */}
-          <div
-            className="absolute inset-0 lg:hidden"
-            style={{
-              background:
-                "linear-gradient(180deg, hsl(var(--foreground) / 0.78) 0%, hsl(var(--foreground) / 0.55) 30%, hsl(var(--foreground) / 0.40) 70%, hsl(var(--foreground) / 0.55) 100%)",
-            }}
-          />
-          {/* Hybrid radial-glow aksenter (lime topp-høyre, forest bunn-venstre) */}
-          <div
-            aria-hidden
-            className="absolute -right-32 -top-20 h-[600px] w-[600px]"
-            style={{
-              background:
-                "radial-gradient(circle, hsl(var(--accent) / 0.12), transparent 65%)",
-            }}
-          />
-          <div
-            aria-hidden
-            className="absolute -bottom-16 -left-16 h-[400px] w-[400px]"
-            style={{
-              background:
-                "radial-gradient(circle, hsl(var(--primary) / 0.35), transparent 65%)",
-            }}
-          />
-        </div>
-
-        <div className="relative z-10 mx-auto w-full max-w-7xl px-6 md:px-8">
-          <div className="flex max-w-[720px] flex-col justify-center pb-16 pt-12 lg:min-h-[648px] lg:py-16">
-            <span className="mkt-hero-in inline-flex items-center gap-2.5 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">
-              <PulseDot size="md" />
-              Ny sesong · Plasser åpne fra 1. mai
-            </span>
-
-            <h1
-              className="mkt-hero-in mt-5 max-w-[14ch] text-balance font-display text-[clamp(44px,6vw,80px)] font-semibold leading-[0.98] tracking-[-0.03em] text-secondary"
-              style={{ animationDelay: "80ms" }}
-            >
-              Bli en bedre golfspiller.{" "}
-              <em className="mkt-hero-em font-normal italic text-accent">
-                Sammen.
-              </em>
+            <h1 className="mt-6 max-w-[15ch] font-display text-[clamp(42px,7vw,78px)] font-semibold leading-[0.92] tracking-[-0.035em]">
+              Hver slag<br />teller.<br />Nå kan du <em className="font-medium italic text-primary">bevise</em> det.
             </h1>
 
-            <p
-              className="mkt-hero-in mt-6 max-w-[48ch] text-[17px] leading-[1.55] text-secondary/85"
-              style={{ animationDelay: "200ms" }}
-            >
-              Personlig coaching, periodiserte treningsplaner og målbar
-              fremgang for spillere som vil mer enn å bare slå baller.
+            <p className="mt-6 max-w-[46ch] text-[17px] leading-[1.55] text-muted-foreground">
+              Strokes gained i dybden, periodiserte planer og coach i samme system.
+              Bygd for spillere som vil til topp 12 % — og coacher som vet hvem som trenger dem nå.
             </p>
 
-            <div
-              className="mkt-hero-in mt-8 flex flex-wrap gap-3"
-              style={{ animationDelay: "320ms" }}
-            >
+            <div className="mt-8 flex flex-wrap items-center gap-3">
               <BookingAnbefaling
-                triggerLabel="Book coachingtime"
-                triggerClassName="inline-flex h-[52px] items-center justify-center gap-1.5 rounded-full bg-accent px-6 font-display text-[16px] font-bold tracking-[-0.005em] text-accent-foreground shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition hover:-translate-y-px hover:brightness-105 hover:shadow-[0_10px_28px_rgba(209,248,67,0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                triggerLabel="Start gratis prøve"
+                triggerClassName="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-accent px-7 font-display text-[15px] font-bold tracking-[-0.005em] text-accent-foreground shadow transition hover:brightness-105 active:scale-[0.985]"
               />
               <Link
                 href="/playerhq"
-                className="inline-flex h-[52px] items-center justify-center gap-1.5 rounded-xl px-6 font-display text-[16px] font-bold tracking-[-0.005em] text-secondary ring-1 ring-inset ring-secondary/45 transition hover:bg-secondary/10 hover:ring-secondary/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-border px-6 font-display text-[15px] font-semibold tracking-[-0.005em] transition hover:bg-muted/40"
               >
-                Få PlayerHQ
+                Se PlayerHQ <ArrowRight className="h-4 w-4" />
               </Link>
+            </div>
+
+            <div className="mt-8 flex gap-8 text-sm text-muted-foreground">
+              <div>
+                <div className="font-mono text-xl font-semibold tabular-nums tracking-[-1px] text-foreground">2.8</div>
+                <div className="font-mono text-[10px] uppercase tracking-[0.12em]">SNITT SG / RUNDE</div>
+              </div>
+              <div>
+                <div className="font-mono text-xl font-semibold tabular-nums tracking-[-1px] text-foreground">41</div>
+                <div className="font-mono text-[10px] uppercase tracking-[0.12em]">AKTIVE SPILLERE</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right: SG Console */}
+          <div className="md:col-span-5">
+            <SGConsole />
+          </div>
+        </div>
+
+        {/* Subtle marquee (robust CSS — moved to globals.css for Turbopack/App Router compatibility) */}
+        <div className="overflow-hidden border-t border-border/60 bg-[#0A1F17] py-2.5 text-white">
+          <div className="marquee flex items-center gap-x-10 whitespace-nowrap text-[11px] font-semibold tracking-[0.06em] text-[#CFE8D8]/80">
+            <span className="flex shrink-0 items-center gap-10 pr-10">
+              ØYVIND ROHJAN · +2.9 SG SISTE 18 · <span className="text-accent">PERSONAL BEST</span> · PUTT 1.84 · TOPP 8% NORSK · WANG 2026 KLAR
+            </span>
+            <span className="flex shrink-0 items-center gap-10 pr-10">
+              ØYVIND ROHJAN · +2.9 SG SISTE 18 · <span className="text-accent">PERSONAL BEST</span> · PUTT 1.84 · TOPP 8% NORSK · WANG 2026 KLAR
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* ========== ÉN PLATTFORM — TO UTTRYKK ========== */}
+      <section className="mx-auto max-w-7xl px-6 py-20">
+        <div className="mx-auto max-w-2xl text-center">
+          <div className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+            ÉN PLATTFORM · TO UTTRYKK
+          </div>
+          <h2 className="mt-3 font-display text-[38px] font-semibold tracking-[-0.02em] md:text-[44px]">
+            To apper. <em className="font-normal italic text-primary">Én sannhet.</em>
+          </h2>
+          <p className="mt-3 text-[15px] text-muted-foreground">
+            Spilleren får et lyst, rolig magasin over hva <strong className="text-foreground">jeg</strong> skal gjøre i dag.
+            Coachen får en mørk terminal over <strong className="text-foreground">hvem som trenger meg</strong> nå.
+          </p>
+        </div>
+
+        <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2">
+          {/* PlayerHQ light */}
+          <div className="overflow-hidden rounded-2xl border border-border bg-card">
+            <div className="flex items-center justify-between border-b bg-muted/30 px-5 py-3 text-xs font-semibold uppercase tracking-[0.08em]">
+              <span>PlayerHQ · Spiller</span>
+              <span className="text-muted-foreground">LYST</span>
+            </div>
+            <div className="p-5">
+              <PlayerHQMockup />
+            </div>
+          </div>
+
+          {/* AgencyOS dark terminal preview */}
+          <div className="overflow-hidden rounded-2xl border border-[#1F2E27] bg-[#0A1F17] text-white">
+            <div className="flex items-center justify-between border-b border-white/10 bg-black/30 px-5 py-3 text-xs font-semibold uppercase tracking-[0.08em] text-accent">
+              <span>AgencyOS · Coach</span>
+              <span className="text-white/50">TERMINAL</span>
+            </div>
+            <div className="p-5">
+              <div className="mb-4 font-mono text-[10px] uppercase tracking-[0.1em] text-white/50">Hvem trenger meg nå</div>
+              <div className="space-y-2 text-sm">
+                {[
+                  { init: "ØR", name: "Øyvind Rohjan", why: "3 putts på 17-18 · ARG svak", tag: "I DAG" },
+                  { init: "MH", name: "Mathias H.", why: "Low drive · tee total -1.4", tag: "HØY PRI" },
+                  { init: "LN", name: "Lukas N.", why: "Ingen økter siste 9 dager", tag: "INAKTIV" },
+                ].map((p, i) => (
+                  <div key={i} className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/5 p-3">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 font-mono text-xs font-bold text-accent">{p.init}</div>
+                    <div className="min-w-0 flex-1">
+                      <div className="font-semibold">{p.name}</div>
+                      <div className="text-xs text-white/60">{p.why}</div>
+                    </div>
+                    <div className="font-mono text-[10px] font-bold text-lime-400">{p.tag}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 text-right">
+                <Link href="/admin" className="text-xs font-semibold uppercase tracking-[0.1em] text-accent hover:underline">Åpne cockpit →</Link>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ========== 02 KPI strip · ekte tall ========== */}
-      <section className="mx-auto max-w-7xl px-6 md:px-8">
-        <div className="grid grid-cols-2 gap-8 border-t border-border py-16 md:grid-cols-4 md:gap-12">
-          <Kpi num="38" lbl="Aktive spillere" />
-          <Kpi num="12" lbl="År erfaring" />
-          <Kpi num="4" lbl="Treningsanlegg" />
-          <Kpi num="2 200" plus lbl="Timer coaching i 2025" />
-        </div>
-      </section>
+      {/* ========== BENTO FEATURES ========== */}
+      <section className="border-y border-border bg-muted/20 py-16">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="mb-8 flex items-end justify-between">
+            <div>
+              <div className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">06 moduler</div>
+              <h2 className="font-display text-4xl font-semibold tracking-[-0.015em]">Alt for å bli bedre.</h2>
+            </div>
+            <Link href="/coaching" className="hidden items-center gap-1 text-sm font-semibold text-primary md:flex">
+              Se hele plattformen <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
 
-      {/* ========== 03 BOOKING direkte · live data fra DB ========== */}
-      <BookingShortcuts />
-
-      {/* ========== 04 TJENESTER · månedspriser ========== */}
-      <section id="tjenester" className="scroll-mt-20 py-24">
-        <div className="mx-auto max-w-7xl px-6 md:px-8">
-          <SectionEyebrow>Coaching · Månedlig</SectionEyebrow>
-          <SectionH2>
-            Tre veier til <Em>neste nivå</Em>.
-          </SectionH2>
-
-          <div className="mt-14 grid grid-cols-1 gap-4 md:grid-cols-3">
-            {TJENESTER.map((t) => (
-              <TjenesteCard key={t.title} {...t} />
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-6">
+            {BENTO.map((item, index) => (
+              <div
+                key={index}
+                className={`group rounded-2xl border p-6 transition ${item.dark ? "border-white/10 bg-[#0A1F17] text-white" : "border-border bg-card"} ${item.span}`}
+              >
+                <div className="mb-4 text-2xl">{item.icon}</div>
+                <div className="font-display text-[19px] font-semibold tracking-[-0.01em]">{item.title}</div>
+                <p className={`mt-2 text-[13.5px] leading-snug ${item.dark ? "text-white/70" : "text-muted-foreground"}`}>
+                  {item.desc}
+                </p>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ========== 05 PLAYERHQ pitch ========== */}
-      <section id="playerhq" className="scroll-mt-20 py-24">
-        <div className="mx-auto max-w-7xl px-6 md:px-8">
-          <div className="mt-14 grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
-            <div>
-              <SectionEyebrow>Spillerportal</SectionEyebrow>
-              <SectionH2>
-                PlayerHQ, <Em>spillerportalen din</Em>.
-              </SectionH2>
-              <p className="mt-4 max-w-[48ch] text-[16px] leading-[1.6] text-muted-foreground">
-                Treningsplanen din, SG-tallene fra hver runde og
-                pyramide-fremgangen samlet i én app. Du logger økter med ett
-                trykk, og vi gjør tallene synlige neste morgen.
-              </p>
-              <div className="mt-6 flex flex-wrap gap-2">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.1em] text-primary-foreground">
-                  Inkludert i Performance
-                </span>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.1em] text-accent-foreground">
-                  Beta · iOS + Android
-                </span>
+      {/* ========== TALL-BAND ========== */}
+      <section className="bg-[#0A1F17] py-12 text-white">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-x-6 gap-y-10 px-6 md:grid-cols-4">
+          {BAND.map((s, i) => (
+            <div key={i}>
+              <div className="font-mono text-[46px] font-semibold tracking-[-1.5px]">{s.num}<span className="text-accent">{s.suffix}</span></div>
+              <div className="mt-1 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-accent">{s.label}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ========== PRISER ========== */}
+      <section id="priser" className="mx-auto max-w-7xl scroll-mt-12 px-6 py-20">
+        <div className="mx-auto max-w-[620px] text-center">
+          <div className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Priser</div>
+          <h2 className="mt-2 font-display text-[38px] font-semibold tracking-[-0.015em]">Start gratis. Oppgrader når du vil.</h2>
+          <p className="mt-3 text-muted-foreground">Ingen binding. PlayerHQ + coaching i samme pakke.</p>
+        </div>
+
+        <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
+          {PRISER.map((p, idx) => (
+            <div
+              key={idx}
+              className={`flex flex-col rounded-2xl border p-8 ${p.featured ? "border-transparent bg-[#0A1F17] text-white ring-1 ring-inset ring-white/10" : "border-border bg-card"}`}
+            >
+              <div className={`font-mono text-xs font-semibold uppercase tracking-[0.12em] ${p.featured ? "text-accent" : "text-muted-foreground"}`}>
+                {p.tier}
               </div>
-              <ul className="mt-6 flex flex-col gap-3">
-                {[
-                  "Daglig økt med målbar drill og fasit",
-                  "Strokes Gained-rapport hver mandag",
-                  "Treningspyramide oppdatert i sanntid",
-                ].map((item) => (
-                  <li
-                    key={item}
-                    className="flex items-start gap-3 text-[15px] leading-[1.55]"
-                  >
-                    <Check
-                      className="mt-1 h-[18px] w-[18px] shrink-0 text-primary"
-                      strokeWidth={1.5}
-                    />
-                    {item}
+              <div className="mt-4 flex items-end gap-1">
+                <span className={`font-mono text-[46px] font-semibold tracking-[-1.5px] tabular-nums ${p.featured ? "text-white" : ""}`}>{p.price}</span>
+                <span className={`pb-1 text-sm ${p.featured ? "text-white/60" : "text-muted-foreground"}`}>{p.sub}</span>
+              </div>
+              <p className={`mt-3 text-[13px] ${p.featured ? "text-white/80" : "text-muted-foreground"}`}>{p.desc}</p>
+
+              <ul className="mt-6 flex-1 space-y-2.5 text-sm">
+                {p.features.map((f, fi) => (
+                  <li key={fi} className="flex items-start gap-2.5">
+                    <Check className={`mt-0.5 h-4 w-4 shrink-0 ${p.featured ? "text-accent" : "text-primary"}`} />
+                    <span>{f}</span>
                   </li>
                 ))}
               </ul>
 
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-                <Link
-                  href="/auth/signup"
-                  className="inline-flex h-12 items-center justify-center gap-1.5 rounded-full bg-accent px-6 font-display text-[15px] font-bold tracking-[-0.005em] text-accent-foreground shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition hover:-translate-y-px hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                >
-                  Start gratis prøveperiode
-                  <ArrowRight className="h-[18px] w-[18px]" strokeWidth={1.5} />
-                </Link>
-                <span className="max-w-[30ch] text-[13px] leading-[1.45] text-muted-foreground">
-                  Gratis i prøveperioden, deretter 300 kr/mnd. Gratis så lenge du
-                  har en coaching-pakke.
-                </span>
-              </div>
+              <Link
+                href={p.href}
+                className={`mt-8 inline-flex h-11 items-center justify-center rounded-full text-sm font-semibold tracking-[-0.01em] transition ${p.featured ? "bg-accent text-[#005840] hover:brightness-105" : "border border-primary/70 text-primary hover:bg-primary/5"}`}
+              >
+                {p.cta}
+              </Link>
             </div>
-
-            <div className="relative aspect-[4/5] overflow-hidden rounded-3xl">
-              <Image
-                src="/images/akademy/putting-data.jpg"
-                alt="Putting med målepinner og data-instrumenter på greenen"
-                fill
-                sizes="(max-width: 1024px) 100vw, 600px"
-                className="object-cover"
-              />
-              <div
-                aria-hidden
-                className="absolute inset-0"
-                style={{
-                  background:
-                    "linear-gradient(180deg, transparent 60%, hsl(var(--foreground) / 0.5) 100%)",
-                }}
-              />
-            </div>
-          </div>
+          ))}
         </div>
       </section>
 
-      {/* ========== 06 ANLEGG ========== */}
-      <section id="anlegg" className="scroll-mt-20 py-24">
-        <div className="mx-auto max-w-7xl px-6 md:px-8">
-          <SectionEyebrow>Anlegg · Øst</SectionEyebrow>
-          <SectionH2>
-            Lokasjoner
-          </SectionH2>
-
-          <div className="mt-12 max-w-xl">
-            <div className="flex flex-col gap-3 rounded-[20px] border border-border bg-card p-7">
-              <span className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground">
-                <Trees className="h-3.5 w-3.5" strokeWidth={1.5} />
-                Bane · Mai – Oktober
-              </span>
-              <h4 className="font-display text-[22px] font-bold tracking-[-0.015em]">
-                GFGK · Gamle Fredrikstad
-              </h4>
-              <p className="text-sm leading-[1.55] text-muted-foreground">
-                18-hulls par 72. Hjemmebanen vår om sommeren, med
-                turneringsforberedelser og bane-strategi.
-              </p>
-              <div className="mt-1 flex flex-col gap-1.5">
-                <LocRow sted="Gamle Fredrikstad GK" by="Fredrikstad" first />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ========== 07 PARTNERE ========== */}
-      <section
-        id="partnere"
-        className="mx-auto max-w-7xl scroll-mt-20 px-6 pb-24 md:px-8"
-      >
-        <SectionEyebrow className="mb-8 block">Partnere · 2025</SectionEyebrow>
-        <div className="grid grid-cols-2 gap-3 border-y border-border py-8 md:grid-cols-4">
-          <PartnerCell role="Utdanning · idrettsfag">
-            <Image
-              src="/images/logos/wang.svg"
-              alt="WANG Toppidrett"
-              width={112}
-              height={146}
-              className="h-14 w-auto max-w-[160px] object-contain opacity-[0.92]"
-            />
-          </PartnerCell>
-          <PartnerCell role="Klubb · for de store slagene">
-            <Image
-              src="/images/logos/miklagard-logo.png"
-              alt="Miklagard Golf"
-              width={400}
-              height={194}
-              className="h-14 w-auto max-w-[160px] object-contain brightness-0"
-            />
-          </PartnerCell>
-          <PartnerCell role="Klubb · 18-hulls">
-            <Image
-              src="/images/logos/gfgk-logo.png"
-              alt="GFGK · Gamle Fredrikstad"
-              width={400}
-              height={326}
-              className="h-14 w-auto max-w-[160px] object-contain opacity-[0.92]"
-            />
-          </PartnerCell>
-          <PartnerCell role="Anlegg · indoor">
-            <span className="font-display text-2xl font-bold leading-[56px] tracking-[-0.01em] text-foreground">
-              Mulligan Indoor
-            </span>
-          </PartnerCell>
-        </div>
-      </section>
-
-      {/* ========== 08 CLOSING CTA ========== */}
-      <section className="mx-auto mt-24 max-w-7xl px-6 pb-24 md:px-8">
-        <div
-          className="relative overflow-hidden rounded-3xl px-6 py-16 text-center text-white sm:px-12 lg:px-16 lg:py-20"
-          style={{
-            background:
-              "linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(168 72% 11%) 100%)",
-          }}
-        >
-          <div
-            aria-hidden
-            className="absolute -top-[120px] left-1/2 h-[480px] w-[480px] -translate-x-1/2 rounded-full bg-accent opacity-[0.12] blur-[4px]"
-          />
-          <span className="relative z-10 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">
-            2026-sesongen · Opptak åpent
-          </span>
-          <h2 className="relative z-10 mx-auto mt-4 max-w-[20ch] text-balance font-display text-[clamp(36px,5vw,56px)] font-bold leading-[1.05] tracking-[-0.025em]">
-            Klar for <Em dark>neste steg</Em>?
+      {/* ========== FINAL CTA ========== */}
+      <section className="mx-auto max-w-7xl px-6 pb-20">
+        <div className="rounded-3xl bg-primary px-8 py-14 text-center text-white md:px-16 md:py-16">
+          <div className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-accent">Opptak 2026 åpent</div>
+          <h2 className="mt-3 font-display text-[38px] font-semibold tracking-[-0.02em] md:text-[46px]">
+            Klar for neste steg?
           </h2>
-          <p className="relative z-10 mx-auto mt-4 max-w-[56ch] text-[16px] leading-[1.55] text-white/85">
-            Vi har plass til 20 nye spillere i 2026-sesongen. Start med en
-            gratis kartleggings-økt. Vi ser hvor du er, snakker om hvor du vil,
-            og legger en plan om kjemien stemmer.
+          <p className="mx-auto mt-3 max-w-[46ch] text-[15px] text-white/85">
+            Vi tar inn maks 20 nye spillere denne sesongen. Start med en gratis kartleggingsøkt — vi ser hvor du er og om det passer.
           </p>
-          <div className="relative z-10 mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+
+          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <BookingAnbefaling
               triggerLabel="Book gratis kartlegging"
-              triggerClassName="inline-flex h-[52px] items-center justify-center gap-1.5 rounded-full bg-accent px-6 font-display text-[16px] font-bold tracking-[-0.005em] text-accent-foreground shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition hover:-translate-y-px hover:brightness-105 hover:shadow-[0_10px_28px_rgba(209,248,67,0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              triggerClassName="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-accent px-7 font-display text-base font-bold text-accent-foreground shadow hover:brightness-105"
             />
             <Link
               href="/kontakt"
-              className="inline-flex h-[52px] items-center justify-center gap-1.5 rounded-xl px-6 font-display text-[16px] font-bold tracking-[-0.005em] text-secondary ring-1 ring-inset ring-secondary/45 transition hover:bg-secondary/10 hover:ring-secondary/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/40 px-6 font-display text-base font-semibold text-white hover:bg-white/10"
             >
               Snakk med Anders
             </Link>
           </div>
         </div>
       </section>
-    </div>
-  );
-}
-
-/* ---------- Seksjonsbyggesteiner (fasit: .section-eyebrow / .section h2) ---------- */
-
-function SectionEyebrow({
-  children,
-  className = "",
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <span
-      className={`font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground ${className}`}
-    >
-      {children}
-    </span>
-  );
-}
-
-function SectionH2({ children }: { children: React.ReactNode }) {
-  return (
-    <h2 className="mt-4 max-w-[22ch] text-balance font-display text-[clamp(36px,5vw,56px)] font-bold leading-[1.05] tracking-[-0.025em]">
-      {children}
-    </h2>
-  );
-}
-
-function Em({
-  children,
-  dark = false,
-}: {
-  children: React.ReactNode;
-  dark?: boolean;
-}) {
-  return (
-    <em
-      className={`font-display font-normal italic ${dark ? "text-accent" : "text-primary"}`}
-    >
-      {children}
-    </em>
-  );
-}
-
-function Kpi({ num, lbl, plus = false }: { num: string; lbl: string; plus?: boolean }) {
-  return (
-    <div>
-      <div className="font-mono text-[clamp(40px,5vw,60px)] font-semibold leading-none tracking-[-0.025em] text-primary tabular-nums">
-        {num}
-        {plus && <span className="font-normal text-muted-foreground">+</span>}
-      </div>
-      <div className="mt-4 font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-        {lbl}
-      </div>
-    </div>
-  );
-}
-
-function TjenesteCard({
-  eb,
-  title,
-  price,
-  items,
-  cta,
-  href,
-  featured,
-}: {
-  eb: string;
-  title: string;
-  price: string;
-  items: readonly string[];
-  cta: string;
-  href: string;
-  featured: boolean;
-}) {
-  return (
-    <div
-      className={`relative flex flex-col overflow-hidden rounded-[20px] border p-8 ${
-        featured
-          ? "dark border-transparent bg-background"
-          : "border-border bg-card"
-      }`}
-    >
-      {featured && (
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -right-10 -top-10 h-[220px] w-[220px]"
-          style={{
-            background:
-              "radial-gradient(circle, hsl(var(--accent) / 0.15), transparent 65%)",
-          }}
-        />
-      )}
-      <span
-        className={`relative z-10 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] ${
-          featured ? "text-accent" : "text-muted-foreground"
-        }`}
-      >
-        {eb}
-      </span>
-      <h4
-        className={`relative z-10 mt-3 font-display text-[28px] font-bold leading-[1.05] tracking-[-0.02em] ${
-          featured ? "text-white" : "text-foreground"
-        }`}
-      >
-        {title}
-      </h4>
-      <div
-        className={`relative z-10 mt-6 flex items-baseline gap-1.5 border-t pt-5 ${
-          featured ? "border-white/15" : "border-border"
-        }`}
-      >
-        <span
-          className={`font-mono text-4xl font-semibold leading-none tracking-[-0.025em] tabular-nums ${
-            featured ? "text-white" : "text-foreground"
-          }`}
-        >
-          {price}
-        </span>
-        <small
-          className={`font-mono text-xs ${featured ? "text-white/70" : "text-muted-foreground"}`}
-        >
-          kr / mnd
-        </small>
-      </div>
-      <ul className="relative z-10 mt-6 flex flex-col gap-2.5">
-        {items.map((item) => (
-          <li
-            key={item}
-            className={`flex items-start gap-2.5 text-sm leading-[1.45] ${
-              featured ? "text-white/90" : "text-foreground"
-            }`}
-          >
-            <Check
-              className={`mt-0.5 h-4 w-4 shrink-0 ${featured ? "text-accent" : "text-primary"}`}
-              strokeWidth={1.5}
-            />
-            {item}
-          </li>
-        ))}
-      </ul>
-      <Link
-        href={href}
-        className={`relative z-10 mt-7 inline-flex h-11 items-center justify-center gap-1.5 font-display text-sm font-semibold tracking-[-0.005em] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
-          featured
-            ? "rounded-full bg-accent [--primary:164_100%_17.3%] text-primary shadow-[0_6px_14px_rgba(209,248,67,0.25)] hover:brightness-105"
-            : "rounded-xl text-primary ring-1 ring-inset ring-primary hover:bg-primary/5"
-        }`}
-      >
-        {cta}
-      </Link>
-    </div>
-  );
-}
-
-function LocRow({
-  sted,
-  by,
-  first = false,
-}: {
-  sted: string;
-  by: string;
-  first?: boolean;
-}) {
-  return (
-    <div
-      className={`flex items-center gap-2 py-2 text-[13px] font-medium ${
-        first ? "" : "border-t border-border"
-      }`}
-    >
-      <MapPin className="h-3.5 w-3.5 shrink-0 text-primary" strokeWidth={1.5} />
-      {sted}
-      <span className="ml-auto font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground">
-        {by}
-      </span>
-    </div>
-  );
-}
-
-function PartnerCell({
-  role,
-  children,
-}: {
-  role: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex flex-col items-center gap-3 p-4">
-      <div className="flex h-16 w-full items-center justify-center">
-        {children}
-      </div>
-      <span className="text-center font-mono text-[9px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-        {role}
-      </span>
     </div>
   );
 }

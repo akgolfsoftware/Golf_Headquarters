@@ -514,3 +514,15 @@ em.editorial {
   letter-spacing: 0.1em;
   color: hsl(var(--muted-foreground));
 }
+
+/* Marketing homepage marquee (moved from <style jsx> for Turbopack + App Router Server Component compatibility) */
+.marquee {
+  animation: marquee 26s linear infinite;
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee { animation: none; }
+}

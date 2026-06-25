@@ -525,7 +525,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Forside | `/(marketing)` | ✓ | ✓✓– | ~ | ~ | – | ✓ |
+| Forside | `/(marketing)` | ✓ | ✓✓– | ~ | ~ | – | ✓† | 
 | Anlegg | `/(marketing)/anlegg` | – | --- | ✓ | ~ | ~ | ✓ |
 | · Anlegg-detalj | `/(marketing)/anlegg/[slug]` | – | --- | ✓ | ~ | ~ | ✓ |
 | Blogg | `/(marketing)/blogg` | – | --- | ✓ | ~ | ~ | ✓ |
