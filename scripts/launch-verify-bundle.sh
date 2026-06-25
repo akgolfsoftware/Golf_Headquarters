@@ -66,13 +66,21 @@ rm -f "$SCRATCH/wb-gate/console-final.log" "$SCRATCH/wb-gate/wb-gate-run.log" "$
 echo "wb-gate EXIT:0" | tee -a "$SCRATCH/verification-manifest.log"
 
 echo "" | tee -a "$SCRATCH/verification-manifest.log"
-echo "## Step 4b: adversarial diff (same bundle)" | tee -a "$SCRATCH/verification-manifest.log"
+echo "## Step 4b: adversarial diff (sub-agent review)" | tee -a "$SCRATCH/verification-manifest.log"
 {
   echo "# CMD: node scripts/workbench-adversarial-diff.mjs $SCRATCH/wb-gate $SCRATCH/verification-manifest.log"
   node scripts/workbench-adversarial-diff.mjs "$SCRATCH/wb-gate" "$SCRATCH/verification-manifest.log"
   echo "EXIT:0"
 } >>"$SCRATCH/wb-gate/adversarial-diff.log" 2>&1
-echo "adversarial-diff.md regenerated" | tee -a "$SCRATCH/verification-manifest.log"
+if ! grep -q '0 undocumented deviations' "$SCRATCH/wb-gate/adversarial-diff.md" 2>/dev/null; then
+  echo "adversarial-diff.md MISSING verdict" | tee -a "$SCRATCH/verification-manifest.log"
+  exit 1
+fi
+if ! grep -q 'ADVERSARIAL_AGENT' "$SCRATCH/wb-gate/adversarial-diff.md" 2>/dev/null; then
+  echo "adversarial-diff.md MISSING agent review marker" | tee -a "$SCRATCH/verification-manifest.log"
+  exit 1
+fi
+echo "adversarial-diff.md agent review OK" | tee -a "$SCRATCH/verification-manifest.log"
 
 echo "" | tee -a "$SCRATCH/verification-manifest.log"
 echo "## Step 5: locked decisions evidence (from gate)" | tee -a "$SCRATCH/verification-manifest.log"
@@ -113,8 +121,8 @@ require_file "$SCRATCH/locked-decisions.log"
 require_file "$SCRATCH/wb-gate/adversarial-diff.md"
 require_file "$FLOW_LOG"
 
-require_pattern "$FLOW_LOG" 'MOVE_BEFORE' 'MOVE_BEFORE'
-require_pattern "$FLOW_LOG" 'MOVE_AFTER.*PASS' 'MOVE_AFTER'
+require_pattern "$FLOW_LOG" 'MOVE_DRAG_BEFORE' 'MOVE_DRAG_BEFORE'
+require_pattern "$FLOW_LOG" 'MOVE_DRAG_AFTER.*PASS' 'MOVE_DRAG_AFTER'
 require_pattern "$FLOW_LOG" 'PUBLISH_BEFORE|PUBLISH_AFTER' 'PUBLISH'
 require_pattern "$FLOW_LOG" 'PUBLISH_CLICK|PUBLISH_ACTION' 'PUBLISH_UI'
 

@@ -672,14 +672,22 @@ export function WorkbenchHybrid({
   );
 
   const onDayDrop = useCallback(
-    (day: WeekKey) => {
-      const drag = dragRef.current;
+    (day: WeekKey, transferSid?: string) => {
+      let drag = dragRef.current;
+      if (!drag && transferSid) {
+        const from = dayKeyOf(state.week, transferSid);
+        if (from) drag = { kind: "move", sid: transferSid, from };
+        else {
+          const p = state.palette.find((x) => x.pid === transferSid);
+          if (p) drag = { kind: "palette", pid: transferSid };
+        }
+      }
       const expectedNewId = `s${state.nextId}`;
       dispatch({ type: "drop", day, drag });
       dragRef.current = null;
       persistDrop(drag, day, undefined, expectedNewId);
     },
-    [state.nextId, persistDrop],
+    [state.nextId, persistDrop, state.week, state.palette],
   );
   const onTimelineDrop = useCallback(
     (time: string) => {

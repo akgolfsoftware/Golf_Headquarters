@@ -1,9 +1,9 @@
 /**
- * Regenerer adversarial-diff.md bundlet til samme verification-kjøring.
- * Usage: node scripts/workbench-adversarial-diff.mjs <wb-gate-dir> <verification-manifest.log>
+ * Bundle adversarial diff — krever vision-agent rapport fra samme screenshot-sett.
  */
-import { readdir, readFile, writeFile } from "node:fs/promises";
+import { readFile, writeFile, readdir } from "node:fs/promises";
 import path from "node:path";
+import { spawnSync } from "node:child_process";
 
 const OUT = process.argv[2];
 const MANIFEST = process.argv[3];
@@ -12,73 +12,60 @@ if (!OUT || !MANIFEST) {
   process.exit(1);
 }
 
+// Vision review mot design-PNG (sub-agent ekvivalent)
+const vision = spawnSync("npx", ["tsx", "scripts/workbench-adversarial-vision.ts", OUT], {
+  cwd: process.cwd(),
+  encoding: "utf8",
+  stdio: ["ignore", "pipe", "pipe"],
+});
+if (vision.status !== 0) {
+  console.error((vision.stderr || vision.stdout || "").trim());
+  process.exit(1);
+}
+
 const manifest = await readFile(MANIFEST, "utf8");
 const bundleTs =
   manifest.match(/Launch verification bundle — (.+)/)?.[1]?.trim() ??
   new Date().toISOString();
 
-const pngs = (await readdir(OUT))
-  .filter((f) => f.endsWith(".png"))
-  .sort();
+const pngs = (await readdir(OUT)).filter((f) => f.endsWith(".png")).sort();
+const agentReport = await readFile(path.join(OUT, "adversarial-agent-report.md"), "utf8");
+const flow = await readFile(path.join(OUT, "workbench-flow.log"), "utf8").catch(() => "");
 
-const flowPath = path.join(OUT, "workbench-flow.log");
-let flow = "";
-try {
-  flow = await readFile(flowPath, "utf8");
-} catch {
-  flow = "";
+const verdictMatch = agentReport.match(/VERDICT:\s*(\d+)\s+undocumented/i);
+const undocumented = verdictMatch ? Number(verdictMatch[1]) : -1;
+if (undocumented !== 0) {
+  console.error(`Adversarial agent found ${undocumented} undocumented deviations`);
+  process.exit(1);
 }
-
-const functionalLines = [
-  "MALER_BRUK",
-  "MOVE_BEFORE",
-  "MOVE_AFTER",
-  "MOVE_UI",
-  "PUBLISH_BEFORE",
-  "PUBLISH_AFTER",
-  "PUBLISH_CLICK",
-  "COACH workbench",
-].flatMap((key) =>
-  flow
-    .split("\n")
-    .filter((l) => l.includes(key))
-    .map((l) => l.trim()),
-);
 
 const md = `# Workbench adversarial diff — launch bundle
 
-**Spawn trace:** \`launch-verify-bundle.sh\` step 4 + 4b @ \`${bundleTs}\`
+**Spawn trace:** \`launch-verify-bundle.sh\` step 4b @ \`${bundleTs}\`
+**ADVERSARIAL_AGENT:** claude-sonnet-4-6 vision review (design PNG vs gate screenshots, same run)
 
-**Design-kilde:** \`.design-review/claude-code-handoff/screens/wb-*.png\` + \`.design-review/Workbench Komplett Hub.dc.html\`
+**Design-kilde:** \`.design-review/claude-code-handoff/screens/wb-*.png\`
 
 **Implementasjon (denne kjøringen):**
 ${pngs.map((p) => `- \`wb-gate/${p}\``).join("\n")}
 
-**Unntak-kilde:** \`.claude/rules/design-porting-gate.md\` § Workbench lanserings-hub (25. juni 2026)
-
 ## Verdict: **0 undocumented deviations**
 
-Adversarial review (runde 4, re-bundlet til screenshots over) — alle strukturelle avvik er dekket av dokumenterte launch-unntak:
+## Agent rapport
 
-| Kategori | Gate-unntak |
-|----------|-------------|
-| Hub-rail 7 faner + zoom-rail mobil | § 7 hub-faner |
-| Uke time-grid vs kolonne-stack | § Uke time-grid |
-| FORRIGE/NESTE uten week-offset API | § FORRIGE/NESTE uke |
-| Maler match-% / kortanatomi | § Maler-unntak |
-| Std drill-preview | § Std DRILL-PROGRAM |
-| Coach PaletteSidebar | § Spiller uten PaletteSidebar |
-| Turneringsbanner | § Turneringsbanner i uke |
-| Tom tilstand uten seed | § Tom tilstand |
+${agentReport.replace(/^#.*\n\n?/, "")}
 
-## Funksjonell gate (workbench-flow.log — samme bundle)
+## Funksjonell gate (workbench-flow.log)
 
-${functionalLines.length ? functionalLines.map((l) => `- ${l.replace(/^\[[^\]]+\]\s*/, "")}`).join("\n") : "- (ingen flyt-linjer funnet)"}
-
-## Manifest-kobling
-
-Denne filen genereres **etter** Playwright-screenshots i step 4 og **før** bundle-manifest PASS — tidsstempel matcher \`verification-manifest.log\`.
+${["MOVE_DRAG_BEFORE", "MOVE_DRAG_AFTER", "PUBLISH_CLICK", "MALER_BRUK"]
+  .flatMap((key) =>
+    flow
+      .split("\n")
+      .filter((l) => l.includes(key))
+      .map((l) => `- ${l.replace(/^\[[^\]]+\]\s*/, "")}`),
+  )
+  .join("\n")}
 `;
 
 await writeFile(path.join(OUT, "adversarial-diff.md"), md);
-console.log(`Wrote ${path.join(OUT, "adversarial-diff.md")} @ bundle ${bundleTs}`);
+console.log(`Wrote adversarial-diff.md @ bundle ${bundleTs}`);

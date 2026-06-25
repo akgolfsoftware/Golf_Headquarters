@@ -1,10 +1,10 @@
 "use client";
 
-import type { ReactElement } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useState, type ReactElement } from "react";
+import { ChevronLeft, ChevronRight, GripVertical } from "lucide-react";
 import { CAT_COLORS, FONT, WB } from "./theme";
 import { durLabel } from "./helpers";
-import type { WbSession, WeekKey, WeekState } from "./types";
+import type { WeekKey, WeekState } from "./types";
 
 const ROW_H = 42;
 const END_HOUR = 22;
@@ -56,7 +56,7 @@ type UkeViewProps = {
   onSessionDragStart: (id: string, from: WeekKey) => void;
   onDayDragOver: (day: WeekKey) => void;
   onDayDragLeave: (day: WeekKey) => void;
-  onDayDrop: (day: WeekKey) => void;
+  onDayDrop: (day: WeekKey, transferSid?: string) => void;
   /** Coach/desktop: vis «dra fra panelet»-hint. */
   showPaletteHint?: boolean;
 };
@@ -76,6 +76,7 @@ export function UkeView({
   onDayDrop,
   showPaletteHint = true,
 }: UkeViewProps): ReactElement {
+  const [draggingId, setDraggingId] = useState<string | null>(null);
   const startHour = earliestHour(week);
   const hours: string[] = [];
   for (let h = startHour; h <= END_HOUR; h++) hours.push(`${h < 10 ? "0" : ""}${h}:00`);
@@ -219,7 +220,7 @@ export function UkeView({
                 onDragLeave={() => onDayDragLeave(d.key)}
                 onDrop={(e) => {
                   e.preventDefault();
-                  onDayDrop(d.key);
+                  onDayDrop(d.key, e.dataTransfer.getData("text/plain") || undefined);
                 }}
                 style={{
                   position: "relative",
@@ -273,22 +274,20 @@ export function UkeView({
                   {hours.map((h) => (
                     <div key={h} style={{ height: ROW_H, borderTop: `1px solid ${WB.hairline}`, boxSizing: "border-box" }} />
                   ))}
-                  {list.map((s: WbSession) => {
-                    const { hh, mm } = parseHM(s.time);
+                  {list
+                    .map((s, idx) => ({ s, idx, ...parseHM(s.time) }))
+                    .sort((a, b) => a.hh - b.hh || a.mm - b.mm)
+                    .map(({ s, idx, hh, mm }) => {
                     const top = (hh - startHour + mm / 60) * ROW_H;
                     const height = Math.max(46, (s.dur / 60) * ROW_H - 3);
                     const c = CAT_COLORS[s.cat];
                     const on = s.id === selectedId;
+                    const dragging = draggingId === s.id;
+                    const stackZ = 2 + idx;
                     return (
                       <div
                         key={s.id}
-                        draggable
                         data-sid={s.id}
-                        onDragStart={(e) => {
-                          e.dataTransfer.effectAllowed = "move";
-                          e.dataTransfer.setData("text/plain", s.id);
-                          onSessionDragStart(s.id, d.key);
-                        }}
                         onClick={() => onSessionClick(s.id)}
                         style={{
                           position: "absolute",
@@ -296,30 +295,69 @@ export function UkeView({
                           right: 3,
                           top,
                           minHeight: height,
+                          zIndex: dragging ? 50 : stackZ,
                           background: on ? "#1d3a2e" : WB.cardBg,
                           borderTop: `1px solid ${on ? WB.lime : WB.panelBorder}`,
                           borderRight: `1px solid ${on ? WB.lime : WB.panelBorder}`,
                           borderBottom: `1px solid ${on ? WB.lime : WB.panelBorder}`,
                           borderLeft: `3px solid ${c}`,
                           borderRadius: 9,
-                          padding: "7px 9px",
+                          padding: "7px 7px 7px 4px",
                           cursor: "pointer",
                           overflow: "hidden",
                           display: "flex",
-                          flexDirection: "column",
-                          gap: 2,
-                          boxShadow: on ? "0 0 0 3px rgba(209,248,67,0.12)" : undefined,
+                          flexDirection: "row",
+                          gap: 4,
+                          boxShadow: dragging
+                            ? "0 8px 24px rgba(0,0,0,0.35)"
+                            : on
+                              ? "0 0 0 3px rgba(209,248,67,0.12)"
+                              : undefined,
+                          opacity: dragging ? 0.92 : 1,
                         }}
                       >
-                        <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                          <span style={{ width: 7, height: 7, borderRadius: "50%", background: c, flexShrink: 0 }} />
-                          <span style={{ fontFamily: FONT.mono, fontSize: 9, color: WB.muted }}>
-                            {s.time && s.time !== "—" ? s.time : "—"} · {durLabel(s.dur)}
-                          </span>
+                        <div
+                          draggable
+                          data-drag-handle
+                          role="button"
+                          tabIndex={0}
+                          aria-label={`Flytt ${s.title}`}
+                          onPointerDown={(e) => e.stopPropagation()}
+                          onDragStart={(e) => {
+                            e.stopPropagation();
+                            e.dataTransfer.effectAllowed = "move";
+                            e.dataTransfer.setData("text/plain", s.id);
+                            setDraggingId(s.id);
+                            onSessionDragStart(s.id, d.key);
+                          }}
+                          onDragEnd={() => setDraggingId(null)}
+                          style={{
+                            flexShrink: 0,
+                            alignSelf: "stretch",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            width: 20,
+                            background: "rgba(255,255,255,0.04)",
+                            borderRadius: 4,
+                            color: WB.muted3,
+                            cursor: "grab",
+                            touchAction: "none",
+                          }}
+                        >
+                          <GripVertical size={14} strokeWidth={1.5} />
                         </div>
-                        <div style={{ fontSize: 11.5, fontWeight: 600, color: WB.text, lineHeight: 1.25 }}>{s.title}</div>
-                        <div style={{ fontFamily: FONT.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.05em", color: c }}>
-                          {AREA_LABEL[s.cat] ?? s.cat}
+                        <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 2 }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                            <span style={{ width: 7, height: 7, borderRadius: "50%", background: c, flexShrink: 0 }} />
+                            <span style={{ fontFamily: FONT.mono, fontSize: 9, color: WB.muted }}>
+                              {s.time && s.time !== "—" ? s.time : "—"} · {durLabel(s.dur)}
+                            </span>
+                          </div>
+                          <div style={{ fontSize: 11.5, fontWeight: 600, color: WB.text, lineHeight: 1.25 }}>{s.title}</div>
+                          <div style={{ fontFamily: FONT.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.05em", color: c }}>
+                            {AREA_LABEL[s.cat] ?? s.cat}
+                          </div>
                         </div>
                       </div>
                     );

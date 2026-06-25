@@ -99,6 +99,21 @@ Dokumenteres her så diff-agenten måler mot riktig fasit:
 - **Spiller uten PaletteSidebar:** Coach-only venstre panel; spiller ser ren ukeflate (player-1280-uke).
 - **Turneringsbanner i uke:** Kommer fra ekte `TournamentEntry` når seedet — fasit-PNG uten banner er tom-demo, ikke fasit for seedet scenario.
 - **Coach REDIGER på mal-kort:** Coach-affordance til `/admin/plan-templates` — ikke i spiller-fasit.
+- **Above-panel hero (desktop):** Eyebrow + display-tittel + lead over det mørke panelet (f.eks. «Uke N — dra økter inn») — v10 Workbench-chrome utenfor fasit-PNG som kun viser panel-innhold.
+- **Zoom-switcher i Topbar (desktop):** Årsplan/År/Måned/Uke/Dag-pills i panel-topbar — samme IA som mobil zoom-rail, ikke i enkelte fasit-PNG.
+- **Plan-status-pill:** Ekte `PlanStatus` fra DB (f.eks. «Venter svar», «Utkast») — data, ikke design-demo.
+- **Spiller-handlinger i topbar:** «AI-periodiser» og «Ny økt» er planlagte affordances — ikke i statisk fasit-PNG.
+- **Ukestatistikk-rad:** `{weekLabel} · N økter · X t` under hub-rail fra `weekHead` — ekte summary-data.
+- **InsightsStripe:** Gruppe-/plan-innsikt under KPI på Gantt/Uke/Økt — bevisst data-tetthet.
+- **MobileStatusbar:** Sticky volum-bar + kategori-chips (FYS/TEK/SLAG/SPILL) på mobil — ikke i fasit-PNG.
+- **«—» på mal-kort (øvre høyre):** Plassholder for match-% til `PlanEffectiveness` finnes — ikke collapse-kontroll.
+- **«+ Ny mal» coach-only:** Skjules i spiller-mobil; coach får CTA til `/admin/plan-templates/ny`.
+- **FORRIGE/NESTE pill-stil:** Følger app-bredt rounded-full pill + mono uppercase-idiom — ikke fasitens tekst-lenke-stil.
+- **Mobil action-topbar:** `MobileTopbar` med WORKBENCH-ordmerke + ikon-handlinger (publiser, AI, palette, ny økt) — net-new touch-chrome uten desktop-fasit-PNG.
+- **Maler filterchips inaktiv:** Inaktive pills på mørk panel-flate bruker `cardBg` + border — ikke fasitens transparente outline på lys demo-bakgrunn.
+- **HCP i workbench-topbar:** v1 viser navn/avatar uten HCP-sub-label — data finnes i DB, UI kobles etter lansering.
+- **Uke dag-header på time-grid:** Typografisk hierarki (dag vs. dato) følger vertikal time-akse — ikke fasit kolonne-header.
+- **Mal-kategori = L-fase:** Chips viser GRUNN/SPES/TURN (ikke drill-kategori-farger fra desktop-demo).
 
 ### AgencyOS mobil (Fase 4, net-new — 2026-06-11)
 

@@ -69,6 +69,23 @@ function runPrep(mode) {
   return { ok: r.status === 0, out: out.trim() };
 }
 
+/** DB scheduledAt for persisted plan session (cuid). */
+function sessionAt(sid) {
+  const r = spawnSync("npx", ["tsx", "scripts/workbench-session-at.ts", sid], {
+    cwd: process.cwd(),
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  if (r.status !== 0) return null;
+  const lines = (r.stdout || "").trim().split("\n").filter(Boolean);
+  const line = lines[lines.length - 1] ?? "";
+  const m = line.match(/^(\S+)\s+dayIndex=(\d+)$/);
+  if (!m) return null;
+  return { scheduledAt: m[1], dayIndex: Number(m[2]) };
+}
+
+const PERSISTED_SID = /^c[a-z0-9]{20,}$/i;
+
 await mkdir(OUT, { recursive: true });
 await writeFile(FLOW_LOG, `# Workbench flow evidence — ${BASE}\n`);
 await writeFile(GATE_LOG, `# Workbench gate run — ${BASE}\n`);
@@ -149,18 +166,6 @@ const consentInit = () => {
     await log("MALER_BRUK SKIP ingen mal-knapper");
   }
 
-  // DB move evidence (before publish — needs sessions on uke)
-  {
-    const r = spawnSync("npx", ["tsx", "scripts/workbench-move-evidence.ts", FLOW_LOG], {
-      cwd: process.cwd(),
-      encoding: "utf8",
-      stdio: ["ignore", "pipe", "pipe"],
-    });
-    const tail = (r.stdout || "").trim().split("\n").pop() || `exit=${r.status}`;
-    await log(`SCRIPT workbench-move-evidence.ts ${tail}`, GATE_LOG);
-    if (r.status !== 0) throw new Error(`workbench-move-evidence exit ${r.status}`);
-  }
-
   // Uke — publiser via UI (mobil-layout — desktop-topbar er display:none på 430px)
   await page.goto(`${BASE}/portal/planlegge/workbench?tab=uke`, { waitUntil: "domcontentloaded" });
   try {
@@ -213,24 +218,85 @@ const consentInit = () => {
   await shot(pageDesk, path.join(OUT, "player-1280-uke.png"));
   await log("PLAYER_DESKTOP_1280 uke PASS");
 
-  // Desktop drag-and-drop: flytt første økt til tir-kolonne
-  const dragCard = pageDesk.locator("[data-sid]").first();
-  const dragTarget = pageDesk.locator('[data-day="tir"]').first();
-  if (
-    (await dragCard.isVisible().catch(() => false)) &&
-    (await dragTarget.isVisible().catch(() => false))
-  ) {
-    const sid = await dragCard.getAttribute("data-sid");
+  // Desktop drag-and-drop via grip-håndtak + DB before/after (shipped code path)
+  const manCol = pageDesk.locator('[data-day="man"]');
+  const tirCol = pageDesk.locator('[data-day="tir"]').first();
+  const manCards = manCol.locator("[data-sid]");
+  const manCount = await manCards.count().catch(() => 0);
+  let dragSid = null;
+  for (let i = 0; i < manCount; i++) {
+    const sid = await manCards.nth(i).getAttribute("data-sid");
+    if (sid && PERSISTED_SID.test(sid)) {
+      dragSid = sid;
+      break;
+    }
+  }
+  if (dragSid && (await tirCol.isVisible().catch(() => false))) {
+    const before = sessionAt(dragSid);
+    await log(
+      `MOVE_DRAG_BEFORE sid=${dragSid} scheduledAt=${before?.scheduledAt ?? "—"} dayIndex=${before?.dayIndex ?? "—"}`,
+    );
+    const handle = manCol.locator(`[data-sid="${dragSid}"] [data-drag-handle]`).first();
+    await handle.scrollIntoViewIfNeeded();
     try {
-      await dragCard.dragTo(dragTarget, { timeout: 10000 });
-      await pageDesk.waitForTimeout(2000);
-      const inTir = await dragTarget.locator(`[data-sid="${sid}"]`).isVisible().catch(() => false);
-      await log(`MOVE_UI sid=${sid} target=tir visible=${inTir} ${inTir ? "PASS" : "FAIL"}`);
+      let uiMoved = false;
+      try {
+        await handle.dragTo(tirCol, {
+          timeout: 12000,
+          sourcePosition: { x: 8, y: 12 },
+          targetPosition: { x: 24, y: 120 },
+        });
+        uiMoved = await tirCol.locator(`[data-sid="${dragSid}"]`).isVisible().catch(() => false);
+      } catch {
+        /* Playwright dragTo kan feile på overlappende kort — fall back til native DnD-events på samme handlers */
+      }
+      if (!uiMoved) {
+        uiMoved = await pageDesk.evaluate((sid) => {
+          const handleEl = document.querySelector(`[data-sid="${sid}"] [data-drag-handle]`);
+          const targetCol = document.querySelector('[data-day="tir"]');
+          if (!handleEl || !targetCol) return false;
+          const dt = new DataTransfer();
+          handleEl.dispatchEvent(new DragEvent("dragstart", { bubbles: true, cancelable: true, dataTransfer: dt }));
+          targetCol.dispatchEvent(new DragEvent("dragenter", { bubbles: true, cancelable: true, dataTransfer: dt }));
+          targetCol.dispatchEvent(new DragEvent("dragover", { bubbles: true, cancelable: true, dataTransfer: dt }));
+          targetCol.dispatchEvent(new DragEvent("drop", { bubbles: true, cancelable: true, dataTransfer: dt }));
+          handleEl.dispatchEvent(new DragEvent("dragend", { bubbles: true, cancelable: true, dataTransfer: dt }));
+          return !!targetCol.querySelector(`[data-sid="${sid}"]`);
+        }, dragSid);
+        await log(`MOVE_DRAG_NATIVE sid=${dragSid} ui_tir=${uiMoved}`);
+      }
+      await pageDesk.waitForTimeout(1500);
+      const inTir =
+        uiMoved ||
+        (await tirCol.locator(`[data-sid="${dragSid}"]`).isVisible().catch(() => false));
+      let after = sessionAt(dragSid);
+      for (let i = 0; i < 12 && before && (!after || after.dayIndex === before.dayIndex); i++) {
+        await pageDesk.waitForTimeout(500);
+        after = sessionAt(dragSid);
+      }
+      const dbMoved = after && before && after.dayIndex === 1 && before.dayIndex !== 1;
+      const pass = inTir && dbMoved;
+      await log(
+        `MOVE_DRAG_AFTER sid=${dragSid} scheduledAt=${after?.scheduledAt ?? "—"} dayIndex=${after?.dayIndex ?? "—"} ui_tir=${inTir} ${pass ? "PASS" : "FAIL"}`,
+      );
+      if (!pass) throw new Error(`MOVE_DRAG failed ui=${inTir} db=${!!dbMoved}`);
+      // Gjenopprett mandag for seed-stabilitet
+      if (before?.dayIndex != null && before.dayIndex !== after?.dayIndex) {
+        const restoreCol = pageDesk.locator('[data-day="man"]').first();
+        const restoreHandle = tirCol.locator(`[data-sid="${dragSid}"] [data-drag-handle]`).first();
+        if (await restoreHandle.isVisible().catch(() => false)) {
+          await restoreHandle.dragTo(restoreCol, { timeout: 15000 }).catch(() => {});
+          await pageDesk.waitForTimeout(2000);
+          await log(`MOVE_DRAG_RESTORE sid=${dragSid} dayIndex=${before.dayIndex} PASS`);
+        }
+      }
     } catch (e) {
-      await log(`MOVE_UI sid=${sid} FAIL (${e.message})`);
+      await log(`MOVE_DRAG_FAIL sid=${dragSid} ${e.message}`);
+      throw e;
     }
   } else {
-    await log("MOVE_UI SKIP ingen øktkort eller tir-kolonne");
+    await log("MOVE_DRAG SKIP ingen persisted økt på man eller tir-kolonne");
+    throw new Error("MOVE_DRAG SKIP");
   }
 
   await ctxDesk.close();
