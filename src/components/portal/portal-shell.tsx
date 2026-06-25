@@ -8,6 +8,7 @@ import { PortalGlobalSearchModal } from "./global-search-modal";
 import { PortalSearchTriggerButton } from "./search-trigger-button";
 import { ProfileMenu } from "@/components/shared/profile-menu";
 import { ViewModeToggle } from "@/components/shared/view-mode-toggle";
+import { ensurePortalPlayerViewMode } from "@/lib/view-mode";
 import { NotificationBell } from "@/components/shared/notification-bell";
 import { ToastProvider } from "@/components/shared/toast-provider";
 import { CmdPalette } from "@/components/shared/cmd-palette";
@@ -20,6 +21,7 @@ export async function PortalShell({
 }) {
   // PARENT-rollen tilhører /forelder, ikke /portal.
   const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN", "GUEST"] });
+  const viewMode = await ensurePortalPlayerViewMode(user.role);
 
   const notifications = await prisma.notification.findMany({
     where: { userId: user.id },
@@ -78,7 +80,7 @@ export async function PortalShell({
             <PortalSearchTriggerButton />
             {(user.role === "ADMIN" || user.role === "COACH") && (
               <div className="hidden md:block">
-                <ViewModeToggle current="player" />
+                <ViewModeToggle current={viewMode} />
               </div>
             )}
             <NotificationBell

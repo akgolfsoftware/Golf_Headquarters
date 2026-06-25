@@ -5,7 +5,6 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { getViewMode } from "@/lib/view-mode";
 import { WorkbenchHybrid } from "@/components/workbench-hybrid";
 import { loadWorkbenchContext } from "@/lib/workbench/load-context";
 
@@ -25,11 +24,7 @@ function utledInitialer(navn: string): string {
 
 export default async function WorkbenchPage() {
   const user = await requirePortalUser();
-  const viewMode = await getViewMode();
 
-  if (user.role === "COACH" || user.role === "ADMIN") {
-    if (viewMode !== "player") redirect("/admin");
-  }
   if (user.role === "GUEST") redirect("/admin/kalender");
   if (user.role === "PARENT") redirect("/forelder");
 

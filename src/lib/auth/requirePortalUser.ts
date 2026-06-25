@@ -3,7 +3,7 @@
 
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "./getCurrentUser";
-import { hasRole } from "./cbac";
+import { canAccessPortalRoute } from "./cbac";
 import { isAwaitingGuardianConsent } from "./minor";
 import type { UserRole } from "@/generated/prisma/client";
 
@@ -26,7 +26,7 @@ export async function requirePortalUser(options: Options = {}) {
   // kan aldri ha deletedAt satt på dette punktet (ville vært død kode).
   const user = await getCurrentUser();
   if (!user) redirect(redirectTo);
-  if (allow && !hasRole(user.role, allow)) {
+  if (allow && !canAccessPortalRoute(user.role, allow)) {
     // Send brukere til riktig "hjemmeside" basert på rolle for å unngå loops.
     if (user.role === "PARENT") redirect("/forelder");
     if (user.role === "ADMIN" || user.role === "COACH") redirect("/admin");

@@ -3,6 +3,7 @@
  * å logge ut og inn som spiller. Lagrer preferansen i en cookie.
  */
 import { cookies } from "next/headers";
+import type { UserRole } from "@/generated/prisma/client";
 
 const COOKIE = "ak_view_as";
 
@@ -22,4 +23,18 @@ export async function setViewMode(mode: ViewMode): Promise<void> {
     path: "/",
     maxAge: 60 * 60 * 24 * 30, // 30 dager
   });
+}
+
+/**
+ * COACH/ADMIN i PlayerHQ skal default være i spiller-modus (egen profil).
+ * Kalles fra portal-shell og fullscreen-layouts.
+ */
+export async function ensurePortalPlayerViewMode(
+  role: UserRole,
+): Promise<ViewMode> {
+  if (role === "COACH" || role === "ADMIN") {
+    await setViewMode("player");
+    return "player";
+  }
+  return getViewMode();
 }

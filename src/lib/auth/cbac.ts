@@ -59,3 +59,19 @@ export function hasRole(
 ): boolean {
   return Array.isArray(allowed) ? allowed.includes(role) : role === allowed;
 }
+
+/**
+ * Dual-role: COACH/ADMIN med egen spillerprofil bruker PlayerHQ som spiller.
+ * Når allow-listen inkluderer PLAYER, skal coach/admin ikke kastes til /admin.
+ */
+export function canAccessPortalRoute(
+  role: UserRole,
+  allowed: UserRole | UserRole[],
+): boolean {
+  if (hasRole(role, allowed)) return true;
+  const roles = Array.isArray(allowed) ? allowed : [allowed];
+  return (
+    roles.includes("PLAYER") &&
+    (role === "COACH" || role === "ADMIN")
+  );
+}
