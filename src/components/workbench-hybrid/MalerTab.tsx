@@ -23,6 +23,8 @@ const FASE_LABEL = {
 type MalerTabProps = {
   templates: WorkbenchPlanTemplate[];
   isCoach: boolean;
+  /** Bruk mal i workbench — bytter til Gantt/uke (ikke bare admin-lenke). */
+  onUseTemplate: (template: WorkbenchPlanTemplate) => void;
 };
 
 const FILTERS: { key: MalFilter; label: string }[] = [
@@ -41,7 +43,7 @@ function matchesFilter(t: WorkbenchPlanTemplate, f: MalFilter): boolean {
   return true;
 }
 
-export function MalerTab({ templates, isCoach }: MalerTabProps): ReactElement {
+export function MalerTab({ templates, isCoach, onUseTemplate }: MalerTabProps): ReactElement {
   const [filter, setFilter] = useState<MalFilter>("alle");
   const visible = useMemo(
     () => templates.filter((t) => matchesFilter(t, filter)),
@@ -160,16 +162,19 @@ export function MalerTab({ templates, isCoach }: MalerTabProps): ReactElement {
       >
         {visible.map((t) => {
           const Icon = FASE_IKON[t.lPhase];
-          const href = isCoach ? `/admin/plan-templates/${t.id}/rediger` : undefined;
-          const inner = (
+          const editHref = isCoach ? `/admin/plan-templates/${t.id}/rediger` : undefined;
+          return (
             <div
+              key={t.id}
               style={{
                 background: WB.cardBg,
                 border: `1px solid ${WB.innerBorder}`,
                 borderRadius: 12,
                 padding: "14px 16px",
                 height: "100%",
-                cursor: href ? "pointer" : "default",
+                display: "flex",
+                flexDirection: "column",
+                gap: 10,
               }}
             >
               <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
@@ -187,7 +192,7 @@ export function MalerTab({ templates, isCoach }: MalerTabProps): ReactElement {
                 >
                   <Icon size={18} color={WB.lime} strokeWidth={1.6} />
                 </span>
-                <div style={{ minWidth: 0 }}>
+                <div style={{ minWidth: 0, flex: 1 }}>
                   <div style={{ fontSize: 13, fontWeight: 600, color: WB.text }}>{t.name}</div>
                   <div style={{ fontFamily: FONT.mono, fontSize: 9, color: WB.muted3, marginTop: 4 }}>
                     {FASE_LABEL[t.lPhase]} · {t.varighetUker} uker · {t.sessionCount} økter
@@ -197,30 +202,50 @@ export function MalerTab({ templates, isCoach }: MalerTabProps): ReactElement {
                   </div>
                 </div>
               </div>
-              {href && (
-                <div style={{ marginTop: 10 }}>
-                  <span
+              <div style={{ display: "flex", gap: 8, marginTop: "auto" }}>
+                {editHref && (
+                  <Link
+                    href={editHref}
                     style={{
+                      flex: 1,
+                      textAlign: "center",
                       fontFamily: FONT.mono,
                       fontSize: 9,
                       fontWeight: 700,
-                      letterSpacing: "0.08em",
+                      letterSpacing: "0.06em",
                       textTransform: "uppercase",
-                      color: WB.lime,
+                      padding: "8px 10px",
+                      borderRadius: 999,
+                      border: `1px solid ${WB.panelBorder}`,
+                      color: WB.muted,
+                      textDecoration: "none",
                     }}
                   >
-                    Bruk →
-                  </span>
-                </div>
-              )}
+                    Rediger
+                  </Link>
+                )}
+                <button
+                  type="button"
+                  onClick={() => onUseTemplate(t)}
+                  style={{
+                    flex: 1,
+                    fontFamily: FONT.mono,
+                    fontSize: 9,
+                    fontWeight: 700,
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
+                    padding: "8px 10px",
+                    borderRadius: 999,
+                    border: "none",
+                    background: WB.lime,
+                    color: WB.limeDark,
+                    cursor: "pointer",
+                  }}
+                >
+                  Bruk
+                </button>
+              </div>
             </div>
-          );
-          return href ? (
-            <Link key={t.id} href={href} style={{ textDecoration: "none" }}>
-              {inner}
-            </Link>
-          ) : (
-            <div key={t.id}>{inner}</div>
           );
         })}
       </div>

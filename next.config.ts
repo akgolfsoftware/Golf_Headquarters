@@ -85,7 +85,7 @@ const nextConfig: NextConfig = {
       // /portal/tren/tester: dedikert test-batteri-skjerm (redesign 2026-06-01) — loop-redirect fjernet.
       { source: "/portal/tren/kalender", destination: "/portal/gjennomfore?tab=kalender", permanent: true },
       { source: "/portal/tren/kalender/:path*", destination: "/portal/gjennomfore?tab=kalender", permanent: true },
-      { source: "/portal/tren", destination: "/portal/planlegge?tab=treningsplan", permanent: true },
+      { source: "/portal/tren", destination: "/portal/planlegge/workbench?tab=uke", permanent: true },
       // /portal/talent er nå egen hub (Del 32 — Manglende hubs hand-off 2026-05-24)
       // Underruter beholdes for talent-detalj-flow
       { source: "/portal/talent/:path*", destination: "/portal/talent/:path*", permanent: false },

@@ -126,6 +126,7 @@ export function MobileTopbar({
 
       {planStatus && (
         <span
+          data-testid="plan-status-pill"
           style={{
             fontFamily: FONT.mono,
             fontSize: 9,

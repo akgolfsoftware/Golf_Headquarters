@@ -210,6 +210,7 @@ export function Topbar({
 
       {planStatus && statusStyle && (
         <span
+          data-testid="plan-status-pill"
           style={{
             fontFamily: FONT.mono,
             fontSize: 10,

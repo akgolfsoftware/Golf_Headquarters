@@ -186,6 +186,7 @@ type Action =
   | { type: "pickBankItem"; title: string; meta: string }
   | { type: "openKpi"; key: KpiKey }
   | { type: "reconcileId"; oldId: string; newId: string }
+  | { type: "syncWeek"; week: WeekState }
   | { type: "closeModal" };
 
 function cloneWeek(w: WeekState): WeekState {
@@ -377,6 +378,8 @@ function reducer(state: State, action: Action): State {
       return { ...state, modal: "kpi", kpiKey: action.key };
     case "closeModal":
       return { ...state, modal: null, recurDraft: null, kpiKey: null };
+    case "syncWeek":
+      return { ...state, week: cloneWeek(action.week) };
     case "reconcileId": {
       // Bytt en syntetisk id ut med DB-id-en etter at en ny økt er lagret,
       // så senere flytting/sletting av samme økt også persisterer.
@@ -451,6 +454,8 @@ export function WorkbenchHybrid({
   const router = useRouter();
   const searchParams = useSearchParams();
   const [publishPending, setPublishPending] = useState(false);
+  const [statusOverride, setStatusOverride] = useState<PlanStatus | null>(null);
+  const displayPlanStatus = statusOverride ?? planStatus ?? null;
 
   const hubTab = useMemo((): WorkbenchHubTab => {
     const raw = searchParams.get("tab");
@@ -498,6 +503,11 @@ export function WorkbenchHybrid({
     kpiKey: null,
     nextId: 100,
   }));
+
+  // Synk server-uke inn i klient-state når ekte data ankommer / etter refresh.
+  useEffect(() => {
+    if (realWeek) dispatch({ type: "syncWeek", week: realWeek });
+  }, [realWeek]);
 
   // Restaurer zoom-nivå fra localStorage (klient).
   useEffect(() => {
@@ -670,13 +680,20 @@ export function WorkbenchHybrid({
 
   const handlePublish = useCallback(() => {
     if (publishPending) return;
+    const priorStatus = displayPlanStatus;
     setPublishPending(true);
+    setStatusOverride("PENDING_PLAYER");
     void publishWorkbenchPlan(isCoach ? resolvedPlayerId : undefined)
       .then((res) => {
-        if (res.ok) router.refresh();
+        if (res.ok) {
+          setStatusOverride(res.status ?? "PENDING_PLAYER");
+          router.refresh();
+        } else {
+          setStatusOverride(priorStatus === planStatus ? null : priorStatus);
+        }
       })
       .finally(() => setPublishPending(false));
-  }, [publishPending, isCoach, resolvedPlayerId, router]);
+  }, [publishPending, isCoach, resolvedPlayerId, router, displayPlanStatus, planStatus]);
 
   const handleStartLive = useCallback(() => {
     const id = state.selectedId;
@@ -893,7 +910,13 @@ export function WorkbenchHybrid({
         />
       )}
       {hubTab === "seson" && <SesongmalTab goals={goals} />}
-      {hubTab === "maler" && <MalerTab templates={planTemplates} isCoach={isCoach} />}
+      {hubTab === "maler" && (
+        <MalerTab
+          templates={planTemplates}
+          isCoach={isCoach}
+          onUseTemplate={() => setHubTabWithUrl("gantt")}
+        />
+      )}
       {hubTab === "std" && (
         <StdTab
           palette={state.palette}
@@ -971,7 +994,7 @@ export function WorkbenchHybrid({
             onOpenCoachSkill={isCoach ? () => setCoachSkillOpen(true) : undefined}
             onOpenAiPlan={isCoach && currentPlayerId ? () => setAiPlanOpen(true) : undefined}
             onOpenAiPeriodiser={!isCoach ? () => setAiPlanOpen(true) : undefined}
-            planStatus={planStatus}
+            planStatus={displayPlanStatus}
             onPublish={planId ? handlePublish : undefined}
             publishPending={publishPending}
           />
@@ -1050,7 +1073,7 @@ export function WorkbenchHybrid({
           onOpenCoachSkill={isCoach ? () => setCoachSkillOpen(true) : undefined}
           onOpenAiPlan={isCoach && currentPlayerId ? () => setAiPlanOpen(true) : undefined}
           onOpenAiPeriodiser={!isCoach ? () => setAiPlanOpen(true) : undefined}
-          planStatus={planStatus}
+          planStatus={displayPlanStatus}
           onPublish={planId ? handlePublish : undefined}
           publishPending={publishPending}
         />
