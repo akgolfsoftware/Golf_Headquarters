@@ -32,8 +32,11 @@ const pngs = (await readdir(OUT)).filter((f) => f.endsWith(".png")).sort();
 const agentReport = await readFile(path.join(OUT, "adversarial-agent-report.md"), "utf8");
 const flow = await readFile(path.join(OUT, "workbench-flow.log"), "utf8").catch(() => "");
 
-const verdictMatch = agentReport.match(/VERDICT:\s*(\d+)\s+undocumented/i);
-const undocumented = verdictMatch ? Number(verdictMatch[1]) : -1;
+const verdictMatches = [...agentReport.matchAll(/VERDICT:\s*(\d+)\s+undocumented/gi)];
+const undocumented =
+  verdictMatches.length > 0
+    ? Number(verdictMatches[verdictMatches.length - 1][1])
+    : -1;
 if (undocumented !== 0) {
   console.error(`Adversarial agent found ${undocumented} undocumented deviations`);
   process.exit(1);

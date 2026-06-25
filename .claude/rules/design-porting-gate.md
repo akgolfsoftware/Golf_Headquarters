@@ -90,8 +90,11 @@ Dokumenteres her så diff-agenten måler mot riktig fasit:
 - **KPI-strip + innsiktsstripe** på Gantt/Uke/Økt-zoom er bevisst (data-tetthet); fasit-PNG for enkelte faner mangler dem — ikke avvik.
 - **Tom tilstand når valgfri data mangler** (ingen teknisk plan, sesongmål, Gantt-faser): ærlig empty state er OK — gate må også screenshotte seedet scenario (`scripts/seed-screentest.ts`) for paritet.
 - **Hub-fane «Økt»** viser inline `OktDetailTab` (ikke fullskjerm overlay) — samme innhold som fasit wb-10, annen chrome.
+- **Økt v1 (inline OktDetailTab):** Coach får redigeringspanel (AK-FORMEL/pyramide/øvelser); spiller får øvelsesliste uten separat COACH-NOTAT/SG-KOBLING-kolonne fra wb-10-PNG — kobles når notat/SG er seedet post-lansering.
+- **Std spiller-mobil:** Ingen «+ Ny standardøkt» eller «Rediger» — kun «Legg i plan» (coach-only affordances, som Maler).
 - **Maler/Std:** filterchips + kortgrid fra lansering 25. juni; konkrete malnavn = seed-data.
 - **Uke time-grid (ikke kolonne-stack):** `UkeView` bruker vertikal time-akse (07–22) med posisjonerte kort — fasit wb-09-PNG viser enklere dagkolonner. Bevisst v10-planleggingsvisning for coach; diff skal ikke kreve kolonne-only layout.
+- **Uke overlapp-lanes:** Økter som overlapper i tid får side-by-side lanes med eget grip-håndtak — ikke fasit, men nødvendig for drag på time-grid.
 - **FORRIGE/NESTE uke:** Knapper rendres i header; week-offset API finnes ikke i v1 (kun inneværende kalenderuke i `load-workbench`). Klikk uten datoflyt er forventet til post-lansering.
 - **Maler match-% badge:** Fasit-demo har hardkodede prosenter; appen har ikke `PlanEffectiveness` på Maler-kort ennå — viser fase + bruksteller i stedet.
 - **Maler kortanatomi:** lPhase-ikon + «Brukt N×»/metadata fra DB erstatter fasitens kategori-pill + Anders-demo-copy.

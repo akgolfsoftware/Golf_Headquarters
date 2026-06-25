@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactElement } from "react";
-import { Calendar, ChevronLeft, ChevronRight, Clock, Flag, Gauge, Pencil, Play, Plus, Timer } from "lucide-react";
+import { Calendar, ChevronLeft, Clock, Flag, Gauge, Pencil, Play, Plus, Timer } from "lucide-react";
 import { CAT_COLORS, FONT, WB } from "./theme";
 import { durLabel, fysExercises, formulaLine, planBlocks } from "./helpers";
 import { dimLabel } from "./taxonomy";
@@ -32,6 +32,8 @@ type OktDetailTabProps = {
   onMode: (mode: PlanMode) => void;
   onBackToWeek: () => void;
   onStart: () => void;
+  /** Coach-only: hurtighandlinger, modus-valg, legg til øvelse, notat/SG-paneler. */
+  isCoach?: boolean;
 };
 
 /** Inline økt-detalj for hub-fanen «Økt» (fasit wb-10, ikke dag-tidslinje). */
@@ -42,6 +44,7 @@ export function OktDetailTab({
   onMode,
   onBackToWeek,
   onStart,
+  isCoach = false,
 }: OktDetailTabProps): ReactElement {
   const isFys = s.cat === "FYS";
   const catColor = CAT_COLORS[s.cat] ?? WB.lime;
@@ -142,6 +145,7 @@ export function OktDetailTab({
           </div>
         </div>
 
+        {isCoach && (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", borderBottom: `1px solid ${WB.panelBorder}` }}>
           {QUICK_ACTIONS.map(({ Icon, label }, i) => (
             <div
@@ -186,6 +190,7 @@ export function OktDetailTab({
             </div>
           ))}
         </div>
+        )}
 
         <div style={{ padding: "16px 16px 20px" }}>
           {!isFys && (
@@ -194,8 +199,15 @@ export function OktDetailTab({
                 <span style={{ fontFamily: FONT.display, fontWeight: 700, fontSize: 15, color: WB.text }}>
                   Drill-program
                 </span>
-                <ModeTabs mode={mode} onMode={onMode} />
+                <span style={{ fontFamily: FONT.mono, fontSize: 9, fontWeight: 700, color: WB.muted3 }}>
+                  0 / {blocks.reduce((n, b) => n + b.steps.length, 0)} fullført
+                </span>
               </div>
+              {isCoach && (
+                <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 10 }}>
+                  <ModeTabs mode={mode} onMode={onMode} />
+                </div>
+              )}
               {blocks.map((b) => (
                 <div key={b.label} style={{ marginBottom: 10 }}>
                   <div
@@ -253,6 +265,28 @@ export function OktDetailTab({
                           <div style={{ fontSize: 13, color: WB.text }}>{st.title}</div>
                           <div style={{ fontSize: 11, color: WB.muted, marginTop: 2 }}>{st.detail}</div>
                         </div>
+                        <div style={{ display: "flex", alignItems: "center", padding: "0 10px" }}>
+                          <button
+                            type="button"
+                            onClick={onStart}
+                            style={{
+                              fontFamily: FONT.mono,
+                              fontSize: 8,
+                              fontWeight: 700,
+                              letterSpacing: "0.06em",
+                              textTransform: "uppercase",
+                              padding: "6px 10px",
+                              borderRadius: 999,
+                              border: "none",
+                              background: WB.lime,
+                              color: WB.limeDark,
+                              cursor: "pointer",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            Start
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -265,16 +299,27 @@ export function OktDetailTab({
             <div>
               <div
                 style={{
-                  fontFamily: FONT.mono,
-                  fontSize: 9,
-                  fontWeight: 600,
-                  letterSpacing: "0.1em",
-                  textTransform: "uppercase",
-                  color: WB.muted3,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
                   marginBottom: 10,
                 }}
               >
-                {fysHead}
+                <span
+                  style={{
+                    fontFamily: FONT.mono,
+                    fontSize: 9,
+                    fontWeight: 600,
+                    letterSpacing: "0.1em",
+                    textTransform: "uppercase",
+                    color: WB.muted3,
+                  }}
+                >
+                  {fysHead}
+                </span>
+                <span style={{ fontFamily: FONT.mono, fontSize: 9, fontWeight: 700, color: WB.muted3 }}>
+                  0 / {exercises.length} fullført
+                </span>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {exercises.map((ex, i) => (
@@ -302,9 +347,29 @@ export function OktDetailTab({
                       <div style={{ fontSize: 14, fontWeight: 600, color: WB.text }}>{ex.name}</div>
                       <div style={{ fontSize: 11, color: WB.muted }}>{ex.meta}</div>
                     </div>
-                    <ChevronRight size={16} color={WB.muted3} />
+                    <button
+                      type="button"
+                      onClick={onStart}
+                      style={{
+                        fontFamily: FONT.mono,
+                        fontSize: 8,
+                        fontWeight: 700,
+                        letterSpacing: "0.06em",
+                        textTransform: "uppercase",
+                        padding: "6px 10px",
+                        borderRadius: 999,
+                        border: "none",
+                        background: WB.lime,
+                        color: WB.limeDark,
+                        cursor: "pointer",
+                        flexShrink: 0,
+                      }}
+                    >
+                      Start
+                    </button>
                   </div>
                 ))}
+                {isCoach && (
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                   <span
                     style={{
@@ -323,10 +388,12 @@ export function OktDetailTab({
                   </span>
                   <span style={{ fontSize: 14, fontWeight: 600, color: WB.muted }}>Legg til øvelse</span>
                 </div>
+                )}
               </div>
             </div>
           )}
 
+          {isCoach && (
           <div
             style={{
               display: "grid",
@@ -345,6 +412,7 @@ export function OktDetailTab({
               mono
             />
           </div>
+          )}
 
           <div
             style={{

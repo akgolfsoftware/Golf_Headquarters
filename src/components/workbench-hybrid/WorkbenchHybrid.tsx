@@ -865,9 +865,17 @@ export function WorkbenchHybrid({
   }
 
   // Header-tittel: uke bruker ekte ukenr når data finnes.
-  const [headTitleRaw, headSub] = HEADS[effectiveLevel];
+  const [headTitleRaw, headSubRaw] = HEADS[effectiveLevel];
   const headTitle =
-    effectiveLevel === "uke" ? `${weekHead.weekLabel} — dra økter inn` : headTitleRaw;
+    hubTab === "okt" && selectedSession
+      ? selectedSession.title
+      : effectiveLevel === "uke"
+        ? `${weekHead.weekLabel} — dra økter inn`
+        : headTitleRaw;
+  const headSub =
+    hubTab === "okt" && selectedSession
+      ? `Øktdetalj — ${DAY_NAMES[dayKeyOf(state.week, selectedSession.id) ?? "man"] ?? "ukedag"}`
+      : headSubRaw;
 
   // omr valgte verdier til dim-picker
   const dimSelected =
@@ -937,6 +945,7 @@ export function WorkbenchHybrid({
           onMode={(mode) => dispatch({ type: "setPlanMode", mode })}
           onBackToWeek={() => setHubTabWithUrl("uke")}
           onStart={handleStartLive}
+          isCoach={isCoach}
         />
       )}
       {effectiveLevel === "dag" && hubTab !== "okt" && (
@@ -1009,6 +1018,7 @@ export function WorkbenchHybrid({
         <StdTab
           palette={state.palette}
           selectedPaletteId={state.editScope === "palette" ? state.selectedPaletteId : null}
+          isCoach={isCoach}
           onSelect={(pid) => dispatch({ type: "selectPalette", pid })}
           onGoToWeek={() => setHubTabWithUrl("uke")}
         />
@@ -1069,6 +1079,7 @@ export function WorkbenchHybrid({
         >
           <Topbar
             level={effectiveLevel}
+            highlightZoom={hubTab !== "okt"}
             onLevel={(l) => {
               setLevel(l);
               setHubTabWithUrl(zoomToHubTab(l));
@@ -1086,7 +1097,7 @@ export function WorkbenchHybrid({
             onPublish={planId ? handlePublish : undefined}
             publishPending={state.publishPending}
           />
-          <HubTabRail tab={hubTab} onTab={setHubTabWithUrl} />
+          <HubTabRail tab={hubTab} onTab={setHubTabWithUrl} compact={isMobile} />
 
           {/* body */}
           <div style={{ flex: 1, display: "flex", minHeight: 0 }}>
@@ -1107,7 +1118,7 @@ export function WorkbenchHybrid({
 
             {/* center */}
             <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
-              {!showPlanningTab && (
+              {!showPlanningTab && hubTab !== "okt" && (
                 <>
                   <InsightsStripe line={combinedInsights} />
                   {kpiStrip}
@@ -1165,17 +1176,18 @@ export function WorkbenchHybrid({
           onPublish={planId ? handlePublish : undefined}
           publishPending={state.publishPending}
         />
-        <HubTabRail tab={hubTab} onTab={setHubTabWithUrl} />
+        <HubTabRail tab={hubTab} onTab={setHubTabWithUrl} compact={isMobile} />
         {!showPlanningTab && (
           <MobileZoomRail
             level={effectiveLevel}
+            highlightZoom={hubTab !== "okt"}
             onLevel={(l) => {
               setLevel(l);
               setHubTabWithUrl(zoomToHubTab(l));
             }}
           />
         )}
-        {!showPlanningTab && (
+        {!showPlanningTab && hubTab !== "okt" && (
           <>
             <InsightsStripe line={combinedInsights} />
             {kpiStrip}

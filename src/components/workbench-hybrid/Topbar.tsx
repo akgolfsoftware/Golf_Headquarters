@@ -58,6 +58,8 @@ type TopbarProps = {
   planStatus?: PlanStatus | null;
   onPublish?: () => void;
   publishPending?: boolean;
+  /** Når false: ingen zoom-pill er aktiv (f.eks. hub-fanen Økt). */
+  highlightZoom?: boolean;
 };
 
 export function Topbar({
@@ -75,6 +77,7 @@ export function Topbar({
   planStatus,
   onPublish,
   publishPending,
+  highlightZoom = true,
 }: TopbarProps): ReactElement {
   const isCoach = role === "coach";
   const canPublish =
@@ -185,7 +188,7 @@ export function Topbar({
         }}
       >
         {LEVELS.map((lv) => {
-          const active = level === lv.key;
+          const active = highlightZoom && level === lv.key;
           return (
             <button
               key={lv.key}

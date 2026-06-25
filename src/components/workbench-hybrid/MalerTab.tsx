@@ -6,7 +6,7 @@ import { Sprout, Target, Trophy } from "lucide-react";
 import type { WorkbenchPlanTemplate } from "@/lib/workbench/load-workbench";
 import { FONT, WB } from "./theme";
 
-type MalFilter = "alle" | "naerspill" | "putting" | "full";
+type MalFilter = "alle" | "naerspill" | "putting" | "utslag" | "turnering" | "full";
 
 const FASE_IKON = {
   GRUNN: Sprout,
@@ -31,6 +31,8 @@ const FILTERS: { key: MalFilter; label: string }[] = [
   { key: "alle", label: "Alle" },
   { key: "naerspill", label: "Nærspill" },
   { key: "putting", label: "Putting" },
+  { key: "utslag", label: "Utslag" },
+  { key: "turnering", label: "Turnering" },
   { key: "full", label: "Full sesong" },
 ];
 
@@ -47,6 +49,8 @@ function matchesFilter(t: WorkbenchPlanTemplate, f: MalFilter): boolean {
   const n = t.name.toLowerCase();
   if (f === "naerspill") return /nær|chip|wedge|arg/i.test(n);
   if (f === "putting") return /putt/i.test(n);
+  if (f === "utslag") return /tee|driver|utslag/i.test(n);
+  if (f === "turnering") return t.lPhase === "TURNERING" || /turn/i.test(n);
   if (f === "full") return t.varighetUker >= 8 || /sesong|helår/i.test(n);
   return true;
 }

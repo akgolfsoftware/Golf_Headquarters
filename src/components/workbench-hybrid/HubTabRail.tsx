@@ -15,18 +15,31 @@ const HUB_TABS: { key: WorkbenchHubTab; label: string; sepBefore?: boolean }[] =
   { key: "okt", label: "Økt" },
 ];
 
+const HUB_TABS_COMPACT: Record<WorkbenchHubTab, string> = {
+  tek: "Tek",
+  seson: "Mål",
+  maler: "Mal",
+  std: "Std",
+  gantt: "Gantt",
+  uke: "Uke",
+  okt: "Økt",
+};
+
 type HubTabRailProps = {
   tab: WorkbenchHubTab;
   onTab: (tab: WorkbenchHubTab) => void;
+  /** Korte etiketter på smal mobil — alle 7 faner synlige uten å scrolle bort navigasjon. */
+  compact?: boolean;
 };
 
-export function HubTabRail({ tab, onTab }: HubTabRailProps): ReactElement {
+export function HubTabRail({ tab, onTab, compact = false }: HubTabRailProps): ReactElement {
   const railRef = useRef<HTMLDivElement>(null);
   const activeRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    activeRef.current?.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" });
-  }, [tab]);
+    if (compact) return;
+    activeRef.current?.scrollIntoView({ inline: "nearest", block: "nearest", behavior: "smooth" });
+  }, [tab, compact]);
 
   return (
     <div
@@ -78,7 +91,7 @@ export function HubTabRail({ tab, onTab }: HubTabRailProps): ReactElement {
                 flexShrink: 0,
               }}
             >
-              {t.label}
+              {compact ? HUB_TABS_COMPACT[t.key] : t.label}
             </button>
           </span>
         );

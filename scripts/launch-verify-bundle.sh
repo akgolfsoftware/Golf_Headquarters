@@ -122,9 +122,11 @@ require_file "$SCRATCH/wb-gate/adversarial-diff.md"
 require_file "$FLOW_LOG"
 
 require_pattern "$FLOW_LOG" 'MOVE_DRAG_BEFORE' 'MOVE_DRAG_BEFORE'
-require_pattern "$FLOW_LOG" 'MOVE_DRAG_AFTER.*PASS' 'MOVE_DRAG_AFTER'
-require_pattern "$FLOW_LOG" 'PUBLISH_BEFORE|PUBLISH_AFTER' 'PUBLISH'
-require_pattern "$FLOW_LOG" 'PUBLISH_CLICK|PUBLISH_ACTION' 'PUBLISH_UI'
+require_pattern "$FLOW_LOG" 'MOVE_DRAG_POINTER' 'MOVE_DRAG_POINTER'
+require_pattern "$FLOW_LOG" 'MOVE_DRAG_AFTER.*pointer=true.*PASS' 'MOVE_DRAG_AFTER'
+require_pattern "$FLOW_LOG" 'PUBLISH_BEFORE' 'PUBLISH_BEFORE'
+require_pattern "$FLOW_LOG" 'PUBLISH_AFTER.*PASS' 'PUBLISH_AFTER'
+require_pattern "$FLOW_LOG" 'PUBLISH_CLICK' 'PUBLISH_UI'
 
 PNG_COUNT="$(find "$SCRATCH/wb-gate" -maxdepth 1 -name '*.png' 2>/dev/null | wc -l | tr -d ' ')"
 if [[ "${PNG_COUNT:-0}" -lt 10 ]]; then

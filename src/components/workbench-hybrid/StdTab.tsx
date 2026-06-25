@@ -3,7 +3,7 @@
 import { useMemo, useState, type ReactElement } from "react";
 import type { PaletteItem } from "./types";
 import { CAT_COLORS, FONT, WB } from "./theme";
-import { durLabel } from "./helpers";
+import { durLabel, fysExercises, planBlocks } from "./helpers";
 
 type StdFilter = "alle" | "naerspill" | "putting" | "utslag" | "full";
 
@@ -28,9 +28,18 @@ function matchesStdFilter(p: PaletteItem, f: StdFilter): boolean {
 type StdTabProps = {
   palette: PaletteItem[];
   selectedPaletteId: string | null;
+  isCoach: boolean;
   onSelect: (pid: string) => void;
   onGoToWeek: () => void;
 };
+
+function drillLinesForPalette(p: PaletteItem): { title: string; detail: string }[] {
+  if (p.cat === "FYS") {
+    return fysExercises(p).map((ex) => ({ title: ex.name, detail: ex.meta }));
+  }
+  const blocks = planBlocks(p, CAT_COLORS[p.cat]);
+  return blocks.flatMap((b) => b.steps.map((st) => ({ title: st.title, detail: st.detail })));
+}
 
 function sgHintForPalette(p: PaletteItem): string {
   const omr = (p.omr ?? p.cat).toUpperCase();
@@ -43,6 +52,7 @@ function sgHintForPalette(p: PaletteItem): string {
 export function StdTab({
   palette,
   selectedPaletteId,
+  isCoach,
   onSelect,
   onGoToWeek,
 }: StdTabProps): ReactElement {
@@ -71,26 +81,28 @@ export function StdTab({
             {visible.length} økter · legg inn i ukeplanen
           </p>
         </div>
-        <button
-          type="button"
-          onClick={onGoToWeek}
-          style={{
-            fontFamily: FONT.mono,
-            fontSize: 10,
-            fontWeight: 700,
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-            padding: "8px 14px",
-            borderRadius: 999,
-            border: "none",
-            background: WB.lime,
-            color: WB.limeDark,
-            cursor: "pointer",
-            flexShrink: 0,
-          }}
-        >
-          + Ny standardøkt
-        </button>
+        {isCoach && (
+          <button
+            type="button"
+            onClick={onGoToWeek}
+            style={{
+              fontFamily: FONT.mono,
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              padding: "8px 14px",
+              borderRadius: 999,
+              border: "none",
+              background: WB.lime,
+              color: WB.limeDark,
+              cursor: "pointer",
+              flexShrink: 0,
+            }}
+          >
+            + Ny standardøkt
+          </button>
+        )}
       </div>
       <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 14 }}>
         {FILTERS.map((f) => {
@@ -175,11 +187,13 @@ export function StdTab({
                 >
                   Drill-program
                 </div>
-                <ul style={{ margin: 0, paddingLeft: 16, fontSize: 11, color: WB.muted, lineHeight: 1.5 }}>
-                  <li>{p.title}</li>
-                  <li>
-                    {p.omr ? `Fokus ${p.omr}` : "Standard progresjon"} · {durLabel(p.dur)}
-                  </li>
+                <ul style={{ margin: 0, paddingLeft: 16, fontSize: 11, color: WB.muted, lineHeight: 1.55 }}>
+                  {drillLinesForPalette(p).map((line) => (
+                    <li key={`${p.pid}-${line.title}`}>
+                      <span style={{ color: WB.text, fontWeight: 600 }}>{line.title}</span>
+                      {line.detail ? ` — ${line.detail}` : ""}
+                    </li>
+                  ))}
                 </ul>
                 <div
                   style={{
@@ -194,26 +208,28 @@ export function StdTab({
                 </div>
               </div>
               <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
-                <button
-                  type="button"
-                  onClick={() => onSelect(p.pid)}
-                  style={{
-                    flex: 1,
-                    fontFamily: FONT.mono,
-                    fontSize: 9,
-                    fontWeight: 700,
-                    letterSpacing: "0.06em",
-                    textTransform: "uppercase",
-                    padding: "8px 10px",
-                    borderRadius: 999,
-                    border: `1px solid ${WB.panelBorder}`,
-                    background: "transparent",
-                    color: WB.muted,
-                    cursor: "pointer",
-                  }}
-                >
-                  Rediger
-                </button>
+                {isCoach && (
+                  <button
+                    type="button"
+                    onClick={() => onSelect(p.pid)}
+                    style={{
+                      flex: 1,
+                      fontFamily: FONT.mono,
+                      fontSize: 9,
+                      fontWeight: 700,
+                      letterSpacing: "0.06em",
+                      textTransform: "uppercase",
+                      padding: "8px 10px",
+                      borderRadius: 999,
+                      border: `1px solid ${WB.panelBorder}`,
+                      background: "transparent",
+                      color: WB.muted,
+                      cursor: "pointer",
+                    }}
+                  >
+                    Rediger
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={() => {

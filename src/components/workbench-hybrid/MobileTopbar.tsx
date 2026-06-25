@@ -256,13 +256,14 @@ export function MobileTopbar({
 type MobileZoomRailProps = {
   level: ZoomLevel;
   onLevel: (l: ZoomLevel) => void;
+  highlightZoom?: boolean;
 };
 
 /**
  * Zoom-nivå-rail (Årsplan/År/Måned/Uke/Dag) som horisontalt-scrollbar pill-rad.
  * Gjenbruker level-state fra reduceren.
  */
-export function MobileZoomRail({ level, onLevel }: MobileZoomRailProps): ReactElement {
+export function MobileZoomRail({ level, onLevel, highlightZoom = true }: MobileZoomRailProps): ReactElement {
   return (
     <div
       className="wb-scroll"
@@ -276,7 +277,7 @@ export function MobileZoomRail({ level, onLevel }: MobileZoomRailProps): ReactEl
       }}
     >
       {LEVELS.map((lv) => {
-        const active = level === lv.key;
+        const active = highlightZoom && level === lv.key;
         return (
           <button
             key={lv.key}

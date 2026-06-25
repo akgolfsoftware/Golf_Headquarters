@@ -4,7 +4,7 @@ import { useState, type ReactElement } from "react";
 import { ChevronLeft, ChevronRight, GripVertical } from "lucide-react";
 import { CAT_COLORS, FONT, WB } from "./theme";
 import { durLabel } from "./helpers";
-import type { WeekKey, WeekState } from "./types";
+import type { WbSession, WeekKey, WeekState } from "./types";
 
 const ROW_H = 42;
 const END_HOUR = 22;
@@ -42,6 +42,37 @@ function earliestHour(week: WeekState): number {
     }),
   );
   return Math.max(5, Math.min(8, min));
+}
+
+function sessionSpanMinutes(s: WbSession, startHour: number): { start: number; end: number } {
+  const { hh, mm } = parseHM(s.time);
+  const start = (hh - startHour) * 60 + mm;
+  return { start, end: start + s.dur };
+}
+
+/** Side-by-side lanes når økter overlapper i tid — unngår at kort dekker grip-håndtak. */
+function computeDayLanes(list: WbSession[], startHour: number): Map<string, { lane: number; laneCount: number }> {
+  const sorted = [...list].sort((a, b) => {
+    const sa = sessionSpanMinutes(a, startHour);
+    const sb = sessionSpanMinutes(b, startHour);
+    return sa.start - sb.start || sa.end - sb.end;
+  });
+  const laneEnds: number[] = [];
+  const meta = new Map<string, { lane: number; laneCount: number }>();
+  for (const s of sorted) {
+    const { start, end } = sessionSpanMinutes(s, startHour);
+    let lane = laneEnds.findIndex((le) => le <= start);
+    if (lane === -1) {
+      lane = laneEnds.length;
+      laneEnds.push(end);
+    } else {
+      laneEnds[lane] = Math.max(laneEnds[lane], end);
+    }
+    meta.set(s.id, { lane, laneCount: 0 });
+  }
+  const laneCount = Math.max(1, laneEnds.length);
+  for (const v of meta.values()) v.laneCount = laneCount;
+  return meta;
 }
 
 type UkeViewProps = {
@@ -207,6 +238,7 @@ export function UkeView({
             const isWeekend = d.key === "lor" || d.key === "son";
             const isHover = hoverDay === d.key;
             const list = week[d.key] ?? [];
+            const laneMap = computeDayLanes(list, startHour);
             const colBg = isWeekend ? "#0a1c15" : isToday ? "rgba(209,248,67,0.05)" : "#0f261c";
             const headBg = isToday ? "#15301f" : isWeekend ? "#0c2018" : WB.cardBgAlt;
             return (
@@ -284,6 +316,8 @@ export function UkeView({
                     const on = s.id === selectedId;
                     const dragging = draggingId === s.id;
                     const stackZ = 2 + idx;
+                    const { lane, laneCount } = laneMap.get(s.id) ?? { lane: 0, laneCount: 1 };
+                    const laneShare = `((100% - 6px) / ${laneCount})`;
                     return (
                       <div
                         key={s.id}
@@ -291,11 +325,11 @@ export function UkeView({
                         onClick={() => onSessionClick(s.id)}
                         style={{
                           position: "absolute",
-                          left: 3,
-                          right: 3,
+                          left: `calc(3px + ${lane} * ${laneShare})`,
+                          width: `calc(${laneShare} - 3px)`,
                           top,
                           minHeight: height,
-                          zIndex: dragging ? 50 : stackZ,
+                          zIndex: dragging ? 50 : stackZ + lane,
                           background: on ? "#1d3a2e" : WB.cardBg,
                           borderTop: `1px solid ${on ? WB.lime : WB.panelBorder}`,
                           borderRight: `1px solid ${on ? WB.lime : WB.panelBorder}`,
@@ -323,6 +357,7 @@ export function UkeView({
                           tabIndex={0}
                           aria-label={`Flytt ${s.title}`}
                           onPointerDown={(e) => e.stopPropagation()}
+                          onClick={(e) => e.stopPropagation()}
                           onDragStart={(e) => {
                             e.stopPropagation();
                             e.dataTransfer.effectAllowed = "move";
@@ -343,6 +378,8 @@ export function UkeView({
                             color: WB.muted3,
                             cursor: "grab",
                             touchAction: "none",
+                            position: "relative",
+                            zIndex: 2,
                           }}
                         >
                           <GripVertical size={14} strokeWidth={1.5} />

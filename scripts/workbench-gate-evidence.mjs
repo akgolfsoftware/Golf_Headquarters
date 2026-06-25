@@ -84,6 +84,70 @@ function sessionAt(sid) {
   return { scheduledAt: m[1], dayIndex: Number(m[2]) };
 }
 
+/** Aktiv plan-status for spiller (før/etter UI publish). */
+function planStatus(email) {
+  const r = spawnSync("npx", ["tsx", "scripts/workbench-plan-status.ts", email], {
+    cwd: process.cwd(),
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  if (r.status !== 0) return null;
+  const line = (r.stdout || "").trim().split("\n").filter(Boolean).pop() ?? "";
+  const m = line.match(/^planId=(\S+) status=(\S+)$/);
+  if (!m) return null;
+  return { planId: m[1], status: m[2] };
+}
+
+const WEEK_DAYS = ["man", "tir", "ons", "tor", "fre", "lor", "son"];
+
+/** Finn persisted økt der grip-håndtak er øverst i hit-test (ikke dekket av overlapp). */
+async function findExposedDragGrip(page, dayCol) {
+  const cards = dayCol.locator("[data-sid]");
+  const count = await cards.count().catch(() => 0);
+  for (let i = 0; i < count; i++) {
+    const sid = await cards.nth(i).getAttribute("data-sid");
+    if (!sid || !PERSISTED_SID.test(sid)) continue;
+    const handle = cards.nth(i).locator("[data-drag-handle]").first();
+    const box = await handle.boundingBox().catch(() => null);
+    if (!box) continue;
+    const cx = box.x + box.width / 2;
+    const cy = box.y + Math.min(box.height / 2, 14);
+    const topSid = await page.evaluate(({ cx, cy }) => {
+      const el = document.elementFromPoint(cx, cy);
+      return el?.closest("[data-sid]")?.getAttribute("data-sid") ?? null;
+    }, { cx, cy });
+    if (topSid === sid && sessionAt(sid)) return { sid, handle };
+  }
+  return null;
+}
+
+/** Finn drag-kilde på første ukedag med DB-persistert økt + målkolonne neste dag. */
+async function findDragSource(page) {
+  for (let d = 0; d < WEEK_DAYS.length - 1; d++) {
+    const fromDay = WEEK_DAYS[d];
+    const toDay = WEEK_DAYS[d + 1];
+    const fromCol = page.locator(`[data-day="${fromDay}"]`).first();
+    const exposed = await findExposedDragGrip(page, fromCol);
+    if (exposed) return { ...exposed, fromDay, toDay };
+  }
+  for (let d = 0; d < WEEK_DAYS.length - 1; d++) {
+    const fromDay = WEEK_DAYS[d];
+    const toDay = WEEK_DAYS[d + 1];
+    const fromCol = page.locator(`[data-day="${fromDay}"]`).first();
+    const cards = fromCol.locator("[data-sid]");
+    const count = await cards.count().catch(() => 0);
+    for (let i = 0; i < count; i++) {
+      const sid = await cards.nth(i).getAttribute("data-sid");
+      if (!sid || !PERSISTED_SID.test(sid) || !sessionAt(sid)) continue;
+      const handle = cards.nth(i).locator("[data-drag-handle]").first();
+      if (await handle.isVisible().catch(() => false)) {
+        return { sid, handle, fromDay, toDay };
+      }
+    }
+  }
+  return null;
+}
+
 const PERSISTED_SID = /^c[a-z0-9]{20,}$/i;
 
 await mkdir(OUT, { recursive: true });
@@ -179,6 +243,10 @@ const consentInit = () => {
   const publishVisible = await publishBtn.isVisible().catch(() => false);
   await log(`PUBLISH_UI visible=${publishVisible} ${publishVisible ? "PASS" : "FAIL"}`);
   if (publishVisible) {
+    const pubBefore = planStatus(PLAYER.email);
+    await log(
+      `PUBLISH_BEFORE status=${pubBefore?.status ?? "—"} planId=${pubBefore?.planId ?? "—"}`,
+    );
     await publishBtn.click();
     const statusPill = mobileRoot.getByTestId("plan-status-pill");
     let pending = false;
@@ -189,6 +257,16 @@ const consentInit = () => {
       pending = false;
     }
     await log(`PUBLISH_CLICK status_pending_visible=${pending} ${pending ? "PASS" : "FAIL"}`);
+    let pubAfter = planStatus(PLAYER.email);
+    for (let i = 0; i < 24 && pubAfter?.status !== "PENDING_PLAYER"; i++) {
+      await page.waitForTimeout(500);
+      pubAfter = planStatus(PLAYER.email);
+    }
+    const pubDbOk = pubAfter?.status === "PENDING_PLAYER";
+    await log(
+      `PUBLISH_AFTER status=${pubAfter?.status ?? "—"} planId=${pubAfter?.planId ?? "—"} ${pubDbOk ? "PASS" : "FAIL"}`,
+    );
+    if (!pubDbOk) throw new Error("PUBLISH_AFTER DB status ikke PENDING_PLAYER");
   }
 
   // Uke — velg økt (siste kort unngår overlapp fra mal-import)
@@ -219,73 +297,50 @@ const consentInit = () => {
   await log("PLAYER_DESKTOP_1280 uke PASS");
 
   // Desktop drag-and-drop via grip-håndtak + DB before/after (shipped code path)
-  const manCol = pageDesk.locator('[data-day="man"]');
-  const tirCol = pageDesk.locator('[data-day="tir"]').first();
-  const manCards = manCol.locator("[data-sid]");
-  const manCount = await manCards.count().catch(() => 0);
-  let dragSid = null;
-  for (let i = 0; i < manCount; i++) {
-    const sid = await manCards.nth(i).getAttribute("data-sid");
-    if (sid && PERSISTED_SID.test(sid)) {
-      dragSid = sid;
-      break;
-    }
-  }
-  if (dragSid && (await tirCol.isVisible().catch(() => false))) {
+  const dragSrc = await findDragSource(pageDesk);
+  const dragSid = dragSrc?.sid ?? null;
+  const handle = dragSrc?.handle ?? null;
+  const fromDay = dragSrc?.fromDay ?? "man";
+  const toDay = dragSrc?.toDay ?? "tir";
+  const fromCol = pageDesk.locator(`[data-day="${fromDay}"]`).first();
+  const targetCol = pageDesk.locator(`[data-day="${toDay}"]`).first();
+  if (dragSid && handle && (await targetCol.isVisible().catch(() => false))) {
     const before = sessionAt(dragSid);
+    const expectedDayIndex = before?.dayIndex != null ? before.dayIndex + 1 : 1;
     await log(
-      `MOVE_DRAG_BEFORE sid=${dragSid} scheduledAt=${before?.scheduledAt ?? "—"} dayIndex=${before?.dayIndex ?? "—"}`,
+      `MOVE_DRAG_BEFORE sid=${dragSid} scheduledAt=${before?.scheduledAt ?? "—"} dayIndex=${before?.dayIndex ?? "—"} from=${fromDay} to=${toDay}`,
     );
-    const handle = manCol.locator(`[data-sid="${dragSid}"] [data-drag-handle]`).first();
     await handle.scrollIntoViewIfNeeded();
     try {
-      let uiMoved = false;
-      try {
-        await handle.dragTo(tirCol, {
-          timeout: 12000,
-          sourcePosition: { x: 8, y: 12 },
-          targetPosition: { x: 24, y: 120 },
-        });
-        uiMoved = await tirCol.locator(`[data-sid="${dragSid}"]`).isVisible().catch(() => false);
-      } catch {
-        /* Playwright dragTo kan feile på overlappende kort — fall back til native DnD-events på samme handlers */
-      }
-      if (!uiMoved) {
-        uiMoved = await pageDesk.evaluate((sid) => {
-          const handleEl = document.querySelector(`[data-sid="${sid}"] [data-drag-handle]`);
-          const targetCol = document.querySelector('[data-day="tir"]');
-          if (!handleEl || !targetCol) return false;
-          const dt = new DataTransfer();
-          handleEl.dispatchEvent(new DragEvent("dragstart", { bubbles: true, cancelable: true, dataTransfer: dt }));
-          targetCol.dispatchEvent(new DragEvent("dragenter", { bubbles: true, cancelable: true, dataTransfer: dt }));
-          targetCol.dispatchEvent(new DragEvent("dragover", { bubbles: true, cancelable: true, dataTransfer: dt }));
-          targetCol.dispatchEvent(new DragEvent("drop", { bubbles: true, cancelable: true, dataTransfer: dt }));
-          handleEl.dispatchEvent(new DragEvent("dragend", { bubbles: true, cancelable: true, dataTransfer: dt }));
-          return !!targetCol.querySelector(`[data-sid="${sid}"]`);
-        }, dragSid);
-        await log(`MOVE_DRAG_NATIVE sid=${dragSid} ui_tir=${uiMoved}`);
-      }
+      await handle.dragTo(targetCol, {
+        timeout: 15000,
+        sourcePosition: { x: 10, y: 12 },
+        targetPosition: { x: 24, y: 120 },
+      });
+      await log(`MOVE_DRAG_POINTER sid=${dragSid} dragTo=ok from=${fromDay} to=${toDay}`);
       await pageDesk.waitForTimeout(1500);
-      const inTir =
-        uiMoved ||
-        (await tirCol.locator(`[data-sid="${dragSid}"]`).isVisible().catch(() => false));
+      const inTarget = await targetCol.locator(`[data-sid="${dragSid}"]`).isVisible().catch(() => false);
       let after = sessionAt(dragSid);
       for (let i = 0; i < 12 && before && (!after || after.dayIndex === before.dayIndex); i++) {
         await pageDesk.waitForTimeout(500);
         after = sessionAt(dragSid);
       }
-      const dbMoved = after && before && after.dayIndex === 1 && before.dayIndex !== 1;
-      const pass = inTir && dbMoved;
+      const dbMoved =
+        after && before && after.dayIndex === expectedDayIndex && before.dayIndex !== expectedDayIndex;
+      const pass = inTarget && dbMoved;
       await log(
-        `MOVE_DRAG_AFTER sid=${dragSid} scheduledAt=${after?.scheduledAt ?? "—"} dayIndex=${after?.dayIndex ?? "—"} ui_tir=${inTir} ${pass ? "PASS" : "FAIL"}`,
+        `MOVE_DRAG_AFTER sid=${dragSid} scheduledAt=${after?.scheduledAt ?? "—"} dayIndex=${after?.dayIndex ?? "—"} ui_target=${inTarget} pointer=true ${pass ? "PASS" : "FAIL"}`,
       );
-      if (!pass) throw new Error(`MOVE_DRAG failed ui=${inTir} db=${!!dbMoved}`);
-      // Gjenopprett mandag for seed-stabilitet
-      if (before?.dayIndex != null && before.dayIndex !== after?.dayIndex) {
-        const restoreCol = pageDesk.locator('[data-day="man"]').first();
-        const restoreHandle = tirCol.locator(`[data-sid="${dragSid}"] [data-drag-handle]`).first();
+      if (!pass) throw new Error(`MOVE_DRAG failed ui=${inTarget} db=${!!dbMoved}`);
+      // Gjenopprett opprinnelig dag for seed-stabilitet
+      if (before?.dayIndex != null && after?.dayIndex !== before.dayIndex) {
+        const restoreGrip = await findExposedDragGrip(pageDesk, targetCol);
+        const restoreHandle =
+          restoreGrip?.sid === dragSid
+            ? restoreGrip.handle
+            : targetCol.locator(`[data-sid="${dragSid}"] [data-drag-handle]`).first();
         if (await restoreHandle.isVisible().catch(() => false)) {
-          await restoreHandle.dragTo(restoreCol, { timeout: 15000 }).catch(() => {});
+          await restoreHandle.dragTo(fromCol, { timeout: 15000 }).catch(() => {});
           await pageDesk.waitForTimeout(2000);
           await log(`MOVE_DRAG_RESTORE sid=${dragSid} dayIndex=${before.dayIndex} PASS`);
         }
@@ -295,7 +350,7 @@ const consentInit = () => {
       throw e;
     }
   } else {
-    await log("MOVE_DRAG SKIP ingen persisted økt på man eller tir-kolonne");
+    await log("MOVE_DRAG SKIP ingen persisted økt med synlig grip i uke-grid");
     throw new Error("MOVE_DRAG SKIP");
   }
 
@@ -338,11 +393,8 @@ await browser.close();
 const restore = runPrep("restore-active");
 await log(`PLAN_PREP restore-active ok=${restore.ok} ${restore.out}`, GATE_LOG);
 
-// Locked + publish DB evidence (move runs earlier, after maler)
-const evidenceScripts = [
-  ["workbench-locked-evidence.ts", path.join(OUT, "locked-decisions.log")],
-  ["workbench-publish-evidence.ts", FLOW_LOG],
-];
+// Locked decisions (publish + move DB-bevis kjører i hovedflyten over)
+const evidenceScripts = [["workbench-locked-evidence.ts", path.join(OUT, "locked-decisions.log")]];
 for (const [script, outPath] of evidenceScripts) {
   const r = spawnSync("npx", ["tsx", `scripts/${script}`, outPath], {
     cwd: process.cwd(),

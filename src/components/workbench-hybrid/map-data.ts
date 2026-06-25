@@ -127,10 +127,44 @@ export function mapTournaments(data: WorkbenchData | undefined): WbTournament[] 
   }));
 }
 
+const DEFAULT_SEASON_PHASES: SeasonPhase[] = [
+  {
+    type: "GRUNN",
+    months: 4,
+    span: "Jan–Apr",
+    weekly: { FYS: 3, TEK: 3, SLAG: 2, SPILL: 1, TURN: 0 },
+    samlinger: [],
+  },
+  {
+    type: "SPESIALISERING",
+    months: 4,
+    span: "Mai–Aug",
+    weekly: { FYS: 2, TEK: 3, SLAG: 3, SPILL: 1, TURN: 0 },
+    samlinger: [],
+  },
+  {
+    type: "TURNERING",
+    months: 4,
+    span: "Sep–Des",
+    weekly: { FYS: 2, TEK: 2, SLAG: 2, SPILL: 1, TURN: 2 },
+    samlinger: [],
+  },
+];
+
+function hasActivePlanSignals(data: WorkbenchData | undefined): boolean {
+  if (!data) return false;
+  if (data.usesV2Sessions) return true;
+  if (data.summary && data.summary.sessionCount > 0) return true;
+  if (data.pyramid?.some((p) => p.hours > 0)) return true;
+  return false;
+}
+
 /** Sesong-perioder fra SeasonPlan.periodBlocks → fasit seasonPhases. */
 export function mapSeasonPhases(data: WorkbenchData | undefined): SeasonPhase[] | null {
   const blocks = data?.seasonBlocks;
-  if (!blocks || blocks.length === 0) return null;
+  if (!blocks || blocks.length === 0) {
+    return hasActivePlanSignals(data) ? DEFAULT_SEASON_PHASES : null;
+  }
   return blocks.map((b) => {
     const start = new Date(b.startDate);
     const end = new Date(b.endDate);
