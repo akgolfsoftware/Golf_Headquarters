@@ -12,6 +12,7 @@
 
 import "server-only";
 import { prisma } from "@/lib/prisma";
+import { v2SessionStartHref } from "@/lib/portal/session-hrefs";
 import { getWeekProgress } from "@/components/portal/workbench/get-week-progress";
 import type { PyramidRow } from "@/components/athletic";
 
@@ -175,7 +176,10 @@ export async function getHjemData(userId: string): Promise<HjemData> {
     tittel: o.title,
     meta: `${TEMA_LABEL[pyrAv(o.practiceType)]} · ${varighetMin(o)} min`,
     status: statusAv(o.status),
-    href: `/portal/gjennomfore/${o.id}`,
+    href:
+      statusAv(o.status) === "done"
+        ? `/portal/gjennomfore/${o.id}`
+        : v2SessionStartHref(o.id, statusAv(o.status)),
   }));
 
   // Fokus-økt: pågående → neste planlagte → første.
@@ -194,7 +198,10 @@ export async function getHjemData(userId: string): Promise<HjemData> {
         beskrivelse: fokusDrills.length
           ? fokusDrills.join(", ")
           : `${fokusKilde._count.drills} drills · ${user.homeClub ?? "egen økt"}`,
-        startHref: `/portal/gjennomfore/${fokusKilde.id}`,
+        startHref: v2SessionStartHref(
+          fokusKilde.id,
+          statusAv(fokusKilde.status),
+        ),
         planHref: "/portal/planlegge/workbench",
       }
     : null;

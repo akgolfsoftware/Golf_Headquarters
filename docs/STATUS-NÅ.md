@@ -2,7 +2,7 @@
 
 > **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg. Detaljert skjermstatus bor i `docs/MASTER-SKJERMPLAN.md`; låste regler i `docs/platform/BUSINESS-RULES.md`; uavklarte beslutninger i `docs/AAPNE-SPORSMAAL.md`.
 
-**Sist oppdatert:** 2026-06-17
+**Sist oppdatert:** 2026-06-25 (Uka kanban round: Design/Data/Funker advanced per design gate + real prisma; see PLAN-GJENSTAENDE and MASTER Uka row)
 
 ---
 
@@ -23,7 +23,7 @@ Appen er **deployet og kjører** på `akgolf-hq.vercel.app`. Kjernen (PlayerHQ +
 - **Resterende skjermer:** ~60 skjermer uten ferdig design var i Claude Design-pipeline (Spor A/C i MASTER-SKJERMPLAN). Status per skjerm: se planen.
 - **Delvis mock i AgencyOS:** godkjenninger, økonomi/finance, innboks/meldinger, analytics — bygget UI, ikke full datakobling.
 - **Foreldreportal (`/forelder`):** bygget (11 ruter), datakvalitet ikke fullverifisert.
-- **Kjent regresjon (forenklingsplan 13. juni):** spiller kan ikke starte «dagens økt» (knapp fører til read-only side). Mobil-nav i AgencyOS er ennå ikke samlet med desktop-nav.
+- **Kjent regresjon (forenklingsplan 13. juni):** ~~spiller kan ikke starte «dagens økt»~~ **LØST 2026-06-25** — Start økt lenker nå til `/portal/live/…` (V2 + plan-økter fra Workbench i Gjennomføre). Mobil-nav i AgencyOS er ennå ikke samlet med desktop-nav.
 
 ## Blokkert — P0 før ekte/betalende brukere
 Kilde og detaljert status: `docs/redesign-2026-06/P0-status.md` (re-verifisert mot kode 17. juni). Betaling åpner **1. juli** — koden gir bevisst gratis tilgang til alle frem til da (`gratisForAlle()` i `src/lib/feature-flags.ts`).

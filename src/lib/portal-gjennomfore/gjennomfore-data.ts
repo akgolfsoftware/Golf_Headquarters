@@ -11,9 +11,16 @@
 
 import "server-only";
 import { prisma } from "@/lib/prisma";
+import {
+  planSessionStartHref,
+  planSessionUiStatus,
+  v2SessionDetailHref,
+  v2SessionStartHref,
+  type V2OktUiStatus,
+} from "@/lib/portal/session-hrefs";
 
 type PyramidArea = "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";
-type OktStatus = "done" | "now" | "upcoming";
+type OktStatus = V2OktUiStatus;
 
 const MILJO_LABEL: Record<string, string> = {
   M0: "Studio",
@@ -89,31 +96,58 @@ export async function getGjennomforeData(userId: string): Promise<GjennomforeDat
   const endOfDay = new Date(startOfDay);
   endOfDay.setDate(endOfDay.getDate() + 1);
 
-  const okterRaw = await prisma.trainingSessionV2
-    .findMany({
-      where: { studentId: userId, startTime: { gte: startOfDay, lt: endOfDay } },
-      orderBy: { startTime: "asc" },
-      select: {
-        id: true,
-        title: true,
-        startTime: true,
-        endTime: true,
-        status: true,
-        practiceType: true,
-        miljo: true,
-        completedSummary: true,
-        drills: {
-          select: { id: true, name: true },
-          orderBy: { sortOrder: "asc" },
-          take: 4,
+  const [okterRaw, planOkterRaw] = await Promise.all([
+    prisma.trainingSessionV2
+      .findMany({
+        where: { studentId: userId, startTime: { gte: startOfDay, lt: endOfDay } },
+        orderBy: { startTime: "asc" },
+        select: {
+          id: true,
+          title: true,
+          startTime: true,
+          endTime: true,
+          status: true,
+          practiceType: true,
+          miljo: true,
+          completedSummary: true,
+          drills: {
+            select: { id: true, name: true },
+            orderBy: { sortOrder: "asc" },
+            take: 4,
+          },
+          _count: { select: { drills: true } },
+          coachId: true,
         },
-        _count: { select: { drills: true } },
-        // Fetch coach name via coachId → user
-        coachId: true,
-      },
-      take: 12,
-    })
-    .catch(() => []);
+        take: 12,
+      })
+      .catch(() => []),
+    prisma.trainingPlanSession
+      .findMany({
+        where: {
+          scheduledAt: { gte: startOfDay, lt: endOfDay },
+          plan: { userId, isActive: true },
+          status: { not: "ABANDONED" },
+        },
+        orderBy: { scheduledAt: "asc" },
+        select: {
+          id: true,
+          title: true,
+          scheduledAt: true,
+          durationMin: true,
+          status: true,
+          pyramidArea: true,
+          environment: true,
+          log: { select: { id: true } },
+          drills: {
+            select: { exercise: { select: { name: true } } },
+            take: 4,
+          },
+          _count: { select: { drills: true } },
+        },
+        take: 12,
+      })
+      .catch(() => []),
+  ]);
 
   // Batch-hent coach-navn for unike coachId-er
   const coachIds = [...new Set(okterRaw.map((o) => o.coachId).filter(Boolean))] as string[];
@@ -163,20 +197,82 @@ export async function getGjennomforeData(userId: string): Promise<GjennomforeDat
       antallDrills: o._count.drills,
       drillNavn,
       status,
-      href: `/portal/gjennomfore/${o.id}`,
+      href:
+        status === "done"
+          ? v2SessionDetailHref(o.id, trengerLogg)
+          : v2SessionStartHref(o.id, status),
       trengerLogg,
       varighet,
       pyramidArea: pyramid,
     };
   };
 
-  const okter = okterRaw.map(mapOkt);
+  const ENV_LABEL: Record<string, string> = {
+    STUDIO: "Studio",
+    RANGE: "Range",
+    COURSE: "Bane",
+    SIMULATOR: "Simulator",
+    HOME: "Hjemme",
+  };
+
+  const mapPlanOkt = (o: (typeof planOkterRaw)[number]): GjennomforeOkt => {
+    const uiStatus = planSessionUiStatus(
+      o.status as "PLANNED" | "ACTIVE" | "PAUSED" | "COMPLETED",
+    );
+    const scheduled = o.scheduledAt;
+    const varighet = o.durationMin;
+    const drillNavn = o.drills.map((d) => d.exercise.name);
+    const trengerLogg = uiStatus === "done" && o.log == null;
+    const minTil = minutterTil(scheduled);
+    const tidLabel =
+      uiStatus === "now"
+        ? "Pågår nå"
+        : uiStatus === "upcoming" && minTil > 0
+          ? `om ${minTil < 60 ? `${minTil} min` : `${Math.round(minTil / 60)} t`}`
+          : tid(scheduled);
+    const sted = o.environment ? (ENV_LABEL[o.environment] ?? "Egen økt") : "Egen økt";
+
+    return {
+      id: o.id,
+      tid: tid(scheduled),
+      relTidTekst: tidLabel,
+      tittel: o.title,
+      meta: `${tid(scheduled)} · ${sted} · ${varighet} min`,
+      sted,
+      coachNavn: "Din plan",
+      antallDrills: o._count.drills,
+      drillNavn,
+      status: uiStatus,
+      href:
+        uiStatus === "done"
+          ? planSessionStartHref(o.id, "COMPLETED")
+          : planSessionStartHref(
+              o.id,
+              o.status as "PLANNED" | "ACTIVE" | "PAUSED" | "COMPLETED",
+            ),
+      trengerLogg,
+      varighet,
+      pyramidArea: o.pyramidArea as PyramidArea,
+    };
+  };
+
+  const okter: GjennomforeOkt[] = [
+    ...okterRaw.map((o) => ({ at: o.startTime.getTime(), okt: mapOkt(o) })),
+    ...planOkterRaw.map((o) => ({
+      at: o.scheduledAt.getTime(),
+      okt: mapPlanOkt(o),
+    })),
+  ]
+    .sort((a, b) => a.at - b.at)
+    .map((x) => x.okt);
+
   const fullfortIdag = okter.filter((o) => o.status === "done");
   const kommende = okter.filter((o) => o.status !== "done");
 
-  // "Neste": IN_PROGRESS først, deretter neste planlagte
-  const nesteOkt = kommende[0] ?? null;
-  const resteAvDagen = kommende.slice(1);
+  // "Neste": pågående først, deretter tidligste planlagte
+  const nesteOkt =
+    kommende.find((o) => o.status === "now") ?? kommende[0] ?? null;
+  const resteAvDagen = kommende.filter((o) => o.id !== nesteOkt?.id);
 
   const totalMin = okter.reduce((sum, o) => sum + o.varighet, 0);
   const datoTekst = now.toLocaleDateString("nb-NO", {

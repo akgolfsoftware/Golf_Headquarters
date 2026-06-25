@@ -11,7 +11,8 @@
 
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Clock, MessageSquare, Target } from "lucide-react";
+import { ArrowLeft, Clock, MessageSquare, Play, Target } from "lucide-react";
+import { v2SessionStartHref } from "@/lib/portal/session-hrefs";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { AthleticEyebrow } from "@/components/athletic/eyebrow";
@@ -122,6 +123,18 @@ export default async function OktDetaljPage({ params }: { params: Promise<{ id: 
       </section>
 
       <div className="mt-5 flex max-w-[680px] flex-wrap gap-2.5">
+        {(okt.status === "PLANNED" || okt.status === "IN_PROGRESS") && (
+          <Link
+            href={v2SessionStartHref(
+              okt.id,
+              okt.status === "IN_PROGRESS" ? "now" : "upcoming",
+            )}
+            className="inline-flex h-11 items-center gap-2 rounded-full bg-accent px-5 font-mono text-[12px] font-bold uppercase tracking-[0.06em] text-accent-foreground transition-opacity hover:opacity-90"
+          >
+            <Play className="h-4 w-4" fill="currentColor" strokeWidth={0} aria-hidden />
+            {okt.status === "IN_PROGRESS" ? "Fortsett økt" : "Start økt"}
+          </Link>
+        )}
         <Link href="/portal/coach/melding" className="inline-flex h-11 items-center gap-2 rounded-full bg-primary px-5 font-mono text-[12px] font-bold uppercase tracking-[0.06em] text-primary-foreground transition-opacity hover:opacity-90">
           <MessageSquare className="h-4 w-4" strokeWidth={1.5} aria-hidden />
           Kontakt coach

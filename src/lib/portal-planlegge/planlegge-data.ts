@@ -6,6 +6,7 @@
 
 import "server-only";
 import { prisma } from "@/lib/prisma";
+import { v2SessionStartHref } from "@/lib/portal/session-hrefs";
 
 export type PyrKey = "fys" | "tek" | "slag" | "spill" | "turn";
 
@@ -90,7 +91,12 @@ export async function getPlanleggeData(userId: string): Promise<PlanleggeData> {
       omr,
       dur: `${Math.max(0, Math.round((o.endTime.getTime() - o.startTime.getTime()) / 60_000))} min`,
       naa: o.status === "IN_PROGRESS",
-      href: `/portal/gjennomfore/${o.id}`,
+      href: o.status === "COMPLETED"
+        ? `/portal/gjennomfore/${o.id}`
+        : v2SessionStartHref(
+            o.id,
+            o.status === "IN_PROGRESS" ? "now" : "upcoming",
+          ),
     });
   }
 
