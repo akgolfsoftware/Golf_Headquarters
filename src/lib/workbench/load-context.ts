@@ -14,8 +14,8 @@ export async function loadWorkbenchContext(userId: string): Promise<WorkbenchCon
   const [insights, activePlan, tekniskPlan] = await Promise.all([
     buildWorkbenchInsights(userId, data),
     prisma.trainingPlan.findFirst({
-      where: { userId, isActive: true },
-      orderBy: { updatedAt: "desc" },
+      where: { userId },
+      orderBy: [{ isActive: "desc" }, { updatedAt: "desc" }],
       select: { id: true, status: true },
     }),
     loadTekniskPlanContext(userId),

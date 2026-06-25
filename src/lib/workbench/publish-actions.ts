@@ -29,8 +29,8 @@ export async function publishWorkbenchPlan(
   }
 
   const plan = await prisma.trainingPlan.findFirst({
-    where: { userId: targetUserId, isActive: true },
-    orderBy: { updatedAt: "desc" },
+    where: { userId: targetUserId },
+    orderBy: [{ isActive: "desc" }, { updatedAt: "desc" }],
     select: { id: true, name: true, status: true, userId: true },
   });
 
