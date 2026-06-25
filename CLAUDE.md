@@ -38,6 +38,7 @@ dashboard-tallene + endringsloggen når du fullfører/endrer skjermer.
 - **Abonnement (ingen tier-nivåer):** PlayerHQ-tilgang er gratis eller 300 kr/mnd. **Gratis** hvis: 1 mnd prøveperiode, ELLER coaching-pakke (Performance / Performance Pro), ELLER gruppe via AK Golf. **300 kr/mnd** for alle andre. «Performance / Performance Pro» er **coaching-pakker** (antall økter), IKKE app-nivåer. **ELITE finnes ikke** (dødt Prisma-enum — vis aldri i UI).
 - **FYS-resultatformel avventer:** Bygg testskjermer med plassholder-tall. Ikke hardkod referanseverdier før Anders gir grønt lys.
 - **Ferskt design:** `public/design-handover/AK Golf HQ Design System/` (4. juni) er gjeldende. `docs/design-handoff-komplett/` (mai) er arkiv.
+- **Design-kilde-regel (LÅST):** All design-referanse (kode/kommentarer/commits/prompts) MÅ peke til `public/design-handover/`. Aldri referer til `wireframe/`, gamle design-package eller design-files-v2 i produksjonsfiler. Se `.claude/rules/design-porting-gate.md`.
 
 ## Stack (eksakte versjoner — ikke oppgrader uten beslutning)
 - Next.js 16 (App Router, TypeScript strict, Turbopack), React 19

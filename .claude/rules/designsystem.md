@@ -8,9 +8,11 @@ Flyttet fra CLAUDE.md 2026-06-14 for å holde CLAUDE.md under 100 linjer. Innhol
 
 **FORBUDT:**
 - Å lage nye `tokens.css`-filer noe sted
-- Å hardkode hex-verdier i komponenter
+- Å hardkode hex-verdier i komponenter (gjelder spesielt `src/components/athletic/**` og all ny UI-kode)
 - Å importere CSS-tokens fra `wireframe/`-mappen (denne mappen er arkiv)
 - Å lage `tokens.ts`-fil i en komponent-mappe
+
+Eksisterende hardkodede hex i gamle data-viz-komponenter må ha TODO + migreringsplan. Ny kode får ikke lov til dette.
 
 Hvis du trenger ny farge, legg den inn som token i `globals.css` først. Spør Anders før du gjør det.
 

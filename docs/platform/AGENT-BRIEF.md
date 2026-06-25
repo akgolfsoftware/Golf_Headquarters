@@ -85,6 +85,7 @@ wireframe/               ARKIV — ikke les eller importer herfra
 - **Abonnement:** Gratis (prøveperiode / coaching-pakke / gruppe) eller 300 kr/mnd. Performance / Performance Pro er coaching-pakker, ikke app-nivåer.
 - **FYS-resultatformel:** avventer grønt lys fra Anders — vis plassholder-tall.
 - **Avatar-initialer:** avledes fra ekte navn i DB, aldri hardkodet.
+- **Design-kilde (LÅST):** All design-referanse i kode, kommentarer, commits og prompts **MÅ** peke til gjeldende `public/design-handover/` (juni 2026+ eller nyere). Referanser til `wireframe/`, `design-package/`, `design-files-v2/` eller gamle arkiver er forbudt i produksjonsfiler. De skal fjernes eller oppdateres ved første touch av filen. Bruk kun gjeldende design-handover som fasit. Se `.claude/rules/design-porting-gate.md` for full regel.
 
 ### Design-porting-unntak (diff-agenter skal ikke flagge disse)
 

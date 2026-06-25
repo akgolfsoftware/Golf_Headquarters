@@ -9,6 +9,24 @@ Når en skjerm portes fra det ferske designet (`public/design-handover/AK Golf H
    Lag en **element-liste** (hero-topp, hero-bunn, hver seksjon, hvert tall/tekst, rekkefølge).
    Bygg implementeringen fra lista — ikke ved å modifisere det som allerede finnes.
 
+## Låst kilde-regel (MÅ følges)
+
+All design-referanse i kode, kommentarer, commits, prompts og interne dokumenter **MÅ** peke til den gjeldende design-kilden:
+
+- `public/design-handover/` (juni 2026 eller nyere .dc.html-filer + Final_AK_Golf_HQ/)
+- `public/design-handover/AK Golf HQ Design System/`
+
+**Forbudt:**
+- `wireframe/`
+- `design-package/`
+- `design-files-v2/`
+- `docs/design-handoff-komplett/`
+- Gamle wireframe-HTML eller arkiverte handoffs
+
+Gamle referanser skal enten fjernes, flyttes til `_archive/` eller oppdateres ved første touch av filen. Diff-agenter og kode-review skal flagge brudd på denne regelen.
+
+Bruk kun gjeldende design-handover som fasit for porting.
+
 2. **Screenshot implementeringen.**
    Playwright mot riktig bredde (PlayerHQ 430px, AgencyOS ~1280px), full-page.
 
