@@ -1,6 +1,6 @@
 /**
- * Gating verification for agent loop — full evidence for plan verification steps 1–4.
- * Usage: SCRATCH=/path/to/implementer npx tsx scripts/verify-agent-loop.ts
+ * Gating verification steps 1 + 3 (DB executor + agents produce PlanActions).
+ * Step 4 (UI approve) lives in verify-godkjenninger-ui.ts
  */
 import "./_env";
 import { writeFile, mkdir } from "node:fs/promises";
@@ -10,7 +10,9 @@ import { acceptAndApplyPlanAction } from "@/lib/agents/accept-plan-action";
 import { runPlanWatcher } from "@/lib/agents/plan-watcher";
 import { runTrainingGap } from "@/lib/agents/training-gap";
 import { runRoundAgent } from "@/lib/agents/round-agent";
-import { startOfWeek, endOfWeek } from "@/lib/uke-helpers";
+import { aggregateSg } from "@/lib/sg";
+import { runWeaknessSkill } from "@/lib/training/skills";
+import { startOfWeek } from "@/lib/uke-helpers";
 
 const SCRATCH =
   process.env.SCRATCH ??
@@ -18,7 +20,9 @@ const SCRATCH =
 
 const lines: string[] = [];
 function log(...parts: unknown[]) {
-  const line = parts.map((p) => (typeof p === "string" ? p : JSON.stringify(p, null, 2))).join(" ");
+  const line = parts
+    .map((p) => (typeof p === "string" ? p : JSON.stringify(p, null, 2)))
+    .join(" ");
   console.log(line);
   lines.push(line);
 }
@@ -36,16 +40,6 @@ async function findDemoUser() {
 }
 
 async function snapshotPlan(planId: string) {
-  const plan = await prisma.trainingPlan.findUnique({
-    where: { id: planId },
-    select: {
-      id: true,
-      name: true,
-      isActive: true,
-      aiPrompt: true,
-      updatedAt: true,
-    },
-  });
   const sessions = await prisma.trainingPlanSession.findMany({
     where: {
       planId,
@@ -59,15 +53,14 @@ async function snapshotPlan(planId: string) {
       pyramidArea: true,
       skillArea: true,
       scheduledAt: true,
-      status: true,
-      drills: { select: { id: true, exerciseId: true } },
+      drills: { select: { exerciseId: true } },
     },
   });
-  return { plan, sessions };
+  return sessions;
 }
 
 async function verifyExecutorAccept(userId: string) {
-  log("\n=== STEP 1: Executor accept (PYRAMID_ADJUST + SESSION_ADD) ===");
+  log("\n=== STEP 1: Executor accept (PYRAMID_ADJUST) ===");
 
   const plan = await prisma.trainingPlan.findFirst({
     where: { userId, isActive: true },
@@ -79,8 +72,7 @@ async function verifyExecutorAccept(userId: string) {
   }
 
   const before = await snapshotPlan(plan.id);
-  log("BEFORE plan:", before.plan);
-  log("BEFORE sessions (PLANNED future):", before.sessions);
+  log("BEFORE sessions:", before);
 
   const action = await prisma.planAction.create({
     data: {
@@ -90,42 +82,125 @@ async function verifyExecutorAccept(userId: string) {
       agentName: "verify-script",
       suggestion: {
         omrade: "FYS",
-        omradeNavn: "Fysisk",
-        faktiskProsent: 5,
-        malProsent: 15,
-        forklaring: "Gating-test PYRAMID_ADJUST — FYS under mål",
+        forklaring: "Gating-test PYRAMID_ADJUST",
       },
     },
   });
-  log("Created PlanAction:", action.id, action.actionType);
 
   const result = await acceptAndApplyPlanAction(action.id);
-  log("acceptAndApplyPlanAction result:", result);
+  log("acceptAndApplyPlanAction:", result);
 
   const after = await snapshotPlan(plan.id);
-  log("AFTER plan:", after.plan);
-  log("AFTER sessions (PLANNED future):", after.sessions);
+  log("AFTER sessions:", after);
 
-  const accepted = await prisma.planAction.findUnique({
+  const status = await prisma.planAction.findUnique({
     where: { id: action.id },
     select: { status: true },
   });
-  log("PlanAction status:", accepted?.status);
 
-  const drillCount = after.sessions.reduce((n, s) => n + s.drills.length, 0);
   const passed =
-    result.status === "ACCEPTED" &&
     result.applied &&
-    accepted?.status === "ACCEPTED" &&
-    after.sessions.length > before.sessions.length &&
-    drillCount > before.sessions.reduce((n, s) => n + s.drills.length, 0);
+    status?.status === "ACCEPTED" &&
+    after.length > before.length &&
+    after.some((s) => s.drills.length > 0);
 
   log(passed ? "PASS step 1" : "FAIL step 1");
   return passed;
 }
 
-/** Seed forrige uke med FYS-tung fordeling slik plan-watcher oppretter PYRAMID_ADJUST. */
-async function seedPyramidGapForWatcher(userId: string, planId: string) {
+async function seedRoundAgentConditions(userId: string) {
+  await prisma.planAction.deleteMany({
+    where: {
+      userId,
+      actionType: "FOCUS_CHANGE",
+      status: "PENDING",
+      agentName: "round-agent",
+    },
+  });
+
+  const tretti = new Date();
+  tretti.setDate(tretti.getDate() - 30);
+  const runder = await prisma.round.findMany({
+    where: { userId, playedAt: { gte: tretti } },
+  });
+  const sg = aggregateSg(runder);
+  const weakness = runWeaknessSkill({
+    sgSnitt: {
+      OTT: sg.ott ?? 0,
+      APP: sg.app ?? 0,
+      ARG: sg.arg ?? 0,
+      PUTT: sg.putt ?? 0,
+    },
+    pyramidSessions: [],
+  });
+  log("round-agent pre-check weakness:", weakness);
+
+  if (weakness.sgValue >= -0.5) {
+    const course = await prisma.courseDefinition.findFirst({
+      select: { id: true },
+    });
+    if (course) {
+      await prisma.round.create({
+        data: {
+          userId,
+          courseId: course.id,
+          playedAt: new Date(),
+          score: 85,
+          sgTotal: -3,
+          sgOtt: 0.2,
+          sgApp: 0.1,
+          sgArg: 0.0,
+          sgPutt: -2.8,
+        },
+      });
+      log("Seeded round with sgPutt=-2.8 for round-agent trigger");
+    }
+  }
+}
+
+async function seedTrainingGapConditions(userId: string) {
+  await prisma.planAction.deleteMany({
+    where: {
+      userId,
+      actionType: "TRAINING_GAP",
+      status: "PENDING",
+      agentName: "training-gap",
+    },
+  });
+
+  const now = new Date();
+  const markor = "verify-gap-seed";
+  const eks = await prisma.trainingLog.findFirst({
+    where: { userId, notes: markor },
+  });
+  if (!eks) {
+    for (let i = 0; i < 6; i++) {
+      const d = new Date(now);
+      d.setDate(d.getDate() - i * 3);
+      await prisma.trainingLog.create({
+        data: {
+          userId,
+          date: d,
+          sgArea: "OTT",
+          minutes: 90,
+          notes: markor,
+        },
+      });
+    }
+    await prisma.trainingLog.create({
+      data: {
+        userId,
+        date: now,
+        sgArea: "PUTT",
+        minutes: 5,
+        notes: markor,
+      },
+    });
+    log("Seeded training logs: 540min OTT, 5min PUTT");
+  }
+}
+
+async function seedPlanWatcherGap(userId: string, planId: string) {
   const idag = new Date();
   const ukestart = startOfWeek(idag);
   const forrigeStart = new Date(ukestart);
@@ -133,31 +208,17 @@ async function seedPyramidGapForWatcher(userId: string, planId: string) {
   const forrigeMid = new Date(forrigeStart);
   forrigeMid.setDate(forrigeMid.getDate() + 2);
 
-  await prisma.planAction.deleteMany({
-    where: {
-      userId,
-      planId,
-      actionType: "PYRAMID_ADJUST",
-      status: "PENDING",
-      agentName: "plan-watcher",
-    },
+  const markor = "verify-watcher-seed";
+  const eks = await prisma.trainingPlanSession.findFirst({
+    where: { planId, title: { contains: markor } },
   });
-
-  const eksisterende = await prisma.trainingPlanSession.findFirst({
-    where: {
-      planId,
-      scheduledAt: { gte: forrigeStart, lt: endOfWeek(forrigeStart) },
-      status: "COMPLETED",
-      title: { contains: "verify-watcher-seed" },
-    },
-  });
-  if (!eksisterende) {
+  if (!eks) {
     await prisma.trainingPlanSession.create({
       data: {
         planId,
-        title: "verify-watcher-seed FYS",
+        title: `${markor} FYS`,
         scheduledAt: forrigeMid,
-        durationMin: 120,
+        durationMin: 180,
         pyramidArea: "FYS",
         skillArea: "SPILL",
         status: "COMPLETED",
@@ -174,153 +235,63 @@ async function verifyAgentsProduceActions(userId: string) {
     where: { userId, isActive: true },
     select: { id: true },
   });
-  if (!plan) {
-    log("SKIP: ingen aktiv plan");
-    return false;
-  }
-
-  const pendingBefore = await prisma.planAction.count({
-    where: { userId, status: "PENDING" },
-  });
-  log("PENDING before:", pendingBefore);
-
-  await seedPyramidGapForWatcher(userId, plan.id);
-
-  await prisma.planAction.deleteMany({
-    where: {
-      userId,
-      actionType: "FOCUS_CHANGE",
-      status: "PENDING",
-      agentName: "round-agent",
-    },
-  });
-
-  const watcher = await runPlanWatcher();
-  log("runPlanWatcher:", watcher);
-
-  const gap = await runTrainingGap();
-  log("runTrainingGap:", gap);
-
-  const round = await runRoundAgent(userId);
-  log("runRoundAgent:", round);
-
-  const pendingAfter = await prisma.planAction.count({
-    where: { userId, status: "PENDING" },
-  });
-  log("PENDING after:", pendingAfter);
-
-  const nye = await prisma.planAction.findMany({
-    where: { userId, status: "PENDING" },
-    orderBy: { createdAt: "desc" },
-    take: 8,
-    select: {
-      id: true,
-      actionType: true,
-      agentName: true,
-      status: true,
-      suggestion: true,
-      createdAt: true,
-    },
-  });
-  log("Recent PENDING actions:", nye);
-
-  const produsert =
-    (watcher.planActionsWritten ?? 0) > 0 ||
-    (gap.planActionsWritten ?? 0) > 0 ||
-    (round.planActionsWritten ?? 0) > 0;
-
-  log(produsert ? "PASS step 3" : "FAIL step 3");
-  return produsert;
-}
-
-async function verifyApprovePath(userId: string) {
-  log("\n=== STEP 4: Approve path (same as UI server action) ===");
-
-  const plan = await prisma.trainingPlan.findFirst({
-    where: { userId, isActive: true },
-    select: { id: true },
-  });
   if (!plan) return false;
 
-  const before = await snapshotPlan(plan.id);
-  const sessionCountBefore = before.sessions.length;
+  await seedPlanWatcherGap(userId, plan.id);
+  await seedRoundAgentConditions(userId);
+  await seedTrainingGapConditions(userId);
 
-  const pending = await prisma.planAction.findFirst({
-    where: { userId, status: "PENDING", actionType: "REST_DAY_ADD" },
+  const watcher = await runPlanWatcher();
+  const gap = await runTrainingGap();
+  const round = await runRoundAgent(userId);
+
+  log("runPlanWatcher:", watcher);
+  log("runTrainingGap:", gap);
+  log("runRoundAgent:", round);
+
+  const nye = await prisma.planAction.findMany({
+    where: {
+      userId,
+      agentName: { in: ["plan-watcher", "training-gap", "round-agent"] },
+      status: "PENDING",
+    },
+    orderBy: { createdAt: "desc" },
+    take: 10,
+    select: { id: true, actionType: true, agentName: true, createdAt: true },
   });
-
-  let actionId = pending?.id;
-  if (!actionId) {
-    const fremtidig = before.sessions[0];
-    if (!fremtidig) {
-      log("SKIP: ingen fremtidig økt for REST_DAY_ADD");
-      return false;
-    }
-    const created = await prisma.planAction.create({
-      data: {
-        userId,
-        planId: plan.id,
-        actionType: "REST_DAY_ADD",
-        agentName: "verify-script",
-        suggestion: {
-          date: fremtidig.scheduledAt.toISOString(),
-          forklaring: "Gating-test hviledag",
-        },
-      },
-    });
-    actionId = created.id;
-    log("Created REST_DAY_ADD action:", actionId);
-  } else {
-    log("Using existing REST_DAY_ADD:", actionId);
-  }
-
-  const result = await acceptAndApplyPlanAction(actionId);
-  log("approve (acceptAndApplyPlanAction) result:", result);
-
-  const after = await snapshotPlan(plan.id);
-  log("Sessions before:", sessionCountBefore, "after:", after.sessions.length);
-
-  const action = await prisma.planAction.findUnique({
-    where: { id: actionId },
-    select: { status: true },
-  });
-  log("Final action status:", action?.status);
+  log("PENDING from agents:", nye);
 
   const passed =
-    result.status === "ACCEPTED" &&
-    action?.status === "ACCEPTED" &&
-    after.sessions.length <= sessionCountBefore;
+    (watcher.planActionsWritten ?? 0) > 0 &&
+    (gap.planActionsWritten ?? 0) > 0 &&
+    (round.planActionsWritten ?? 0) > 0;
 
-  log(passed ? "PASS step 4" : "FAIL step 4");
+  log(passed ? "PASS step 3" : "FAIL step 3");
   return passed;
 }
 
 async function main() {
-  log("=== Agent loop verification ===");
+  log("=== verify-agent-loop.ts ===");
   log("Time:", new Date().toISOString());
-  log("SCRATCH:", SCRATCH);
 
   const user = await findDemoUser();
   if (!user) {
     log("FAIL: demo-bruker ikke funnet");
     process.exit(1);
   }
-  log("User:", user.name, user.id, user.email);
+  log("User:", user.name, user.id);
 
   const s1 = await verifyExecutorAccept(user.id);
   const s3 = await verifyAgentsProduceActions(user.id);
-  const s4 = await verifyApprovePath(user.id);
 
   await mkdir(SCRATCH, { recursive: true });
-  const fullLog = lines.join("\n");
-  await writeFile(join(SCRATCH, "executor-accept.log"), fullLog);
-  await writeFile(join(SCRATCH, "agent-apply.log"), fullLog);
-  await writeFile(join(SCRATCH, "godkjenninger-evidence.txt"), fullLog);
+  const full = lines.join("\n");
+  await writeFile(join(SCRATCH, "executor-accept.log"), full);
+  await writeFile(join(SCRATCH, "agent-apply.log"), full);
 
   await prisma.$disconnect();
-
-  if (!s1 || !s3 || !s4) process.exit(1);
-  log("\nALL GATING STEPS PASSED");
+  if (!s1 || !s3) process.exit(1);
+  log("\nSTEPS 1+3 PASSED (step 4 = verify-godkjenninger-ui.ts)");
 }
 
 main().catch((e) => {

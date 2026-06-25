@@ -73,24 +73,24 @@ export function ApprovalDetailClient({ detail }: { detail: ApprovalDetail }) {
     setMode("none");
   }
 
-  function submit() {
+  function submit(activeMode: DialogMode = mode) {
     setError(null);
     startTransition(async () => {
       try {
-        if (mode === "decline") {
+        if (activeMode === "decline") {
           if (comment.trim().length < 3) {
             setError("Skriv en kort begrunnelse (minst 3 tegn).");
             return;
           }
           await declineRequestDetailed(detail.id, comment.trim());
-        } else if (mode === "info") {
+        } else if (activeMode === "info") {
           if (comment.trim().length < 3) {
             setError("Formulér spørsmålet du vil sende spilleren.");
             return;
           }
           await requestMoreInfo(detail.id, comment.trim());
           reset();
-        } else if (mode === "approve") {
+        } else if (activeMode === "approve") {
           await approveRequestDetailed(
             detail.id,
             comment.trim() || undefined,
@@ -187,7 +187,7 @@ export function ApprovalDetailClient({ detail }: { detail: ApprovalDetail }) {
             type="button"
             onClick={() => {
               setMode("approve");
-              submit();
+              submit("approve");
             }}
             disabled={pending}
             className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
@@ -300,7 +300,7 @@ export function ApprovalDetailClient({ detail }: { detail: ApprovalDetail }) {
               </button>
               <button
                 type="button"
-                onClick={submit}
+                onClick={() => submit()}
                 disabled={pending}
                 className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60"
               >
