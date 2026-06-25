@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   planSessionStartHref,
   planSessionUiStatus,
+  v2DbSessionHref,
   v2SessionStartHref,
 } from "./session-hrefs";
 
@@ -25,5 +26,12 @@ describe("session-hrefs", () => {
 
   it("planSessionUiStatus maps ACTIVE to now", () => {
     assert.equal(planSessionUiStatus("ACTIVE"), "now");
+  });
+
+  it("v2DbSessionHref maps IN_PROGRESS to active", () => {
+    assert.equal(
+      v2DbSessionHref("s1", "IN_PROGRESS"),
+      "/portal/live/s1/active",
+    );
   });
 });

@@ -31,6 +31,7 @@ type PlanSessionStatus =
   | "PAUSED"
   | "COMPLETED"
   | "ABANDONED"
+  | "SKIPPED"
   | "CANCELLED";
 
 /** CTA for TrainingPlanSession (Spor A / Workbench). */
@@ -39,6 +40,9 @@ export function planSessionStartHref(
   status: PlanSessionStatus,
 ): string {
   if (status === "COMPLETED") return `/portal/tren/${sessionId}`;
+  if (status === "ABANDONED" || status === "SKIPPED" || status === "CANCELLED") {
+    return `/portal/tren/${sessionId}`;
+  }
   if (status === "ACTIVE" || status === "PAUSED") {
     return `/portal/live/${sessionId}/tapper`;
   }
@@ -51,4 +55,15 @@ export function planSessionUiStatus(
   if (status === "COMPLETED") return "done";
   if (status === "ACTIVE" || status === "PAUSED") return "now";
   return "upcoming";
+}
+
+/** TrainingSessionV2 status fra Prisma → spiller-CTA. */
+export function v2DbSessionHref(sessionId: string, status: string): string {
+  const ui: V2OktUiStatus =
+    status === "COMPLETED"
+      ? "done"
+      : status === "IN_PROGRESS"
+        ? "now"
+        : "upcoming";
+  return v2SessionStartHref(sessionId, ui);
 }

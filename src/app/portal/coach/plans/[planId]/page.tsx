@@ -21,6 +21,8 @@ import {
 } from "@/lib/pyramide";
 import type { PyramidArea } from "@/generated/prisma/client";
 import { PlayerPlanActions } from "./player-plan-actions";
+import { planSessionStartHref } from "@/lib/portal/session-hrefs";
+
 
 const FASER = [
   { key: "GEN", label: "Generell" },
@@ -152,6 +154,7 @@ export default async function CoachPlanDetalj({
     title: d.exercise?.name ?? d.notes ?? "Øvelse",
     meta: [d.exercise?.pyramidArea, d.repsSets].filter(Boolean).join(" · "),
     sessionId: s.id,
+    sessionStatus: s.status,
   }))).slice(0, 8);
 
   return (
@@ -289,7 +292,7 @@ export default async function CoachPlanDetalj({
                     )}
                   </div>
                   <Link
-                    href={`/portal/gjennomfore/${d.sessionId}`}
+                    href={planSessionStartHref(d.sessionId, d.sessionStatus)}
                     className="shrink-0 rounded-full bg-primary px-3 py-[6px] font-mono text-[10px] font-bold uppercase tracking-[0.06em] text-primary-foreground transition hover:brightness-95"
                   >
                     Utfør
@@ -332,7 +335,7 @@ export default async function CoachPlanDetalj({
                   <div className="flex min-w-0 flex-1 items-center gap-1.5">
                     <TypeTag type={s.pyramidArea} />
                     <Link
-                      href={`/portal/gjennomfore/${s.id}`}
+                      href={planSessionStartHref(s.id, s.status)}
                       className="truncate text-[13px] font-medium text-foreground hover:text-primary"
                     >
                       {s.title}

@@ -11,6 +11,7 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 import type { PyramidArea, PracticeType, SessionStatusV2 } from "@/generated/prisma/client";
 import { translateMiljo } from "@/lib/portal/translate-taxonomy";
+import { v2DbSessionHref } from "@/lib/portal/session-hrefs";
 
 // ── Types ─────────────────────────────────────────────────────────
 
@@ -210,7 +211,7 @@ export async function getTodaysSession(userId: string): Promise<TodaySession | n
     durationMin: Math.max(0, Math.round((s.endTime.getTime() - s.startTime.getTime()) / 60_000)),
     sted: s.miljo ? translateMiljo(s.miljo) : null,
     drills: s.drills,
-    href: `/portal/gjennomfore/${s.id}`,
+    href: v2DbSessionHref(s.id, s.status),
   };
 }
 
@@ -256,7 +257,7 @@ export async function getWeekOverview(userId: string): Promise<WeekDay[]> {
       endTime: s.endTime,
       status: s.status,
       pyramidArea: PRACTICE_TO_PYRAMID[s.practiceType] ?? "TEK",
-      href: `/portal/gjennomfore/${s.id}`,
+      href: v2DbSessionHref(s.id, s.status),
     });
   }
 
@@ -292,7 +293,7 @@ export async function getRecentActivity(userId: string, limit = 5): Promise<Rece
       loggedAt: log.loggedAt,
       repsTotal: log.repsTotal,
       successRate: log.successRate,
-      href: `/portal/gjennomfore/${log.drill.session.id}`,
+      href: v2DbSessionHref(log.drill.session.id, "COMPLETED"),
     }));
   }
 
@@ -634,7 +635,7 @@ export async function getAllTodaysSessions(userId: string): Promise<TodaySession
     durationMin: Math.max(0, Math.round((s.endTime.getTime() - s.startTime.getTime()) / 60_000)),
     sted: s.miljo ? translateMiljo(s.miljo) : null,
     drills: s.drills,
-    href: `/portal/gjennomfore/${s.id}`,
+    href: v2DbSessionHref(s.id, s.status),
   }));
 }
 
