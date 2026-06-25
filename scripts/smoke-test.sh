@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 # Smoke-test for AK Golf HQ produksjon.
-# Bruk: bash scripts/smoke-test.sh   (eller: BASE=https://akgolf.no bash scripts/smoke-test.sh)
-set -u
+# Bruk: bash scripts/smoke-test.sh   (eller: BASE=https://akgolf-hq.vercel.app bash scripts/smoke-test.sh)
+set -euo pipefail
 
-# Default: faktisk Vercel-produksjon (ikke akgolf.no DNS — den kan peke Acuity midlertidig).
 BASE="${BASE:-https://akgolf-hq.vercel.app}"
 fail=0
 
@@ -27,43 +26,20 @@ for r in / /stats /turneringer /booking /priser /coaching /om-oss /auth/login /a
 done
 
 echo ""
-echo "Gated ruter (forventer 307 → login):"
+echo "Gated ruter:"
 check 307 /portal "spillerportal"
 check 307 /admin "coach-admin"
 check 307 /intern "intern"
-# /hull-demo fjernet pre-lansering — 404 er forventet.
-kode="$(curl -s -o /dev/null -w '%{http_code}' "${BASE}/hull-demo")"
-if [ "$kode" = "404" ] || [ "$kode" = "307" ]; then
-  printf '  \033[32mPASS\033[0m  %-28s %s (%s)\n' "/hull-demo" "demo fjernet/gated" "$kode"
-else
-  printf '  \033[31mFAIL\033[0m  %-28s %s (fikk %s)\n' "/hull-demo" "demo fjernet/gated" "$kode"
-  fail=1
-fi
+check 404 /hull-demo "demo-route fjernet"
 
 echo ""
 echo "API / infrastruktur:"
 check 405 /api/stripe/webhook "stripe webhook (GET avvist)"
 
 echo ""
-if [ "${SMOKE_DNS:-0}" = "1" ]; then
-  echo "www-redirect (skal IKKE gå til Acuity — krever SMOKE_DNS=1):"
-  www="$(curl -s -o /dev/null -w '%{redirect_url}' https://www.akgolf.no/)"
-  if echo "$www" | grep -qi "as.me\|acuity"; then
-    printf '  \033[31mFAIL\033[0m  www.akgolf.no peker fortsatt til Acuity: %s\n' "$www"
-    fail=1
-  elif echo "$www" | grep -qi "akgolf.no"; then
-    printf '  \033[32mPASS\033[0m  www.akgolf.no → %s\n' "$www"
-  else
-    printf '  \033[33mNB\033[0m    www.akgolf.no → %s\n' "${www:-(ingen redirect)}"
-  fi
-else
-  printf '  \033[33mSKIP\033[0m  www.akgolf.no DNS (sett SMOKE_DNS=1 — utenfor standard launch-smoke)\n'
-fi
-
-echo ""
 if [ "$fail" = "0" ]; then
   echo -e "\033[32mAlle sjekker passerte.\033[0m"
 else
   echo -e "\033[31mNoen sjekker feilet — se over.\033[0m"
+  exit 1
 fi
-exit "$fail"

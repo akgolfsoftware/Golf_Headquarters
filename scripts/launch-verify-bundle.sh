@@ -27,6 +27,10 @@ echo "## Step 1: prisma + tsc + build" | tee -a "$SCRATCH/verification-manifest.
   echo "EXIT:0"
   echo "# Finished: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 } >"$SCRATCH/build-verify.log" 2>&1
+if grep -qE '\[@serwist/next\] WARNING|⚠ Warning' "$SCRATCH/build-verify.log"; then
+  echo "build-verify.log BUILD_WARNING:FAIL" | tee -a "$SCRATCH/verification-manifest.log"
+  exit 1
+fi
 echo "build-verify.log EXIT:0" | tee -a "$SCRATCH/verification-manifest.log"
 
 echo "" | tee -a "$SCRATCH/verification-manifest.log"
