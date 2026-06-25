@@ -66,6 +66,20 @@ export type WorkbenchData = {
   summary?: { weekNumber: number; sessionCount: number; plannedHours: number };
   /** Ukevolum-mål fra spillerens aktive PeriodBlock (min/max minutter). Null-felt = ikke satt. */
   volTarget?: { min: number | null; max: number | null };
+  /** Sesong-perioder fra SeasonPlan.periodBlocks (Gantt/Årsplan). */
+  seasonBlocks?: {
+    lPhase: "GRUNN" | "SPESIAL" | "TURNERING";
+    startDate: string;
+    endDate: string;
+    focus?: string | null;
+  }[];
+  /** Turneringer med konkret dato for kalender/Gantt (ikke bare «om N dg»). */
+  tournamentCalendar?: {
+    title: string;
+    startDate: string;
+    daysUntil: number;
+    priority: "MAJOR" | "NORMAL" | "LOCAL";
+  }[];
 };
 
 // ───────── Konstanter ─────────
@@ -160,7 +174,10 @@ export async function loadWorkbenchData(userId: string): Promise<WorkbenchData |
   const tretti = new Date(now);
   tretti.setDate(tretti.getDate() - 30);
 
-  const [weekSessions, last30Sessions, goals, entries, activePeriod, player] = await Promise.all([
+  const year = now.getFullYear();
+
+  const [weekSessions, last30Sessions, goals, entries, activePeriod, player, seasonPlan, yearTournaments] =
+    await Promise.all([
     prisma.trainingPlanSession.findMany({
       where: { plan: { userId }, scheduledAt: { gte: weekStart, lt: weekEnd } },
       orderBy: { scheduledAt: "asc" },
@@ -204,6 +221,27 @@ export async function loadWorkbenchData(userId: string): Promise<WorkbenchData |
       select: { weeklyVolMin: true, weeklyVolMax: true },
     }),
     prisma.user.findUnique({ where: { id: userId }, select: { hcp: true } }),
+    prisma.seasonPlan.findFirst({
+      where: { userId, year },
+      include: { periodBlocks: { orderBy: { startDate: "asc" } } },
+    }),
+    prisma.tournamentEntry.findMany({
+      where: {
+        userId,
+        entryStatus: { in: ["PLANNED", "CONFIRMED"] },
+        OR: [
+          { tournament: { startDate: { gte: new Date(year, 0, 1), lte: new Date(year, 11, 31) } } },
+          { manualDate: { gte: new Date(year, 0, 1), lte: new Date(year, 11, 31) } },
+        ],
+      },
+      orderBy: { createdAt: "asc" },
+      select: {
+        manualName: true,
+        manualDate: true,
+        priority: true,
+        tournament: { select: { name: true, startDate: true, location: true } },
+      },
+    }),
   ]);
 
   const volTarget =
@@ -378,6 +416,33 @@ export async function loadWorkbenchData(userId: string): Promise<WorkbenchData |
     plannedHours: Math.round((plannedMin / 60) * 10) / 10,
   };
 
+  const seasonBlocks =
+    seasonPlan && seasonPlan.periodBlocks.length > 0
+      ? seasonPlan.periodBlocks.map((b) => ({
+          lPhase: b.lPhase,
+          startDate: b.startDate.toISOString(),
+          endDate: b.endDate.toISOString(),
+          focus: b.focus,
+        }))
+      : undefined;
+
+  const tournamentCalendar = yearTournaments
+    .map((e) => {
+      const name = e.tournament?.name ?? e.manualName ?? "Turnering";
+      const loc = e.tournament?.location ?? null;
+      const title = loc ? `${name} · ${loc}` : name;
+      const date = e.tournament?.startDate ?? e.manualDate ?? null;
+      if (!date) return null;
+      const daysUntil = Math.max(0, Math.ceil((date.getTime() - now.getTime()) / 86_400_000));
+      const priority = (e.priority === "MAJOR" || e.priority === "LOCAL" ? e.priority : "NORMAL") as
+        | "MAJOR"
+        | "NORMAL"
+        | "LOCAL";
+      return { title, startDate: date.toISOString(), daysUntil, priority };
+    })
+    .filter((x): x is NonNullable<typeof x> => x !== null)
+    .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+
   return {
     weekHead,
     weekDays,
@@ -389,6 +454,8 @@ export async function loadWorkbenchData(userId: string): Promise<WorkbenchData |
     pyramid,
     summary,
     volTarget,
+    seasonBlocks,
+    tournamentCalendar: tournamentCalendar.length > 0 ? tournamentCalendar : undefined,
   };
 }
 

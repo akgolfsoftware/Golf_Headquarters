@@ -40,6 +40,9 @@ export default async function WorkbenchPage() {
         tekniskPlan={ctx?.tekniskPlan ?? null}
         playerName={user.name}
         initials={utledInitialer(user.name)}
+        subjectPlayerId={user.id}
+        planId={ctx?.planId ?? null}
+        planStatus={ctx?.planStatus ?? null}
       />
     </Suspense>
   );

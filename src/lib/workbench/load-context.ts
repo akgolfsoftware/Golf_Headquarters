@@ -16,7 +16,7 @@ export async function loadWorkbenchContext(userId: string): Promise<WorkbenchCon
     prisma.trainingPlan.findFirst({
       where: { userId, isActive: true },
       orderBy: { updatedAt: "desc" },
-      select: { status: true },
+      select: { id: true, status: true },
     }),
     loadTekniskPlanContext(userId),
   ]);
@@ -27,6 +27,7 @@ export async function loadWorkbenchContext(userId: string): Promise<WorkbenchCon
     data,
     insights,
     hasWeekSessions,
+    planId: activePlan?.id ?? null,
     planStatus: activePlan?.status ?? null,
     tekniskPlan,
   };

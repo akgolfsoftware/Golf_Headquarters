@@ -13,7 +13,15 @@
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
 import type { Axis, WeekDay, WeekEvent } from "@/lib/workbench/week-types";
 import type { Cat } from "./theme";
-import type { WbGoal, WbSession, WbTournament, WeekKey, WeekState } from "./types";
+import type {
+  SeasonPhase,
+  SeasonPhaseType,
+  WbGoal,
+  WbSession,
+  WbTournament,
+  WeekKey,
+  WeekState,
+} from "./types";
 
 const AXIS_TO_CAT: Record<Axis, Cat> = {
   fys: "FYS",
@@ -85,16 +93,58 @@ export function mapGoals(data: WorkbenchData | undefined): WbGoal[] | null {
   }));
 }
 
-/**
- * Turneringer for Årsplan/Måned-tidslinja. Disse trenger eksakt dato (DMY) og
- * turneringstype for å plasseres i kalenderen — WorkbenchData modellerer kun
- * "om N dager"-tekst (`td`) uten konkret dato eller type. Vi har derfor ingen
- * brukbar kilde her og returnerer null → komponenten faller tilbake til
- * fasit-demo-turneringene (tydelig demo, ingen oppdiktede datoer).
- */
-export function mapTournaments(_data: WorkbenchData | undefined): WbTournament[] | null {
-  void _data;
-  return null;
+const MND_SHORT_CAP = ["Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Des"];
+
+const LPHASE_TO_TYPE: Record<"GRUNN" | "SPESIAL" | "TURNERING", SeasonPhaseType> = {
+  GRUNN: "GRUNN",
+  SPESIAL: "SPESIALISERING",
+  TURNERING: "TURNERING",
+};
+
+function formatDmy(iso: string): string {
+  const d = new Date(iso);
+  return `${pad2(d.getDate())}.${pad2(d.getMonth() + 1)}.${d.getFullYear()}`;
+}
+
+function priorityToTourType(priority: "MAJOR" | "NORMAL" | "LOCAL"): keyof typeof import("./theme").TOUR_TYPES {
+  if (priority === "MAJOR") return "PRESTASJON";
+  if (priority === "LOCAL") return "TRENING";
+  return "UTVIKLING";
+}
+
+/** Turneringer for Årsplan/Måned-tidslinja fra TournamentEntry + dato. */
+export function mapTournaments(data: WorkbenchData | undefined): WbTournament[] | null {
+  const cal = data?.tournamentCalendar;
+  if (!cal || cal.length === 0) return null;
+  return cal.map((t) => ({
+    title: t.title,
+    date: formatDmy(t.startDate),
+    days: t.daysUntil,
+    dateLabel: `${t.daysUntil} dg`,
+    type: priorityToTourType(t.priority),
+  }));
+}
+
+/** Sesong-perioder fra SeasonPlan.periodBlocks → fasit seasonPhases. */
+export function mapSeasonPhases(data: WorkbenchData | undefined): SeasonPhase[] | null {
+  const blocks = data?.seasonBlocks;
+  if (!blocks || blocks.length === 0) return null;
+  return blocks.map((b) => {
+    const start = new Date(b.startDate);
+    const end = new Date(b.endDate);
+    const startM = start.getMonth();
+    const endM = end.getMonth();
+    const months = Math.max(1, (end.getFullYear() - start.getFullYear()) * 12 + endM - startM + 1);
+    const span = `${MND_SHORT_CAP[startM]}–${MND_SHORT_CAP[endM]}`;
+    const type = LPHASE_TO_TYPE[b.lPhase];
+    const weekly: Record<Cat, number> = { FYS: 2, TEK: 3, SLAG: 2, SPILL: 1, TURN: 0 };
+    if (type === "TURNERING") weekly.TURN = 2;
+    if (type === "GRUNN") {
+      weekly.FYS = 3;
+      weekly.TURN = 0;
+    }
+    return { type, months, span, weekly, samlinger: [] };
+  });
 }
 
 /** Uke-header (uke-nr fra summary). */

@@ -19,7 +19,16 @@ import type {
   ZoomLevel,
 } from "./types";
 import { PALETTE_LIBRARY } from "./demo-data";
-import { mapGoals, mapTournaments, mapWarningBanner, mapWeek, mapWeekHead } from "./map-data";
+import {
+  mapGoals,
+  mapSeasonPhases,
+  mapTournaments,
+  mapWarningBanner,
+  mapWeek,
+  mapWeekHead,
+} from "./map-data";
+import { publishWorkbenchPlan } from "@/lib/workbench/publish-actions";
+import type { PlanStatus } from "@/generated/prisma/client";
 import { Topbar, type RosterPlayer } from "./Topbar";
 import { CoachSkillWizard } from "./CoachSkillWizard";
 import { AiPlanPanel } from "./AiPlanPanel";
@@ -86,9 +95,6 @@ const EMPTY_WEEK: WeekState = { man: [], tir: [], ons: [], tor: [], fre: [], lor
 
 /** Tom uke-header når data mangler — ingen oppdiktet uke-nr/datointervall. */
 const EMPTY_WEEK_HEAD = { weekLabel: "Denne uka", range: "" };
-
-/** Ingen sesong-periodisering ennå — Årsplan/År/Måned viser tomtilstand. */
-const EMPTY_SEASON_PHASES: SeasonPhase[] = [];
 
 const HEADS: Record<ZoomLevel, [string, string]> = {
   arsplan: [
@@ -409,6 +415,10 @@ export type WorkbenchHybridProps = {
   insightsLine?: string | null;
   /** Aktiv teknisk plan — for hub-fanen Teknisk plan. */
   tekniskPlan?: TekniskPlanWorkbenchContext | null;
+  planId?: string | null;
+  planStatus?: PlanStatus | null;
+  /** Bruker-id for planen som redigeres (spiller selv eller coach-valgt spiller). */
+  subjectPlayerId?: string;
 };
 
 export function WorkbenchHybrid({
@@ -421,10 +431,15 @@ export function WorkbenchHybrid({
   currentPlayerId,
   insightsLine,
   tekniskPlan,
+  planId,
+  planStatus = null,
+  subjectPlayerId,
 }: WorkbenchHybridProps): ReactElement {
+  const resolvedPlayerId = currentPlayerId ?? subjectPlayerId;
   const isCoach = role === "coach";
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [publishPending, setPublishPending] = useState(false);
 
   const hubTab = useMemo((): WorkbenchHubTab => {
     const raw = searchParams.get("tab");
@@ -447,10 +462,8 @@ export function WorkbenchHybrid({
   const goals: WbGoal[] = useMemo(() => mapGoals(data) ?? [], [data]);
   const weekHead = useMemo(() => mapWeekHead(data) ?? EMPTY_WEEK_HEAD, [data]);
   const banner = useMemo(() => mapWarningBanner(data), [data]);
-  // Turnerings-tidslinje har ingen Prisma-kilde med dato/type ennå → tom liste.
   const tournaments = useMemo(() => mapTournaments(data) ?? [], [data]);
-  // Sesong-periodisering har ingen datamodell ennå → tom (Årsplan/År/Måned viser tomtilstand).
-  const seasonPhases: SeasonPhase[] = EMPTY_SEASON_PHASES;
+  const seasonPhases: SeasonPhase[] = useMemo(() => mapSeasonPhases(data) ?? [], [data]);
 
   const [state, dispatch] = useReducer(reducer, undefined, (): State => ({
     level: "uke",
@@ -631,6 +644,16 @@ export function WorkbenchHybrid({
       void removeWorkbenchSession(id);
     }
   }, [state.selectedId, isCoach, currentPlayerId]);
+
+  const handlePublish = useCallback(() => {
+    if (publishPending) return;
+    setPublishPending(true);
+    void publishWorkbenchPlan(isCoach ? resolvedPlayerId : undefined)
+      .then((res) => {
+        if (res.ok) router.refresh();
+      })
+      .finally(() => setPublishPending(false));
+  }, [publishPending, isCoach, resolvedPlayerId, router]);
 
   const handleStartLive = useCallback(() => {
     const id = state.selectedId;
@@ -946,6 +969,10 @@ export function WorkbenchHybrid({
             currentPlayerId={currentPlayerId}
             onOpenCoachSkill={isCoach ? () => setCoachSkillOpen(true) : undefined}
             onOpenAiPlan={isCoach && currentPlayerId ? () => setAiPlanOpen(true) : undefined}
+            onOpenAiPeriodiser={!isCoach ? () => setAiPlanOpen(true) : undefined}
+            planStatus={planStatus}
+            onPublish={planId ? handlePublish : undefined}
+            publishPending={publishPending}
           />
           <HubTabRail tab={hubTab} onTab={setHubTabWithUrl} />
 
@@ -1168,9 +1195,9 @@ export function WorkbenchHybrid({
       )}
 
       {/* AI-plan-panel (kun coach-modus, én spiller) */}
-      {isCoach && aiPlanOpen && currentPlayerId && (
+      {aiPlanOpen && resolvedPlayerId && (
         <AiPlanPanel
-          playerId={currentPlayerId}
+          playerId={resolvedPlayerId}
           playerName={playerName}
           onClose={() => setAiPlanOpen(false)}
         />

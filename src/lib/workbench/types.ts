@@ -17,6 +17,7 @@ export type WorkbenchContext = {
   data: WorkbenchData;
   insights: WorkbenchInsights;
   hasWeekSessions: boolean;
+  planId: string | null;
   planStatus: PlanStatus | null;
   tekniskPlan: TekniskPlanWorkbenchContext | null;
 };

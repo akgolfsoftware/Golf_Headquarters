@@ -69,6 +69,9 @@ export default async function CoachWorkbenchPage({ params }: Props) {
         initials={initialer}
         coachName={me.name ?? "Anders Kristiansen"}
         players={roster}
+        subjectPlayerId={id}
+        planId={ctx.planId}
+        planStatus={ctx.planStatus}
       />
     </Suspense>
   );

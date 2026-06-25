@@ -2,9 +2,30 @@
 
 import { useEffect, useRef, useState, type ReactElement } from "react";
 import Link from "next/link";
-import { Bot, ChevronDown, Plus, Sparkles } from "lucide-react";
+import { Bot, ChevronDown, Plus, Send, Sparkles } from "lucide-react";
+import type { PlanStatus } from "@/generated/prisma/client";
 import { FONT, WB } from "./theme";
 import type { WorkbenchRole, ZoomLevel } from "./types";
+
+const PLAN_STATUS_LABEL: Record<PlanStatus, string> = {
+  DRAFT: "Utkast",
+  PENDING_PLAYER: "Venter svar",
+  ACCEPTED: "Godtatt",
+  REJECTED: "Endring ønsket",
+  ACTIVE: "Aktiv",
+  PAUSED: "Pause",
+  ARCHIVED: "Arkiv",
+};
+
+const PLAN_STATUS_COLOR: Record<PlanStatus, { bg: string; fg: string }> = {
+  DRAFT: { bg: `${WB.warn}22`, fg: WB.warn },
+  PENDING_PLAYER: { bg: `${WB.lime}22`, fg: WB.lime },
+  ACCEPTED: { bg: `${WB.ok}22`, fg: WB.ok },
+  REJECTED: { bg: "#F2908C22", fg: "#F2908C" },
+  ACTIVE: { bg: `${WB.ok}22`, fg: WB.ok },
+  PAUSED: { bg: `${WB.muted}22`, fg: WB.muted },
+  ARCHIVED: { bg: `${WB.muted}22`, fg: WB.muted },
+};
 
 const LEVELS: { key: ZoomLevel; label: string }[] = [
   { key: "arsplan", label: "Årsplan" },
@@ -32,6 +53,11 @@ type TopbarProps = {
   onOpenCoachSkill?: () => void;
   /** Coach-modus: åpne AI-plan-panel for denne spilleren. */
   onOpenAiPlan?: () => void;
+  /** Spiller-modus: åpne AI-periodiser-panel. */
+  onOpenAiPeriodiser?: () => void;
+  planStatus?: PlanStatus | null;
+  onPublish?: () => void;
+  publishPending?: boolean;
 };
 
 export function Topbar({
@@ -45,8 +71,15 @@ export function Topbar({
   currentPlayerId,
   onOpenCoachSkill,
   onOpenAiPlan,
+  onOpenAiPeriodiser,
+  planStatus,
+  onPublish,
+  publishPending,
 }: TopbarProps): ReactElement {
   const isCoach = role === "coach";
+  const canPublish =
+    onPublish && planStatus && (planStatus === "DRAFT" || planStatus === "REJECTED");
+  const statusStyle = planStatus ? PLAN_STATUS_COLOR[planStatus] : null;
 
   return (
     <div
@@ -175,7 +208,51 @@ export function Topbar({
         })}
       </div>
 
+      {planStatus && statusStyle && (
+        <span
+          style={{
+            fontFamily: FONT.mono,
+            fontSize: 10,
+            fontWeight: 700,
+            letterSpacing: "0.06em",
+            textTransform: "uppercase",
+            padding: "5px 10px",
+            borderRadius: 9999,
+            background: statusStyle.bg,
+            color: statusStyle.fg,
+            border: `1px solid ${statusStyle.fg}44`,
+          }}
+        >
+          {PLAN_STATUS_LABEL[planStatus]}
+        </span>
+      )}
+
       <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 10 }}>
+        {!isCoach && onOpenAiPeriodiser && (
+          <button
+            type="button"
+            onClick={onOpenAiPeriodiser}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 7,
+              background: `${WB.lime}18`,
+              color: WB.lime,
+              border: `1px solid ${WB.lime}44`,
+              borderRadius: 9999,
+              padding: "8px 14px",
+              cursor: "pointer",
+              fontFamily: FONT.mono,
+              fontSize: 11,
+              fontWeight: 700,
+              letterSpacing: "0.04em",
+              textTransform: "uppercase",
+            }}
+          >
+            <Bot size={15} strokeWidth={2} />
+            AI-periodiser
+          </button>
+        )}
         {isCoach && onOpenAiPlan && (
           <button
             type="button"
@@ -224,6 +301,33 @@ export function Topbar({
           >
             <Sparkles size={15} strokeWidth={2.2} color={WB.lime} />
             Coach-Skill
+          </button>
+        )}
+        {canPublish && (
+          <button
+            type="button"
+            onClick={onPublish}
+            disabled={publishPending}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 7,
+              background: WB.forest,
+              color: WB.lime,
+              border: `1px solid ${WB.lime}55`,
+              borderRadius: 9999,
+              padding: "8px 14px",
+              cursor: publishPending ? "wait" : "pointer",
+              opacity: publishPending ? 0.7 : 1,
+              fontFamily: FONT.mono,
+              fontSize: 11,
+              fontWeight: 700,
+              letterSpacing: "0.04em",
+              textTransform: "uppercase",
+            }}
+          >
+            <Send size={14} strokeWidth={2.2} />
+            {publishPending ? "Publiserer…" : "Publiser"}
           </button>
         )}
         <button

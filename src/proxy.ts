@@ -5,6 +5,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { updateSession } from "@/lib/supabase/proxy";
+import { workbenchRedirectForTrenPath } from "@/lib/portal/tren-workbench-redirect";
 
 // Stats-sider som fortsatt har hardkodede design-/prototypedata (fabrikkerte
 // spillere). Skjules i PRODUKSJON (redirect → /stats) til de er wired til ekte
@@ -67,6 +68,20 @@ function buildCsp(nonce: string): string {
 
 export async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
+
+  const trenTarget = workbenchRedirectForTrenPath(path);
+  if (trenTarget) {
+    const url = request.nextUrl.clone();
+    const q = trenTarget.indexOf("?");
+    if (q >= 0) {
+      url.pathname = trenTarget.slice(0, q);
+      url.search = trenTarget.slice(q);
+    } else {
+      url.pathname = trenTarget;
+      url.search = "";
+    }
+    return NextResponse.redirect(url);
+  }
 
   // Skjul prototype-stats-sider (hardkodede fake-spillere) i PRODUKSJON til de
   // er wired til ekte data. Redirect → /stats. Gjelder også /stats/aargang/<aar>
