@@ -12,7 +12,8 @@
  */
 
 import { prisma } from "@/lib/prisma";
-import { kategoriFraHcp } from "@/lib/ai-plan/context";
+import type { AkKategori } from "@/lib/domain/ak-kategori";
+import { akTilNgfKategori, hentSpillerAkKategori } from "@/lib/domain/spiller-kategori";
 import {
   DrillParametersSchema,
   M_MILJO,
@@ -104,9 +105,9 @@ function beregnCs(
   csTargetByKategori: unknown,
   csMin: number | null,
   csMax: number | null,
-  hcp: number | null,
+  akKategori: AkKategori | null,
 ): number | null {
-  const kategori = kategoriFraHcp(hcp);
+  const kategori = akKategori ? akTilNgfKategori(akKategori) : null;
   if (
     kategori !== null &&
     csTargetByKategori &&
@@ -160,8 +161,10 @@ function repsLabel(
 
 export async function loadDrillDetalj(
   id: string,
-  user: { hcp: number | null },
+  user: { id: string; hcp: number | null },
 ): Promise<DrillDetaljData | null> {
+  const akKategori = await hentSpillerAkKategori(user.id, { hcp: user.hcp });
+
   const drill = await prisma.exerciseDefinition.findUnique({
     where: { id },
     select: {
@@ -210,7 +213,7 @@ export async function loadDrillDetalj(
     drill.csTargetByKategori,
     drill.csMin,
     drill.csMax,
-    user.hcp,
+    akKategori,
   );
 
   // Media — kun det som faktisk finnes.

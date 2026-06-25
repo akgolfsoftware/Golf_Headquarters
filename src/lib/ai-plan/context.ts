@@ -7,6 +7,7 @@
 import { prisma } from "@/lib/prisma";
 import type {
   DrillFasilitet,
+  LacFase,
   LPhase,
   NgfKategori,
   PyramidArea,
@@ -18,6 +19,13 @@ import {
   beregnKorrelasjon,
   type KorrelasjonsResultat,
 } from "../training/korrelasjon";
+import type { AkKategori } from "@/lib/domain/ak-kategori";
+import {
+  AK_KATEGORI_ORDER,
+  akKategoriIdx,
+  akTilNgfKategori,
+  hentSpillerAkKategori,
+} from "@/lib/domain/spiller-kategori";
 
 export type DrillKatalogEntry = {
   id: string;
@@ -32,8 +40,23 @@ export type DrillKatalogEntry = {
   morad: boolean;
   environment: SessionEnvironment[];
   lPhases: LPhase[];
+  lacFaser: LacFase[];
   minKategori: NgfKategori | null;
   maxKategori: NgfKategori | null;
+};
+
+export type FasilitetsGrenser = {
+  maxPuttM: number | null;
+  maxChipM: number | null;
+  maxWedgeM: number | null;
+  trackmanHrsPerWeek: number | null;
+  canSwingAtHome: boolean;
+  hasBunker: boolean;
+  hasNetAndMat: boolean;
+  /** Avledede boolean-flagg fra DrillFasilitet[] på brukerprofilen */
+  harRange: boolean;
+  harSimulator: boolean;
+  harBane: boolean;
 };
 
 export type TemplateSession = {
@@ -82,7 +105,9 @@ export type SpillerKontekst = {
     spilteAr: number | null;
     ambisjon: string | null;
     hjemmeklubb: string | null;
-    /** NGF-kategori utledet fra WAGR-snapshot eller HCP. */
+    /** A–K-kategori (snittscore inneværende sesong). Samme bokstav som ngfKategori. */
+    akKategori: AkKategori | null;
+    /** @deprecated Bruk akKategori — beholdt for AI-prompt bakoverkompat. */
     ngfKategori: NgfKategori | null;
     /** Fasiliteter og utstyr spilleren har registrert. Brukes for drill-matching. */
     tilgjengeligeFasiliteter: DrillFasilitet[];
@@ -119,6 +144,8 @@ export type SpillerKontekst = {
     value: number | null;
     computedAt: string;
   }[];
+  /** Avstandsgrenser og fasilitetstilgang fra FacilityPrefs. */
+  fasilitetsGrenser: FasilitetsGrenser;
   /** Drills filtrert på spillerens NGF-kategori. */
   tilgjengeligeDrills: DrillKatalogEntry[];
   /** Forrige PlanEffectiveness — hva som virket / ikke virket. */
@@ -129,8 +156,8 @@ export type SpillerKontekst = {
   korrelasjon: KorrelasjonsResultat[];
 };
 
-// HCP → NGF-kategori-mapping (grov terskel; brukes hvis WAGR ikke finnes).
-// A=elite, L=høyt HCP. Match med skala-kommentaren i schema.prisma.
+// HCP → gammel NGF A–L-skala. @deprecated — bruk hentSpillerAkKategori (snittscore A–K).
+// Beholdt kun for seed/scripts som refererer til legacy-mapping.
 export function kategoriFraHcp(hcp: number | null): NgfKategori | null {
   if (hcp === null) return null;
   if (hcp < -2) return "A";
@@ -145,28 +172,6 @@ export function kategoriFraHcp(hcp: number | null): NgfKategori | null {
   if (hcp < 28) return "J";
   if (hcp < 36) return "K";
   return "L";
-}
-
-function parseKategori(value: string | null): NgfKategori | null {
-  if (!value) return null;
-  const trimmed = value.trim().toUpperCase();
-  const KATEGORIER: NgfKategori[] = [
-    "A",
-    "B",
-    "C",
-    "D",
-    "E",
-    "F",
-    "G",
-    "H",
-    "I",
-    "J",
-    "K",
-    "L",
-  ];
-  return (KATEGORIER as string[]).includes(trimmed)
-    ? (trimmed as NgfKategori)
-    : null;
 }
 
 function parseCsTargetByKategori(
@@ -204,38 +209,25 @@ async function hentAktivLPhase(userId: string): Promise<LPhase | null> {
   return block?.lPhase ?? null;
 }
 
-const ALLE_KATEGORIER: NgfKategori[] = [
-  "A",
-  "B",
-  "C",
-  "D",
-  "E",
-  "F",
-  "G",
-  "H",
-  "I",
-  "J",
-  "K",
-  "L",
-];
-
-// Hent drills som matcher spillerens kategori og fasilitetsprofil.
+// Hent drills som matcher spillerens A–K-kategori (snittscore-basert) og fasilitetsprofil.
 //
-// Prisma støtter ikke lte/gte på enum-felter — vi materialiserer i stedet
-// listen over kategorier som er ≤ og ≥ spillerens kategori og bruker `in`.
-// Fasilitetsfilter: drills der alle krav er delmengde av spillerens profil.
-// Drills uten krav (tom liste) er alltid inkludert.
+// Konvensjon på ExerciseDefinition: minKategori = beste spiller (A), maxKategori = svakeste (K).
+// Prisma støtter ikke lte/gte på enum — vi materialiserer tillatte bokstaver og bruker `in`.
+// Legacy L på drills behandles som K i filteret.
 async function hentTilgjengeligeDrills(
-  kategori: NgfKategori | null,
+  kategori: AkKategori | null,
   fasilitetProfil: DrillFasilitet[] = [],
 ): Promise<DrillKatalogEntry[]> {
   const whereClause =
     kategori === null
       ? {}
       : (() => {
-          const idx = ALLE_KATEGORIER.indexOf(kategori);
-          const tillattMin = ALLE_KATEGORIER.slice(0, idx + 1); // ≤ kategori
-          const tillattMax = ALLE_KATEGORIER.slice(idx); // ≥ kategori
+          const idx = akKategoriIdx(kategori);
+          const tillattMin = AK_KATEGORI_ORDER.slice(0, idx + 1).map(akTilNgfKategori);
+          const tillattMax: NgfKategori[] = [
+            ...AK_KATEGORI_ORDER.slice(idx).map(akTilNgfKategori),
+            "L", // legacy-tagger etter retag — L = K
+          ];
           return {
             AND: [
               {
@@ -270,6 +262,7 @@ async function hentTilgjengeligeDrills(
       environment: true,
       fasilitetKrav: true,
       lPhases: true,
+      lacFaser: true,
       minKategori: true,
       maxKategori: true,
     },
@@ -302,6 +295,7 @@ async function hentTilgjengeligeDrills(
     morad: d.morad,
     environment: d.environment,
     lPhases: d.lPhases,
+    lacFaser: d.lacFaser as LacFase[],
     minKategori: d.minKategori,
     maxKategori: d.maxKategori,
   }));
@@ -455,11 +449,13 @@ export async function byggSpillerKontekst(
     hentAktivLPhase(userId),
   ]);
 
-  // Utled NGF-kategori: WAGR-snapshot foretrekkes, fall tilbake til HCP-mapping.
-  const ngfKategori =
-    parseKategori(wagr?.ngfCategory ?? null) ?? kategoriFraHcp(user.hcp);
+  const akKategori = await hentSpillerAkKategori(userId, {
+    wagrNgfCategory: wagr?.ngfCategory ?? null,
+    hcp: user.hcp,
+  });
+  const ngfKategori = akKategori ? akTilNgfKategori(akKategori) : null;
 
-  const [logger, tilgjengeligeDrills, forrigeEffektivitet, treningsVolum, korrelasjon] =
+  const [logger, tilgjengeligeDrills, forrigeEffektivitet, treningsVolum, korrelasjon, facilityPrefs] =
     await Promise.all([
       prisma.trainingPlanSessionLog.findMany({
         where: { session: { plan: { userId } } },
@@ -477,10 +473,26 @@ export async function byggSpillerKontekst(
           },
         },
       }),
-      hentTilgjengeligeDrills(ngfKategori, user.tilgjengeligeFasiliteter as DrillFasilitet[]),
+      hentTilgjengeligeDrills(akKategori, user.tilgjengeligeFasiliteter as DrillFasilitet[]),
       hentForrigeEffektivitet(userId),
       hentTreningsVolum(userId, 8),
       beregnKorrelasjon(userId, 16),
+      prisma.facilityPrefs.findUnique({
+        where: { userId },
+        select: {
+          maxPuttM: true,
+          maxChipM: true,
+          maxWedgeM: true,
+          trackmanHrsPerWeek: true,
+          canSwingAtHome: true,
+          hasBunker: true,
+          hasNetAndMat: true,
+          trackman: true,
+          range: true,
+          course18: true,
+          course9: true,
+        },
+      }),
     ]);
 
   // For å holde token-budsjettet nede: ikke send hele drills-katalogen hvis
@@ -500,8 +512,9 @@ export async function byggSpillerKontekst(
       spilteAr: user.playingYears,
       ambisjon: user.ambition,
       hjemmeklubb: user.homeClub,
+      akKategori,
       ngfKategori,
-    tilgjengeligeFasiliteter: user.tilgjengeligeFasiliteter as DrillFasilitet[],
+      tilgjengeligeFasiliteter: user.tilgjengeligeFasiliteter as DrillFasilitet[],
     },
     wagr: wagr
       ? { rank: wagr.rank, ngfKategori: wagr.ngfCategory, ptsAvg: wagr.ptsAvg }
@@ -532,6 +545,18 @@ export async function byggSpillerKontekst(
       value: s.value,
       computedAt: s.computedAt.toISOString().slice(0, 10),
     })),
+    fasilitetsGrenser: {
+      maxPuttM: facilityPrefs?.maxPuttM ?? null,
+      maxChipM: facilityPrefs?.maxChipM ?? null,
+      maxWedgeM: facilityPrefs?.maxWedgeM ?? null,
+      trackmanHrsPerWeek: facilityPrefs?.trackmanHrsPerWeek ?? null,
+      canSwingAtHome: facilityPrefs?.canSwingAtHome ?? false,
+      hasBunker: facilityPrefs?.hasBunker ?? false,
+      hasNetAndMat: facilityPrefs?.hasNetAndMat ?? false,
+      harRange: facilityPrefs?.range ?? true,
+      harSimulator: facilityPrefs?.trackman ?? false,
+      harBane: (facilityPrefs?.course18 || facilityPrefs?.course9) ?? true,
+    },
     tilgjengeligeDrills: drills,
     forrigeEffektivitet,
     treningsVolum,

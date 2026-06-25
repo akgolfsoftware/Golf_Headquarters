@@ -18,7 +18,7 @@ import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { genererPlan } from "@/lib/ai-plan/generate";
-import { kategoriFraHcp } from "@/lib/ai-plan/context";
+import { akTilNgfKategori, hentSpillerAkKategori } from "@/lib/domain/spiller-kategori";
 import type { PlanForslag, OktDag } from "@/lib/ai-plan/schema";
 import type {
   LPhase,
@@ -184,8 +184,11 @@ export async function hentByggerKontekst(): Promise<ByggerKontekst> {
     svakhet = { skillArea: navn, sgDelta: laveste.value };
   }
 
-  // Parse NGF-kategori fra WAGR-snapshot, eller utled fra HCP.
-  const kategori = parseKategori(wagr?.ngfCategory ?? null) ?? kategoriFraHcp(user.hcp);
+  const akKat = await hentSpillerAkKategori(user.id, {
+    wagrNgfCategory: wagr?.ngfCategory ?? null,
+    hcp: user.hcp,
+  });
+  const kategori = akKat ? akTilNgfKategori(akKat) : null;
 
   return {
     spiller: {
@@ -207,28 +210,6 @@ export async function hentByggerKontekst(): Promise<ByggerKontekst> {
   };
 }
 
-function parseKategori(value: string | null): NgfKategori | null {
-  if (!value) return null;
-  const trimmed = value.trim().toUpperCase();
-  const KATEGORIER: NgfKategori[] = [
-    "A",
-    "B",
-    "C",
-    "D",
-    "E",
-    "F",
-    "G",
-    "H",
-    "I",
-    "J",
-    "K",
-    "L",
-  ];
-  return (KATEGORIER as string[]).includes(trimmed)
-    ? (trimmed as NgfKategori)
-    : null;
-}
-
 export async function anbefalMal(input: {
   maltype: ByggerMaltype;
   turneringId?: string | null;
@@ -239,8 +220,11 @@ export async function anbefalMal(input: {
     where: { userId: user.id },
     select: { ngfCategory: true },
   });
-  const kategori =
-    parseKategori(wagr?.ngfCategory ?? null) ?? kategoriFraHcp(user.hcp);
+  const akKat = await hentSpillerAkKategori(user.id, {
+    wagrNgfCategory: wagr?.ngfCategory ?? null,
+    hcp: user.hcp,
+  });
+  const kategori = akKat ? akTilNgfKategori(akKat) : null;
   if (!kategori) {
     return { anbefalt: null, alternativer: [] };
   }

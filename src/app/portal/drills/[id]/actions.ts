@@ -13,7 +13,7 @@
 import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { kategoriFraHcp } from "@/lib/ai-plan/context";
+import { akTilNgfKategori, hentSpillerAkKategori } from "@/lib/domain/spiller-kategori";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 type ActionResult<T extends object = {}> =
@@ -53,7 +53,8 @@ export async function registrerMestringsOkt(
   // Beregn om spilleren har mestret drillen.
   let mestret = false;
   if (csScore !== null) {
-    const spillerKategori = kategoriFraHcp(user.hcp);
+    const akKat = await hentSpillerAkKategori(user.id, { hcp: user.hcp });
+    const spillerKategori = akKat ? akTilNgfKategori(akKat) : null;
 
     // Hent csTarget fra kategorisert map, fall tilbake til csMax.
     let csTarget: number | null = null;
@@ -115,7 +116,8 @@ export async function rateDrill(
   });
   if (!drill) return { ok: false, error: "Drill ikke funnet" };
 
-  const spillerKategori = kategoriFraHcp(user.hcp);
+  const akKat = await hentSpillerAkKategori(user.id, { hcp: user.hcp });
+  const spillerKategori = akKat ? akTilNgfKategori(akKat) : null;
 
   if (!drillModellKlar("drillRating"))
     return { ok: false, error: MODELL_IKKE_KLAR };

@@ -67,7 +67,7 @@ export default async function DrillDetailPage({
   const user = await requirePortalUser({ allow: ["PLAYER", "PARENT"] });
   const { id } = await params;
 
-  const data = await loadDrillDetalj(id, { hcp: user.hcp });
+  const data = await loadDrillDetalj(id, { id: user.id, hcp: user.hcp });
 
   // Fallback hvis drillen ikke finnes.
   if (!data) {
