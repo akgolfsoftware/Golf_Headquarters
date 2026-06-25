@@ -17,70 +17,49 @@ Elevasjon (varm, lav): hvile = kun hårlinje · kort = 0 1px 2px rgba(10,31,23,.
 Spacing: 8pt-grid (8/16/24/32/48/64), data-tett 12/14. Radius: 8/14/20/28/full (knapper helt runde). Hårfine 1px-linjer organiserer rader/celler — ikke bokser overalt.
 Regler: lime kun som signal (ALDRI lime tekst på lys bakgrunn — mørk tekst på lime). Tallet er helten. Tett men organisert. Kun Lucide-ikoner (1,5px). Ingen emoji. Tema: PlayerHQ lyst · AgencyOS mørk «terminal» + lys-toggle · Forelder/Marketing lyst.
 
-KOMPONENTER (bygg ALLE som gjenbrukbare, lyst + mørkt — dette skal være 100 % komplett):
+KOMPONENTER (bygg ALLE — dette er den EKTE katalogen fra design-systemet, ~57 komponenter + tillegg under. 100 % komplett, lyst OG mørkt tema):
 
-A · Grunnelementer
-- Button (lime / forest / ghost, rounded-full pill, mono 12px bold uppercase, ≥44px på mobil)
-- Badge (ok / warn / urgent / lime / primary / neutral)
-- StatusPill (status + farget prikk: lime = aktiv/nå, urgent = haster)
-- Eyebrow (mono uppercase, muted, tracking 0.1em)
-- Avatar (initialer/foto, sirkel, tone regelstyrt: lime = aktiv i dag)
-- Chip / FilterPill (filtrering med valgt-tilstand)
-- Toggle (av/på) · SegmentedControl (2–4 valg, f.eks. liste/kanban/kalender)
-- PulseDot (live-indikator) · SearchField (med ⌘K-hint)
+A · Atomer & grunnelementer
+- Button (lime/forest/ghost, rounded-full pill, mono 12px bold uppercase, ≥44px mobil)
+- Badge · BadgeShelf (rad av badges/utmerkelser)
+- Avatar (initialer/foto, tone regelstyrt: lime = aktiv i dag)
+- Eyebrow (mono uppercase muted, tracking 0.1em)
+- Delta (signert ▲▼-tall med farge) · GhostNumber (stort dempet bakgrunns-tall)
+- ViewSwitcher (bytter liste/kanban/kalender) · StatusPill · Chip/FilterPill · Toggle · PulseDot · SearchField (⌘K-hint)
+- EmptyState (med «neste handling») · Skeleton (puls, aldri spinner)
 
-B · Kort & blokker
-- KpiCard (eyebrow + stort mono-tall + signert delta ▲▼, hårlinje-skille)
-- Hero / PhotoHero (greeting Inter Tight italic + KPI-stripe + tier-pill)
-- FeaturedCard · InsightCard
-- DiagnoseCard (nivå + 2–3 gap-punkter rangert etter slag-gevinst)
-- CoachInsightCard (avatar + ukes-fokus + CTA-rad)
-- EmptyState (med «neste handling») + Skeleton (puls, matcher innholdsform — aldri spinner)
+B · Hero & kort
+- PageHero · PhotoHero (foto + greeting Inter Tight italic + KPI-stripe + tier-pill) · DetailHero
+- AthleticCard (grunn-kort, AK-DNA) · FeaturedCard · HubCard (inngang til underseksjon) · InsightCard
+- WellnessCard (søvn/hvilepuls/HRV) · TournamentCard · ShareCard (delbar resultat-grafikk) · AuthCard
 
-C · Data-viz (ALLE mulige visninger av stats/data)
-- SgBar (strokes-gained per område, lime fyll + mono verdi)
-- PyramidProgress (5-akse: Fysisk/Teknisk/Golfslag/Spill/Turnering med akse-fargene)
-- KpiRing / MasteryRing (sirkulær progress, mono senter-tall)
-- TrendChart / Sparkline (HCP- og SG-utvikling, hårfine gridlinjer)
-- BarChart · AreaChart
-- RadarChart (talent-radar, flere akser)
-- BenchmarkBar (persentil vs pro / Tour-snitt)
-- Heatmap (intensitet over tid/kategori)
-- Distribution / Histogram (spredning)
-- StreakTracker (dager på rad)
-- StatStrip / Ticker (tett rad med mono-nøkkeltall + delta)
+C · KPI & progresjon
+- KpiCard · KpiStrip (tett rad med flere KPI) · StatTile · KpiRing · MasteryRing (sirkulær ferdighet)
+- GoalProgress (mål-fremdrift) · PersonalBest (rekord-kort) · LevelLadder (A–K nivå-stige) · StreakTracker (dager på rad)
 
-D · Tabeller & tavler
-- StatTable (tett, hårfine rad-skiller, mono tabular, avatar-celle; rad ≥md → kort <md)
-- KanbanBoard (kolonner TODO/DOING/BLOKKERT/DONE, kort med status)
-- ListView (rad-liste med høyre-justert metrikk)
+D · Data-viz / stats (golf-spesifikt — ALLE visninger)
+- SgBar · SgBreakdown (strokes-gained nedbrytning per område)
+- Sparkline · TrendBand (HCP-/SG-utvikling over tid)
+- PyramidProgress (5-akse: Fysisk/Teknisk/Golfslag/Spill/Turnering)
+- PercentileGauge (persentil vs pro/Tour) · SkillRadarLive (radar, flere akser)
+- DispersionMap (slag-spredning/treffbilde) · RiskHeatmap (risiko per kategori/tid)
+- StableMatrix · TestMatrix (test-resultater i rutenett) · ClubMetricGrid (metrikk per kølle)
+- HoleStrip (hull-for-hull-stripe) · RoundScorecard (scorekort) · JourneyMap (utviklingsreise)
+- PlayerPipeline (stall-pipeline/kohort) · LiveRepPulse (live økt-/rep-puls)
 
-E · Kalendere (ALLE visninger)
-- DayView (dag-planlegger, time-rader)
-- WeekView (uke-rutenett)
-- MonthGrid (måned)
-- YearGantt (årsplan, perioder over måneder)
-- HeatmapCalendar (aktivitet per dag)
-- StreakCalendar (siste N dager, fylt/tom)
-- SessionScheduler (book/tildel økt i tid)
+E · Tabeller, lister & tavler
+- DataTable Pro (tett tabell, hårfine rad-skiller, mono tabular, avatar-celle; rad ≥md → kort <md)
+- KanbanBoard (TODO/DOING/BLOKKERT/DONE) · InboxList (innboks-rader) · SettingsList (innstillings-rader)
 
-F · Tidslinjer
-- DayTimeline (dagens økter, tids-prikker)
-- SessionTimeline (økt-struktur: oppvarming → hovedfase → avslutning)
-- EventTimeline (kommende hendelser med prikker)
-- ItineraryRow (tid + tittel + meta + varighet)
+F · Kalendere & tidslinjer (ALLE visninger)
+- DayCal (dag) · WeekGrid (uke) · MonthGrid (måned) · YearPlanGantt (årsplan/perioder)
+- PeriodTimeline (periode-/fase-tidslinje) · ItineraryRow (tid + tittel + meta + varighet)
 
-G · Navigasjon
-- Sidebar (gruppert, desktop) + BottomNav (mobil, 5 seksjoner)
-- SubNav / Tabs (fane-rad) · CockpitTabBar (AgencyOS dashboard-faner)
-- CommandPalette (⌘K, søk + hurtighandlinger)
+G · Kommunikasjon, kø & flyt
+- MessageThread (chat-bobler meg vs coach) · QueueItem («hvem trenger meg nå»: avatar + grunn + status + delta)
+- WizardShell (onboarding-stepper) · CommandPalette (⌘K) · Sidebar + BottomNav + SubNav/Tabs + CockpitTabBar
 
-H · Kommunikasjon & kø
-- MessageThread (chat-bobler, meg vs coach)
-- QueueItem («hvem trenger meg nå»: avatar + grunn + status + delta)
-- ActionList / NotificationRow (varsler med ikon + status)
-
-Hver komponent bygges i lyst OG mørkt tema og skal se IDENTISK ut på tvers av alle skjermer — det er det som gir konsistens. Forest = primærhandling, lime kun som signal, mono på alle tall, hårfine linjer organiserer.
+Tillegg (fra manifestet): 24 sammensatte «cards» + 12 startpunkter (hele skjermer) bygges av komponentene over. Hver komponent i lyst OG mørkt tema, identisk på tvers av skjermer. Forest = primærhandling, lime kun som signal, mono på alle tall, hårfine linjer organiserer.
 ```
 
 ---
