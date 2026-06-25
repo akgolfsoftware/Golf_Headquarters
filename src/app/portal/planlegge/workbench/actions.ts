@@ -10,6 +10,7 @@ import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
+import { deleteV2ForPlanSession, upsertV2ForPlanSession } from "@/lib/workbench/v2-sync";
 
 // ============================================================================
 // PERIODE
@@ -426,10 +427,27 @@ export async function moveWorkbenchSession(
     session.scheduledAt.getMinutes(),
   );
 
-  await prisma.trainingPlanSession.update({
+  const updated = await prisma.trainingPlanSession.update({
     where: { id: sessionId },
     data: { scheduledAt: target },
+    select: {
+      id: true,
+      title: true,
+      scheduledAt: true,
+      durationMin: true,
+      pyramidArea: true,
+    },
   });
+
+  await upsertV2ForPlanSession({
+    planSessionId: updated.id,
+    playerId: user.id,
+    title: updated.title,
+    scheduledAt: updated.scheduledAt,
+    durationMin: updated.durationMin,
+    pyramidArea: updated.pyramidArea,
+  });
+
   revalidatePath("/portal/planlegge/workbench");
   return { ok: true };
 }
@@ -474,7 +492,22 @@ export async function addWorkbenchSession(input: {
       pyramidArea: area,
       status: "PLANNED",
     },
-    select: { id: true },
+    select: {
+      id: true,
+      title: true,
+      scheduledAt: true,
+      durationMin: true,
+      pyramidArea: true,
+    },
+  });
+
+  await upsertV2ForPlanSession({
+    planSessionId: created.id,
+    playerId: user.id,
+    title: created.title,
+    scheduledAt: created.scheduledAt,
+    durationMin: created.durationMin,
+    pyramidArea: created.pyramidArea,
   });
 
   revalidatePath("/portal/planlegge/workbench");
@@ -492,6 +525,7 @@ export async function removeWorkbenchSession(
   if (!session || session.plan.userId !== user.id) {
     return { ok: false, error: "Økt ikke funnet" };
   }
+  await deleteV2ForPlanSession(sessionId);
   await prisma.trainingPlanSession.delete({ where: { id: sessionId } });
   revalidatePath("/portal/planlegge/workbench");
   return { ok: true };

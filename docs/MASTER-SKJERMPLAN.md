@@ -117,7 +117,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | Planlegge (= Workbench mobil) ★ | `/portal/planlegge` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
-| **Workbench (planlegging)** ★ | `/portal/planlegge/workbench` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
+| **Workbench (planlegging)** ★ | `/portal/planlegge/workbench` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | Årsplan | `/portal/tren/aarsplan` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ |
 | · Rediger periode | `/portal/tren/aarsplan/periode/[id]/rediger` | – | --- | ✓ | – | – | ~ |
 | Teknisk plan (liste) | `/portal/tren/teknisk-plan` | – | --- | ✓ | ~ | ~ | ✓ |
@@ -316,7 +316,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | **Cockpit (hjem)** ★ | `/admin/agencyos` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
-| · Uka (kanban) | `/admin/agencyos/uka` | – | --- | ✓ | ~ | ~ | ~ |
+| · Uka (kanban) | `/admin/agencyos/uka` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | Design (grip + tcard + sc-t/sc-s + lane-hd-t + locked state from terminal design); Data (real prisma.booking.findMany); Funker (md:4 grid + build); brand in shell. |
 | · Spillere (snarvei) | `/admin/agencyos/spillere` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ |
 | · Økonomi | `/admin/agencyos/okonomi` | – | --- | ✓ | ~ | ~ | ~ |
 | · Caddie (AI-chat) | `/admin/agencyos/caddie` | ✓ | ✓✓– | ✓ | ~ | – | ✓ |
@@ -351,7 +351,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Ny spiller | `/admin/spillere/ny` | – | --- | ✓ | ~ | ~ | ~ |
 | **Spiller-detalj** ★ | `/admin/spillere/[id]` | ✓ | ~✓– | ✓ | ✓ | ✓ | ✓ |
 | · Profil | `/admin/spillere/[id]/profil` | – | --- | ✓ | ~ | ~ | ~ |
-| · **Workbench (coach-i-spiller)** ★ | `/admin/spillere/[id]/workbench` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
+| · **Workbench (coach-i-spiller)** ★ | `/admin/spillere/[id]/workbench` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | · Plan-detalj | `/admin/spillere/[id]/plan/[planId]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Fremgang (trening vs SG) † | `/admin/spillere/[id]/fremgang` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ~ |
 | · Tester | `/admin/spillere/[id]/tester` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ~ |
@@ -714,6 +714,7 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 ## Endringslogg
 
+- 25. juni: **Workbench lanserings-hub (Bølge 1–2).** 7 hub-faner med ekte flater (Teknisk plan, Sesongmål, Maler fra PlanTemplate, Standardøkter fra mal-økter), mobil topbar-paritet (planStatus, Publiser, AI), TrainingSessionV2 merge i ukevisning + dual-write ved drag-drop, GroupSchedule i innsiktsstripe, `/portal/tren/*`→Workbench-redirects, turnerings-fellesmelding sender Notification til alle GroupMember-spillere i coachens grupper. Workbench-rader (spiller + coach): Mob/Desk/iPad → ✓✓✓. 222/222 tester, tsc, build grønt.
 - 14. juni: **Testbatteriet koblet ende-til-ende (steg 1–6).**
   - **Server-side scoring-motor** (`src/lib/portal-tester/test-scoring.ts`): riktig formel per test (PEI = nærhet ÷ lengde, carry+side→avstand for fullslag; spread/maks/snitt/poeng/tid osv.), 16 enhetstester. Score regnes nå som fasit på server; klient-preview bruker samme motor. Lagring krever resultat på alle slag; kontekst (dato/lokasjon/vanskelighet/vær/greenfart/fasthet) fanges.
   - **Død dublett-flyt fjernet** (mockup `(fullscreen)/test/.../live|summary`, `live-test-runner`, foreldreløs `session-actions`, gammel `protokoll.ts`-parser). Gjennomfør-flyten flyttet til lyst, chrome-løst fullskjerm-lag.

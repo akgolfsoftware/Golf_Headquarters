@@ -34,6 +34,32 @@ import type {
 
 // ───────── Eksportert data-form ─────────
 // Hver del er optional: mangler kilde → komponenten bruker v10-demo.
+export type WorkbenchPlanTemplate = {
+  id: string;
+  name: string;
+  lPhase: "GRUNN" | "SPESIAL" | "TURNERING";
+  varighetUker: number;
+  usageCount: number;
+  sessionCount: number;
+};
+
+export type WorkbenchGroupSlot = {
+  id: string;
+  title: string;
+  groupName: string;
+  startAt: string;
+  endAt: string;
+  location: string | null;
+  dayIndex: number;
+};
+
+export type WorkbenchPaletteItem = {
+  pid: string;
+  title: string;
+  dur: number;
+  cat: "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";
+};
+
 export type WorkbenchData = {
   /** Uke-header (A · WeekView): MAN..FRE med dato + i-dag-flagg. */
   weekHead?: { dow: string; date: string; today: boolean; sub: string }[];
@@ -80,6 +106,14 @@ export type WorkbenchData = {
     daysUntil: number;
     priority: "MAJOR" | "NORMAL" | "LOCAL";
   }[];
+  /** Planmaler for hub-fanen Maler. */
+  planTemplates?: WorkbenchPlanTemplate[];
+  /** Standardøkter fra mal-bibliotek (hub-fanen Standardøkter). */
+  paletteItems?: WorkbenchPaletteItem[];
+  /** Felles gruppetider denne uka (GroupSchedule — tid/sted delt, innhold per spiller). */
+  groupSlots?: WorkbenchGroupSlot[];
+  /** Om ukedata inkluderer TrainingSessionV2 (lanserings-spor B). */
+  usesV2Sessions?: boolean;
 };
 
 // ───────── Konstanter ─────────
@@ -176,8 +210,19 @@ export async function loadWorkbenchData(userId: string): Promise<WorkbenchData |
 
   const year = now.getFullYear();
 
-  const [weekSessions, last30Sessions, goals, entries, activePeriod, player, seasonPlan, yearTournaments] =
-    await Promise.all([
+  const [
+    weekSessions,
+    last30Sessions,
+    goals,
+    entries,
+    activePeriod,
+    player,
+    seasonPlan,
+    yearTournaments,
+    v2WeekSessions,
+    groupMemberships,
+    planTemplates,
+  ] = await Promise.all([
     prisma.trainingPlanSession.findMany({
       where: { plan: { userId }, scheduledAt: { gte: weekStart, lt: weekEnd } },
       orderBy: { scheduledAt: "asc" },
@@ -242,6 +287,59 @@ export async function loadWorkbenchData(userId: string): Promise<WorkbenchData |
         tournament: { select: { name: true, startDate: true, location: true } },
       },
     }),
+    prisma.trainingSessionV2.findMany({
+      where: { studentId: userId, startTime: { gte: weekStart, lt: weekEnd } },
+      orderBy: { startTime: "asc" },
+      select: {
+        id: true,
+        title: true,
+        startTime: true,
+        endTime: true,
+        generertFraId: true,
+        drills: { select: { pyramide: true } },
+        practiceType: true,
+      },
+    }),
+    prisma.groupMember.findMany({
+      where: { userId },
+      select: {
+        group: {
+          select: {
+            id: true,
+            name: true,
+            schedules: {
+              where: { startAt: { gte: weekStart, lt: weekEnd } },
+              orderBy: { startAt: "asc" },
+              select: {
+                id: true,
+                title: true,
+                startAt: true,
+                endAt: true,
+                location: true,
+              },
+            },
+          },
+        },
+      },
+    }),
+    prisma.planTemplate.findMany({
+      where: { approved: true },
+      orderBy: [{ usageCount: "desc" }, { name: "asc" }],
+      take: 12,
+      select: {
+        id: true,
+        name: true,
+        lPhase: true,
+        varighetUker: true,
+        usageCount: true,
+        _count: { select: { sessions: true } },
+        sessions: {
+          take: 8,
+          orderBy: [{ ukeNr: "asc" }, { dagNr: "asc" }],
+          select: { title: true, varighetMin: true, pyramidArea: true },
+        },
+      },
+    }),
   ]);
 
   const volTarget =
@@ -249,17 +347,86 @@ export async function loadWorkbenchData(userId: string): Promise<WorkbenchData |
       ? { min: activePeriod.weeklyVolMin, max: activePeriod.weeklyVolMax }
       : undefined;
 
-  // Tom DB → eksplisitt tom tilstand (ingen demo-økter i produksjon).
+  const templateRowsEarly: WorkbenchPlanTemplate[] = planTemplates.map((t) => ({
+    id: t.id,
+    name: t.name,
+    lPhase: t.lPhase,
+    varighetUker: t.varighetUker,
+    usageCount: t.usageCount,
+    sessionCount: t._count.sessions,
+  }));
+
+  const groupSlotsEarly: WorkbenchGroupSlot[] = [];
+  for (const m of groupMemberships) {
+    for (const sch of m.group.schedules) {
+      groupSlotsEarly.push({
+        id: sch.id,
+        title: sch.title,
+        groupName: m.group.name,
+        startAt: sch.startAt.toISOString(),
+        endAt: sch.endAt.toISOString(),
+        location: sch.location,
+        dayIndex: (sch.startAt.getDay() + 6) % 7,
+      });
+    }
+  }
+
+  // Tom uke → eksplisitt tom tilstand, men behold maler/gruppetider.
   if (
     weekSessions.length === 0 &&
+    v2WeekSessions.length === 0 &&
     last30Sessions.length === 0 &&
     goals.length === 0 &&
     entries.length === 0
   ) {
-    return { summary: { weekNumber: isoWeek(now), sessionCount: 0, plannedHours: 0 } };
+    return {
+      summary: { weekNumber: isoWeek(now), sessionCount: 0, plannedHours: 0 },
+      planTemplates: templateRowsEarly.length > 0 ? templateRowsEarly : undefined,
+      groupSlots: groupSlotsEarly.length > 0 ? groupSlotsEarly : undefined,
+      usesV2Sessions: false,
+    };
   }
 
   const sessions = weekSessions as WeekSessionRow[];
+  const linkedPlanIds = new Set(
+    v2WeekSessions.map((v) => v.generertFraId).filter((id): id is string => Boolean(id)),
+  );
+
+  /** V2-økter uten plan-kobling merges inn i ukevisningen. */
+  const v2OrphanEvents: WeekSessionRow[] = v2WeekSessions
+    .filter((v) => !v.generertFraId || !linkedPlanIds.has(v.generertFraId))
+    .map((v) => {
+      const durMin = Math.max(
+        5,
+        Math.round((v.endTime.getTime() - v.startTime.getTime()) / 60_000),
+      );
+      const topDrill = v.drills[0]?.pyramide;
+      const pyramidArea = (
+        topDrill && ["FYS", "TEK", "SLAG", "SPILL", "TURN"].includes(topDrill)
+          ? topDrill
+          : v.practiceType === "KONKURRANSE"
+            ? "TURN"
+            : v.practiceType === "SPILL_TEST"
+              ? "SPILL"
+              : v.practiceType === "RANDOM"
+                ? "SLAG"
+                : "TEK"
+      ) as WeekSessionRow["pyramidArea"];
+      return {
+        id: v.id,
+        scheduledAt: v.startTime,
+        durationMin: durMin,
+        title: v.title,
+        pyramidArea,
+        environment: null,
+        _count: { drills: v.drills.length },
+      };
+    });
+
+  const mergedSessions = [...sessions, ...v2OrphanEvents].sort(
+    (a, b) => a.scheduledAt.getTime() - b.scheduledAt.getTime(),
+  );
+
   const todayDow = (now.getDay() + 6) % 7;
 
   // ── A · WeekView: header + dag-kolonner med blokker ──────────────
@@ -278,7 +445,7 @@ export async function loadWorkbenchData(userId: string): Promise<WorkbenchData |
     const d = new Date(weekStart);
     d.setDate(d.getDate() + i);
     const isToday = i === todayDow;
-    const dayEvents: WeekEvent[] = sessions
+    const dayEvents: WeekEvent[] = mergedSessions
       .filter((s) => (s.scheduledAt.getDay() + 6) % 7 === i)
       .map((s) => sessionToWeekEvent(s));
     return {
@@ -296,7 +463,7 @@ export async function loadWorkbenchData(userId: string): Promise<WorkbenchData |
     const d = new Date(weekStart);
     d.setDate(d.getDate() + i);
     const isToday = i === todayDow;
-    const daySessions = sessions.filter((s) => (s.scheduledAt.getDay() + 6) % 7 === i);
+    const daySessions = mergedSessions.filter((s) => (s.scheduledAt.getDay() + 6) % 7 === i);
     const ct = daySessions.length;
     const totMin = daySessions.reduce((a, s) => a + s.durationMin, 0);
     return {
@@ -312,7 +479,7 @@ export async function loadWorkbenchData(userId: string): Promise<WorkbenchData |
   // ── Kanban: 5 akse-kolonner ─────────────────────────────────────
   const kanbanCols = PYR_REKKEFOLGE.map((area) => {
     const ax = PYR_TONE[area];
-    const cards = sessions
+    const cards = mergedSessions
       .filter((s) => s.pyramidArea === area)
       .map((s) => {
         const dow = DOW[(s.scheduledAt.getDay() + 6) % 7];
@@ -329,7 +496,7 @@ export async function loadWorkbenchData(userId: string): Promise<WorkbenchData |
 
   // ── Timer per akse (denne uka) — statusbar + pie ────────────────
   const weekMinByArea = new Map<PyramidArea, number>();
-  for (const s of sessions) {
+  for (const s of mergedSessions) {
     weekMinByArea.set(s.pyramidArea, (weekMinByArea.get(s.pyramidArea) ?? 0) + s.durationMin);
   }
   const axisHours = PYR_REKKEFOLGE.map((area) => ({
@@ -409,12 +576,34 @@ export async function loadWorkbenchData(userId: string): Promise<WorkbenchData |
   });
 
   // ── Topp-tall ───────────────────────────────────────────────────
-  const plannedMin = sessions.reduce((a, s) => a + s.durationMin, 0);
+  const plannedMin = mergedSessions.reduce((a, s) => a + s.durationMin, 0);
   const summary = {
     weekNumber: isoWeek(now),
-    sessionCount: sessions.length,
+    sessionCount: mergedSessions.length,
     plannedHours: Math.round((plannedMin / 60) * 10) / 10,
   };
+
+  const templateRows = templateRowsEarly;
+
+  const paletteSeen = new Set<string>();
+  const paletteItems: WorkbenchPaletteItem[] = [];
+  for (const t of planTemplates) {
+    for (const s of t.sessions) {
+      const key = `${s.title}-${s.varighetMin}-${s.pyramidArea}`;
+      if (paletteSeen.has(key)) continue;
+      paletteSeen.add(key);
+      paletteItems.push({
+        pid: `tpl-${t.id}-${paletteItems.length}`,
+        title: s.title,
+        dur: s.varighetMin,
+        cat: s.pyramidArea,
+      });
+      if (paletteItems.length >= 12) break;
+    }
+    if (paletteItems.length >= 12) break;
+  }
+
+  const groupSlots = groupSlotsEarly;
 
   const seasonBlocks =
     seasonPlan && seasonPlan.periodBlocks.length > 0
@@ -456,6 +645,10 @@ export async function loadWorkbenchData(userId: string): Promise<WorkbenchData |
     volTarget,
     seasonBlocks,
     tournamentCalendar: tournamentCalendar.length > 0 ? tournamentCalendar : undefined,
+    planTemplates: templateRows.length > 0 ? templateRows : undefined,
+    paletteItems: paletteItems.length > 0 ? paletteItems : undefined,
+    groupSlots: groupSlots.length > 0 ? groupSlots : undefined,
+    usesV2Sessions: v2WeekSessions.length > 0,
   };
 }
 

@@ -453,3 +453,17 @@ export async function exportTournamentsReport(
 
   return { success: true, downloadUrl, filename };
 }
+
+/** Fellesmelding til alle spillere i coachens grupper (GroupMember-fan-out). */
+export async function sendTournamentFellesmelding(input: {
+  subject: string;
+  body: string;
+  link?: string;
+}): Promise<{ ok: boolean; count?: number; error?: string }> {
+  const { notifyTournamentToCoachGroups } = await import(
+    "@/lib/workbench/notify-tournament-group"
+  );
+  const result = await notifyTournamentToCoachGroups(input);
+  if (!result.ok) return { ok: false, error: result.error };
+  return { ok: true, count: result.count };
+}

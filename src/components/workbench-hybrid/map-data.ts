@@ -11,6 +11,8 @@
  */
 
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
+import type { PaletteItem } from "./types";
+import { PALETTE_LIBRARY } from "./demo-data";
 import type { Axis, WeekDay, WeekEvent } from "@/lib/workbench/week-types";
 import type { Cat } from "./theme";
 import type {
@@ -162,4 +164,35 @@ export function mapWeekHead(
     range = `${first.date}.–${last.date}.${mn}`;
   }
   return { weekLabel: `Uke ${n}`, range };
+}
+
+/** Standardøkter: ekte mal-økter fra DB, ellers startbibliotek. */
+export function mapPalette(data: WorkbenchData | undefined): PaletteItem[] {
+  const items = data?.paletteItems;
+  if (!items || items.length === 0) return PALETTE_LIBRARY;
+  return items.map((p) => ({
+    pid: p.pid,
+    title: p.title,
+    dur: p.dur,
+    cat: p.cat,
+    omr: "PUTT0_3",
+    m: "M2",
+    pr: "PR2",
+    cs: "CS80",
+    lfase: "L_BALL",
+    praksis: "BLOKK",
+  }));
+}
+
+/** Gruppetrening-linje for innsiktsstripe. */
+export function mapGroupInsightLine(data: WorkbenchData | undefined): string | null {
+  const slots = data?.groupSlots;
+  if (!slots || slots.length === 0) return null;
+  const first = slots[0];
+  const d = new Date(first.startAt);
+  const ukedag = ["søn", "man", "tir", "ons", "tor", "fre", "lør"][d.getDay()];
+  const tid = `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+  const loc = first.location ? ` · ${first.location}` : "";
+  const flere = slots.length > 1 ? ` (+${slots.length - 1} til)` : "";
+  return `Gruppetrening ${first.groupName}: ${ukedag} ${tid}${loc}${flere}`;
 }

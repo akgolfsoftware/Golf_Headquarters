@@ -7,6 +7,7 @@
 import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { deleteV2ForPlanSession, upsertV2ForPlanSession } from "@/lib/workbench/v2-sync";
 
 const PYRAMID_AREAS = ["FYS", "TEK", "SLAG", "SPILL", "TURN"] as const;
 export type WbPyramidArea = (typeof PYRAMID_AREAS)[number];
@@ -53,7 +54,7 @@ export async function coachMoveWorkbenchSession(
   sessionId: string,
   dayIndex: number,
 ): Promise<{ ok: boolean; error?: string }> {
-  await ensureCoach();
+  const coach = await ensureCoach();
   if (dayIndex < 0 || dayIndex > 6) return { ok: false, error: "Ugyldig dag" };
 
   const session = await sessionForPlayer(sessionId, playerId);
@@ -67,10 +68,28 @@ export async function coachMoveWorkbenchSession(
     session.scheduledAt.getMinutes(),
   );
 
-  await prisma.trainingPlanSession.update({
+  const updated = await prisma.trainingPlanSession.update({
     where: { id: sessionId },
     data: { scheduledAt: target },
+    select: {
+      id: true,
+      title: true,
+      scheduledAt: true,
+      durationMin: true,
+      pyramidArea: true,
+    },
   });
+
+  await upsertV2ForPlanSession({
+    planSessionId: updated.id,
+    playerId,
+    title: updated.title,
+    scheduledAt: updated.scheduledAt,
+    durationMin: updated.durationMin,
+    pyramidArea: updated.pyramidArea,
+    coachId: coach.id,
+  });
+
   revalidateWorkbench(playerId);
   return { ok: true };
 }
@@ -118,7 +137,23 @@ export async function coachAddWorkbenchSession(
       pyramidArea: area,
       status: "PLANNED",
     },
-    select: { id: true },
+    select: {
+      id: true,
+      title: true,
+      scheduledAt: true,
+      durationMin: true,
+      pyramidArea: true,
+    },
+  });
+
+  await upsertV2ForPlanSession({
+    planSessionId: created.id,
+    playerId,
+    title: created.title,
+    scheduledAt: created.scheduledAt,
+    durationMin: created.durationMin,
+    pyramidArea: created.pyramidArea,
+    coachId: coach.id,
   });
 
   revalidateWorkbench(playerId);
@@ -134,6 +169,7 @@ export async function coachRemoveWorkbenchSession(
   if (!session || session.plan.userId !== playerId) {
     return { ok: false, error: "Økt ikke funnet" };
   }
+  await deleteV2ForPlanSession(sessionId);
   await prisma.trainingPlanSession.delete({ where: { id: sessionId } });
   revalidateWorkbench(playerId);
   return { ok: true };

@@ -11,8 +11,9 @@
  * er flyten presentasjonell; ingen send-backend finnes ennå.
  */
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Send, Users } from "lucide-react";
+import { sendTournamentFellesmelding } from "@/app/admin/tournaments/actions";
 
 import { agBtnClass } from "@/components/admin/agencyos/ui";
 import {
@@ -32,6 +33,10 @@ export function FellesmeldingKnapp({
   mottakere: number;
 }) {
   const [open, setOpen] = useState(false);
+  const [subject, setSubject] = useState(`Orientering · ${navn}`);
+  const [body, setBody] = useState("");
+  const [feedback, setFeedback] = useState<string | null>(null);
+  const [pending, startTransition] = useTransition();
 
   return (
     <>
@@ -67,7 +72,7 @@ export function FellesmeldingKnapp({
               <span className="font-mono text-[9px] font-extrabold uppercase tracking-[0.1em] text-muted-foreground">
                 Emne
               </span>
-              <Input defaultValue={`Orientering · ${navn}`} />
+              <Input value={subject} onChange={(e) => setSubject(e.target.value)} />
             </label>
 
             <label className="flex flex-col gap-[7px]">
@@ -78,6 +83,8 @@ export function FellesmeldingKnapp({
                 rows={6}
                 className="min-h-[140px]"
                 placeholder="Oppmøte 07:30 ved klubbhus. Husk regnplagg…"
+                value={body}
+                onChange={(e) => setBody(e.target.value)}
               />
             </label>
           </div>
@@ -90,12 +97,30 @@ export function FellesmeldingKnapp({
             >
               Avbryt
             </button>
+            {feedback && (
+              <p className="mb-2 w-full font-mono text-[10px] text-muted-foreground">{feedback}</p>
+            )}
             <button
               type="button"
               className={`${agBtnClass("primary")} flex-1`}
-              onClick={() => setOpen(false)}
+              disabled={pending || !body.trim()}
+              onClick={() => {
+                startTransition(async () => {
+                  const res = await sendTournamentFellesmelding({
+                    subject: subject.trim() || `Orientering · ${navn}`,
+                    body: body.trim(),
+                  });
+                  if (res.ok) {
+                    setFeedback(`Sendt til ${res.count ?? 0} spillere i gruppene`);
+                    setOpen(false);
+                    setBody("");
+                  } else {
+                    setFeedback(res.error ?? "Kunne ikke sende");
+                  }
+                });
+              }}
             >
-              <Send size={16} strokeWidth={1.5} /> Send til alle
+              <Send size={16} strokeWidth={1.5} /> {pending ? "Sender…" : "Send til alle"}
             </button>
           </div>
         </SheetContent>

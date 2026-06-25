@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState, type ReactElement } from "react";
 import Link from "next/link";
-import { ChevronDown, LayoutGrid, Plus, Sparkles } from "lucide-react";
+import { Bot, ChevronDown, LayoutGrid, Plus, Send, Sparkles } from "lucide-react";
+import type { PlanStatus } from "@/generated/prisma/client";
 import { FONT, WB } from "./theme";
 import type { WorkbenchRole, ZoomLevel } from "./types";
 import type { RosterPlayer } from "./Topbar";
@@ -15,6 +16,16 @@ const LEVELS: { key: ZoomLevel; label: string }[] = [
   { key: "dag", label: "Dag" },
 ];
 
+const PLAN_STATUS_LABEL: Record<PlanStatus, string> = {
+  DRAFT: "Utkast",
+  PENDING_PLAYER: "Venter",
+  ACCEPTED: "Godtatt",
+  REJECTED: "Endring",
+  ACTIVE: "Aktiv",
+  PAUSED: "Pause",
+  ARCHIVED: "Arkiv",
+};
+
 type MobileTopbarProps = {
   playerName: string;
   initials: string;
@@ -24,6 +35,11 @@ type MobileTopbarProps = {
   players?: RosterPlayer[];
   currentPlayerId?: string;
   onOpenCoachSkill?: () => void;
+  onOpenAiPlan?: () => void;
+  onOpenAiPeriodiser?: () => void;
+  planStatus?: PlanStatus | null;
+  onPublish?: () => void;
+  publishPending?: boolean;
 };
 
 /**
@@ -40,8 +56,15 @@ export function MobileTopbar({
   players,
   currentPlayerId,
   onOpenCoachSkill,
+  onOpenAiPlan,
+  onOpenAiPeriodiser,
+  planStatus,
+  onPublish,
+  publishPending,
 }: MobileTopbarProps): ReactElement {
   const isCoach = role === "coach";
+  const canPublish =
+    onPublish && planStatus && (planStatus === "DRAFT" || planStatus === "REJECTED");
 
   return (
     <div
@@ -101,7 +124,70 @@ export function MobileTopbar({
         </button>
       )}
 
+      {planStatus && (
+        <span
+          style={{
+            fontFamily: FONT.mono,
+            fontSize: 9,
+            fontWeight: 700,
+            letterSpacing: "0.06em",
+            textTransform: "uppercase",
+            padding: "4px 8px",
+            borderRadius: 999,
+            background: `${WB.lime}18`,
+            color: WB.lime,
+            flexShrink: 0,
+          }}
+        >
+          {PLAN_STATUS_LABEL[planStatus]}
+        </span>
+      )}
+
       <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 7, flexShrink: 0 }}>
+        {canPublish && (
+          <button
+            type="button"
+            onClick={onPublish}
+            disabled={publishPending}
+            aria-label="Publiser plan"
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 12,
+              border: "none",
+              background: WB.lime,
+              color: WB.limeDark,
+              cursor: publishPending ? "wait" : "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              opacity: publishPending ? 0.7 : 1,
+            }}
+          >
+            <Send size={17} strokeWidth={2.2} />
+          </button>
+        )}
+        {(onOpenAiPlan || onOpenAiPeriodiser) && (
+          <button
+            type="button"
+            onClick={isCoach ? onOpenAiPlan : onOpenAiPeriodiser}
+            aria-label={isCoach ? "Generer plan" : "AI-periodiser"}
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 12,
+              border: `1px solid ${WB.panelBorder}`,
+              background: WB.cardBg,
+              color: WB.lime,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Bot size={18} strokeWidth={2} />
+          </button>
+        )}
         <button
           type="button"
           onClick={onOpenPalette}

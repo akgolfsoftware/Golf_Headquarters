@@ -18,9 +18,10 @@ import type {
   WorkbenchRole,
   ZoomLevel,
 } from "./types";
-import { PALETTE_LIBRARY } from "./demo-data";
 import {
   mapGoals,
+  mapGroupInsightLine,
+  mapPalette,
   mapSeasonPhases,
   mapTournaments,
   mapWarningBanner,
@@ -73,6 +74,8 @@ import {
 } from "./HubTabRail";
 import { TekniskPlanTab } from "./TekniskPlanTab";
 import { SesongmalTab } from "./SesongmalTab";
+import { MalerTab } from "./MalerTab";
+import { StdTab } from "./StdTab";
 
 const LS_KEY = "akgolf.wb.level";
 const VALID_LEVELS: ZoomLevel[] = ["arsplan", "ar", "maned", "uke", "dag"];
@@ -464,11 +467,15 @@ export function WorkbenchHybrid({
   const banner = useMemo(() => mapWarningBanner(data), [data]);
   const tournaments = useMemo(() => mapTournaments(data) ?? [], [data]);
   const seasonPhases: SeasonPhase[] = useMemo(() => mapSeasonPhases(data) ?? [], [data]);
+  const planTemplates = useMemo(() => data?.planTemplates ?? [], [data]);
+  const serverPalette = useMemo(() => mapPalette(data), [data]);
+  const groupInsight = useMemo(() => mapGroupInsightLine(data), [data]);
+  const combinedInsights = groupInsight ?? insightsLine ?? null;
 
   const [state, dispatch] = useReducer(reducer, undefined, (): State => ({
     level: "uke",
     week: realWeek ?? EMPTY_WEEK,
-    palette: PALETTE_LIBRARY,
+    palette: serverPalette,
     selectedId: null,
     selectedPaletteId: null,
     editScope: "session",
@@ -860,46 +867,14 @@ export function WorkbenchHybrid({
         />
       )}
       {hubTab === "seson" && <SesongmalTab goals={goals} />}
-      {hubTab === "maler" && (
-        <div className="wb-scroll" style={{ flex: 1, overflow: "auto", padding: 16 }}>
-          <p style={{ fontFamily: FONT.mono, fontSize: 10, color: WB.muted, margin: "0 0 12px" }}>
-            Planmaler · velg fra biblioteket eller opprett ny mal i AgencyOS.
-          </p>
-          <a
-            href={isCoach ? "/admin/plan-templates" : "/portal/planlegge/workbench?tab=std"}
-            style={{ fontFamily: FONT.mono, fontSize: 10, fontWeight: 700, color: WB.lime, textTransform: "uppercase" }}
-          >
-            Åpne mal-bibliotek →
-          </a>
-        </div>
-      )}
+      {hubTab === "maler" && <MalerTab templates={planTemplates} isCoach={isCoach} />}
       {hubTab === "std" && (
-        <div className="wb-scroll" style={{ flex: 1, overflow: "auto", padding: 16, display: "grid", gap: 8 }}>
-          {state.palette.map((p) => (
-            <button
-              key={p.pid}
-              type="button"
-              onClick={() => {
-                setHubTabWithUrl("uke");
-                dispatch({ type: "selectPalette", pid: p.pid });
-              }}
-              style={{
-                textAlign: "left",
-                background: WB.cardBg,
-                border: `1px solid ${WB.innerBorder}`,
-                borderRadius: 10,
-                padding: "12px 14px",
-                cursor: "pointer",
-                color: WB.text,
-              }}
-            >
-              <div style={{ fontSize: 13, fontWeight: 600 }}>{p.title}</div>
-              <div style={{ fontFamily: FONT.mono, fontSize: 9, color: WB.muted3, marginTop: 4 }}>
-                {p.dur} min · {p.cat}
-              </div>
-            </button>
-          ))}
-        </div>
+        <StdTab
+          palette={state.palette}
+          selectedPaletteId={state.editScope === "palette" ? state.selectedPaletteId : null}
+          onSelect={(pid) => dispatch({ type: "selectPalette", pid })}
+          onGoToWeek={() => setHubTabWithUrl("uke")}
+        />
       )}
     </>
   ) : null;
@@ -997,7 +972,7 @@ export function WorkbenchHybrid({
             <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
               {!showPlanningTab && (
                 <>
-                  <InsightsStripe line={insightsLine ?? null} />
+                  <InsightsStripe line={combinedInsights} />
                   {kpiStrip}
                 </>
               )}
@@ -1047,6 +1022,11 @@ export function WorkbenchHybrid({
           players={players}
           currentPlayerId={currentPlayerId}
           onOpenCoachSkill={isCoach ? () => setCoachSkillOpen(true) : undefined}
+          onOpenAiPlan={isCoach && currentPlayerId ? () => setAiPlanOpen(true) : undefined}
+          onOpenAiPeriodiser={!isCoach ? () => setAiPlanOpen(true) : undefined}
+          planStatus={planStatus}
+          onPublish={planId ? handlePublish : undefined}
+          publishPending={publishPending}
         />
         <HubTabRail tab={hubTab} onTab={setHubTabWithUrl} />
         {!showPlanningTab && (
@@ -1060,7 +1040,7 @@ export function WorkbenchHybrid({
         )}
         {!showPlanningTab && (
           <>
-            <InsightsStripe line={insightsLine ?? null} />
+            <InsightsStripe line={combinedInsights} />
             {kpiStrip}
           </>
         )}
