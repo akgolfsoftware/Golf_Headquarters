@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactElement } from "react";
+import { useEffect, useRef, type ReactElement } from "react";
 import { FONT, WB } from "./theme";
 
 export type WorkbenchHubTab = "tek" | "seson" | "maler" | "std" | "gantt" | "uke" | "okt";
@@ -21,8 +21,16 @@ type HubTabRailProps = {
 };
 
 export function HubTabRail({ tab, onTab }: HubTabRailProps): ReactElement {
+  const railRef = useRef<HTMLDivElement>(null);
+  const activeRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    activeRef.current?.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" });
+  }, [tab]);
+
   return (
     <div
+      ref={railRef}
       style={{
         display: "flex",
         alignItems: "center",
@@ -51,6 +59,7 @@ export function HubTabRail({ tab, onTab }: HubTabRailProps): ReactElement {
               />
             ) : null}
             <button
+              ref={active ? activeRef : undefined}
               type="button"
               onClick={() => onTab(t.key)}
               style={{

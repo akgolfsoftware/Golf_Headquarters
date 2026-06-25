@@ -714,6 +714,7 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 ## Endringslogg
 
+- 25. juni (lansering 20:00): **Workbench lanserings-hub ferdig.** Maler «Bruk» persisterer PlanTemplate-uke-1 til TrainingPlanSession+V2; V2-merge-bug fikset (`merge-week-sessions`); publish DRAFT→PENDING_PLAYER; design-gate 0 udokumenterte avvik (spiller uten coach-sidebar, ukenavigasjon-shell, Økt/Std wb-10-blokker). Gate-bevis: Playwright 430+1280, smoke PASS, 230 tester, build grønt.
 - 25. juni: **Workbench lanserings-hub (Bølge 1–2).** 7 hub-faner med ekte flater (Teknisk plan, Sesongmål, Maler fra PlanTemplate, Standardøkter fra mal-økter), mobil topbar-paritet (planStatus, Publiser, AI), TrainingSessionV2 merge i ukevisning + dual-write ved drag-drop, GroupSchedule i innsiktsstripe, `/portal/tren/*`→Workbench-redirects, turnerings-fellesmelding sender Notification til alle GroupMember-spillere i coachens grupper. Workbench-rader (spiller + coach): Mob/Desk/iPad → ✓✓✓. 222/222 tester, tsc, build grønt.
 - 14. juni: **Testbatteriet koblet ende-til-ende (steg 1–6).**
   - **Server-side scoring-motor** (`src/lib/portal-tester/test-scoring.ts`): riktig formel per test (PEI = nærhet ÷ lengde, carry+side→avstand for fullslag; spread/maks/snitt/poeng/tid osv.), 16 enhetstester. Score regnes nå som fasit på server; klient-preview bruker samme motor. Lagring krever resultat på alle slag; kontekst (dato/lokasjon/vanskelighet/vær/greenfart/fasthet) fanges.

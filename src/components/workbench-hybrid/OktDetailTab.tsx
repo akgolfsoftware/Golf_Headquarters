@@ -329,6 +329,25 @@ export function OktDetailTab({
 
           <div
             style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+              gap: 10,
+              marginTop: 14,
+            }}
+          >
+            <InsightPanel
+              eyebrow="Coach-notat · før økt"
+              body="Coach legger inn notat i Workbench når notat-feltet er koblet til planen. Ingen notat lagret for denne økten ennå."
+            />
+            <InsightPanel
+              eyebrow="SG-kobling · denne økten"
+              body="Forventet SG-gevinst vises når FYS-formelen og økt-SG er låst. —"
+              mono
+            />
+          </div>
+
+          <div
+            style={{
               display: "flex",
               alignItems: "flex-start",
               gap: 8,
@@ -392,6 +411,51 @@ export function OktDetailTab({
             </span>
           </button>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function InsightPanel({
+  eyebrow,
+  body,
+  mono,
+}: {
+  eyebrow: string;
+  body: string;
+  mono?: boolean;
+}): ReactElement {
+  return (
+    <div
+      style={{
+        background: WB.cardBg,
+        border: `1px solid ${WB.panelBorder}`,
+        borderRadius: 10,
+        padding: "12px 14px",
+      }}
+    >
+      <div
+        style={{
+          fontFamily: FONT.mono,
+          fontSize: 8,
+          fontWeight: 700,
+          letterSpacing: "0.08em",
+          textTransform: "uppercase",
+          color: WB.muted3,
+          marginBottom: 6,
+        }}
+      >
+        {eyebrow}
+      </div>
+      <div
+        style={{
+          fontSize: mono ? 10 : 12,
+          fontFamily: mono ? FONT.mono : undefined,
+          color: mono ? WB.lime : WB.muted,
+          lineHeight: 1.45,
+        }}
+      >
+        {body}
       </div>
     </div>
   );

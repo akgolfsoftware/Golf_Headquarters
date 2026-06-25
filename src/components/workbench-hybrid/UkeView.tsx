@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactElement } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { CAT_COLORS, FONT, WB } from "./theme";
 import { durLabel } from "./helpers";
 import type { WbSession, WeekKey, WeekState } from "./types";
@@ -56,6 +57,8 @@ type UkeViewProps = {
   onDayDragOver: (day: WeekKey) => void;
   onDayDragLeave: (day: WeekKey) => void;
   onDayDrop: (day: WeekKey) => void;
+  /** Coach/desktop: vis «dra fra panelet»-hint. */
+  showPaletteHint?: boolean;
 };
 
 export function UkeView({
@@ -71,6 +74,7 @@ export function UkeView({
   onDayDragOver,
   onDayDragLeave,
   onDayDrop,
+  showPaletteHint = true,
 }: UkeViewProps): ReactElement {
   const startHour = earliestHour(week);
   const hours: string[] = [];
@@ -79,12 +83,66 @@ export function UkeView({
 
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 18px 8px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <span style={{ fontFamily: FONT.display, fontWeight: 700, fontSize: 18, color: WB.text }}>{weekLabel}</span>
-          <span style={{ fontSize: 12.5, color: WB.muted }}>{weekRange}</span>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 18px 8px", gap: 12 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <button
+            type="button"
+            aria-label="Forrige uke"
+            disabled
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 4,
+              border: `1px solid ${WB.panelBorder}`,
+              background: "transparent",
+              borderRadius: 999,
+              padding: "6px 10px",
+              fontFamily: FONT.mono,
+              fontSize: 9,
+              fontWeight: 700,
+              letterSpacing: "0.06em",
+              textTransform: "uppercase",
+              color: WB.muted3,
+              cursor: "not-allowed",
+              opacity: 0.55,
+            }}
+          >
+            <ChevronLeft size={12} />
+            Forrige
+          </button>
+          <div style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
+            <span style={{ fontFamily: FONT.display, fontWeight: 700, fontSize: 18, color: WB.text }}>{weekLabel}</span>
+            <span style={{ fontSize: 12.5, color: WB.muted }}>{weekRange}</span>
+          </div>
+          <button
+            type="button"
+            aria-label="Neste uke"
+            disabled
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 4,
+              border: `1px solid ${WB.panelBorder}`,
+              background: "transparent",
+              borderRadius: 999,
+              padding: "6px 10px",
+              fontFamily: FONT.mono,
+              fontSize: 9,
+              fontWeight: 700,
+              letterSpacing: "0.06em",
+              textTransform: "uppercase",
+              color: WB.muted3,
+              cursor: "not-allowed",
+              opacity: 0.55,
+            }}
+          >
+            Neste
+            <ChevronRight size={12} />
+          </button>
         </div>
-        <span style={{ fontSize: 12, color: WB.muted }}>dra fra panelet · flytt mellom dager</span>
+        {showPaletteHint ? (
+          <span style={{ fontSize: 12, color: WB.muted, flexShrink: 0 }}>dra fra panelet · flytt mellom dager</span>
+        ) : null}
       </div>
 
       {warningTitle && (

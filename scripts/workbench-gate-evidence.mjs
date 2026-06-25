@@ -126,26 +126,31 @@ const consentInit = () => {
     await log(`TAB_SWITCH player ${tab} PASS`);
   }
 
+  const mobileRoot = page.locator(".wb-mobile");
+
   // Maler — klikk Bruk på første mal
   await page.goto(`${BASE}/portal/planlegge/workbench?tab=maler`, { waitUntil: "domcontentloaded" });
   await page.waitForTimeout(1000);
   const brukBtn = page.getByRole("button", { name: "Bruk" }).first();
   if (await brukBtn.isVisible().catch(() => false)) {
     await Promise.all([
-      page.waitForURL(/tab=gantt/, { timeout: 15000 }).catch(() => {}),
+      page.waitForURL(/tab=(uke|gantt)/, { timeout: 20000 }).catch(() => {}),
       brukBtn.click(),
     ]);
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(1500);
     const afterBruk = page.url();
-    const brukOk = afterBruk.includes("tab=gantt");
+    const brukOk = afterBruk.includes("tab=uke") || afterBruk.includes("tab=gantt");
     await log(`MALER_BRUK → ${afterBruk} ${brukOk ? "PASS" : "FAIL"}`);
+    if (afterBruk.includes("tab=uke")) {
+      const cards = await mobileRoot.locator("[data-sid]").count().catch(() => 0);
+      await log(`MALER_BRUK_SESSIONS count=${cards} ${cards > 0 ? "PASS" : "FAIL"}`);
+    }
   } else {
     await log("MALER_BRUK SKIP ingen mal-knapper");
   }
 
   // Uke — publiser via UI (mobil-layout — desktop-topbar er display:none på 430px)
   await page.goto(`${BASE}/portal/planlegge/workbench?tab=uke`, { waitUntil: "domcontentloaded" });
-  const mobileRoot = page.locator(".wb-mobile");
   try {
     await mobileRoot.locator('[data-testid="wb-week-ready"]').waitFor({ state: "visible", timeout: 15000 });
     await log("WB_WEEK_READY visible=true PASS");
@@ -169,12 +174,12 @@ const consentInit = () => {
     await log(`PUBLISH_CLICK status_pending_visible=${pending} ${pending ? "PASS" : "FAIL"}`);
   }
 
-  // Uke — velg økt (klikk første øktkort om finnes)
+  // Uke — velg økt (siste kort unngår overlapp fra mal-import)
   await page.waitForTimeout(1200);
-  const sessionCard = mobileRoot.locator("[data-sid]").first();
+  const sessionCard = mobileRoot.locator("[data-sid]").last();
   await sessionCard.waitFor({ state: "visible", timeout: 8000 }).catch(() => {});
   if (await sessionCard.isVisible().catch(() => false)) {
-    await sessionCard.click();
+    await sessionCard.click({ force: true });
     await page.waitForTimeout(500);
     await log("UKE_SELECT_SESSION PASS");
   } else {

@@ -58,11 +58,18 @@ import {
   removeWorkbenchSession,
 } from "@/app/portal/planlegge/workbench/actions";
 import {
+  applyWorkbenchTemplate,
+  coachApplyWorkbenchTemplate,
+  type AppliedTemplateSession,
+} from "@/lib/workbench/apply-template-actions";
+
+import {
   coachMoveWorkbenchSession,
   coachAddWorkbenchSession,
   coachRemoveWorkbenchSession,
   resolvePlanSessionLiveHref,
 } from "@/lib/workbench/session-actions";
+import type { WorkbenchPlanTemplate } from "@/lib/workbench/load-workbench";
 import { InsightsStripe } from "./InsightsStripe";
 import { EmptyPlanState } from "./EmptyPlanState";
 import {
@@ -189,6 +196,7 @@ type Action =
   | { type: "publishStart" }
   | { type: "publishDone"; status?: PlanStatus }
   | { type: "publishFail" }
+  | { type: "applyTemplateSessions"; sessions: AppliedTemplateSession[] }
   | { type: "closeModal" };
 
 function cloneWeek(w: WeekState): WeekState {
@@ -416,6 +424,28 @@ function reducer(state: State, action: Action): State {
         ...state,
         week: w,
         selectedId: state.selectedId === action.oldId ? action.newId : state.selectedId,
+      };
+    }
+    case "applyTemplateSessions": {
+      const w = cloneWeek(state.week);
+      for (const s of action.sessions) {
+        const hh = String(s.hour).padStart(2, "0");
+        const mm = String(s.minute).padStart(2, "0");
+        w[s.dayKey].push({
+          id: s.sessionId,
+          title: s.title,
+          dur: s.durMin,
+          cat: s.area,
+          time: `${hh}:${mm}`,
+        });
+      }
+      const firstId = action.sessions[0]?.sessionId ?? state.selectedId;
+      return {
+        ...state,
+        week: w,
+        selectedId: firstId,
+        editScope: "session",
+        level: state.level === "ar" || state.level === "arsplan" || state.level === "maned" ? "uke" : state.level,
       };
     }
     default:
@@ -714,6 +744,34 @@ export function WorkbenchHybrid({
       .catch(() => dispatch({ type: "publishFail" }));
   }, [state.publishPending, isCoach, resolvedPlayerId, router]);
 
+  const [templateApplying, setTemplateApplying] = useState(false);
+
+  const handleUseTemplate = useCallback(
+    (template: WorkbenchPlanTemplate) => {
+      if (templateApplying) return;
+      setTemplateApplying(true);
+      const promise =
+        isCoach && currentPlayerId
+          ? coachApplyWorkbenchTemplate(currentPlayerId, template.id)
+          : !isCoach
+            ? applyWorkbenchTemplate(template.id)
+            : null;
+      void promise
+        ?.then((res) => {
+          if (res?.ok && res.sessions && res.sessions.length > 0) {
+            dispatch({ type: "applyTemplateSessions", sessions: res.sessions });
+            setHubTabWithUrl("uke");
+            router.refresh();
+          } else {
+            setHubTabWithUrl("gantt");
+          }
+        })
+        .catch(() => setHubTabWithUrl("gantt"))
+        .finally(() => setTemplateApplying(false));
+    },
+    [templateApplying, isCoach, currentPlayerId, setHubTabWithUrl, router],
+  );
+
   const handleStartLive = useCallback(() => {
     const id = state.selectedId;
     if (!id || !isPersisted(id)) return;
@@ -854,6 +912,7 @@ export function WorkbenchHybrid({
               weekRange={weekHead.range}
               warningTitle={banner?.title ?? null}
               warningMeta={banner?.meta ?? null}
+              showPaletteHint={isCoach}
               onSessionClick={(id) => dispatch({ type: "selectSession", id })}
               onSessionDragStart={onSessionDragStart}
               onDayDragOver={(day) => dispatch({ type: "setHoverDay", day })}
@@ -935,7 +994,7 @@ export function WorkbenchHybrid({
         <MalerTab
           templates={planTemplates}
           isCoach={isCoach}
-          onUseTemplate={() => setHubTabWithUrl("gantt")}
+          onUseTemplate={handleUseTemplate}
         />
       )}
       {hubTab === "std" && (
@@ -1023,7 +1082,7 @@ export function WorkbenchHybrid({
 
           {/* body */}
           <div style={{ flex: 1, display: "flex", minHeight: 0 }}>
-            {!showPlanningTab && (
+            {!showPlanningTab && isCoach && (
             <PaletteSidebar
               open={state.panels}
               onToggle={(k) => dispatch({ type: "togglePanel", key: k })}

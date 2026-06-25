@@ -32,6 +32,14 @@ type StdTabProps = {
   onGoToWeek: () => void;
 };
 
+function sgHintForPalette(p: PaletteItem): string {
+  const omr = (p.omr ?? p.cat).toUpperCase();
+  if (/PUT|PUTT/i.test(omr)) return "PUT · 2× / uke";
+  if (/ARG|NÆR|CHIP|WEDGE/i.test(omr)) return "ARG · 2× / uke";
+  if (/TEE|DRIVER/i.test(omr)) return "OTT · 1× / uke";
+  return `${p.cat} · planlagt volum`;
+}
+
 export function StdTab({
   palette,
   selectedPaletteId,
@@ -153,8 +161,37 @@ export function StdTab({
                 <span style={{ fontFamily: FONT.mono, fontSize: 9, color: WB.muted3 }}>{durLabel(p.dur)}</span>
               </div>
               <div style={{ fontSize: 14, fontWeight: 600, color: WB.text, lineHeight: 1.3 }}>{p.title}</div>
-              <div style={{ fontFamily: FONT.mono, fontSize: 9, color: WB.muted }}>
-                Drill-program · {p.omr ?? "Generell"}
+              <div>
+                <div
+                  style={{
+                    fontFamily: FONT.mono,
+                    fontSize: 8,
+                    fontWeight: 700,
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    color: WB.muted3,
+                    marginBottom: 6,
+                  }}
+                >
+                  Drill-program
+                </div>
+                <ul style={{ margin: 0, paddingLeft: 16, fontSize: 11, color: WB.muted, lineHeight: 1.5 }}>
+                  <li>{p.title}</li>
+                  <li>
+                    {p.omr ? `Fokus ${p.omr}` : "Standard progresjon"} · {durLabel(p.dur)}
+                  </li>
+                </ul>
+                <div
+                  style={{
+                    marginTop: 8,
+                    fontFamily: FONT.mono,
+                    fontSize: 9,
+                    color: WB.lime,
+                    letterSpacing: "0.04em",
+                  }}
+                >
+                  SG: {sgHintForPalette(p)} — data kobles når formel er låst
+                </div>
               </div>
               <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
                 <button
