@@ -1,7 +1,8 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
-import { mapSeasonPhases, mapTournaments } from "@/components/workbench-hybrid/map-data";
+import { mapSeasonPhases, mapTournaments, mapWeek } from "@/components/workbench-hybrid/map-data";
+import type { WeekDay } from "@/lib/workbench/week-types";
 
 const baseData = (): WorkbenchData => ({
   summary: { weekNumber: 26, sessionCount: 0, plannedHours: 0 },
@@ -32,6 +33,30 @@ describe("mapTournaments", () => {
     assert.match(rows![0].date!, /^\d{2}\.\d{2}\.2026$/);
     assert.equal(rows![0].type, "PRESTASJON");
     assert.equal(rows![0].days, 54);
+  });
+});
+
+describe("mapWeek", () => {
+  it("returns null without weekDays", () => {
+    assert.equal(mapWeek(baseData()), null);
+  });
+
+  it("maps weekDays events into week state keys", () => {
+    const days: WeekDay[] = Array.from({ length: 5 }, (_, i) => ({
+      dow: ["MAN", "TIR", "ONS", "TOR", "FRE"][i],
+      date: String(23 + i),
+      today: i === 3,
+      sub: "",
+      events:
+        i === 2
+          ? [{ id: "sess-1", h: 10, m: 0, durMin: 60, ax: "tek" as const, eb: "TEK", ttl: "Teknisk", meta: [] }]
+          : [],
+    }));
+    const week = mapWeek({ ...baseData(), weekDays: days });
+    assert.ok(week);
+    assert.equal(week!.ons.length, 1);
+    assert.equal(week!.ons[0].id, "sess-1");
+    assert.equal(week!.man.length, 0);
   });
 });
 

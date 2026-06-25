@@ -145,8 +145,14 @@ const consentInit = () => {
 
   // Uke — publiser via UI (mobil-layout — desktop-topbar er display:none på 430px)
   await page.goto(`${BASE}/portal/planlegge/workbench?tab=uke`, { waitUntil: "domcontentloaded" });
-  await page.waitForTimeout(1500);
   const mobileRoot = page.locator(".wb-mobile");
+  try {
+    await mobileRoot.locator('[data-testid="wb-week-ready"]').waitFor({ state: "visible", timeout: 15000 });
+    await log("WB_WEEK_READY visible=true PASS");
+  } catch (e) {
+    await log(`WB_WEEK_READY visible=false FAIL (${e.message})`);
+  }
+  await page.waitForTimeout(500);
   const publishBtn = mobileRoot.getByLabel("Publiser plan");
   const publishVisible = await publishBtn.isVisible().catch(() => false);
   await log(`PUBLISH_UI visible=${publishVisible} ${publishVisible ? "PASS" : "FAIL"}`);

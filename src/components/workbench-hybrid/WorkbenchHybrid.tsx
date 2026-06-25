@@ -18,14 +18,13 @@ import type {
   WorkbenchRole,
   ZoomLevel,
 } from "./types";
+import { buildWorkbenchSeed } from "./build-seed";
 import {
   mapGoals,
   mapGroupInsightLine,
-  mapPalette,
   mapSeasonPhases,
   mapTournaments,
   mapWarningBanner,
-  mapWeek,
   mapWeekHead,
 } from "./map-data";
 import { publishWorkbenchPlan } from "@/lib/workbench/publish-actions";
@@ -95,8 +94,6 @@ function parseTime(t: string | undefined): { hour: number; minute: number } {
 }
 
 /** Tom uke når spilleren ennå ikke har planlagte økter (ingen oppdiktede økter). */
-const EMPTY_WEEK: WeekState = { man: [], tir: [], ons: [], tor: [], fre: [], lor: [], son: [] };
-
 /** Tom uke-header når data mangler — ingen oppdiktet uke-nr/datointervall. */
 const EMPTY_WEEK_HEAD = { weekLabel: "Denne uka", range: "" };
 
@@ -157,6 +154,9 @@ type State = {
   /** valgt KPI for detalj-modalen */
   kpiKey: KpiKey | null;
   nextId: number;
+  planStatusDisplay: PlanStatus | null;
+  publishPending: boolean;
+  publishPriorStatus: PlanStatus | null;
 };
 
 type Action =
@@ -186,7 +186,9 @@ type Action =
   | { type: "pickBankItem"; title: string; meta: string }
   | { type: "openKpi"; key: KpiKey }
   | { type: "reconcileId"; oldId: string; newId: string }
-  | { type: "syncWeek"; week: WeekState }
+  | { type: "publishStart" }
+  | { type: "publishDone"; status?: PlanStatus }
+  | { type: "publishFail" }
   | { type: "closeModal" };
 
 function cloneWeek(w: WeekState): WeekState {
@@ -378,8 +380,27 @@ function reducer(state: State, action: Action): State {
       return { ...state, modal: "kpi", kpiKey: action.key };
     case "closeModal":
       return { ...state, modal: null, recurDraft: null, kpiKey: null };
-    case "syncWeek":
-      return { ...state, week: cloneWeek(action.week) };
+    case "publishStart":
+      return {
+        ...state,
+        publishPriorStatus: state.planStatusDisplay,
+        planStatusDisplay: "PENDING_PLAYER",
+        publishPending: true,
+      };
+    case "publishDone":
+      return {
+        ...state,
+        planStatusDisplay: action.status ?? "PENDING_PLAYER",
+        publishPending: false,
+        publishPriorStatus: null,
+      };
+    case "publishFail":
+      return {
+        ...state,
+        planStatusDisplay: state.publishPriorStatus,
+        publishPending: false,
+        publishPriorStatus: null,
+      };
     case "reconcileId": {
       // Bytt en syntetisk id ut med DB-id-en etter at en ny økt er lagret,
       // så senere flytting/sletting av samme økt også persisterer.
@@ -412,6 +433,35 @@ function totalsOf(week: WeekState): { totals: Record<Cat, number>; grand: number
     }),
   );
   return { totals, grand };
+}
+
+type WorkbenchInitArg = {
+  data?: WorkbenchData;
+  planStatus?: PlanStatus | null;
+};
+
+function initWorkbenchState(arg: WorkbenchInitArg): State {
+  const seed = buildWorkbenchSeed(arg);
+  return {
+    level: "uke",
+    week: seed.week,
+    palette: seed.palette,
+    selectedId: null,
+    selectedPaletteId: null,
+    editScope: "session",
+    hoverDay: null,
+    panels: { palette: true, goals: false, tests: false, tech: false },
+    dimPicker: null,
+    selectedMonth: new Date().getMonth(),
+    modal: null,
+    planMode: "BANE",
+    recurDraft: null,
+    kpiKey: null,
+    nextId: 100,
+    planStatusDisplay: seed.planStatusDisplay,
+    publishPending: false,
+    publishPriorStatus: null,
+  };
 }
 
 export type WorkbenchHybridProps = {
@@ -453,10 +503,6 @@ export function WorkbenchHybrid({
   const isCoach = role === "coach";
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [publishPending, setPublishPending] = useState(false);
-  const [statusOverride, setStatusOverride] = useState<PlanStatus | null>(null);
-  const displayPlanStatus = statusOverride ?? planStatus ?? null;
-
   const hubTab = useMemo((): WorkbenchHubTab => {
     const raw = searchParams.get("tab");
     const valid: WorkbenchHubTab[] = ["tek", "seson", "maler", "std", "gantt", "uke", "okt"];
@@ -473,41 +519,16 @@ export function WorkbenchHybrid({
   const [mobilePaletteOpen, setMobilePaletteOpen] = useState(false);
   const [mobileTargetDay, setMobileTargetDay] = useState<WeekKey>("ons");
 
-  // Ekte data der den finnes; ellers tomme/ærlige tomtilstander (ingen oppdiktede tall).
-  const realWeek = useMemo(() => mapWeek(data), [data]);
   const goals: WbGoal[] = useMemo(() => mapGoals(data) ?? [], [data]);
   const weekHead = useMemo(() => mapWeekHead(data) ?? EMPTY_WEEK_HEAD, [data]);
   const banner = useMemo(() => mapWarningBanner(data), [data]);
   const tournaments = useMemo(() => mapTournaments(data) ?? [], [data]);
   const seasonPhases: SeasonPhase[] = useMemo(() => mapSeasonPhases(data) ?? [], [data]);
   const planTemplates = useMemo(() => data?.planTemplates ?? [], [data]);
-  const serverPalette = useMemo(() => mapPalette(data), [data]);
   const groupInsight = useMemo(() => mapGroupInsightLine(data), [data]);
   const combinedInsights = groupInsight ?? insightsLine ?? null;
 
-  const [state, dispatch] = useReducer(reducer, undefined, (): State => ({
-    level: "uke",
-    week: realWeek ?? EMPTY_WEEK,
-    palette: serverPalette,
-    selectedId: null,
-    selectedPaletteId: null,
-    editScope: "session",
-    hoverDay: null,
-    panels: { palette: true, goals: false, tests: false, tech: false },
-    dimPicker: null,
-    // Naviger til inneværende måned (lazy-init, kjører kun ved montering — ikke i render).
-    selectedMonth: new Date().getMonth(),
-    modal: null,
-    planMode: "BANE",
-    recurDraft: null,
-    kpiKey: null,
-    nextId: 100,
-  }));
-
-  // Synk server-uke inn i klient-state når ekte data ankommer / etter refresh.
-  useEffect(() => {
-    if (realWeek) dispatch({ type: "syncWeek", week: realWeek });
-  }, [realWeek]);
+  const [state, dispatch] = useReducer(reducer, { data, planStatus }, initWorkbenchState);
 
   // Restaurer zoom-nivå fra localStorage (klient).
   useEffect(() => {
@@ -679,21 +700,19 @@ export function WorkbenchHybrid({
   }, [state.selectedId, isCoach, currentPlayerId]);
 
   const handlePublish = useCallback(() => {
-    if (publishPending) return;
-    const priorStatus = displayPlanStatus;
-    setPublishPending(true);
-    setStatusOverride("PENDING_PLAYER");
+    if (state.publishPending) return;
+    dispatch({ type: "publishStart" });
     void publishWorkbenchPlan(isCoach ? resolvedPlayerId : undefined)
       .then((res) => {
         if (res.ok) {
-          setStatusOverride(res.status ?? "PENDING_PLAYER");
+          dispatch({ type: "publishDone", status: res.status ?? "PENDING_PLAYER" });
           router.refresh();
         } else {
-          setStatusOverride(priorStatus === planStatus ? null : priorStatus);
+          dispatch({ type: "publishFail" });
         }
       })
-      .finally(() => setPublishPending(false));
-  }, [publishPending, isCoach, resolvedPlayerId, router, displayPlanStatus, planStatus]);
+      .catch(() => dispatch({ type: "publishFail" }));
+  }, [state.publishPending, isCoach, resolvedPlayerId, router]);
 
   const handleStartLive = useCallback(() => {
     const id = state.selectedId;
@@ -826,20 +845,22 @@ export function WorkbenchHybrid({
         (weekIsEmpty ? (
           <EmptyPlanState role={role} />
         ) : (
-          <UkeView
-            week={state.week}
-            selectedId={state.editScope === "session" ? state.selectedId : null}
-            hoverDay={state.hoverDay}
-            weekLabel={weekHead.weekLabel}
-            weekRange={weekHead.range}
-            warningTitle={banner?.title ?? null}
-            warningMeta={banner?.meta ?? null}
-            onSessionClick={(id) => dispatch({ type: "selectSession", id })}
-            onSessionDragStart={onSessionDragStart}
-            onDayDragOver={(day) => dispatch({ type: "setHoverDay", day })}
-            onDayDragLeave={(day) => state.hoverDay === day && dispatch({ type: "setHoverDay", day: null })}
-            onDayDrop={onDayDrop}
-          />
+          <div data-testid="wb-week-ready">
+            <UkeView
+              week={state.week}
+              selectedId={state.editScope === "session" ? state.selectedId : null}
+              hoverDay={state.hoverDay}
+              weekLabel={weekHead.weekLabel}
+              weekRange={weekHead.range}
+              warningTitle={banner?.title ?? null}
+              warningMeta={banner?.meta ?? null}
+              onSessionClick={(id) => dispatch({ type: "selectSession", id })}
+              onSessionDragStart={onSessionDragStart}
+              onDayDragOver={(day) => dispatch({ type: "setHoverDay", day })}
+              onDayDragLeave={(day) => state.hoverDay === day && dispatch({ type: "setHoverDay", day: null })}
+              onDayDrop={onDayDrop}
+            />
+          </div>
         ))}
       {effectiveLevel === "dag" && hubTab === "okt" && selectedSession && dayKeyOf(state.week, selectedSession.id) && (
         <OktDetailTab
@@ -928,8 +949,8 @@ export function WorkbenchHybrid({
     </>
   ) : null;
 
-  // Mobil-inspektør vises kun når noe er valgt OG vi er på mobil.
-  const mobileInspectorOpen = isMobile && inspectorMode !== null;
+  // Mobil-inspektør — ikke på hub-fanen Økt (inline OktDetailTab, gate-unntak 2026-06-25).
+  const mobileInspectorOpen = isMobile && inspectorMode !== null && hubTab !== "okt";
 
   return (
     <div style={wrapperStyle} className={isCoach ? "wb-root" : "wb-root wb-player"}>
@@ -994,9 +1015,9 @@ export function WorkbenchHybrid({
             onOpenCoachSkill={isCoach ? () => setCoachSkillOpen(true) : undefined}
             onOpenAiPlan={isCoach && currentPlayerId ? () => setAiPlanOpen(true) : undefined}
             onOpenAiPeriodiser={!isCoach ? () => setAiPlanOpen(true) : undefined}
-            planStatus={displayPlanStatus}
+            planStatus={state.planStatusDisplay}
             onPublish={planId ? handlePublish : undefined}
-            publishPending={publishPending}
+            publishPending={state.publishPending}
           />
           <HubTabRail tab={hubTab} onTab={setHubTabWithUrl} />
 
@@ -1073,9 +1094,9 @@ export function WorkbenchHybrid({
           onOpenCoachSkill={isCoach ? () => setCoachSkillOpen(true) : undefined}
           onOpenAiPlan={isCoach && currentPlayerId ? () => setAiPlanOpen(true) : undefined}
           onOpenAiPeriodiser={!isCoach ? () => setAiPlanOpen(true) : undefined}
-          planStatus={displayPlanStatus}
+          planStatus={state.planStatusDisplay}
           onPublish={planId ? handlePublish : undefined}
-          publishPending={publishPending}
+          publishPending={state.publishPending}
         />
         <HubTabRail tab={hubTab} onTab={setHubTabWithUrl} />
         {!showPlanningTab && (

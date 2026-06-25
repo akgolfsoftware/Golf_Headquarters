@@ -24,6 +24,11 @@
 import { prisma } from "@/lib/prisma";
 import type { PyramidArea } from "@/generated/prisma/client";
 import { PYR_REKKEFOLGE } from "@/lib/pyramide";
+import {
+  mergeWeekSessions,
+  type V2WeekSessionInput,
+  type WeekSessionRow,
+} from "@/lib/workbench/merge-week-sessions";
 import type {
   Axis,
   WeekDay,
@@ -182,16 +187,6 @@ const SESSION_SELECT = {
   environment: true,
   _count: { select: { drills: true } },
 } as const;
-
-type WeekSessionRow = {
-  id: string;
-  scheduledAt: Date;
-  durationMin: number;
-  title: string;
-  pyramidArea: PyramidArea;
-  environment: "RANGE" | "BANE" | "STUDIO" | "HJEM" | "SIMULATOR" | "GYM" | null;
-  _count: { drills: number };
-};
 
 /**
  * Kjernen: gitt en bruker-id, bygg `WorkbenchData` fra ekte Prisma-data.
@@ -387,44 +382,9 @@ export async function loadWorkbenchData(userId: string): Promise<WorkbenchData |
     };
   }
 
-  const sessions = weekSessions as WeekSessionRow[];
-  const linkedPlanIds = new Set(
-    v2WeekSessions.map((v) => v.generertFraId).filter((id): id is string => Boolean(id)),
-  );
-
-  /** V2-økter uten plan-kobling merges inn i ukevisningen. */
-  const v2OrphanEvents: WeekSessionRow[] = v2WeekSessions
-    .filter((v) => !v.generertFraId || !linkedPlanIds.has(v.generertFraId))
-    .map((v) => {
-      const durMin = Math.max(
-        5,
-        Math.round((v.endTime.getTime() - v.startTime.getTime()) / 60_000),
-      );
-      const topDrill = v.drills[0]?.pyramide;
-      const pyramidArea = (
-        topDrill && ["FYS", "TEK", "SLAG", "SPILL", "TURN"].includes(topDrill)
-          ? topDrill
-          : v.practiceType === "KONKURRANSE"
-            ? "TURN"
-            : v.practiceType === "SPILL_TEST"
-              ? "SPILL"
-              : v.practiceType === "RANDOM"
-                ? "SLAG"
-                : "TEK"
-      ) as WeekSessionRow["pyramidArea"];
-      return {
-        id: v.id,
-        scheduledAt: v.startTime,
-        durationMin: durMin,
-        title: v.title,
-        pyramidArea,
-        environment: null,
-        _count: { drills: v.drills.length },
-      };
-    });
-
-  const mergedSessions = [...sessions, ...v2OrphanEvents].sort(
-    (a, b) => a.scheduledAt.getTime() - b.scheduledAt.getTime(),
+  const mergedSessions = mergeWeekSessions(
+    weekSessions as WeekSessionRow[],
+    v2WeekSessions as V2WeekSessionInput[],
   );
 
   const todayDow = (now.getDay() + 6) % 7;
