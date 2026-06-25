@@ -17,19 +17,70 @@ Elevasjon (varm, lav): hvile = kun hårlinje · kort = 0 1px 2px rgba(10,31,23,.
 Spacing: 8pt-grid (8/16/24/32/48/64), data-tett 12/14. Radius: 8/14/20/28/full (knapper helt runde). Hårfine 1px-linjer organiserer rader/celler — ikke bokser overalt.
 Regler: lime kun som signal (ALDRI lime tekst på lys bakgrunn — mørk tekst på lime). Tallet er helten. Tett men organisert. Kun Lucide-ikoner (1,5px). Ingen emoji. Tema: PlayerHQ lyst · AgencyOS mørk «terminal» + lys-toggle · Forelder/Marketing lyst.
 
-KOMPONENTER (bygg hver som gjenbrukbar, lyst + mørkt):
-1. Button — varianter lime / forest / ghost. Rounded-full pill, JetBrains Mono 12px bold uppercase. Min 44px høyde på mobil.
-2. Badge — ok / warn / urgent / lime / primary / neutral. Liten pill, mono uppercase.
-3. Eyebrow — mono 10–11px uppercase, muted, tracking 0.1em.
-4. KpiCard — eyebrow + stort mono display-tall + signert delta (▲▼ + farge). Hårlinje-skille mellom kort.
-5. SgBar — kategorinavn + lime fyll-bar + mono verdi (strokes-gained per område).
-6. PyramidProgress — fem-akse pyramide med akse-fargene over.
-7. StatTable — tett tabell, hårfine rad-skiller, mono tabular-tall, avatar-celle. Rad ≥md → kort <md.
-8. StatusPill — status med farget prikk (lime = aktiv/nå, urgent = haster).
-9. Avatar — initialer eller foto, sirkel, tone regelstyrt (lime = aktiv i dag).
-10. EmptyState + Skeleton — tom-tilstand med «neste handling»; skeleton-puls som matcher innholdets form (aldri spinner).
+KOMPONENTER (bygg ALLE som gjenbrukbare, lyst + mørkt — dette skal være 100 % komplett):
 
-Disse komponentene skal se IDENTISKE ut på tvers av alle skjermer — det er det som gir konsistens. Bruk forest som primærhandling, lime kun som signal, mono på alle tall.
+A · Grunnelementer
+- Button (lime / forest / ghost, rounded-full pill, mono 12px bold uppercase, ≥44px på mobil)
+- Badge (ok / warn / urgent / lime / primary / neutral)
+- StatusPill (status + farget prikk: lime = aktiv/nå, urgent = haster)
+- Eyebrow (mono uppercase, muted, tracking 0.1em)
+- Avatar (initialer/foto, sirkel, tone regelstyrt: lime = aktiv i dag)
+- Chip / FilterPill (filtrering med valgt-tilstand)
+- Toggle (av/på) · SegmentedControl (2–4 valg, f.eks. liste/kanban/kalender)
+- PulseDot (live-indikator) · SearchField (med ⌘K-hint)
+
+B · Kort & blokker
+- KpiCard (eyebrow + stort mono-tall + signert delta ▲▼, hårlinje-skille)
+- Hero / PhotoHero (greeting Inter Tight italic + KPI-stripe + tier-pill)
+- FeaturedCard · InsightCard
+- DiagnoseCard (nivå + 2–3 gap-punkter rangert etter slag-gevinst)
+- CoachInsightCard (avatar + ukes-fokus + CTA-rad)
+- EmptyState (med «neste handling») + Skeleton (puls, matcher innholdsform — aldri spinner)
+
+C · Data-viz (ALLE mulige visninger av stats/data)
+- SgBar (strokes-gained per område, lime fyll + mono verdi)
+- PyramidProgress (5-akse: Fysisk/Teknisk/Golfslag/Spill/Turnering med akse-fargene)
+- KpiRing / MasteryRing (sirkulær progress, mono senter-tall)
+- TrendChart / Sparkline (HCP- og SG-utvikling, hårfine gridlinjer)
+- BarChart · AreaChart
+- RadarChart (talent-radar, flere akser)
+- BenchmarkBar (persentil vs pro / Tour-snitt)
+- Heatmap (intensitet over tid/kategori)
+- Distribution / Histogram (spredning)
+- StreakTracker (dager på rad)
+- StatStrip / Ticker (tett rad med mono-nøkkeltall + delta)
+
+D · Tabeller & tavler
+- StatTable (tett, hårfine rad-skiller, mono tabular, avatar-celle; rad ≥md → kort <md)
+- KanbanBoard (kolonner TODO/DOING/BLOKKERT/DONE, kort med status)
+- ListView (rad-liste med høyre-justert metrikk)
+
+E · Kalendere (ALLE visninger)
+- DayView (dag-planlegger, time-rader)
+- WeekView (uke-rutenett)
+- MonthGrid (måned)
+- YearGantt (årsplan, perioder over måneder)
+- HeatmapCalendar (aktivitet per dag)
+- StreakCalendar (siste N dager, fylt/tom)
+- SessionScheduler (book/tildel økt i tid)
+
+F · Tidslinjer
+- DayTimeline (dagens økter, tids-prikker)
+- SessionTimeline (økt-struktur: oppvarming → hovedfase → avslutning)
+- EventTimeline (kommende hendelser med prikker)
+- ItineraryRow (tid + tittel + meta + varighet)
+
+G · Navigasjon
+- Sidebar (gruppert, desktop) + BottomNav (mobil, 5 seksjoner)
+- SubNav / Tabs (fane-rad) · CockpitTabBar (AgencyOS dashboard-faner)
+- CommandPalette (⌘K, søk + hurtighandlinger)
+
+H · Kommunikasjon & kø
+- MessageThread (chat-bobler, meg vs coach)
+- QueueItem («hvem trenger meg nå»: avatar + grunn + status + delta)
+- ActionList / NotificationRow (varsler med ikon + status)
+
+Hver komponent bygges i lyst OG mørkt tema og skal se IDENTISK ut på tvers av alle skjermer — det er det som gir konsistens. Forest = primærhandling, lime kun som signal, mono på alle tall, hårfine linjer organiserer.
 ```
 
 ---
