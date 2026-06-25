@@ -210,12 +210,25 @@ export function MalerTab({ templates, isCoach, onUseTemplate }: MalerTabProps): 
                     fontFamily: FONT.mono,
                     fontSize: 9,
                     fontWeight: 700,
-                    color: WB.muted3,
+                    color:
+                      t.effectivenessAvg == null
+                        ? WB.muted3
+                        : t.effectivenessAvg >= 0
+                          ? WB.lime
+                          : WB.err,
                     flexShrink: 0,
                   }}
-                  title="Effektivitet kobles når PlanEffectiveness er på plass"
+                  title={
+                    t.effectivenessAvg == null
+                      ? "Snitt SG-effekt vises når fullførte planer har brukt malen"
+                      : "Snitt SG-Total-delta fra fullførte planer med denne malen"
+                  }
                 >
-                  —
+                  {t.effectivenessAvg == null
+                    ? "—"
+                    : `${t.effectivenessAvg >= 0 ? "+" : ""}${t.effectivenessAvg
+                        .toFixed(1)
+                        .replace(".", ",")} SG`}
                 </span>
               </div>
               <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
