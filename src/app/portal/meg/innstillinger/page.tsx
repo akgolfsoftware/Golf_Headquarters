@@ -96,7 +96,14 @@ export default async function InnstillingerPage() {
         <SetRow
           icon={Globe}
           title="Språk"
-          right={<SetVal>{prefs.spraak === "en" ? "English" : "Norsk"}</SetVal>}
+          right={
+            <Link
+              href="/portal/meg/innstillinger/sprak"
+              className={buttonClasses({ variant: "secondary", size: "sm" })}
+            >
+              {prefs.spraak === "en" ? "English" : "Norsk"}
+            </Link>
+          }
         />
         <SetRow
           icon={Moon}
