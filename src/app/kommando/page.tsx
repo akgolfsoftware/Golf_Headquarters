@@ -15,13 +15,29 @@ export default async function KommandoDashboard() {
   const user = await canAccessMissionControl();
   if (!user) return null; // layoutet redirecter; dette gir type-narrowing
 
-  const [openCount, aiRuns, recentTasks] = await Promise.all([
+  const now = new Date();
+  const startIdag = new Date(now);
+  startIdag.setHours(0, 0, 0, 0);
+  const startImorgen = new Date(startIdag);
+  startImorgen.setDate(startIdag.getDate() + 1);
+
+  const [openCount, aiRuns, recentTasks, projectsCount, todayBookings, todayTasks] = await Promise.all([
     prisma.kommandoTask.count({ where: { userId: user.id, status: "open" } }),
     prisma.kommandoMessage.count({ where: { userId: user.id, role: "assistant" } }),
     prisma.kommandoTask.findMany({
       where: { userId: user.id, status: "open" },
       orderBy: { createdAt: "desc" },
       take: 4,
+    }),
+    prisma.kommandoProject.count({ where: { userId: user.id, status: "active" } }),
+    prisma.booking.findMany({
+      where: { startAt: { gte: startIdag, lt: startImorgen }, status: { in: ["CONFIRMED", "PENDING"] } },
+      orderBy: { startAt: "asc" },
+      include: { user: { select: { name: true } }, serviceType: { select: { name: true } } },
+    }),
+    prisma.kommandoTask.findMany({
+      where: { userId: user.id, status: "open", dueAt: { gte: startIdag, lt: startImorgen } },
+      orderBy: { dueAt: "asc" },
     }),
   ]);
 
@@ -31,7 +47,7 @@ export default async function KommandoDashboard() {
         <KpiCard label="Modeller" value={KOMMANDO_MODELS.length} />
         <KpiCard label="Åpne oppgaver" value={openCount} />
         <KpiCard label="AI-kjøringer" value={aiRuns} />
-        <KpiCard label="Prosjekter" value="—" />
+        <KpiCard label="Prosjekter" value={projectsCount} />
       </KpiStrip>
 
       <div className="grid gap-4 lg:grid-cols-2">
@@ -70,12 +86,44 @@ export default async function KommandoDashboard() {
           </ul>
         </section>
 
-        {/* I dag — kalender kommer i E2 */}
+        {/* I dag — ekte bookinger + oppgavefrister */}
         <section className="rounded-xl border border-border bg-card p-4">
-          <h2 className="mb-3 font-display text-[13px] font-semibold text-foreground">I dag</h2>
-          <p className="py-6 text-center text-xs text-muted-foreground">
-            Kalenderen kobles på i Etappe 2.
-          </p>
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="font-display text-[13px] font-semibold text-foreground">I dag</h2>
+            <Link
+              href="/kommando/kalender"
+              className="flex items-center gap-1 font-mono text-[11px] text-muted-foreground hover:text-foreground"
+            >
+              Kalender <ArrowRight className="h-3.5 w-3.5" strokeWidth={1.5} />
+            </Link>
+          </div>
+          {todayBookings.length === 0 && todayTasks.length === 0 ? (
+            <p className="py-6 text-center text-xs text-muted-foreground">
+              Ingen avtaler eller frister i dag.
+            </p>
+          ) : (
+            <ul className="space-y-2.5">
+              {todayBookings.map((b) => {
+                const navn = b.user?.name ?? b.guestName ?? "Gjest";
+                const tid = b.startAt.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" });
+                return (
+                  <li key={b.id} className="flex items-center gap-3 text-sm">
+                    <span className="w-10 flex-none font-mono text-[11px] text-accent">{tid}</span>
+                    <span className="flex-1 truncate text-foreground">
+                      {b.serviceType.name} — {navn}
+                    </span>
+                  </li>
+                );
+              })}
+              {todayTasks.map((t) => (
+                <li key={t.id} className="flex items-center gap-3 text-sm">
+                  <span className="w-10 flex-none font-mono text-[10px] text-muted-foreground">FRIST</span>
+                  <span className="flex-1 truncate text-foreground">{t.title}</span>
+                  {t.priority === "haster" && <AthleticBadge variant="warn">Haster</AthleticBadge>}
+                </li>
+              ))}
+            </ul>
+          )}
         </section>
 
         {/* Oppgaver */}

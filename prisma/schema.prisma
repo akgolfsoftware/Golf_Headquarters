@@ -4163,3 +4163,18 @@ model KommandoMessage {
   @@index([userId, conversationId, createdAt])
   @@map("kommando_messages")
 }
+
+// Etappe 2 — Prosjekter. KommandoTask.projectId peker hit (plain string-kobling).
+model KommandoProject {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  color     String? // valgfri hex/token-nøkkel for fargemerking
+  // "active" | "archived"
+  status    String   @default("active")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, status, createdAt])
+  @@map("kommando_projects")
+}

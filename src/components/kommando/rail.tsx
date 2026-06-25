@@ -20,8 +20,8 @@ const ITEMS: RailItem[] = [
   { href: "/kommando", label: "Dashboard", icon: LayoutDashboard },
   { href: "/kommando/agenter", label: "Agenter", icon: Bot },
   { href: "/kommando/oppgaver", label: "Oppgaver", icon: ListChecks },
-  { href: null, label: "Kalender", icon: Calendar },
-  { href: null, label: "Prosjekter", icon: Folder },
+  { href: "/kommando/kalender", label: "Kalender", icon: Calendar },
+  { href: "/kommando/prosjekter", label: "Prosjekter", icon: Folder },
   { href: null, label: "Team", icon: Users },
 ];
 

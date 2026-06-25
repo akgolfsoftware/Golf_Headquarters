@@ -7,22 +7,42 @@ import { revalidatePath } from "next/cache";
 import { canAccessMissionControl } from "@/lib/auth/canAccessMissionControl";
 import { prisma } from "@/lib/prisma";
 
-export async function createKommandoTask(input: { title: string; priority: "normal" | "haster" }) {
+export async function createKommandoTask(input: {
+  title: string;
+  priority: "normal" | "haster";
+  projectId?: string | null;
+  dueAt?: string | null;
+}) {
   const user = await canAccessMissionControl();
   if (!user) throw new Error("Ikke autorisert");
 
   const title = input.title.trim();
   if (!title) return;
 
+  // Bekreft at et ev. valgt prosjekt faktisk tilhører brukeren.
+  let projectId: string | null = null;
+  if (input.projectId) {
+    const owned = await prisma.kommandoProject.findFirst({
+      where: { id: input.projectId, userId: user.id },
+      select: { id: true },
+    });
+    projectId = owned?.id ?? null;
+  }
+
+  const dueAt = input.dueAt ? new Date(input.dueAt) : null;
+
   await prisma.kommandoTask.create({
     data: {
       userId: user.id,
       title,
       priority: input.priority === "haster" ? "haster" : "normal",
+      projectId,
+      dueAt: dueAt && !Number.isNaN(dueAt.getTime()) ? dueAt : null,
     },
   });
   revalidatePath("/kommando/oppgaver");
   revalidatePath("/kommando");
+  revalidatePath("/kommando/kalender");
 }
 
 export async function toggleKommandoTask(id: string) {
