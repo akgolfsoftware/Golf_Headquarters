@@ -83,6 +83,15 @@ Dokumenteres her så diff-agenten måler mot riktig fasit:
   CDN-font-kolonne) og strekker alle grid-kortene +13css; appens font holder samme tekst på 1 linje.
   Wrap-følsom høyde = konsekvens av font-unntaket over, ikke design-avvik. (Målt runde 6, 2026-06-10.)
 
+### Workbench lanserings-hub (2026-06-25)
+
+- **7 hub-faner erstatter fasitens enkle zoom-only topbar:** Teknisk plan · Sesongmål · Maler · Standardøkter · Gantt (År) · Uke · Økt i `HubTabRail` — diff skal ikke kreve tilbake til 5-pills-only uten hub-rail.
+- **Mobil zoom-rail (Årsplan/År/Måned/Uke/Dag)** vises under hub-railen på planleggings-zoom — tilleggs-IA for touch, ikke i fasit-PNG.
+- **KPI-strip + innsiktsstripe** på Gantt/Uke/Økt-zoom er bevisst (data-tetthet); fasit-PNG for enkelte faner mangler dem — ikke avvik.
+- **Tom tilstand når valgfri data mangler** (ingen teknisk plan, sesongmål, Gantt-faser): ærlig empty state er OK — gate må også screenshotte seedet scenario (`scripts/seed-screentest.ts`) for paritet.
+- **Hub-fane «Økt»** viser inline `OktDetailTab` (ikke fullskjerm overlay) — samme innhold som fasit wb-10, annen chrome.
+- **Maler/Std:** filterchips + kortgrid fra lansering 25. juni; konkrete malnavn = seed-data.
+
 ### AgencyOS mobil (Fase 4, net-new — 2026-06-11)
 
 - **Gate-form:** ingen fasit → brand-vokter-review (tokens/typografi/lucide/8pt/lime-disiplin/44px) i stedet for pikseldiff.

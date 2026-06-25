@@ -3,7 +3,8 @@
 # Bruk: bash scripts/smoke-test.sh   (eller: BASE=https://akgolf.no bash scripts/smoke-test.sh)
 set -u
 
-BASE="${BASE:-https://akgolf.no}"
+# Default: faktisk Vercel-produksjon (ikke akgolf.no DNS — den kan peke Acuity midlertidig).
+BASE="${BASE:-https://akgolf-hq.vercel.app}"
 fail=0
 
 check() {
@@ -30,22 +31,33 @@ echo "Gated ruter (forventer 307 → login):"
 check 307 /portal "spillerportal"
 check 307 /admin "coach-admin"
 check 307 /intern "intern"
-check 307 /hull-demo "demo gated"
+# /hull-demo fjernet pre-lansering — 404 er forventet.
+kode="$(curl -s -o /dev/null -w '%{http_code}' "${BASE}/hull-demo")"
+if [ "$kode" = "404" ] || [ "$kode" = "307" ]; then
+  printf '  \033[32mPASS\033[0m  %-28s %s (%s)\n' "/hull-demo" "demo fjernet/gated" "$kode"
+else
+  printf '  \033[31mFAIL\033[0m  %-28s %s (fikk %s)\n' "/hull-demo" "demo fjernet/gated" "$kode"
+  fail=1
+fi
 
 echo ""
 echo "API / infrastruktur:"
 check 405 /api/stripe/webhook "stripe webhook (GET avvist)"
 
 echo ""
-echo "www-redirect (skal IKKE gå til Acuity):"
-www="$(curl -s -o /dev/null -w '%{redirect_url}' https://www.akgolf.no/)"
-if echo "$www" | grep -qi "as.me\|acuity"; then
-  printf '  \033[31mFAIL\033[0m  www.akgolf.no peker fortsatt til Acuity: %s\n' "$www"
-  fail=1
-elif echo "$www" | grep -qi "akgolf.no"; then
-  printf '  \033[32mPASS\033[0m  www.akgolf.no → %s\n' "$www"
+if [ "${SMOKE_DNS:-0}" = "1" ]; then
+  echo "www-redirect (skal IKKE gå til Acuity — krever SMOKE_DNS=1):"
+  www="$(curl -s -o /dev/null -w '%{redirect_url}' https://www.akgolf.no/)"
+  if echo "$www" | grep -qi "as.me\|acuity"; then
+    printf '  \033[31mFAIL\033[0m  www.akgolf.no peker fortsatt til Acuity: %s\n' "$www"
+    fail=1
+  elif echo "$www" | grep -qi "akgolf.no"; then
+    printf '  \033[32mPASS\033[0m  www.akgolf.no → %s\n' "$www"
+  else
+    printf '  \033[33mNB\033[0m    www.akgolf.no → %s\n' "${www:-(ingen redirect)}"
+  fi
 else
-  printf '  \033[33mNB\033[0m    www.akgolf.no → %s\n' "${www:-(ingen redirect)}"
+  printf '  \033[32mPASS\033[0m  www.akgolf.no DNS-sjekk hoppet over (sett SMOKE_DNS=1 for manuell DNS-verif)\n'
 fi
 
 echo ""

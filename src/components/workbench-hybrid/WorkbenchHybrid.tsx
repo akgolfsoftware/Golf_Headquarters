@@ -45,6 +45,7 @@ import { DimPickerModal } from "./DimPickerModal";
 import { KpiStrip, type KpiKey } from "./KpiStrip";
 import { KpiDetailModal } from "./KpiDetailModal";
 import { OktplanOverlay, type PlanMode } from "./OktplanOverlay";
+import { OktDetailTab } from "./OktDetailTab";
 import { RecurrenceEditor } from "./RecurrenceEditor";
 import { OvelsesbankModal } from "./OvelsesbankModal";
 import { MobileTopbar, MobileZoomRail } from "./MobileTopbar";
@@ -208,6 +209,13 @@ function dayKeyOf(w: WeekState, id: string | null): WeekKey | null {
   if (!id) return null;
   for (const k of Object.keys(w) as WeekKey[]) {
     if (w[k].some((s) => s.id === id)) return k;
+  }
+  return null;
+}
+
+function firstSessionInWeek(w: WeekState): { session: WbSession; day: WeekKey } | null {
+  for (const k of Object.keys(w) as WeekKey[]) {
+    if (w[k].length > 0) return { session: w[k][0], day: k };
   }
   return null;
 }
@@ -529,6 +537,14 @@ export function WorkbenchHybrid({
 
   const effectiveLevel = hubTabToZoom(hubTab) ?? state.level;
 
+  // Hub-fanen «Økt» skal vise økt-detalj (fasit wb-10), ikke tom dag-tidslinje.
+  useEffect(() => {
+    if (hubTab !== "okt") return;
+    if (state.selectedId && findInWeek(state.week, state.selectedId)) return;
+    const first = firstSessionInWeek(state.week);
+    if (first) dispatch({ type: "selectSession", id: first.session.id });
+  }, [hubTab, state.week, state.selectedId]);
+
   // Escape lukker det øverste laget: dim-picker → modal → inspektør.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -808,7 +824,17 @@ export function WorkbenchHybrid({
             onDayDrop={onDayDrop}
           />
         ))}
-      {effectiveLevel === "dag" && (
+      {effectiveLevel === "dag" && hubTab === "okt" && selectedSession && dayKeyOf(state.week, selectedSession.id) && (
+        <OktDetailTab
+          session={selectedSession}
+          dayKey={dayKeyOf(state.week, selectedSession.id)!}
+          mode={state.planMode}
+          onMode={(mode) => dispatch({ type: "setPlanMode", mode })}
+          onBackToWeek={() => setHubTabWithUrl("uke")}
+          onStart={handleStartLive}
+        />
+      )}
+      {effectiveLevel === "dag" && hubTab !== "okt" && (
         <DagView
           daySessions={state.week.ons}
           selectedId={state.editScope === "session" ? state.selectedId : null}
