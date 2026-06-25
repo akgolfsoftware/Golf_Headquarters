@@ -37,7 +37,7 @@ export default async function LiveTapperPage({
   const erEier = session.plan.userId === user.id;
   const erCoach = user.role === "COACH" || user.role === "ADMIN";
   if (!erEier && !erCoach) {
-    redirect("/portal/tren");
+    redirect("/portal/planlegge/workbench");
   }
 
   return (

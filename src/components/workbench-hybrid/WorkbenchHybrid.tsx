@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState, type ReactElement } from "react";
+import { useRouter } from "next/navigation";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
 import { FONT, WB, type Cat } from "./theme";
 import type { DimField } from "./taxonomy";
@@ -45,6 +46,14 @@ import {
   addWorkbenchSession,
   removeWorkbenchSession,
 } from "@/app/portal/planlegge/workbench/actions";
+import {
+  coachMoveWorkbenchSession,
+  coachAddWorkbenchSession,
+  coachRemoveWorkbenchSession,
+  resolvePlanSessionLiveHref,
+} from "@/lib/workbench/session-actions";
+import { InsightsStripe } from "./InsightsStripe";
+import { EmptyPlanState } from "./EmptyPlanState";
 
 const LS_KEY = "akgolf.wb.level";
 const VALID_LEVELS: ZoomLevel[] = ["arsplan", "ar", "maned", "uke", "dag"];
@@ -386,6 +395,8 @@ export type WorkbenchHybridProps = {
   players?: RosterPlayer[];
   /** Coach-modus: id på spilleren Workbench står på nå. */
   currentPlayerId?: string;
+  /** «Hvorfor denne uken» — fra loadWorkbenchContext. */
+  insightsLine?: string | null;
 };
 
 export function WorkbenchHybrid({
@@ -396,8 +407,10 @@ export function WorkbenchHybrid({
   coachName = "Anders Kristiansen",
   players,
   currentPlayerId,
+  insightsLine,
 }: WorkbenchHybridProps): ReactElement {
   const isCoach = role === "coach";
+  const router = useRouter();
 
   // Coach-Skill-veiviseren (kun coach-modus) — åpen/lukket-tilstand.
   const [coachSkillOpen, setCoachSkillOpen] = useState(false);
@@ -488,29 +501,41 @@ export function WorkbenchHybrid({
   // palette = opprett ny økt og bytt den syntetiske id-en mot DB-id-en.
   const persistDrop = useCallback(
     (drag: DragState, dayKey: WeekKey, time: string | undefined, expectedNewId: string) => {
-      if (isCoach || !drag) return;
+      if (!drag) return;
       const dayIndex = DAY_INDEX[dayKey];
       if (drag.kind === "move") {
-        if (isPersisted(drag.sid)) void moveWorkbenchSession(drag.sid, dayIndex);
+        if (!isPersisted(drag.sid)) return;
+        if (isCoach && currentPlayerId) {
+          void coachMoveWorkbenchSession(currentPlayerId, drag.sid, dayIndex);
+        } else if (!isCoach) {
+          void moveWorkbenchSession(drag.sid, dayIndex);
+        }
         return;
       }
       const item = state.palette.find((p) => p.pid === drag.pid);
       if (!item) return;
       const { hour, minute } = parseTime(time);
-      void addWorkbenchSession({
+      const payload = {
         dayIndex,
         title: item.title,
         durMin: item.dur,
         area: item.cat,
         hour,
         minute,
-      }).then((res) => {
+      };
+      const promise =
+        isCoach && currentPlayerId
+          ? coachAddWorkbenchSession(currentPlayerId, payload)
+          : !isCoach
+            ? addWorkbenchSession(payload)
+            : null;
+      void promise?.then((res) => {
         if (res?.ok && res.sessionId) {
           dispatch({ type: "reconcileId", oldId: expectedNewId, newId: res.sessionId });
         }
       });
     },
-    [isCoach, state.palette],
+    [isCoach, currentPlayerId, state.palette],
   );
 
   const onDayDrop = useCallback(
@@ -538,28 +563,46 @@ export function WorkbenchHybrid({
   const handleAddSession = useCallback(() => {
     const expectedNewId = `s${state.nextId}`;
     dispatch({ type: "addSession" });
-    if (!isCoach) {
-      void addWorkbenchSession({
-        dayIndex: DAY_INDEX.ons,
-        title: "Ny økt",
-        durMin: 60,
-        area: "TEK",
-        hour: 9,
-        minute: 0,
-      }).then((res) => {
-        if (res?.ok && res.sessionId) {
-          dispatch({ type: "reconcileId", oldId: expectedNewId, newId: res.sessionId });
-        }
-      });
-    }
-  }, [state.nextId, isCoach]);
+    const payload = {
+      dayIndex: DAY_INDEX.ons,
+      title: "Ny økt",
+      durMin: 60,
+      area: "TEK" as const,
+      hour: 9,
+      minute: 0,
+    };
+    const promise =
+      isCoach && currentPlayerId
+        ? coachAddWorkbenchSession(currentPlayerId, payload)
+        : !isCoach
+          ? addWorkbenchSession(payload)
+          : null;
+    void promise?.then((res) => {
+      if (res?.ok && res.sessionId) {
+        dispatch({ type: "reconcileId", oldId: expectedNewId, newId: res.sessionId });
+      }
+    });
+  }, [state.nextId, isCoach, currentPlayerId]);
 
   // Slett valgt økt: fjern optimistisk + persister hvis den allerede er lagret.
   const handleRemoveSelected = useCallback(() => {
     const id = state.selectedId;
     dispatch({ type: "removeSelected" });
-    if (!isCoach && id && isPersisted(id)) void removeWorkbenchSession(id);
-  }, [state.selectedId, isCoach]);
+    if (!id || !isPersisted(id)) return;
+    if (isCoach && currentPlayerId) {
+      void coachRemoveWorkbenchSession(currentPlayerId, id);
+    } else if (!isCoach) {
+      void removeWorkbenchSession(id);
+    }
+  }, [state.selectedId, isCoach, currentPlayerId]);
+
+  const handleStartLive = useCallback(() => {
+    const id = state.selectedId;
+    if (!id || !isPersisted(id)) return;
+    void resolvePlanSessionLiveHref(id, isCoach ? currentPlayerId : undefined).then((res) => {
+      if (res.ok && res.href) router.push(res.href);
+    });
+  }, [state.selectedId, isCoach, currentPlayerId, router]);
 
   // Mobil tap-to-add: legg en standardøkt på valgt dag (Dag-visning → "ons").
   const onMobileAddToDay = useCallback(
@@ -617,6 +660,8 @@ export function WorkbenchHybrid({
   const kpiSessionCount =
     data?.summary?.sessionCount ??
     (Object.keys(state.week) as WeekKey[]).reduce((n, k) => n + state.week[k].length, 0);
+
+  const weekIsEmpty = (Object.keys(state.week) as WeekKey[]).every((k) => state.week[k].length === 0);
 
   // Inspektør-modus
   let inspectorMode: InspectorMode | null = null;
@@ -678,22 +723,25 @@ export function WorkbenchHybrid({
   // mobil-layoutet (begge bruker samme view-komponenter og handlere).
   const centerView = (
     <>
-      {state.level === "uke" && (
-        <UkeView
-          week={state.week}
-          selectedId={state.editScope === "session" ? state.selectedId : null}
-          hoverDay={state.hoverDay}
-          weekLabel={weekHead.weekLabel}
-          weekRange={weekHead.range}
-          warningTitle={banner?.title ?? null}
-          warningMeta={banner?.meta ?? null}
-          onSessionClick={(id) => dispatch({ type: "selectSession", id })}
-          onSessionDragStart={onSessionDragStart}
-          onDayDragOver={(day) => dispatch({ type: "setHoverDay", day })}
-          onDayDragLeave={(day) => state.hoverDay === day && dispatch({ type: "setHoverDay", day: null })}
-          onDayDrop={onDayDrop}
-        />
-      )}
+      {state.level === "uke" &&
+        (weekIsEmpty ? (
+          <EmptyPlanState role={role} />
+        ) : (
+          <UkeView
+            week={state.week}
+            selectedId={state.editScope === "session" ? state.selectedId : null}
+            hoverDay={state.hoverDay}
+            weekLabel={weekHead.weekLabel}
+            weekRange={weekHead.range}
+            warningTitle={banner?.title ?? null}
+            warningMeta={banner?.meta ?? null}
+            onSessionClick={(id) => dispatch({ type: "selectSession", id })}
+            onSessionDragStart={onSessionDragStart}
+            onDayDragOver={(day) => dispatch({ type: "setHoverDay", day })}
+            onDayDragLeave={(day) => state.hoverDay === day && dispatch({ type: "setHoverDay", day: null })}
+            onDayDrop={onDayDrop}
+          />
+        ))}
       {state.level === "dag" && (
         <DagView
           daySessions={state.week.ons}
@@ -823,6 +871,7 @@ export function WorkbenchHybrid({
             <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
               {/* KPI-stripe — over alle zoom-visninger. Volum/pyramide fra ekte
                   uke-data; adherence/SG er fasit-demo (ingen modell ennå). */}
+              <InsightsStripe line={insightsLine ?? null} />
               {kpiStrip}
               {centerView}
             </div>
@@ -838,9 +887,7 @@ export function WorkbenchHybrid({
                 onPaletteTitle={(title) => dispatch({ type: "patchPalette", patch: { title } })}
                 onPaletteDur={(delta) => dispatch({ type: "patchPaletteDur", delta })}
                 onRemoveSession={handleRemoveSelected}
-                onStart={() => {
-                  /* Live-økt er en senere fase — no-op for nå. */
-                }}
+                onStart={handleStartLive}
                 onOpenPlan={inspectorMode.kind === "session" ? () => dispatch({ type: "openPlan" }) : undefined}
                 onOpenRecur={inspectorMode.kind === "session" ? () => dispatch({ type: "openRecur" }) : undefined}
                 onOpenBank={inspectorMode.kind === "session" ? () => dispatch({ type: "openBank" }) : undefined}
@@ -874,6 +921,7 @@ export function WorkbenchHybrid({
           onOpenCoachSkill={isCoach ? () => setCoachSkillOpen(true) : undefined}
         />
         <MobileZoomRail level={state.level} onLevel={setLevel} />
+        <InsightsStripe line={insightsLine ?? null} />
         {kpiStrip}
         {/* Én visning om gangen. Uke-rutenettet (8 kolonner) scroller horisontalt
             via en min-bredde; Dag-tidslinja og Årsplan/År/Måned reflow-er til full bredde. */}
@@ -915,9 +963,7 @@ export function WorkbenchHybrid({
           onPaletteTitle={(title) => dispatch({ type: "patchPalette", patch: { title } })}
           onPaletteDur={(delta) => dispatch({ type: "patchPaletteDur", delta })}
           onRemoveSession={() => dispatch({ type: "removeSelected" })}
-          onStart={() => {
-            /* Live-økt er en senere fase — no-op for nå. */
-          }}
+          onStart={handleStartLive}
           onOpenPlan={inspectorMode.kind === "session" ? () => dispatch({ type: "openPlan" }) : undefined}
           onOpenRecur={inspectorMode.kind === "session" ? () => dispatch({ type: "openRecur" }) : undefined}
           onOpenBank={inspectorMode.kind === "session" ? () => dispatch({ type: "openBank" }) : undefined}
@@ -943,8 +989,8 @@ export function WorkbenchHybrid({
           onMode={(mode) => dispatch({ type: "setPlanMode", mode })}
           onClose={() => dispatch({ type: "closeModal" })}
           onStart={() => {
-            /* Live-økt er en senere fase — lukk overlay for nå. */
             dispatch({ type: "closeModal" });
+            handleStartLive();
           }}
         />
       )}

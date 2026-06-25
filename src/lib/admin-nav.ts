@@ -168,7 +168,7 @@ export function buildAdminNav(
           key: "workbench",
           label: "Workbench",
           href: workbenchHref,
-          match: ["/admin/coach-workbench"],
+          match: ["/admin/coach-workbench", "/admin/spillere"],
           icon: LayoutTemplate,
           primary: true,
         },

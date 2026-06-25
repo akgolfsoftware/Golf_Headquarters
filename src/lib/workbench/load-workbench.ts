@@ -197,14 +197,14 @@ export async function loadWorkbenchData(userId: string): Promise<WorkbenchData |
       ? { min: activePeriod.weeklyVolMin, max: activePeriod.weeklyVolMax }
       : undefined;
 
-  // Tom DB for denne brukeren → returner {} så komponentene viser ren v10-demo.
+  // Tom DB → eksplisitt tom tilstand (ingen demo-økter i produksjon).
   if (
     weekSessions.length === 0 &&
     last30Sessions.length === 0 &&
     goals.length === 0 &&
     entries.length === 0
   ) {
-    return {};
+    return { summary: { weekNumber: isoWeek(now), sessionCount: 0, plannedHours: 0 } };
   }
 
   const sessions = weekSessions as WeekSessionRow[];

@@ -1,17 +1,12 @@
 /**
  * /portal/planlegge/workbench — PlayerHQ Workbench (delt planleggings-kjerne).
- *
- * Hybrid-design (fase 1–3, desktop): WorkbenchHybrid — Anders' egen Workbench-
- * fasit portet visuelt. Spiller-versjon. Coach-versjonen ligger i
- * /admin/spillere/[id]/workbench. Ekte data fra loadWorkbenchData
- * (TrainingPlan + TrainingPlanSession + Goal + TournamentEntry).
  */
 
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getViewMode } from "@/lib/view-mode";
 import { WorkbenchHybrid } from "@/components/workbench-hybrid";
-import { loadWorkbenchData } from "@/lib/workbench/load-workbench";
+import { loadWorkbenchContext } from "@/lib/workbench/load-context";
 
 export const dynamic = "force-dynamic";
 
@@ -37,13 +32,14 @@ export default async function WorkbenchPage() {
   if (user.role === "GUEST") redirect("/admin/kalender");
   if (user.role === "PARENT") redirect("/forelder");
 
-  // Ekte data for innlogget spiller. Mangler/tom → fasit-demo i komponenten.
-  const data = (await loadWorkbenchData(user.id)) ?? undefined;
+  const ctx = await loadWorkbenchContext(user.id);
+  const data = ctx?.data;
 
   return (
     <WorkbenchHybrid
       role="player"
       data={data}
+      insightsLine={ctx?.insights.line ?? null}
       playerName={user.name}
       initials={utledInitialer(user.name)}
     />

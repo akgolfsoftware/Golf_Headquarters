@@ -131,7 +131,7 @@ export async function AdminShell({ children }: { children: React.ReactNode }) {
 
   const workbenchHref = players[0]
     ? `/admin/spillere/${players[0].id}/workbench`
-    : "/admin/coach-workbench";
+    : "/admin/spillere";
 
   return (
     <div

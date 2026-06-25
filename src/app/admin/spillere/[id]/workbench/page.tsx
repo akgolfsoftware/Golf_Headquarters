@@ -10,7 +10,7 @@ import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { WorkbenchHybrid, type RosterPlayer } from "@/components/workbench-hybrid";
 import { WorkbenchMobile, type MobileSession } from "@/components/admin/workbench-mobile";
-import { loadWorkbenchData } from "@/lib/workbench/load-workbench";
+import { loadWorkbenchContext } from "@/lib/workbench/load-context";
 
 export const dynamic = "force-dynamic";
 
@@ -33,8 +33,9 @@ export default async function CoachWorkbenchPage({ params }: Props) {
 
   const { id } = await params;
 
-  const data = await loadWorkbenchData(id);
-  if (data === null) notFound();
+  const ctx = await loadWorkbenchContext(id);
+  if (ctx === null) notFound();
+  const data = ctx.data;
 
   const spiller = await prisma.user.findUnique({
     where: { id },
@@ -77,6 +78,7 @@ export default async function CoachWorkbenchPage({ params }: Props) {
         <WorkbenchHybrid
           role="coach"
           data={data}
+          insightsLine={ctx.insights.line}
           currentPlayerId={id}
           playerName={fulltNavn}
           initials={initialer}

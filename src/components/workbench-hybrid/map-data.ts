@@ -1,7 +1,7 @@
 /**
  * Adapter: WorkbenchData (ekte Prisma-data fra loadWorkbenchData) → fasitens
  * interne week-modell + sidebar-lister. Brukes når `data` er gitt; ellers faller
- * komponenten tilbake til demo-data.
+ * komponenten tilbake til tom tilstand.
  *
  * Merk: WorkbenchData modellerer en økt som {h, m, durMin, ax, ttl} (WeekEvent),
  * mens fasiten bruker {id, title, dur, cat, time}. Vi mapper aksen→kategori og

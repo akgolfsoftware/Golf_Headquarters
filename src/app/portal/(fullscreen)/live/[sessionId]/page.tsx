@@ -1,8 +1,8 @@
 /**
- * PlayerHQ · Live-økt V2 — status-router.
+ * PlayerHQ · Live-økt — status-router.
  *
- * /portal/live/[sessionId] rendrer ingen UI selv; den slår opp TrainingSessionV2s
- * status og sender videre til riktig underside (brief/active/summary).
+ * Støtter TrainingSessionV2 (brief/active/summary) og TrainingPlanSession
+ * (økt fra Workbench → /portal/tren/[id] eller tapper).
  */
 
 import { notFound, redirect } from "next/navigation";
@@ -22,7 +22,7 @@ export default async function LiveSessionPage({
     redirect("/portal/meg/abonnement");
   }
 
-  const session = await prisma.trainingSessionV2.findUnique({
+  const v2 = await prisma.trainingSessionV2.findUnique({
     where: { id: sessionId },
     select: {
       status: true,
@@ -32,28 +32,54 @@ export default async function LiveSessionPage({
       participants: { where: { userId: user.id } },
     },
   });
-  if (!session) notFound();
 
-  const isOwner =
-    session.studentId === user.id ||
-    session.coachId === user.id ||
-    session.hostId === user.id;
-  const isParticipant = session.participants.some((p) =>
-    ["ACCEPTED", "ATTENDED"].includes(p.status),
-  );
-  if (!isOwner && !isParticipant && !isCoach) {
-    redirect("/portal/planlegge");
+  if (v2) {
+    const isOwner =
+      v2.studentId === user.id ||
+      v2.coachId === user.id ||
+      v2.hostId === user.id;
+    const isParticipant = v2.participants.some((p) =>
+      ["ACCEPTED", "ATTENDED"].includes(p.status),
+    );
+    if (!isOwner && !isParticipant && !isCoach) {
+      redirect("/portal/planlegge/workbench");
+    }
+
+    switch (v2.status) {
+      case "COMPLETED":
+        redirect(`/portal/live/${sessionId}/summary`);
+      case "IN_PROGRESS":
+        redirect(`/portal/live/${sessionId}/active`);
+      case "CANCELLED":
+      case "SKIPPED":
+        redirect("/portal/planlegge/workbench");
+      default:
+        redirect(`/portal/live/${sessionId}/brief`);
+    }
   }
 
-  switch (session.status) {
+  const planSession = await prisma.trainingPlanSession.findUnique({
+    where: { id: sessionId },
+    select: {
+      status: true,
+      plan: { select: { userId: true } },
+    },
+  });
+
+  if (!planSession) notFound();
+
+  const erEier = planSession.plan.userId === user.id;
+  if (!erEier && !isCoach) {
+    redirect("/portal/planlegge/workbench");
+  }
+
+  switch (planSession.status) {
     case "COMPLETED":
-      redirect(`/portal/live/${sessionId}/summary`);
-    case "IN_PROGRESS":
-      redirect(`/portal/live/${sessionId}/active`);
-    case "CANCELLED":
-    case "SKIPPED":
-      redirect("/portal/planlegge");
-    default: // PLANNED
-      redirect(`/portal/live/${sessionId}/brief`);
+      redirect(`/portal/tren/${sessionId}`);
+    case "ACTIVE":
+    case "PAUSED":
+      redirect(`/portal/live/${sessionId}/tapper`);
+    default:
+      redirect(`/portal/tren/${sessionId}`);
   }
 }

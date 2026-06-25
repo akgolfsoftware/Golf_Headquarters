@@ -195,7 +195,7 @@ export async function getHjemData(userId: string): Promise<HjemData> {
           ? fokusDrills.join(", ")
           : `${fokusKilde._count.drills} drills · ${user.homeClub ?? "egen økt"}`,
         startHref: `/portal/gjennomfore/${fokusKilde.id}`,
-        planHref: "/portal/planlegge",
+        planHref: "/portal/planlegge/workbench",
       }
     : null;
 
@@ -289,7 +289,7 @@ export async function getHjemData(userId: string): Promise<HjemData> {
         meta: `${turn.dato.getDate()}. ${MND_KORT[turn.dato.getMonth()].toLowerCase()} · ${turn.sted}`,
         chip: turn.status,
         href: "/portal/tren/turneringer",
-        planHref: "/portal/planlegge",
+        planHref: "/portal/planlegge/workbench",
       }
     : null;
 
