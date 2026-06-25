@@ -57,7 +57,7 @@ if [ "${SMOKE_DNS:-0}" = "1" ]; then
     printf '  \033[33mNB\033[0m    www.akgolf.no → %s\n' "${www:-(ingen redirect)}"
   fi
 else
-  printf '  \033[32mPASS\033[0m  www.akgolf.no DNS-sjekk hoppet over (sett SMOKE_DNS=1 for manuell DNS-verif)\n'
+  printf '  \033[33mSKIP\033[0m  www.akgolf.no DNS (sett SMOKE_DNS=1 — utenfor standard launch-smoke)\n'
 fi
 
 echo ""

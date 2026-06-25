@@ -91,6 +91,14 @@ Dokumenteres her så diff-agenten måler mot riktig fasit:
 - **Tom tilstand når valgfri data mangler** (ingen teknisk plan, sesongmål, Gantt-faser): ærlig empty state er OK — gate må også screenshotte seedet scenario (`scripts/seed-screentest.ts`) for paritet.
 - **Hub-fane «Økt»** viser inline `OktDetailTab` (ikke fullskjerm overlay) — samme innhold som fasit wb-10, annen chrome.
 - **Maler/Std:** filterchips + kortgrid fra lansering 25. juni; konkrete malnavn = seed-data.
+- **Uke time-grid (ikke kolonne-stack):** `UkeView` bruker vertikal time-akse (07–22) med posisjonerte kort — fasit wb-09-PNG viser enklere dagkolonner. Bevisst v10-planleggingsvisning for coach; diff skal ikke kreve kolonne-only layout.
+- **FORRIGE/NESTE uke:** Knapper rendres i header; week-offset API finnes ikke i v1 (kun inneværende kalenderuke i `load-workbench`). Klikk uten datoflyt er forventet til post-lansering.
+- **Maler match-% badge:** Fasit-demo har hardkodede prosenter; appen har ikke `PlanEffectiveness` på Maler-kort ennå — viser fase + bruksteller i stedet.
+- **Maler kortanatomi:** lPhase-ikon + «Brukt N×»/metadata fra DB erstatter fasitens kategori-pill + Anders-demo-copy.
+- **Std DRILL-PROGRAM:** Kort viser 2-linjers preview fra `paletteItems` (mal-økter) inntil full `drillsJson`-parsing fra PlanTemplateSession.
+- **Spiller uten PaletteSidebar:** Coach-only venstre panel; spiller ser ren ukeflate (player-1280-uke).
+- **Turneringsbanner i uke:** Kommer fra ekte `TournamentEntry` når seedet — fasit-PNG uten banner er tom-demo, ikke fasit for seedet scenario.
+- **Coach REDIGER på mal-kort:** Coach-affordance til `/admin/plan-templates` — ikke i spiller-fasit.
 
 ### AgencyOS mobil (Fase 4, net-new — 2026-06-11)
 

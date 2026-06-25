@@ -34,6 +34,14 @@ const FILTERS: { key: MalFilter; label: string }[] = [
   { key: "full", label: "Full sesong" },
 ];
 
+function categoryChip(t: WorkbenchPlanTemplate): string {
+  const n = t.name.toLowerCase();
+  if (/putt/i.test(n)) return "PUTTING";
+  if (/nær|chip|wedge|arg/i.test(n)) return "NÆRSPILL";
+  if (/tee|driver|utslag/i.test(n)) return "UTSLAG";
+  return FASE_LABEL[t.lPhase].split(" ")[0]!.toUpperCase();
+}
+
 function matchesFilter(t: WorkbenchPlanTemplate, f: MalFilter): boolean {
   if (f === "alle") return true;
   const n = t.name.toLowerCase();
@@ -177,6 +185,35 @@ export function MalerTab({ templates, isCoach, onUseTemplate }: MalerTabProps): 
                 gap: 10,
               }}
             >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
+                <span
+                  style={{
+                    fontFamily: FONT.mono,
+                    fontSize: 8,
+                    fontWeight: 700,
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
+                    padding: "4px 8px",
+                    borderRadius: 6,
+                    background: `${WB.lime}18`,
+                    color: WB.lime,
+                  }}
+                >
+                  {categoryChip(t)}
+                </span>
+                <span
+                  style={{
+                    fontFamily: FONT.mono,
+                    fontSize: 9,
+                    fontWeight: 700,
+                    color: WB.muted3,
+                    flexShrink: 0,
+                  }}
+                  title="Effektivitet kobles når PlanEffectiveness er på plass"
+                >
+                  —
+                </span>
+              </div>
               <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
                 <span
                   style={{
@@ -194,6 +231,9 @@ export function MalerTab({ templates, isCoach, onUseTemplate }: MalerTabProps): 
                 </span>
                 <div style={{ minWidth: 0, flex: 1 }}>
                   <div style={{ fontSize: 13, fontWeight: 600, color: WB.text }}>{t.name}</div>
+                  <div style={{ fontSize: 11, color: WB.muted, marginTop: 4, lineHeight: 1.4 }}>
+                    {t.sessionCount} økter over {t.varighetUker} uker — {FASE_LABEL[t.lPhase].toLowerCase()}
+                  </div>
                   <div style={{ fontFamily: FONT.mono, fontSize: 9, color: WB.muted3, marginTop: 4 }}>
                     {FASE_LABEL[t.lPhase]} · {t.varighetUker} uker · {t.sessionCount} økter
                   </div>
