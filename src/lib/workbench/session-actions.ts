@@ -174,13 +174,6 @@ export async function resolvePlanSessionLiveHref(
     data: { status: "SKIPPED" },
   });
 
-  if (session.status === "PLANNED") {
-    await prisma.trainingPlanSession.update({
-      where: { id: sessionId },
-      data: { status: "ACTIVE" },
-    });
-  }
-
   revalidateWorkbench(ownerId);
-  return { ok: true, href: `/portal/tren/${sessionId}` };
+  return { ok: true, href: `/portal/live/${sessionId}/brief` };
 }

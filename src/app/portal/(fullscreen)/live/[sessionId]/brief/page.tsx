@@ -7,8 +7,10 @@
 
 import { notFound, redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { loadLiveSession } from "@/app/portal/(fullscreen)/live/[sessionId]/actions";
-import { LiveBrief } from "@/components/portal/live";
+import { prisma } from "@/lib/prisma";
+import { loadLiveSession as loadPlanLiveSession } from "@/lib/portal-live/data";
+import { loadLiveSession as loadV2LiveSession } from "@/app/portal/(fullscreen)/live/[sessionId]/actions";
+import { LiveBrief, PlanSessionBrief } from "@/components/portal/live";
 
 export default async function LiveBriefPage({
   params,
@@ -17,17 +19,51 @@ export default async function LiveBriefPage({
 }) {
   const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
   const { sessionId } = await params;
-
   const isCoach = user.role === "COACH" || user.role === "ADMIN";
-  const result = await loadLiveSession(sessionId, user.id, isCoach);
+
+  const [v2, planSession] = await Promise.all([
+    prisma.trainingSessionV2.findUnique({
+      where: { id: sessionId },
+      select: { id: true },
+    }),
+    prisma.trainingPlanSession.findUnique({
+      where: { id: sessionId },
+      select: { id: true },
+    }),
+  ]);
+
+  if (planSession && !v2) {
+    const result = await loadPlanLiveSession(sessionId, user.id, isCoach);
+    if (!result.ok) {
+      if (result.reason === "notfound") notFound();
+      redirect("/portal/planlegge/workbench");
+    }
+
+    const { data } = result;
+    const owner = await prisma.trainingPlanSession.findUnique({
+      where: { id: sessionId },
+      select: { plan: { select: { userId: true } } },
+    });
+    const erEier = owner?.plan.userId === user.id;
+    const canStart = erEier && user.tier !== "GRATIS" && !data.completed;
+    const blockReason: "completed" | "tier" | "coach" | null = data.completed
+      ? "completed"
+      : isCoach
+        ? "coach"
+        : user.tier === "GRATIS"
+          ? "tier"
+          : null;
+
+    return <PlanSessionBrief data={data} canStart={canStart} blockReason={blockReason} />;
+  }
+
+  const result = await loadV2LiveSession(sessionId, user.id, isCoach);
   if (!result.ok) {
     if (result.reason === "notfound") notFound();
     redirect("/portal/planlegge");
   }
 
   const { data } = result;
-
-  // Spiller kan starte hvis hen eier/deltar og ikke er gratis. Coach ser read-only.
   const canStart = !isCoach && user.tier !== "GRATIS" && !data.completed;
   const blockReason: "completed" | "tier" | null = data.completed
     ? "completed"

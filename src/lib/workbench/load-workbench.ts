@@ -30,7 +30,7 @@ import type {
   WeekEvent,
   DirBDayData,
   DirBRowData,
-} from "@/components/workbench/data";
+} from "@/lib/workbench/week-types";
 
 // ───────── Eksportert data-form ─────────
 // Hver del er optional: mangler kilde → komponenten bruker v10-demo.
@@ -53,7 +53,13 @@ export type WorkbenchData = {
   /** Sidebar: kommende turneringer. */
   tournaments?: { tn: string; td: string; soon?: boolean }[];
   /** Sidebar: aktive mål. */
-  goals?: { gn: string; gm: string; ax: Axis }[];
+  goals?: {
+    gn: string;
+    gm: string;
+    ax: Axis;
+    targetValue?: number | null;
+    progressPct?: number | null;
+  }[];
   /** Sidebar/dashboard: pyramide-fordeling (timer per akse siste 30 d). */
   pyramid?: { lbl: string; ax: Axis; hours: number; pct: number }[];
   /** Topp-tall: uke-nummer, antall økter, planlagte timer. */
@@ -154,7 +160,7 @@ export async function loadWorkbenchData(userId: string): Promise<WorkbenchData |
   const tretti = new Date(now);
   tretti.setDate(tretti.getDate() - 30);
 
-  const [weekSessions, last30Sessions, goals, entries, activePeriod] = await Promise.all([
+  const [weekSessions, last30Sessions, goals, entries, activePeriod, player] = await Promise.all([
     prisma.trainingPlanSession.findMany({
       where: { plan: { userId }, scheduledAt: { gte: weekStart, lt: weekEnd } },
       orderBy: { scheduledAt: "asc" },
@@ -168,7 +174,14 @@ export async function loadWorkbenchData(userId: string): Promise<WorkbenchData |
       where: { userId, status: "ACTIVE" },
       orderBy: { createdAt: "desc" },
       take: 6,
-      select: { id: true, title: true, type: true, category: true },
+      select: {
+        id: true,
+        title: true,
+        type: true,
+        category: true,
+        targetValue: true,
+        payload: true,
+      },
     }),
     prisma.tournamentEntry.findMany({
       where: {
@@ -190,6 +203,7 @@ export async function loadWorkbenchData(userId: string): Promise<WorkbenchData |
       where: { seasonPlan: { userId }, startDate: { lte: now }, endDate: { gte: now } },
       select: { weeklyVolMin: true, weeklyVolMax: true },
     }),
+    prisma.user.findUnique({ where: { id: userId }, select: { hcp: true } }),
   ]);
 
   const volTarget =
@@ -320,12 +334,41 @@ export async function loadWorkbenchData(userId: string): Promise<WorkbenchData |
     .sort((a, b) => a._sort - b._sort)
     .map(({ tn, td, soon }) => ({ tn, td, soon }));
 
-  // ── Mål (sidebar) ───────────────────────────────────────────────
-  const goalRows = goals.map((g) => ({
-    gn: g.title,
-    gm: g.category === "PROCESS" ? "PROSESSMÅL" : "RESULTATMÅL",
-    ax: (g.type === "SG_AREA" ? "spill" : g.type === "HCP_TARGET" ? "tek" : "fys") as Axis,
-  }));
+  // ── Mål (sidebar + sesongmål-fane) ─────────────────────────────
+  const goalRows = goals.map((g) => {
+    const payload =
+      g.payload && typeof g.payload === "object" && !Array.isArray(g.payload)
+        ? (g.payload as Record<string, unknown>)
+        : null;
+    const payloadCurrent =
+      typeof payload?.currentValue === "number" ? payload.currentValue : null;
+
+    let progressPct: number | null = null;
+    if (g.type === "HCP_TARGET" && player?.hcp != null && g.targetValue != null) {
+      const current = player.hcp;
+      const start = payloadCurrent ?? current;
+      const span = start - g.targetValue;
+      progressPct =
+        Math.abs(span) < 0.001
+          ? current === g.targetValue
+            ? 100
+            : 0
+          : Math.max(0, Math.min(100, Math.round(((start - current) / span) * 100)));
+    } else if (payloadCurrent != null && g.targetValue != null) {
+      progressPct = Math.max(
+        0,
+        Math.min(100, Math.round((payloadCurrent / g.targetValue) * 100)),
+      );
+    }
+
+    return {
+      gn: g.title,
+      gm: g.category === "PROCESS" ? "PROSESSMÅL" : "RESULTATMÅL",
+      ax: (g.type === "SG_AREA" ? "spill" : g.type === "HCP_TARGET" ? "tek" : "fys") as Axis,
+      targetValue: g.targetValue,
+      progressPct,
+    };
+  });
 
   // ── Topp-tall ───────────────────────────────────────────────────
   const plannedMin = sessions.reduce((a, s) => a + s.durationMin, 0);

@@ -5,38 +5,15 @@
 // against the v10 screenshot lands on 0 deviations.
 // ============================================================
 
-export type Axis = "fys" | "tek" | "slag" | "spill" | "turn";
+import type {
+  Axis,
+  WeekDay,
+  WeekEvent,
+  DirBDayData,
+  DirBRowData,
+} from "@/lib/workbench/week-types";
 
-// ───────── WeekView events ─────────
-export type WeekEvent = {
-  /** DB-id (TrainingPlanSession) når eventen kommer fra ekte data — brukes for
-   *  persistering av drag-drop. Udefinert for demo-data. */
-  id?: string;
-  /** start hour (24h) */
-  h: number;
-  /** start minute */
-  m?: number;
-  /** duration in minutes */
-  durMin: number;
-  ax: Axis;
-  eb: string;
-  ttl: string;
-  meta: [icon: string, text: string][];
-  chips?: [label: string, cls: string][];
-  selected?: boolean;
-  group?: boolean;
-  tournament?: boolean;
-};
-
-export type WeekDay = {
-  dow: string;
-  date: string;
-  today: boolean;
-  sub: string;
-  /** position of NÅ-linje in {h,m}, only set on today */
-  nowLine?: { h: number; m: number };
-  events: WeekEvent[];
-};
+export type { Axis, WeekEvent, WeekDay, DirBDayData, DirBRowData };
 
 export const WEEK_HEAD: { dow: string; date: string; today: boolean; sub: string }[] = [
   { dow: "MAN", date: "26", today: false, sub: "mai" },
@@ -583,31 +560,6 @@ export const DIRB_PYR_SGS: { k: Axis; nm: string; v: string; cls: "pos" | "neg" 
 ];
 
 // ───────── B · Tidslinje (day sections + rows) ─────────
-export type DirBRowData = {
-  time: string;
-  ax: Axis;
-  axt: string;
-  ttl: string;
-  /** [icon, text] meta items */
-  meta?: [icon: string, text: string][];
-  /** [label, cls] pills */
-  pills?: [label: string, cls: string][];
-  dur: string;
-  selected?: boolean;
-};
-
-export type DirBDayData = {
-  dow: string;
-  dt: string;
-  mn: string;
-  tag?: string;
-  tagCls?: string;
-  isToday?: boolean;
-  /** summary parts: count + duration text */
-  summary: { ct: string; dur: string };
-  rows: DirBRowData[];
-};
-
 export const DIRB_TOUR_STRIP = {
   eb: "TURN · NÆR",
   nm: "Srixon Tour #2 · Larvik GK",

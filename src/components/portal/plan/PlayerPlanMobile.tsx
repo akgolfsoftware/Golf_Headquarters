@@ -14,7 +14,7 @@
 import Link from "next/link";
 import { ChevronRight, Dumbbell, MessageSquarePlus, Moon } from "lucide-react";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
-import type { WeekDay } from "@/components/workbench/data";
+import type { WeekDay } from "@/lib/workbench/week-types";
 import { cn } from "@/lib/utils";
 
 const AKSE_LABEL: Record<string, string> = {

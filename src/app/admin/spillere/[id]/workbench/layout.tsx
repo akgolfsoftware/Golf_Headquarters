@@ -1,7 +1,7 @@
 /**
  * Coach workbench-layout.
  * Desktop (md+): full-screen overlay (fixed inset-0 z-50).
- * Mobil (<md): normal page-flow inni AdminShell (WorkbenchMobile vises).
+ * Mobil (<md): normal page-flow inni AdminShell (full WorkbenchHybrid).
  */
 
 import type { Metadata } from "next";

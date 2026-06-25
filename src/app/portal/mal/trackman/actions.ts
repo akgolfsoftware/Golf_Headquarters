@@ -5,6 +5,7 @@ import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { triggerTrackManAgent } from "@/lib/agents/triggers";
 import { matchShotToTask, mpsToMph } from "@/lib/teknisk-plan/match-shot";
+import { updateTmGoalsFromShot } from "@/lib/teknisk-plan/update-tm-goals";
 import { parseTrackManCsv } from "@/lib/trackman/parse-csv";
 import { parseTrackManHtmlReport } from "@/lib/trackman/parse-html-report";
 import type { TrackManEnvironment } from "@/generated/prisma/client";
@@ -58,13 +59,16 @@ export async function importTrackManCsv(input: TrackManCsvInput) {
       const club = shot.club?.trim() || "Ukjent";
       const match = await matchShotToTask(targetUserId, club);
 
+      const clubSpeed = mpsToMph(shot.clubSpeedMps);
+      const ballSpeed = mpsToMph(shot.ballSpeedMps);
+
       await prisma.trackManShot.create({
         data: {
           sessionId: created.id,
           shotNumber: i + 1,
           club,
-          clubSpeed: mpsToMph(shot.clubSpeedMps),
-          ballSpeed: mpsToMph(shot.ballSpeedMps),
+          clubSpeed,
+          ballSpeed,
           smashFactor: shot.smashFactor,
           carryDistance: shot.carryMeters,
           totalDistance: shot.totalMeters,
@@ -77,6 +81,16 @@ export async function importTrackManCsv(input: TrackManCsvInput) {
           recordedAt,
         },
       });
+
+      if (match.taskId) {
+        await updateTmGoalsFromShot(match.taskId, {
+          clubSpeed,
+          ballSpeed,
+          smashFactor: shot.smashFactor,
+          carryDistance: shot.carryMeters,
+          side: shot.sideMeters,
+        });
+      }
     }
   }
 

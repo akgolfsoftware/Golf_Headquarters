@@ -11,7 +11,7 @@
  */
 
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
-import type { Axis, WeekDay, WeekEvent } from "@/components/workbench/data";
+import type { Axis, WeekDay, WeekEvent } from "@/lib/workbench/week-types";
 import type { Cat } from "./theme";
 import type { WbGoal, WbSession, WbTournament, WeekKey, WeekState } from "./types";
 
@@ -76,7 +76,13 @@ export function mapWarningBanner(
 export function mapGoals(data: WorkbenchData | undefined): WbGoal[] | null {
   const g = data?.goals;
   if (!g || g.length === 0) return null;
-  return g.map((x) => ({ gn: x.gn, gm: x.gm, ax: AXIS_TO_CAT[x.ax] }));
+  return g.map((x) => ({
+    gn: x.gn,
+    gm: x.gm,
+    ax: AXIS_TO_CAT[x.ax],
+    targetValue: x.targetValue,
+    progressPct: x.progressPct,
+  }));
 }
 
 /**

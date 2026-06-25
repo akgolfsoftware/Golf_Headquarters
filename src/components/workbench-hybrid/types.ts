@@ -79,8 +79,14 @@ export type WbTournament = {
   type?: keyof typeof import("./theme").TOUR_TYPES;
 };
 
-/** Sesongmål (sidebar). */
-export type WbGoal = { gn: string; gm: string; ax: Cat };
+/** Sesongmål (sidebar + sesongmål-fane). */
+export type WbGoal = {
+  gn: string;
+  gm: string;
+  ax: Cat;
+  targetValue?: number | null;
+  progressPct?: number | null;
+};
 
 /** Treningssamling i en periode (fasit `samlinger`). */
 export type WbSamling = { title: string; date: string; time: string; org: string };

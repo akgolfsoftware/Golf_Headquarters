@@ -201,7 +201,7 @@ export default async function SessionDetalj({
         actions={
           kanStarte ? (
             <Link
-              href={`/portal/live/${session.id}`}
+              href={`/portal/live/${session.id}/brief`}
               className="inline-flex min-h-11 items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
             >
               <Play className="h-3.5 w-3.5" strokeWidth={2.5} />

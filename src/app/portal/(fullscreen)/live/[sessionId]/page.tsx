@@ -80,6 +80,6 @@ export default async function LiveSessionPage({
     case "PAUSED":
       redirect(`/portal/live/${sessionId}/tapper`);
     default:
-      redirect(`/portal/tren/${sessionId}`);
+      redirect(`/portal/live/${sessionId}/brief`);
   }
 }
