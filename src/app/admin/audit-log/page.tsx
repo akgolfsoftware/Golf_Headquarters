@@ -46,7 +46,7 @@ const NB = new Intl.DateTimeFormat("nb-NO", {
 });
 
 export default async function AuditLogPage() {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  await requirePortalUser({ allow: ["ADMIN"] });
 
   const rows = await prisma.auditLog
     .findMany({

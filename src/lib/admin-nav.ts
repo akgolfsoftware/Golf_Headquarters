@@ -281,7 +281,17 @@ export function buildAdminNav(
   // Skjul capability-gatede nav-lenker for roller uten tilgang (samme policy som
   // /admin/settings/tilgang viser). Uten oppgitt rolle (legacy) vises alt.
   if (role) {
+    // Forretnings-/personlig-admin: KUN ADMIN (ikke golf-coaching). Skjules for
+    // COACH så Markus ikke ser Anders' integrasjoner/automasjon/secrets/system.
+    const ADMIN_ONLY_NAV = new Set([
+      "integrations",
+      "agents",
+      "email-templates",
+      "audit-log",
+      "settings",
+    ]);
     const blokkert = (key: string) => {
+      if (role !== "ADMIN" && ADMIN_ONLY_NAV.has(key)) return true;
       const cap = LEAF_CAPABILITY[key];
       return cap !== undefined && !can(role, cap);
     };

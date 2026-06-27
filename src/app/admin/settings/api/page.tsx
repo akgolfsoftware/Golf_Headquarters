@@ -27,7 +27,7 @@ function relative(d: Date) {
 }
 
 export default async function AdminApiKeysPage() {
-  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const user = await requirePortalUser({ allow: ["ADMIN"] });
 
   const keys = await prisma.apiKey.findMany({
     where: user.role === "ADMIN" ? {} : { userId: user.id },

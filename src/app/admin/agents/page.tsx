@@ -50,7 +50,7 @@ const AGENT_INFO: Record<string, { navn: string; trigger: string; beskrivelse: s
 };
 
 export default async function AgentsAdmin() {
-  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const user = await requirePortalUser({ allow: ["ADMIN"] });
 
   const idag = new Date();
   idag.setHours(0, 0, 0, 0);

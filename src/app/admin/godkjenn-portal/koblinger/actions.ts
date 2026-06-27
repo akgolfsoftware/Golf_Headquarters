@@ -8,7 +8,8 @@ import type { DesignKoblingStatus } from "@/generated/prisma/client";
 
 async function requireAdmin() {
   const user = await getCurrentUser();
-  if (!user || (user.role !== "ADMIN" && user.role !== "COACH")) {
+  // Portal-godkjenning er ADMIN-only (forretnings-/intern-QA — ikke golf-coaching).
+  if (!user || user.role !== "ADMIN") {
     redirect("/auth/login");
   }
   return user;

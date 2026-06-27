@@ -65,7 +65,7 @@ export default async function AdminSettingsPage({
 }: {
   searchParams: Promise<{ tab?: string }>;
 }) {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  await requirePortalUser({ allow: ["ADMIN"] });
 
   const sp = await searchParams;
   const tab: Tab = TABS.some((t) => t.key === sp.tab) ? (sp.tab as Tab) : "org";

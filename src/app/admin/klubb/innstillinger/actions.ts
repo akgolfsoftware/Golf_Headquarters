@@ -113,7 +113,7 @@ export async function updateClubSettings(id: string, raw: unknown) {
  * Tomme felter lagres som null (ingen fabrikerte verdier).
  */
 export async function lagreClubSettings(raw: unknown) {
-  const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+  const user = await requirePortalUser({ allow: ["ADMIN"] });
   const parsed = klubbSettingsSchema.safeParse(raw);
   if (!parsed.success) {
     throw new Error(parsed.error.issues[0]?.message ?? "Ugyldig input");
