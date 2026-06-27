@@ -19,7 +19,14 @@
 - [ ] **🚨 NY BESLUTNING (blokkerer datakobling):** Intelligence skal være master, men `dashboard`-schemaet er tomt. Hvordan fyller vi det? (a) Kjør Intelligence sine Python-pipelines mot delt prod-DB, (b) engangs-migrer HQ sin `public`-golf-data inn i `dashboard`, eller (c) snu retning — HQ sin `public` er master og Intelligence leser derfra. Se §6.6.
 - [ ] **Beslutning:** `/stats/*`-eierskap — bekreftet «bli i HQ, hent data fra Intel» (§6.2). Ingen flytting av ruter.
 
-**Gjenstår (kode — egne runder, når nøkkel + prod-DB er på plass):**
+**Master-fylling (valgt 2026-06-27: kjør Intelligence-pipelinene mot delt DB) — BLOKKERT:**
+- 🚨 **GitHub Actions er deaktivert for kontoen** (`gh workflow run` → «Actions has been disabled for this user»). Derfor har pipelinene aldri kjørt → `dashboard`-schemaet er tomt. Secrets ER satt (DATABASE_URL, DATAGOLF_API_KEY, DIRECT_URL, SUPABASE_*).
+- 🚨 **DATAGOLF_API_KEY finnes kun som GitHub-secret, ikke i lokal `.env`** → lokal backfill kan ikke kjøre uten at nøkkelen legges lokalt.
+- Validert: lokal pipeline-sti fungerer (psycopg3 installert i `.venv`, DB-tilkobling OK via WAGR `--dry-run`). Pipelinene skriver til `dashboard.*` (isolert fra HQ `public` — trygt).
+- Cold-start er IKKE «kjør ukentlig sync»: de ukentlige jobbene er inkrementelle. Tomt → trenger full historisk backfill (DataGolf først: `python -m pipelines.datagolf --all-historical`, deretter WAGR/turneringer/kohort/college). DataGolf-backfill er stor + rate-limited (40 req/min).
+- **Vei videre (krever Anders):** enten (A) re-aktiver GitHub Actions + trigg workflows (secrets ligger der), eller (B) legg DATAGOLF_API_KEY i lokal `.env` så jeg kjører backfill lokalt.
+
+**Gjenstår (kode — egne runder, når master-schemaet er fylt):**
 - [ ] Bygg tynn HQ-klient (`src/lib/intelligence/client.ts`) som henter fra `/api/v1/*` med nøkkel
 - [ ] Bytt HQ-leserne over til Intel-API, ett domene om gangen: WAGR → DataGolf-benchmarks → turnering/proff → kohort → college
 - [ ] Fjern HQ sin egen DataGolf/WAGR-synk + arkiver de duplikate Prisma-modellene (se §4) når de ikke lenger leses/skrives
