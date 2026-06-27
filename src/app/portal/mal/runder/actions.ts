@@ -139,85 +139,18 @@ export async function exportRounds(input: ExportRoundsInput) {
 // ---------------------------------------------------------------------------
 
 /**
- * Hardkodet dummy-data for stub-implementasjonen. I produksjon vil dette
- * komme fra GolfBox API etter OAuth-flyt. Inneholder 8 runder; 2 av disse
- * markeres som duplikater hvis de matcher en eksisterende Round (dato +
- * score) for innlogget spiller.
+ * GolfBox-integrasjonen (OAuth/API) er IKKE aktivert ennå. Tom liste — aldri
+ * falske runder. Når NGF GolfBox-integrasjonen er live, hentes ekte runder her.
  */
-const DUMMY_GOLFBOX_ROUNDS = [
-  {
-    externalId: "gb-2026-05-12",
-    playedAt: "2026-05-12",
-    courseName: "Larvik GK",
-    score: 68,
-    par: 70,
-    slope: 132,
-    tee: "Gul",
-  },
-  {
-    externalId: "gb-2026-05-04",
-    playedAt: "2026-05-04",
-    courseName: "Bossum Golfklubb",
-    score: 72,
-    par: 72,
-    slope: 128,
-    tee: "Gul",
-  },
-  {
-    externalId: "gb-2026-04-27",
-    playedAt: "2026-04-27",
-    courseName: "Larvik GK",
-    score: 71,
-    par: 70,
-    slope: 132,
-    tee: "Gul",
-  },
-  {
-    externalId: "gb-2026-04-20",
-    playedAt: "2026-04-20",
-    courseName: "Borre Golfklubb",
-    score: 75,
-    par: 71,
-    slope: 124,
-    tee: "Gul",
-  },
-  {
-    externalId: "gb-2026-04-12",
-    playedAt: "2026-04-12",
-    courseName: "Onsøy Golfklubb",
-    score: 70,
-    par: 70,
-    slope: 122,
-    tee: "Gul",
-  },
-  {
-    externalId: "gb-2026-03-30",
-    playedAt: "2026-03-30",
-    courseName: "Bossum Golfklubb",
-    score: 73,
-    par: 72,
-    slope: 128,
-    tee: "Hvit",
-  },
-  {
-    externalId: "gb-2026-03-22",
-    playedAt: "2026-03-22",
-    courseName: "Hauger Golfklubb",
-    score: 76,
-    par: 71,
-    slope: 130,
-    tee: "Gul",
-  },
-  {
-    externalId: "gb-2026-03-15",
-    playedAt: "2026-03-15",
-    courseName: "Larvik GK",
-    score: 74,
-    par: 70,
-    slope: 132,
-    tee: "Gul",
-  },
-];
+const DUMMY_GOLFBOX_ROUNDS: Array<{
+  externalId: string;
+  playedAt: string;
+  courseName: string;
+  score: number;
+  par: number;
+  slope: number;
+  tee: string;
+}> = [];
 
 export type GolfBoxPreviewRound = {
   externalId: string;
