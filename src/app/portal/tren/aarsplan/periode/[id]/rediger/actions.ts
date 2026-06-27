@@ -28,8 +28,12 @@ export async function updatePeriode(input: UpdatePeriodeInput) {
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
 
-  const periode = await prisma.periodBlock.findUnique({ where: { id: input.id } });
-  if (!periode) throw new Error("not_found");
+  // IDOR-vern: periodeblokken eies via seasonPlan.userId — verifiser eierskap.
+  const periode = await prisma.periodBlock.findUnique({
+    where: { id: input.id },
+    include: { seasonPlan: { select: { userId: true } } },
+  });
+  if (!periode || periode.seasonPlan.userId !== user.id) throw new Error("not_found");
 
   await prisma.periodBlock.update({
     where: { id: input.id },
@@ -48,6 +52,12 @@ export async function updatePeriode(input: UpdatePeriodeInput) {
 export async function deletePeriode(id: string) {
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
+  // IDOR-vern: verifiser eierskap før sletting.
+  const periode = await prisma.periodBlock.findUnique({
+    where: { id },
+    include: { seasonPlan: { select: { userId: true } } },
+  });
+  if (!periode || periode.seasonPlan.userId !== user.id) throw new Error("not_found");
   await prisma.periodBlock.delete({ where: { id } });
   revalidatePath("/portal/tren/aarsplan");
   redirect("/portal/tren/aarsplan");

@@ -3,7 +3,7 @@
 // e-post-bekreftelse hvor signup-formen lagret meta før Prisma-rad ble opprettet.
 
 import { prisma } from "@/lib/prisma";
-import type { User, UserRole, Tier } from "@/generated/prisma/client";
+import type { User, UserRole } from "@/generated/prisma/client";
 import type { User as AuthUser } from "@supabase/supabase-js";
 
 export async function ensureUser(authUser: AuthUser): Promise<User | null> {
@@ -14,6 +14,16 @@ export async function ensureUser(authUser: AuthUser): Promise<User | null> {
   const lastName = typeof meta.lastName === "string" ? meta.lastName : "";
   const name = `${firstName} ${lastName}`.trim() || authUser.email!;
 
+  // SIKKERHET: user_metadata er klient-kontrollert og kan ALDRI gi privilegert
+  // tilgang. Whitelist rollen til selvbetjente verdier (PLAYER/PARENT) — COACH/
+  // ADMIN settes kun server-side av en eksisterende ADMIN. Tier tvinges til
+  // GRATIS; ekte PRO settes av Stripe-webhooken ved betaling (aldri av signup).
+  const requestedRole = meta.role as UserRole;
+  const role: UserRole =
+    requestedRole === "PLAYER" || requestedRole === "PARENT"
+      ? requestedRole
+      : "PLAYER";
+
   return prisma.user.upsert({
     where: { authId: authUser.id },
     update: {},
@@ -21,8 +31,8 @@ export async function ensureUser(authUser: AuthUser): Promise<User | null> {
       authId: authUser.id,
       email: authUser.email!,
       name,
-      role: meta.role as UserRole,
-      tier: meta.tier as Tier,
+      role,
+      tier: "GRATIS",
     },
   });
 }

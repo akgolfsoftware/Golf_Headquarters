@@ -19,12 +19,14 @@ const ALLOWED_ORIGINS: string[] = (() => {
   const prod = process.env.NEXT_PUBLIC_APP_URL ?? "https://akgolf.no";
   const origins = [new URL(prod).origin];
 
+  // Vercel preview: KUN denne deployens egen URL — aldri en blanket
+  // *.vercel.app-match (det ville sluppet enhver angripers Vercel-app gjennom
+  // CSRF-vernet). VERCEL_URL settes per-deploy av Vercel.
+  if (process.env.VERCEL_URL) {
+    origins.push(`https://${process.env.VERCEL_URL}`);
+  }
   if (process.env.NODE_ENV !== "production") {
     origins.push("http://localhost:3000", "http://127.0.0.1:3000");
-    // Vercel preview-URLer: akgolf-hq-*.vercel.app
-    if (process.env.VERCEL_URL) {
-      origins.push(`https://${process.env.VERCEL_URL}`);
-    }
   }
 
   return origins;
@@ -33,9 +35,7 @@ const ALLOWED_ORIGINS: string[] = (() => {
 export function isSameOrigin(req: Request): boolean {
   const origin = req.headers.get("origin");
   if (origin) {
-    return ALLOWED_ORIGINS.some(
-      (allowed) => allowed === origin || origin.endsWith(".vercel.app")
-    );
+    return ALLOWED_ORIGINS.includes(origin);
   }
 
   // Fallback: sjekk Referer
