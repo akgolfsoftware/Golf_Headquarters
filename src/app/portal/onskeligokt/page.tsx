@@ -21,8 +21,18 @@ export default async function OnskeligOktPage({
   await requirePortalUser();
   const params = await searchParams;
 
+  // Coacher = de som faktisk tilbyr coaching-tjenester (serviceType.coachUserId).
+  // Rolle-feltet alene duger ikke: coaching gjøres av ADMIN-brukere, ikke role=COACH.
+  const coachLinks = await prisma.serviceType.findMany({
+    where: { coachUserId: { not: null } },
+    select: { coachUserId: true },
+    distinct: ["coachUserId"],
+  });
+  const coachIds = coachLinks
+    .map((s) => s.coachUserId)
+    .filter((id): id is string => id !== null);
   const coacher = await prisma.user.findMany({
-    where: { role: "COACH" },
+    where: { id: { in: coachIds }, deletedAt: null },
     select: { id: true, name: true },
     orderBy: { name: "asc" },
   });
