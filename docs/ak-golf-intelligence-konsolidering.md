@@ -15,7 +15,8 @@
 
 **Gjenstår (Anders / manuelt):**
 - [ ] **Sett `INTELLIGENCE_API_KEY` tre steder:** Vercel (ak-golf-intelligence) + HQ `.env.local` + 1Password. Verdi: `grep '^INTELLIGENCE_API_KEY=' ~/Developer/ak-golf-intelligence/.env`
-- [ ] **Avklar hvilken Supabase `DATABASE_URL` som er prod/delt.** Den lokale `.env` i Intelligence pekte på en nesten tom base (kun `dg_tours` seedet) — den ekte dataen (295k runder, WAGR osv.) ligger et annet sted. HQ kan ikke kobles på før dette er bekreftet.
+- [x] **Avklar hvilken Supabase `DATABASE_URL` som er prod/delt.** ✅ **Funn 2026-06-27:** HQ og Intelligence deler SAMME Supabase-prosjekt (`postgres.eljkjqvggsmnbbszzbpj`), men bruker hver sin **Postgres-schema**: HQ = `public` (140 tabeller), Intelligence = `dashboard` (49 tabeller). **All ekte golf-data ligger i HQ sin `public`-schema** (`pga_player_seasons`=1332, `tournaments`=2111, `wagr_snapshots`=14). **Intelligence sin `dashboard`-schema er tom** (dg_/wagr_/tournaments = 0, kun `dg_tours`=26). Duplikatet er altså to parallelle schema i én DB, der bare HQ-siden er fylt.
+- [ ] **🚨 NY BESLUTNING (blokkerer datakobling):** Intelligence skal være master, men `dashboard`-schemaet er tomt. Hvordan fyller vi det? (a) Kjør Intelligence sine Python-pipelines mot delt prod-DB, (b) engangs-migrer HQ sin `public`-golf-data inn i `dashboard`, eller (c) snu retning — HQ sin `public` er master og Intelligence leser derfra. Se §6.6.
 - [ ] **Beslutning:** `/stats/*`-eierskap — bekreftet «bli i HQ, hent data fra Intel» (§6.2). Ingen flytting av ruter.
 
 **Gjenstår (kode — egne runder, når nøkkel + prod-DB er på plass):**
@@ -125,6 +126,20 @@ Bane (delvis)              → bane-master kan deles
    Hvilken er fasit? Må samles til én.
 5. **Multi-brand:** HQ har en halvferdig WANG/TN-variant i stash. Intel har et modent brandTheme-system.
    Skal HQ arve Intel sitt mønster?
+
+6. **🚨 Master-schemaet er tomt (avklart 2026-06-27 — krever beslutning).** De to appene deler én
+   Supabase-DB, men hver sin schema: HQ `public` (har dataen), Intelligence `dashboard` (tom). For at
+   «Intelligence = master, HQ henter via API» skal gi ekte data, må `dashboard` fylles. Tre veier:
+   - **(a) Kjør Intelligence-pipelinene mot delt prod-DB** — Python-pipelines (DataGolf 16 stk, WAGR CI)
+     skriver til `dashboard.*`. Matcher opprinnelig mål, men krever API-nøkler + kjøretid + at pipelinene
+     peker på riktig DB. Da blir Intel-API-et fylt og HQ kan konsumere.
+   - **(b) Engangs-migrer HQ sin `public`-golf-data → `dashboard`** (SQL `INSERT INTO dashboard… SELECT … FROM public…`).
+     Rask, men HQ sine tabeller har annen form enn Intelligence sine (mapping kreves), og bare HQ-delen finnes (ikke 295k DataGolf-runder).
+   - **(c) Snu retningen:** HQ sin `public` er allerede den fylte kilden + serverer `/stats` offentlig.
+     La HQ være master for det HQ allerede har, og Intelligence-API-et leser fra `public` (eller Intel
+     beholder kun det unike: kohort/college/295k-DataGolf når de lastes). Minst flytting nå.
+
+   **Inntil dette er valgt: ikke koble HQ-lesere til Intel-API-et — det ville hentet tomme svar.**
 
 ---
 
