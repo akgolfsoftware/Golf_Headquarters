@@ -14,6 +14,18 @@ Oppdrag: Design to motorer i AgencyOS for AK Golf Group (coach: Anders Kristians
 det mørke «terminal»-temaet: (1) ØVELSESBANKEN og (2) TRENINGSPLAN-GENERATOREN — med ALLE
 skjermer og funksjoner, og et kart over alle øvrige funksjoner. Norsk bokmål (æ, ø, å).
 
+═══ 0. HANDOVER-GRADE — KODEKLAR, INGEN STUBS (HARDEST REGEL, GJELDER ALT) ═══
+- INGEN stub-, placeholder- eller skisse-skjermer. Gå RETT til ferdige, KODEKLARE skjermer i
+  HELE Claude Design. Aldri «TODO», grå tomme bokser, «kommer senere» eller halvferdige flater.
+- KODEKLAR = klar for direkte handover til Claude Code UTEN mer designarbeid: komplett layout,
+  ekte komponenter fra designsystemet, eksakte tokens/farger/fonter/ikoner (ingen gjetting),
+  ALLE tilstander (normal, tom, laster, feil, lang tekst), DESKTOP + MOBIL, og interaksjoner +
+  navigasjon spesifisert. Demo-data skal være realistisk AK-data — aldri «Lorem».
+- HVIS en EKSISTERENDE skjerm eller design ikke allerede er 100 % klar for handover til Claude Code:
+  RETT DEN I DENNE RUNDEN. Ikke utsett, ikke lever som «nesten». Oppdater til kodeklar standard nå.
+- KVALITETSBAR 10/10 mot AK-fasiten: før HVER skjerm leveres, sjekk mot designsystemet (tokens,
+  lime kun som signal, kun Lucide, mono-tall, 8pt-grid, norsk bokmål) og fiks hvert avvik til 0.
+
 ═══ FELLES (gjelder alt) ═══
 - ADHD-design (HARD): én ting i fokus per skjerm, rolig/ryddig, «hva nå?» alltid synlig,
   lime #D1F843 KUN som signal (aktiv/haster/NÅ), synlig fremdrift, minimal input.
