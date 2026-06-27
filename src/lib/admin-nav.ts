@@ -10,13 +10,16 @@ import {
   FileBarChart,
   Flag,
   FlaskConical,
+  FolderKanban,
   Inbox,
   LayoutDashboard,
   LayoutTemplate,
   ListChecks,
   Mail,
   MessageSquare,
+  MessagesSquare,
   Play,
+  Workflow,
   Plug,
   Radar,
   ScrollText,
@@ -58,6 +61,8 @@ export type NavLeaf = {
   exact?: boolean;
   badge?: keyof SidebarCounts;
   badgeCls?: "alert" | "lime";
+  /** Kun synlig for ADMIN (skjules for COACH). Pages gater i tillegg selv. */
+  adminOnly?: boolean;
 };
 
 export type NavEntry =
@@ -118,6 +123,14 @@ export function buildAdminNav(
             { key: "assigned", label: "Tildelt meg", href: "/admin/workspace/tildelt-meg", badge: "assigned" },
           ],
         },
+      ],
+    },
+    {
+      label: "AI & arbeid",
+      items: [
+        { type: "item", key: "k-agenter", label: "Agenter", href: "/admin/agenter", icon: MessagesSquare, adminOnly: true },
+        { type: "item", key: "k-agent-team", label: "Agent-team", href: "/admin/agent-team", icon: Workflow, adminOnly: true },
+        { type: "item", key: "k-prosjekter", label: "Prosjekter", href: "/admin/prosjekter", icon: FolderKanban, adminOnly: true },
       ],
     },
     {
@@ -274,6 +287,7 @@ export function buildAdminNav(
       ...s,
       items: s.items
         .filter((it) => !blokkert(it.key))
+        .filter((it) => !(it.type === "item" && it.adminOnly && role !== "ADMIN"))
         .map((it) =>
           it.type === "group"
             ? { ...it, children: it.children.filter((c) => !blokkert(c.key)) }
