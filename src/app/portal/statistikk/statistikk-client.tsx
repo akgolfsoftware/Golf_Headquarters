@@ -655,7 +655,7 @@ function BenchmarkBar({
 
 function StreakCard({ streak }: { streak: boolean[] }) {
   const aktiv = beregnAktivStreak(streak);
-  const lengsteStreak = 23; // Fra dummy/spillerprofil.
+  const lengsteStreak = beregnLengsteStreak(streak);
 
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card p-4 md:p-8">
@@ -672,11 +672,11 @@ function StreakCard({ streak }: { streak: boolean[] }) {
         {aktiv === 1 ? "dag" : "dager"} på rad
       </h2>
       <p className="mt-1 text-sm text-muted-foreground">
-        Lengste streak:{" "}
+        Lengste i perioden:{" "}
         <strong className="font-mono tabular-nums text-foreground">
-          {lengsteStreak} dager
+          {lengsteStreak} {lengsteStreak === 1 ? "dag" : "dager"}
         </strong>{" "}
-        (mai 2026).
+        (siste 14 dager).
       </p>
 
       <div className="mt-6 grid grid-cols-7 gap-1.5">
@@ -717,6 +717,21 @@ function beregnAktivStreak(streak: boolean[]): number {
     else break;
   }
   return antall;
+}
+
+/** Lengste sammenhengende treningsrekke innenfor det tilgjengelige vinduet. */
+function beregnLengsteStreak(streak: boolean[]): number {
+  let lengste = 0;
+  let gjeldende = 0;
+  for (const aktiv of streak) {
+    if (aktiv) {
+      gjeldende++;
+      if (gjeldende > lengste) lengste = gjeldende;
+    } else {
+      gjeldende = 0;
+    }
+  }
+  return lengste;
 }
 
 // --- REKORDER ------------------------------------------------------------
