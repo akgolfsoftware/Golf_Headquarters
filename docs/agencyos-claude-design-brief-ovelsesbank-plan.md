@@ -27,7 +27,7 @@ skjermer og funksjoner, og et kart over alle øvrige funksjoner. Norsk bokmål (
 - KATEGORIER A–K: spillernivå fra A (elite/lavest HCP) til K (nybegynner). Vises ofte med
   undernivå (A1, A2 …). NGF bruker A–L; L vises som K. Hver drill/test/mal har et kategori-spenn.
 - PYRAMIDEN (5 områder, hver drill/økt tagges med ETT): FYS · TEK · SLAG · SPILL · TURN.
-- L-FASER (læring, 5 trinn): L_KROPP → L_ARM → L_KØLLE → L_BALL → L_AUTO.
+- L-FASER (læring, 5 trinn): L_KROPP → L_ARM → L_KOLLE → L_BALL → L_AUTO. (kode-id uten ø; uttales «kølle»)
 - CS (køllehastighet, % av maks): CS50 · CS60 · CS70 · CS80 · CS90 · CS100.
 - AK-FORMELEN = 4 akser som koder hver øvelse/oppgave: L-fase × CS × M (miljø M0–M5) × PR (press PR1–PR5).
 - PERIODER (periodisering): GRUNN · SPESIALISERING · TURNERING · EVALUERING · FERIE —
@@ -60,6 +60,10 @@ skjermer og funksjoner, og et kart over alle øvrige funksjoner. Norsk bokmål (
     og samme web/AI-generator + godkjenning for NYE tester.
 1.7 KILDE-/AGENT-INNSTILLINGER: skru kilder på/av (Web/YouTube/IG/TikTok), sett kvalitetsfilter,
     se historikk over genereringer (hva ble funnet, godkjent, avvist).
+MERK (gjennomførbarhet — design for dette): bruk LOVLIGE kilder/API-er — YouTube Data API +
+web-søk-API gir ekte automatisk innhenting. Instagram/TikTok har ingen åpen API og skraping
+bryter deres vilkår; design derfor en «lim inn lenke»-fallback for disse (coach limer URL →
+AI trekker ut øvelsen), ikke automatisk skraping. Vis kilde-status ærlig (API-tilkoblet vs lenke-basert).
 
 ╔══════════════════════════════════════════════════════════════════╗
 ║ DEL 2 — TRENINGSPLAN-GENERATOR (alle kategorier A–K)              ║
