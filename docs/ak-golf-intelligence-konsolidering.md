@@ -27,7 +27,7 @@
 - **Vei videre (krever Anders):** enten (A) re-aktiver GitHub Actions + trigg workflows (secrets ligger der), eller (B) legg DATAGOLF_API_KEY i lokal `.env` så jeg kjører backfill lokalt.
 
 **Gjenstår (kode — egne runder, når master-schemaet er fylt):**
-- [ ] Bygg tynn HQ-klient (`src/lib/intelligence/client.ts`) som henter fra `/api/v1/*` med nøkkel
+- [x] Bygg tynn HQ-klient (`src/lib/intelligence/client.ts`) som henter fra `/api/v1/*` med nøkkel — ✅ bygget (server-only, typede wrappere, `intelligenceConfigured()`-fallback). Nøkkel i HQ `.env.local`; `INTELLIGENCE_API_URL` må fylles med Intelligence-deployment-URL.
 - [ ] Bytt HQ-leserne over til Intel-API, ett domene om gangen: WAGR → DataGolf-benchmarks → turnering/proff → kohort → college
 - [ ] Fjern HQ sin egen DataGolf/WAGR-synk + arkiver de duplikate Prisma-modellene (se §4) når de ikke lenger leses/skrives
 - [ ] Konsolider SG-benchmark-kalibrering til én kilde (HQ «Team Norway IUP» vs Intel «Broadie HCP» — §6.4)
