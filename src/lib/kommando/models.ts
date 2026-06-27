@@ -29,3 +29,29 @@ export function getKommandoModel(id: string): KommandoModel | undefined {
 export function isKommandoModelId(id: unknown): id is KommandoModelId {
   return typeof id === "string" && KOMMANDO_MODELS.some((m) => m.id === id);
 }
+
+// ── Agent-team (Etappe 3) ──
+// Fast oppskrift: tre AI-er jobber sekvensielt på én oppgave. Output fra ett
+// steg mates inn i neste. Modeller uten konfigurert nøkkel hoppes over.
+export type KommandoTeamStep = { model: KommandoModelId; role: string; instruction: string };
+
+export const KOMMANDO_TEAM: KommandoTeamStep[] = [
+  {
+    model: "grok",
+    role: "Research",
+    instruction:
+      "Du er research-agent i et AI-team. Samle relevante fakta, markedsinnsikt og kontekst for oppgaven. Vær konkret og konsis — punktliste er greit. Svar på norsk.",
+  },
+  {
+    model: "claude",
+    role: "Utkast",
+    instruction:
+      "Du er hovedforfatter i et AI-team. Bruk research-en til å lage et konkret, godt strukturert utkast eller leveranse for oppgaven. Svar på norsk.",
+  },
+  {
+    model: "gemini",
+    role: "Gjennomgang",
+    instruction:
+      "Du er kvalitetssikrer i et AI-team. Gå gjennom utkastet, stram det opp, fyll hull og lever en forbedret endelig versjon. Svar på norsk.",
+  },
+];

@@ -4178,3 +4178,34 @@ model KommandoProject {
   @@index([userId, status, createdAt])
   @@map("kommando_projects")
 }
+
+// Etappe 3 — Agent-team. Flere AI-er jobber sekvensielt på én oppgave.
+model KommandoAgentRun {
+  id         String    @id @default(cuid())
+  userId     String
+  projectId  String?
+  title      String
+  // "running" | "done" | "failed"
+  status     String    @default("running")
+  createdAt  DateTime  @default(now())
+  finishedAt DateTime?
+
+  @@index([userId, createdAt])
+  @@map("kommando_agent_runs")
+}
+
+model KommandoAgentStep {
+  id         String    @id @default(cuid())
+  runId      String
+  orderIndex Int
+  model      String
+  role       String
+  // "pending" | "running" | "done" | "skipped" | "failed"
+  status     String    @default("pending")
+  output     String?   @db.Text
+  createdAt  DateTime  @default(now())
+  finishedAt DateTime?
+
+  @@index([runId, orderIndex])
+  @@map("kommando_agent_steps")
+}

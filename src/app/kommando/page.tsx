@@ -21,7 +21,7 @@ export default async function KommandoDashboard() {
   const startImorgen = new Date(startIdag);
   startImorgen.setDate(startIdag.getDate() + 1);
 
-  const [openCount, aiRuns, recentTasks, projectsCount, todayBookings, todayTasks] = await Promise.all([
+  const [openCount, aiRuns, recentTasks, projectsCount, todayBookings, todayTasks, latestRun] = await Promise.all([
     prisma.kommandoTask.count({ where: { userId: user.id, status: "open" } }),
     prisma.kommandoMessage.count({ where: { userId: user.id, role: "assistant" } }),
     prisma.kommandoTask.findMany({
@@ -39,7 +39,21 @@ export default async function KommandoDashboard() {
       where: { userId: user.id, status: "open", dueAt: { gte: startIdag, lt: startImorgen } },
       orderBy: { dueAt: "asc" },
     }),
+    prisma.kommandoAgentRun.findFirst({ where: { userId: user.id }, orderBy: { createdAt: "desc" } }),
   ]);
+
+  const latestSteps = latestRun
+    ? await prisma.kommandoAgentStep.findMany({
+        where: { runId: latestRun.id },
+        select: { status: true },
+      })
+    : [];
+  const teamDone = latestSteps.filter((s) => s.status === "done" || s.status === "skipped").length;
+  const teamPct = latestSteps.length ? Math.round((teamDone / latestSteps.length) * 100) : 0;
+  const teamStatusLabel =
+    latestRun?.status === "done" ? "Ferdig" : latestRun?.status === "failed" ? "Feilet" : "Kjører";
+  const teamStatusVariant =
+    latestRun?.status === "done" ? "ok" : latestRun?.status === "failed" ? "urgent" : "lime";
 
   return (
     <div className="space-y-5">
@@ -123,6 +137,40 @@ export default async function KommandoDashboard() {
                 </li>
               ))}
             </ul>
+          )}
+        </section>
+
+        {/* Agent-team */}
+        <section className="rounded-xl border border-border bg-card p-4 lg:col-span-2">
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="font-display text-[13px] font-semibold text-foreground">Agent-team</h2>
+            <Link
+              href="/kommando/team"
+              className="flex items-center gap-1 font-mono text-[11px] text-muted-foreground hover:text-foreground"
+            >
+              Åpne <ArrowRight className="h-3.5 w-3.5" strokeWidth={1.5} />
+            </Link>
+          </div>
+          {latestRun ? (
+            <div>
+              <div className="mb-2 flex items-center justify-between gap-2">
+                <span className="truncate text-sm text-foreground">{latestRun.title}</span>
+                <AthleticBadge variant={teamStatusVariant}>{teamStatusLabel}</AthleticBadge>
+              </div>
+              <div className="h-1.5 overflow-hidden rounded bg-secondary">
+                <div className="h-full bg-accent" style={{ width: `${teamPct}%` }} />
+              </div>
+              <div className="mt-1.5 font-mono text-[10px] uppercase tracking-[0.05em] text-muted-foreground">
+                {teamDone}/{latestSteps.length} steg
+              </div>
+            </div>
+          ) : (
+            <p className="py-4 text-center text-xs text-muted-foreground">
+              Ingen kjøringer enda.{" "}
+              <Link href="/kommando/team" className="text-accent hover:underline">
+                Start et team →
+              </Link>
+            </p>
           )}
         </section>
 

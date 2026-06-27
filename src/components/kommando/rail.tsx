@@ -22,7 +22,7 @@ const ITEMS: RailItem[] = [
   { href: "/kommando/oppgaver", label: "Oppgaver", icon: ListChecks },
   { href: "/kommando/kalender", label: "Kalender", icon: Calendar },
   { href: "/kommando/prosjekter", label: "Prosjekter", icon: Folder },
-  { href: null, label: "Team", icon: Users },
+  { href: "/kommando/team", label: "Team", icon: Users },
 ];
 
 export function KommandoRail() {

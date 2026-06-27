@@ -1,7 +1,7 @@
 # AK Agency OS — plan (personlig kommandosenter)
 
 > Status: godkjent design 2026-06-25. Bygges i 4 etapper. Eier: Anders.
-> **Fremdrift:** Etappe 1 ✓ (commit 42ed0f92) · Etappe 2 ✓ (Prosjekter + Kalender). Neste: Etappe 3 (Agent-team).
+> **Fremdrift:** Etappe 1 ✓ · Etappe 2 ✓ · Etappe 3 ✓ (Agent-team — flere AI-er sekvensielt på én oppgave, live fremdrift). Neste: Etappe 4 (mobil + status på Cowork/Grok Build/Claude Code).
 > Dette er et **personlig produktivitets-OS** for Anders — ikke coach-appen.
 > Coach-appen «AgencyOS» bor på `/admin/agencyos` og røres ikke. Dette bor på **`/kommando`**.
 
