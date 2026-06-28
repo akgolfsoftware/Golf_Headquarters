@@ -37,19 +37,23 @@ Felt (alltid, som standard): **navn, målsetting, startdato, sluttdato**, releva
   **oppdaterte tekniske planen for alle slag** — alle **uferdige** tekniske oppgaver er tilgjengelige.
 - Logger spiller f.eks. **500 reps «bare kropp, uten ball»**, oppdateres fremdriften **automatisk** i den tekniske planen.
 
-## 3. Datamodell — finnes vs nytt
-**FINNES (gjenbruk):** `TechnicalPlan` (start/slutt/status/PeriodBlock/varianter A-B), `TechnicalPlanPosition`
-(P-nummer, hovedfokus), `PositionTask` (beskrivelse, AK-formel-koding, rep-mål DRY/LAV/FULL, slagType, køller),
-`PositionTaskTmGoal` (TrackMan-mål), `PositionTaskLog` (logget rep → fremdrift), `TechnicalPlanClubTarget`, audit.
-**NYTT / UTVIDELSE:**
-- `planNivaa` (STANDARD | ADVANCED) på TechnicalPlan + støtte for desimal P-nummer (P1.1–P1.9 …) i advanced.
-- Scope-felt: shotType/avstand + grunnslag vs spesialslag.
-- `nåsituasjon`-blokk (snapshot: snitt/TM/SG + media-referanser).
-- Oppgave-felt: **film-vinkel** (enum FACE_ON/DOWN_THE_LINE/REAR/…), **strukturert posisjons-metrikk**
-  (f.eks. {parameter: «hofterotasjon», verdi: 45, enhet: «grader», pPos: «P4»}) i stedet for kun fritekst,
-  og **media** (bilde/video) på oppgave-beskrivelse.
-- Eksplisitt **tidslinje-komponent** plan ↔ årsplan/periodisering/konkurranser (data finnes; visningen er ny).
-- Auto-oppdatering workbench → plan ved rep-logging (logg finnes; koblingen «teknisk trening henter uferdige oppgaver» forsterkes).
+## 3. Datamodell — GJENNOMGANG mot kode (verifisert 2026-06-28)
+**FINNES allerede (modeller + ruter bygget — `/admin/teknisk-plan`, `/portal/tren/teknisk-plan`, workbench-kobling):**
+- `TechnicalPlan` (startDato/sluttDato/status/`periodBlockId`/varianter A-B, opprettetAv coach el. spiller).
+- `TechnicalPlanPosition` (P1.0–P10.0, `hovedfokus`).
+- `PositionTask` (tittel, beskrivelse, **`bildeUrl` + `videoUrl` = media ✓**, AK-formel: lFase/cs/miljo/prPress/koller/omraade/slagType,
+  **rep-mål i 3 farter DRY/LAV/FULL ✓**, **`diagnosticMetrics` Json + «Baseline → Mål» i oppgave-modal = målbar metrikk** som «hofterotasjon 45°» ✓,
+  trackStatus/fremdrift, lastRepLoggedAt).
+- `PositionTaskTmGoal` + `trackmanShots`-relasjon (**linket til TrackMan ✓**). `PositionTaskLog` (**logging → auto-oppdatert `repsGjort` ✓**).
+- `TrainingCamp` (**treningssamling ✓ — egen modell**), `PlanSession` (workbench drag-drop knyttet til plan).
+- Workbench finner/oppretter aktiv `TechnicalPlan` (`/portal/planlegge/workbench/actions.ts`).
+
+**NYTT / må bygges (det reelt manglende):**
+- `planNivaa` (STANDARD P1–P10 / ADVANCED desimal P1.1–P1.9) — `pNummer` er fri streng (kan lagre «P1.5»), men ingen nivå-velger/standard.
+- **Film-vinkel** på oppgave (enum FACE_ON/DOWN_THE_LINE/REAR …) — finnes IKKE (kun KAMERA som fasilitet).
+- **Scope på plan-nivå** (slagtype/avstand + grunnslag vs spesialslag) — finnes per oppgave (omraade/slagType), ikke som plan-filter.
+- **Eget målsetting-felt** på plan — i dag kun `navn`.
+- **Samlet nåsituasjon-snapshot** (snitt/TM/SG i én blokk) + **visuell tidslinje** plan ↔ årsplan/periodisering/konkurranser (data finnes; visningen er ny).
 
 ## 4. Claude Design — komplett startprompt (kodeklar)
 
