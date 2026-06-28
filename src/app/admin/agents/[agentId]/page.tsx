@@ -77,6 +77,20 @@ const AGENT_KONFIG: Record<string, AgentKonfig> = {
     status: "aktiv",
     trigger: "Cron hvert 15. min",
   },
+  "daily-brief": {
+    navn: "Daily Brief",
+    beskrivelse:
+      "Genererer morgenbrief per coach (dagens økter, flagg, neste turnering) og varsler coach + Anders på Telegram ved hastefunn (severity 4+).",
+    status: "aktiv",
+    trigger: "Cron daglig 05:30",
+  },
+  "drill-forslag": {
+    navn: "Drill-forslag",
+    beskrivelse:
+      "Finner stallens svakeste SG-område siste 60 dager og foreslår 5 driller via Claude (YouTube-video når YOUTUBE_API_KEY er satt). Godkjennes på /admin/drills/forslag.",
+    status: "aktiv",
+    trigger: "Cron mandag 08:00",
+  },
 };
 
 const STATUS_VARIANT: Record<
@@ -323,6 +337,38 @@ export default async function AgentDetaljPage({
 
 function lagSnippet(meta: Record<string, unknown> | null): string | null {
   if (!meta) return null;
+
+  // Daily Brief: vis antall briefer/varsler + start på første brief.
+  if (Array.isArray(meta.briefs)) {
+    const n = meta.briefs.length;
+    const varsler = typeof meta.varsler === "number" ? meta.varsler : 0;
+    const first = meta.briefs[0] as { brief?: string } | undefined;
+    const preview =
+      typeof first?.brief === "string"
+        ? ` — ${first.brief.replace(/\s+/g, " ").slice(0, 180)}`
+        : "";
+    return `${n} brief${n === 1 ? "" : "er"} · ${varsler} varsel${
+      varsler === 1 ? "" : "er"
+    }${preview}`;
+  }
+
+  // Drill-forslag: vis svakeste område + antall driller (og video-andel).
+  if (typeof meta.svakesteLabel === "string" && Array.isArray(meta.driller)) {
+    const n = meta.driller.length;
+    const video =
+      typeof meta.medVideo === "number" && meta.medVideo > 0
+        ? `, ${meta.medVideo} m/video`
+        : "";
+    return `Svakest: ${meta.svakesteLabel} · ${n} drill${
+      n === 1 ? "" : "er"
+    }${video}`;
+  }
+
+  // Agenter som returnerer en ren statusmelding (f.eks. "ingen-sg-data").
+  if (typeof meta.melding === "string" && meta.melding.trim().length > 0) {
+    return meta.melding.slice(0, 240);
+  }
+
   const kandidater = [
     "suggestion",
     "result",
