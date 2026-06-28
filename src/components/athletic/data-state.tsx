@@ -36,7 +36,7 @@ function SkeletonRows({ rows, className }: { rows: number; className?: string })
   );
 }
 
-function ErrorState({ message, className }: { message?: string; className?: string }) {
+export function ErrorState({ message, className }: { message?: string; className?: string }) {
   return (
     <div
       className={cn(

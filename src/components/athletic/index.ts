@@ -19,7 +19,10 @@ export { AthleticBadge } from "./badge";
 export { AthleticButton } from "./button";
 export { AthleticAvatar } from "./avatar";
 export { Logo, type LogoProps } from "./logo";
-export { DataState, type DataStateProps } from "./data-state";
+// Tilstands-trio — ett importpunkt for de fire dataflate-tilstandene (innhold/tom/laster/feil).
+export { DataState, ErrorState, type DataStateProps } from "./data-state";
+export { EmptyState } from "@/components/ui/empty-state";
+export { Skeleton, SkeletonText, SkeletonCard } from "@/components/ui/skeleton";
 export { AthleticHero } from "./hero";
 export { AthleticGreeting } from "./greeting";
 export { KpiCard, KpiStrip } from "./kpi";
