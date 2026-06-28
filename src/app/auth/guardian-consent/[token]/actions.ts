@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { logError } from "@/lib/error-tracking";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
+import { isSameOriginAction } from "@/lib/security/same-origin";
 
 export type ConfirmGuardianConsentInput = {
   token: string;
@@ -26,6 +27,11 @@ export async function confirmGuardianConsent({
   token,
   guardianName,
 }: ConfirmGuardianConsentInput): Promise<{ ok: boolean; error?: string }> {
+  // CSRF-vern: denne action-en behandler persondata for en mindreårig og oppretter
+  // en tilgangsgivende relasjon. Avvis forespørsler fra fremmed opphav.
+  if (!(await isSameOriginAction())) {
+    return { ok: false, error: "Avvist: forespørselen kom fra feil opphav." };
+  }
   try {
     const invitation = await prisma.parentInvitation.findUnique({
       where: { token },
