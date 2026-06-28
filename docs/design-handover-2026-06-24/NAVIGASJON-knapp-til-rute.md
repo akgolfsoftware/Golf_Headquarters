@@ -109,14 +109,14 @@ Hub `/stats` → PGA-metrikker · Norske spillere/baner/turneringer · Verktøy 
 | AgencyOS utdaterte flater — ✅ **enkle dubletter ryddet (verifisert 2026-06-28)** | Allerede redirects: `/admin/calendar`→`kalender`, `/admin/finance`→`okonomi`, `/admin/messages`→`innboks`, `/admin/caddie`→`agencyos/caddie/dashbord`, `/admin/board`. `/admin/queue` er BÆRENDE (`/admin/oppfolging` re-eksporterer den) — ikke rør. | Ferdig for de enkle. |
 | AgencyOS — 4 ekte foreldreløse sider (IKKE enkle dubletter) | 0 inbound-lenker, men reell UI-kode (verdikt 2026-06-28, hver side lest). | Per-side (under) — IKKE blind-redirect før lansering. |
 
-**Beslutnings-klar liste (de 4 foreldreløse — Anders avgjør):**
+**De 4 foreldreløse — LØST 2026-06-28 (Anders: «De 4 sidene»):**
 
-| Rute | Hva den ER (verifisert) | Anbefaling |
+| Rute | Hva den ER (verifisert) | Gjort |
 |---|---|---|
-| `/admin/planlegge` (446 l) | Ekte sesong-Gantt fra `SeasonPlan`+`PeriodBlock`+`TournamentEntry`+`TrainingPlan`, ærlige tomme tilstander. | **Behold + gi nav-inngang**, ELLER bekreft at Workbench avløser den (låst: «planlegging bor i Workbench») → da redirect til `/admin/coach-workbench`. |
-| `/admin/videoer` (127 l) | Ekte video-håndtering: `sessionVideo`-spørring + opplasting + kort. | **Behold + gi nav-inngang** (coach-verktøy). Ikke slett. |
-| `/admin/hjelp` (296 l) | Statisk hjelpesenter (søk + 5 kategorier), ingen DB. | **Behold** — lenk fra en hjelp-knapp i topbar senere. Ufarlig som er. |
-| `/admin/kommunikasjon` (133 l) | Gammel kombinert hub (Innboks/E-postmaler/Notion-faner); delene finnes nå hver for seg i nav. | Eneste reelle redirect-kandidat → `/admin/innboks`. IA-valg: vil du beholde et samlet kommunikasjons-hub eller bruke de separate nav-postene? |
+| `/admin/planlegge` (446 l) | Ekte sesong-Gantt fra `SeasonPlan`+`PeriodBlock`+`TournamentEntry`+`TrainingPlan`. | ✅ **Koblet til nav** — «Sesongplan» i Planlegge-gruppa. |
+| `/admin/videoer` (127 l) | Ekte video-håndtering: `sessionVideo`-spørring + opplasting + kort. | ✅ **Koblet til nav** — «Videoer» i Gjennomføre-gruppa (ved Opptak). |
+| `/admin/hjelp` (296 l) | Statisk hjelpesenter (søk + 5 kategorier), ingen DB. | ✅ **Beholdt** uendret (lenkes fra hjelp-knapp senere). |
+| `/admin/kommunikasjon` (133 l) | Var ren launcher: 4 faner som hver kun lenket videre til kanonisk rute (innboks/email-templates/workspace/notion) — null unikt innhold. | ✅ **Redirecter til `/admin/innboks`** (delene nås fra nav). |
 | PlayerHQ «kalender» x3 | `/portal/kalender` (ekte) · `/portal/tren/kalender` (redirect-skygge) · `/portal/gjennomfore?tab=kalender` | Velg én kanonisk, fjern de to andre inngangene. |
 | Stats henger løst | `StatsCmdK` (11-lenkers nav) er aldri montert + ingen `stats/layout.tsx` → ~15 foreldreløse | Monter `StatsCmdK` ELLER lag `stats/layout.tsx` med nav. (Avventer: stats er ikke i v1.) |
 | Forelder-invitasjon x2 | `/inviter/forelder/[token]` vs `/auth/guardian-consent/[token]` | Avklar hvilken som er kanon, fjern den andre. |

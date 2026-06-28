@@ -187,6 +187,7 @@ export function buildAdminNav(
           label: "Planlegge",
           icon: ClipboardList,
           children: [
+            { key: "season-plan", label: "Sesongplan", href: "/admin/planlegge" },
             { key: "training-plans", label: "Treningsplaner", href: "/admin/plans" },
             { key: "plan-templates", label: "Plan-maler", href: "/admin/plan-templates" },
             { key: "drills", label: "Drill-bibliotek", href: "/admin/drills" },
@@ -208,6 +209,7 @@ export function buildAdminNav(
             { key: "services", label: "Tjenester", href: "/admin/services" },
             { key: "trackman", label: "TrackMan", href: "/admin/trackman" },
             { key: "recording", label: "Opptak", href: "/admin/recording" },
+            { key: "videoer", label: "Videoer", href: "/admin/videoer" },
           ],
         },
       ],
