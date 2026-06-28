@@ -2,7 +2,7 @@
 // mangler tillatt rolle, eller venter på foreldresamtykke (GDPR art. 8).
 
 import { redirect } from "next/navigation";
-import { getCurrentUser } from "./getCurrentUser";
+import { getCurrentUserRaw } from "./getCurrentUser";
 import { canAccessPortalRoute } from "./cbac";
 import { isAwaitingGuardianConsent } from "./minor";
 import type { UserRole } from "@/generated/prisma/client";
@@ -24,7 +24,10 @@ export async function requirePortalUser(options: Options = {}) {
   // returnerer null for soft-slettet konto (deletedAt satt) — så !user-redirecten
   // under stenger slettede kontoer ute. Ikke dupliser deletedAt-sjekken her: user
   // kan aldri ha deletedAt satt på dette punktet (ville vært død kode).
-  const user = await getCurrentUser();
+  // Bruker getCurrentUserRaw fordi denne guarden gjør sin EGEN samtykke-redirect
+  // under (med allowAwaitingConsent-flagget) — getCurrentUser ville redirecte
+  // ubetinget og gjort allowAwaitingConsent-flagget dødt.
+  const user = await getCurrentUserRaw();
   if (!user) redirect(redirectTo);
   if (allow && !canAccessPortalRoute(user.role, allow)) {
     // Send brukere til riktig "hjemmeside" basert på rolle for å unngå loops.

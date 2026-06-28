@@ -3,7 +3,7 @@
 // håndhevingen matcher matrisen som vises i /admin/settings/tilgang.
 
 import { redirect } from "next/navigation";
-import { getCurrentUser } from "./getCurrentUser";
+import { getCurrentUserRaw } from "./getCurrentUser";
 import { can, type Capability } from "./cbac";
 import { isAwaitingGuardianConsent } from "./minor";
 
@@ -22,7 +22,8 @@ export async function requireCapability(
   options: Options = {},
 ) {
   const { redirectTo = "/auth/login" } = options;
-  const user = await getCurrentUser();
+  // getCurrentUserRaw fordi denne guarden gjør sin egen samtykke-redirect under.
+  const user = await getCurrentUserRaw();
   if (!user) redirect(redirectTo);
   if (!can(user.role, capability)) {
     // Send til riktig hjemmeside basert på rolle for å unngå redirect-loops.
