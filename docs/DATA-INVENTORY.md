@@ -125,7 +125,7 @@ To parsere + rik analyse-motor + DB-modell. **Ingen TrackMan-API** — alt er ma
 - **`NgfKategori` (`:164`):** `A…L` (12 nivåer; A = OWGR Top 150, K–L = HCP 15+/junior).
 - Utledes to veier: fra HCP (`ai-plan/context.ts:134`, harde terskler) og fra WAGR-poeng (`talent/wagr-import/actions.ts:12`, lagres på `WagrSnapshot.ngfCategory`; WAGR foretrekkes, `context.ts:459`).
 - Andre nivå-felt (overlapper ikke): `Group.level` (fritekst), `OktMal.kategoriAK` (fritekst), `SPILLERKATEGORIER` A–K i `taxonomy.ts:239`.
-- **PARKERT A–K snittscore-bånd (11 grenser):** **0 kode** finnes — må bygges fra bunnen når Anders gir grensene (ingen plassholder å fylle). Jf. [arkiv/KONFLIKTER.md K-04].
+- **✅ A–K snittscore-bånd (11 grenser): IMPLEMENTERT** (`src/lib/domain/ak-kategori.ts`, Anders' tabell 2026-06-22). `AK_BANDS` + `kategoriFraSnittscore`/`nesteKategori`/`prosentTilNesteNiva`. Grensene matcher kanon i ak-second-brain (`iup-kategorisystem.md`, Team Norway-metodikk) eksakt. Bånd: A `<68` · B `68–72` · … · K `100+`, hvert `[min, max)`. (Tidligere «0 kode» her var utdatert — verifisert mot kode 2026-06-28.)
 
 ### «Neste nivå» i dag
 - **Datadrevet terskel:** ingenting. NGF-kategorien klassifiserer nåværende nivå (brukes kun til drill-filtrering), ikke en nivå-stige.
