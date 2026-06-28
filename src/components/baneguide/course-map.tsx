@@ -40,11 +40,15 @@ export type CourseMapProps = {
   holes?: CourseMapHole[];
   zoom?: number;
   className?: string;
+  /** Spillerens landingspunkter (GPS) — tegnes som lime prikker. */
+  shotPoints?: { lat: number; lng: number }[];
+  /** Sikte-linje tee → green for ett hull. */
+  aimLine?: { tee: { lat: number; lng: number }; green: { lat: number; lng: number } } | null;
 };
 
 const TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
-export function CourseMap({ center, geojson, holes = [], zoom = 15.5, className }: CourseMapProps) {
+export function CourseMap({ center, geojson, holes = [], zoom = 15.5, className, shotPoints = [], aimLine = null }: CourseMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
 
@@ -111,6 +115,56 @@ export function CourseMap({ center, geojson, holes = [], zoom = 15.5, className 
             )
             .addTo(map);
         }
+      }
+
+      // Sikte-linje tee → green (hull-detalj)
+      if (aimLine) {
+        map.addSource("aim", {
+          type: "geojson",
+          data: {
+            type: "Feature",
+            properties: {},
+            geometry: {
+              type: "LineString",
+              coordinates: [
+                [aimLine.tee.lng, aimLine.tee.lat],
+                [aimLine.green.lng, aimLine.green.lat],
+              ],
+            },
+          },
+        });
+        map.addLayer({
+          id: "course-aim",
+          type: "line",
+          source: "aim",
+          paint: { "line-color": "#FFFFFF", "line-width": 1.5, "line-dasharray": [3, 3], "line-opacity": 0.6 },
+        });
+      }
+
+      // Spillerens landingspunkter
+      if (shotPoints.length > 0) {
+        map.addSource("shots", {
+          type: "geojson",
+          data: {
+            type: "FeatureCollection",
+            features: shotPoints.map((p) => ({
+              type: "Feature" as const,
+              properties: {},
+              geometry: { type: "Point" as const, coordinates: [p.lng, p.lat] },
+            })),
+          },
+        });
+        map.addLayer({
+          id: "course-shots",
+          type: "circle",
+          source: "shots",
+          paint: {
+            "circle-radius": 5,
+            "circle-color": pyramidColors.spill,
+            "circle-stroke-color": "#06140E",
+            "circle-stroke-width": 1,
+          },
+        });
       }
     });
 

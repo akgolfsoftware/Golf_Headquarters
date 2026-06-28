@@ -1094,9 +1094,14 @@ model CourseDefinition {
   slope     Int?
   createdAt DateTime @default(now())
 
+  // Bro til banegeometri (baneguide) — valgfri kobling til Bane med hull-kart
+  baneId    String?
+
   rounds      Round[]
   tournaments Tournament[]
+  bane        Bane?        @relation(fields: [baneId], references: [id], onDelete: SetNull)
 
+  @@index([baneId])
   @@map("course_definitions")
 }
 
@@ -1982,7 +1987,8 @@ model Bane {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  holes         CourseHole[]
+  holes             CourseHole[]
+  courseDefinitions CourseDefinition[]
 
   @@index([region])
   @@index([slug])
