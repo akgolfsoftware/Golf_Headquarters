@@ -22,6 +22,7 @@ import { AgPage, AgPageHead, agBtnClass } from "@/components/admin/agencyos/ui";
 import { cn } from "@/lib/utils";
 import { SynkButton } from "./availability-actions";
 import { SlotForm } from "./slot-form";
+import { AvailabilityWeekGrid } from "./availability-week-grid";
 import { CalendarSyncSection } from "@/app/admin/settings/calendar/calendar-sync-section";
 
 export const dynamic = "force-dynamic";
@@ -32,7 +33,7 @@ const MND_NB = [
 ];
 const UKEDAGER_NB = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
 
-type SearchParams = Promise<{ m?: string }>;
+type SearchParams = Promise<{ m?: string; v?: string }>;
 
 /** ?m=YYYY-MM → {y, m(0-11)}, ellers inneværende måned. */
 function parseMnd(param: string | undefined): { y: number; m: number } {
@@ -63,7 +64,8 @@ export default async function AvailabilityPage({
   searchParams: SearchParams;
 }) {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
-  const { m: mParam } = await searchParams;
+  const { m: mParam, v: vParam } = await searchParams;
+  const visning = vParam === "uke" ? "uke" : "maaned";
   const { y, m } = parseMnd(mParam);
 
   // Egne tidsvinduer (alle, for liste/rediger) + anleggene for sted-velgeren.
@@ -97,6 +99,16 @@ export default async function AvailabilityPage({
     const range = `${s.startTime}–${s.endTime}`;
     perUkedag.set(s.weekday, perUkedag.has(s.weekday) ? `${perUkedag.get(s.weekday)} · ${range}` : range);
   }
+  // Aktive ukentlige vinduer for uke-rutenettet.
+  const ukeVinduer = slots
+    .filter((s) => s.active && s.weekday !== null)
+    .map((s) => ({
+      id: s.id,
+      weekday: s.weekday as number,
+      startTime: s.startTime,
+      endTime: s.endTime,
+      locationName: s.location?.name ?? null,
+    }));
 
   // Måned-grid, mandag først.
   const dagerIMnd = new Date(y, m + 1, 0).getDate();
@@ -128,6 +140,25 @@ export default async function AvailabilityPage({
         }
       />
 
+      {/* Visnings-bytter: Måned / Uke (drag) */}
+      <div className="mb-4 flex gap-2">
+        <Link
+          href="/admin/availability?v=maaned"
+          className={agBtnClass(visning === "maaned" ? "primary" : "ghost", "sm")}
+        >
+          Måned
+        </Link>
+        <Link
+          href="/admin/availability?v=uke"
+          className={agBtnClass(visning === "uke" ? "primary" : "ghost", "sm")}
+        >
+          Uke (drag)
+        </Link>
+      </div>
+
+      {visning === "uke" ? (
+        <AvailabilityWeekGrid locations={locations} windows={ukeVinduer} />
+      ) : (
       <div className="rounded-xl border border-border bg-card p-[18px]">
         {/* Måned-navigasjon */}
         <div className="mb-[14px] flex items-center justify-between">
@@ -210,6 +241,7 @@ export default async function AvailabilityPage({
           </span>
         </div>
       </div>
+      )}
 
       {/* Tidsvinduer — rediger/slett per vindu */}
       <div className="mt-8 space-y-3">
