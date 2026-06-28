@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { applyAcceptedPlanAction } from "@/lib/agents/apply-action";
 
 export async function acceptPlanAction(actionId: string) {
   const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
@@ -16,13 +17,10 @@ export async function acceptPlanAction(actionId: string) {
   }
   if (action.status !== "PENDING") return;
 
-  // For PYRAMID_ADJUST: forenklet — bare marker som godkjent.
-  // Faktisk planjustering kan kjøres av periodiseringsagenten
-  // som henter accepted actions og oppretter sesjoner basert på dem.
-  await prisma.planAction.update({
-    where: { id: actionId },
-    data: { status: "ACCEPTED" },
-  });
+  // Anvend forslaget på planen (f.eks. PYRAMID_ADJUST → ny mål-allokering),
+  // og marker som godkjent. Apply-laget er idempotent og en no-op for
+  // rent rådgivende typer.
+  await applyAcceptedPlanAction(action);
 
   revalidatePath("/portal");
   revalidatePath("/portal/agent-pipeline");

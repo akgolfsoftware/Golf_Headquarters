@@ -2,20 +2,12 @@
 // og oppretter PlanAction-forslag basert på pyramide-adherence.
 
 import { prisma } from "@/lib/prisma";
-import { aggregateByArea, prosentPerArea, PYR_LABEL } from "@/lib/pyramide";
+import { aggregateByArea, prosentPerArea, PYR_LABEL, PYR_REKKEFOLGE } from "@/lib/pyramide";
+import { parseTargetAllocation } from "@/lib/training/target-allocation";
 import { startOfWeek, endOfWeek } from "@/lib/uke-helpers";
 import { runAgent, type AgentResult } from "./agent-runner";
 
 export const AGENT_NAME = "plan-watcher";
-
-// Mål-allokering — kan senere flyttes til egen tabell
-const MAL_PROSENT = {
-  FYS: 15,
-  TEK: 20,
-  SLAG: 35,
-  SPILL: 20,
-  TURN: 10,
-} as const;
 
 export async function runPlanWatcher(): Promise<AgentResult> {
   return runAgent(AGENT_NAME, null, async () => {
@@ -41,10 +33,12 @@ export async function runPlanWatcher(): Promise<AgentResult> {
     for (const plan of planer) {
       if (plan.sessions.length === 0) continue;
       const fordeling = prosentPerArea(aggregateByArea(plan.sessions));
+      // Mål planen faktisk er godkjent mot (eller standard hvis ikke satt).
+      const malAllokering = parseTargetAllocation(plan.targetAllocation);
 
-      for (const omr of Object.keys(MAL_PROSENT) as (keyof typeof MAL_PROSENT)[]) {
+      for (const omr of PYR_REKKEFOLGE) {
         const faktisk = fordeling[omr];
-        const mal = MAL_PROSENT[omr];
+        const mal = malAllokering[omr];
         const avvik = mal - faktisk;
         if (avvik <= 8) continue;
 

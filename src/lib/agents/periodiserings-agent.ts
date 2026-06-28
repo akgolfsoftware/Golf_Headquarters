@@ -2,17 +2,10 @@
 // Foreslår initial uke-allokering hvis planen mangler sesjoner.
 
 import { prisma } from "@/lib/prisma";
+import { STANDARD_MAL } from "@/lib/training/target-allocation";
 import { runAgent, type AgentResult } from "./agent-runner";
 
 export const AGENT_NAME = "periodiseringsagent";
-
-const MAL_PROSENT = {
-  FYS: 15,
-  TEK: 20,
-  SLAG: 35,
-  SPILL: 20,
-  TURN: 10,
-} as const;
 
 export async function runPeriodiseringsAgent(
   planId: string
@@ -38,7 +31,7 @@ export async function runPeriodiseringsAgent(
         suggestion: {
           forklaring:
             "Ny plan opprettet. Foreslått uke-allokering: 35% SLAG, 20% TEK, 20% SPILL, 15% FYS, 10% TURN.",
-          fordeling: MAL_PROSENT,
+          fordeling: STANDARD_MAL,
         },
       },
     });

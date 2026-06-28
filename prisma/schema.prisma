@@ -811,6 +811,11 @@ model TrainingPlan {
   aiModel        String?
   aiGenerationId String?
 
+  // Mål-allokering (pyramide-%, { FYS, TEK, SLAG, SPILL, TURN }). Settes når en
+  // coach godkjenner et PYRAMID_ADJUST-forslag; agentene måler mot DENNE i
+  // stedet for standard-målet. null = bruk STANDARD_MAL. Valideres med zod.
+  targetAllocation Json?
+
   user          User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
   sessions      TrainingPlanSession[]
   planActions   PlanAction[]

@@ -13,13 +13,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-
-type CoachNote = {
-  kind: "approve" | "decline" | "info_request";
-  text: string;
-  authorId: string;
-  at: string;
-};
+import { applyAcceptedPlanAction, type CoachNote } from "@/lib/agents/apply-action";
 
 async function attachCoachNote(actionId: string, note: CoachNote) {
   const existing = await prisma.planAction.findUnique({
@@ -55,21 +49,16 @@ export async function approveRequestDetailed(
     return;
   }
 
-  const suggestion = comment
-    ? await attachCoachNote(actionId, {
-        kind: "approve",
-        text: comment,
-        authorId: user.id,
-        at: new Date().toISOString(),
-      })
-    : undefined;
-
-  await prisma.planAction.update({
-    where: { id: actionId },
-    data: {
-      status: "ACCEPTED",
-      ...(suggestion ? { suggestion } : {}),
-    },
+  // Anvend forslaget på planen + flipp status, med ev. coach-kommentar i sporet.
+  await applyAcceptedPlanAction(action, {
+    coachNote: comment
+      ? {
+          kind: "approve",
+          text: comment,
+          authorId: user.id,
+          at: new Date().toISOString(),
+        }
+      : undefined,
   });
 
   revalidatePath("/admin/godkjenninger");
