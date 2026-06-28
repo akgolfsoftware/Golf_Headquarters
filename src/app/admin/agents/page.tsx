@@ -62,6 +62,16 @@ const AGENT_INFO: Record<string, { navn: string; trigger: string; beskrivelse: s
     trigger: "Cron mandag 08:00",
     beskrivelse: "Finner stallens svakeste SG-område siste 60 dager og foreslår 5 driller via Claude (med YouTube-video når YOUTUBE_API_KEY er satt). Godkjennes på /admin/drills/forslag.",
   },
+  "plan-revisjon": {
+    navn: "Plan-revisjon",
+    trigger: "Manuell (velg plan)",
+    beskrivelse: "Foreslår konkrete plan-justeringer for en valgt treningsplan og trigger (siste runde / skade / turneringsprep). Kjøres fra agent-detaljene.",
+  },
+  peaking: {
+    navn: "Peaking",
+    trigger: "Manuell (velg spiller)",
+    beskrivelse: "Foreslår uke-for-uke periodisering (Bompa) frem mot en valgt turnering for en spiller. Kjøres fra agent-detaljene.",
+  },
 };
 
 export default async function AgentsAdmin() {

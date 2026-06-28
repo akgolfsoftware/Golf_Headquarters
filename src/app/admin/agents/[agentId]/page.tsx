@@ -12,6 +12,7 @@ import { AthleticBadge } from "@/components/athletic/badge";
 import { EmptyState } from "@/components/shared/empty-state";
 import { FeedbackForm } from "./feedback-form";
 import { ApprovalActions } from "@/app/admin/approvals/approval-actions";
+import { AgentRunPanel } from "./agent-run-panel";
 
 type AgentKonfig = {
   navn: string;
@@ -91,6 +92,20 @@ const AGENT_KONFIG: Record<string, AgentKonfig> = {
     status: "aktiv",
     trigger: "Cron mandag 08:00",
   },
+  "plan-revisjon": {
+    navn: "Plan-revisjon",
+    beskrivelse:
+      "Foreslår konkrete plan-justeringer for en valgt treningsplan og trigger (siste runde / skade / turneringsprep). Velg plan under og kjør.",
+    status: "aktiv",
+    trigger: "Manuell (velg plan)",
+  },
+  peaking: {
+    navn: "Peaking",
+    beskrivelse:
+      "Foreslår uke-for-uke periodisering (Bompa) frem mot en valgt turnering for en spiller. Velg spiller og turnering under og kjør.",
+    status: "aktiv",
+    trigger: "Manuell (velg spiller)",
+  },
 };
 
 const STATUS_VARIANT: Record<
@@ -144,6 +159,46 @@ export default async function AgentDetaljPage({
     }),
   ]);
 
+  // Data for de manuelt kjørbare agentenes velgere.
+  let planValg: { id: string; label: string }[] = [];
+  let playerValg: { id: string; label: string }[] = [];
+  let tournamentValg: { id: string; label: string }[] = [];
+  if (agentId === "plan-revisjon") {
+    const plans = await prisma.trainingPlan.findMany({
+      where: { isActive: true },
+      orderBy: { startDate: "desc" },
+      take: 50,
+      select: { id: true, name: true, user: { select: { name: true } } },
+    });
+    planValg = plans.map((p) => ({
+      id: p.id,
+      label: `${p.user.name ?? "Ukjent"} — ${p.name}`,
+    }));
+  } else if (agentId === "peaking") {
+    const [players, tournaments] = await Promise.all([
+      prisma.user.findMany({
+        where: { role: "PLAYER", deletedAt: null },
+        orderBy: { name: "asc" },
+        take: 200,
+        select: { id: true, name: true },
+      }),
+      prisma.tournament.findMany({
+        where: { startDate: { gte: new Date() } },
+        orderBy: { startDate: "asc" },
+        take: 50,
+        select: { id: true, name: true, startDate: true },
+      }),
+    ]);
+    playerValg = players.map((p) => ({ id: p.id, label: p.name ?? "Ukjent" }));
+    tournamentValg = tournaments.map((t) => ({
+      id: t.id,
+      label: `${t.name} — ${t.startDate.toLocaleDateString("nb-NO", {
+        day: "2-digit",
+        month: "2-digit",
+      })}`,
+    }));
+  }
+
   const sistKjort = kjoringer[0]?.createdAt
     ? kjoringer[0].createdAt.toLocaleString("nb-NO", {
         day: "2-digit",
@@ -183,6 +238,14 @@ export default async function AgentDetaljPage({
         </div>
       }
     >
+      {/* Manuell kjøring for per-spiller-agentene (plan-revisjon, peaking) */}
+      <AgentRunPanel
+        agentId={agentId}
+        plans={planValg}
+        players={playerValg}
+        tournaments={tournamentValg}
+      />
+
       {/* Siste 10 forslag (PlanAction) fra denne agenten */}
       <section>
         <div className="mb-4 flex items-center justify-between gap-2">
@@ -362,6 +425,28 @@ function lagSnippet(meta: Record<string, unknown> | null): string | null {
     return `Svakest: ${meta.svakesteLabel} · ${n} drill${
       n === 1 ? "" : "er"
     }${video}`;
+  }
+
+  // Plan-revisjon: spiller + antall endringer + anbefaling.
+  if (Array.isArray(meta.endringer) && typeof meta.spillerNavn === "string") {
+    const n = meta.endringer.length;
+    const anbef =
+      typeof meta.samletAnbefaling === "string"
+        ? ` — ${meta.samletAnbefaling.replace(/\s+/g, " ").slice(0, 160)}`
+        : "";
+    return `${meta.spillerNavn} · ${n} endring${n === 1 ? "" : "er"}${anbef}`;
+  }
+
+  // Peaking: spiller → turnering + uker.
+  if (
+    Array.isArray(meta.fasePerUke) &&
+    typeof meta.tournamentNavn === "string"
+  ) {
+    const uker =
+      typeof meta.ukerTilTurnering === "number"
+        ? ` · ${meta.ukerTilTurnering} uker`
+        : "";
+    return `${meta.spillerNavn ?? "Spiller"} → ${meta.tournamentNavn}${uker}`;
   }
 
   // Agenter som returnerer en ren statusmelding (f.eks. "ingen-sg-data").
