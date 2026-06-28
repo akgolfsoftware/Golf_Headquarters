@@ -21,6 +21,7 @@ import { Activity, BatteryMedium, CircleCheck, Moon, Stethoscope } from "lucide-
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { hentFysScore } from "@/lib/fys-data";
+import { hentBelastning } from "@/lib/health/belastning";
 import { MeSub, SetGroup, SetRow, SetVal } from "@/components/portal/meg/meg-sub";
 import { AthleticBadge } from "@/components/athletic/badge";
 import { KpiCard } from "@/components/athletic/kpi";
@@ -43,7 +44,7 @@ export default async function HelsePage() {
   since.setUTCDate(since.getUTCDate() - 13);
 
   const now = new Date();
-  const [entries, aktivSkade, tidligereSkader, fys] = await Promise.all([
+  const [entries, aktivSkade, tidligereSkader, fys, belastning] = await Promise.all([
     prisma.healthEntry.findMany({
       where: { userId: user.id, date: { gte: since } },
       orderBy: { date: "desc" },
@@ -65,6 +66,7 @@ export default async function HelsePage() {
       },
     }),
     hentFysScore(user.id),
+    hentBelastning(user.id),
   ]);
 
   const siste = entries[0];
@@ -130,7 +132,22 @@ export default async function HelsePage() {
           }
           right={<SetVal>{sovnSnitt != null ? `${formatTimer(sovnSnitt)} t` : "—"}</SetVal>}
         />
-        <SetRow icon={Activity} title="Belastning" meta="Trening + runder" right={<SetVal>—</SetVal>} />
+        <SetRow
+          icon={Activity}
+          title="Belastning"
+          meta={
+            belastning.harData
+              ? "Siste uke vs 4-ukers snitt (trening + runder)"
+              : "For lite trenings-historikk siste 4 uker"
+          }
+          right={
+            <SetVal>
+              {belastning.prosentAvNormalt != null
+                ? `${belastning.prosentAvNormalt}%`
+                : "—"}
+            </SetVal>
+          }
+        />
         <SetRow icon={BatteryMedium} title="HRV" meta="Restitusjon" right={<SetVal>—</SetVal>} />
       </SetGroup>
 
@@ -162,8 +179,9 @@ export default async function HelsePage() {
 
       <div className="rounded-xl border border-border border-l-[3px] border-l-accent bg-card px-4 py-3.5 text-[13px] leading-[1.55] text-muted-foreground">
         <b className="font-semibold text-foreground">FYS-score</b> er din samlede testbatteri-form
-        (0–100, relativt til stallen). <b className="font-semibold text-foreground">Belastning</b> og{" "}
-        <b className="font-semibold text-foreground">HRV</b> er fortsatt plassholdere til de formlene er låst.
+        (0–100, relativt til stallen). <b className="font-semibold text-foreground">Belastning</b> viser
+        siste ukes trening + runder som prosent av ditt eget 4-ukers snitt (100 % = som vanlig).{" "}
+        <b className="font-semibold text-foreground">HRV</b> står som «—» til vi samler HRV-data.
       </div>
 
       <div className="mt-4">
