@@ -1,13 +1,12 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
 import { lesPreferences } from "@/lib/preferences";
 
 export async function setSgHubMode(mode: "simple" | "advanced") {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
 
   const existing = lesPreferences(user);
 

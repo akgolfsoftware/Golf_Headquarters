@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
 import { triggerRoundAgent } from "@/lib/agents/triggers";
 
@@ -40,8 +40,7 @@ export type RoundInput = {
 export async function createRound(
   input: RoundInput,
 ): Promise<{ roundId: string; sgTotal: number | null }> {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
 
   const round = await prisma.round.create({
     data: {
@@ -88,8 +87,7 @@ export async function lagreSgDiagnose(
   roundId: string,
   diagnose: "TEKNIKK" | "STRATEGI" | "MENTAL",
 ): Promise<void> {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
 
   const round = await prisma.round.findUnique({
     where: { id: roundId, userId: user.id },
@@ -123,8 +121,7 @@ export type ExportRoundsInput = {
  * eller streame filen via en route handler. For nå logger den valget.
  */
 export async function exportRounds(input: ExportRoundsInput) {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
   // Stub: kun for å bekrefte at server action er koblet.
   // Eksport-pipeline implementeres når PDF-renderer er på plass.
   await prisma.round.findMany({
@@ -309,8 +306,7 @@ export async function importFromGolfBox(
 }
 
 export async function deleteRound(roundId: string) {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
 
   const round = await prisma.round.findUnique({ where: { id: roundId } });
   if (!round || round.userId !== user.id) throw new Error("forbidden");

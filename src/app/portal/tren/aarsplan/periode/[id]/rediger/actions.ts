@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
 
 export type UpdatePeriodeInput = {
@@ -25,8 +25,7 @@ export type UpdatePeriodeInput = {
  * Mapper UI-felter til schema-kolonnene (PeriodBlock).
  */
 export async function updatePeriode(input: UpdatePeriodeInput) {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
 
   // IDOR-vern: periodeblokken eies via seasonPlan.userId — verifiser eierskap.
   const periode = await prisma.periodBlock.findUnique({
@@ -50,8 +49,7 @@ export async function updatePeriode(input: UpdatePeriodeInput) {
 }
 
 export async function deletePeriode(id: string) {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
   // IDOR-vern: verifiser eierskap før sletting.
   const periode = await prisma.periodBlock.findUnique({
     where: { id },

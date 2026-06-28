@@ -3,20 +3,19 @@
 /**
  * Server actions for /portal/meg — PlayerHQ "Meg"-profil.
  *
- * Hent, oppdater og logg ut. Bruker getCurrentUser + Prisma. Ingen schema-endringer.
+ * Hent, oppdater og logg ut. Bruker requireConsentingUser + Prisma. Ingen schema-endringer.
  */
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { lesPreferences, type UserPreferences } from "@/lib/preferences";
 import type { ProfileData } from "@/components/portal/profile/ProfileShell";
 
 export async function hentProfil(): Promise<ProfileData> {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
 
   const supabase = await createClient();
   const {
@@ -59,8 +58,7 @@ export async function oppdaterProfil(input: {
   prevSeasonAvgScore?: number | null;
   dateOfBirth?: Date | null;
 }) {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
 
   await prisma.user.update({
     where: { id: user.id },
@@ -82,8 +80,7 @@ export async function oppdaterProfil(input: {
 }
 
 export async function oppdaterPreferences(input: Partial<UserPreferences>) {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
 
   const eksisterende = lesPreferences(user);
   const oppdatert: UserPreferences = {

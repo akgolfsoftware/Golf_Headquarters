@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 
 export type LogSymptomInput = {
   region: string;
@@ -22,8 +22,7 @@ export type LogSymptomInput = {
  * dersom skjemaet utvides). For nå brukes en stub som validerer auth.
  */
 export async function logSymptom(input: LogSymptomInput) {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  await requireConsentingUser();
   void input;
   // I produksjon: prisma.symptomLog.create({ ... })
   revalidatePath("/portal/meg/helse");

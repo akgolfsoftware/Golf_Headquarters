@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
 
 export async function pinSession(input: {
@@ -9,8 +9,7 @@ export async function pinSession(input: {
   notes?: string | null;
   autoSuggested?: boolean;
 }) {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
 
   // Verifiser at økten tilhører brukeren
   const session = await prisma.trackManSession.findFirst({
@@ -41,8 +40,7 @@ export async function pinSession(input: {
 }
 
 export async function unpinSession() {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
 
   await prisma.bestSessionReference
     .delete({ where: { userId: user.id } })

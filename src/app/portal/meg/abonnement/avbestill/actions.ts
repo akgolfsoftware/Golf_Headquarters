@@ -2,13 +2,12 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 
 export async function cancelPro(): Promise<void> {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
 
   // Marker subscription som cancelAtPeriodEnd. Sluttbruker beholder Pro til periodEnd.
   const sub = await prisma.subscription.findUnique({

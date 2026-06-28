@@ -14,6 +14,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { assertNotAwaitingConsent } from "@/lib/auth/requireConsentingUser";
 import type { Ukedag } from "@/generated/prisma/client";
 
 // ---------- Schemas ----------
@@ -74,6 +75,7 @@ const LoggFullfortOktSchema = z.object({
 async function ensurePlanAccess(planId: string) {
   const user = await getCurrentUser();
   if (!user) throw new Error("Ikke innlogget");
+  assertNotAwaitingConsent(user);
 
   const plan = await prisma.fysiskPlan.findUnique({
     where: { id: planId },
@@ -114,6 +116,7 @@ export async function opprettPlan(input: z.input<typeof OpprettPlanSchema>) {
   const data = OpprettPlanSchema.parse(input);
   const user = await getCurrentUser();
   if (!user) throw new Error("Ikke innlogget");
+  assertNotAwaitingConsent(user);
 
   const plan = await prisma.fysiskPlan.create({
     data: {

@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { audit } from "@/lib/audit";
 
 const RequestProUpgradeSchema = z.object({
@@ -17,8 +17,7 @@ type Input = {
 
 export async function requestProUpgrade(input: Input): Promise<void> {
   RequestProUpgradeSchema.parse(input);
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
 
   // I produksjon: opprett Stripe checkout-session og redirect dit.
   // Foreløpig: logg forespørsel og redirect tilbake til abonnement med ok-state.

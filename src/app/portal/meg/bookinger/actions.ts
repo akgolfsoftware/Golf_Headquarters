@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
 import { stripeKlient } from "@/lib/stripe";
 import { audit } from "@/lib/audit";
@@ -23,8 +23,7 @@ const RescheduleBookingSchema = z.object({
 
 export async function cancelBooking(bookingId: string) {
   CancelBookingSchema.parse({ bookingId });
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
 
   const booking = await prisma.booking.findUnique({
     where: { id: bookingId },
@@ -190,8 +189,7 @@ export async function rescheduleBooking(input: {
   newCoachId: string;
 }): Promise<{ ok: true }> {
   RescheduleBookingSchema.parse(input);
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
 
   const booking = await prisma.booking.findUnique({
     where: { id: input.bookingId },

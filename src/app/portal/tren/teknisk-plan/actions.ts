@@ -10,6 +10,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { assertNotAwaitingConsent } from "@/lib/auth/requireConsentingUser";
 import type {
   PyramidArea,
   LFase,
@@ -91,6 +92,7 @@ export interface TaskInput {
 async function ensurePlanAccess(planId: string) {
   const user = await getCurrentUser();
   if (!user) throw new Error("Ikke innlogget");
+  assertNotAwaitingConsent(user);
   const plan = await prisma.technicalPlan.findUnique({
     where: { id: planId },
     select: { userId: true, opprettetAvId: true },
