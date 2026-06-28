@@ -106,7 +106,8 @@ Hub `/stats` → PGA-metrikker · Norske spillere/baner/turneringer · Verktøy 
 
 | Tema | Situasjon | Anbefaling |
 |---|---|---|
-| AgencyOS utdaterte flater | `/admin/calendar*` (dead `calendar-view-toggle`), `/admin/planlegge`, `/admin/queue`+`/oppfolging`, `/admin/kommunikasjon`, `/admin/hjelp`, `/admin/videoer`, `/admin/finance`, `/admin/messages`, `/admin/board`, `/admin/caddie`(stub) | Pensjoner/redirect til kanonisk rute (`/admin/kalender`, `/admin/okonomi`, `/admin/innboks`, …). |
+| AgencyOS utdaterte flater — ✅ **enkle dubletter ryddet (verifisert 2026-06-28)** | Allerede redirects: `/admin/calendar`→`kalender`, `/admin/finance`→`okonomi`, `/admin/messages`→`innboks`, `/admin/caddie`→`agencyos/caddie/dashbord`, `/admin/board`. `/admin/queue` er BÆRENDE (`/admin/oppfolging` re-eksporterer den) — ikke rør. | Ferdig for de enkle. |
+| AgencyOS — 4 ekte foreldreløse sider (IKKE enkle dubletter) | `/admin/planlegge` (446 l), `/admin/hjelp` (296 l), `/admin/kommunikasjon` (133 l), `/admin/videoer` (127 l): 0 inbound-lenker, men reell UI-kode. Redirect = sletting av fungerende kode. Skader ingen aktiv sti i dag (ingenting peker dit). | Per-side-beslutning: pensjoner (slett) ELLER koble inn. Ikke blind-redirect før lansering. |
 | PlayerHQ «kalender» x3 | `/portal/kalender` (ekte) · `/portal/tren/kalender` (redirect-skygge) · `/portal/gjennomfore?tab=kalender` | Velg én kanonisk, fjern de to andre inngangene. |
 | Stats henger løst | `StatsCmdK` (11-lenkers nav) er aldri montert + ingen `stats/layout.tsx` → ~15 foreldreløse | Monter `StatsCmdK` ELLER lag `stats/layout.tsx` med nav. (Avventer: stats er ikke i v1.) |
 | Forelder-invitasjon x2 | `/inviter/forelder/[token]` vs `/auth/guardian-consent/[token]` | Avklar hvilken som er kanon, fjern den andre. |
