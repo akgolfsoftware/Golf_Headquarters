@@ -1044,7 +1044,7 @@ motorberegnet.** SG-*motoren* er produksjonsklar, men *frakoblet* skrivebanen.
 | Tilstander `/admin/tilstander` | **STUB** — design-system-showcase, fiktive spillere hardkodet | `src/app/admin/tilstander/page.tsx` |
 | Analytics-eksport (PDF/CSV/XLSX) | **STUB** — fabrikkert `downloadUrl`; `/api/exports/` finnes ikke → 404 | `src/app/admin/analytics/actions.ts` (`return`) |
 | Turneringer-eksport | **STUB** — samme, fabrikkert URL | `src/app/admin/tournaments/actions.ts:438` |
-| Cockpit SG-ticker-stripe | **MANGLER** — fasit har lime SG-ticker; appen har fane-rad | `BYGGELOGG-FLAGG.md` A-3 |
+| Cockpit SG-ticker-stripe | **MANGLER** — fasit har lime SG-ticker; appen har fane-rad | `arkiv/BYGGELOGG-FLAGG.md` A-3 |
 | TrackMan-filtre (Miljø/Kilde) | **STUB** — toast «kommer snart» | `src/app/admin/trackman/trackman-actions.tsx:12-13` |
 | Tester-detalj: Del + PDF | **STUB** — «kommer snart» | `src/app/admin/tester/[id]/tester-detail-actions.tsx:16,25` |
 | Grupper-handlinger (5×) | **STUB** — «kommer snart» | `…/grupper/[id]/gruppe-actions.tsx:23,35,47,59`, `…/grupper/grupper-actions.tsx:10` |
@@ -1158,7 +1158,7 @@ bekrefter mønsteret: CBAC-modulen brukes for `hasRole`, aldri for `can`.
   AgencyOS (godkjenninger, økonomi, innboks, analytics) — ikke anta tallene er ekte.»
 - **`docs/STATUS-NÅ.md`:** «Delvis mock i AgencyOS: godkjenninger, økonomi, innboks/meldinger,
   analytics — UI bygget, ikke full datakobling.» Mobil-nav ikke samlet med desktop.
-- **`docs/BYGGELOGG-FLAGG.md` A-1/A-3:** stall-SG + plan-adherence LØST; SG-ticker-stripe mangler;
+- **`docs/arkiv/BYGGELOGG-FLAGG.md` A-1/A-3:** stall-SG + plan-adherence LØST; SG-ticker-stripe mangler;
   long-tail-skjermer (`/plan/[planId]`, `/rediger`, `/tildel-test`, `/audit-log`, `/reach`,
   `/compliance`, `/risiko`, `/lag-snitt`, `/team`, `/integrasjoner`, `/email-templates`) ikke verifisert.
 - **`docs/DATA-INVENTORY.md`:** «motoren er bygd men frakoblet»; TrackMan-filtre stub; ekte sanntid

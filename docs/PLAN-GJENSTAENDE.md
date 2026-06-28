@@ -1,6 +1,6 @@
 # PLAN — Gjenstående oppgaver + handover
 
-> **Hva dette er:** én samlet, prioritert plan over alt som gjenstår — fra denne øktens arbeid, fra handover-designet, og fra de tidligere sporene (`SKJERM-STATUS.md`, `BYGGELOGG-FLAGG.md`, `AAPNE-SPORSMAAL.md`, `REGLER-OPPLAST-2026-06-22.md`).
+> **Hva dette er:** én samlet, prioritert plan over alt som gjenstår — fra denne øktens arbeid, fra handover-designet, og fra de tidligere sporene (`arkiv/SKJERM-STATUS.md`, `arkiv/BYGGELOGG-FLAGG.md`, `AAPNE-SPORSMAAL.md`, `REGLER-OPPLAST-2026-06-22.md`).
 >
 > **Status etter 2026-06-22-øktene:** 335 av 362 reelle skjermer ferdige (93 %). Alle 13 «blokkerte» løst. 66 QA-launch-blokkere + admin-farge-tokenisering + 7 feature-knapp-grupper fikset. Det som står igjen er listet under — gruppert etter **hva som trengs for å komme videre.**
 >
@@ -119,4 +119,4 @@ Si fra hvis du vil at jeg skal bygge scaffolding for D3.6/D3.7 (tomme-men-klare 
 + admin-redigering) eller ta Notion-mappingen (D3.5) — de er byggbare, men gir ikke
 verdi før det finnes ekte data/innhold å vise.
 
-*Sist oppdatert 2026-06-22. Hold denne i sync med `SKJERM-STATUS.md` (skjerm-status) og `AAPNE-SPORSMAAL.md` (beslutninger).*
+*Sist oppdatert 2026-06-22. Hold denne i sync med `MASTER-SKJERMPLAN.md` (skjerm-status) og `AAPNE-SPORSMAAL.md` (beslutninger).*
