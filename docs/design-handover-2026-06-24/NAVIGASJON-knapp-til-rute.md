@@ -15,7 +15,7 @@
 | Produkt | Ruter | Hovedfunn |
 |---|---|---|
 | PlayerHQ `/portal` | 150 | 5-fane-IA er sunn. Coach-videoer + Innstillinger MER koblet, TrackMan-duplikat konsolidert (2026-06-25). Igjen: coach/booking-deep-links = beslutning. |
-| AgencyOS `/admin` | 141 | Gruppert sidebar godt koblet. **3 ekte 404-bugs**, ~7 «glemt å koble», ~9 utdaterte dublett-flater. |
+| AgencyOS `/admin` | 141 | Gruppert sidebar godt koblet. **404-bugene løst (2026-06-28)**, ~7 «glemt å koble», ~9 utdaterte dublett-flater. |
 | Marketing `akgolf.no` | ~27 | `/priser` + `/faq` nå i header/mobil-meny (2026-06-25). `/blogg`,`/cases`,`/junior`,`/suksess` = IA-valg. `/turneringer` bevisst ute av v1. |
 | Stats `/stats` | ~45 | Strukturelt løst: nav-komponenten (`StatsCmdK`) er aldri montert + ingen stats-layout → ~15 foreldreløse. (Delvis bevisst: ikke i v1.) |
 | Forelder/Auth/Booking | ~35 | Forelder rent. 1 ekte 404-blindvei, 4 foreldreløse, 2 dublett-flyter. |
@@ -69,17 +69,18 @@ Hub `/stats` → PGA-metrikker · Norske spillere/baner/turneringer · Verktøy 
 
 ## DEL 2 — Forbedrings-lag (handle på disse)
 
-### A · EKTE BUGS — gir 404 i dag (fiks først, lav risiko)
+### A · EKTE BUGS — ✅ ALLE FEM LØST (verifisert mot kode 2026-06-28)
 
-| # | Hvor | Problem | Fiks |
+| # | Hvor | Problem | Status |
 |---|---|---|---|
-| A1 | `src/app/api/admin/search/route.ts:62` | Cmd+K «Innstillinger» → `/admin/innstillinger` (finnes ikke) | → `/admin/settings` |
-| A2 | `src/app/api/admin/search/route.ts:64` | Cmd+K «Meldinger» → `/admin/meldinger` (finnes ikke) | → `/admin/innboks` |
-| A3 | `src/app/admin/tester/page.tsx:199` | «Tildel»-knapp → `/admin/tester/tildel` (finnes kun `/[spillerId]`) | velg spiller først, ELLER pek til tildel-flate med spiller-velger |
-| A4 | `src/app/portal/booking/[bookingId]` (~248) | «Alt er klart» → `/bekreftet` UTEN `?bookingId=` → `notFound()` | send med `bookingId`, ELLER pek til booking-hub |
-| A5 | `global-search` + `api/portal/search` | Lenker til gammel `/portal/analyse` (redirecter, men stale) | → `/portal/analysere` |
+| A1 | `src/app/api/admin/search/route.ts:62` | Cmd+K «Innstillinger» → `/admin/innstillinger` (fantes ikke) | ✅ peker nå `/admin/settings` |
+| A2 | `src/app/api/admin/search/route.ts:64` | Cmd+K «Meldinger» → `/admin/meldinger` (fantes ikke) | ✅ peker nå `/admin/innboks` |
+| A3 | `src/app/admin/tester/page.tsx` | «Tildel» → `/admin/tester/tildel` (manglet) | ✅ `tester/tildel/page.tsx` finnes (spiller-velger → `/[spillerId]`) |
+| A4 | `src/app/portal/booking/[bookingId]` | «Alt er klart» → `/bekreftet` uten `bookingId` → `notFound()` | ✅ lenken sender nå `?bookingId=${bookingId}` (linje 248 + bekreft-form) |
+| A5 | `global-search` + `api/portal/search` | Lenker til gammel `/portal/analyse` (stale) | ✅ ingen treff igjen — alle peker `/portal/analysere` |
 
-> Alle fem er verifisert mot kildekoden. A1–A2 + A5 er rene streng-bytter.
+> **2026-06-28:** Verifisert at admin-sidebar (46 ruter i `admin-nav.ts`) + alle portal/admin
+> bunn-/mobil-nav-kilder peker på ekte `page.tsx` — **null døde knapper i nav-kildene**. DEL 2-A er historikk.
 
 ### B · FORELDRELØSE — koble eller pensjoner (bestem per rad)
 
@@ -117,4 +118,4 @@ Hub `/stats` → PGA-metrikker · Norske spillere/baner/turneringer · Verktøy 
 
 DEL 1 (kanonisk fasit) er det Claude Design-prompten (`CLAUDE-DESIGN-PROMPT.md`) skal bruke som «knapp → skjerm». DEL 2-B/C er IA-beslutninger: når en foreldreløs skjerm får et hjem eller en dublett pensjoneres, oppdateres DEL 1 + prompten. Slik holder designet og koden samme navigasjon - og «feil skjerm på feil knapp» forsvinner ved kilden.
 
-*Verifisert 2026-06-24 mot 406 page.tsx-ruter. Hold i sync med `CLAUDE-DESIGN-PROMPT.md` og appens nav-filer (`bottom-nav.tsx`, `portal/sidebar.tsx`, `admin-nav.ts`).*
+*Verifisert 2026-06-24 mot 406 page.tsx-ruter; DEL 2-A re-verifisert + alle 5 404-bugs bekreftet løst 2026-06-28 (admin-nav + portal/admin bunn-nav har null døde knapper). Hold i sync med `CLAUDE-DESIGN-PROMPT.md` og appens nav-filer (`bottom-nav.tsx`, `portal/sidebar.tsx`, `admin-nav.ts`).*
