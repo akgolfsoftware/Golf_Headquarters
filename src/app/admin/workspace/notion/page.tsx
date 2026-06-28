@@ -556,9 +556,9 @@ function ConnectedState({
           <strong>Hint:</strong> Vi har detektert at databasen{" "}
           <strong>Mulligan · drift</strong> har ny property <em>«Forventet timer»</em>.
           Vil du mappe denne til <strong>Estimat</strong>-feltet?{" "}
-          <a href="#" className="font-bold text-primary">
+          <span className="font-bold text-primary">
             Ja, map nå →
-          </a>
+          </span>
         </p>
       </div>
     </div>

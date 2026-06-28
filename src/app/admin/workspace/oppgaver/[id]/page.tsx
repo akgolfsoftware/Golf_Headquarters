@@ -400,12 +400,9 @@ export default async function TaskDetaljPage({
                     sist 4 min siden
                   </div>
                 </div>
-                <a
-                  href="#"
-                  className="font-mono text-[10.5px] font-bold uppercase tracking-[0.06em] text-primary"
-                >
+                <span className="font-mono text-[10.5px] font-bold uppercase tracking-[0.06em] text-primary">
                   ÅPNE →
-                </a>
+                </span>
               </div>
             </div>
           </div>
