@@ -83,6 +83,11 @@ export type ShotInput = {
   shotType: ShotType;
   isPenalty?: boolean;
   notes?: string;
+  // GPS-posisjon for baneguide/dispersion (X=lng, Y=lat — se lib/baneguide/shot-coords)
+  startLat?: number;
+  startLng?: number;
+  endLat?: number;
+  endLng?: number;
 };
 
 async function assertRoundOwner(roundId: string, userId: string) {
@@ -117,6 +122,10 @@ export async function saveShot(roundId: string, input: ShotInput) {
       shotType: input.shotType,
       isPenalty: input.isPenalty ?? false,
       notes: input.notes ?? null,
+      startX: input.startLng ?? null,
+      startY: input.startLat ?? null,
+      endX: input.endLng ?? null,
+      endY: input.endLat ?? null,
     },
     update: {
       holePar: input.holePar,
@@ -128,6 +137,10 @@ export async function saveShot(roundId: string, input: ShotInput) {
       shotType: input.shotType,
       isPenalty: input.isPenalty ?? false,
       notes: input.notes ?? null,
+      startX: input.startLng ?? null,
+      startY: input.startLat ?? null,
+      endX: input.endLng ?? null,
+      endY: input.endLat ?? null,
     },
   });
 
