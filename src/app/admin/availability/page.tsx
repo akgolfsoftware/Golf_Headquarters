@@ -21,6 +21,7 @@ import { prisma } from "@/lib/prisma";
 import { AgPage, AgPageHead, agBtnClass } from "@/components/admin/agencyos/ui";
 import { cn } from "@/lib/utils";
 import { SynkButton } from "./availability-actions";
+import { CalendarSyncSection } from "@/app/admin/settings/calendar/calendar-sync-section";
 
 export const dynamic = "force-dynamic";
 
@@ -182,6 +183,23 @@ export default async function AvailabilityPage({
             <span className="h-[6px] w-[6px] rounded-full bg-accent" /> I DAG
           </span>
         </div>
+      </div>
+
+      {/* Google Calendar-kobling — samme skjerm som arbeidstidene. */}
+      <div className="mt-8 space-y-3">
+        <div>
+          <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            Gjennomføre · Tilgjengelighet · Google Calendar
+          </div>
+          <h2 className="mt-1 font-display text-lg font-bold tracking-[-0.015em] text-foreground">
+            Koble kalender — velg hva som blokkerer booking
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Familie-, jobb- og møtekalendere du huker av blokkerer automatisk
+            booking-tid. Opptatt-tid kan aldri dobbeltbookes.
+          </p>
+        </div>
+        <CalendarSyncSection userId={user.id} />
       </div>
     </AgPage>
   );

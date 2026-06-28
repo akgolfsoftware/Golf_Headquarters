@@ -205,7 +205,6 @@ export function buildAdminNav(
             { key: "bookings", label: "Bookinger & kapasitet", href: "/admin/bookinger", badge: "bookings" },
             { key: "facilities", label: "Anlegg", href: "/admin/anlegg" },
             { key: "availability", label: "Tilgjengelighet", href: "/admin/availability" },
-            { key: "calendar-sync", label: "Kalender-kobling", href: "/admin/settings/calendar" },
             { key: "services", label: "Tjenester", href: "/admin/services" },
             { key: "trackman", label: "TrackMan", href: "/admin/trackman" },
             { key: "recording", label: "Opptak", href: "/admin/recording" },
