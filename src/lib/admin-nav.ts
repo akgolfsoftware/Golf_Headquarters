@@ -203,6 +203,7 @@ export function buildAdminNav(
             { key: "training-plans", label: "Treningsplaner", href: "/admin/plans" },
             { key: "plan-templates", label: "Plan-maler", href: "/admin/plan-templates" },
             { key: "drills", label: "Drill-bibliotek", href: "/admin/drills" },
+            { key: "drill-forslag", label: "AI drill-forslag", href: "/admin/drills/forslag" },
             { key: "sessions", label: "Økter", href: "/admin/okter" },
             { key: "technical-plan", label: "Teknisk plan", href: "/admin/teknisk-plan" },
             { key: "tournaments", label: "Turneringer", href: "/admin/tournaments" },
