@@ -23,7 +23,14 @@ import { cn } from "@/lib/utils";
 import { SynkButton } from "./availability-actions";
 import { SlotForm } from "./slot-form";
 import { AvailabilityWeekGrid } from "./availability-week-grid";
+import { AvailabilityYearGantt, type YearWindow } from "./availability-year-gantt";
 import { CalendarSyncSection } from "@/app/admin/settings/calendar/calendar-sync-section";
+
+const REP_TEKST: Record<number, string> = {
+  2: "annenhver uke",
+  3: "hver 3. uke",
+  4: "hver 4. uke",
+};
 
 export const dynamic = "force-dynamic";
 
@@ -65,7 +72,7 @@ export default async function AvailabilityPage({
 }) {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const { m: mParam, v: vParam } = await searchParams;
-  const visning = vParam === "uke" ? "uke" : "maaned";
+  const visning = vParam === "uke" ? "uke" : vParam === "aar" ? "aar" : "maaned";
   const { y, m } = parseMnd(mParam);
 
   // Egne tidsvinduer (alle, for liste/rediger) + anleggene for sted-velgeren.
@@ -83,6 +90,7 @@ export default async function AvailabilityPage({
         locationId: true,
         validFrom: true,
         validTo: true,
+        recurrenceInterval: true,
         location: { select: { name: true } },
       },
     }),
@@ -109,6 +117,22 @@ export default async function AvailabilityPage({
       endTime: s.endTime,
       locationName: s.location?.name ?? null,
     }));
+
+  // Aktive ukentlige vinduer for år-Gantt (periode-bjelker).
+  const aarsVinduer: YearWindow[] = slots
+    .filter((s) => s.active && s.weekday !== null)
+    .map((s) => {
+      const rep = s.recurrenceInterval && s.recurrenceInterval > 1
+        ? ` · ${REP_TEKST[s.recurrenceInterval] ?? `hver ${s.recurrenceInterval}. uke`}`
+        : "";
+      return {
+        id: s.id,
+        locationName: s.location?.name ?? null,
+        label: `${UKEDAGER_NB[s.weekday as number]} · ${s.startTime}–${s.endTime}${rep}`,
+        validFrom: s.validFrom,
+        validTo: s.validTo,
+      };
+    });
 
   // Måned-grid, mandag først.
   const dagerIMnd = new Date(y, m + 1, 0).getDate();
@@ -154,10 +178,36 @@ export default async function AvailabilityPage({
         >
           Uke (drag)
         </Link>
+        <Link
+          href={`/admin/availability?v=aar&m=${mndParam(y, m)}`}
+          className={agBtnClass(visning === "aar" ? "primary" : "ghost", "sm")}
+        >
+          År
+        </Link>
       </div>
 
       {visning === "uke" ? (
         <AvailabilityWeekGrid locations={locations} windows={ukeVinduer} />
+      ) : visning === "aar" ? (
+        <div className="space-y-3">
+          <div className="flex items-center justify-end gap-[6px]">
+            <Link
+              href={`/admin/availability?v=aar&m=${mndParam(y - 1, m)}`}
+              className={agBtnClass("ghost", "sm")}
+              aria-label="Forrige år"
+            >
+              <ChevronLeft size={16} strokeWidth={1.5} />
+            </Link>
+            <Link
+              href={`/admin/availability?v=aar&m=${mndParam(y + 1, m)}`}
+              className={agBtnClass("ghost", "sm")}
+              aria-label="Neste år"
+            >
+              <ChevronRight size={16} strokeWidth={1.5} />
+            </Link>
+          </div>
+          <AvailabilityYearGantt year={y} windows={aarsVinduer} />
+        </div>
       ) : (
       <div className="rounded-xl border border-border bg-card p-[18px]">
         {/* Måned-navigasjon */}
@@ -289,6 +339,7 @@ export default async function AvailabilityPage({
                     locationId: s.locationId,
                     validFrom: s.validFrom ? s.validFrom.toISOString().slice(0, 10) : null,
                     validTo: s.validTo ? s.validTo.toISOString().slice(0, 10) : null,
+                    recurrenceInterval: s.recurrenceInterval,
                   }}
                 />
               </li>

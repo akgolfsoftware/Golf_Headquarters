@@ -20,6 +20,7 @@ type Props = {
     locationId: string | null;
     validFrom: string | null;
     validTo: string | null;
+    recurrenceInterval: number | null;
   };
   defaultWeekday?: number;
   triggerLabel: string;
@@ -47,6 +48,7 @@ export function SlotForm({ locations, initial, defaultWeekday, triggerLabel }: P
   );
   const [validFrom, setValidFrom] = useState(initial?.validFrom ?? "");
   const [validTo, setValidTo] = useState(initial?.validTo ?? "");
+  const [recurrence, setRecurrence] = useState(initial?.recurrenceInterval ?? 1);
 
   useEffect(() => {
     if (open) dialogRef.current?.showModal();
@@ -77,6 +79,7 @@ export function SlotForm({ locations, initial, defaultWeekday, triggerLabel }: P
       locationId,
       validFrom: visPeriode && validFrom ? validFrom : null,
       validTo: visPeriode && validTo ? validTo : null,
+      recurrenceInterval: mode === "weekly" ? recurrence : null,
     };
     startTransition(async () => {
       try {
@@ -157,19 +160,33 @@ export function SlotForm({ locations, initial, defaultWeekday, triggerLabel }: P
             </div>
 
             {mode === "weekly" ? (
-              <Felt label="Ukedag">
-                <select
-                  value={weekday}
-                  onChange={(e) => setWeekday(Number(e.target.value))}
-                  className={input}
-                >
-                  {DAGER.map((d, i) => (
-                    <option key={i} value={i}>
-                      {d}
-                    </option>
-                  ))}
-                </select>
-              </Felt>
+              <>
+                <Felt label="Ukedag">
+                  <select
+                    value={weekday}
+                    onChange={(e) => setWeekday(Number(e.target.value))}
+                    className={input}
+                  >
+                    {DAGER.map((d, i) => (
+                      <option key={i} value={i}>
+                        {d}
+                      </option>
+                    ))}
+                  </select>
+                </Felt>
+                <Felt label="Repetisjon">
+                  <select
+                    value={recurrence}
+                    onChange={(e) => setRecurrence(Number(e.target.value))}
+                    className={input}
+                  >
+                    <option value={1}>Hver uke</option>
+                    <option value={2}>Annenhver uke</option>
+                    <option value={3}>Hver tredje uke</option>
+                    <option value={4}>Hver fjerde uke</option>
+                  </select>
+                </Felt>
+              </>
             ) : (
               <Felt label="Dato">
                 <input

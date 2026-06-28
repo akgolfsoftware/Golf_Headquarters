@@ -21,6 +21,14 @@ export type Slot = {
 
 const SLOT_INTERVAL_MIN = 30;
 
+// Antall hele uker siden en fast mandag-epoke (1970-01-05). Brukes til å avgjøre
+// om et «hver Nte uke»-vindu treffer en gitt dato.
+function ukeNummer(d: Date): number {
+  const epoke = Date.UTC(1970, 0, 5); // mandag
+  const dag = Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
+  return Math.floor((dag - epoke) / (7 * 86_400_000));
+}
+
 /**
  * Returner ledige tider for tjenesten på gitt dato.
  *
@@ -66,6 +74,19 @@ export async function getAvailableSlots(
 
   if (availability.length === 0) return [];
 
+  // Repetisjon: dropp ukentlige vinduer som ikke treffer denne uka (hver Nte).
+  // Ankret til validFrom (ellers fast epoke). Én-gangs-datoer påvirkes ikke.
+  const ukeIdag = ukeNummer(date);
+  const gjeldende = availability.filter((av) => {
+    if (!av.recurrenceInterval || av.recurrenceInterval <= 1 || av.weekday === null) {
+      return true;
+    }
+    const ankerUke = ukeNummer(av.validFrom ?? new Date(0));
+    const n = av.recurrenceInterval;
+    return ((((ukeIdag - ankerUke) % n) + n) % n) === 0;
+  });
+  if (gjeldende.length === 0) return [];
+
   // Hent eksisterende bookinger for denne dagen (uavhengig av coach).
   const dayStart = new Date(date);
   dayStart.setHours(0, 0, 0, 0);
@@ -84,7 +105,7 @@ export async function getAvailableSlots(
   // Hvis en coach ikke har koblet Calendar, returneres tom liste.
   const uniqueCoachIds = Array.from(
     new Set(
-      availability
+      gjeldende
         .filter((av) => av.coach && (av.coach.role === "COACH" || av.coach.role === "ADMIN"))
         .map((av) => av.coach.id),
     ),
@@ -100,7 +121,7 @@ export async function getAvailableSlots(
   const slots: Slot[] = [];
   const now = new Date();
 
-  for (const av of availability) {
+  for (const av of gjeldende) {
     if (!av.coach || (av.coach.role !== "COACH" && av.coach.role !== "ADMIN")) {
       continue;
     }

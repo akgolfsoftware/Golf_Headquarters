@@ -2310,6 +2310,9 @@ model CoachAvailability {
   // Periode-gyldighet (års-visning): vinduet gjelder kun mellom disse. Null = alltid.
   validFrom DateTime?
   validTo   DateTime?
+  // Repetisjon: null/1 = hver uke, 2 = annenhver, 3 = «hver tredje» osv. Ankret
+  // til validFrom (ellers fast uke-epoke). Kun for ukentlige vinduer.
+  recurrenceInterval Int?
   active    Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

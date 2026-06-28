@@ -23,6 +23,8 @@ export type SlotInput = {
   // Periode-gyldighet (års-perioder). null = alltid.
   validFrom?: string | null; // ISO YYYY-MM-DD
   validTo?: string | null;
+  // Repetisjon: 1/null = hver uke, 2 = annenhver, 3 = hver tredje osv.
+  recurrenceInterval?: number | null;
 };
 
 function tilMin(t: string): number {
@@ -69,6 +71,7 @@ function normaliser(input: SlotInput): {
   locationId: string | null;
   validFrom: Date | null;
   validTo: Date | null;
+  recurrenceInterval: number | null;
 } {
   const weekday = input.weekday ?? null;
   const date = input.date ? new Date(input.date) : null;
@@ -84,6 +87,8 @@ function normaliser(input: SlotInput): {
     locationId: input.locationId ?? null,
     validFrom: input.validFrom ? new Date(input.validFrom) : null,
     validTo: input.validTo ? new Date(input.validTo) : null,
+    // Repetisjon gjelder kun ukentlige vinduer.
+    recurrenceInterval: weekday !== null ? (input.recurrenceInterval ?? null) : null,
   };
 }
 
@@ -105,6 +110,7 @@ export async function addSlot(input: SlotInput) {
       locationId: n.locationId,
       validFrom: n.validFrom,
       validTo: n.validTo,
+      recurrenceInterval: n.recurrenceInterval,
       startTime: input.startTime,
       endTime: input.endTime,
       active: input.active,
@@ -138,6 +144,7 @@ export async function updateSlot(id: string, input: SlotInput) {
       locationId: n.locationId,
       validFrom: n.validFrom,
       validTo: n.validTo,
+      recurrenceInterval: n.recurrenceInterval,
       startTime: input.startTime,
       endTime: input.endTime,
       active: input.active,
