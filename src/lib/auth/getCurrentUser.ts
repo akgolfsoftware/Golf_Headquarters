@@ -2,13 +2,20 @@
 // og Server Actions. React.cache deduper kall innenfor samme request.
 
 import { cache } from "react";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { ensureUser } from "./ensureUser";
+import { isAwaitingGuardianConsent } from "./minor";
 import { resolveTier } from "@/lib/feature-flags";
 import type { User } from "@/generated/prisma/client";
 
-export const getCurrentUser = cache(async (): Promise<User | null> => {
+// Henter innlogget Prisma-bruker UTEN samtykke-håndheving. Brukes KUN av
+// samtykke-flyten (samtykke-venter-siden + onboarding der den mindreårige
+// setter fødselsdato og resender invitasjon MENS hen venter på samtykke) og av
+// requirePortalUser/requireCapability (som gjør sin egen samtykke-redirect).
+// All annen kode skal bruke getCurrentUser, som arver samtykke-gaten under.
+export const getCurrentUserRaw = cache(async (): Promise<User | null> => {
   const supabase = await createClient();
   const {
     data: { user: authUser },
@@ -26,6 +33,20 @@ export const getCurrentUser = cache(async (): Promise<User | null> => {
   // Supabase-bruker finnes, men Prisma-rad mangler — opprett via metadata.
   const ny = await ensureUser(authUser);
   return ny ? withEffektivTilgang(ny) : null;
+});
+
+// GDPR art. 8 (S-13): standard innloggings-sti for portal/admin. Identisk med
+// getCurrentUserRaw, men håndhever foreldresamtykke for mindreårige sentralt —
+// en mindreårig som venter på samtykke sendes til venterommet i stedet for å få
+// kjøre data-mutasjoner. Dette lukker gapet der ~67 server-actions kalte rå
+// getCurrentUser uten requirePortalUser/requireCapability. Returnerer aldri en
+// bruker som venter på samtykke (redirect kaster før retur).
+export const getCurrentUser = cache(async (): Promise<User | null> => {
+  const user = await getCurrentUserRaw();
+  if (user && isAwaitingGuardianConsent(user)) {
+    redirect("/auth/samtykke-venter");
+  }
+  return user;
 });
 
 // Overskriver `tier` med EFFEKTIV tier etter de låste reglene (se lib/feature-flags.ts):

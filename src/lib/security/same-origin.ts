@@ -30,8 +30,12 @@ const ALLOWED_ORIGINS: string[] = (() => {
   return origins;
 })();
 
-export function isSameOrigin(req: Request): boolean {
-  const origin = req.headers.get("origin");
+// Delt origin/referer-sjekk brukt av både Request-varianten (route handlers) og
+// action-varianten (server actions via next/headers).
+function checkOriginReferer(
+  origin: string | null,
+  referer: string | null,
+): boolean {
   if (origin) {
     return ALLOWED_ORIGINS.some(
       (allowed) => allowed === origin || origin.endsWith(".vercel.app")
@@ -39,7 +43,6 @@ export function isSameOrigin(req: Request): boolean {
   }
 
   // Fallback: sjekk Referer
-  const referer = req.headers.get("referer");
   if (referer) {
     try {
       const refOrigin = new URL(referer).origin;
@@ -51,6 +54,23 @@ export function isSameOrigin(req: Request): boolean {
 
   // Ingen origin/referer — avvis i produksjon
   return process.env.NODE_ENV !== "production";
+}
+
+export function isSameOrigin(req: Request): boolean {
+  return checkOriginReferer(
+    req.headers.get("origin"),
+    req.headers.get("referer"),
+  );
+}
+
+// Same-origin-sjekk for SERVER ACTIONS, som ikke får et Request-objekt. Leser
+// innkommende headers via next/headers og bruker nøyaktig samme allowlist som
+// route-variantene. Next håndhever allerede en innebygd origin-sjekk på server
+// actions; dette er defense-in-depth for samtykke-/persondata-actions.
+export async function isSameOriginAction(): Promise<boolean> {
+  const { headers } = await import("next/headers");
+  const h = await headers();
+  return checkOriginReferer(h.get("origin"), h.get("referer"));
 }
 
 /**

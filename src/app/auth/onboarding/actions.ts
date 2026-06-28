@@ -3,7 +3,11 @@
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+// getCurrentUserRaw (ikke getCurrentUser): under onboarding setter en mindreårig
+// fødselsdato (som TRIGGER samtykke-kravet) og kan resende invitasjonen MENS hen
+// venter på samtykke. getCurrentUser ville redirecte til venterommet og gjort
+// disse stegene umulige å fullføre. Onboarding er flyten FØR samtykke er gitt.
+import { getCurrentUserRaw as getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { lesPreferences } from "@/lib/preferences";
 import { prisma } from "@/lib/prisma";
 import { isMinor } from "@/lib/auth/minor";
