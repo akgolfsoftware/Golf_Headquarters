@@ -21,6 +21,7 @@ import { prisma } from "@/lib/prisma";
 import { AgPage, AgPageHead, agBtnClass } from "@/components/admin/agencyos/ui";
 import { cn } from "@/lib/utils";
 import { SynkButton } from "./availability-actions";
+import { SlotForm } from "./slot-form";
 import { CalendarSyncSection } from "@/app/admin/settings/calendar/calendar-sync-section";
 
 export const dynamic = "force-dynamic";
@@ -65,15 +66,34 @@ export default async function AvailabilityPage({
   const { m: mParam } = await searchParams;
   const { y, m } = parseMnd(mParam);
 
-  // Egne aktive uke-vinduer → tidsrom per ukedag (0 = mandag).
-  const slots = await prisma.coachAvailability.findMany({
-    where: { coachId: user.id, active: true },
-    orderBy: [{ weekday: "asc" }, { startTime: "asc" }],
-    select: { weekday: true, startTime: true, endTime: true },
-  });
+  // Egne tidsvinduer (alle, for liste/rediger) + anleggene for sted-velgeren.
+  const [slots, locations] = await Promise.all([
+    prisma.coachAvailability.findMany({
+      where: { coachId: user.id },
+      orderBy: [{ locationId: "asc" }, { weekday: "asc" }, { startTime: "asc" }],
+      select: {
+        id: true,
+        weekday: true,
+        date: true,
+        startTime: true,
+        endTime: true,
+        active: true,
+        locationId: true,
+        validFrom: true,
+        validTo: true,
+        location: { select: { name: true } },
+      },
+    }),
+    prisma.location.findMany({
+      where: { active: true },
+      orderBy: { name: "asc" },
+      select: { id: true, name: true },
+    }),
+  ]);
+  // Måned-visning projiserer kun aktive UKENTLIGE vinduer på ukedag.
   const perUkedag = new Map<number, string>();
   for (const s of slots) {
-    if (s.weekday === null) continue; // én-gangs-datoer projiseres ikke på ukedag
+    if (!s.active || s.weekday === null) continue;
     const range = `${s.startTime}–${s.endTime}`;
     perUkedag.set(s.weekday, perUkedag.has(s.weekday) ? `${perUkedag.get(s.weekday)} · ${range}` : range);
   }
@@ -99,8 +119,13 @@ export default async function AvailabilityPage({
         eyebrow="Gjennomføre · Tilgjengelighet"
         title="Din måned,"
         italic="åpen for booking."
-        lead="Klikk en dato og skriv inn tidsrommet du er tilgjengelig, f.eks. 10:00 – 18:00. Grønne dager er åpne for spiller-booking."
-        actions={<SynkButton />}
+        lead="Sett tidsvinduer du er tilgjengelig, per anlegg. Grønne dager er åpne for spiller-booking. Du kan aldri være tilgjengelig to steder samtidig."
+        actions={
+          <div className="flex items-center gap-2">
+            <SlotForm locations={locations} triggerLabel="+ Nytt tidsvindu" />
+            <SynkButton />
+          </div>
+        }
       />
 
       <div className="rounded-xl border border-border bg-card p-[18px]">
@@ -184,6 +209,60 @@ export default async function AvailabilityPage({
             <span className="h-[6px] w-[6px] rounded-full bg-accent" /> I DAG
           </span>
         </div>
+      </div>
+
+      {/* Tidsvinduer — rediger/slett per vindu */}
+      <div className="mt-8 space-y-3">
+        <div>
+          <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            Gjennomføre · Tilgjengelighet · Tidsvinduer
+          </div>
+          <h2 className="mt-1 font-display text-lg font-bold tracking-[-0.015em] text-foreground">
+            Dine tidsvinduer
+          </h2>
+        </div>
+        {slots.length === 0 ? (
+          <p className="text-sm text-muted-foreground">
+            Ingen tidsvinduer satt ennå. Klikk «Nytt tidsvindu» for å legge til.
+          </p>
+        ) : (
+          <ul className="divide-y divide-border overflow-hidden rounded-xl border border-border bg-card">
+            {slots.map((s) => (
+              <li key={s.id} className="flex items-center justify-between gap-4 px-4 py-3">
+                <div className="min-w-0">
+                  <span className="font-mono text-[13px] font-bold text-foreground">
+                    {s.startTime}–{s.endTime}
+                  </span>{" "}
+                  <span className="text-sm text-muted-foreground">
+                    {s.weekday !== null
+                      ? UKEDAGER_NB[s.weekday]
+                      : s.date
+                        ? s.date.toLocaleDateString("nb-NO", { day: "numeric", month: "short", year: "numeric" })
+                        : "—"}
+                    {" · "}
+                    {s.location?.name ?? "Alle steder"}
+                    {!s.active && " · (av)"}
+                  </span>
+                </div>
+                <SlotForm
+                  locations={locations}
+                  triggerLabel="Endre"
+                  initial={{
+                    id: s.id,
+                    weekday: s.weekday,
+                    date: s.date ? s.date.toISOString().slice(0, 10) : null,
+                    startTime: s.startTime,
+                    endTime: s.endTime,
+                    active: s.active,
+                    locationId: s.locationId,
+                    validFrom: s.validFrom ? s.validFrom.toISOString().slice(0, 10) : null,
+                    validTo: s.validTo ? s.validTo.toISOString().slice(0, 10) : null,
+                  }}
+                />
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       {/* Google Calendar-kobling — samme skjerm som arbeidstidene. */}

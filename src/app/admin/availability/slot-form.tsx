@@ -6,29 +6,47 @@ import { addSlot, updateSlot, deleteSlot } from "./actions";
 
 const DAGER = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
 
+export type LocationOption = { id: string; name: string };
+
 type Props = {
+  locations: LocationOption[];
   initial?: {
     id: string;
-    weekday: number;
+    weekday: number | null;
+    date: string | null; // ISO YYYY-MM-DD
     startTime: string;
     endTime: string;
     active: boolean;
+    locationId: string | null;
+    validFrom: string | null;
+    validTo: string | null;
   };
   defaultWeekday?: number;
   triggerLabel: string;
 };
 
-export function SlotForm({ initial, defaultWeekday, triggerLabel }: Props) {
+export function SlotForm({ locations, initial, defaultWeekday, triggerLabel }: Props) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
+  // «Ukentlig» (gjentas hver uke) vs «Spesifikk dato» (én gang).
+  const [mode, setMode] = useState<"weekly" | "date">(
+    initial?.date ? "date" : "weekly",
+  );
   const [weekday, setWeekday] = useState(initial?.weekday ?? defaultWeekday ?? 0);
-  const [startTime, setStartTime] = useState(initial?.startTime ?? "08:00");
-  const [endTime, setEndTime] = useState(initial?.endTime ?? "16:00");
+  const [date, setDate] = useState(initial?.date ?? "");
+  const [startTime, setStartTime] = useState(initial?.startTime ?? "10:00");
+  const [endTime, setEndTime] = useState(initial?.endTime ?? "18:00");
   const [active, setActive] = useState(initial?.active ?? true);
+  const [locationId, setLocationId] = useState(initial?.locationId ?? locations[0]?.id ?? "");
+  const [visPeriode, setVisPeriode] = useState(
+    Boolean(initial?.validFrom || initial?.validTo),
+  );
+  const [validFrom, setValidFrom] = useState(initial?.validFrom ?? "");
+  const [validTo, setValidTo] = useState(initial?.validTo ?? "");
 
   useEffect(() => {
     if (open) dialogRef.current?.showModal();
@@ -41,15 +59,34 @@ export function SlotForm({ initial, defaultWeekday, triggerLabel }: Props) {
       setError("Slutt-tid må være etter start-tid.");
       return;
     }
+    if (mode === "date" && !date) {
+      setError("Velg en dato.");
+      return;
+    }
+    if (!locationId) {
+      setError("Velg et anlegg.");
+      return;
+    }
     setError(null);
+    const payload = {
+      weekday: mode === "weekly" ? weekday : null,
+      date: mode === "date" ? date : null,
+      startTime,
+      endTime,
+      active,
+      locationId,
+      validFrom: visPeriode && validFrom ? validFrom : null,
+      validTo: visPeriode && validTo ? validTo : null,
+    };
     startTransition(async () => {
       try {
-        if (initial) await updateSlot(initial.id, { weekday, startTime, endTime, active });
-        else await addSlot({ weekday, startTime, endTime, active });
+        if (initial) await updateSlot(initial.id, payload);
+        else await addSlot(payload);
         setOpen(false);
         router.refresh();
-      } catch {
-        setError("Kunne ikke lagre.");
+      } catch (err) {
+        // Server kaster lesbare feil (f.eks. no-dobbeltsted) — vis dem.
+        setError(err instanceof Error ? err.message : "Kunne ikke lagre.");
       }
     });
   }
@@ -95,44 +132,89 @@ export function SlotForm({ initial, defaultWeekday, triggerLabel }: Props) {
           </h2>
 
           <div className="mt-6 space-y-4">
-            <Felt label="Ukedag">
+            <Felt label="Anlegg">
               <select
-                value={weekday}
-                onChange={(e) => setWeekday(Number(e.target.value))}
+                value={locationId}
+                onChange={(e) => setLocationId(e.target.value)}
                 className={input}
               >
-                {DAGER.map((d, i) => (
-                  <option key={i} value={i}>
-                    {d}
+                {locations.map((l) => (
+                  <option key={l.id} value={l.id}>
+                    {l.name}
                   </option>
                 ))}
               </select>
             </Felt>
+
+            {/* Ukentlig vs spesifikk dato */}
+            <div className="grid grid-cols-2 gap-2">
+              <ModeKnapp aktiv={mode === "weekly"} onClick={() => setMode("weekly")}>
+                Ukentlig
+              </ModeKnapp>
+              <ModeKnapp aktiv={mode === "date"} onClick={() => setMode("date")}>
+                Spesifikk dato
+              </ModeKnapp>
+            </div>
+
+            {mode === "weekly" ? (
+              <Felt label="Ukedag">
+                <select
+                  value={weekday}
+                  onChange={(e) => setWeekday(Number(e.target.value))}
+                  className={input}
+                >
+                  {DAGER.map((d, i) => (
+                    <option key={i} value={i}>
+                      {d}
+                    </option>
+                  ))}
+                </select>
+              </Felt>
+            ) : (
+              <Felt label="Dato">
+                <input
+                  type="date"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                  className={input}
+                />
+              </Felt>
+            )}
+
             <div className="grid grid-cols-2 gap-4">
               <Felt label="Start">
-                <input
-                  type="time"
-                  value={startTime}
-                  onChange={(e) => setStartTime(e.target.value)}
-                  className={input}
-                />
+                <input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} className={input} />
               </Felt>
               <Felt label="Slutt">
-                <input
-                  type="time"
-                  value={endTime}
-                  onChange={(e) => setEndTime(e.target.value)}
-                  className={input}
-                />
+                <input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} className={input} />
               </Felt>
             </div>
+
+            {/* Periode (års-perioder) — valgfritt, kun for ukentlig */}
+            {mode === "weekly" && (
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setVisPeriode((v) => !v)}
+                  className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground hover:text-foreground"
+                >
+                  {visPeriode ? "− Periode" : "+ Begrens til periode (valgfritt)"}
+                </button>
+                {visPeriode && (
+                  <div className="mt-2 grid grid-cols-2 gap-4">
+                    <Felt label="Fra">
+                      <input type="date" value={validFrom} onChange={(e) => setValidFrom(e.target.value)} className={input} />
+                    </Felt>
+                    <Felt label="Til">
+                      <input type="date" value={validTo} onChange={(e) => setValidTo(e.target.value)} className={input} />
+                    </Felt>
+                  </div>
+                )}
+              </div>
+            )}
+
             <label className="flex cursor-pointer items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={active}
-                onChange={(e) => setActive(e.target.checked)}
-                className="accent-primary"
-              />
+              <input type="checkbox" checked={active} onChange={(e) => setActive(e.target.checked)} className="accent-primary" />
               <span>Aktiv (bookbar)</span>
             </label>
           </div>
@@ -178,6 +260,32 @@ export function SlotForm({ initial, defaultWeekday, triggerLabel }: Props) {
 
 const input =
   "w-full rounded-md border border-input bg-card px-4 py-2.5 text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30";
+
+function ModeKnapp({
+  aktiv,
+  onClick,
+  children,
+}: {
+  aktiv: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={aktiv}
+      className={
+        "rounded-md border px-4 py-2 text-sm font-medium transition-colors " +
+        (aktiv
+          ? "border-primary bg-primary/[0.06] text-primary"
+          : "border-input bg-card text-foreground hover:border-border")
+      }
+    >
+      {children}
+    </button>
+  );
+}
 
 function Felt({ label, children }: { label: string; children: React.ReactNode }) {
   return (
