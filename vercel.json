@@ -104,6 +104,14 @@
     {
       "path": "/api/cron/turnering-agent",
       "schedule": "0 7 * * *"
+    },
+    {
+      "path": "/api/cron/daily-brief",
+      "schedule": "30 5 * * *"
+    },
+    {
+      "path": "/api/cron/drill-forslag",
+      "schedule": "0 8 * * 1"
     }
   ]
 }

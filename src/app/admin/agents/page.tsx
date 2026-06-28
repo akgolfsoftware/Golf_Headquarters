@@ -52,6 +52,16 @@ const AGENT_INFO: Record<string, { navn: string; trigger: string; beskrivelse: s
     trigger: "Cron hvert 15. min",
     beskrivelse: "2-veis synkronisering med Google Calendar: henter endringer (pull) og pusher bookinger uten event-ID (repair).",
   },
+  "daily-brief": {
+    navn: "Daily Brief",
+    trigger: "Cron daglig 05:30",
+    beskrivelse: "Genererer morgenbrief per coach (økter, flagg, neste turnering). Varsler coach + Anders på Telegram ved hastefunn (severity 4+).",
+  },
+  "drill-forslag": {
+    navn: "Drill-forslag",
+    trigger: "Cron mandag 08:00",
+    beskrivelse: "Finner stallens svakeste SG-område siste 60 dager og foreslår 5 driller via Claude. Forslag vises i agent-detaljene.",
+  },
 };
 
 export default async function AgentsAdmin() {

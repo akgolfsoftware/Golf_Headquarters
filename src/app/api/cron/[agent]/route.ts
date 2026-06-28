@@ -27,6 +27,8 @@ import {
 } from "@/lib/meg/briefs";
 import { runCaddieProactive } from "@/lib/agents/caddie-proactive";
 import { triggerTurneringAgent } from "@/lib/agents/triggers";
+import { runDailyBrief } from "@/lib/agents/daily-brief-agent";
+import { runDrillForslag } from "@/lib/agents/drill-forslag-agent";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -60,6 +62,9 @@ const AGENTS: Record<string, () => Promise<unknown>> = {
   // Proaktiv Caddie (Fase 3) — inaktive spillere → forslag i Caddie-dashbordet
   "caddie-proactive": runCaddieProactive,
   "turnering-agent": triggerTurneringAgent,
+  // Selvgående golf-agenter koblet til Mission Control + varsling
+  "daily-brief": runDailyBrief,
+  "drill-forslag": runDrillForslag,
 };
 
 export async function GET(
