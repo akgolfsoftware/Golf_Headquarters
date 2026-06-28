@@ -1972,12 +1972,54 @@ model Bane {
   spillereSomHarSpilt      Int  @default(0)
   lavesteRundeRegistrert   Int?
 
+  // Banekart-geometri (baneguide) — hele banens GeoJSON FeatureCollection
+  // (green/fairway/bunker/tee/hazard) for kart-rendering. Per-hull-data i CourseHole.
+  geojson           Json?     // FeatureCollection fra OSM/rette-editor
+  osmRelationId     String?   // OSM-id banen ble importert fra
+  geometrySource    String?   // "osm" | "manual" | "api"
+  geometryUpdatedAt DateTime?
+
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
+  holes         CourseHole[]
 
   @@index([region])
   @@index([slug])
   @@map("baner")
+}
+
+// Ett hull på en bane — geometri + GPS for baneguide/dispersion.
+// Tee/green-koordinater driver avstander og plotting; geojson holder
+// per-hull-polygoner når de finnes (ellers ligger de på Bane.geojson).
+model CourseHole {
+  id          String  @id @default(cuid())
+  baneId      String
+  holeNumber  Int
+  par         Int?
+  lengthMeter Int?
+  handicapIndex Int?  // hull-vanskelighet (1-18) når kjent
+
+  // GPS (WGS84) — tee = start, green = senter, pin = dagens flagg (valgfri)
+  teeLat   Float?
+  teeLng   Float?
+  greenLat Float?
+  greenLng Float?
+  pinLat   Float?
+  pinLng   Float?
+
+  // Per-hull-geometri (green/fairway/bunker-polygoner) hvis tilordnet
+  geojson  Json?
+  osmWayId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  bane Bane @relation(fields: [baneId], references: [id], onDelete: Cascade)
+
+  @@unique([baneId, holeNumber])
+  @@index([baneId])
+  @@map("course_holes")
 }
 
 // Norske + internasjonale spillere vi følger på /turneringer.
