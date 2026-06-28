@@ -58,6 +58,25 @@
 
 ---
 
+### 1.5 STUB-verifisering (2026-06-28 — etter godkjent prioritering)
+Heuristikk-flaggene i §1.1 ble verifisert én-for-én. Resultat: **nesten alle er falske positive.**
+
+| Rute | Linjer | Faktisk status |
+|---|---|---|
+| agencyos/caddie | 30 | **EKTE** — fungerende AI-chat (`CaddieChat`, Sonnet via Gateway). Tynn fil = logikk i komponent. |
+| kommunikasjon | 133 | **EKTE** — fane-side (Innboks/E-post/Notion-prosjekter/-oppgaver), `requirePortalUser` + TabBar. |
+| board | 9 | **REDIRECT** (bevisst) → `/admin/spillere?view=tavle`. Rør ikke. |
+| kapasitet | 12 | **REDIRECT** (bevisst) → `/admin/bookinger`. Rør ikke. |
+| agencyos/live | 21 | **FERDIG visuell** (`MissionControl`, seed-data) — venter på live-integrasjoner (Gmail/Beeper/Notion/Kalender). Egen, større jobb. |
+| hjelp | 296 | **EKTE statisk** hjelpeside. Ikke et datahull. |
+| uka, økonomi, talent/*, recording, reach, organisasjon, videoer, analysere | 127–414 | **EKTE** Prisma/lib. |
+
+**Konklusjon:** «Bygg ut STUB-undersider» (P1 #7) er i praksis allerede levert. Eneste reelt ventende
+flate er `agencyos/live` sine live-koblinger — egen integrasjonsjobb, ikke en skjerm-build-out.
+Reelt gjenstående Fase 1: de **3 manglende skjermene** (§2.1) + token-opprydding (§2.3).
+
+---
+
 ## 2. Gap-analyse (Oppgave C)
 
 ### 2.1 Manglende skjermer
