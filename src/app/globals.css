@@ -58,22 +58,22 @@
 }
 
 .dark {
-  --background: 153 39% 5%;        /* #07100C — terminal-paletten */
-  --foreground: 135 24% 93%;       /* #EAF2EC — terminal-paletten */
-  --card: 152 33% 10%;             /* #11221A — terminal-paletten */
-  --card-foreground: 135 24% 93%;
-  --popover: 152 33% 10%;          /* #11221A — terminal-paletten */
-  --popover-foreground: 135 24% 93%;
+  --background: 120 5% 4%;         /* #0A0B0A — varm nær-svart (handover 2026-06-26) */
+  --foreground: 0 0% 94%;          /* #F0F0F0 — handover */
+  --card: 120 2.1% 9.2%;           /* #171817 — tile (handover) */
+  --card-foreground: 0 0% 94%;
+  --popover: 120 2.1% 9.2%;        /* #171817 — tile (handover) */
+  --popover-foreground: 0 0% 94%;
 
   --primary: 72 92% 62%;           /* I dark mode er lime primary — uendret */
-  --primary-foreground: 157 53% 8%;
+  --primary-foreground: 132 33% 6%; /* #0A140C — on-lime (handover) */
   --accent: 72 92% 62%;
-  --accent-foreground: 157 53% 8%;
+  --accent-foreground: 132 33% 6%;  /* #0A140C — on-lime (handover) */
 
-  --secondary: 152 33% 10%;        /* #11221A — terminal-paletten */
-  --secondary-foreground: 135 24% 93%;
-  --muted: 152 33% 10%;            /* #11221A — terminal-paletten */
-  --muted-foreground: 142 11% 65%; /* #9DB0A4 — terminal-paletten */
+  --secondary: 90 3.3% 11.8%;      /* #1E1F1D — tile-raised (handover) */
+  --secondary-foreground: 0 0% 94%;
+  --muted: 90 5% 8%;               /* #141513 — panel (handover) */
+  --muted-foreground: 84 3% 65%;   /* #A6A8A3 — fg-2 (handover) */
 
   --destructive: 14 86% 59%;       /* #F0683E — terminal-paletten */
   --destructive-foreground: 157 53% 8%;
@@ -91,37 +91,39 @@
   --chart-5: 207 85% 65%;
   --chart-6: 280 60% 65%;
 
-  --border: 147 23% 18%;           /* #243A2E — terminal-paletten */
-  --input: 147 23% 18%;            /* #243A2E — terminal-paletten */
+  --border: 90 3% 15%;             /* #262725 — hairline (handover) */
+  --input: 90 3% 15%;              /* #262725 — hairline (handover) */
   --ring: 72 92% 62%;
 
-  /* ---- Terminal mørk stack — AgencyOS (.dark på html) ---- */
-  --t-bg:        #07100C;
-  --t-bg-1:      #0A1410;
-  --t-bg-2:      #0D1A14;
-  --t-bg-3:      #11221A;
-  --t-bg-4:      #16291F;
-  --t-line:      #1C2C23;
-  --t-line-2:    #243A2E;
-  --t-line-soft: rgba(180,225,195,.035);
-  --t-fg:        #EAF2EC;
-  --t-fg-2:      #9DB0A4;
-  --t-fg-3:      #5E726A;
-  --t-fg-4:      #3D4F47;
+  /* ---- Terminal mørk stack — AgencyOS (.dark på html)
+   * Retunet til handoverens varme nær-svarte rampe (2026-06-26):
+   * dybde fra hårlinjer, ikke skygger; aldri grønt. ---- */
+  --t-bg:        #0A0B0A;
+  --t-bg-1:      #101110;
+  --t-bg-2:      #141513;
+  --t-bg-3:      #171817;
+  --t-bg-4:      #1E1F1D;
+  --t-line:      #262725;
+  --t-line-2:    #313230;
+  --t-line-soft: rgba(240,240,240,.035);
+  --t-fg:        #F0F0F0;
+  --t-fg-2:      #A6A8A3;
+  --t-fg-3:      #7E807A;
+  --t-fg-4:      #5A5B56;
   --t-up:        #4FD08A;
   --t-up-bg:     rgba(79,208,138,.10);
   --t-down:      #F0683E;
   --t-down-bg:   rgba(240,104,62,.10);
   --t-warn:      #E8B43C;
   --t-info:      #5AA9F0;
-  --lime-bg:     rgba(209,248,67,.10);
-  --lime-bg-2:   rgba(209,248,67,.16);
+  --lime-bg:     rgba(209,248,67,.08);
+  --lime-bg-2:   rgba(209,248,67,.14);
   --paper:       var(--t-bg-3);
   --border-soft: var(--t-line);
   --ink:         var(--t-fg);
   --muted-2:     var(--t-fg-3);
-  --forest:      #005840;
-  --forest-deep: #00402F;
+  --forest:      #00684A;
+  --forest-deep: #004D37;
   --lime:        #D1F843;
 }
 
@@ -277,8 +279,8 @@
   --color-danger: #A32D2D;
   --color-danger-bg: #FAE3E3;
 
-  --color-rail-bg: #061210;
-  --color-rail-bg-cockpit: #0F2A22;
+  --color-rail-bg: #101110;        /* nær-svart rail (handover 2026-06-26) */
+  --color-rail-bg-cockpit: #101110; /* nær-svart cockpit-rail (handover) */
   --color-nav-bg: #FAFAF7;
   --color-nav-active: rgba(209, 248, 67, 0.30);
 
