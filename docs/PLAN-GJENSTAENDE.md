@@ -30,7 +30,7 @@ Bygd som plassholder — låses opp når du gir tallene (slik FYS-score ble).
 
 | # | Oppgave | Hva mangler |
 |---|---|---|
-| ~~D2.1~~ ⚠ | **Helse: Belastning + HRV** | ✅ **Belastning LØST 2026-06-28** — selv-relativ ACWR (siste uke vs 4-ukers snitt, `src/lib/health/belastning.ts`), ingen hardkodede terskler. ❌ **HRV: data-blokkert** — `HealthEntry` har ingen HRV-felt; krever ny datakilde (wearable-sync ELLER manuelt HRV-felt) før det kan vises. Ikke en formel som mangler. |
+| ~~D2.1~~ ✅ | **Helse: Belastning + HRV** | **LØST 2026-06-28.** Belastning = selv-relativ ACWR (siste uke vs 4-ukers snitt, `src/lib/health/belastning.ts`), ingen hardkodede terskler. HRV = manuelt loggefelt (`HealthEntry.hrv`, RMSSD ms) ved siden av hvilepuls — ekte verdi, ingen terskler; en wearable-sync kan fylle samme felt post-beta. Alle Helse-tall er nå ekte. |
 | D2.2 | **Onboarding steg 6 «Her er du nå»** (BYGGELOGG B-2) | A–K-nivå er gitt, men trenger `SeasonStat`-schema (3-sesong-progresjon) før «du er her»-stigen kan vise ekte historikk. |
 | D2.3 | **Cockpit SG-ticker + plan-etterlevelse** (BYGGELOGG A-1/A-3) | Aggregat-tall (stall-SG, per-spiller-SG-ticker) — referanseverdier/visning bekreftes. |
 
