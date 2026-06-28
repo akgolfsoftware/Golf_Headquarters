@@ -709,8 +709,9 @@ model Location {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  bookings   Booking[]
-  facilities Facility[]
+  bookings          Booking[]
+  facilities        Facility[]
+  coachAvailability CoachAvailability[]
 
   @@map("locations")
 }
@@ -2297,17 +2298,27 @@ model ErrorLog {
 model CoachAvailability {
   id        String   @id @default(cuid())
   coachId   String
-  // 0 = mandag, 6 = søndag
-  weekday   Int
+  // Sted (anlegg) vinduet gjelder for. Nullable = legacy «alle steder».
+  // Per-anlegg gjør at en coach aldri er dobbelt-tilgjengelig to steder samtidig.
+  locationId String?
+  // 0 = mandag, 6 = søndag. Nullable for én-gangs-vinduer (bruker `date`).
+  weekday   Int?
+  // Én-gangs spesifikk dato (alternativ til ukentlig weekday).
+  date      DateTime?
   startTime String // "08:00"
   endTime   String // "18:00"
+  // Periode-gyldighet (års-visning): vinduet gjelder kun mellom disse. Null = alltid.
+  validFrom DateTime?
+  validTo   DateTime?
   active    Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  coach User @relation(fields: [coachId], references: [id], onDelete: Cascade)
+  coach    User      @relation(fields: [coachId], references: [id], onDelete: Cascade)
+  location Location? @relation(fields: [locationId], references: [id], onDelete: SetNull)
 
   @@index([coachId, active])
+  @@index([locationId])
   @@map("coach_availability")
 }
 

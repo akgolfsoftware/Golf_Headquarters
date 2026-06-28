@@ -73,6 +73,7 @@ export default async function AvailabilityPage({
   });
   const perUkedag = new Map<number, string>();
   for (const s of slots) {
+    if (s.weekday === null) continue; // én-gangs-datoer projiseres ikke på ukedag
     const range = `${s.startTime}–${s.endTime}`;
     perUkedag.set(s.weekday, perUkedag.has(s.weekday) ? `${perUkedag.get(s.weekday)} · ${range}` : range);
   }
