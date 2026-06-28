@@ -9,6 +9,7 @@ import { lagreHelseEntry } from "./actions";
 type Initial = {
   date: string;
   restingHr: number | null;
+  hrv: number | null;
   sleepHours: number | null;
   weightKg: number | null;
   notes: string | null;
@@ -25,6 +26,7 @@ export function HelseForm({ initial }: { initial: Initial }) {
   const [restingHr, setRestingHr] = useState(
     initial.restingHr != null ? String(initial.restingHr) : "",
   );
+  const [hrv, setHrv] = useState(initial.hrv != null ? String(initial.hrv) : "");
   const [sleep, setSleep] = useState(
     initial.sleepHours != null ? String(initial.sleepHours) : "",
   );
@@ -45,6 +47,7 @@ export function HelseForm({ initial }: { initial: Initial }) {
         await lagreHelseEntry({
           date,
           restingHr: restingHr ? Number(norm(restingHr)) : null,
+          hrv: hrv ? Number(norm(hrv)) : null,
           sleepHours: sleep ? Number(norm(sleep)) : null,
           weightKg: weight ? Number(norm(weight)) : null,
           notes: notes.trim() ? notes.trim() : null,
@@ -93,6 +96,16 @@ export function HelseForm({ initial }: { initial: Initial }) {
             value={restingHr}
             onChange={(e) => setRestingHr(e.target.value)}
             placeholder="f.eks. 52"
+            className={input}
+          />
+        </Felt>
+        <Felt label="HRV (ms, RMSSD)">
+          <input
+            type="number"
+            inputMode="numeric"
+            value={hrv}
+            onChange={(e) => setHrv(e.target.value)}
+            placeholder="f.eks. 65"
             className={input}
           />
         </Felt>

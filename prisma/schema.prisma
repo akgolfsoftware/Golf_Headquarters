@@ -591,6 +591,7 @@ model HealthEntry {
   userId     String
   date       DateTime @db.Date
   restingHr  Int?
+  hrv        Int? // HRV (RMSSD, ms) — manuelt logget, som hvilepuls. Wearable-sync kan fylle samme felt.
   sleepHours Float?
   weightKg   Float?
   notes      String?

@@ -74,6 +74,7 @@ export default async function HelsePage() {
   const initial = {
     date: iDagIso,
     restingHr: siste?.restingHr ?? null,
+    hrv: siste?.hrv ?? null,
     sleepHours: siste?.sleepHours ?? null,
     weightKg: siste?.weightKg ?? null,
     notes: siste?.notes ?? null,
@@ -97,7 +98,7 @@ export default async function HelsePage() {
       eyebrow="MEG · HELSE"
       title="Helse &"
       italic="readiness."
-      lead="Søvn, puls, belastning og FYS-form. Noen tall er plassholdere til formlene er låst."
+      lead="Søvn, puls, HRV, belastning og FYS-form — alt fra dine egne ekte logger og tester."
     >
       <div className="mb-[22px] grid grid-cols-3 gap-3">
         {/* FYS-score: testbatteri → stall-relativ samlet form (Anders' formel 2026-06-22). */}
@@ -148,7 +149,12 @@ export default async function HelsePage() {
             </SetVal>
           }
         />
-        <SetRow icon={BatteryMedium} title="HRV" meta="Restitusjon" right={<SetVal>—</SetVal>} />
+        <SetRow
+          icon={BatteryMedium}
+          title="HRV"
+          meta={siste?.hrv != null ? "Restitusjon (RMSSD, ms)" : "Restitusjon · logg HRV i skjemaet"}
+          right={<SetVal>{siste?.hrv != null ? `${siste.hrv} ms` : "—"}</SetVal>}
+        />
       </SetGroup>
 
       <SetGroup label="SKADE & STATUS">
@@ -181,7 +187,8 @@ export default async function HelsePage() {
         <b className="font-semibold text-foreground">FYS-score</b> er din samlede testbatteri-form
         (0–100, relativt til stallen). <b className="font-semibold text-foreground">Belastning</b> viser
         siste ukes trening + runder som prosent av ditt eget 4-ukers snitt (100 % = som vanlig).{" "}
-        <b className="font-semibold text-foreground">HRV</b> står som «—» til vi samler HRV-data.
+        <b className="font-semibold text-foreground">HRV</b> (RMSSD i ms) logger du selv ved siden av
+        hvilepuls — en wearable-sync kan fylle samme felt senere.
       </div>
 
       <div className="mt-4">
