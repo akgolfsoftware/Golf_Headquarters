@@ -3,6 +3,7 @@ import {
   AlertTriangle,
   Banknote,
   BarChart3,
+  Bell,
   Bot,
   CalendarCheck,
   CheckCheck,
@@ -261,6 +262,7 @@ export function buildAdminNav(
           badgeCls: "lime",
         },
         { type: "item", key: "messages", label: "Meldinger", href: "/admin/innboks", icon: MessageSquare },
+        { type: "item", key: "varsler", label: "Varsler", href: "/admin/varsler", icon: Bell },
       ],
     },
     {
