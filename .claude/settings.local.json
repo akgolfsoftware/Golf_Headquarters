@@ -279,7 +279,10 @@
       "mcp__visualize__read_me",
       "mcp__visualize__show_widget",
       "Skill(claude-api)",
-      "Skill(claude-api:*)"
+      "Skill(claude-api:*)",
+      "mcp__72351f58-4d83-4538-8807-8f01835b16a1__read_file_content",
+      "mcp__72351f58-4d83-4538-8807-8f01835b16a1__download_file_content",
+      "mcp__72351f58-4d83-4538-8807-8f01835b16a1__create_file"
     ]
   }
 }
