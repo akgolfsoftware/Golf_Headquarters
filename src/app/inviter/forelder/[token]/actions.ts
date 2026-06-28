@@ -6,6 +6,7 @@
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { supabaseAdmin } from "@/lib/supabase/admin";
+import { claimPendingAccountByEmail } from "@/lib/auth/claim-pending-account";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
 
 type AksepterResult = { ok: false; error: string } | { ok: true; redirect: string };
@@ -74,6 +75,11 @@ export async function aksepterInvitasjon(formData: FormData): Promise<AksepterRe
   }
 
   // 2) Opprett / oppdater Prisma User med role=PARENT.
+  // Først: hvis guardian-consent-flyten allerede laget en ventende rad for denne
+  // e-posten, koble den verifiserte authId-en til SAMME rad (Supabase har nettopp
+  // bekreftet eierskap via email_confirm). Da finner upsert under raden på authId
+  // og slipper å kollidere på unik e-post.
+  await claimPendingAccountByEmail(authId, email);
   const parentUser = await prisma.user.upsert({
     where: { authId },
     update: { name: navn, phone: phone || null, role: "PARENT" },

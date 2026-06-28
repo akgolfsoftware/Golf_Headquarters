@@ -10,7 +10,7 @@
  * - Logg ut-link
  */
 
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { getCurrentUserRaw } from "@/lib/auth/getCurrentUser";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { isAwaitingGuardianConsent } from "@/lib/auth/minor";
@@ -19,7 +19,10 @@ import { SamtykkeVenterKlient } from "./samtykke-venter-klient";
 export const dynamic = "force-dynamic";
 
 export default async function SamtykkeVenterPage() {
-  const user = await getCurrentUser();
+  // getCurrentUserRaw (ikke getCurrentUser): denne siden ER venterommet, så den
+  // må kunne lese den ventende brukeren. getCurrentUser ville redirecte hit på
+  // nytt → uendelig loop.
+  const user = await getCurrentUserRaw();
 
   // Ikke innlogget → logg inn
   if (!user) redirect("/auth/login");
