@@ -38,6 +38,7 @@ export default async function DrillForslagPage() {
       description?: string;
       svakesteKategori?: string;
       durationMin?: number;
+      videoUrl?: string | null;
     };
     return {
       id: d.id,
@@ -45,6 +46,7 @@ export default async function DrillForslagPage() {
       beskrivelse: inp.description ?? "",
       omraade: OMRAADE_LABEL[inp.svakesteKategori ?? ""] ?? "Slag",
       varighetMin: typeof inp.durationMin === "number" ? inp.durationMin : null,
+      videoUrl: typeof inp.videoUrl === "string" ? inp.videoUrl : null,
     };
   });
 

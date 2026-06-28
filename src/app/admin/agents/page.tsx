@@ -60,7 +60,7 @@ const AGENT_INFO: Record<string, { navn: string; trigger: string; beskrivelse: s
   "drill-forslag": {
     navn: "Drill-forslag",
     trigger: "Cron mandag 08:00",
-    beskrivelse: "Finner stallens svakeste SG-område siste 60 dager og foreslår 5 driller via Claude. Forslag vises i agent-detaljene.",
+    beskrivelse: "Finner stallens svakeste SG-område siste 60 dager og foreslår 5 driller via Claude (med YouTube-video når YOUTUBE_API_KEY er satt). Godkjennes på /admin/drills/forslag.",
   },
 };
 

@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { Check, X } from "lucide-react";
+import { Check, X, Play } from "lucide-react";
 import { godkjennDrillForslag, avvisDrillForslag } from "./actions";
 
 export type ForslagRad = {
@@ -11,6 +11,7 @@ export type ForslagRad = {
   beskrivelse: string;
   omraade: string;
   varighetMin: number | null;
+  videoUrl: string | null;
 };
 
 export function ForslagListe({ forslag }: { forslag: ForslagRad[] }) {
@@ -72,6 +73,17 @@ export function ForslagListe({ forslag }: { forslag: ForslagRad[] }) {
             <p className="mt-1.5 whitespace-pre-line text-sm text-muted-foreground">
               {d.beskrivelse}
             </p>
+            {d.videoUrl && (
+              <a
+                href={d.videoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 inline-flex items-center gap-1.5 text-sm text-destructive hover:underline"
+              >
+                <Play className="h-4 w-4" strokeWidth={1.8} />
+                Se video
+              </a>
+            )}
           </div>
           <div className="flex shrink-0 items-center gap-2">
             <button

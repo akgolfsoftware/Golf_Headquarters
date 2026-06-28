@@ -22,6 +22,7 @@ const DrillInputSchema = z.object({
   skillArea: z.nativeEnum(SkillArea).optional(),
   pyramidArea: z.nativeEnum(PyramidArea),
   durationMin: z.number().int().positive().optional(),
+  videoUrl: z.string().url().nullish(),
 });
 
 async function hentEgetForslag(draftId: string, userId: string) {
@@ -55,6 +56,7 @@ export async function godkjennDrillForslag(
         pyramidArea: parsed.data.pyramidArea,
         skillArea: parsed.data.skillArea ?? null,
         durationMin: parsed.data.durationMin ?? null,
+        videoUrl: parsed.data.videoUrl ?? null,
         createdBy: user.id,
       },
     });
