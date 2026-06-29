@@ -52,6 +52,40 @@ coach, mobil-skuff (drawer-nav), kompakte kort-lister for Cockpit/Stall/Innboks 
 Primitivene finnes; det som mangler er **sammensatte mønstre** for de udesignede undersidene
 (mål-hub/bygger, teknisk plan, SG-Hub-subs, coach-seksjon, talent) — bygges av eksisterende kort/kpi/faner.
 
+## Kalender- og tidslinje-komponenter (eksplisitt enumerert)
+
+Kalender/tidslinje brukes i **57 filer** — et eget delsystem, ikke et hull. Verifisert via
+`ls src/components/athletic/calendars/` + `src/components/shared/calendar/`.
+
+### Eksisterende — `athletic/calendars/` (11, branded primitiver)
+`month-grid` · `week-grid` · `day-planner` · `year-plan-gantt` (Gantt/årsplan) ·
+`period-timeline` (periodisering-tidslinje) · `session-scheduler` · `streak-calendar` ·
+`heatmap-calendar` · `compare-calendar` · `load-calendar` · `index`
+
+### Eksisterende — `shared/calendar/` (28, sammensatt kalender-app)
+`KalenderRoot` · `CalendarShell` · `MonthView` · `WeekView` · `DayView` · `AarsplanView` ·
+`MiniCalendar` · `SessionCard` · `SessionEditor` · `PeriodeModal` · `RecurringPatternEditor` ·
+`QuickAddPopover` · `SmartDateInput` · `TurneringMarker` · `CapacityLoadBar` · `PyramideBar` ·
+`PlanSidebar` · drill/mal-editorer (`GolfDrillEditor`, `FysDrillEditor`, `DrillMalLibrary`, `OktMalLibrary`) ·
+`LockedAnchorEditor` · `ConditionalRulesPanel` · `PeriodVolumeRecipeEditor` · `MyelinTracker` · `PortalKalenderWrapper`
+
+### Tidslinje-/kalender-BERØRINGSPUNKTER (hvor de må fungere — design-behov)
+| Flate · skjerm | Behov | Komponent i dag |
+|---|---|---|
+| PlayerHQ Workbench (zoom: årsplan→år→måned→uke→dag) | 5 zoom-nivåer + Gantt | `year-plan-gantt`, `month-grid`, `week-grid` (time-grid `UkeView`), `day-planner` |
+| PlayerHQ Workbench uke (time-grid 07–22, dra-drop, overlapp-lanes) | vertikal time-akse | `UkeView` (workbench-hybrid) |
+| AgencyOS Kalender (uke/måned) | coach-kalender | `KalenderRoot`, `WeekView`, `MonthView` |
+| PlayerHQ Kalender / Gjennomføre | spiller-kalender | `PortalKalenderWrapper`, `MiniCalendar` |
+| Periodisering / sesongplan | makro-tidslinje (faser) | `period-timeline`, `AarsplanView`, `year-plan-gantt` |
+| Live-økt / Dag | tidslinje for dagens økter | `day-planner`, `DayView` |
+| Streak / aktivitet | streak + heatmap | `streak-calendar`, `heatmap-calendar` |
+| Turneringskalender | turneringer på tidsakse | `TurneringMarker`, gantt |
+
+### Gap (kalender/tidslinje)
+- **AgencyOS mobil-kalender:** kalenderne er desktop-tette → trenger mobil-variant (kompakt uke/dag-liste).
+- **Konsistens:** to kalender-sett (`athletic/calendars` vs `shared/calendar`) — designsystemet bør avklare ÉN kanonisk visuell stil for alle kalender/tidslinje-flater.
+- Resten (Gantt, time-grid, period-timeline, streak/heatmap) finnes — gjenbruk, ikke nybygg.
+
 ## Anbefaling
 1. Bygg **3 nye data-viz-komponenter** først (benchmark-scrubber, fordelings-radar, approach-varmestige)
    — de driver stats-funnelen og gjenbrukes i PlayerHQ SG-Hub.
