@@ -23,17 +23,25 @@ Pluss ikke-rute-skjermer (modaler/sheets/wizard-steg/tom-laster-feil-suksess) �
 3. **Verifisering:** hvert element/skjerm-felt siterer `fil:linje`. Ikke-verifiserbart = `UVERIFISERT`.
 4. **Responsiv:** desktop + mobil-oppførsel noteres per element der koden har breakpoints (`md:`, `lg:`, `max-md:`).
 
-## Status på denne kjøringen
-- ✅ **Auth** — komplett (11 skjermer; `login` fullt element-verifisert som format-fasit).
-- ✅ **`komponenter.md`** — komponentbibliotek (athletic 40 / ui 22 / shared 38) + GAP-analyse.
-- ⏳ **Marketing, PlayerHQ, AgencyOS, Forelder** — gjenstår. Se «Plan» under.
+## Status på denne kjøringen — BASISPASS FERDIG (alle 5 flater)
+| Flate | Skjermer | Elementer (P0) | Fil |
+|---|--:|--:|---|
+| Auth | 11 | 9 (`login` fasit) | `auth.md` / `.json` ✅ |
+| Forelder | 12 | skjerm-nivå | `forelder.md` / `.json` ✅ |
+| Marketing | 72 (27+45 stats) | 21 (forsiden) | `marketing.md` / `.json` ✅ |
+| PlayerHQ | 153 (+3 ghost) | 43 (7 P0-skjermer) | `portal.md` / `.json` ✅ |
+| AgencyOS | 146 | 90 (P0 + Innboks/Workbench) | `admin.md` / `.json` ✅ |
+| **Sum** | **~394 ruter** | **~163 elementer** | |
 
-## Plan for de fire store flatene
-Marketing (72), PlayerHQ (153) og AgencyOS (146) er for store til å spores skjerm→komponent på element-
-nivå i én økt. Anbefalt: **parallelle agenter per flate/seksjon** (egen del-kjøring) som hver skriver
-sin `<flate>.md`/`.json` etter samme skjema som `auth.*`. Dette er en stor jobb (mange filer, høyt
-token-forbruk) — bør bekreftes før full kjøring. Alternativ: element-nivå kun for P0-skjermer + skjerm-
-nivå for resten.
+- ✅ **`komponenter.md`** — komponentbibliotek (athletic 40 / ui 22 / shared 38) + GAP-analyse + kalender/tidslinje enumerert.
+- ✅ **`navigasjon.md`** — IA/sitemap per flate + 8 nøkkelflyt.
+- Hver flate har desktop+mobil-note + `layoutArchetype` på hver skjerm (basispass-krav a).
+- Element-detalj (knapp-for-knapp) er gjort for P0-skjermene per flate; resten er skjerm-nivå.
+
+## Gjenstår (Alt 3 — full element-detalj, prioritert rekkefølge)
+Neste fase tar element-detalj for ALLE skjermer per flate, i rekkefølge:
+**Forelder (kvalitetsprøve) → PlayerHQ (153) → AgencyOS (146) → resten av Marketing.**
+Hver skjerm spores page→klient-komponent og hvert element får `fil:linje` eller `UVERIFISERT`.
 
 ## Lesehjelp
 - `<flate>.md` — menneskelesbare tabeller (skjermer + elementer).

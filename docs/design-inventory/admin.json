@@ -1,0 +1,3318 @@
+{
+  "surface": "admin",
+  "generated": "2026-06-29",
+  "verification": "fil:linje per claim; UVERIFISERT der ikke åpnet",
+  "screens": [
+    {
+      "id": "admin.index",
+      "surface": "admin",
+      "route": "/admin",
+      "file": "src/app/admin/page.tsx:1",
+      "job": "Redirecter /admin til /admin/agencyos (AgencyOS er hovedhub).",
+      "layoutArchetype": "modal",
+      "gating": "Ingen egen gate i page; ren redirect (page.tsx:12-14). Auth via admin/layout (ADMIN+COACH).",
+      "states": "Ingen — kun redirect (page.tsx:13).",
+      "desktopMobilNote": "Ingen UI (redirect). Ikke relevant."
+    },
+    {
+      "id": "admin.agencyos",
+      "surface": "admin",
+      "route": "/admin/agencyos",
+      "file": "src/app/admin/agencyos/page.tsx:20",
+      "job": "Rendrer AgencyOS-cockpit (3-kolonne Bloomberg) med ekte loadDailyBrief-data (page.tsx:1-9,22-23).",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"ADMIN\",\"COACH\"]}) (page.tsx:21).",
+      "states": "success rendres via <AgencyCockpit> (page.tsx:23); loading/empty/error UVERIFISERT (klient-komp ikke åpnet).",
+      "desktopMobilNote": "mobil UVERIFISERT (AgencyCockpit-klientkomp ikke åpnet)."
+    },
+    {
+      "id": "admin.agencyos.caddie",
+      "surface": "admin",
+      "route": "/admin/agencyos/caddie",
+      "file": "src/app/admin/agencyos/caddie/page.tsx:20",
+      "job": "Anders' personlige AI-Caddie-chat koblet til samtale-historikk (page.tsx:1-12,29).",
+      "layoutArchetype": "split",
+      "gating": "requirePortalUser({allow:[\"ADMIN\"]}) — ADMIN-only (page.tsx:25).",
+      "states": "success rendres via <CaddieChat> (page.tsx:29); loading/empty/error UVERIFISERT (klient-komp ikke åpnet).",
+      "desktopMobilNote": "mobil UVERIFISERT (CaddieChat-klientkomp ikke åpnet)."
+    },
+    {
+      "id": "admin.agencyos.caddie.aktivitet",
+      "surface": "admin",
+      "route": "/admin/agencyos/caddie/aktivitet",
+      "file": "src/app/admin/agencyos/caddie/aktivitet/page.tsx:20",
+      "job": "Oversikt over AI-Caddie-aktivitet: tidslinje fra Notification + AI-feil siste 7 d (page.tsx:1-11,29-83).",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"ADMIN\"]}) — ADMIN-only (page.tsx:21).",
+      "states": "error eksplisitt (try/catch loadError, page.tsx:28,51-54,80); empty via tom events-array (page.tsx:24); success via <CaddieAktivitetClient>; loading UVERIFISERT.",
+      "desktopMobilNote": "mobil UVERIFISERT (CaddieAktivitetClient-klientkomp ikke åpnet)."
+    },
+    {
+      "id": "admin.agencyos.caddie.dashbord",
+      "surface": "admin",
+      "route": "/admin/agencyos/caddie/dashbord",
+      "file": "src/app/admin/agencyos/caddie/dashbord/page.tsx:17",
+      "job": "Proaktive Caddie-forslag + co-agent-rammeverk (utkast/fleet/audit) (page.tsx:1-7,46-51).",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"ADMIN\"]}) — ADMIN-only (page.tsx:18).",
+      "states": "success via <CaddieProactive>+<CoAgent> (page.tsx:47-49); loading/empty/error UVERIFISERT (klient-komp ikke åpnet).",
+      "desktopMobilNote": "mobil UVERIFISERT (CaddieProactive/CoAgent-klientkomp ikke åpnet)."
+    },
+    {
+      "id": "admin.agencyos.live",
+      "surface": "admin",
+      "route": "/admin/agencyos/live",
+      "file": "src/app/admin/agencyos/live/page.tsx:19",
+      "job": "Mission Control — personlig live-ops-dashboard (port av Direction A), statisk seed-skall (page.tsx:1-10,19-21).",
+      "layoutArchetype": "tabell-tett",
+      "gating": "Ingen gate i page; auth arves fra admin-layout (ADMIN/COACH) (page.tsx:9-10). via admin/layout (ADMIN+COACH).",
+      "states": "success via <MissionControl> (page.tsx:20); loading/empty/error UVERIFISERT (klient-komp ikke åpnet).",
+      "desktopMobilNote": "mobil UVERIFISERT (MissionControl-klientkomp ikke åpnet)."
+    },
+    {
+      "id": "admin.agencyos.okonomi",
+      "surface": "admin",
+      "route": "/admin/agencyos/okonomi",
+      "file": "src/app/admin/agencyos/okonomi/page.tsx:38",
+      "job": "Coachens business-kontrolltårn: MRR/innbetalt/utestående-KPIer + inntektsgraf + fakturatabell (page.tsx:1-13,98-307).",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requireCapability(Capability.VIEW_FINANCE) — CBAC capability-sjekk, ikke requirePortalUser (page.tsx:17-19,39).",
+      "states": "success (KPI+graf+tabell); empty (tom fakturatabell page.tsx:238-247, «Ingen PRO» page.tsx:278-281); loading/error UVERIFISERT.",
+      "desktopMobilNote": "Har mobil-handling: grid-cols-2 lg:grid-cols-4 (page.tsx:118), lg:grid-cols-3 (page.tsx:152)."
+    },
+    {
+      "id": "admin.agencyos.spillere",
+      "surface": "admin",
+      "route": "/admin/agencyos/spillere",
+      "file": "src/app/admin/agencyos/spillere/page.tsx:26",
+      "job": "Søkbar data-tett spillertabell med HCP, SG-trend, pakke og betaling (page.tsx:1-3,123-355).",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"ADMIN\",\"COACH\"]}) (page.tsx:31).",
+      "states": "success (tabell, page.tsx:187); empty (EmptyState når 0 spillere, page.tsx:175-183 + filter-tomt page.tsx:305-311); loading/error UVERIFISERT.",
+      "desktopMobilNote": "Eksplisitt mobil: desktop-tabell hidden md:block (page.tsx:187), mobil-liste md:hidden (page.tsx:317)."
+    },
+    {
+      "id": "admin.agencyos.uka",
+      "surface": "admin",
+      "route": "/admin/agencyos/uka",
+      "file": "src/app/admin/agencyos/uka/page.tsx:28",
+      "job": "7-dagers ukekanban med bookinger gruppert per dag + uke-KPIer (page.tsx:1-2,73-188).",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"ADMIN\",\"COACH\"]}) (page.tsx:29).",
+      "states": "success (grid, page.tsx:109); empty per dag («— ledig —»/«— beskyttet —», page.tsx:139-142); loading/error UVERIFISERT.",
+      "desktopMobilNote": "Har mobil-handling: grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 (page.tsx:109); KPI grid-cols-2 md:grid-cols-4 (page.tsx:91)."
+    },
+    {
+      "id": "admin.agent-team",
+      "surface": "admin",
+      "route": "/admin/agent-team",
+      "file": "src/app/admin/agent-team/page.tsx:15",
+      "job": "Agent-team: flere AI-er sekvensielt på én oppgave med tidligere kjøringer (page.tsx:1-2,15-66).",
+      "layoutArchetype": "split",
+      "gating": "canAccessMissionControl() → redirect(\"/admin\") hvis ikke tilgang (ADMIN-only) (page.tsx:5,16-17).",
+      "states": "success via <AgentTeam> (page.tsx:63); loading/empty/error UVERIFISERT (klient-komp ikke åpnet).",
+      "desktopMobilNote": "mobil UVERIFISERT (AgentTeam-klientkomp ikke åpnet; page bare max-w-3xl, page.tsx:58)."
+    },
+    {
+      "id": "admin.agenter",
+      "surface": "admin",
+      "route": "/admin/agenter",
+      "file": "src/app/admin/agenter/page.tsx:11",
+      "job": "Flermodell AI-chat (merget fra kommandosenter): snakk med Claude/Gemini/Grok/Ollama (page.tsx:1-2,11-26).",
+      "layoutArchetype": "split",
+      "gating": "canAccessMissionControl() → redirect(\"/admin\") hvis ikke tilgang (ADMIN-only) (page.tsx:6,12-13).",
+      "states": "success via <AgentChat> (page.tsx:23); loading/empty/error UVERIFISERT (klient-komp ikke åpnet).",
+      "desktopMobilNote": "mobil UVERIFISERT (AgentChat-klientkomp ikke åpnet; page bare max-w-3xl, page.tsx:18)."
+    },
+    {
+      "id": "admin.agents",
+      "surface": "admin",
+      "route": "/admin/agents",
+      "file": "src/app/admin/agents/page.tsx:77",
+      "job": "Agent-pipeline-oversikt: registrerte agenter, stats og siste 30 kjøringer (AgentRun) (page.tsx:77-267).",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (page.tsx:78); ManualTrigger kun ADMIN (page.tsx:206).",
+      "states": "success (tabeller); empty (<EmptyState> når 0 kjøringer page.tsx:212-218); loading/error UVERIFISERT.",
+      "desktopMobilNote": "Har mobil-handling: stat-grid grid-cols-1 sm:grid-cols-3 (page.tsx:117); tabeller overflow-x-auto min-w-[640px]/[480px] (page.tsx:135-136,221-222)."
+    },
+    {
+      "id": "admin.agents.agentId",
+      "surface": "admin",
+      "route": "/admin/agents/[agentId]",
+      "file": "src/app/admin/agents/[agentId]/page.tsx:136",
+      "job": "Agent-detalj: konfig, manuell kjøring, siste forslag (PlanAction) og kjøringer med feedback (page.tsx:136-399).",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (page.tsx:141); notFound() når agentId ukjent (page.tsx:143-144).",
+      "states": "success (DetailShell); empty (<EmptyState> for forslag page.tsx:265-271 og kjøringer page.tsx:339-345); error/404 (notFound page.tsx:144); loading UVERIFISERT.",
+      "desktopMobilNote": "Har noe mobil-handling: KPI-rad grid-cols-1 sm:grid-cols-3 (page.tsx:227); øvrig layout via DetailShell-klientkomp UVERIFISERT."
+    },
+    {
+      "id": "admin.analyse",
+      "surface": "admin",
+      "route": "/admin/analyse",
+      "file": "src/app/admin/analyse/page.tsx:143",
+      "job": "Stall-analyse: 4 KPI-kort + 2-kolonners grid med pyramide-fordeling (stall) og per-gruppe-tabell; radklikk → /admin/lag-snitt. (linje 1-19, 143)",
+      "layoutArchetype": "split",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 144)",
+      "states": "«—» når data mangler per JSDoc (linje 9); loading/empty/error UVERIFISERT (kun lest linje 1-60)",
+      "desktopMobilNote": "desktop-first 1280; mobil UVERIFISERT (render-body ikke åpnet)"
+    },
+    {
+      "id": "admin.analysere",
+      "surface": "admin",
+      "route": "/admin/analysere",
+      "file": "src/app/admin/analysere/page.tsx:46",
+      "job": "Innsikt-hub: kort for spillere, overdue tester, godkjenninger, forespørsler, runder, finance og tilstander — alle tall fra Prisma. (linje 1-16, 46)",
+      "layoutArchetype": "desktop-rail",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 47)",
+      "states": "metrikker uten kilde vises «—»/utelates per JSDoc (linje 5-6); loading/empty/error UVERIFISERT",
+      "desktopMobilNote": "HubFrame; mobil UVERIFISERT (HubFrame/HubCard ikke åpnet)"
+    },
+    {
+      "id": "admin.analysere.compliance",
+      "surface": "admin",
+      "route": "/admin/analysere/compliance",
+      "file": "src/app/admin/analysere/compliance/page.tsx:95",
+      "job": "Compliance-sporing (stall-analyse plan vs reps) — rendrer v10 Compliance-komponent med ekte loadComplianceData. ?periode&?studentId. (linje 1-10, 95)",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 96)",
+      "states": "tom-tilstander bevares (panel/drillSession=null) per JSDoc (linje 8-9); loading/error UVERIFISERT",
+      "desktopMobilNote": "mobil UVERIFISERT (Compliance-komponent ikke åpnet)"
+    },
+    {
+      "id": "admin.anlegg",
+      "surface": "admin",
+      "route": "/admin/anlegg",
+      "file": "src/app/admin/anlegg/page.tsx:53",
+      "job": "Anlegg-oversikt: 2-kolonners grid av fasilitet-tiles (ikon + tittel + booking-trykk denne uka + beskrivelse), tile lenker til availability. (linje 1-13, 53)",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "CBAC: requireCapability(Capability.MANAGE_FACILITIES) (linje 54) — gates på capability, IKKE rolle-liste",
+      "states": "UVERIFISERT (kun lest linje 1-92)",
+      "desktopMobilNote": "desktop-first 1280; mobil UVERIFISERT (render-body ikke åpnet)"
+    },
+    {
+      "id": "admin.anlegg.id",
+      "surface": "admin",
+      "route": "/admin/anlegg/[id]",
+      "file": "src/app/admin/anlegg/[id]/page.tsx:29",
+      "job": "Anlegg-detalj per lokasjon med to moduser (KART med SVG-hotspots / KALENDER per fasilitet × tidsblokker) i DetailShell. ?dag&?tab. (linje 1-12, 29)",
+      "layoutArchetype": "split",
+      "gating": "CBAC: requireCapability(Capability.MANAGE_FACILITIES) (linje 36); notFound hvis lokasjon mangler (linje 80)",
+      "states": "UVERIFISERT (kun lest linje 1-90); view bor i AnleggDetailView",
+      "desktopMobilNote": "DetailShell-mønster; mobil UVERIFISERT (AnleggDetailView ikke åpnet)"
+    },
+    {
+      "id": "admin.approvals",
+      "surface": "admin",
+      "route": "/admin/approvals",
+      "file": "src/app/admin/approvals/page.tsx:3",
+      "job": "Permanent redirect til /admin/godkjenninger. (linje 3-5)",
+      "layoutArchetype": "modal",
+      "gating": "ingen guard — permanentRedirect til /admin/godkjenninger (linje 4)",
+      "states": "n/a — redirect (linje 4)",
+      "desktopMobilNote": "n/a — redirect, ingen UI"
+    },
+    {
+      "id": "admin.approvals.id",
+      "surface": "admin",
+      "route": "/admin/approvals/[id]",
+      "file": "src/app/admin/approvals/[id]/page.tsx:5",
+      "job": "Permanent redirect til /admin/godkjenninger/[id]. (linje 5-8)",
+      "layoutArchetype": "modal",
+      "gating": "ingen guard — permanentRedirect til /admin/godkjenninger/${id} (linje 7)",
+      "states": "n/a — redirect (linje 7)",
+      "desktopMobilNote": "n/a — redirect, ingen UI"
+    },
+    {
+      "id": "admin.audit-log",
+      "surface": "admin",
+      "route": "/admin/audit-log",
+      "file": "src/app/admin/audit-log/page.tsx:48",
+      "job": "Audit-log: ekte hendelse-liste fra AuditLog (siste 50) med kategori/ikon/status utledet av action-prefiks; tomstate når loggen er tom. (linje 1-6, 48)",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 49)",
+      "states": "empty present — tomstate per JSDoc (linje 5); loading/error UVERIFISERT (render-body utover linje 50 ikke åpnet)",
+      "desktopMobilNote": "mobil UVERIFISERT (render-body ikke åpnet; bruker hubs.css)"
+    },
+    {
+      "id": "admin.audit-log.id",
+      "surface": "admin",
+      "route": "/admin/audit-log/[id]",
+      "file": "src/app/admin/audit-log/[id]/page.tsx:131",
+      "job": "Audit-log-detalj: én event med hero, før/etter-diff, relaterte events (samme aktør ±15 min) og handlinger (rull tilbake/eksporter JSON) i DetailShell. (linje 1-11, 131)",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 136); notFound hvis event mangler (linje 164)",
+      "states": "empty present (EmptyState linje 150 — ugyldig id); notFound (linje 164); loading/error UVERIFISERT",
+      "desktopMobilNote": "DetailShell; grid grid-cols-1 md:grid-cols-2 (linje 376) — mobil 1-kolonne"
+    },
+    {
+      "id": "admin.availability",
+      "surface": "admin",
+      "route": "/admin/availability",
+      "file": "src/app/admin/availability/page.tsx:58",
+      "job": "Tilgjengelighet: måned-kalender (man-først) med grønne åpen-for-booking-dager projisert fra coachAvailability-vinduer. ?m=YYYY-MM. (linje 1-14, 58)",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 63)",
+      "states": "UVERIFISERT (kun lest linje 1-90)",
+      "desktopMobilNote": "desktop-first 1280; mobil UVERIFISERT (render-body ikke åpnet)"
+    },
+    {
+      "id": "admin.board",
+      "surface": "admin",
+      "route": "/admin/board",
+      "file": "src/app/admin/board/page.tsx:7",
+      "job": "Redirecter til /admin/spillere?view=tavle (board slått sammen med spillere) (page.tsx:3-9).",
+      "layoutArchetype": "modal",
+      "gating": "Ingen gate i page; ren redirect (page.tsx:8). via admin/layout (ADMIN+COACH).",
+      "states": "Ingen — kun redirect (page.tsx:8).",
+      "desktopMobilNote": "Ingen UI (redirect). Ikke relevant."
+    },
+    {
+      "id": "admin.bookinger",
+      "surface": "admin",
+      "route": "/admin/bookinger",
+      "file": "src/app/admin/bookinger/page.tsx:103",
+      "job": "Kombinert Bookinger & kapasitet-dashbord: 4 KPI-kort, kapasitet-heatmap (timer×dag) og booking-liste med bekreft/avvis per rad. (linje 1-17, 103)",
+      "layoutArchetype": "split",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 104)",
+      "states": "UVERIFISERT (kun lest linje 1-92; states ikke verifisert i render-body)",
+      "desktopMobilNote": "desktop-first 1280; mobil UVERIFISERT (render-body linje 103+ ikke åpnet)"
+    },
+    {
+      "id": "admin.bookinger.ny",
+      "surface": "admin",
+      "route": "/admin/bookinger/ny",
+      "file": "src/app/admin/bookinger/ny/page.tsx:15",
+      "job": "Server-shell for manuell booking-oppretting (coach/admin): henter spillere, tjenester, lokasjoner og delegerer til 5-stegs NyBookingWizard. (linje 1-7, 15)",
+      "layoutArchetype": "wizard",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 16)",
+      "states": "UVERIFISERT (states bor i NyBookingWizard, ikke åpnet)",
+      "desktopMobilNote": "mobil UVERIFISERT (NyBookingWizard-klient-komp ikke åpnet)"
+    },
+    {
+      "id": "admin.brief",
+      "surface": "admin",
+      "route": "/admin/brief",
+      "file": "src/app/admin/brief/page.tsx:62",
+      "job": "Coachens daglige AI-morgenbrief: AI-oppsummering + KPIer + agentforslag (page.tsx:1-14,62-413).",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (page.tsx:63).",
+      "states": "success (hele siden); empty (nyligeRunder page.tsx:289-294, ferskeForslag page.tsx:347-353); error (AI-feil page.tsx:120-122,278-280); loading (\"Genererer brief…\" page.tsx:280).",
+      "desktopMobilNote": "Har mobil-handling: sm:flex-row hero (page.tsx:158), grid-cols-2 lg:grid-cols-4 KPI (page.tsx:222), grid-cols-1 lg:grid-cols-2 (page.tsx:337)."
+    },
+    {
+      "id": "admin.caddie",
+      "surface": "admin",
+      "route": "/admin/caddie",
+      "file": "src/app/admin/caddie/page.tsx:9",
+      "job": "Permanent redirect til /admin/agencyos/caddie/dashbord (Caddie-skjerm konsolidert i Fase 2). (linje 1-5, 9)",
+      "layoutArchetype": "modal",
+      "gating": "ingen guard — permanentRedirect til /admin/agencyos/caddie/dashbord (linje 10)",
+      "states": "n/a — redirect (linje 10)",
+      "desktopMobilNote": "n/a — redirect, ingen UI"
+    },
+    {
+      "id": "admin.calendar",
+      "surface": "admin",
+      "route": "/admin/calendar",
+      "file": "src/app/admin/calendar/page.tsx:3",
+      "job": "Permanent redirect til /admin/kalender. (linje 3-5)",
+      "layoutArchetype": "modal",
+      "gating": "ingen guard — permanentRedirect til /admin/kalender (linje 4)",
+      "states": "n/a — redirect (linje 4)",
+      "desktopMobilNote": "n/a — redirect, ingen UI"
+    },
+    {
+      "id": "admin.calendar.maned",
+      "surface": "admin",
+      "route": "/admin/calendar/maned",
+      "file": "src/app/admin/calendar/maned/page.tsx:3",
+      "job": "Permanent redirect til /admin/kalender/maned. (linje 3-5)",
+      "layoutArchetype": "modal",
+      "gating": "ingen guard — permanentRedirect til /admin/kalender/maned (linje 4)",
+      "states": "n/a — redirect (linje 4)",
+      "desktopMobilNote": "n/a — redirect, ingen UI"
+    },
+    {
+      "id": "admin.coach-workbench",
+      "surface": "admin",
+      "route": "/admin/coach-workbench",
+      "file": "src/app/admin/coach-workbench/page.tsx:11",
+      "job": "Legacy-prototype redirect: sender til spillerens hybrid Workbench (/admin/spillere/[id]/workbench) eller spiller-liste. (linje 1-3, 11)",
+      "layoutArchetype": "modal",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 16); deretter redirect (linje 20/30/33)",
+      "states": "n/a — redirect (linje 20-33)",
+      "desktopMobilNote": "n/a — redirect, ingen UI"
+    },
+    {
+      "id": "admin.drills",
+      "surface": "admin",
+      "route": "/admin/drills",
+      "file": "src/app/admin/drills/page.tsx:100",
+      "job": "Drill-bibliotek: kategorifiltrert tile-grid over alle ExerciseDefinition-driller (Approach/Putting/Driving/Nærspill/Fys), viser de første 30 i valgt kategori med «Ny drill».",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 100)",
+      "states": "ærlig teller når >30; tom kategori UVERIFISERT",
+      "desktopMobilNote": "AgPage + 3-kolonners grid (md:grid-cols-3 forventet); mobil UVERIFISERT (render-body kun delvis åpnet)"
+    },
+    {
+      "id": "admin.drills.id",
+      "surface": "admin",
+      "route": "/admin/drills/[id]",
+      "file": "src/app/admin/drills/[id]/page.tsx:50",
+      "job": "Drill-detalj: viser én ExerciseDefinition i full bredde med disiplin/ferdighet/NGF-kategori, prerequisites-navn og bruksteller (sessionDrills _count).",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje ~55)",
+      "states": "notFound() når drill mangler (linje ~70); empty/error UVERIFISERT",
+      "desktopMobilNote": "mobil UVERIFISERT (render-body ikke åpnet)"
+    },
+    {
+      "id": "admin.drills.id.rediger",
+      "surface": "admin",
+      "route": "/admin/drills/[id]/rediger",
+      "file": "src/app/admin/drills/[id]/rediger/page.tsx:13",
+      "job": "Drill-redaktør: laster drill + alle andre drills (til prerequisites-multiselect) og mounter DrillEditForm for redigering.",
+      "layoutArchetype": "wizard",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 19)",
+      "states": "notFound() når drill mangler (linje 23); skjema-states i klient-form UVERIFISERT",
+      "desktopMobilNote": "space-y-6 pb-20 md:pb-0 (bunn-padding for mobil bunnnav)"
+    },
+    {
+      "id": "admin.drills.forslag",
+      "surface": "admin",
+      "route": "/admin/drills/forslag",
+      "file": "src/app/admin/drills/forslag/page.tsx:26",
+      "job": "AI drill-forslag: lister PENDING CaddieDraft fra drill-forslag-agenten; coach godkjenner (→ bibliotek) eller avviser via ForslagListe.",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 27)",
+      "states": "teller «N forslag venter»; tom liste UVERIFISERT (i ForslagListe)",
+      "desktopMobilNote": "AgPage + AgPageHead; mobil UVERIFISERT"
+    },
+    {
+      "id": "admin.drills.ny",
+      "surface": "admin",
+      "route": "/admin/drills/ny",
+      "file": "src/app/admin/drills/ny/page.tsx:12",
+      "job": "Ny drill: tilbake-lenke + header og mounter blank DrillCreateForm som oppretter en ExerciseDefinition via createDrill-action.",
+      "layoutArchetype": "wizard",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 14)",
+      "states": "skjema-states i klient-form UVERIFISERT",
+      "desktopMobilNote": "space-y-6 pb-20 md:pb-0 (bunn-padding for mobil bunnnav)"
+    },
+    {
+      "id": "admin.email-templates",
+      "surface": "admin",
+      "route": "/admin/email-templates",
+      "file": "src/app/admin/email-templates/page.tsx:15",
+      "job": "E-postmaler: ekte EmailTemplate-data gruppert på slug-prefiks, data-tett liste med CRUD via TemplateForm. (linje 1-7, 15)",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 16)",
+      "states": "empty present (linje 42-50); loading/error UVERIFISERT",
+      "desktopMobilNote": "desktop-first; grid grid-cols-1 md:grid-cols-[260px_1fr] (linje 62) — mobil 1-kolonne"
+    },
+    {
+      "id": "admin.email-templates.id.rediger",
+      "surface": "admin",
+      "route": "/admin/email-templates/[id]/rediger",
+      "file": "src/app/admin/email-templates/[id]/rediger/page.tsx:17",
+      "job": "Rediger e-postmal: 2-pane editor med live preview (COACH/ADMIN) via EditorClient. (linje 1-6, 17)",
+      "layoutArchetype": "split",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 18); notFound hvis mal mangler (linje 25)",
+      "states": "notFound (linje 25); øvrige states i EditorClient UVERIFISERT",
+      "desktopMobilNote": "2-pane editor (per JSDoc linje 4); mobil UVERIFISERT (EditorClient ikke åpnet)"
+    },
+    {
+      "id": "admin.finance",
+      "surface": "admin",
+      "route": "/admin/finance",
+      "file": "src/app/admin/finance/page.tsx:3",
+      "job": "Permanent redirect til /admin/okonomi. (linje 3-5)",
+      "layoutArchetype": "modal",
+      "gating": "ingen guard — permanentRedirect til /admin/okonomi (linje 4)",
+      "states": "n/a — redirect (linje 4)",
+      "desktopMobilNote": "n/a — redirect, ingen UI"
+    },
+    {
+      "id": "admin.foresporsler",
+      "surface": "admin",
+      "route": "/admin/foresporsler",
+      "file": "src/app/admin/foresporsler/page.tsx:30",
+      "job": "Forespørsler-innboks: SessionRequest (booking-ønsker) fra spillere som rad-liste med godta/avvis; alle rader er Booking-type. (linje 1-8, 30)",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 31)",
+      "states": "UVERIFISERT i lest del (kun linje 1-60)",
+      "desktopMobilNote": "desktop-first; responsiv rad-grid grid-cols-[36px_1fr] ... md:grid-cols-[36px_1fr_auto] (linje 74)"
+    },
+    {
+      "id": "admin.gjennomfore",
+      "surface": "admin",
+      "route": "/admin/gjennomfore",
+      "file": "src/app/admin/gjennomfore/page.tsx:55",
+      "job": "Gjennomføre-hub: daglig drift med kort for kalender, bookinger, anlegg, tilgjengelighet, kapasitet, tjenester, TrackMan og live-økter. (linje 1-4, 70-176)",
+      "layoutArchetype": "desktop-rail",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 56)",
+      "states": "empty-tone på live-økter-kort (tone=\"empty\" linje 171); loading/error UVERIFISERT",
+      "desktopMobilNote": "HubFrame + hub-grid (linje 100); mobil UVERIFISERT (HubFrame/HubCard ikke åpnet)"
+    },
+    {
+      "id": "admin.gjennomfore.okter.id",
+      "surface": "admin",
+      "route": "/admin/gjennomfore/okter/[id]",
+      "file": "src/app/admin/gjennomfore/okter/[id]/page.tsx:46",
+      "job": "Økt-detalj (coach-context): status-pill etter tid, planlagt innhold/drills, live-progress-strip og handlinger (avlys/start/reschedule/oppfølging). (linje 1-9, 46)",
+      "layoutArchetype": "split",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 51); notFound hvis booking/user mangler (linje 70)",
+      "states": "success-flyt via status (linje 37-44); loading/empty/error UVERIFISERT (drills er hardkodet SESSION_DRILLS linje 29-35)",
+      "desktopMobilNote": "desktop-first; sticky mobil CTA-bar (pb-24 md:pb-6 linje 140), actions hidden md:flex (linje 154); grid lg:grid-cols (linje 200)"
+    },
+    {
+      "id": "admin.godkjenn-portal",
+      "surface": "admin",
+      "route": "/admin/godkjenn-portal",
+      "file": "src/app/admin/godkjenn-portal/page.tsx:33",
+      "job": "Manuell godkjenning av PlayerHQ-sider mot design-handoff: liste over alle ruter med status + lenker til live preview og designfil. (linje 1-5, 33)",
+      "layoutArchetype": "tabell-tett",
+      "gating": "getCurrentUser + manuell rolle-sjekk (role !== ADMIN && !== COACH → redirect /auth/login) (linje 34-37)",
+      "states": "UVERIFISERT i lest del (kun linje 1-50)",
+      "desktopMobilNote": "mobil UVERIFISERT (render-body ikke åpnet)"
+    },
+    {
+      "id": "admin.godkjenn-portal.koblinger",
+      "surface": "admin",
+      "route": "/admin/godkjenn-portal/koblinger",
+      "file": "src/app/admin/godkjenn-portal/koblinger/page.tsx:16",
+      "job": "Oversikt over alle DesignKobling-er med status + foreslått rute; status-filter via ?status. (linje 1-4, 16)",
+      "layoutArchetype": "tabell-tett",
+      "gating": "getCurrentUser + manuell rolle-sjekk (role !== ADMIN && !== COACH → redirect /auth/login) (linje 21-24)",
+      "states": "UVERIFISERT i lest del (kun linje 1-50)",
+      "desktopMobilNote": "desktop-first max-w-7xl p-8; grid grid-cols-2 md:grid-cols-5 (linje 70) — mobil 2-kolonne"
+    },
+    {
+      "id": "admin.godkjenn-portal.koblinger.id",
+      "surface": "admin",
+      "route": "/admin/godkjenn-portal/koblinger/[id]",
+      "file": "src/app/admin/godkjenn-portal/koblinger/[id]/page.tsx:18",
+      "job": "Kobling-detalj: design-iframe + app-iframe + knapp-liste for å mappe DesignKobling mot rute via KoblingDetailClient. (linje 1-4, 18)",
+      "layoutArchetype": "split",
+      "gating": "getCurrentUser + manuell rolle-sjekk (role !== ADMIN && !== COACH → redirect /auth/login) (linje 19-22); notFound hvis kobling mangler (linje 26)",
+      "states": "notFound (linje 26); øvrige states UVERIFISERT (KoblingDetailClient ikke åpnet)",
+      "desktopMobilNote": "split design-/app-iframe; sticky topbar (linje 36); mobil UVERIFISERT (KoblingDetailClient ikke åpnet)"
+    },
+    {
+      "id": "admin.godkjenn-portal.review",
+      "surface": "admin",
+      "route": "/admin/godkjenn-portal/review",
+      "file": "src/app/admin/godkjenn-portal/review/page.tsx:22",
+      "job": "Side-ved-side godkjenning: venstre iframe live preview av rute, høyre iframe designfil, med godkjent/avvik/hopp-over-knapper. ?route=. (linje 1-6, 22)",
+      "layoutArchetype": "split",
+      "gating": "getCurrentUser + manuell rolle-sjekk (role !== ADMIN && !== COACH → redirect /auth/login) (linje 23-26); redirect hvis route mangler/ugyldig (linje 29-36)",
+      "states": "redirect ved manglende/ugyldig route (linje 29-36); øvrige states UVERIFISERT (kun lest linje 1-50)",
+      "desktopMobilNote": "desktop-first h-screen split-iframe (linje 50); mobil UVERIFISERT (render-body ikke fullt åpnet) — iframe side-ved-side er desktop-orientert"
+    },
+    {
+      "id": "admin.godkjenninger",
+      "surface": "admin",
+      "route": "/admin/godkjenninger",
+      "file": "src/app/admin/godkjenninger/page.tsx:146",
+      "job": "Godkjenninger-innboks: PENDING PlanAction (AI-foreslåtte plan-endringer) med godkjenn/batch-godkjenn og delta-preview. (linje 1-3, 146)",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 147)",
+      "states": "UVERIFISERT i lest del (kun linje 1-60)",
+      "desktopMobilNote": "mobil UVERIFISERT (render-body ikke åpnet)"
+    },
+    {
+      "id": "admin.godkjenninger.id",
+      "surface": "admin",
+      "route": "/admin/godkjenninger/[id]",
+      "file": "src/app/admin/godkjenninger/[id]/page.tsx:53",
+      "job": "Godkjenning-detaljvisning: én PlanAction med rationale, signal-snapshot og diff-preview via gjenbrukt ApprovalDetailClient. (linje 1-3, 53)",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 58)",
+      "states": "ApprovalNotFound importert (linje 9) for not-found; øvrige states UVERIFISERT (kun lest linje 1-60)",
+      "desktopMobilNote": "mobil UVERIFISERT (ApprovalDetailClient ikke åpnet)"
+    },
+    {
+      "id": "admin.grupper",
+      "surface": "admin",
+      "route": "/admin/grupper",
+      "file": "src/app/admin/grupper/page.tsx:56",
+      "job": "Grupper-oversikt: 2-kolonners grid av gruppe-tiles (ikon + nivå-chip + navn + medlemstall/HCP-snitt + aktivitetsbar fra innlogging siste 14 d), klikk → gruppe-detalj, «Ny gruppe».",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 56)",
+      "states": "empty: «Ingen grupper ennå — opprett den første» (md:col-span-2); HCP-snitt utelates uten data",
+      "desktopMobilNote": "grid gap-3 md:grid-cols-2 (1 kol mobil, 2 desktop)"
+    },
+    {
+      "id": "admin.grupper.id",
+      "surface": "admin",
+      "route": "/admin/grupper/[id]",
+      "file": "src/app/admin/grupper/[id]/page.tsx:70",
+      "job": "Gruppe-detalj: hero med gruppenavn + coach, spiller-grid (avatar/navn/HCP), gruppeplan/neste samling fra GroupSchedule, og per-spiller statistikk; med medlems- og samling-handlinger.",
+      "layoutArchetype": "split",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 76)",
+      "states": "notFound() når gruppe mangler; EmptyState importert for tomme seksjoner",
+      "desktopMobilNote": "DetailShell-wrapper; responsive klasser UVERIFISERT (render-body ikke fullt åpnet)"
+    },
+    {
+      "id": "admin.grupper.id.timeplan",
+      "surface": "admin",
+      "route": "/admin/grupper/[id]/timeplan",
+      "file": "src/app/admin/grupper/[id]/timeplan/page.tsx:49",
+      "job": "Gruppe-timeplan: full ukentlig liste over GroupSchedule-rader (ukedag, tid, varighet, sted, repetisjon); ?focus=<scheduleId> framhever én rad.",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 56)",
+      "states": "notFound() når gruppe mangler; EmptyState når ingen faste tider satt",
+      "desktopMobilNote": "DetailShell-wrapper; responsive klasser UVERIFISERT"
+    },
+    {
+      "id": "admin.handlingssenter",
+      "surface": "admin",
+      "route": "/admin/handlingssenter",
+      "file": "src/app/admin/handlingssenter/page.tsx:78",
+      "job": "Handlingssenter — oppgaver fra OppgaveCache (Notion-sync) med kanban/tabell/liste-toggle (page.tsx:1-7,78-139).",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (page.tsx:79).",
+      "states": "success via <HandlingssenterClient> (page.tsx:132); empty (ærlig tom tilstand ved tom cache, page.tsx:130-131; query .catch(()=>[]) page.tsx:86); loading/error UVERIFISERT.",
+      "desktopMobilNote": "mobil UVERIFISERT (HandlingssenterClient-klientkomp ikke åpnet; page selv har ingen md:-klasser)."
+    },
+    {
+      "id": "admin.hjelp",
+      "surface": "admin",
+      "route": "/admin/hjelp",
+      "file": "src/app/admin/hjelp/page.tsx:76",
+      "job": "Hjelpesenter: søk, 5 kategorier, populære artikler og kontakt-CTA, statisk innhold (page.tsx:1-7,76-205).",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (page.tsx:77).",
+      "states": "success (statisk); loading/empty/error UVERIFISERT (statisk, ingen DB, page.tsx:5).",
+      "desktopMobilNote": "Har mobil-handling: kategori-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 (page.tsx:106), kontakt-grid (page.tsx:174)."
+    },
+    {
+      "id": "admin.innboks",
+      "surface": "admin",
+      "route": "/admin/innboks",
+      "file": "src/app/admin/innboks/page.tsx:41",
+      "job": "Meldings-innboks som master-detalj: liste + samtale + kontekstpanel, kan lese/svare (page.tsx:1-13,108-192).",
+      "layoutArchetype": "split",
+      "gating": "requirePortalUser({allow:[\"ADMIN\",\"COACH\"]}) (page.tsx:46).",
+      "states": "success (SplitInboxShell page.tsx:137); empty (EmptyState når 0 samtaler page.tsx:121-135); «Velg en samtale» page.tsx:162-167; loading/error UVERIFISERT.",
+      "desktopMobilNote": "mobil UVERIFISERT (SplitInboxShell-klientkomp ikke åpnet; page selv har ingen md:-klasser)."
+    },
+    {
+      "id": "admin.integrasjoner",
+      "surface": "admin",
+      "route": "/admin/integrasjoner",
+      "file": "src/app/admin/integrasjoner/page.tsx:45",
+      "job": "Integrasjoner-dashboard: statuskort for Google Calendar, Stripe, Notion, Anthropic, Resend, Supabase (env-/DB-sjekk per tjeneste). (linje 1-6, 45)",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 46)",
+      "states": "UVERIFISERT i lest del (kun linje 1-55)",
+      "desktopMobilNote": "desktop-first; grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 (linje 157) — mobil 1-kolonne"
+    },
+    {
+      "id": "admin.kalender",
+      "surface": "admin",
+      "route": "/admin/kalender",
+      "file": "src/app/admin/kalender/page.tsx:64",
+      "job": "Coach-kalender (hybrid terminal): venstre mini-ukegrid + kommende-liste, høyre dag-visning med tidsslot-blokker. ?uke=YYYY-MM-DD. (linje 1-7, 64)",
+      "layoutArchetype": "split",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 69)",
+      "states": "empty present (kommende linje 233-234, dag linje 371-374); loading/error UVERIFISERT",
+      "desktopMobilNote": "desktop-first split; venstre panel hidden md:flex (linje 173); mobil ukeliste md:hidden (linje 381)"
+    },
+    {
+      "id": "admin.kalender.maned",
+      "surface": "admin",
+      "route": "/admin/kalender/maned",
+      "file": "src/app/admin/kalender/maned/page.tsx:20",
+      "job": "Måned-visning av alle bookinger på tvers av spillere via MonthCalendar med ekte Prisma-data. ?mnd=YYYY-MM. (linje 1-10, 20)",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 25)",
+      "states": "empty i MonthCalendar-komponent per JSDoc (linje 7); loading/error UVERIFISERT",
+      "desktopMobilNote": "mobil UVERIFISERT (MonthCalendar-komponent ikke åpnet)"
+    },
+    {
+      "id": "admin.kalender.uke",
+      "surface": "admin",
+      "route": "/admin/kalender/uke",
+      "file": "src/app/admin/kalender/uke/page.tsx:14",
+      "job": "Redirect-rute til /admin/kalender (videresender ?uke). (linje 1-8, 14-21)",
+      "layoutArchetype": "modal",
+      "gating": "ingen egen guard — redirect til /admin/kalender (linje 20-21); arver gating der",
+      "states": "n/a — redirect (linje 21)",
+      "desktopMobilNote": "n/a — redirect, ingen UI"
+    },
+    {
+      "id": "admin.kapasitet",
+      "surface": "admin",
+      "route": "/admin/kapasitet",
+      "file": "src/app/admin/kapasitet/page.tsx:10",
+      "job": "Redirect-rute — kapasitet er slått sammen med /admin/bookinger; redirecter dit. (linje 1-5, 10-12)",
+      "layoutArchetype": "modal",
+      "gating": "ingen guard — redirect til /admin/bookinger (linje 11)",
+      "states": "n/a — redirect (linje 11)",
+      "desktopMobilNote": "n/a — redirect, ingen UI"
+    },
+    {
+      "id": "admin.klubb.innstillinger",
+      "surface": "admin",
+      "route": "/admin/klubb/innstillinger",
+      "file": "src/app/admin/klubb/innstillinger/page.tsx:33",
+      "job": "Klubb-innstillinger (multi-club): kort per klubb/Location med spillere/coacher/fasilitet + singleton org-innstillinger fra ClubSettings. (linje 1-7, 33)",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"ADMIN\"]}) (linje 34) — KUN ADMIN",
+      "states": "«—» (TOM) når felt mangler (linje 18-19); loading/empty/error UVERIFISERT",
+      "desktopMobilNote": "mobil UVERIFISERT (KlubbInnstillingerClient ikke åpnet)"
+    },
+    {
+      "id": "admin.kommunikasjon",
+      "surface": "admin",
+      "route": "/admin/kommunikasjon",
+      "file": "src/app/admin/kommunikasjon/page.tsx:26",
+      "job": "Kommunikasjon-hovedseksjon med faner (Innboks/E-postmaler/Notion) som lenker videre (page.tsx:1-4,33-101).",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (page.tsx:27).",
+      "states": "success (alltid ett SummaryCard via tab page.tsx:62-99); loading/empty/error UVERIFISERT (statisk, ingen DB).",
+      "desktopMobilNote": "Har mobil-handling: px-4 md:px-8 lg:px-12 (page.tsx:34); SummaryCard-grid sm:grid-cols-2 finnes ikke her (single card)."
+    },
+    {
+      "id": "admin.lag-snitt",
+      "surface": "admin",
+      "route": "/admin/lag-snitt",
+      "file": "src/app/admin/lag-snitt/page.tsx:63",
+      "job": "Lag-snitt: 3-kolonners grid av gruppekort (navn + medlemstall-chip + pyramide-barer) basert på COMPLETED-økter per gruppe. (linje 1-12, 63)",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 64)",
+      "states": "«—» per akse uten loggede økter per JSDoc (linje 10-11); loading/empty/error UVERIFISERT",
+      "desktopMobilNote": "desktop-first; grid grid-cols-1 md:grid-cols-3 (linje 103) — mobil 1-kolonne"
+    },
+    {
+      "id": "admin.live.sessionId.active",
+      "surface": "admin",
+      "route": "/admin/live/[sessionId]/active",
+      "file": "src/app/admin/live/[sessionId]/active/page.tsx:58",
+      "job": "Coach følger spillerens pågående økt i sanntid (hybrid terminal): status, aktiv drill, plan-fremdrift og live-melding. (linje 1-6, 58)",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 60); notFound hvis session mangler (linje 72)",
+      "states": "status-styrt success (linje 81-90); loading/empty/error UVERIFISERT",
+      "desktopMobilNote": "AgPage-shell; mobil UVERIFISERT (render-body + LiveMelding ikke åpnet)"
+    },
+    {
+      "id": "admin.live.sessionId.brief",
+      "surface": "admin",
+      "route": "/admin/live/[sessionId]/brief",
+      "file": "src/app/admin/live/[sessionId]/brief/page.tsx:34",
+      "job": "Coach ser sesjonens detaljer og legger til et fokuspunkt (brief) som vises til spilleren før økten starter. (linje 1-6, 34)",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 36); notFound hvis session mangler (linje 42)",
+      "states": "success-flyt; viser tidligere brief hvis lagret (linje 70-71); loading/empty/error UVERIFISERT",
+      "desktopMobilNote": "sentrert max-w-3xl container (linje 75); mobil UVERIFISERT (BriefSend ikke åpnet)"
+    },
+    {
+      "id": "admin.live.sessionId.summary",
+      "surface": "admin",
+      "route": "/admin/live/[sessionId]/summary",
+      "file": "src/app/admin/live/[sessionId]/summary/page.tsx:34",
+      "job": "Post-økt sammendrag: coach vurderer øktkvalitet, skriver observasjoner og lagrer til spillerprofilen. (linje 1-6, 34)",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 36); notFound hvis session mangler (linje 42)",
+      "states": "success-flyt; viser eksisterende vurdering hvis lagret (linje 61-63); loading/empty/error UVERIFISERT",
+      "desktopMobilNote": "sentrert max-w-3xl container (linje 67); grid sm:grid-cols-3 (linje 89); mobil UVERIFISERT (CoachSummaryForm ikke åpnet)"
+    },
+    {
+      "id": "admin.mer",
+      "surface": "admin",
+      "route": "/admin/mer",
+      "file": "src/app/admin/mer/page.tsx:103",
+      "job": "Mobil «Mer»-flate: mørk lenkeliste gruppert som desktop-sidebaren (page.tsx:1-11,103-141).",
+      "layoutArchetype": "mobil-kolonne+bunnnav",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (page.tsx:104).",
+      "states": "success (statisk seksjonsliste page.tsx:114-138); loading/empty/error UVERIFISERT (ingen DB).",
+      "desktopMobilNote": "Eksplisitt mobil-flate (Fase 4, bunnbar-«Mer», page.tsx:1-6); maks bredde 640px (page.tsx:107)."
+    },
+    {
+      "id": "admin.messages",
+      "surface": "admin",
+      "route": "/admin/messages",
+      "file": "src/app/admin/messages/page.tsx:3",
+      "job": "Permanent-redirecter til /admin/innboks (page.tsx:3-5).",
+      "layoutArchetype": "modal",
+      "gating": "Ingen gate i page; ren permanentRedirect (page.tsx:4). via admin/layout (ADMIN+COACH).",
+      "states": "Ingen — kun redirect (page.tsx:4).",
+      "desktopMobilNote": "Ingen UI (redirect). Ikke relevant."
+    },
+    {
+      "id": "admin.okonomi",
+      "surface": "admin",
+      "route": "/admin/okonomi",
+      "file": "src/app/admin/okonomi/page.tsx:149",
+      "job": "Økonomi (hybrid terminal): KPI-stripe (4 kort) + fakturaer/betalinger-tabell fra Payment-modellen; periode-filter ?p=mai|jun|q2. (linje 1-7, 149)",
+      "layoutArchetype": "tabell-tett",
+      "gating": "CBAC: requireCapability(Capability.VIEW_FINANCE) (linje 154) — gates på capability, IKKE rolle-liste",
+      "states": "UVERIFISERT (kun lest linje 1-55)",
+      "desktopMobilNote": "desktop-first; mobil UVERIFISERT (render-body ikke åpnet)"
+    },
+    {
+      "id": "admin.okter",
+      "surface": "admin",
+      "route": "/admin/okter",
+      "file": "src/app/admin/okter/page.tsx:109",
+      "job": "Økter denne uka: TrainingPlanSession-instanser i list-grid med fargekodede pyramide-stripes per økt, KPI-strip (Økter/Snitt-pyramide/Live/Forfalt) og filter-row.",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 109)",
+      "states": "EmptyState importert; filtre er statiske (server component)",
+      "desktopMobilNote": "AdminHero/PageHeader; responsive klasser UVERIFISERT"
+    },
+    {
+      "id": "admin.oppfolging",
+      "surface": "admin",
+      "route": "/admin/oppfolging",
+      "file": "src/app/admin/oppfolging/page.tsx:13",
+      "job": "Alias-rute som re-eksporterer /admin/queue (Oppfølgingskø) (page.tsx:1-13).",
+      "layoutArchetype": "tabell-tett",
+      "gating": "Arver fra re-eksportert QueuePage: requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (queue/page.tsx:61).",
+      "states": "Som queue: success (kanban); empty per kolonne («Ingen saker her.» queue/page.tsx:362-364); loading/error UVERIFISERT.",
+      "desktopMobilNote": "Som queue: KPI grid-cols-2 lg:grid-cols-4 (queue/page.tsx:214), board sm:grid-cols-2 xl:grid-cols-4 (queue/page.tsx:265)."
+    },
+    {
+      "id": "admin.organisasjon",
+      "surface": "admin",
+      "route": "/admin/organisasjon",
+      "file": "src/app/admin/organisasjon/page.tsx:30",
+      "job": "Admin-hub: kort for klubb, team, integrasjoner og innstillinger med ekte coach/admin-tellinger. (linje 1-4, 30)",
+      "layoutArchetype": "desktop-rail",
+      "gating": "CBAC: requireCapability(Capability.MANAGE_USERS) (linje 31) — gates på capability, IKKE rolle-liste",
+      "states": "«—» for integrasjoner-tall (linje 55); loading/empty/error UVERIFISERT",
+      "desktopMobilNote": "HubFrame; mobil UVERIFISERT (HubFrame/HubCard ikke åpnet)"
+    },
+    {
+      "id": "admin.plan-templates",
+      "surface": "admin",
+      "route": "/admin/plan-templates",
+      "file": "src/app/admin/plan-templates/page.tsx:54",
+      "job": "Plan-maler: 3-kolonners grid av PlanTemplate-tiles (L-fase-ikon + navn + «Brukt N×» + fase/varighet), klikk → mal-detalj, «Ny mal». Kanonisk skjerm (var tidligere redirect).",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 54)",
+      "states": "tallord-tittel; tom liste UVERIFISERT",
+      "desktopMobilNote": "AgPage + 3-kol grid forventet; mobil UVERIFISERT"
+    },
+    {
+      "id": "admin.plan-templates.id",
+      "surface": "admin",
+      "route": "/admin/plan-templates/[id]",
+      "file": "src/app/admin/plan-templates/[id]/page.tsx:27",
+      "job": "Mal-detalj: viser én PlanTemplate med økter (sortert uke/dag), resolvede drill-navn og fordeling via TemplateDetail-komponent.",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 31)",
+      "states": "notFound() når mal mangler",
+      "desktopMobilNote": "AdminHero/PageHeader; responsive i TemplateDetail UVERIFISERT"
+    },
+    {
+      "id": "admin.plan-templates.id.effectiveness",
+      "surface": "admin",
+      "route": "/admin/plan-templates/[id]/effectiveness",
+      "file": "src/app/admin/plan-templates/[id]/effectiveness/page.tsx:74",
+      "job": "Mal-effekt: alle PlanEffectiveness-rader for malen med SG-deltas, completion-rate, ratings og notater + KPI-strip og trend-graf per måned.",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 74)",
+      "states": "notFound() når mal mangler; «—» for manglende deltas",
+      "desktopMobilNote": "AdminHero/PageHeader; responsive klasser UVERIFISERT"
+    },
+    {
+      "id": "admin.plan-templates.id.rediger",
+      "surface": "admin",
+      "route": "/admin/plan-templates/[id]/rediger",
+      "file": "src/app/admin/plan-templates/[id]/rediger/page.tsx:26",
+      "job": "Mal-redaktør: laster PlanTemplate + alle ExerciseDefinition (drill-valg) og mounter TemplateEditor for redigering av økter og fordeling.",
+      "layoutArchetype": "wizard",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 30)",
+      "states": "notFound() når mal mangler; skjema-states i editor UVERIFISERT",
+      "desktopMobilNote": "AdminHero/PageHeader; responsive i TemplateEditor UVERIFISERT"
+    },
+    {
+      "id": "admin.plan-templates.ny",
+      "surface": "admin",
+      "route": "/admin/plan-templates/ny",
+      "file": "src/app/admin/plan-templates/ny/page.tsx:13",
+      "job": "Ny mal: tilbake-lenke + header og mounter NewTemplateForm for å opprette PlanTemplate med metadata (økter legges til etterpå).",
+      "layoutArchetype": "wizard",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 14)",
+      "states": "skjema-states i klient-form UVERIFISERT",
+      "desktopMobilNote": "flex flex-col gap-6 pb-20 md:pb-0 (bunn-padding for mobil bunnnav)"
+    },
+    {
+      "id": "admin.planlegge",
+      "surface": "admin",
+      "route": "/admin/planlegge",
+      "file": "src/app/admin/planlegge/page.tsx:11",
+      "job": "Ren redirect: sender coach videre til /admin/spillere/[id]/workbench for første spiller (ellers /admin/spillere). Ett trykkpunkt til Workbench.",
+      "layoutArchetype": "modal",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 12) + redirect",
+      "states": "ingen UI — kun redirect (workbench eller spillere-liste)",
+      "desktopMobilNote": "n/a (redirect, ingen render-body)"
+    },
+    {
+      "id": "admin.plans",
+      "surface": "admin",
+      "route": "/admin/plans",
+      "file": "src/app/admin/plans/page.tsx:64",
+      "job": "Treningsplaner: kanban med tre faser (Utkast/Aktiv/Fullført) over TrainingPlan-kort (navn + spiller + meta), statisk server-render (ingen drag-and-drop). Template-placeholder-planer filtreres bort.",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 64)",
+      "states": "statisk kanban; tomme kolonner UVERIFISERT",
+      "desktopMobilNote": "AgPage + AgPageHead; mobil UVERIFISERT"
+    },
+    {
+      "id": "admin.plans.planId",
+      "surface": "admin",
+      "route": "/admin/plans/[planId]",
+      "file": "src/app/admin/plans/[planId]/page.tsx:45",
+      "job": "Plan-detalj: tabbet visning (Oversikt/Øvelser/Notater/Rapport) av én TrainingPlan med fase-timeline, pyramide-fordeling, drabare økter, fullførte økter og agent-strip.",
+      "layoutArchetype": "split",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje ~51)",
+      "states": "notFound() når plan mangler; RejectedBanner ved avvist; EmptyState UVERIFISERT",
+      "desktopMobilNote": "DetailShell-wrapper; responsive klasser UVERIFISERT"
+    },
+    {
+      "id": "admin.plans.new",
+      "surface": "admin",
+      "route": "/admin/plans/new",
+      "file": "src/app/admin/plans/new/page.tsx:7",
+      "job": "Ny plan (legacy wizard): laster spillere + grupper og mounter PlanBuilderClient. Består som rute, men lenkes ikke fra /admin/plans (Workbench er kanon).",
+      "layoutArchetype": "wizard",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 8)",
+      "states": "klient-wizard states UVERIFISERT",
+      "desktopMobilNote": "mobil UVERIFISERT (delegert til PlanBuilderClient)"
+    },
+    {
+      "id": "admin.plans.templates",
+      "surface": "admin",
+      "route": "/admin/plans/templates",
+      "file": "src/app/admin/plans/templates/page.tsx:3",
+      "job": "Ren permanentRedirect til /admin/plan-templates (legacy-rute konsolidert).",
+      "layoutArchetype": "modal",
+      "gating": "ingen auth — permanentRedirect",
+      "states": "ingen UI — kun redirect",
+      "desktopMobilNote": "n/a (redirect)"
+    },
+    {
+      "id": "admin.plans.templates.id.effectiveness",
+      "surface": "admin",
+      "route": "/admin/plans/templates/[id]/effectiveness",
+      "file": "src/app/admin/plans/templates/[id]/effectiveness/page.tsx:3",
+      "job": "Ren permanentRedirect til /admin/plan-templates/[id]/effectiveness (legacy-rute konsolidert).",
+      "layoutArchetype": "modal",
+      "gating": "ingen auth — permanentRedirect",
+      "states": "ingen UI — kun redirect",
+      "desktopMobilNote": "n/a (redirect)"
+    },
+    {
+      "id": "admin.plans.templates.id.rediger",
+      "surface": "admin",
+      "route": "/admin/plans/templates/[id]/rediger",
+      "file": "src/app/admin/plans/templates/[id]/rediger/page.tsx:3",
+      "job": "Ren permanentRedirect til /admin/plan-templates/[id]/rediger (legacy-rute konsolidert).",
+      "layoutArchetype": "modal",
+      "gating": "ingen auth — permanentRedirect",
+      "states": "ingen UI — kun redirect",
+      "desktopMobilNote": "n/a (redirect)"
+    },
+    {
+      "id": "admin.plans.templates.ny",
+      "surface": "admin",
+      "route": "/admin/plans/templates/ny",
+      "file": "src/app/admin/plans/templates/ny/page.tsx:3",
+      "job": "Ren permanentRedirect til /admin/plan-templates/ny (legacy-rute konsolidert).",
+      "layoutArchetype": "modal",
+      "gating": "ingen auth — permanentRedirect",
+      "states": "ingen UI — kun redirect",
+      "desktopMobilNote": "n/a (redirect)"
+    },
+    {
+      "id": "admin.profile",
+      "surface": "admin",
+      "route": "/admin/profile",
+      "file": "src/app/admin/profile/page.tsx:18",
+      "job": "Coachens profil-side: personalia, profesjonelt, galleri + redigeringsskjema + farlig sone (page.tsx:18-176).",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (page.tsx:19).",
+      "states": "success (alltid rendret fra user); empty per felt («Ikke registrert»/tomme chips page.tsx:24,242-244); loading/error UVERIFISERT.",
+      "desktopMobilNote": "Har mobil-handling: hero flex-wrap (page.tsx:59), grid-cols-1 lg:grid-cols-[320px_1fr] (page.tsx:87), responsive font sm:/md: (page.tsx:64)."
+    },
+    {
+      "id": "admin.prosjekter",
+      "surface": "admin",
+      "route": "/admin/prosjekter",
+      "file": "src/app/admin/prosjekter/page.tsx:11",
+      "job": "Prosjekt-liste (merget fra kommandosenter): KommandoProject + task-tellere (page.tsx:1-2,11-42).",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "canAccessMissionControl() → redirect(\"/admin\") hvis ikke tilgang (ADMIN-only) (page.tsx:5,12-13).",
+      "states": "success via <ProjectList> (page.tsx:40); loading/empty/error UVERIFISERT (klient-komp ikke åpnet).",
+      "desktopMobilNote": "mobil UVERIFISERT (ProjectList-klientkomp ikke åpnet; page bare max-w-2xl, page.tsx:37)."
+    },
+    {
+      "id": "admin.queue",
+      "surface": "admin",
+      "route": "/admin/queue",
+      "file": "src/app/admin/queue/page.tsx:60",
+      "job": "Oppfølgingskø — kanban som flagger hvilke spillere som trenger samtale (page.tsx:1-12,60-279).",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (page.tsx:61).",
+      "states": "success (kanban-kolonner); empty per kolonne («Ingen saker her.» page.tsx:362-364); loading/error UVERIFISERT.",
+      "desktopMobilNote": "Har mobil-handling: KPI grid-cols-2 lg:grid-cols-4 (page.tsx:214), board grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 (page.tsx:265)."
+    },
+    {
+      "id": "admin.reach",
+      "surface": "admin",
+      "route": "/admin/reach",
+      "file": "src/app/admin/reach/page.tsx:26",
+      "job": "Engasjement-/rekkevidde-analyse: aggregerer aktivitet, compliance og lesefrekvens per spiller (page.tsx:26-164).",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (page.tsx:27).",
+      "states": "success via <ReachClient> (page.tsx:164); empty (ærlige 0-tall/tomme lister ved tom DB, page.tsx:152-153); loading/error UVERIFISERT.",
+      "desktopMobilNote": "mobil UVERIFISERT (ReachClient-klientkomp ikke åpnet; page er ren data)."
+    },
+    {
+      "id": "admin.recording",
+      "surface": "admin",
+      "route": "/admin/recording",
+      "file": "src/app/admin/recording/page.tsx:76",
+      "job": "Sesjon-opptak: coach tar opp coaching-økt (Deepgram-transkripsjon), viser siste 30 SessionRecording med pipeline-status, waveform-placeholder og meta-stats.",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 76)",
+      "states": "status-piller (RECORDING/PROCESSING/DONE/FAILED/ABORTED); EmptyState importert",
+      "desktopMobilNote": "RecordingControls/analyze er klient; responsive klasser UVERIFISERT"
+    },
+    {
+      "id": "admin.reports",
+      "surface": "admin",
+      "route": "/admin/reports",
+      "file": "src/app/admin/reports/page.tsx:43",
+      "job": "Rapporter: 3-kolonners grid av rapport-tiles; CSV-tiles peker på ekte eksport-endepunkter, andre lenker til riktig analyse-flate. (linje 1-13, 43)",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 44)",
+      "states": "UVERIFISERT i lest del (kun linje 1-60)",
+      "desktopMobilNote": "desktop-first 1280; mobil UVERIFISERT (render-body ikke åpnet)"
+    },
+    {
+      "id": "admin.risiko",
+      "surface": "admin",
+      "route": "/admin/risiko",
+      "file": "src/app/admin/risiko/page.tsx:88",
+      "job": "Risiko-stallkart: heatmap (8-kol) + liste over spillere som trenger oppfølging, ekte Prisma (page.tsx:1-14,88-342).",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (page.tsx:89).",
+      "states": "success (heatmap+liste); empty («Ingen spillere» page.tsx:252-255, «Ingen forhøyet risiko» page.tsx:297-306); loading/error UVERIFISERT.",
+      "desktopMobilNote": "Har desktop-handling: grid-cols-1 xl:grid-cols-[1fr_340px] (page.tsx:222); heatmap fast grid-cols-8 (page.tsx:257); mobil stacker default."
+    },
+    {
+      "id": "admin.runder",
+      "surface": "admin",
+      "route": "/admin/runder",
+      "file": "src/app/admin/runder/page.tsx:49",
+      "job": "Coach-oversikt over alle registrerte runder fra stallen: data-tett tabell med score/SG-total/baner + KPI-strip med SG-trend-sparkline. (linje 1-7, 49)",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 50)",
+      "states": "empty present (EmptyState linje 160); loading/error UVERIFISERT",
+      "desktopMobilNote": "desktop-first; mobil UVERIFISERT (render-body utover linje 60 ikke fullt åpnet)"
+    },
+    {
+      "id": "admin.services",
+      "surface": "admin",
+      "route": "/admin/services",
+      "file": "src/app/admin/services/page.tsx:40",
+      "job": "Tjenester-tabell (Tjeneste/Varighet/Pris/Status) over bookbare tjenester; aktiv=chip-ok, inaktiv=Skjult. Ny tjeneste via ServiceForm. (linje 1-11, 40)",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 41)",
+      "states": "empty present (linje 78-83); loading/error UVERIFISERT",
+      "desktopMobilNote": "desktop-first 1280; mobil UVERIFISERT (responsiv-klasser ikke sett i lest del)"
+    },
+    {
+      "id": "admin.settings",
+      "surface": "admin",
+      "route": "/admin/settings",
+      "file": "src/app/admin/settings/page.tsx:63",
+      "job": "Admin-innstillinger: seg-faner Organisasjon / Team & roller / Tilgang (server-side ?tab) med ekte location/user-data eller «—». (linje 1-19, 63)",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 68)",
+      "states": "«—» for org-innstillinger uten DB-modell per JSDoc (linje 14-15); loading/empty/error UVERIFISERT",
+      "desktopMobilNote": "desktop-first 1280; mobil UVERIFISERT (render-body ikke åpnet)"
+    },
+    {
+      "id": "admin.settings.api",
+      "surface": "admin",
+      "route": "/admin/settings/api",
+      "file": "src/app/admin/settings/api/page.tsx:29",
+      "job": "API-nøkler: liste over apiKey (alle for ADMIN, egne for COACH) med opprett/revoke/kopier-prefiks. (linje 29-55)",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 30); ADMIN ser alle nøkler, COACH kun egne (linje 33)",
+      "states": "UVERIFISERT i lest del (kun linje 1-55)",
+      "desktopMobilNote": "space-y-8 container; mobil UVERIFISERT (render-body ikke åpnet)"
+    },
+    {
+      "id": "admin.settings.calendar",
+      "surface": "admin",
+      "route": "/admin/settings/calendar",
+      "file": "src/app/admin/settings/calendar/page.tsx:11",
+      "job": "Google Calendar 2-way sync-innstillinger: koble Google-konto og velge hvilke kalendere som pusher/blokkerer. ?ok&?error. (linje 11-50)",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"ADMIN\",\"COACH\"]}) (linje 17)",
+      "states": "success-banner ved ok=1 (linje 52-55); error-state UVERIFISERT i lest del (error-param finnes linje 16)",
+      "desktopMobilNote": "space-y-6 container; mobil UVERIFISERT (SubscriptionsForm ikke åpnet)"
+    },
+    {
+      "id": "admin.settings.security",
+      "surface": "admin",
+      "route": "/admin/settings/security",
+      "file": "src/app/admin/settings/security/page.tsx:7",
+      "job": "Sikkerhet: konto-oversikt (rolle, sist oppdatert) + 2FA-oppsett via Setup2FA. (linje 7-55)",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 8)",
+      "states": "UVERIFISERT (TODO: aktive økter/innloggings-historikk mangler audit-logg, linje 10); ingen eksplisitt loading/empty/error i lest del",
+      "desktopMobilNote": "space-y-8 container; grid grid-cols-2 (linje 37); mobil UVERIFISERT (render-body ikke fullt åpnet)"
+    },
+    {
+      "id": "admin.settings.tilgang",
+      "surface": "admin",
+      "route": "/admin/settings/tilgang",
+      "file": "src/app/admin/settings/tilgang/page.tsx:25",
+      "job": "Read-only CBAC-matrise: viser hvilke capabilities hver rolle (ADMIN/COACH/PLAYER/PARENT/GUEST) har via can(). (linje 1-2, 25)",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"ADMIN\"]}) (linje 26) — KUN ADMIN",
+      "states": "read-only, ingen tom/loading/error i lest del; success implisitt (matrise alltid populert fra Capability-enum)",
+      "desktopMobilNote": "desktop-first; tabell min-w-[640px] med overflow-x-auto (linje 53-54) — horisontal scroll på mobil"
+    },
+    {
+      "id": "admin.spillere",
+      "surface": "admin",
+      "route": "/admin/spillere",
+      "file": "src/app/admin/spillere/page.tsx:92",
+      "job": "Alle spillere (stall-tabell): ekte Prisma-data per spiller (HCP, SG, siste/neste økt, status-heuristikk «N økter bak»/«N dg inaktiv»/«På plan») mappet til SpillereTabell-rader. Coach-hovedflate.",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 92)",
+      "states": "status: alert/warn/ok; «—» for felt uten kilde — aldri liksom-tall; empty/loading i klient-tabell UVERIFISERT",
+      "desktopMobilNote": "port av fasit desktop 1280 (mørkt); interaktiv tabell i SpillereTabell; mobil UVERIFISERT"
+    },
+    {
+      "id": "admin.spillere.id",
+      "surface": "admin",
+      "route": "/admin/spillere/[id]",
+      "file": "src/app/admin/spillere/[id]/page.tsx:209",
+      "job": "Spillerprofil 360°: hero-kort (avatar + meta + Melding/Ny plan/Ny økt), venstre kolonne (coach-flagg, treningspyramide, siste runder & tester) og høyre kolonne (aktiv plan, hurtighandlinger, meldinger). Coach-hovedflate.",
+      "layoutArchetype": "split",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje ~211)",
+      "states": "notFound() når spiller mangler; tomme felter viser «—»/skjules; PENDING PlanAction zod-validert → fallback comms",
+      "desktopMobilNote": "AgPage, fasit desktop 1280 mørkt; 2-kol layout (venstre/høyre); mobil UVERIFISERT"
+    },
+    {
+      "id": "admin.spillere.id.fremgang",
+      "surface": "admin",
+      "route": "/admin/spillere/[id]/fremgang",
+      "file": "src/app/admin/spillere/[id]/fremgang/page.tsx:25",
+      "job": "Spiller-fremgang: 8-ukers SG-sparkline + treningsvolum-bar + korrelasjon mellom treningsvolum og SG per område (ekte runder/volum).",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:['COACH','ADMIN']}) (linje 26)",
+      "states": "notFound() når spiller mangler; SG-data fra runder med sgTotal != null",
+      "desktopMobilNote": "SgSparkline/TreningsvolumBar; responsive klasser UVERIFISERT"
+    },
+    {
+      "id": "admin.spillere.id.plan",
+      "surface": "admin",
+      "route": "/admin/spillere/[id]/plan",
+      "file": "src/app/admin/spillere/[id]/plan/page.tsx:38",
+      "job": "Plan-indeks (coach-context): 0 planer → tom-tilstand med «Lag plan», 1 plan → redirect til detalj, 2+ → liste sortert ACTIVE/DRAFT/ARCHIVED som lenker til /plan/[planId].",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje ~44)",
+      "states": "notFound() når spiller mangler; ærlig tom-tilstand ved 0 planer; redirect ved 1",
+      "desktopMobilNote": "AthleticEyebrow/AthleticButton; responsive klasser UVERIFISERT"
+    },
+    {
+      "id": "admin.spillere.id.plan.planId",
+      "surface": "admin",
+      "route": "/admin/spillere/[id]/plan/[planId]",
+      "file": "src/app/admin/spillere/[id]/plan/[planId]/page.tsx:50",
+      "job": "Spiller-plan detalj (coach): 5 tabs (Oversikt/Periodisering/Drills default/Hit-rate/Effekt) over planens ekte positions[].tasks via TabBar; tom plan gir ærlig tom-tilstand.",
+      "layoutArchetype": "split",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje ~56)",
+      "states": "notFound() når plan mangler; tom plan → ærlig tom-tilstand i drills/hit-rate/effekt",
+      "desktopMobilNote": "TabBar + PlanToolbar; responsive klasser UVERIFISERT"
+    },
+    {
+      "id": "admin.spillere.id.profil",
+      "surface": "admin",
+      "route": "/admin/spillere/[id]/profil",
+      "file": "src/app/admin/spillere/[id]/profil/page.tsx:34",
+      "job": "Full spiller-profil: vertikal stack med personalia, forelder (med invite-knapp), spiller-DNA-radar, aktive mål, skade-historikk og coach-vurdering (Inter Tight blokk-quote).",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 40)",
+      "states": "notFound() når spiller mangler; alder/forelder beregnes når data finnes",
+      "desktopMobilNote": "vertikal stack; responsive klasser UVERIFISERT"
+    },
+    {
+      "id": "admin.spillere.id.rediger",
+      "surface": "admin",
+      "route": "/admin/spillere/[id]/rediger",
+      "file": "src/app/admin/spillere/[id]/rediger/page.tsx:35",
+      "job": "Rediger spiller: 2-kolonners form med sticky save-bar (topp+bunn), endrings-historikk i høyre kolonne, lagring via lagreSpiller server action og slett-knapp.",
+      "layoutArchetype": "split",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 41)",
+      "states": "notFound() når spiller mangler; skjema-states i form UVERIFISERT",
+      "desktopMobilNote": "2-kol form (sticky save-bar); responsive klasser UVERIFISERT"
+    },
+    {
+      "id": "admin.spillere.id.tester",
+      "surface": "admin",
+      "route": "/admin/spillere/[id]/tester",
+      "file": "src/app/admin/spillere/[id]/tester/page.tsx:13",
+      "job": "Coach-view av en spillers tester: laster loadSpillerTesterData og mounter CoachSpillerTesterTabScreen (ekte data, visuelt portet fra Claude Design).",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 14)",
+      "states": "notFound() når data mangler; øvrige states i klient-screen UVERIFISERT",
+      "desktopMobilNote": "delegert til CoachSpillerTesterTabScreen; mobil UVERIFISERT"
+    },
+    {
+      "id": "admin.spillere.id.tildel-test",
+      "surface": "admin",
+      "route": "/admin/spillere/[id]/tildel-test",
+      "file": "src/app/admin/spillere/[id]/tildel-test/page.tsx:12",
+      "job": "Tildel test: laster spiller + alle TestDefinition (gruppert per pyramide-akse) og mounter TildelTestModalScreen for å tildele tester.",
+      "layoutArchetype": "modal",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 13)",
+      "states": "notFound() når spiller mangler; testDefinition.findMany().catch(() => []) (tom fallback)",
+      "desktopMobilNote": "modal-screen; responsive klasser UVERIFISERT"
+    },
+    {
+      "id": "admin.spillere.id.workbench",
+      "surface": "admin",
+      "route": "/admin/spillere/[id]/workbench",
+      "file": "src/app/admin/spillere/[id]/workbench/page.tsx:29",
+      "job": "Coach-Workbench: planleggings-hub i coach-modus (WorkbenchHybrid) med full mobil+desktop-paritet; ?uke= styrer week-offset, roster + workbench-kontekst lastes for spilleren.",
+      "layoutArchetype": "split",
+      "gating": "getCurrentUser() + manuell sjekk role ADMIN/COACH, ellers redirect /auth/login (linje 30-32)",
+      "states": "notFound() når kontekst mangler (linje 38); Suspense-wrapper",
+      "desktopMobilNote": "WorkbenchHybrid = full mobil + desktop paritet (delt komponent)"
+    },
+    {
+      "id": "admin.spillere.ny",
+      "surface": "admin",
+      "route": "/admin/spillere/ny",
+      "file": "src/app/admin/spillere/ny/page.tsx:14",
+      "job": "Spiller-onboarding: tilbake-lenke + mounter SpillerOnboardingWizard (multi-stegs); server action createSpiller persisterer.",
+      "layoutArchetype": "wizard",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 15)",
+      "states": "wizard-states UVERIFISERT (delegert til klient-wizard)",
+      "desktopMobilNote": "space-y-6; mobil UVERIFISERT (delegert til wizard)"
+    },
+    {
+      "id": "admin.stall",
+      "surface": "admin",
+      "route": "/admin/stall",
+      "file": "src/app/admin/stall/page.tsx:75",
+      "job": "Stall (hybrid terminal): spiller-roster-tabell (venstre) + 360°-panel (høyre), ekte Prisma-data (SG-serie, siste aktivitet, pyramide-score, tone up/warn/down). Coach-hovedflate.",
+      "layoutArchetype": "split",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 75)",
+      "states": "tone-heuristikk fra behind/inaktivitet; «—» uten data; empty/loading i StallClient UVERIFISERT",
+      "desktopMobilNote": "StallClient interaktiv roster+panel (split); mobil UVERIFISERT"
+    },
+    {
+      "id": "admin.stats.moderering",
+      "surface": "admin",
+      "route": "/admin/stats/moderering",
+      "file": "src/app/admin/stats/moderering/page.tsx:26",
+      "job": "Coach modereringskø (kø-status, KPI, tabs for turneringer/resultater/profil/slett/historikk); rendrer ærlige tomme tilstander (ingen kø i datamodellen ennå). (linje 1-12, 26)",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"ADMIN\",\"COACH\"]}) (linje 27)",
+      "states": "empty present — tomme lister/null sendes bevisst (linje 29-45); loading/error UVERIFISERT",
+      "desktopMobilNote": "mobil UVERIFISERT (ModeringClient ikke åpnet)"
+    },
+    {
+      "id": "admin.stats.overview",
+      "surface": "admin",
+      "route": "/admin/stats/overview",
+      "file": "src/app/admin/stats/overview/page.tsx:242",
+      "job": "Admin stats-oversikt: ekte tellinger fra flere modeller + git-log siste 5 commits; Plausible-felt merket som krever integrasjon. (linje 1-13, 242)",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"ADMIN\"]}) (linje 243) — KUN ADMIN",
+      "states": "UVERIFISERT i lest del (kun linje 1-55); revalidate 300 (linje 33)",
+      "desktopMobilNote": "mobil UVERIFISERT (render-body ikke åpnet)"
+    },
+    {
+      "id": "admin.talent",
+      "surface": "admin",
+      "route": "/admin/talent",
+      "file": "src/app/admin/talent/page.tsx:95",
+      "job": "Talent Coach (hybrid terminal): tre paneler — SkillRadar, PercentileGauge, PyramidProgress + H2H — fra TalentTracking; spiller-selector via ?spiller=.",
+      "layoutArchetype": "split",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 95)",
+      "states": "EmptyState importert; spiller velges fra URL-param",
+      "desktopMobilNote": "AgPage; tre-panel layout; mobil UVERIFISERT"
+    },
+    {
+      "id": "admin.talent.playerId",
+      "surface": "admin",
+      "route": "/admin/talent/[playerId]",
+      "file": "src/app/admin/talent/[playerId]/page.tsx:68",
+      "job": "Talent 360-profil (K4): hero med avatar, 5 KPI-kort (radar-akser + total), stor radar-chart, milepæler-timeline, redigerbare notater og hurtigvalg-grid.",
+      "layoutArchetype": "split",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje ~74)",
+      "states": "notFound() når spiller mangler; lagreNotater/loggMilepael server actions",
+      "desktopMobilNote": "DetailShell-wrapper; responsive klasser UVERIFISERT"
+    },
+    {
+      "id": "admin.talent.discovery",
+      "surface": "admin",
+      "route": "/admin/talent/discovery",
+      "file": "src/app/admin/talent/discovery/page.tsx:42",
+      "job": "Scout-feed (K2): PLAYER-brukere som IKKE er i TalentTracking, med søk + HCP-range/klubb-filter; hver rad har form for å legge spilleren inn i talent-tracking.",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje ~48)",
+      "states": "EmptyState importert; HCP-range/klubb-filter via searchParams",
+      "desktopMobilNote": "AdminHero/PageHeader; responsive klasser UVERIFISERT"
+    },
+    {
+      "id": "admin.talent.kohort",
+      "surface": "admin",
+      "route": "/admin/talent/kohort",
+      "file": "src/app/admin/talent/kohort/page.tsx:50",
+      "job": "Kohort-analyse (K3): grupperer TalentTracking per nivå (U10–Senior); per kohort antall, snitt-radar (5 akser), total og progresjon siste 90 d.",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje ~56)",
+      "states": "EmptyState importert; snitt = null når data mangler",
+      "desktopMobilNote": "AdminHero/PageHeader; responsive klasser UVERIFISERT"
+    },
+    {
+      "id": "admin.talent.radar",
+      "surface": "admin",
+      "route": "/admin/talent/radar",
+      "file": "src/app/admin/talent/radar/page.tsx:61",
+      "job": "Talent-radar: TalentTracking + WagrSnapshot (rank/uke-trend) + treningsplan-økter per pyramide-akse i mini-pyramide; signal derives av WAGR-trend (Stigende/Watch/Stabil).",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 61)",
+      "states": "«—» når data mangler; bevisst datadrevet avvik fra fasit (uke-trend ikke 30 dg)",
+      "desktopMobilNote": "AgPage fasit desktop mørkt; mobil UVERIFISERT"
+    },
+    {
+      "id": "admin.talent.radar.playerId",
+      "surface": "admin",
+      "route": "/admin/talent/radar/[playerId]",
+      "file": "src/app/admin/talent/radar/[playerId]/page.tsx:34",
+      "job": "Radar-vurdering per spiller (K2): stor pentagonal radar (5 akser, 1–10) med nivå-snitt som overlay; RadarForm oppdaterer verdier via oppdaterRadar.",
+      "layoutArchetype": "split",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje ~40)",
+      "states": "notFound() når spiller mangler; snitt = null uten data",
+      "desktopMobilNote": "DetailShell-wrapper; responsive klasser UVERIFISERT"
+    },
+    {
+      "id": "admin.talent.region",
+      "surface": "admin",
+      "route": "/admin/talent/region",
+      "file": "src/app/admin/talent/region/page.tsx:58",
+      "job": "Regional pipeline (K3): grupperer TalentTracking per region, forenklet SVG-Norge pin-kart + tabell (region/antall/snitt/klubber), filter på nivå via ?niva=.",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje ~64)",
+      "states": "EmptyState importert; region-matching via nøkkelord",
+      "desktopMobilNote": "AdminHero/PageHeader + SVG-kart; responsive klasser UVERIFISERT"
+    },
+    {
+      "id": "admin.talent.ressurser",
+      "surface": "admin",
+      "route": "/admin/talent/ressurser",
+      "file": "src/app/admin/talent/ressurser/page.tsx:42",
+      "job": "Ressurs-bibliotek (K4): filter-chips (kategori video/artikkel/podcast, nivå, fokus) + grid med ressurs-kort; kun ADMIN kan legge til via leggTilRessurs.",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje ~48); ADMIN-only for tillegg",
+      "states": "EmptyState importert; filter via chips",
+      "desktopMobilNote": "AdminHero/PageHeader + kort-grid; responsive klasser UVERIFISERT"
+    },
+    {
+      "id": "admin.talent.sammenligning",
+      "surface": "admin",
+      "route": "/admin/talent/sammenligning",
+      "file": "src/app/admin/talent/sammenligning/page.tsx:21",
+      "job": "Talent-sammenligning: loadMultiCompare → TalentSammenligning (v10) for inntil 4 spillere via ?ids=; uten ids vises tre øverste fra kohort-rangering.",
+      "layoutArchetype": "split",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 27)",
+      "states": "fallback til topp-3 ved tomt utvalg; tom-tilstand UVERIFISERT",
+      "desktopMobilNote": "AgPage + TalentSammenligning; mobil UVERIFISERT"
+    },
+    {
+      "id": "admin.talent.wagr-benchmark",
+      "surface": "admin",
+      "route": "/admin/talent/wagr-benchmark",
+      "file": "src/app/admin/talent/wagr-benchmark/page.tsx:35",
+      "job": "WAGR-referansespillere: 5 globalt + 5 norske topp som kalibreringspunkter for NGF-kategori (A–L), med slett-knapp; AK-spillere kan kobles til wagr_snapshot.",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 35)",
+      "states": "EmptyState importert; data fra wagr.com seedet",
+      "desktopMobilNote": "AdminHero/PageHeader; responsive klasser UVERIFISERT"
+    },
+    {
+      "id": "admin.talent.wagr-import",
+      "surface": "admin",
+      "route": "/admin/talent/wagr-import",
+      "file": "src/app/admin/talent/wagr-import/page.tsx:48",
+      "job": "WAGR-import: matchede WagrSnapshot (userId-koblede) + antall PLAYER-brukere; «Sist synket» = nyeste snapshotAt. «Synk nå» uten auto-action ennå (manuell import via actions).",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 48)",
+      "states": "ærlige tomme tilstander; alle koblede rader vises «Sikker match» (mangler konfidens-felt)",
+      "desktopMobilNote": "AgPage fasit desktop mørkt; mobil UVERIFISERT"
+    },
+    {
+      "id": "admin.team",
+      "surface": "admin",
+      "route": "/admin/team",
+      "file": "src/app/admin/team/page.tsx:22",
+      "job": "Team: card-grid (2 kol / mobil 1) av coacher/admin med avatar, rolle-tags og 3-felts stats; KPI for total/admin/coach/snitt-spillere. (linje 1-7, 22)",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "CBAC: requireCapability(Capability.MANAGE_USERS) (linje 23) — gates på capability, IKKE rolle-liste",
+      "states": "empty present (EmptyState linje 105); loading/error UVERIFISERT",
+      "desktopMobilNote": "desktop-first; card-grid 2 kol, mobil 1 (per JSDoc linje 5); mobil-detalj UVERIFISERT (render-body utover linje 50 ikke fullt åpnet)"
+    },
+    {
+      "id": "admin.team.inviter",
+      "surface": "admin",
+      "route": "/admin/team/inviter",
+      "file": "src/app/admin/team/inviter/page.tsx:11",
+      "job": "Inviter coach: enkelt invitasjonsskjema som bruker eksisterende inviterCoach server-action. (linje 1-5, 11)",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"ADMIN\"]}) (linje 12) — KUN ADMIN",
+      "states": "states i InviterCoachForm UVERIFISERT (ikke åpnet); ingen i page-shell",
+      "desktopMobilNote": "max-w-xl skjema-kort (linje 23); mobil UVERIFISERT (InviterCoachForm ikke åpnet)"
+    },
+    {
+      "id": "admin.teknisk-plan",
+      "surface": "admin",
+      "route": "/admin/teknisk-plan",
+      "file": "src/app/admin/teknisk-plan/page.tsx:21",
+      "job": "Teknisk-plan oversikt: alle PLAYER-brukere med status for aktiv teknisk plan + maler som utgangspunkt; lenker til per-spiller plan og «Bruk mal».",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 22)",
+      "states": "EmptyState importert; status fra aktive trainingPlans",
+      "desktopMobilNote": "AdminHero/PageHeader; responsive klasser UVERIFISERT"
+    },
+    {
+      "id": "admin.teknisk-plan.spillerId",
+      "surface": "admin",
+      "route": "/admin/teknisk-plan/[spillerId]",
+      "file": "src/app/admin/teknisk-plan/[spillerId]/page.tsx:33",
+      "job": "Teknisk plan for én spiller: tekniske mål periodisert etter L-fase (Grunn/Spesial/Turnering) + fremgangsmålinger per teknisk element (TEK-økter).",
+      "layoutArchetype": "split",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje ~39)",
+      "states": "notFound() når spiller mangler; EmptyState + «—» for manglende HCP",
+      "desktopMobilNote": "DetailShell-wrapper; responsive klasser UVERIFISERT"
+    },
+    {
+      "id": "admin.tester",
+      "surface": "admin",
+      "route": "/admin/tester",
+      "file": "src/app/admin/tester/page.tsx:51",
+      "job": "Tester-oversikt: 4 KPI-kort + tabell over siste testgjennomføring (Spiller/Test/Resultat/Delta/Dato/Status); nøytrale resultat-chips (FYS-formel ikke låst). (linje 1-14, 51)",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 52)",
+      "states": "UVERIFISERT i lest del (kun linje 1-60); render-body linje 206+ ikke åpnet",
+      "desktopMobilNote": "desktop-first; KPI grid grid-cols-2 md:grid-cols-4 (linje 206); mobil liste md:hidden (linje 238), desktop tabell md:block (linje 267)"
+    },
+    {
+      "id": "admin.tester.id",
+      "surface": "admin",
+      "route": "/admin/tester/[id]",
+      "file": "src/app/admin/tester/[id]/page.tsx:40",
+      "job": "Test-resultat-detalj (coach-view): henter ett TestResult + historikk for samme test/spiller og tegner trend-graf + benchmarking i DetailShell. (linje 1-8, 40)",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 45); notFound hvis result mangler (linje 55)",
+      "states": "UVERIFISERT (kun lest linje 1-60); trend/benchmark i TestDetailClient",
+      "desktopMobilNote": "DetailShell-mønster; mobil UVERIFISERT (TestDetailClient ikke åpnet)"
+    },
+    {
+      "id": "admin.tester.benchmarks",
+      "surface": "admin",
+      "route": "/admin/tester/benchmarks",
+      "file": "src/app/admin/tester/benchmarks/page.tsx:50",
+      "job": "Fasiter (DataGolf-autosync): viser nivåstiger i NGF-testbatteriet, synk-status per test (AUTO/FØLGER/REFERANSE) og ventende justeringer som krever godkjenning. (linje 1-10, 50)",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 51)",
+      "states": "UVERIFISERT i lest del (kun linje 1-60)",
+      "desktopMobilNote": "mobil UVERIFISERT (render-body ikke åpnet)"
+    },
+    {
+      "id": "admin.tester.foreslatte",
+      "surface": "admin",
+      "route": "/admin/tester/foreslatte",
+      "file": "src/app/admin/tester/foreslatte/page.tsx:20",
+      "job": "Viser custom-tester laget av spillere som ønsker coach-godkjenning (visibility COACH, ikke godkjent); coach kan godkjenne eller avvise. (linje 1-7, 20)",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 21)",
+      "states": "UVERIFISERT i lest del (kun linje 1-60); kort i ForeslattTestKort",
+      "desktopMobilNote": "desktop-first; space-y md:space-y-8, pb-20 md:pb-0 (linje 49) — mobil bunn-padding for bunn-nav"
+    },
+    {
+      "id": "admin.tester.tildel.spillerId",
+      "surface": "admin",
+      "route": "/admin/tester/tildel/[spillerId]",
+      "file": "src/app/admin/tester/tildel/[spillerId]/page.tsx:18",
+      "job": "Route-basert tildel-test-modal: henter spiller + TestDefinition-liste og rendrer TildelModal for å tildele test til spiller. (linje 1-8, 18)",
+      "layoutArchetype": "modal",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 23); notFound hvis spiller mangler (linje 39)",
+      "states": "UVERIFISERT (states i TildelModal, ikke åpnet)",
+      "desktopMobilNote": "modal-overlay; mobil UVERIFISERT (TildelModal ikke åpnet)"
+    },
+    {
+      "id": "admin.tilstander",
+      "surface": "admin",
+      "route": "/admin/tilstander",
+      "file": "src/app/admin/tilstander/page.tsx:24",
+      "job": "Design-system-katalog: 9 økt-kort-tilstander (livssyklus/unntak/flyt), statisk demo (page.tsx:24-217).",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (page.tsx:25).",
+      "states": "success (statiske kort); loading/empty/error UVERIFISERT (hardkodet demo-data, ingen DB).",
+      "desktopMobilNote": "Har mobil-handling: kort-grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 (page.tsx:191,198,205); footer flex-col sm:flex-row (page.tsx:211)."
+    },
+    {
+      "id": "admin.tournaments",
+      "surface": "admin",
+      "route": "/admin/tournaments",
+      "file": "src/app/admin/tournaments/page.tsx:77",
+      "job": "Lister turneringer stallen er påmeldt i som tabell/kortliste med status-chip og fellesmelding-knapp per rad. (linje 1-15, 137-149)",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 78)",
+      "states": "empty present (linje 154-156 mobil, 203-207 desktop); loading/error UVERIFISERT",
+      "desktopMobilNote": "desktop-first; mobil kortliste via md:hidden (linje 152), desktop tabell via md:block (linje 189)"
+    },
+    {
+      "id": "admin.tournaments.id",
+      "surface": "admin",
+      "route": "/admin/tournaments/[id]",
+      "file": "src/app/admin/tournaments/[id]/page.tsx:19",
+      "job": "Turnering-detalj: påmeldte spillere, resultater, KPI-rad, påmeldings-/endre-handlinger og unmerge-banner. (linje 84-348)",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 24); notFound hvis ikke funnet (linje 55)",
+      "states": "empty present (EmptyState linje 224-230 påmeldte, 289-295 resultater); success implisitt; loading/error UVERIFISERT",
+      "desktopMobilNote": "DetailShell-mønster; grid sm:grid-cols-4 (linje 139), responsiv via shell; mobil UVERIFISERT (DetailShell ikke åpnet)"
+    },
+    {
+      "id": "admin.tournaments.dubletter",
+      "surface": "admin",
+      "route": "/admin/tournaments/dubletter",
+      "file": "src/app/admin/tournaments/dubletter/page.tsx:43",
+      "job": "Coach gjennomgår potensielle dubletter mellom manuelle og synkroniserte turneringer og merger dem. (linje 1-13, 43)",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 44)",
+      "states": "empty present (EmptyState linje 148-153); success/merge-liste; loading/error UVERIFISERT",
+      "desktopMobilNote": "desktop-first max-w-[1200px] container med md:px-6/md:py-8 (linje 129); mobil UVERIFISERT (MergeDubletterListe ikke åpnet)"
+    },
+    {
+      "id": "admin.tournaments.ny",
+      "surface": "admin",
+      "route": "/admin/tournaments/ny",
+      "file": "src/app/admin/tournaments/ny/page.tsx:15",
+      "job": "Full-page 5-stegs wizard for å opprette ny turnering; server-shell henter kursliste og delegerer til klient-wizard. (linje 1-6, 15-34)",
+      "layoutArchetype": "wizard",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 16)",
+      "states": "UVERIFISERT (states bor i NyTurneringWizard, ikke åpnet)",
+      "desktopMobilNote": "sentrert max-w-[880px] container med responsiv padding sm:/md: (linje 24); mobil UVERIFISERT (wizard-klient-komp ikke åpnet)"
+    },
+    {
+      "id": "admin.trackman",
+      "surface": "admin",
+      "route": "/admin/trackman",
+      "file": "src/app/admin/trackman/page.tsx:51",
+      "job": "Coach-oversikt over alle TrackMan-sesjoner fra stallen: KPI-strip, filter og data-tett tabell med shot-count/kilde/miljø. (linje 1-7, 51)",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 52)",
+      "states": "EmptyState importert (linje 16); states UVERIFISERT i render-body (kun lest linje 1-90)",
+      "desktopMobilNote": "desktop-first; mobil UVERIFISERT (render-body ikke åpnet)"
+    },
+    {
+      "id": "admin.varsler",
+      "surface": "admin",
+      "route": "/admin/varsler",
+      "file": "src/app/admin/varsler/page.tsx:19",
+      "job": "Coach-varsler-senter: agent-forslag, signaler og uleste meldinger samlet (page.tsx:15-18,19-46).",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (page.tsx:20).",
+      "states": "success via <VarslerClient> (page.tsx:43); empty («Alt er ajour» når total=0 page.tsx:36-39); loading/error UVERIFISERT.",
+      "desktopMobilNote": "Har noe mobil-handling: px-4 md:px-8 lg:px-12 (page.tsx:25); detaljer i VarslerClient UVERIFISERT (klient-komp ikke åpnet)."
+    },
+    {
+      "id": "admin.videoer",
+      "surface": "admin",
+      "route": "/admin/videoer",
+      "file": "src/app/admin/videoer/page.tsx:9",
+      "job": "Coaching-videoer: last opp og del med spillere (maks 500 MB mp4/mov/webm); KPI-strip (totalt/siste 7 dgr/unike spillere/lagring) + VideoUploadForm + VideoCard-grid. ADMIN ser alle, COACH egne.",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (linje 9); coachId-filter for COACH",
+      "states": "KPI fra ekte videos; tom liste UVERIFISERT",
+      "desktopMobilNote": "KPI grid grid-cols-2 lg:grid-cols-4 (2 kol mobil, 4 desktop)"
+    },
+    {
+      "id": "admin.workspace",
+      "surface": "admin",
+      "route": "/admin/workspace",
+      "file": "src/app/admin/workspace/page.tsx:28",
+      "job": "Workspace «Min uke»: 3-kol (I dag/Denne uka/Senere) med oppgaver fra Notion/sample (page.tsx:1-9,28-116).",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (page.tsx:29).",
+      "states": "success (3-kol); empty-preview-kort («ny coach» page.tsx:183-197); brenner-strip betinget (page.tsx:74); loading/error UVERIFISERT.",
+      "desktopMobilNote": "Har desktop-handling: 3-kol lg:grid-cols-[1.1fr_1fr_0.95fr] (page.tsx:77); ingen eksplisitt max-md:; mobil stacker default."
+    },
+    {
+      "id": "admin.workspace.notion",
+      "surface": "admin",
+      "route": "/admin/workspace/notion",
+      "file": "src/app/admin/workspace/notion/page.tsx:24",
+      "job": "Notion-tilkobling: empty/connected-states + databaser, feltkartlegging, sync-historikk (page.tsx:1-12,24-128).",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (page.tsx:29); ADMIN-only innhold/bootstrap (role-sjekk page.tsx:33,37,102).",
+      "states": "empty (EmptyState page.tsx:116-117); connected/success (ConnectedState page.tsx:118-125); error (sp.error-banner page.tsx:109-113); loading («Kobler til...» page.tsx:285-304).",
+      "desktopMobilNote": "Har mobil-handling: hero -mx-4 md:-mx-8 px (page.tsx:60), grid md:grid-cols-[160px_1fr] (page.tsx:163,187), md:grid-cols-3 (page.tsx:220)."
+    },
+    {
+      "id": "admin.workspace.oppgaver",
+      "surface": "admin",
+      "route": "/admin/workspace/oppgaver",
+      "file": "src/app/admin/workspace/oppgaver/page.tsx:44",
+      "job": "Oppgaver med Liste/Kanban/Kalender-toggle, ekte data fra OppgaveCache (page.tsx:1-7,44-101).",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (page.tsx:49).",
+      "states": "success (3 views); empty (<EmptyTasks> når 0 tasks page.tsx:89-90,486-506); loading/error UVERIFISERT.",
+      "desktopMobilNote": "Har mobil-handling: kanban grid-cols-1 md:grid-cols-3 (page.tsx:309); liste/kalender bruker overflow-x-auto min-w-[760px] (page.tsx:234-235,420-421)."
+    },
+    {
+      "id": "admin.workspace.oppgaver.id",
+      "surface": "admin",
+      "route": "/admin/workspace/oppgaver/[id]",
+      "file": "src/app/admin/workspace/oppgaver/[id]/page.tsx:58",
+      "job": "Task-detalj: beskrivelse, sub-tasks, aktivitet + metadata-sidebar (page.tsx:1-9,58-413).",
+      "layoutArchetype": "split",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (page.tsx:63); notFound() når task mangler (page.tsx:71); PRIVAT-sjekk → NoAccessFallback (page.tsx:74-79).",
+      "states": "success (2-kol); error/404 (notFound page.tsx:71, NoAccessFallback page.tsx:78,432-473); loading/empty UVERIFISERT.",
+      "desktopMobilNote": "Har desktop-handling: 2-kol lg:grid-cols-[1.6fr_1fr] (page.tsx:112), sidebar lg:sticky (page.tsx:263); mobil stacker default."
+    },
+    {
+      "id": "admin.workspace.prosjekter",
+      "surface": "admin",
+      "route": "/admin/workspace/prosjekter",
+      "file": "src/app/admin/workspace/prosjekter/page.tsx:35",
+      "job": "Prosjekt-grid fra ProsjektCache (Notion-sync) med filter-strip og stats per kort (page.tsx:1-10,35-118).",
+      "layoutArchetype": "tabell-tett",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (page.tsx:40).",
+      "states": "success (grid); empty (<EmptyProjects> når 0 page.tsx:106-107,284-306); loading/error UVERIFISERT.",
+      "desktopMobilNote": "Har mobil-handling: header flex-col md:flex-row (page.tsx:63), grid md:grid-cols-2 xl:grid-cols-3 (page.tsx:109)."
+    },
+    {
+      "id": "admin.workspace.tildelt-meg",
+      "surface": "admin",
+      "route": "/admin/workspace/tildelt-meg",
+      "file": "src/app/admin/workspace/tildelt-meg/page.tsx:42",
+      "job": "«Tildelt meg»: aggregerer ventende godkjenninger, forespørsler, plan-utkast og oppgaver (page.tsx:1-7,42-136).",
+      "layoutArchetype": "fluid-editorial",
+      "gating": "requirePortalUser({allow:[\"COACH\",\"ADMIN\"]}) (page.tsx:43).",
+      "states": "success (liste); empty («Ingenting venter på deg» når 0 items, page.tsx:108-112); loading/error UVERIFISERT.",
+      "desktopMobilNote": "Beskrevet som mørk/desktop (port av AssignedScreen, page.tsx:1-6); AgPage-wrapper, ingen eksplisitt md:-klasser i page; mobil UVERIFISERT."
+    }
+  ],
+  "elements": [
+    {
+      "id": "innboks.empty.cta.spillerliste",
+      "screen": "/admin/innboks",
+      "kind": "link",
+      "label": "Til spillerlisten",
+      "icon": null,
+      "component": "next/link",
+      "action": {
+        "type": "route",
+        "target": "/admin/spillere"
+      },
+      "states": [
+        "default",
+        "hover"
+      ],
+      "responsive": "—",
+      "source": "src/app/admin/innboks/page.tsx:128"
+    },
+    {
+      "id": "innboks.shell.mobil.btn.tilbake",
+      "screen": "/admin/innboks",
+      "kind": "button",
+      "label": "Tilbake",
+      "icon": "ChevronLeft",
+      "component": "native button",
+      "action": {
+        "type": "client",
+        "target": "router.push(backHref='/admin/innboks') ellers router.back()"
+      },
+      "states": [
+        "default",
+        "hover"
+      ],
+      "responsive": "md:hidden — kun synlig på mobil når en tråd er aktiv",
+      "source": "src/components/admin/split-inbox-shell.tsx:60"
+    },
+    {
+      "id": "innboks.liste.input.sok",
+      "screen": "/admin/innboks",
+      "kind": "input",
+      "label": "Søk navn, tråd …",
+      "icon": "Search",
+      "component": "native input[type=text]",
+      "action": {
+        "type": "client",
+        "target": "setSøk — client-side filter på userName/preview"
+      },
+      "states": [
+        "default",
+        "focus"
+      ],
+      "responsive": "—",
+      "source": "src/app/admin/messages/_components/messages-inbox.tsx:67"
+    },
+    {
+      "id": "innboks.liste.tab.alle",
+      "screen": "/admin/innboks",
+      "kind": "tab",
+      "label": "Alle",
+      "icon": null,
+      "component": "next/link (FilterLink)",
+      "action": {
+        "type": "route",
+        "target": "/admin/innboks"
+      },
+      "states": [
+        "default",
+        "active",
+        "hover"
+      ],
+      "responsive": "—",
+      "source": "src/app/admin/messages/_components/messages-inbox.tsx:77,163"
+    },
+    {
+      "id": "innboks.liste.tab.uleste",
+      "screen": "/admin/innboks",
+      "kind": "tab",
+      "label": "Uleste",
+      "icon": null,
+      "component": "next/link (FilterLink)",
+      "action": {
+        "type": "route",
+        "target": "/admin/innboks?filter=ulest"
+      },
+      "states": [
+        "default",
+        "active",
+        "hover"
+      ],
+      "responsive": "—",
+      "source": "src/app/admin/messages/_components/messages-inbox.tsx:80,164"
+    },
+    {
+      "id": "innboks.liste.tab.merkede",
+      "screen": "/admin/innboks",
+      "kind": "tab",
+      "label": "Merkede",
+      "icon": null,
+      "component": "next/link (FilterLink)",
+      "action": {
+        "type": "route",
+        "target": "/admin/innboks?filter=merkede"
+      },
+      "states": [
+        "default",
+        "active",
+        "hover"
+      ],
+      "responsive": "—",
+      "source": "src/app/admin/messages/_components/messages-inbox.tsx:83,164"
+    },
+    {
+      "id": "innboks.liste.row.trad",
+      "screen": "/admin/innboks",
+      "kind": "link",
+      "label": "{userName} + preview (radlenke per tråd; ulest-prikk-indikator)",
+      "icon": null,
+      "component": "next/link (scroll=false)",
+      "action": {
+        "type": "route",
+        "target": "/admin/innboks?thread={t.id}[&filter={aktivtFilter}]"
+      },
+      "states": [
+        "default",
+        "active",
+        "hover"
+      ],
+      "responsive": "—",
+      "source": "src/app/admin/messages/_components/messages-inbox.tsx:94"
+    },
+    {
+      "id": "innboks.samtale.link.aapne-profil-header",
+      "screen": "/admin/innboks",
+      "kind": "link",
+      "label": "Åpne profil",
+      "icon": null,
+      "component": "native anchor (a href)",
+      "action": {
+        "type": "route",
+        "target": "/admin/spillere/{spillerId}"
+      },
+      "states": [
+        "default",
+        "hover"
+      ],
+      "responsive": "—",
+      "source": "src/app/admin/messages/_components/conversation.tsx:179"
+    },
+    {
+      "id": "innboks.samtale.textarea.svar",
+      "screen": "/admin/innboks",
+      "kind": "textarea",
+      "label": "Skriv et svar …",
+      "icon": null,
+      "component": "native textarea (name=body, ref)",
+      "action": {
+        "type": "client",
+        "target": "setTekst (composer-state)"
+      },
+      "states": [
+        "default",
+        "disabled",
+        "focus"
+      ],
+      "responsive": "—",
+      "source": "src/app/admin/messages/_components/conversation.tsx:299"
+    },
+    {
+      "id": "innboks.samtale.btn.ai-utkast",
+      "screen": "/admin/innboks",
+      "kind": "button",
+      "label": "AI-utkast (PRO-badge når proKreves)",
+      "icon": "Sparkles (Loader2 ved lasting)",
+      "component": "native button",
+      "action": {
+        "type": "client",
+        "target": "generereAiUtkast → fetch POST /api/admin/coach-ai (streamet)"
+      },
+      "states": [
+        "default",
+        "disabled",
+        "loading"
+      ],
+      "responsive": "—",
+      "source": "src/app/admin/messages/_components/conversation.tsx:339"
+    },
+    {
+      "id": "innboks.samtale.btn.send",
+      "screen": "/admin/innboks",
+      "kind": "button",
+      "label": "Send",
+      "icon": "Send (Loader2 ved pending)",
+      "component": "native button[type=submit]",
+      "action": {
+        "type": "server-action",
+        "target": "sendMelding(threadId, body) — importert fra ../actions; via form action + håndterSend/startTransition"
+      },
+      "states": [
+        "default",
+        "disabled",
+        "loading"
+      ],
+      "responsive": "—",
+      "source": "src/app/admin/messages/_components/conversation.tsx:362; action: src/app/admin/messages/actions.ts:32"
+    },
+    {
+      "id": "innboks.samtale.aiutkast.btn.bruk",
+      "screen": "/admin/innboks",
+      "kind": "button",
+      "label": "Bruk",
+      "icon": "Check",
+      "component": "native button",
+      "action": {
+        "type": "client",
+        "target": "bruksAiUtkast — kopierer utkast til composer"
+      },
+      "states": [
+        "default",
+        "disabled"
+      ],
+      "responsive": "—",
+      "source": "src/app/admin/messages/_components/conversation.tsx:258"
+    },
+    {
+      "id": "innboks.samtale.aiutkast.btn.regenerer",
+      "screen": "/admin/innboks",
+      "kind": "button",
+      "label": "Regenerer",
+      "icon": "Pencil",
+      "component": "native button",
+      "action": {
+        "type": "client",
+        "target": "generereAiUtkast → fetch POST /api/admin/coach-ai"
+      },
+      "states": [
+        "default",
+        "disabled"
+      ],
+      "responsive": "—",
+      "source": "src/app/admin/messages/_components/conversation.tsx:267"
+    },
+    {
+      "id": "innboks.samtale.aiutkast.btn.forkast",
+      "screen": "/admin/innboks",
+      "kind": "button",
+      "label": "Forkast",
+      "icon": null,
+      "component": "native button",
+      "action": {
+        "type": "client",
+        "target": "setAiUtkast(null)"
+      },
+      "states": [
+        "default",
+        "hover"
+      ],
+      "responsive": "—",
+      "source": "src/app/admin/messages/_components/conversation.tsx:276"
+    },
+    {
+      "id": "innboks.samtale.slot.ai-feil",
+      "screen": "/admin/innboks",
+      "kind": "slot",
+      "label": "AI-feilmelding (destructive)",
+      "icon": null,
+      "component": "conditional div (aiFeil)",
+      "action": {
+        "type": "none",
+        "target": "—"
+      },
+      "states": [
+        "default"
+      ],
+      "responsive": "—",
+      "source": "src/app/admin/messages/_components/conversation.tsx:286"
+    },
+    {
+      "id": "innboks.kontekst.link.aapne-profil",
+      "screen": "/admin/innboks",
+      "kind": "link",
+      "label": "Åpne profil",
+      "icon": "ArrowUpRight",
+      "component": "next/link",
+      "action": {
+        "type": "route",
+        "target": "/admin/spillere/{spiller.id}"
+      },
+      "states": [
+        "default",
+        "hover"
+      ],
+      "responsive": "lg:contents — context-panel kun synlig lg+",
+      "source": "src/app/admin/messages/_components/context-panel.tsx:63"
+    },
+    {
+      "id": "innboks.kontekst.snarvei.spiller-profil",
+      "screen": "/admin/innboks",
+      "kind": "link",
+      "label": "Spiller-profil",
+      "icon": "FileText",
+      "component": "next/link (Shortcut)",
+      "action": {
+        "type": "route",
+        "target": "/admin/spillere/{spiller.id}"
+      },
+      "states": [
+        "default",
+        "hover"
+      ],
+      "responsive": "lg+ only",
+      "source": "src/app/admin/messages/_components/context-panel.tsx:108"
+    },
+    {
+      "id": "innboks.kontekst.snarvei.book-okt",
+      "screen": "/admin/innboks",
+      "kind": "link",
+      "label": "Book økt",
+      "icon": "Calendar",
+      "component": "next/link (Shortcut)",
+      "action": {
+        "type": "route",
+        "target": "/admin/kalender?player={spiller.id}"
+      },
+      "states": [
+        "default",
+        "hover"
+      ],
+      "responsive": "lg+ only",
+      "source": "src/app/admin/messages/_components/context-panel.tsx:114"
+    },
+    {
+      "id": "innboks.kontekst.snarvei.treningsplan",
+      "screen": "/admin/innboks",
+      "kind": "link",
+      "label": "Treningsplan",
+      "icon": "ClipboardCheck",
+      "component": "next/link (Shortcut)",
+      "action": {
+        "type": "route",
+        "target": "/admin/spillere/{spiller.id}/workbench"
+      },
+      "states": [
+        "default",
+        "hover"
+      ],
+      "responsive": "lg+ only",
+      "source": "src/app/admin/messages/_components/context-panel.tsx:120"
+    },
+    {
+      "id": "workbench.topbar.selector.player",
+      "screen": "/admin/spillere/[id]/workbench",
+      "kind": "button",
+      "label": "{playerName} — coach: spiller-velger (dropdown «Bytt spiller»); player: ikke-funksjonell pill",
+      "icon": "ChevronDown",
+      "component": "native button (PlayerSelector, coach) / native button (player)",
+      "action": {
+        "type": "client",
+        "target": "coach: åpner meny m/ next/link → /admin/spillere/{p.id}/workbench; player: ingen onClick"
+      },
+      "states": [
+        "default"
+      ],
+      "responsive": "Desktop-Topbar (wb-desktop). Mobil-ekvivalent: MobilePlayerSelector",
+      "source": "src/components/workbench-hybrid/Topbar.tsx:134,142,376; mobil: MobileTopbar.tsx:85,311"
+    },
+    {
+      "id": "workbench.topbar.zoom.pills",
+      "screen": "/admin/spillere/[id]/workbench",
+      "kind": "tab",
+      "label": "Zoom-pills: Årsplan · År · Måned · Uke · Dag",
+      "icon": null,
+      "component": "native button ×5 (LEVELS)",
+      "action": {
+        "type": "client",
+        "target": "onLevel(key) → setLevel + setHubTabWithUrl(zoomToHubTab)"
+      },
+      "states": [
+        "default",
+        "active"
+      ],
+      "responsive": "Desktop. Mobil = MobileZoomRail (horisontal scroll, 40px+). active = highlightZoom && level===key",
+      "source": "src/components/workbench-hybrid/Topbar.tsx:190; mobil: MobileTopbar.tsx:266; wiring: WorkbenchHybrid.tsx:1144,1242"
+    },
+    {
+      "id": "workbench.topbar.slot.plan-status",
+      "screen": "/admin/spillere/[id]/workbench",
+      "kind": "slot",
+      "label": "Plan-status-pill (Utkast/Venter svar/Godtatt/… fra PlanStatus)",
+      "icon": null,
+      "component": "conditional span (data-testid=plan-status-pill)",
+      "action": {
+        "type": "none",
+        "target": "—"
+      },
+      "states": [
+        "default"
+      ],
+      "responsive": "Desktop + mobil (begge topbars)",
+      "source": "src/components/workbench-hybrid/Topbar.tsx:214; mobil: MobileTopbar.tsx:127"
+    },
+    {
+      "id": "workbench.topbar.btn.ai-periodiser",
+      "screen": "/admin/spillere/[id]/workbench",
+      "kind": "button",
+      "label": "AI-periodiser (kun player-modus)",
+      "icon": "Bot",
+      "component": "native button",
+      "action": {
+        "type": "client",
+        "target": "onOpenAiPeriodiser → setAiPlanOpen(true); kun når !isCoach"
+      },
+      "states": [
+        "default"
+      ],
+      "responsive": "Desktop tekst-knapp; mobil 44px ikon-knapp (delt med AI-plan)",
+      "source": "src/components/workbench-hybrid/Topbar.tsx:235; wiring: WorkbenchHybrid.tsx:1156"
+    },
+    {
+      "id": "workbench.topbar.btn.generer-plan",
+      "screen": "/admin/spillere/[id]/workbench",
+      "kind": "button",
+      "label": "Generer plan (kun coach + currentPlayerId)",
+      "icon": "Bot",
+      "component": "native button",
+      "action": {
+        "type": "client",
+        "target": "onOpenAiPlan → setAiPlanOpen(true); kun isCoach && currentPlayerId"
+      },
+      "states": [
+        "default"
+      ],
+      "responsive": "Desktop tekst; mobil 44px ikon (aria-label «Generer plan»)",
+      "source": "src/components/workbench-hybrid/Topbar.tsx:260; mobil: MobileTopbar.tsx:171; wiring: WorkbenchHybrid.tsx:1155"
+    },
+    {
+      "id": "workbench.topbar.btn.coach-skill",
+      "screen": "/admin/spillere/[id]/workbench",
+      "kind": "button",
+      "label": "Coach-Skill (kun coach)",
+      "icon": "Sparkles",
+      "component": "native button",
+      "action": {
+        "type": "client",
+        "target": "onOpenCoachSkill → setCoachSkillOpen(true); kun isCoach"
+      },
+      "states": [
+        "default"
+      ],
+      "responsive": "Desktop tekst; mobil 44px ikon",
+      "source": "src/components/workbench-hybrid/Topbar.tsx:285; mobil: MobileTopbar.tsx:211; wiring: WorkbenchHybrid.tsx:1154"
+    },
+    {
+      "id": "workbench.topbar.btn.publiser",
+      "screen": "/admin/spillere/[id]/workbench",
+      "kind": "button",
+      "label": "Publiser (vises kun når planStatus DRAFT|REJECTED)",
+      "icon": "Send",
+      "component": "native button",
+      "action": {
+        "type": "client",
+        "target": "onPublish=handlePublish → publishWorkbenchPlan(...) (kun når planId)"
+      },
+      "states": [
+        "default",
+        "disabled",
+        "loading"
+      ],
+      "responsive": "Desktop tekst («Publiserer…»); mobil 44px ikon (aria-label «Publiser plan»)",
+      "source": "src/components/workbench-hybrid/Topbar.tsx:310; mobil: MobileTopbar.tsx:148; wiring: WorkbenchHybrid.tsx:1158, publish-effekt :796"
+    },
+    {
+      "id": "workbench.topbar.btn.ny-okt",
+      "screen": "/admin/spillere/[id]/workbench",
+      "kind": "button",
+      "label": "Ny økt",
+      "icon": "Plus",
+      "component": "native button",
+      "action": {
+        "type": "client",
+        "target": "onAddSession (desktop: handleAddSession; mobil: dispatch addSession)"
+      },
+      "states": [
+        "default"
+      ],
+      "responsive": "Desktop tekst; mobil 44px ikon (aria-label «Ny økt»)",
+      "source": "src/components/workbench-hybrid/Topbar.tsx:337; mobil: MobileTopbar.tsx:232; wiring: WorkbenchHybrid.tsx:1150,1228"
+    },
+    {
+      "id": "workbench.mobiltopbar.btn.palette",
+      "screen": "/admin/spillere/[id]/workbench",
+      "kind": "icon-button",
+      "label": "Standardøkter (mobil-only)",
+      "icon": "LayoutGrid",
+      "component": "native button (44px)",
+      "action": {
+        "type": "client",
+        "target": "onOpenPalette → setMobilePaletteOpen(true)"
+      },
+      "states": [
+        "default"
+      ],
+      "responsive": "Kun mobil (MobileTopbar). Desktop bruker PaletteSidebar i body i stedet",
+      "source": "src/components/workbench-hybrid/MobileTopbar.tsx:192; wiring: WorkbenchHybrid.tsx:1229"
+    },
+    {
+      "id": "workbench.hubrail.tab.tek",
+      "screen": "/admin/spillere/[id]/workbench",
+      "kind": "tab",
+      "label": "Teknisk plan (compact: «Tek»)",
+      "icon": null,
+      "component": "native button (HubTabRail)",
+      "action": {
+        "type": "client",
+        "target": "onTab('tek') → setHubTabWithUrl"
+      },
+      "states": [
+        "default",
+        "active"
+      ],
+      "responsive": "compact=isMobile → korte etiketter",
+      "source": "src/components/workbench-hybrid/HubTabRail.tsx:9,74"
+    },
+    {
+      "id": "workbench.hubrail.tab.seson",
+      "screen": "/admin/spillere/[id]/workbench",
+      "kind": "tab",
+      "label": "Sesongmål (compact: «Mål»)",
+      "icon": null,
+      "component": "native button (HubTabRail)",
+      "action": {
+        "type": "client",
+        "target": "onTab('seson') → setHubTabWithUrl"
+      },
+      "states": [
+        "default",
+        "active"
+      ],
+      "responsive": "compact-etiketter på mobil",
+      "source": "src/components/workbench-hybrid/HubTabRail.tsx:10,74"
+    },
+    {
+      "id": "workbench.hubrail.tab.maler",
+      "screen": "/admin/spillere/[id]/workbench",
+      "kind": "tab",
+      "label": "Maler (compact: «Mal»)",
+      "icon": null,
+      "component": "native button (HubTabRail)",
+      "action": {
+        "type": "client",
+        "target": "onTab('maler') → setHubTabWithUrl"
+      },
+      "states": [
+        "default",
+        "active"
+      ],
+      "responsive": "compact-etiketter på mobil",
+      "source": "src/components/workbench-hybrid/HubTabRail.tsx:11,74"
+    },
+    {
+      "id": "workbench.hubrail.tab.std",
+      "screen": "/admin/spillere/[id]/workbench",
+      "kind": "tab",
+      "label": "Standardøkter (compact: «Std»)",
+      "icon": null,
+      "component": "native button (HubTabRail)",
+      "action": {
+        "type": "client",
+        "target": "onTab('std') → setHubTabWithUrl"
+      },
+      "states": [
+        "default",
+        "active"
+      ],
+      "responsive": "compact-etiketter på mobil",
+      "source": "src/components/workbench-hybrid/HubTabRail.tsx:12,74"
+    },
+    {
+      "id": "workbench.hubrail.tab.gantt",
+      "screen": "/admin/spillere/[id]/workbench",
+      "kind": "tab",
+      "label": "Gantt (År) — separator før (compact: «Gantt»)",
+      "icon": null,
+      "component": "native button (HubTabRail)",
+      "action": {
+        "type": "client",
+        "target": "onTab('gantt') → setHubTabWithUrl; hubTabToZoom→arsplan"
+      },
+      "states": [
+        "default",
+        "active"
+      ],
+      "responsive": "compact-etiketter på mobil",
+      "source": "src/components/workbench-hybrid/HubTabRail.tsx:13,74"
+    },
+    {
+      "id": "workbench.hubrail.tab.uke",
+      "screen": "/admin/spillere/[id]/workbench",
+      "kind": "tab",
+      "label": "Uke (compact: «Uke»)",
+      "icon": null,
+      "component": "native button (HubTabRail)",
+      "action": {
+        "type": "client",
+        "target": "onTab('uke') → setHubTabWithUrl; hubTabToZoom→uke"
+      },
+      "states": [
+        "default",
+        "active"
+      ],
+      "responsive": "compact-etiketter på mobil",
+      "source": "src/components/workbench-hybrid/HubTabRail.tsx:14,74"
+    },
+    {
+      "id": "workbench.hubrail.tab.okt",
+      "screen": "/admin/spillere/[id]/workbench",
+      "kind": "tab",
+      "label": "Økt (compact: «Økt»)",
+      "icon": null,
+      "component": "native button (HubTabRail)",
+      "action": {
+        "type": "client",
+        "target": "onTab('okt') → setHubTabWithUrl; hubTabToZoom→dag"
+      },
+      "states": [
+        "default",
+        "active"
+      ],
+      "responsive": "compact-etiketter på mobil",
+      "source": "src/components/workbench-hybrid/HubTabRail.tsx:15,74"
+    },
+    {
+      "id": "workbench.body.PaletteSidebar",
+      "screen": "/admin/spillere/[id]/workbench",
+      "kind": "slot",
+      "label": "Palette-sidebar (coach-only, venstre kolonne) — drag/klikk standardøkter inn",
+      "icon": null,
+      "component": "PaletteSidebar",
+      "action": {
+        "type": "client",
+        "target": "TODO (dyp redigering ikke enumerert) — onPaletteClick/onPaletteDragStart/onAddPalette"
+      },
+      "states": [
+        "default"
+      ],
+      "responsive": "Kun desktop + isCoach && !showPlanningTab; mobil bruker palette-knapp/ark",
+      "source": "src/components/workbench-hybrid/WorkbenchHybrid.tsx:1165"
+    },
+    {
+      "id": "workbench.body.Inspector",
+      "screen": "/admin/spillere/[id]/workbench",
+      "kind": "slot",
+      "label": "Inspektør (høyre kolonne, dyp redigering av valgt økt/palette)",
+      "icon": null,
+      "component": "Inspector",
+      "action": {
+        "type": "client",
+        "target": "TODO (dyp redigering ikke enumerert) — onStart/onOpenPlan/onOpenBank/onOpenRecur/onRemoveSession osv."
+      },
+      "states": [
+        "default"
+      ],
+      "responsive": "Kun desktop (!isMobile) når inspectorMode satt; mobil = bunn-ark",
+      "source": "src/components/workbench-hybrid/WorkbenchHybrid.tsx:1193"
+    },
+    {
+      "id": "cockpit.link.tildel-plan",
+      "screen": "/admin/agencyos",
+      "kind": "link",
+      "label": "Tildel plan",
+      "icon": "Plus",
+      "component": "next/link",
+      "action": {
+        "type": "route",
+        "target": "/admin/spillere"
+      },
+      "states": [
+        "default",
+        "hover:opacity-90",
+        "focus-visible:ring-2"
+      ],
+      "responsive": "Topbar høyre, alltid synlig (desktop-fasit; cockpit har ingen egen mobil-variant her).",
+      "source": "src/components/admin/cockpit/agency-cockpit.tsx:487"
+    },
+    {
+      "id": "cockpit.slot.sok",
+      "screen": "/admin/agencyos",
+      "kind": "slot",
+      "label": "Søk spiller, økt, test …",
+      "icon": "Search",
+      "component": "div (ikke-interaktiv pseudo-søkefelt)",
+      "action": {
+        "type": "none",
+        "target": null
+      },
+      "states": [
+        "static"
+      ],
+      "responsive": "Fast bredde 230px i topbar; presentasjonell placeholder, ingen input/binding.",
+      "source": "src/components/admin/cockpit/agency-cockpit.tsx:483"
+    },
+    {
+      "id": "cockpit.link.timeline-okt",
+      "screen": "/admin/agencyos",
+      "kind": "link",
+      "label": "Timeline-økt (per rad, tittel + spiller + meta)",
+      "icon": null,
+      "component": "next/link",
+      "action": {
+        "type": "route",
+        "target": "s.href (per økt; kan mangle → div uten lenke)"
+      },
+      "states": [
+        "default",
+        "group hover",
+        "focus-visible:ring-2",
+        "isActive(LIVE-badge)",
+        "isDone(opacity-60)",
+        "isUpcoming"
+      ],
+      "responsive": "VEN-kolonne i 2-kol grid (lg:1.15fr). Stables til 1 kolonne under lg.",
+      "source": "src/components/admin/cockpit/agency-cockpit.tsx:332"
+    },
+    {
+      "id": "cockpit.slot.queue-rad",
+      "screen": "/admin/agencyos",
+      "kind": "slot",
+      "label": "Hvem trenger meg nå — queue-rad (avatar + navn + signal-chip)",
+      "icon": "signal.icon (dynamisk lucide via COCKPIT_ICONS)",
+      "component": "div (ikke-lenket rad)",
+      "action": {
+        "type": "none",
+        "target": null
+      },
+      "states": [
+        "tone:alert",
+        "tone:warn",
+        "tone:info",
+        "tone:lime",
+        "tom:Ingen ventende"
+      ],
+      "responsive": "HØY-kolonne (lg:1fr), stablet over Innboks. Venstre farget border per tone.",
+      "source": "src/components/admin/cockpit/agency-cockpit.tsx:372"
+    },
+    {
+      "id": "cockpit.link.inbox-item",
+      "screen": "/admin/agencyos",
+      "kind": "link",
+      "label": "Innboks-rad (navn + preview + typeLabel)",
+      "icon": null,
+      "component": "next/link",
+      "action": {
+        "type": "route",
+        "target": "it.href (per item; kan mangle → div uten lenke)"
+      },
+      "states": [
+        "default",
+        "unread(viser N nye-badge)",
+        "focus-visible:ring-2",
+        "type:appr/req/msg/advice(prikk-farge)",
+        "tom:Ingenting nytt"
+      ],
+      "responsive": "HØY-kolonne under QueueCard. Prikk-kodet per type.",
+      "source": "src/components/admin/cockpit/agency-cockpit.tsx:449"
+    },
+    {
+      "id": "cockpit.slot.kpi-strip",
+      "screen": "/admin/agencyos",
+      "kind": "slot",
+      "label": "KPI-strip (5 kolonner: Aktive spillere · Forespørsler · Økter i dag · Stall-SG · Plan-adherence)",
+      "icon": "per-kpi (activity, help-circle, clipboard-check m.fl.)",
+      "component": "div-grid (ikke-interaktiv)",
+      "action": {
+        "type": "none",
+        "target": null
+      },
+      "states": [
+        "delta tone up/down/flat",
+        "lime når Stall-SG starter med +"
+      ],
+      "responsive": "grid-cols-2 → sm:3 → lg:5. Hairline-delt. Mono-tall.",
+      "source": "src/components/admin/cockpit/agency-cockpit.tsx:202"
+    },
+    {
+      "id": "spillere-tabell.button.eksport",
+      "screen": "/admin/spillere",
+      "kind": "button",
+      "label": "Eksport",
+      "icon": "Download",
+      "component": "native button",
+      "action": {
+        "type": "client",
+        "target": "eksporter() — bygger CSV av filtrerte rader, laster ned spillere.csv"
+      },
+      "states": [
+        "default",
+        "hover",
+        "ghost-variant"
+      ],
+      "responsive": "I AgPageHead actions; pakkes på mobil men knappestil uendret.",
+      "source": "src/app/admin/spillere/spillere-tabell.tsx:186"
+    },
+    {
+      "id": "spillere-tabell.link.ny-spiller",
+      "screen": "/admin/spillere",
+      "kind": "link",
+      "label": "Ny spiller",
+      "icon": "UserPlus",
+      "component": "next/link",
+      "action": {
+        "type": "route",
+        "target": "/admin/spillere/ny"
+      },
+      "states": [
+        "default",
+        "hover",
+        "primary-variant"
+      ],
+      "responsive": "I AgPageHead actions, ved siden av Eksport.",
+      "source": "src/app/admin/spillere/spillere-tabell.tsx:189"
+    },
+    {
+      "id": "spillere-tabell.input.sok",
+      "screen": "/admin/spillere",
+      "kind": "input",
+      "label": "Søk spiller…",
+      "icon": "Search",
+      "component": "native input (controlled, useState q)",
+      "action": {
+        "type": "client",
+        "target": "setQ — filtrerer rows på name.includes(q)"
+      },
+      "states": [
+        "empty",
+        "typing",
+        "h-8 desktop / max-md:h-11 mobil"
+      ],
+      "responsive": "min-w-200px; max-md:w-full (full bredde mobil).",
+      "source": "src/app/admin/spillere/spillere-tabell.tsx:271"
+    },
+    {
+      "id": "spillere-tabell.tab.gruppe-filter",
+      "screen": "/admin/spillere",
+      "kind": "tab",
+      "label": "Gruppe-segment (Alle / WANG / GFGK / Junior)",
+      "icon": null,
+      "component": "native button (segmented, useState group)",
+      "action": {
+        "type": "client",
+        "target": "setGroup — filtrerer på bucket"
+      },
+      "states": [
+        "active(bg-card text-primary shadow)",
+        "inaktiv(text-muted)",
+        "max-md:h-11"
+      ],
+      "responsive": "Segmentert pill-gruppe i toolbar; touch-høyde 44px på mobil.",
+      "source": "src/app/admin/spillere/spillere-tabell.tsx:280"
+    },
+    {
+      "id": "spillere-tabell.button.status-filter",
+      "screen": "/admin/spillere",
+      "kind": "button",
+      "label": "Status / Trenger deg (toggle)",
+      "icon": "SlidersHorizontal | FilterX",
+      "component": "native button (toggle, useState att)",
+      "action": {
+        "type": "client",
+        "target": "setAtt — viser kun status alert/warn"
+      },
+      "states": [
+        "av(Status, border-border)",
+        "på(Trenger deg, border-primary, FilterX-ikon)",
+        "max-md:h-11"
+      ],
+      "responsive": "Toolbar; bytter label+ikon ved toggle.",
+      "source": "src/app/admin/spillere/spillere-tabell.tsx:295"
+    },
+    {
+      "id": "spillere-tabell.button.velg-alle",
+      "screen": "/admin/spillere",
+      "kind": "button",
+      "label": "Velg alle (kolonnehode-checkbox)",
+      "icon": "Check",
+      "component": "RadCheckbox (native button, aria-pressed)",
+      "action": {
+        "type": "client",
+        "target": "toggleAll — markerer/avmarkerer alle filtrerte rader"
+      },
+      "states": [
+        "av",
+        "på(border-primary bg-primary)"
+      ],
+      "responsive": "Kun desktop-tabell (hidden md:block).",
+      "source": "src/app/admin/spillere/spillere-tabell.tsx:341"
+    },
+    {
+      "id": "spillere-tabell.button.rad-checkbox",
+      "screen": "/admin/spillere",
+      "kind": "button",
+      "label": "Rad-checkbox (Velg {navn})",
+      "icon": "Check",
+      "component": "RadCheckbox (native button, stopPropagation)",
+      "action": {
+        "type": "client",
+        "target": "toggle(id) — legger/fjerner rad i seleksjon"
+      },
+      "states": [
+        "av",
+        "på",
+        "rad markert: bg-primary/5 + inset-shadow"
+      ],
+      "responsive": "Kun desktop-tabell.",
+      "source": "src/app/admin/spillere/spillere-tabell.tsx:373"
+    },
+    {
+      "id": "spillere-tabell.row.spiller-rad",
+      "screen": "/admin/spillere",
+      "kind": "button",
+      "label": "Spiller-rad (hele tr klikkbar)",
+      "icon": null,
+      "component": "tr m/ onClick (router.push)",
+      "action": {
+        "type": "route",
+        "target": "/admin/spillere/{id}"
+      },
+      "states": [
+        "default",
+        "hover",
+        "selektert(bg-primary/5)"
+      ],
+      "responsive": "Desktop-tabell; rad-navigasjon via router.push (ikke Link).",
+      "source": "src/app/admin/spillere/spillere-tabell.tsx:363"
+    },
+    {
+      "id": "spillere-tabell.link.mobil-rad",
+      "screen": "/admin/spillere",
+      "kind": "link",
+      "label": "Mobil spiller-rad (AgMobileRow)",
+      "icon": "AgStatusDot trailing",
+      "component": "AgMobileRow → next/link",
+      "action": {
+        "type": "route",
+        "target": "/admin/spillere/{id}"
+      },
+      "states": [
+        "default",
+        "status-dot tone ok/warn/alert",
+        "tom:Ingen spillere matcher"
+      ],
+      "responsive": "Kun mobil (md:hidden) — kort-rad m/ avatar, navn, gruppe-sub, status-dot, chevron.",
+      "source": "src/app/admin/spillere/spillere-tabell.tsx:324"
+    },
+    {
+      "id": "spillere-tabell.button.bulk-generer-plan",
+      "screen": "/admin/spillere",
+      "kind": "button",
+      "label": "Generer plan (bulk-bar)",
+      "icon": "Bot | Loader2",
+      "component": "native button (async fetch)",
+      "action": {
+        "type": "client",
+        "target": "genererPlanForslag — POST /api/admin/ai-plan/batch m/ valgte playerIds"
+      },
+      "states": [
+        "default",
+        "genLoading(Genererer…, spinner, disabled)",
+        "primary-sm"
+      ],
+      "responsive": "Vises kun når selCt>0 (erstatter toolbar). Wrapper på mobil.",
+      "source": "src/app/admin/spillere/spillere-tabell.tsx:236"
+    },
+    {
+      "id": "spillere-tabell.link.bulk-tildel-plan",
+      "screen": "/admin/spillere",
+      "kind": "link",
+      "label": "Tildel plan (bulk-bar)",
+      "icon": "ClipboardList",
+      "component": "next/link",
+      "action": {
+        "type": "route",
+        "target": "/admin/plans"
+      },
+      "states": [
+        "default",
+        "secondary-sm"
+      ],
+      "responsive": "Bulk-bar; synlig kun ved seleksjon.",
+      "source": "src/app/admin/spillere/spillere-tabell.tsx:249"
+    },
+    {
+      "id": "spillere-tabell.link.bulk-legg-i-gruppe",
+      "screen": "/admin/spillere",
+      "kind": "link",
+      "label": "Legg i gruppe (bulk-bar)",
+      "icon": "Users",
+      "component": "next/link",
+      "action": {
+        "type": "route",
+        "target": "/admin/grupper"
+      },
+      "states": [
+        "default",
+        "secondary-sm"
+      ],
+      "responsive": "Bulk-bar; synlig kun ved seleksjon.",
+      "source": "src/app/admin/spillere/spillere-tabell.tsx:252"
+    },
+    {
+      "id": "spillere-tabell.link.bulk-send-melding",
+      "screen": "/admin/spillere",
+      "kind": "link",
+      "label": "Send melding (bulk-bar)",
+      "icon": "MessageSquare",
+      "component": "next/link",
+      "action": {
+        "type": "route",
+        "target": "/admin/innboks"
+      },
+      "states": [
+        "default",
+        "secondary-sm"
+      ],
+      "responsive": "Bulk-bar; synlig kun ved seleksjon.",
+      "source": "src/app/admin/spillere/spillere-tabell.tsx:255"
+    },
+    {
+      "id": "spillere-tabell.button.bulk-avbryt",
+      "screen": "/admin/spillere",
+      "kind": "button",
+      "label": "Avbryt (bulk-bar)",
+      "icon": null,
+      "component": "native button",
+      "action": {
+        "type": "client",
+        "target": "clearSel — nullstiller seleksjon"
+      },
+      "states": [
+        "default",
+        "ghost-sm"
+      ],
+      "responsive": "Bulk-bar høyre (ml-auto).",
+      "source": "src/app/admin/spillere/spillere-tabell.tsx:259"
+    },
+    {
+      "id": "spillere-tabell.link.gen-se-koen",
+      "screen": "/admin/spillere",
+      "kind": "link",
+      "label": "Se køen → (etter generert planforslag)",
+      "icon": null,
+      "component": "native anchor (a href)",
+      "action": {
+        "type": "route",
+        "target": "/admin/approvals"
+      },
+      "states": [
+        "vises kun når genStatus.ok>0"
+      ],
+      "responsive": "I status-banner over tabellen.",
+      "source": "src/app/admin/spillere/spillere-tabell.tsx:211"
+    },
+    {
+      "id": "spillere-tabell.button.gen-lukk-banner",
+      "screen": "/admin/spillere",
+      "kind": "icon-button",
+      "label": "Lukk status-banner (✕)",
+      "icon": null,
+      "component": "native button",
+      "action": {
+        "type": "client",
+        "target": "setGenStatus(null)"
+      },
+      "states": [
+        "default",
+        "hover"
+      ],
+      "responsive": "I status-banner.",
+      "source": "src/app/admin/spillere/spillere-tabell.tsx:218"
+    },
+    {
+      "id": "agencyos-spillere.tab.filter-chip",
+      "screen": "/admin/agencyos/spillere",
+      "kind": "tab",
+      "label": "Filter-chip (Alle / Aktiv / Abonnent / Skylder med teller)",
+      "icon": null,
+      "component": "next/link (GET-param filter)",
+      "action": {
+        "type": "route",
+        "target": "/admin/agencyos/spillere?filter={key}&q={q}"
+      },
+      "states": [
+        "active(border-primary bg-primary)",
+        "inaktiv(border-border)"
+      ],
+      "responsive": "Toolbar, wrapper på mobil. Filter via URL (server-rendret).",
+      "source": "src/app/admin/agencyos/spillere/page.tsx:140"
+    },
+    {
+      "id": "agencyos-spillere.input.sok",
+      "screen": "/admin/agencyos/spillere",
+      "kind": "input",
+      "label": "Søk på navn, pakke eller fokus …",
+      "icon": "Search",
+      "component": "native input type=search (form GET, defaultValue)",
+      "action": {
+        "type": "route",
+        "target": "submit → ?q=… (server-filtrert)"
+      },
+      "states": [
+        "empty",
+        "med verdi"
+      ],
+      "responsive": "max-w-320px min-w-200px flex-1; del av form-toolbar.",
+      "source": "src/app/admin/agencyos/spillere/page.tsx:164"
+    },
+    {
+      "id": "agencyos-spillere.input.filter-hidden",
+      "screen": "/admin/agencyos/spillere",
+      "kind": "input",
+      "label": "Skjult filter-felt (bevarer aktivt filter ved søk)",
+      "icon": null,
+      "component": "native input type=hidden",
+      "action": {
+        "type": "none",
+        "target": null
+      },
+      "states": [
+        "bærer current filter-verdi"
+      ],
+      "responsive": "Skjult; sendes med form GET.",
+      "source": "src/app/admin/agencyos/spillere/page.tsx:172"
+    },
+    {
+      "id": "agencyos-spillere.link.rad-chevron",
+      "screen": "/admin/agencyos/spillere",
+      "kind": "icon-button",
+      "label": "Åpne {navn} (chevron i radens siste celle)",
+      "icon": "ChevronRight",
+      "component": "next/link (aria-label)",
+      "action": {
+        "type": "route",
+        "target": "/admin/spillere/{id}"
+      },
+      "states": [
+        "default",
+        "hover(bg-secondary text-primary)"
+      ],
+      "responsive": "Kun desktop-tabell (md:block). Radene selv er ikke klikkbare her — kun chevron.",
+      "source": "src/app/admin/agencyos/spillere/page.tsx:295"
+    },
+    {
+      "id": "agencyos-spillere.link.mobil-rad",
+      "screen": "/admin/agencyos/spillere",
+      "kind": "link",
+      "label": "Mobil spiller-rad (navn + HCP/SG/pakke + sparkline)",
+      "icon": "ChevronRight",
+      "component": "next/link",
+      "action": {
+        "type": "route",
+        "target": "/admin/spillere/{id}"
+      },
+      "states": [
+        "default",
+        "sparkline vises når sgTrend.length>=2"
+      ],
+      "responsive": "Kun mobil (md:hidden) — li/Link med avatar, meta-linje, mini-sparkline, chevron.",
+      "source": "src/app/admin/agencyos/spillere/page.tsx:320"
+    },
+    {
+      "id": "spiller-detalj.link.alle-spillere",
+      "screen": "/admin/spillere/[id]",
+      "kind": "link",
+      "label": "Alle spillere (tilbake)",
+      "icon": "ArrowLeft",
+      "component": "next/link",
+      "action": {
+        "type": "route",
+        "target": "/admin/spillere"
+      },
+      "states": [
+        "default",
+        "ghost-sm"
+      ],
+      "responsive": "Topp av siden; uendret mobil/desktop.",
+      "source": "src/app/admin/spillere/[id]/page.tsx:430"
+    },
+    {
+      "id": "spiller-detalj.link.hero-melding",
+      "screen": "/admin/spillere/[id]",
+      "kind": "link",
+      "label": "Melding (hero)",
+      "icon": "MessageSquare",
+      "component": "next/link",
+      "action": {
+        "type": "route",
+        "target": "/admin/innboks"
+      },
+      "states": [
+        "default",
+        "secondary-variant"
+      ],
+      "responsive": "Hero høyre handlingsgruppe; wrapper under hero-tekst på smal skjerm.",
+      "source": "src/app/admin/spillere/[id]/page.tsx:447"
+    },
+    {
+      "id": "spiller-detalj.link.hero-ny-plan",
+      "screen": "/admin/spillere/[id]",
+      "kind": "link",
+      "label": "Ny plan (hero)",
+      "icon": "ClipboardList",
+      "component": "next/link",
+      "action": {
+        "type": "route",
+        "target": "/admin/spillere/{id}/workbench"
+      },
+      "states": [
+        "default",
+        "secondary-variant"
+      ],
+      "responsive": "Hero handlingsgruppe.",
+      "source": "src/app/admin/spillere/[id]/page.tsx:450"
+    },
+    {
+      "id": "spiller-detalj.link.hero-ny-okt",
+      "screen": "/admin/spillere/[id]",
+      "kind": "link",
+      "label": "Ny økt (hero)",
+      "icon": "Plus",
+      "component": "next/link",
+      "action": {
+        "type": "route",
+        "target": "/admin/spillere/{id}/workbench"
+      },
+      "states": [
+        "default",
+        "primary-variant"
+      ],
+      "responsive": "Hero handlingsgruppe (primær CTA).",
+      "source": "src/app/admin/spillere/[id]/page.tsx:453"
+    },
+    {
+      "id": "spiller-detalj.link.coachflagg-cta",
+      "screen": "/admin/spillere/[id]",
+      "kind": "link",
+      "label": "Coach-flagg CTA (Åpne i Workbench / Send melding)",
+      "icon": "Plus",
+      "component": "next/link",
+      "action": {
+        "type": "route",
+        "target": "flagg.href (workbench ELLER /admin/innboks avhengig av flagg-type)"
+      },
+      "states": [
+        "vises kun ved coach-flagg(bak>=1 ELLER inaktivDg>=5)",
+        "primary-sm"
+      ],
+      "responsive": "Venstre kolonne flagg-kort.",
+      "source": "src/app/admin/spillere/[id]/page.tsx:473"
+    },
+    {
+      "id": "spiller-detalj.link.coachflagg-avvis",
+      "screen": "/admin/spillere/[id]",
+      "kind": "link",
+      "label": "Avvis (coach-flagg)",
+      "icon": null,
+      "component": "next/link",
+      "action": {
+        "type": "route",
+        "target": "/admin/godkjenninger"
+      },
+      "states": [
+        "vises kun ved coach-flagg",
+        "ghost-sm"
+      ],
+      "responsive": "Venstre kolonne flagg-kort.",
+      "source": "src/app/admin/spillere/[id]/page.tsx:476"
+    },
+    {
+      "id": "spiller-detalj.link.aktiv-plan-kort",
+      "screen": "/admin/spillere/[id]",
+      "kind": "link",
+      "label": "Aktiv plan-kort (navn + progress)",
+      "icon": null,
+      "component": "next/link",
+      "action": {
+        "type": "route",
+        "target": "/admin/plans"
+      },
+      "states": [
+        "aktiv plan finnes",
+        "hover(bg-secondary)"
+      ],
+      "responsive": "Høyre kolonne; hvis ingen plan vises i stedet ikke-lenket kort + 'Lag plan i Workbench'-lenke.",
+      "source": "src/app/admin/spillere/[id]/page.tsx:564"
+    },
+    {
+      "id": "spiller-detalj.link.lag-plan-workbench",
+      "screen": "/admin/spillere/[id]",
+      "kind": "link",
+      "label": "Lag plan i Workbench (tom plan-tilstand)",
+      "icon": null,
+      "component": "next/link",
+      "action": {
+        "type": "route",
+        "target": "/admin/spillere/{id}/workbench"
+      },
+      "states": [
+        "vises kun når ingen aktiv plan",
+        "ghost-sm"
+      ],
+      "responsive": "Høyre kolonne.",
+      "source": "src/app/admin/spillere/[id]/page.tsx:583"
+    },
+    {
+      "id": "spiller-detalj.link.hurtighandling",
+      "screen": "/admin/spillere/[id]",
+      "kind": "link",
+      "label": "Hurtighandling-rad (Ny økt / Ny treningsplan / Send melding / Book Pro-time / Meld på turnering)",
+      "icon": "CalendarPlus | ClipboardList | MessageSquare | Clock | Trophy",
+      "component": "next/link",
+      "action": {
+        "type": "route",
+        "target": "workbench | /admin/innboks | /admin/bookinger | /admin/tournaments (per rad)"
+      },
+      "states": [
+        "default",
+        "chevron-trailing"
+      ],
+      "responsive": "Høyre kolonne; 5 stablede rader m/ hairline mellom.",
+      "source": "src/app/admin/spillere/[id]/page.tsx:594"
+    },
+    {
+      "id": "spiller-detalj.link.melding-kort",
+      "screen": "/admin/spillere/[id]",
+      "kind": "link",
+      "label": "Meldinger-kort (PENDING godkjenning ELLER siste comm)",
+      "icon": null,
+      "component": "next/link",
+      "action": {
+        "type": "route",
+        "target": "/admin/approvals ELLER /admin/innboks (avhengig av kilde)"
+      },
+      "states": [
+        "godkjenning ventende",
+        "fallback siste comm",
+        "tom:Ingen meldinger ennå",
+        "hover(bg-secondary)"
+      ],
+      "responsive": "Høyre kolonne nederst.",
+      "source": "src/app/admin/spillere/[id]/page.tsx:612"
+    },
+    {
+      "id": "spiller-detalj.slot.ingen-faner",
+      "screen": "/admin/spillere/[id]",
+      "kind": "slot",
+      "label": "MERK: ingen workbench/fremgang/tester/plan-faner i denne filen — siden er ren seksjons-layout (pyramide, runder&tester-tabell, aktiv plan, hurtighandlinger, meldinger). Workbench/plan/tester nås via lenker (hero + hurtighandlinger), ikke faner.",
+      "icon": null,
+      "component": "n/a",
+      "action": {
+        "type": "none",
+        "target": null
+      },
+      "states": [],
+      "responsive": "2-kol grid lg:[1.3fr_1fr], stables til 1 kol under lg.",
+      "source": "src/app/admin/spillere/[id]/page.tsx:459"
+    },
+    {
+      "id": "tournaments.link.ny-turnering",
+      "screen": "/admin/tournaments",
+      "kind": "link",
+      "label": "Ny turnering",
+      "icon": "Plus",
+      "component": "next/link",
+      "action": {
+        "type": "route",
+        "target": "/admin/tournaments/ny"
+      },
+      "states": [
+        "default",
+        "primary-variant"
+      ],
+      "responsive": "AgPageHead actions (CTA).",
+      "source": "src/app/admin/tournaments/page.tsx:145"
+    },
+    {
+      "id": "tournaments.link.rad-navn",
+      "screen": "/admin/tournaments",
+      "kind": "link",
+      "label": "Turneringsnavn (rad-lenke, desktop)",
+      "icon": null,
+      "component": "next/link (kun når r.href != null)",
+      "action": {
+        "type": "route",
+        "target": "/admin/tournaments/{id} (manuelle entries uten href → ren tekst)"
+      },
+      "states": [
+        "lenket(hover:underline)",
+        "uten href(ren span)"
+      ],
+      "responsive": "Desktop-tabell første celle.",
+      "source": "src/app/admin/tournaments/page.tsx:216"
+    },
+    {
+      "id": "tournaments.button.fellesmelding",
+      "screen": "/admin/tournaments",
+      "kind": "button",
+      "label": "Fellesmelding (per rad)",
+      "icon": "Send",
+      "component": "FellesmeldingKnapp → native button (åpner Sheet)",
+      "action": {
+        "type": "client",
+        "target": "setOpen(true) — åpner høyre Sheet-panel med emne+melding"
+      },
+      "states": [
+        "default",
+        "disabled(mottakere===0)",
+        "ghost-sm"
+      ],
+      "responsive": "Desktop: siste tabellcelle. Mobil: i kort-rad. Samme komponent.",
+      "source": "src/app/admin/tournaments/page.tsx:238"
+    },
+    {
+      "id": "tournaments.input.fellesmelding-emne",
+      "screen": "/admin/tournaments",
+      "kind": "input",
+      "label": "Emne (fellesmelding-panel)",
+      "icon": null,
+      "component": "ui/Input (controlled, forhåndsutfylt 'Orientering · {navn}')",
+      "action": {
+        "type": "client",
+        "target": "setSubject"
+      },
+      "states": [
+        "forhåndsutfylt",
+        "redigerbar"
+      ],
+      "responsive": "Sheet-panel side=right size=lg.",
+      "source": "src/app/admin/tournaments/_fellesmelding-knapp.tsx:75"
+    },
+    {
+      "id": "tournaments.textarea.fellesmelding-melding",
+      "screen": "/admin/tournaments",
+      "kind": "textarea",
+      "label": "Melding (fellesmelding-panel)",
+      "icon": null,
+      "component": "ui/Textarea (controlled, rows=6)",
+      "action": {
+        "type": "client",
+        "target": "setBody"
+      },
+      "states": [
+        "empty(placeholder)",
+        "med tekst"
+      ],
+      "responsive": "Sheet-panel; min-h-140px.",
+      "source": "src/app/admin/tournaments/_fellesmelding-knapp.tsx:82"
+    },
+    {
+      "id": "tournaments.button.fellesmelding-send",
+      "screen": "/admin/tournaments",
+      "kind": "button",
+      "label": "Send til alle (fellesmelding-panel)",
+      "icon": "Send",
+      "component": "native button",
+      "action": {
+        "type": "server-action",
+        "target": "sendTournamentFellesmelding({subject, body})"
+      },
+      "states": [
+        "disabled(pending || tom body)",
+        "pending(Sender…)",
+        "primary-variant"
+      ],
+      "responsive": "Sheet-footer; flex-1 ved siden av Avbryt.",
+      "source": "src/app/admin/tournaments/_fellesmelding-knapp.tsx:103"
+    },
+    {
+      "id": "tournaments.button.fellesmelding-avbryt",
+      "screen": "/admin/tournaments",
+      "kind": "button",
+      "label": "Avbryt (fellesmelding-panel)",
+      "icon": null,
+      "component": "native button",
+      "action": {
+        "type": "client",
+        "target": "setOpen(false)"
+      },
+      "states": [
+        "default",
+        "ghost-variant"
+      ],
+      "responsive": "Sheet-footer; flex-1.",
+      "source": "src/app/admin/tournaments/_fellesmelding-knapp.tsx:94"
+    },
+    {
+      "id": "tournaments.slot.status-chip",
+      "screen": "/admin/tournaments",
+      "kind": "slot",
+      "label": "Status-chip (Bekreftet / Påmelding åpen / Gjennomført / Trukket)",
+      "icon": null,
+      "component": "AgChip (ikke-interaktiv)",
+      "action": {
+        "type": "none",
+        "target": null
+      },
+      "states": [
+        "tone ok/warn/neu/lime",
+        "null → '—'"
+      ],
+      "responsive": "Desktop Status-celle + mobil ved navn. Avledet av entry-statuser.",
+      "source": "src/app/admin/tournaments/page.tsx:235"
+    },
+    {
+      "id": "bookinger.button.eksporter",
+      "screen": "/admin/bookinger",
+      "kind": "button",
+      "label": "Eksporter (heatmap CSV)",
+      "icon": "Download (i EksporterKnapp)",
+      "component": "EksporterKnapp → native button",
+      "action": {
+        "type": "client",
+        "target": "laster ned kapasitet-CSV (timer × dag)"
+      },
+      "states": [
+        "default"
+      ],
+      "responsive": "AgPageHead actions; se eksporter-knapp.tsx for detalj.",
+      "source": "src/app/admin/bookinger/page.tsx:182"
+    },
+    {
+      "id": "bookinger.link.ny-booking",
+      "screen": "/admin/bookinger",
+      "kind": "link",
+      "label": "Ny booking",
+      "icon": "Plus",
+      "component": "next/link",
+      "action": {
+        "type": "route",
+        "target": "/admin/bookinger/ny"
+      },
+      "states": [
+        "default",
+        "primary-variant"
+      ],
+      "responsive": "AgPageHead actions (CTA).",
+      "source": "src/app/admin/bookinger/page.tsx:183"
+    },
+    {
+      "id": "bookinger.slot.kpi-kort",
+      "screen": "/admin/bookinger",
+      "kind": "slot",
+      "label": "KPI-kort (Bookinger uke · Kapasitet brukt % · Ledige luker · Forespørsler)",
+      "icon": null,
+      "component": "Kpi (div, ikke-interaktiv)",
+      "action": {
+        "type": "none",
+        "target": null
+      },
+      "states": [
+        "tone default/lime/warn"
+      ],
+      "responsive": "grid-cols-2 → md:4. Hairline-delt.",
+      "source": "src/app/admin/bookinger/page.tsx:191"
+    },
+    {
+      "id": "bookinger.slot.heatmap-celle",
+      "screen": "/admin/bookinger",
+      "kind": "slot",
+      "label": "Kapasitet-heatmap-celle (time × dag, % belegg)",
+      "icon": null,
+      "component": "span m/ title-tooltip (IKKE klikkbar)",
+      "action": {
+        "type": "none",
+        "target": null
+      },
+      "states": [
+        "heat-nivå 0–5 (bg-secondary → bg-accent)",
+        "hover:ring-2 ring-foreground",
+        "title=tooltip belegg%"
+      ],
+      "responsive": "Venstre kolonne (xl:1fr). Hover gir ring + title; ingen onClick — interaktivitet er kun hover-tooltip.",
+      "source": "src/app/admin/bookinger/page.tsx:299"
+    },
+    {
+      "id": "bookinger.button.bekreft",
+      "screen": "/admin/bookinger",
+      "kind": "button",
+      "label": "Bekreft (ventende booking-rad)",
+      "icon": "Check",
+      "component": "BekreftAvvis → native button",
+      "action": {
+        "type": "server-action",
+        "target": "bekreftBooking(bookingId) — revalidatePath"
+      },
+      "states": [
+        "default",
+        "pending(opacity-50, disabled)",
+        "primary-sm"
+      ],
+      "responsive": "Vises kun for status PENDING i booking-listens Status-kolonne (høyre, xl:1.2fr).",
+      "source": "src/app/admin/bookinger/bekreft-avvis.tsx:19"
+    },
+    {
+      "id": "bookinger.button.avvis",
+      "screen": "/admin/bookinger",
+      "kind": "button",
+      "label": "Avvis (ventende booking-rad)",
+      "icon": null,
+      "component": "BekreftAvvis → native button",
+      "action": {
+        "type": "server-action",
+        "target": "avvisBooking(bookingId) — revalidatePath"
+      },
+      "states": [
+        "default",
+        "pending(opacity-50, disabled)",
+        "ghost-sm"
+      ],
+      "responsive": "Ved siden av Bekreft; kun PENDING-rader.",
+      "source": "src/app/admin/bookinger/bekreft-avvis.tsx:25"
+    },
+    {
+      "id": "bookinger.slot.status-chip",
+      "screen": "/admin/bookinger",
+      "kind": "slot",
+      "label": "Status-chip (Bekreftet / Avlyst / Fullført — ikke-PENDING rader)",
+      "icon": null,
+      "component": "AgChip (ikke-interaktiv)",
+      "action": {
+        "type": "none",
+        "target": null
+      },
+      "states": [
+        "tone ok/warn/neu"
+      ],
+      "responsive": "Booking-listens Status-kolonne for ikke-PENDING bookinger.",
+      "source": "src/app/admin/bookinger/page.tsx:278"
+    }
+  ],
+  "gaps": [
+    {
+      "cluster": "admin.spillere/stall (BATCH B, 12 ruter)",
+      "status": "skjerm-rad mangler — se MASTER-SKJERMPLAN",
+      "note": "Batch B-orkestratoren leste alle 12 page-filene men rakk aldri å normalisere dem til skjerm-objekter (ventet på 4 parallelle sub-agenter som ikke returnerte). Ikke gjettet — feltene (job/arketype/gating/states) er ikke kode-verifisert her.",
+      "routes": [
+        {
+          "route": "/admin/stall",
+          "file": "src/app/admin/stall/page.tsx"
+        },
+        {
+          "route": "/admin/spillere",
+          "file": "src/app/admin/spillere/page.tsx"
+        },
+        {
+          "route": "/admin/spillere/ny",
+          "file": "src/app/admin/spillere/ny/page.tsx"
+        },
+        {
+          "route": "/admin/spillere/[id]",
+          "file": "src/app/admin/spillere/[id]/page.tsx"
+        },
+        {
+          "route": "/admin/spillere/[id]/profil",
+          "file": "src/app/admin/spillere/[id]/profil/page.tsx"
+        },
+        {
+          "route": "/admin/spillere/[id]/workbench",
+          "file": "src/app/admin/spillere/[id]/workbench/page.tsx"
+        },
+        {
+          "route": "/admin/spillere/[id]/plan",
+          "file": "src/app/admin/spillere/[id]/plan/page.tsx"
+        },
+        {
+          "route": "/admin/spillere/[id]/plan/[planId]",
+          "file": "src/app/admin/spillere/[id]/plan/[planId]/page.tsx"
+        },
+        {
+          "route": "/admin/spillere/[id]/fremgang",
+          "file": "src/app/admin/spillere/[id]/fremgang/page.tsx"
+        },
+        {
+          "route": "/admin/spillere/[id]/tester",
+          "file": "src/app/admin/spillere/[id]/tester/page.tsx"
+        },
+        {
+          "route": "/admin/spillere/[id]/tildel-test",
+          "file": "src/app/admin/spillere/[id]/tildel-test/page.tsx"
+        },
+        {
+          "route": "/admin/spillere/[id]/rediger",
+          "file": "src/app/admin/spillere/[id]/rediger/page.tsx"
+        }
+      ]
+    },
+    {
+      "cluster": "øvrige BATCH B-ruter (~36, ikke i de 12 spillere/stall)",
+      "status": "skjerm-rad mangler — sub-agenter returnerte aldri",
+      "note": "Batch B-orkestratoren oppga 36 gjenstående ruter (grupper, talent, plans, plan-templates, drills, teknisk-plan, okter, videoer, recording) som ble delegert til 4 parallelle sub-agenter som aldri leverte JSON. Ingen kode-verifiserte rader finnes. Se docs/MASTER-SKJERMPLAN.md."
+    },
+    {
+      "cluster": "P0 element-detalj: Cockpit, Spillere, Spiller-detalj, Tournaments, Bookinger",
+      "status": "element-rader mangler — analysert i orkestrator-resonnement, aldri emittert som JSON",
+      "note": "Orkestratoren (fil 5) skrev at den 'fullt kartla' element-detalj for disse 5 P0-skjermene i sin tenkning, men rakk aldri å produsere element-objektene som JSON før økten endte. Kun Innboks + Workbench har ferdige element-rader (fra fil 4). Funn nevnt i resonnementet, ikke gjengitt her for å unngå å finne på fil:linje."
+    }
+  ]
+}
