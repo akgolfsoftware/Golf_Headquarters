@@ -25,7 +25,7 @@ import { cn } from "@/lib/utils";
 
 // ---------- Types ----------
 
-type Tier = "GRATIS" | "PRO" | "ELITE";
+type Tier = "GRATIS" | "PRO";
 
 export type CoachSpillerHeroProps = {
   spiller: {

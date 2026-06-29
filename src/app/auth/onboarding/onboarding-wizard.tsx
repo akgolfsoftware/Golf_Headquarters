@@ -139,7 +139,17 @@ function StepBody({ children }: { children: React.ReactNode }) {
 // Wizard
 // ──────────────────────────────────────────────────────────────────────────────
 
-export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) {
+export function OnboardingWizard({
+  initialStep = 1,
+  subscribe,
+}: {
+  initialStep?: number;
+  subscribe?: string;
+}) {
+  // Mål etter fullført onboarding: gjenoppta checkout hvis besøkende valgte en pakke.
+  const ferdigMaal = subscribe
+    ? `/auth/checkout-resume?plan=${encodeURIComponent(subscribe)}`
+    : "/portal";
   const router = useRouter();
   const [step, setStep] = useState(initialStep);
   const [pending, startTransition] = useTransition();
@@ -253,22 +263,22 @@ export function OnboardingWizard({ initialStep = 1 }: { initialStep?: number }) 
     startTransition(async () => {
       try {
         await saveSpillerOnboardingStep(buildData());
-        await completeOnboarding();
+        await completeOnboarding(subscribe);
       } catch {
-        router.push("/portal");
+        router.push(ferdigMaal);
         router.refresh();
       }
     });
   }
 
-  // Steg 7 er suksess-skjerm — redirect til portal
+  // Steg 7 er suksess-skjerm — redirect til portal (eller checkout-resume)
   function fullfor() {
     setError(null);
     startTransition(async () => {
       try {
-        await completeOnboarding();
+        await completeOnboarding(subscribe);
       } catch {
-        router.push("/portal");
+        router.push(ferdigMaal);
         router.refresh();
       }
     });

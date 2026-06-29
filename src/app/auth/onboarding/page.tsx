@@ -5,7 +5,12 @@ import { OnboardingWizard } from "./onboarding-wizard";
 
 export const dynamic = "force-dynamic";
 
-export default async function OnboardingPage() {
+export default async function OnboardingPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ subscribe?: string }>;
+}) {
+  const { subscribe } = await searchParams;
   const user = await requirePortalUser();
 
   // P7 state-machine: auto-resume eller redirect hvis ferdig
@@ -29,7 +34,7 @@ export default async function OnboardingPage() {
   // uten mørk gradient-ramme. Forelder-flyten beholder OnboardingShell.
   return (
     <main className="min-h-svh bg-background pb-6">
-      <OnboardingWizard initialStep={resumeStep} />
+      <OnboardingWizard initialStep={resumeStep} subscribe={subscribe} />
     </main>
   );
 }

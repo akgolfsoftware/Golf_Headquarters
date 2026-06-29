@@ -1,6 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Check } from "lucide-react";
+import {
+  ArrowRight,
+  Check,
+  TrendingUp,
+  ClipboardList,
+  MessageCircle,
+  FlaskConical,
+  Star,
+  Radar,
+} from "lucide-react";
 import { SGConsole } from "@/components/marketing/sg-console";
 import { PlayerHQMockup } from "@/components/marketing/playerhq-mockup";
 import { BookingAnbefaling } from "@/components/marketing/booking-anbefaling";
@@ -14,42 +23,42 @@ export const metadata: Metadata = {
 /* Enkel data for bento og band — moderne stil */
 const BENTO = [
   {
-    icon: "📈",
+    icon: TrendingUp,
     title: "Strokes gained i dybden",
     desc: "Se nøyaktig hvor slagene tapes og vinnes — per kategori, mot tour-snitt. Samme modell som proffene bruker.",
     span: "col-span-1 md:col-span-3",
     dark: false as const,
   },
   {
-    icon: "📋",
+    icon: ClipboardList,
     title: "Plan & Workbench",
     desc: "År, periode, uke og økt i én flate. Coach tildeler — du gjennomfører med ett trykk.",
     span: "col-span-1 md:col-span-3",
     dark: false as const,
   },
   {
-    icon: "💬",
+    icon: MessageCircle,
     title: "Coach i lomma",
     desc: "Direktemelding, video-feedback og notater fra coachen din — i sanntid.",
     span: "col-span-1 md:col-span-3",
     dark: true as const,
   },
   {
-    icon: "🧪",
+    icon: FlaskConical,
     title: "FYS & tester",
     desc: "Utviklingspyramiden — fra fysisk base til turneringsforberedelse.",
     span: "col-span-1 md:col-span-2",
     dark: false as const,
   },
   {
-    icon: "⭐",
+    icon: Star,
     title: "Talent-løype",
     desc: "For juniorer som skal til toppen — steg-for-steg program.",
     span: "col-span-1 md:col-span-2",
     dark: false as const,
   },
   {
-    icon: "📡",
+    icon: Radar,
     title: "TrackMan",
     desc: "Hvert slag målt. Dispersjon, ballflukt, køllesnitt og spin.",
     span: "col-span-1 md:col-span-2",
@@ -64,43 +73,48 @@ const BAND = [
   { num: "2200", label: "TIMER COACHING", suffix: "+" },
 ] as const;
 
+/* Låst modell: PlayerHQ-appen er gratis (med coaching) eller 300 kr/mnd.
+   «Performance»/«Performance Pro» er coaching-pakker, IKKE app-nivåer. */
 const PRISER = [
   {
-    tier: "Gratis",
+    kind: "App-tilgang",
+    tier: "PlayerHQ",
     price: "0",
-    sub: "kr / mnd",
-    desc: "Logg runder, se egen utvikling, enkel tilgang til drills.",
+    sub: "kr · gratis med coaching",
+    desc: "Appen er gratis så lenge du har en coaching-pakke. Uten coaching: 300 kr/mnd, ingen binding.",
     features: [
       "Spillerprofil & historikk",
-      "Enkel SG-oversikt",
+      "SG-oversikt",
       "Drills-bibliotek",
       "Booking av drop-in",
     ],
-    cta: "Start gratis",
+    cta: "Lag gratis konto",
     href: "/auth/signup",
     featured: false,
   },
   {
+    kind: "Coaching-pakke",
     tier: "Performance",
     price: "1 200",
     sub: "kr / mnd",
-    desc: "Full treningsplan + PlayerHQ. Anbefalt for seriøse amatører.",
+    desc: "Periodisert plan + 2× coaching i måneden. PlayerHQ inkludert gratis.",
     features: [
       "Periodisert plan + Workbench",
       "Månedlig SG-rapport",
-      "PlayerHQ full tilgang",
+      "PlayerHQ inkludert",
       "2× coaching pr. måned",
       "Fri tilgang alle anlegg",
     ],
-    cta: "Start Performance",
+    cta: "Se coaching-pakkene",
     href: "/coaching",
     featured: true,
   },
   {
+    kind: "Coaching-pakke",
     tier: "Performance Pro",
     price: "2 220",
     sub: "kr / mnd",
-    desc: "For de som sikter høyt. Full analyse, fysikk og turnering.",
+    desc: "Full analyse, fysikk og turnering + 4× coaching. PlayerHQ inkludert gratis.",
     features: [
       "Alt i Performance",
       "Full SG per runde + innsikt",
@@ -261,7 +275,10 @@ export default function NyLanding() {
                 key={index}
                 className={`group rounded-2xl border p-6 transition ${item.dark ? "border-white/10 bg-[#0A1F17] text-white" : "border-border bg-card"} ${item.span}`}
               >
-                <div className="mb-4 text-2xl">{item.icon}</div>
+                <item.icon
+                  className={`mb-4 h-7 w-7 ${item.dark ? "text-accent" : "text-primary"}`}
+                  strokeWidth={1.5}
+                />
                 <div className="font-display text-[19px] font-semibold tracking-[-0.01em]">{item.title}</div>
                 <p className={`mt-2 text-[13.5px] leading-snug ${item.dark ? "text-white/70" : "text-muted-foreground"}`}>
                   {item.desc}
@@ -289,7 +306,7 @@ export default function NyLanding() {
         <div className="mx-auto max-w-[620px] text-center">
           <div className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Priser</div>
           <h2 className="mt-2 font-display text-[38px] font-semibold tracking-[-0.015em]">Start gratis. Oppgrader når du vil.</h2>
-          <p className="mt-3 text-muted-foreground">Ingen binding. PlayerHQ + coaching i samme pakke.</p>
+          <p className="mt-3 text-muted-foreground">PlayerHQ er gratis med coaching, ellers 300 kr/mnd. Coaching-pakkene inkluderer appen. Ingen binding.</p>
         </div>
 
         <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -298,7 +315,10 @@ export default function NyLanding() {
               key={idx}
               className={`flex flex-col rounded-2xl border p-8 ${p.featured ? "border-transparent bg-[#0A1F17] text-white ring-1 ring-inset ring-white/10" : "border-border bg-card"}`}
             >
-              <div className={`font-mono text-xs font-semibold uppercase tracking-[0.12em] ${p.featured ? "text-accent" : "text-muted-foreground"}`}>
+              <div className={`font-mono text-[10px] font-semibold uppercase tracking-[0.14em] ${p.featured ? "text-white/60" : "text-muted-foreground/70"}`}>
+                {p.kind}
+              </div>
+              <div className={`mt-1 font-mono text-xs font-semibold uppercase tracking-[0.12em] ${p.featured ? "text-accent" : "text-muted-foreground"}`}>
                 {p.tier}
               </div>
               <div className="mt-4 flex items-end gap-1">

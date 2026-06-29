@@ -10,9 +10,9 @@ import { SignupForm } from "./signup-form";
 export default async function SignupPage({
   searchParams,
 }: {
-  searchParams: Promise<{ epost?: string }>;
+  searchParams: Promise<{ epost?: string; subscribe?: string }>;
 }) {
-  const { epost } = await searchParams;
+  const { epost, subscribe } = await searchParams;
   return (
     <main
       className="dark relative flex min-h-svh items-center justify-center overflow-hidden px-5 py-10"
@@ -46,7 +46,7 @@ export default async function SignupPage({
 
         {/* Skjema — rett på flaten */}
         <div className="w-full">
-          <SignupForm defaultEmail={epost} />
+          <SignupForm defaultEmail={epost} subscribe={subscribe} />
         </div>
       </div>
     </main>

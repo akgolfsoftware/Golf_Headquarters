@@ -133,8 +133,8 @@ export default async function KoblingerPage({
                   </td>
                   <td className="px-4 py-4">
                     {k.confirmedRoute ? (
-                      <span className="font-mono text-xs text-success">
-                        ✓ {k.confirmedRoute}
+                      <span className="inline-flex items-center gap-1 font-mono text-xs text-success">
+                        <CheckCircle2 className="h-3.5 w-3.5" /> {k.confirmedRoute}
                       </span>
                     ) : k.suggestedRoute ? (
                       <span className="font-mono text-xs text-muted-foreground">

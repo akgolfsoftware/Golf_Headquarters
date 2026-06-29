@@ -78,7 +78,7 @@ export default async function CoachHubPage({
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
         <StatCard label="TrackMan-økter" value={sessions.length} />
         <StatCard label="Køller registrert" value={clubs.length} />
-        <StatCard label="Spillerens tier" value={player.tier} isText />
+        <StatCard label="Spillerens tier" value={player.tier === "ELITE" ? "PRO" : player.tier} isText />
       </div>
 
       <section>

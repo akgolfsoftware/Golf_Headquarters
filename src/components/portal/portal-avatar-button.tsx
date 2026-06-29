@@ -10,7 +10,7 @@ type Props = {
   name: string;
   avatarUrl: string | null;
   initial: string;
-  tier: "GRATIS" | "PRO" | "ELITE";
+  tier: "GRATIS" | "PRO";
 };
 
 export function PortalAvatarButton({ name, avatarUrl, initial, tier }: Props) {
