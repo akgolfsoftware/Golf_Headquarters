@@ -20,7 +20,7 @@ import { avatarBg, initialsFromName } from "@/lib/avatar-colors";
 type PlayerHeroImageProps = {
   user: {
     name: string;
-    tier: "GRATIS" | "PRO" | "ELITE";
+    tier: "GRATIS" | "PRO";
     nivaa?: string;
     hcp: number | null;
     hcpTrend?: number;

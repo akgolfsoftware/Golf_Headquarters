@@ -65,7 +65,7 @@ function abonnementStatus(s: SubscriptionStatus): {
 }
 
 function tierLabel(tier: Tier): string {
-  return tier === "PRO" ? "Performance Pro" : "Gratis";
+  return tier === "PRO" ? "PlayerHQ PRO" : "Gratis";
 }
 
 // Faktura-status → pille (matcher oversikt.tsx).

@@ -179,7 +179,7 @@ export async function markStepComplete(stepNumber: number): Promise<void> {
 // Fullfør onboarding
 // ──────────────────────────────────────────────────────────────────────────────
 
-export async function completeOnboarding(): Promise<void> {
+export async function completeOnboarding(subscribe?: string): Promise<void> {
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
 
@@ -208,6 +208,10 @@ export async function completeOnboarding(): Promise<void> {
   });
 
   revalidatePath("/portal");
+  // Gjenoppta valgt checkout hvis besøkende startet med en abonnement-intent.
+  if (subscribe) {
+    redirect(`/auth/checkout-resume?plan=${encodeURIComponent(subscribe)}`);
+  }
   redirect("/portal");
 }
 

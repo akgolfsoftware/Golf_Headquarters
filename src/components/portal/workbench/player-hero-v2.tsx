@@ -24,7 +24,7 @@ import { cn } from "@/lib/utils";
 
 // ---------- Types ----------
 
-type Tier = "GRATIS" | "PRO" | "ELITE";
+type Tier = "GRATIS" | "PRO";
 
 type WellnessTrend = "OPP" | "FLAT" | "NED";
 

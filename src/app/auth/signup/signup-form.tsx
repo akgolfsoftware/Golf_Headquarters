@@ -51,7 +51,10 @@ const PACKAGES: PackageOption[] = [
   },
 ];
 
-export function SignupForm({ defaultEmail }: { defaultEmail?: string } = {}) {
+export function SignupForm({
+  defaultEmail,
+  subscribe,
+}: { defaultEmail?: string; subscribe?: string } = {}) {
   const router = useRouter();
   const supabase = createClient();
   const [pkg, setPkg] = useState<PackageValue>("PERFORMANCE_PRO");
@@ -108,11 +111,17 @@ export function SignupForm({ defaultEmail }: { defaultEmail?: string } = {}) {
     // Hvis Supabase returnerer en aktiv session betyr det at "Confirm email"
     // er AV — brukeren er allerede innlogget. Ellers (vanlig case) må de
     // bekrefte e-posten først.
+    // Bær subscribe-intent videre så en ny besøkende kan fullføre betaling i én flyt.
+    const onbUrl = subscribe
+      ? `/auth/onboarding?subscribe=${encodeURIComponent(subscribe)}`
+      : "/auth/onboarding";
     if (data.session) {
-      router.push("/auth/onboarding");
+      router.push(onbUrl);
       router.refresh();
     } else {
-      router.push("/auth/check-email");
+      router.push(
+        subscribe ? `/auth/check-email?subscribe=${encodeURIComponent(subscribe)}` : "/auth/check-email",
+      );
     }
   }
 
