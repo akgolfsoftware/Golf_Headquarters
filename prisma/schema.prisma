@@ -959,6 +959,13 @@ model SessionDrill {
   sets       Int?
   reps       Int?
   csTarget   Int?
+  // AK-formel per drill (Del B · 2026-06-30) — speiler drill-nivå-typene på TrainingDrillV2.
+  // Arver øktas (TrainingPlanSession) default når null; kan overstyres per drill.
+  lFase       LFase?
+  miljo       MMiljo?
+  csNivaa     CSNivaa?
+  prPress     PRPress?
+  pPosisjoner String[]
   notes      String?
   orderIndex Int     @default(0)
 
