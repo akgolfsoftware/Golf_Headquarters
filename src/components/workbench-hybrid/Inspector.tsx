@@ -6,6 +6,8 @@ import { CAT_COLORS, FONT, WB } from "./theme";
 import type { DimField } from "./taxonomy";
 import { buildDimensions, durLabel, recurSummary, type DimRow } from "./helpers";
 import type { PaletteItem, WbSession } from "./types";
+import type { BruddRad } from "@/lib/canon/valider-plan";
+import { BruddPanel } from "./CanonValidering";
 
 const chipBase = (color: string): React.CSSProperties => ({
   display: "inline-flex",
@@ -28,6 +30,7 @@ function DimensionRows({
   onDimClick,
   onRemoveMulti,
   readOnly = false,
+  bruddFelt,
 }: {
   dims: DimRow[];
   cat: string;
@@ -35,20 +38,24 @@ function DimensionRows({
   onRemoveMulti: (field: DimField, value: string) => void;
   /** Spiller får lese-visning (ingen klikkbare chips). */
   readOnly?: boolean;
+  /** Felt med aktivt invariant-brudd → rød (hard) / amber (myk) kant. */
+  bruddFelt?: Partial<Record<DimField, "hard" | "myk">>;
 }): ReactElement {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 12 }}>
       {dims.map((dim) => {
         const chipColor =
           dim.field === "cat" ? CAT_COLORS[cat as keyof typeof CAT_COLORS] ?? WB.lime : WB.lime;
+        const bf = bruddFelt?.[dim.field];
+        const bdr = bf ? (bf === "hard" ? WB.err : WB.warn) : WB.panelBorder;
         return (
         <div key={dim.field} style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
           <span style={{ fontSize: 11.5, color: WB.muted, paddingTop: 5 }}>{dim.label}</span>
           {dim.single &&
             (readOnly ? (
-              <span style={{ ...chipBase(chipColor), cursor: "default" }}>{dim.value}</span>
+              <span style={{ ...chipBase(chipColor), cursor: "default", border: `1px solid ${bdr}` }}>{dim.value}</span>
             ) : (
-              <button type="button" onClick={() => onDimClick(dim.field)} style={chipBase(chipColor)}>
+              <button type="button" onClick={() => onDimClick(dim.field)} style={{ ...chipBase(chipColor), border: `1px solid ${bdr}` }}>
                 {dim.value}
               </button>
             ))}
@@ -155,6 +162,12 @@ type InspectorProps = {
   readOnly?: boolean;
   /** "rail" (desktop høyre-kolonne) | "sheet" (mobil bunn-ark). */
   variant?: "rail" | "sheet";
+  // CANON-validering (Lag A)
+  bruddFelt?: Partial<Record<DimField, "hard" | "myk">>;
+  brudd?: BruddRad[];
+  isCoach?: boolean;
+  overrides?: Set<string>;
+  onOverstyr?: (invariantId: string, begrunnelse: string) => void;
   // palette editor
   onPaletteTitle?: (title: string) => void;
   onPaletteDur?: (delta: number) => void;
@@ -173,6 +186,11 @@ export function Inspector({
   onRemoveMulti,
   readOnly = false,
   variant = "rail",
+  bruddFelt,
+  brudd = [],
+  isCoach = false,
+  overrides,
+  onOverstyr,
   onPaletteTitle,
   onPaletteDur,
   onRemoveSession,
@@ -181,6 +199,7 @@ export function Inspector({
   onOpenRecur,
   onOpenBank,
 }: InspectorProps): ReactElement {
+  const overrideSet = overrides ?? new Set<string>();
   // Mobil bunn-ark: full bredde, ingen venstre-kant, runde topp-hjørner.
   const containerStyle: React.CSSProperties =
     variant === "sheet"
@@ -328,7 +347,9 @@ export function Inspector({
           </div>
 
           {formelHeader("AK-formel · kodet", readOnly)}
-          <DimensionRows dims={buildDimensions(mode.session)} cat={mode.session.cat} onDimClick={onDimClick} onRemoveMulti={onRemoveMulti} readOnly={readOnly} />
+          <DimensionRows dims={buildDimensions(mode.session)} cat={mode.session.cat} onDimClick={onDimClick} onRemoveMulti={onRemoveMulti} readOnly={readOnly} bruddFelt={bruddFelt} />
+
+          <BruddPanel brudd={brudd} isCoach={isCoach} overrides={overrideSet} onOverstyr={onOverstyr} />
 
           {/* GJENTA UKENTLIG */}
           {(() => {

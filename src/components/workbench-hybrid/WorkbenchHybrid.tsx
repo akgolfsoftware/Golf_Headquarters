@@ -38,6 +38,9 @@ import { Topbar, type RosterPlayer } from "./Topbar";
 import { CoachSkillWizard } from "./CoachSkillWizard";
 import { AiPlanPanel } from "./AiPlanPanel";
 import { PaletteSidebar } from "./PaletteSidebar";
+import { validatePlan, overstyrInvariant, hentOverrides } from "@/lib/canon/actions";
+import type { PlanValidering } from "@/lib/canon/valider-plan";
+import { PlanKvalitetKort, bruddByField } from "./CanonValidering";
 import { UkeView } from "./UkeView";
 import { DagView } from "./DagView";
 import { ArsplanView } from "./ArsplanView";
@@ -584,6 +587,60 @@ export function WorkbenchHybrid({
 
   const [state, dispatch] = useReducer(reducer, { data, planStatus }, initWorkbenchState);
 
+  // ── CANON-validering (Lag A) — plan-kvalitet + brudd, levende ──
+  const [validering, setValidering] = useState<PlanValidering | null>(null);
+  const [overrides, setOverrides] = useState<Set<string>>(() => new Set());
+
+  // Revalider debounced når planen endres (drag-drop, chip-redigering).
+  useEffect(() => {
+    if (!planId) return;
+    let avbrutt = false;
+    const t = setTimeout(() => {
+      validatePlan(planId)
+        .then((v) => {
+          if (!avbrutt) setValidering(v);
+        })
+        .catch(() => {});
+    }, 400);
+    return () => {
+      avbrutt = true;
+      clearTimeout(t);
+    };
+  }, [planId, state.week]);
+
+  // Last aktive overstyringer for planen.
+  useEffect(() => {
+    if (!planId) return;
+    let avbrutt = false;
+    hentOverrides({ planId })
+      .then((rows) => {
+        if (!avbrutt) setOverrides(new Set(rows.map((r) => r.invariantId)));
+      })
+      .catch(() => {});
+    return () => {
+      avbrutt = true;
+    };
+  }, [planId]);
+
+  const handleOverstyr = useCallback(
+    async (invariantId: string, begrunnelse: string) => {
+      if (!planId) return;
+      const res = await overstyrInvariant({
+        invariantId,
+        sessionId: state.selectedId ?? undefined,
+        planId,
+        begrunnelse,
+      });
+      if (res.ok) setOverrides((prev) => new Set(prev).add(invariantId));
+    },
+    [planId, state.selectedId],
+  );
+
+  const handleJumpTilBrudd = useCallback((sessionIds: string[]) => {
+    const id = sessionIds[0];
+    if (id) dispatch({ type: "selectSession", id });
+  }, []);
+
   // Restaurer zoom-nivå fra localStorage (klient).
   useEffect(() => {
     try {
@@ -906,6 +963,15 @@ export function WorkbenchHybrid({
   const { totals, grand } = totalsOf(state.week);
   const selectedSession = findInWeek(state.week, state.selectedId);
 
+  // CANON-derivering for valgt økt + pyramide-sone.
+  const selectedBrudd =
+    selectedSession && validering
+      ? validering.brudd.filter((b) => b.sessionIds.includes(selectedSession.id))
+      : [];
+  const bruddFelt = bruddByField(selectedBrudd, overrides);
+  const tekBrudd =
+    validering?.brudd.find((b) => b.invariantId === "tek-min" && !overrides.has("tek-min")) ?? null;
+
   // KPI "antall økter": ekte summary-tall der det finnes, ellers ukens egne økter.
   const kpiSessionCount =
     data?.summary?.sessionCount ??
@@ -1198,6 +1264,17 @@ export function WorkbenchHybrid({
                 <>
                   <InsightsStripe line={combinedInsights} />
                   {kpiStrip}
+                  {validering && (
+                    <div style={{ padding: "0 14px 8px" }}>
+                      <PlanKvalitetKort
+                        score={validering.score}
+                        brudd={validering.brudd}
+                        isCoach={isCoach}
+                        overrides={overrides}
+                        onJump={handleJumpTilBrudd}
+                      />
+                    </div>
+                  )}
                 </>
               )}
               {showPlanningTab ? hubContent : centerView}
@@ -1212,6 +1289,11 @@ export function WorkbenchHybrid({
                 onDimClick={(field) => dispatch({ type: "openDim", field })}
                 onRemoveMulti={onRemoveMulti}
                 readOnly={!isCoach}
+                bruddFelt={bruddFelt}
+                brudd={selectedBrudd}
+                isCoach={isCoach}
+                overrides={overrides}
+                onOverstyr={isCoach ? handleOverstyr : undefined}
                 onPaletteTitle={(title) => dispatch({ type: "patchPalette", patch: { title } })}
                 onPaletteDur={(delta) => dispatch({ type: "patchPaletteDur", delta })}
                 onRemoveSession={handleRemoveSelected}
@@ -1223,7 +1305,7 @@ export function WorkbenchHybrid({
             )}
           </div>
 
-          <Statusbar totals={totals} grand={grand} weekLabel={weekHead.weekLabel} volMin={data?.volTarget?.min} volMax={data?.volTarget?.max} />
+          <Statusbar totals={totals} grand={grand} weekLabel={weekHead.weekLabel} volMin={data?.volTarget?.min} volMax={data?.volTarget?.max} tekBrudd={tekBrudd ? { malt: tekBrudd.malt, grense: tekBrudd.grense } : null} />
         </div>
       </div>
 
@@ -1294,7 +1376,7 @@ export function WorkbenchHybrid({
             {showPlanningTab ? hubContent : centerView}
           </div>
         </div>
-        <MobileStatusbar totals={totals} grand={grand} weekLabel={weekHead.weekLabel} volMin={data?.volTarget?.min} volMax={data?.volTarget?.max} />
+        <MobileStatusbar totals={totals} grand={grand} weekLabel={weekHead.weekLabel} volMin={data?.volTarget?.min} volMax={data?.volTarget?.max} tekBrudd={tekBrudd ? { malt: tekBrudd.malt, grense: tekBrudd.grense } : null} />
       </div>
 
       {/* ───────── DELTE OVERLAYS (begge layouts) ───────── */}
@@ -1325,6 +1407,11 @@ export function WorkbenchHybrid({
           onDimClick={(field) => dispatch({ type: "openDim", field })}
           onRemoveMulti={onRemoveMulti}
           readOnly={!isCoach}
+          bruddFelt={bruddFelt}
+          brudd={selectedBrudd}
+          isCoach={isCoach}
+          overrides={overrides}
+          onOverstyr={isCoach ? handleOverstyr : undefined}
           onPaletteTitle={(title) => dispatch({ type: "patchPalette", patch: { title } })}
           onPaletteDur={(delta) => dispatch({ type: "patchPaletteDur", delta })}
           onRemoveSession={() => dispatch({ type: "removeSelected" })}

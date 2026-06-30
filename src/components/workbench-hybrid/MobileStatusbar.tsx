@@ -17,6 +17,8 @@ type MobileStatusbarProps = {
   /** Ukevolum-mål fra spillerens aktive PeriodBlock (min/max minutter). */
   volMin?: number | null;
   volMax?: number | null;
+  /** CANON tek-min-brudd → TEK-chip lyser rødt. */
+  tekBrudd?: { malt?: number; grense?: number } | null;
 };
 
 /**
@@ -24,7 +26,7 @@ type MobileStatusbarProps = {
  * desktop-Statusbar-en. Samlet volum + volumtak-gauge øverst, kategori-chips i
  * en horisontalt scrollbar rad under.
  */
-export function MobileStatusbar({ totals, grand, weekLabel, volMin, volMax }: MobileStatusbarProps): ReactElement {
+export function MobileStatusbar({ totals, grand, weekLabel, volMin, volMax, tekBrudd }: MobileStatusbarProps): ReactElement {
   const vMin = volMin ?? VOL_MIN_DEFAULT;
   const vMax = volMax ?? VOL_MAX_DEFAULT;
   const volPct = Math.min(100, Math.round((grand / vMax) * 100));
@@ -55,6 +57,7 @@ export function MobileStatusbar({ totals, grand, weekLabel, volMin, volMax }: Mo
       <div className="wb-scroll" style={{ display: "flex", gap: 6, marginTop: 9, overflowX: "auto" }}>
         {ORDER.map((cat) => {
           const m = totals[cat];
+          const tekRod = cat === "TEK" && !!tekBrudd;
           return (
             <div
               key={cat}
@@ -63,16 +66,18 @@ export function MobileStatusbar({ totals, grand, weekLabel, volMin, volMax }: Mo
                 display: "flex",
                 alignItems: "center",
                 gap: 8,
-                background: WB.cardBgAlt,
-                border: `1px solid ${WB.innerBorderSoft}`,
+                background: tekRod ? "#2a1414" : WB.cardBgAlt,
+                border: `1px solid ${tekRod ? WB.err : WB.innerBorderSoft}`,
                 borderRadius: 9999,
                 padding: "5px 12px 5px 8px",
               }}
             >
               <span style={{ width: 9, height: 9, borderRadius: 3, background: CAT_COLORS[cat], opacity: m ? 1 : 0.35 }} />
               <div style={{ lineHeight: 1.05 }}>
-                <div style={{ fontSize: 12, fontWeight: 700, color: WB.text, fontFamily: FONT.display }}>{m ? durLabel(m) : "0m"}</div>
-                <div style={{ fontSize: 8, fontFamily: FONT.mono, letterSpacing: "0.06em", color: "#7c8a82" }}>{cat}</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: tekRod ? WB.err : WB.text, fontFamily: FONT.display }}>{m ? durLabel(m) : "0m"}</div>
+                <div style={{ fontSize: 8, fontFamily: FONT.mono, letterSpacing: "0.06em", color: tekRod ? WB.err : "#7c8a82" }}>
+                  {tekRod ? `TEK <${tekBrudd?.grense}%` : cat}
+                </div>
               </div>
             </div>
           );

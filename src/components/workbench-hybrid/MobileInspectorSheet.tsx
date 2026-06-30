@@ -18,6 +18,12 @@ type MobileInspectorSheetProps = {
   onOpenPlan?: () => void;
   onOpenRecur?: () => void;
   onOpenBank?: () => void;
+  // CANON-validering (pass-through til Inspector)
+  bruddFelt?: Partial<Record<DimField, "hard" | "myk">>;
+  brudd?: import("@/lib/canon/valider-plan").BruddRad[];
+  isCoach?: boolean;
+  overrides?: Set<string>;
+  onOverstyr?: (invariantId: string, begrunnelse: string) => void;
 };
 
 /**
