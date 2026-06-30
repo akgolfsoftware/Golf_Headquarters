@@ -1,6 +1,7 @@
 import "server-only";
 
 import { prisma } from "@/lib/prisma";
+import { computeLevelGaps, type CategoryGap } from "./benchmark";
 
 /**
  * Benchmark-provider — leser HCP-stratifiserte SG-benchmarks fra AK Golf
@@ -85,4 +86,25 @@ export async function benchmarksAvailable(): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+/**
+ * Henter en spillers nivå-posisjon + slag-gap per kategori, basert på nyeste
+ * registrerte SG (`BrukerSgInput`) mot benchmark-stigen. Tom liste hvis spilleren
+ * ikke har SG-data eller benchmarkene er utilgjengelige (forbruk viser tom-tilstand).
+ */
+export async function getPlayerBenchmarkGaps(userId: string): Promise<CategoryGap[]> {
+  const [latest, benchmarks] = await Promise.all([
+    prisma.brukerSgInput.findFirst({
+      where: { userId },
+      orderBy: { dato: "desc" },
+      select: { sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
+    }),
+    getSgBenchmarks(),
+  ]);
+  if (!latest || benchmarks.length === 0) return [];
+  return computeLevelGaps(
+    { OTT: latest.sgOtt, APP: latest.sgApp, ARG: latest.sgArg, PUTT: latest.sgPutt },
+    benchmarks,
+  );
 }
