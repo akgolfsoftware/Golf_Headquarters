@@ -55,6 +55,7 @@ export async function executeSessionMove(
       scheduledAt: true,
       durationMin: true,
       pyramidArea: true,
+      miljo: true,
     },
   });
 
@@ -66,6 +67,8 @@ export async function executeSessionMove(
     durationMin: updated.durationMin,
     pyramidArea: updated.pyramidArea,
     coachId,
+    // Bevar miljø i V2-speilet ved flytting (ellers ble det nullstilt til "M2").
+    miljo: updated.miljo,
   });
 
   return { ok: true, before, after: updated.scheduledAt };

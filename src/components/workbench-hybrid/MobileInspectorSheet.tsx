@@ -10,6 +10,7 @@ type MobileInspectorSheetProps = {
   onClose: () => void;
   onDimClick: (field: DimField) => void;
   onRemoveOmr: (value: string) => void;
+  readOnly?: boolean;
   onPaletteTitle?: (title: string) => void;
   onPaletteDur?: (delta: number) => void;
   onRemoveSession?: () => void;

@@ -9,6 +9,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { dateForDayIndex, executeSessionMove, weekRefDate } from "@/lib/workbench/session-move";
 import { deleteV2ForPlanSession, upsertV2ForPlanSession } from "@/lib/workbench/v2-sync";
+import { sanitizeAkFormel, type AkFormelInput } from "@/lib/workbench/ak-formel";
 
 const PYRAMID_AREAS = ["FYS", "TEK", "SLAG", "SPILL", "TURN"] as const;
 export type WbPyramidArea = (typeof PYRAMID_AREAS)[number];
@@ -64,6 +65,8 @@ export async function coachAddWorkbenchSession(
     hour: number;
     minute: number;
     weekOffset?: number;
+    /** AK-formel fra palette-malen / valgt økt (renses server-side). */
+    akFormel?: AkFormelInput;
   },
 ): Promise<{ ok: boolean; sessionId?: string; error?: string }> {
   const coach = await ensureCoach();
@@ -89,6 +92,7 @@ export async function coachAddWorkbenchSession(
     });
   }
 
+  const ak = sanitizeAkFormel(input.akFormel);
   const created = await prisma.trainingPlanSession.create({
     data: {
       planId: plan.id,
@@ -101,6 +105,11 @@ export async function coachAddWorkbenchSession(
       ),
       durationMin: Math.max(5, Math.min(480, Math.round(input.durMin))),
       pyramidArea: area,
+      lFase: ak.lFase,
+      miljo: ak.miljo,
+      csNivaa: ak.csNivaa,
+      pressureLevel: ak.pressureLevel,
+      pPosisjoner: ak.pPosisjoner,
       status: "PLANNED",
     },
     select: {
@@ -120,6 +129,7 @@ export async function coachAddWorkbenchSession(
     durationMin: created.durationMin,
     pyramidArea: created.pyramidArea,
     coachId: coach.id,
+    miljo: ak.miljo,
   });
 
   revalidateWorkbench(playerId);

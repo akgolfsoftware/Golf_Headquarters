@@ -1,6 +1,6 @@
 import "server-only";
 
-import type { PyramidArea } from "@/generated/prisma/client";
+import type { PyramidArea, MMiljo } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 
 const GENERERT_FRA = "WORKBENCH_PLAN";
@@ -50,6 +50,10 @@ export async function upsertV2ForPlanSession(input: {
   durationMin: number;
   pyramidArea: PyramidArea;
   coachId?: string | null;
+  // AK-formel (Fase 0) — kun miljo speiles (eneste session-nivå AK-felt på
+  // TrainingSessionV2). Full formel bor på kanon TrainingPlanSession;
+  // drill-nivå-formelen bor på TrainingDrillV2 (egen runde).
+  miljo?: MMiljo | null;
 }): Promise<void> {
   const coachId = await resolveCoachIdForPlayer(input.playerId, input.coachId);
   const endTime = new Date(input.scheduledAt.getTime() + input.durationMin * 60_000);
@@ -65,7 +69,7 @@ export async function upsertV2ForPlanSession(input: {
     coachId,
     startTime: input.scheduledAt,
     endTime,
-    miljo: "M2" as const,
+    miljo: input.miljo ?? "M2",
     practiceType: PYR_TO_PRACTICE[input.pyramidArea],
     status: "PLANNED" as const,
     isCoachCreated: coachId !== input.playerId,

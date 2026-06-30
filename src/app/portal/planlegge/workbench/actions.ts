@@ -12,6 +12,7 @@ import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import { dateForDayIndex, executeSessionMove, weekRefDate } from "@/lib/workbench/session-move";
 import { deleteV2ForPlanSession, upsertV2ForPlanSession } from "@/lib/workbench/v2-sync";
+import { sanitizeAkFormel, type AkFormelInput } from "@/lib/workbench/ak-formel";
 
 // ============================================================================
 // PERIODE
@@ -299,6 +300,13 @@ export async function createTrainingPlanSession(formData: FormData): Promise<{
     return { ok: false, error: "Plan ikke funnet" };
   }
 
+  const ak = sanitizeAkFormel({
+    lFase: (formData.get("lFase") as string) || null,
+    miljo: (formData.get("miljo") as string) || null,
+    csNivaa: (formData.get("csNivaa") as string) || null,
+    pressureLevel: (formData.get("pressureLevel") as string) || null,
+    pPosisjoner: formData.getAll("pPosisjoner").map(String),
+  });
   const session = await prisma.trainingPlanSession.create({
     data: {
       planId,
@@ -307,6 +315,11 @@ export async function createTrainingPlanSession(formData: FormData): Promise<{
       durationMin,
       pyramidArea,
       environment: environment ?? null,
+      lFase: ak.lFase,
+      miljo: ak.miljo,
+      csNivaa: ak.csNivaa,
+      pressureLevel: ak.pressureLevel,
+      pPosisjoner: ak.pPosisjoner,
       status: "PLANNED",
     },
     select: { id: true },
@@ -415,6 +428,8 @@ export async function addWorkbenchSession(input: {
   hour: number;
   minute: number;
   weekOffset?: number;
+  /** AK-formel fra palette-malen / valgt økt (renses server-side). */
+  akFormel?: AkFormelInput;
 }): Promise<{ ok: boolean; sessionId?: string; error?: string }> {
   const user = await requirePortalUser();
   if (input.dayIndex < 0 || input.dayIndex > 6) return { ok: false, error: "Ugyldig dag" };
@@ -439,6 +454,7 @@ export async function addWorkbenchSession(input: {
     });
   }
 
+  const ak = sanitizeAkFormel(input.akFormel);
   const created = await prisma.trainingPlanSession.create({
     data: {
       planId: plan.id,
@@ -451,6 +467,11 @@ export async function addWorkbenchSession(input: {
       ),
       durationMin: Math.max(5, Math.min(480, Math.round(input.durMin))),
       pyramidArea: area,
+      lFase: ak.lFase,
+      miljo: ak.miljo,
+      csNivaa: ak.csNivaa,
+      pressureLevel: ak.pressureLevel,
+      pPosisjoner: ak.pPosisjoner,
       status: "PLANNED",
     },
     select: {
@@ -469,6 +490,7 @@ export async function addWorkbenchSession(input: {
     scheduledAt: created.scheduledAt,
     durationMin: created.durationMin,
     pyramidArea: created.pyramidArea,
+    miljo: ak.miljo,
   });
 
   revalidatePath("/portal/planlegge/workbench");

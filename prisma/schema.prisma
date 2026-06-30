@@ -864,6 +864,12 @@ model TrainingPlanSession {
   environment   SessionEnvironment?
   lPhase        LPhase?
   pressureLevel PressureLevel?
+  // AK-formel (Fase 0 · 2026-06-30) — metodikk-dimensjonene, speiler TrainingSessionV2.
+  // pyramidArea + pressureLevel (over) er to av seks AK-akser; disse fire er resten.
+  lFase         LFase?
+  miljo         MMiljo?
+  csNivaa       CSNivaa?
+  pPosisjoner   String[]
   status        SessionStatus       @default(PLANNED)
   liveSnapshot  Json? // Løpende live-fremdrift (reps/tid per drill). Nulles ved completeSession.
   createdAt     DateTime            @default(now())

@@ -27,32 +27,37 @@ function DimensionRows({
   cat,
   onDimClick,
   onRemoveOmr,
+  readOnly = false,
 }: {
   dims: DimRow[];
   cat: string;
   onDimClick: (field: DimField) => void;
   onRemoveOmr: (value: string) => void;
+  /** Spiller får lese-visning (ingen klikkbare chips). */
+  readOnly?: boolean;
 }): ReactElement {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 12 }}>
-      {dims.map((dim) => (
+      {dims.map((dim) => {
+        const chipColor =
+          dim.field === "cat" ? CAT_COLORS[cat as keyof typeof CAT_COLORS] ?? WB.lime : WB.lime;
+        return (
         <div key={dim.field} style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
           <span style={{ fontSize: 11.5, color: WB.muted, paddingTop: 5 }}>{dim.label}</span>
-          {dim.single && (
-            <button
-              type="button"
-              onClick={() => onDimClick(dim.field)}
-              style={chipBase(dim.field === "cat" ? CAT_COLORS[cat as keyof typeof CAT_COLORS] ?? WB.lime : WB.lime)}
-            >
-              {dim.value}
-            </button>
-          )}
+          {dim.single &&
+            (readOnly ? (
+              <span style={{ ...chipBase(chipColor), cursor: "default" }}>{dim.value}</span>
+            ) : (
+              <button type="button" onClick={() => onDimClick(dim.field)} style={chipBase(chipColor)}>
+                {dim.value}
+              </button>
+            ))}
           {dim.multi && (
             <div style={{ display: "flex", flexWrap: "wrap", gap: 5, justifyContent: "flex-end", maxWidth: "66%" }}>
               {dim.chips.map((ch) => (
                 <span
                   key={ch.value}
-                  onClick={() => onRemoveOmr(ch.value)}
+                  onClick={readOnly ? undefined : () => onRemoveOmr(ch.value)}
                   style={{
                     display: "inline-flex",
                     alignItems: "center",
@@ -64,14 +69,15 @@ function DimensionRows({
                     border: `1px solid ${WB.panelBorder}`,
                     borderRadius: 9999,
                     padding: "5px 9px",
-                    cursor: "pointer",
+                    cursor: readOnly ? "default" : "pointer",
                     color: CAT_COLORS.SLAG,
                   }}
                 >
                   {ch.label}
-                  <span style={{ opacity: 0.6 }}>×</span>
+                  {!readOnly && <span style={{ opacity: 0.6 }}>×</span>}
                 </span>
               ))}
+              {!readOnly && (
               <button
                 type="button"
                 onClick={() => onDimClick(dim.field)}
@@ -92,20 +98,22 @@ function DimensionRows({
               >
                 +
               </button>
+              )}
             </div>
           )}
         </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
 
-const formelHeader = (label: string): ReactElement => (
+const formelHeader = (label: string, readOnly = false): ReactElement => (
   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
     <span style={{ fontFamily: FONT.mono, fontSize: 9.5, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: WB.muted3 }}>
       {label}
     </span>
-    <span style={{ fontFamily: FONT.mono, fontSize: 9, color: "#3f6354" }}>klikk for å endre</span>
+    <span style={{ fontFamily: FONT.mono, fontSize: 9, color: "#3f6354" }}>{readOnly ? "lese-visning" : "klikk for å endre"}</span>
   </div>
 );
 
@@ -143,6 +151,8 @@ type InspectorProps = {
   onClose: () => void;
   onDimClick: (field: DimField) => void;
   onRemoveOmr: (value: string) => void;
+  /** Spiller får lese-visning av AK-formel-chips (coach kan redigere). */
+  readOnly?: boolean;
   /** "rail" (desktop høyre-kolonne) | "sheet" (mobil bunn-ark). */
   variant?: "rail" | "sheet";
   // palette editor
@@ -161,6 +171,7 @@ export function Inspector({
   onClose,
   onDimClick,
   onRemoveOmr,
+  readOnly = false,
   variant = "rail",
   onPaletteTitle,
   onPaletteDur,
@@ -276,8 +287,8 @@ export function Inspector({
             </div>
           </div>
 
-          {formelHeader("AK-formel · mal")}
-          <DimensionRows dims={buildDimensions(mode.item)} cat={mode.item.cat} onDimClick={onDimClick} onRemoveOmr={onRemoveOmr} />
+          {formelHeader("AK-formel · mal", readOnly)}
+          <DimensionRows dims={buildDimensions(mode.item)} cat={mode.item.cat} onDimClick={onDimClick} onRemoveOmr={onRemoveOmr} readOnly={readOnly} />
           <p
             style={{
               margin: 0,
@@ -316,8 +327,8 @@ export function Inspector({
             {mode.dayLabel} · {durLabel(mode.session.dur)}
           </div>
 
-          {formelHeader("AK-formel · kodet")}
-          <DimensionRows dims={buildDimensions(mode.session)} cat={mode.session.cat} onDimClick={onDimClick} onRemoveOmr={onRemoveOmr} />
+          {formelHeader("AK-formel · kodet", readOnly)}
+          <DimensionRows dims={buildDimensions(mode.session)} cat={mode.session.cat} onDimClick={onDimClick} onRemoveOmr={onRemoveOmr} readOnly={readOnly} />
 
           {/* GJENTA UKENTLIG */}
           {(() => {

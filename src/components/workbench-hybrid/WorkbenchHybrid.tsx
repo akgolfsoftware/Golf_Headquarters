@@ -707,6 +707,14 @@ export function WorkbenchHybrid({
         hour,
         minute,
         weekOffset,
+        // AK-formel fra standardøkt-malen — renses server-side (sanitizeAkFormel).
+        akFormel: {
+          lFase: item.lfase ?? null,
+          miljo: item.m ?? null,
+          csNivaa: item.cs ?? null,
+          pressureLevel: item.pr ?? null,
+          pPosisjoner: [] as string[],
+        },
       };
       const promise =
         isCoach && currentPlayerId
@@ -1196,6 +1204,7 @@ export function WorkbenchHybrid({
                 onClose={() => dispatch({ type: "closeInspector" })}
                 onDimClick={(field) => dispatch({ type: "openDim", field })}
                 onRemoveOmr={onRemoveOmr}
+                readOnly={!isCoach}
                 onPaletteTitle={(title) => dispatch({ type: "patchPalette", patch: { title } })}
                 onPaletteDur={(delta) => dispatch({ type: "patchPaletteDur", delta })}
                 onRemoveSession={handleRemoveSelected}
@@ -1308,6 +1317,7 @@ export function WorkbenchHybrid({
           onClose={() => dispatch({ type: "closeInspector" })}
           onDimClick={(field) => dispatch({ type: "openDim", field })}
           onRemoveOmr={onRemoveOmr}
+          readOnly={!isCoach}
           onPaletteTitle={(title) => dispatch({ type: "patchPalette", patch: { title } })}
           onPaletteDur={(delta) => dispatch({ type: "patchPaletteDur", delta })}
           onRemoveSession={() => dispatch({ type: "removeSelected" })}
