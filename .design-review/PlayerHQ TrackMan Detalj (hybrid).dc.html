@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:ital,wght@0,500;0,600;0,700;1,500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="ds/tokens.css">
+  <style>
+    *{box-sizing:border-box;}body{margin:0;}
+    .ph-page{background:var(--cream-2);}
+    .scr{background:var(--cream);color:var(--ink);}
+    .ph-scroll::-webkit-scrollbar{width:0;}
+    .dt{width:100%;border-collapse:collapse;font-size:11.5px;}
+    .dt thead th{font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted-2);text-align:left;padding:7px 9px;border-bottom:1px solid var(--border);font-weight:600;}
+    .dt thead th.r{text-align:right;}
+    .dt tbody td{padding:8px 9px;border-bottom:1px solid var(--border-soft);color:var(--ink);}
+    .dt tbody tr:last-child td{border-bottom:none;}
+    .dt .val{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right;}
+    .sk{background:linear-gradient(90deg,var(--sand) 25%,var(--border) 50%,var(--sand) 75%);background-size:200%;animation:sk-shine 1.4s infinite;border-radius:var(--r-sm);}
+    @keyframes sk-shine{to{background-position:200% center;}}
+  </style>
+</helmet>
+
+<div class="ph-page" style="min-height:100vh;display:flex;flex-direction:column;align-items:center;gap:18px;padding:34px 20px 60px;font-family:var(--sans);">
+  <div style="width:100%;max-width:392px;display:flex;align-items:center;justify-content:space-between;">
+    <span style="font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted-2);">B4b · /portal/mal/trackman/[id]</span>
+    <div style="display:flex;gap:5px;">
+      <sc-for list="{{ stateTabs }}" as="t" hint-placeholder-count="2">
+        <button onClick="{{ t.onClick }}" style="{{ t.style }}">{{ t.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="width:392px;max-width:100%;height:828px;background:var(--forest-deep);border-radius:46px;padding:11px;box-shadow:0 40px 90px -30px rgba(10,31,23,.5);flex-shrink:0;">
+    <div class="scr" style="position:relative;width:100%;height:100%;border-radius:36px;overflow:hidden;">
+      <div style="position:absolute;top:0;left:0;right:0;z-index:20;height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 26px;pointer-events:none;"><span style="font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink);">14:30</span></div>
+      <div class="ph-scroll" style="position:absolute;inset:0;overflow-y:auto;padding:50px 0 28px;">
+
+        <div style="padding:10px 14px 14px;">
+          <button style="background:none;border:none;cursor:pointer;padding:0;display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:10px;">← TrackMan</button>
+          <div style="font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);margin-bottom:5px;">Driver · Performance Studio</div>
+          <h1 style="font-family:var(--disp);font-size:20px;font-weight:700;letter-spacing:-0.02em;margin:0 0 4px;color:var(--ink);">Driver-økt<em style="font-style:italic;color:var(--forest);font-weight:500;"> 17. juni</em></h1>
+          <p style="font-size:12.5px;color:var(--muted);margin:0 0 14px;">24 slag · Performance Studio · Svingstudio</p>
+        </div>
+
+        <!-- Snitt KPI row -->
+        <div style="margin:0 14px 14px;display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;background:var(--paper);box-shadow:var(--sh-sm);">
+          <sc-for list="{{ snittKpis }}" as="k" hint-placeholder-count="3">
+            <div style="{{ k.style }}">
+              <div style="font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);margin-bottom:5px;">{{ k.label }}</div>
+              <div style="font-family:var(--mono);font-size:20px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1;">{{ k.val }}<small style="font-size:10px;color:var(--muted-2);font-weight:500;"> {{ k.unit }}</small></div>
+            </div>
+          </sc-for>
+        </div>
+
+        <!-- Dispersion -->
+        <sc-if value="{{ hasData }}" hint-placeholder-val="{{ true }}">
+          <div style="margin:0 14px 12px;background:var(--paper);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px;box-shadow:var(--sh-sm);">
+            <div style="font-family:var(--disp);font-size:14px;font-weight:700;color:var(--ink);margin-bottom:10px;">Spredning</div>
+            <svg id="tmDisp" viewBox="0 0 300 160" style="width:100%;border-radius:var(--r-sm);background:linear-gradient(180deg,color-mix(in srgb,var(--forest) 8%,var(--paper)),var(--paper));border:1px solid var(--border);display:block;"></svg>
+            <div style="display:flex;justify-content:space-between;margin-top:8px;font-family:var(--mono);font-size:8.5px;color:var(--muted-2);"><span>venstre</span><span>center</span><span>høyre</span></div>
+          </div>
+
+          <!-- Slag tabell -->
+          <div style="margin:0 14px 12px;background:var(--paper);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh-sm);">
+            <div style="padding:10px 13px 8px;font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted-2);background:var(--sand);border-bottom:1px solid var(--border-soft);">Alle slag · driver</div>
+            <div style="max-height:200px;overflow-y:auto;">
+              <table class="dt">
+                <thead><tr><th>#</th><th class="r">Carry</th><th class="r">Ballfart</th><th class="r">Avvik</th></tr></thead>
+                <tbody>
+                  <sc-for list="{{ shots }}" as="s" hint-placeholder-count="6">
+                    <tr><td style="font-family:var(--mono);color:var(--muted-2);">{{ s.n }}</td><td class="val">{{ s.carry }} m</td><td class="val">{{ s.speed }}</td><td class="val" style="color:{{ s.devColor }};">{{ s.dev }}</td></tr>
+                  </sc-for>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Vs forrige -->
+          <div style="margin:0 14px 12px;background:var(--paper);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px;box-shadow:var(--sh-sm);">
+            <div style="font-family:var(--disp);font-size:14px;font-weight:700;color:var(--ink);margin-bottom:8px;">Vs forrige økt</div>
+            <div style="display:flex;gap:12px;">
+              <sc-for list="{{ deltas }}" as="d" hint-placeholder-count="3">
+                <div style="flex:1;text-align:center;"><div style="font-family:var(--mono);font-size:8px;color:var(--muted-2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;">{{ d.label }}</div><div style="font-family:var(--mono);font-size:16px;font-weight:600;color:{{ d.vc }};font-variant-numeric:tabular-nums;">{{ d.val }}</div></div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="padding:0 14px;"><button style="width:100%;padding:13px;background:var(--forest);color:var(--lime);border:none;border-radius:var(--r-full);font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/></svg>Del med coach</button></div>
+        </sc-if>
+
+        <!-- LOADING -->
+        <sc-if value="{{ isLoading }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:0 14px;display:flex;flex-direction:column;gap:10px;">
+            <sc-for list="{{ skels }}" as="s" hint-placeholder-count="3"><div class="sk" style="height:{{ s.h }};border-radius:var(--r-lg);"></div></sc-for>
+          </div>
+        </sc-if>
+
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:432,&quot;height&quot;:960}}">
+class Component extends DCLogic {
+  state = { uiState:'data' };
+  componentDidMount() { this._buildDisp(); }
+  componentDidUpdate(p,prev) { if(prev.uiState!==this.state.uiState&&this.state.uiState==='data') setTimeout(()=>this._buildDisp(),100); }
+
+  _buildDisp() {
+    const svg=document.getElementById('tmDisp'); if(!svg) return;
+    const cx=150,cy=72;
+    let seed=13; const rnd=()=>{seed=(seed*9301+49297)%233280;return seed/233280;};
+    const g=()=>(rnd()+rnd()+rnd()-1.5);
+    let pts=''; let inZone=0;
+    for(let i=0;i<24;i++){const x=cx+g()*60,y=cy+g()*28;const in_=Math.abs(x-cx)<50&&Math.abs(y-cy)<22;if(in_)inZone++;pts+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3" fill="${in_?'var(--lime-deep)':'var(--down)'}" opacity="${in_?.9:.6}"/>`;}
+    svg.innerHTML=`<rect x="${cx-50}" y="${cy-22}" width="100" height="44" rx="6" fill="rgba(209,248,67,.07)" stroke="var(--lime-dim)" stroke-width="1" stroke-dasharray="4 4"/><line x1="${cx}" y1="10" x2="${cx}" y2="140" stroke="var(--border)" stroke-width="1" stroke-dasharray="3 4"/><ellipse cx="${cx}" cy="${cy}" rx="60" ry="28" fill="var(--forest)" fill-opacity=".07" stroke="var(--forest)" stroke-width="1.2" stroke-opacity=".4"/><circle cx="${cx}" cy="${cy}" r="4" fill="none" stroke="var(--forest)" stroke-width="1.5"/>${pts}`;
+  }
+
+  renderVals() {
+    const { uiState } = this.state;
+    const stateTabs=['data','loading'].map((s,i)=>({label:['Data','Laster'][i],onClick:()=>this.setState({uiState:s}),style:`font-family:var(--mono);font-size:10px;font-weight:600;padding:5px 9px;border-radius:var(--r-full);cursor:pointer;border:none;background:${uiState===s?'var(--lime)':'var(--sand)'};color:${uiState===s?'var(--forest-deep)':'var(--muted)'};`}));
+    const snittKpis=[
+      {label:'Carry snitt',val:'268',unit:'m',style:'padding:12px;border-right:1px solid var(--border-soft);'},
+      {label:'Ballfart',val:'248',unit:'km/t',style:'padding:12px;border-right:1px solid var(--border-soft);'},
+      {label:'Smash',val:'1,49',unit:'',style:'padding:12px;'},
+    ];
+    const shots=Array.from({length:8},(v,i)=>({n:i+1,carry:260+Math.round((Math.random()-.5)*30),speed:242+Math.round((Math.random()-.5)*20),dev:Math.round((Math.random()-.5)*20),devColor:Math.abs(Math.round((Math.random()-.5)*20))<10?'var(--up)':'var(--down)'})).map(s=>({...s,carry:s.carry.toString(),speed:s.speed+' km/t',dev:(s.dev>0?'+':'')+s.dev+' m'}));
+    const deltas=[{label:'Carry',val:'+4 m',vc:'var(--up)'},{label:'Ballfart',val:'+2',vc:'var(--up)'},{label:'Spredning',val:'−3 m',vc:'var(--up)'}];
+    return { stateTabs, snittKpis, shots, deltas, hasData:uiState==='data', isLoading:uiState==='loading', skels:[{h:'80px'},{h:'160px'},{h:'80px'}] };
+  }
+}
+</script>
+</body>
+</html>

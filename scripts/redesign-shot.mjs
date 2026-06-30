@@ -1,7 +1,7 @@
 import { chromium } from "playwright";
 
 const DR = `${process.env.HOME}/Library/CloudStorage/GoogleDrive-akgolfgroup@gmail.com/My Drive/AK Golf Group/software/akgolf-hq/design-retninger`;
-const files = ["A-skog-premium", "B-editorial-lys", "C-terminal"];
+const files = ["E-komponent-lab"];
 
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, deviceScaleFactor: 1 });

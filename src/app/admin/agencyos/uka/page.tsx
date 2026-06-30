@@ -2,7 +2,7 @@
 // Speiler WeekScreen fra Claude artifact AK Golf AgencyOS.
 
 import Link from "next/link";
-import { Calendar, Plus } from "lucide-react";
+import { Calendar, Plus, GripVertical } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
@@ -105,8 +105,8 @@ export default async function UkaPage() {
         </div>
       </div>
 
-      {/* 7-dagers grid */}
-      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-7">
+      {/* 7-dagers grid (iPad 4-col, desk 7) */}
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7">
         {dager.map((d, i) => (
           <div
             key={i}
@@ -121,16 +121,16 @@ export default async function UkaPage() {
             <div className="mb-4 border-b border-border pb-2">
               <div
                 className={`font-mono text-[10px] uppercase tracking-[0.10em] ${
-                  d.erIdag ? "text-primary" : "text-muted-foreground"
+                  d.erIdag ? "text-primary" : d.erHelg ? "text-[var(--t-down,#A32D2D)]" : "text-muted-foreground"
                 }`}
               >
-                {DAGNAVN_KORT[i]} {d.dato.getDate()}.
+                {DAGNAVN_KORT[i]} · {d.events.length}
               </div>
               <div className="font-display text-sm font-semibold tracking-tight">
                 {d.erIdag ? (
-                  <>
-                    <em>I dag</em>
-                  </>
+                  <em>I dag</em>
+                ) : d.erHelg ? (
+                  "Låst dag"
                 ) : (
                   DAGNAVN_LANG[i]
                 )}
@@ -148,14 +148,19 @@ export default async function UkaPage() {
                   return (
                     <li
                       key={e.id}
-                      className="rounded-md border border-border bg-background p-2 text-xs"
+                      className="tcard rounded-md border border-border bg-background p-2 text-xs"
                     >
-                      <div className="font-mono text-[10px] tabular-nums text-muted-foreground">
-                        {e.startAt.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" })} · {dur} min
-                      </div>
-                      <div className="mt-0.5 truncate font-semibold text-foreground">{navn}</div>
-                      <div className="truncate text-[11px] text-muted-foreground">
-                        {e.serviceType.name}
+                      <div className="flex items-start gap-2">
+                        <span className="gripwrap grip grip-t mt-0.5"><GripVertical className="h-3 w-3 text-muted-foreground/60" /></span>
+                        <div className="min-w-0 flex-1">
+                          <div className="sc-s font-mono text-[10px] tabular-nums text-muted-foreground">
+                            {e.startAt.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" })} · {dur} min
+                          </div>
+                          <div className="sc-t mt-0.5 truncate font-semibold text-foreground">{navn}</div>
+                          <div className="sc-s truncate text-[11px] text-muted-foreground">
+                            {e.serviceType.name}
+                          </div>
+                        </div>
                       </div>
                     </li>
                   );

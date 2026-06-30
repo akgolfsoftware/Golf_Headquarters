@@ -1,19 +1,23 @@
-// Lett-vekt AI-plan-stub for "AI-foreslå plan"-knappen i admin.
-// Den ekte plan-generatoren ligger i /api/ai-plan/generate (Anthropic).
-// Denne ruten returnerer en hardkodet skisse + logger til AuditLog,
-// og brukes som rask preview før coach går videre til full generering.
+// Ekte AI-plan-generator for én spiller. Bruker genererPlan() fra
+// src/lib/ai-plan/generate.ts — ikke lenger stub.
+// POST { playerId, prompt?, iterationOf?, feedback? }
 
 import { NextResponse } from "next/server";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { audit } from "@/lib/audit";
+import { genererPlan } from "@/lib/ai-plan/generate";
+
+export const runtime = "nodejs";
+export const maxDuration = 120;
 
 type Body = {
   playerId?: string;
-  fokusOmrader?: string[];
+  prompt?: string;
+  iterationOf?: string;
+  feedback?: string;
 };
 
 export async function POST(req: Request) {
-  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
   let body: Body = {};
   try {
@@ -24,35 +28,29 @@ export async function POST(req: Request) {
 
   const playerId = body.playerId?.trim();
   if (!playerId) {
-    return NextResponse.json(
-      { error: "playerId mangler." },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "playerId mangler." }, { status: 400 });
   }
 
-  const fokus =
-    body.fokusOmrader && body.fokusOmrader.length > 0
-      ? body.fokusOmrader.join(", ")
-      : "putting under 3m, wedge-distansekontroll, mental rutine";
+  const brukerPrompt =
+    body.prompt?.trim() ||
+    "Lag en 4-ukers treningsplan tilpasset spillerens nivå og tilgjengelige fasiliteter.";
 
-  const suggestion =
-    `6-ukers progresjonsplan med fokus på ${fokus}. ` +
-    `4 økter per uke (75 min): 2 tekniske, 1 spilløkt på korthullsbane, ` +
-    `1 mental/restitusjon. Uke 1-2 etablering, uke 3-4 progresjon, ` +
-    `uke 5 turnerings-simulering, uke 6 tapering. ` +
-    `Måling via SG-test før og etter.`;
+  try {
+    const resultat = await genererPlan({
+      userId: playerId,
+      coachId: coach.id,
+      brukerPrompt,
+      iterationOf: body.iterationOf,
+      feedback: body.feedback,
+    });
 
-  await audit({
-    actorId: user.id,
-    action: "agent.ai-plan.generated",
-    target: playerId,
-    metadata: {
-      playerId,
-      fokusOmrader: body.fokusOmrader ?? null,
-      suggestion,
-      stub: true,
-    },
-  });
-
-  return NextResponse.json({ suggestion });
+    return NextResponse.json({
+      generationId: resultat.generationId,
+      templateId: resultat.templateId,
+      forslag: resultat.forslag,
+    });
+  } catch (err) {
+    const melding = err instanceof Error ? err.message : "Ukjent feil";
+    return NextResponse.json({ error: melding }, { status: 500 });
+  }
 }

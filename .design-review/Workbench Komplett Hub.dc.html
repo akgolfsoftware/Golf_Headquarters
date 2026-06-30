@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:ital,wght@0,500;0,600;0,700;1,500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="ds/tokens.css">
+  <style>
+    *{box-sizing:border-box;}
+    body{margin:0;font-family:var(--sans);-webkit-font-smoothing:antialiased;background:#07100C;}
+    .scope{min-height:100vh;background:var(--t-bg);color:#eaf3ee;position:relative;}
+    .scope::before{content:"";position:fixed;inset:0;background-image:linear-gradient(rgba(180,225,195,.032) 1px,transparent 1px),linear-gradient(90deg,rgba(180,225,195,.032) 1px,transparent 1px);background-size:32px 32px;pointer-events:none;z-index:0;}
+    .mono{font-family:var(--mono);font-variant-numeric:tabular-nums;}
+    /* topbar */
+    .topbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:0;background:var(--t-bg-1);border-bottom:1px solid var(--t-line-2);height:52px;padding:0 22px;}
+    .logo{height:20px;margin-right:14px;}
+    .wb-label{font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--lime);margin-right:20px;}
+    /* scope pill */
+    .scope-pill{display:inline-flex;align-items:center;gap:8px;background:var(--t-bg-3);border:1px solid var(--t-line-2);border-radius:var(--r-full);padding:5px 12px 5px 6px;cursor:pointer;}
+    .av{width:26px;height:26px;border-radius:50%;background:var(--forest-deep);color:var(--lime);font-family:var(--mono);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none;}
+    /* tabs */
+    .tabs{display:flex;gap:2px;margin-left:22px;}
+    .tab{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:7px 14px;border-radius:var(--r-full);cursor:pointer;color:var(--t-fg-3);border:none;background:transparent;transition:all .12s;}
+    .tab:hover{color:#cfe8d8;background:var(--t-bg-3);}
+    .tab.on{background:var(--lime);color:var(--forest-deep);font-weight:700;}
+    .tab-sep{width:1px;height:20px;background:var(--t-line-2);margin:0 6px;align-self:center;}
+    /* back chips */
+    .back-chips{display:flex;gap:6px;margin-left:auto;}
+    .bchip{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:5px 10px;border-radius:var(--r-full);border:1px solid var(--t-line-2);background:var(--t-bg-3);color:#cfe8d8;cursor:pointer;display:flex;align-items:center;gap:5px;transition:border-color .12s;}
+    .bchip:hover{border-color:var(--lime);color:var(--lime);}
+    /* content */
+    .content{position:relative;z-index:1;max-width:1320px;margin:0 auto;padding:24px 24px 60px;}
+    /* cards */
+    .card{background:var(--t-bg-2);border:1px solid var(--t-line-2);border-radius:8px;}
+    .klab{font-family:var(--mono);font-size:8.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t-fg-3);}
+    /* bars */
+    .bar{height:7px;border-radius:4px;background:var(--t-bg-4);overflow:hidden;}
+    .bfill{height:100%;border-radius:4px;animation:grow .9s cubic-bezier(.2,.7,.3,1) both;}
+    @keyframes grow{from{width:0 !important;}}
+    /* progress row */
+    .prow{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--t-line-soft);}
+    /* pill */
+    .pill{font-family:var(--mono);font-size:8.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border-radius:999px;padding:3px 8px;}
+    /* btn */
+    .btn-lime{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:var(--lime);color:var(--forest-deep);border:none;border-radius:var(--r-full);padding:9px 16px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+    .btn-ghost{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:var(--t-bg-3);border:1px solid var(--t-line-2);color:#cfe8d8;border-radius:var(--r-full);padding:8px 14px;cursor:pointer;}
+    /* template card */
+    .tcard{background:var(--t-bg-2);border:1px solid var(--t-line-2);border-radius:8px;padding:15px;cursor:pointer;transition:border-color .13s,transform .13s;}
+    .tcard:hover{border-color:rgba(209,248,67,.3);transform:translateY(-2px);}
+    /* gantt */
+    .gbar{height:30px;border-radius:5px;display:flex;align-items:center;padding:0 10px;cursor:pointer;border:1px solid rgba(255,255,255,.1);}
+    .gname{font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;color:rgba(255,255,255,.88);}
+    /* week */
+    .wday{border-right:1px solid var(--t-line-soft);padding:10px 10px 14px;}
+    .wday:last-child{border-right:none;}
+    .whead{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t-fg-3);margin-bottom:8px;}
+    .wokt{background:var(--t-bg-3);border:1px solid var(--t-line-2);border-radius:5px;padding:8px 9px;margin-bottom:6px;cursor:pointer;}
+    .wokt.coach{border-color:rgba(209,248,67,.35);background:rgba(209,248,67,.06);}
+    /* drill */
+    .drill{display:flex;align-items:flex-start;gap:11px;padding:11px 14px;border-bottom:1px solid var(--t-line-soft);}
+    .drill:last-child{border-bottom:none;}
+    @media(max-width:900px){.content{padding:16px;} .tabs{gap:1px;} .tab{padding:6px 10px;font-size:9.5px;}}
+    @media(prefers-reduced-motion:reduce){.bfill{animation:none !important;}}
+  </style>
+</helmet>
+
+<div class="scope">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <img src="images/ak-logo-on-dark.svg" alt="AK Golf" class="logo">
+    <span class="wb-label">Workbench</span>
+
+    <!-- scope pill -->
+    <div class="scope-pill">
+      <span class="av">ØR</span>
+      <span style="font-size:12px;font-weight:600;color:#eaf3ee;">Øyvind Rohjan</span>
+      <span class="mono" style="font-size:9px;color:var(--lime);">HCP 4,2</span>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--t-fg-3)" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+    </div>
+
+    <!-- tabs -->
+    <div class="tabs">
+      <sc-for list="{{ mainTabs }}" as="t" hint-placeholder-count="3">
+        <sc-if value="{{ t.sep }}" hint-placeholder-val="{{ false }}"><div class="tab-sep"></div></sc-if>
+        <button class="tab {{ t.cls }}" onClick="{{ t.pick }}">{{ t.label }}</button>
+      </sc-for>
+    </div>
+
+    <!-- back chips -->
+    <div class="back-chips">
+      <sc-for list="{{ backChips }}" as="b" hint-placeholder-count="3">
+        <span class="bchip">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg>
+          {{ b.label }}
+        </span>
+      </sc-for>
+      <span class="bchip" style="border-color:rgba(209,248,67,.3);color:var(--lime);">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        Lagret automatisk
+      </span>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ═══════════════ TAB: TEKNISK PLAN ═══════════════ -->
+    <sc-if value="{{ isTek }}" hint-placeholder-val="{{ true }}">
+      <div style="display:grid;grid-template-columns:320px 1fr 280px;gap:20px;">
+
+        <!-- left: focus areas -->
+        <div>
+          <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;">
+            <span style="font-family:var(--disp);font-size:18px;font-weight:700;color:#eaf3ee;">Teknisk plan</span>
+            <button class="btn-lime" style="font-size:9px;padding:6px 12px;">+ Legg til område</button>
+          </div>
+          <div class="card" style="overflow:hidden;margin-bottom:14px;">
+            <div style="padding:12px 14px;border-bottom:1px solid var(--t-line-2);display:flex;align-items:center;justify-content:space-between;">
+              <span class="klab">Fokusområder · prioritert</span>
+              <span class="mono" style="font-size:9px;color:var(--t-fg-3);">4 aktive</span>
+            </div>
+            <sc-for list="{{ focusAreas }}" as="a" hint-placeholder-count="4">
+              <div onClick="{{ a.pick }}" style="padding:12px 14px;border-bottom:1px solid var(--t-line-soft);cursor:pointer;background:{{ a.bg }};transition:background .12s;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;">
+                  <div style="display:flex;align-items:center;gap:8px;">
+                    <span style="width:18px;height:18px;border-radius:4px;background:{{ a.numBg }};color:var(--forest-deep);font-family:var(--mono);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none;">{{ a.n }}</span>
+                    <span style="font-size:12.5px;font-weight:600;color:#eaf3ee;">{{ a.name }}</span>
+                  </div>
+                  <span class="pill" style="background:{{ a.statusBg }};color:{{ a.statusC }};">{{ a.status }}</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:9px;">
+                  <div style="flex:1;" class="bar"><div class="bfill" style="width:{{ a.prog }}%;background:{{ a.pc }};"></div></div>
+                  <span class="mono" style="font-size:10px;font-weight:600;color:{{ a.pc }};">{{ a.prog }} %</span>
+                </div>
+                <div class="mono" style="font-size:9px;color:var(--t-fg-3);margin-top:5px;">SG kobling: {{ a.sg }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <!-- SG-kobling summary -->
+          <div class="card" style="padding:13px 14px;">
+            <div class="klab" style="margin-bottom:10px;">Forventet SG-gevinst ved gjennomføring</div>
+            <sc-for list="{{ sgGain }}" as="g" hint-placeholder-count="3">
+              <div class="prow">
+                <span style="font-size:11.5px;color:#cfe8d8;flex:1;">{{ g.cat }}</span>
+                <span class="mono" style="font-size:11px;font-weight:600;color:var(--lime);">{{ g.gain }}</span>
+              </div>
+            </sc-for>
+            <div style="margin-top:10px;padding:10px;background:rgba(209,248,67,.06);border:1px solid rgba(209,248,67,.2);border-radius:6px;">
+              <div class="mono" style="font-size:9px;color:var(--lime);">TOTAL GEVINST VED PLANOVERHOLDELSE</div>
+              <div class="mono" style="font-size:22px;font-weight:700;color:var(--lime);line-height:1.1;margin-top:4px;">+1,4 <span style="font-size:12px;color:#cfe8d8;">slag per runde</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- center: active focus detail -->
+        <div>
+          <div class="card" style="margin-bottom:16px;overflow:hidden;">
+            <div style="padding:14px 16px;border-bottom:1px solid var(--t-line-2);display:flex;align-items:center;justify-content:space-between;">
+              <div>
+                <div class="klab" style="margin-bottom:4px;">Prioritet 1 · Aktivt fokus</div>
+                <span style="font-family:var(--disp);font-size:17px;font-weight:700;color:#eaf3ee;">Nærspill rundt green</span>
+              </div>
+              <span class="pill" style="background:rgba(209,248,67,.12);color:var(--lime);">I GANG</span>
+            </div>
+            <!-- TrackMan targets -->
+            <div style="padding:14px 16px;border-bottom:1px solid var(--t-line-2);">
+              <div class="klab" style="margin-bottom:10px;">TrackMan-mål · dette fokusområdet</div>
+              <sc-for list="{{ tmTargets }}" as="t" hint-placeholder-count="3">
+                <div class="prow">
+                  <span style="font-size:12px;color:#cfe8d8;width:160px;flex:none;">{{ t.name }}</span>
+                  <div style="flex:1;" class="bar">
+                    <div class="bfill" style="width:{{ t.pct }}%;background:linear-gradient(90deg,#56C59A,var(--lime));"></div>
+                  </div>
+                  <span class="mono" style="font-size:10.5px;font-weight:600;color:{{ t.col }};min-width:70px;text-align:right;">{{ t.now }} / {{ t.maal }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <!-- P1-P10 stability -->
+            <div style="padding:14px 16px;border-bottom:1px solid var(--t-line-2);">
+              <div class="klab" style="margin-bottom:10px;">Svingposisjon · stabilitet P1–P10</div>
+              <div style="display:flex;align-items:flex-end;gap:4px;height:68px;margin-bottom:6px;">
+                <sc-for list="{{ pPos }}" as="p" hint-placeholder-count="10">
+                  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:3px;">
+                    <div class="bfill" style="width:100%;height:{{ p.h }};background:{{ p.c }};border-radius:2px 2px 0 0;"></div>
+                    <span class="mono" style="font-size:7.5px;color:var(--t-fg-3);">{{ p.l }}</span>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="font-size:11px;color:var(--t-fg-2);background:var(--t-bg-3);border-radius:5px;padding:8px 10px;"><strong style="color:var(--lime);">P5–P6 (nedsving)</strong> er minst stabil — konsentrer drills her for raskest SG-gevinst.</div>
+            </div>
+            <!-- drills -->
+            <div style="padding:12px 0;">
+              <div class="klab" style="padding:0 16px;margin-bottom:8px;">Tildelte drills · uke 25</div>
+              <sc-for list="{{ drills }}" as="d" hint-placeholder-count="3">
+                <div class="drill">
+                  <span style="width:22px;height:22px;border-radius:50%;background:{{ d.doneBg }};color:{{ d.doneC }};font-family:var(--mono);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none;margin-top:1px;">{{ d.doneIcon }}</span>
+                  <div style="flex:1;min-width:0;">
+                    <div style="font-size:12.5px;font-weight:600;color:#eaf3ee;">{{ d.name }}</div>
+                    <div class="mono" style="font-size:10px;color:var(--t-fg-3);margin-top:2px;">{{ d.detail }}</div>
+                  </div>
+                  <span class="pill" style="background:{{ d.catBg }};color:{{ d.catC }};">{{ d.cat }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+
+        <!-- right: coach notes + history -->
+        <div>
+          <div class="card" style="padding:14px;margin-bottom:14px;">
+            <div class="klab" style="margin-bottom:10px;">Coach · Anders Kristiansen</div>
+            <div style="font-size:12.5px;line-height:1.6;color:#cfe8d8;border-left:2px solid var(--lime);padding-left:10px;margin-bottom:12px;">"Nærspillsarbeidet begynner å vise seg i tallene. Hold trykket på P5–P6-drillene — det er der vi henter de neste 0,3 slagene."</div>
+            <div class="mono" style="font-size:9px;color:var(--t-fg-3);">Uke 25 · 17. juni 2026</div>
+          </div>
+          <div class="card" style="overflow:hidden;">
+            <div style="padding:11px 14px;border-bottom:1px solid var(--t-line-2);">
+              <div class="klab">Historikk · SG ARG siste 6 uker</div>
+            </div>
+            <div style="padding:13px 14px;">
+              <sc-for list="{{ history }}" as="h" hint-placeholder-count="6">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                  <span class="mono" style="font-size:9px;color:var(--t-fg-3);width:44px;flex:none;">{{ h.uke }}</span>
+                  <div style="flex:1;height:5px;border-radius:3px;background:var(--t-bg-4);overflow:hidden;"><div class="bfill" style="width:{{ h.pct }}%;background:{{ h.c }};height:100%;border-radius:3px;"></div></div>
+                  <span class="mono" style="font-size:10px;font-weight:600;color:{{ h.c }};width:36px;text-align:right;">{{ h.val }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <button class="btn-lime" style="width:100%;margin-top:12px;justify-content:center;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            Gå til økt med dette fokus
+          </button>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ═══════════════ TAB: SESONGMÅL ═══════════════ -->
+    <sc-if value="{{ isSeson }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid;grid-template-columns:1fr 360px;gap:20px;">
+        <div>
+          <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px;">
+            <span style="font-family:var(--disp);font-size:18px;font-weight:700;color:#eaf3ee;">Sesongmål 2026</span>
+            <button class="btn-lime" style="font-size:9px;padding:6px 12px;">+ Nytt mål</button>
+          </div>
+
+          <!-- hero goal -->
+          <div style="background:linear-gradient(150deg,var(--forest),var(--forest-deep));border:1px solid rgba(209,248,67,.2);border-radius:10px;padding:20px 22px;margin-bottom:16px;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(180,225,195,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(180,225,195,.04) 1px,transparent 1px);background-size:28px 28px;"></div>
+            <div style="position:relative;display:flex;align-items:flex-start;justify-content:space-between;">
+              <div>
+                <div class="klab" style="color:var(--lime);margin-bottom:8px;">Primærmål · HCP-reduksjon</div>
+                <div style="display:flex;align-items:baseline;gap:16px;">
+                  <div class="mono" style="font-size:42px;font-weight:700;color:#fff;line-height:1;">4,2</div>
+                  <div style="display:flex;flex-direction:column;align-items:center;">
+                    <svg width="28" height="16" viewBox="0 0 28 16" fill="none"><path d="M4 8h20M18 3l6 5-6 5" stroke="var(--lime)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span class="mono" style="font-size:8px;color:rgba(255,255,255,.5);margin-top:2px;">mål okt</span>
+                  </div>
+                  <div class="mono" style="font-size:42px;font-weight:700;color:var(--lime);line-height:1;">3,5</div>
+                </div>
+                <div style="font-size:12px;color:rgba(255,255,255,.6);margin-top:8px;">−0,7 handicap slag · innen 31. oktober 2026</div>
+              </div>
+              <div style="text-align:right;">
+                <div class="klab" style="color:var(--lime);">Fremdrift</div>
+                <div class="mono" style="font-size:28px;font-weight:700;color:#fff;line-height:1;margin-top:6px;">57 %</div>
+                <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:4px;">4 mnd igjen</div>
+              </div>
+            </div>
+            <div style="margin-top:16px;height:8px;border-radius:4px;background:rgba(255,255,255,.12);overflow:hidden;">
+              <div style="height:100%;width:57%;background:var(--lime);border-radius:4px;"></div>
+            </div>
+          </div>
+
+          <!-- milestones table -->
+          <div class="card" style="overflow:hidden;margin-bottom:16px;">
+            <div style="padding:12px 15px;border-bottom:1px solid var(--t-line-2);display:flex;align-items:center;justify-content:space-between;">
+              <span class="klab">Månedlige milepæler</span>
+              <span class="mono" style="font-size:9px;color:var(--t-fg-3);">2 av 6 nådd</span>
+            </div>
+            <sc-for list="{{ milestones }}" as="m" hint-placeholder-count="6">
+              <div style="display:flex;align-items:center;gap:14px;padding:11px 15px;border-bottom:1px solid var(--t-line-soft);">
+                <span style="width:32px;height:32px;border-radius:50%;background:{{ m.iconBg }};color:{{ m.iconC }};font-family:var(--mono);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none;">{{ m.icon }}</span>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:12.5px;font-weight:600;color:#eaf3ee;">{{ m.title }}</div>
+                  <div class="mono" style="font-size:9.5px;color:var(--t-fg-3);margin-top:2px;">{{ m.date }} · {{ m.metric }}</div>
+                </div>
+                <span class="pill" style="background:{{ m.sBg }};color:{{ m.sC }};">{{ m.status }}</span>
+              </div>
+            </sc-for>
+          </div>
+
+          <!-- key events -->
+          <div class="card" style="overflow:hidden;">
+            <div style="padding:12px 15px;border-bottom:1px solid var(--t-line-2);"><span class="klab">Nøkkelturnering-er</span></div>
+            <sc-for list="{{ events }}" as="e" hint-placeholder-count="3">
+              <div style="display:flex;align-items:center;gap:12px;padding:11px 15px;border-bottom:1px solid var(--t-line-soft);">
+                <div style="width:3px;height:36px;border-radius:2px;background:{{ e.lineC }};flex:none;"></div>
+                <div style="flex:1;">
+                  <div style="font-size:12.5px;font-weight:600;color:#eaf3ee;">{{ e.name }}</div>
+                  <div class="mono" style="font-size:9.5px;color:var(--t-fg-3);margin-top:2px;">{{ e.date }} · {{ e.sub }}</div>
+                </div>
+                <span class="pill" style="background:{{ e.sBg }};color:{{ e.sC }};">{{ e.status }}</span>
+                <button class="btn-ghost" style="font-size:9px;padding:5px 10px;">Planlegg</button>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <!-- right: SG-fremdrift -->
+        <div>
+          <div class="card" style="padding:14px;margin-bottom:14px;">
+            <div class="klab" style="margin-bottom:12px;">SG-utvikling mot sesongmål</div>
+            <sc-for list="{{ sgSesonMaal }}" as="s" hint-placeholder-count="4">
+              <div style="margin-bottom:14px;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+                  <span style="font-size:12px;color:#cfe8d8;">{{ s.cat }}</span>
+                  <span class="mono" style="font-size:10.5px;font-weight:600;color:{{ s.col }};">{{ s.val }} / {{ s.maal }}</span>
+                </div>
+                <div class="bar"><div class="bfill" style="width:{{ s.pct }}%;background:{{ s.barC }};"></div></div>
+              </div>
+            </sc-for>
+          </div>
+          <div class="card" style="padding:14px;">
+            <div class="klab" style="margin-bottom:10px;">Coach-vurdering</div>
+            <div style="font-size:12px;line-height:1.6;color:#cfe8d8;border-left:2px solid var(--lime);padding-left:10px;">"Øyvind er i rute på nærspill men trenger en ekstra innsats på putting for å nå HCP 3,5 innen oktober. Vi legger inn 2 ekstra putting-økter i august."</div>
+            <div class="mono" style="font-size:9px;color:var(--t-fg-3);margin-top:8px;">Anders Kristiansen · 17. juni 2026</div>
+            <div style="margin-top:12px;display:flex;gap:7px;">
+              <button class="btn-lime" style="flex:1;justify-content:center;font-size:9px;padding:7px;">Godkjenn plan</button>
+              <button class="btn-ghost" style="font-size:9px;padding:7px 11px;">Kommenter</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ═══════════════ TAB: MALER ═══════════════ -->
+    <sc-if value="{{ isMaler }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+          <div>
+            <span style="font-family:var(--disp);font-size:18px;font-weight:700;color:#eaf3ee;">Mal-bibliotek</span>
+            <span class="mono" style="font-size:11px;color:var(--t-fg-3);margin-left:12px;">12 maler</span>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <sc-for list="{{ malerFilters }}" as="f" hint-placeholder-count="4">
+              <button style="font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:6px 12px;border-radius:var(--r-full);border:1px solid {{ f.bc }};background:{{ f.bg }};color:{{ f.c }};cursor:pointer;">{{ f.t }}</button>
+            </sc-for>
+            <button class="btn-lime" style="font-size:9px;padding:7px 14px;">+ Ny mal</button>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;">
+          <sc-for list="{{ maler }}" as="m" hint-placeholder-count="8">
+            <div class="tcard" onClick="{{ m.apply }}">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;">
+                <span class="pill" style="background:{{ m.catBg }};color:{{ m.catC }};">{{ m.cat }}</span>
+                <span class="mono" style="font-size:11px;font-weight:600;color:var(--lime);">{{ m.score }} %</span>
+              </div>
+              <div style="font-size:14px;font-weight:700;color:#eaf3ee;margin-bottom:5px;line-height:1.2;">{{ m.name }}</div>
+              <div style="font-size:11px;line-height:1.45;color:var(--t-fg-2);margin-bottom:12px;">{{ m.desc }}</div>
+              <div style="border-top:1px solid var(--t-line-soft);padding-top:10px;display:flex;justify-content:space-between;align-items:center;">
+                <div>
+                  <div class="mono" style="font-size:9px;color:var(--t-fg-3);">{{ m.sessions }} økter · {{ m.weeks }} uker</div>
+                  <div class="mono" style="font-size:9px;color:var(--t-fg-3);margin-top:2px;">{{ m.coach }}</div>
+                </div>
+                <button class="btn-lime" style="font-size:9px;padding:6px 11px;">Bruk</button>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ═══════════════ TAB: STANDARDØKTER ═══════════════ -->
+    <sc-if value="{{ isStd }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+          <div>
+            <span style="font-family:var(--disp);font-size:18px;font-weight:700;color:#eaf3ee;">Standardøkter</span>
+            <span class="mono" style="font-size:11px;color:var(--t-fg-3);margin-left:12px;">Gjenbrukbare enkeltøkter · dra inn i ukeplan</span>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <sc-for list="{{ stdKats }}" as="f" hint-placeholder-count="5">
+              <button style="font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:6px 12px;border-radius:var(--r-full);border:1px solid {{ f.bc }};background:{{ f.bg }};color:{{ f.c }};cursor:pointer;">{{ f.t }}</button>
+            </sc-for>
+            <button class="btn-lime" style="font-size:9px;padding:7px 14px;">+ Ny standardøkt</button>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
+          <sc-for list="{{ stdOkter }}" as="s" hint-placeholder-count="6">
+            <div class="tcard" onClick="{{ s.apply }}">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;">
+                <span class="pill" style="background:{{ s.catBg }};color:{{ s.catC }};">{{ s.cat }}</span>
+                <span class="mono" style="font-size:10px;color:var(--t-fg-3);">{{ s.min }} min</span>
+              </div>
+              <div style="font-size:15px;font-weight:700;color:#eaf3ee;margin-bottom:6px;line-height:1.2;">{{ s.name }}</div>
+              <div style="font-size:11px;color:var(--t-fg-2);margin-bottom:10px;line-height:1.45;">{{ s.focus }}</div>
+              <div style="border-top:1px solid var(--t-line-soft);padding-top:10px;margin-bottom:10px;">
+                <div class="klab" style="margin-bottom:6px;">Drill-program</div>
+                <sc-for list="{{ s.drills }}" as="d" hint-placeholder-count="3">
+                  <div style="display:flex;align-items:center;gap:7px;margin-bottom:5px;">
+                    <span style="width:14px;height:14px;border-radius:50%;border:1px solid var(--t-line-2);flex:none;"></span>
+                    <span style="font-size:11px;color:#cfe8d8;">{{ d }}</span>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="border-top:1px solid var(--t-line-soft);padding-top:10px;display:flex;justify-content:space-between;align-items:center;">
+                <div>
+                  <div class="mono" style="font-size:9px;color:var(--t-fg-3);">SG: {{ s.sg }} · {{ s.frekvens }}</div>
+                </div>
+                <div style="display:flex;gap:6px;">
+                  <button class="btn-ghost" style="font-size:9px;padding:5px 10px;">Rediger</button>
+                  <button class="btn-lime" style="font-size:9px;padding:6px 11px;">Legg i plan</button>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ═══════════════ TAB: GANTT (ÅR) ═══════════════ -->
+    <sc-if value="{{ isGantt }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+          <span style="font-family:var(--disp);font-size:18px;font-weight:700;color:#eaf3ee;">Årsplan 2026</span>
+          <div style="display:flex;gap:6px;">
+            <sc-for list="{{ zoomTabs }}" as="z" hint-placeholder-count="3">
+              <button class="tab {{ z.cls }}" style="padding:6px 12px;font-size:9.5px;" onClick="{{ z.pick }}">{{ z.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+        <!-- month headers -->
+        <div class="card" style="overflow:hidden;">
+          <div style="display:flex;border-bottom:1px solid var(--t-line-2);">
+            <div style="width:160px;flex:none;padding:8px 14px;"><span class="klab">Fokusområde</span></div>
+            <sc-for list="{{ months }}" as="m" hint-placeholder-count="7">
+              <div style="flex:1;padding:8px 4px;text-align:center;border-left:1px solid var(--t-line-soft);">
+                <span class="mono" style="font-size:8.5px;font-weight:700;letter-spacing:.06em;color:{{ m.c }};">{{ m.l }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <sc-for list="{{ ganttRows }}" as="row" hint-placeholder-count="5">
+            <div style="display:flex;align-items:center;border-bottom:1px solid var(--t-line-soft);min-height:44px;">
+              <div style="width:160px;flex:none;padding:8px 14px;">
+                <div style="font-size:11.5px;font-weight:600;color:#cfe8d8;">{{ row.name }}</div>
+                <div class="mono" style="font-size:9px;color:var(--t-fg-3);">SG {{ row.sg }}</div>
+              </div>
+              <div style="flex:1;position:relative;height:44px;">
+                <sc-for list="{{ row.bars }}" as="b" hint-placeholder-count="1">
+                  <div class="gbar" style="position:absolute;top:7px;left:{{ b.left }};width:{{ b.width }};background:{{ b.bg }};border-color:{{ b.bc }};">
+                    <span class="gname" style="font-size:9px;">{{ b.label }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+          <!-- tournaments row -->
+          <div style="display:flex;align-items:center;border-top:2px solid var(--t-line-2);min-height:38px;background:var(--t-bg-3);">
+            <div style="width:160px;flex:none;padding:8px 14px;">
+              <div class="klab">Turneringer</div>
+            </div>
+            <div style="flex:1;position:relative;height:38px;">
+              <sc-for list="{{ tournBars }}" as="t" hint-placeholder-count="3">
+                <div style="position:absolute;top:6px;left:{{ t.left }};background:rgba(209,248,67,.12);border:1px solid rgba(209,248,67,.4);border-radius:4px;padding:3px 9px;white-space:nowrap;">
+                  <span class="mono" style="font-size:8.5px;font-weight:700;color:var(--lime);">{{ t.label }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ═══════════════ TAB: UKE ═══════════════ -->
+    <sc-if value="{{ isUke }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <button class="btn-ghost" style="padding:6px 10px;font-size:10px;">‹ Forrige</button>
+            <span style="font-family:var(--disp);font-size:18px;font-weight:700;color:#eaf3ee;">Uke 26 · 23–29. juni 2026</span>
+            <button class="btn-ghost" style="padding:6px 10px;font-size:10px;">Neste ›</button>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <sc-for list="{{ zoomTabs }}" as="z" hint-placeholder-count="3">
+              <button class="tab {{ z.cls }}" style="padding:6px 12px;font-size:9.5px;" onClick="{{ z.pick }}">{{ z.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div class="card" style="display:grid;grid-template-columns:repeat(7,1fr);overflow:hidden;">
+          <sc-for list="{{ weekDays }}" as="d" hint-placeholder-count="7">
+            <div class="wday" style="background:{{ d.bg }};">
+              <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px;">
+                <span class="mono" style="font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:{{ d.dc }};">{{ d.name }}</span>
+                <span class="mono" style="font-size:10px;color:{{ d.dc }};">{{ d.date }}</span>
+              </div>
+              <sc-for list="{{ d.sessions }}" as="s" hint-placeholder-count="0">
+                <div class="wokt {{ s.cls }}">
+                  <div class="mono" style="font-size:8.5px;color:var(--lime);margin-bottom:3px;">{{ s.time }}</div>
+                  <div style="font-size:11px;font-weight:600;color:#eaf3ee;line-height:1.3;">{{ s.name }}</div>
+                  <div class="mono" style="font-size:9px;color:var(--t-fg-3);margin-top:2px;">{{ s.sub }}</div>
+                </div>
+              </sc-for>
+              <sc-if value="{{ d.isEmpty }}" hint-placeholder-val="{{ false }}">
+                <div style="padding:8px 0;text-align:center;"><span class="mono" style="font-size:9px;color:var(--t-fg-3);">Fri</span></div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ═══════════════ TAB: ØKT ═══════════════ -->
+    <sc-if value="{{ isOkt }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid;grid-template-columns:1fr 360px;gap:20px;">
+        <div>
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
+            <button class="btn-ghost" style="padding:7px 13px;font-size:10px;">‹ Tilbake til Uke</button>
+            <div>
+              <div class="klab" style="margin-bottom:3px;">Økt-detalj · Ons 25. juni 2026</div>
+              <span style="font-family:var(--disp);font-size:17px;font-weight:700;color:#eaf3ee;">TrackMan-økt · Nærspill</span>
+            </div>
+            <span class="pill" style="background:rgba(209,248,67,.12);color:var(--lime);margin-left:auto;">Kommende</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;">
+            <sc-for list="{{ oktMeta }}" as="m" hint-placeholder-count="3">
+              <div class="card" style="padding:12px 14px;">
+                <div class="klab" style="margin-bottom:5px;">{{ m.label }}</div>
+                <div class="mono" style="font-size:16px;font-weight:600;color:#eaf3ee;">{{ m.val }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <div class="card" style="overflow:hidden;margin-bottom:14px;">
+            <div style="padding:12px 15px;border-bottom:1px solid var(--t-line-2);display:flex;align-items:center;justify-content:space-between;">
+              <span class="klab">Drill-program</span>
+              <span class="mono" style="font-size:9px;color:var(--t-fg-3);">0 / 3 fullført</span>
+            </div>
+            <sc-for list="{{ oktDrills }}" as="d" hint-placeholder-count="3">
+              <div class="drill">
+                <span style="width:24px;height:24px;border-radius:50%;background:var(--t-bg-4);border:1.5px solid var(--t-line-2);color:var(--t-fg-3);font-family:var(--mono);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none;">{{ d.n }}</span>
+                <div style="flex:1;">
+                  <div style="font-size:13px;font-weight:600;color:#eaf3ee;">{{ d.name }}</div>
+                  <div class="mono" style="font-size:10px;color:var(--t-fg-3);margin-top:2px;">{{ d.reps }} · {{ d.focus }}</div>
+                </div>
+                <button class="btn-ghost" style="font-size:9px;padding:5px 11px;">Start</button>
+              </div>
+            </sc-for>
+          </div>
+          <button class="btn-lime" style="width:100%;justify-content:center;padding:14px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Start økt nå
+          </button>
+        </div>
+        <div>
+          <div class="card" style="padding:14px;margin-bottom:14px;">
+            <div class="klab" style="margin-bottom:10px;">Coach-notat · før økt</div>
+            <div style="font-size:12.5px;line-height:1.6;color:#cfe8d8;border-left:2px solid var(--lime);padding-left:10px;">"Fokus på konsistens, ikke avstand. 50 slag med 60-64 grader — mål er 85 % kontakt i sweet-spot-sonen. Ta bilde av dispersjon før og etter."</div>
+            <div class="mono" style="font-size:9px;color:var(--t-fg-3);margin-top:8px;">Anders Kristiansen · 24. juni 2026</div>
+          </div>
+          <div class="card" style="padding:14px;">
+            <div class="klab" style="margin-bottom:10px;">SG-kobling · denne økten</div>
+            <div style="font-size:12px;color:#cfe8d8;margin-bottom:10px;line-height:1.5;">Drillene her er direkte koblet til <strong style="color:#eaf3ee;">SG ARG (nærspill)</strong> — din svakeste kategori. Gjennomfører du denne økten er forventet SG-forbedring:</div>
+            <div style="background:rgba(209,248,67,.06);border:1px solid rgba(209,248,67,.2);border-radius:6px;padding:12px;">
+              <div class="klab" style="color:var(--lime);margin-bottom:6px;">Forventet SG-gevinst</div>
+              <div class="mono" style="font-size:24px;font-weight:700;color:var(--lime);">+0,08 <span style="font-size:12px;color:#cfe8d8;">slag per runde</span></div>
+              <div class="mono" style="font-size:9px;color:var(--t-fg-3);margin-top:4px;">Basert på siste 14 dagers trening</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: 'tek', zoom: 'gantt' };
+
+  renderVals() {
+    const { tab, zoom } = this.state;
+    const setTab = t => () => this.setState({ tab: t });
+    const setZoom = z => () => this.setState({ zoom: z, tab: z });
+
+    const mainTabs = [
+      { label: 'Teknisk plan', key: 'tek', sep: false },
+      { label: 'Sesongmål', key: 'seson', sep: false },
+      { label: 'Maler', key: 'maler', sep: false },
+      { label: 'Standardøkter', key: 'std', sep: false },
+      { label: 'Gantt (År)', key: 'gantt', sep: true },
+      { label: 'Uke', key: 'uke', sep: false },
+      { label: 'Økt', key: 'okt', sep: false },
+    ].map(t => ({ ...t, cls: t.key === tab ? 'on' : '', pick: setTab(t.key) }));
+
+    const backChips = [
+      { label: 'Dashboard' },
+      { label: 'Analyse' },
+      { label: 'Mål-hub' },
+    ];
+
+    // ── TEKNISK PLAN ──
+    const focusAreas = [
+      { n: '1', name: 'Nærspill rundt green', prog: 52, status: 'I gang', sg: 'ARG', pc: 'var(--lime)', numBg: 'var(--lime)', statusBg: 'rgba(209,248,67,.12)', statusC: 'var(--lime)' },
+      { n: '2', name: 'Putting 2–5 m', prog: 34, status: 'Planlagt', sg: 'PUTT', pc: '#56C59A', numBg: '#56C59A', statusBg: 'rgba(86,197,154,.12)', statusC: '#56C59A' },
+      { n: '3', name: 'Utslag — spredning', prog: 68, status: 'I gang', sg: 'OTT', pc: 'var(--lime)', numBg: 'var(--lime)', statusBg: 'rgba(209,248,67,.12)', statusC: 'var(--lime)' },
+      { n: '4', name: 'Innspill — nøyaktighet', prog: 80, status: 'Avsluttet', sg: 'APP', pc: '#56C59A', numBg: '#56C59A', statusBg: 'rgba(0,88,64,.3)', statusC: '#56C59A' },
+    ].map((a, i) => ({ ...a, bg: i === 0 ? 'rgba(209,248,67,.04)' : 'transparent', pick: () => {} }));
+
+    const tmTargets = [
+      { name: 'Kontakt-sone', now: '72 %', maal: '85 %', pct: 72 / 85 * 100, col: '#cfe8d8' },
+      { name: 'Høydepunkt', now: '4,8 m', maal: '3,5 m', pct: 62, col: '#F2C063' },
+      { name: 'Sidevariasjon', now: '2,1 m', maal: '1,5 m', pct: 58, col: '#F2C063' },
+    ];
+
+    const pPos = [
+      { l: 'P1', h: '72%', c: 'var(--lime)', v: '8' },
+      { l: 'P2', h: '66%', c: 'var(--lime)', v: '7' },
+      { l: 'P3', h: '60%', c: '#56C59A', v: '7' },
+      { l: 'P4', h: '55%', c: '#56C59A', v: '6' },
+      { l: 'P5', h: '32%', c: '#F2908C', v: '4' },
+      { l: 'P6', h: '28%', c: '#F2908C', v: '3' },
+      { l: 'P7', h: '50%', c: '#F2C063', v: '6' },
+      { l: 'P8', h: '65%', c: '#56C59A', v: '7' },
+      { l: 'P9', h: '70%', c: 'var(--lime)', v: '8' },
+      { l: 'P10', h: '74%', c: 'var(--lime)', v: '8' },
+    ];
+
+    const drills = [
+      { name: 'Chip til mål — 5 m', detail: '50 slag · 60–64°-jernslag · sweetspot-fokus', cat: 'CHIP', catBg: 'rgba(209,248,67,.12)', catC: 'var(--lime)', doneIcon: '✓', doneBg: 'rgba(209,248,67,.2)', doneC: 'var(--lime)' },
+      { name: 'Bunker til 3 m', detail: '30 slag · eksplosiv kontakt · åpen face', cat: 'BUNKER', catBg: 'rgba(86,197,154,.12)', catC: '#56C59A', doneIcon: '2', doneBg: 'var(--t-bg-4)', doneC: 'var(--t-fg-3)' },
+      { name: 'Putting stretch — 4–6 m', detail: '20 slag · 2 av 3 innenfor 60 cm', cat: 'PUTT', catBg: 'rgba(86,197,154,.12)', catC: '#56C59A', doneIcon: '3', doneBg: 'var(--t-bg-4)', doneC: 'var(--t-fg-3)' },
+    ];
+
+    const sgGain = [
+      { cat: 'SG ARG (nærspill)', gain: '+0,4' },
+      { cat: 'SG PUTT (putting)', gain: '+0,3' },
+      { cat: 'SG OTT (utslag)', gain: '+0,3' },
+      { cat: 'SG APP (innspill)', gain: '+0,4' },
+    ];
+
+    const history = [
+      { uke: 'Uke 19', val: '−0,7', pct: 22, c: '#F2908C' },
+      { uke: 'Uke 20', val: '−0,6', pct: 28, c: '#F2908C' },
+      { uke: 'Uke 21', val: '−0,5', pct: 38, c: '#F2C063' },
+      { uke: 'Uke 22', val: '−0,4', pct: 50, c: '#F2C063' },
+      { uke: 'Uke 23', val: '−0,3', pct: 65, c: '#56C59A' },
+      { uke: 'Uke 24', val: '−0,4', pct: 50, c: '#F2C063' },
+    ];
+
+    // ── SESONGMÅL ──
+    const milestones = [
+      { icon: '✓', iconBg: 'rgba(209,248,67,.2)', iconC: 'var(--lime)', title: 'HCP under 4,5 nådd', date: 'Juni 2026', metric: 'HCP 4,2', status: 'Nådd', sBg: 'rgba(209,248,67,.15)', sC: 'var(--lime)' },
+      { icon: '✓', iconBg: 'rgba(209,248,67,.2)', iconC: 'var(--lime)', title: '10 runder logget med SG', date: 'Mai 2026', metric: '12 runder', status: 'Nådd', sBg: 'rgba(209,248,67,.15)', sC: 'var(--lime)' },
+      { icon: 'Jul', iconBg: 'var(--t-bg-4)', iconC: '#cfe8d8', title: 'SG ARG positivt', date: 'Juli 2026', metric: 'Mål: > 0', status: 'I rute', sBg: 'rgba(86,197,154,.12)', sC: '#56C59A' },
+      { icon: 'Aug', iconBg: 'var(--t-bg-4)', iconC: '#cfe8d8', title: 'Top 20 NM Amateur', date: 'Aug 2026', metric: 'Turnering', status: 'Kommende', sBg: 'var(--t-bg-3)', sC: 'var(--t-fg-3)' },
+      { icon: 'Sep', iconBg: 'var(--t-bg-4)', iconC: '#cfe8d8', title: 'HCP under 4,0', date: 'Sep 2026', metric: 'Mål: 3,8', status: 'Kommende', sBg: 'var(--t-bg-3)', sC: 'var(--t-fg-3)' },
+      { icon: 'Okt', iconBg: 'var(--t-bg-4)', iconC: '#cfe8d8', title: 'HCP 3,5 — primærmål', date: 'Okt 2026', metric: 'Mål: 3,5', status: 'Primærmål', sBg: 'rgba(209,248,67,.08)', sC: 'var(--lime)' },
+    ];
+
+    const events = [
+      { name: 'NM Amateur', date: '18–21. aug', sub: 'Losby GK', status: 'Påmeldt', sBg: 'rgba(86,197,154,.12)', sC: '#56C59A', lineC: 'var(--lime)' },
+      { name: 'Klubbmesterskap', date: '6. sep', sub: 'Onsøy GK', status: 'Planlagt', sBg: 'var(--t-bg-3)', sC: 'var(--t-fg-3)', lineC: '#56C59A' },
+      { name: 'Challenge Tour Q-school', date: '15. nov', sub: 'Wildcard-forsøk', status: 'Vurderes', sBg: 'rgba(242,192,99,.12)', sC: '#F2C063', lineC: '#F2C063' },
+    ];
+
+    const sgSesonMaal = [
+      { cat: 'SG ARG (nærspill)', val: '−0,4', maal: '+0,2', pct: 40, col: '#F2C063', barC: '#F2C063' },
+      { cat: 'SG PUTT (putting)', val: '+0,6', maal: '+0,8', pct: 75, col: 'var(--lime)', barC: 'var(--lime)' },
+      { cat: 'SG OTT (utslag)', val: '+0,7', maal: '+0,9', pct: 78, col: 'var(--lime)', barC: 'var(--lime)' },
+      { cat: 'SG APP (innspill)', val: '+0,9', maal: '+1,0', pct: 90, col: 'var(--lime)', barC: 'var(--lime)' },
+    ];
+
+    // ── MALER ──
+    const malerFilters = [
+      { t: 'Alle', bg: 'var(--lime)', c: 'var(--forest-deep)', bc: 'var(--lime)' },
+      { t: 'Nærspill', bg: 'transparent', c: '#cfe8d8', bc: 'var(--t-line-2)' },
+      { t: 'Putting', bg: 'transparent', c: '#cfe8d8', bc: 'var(--t-line-2)' },
+      { t: 'Full sesong', bg: 'transparent', c: '#cfe8d8', bc: 'var(--t-line-2)' },
+    ];
+
+    const maler = [
+      { name: 'Nærspill Intensiv', desc: '4-ukers intensiv rundt green. P5–P6-fokus, bunker og chip.', cat: 'NÆRSPILL', catBg: 'rgba(209,248,67,.12)', catC: 'var(--lime)', score: 94, sessions: 12, weeks: 4, coach: 'Anders K.' },
+      { name: 'Putting Fundamentals', desc: '3-ukers grunnleggende putting — linje, tempo og 2-m-sone.', cat: 'PUTTING', catBg: 'rgba(86,197,154,.12)', catC: '#56C59A', score: 88, sessions: 9, weeks: 3, coach: 'Anders K.' },
+      { name: 'TrackMan-intensiv', desc: 'Data-drevet sesong med ukentlig trackman-logging og gapping.', cat: 'FULLSPILL', catBg: 'rgba(86,197,154,.12)', catC: '#56C59A', score: 91, sessions: 16, weeks: 8, coach: 'Anders K.' },
+      { name: 'Sesongstart', desc: 'Gradvis oppbygging etter vinter. Styrke + teknisk grunnarbeid.', cat: 'SESONG', catBg: 'rgba(242,192,99,.12)', catC: '#F2C063', score: 85, sessions: 20, weeks: 8, coach: 'Anders K.' },
+      { name: 'Turneringspeaking', desc: '2-ukers toppform-program før nøkkelturnering. Lite volum, høy intensitet.', cat: 'TURNERING', catBg: 'rgba(209,248,67,.12)', catC: 'var(--lime)', score: 90, sessions: 6, weeks: 2, coach: 'Anders K.' },
+      { name: 'Utslag Kontroll', desc: 'Treffsikkerhet fra tee — fairway % og spredningsreduksjon.', cat: 'UTSLAG', catBg: 'rgba(86,197,154,.12)', catC: '#56C59A', score: 86, sessions: 10, weeks: 4, coach: 'Anders K.' },
+      { name: 'Full Sesong PRO', desc: 'Komplett 16-ukers sesong med alle kategorier + mentalt spill.', cat: 'FULLSPILL', catBg: 'rgba(242,192,99,.12)', catC: '#F2C063', score: 97, sessions: 48, weeks: 16, coach: 'Anders K.' },
+      { name: 'Rask Forbedring', desc: 'Fire-ukers quick-win program. Identifiserer og lukker største gap.', cat: 'NÆRSPILL', catBg: 'rgba(209,248,67,.12)', catC: 'var(--lime)', score: 82, sessions: 8, weeks: 4, coach: 'Anders K.' },
+    ].map(m => ({ ...m, apply: () => {} }));
+
+    // ── STANDARDØKTER ──
+    const stdKats = [
+      { t: 'Alle', bg: 'var(--lime)', c: 'var(--forest-deep)', bc: 'var(--lime)' },
+      { t: 'Nærspill', bg: 'transparent', c: '#cfe8d8', bc: 'var(--t-line-2)' },
+      { t: 'Putting', bg: 'transparent', c: '#cfe8d8', bc: 'var(--t-line-2)' },
+      { t: 'Utslag', bg: 'transparent', c: '#cfe8d8', bc: 'var(--t-line-2)' },
+      { t: 'Full runde', bg: 'transparent', c: '#cfe8d8', bc: 'var(--t-line-2)' },
+    ];
+    const stdOkter = [
+      { name: 'Chip & Pitch intensiv', cat: 'NÆRSPILL', catBg: 'rgba(209,248,67,.12)', catC: 'var(--lime)', min: 45, focus: 'P5–P6 kontakt · sweetspot-rate ≥ 85 %', drills: ['50 chip til mål 5m', '30 pitch 10–15m', '20 bunker'], sg: 'ARG', frekvens: '2× / uke' },
+      { name: 'Putting fundamentals', cat: 'PUTTING', catBg: 'rgba(86,197,154,.12)', catC: '#56C59A', min: 30, focus: 'Linje + tempo · 2-m-sone', drills: ['20 × 2 m gate-drill', '15 × 5 m linjefokus', '10 × lag-putt'], sg: 'PUTT', frekvens: '3× / uke' },
+      { name: 'Driver kontroll', cat: 'UTSLAG', catBg: 'rgba(86,197,154,.12)', catC: '#56C59A', min: 60, focus: 'Fairway-% · spredningsreduksjon', drills: ['30 × halv swing inngroving', '20 × fulle slag med target', '10 × fade/draw-drill'], sg: 'OTT', frekvens: '1× / uke' },
+      { name: 'TrackMan-analyse', cat: 'UTSLAG', catBg: 'rgba(86,197,154,.12)', catC: '#56C59A', min: 45, focus: 'Gapping · Club path · Face angle', drills: ['Gapping alle jernslag', 'Dispersjon-kart driver', 'Club path-korrektur'], sg: 'OTT', frekvens: '1× / 2 uker' },
+      { name: 'Jernspill nøyaktighet', cat: 'NÆRSPILL', catBg: 'rgba(209,248,67,.12)', catC: 'var(--lime)', min: 60, focus: 'Avstandskontroll 100–150 m · venstre/høyre dispersion', drills: ['30 × 100m target', '30 × 130m target', '20 × random avstand'], sg: 'APP', frekvens: '2× / uke' },
+      { name: 'On-course 9 hull', cat: 'FULL RUNDE', catBg: 'rgba(242,192,99,.12)', catC: '#F2C063', min: 120, focus: 'Spill-strategi + SG-logging', drills: ['SG per slag logges', 'Beslutningstaking dokumenteres', 'Coach-rapport etter'], sg: 'Alle', frekvens: '1× / uke' },
+    ].map(s => ({ ...s, apply: () => {} }));
+
+    // ── GANTT ──
+    const months = ['Jan','Feb','Mar','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Des']
+      .map((l, i) => ({ l, c: i === 5 ? 'var(--lime)' : 'var(--t-fg-3)' }));
+
+    const ganttRows = [
+      { name: 'Nærspill', sg: 'ARG', bars: [{ left: '41.7%', width: '25%', bg: 'rgba(209,248,67,.18)', bc: 'rgba(209,248,67,.4)', label: 'Intensiv P1' }] },
+      { name: 'Putting', sg: 'PUTT', bars: [{ left: '33.3%', width: '16.7%', bg: 'rgba(86,197,154,.16)', bc: 'rgba(86,197,154,.4)', label: 'Fundamentals' }, { left: '58.3%', width: '16.7%', bg: 'rgba(86,197,154,.16)', bc: 'rgba(86,197,154,.4)', label: 'Pre-turn.' }] },
+      { name: 'Utslag', sg: 'OTT', bars: [{ left: '8.3%', width: '25%', bg: 'rgba(209,248,67,.12)', bc: 'rgba(209,248,67,.3)', label: 'Kontroll' }] },
+      { name: 'Innspill', sg: 'APP', bars: [{ left: '25%', width: '16.7%', bg: 'rgba(86,197,154,.12)', bc: 'rgba(86,197,154,.3)', label: 'Innspill' }] },
+      { name: 'FYS', sg: '—', bars: [{ left: '0%', width: '33.3%', bg: 'rgba(242,192,99,.1)', bc: 'rgba(242,192,99,.3)', label: 'Styrkebase' }] },
+    ];
+
+    const tournBars = [
+      { left: '60%', label: 'NM AMATEUR' },
+      { left: '67%', label: 'KLUBBMEST.' },
+      { left: '87%', label: 'Q-SCHOOL' },
+    ];
+
+    // ── UKE ──
+    const mkSessions = sessions => sessions;
+    const weekDays = [
+      { name: 'Man', date: '23', bg: 'transparent', dc: 'var(--t-fg-3)', isEmpty: false, sessions: [{ time: '10:00', name: 'Range', sub: 'Nærspill', cls: '' }, { time: '14:00', name: 'TrackMan-økt', sub: 'Gapping', cls: 'coach' }] },
+      { name: 'Tir', date: '24', bg: 'transparent', dc: 'var(--t-fg-3)', isEmpty: true, sessions: [] },
+      { name: 'Ons', date: '25', bg: 'rgba(209,248,67,.03)', dc: 'var(--lime)', isEmpty: false, sessions: [{ time: '12:00', name: 'On-course', sub: 'Treningsrunde', cls: '' }, { time: '14:00', name: 'Coach-økt', sub: 'Anders · Nærspill', cls: 'coach' }] },
+      { name: 'Tor', date: '26', bg: 'transparent', dc: 'var(--t-fg-3)', isEmpty: false, sessions: [{ time: '09:00', name: 'Putting', sub: '2–5 m drill', cls: '' }] },
+      { name: 'Fre', date: '27', bg: 'transparent', dc: 'var(--t-fg-3)', isEmpty: true, sessions: [] },
+      { name: 'Lør', date: '28', bg: 'transparent', dc: 'var(--t-fg-3)', isEmpty: false, sessions: [{ time: '10:00', name: 'Konkurranse', sub: 'Losby GK', cls: 'coach' }] },
+      { name: 'Søn', date: '29', bg: 'transparent', dc: 'var(--t-fg-3)', isEmpty: true, sessions: [] },
+    ];
+
+    const zoomTabs = [
+      { label: 'År', key: 'gantt' },
+      { label: 'Uke', key: 'uke' },
+      { label: 'Økt', key: 'okt' },
+    ].map(z => ({ ...z, cls: z.key === tab ? 'on' : '', pick: setTab(z.key) }));
+
+    // ── ØKT ──
+    const oktMeta = [
+      { label: 'DATO', val: 'Ons 25. juni' },
+      { label: 'VARIGHET', val: '90 min' },
+      { label: 'LOKASJON', val: 'Svingstudio AK' },
+    ];
+
+    const oktDrills = [
+      { n: '1', name: 'Chip til mål — 5 m', reps: '50 slag', focus: 'Sweetspot + face angle' },
+      { n: '2', name: 'Bunker til 3 m', reps: '30 slag', focus: 'Eksplosiv + åpen face' },
+      { n: '3', name: 'Putting 2–5 m stretch', reps: '20 slag', focus: '2 av 3 innenfor 60 cm' },
+    ];
+
+    return {
+      mainTabs, backChips,
+      isTek: tab === 'tek',
+      isSeson: tab === 'seson',
+      isMaler: tab === 'maler',
+      isStd: tab === 'std',
+      isGantt: tab === 'gantt',
+      isUke: tab === 'uke',
+      isOkt: tab === 'okt',
+      focusAreas, tmTargets, pPos, drills, sgGain, history,
+      milestones, events, sgSesonMaal,
+      malerFilters, maler,
+      stdKats, stdOkter,
+      months, ganttRows, tournBars, zoomTabs,
+      weekDays,
+      oktMeta, oktDrills,
+    };
+  }
+}
+
+</script>
+</body>
+</html>

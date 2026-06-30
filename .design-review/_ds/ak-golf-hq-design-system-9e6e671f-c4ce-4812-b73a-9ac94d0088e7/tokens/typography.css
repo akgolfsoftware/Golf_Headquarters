@@ -1,0 +1,45 @@
+/* ============================================================
+   TYPOGRAPHY — AK Golf HQ
+   Three families, one job each:
+   • Inter        → UI + body
+   • Inter Tight  → display / hero + editorial italic (<em> = forest/lime accent)
+   • JetBrains Mono → ALL numbers, eyebrows, KPI labels (tabular-nums always)
+   Norwegian: comma-decimal "48,3" · space thousands "1 240 m" · "48 %" · 24h "14:30".
+   Headings sentence-case. Eyebrows / KPI labels MONO CAPS.
+   ============================================================ */
+
+:root{
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-disp: 'Inter Tight', 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', monospace;
+
+  /* legacy short aliases used across mockups */
+  --sans: var(--font-sans);
+  --disp: var(--font-disp);
+  --mono: var(--font-mono);
+
+  /* ---- type scale (display) ---- */
+  --fs-hero:    clamp(44px, 8.5vw, 92px); /* @kind font */
+  --fs-display: clamp(30px, 4.4vw, 52px); /* @kind font */
+  --fs-h1:      32px; /* @kind font */
+  --fs-h2:      26px; /* @kind font */
+  --fs-h3:      19px; /* @kind font */
+  --fs-h4:      16px; /* @kind font */
+
+  /* ---- type scale (body) ---- */
+  --fs-lg:      18px; /* @kind font */
+  --fs-body:    15px; /* @kind font */
+  --fs-sm:      13px; /* @kind font */
+  --fs-xs:      11px; /* @kind font */
+
+  --lh-tight:   1.04; /* @kind other */
+  --lh-snug:    1.3; /* @kind other */
+  --lh-body:    1.5; /* @kind other */
+
+  --ls-hero:    -0.045em;
+  --ls-display: -0.035em;
+  --ls-tight:   -0.02em;
+  --ls-body:    -0.011em;
+  --ls-eyebrow: 0.16em;   /* mono caps tracking */
+  --ls-label:   0.1em;
+}

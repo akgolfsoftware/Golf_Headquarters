@@ -1,0 +1,51 @@
+/* ============================================================
+   BASE — AK Golf HQ
+   Minimal global resets + page atmosphere + the .mono helper.
+   Light: subtle radial gradients (forest 6% top-right, lime 10%
+   top-left) over cream. Terminal: faint forest/lime wash over near-black.
+   ============================================================ */
+
+*{ box-sizing:border-box; }
+
+html{ -webkit-text-size-adjust:100%; }
+
+body{
+  font-family: var(--font-sans);
+  color: var(--text-body);
+  line-height: var(--lh-body);
+  letter-spacing: var(--ls-body);
+  -webkit-font-smoothing: antialiased;
+  background:
+    radial-gradient(1200px 600px at 82% -8%, rgba(0,88,64,.06), transparent 60%),
+    radial-gradient(900px 500px at 0% 4%, rgba(209,248,67,.10), transparent 55%),
+    var(--surface-bg);
+}
+
+body[data-theme="terminal"],
+[data-theme="terminal"] body{
+  background:
+    radial-gradient(1200px 600px at 82% -8%, rgba(209,248,67,.05), transparent 60%),
+    radial-gradient(900px 500px at 0% 4%, rgba(0,88,64,.22), transparent 55%),
+    var(--surface-bg);
+}
+
+/* All numbers, eyebrows, KPI labels ride on this helper. */
+.mono{
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* Editorial eyebrow — mono caps, tracked. */
+.eyebrow{
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+::selection{ background: var(--lime); color: var(--forest-deep); }
+
+:focus-visible{ outline: 2px solid var(--focus-ring); outline-offset: 2px; }

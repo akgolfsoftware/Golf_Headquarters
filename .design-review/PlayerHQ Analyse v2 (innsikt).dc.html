@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:ital,wght@0,500;0,600;0,700;1,500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="ds/tokens.css">
+  <style>
+    *{box-sizing:border-box;}
+    body{margin:0;font-family:var(--sans);-webkit-font-smoothing:antialiased;}
+    .stage{min-height:100vh;display:flex;justify-content:center;align-items:flex-start;gap:42px;flex-wrap:wrap;padding:46px 24px 80px;background:#e7e4dc;}
+    .mono{font-family:var(--mono);font-variant-numeric:tabular-nums;}
+    .eyebrow{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted-2);}
+    .phone{width:390px;background:var(--cream);border:10px solid #11231c;border-radius:46px;overflow:hidden;box-shadow:0 40px 80px -34px rgba(10,31,23,.55);}
+    .lab{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);}
+    .insight{display:flex;gap:9px;align-items:flex-start;border-left:2px solid var(--lime-dim);padding:9px 0 9px 11px;margin-top:11px;}
+    .sgtrack{position:relative;height:8px;border-radius:5px;background:var(--t-bg-4);overflow:hidden;}
+    .sgfill{position:absolute;top:0;bottom:0;border-radius:5px;animation:grow 1s cubic-bezier(.2,.7,.3,1) both;}
+    @keyframes grow{from{width:0 !important;}}
+    .zero{position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:rgba(255,255,255,.22);}
+    .tab{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:8px 12px;border-radius:var(--r-full);cursor:pointer;white-space:nowrap;border:1px solid transparent;color:var(--muted-2);}
+    .tab.on{background:var(--forest);color:var(--lime);font-weight:700;}
+    @media (prefers-reduced-motion:reduce){.sgfill{animation:none !important;}}
+  </style>
+</helmet>
+<div class="stage">
+  <div style="flex:none;">
+    <div style="display:flex;align-items:baseline;gap:9px;margin-bottom:14px;"><span class="mono" style="font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--forest);">PlayerHQ · Analyse v2</span><span style="font-size:13px;color:#7c7768;">«hva betyr dette» + hypotese · 390px</span></div>
+    <div class="phone">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 24px 8px;">
+        <span class="mono" style="font-size:13px;font-weight:600;color:var(--ink);">14:30</span>
+        <div style="display:flex;gap:6px;color:var(--ink);"><svg width="17" height="12" viewBox="0 0 17 12" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="4.5" y="4.5" width="3" height="7.5" rx="1"/><rect x="9" y="2" width="3" height="10" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg></div>
+      </div>
+      <div style="padding:8px 20px 4px;">
+        <span class="eyebrow" style="display:block;margin-bottom:7px;">Analyse · forklart</span>
+        <h1 style="font-family:var(--disp);font-weight:700;font-size:23px;line-height:1.04;letter-spacing:-.03em;margin:0;color:var(--ink);">Hva tallene <em style="font-style:italic;color:var(--forest);font-weight:500;">betyr</em></h1>
+      </div>
+      <div style="display:flex;gap:6px;padding:12px 20px 10px;overflow-x:auto;">
+        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="5"><span class="tab {{ t.cls }}">{{ t.t }}</span></sc-for>
+      </div>
+
+      <div style="max-height:660px;overflow-y:auto;padding:0 20px 22px;">
+        <!-- headline insight -->
+        <div style="border-radius:var(--r-md);background:linear-gradient(150deg,var(--forest),var(--forest-deep));box-shadow:var(--sh-forest);padding:16px 17px;">
+          <div class="lab" style="color:var(--lime);margin-bottom:9px;">Det viktigste akkurat nå</div>
+          <p style="font-size:14.5px;line-height:1.45;color:#fff;margin:0 0 6px;font-weight:500;">Nærspillet ditt koster deg <strong style="color:var(--lime);">~1,2 slag</strong> per runde.</p>
+          <p style="font-size:12px;line-height:1.45;color:#cfe8d8;margin:0;">Det er ditt største gap mot neste nivå. Lukker du halvparten, er du på topp 10 % i kohorten din.</p>
+        </div>
+
+        <!-- SG bars WITH insight -->
+        <div style="margin-top:16px;background:var(--t-bg-2);border:1px solid var(--t-line-2);border-radius:var(--r-md);padding:15px 16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:13px;"><span class="lab" style="color:#9CA39E;">SG per kategori</span><span class="mono" style="font-size:9.5px;font-weight:600;color:var(--lime);">VS NORDIC</span></div>
+          <div style="display:flex;flex-direction:column;gap:11px;">
+            <sc-for list="{{ sg }}" as="b" hint-placeholder-count="4">
+              <div><div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:12px;color:#cfe8d8;">{{ b.name }}</span><span class="mono" style="font-size:11px;font-weight:600;color:{{ b.color }};">{{ b.val }}</span></div><div class="sgtrack"><div class="sgfill" style="{{ b.fill }}"></div><div class="zero"></div></div></div>
+            </sc-for>
+          </div>
+          <div class="insight"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--lime-dim)" stroke-width="2" style="flex:none;margin-top:1px;"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg><span style="font-size:11.5px;line-height:1.45;color:#cfe8d8;">Approach er styrken din (+0,9). Nærspill (−0,4) drar mest ned — derfor prioriterer planen det.</span></div>
+        </div>
+
+        <!-- HYPOTHESIS mode -->
+        <div style="margin-top:16px;border:1px solid var(--lime-dim);border-radius:var(--r-md);background:var(--lime-bg);padding:15px 16px;">
+          <div style="display:flex;align-items:center;gap:7px;margin-bottom:11px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--forest)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M5 12H2M22 12h-3M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/></svg><span class="lab" style="color:var(--forest);">Hva om-modus</span></div>
+          <p style="font-size:12.5px;line-height:1.45;color:var(--ink);margin:0 0 13px;">Dra for å se hvordan en forbedring påvirker scoren din:</p>
+          <div style="margin-bottom:7px;display:flex;justify-content:space-between;"><span style="font-size:12px;color:var(--muted);">Nærspill +0,3 SG</span><span class="mono" style="font-size:11px;font-weight:600;color:var(--forest);">satt</span></div>
+          <div style="height:30px;border-radius:var(--r-full);background:var(--sand);position:relative;margin-bottom:14px;"><div style="position:absolute;left:0;top:0;bottom:0;width:62%;background:linear-gradient(90deg,var(--forest),var(--lime));border-radius:var(--r-full);"></div><div style="position:absolute;left:62%;top:50%;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.2);border:2px solid var(--forest);"></div></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:var(--r-sm);background:var(--paper);border:1px solid var(--border);">
+            <div><div class="lab" style="margin-bottom:4px;">Estimert ny snittscore</div><div class="mono" style="font-size:11px;color:var(--muted-2);">fra 74,0</div></div>
+            <span class="mono" style="font-size:24px;font-weight:600;color:var(--forest);">72,8</span>
+          </div>
+        </div>
+
+        <!-- trend with insight -->
+        <div style="margin-top:16px;border:1px solid var(--border);border-radius:var(--r-md);background:var(--paper);box-shadow:var(--sh-sm);padding:15px 16px;">
+          <span class="lab" style="display:block;margin-bottom:13px;">SG-trend · 8 uker</span>
+          <div style="display:flex;align-items:flex-end;gap:5px;height:60px;">
+            <sc-for list="{{ trend }}" as="h" hint-placeholder-count="8"><div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;"><div class="sgfill" style="width:100%;height:{{ h }};background:linear-gradient(180deg,var(--lime),var(--forest));border-radius:3px 3px 0 0;"></div></div></sc-for>
+          </div>
+          <div class="insight"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--ok)" stroke-width="2" style="flex:none;margin-top:1px;"><path d="M3 17l6-6 4 4 8-8M21 7v6M21 7h-6"/></svg><span style="font-size:11.5px;line-height:1.45;color:var(--muted);">Du har lagt på <strong style="color:var(--ink);">+0,4 SG</strong> på 8 uker. Holder du tempoet, når du Challenge-nivå i oktober.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="flex:none;width:290px;padding-top:40px;">
+    <div class="eyebrow" style="margin-bottom:13px;">Innsikt, ikke bare tall</div>
+    <p style="font-size:13px;line-height:1.55;color:var(--muted);margin:0 0 16px;">Hver graf får <strong style="color:var(--ink);">én setning på vanlig språk</strong> som peker på neste handling. Pluss «hva om-modus»: dra en forbedring og se effekten på scoren — analyse blir motivasjon.</p>
+    <div class="mono" style="font-size:10.5px;line-height:1.5;color:var(--muted-2);">Sprint 2 · oppgave 1/2. Løfter Analyse 6→10.</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals(){
+    const tabs = [{t:'Innsikt',on:true},{t:'SG',on:false},{t:'Runder',on:false},{t:'TrackMan',on:false},{t:'Trend',on:false}].map(t=>({t:t.t,cls:t.on?'on':''}));
+    const sg = [
+      { name:'Utslag', val:'+0,7', color:'var(--lime)', pos:true, w:35 },
+      { name:'Innspill', val:'+0,9', color:'var(--lime)', pos:true, w:46 },
+      { name:'Nærspill', val:'−0,4', color:'#F2908C', pos:false, w:22 },
+      { name:'Putting', val:'+0,6', color:'var(--lime)', pos:true, w:30 },
+    ].map(b=>({ ...b, fill: b.pos ? `left:50%;width:${b.w}%;background:linear-gradient(90deg,#56C59A,var(--lime));` : `right:50%;width:${b.w}%;background:linear-gradient(90deg,#A33636,#F2908C);` }));
+    const trend = ['38%','44%','42%','52%','56%','60%','68%','80%'];
+    return { tabs, sg, trend };
+  }
+}
+</script>
+</body>
+</html>

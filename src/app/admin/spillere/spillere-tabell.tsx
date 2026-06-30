@@ -14,11 +14,13 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
+  Bot,
   Check,
   CheckCheck,
   ClipboardList,
   Download,
   FilterX,
+  Loader2,
   MessageSquare,
   Search,
   SlidersHorizontal,
@@ -110,6 +112,8 @@ export function SpillereTabell({
   const [q, setQ] = useState("");
   const [att, setAtt] = useState(false);
   const [sel, setSel] = useState<Record<string, boolean>>({});
+  const [genStatus, setGenStatus] = useState<null | { ok: number; feil: number }>(null);
+  const [genLoading, setGenLoading] = useState(false);
 
   const filtered = rows.filter(
     (p) =>
@@ -130,6 +134,27 @@ export function SpillereTabell({
       return n;
     });
   const clearSel = () => setSel({});
+
+  async function genererPlanForslag() {
+    const playerIds = Object.keys(sel).filter((id) => sel[id]);
+    if (playerIds.length === 0) return;
+    setGenLoading(true);
+    setGenStatus(null);
+    try {
+      const res = await fetch("/api/admin/ai-plan/batch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ playerIds }),
+      });
+      const data = (await res.json()) as { ok: { playerId: string }[]; feil: { playerId: string; error: string }[] };
+      setGenStatus({ ok: data.ok?.length ?? 0, feil: data.feil?.length ?? 0 });
+      clearSel();
+    } catch {
+      setGenStatus({ ok: 0, feil: playerIds.length });
+    } finally {
+      setGenLoading(false);
+    }
+  }
 
   function eksporter() {
     const header = ["Spiller", "Gruppe", "HCP", "SG-trend", "Siste aktivitet", "Status", "Neste økt"];
@@ -168,6 +193,38 @@ export function SpillereTabell({
         }
       />
 
+      {genStatus && (
+        <div
+          className={cn(
+            "mb-2 flex items-center gap-3 rounded-lg border px-4 py-3 text-sm",
+            genStatus.feil === 0
+              ? "border-primary/30 bg-primary/5 text-primary"
+              : "border-warning/30 bg-warning/5 text-warning",
+          )}
+        >
+          <Bot size={16} strokeWidth={1.5} />
+          <span>
+            {genStatus.ok > 0 && `${genStatus.ok} planforslag generert og lagt i godkjenningskøen.`}
+            {genStatus.feil > 0 && ` ${genStatus.feil} feilet.`}
+          </span>
+          {genStatus.ok > 0 && (
+            <Link
+              href="/admin/approvals"
+              className="ml-auto font-mono text-[11px] font-bold uppercase tracking-[0.08em] underline underline-offset-2"
+            >
+              Se køen →
+            </Link>
+          )}
+          <button
+            type="button"
+            className="ml-1 text-muted-foreground hover:text-foreground"
+            onClick={() => setGenStatus(null)}
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
       <div className="overflow-hidden rounded-xl border border-border bg-card">
         {selCt > 0 ? (
           <div className="flex flex-wrap items-center gap-[14px] border-b border-border bg-secondary px-3 py-[9px]">
@@ -176,7 +233,20 @@ export function SpillereTabell({
               {selCt} valgt
             </span>
             <span className="flex flex-wrap gap-2">
-              <Link href="/admin/plans" className={agBtnClass("primary", "sm")}>
+              <button
+                type="button"
+                className={agBtnClass("primary", "sm")}
+                onClick={genererPlanForslag}
+                disabled={genLoading}
+              >
+                {genLoading ? (
+                  <Loader2 size={14} strokeWidth={1.5} className="animate-spin" />
+                ) : (
+                  <Bot size={14} strokeWidth={1.5} />
+                )}
+                {genLoading ? "Genererer…" : "Generer plan"}
+              </button>
+              <Link href="/admin/plans" className={agBtnClass("secondary", "sm")}>
                 <ClipboardList size={14} strokeWidth={1.5} /> Tildel plan
               </Link>
               <Link href="/admin/grupper" className={agBtnClass("secondary", "sm")}>
