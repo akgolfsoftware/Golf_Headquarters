@@ -26,13 +26,13 @@ function DimensionRows({
   dims,
   cat,
   onDimClick,
-  onRemoveOmr,
+  onRemoveMulti,
   readOnly = false,
 }: {
   dims: DimRow[];
   cat: string;
   onDimClick: (field: DimField) => void;
-  onRemoveOmr: (value: string) => void;
+  onRemoveMulti: (field: DimField, value: string) => void;
   /** Spiller får lese-visning (ingen klikkbare chips). */
   readOnly?: boolean;
 }): ReactElement {
@@ -57,7 +57,7 @@ function DimensionRows({
               {dim.chips.map((ch) => (
                 <span
                   key={ch.value}
-                  onClick={readOnly ? undefined : () => onRemoveOmr(ch.value)}
+                  onClick={readOnly ? undefined : () => onRemoveMulti(dim.field, ch.value)}
                   style={{
                     display: "inline-flex",
                     alignItems: "center",
@@ -150,7 +150,7 @@ type InspectorProps = {
   mode: InspectorMode;
   onClose: () => void;
   onDimClick: (field: DimField) => void;
-  onRemoveOmr: (value: string) => void;
+  onRemoveMulti: (field: DimField, value: string) => void;
   /** Spiller får lese-visning av AK-formel-chips (coach kan redigere). */
   readOnly?: boolean;
   /** "rail" (desktop høyre-kolonne) | "sheet" (mobil bunn-ark). */
@@ -170,7 +170,7 @@ export function Inspector({
   mode,
   onClose,
   onDimClick,
-  onRemoveOmr,
+  onRemoveMulti,
   readOnly = false,
   variant = "rail",
   onPaletteTitle,
@@ -288,7 +288,7 @@ export function Inspector({
           </div>
 
           {formelHeader("AK-formel · mal", readOnly)}
-          <DimensionRows dims={buildDimensions(mode.item)} cat={mode.item.cat} onDimClick={onDimClick} onRemoveOmr={onRemoveOmr} readOnly={readOnly} />
+          <DimensionRows dims={buildDimensions(mode.item)} cat={mode.item.cat} onDimClick={onDimClick} onRemoveMulti={onRemoveMulti} readOnly={readOnly} />
           <p
             style={{
               margin: 0,
@@ -328,7 +328,7 @@ export function Inspector({
           </div>
 
           {formelHeader("AK-formel · kodet", readOnly)}
-          <DimensionRows dims={buildDimensions(mode.session)} cat={mode.session.cat} onDimClick={onDimClick} onRemoveOmr={onRemoveOmr} readOnly={readOnly} />
+          <DimensionRows dims={buildDimensions(mode.session)} cat={mode.session.cat} onDimClick={onDimClick} onRemoveMulti={onRemoveMulti} readOnly={readOnly} />
 
           {/* GJENTA UKENTLIG */}
           {(() => {

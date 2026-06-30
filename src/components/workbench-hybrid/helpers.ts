@@ -31,6 +31,12 @@ export function omrLabelOf(s: Editable): string {
     .join(", ");
 }
 
+/** P-posisjoner som array (default tom — P-posisjon er valgfri, ikke som omr). */
+export function pposArr(s: Editable): string[] {
+  const v = s.ppos;
+  return Array.isArray(v) ? v : [];
+}
+
 /** En dimensjon-rad i inspektøren. */
 export type DimRow = {
   field: DimField;
@@ -89,6 +95,14 @@ export function buildDimensions(s: Editable): DimRow[] {
     { field: "pr", label: "Press", value: dimLabel("pr", v(s, "pr", "PR2")), single: true, multi: false, chips: [] },
     { field: "cs", label: "Hastighet", value: dimLabel("cs", v(s, "cs", "CS80")), single: true, multi: false, chips: [] },
     { field: "lfase", label: "L-fase", value: dimLabel("lfase", v(s, "lfase", "L_BALL")), single: true, multi: false, chips: [] },
+    {
+      field: "ppos",
+      label: "P-posisjon",
+      value: "",
+      single: false,
+      multi: true,
+      chips: pposArr(s).map((val) => ({ label: dimLabel("ppos", val), value: val })),
+    },
     { field: "praksis", label: "Praksis", value: dimLabel("praksis", v(s, "praksis", "BLOKK")), single: true, multi: false, chips: [] },
   ];
 }

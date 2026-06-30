@@ -6,7 +6,7 @@ import type { TekniskPlanWorkbenchContext } from "@/lib/teknisk-plan/types";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
 import { FONT, WB, type Cat } from "./theme";
 import type { DimField } from "./taxonomy";
-import { omrArr } from "./helpers";
+import { omrArr, pposArr } from "./helpers";
 import type {
   PaletteItem,
   Recur,
@@ -713,7 +713,7 @@ export function WorkbenchHybrid({
           miljo: item.m ?? null,
           csNivaa: item.cs ?? null,
           pressureLevel: item.pr ?? null,
-          pPosisjoner: [] as string[],
+          pPosisjoner: Array.isArray(item.ppos) ? item.ppos : ([] as string[]),
         },
       };
       const promise =
@@ -871,16 +871,18 @@ export function WorkbenchHybrid({
     (value: string) => {
       const field = state.dimPicker;
       if (!field) return;
-      if (field === "omr") {
+      if (field === "omr" || field === "ppos") {
         if (!editTarget) return;
-        const arr = omrArr(editTarget);
+        // omr må ha minst én verdi; ppos (P-posisjon) kan tømmes helt (valgfri).
+        const minOne = field === "omr";
+        const arr = field === "omr" ? omrArr(editTarget) : pposArr(editTarget);
         const next = arr.includes(value)
-          ? arr.length > 1
-            ? arr.filter((x) => x !== value)
-            : arr
+          ? minOne && arr.length <= 1
+            ? arr
+            : arr.filter((x) => x !== value)
           : [...arr, value];
-        dispatch({ type: "writeField", field: "omr", value: next });
-        // omr er multi → modalen blir åpen for flere valg
+        dispatch({ type: "writeField", field, value: next });
+        // multi → modalen blir åpen for flere valg
       } else {
         dispatch({ type: "writeField", field, value });
         dispatch({ type: "closeDim" });
@@ -889,11 +891,14 @@ export function WorkbenchHybrid({
     [state.dimPicker, editTarget],
   );
 
-  const onRemoveOmr = useCallback(
-    (value: string) => {
+  const onRemoveMulti = useCallback(
+    (field: DimField, value: string) => {
       if (!editTarget) return;
-      const arr = omrArr(editTarget);
-      if (arr.length > 1) dispatch({ type: "writeField", field: "omr", value: arr.filter((x) => x !== value) });
+      const minOne = field === "omr";
+      const arr = field === "omr" ? omrArr(editTarget) : pposArr(editTarget);
+      if (!minOne || arr.length > 1) {
+        dispatch({ type: "writeField", field, value: arr.filter((x) => x !== value) });
+      }
     },
     [editTarget],
   );
@@ -940,8 +945,10 @@ export function WorkbenchHybrid({
 
   // omr valgte verdier til dim-picker
   const dimSelected =
-    state.dimPicker === "omr" && editTarget
-      ? omrArr(editTarget)
+    (state.dimPicker === "omr" || state.dimPicker === "ppos") && editTarget
+      ? state.dimPicker === "omr"
+        ? omrArr(editTarget)
+        : pposArr(editTarget)
       : state.dimPicker && editTarget
         ? [(editTarget as Record<string, unknown>)[state.dimPicker] as string].filter(Boolean)
         : [];
@@ -1203,7 +1210,7 @@ export function WorkbenchHybrid({
                 mode={inspectorMode}
                 onClose={() => dispatch({ type: "closeInspector" })}
                 onDimClick={(field) => dispatch({ type: "openDim", field })}
-                onRemoveOmr={onRemoveOmr}
+                onRemoveMulti={onRemoveMulti}
                 readOnly={!isCoach}
                 onPaletteTitle={(title) => dispatch({ type: "patchPalette", patch: { title } })}
                 onPaletteDur={(delta) => dispatch({ type: "patchPaletteDur", delta })}
@@ -1316,7 +1323,7 @@ export function WorkbenchHybrid({
           mode={inspectorMode}
           onClose={() => dispatch({ type: "closeInspector" })}
           onDimClick={(field) => dispatch({ type: "openDim", field })}
-          onRemoveOmr={onRemoveOmr}
+          onRemoveMulti={onRemoveMulti}
           readOnly={!isCoach}
           onPaletteTitle={(title) => dispatch({ type: "patchPalette", patch: { title } })}
           onPaletteDur={(delta) => dispatch({ type: "patchPaletteDur", delta })}
@@ -1332,7 +1339,7 @@ export function WorkbenchHybrid({
         <DimPickerModal
           field={state.dimPicker}
           selected={dimSelected}
-          multi={state.dimPicker === "omr"}
+          multi={state.dimPicker === "omr" || state.dimPicker === "ppos"}
           onPick={onDimPick}
           onClose={() => dispatch({ type: "closeDim" })}
         />

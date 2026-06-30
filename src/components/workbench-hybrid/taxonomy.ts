@@ -14,7 +14,8 @@ export type DimField =
   | "praksis"
   | "fysType"
   | "sone"
-  | "periode";
+  | "periode"
+  | "ppos";
 
 /** Mulige verdier per dimensjon (rekkefølge bevart fra fasit). */
 export const DIM_OPTS: Record<DimField, string[]> = {
@@ -32,6 +33,7 @@ export const DIM_OPTS: Record<DimField, string[]> = {
   fysType: ["STYRKE", "KONDISJON", "BEVEGELIGHET", "POWER"],
   sone: ["SONE_1", "SONE_2", "SONE_3", "SONE_4", "SONE_5"],
   periode: ["GRUNN", "SPESIALISERING", "TURNERING", "EVALUERING", "FERIE"],
+  ppos: ["P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10"],
 };
 
 /** Lesbare etiketter per verdi (fasit dimLabels). */
@@ -87,6 +89,7 @@ export const DIM_TITLES: Record<DimField, string> = {
   fysType: "FYS-type",
   sone: "Intensitetssone",
   periode: "Periode",
+  ppos: "P-posisjon (P1–P10)",
 };
 
 /** Slå opp lesbar etikett; faller tilbake til råverdien. */

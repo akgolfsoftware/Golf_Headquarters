@@ -31,6 +31,8 @@ export type WbSession = {
   time: string;
   // AK-formel-dimensjoner (alle valgfrie; defaults i buildDimensions)
   omr?: string | string[];
+  /** P-posisjoner (P1–P10, multi-valg). */
+  ppos?: string[];
   m?: string;
   pr?: string;
   cs?: string;
@@ -54,6 +56,7 @@ export type PaletteItem = {
   dur: number;
   cat: Cat;
   omr?: string;
+  ppos?: string[];
   m?: string;
   pr?: string;
   cs?: string;
