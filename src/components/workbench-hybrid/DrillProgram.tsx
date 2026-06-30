@@ -1,0 +1,405 @@
+"use client";
+
+import { useCallback, useEffect, useState, useTransition } from "react";
+import { Plus, Trash2, Search, X } from "lucide-react";
+import { FONT, WB } from "./theme";
+import { dimLabel, DIM_TITLES, type DimField } from "./taxonomy";
+import { DimPickerModal } from "./DimPickerModal";
+import type { AkFormelInput } from "@/lib/workbench/ak-formel";
+import {
+  loadSessionDrills,
+  searchExercises,
+  createSessionDrill,
+  updateSessionDrill,
+  deleteSessionDrill,
+  type WbDrill,
+  type ExerciseHit,
+} from "@/lib/workbench/drill-actions";
+
+/** Øktas AK-formel — brukes som arve-default når en ny drill legges til (B2). */
+export type SessionDefaults = {
+  pyramidArea: string;
+  lfase?: string;
+  m?: string;
+  pr?: string;
+  cs?: string;
+  ppos?: string[];
+};
+
+/** Dimensjon-felt ↔ drill-felt. Single = enum-streng, multi = string[]. */
+const AK_DIMS: { field: DimField; drillKey: keyof WbDrill; multi: boolean }[] = [
+  { field: "lfase", drillKey: "lFase", multi: false },
+  { field: "cs", drillKey: "csNivaa", multi: false },
+  { field: "m", drillKey: "miljo", multi: false },
+  { field: "pr", drillKey: "prPress", multi: false },
+  { field: "ppos", drillKey: "pPosisjoner", multi: true },
+];
+
+/** Bygg AkFormelInput fra en drill (for å sende hele formelen ved patch). */
+function drillToAk(d: WbDrill): AkFormelInput {
+  return { lFase: d.lFase, miljo: d.miljo, csNivaa: d.csNivaa, pressureLevel: d.prPress, pPosisjoner: d.pPosisjoner };
+}
+
+type DrillProgramProps = {
+  sessionId: string;
+  defaults: SessionDefaults;
+  isCoach: boolean;
+};
+
+export function DrillProgram({ sessionId, defaults, isCoach }: DrillProgramProps) {
+  const [drills, setDrills] = useState<WbDrill[]>([]);
+  const [loadedFor, setLoadedFor] = useState<string | null>(null);
+  const [pending, startTransition] = useTransition();
+  const [picker, setPicker] = useState<{ drillId: string; field: DimField } | null>(null);
+  const [exOpen, setExOpen] = useState(false);
+  // Drills krever en lagret økt (ekte cuid). Usynkede økter (synt. id) har ingen ennå.
+  const persisted = /^c[a-z0-9]{20,}$/i.test(sessionId);
+  const canEdit = isCoach && persisted;
+  const loading = loadedFor !== sessionId;
+
+  useEffect(() => {
+    let alive = true;
+    // Synkede økter (synt. id) finnes ikke i DB → loaderen returnerer [].
+    loadSessionDrills(sessionId).then((d) => {
+      if (alive) {
+        setDrills(d);
+        setLoadedFor(sessionId);
+      }
+    });
+    return () => {
+      alive = false;
+    };
+  }, [sessionId]);
+
+  const handleAddExercise = useCallback(
+    (ex: ExerciseHit) => {
+      setExOpen(false);
+      // Ny drill arver øktas AK-formel-default (B2).
+      const ak: AkFormelInput = {
+        lFase: defaults.lfase ?? null,
+        miljo: defaults.m ?? null,
+        csNivaa: defaults.cs ?? null,
+        pressureLevel: defaults.pr ?? null,
+        pPosisjoner: defaults.ppos ?? [],
+      };
+      startTransition(async () => {
+        const res = await createSessionDrill({ sessionId, exerciseId: ex.id, repsSets: ex.defaultRepsSets ?? undefined, akFormel: ak });
+        if (res.ok && res.drill) setDrills((prev) => [...prev, res.drill!]);
+      });
+    },
+    [sessionId, defaults],
+  );
+
+  const handleDelete = useCallback((drillId: string) => {
+    setDrills((prev) => prev.filter((d) => d.id !== drillId));
+    startTransition(async () => {
+      await deleteSessionDrill(drillId);
+    });
+  }, []);
+
+  // Persister en endret drill (idempotent AK-patch — trygt å kalle per chip-klikk).
+  const saveDrill = useCallback((drillId: string, next: WbDrill) => {
+    setDrills((prev) => prev.map((d) => (d.id === drillId ? next : d)));
+    startTransition(async () => {
+      await updateSessionDrill(drillId, { akFormel: drillToAk(next) });
+    });
+  }, []);
+
+  // Per-drill AK-akse valgt fra DimPickerModal.
+  const handlePick = useCallback(
+    (value: string) => {
+      if (!picker) return;
+      const { drillId, field } = picker;
+      const dim = AK_DIMS.find((d) => d.field === field);
+      const cur = drills.find((d) => d.id === drillId);
+      if (!dim || !cur) return;
+      const next: WbDrill = dim.multi
+        ? {
+            ...cur,
+            pPosisjoner: (cur.pPosisjoner ?? []).includes(value)
+              ? (cur.pPosisjoner ?? []).filter((x) => x !== value)
+              : [...(cur.pPosisjoner ?? []), value],
+          }
+        : { ...cur, [dim.drillKey]: value };
+      saveDrill(drillId, next);
+      if (!dim.multi) setPicker(null);
+    },
+    [picker, drills, saveDrill],
+  );
+
+  const closePicker = useCallback(() => setPicker(null), []);
+
+  const removePpos = useCallback(
+    (drillId: string, value: string) => {
+      const cur = drills.find((d) => d.id === drillId);
+      if (!cur) return;
+      saveDrill(drillId, { ...cur, pPosisjoner: (cur.pPosisjoner ?? []).filter((x) => x !== value) });
+    },
+    [drills, saveDrill],
+  );
+
+  const pickerSelected =
+    picker && AK_DIMS.find((d) => d.field === picker.field)?.multi
+      ? ((drills.find((d) => d.id === picker.drillId)?.pPosisjoner ?? []) as string[])
+      : picker
+        ? [String(drills.find((d) => d.id === picker.drillId)?.[AK_DIMS.find((x) => x.field === picker.field)!.drillKey] ?? "")].filter(Boolean)
+        : [];
+
+  return (
+    <div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+        <span style={{ fontFamily: FONT.display, fontWeight: 700, fontSize: 15, color: WB.text }}>Drill-program</span>
+        <span style={{ fontFamily: FONT.mono, fontSize: 9, fontWeight: 700, color: WB.muted3 }}>
+          {loading ? "laster…" : `${drills.length} ${drills.length === 1 ? "drill" : "drills"}`}
+        </span>
+      </div>
+
+      {!loading && drills.length === 0 && (
+        <div
+          style={{
+            border: `1px dashed ${WB.panelBorder}`,
+            borderRadius: 10,
+            padding: "18px 12px",
+            textAlign: "center",
+            color: WB.muted,
+            fontSize: 12,
+          }}
+        >
+          {!persisted
+            ? "Lagre økta først for å legge til drills."
+            : canEdit
+              ? "Ingen drills ennå — legg til øvelser under."
+              : "Ingen drills lagt til ennå."}
+        </div>
+      )}
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {!loading && drills.map((d, i) => (
+          <div
+            key={d.id}
+            style={{
+              background: WB.cardBg,
+              border: `1px solid ${WB.panelBorder}`,
+              borderRadius: 10,
+              padding: "10px 12px",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <span
+                style={{
+                  width: 26,
+                  height: 26,
+                  borderRadius: "50%",
+                  background: WB.railBg,
+                  border: `1px solid ${WB.panelBorder}`,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontFamily: FONT.display,
+                  fontWeight: 700,
+                  fontSize: 12,
+                  color: WB.lime,
+                  flexShrink: 0,
+                }}
+              >
+                {i + 1}
+              </span>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: WB.text }}>{d.exerciseName}</div>
+                <div style={{ fontSize: 11, color: WB.muted, marginTop: 1 }}>{d.repsSets}</div>
+              </div>
+              {canEdit && (
+                <button
+                  type="button"
+                  onClick={() => handleDelete(d.id)}
+                  disabled={pending}
+                  aria-label="Slett drill"
+                  style={{ border: "none", background: "transparent", color: WB.muted, cursor: "pointer", padding: 4 }}
+                >
+                  <Trash2 size={14} strokeWidth={1.8} />
+                </button>
+              )}
+            </div>
+
+            {/* AK-formel-chips per drill */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginTop: 8 }}>
+              {AK_DIMS.filter((dim) => !dim.multi).map((dim) => {
+                const val = d[dim.drillKey] as string | null;
+                const label = val ? dimLabel(dim.field, val) : DIM_TITLES[dim.field];
+                return (
+                  <ChipBtn
+                    key={dim.field}
+                    active={!!val}
+                    disabled={!canEdit}
+                    onClick={canEdit ? () => setPicker({ drillId: d.id, field: dim.field }) : undefined}
+                  >
+                    {label}
+                  </ChipBtn>
+                );
+              })}
+              {(d.pPosisjoner ?? []).map((p) => (
+                <ChipBtn key={p} active disabled={!canEdit} onClick={canEdit ? () => removePpos(d.id, p) : undefined}>
+                  {p} {isCoach ? "×" : ""}
+                </ChipBtn>
+              ))}
+              {canEdit && (
+                <ChipBtn active={false} onClick={() => setPicker({ drillId: d.id, field: "ppos" })}>
+                  + P
+                </ChipBtn>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {canEdit && (
+        <button
+          type="button"
+          onClick={() => setExOpen(true)}
+          disabled={pending}
+          style={{
+            marginTop: 10,
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 8,
+            background: "transparent",
+            border: `1px dashed ${WB.panelBorder}`,
+            borderRadius: 10,
+            padding: "10px 12px",
+            color: WB.lime,
+            cursor: "pointer",
+            fontSize: 13,
+            fontWeight: 600,
+          }}
+        >
+          <Plus size={16} />
+          Legg til øvelse
+        </button>
+      )}
+
+      {picker && (
+        <DimPickerModal
+          field={picker.field}
+          selected={pickerSelected}
+          multi={!!AK_DIMS.find((d) => d.field === picker.field)?.multi}
+          onPick={handlePick}
+          onClose={closePicker}
+        />
+      )}
+
+      {exOpen && (
+        <ExercisePicker
+          pyramidArea={defaults.pyramidArea}
+          onPick={handleAddExercise}
+          onClose={() => setExOpen(false)}
+        />
+      )}
+    </div>
+  );
+}
+
+function ChipBtn({
+  children,
+  active,
+  disabled,
+  onClick,
+}: {
+  children: React.ReactNode;
+  active: boolean;
+  disabled?: boolean;
+  onClick?: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled || !onClick}
+      style={{
+        fontFamily: FONT.mono,
+        fontSize: 10,
+        fontWeight: 700,
+        background: active ? `${WB.lime}1f` : WB.railBg,
+        border: `1px solid ${active ? WB.lime : WB.panelBorder}`,
+        borderRadius: 9999,
+        padding: "4px 9px",
+        color: active ? WB.lime : WB.muted,
+        cursor: disabled || !onClick ? "default" : "pointer",
+        whiteSpace: "nowrap",
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
+function ExercisePicker({
+  pyramidArea,
+  onPick,
+  onClose,
+}: {
+  pyramidArea: string;
+  onPick: (ex: ExerciseHit) => void;
+  onClose: () => void;
+}) {
+  const [q, setQ] = useState("");
+  const [hits, setHits] = useState<ExerciseHit[]>([]);
+  const [searching, startSearch] = useTransition();
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      startSearch(async () => {
+        const res = await searchExercises(q, pyramidArea);
+        setHits(res);
+      });
+    }, 200);
+    return () => clearTimeout(t);
+  }, [q, pyramidArea]);
+
+  return (
+    <div
+      onClick={onClose}
+      style={{ position: "fixed", inset: 0, zIndex: 80, background: "rgba(7,16,12,0.74)", backdropFilter: "blur(5px)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{ width: "100%", maxWidth: 420, maxHeight: "80vh", display: "flex", flexDirection: "column", background: WB.railBg, border: `1px solid ${WB.panelBorder}`, borderRadius: 16, overflow: "hidden" }}
+      >
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 16px", borderBottom: `1px solid ${WB.panelBorder}` }}>
+          <span style={{ fontFamily: FONT.display, fontWeight: 700, fontSize: 15, color: WB.text }}>Legg til øvelse</span>
+          <button type="button" onClick={onClose} aria-label="Lukk" style={{ border: "none", background: "transparent", color: WB.muted, cursor: "pointer" }}>
+            <X size={18} />
+          </button>
+        </div>
+        <div style={{ padding: "10px 16px", borderBottom: `1px solid ${WB.panelBorder}` }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, background: WB.cardBg, border: `1px solid ${WB.panelBorder}`, borderRadius: 9999, padding: "7px 12px" }}>
+            <Search size={14} color={WB.muted} />
+            <input
+              autoFocus
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Søk i øvelsesbiblioteket…"
+              style={{ flex: 1, border: "none", background: "transparent", outline: "none", color: WB.text, fontSize: 13 }}
+            />
+          </div>
+        </div>
+        <div className="wb-scroll" style={{ flex: 1, overflowY: "auto", padding: 8 }}>
+          {searching && <div style={{ padding: 12, color: WB.muted, fontSize: 12 }}>Søker…</div>}
+          {!searching && hits.length === 0 && <div style={{ padding: 12, color: WB.muted, fontSize: 12 }}>Ingen treff.</div>}
+          {hits.map((ex) => (
+            <button
+              key={ex.id}
+              type="button"
+              onClick={() => onPick(ex)}
+              style={{ display: "flex", width: "100%", alignItems: "center", justifyContent: "space-between", gap: 10, background: "transparent", border: "none", borderRadius: 8, padding: "9px 10px", cursor: "pointer", textAlign: "left" }}
+            >
+              <span style={{ fontSize: 13, color: WB.text }}>{ex.name}</span>
+              <span style={{ fontFamily: FONT.mono, fontSize: 9, fontWeight: 700, color: WB.muted3 }}>{ex.pyramidArea}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -1,12 +1,13 @@
 "use client";
 
 import type { ReactElement } from "react";
-import { Calendar, ChevronLeft, Clock, Flag, Gauge, Pencil, Play, Plus, Timer } from "lucide-react";
+import { Calendar, ChevronLeft, Clock, Flag, Gauge, Pencil, Play, Timer } from "lucide-react";
 import { CAT_COLORS, FONT, WB } from "./theme";
-import { durLabel, fysExercises, formulaLine, planBlocks } from "./helpers";
+import { durLabel, formulaLine } from "./helpers";
 import { dimLabel } from "./taxonomy";
 import type { PlanMode } from "./OktplanOverlay";
 import type { WbSession, WeekKey } from "./types";
+import { DrillProgram } from "./DrillProgram";
 
 const DAY_NAMES: Record<WeekKey, string> = {
   man: "Mandag",
@@ -49,13 +50,10 @@ export function OktDetailTab({
   const isFys = s.cat === "FYS";
   const catColor = CAT_COLORS[s.cat] ?? WB.lime;
   const dayLabel = DAY_NAMES[dayKey] ?? "Ukedag";
-  const blocks = planBlocks(s, catColor);
-  const exercises = fysExercises(s);
   const subLabel =
     (isFys ? dimLabel("fysType", s.fysType || "STYRKE") : omrSub(s)) +
     ` · ${s.cat} · ${dayLabel}`;
   const dur = durLabel(s.dur) + (s.time && s.time !== "—" ? ` · fra ${s.time}` : "");
-  const fysHead = `${dimLabel("fysType", s.fysType || "STYRKE")} · ${dimLabel("sone", s.sone || "SONE_3")}`;
 
   return (
     <div className="wb-scroll" style={{ flex: 1, overflow: "auto" }}>
@@ -193,205 +191,24 @@ export function OktDetailTab({
         )}
 
         <div style={{ padding: "16px 16px 20px" }}>
-          {!isFys && (
-            <div>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-                <span style={{ fontFamily: FONT.display, fontWeight: 700, fontSize: 15, color: WB.text }}>
-                  Drill-program
-                </span>
-                <span style={{ fontFamily: FONT.mono, fontSize: 9, fontWeight: 700, color: WB.muted3 }}>
-                  0 / {blocks.reduce((n, b) => n + b.steps.length, 0)} fullført
-                </span>
-              </div>
-              {isCoach && (
-                <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 10 }}>
-                  <ModeTabs mode={mode} onMode={onMode} />
-                </div>
-              )}
-              {blocks.map((b) => (
-                <div key={b.label} style={{ marginBottom: 10 }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      background: b.color,
-                      borderRadius: "10px 10px 0 0",
-                      padding: "8px 12px",
-                    }}
-                  >
-                    <span style={{ fontSize: 12, fontWeight: 700, color: WB.limeDark }}>{b.label}</span>
-                    {b.hasRepeat && (
-                      <span style={{ fontFamily: FONT.mono, fontSize: 9, fontWeight: 700, color: WB.limeDark }}>
-                        {b.repeatLabel}
-                      </span>
-                    )}
-                  </div>
-                  <div
-                    style={{
-                      background: WB.cardBg,
-                      border: `1px solid ${WB.panelBorder}`,
-                      borderTop: "none",
-                      borderRadius: "0 0 10px 10px",
-                      overflow: "hidden",
-                    }}
-                  >
-                    {b.steps.map((st) => (
-                      <div
-                        key={st.n}
-                        style={{
-                          display: "flex",
-                          alignItems: "stretch",
-                          borderTop: `1px solid ${WB.hairlineSoft}`,
-                        }}
-                      >
-                        <div
-                          style={{
-                            width: 40,
-                            flexShrink: 0,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            fontFamily: FONT.display,
-                            fontWeight: 700,
-                            fontSize: 14,
-                            color: WB.muted3,
-                            borderRight: `1px solid ${WB.hairlineSoft}`,
-                          }}
-                        >
-                          {st.n}
-                        </div>
-                        <div style={{ flex: 1, padding: "10px 12px" }}>
-                          <div style={{ fontSize: 13, color: WB.text }}>{st.title}</div>
-                          <div style={{ fontSize: 11, color: WB.muted, marginTop: 2 }}>{st.detail}</div>
-                        </div>
-                        <div style={{ display: "flex", alignItems: "center", padding: "0 10px" }}>
-                          <button
-                            type="button"
-                            onClick={onStart}
-                            style={{
-                              fontFamily: FONT.mono,
-                              fontSize: 8,
-                              fontWeight: 700,
-                              letterSpacing: "0.06em",
-                              textTransform: "uppercase",
-                              padding: "6px 10px",
-                              borderRadius: 999,
-                              border: "none",
-                              background: WB.lime,
-                              color: WB.limeDark,
-                              cursor: "pointer",
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            Start
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
+          {!isFys && isCoach && (
+            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 10 }}>
+              <ModeTabs mode={mode} onMode={onMode} />
             </div>
           )}
 
-          {isFys && (
-            <div>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  marginBottom: 10,
-                }}
-              >
-                <span
-                  style={{
-                    fontFamily: FONT.mono,
-                    fontSize: 9,
-                    fontWeight: 600,
-                    letterSpacing: "0.1em",
-                    textTransform: "uppercase",
-                    color: WB.muted3,
-                  }}
-                >
-                  {fysHead}
-                </span>
-                <span style={{ fontFamily: FONT.mono, fontSize: 9, fontWeight: 700, color: WB.muted3 }}>
-                  0 / {exercises.length} fullført
-                </span>
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {exercises.map((ex, i) => (
-                  <div key={ex.name} style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                    <span
-                      style={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: "50%",
-                        background: WB.cardBg,
-                        border: `1px solid ${WB.panelBorder}`,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontFamily: FONT.display,
-                        fontWeight: 700,
-                        fontSize: 15,
-                        color: WB.lime,
-                        flexShrink: 0,
-                      }}
-                    >
-                      {i + 1}
-                    </span>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 14, fontWeight: 600, color: WB.text }}>{ex.name}</div>
-                      <div style={{ fontSize: 11, color: WB.muted }}>{ex.meta}</div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={onStart}
-                      style={{
-                        fontFamily: FONT.mono,
-                        fontSize: 8,
-                        fontWeight: 700,
-                        letterSpacing: "0.06em",
-                        textTransform: "uppercase",
-                        padding: "6px 10px",
-                        borderRadius: 999,
-                        border: "none",
-                        background: WB.lime,
-                        color: WB.limeDark,
-                        cursor: "pointer",
-                        flexShrink: 0,
-                      }}
-                    >
-                      Start
-                    </button>
-                  </div>
-                ))}
-                {isCoach && (
-                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <span
-                    style={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: "50%",
-                      background: WB.cardBg,
-                      border: `1px solid ${WB.panelBorder}`,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      color: WB.lime,
-                    }}
-                  >
-                    <Plus size={18} />
-                  </span>
-                  <span style={{ fontSize: 14, fontWeight: 600, color: WB.muted }}>Legg til øvelse</span>
-                </div>
-                )}
-              </div>
-            </div>
-          )}
+          <DrillProgram
+            sessionId={s.id}
+            defaults={{
+              pyramidArea: s.cat,
+              lfase: s.lfase,
+              m: s.m,
+              pr: s.pr,
+              cs: s.cs,
+              ppos: s.ppos,
+            }}
+            isCoach={isCoach}
+          />
 
           {isCoach && (
           <div
