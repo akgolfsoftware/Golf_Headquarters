@@ -4270,3 +4270,20 @@ model KommandoAgentStep {
   @@index([runId, orderIndex])
   @@map("kommando_agent_steps")
 }
+
+// CANON invariant-override (Lag A · 2026-06-30) — coach kan overstyre et HARDT
+// invariant-brudd med begrunnelse; logges. Spiller kan aldri overstyre.
+// Isolert (ingen @relation) per gotcha — additiv via db execute.
+model InvariantOverride {
+  id          String   @id @default(cuid())
+  invariantId String
+  sessionId   String?
+  planId      String?
+  begrunnelse String
+  coachId     String
+  opprettet   DateTime @default(now())
+
+  @@index([sessionId])
+  @@index([planId])
+  @@map("invariant_overrides")
+}
