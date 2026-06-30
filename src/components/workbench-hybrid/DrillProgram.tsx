@@ -154,6 +154,8 @@ export function DrillProgram({ sessionId, defaults, isCoach }: DrillProgramProps
         </span>
       </div>
 
+      {!loading && drills.length > 0 && <DrillFordeling drills={drills} />}
+
       {!loading && drills.length === 0 && (
         <div
           style={{
@@ -296,6 +298,70 @@ export function DrillProgram({ sessionId, defaults, isCoach }: DrillProgramProps
           onClose={() => setExOpen(false)}
         />
       )}
+    </div>
+  );
+}
+
+/** Fordelings-visning (B3): hvordan drill-kodene fordeler seg per AK-akse. */
+function DrillFordeling({ drills }: { drills: WbDrill[] }) {
+  const axes: { label: string; field: DimField; get: (d: WbDrill) => string | null }[] = [
+    { label: "L-fase", field: "lfase", get: (d) => d.lFase },
+    { label: "CS", field: "cs", get: (d) => d.csNivaa },
+    { label: "Miljø", field: "m", get: (d) => d.miljo },
+    { label: "Press", field: "pr", get: (d) => d.prPress },
+  ];
+  const rows = axes
+    .map((a) => {
+      const counts = new Map<string, number>();
+      drills.forEach((d) => {
+        const v = a.get(d);
+        if (v) counts.set(v, (counts.get(v) ?? 0) + 1);
+      });
+      return { label: a.label, field: a.field, entries: [...counts.entries()] };
+    })
+    .filter((r) => r.entries.length > 0);
+
+  const ppos = new Map<string, number>();
+  drills.forEach((d) => (d.pPosisjoner ?? []).forEach((p) => ppos.set(p, (ppos.get(p) ?? 0) + 1)));
+
+  if (rows.length === 0 && ppos.size === 0) return null;
+
+  const tally = (label: string, items: [string, number][], render: (v: string) => string) => (
+    <div style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
+      <span style={{ width: 48, flexShrink: 0, fontSize: 10, color: WB.muted, paddingTop: 2 }}>{label}</span>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+        {items.map(([val, n]) => (
+          <span
+            key={val}
+            style={{
+              fontFamily: FONT.mono,
+              fontSize: 9,
+              fontWeight: 700,
+              background: `${WB.lime}1a`,
+              border: `1px solid ${WB.panelBorder}`,
+              borderRadius: 9999,
+              padding: "2px 7px",
+              color: WB.lime,
+            }}
+          >
+            {render(val)} ×{n}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+
+  return (
+    <div style={{ background: WB.railBg, border: `1px solid ${WB.panelBorder}`, borderRadius: 10, padding: "10px 12px", marginBottom: 12 }}>
+      <div style={{ fontFamily: FONT.mono, fontSize: 8, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: WB.muted3, marginBottom: 8 }}>
+        Fordeling · {drills.length} {drills.length === 1 ? "drill" : "drills"}
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        {rows.map((r) => (
+          <div key={r.field}>{tally(r.label, r.entries, (v) => dimLabel(r.field, v))}</div>
+        ))}
+        {ppos.size > 0 && tally("P-pos", [...ppos.entries()], (v) => v)}
+      </div>
     </div>
   );
 }
