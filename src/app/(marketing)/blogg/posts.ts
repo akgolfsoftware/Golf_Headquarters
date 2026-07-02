@@ -24,8 +24,8 @@ export const POSTS: BlogPost[] = [
     ],
   },
   {
-    slug: "kortspill-er-hvor-runden-vinnes",
-    tittel: "Kortspill er hvor runden vinnes",
+    slug: "naerspill-er-hvor-runden-vinnes",
+    tittel: "Nærspill er hvor runden vinnes",
     ingress:
       "Driveren får alle oppslagene, men det er innspillet til green og putten som avgjør om scoren blir minneverdig eller glemmebar.",
     dato: "2026-04-22",

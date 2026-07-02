@@ -14,7 +14,7 @@ export type SgKategori = "OTT" | "APP" | "ARG" | "PUTT";
 export type WorkbenchFokus = {
   /** coach = PeriodBlock.focus (fritekst); sg-gap = beregnet svakeste SG-kategori. */
   kilde: "coach" | "sg-gap";
-  /** Klarspråk til chip, f.eks. "Putting + kort spill" eller "Innspill". */
+  /** Klarspråk til chip, f.eks. "Putting + nærspill" eller "Innspill". */
   label: string;
   /** SG-kategori for palette-rangering. Null når coach-fritekst ikke lar seg mappe. */
   kategori: SgKategori | null;
@@ -23,7 +23,7 @@ export type WorkbenchFokus = {
 export const SG_FOKUS_LABEL: Record<SgKategori, string> = {
   OTT: "Tee-slag",
   APP: "Innspill",
-  ARG: "Rundt green",
+  ARG: "Nærspill",
   PUTT: "Putting",
 };
 
@@ -38,7 +38,8 @@ export const SKILLAREA_TO_SG: Partial<Record<SkillArea, SgKategori>> = {
 // Rekkefølgen avgjør ved flertreff — mest spesifikke ord først.
 const FRITEKST_NOKKELORD: [SgKategori, RegExp][] = [
   ["PUTT", /\bputt/i],
-  ["ARG", /chip|pitch|lob|bunker|kort\s*spill|rundt\s*green/i],
+  // «kort spill» beholdes som input-toleranse (eldre fritekst), kanon er «nærspill».
+  ["ARG", /nærspill|naerspill|chip|pitch|lob|bunker|kort\s*spill|rundt\s*green/i],
   ["APP", /innspill|approach|jernspill|wedge/i],
   ["OTT", /\btee\b|driver|utslag/i],
 ];

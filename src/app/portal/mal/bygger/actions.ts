@@ -301,10 +301,10 @@ export async function genererPlanForslag(input: {
         const dato = (t?.tournament?.startDate ?? t?.manualDate)
           ?.toISOString()
           .slice(0, 10);
-        brukerPrompt = `Lag en plan som forbereder spilleren til ${navn}${dato ? ` (${dato})` : ""}. Fokus på turneringsspesifikk skarphet — under-press-trening, kortspill og putting under turnerings-forhold.`;
+        brukerPrompt = `Lag en plan som forbereder spilleren til ${navn}${dato ? ` (${dato})` : ""}. Fokus på turneringsspesifikk skarphet — under-press-trening, nærspill og putting under turnerings-forhold.`;
       } else {
         brukerPrompt =
-          "Lag en turneringsforberedelse-plan. Fokus på under-press-trening, kortspill og putting under turnerings-forhold.";
+          "Lag en turneringsforberedelse-plan. Fokus på under-press-trening, nærspill og putting under turnerings-forhold.";
       }
       break;
     }

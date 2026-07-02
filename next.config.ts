@@ -66,6 +66,9 @@ const nextConfig: NextConfig = {
       { source: "/admin/meg", destination: "/admin/profile", permanent: true },
       { source: "/admin/meg/:path*", destination: "/admin/profile/:path*", permanent: true },
 
+      // Ordliste 2026-07-03: «kortspill» → «nærspill» — blogg-slug endret, gammel URL redirecter.
+      { source: "/blogg/kortspill-er-hvor-runden-vinnes", destination: "/blogg/naerspill-er-hvor-runden-vinnes", permanent: true },
+
       // PlayerHQ IA-restrukturering 2026-05-22 (master-plan)
       // Gamle ruter -> nye hovedseksjoner under /portal
       { source: "/portal/innsikt", destination: "/portal/analysere", permanent: true },

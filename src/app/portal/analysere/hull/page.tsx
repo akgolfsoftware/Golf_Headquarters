@@ -89,7 +89,7 @@ export default async function HullAnalysePage() {
     {
       id: "arg",
       label: "Nærspill",
-      sub: "Rundt green",
+      sub: "Chip, pitch, bunker",
       x: 62,
       y: 28,
       sg: latest?.sgArg ?? null,

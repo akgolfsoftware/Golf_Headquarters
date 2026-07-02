@@ -51,7 +51,7 @@ function fallbackSuggestions(): WeekSuggestion[] {
       sessions: [
         { day: 0, title: "Tek — grunnbevegelse", pyramidArea: "TEK", durationMin: 60 },
         { day: 1, title: "Slag — banespill", pyramidArea: "SLAG", durationMin: 75 },
-        { day: 3, title: "Tek — kort spill", pyramidArea: "TEK", durationMin: 60 },
+        { day: 3, title: "Tek — nærspill", pyramidArea: "TEK", durationMin: 60 },
         { day: 4, title: "Spill — runde 9 hull", pyramidArea: "SPILL", durationMin: 120 },
         { day: 6, title: "FYS — restitusjon", pyramidArea: "FYS", durationMin: 45 },
       ],
@@ -80,7 +80,7 @@ function fallbackSuggestions(): WeekSuggestion[] {
         { day: 3, title: "Slag — jern under press", pyramidArea: "SLAG", durationMin: 90 },
         { day: 4, title: "Spill — runde 18 hull", pyramidArea: "SPILL", durationMin: 240 },
         { day: 5, title: "Turn — simulering", pyramidArea: "TURN", durationMin: 90 },
-        { day: 6, title: "Tek — kort spill", pyramidArea: "TEK", durationMin: 60 },
+        { day: 6, title: "Tek — nærspill", pyramidArea: "TEK", durationMin: 60 },
       ],
     },
   ];

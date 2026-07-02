@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Check, Plus, X, Trash2 } from "lucide-react";
 import { updatePeriode, deletePeriode } from "./actions";
 
-const SG_OPTIONS = ["Tee", "Approach", "Rundt green", "Putting", "Total"];
+const SG_OPTIONS = ["Tee", "Approach", "Nærspill", "Putting", "Total"];
 const PYR_OPTIONS = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
 const COLORS: Array<{ id: string; label: string; cls: string }> = [
   { id: "lime", label: "Lime", cls: "bg-accent" },

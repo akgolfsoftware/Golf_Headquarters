@@ -190,7 +190,7 @@ export default function JuniorSide() {
               </thead>
               <tbody className="divide-y divide-border">
                 <Sesongrad periode="Januar–april" fokus="Innendørs teknikk og fysikk" sted="Mulligan Fredrikstad / Sarpsborg" />
-                <Sesongrad periode="Mai–juni" fokus="Overgang utendørs, kortspill" sted="GFGK (Torsnesveien)" />
+                <Sesongrad periode="Mai–juni" fokus="Overgang utendørs, nærspill" sted="GFGK (Torsnesveien)" />
                 <Sesongrad periode="Juli–august" fokus="Turneringer og runde-spilling" sted="Baner i regionen" />
                 <Sesongrad periode="September–oktober" fokus="Avslutning sesong, evaluering" sted="GFGK (Torsnesveien)" />
                 <Sesongrad periode="November–desember" fokus="Styrke, kondisjon, individuelle mål" sted="Mulligan Fredrikstad / Sarpsborg" />

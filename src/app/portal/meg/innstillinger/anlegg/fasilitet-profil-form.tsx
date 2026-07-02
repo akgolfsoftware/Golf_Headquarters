@@ -84,7 +84,7 @@ const GRUPPER: Gruppe[] = [
         kode: "PUTTING_GREEN_KORT",
         tittel: "Putting green (opptil 10m)",
         beskrivelse:
-          "Liten putting-green — dekker drills på 1-10m avstand. Kortspill og 1-2m presisjon.",
+          "Liten putting-green — dekker drills på 1-10m avstand. Nærspill og 1-2m presisjon.",
       },
       {
         kode: "PUTTING_GREEN_LANG",

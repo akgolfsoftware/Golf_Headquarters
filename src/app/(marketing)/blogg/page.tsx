@@ -18,7 +18,7 @@ const META: Record<string, PostMeta> = {
     readMinutes: 7,
     featured: true,
   },
-  "kortspill-er-hvor-runden-vinnes": {
+  "naerspill-er-hvor-runden-vinnes": {
     category: "Coaching",
     readMinutes: 6,
     featured: false,

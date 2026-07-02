@@ -34,8 +34,8 @@ const DISIPLINER: { v: PyramidArea; label: string }[] = [
 
 const SKILLS: { v: SkillArea; label: string }[] = [
   { v: "TEE_TOTAL", label: "Tee" },
-  { v: "TILNAERMING", label: "Tilnaerming" },
-  { v: "AROUND_GREEN", label: "Rundt green" },
+  { v: "TILNAERMING", label: "Tilnærming" },
+  { v: "AROUND_GREEN", label: "Nærspill" },
   { v: "PUTTING", label: "Putt" },
   { v: "SPILL", label: "Spill" },
 ];

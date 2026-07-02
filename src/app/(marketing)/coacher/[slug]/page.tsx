@@ -45,7 +45,7 @@ const COACHER: CoachProfil[] = [
     tittel: "Assistent · Junior-ansvarlig",
     initialer: "MR",
     intro:
-      "Markus jobber tett med juniorgruppen og spillere som vil løfte kortspill og putting. Tålmodig, presis, og kompromissløst opptatt av god teknikk.",
+      "Markus jobber tett med juniorgruppen og spillere som vil løfte nærspill og putting. Tålmodig, presis, og kompromissløst opptatt av god teknikk.",
     bio: [
       "Markus kombinerer egen spillerbakgrunn med en pedagogisk tilnærming som gjør komplisert stoff enkelt å forstå. Spillerne hans merker forskjellen raskt, særlig på de slagene som teller mest når runden står og vipper.",
       "I Academy har Markus hovedansvaret for juniorprogrammet og driver gruppetreninger på Gamle Fredrikstad og Mulligan Indoor gjennom hele sesongen.",
@@ -53,7 +53,7 @@ const COACHER: CoachProfil[] = [
     erfaring: [
       "Egen spillerbakgrunn fra junior- og amatørgolf",
       "Co-trener på WANG Toppidrett Fredrikstad",
-      "Spesialisert på kortspill og putting",
+      "Spesialisert på nærspill og putting",
     ],
     spesialiteter: [
       "Korte slag: wedge under 100 m",

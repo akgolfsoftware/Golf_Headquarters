@@ -252,10 +252,10 @@ export const SPILLERKATEGORIER = [
 
 export const TEMPLATE_FOCUS = [
   { kode: "FULL_BAG",      label: "Full bag",           omraader: ["TEE", "INN200", "INN150", "INN100", "INN50", "CHIP", "PITCH", "PUTT0_3", "PUTT3_6"] as Treningsomrade[] },
-  { kode: "KORT_SPILL",    label: "Kort spill",         omraader: ["INN50", "CHIP", "PITCH", "LOB", "BUNKER"] as Treningsomrade[] },
+  { kode: "KORT_SPILL",    label: "Nærspill",           omraader: ["INN50", "CHIP", "PITCH", "LOB", "BUNKER"] as Treningsomrade[] },
   { kode: "PUTTING",       label: "Putting",            omraader: ["PUTT0_3", "PUTT3_6", "PUTT6_10", "PUTT10_20", "PUTT20_40", "PUTT40P"] as Treningsomrade[] },
   { kode: "LANG_SPILL",    label: "Langt spill",        omraader: ["TEE", "INN200", "INN150"] as Treningsomrade[] },
-  { kode: "TILNAERMING",   label: "Tilnaerming",        omraader: ["INN200", "INN150", "INN100", "INN50"] as Treningsomrade[] },
+  { kode: "TILNAERMING",   label: "Tilnærming",         omraader: ["INN200", "INN150", "INN100", "INN50"] as Treningsomrade[] },
   { kode: "BUNKER_FOKUS",  label: "Bunker",             omraader: ["BUNKER"] as Treningsomrade[] },
   { kode: "TURNERINGSPREP", label: "Turneringsforberedelse", omraader: ["SPILL"] as Treningsomrade[] },
 ] as const;

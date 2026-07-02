@@ -29,7 +29,7 @@ export type WeaknessOutput = {
 const SG_LABEL: Record<SgCategory, string> = {
   OTT: "Tee-slag",
   APP: "Innspill",
-  ARG: "Kortspill",
+  ARG: "Nærspill",
   PUTT: "Putting",
 };
 

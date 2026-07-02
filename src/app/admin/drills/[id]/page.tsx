@@ -41,8 +41,8 @@ const DISCIPLIN_LABEL: Record<PyramidArea, string> = {
 
 const SKILL_LABEL: Record<SkillArea, string> = {
   TEE_TOTAL: "Tee total",
-  TILNAERMING: "Tilnaerming",
-  AROUND_GREEN: "Rundt green",
+  TILNAERMING: "Tilnærming",
+  AROUND_GREEN: "Nærspill",
   PUTTING: "Putting",
   SPILL: "Spill",
 };

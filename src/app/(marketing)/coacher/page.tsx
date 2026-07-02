@@ -44,7 +44,7 @@ const FALLBACK_COACHER: CoachKort[] = [
     bio: "Jobber tett med juniorprogrammet og spillere som vil ta neste steg. Sterk på korte slag og putting.",
     initialer: "MR",
     foto: null,
-    tags: ["Kortspill", "Putting", "Junior"],
+    tags: ["Nærspill", "Putting", "Junior"],
   },
 ];
 
@@ -68,8 +68,8 @@ const FASILITETER: Fasilitet[] = [
     type: "Utendørs",
     navn: "Gamle Fredrikstad GK",
     beskrivelse:
-      "Driving range, kortspill-områder og bane. Hovedanlegg for AK Golf Academy gjennom sesongen.",
-    feats: ["Driving range", "Kortspill", "Bane"],
+      "Driving range, nærspill-områder og bane. Hovedanlegg for AK Golf Academy gjennom sesongen.",
+    feats: ["Driving range", "Nærspill", "Bane"],
   },
 ];
 
