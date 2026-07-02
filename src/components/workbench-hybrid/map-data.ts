@@ -51,6 +51,7 @@ function eventToSession(ev: WeekEvent, dayKey: WeekKey, idx: number): WbSession 
     dur: ev.durMin,
     cat: AXIS_TO_CAT[ev.ax],
     time: `${pad2(h)}:${pad2(m)}`,
+    compliance: ev.compliance,
   };
 }
 

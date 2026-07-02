@@ -51,6 +51,16 @@ export const WB = {
   err: "#F2908C",
 } as const;
 
+/**
+ * Compliance-farger for økt-kort (plan vs. gjennomført). Gjenbruker eksisterende
+ * WB-konstanter — ingen nye fargeverdier. Fremtidige økter compliance-farges ikke.
+ */
+export const COMPLIANCE_COLORS = {
+  "pa-plan": WB.lime,
+  avvik: WB.err,
+  "ikke-gjennomfort": WB.muted,
+} as const;
+
 export const FONT = {
   sans: "'Inter', sans-serif",
   display: "'Inter Tight', sans-serif",

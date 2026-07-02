@@ -23,7 +23,7 @@ type KpiStripProps = {
   grand: number;
   /** antall planlagte økter (ekte når data finnes) */
   sessionCount: number;
-  /** plan-adherence (ingen datamodell ennå — null = ærlig tomtilstand "—") */
+  /** plan-adherence ("78 %") — null = ingen forfalte økter denne uka → "—" */
   adherence: string | null;
   /** strokes gained (ingen datamodell ennå — null = ærlig tomtilstand "—") */
   sg: string | null;
@@ -68,13 +68,12 @@ export function KpiStrip({ totals, grand, sessionCount, adherence, sg, onOpen }:
         <div style={subStyle}>FYS·TEK·SLAG·SPILL·TURN</div>
       </KpiCard>
 
-      {/* Plan-adherence (stat) — ingen datamodell ennå → ærlig "—" */}
+      {/* Plan-adherence (stat) — % gjennomførte minutter av forfalte økter denne uka */}
       <KpiCard label="Plan-adherence" dot="#56C59A" onClick={() => onOpen("adherence")}>
         <div style={{ display: "flex", alignItems: "baseline", gap: 5 }}>
           <span style={statValue(adherence ? WB.ok : WB.muted3)}>{adherence ?? "—"}</span>
-          {adherence && <span style={{ fontSize: 10.5, fontWeight: 600, color: WB.ok }}>▲</span>}
         </div>
-        <div style={subStyle}>{adherence ? "planlagt vs gjennomført" : "ingen data ennå"}</div>
+        <div style={subStyle}>{adherence ? "planlagt vs gjennomført" : "ingen forfalte økter"}</div>
       </KpiCard>
 
       {/* Strokes Gained (stat) — ingen datamodell ennå → ærlig "—" */}

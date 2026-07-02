@@ -1,4 +1,4 @@
-import type { PyramidArea } from "@/generated/prisma/client";
+import type { PyramidArea, SessionStatus, SessionStatusV2 } from "@/generated/prisma/client";
 
 /** Felles uke-rad — TrainingPlanSession og V2 mappes hit før merge. */
 export type WeekSessionRow = {
@@ -8,6 +8,7 @@ export type WeekSessionRow = {
   title: string;
   pyramidArea: PyramidArea;
   environment: "RANGE" | "BANE" | "STUDIO" | "HJEM" | "SIMULATOR" | "GYM" | null;
+  status: SessionStatus;
   _count: { drills: number };
 };
 
@@ -19,6 +20,16 @@ export type V2WeekSessionInput = {
   generertFraId: string | null;
   drills: { pyramide: string | null }[];
   practiceType: "BLOKK" | "RANDOM" | "KONKURRANSE" | "SPILL_TEST";
+  status: SessionStatusV2;
+};
+
+/** SessionStatusV2 → SessionStatus, så compliance-regelen kan bo ett sted. */
+const V2_STATUS_TO_V1: Record<SessionStatusV2, SessionStatus> = {
+  PLANNED: "PLANNED",
+  IN_PROGRESS: "ACTIVE",
+  COMPLETED: "COMPLETED",
+  CANCELLED: "CANCELLED",
+  SKIPPED: "SKIPPED",
 };
 
 function v2ToWeekRow(v: V2WeekSessionInput): WeekSessionRow {
@@ -42,6 +53,7 @@ function v2ToWeekRow(v: V2WeekSessionInput): WeekSessionRow {
     title: v.title,
     pyramidArea,
     environment: null,
+    status: V2_STATUS_TO_V1[v.status],
     _count: { drills: v.drills.length },
   };
 }

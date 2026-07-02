@@ -4,6 +4,7 @@
  */
 
 import type { Cat } from "./theme";
+import type { OktCompliance } from "@/lib/workbench/compliance";
 
 /** Gjentakelse (Google-kalender-stil). Lever kun i komponent-state. */
 export type RecurFreq = "none" | "daily" | "weekly" | "monthly";
@@ -42,6 +43,8 @@ export type WbSession = {
   sone?: string;
   /** Gjentakelse — null/undefined = kun denne uka. */
   recur?: Recur | null;
+  /** Plan vs. gjennomført (fra loaderen) — undefined for demo-/nyopprettede økter. */
+  compliance?: OktCompliance;
 };
 
 /** Ukens 7 dager (man..son). */

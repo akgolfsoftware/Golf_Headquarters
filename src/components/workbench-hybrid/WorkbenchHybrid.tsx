@@ -1129,8 +1129,9 @@ export function WorkbenchHybrid({
       totals={totals}
       grand={grand}
       sessionCount={kpiSessionCount}
-      // Adherence + SG har ingen datamodell ennå → ærlig tomtilstand ("—"), ikke oppdiktede tall.
-      adherence={null}
+      // Adherence: ekte plan vs. gjennomført fra loaderen (null = ingen forfalte økter → "—").
+      // SG har ingen datamodell ennå → ærlig tomtilstand ("—"), ikke oppdiktede tall.
+      adherence={data?.adherencePct != null ? `${data.adherencePct} %` : null}
       sg={null}
       onOpen={(key) => dispatch({ type: "openKpi", key })}
     />

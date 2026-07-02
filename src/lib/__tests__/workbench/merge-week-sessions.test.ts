@@ -17,6 +17,7 @@ function mkV2(id: string, generertFraId: string | null): V2WeekSessionInput {
     generertFraId,
     drills: [{ pyramide: "TEK" }],
     practiceType: "BLOKK",
+    status: "PLANNED",
   };
 }
 
@@ -42,6 +43,7 @@ describe("mergeWeekSessions", () => {
         title: "V1 økt",
         pyramidArea: "TEK",
         environment: "RANGE",
+        status: "PLANNED",
         _count: { drills: 2 },
       },
     ];
@@ -60,6 +62,7 @@ describe("mergeWeekSessions", () => {
         title: "Sen V1",
         pyramidArea: "SLAG",
         environment: null,
+        status: "PLANNED",
         _count: { drills: 0 },
       },
     ];

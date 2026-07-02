@@ -24,6 +24,7 @@
 import { prisma } from "@/lib/prisma";
 import type { PyramidArea } from "@/generated/prisma/client";
 import { PYR_REKKEFOLGE } from "@/lib/pyramide";
+import { adherencePct, oktCompliance } from "@/lib/workbench/compliance";
 import {
   mergeWeekSessions,
   type V2WeekSessionInput,
@@ -97,6 +98,8 @@ export type WorkbenchData = {
   pyramid?: { lbl: string; ax: Axis; hours: number; pct: number }[];
   /** Topp-tall: uke-nummer, antall økter, planlagte timer. */
   summary?: { weekNumber: number; sessionCount: number; plannedHours: number };
+  /** Plan-adherence for uka (% gjennomførte minutter av forfalte). Null = ingen forfalte økter. */
+  adherencePct?: number | null;
   /** Ukevolum-mål fra spillerens aktive PeriodBlock (min/max minutter). Null-felt = ikke satt. */
   volTarget?: { min: number | null; max: number | null };
   /** Sesong-perioder fra SeasonPlan.periodBlocks (Gantt/Årsplan). */
@@ -191,6 +194,7 @@ const SESSION_SELECT = {
   title: true,
   pyramidArea: true,
   environment: true,
+  status: true,
   _count: { select: { drills: true } },
 } as const;
 
@@ -308,6 +312,7 @@ export async function loadWorkbenchData(
         generertFraId: true,
         drills: { select: { pyramide: true } },
         practiceType: true,
+        status: true,
       },
     }),
     prisma.groupMember.findMany({
@@ -431,7 +436,7 @@ export async function loadWorkbenchData(
     const isToday = i === todayDow;
     const dayEvents: WeekEvent[] = mergedSessions
       .filter((s) => (s.scheduledAt.getDay() + 6) % 7 === i)
-      .map((s) => sessionToWeekEvent(s));
+      .map((s) => sessionToWeekEvent(s, now));
     return {
       dow: DOW[i],
       date: String(d.getDate()),
@@ -566,6 +571,7 @@ export async function loadWorkbenchData(
     sessionCount: mergedSessions.length,
     plannedHours: Math.round((plannedMin / 60) * 10) / 10,
   };
+  const weekAdherencePct = adherencePct(mergedSessions, now);
 
   const templateRows = templateRowsEarly;
 
@@ -626,6 +632,7 @@ export async function loadWorkbenchData(
     goals: goalRows.length > 0 ? goalRows : undefined,
     pyramid,
     summary,
+    adherencePct: weekAdherencePct,
     volTarget,
     seasonBlocks,
     tournamentCalendar: tournamentCalendar.length > 0 ? tournamentCalendar : undefined,
@@ -641,7 +648,7 @@ export async function loadWorkbenchData(
 // ───────── Mappers ─────────
 
 /** TrainingPlanSession → A·WeekView-blokk (posisjonert via h/m + durMin). */
-function sessionToWeekEvent(s: WeekSessionRow): WeekEvent {
+function sessionToWeekEvent(s: WeekSessionRow, now: Date): WeekEvent {
   const start = s.scheduledAt;
   const ax = PYR_TONE[s.pyramidArea];
   const loc = s.environment ? ENV_LABEL[s.environment] ?? null : null;
@@ -657,6 +664,7 @@ function sessionToWeekEvent(s: WeekSessionRow): WeekEvent {
     eb: PYR_SHORT[s.pyramidArea],
     ttl: s.title,
     meta,
+    compliance: oktCompliance(s, now),
   };
 }
 

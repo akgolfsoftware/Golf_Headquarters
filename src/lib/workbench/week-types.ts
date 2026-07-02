@@ -1,7 +1,8 @@
 /**
  * Workbench uke-/tidslinje-typer — delt mellom load-workbench, hybrid og plan.
- * Demo-literals ligger fortsatt i `components/workbench/data.ts`.
  */
+
+import type { OktCompliance } from "./compliance";
 
 export type Axis = "fys" | "tek" | "slag" | "spill" | "turn";
 
@@ -15,6 +16,8 @@ export type WeekEvent = {
   eb: string;
   ttl: string;
   meta: [icon: string, text: string][];
+  /** Plan vs. gjennomført — settes av loaderen for ekte økter. */
+  compliance?: OktCompliance;
   chips?: [label: string, cls: string][];
   selected?: boolean;
   group?: boolean;

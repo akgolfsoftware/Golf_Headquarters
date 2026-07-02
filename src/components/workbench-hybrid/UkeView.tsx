@@ -2,7 +2,7 @@
 
 import { useState, type ReactElement } from "react";
 import { ChevronLeft, ChevronRight, GripVertical } from "lucide-react";
-import { CAT_COLORS, FONT, WB } from "./theme";
+import { CAT_COLORS, COMPLIANCE_COLORS, FONT, WB } from "./theme";
 import { durLabel } from "./helpers";
 import type { WbSession, WeekKey, WeekState } from "./types";
 
@@ -347,6 +347,11 @@ export function UkeView({
                     const top = (hh - startHour + mm / 60) * ROW_H;
                     const height = Math.max(46, (s.dur / 60) * ROW_H - 3);
                     const c = CAT_COLORS[s.cat];
+                    // Compliance-farge (plan vs. gjennomført) overtar kant + prikk for
+                    // forfalte økter. Fremtidige økter beholder ren kategori-farge.
+                    const comp =
+                      s.compliance && s.compliance !== "fremtidig" ? s.compliance : null;
+                    const edge = comp ? COMPLIANCE_COLORS[comp] : c;
                     const on = s.id === selectedId;
                     const dragging = draggingId === s.id;
                     const stackZ = 2 + idx;
@@ -368,7 +373,7 @@ export function UkeView({
                           borderTop: `1px solid ${on ? WB.lime : WB.panelBorder}`,
                           borderRight: `1px solid ${on ? WB.lime : WB.panelBorder}`,
                           borderBottom: `1px solid ${on ? WB.lime : WB.panelBorder}`,
-                          borderLeft: `3px solid ${c}`,
+                          borderLeft: `3px solid ${edge}`,
                           borderRadius: 9,
                           padding: "7px 7px 7px 4px",
                           cursor: "pointer",
@@ -381,7 +386,7 @@ export function UkeView({
                             : on
                               ? "0 0 0 3px rgba(209,248,67,0.12)"
                               : undefined,
-                          opacity: dragging ? 0.92 : 1,
+                          opacity: dragging ? 0.92 : comp === "ikke-gjennomfort" ? 0.72 : 1,
                         }}
                       >
                         <div
@@ -420,7 +425,7 @@ export function UkeView({
                         </div>
                         <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 2 }}>
                           <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                            <span style={{ width: 7, height: 7, borderRadius: "50%", background: c, flexShrink: 0 }} />
+                            <span style={{ width: 7, height: 7, borderRadius: "50%", background: edge, flexShrink: 0 }} />
                             <span style={{ fontFamily: FONT.mono, fontSize: 9, color: WB.muted }}>
                               {s.time && s.time !== "—" ? s.time : "—"} · {durLabel(s.dur)}
                             </span>

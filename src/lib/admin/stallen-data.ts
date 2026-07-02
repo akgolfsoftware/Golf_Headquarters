@@ -11,6 +11,7 @@
 
 import { prisma } from "@/lib/prisma";
 import type { PlayerProgram, Tier, UserStatus, PyramidArea } from "@/generated/prisma/client";
+import { erOktGjennomfort } from "@/lib/workbench/compliance";
 
 // ── Typer eksponert til komponenten ─────────────────────────────
 export type GroupBucket = "WANG" | "GFGK" | "AKA";
@@ -302,7 +303,7 @@ export async function loadStallen(
       (s) => s.scheduledAt >= ukeStart && s.scheduledAt < ukeSlutt,
     );
     const oktPlanned = ukeSessions.length;
-    const oktDone = ukeSessions.filter((s) => s.status === "COMPLETED").length;
+    const oktDone = ukeSessions.filter((s) => erOktGjennomfort(s.status)).length;
 
     // Pyramide-adherence denne uka per akse: % minutter fullført av planlagt.
     const plannedByAxis = new Map<Axis, number>();
@@ -311,7 +312,7 @@ export async function loadStallen(
       const ax = PYR_TO_AXIS[s.pyramidArea];
       const dur = s.durationMin ?? 0;
       plannedByAxis.set(ax, (plannedByAxis.get(ax) ?? 0) + dur);
-      if (s.status === "COMPLETED")
+      if (erOktGjennomfort(s.status))
         doneByAxis.set(ax, (doneByAxis.get(ax) ?? 0) + dur);
     }
     const adherence: AxisAdh[] = AXIS_ORDER.map((axis) => {
