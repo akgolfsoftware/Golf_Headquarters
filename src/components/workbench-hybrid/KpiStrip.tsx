@@ -3,6 +3,7 @@
 import type { ReactElement } from "react";
 import { CAT_COLORS, FONT, WB, type Cat } from "./theme";
 import { durLabel } from "./helpers";
+import type { WorkbenchFokus } from "@/lib/workbench/fokus";
 
 /** KPI-nøkler — styrer hvilken detalj-modal som åpnes. */
 export type KpiKey = "volum" | "pyramide" | "adherence" | "sg";
@@ -27,6 +28,8 @@ type KpiStripProps = {
   adherence: string | null;
   /** strokes gained (ingen datamodell ennå — null = ærlig tomtilstand "—") */
   sg: string | null;
+  /** aktivt fokus (coach-valgt eller beregnet SG-gap) — null = ingen kilde */
+  fokus: WorkbenchFokus | null;
   onOpen: (key: KpiKey) => void;
 };
 
@@ -36,7 +39,7 @@ type KpiStripProps = {
  * (totals/grand). Adherence og SG har ingen datamodell ennå → vises som ærlig
  * tomtilstand ("—") når propen er null, aldri oppdiktede tall.
  */
-export function KpiStrip({ totals, grand, sessionCount, adherence, sg, onOpen }: KpiStripProps): ReactElement {
+export function KpiStrip({ totals, grand, sessionCount, adherence, sg, fokus, onOpen }: KpiStripProps): ReactElement {
   const pyrTotal = grand || 1;
   const segs = CAT_ORDER.map((cat) => ({
     cat,
@@ -68,6 +71,30 @@ export function KpiStrip({ totals, grand, sessionCount, adherence, sg, onOpen }:
         <div style={subStyle}>FYS·TEK·SLAG·SPILL·TURN</div>
       </KpiCard>
 
+      {/* Fokus (chip) — coachens periode-fokus, ellers beregnet SG-gap. Rangerer paletten. */}
+      <KpiCard label="Fokus" dot={WB.lime}>
+        <div style={{ display: "flex", alignItems: "baseline", gap: 5 }}>
+          <span
+            style={{
+              fontFamily: FONT.display,
+              fontWeight: 800,
+              fontSize: 15,
+              letterSpacing: "-0.01em",
+              color: fokus ? WB.text : WB.muted3,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              maxWidth: 180,
+            }}
+          >
+            {fokus?.label ?? "—"}
+          </span>
+        </div>
+        <div style={subStyle}>
+          {fokus ? (fokus.kilde === "coach" ? "coachens periodefokus" : "størst SG-gap") : "ingen fokus-kilde"}
+        </div>
+      </KpiCard>
+
       {/* Plan-adherence (stat) — % gjennomførte minutter av forfalte økter denne uka */}
       <KpiCard label="Plan-adherence" dot="#56C59A" onClick={() => onOpen("adherence")}>
         <div style={{ display: "flex", alignItems: "baseline", gap: 5 }}>
@@ -96,7 +123,8 @@ function KpiCard({
 }: {
   label: string;
   dot: string;
-  onClick: () => void;
+  /** Uten onClick rendres kortet som ren info-chip (ingen detalj-modal). */
+  onClick?: () => void;
   children: React.ReactNode;
 }): ReactElement {
   return (
@@ -111,7 +139,7 @@ function KpiCard({
         border: `1px solid ${WB.panelBorder}`,
         borderRadius: 12,
         padding: "10px 12px",
-        cursor: "pointer",
+        cursor: onClick ? "pointer" : "default",
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 7 }}>

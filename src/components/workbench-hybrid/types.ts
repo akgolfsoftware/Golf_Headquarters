@@ -58,6 +58,8 @@ export type PaletteItem = {
   title: string;
   dur: number;
   cat: Cat;
+  /** SG-tagging (SkillArea) fra mal-økten — brukes til fokus-rangering. */
+  skillArea?: string | null;
   omr?: string;
   ppos?: string[];
   m?: string;

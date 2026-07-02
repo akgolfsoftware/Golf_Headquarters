@@ -11,6 +11,8 @@
  */
 
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
+import type { SkillArea } from "@/generated/prisma/client";
+import { SKILLAREA_TO_SG, type SgKategori } from "@/lib/workbench/fokus";
 import type { PaletteItem } from "./types";
 import { PALETTE_LIBRARY } from "./demo-data";
 import type { Axis, WeekDay, WeekEvent } from "@/lib/workbench/week-types";
@@ -201,22 +203,40 @@ export function mapWeekHead(
   return { weekLabel: `Uke ${n}`, range };
 }
 
-/** Standardøkter: ekte mal-økter fra DB, ellers startbibliotek. */
+/** Standardøkter: ekte mal-økter fra DB, ellers startbibliotek. Fokus-treff øverst. */
 export function mapPalette(data: WorkbenchData | undefined): PaletteItem[] {
   const items = data?.paletteItems;
-  if (!items || items.length === 0) return PALETTE_LIBRARY;
-  return items.map((p) => ({
-    pid: p.pid,
-    title: p.title,
-    dur: p.dur,
-    cat: p.cat,
-    omr: "PUTT0_3",
-    m: "M2",
-    pr: "PR2",
-    cs: "CS80",
-    lfase: "L_BALL",
-    praksis: "BLOKK",
-  }));
+  const base: PaletteItem[] =
+    !items || items.length === 0
+      ? PALETTE_LIBRARY
+      : items.map((p) => ({
+          pid: p.pid,
+          title: p.title,
+          dur: p.dur,
+          cat: p.cat,
+          skillArea: p.skillArea,
+          omr: "PUTT0_3",
+          m: "M2",
+          pr: "PR2",
+          cs: "CS80",
+          lfase: "L_BALL",
+          praksis: "BLOKK",
+        }));
+  return sortPaletteByFokus(base, data?.fokus?.kategori ?? null);
+}
+
+/**
+ * Rangerer paletten etter fokus: mal-økter hvis skillArea matcher fokus-SG-kategorien
+ * legges øverst; innbyrdes rekkefølge bevares (stabil). Uten fokus-kategori: uendret.
+ */
+export function sortPaletteByFokus(
+  items: PaletteItem[],
+  kategori: SgKategori | null,
+): PaletteItem[] {
+  if (!kategori) return items;
+  const treff = (p: PaletteItem): boolean =>
+    p.skillArea != null && SKILLAREA_TO_SG[p.skillArea as SkillArea] === kategori;
+  return [...items.filter(treff), ...items.filter((p) => !treff(p))];
 }
 
 /** Gruppetrening-linje for innsiktsstripe. */

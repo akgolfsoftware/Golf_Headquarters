@@ -1133,6 +1133,7 @@ export function WorkbenchHybrid({
       // SG har ingen datamodell ennå → ærlig tomtilstand ("—"), ikke oppdiktede tall.
       adherence={data?.adherencePct != null ? `${data.adherencePct} %` : null}
       sg={null}
+      fokus={data?.fokus ?? null}
       onOpen={(key) => dispatch({ type: "openKpi", key })}
     />
   );

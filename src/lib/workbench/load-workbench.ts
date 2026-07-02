@@ -22,9 +22,11 @@
  */
 
 import { prisma } from "@/lib/prisma";
-import type { PyramidArea } from "@/generated/prisma/client";
+import type { PyramidArea, SkillArea } from "@/generated/prisma/client";
 import { PYR_REKKEFOLGE } from "@/lib/pyramide";
 import { adherencePct, oktCompliance } from "@/lib/workbench/compliance";
+import { kategoriFraFritekst, SG_FOKUS_LABEL, type WorkbenchFokus } from "@/lib/workbench/fokus";
+import { beregnSgGap } from "@/lib/workbench/sg-gap";
 import {
   mergeWeekSessions,
   type V2WeekSessionInput,
@@ -66,6 +68,8 @@ export type WorkbenchPaletteItem = {
   title: string;
   dur: number;
   cat: "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";
+  /** SG-tagging fra PlanTemplateSession.skillArea — brukes til fokus-rangering. */
+  skillArea: SkillArea | null;
 };
 
 export type WorkbenchData = {
@@ -100,6 +104,8 @@ export type WorkbenchData = {
   summary?: { weekNumber: number; sessionCount: number; plannedHours: number };
   /** Plan-adherence for uka (% gjennomførte minutter av forfalte). Null = ingen forfalte økter. */
   adherencePct?: number | null;
+  /** Aktivt fokus: coachens PeriodBlock.focus, ellers beregnet SG-gap. Null = ingen kilde. */
+  fokus?: WorkbenchFokus | null;
   /** Ukevolum-mål fra spillerens aktive PeriodBlock (min/max minutter). Null-felt = ikke satt. */
   volTarget?: { min: number | null; max: number | null };
   /** Sesong-perioder fra SeasonPlan.periodBlocks (Gantt/Årsplan). */
@@ -274,10 +280,10 @@ export async function loadWorkbenchData(
         tournament: { select: { name: true, startDate: true, location: true } },
       },
     }),
-    // Aktiv periode-blokk (dagens dato innenfor start/slutt) → ukevolum-mål.
+    // Aktiv periode-blokk (dagens dato innenfor start/slutt) → ukevolum-mål + coach-fokus.
     prisma.periodBlock.findFirst({
       where: { seasonPlan: { userId }, startDate: { lte: now }, endDate: { gte: now } },
-      select: { weeklyVolMin: true, weeklyVolMax: true },
+      select: { weeklyVolMin: true, weeklyVolMax: true, focus: true },
     }),
     prisma.user.findUnique({ where: { id: userId }, select: { hcp: true } }),
     prisma.seasonPlan.findFirst({
@@ -352,7 +358,7 @@ export async function loadWorkbenchData(
         sessions: {
           take: 8,
           orderBy: [{ ukeNr: "asc" }, { dagNr: "asc" }],
-          select: { title: true, varighetMin: true, pyramidArea: true },
+          select: { title: true, varighetMin: true, pyramidArea: true, skillArea: true },
         },
       },
     }),
@@ -573,6 +579,19 @@ export async function loadWorkbenchData(
   };
   const weekAdherencePct = adherencePct(mergedSessions, now);
 
+  // Fokus: coachens eksplisitte periode-fokus vinner; ellers beregnet SG-gap.
+  let fokus: WorkbenchFokus | null = null;
+  if (activePeriod?.focus) {
+    fokus = {
+      kilde: "coach",
+      label: activePeriod.focus,
+      kategori: kategoriFraFritekst(activePeriod.focus),
+    };
+  } else {
+    const gap = await beregnSgGap(userId);
+    if (gap) fokus = { kilde: "sg-gap", label: SG_FOKUS_LABEL[gap.kategori], kategori: gap.kategori };
+  }
+
   const templateRows = templateRowsEarly;
 
   const paletteSeen = new Set<string>();
@@ -587,6 +606,7 @@ export async function loadWorkbenchData(
         title: s.title,
         dur: s.varighetMin,
         cat: s.pyramidArea,
+        skillArea: s.skillArea,
       });
       if (paletteItems.length >= 12) break;
     }
@@ -633,6 +653,7 @@ export async function loadWorkbenchData(
     pyramid,
     summary,
     adherencePct: weekAdherencePct,
+    fokus,
     volTarget,
     seasonBlocks,
     tournamentCalendar: tournamentCalendar.length > 0 ? tournamentCalendar : undefined,
