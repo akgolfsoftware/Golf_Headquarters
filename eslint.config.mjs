@@ -62,12 +62,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
-    // Ikke-app-kode: arkiv, skill-/agent-filer, design-handover og statiske
-    // assets. Disse er ikke en del av appen og skal aldri lintes (de inneholder
-    // standalone .jsx-eksempler uten imports → falske jsx-no-undef-errors).
+    // Ikke-app-kode: arkiv (gitignored disk-rester), skill-filer, design-handover
+    // og statiske assets. Disse er ikke en del av appen og skal aldri lintes (de
+    // inneholder standalone .jsx-eksempler uten imports → falske jsx-no-undef-errors).
     "_archive/**",
     ".claude/**",
-    ".agents/**",
     "public/**",
     "wireframe/**",
   ]),
