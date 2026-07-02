@@ -113,7 +113,7 @@ wireframe/               ARKIV — ikke les eller importer herfra
 
 ## Kvalitetsgate per skjerm (ingen snarvei)
 
-1. Bygg fra design-kilde (`public/design-handover/AK Golf HQ Design System/`) — lag element-liste først.
+1. Bygg fra design-kilde (`docs/design-handover-2026-06-24/`, se `SKJERMER.md`) — lag element-liste først.
 2. Screenshot med Playwright (PlayerHQ 430px, AgencyOS ~1280px, full-page).
 3. Adversarial diff — spawn egen subagent som FINNER avvik (ikke bekrefter).
 4. Fiks alle avvik, re-screenshot, loop til 0 avvik.

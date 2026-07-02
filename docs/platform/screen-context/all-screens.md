@@ -3,7 +3,8 @@
 Generert: 11. juni 2026. Kilde: MASTER-SKJERMPLAN + Prisma-schema + route-tre.
 
 Brukes av agenter og utviklere som kontekst FØR arbeid på en skjerm starter.
-Fasit for design: `public/design-handover/AK Golf HQ Design System/`.
+Fasit for design: `docs/design-handover-2026-06-24/SKJERMER.md` (billedkatalog — kildefiler og skjermbilder ligger på Google Drive, «Final AK Golf HQ»; se `_REPO-NOTE.md` i samme mappe).
+Fasit-linjene under er oppdatert 3. juli 2026 — resten av dokumentet (formål, data, flyt) er fortsatt fra 11. juni og kan ha driftet noe fra kodebasen siden.
 
 ---
 
@@ -32,7 +33,7 @@ Fasit for design: `public/design-handover/AK Golf HQ Design System/`.
 - Kommer fra: login (`/auth/login`), alle undersider via bunn-nav
 - Leder til: Workbench (`/portal/planlegge/workbench`), Live aktiv (`/portal/(fullscreen)/live/[sessionId]/active`), Analysere (`/portal/analysere`), Meg (`/portal/meg`), Varsler (`/portal/varsler`)
 
-**Fasit:** `public/design-handover/AK Golf HQ Design System/playerhq-app/screens/HomeScreen.jsx` + `screenshots/pl-hjem.png`
+**Fasit:** `PlayerHQ Dashboard (terminal-lys).dc.html` — SKJERMER.md A1
 
 ---
 
@@ -54,7 +55,7 @@ Fasit for design: `public/design-handover/AK Golf HQ Design System/`.
 - Kommer fra: Hjem (`/portal`), bunn-nav
 - Leder til: Workbench (`/portal/planlegge/workbench`), Årsplan (`/portal/tren/aarsplan`), Drills (`/portal/drills`)
 
-**Fasit:** `public/design-handover/AK Golf HQ Design System/playerhq-app/screens/PlanScreen.jsx` + `screenshots/pl-planlegge.png`
+**Fasit:** `PlayerHQ Plan-Workbench (terminal-lys).dc.html` — SKJERMER.md A5
 
 ---
 
@@ -83,7 +84,7 @@ Fasit for design: `public/design-handover/AK Golf HQ Design System/`.
 - Kommer fra: Planlegge (`/portal/planlegge`), Hjem (`/portal`)
 - Leder til: Live aktiv (start økt), Årsplan (`/portal/tren/aarsplan`), Coach-planer (`/portal/coach/plans`)
 
-**Fasit:** `public/design-handover/AK Golf HQ Design System/playerhq-app/screens/WorkbenchScreen.jsx` + `screenshots/pl-workbench.png`
+**Fasit:** `Workbench Komplett Hub.dc.html` — SKJERMER.md C (delt fasit for spiller + coach, 7 faner)
 
 ---
 
@@ -107,7 +108,7 @@ Fasit for design: `public/design-handover/AK Golf HQ Design System/`.
 - Kommer fra: Hjem (`/portal`), bunn-nav
 - Leder til: Live aktiv (`/portal/(fullscreen)/live/[sessionId]/active`), Booking-hub (`/portal/booking`), Kalender (`/portal/kalender`), Ny økt (`/portal/ny-okt`)
 
-**Fasit:** `public/design-handover/AK Golf HQ Design System/playerhq-app/screens/ExecuteScreen.jsx` + `screenshots/pl-gjennomfore.png`
+**Fasit:** `PlayerHQ Gjennomføre (terminal-lys).dc.html` — SKJERMER.md A12
 
 ---
 
@@ -134,7 +135,7 @@ Fasit for design: `public/design-handover/AK Golf HQ Design System/`.
 - Kommer fra: Live brief (`/portal/(fullscreen)/live/[sessionId]/brief`), Gjennomføre
 - Leder til: Live oppsummering (`/portal/(fullscreen)/live/[sessionId]/summary`), Live logger, Live tapper
 
-**Fasit:** `public/design-handover/AK Golf HQ Design System/playerhq-app/screens/LiveActiveScreen.jsx` + `screenshots/pl-live-aktiv.png`
+**Fasit:** `PlayerHQ Live-okt v2 (range-modus).dc.html` — SKJERMER.md A11
 
 ---
 
@@ -160,7 +161,7 @@ Fasit for design: `public/design-handover/AK Golf HQ Design System/`.
 - Kommer fra: Live aktiv (`/portal/(fullscreen)/live/[sessionId]/active`)
 - Leder til: Hjem (`/portal`), SG-Hub (`/portal/mal/sg-hub`), Analysere (`/portal/analysere`)
 
-**Fasit:** `public/design-handover/AK Golf HQ Design System/playerhq-app/screens/LiveSummaryScreen.jsx` + `screenshots/pl-live-summary.png`
+**Fasit:** ingen egen rad i SKJERMER.md — del av samme flyt som A11 (`PlayerHQ Live-okt v2 (range-modus).dc.html`), usikker om oppsummeringen er egen skjerm i fasiten eller en tilstand inni A11. Sjekk med Anders/Claude Design ved neste porting.
 
 ---
 
@@ -183,7 +184,7 @@ Fasit for design: `public/design-handover/AK Golf HQ Design System/`.
 - Kommer fra: Hjem (`/portal`), bunn-nav
 - Leder til: SG-Hub (`/portal/mal/sg-hub`), Runder (`/portal/mal/runder`), TrackMan (`/portal/mal/trackman`), Tester (`/portal/tren/tester`), Hull-analyse (`/portal/analysere/hull`)
 
-**Fasit:** `public/design-handover/AK Golf HQ Design System/playerhq-app/screens/AnalyzeScreen.jsx` + `screenshots/pl-analysere.png`
+**Fasit:** `PlayerHQ Analyse (terminal-lys).dc.html` — SKJERMER.md A3
 
 ---
 
@@ -209,7 +210,7 @@ Fasit for design: `public/design-handover/AK Golf HQ Design System/`.
 - Kommer fra: Analysere (`/portal/analysere`), Hjem (SG-widget)
 - Leder til: SG-kategori-detalj, Benchmark, Best vs nå, TrackMan, Runder
 
-**Fasit:** `public/design-handover/AK Golf HQ Design System/playerhq-app/screens/SGHubScreen.jsx` + `screenshots/pl-sghub.png`
+**Fasit:** `PlayerHQ Statistikk-SG (terminal-lys).dc.html` — SKJERMER.md A4
 
 ---
 
@@ -230,7 +231,7 @@ Fasit for design: `public/design-handover/AK Golf HQ Design System/`.
 - Kommer fra: Analysere (`/portal/analysere`), SG-Hub
 - Leder til: Runde-detalj (`/portal/mal/runder/[id]`), Logg ny runde (`/portal/mal/runder/ny`)
 
-**Fasit:** `public/design-handover/AK Golf HQ Design System/playerhq-app/screens/RoundsScreen.jsx` + `screenshots/pl-runder.png`
+**Fasit:** USIKKER — ingen egen rad i SKJERMER.md for en ren runde-liste. Nærmeste treff er `PlayerHQ Statistikk-SG (terminal-lys).dc.html` (A4), men det kan hende runde-listen er en fane der eller mangler helt i denne handoveren. Bekreft med Claude Design før porting.
 
 ---
 
@@ -252,7 +253,7 @@ Fasit for design: `public/design-handover/AK Golf HQ Design System/`.
 - Kommer fra: Runder (liste) (`/portal/mal/runder`)
 - Leder til: Slag-for-slag (`/portal/mal/runder/[id]/shot-by-shot`), Del runde (`/portal/statistikk/runder/[runId]/del`)
 
-**Fasit:** `public/design-handover/AK Golf HQ Design System/playerhq-app/screens/RoundDetailScreen.jsx` + `screenshots/pl-runde-detalj.png`
+**Fasit:** USIKKER — samme som Runder (liste): ingen egen rad i SKJERMER.md. Nærmeste treff er `PlayerHQ Statistikk-SG (terminal-lys).dc.html` (A4). Bekreft med Claude Design før porting.
 
 ---
 
@@ -273,7 +274,7 @@ Fasit for design: `public/design-handover/AK Golf HQ Design System/`.
 - Kommer fra: Analysere (`/portal/analysere`)
 - Leder til: TrackMan-sesjon (`/portal/mal/trackman/[id]`)
 
-**Fasit:** `public/design-handover/AK Golf HQ Design System/playerhq-app/screens/TrackManScreen.jsx` + `screenshots/pl-trackman.png`
+**Fasit:** `PlayerHQ TrackMan-okt (terminal-lys).dc.html` — SKJERMER.md A9
 
 ---
 
@@ -295,7 +296,7 @@ Fasit for design: `public/design-handover/AK Golf HQ Design System/`.
 - Kommer fra: Analysere (`/portal/analysere`), Hjem (test-widget)
 - Leder til: Test-detalj (`/portal/tren/tester/[testId]`), Gjennomfør test (`/portal/tren/tester/[testId]/gjennomfor`), Test-katalog (`/portal/tren/tester/katalog`)
 
-**Fasit:** `public/design-handover/AK Golf HQ Design System/playerhq-app/screens/TestsScreen.jsx` + `screenshots/pl-tester.png`
+**Fasit:** `PlayerHQ Tester-flyt (terminal-lys).dc.html` — SKJERMER.md A13
 
 ---
 
@@ -317,7 +318,7 @@ Fasit for design: `public/design-handover/AK Golf HQ Design System/`.
 - Kommer fra: Hjem, Planlegge, Workbench
 - Leder til: Drill-detalj (`/portal/drills/[id]`), Workbench (legg til drill)
 
-**Fasit:** `public/design-handover/AK Golf HQ Design System/playerhq-app/screens/DrillLibraryScreen.jsx` + `screenshots/pl-drills.png`
+**Fasit:** `PlayerHQ Putting-reach-drills (terminal-lys).dc.html` — SKJERMER.md A23
 
 ---
 
@@ -341,7 +342,7 @@ Fasit for design: `public/design-handover/AK Golf HQ Design System/`.
 - Kommer fra: bunn-nav, alle undersider via tilbake
 - Leder til: Rediger profil (`/portal/meg/profil`), Abonnement (`/portal/meg/abonnement`), Innstillinger (`/portal/meg/innstillinger`), Helse (`/portal/meg/helse`), Utstyrsbag (`/portal/meg/utstyrsbag`), Dokumenter (`/portal/meg/dokumenter`), Hjelpesenter (`/portal/meg/help`)
 
-**Fasit:** `public/design-handover/AK Golf HQ Design System/playerhq-app/screens/MeScreen.jsx` + `screenshots/pl-meg.png`
+**Fasit:** `PlayerHQ Meg-undersider (terminal-lys).dc.html` — SKJERMER.md A15
 
 ---
 
@@ -363,7 +364,7 @@ Fasit for design: `public/design-handover/AK Golf HQ Design System/`.
 - Kommer fra: Gjennomføre (`/portal/gjennomfore`), Hjem, Meg
 - Leder til: Ny booking (`/portal/booking/ny`), Booking-detalj (`/portal/booking/[bookingId]`), Coach-profil i booking-kontekst (`/portal/booking/coach/[coachId]`)
 
-**Fasit:** `public/design-handover/AK Golf HQ Design System/playerhq-app/screens/BookingHubScreen.jsx` + `screenshots/pl-booking.png`
+**Fasit:** `PlayerHQ Booking-wizard (terminal-lys).dc.html` — SKJERMER.md A14
 
 ---
 
@@ -389,7 +390,7 @@ Fasit for design: `public/design-handover/AK Golf HQ Design System/`.
 - Kommer fra: Booking-hub (`/portal/booking`)
 - Leder til: Booking bekreftet (`/portal/booking/bekreftet`), Booking-hub (tilbake ved avbryt)
 
-**Fasit:** `public/design-handover/AK Golf HQ Design System/playerhq-app/screens/NewBookingScreen.jsx` + `screenshots/pl-booking-ny.png`
+**Fasit:** `PlayerHQ Booking-wizard (terminal-lys).dc.html` — SKJERMER.md A14 (samme fasit-fil som Booking-hub; wizard-steg av samme flyt)
 
 ---
 
@@ -419,7 +420,7 @@ Fasit for design: `public/design-handover/AK Golf HQ Design System/`.
 - Kommer fra: login (`/auth/login`), alle AgencyOS-undersider via sidebar
 - Leder til: Spillere (`/admin/spillere`), Innboks (`/admin/innboks`), Forespørsler (`/admin/foresporsler`), Kalender (`/admin/kalender`), Bookinger (`/admin/bookinger`), Caddie (`/admin/agencyos/caddie`)
 
-**Fasit:** `public/design-handover/AK Golf HQ Design System/agencyos-app/screens/DashboardScreen.jsx` + `screenshots/ag-dashboard.png`
+**Fasit:** `AgencyOS Cockpit (terminal-lys).dc.html` — SKJERMER.md B1
 
 ---
 
@@ -447,7 +448,7 @@ Fasit for design: `public/design-handover/AK Golf HQ Design System/`.
 - Kommer fra: Cockpit (`/admin/agencyos`), sidebar
 - Leder til: Spiller-detalj (`/admin/spillere/[id]`), Ny spiller (`/admin/spillere/ny`), Talent (`/admin/talent`)
 
-**Fasit:** `public/design-handover/AK Golf HQ Design System/agencyos-app/screens/PlayersScreen.jsx` + `screenshots/ag-stallen.png`
+**Fasit:** `AgencyOS Stall responsiv (terminal).dc.html` — SKJERMER.md B2
 
 ---
 
@@ -477,7 +478,7 @@ Fasit for design: `public/design-handover/AK Golf HQ Design System/`.
 - Kommer fra: Spillere-liste (`/admin/spillere`)
 - Leder til: Coach-Workbench (`/admin/spillere/[id]/workbench`), Fremgang (`/admin/spillere/[id]/fremgang`), Plan-detalj (`/admin/spillere/[id]/plan/[planId]`), Tester (`/admin/spillere/[id]/tester`), Rediger (`/admin/spillere/[id]/rediger`)
 
-**Fasit:** `public/design-handover/AK Golf HQ Design System/agencyos-app/screens/PlayerDetailScreen.jsx` + `screenshots/ag-spiller.png`
+**Fasit:** `AgencyOS Spiller-detalj (terminal).dc.html` — SKJERMER.md B3
 
 ---
 
@@ -508,7 +509,7 @@ Fasit for design: `public/design-handover/AK Golf HQ Design System/`.
 - Kommer fra: Spiller-detalj (`/admin/spillere/[id]`)
 - Leder til: Spiller-detalj (tilbake), Plan-detalj (`/admin/spillere/[id]/plan/[planId]`), Drills (`/admin/drills`)
 
-**Fasit:** `public/design-handover/AK Golf HQ Design System/agencyos-app/screens/CoachWorkbenchScreen.jsx` + `screenshots/ag-workbench.png`
+**Fasit:** `Workbench Komplett Hub.dc.html` — SKJERMER.md C (delt fasit for spiller + coach, 7 faner)
 
 ---
 
@@ -533,7 +534,7 @@ Fasit for design: `public/design-handover/AK Golf HQ Design System/`.
 - Kommer fra: Cockpit (innboks-widget), sidebar
 - Leder til: Forespørsler (`/admin/foresporsler`), Godkjenninger (`/admin/godkjenninger`), Spiller-detalj (fra meldingskort)
 
-**Fasit:** `public/design-handover/AK Golf HQ Design System/agencyos-app/screens/InboxScreen.jsx` + `screenshots/ag-innboks.png`
+**Fasit:** `AgencyOS Handlingssenter-faner (terminal).dc.html` — SKJERMER.md B10 (innboks er én av fanene i denne fasit-filen, ikke lenger en egen fil)
 
 ---
 
@@ -557,7 +558,7 @@ Fasit for design: `public/design-handover/AK Golf HQ Design System/`.
 - Kommer fra: Innboks (`/admin/innboks`), Cockpit
 - Leder til: Spiller-detalj (for kontekst), Bookinger (`/admin/bookinger`)
 
-**Fasit:** `public/design-handover/AK Golf HQ Design System/agencyos-app/screens/RequestsScreen.jsx` + `screenshots/ag-foresporsler.png`
+**Fasit:** `AgencyOS Handlingssenter-faner (terminal).dc.html` — SKJERMER.md B10 (fane i samme fasit-fil som Innboks/Godkjenninger)
 
 ---
 
@@ -581,7 +582,7 @@ Fasit for design: `public/design-handover/AK Golf HQ Design System/`.
 - Kommer fra: Innboks (`/admin/innboks`), Cockpit
 - Leder til: Spiller-detalj, Plan-detalj
 
-**Fasit:** `public/design-handover/AK Golf HQ Design System/agencyos-app/screens/ApprovalsScreen.jsx` + `screenshots/ag-godkjenninger.png`
+**Fasit:** `AgencyOS Handlingssenter-faner (terminal).dc.html` — SKJERMER.md B10 (fane i samme fasit-fil som Innboks/Forespørsler)
 
 ---
 
@@ -606,7 +607,7 @@ Fasit for design: `public/design-handover/AK Golf HQ Design System/`.
 - Kommer fra: sidebar, Cockpit
 - Leder til: Bookinger (`/admin/bookinger`), Ny booking (`/admin/bookinger/ny`), Spiller-detalj
 
-**Fasit:** `public/design-handover/AK Golf HQ Design System/agencyos-app/screens/CalendarScreen.jsx` + `screenshots/ag-kalender.png`
+**Fasit:** `AgencyOS Kalender (terminal).dc.html` — SKJERMER.md B5
 
 ---
 
@@ -630,7 +631,7 @@ Fasit for design: `public/design-handover/AK Golf HQ Design System/`.
 - Kommer fra: Kalender, Cockpit, Forespørsler
 - Leder til: Ny booking (`/admin/bookinger/ny`), Spiller-detalj
 
-**Fasit:** `public/design-handover/AK Golf HQ Design System/agencyos-app/screens/BookingsScreen.jsx` + `screenshots/ag-bookinger.png`
+**Fasit:** `AgencyOS Bookinger og kapasitet (terminal).dc.html` — SKJERMER.md B11
 
 ---
 
@@ -654,7 +655,7 @@ Fasit for design: `public/design-handover/AK Golf HQ Design System/`.
 - Kommer fra: sidebar, Cockpit (tester-widget)
 - Leder til: Test-detalj (`/admin/tester/[id]`), Tildel test (`/admin/tester/tildel/[spillerId]`), Benchmarks (`/admin/tester/benchmarks`)
 
-**Fasit:** `public/design-handover/AK Golf HQ Design System/agencyos-app/screens/TestsScreen.jsx` + `screenshots/ag-tester.png`
+**Fasit:** USIKKER — `AgencyOS Test-bygger (terminal).dc.html` (SKJERMER.md B8) er en no-code protokoll-BYGGER for nye tester, ikke coachens oversikt over alle tester på tvers av stallen. Ingen tydelig rad i SKJERMER.md dekker akkurat denne oversikts-skjermen. Bekreft med Claude Design før porting.
 
 ---
 
@@ -679,7 +680,7 @@ Fasit for design: `public/design-handover/AK Golf HQ Design System/`.
 - Kommer fra: sidebar, Spiller-detalj, Cockpit
 - Leder til: Plan-bygger (`/admin/plans/new`), Plan-detalj (`/admin/plans/[planId]`), Plan-maler (`/admin/plan-templates`), Coach-Workbench
 
-**Fasit:** `public/design-handover/AK Golf HQ Design System/agencyos-app/screens/PlansScreen.jsx` + `screenshots/ag-planer.png`
+**Fasit:** `AgencyOS Plans og Maler (terminal).dc.html` — SKJERMER.md B4
 
 ---
 
@@ -706,7 +707,7 @@ Fasit for design: `public/design-handover/AK Golf HQ Design System/`.
 - Kommer fra: landing page, logget-ut-side (`/auth/logget-ut`), direkte URL
 - Leder til: Hjem (`/portal`) for spillere, Cockpit (`/admin/agencyos`) for coaches, BankID (`/auth/bankid`), Registrer (`/auth/signup`), Glemt passord (`/auth/forgot-password`)
 
-**Fasit:** `public/design-handover/AK Golf HQ Design System/auth/screens/LoginScreen.jsx` + `screenshots/au-login.png`
+**Fasit:** `Auth Innlogging (terminal-lys).dc.html` — SKJERMER.md F1
 
 ---
 
@@ -731,7 +732,7 @@ Fasit for design: `public/design-handover/AK Golf HQ Design System/`.
 - Kommer fra: Signup (`/auth/signup`) etter e-postbekreftelse
 - Leder til: Hjem (`/portal`) ved fullføring, Samtykke-venter (`/auth/samtykke-venter`) for mindreårige
 
-**Fasit:** `public/design-handover/AK Golf HQ Design System/auth/screens/OnboardingScreen.jsx` + `screenshots/pl-onboarding.png`
+**Fasit:** `PlayerHQ Onboarding (terminal-lys).dc.html` — SKJERMER.md A2 (kildekatalogen plasserer denne under PlayerHQ, ikke Auth — samme skjerm)
 
 ---
 
@@ -755,7 +756,7 @@ Fasit for design: `public/design-handover/AK Golf HQ Design System/`.
 - Kommer fra: Google/sosiale medier, direkte URL
 - Leder til: Registrer (`/auth/signup`), Booking (`/(marketing)/booking`), Coaching (`/(marketing)/coaching`), Priser (`/(marketing)/priser`), Coacher (`/(marketing)/coacher`), PlayerHQ-salgsside (`/(marketing)/playerhq`)
 
-**Fasit:** `public/design-handover/AK Golf HQ Design System/ui_kits/marketing/MarketingHomepage.jsx` + `screenshots/mk-forside.png`
+**Fasit:** `Marketing Hjem (moderne).dc.html` — SKJERMER.md E1
 
 ---
 
