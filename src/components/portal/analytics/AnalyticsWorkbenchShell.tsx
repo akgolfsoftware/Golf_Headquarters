@@ -13,7 +13,7 @@ import { AnalyticsDashboard } from "./AnalyticsDashboard";
 import { AnalyticsRightPanel } from "./AnalyticsRightPanel";
 import type { AnalyticsWorkbenchData } from "@/app/portal/analysere/actions";
 import type { AnalyticsCategory } from "./categories";
-import "@/components/workbench/workbench.css";
+import "./workbench.css";
 
 export type { AnalyticsWorkbenchData };
 
