@@ -27,7 +27,7 @@ Appen er **deployet og kjører** på `akgolf-hq.vercel.app`. Kjernen (PlayerHQ +
 - **Kjent regresjon (forenklingsplan 13. juni):** ~~spiller kan ikke starte «dagens økt»~~ **LØST 2026-06-25** — Start økt lenker nå til `/portal/live/…` (V2 + plan-økter fra Workbench i Gjennomføre). Mobil-nav i AgencyOS er ennå ikke samlet med desktop-nav.
 
 ## Blokkert — P0 før ekte/betalende brukere
-Kilde og detaljert status: `docs/redesign-2026-06/P0-status.md` (re-verifisert mot kode 17. juni). Betaling åpner **1. juli** — koden gir bevisst gratis tilgang til alle frem til da (`gratisForAlle()` i `src/lib/feature-flags.ts`).
+Re-verifisert mot kode 17. juni. Betaling åpner **1. juli** — koden gir bevisst gratis tilgang til alle frem til da (`gratisForAlle()` i `src/lib/feature-flags.ts`).
 
 ### Løst i kode — trenger kun bekreftelse
 1. ~~**Abonnements-/gratis-logikk**~~ — **LØST.** `resolveTier()` i `src/lib/feature-flags.ts` implementerer alle fire gratis-veiene (lanserings-vindu, coaching-pakke, gruppemedlemskap, 30-dagers prøveperiode). Dekket av tester. Gammel påstand «ingen kode setter PRO» er utdatert.
@@ -42,8 +42,6 @@ Kilde og detaljert status: `docs/redesign-2026-06/P0-status.md` (re-verifisert m
 6. **E-postleveranse** — Resend SPF/DKIM for akgolf.no ikke verifisert; signup/reset kan havne i spam. *(DNS + Resend-panel)*
 7. **`NEXT_PUBLIC_APP_URL` feil i prod** — peker på Vercel-URL, ikke akgolf.no. *(Vercel-panel)*
 8. **Deploy-rutinen uavklart** — push til main = ikke live; kun manuell `vercel deploy --prod`. *(beslutning)*
-
-> Detaljer, kode-stier og anbefalt rekkefølge: `docs/redesign-2026-06/P0-status.md`.
 
 ## Verifisert vs. antatt
 - **Verifisert** mot fil/kode denne økten: P0-lista, SG-kalibrering, deploy-fakta, dokument-hierarkiet, skjermtall fra MASTER-SKJERMPLAN.
