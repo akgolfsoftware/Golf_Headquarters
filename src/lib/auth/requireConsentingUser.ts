@@ -10,7 +10,6 @@
 // andre.
 
 import type { User } from "@/generated/prisma/client";
-import { getCurrentUser } from "./getCurrentUser";
 import { isAwaitingGuardianConsent } from "./minor";
 
 /**
@@ -18,8 +17,13 @@ import { isAwaitingGuardianConsent } from "./minor";
  * Kaster `unauthenticated` hvis ikke innlogget, `guardian-consent-required`
  * hvis en mindreårig venter på foreldresamtykke. Erstatter mønsteret
  * `getCurrentUser()` + `if (!user) throw new Error("unauthenticated")`.
+ *
+ * Lazy import av getCurrentUser: unngår at bare det å importere
+ * `assertNotAwaitingConsent` (ren funksjon, testes isolert) drar inn
+ * next/navigation via getCurrentUser sin redirect-logikk.
  */
 export async function requireConsentingUser(): Promise<User> {
+  const { getCurrentUser } = await import("./getCurrentUser");
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
   if (isAwaitingGuardianConsent(user)) {
