@@ -24,7 +24,7 @@ Alle 8 steg (STEG 1–8) i denne planen er kjørt, hvert grep-bevis re-verifiser
 1. `.agents/skills/` → SLETTET (byte-identisk med `.claude/skills/`, ingen andre verktøy leser den).
 2. `supabase-meg/` → BEHOLDT (egen Supabase-instans for Meg-assistenten). Ikke rørt.
 3. `/kommando` vs `/admin/workspace` → `/admin/workspace` vinner. `/kommando` er IKKE slettet denne økten — fått TODO-kommentar øverst i `src/app/kommando/page.tsx` som peker hit. DB-koblingen migreres inn i `/admin/workspace` i en egen bygge-økt, deretter slettes `/kommando`.
-4. CoachHQ-komponentene i 138/144-lista → bekreftet dødt navnerom, hele `src/components/coachhq/` er slettet (inkl. de to panelene med CoachNote/Message-TODO-er — disse TODO-ene gjaldt uimplementerte Prisma-modeller, ikke gjenbruksplaner for selve komponentene).
+4. CoachHQ-komponentene i 138/144-lista → de 13 navngitte komponentfilene i FASE 1-listen er slettet (inkl. de to panelene med CoachNote/Message-TODO-er — disse TODO-ene gjaldt uimplementerte Prisma-modeller, ikke gjenbruksplaner for selve komponentene). Resten av mappa (14 filer) er fortsatt i bruk og IKKE slettet — se LEVENDE-funn over.
 
 **Ikke rørt denne økten (per instruks):** FASE 3 (bygging/P0-P2), `docs/` rotnivå-opprydding (1B), `tests/e2e/` vs `e2e/`-sammenslåing (1B), `src/app/dev-banekart/` (1B).
 
