@@ -1,3 +1,5 @@
+// TODO: MIGRERES til /admin/workspace, deretter slettes — se plans/opprydding-og-ferdigstilling.md
+//
 // AK Agency OS — Dashboard (/kommando). Kommandosenter: KPI-strip + paneler
 // (AI-agenter, I dag, Oppgaver). Ekte tall fra DB; ingen dummy. Kalender og
 // prosjekter er ærlige plassholdere til Etappe 2.
