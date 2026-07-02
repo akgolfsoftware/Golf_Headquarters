@@ -5,6 +5,30 @@
 
 ---
 
+## GJENNOMFØRT 2026-07-02 — FASE 1 + FASE 2 ferdig, FASE 3 IKKE rørt
+
+Alle 8 steg (STEG 1–8) i denne planen er kjørt, hvert grep-bevis re-verifisert mot repoet før sletting (repoet hadde endret seg siden analysen som ga 138/144-tallet). Alle batcher verifisert med `prisma validate/generate + tsc --noEmit + npm run build + npm test` (299/299, ikke 244 — testsuiten har vokst siden planen ble skrevet). Hver batch egen commit, pushet fortløpende til `main` på `akgolfsoftware/Golf_Headquarters`.
+
+**Avvik fra planens tall (ingen blokkerte, alle notert underveis):**
+- 1C-lista sa «138» i overskriften, men den faktiske kodeblokken inneholdt **144** filer. Prosessert alle 144 minus de 3 bekreftet levende blogg-komponentene = **141 kandidater** behandlet.
+- `.agents`-fjerningen avdekket at `eslint.config.mjs` faktisk hadde en ignore-referanse til `.agents/**` (planen sa «ingen config refererer»). Fjernet linjen i samme commit. Feilet først ved å også fjerne `_archive/**`-ignoreren — den var fortsatt nødvendig fordi gitignored disk-rester av `_archive/` består lokalt selv om git-sporingen er fjernet. Rettet før commit.
+- FASE 2B fant at hele `design-system/components/Coach/`-settet (3 filer: player-pipeline, risk-heatmap, stable-matrix) også var uten treff i design-handover — planen nevnte kun Gamification/Data-viz. Migrert til `public/design-handover/migrert-fra-design-system/` sammen med de opprinnelige 11 (7 Gamification + 4 Data-viz) = 14 filer totalt, lokalt/gitignored.
+- Under komponent-sletting (STEG 7) trigget push-hooken **faktiske produksjons-deploy-forsøk** på Vercel hver gang filantallet falt under Vercels 15000-graense (som tidligere blokkerte den helt). Disse ble avbrutt (`vercel remove`) etter hver push etter avklaring med Anders — ingen av dem rakk å gå live.
+
+**LEVENDE-funn (unntak fra slettelisten, med bevis):**
+- `src/components/blogg/Sammendrag.tsx`, `Stat.tsx`, `Quote.tsx` — importert direkte av `mdx-components.tsx` (repo-rot, utenfor `src/`) og brukt globalt i alle `content/blogg/*.mdx`. Planen markerte disse USIKKER; bekreftet levende, ikke slettet.
+- `src/components/athletic/data/index.ts` — re-eksportert som `./data` fra `src/components/athletic/index.ts`. Brakk build ved første forsøk (batch 4), gjenopprettet umiddelbart, ikke i noen slettet batch.
+
+**Åpne spørsmål avklart av Anders i denne økten (overstyrer planens spørsmål 1–3 nedenfor):**
+1. `.agents/skills/` → SLETTET (byte-identisk med `.claude/skills/`, ingen andre verktøy leser den).
+2. `supabase-meg/` → BEHOLDT (egen Supabase-instans for Meg-assistenten). Ikke rørt.
+3. `/kommando` vs `/admin/workspace` → `/admin/workspace` vinner. `/kommando` er IKKE slettet denne økten — fått TODO-kommentar øverst i `src/app/kommando/page.tsx` som peker hit. DB-koblingen migreres inn i `/admin/workspace` i en egen bygge-økt, deretter slettes `/kommando`.
+4. CoachHQ-komponentene i 138/144-lista → bekreftet dødt navnerom, hele `src/components/coachhq/` er slettet (inkl. de to panelene med CoachNote/Message-TODO-er — disse TODO-ene gjaldt uimplementerte Prisma-modeller, ikke gjenbruksplaner for selve komponentene).
+
+**Ikke rørt denne økten (per instruks):** FASE 3 (bygging/P0-P2), `docs/` rotnivå-opprydding (1B), `tests/e2e/` vs `e2e/`-sammenslåing (1B), `src/app/dev-banekart/` (1B).
+
+---
+
 ## FASE 1 — SLETT (verifisert med grep)
 
 Metode: hver kandidat er greppet mot `src/`, `scripts/`, `tests/`, `e2e/`, `mdx-components.tsx`, `package.json`, `next.config.ts` og `.claude/rules/`. «Null treff» betyr null import-/path-referanser utenfor kandidaten selv.
@@ -66,9 +90,9 @@ src/components/shared/calendar/SessionEditor.tsx
 src/components/shared/calendar/ConditionalRulesPanel.tsx
 src/components/shared/calendar/MiniCalendar.tsx
 src/components/shared/calendar/__demoData.ts
-src/components/blogg/Sammendrag.tsx   [USIKKER — kan brukes av MDX; sjekk mdx-components først]
-src/components/blogg/Stat.tsx          [USIKKER — samme]
-src/components/blogg/Quote.tsx         [USIKKER — samme]
+src/components/blogg/Sammendrag.tsx   [LEVENDE — importert av mdx-components.tsx, IKKE slettet]
+src/components/blogg/Stat.tsx          [LEVENDE — samme, IKKE slettet]
+src/components/blogg/Quote.tsx         [LEVENDE — samme, IKKE slettet]
 src/components/admin/workbench-mobile.tsx
 src/components/admin/calendar-week-grid.tsx
 src/components/admin/caddie/caddie-conversation-list.tsx
@@ -100,7 +124,7 @@ src/components/stats/stats-cmd-k.tsx
 src/components/stats/stats-trending-badge.tsx
 src/components/forelder/forelder-hjem.tsx
 src/components/forelder/oversikt.tsx
-src/components/athletic/data/index.ts
+src/components/athletic/data/index.ts   [LEVENDE — re-eksportert fra athletic/index.ts, IKKE slettet]
 src/components/baneguide/shot-plot-map.tsx
 src/components/planlegge-v2/turneringer-screen.tsx
 src/components/planlegge-v2/arsplan-screen.tsx
@@ -280,9 +304,16 @@ Verifikasjon per commit (fra CLAUDE.md): `npx prisma validate && npx prisma gene
 
 ---
 
-## Åpne spørsmål til Anders (én beslutning per punkt)
+## Åpne spørsmål til Anders (én beslutning per punkt) — BESVART 2026-07-02
 
-1. `.agents/skills/` — bruker Kimi Code CLI eller annet verktøy denne mappen? Hvis nei: slett (75 filer).
-2. `supabase-meg/` — egen Supabase-instans for Meg-assistenten? Hvis ja: behold.
-3. /kommando vs /admin/workspace — hvilken vinner? (Min anbefaling: /admin/workspace.)
-4. CoachHQ-komponentene i 138-lista — bekreft at CoachHQ-navnerommet er dødt (CLAUDE.md sier navnet er utgått, men to paneler har TODO-er som antyder planlagt gjenbruk).
+1. ~~`.agents/skills/` — bruker Kimi Code CLI eller annet verktøy denne mappen? Hvis nei: slett (75 filer).~~ **SVAR: slett.** Utført.
+2. ~~`supabase-meg/` — egen Supabase-instans for Meg-assistenten? Hvis ja: behold.~~ **SVAR: behold.** Ikke rørt.
+3. ~~/kommando vs /admin/workspace — hvilken vinner? (Min anbefaling: /admin/workspace.)~~ **SVAR: /admin/workspace vinner.** `/kommando` fikk TODO-merking, DB-migrering og sletting gjenstår i egen bygge-økt (FASE 3).
+4. ~~CoachHQ-komponentene i 138-lista — bekreft at CoachHQ-navnerommet er dødt.~~ **SVAR: dødt, slett alt inkl. panelene.** Utført.
+
+## Fortsatt åpne (ikke del av denne økten)
+
+- `docs/` rotnivå-opprydding (1B) — utsatt til etter lansering.
+- `tests/e2e/` vs `e2e/`-sammenslåing (1B) — egen refaktor-økt.
+- `src/app/dev-banekart/` (1B) — sjekk om baneguide-porting er ferdig først.
+- FASE 3 (bygging, P0–P2) — ikke rørt denne økten, se plan over.
