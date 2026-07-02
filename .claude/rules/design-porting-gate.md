@@ -1,11 +1,11 @@
 # Design-porting-gate (LÅST regel)
 
-Når en skjerm portes fra det ferske designet (`public/design-handover/AK Golf HQ Design System/`) til kode, MÅ denne gaten følges. En skjerm er IKKE «ferdig» og vises IKKE til Anders før gaten er bestått. Dette finnes fordi porting «fra minne/eksisterende kode» gir «nesten»-resultater som avviker fra fasit.
+Når en skjerm portes fra det ferske designet (`docs/design-handover-2026-06-24/`) til kode, MÅ denne gaten følges. En skjerm er IKKE «ferdig» og vises IKKE til Anders før gaten er bestått. Dette finnes fordi porting «fra minne/eksisterende kode» gir «nesten»-resultater som avviker fra fasit.
 
 ## Gaten — 5 steg per skjerm
 
 1. **Bygg FRA design-kilden, ikke fra eksisterende kode.**
-   Les kilden under `public/design-handover/AK Golf HQ Design System/`: `playerhq-app/`/`agencyos-app/` screen-JSX + matchende `screenshots/*.png`.
+   Les kilden under `docs/design-handover-2026-06-24/`: `SKJERMER.md` (billedkatalog) + `NAVIGASJON-knapp-til-rute.md` (knapp→skjerm-kart) + matchende skjermbilder.
    Lag en **element-liste** (hero-topp, hero-bunn, hver seksjon, hvert tall/tekst, rekkefølge).
    Bygg implementeringen fra lista — ikke ved å modifisere det som allerede finnes.
 
@@ -13,10 +13,10 @@ Når en skjerm portes fra det ferske designet (`public/design-handover/AK Golf H
 
 All design-referanse i kode, kommentarer, commits, prompts og interne dokumenter **MÅ** peke til den gjeldende design-kilden:
 
-- `public/design-handover/` (juni 2026 eller nyere .dc.html-filer + Final_AK_Golf_HQ/)
-- `public/design-handover/AK Golf HQ Design System/`
+- `docs/design-handover-2026-06-24/` (Claude Design-handover, juni — eneste git-sporede kilde, se `README.md` der)
 
 **Forbudt:**
+- `public/design-handover/` — kun en lokal maskin-cache (gitignored). Den følger IKKE med repoet til andre maskiner/sesjoner og skal aldri være fasit i en regel eller et diff-oppdrag. Hvis noe herfra trengs, flytt det inn i en git-sporet `docs/design-handover-*/`-mappe først.
 - `wireframe/`
 - `design-package/`
 - `design-files-v2/`
@@ -26,6 +26,8 @@ All design-referanse i kode, kommentarer, commits, prompts og interne dokumenter
 Gamle referanser skal enten fjernes, flyttes til `_archive/` eller oppdateres ved første touch av filen. Diff-agenter og kode-review skal flagge brudd på denne regelen.
 
 Bruk kun gjeldende design-handover som fasit for porting.
+
+Ved en NY handover (zip/tar.gz fra Claude Design): pakk ut til en fersk, dato-stemplet `docs/design-handover-YYYY-MM-DD/`-mappe, commit den, og oppdater datoen i denne regelen + i CLAUDE.md sin «Ferskt design»-linje i samme commit.
 
 2. **Screenshot implementeringen.**
    Playwright mot riktig bredde (PlayerHQ 430px, AgencyOS ~1280px), full-page.
