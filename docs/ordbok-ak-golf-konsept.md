@@ -137,7 +137,7 @@ Treningsområdene er den fine inndelingen av golf-trening etter avstand/situasjo
 | Spill (simulert) | `SPILL` | Treningsområde | Helhetlig simulert spill. | SG-kategori `SPILL`. | TURNERINGSPREP |
 | SG-kategori (taksonomi) | `SGKategori` | Treningsområde | Den grove gruppen et treningsområde hører til: TEE, TILNAERMING, KORT_SPILL, PUTTING, SPILL. | Avleder fra `TRENINGSOMRADER`. NB: ikke identisk med SkillArea eller SgCategory. | SkillArea, SgCategory |
 | SG-ferdighetsområde | `SkillArea` | Treningsområde | Statistikk-enum for hvor SG rapporteres: TEE_TOTAL, TILNAERMING, AROUND_GREEN, PUTTING, SPILL. | Brukes i SG-statistikk og chips. TEE_TOTAL ≠ TEE, AROUND_GREEN ≠ KORT_SPILL. | SGKategori, SgCategory |
-| Fokus-mal | `TEMPLATE_FOCUS` | Treningsområde | Forhåndsdefinerte øktfokus (Full bag, Kort spill, Putting, Langt spill, Tilnærming, Bunker, Turneringsprep) som hver peker på et sett treningsområder. | `getOmraaderForFokus()` slår opp områdene for et fokus i øktmal-byggeren. | Treningsområde, OktMal |
+| Fokus-mal | `TEMPLATE_FOCUS` | Treningsområde | Forhåndsdefinerte øktfokus (Full bag, Nærspill, Putting, Langt spill, Tilnærming, Bunker, Turneringsprep) som hver peker på et sett treningsområder. | `getOmraaderForFokus()` slår opp områdene for et fokus i øktmal-byggeren. Kode-enumet heter fortsatt `KORT_SPILL`; norsk UI-tekst er «Nærspill». | Treningsområde, OktMal |
 
 ---
 
@@ -602,17 +602,13 @@ Sentrale enums for plan-, økt- og bruker-tilstander. (Rene interne hjelpefunksj
 |---|---|---|
 | Full swing | Fulle slag | mellomrom |
 | Drive | drive | "tee-shot" |
-| Iron-spill | jern slag | bindestrek |
-| Jern-spill | jern slag | norsk form |
+| Iron-spill | jern-slag | engelsk fagterm — bruk «Jern-spill» |
+| Jern-spill | jern-slag | norsk form, bindestrek |
 | Approach-spill | innspill | bindestrek |
 | Innspill | innspill | "approach" norsk |
-| Wedge-spill | wedger | bindestrek |
-|  |  | norsk form |
+| Wedge-spill | wedge-slag | bindestrek |
 | Pitch | pitch | engelsk |
-|                   |                 |                           |
 | Chip | chip | engelsk |
-|                   |                 |                           |
-|                   |                 |                           |
 | Flop shot | lob | engelsk |
 | Lob shot | lob | engelsk |
 | Punch shot | lavt slag | engelsk |
@@ -727,7 +723,7 @@ Sentrale enums for plan-, økt- og bruker-tilstander. (Rene interne hjelpefunksj
 | SG Tee-to-Green | SG-T2G | T2G | "Total uten putting" |
 | SG Off-the-tee | SG-OTT | OTT | Sjelden norsk; bruk OTT |
 | SG Approach | SG-APP | APP | Innspill |
-| SG Around-green | SG-ARG | ARG | Kort spill nær green |
+| SG Around-green | SG-ARG | ARG | Nærspill rundt green — norsk UI-tekst: «Nærspill» |
 | SG Putting | SG-PUTT | PUTT | Putting |
 | SG per runde | SG/runde | — | Beregnet snitt |
 | SG per slag | SG/slag | — | Beregnet snitt |
@@ -1048,7 +1044,7 @@ Sentrale enums for plan-, økt- og bruker-tilstander. (Rene interne hjelpefunksj
 | Differensiell-praksis | differensiell-praksis | |
 | Variabel praksis | variabel praksis | uten bindestrek |
 
-### CS-system (Capacity Stress)
+### CS-system (Clubhead Speed)
 
 | Term | Bokmål | Notater |
 |---|---|---|
@@ -1381,13 +1377,10 @@ Sentrale enums for plan-, økt- og bruker-tilstander. (Rene interne hjelpefunksj
 | Putter | putter | |
 | Hybrid | hybrid | |
 | Woods | wood 3 | |
-| Lang jern | langj ern | bindestrek |
+| Lang jern | lang-jern | bindestrek |
 | Mellomjern | midtjern | bindestrek |
-| Kortern | kort-jern | bindestrek |
-| Wedge | wedge | |
-| Sand-wedge | wedge | |
-| Wedge           | wedge | |
-| Wedge | wedge | |
+| Kort jern | kort-jern | bindestrek |
+| Sand-wedge | sand-wedge | bindestrek |
 
 ## B13. Knapp-tekst & CTAs (standardisert)
 
@@ -1551,7 +1544,7 @@ Sentrale enums for plan-, økt- og bruker-tilstander. (Rene interne hjelpefunksj
 | **Anders Kristiansen** | Head coach AK Golf, 38 aktive spillere |
 | Joachim Tangen | Spiller, HCP +1,2, A1 |
 | Emma Sundsdal | Spiller, HCP 4,8, A2 |
-| Øyvind Røhjan | Spiller, HCP +3,5, A1 |
+| Øyvind Rohjan | Spiller, HCP +3,5, A1 — demo-kanon |
 | Sigrid Berg | Spiller, HCP 8,2, B1 |
 | Nora Lillevold | Spiller, HCP 12,4, B2 |
 | Henrik Vorli | Spiller, HCP +0,4, A1 |
@@ -1608,6 +1601,8 @@ Sentrale enums for plan-, økt- og bruker-tilstander. (Rene interne hjelpefunksj
 | Username | brukernavn |
 | Password | passord |
 | All / Show all | Alle / Vis alle |
+| Kort spill / kortspill | nærspill (kode-enum `KORT_SPILL` beholdes) |
+| Rundt green (som ARG-label) | nærspill (engelsk fagvisning «SG Around-green» beholdes) |
 | 🏌️ ⛳ 🎯 ⭐ | Lucide SVG-ikoner |
 
 ---
@@ -1622,7 +1617,7 @@ Sentrale enums for plan-, økt- og bruker-tilstander. (Rene interne hjelpefunksj
 3. Verifiser: `npx tsc --noEmit && npm run build`
 4. Commit med meldingsformat: `chore(ordliste): "X" → "Y"`
 
-**Sist oppdatert:** 2026-05-20 (Markus R.P. som default-spiller, AK Golf v2-design)
+**Sist oppdatert:** 2026-07-03 («kort spill» → «nærspill» i UI-tekst; CS-system-overskrift rettet til Clubhead Speed; ødelagte tabellrader ryddet. Demo-kanon: Øyvind Rohjan som demo-spiller.)
 
 ---
 
