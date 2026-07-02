@@ -943,8 +943,13 @@ function buildSummary(
   runnerB: number,
 ): string | null {
   const parts: string[] = [];
-  const navnA = a.name.split(" ")[0]!;
-  const navnB = b.name.split(" ")[0]!;
+  // HTML-escape navnene: summary injiseres via dangerouslySetInnerHTML, og
+  // DOMPurify kjører kun klient-side. Escaping her gjør SSR-grenen trygg mot
+  // navn med markup (XSS) uten å miste de tiltenkte <strong>/<em>-taggene.
+  const esc = (s: string) =>
+    s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const navnA = esc(a.name.split(" ")[0]!);
+  const navnB = esc(b.name.split(" ")[0]!);
 
   if (snittA !== null && snittB !== null) {
     const bedre = snittA <= snittB ? navnA : navnB;

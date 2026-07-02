@@ -20,6 +20,13 @@ const AK_GOLF = [
   { href: "/jobb", label: "Karriere" },
 ];
 
+const RESSURSER = [
+  { href: "/blogg", label: "Blogg" },
+  { href: "/cases", label: "Cases" },
+  { href: "/suksess", label: "Suksesshistorier" },
+  { href: "/junior", label: "Junior" },
+];
+
 const KONTAKT = [
   { href: "mailto:post@akgolf.no", label: "post@akgolf.no" },
   { href: "/kontakt", label: "Fredrikstad · Sarpsborg" },
@@ -29,7 +36,7 @@ export function MarketingFooter() {
   return (
     <footer className="dark bg-background pb-8 pt-16 text-foreground/70">
       <div className="mx-auto max-w-7xl px-6 md:px-8">
-        <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 md:grid-cols-[2fr_1fr_1fr_1fr]">
+        <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 md:grid-cols-[2fr_1fr_1fr_1fr_1fr]">
           <div>
             <Link href="/" aria-label="AK Golf, hjem" className="inline-flex">
               <AkGolfLogo variant="white" width={41} />
@@ -42,6 +49,7 @@ export function MarketingFooter() {
 
           <FooterColumn title="Tjenester" links={TJENESTER} />
           <FooterColumn title="AK Golf" links={AK_GOLF} />
+          <FooterColumn title="Ressurser" links={RESSURSER} />
           <FooterColumn title="Kontakt" links={KONTAKT} />
         </div>
 

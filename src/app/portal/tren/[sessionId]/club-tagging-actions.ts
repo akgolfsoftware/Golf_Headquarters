@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
 import type { TrackManEnvironment } from "@/generated/prisma/client";
 
@@ -15,8 +15,7 @@ export async function tagClubsPracticed(
   sessionId: string,
   clubs: ClubInput[],
 ) {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
 
   // Verifiser at sesjonen tilhører brukeren
   const session = await prisma.trainingPlanSession.findUnique({

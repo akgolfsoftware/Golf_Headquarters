@@ -125,7 +125,7 @@ To parsere + rik analyse-motor + DB-modell. **Ingen TrackMan-API** — alt er ma
 - **`NgfKategori` (`:164`):** `A…L` (12 nivåer; A = OWGR Top 150, K–L = HCP 15+/junior).
 - Utledes to veier: fra HCP (`ai-plan/context.ts:134`, harde terskler) og fra WAGR-poeng (`talent/wagr-import/actions.ts:12`, lagres på `WagrSnapshot.ngfCategory`; WAGR foretrekkes, `context.ts:459`).
 - Andre nivå-felt (overlapper ikke): `Group.level` (fritekst), `OktMal.kategoriAK` (fritekst), `SPILLERKATEGORIER` A–K i `taxonomy.ts:239`.
-- **PARKERT A–K snittscore-bånd (11 grenser):** **0 kode** finnes — må bygges fra bunnen når Anders gir grensene (ingen plassholder å fylle). Jf. [KONFLIKTER.md K-04].
+- **✅ A–K snittscore-bånd (11 grenser): IMPLEMENTERT** (`src/lib/domain/ak-kategori.ts`, Anders' tabell 2026-06-22). `AK_BANDS` + `kategoriFraSnittscore`/`nesteKategori`/`prosentTilNesteNiva`. Grensene matcher kanon i ak-second-brain (`iup-kategorisystem.md`, Team Norway-metodikk) eksakt. Bånd: A `<68` · B `68–72` · … · K `100+`, hvert `[min, max)`. (Tidligere «0 kode» her var utdatert — verifisert mot kode 2026-06-28.)
 
 ### «Neste nivå» i dag
 - **Datadrevet terskel:** ingenting. NGF-kategorien klassifiserer nåværende nivå (brukes kun til drill-filtrering), ikke en nivå-stige.
@@ -155,12 +155,12 @@ To parsere + rik analyse-motor + DB-modell. **Ingen TrackMan-API** — alt er ma
 ### Scoring
 - Kanonisk motor: `src/lib/portal-tester/test-scoring.ts` — `scoreTest(protocol, forsok)`. **`ScoringKind` (`:31-46`)** dekker alle nevnte typer + flere (`pei_average, pei_total, spread_stddev, time_seconds, points_total, count_ok, hit_rate, distance_average, carry_average, value_single, value_max, sum, average, min, fallback`). Retning per kind i `RETNING` (`:95-111`). PEI = nærhet ÷ lengde (`:229-241`).
 - **Benchmarks:** i `TestDefinition.protocol.benchmarks` (JSON, zod-validert i `test-benchmarks.ts`). 7 anker-nivåer (`SHORT_LABEL :41-49`): `pga_top40, pga_avg, dpw_kft, challenge, nordic, elite_junior, scratch`. `achievedLevel()` (`:92`). Autosync (`benchmark-sync.ts`): kun 2 tester har DataGolf-ankere; PEI/putt har statiske referanser.
-- **FYS scores som rå beste verdi** (`value_max`/`time_seconds`) — **ingen referanse** (FYS-formel parkert, `:20-21`). Jf. [KONFLIKTER.md K-12].
+- **FYS scores som rå beste verdi** (`value_max`/`time_seconds`) — **ingen referanse** (FYS-formel parkert, `:20-21`). Jf. [arkiv/KONFLIKTER.md K-12].
 
 ### Drill-bibliotek
 - **`ExerciseDefinition` (`:878`)** — hovedbank: `pyramidArea, skillArea?, lPhase?+lPhases[], csMin/Max, csTargetByKategori, environment[], fasilitetKrav[], utstyr[], intensitet, minKategori/maxKategori: NgfKategori?, minHcp/maxHcp, treningstype, source, visibility, videoUrl`.
 - **`SessionDrill` (`:945`)** kobler bank→`TrainingPlanSession` (Spor A). **`TrainingDrillV2` (`:2539`)** = Spor B (Workbench/live-V2), **egen drill-tabell uten FK til `ExerciseDefinition`**, egen taksonomi (`pyramide, lFase, csNivaa, miljo, prPress` + 17 `fys*`-felt). **To adskilte drill-banker.**
-- **BEKREFTET DATA-BUG:** QA `scripts/drill-qa.ts` (`npm run qa:drills`) regel `kategori-range-omvendt` (`:147-164`). Filteret `hentTilgjengeligeDrills()` (`ai-plan/context.ts:228-308`) krever `idx(minKategori) ≤ idx(maxKategori)`; driller med omvendt range matcher **ingen** spiller → usynlige i AI-plan. Auto-memory: ~809/930 rammet (tallet bør re-verifiseres mot live DB). Også: 0 video-dekning, blokk-skjevhet. Jf. [KONFLIKTER.md K-13].
+- **BEKREFTET DATA-BUG:** QA `scripts/drill-qa.ts` (`npm run qa:drills`) regel `kategori-range-omvendt` (`:147-164`). Filteret `hentTilgjengeligeDrills()` (`ai-plan/context.ts:228-308`) krever `idx(minKategori) ≤ idx(maxKategori)`; driller med omvendt range matcher **ingen** spiller → usynlige i AI-plan. Auto-memory: ~809/930 rammet (tallet bør re-verifiseres mot live DB). Også: 0 video-dekning, blokk-skjevhet. Jf. [arkiv/KONFLIKTER.md K-13].
 
 ### Test-score → SG/nivå?
 - **Til nivå-bånd: JA** for tester med benchmarks (via `achievedLevel()`), men få tester har faktisk `levels[]`. **Til SG: NEI** (ingen kode kobler `TestResult.score` til SG).

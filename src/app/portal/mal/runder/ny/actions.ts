@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
 
 export type LogRoundManualInput = {
@@ -33,8 +33,7 @@ export type LogRoundManualInput = {
  * Lager en Round-rad med score og valgfrie statistikk-felter.
  */
 export async function logRoundManual(input: LogRoundManualInput) {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
 
   const sgValues = [input.sgOtt, input.sgApp, input.sgArg, input.sgPutt];
   const sgTotal = sgValues.some((v) => typeof v === "number")

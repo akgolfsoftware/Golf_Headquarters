@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
 import { nonEmpty, isoDate } from "@/lib/validation/schemas";
 
@@ -29,8 +29,7 @@ export type GoalInput = {
 
 export async function createGoal(input: GoalInput) {
   GoalInputSchema.parse(input);
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
   if (!input.title.trim()) throw new Error("missing-title");
 
   await prisma.goal.create({
@@ -48,8 +47,7 @@ export async function createGoal(input: GoalInput) {
 
 export async function markeerGoalSomOppnaadd(goalId: string) {
   GoalIdSchema.parse(goalId);
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
 
   const goal = await prisma.goal.findUnique({ where: { id: goalId } });
   if (!goal || goal.userId !== user.id) throw new Error("forbidden");
@@ -65,8 +63,7 @@ export async function markeerGoalSomOppnaadd(goalId: string) {
 
 export async function slettGoal(goalId: string) {
   GoalIdSchema.parse(goalId);
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
 
   const goal = await prisma.goal.findUnique({ where: { id: goalId } });
   if (!goal || goal.userId !== user.id) throw new Error("forbidden");
@@ -82,8 +79,7 @@ export async function slettGoal(goalId: string) {
  */
 export async function avbrytGoal(goalId: string, reason: string) {
   AvbrytGoalSchema.parse({ goalId, reason });
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
 
   const goal = await prisma.goal.findUnique({ where: { id: goalId } });
   if (!goal || goal.userId !== user.id) throw new Error("forbidden");
@@ -118,8 +114,7 @@ export async function avbrytGoal(goalId: string, reason: string) {
 export async function endreGoal(goalId: string, input: GoalInput) {
   GoalIdSchema.parse(goalId);
   GoalInputSchema.parse(input);
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
 
   const goal = await prisma.goal.findUnique({ where: { id: goalId } });
   if (!goal || goal.userId !== user.id) throw new Error("forbidden");

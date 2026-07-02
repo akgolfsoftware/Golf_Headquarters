@@ -1,13 +1,26 @@
 # STATUS NÅ — AK Golf HQ
 
-> **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg. Detaljert skjermstatus bor i `docs/MASTER-SKJERMPLAN.md`; låste regler i `docs/platform/BUSINESS-RULES.md`; uavklarte beslutninger i `docs/AAPNE-SPORSMAAL.md`.
+> **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg.
 
-**Sist oppdatert:** 2026-06-25 post-lansering (Bølge 0–1 ferdig: brutt main-build fikset (SGConsole), Workbench uke-navigasjon FORRIGE/NESTE koblet med riktig persistering, Maler-kort viser ekte PlanEffectiveness-SG; 244/244 tester. Evaluering-sløyfa + Økt SG-kobling parkert til egen Workbench-økt med Anders. Neste: Bølge 2 — PlayerHQ undersider.)
+**Sist oppdatert:** 2026-06-28
+
+## Levende kilder (én av hver rolle — start her)
+
+| Rolle | Dokument |
+|---|---|
+| **Snapshot (denne)** | `docs/STATUS-NÅ.md` |
+| **Skjerm-status** (autoritativ, 6 haker/skjerm) | `docs/MASTER-SKJERMPLAN.md` |
+| **Uavklart / parkert / løst** | `docs/AAPNE-SPORSMAAL.md` |
+| **Gjenstående arbeid** (prioritert) | `docs/PLAN-GJENSTAENDE.md` |
+| **Låste forretningsregler** (fasit) | `docs/platform/BUSINESS-RULES.md` |
+| **Full plattformkontekst** (5 min) | `docs/platform/AGENT-BRIEF.md` |
+
+Historiske bygg-spor (SKJERM-STATUS, SKJERM-BYGGEPLAN, BYGGELOGG-FLAGG, KONFLIKTER) er flyttet til `docs/arkiv/` — ikke bygg mot dem.
 
 ---
 
 ## Kort sagt
-Appen er **deployet og kjører** på `akgolf-hq.vercel.app`. Kjernen (PlayerHQ + AgencyOS) er bygget og i stor grad portet fra designfasiten. **Den er IKKE klar for betalende/ekte brukere ennå** — det står 8 P0-blokkerere igjen (se nederst). Betaling starter etter plan **1. juli**. Booking går midlertidig via **Acuity** (`akgolfgroup.as.me`) til den innebygde HQ-bookingen lanseres.
+Appen er **deployet og kjører** på `akgolf-hq.vercel.app`. Kjernen (PlayerHQ + AgencyOS) er bygget og i stor grad portet fra designfasiten. **Den er IKKE klar for betalende/ekte brukere ennå** — det står 8 P0-blokkerere igjen (se nederst). Betaling starter etter plan **1. august** (flyttet fra 1. juli av Anders 2026-06-24). Booking går midlertidig via **Acuity** (`akgolfgroup.as.me`) til den innebygde HQ-bookingen lanseres.
 
 ## Ferdig / solid (verifisert)
 - **Deployet live:** prod på `akgolf-hq.vercel.app`. (NB: push til `main` deployer IKKE automatisk — kjør `vercel deploy --prod`.)
@@ -27,15 +40,15 @@ Appen er **deployet og kjører** på `akgolf-hq.vercel.app`. Kjernen (PlayerHQ +
 - **Kjent regresjon (forenklingsplan 13. juni):** ~~spiller kan ikke starte «dagens økt»~~ **LØST 2026-06-25** — Start økt lenker nå til `/portal/live/…` (V2 + plan-økter fra Workbench i Gjennomføre). Mobil-nav i AgencyOS er ennå ikke samlet med desktop-nav.
 
 ## Blokkert — P0 før ekte/betalende brukere
-Re-verifisert mot kode 17. juni. Betaling åpner **1. juli** — koden gir bevisst gratis tilgang til alle frem til da (`gratisForAlle()` i `src/lib/feature-flags.ts`).
+Kilde og detaljert status: `docs/redesign-2026-06/P0-status.md` (re-verifisert mot kode 17. juni). Betaling åpner **1. august** — koden gir bevisst gratis tilgang til alle frem til da (`gratisForAlle()` i `src/lib/feature-flags.ts`).
 
 ### Løst i kode — trenger kun bekreftelse
 1. ~~**Abonnements-/gratis-logikk**~~ — **LØST.** `resolveTier()` i `src/lib/feature-flags.ts` implementerer alle fire gratis-veiene (lanserings-vindu, coaching-pakke, gruppemedlemskap, 30-dagers prøveperiode). Dekket av tester. Gammel påstand «ingen kode setter PRO» er utdatert.
-2. ~~**PRO-for-alle-kampanjen «kald»**~~ — **IKKE ET PROBLEM.** `gratisForAlle()` gir alle PRO frem til `BETALING_STARTER` (1. juli). Ingen «kald vegg» før da. Bekreft kun at 1. juli-datoen er riktig.
+2. ~~**PRO-for-alle-kampanjen «kald»**~~ — **IKKE ET PROBLEM.** `gratisForAlle()` gir alle PRO frem til `BETALING_STARTER` (1. august). Ingen «kald vegg» før da. (Dato bekreftet til 1. august av Anders 2026-06-24.)
 4. ~~**Soft-slettet konto kan fortsatt logge inn**~~ — **LØST.** `getCurrentUser.ts:23` returnerer `null` når `deletedAt` er satt.
 
 ### Gjenstår (kode)
-5. **Dataeksport: eksport-stub forvirrende** — GDPR-eksporten virker i `/portal/meg/innstillinger/personvern`, men den separate `/portal/meg/innstillinger/eksport` er en «kommer snart»-stub. Fix: redirect stub → personvern-siden. *(liten fiks, kan gjøres nå)*
+5. ~~**Dataeksport: eksport-stub forvirrende**~~ — **LØST.** `/portal/meg/innstillinger/eksport/page.tsx` redirecter nå til personvern-siden (ekte `exportUserData`-flyt). Ingen «kommer snart»-stub igjen. *(verifisert 2026-06-28)*
 
 ### Krever Anders (panel/DNS/beslutning)
 3. **Live Stripe-nøkler** — verifiser at `.env.local` har TEST-nøkler, live kun i Vercel. *(Stripe + Vercel-panel)*

@@ -1320,6 +1320,8 @@ type LdTournament = {
 };
 
 function tilJsonLd(t: LdTournament): string {
+  // Escape <,>,& slik at DB-sourcede felt (navn/sted) ikke kan bryte ut av
+  // <script>-taggen (JSON-LD XSS). \u-escaping er gyldig JSON.
   return JSON.stringify({
     "@context": "https://schema.org",
     "@type": "SportsEvent",
@@ -1329,5 +1331,8 @@ function tilJsonLd(t: LdTournament): string {
     location: t.location ? { "@type": "Place", name: t.location } : undefined,
     url: t.officialUrl ?? undefined,
     sport: "Golf",
-  });
+  })
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")
+    .replace(/&/g, "\\u0026");
 }

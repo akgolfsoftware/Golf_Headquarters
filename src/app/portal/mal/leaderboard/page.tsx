@@ -97,11 +97,23 @@ export default async function LeaderboardPage({
         },
         select: { sgTotal: true, sgApp: true, sgArg: true, sgPutt: true },
       },
+      trainingPlans: {
+        select: {
+          sessions: {
+            where: { scheduledAt: { gte: tretti } },
+            select: { id: true },
+          },
+        },
+      },
     },
   });
 
   const rangering: Rad[] = proBrukere
     .map((b) => {
+      const sessionCount = b.trainingPlans.reduce(
+        (acc, p) => acc + p.sessions.length,
+        0,
+      );
       const sgVerdier = b.rounds
         .map((r) => {
           if (sgTab === "approach") return r.sgApp;
@@ -126,9 +138,8 @@ export default async function LeaderboardPage({
             ? (b.hcp >= 0 ? "+" : "") + b.hcp.toFixed(1).replace(".", ",")
             : "—",
         sg,
-        // TODO: hent økt-volum fra TrainingPlanSession-logg
-        sessions: b.rounds.length,
-        sessionsPct: Math.min(100, b.rounds.length * 14),
+        sessions: sessionCount,
+        sessionsPct: Math.min(100, sessionCount * 3),
         me: b.id === user.id,
       };
     })

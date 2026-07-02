@@ -30,7 +30,7 @@ export async function createApiKey(
 ): Promise<CreateApiKeyResult> {
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
-  if (user.role !== "ADMIN" && user.role !== "COACH") throw new Error("forbidden");
+  if (user.role !== "ADMIN") throw new Error("forbidden");
   if (!input.name.trim()) throw new Error("missing-name");
 
   const { fullKey, prefix, hashed } = generateSecret();

@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { assertNotAwaitingConsent } from "@/lib/auth/requireConsentingUser";
 import { audit } from "@/lib/audit";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
 import { prisma } from "@/lib/prisma";
@@ -42,6 +43,7 @@ export async function lagreFasilitetProfil(
   }
   const user = await getCurrentUser();
   if (!user) return { ok: false, error: "unauthenticated" };
+  assertNotAwaitingConsent(user);
 
   // Valider at alle verdier er gyldige enum-verdier
   const validerte = fasiliteter.filter((f) =>
@@ -77,6 +79,7 @@ export async function exportUserData(): Promise<{
 }> {
   const user = await getCurrentUser();
   if (!user) return { ok: false, error: "unauthenticated" };
+  assertNotAwaitingConsent(user);
 
   try {
     // Samle all bruker-data fra Prisma
@@ -186,6 +189,7 @@ export async function deleteUserAccount(
   }
   const user = await getCurrentUser();
   if (!user) return { ok: false, error: "unauthenticated" };
+  assertNotAwaitingConsent(user);
 
   try {
     // Soft-delete

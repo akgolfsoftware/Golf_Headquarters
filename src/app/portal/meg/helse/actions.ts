@@ -11,6 +11,7 @@ const InputSchema = z.object({
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, "Dato må være på formatet ÅÅÅÅ-MM-DD"),
   restingHr: z.number().int().min(20).max(220).nullable().optional(),
+  hrv: z.number().int().min(0).max(300).nullable().optional(),
   sleepHours: z.number().min(0).max(24).nullable().optional(),
   weightKg: z.number().min(20).max(300).nullable().optional(),
   notes: z.string().max(500).nullable().optional(),
@@ -36,12 +37,14 @@ export async function lagreHelseEntry(input: HelseInput) {
       userId: user.id,
       date: dateValue,
       restingHr: parsed.restingHr ?? null,
+      hrv: parsed.hrv ?? null,
       sleepHours: parsed.sleepHours ?? null,
       weightKg: parsed.weightKg ?? null,
       notes: parsed.notes ?? null,
     },
     update: {
       restingHr: parsed.restingHr ?? null,
+      hrv: parsed.hrv ?? null,
       sleepHours: parsed.sleepHours ?? null,
       weightKg: parsed.weightKg ?? null,
       notes: parsed.notes ?? null,

@@ -132,12 +132,18 @@ export default async function CoachPage() {
               )}
 
               {/* CTA-knapper */}
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <Link
                   href="/portal/coach/melding"
                   className="flex flex-1 items-center justify-center rounded-lg bg-primary px-3 py-2.5 font-mono text-[10.5px] font-bold uppercase tracking-[0.06em] text-primary-foreground transition hover:brightness-95"
                 >
                   Send melding
+                </Link>
+                <Link
+                  href={`/portal/coach/${coach.id}`}
+                  className="flex shrink-0 items-center justify-center gap-1.5 rounded-lg border border-border bg-secondary px-3.5 py-2.5 font-mono text-[10.5px] font-bold uppercase tracking-[0.06em] text-foreground transition hover:bg-secondary/70"
+                >
+                  Se profil
                 </Link>
                 <Link
                   href="/portal/booking"

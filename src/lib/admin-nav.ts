@@ -201,6 +201,7 @@ export function buildAdminNav(
           label: "Planlegge",
           icon: ClipboardList,
           children: [
+            { key: "season-plan", label: "Sesongplan", href: "/admin/planlegge" },
             { key: "training-plans", label: "Treningsplaner", href: "/admin/plans" },
             { key: "plan-templates", label: "Plan-maler", href: "/admin/plan-templates" },
             { key: "drills", label: "Drill-bibliotek", href: "/admin/drills" },
@@ -223,6 +224,7 @@ export function buildAdminNav(
             { key: "services", label: "Tjenester", href: "/admin/services" },
             { key: "trackman", label: "TrackMan", href: "/admin/trackman" },
             { key: "recording", label: "Opptak", href: "/admin/recording" },
+            { key: "videoer", label: "Videoer", href: "/admin/videoer" },
           ],
         },
       ],
@@ -279,10 +281,35 @@ export function buildAdminNav(
     },
   ];
 
+  // Intern / QA — admin-only tooling. Tidligere foreldreløse skjermer koblet
+  // inn 2026-06-25 (Anders «koble alt inn additivt»). Holdes UT av primær-nav
+  // for å ikke rote til coach-flaten; vises kun for ADMIN (eller legacy uten rolle).
+  if (!role || role === "ADMIN") {
+    sections.push({
+      label: "Intern",
+      items: [
+        { type: "item", key: "organisasjon", label: "Organisasjon", href: "/admin/organisasjon", icon: LayoutDashboard },
+        { type: "item", key: "stats-overview", label: "Stats-oversikt", href: "/admin/stats/overview", icon: BarChart3 },
+        { type: "item", key: "stats-moderering", label: "Moderering", href: "/admin/stats/moderering", icon: CheckCheck },
+        { type: "item", key: "godkjenn-portal", label: "Portal-godkjenning", href: "/admin/godkjenn-portal", icon: ShieldCheck },
+      ],
+    });
+  }
+
   // Skjul capability-gatede nav-lenker for roller uten tilgang (samme policy som
   // /admin/settings/tilgang viser). Uten oppgitt rolle (legacy) vises alt.
   if (role) {
+    // Forretnings-/personlig-admin: KUN ADMIN (ikke golf-coaching). Skjules for
+    // COACH så Markus ikke ser Anders' integrasjoner/automasjon/secrets/system.
+    const ADMIN_ONLY_NAV = new Set([
+      "integrations",
+      "agents",
+      "email-templates",
+      "audit-log",
+      "settings",
+    ]);
     const blokkert = (key: string) => {
+      if (role !== "ADMIN" && ADMIN_ONLY_NAV.has(key)) return true;
       const cap = LEAF_CAPABILITY[key];
       return cap !== undefined && !can(role, cap);
     };

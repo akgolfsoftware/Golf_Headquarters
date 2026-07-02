@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
 import { markAllRead } from "@/lib/notifications";
 
@@ -9,8 +9,7 @@ import { markAllRead } from "@/lib/notifications";
  * Marker spesifikke varsler som lest. Hvis ids er tom, markeres alle.
  */
 export async function markNotificationsRead(ids?: string[]): Promise<void> {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
 
   if (!ids || ids.length === 0) {
     await markAllRead(user.id);
@@ -33,8 +32,7 @@ export async function markNotificationsRead(ids?: string[]): Promise<void> {
  * Slett spesifikke varsler.
  */
 export async function deleteNotifications(ids: string[]): Promise<void> {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
   if (ids.length === 0) return;
 
   await prisma.notification.deleteMany({

@@ -8,7 +8,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@/generated/prisma/client";
 import type { PyramidArea, SessionStatusV2 } from "@/generated/prisma/client";
@@ -72,8 +72,7 @@ function readCoachComment(session: {
 
 /** Sjekk at brukeren har tilgang til økta (spiller, coach, admin, eller deltaker). */
 async function verifyAccess(sessionId: string) {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
 
   const session = await prisma.trainingSessionV2.findUnique({
     where: { id: sessionId },

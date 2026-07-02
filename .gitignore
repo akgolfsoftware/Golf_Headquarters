@@ -91,3 +91,14 @@ public/design-handover/
 data/beta-users-*.csv
 data/notion-spillere-*.json
 data/tournaments-import.json
+.ds-sync/
+ds-bundle/
+.design-sync/.cache/
+.design-sync/learnings/
+.design-sync/node_modules
+.design-sync/compiled-tailwind.css
+# Regenererbar design-sync-scaffolding (skill bygger disse på nytt; stubs feiler lint).
+.design-sync/stubs/
+.design-sync/previews/
+.design-sync/overrides/
+tsconfig.sync.json

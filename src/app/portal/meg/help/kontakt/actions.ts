@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { audit } from "@/lib/audit";
 import { nonEmpty } from "@/lib/validation/schemas";
 
@@ -22,8 +22,7 @@ type Input = {
 
 export async function submitSupportTicket(input: Input): Promise<void> {
   SupportTicketSchema.parse(input);
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
 
   // Generer et enkelt ticket-id basert på timestamp.
   const ticket = `PHQ-${Math.floor(Date.now() / 1000) % 100000}`;

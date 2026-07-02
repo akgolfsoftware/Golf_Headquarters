@@ -7,7 +7,9 @@ const NAV = [
   { href: "/coaching", label: "Coaching" },
   { href: "/treningsfilosofi", label: "Slik trener vi" },
   { href: "/playerhq", label: "PlayerHQ" },
+  { href: "/priser", label: "Priser" },
   { href: "/anlegg", label: "Anlegg" },
+  { href: "/faq", label: "FAQ" },
   { href: "/om-oss", label: "Om oss" },
 ];
 

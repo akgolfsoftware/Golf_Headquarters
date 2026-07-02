@@ -1,7 +1,7 @@
 // Tilgangsregler for PlayerHQ.
 //
 // LÅST forretningsregel (CLAUDE.md): PlayerHQ-tilgang er GRATIS hvis brukeren
-//   (a) er i lanserings-vinduet — ALLE er gratis frem til betaling starter 1. juli 2026,
+//   (a) er i lanserings-vinduet — ALLE er gratis frem til betaling starter 1. august 2026,
 //   (b) har aktiv coaching-pakke (Performance / Performance Pro → monthlyCredits > 0),
 //   (c) er medlem av en gruppe gjennom AK Golf (aktivt GroupMember), eller
 //   (d) er i prøveperiode (30 dager fra registrering).
@@ -14,8 +14,8 @@
 
 import type { Tier, SubscriptionStatus } from "@/generated/prisma/client";
 
-// Betaling starter 1. juli 2026 (Europe/Oslo). Frem til da har ALLE full tilgang.
-const BETALING_STARTER = new Date("2026-07-01T00:00:00.000+02:00");
+// Betaling starter 1. august 2026 (Europe/Oslo). Frem til da har ALLE full tilgang.
+const BETALING_STARTER = new Date("2026-08-01T00:00:00.000+02:00");
 const PROVEPERIODE_DAGER = 30;
 
 export function gratisForAlle(now: Date = new Date()): boolean {
@@ -47,7 +47,7 @@ export type ResolveTierInput = {
  */
 export function resolveTier(user: ResolveTierInput): Tier {
   const now = user.now ?? new Date();
-  // (a) Lanserings-vindu: ALLE gratis frem til betaling starter 1. juli 2026.
+  // (a) Lanserings-vindu: ALLE gratis frem til betaling starter 1. august 2026.
   if (gratisForAlle(now)) return "PRO";
   // Betaler app-abonnement (PRO; ELITE er dødt enum, men behandles som betalt om satt).
   if (user.tier !== "GRATIS") return "PRO";
@@ -64,7 +64,7 @@ export function resolveTier(user: ResolveTierInput): Tier {
   return "GRATIS";
 }
 
-/** Banner-info: gratis for alle frem til betaling starter 1. juli. */
+/** Banner-info: gratis for alle frem til betaling starter 1. august. */
 export const PRO_KAMPANJE_INFO = {
   aktiv: gratisForAlle(),
   utlopISO: BETALING_STARTER.toISOString(),

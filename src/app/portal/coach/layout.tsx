@@ -5,6 +5,7 @@ const ITEMS = [
   { href: "/portal/coach/plans",    label: "Planer" },
   { href: "/portal/coach/plans/perioder", label: "Perioder" },
   { href: "/portal/coach/ovelser",  label: "Øvelser" },
+  { href: "/portal/coach/videoer",  label: "Videoer" },
   { href: "/portal/coach/sg-hub",   label: "SG-hub" },
   { href: "/portal/coach/melding",  label: "Meldinger" },
   { href: "/portal/onskeligokt",    label: "Ønske om økt" },

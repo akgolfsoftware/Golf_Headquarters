@@ -1,0 +1,11 @@
+{
+  "shape": "package",
+  "pkg": "akgolf-hq",
+  "globalName": "AKGolfHQ",
+  "srcDir": "src/components/athletic",
+  "tsconfig": "tsconfig.sync.json",
+  "cssEntry": ".design-sync/compiled-tailwind.css",
+  "libOverrides": {
+    "source-kit.mjs": "synth entry re-exports named defaults"
+  }
+}

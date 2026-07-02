@@ -43,7 +43,7 @@ function nokFormat(ore: number): string {
 }
 
 export default async function IntegrasjonerPage() {
-  const me = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const me = await requirePortalUser({ allow: ["ADMIN"] });
 
   // Google Calendar — sjekk om current user har en kobling.
   const googleConn = await prisma.googleCalendarConnection.findUnique({

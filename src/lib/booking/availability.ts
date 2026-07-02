@@ -8,6 +8,7 @@
  */
 
 import { prisma } from "@/lib/prisma";
+import type { Prisma } from "@/generated/prisma/client";
 import { getCalendarBusy } from "@/lib/google-calendar";
 import { kalenderBlokkererSlot, type CalendarBusyResult } from "@/lib/booking/calendar-result";
 
@@ -20,6 +21,14 @@ export type Slot = {
 
 const SLOT_INTERVAL_MIN = 30;
 
+// Antall hele uker siden en fast mandag-epoke (1970-01-05). Brukes til å avgjøre
+// om et «hver Nte uke»-vindu treffer en gitt dato.
+function ukeNummer(d: Date): number {
+  const epoke = Date.UTC(1970, 0, 5); // mandag
+  const dag = Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
+  return Math.floor((dag - epoke) / (7 * 86_400_000));
+}
+
 /**
  * Returner ledige tider for tjenesten på gitt dato.
  *
@@ -29,6 +38,7 @@ const SLOT_INTERVAL_MIN = 30;
 export async function getAvailableSlots(
   serviceTypeId: string,
   date: Date,
+  locationId?: string,
 ): Promise<Slot[]> {
   const service = await prisma.serviceType.findUnique({
     where: { id: serviceTypeId },
@@ -39,13 +49,43 @@ export async function getAvailableSlots(
   // Konverter: (jsDay + 6) % 7.
   const weekday = (date.getDay() + 6) % 7;
 
-  // Hent alle aktive availability-slots for denne ukedagen.
+  const dagStart = new Date(date);
+  dagStart.setHours(0, 0, 0, 0);
+  const dagSlutt = new Date(date);
+  dagSlutt.setHours(23, 59, 59, 999);
+
+  // Hent aktive availability-vinduer for DENNE datoen. HVOR (sted) legges til
+  // kun når kalleren oppgir lokasjon — da tilbys en coach aldri på et anlegg de
+  // ikke har satt seg tilgjengelig. Uten lokasjon: legacy «alle steder».
+  const andKlausuler: Prisma.CoachAvailabilityWhereInput[] = [
+    // NÅR: ukentlig på denne ukedagen ELLER én-gangs på denne datoen.
+    { OR: [{ weekday }, { date: { gte: dagStart, lte: dagSlutt } }] },
+    // PERIODE-gyldighet (års-perioder): vinduet må omslutte datoen.
+    { OR: [{ validFrom: null }, { validFrom: { lte: dagSlutt } }] },
+    { OR: [{ validTo: null }, { validTo: { gte: dagStart } }] },
+  ];
+  if (locationId) {
+    andKlausuler.push({ OR: [{ locationId }, { locationId: null }] });
+  }
   const availability = await prisma.coachAvailability.findMany({
-    where: { weekday, active: true },
+    where: { active: true, AND: andKlausuler },
     include: { coach: { select: { id: true, name: true, role: true } } },
   });
 
   if (availability.length === 0) return [];
+
+  // Repetisjon: dropp ukentlige vinduer som ikke treffer denne uka (hver Nte).
+  // Ankret til validFrom (ellers fast epoke). Én-gangs-datoer påvirkes ikke.
+  const ukeIdag = ukeNummer(date);
+  const gjeldende = availability.filter((av) => {
+    if (!av.recurrenceInterval || av.recurrenceInterval <= 1 || av.weekday === null) {
+      return true;
+    }
+    const ankerUke = ukeNummer(av.validFrom ?? new Date(0));
+    const n = av.recurrenceInterval;
+    return ((((ukeIdag - ankerUke) % n) + n) % n) === 0;
+  });
+  if (gjeldende.length === 0) return [];
 
   // Hent eksisterende bookinger for denne dagen (uavhengig av coach).
   const dayStart = new Date(date);
@@ -65,7 +105,7 @@ export async function getAvailableSlots(
   // Hvis en coach ikke har koblet Calendar, returneres tom liste.
   const uniqueCoachIds = Array.from(
     new Set(
-      availability
+      gjeldende
         .filter((av) => av.coach && (av.coach.role === "COACH" || av.coach.role === "ADMIN"))
         .map((av) => av.coach.id),
     ),
@@ -81,7 +121,7 @@ export async function getAvailableSlots(
   const slots: Slot[] = [];
   const now = new Date();
 
-  for (const av of availability) {
+  for (const av of gjeldende) {
     if (!av.coach || (av.coach.role !== "COACH" && av.coach.role !== "ADMIN")) {
       continue;
     }

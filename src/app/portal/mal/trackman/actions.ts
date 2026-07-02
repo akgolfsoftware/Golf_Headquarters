@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
 import { triggerTrackManAgent } from "@/lib/agents/triggers";
 import { matchShotToTask, mpsToMph } from "@/lib/teknisk-plan/match-shot";
@@ -25,8 +25,7 @@ export type TrackManCsvInput = {
 };
 
 export async function importTrackManCsv(input: TrackManCsvInput) {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
 
   const targetUserId = await resolveTargetUserId(user, input.onBehalfOfUserId);
 
@@ -113,8 +112,7 @@ export type TrackManHtmlInput = {
 };
 
 export async function importTrackManHtml(input: TrackManHtmlInput) {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
 
   const targetUserId = await resolveTargetUserId(user, input.onBehalfOfUserId);
 

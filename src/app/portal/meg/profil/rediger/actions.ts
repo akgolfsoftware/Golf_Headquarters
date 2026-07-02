@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
 import { nonEmpty, phone, optStr } from "@/lib/validation/schemas";
 
@@ -28,8 +28,7 @@ type UpdateProfileInput = {
 
 export async function updateProfile(input: UpdateProfileInput): Promise<void> {
   UpdateProfileSchema.parse(input);
-  const me = await getCurrentUser();
-  if (!me) throw new Error("unauthenticated");
+  const me = await requireConsentingUser();
 
   const targetId = input.targetUserId ?? me.id;
   const editingOther = targetId !== me.id;

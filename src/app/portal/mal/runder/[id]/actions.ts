@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
 import { notifyMany } from "@/lib/notifications";
 import { ShotLie, ShotType, WindDir } from "@/generated/prisma/client";
@@ -30,8 +30,7 @@ export type ShareRoundInput = {
  * visibility === "coach".
  */
 export async function shareRound(roundId: string, input: ShareRoundInput) {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
 
   const round = await prisma.round.findUnique({
     where: { id: roundId },
@@ -97,8 +96,7 @@ async function assertRoundOwner(roundId: string, userId: string) {
 }
 
 export async function saveShot(roundId: string, input: ShotInput) {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
   await assertRoundOwner(roundId, user.id);
 
   await prisma.shot.upsert({
@@ -148,8 +146,7 @@ export async function saveShot(roundId: string, input: ShotInput) {
 }
 
 export async function deleteShot(roundId: string, shotId: string) {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
   await assertRoundOwner(roundId, user.id);
 
   await prisma.shot.delete({ where: { id: shotId } });
@@ -160,8 +157,7 @@ export async function importUpGameShots(
   roundId: string,
   shots: ShotInput[],
 ) {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
   await assertRoundOwner(roundId, user.id);
 
   // Slett eksisterende slag og erstatt med importerte

@@ -23,7 +23,7 @@
  */
 
 import Link from "next/link";
-import { Download, Flag, Globe, Lock, Moon, Radar, Ruler, Shield, ShieldCheck, Smartphone, Sparkles, Watch } from "lucide-react";
+import { Download, Flag, Globe, Lock, MapPin, Monitor, Moon, Radar, Ruler, Shield, ShieldCheck, Smartphone, Sparkles, Watch } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { lesPreferences } from "@/lib/preferences";
 import { prisma } from "@/lib/prisma";
@@ -96,7 +96,14 @@ export default async function InnstillingerPage() {
         <SetRow
           icon={Globe}
           title="Språk"
-          right={<SetVal>{prefs.spraak === "en" ? "English" : "Norsk"}</SetVal>}
+          right={
+            <Link
+              href="/portal/meg/innstillinger/sprak"
+              className={buttonClasses({ variant: "secondary", size: "sm" })}
+            >
+              {prefs.spraak === "en" ? "English" : "Norsk"}
+            </Link>
+          }
         />
         <SetRow
           icon={Moon}
@@ -143,6 +150,21 @@ export default async function InnstillingerPage() {
           icon={Sparkles}
           title="AI-coach"
           meta="Datadrevet assistent · Kommer snart (V2)"
+        />
+      </SetGroup>
+
+      <SetGroup label="MER">
+        <SetLinkRow
+          href="/portal/meg/innstillinger/anlegg"
+          icon={MapPin}
+          title="Anlegg og utstyr"
+          meta="Hva du har tilgang til"
+        />
+        <SetLinkRow
+          href="/portal/meg/innstillinger/okter"
+          icon={Monitor}
+          title="Apparater og økter"
+          meta="Aktive innlogginger og enheter"
         />
       </SetGroup>
 

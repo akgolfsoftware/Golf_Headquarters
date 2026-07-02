@@ -292,7 +292,9 @@
       "Read(//Users/anderskristiansen/**)",
       "mcp__72351f58-4d83-4538-8807-8f01835b16a1__download_file_content",
       "Skill(loop)",
-      "Skill(loop:*)"
+      "Skill(loop:*)",
+      "mcp__72351f58-4d83-4538-8807-8f01835b16a1__read_file_content",
+      "mcp__72351f58-4d83-4538-8807-8f01835b16a1__create_file"
     ]
   }
 }

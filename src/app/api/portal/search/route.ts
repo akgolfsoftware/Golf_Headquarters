@@ -55,7 +55,7 @@ const ROUTES: Omit<SearchRoute, "id">[] = [
   { label: "Hjem", description: "Dagens brief og fremgang", href: "/portal" },
   { label: "Trening", description: "Treningsplaner og økter", href: "/portal/tren" },
   { label: "Kalender", description: "Min uke og bookinger", href: "/portal/kalender" },
-  { label: "Analyse", description: "Strokes Gained, runder, TrackMan", href: "/portal/analyse" },
+  { label: "Analyse", description: "Strokes Gained, runder, TrackMan", href: "/portal/analysere" },
   { label: "Statistikk", description: "Tall over tid og benchmarks", href: "/portal/statistikk" },
   { label: "Mine bookinger", description: "Pågående og tidligere", href: "/portal/booking" },
   { label: "Coach", description: "Min coach og meldinger", href: "/portal/coach" },

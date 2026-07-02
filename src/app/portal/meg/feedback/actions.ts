@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { audit } from "@/lib/audit";
 import { nonEmpty } from "@/lib/validation/schemas";
 
@@ -22,8 +22,7 @@ type Input = {
 
 export async function submitFeedback(input: Input): Promise<void> {
   FeedbackSchema.parse(input);
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
+  const user = await requireConsentingUser();
 
   await audit({
     actorId: input.anonym ? "anonym" : user.id,

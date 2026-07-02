@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { assertNotAwaitingConsent } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
 import type { PyramidArea } from "@/generated/prisma/client";
 
@@ -35,6 +36,7 @@ export async function createSessionsForPeriod(
 ): Promise<CreateSessionsResult> {
   const user = await getCurrentUser();
   if (!user) return { ok: false, error: "Ikke innlogget" };
+  assertNotAwaitingConsent(user);
 
   // Hent PeriodBlock — verifiser at den tilhører brukerens SeasonPlan
   const block = await prisma.periodBlock.findFirst({

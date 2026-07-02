@@ -13,7 +13,7 @@ import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 import { TemplateForm } from "./template-form";
 
 export default async function EmailTemplatesAdmin() {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  await requirePortalUser({ allow: ["ADMIN"] });
 
   const templates = await prisma.emailTemplate.findMany({
     orderBy: [{ active: "desc" }, { name: "asc" }],
