@@ -18,6 +18,7 @@ Alle 8 steg (STEG 1–8) i denne planen er kjørt, hvert grep-bevis re-verifiser
 **LEVENDE-funn (unntak fra slettelisten, med bevis):**
 - `src/components/blogg/Sammendrag.tsx`, `Stat.tsx`, `Quote.tsx` — importert direkte av `mdx-components.tsx` (repo-rot, utenfor `src/`) og brukt globalt i alle `content/blogg/*.mdx`. Planen markerte disse USIKKER; bekreftet levende, ikke slettet.
 - `src/components/athletic/data/index.ts` — re-eksportert som `./data` fra `src/components/athletic/index.ts`. Brakk build ved første forsøk (batch 4), gjenopprettet umiddelbart, ikke i noen slettet batch.
+- `src/components/coachhq/` — 14 filer (shell.tsx, top-bar.tsx, tabs.tsx, tournament-enroll-modal.tsx m.fl.) er FORTSATT I BRUK, importert av bl.a. admin/plans/[planId]/page.tsx og admin/tournaments/[id]/page.tsx. Kun de 13 navngitte filene i FASE 1-listen ble slettet. Navnet "coachhq" i mappestien er historisk (appen heter AgencyOS), men innholdet er levende kode, ikke død — omdøping er en egen FASE 3/4-jobb, ikke en sletting.
 
 **Åpne spørsmål avklart av Anders i denne økten (overstyrer planens spørsmål 1–3 nedenfor):**
 1. `.agents/skills/` → SLETTET (byte-identisk med `.claude/skills/`, ingen andre verktøy leser den).
