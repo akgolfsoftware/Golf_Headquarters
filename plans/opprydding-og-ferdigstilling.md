@@ -252,17 +252,19 @@ Migreringssteg, i rekkefølge:
 
 ## FASE 3 — BYGG (prioritert etter brukersynlighet)
 
+**Re-verifisert mot live kode 2026-07-02** — kilde er nå faktisk repo-tilstand, ikke zip-snapshot fra analysetidspunktet.
+
 Kalibrert til Claude Code-fart. Kilde: kryss av STATUS-NÅ P0-lista (re-verifisert 17. juni) mot faktiske «kommer snart»-toasts og TODO-er i koden (66 TODO/FIXME totalt, alle gjennomgått).
 
 ### P0 — blokkerer betalende brukere
 
 | # | Hva | Fil | Estimat |
 |---|---|---|---|
-| 1 | Eksport-stub → redirect til personvern-siden (GDPR-eksporten der virker) | `src/app/portal/meg/innstillinger/eksport/` | 15 min |
-| 2 | Meldinger: vedlegg/fil/galleri-opplasting (3 steder, «kommer snart»-toasts; @vercel/blob er allerede i deps) | `portal/coach/melding/[id]/trad-ui.tsx`, `melding/ny/ny-melding-client.tsx` | 2 t |
+| 1 | ~~Eksport-stub~~ — LØST (allerede en ren redirect, ikke en stub. Opprinnelig funn var feillesing av en kommentarlinje.) | `src/app/portal/meg/innstillinger/eksport/` | — |
+| 2 | Meldinger: vedlegg/fil/galleri-opplasting (3 steder, «kommer snart»-toasts) | `portal/coach/melding/[id]/trad-ui.tsx`, `melding/ny/ny-melding-client.tsx` | 2 t |
 | 3 | Gruppe-oppretting (knapp gir kun toast) | `admin/grupper/grupper-actions.tsx` | 1,5 t |
-| 4 | AgencyOS datakobling: godkjenninger, økonomi, innboks, analytics (UI bygget, mock-data) | `/admin/godkjenninger`, `/admin/okonomi`, `/admin/innboks` m.fl. | 8–10 t |
-| 5 | E2E-nettlesertest av 3 coach-test-skjermer (eneste gule hake i testbatteriet) | tests | 1 t |
+| 4 | ~~AgencyOS datakobling~~ — DELVIS LØST. Godkjenninger, økonomi, innboks er nå ekte Prisma-koblet, ingen mock. KUN `/admin/workspace` gjenstår (sample-data.ts, venter på Notion-kobling — se rad 10). | `/admin/workspace` | se rad 10 |
+| 5 | E2E-nettlesertest av 3 coach-test-skjermer (testfil finnes ikke ennå) | tests | 1 t |
 
 Ikke-kode P0 (Anders selv, fra STATUS-NÅ): Stripe live-nøkler i Vercel, Resend SPF/DKIM for akgolf.no, `NEXT_PUBLIC_APP_URL` → akgolf.no, beslutning om deploy-rutine (auto-deploy fra main vs manuell `vercel deploy --prod`).
 
@@ -270,11 +272,13 @@ Ikke-kode P0 (Anders selv, fra STATUS-NÅ): Stripe live-nøkler i Vercel, Resend
 
 | # | Hva | Fil | Estimat |
 |---|---|---|---|
-| 6 | Gruppe-tildeling i plan-builder («lagret som utkast»-toast) | `admin/plans/new/plan-builder-client.tsx` | 1 t |
-| 7 | Filtere: TrackMan (miljø/kilde), Runder (avansert), Workspace x2 | 4 actions-filer | 2 t |
-| 8 | Test-detalj: Del + PDF-eksport (@react-pdf i deps) | `admin/tester/[id]/tester-detail-actions.tsx` | 2 t |
-| 9 | CoachNote + Message Prisma-modeller (to paneler venter på dem) | `coachhq/workbench/panels/` — NB: panelene er i 138-lista; avklar om de skal bygges eller slettes | 4 t hvis bygges |
-| 10 | /kommando vs /admin/workspace — to parallelle workspace-implementasjoner (én med DB-tall, én med sample-data + 11 TODO). BESLUTNING: velg én, slett den andre. Anbefaling: behold `/admin/workspace` (matcher AgencyOS-navigasjonen), migrer DB-koblingen fra /kommando inn. | begge trær | 1 beslutning + 3 t |
+| 6 | Notater-panel → koble til CoachNote-modellen (modellen finnes nå i Prisma, kun wiring gjenstår — kommentar i filen sier feilaktig at modellen mangler) | `coachhq/workbench/panels/notater-panel.tsx` | 1 t |
+| 7 | Gruppe-tildeling i plan-builder («lagret som utkast»-toast) | `admin/plans/new/plan-builder-client.tsx` | 1 t |
+| 8 | Filtere: TrackMan (miljø/kilde), Runder (avansert), Workspace x2 | 4 actions-filer | 2 t |
+| 9 | Test-detalj: Del + PDF-eksport (@react-pdf i deps) | `admin/tester/[id]/tester-detail-actions.tsx` | 2 t |
+| 10 | `/admin/workspace` datakobling fra `/kommando`. `/kommando` har egne Prisma-modeller (KommandoTask, KommandoProject, KommandoAgentRun, KommandoAgentStep) — mer reelt datakoblet enn workspace. Workspace beholder URL/UI (matcher AgencyOS-navigasjon), men trenger kommandos databakking portert inn. `/kommando` slettes etterpå. | begge trær | 3 t |
+
+Message-modellen finnes fortsatt ikke. `kommunikasjon-panel.tsx` (den delen av opprinnelig rad 9 som ventet på Message) ble slettet i komponent-opprydningen — ikke fordi den ble bygget, men fordi den var død kode. Ikke gjenopprett den; bygg fra scratch hvis meldingsfunksjon i CoachNote-panelet trengs senere.
 
 ### P2 — kutt fra lansering (anbefalt)
 
@@ -285,7 +289,7 @@ Ikke-kode P0 (Anders selv, fra STATUS-NÅ): Stripe live-nøkler i Vercel, Resend
 | 13 | Innloggings-historikk/aktive økter («under utvikling»-merking) | Bevisst ærlig merking, ikke en bug. La stå. |
 | 14 | Ring-knapp i meldinger, periodisering-toast i teknisk plan | V2. |
 
-**Sum P0+P1 kode: ca. 20 timer.** Med P2 inkludert: ca. 32 timer.
+**Sum P0+P1 kode: ca. 14 timer.** Med P2 inkludert: ca. 26 timer.
 
 ---
 
