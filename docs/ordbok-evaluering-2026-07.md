@@ -68,3 +68,60 @@ I tillegg oppdateres verdilistene i allerede dokumenterte enums (størst gap:
 2. Peker-filer på de to gamle kopi-stedene.
 3. ETTER-verifikasjon: term-diff-script (original vs ny — hvert avvik MÅ stå på
    SLETT-/DEDUPE-listen), fredet-diff på B24 + forvekslings-advarslene, linjetall < 900.
+
+---
+
+# ETTER-rapport (renskriving gjennomført 2026-07-03)
+
+## Resultat
+
+| Måltall | Før | Etter |
+|---|---|---|
+| Linjer | 1629 | **1092** (mål var < 900 — se avvik under) |
+| Kode-termer dekket | 350 | 366 (32 nye enums + Leave/focus; 1 slettet) |
+| Norske termer | 988 | alle gjenfinnbare (verifisert med term-diff-script) |
+| Tabellkolonner Del A | 6 | 3 (Kategori-, Relaterte termer-kolonnen kuttet; Definisjon+Bruk slått sammen) |
+| Alfabetisk indeks | 54 linjer | slettet |
+| Kopier i repo | 1 + 5 stale-risiko | 1 kanonisk + 5 én-linjes pekere |
+
+**Avvik fra linjemål:** null-informasjonstap ble prioritert over 900-linjersmålet. Token-
+besparelsen er større enn linjetallet antyder (6→3 kolonner + konsoliderte celler ≈ ~55 %
+færre tegn). Ytterligere kutt krever innholdsvedtak, ikke komprimering.
+
+## SLETTET (godkjent av Anders 2026-07-03)
+
+| Term | Begrunnelse |
+|---|---|
+| `NorwegianSkillBenchmark` | Finnes ikke i schema eller src. Realiteten (IUP Ref-ark, test-benchmarks, WAGR) dekkes i §10. |
+| Alfabetisk indeks (§17) | Manuelt vedlikeholdt, drifter, unødvendig for søk. |
+| «Sekvensk» (B2B) | Tastefeil-duplikat av «Sekvens» — slått sammen. |
+| «Lededagsleder» (B7) | Tastefeil-term; bokmålsformen «leder» beholdt. |
+| «CLub path»-duplikatrad (B2B) | Tastefeil-duplikat av «Club path». |
+
+**Beholdt etter Anders' beslutning:** P-halvtrinnene P4.5/P5.5/P6.5/P7.5 — dokumentert som
+MORAD-konsept i §6 med eksplisitt «finnes ikke i koden»-flagg. §6-faktafeilen («taxonomy har
+14 posisjoner») er rettet — koden har 10.
+
+## DEDUPE (innhold bevart i sammenslåtte rader/celler)
+
+- Del B-rader som re-definerte Del A-innhold: B2-diskiplin-tabellen → peker til §1; B4
+  praksis-/CS-/fase-rader strammet (Mac O'Grady-fasene beholdt som eget vokabular, kryss-
+  merket mot §9); B11 TrackMan-termer → konsolidert rad som peker til §11.
+- Varianter slått sammen i én celle med «/»-skille (f.eks. «Flop shot / Lob shot | lob»,
+  «Punch shot / Knockdown / Stinger | lavt slag», make rate-avstander, måneds-/dagsnavn).
+  Term-diff-scriptet bekrefter at hvert termnavn fortsatt er gjenfinnbart som tekst.
+
+## Korreksjoner gjort underveis (utover renskriving)
+
+- B15 «Elite | for selekterte spillere» → rettet til «DØDT enum — vises ALDRI i UI» (var i
+  konflikt med låst beslutning juni 2026).
+- B20 hero-eksempel «God morgen, Markus» → «God morgen, Øyvind» (demo-kanon).
+- B21 Markus Røinås Pedersen-raden merket «ekte coach — skal IKKE brukes som demo-spiller».
+- B2D tastefeil «pres» → «press».
+- B9 «Sekund | sek» beholdt med full form i notat.
+
+## Verifisering
+
+- Term-diff-script: 0 manglende norske termer, 0 manglende kode-termer (utenom godkjent
+  SLETTET-liste). B24 forbudt-liste byte-identisk. Forvekslings-advarslene bevart i preamble.
+- Peker-filer lagt på alle 5 gamle kopi-stedene (én linje, peker til `docs/`).
