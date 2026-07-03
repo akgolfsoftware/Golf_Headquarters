@@ -21,23 +21,19 @@ dashboard-tallene + endringsloggen når du fullfører/endrer skjermer.
 ## Låste beslutninger (juni 2026 — gjelder til Anders endrer dem)
 > **Fasit-kilde:** `docs/platform/BUSINESS-RULES.md`. Listen under er sammendrag — ved konflikt vinner BUSINESS-RULES.md. Ikke dupliser nye regler hit.
 
-> ⚠ **2026-06-22 — ANDERS HAR LÅST OPP 4 REGEL-KLYNGER.** Disse gjelder IKKE lenger som hard
-> constraint — de blokkerte designet fra å bli slik Anders ville. Verdier under avklaring, se
-> `docs/REGLER-OPPLAST-2026-06-22.md`:
-> 1. **Tema-toggle** (var: ingen toggle, fast lys/mørk per produkt)
-> 2. **Abonnement & pris** (var: kun 300 kr/mnd, ingen nivåer, ingen Stripe-kort-visning)
-> 3. **FYS-formel + A–K-nivåtall** (var: «—»-plassholdere til formel låst)
-> 4. **Cockpit stall-SG + plan-etterlevelse** (var: «—»-plassholdere)
-> Ikke håndhev de fire som låst før nye verdier er bekreftet. De andre punktene under står.
+> ⚠ **2026-06-22:** 4 regel-klynger er låst OPP (ikke lenger hard constraint) — tema-toggle,
+> abonnement/pris-nivåer, FYS-formel/A–K-tall, cockpit stall-SG/plan-etterlevelse. Verdier
+> under avklaring, se `docs/REGLER-OPPLAST-2026-06-22.md`. Ikke håndhev disse fire som låst
+> før nye verdier er bekreftet — resten av lista under står fast.
 
 - **App-navn:** Coach-appen heter **AgencyOS** (`/admin`). «CoachHQ» er gammelt — ikke bruk i ny UI-tekst.
 - **Tema (oppdatert 2026-06-22):** PlayerHQ alltid **lyst**. AgencyOS har **lys/mørk-toggle** (sol/måne i topbar, cookie `ak-admin-theme`, standard mørk) — Anders vil ha AgencyOS i begge moduser. (Var: «AgencyOS alltid mørkt, ingen toggle» — opphevet.)
-- **Navne-kanon (demo):** spiller = **Øyvind Rohjan**, coach = **Anders Kristiansen**. Alltid fulle navn. (Gamle: Magnus / Markus R.P. / Markus Berg / Anders Berg / Andreas Kragerud — skal bort.) NB: EKTE coach «Markus Røinås Pedersen» på markedssidene — IKKE bytt han ut med demo-spilleren.
+- **Navne-kanon (demo):** spiller = **Øyvind Rohjan**, coach = **Anders Kristiansen** — alltid fulle navn, gamle demo-navn skal bort. Unntak: ekte coach **«Markus Røinås Pedersen»** på markedssidene, ikke bytt ham ut.
 - **Planlegge → Workbench:** All planlegging går gjennom Workbench. Planlegge er **ett trykkpunkt** dit, ikke en meny av 6 kort. Samme i coachens spiller-Workbench.
 - **Analyse samlet:** Analysere + TrackMan + Runder + SG er én flate med faner — ikke separate moduler. Mål bor i Oversikt, redigeres i Workbench.
 - **Abonnement (ingen tier-nivåer):** PlayerHQ-tilgang er gratis eller 300 kr/mnd. **Gratis** hvis: 1 mnd prøveperiode, ELLER coaching-pakke (Performance / Performance Pro), ELLER gruppe via AK Golf. **300 kr/mnd** for alle andre. «Performance / Performance Pro» er **coaching-pakker** (antall økter), IKKE app-nivåer. **ELITE finnes ikke** (dødt Prisma-enum — vis aldri i UI).
 - **FYS-resultatformel avventer:** Bygg testskjermer med plassholder-tall. Ikke hardkod referanseverdier før Anders gir grønt lys.
-- **Design under aktiv utvikling (2026-07-03):** Ingen låst design-kilde akkurat nå — gjeldende design bygges hos Claude Design og leveres som ny zip-handover. Tidligere handover-mapper (`docs/design-handover-2026-06-24/`, `docs/design-handoff-komplett/`) og gate-regelen er fjernet for ikke å peke feil mot den neste leveransen. Når ny handover kommer: pakk ut til en fersk, dato-stemplet `docs/design-handover-YYYY-MM-DD/`-mappe, og skriv en ny kilde- og gate-regel her og i `.claude/rules/`.
+- **Design under aktiv utvikling (2026-07-03):** Ingen låst design-kilde akkurat nå — ny design bygges hos Claude Design og leveres som zip-handover senere. Når den kommer: pakk ut til dato-stemplet `docs/design-handover-YYYY-MM-DD/`, skriv ny kilde-/gate-regel her.
 - Aldri referer til `wireframe/`, gamle `design-package/` eller `design-files-v2/` i produksjonsfiler — disse er dødt arkiv uansett hvilken handover som gjelder.
 
 ## Stack (eksakte versjoner — ikke oppgrader uten beslutning)

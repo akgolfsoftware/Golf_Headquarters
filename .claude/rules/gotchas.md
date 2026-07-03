@@ -31,6 +31,10 @@ Bare nodejs runtime, ikke edge.
 ### Supabase Connect — bruk Shared Pooler (IPv4) for konsistens
 Transaction pooler + IPv4-toggle på. Da får du `aws-0-REGION.pooler.supabase.com` på begge porter.
 
+### .dark-tema — primary=accent er samme farge (skjørt)
+I `.dark`-klassen er `primary` og `accent` begge lime. Par som `bg-primary text-accent` rendres
+riktig i dag, men er flaks — ny kode skal bruke `-foreground`-parene (`bg-primary text-primary-foreground`).
+
 <!-- Mal for nye gotchas:
 ### <Kort tittel>
 - **Symptom:**
