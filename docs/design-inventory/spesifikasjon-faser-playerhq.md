@@ -49,8 +49,10 @@ lyst tema) — merket under.
 **Hjem · Planlegge · Gjennomføre · Analysere · Meg** (bunnbar) + sidespor **Coach · Booking · Talent(utsatt) · Varsler**.
 
 ## Porting-gate + unntak
-Følg [`.claude/rules/design-porting-gate.md`] inkl. de dokumenterte PlayerHQ-unntakene (profilbilde+tier-pill i
-hero, pill-knappestil, delt shell-topbar på undersider). Hver skjerm: states tom/laster/feil/fylt.
+Ingen låst gate-regel akkurat nå (fjernet 2026-07-03 — design under aktiv utvikling, se `CLAUDE.md`). De
+dokumenterte PlayerHQ-unntakene (profilbilde+tier-pill i hero, pill-knappestil, delt shell-topbar på undersider)
+lever videre i [`.claude/rules/design-produktbeslutninger.md`](../../.claude/rules/design-produktbeslutninger.md) —
+disse er stående beslutninger, uavhengig av handover. Hver skjerm: states tom/laster/feil/fylt.
 
 ## Nye komponenter som må DESIGNES
 | Komponent | Fase | Deles med AgencyOS | Kort |

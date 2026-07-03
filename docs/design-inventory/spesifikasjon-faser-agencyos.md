@@ -47,8 +47,11 @@ Regler: **Cockpit = se / Innboks = gjøre**, Stall = én liste m/briller, Workbe
 rolle-filtrert (COACH ser ~8, ADMIN alle), mobil = 5 huber + «Mer».
 
 ## Porting-gate (gjelder hver skjerm Claude Design leverer)
-Følg [`.claude/rules/design-porting-gate.md`](../../.claude/rules/design-porting-gate.md): bygg fra design-kilde,
-screenshot, adversarial diff, fiks til 0 avvik. Hver skjerm leveres med states: **tom / laster / feil / fylt**.
+Ingen låst gate-regel akkurat nå (fjernet 2026-07-03 — design under aktiv utvikling, se `CLAUDE.md`). Når ny
+handover kommer: skriv gaten på nytt (bygg fra design-kilde, screenshot, adversarial diff, fiks til 0 avvik).
+De dokumenterte AgencyOS-unntakene lever videre i
+[`.claude/rules/design-produktbeslutninger.md`](../../.claude/rules/design-produktbeslutninger.md) — stående
+beslutninger, uavhengig av handover. Hver skjerm leveres med states: **tom / laster / feil / fylt**.
 
 ## Nye komponenter som må DESIGNES (samlet katalog — detaljeres per fase)
 | Komponent | Fase | Kort |

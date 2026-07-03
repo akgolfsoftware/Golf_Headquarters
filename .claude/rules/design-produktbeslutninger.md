@@ -1,51 +1,9 @@
-# Design-porting-gate (LÅST regel)
+# Design-produktbeslutninger (Anders-beslutninger som overstyrer mockupen)
 
-Når en skjerm portes fra det ferske designet (`docs/design-handover-2026-06-24/`) til kode, MÅ denne gaten følges. En skjerm er IKKE «ferdig» og vises IKKE til Anders før gaten er bestått. Dette finnes fordi porting «fra minne/eksisterende kode» gir «nesten»-resultater som avviker fra fasit.
-
-## Gaten — 5 steg per skjerm
-
-1. **Bygg FRA design-kilden, ikke fra eksisterende kode.**
-   Les kilden under `docs/design-handover-2026-06-24/`: `SKJERMER.md` (billedkatalog) + `NAVIGASJON-knapp-til-rute.md` (knapp→skjerm-kart) + matchende skjermbilder.
-   Lag en **element-liste** (hero-topp, hero-bunn, hver seksjon, hvert tall/tekst, rekkefølge).
-   Bygg implementeringen fra lista — ikke ved å modifisere det som allerede finnes.
-
-## Låst kilde-regel (MÅ følges)
-
-All design-referanse i kode, kommentarer, commits, prompts og interne dokumenter **MÅ** peke til den gjeldende design-kilden:
-
-- `docs/design-handover-2026-06-24/` (Claude Design-handover, juni — eneste git-sporede kilde, se `README.md` der)
-
-**Forbudt:**
-- `public/design-handover/` — kun en lokal maskin-cache (gitignored). Den følger IKKE med repoet til andre maskiner/sesjoner og skal aldri være fasit i en regel eller et diff-oppdrag. Hvis noe herfra trengs, flytt det inn i en git-sporet `docs/design-handover-*/`-mappe først.
-- `wireframe/`
-- `design-package/`
-- `design-files-v2/`
-- `docs/design-handoff-komplett/`
-- Gamle wireframe-HTML eller arkiverte handoffs
-
-Gamle referanser skal enten fjernes, flyttes til `_archive/` eller oppdateres ved første touch av filen. Diff-agenter og kode-review skal flagge brudd på denne regelen.
-
-Bruk kun gjeldende design-handover som fasit for porting.
-
-Ved en NY handover (zip/tar.gz fra Claude Design): pakk ut til en fersk, dato-stemplet `docs/design-handover-YYYY-MM-DD/`-mappe, commit den, og oppdater datoen i denne regelen + i CLAUDE.md sin «Ferskt design»-linje i samme commit.
-
-2. **Screenshot implementeringen.**
-   Playwright mot riktig bredde (PlayerHQ 430px, AgencyOS ~1280px), full-page.
-
-3. **ADVERSARIAL diff — egen agent, ikke meg selv.**
-   Spawn en subagent med: design-screenshot (fra handover) + min screenshot + element-lista.
-   Oppgaven er å **FINNE avvik** — den er kritiker, ikke heiagjeng. Den lister hvert avvik
-   (topp, rekkefølge, farge, tekst, manglende/ekstra element, layout). Default: anta avvik
-   finnes til den har lett grundig.
-
-4. **Fiks til 0 avvik.**
-   Rett hvert avvik, re-screenshot, kjør diff på nytt. Loop til agenten finner **0 avvik**.
-
-5. **FØRST DA** vises skjermen til Anders / merkes ferdig.
-
-## Bevisste unntak (Anders-beslutninger som overstyrer designet)
-
-Dokumenteres her så diff-agenten måler mot riktig fasit:
+Reddet 2026-07-03 fra den slettede `design-porting-gate.md` (gate-PROSESSEN der er foreldet fordi design
+nå utvikles på nytt hos Claude Design — se `CLAUDE.md`). Innholdet under er ikke prosess, men stående
+produktbeslutninger om hvordan appen faktisk skal se ut og oppføre seg — de gjelder uavhengig av hvilken
+designleveranse som er gjeldende, og skal fortsatt følges når neste handover porteres.
 
 - **PlayerHQ-hjem hero:** beholder **profilbilde + tier-pill** øverst (Anders' valg 2026-06-02),
   selv om designet har dato-eyebrow + vær der. Resten av hero (greeting + samlet headline) følger designet.
@@ -147,9 +105,3 @@ Dokumenteres her så diff-agenten måler mot riktig fasit:
   Mobil-NYE flater (bunnbar, Mer) håndhever streng lime-disiplin (kun aktiv/NÅ).
 - **Kjent skjørhet:** i .dark er primary=accent (begge lime) — par som «bg-primary text-accent» rendres riktig i dag,
   men er flaks; ny kode skal bruke -foreground-parene.
-
-## Hvorfor dette (ikke bare «vær nøye»)
-
-Jeg har bias mot å bekrefte mitt eget arbeid. En uavhengig diff-agent hvis *jobb* er å finne feil,
-fanger det jeg overser (f.eks. hero-topp avatar≠vær, headline rendret som eyebrow). Gaten flytter
-godkjenningen bort fra meg selv.

@@ -13,7 +13,7 @@
 | Hva er låst (navn, tema, abonnement, demo-navn)? | `docs/platform/BUSINESS-RULES.md` |
 | Hva er uavklart / ikke bestemt? | `docs/AAPNE-SPORSMAAL.md` |
 | Produkt- og dataspec | `docs/platform/PLATFORM-PRD.md` + `DATA-MODEL.md` |
-| Designregler + porting | `.claude/rules/design-porting-gate.md` + `docs/design-system-lint.md` |
+| Designregler + porting | Ingen låst kilde/gate akkurat nå — design under aktiv utvikling, se `CLAUDE.md` |
 | Arbeidsregler / stack / gotchas | `CLAUDE.md` + `AGENT-BRIEF.md` |
 
 **Ikke stol på:** `docs/_arkiv/` (historikk, kan være utdatert) eller `wireframe/` (arkiv). Ved tvil — `AGENT-BRIEF.md` vinner.

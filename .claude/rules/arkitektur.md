@@ -54,8 +54,7 @@ akgolf-hq/
 │   │   ├── utils.ts          # cn()
 │   │   └── supabase/
 │   └── proxy.ts              # Next.js 16 proxy
-├── docs/
-│   └── design-handoff-komplett/   # ARKIV (mai 2026) — IKKE fasit. Fersk design: public/design-handover/
+├── docs/                      # Design under aktiv utvikling (2026-07-03) — ingen låst kilde nå, se CLAUDE.md
 ├── prisma.config.ts
 └── CLAUDE.md
 ```

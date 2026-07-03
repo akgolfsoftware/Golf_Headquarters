@@ -85,9 +85,9 @@ wireframe/               ARKIV — ikke les eller importer herfra
 - **Abonnement:** Gratis (prøveperiode / coaching-pakke / gruppe) eller 300 kr/mnd. Performance / Performance Pro er coaching-pakker, ikke app-nivåer.
 - **FYS-resultatformel:** avventer grønt lys fra Anders — vis plassholder-tall.
 - **Avatar-initialer:** avledes fra ekte navn i DB, aldri hardkodet.
-- **Design-kilde (LÅST):** All design-referanse i kode, kommentarer, commits og prompts **MÅ** peke til gjeldende `public/design-handover/` (juni 2026+ eller nyere). Referanser til `wireframe/`, `design-package/`, `design-files-v2/` eller gamle arkiver er forbudt i produksjonsfiler. De skal fjernes eller oppdateres ved første touch av filen. Bruk kun gjeldende design-handover som fasit. Se `.claude/rules/design-porting-gate.md` for full regel.
+- **Design under aktiv utvikling (2026-07-03):** Ingen låst design-kilde akkurat nå — gjeldende design bygges hos Claude Design og leveres som ny zip-handover. Referanser til `wireframe/`, `design-package/`, `design-files-v2/` eller gamle arkiver er uansett forbudt i produksjonsfiler — fjernes eller oppdateres ved første touch av filen. Se `CLAUDE.md`.
 
-### Design-porting-unntak (diff-agenter skal ikke flagge disse)
+### Design-porting-unntak (diff-agenter skal ikke flagge disse — full liste i `.claude/rules/design-produktbeslutninger.md`)
 
 - PlayerHQ-hjem hero: profilbilde + tier-pill øverst (ikke dato-eyebrow + vær fra designet).
 - Tier-pill-tekst: «PlayerHQ · {tier}» (ikke «Performance Pro»).
@@ -111,13 +111,13 @@ wireframe/               ARKIV — ikke les eller importer herfra
 
 ---
 
-## Kvalitetsgate per skjerm (ingen snarvei)
+## Kvalitetsgate per skjerm (ingen snarvei — prosessen skrives på nytt når ny handover kommer)
 
-1. Bygg fra design-kilde (`docs/design-handover-2026-06-24/`, se `SKJERMER.md`) — lag element-liste først.
-2. Screenshot med Playwright (PlayerHQ 430px, AgencyOS ~1280px, full-page).
-3. Adversarial diff — spawn egen subagent som FINNER avvik (ikke bekrefter).
-4. Fiks alle avvik, re-screenshot, loop til 0 avvik.
-5. Merk ferdig i `docs/MASTER-SKJERMPLAN.md` — alle 6 haker grønne: **Design · Mob/Desk/iPad · Adresse · Flyt · Data · Funker**.
+Ingen låst design-kilde akkurat nå (se `CLAUDE.md`), så steg 1 kan ikke kjøres før neste zip-handover er
+mottatt. Når den kommer: pakk ut til `docs/design-handover-YYYY-MM-DD/`, bygg fra den (element-liste først),
+screenshot med Playwright (PlayerHQ 430px, AgencyOS ~1280px, full-page), spawn en adversarial diff-subagent
+som FINNER avvik (ikke bekrefter), fiks til 0 avvik, og merk ferdig i `docs/MASTER-SKJERMPLAN.md` — alle 6
+haker grønne: **Design · Mob/Desk/iPad · Adresse · Flyt · Data · Funker**.
 
 ---
 

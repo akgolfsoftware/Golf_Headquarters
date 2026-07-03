@@ -9,8 +9,8 @@ Hele plattformen for AK Golf Group. Ett monorepo, ett Next.js-prosjekt, fire pro
 ## Detaljerte regler (`.claude/rules/`)
 - `arkitektur.md` — produkter, ruter, mappestruktur.
 - `designsystem.md` — tokens, komponenter, typografi, spacing, ikoner (ÉN kilde til sannhet).
+- `design-produktbeslutninger.md` — stående Anders-beslutninger som overstyrer mockupen (knappestil, avatar-initialer, Workbench-unntak m.m.) — uavhengig av hvilken designleveranse som er gjeldende.
 - `gotchas.md` — kjente feller (Prisma 7, Next.js 16 proxy, Supabase pooler, zod). Les FØR koding.
-- `design-porting-gate.md` — LÅST gate for porting av skjermer fra design-handover.
 
 ## FØR DU RØRER EN SKJERM — `docs/MASTER-SKJERMPLAN.md` (LÅST regel)
 Autoritativ liste over hver skjerm + 6 haker (Design · Mobil/Desktop/iPad · Adresse · Flyt · Data · Funker).
@@ -37,8 +37,8 @@ dashboard-tallene + endringsloggen når du fullfører/endrer skjermer.
 - **Analyse samlet:** Analysere + TrackMan + Runder + SG er én flate med faner — ikke separate moduler. Mål bor i Oversikt, redigeres i Workbench.
 - **Abonnement (ingen tier-nivåer):** PlayerHQ-tilgang er gratis eller 300 kr/mnd. **Gratis** hvis: 1 mnd prøveperiode, ELLER coaching-pakke (Performance / Performance Pro), ELLER gruppe via AK Golf. **300 kr/mnd** for alle andre. «Performance / Performance Pro» er **coaching-pakker** (antall økter), IKKE app-nivåer. **ELITE finnes ikke** (dødt Prisma-enum — vis aldri i UI).
 - **FYS-resultatformel avventer:** Bygg testskjermer med plassholder-tall. Ikke hardkod referanseverdier før Anders gir grønt lys.
-- **Ferskt design:** `docs/design-handover-2026-06-24/` (Claude Design-handover, juni) er gjeldende — knapp→skjerm-kart (`NAVIGASJON-knapp-til-rute.md`), prompt, billedkatalog (`SKJERMER.md`), tokens. Interaktivt `NAV-DIAGRAM.html` + `screens/`-PNG-er på Google Drive («Final AK Golf HQ»). Eldre `public/design-handover/...` er kun en lokal maskin-cache (gitignored, ikke git-sporet) — ikke bruk som kilde, den følger ikke med repoet. `docs/design-handoff-komplett/` (mai) er arkiv.
-- **Design-kilde-regel (LÅST):** All design-referanse (kode/kommentarer/commits/prompts) MÅ peke til gjeldende design-kilde over. Aldri referer til `wireframe/`, gamle design-package eller design-files-v2 i produksjonsfiler. Se `.claude/rules/design-porting-gate.md`.
+- **Design under aktiv utvikling (2026-07-03):** Ingen låst design-kilde akkurat nå — gjeldende design bygges hos Claude Design og leveres som ny zip-handover. Tidligere handover-mapper (`docs/design-handover-2026-06-24/`, `docs/design-handoff-komplett/`) og gate-regelen er fjernet for ikke å peke feil mot den neste leveransen. Når ny handover kommer: pakk ut til en fersk, dato-stemplet `docs/design-handover-YYYY-MM-DD/`-mappe, og skriv en ny kilde- og gate-regel her og i `.claude/rules/`.
+- Aldri referer til `wireframe/`, gamle `design-package/` eller `design-files-v2/` i produksjonsfiler — disse er dødt arkiv uansett hvilken handover som gjelder.
 
 ## Stack (eksakte versjoner — ikke oppgrader uten beslutning)
 - Next.js 16 (App Router, TypeScript strict, Turbopack), React 19
