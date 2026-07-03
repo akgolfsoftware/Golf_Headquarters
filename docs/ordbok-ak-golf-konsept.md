@@ -2,7 +2,10 @@
 
 > **Hva dette er:** Den autoritative referansen for alle fagbegreper, koder og systemord i AK Golf-konseptet — pyramiden, L-fasene, CS, treningsområdene, miljø/press, Strokes Gained, TrackMan, periodisering, planleggingshjernen og invariantene. Felles språk for utviklere, trenere og AI-agenter.
 >
-> **Kilde:** Hentet og faktasjekket mot kodebasens taksonomi (`src/lib/taxonomy.ts`, `src/lib/portal/training/ak-taxonomy.ts`, `src/lib/domain/*`, `src/lib/sg-hub/*`, `prisma/schema.prisma`). Der koden er fasit, vinner koden.
+> **Kilde-hierarki (oppdatert 2026-07-03):**
+> 1. **MasterBrain CANON v3.5** (`~/Developer/Masterbrain/knowledge/concepts/canon-methodology.json`, 2026-06-16) + `l-faser.json` (2026-06-13) — fasit for konsept-verdiene: CS-skala, L-faser, M/PR, spillerkategorier A–K, invarianter. Systemets harde regler er versjonert her og **kan endres av Anders**.
+> 2. Intelligence-taksonomien (`ak-golf-intelligence/shared/training/ak-taxonomy.ts`) — enheter: putting i **fot**, innspill i yards.
+> 3. Kodebasens taksonomi (`src/lib/taxonomy.ts`, `prisma/schema.prisma` m.fl.) — fasit for kode-identifiere/enum-navn. Der koden avviker fra canon i VERDIER, vinner canon og koden skal migreres (avvik er flagget som «Kode-status» i tabellene).
 >
 > **To deler:** Dette dokumentet samler to ting. **Del A — Konsept & system** forklarer hva begrepene *betyr*. **Del B — UI-tekst & rettskriving** (tidligere egen fil `ordliste-ak-golf.md`) styrer hvordan ord *staves* i grensesnittet — standardiserte UI-tekster og rettskriving.
 >
@@ -70,37 +73,42 @@ Den 5-trinns trenings-pyramiden er grunnmuren i hele plattformen. Hver drill, ø
 
 ## 2. L-faser (læringsfaser)
 
-L-fasene beskriver **hvor langt en bevegelse er innlært** — fra kroppen lærer bevegelsen til full automatisering under press. Hver fase har et anbefalt CS-intervall og utstyr.
+L-fasene beskriver **hvor langt en bevegelse er innlært** — fra kroppen lærer bevegelsen til full automatisering under press. Hver fase har CS-intervall, miljø-intervall (M), TEK-andel og utstyr. **Fasit: MasterBrain CANON v3.5 (2026-06-16) + l-faser.json (2026-06-13)** — verdiene under erstatter de gamle CS 50–100 %-anbefalingene.
 
 > **NB:** `LFase` (læringsfase, denne seksjonen) er ikke det samme som `LPhase` (periodiseringsfase, se [seksjon 9](#9-periodisering)).
+>
+> **Prioritetsregel (canon v3.5):** L-KROPP og L-ARM **overstyrer all SG-prioritering** — ingen SG-diagnostikk brukes i disse fasene. Teknisk korreksjon er absolutt mål.
 
-| Norsk term | Engelsk / Teknisk term | Kategori | Definisjon | Bruk / Kontekst | Relaterte termer |
+| Norsk term | Engelsk / Teknisk term | Kategori | Definisjon | Bruk / Kontekst (canon v3.5) | Relaterte termer |
 |---|---|---|---|---|---|
-| L-fase | `LFase` / `L_FASER` | L-fase | Læringsfase-systemet i fem trinn: L_KROPP → L_ARM → L_KOLLE → L_BALL → L_AUTO. | Settes på golf-drills/oppgaver. Styrer anbefalt CS og utstyr, og begrenses per periode via `lFaserTillatt`. | CS-nivå, LFASE_ANBEFALT_CS, Periode |
-| L-Kropp | `L_KROPP` | L-fase | 1. fase: kroppen lærer bevegelsen (uten kølle/ball i fokus). | Anbefalt CS 50–60 % (kart: CS50/CS60). Utstyr: speil, alignment-sticks. Tillatt i GRUNN; dominerer FERIE. | CS50, CS60, Periode GRUNN |
-| L-Arm | `L_ARM` | L-fase | 2. fase: armene integreres i bevegelsen. | Anbefalt CS 60–70 % (kart: CS60/CS70). Utstyr: alignment-sticks, impact-bag. | CS60, CS70 |
-| L-Kølle | `L_KOLLE` | L-fase | 3. fase: kølla inkluderes med sakte tempo. | Anbefalt CS 60–75 % (kart: CS70/CS80). Utstyr: kølle, skumpute-baller. Kode-id skrives uten ø. | CS70, CS80 |
-| L-Ball | `L_BALL` | L-fase | 4. fase: ball og mål, kontrollert repetisjon. | Anbefalt CS 70–85 % (kart: CS80/CS90). Utstyr: kølle, baller, mål. Tillatt i SPESIALISERING. | CS80, CS90 |
-| L-Auto | `L_AUTO` | L-fase | 5. og siste fase: automatisering av bevegelsen under press. | Anbefalt CS 85–100 % (kart: CS90/CS100). Utstyr: full bag, bane. Eneste tillatte fase i TURNERING; 100 % av L-fordeling i EVALUERING. | CS100, Turneringslås |
-| Anbefalt CS per L-fase | `LFASE_ANBEFALT_CS` | L-fase | Kart fra hver L-fase til de to anbefalte CS-nivåene (atskilt fra tekst-rangene i `L_FASER`). | Foreslår riktig CS-nivå når en drill merkes med L-fase. | CS-nivå, L-fase |
+| L-fase | `LFase` / `L_FASER` | L-fase | Læringsfase-systemet i fem trinn: L_KROPP → L_ARM → L_KOLLE → L_BALL → L_AUTO. | Settes på golf-drills/oppgaver. Styrer CS-intervall, miljø og TEK-andel; begrenses per periode via `lFaserTillatt`. | CS-nivå, Miljø-kode, Periode |
+| L-Kropp | `L_KROPP` | L-fase | 1. fase: kun kropp — ingen armer/kølle. Rotasjon, vektoverføring, ryggradsposisjon. | CS20–40 · M0–M1 · TEK 60–80 % · ingen ball. SG-vekt lav; overstyrer ALL annen prioritering. Utstyr: speil, alignment-sticks. | CS20, CS40, M0 |
+| L-Arm | `L_ARM` | L-fase | 2. fase: armer uten kølle — arm-/håndposisjon, grep, arm-sving. | CS20–50 · M1–M2 · TEK 50–70 % · minimal ball. Overstyrer SG-prioritering. Utstyr: alignment-sticks, impact-bag. | CS50, M1, M2 |
+| L-Kølle | `L_KOLLE` | L-fase | 3. fase: med kølle, uten ball — kølle-følelse, path, face control. | CS50–70 · M2–M3 · TEK 40–60 %. SG-vekt medium. Kode-id skrives uten ø. | CS50, CS70, M2, M3 |
+| L-Ball | `L_BALL` | L-fase | 4. fase: med ball og økende hastighet — konsistens + kontakt. | CS60–80 · M3–M4 · TEK 30–50 %. SG-vekt høy; SG relevant, men fortsatt teknikk-fokus. | CS60, CS80, M3, M4 |
+| L-Auto | `L_AUTO` | L-fase | 5. fase: automatikk + miljø + variasjon — overføring til bane, press, random. | CS80–100 · M4–M5 · TEK 20–40 %. Eneste tillatte fase i TURNERING; 100 % av L-fordeling i EVALUERING. | CS100, M5, Turneringslås |
+| Anbefalt CS per L-fase | `LFASE_ANBEFALT_CS` | L-fase | Kart fra hver L-fase til anbefalte CS-nivåer. | **Kode-status:** koden har fortsatt de gamle CS50–100-mappene — må oppdateres til canon v3.5-intervallene over. | CS-nivå, L-fase |
 
 ---
 
-## 3. CS — Clubhead Speed
+## 3. CS — Club Speed
 
-**CS = Clubhead Speed (køllehodehastighet)**, uttrykt som prosent av spillerens maks. CS styrer treningstempoet på et slag og er en av de fire AK-formel-aksene (sammen med L-fase, M-miljø og PR-press).
+**CS = Club Speed (køllehodehastighet)**, uttrykt som prosent av spillerens maks. CS styrer treningstempoet på et slag og er en av de fire AK-formel-aksene (sammen med L-fase, M-miljø og PR-press). **Fasit: MasterBrain CANON v3.5** — skalaen har **ni nivåer CS20–CS100** (utvidet nedover fra de gamle seks CS50–CS100 for å dekke bevegelsesdrill uten ball).
 
-> **Merk:** CS betyr *Clubhead Speed* — ikke «Capacity Stress».
+> **Merk:** CS betyr *Club Speed* — ikke «Capacity Stress» og ikke «Confidence Score» (begge har forekommet i eldre dokumenter og er feil).
 
-| Norsk term | Engelsk / Teknisk term | Kategori | Definisjon | Bruk / Kontekst | Relaterte termer |
+| Norsk term | Engelsk / Teknisk term | Kategori | Definisjon | Bruk / Kontekst (canon v3.5) | Relaterte termer |
 |---|---|---|---|---|---|
-| CS-nivå | `CSNivaa` / `CS_NIVAER` | CS | Seks treningstempoer (CS50–CS100) som angir hvor hardt det slås, i % av maks svinghastighet. | Settes på drills/oppgaver. Begrenses oppover av `csMax` per periode. Klassifiserer også rep-hastighet (LAV/FULL). | CS-tak, L-fase, RepHastighet |
-| CS50 | `CS50` | CS | 50 % av maks — supersakte, kun form. | Laveste nivå; anbefalt for L_KROPP. Del av LAV-klassifisering (CS50–CS70). | L_KROPP |
-| CS60 | `CS60` | CS | 60 % — sakte, bevisst tempo. | Anbefalt for L_KROPP/L_ARM. | L_ARM |
-| CS70 | `CS70` | CS | 70 % — kontrollert, lett treff. | Anbefalt for L_ARM/L_KOLLE. Grense mellom LAV og FULL rep-hastighet. | L_KOLLE, RepHastighet |
-| CS80 | `CS80` | CS | 80 % — normal treningshastighet. | Anbefalt for L_KOLLE/L_BALL. Del av FULL-klassifisering (CS80–CS100). | L_BALL |
-| CS90 | `CS90` | CS | 90 % — nesten maks, kontrollert. | Anbefalt for L_BALL/L_AUTO. | L_AUTO |
-| CS100 | `CS100` | CS | 100 % — full speed. | Høyeste nivå; anbefalt for L_AUTO. | L_AUTO |
+| CS-nivå | `CSNivaa` / `CS_NIVAER` | CS | Ni treningstempoer (CS20–CS100) som angir hvor hardt det slås, i % av maks svinghastighet. | Settes på drills/oppgaver. Begrenses oppover av `csMax` per periode. Klassifiserer også rep-hastighet (LAV/FULL). **Kode-status:** Prisma-enum har fortsatt kun CS50–CS100 — CS20/CS30/CS40 må legges til. | CS-tak, L-fase, RepHastighet |
+| CS20 | `CS20` | CS | 20 % — bevegelsesdrill uten ball. | Laveste nivå; L_KROPP/L_ARM. | L_KROPP |
+| CS30 | `CS30` | CS | 30 % — langsom teknisk drill. | L_KROPP/L_ARM. | L_KROPP |
+| CS40 | `CS40` | CS | 40 % — halvfart teknisk drill. | Øvre grense for L_KROPP. | L_KROPP, L_ARM |
+| CS50 | `CS50` | CS | 50 % — minimum for balltrening. | Del av LAV-klassifisering (CS50–CS70). | L_ARM, L_KOLLE |
+| CS60 | `CS60` | CS | 60 % — moderat balltrening. | L_KOLLE/L_BALL. | L_BALL |
+| CS70 | `CS70` | CS | 70 % — kontrollert full swing. | Grense mellom LAV og FULL rep-hastighet. | L_KOLLE, RepHastighet |
+| CS80 | `CS80` | CS | 80 % — full swing med kontroll. | Del av FULL-klassifisering (CS80–CS100). | L_BALL, L_AUTO |
+| CS90 | `CS90` | CS | 90 % — tour-speed trening. | L_AUTO. | L_AUTO |
+| CS100 | `CS100` | CS | 100 % — maks hastighet. | Høyeste nivå; L_AUTO. | L_AUTO |
 | CS-progresjon | `beregnCsProgresjon()` / `CsProgresjon` | CS | Utviklingen i køllehodehastighet (mph) målt som 4-ukers rullende snitt over de siste 8 ukene, med endring, trend og skadevarsel. | Tar TrackMan-økter (dato + mph), sammenligner siste 4 uker mot uke −8 til −4. Vises på spillerens analyseflater. | CS-trend, Skadevarsel, TrackMan |
 | CS-trend | `CsTrend` | CS | Retning på CS-utviklingen: OPP, FLAT eller NED. | FLAT ved \|endring\| ≤ 2 %, OPP > +2 %, NED < −2 % (`TREND_TERSKEL_PCT`). | CS-progresjon |
 | Skadevarsel | `MULIG_SKADE` / `CsVarsel` | CS | Varselflagg når siste ukes CS-snitt faller mer enn 3 mph under nest-siste uke. | Settes som `varselFlagg = "MULIG_SKADE"` for å flagge mulig skade/overbelastning. | CS-progresjon |
@@ -118,7 +126,7 @@ Treningsområdene er den fine inndelingen av golf-trening etter avstand/situasjo
 
 | Norsk term | Engelsk / Teknisk term | Kategori | Definisjon | Bruk / Kontekst | Relaterte termer |
 |---|---|---|---|---|---|
-| Treningsområde | `TRENINGSOMRADER` / `Treningsomrade` | Treningsområde | De 16 golf-treningsområdene etter avstand/situasjon, hver med label og SG-kategori. | Settes på GOLF-drills (`treningsomrade`). Grupperes til fokus via `TEMPLATE_FOCUS`. | SGKategori, TEMPLATE_FOCUS |
+| Treningsområde | `TRENINGSOMRADER` / `Treningsomrade` | Treningsområde | De 16 golf-treningsområdene etter avstand/situasjon, hver med label og SG-kategori. **Enheter: putting i fot (ft); innspill i yards i intelligence-taksonomien (`Innspill 50y`) — meter-labels i eldre kode skal fases ut.** | Settes på GOLF-drills (`treningsomrade`). Grupperes til fokus via `TEMPLATE_FOCUS`. | SGKategori, TEMPLATE_FOCUS |
 | Tee-slag | `TEE` | Treningsområde | Utslag fra tee. | SG-kategori `TEE`. | OTT, TEE_TOTAL |
 | Innspill 150–200 m | `INN200` | Treningsområde | Langt innspill, 150–200 m. | SG-kategori `TILNAERMING`. | INN150, APP |
 | Innspill 100–150 m | `INN150` | Treningsområde | Mellomlangt innspill, 100–150 m. | SG-kategori `TILNAERMING`. | INN100 |
@@ -128,12 +136,12 @@ Treningsområdene er den fine inndelingen av golf-trening etter avstand/situasjo
 | Pitch | `PITCH` | Treningsområde | Høyere, mykere nærspill. | SG-kategori `KORT_SPILL`. | CHIP, LOB |
 | Lob | `LOB` | Treningsområde | Høyt slag med rask stopp. | SG-kategori `KORT_SPILL`. | PITCH, BUNKER |
 | Bunker | `BUNKER` | Treningsområde | Sandslag rundt green. | SG-kategori `KORT_SPILL`. | LOB |
-| Putt 0–3 m | `PUTT0_3` | Treningsområde | Korte putter. | SG-kategori `PUTTING`. | PUTT3_6 |
-| Putt 3–6 m | `PUTT3_6` | Treningsområde | Mellomdistanse-putter. | SG-kategori `PUTTING`. | PUTT0_3, PUTT6_10 |
-| Putt 6–10 m | `PUTT6_10` | Treningsområde | Lengre putter. | SG-kategori `PUTTING`. | PUTT10_20 |
-| Putt 10–20 m | `PUTT10_20` | Treningsområde | Lange putter / lag-putt. | SG-kategori `PUTTING`. | PUTT20_40 |
-| Putt 20–40 m | `PUTT20_40` | Treningsområde | Svært lange putter. | SG-kategori `PUTTING`. | PUTT40P |
-| Putt 40 m+ | `PUTT40P` | Treningsområde | Ekstreme lag-putter. | SG-kategori `PUTTING`. | PUTT20_40 |
+| Putt 0–3 ft | `PUTT0_3` | Treningsområde | Korte putter. **Putting måles alltid i fot (ft), aldri meter.** | SG-kategori `PUTTING`. Kode-labels som sier «m» er feil og skal rettes. | PUTT3_6 |
+| Putt 3–6 ft | `PUTT3_6` | Treningsområde | Mellomdistanse-putter. | SG-kategori `PUTTING`. | PUTT0_3, PUTT6_10 |
+| Putt 6–10 ft | `PUTT6_10` | Treningsområde | Lengre putter. | SG-kategori `PUTTING`. | PUTT10_20 |
+| Putt 10–20 ft | `PUTT10_20` | Treningsområde | Lange putter / lag-putt. | SG-kategori `PUTTING`. | PUTT20_40 |
+| Putt 20–40 ft | `PUTT20_40` | Treningsområde | Svært lange putter. | SG-kategori `PUTTING`. | PUTT40P |
+| Putt 40 ft+ | `PUTT40P` | Treningsområde | Ekstreme lag-putter. | SG-kategori `PUTTING`. | PUTT20_40 |
 | Spill (simulert) | `SPILL` | Treningsområde | Helhetlig simulert spill. | SG-kategori `SPILL`. | TURNERINGSPREP |
 | SG-kategori (taksonomi) | `SGKategori` | Treningsområde | Den grove gruppen et treningsområde hører til: TEE, TILNAERMING, KORT_SPILL, PUTTING, SPILL. | Avleder fra `TRENINGSOMRADER`. NB: ikke identisk med SkillArea eller SgCategory. | SkillArea, SgCategory |
 | SG-ferdighetsområde | `SkillArea` | Treningsområde | Statistikk-enum for hvor SG rapporteres: TEE_TOTAL, TILNAERMING, AROUND_GREEN, PUTTING, SPILL. | Brukes i SG-statistikk og chips. TEE_TOTAL ≠ TEE, AROUND_GREEN ≠ KORT_SPILL. | SGKategori, SgCategory |
@@ -147,19 +155,19 @@ To akser som beskriver *konteksten* en økt foregår i: **M** = hvor virkelighet
 
 | Norsk term | Engelsk / Teknisk term | Kategori | Definisjon | Bruk / Kontekst | Relaterte termer |
 |---|---|---|---|---|---|
-| Miljø-kode | `M_MILJO` / `MMiljo` | Miljø | 6-trinns skala (M0–M5) for hvor virkelighetsnær treningssituasjonen er. | Settes på øktnivå (`miljo`). Auto-genererte økter får alltid M2. En av fire AK-formel-akser. | Press-nivå, SessionEnvironment |
-| M0 — Innendørs | `M0` | Miljø | Studio, simulator eller innendørsanlegg (mest kontrollert). | Laveste miljønivå. | M1 |
-| M1 — Range tomt | `M1` | Miljø | Range uten forstyrrelser. | | M0, M2 |
-| M2 — Range normalt | `M2` | Miljø | Range med andre spillere til stede. | Default for auto-genererte økter. | M1, M3 |
-| M3 — Bane treningsrunde | `M3` | Miljø | Treningsrunde på bane uten konkurransepress. | | M2, M4 |
-| M4 — Bane simulert match | `M4` | Miljø | Bane med simulert turneringssituasjon. | | M3, M5 |
-| M5 — Turnering | `M5` | Miljø | Reell turneringsrunde (mest virkelighetsnær). | Høyeste miljønivå. | M4, PR5 |
-| Press-nivå | `PR_PRESS` / `PressureLevel` / `PRPress` | Press | 5-trinns skala (PR1–PR5) for hvor mye press/konsekvens en økt har. | Settes på øktnivå (sammen med M). Samme skala finnes som `PressureLevel` (Spor A) og `PRPress` (V2). | Miljø-kode, PositionTask |
-| PR1 — Ingen press | `PR1` | Press | Fritt utforskende, ingen konsekvens. | Laveste pressnivå. | PR2 |
-| PR2 — Lav press | `PR2` | Press | Enkle mål, liten konsekvens. | | PR1, PR3 |
-| PR3 — Moderat press | `PR3` | Press | Tydelige mål, moderat konsekvens. | | PR2, PR4 |
-| PR4 — Høy press | `PR4` | Press | Krevende mål, merkbar konsekvens. | | PR3, PR5 |
-| PR5 — Maks press | `PR5` | Press | Simulert turneringssituasjon, full konsekvens. | Høyeste pressnivå. | PR4, M5 |
+| Miljø-kode | `M_MILJO` / `MMiljo` | Miljø | 6-trinns skala (M0–M5) for treningsmiljøets struktur og kontroll — M0 mest kontrollert, M5 konkurranse. **Fasit: canon v3.5-beskrivelsene under (erstatter gamle «Innendørs/Range»-etiketter).** | Settes på øktnivå (`miljo`). Auto-genererte økter får alltid M2. En av fire AK-formel-akser. | Press-nivå, SessionEnvironment |
+| M0 — Kontrollert, uten ball | `M0` | Miljø | Kontrollert range/rom, ingen mål, ingen ball. | Laveste miljønivå. Hjemmet til L_KROPP. | M1, L_KROPP |
+| M1 — Kontrollert, enkelt mål | `M1` | Miljø | Kontrollert range med ett enkelt mål. | | M0, M2 |
+| M2 — Range med mål og distanser | `M2` | Miljø | Driving range med definerte mål og distanser. | Default for auto-genererte økter. | M1, M3 |
+| M3 — Baneøving uten konkurranse | `M3` | Miljø | Baneøving uten konkurranse (greenside, treningsgreen). | | M2, M4 |
+| M4 — Bane med scoringsfokus | `M4` | Miljø | Bane med scoringsfokus, simulert konkurranse. | | M3, M5 |
+| M5 — Turneringsforhold | `M5` | Miljø | Faktiske turneringsforhold. | Høyeste miljønivå. | M4, PR5 |
+| Press-nivå | `PR_PRESS` / `PressureLevel` / `PRPress` | Press | 5-trinns skala (PR1–PR5) som simulerer konkurransepress progressivt. **Fasit: canon v3.5-beskrivelsene under.** | Settes på øktnivå (sammen med M). Samme skala finnes som `PressureLevel` (Spor A) og `PRPress` (V2). | Miljø-kode, PositionTask |
+| PR1 — Minimalt press | `PR1` | Press | Ren teknikk-drill, ingen konsekvens. | Laveste pressnivå. | PR2 |
+| PR2 — Lett press | `PR2` | Press | Mål definert, men ingen konkurranse. | | PR1, PR3 |
+| PR3 — Moderat press | `PR3` | Press | Scoringssystem eller partner involvert. | | PR2, PR4 |
+| PR4 — Høyt press | `PR4` | Press | Simulert turneringsrunde eller økonomi/poeng på spill. | | PR3, PR5 |
+| PR5 — Maksimalt press | `PR5` | Press | Faktisk turneringssituasjon. | Høyeste pressnivå. | PR4, M5 |
 | Øktmiljø (sted) | `SessionEnvironment` | Miljø | Enum for konkret *stedtype* en økt logges på: RANGE, BANE, STUDIO, HJEM, SIMULATOR, GYM. | Vises som chip ved øktlogging. Atskilt fra M-skalaen (sted ≠ konkurransenærhet). | Miljø-kode, TrackManEnvironment |
 | TrackMan-miljø | `TrackManEnvironment` | Miljø | Enum for hvor en TrackMan-måling ble gjort: SIMULATOR_INDOOR, NET_INDOOR, RANGE_OUTDOOR_MAT, RANGE_OUTDOOR_GRASS, COURSE_PRACTICE, COURSE_COMPETITION. | Velges ved TrackMan-data i SG-hub. Påvirker hvordan data tolkes (innendørs vs. ute). | SessionEnvironment, SG-hub |
 
@@ -343,9 +351,9 @@ Avledede analyser som SG-hub kjører på TrackMan-data, pluss innsiktsmotoren so
 
 ---
 
-## 13. Invarianter (systemets harde regler)
+## 13. Invarianter (systemets harde regler — versjonert, kan endres)
 
-«Invarianter» er regler systemet alltid håndhever for at en plan/økt skal være gyldig. De håndheves i `periode-constraints.ts`, `taxonomy.ts` og planleggings­logikken.
+«Invarianter» er regler systemet håndhever for at en plan/økt skal være gyldig. De håndheves i `periode-constraints.ts`, `taxonomy.ts` og planleggings­logikken. **Invariantene er IKKE evige: de er versjonert i MasterBrain CANON (gjeldende: v3.5 med 13 invarianter) og kan endres av Anders. Ved endring: oppdater canon først, deretter denne ordboken, deretter koden.** Coach kan dessuten overstyre harde brudd i Workbench med begrunnelse (logges i `InvariantOverride`).
 
 | Norsk term | Engelsk / Teknisk term | Kategori | Definisjon | Bruk / Kontekst | Relaterte termer |
 |---|---|---|---|---|---|
@@ -408,8 +416,9 @@ Sentrale enums for plan-, økt- og bruker-tilstander. (Rene interne hjelpefunksj
 | Norsk term | Engelsk / Teknisk term | Kategori | Definisjon | Bruk / Kontekst | Relaterte termer |
 |---|---|---|---|---|---|
 | HCP / handicap | `hcp` | Begrep | Spillerens offisielle handicap. | Grunnlag for HCP-forventet SG og krise-diagnose; brukes til nivå-differensiering. | HCP-forventet SG, NGF-kategori |
-| NGF-kategori | `NgfKategori` | Begrep | Nivåskala A–L som rangerer spillere fra verdenselite (A = OWGR topp 150) ned til junior/klubb (K–L). | Settes som `minKategori`/`maxKategori` på øvelser og `kategori` på plan-maler. Nøkkel i `csTargetByKategori`. | Spillerkategori, csTargetByKategori |
-| Spillerkategori (taksonomi) | `SPILLERKATEGORIER` | Begrep | A–K-skala i taxonomy.ts med HCP-range og alder (A = aspirerende Tour … E = nybegynner; J/K = junior). | Brukes i taksonomien til å beskrive målgruppe. NB: `NgfKategori` (datamodellen) går A–L. | NGF-kategori |
+| Spillerkategori A–K (canon v3.5) | `categories` i canon-methodology.json | Begrep | **Gjeldende kanon (MasterBrain v3.5, 2026-06-16):** 11 nivåer der **A = komplett nybegynner (HCP 54+)** og **K = tour-proff (+4 eller bedre)**. Hver kategori har HCP-ekvivalent, LTAD-fase, pyramide-default og typisk L-fase. | Grunnlag for sportsplaner, treningsmål, evalueringer og pyramide-defaults. **NB: motsatt retning av eldre skalaer i koden — se radene under. Kode-migrering utestår.** | LTAD, Pyramide |
+| NGF-kategori (eldre kode) | `NgfKategori` | Begrep | **Eldre skala i datamodellen** A–L der A = verdenselite (OWGR topp 150) ned til junior/klubb (K–L) — motsatt retning av canon v3.5. | Settes som `minKategori`/`maxKategori` på øvelser og `kategori` på plan-maler. Nøkkel i `csTargetByKategori`. **Skal migreres til canon v3.5-skalaen.** | Spillerkategori A–K, csTargetByKategori |
+| Spillerkategori (eldre taksonomi) | `SPILLERKATEGORIER` | Begrep | **Eldre A–K-skala** i taxonomy.ts (A = aspirerende Tour … E = nybegynner; J/K = junior) — motsatt retning av canon v3.5. | Brukes i taksonomien til å beskrive målgruppe. **Skal migreres til canon v3.5-skalaen.** | Spillerkategori A–K |
 | LIFE-koder | `LIFE_KODER` | Begrep | Fem livsferdigheter trening kan utvikle: Resiliens, Fokus, Selvtillit, Kommunikasjon, Eget ansvar. | Knytter mental/personlig utvikling til drills (særlig TURN). | TURN, MENTAL_DRILL |
 | AK-formelen | (CS · L-fase · M · PR) | Begrep | Den firedelte kodingen av et slag/drill: hvor hardt (CS), hvor innlært (L-fase), hvor virkelighetsnært (M) og under hvor mye press (PR). | Felles «adresse» for enhver øvelse; gjør trening sammenlignbar og styrbar på tvers av spillere. | CS-nivå, L-fase, Miljø, Press |
 | Breaking Point | *(ikke i koden)* | Begrep | Konseptuelt treningsbegrep: punktet der teknikken bryter sammen når svinghastigheten økes — man trener like under det og skyver det gradvis oppover. | **Ikke implementert som egen kode-konstant per nå.** I praksis håndteres dette via `csMax` (CS-taket per periode) og CS-progresjonen. Vurder å koble det formelt til CS-progresjon hvis det skal bli en målbar størrelse. | CS-tak, CS-progresjon |
@@ -621,9 +630,9 @@ Sentrale enums for plan-, økt- og bruker-tilstander. (Rene interne hjelpefunksj
 | Buried lie | plugget lie | engelsk |
 | Putting | putting | engelsk |
 | Putt | putt | enkelt slag |
-| Kort-putt | kort-putt | bindestrek, 0–3m |
-| Mid-putt | mid-putt | 3–6m |
-| Lang-putt | lang-putt | 6m+ |
+| Kort-putt | kort-putt | bindestrek, 0–3 ft |
+| Mid-putt | mid-putt | 3–6 ft |
+| Lang-putt | lang-putt | 6 ft+ |
 | Lag-putt | lag-putt | "speed putting" |
 | Distance-kontroll | lengde-kontroll | bindestrek |
 | Avstandskontroll | lengdekontroll | ett ord, norsk form |
@@ -764,10 +773,10 @@ Sentrale enums for plan-, økt- og bruker-tilstander. (Rene interne hjelpefunksj
 |---|---|---|
 | Distance bucket | distanse-bucket | bindestrek |
 | Distanse-zone | distanse-zone | bindestrek |
-| 0–3 m putting | 0–3 m putting | tankestrek |
-| 3–6 m putting | 3–6 m putting | |
-| 6–10 m putting | 6–10 m putting | |
-| 10 m+ putting | 10 m+ putting | |
+| 0–3 ft putting | 0–3 ft putting | tankestrek. Putting ALLTID i fot (ft), aldri meter |
+| 3–6 ft putting | 3–6 ft putting | |
+| 6–10 ft putting | 6–10 ft putting | |
+| 10 ft+ putting | 10 ft+ putting | |
 | 50–100 m innspill | 50–100 m innspill | |
 | 100–125 m innspill | 100–125 m innspill | |
 | 125–150 m innspill | 125–150 m innspill | |
@@ -1044,12 +1053,12 @@ Sentrale enums for plan-, økt- og bruker-tilstander. (Rene interne hjelpefunksj
 | Differensiell-praksis | differensiell-praksis | |
 | Variabel praksis | variabel praksis | uten bindestrek |
 
-### CS-system (Clubhead Speed)
+### CS-system (Club Speed)
 
 | Term | Bokmål | Notater |
 |---|---|---|
 | CS-maks | CS-maks | bindestrek |
-| CS70, CS75, CS80 | `CS70`, `CS75`, `CS80` | UPPERCASE + tall, ingen mellomrom |
+| CS20 … CS100 | `CS20`, `CS50`, `CS80`, `CS100` | UPPERCASE + tall, ingen mellomrom. Ni nivåer (canon v3.5): 20/30/40/50/60/70/80/90/100 — CS75 o.l. finnes ikke |
 | Belastning | belastning | "Belastning: Medium/Høy/Lav" |
 | Volum | volum | timer/reps |
 | Intensitet | intensitet | |
@@ -1617,7 +1626,7 @@ Sentrale enums for plan-, økt- og bruker-tilstander. (Rene interne hjelpefunksj
 3. Verifiser: `npx tsc --noEmit && npm run build`
 4. Commit med meldingsformat: `chore(ordliste): "X" → "Y"`
 
-**Sist oppdatert:** 2026-07-03 («kort spill» → «nærspill» i UI-tekst; CS-system-overskrift rettet til Clubhead Speed; ødelagte tabellrader ryddet. Demo-kanon: Øyvind Rohjan som demo-spiller.)
+**Sist oppdatert:** 2026-07-03 — synket mot **MasterBrain CANON v3.5**: CS = Club Speed med ni nivåer CS20–CS100; L-faser med nye CS/M/TEK-intervaller og prioritetsregler; M- og PR-beskrivelser fra canon; putting i **fot** (aldri meter); spillerkategorier A–K (A = nybegynner → K = tour-proff, eldre skalaer flagget for migrering); invarianter markert som versjonerte (kan endres). Samme dato: «kort spill» → «nærspill» i UI-tekst, demo-kanon Øyvind Rohjan.
 
 ---
 
