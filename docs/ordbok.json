@@ -1,0 +1,661 @@
+{
+  "$schema": "ordbok-lag-3",
+  "versjon": "2026-07-03",
+  "kilder": {
+    "canon": "MasterBrain CANON v3.5 (canon-methodology.json + l-faser.json)",
+    "ordbok": "docs/ordbok-ak-golf-konsept.md",
+    "designGuide": "docs/design-guide-terminologi.md",
+    "schema": "prisma/schema.prisma"
+  },
+  "canonSjekket": true,
+  "konsept": {
+    "pyramide": {
+      "omraader": [
+        "FYS",
+        "TEK",
+        "SLAG",
+        "SPILL",
+        "TURN"
+      ],
+      "labels": {
+        "FYS": "Fysisk",
+        "TEK": "Teknisk",
+        "SLAG": "Slag",
+        "SPILL": "Spill",
+        "TURN": "Turnering"
+      },
+      "fargerLysFlate": {
+        "FYS": "#005840",
+        "TEK": "#B8852A",
+        "SLAG": "#2563EB",
+        "SPILL": "#D1F843",
+        "TURN": "#A32D2D"
+      },
+      "fargerWorkbenchMork": {
+        "FYS": "#56C59A",
+        "TEK": "#E8A33D",
+        "SLAG": "#84A9FF",
+        "SPILL": "#D1F843",
+        "TURN": "#F2908C"
+      }
+    },
+    "lFaser": {
+      "rekkefolge": [
+        "L_KROPP",
+        "L_ARM",
+        "L_KOLLE",
+        "L_BALL",
+        "L_AUTO"
+      ],
+      "verdier": {
+        "L_KROPP": {
+          "cs": "CS20-40",
+          "miljo": "M0-M1",
+          "tekProsent": "60-80",
+          "ball": false
+        },
+        "L_ARM": {
+          "cs": "CS20-50",
+          "miljo": "M1-M2",
+          "tekProsent": "50-70",
+          "ball": "minimal"
+        },
+        "L_KOLLE": {
+          "cs": "CS50-70",
+          "miljo": "M2-M3",
+          "tekProsent": "40-60",
+          "ball": false
+        },
+        "L_BALL": {
+          "cs": "CS60-80",
+          "miljo": "M3-M4",
+          "tekProsent": "30-50",
+          "ball": true
+        },
+        "L_AUTO": {
+          "cs": "CS80-100",
+          "miljo": "M4-M5",
+          "tekProsent": "20-40",
+          "ball": true
+        }
+      },
+      "prioritetsregel": "L_KROPP og L_ARM overstyrer all SG-prioritering"
+    },
+    "cs": {
+      "betyr": "Club Speed (% av spillerens maks)",
+      "nivaaer": [
+        "CS20",
+        "CS30",
+        "CS40",
+        "CS50",
+        "CS60",
+        "CS70",
+        "CS80",
+        "CS90",
+        "CS100"
+      ],
+      "kodeStatus": "Prisma-enum CSNivaa har kun CS50-CS100 — CS20/30/40 venter migrering"
+    },
+    "miljo": {
+      "nivaaer": [
+        "M0",
+        "M1",
+        "M2",
+        "M3",
+        "M4",
+        "M5"
+      ],
+      "beskrivelser": {
+        "M0": "Kontrollert range/rom, ingen mål, ingen ball",
+        "M1": "Kontrollert range, enkelt mål",
+        "M2": "Driving range med definerte mål og distanser",
+        "M3": "Baneøving uten konkurranse",
+        "M4": "Bane med scoringsfokus, simulert konkurranse",
+        "M5": "Faktiske turneringsforhold"
+      }
+    },
+    "press": {
+      "nivaaer": [
+        "PR1",
+        "PR2",
+        "PR3",
+        "PR4",
+        "PR5"
+      ],
+      "beskrivelser": {
+        "PR1": "Minimalt press — ren teknikk-drill",
+        "PR2": "Lett press — mål definert, ingen konkurranse",
+        "PR3": "Moderat press — scoringssystem eller partner",
+        "PR4": "Høyt press — simulert turnering eller poeng på spill",
+        "PR5": "Maksimalt press — faktisk turneringssituasjon"
+      }
+    },
+    "treningsomraader": {
+      "enhetPutting": "ft",
+      "enhetInnspill": "m (kode i dag) / yards (intelligence-taksonomi)",
+      "alle": [
+        "TEE",
+        "INN200",
+        "INN150",
+        "INN100",
+        "INN50",
+        "CHIP",
+        "PITCH",
+        "LOB",
+        "BUNKER",
+        "PUTT0_3",
+        "PUTT3_6",
+        "PUTT6_10",
+        "PUTT10_20",
+        "PUTT20_40",
+        "PUTT40P",
+        "SPILL"
+      ]
+    },
+    "sg": {
+      "kategorier": {
+        "OTT": "Tee-slag",
+        "APP": "Innspill",
+        "ARG": "Nærspill",
+        "PUTT": "Putting"
+      },
+      "format": "komma-desimal med fortegn, f.eks. +1,2",
+      "positivFarge": "text-success",
+      "negativFarge": "text-destructive"
+    },
+    "spillerkategorierCanon": {
+      "skala": "A-K",
+      "retning": "A = komplett nybegynner (HCP 54+) → K = tour-proff (+4 eller bedre)",
+      "kodeStatus": "NgfKategori (A-L, A=elite) og SPILLERKATEGORIER har MOTSATT retning — migrering utestår"
+    },
+    "forbudteTermer": [
+      {
+        "forbudt": "elev",
+        "bruk": "spiller"
+      },
+      {
+        "forbudt": "trener (alene)",
+        "bruk": "coach"
+      },
+      {
+        "forbudt": "goal",
+        "bruk": "mål"
+      },
+      {
+        "forbudt": "session",
+        "bruk": "økt"
+      },
+      {
+        "forbudt": "workout",
+        "bruk": "økt"
+      },
+      {
+        "forbudt": "stats",
+        "bruk": "statistikk"
+      },
+      {
+        "forbudt": "schedule",
+        "bruk": "plan / kalender"
+      },
+      {
+        "forbudt": "subscription",
+        "bruk": "abonnement"
+      },
+      {
+        "forbudt": "kort spill / kortspill",
+        "bruk": "nærspill"
+      },
+      {
+        "forbudt": "rundt green (som ARG-label)",
+        "bruk": "nærspill"
+      },
+      {
+        "forbudt": "Error",
+        "bruk": "Noe gikk galt"
+      },
+      {
+        "forbudt": "emoji i UI",
+        "bruk": "Lucide-ikoner"
+      }
+    ],
+    "formatRegler": {
+      "desimal": "komma",
+      "tusenskille": "mellomrom",
+      "tid": "24h (09:00)",
+      "periodeSkille": "tankestrek (—)",
+      "puttingAvstand": "alltid ft",
+      "hcpFortegn": "+3,5 / −3,5 (ekte minus-tegn)",
+      "kpiTall": "JetBrains Mono"
+    }
+  },
+  "prismaEnums": {
+    "UserRole": [
+      "ADMIN",
+      "COACH",
+      "PLAYER",
+      "PARENT",
+      "GUEST"
+    ],
+    "Tier": [
+      "GRATIS",
+      "PRO",
+      "ELITE"
+    ],
+    "BookingStatus": [
+      "PENDING",
+      "CONFIRMED",
+      "CANCELLED",
+      "COMPLETED"
+    ],
+    "SessionStatus": [
+      "PLANNED",
+      "ACTIVE",
+      "PAUSED",
+      "COMPLETED",
+      "ABANDONED",
+      "SKIPPED",
+      "CANCELLED"
+    ],
+    "SessionStatusV2": [
+      "PLANNED",
+      "IN_PROGRESS",
+      "COMPLETED",
+      "CANCELLED",
+      "SKIPPED"
+    ],
+    "TournamentEntryStatus": [
+      "PLANNED",
+      "CONFIRMED",
+      "WITHDRAWN",
+      "COMPLETED",
+      "DNF"
+    ],
+    "PyramidArea": [
+      "FYS",
+      "TEK",
+      "SLAG",
+      "SPILL",
+      "TURN"
+    ],
+    "LPhase": [
+      "GRUNN",
+      "SPESIAL",
+      "TURNERING"
+    ],
+    "SkillArea": [
+      "TEE_TOTAL",
+      "TILNAERMING",
+      "AROUND_GREEN",
+      "PUTTING",
+      "SPILL"
+    ],
+    "SessionEnvironment": [
+      "RANGE",
+      "BANE",
+      "STUDIO",
+      "HJEM",
+      "SIMULATOR",
+      "GYM"
+    ],
+    "ExerciseSource": [
+      "SYSTEM",
+      "COACH",
+      "PLAYER"
+    ],
+    "ExerciseVisibility": [
+      "PRIVATE",
+      "COACH_PLAYERS"
+    ],
+    "UserStatus": [
+      "AKTIV",
+      "PERMISJON",
+      "SKADET",
+      "INAKTIV"
+    ],
+    "LeaveReason": [
+      "SKADE",
+      "SYKDOM",
+      "REISE",
+      "JOBB",
+      "STUDIER",
+      "ANNET"
+    ],
+    "DrillPracticeType": [
+      "BLOKK",
+      "VARIABEL",
+      "KONKURRANSE",
+      "SPILL_TEST"
+    ],
+    "DrillFasilitet": [
+      "RADAR",
+      "MAT_NET",
+      "BUNKER",
+      "KAMERA",
+      "PUTTING_GREEN_KORT",
+      "PUTTING_GREEN_LANG",
+      "SHORT_GAME_AREA",
+      "DRIVING_RANGE",
+      "BANE",
+      "SIMULATOR",
+      "VEKTSTANG",
+      "TRAPBAR",
+      "LOPEBANE",
+      "MED_BALL"
+    ],
+    "NgfKategori": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J",
+      "K",
+      "L"
+    ],
+    "SubscriptionStatus": [
+      "ACTIVE",
+      "PAST_DUE",
+      "CANCELLED",
+      "TRIALING"
+    ],
+    "PlayerProgram": [
+      "WANG_TOPPIDRETT",
+      "WANG_UNG",
+      "GFGK_MINI",
+      "GFGK_BREDDE",
+      "GFGK_JENTER",
+      "GFGK_ELITE",
+      "AK_ACADEMY",
+      "AK_ACADEMY_JUNIOR",
+      "PLATFORM_ONLY"
+    ],
+    "PressureLevel": [
+      "PR1",
+      "PR2",
+      "PR3",
+      "PR4",
+      "PR5"
+    ],
+    "PlanStatus": [
+      "DRAFT",
+      "PENDING_PLAYER",
+      "ACCEPTED",
+      "REJECTED",
+      "ACTIVE",
+      "PAUSED",
+      "ARCHIVED"
+    ],
+    "LFase": [
+      "L_KROPP",
+      "L_ARM",
+      "L_KOLLE",
+      "L_BALL",
+      "L_AUTO"
+    ],
+    "CSNivaa": [
+      "CS50",
+      "CS60",
+      "CS70",
+      "CS80",
+      "CS90",
+      "CS100"
+    ],
+    "MMiljo": [
+      "M0",
+      "M1",
+      "M2",
+      "M3",
+      "M4",
+      "M5"
+    ],
+    "PRPress": [
+      "PR1",
+      "PR2",
+      "PR3",
+      "PR4",
+      "PR5"
+    ],
+    "PracticeType": [
+      "BLOKK",
+      "RANDOM",
+      "KONKURRANSE",
+      "SPILL_TEST"
+    ],
+    "PeriodeType": [
+      "GRUNN",
+      "SPESIALISERING",
+      "TURNERING",
+      "EVALUERING",
+      "FERIE"
+    ],
+    "GoalCategory": [
+      "OUTCOME",
+      "PROCESS"
+    ],
+    "SessionNoteType": [
+      "SELF",
+      "COACH_QUESTION",
+      "VIDEO"
+    ],
+    "SessionRequestStatus": [
+      "PENDING",
+      "APPROVED",
+      "DECLINED",
+      "CANCELLED"
+    ],
+    "PlanAdjustmentStatus": [
+      "PENDING",
+      "APPROVED",
+      "DECLINED"
+    ],
+    "ParentLinkRelation": [
+      "FATHER",
+      "MOTHER",
+      "GUARDIAN"
+    ],
+    "ShotLie": [
+      "TEE",
+      "FAIRWAY",
+      "SEMI_ROUGH",
+      "ROUGH",
+      "DEEP_ROUGH",
+      "BUNKER",
+      "GREEN",
+      "WATER",
+      "OOB",
+      "TREES"
+    ],
+    "WindDir": [
+      "STILLE",
+      "MEDVIND",
+      "MOTVIND",
+      "VENSTRE",
+      "HOYRE"
+    ],
+    "ShotType": [
+      "DRIVE",
+      "APPROACH",
+      "CHIP",
+      "PITCH",
+      "PUTT",
+      "BUNKER",
+      "RECOVERY",
+      "DROP"
+    ],
+    "TestVisibility": [
+      "PRIVATE",
+      "COACH",
+      "GROUP",
+      "ACADEMY"
+    ],
+    "TestSessionStatus": [
+      "IN_PROGRESS",
+      "COMPLETED",
+      "ABORTED"
+    ],
+    "TestAssignmentStatus": [
+      "OPEN",
+      "COMPLETED",
+      "CANCELLED"
+    ],
+    "TrackManEnvironment": [
+      "SIMULATOR_INDOOR",
+      "NET_INDOOR",
+      "RANGE_OUTDOOR_MAT",
+      "RANGE_OUTDOOR_GRASS",
+      "COURSE_PRACTICE",
+      "COURSE_COMPETITION"
+    ],
+    "SgCategory": [
+      "OTT",
+      "APP",
+      "ARG",
+      "PUTT"
+    ],
+    "InsightCategory": [
+      "DISTANCE_GAPPING",
+      "CONSISTENCY_LEAK",
+      "TRAINING_GAP",
+      "D_PLANE_DRIFT",
+      "STRIKE_QUALITY",
+      "FATIGUE_PATTERN",
+      "EQUIPMENT_FIT",
+      "TEMPO_VARIANCE",
+      "PROGRESSION_TREND",
+      "SAME_DISTANCE_OPPORTUNITY"
+    ],
+    "PaymentStatus": [
+      "PENDING",
+      "SUCCEEDED",
+      "FAILED",
+      "REFUNDED",
+      "PARTIALLY_REFUNDED"
+    ],
+    "PaymentType": [
+      "BOOKING",
+      "SUBSCRIPTION",
+      "INVOICE",
+      "OTHER"
+    ],
+    "FacilityType": [
+      "STUDIO",
+      "RANGE_1F",
+      "RANGE_2F",
+      "PUTTING_GREEN",
+      "SHORT_GAME",
+      "COURSE_9H",
+      "COURSE_18H",
+      "SPECIFIC_HOLES",
+      "GENERAL"
+    ],
+    "ParticipationStatus": [
+      "INVITED",
+      "ACCEPTED",
+      "DECLINED",
+      "MAYBE",
+      "ATTENDED",
+      "NO_SHOW"
+    ],
+    "TechPlanStatus": [
+      "DRAFT",
+      "ACTIVE",
+      "ARCHIVED"
+    ],
+    "Ukedag": [
+      "MAN",
+      "TIR",
+      "ONS",
+      "TOR",
+      "FRE",
+      "LOR",
+      "SON"
+    ],
+    "PositionTaskStatus": [
+      "PENDING",
+      "ACTIVE",
+      "DONE",
+      "ARCHIVED"
+    ],
+    "TrackStatus": [
+      "PAA_VEI",
+      "STAGNERER",
+      "FERDIG",
+      "INAKTIV",
+      "AVSLAATT"
+    ],
+    "RepHastighet": [
+      "DRY",
+      "LAV",
+      "FULL"
+    ],
+    "TmGoalType": [
+      "PRIMARY",
+      "SECONDARY",
+      "CAUSAL",
+      "HIT_RATE"
+    ],
+    "TmGoalProtocol": [
+      "ROLLING_WINDOW",
+      "BEST_OF_N",
+      "STREAK",
+      "SESSION_GATE"
+    ],
+    "TmGoalComparison": [
+      "LESS_THAN",
+      "GREATER_THAN",
+      "RANGE",
+      "EQUAL"
+    ],
+    "ClubTargetStatus": [
+      "OPPNAADD",
+      "PAA_VEI_KT",
+      "IKKE_BEGYNT"
+    ],
+    "SuggestionType": [
+      "NEW_TASK",
+      "ARCHIVE_TASK",
+      "RE_PRIORITIZE",
+      "CHANGE_CUE",
+      "ADJUST_GOAL",
+      "ADD_CLUB_TARGET"
+    ],
+    "SuggestionStatus": [
+      "PENDING",
+      "ACCEPTED",
+      "REJECTED",
+      "EDITED"
+    ],
+    "NotionLinkType": [
+      "OPPGAVER",
+      "PROSJEKTER"
+    ],
+    "NotionSyncMode": [
+      "AUTO",
+      "MANUELL",
+      "PAUSED"
+    ],
+    "ApprovalStatus": [
+      "PENDING",
+      "APPROVED",
+      "MINOR_AVVIK",
+      "MAJOR_AVVIK",
+      "SKIP"
+    ],
+    "DesignKoblingStatus": [
+      "UNMAPPED",
+      "MAPPED",
+      "APPROVED",
+      "MISSING",
+      "BROKEN"
+    ],
+    "CoachDirektivType": [
+      "PIN",
+      "BLOCK",
+      "PRIORITER"
+    ]
+  }
+}
