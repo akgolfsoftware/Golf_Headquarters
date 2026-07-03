@@ -159,6 +159,22 @@ if (udekket.length > 0) {
   process.exit(1);
 }
 
+// ── 4b. Valider at Claude Design-kopien av design-guiden ikke har driftet ──
+const GUIDE = join(ROT, "docs/design-guide-terminologi.md");
+const GUIDE_KOPI = join(ROT, "docs/claude-design/ordbok-design-guide.md");
+if (existsSync(GUIDE_KOPI)) {
+  const kanonisk = readFileSync(GUIDE, "utf-8").trim();
+  // Kopien har én KOPI-headerlinje + blank linje øverst — resten skal være identisk.
+  const kopi = readFileSync(GUIDE_KOPI, "utf-8").split("\n").slice(2).join("\n").trim();
+  if (kopi !== kanonisk) {
+    console.error(
+      "DRIFT: docs/claude-design/ordbok-design-guide.md avviker fra docs/design-guide-terminologi.md.\n" +
+        "Synk med: { head -2 docs/claude-design/ordbok-design-guide.md; cat docs/design-guide-terminologi.md; } > tmp && mv tmp docs/claude-design/ordbok-design-guide.md",
+    );
+    process.exit(1);
+  }
+}
+
 // ── 5. Skriv json ──────────────────────────────────────────────────
 const ut = {
   $schema: "ordbok-lag-3",

@@ -73,6 +73,15 @@ heatmap. Nytenkende og interaktivt — aldri flate grafer.
 - Performance / Performance Pro = coaching-pakker, ikke app-nivåer.
 - Tema: PlayerHQ alltid lyst. AgencyOS mørkt standard (+ lys variant).
 
+## Terminologi & tallvisning (LES `ordbok-design-guide` før du skriver tekst)
+Den vedlagte `ordbok-design-guide` er fasit for ALT som vises av tekst, tall og enheter:
+- **«nærspill»** — aldri «kort spill»/«kortspill». SG-kategoriene på norsk: Tee-slag · Innspill · Nærspill · Putting.
+- **Putting-avstander ALLTID i fot (ft)** (`Putt 3–6 ft`), aldri meter.
+- **SG-verdier:** alltid fortegn + komma (`+1,2` / `−0,4`); positiv = grønn, negativ = rød.
+- Tall: komma-desimal, mellomrom-tusenskille, tankestrek i ranges (`19—25 mai`), 24h-tid.
+- Knapp-tekster, eyebrows, personas (Øyvind Rohjan = demo-kanon) og tomtilstands-mønstre («—», aldri oppdiktede tall) står i guiden.
+- Forbudte ord (elev, session, stats, goal, Error m.fl.): se guidens §11 / ordbokens B24.
+
 ## Skjerm-fasit
 Hvilke skjermer som finnes + mobil/desktop-status: se de vedlagte skjerm-docene
 (`plattform-skjermer-indeks`, `playerhq-agencyos-skjermer-desktop-mobil`,

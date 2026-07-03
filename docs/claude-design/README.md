@@ -17,13 +17,15 @@ blir alt konsistent.
 | `plattform-skjermer-indeks` | Hele plattformen på ett blikk — totaltall + de tre største gapene. | Oversikt. |
 | `playerhq-agencyos-skjermer-desktop-mobil` | Hver PlayerHQ- + AgencyOS-skjerm m/ mobil/desktop-status. | Fasit for IA/dekning. |
 | `marketing-booking-forelder-auth-skjermer-desktop-mobil` | Resten av flatene, samme format. | Fasit for IA/dekning. |
+| **`ordbok-design-guide`** | Terminologi-fasit for visning: enheter (putting i **ft**), tallformat (+1,2 med komma), SG-farger, chips/badges, knappe-tekster, eyebrows, personas, tomtilstander. | **Les før du skriver én UI-tekst eller ett tall.** |
 | `akgolf-stats-claude-design-prompt` (valgfri) | Egen prompt for stats-funnelen. | Når du tar stats-flaten. |
 
 ## Slik jobber du
 1. Les `CLAUDE.md` (tokens + regler).
 2. Slå opp skjermen(e) i skjerm-docene (finnes den? mobil/desktop-status?).
-3. Tegn med de eksakte tokenene + gjenbruk komponentene. Mobil + desktop (iPad der naturlig).
-4. Match stilen til en eksisterende skjerm i samme flate når du er i tvil.
+3. All tekst, tall og enheter: følg `ordbok-design-guide` (aldri «kort spill» — alltid «nærspill»; putting i ft; SG med fortegn og komma).
+4. Tegn med de eksakte tokenene + gjenbruk komponentene. Mobil + desktop (iPad der naturlig).
+5. Match stilen til en eksisterende skjerm i samme flate når du er i tvil.
 
 ## De tre største gapene å ferdigstille (prioritert)
 1. **AgencyOS mobil** — coach-flaten finnes nesten bare på desktop. Trenger egen mobil-IA.
