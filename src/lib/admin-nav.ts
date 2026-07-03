@@ -291,7 +291,6 @@ export function buildAdminNav(
         { type: "item", key: "organisasjon", label: "Organisasjon", href: "/admin/organisasjon", icon: LayoutDashboard },
         { type: "item", key: "stats-overview", label: "Stats-oversikt", href: "/admin/stats/overview", icon: BarChart3 },
         { type: "item", key: "stats-moderering", label: "Moderering", href: "/admin/stats/moderering", icon: CheckCheck },
-        { type: "item", key: "godkjenn-portal", label: "Portal-godkjenning", href: "/admin/godkjenn-portal", icon: ShieldCheck },
       ],
     });
   }

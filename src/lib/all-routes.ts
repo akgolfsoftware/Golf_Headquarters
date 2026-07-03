@@ -44,8 +44,6 @@ export const ALL_ROUTES: AllRouteEntry[] = [
   { route: "/admin/foresporsler", label: "Foresporsler", category: "AgencyOS", filePath: "src/app/admin/foresporsler/page.tsx" },
   { route: "/admin/gjennomfore", label: "Gjennomfore", category: "AgencyOS", filePath: "src/app/admin/gjennomfore/page.tsx" },
   { route: "/admin/gjennomfore/okter/[id]", label: "okter · detalj", category: "AgencyOS", filePath: "src/app/admin/gjennomfore/okter/[id]/page.tsx" },
-  { route: "/admin/godkjenn-portal", label: "Godkjenn portal", category: "AgencyOS · Godkjenning", filePath: "src/app/admin/godkjenn-portal/page.tsx" },
-  { route: "/admin/godkjenn-portal/review", label: "Review", category: "AgencyOS · Godkjenning", filePath: "src/app/admin/godkjenn-portal/review/page.tsx" },
   { route: "/admin/godkjenninger", label: "Godkjenninger", category: "AgencyOS · Godkjenning", filePath: "src/app/admin/godkjenninger/page.tsx" },
   { route: "/admin/grupper", label: "Grupper", category: "AgencyOS", filePath: "src/app/admin/grupper/page.tsx" },
   { route: "/admin/grupper/[id]", label: "grupper · detalj", category: "AgencyOS", filePath: "src/app/admin/grupper/[id]/page.tsx" },
