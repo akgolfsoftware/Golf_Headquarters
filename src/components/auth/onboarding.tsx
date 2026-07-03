@@ -3,7 +3,7 @@
 /**
  * Onboarding — presentasjonell, props-drevet velkomst-skjerm (steg 1 av 7).
  *
- * Visuell fasit: public/design-handover/_screens/pl-onboarding.png
+ * Visuell fasit: [historisk fasit, fjernet 2026-07-03] _screens/pl-onboarding.png
  *
  * Selvstendig AUTH-skjerm: dyp forest-bakgrunn med hvit "ak"-logo øverst til
  * venstre, og ett SENTRERT hvitt kort (maks ~440px) som holder wizard-steget.
@@ -92,7 +92,7 @@ function ProgressBar({ total, current }: { total: number; current: number }) {
 
 // ── Underkomponent: hero-illustrasjon ────────────────────────────────────────
 // Bevisst dekorativt mørkt forest-kort med diagonale striper + lime-glød.
-// Speiler .hero-illo i public/design-handover/playerhq/components-onboarding.html.
+// Speiler .hero-illo i [historisk fasit, fjernet 2026-07-03] playerhq/components-onboarding.html.
 
 function HeroIllo({ label }: { label: string }) {
   return (

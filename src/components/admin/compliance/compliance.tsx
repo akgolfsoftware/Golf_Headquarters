@@ -1,9 +1,9 @@
 /**
  * Compliance-oversikt (AgencyOS · §5 Compliance) — presentasjonell, props-drevet.
  *
- * Pixel-port av fasit public/design-handover/_screens/ag-compliance.png
+ * Pixel-port av fasit [historisk fasit, fjernet 2026-07-03] _screens/ag-compliance.png
  * (som er den rendrede compliance-skjermen) + design-HTML
- * public/design-handover/agencyos/components-compliance.html.
+ * [historisk fasit, fjernet 2026-07-03] agencyos/components-compliance.html.
  *
  * Tre nivåer i samme språk:
  *   1) Spillerpanel-modul — plan-fullføring for ÉN spiller

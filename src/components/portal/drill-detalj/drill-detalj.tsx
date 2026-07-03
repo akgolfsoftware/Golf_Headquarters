@@ -1,7 +1,7 @@
 /**
  * PlayerHQ · Drill-detalj — presentasjonskomponent.
  *
- * Pixel-port av public/design-handover/playerhq/components-drill-detalj.html,
+ * Pixel-port av [historisk fasit, fjernet 2026-07-03] playerhq/components-drill-detalj.html,
  * mobile-first (430px). Hele drillen på én flate:
  *   topbar (← Bibliotek + drill-tag) · hero (akse-farge venstrekant + tittel
  *   italic + meta-chips) · beskrivelse · media-veksler · numerisk trinn-liste ·

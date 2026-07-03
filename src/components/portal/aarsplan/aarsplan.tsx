@@ -2,10 +2,10 @@
  * Aarsplan — PlayerHQ §2 Planlegge · Aarsplan (`/portal/tren/aarsplan`).
  *
  * Portet FRA v10-fasit:
- *   - Visuell fasit (pixel-maal): public/design-handover/_screens/pl-aarsplan.png
+ *   - Visuell fasit (pixel-maal): [historisk fasit, fjernet 2026-07-03] _screens/pl-aarsplan.png
  *     (mobil 430px, TOM-TILSTAND — ny spiller "Mathias", ingen sesongplan)
  *   - HTML/CSS-referanse (header + Gantt-verdier):
- *     public/design-handover/playerhq/components-season-timeline.html
+ *     [historisk fasit, fjernet 2026-07-03] playerhq/components-season-timeline.html
  *   - Manifest: docs/skjerm-manifest-playerhq.md §2 (Gantt-kart hele aaret,
  *     faser farget per pyramide-akse).
  *

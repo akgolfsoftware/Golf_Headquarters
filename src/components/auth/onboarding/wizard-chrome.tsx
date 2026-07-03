@@ -2,7 +2,7 @@
 
 /**
  * Onboarding-wizard — felles chrome (mobil-først, 430px).
- * Visuelt skall fra fersk fasit: public/design-handover/AK Golf HQ Design
+ * Visuelt skall fra fersk fasit: [historisk fasit, fjernet 2026-07-03] AK Golf HQ Design
  * System/playerhq-app/ph-auth.jsx → AOnboarding (StepsRail + AHead + CTA-rad).
  *
  *   - Steps-rail: tynne baner — fullført = lime, aktiv = grønn, gjenstår = border

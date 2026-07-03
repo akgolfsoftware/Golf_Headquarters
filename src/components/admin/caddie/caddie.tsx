@@ -1,7 +1,7 @@
 /**
  * AgencyOS — Caddie / co-agent rammeverk (presentasjonell).
- * Pixel-port av public/design-handover/_screens/ag-caddie.png
- * (kilde: public/design-handover/agencyos/components-co-agent.html).
+ * Pixel-port av [historisk fasit, fjernet 2026-07-03] _screens/ag-caddie.png
+ * (kilde: [historisk fasit, fjernet 2026-07-03] agencyos/components-co-agent.html).
  *
  * Tre primitiver for AI-assistert coaching for coachen i AgencyOS:
  *   1. UTKAST → GODKJENNING — kildebruk + diff + tre-handlings-struktur

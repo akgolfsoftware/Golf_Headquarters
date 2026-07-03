@@ -1,6 +1,6 @@
 /**
  * AgencyOS — Spiller-detalj oversikt (/admin/spillere/[id] · Profil-tab).
- * Pixel-port av public/design-handover/agencyos/components-agency-player-panel.html.
+ * Pixel-port av [historisk fasit, fjernet 2026-07-03] agencyos/components-agency-player-panel.html.
  *
  * Drawer-innholdet fra FASIT gjengitt som in-page oversikt (vi beholder
  * DetailShell + tabs). Fem seksjoner:

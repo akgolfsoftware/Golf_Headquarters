@@ -2,7 +2,7 @@
  * Data-loader for AgencyOS booking-oversikt (/admin/bookinger).
  * Henter ekte Prisma-data og mapper til BookingerViewProps.
  *
- * Pixel-port av public/design-handover/agencyos/components-agency-bookings.html.
+ * Pixel-port av [historisk fasit, fjernet 2026-07-03] agencyos/components-agency-bookings.html.
  * Credit-cellen utledes fra booking.subscription (monthlyCredits = nevner,
  * creditsRemaining = teller). Coach fra booking.coach-relasjonen. Type-pille
  * klassifiseres best-effort fra serviceType.name. Ingen oppdiktede tall — der

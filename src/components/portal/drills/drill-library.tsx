@@ -3,7 +3,7 @@
 /**
  * PlayerHQ · Drill-bibliotek (mobil-first, 430px)
  *
- * Port av public/design-handover/playerhq/components-drill-bibliotek.html.
+ * Port av [historisk fasit, fjernet 2026-07-03] playerhq/components-drill-bibliotek.html.
  * Liste-mønster fra tester-list.tsx + FilterPillBar fra athletic.
  *
  * Header (N AV M DRILLS) · søkefelt · akse-pills (Alle/FYS/TEK/SLAG/SPILL/TURN

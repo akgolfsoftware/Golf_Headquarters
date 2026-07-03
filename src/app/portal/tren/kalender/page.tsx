@@ -1,7 +1,7 @@
 /**
  * PlayerHQ · Trening · Ukekalender (`/portal/tren/kalender`) — hybrid-design 2026-06-17.
  *
- * Fasit: public/design-handover/prosjektgjennomgang-2026-06-17/
+ * Fasit: [historisk fasit, fjernet 2026-07-03] prosjektgjennomgang-2026-06-17/
  *   prosjektgjennomgang-og-wireframing/project/PlayerHQ Ukekalender (hybrid).dc.html
  *
  * Layout:

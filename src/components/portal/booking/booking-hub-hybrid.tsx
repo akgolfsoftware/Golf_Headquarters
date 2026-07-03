@@ -3,7 +3,7 @@
 /**
  * BookingHubHybrid — hybrid design-port av /portal/booking.
  *
- * Design-kilde: public/design-handover/prosjektgjennomgang-2026-06-17/
+ * Design-kilde: [historisk fasit, fjernet 2026-07-03] prosjektgjennomgang-2026-06-17/
  *   prosjektgjennomgang-og-wireframing/project/PlayerHQ Booking (hybrid).dc.html
  *
  * Hybrid-mønster: editorial lyst øverst (hero + kalender), terminal data nedenfor

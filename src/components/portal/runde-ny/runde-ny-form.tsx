@@ -4,7 +4,7 @@
  * PlayerHQ · Runder · Ny — Loggfør runde.
  *
  * Visuelt portet FRA fersk Claude Design-fasit:
- *   public/design-handover/AK Golf HQ Design System/playerhq-app/ph-screens.jsx
+ *   (historisk juni-fasit, fjernet fra repo) playerhq-app/ph-screens.jsx
  *   (LogRoundScreen): Bane + Dato (2-kol md) → accent-kort med LIVE to-par
  *   (stor farget to-par + «{total} slag» + «Par {par} · 18 hull») → hull-grid
  *   UT/INN med −/+ per hull (3-kol mobil / 9-kol md) → primær full-bredde

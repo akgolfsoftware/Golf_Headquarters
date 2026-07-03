@@ -1,7 +1,7 @@
 /**
  * PlayerHQ · Trening · Årsplan (`/portal/tren/aarsplan`) — v10-design.
  *
- * Rendrer <Aarsplan> (v10-fasit fra pl-aarsplan, public/design-handover/
+ * Rendrer <Aarsplan> (v10-fasit fra pl-aarsplan, [historisk fasit, fjernet 2026-07-03] 
  * _screens/pl-aarsplan.png) med EKTE data fra Prisma (seasonPlan +
  * periodBlocks). mapAarsplanData oversetter seasonPlan-shapen til
  * AarsplanData. Tom-tilstand (faser: []) bevares når ingen sesongplan

@@ -2,7 +2,7 @@
 
 /**
  * AgencyOS — booking-oversikt (/admin/bookinger).
- * Pixel-port av public/design-handover/agencyos/components-agency-bookings.html.
+ * Pixel-port av [historisk fasit, fjernet 2026-07-03] agencyos/components-agency-bookings.html.
  *
  * Tittel-rad (BOOKINGER · uke · stats) · toolbar (periode-pill-tabs +
  * dropdown-filtre + eksport + Ny booking) · inline lime-tint ny-booking-form

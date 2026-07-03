@@ -1,7 +1,7 @@
 /**
  * PlayerHQ · Tren · Tester — mobile-first skjerm.
  *
- * Port av public/design-handover/playerhq/components-test-week.html. Den
+ * Port av [historisk fasit, fjernet 2026-07-03] playerhq/components-test-week.html. Den
  * coach-only periodiserings-dialogen (seksjon 3 i FASIT) er bevisst utelatt —
  * spilleren ser kun trigger (nedtelling) og resultat (tester + historikk),
  * jf. design-prinsippet i HTML-fotnoten.

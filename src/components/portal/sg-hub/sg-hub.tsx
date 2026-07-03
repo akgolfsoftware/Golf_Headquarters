@@ -1,7 +1,7 @@
 /**
  * PlayerHQ Strokes Gained Hub (SG-Hub) — portet FRA v10-fasit:
- *   - Visuell fasit (mobil, autoritativ): public/design-handover/_screens/pl-sghub.png
- *   - HTML/CSS-referanse (chart-stil/tokens): public/design-handover/playerhq/components-stats-sg.html
+ *   - Visuell fasit (mobil, autoritativ): [historisk fasit, fjernet 2026-07-03] _screens/pl-sghub.png
+ *   - HTML/CSS-referanse (chart-stil/tokens): [historisk fasit, fjernet 2026-07-03] playerhq/components-stats-sg.html
  *   - Manifest §4 (navigasjon): tool-ruter under /portal/mal/sg-hub/*
  *
  * Presentasjonell komponent. Tar all data via `SgHubData`-props — INGEN

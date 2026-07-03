@@ -2,7 +2,7 @@
  * Mission Control (/admin/agencyos/live) — personlig live-ops-dashboard.
  *
  * Faithful port av Direction A «Mission Control» fra Claude Design-eksporten
- * (public/design-handover/meg-live-os/src/dir-a.jsx). Foreløpig et visuelt
+ * ([historisk fasit, fjernet 2026-07-03] meg-live-os/src/dir-a.jsx). Foreløpig et visuelt
  * skall med statisk seed-data — live-integrasjoner (Gmail/Beeper/Notion/
  * Kalender) kobles senere.
  *

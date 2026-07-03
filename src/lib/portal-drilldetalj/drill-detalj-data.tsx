@@ -2,7 +2,7 @@
  * Data-loader for PlayerHQ · Drill-detalj (/portal/drills/[id]).
  *
  * Henter én ekte ExerciseDefinition og mapper til props for drill-detalj-
- * skjermen. Port av public/design-handover/playerhq/components-drill-detalj.html
+ * skjermen. Port av [historisk fasit, fjernet 2026-07-03] playerhq/components-drill-detalj.html
  * — mobile-first (430px) og uten fabrikerte tall.
  *
  * Prinsipp: alt som vises er utledet fra faktiske felter. Felter som ikke

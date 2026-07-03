@@ -1,7 +1,7 @@
 /**
  * Auth · Logget ut (/auth/logget-ut) — v10-design.
  *
- * Rendrer <LoggetUtSkjerm> (v10-fasit fra public/design-handover/_screens/
+ * Rendrer <LoggetUtSkjerm> (v10-fasit fra [historisk fasit, fjernet 2026-07-03] _screens/
  * au-loggetut.png) som selvstendig sentrert kort på cream-bakgrunn, INGEN
  * app-sidebar.
  *

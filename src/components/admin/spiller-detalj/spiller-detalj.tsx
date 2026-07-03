@@ -2,8 +2,8 @@
  * AgencyOS — Spiller-detalj (DetailShell, coachens inngang til én spiller).
  *
  * Pixel-port FRA design-fasit:
- *   - Visuell fasit (full-page, 2 kolonner): public/design-handover/_screens/ag-spiller.png
- *   - Komponent-/token-referanse: public/design-handover/agencyos/components-agency-player-panel.html
+ *   - Visuell fasit (full-page, 2 kolonner): [historisk fasit, fjernet 2026-07-03] _screens/ag-spiller.png
+ *   - Komponent-/token-referanse: [historisk fasit, fjernet 2026-07-03] agencyos/components-agency-player-panel.html
  *     (drawer-varianten gir eksakt styling for header, KPI, mini-pyramide, uke-grid,
  *      booking, kommunikasjon og footer — gjengitt her i fasitens full-page-layout).
  *

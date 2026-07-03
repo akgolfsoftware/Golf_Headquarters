@@ -5,7 +5,7 @@
  * ikke en del av globals.css-token-settet. Flaten er alltid mørk, uavhengig av
  * produkt (PlayerHQ lyst / AgencyOS mørkt) fordi Workbench er ÉN delt komponent.
  * Verdiene er hentet 1:1 fra fasiten
- * (public/design-handover/.../Workbench Interaktiv (standalone-src).dc.html).
+ * ([historisk fasit, fjernet 2026-07-03] .../Workbench Interaktiv (standalone-src).dc.html).
  */
 
 /** Kategori- / akse-farger (AK-pyramide). */

@@ -1,7 +1,7 @@
 /**
  * PlayerHQ Mål-hub — /portal/mal
  * Hybrid design (B2). Portert fra:
- * public/design-handover/prosjektgjennomgang-2026-06-17/…/PlayerHQ Mål-hub (hybrid).dc.html
+ * [historisk fasit, fjernet 2026-07-03] prosjektgjennomgang-2026-06-17/…/PlayerHQ Mål-hub (hybrid).dc.html
  *
  * Layout: header + siste milepæl + goal-cards liste + empty state.
  * Data: ekte Prisma-queries for Goal + Achievement.

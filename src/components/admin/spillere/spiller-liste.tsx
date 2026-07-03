@@ -1,8 +1,8 @@
 /**
  * AgencyOS — Spillere (Stallen) komplett spilleroversikt.
  * Presentasjonell, props-drevet port av v10-fasiten:
- *   - Visuell fasit: public/design-handover/_screens/ag-stallen.png
- *   - Struktur-/CSS-referanse: public/design-handover/agencyos/
+ *   - Visuell fasit: [historisk fasit, fjernet 2026-07-03] _screens/ag-stallen.png
+ *   - Struktur-/CSS-referanse: [historisk fasit, fjernet 2026-07-03] agencyos/
  *       components-agency-player-table.html
  *
  * Panel med:

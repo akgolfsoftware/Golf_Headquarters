@@ -1,6 +1,6 @@
 /**
  * AgencyOS — Daglig brief (/admin/agencyos)
- * Pixel-port av public/design-handover/agencyos/components-agency-dashboard.html.
+ * Pixel-port av [historisk fasit, fjernet 2026-07-03] agencyos/components-agency-dashboard.html.
  *
  * 3-kolonne operations cockpit (Bloomberg-tetthet):
  *   COL 1 — Dagens timeline (økter, pyramide-akse-kant, NÅ-strek, ferdig/pågår/kommer)

@@ -4,8 +4,8 @@
  * AgencyOS · Bookinger — alle bookinger + manuell (inline) ny-booking.
  *
  * Presentasjonell og props-drevet. Portet pixel-mot v10-fasiten
- * (public/design-handover/_screens/ag-bookinger.png +
- *  public/design-handover/agencyos/components-agency-bookings.html).
+ * ([historisk fasit, fjernet 2026-07-03] _screens/ag-bookinger.png +
+ *  [historisk fasit, fjernet 2026-07-03] agencyos/components-agency-bookings.html).
  *
  * Struktur:
  *   - Tittelrad: eyebrow + "Uke N · M bookinger" + periode-meta (høyre)

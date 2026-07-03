@@ -1,7 +1,7 @@
 /**
  * BookingHub — mobil-first booking-landingsside for PlayerHQ (/portal/booking).
  *
- * Port av public/design-handover/_screens/pl-booking.png + components-booking-flow.html
+ * Port av [historisk fasit, fjernet 2026-07-03] _screens/pl-booking.png + components-booking-flow.html
  * + components-credit-indicator.html (HUB-en, ikke wizard-stegene).
  *
  * Seksjoner (vertikal stack, tap-vennlig — mobil-først 430px):

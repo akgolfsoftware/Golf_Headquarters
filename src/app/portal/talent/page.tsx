@@ -1,7 +1,7 @@
 /**
  * /portal/talent — PlayerHQ Talent hub
  * Hybrid design: editorial hero + data widgets
- * Fasit: public/design-handover/prosjektgjennomgang-2026-06-17/.../PlayerHQ Talent (hybrid).dc.html
+ * Fasit: [historisk fasit, fjernet 2026-07-03] prosjektgjennomgang-2026-06-17/.../PlayerHQ Talent (hybrid).dc.html
  */
 
 import type { ReactElement } from "react";

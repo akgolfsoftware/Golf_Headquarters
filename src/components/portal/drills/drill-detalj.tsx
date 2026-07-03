@@ -3,7 +3,7 @@
 /**
  * PlayerHQ · Drill-detalj — presentasjonskomponent (props-drevet).
  *
- * Pixel-port av public/design-handover/preview/components-drill-detalj.html.
+ * Pixel-port av [historisk fasit, fjernet 2026-07-03] preview/components-drill-detalj.html.
  * Mobile-first (≤640px = primær-fasit). Hele drillen på én flate:
  *   topbar (← Bibliotek + DRILL #N) · hero (akse-farge venstrekant + eyebrow
  *   med farget dot + tittel italic + meta-chips: varighet/trinn/CS) ·

@@ -4,7 +4,7 @@
  * Selvstendig SENTRERT kort på cream-bakgrunn, INGEN sidebar (auth-layout).
  * Samme grunnlayout mobil + desktop: kortet sentrert, maks ~440px.
  *
- * Design-fasit (juni 2026): public/design-handover/AK Golf HQ Design System/
+ * Design-fasit (juni 2026): (historisk juni-fasit, fjernet fra repo) 
  *   playerhq-app/ph-auth.jsx → ABankID (start-fasen er det visuelle skallet:
  *   mørk BankID-badge → tittel «Logg inn med BankID.» → ingress → primær-CTA).
  *

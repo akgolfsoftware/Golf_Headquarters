@@ -5,7 +5,7 @@
  *
  * Presentasjonell, props-drevet test-oversikt + NGF-katalog (flat liste over
  * hele test-batteriet, gruppert per pyramide-akse via rekkefølge, med
- * akse-filter). Bygget FRA fasiten public/design-handover/_screens/pl-tester.png:
+ * akse-filter). Bygget FRA fasiten [historisk fasit, fjernet 2026-07-03] _screens/pl-tester.png:
  *   hero (eyebrow · «Tester og benchmarks» · deck · «Ta ny test») →
  *   4 KPI-kort (Gjennomført / Totale forsøk / Beste kategori / Pågående) →
  *   TEST-BATTERI-seksjon (ALLE TESTER N + filter-pills + rader) →

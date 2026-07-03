@@ -2,7 +2,7 @@
 
 /**
  * Onboarding-wizard (spiller) — MOBIL-FØRST 430px.
- * Chrome portet til fersk fasit (juni 2026): public/design-handover/
+ * Chrome portet til fersk fasit (juni 2026): (historisk juni-fasit, fjernet fra repo)
  * AK Golf HQ Design System/playerhq-app/ph-auth.jsx → AOnboarding
  * (steps-rail, TRINN-eyebrow + AHead, opt-card-valg, CTA-rad m/tilbake).
  * NB: fasitens 5 steg ≠ appens låste 7-stegs state-maskin — stegene beholdes.

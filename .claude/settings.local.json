@@ -294,7 +294,11 @@
       "Skill(loop)",
       "Skill(loop:*)",
       "mcp__72351f58-4d83-4538-8807-8f01835b16a1__read_file_content",
-      "mcp__72351f58-4d83-4538-8807-8f01835b16a1__create_file"
+      "mcp__72351f58-4d83-4538-8807-8f01835b16a1__create_file",
+      "mcp__claude-in-chrome__tabs_context_mcp",
+      "mcp__claude-in-chrome__navigate",
+      "mcp__claude-in-chrome__computer",
+      "mcp__claude-in-chrome__get_page_text"
     ]
   }
 }

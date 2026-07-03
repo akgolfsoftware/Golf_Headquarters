@@ -1,6 +1,6 @@
 /**
  * AgencyOS — Tester-matrise (/admin/tester)
- * Port av public/design-handover/agencyos/components-agency-tests.html.
+ * Port av [historisk fasit, fjernet 2026-07-03] agencyos/components-agency-tests.html.
  *
  * Spillere (rader) × tester (kolonner) ytelse-matrise:
  *   - Sticky første kolonne (spiller) + sticky header (test-navn + enhet)

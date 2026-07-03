@@ -1,7 +1,7 @@
 /* ============================================================
    Workbench (Bolk 1) — ported v10 styles, scoped under .akwb
    ------------------------------------------------------------
-   Source of truth: public/design-handover/v10/workbench-styles.css
+   Source of truth: [historisk fasit, fjernet 2026-07-03] v10/workbench-styles.css
    (sections: frame, topbar, main, sidebar, calendar/week, day view,
    inspector, statusbar). Kanban/Dashboard rules intentionally omitted
    in this bolk.
@@ -2150,7 +2150,7 @@
 
 /* ============================================================
    DIRECTION B (Liste · Bolk 3) — ported from
-   public/design-handover/ak-design-system/.../workbench-dir-b.css
+   [historisk fasit, fjernet 2026-07-03] ak-design-system/.../workbench-dir-b.css
    Every selector prefixed with .akwb (token-shim + --pyr-* +
    --font-* inherited from the .akwb scope above). The Bolk-4
    drill-overlay block is ported at the end of this section

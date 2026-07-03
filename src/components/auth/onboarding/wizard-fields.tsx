@@ -2,7 +2,7 @@
 
 /**
  * Onboarding-wizard — mobil-først felt- og valg-byggeklosser (430px).
- * Valg-kort portet til fersk fasit: public/design-handover/AK Golf HQ Design
+ * Valg-kort portet til fersk fasit: [historisk fasit, fjernet 2026-07-03] AK Golf HQ Design
  * System/playerhq-app (ph-auth.jsx AOnboarding + app.css .opt-card).
  *
  * Editorial sport-analytics: mono-caps labels, lime-accent på valgt tilstand,

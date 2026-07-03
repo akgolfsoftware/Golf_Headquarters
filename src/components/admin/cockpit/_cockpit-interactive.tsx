@@ -3,7 +3,7 @@
 // ============================================================
 // Cockpit-interaktivitet + delte client-primitiver for AgencyCockpit.
 // Port FRA fersk design-fasit:
-//   public/design-handover/AK Golf HQ Design System/agencyos-app/
+//   (historisk juni-fasit, fjernet fra repo) agencyos-app/
 //   (screens-dashboard.jsx + core.jsx + agency.css) · /tmp/ag-fasit/dashboard.png
 //
 //   • COCKPIT_ICONS    — string→lucide-registry (data er serialiserbar)

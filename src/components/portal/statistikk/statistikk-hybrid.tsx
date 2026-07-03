@@ -1,7 +1,7 @@
 /**
  * StatistikkHub — hybrid design (2026-06-17)
  *
- * Portert fra: public/design-handover/prosjektgjennomgang-2026-06-17/
+ * Portert fra: [historisk fasit, fjernet 2026-07-03] prosjektgjennomgang-2026-06-17/
  *   prosjektgjennomgang-og-wireframing/project/PlayerHQ Statistikk-hub (hybrid).dc.html
  *
  * Layout (top → bunn):

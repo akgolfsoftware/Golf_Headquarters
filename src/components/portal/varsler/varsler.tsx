@@ -1,8 +1,8 @@
 /**
  * Varsler — PlayerHQ varsel-senter (/portal/varsler), presentasjonell variant.
  *
- * Pixel-port av fasiten public/design-handover/_screens/pl-varsler.png
- * (kalibrert mot tokenene i public/design-handover/playerhq/components-varsler.html).
+ * Pixel-port av fasiten [historisk fasit, fjernet 2026-07-03] _screens/pl-varsler.png
+ * (kalibrert mot tokenene i [historisk fasit, fjernet 2026-07-03] playerhq/components-varsler.html).
  *
  * Elementliste fra fasiten (rekkefølge oppe → ned):
  *   1. Header-rad:   display-tittel "Varsler · N nye" ("N nye" i primary) +

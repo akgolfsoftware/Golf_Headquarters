@@ -3,7 +3,7 @@
  *
  * Henter ekte Prisma-data (TestResult, TestDefinition, TestSession) for én
  * spiller og mapper til props for tester-skjermen. Porten av
- * public/design-handover/playerhq/components-test-week.html — men
+ * [historisk fasit, fjernet 2026-07-03] playerhq/components-test-week.html — men
  * mobile-first og uten fabrikerte tall.
  *
  * Tre baselines per test (jf. design-prinsipp): NÅ (siste resultat),

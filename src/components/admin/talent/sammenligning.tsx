@@ -2,8 +2,8 @@
  * AgencyOS — Sammenlign flere spillere (B10 sammenlignings-flate).
  *
  * Pixel-port FRA design-fasit:
- *   - Visuell fasit: public/design-handover/_screens/ag-compare.png (desktop ~1280px)
- *   - HTML/CSS-referanse: public/design-handover/agencyos/components-multi-compare.html
+ *   - Visuell fasit: [historisk fasit, fjernet 2026-07-03] _screens/ag-compare.png (desktop ~1280px)
+ *   - HTML/CSS-referanse: [historisk fasit, fjernet 2026-07-03] agencyos/components-multi-compare.html
  *
  * Fasiten viser den ekte tom-tilstanden: 3 valgte spillere uten registrert SG.
  * Tre nivåer:

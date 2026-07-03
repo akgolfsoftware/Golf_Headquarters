@@ -2,7 +2,7 @@
  * Foreldreportal · /forelder/barn — mobil-first 430px.
  *
  * Liste over alle koblede barn som store, klikkbare "fremgang"-kort.
- * Port mot public/design-handover/_prompts/SKJERMER-RUNDE-8-FORELDRE-MARKETING-MISC.md
+ * Port mot [historisk fasit, fjernet 2026-07-03] _prompts/SKJERMER-RUNDE-8-FORELDRE-MARKETING-MISC.md
  * (foreldre-portal — varm tone, luftig spacing). Hvert kort viser barnets
  * fremgang i kortform: pyramide-snapshot, økter (30 d), neste kommende økt og
  * utestående betaling. Detalj ligger på /forelder/barn/[childId].

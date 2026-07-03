@@ -2,7 +2,7 @@
  * Mission Control (AgencyOS · live) — statisk seed-data.
  *
  * Foreløpig et visuelt skall: dataene er løftet verbatim fra Anders' innboks
- * (Direction A-designet i public/design-handover/meg-live-os/src/data.jsx).
+ * (Direction A-designet i [historisk fasit, fjernet 2026-07-03] meg-live-os/src/data.jsx).
  * Live-integrasjoner (Gmail / Beeper / iMessage / Notion / Google Kalender)
  * kobles senere — da byttes konstantene under ut mot ekte kilder som
  * valideres mot de samme zod-skjemaene.

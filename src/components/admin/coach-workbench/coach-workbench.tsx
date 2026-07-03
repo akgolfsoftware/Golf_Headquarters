@@ -3,9 +3,9 @@
  * spillerens workbench (role=coach).
  *
  * Pixel-port av:
- *   public/design-handover/agencyos/components-workbench-sidebar.html
- *   public/design-handover/agencyos/components-workbench-week.html
- *   public/design-handover/agencyos/components-workbench-day.html
+ *   [historisk fasit, fjernet 2026-07-03] agencyos/components-workbench-sidebar.html
+ *   [historisk fasit, fjernet 2026-07-03] agencyos/components-workbench-week.html
+ *   [historisk fasit, fjernet 2026-07-03] agencyos/components-workbench-day.html
  *
  * Desktop 3-søyle:
  *   VENSTRE — sidemeny med tre-struktur (Sesong / Planer / Standardøkter /

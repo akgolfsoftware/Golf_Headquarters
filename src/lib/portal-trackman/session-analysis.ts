@@ -2,7 +2,7 @@
  * TrackMan sesjonsanalyse — server-side aggregering (Bag-view).
  *
  * Port-datakilde for /portal/mal/trackman (FASIT:
- * public/design-handover/playerhq/components-trackman.html).
+ * [historisk fasit, fjernet 2026-07-03] playerhq/components-trackman.html).
  *
  * Aggregerer ekte `TrackManShot`-rader per kølle til metrikkene designet viser:
  * carry/total/side/spread (95 %), stabilitetsscore, full parameter-tabell

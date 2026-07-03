@@ -2,7 +2,7 @@
  * IkkeFunnet — presentasjonell 404 «Siden ble ikke funnet»-side for AK Golf HQ.
  *
  * Minimal, sentrert systemside uten app-sidebar. Bygget pixel-mot v10-fasit:
- * public/design-handover/_screens/mx-404.png — stor muted «404» med golfball-
+ * [historisk fasit, fjernet 2026-07-03] _screens/mx-404.png — stor muted «404» med golfball-
  * detalj i nullen, H1 «Siden ble ikke funnet», kort forklaring og én primær
  * CTA «Tilbake til forsiden» (forest fyll + lime tekst, pill-radius).
  *

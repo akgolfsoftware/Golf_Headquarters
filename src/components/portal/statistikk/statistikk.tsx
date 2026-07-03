@@ -1,8 +1,8 @@
 /**
  * PlayerHQ · Statistikk — nøkkeltall + metrikk, portet FRA v10-fasit:
- *   - Visuell fasit (mobil, autoritativ): public/design-handover/_screens/pl-stats.png
+ *   - Visuell fasit (mobil, autoritativ): [historisk fasit, fjernet 2026-07-03] _screens/pl-stats.png
  *   - HTML/CSS-referanse (eyebrow-pulse, mono-skala, kort-radius/border):
- *     public/design-handover/playerhq/components-stats-sg.html
+ *     [historisk fasit, fjernet 2026-07-03] playerhq/components-stats-sg.html
  *   - Manifest §4 ("Statistikk"): nøkkeltall-oversikt · metrikk-drilldown ·
  *     sammenlign mot PGA-spiller.
  *

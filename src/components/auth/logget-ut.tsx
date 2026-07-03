@@ -4,7 +4,7 @@
  * Selvstendig sentrert kort på cream-bakgrunn, INGEN app-sidebar. Samme
  * grunnlayout på mobil og desktop (kort sentrert, maks ~440px).
  *
- * Portet fra v10-fasit: public/design-handover/_screens/au-loggetut.png
+ * Portet fra v10-fasit: [historisk fasit, fjernet 2026-07-03] _screens/au-loggetut.png
  * (AK-logo → lime CheckCircle i accent-sirkel → lime eyebrow «AK GOLF · TAKK
  * FOR DENNE GANG» → display «Vi ses snart» → sub-tekst → primær-CTA «Logg inn
  * på nytt →» → ghost «Tilbake til akgolf.no» → divider + feedback-footer).

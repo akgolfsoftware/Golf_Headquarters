@@ -4,7 +4,7 @@
  * Forberedelse-checklist — avkryssbar liste med live progresjon.
  *
  * Port av checklist-interaksjonen i
- * public/design-handover/playerhq/components-turnering-detalj.html.
+ * [historisk fasit, fjernet 2026-07-03] playerhq/components-turnering-detalj.html.
  *
  * Lokalt verktøy: punktene er en huskeliste spilleren krysser av selv. Det
  * finnes ingen persisteringsmodell for dette i schemaet, så tilstanden lever i

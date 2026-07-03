@@ -1,7 +1,7 @@
 /**
  * TrackMan — PlayerHQ sesjonsanalyse (presentasjonell, props-drevet).
  *
- * Fasit: public/design-handover/_screens/pl-trackman.png (tom-tilstand).
+ * Fasit: [historisk fasit, fjernet 2026-07-03] _screens/pl-trackman.png (tom-tilstand).
  * Skjermen viser dispersjon + per-slag-data per kølle. Når spilleren ikke har
  * importert noen TrackMan-økt ennå, vises tom-tilstanden fra fasiten:
  *   - eyebrow "TRACKMAN · SESJONSANALYSE"

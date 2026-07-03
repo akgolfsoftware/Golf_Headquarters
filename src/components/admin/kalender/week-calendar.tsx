@@ -1,6 +1,6 @@
 /**
  * AgencyOS Kalender — uke-visning, lese-modus (/admin/kalender).
- * Port av public/design-handover/agencyos/components-workbench-week.html
+ * Port av [historisk fasit, fjernet 2026-07-03] agencyos/components-workbench-week.html
  * (uke-grid-mønsteret) + skjerm 7-spec i SKJERMER-RUNDE-4-AGENCYOS.
  *
  * Server Component (ren presentasjon, ingen client-state). Data kommer fra

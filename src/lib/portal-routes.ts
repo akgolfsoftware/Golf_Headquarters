@@ -1,5 +1,5 @@
 /**
- * Mapping mellom PlayerHQ-ruter og designfilere i public/design-handover/.
+ * Mapping mellom PlayerHQ-ruter og designfilere i [historisk fasit, fjernet 2026-07-03] .
  * Brukt av /admin/godkjenn-portal for godkjenning av sider mot design-handoff.
  */
 

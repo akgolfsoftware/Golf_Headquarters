@@ -1,6 +1,6 @@
 /**
  * AgencyOS — Caddie / co-agent rammeverk (/admin/caddie).
- * Pixel-port av public/design-handover/agencyos/components-co-agent.html.
+ * Pixel-port av [historisk fasit, fjernet 2026-07-03] agencyos/components-co-agent.html.
  *
  * Tre primitiver for AI-assistert coaching (⌘K-paletten er en egen global
  * komponent og er bevisst utelatt her):

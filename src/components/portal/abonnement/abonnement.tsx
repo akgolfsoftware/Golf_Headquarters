@@ -1,6 +1,6 @@
 /**
  * Abonnement — PlayerHQ abonnement- og faktura-skjerm (port av fasit
- * public/design-handover/_screens/pl-abonnement.png · 2-tier-modell GRATIS + PRO).
+ * [historisk fasit, fjernet 2026-07-03] _screens/pl-abonnement.png · 2-tier-modell GRATIS + PRO).
  *
  * Mobil-først presentasjon. Bygd EKSAKT fra fasiten:
  *   1. Side-header  — eyebrow + display-H1 (faktura i grønn italic) + ingress

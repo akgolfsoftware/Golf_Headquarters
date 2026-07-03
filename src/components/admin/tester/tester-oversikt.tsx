@@ -2,8 +2,8 @@
  * AgencyOS · Tester på tvers — spillere × tester ytelse-matrise (presentasjonell).
  *
  * Port fra v10-fasiten:
- *   - public/design-handover/_screens/ag-tester.png (pixel-fasit, ekte data)
- *   - public/design-handover/agencyos/components-agency-tests.html (komponent-spec)
+ *   - [historisk fasit, fjernet 2026-07-03] _screens/ag-tester.png (pixel-fasit, ekte data)
+ *   - [historisk fasit, fjernet 2026-07-03] agencyos/components-agency-tests.html (komponent-spec)
  *
  * Matrise med spillere som rader og tester som kolonner. Hver celle viser siste
  * måling (verdi + relativ dato) eller "ikke testet" (skrå-stripe). Fargekoding

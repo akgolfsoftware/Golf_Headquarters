@@ -6,9 +6,9 @@
  * Spiller-versjon av den delte Workbench-kjernen. Coach-versjonen ligger i
  * src/components/admin/coach-workbench/coach-workbench.tsx (samme datamodell,
  * samme DS-tokens). Denne er forenklet for mobil per design-FASIT:
- *   public/design-handover/agencyos/components-workbench-week.html  (uke-grid)
- *   public/design-handover/agencyos/components-workbench-sidebar.html (slide-over)
- *   public/design-handover/agencyos/components-workbench-day.html   (økt-blokk)
+ *   [historisk fasit, fjernet 2026-07-03] agencyos/components-workbench-week.html  (uke-grid)
+ *   [historisk fasit, fjernet 2026-07-03] agencyos/components-workbench-sidebar.html (slide-over)
+ *   [historisk fasit, fjernet 2026-07-03] agencyos/components-workbench-day.html   (økt-blokk)
  *
  * Layout (430px):
  *   TOPBAR  — hamburger (åpner slide-over) + "WORKBENCH · UKE N" + "+" + plan A/B-toggle

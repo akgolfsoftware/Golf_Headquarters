@@ -1,6 +1,6 @@
 /**
  * Data-loader for AgencyOS Spiller-detalj (/admin/spillere/[id] — oversikt).
- * Pixel-port av public/design-handover/agencyos/components-agency-player-panel.html.
+ * Pixel-port av [historisk fasit, fjernet 2026-07-03] agencyos/components-agency-player-panel.html.
  *
  * Henter ekte Prisma-data og mapper til SpillerDetaljOversiktProps. Skjermen
  * forteller spillerens 30-dagers-historie: KPI (økter/timer/SG-trend),

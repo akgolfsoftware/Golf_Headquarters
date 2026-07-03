@@ -1,6 +1,6 @@
 /**
  * Data-loader for AgencyOS Caddie / co-agent (/admin/caddie).
- * Pixel-port av public/design-handover/agencyos/components-co-agent.html.
+ * Pixel-port av [historisk fasit, fjernet 2026-07-03] agencyos/components-co-agent.html.
  *
  * Tre primitiver med ekte Prisma-data:
  *   1. Utkast-til-godkjenning  — siste PENDING `planAction` (med kildebruk + diff)

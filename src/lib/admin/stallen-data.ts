@@ -2,7 +2,7 @@
  * Data-loader for AgencyOS Stallen — spillertabell (/admin/spillere).
  * Henter ekte Prisma-data og mapper til StallenRow[] for den sortbare
  * spillertabellen. Pixel-port av
- * public/design-handover/agencyos/components-agency-player-table.html.
+ * [historisk fasit, fjernet 2026-07-03] agencyos/components-agency-player-table.html.
  *
  * Følger samme mønster som src/lib/agencyos/daily-brief-data.tsx — alle tall
  * er utledet fra ekte data. Felter uten kilde i datamodellen vises tomt/utledet

@@ -1,6 +1,6 @@
 /**
  * Helse — /portal/meg/helse, portet FRA fersk Claude Design-fasit:
- *   public/design-handover/AK Golf HQ Design System/playerhq-app/ph-screens.jsx
+ *   (historisk juni-fasit, fjernet fra repo) playerhq-app/ph-screens.jsx
  *   (HelseScreen, linje 710–734) via MeSub/SetGroup/SetRow-primitivene.
  *
  * Element-liste (fasit, topp → bunn):

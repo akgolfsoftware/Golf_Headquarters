@@ -4,9 +4,9 @@
  * Innstillinger — PlayerHQ-skjerm (/portal/meg/innstillinger), preview-variant.
  *
  * Portet FRA v10-fasit (LÅST design-porting-gate):
- *   - Visuell pixel-fasit: public/design-handover/_screens/pl-innstillinger.png
+ *   - Visuell pixel-fasit: [historisk fasit, fjernet 2026-07-03] _screens/pl-innstillinger.png
  *     (mobil 430px — Mathias Sørby, GRATIS, Profil-seksjon åpen øverst).
- *   - HTML/CSS-referanse (eksakte verdier): public/design-handover/playerhq/
+ *   - HTML/CSS-referanse (eksakte verdier): [historisk fasit, fjernet 2026-07-03] playerhq/
  *     components-innstillinger.html (accordion, toggles, snap-slidere, lagre-bar).
  *   - Manifest: skjerm-manifest-playerhq.md §6 (/portal/meg/innstillinger).
  *

@@ -3,7 +3,7 @@
 /**
  * Varsel-senter (PlayerHQ · mobil-first 430px).
  *
- * Pixel-port av public/design-handover/playerhq/components-varsler.html.
+ * Pixel-port av [historisk fasit, fjernet 2026-07-03] playerhq/components-varsler.html.
  * Header («VARSLER · N NYE» + «Mark alle») · varsler gruppert per tid
  * (I dag / I går / Denne uka / Eldre) med per-gruppe-teller · varsel-card med
  * agent-ikon (lucide) + agent-navn (mono-eyebrow) + beskrivelse + relativ tid +

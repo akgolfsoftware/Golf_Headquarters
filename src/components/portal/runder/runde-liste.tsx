@@ -1,7 +1,7 @@
 /**
  * PlayerHQ · Runder — rundeliste, portet FRA v10-fasit:
- *   - Visuell fasit (mobil, autoritativ): public/design-handover/_screens/pl-runder.png
- *   - HTML/CSS-referanse (rad-/farge-mønster): public/design-handover/playerhq/
+ *   - Visuell fasit (mobil, autoritativ): [historisk fasit, fjernet 2026-07-03] _screens/pl-runder.png
+ *   - HTML/CSS-referanse (rad-/farge-mønster): [historisk fasit, fjernet 2026-07-03] playerhq/
  *     components-season-timeline.html (meta-rad + score-/SG-farger) og
  *     components-runde-ny.html (score-til-par-farger).
  *   - Manifest §4 ("Runder"): rundeliste m/ bane, dato, score-til-par, SG-total.

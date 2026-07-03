@@ -1,6 +1,6 @@
 /**
  * Innstillinger — /portal/meg/innstillinger, portet FRA fersk Claude Design-fasit:
- *   public/design-handover/AK Golf HQ Design System/playerhq-app/ph-screens.jsx
+ *   (historisk juni-fasit, fjernet fra repo) playerhq-app/ph-screens.jsx
  *   (InnstillingerScreen, linje 678–707) via MeSub/SetGroup/SetRow-primitivene.
  *
  * Element-liste (fasit, topp → bunn):

@@ -1,7 +1,7 @@
 /**
  * Booking-wizard (/portal/booking/ny) — mobil-first 430px.
  *
- * Port mot public/design-handover/_prompts/SKJERMER-RUNDE-7-BOOKING.md.
+ * Port mot [historisk fasit, fjernet 2026-07-03] _prompts/SKJERMER-RUNDE-7-BOOKING.md.
  * Beholder eksisterende query-drevet wizard-state og actions:
  *   service → dato → tid → /portal/booking/ny/bekreft (SlotGrid-href).
  *

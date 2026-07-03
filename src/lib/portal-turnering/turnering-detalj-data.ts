@@ -4,7 +4,7 @@
  *
  * Henter ekte Prisma-data for én turnering + spillerens egen påmelding og
  * resultathistorikk. Porten av
- * public/design-handover/playerhq/components-turnering-detalj.html — men
+ * [historisk fasit, fjernet 2026-07-03] playerhq/components-turnering-detalj.html — men
  * mobile-first og uten fabrikerte tall.
  *
  * Ærlig data-prinsipp (verifisert mot prod-DB):

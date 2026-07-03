@@ -2,7 +2,7 @@
  * AgencyOS · Live-økt Coach — hybrid terminal design
  *
  * Coach følger spillerens pågående økt i sanntid.
- * Design: public/design-handover/prosjektgjennomgang-2026-06-17/.../AgencyOS Live-økt Coach (hybrid).dc.html
+ * Design: [historisk fasit, fjernet 2026-07-03] prosjektgjennomgang-2026-06-17/.../AgencyOS Live-økt Coach (hybrid).dc.html
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";

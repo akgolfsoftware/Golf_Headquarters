@@ -2,7 +2,7 @@
 
 /**
  * Mission Control — Direction A live-dashboard (visuelt skall).
- * Faithful port av public/design-handover/meg-live-os/src/dir-a.jsx (+ dir-a.css).
+ * Faithful port av [historisk fasit, fjernet 2026-07-03] meg-live-os/src/dir-a.jsx (+ dir-a.css).
  *
  * Mørk skog-cockpit · bento-grid · lime-signaler · «live»-følelse.
  * Wrapper i .dark slik at semantiske tokens flipper til forest/lime.

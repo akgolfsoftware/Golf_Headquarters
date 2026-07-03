@@ -3,7 +3,7 @@
  *
  * Standalone, presentasjonelt sett for /playerhq-preview/live-*. INGEN
  * Prisma/DB/auth-avhengigheter — kun props + demo-data. Speiler den visuelle
- * fasiten i public/design-handover/_screens/pl-live-{brief,active,summary}.png.
+ * fasiten i [historisk fasit, fjernet 2026-07-03] _screens/pl-live-{brief,active,summary}.png.
  */
 
 export type LiveAxis = "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";

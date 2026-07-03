@@ -2,7 +2,7 @@
 
 /**
  * Samtykke-venterom (spiller under 16) — visuelt skall fra fersk fasit:
- * public/design-handover/AK Golf HQ Design System/playerhq-app/ph-auth.jsx
+ * (historisk juni-fasit, fjernet fra repo) playerhq-app/ph-auth.jsx
  *   → ASamtykke (klokke-badge → «Venter på samtykke»-chip → «Nesten i mål.»
  *     → STATUS-kort med tre rader → sekundær påminnelses-CTA → logg ut-lenke).
  *
