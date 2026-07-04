@@ -436,11 +436,12 @@ body {
  */
 @import "../styles/v2/patterns.css";
 
-/* ---------- Golfdata-tokens (design-handover v13) ----------
- * Scopet token-lag for golfdata-komponentfamilien (athletic/golfdata).
- * Verdier portet EKSAKT fra public/design-handover/tokens/ — se filens header.
+/* ---------- Golfdata-tokens + komponent-CSS (design-handover v13) ----------
+ * Scopet token-lag + portert komponent-CSS for golfdata-familien
+ * (athletic/golfdata). Verdier portet EKSAKT fra public/design-handover/.
  */
 @import "../styles/golfdata-tokens.css";
+@import "../components/athletic/golfdata/golfdata.css";
 
 /* ---------- AK Golf type helpers ----------
  * Speilet fra .claude/skills/ak-golf-hq-design/colors_and_type.css.
