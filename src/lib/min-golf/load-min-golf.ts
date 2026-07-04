@@ -15,6 +15,7 @@ import {
 } from "@/lib/domain/ak-kategori";
 import { SG_TO_PYRAMID } from "@/lib/training/skills/types";
 import { buildYardageRows } from "@/lib/sg-hub/yardage-calc";
+import { avgScoreFromHcp } from "@/lib/stats/sg-estimator";
 import { nivaaFraKategori, type Nivaa } from "./dybde";
 import {
   fmtKortDato,
@@ -122,7 +123,7 @@ export async function loadMinGolf(
   userId: string,
   overstyrNivaa?: Nivaa,
 ): Promise<MinGolfData> {
-  const [runder, innsikter, trackmanOkter, puttSlag] = await Promise.all([
+  const [runder, innsikter, trackmanOkter, puttSlag, bruker] = await Promise.all([
     prisma.round.findMany({
       where: { userId },
       orderBy: { playedAt: "desc" },
@@ -159,6 +160,7 @@ export async function loadMinGolf(
       },
       take: 2000,
     }),
+    prisma.user.findUnique({ where: { id: userId }, select: { hcp: true } }),
   ]);
 
   const agg = aggregateSg(runder);
@@ -172,7 +174,11 @@ export async function loadMinGolf(
     scoreGrunnlag.length > 0
       ? scoreGrunnlag.reduce((a, r) => a + r.score, 0) / scoreGrunnlag.length
       : null;
-  const kategori = snittScore !== null ? kategoriFraSnittscore(snittScore) : null;
+  // Ny spiller uten runder: plasser fra HCP (samlet ved onboarding) så progressiv
+  // dybde virker fra dag én. Ekte snittscore vinner så snart runder finnes.
+  const fraHcp = snittScore === null && bruker?.hcp != null;
+  const effektivSnitt = snittScore ?? (bruker?.hcp != null ? avgScoreFromHcp(bruker.hcp) : null);
+  const kategori = effektivSnitt !== null ? kategoriFraSnittscore(effektivSnitt) : null;
   const nivaa: Nivaa =
     overstyrNivaa ?? (kategori ? nivaaFraKategori(kategori.kategori) : "nybegynner");
 
@@ -332,17 +338,20 @@ export async function loadMinGolf(
 
   // ---- Progresjon: A–K-krav fra kanonisk tabell ----
   let progresjon: MinGolfData["progresjon"] = null;
-  if (kategori && snittScore !== null) {
+  if (kategori && effektivSnitt !== null) {
     const neste = nesteKategori(kategori.kategori);
-    const prosent = prosentTilNesteNiva(snittScore);
+    const prosent = prosentTilNesteNiva(effektivSnitt);
+    const verdiTekst = effektivSnitt.toFixed(1).replace(".", ",");
+    // Ærlig kilde-merking: HCP-estimat før første runde, ekte snitt etterpå.
+    const kildeSuffix = fraHcp ? " (estimert fra HCP)" : "";
     progresjon = {
       nivaa: kategori.kategori,
       nesteNivaa: neste?.kategori ?? null,
       krav: [
         {
-          navn: `Snittscore i ${kategori.kategori}-spennet (${kategori.snittLabel})`,
+          navn: `Snittscore i ${kategori.kategori}-spennet (${kategori.snittLabel})${kildeSuffix}`,
           bestatt: true,
-          verdi: snittScore.toFixed(1).replace(".", ","),
+          verdi: verdiTekst,
           mal: kategori.snittLabel,
         },
         ...(neste
@@ -350,15 +359,17 @@ export async function loadMinGolf(
               {
                 navn: `Snittscore for ${neste.kategori} (${neste.snittLabel})`,
                 bestatt: false,
-                verdi: snittScore.toFixed(1).replace(".", ","),
+                verdi: verdiTekst,
                 mal: neste.snittLabel,
               },
             ]
           : []),
       ],
-      nesteKrav: neste
-        ? `Snittscore ${neste.snittLabel} løfter deg til kategori ${neste.kategori}${prosent !== null ? ` — du er ${prosent} % på vei` : ""}.`
-        : "Du er i beste kategori (A).",
+      nesteKrav: fraHcp
+        ? `Plassert fra HCP ${bruker!.hcp!.toFixed(1).replace(".", ",")}. Spill din første runde for en ekte plassering.`
+        : neste
+          ? `Snittscore ${neste.snittLabel} løfter deg til kategori ${neste.kategori}${prosent !== null ? ` — du er ${prosent} % på vei` : ""}.`
+          : "Du er i beste kategori (A).",
     };
   }
 
