@@ -13,6 +13,15 @@ export { DeltaIndikator, type DeltaIndikatorProps } from "./DeltaIndikator";
 export { Skeleton, SkeletonRow, type SkeletonProps, type SkeletonRowProps, type SkeletonVariant } from "./Skeleton";
 export { Icon, ICON_NAMES, type IconProps } from "./Icon";
 
+// Fundament-komponenter (Bolk 0) — v13 core/ + data/
+export { Button, type ButtonProps, type ButtonVariant, type ButtonSize } from "./Button";
+export { Card, type CardProps } from "./Card";
+export { Eyebrow, type EyebrowProps } from "./Eyebrow";
+export { DataPreview, nearestIndex, type DataPreviewProps, type DataPreviewRow } from "./DataPreview";
+export { Sparkline, type SparklineProps } from "./Sparkline";
+export { KpiTile, type KpiTileProps } from "./KpiTile";
+export { DataTable, type TableColumn, type DataTableProps } from "./DataTable";
+
 // Golfdata-komponentene (14)
 export { DiagnoseKort, type DiagnoseKortProps, type DiagnoseBevis, type DiagnoseResept } from "./DiagnoseKort";
 export { GappingChart, type GappingChartProps, type Kolle } from "./GappingChart";
