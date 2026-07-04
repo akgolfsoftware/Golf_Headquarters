@@ -5,6 +5,7 @@
 Hele plattformen for AK Golf Group. Ett monorepo, ett Next.js-prosjekt, fire produkter (Marketing, Booking, PlayerHQ, AgencyOS).
 
 > **Start her:** [`docs/platform/AGENT-BRIEF.md`](docs/platform/AGENT-BRIEF.md). Nåstatus: `docs/STATUS-NÅ.md`. Uavklart: `docs/AAPNE-SPORSMAAL.md`. Gamle `PLATFORM.md` er arkivert — ikke bruk den.
+> **Masterplan (styringsdokument):** [`plans/skjermplan-master.md`](plans/skjermplan-master.md) eier scope, bølgerekkefølge og beslutninger for hele appen — alle økter refererer den; detaljplaner per bølge lages i plan-mode mot faktisk repo-tilstand.
 
 ## Detaljerte regler (`.claude/rules/`)
 - `arkitektur.md` — produkter, ruter, mappestruktur.
