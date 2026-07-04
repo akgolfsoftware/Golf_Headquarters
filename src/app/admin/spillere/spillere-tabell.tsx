@@ -34,16 +34,18 @@ import {
   AgMobileRow,
   AgPage,
   AgPageHead,
-  AgPlayerCell,
-  AgSpark,
   AgStatusDot,
-  AgTable,
   AgTableToolbar,
-  AgTd,
-  AgTh,
   agBtnClass,
-  agTrClass,
 } from "@/components/admin/agencyos/ui";
+import { SpillerTilstandKort } from "@/components/athletic/golfdata";
+
+/** Status-heuristikken → kortets form-tilstand (kontraktens fire ord). */
+const TILSTAND: Record<SpillerRad["status"], "god" | "varsel" | "risiko"> = {
+  ok: "god",
+  warn: "varsel",
+  alert: "risiko",
+};
 
 export type SpillerRad = {
   id: string;
@@ -332,96 +334,57 @@ export function SpillereTabell({
           ))}
         </div>
 
-        {/* Desktop (md+): full tabell */}
-        <div className="hidden md:block">
-        <AgTable>
-          <thead>
-            <tr>
-              <AgTh className="w-[40px]">
-                <RadCheckbox on={allOn} label="Velg alle" onToggle={toggleAll} />
-              </AgTh>
-              <AgTh>Spiller</AgTh>
-              <AgTh num>HCP</AgTh>
-              <AgTh num>SG-trend · 6 r</AgTh>
-              <AgTh>Siste aktivitet</AgTh>
-              <AgTh>Status</AgTh>
-              <AgTh>Neste økt</AgTh>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.length === 0 && (
-              <tr>
-                <td
-                  colSpan={7}
-                  className="px-[14px] py-10 text-center text-[13px] text-muted-foreground"
-                >
-                  Ingen spillere matcher filteret.
-                </td>
-              </tr>
-            )}
+        {/* Desktop (md+): SpillerTilstandKort-liste (v13 golfdata — coachens
+            5-sekunderslesing: navn → form → SG-trend → siste aktivitet → ett flagg).
+            Checkbox utenfor kortet bevarer bulk-flyten. */}
+        <div className="golfdata-scope hidden md:block">
+          <div className="flex items-center gap-3 border-b border-border px-4 py-2">
+            <RadCheckbox on={allOn} label="Velg alle" onToggle={toggleAll} />
+            <span className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+              Velg alle
+            </span>
+          </div>
+          {filtered.length === 0 && (
+            <div className="px-4 py-10 text-center text-[13px] text-muted-foreground">
+              Ingen spillere matcher filteret.
+            </div>
+          )}
+          <ul className="flex flex-col gap-2 p-3">
             {filtered.map((p) => (
-              <tr
-                key={p.id}
-                className={cn(
-                  agTrClass,
-                  sel[p.id] &&
-                    "bg-primary/5 [&>td:first-child]:shadow-[inset_3px_0_0_hsl(var(--primary))]",
-                )}
-                onClick={() => router.push(`/admin/spillere/${p.id}`)}
-              >
-                <AgTd>
-                  <RadCheckbox
-                    on={!!sel[p.id]}
-                    label={`Velg ${p.name}`}
-                    onToggle={() => toggle(p.id)}
-                  />
-                </AgTd>
-                <AgTd className="pl-7">
-                  <AgPlayerCell initials={p.initials} name={p.name} sub={p.groupLabel} />
-                </AgTd>
-                <AgTd num>{p.hcp}</AgTd>
-                <AgTd num>
-                  {p.sg.length >= 2 ? (
-                    <span className="flex items-center justify-end gap-[10px]">
-                      <AgSpark
-                        points={p.sg}
-                        color={
-                          p.sgDir === "down" ? "hsl(var(--destructive))" : "hsl(var(--success))"
-                        }
-                      />
-                      <span
-                        className={cn(
-                          "min-w-[44px] text-right font-mono text-xs font-semibold",
-                          p.sgDir === "down" ? "text-destructive" : "text-success",
-                        )}
-                      >
-                        {p.sgVal}
-                      </span>
-                    </span>
-                  ) : (
-                    <span className="font-normal text-muted-foreground">—</span>
+              <li key={p.id} className="flex items-center gap-3">
+                <RadCheckbox
+                  on={!!sel[p.id]}
+                  label={`Velg ${p.name}`}
+                  onToggle={() => toggle(p.id)}
+                />
+                <div
+                  className={cn(
+                    "min-w-0 flex-1",
+                    sel[p.id] && "rounded-2xl ring-1 ring-primary/50",
                   )}
-                </AgTd>
-                <AgTd>
-                  <span className="font-mono text-xs text-muted-foreground">{p.last}</span>
-                </AgTd>
-                <AgTd>
-                  <AgStatusDot tone={p.status}>{p.statusLbl}</AgStatusDot>
-                </AgTd>
-                <AgTd>
-                  <span
-                    className={cn(
-                      "font-mono text-xs font-semibold",
-                      p.next === "Ingen" ? "text-destructive" : "text-foreground",
-                    )}
-                  >
-                    {p.next}
-                  </span>
-                </AgTd>
-              </tr>
+                >
+                  <SpillerTilstandKort
+                    navn={p.name}
+                    initialer={p.initials}
+                    tilstand={TILSTAND[p.status]}
+                    formTekst={p.statusLbl}
+                    sgTrend={p.sg.length >= 2 ? p.sgVal : undefined}
+                    sgTrendLabel="SG-trend siste 6"
+                    sisteAktivitet={p.last === "—" ? undefined : p.last}
+                    flagg={
+                      p.status === "alert"
+                        ? p.statusLbl
+                        : p.next === "Ingen"
+                          ? "Ingen neste økt"
+                          : undefined
+                    }
+                    onClick={() => router.push(`/admin/spillere/${p.id}`)}
+                    className="w-full"
+                  />
+                </div>
+              </li>
             ))}
-          </tbody>
-        </AgTable>
+          </ul>
         </div>
       </div>
     </AgPage>

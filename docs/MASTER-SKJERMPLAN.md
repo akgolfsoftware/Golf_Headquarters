@@ -347,7 +347,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | Stall-oversikt | `/admin/stall` | – | --- | ✓ | ~ | ~ | ✓ |
-| **Spillere (alle)** ★ | `/admin/spillere` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
+| **Spillere (alle)** = SpillerTilstandKort-liste (v13 golfdata, bølge 1 2026-07-04) ★ | `/admin/spillere` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Ny spiller | `/admin/spillere/ny` | – | --- | ✓ | ~ | ~ | ~ |
 | **Spiller-detalj** ★ | `/admin/spillere/[id]` | ✓ | ~✓– | ✓ | ✓ | ✓ | ✓ |
 | · Profil | `/admin/spillere/[id]/profil` | – | --- | ✓ | ~ | ~ | ~ |
