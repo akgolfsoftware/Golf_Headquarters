@@ -36,6 +36,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button, Card, Eyebrow, KpiTile } from "@/components/athletic/golfdata";
 
 // ────────────────────────────────────────────────────────────────────────────
 // Datamodell — alt skjermen trenger, levert som props.
@@ -217,17 +218,9 @@ function SgTotalHero({ data }: { data: SgHubData }) {
 
 function SgKpiCard({ kpi }: { kpi: SgKpi }) {
   return (
-    <div className="rounded-2xl border border-border bg-card p-5">
-      <span className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-        {kpi.eyebrow}
-      </span>
-      <div className="mt-2 font-mono text-3xl font-bold leading-none tracking-[-0.02em] text-foreground tabular-nums">
-        {kpi.value}
-      </div>
-      <p className="mt-2 font-mono text-[12px] tracking-[0.01em] text-muted-foreground">
-        {kpi.footnote}
-      </p>
-    </div>
+    <Card compact>
+      <KpiTile size="md" label={kpi.eyebrow} value={kpi.value} deltaSuffix={kpi.footnote} />
+    </Card>
   );
 }
 
@@ -244,13 +237,17 @@ function TomTilstandCta({ data }: { data: SgHubData }) {
       <p className="mx-auto mt-3 max-w-[44ch] text-[15px] leading-[1.55] text-muted-foreground">
         {data.cta.body}
       </p>
-      <Link
-        href={data.cta.knapp.href}
-        className="mt-6 inline-flex h-[52px] items-center justify-center gap-2 rounded-full bg-primary px-7 font-display text-base font-bold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-      >
-        <Plus className="h-5 w-5" strokeWidth={2.5} aria-hidden />
-        {data.cta.knapp.label}
-      </Link>
+      <div className="mt-6">
+        <Button
+          as={Link}
+          href={data.cta.knapp.href}
+          variant="signal"
+          size="lg"
+          iconLeft={<Plus className="h-5 w-5" strokeWidth={2.5} aria-hidden />}
+        >
+          {data.cta.knapp.label}
+        </Button>
+      </div>
     </div>
   );
 }
@@ -263,39 +260,38 @@ function TomTilstandCta({ data }: { data: SgHubData }) {
 function DisiplinKort({ d }: { d: SgDisiplin }) {
   const tom = d.value.trim() === "—";
   return (
-    <Link
-      href={d.href}
-      className="group relative block min-h-[180px] rounded-2xl border border-border bg-card p-6 transition-colors hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
-    >
-      <div className="flex items-start justify-between gap-3">
-        <span className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
-          {d.eyebrow}
-        </span>
-        <ArrowUpRight
-          className="h-4 w-4 shrink-0 text-muted-foreground/70 transition-colors group-hover:text-primary"
-          strokeWidth={2}
-          aria-hidden
-        />
-      </div>
+    <Link href={d.href} className="group block">
+      <Card interactive className="min-h-[180px]">
+        <div className="flex items-start justify-between gap-3">
+          <span className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+            {d.eyebrow}
+          </span>
+          <ArrowUpRight
+            className="h-4 w-4 shrink-0 text-muted-foreground/70 transition-colors group-hover:text-primary"
+            strokeWidth={2}
+            aria-hidden
+          />
+        </div>
 
-      {/* Dempet underline (foreground-markør) */}
-      <span aria-hidden className="mt-5 block h-[3px] w-12 rounded-full bg-foreground" />
+        {/* Dempet underline (foreground-markør) */}
+        <span aria-hidden className="mt-5 block h-[3px] w-12 rounded-full bg-foreground" />
 
-      {/* Stor verdi (tom = "—", sentrert) */}
-      <div className="mt-7 flex justify-center">
-        <span
-          className={cn(
-            "font-mono text-3xl font-bold leading-none tabular-nums",
-            tom ? "text-muted-foreground/60" : d.negativ ? "text-destructive" : "text-success",
-          )}
-        >
-          {d.value}
-        </span>
-      </div>
+        {/* Stor verdi (tom = "—", sentrert) */}
+        <div className="mt-7 flex justify-center">
+          <span
+            className={cn(
+              "font-mono text-3xl font-bold leading-none tabular-nums",
+              tom ? "text-muted-foreground/60" : d.negativ ? "text-destructive" : "text-success",
+            )}
+          >
+            {d.value}
+          </span>
+        </div>
 
-      <p className="mt-7 font-mono text-[12px] tracking-[0.01em] text-muted-foreground">
-        {d.status}
-      </p>
+        <p className="mt-7 font-mono text-[12px] tracking-[0.01em] text-muted-foreground">
+          {d.status}
+        </p>
+      </Card>
     </Link>
   );
 }
@@ -306,7 +302,7 @@ function DisiplinKort({ d }: { d: SgDisiplin }) {
 
 function PrioriteringerBanner({ data }: { data: SgHubData }) {
   return (
-    <div className="rounded-2xl border border-border bg-secondary/60 p-5">
+    <Card>
       <div className="flex items-center gap-2">
         <Sparkles className="h-4 w-4 shrink-0 text-primary" strokeWidth={2} aria-hidden />
         <span className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-primary">
@@ -316,7 +312,7 @@ function PrioriteringerBanner({ data }: { data: SgHubData }) {
       <p className="mt-3 text-[15px] leading-[1.55] text-muted-foreground">
         {data.prioriteringer.body}
       </p>
-    </div>
+    </Card>
   );
 }
 
@@ -326,7 +322,7 @@ function PrioriteringerBanner({ data }: { data: SgHubData }) {
 
 function TrackmanKort({ data }: { data: SgHubData }) {
   return (
-    <div className="rounded-2xl border border-border bg-card p-5">
+    <Card>
       <div className="flex items-center gap-2">
         <Activity className="h-4 w-4 shrink-0 text-muted-foreground" strokeWidth={2} aria-hidden />
         <span className="font-mono text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
@@ -334,7 +330,7 @@ function TrackmanKort({ data }: { data: SgHubData }) {
         </span>
       </div>
       <p className="mt-3 text-[15px] leading-[1.55] text-foreground">{data.trackman.body}</p>
-    </div>
+    </Card>
   );
 }
 
@@ -347,28 +343,27 @@ function TrackmanKort({ data }: { data: SgHubData }) {
 function VerktoyKort({ v }: { v: SgVerktoy }) {
   const Icon = v.ikon;
   return (
-    <Link
-      href={v.href}
-      className="group relative block rounded-2xl border border-border bg-card p-5 transition-colors hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
-    >
-      <div className="flex items-start justify-between gap-3">
-        <Icon className="h-6 w-6 shrink-0 text-primary" strokeWidth={1.75} aria-hidden />
-        <span className="inline-flex items-center rounded-full bg-accent/25 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.1em] text-primary">
-          {v.badge}
-        </span>
-      </div>
+    <Link href={v.href} className="group block">
+      <Card interactive>
+        <div className="flex items-start justify-between gap-3">
+          <Icon className="h-6 w-6 shrink-0 text-primary" strokeWidth={1.75} aria-hidden />
+          <span className="inline-flex items-center rounded-full bg-accent/25 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.1em] text-primary">
+            {v.badge}
+          </span>
+        </div>
 
-      <h3 className="mt-5 font-display text-xl font-bold leading-tight tracking-[-0.015em] text-foreground">
-        {v.tittel}
-      </h3>
+        <h3 className="mt-5 font-display text-xl font-bold leading-tight tracking-[-0.015em] text-foreground">
+          {v.tittel}
+        </h3>
 
-      <div className="mt-3 flex items-end justify-between">
-        <span className="inline-flex items-center gap-1.5 font-mono text-[13px] font-medium text-primary transition-opacity group-hover:opacity-80">
-          Åpne
-          <ArrowRight className="h-4 w-4" strokeWidth={2} aria-hidden />
-        </span>
-        <Zap className="h-5 w-5 text-primary" strokeWidth={2} aria-hidden />
-      </div>
+        <div className="mt-3 flex items-end justify-between">
+          <span className="inline-flex items-center gap-1.5 font-mono text-[13px] font-medium text-primary transition-opacity group-hover:opacity-80">
+            Åpne
+            <ArrowRight className="h-4 w-4" strokeWidth={2} aria-hidden />
+          </span>
+          <Zap className="h-5 w-5 text-primary" strokeWidth={2} aria-hidden />
+        </div>
+      </Card>
     </Link>
   );
 }
@@ -614,12 +609,12 @@ function GapToDrillSeksjon({ gtd }: { gtd: SgGapToDrill }) {
 
 export function SgHub({ data }: { data: SgHubData }) {
   return (
-    <div className="mx-auto w-full max-w-[460px] space-y-6 px-4 py-6 sm:px-0 md:max-w-[720px]">
+    <div className="golfdata-scope mx-auto w-full max-w-[460px] space-y-6 px-4 py-6 sm:px-0 md:max-w-[720px]">
       {/* 1. Side-header */}
       <header className="space-y-2">
-        <span className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+        <Eyebrow style={{ fontSize: "var(--text-11)", letterSpacing: "0.14em" }}>
           {data.eyebrow}
-        </span>
+        </Eyebrow>
         <h1 className="font-display text-[40px] font-bold leading-[1.02] tracking-[-0.03em] text-foreground">
           Min <span className="font-normal italic text-primary">SG-pipeline</span>
         </h1>
