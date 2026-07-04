@@ -24,6 +24,7 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button, Card } from "@/components/athletic/golfdata";
 import type { HubBooking, HubCredits, HubCoach } from "./booking-hub";
 
 // ── Dag-namen (norsk, mandag-først) ──────────────────────────────
@@ -347,12 +348,14 @@ function DayPanel({
               <div className="min-w-0 flex-1 rounded-[8px] border border-dashed border-border bg-secondary/30 px-3 py-2">
                 <div className="font-mono text-[10px] text-muted-foreground">Ledig</div>
               </div>
-              <button
+              <Button
                 onClick={() => router.push(`/portal/booking/ny?dato=${iso}&tid=${timeLabel}`)}
-                className="shrink-0 rounded-full bg-primary px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.06em] text-accent transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                variant="signal"
+                size="sm"
+                className="shrink-0"
               >
                 Book
-              </button>
+              </Button>
             </div>
           );
         })}
@@ -391,51 +394,50 @@ function MineBookingerList({ bookings }: { bookings: HubBooking[] }) {
         const isPending = b.status === "PENDING";
 
         return (
-          <div
-            key={b.id}
-            className="flex items-center gap-3 rounded-xl border border-border bg-card p-3.5 shadow-sm"
-          >
-            {/* Dato-firkant */}
-            <div className="flex h-10 w-10 shrink-0 flex-col items-center justify-center rounded-xl bg-primary">
-              <span className="font-mono text-[13px] font-bold leading-none text-accent">
-                {sq.day}
-              </span>
-              <span className="font-mono text-[7.5px] font-semibold text-accent/70">
-                {sq.mon}
-              </span>
-            </div>
-
-            {/* Innhold */}
-            <div className="min-w-0 flex-1">
-              <div className="truncate font-sans text-[13.5px] font-semibold text-foreground">
-                {b.serviceName}
+          <Card key={b.id} compact>
+            <div className="flex items-center gap-3">
+              {/* Dato-firkant */}
+              <div className="flex h-10 w-10 shrink-0 flex-col items-center justify-center rounded-xl bg-primary">
+                <span className="font-mono text-[13px] font-bold leading-none text-accent">
+                  {sq.day}
+                </span>
+                <span className="font-mono text-[7.5px] font-semibold text-accent/70">
+                  {sq.mon}
+                </span>
               </div>
-              <div className="mt-0.5 font-mono text-[10px] text-muted-foreground">
-                {[time, b.locationName, b.coachName].filter(Boolean).join(" · ")}
+
+              {/* Innhold */}
+              <div className="min-w-0 flex-1">
+                <div className="truncate font-sans text-[13.5px] font-semibold text-foreground">
+                  {b.serviceName}
+                </div>
+                <div className="mt-0.5 font-mono text-[10px] text-muted-foreground">
+                  {[time, b.locationName, b.coachName].filter(Boolean).join(" · ")}
+                </div>
+              </div>
+
+              {/* Status + avlys */}
+              <div className="flex shrink-0 flex-col items-end gap-1.5">
+                <span
+                  className={cn(
+                    "rounded-full px-2 py-0.5 font-mono text-[9px] font-bold",
+                    isConfirmed && "bg-success/10 text-success",
+                    isPending && "bg-warning/10 text-warning",
+                    !isConfirmed && !isPending && "bg-secondary text-muted-foreground",
+                  )}
+                >
+                  {statusLabel(b.status)}
+                </span>
+                <button
+                  onClick={() => router.push(`/portal/booking/${b.id}?action=avlys`)}
+                  className="inline-flex items-center gap-0.5 font-mono text-[9px] font-semibold text-destructive/70 transition-colors hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <X className="h-2.5 w-2.5" strokeWidth={2} />
+                  Avlys
+                </button>
               </div>
             </div>
-
-            {/* Status + avlys */}
-            <div className="flex shrink-0 flex-col items-end gap-1.5">
-              <span
-                className={cn(
-                  "rounded-full px-2 py-0.5 font-mono text-[9px] font-bold",
-                  isConfirmed && "bg-success/10 text-success",
-                  isPending && "bg-warning/10 text-warning",
-                  !isConfirmed && !isPending && "bg-secondary text-muted-foreground",
-                )}
-              >
-                {statusLabel(b.status)}
-              </span>
-              <button
-                onClick={() => router.push(`/portal/booking/${b.id}?action=avlys`)}
-                className="inline-flex items-center gap-0.5 font-mono text-[9px] font-semibold text-destructive/70 transition-colors hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                <X className="h-2.5 w-2.5" strokeWidth={2} />
-                Avlys
-              </button>
-            </div>
-          </div>
+          </Card>
         );
       })}
     </div>
@@ -474,7 +476,7 @@ export function BookingHubHybrid({
   }, []);
 
   return (
-    <div className="mx-auto max-w-[480px] space-y-6 px-4 py-6 pb-24">
+    <div className="golfdata-scope mx-auto max-w-[480px] space-y-6 px-4 py-6 pb-24">
       {/* ── 1. HEADER (eyebrow) ── */}
       <Eyebrow>
         <span
