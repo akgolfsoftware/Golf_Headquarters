@@ -23,8 +23,12 @@ export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   block?: boolean;
   /** Vis spinner og deaktiver interaksjon (aria-busy). */
   loading?: boolean;
-  /** Render as another element/component (e.g. "a"). */
+  /** Render as another element/component (e.g. "a" or Next Link). */
   as?: React.ElementType;
+  /** Href — kun relevant når `as` er en lenke/anker (Link, "a"). Videresendes via rest. */
+  href?: string;
+  /** Target — kun relevant ved lenke-bruk. */
+  target?: string;
 };
 
 const ICON_SIZE: Record<ButtonSize, number> = { sm: 16, md: 18, lg: 20 };
