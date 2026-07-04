@@ -1,0 +1,154 @@
+/* ============================================================
+   Golfdata-tokens — portet fra design-handover v13 (PORTING.md §1)
+   ------------------------------------------------------------
+   SCOPET under .golfdata-scope for å ikke kollidere med appens
+   shadcn-tokens (appens --border er en HSL-trippel; DS-ens --border
+   er en ferdig rgba-farge — samme navn, uforenlige formater).
+   Verdier er kopiert EKSAKT fra public/design-handover/tokens/
+   {colors,typography,spacing,data-viz}.css — aldri oppfunnet her.
+
+   Tema-mapping (invers av DS-defaulten, i tråd med appens system):
+   appens :root er lys → .golfdata-scope bærer DS-ens .light-verdier.
+   appens/DS-ens .dark → DS-ens dark-aliaser (både forelder-.dark og
+   nested mørk innfelling: data-hero på lys flate).
+
+   Kun tokens som faktisk konsumeres av golfdata-familien + dens
+   4 avhengigheter (HeroTall, DeltaIndikator, Skeleton, Icon).
+   ============================================================ */
+
+.golfdata-scope {
+  /* ---- Råskalaer (tema-uavhengige, fra colors.css) ---- */
+  --lime-500: #D1F843;
+  --lime-600: #BCE234;
+  --forest-700: #005840;
+  --forest-800: #073A2A;
+  --graphite-0: #0A0B0A;
+  --graphite-50: #171817;
+  --graphite-100: #1E1F1D;
+  --graphite-200: #2A2B27;
+  --graphite-500: #6B6C64;
+  --graphite-600: #A6A8A3;
+  --graphite-700: #BFC1BC;
+  --graphite-900: #F0F0F0;
+  --sand-0: #FFFFFF;
+  --sand-50: #F7F7F4;
+  --sand-100: #F1F1EF;
+  --sand-200: #E7E8E5;
+  --sand-500: #8E908C;
+  --sand-600: #6E706C;
+  --sand-700: #565854;
+  --sand-900: #101613;
+
+  /* ---- Typografi (typography.css) ---- */
+  --font-display: var(--font-familjen-grotesk), "Inter", system-ui, sans-serif;
+  --font-ui: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, "SF Mono", Menlo, monospace;
+  --text-11: 0.6875rem;
+  --text-12: 0.75rem;
+  --text-13: 0.8125rem;
+  --text-14: 0.875rem;
+  --text-16: 1rem;
+  --text-18: 1.125rem;
+  --text-20: 1.25rem;
+  --text-24: 1.5rem;
+  --text-30: 1.875rem;
+  --text-36: 2.25rem;
+  --text-48: 3rem;
+  --text-60: 3.75rem;
+  --leading-none: 1;
+  --tracking-display: -0.01em;
+  --tracking-mono: 0.02em;
+  --tracking-eyebrow: 0.12em;
+
+  /* ---- Radius + motion (spacing.css) ---- */
+  --radius-tag: 8px;
+  --radius-card: 16px;
+  --radius-pill: 9999px;
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+
+  /* ---- Semantiske aliaser — LYS (colors.css .light-blokken) ---- */
+  --surface: var(--sand-0);
+  --surface-2: var(--sand-100);
+  --surface-hover: var(--sand-200);
+  --border: rgba(0, 0, 0, 0.08);
+  --border-strong: rgba(0, 0, 0, 0.14);
+  --text: var(--sand-900);
+  --text-2: var(--sand-700);
+  --text-muted: var(--sand-600);
+  --text-faint: var(--sand-500);
+  --up: #00753A;
+  --down: #C0392F;
+  --signal: var(--forest-700);
+  --on-signal: #FFFFFF;
+  --glow-signal: 0 0 0 1px rgba(0, 88, 64, 0.35);
+  --success: #007845;
+  --success-bg: oklch(0.58 0.15 158 / 0.12);
+  --success-border: oklch(0.5 0.13 158 / 0.45);
+  --warning: #865A00;
+  --warn: var(--warning);
+
+  /* ---- Pyramide-akser — LYS (data-viz.css .light-blokken) ---- */
+  --axis-fys: #005840;
+  --axis-fys-text: #005840;
+  --axis-fys-soft: rgba(0, 88, 64, 0.13);
+  --axis-tek: #B8852A;
+  --axis-tek-text: #8A6316;
+  --axis-tek-soft: rgba(184, 133, 42, 0.13);
+  --axis-slag: #2563EB;
+  --axis-slag-text: #1D4FD0;
+  --axis-slag-soft: rgba(37, 99, 235, 0.13);
+  --axis-spill: #D1F843;
+  --axis-spill-text: #55680A;
+  --axis-spill-soft: rgba(209, 248, 67, 0.22);
+  --axis-turn: #A32D2D;
+  --axis-turn-text: #A32D2D;
+  --axis-turn-soft: rgba(163, 45, 45, 0.13);
+}
+
+/* ============================================================
+   MØRK — DS-ens :root/.dark-aliaser. Treffer både AgencyOS
+   (.dark på forelder) og mørke data-hero-innfellinger nested
+   inne i et lyst golfdata-scope.
+   ============================================================ */
+.dark .golfdata-scope,
+.golfdata-scope.dark,
+.golfdata-scope .dark,
+.golfdata-scope [data-theme="dark"] {
+  --surface: var(--graphite-50);
+  --surface-2: var(--graphite-100);
+  --surface-hover: var(--graphite-200);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
+  --text: var(--graphite-900);
+  --text-2: var(--graphite-700);
+  --text-muted: var(--graphite-600);
+  --text-faint: var(--graphite-500);
+  --up: var(--lime-500);
+  --down: #FF6B5A;
+  --signal: var(--lime-500);
+  --on-signal: var(--graphite-0);
+  --glow-signal: 0 0 0 1px rgba(209, 248, 67, 0.4);
+  --success: #84D2A5;
+  --success-bg: oklch(0.62 0.14 158 / 0.15);
+  --success-border: oklch(0.62 0.14 158 / 0.42);
+  --warning: #DDB870;
+  --warn: var(--warning);
+
+  --axis-fys: #56C59A;
+  --axis-fys-text: #74D0AC;
+  --axis-fys-soft: rgba(86, 197, 154, 0.15);
+  --axis-tek: #E8A33D;
+  --axis-tek-text: #EEB965;
+  --axis-tek-soft: rgba(232, 163, 61, 0.16);
+  --axis-slag: #84A9FF;
+  --axis-slag-text: #9EBCFF;
+  --axis-slag-soft: rgba(132, 169, 255, 0.15);
+  --axis-spill: #D1F843;
+  --axis-spill-text: #D1F843;
+  --axis-spill-soft: rgba(209, 248, 67, 0.16);
+  --axis-turn: #F2908C;
+  --axis-turn-text: #F5A8A4;
+  --axis-turn-soft: rgba(242, 144, 140, 0.16);
+}

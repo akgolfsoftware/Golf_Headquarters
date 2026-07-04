@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import { Inter, Inter_Tight, JetBrains_Mono } from "next/font/google";
+import { Familjen_Grotesk, Inter, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { InstallPrompt } from "@/components/portal/install-prompt";
@@ -28,6 +28,15 @@ const interTight = Inter_Tight({
 // JetBrains Mono — KPI-tall, tabulære tall, kode
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+// Familjen Grotesk — display-font i design-handover v13; konsumeres kun av
+// golfdata-token-laget (src/styles/golfdata-tokens.css). Eksisterende skjermer
+// beholder Inter Tight.
+const familjenGrotesk = Familjen_Grotesk({
+  variable: "--font-familjen-grotesk",
   subsets: ["latin"],
   display: "swap",
 });
@@ -127,7 +136,7 @@ export default async function RootLayout({
   return (
     <html
       lang="nb"
-      className={`${inter.variable} ${interTight.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${interTight.variable} ${jetbrainsMono.variable} ${familjenGrotesk.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         {children}
