@@ -8,6 +8,7 @@ import type { ReactElement } from "react";
 import { Check, Lock, Star } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { Eyebrow } from "@/components/athletic/golfdata";
 import { computeStreak, aktivStreak } from "@/lib/streak";
 
 export const dynamic = "force-dynamic";
@@ -257,12 +258,12 @@ export default async function TalentPage() {
   // Render
   // ---------------------------------------------------------------------------
   return (
-    <div className="mx-auto max-w-lg space-y-4 px-4 py-6">
+    <div className="golfdata-scope mx-auto max-w-lg space-y-4 px-4 py-6">
       {/* Hero */}
       <header className="px-1 pb-2">
-        <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+        <Eyebrow style={{ fontSize: "var(--text-11)", letterSpacing: "0.16em" }}>
           Talent · {user.name}
-        </span>
+        </Eyebrow>
         <h1 className="mt-2.5 font-display text-[30px] font-bold leading-[1.04] tracking-[-0.035em] text-foreground">
           Din{" "}
           <em className="italic font-medium text-primary">utviklingsvei</em>

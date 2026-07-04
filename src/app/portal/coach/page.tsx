@@ -13,6 +13,7 @@
 import Link from "next/link";
 import { Calendar, Send, User } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { Eyebrow } from "@/components/athletic/golfdata";
 import { MessageThread } from "@/components/portal/coach/MessageThread";
 import {
   getCoachProfile,
@@ -83,13 +84,13 @@ export default async function CoachPage() {
   const timelineEvents = upcomingSessions.slice(0, 4);
 
   return (
-    <div className="mx-auto max-w-[430px] space-y-0 px-0 pb-24 md:max-w-[860px] md:pb-0">
+    <div className="golfdata-scope mx-auto max-w-[430px] space-y-0 px-0 pb-24 md:max-w-[860px] md:pb-0">
 
       {/* ── 1. Header ──────────────────────────────────────────── */}
       <div className="px-4 pb-4 pt-2 md:px-6">
-        <span className="mb-2.5 block font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+        <Eyebrow className="mb-2.5 block" style={{ fontSize: "var(--text-11)", letterSpacing: "0.16em" }}>
           Coach · {coach?.name ?? "Din coach"}
-        </span>
+        </Eyebrow>
         <h1 className="font-display text-[28px] font-bold leading-[1.04] tracking-[-0.035em] text-foreground">
           Din{" "}
           <em className="font-medium italic text-primary">coach</em>
