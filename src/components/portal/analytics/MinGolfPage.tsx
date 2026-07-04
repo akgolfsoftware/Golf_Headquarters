@@ -210,12 +210,9 @@ export function MinGolfPage({
                 Historikk · {workbench.rounds.totalRounds} runder
               </p>
               <ul>
-                {workbench.rounds.rounds.slice(0, 8).map((r) => (
-                  <li key={r.id}>
-                    <Link
-                      href={`/portal/analysere/runder/${r.id}`}
-                      className="flex min-h-11 items-center justify-between gap-2 px-4 py-2.5 hover:bg-secondary/60"
-                    >
+                {workbench.rounds.rounds.slice(0, 8).map((r) => {
+                  const innhold = (
+                    <>
                       <span className="truncate text-[13px]">
                         {r.courseName}
                         <span className="ml-2 text-muted-foreground">
@@ -229,14 +226,32 @@ export function MinGolfPage({
                             {fmtSg(r.sgTotal)}
                           </span>
                         )}
-                        <ChevronRight
-                          className="h-4 w-4 text-muted-foreground"
-                          aria-hidden
-                        />
+                        {visning === "spiller" && (
+                          <ChevronRight
+                            className="h-4 w-4 text-muted-foreground"
+                            aria-hidden
+                          />
+                        )}
                       </span>
-                    </Link>
-                  </li>
-                ))}
+                    </>
+                  );
+                  const radKlasse =
+                    "flex min-h-11 items-center justify-between gap-2 px-4 py-2.5";
+                  return (
+                    <li key={r.id}>
+                      {visning === "spiller" ? (
+                        <Link
+                          href={`/portal/analysere/runder/${r.id}`}
+                          className={cn(radKlasse, "hover:bg-secondary/60")}
+                        >
+                          {innhold}
+                        </Link>
+                      ) : (
+                        <div className={radKlasse}>{innhold}</div>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           )}
@@ -279,12 +294,14 @@ export function MinGolfPage({
               <p className="mt-2 text-[13px] text-muted-foreground">
                 Spill din første runde for å plasseres i A–K-stigen.
               </p>
-              <Link
-                href="/portal/mal/runder/ny"
-                className="mt-4 inline-flex min-h-11 items-center justify-center rounded-full bg-primary px-6 font-mono text-[12px] font-bold uppercase tracking-wide text-primary-foreground"
-              >
-                Logg runde
-              </Link>
+              {visning === "spiller" && (
+                <Link
+                  href="/portal/mal/runder/ny"
+                  className="mt-4 inline-flex min-h-11 items-center justify-center rounded-full bg-primary px-6 font-mono text-[12px] font-bold uppercase tracking-wide text-primary-foreground"
+                >
+                  Logg runde
+                </Link>
+              )}
             </div>
           )}
           {workbench.tests.length > 0 && (
@@ -310,13 +327,15 @@ export function MinGolfPage({
                   </li>
                 ))}
               </ul>
-              <Link
-                href="/portal/tren/tester"
-                className="flex min-h-11 items-center justify-center gap-1 text-[12px] font-semibold uppercase tracking-wide text-muted-foreground hover:text-foreground"
-              >
-                Alle tester
-                <ChevronRight className="h-4 w-4" aria-hidden />
-              </Link>
+              {visning === "spiller" && (
+                <Link
+                  href="/portal/tren/tester"
+                  className="flex min-h-11 items-center justify-center gap-1 text-[12px] font-semibold uppercase tracking-wide text-muted-foreground hover:text-foreground"
+                >
+                  Alle tester
+                  <ChevronRight className="h-4 w-4" aria-hidden />
+                </Link>
+              )}
             </div>
           )}
         </div>

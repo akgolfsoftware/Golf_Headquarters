@@ -21,6 +21,7 @@ import { notFound } from "next/navigation";
 import {
   AlertTriangle,
   ArrowLeft,
+  BarChart3,
   CalendarPlus,
   ChevronRight,
   ClipboardList,
@@ -444,6 +445,12 @@ export default async function SpillerProfilPage({
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
+          <Link
+            href={`/admin/spillere/${player.id}/analyse`}
+            className={agBtnClass("secondary")}
+          >
+            <BarChart3 size={16} strokeWidth={1.5} /> Analyse
+          </Link>
           <Link href="/admin/innboks" className={agBtnClass("secondary")}>
             <MessageSquare size={16} strokeWidth={1.5} /> Melding
           </Link>
