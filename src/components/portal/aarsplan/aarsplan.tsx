@@ -32,6 +32,7 @@
 
 import Link from "next/link";
 import { CalendarDays, Plus } from "lucide-react";
+import { Button, Card, Eyebrow } from "@/components/athletic/golfdata";
 
 // ────────────────────────────────────────────────────────────────────────────
 // Datamodell
@@ -111,9 +112,7 @@ function Header({ data }: { data: AarsplanData }) {
   const tom = data.faser.length === 0;
   return (
     <header>
-      <p className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
-        PlayerHQ · Trening · Årsplan
-      </p>
+      <Eyebrow>PlayerHQ · Trening · Årsplan</Eyebrow>
       <h1 className="mt-2 font-display text-[30px] font-bold leading-[1.05] tracking-[-0.025em] text-foreground">
         Årsplan{" "}
         <em className="font-normal italic text-primary">{data.aar}</em>
@@ -134,31 +133,29 @@ function Header({ data }: { data: AarsplanData }) {
 
 function TomTilstand({ data }: { data: AarsplanData }) {
   return (
-    <div
-      role="status"
-      aria-live="polite"
-      className="flex flex-col items-center rounded-2xl border border-border bg-card px-6 py-12 text-center sm:py-16"
-    >
-      <CalendarDays
-        className="h-6 w-6 text-muted-foreground"
-        strokeWidth={1.5}
-        aria-hidden
-      />
-      <h2 className="mt-6 text-[22px] font-bold leading-tight tracking-[-0.01em] text-foreground">
-        Ingen sesongplan for {data.aar}
-      </h2>
-      <p className="mt-3 max-w-[320px] text-[15px] leading-[1.5] text-muted-foreground">
-        En sesongplan hjelper deg å strukturere hele treningsåret med Mac
-        O&apos;Grady-faser, volummål og turneringsplan.
-      </p>
-      <Link
-        href={data.hrefs.opprett}
-        className="mt-8 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-      >
-        <Plus className="h-4 w-4" strokeWidth={2.5} aria-hidden />
-        Opprett sesongplan for {data.aar}
-      </Link>
-    </div>
+    <Card>
+      <div role="status" aria-live="polite" className="flex flex-col items-center px-2 py-8 text-center sm:py-12">
+        <CalendarDays className="h-6 w-6 text-muted-foreground" strokeWidth={1.5} aria-hidden />
+        <h2 className="mt-6 text-[22px] font-bold leading-tight tracking-[-0.01em] text-foreground">
+          Ingen sesongplan for {data.aar}
+        </h2>
+        <p className="mt-3 max-w-[320px] text-[15px] leading-[1.5] text-muted-foreground">
+          En sesongplan hjelper deg å strukturere hele treningsåret med Mac
+          O&apos;Grady-faser, volummål og turneringsplan.
+        </p>
+        <div className="mt-8">
+          <Button
+            as={Link}
+            href={data.hrefs.opprett}
+            variant="signal"
+            size="lg"
+            iconLeft={<Plus className="h-4 w-4" strokeWidth={2.5} aria-hidden />}
+          >
+            Opprett sesongplan for {data.aar}
+          </Button>
+        </div>
+      </div>
+    </Card>
   );
 }
 
@@ -187,7 +184,7 @@ function GanttBar({ fase }: { fase: Fase }) {
 
 function Gantt({ data }: { data: AarsplanData }) {
   return (
-    <div className="overflow-x-auto rounded-2xl border border-border bg-card p-4 sm:p-6">
+    <Card bodyStyle={{ overflowX: "auto" }}>
       <div className="min-w-[640px]">
         {/* Maaneds-akse */}
         <div className="mb-3 grid grid-cols-[88px_repeat(12,minmax(0,1fr))] items-end gap-x-1.5">
@@ -246,7 +243,7 @@ function Gantt({ data }: { data: AarsplanData }) {
           })}
         </div>
       </div>
-    </div>
+    </Card>
   );
 }
 
@@ -257,7 +254,7 @@ function Gantt({ data }: { data: AarsplanData }) {
 export function Aarsplan({ data }: { data: AarsplanData }) {
   const tom = data.faser.length === 0;
   return (
-    <div className="mx-auto w-full max-w-[460px] space-y-6 px-4 py-6 sm:px-6 md:max-w-[860px]">
+    <div className="golfdata-scope mx-auto w-full max-w-[460px] space-y-6 px-4 py-6 sm:px-6 md:max-w-[860px]">
       <Header data={data} />
       {tom ? <TomTilstand data={data} /> : <Gantt data={data} />}
     </div>
