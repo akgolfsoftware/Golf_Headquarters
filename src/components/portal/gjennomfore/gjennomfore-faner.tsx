@@ -11,6 +11,7 @@
 
 import Link from "next/link";
 import { Play, ArrowRight, Pencil, Check } from "lucide-react";
+import { Button, Card, Eyebrow } from "@/components/athletic/golfdata";
 import type { GjennomforeData, GjennomforeOkt } from "@/lib/portal-gjennomfore/gjennomfore-data";
 
 // ── Neste økt — featured forest card ──────────────────────────────
@@ -112,22 +113,23 @@ const PYR_CSS: Record<string, string> = {
 function ResteRad({ o }: { o: GjennomforeOkt }) {
   const borderColor = PYR_CSS[o.pyramidArea] ?? "var(--border)";
   return (
-    <div
-      className="mb-[9px] flex items-center gap-3 rounded-[12px] border border-border border-l-[3px] bg-card p-3 pl-[14px]"
-      style={{ borderLeftColor: borderColor }}
-    >
-      <div className="min-w-0 flex-1">
-        <div className="text-[13.5px] font-bold text-foreground">{o.tittel}</div>
-        <div className="mt-[3px] font-mono text-[10.5px] text-muted-foreground">{o.meta}</div>
+    <Card compact className="mb-[9px] border-l-[3px]" style={{ borderLeftColor: borderColor }}>
+      <div className="flex items-center gap-3">
+        <div className="min-w-0 flex-1">
+          <div className="text-[13.5px] font-bold text-foreground">{o.tittel}</div>
+          <div className="mt-[3px] font-mono text-[10.5px] text-muted-foreground">{o.meta}</div>
+        </div>
+        <Button
+          as={Link}
+          href={o.href}
+          variant="secondary"
+          size="sm"
+          iconLeft={<Play className="h-3 w-3" fill="currentColor" strokeWidth={0} aria-hidden />}
+        >
+          Start
+        </Button>
       </div>
-      <Link
-        href={o.href}
-        className="flex shrink-0 items-center gap-1.5 rounded-full border border-border bg-secondary px-[13px] py-2 font-mono text-[10.5px] font-bold text-foreground transition-colors hover:bg-secondary/70"
-      >
-        <Play className="h-3 w-3" fill="currentColor" strokeWidth={0} aria-hidden />
-        Start
-      </Link>
-    </div>
+    </Card>
   );
 }
 
@@ -135,35 +137,35 @@ function ResteRad({ o }: { o: GjennomforeOkt }) {
 
 function FullfortRad({ o }: { o: GjennomforeOkt }) {
   return (
-    <div className="mb-[9px] flex items-center gap-3 rounded-[12px] border border-border bg-card p-3 pl-[14px]">
-      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-success/14">
-        <Check
-          className="h-[13px] w-[13px] text-success"
-          strokeWidth={2.8}
-          aria-hidden
-        />
-      </span>
-      <div className="min-w-0 flex-1">
-        <div className="text-[13px] font-semibold text-foreground">{o.tittel}</div>
-        <div className="mt-0.5 font-mono text-[10px] text-muted-foreground">
-          {o.tid} · {o.varighet} min
-        </div>
-      </div>
-      {o.trengerLogg ? (
-        <Link
-          href={`${o.href}?logg=1`}
-          className="inline-flex shrink-0 items-center gap-1 rounded-full border border-accent/40 bg-accent/16 px-3 py-[7px] font-mono text-[10px] font-bold text-primary transition-opacity hover:opacity-80 whitespace-nowrap"
-        >
-          <Pencil className="h-[9px] w-[9px]" strokeWidth={2.5} aria-hidden />
-          Logg
-        </Link>
-      ) : (
-        <span className="inline-flex shrink-0 items-center gap-1 font-mono text-[11px] font-bold text-success whitespace-nowrap">
-          <Check className="h-[10px] w-[10px]" strokeWidth={3} aria-hidden />
-          Logget
+    <Card compact className="mb-[9px]">
+      <div className="flex items-center gap-3">
+        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-success/14">
+          <Check className="h-[13px] w-[13px] text-success" strokeWidth={2.8} aria-hidden />
         </span>
-      )}
-    </div>
+        <div className="min-w-0 flex-1">
+          <div className="text-[13px] font-semibold text-foreground">{o.tittel}</div>
+          <div className="mt-0.5 font-mono text-[10px] text-muted-foreground">
+            {o.tid} · {o.varighet} min
+          </div>
+        </div>
+        {o.trengerLogg ? (
+          <Button
+            as={Link}
+            href={`${o.href}?logg=1`}
+            variant="secondary"
+            size="sm"
+            iconLeft={<Pencil className="h-[9px] w-[9px]" strokeWidth={2.5} aria-hidden />}
+          >
+            Logg
+          </Button>
+        ) : (
+          <span className="inline-flex shrink-0 items-center gap-1 font-mono text-[11px] font-bold text-success whitespace-nowrap">
+            <Check className="h-[10px] w-[10px]" strokeWidth={3} aria-hidden />
+            Logget
+          </span>
+        )}
+      </div>
+    </Card>
   );
 }
 
@@ -211,9 +213,7 @@ export function GjennomforeFaner({ data }: { data: GjennomforeData }) {
       {/* Resten av dagen */}
       {resteAvDagen.length > 0 && (
         <div>
-          <span className="mb-[9px] block font-mono text-[9.5px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
-            Resten av dagen
-          </span>
+          <Eyebrow className="mb-[9px] block">Resten av dagen</Eyebrow>
           {resteAvDagen.map((o) => (
             <ResteRad key={o.id} o={o} />
           ))}
@@ -223,9 +223,7 @@ export function GjennomforeFaner({ data }: { data: GjennomforeData }) {
       {/* Fullført i dag */}
       {fullfortIdag.length > 0 && (
         <div>
-          <span className="mb-[9px] block font-mono text-[9.5px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
-            Fullført i dag
-          </span>
+          <Eyebrow className="mb-[9px] block">Fullført i dag</Eyebrow>
           {fullfortIdag.map((o) => (
             <FullfortRad key={o.id} o={o} />
           ))}
