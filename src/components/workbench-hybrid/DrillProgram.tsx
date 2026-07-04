@@ -11,10 +11,56 @@ import {
   searchExercises,
   createSessionDrill,
   updateSessionDrill,
+  updateAllDrillsInSession,
   deleteSessionDrill,
   type WbDrill,
   type ExerciseHit,
+  type DrillVolumInput,
 } from "@/lib/workbench/drill-actions";
+
+/** Rep-type (bølge 2) — kort UI-etikett per type. */
+const REP_TYPES: { key: string; label: string }[] = [
+  { key: "SVINGER_UTEN_BALL", label: "Svinger" },
+  { key: "BALLER_SLATT", label: "Baller" },
+  { key: "TID", label: "Tid" },
+  { key: "SETT_REPS", label: "Sett×reps" },
+];
+
+/** Volum som klarspråk-tekst (read-only-visning). */
+function volumText(d: {
+  repType: string | null;
+  repAntall: number | null;
+  repMinutter: number | null;
+  repSett: number | null;
+  repReps: number | null;
+}): string | null {
+  switch (d.repType) {
+    case "SVINGER_UTEN_BALL":
+      return d.repAntall != null ? `${d.repAntall} svinger` : "Svinger uten ball";
+    case "BALLER_SLATT":
+      return d.repAntall != null ? `${d.repAntall} baller` : "Baller slått";
+    case "TID":
+      return d.repMinutter != null ? `${d.repMinutter} min` : "Tid";
+    case "SETT_REPS":
+      return d.repSett != null && d.repReps != null
+        ? `${d.repSett} × ${d.repReps}`
+        : "Sett × reps";
+    default:
+      return null;
+  }
+}
+
+/** Merge en volum-patch inn i en drill (optimistisk UI). */
+function applyVolum(d: WbDrill, v: DrillVolumInput): WbDrill {
+  return {
+    ...d,
+    ...(v.repType !== undefined ? { repType: v.repType ?? null } : {}),
+    ...(v.repAntall !== undefined ? { repAntall: v.repAntall ?? null } : {}),
+    ...(v.repMinutter !== undefined ? { repMinutter: v.repMinutter ?? null } : {}),
+    ...(v.repSett !== undefined ? { repSett: v.repSett ?? null } : {}),
+    ...(v.repReps !== undefined ? { repReps: v.repReps ?? null } : {}),
+  };
+}
 
 /** Øktas AK-formel — brukes som arve-default når en ny drill legges til (B2). */
 export type SessionDefaults = {
@@ -52,6 +98,9 @@ export function DrillProgram({ sessionId, defaults, isCoach }: DrillProgramProps
   const [pending, startTransition] = useTransition();
   const [picker, setPicker] = useState<{ drillId: string; field: DimField } | null>(null);
   const [exOpen, setExOpen] = useState(false);
+  // «Sett samme for hele økten»-panel (bølge 3).
+  const [bulkOpen, setBulkOpen] = useState(false);
+  const [bulkVolum, setBulkVolum] = useState<DrillVolumInput>({});
   // Drills krever en lagret økt (ekte cuid). Usynkede økter (synt. id) har ingen ennå.
   const persisted = /^c[a-z0-9]{20,}$/i.test(sessionId);
   const canEdit = isCoach && persisted;
@@ -105,6 +154,25 @@ export function DrillProgram({ sessionId, defaults, isCoach }: DrillProgramProps
     });
   }, []);
 
+  // Persister en volum-patch på én drill (rep-type/antall/minutter/sett/reps).
+  const saveVolum = useCallback((drillId: string, volum: DrillVolumInput) => {
+    setDrills((prev) => prev.map((d) => (d.id === drillId ? applyVolum(d, volum) : d)));
+    startTransition(async () => {
+      await updateSessionDrill(drillId, { volum });
+    });
+  }, []);
+
+  // «Sett samme for hele økten» — bulk-apply til alle drills.
+  const applyBulk = useCallback(() => {
+    if (!bulkVolum.repType) return;
+    setDrills((prev) => prev.map((d) => applyVolum(d, bulkVolum)));
+    setBulkOpen(false);
+    startTransition(async () => {
+      const res = await updateAllDrillsInSession(sessionId, { volum: bulkVolum });
+      if (res.ok && res.drills) setDrills(res.drills);
+    });
+  }, [sessionId, bulkVolum]);
+
   // Per-drill AK-akse valgt fra DimPickerModal.
   const handlePick = useCallback(
     (value: string) => {
@@ -155,6 +223,95 @@ export function DrillProgram({ sessionId, defaults, isCoach }: DrillProgramProps
       </div>
 
       {!loading && drills.length > 0 && <DrillFordeling drills={drills} />}
+
+      {/* «Sett samme for hele økten» — bulk rep-type/volum (bølge 3) */}
+      {canEdit && drills.length > 1 && (
+        <div style={{ marginBottom: 12 }}>
+          {!bulkOpen ? (
+            <button
+              type="button"
+              onClick={() => setBulkOpen(true)}
+              style={{
+                fontFamily: FONT.mono,
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: "0.04em",
+                textTransform: "uppercase",
+                background: WB.railBg,
+                border: `1px solid ${WB.panelBorder}`,
+                borderRadius: 9999,
+                padding: "6px 12px",
+                color: WB.muted,
+                cursor: "pointer",
+              }}
+            >
+              Sett samme for hele økten
+            </button>
+          ) : (
+            <div
+              style={{
+                background: WB.railBg,
+                border: `1px solid ${WB.lime}`,
+                borderRadius: 10,
+                padding: "10px 12px",
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: FONT.mono,
+                  fontSize: 9,
+                  fontWeight: 700,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  color: WB.muted3,
+                  marginBottom: 8,
+                }}
+              >
+                Sett rep-type + volum på alle {drills.length} drills
+              </div>
+              <VolumEditor value={bulkVolum} onChange={(patch) => setBulkVolum((v) => ({ ...v, ...patch }))} />
+              <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+                <button
+                  type="button"
+                  onClick={applyBulk}
+                  disabled={!bulkVolum.repType || pending}
+                  style={{
+                    fontFamily: FONT.mono,
+                    fontSize: 11,
+                    fontWeight: 700,
+                    background: bulkVolum.repType ? WB.lime : WB.railBg,
+                    border: `1px solid ${bulkVolum.repType ? WB.lime : WB.panelBorder}`,
+                    borderRadius: 9999,
+                    padding: "6px 14px",
+                    color: bulkVolum.repType ? "#0A0B0A" : WB.muted,
+                    cursor: bulkVolum.repType ? "pointer" : "default",
+                  }}
+                >
+                  Bruk på alle
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setBulkOpen(false);
+                    setBulkVolum({});
+                  }}
+                  style={{
+                    fontFamily: FONT.mono,
+                    fontSize: 11,
+                    fontWeight: 700,
+                    background: "transparent",
+                    border: "none",
+                    color: WB.muted,
+                    cursor: "pointer",
+                  }}
+                >
+                  Avbryt
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {!loading && drills.length === 0 && (
         <div
@@ -208,7 +365,9 @@ export function DrillProgram({ sessionId, defaults, isCoach }: DrillProgramProps
               </span>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: WB.text }}>{d.exerciseName}</div>
-                <div style={{ fontSize: 11, color: WB.muted, marginTop: 1 }}>{d.repsSets}</div>
+                <div style={{ fontSize: 11, color: WB.muted, marginTop: 1 }}>
+                  {volumText(d) ?? d.repsSets}
+                </div>
               </div>
               {canEdit && (
                 <button
@@ -250,6 +409,14 @@ export function DrillProgram({ sessionId, defaults, isCoach }: DrillProgramProps
                 </ChipBtn>
               )}
             </div>
+
+            {/* Rep-type + volum per drill (bølge 2/3) */}
+            {canEdit && (
+              <VolumEditor
+                value={d}
+                onChange={(patch) => saveVolum(d.id, patch)}
+              />
+            )}
           </div>
         ))}
       </div>
@@ -362,6 +529,110 @@ function DrillFordeling({ drills }: { drills: WbDrill[] }) {
         ))}
         {ppos.size > 0 && tally("P-pos", [...ppos.entries()], (v) => v)}
       </div>
+    </div>
+  );
+}
+
+/**
+ * Rep-type + volum-editor (bølge 3). Fire rep-type-chips; valgt type viser
+ * relevant tall-input (antall / minutter / sett×reps). Kontrollert —
+ * `value` fra parent, `onChange` sender en volum-patch (kun endrede felt).
+ */
+function VolumEditor({
+  value,
+  onChange,
+}: {
+  value: {
+    repType?: string | null;
+    repAntall?: number | null;
+    repMinutter?: number | null;
+    repSett?: number | null;
+    repReps?: number | null;
+  };
+  onChange: (patch: DrillVolumInput) => void;
+}) {
+  const rt = value.repType ?? null;
+  const numInputStyle: React.CSSProperties = {
+    width: 60,
+    fontFamily: FONT.mono,
+    fontSize: 12,
+    fontWeight: 600,
+    background: WB.cardBg,
+    border: `1px solid ${WB.panelBorder}`,
+    borderRadius: 8,
+    padding: "4px 8px",
+    color: WB.text,
+    outline: "none",
+  };
+  const numVal = (n: number | null | undefined) => (n == null ? "" : String(n));
+  const parse = (s: string): number | null => {
+    if (s.trim() === "") return null;
+    const n = parseInt(s, 10);
+    return Number.isFinite(n) && n >= 0 ? n : null;
+  };
+  return (
+    <div style={{ marginTop: 8, display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6 }}>
+      {REP_TYPES.map((t) => (
+        <ChipBtn
+          key={t.key}
+          active={rt === t.key}
+          onClick={() => onChange({ repType: rt === t.key ? null : t.key })}
+        >
+          {t.label}
+        </ChipBtn>
+      ))}
+      {(rt === "SVINGER_UTEN_BALL" || rt === "BALLER_SLATT") && (
+        <input
+          type="number"
+          min={0}
+          inputMode="numeric"
+          placeholder="antall"
+          value={numVal(value.repAntall)}
+          onChange={(e) => onChange({ repAntall: parse(e.target.value) })}
+          style={numInputStyle}
+          aria-label="Antall"
+        />
+      )}
+      {rt === "TID" && (
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+          <input
+            type="number"
+            min={0}
+            inputMode="numeric"
+            placeholder="min"
+            value={numVal(value.repMinutter)}
+            onChange={(e) => onChange({ repMinutter: parse(e.target.value) })}
+            style={numInputStyle}
+            aria-label="Minutter"
+          />
+          <span style={{ fontSize: 11, color: WB.muted }}>min</span>
+        </span>
+      )}
+      {rt === "SETT_REPS" && (
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+          <input
+            type="number"
+            min={0}
+            inputMode="numeric"
+            placeholder="sett"
+            value={numVal(value.repSett)}
+            onChange={(e) => onChange({ repSett: parse(e.target.value) })}
+            style={numInputStyle}
+            aria-label="Sett"
+          />
+          <span style={{ fontSize: 12, color: WB.muted }}>×</span>
+          <input
+            type="number"
+            min={0}
+            inputMode="numeric"
+            placeholder="reps"
+            value={numVal(value.repReps)}
+            onChange={(e) => onChange({ repReps: parse(e.target.value) })}
+            style={numInputStyle}
+            aria-label="Reps"
+          />
+        </span>
+      )}
     </div>
   );
 }
