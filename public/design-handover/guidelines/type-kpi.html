@@ -1,0 +1,36 @@
+<!-- @dsCard group="Type" viewport="700x210" name="KPI number — the hero" subtitle="JetBrains Mono 600, 36→60px, line-height 1, small muted unit" -->
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; background: var(--bg); padding: 30px; }
+  .wrap { display: flex; align-items: flex-end; gap: 56px; flex-wrap: wrap; }
+  .kpi { display: flex; flex-direction: column; gap: 10px; }
+  .eb { font-family: var(--font-mono); font-weight: 600; font-size: 11px; line-height: 1;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
+  .num { font-family: var(--font-mono); font-weight: 600; line-height: 1; letter-spacing: 0.02em;
+    color: var(--text); font-variant-numeric: tabular-nums; display: flex; align-items: baseline; gap: 8px; }
+  .unit { font-size: 0.4em; font-weight: 500; color: var(--text-muted); }
+  .delta { display: inline-flex; align-items: baseline; gap: 2px; font-size: 0.3em; color: var(--up); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kpi">
+    <span class="eb">Stall-SG</span>
+    <span class="num" style="font-size: 60px;">2,8<span class="unit">snitt</span><span class="delta">↗ +0,4</span></span>
+  </div>
+  <div class="kpi">
+    <span class="eb">Plan-adherence</span>
+    <span class="num" style="font-size: 48px;">86<span class="unit">%</span></span>
+  </div>
+  <div class="kpi">
+    <span class="eb">Økter i dag</span>
+    <span class="num" style="font-size: 36px;">6</span>
+  </div>
+</div>
+</body>
+</html>

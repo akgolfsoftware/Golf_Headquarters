@@ -1,0 +1,29 @@
+<!-- @dsCard group="Spacing" viewport="700x200" name="Motion" subtitle="Calm & precise — 120/200/320ms, ease(0.2,0,0,1), no bounce" -->
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; background: var(--bg); padding: 26px; font-family: var(--font-mono); }
+  .stack { display: flex; flex-direction: column; gap: 18px; }
+  .track { position: relative; height: 12px; background: var(--track); border-radius: 9999px; }
+  .dot { position: absolute; top: -3px; width: 18px; height: 18px; border-radius: 9999px; background: var(--signal); }
+  .d1 { animation: slide var(--dur-fast) var(--ease-standard) infinite alternate; }
+  .d2 { animation: slide var(--dur-base) var(--ease-standard) infinite alternate; }
+  .d3 { animation: slide var(--dur-slow) var(--ease-out) infinite alternate; }
+  @keyframes slide { from { left: 0; } to { left: calc(100% - 18px); } }
+  .lbl { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-2); margin-bottom: 7px; }
+  .lbl span:last-child { color: var(--text-muted); }
+  .row { width: 420px; }
+</style>
+</head>
+<body>
+<div class="stack">
+  <div class="row"><div class="lbl"><span>fast</span><span>120ms</span></div><div class="track"><div class="dot d1"></div></div></div>
+  <div class="row"><div class="lbl"><span>base</span><span>200ms · cubic-bezier(.2,0,0,1)</span></div><div class="track"><div class="dot d2"></div></div></div>
+  <div class="row"><div class="lbl"><span>slow / entrance</span><span>320ms · ease-out</span></div><div class="track"><div class="dot d3"></div></div></div>
+</div>
+</body>
+</html>

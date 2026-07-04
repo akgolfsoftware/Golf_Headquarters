@@ -1,0 +1,26 @@
+<!-- @dsCard group="Brand" viewport="700x190" name="Logo — on light & forest" subtitle="Primary on cream; white + lime dot on the forest band" -->
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; background: var(--bg); padding: 28px; font-family: var(--font-mono); }
+  .row { display: flex; gap: 22px; flex-wrap: wrap; }
+  .tile { flex: 1; min-width: 200px; border-radius: var(--radius-card); padding: 26px;
+    display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .tile img { height: 66px; }
+  .cream { background: var(--cream-0); border: 1px solid rgba(0,0,0,0.08); }
+  .forest { background: linear-gradient(160deg, var(--forest-700), var(--forest-900)); }
+  .t { font-size: 11px; color: var(--text-muted); }
+  .tw { color: rgba(255,255,255,0.7); }
+</style>
+</head>
+<body>
+<div class="row">
+  <div class="tile cream"><img src="../assets/logos/ak-golf-logo-primary-on-light.svg" alt="AK Golf on light" /><span class="t">primary-on-light</span></div>
+  <div class="tile forest"><img src="../assets/logos/ak-golf-logo-white-on-green.svg" alt="AK Golf on green" /><span class="t tw">white-on-green</span></div>
+</div>
+</body>
+</html>

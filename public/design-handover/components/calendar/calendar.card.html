@@ -1,0 +1,179 @@
+<!-- @dsCard group="Components" viewport="700x1290" name="Calendar — VisningsVelger, TidsGrid, DayStrip, Agenda, UkeKalender, MånedKal, Periodeplan" subtitle="Notion-inspirert kalendersuite: visningsbytte, tidsgrid m/ nå-linje, ukegrid, måned og sesong" -->
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="../../styles.css" />
+<style>
+  body { margin: 0; background: var(--bg); padding: 28px; }
+  .wrap { display: flex; flex-direction: column; gap: 32px; }
+  .lbl { font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 14px; }
+  .row { display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start; }
+</style>
+</head>
+<body>
+<div id="root" class="wrap"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+
+<script type="text/babel">
+const { DayStrip, AgendaRow, UkeKalender, MaanedKalender, Periodeplan, VisningsVelger, TidsGrid } = window.AKGolfHQDesignSystem_a3d5af;
+
+function TgDemo() {
+  const [visning, setVisning] = React.useState("uke");
+  const [okter, setOkter] = React.useState([
+    { id: "o1", kol: "man", fra: 9,    til: 10.5, akse: "TEK",  tittel: "Teknikk — Øyvind" },
+    { id: "o2", kol: "man", fra: 14,   til: 15,   akse: "FYS",  tittel: "Styrke" },
+    { id: "o3", kol: "tir", fra: 10,   til: 12,   akse: "SLAG", tittel: "Innspill" },
+    { id: "o4", kol: "tir", fra: 10.5, til: 12,   akse: "SPILL", tittel: "Nærspill" },
+  ]);
+  const KOLR = ["man", "tir", "ons"];
+  const flytt = ({ id, kolonneId, fra, til, retning }) => {
+    setOkter((prev) => prev.map((o) => {
+      if (o.id !== id) return o;
+      if (retning) {
+        const i = Math.min(Math.max(KOLR.indexOf(o.kol) + retning, 0), KOLR.length - 1);
+        return { ...o, kol: KOLR[i] };
+      }
+      return { ...o, kol: kolonneId || o.kol, fra, til };
+    }));
+  };
+  const sporFor = (o, alle) => {
+    const kolliderer = alle.filter((a) => a.kol === o.kol && a.fra < o.til && a.til > o.fra);
+    if (kolliderer.length < 2) return { spor: 0, antallSpor: 1 };
+    const idx = kolliderer.sort((a, b) => a.fra - b.fra || a.id.localeCompare(b.id)).findIndex((a) => a.id === o.id);
+    return { spor: idx, antallSpor: kolliderer.length };
+  };
+  if (!TidsGrid || !VisningsVelger) return null; /* vakt: eldre bundle uten nye eksporter */
+  return (
+    <div>
+      <div className="lbl">VisningsVelger + TidsGrid — dra øktene (snap :30, på tvers av dager · dra nederste kant = varighet · Alt+piltaster på tastatur · Esc avbryter)</div>
+      <div style={{ border: "1px solid var(--border)", borderRadius: 14, overflow: "hidden" }}>
+        <div style={{ padding: "6px 14px 0", borderBottom: "1px solid var(--border)" }}>
+          <VisningsVelger visning={visning} onVisning={setVisning}
+            visninger={["agenda", "uke", "maned", "tidslinje"]}
+            periode="Uke 25 · juni 2026"
+            onForrige={() => {}} onNeste={() => {}} onIdag={() => {}} />
+        </div>
+        <TidsGrid fraTime={8} tilTime={17} naa={13.4} onFlytt={flytt}>
+          <TidsGrid.Kolonne id="man" header="Man 19" onNyOkt={() => {}}>
+            {okter.filter((o) => o.kol === "man").map((o) => (
+              <TidsGrid.Blokk key={o.id} id={o.id} fra={o.fra} til={o.til} akse={o.akse} onClick={() => {}} {...sporFor(o, okter)}>
+                <span style={{ fontFamily: "var(--font-mono)", fontSize: 9, color: "var(--text-muted)" }}>{String(Math.floor(o.fra)).padStart(2, "0")}:{o.fra % 1 ? "30" : "00"}</span>
+                <span style={{ fontSize: 12, fontWeight: 600, color: "var(--text)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{o.tittel}</span>
+              </TidsGrid.Blokk>
+            ))}
+          </TidsGrid.Kolonne>
+          <TidsGrid.Kolonne id="tir" header="Tir 20" idag onNyOkt={() => {}}>
+            {okter.filter((o) => o.kol === "tir").map((o) => (
+              <TidsGrid.Blokk key={o.id} id={o.id} fra={o.fra} til={o.til} akse={o.akse} onClick={() => {}} {...sporFor(o, okter)}>
+                <span style={{ fontFamily: "var(--font-mono)", fontSize: 9, color: "var(--text-muted)" }}>{String(Math.floor(o.fra)).padStart(2, "0")}:{o.fra % 1 ? "30" : "00"}</span>
+                <span style={{ fontSize: 12, fontWeight: 600, color: "var(--text)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{o.tittel}</span>
+              </TidsGrid.Blokk>
+            ))}
+          </TidsGrid.Kolonne>
+          <TidsGrid.Kolonne id="ons" header="Ons 21" onNyOkt={() => {}}>
+            {okter.filter((o) => o.kol === "ons").map((o) => (
+              <TidsGrid.Blokk key={o.id} id={o.id} fra={o.fra} til={o.til} akse={o.akse} onClick={() => {}} {...sporFor(o, okter)}>
+                <span style={{ fontFamily: "var(--font-mono)", fontSize: 9, color: "var(--text-muted)" }}>{String(Math.floor(o.fra)).padStart(2, "0")}:{o.fra % 1 ? "30" : "00"}</span>
+                <span style={{ fontSize: 12, fontWeight: 600, color: "var(--text)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{o.tittel}</span>
+              </TidsGrid.Blokk>
+            ))}
+            <TidsGrid.Blokk fra={9} til={10} tilstand="apen" onClick={() => {}}>
+              <span style={{ fontSize: 11, fontWeight: 500, color: "var(--text-muted)" }}>Åpent vindu</span>
+            </TidsGrid.Blokk>
+            <TidsGrid.Blokk fra={12} til={13.5} tilstand="booket" onClick={() => {}}>
+              <span style={{ fontFamily: "var(--font-mono)", fontSize: 9, color: "var(--text-muted)" }}>12:00</span>
+              <span style={{ fontSize: 12, fontWeight: 600, color: "var(--text)" }}>Booket — Marius</span>
+            </TidsGrid.Blokk>
+            <TidsGrid.Blokk fra={15} til={16} tilstand="holdt" onClick={() => {}}>
+              <span style={{ fontSize: 11, fontWeight: 500, color: "var(--text)" }}>Holdt</span>
+            </TidsGrid.Blokk>
+          </TidsGrid.Kolonne>
+        </TidsGrid>
+      </div>
+    </div>
+  );
+}
+
+function Demo() {
+  const [day, setDay] = React.useState(23);
+  const [calDate, setCalDate] = React.useState(17);
+
+  return (
+    <React.Fragment>
+      <TgDemo />
+      <div>
+        <div className="lbl">DayStrip + AgendaRow</div>
+        <div style={{ maxWidth: 440 }}>
+          <DayStrip value={day} onChange={setDay} days={[
+            {dow:"M",date:17,state:"done"},{dow:"T",date:18,state:"done"},
+            {dow:"O",date:19,state:"done"},{dow:"T",date:20,state:"done"},
+            {dow:"F",date:21,state:"done"},{dow:"L",date:22},{dow:"S",date:23,today:true},
+          ]} />
+          <div style={{ display:"flex",flexDirection:"column",gap:8,marginTop:16 }}>
+            <AgendaRow time="09:00" icon="dumbbell" title="Styrke & mobilitet" subtitle="Mulligan Studio 2" duration="45 min" state="done" />
+            <AgendaRow time="16:00" icon="target" title="Putting-blokk" subtitle="Med Anders · GFGK" duration="60 min" state="live" />
+            <AgendaRow time="18:30" icon="flag" title="Banespill — 9 hull" subtitle="GFGK" duration="2t" />
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div className="lbl">UkeKalender — uke 25</div>
+        <UkeKalender week={[
+          {date:17,sessions:[{time:"09:00",title:"Styrke",axis:"FYS",compliance:"on"},{time:"16:00",title:"Putting",axis:"SLAG",compliance:"on"}]},
+          {date:18,sessions:[{time:"10:00",title:"Teknikk-drill",axis:"TEK",compliance:"off"}]},
+          {date:19,sessions:[{title:"Fri"}]},
+          {date:20,today:true,sessions:[{time:"16:00",title:"Kortkspill",axis:"SPILL",compliance:"planned"},{time:"18:00",title:"Styrke",axis:"FYS",compliance:"planned"}]},
+          {date:21,sessions:[{time:"09:00",title:"Banespill 18 hull",axis:"SPILL",compliance:"planned"}]},
+          {date:22,sessions:[]},
+          {date:23,sessions:[{title:"NM kvaifisering",axis:"TURN",compliance:"planned"}]},
+        ]} />
+      </div>
+
+      <div className="row">
+        <div style={{ flex:"0 0 220px" }}>
+          <div className="lbl">MånedKalender</div>
+          <MaanedKalender year={2025} month={5} value={calDate} onChange={setCalDate}
+            days={[
+              {date:3,sessions:2},{date:5,sessions:1},{date:10,sessions:3},
+              {date:12,sessions:1},{date:17,sessions:2,today:true},
+              {date:19,sessions:1},{date:24,sessions:3},{date:26,sessions:2},
+            ]}
+          />
+        </div>
+        <div style={{ flex:1,minWidth:300 }}>
+          <div className="lbl">Periodeplan — sesong 2025</div>
+          <Periodeplan
+            totalWeeks={52}
+            phases={[
+              {label:"Base",startWeek:1,durationWeeks:8},
+              {label:"Forberedelse",startWeek:9,durationWeeks:10},
+              {label:"Spesialisering",startWeek:19,durationWeeks:12},
+              {label:"Taper",startWeek:31,durationWeeks:4},
+              {label:"Peak",startWeek:35,durationWeeks:10},
+            ]}
+            tournaments={[
+              {name:"Krets",week:24,prio:"B"},
+              {name:"Regionals",week:32,prio:"B"},
+              {name:"NM",week:38,prio:"A"},
+              {name:"Avslutning",week:44,prio:"C"},
+            ]}
+          />
+        </div>
+      </div>
+    </React.Fragment>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<Demo />);
+</script>
+</body>
+</html>

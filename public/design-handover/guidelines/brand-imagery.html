@@ -1,0 +1,33 @@
+<!-- @dsCard group="Brand" viewport="700x250" name="Imagery" subtitle="Cool, atmospheric nature — misty green peaks under a forest scrim" -->
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; background: var(--bg); padding: 22px; font-family: var(--font-ui); }
+  .row { display: flex; gap: 16px; }
+  .frame { flex: 1; height: 200px; border-radius: var(--radius-panel); overflow: hidden;
+    position: relative; background: #000; }
+  .frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .scrim::after { content: ""; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(4,36,26,0.1) 0%, rgba(4,36,26,0.85) 100%); }
+  .cap { position: absolute; left: 18px; bottom: 16px; z-index: 1; color: #fff; }
+  .cap .eb { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--signal); }
+  .cap .h { font-family: var(--font-display); font-weight: 700; font-size: 20px; letter-spacing: -0.02em; }
+  .tag { position: absolute; right: 14px; top: 12px; z-index: 1; font-family: var(--font-mono);
+    font-size: 10px; color: rgba(255,255,255,0.75); }
+</style>
+</head>
+<body>
+<div class="row">
+  <div class="frame"><img src="../assets/imagery/peak-misty.png" alt="Misty peak" /><span class="tag">clean</span></div>
+  <div class="frame scrim"><img src="../assets/imagery/peak-misty.png" alt="Misty peak with scrim" />
+    <div class="cap"><div class="eb">Treningsfilosofi</div><div class="h">Veien til toppen</div></div>
+    <span class="tag">forest scrim + caption</span>
+  </div>
+</div>
+</body>
+</html>

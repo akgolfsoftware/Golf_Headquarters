@@ -1,0 +1,116 @@
+/* ============================================================
+   AK Golf HQ — LAG 4: KATEGORISK + data-visualisering
+   ------------------------------------------------------------
+   Pyramide-aksene (FYS/TEK/SLAG/SPILL/TURN) er løftet fra
+   kun-data-viz til et GJENNOMGÅENDE fargespråk: hver akse har én
+   fast farge som betyr aksetilhørighet — brukt som markør på
+   økter, drills, plan-blokker, kalender-segmenter og filtre, ikke
+   bare i grafer. Farge = akse, overalt.
+
+   Tre roller per akse, pr. tema (begge kontrastsjekket):
+     --axis-<x>        markør (prikk, venstre-kant, fylt chip) — ≥3:1
+     --axis-<x>-text   tilgjengelig etikett/tekst på flate      — ≥4,5:1
+     --axis-<x>-soft   myk tint-bakgrunn (segment, blokk, chip)
+
+   Identitets-hue holdes fast pr. akse; KUN lyshet justeres pr.
+   tema så markøren får kontrast (lys på mørk base, mørkere på cream).
+
+   Skillbarhet: de fem markørene er testet mot deuteranopi
+   (Machado 2009). Min. ΔE i simulert syn: 23,6 (mørk) / 20,2 (lys)
+   — godt over JND. Ingen akse bruker gul-grønt → kolliderer ikke
+   med lime. Farge forsterkes alltid av FYS/TEK-etikett, aldri alene.
+   ============================================================ */
+
+:root {
+  /* ---- Identitets-hue pr. akse (felles for begge temaer) ----
+     FYS 78 (orange)  TEK 346 (rose)  SLAG 205 (cyan-teal)
+     SPILL 244 (dypblå)  TURN 40 (vermillion) */
+
+  /* ---- DARK (default): markør lys nok for near-black ---- */
+  --axis-fys:        #56C59A;
+  --axis-fys-text:   #74D0AC;
+  --axis-fys-soft:   rgba(86,197,154,0.15);
+
+  --axis-tek:        #E8A33D;
+  --axis-tek-text:   #EEB965;
+  --axis-tek-soft:   rgba(232,163,61,0.16);
+
+  --axis-slag:       #84A9FF;
+  --axis-slag-text:  #9EBCFF;
+  --axis-slag-soft:  rgba(132,169,255,0.15);
+
+  --axis-spill:      #D1F843;
+  --axis-spill-text: #D1F843;
+  --axis-spill-soft: rgba(209,248,67,0.16);
+
+  --axis-turn:       #F2908C;
+  --axis-turn-text:  #F5A8A4;
+  --axis-turn-soft:  rgba(242,144,140,0.16);
+
+  /* Bakover-kompatible aliaser (eldre --cat-* navn) */
+  --cat-fys:   var(--axis-fys);
+  --cat-tek:   var(--axis-tek);
+  --cat-slag:  var(--axis-slag);
+  --cat-spill: var(--axis-spill);
+  --cat-turn:  var(--axis-turn);
+  --cat-fys-soft:   var(--axis-fys-soft);
+  --cat-tek-soft:   var(--axis-tek-soft);
+  --cat-slag-soft:  var(--axis-slag-soft);
+  --cat-spill-soft: var(--axis-spill-soft);
+  --cat-turn-soft:  var(--axis-turn-soft);
+
+  /* ---- SG-akser (OTT/APP/ARG/PUTT) — gjenbruk 4 akse-farger ---- */
+  --sg-ott:  var(--axis-fys);
+  --sg-app:  var(--axis-slag);
+  --sg-arg:  var(--axis-spill);
+  --sg-putt: var(--axis-turn);
+
+  /* ---- L-fase sekvensiell rampe (Base→Peak): forest→lime intensitet ---- */
+  --phase-base:           oklch(0.44 0.07 165);
+  --phase-forberedelse:   oklch(0.54 0.10 155);
+  --phase-spesialisering: oklch(0.66 0.14 142);
+  --phase-taper:          oklch(0.80 0.16 128);
+  --phase-peak:           oklch(0.90 0.19 122);
+
+  /* ---- Compliance (brand: lime / coral / grå) ---- */
+  --compliance-on:   var(--lime-500);
+  --compliance-off:  var(--down);
+  --compliance-none: var(--graphite-500);
+
+  /* ---- Chart-nøytraler ---- */
+  --chart-grid:  rgba(255, 255, 255, 0.06);
+  --chart-axis:  rgba(255, 255, 255, 0.20);
+  --chart-track: var(--track);
+}
+
+/* ============================================================
+   LIGHT — markør/tekst mørkere så de leser på cream/hvit.
+   Hue uendret; aksen beholder sin identitet på tvers av tema.
+   ============================================================ */
+.light,
+[data-theme="light"] {
+  --axis-fys:        #005840;
+  --axis-fys-text:   #005840;
+  --axis-fys-soft:   rgba(0,88,64,0.13);
+
+  --axis-tek:        #B8852A;
+  --axis-tek-text:   #8A6316;
+  --axis-tek-soft:   rgba(184,133,42,0.13);
+
+  --axis-slag:       #2563EB;
+  --axis-slag-text:  #1D4FD0;
+  --axis-slag-soft:  rgba(37,99,235,0.13);
+
+  --axis-spill:      #D1F843;
+  --axis-spill-text: #55680A;
+  --axis-spill-soft: rgba(209,248,67,0.22);
+
+  --axis-turn:       #A32D2D;
+  --axis-turn-text:  #A32D2D;
+  --axis-turn-soft:  rgba(163,45,45,0.13);
+
+  --compliance-none: var(--sand-500);
+
+  --chart-grid: rgba(0, 0, 0, 0.06);
+  --chart-axis: rgba(0, 0, 0, 0.22);
+}

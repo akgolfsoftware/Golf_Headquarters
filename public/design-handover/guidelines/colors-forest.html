@@ -1,0 +1,29 @@
+<!-- @dsCard group="Colors" viewport="700x190" name="Forest — identitet & primær-CTA" subtitle="Arve-grønnen bærer merkevaren og primær-handlingen i begge temaer" -->
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; background: var(--bg); padding: 24px; font-family: var(--font-ui); }
+  .row { display: flex; gap: 14px; flex-wrap: wrap; align-items: stretch; }
+  .sw { display: flex; flex-direction: column; gap: 9px; width: 124px; }
+  .chip { height: 70px; border-radius: 12px; border: 1px solid var(--border); }
+  .tok { font-family: var(--font-mono); font-size: 12px; color: var(--text); font-weight: 600; }
+  .hex { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); }
+  .cta { display: inline-flex; align-items: center; justify-content: center; height: 70px;
+    border-radius: 9999px; background: var(--brand); color: var(--on-brand);
+    font-weight: 600; font-size: 14px; padding: 0 22px; }
+</style>
+</head>
+<body>
+<div class="row">
+  <div class="sw"><div class="chip" style="background: var(--forest-900);"></div><span class="tok">--forest-900</span><span class="hex">#04241A · band</span></div>
+  <div class="sw"><div class="chip" style="background: var(--forest-700);"></div><span class="tok">--forest-700</span><span class="hex">#005840 · CTA (lys)</span></div>
+  <div class="sw"><div class="chip" style="background: var(--forest-600);"></div><span class="tok">--forest-600</span><span class="hex">#0A6B4C · CTA (mørk)</span></div>
+  <div class="sw"><div class="chip" style="background: var(--forest-500);"></div><span class="tok">--forest-500</span><span class="hex">#0A8A63</span></div>
+  <div class="sw" style="width:auto;"><div class="cta">Tildel plan</div><span class="tok">--brand</span><span class="hex">primær-CTA · hvit tekst</span></div>
+</div>
+</body>
+</html>

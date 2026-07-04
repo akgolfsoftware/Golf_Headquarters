@@ -1,0 +1,62 @@
+/* ============================================================
+   AK Golf HQ — Spacing, radius, elevation & motion
+   ------------------------------------------------------------
+   4px base. Calm, precise, lots of air at the top of screens,
+   tighter inside data tables. The dark theme uses almost no
+   shadow — separation comes from surface lightness + hairline
+   borders. Only popovers / modals / sheets get a real shadow.
+   ============================================================ */
+
+:root {
+  /* ---- Spacing (4px base) ---- */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ---- Radius ---- */
+  --radius-tag:   8px;     /* tag / pill-badge */
+  --radius-input: 12px;    /* input / small button */
+  --radius-card:  16px;    /* card */
+  --radius-panel: 20px;    /* large panel */
+  --radius-sheet: 28px;    /* sheet / hero */
+  --radius-pill:  9999px;  /* pill / ring / full button */
+
+  /* ---- Borders ---- */
+  --hairline: 1px solid var(--border);
+
+  /* ---- Elevation — two-layer depth (Fase 6.1) ----
+   * Separation is still surface + border first; real shadows are reserved for
+   * lifted surfaces (popover / sheet / active-drag). Each is TWO layers: a tight
+   * near shadow (contact) + a diffuse far shadow (ambient) — this is the premium
+   * depth cue, never a fill or gradient. Far layer ≈ the old single value, so the
+   * upgrade reads as more precise, not heavier. Theme-independent; light theme
+   * softens via lower-alpha inheritance where re-declared. */
+  --shadow-none:    none;
+  --shadow-raised:  0 1px 2px rgba(0, 0, 0, 0.22), 0 6px 16px rgba(0, 0, 0, 0.28);  /* @kind shadow */
+  --shadow-popover: 0 2px 6px rgba(0, 0, 0, 0.28), 0 12px 32px rgba(0, 0, 0, 0.40);  /* @kind shadow */
+  --shadow-sheet:   0 4px 12px rgba(0, 0, 0, 0.34), 0 24px 64px rgba(0, 0, 0, 0.48);  /* @kind shadow */
+  /* Lime CTA focus glow — kept subtle and calm. */
+  --glow-signal:    0 0 0 1px rgba(209, 248, 67, 0.30);
+
+  /* ---- Motion — calm, precise; fades and short slides, no bounce ---- */
+  --dur-fast:   120ms;  /* @kind other */
+  --dur-base:   200ms;  /* @kind other */
+  --dur-slow:   320ms;  /* @kind other */
+  /* standard = default in/out · out = entrances · in = exits */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);     /* @kind other */
+  --ease-out:      cubic-bezier(0.16, 1, 0.3, 1);  /* @kind other */
+  --ease-in:       cubic-bezier(0.4, 0, 1, 1);     /* @kind other */
+
+  /* ---- Layout rails ---- */
+  --rail-collapsed: 54px;   /* AgencyOS icon rail */
+  --rail-expanded:  244px;  /* AgencyOS expanded sidebar */
+  --app-max:        1280px; /* desktop content cap */
+  --mobile-max:     440px;  /* PlayerHQ phone column */
+}

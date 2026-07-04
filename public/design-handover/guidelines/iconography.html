@@ -1,0 +1,41 @@
+<!-- @dsCard group="Brand" viewport="700x260" name="Iconography — Lucide 1.5px" subtitle="Lucide is the only icon system. 1.5px stroke. No emoji." -->
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; background: var(--bg); padding: 26px; font-family: var(--font-mono); }
+  .grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 10px; }
+  .cell { display: flex; flex-direction: column; align-items: center; gap: 8px;
+    padding: 14px 6px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; }
+  .cell svg { width: 24px; height: 24px; stroke-width: 1.5; color: var(--text); }
+  .cell.acc svg { color: var(--signal); }
+  .n { font-size: 9px; color: var(--text-muted); letter-spacing: 0.02em; }
+</style>
+</head>
+<body>
+<div class="grid" id="g"></div>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script>
+  const names = ["target","flag","dumbbell","activity","trophy","trending-up","sparkles","flame",
+    "calendar","clock","map-pin","user","bell","search","plus","check","chevron-right",
+    "play","mail","bar-chart-3","zap","lock","arrow-up-right","sliders-horizontal"];
+  const accent = new Set(["sparkles","flame","zap","trending-up"]);
+  const g = document.getElementById("g");
+  for (const n of names) {
+    const cell = document.createElement("div");
+    cell.className = "cell" + (accent.has(n) ? " acc" : "");
+    const i = document.createElement("i");
+    i.setAttribute("data-lucide", n);
+    const lbl = document.createElement("span");
+    lbl.className = "n";
+    lbl.textContent = n;
+    cell.appendChild(i); cell.appendChild(lbl); g.appendChild(cell);
+  }
+  if (window.lucide) lucide.createIcons();
+</script>
+</body>
+</html>

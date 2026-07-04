@@ -1,0 +1,324 @@
+<!-- @dsCard group="Premium" viewport="1360x3400" name="Premium-referanse — løftet komponentsett" subtitle="Presisjon, mikrointeraksjon, dataliv — mørk (AgencyOS) + lys (PlayerHQ), hvile/interaktiv/lasting" -->
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); font-family: var(--font-ui); }
+  .shell { display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh; }
+  .pane { padding: 28px 26px 60px; display: flex; flex-direction: column; gap: 22px; }
+  .pane--dark { background: var(--bg); }
+  .pane--light.light { background: var(--bg); }
+  .pane-head { display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+  .pane-title { font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--text); }
+  .pane-sub { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); }
+  .replay {
+    height: 28px; padding: 0 12px; border-radius: 9999px; border: 1px solid var(--border-strong);
+    background: transparent; color: var(--text-2); font-family: var(--font-mono); font-size: 10px;
+    font-weight: 600; letter-spacing: 0.04em; cursor: pointer;
+    transition: background 120ms var(--ease-standard), transform 120ms var(--ease-standard);
+  }
+  .replay:hover { background: var(--surface-hover); }
+  .replay:active { transform: scale(.96); }
+  .block { display: flex; flex-direction: column; gap: 10px; }
+  .block-lbl { font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .center { display: flex; justify-content: center; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_ds_bundle.js"></script>
+
+<script type="text/babel">
+const {
+  KpiTile, StatStrip, Card, Button, Tag, SGTrend, Radar, Pyramid, OektKort,
+  ValidationChip, ValidationGroup, RingGauge, PercentileBar, LoadChart, CompareChart,
+  LengdeAvvik, Heatmap, PPositionRail, Skeleton, SkeletonRow,
+} = window.AKGolfHQDesignSystem_a3d5af;
+
+const ROUNDS = [
+  {label:"R1",ott:0.2,app:-0.3,arg:0.0,putt:0.4},
+  {label:"R2",ott:0.5,app:0.1,arg:-0.1,putt:0.5},
+  {label:"R3",ott:0.4,app:0.3,arg:0.2,putt:0.6},
+  {label:"R4",ott:0.8,app:0.2,arg:0.1,putt:0.7},
+  {label:"R5",ott:0.9,app:0.4,arg:0.3,putt:0.8},
+  {label:"R6",ott:0.7,app:0.5,arg:0.2,putt:0.9},
+];
+
+const ACWR_SERIES = [
+  {label:"U18",value:0.94},{label:"U19",value:1.02},{label:"U20",value:1.08},
+  {label:"U21",value:1.15},{label:"U22",value:1.22},{label:"U23",value:1.18},
+];
+const ACWR_ZONES = [
+  {from:0.5, to:1.3, color:"var(--signal)"},
+  {from:1.3, to:1.5, color:"var(--warning)", label:"1,3–1,5 følg"},
+  {from:1.5, to:1.8, color:"var(--error-solid)", label:"> 1,5 risiko"},
+];
+
+const CMP_LABELS = ["Uke20","Uke21","Uke22","Uke23","Uke24","Uke25"];
+const CMP_PRIMARY = [68,71,74,76,80,86];
+const CMP_SECONDARY = [60,63,65,67,70,72];
+
+const SHOTS = Array.from({length:22}, (_, i) => ({
+  x: (Math.sin(i*1.7)*4 + (Math.random()-0.5)*5),
+  y: (Math.cos(i*1.3)*3 + (Math.random()-0.5)*6),
+}));
+
+const HEAT_ROWS = ["Man","Tir","Ons","Tor","Fre","Lør"];
+const HEAT_COLS = ["08","10","12","14","16","18"];
+const HEAT_VALUES = HEAT_ROWS.map((_, r) =>
+  HEAT_COLS.map((_, c) => Math.max(0, Math.min(1, Math.abs(Math.sin(r*1.3+c*0.7)))))
+);
+
+const POSITIONS = [
+  {id:"P1", label:"Setup", status:"ferdig"},
+  {id:"P4", label:"Topp", status:"ferdig"},
+  {id:"P7", label:"Impact", status:"aktiv"},
+  {id:"P10", label:"Slutt", status:"planlagt"},
+];
+
+function LoadingRow({ live, height = 200 }) {
+  if (live) return null;
+  return <Skeleton variant="card" width="100%" height={height} />;
+}
+
+function Pane({ theme, title, sub, replayKey, onReplay }) {
+  const [live, setLive] = React.useState(false);
+  React.useEffect(() => {
+    setLive(false);
+    const t = setTimeout(() => setLive(true), 700);
+    return () => clearTimeout(t);
+  }, [replayKey]);
+
+  const wrapProps = theme === "light" ? { className: "light pane pane--light", "data-theme": "light" } : { className: "pane pane--dark" };
+
+  return (
+    <div {...wrapProps}>
+      <div className="pane-head">
+        <div>
+          <div className="pane-title">{title}</div>
+          <div className="pane-sub">{sub}</div>
+        </div>
+        <button className="replay" onClick={onReplay}>↻ Spill av på nytt</button>
+      </div>
+
+      {/* KPI + StatStrip */}
+      <div className="block">
+        <div className="block-lbl">StatStrip — KpiTile (tell opp)</div>
+        {live ? (
+          <Card style={{padding:"18px 20px"}}>
+            <StatStrip stats={[
+              {label:"SG snitt · 30d", value:"2,8", unit:"snitt", delta:"+0,4", sparkline:[0.2,0.4,0.3,0.6,0.5,0.8,0.9]},
+              {label:"Plan-kvalitet", value:"86", unit:"%", delta:"+5"},
+              {label:"HCP", value:"+2,4", delta:"−0,3", trend:"up"},
+            ]} />
+          </Card>
+        ) : <LoadingRow live={live} height={92} />}
+      </div>
+
+      {/* Card/Button/Tag */}
+      <div className="block">
+        <div className="block-lbl">Card · Button · Tag — hover / press</div>
+        <Card interactive style={{padding:"16px 18px", display:"flex", flexDirection:"column", gap:12}}>
+          <div style={{display:"flex", gap:8, flexWrap:"wrap", alignItems:"center"}}>
+            <Tag variant="live" size="sm">AKTIV</Tag>
+            <Tag variant="neutral" size="sm">FULLFØRT</Tag>
+            <Tag variant="down" size="sm">AVLYST</Tag>
+          </div>
+          <div style={{display:"flex", gap:8}}>
+            <Button variant="primary" size="sm">Lagre plan</Button>
+            <Button variant="secondary" size="sm">Avbryt</Button>
+          </div>
+          <div style={{fontFamily:"var(--font-mono)", fontSize:10, color:"var(--text-faint)"}}>
+            hold pekeren over kortet / trykk en knapp →
+          </div>
+        </Card>
+      </div>
+
+      {/* SGTrend + Radar */}
+      <div className="row2">
+        <div className="block">
+          <div className="block-lbl">SGTrend — scrubber</div>
+          {live ? (
+            <Card compact eyebrow="SG-trend · 6 runder">
+              <SGTrend key={replayKey} rounds={ROUNDS} benchmark={0} height={150} />
+            </Card>
+          ) : <LoadingRow live={live} height={210} />}
+        </div>
+        <div className="block">
+          <div className="block-lbl">Radar — vekst inn</div>
+          {live ? (
+            <Card compact eyebrow="SG-øyeblikksbilde">
+              <div className="center">
+                <Radar key={replayKey}
+                  data={{ott:0.8,app:0.4,arg:0.2,putt:0.7}}
+                  baseline={{ott:0.5,app:0.5,arg:0.5,putt:0.5}}
+                  size={160}
+                />
+              </div>
+            </Card>
+          ) : <LoadingRow live={live} height={210} />}
+        </div>
+      </div>
+
+      {/* Pyramid + OektKort */}
+      <div className="row2">
+        <div className="block">
+          <div className="block-lbl">Pyramid — stagger inn</div>
+          {live ? (
+            <Card compact eyebrow="Disiplin-budsjett">
+              <Pyramid key={replayKey} activeAxis="SLAG" compact />
+            </Card>
+          ) : <LoadingRow live={live} height={210} />}
+        </div>
+        <div className="block">
+          <div className="block-lbl">ØktKort — press</div>
+          {live ? (
+            <div style={{display:"flex", flexDirection:"column", gap:8}}>
+              <OektKort title="Putting — 10–20 ft" axis="SLAG" time="09:00" duration="45 min"
+                location="Onsøy GK" coach="A. Karlsen" state="live" onClick={() => {}} />
+              <OektKort title="Styrke — underkropp" axis="FYS" time="16:00" duration="60 min"
+                location="Treningssenter" state="planned" onClick={() => {}} />
+            </div>
+          ) : <LoadingRow live={live} height={140} />}
+        </div>
+      </div>
+
+      {/* ValidationGroup — anbefalingstilstandene */}
+      <div className="block">
+        <div className="block-lbl">Inspektør-chip — innenfor anbefaling · avviker · sterkt avvik</div>
+        <div style={{display:"flex", flexDirection:"column", gap:10}}>
+          <ValidationGroup label="Køllehastighet" state="ren">
+            {["CS50","CS60","CS70"].map(v => (
+              <ValidationChip key={v} label={v} active={v==="CS60"} onClick={() => {}} />
+            ))}
+          </ValidationGroup>
+          <ValidationGroup label="Køllehastighet" state="myk"
+            message="CS90 nærmer seg taket for perioden." readerMessage="Hastigheten er i høyeste laget nå.">
+            {["CS70","CS80","CS90"].map(v => (
+              <ValidationChip key={v} label={v} active={v==="CS90"} onClick={() => {}} />
+            ))}
+          </ValidationGroup>
+          <ValidationGroup label="Køllehastighet" state="hard"
+            message="Sterkt avvik: CS20 er under anbefalt CS50 for ballkontakt-drill — coach varsles."
+            readerMessage="Denne økta er satt for enkel for slag-trening.">
+            {["CS20","CS50"].map(v => (
+              <ValidationChip key={v} label={v} active={v==="CS20"} onClick={() => {}} />
+            ))}
+          </ValidationGroup>
+        </div>
+      </div>
+
+      {/* RingGauge + PercentileBar */}
+      <div className="row2">
+        <div className="block">
+          <div className="block-lbl">RingGauge — ACWR-soner</div>
+          {live ? (
+            <Card compact style={{alignItems:"center", display:"flex", justifyContent:"center", padding:"20px"}}>
+              <RingGauge key={replayKey} value={1.22} min={0.5} max={1.8} decimals={2} unit=""
+                label="ACWR" size={128} zones={ACWR_ZONES} />
+            </Card>
+          ) : <LoadingRow live={live} height={190} />}
+        </div>
+        <div className="block">
+          <div className="block-lbl">PercentileBar — glidende markør</div>
+          {live ? (
+            <Card compact style={{padding:"20px"}}>
+              <PercentileBar key={replayKey} percentile={82} benchmark={50}
+                label="HCP · U16-stall" valueLabel="Topp 18 %" />
+            </Card>
+          ) : <LoadingRow live={live} height={90} />}
+        </div>
+      </div>
+
+      {/* LoadChart — signature */}
+      <div className="block">
+        <div className="block-lbl">LoadChart — glødende signaturmoment</div>
+        {live ? (
+          <Card compact eyebrow="ACWR · 6 uker">
+            <LoadChart key={replayKey} series={ACWR_SERIES} zones={ACWR_ZONES}
+              min={0.6} max={1.8} height={170}
+              fmt={(v) => v.toFixed(2).replace(".", ",")} />
+          </Card>
+        ) : <LoadingRow live={live} height={230} />}
+      </div>
+
+      {/* CompareChart */}
+      <div className="block">
+        <div className="block-lbl">CompareChart — sesong mot sesong</div>
+        {live ? (
+          <Card compact eyebrow="Plan-kvalitet">
+            <CompareChart key={replayKey} labels={CMP_LABELS} primary={CMP_PRIMARY}
+              secondary={CMP_SECONDARY} primaryLabel="Denne sesongen" secondaryLabel="Forrige"
+              fmt={(v) => `${Math.round(v)}%`} height={180} />
+          </Card>
+        ) : <LoadingRow live={live} height={230} />}
+      </div>
+
+      {/* LengdeAvvik + Heatmap */}
+      <div className="row2">
+        <div className="block">
+          <div className="block-lbl">LengdeAvvik — lengdeavvik inn</div>
+          {live ? (
+            <Card compact eyebrow="Spredning · 7-jern">
+              <div className="center">
+                <LengdeAvvik key={replayKey} shots={SHOTS} range={16} size={240} />
+              </div>
+            </Card>
+          ) : <LoadingRow live={live} height={290} />}
+        </div>
+        <div className="block">
+          <div className="block-lbl">Heatmap — belegg</div>
+          {live ? (
+            <Card compact eyebrow="Booking · uke 25">
+              <div className="center">
+                <Heatmap key={replayKey} rows={HEAT_ROWS} cols={HEAT_COLS} values={HEAT_VALUES}
+                  color="var(--signal)" fmt={(v) => `${Math.round(v*6)} økter`} />
+              </div>
+            </Card>
+          ) : <LoadingRow live={live} height={290} />}
+        </div>
+      </div>
+
+      {/* PPositionRail */}
+      <div className="block">
+        <div className="block-lbl">P-posisjon-rail</div>
+        {live ? (
+          <Card compact eyebrow="Teknisk plan · svingkjede">
+            <PPositionRail key={replayKey} positions={POSITIONS} selectedId="P7" onSelect={() => {}} />
+          </Card>
+        ) : <LoadingRow live={live} height={70} />}
+      </div>
+    </div>
+  );
+}
+
+function Demo() {
+  const [darkKey, setDarkKey] = React.useState(0);
+  const [lightKey, setLightKey] = React.useState(0);
+  return (
+    <div className="shell">
+      <Pane theme="dark" title="AgencyOS · mørk" sub="coach, innendørs"
+        replayKey={darkKey} onReplay={() => setDarkKey(k => k + 1)} />
+      <Pane theme="light" title="PlayerHQ · lys" sub="spiller, utendørs / sollys"
+        replayKey={lightKey} onReplay={() => setLightKey(k => k + 1)} />
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<Demo />);
+</script>
+</body>
+</html>

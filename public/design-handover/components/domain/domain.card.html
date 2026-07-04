@@ -1,0 +1,165 @@
+<!-- @dsCard group="Components" viewport="700x1450" name="Domain — SpillerKort, ØktKort, BookingKort, FakturaRad, VarselRad, Samtykke, SGSplitt, DiffKort, AnbefalingsKort, Læringstrapp" subtitle="AK Golf-specific domain components composed from primitives" -->
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="../../styles.css" />
+<style>
+  body { margin: 0; background: var(--bg); padding: 28px; }
+  .wrap { display: flex; flex-direction: column; gap: 28px; }
+  .lbl { font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .col { display: flex; flex-direction: column; gap: 8px; }
+</style>
+</head>
+<body>
+<div id="root" class="wrap"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+
+<script type="text/babel">
+const { SpillerKort, OektKort, BookingKort, FakturaRad, VarselRad, SamtykkKort, LFaseBadge, SGSplittKort, DiffKort, AnbefalingsKort, Laeringstrapp, OppgaveKort } = window.AKGolfHQDesignSystem_a3d5af;
+
+function Demo() {
+  if (!OppgaveKort) return null; /* vakt: eldre bundle uten ny eksport */
+  return (
+    <React.Fragment>
+      <div className="grid2">
+        <div>
+          <div className="lbl">SpillerKort</div>
+          <SpillerKort name="Øyvind Rohjan" hcp="+2,4" kategori="A" tier="PRO"
+            sg="2,8" sgDelta="+0,4" runder={24} adherence={86} />
+        </div>
+        <div>
+          <div className="lbl">SGSplittKort</div>
+          <SGSplittKort data={{
+            ott:  {value:0.8,  delta:0.2},
+            app:  {value:0.3,  delta:-0.1},
+            arg:  {value:-0.2, delta:0.0},
+            putt: {value:0.6,  delta:0.3},
+          }} />
+        </div>
+      </div>
+
+      <div className="grid2">
+        <div>
+          <div className="lbl">ØktKort — varianter</div>
+          <div className="col">
+            <OektKort title="Putting-blokk" axis="SLAG" time="16:00" duration="60 min" location="GFGK" coach="Anders K." state="live" />
+            <OektKort title="Styrke & mobilitet" axis="FYS" time="09:00" duration="45 min" location="Mulligan" state="done" />
+            <OektKort title="Banespill 18 hull" axis="SPILL" time="10:00" location="GFGK" state="planned" />
+          </div>
+        </div>
+        <div>
+          <div className="lbl">BookingKort · Fase-badges (periodisering)</div>
+          <BookingKort type="Kartlegging" date="3. juni 2025" time="09:00" duration="60 min"
+            location="GFGK" coach="Anders Kristiansen" state="available" onBook={() => {}} />
+          <div style={{marginTop:14,display:"flex",gap:6,flexWrap:"wrap"}}>
+            {["Base","Forberedelse","Spesialisering","Taper","Peak"].map(p => (
+              <LFaseBadge key={p} phase={p} />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="grid2">
+        <div>
+          <div className="lbl">FakturaRad</div>
+          <div style={{border:"1px solid var(--border)",borderRadius:"var(--radius-card)",overflow:"hidden"}}>
+            <FakturaRad title="PRO-abonnement juni" subtitle="Øyvind Rohjan" amount="299" status="paid" />
+            <FakturaRad title="Treningsavgift mai" subtitle="Øyvind Rohjan" amount="1 200" status="overdue" />
+            <FakturaRad title="PRO-abonnement juli" subtitle="Øyvind Rohjan" amount="299" status="pending" />
+          </div>
+        </div>
+        <div>
+          <div className="lbl">VarselRad · Samtykke</div>
+          <div className="col">
+            <VarselRad tone="success" title="Betaling mottatt" body="299 kr for juni" time="2 min siden" unread />
+            <VarselRad tone="warning" title="Økt ikke fullført" body="Styrkeøkt onsdag" time="i går" />
+          </div>
+          <div style={{marginTop:12}}>
+            <SamtykkKort playerName="Øyvind Rohjan" type="Deltakelse turneringsreise"
+              description="Samtykke til at Øyvind deltar i NM 14.–16. august 2025."
+              status="pending" onApprove={() => {}} onReject={() => {}} />
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div className="lbl">DiffKort — AI-foreslått endring</div>
+        <DiffKort>
+          <DiffKort.Fjernes>
+            <DiffKort.Rad akse="SPILL" meta="Lør 09:00 · 4t · CS20">Banespill — 18 hull</DiffKort.Rad>
+          </DiffKort.Fjernes>
+          <DiffKort.LeggesTil>
+            <DiffKort.Rad akse="SLAG" meta="Lør 09:00 · 1,5t · CS50">Innspill 150–175 m</DiffKort.Rad>
+            <DiffKort.Rad akse="TEK" meta="Lør 11:00 · 1t · CS50">Teknikk — face-to-path</DiffKort.Rad>
+          </DiffKort.LeggesTil>
+          <DiffKort.Effekt>
+            <DiffKort.Metrikk label="ACWR" fra="1,22" til="1,14" tone="positiv" />
+            <DiffKort.Metrikk label="TEK-andel" fra="13%" til="17%" tone="positiv" />
+            <DiffKort.Metrikk label="Plan-kvalitet" fra="72" til="87" tone="positiv" />
+            <DiffKort.Metrikk label="Volum" fra="12t" til="10,5t" tone="negativ" />
+          </DiffKort.Effekt>
+        </DiffKort>
+      </div>
+
+      <div className="grid2">
+        <div>
+          <div className="lbl">AnbefalingsKort — anbefalingskontrakten</div>
+          <AnbefalingsKort
+            kontekst="Uke 25 · Øyvind"
+            hvorfor="Øyvind taper −1,4 SG på innspill 150–175 m og ligger under TEK-minstekravet."
+            hva="Bytt lørdagens fulle runde med 1,5 t innspillsarbeid + 1 t face-to-path (CS60)."
+            effekt="Plan-kvalitet 72 → 87 · TEK-andel 13 % → 17 % · ACWR 1,22 → 1,14."
+            hvorforNaa="Siste uke før Taper — endringen rekker å virke før kretsspillet."
+            onBruk={() => {}}
+            onAvvis={() => {}}
+            onJuster={() => {}}
+          />
+        </div>
+        <div>
+          <div className="lbl">Læringstrapp — signaturmotivet</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+            <Laeringstrapp aktivtTrinn={3} visStatus />
+            <Laeringstrapp aktivtTrinn={5} kompakt />
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div className="lbl">OppgaveKort — lekse-loopen (coach-godkjenning · spiller-sjekkliste)</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <OppgaveKort
+            tittel="Face-to-path CS60" akse="TEK" trinn="Trinn 3 · Kølle"
+            beskrivelse="Speiltrening + 20 baller med bevisst lukket kølleface gjennom impact."
+            drill="Gate-drill høyrebrekk" dose="3×/uke" frist="fredag 20.6"
+            status="innlevert" videoKrav
+            onPrimaer={() => {}} primaerTekst="Godkjenn"
+            onSekundaer={() => {}} sekundaerTekst="Se innlevering" />
+          <OppgaveKort
+            tittel="Putting innenfor 6 ft" akse="SLAG" dose="40 putter" frist="i morgen"
+            status="venter" onPrimaer={() => {}} primaerTekst="Marker gjort" />
+          <OppgaveKort
+            tittel="Wedge-matrise 60/80/100 m" akse="SLAG" dose="30 slag" frist="i går"
+            status="forfalt" onPrimaer={() => {}} primaerTekst="Send påminnelse"
+            onSekundaer={() => {}} sekundaerTekst="Flytt frist" />
+          <OppgaveKort
+            tittel="Mobilitet hofte" akse="FYS" dose="3×/uke" frist="løpende"
+            status="godkjent" />
+        </div>
+      </div>
+    </React.Fragment>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<Demo />);
+</script>
+</body>
+</html>

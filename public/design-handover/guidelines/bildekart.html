@@ -1,0 +1,268 @@
+<!-- @dsCard group="Tema" viewport="1400x2050" name="Bildekart — hvor foto får være" subtitle="Kuratert bildeprogram: hvilke flater FÅR foto (marketing hero + closing-CTA, auth-bakgrunn, onboarding, forelder-topp, FeaturedCard, PlayerHQ-hjem-hero) og hvilke ALDRI får (datatabeller, cockpit, workbench, kalendere, empty states). Foto lever bak mørk gradient / i mørke kort på dark; forest-scrim på lys; aldri i konkurranse med data. Stripete plassholder + mono-motiv der ekte foto mangler." -->
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--bg); padding: 30px; font-family: var(--font-ui); color: var(--text); }
+  .wrap { max-width: 1340px; margin: 0 auto; }
+  .head { border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 28px; }
+  .eb { font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--signal); margin: 0 0 10px; }
+  h1 { font-family: var(--font-display); font-size: 30px; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 8px; }
+  .lede { font-size: 15px; line-height: 1.55; color: var(--text-2); margin: 0; max-width: 760px; }
+  .sec-lbl { font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--text-muted); margin: 34px 0 14px; }
+
+  /* --- map table --- */
+  .map { width: 100%; border-collapse: separate; border-spacing: 0; border: 1px solid var(--border);
+    border-radius: var(--radius-panel); overflow: hidden; }
+  .map th { text-align: left; font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted);
+    padding: 12px 16px; background: var(--surface); border-bottom: 1px solid var(--border); }
+  .map td { padding: 13px 16px; font-size: 13.5px; line-height: 1.45; color: var(--text-2);
+    border-bottom: 1px solid var(--border); vertical-align: top; }
+  .map tr:last-child td { border-bottom: none; }
+  .map td.flate { color: var(--text); font-weight: 500; white-space: nowrap; }
+  .map td.motiv { color: var(--text-muted); font-family: var(--font-mono); font-size: 11.5px; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono);
+    font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 3px 9px; border-radius: 9999px; white-space: nowrap; }
+  .pill--ja { color: var(--text); background: color-mix(in oklab, var(--signal) 20%, transparent); }
+  .pill--nei { color: var(--text-muted); background: var(--surface-2); border: 1px solid var(--border); }
+  .pill .dot { width: 6px; height: 6px; border-radius: 50%; }
+  .pill--ja .dot { background: var(--signal); }
+  .pill--nei .dot { background: var(--text-faint); }
+
+  /* --- live photo frames --- */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .frame { position: relative; height: 230px; border-radius: var(--radius-panel); overflow: hidden;
+    background: #05130D; border: 1px solid var(--border); }
+  .frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .scrim-dark::after { content: ""; position: absolute; inset: 0;
+    background: linear-gradient(178deg, rgba(4,20,14,0.05) 0%, rgba(4,20,14,0.55) 55%, rgba(4,20,14,0.94) 100%); }
+  .scrim-forest::after { content: ""; position: absolute; inset: 0;
+    background: linear-gradient(102deg, rgba(0,88,64,0.82) 0%, rgba(0,88,64,0.46) 52%, rgba(0,88,64,0.12) 100%); }
+  .cap { position: absolute; left: 18px; right: 18px; bottom: 16px; z-index: 2; }
+  .cap .c-eb { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--signal); }
+  .cap .c-eb--light { color: #EAF5C8; }
+  .cap .c-h { font-family: var(--font-display); font-weight: 700; font-size: 21px;
+    letter-spacing: -0.02em; color: #fff; margin-top: 2px; }
+  .tag { position: absolute; right: 12px; top: 11px; z-index: 2; font-family: var(--font-mono);
+    font-size: 9.5px; letter-spacing: 0.06em; color: rgba(255,255,255,0.78);
+    background: rgba(0,0,0,0.32); padding: 3px 8px; border-radius: 6px; backdrop-filter: blur(2px); }
+
+  /* --- striped placeholder --- */
+  .ph { position: relative; height: 200px; border-radius: var(--radius-panel); overflow: hidden;
+    border: 1px solid var(--border);
+    background-color: var(--surface);
+    background-image: repeating-linear-gradient(135deg,
+      transparent 0, transparent 11px,
+      color-mix(in oklab, var(--border) 60%, transparent) 11px,
+      color-mix(in oklab, var(--border) 60%, transparent) 12px);
+    display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; }
+  .ph__inner { display: flex; flex-direction: column; gap: 7px; }
+  .ph__motiv { font-family: var(--font-mono); font-size: 12px; font-weight: 700; letter-spacing: 0.04em;
+    color: var(--text-2); }
+  .ph__meta { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.03em; color: var(--text-faint); }
+  .ph__flate { position: absolute; left: 12px; top: 11px; font-family: var(--font-mono); font-size: 9.5px;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted);
+    background: var(--surface-2); padding: 3px 8px; border-radius: 6px; border: 1px solid var(--border); }
+
+  .rules { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .rule { border: 1px solid var(--border); border-radius: var(--radius-card); padding: 16px 18px; background: var(--surface); }
+  .rule h4 { font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--signal); margin: 0 0 8px; }
+  .rule p { font-size: 13px; line-height: 1.5; color: var(--text-2); margin: 0; }
+  .foot { margin-top: 30px; padding-top: 16px; border-top: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 10.5px; color: var(--text-faint); letter-spacing: 0.03em; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <p class="eb">Fase 3 · Bildeprogram</p>
+    <h1>Bildekart</h1>
+    <p class="lede">Foto er atmosfære, aldri dekor. Det lever bak en mørk gradient eller i mørke kort på dark,
+      med forest-scrim på lys — og konkurrerer aldri med data. Kald, avmettet natur og atleter i
+      bevegelsesuskarphet; tåkete grønne topper, morgenlys på greener.</p>
+  </div>
+
+  <!-- ============ THE MAP ============ -->
+  <table class="map">
+    <thead>
+      <tr><th style="width:230px">Flate</th><th style="width:120px">Foto</th><th>Behandling</th><th style="width:300px">Motiv</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="flate">Marketing — hero</td>
+        <td><span class="pill pill--ja"><span class="dot"></span>Ja</span></td>
+        <td>Fullbleed bak forest-gradient 94→32 %, venstrestilt tekst</td>
+        <td class="motiv">tåkete åskam, morgenlys</td>
+      </tr>
+      <tr>
+        <td class="flate">Marketing — closing-CTA</td>
+        <td><span class="pill pill--ja"><span class="dot"></span>Ja</span></td>
+        <td>Mørkt bånd, foto bak mørk gradient, lime CTA-pill</td>
+        <td class="motiv">green i motlys, lav horisont</td>
+      </tr>
+      <tr>
+        <td class="flate">Auth — bakgrunn</td>
+        <td><span class="pill pill--ja"><span class="dot"></span>Ja</span></td>
+        <td>Helflate bak mørk scrim 55→94 %, kort sentrert oppå</td>
+        <td class="motiv">tåkete topp, blågrønn, dyp</td>
+      </tr>
+      <tr>
+        <td class="flate">Auth — onboarding-steg</td>
+        <td><span class="pill pill--ja"><span class="dot"></span>Ja</span></td>
+        <td>Smalt topp-bånd (140 px) bak steg-tittel, resten ren</td>
+        <td class="motiv">range ved daggry, dis</td>
+      </tr>
+      <tr>
+        <td class="flate">Forelder — topp</td>
+        <td><span class="pill pill--ja"><span class="dot"></span>Ja</span></td>
+        <td>Rolig topp-bånd, forest-scrim, barnets navn oppå</td>
+        <td class="motiv">junior i sving, uskarp bakgrunn</td>
+      </tr>
+      <tr>
+        <td class="flate">FeaturedCard</td>
+        <td><span class="pill pill--ja"><span class="dot"></span>Ja</span></td>
+        <td>Foto under forest-scrim (komponentens innebygde behandling)</td>
+        <td class="motiv">motiv etter kontekst</td>
+      </tr>
+      <tr>
+        <td class="flate">PlayerHQ — hjem-hero</td>
+        <td><span class="pill pill--ja"><span class="dot"></span>Ja</span></td>
+        <td>KUN som mørkt kort (class="dark") på lys flate — aldri lys-på-lys</td>
+        <td class="motiv">bane i morgenlys, dempet</td>
+      </tr>
+      <tr>
+        <td class="flate">Datatabeller</td>
+        <td><span class="pill pill--nei"><span class="dot"></span>Aldri</span></td>
+        <td>Klarspråk og tall — hårlinjer skiller, ikke bilder</td>
+        <td class="motiv">—</td>
+      </tr>
+      <tr>
+        <td class="flate">Cockpit</td>
+        <td><span class="pill pill--nei"><span class="dot"></span>Aldri</span></td>
+        <td>Tett dashbord; helten er største tall, ikke foto</td>
+        <td class="motiv">—</td>
+      </tr>
+      <tr>
+        <td class="flate">Workbench</td>
+        <td><span class="pill pill--nei"><span class="dot"></span>Aldri</span></td>
+        <td>Planleggingsverktøy — akse-farge og grid bærer</td>
+        <td class="motiv">—</td>
+      </tr>
+      <tr>
+        <td class="flate">Kalendere</td>
+        <td><span class="pill pill--nei"><span class="dot"></span>Aldri</span></td>
+        <td>Rutenett og økt-piller; foto ville støye</td>
+        <td class="motiv">—</td>
+      </tr>
+      <tr>
+        <td class="flate">Empty states</td>
+        <td><span class="pill pill--nei"><span class="dot"></span>Aldri</span></td>
+        <td>Ikon + klarspråk + handling — rolig, ikke dekorert</td>
+        <td class="motiv">—</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ============ REAL PHOTOS ============ -->
+  <p class="sec-lbl">Ekte foto i systemet — riktig behandling</p>
+  <div class="grid2">
+    <div class="frame scrim-forest">
+      <img src="../assets/imagery/peak-misty.png" alt="Tåkete grønn topp" />
+      <span class="tag">forest-scrim · lys kontekst</span>
+      <div class="cap">
+        <div class="c-eb c-eb--light">Treningsfilosofi</div>
+        <div class="c-h">Veien til toppen</div>
+      </div>
+    </div>
+    <div class="frame scrim-dark">
+      <img src="../assets/imagery/strength-training.png" alt="Styrketrening, mørkt gym" />
+      <span class="tag">mørk gradient · dark kort</span>
+      <div class="cap">
+        <div class="c-eb">FYS · fundament</div>
+        <div class="c-h">Bygget nedenfra</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ PLACEHOLDERS FOR MISSING MOTIFS ============ -->
+  <p class="sec-lbl">Der ekte foto mangler — stripete plassholder + mono-motiv</p>
+  <div class="grid3">
+    <div class="ph">
+      <span class="ph__flate">Marketing hero</span>
+      <div class="ph__inner">
+        <div class="ph__motiv">tåkete åskam, morgenlys</div>
+        <div class="ph__meta">forest-scrim 94→32 % · 1600×900</div>
+      </div>
+    </div>
+    <div class="ph">
+      <span class="ph__flate">Auth bakgrunn</span>
+      <div class="ph__inner">
+        <div class="ph__motiv">tåkete topp, blågrønn dybde</div>
+        <div class="ph__meta">mørk scrim 55→94 % · helflate</div>
+      </div>
+    </div>
+    <div class="ph">
+      <span class="ph__flate">PlayerHQ hjem-hero</span>
+      <div class="ph__inner">
+        <div class="ph__motiv">bane i morgenlys, dempet</div>
+        <div class="ph__meta">mørkt kort på lys · 40 % scrim</div>
+      </div>
+    </div>
+    <div class="ph">
+      <span class="ph__flate">Onboarding-steg</span>
+      <div class="ph__inner">
+        <div class="ph__motiv">range ved daggry, dis</div>
+        <div class="ph__meta">topp-bånd 140 px · dempet</div>
+      </div>
+    </div>
+    <div class="ph">
+      <span class="ph__flate">Forelder topp</span>
+      <div class="ph__inner">
+        <div class="ph__motiv">junior i sving, bevegelsesuskarphet</div>
+        <div class="ph__meta">forest-scrim · rolig bånd</div>
+      </div>
+    </div>
+    <div class="ph">
+      <span class="ph__flate">Closing-CTA</span>
+      <div class="ph__inner">
+        <div class="ph__motiv">green i motlys, lav horisont</div>
+        <div class="ph__meta">mørk gradient · lime CTA oppå</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ RULES ============ -->
+  <p class="sec-lbl">Tre faste regler</p>
+  <div class="rules">
+    <div class="rule">
+      <h4>Foto lever i mørket</h4>
+      <p>På dark: bak en mørk gradient eller i et mørkt kort. På lys: kun med forest-scrim. Aldri et nakent, lyst foto på en lys flate.</p>
+    </div>
+    <div class="rule">
+      <h4>Aldri i konkurranse med data</h4>
+      <p>Tall, tabeller, grafer og kalendere er helten. Foto hører hjemme på fortellende flater — marketing, auth, forelder, hjem-hero — aldri i cockpit eller workbench.</p>
+    </div>
+    <div class="rule">
+      <h4>Atmosfære, ikke dekor</h4>
+      <p>Kald, avmettet natur og atleter i bevegelsesuskarphet. Der foto mangler: stripete plassholder med mono-motiv — aldri hånddtegnede illustrasjons-SVG-er.</p>
+    </div>
+  </div>
+
+  <div class="foot">AK Golf HQ · bildekart v1 · alle behandlinger token-drevet (forest-scrim, mørk gradient, signal-lime kun på CTA)</div>
+</div>
+</body>
+</html>

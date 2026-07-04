@@ -1,0 +1,26 @@
+<!-- @dsCard group="Type" viewport="700x220" name="Body & UI — Inter" subtitle="Inter 400/500/600 · body 14px / line-height 1.55" -->
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; background: var(--bg); padding: 28px; font-family: var(--font-ui); }
+  .stack { display: flex; flex-direction: column; gap: 16px; max-width: 560px; }
+  p { margin: 0; }
+  .lead { font-size: 16px; font-weight: 500; color: var(--text); line-height: 1.5; }
+  .body { font-size: 14px; font-weight: 400; color: var(--text-2); line-height: 1.55; }
+  .body em { color: var(--text); font-style: italic; }
+  .small { font-size: 12px; font-weight: 500; color: var(--text-muted); }
+  .meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); }
+</style>
+</head>
+<body>
+<div class="stack">
+  <p class="lead">Ingress / lead — Inter 500, 16px. Rolig og presis. <span class="meta">· 500 / 16</span></p>
+  <p class="body">Brødtekst i Inter 400, 14px, line-height 1.55. Vi skriver på norsk bokmål, og lar tallene snakke. Golf-faguttrykk som <em>Strokes Gained</em> beholdes på engelsk. <span class="meta">· 400 / 14</span></p>
+  <p class="small">Liten hjelpetekst — Inter 500, 12px, dempet. <span class="meta">· 500 / 12</span></p>
+</div>
+</body>
+</html>

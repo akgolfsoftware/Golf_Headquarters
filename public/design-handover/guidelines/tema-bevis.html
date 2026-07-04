@@ -1,0 +1,199 @@
+<!-- @dsCard group="Tema" viewport="1400x2200" name="Tema-bevis — Lys ⇄ Mørk kontrakt" subtitle="Kjernebiblioteket rendret i begge temaer side ved side — inkl. anbefalingstilstandene innenfor/avviker/sterkt avvik og de to hero-tallene. Diff-kontrakten Code speiler mot. Null rå farger; alt via tokens." -->
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  html, body { margin: 0; }
+  body { background: #1a1d1b; padding: 22px; font-family: var(--font-ui); }
+  .sheet { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; max-width: 1360px; margin: 0 auto; align-items: start; }
+  .head { max-width: 1360px; margin: 0 auto 18px; display: flex; align-items: baseline; gap: 14px; color: #E7EAE8; }
+  .head h1 { font-family: var(--font-display); font-size: 22px; font-weight: 700; letter-spacing: -0.02em; margin: 0; }
+  .head p { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #838B86; margin: 0; }
+  /* each column carries a theme scope; bg/text come from tokens */
+  .col { border-radius: 18px; overflow: hidden; border: 1px solid var(--border); background: var(--bg); color: var(--text); }
+  .col__bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 13px 18px; border-bottom: 1px solid var(--border); background: var(--surface); }
+  .col__name { font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text); }
+  .col__flate { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); }
+  .col__body { padding: 20px; display: flex; flex-direction: column; gap: 24px; }
+  .sec__lbl { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin: 0 0 12px; }
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+  .stack { display: flex; flex-direction: column; gap: 12px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .heroes { display: flex; gap: 14px; flex-wrap: wrap; }
+  .hero { flex: 1; min-width: 130px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-card); padding: 14px 16px; box-shadow: var(--sheen-top); }
+  .hero__lbl { font-family: var(--font-mono); font-size: 9px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
+  .hero__val { font-family: var(--font-mono); font-weight: 700; font-size: 40px; line-height: 1; color: var(--text); font-variant-numeric: tabular-nums; margin-top: 6px; }
+  .hero__val--signal { color: var(--signal); }
+  .hero__sub { font-family: var(--font-ui); font-size: 12px; color: var(--text-2); margin-top: 5px; }
+  .swz { display: flex; gap: 8px; flex-wrap: wrap; }
+  .sw { width: 46px; height: 46px; border-radius: 10px; border: 1px solid var(--border); }
+</style>
+</head>
+<body>
+<div class="head">
+  <h1>Tema-bevis</h1>
+  <p>Lys ⇄ Mørk · diff-kontrakt</p>
+</div>
+<div class="sheet">
+  <div class="col light"><div id="lys"></div></div>
+  <div class="col dark"><div id="mork"></div></div>
+</div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_ds_bundle.js"></script>
+
+<script type="text/babel">
+const DS = window.AKGolfHQDesignSystem_a3d5af;
+const { Button, Tag, CountBadge, Card, Eyebrow, Icon, ValidationChip, ValidationGroup,
+  AKFormelChip, Laeringstrapp, Toggle, Progress } = DS;
+const ThemeToggle = DS.ThemeToggle; // finnes etter bundle-regen
+
+function Sec({ label, children }) {
+  return (
+    <div>
+      <p className="sec__lbl">{label}</p>
+      {children}
+    </div>
+  );
+}
+
+const AXES = ["fys", "tek", "slag", "spill", "turn"];
+
+function Body() {
+  const [csAktiv, setCsAktiv] = React.useState("cs70");
+  return (
+    <React.Fragment>
+      {/* To-talls-regelen: to separate hero-tall, aldri slått sammen */}
+      <Sec label="Hero-tall — Plan-kvalitet (0–100) + Gjennomføring (%)">
+        <div className="heroes">
+          <div className="hero">
+            <div className="hero__lbl">Plan-kvalitet</div>
+            <div className="hero__val hero__val--signal">82</div>
+            <div className="hero__sub">av 100 · 1 mykt avvik</div>
+          </div>
+          <div className="hero">
+            <div className="hero__lbl">Gjennomføring</div>
+            <div className="hero__val">94<span style={{ fontSize: 20, color: "var(--text-muted)" }}>%</span></div>
+            <div className="hero__sub">15 av 16 økter</div>
+          </div>
+        </div>
+      </Sec>
+
+      <Sec label="Knapper — primær · signal · sekundær · ghost · destruktiv · disabled">
+        <div className="row">
+          <Button variant="primary">Primær</Button>
+          <Button variant="signal" iconLeft="zap">Signal</Button>
+          <Button variant="secondary">Sekundær</Button>
+          <Button variant="ghost" iconLeft="chevron-left">Tilbake</Button>
+          <Button variant="destructive">Slett</Button>
+          <Button variant="primary" disabled>Av</Button>
+        </div>
+      </Sec>
+
+      <Sec label="Tags · badges">
+        <div className="row">
+          <Tag variant="live">Live</Tag>
+          <Tag variant="signal">Aktiv</Tag>
+          <Tag variant="up" dot>+2,8 SG</Tag>
+          <Tag variant="down" dot>−0,6 SG</Tag>
+          <Tag variant="neutral">Kategori A</Tag>
+          <Tag variant="outline">Drop-in</Tag>
+          <CountBadge count={3} tone="signal" />
+          <CountBadge count={12} />
+        </div>
+      </Sec>
+
+      <Sec label="Pyramide-akser — kategorisk farge (markør + soft) per tema">
+        <div className="swz">
+          {AXES.map((a) => (
+            <div key={a} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+              <div className="sw" style={{ background: `var(--axis-${a})` }} />
+              <span style={{ fontFamily: "var(--font-mono)", fontSize: 9, fontWeight: 700, letterSpacing: "0.06em", color: `var(--axis-${a}-text)` }}>{a.toUpperCase()}</span>
+            </div>
+          ))}
+        </div>
+      </Sec>
+
+      <Sec label="CANON — Innenfor anbefaling · Avviker fra anbefaling · Sterkt avvik">
+        <div className="stack">
+          <ValidationGroup label="CS-nivå · innenfor anbefaling" state="ren">
+            <ValidationChip label="CS60" />
+            <ValidationChip label="CS70" active color="var(--signal)" />
+            <ValidationChip label="CS80" />
+          </ValidationGroup>
+          <ValidationGroup label="Volum · avviker fra anbefaling" state="myk"
+            message="Ukevolum 8 % over anbefalt — vurder å flytte en økt.">
+            <ValidationChip label="420 min" active color="var(--warning)" />
+          </ValidationGroup>
+          <ValidationGroup label="Turneringsuke · sterkt avvik" state="hard"
+            message="CS20 på ballkontakt-drill er langt under anbefalt CS50 — coach varsles automatisk.">
+            <ValidationChip label="CS20" active color="var(--error-solid)" />
+          </ValidationGroup>
+        </div>
+      </Sec>
+
+      <Sec label="AK-formel-chip — arvet (dempet) vs satt manuelt (solid)">
+        <div className="row">
+          <AKFormelChip kode="L3" navn="Kølle" />
+          <AKFormelChip kode="M2" navn="Kravtrening" tilstand="overstyrt" />
+          <AKFormelChip kode="CS70" navn="70 % fart" />
+        </div>
+      </Sec>
+
+      <Sec label="Læringstrapp — signaturmotiv (Trinn 3 av 5)">
+        <Laeringstrapp aktivtTrinn={3} visStatus />
+      </Sec>
+
+      <Sec label="Kort · toggle · progress">
+        <div className="grid2">
+          <Card compact eyebrow="Stall" title="Øyvind Rohjan"
+            action={<Tag variant="up" size="sm" dot>+2,8</Tag>}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, color: "var(--text-2)", fontSize: "var(--text-13)" }}>
+              <Icon name="trophy" size={16} style={{ color: "var(--text-muted)" }} />
+              HCP +2,4 · Kategori A
+            </div>
+          </Card>
+          <div className="stack" style={{ justifyContent: "center" }}>
+            <div className="row"><Toggle checked onChange={() => {}} /><span style={{ fontSize: 13, color: "var(--text-2)" }}>På</span></div>
+            <div className="row"><Toggle checked={false} onChange={() => {}} /><span style={{ fontSize: 13, color: "var(--text-2)" }}>Av</span></div>
+            <Progress value={68} />
+          </div>
+        </div>
+      </Sec>
+
+      {typeof ThemeToggle === "function" && (
+        <Sec label="ThemeToggle — nøytral, aldri lime på lys">
+          <div className="row">
+            <ThemeToggle apply={false} defaultValue="light" />
+            <ThemeToggle apply={false} size="sm" visEtiketter={false} defaultValue="system" />
+          </div>
+        </Sec>
+      )}
+    </React.Fragment>
+  );
+}
+
+function Col({ flate }) {
+  return (
+    <React.Fragment>
+      <div className="col__bar">
+        <span className="col__name">{flate.tema}</span>
+        <span className="col__flate">{flate.navn}</span>
+      </div>
+      <div className="col__body"><Body /></div>
+    </React.Fragment>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("lys")).render(<Col flate={{ tema: "Lys", navn: "PlayerHQ default · AgencyOS lys" }} />);
+ReactDOM.createRoot(document.getElementById("mork")).render(<Col flate={{ tema: "Mørk", navn: "AgencyOS default · PlayerHQ mørk" }} />);
+</script>
+</body>
+</html>

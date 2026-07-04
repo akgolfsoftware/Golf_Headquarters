@@ -1,0 +1,26 @@
+<!-- @dsCard group="Colors" viewport="700x180" name="Data-delta" subtitle="Positiv = lime · negativ = coral. Gjelder dataendring — tilstand har egne semantiske farger." -->
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; background: var(--bg); padding: 24px; font-family: var(--font-ui); }
+  .row { display: flex; gap: 14px; flex-wrap: wrap; align-items: stretch; }
+  .sw { display: flex; flex-direction: column; gap: 9px; width: 150px; }
+  .chip { height: 70px; border-radius: 12px; border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-weight: 600; font-size: 20px; }
+  .tok { font-family: var(--font-mono); font-size: 12px; color: var(--text); font-weight: 600; }
+  .hex { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); }
+</style>
+</head>
+<body>
+<div class="row">
+  <div class="sw"><div class="chip" style="background: color-mix(in srgb, var(--up) 14%, transparent); color: var(--up);">↗ +2,8</div><span class="tok">--up</span><span class="hex">#D1F843 · positiv</span></div>
+  <div class="sw"><div class="chip" style="background: color-mix(in srgb, var(--down) 15%, transparent); color: var(--down);">↘ −0,6</div><span class="tok">--down</span><span class="hex">#FF6B5A · negativ</span></div>
+  <div class="sw"><div class="chip" style="background: var(--destructive); color: #fff;">Slett</div><span class="tok">--destructive</span><span class="hex">#E5484D · handling</span></div>
+</div>
+</body>
+</html>

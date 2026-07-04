@@ -1,0 +1,314 @@
+/* ============================================================
+   AK Golf HQ — Color tokens
+   ------------------------------------------------------------
+   A DISCIPLINED FOUR-LAYER SYSTEM. No colour is decorative; each
+   has one defined job. (Revises the old «lime er eneste aksent».)
+
+     LAG 1 · IDENTITET   — forest eier merkevare + primær-CTA;
+                            lime er energi-aksenten (ÉN ting/skjerm).
+     LAG 2 · NØYTRAL      — to fulle ramper (kjølig mot mørk base,
+                            varm mot cream). 80 % av flaten.
+     LAG 3 · SEMANTISK    — suksess / advarsel / feil / info. Eier
+                            tilstand entydig (betaling, godkjenning,
+                            varsel, live) — konkurrerer aldri med lime.
+     LAG 4 · KATEGORISK   — pyramide-aksene (FYS/TEK/SLAG/SPILL/TURN).
+                            Egen fast farge = aksetilhørighet, brukt
+                            som markør overalt. Se tokens/data-viz.css.
+
+   Struktur: RAW skala (tema-uavhengig) → SEMANTISKE aliaser (det
+   produktkoden bruker). :root bærer DARK-mappingen (default);
+   `.light` / [data-theme=light] re-mapper de samme navnene.
+
+   Alle tekst/bakgrunn-par er kontrastsjekket mot WCAG AA (≥4,5:1
+   normal tekst, ≥3:1 grafiske markører) i begge temaer.
+   ============================================================ */
+
+:root {
+  /* ========================================================
+     LAG 1 — IDENTITET
+     ======================================================== */
+
+  /* Lime — energi-aksenten. Signal, aldri stor flate/bakgrunn. */
+  --lime-500: #D1F843;   /* signalet */
+  --lime-600: #BCE234;   /* press / hover */
+  --lime-300: #E4FB8E;   /* myk tint, kun fin detalj */
+
+  /* Forest — merkevare-grønn + primær-CTA (identitet). */
+  --forest-900: #04241A;  /* dypeste — scrim/band */
+  --forest-800: #073A2A;  /* press */
+  --forest-700: #005840;  /* merkevare / CTA (lys base) */
+  --forest-600: #0A6B4C;  /* CTA-løft for mørk base + hover */
+  --forest-500: #0A8A63;  /* lysere aksent */
+
+  /* ========================================================
+     LAG 2 — NØYTRAL-RAMPER (≥10 trinn per base)
+     Konvensjon: 0 = base-flaten, 900 = primær blekk (ink).
+     ======================================================== */
+
+  /* Varm near-black (repo-kanon 3. jul 2026: «IKKE grønn»). Nøytral gråtone,
+     svakt varm (R≥G≥B), near-black→lys. Anker fra repo-guiden: bg/kort/hevet/
+     dempet/tekst. Erstatter tidligere gran-spine (hue ~160). */
+  --graphite-0:   #0A0B0A;  /* app-bakgrunn (near-black) */
+  --graphite-50:  #171817;  /* kort-flate */
+  --graphite-100: #1E1F1D;  /* hevet: popover, modal, sheet */
+  --graphite-150: #242521;  /* inset / subtil divider */
+  --graphite-200: #2A2B27;  /* hover-flate */
+  --graphite-250: #32332E;  /* kant ved hvile */
+  --graphite-300: #3C3D38;  /* sterk divider / track */
+  --graphite-400: #515249;  /* deaktivert kant */
+  --graphite-500: #6B6C64;  /* deaktivert tekst / ikon */
+  --graphite-600: #A6A8A3;  /* dempet tekst (repo muted, AA ✓) */
+  --graphite-700: #BFC1BC;  /* sekundær tekst */
+  --graphite-800: #D9DAD6;  /* høy-kontrast sekundær */
+  --graphite-900: #F0F0F0;  /* primær tekst */
+
+  /* Nøytral «sand» — kald kritt (Retning A): nøytral/svakt kjølig, blekk mot gran. */
+  --sand-0:   #FFFFFF;  /* kort-flate */
+  --sand-50:  #F7F7F4;  /* app-bakgrunn (kritt) */
+  --sand-100: #F1F1EF;  /* hevet / inset */
+  --sand-150: #EBEBE9;  /* subtil divider */
+  --sand-200: #E7E8E5;  /* hover-flate */
+  --sand-250: #DCDDDA;  /* kant ved hvile */
+  --sand-300: #CFD0CD;  /* sterk divider / track */
+  --sand-400: #B0B2AE;  /* deaktivert kant */
+  --sand-500: #8E908C;  /* deaktivert tekst / ikon */
+  --sand-600: #6E706C;  /* dempet tekst (AA ✓) */
+  --sand-700: #565854;  /* sekundær tekst */
+  --sand-800: #333630;  /* høy-kontrast sekundær */
+  --sand-900: #101613;  /* primær tekst (blekk, gran-familie) */
+
+  /* Bakover-kompatible aliaser (eldre token-navn) */
+  --off-white: var(--graphite-900);
+  --grey-400:  var(--graphite-700);
+  --grey-600:  #62676E;   /* dimmet — KUN dekor/deaktivert, ikke tekst */
+  --cream-0:   var(--sand-50);
+  --cream-50:  var(--sand-0);
+  --cream-100: var(--sand-100);
+  --cream-200: var(--sand-200);
+  --ink-900:   var(--sand-900);
+  --ink-500:   var(--sand-700);
+  --ink-300:   var(--sand-600);
+
+  /* ========================================================
+     LAG 3 — SEMANTISKE RÅFARGER
+     (text/solid pr. tema mappes i :root=DARK og .light under)
+     ======================================================== */
+
+  /* Data-delta (behold): positiv = lime, negativ = coral. */
+  --up:          var(--lime-500);
+  --down:        #FF6B5A;
+  --destructive: var(--destructive-solid, #E5484D);
+
+  /* ========================================================
+     SEMANTISKE ALIASER — DARK (default / primær)
+     ======================================================== */
+  --bg:            var(--graphite-0);
+  --surface:       var(--graphite-50);
+  --surface-2:     var(--graphite-100);
+  --surface-hover: var(--graphite-200);
+
+  --border:        rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
+  --track:         rgba(255, 255, 255, 0.10);
+
+  --text:        var(--graphite-900);
+  --text-2:      var(--graphite-700);
+  --text-muted:  var(--graphite-600);   /* AA ✓ — eyebrow/mikro-label */
+  --text-faint:  var(--graphite-500);   /* deaktivert / dekor (ikke brødtekst) */
+
+  /* Lime energi-aksent */
+  --signal:       var(--lime-500);
+  --signal-press: var(--lime-600);
+  --on-signal:    var(--graphite-0);
+
+  /* Forest identitet / primær-CTA */
+  --brand:        var(--forest-600);    /* løftet så pillen leser på near-black */
+  --brand-hover:  #0D7D59;
+  --brand-press:  #064D37;
+  --on-brand:     #FFFFFF;
+
+  /* Nøytral «hvit pille» — bærer handlingen PÅ forest-flater */
+  --primary-fill: var(--graphite-900);
+  --primary-text: var(--graphite-0);
+  --primary-press:#E2E4E6;
+
+  /* Semantisk — suksess (betalt / godkjent / på plan) */
+  --success:        #84D2A5;   /* tekst/ikon på flate */
+  --success-solid:  #169F65;   /* fylt badge/toast */
+  --on-success:     var(--graphite-0);
+  --success-bg:     oklch(0.62 0.14 158 / 0.15);
+  --success-border: oklch(0.62 0.14 158 / 0.42);
+
+  /* Semantisk — advarsel (venter / forfaller snart / taper) */
+  --warning:        #DDB870;
+  --warning-solid:  #AF7C00;
+  --on-warning:     var(--graphite-0);
+  --warning-bg:     oklch(0.62 0.14 83 / 0.15);
+  --warning-border: oklch(0.62 0.14 83 / 0.42);
+
+  /* Semantisk — feil (avvist / forfalt / destruktiv) */
+  --error:          #F8A59B;
+  --error-solid:    #CD6057;
+  --on-error:       var(--graphite-0);
+  --error-bg:       oklch(0.62 0.14 27 / 0.15);
+  --error-border:   oklch(0.62 0.14 27 / 0.42);
+  --destructive-solid: #E5484D;
+
+  /* Semantisk — info (varsel / nøytral status / live-info) */
+  --info:           #66CFE1;
+  --info-solid:     #009BB4;
+  --on-info:        var(--graphite-0);
+  --info-bg:        oklch(0.62 0.14 210 / 0.15);
+  --info-border:    oklch(0.62 0.14 210 / 0.42);
+
+  /* Tekst på destruktiv fylt flate + tekst over foto-scrim (alltid hvit) */
+  --on-destructive: #FFFFFF;
+  /* Toggle-knott — alltid hvit på farget track */
+  --knob:           #FFFFFF;
+
+  --overlay:     rgba(6, 7, 8, 0.62);
+  --focus-ring:  rgba(209, 248, 67, 0.30);
+
+  /* Premium precision — 1px top-highlight on cards ("sheen"), never a
+     fill/gradient. Depth comes from this + the neutral-ramp hierarchy,
+     not shadow. Kept out of buttons/chips per system rule. */
+  --sheen-top:    inset 0 1px 0 rgba(255, 255, 255, 0.05);  /* @kind shadow */
+  --sheen-top-lg: inset 0 1px 0 rgba(255, 255, 255, 0.07);  /* @kind shadow */
+}
+
+/* ============================================================
+   MØRK INNFELLING — .dark / [data-theme="dark"]
+   Re-asserterer mørke aliaser INNI et lys-scope. Kanon-bruk:
+   data-hero på lys flate = mørk gran-innfelling (lime tillatt her).
+   Speiler :root-aliasene — hold i sync.
+   ============================================================ */
+.dark,
+[data-theme="dark"] {
+  --bg:            var(--graphite-0);
+  --surface:       var(--graphite-50);
+  --surface-2:     var(--graphite-100);
+  --surface-hover: var(--graphite-200);
+  --border:        rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
+  --track:         rgba(255, 255, 255, 0.10);
+  --text:        var(--graphite-900);
+  --text-2:      var(--graphite-700);
+  --text-muted:  var(--graphite-600);
+  --text-faint:  var(--graphite-500);
+  --signal:       var(--lime-500);
+  --signal-press: var(--lime-600);
+  --on-signal:    var(--graphite-0);
+  --glow-signal:  0 0 0 1px rgba(209, 248, 67, 0.40);
+  --brand:        var(--forest-600);
+  --brand-hover:  #0D7D59;
+  --brand-press:  #064D37;
+  --on-brand:     #FFFFFF;
+  --primary-fill: var(--graphite-900);
+  --primary-text: var(--graphite-0);
+  --primary-press:#E2E4E6;
+  --success:        #84D2A5;
+  --success-solid:  #169F65;
+  --on-success:     var(--graphite-0);
+  --success-bg:     oklch(0.62 0.14 158 / 0.15);
+  --success-border: oklch(0.62 0.14 158 / 0.42);
+  --warning:        #DDB870;
+  --warning-solid:  #AF7C00;
+  --on-warning:     var(--graphite-0);
+  --warning-bg:     oklch(0.62 0.14 83 / 0.15);
+  --warning-border: oklch(0.62 0.14 83 / 0.42);
+  --error:          #F8A59B;
+  --error-solid:    #CD6057;
+  --on-error:       var(--graphite-0);
+  --error-bg:       oklch(0.62 0.14 27 / 0.15);
+  --error-border:   oklch(0.62 0.14 27 / 0.42);
+  --info:           #66CFE1;
+  --info-solid:     #009BB4;
+  --on-info:        var(--graphite-0);
+  --info-bg:        oklch(0.62 0.14 210 / 0.15);
+  --info-border:    oklch(0.62 0.14 210 / 0.42);
+  --on-destructive: #FFFFFF;
+  --knob:           #FFFFFF;
+  --overlay:     rgba(6, 7, 8, 0.62);
+  --focus-ring:  rgba(209, 248, 67, 0.30);
+  --sheen-top:    inset 0 1px 0 rgba(255, 255, 255, 0.05);  /* @kind shadow */
+  --sheen-top-lg: inset 0 1px 0 rgba(255, 255, 255, 0.07);  /* @kind shadow */
+}
+
+/* ============================================================
+   SEMANTISKE ALIASER — LIGHT (marketing / onboarding / forelder)
+   Aktiveres med .light eller [data-theme="light"] på en wrapper.
+   ============================================================ */
+.light,
+[data-theme="light"] {
+  --bg:            var(--sand-50);
+  --surface:       var(--sand-0);
+  --surface-2:     var(--sand-100);
+  --surface-hover: var(--sand-200);
+
+  --border:        rgba(0, 0, 0, 0.08);
+  --border-strong: rgba(0, 0, 0, 0.14);
+  --track:         rgba(0, 0, 0, 0.08);
+
+  --text:        var(--sand-900);
+  --text-2:      var(--sand-700);
+  --text-muted:  var(--sand-600);    /* AA ✓ */
+  --text-faint:  var(--sand-500);
+
+  /* Data-delta på lys flate — aldri lime på lys (token-lås); mørke, AA-sikre toner */
+  --up:          #00753A;
+  --down:        #C0392F;
+
+  /* Signal på lys flate = forest (kanon: aldri lime på lys).
+     Lime finnes ikke i lys-scope — alt som bruker --signal arver forest. */
+  --signal:      var(--forest-700);
+  --signal-press:var(--forest-800);
+  --on-signal:   #FFFFFF;
+  --glow-signal: 0 0 0 1px rgba(0, 88, 64, 0.35);
+  --focus-ring:  rgba(0, 88, 64, 0.28);
+
+  /* Forest identitet / primær-CTA (arve-grønn på lys flate) */
+  --brand:       var(--forest-700);
+  --brand-hover: #006B4D;
+  --brand-press: var(--forest-800);
+  --on-brand:    #FFFFFF;
+
+  /* Nøytral primær = mørk pille / hvit tekst */
+  --primary-fill: var(--sand-900);
+  --primary-text: var(--sand-0);
+  --primary-press:#2A2C30;
+
+  /* Semantisk — lys base: mørkere tekst, mettet solid m/ hvit tekst */
+  --success:        #007845;
+  --success-solid:  #00753A;
+  --on-success:     #FFFFFF;
+  --success-bg:     oklch(0.58 0.15 158 / 0.12);
+  --success-border: oklch(0.50 0.13 158 / 0.45);
+
+  --warning:        #865A00;
+  --warning-solid:  #855100;
+  --on-warning:     #FFFFFF;
+  --warning-bg:     oklch(0.58 0.15 83 / 0.12);
+  --warning-border: oklch(0.50 0.13 83 / 0.45);
+
+  --error:          #A04038;
+  --error-solid:    #A1302B;
+  --on-error:       #FFFFFF;
+  --error-bg:       oklch(0.58 0.15 27 / 0.12);
+  --error-border:   oklch(0.50 0.13 27 / 0.45);
+  --destructive-solid: #C0392F;
+
+  --info:           #00758C;
+  --info-solid:     #00718C;
+  --on-info:        #FFFFFF;
+  --info-bg:        oklch(0.58 0.15 210 / 0.12);
+  --info-border:    oklch(0.50 0.13 210 / 0.45);
+
+  --on-destructive: #FFFFFF;
+  --knob:           #FFFFFF;
+
+  --overlay:     rgba(19, 20, 22, 0.45);
+  --focus-ring:  rgba(0, 88, 64, 0.28);
+
+  --sheen-top:    inset 0 1px 0 rgba(255, 255, 255, 0.8);  /* @kind shadow */
+  --sheen-top-lg: inset 0 1px 0 rgba(255, 255, 255, 0.9);  /* @kind shadow */
+}

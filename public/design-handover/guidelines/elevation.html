@@ -1,0 +1,26 @@
+<!-- @dsCard group="Spacing" viewport="700x200" name="Elevation" subtitle="Dark = no shadow. Only popover/sheet lift; lime glow on focus." -->
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; background: var(--bg); padding: 30px; font-family: var(--font-mono); }
+  .row { display: flex; gap: 26px; flex-wrap: wrap; align-items: flex-end; }
+  .sw { display: flex; flex-direction: column; gap: 11px; align-items: center; }
+  .box { width: 150px; height: 78px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-card); display: flex; align-items: center; justify-content: center;
+    color: var(--text-2); font-size: 12px; }
+  .t { font-size: 11px; color: var(--text-2); }
+  .px { font-size: 10px; color: var(--text-muted); }
+</style>
+</head>
+<body>
+<div class="row">
+  <div class="sw"><div class="box">flat</div><span class="t">--shadow-none</span><span class="px">cards — border only</span></div>
+  <div class="sw"><div class="box" style="background: var(--surface-2); box-shadow: var(--shadow-popover);">popover</div><span class="t">--shadow-popover</span><span class="px">0 12px 32px /.40</span></div>
+  <div class="sw"><div class="box" style="box-shadow: var(--glow-signal); border-color: transparent;">focus</div><span class="t">--glow-signal</span><span class="px">lime ring</span></div>
+</div>
+</body>
+</html>

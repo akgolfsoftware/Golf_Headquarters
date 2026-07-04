@@ -1,0 +1,432 @@
+<!-- @dsCard group="Colors" viewport="1080x4680" name="Fargesystem — palett-spec" subtitle="Fire lag, hver farge med én jobb · lys + mørk · WCAG AA · deuteranopi-testet" -->
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AK Golf HQ — Fargesystem</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font-ui); }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 40px; }
+
+  /* ---- rhythm ---- */
+  .sec { padding: 64px 0; border-top: 1px solid var(--border); }
+  .sec:first-of-type { border-top: 0; }
+  .eyb { font-family: var(--font-mono); font-weight: 600; font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--text-muted); margin: 0 0 14px; }
+  .eyb b { color: var(--signal); font-weight: 600; }
+  h1 { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.025em; line-height: 1.04;
+    font-size: 52px; margin: 0 0 20px; }
+  h2 { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.02em; line-height: 1.08;
+    font-size: 32px; margin: 0 0 10px; }
+  .job { font-size: 16px; line-height: 1.55; color: var(--text-2); max-width: 640px; margin: 0 0 30px; }
+  .job b { color: var(--text); font-weight: 600; }
+  .lead { font-size: 18px; line-height: 1.6; color: var(--text-2); max-width: 680px; margin: 0 0 26px; }
+  .lead b { color: var(--text); font-weight: 600; }
+  .note { font-size: 13px; line-height: 1.5; color: var(--text-muted); max-width: 660px; margin: 18px 0 0; }
+  .mono { font-family: var(--font-mono); }
+
+  /* ---- swatches ---- */
+  .swrow { display: flex; flex-wrap: wrap; gap: 14px; }
+  .sw { display: flex; flex-direction: column; gap: 8px; width: 150px; }
+  .chip { height: 72px; border-radius: 12px; border: 1px solid var(--border); }
+  .tok { font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: var(--text); }
+  .meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+
+  /* ---- ramp ---- */
+  .ramp { display: flex; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+  .ramp > div { flex: 1; height: 88px; display: flex; align-items: flex-end; padding: 7px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600; }
+  .ramplabels { display: flex; margin-top: 8px; }
+  .ramplabels > span { flex: 1; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); text-align: center; }
+
+  /* ---- two-up theme panels ---- */
+  .panels { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .panel { border-radius: var(--radius-card); border: 1px solid var(--border); padding: 22px; background: var(--surface); }
+  .panel-h { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--text-muted); margin: 0 0 16px; }
+
+  /* ---- demo cluster card ---- */
+  .demo { border-radius: var(--radius-card); border: 1px solid var(--border); background: var(--surface);
+    padding: 20px; }
+  .demo + .demo { margin-top: 16px; }
+  .demo-h { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--text-muted); margin: 0 0 14px; }
+
+  .stack { display: flex; flex-direction: column; gap: 10px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  /* buttons (use tokens directly — no component dep) */
+  .btn { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 22px;
+    border-radius: 9999px; font-family: var(--font-ui); font-weight: 600; font-size: 14px;
+    border: 1px solid transparent; cursor: default; }
+  .btn-brand { background: var(--brand); color: var(--on-brand); }
+  .btn-signal { background: var(--signal); color: var(--on-signal); }
+  .btn-neutral { background: var(--primary-fill); color: var(--primary-text); }
+  .btn-secondary { background: transparent; color: var(--text); border-color: var(--border-strong); }
+  .dot { width: 9px; height: 9px; border-radius: 9999px; background: currentColor; }
+
+  /* semantic rows */
+  .semrow { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-top: 1px solid var(--border); }
+  .semrow:first-child { border-top: 0; }
+  .sbadge { display: inline-flex; align-items: center; gap: 7px; height: 28px; padding: 0 12px;
+    border-radius: 9999px; font-size: 12px; font-weight: 600; }
+  .sbadge .dot { width: 7px; height: 7px; }
+  .ssolid { display: inline-flex; align-items: center; height: 28px; padding: 0 12px;
+    border-radius: 8px; font-size: 12px; font-weight: 600; }
+  .stok { margin-left: auto; font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); }
+
+  /* axis markers */
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .achip { display: inline-flex; align-items: center; gap: 7px; height: 30px; padding: 0 13px;
+    border-radius: 9999px; font-size: 13px; font-weight: 600; cursor: default; }
+  .achip .dot { width: 8px; height: 8px; }
+  .arow { display: flex; align-items: center; gap: 12px; padding: 11px 13px; border-radius: 12px;
+    background: var(--surface-2); border-left: 3px solid; }
+  .arow .nm { font-size: 13px; font-weight: 600; color: var(--text); }
+  .arow .sub { font-size: 12px; color: var(--text-muted); }
+  .arow .dur { margin-left: auto; font-family: var(--font-mono); font-size: 12px; color: var(--text-2); }
+  .atag { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 6px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.06em; }
+  .pblock { height: 30px; border-radius: 7px; display: flex; align-items: center; padding: 0 9px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.04em; }
+  .pyr { display: flex; align-items: center; gap: 10px; }
+  .pyl { width: 46px; flex: none; font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.06em; }
+  .pytrack { flex: 1; height: 10px; border-radius: 9999px; background: var(--track); overflow: hidden; }
+  .pytrack > div { height: 100%; border-radius: 9999px; }
+  .deutrow { display: flex; gap: 8px; }
+  .deutrow > span { flex: 1; height: 60px; border-radius: 10px; display: flex; align-items: flex-end;
+    padding: 7px; font-family: var(--font-mono); font-size: 10px; font-weight: 600; color: rgba(0,0,0,0.7); }
+
+  /* contrast table */
+  .ctable { display: grid; grid-template-columns: 1.4fr 1.2fr auto auto; border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden; font-size: 13px; }
+  .ctable > div { padding: 9px 14px; border-top: 1px solid var(--border); display: flex; align-items: center; }
+  .ctable > .hd { border-top: 0; background: var(--surface-2); font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
+  .ctable .crole { color: var(--text); font-weight: 500; }
+  .ctable .cbg { color: var(--text-2); font-family: var(--font-mono); font-size: 12px; }
+  .ctable .num { font-family: var(--font-mono); justify-content: flex-end; color: var(--text); }
+  .ctable .pass { justify-content: flex-end; font-family: var(--font-mono); font-size: 12px; color: var(--success); font-weight: 600; }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===================== INTRO ===================== -->
+  <section class="sec" style="padding-top:72px;">
+    <p class="eyb">AK GOLF HQ · FARGESYSTEM · <b>v2</b></p>
+    <h1>Fire lag.<br />Hver farge har én jobb.</h1>
+    <p class="lead">Målet er ikke flere dekorative farger — det er et disiplinert system der ingen
+      farge er der for variasjonens skyld. <b>Forest</b> eier identitet og primær-CTA. <b>Lime</b> er
+      energi-aksenten som trekker øyet til én ting per skjerm. <b>Semantiske farger</b> eier tilstand.
+      <b>Pyramide-aksene</b> eier kategorisering. Alt annet er nøytralt — og det nøytrale bærer 80 % av flaten.</p>
+    <div class="swrow" style="gap:10px;">
+      <div class="sw" style="width:auto;"><div class="chip" style="width:200px;background:var(--brand);"></div><span class="tok">Identitet · forest + lime</span><span class="meta">merkevare &amp; CTA + ÉN aksent</span></div>
+      <div class="sw" style="width:auto;"><div class="chip" style="width:200px;background:linear-gradient(90deg,var(--graphite-50),var(--graphite-700));"></div><span class="tok">Nøytral · 80 % av flaten</span><span class="meta">to fulle ramper</span></div>
+      <div class="sw" style="width:auto;"><div class="chip" style="width:200px;background:linear-gradient(90deg,var(--success-solid),var(--warning-solid),var(--error-solid),var(--info-solid));"></div><span class="tok">Semantisk · tilstand</span><span class="meta">suksess/advarsel/feil/info</span></div>
+      <div class="sw" style="width:auto;"><div class="chip" style="width:200px;background:linear-gradient(90deg,var(--axis-fys),var(--axis-tek),var(--axis-slag),var(--axis-spill),var(--axis-turn));"></div><span class="tok">Kategorisk · pyramiden</span><span class="meta">FYS/TEK/SLAG/SPILL/TURN</span></div>
+    </div>
+  </section>
+  <!-- ===================== LAYER 1 — IDENTITY ===================== -->
+  <section class="sec">
+    <p class="eyb">LAG 1 · IDENTITET</p>
+    <h2>Forest bærer merkevaren. Lime er energien.</h2>
+    <p class="job">Forest <b>#005840</b> er arve-grønnen og eier <b>primær-CTA</b> — den stabile,
+      gjenkjennelige handlingsfargen. Lime <b>#D1F843</b> er ikke lenger en knappefarge: den er
+      <b>signalet</b> som peker på den ene tingen som betyr noe akkurat nå. Hvis en skjerm ser «lime» ut,
+      er det feil.</p>
+
+    <div class="grid2" style="margin-bottom:26px;">
+      <div class="demo">
+        <p class="demo-h">Forest — identitet &amp; CTA</p>
+        <div class="swrow">
+          <div class="sw" style="width:128px;"><div class="chip" style="background:var(--forest-900);"></div><span class="tok">--forest-900</span><span class="meta">#04241A · band/scrim</span></div>
+          <div class="sw" style="width:128px;"><div class="chip" style="background:var(--forest-700);"></div><span class="tok">--forest-700</span><span class="meta">#005840 · merkevare/CTA</span></div>
+          <div class="sw" style="width:128px;"><div class="chip" style="background:var(--forest-600);"></div><span class="tok">--forest-600</span><span class="meta">#0A6B4C · CTA mørk base</span></div>
+          <div class="sw" style="width:128px;"><div class="chip" style="background:var(--forest-500);"></div><span class="tok">--forest-500</span><span class="meta">#0A8A63 · aksent</span></div>
+        </div>
+      </div>
+      <div class="demo">
+        <p class="demo-h">Lime — energi-aksent</p>
+        <div class="swrow">
+          <div class="sw" style="width:128px;"><div class="chip" style="background:var(--lime-500);"></div><span class="tok">--lime-500</span><span class="meta">#D1F843 · signal</span></div>
+          <div class="sw" style="width:128px;"><div class="chip" style="background:var(--lime-600);"></div><span class="tok">--lime-600</span><span class="meta">#BCE234 · press</span></div>
+          <div class="sw" style="width:128px;"><div class="chip" style="background:var(--lime-300);"></div><span class="tok">--lime-300</span><span class="meta">#E4FB8E · myk</span></div>
+          <div class="sw" style="width:128px;"><div class="chip" style="background:color-mix(in srgb,var(--signal) 12%,transparent);border-color:var(--signal);"></div><span class="tok">--focus-ring</span><span class="meta">fokus-glød</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo">
+      <p class="demo-h">Knappe-hierarki — én jobb hver</p>
+      <div class="swrow" style="align-items:center;gap:16px;">
+        <span class="btn btn-brand">Tildel plan</span>
+        <span class="btn btn-neutral">Sekundær handling</span>
+        <span class="btn btn-secondary">Avbryt</span>
+        <span class="btn btn-signal">Start live-økt</span>
+      </div>
+      <p class="note"><b style="color:var(--text);">Primær = forest.</b> Den nøytrale «hvite pillen»
+        bærer handlingen <i>på</i> forest-flater (der en forest-knapp ville forsvunnet). Lime-pillen er
+        reservert for den ene «høylytte» handlingen — sjelden, aldri to på samme skjerm.</p>
+    </div>
+  </section>
+
+  <!-- ===================== LAYER 2 — NEUTRAL ===================== -->
+  <section class="sec">
+    <p class="eyb">LAG 2 · NØYTRAL-RAMPE</p>
+    <h2>Det nøytrale bærer UI-et.</h2>
+    <p class="job">To fulle ramper på minst ti trinn — <b>kjølig graphite</b> mot den mørke basen,
+      <b>varm sand</b> mot cream. Tekst, kanter, bakgrunner, kort og hvilende tilstander lever her.
+      Dette er ~80 % av flaten; jo rikere rampen er, jo mindre trenger UI-et å lene seg på aksenter.</p>
+
+    <p class="demo-h" style="color:var(--text-2);margin-bottom:10px;">Graphite — kjølig-nøytral (mørk base)</p>
+    <div class="ramp">
+      <div style="background:var(--graphite-0);color:#9BA0A6;">0</div>
+      <div style="background:var(--graphite-50);color:#9BA0A6;">50</div>
+      <div style="background:var(--graphite-100);color:#9BA0A6;">100</div>
+      <div style="background:var(--graphite-150);color:#9BA0A6;">150</div>
+      <div style="background:var(--graphite-200);color:#9BA0A6;">200</div>
+      <div style="background:var(--graphite-250);color:#9BA0A6;">250</div>
+      <div style="background:var(--graphite-300);color:#9BA0A6;">300</div>
+      <div style="background:var(--graphite-400);color:#cfd2d6;">400</div>
+      <div style="background:var(--graphite-500);color:#0B0C0E;">500</div>
+      <div style="background:var(--graphite-600);color:#0B0C0E;">600</div>
+      <div style="background:var(--graphite-700);color:#0B0C0E;">700</div>
+      <div style="background:var(--graphite-800);color:#0B0C0E;">800</div>
+      <div style="background:var(--graphite-900);color:#0B0C0E;">900</div>
+    </div>
+    <div class="ramplabels mono">
+      <span>bg</span><span>kort</span><span>hevet</span><span>inset</span><span>hover</span><span>kant</span><span>divider</span><span>kant◦</span><span>disabl.</span><span>dempet</span><span>sek.</span><span>—</span><span>tekst</span>
+    </div>
+
+    <p class="demo-h" style="color:var(--text-2);margin:30px 0 10px;">Sand — varm-nøytral (lys base)</p>
+    <div class="ramp">
+      <div style="background:var(--sand-0);color:#737068;">0</div>
+      <div style="background:var(--sand-50);color:#737068;">50</div>
+      <div style="background:var(--sand-100);color:#737068;">100</div>
+      <div style="background:var(--sand-150);color:#737068;">150</div>
+      <div style="background:var(--sand-200);color:#737068;">200</div>
+      <div style="background:var(--sand-250);color:#737068;">250</div>
+      <div style="background:var(--sand-300);color:#5B5851;">300</div>
+      <div style="background:var(--sand-400);color:#FFFFFF;">400</div>
+      <div style="background:var(--sand-500);color:#FFFFFF;">500</div>
+      <div style="background:var(--sand-600);color:#FFFFFF;">600</div>
+      <div style="background:var(--sand-700);color:#FFFFFF;">700</div>
+      <div style="background:var(--sand-800);color:#F4F4F1;">800</div>
+      <div style="background:var(--sand-900);color:#F4F4F1;">900</div>
+    </div>
+    <div class="ramplabels mono">
+      <span>kort</span><span>bg</span><span>hevet</span><span>div.</span><span>hover</span><span>kant</span><span>divider</span><span>kant◦</span><span>disabl.</span><span>dempet</span><span>sek.</span><span>—</span><span>tekst</span>
+    </div>
+    <p class="note">Konvensjon: <b style="color:var(--text);">0 = base-flaten, 900 = primær blekk.</b>
+      Dempet tekst (600) og oppover er WCAG-AA-kompatibel som tekst; 500 og lavere er for deaktiverte
+      tilstander, kanter og dekor — aldri brødtekst.</p>
+  </section>
+  <!-- ===================== LAYER 3 — SEMANTIC ===================== -->
+  <section class="sec">
+    <p class="eyb">LAG 3 · SEMANTISK</p>
+    <h2>Tilstand eier sin egen farge.</h2>
+    <p class="job">Appen har betaling, godkjenninger, varsler og live-status. Disse må leses
+      <b>entydig</b> — ikke konkurrere med lime. Fire farger med full tilstand (tekst / bakgrunn / kant +
+      fylt solid) i begge baser: <b>suksess</b> (grønn), <b>advarsel</b> (gul), <b>feil</b> (rød),
+      <b>info</b> (blå). Grønnen er en egen sjatтering, godt skilt fra både forest og lime.</p>
+
+    <div class="panels">
+      <!-- DARK -->
+      <div class="panel">
+        <p class="panel-h">Mørk base</p>
+        <div class="stack">
+          <div class="semrow"><span class="sbadge" style="background:var(--success-bg);border:1px solid var(--success-border);color:var(--success);"><span class="dot"></span>Betalt</span><span class="ssolid" style="background:var(--success-solid);color:var(--on-success);">Godkjent</span><span class="stok">--success</span></div>
+          <div class="semrow"><span class="sbadge" style="background:var(--warning-bg);border:1px solid var(--warning-border);color:var(--warning);"><span class="dot"></span>Venter</span><span class="ssolid" style="background:var(--warning-solid);color:var(--on-warning);">Forfaller</span><span class="stok">--warning</span></div>
+          <div class="semrow"><span class="sbadge" style="background:var(--error-bg);border:1px solid var(--error-border);color:var(--error);"><span class="dot"></span>Forfalt</span><span class="ssolid" style="background:var(--error-solid);color:var(--on-error);">Avvist</span><span class="stok">--error</span></div>
+          <div class="semrow"><span class="sbadge" style="background:var(--info-bg);border:1px solid var(--info-border);color:var(--info);"><span class="dot"></span>Ny melding</span><span class="ssolid" style="background:var(--info-solid);color:var(--on-info);">Varsel</span><span class="stok">--info</span></div>
+        </div>
+      </div>
+      <!-- LIGHT -->
+      <div class="light panel" style="background:var(--bg);border-color:var(--border);">
+        <p class="panel-h">Lys base</p>
+        <div class="stack">
+          <div class="semrow"><span class="sbadge" style="background:var(--success-bg);border:1px solid var(--success-border);color:var(--success);"><span class="dot"></span>Betalt</span><span class="ssolid" style="background:var(--success-solid);color:var(--on-success);">Godkjent</span><span class="stok" style="color:var(--text);">--success</span></div>
+          <div class="semrow"><span class="sbadge" style="background:var(--warning-bg);border:1px solid var(--warning-border);color:var(--warning);"><span class="dot"></span>Venter</span><span class="ssolid" style="background:var(--warning-solid);color:var(--on-warning);">Forfaller</span><span class="stok" style="color:var(--text);">--warning</span></div>
+          <div class="semrow"><span class="sbadge" style="background:var(--error-bg);border:1px solid var(--error-border);color:var(--error);"><span class="dot"></span>Forfalt</span><span class="ssolid" style="background:var(--error-solid);color:var(--on-error);">Avvist</span><span class="stok" style="color:var(--text);">--error</span></div>
+          <div class="semrow"><span class="sbadge" style="background:var(--info-bg);border:1px solid var(--info-border);color:var(--info);"><span class="dot"></span>Ny melding</span><span class="ssolid" style="background:var(--info-solid);color:var(--on-info);">Varsel</span><span class="stok" style="color:var(--text);">--info</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="note">Hver semantisk farge har tre roller: <span class="mono">--&lt;x&gt;</span> (tekst/ikon på flate),
+      <span class="mono">--&lt;x&gt;-bg</span> + <span class="mono">--&lt;x&gt;-border</span> (mykt felt) og
+      <span class="mono">--&lt;x&gt;-solid</span> + <span class="mono">--on-&lt;x&gt;</span> (fylt badge/toast).
+      Positiv data-delta er fortsatt lime, negativ coral — det er <i>data</i>, ikke tilstand.</p>
+  </section>
+
+  <!-- ===================== LAYER 4 — CATEGORICAL ===================== -->
+  <section class="sec">
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+      <filter id="deut" color-interpolation-filters="linearRGB">
+        <feColorMatrix type="matrix" values="0.367322 0.860646 -0.227968 0 0  0.280085 0.672501 0.047413 0 0  -0.011820 0.042940 0.968881 0 0  0 0 0 1 0" />
+      </filter>
+    </defs></svg>
+
+    <p class="eyb">LAG 4 · KATEGORISK</p>
+    <h2>Farge = aksetilhørighet. Overalt.</h2>
+    <p class="job">Pyramide-aksene løftes fra kun-data-viz til et gjennomgående språk. Hver av de fem
+      — <b>FYS, TEK, SLAG, SPILL, TURN</b> — får én fast farge, brukt konsekvent som markør på økter,
+      drills, plan-blokker, kalender-segmenter og filtre. Ser du fargen, vet du aksen — i grafen <i>og</i>
+      i lista.</p>
+
+    <div class="swrow" style="margin-bottom:26px;">
+      <div class="sw" style="width:188px;"><div class="chip" style="background:var(--axis-fys);"></div><span class="tok">FYS · fysisk</span><span class="meta">--axis-fys · orange · H78</span></div>
+      <div class="sw" style="width:188px;"><div class="chip" style="background:var(--axis-tek);"></div><span class="tok">TEK · teknikk</span><span class="meta">--axis-tek · rose · H346</span></div>
+      <div class="sw" style="width:188px;"><div class="chip" style="background:var(--axis-slag);"></div><span class="tok">SLAG · slag</span><span class="meta">--axis-slag · cyan-teal · H205</span></div>
+      <div class="sw" style="width:188px;"><div class="chip" style="background:var(--axis-spill);"></div><span class="tok">SPILL · spill</span><span class="meta">--axis-spill · dypblå · H244</span></div>
+      <div class="sw" style="width:188px;"><div class="chip" style="background:var(--axis-turn);"></div><span class="tok">TURN · turnering</span><span class="meta">--axis-turn · vermillion · H40</span></div>
+    </div>
+
+    <div class="demo">
+      <p class="demo-h">Filtre · chip = markør + etikett</p>
+      <div class="chips">
+        <span class="achip" style="background:var(--axis-fys-soft);color:var(--axis-fys-text);"><span class="dot" style="background:var(--axis-fys);"></span>FYS</span>
+        <span class="achip" style="background:var(--axis-tek-soft);color:var(--axis-tek-text);"><span class="dot" style="background:var(--axis-tek);"></span>TEK</span>
+        <span class="achip" style="background:var(--axis-slag-soft);color:var(--axis-slag-text);"><span class="dot" style="background:var(--axis-slag);"></span>SLAG</span>
+        <span class="achip" style="background:var(--axis-spill-soft);color:var(--axis-spill-text);"><span class="dot" style="background:var(--axis-spill);"></span>SPILL</span>
+        <span class="achip" style="background:var(--axis-turn-soft);color:var(--axis-turn-text);"><span class="dot" style="background:var(--axis-turn);"></span>TURN</span>
+      </div>
+    </div>
+
+    <div class="grid2" style="margin-top:16px;">
+      <div class="demo">
+        <p class="demo-h">Økter · venstre-kant + akse-tag</p>
+        <div class="stack">
+          <div class="arow" style="border-left-color:var(--axis-fys);"><span class="dot" style="background:var(--axis-fys);width:8px;height:8px;"></span><div style="flex:1;"><div class="nm">Styrke — underkropp</div><div class="sub">Mulligan · studio 2</div></div><span class="atag" style="background:var(--axis-fys-soft);color:var(--axis-fys-text);">FYS</span><span class="dur">45 min</span></div>
+          <div class="arow" style="border-left-color:var(--axis-slag);"><span class="dot" style="background:var(--axis-slag);width:8px;height:8px;"></span><div style="flex:1;"><div class="nm">Approach — 50–100 m</div><div class="sub">GFGK · range</div></div><span class="atag" style="background:var(--axis-slag-soft);color:var(--axis-slag-text);">SLAG</span><span class="dur">60 min</span></div>
+          <div class="arow" style="border-left-color:var(--axis-turn);"><span class="dot" style="background:var(--axis-turn);width:8px;height:8px;"></span><div style="flex:1;"><div class="nm">Banespill — 9 hull</div><div class="sub">GFGK · elitegruppe</div></div><span class="atag" style="background:var(--axis-turn-soft);color:var(--axis-turn-text);">TURN</span><span class="dur">2t</span></div>
+        </div>
+      </div>
+      <div class="demo">
+        <p class="demo-h">Ukeplan · blokker per akse</p>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;">
+          <div class="mono" style="font-size:10px;color:var(--text-muted);text-align:center;">MAN</div>
+          <div class="mono" style="font-size:10px;color:var(--text-muted);text-align:center;">TIR</div>
+          <div class="mono" style="font-size:10px;color:var(--text-muted);text-align:center;">ONS</div>
+          <div class="mono" style="font-size:10px;color:var(--text-muted);text-align:center;">TOR</div>
+          <div class="mono" style="font-size:10px;color:var(--text-muted);text-align:center;">FRE</div>
+          <div class="pblock" style="background:var(--axis-fys-soft);border-left:3px solid var(--axis-fys);color:var(--axis-fys-text);">FYS</div>
+          <div class="pblock" style="background:var(--axis-tek-soft);border-left:3px solid var(--axis-tek);color:var(--axis-tek-text);">TEK</div>
+          <div class="pblock" style="background:var(--axis-slag-soft);border-left:3px solid var(--axis-slag);color:var(--axis-slag-text);">SLAG</div>
+          <div class="pblock" style="background:var(--axis-fys-soft);border-left:3px solid var(--axis-fys);color:var(--axis-fys-text);">FYS</div>
+          <div class="pblock" style="background:var(--axis-turn-soft);border-left:3px solid var(--axis-turn);color:var(--axis-turn-text);">TURN</div>
+          <div class="pblock" style="background:var(--axis-spill-soft);border-left:3px solid var(--axis-spill);color:var(--axis-spill-text);">SPILL</div>
+          <div></div>
+          <div class="pblock" style="background:var(--axis-slag-soft);border-left:3px solid var(--axis-slag);color:var(--axis-slag-text);">SLAG</div>
+          <div></div>
+          <div class="pblock" style="background:var(--axis-tek-soft);border-left:3px solid var(--axis-tek);color:var(--axis-tek-text);">TEK</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid2" style="margin-top:16px;">
+      <div class="demo">
+        <p class="demo-h">Kalender-segment · ukens fordeling</p>
+        <div style="display:flex;height:40px;border-radius:10px;overflow:hidden;border:1px solid var(--border);">
+          <div style="flex:3;background:var(--axis-fys);"></div>
+          <div style="flex:2;background:var(--axis-tek);"></div>
+          <div style="flex:4;background:var(--axis-slag);"></div>
+          <div style="flex:2;background:var(--axis-spill);"></div>
+          <div style="flex:2;background:var(--axis-turn);"></div>
+        </div>
+        <div class="chips" style="margin-top:12px;gap:6px;">
+          <span class="atag" style="background:var(--axis-fys-soft);color:var(--axis-fys-text);">FYS 3t</span>
+          <span class="atag" style="background:var(--axis-tek-soft);color:var(--axis-tek-text);">TEK 2t</span>
+          <span class="atag" style="background:var(--axis-slag-soft);color:var(--axis-slag-text);">SLAG 4t</span>
+          <span class="atag" style="background:var(--axis-spill-soft);color:var(--axis-spill-text);">SPILL 2t</span>
+          <span class="atag" style="background:var(--axis-turn-soft);color:var(--axis-turn-text);">TURN 2t</span>
+        </div>
+      </div>
+      <div class="demo">
+        <p class="demo-h">Pyramide · fargelagt graf</p>
+        <div class="stack" style="gap:9px;">
+          <div class="pyr"><span class="pyl" style="color:var(--axis-turn-text);">TURN</span><div class="pytrack"><div style="width:40%;background:var(--axis-turn);"></div></div></div>
+          <div class="pyr"><span class="pyl" style="color:var(--axis-spill-text);">SPILL</span><div class="pytrack"><div style="width:62%;background:var(--axis-spill);"></div></div></div>
+          <div class="pyr"><span class="pyl" style="color:var(--axis-slag-text);">SLAG</span><div class="pytrack"><div style="width:71%;background:var(--axis-slag);"></div></div></div>
+          <div class="pyr"><span class="pyl" style="color:var(--axis-tek-text);">TEK</span><div class="pytrack"><div style="width:84%;background:var(--axis-tek);"></div></div></div>
+          <div class="pyr"><span class="pyl" style="color:var(--axis-fys-text);">FYS</span><div class="pytrack"><div style="width:90%;background:var(--axis-fys);"></div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo" style="margin-top:16px;">
+      <p class="demo-h">Skillbarhet · testet mot deuteranopi (Machado 2009)</p>
+      <div class="grid2" style="gap:24px;">
+        <div>
+          <p class="meta" style="margin:0 0 8px;">Normalt syn</p>
+          <div class="deutrow">
+            <span style="background:var(--axis-fys);">FYS</span><span style="background:var(--axis-tek);">TEK</span><span style="background:var(--axis-slag);">SLAG</span><span style="background:var(--axis-spill);">SPILL</span><span style="background:var(--axis-turn);">TURN</span>
+          </div>
+        </div>
+        <div>
+          <p class="meta" style="margin:0 0 8px;">Simulert deuteranopi</p>
+          <div class="deutrow" style="filter:url(#deut);">
+            <span style="background:var(--axis-fys);">FYS</span><span style="background:var(--axis-tek);">TEK</span><span style="background:var(--axis-slag);">SLAG</span><span style="background:var(--axis-spill);">SPILL</span><span style="background:var(--axis-turn);">TURN</span>
+          </div>
+        </div>
+      </div>
+      <p class="note">Min. avstand i simulert syn (ΔE76): <b style="color:var(--text);">13,4 mørk</b> /
+        <b style="color:var(--text);">12,8 lys</b> (TEK/SLAG) — godt over merkbarhetsterskelen. Ingen akse er gul-grønn,
+        så de kolliderer aldri med lime. Farge forsterkes alltid av tre-bokstavs-etiketten — aldri eneste
+        signal.</p>
+    </div>
+  </section>
+
+  <!-- ===================== WCAG APPENDIX ===================== -->
+  <section class="sec">
+    <p class="eyb">KONTRAST-REVISJON · WCAG 2.1 AA</p>
+    <h2>All tekst består mot sin bakgrunn.</h2>
+    <p class="job">Målt på faktisk gjengitt sRGB (relativ luminans). Tabellen viser det <b>laveste
+      (bindende)</b> forholdet per rolle — alle øvrige par i samme rolle ligger høyere. Terskel: 4,5:1 for
+      normal tekst, 3:1 for grafiske markører.</p>
+
+    <div class="panels">
+      <div>
+        <p class="panel-h">Mørk base</p>
+        <div class="ctable">
+          <div class="hd">Rolle</div><div class="hd">Mot</div><div class="hd num">Forhold</div><div class="hd pass">AA</div>
+          <div class="crole">Primær tekst</div><div class="cbg">--bg</div><div class="num">17,9:1</div><div class="pass">✓</div>
+          <div class="crole">Sekundær tekst</div><div class="cbg">--surface</div><div class="num">6,9:1</div><div class="pass">✓</div>
+          <div class="crole">Dempet tekst</div><div class="cbg">--surface</div><div class="num">5,0:1</div><div class="pass">✓</div>
+          <div class="crole">Hvit på forest-CTA</div><div class="cbg">--brand</div><div class="num">6,5:1</div><div class="pass">✓</div>
+          <div class="crole">Mørk på lime</div><div class="cbg">--signal</div><div class="num">16,1:1</div><div class="pass">✓</div>
+          <div class="crole">Semantisk tekst (feil)</div><div class="cbg">--surface</div><div class="num">9,4:1</div><div class="pass">✓</div>
+          <div class="crole">På solid (feil)</div><div class="cbg">--error-solid</div><div class="num">5,0:1</div><div class="pass">✓</div>
+          <div class="crole">Akse-tekst (SPILL)</div><div class="cbg">--bg</div><div class="num">8,6:1</div><div class="pass">✓</div>
+          <div class="crole">Akse-markør (SPILL)</div><div class="cbg">--surface</div><div class="num">5,2:1</div><div class="pass">✓</div>
+        </div>
+      </div>
+      <div class="light" style="background:var(--bg);border-radius:var(--radius-card);padding:0;">
+        <p class="panel-h" style="padding-top:0;">Lys base</p>
+        <div class="ctable">
+          <div class="hd">Rolle</div><div class="hd">Mot</div><div class="hd num">Forhold</div><div class="hd pass">AA</div>
+          <div class="crole">Primær tekst</div><div class="cbg">--bg</div><div class="num">18,0:1</div><div class="pass">✓</div>
+          <div class="crole">Sekundær tekst</div><div class="cbg">--bg</div><div class="num">6,8:1</div><div class="pass">✓</div>
+          <div class="crole">Dempet tekst</div><div class="cbg">--bg</div><div class="num">4,7:1</div><div class="pass">✓</div>
+          <div class="crole">Hvit på forest-CTA</div><div class="cbg">--brand</div><div class="num">8,5:1</div><div class="pass">✓</div>
+          <div class="crole">Mørk på lime</div><div class="cbg">--signal</div><div class="num">16,1:1</div><div class="pass">✓</div>
+          <div class="crole">Semantisk tekst (info)</div><div class="cbg">--surface</div><div class="num">5,4:1</div><div class="pass">✓</div>
+          <div class="crole">Hvit på solid (advarsel)</div><div class="cbg">--warning-solid</div><div class="num">6,6:1</div><div class="pass">✓</div>
+          <div class="crole">Akse-tekst (SLAG)</div><div class="cbg">--bg</div><div class="num">4,7:1</div><div class="pass">✓</div>
+          <div class="crole">Akse-markør (FYS)</div><div class="cbg">--surface</div><div class="num">3,2:1</div><div class="pass">✓</div>
+        </div>
+      </div>
+    </div>
+    <p class="note">Dempet tekst ble løftet fra forrige <span class="mono">#62676E</span> (3,2:1 — under AA)
+      til en kompatibel verdi; den gamle dimmen er bevart som <span class="mono">--text-faint</span> for
+      deaktiverte tilstander og dekor, aldri brødtekst.</p>
+  </section>
+
+</div>
+</body>
+</html>
+

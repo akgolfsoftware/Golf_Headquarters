@@ -1,0 +1,36 @@
+<!-- @dsCard group="Colors" viewport="700x230" name="Kategorisk — pyramide-aksene" subtitle="FYS/TEK/SLAG/SPILL/TURN: fast farge = aksetilhørighet, brukt som markør overalt" -->
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; background: var(--bg); padding: 24px; font-family: var(--font-ui); }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .chip { display: inline-flex; align-items: center; gap: 7px; height: 30px; padding: 0 13px;
+    border-radius: 9999px; font-size: 13px; font-weight: 600; }
+  .dot { width: 8px; height: 8px; border-radius: 9999px; }
+  .rows { display: flex; flex-direction: column; gap: 8px; }
+  .arow { display: flex; align-items: center; gap: 11px; padding: 9px 12px; border-radius: 11px;
+    background: var(--surface); border: 1px solid var(--border); border-left: 3px solid; }
+  .nm { font-size: 13px; font-weight: 600; color: var(--text); flex: 1; }
+  .tag { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 6px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.06em; }
+  .dur { font-family: var(--font-mono); font-size: 12px; color: var(--text-2); }
+</style>
+</head>
+<body>
+<div class="chips">
+  <span class="chip" style="background:var(--axis-fys-soft);color:var(--axis-fys-text);"><span class="dot" style="background:var(--axis-fys);"></span>FYS</span>
+  <span class="chip" style="background:var(--axis-tek-soft);color:var(--axis-tek-text);"><span class="dot" style="background:var(--axis-tek);"></span>TEK</span>
+  <span class="chip" style="background:var(--axis-slag-soft);color:var(--axis-slag-text);"><span class="dot" style="background:var(--axis-slag);"></span>SLAG</span>
+  <span class="chip" style="background:var(--axis-spill-soft);color:var(--axis-spill-text);"><span class="dot" style="background:var(--axis-spill);"></span>SPILL</span>
+  <span class="chip" style="background:var(--axis-turn-soft);color:var(--axis-turn-text);"><span class="dot" style="background:var(--axis-turn);"></span>TURN</span>
+</div>
+<div class="rows">
+  <div class="arow" style="border-left-color:var(--axis-slag);"><span class="dot" style="background:var(--axis-slag);"></span><span class="nm">Approach — 50–100 m</span><span class="tag" style="background:var(--axis-slag-soft);color:var(--axis-slag-text);">SLAG</span><span class="dur">60 min</span></div>
+  <div class="arow" style="border-left-color:var(--axis-turn);"><span class="dot" style="background:var(--axis-turn);"></span><span class="nm">Banespill — 9 hull</span><span class="tag" style="background:var(--axis-turn-soft);color:var(--axis-turn-text);">TURN</span><span class="dur">2t</span></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!-- @dsCard group="Colors" viewport="700x190" name="Text on dark" subtitle="Three steps: primary off-white, secondary, muted labels" -->
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; background: var(--bg); padding: 26px; font-family: var(--font-ui); }
+  .stack { display: flex; flex-direction: column; gap: 18px; }
+  .line { display: flex; align-items: baseline; gap: 16px; }
+  .samp { font-size: 22px; font-weight: 500; width: 320px; }
+  .tok { font-family: var(--font-mono); font-size: 12px; color: var(--text-2); font-weight: 600; }
+  .hex { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); margin-left: 8px; }
+</style>
+</head>
+<body>
+<div class="stack">
+  <div class="line"><span class="samp" style="color: var(--text);">Tren på det du trenger</span><span><span class="tok">--text</span><span class="hex">#F4F5F6</span></span></div>
+  <div class="line"><span class="samp" style="color: var(--text-2);">Sekundær tekst og ingress</span><span><span class="tok">--text-2</span><span class="hex">#9BA0A6</span></span></div>
+  <div class="line"><span class="samp" style="color: var(--text-muted); font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase;">Dempet mono-label</span><span><span class="tok">--text-muted</span><span class="hex">#62676E</span></span></div>
+</div>
+</body>
+</html>

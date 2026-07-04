@@ -1,0 +1,27 @@
+<!-- @dsCard group="Spacing" viewport="700x200" name="Radius scale" subtitle="tag 8 · input 12 · card 16 · panel 20 · sheet 28 · pill ∞" -->
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; background: var(--bg); padding: 26px; font-family: var(--font-mono); }
+  .row { display: flex; gap: 18px; flex-wrap: wrap; }
+  .sw { display: flex; flex-direction: column; gap: 9px; align-items: center; }
+  .box { width: 84px; height: 64px; background: var(--surface); border: 1px solid var(--border-strong); }
+  .t { font-size: 11px; color: var(--text-2); }
+  .px { font-size: 10px; color: var(--text-muted); }
+</style>
+</head>
+<body>
+<div class="row">
+  <div class="sw"><div class="box" style="border-radius: var(--radius-tag);"></div><span class="t">tag</span><span class="px">8</span></div>
+  <div class="sw"><div class="box" style="border-radius: var(--radius-input);"></div><span class="t">input</span><span class="px">12</span></div>
+  <div class="sw"><div class="box" style="border-radius: var(--radius-card);"></div><span class="t">card</span><span class="px">16</span></div>
+  <div class="sw"><div class="box" style="border-radius: var(--radius-panel);"></div><span class="t">panel</span><span class="px">20</span></div>
+  <div class="sw"><div class="box" style="border-radius: var(--radius-sheet);"></div><span class="t">sheet</span><span class="px">28</span></div>
+  <div class="sw"><div class="box" style="border-radius: var(--radius-pill); width: 110px;"></div><span class="t">pill</span><span class="px">9999</span></div>
+</div>
+</body>
+</html>

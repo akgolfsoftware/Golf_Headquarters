@@ -1,0 +1,35 @@
+<!-- @dsCard group="Colors" viewport="700x210" name="Graphite — kjølig nøytral-rampe" subtitle="Dark base spine, 13 trinn. Flater skilles av lyshet + hårlinje, ikke skygge." -->
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; background: var(--bg); padding: 24px; font-family: var(--font-ui); }
+  .ramp { display: flex; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+  .ramp > div { flex: 1; height: 84px; display: flex; align-items: flex-end; padding: 6px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600; }
+  .cap { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); margin: 14px 0 0; line-height: 1.6; }
+  .cap b { color: var(--text-2); font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="ramp">
+  <div style="background:var(--graphite-0);color:#9BA0A6;">0</div>
+  <div style="background:var(--graphite-50);color:#9BA0A6;">50</div>
+  <div style="background:var(--graphite-100);color:#9BA0A6;">100</div>
+  <div style="background:var(--graphite-150);color:#9BA0A6;">150</div>
+  <div style="background:var(--graphite-200);color:#9BA0A6;">200</div>
+  <div style="background:var(--graphite-250);color:#9BA0A6;">250</div>
+  <div style="background:var(--graphite-300);color:#9BA0A6;">300</div>
+  <div style="background:var(--graphite-400);color:#cfd2d6;">400</div>
+  <div style="background:var(--graphite-500);color:#0B0C0E;">500</div>
+  <div style="background:var(--graphite-600);color:#0B0C0E;">600</div>
+  <div style="background:var(--graphite-700);color:#0B0C0E;">700</div>
+  <div style="background:var(--graphite-800);color:#0B0C0E;">800</div>
+  <div style="background:var(--graphite-900);color:#0B0C0E;">900</div>
+</div>
+<p class="cap"><b>0</b> bg · <b>50</b> kort · <b>100</b> hevet · <b>200</b> hover · <b>300</b> divider · <b>600</b> dempet tekst (AA) · <b>700</b> sekundær · <b>900</b> primær tekst</p>
+</body>
+</html>

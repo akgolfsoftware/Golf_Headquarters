@@ -1,0 +1,129 @@
+<!-- @dsCard group="Components" viewport="760x1160" name="TrackMan — DispersionPlot, TrajectoryPlot, KolleStatKort, TrackmanSammendrag" subtitle="Rådata-laget under SG: spredning, ballbaner og per-kølle-konsistens" -->
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="../../styles.css" />
+<style>
+  body { margin: 0; background: var(--bg); padding: 28px; }
+  .wrap { display: flex; flex-direction: column; gap: 28px; }
+  .lbl { font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: start; }
+</style>
+</head>
+<body>
+<div id="root" class="wrap"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+
+<script type="text/babel">
+const { DispersionPlot, TrajectoryPlot, KolleStatKort, TrackmanSammendrag, DataTable } = window.AKGolfHQDesignSystem_a3d5af;
+
+/* Syntetisk økt basert på rapport-empirien (Øyvind, 6.3.2025):
+   6-jern ~165 m ±4, 52° wedge ~98 m, 60° wedge ~78 m. */
+function lagSlag(kolle, n, carry, cSpread, sSpread, seed) {
+  let s = seed;
+  const rnd = () => { s = (s * 9301 + 49297) % 233280; return s / 233280 - 0.5; };
+  return Array.from({ length: n }, () => ({
+    kolle,
+    carry: carry + rnd() * cSpread * 2,
+    side: rnd() * sSpread * 2,
+    apex: (kolle === "6i" ? 25 : kolle === "52w" ? 21 : 17) + rnd() * 4,
+  }));
+}
+const SLAG = [
+  ...lagSlag("6i", 41, 165, 5.5, 7, 7),
+  ...lagSlag("52w", 30, 98, 3.5, 4, 13),
+  ...lagSlag("60w", 24, 78, 3, 3.5, 29),
+];
+const KOLLER = [
+  { id: "6i", navn: "6-jern" },
+  { id: "52w", navn: "52° wedge" },
+  { id: "60w", navn: "60° wedge" },
+];
+
+const TABELL_RADER = [
+  { nr: 1, cs: "38,5", attack: "−2,8", ball: "56,2", spinn: 5285, carry: 163.2, side: "11,9 H" },
+  { nr: 2, cs: "38,4", attack: "−2,8", ball: "55,8", spinn: 4866, carry: 167.5, side: "3,1 H" },
+  { nr: 3, cs: "38,1", attack: "−3,4", ball: "54,9", spinn: 4848, carry: 163.9, side: "7,1 V" },
+  { nr: 4, cs: "38,0", attack: "−1,8", ball: "53,7", spinn: 4975, carry: 159.2, side: "3,7 V" },
+  { nr: 5, cs: "38,5", attack: "−3,2", ball: "54,8", spinn: 4581, carry: 165.0, side: "6,8 V" },
+];
+
+function Demo() {
+  return (
+    <React.Fragment>
+      <div>
+        <div className="lbl">TrackmanSammendrag — inngang til rapport</div>
+        <TrackmanSammendrag
+          dato="6. mars 2025" spiller="Øyvind Rojahn" kilde="TrackMan Range"
+          totalSlag={95}
+          koller={[{ navn: "6-jern", antall: 41 }, { navn: "52° wedge", antall: 30 }, { navn: "60° wedge", antall: 24 }]}
+          hoydepunkt="Jevnest med 6-jern: carry ±4,1 m over 41 slag."
+          onClick={() => {}}
+        />
+      </div>
+
+      <div>
+        <div className="lbl">DispersionPlot — carry × side (klikk legend for å isolere)</div>
+        <DispersionPlot slag={SLAG} koller={KOLLER} />
+      </div>
+
+      <div>
+        <div className="lbl">TrajectoryPlot — ballbaner</div>
+        <TrajectoryPlot
+          baner={SLAG.map((s) => ({ kolle: s.kolle, carry: s.carry, apex: s.apex }))}
+          koller={KOLLER}
+        />
+      </div>
+
+      <div>
+        <div className="lbl">KolleStatKort — snitt ± konsistens</div>
+        <div className="grid2">
+          <KolleStatKort navn="6-jern" antall={41} csNivaa="CS60"
+            stats={[
+              { label: "Club speed", snitt: "38,5", konsistens: "0,3", enhet: "m/s" },
+              { label: "Spinn", snitt: "4 862", konsistens: "207", enhet: "rpm" },
+              { label: "Carry", snitt: "165,0", konsistens: "4,1", enhet: "m" },
+              { label: "Side", snitt: "0,3 V", konsistens: "5,2", enhet: "m" },
+            ]} />
+          <KolleStatKort navn="52° wedge" antall={30} csNivaa="CS50"
+            stats={[
+              { label: "Club speed", snitt: "31,2", konsistens: "0,4", enhet: "m/s" },
+              { label: "Spinn", snitt: "7 410", konsistens: "312", enhet: "rpm" },
+              { label: "Carry", snitt: "98,3", konsistens: "3,2", enhet: "m" },
+              { label: "Side", snitt: "0,8 H", konsistens: "3,9", enhet: "m" },
+            ]} />
+        </div>
+      </div>
+
+      <div>
+        <div className="lbl">SlagTabell — DataTable-oppskrift (ingen egen komponent)</div>
+        <DataTable
+          columns={[
+            { key: "nr", label: "#", mono: true, width: 40 },
+            { key: "cs", label: "Club speed", mono: true, align: "right" },
+            { key: "attack", label: "Attack", mono: true, align: "right" },
+            { key: "ball", label: "Ball speed", mono: true, align: "right" },
+            { key: "spinn", label: "Spinn", mono: true, align: "right", sortable: true },
+            { key: "carry", label: "Carry", mono: true, align: "right", sortable: true,
+              render: (v) => String(v.toFixed(1)).replace(".", ",") },
+            { key: "side", label: "Side", mono: true, align: "right" },
+          ]}
+          rows={TABELL_RADER}
+        />
+      </div>
+    </React.Fragment>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<Demo />);
+</script>
+</body>
+</html>
