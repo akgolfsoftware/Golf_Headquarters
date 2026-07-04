@@ -18,6 +18,7 @@ import {
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PlayerHero } from "@/components/portal/player-hero";
+import { Card } from "@/components/athletic/golfdata";
 import { cn } from "@/lib/utils";
 import { PlanHandlinger } from "./plan-handlinger";
 
@@ -145,7 +146,7 @@ export default async function TekniskPlanListePage() {
   ];
 
   return (
-    <div className="mx-auto max-w-[430px] space-y-6 px-4 pb-24 md:pb-8">
+    <div className="golfdata-scope mx-auto max-w-[430px] space-y-6 px-4 pb-24 md:pb-8">
       <PlayerHero
         eyebrow="PlayerHQ · Tren · Tekniske planer"
         titleLead="Tekniske"
@@ -219,22 +220,17 @@ function PlanCard({ plan, featured }: { plan: PlanWithStats; featured: boolean }
   const archived = plan.status === "ARCHIVED";
 
   return (
-    <Link
-      href={`/portal/tren/teknisk-plan/${plan.id}`}
-      className={cn(
-        "block rounded-xl border border-border bg-card p-4 transition-[transform,box-shadow] hover:-translate-y-0.5 hover:shadow-[0_10px_22px_rgba(10,31,23,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0",
-        featured && "border-l-[3px] border-l-primary",
-        archived && "opacity-90",
-      )}
-    >
+    <Link href={`/portal/tren/teknisk-plan/${plan.id}`} className="block">
+     <Card
+       interactive
+       compact
+       className={cn(featured && "border-l-[3px] border-l-primary", archived && "opacity-90")}
+     >
       <div className="flex items-start justify-between gap-3">
         <h3 className="text-[16px] font-bold leading-tight tracking-[-0.015em] text-foreground">
           {plan.navn}
           {plan.periodLabel && (
-            <em
-              className="ml-1 font-normal not-italic text-muted-foreground"
-              style={{ fontFamily: "'Inter Tight', sans-serif", fontStyle: "italic" }}
-            >
+            <em className="ml-1 font-medium italic text-muted-foreground">
               · {plan.periodLabel}
             </em>
           )}
@@ -316,6 +312,7 @@ function PlanCard({ plan, featured }: { plan: PlanWithStats; featured: boolean }
           <ArrowRight className="h-3 w-3" strokeWidth={2.5} aria-hidden />
         </span>
       </div>
+     </Card>
     </Link>
   );
 }
