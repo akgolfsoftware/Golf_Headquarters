@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Check } from "lucide-react";
 import type { LiveV2Drill, LiveV2Session, DrillRepState } from "./types";
+import { plannedVolumText } from "./types";
 import { DrillLogger } from "./DrillLogger";
 import { SessionTimer } from "./SessionTimer";
 import { completeDrill, completeSession, startSession } from "@/app/portal/(fullscreen)/live/[sessionId]/actions";
@@ -133,9 +134,16 @@ function ChallengeCard({ drill, onLogRep }: ChallengeCardProps) {
       </div>
 
       {/* Title */}
-      <div className="mb-3 font-display text-[18px] font-bold leading-[1.15] -tracking-[0.02em] text-foreground">
+      <div className="mb-1 font-display text-[18px] font-bold leading-[1.15] -tracking-[0.02em] text-foreground">
         {drill.name}
       </div>
+
+      {/* Planlagt rep-type + volum (bølge 2) — det coachen la inn */}
+      {plannedVolumText(drill) && (
+        <div className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
+          Planlagt: {plannedVolumText(drill)}
+        </div>
+      )}
 
       {/* Fremdrift */}
       <div className="mb-[7px] flex items-center justify-between">

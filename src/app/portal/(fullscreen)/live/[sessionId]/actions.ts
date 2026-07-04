@@ -111,6 +111,11 @@ function mapDrill(drill: {
   pyramide: PyramidArea;
   lFase: string | null;
   notes: string | null;
+  repType: string | null;
+  repAntall: number | null;
+  repMinutter: number | null;
+  repSett: number | null;
+  repReps: number | null;
 }): LiveV2Drill {
   return {
     id: drill.id,
@@ -122,6 +127,11 @@ function mapDrill(drill: {
     pyramide: drill.pyramide,
     lFase: drill.lFase,
     notes: drill.notes,
+    repType: drill.repType,
+    repAntall: drill.repAntall,
+    repMinutter: drill.repMinutter,
+    repSett: drill.repSett,
+    repReps: drill.repReps,
   };
 }
 

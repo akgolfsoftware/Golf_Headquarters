@@ -17,7 +17,37 @@ export type LiveV2Drill = {
   pyramide: PyramidArea;
   lFase: string | null;
   notes: string | null;
+  // Planlagt rep-type + volum (bølge 2) — det coachen la inn i composeren.
+  repType: string | null;
+  repAntall: number | null;
+  repMinutter: number | null;
+  repSett: number | null;
+  repReps: number | null;
 };
+
+/** Planlagt rep-type + volum som klarspråk, f.eks. «120 baller», «30 min», «3 × 10». */
+export function plannedVolumText(d: {
+  repType: string | null;
+  repAntall: number | null;
+  repMinutter: number | null;
+  repSett: number | null;
+  repReps: number | null;
+}): string | null {
+  switch (d.repType) {
+    case "SVINGER_UTEN_BALL":
+      return d.repAntall != null ? `${d.repAntall} svinger` : "Svinger uten ball";
+    case "BALLER_SLATT":
+      return d.repAntall != null ? `${d.repAntall} baller` : "Baller slått";
+    case "TID":
+      return d.repMinutter != null ? `${d.repMinutter} min` : "Tid";
+    case "SETT_REPS":
+      return d.repSett != null && d.repReps != null
+        ? `${d.repSett} × ${d.repReps}`
+        : "Sett × reps";
+    default:
+      return null;
+  }
+}
 
 /** Rep-fordeling logget for en drill (DrillLogV2). */
 export type LiveV2DrillLog = {

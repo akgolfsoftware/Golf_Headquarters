@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { CheckCircle2, Lock, Play } from "lucide-react";
 import type { LiveV2Session } from "./types";
+import { plannedVolumText } from "./types";
 import { LiveSessionShell } from "./LiveSessionShell";
 
 export type LiveBriefProps = {
@@ -160,9 +161,9 @@ export function LiveBrief({ data, canStart, blockReason }: LiveBriefProps) {
                       {drill.durationMinutes > 0 ? ` · ${drill.durationMinutes} min` : ""}
                     </div>
                   </div>
-                  {drill.plannedReps > 0 && (
-                    <span className="font-mono text-[11px] font-semibold text-background/60">
-                      {drill.plannedReps}r
+                  {(plannedVolumText(drill) ?? (drill.plannedReps > 0 ? `${drill.plannedReps}r` : null)) && (
+                    <span className="whitespace-nowrap font-mono text-[11px] font-semibold text-background/60">
+                      {plannedVolumText(drill) ?? `${drill.plannedReps}r`}
                     </span>
                   )}
                 </li>
