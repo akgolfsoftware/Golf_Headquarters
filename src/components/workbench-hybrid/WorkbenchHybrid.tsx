@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useReducer, useRef, useState, type ReactElement } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState, useTransition, type ReactElement } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { TekniskPlanWorkbenchContext } from "@/lib/teknisk-plan/types";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
@@ -75,6 +75,7 @@ import {
   coachMoveWorkbenchSession,
   coachAddWorkbenchSession,
   coachRemoveWorkbenchSession,
+  coachDuplicateWeek,
   resolvePlanSessionLiveHref,
 } from "@/lib/workbench/session-actions";
 import type { WorkbenchPlanTemplate } from "@/lib/workbench/load-workbench";
@@ -1057,6 +1058,15 @@ export function WorkbenchHybrid({
           <EmptyPlanState role={role} />
         ) : (
           <div data-testid="wb-week-ready">
+            {isCoach && currentPlayerId && (
+              <DupliserUkeKnapp
+                onClick={() => {
+                  void coachDuplicateWeek(currentPlayerId, weekOffset).then((res) => {
+                    if (res.ok) router.refresh();
+                  });
+                }}
+              />
+            )}
             <UkeView
               week={state.week}
               selectedId={state.editScope === "session" ? state.selectedId : null}
@@ -1498,6 +1508,38 @@ export function WorkbenchHybrid({
           onClose={() => setAiPlanOpen(false)}
         />
       )}
+    </div>
+  );
+}
+
+/** «Dupliser forrige uke» — coach-knapp over uke-visningen (bølge 3c). */
+function DupliserUkeKnapp({ onClick }: { onClick: () => void }) {
+  const [pending, startTransition] = useTransition();
+  return (
+    <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 8 }}>
+      <button
+        type="button"
+        disabled={pending}
+        onClick={() => startTransition(() => onClick())}
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 6,
+          fontFamily: FONT.mono,
+          fontSize: 10,
+          fontWeight: 700,
+          letterSpacing: "0.04em",
+          textTransform: "uppercase",
+          background: WB.railBg,
+          border: `1px solid ${WB.panelBorder}`,
+          borderRadius: 9999,
+          padding: "6px 12px",
+          color: pending ? WB.muted3 : WB.muted,
+          cursor: pending ? "default" : "pointer",
+        }}
+      >
+        {pending ? "Dupliserer…" : "Dupliser forrige uke"}
+      </button>
     </div>
   );
 }

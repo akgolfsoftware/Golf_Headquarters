@@ -151,6 +151,120 @@ export async function coachRemoveWorkbenchSession(
   return { ok: true };
 }
 
+/**
+ * «Dupliser forrige uke» (bølge 3) — kopier alle økter (med drills, inkl.
+ * rep-type/volum) fra uka før `targetWeekOffset` inn i den uka, forskjøvet +7
+ * dager (samme dag+tid). Legger til (rører ikke eksisterende økter i måluka).
+ */
+export async function coachDuplicateWeek(
+  playerId: string,
+  targetWeekOffset = 0,
+): Promise<{ ok: boolean; count?: number; error?: string }> {
+  const coach = await ensureCoach();
+  const targetMonday = weekRefDate(targetWeekOffset);
+  const sourceMonday = new Date(targetMonday);
+  sourceMonday.setDate(sourceMonday.getDate() - 7);
+
+  const sources = await prisma.trainingPlanSession.findMany({
+    where: {
+      plan: { userId: playerId },
+      scheduledAt: { gte: sourceMonday, lt: targetMonday },
+    },
+    orderBy: { scheduledAt: "asc" },
+    select: {
+      planId: true,
+      title: true,
+      scheduledAt: true,
+      durationMin: true,
+      pyramidArea: true,
+      skillArea: true,
+      environment: true,
+      lPhase: true,
+      lFase: true,
+      miljo: true,
+      csNivaa: true,
+      pressureLevel: true,
+      pPosisjoner: true,
+      drills: {
+        orderBy: { orderIndex: "asc" },
+        select: {
+          exerciseId: true,
+          repsSets: true,
+          sets: true,
+          reps: true,
+          csTarget: true,
+          notes: true,
+          orderIndex: true,
+          lFase: true,
+          miljo: true,
+          csNivaa: true,
+          prPress: true,
+          pPosisjoner: true,
+          pyramidArea: true,
+          skillArea: true,
+          repType: true,
+          repAntall: true,
+          repMinutter: true,
+          repSett: true,
+          repReps: true,
+        },
+      },
+    },
+  });
+  if (sources.length === 0) return { ok: false, error: "Forrige uke har ingen økter" };
+
+  let count = 0;
+  for (const s of sources) {
+    const newAt = new Date(s.scheduledAt);
+    newAt.setDate(newAt.getDate() + 7);
+    const created = await prisma.trainingPlanSession.create({
+      data: {
+        planId: s.planId,
+        title: s.title,
+        scheduledAt: newAt,
+        durationMin: s.durationMin,
+        pyramidArea: s.pyramidArea,
+        skillArea: s.skillArea,
+        environment: s.environment,
+        lPhase: s.lPhase,
+        lFase: s.lFase,
+        miljo: s.miljo,
+        csNivaa: s.csNivaa,
+        pressureLevel: s.pressureLevel,
+        pPosisjoner: s.pPosisjoner,
+        status: "PLANNED",
+      },
+      select: {
+        id: true,
+        title: true,
+        scheduledAt: true,
+        durationMin: true,
+        pyramidArea: true,
+        miljo: true,
+      },
+    });
+    if (s.drills.length > 0) {
+      await prisma.sessionDrill.createMany({
+        data: s.drills.map((d) => ({ ...d, sessionId: created.id })),
+      });
+    }
+    await upsertV2ForPlanSession({
+      planSessionId: created.id,
+      playerId,
+      title: created.title,
+      scheduledAt: created.scheduledAt,
+      durationMin: created.durationMin,
+      pyramidArea: created.pyramidArea,
+      coachId: coach.id,
+      miljo: created.miljo,
+    });
+    count++;
+  }
+
+  revalidateWorkbench(playerId);
+  return { ok: true, count };
+}
+
 /** Lukk hengende ACTIVE/PAUSED før ny start. Returnerer URL til økt-brief. */
 export async function resolvePlanSessionLiveHref(
   sessionId: string,
