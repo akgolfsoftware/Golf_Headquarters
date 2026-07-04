@@ -17,6 +17,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { Card, Eyebrow } from "@/components/athletic/golfdata";
 
 export type DrillAxis = "fys" | "tek" | "slag" | "spill" | "turn";
 export type DrillDifficulty = "lett" | "middels" | "hard";
@@ -71,16 +72,14 @@ function DrillCard({ drill }: { drill: DrillCard }) {
   const varighet = drill.meta[0] ?? null;
 
   return (
-    <Link
-      href={`/portal/drills/${drill.id}`}
-      className="block overflow-hidden rounded-[var(--radius-lg,14px)] border border-border bg-card shadow-[0_1px_2px_rgba(10,31,23,.05)] transition-[transform,box-shadow] hover:-translate-y-0.5 hover:shadow-[0_10px_22px_rgba(10,31,23,.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
-    >
+    <Link href={`/portal/drills/${drill.id}`} className="block">
+      <Card interactive className="overflow-hidden" bodyStyle={{ padding: 0 }}>
       {/* Thumbnail — forest-gradient med lime-gridmønster */}
       <div
         className="relative h-[72px] w-full"
         style={{
           background: "linear-gradient(150deg,#2f5a2c,#0a2417)",
-          borderRadius: "var(--radius-lg,14px) var(--radius-lg,14px) 0 0",
+          borderRadius: "var(--radius-card) var(--radius-card) 0 0",
         }}
         aria-hidden
       >
@@ -125,6 +124,7 @@ function DrillCard({ drill }: { drill: DrillCard }) {
           )}
         </div>
       </div>
+      </Card>
     </Link>
   );
 }
@@ -154,20 +154,14 @@ export function DrillGallery({ drills }: { drills: DrillCard[] }) {
   );
 
   return (
-    <div className="px-0">
+    <div className="golfdata-scope px-0">
       {/* Side-header */}
       <div className="px-[18px] pb-4 pt-2">
-        <p className="mb-2.5 font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+        <Eyebrow className="mb-2.5 block" style={{ fontSize: "var(--text-11)", letterSpacing: "0.16em" }}>
           Drills
-        </p>
+        </Eyebrow>
         <h1 className="font-display mb-3.5 text-[28px] font-bold leading-[1.04] tracking-[-0.035em] text-foreground">
-          Velg{" "}
-          <em
-            className="not-italic italic font-medium"
-            style={{ color: "var(--color-primary)" }}
-          >
-            drill
-          </em>
+          Velg <em className="font-medium italic text-primary">drill</em>
         </h1>
 
         {/* Filter-pills — horisontalt scrollbare */}
