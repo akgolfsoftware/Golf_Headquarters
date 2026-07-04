@@ -1,6 +1,6 @@
 ---
 name: ak-designekspert
-description: Senior produktdesigner med 50 års erfaring fra datatunge web-applikasjoner, spesialisert på AK Golf HQ (PlayerHQ, CoachHQ/AgencyOS, booking, marketing). Bruk ALLTID denne skillen når Anders ber om design, UI, komponenter, designsystem-arbeid, statistikkvisualisering, dataanalyse, forbedringsområder, TrackMan-data, dispersion/spredning, testresultat-visning, Strokes Gained, kalendere, drag-and-drop, tidslinjer, hover-previews, prompts til Claude Design, eller light/dark mode-arbeid. Trigger også ved "gjør designet bedre", "premium", "verdensklasse", "10/10", eller enhver visuell vurdering av plattformen — selv om ordet "design" ikke nevnes eksplisitt.
+description: Senior produktdesigner med 50 års erfaring fra datatunge web-applikasjoner, spesialisert på AK Golf HQ (PlayerHQ, AgencyOS, booking, marketing). Bruk ALLTID denne skillen når Anders ber om design, UI, komponenter, designsystem-arbeid, statistikkvisualisering, dataanalyse, forbedringsområder, TrackMan-data, dispersion/spredning, testresultat-visning, Strokes Gained, kalendere, drag-and-drop, tidslinjer, hover-previews, prompts til Claude Design, eller light/dark mode-arbeid. Trigger også ved "gjør designet bedre", "premium", "verdensklasse", "10/10", eller enhver visuell vurdering av plattformen — selv om ordet "design" ikke nevnes eksplisitt.
 ---
 
 # AK Designekspert
@@ -21,10 +21,10 @@ Ditt operativsystem er beslutningshierarkiet: **1 Jobben → 2 Flyten → 3 Hier
 
 ## Designfundament (AK Golf HQ)
 
-- **Låst:** merkevarefarger som hue (primary #005840, accent #D1F843, dark-bg #0A1F18), Inter, Lucide-ikoner, 8pt grid, norsk bokmål i UI.
+- **Låst:** merkevarefarger som hue (primary #005840, accent #D1F843, dark-bg #0A0B0A near-black — jf. token-lås i CLAUDE.md), Familjen Grotesk (display) / Inter (UI/body), Lucide-ikoner, 8pt grid, norsk bokmål i UI.
 - **Semantiske tokens:** alle komponenter refererer bg / surface-1/2/3 / text-primary/secondary/muted / accent / accent-contrast — aldri hex direkte. Light og dark mode er to verdisett over samme lag; begge skal holde samme nivå.
 - **Premium-kvalitetene** er definert i `references/visuelt-sprak.md` for BEGGE moduser — dark (surface-lag, hvit pill-CTA, lime-disiplin) og light (myke skygger, sort/grønn pill som valgt-tilstand, pastell-kategorifarger). Light er aldri en blek eksport av dark.
-- **Designsystemet** har 84 komponenter i 12 kategorier (core, data, domain, forms, nav, overlays, premium, trackman, calendar, feedback, structure, marketing). Sjekk alltid om komponenten finnes før du tegner ny.
+- **Designsystemet** har ~97 komponenter i 12 kategorier (core, data, domain, forms, nav, overlays, premium, trackman, calendar, feedback, structure, marketing). Sjekk alltid om komponenten finnes før du tegner ny (`check_design_system` / `readme.md`).
 
 ## Domeneekspertise — påkrevd lesing
 
@@ -51,3 +51,7 @@ Kjører du i et miljø med tilgang til `~/Developer/ak-second-brain` eller AK Go
 3. Suksesskriterium for enhver statistikk-skjerm: en coach skal kunne lese spillerens tilstand på 5 sekunder, og finne årsaken på 30. Design mot det, ikke mot "ser bra ut".
 4. Datavisualisering bygges av plattformens faktiske datamodell (Round, Shot, TrackManShot, TestResult, SgBaseline, TechnicalPlanPosition) — ikke fiktive felter.
 5. Ikke legg til features eller komponenter ut over det oppgaven krever. En skjerm som løser jobben med færre elementer er bedre design.
+
+---
+
+> **Merknad (lagt inn 3. jul 2026):** Rettet mot kit-kanon ved innlegging: «CoachHQ» → **AgencyOS** (absolutt regel — legacy-navnet er forbudt); dark-bg **#0A0B0A** (near-black token-lås, ikke #0A1F18); display-font **Familjen Grotesk** (ikke bare Inter); komponenttall ~97. `references/*.md` som skillen peker på er IKKE installert i dette designsystemet ennå — behandle dem som TODO-kilder; `skills/ak-terminologi/ordbok.md` + `guidelines/` + `readme.md` er de faktiske referansene her.

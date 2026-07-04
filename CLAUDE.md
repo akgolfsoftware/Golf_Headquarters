@@ -33,8 +33,8 @@ dashboard-tallene + endringsloggen når du fullfører/endrer skjermer.
 - **Analyse samlet:** Analysere + TrackMan + Runder + SG er én flate med faner — ikke separate moduler. Mål bor i Oversikt, redigeres i Workbench.
 - **Abonnement (ingen tier-nivåer):** PlayerHQ-tilgang er gratis eller 300 kr/mnd. **Gratis** hvis: 1 mnd prøveperiode, ELLER coaching-pakke (Performance / Performance Pro), ELLER gruppe via AK Golf. **300 kr/mnd** for alle andre. «Performance / Performance Pro» er **coaching-pakker** (antall økter), IKKE app-nivåer. **ELITE finnes ikke** (dødt Prisma-enum — vis aldri i UI).
 - **FYS-resultatformel avventer:** Bygg testskjermer med plassholder-tall. Ikke hardkod referanseverdier før Anders gir grønt lys.
-- **Design under aktiv utvikling (2026-07-03):** Ingen låst design-kilde akkurat nå — ny design bygges hos Claude Design og leveres som zip-handover senere. Når den kommer: pakk ut til dato-stemplet `docs/design-handover-YYYY-MM-DD/`, skriv ny kilde-/gate-regel her.
-- Aldri referer til `wireframe/`, gamle `design-package/` eller `design-files-v2/` i produksjonsfiler — disse er dødt arkiv uansett hvilken handover som gjelder.
+- **Design-kilde (LÅST, v13 — 2026-07-04):** `public/design-handover/` (design-handover v13, git-sporet) er ENESTE designkilde: 113 komponenter (jsx + d.ts + prompt.md, manifest-verifisert), tokens/, guidelines/, DEKNINGSKART.md, PORTING.md. Skjermer KOMPONERES fra `components/` per prompt.md-kontraktene og PORTING.md — følg `.claude/skills/ak-designekspert` (skjermkomposisjons-kontrakten i `references/skjermkomposisjon.md`: gap meldes, ikke improviseres).
+- Aldri referer til `wireframe/`, gamle `design-package/` eller `design-files-v2/` i produksjonsfiler — disse er slettet fra prosjektet.
 
 ## Stack (eksakte versjoner — ikke oppgrader uten beslutning)
 - Next.js 16 (App Router, TypeScript strict, Turbopack), React 19
