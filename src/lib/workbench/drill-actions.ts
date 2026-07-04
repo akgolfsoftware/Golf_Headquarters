@@ -12,9 +12,61 @@
  */
 
 import { revalidatePath } from "next/cache";
+import type { PyramidArea, RepType, SkillArea } from "@/generated/prisma/client";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { sanitizeAkFormel, type AkFormelInput } from "@/lib/workbench/ak-formel";
+
+// Rep-type + volum + område per drill (bølge 2/3). Validering client-strenger → enum/int.
+const REP_TYPES = ["SVINGER_UTEN_BALL", "BALLER_SLATT", "TID", "SETT_REPS"] as const;
+const PYRAMID = ["FYS", "TEK", "SLAG", "SPILL", "TURN"] as const;
+const SKILL = ["TEE_TOTAL", "TILNAERMING", "AROUND_GREEN", "PUTTING", "SPILL"] as const;
+
+const validRepType = (v: string | null | undefined): RepType | null =>
+  v && (REP_TYPES as readonly string[]).includes(v) ? (v as RepType) : null;
+const validPyramid = (v: string | null | undefined): PyramidArea | null =>
+  v && (PYRAMID as readonly string[]).includes(v) ? (v as PyramidArea) : null;
+const validSkill = (v: string | null | undefined): SkillArea | null =>
+  v && (SKILL as readonly string[]).includes(v) ? (v as SkillArea) : null;
+const validInt = (v: number | null | undefined): number | null =>
+  typeof v === "number" && Number.isFinite(v) && v >= 0 ? Math.floor(v) : null;
+
+/** Rep-type + volum + område per drill (kanonisk kontrakt, bølge 2). */
+export type DrillVolumInput = {
+  repType?: string | null;
+  repAntall?: number | null;
+  repMinutter?: number | null;
+  repSett?: number | null;
+  repReps?: number | null;
+  pyramidArea?: string | null;
+  skillArea?: string | null;
+};
+
+/** DrillVolumInput → validert drill-data. Alle felt settes (create). */
+function drillVolumData(v: DrillVolumInput) {
+  return {
+    repType: validRepType(v.repType),
+    repAntall: validInt(v.repAntall),
+    repMinutter: validInt(v.repMinutter),
+    repSett: validInt(v.repSett),
+    repReps: validInt(v.repReps),
+    pyramidArea: validPyramid(v.pyramidArea),
+    skillArea: validSkill(v.skillArea),
+  };
+}
+
+/** Guardet patch (undefined = uendret, null/verdi = sett) — for update + bulk. */
+function drillVolumPatch(v: DrillVolumInput) {
+  return {
+    ...(v.repType !== undefined ? { repType: validRepType(v.repType) } : {}),
+    ...(v.repAntall !== undefined ? { repAntall: validInt(v.repAntall) } : {}),
+    ...(v.repMinutter !== undefined ? { repMinutter: validInt(v.repMinutter) } : {}),
+    ...(v.repSett !== undefined ? { repSett: validInt(v.repSett) } : {}),
+    ...(v.repReps !== undefined ? { repReps: validInt(v.repReps) } : {}),
+    ...(v.pyramidArea !== undefined ? { pyramidArea: validPyramid(v.pyramidArea) } : {}),
+    ...(v.skillArea !== undefined ? { skillArea: validSkill(v.skillArea) } : {}),
+  };
+}
 
 export type WbDrill = {
   id: string;
@@ -32,6 +84,14 @@ export type WbDrill = {
   csNivaa: string | null;
   prPress: string | null;
   pPosisjoner: string[];
+  // Rep-type + volum + område per drill (bølge 2).
+  repType: string | null;
+  repAntall: number | null;
+  repMinutter: number | null;
+  repSett: number | null;
+  repReps: number | null;
+  pyramidArea: string | null;
+  skillArea: string | null;
 };
 
 export type ExerciseHit = {
@@ -55,6 +115,13 @@ const DRILL_SELECT = {
   csNivaa: true,
   prPress: true,
   pPosisjoner: true,
+  repType: true,
+  repAntall: true,
+  repMinutter: true,
+  repSett: true,
+  repReps: true,
+  pyramidArea: true,
+  skillArea: true,
   exercise: { select: { name: true } },
 } as const;
 
@@ -72,6 +139,13 @@ type DrillRow = {
   csNivaa: string | null;
   prPress: string | null;
   pPosisjoner: string[];
+  repType: string | null;
+  repAntall: number | null;
+  repMinutter: number | null;
+  repSett: number | null;
+  repReps: number | null;
+  pyramidArea: string | null;
+  skillArea: string | null;
   exercise: { name: string };
 };
 
@@ -91,6 +165,13 @@ function toWbDrill(d: DrillRow): WbDrill {
     csNivaa: d.csNivaa,
     prPress: d.prPress,
     pPosisjoner: d.pPosisjoner,
+    repType: d.repType,
+    repAntall: d.repAntall,
+    repMinutter: d.repMinutter,
+    repSett: d.repSett,
+    repReps: d.repReps,
+    pyramidArea: d.pyramidArea,
+    skillArea: d.skillArea,
   };
 }
 
@@ -160,6 +241,7 @@ export async function createSessionDrill(input: {
   repsSets?: string;
   csTarget?: number | null;
   akFormel?: AkFormelInput;
+  volum?: DrillVolumInput;
 }): Promise<{ ok: boolean; drill?: WbDrill; error?: string }> {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const access = await sessionForAccess(input.sessionId);
@@ -187,6 +269,7 @@ export async function createSessionDrill(input: {
       csTarget: input.csTarget ?? null,
       orderIndex,
       ...drillAkData(input.akFormel),
+      ...(input.volum ? drillVolumData(input.volum) : {}),
     },
     select: DRILL_SELECT,
   });
@@ -205,6 +288,7 @@ export async function updateSessionDrill(
     csTarget?: number | null;
     notes?: string | null;
     akFormel?: AkFormelInput;
+    volum?: DrillVolumInput;
   },
 ): Promise<{ ok: boolean; drill?: WbDrill; error?: string }> {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
@@ -223,12 +307,43 @@ export async function updateSessionDrill(
       ...(patch.csTarget !== undefined ? { csTarget: patch.csTarget } : {}),
       ...(patch.notes !== undefined ? { notes: patch.notes } : {}),
       ...(patch.akFormel ? drillAkData(patch.akFormel) : {}),
+      ...(patch.volum ? drillVolumPatch(patch.volum) : {}),
     },
     select: DRILL_SELECT,
   });
   revalidatePath("/admin/spillere/" + drill.session.plan.userId + "/workbench");
   revalidatePath("/portal/planlegge/workbench");
   return { ok: true, drill: toWbDrill(updated) };
+}
+
+/**
+ * «Sett samme for hele økten» (bølge 3) — bulk-apply rep-type/volum (+ ev. AK-formel)
+ * til ALLE drills i en økt. Modellen lagrer per drill; dette er kun en effektiv
+ * skrive-affordance for coach. Returnerer de oppdaterte drillene.
+ */
+export async function updateAllDrillsInSession(
+  sessionId: string,
+  patch: { akFormel?: AkFormelInput; volum?: DrillVolumInput },
+): Promise<{ ok: boolean; drills?: WbDrill[]; error?: string }> {
+  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const access = await sessionForAccess(sessionId);
+  if (!access.ok) return { ok: false, error: access.error };
+
+  const data = {
+    ...(patch.akFormel ? drillAkData(patch.akFormel) : {}),
+    ...(patch.volum ? drillVolumPatch(patch.volum) : {}),
+  };
+  if (Object.keys(data).length === 0) return { ok: false, error: "Ingenting å sette" };
+
+  await prisma.sessionDrill.updateMany({ where: { sessionId }, data });
+  const rows = await prisma.sessionDrill.findMany({
+    where: { sessionId },
+    orderBy: { orderIndex: "asc" },
+    select: DRILL_SELECT,
+  });
+  revalidatePath("/admin/spillere/" + access.playerId + "/workbench");
+  revalidatePath("/portal/planlegge/workbench");
+  return { ok: true, drills: rows.map(toWbDrill) };
 }
 
 /** Slett en drill (coach). */
