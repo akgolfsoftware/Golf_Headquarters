@@ -12,7 +12,7 @@ import Link from "next/link";
 import { Dumbbell, ChevronRight } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { AthleticEyebrow } from "@/components/athletic";
+import { Card, Eyebrow } from "@/components/athletic/golfdata";
 import { cn } from "@/lib/utils";
 import { NyPlanKnapp } from "./ny-plan-knapp";
 
@@ -94,23 +94,13 @@ export default async function FysPlanListePage() {
   const harNoen = enriched.length > 0;
 
   return (
-    <div className="mx-auto max-w-[430px] space-y-6 px-4 pb-24 md:pb-8">
+    <div className="golfdata-scope mx-auto max-w-[430px] space-y-6 px-4 pb-24 md:pb-8">
       {/* ── Editorial hero ── */}
       <header className="flex items-start justify-between gap-4 pt-1">
         <div>
-          <AthleticEyebrow>Tren · Fysisk plan</AthleticEyebrow>
+          <Eyebrow>Tren · Fysisk plan</Eyebrow>
           <h1 className="font-display mt-1.5 text-[26px] font-bold leading-tight tracking-[-0.025em] text-foreground">
-            FYS
-            <em
-              className="font-medium not-italic"
-              style={{
-                fontFamily: "'Inter Tight', sans-serif",
-                fontStyle: "italic",
-                color: "hsl(var(--primary))",
-              }}
-            >
-              -plan
-            </em>
+            FYS<em className="font-medium italic text-primary">-plan</em>
           </h1>
           <p className="mt-1 text-[13px] text-muted-foreground">
             Plassholderverdier · formelen ikke låst
@@ -120,24 +110,20 @@ export default async function FysPlanListePage() {
       </header>
 
       {/* ── Mastery rings — FYS-score per område (plassholder) ── */}
-      <section className="rounded-xl border border-border bg-card p-4 shadow-sm">
-        <AthleticEyebrow className="mb-3 block">
-          FYS-score per område · plassholder
-        </AthleticEyebrow>
+      <Card as="section">
+        <Eyebrow className="mb-3 block">FYS-score per område · plassholder</Eyebrow>
         <div className="flex justify-around">
           <MasteryRing label="Styrke" pct={62} color="var(--forest)" />
           <MasteryRing label="Mobilitet" pct={78} color="#B8852A" />
           <MasteryRing label="Uthold." pct={55} color="#2563EB" />
           <MasteryRing label="Spenst" pct={70} color="var(--lime)" />
         </div>
-      </section>
+      </Card>
 
       {/* ── Aktive planer ── */}
       {aktive.length > 0 && (
         <section className="space-y-3">
-          <AthleticEyebrow>
-            Aktive · {aktive.length}
-          </AthleticEyebrow>
+          <Eyebrow>Aktive · {aktive.length}</Eyebrow>
           <div className="space-y-3">
             {aktive.map((p, i) => (
               <PlanCard key={p.id} plan={p} featured={i === 0 && p.status === "ACTIVE"} />
@@ -149,9 +135,7 @@ export default async function FysPlanListePage() {
       {/* ── Arkiverte planer ── */}
       {arkiverte.length > 0 && (
         <section className="space-y-3">
-          <AthleticEyebrow>
-            Arkiverte · {arkiverte.length}
-          </AthleticEyebrow>
+          <Eyebrow>Arkiverte · {arkiverte.length}</Eyebrow>
           <div className="space-y-3">
             {arkiverte.map((p) => (
               <PlanCard key={p.id} plan={p} featured={false} />
@@ -265,13 +249,8 @@ function PlanCard({
   const s = STATUS_CFG[plan.status];
 
   return (
-    <Link
-      href={`/portal/tren/fys-plan/${plan.id}`}
-      className={cn(
-        "block rounded-xl border border-border bg-card p-4 shadow-sm transition-[transform,box-shadow] hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0",
-        featured && "border-l-[3px] border-l-primary",
-      )}
-    >
+    <Link href={`/portal/tren/fys-plan/${plan.id}`} className="block">
+     <Card interactive compact className={cn(featured && "border-l-[3px] border-l-primary")}>
       {/* Topplinje: tittel + status-badge */}
       <div className="flex items-center justify-between gap-3 mb-2">
         <p className="text-[14px] font-semibold text-foreground leading-tight">
@@ -322,6 +301,7 @@ function PlanCard({
           aria-hidden
         />
       </div>
+     </Card>
     </Link>
   );
 }
