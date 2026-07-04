@@ -22,8 +22,7 @@
  */
 
 import Link from "next/link";
-import { TrendingUp, TrendingDown } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Card, Eyebrow, KpiTile as DsKpiTile } from "@/components/athletic/golfdata";
 
 // ── Datamodell ────────────────────────────────────────────────────────────────
 
@@ -79,44 +78,43 @@ export type StatistikkHybridData = {
 
 // ── KPI strip ─────────────────────────────────────────────────────────────────
 
+/** true når delta-strengen er et signert tall (+/−) og ikke en note («fra loggede hull»). */
+function erSignertDelta(delta: string): boolean {
+  return /^[+\-−]/.test(delta.trim());
+}
+
 function KpiStrip({ kpis }: { kpis: KpiTile[] }) {
   return (
-    <div className="grid grid-cols-2 overflow-hidden rounded-xl border border-border bg-card shadow-[0_1px_3px_rgba(10,31,23,.07)]">
-      {kpis.map((k, i) => {
-        const isOdd = i % 2 === 1;
-        const isLastRow = i >= kpis.length - 2;
-        return (
-          <div
-            key={k.label}
-            className={cn(
-              "flex flex-col gap-[5px] p-3",
-              !isOdd && "border-r border-border/60",
-              !isLastRow && "border-b border-border/60",
-            )}
-          >
-            <span className="font-mono text-[8px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
-              {k.label}
-            </span>
-            <span className="font-mono text-[20px] font-semibold leading-none tabular-nums text-foreground">
-              {k.val}
-            </span>
-            <span
-              className={cn(
-                "flex items-center gap-[3px] font-mono text-[9.5px] font-semibold",
-                k.positive ? "text-success" : "text-destructive",
-              )}
+    <Card compact bodyStyle={{ padding: 0 }}>
+      <div className="grid grid-cols-2">
+        {kpis.map((k, i) => {
+          const isOdd = i % 2 === 1;
+          const isLastRow = i >= kpis.length - 2;
+          const signert = erSignertDelta(k.delta);
+          return (
+            <div
+              key={k.label}
+              className={[
+                "px-4 py-3.5",
+                isOdd ? "" : "border-r border-border",
+                isLastRow ? "" : "border-b border-border",
+              ]
+                .filter(Boolean)
+                .join(" ")}
             >
-              {k.positive ? (
-                <TrendingUp className="h-3 w-3 shrink-0" strokeWidth={2} aria-hidden />
-              ) : (
-                <TrendingDown className="h-3 w-3 shrink-0" strokeWidth={2} aria-hidden />
-              )}
-              {k.delta}
-            </span>
-          </div>
-        );
-      })}
-    </div>
+              <DsKpiTile
+                size="md"
+                label={k.label}
+                value={k.val}
+                delta={signert ? k.delta : undefined}
+                trend={signert ? (k.positive ? "up" : "down") : undefined}
+                deltaSuffix={signert ? undefined : k.delta}
+              />
+            </div>
+          );
+        })}
+      </div>
+    </Card>
   );
 }
 
@@ -237,22 +235,18 @@ function TrendBandCard({ scores }: { scores: number[] }) {
 function HubCard({ hub }: { hub: HubShortcut }) {
   const Icon = hub.icon;
   return (
-    <Link
-      href={hub.href}
-      className="flex flex-col gap-[9px] rounded-xl border border-border bg-card p-[14px] shadow-[0_1px_3px_rgba(10,31,23,.06)] transition-shadow hover:shadow-[0_4px_12px_rgba(10,31,23,.10)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
-    >
-      <div
-        className="flex h-[34px] w-[34px] items-center justify-center rounded-lg"
-        style={{ background: "rgba(0,88,64,.08)", color: "var(--color-primary)" }}
-      >
-        <Icon size={17} strokeWidth={1.5} aria-hidden />
-      </div>
-      <span className="text-[13.5px] font-semibold leading-tight text-foreground">
-        {hub.label}
-      </span>
-      <span className="font-mono text-[9.5px] text-muted-foreground">
-        {hub.sub}
-      </span>
+    <Link href={hub.href} className="block">
+      <Card interactive compact>
+        <div className="flex flex-col gap-[9px]">
+          <div className="flex h-[34px] w-[34px] items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <Icon size={17} strokeWidth={1.5} aria-hidden />
+          </div>
+          <span className="text-[13.5px] font-semibold leading-tight text-foreground">
+            {hub.label}
+          </span>
+          <span className="font-mono text-[9.5px] text-muted-foreground">{hub.sub}</span>
+        </div>
+      </Card>
     </Link>
   );
 }
@@ -374,13 +368,13 @@ function NivaaTomState() {
 
 export function StatistikkHub({ data }: { data: StatistikkHybridData }) {
   return (
-    <div className="mx-auto w-full max-w-[460px] space-y-[14px] px-4 pb-6 pt-[10px] sm:px-0">
+    <div className="golfdata-scope mx-auto w-full max-w-[460px] space-y-[14px] px-4 pb-6 pt-[10px] sm:px-0">
 
       {/* 1. Hero */}
       <div className="px-0 pb-[0px]">
-        <span className="block font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+        <Eyebrow style={{ fontSize: "var(--text-11)", letterSpacing: "0.14em" }}>
           Analyse · Nivå-diagnose
-        </span>
+        </Eyebrow>
         <h1 className="mt-1 font-display text-[22px] font-bold leading-[1.1] tracking-[-0.03em] text-foreground">
           Strokes gained <em className="font-medium italic text-primary">i dybden</em>
         </h1>
