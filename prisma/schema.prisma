@@ -252,6 +252,14 @@ enum PRPress {
   PR5
 }
 
+// Rep-type per drill (bølge 2 · 2026-07-04). Låst av Anders — de fire volumtypene.
+enum RepType {
+  SVINGER_UTEN_BALL // antall svinger uten ball
+  BALLER_SLATT // antall baller slått
+  TID // minutter
+  SETT_REPS // sett × reps
+}
+
 enum PracticeType {
   BLOKK
   RANDOM
@@ -972,6 +980,15 @@ model SessionDrill {
   miljo       MMiljo?
   csNivaa     CSNivaa?
   prPress     PRPress?
+  // Alle-seks-per-drill (bølge 2 · 2026-07-04) — pyramide + område per drill (arver økta når null).
+  pyramidArea PyramidArea?
+  skillArea   SkillArea?
+  // Rep-type + volum per drill (bølge 2). repType velger hvilke volumfelt som gjelder.
+  repType     RepType?
+  repAntall   Int? // antall svinger (SVINGER_UTEN_BALL) eller baller (BALLER_SLATT)
+  repMinutter Int? // minutter (TID)
+  repSett     Int? // sett (SETT_REPS)
+  repReps     Int? // reps per sett (SETT_REPS)
   pPosisjoner String[]
   notes      String?
   orderIndex Int     @default(0)
@@ -2636,6 +2653,12 @@ model TrainingDrillV2 {
   csNivaa             CSNivaa?
   miljo               MMiljo?
   prPress             PRPress?
+  // Rep-type + volum per drill (bølge 2 · 2026-07-04) — kanonisk kontrakt delt med SessionDrill.
+  repType             RepType?
+  repAntall           Int? // antall svinger (SVINGER_UTEN_BALL) eller baller (BALLER_SLATT)
+  repMinutter         Int? // minutter (TID)
+  repSett             Int? // sett (SETT_REPS)
+  repReps             Int? // reps per sett (SETT_REPS)
   pPosisjoner         String[]
   lifeKode            String?
   componentFocus      String?
