@@ -37,9 +37,9 @@ Eksport inn i `public/design-handover/` (2 MB-sjekk), én designkilde verifisert
 PlayerHQ **Min golf**: konsolidert flate med tabs — SG-status (SgTotalKort, SgKategoriBar, SgTrend), Neste fokus (NesteFokusKort + SlagLekkasjeKart + DiagnoseKort), Runder (Scorekort, TigerFive), Baggen (GappingChart, LaunchWindow, StrikeSmash), Putting (PuttModellKort), Progresjon (KategoriKravKort). AgencyOS **cockpit**: SpillerTilstandKort-grid → klikk åpner full analyse i coach-dybde. Data: sg-hub, runde-/test-/TrackMan-modeller — kun visning, ingen ny beregning. Empty states = onboarding.
 **Ferdig når:** SG-tall stemmer mot sg-hub for kjent spiller; coach leser tilstand på 5 sek med ekte data.
 
-### Bølge 2 — Datamodell drill-nivå · INPUT KREVES · ~1 økt
-Økt blir container: `Okt` → `OktDrill[]`, hver drill med egen formel (PYR/Område/CS/Læringstrinn), repstype og volum. Drillbank som sannhetskilde. FysProgram/ProgramSplitt/ProgramOvelse (sett/reps/kg/tid/sone). Migrasjonsstrategi for eksisterende økter.
-**Blokkert av intervjusvar 1–3, 5** (se INPUT KREVES). Ingen bølge 3–5 før denne er besluttet, migrert og verifisert grønn.
+### Bølge 2 — Datamodell drill-nivå · KLAR (input besvart 2026-07-04) · ~1 økt
+Økt blir container: `Okt` → `OktDrill[]`, hver drill med ALLE seks akser (PYR/Område/CS/Læringstrinn/Situasjon/Press) + én av fire repstyper (svinger uten ball / baller slått / tid / sett×reps) + volum. Bulk-apply-affordance i UI (ikke i modellen). Drillbank på plattformen = sannhetskilde (ingen Notion-synk). FysProgram/ProgramSplitt/ProgramOvelse (sett/reps/kg/tid/sone). **Additiv migrering** (nye tabeller, CREATE TABLE IF NOT EXISTS via db execute per gotchas — rører aldri eksisterende data). Gamle økter migreres IKKE (fryses lesbar; drill-modell fra dato). Offline-krav (svar 4) håndteres i bølge 4, men modellen må tåle klient-generert id + synk-status.
+**Ferdig når:** schema validert + generert, additiv migrering kjørt mot dev-DB uten datatap, tsc/tester/build grønt.
 
 ### Bølge 3 — Workbench v2 · avhenger av bølge 2 · ~1–2 økter
 Composer på drill-nivå (velg fra drillbank → reps per drill → økt). Øktmaler og ukemaler med fase-tag (GRUNN/SPES/TURN), deling coach→spiller. «Dupliser forrige uke». FYS-programkobling når PYR=FYS. Pyramide-budsjett regnes fra drill-minutter. Anbefalings-chips (aldri sperrer) + coach-varsel-event.
@@ -59,13 +59,13 @@ Onboarding-quiz med nivåplassering (lanseringskritisk for selvbetjening). Forel
 ### Bølge 7 — AI Coach-laget · strategisk, etter lukket loop
 Når loopen produserer data (plan + gjennomføring + resultat) er grunnlaget lagt for AI Coach-satsingen ($10M ARR-sporet): samtale over egne data, ukesoppsummeringer, proaktive dommer. Bygges IKKE før bølge 1–5 er i produksjon — AI uten gjennomføringsdata er en chatbot, med data er den en coach.
 
-## INPUT KREVES (blokkerer bølge 2–5 — svar med Wispr)
+## INPUT KREVES — BESVART 2026-07-04 (Anders). Låst fasit for bølge 2–5:
 
-1. Formel-nivå: M og PR felles per økt, PYR/Område/CS/Læringstrinn per drill — ja/nei?
-2. Repstyper: svinger uten ball, baller slått, tid, sett×reps — komplett liste?
-3. Drillbank: plattformen som sannhetskilde, Notion Øvelsesbank fases ut — ja/nei?
-4. Live-økt offline med synk etterpå — ja/nei? (Anbefaling: ja)
-5. Historikk: migrere gamle økter til én-drill-per-økt, eller drill-modell fra dato? (Anbefaling: fra dato — historikk fryses som lesbar)
+1. **Formel-nivå:** ALLE seks aksene (PYR/Område/CS/Læringstrinn/Situasjon/Press) settes **per drill**. UI får en «sett samme for hele økten»-knapp (bulk-apply) — men lagringen er alltid per drill. (Endrer den opprinnelige antakelsen om at M+PR var felles per økt.)
+2. **Repstyper:** de fire er komplette — `svinger uten ball` · `baller slått` · `tid` · `sett×reps`. Ingen flere.
+3. **Drillbank:** plattformen er **fasit** (sannhetskilde for drill-data). Notion-godkjenning er en **manuell menneskelig sjekk** — **ingen Notion-integrasjon/synk i koden**. Notion Øvelsesbank fases ut som datakilde.
+4. **Live-økt:** fungerer **offline** med synk etterpå.
+5. **Historikk:** drill-modellen gjelder **fra dato** framover. Gamle økter migreres IKKE — de fryses som lesbar historikk.
 
 ## Kritisk sti og total
 
