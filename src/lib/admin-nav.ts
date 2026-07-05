@@ -148,13 +148,6 @@ export function buildAdminNav(
         },
         {
           type: "item",
-          key: "stall",
-          label: "Stall",
-          href: "/admin/stall",
-          icon: UsersRound,
-        },
-        {
-          type: "item",
           key: "groups",
           label: "Grupper",
           href: "/admin/grupper",

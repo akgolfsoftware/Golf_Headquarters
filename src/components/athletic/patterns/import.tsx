@@ -9,6 +9,7 @@
  */
 
 import { useState, useRef, useCallback } from "react";
+import Link from "next/link";
 import {
   Upload,
   Check,
@@ -788,8 +789,8 @@ function SuccessState({
       </div>
 
       <div className="flex flex-wrap items-center justify-center gap-4">
-        <a
-          href="/admin/stall"
+        <Link
+          href="/admin/spillere"
           className="inline-flex items-center gap-2 rounded-full font-mono text-[12px] font-bold uppercase tracking-[0.10em] no-underline"
           style={{
             background: "hsl(var(--primary))",
@@ -799,7 +800,7 @@ function SuccessState({
         >
           <ExternalLink size={14} />
           Se importerte spillere
-        </a>
+        </Link>
         <button
           type="button"
           onClick={onReset}

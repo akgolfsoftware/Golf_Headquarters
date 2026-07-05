@@ -94,7 +94,6 @@ export const ALL_ROUTES: AllRouteEntry[] = [
   { route: "/admin/spillere/[id]/tildel-test", label: "Tildel test", category: "AgencyOS · Spillere", filePath: "src/app/admin/spillere/[id]/tildel-test/page.tsx" },
   { route: "/admin/spillere/[id]/workbench", label: "Workbench", category: "AgencyOS · Spillere", filePath: "src/app/admin/spillere/[id]/workbench/page.tsx" },
   { route: "/admin/spillere/ny", label: "Ny", category: "AgencyOS · Spillere", filePath: "src/app/admin/spillere/ny/page.tsx" },
-  { route: "/admin/stall", label: "Stall", category: "AgencyOS", filePath: "src/app/admin/stall/page.tsx" },
   { route: "/admin/stats/moderering", label: "Moderering", category: "AgencyOS", filePath: "src/app/admin/stats/moderering/page.tsx" },
   { route: "/admin/stats/overview", label: "Overview", category: "AgencyOS", filePath: "src/app/admin/stats/overview/page.tsx" },
   { route: "/admin/talent", label: "Talent", category: "AgencyOS", filePath: "src/app/admin/talent/page.tsx" },
