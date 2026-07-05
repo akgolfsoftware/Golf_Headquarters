@@ -70,6 +70,13 @@ type BenchmarkGroup = {
  *    meter-intervaller 0–18 m, NGF/Team Norway-fasit. 1 m → 1,13 (var 1,85!).
  *  - OTT/APP/ARG: Mark Broadie, "Every Shot Counts" (2014), PGA Tour-baseline,
  *    interpolert fra yards til meter-gruppene under.
+ *
+ * VISNINGSENHET PUTT (bekreftet av Anders 2026-07-06): putt-avstand vises i FOT
+ * i alt brukergrensesnitt — meter kan vises som forklaring, ikke som standard.
+ * Dette er kun en visningsregel: BENCHMARK_PUTT under forblir meter-indeksert
+ * (datakilden er meter-basert), ingen re-kalibrering av forventet-slag-verdiene.
+ * Konverter med `meterTilFot()` fra src/lib/min-golf/format.ts ved visning —
+ * ikke dupliser konverteringen her.
  */
 
 const BENCHMARK_OTT: ReadonlyArray<BenchmarkGroup> = [
