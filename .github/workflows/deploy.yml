@@ -1,9 +1,10 @@
 name: Deploy to Vercel
 
+# Manuell trigger (2026-07-05): deploy skal være en bevisst handling, ikke en
+# automatisk bivirkning av push til main. Kjør fra fanen "Actions" på GitHub
+# (velg denne workflowen -> "Run workflow"), eller: gh workflow run deploy.yml
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch: {}
 
 jobs:
   deploy:
