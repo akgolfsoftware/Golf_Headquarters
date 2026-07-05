@@ -2,7 +2,7 @@
 
 > **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg.
 
-**Sist oppdatert:** 2026-06-28
+**Sist oppdatert:** 2026-07-06 (deploy-rutine avklart, akgolf.no-domenefunn, kodehelse re-verifisert: 313/313 tester)
 
 ## Levende kilder (én av hver rolle — start her)
 
@@ -20,7 +20,7 @@ Historiske bygg-spor (SKJERM-STATUS, SKJERM-BYGGEPLAN, BYGGELOGG-FLAGG, KONFLIKT
 ---
 
 ## Kort sagt
-Appen er **deployet og kjører** på `akgolf-hq.vercel.app`. Kjernen (PlayerHQ + AgencyOS) er bygget og i stor grad portet fra designfasiten. **Den er IKKE klar for betalende/ekte brukere ennå** — det står 8 P0-blokkerere igjen (se nederst). Betaling starter etter plan **1. august** (flyttet fra 1. juli av Anders 2026-06-24). Booking går midlertidig via **Acuity** (`akgolfgroup.as.me`) til den innebygde HQ-bookingen lanseres.
+Appen er **deployet og kjører** på `akgolf-hq.vercel.app`. Kjernen (PlayerHQ + AgencyOS) er bygget og i stor grad portet fra designfasiten. **Den er IKKE klar for betalende/ekte brukere ennå** — 1 av 8 opprinnelige P0-punkter avklart denne økten (deploy-rutine), 6 gjenstår (se nederst), pluss et nytt funn (akgolf.no peker ikke til appen). Betaling starter etter plan **1. august** (flyttet fra 1. juli av Anders 2026-06-24). Booking går midlertidig via **Acuity** (`akgolfgroup.as.me`) til den innebygde HQ-bookingen lanseres.
 
 ## Ferdig / solid (verifisert)
 - **Deployet live:** prod på `akgolf-hq.vercel.app`. (NB: push til `main` deployer IKKE automatisk — kjør `vercel deploy --prod`.)
@@ -51,10 +51,10 @@ Detaljert status: listen under (re-verifisert mot kode 17. juni). Betaling åpne
 5. ~~**Dataeksport: eksport-stub forvirrende**~~ — **LØST.** `/portal/meg/innstillinger/eksport/page.tsx` redirecter nå til personvern-siden (ekte `exportUserData`-flyt). Ingen «kommer snart»-stub igjen. *(verifisert 2026-06-28)*
 
 ### Krever Anders (panel/DNS/beslutning)
-3. **Live Stripe-nøkler** — verifiser at `.env.local` har TEST-nøkler, live kun i Vercel. *(Stripe + Vercel-panel)*
+3. **Live Stripe-nøkler** — verifiser at `.env.local` har TEST-nøkler, live kun i Vercel. *(Stripe + Vercel-panel)* — ikke re-verifisert denne økten (miljøfil-tilgang blokkert av sikkerhetsgrunner).
 6. **E-postleveranse** — Resend SPF/DKIM for akgolf.no ikke verifisert; signup/reset kan havne i spam. *(DNS + Resend-panel)*
-7. **`NEXT_PUBLIC_APP_URL` feil i prod** — peker på Vercel-URL, ikke akgolf.no. *(Vercel-panel)*
-8. **Deploy-rutinen uavklart** — push til main = ikke live; kun manuell `vercel deploy --prod`. *(beslutning)*
+7. **`akgolf.no` peker IKKE til appen i det hele tatt** — **nytt funn 2026-07-06**: domenet redirecter 100 % til `https://akgolfgroup.as.me/` (Acuity) på DNS-/registrar-nivå, før Vercel/Next.js ser forespørselen (`vercel domains inspect akgolf.no` bekrefter domenet ikke er tilknyttet dette Vercel-prosjektet). Konsistent med at Booking bevisst går via Acuity midlertidig — men betyr at `NEXT_PUBLIC_APP_URL`-verdien i prod ikke kan bekreftes fra utsiden, og at noen må aktivt peke `akgolf.no` til Vercel-prosjektet når dere er klare til å gå live på eget domene. *(DNS/registrar-panel)*
+8. ~~**Deploy-rutinen uavklart**~~ — **AVKLART 2026-07-05.** Deploy er nå eksplisitt manuelt: en tidligere lokal shell-funksjon som auto-deployet til prod på hver `git push` er deaktivert, og GitHub Actions-workflowen (`deploy.yml`) er endret fra automatisk push-trigger til `workflow_dispatch` (manuell trigger fra Actions-fanen eller `gh workflow run`). Push til main deployer ikke lenger noe sted automatisk.
 
 ## Verifisert vs. antatt
 - **Verifisert** mot fil/kode denne økten: P0-lista, SG-kalibrering, deploy-fakta, dokument-hierarkiet, skjermtall fra MASTER-SKJERMPLAN.
