@@ -29,6 +29,13 @@
       "autoPort": true
     },
     {
+      "name": "design-handover",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8795", "--directory", "public/design-handover"],
+      "port": 8795,
+      "autoPort": true
+    },
+    {
       "name": "wireframe",
       "runtimeExecutable": "python3",
       "runtimeArgs": ["-m", "http.server", "8765", "--directory", "wireframe"],
