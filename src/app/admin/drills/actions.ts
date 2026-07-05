@@ -1,6 +1,6 @@
 "use server";
 
-// CoachHQ — Drill-redaktør server actions
+// AgencyOS — Drill-redaktør server actions
 // CRUD for ExerciseDefinition. Bare COACH/ADMIN. Zod-validert input,
 // audit-loggført, og revalidatePath på alle mutasjoner.
 

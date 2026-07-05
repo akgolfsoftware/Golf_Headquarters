@@ -16,7 +16,7 @@
  */
 
 import Link from "next/link";
-import { Plus, Volleyball } from "lucide-react";
+import { Plus, Search, Volleyball } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
@@ -100,18 +100,34 @@ function drillMeta(d: DrillRad): string {
 export default async function DrillBibliotekPage({
   searchParams,
 }: {
-  searchParams: Promise<{ kat?: string }>;
+  searchParams: Promise<{ kat?: string; q?: string }>;
 }) {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const sp = await searchParams;
   const aktiv =
     KATEGORIER.find((k) => k.param === (sp.kat ?? "alle")) ?? KATEGORIER[0];
+  const q = sp.q?.trim() ?? "";
+
+  const sokWhere: Prisma.ExerciseDefinitionWhereInput | undefined = q
+    ? {
+        OR: [
+          { name: { contains: q, mode: "insensitive" } },
+          { description: { contains: q, mode: "insensitive" } },
+          { tags: { hasSome: [q] } },
+        ],
+      }
+    : undefined;
+
+  const where: Prisma.ExerciseDefinitionWhereInput | undefined =
+    aktiv.where && sokWhere
+      ? { AND: [aktiv.where, sokWhere] }
+      : (aktiv.where ?? sokWhere ?? undefined);
 
   const [total, iKategori, drills] = await Promise.all([
     prisma.exerciseDefinition.count(),
-    prisma.exerciseDefinition.count({ where: aktiv.where ?? undefined }),
+    prisma.exerciseDefinition.count({ where }),
     prisma.exerciseDefinition.findMany({
-      where: aktiv.where ?? undefined,
+      where,
       orderBy: { name: "asc" },
       select: {
         id: true,
@@ -140,13 +156,36 @@ export default async function DrillBibliotekPage({
         }
       />
 
+      {/* Søk — kombineres med kategorifilteret via ?q= */}
+      <form className="mb-4 flex" action="/admin/drills" method="GET">
+        <label className="inline-flex h-9 w-full max-w-[360px] items-center gap-2 rounded-full border border-input bg-card px-3.5">
+          <Search className="h-[13px] w-[13px] text-muted-foreground" strokeWidth={1.75} aria-hidden />
+          <input
+            type="search"
+            name="q"
+            defaultValue={q}
+            placeholder="Søk drill-navn, beskrivelse eller tag"
+            className="min-w-0 flex-1 bg-transparent font-sans text-sm text-foreground outline-none placeholder:text-muted-foreground"
+          />
+        </label>
+        {aktiv.param !== "alle" && (
+          <input type="hidden" name="kat" value={aktiv.param} />
+        )}
+      </form>
+
       {/* Seg-kontroll (fasit .seg) — interaktiv via ?kat= */}
       <div className="mb-4 overflow-x-auto pb-1">
         <div className="inline-flex gap-[2px] rounded-lg bg-secondary p-[3px] whitespace-nowrap">
         {KATEGORIER.map((k) => (
           <Link
             key={k.param}
-            href={k.param === "alle" ? "/admin/drills" : `/admin/drills?kat=${k.param}`}
+            href={(() => {
+              const params = new URLSearchParams();
+              if (k.param !== "alle") params.set("kat", k.param);
+              if (q) params.set("q", q);
+              const qs = params.toString();
+              return qs ? `/admin/drills?${qs}` : "/admin/drills";
+            })()}
             className={cn(
               "inline-flex h-[26px] items-center rounded-md px-[11px] font-mono text-[10px] font-bold uppercase tracking-[0.06em] transition-colors",
               k.param === aktiv.param
