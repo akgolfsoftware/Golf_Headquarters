@@ -9,8 +9,8 @@ innlogging). Sjekket mot `public/design-handover/CLAUDE.md` (terminologi/tokens/
 
 - **Ingen terminologi-brudd funnet noe sted** (ingen "kortspill", "CoachHQ", "ELITE", "øving", emoji, eller sperre-språk som "brudd"/"overstyr"/"krever begrunnelse").
 - Mønsteret er konsekvent: skjermer bygget **etter** 4. juli bruker `athletic/golfdata`-familien og matcher v13. Skjermer bygget **før** det bruker en eldre, men fortsatt token-ren, komponentfamilie (`agencyos/ui`, `AthleticCard`, gamle shadcn-tokens).
-- **Én reell feil funnet:** feil pris i Meg-skjermen (se under).
-- **Én mistenkelig placeholder-verdi:** falsk "88 %"-tall i Stall.
+- **Rettet 2026-07-06 (ettersyn):** denne revisjonen tok selv feil på to punkter. (1) Meg-skjermens «300 kr/mnd» er IKKE en bug — 300 kr er den låste, riktige prisen (`docs/platform/BUSINESS-RULES.md`, Anders' beslutning 2026-06-22). Det er `public/design-handover/CLAUDE.md` sitt «299 kr»-tall som er feil og ikke skal kopieres inn i appen. (2) Stall sin SG→pyramide-databug var allerede FIKSET samme kveld (commit `a3be5389`, 2026-07-05 22:35) — se oppdatert Stall-rad under.
+- **Én mistenkelig placeholder-verdi (fortsatt reell):** falsk "88 %"-tall i Stall — se Stall-rad.
 
 ## PlayerHQ
 
@@ -20,14 +20,14 @@ innlogging). Sjekket mot `public/design-handover/CLAUDE.md` (terminologi/tokens/
 | **Analyse** | ✅ MATCHER | Ingen handling. |
 | **Gjennomføre** | ✅ MATCHER | Ingen handling. |
 | **Planlegge** (→ Workbench) | ⬜ TRENGER FULL RE-DESIGN | Hele `WorkbenchHybrid`-stacken (7 hub-faner, uke-tidsgrid m.m.) er bygget på en egen, eldre komponentarkitektur — ikke golfdata i det hele tatt. Størst jobb av alle 13 skjermer. |
-| **Meg** | 🔧 TRENGER TOKEN-/KOMPONENTBYTTE | Struktur er god, men: (1) **feil pris «300 kr/mnd» — skal være 299 kr** (kanon-brudd, konkret bug); (2) lime brukt som ikon-bakgrunnstint på lys flate (grensetilfelle mot «aldri lime på lys»-regelen, bør sjekkes visuelt); (3) gamle tokens/inline `var(--color-primary)` i stedet for golfdata-scope. |
+| **Meg** | 🔧 TRENGER TOKEN-/KOMPONENTBYTTE | Struktur er god. «300 kr/mnd» er RIKTIG og skal IKKE endres (se rettelse øverst). Gjenstår: (1) lime brukt som ikon-bakgrunnstint på lys flate (grensetilfelle mot «aldri lime på lys»-regelen, bør sjekkes visuelt); (2) gamle tokens/inline `var(--color-primary)` i stedet for golfdata-scope. |
 
 ## AgencyOS
 
 | Skjerm | Status | Hva gjenstår |
 |---|---|---|
 | **Cockpit** (`/admin/agencyos`) | DELVIS | Token-disiplin er god (ingen rå hex), men bruker et eget, skreddersydd komponentsett (KpiStrip/TimelineCard/QueueCard) — ikke golfdata-familien. Kan være bevisst (annet formål enn spillerkort), men bør bekreftes. |
-| **Stall** (`/admin/stall`) | 🔧 TRENGER TOKEN-/KOMPONENTBYTTE + **DATABUG** | **Hardkodede `rgba()`-farger** i stedet for tokens. **Falsk "88 %"-adherence-tall vises som ekte** — koden sier selv «ikke i schema ennå». **Reell databug (ikke bare design):** «Pyramide-balanse» mapper SG-akser (OTT/APP/ARG/PUTT) direkte som pyramide-prosent (FYS/TEK/SLAG/SPILL/TURN) — dette er to forskjellige akser som blandes sammen, ikke bare en fargekobling. Coach ser feil tall. Bruker ikke `SpillerTilstandKort`. |
+| **Stall** (`/admin/stall`) | 🔧 TRENGER TOKEN-/KOMPONENTBYTTE | **SG→pyramide-databuggen er FIKSET** (commit `a3be5389`, 2026-07-05 — verifisert i `src/lib/admin/stallen-data.ts:308-364`: ekte per-akse treningsminutter, ingen SG-avledet fake, ingen hardkodet 88 %). Gjenstår: **hardkodede `rgba()`-farger** i stedet for tokens, og bytte til `SpillerTilstandKort` i stedet for egendefinerte kort. |
 | **Innboks** | 🔧 TRENGER TOKEN-/KOMPONENTBYTTE | Bruker `AdminHero` (stor marketing-stil hero) i stedet for samme `AgPageHead`-idiom som Cockpit/Stall/Godkjenninger — inkonsistent med resten av AgencyOS. `admin-hero.tsx` hardkoder også fontnavn som streng i stedet for å bruke `font-display`-tokenet. |
 | **Godkjenninger** | ✅ MATCHER | Ren tokens og terminologi. |
 | **Spiller-detalj** | DELVIS | Eldre `agencyos/ui`-komponenter, men tokens/terminologi er rene. |
@@ -37,12 +37,12 @@ innlogging). Sjekket mot `public/design-handover/CLAUDE.md` (terminologi/tokens/
 
 ## Anbefalt prioritering (min vurdering, ikke bestemt)
 
-1. **Stall sin SG→pyramide-databug** — coach ser feil tall i «Pyramide-balanse» fordi SG-akser blandes inn som om de var pyramide-akser. Dette er ikke et designspørsmål, det er feil informasjon til en betalende bruker. Høyest prioritet.
-2. **Fiks prisbuggen i Meg** (300→299 kr) — 5 minutter, ekte feil, bør rettes uansett.
-3. **Stall — resten** — fjern falskt 88%-tall (vis ærlig tomtilstand i stedet) + bytt rgba-hardkoding til tokens.
-4. **Innboks** — bytt `AdminHero` til samme `AgPageHead`-idiom som resten av AgencyOS, fjern hardkodet fontstreng.
-5. **Planlegge/Workbench** — den store jobben. Bør vente til Bølge 2 (datamodell) er på plass siden Workbench uansett bygges om da.
-6. Resten (Cockpit, Godkjenninger, Spiller-detalj, Kalender, Drillbank, Plans, Hjem/WeekProgress) — token-rene, fungerer, kan vente til en generell komponent-migrering til golfdata-familien.
+1. **Stall — rgba→token-bytte** — SG→pyramide-databuggen og det falske 88%-tallet er allerede fikset (commit `a3be5389`); gjenstår kun hardkodet `rgba()` → tokens + bytte til `SpillerTilstandKort`.
+2. **Innboks** — bytt `AdminHero` til samme `AgPageHead`-idiom som resten av AgencyOS, fjern hardkodet fontstreng.
+3. **Planlegge/Workbench** — den store jobben. Bør vente til Bølge 2 (datamodell) er på plass siden Workbench uansett bygges om da.
+4. Resten (Cockpit, Godkjenninger, Spiller-detalj, Kalender, Drillbank, Plans, Hjem/WeekProgress) — token-rene, fungerer, kan vente til en generell komponent-migrering til golfdata-familien.
+
+*(Meg-skjermens pris var aldri en reell bug — se rettelse øverst i dokumentet — og er derfor fjernet fra prioriteringslisten.)*
 
 ## Metodenotat
 

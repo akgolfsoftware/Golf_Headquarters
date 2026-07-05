@@ -9,9 +9,8 @@
 | Rolle | Dokument |
 |---|---|
 | **Snapshot (denne)** | `docs/STATUS-NÅ.md` |
-| **Skjerm-status** (autoritativ, 6 haker/skjerm) | `docs/MASTER-SKJERMPLAN.md` |
+| **Skjerm-status** (autoritativ, 6 haker/skjerm + «Veien til 100%») | `docs/MASTER-SKJERMPLAN.md` |
 | **Uavklart / parkert / løst** | `docs/AAPNE-SPORSMAAL.md` |
-| **Gjenstående arbeid** (prioritert) | `docs/PLAN-GJENSTAENDE.md` |
 | **Låste forretningsregler** (fasit) | `docs/platform/BUSINESS-RULES.md` |
 | **Full plattformkontekst** (5 min) | `docs/platform/AGENT-BRIEF.md` |
 

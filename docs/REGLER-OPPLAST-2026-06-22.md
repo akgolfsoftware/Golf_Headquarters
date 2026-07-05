@@ -5,7 +5,11 @@ låste dem — og at de er grunnen til at appen avvek fra Claude Design-fasiten.
 **4 regel-klynger**. Dette dokumentet styrer prosessen: hver klynge har STATUS, hva som trengs,
 og besluttede verdier (fylles inn).
 
-> Loopen er PÅ PAUSE til verdiene er satt — å bygge videre mot gamle antakelser ville vært bortkastet.
+> **Status 2026-07-06: 3 av 4 er avklart OG bygget** — tema-toggle, abonnement/pris og cockpit
+> stall-SG/plan-etterlevelse er ferdige (se seksjon 1, 2, 4 under). Kun **FYS-formel + A–K-nivåtall**
+> (seksjon 3) har en liten gjenstående deltråd: onboarding steg 6 + drill-retag-beslutning. De
+> bekreftede verdiene er nå foldet inn i `docs/platform/BUSINESS-RULES.md` selv — denne fila er
+> historikk/prosess-spor, ikke lenger gjeldende fasit for de tre ferdige klyngene.
 
 ## FASIT-SWEEP STATUS (2026-06-22) — høyverdi-arbeid FERDIG
 Adversarial diff per mest-sett skjerm. FIKSET reelle avvik: PlayerHQ Hjem («Hva er nytt»-feed),

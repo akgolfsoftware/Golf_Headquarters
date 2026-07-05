@@ -5,10 +5,12 @@
 Dokumenterer forretningsregler som ikke kan utledes fra kode alene.
 Sist oppdatert: 2026-06-14.
 
-> ⚠ **2026-06-22 — 4 REGLER LÅST OPP AV ANDERS.** Følgende er IKKE lenger låst (de blokkerte
-> designet): (1) tema-toggle, (2) abonnement/pris-modell, (3) FYS-formel + A–K-nivåtall,
-> (4) cockpit stall-SG + plan-etterlevelse. Nye verdier under avklaring — se
-> `docs/REGLER-OPPLAST-2026-06-22.md`. Ikke håndhev disse fire som låst før nye verdier er bekreftet.
+> ⚠ **Status per 2026-07-06** (fulgte opp 2026-06-22-opplåsingen, se `docs/REGLER-OPPLAST-2026-06-22.md`
+> for full historikk): 3 av 4 daværende «låst opp»-regler er nå **avklart og bygget** — tema-toggle
+> (AgencyOS lys/mørk-bryter), abonnement/pris-modell (300 kr/mnd, ingen årlig — se under) og cockpit
+> stall-SG/plan-etterlevelse. Kun **FYS-formel + A–K-nivåtall** har én gjenstående deltråd: onboarding
+> steg 6 og en beslutning om drill-retag mellom gammelt HCP-basert og nytt snittscore-basert A–K.
+> Seksjonene under i denne fila er oppdatert til å reflektere den faktiske, bygde tilstanden.
 
 ---
 
@@ -78,6 +80,17 @@ Implementasjon: `src/lib/domain/sg.ts`.
 
 - `skip = false` på alle SG-tester.
 - 168/168 tester grønne etter kalibrering 2026-06-10.
+
+### Visningsenhet for putt-avstand (bekreftet 2026-07-06)
+
+- Putt-avstand vises i **fot (ft)** i alt brukergrensesnitt — aldri meter som primærenhet.
+  Meter kan vises som forklaring/sekundærverdi der det er nyttig, ikke som standard.
+- Dette er en **visningsregel**, ikke en re-kalibrering: selve datafangsten og
+  `BENCHMARK_PUTT`-tabellen i `src/lib/domain/sg.ts` forblir meter-indeksert internt (kilden er
+  Team Norway IUP-referansen, målt i meter). Kun det brukeren ser konverteres til fot.
+- Matcher repoets egen ordbok (`docs/ordbok-ak-golf-konsept.md`: «Putting ALLTID i fot (ft), aldri
+  meter», MasterBrain CANON v3.5) — koden har foreløpig ikke fulgt denne regelen overalt.
+- Gjenbruk `meterTilFot()` fra `src/lib/min-golf/format.ts` — ikke lag en ny konverterer.
 
 ---
 
@@ -150,10 +163,14 @@ To separate live-systemer sameksisterer **bevisst** og skal **ikke merges uoppfo
 
 ## FYS-testresultat-formel
 
-- Formelen for utregning av FYS-testresultater er **ikke låst**.
-- Bygg alle FYS-testskjermer med **plassholdertall**.
-- **Ingen referanseverdier** for FYS-tester skal hardkodes i kode eller UI før Anders gir eksplisitt klarsignal.
-- Dette gjelder alle skjermer under `/portal/tren/tester/` og `/admin/tester/`.
+- **Formelen er bygget og live** (`src/lib/domain/fys-score.ts`), godkjent av Anders 2026-06-22.
+  Vekter: markløft 100 % · benkpress 100 % · stille lengde 50 % · ballkast 16,6 % · CHS 100 %.
+  Stall-relativ scoring (beste spiller i stallen = 100) — ingen faste normverdier hardkodet.
+  Vises i PlayerHQ Helse (`/portal/meg/helse`) som FYS-SCORE 0–100.
+- **Gjenstår (ikke selve formelen):** onboarding steg 6 (nivå-visning ved førstegangsoppsett) og
+  en beslutning om hvordan gammelt HCP-basert A–K og nytt snittscore-basert A–K skal henge sammen
+  i drill-filtrering (`kategoriFraHcp` vs. `kategoriFraSnittscore` gir ulik bokstav i dag).
+- A–K-kategoriene selv (11 nivåer, snittscore-basert) er bygget og i bruk (`src/lib/domain/ak-kategori.ts`).
 
 ---
 
@@ -221,10 +238,13 @@ AK Golf Academy bruker en 5-trinns trenings-pyramide:
 | Produkt | Tema | Kan endres av bruker? |
 |---|---|---|
 | PlayerHQ (`/portal`) | Alltid **lyst** | Nei — fast |
-| AgencyOS (`/admin`) | Alltid **mørkt** (`.dark`) | Nei — fast |
+| AgencyOS (`/admin`) | **Lyst/mørkt, brukervalgt** | Ja — sol/måne-bryter i topbar, standard mørk |
 
-- Ingen tema-toggle finnes eller skal bygges.
-- Begge paletter finnes i `globals.css`, men valget er låst per produkt.
+- **Oppdatert 2026-06-22:** AgencyOS har en lys/mørk-bryter (`admin-theme-toggle.tsx`), valget
+  persisteres i cookie `ak-admin-theme` og leses server-side i `AdminShell` (ingen flash).
+  Coach-chrome (sidebar/topbar) er alltid forest uansett tema — kun arbeidsområdet bytter.
+  PlayerHQ er uendret: fortsatt fast lyst, ingen bryter.
+- Begge paletter finnes i `globals.css`.
 
 ---
 
