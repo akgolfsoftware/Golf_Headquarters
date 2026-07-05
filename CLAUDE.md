@@ -27,6 +27,9 @@ dashboard-tallene + endringsloggen når du fullfører/endrer skjermer.
 > under avklaring, se `docs/REGLER-OPPLAST-2026-06-22.md`. Ikke håndhev disse fire som låst
 > før nye verdier er bekreftet — resten av lista under står fast.
 
+- **Invarianter er anbefalinger, aldri sperrer:** ingenting i appen blokkerer trening. Avvik fra
+  plan/regel vises i klarspråk til brukeren; sterkt avvik varsler coach. Aldri skriv «kan ikke
+  brytes»-kode eller -tekst — se `plans/skjermplan-master.md` prinsipp 3 for fasit.
 - **App-navn:** Coach-appen heter **AgencyOS** (`/admin`). «CoachHQ» er gammelt — ikke bruk i ny UI-tekst.
 - **Tema (oppdatert 2026-06-22):** PlayerHQ alltid **lyst**. AgencyOS har **lys/mørk-toggle** (sol/måne i topbar, cookie `ak-admin-theme`, standard mørk) — Anders vil ha AgencyOS i begge moduser. (Var: «AgencyOS alltid mørkt, ingen toggle» — opphevet.)
 - **Navne-kanon (demo):** spiller = **Øyvind Rohjan**, coach = **Anders Kristiansen** — alltid fulle navn, gamle demo-navn skal bort. Unntak: ekte coach **«Markus Røinås Pedersen»** på markedssidene, ikke bytt ham ut.
@@ -34,7 +37,8 @@ dashboard-tallene + endringsloggen når du fullfører/endrer skjermer.
 - **Analyse samlet:** Analysere + TrackMan + Runder + SG er én flate med faner — ikke separate moduler. Mål bor i Oversikt, redigeres i Workbench.
 - **Abonnement (ingen tier-nivåer):** PlayerHQ-tilgang er gratis eller 300 kr/mnd. **Gratis** hvis: 1 mnd prøveperiode, ELLER coaching-pakke (Performance / Performance Pro), ELLER gruppe via AK Golf. **300 kr/mnd** for alle andre. «Performance / Performance Pro» er **coaching-pakker** (antall økter), IKKE app-nivåer. **ELITE finnes ikke** (dødt Prisma-enum — vis aldri i UI).
 - **FYS-resultatformel avventer:** Bygg testskjermer med plassholder-tall. Ikke hardkod referanseverdier før Anders gir grønt lys.
-- **Design-kilde (LÅST, v13 — 2026-07-04):** `public/design-handover/` (design-handover v13, git-sporet) er ENESTE designkilde: 113 komponenter (jsx + d.ts + prompt.md, manifest-verifisert), tokens/, guidelines/, DEKNINGSKART.md, PORTING.md. Skjermer KOMPONERES fra `components/` per prompt.md-kontraktene og PORTING.md — følg `.claude/skills/ak-designekspert` (skjermkomposisjons-kontrakten i `references/skjermkomposisjon.md`: gap meldes, ikke improviseres).
+- **Design-kilde (LÅST, v13 — 2026-07-04):** `public/design-handover/` (design-handover v13, git-sporet) er ENESTE designkilde: 113 komponenter (jsx + d.ts + prompt.md, manifest-verifisert), tokens/, guidelines/, DEKNINGSKART.md, PORTING.md. Skjermer KOMPONERES fra `components/` per prompt.md-kontraktene og PORTING.md. **Designdommer:** `.claude/skills/ak-designekspert` dømmer alt komponert mot verdensklasse (skjermkomposisjons-kontrakten i `references/skjermkomposisjon.md`: gap meldes, ikke improviseres).
+- **Skjermtekst (copy-kilde):** `docs/skjermtekst/` — ekte norsk UI-tekst per hovedskjerm + design-brief. Kopier derfra, ikke dikt opp ny tekst.
 - Aldri referer til `wireframe/`, gamle `design-package/` eller `design-files-v2/` i produksjonsfiler — disse er slettet fra prosjektet.
 
 ## Stack (eksakte versjoner — ikke oppgrader uten beslutning)
@@ -42,6 +46,11 @@ dashboard-tallene + endringsloggen når du fullfører/endrer skjermer.
 - Prisma 7 + Supabase (Postgres)
 - Tailwind CSS v4 (CSS-first via `@theme` i `globals.css` — INGEN `tailwind.config.ts`)
 - Inter + Inter Tight + JetBrains Mono via `next/font/google`. Lucide React — eneste ikon-bibliotek. npm.
+
+## Modell og effort
+Standardmodell for dette prosjektet: **Fable 5.** Effort er spaken, ikke modellbytte —
+**xhigh** for kritisk/vanskelig arbeid (arkitektur, invarianter, sikkerhet), **high** som
+default, **medium/low** for rutinejobb (opprydding, dokumentflytting, små tekstendringer).
 
 ## Språk
 All UI-tekst på norsk bokmål med æ, ø, å. Kommentarer kan være engelsk eller norsk — konsistent innenfor en fil.
