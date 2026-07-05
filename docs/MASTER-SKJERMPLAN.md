@@ -2,6 +2,13 @@
 
 > Autoritativ oversikt over alle skjermer i plattformen. Én plass å se alt. **Sist oppdatert: 25. juni 2026.**
 
+> ⚠ **STALE (2026-07-06):** «Design=✓» i denne fila måler mot den gamle design-porting-gaten,
+> som CLAUDE.md erklærte død 3. juli 2026 (design bygges nå på nytt hos Claude Design mot
+> `public/design-handover/` v13). De fleste ✓-merkene under stemmer IKKE lenger mot v13 — kun
+> skjermer bygget etter 4. juli (bekreftet: Analyse, Gjennomføre) er faktisk portet dit. Se
+> `docs/design-revisjon-kjerneskjermer-2026-07-06.md` for en verifisert status på kjerneskjermene.
+> Ikke stol på ✓-merkene her som «designet er slik Anders vil ha det» før fila er re-revidert.
+
 **Booking:** Acuity (`akgolfgroup.as.me`) er midlertidig booking frem til HQ-bookingen lanseres. Sett `BOOKING_ACTIVE=true` i Vercel for å aktivere den innebygde flyten.
 
 ---
