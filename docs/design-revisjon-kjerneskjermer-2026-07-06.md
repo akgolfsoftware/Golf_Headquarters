@@ -27,8 +27,8 @@ innlogging). Sjekket mot `public/design-handover/CLAUDE.md` (terminologi/tokens/
 | Skjerm | Status | Hva gjenstår |
 |---|---|---|
 | **Cockpit** (`/admin/agencyos`) | DELVIS | Token-disiplin er god (ingen rå hex), men bruker et eget, skreddersydd komponentsett (KpiStrip/TimelineCard/QueueCard) — ikke golfdata-familien. Kan være bevisst (annet formål enn spillerkort), men bør bekreftes. |
-| **Stall** (`/admin/stall`) | 🔧 TRENGER TOKEN-/KOMPONENTBYTTE | **Hardkodede `rgba()`-farger** i stedet for tokens (brudd på designsystem-regel). **Falsk "88 %"-adherence-tall vises som ekte** — koden sier selv «ikke i schema ennå». Bruker ikke `SpillerTilstandKort`. Dette er skjermen som trengte re-komponering per forrige design-prompt. |
-| **Innboks** | ✅ MATCHER | Ren tokens, golfdata er ikke relevant for meldings-UI. |
+| **Stall** (`/admin/stall`) | 🔧 TRENGER TOKEN-/KOMPONENTBYTTE + **DATABUG** | **Hardkodede `rgba()`-farger** i stedet for tokens. **Falsk "88 %"-adherence-tall vises som ekte** — koden sier selv «ikke i schema ennå». **Reell databug (ikke bare design):** «Pyramide-balanse» mapper SG-akser (OTT/APP/ARG/PUTT) direkte som pyramide-prosent (FYS/TEK/SLAG/SPILL/TURN) — dette er to forskjellige akser som blandes sammen, ikke bare en fargekobling. Coach ser feil tall. Bruker ikke `SpillerTilstandKort`. |
+| **Innboks** | 🔧 TRENGER TOKEN-/KOMPONENTBYTTE | Bruker `AdminHero` (stor marketing-stil hero) i stedet for samme `AgPageHead`-idiom som Cockpit/Stall/Godkjenninger — inkonsistent med resten av AgencyOS. `admin-hero.tsx` hardkoder også fontnavn som streng i stedet for å bruke `font-display`-tokenet. |
 | **Godkjenninger** | ✅ MATCHER | Ren tokens og terminologi. |
 | **Spiller-detalj** | DELVIS | Eldre `agencyos/ui`-komponenter, men tokens/terminologi er rene. |
 | **Kalender** | DELVIS | Samme mønster. |
@@ -37,10 +37,12 @@ innlogging). Sjekket mot `public/design-handover/CLAUDE.md` (terminologi/tokens/
 
 ## Anbefalt prioritering (min vurdering, ikke bestemt)
 
-1. **Fiks prisbuggen i Meg** (300→299 kr) — 5 minutter, ekte feil, bør rettes uansett.
-2. **Stall** — fjern falskt 88%-tall (vis ærlig tomtilstand i stedet) + bytt rgba-hardkoding til tokens. Liten/middels jobb, og dette er skjermen som uansett trengte re-design (fra forrige prompt til Claude Design).
-3. **Planlegge/Workbench** — den store jobben. Bør vente til Bølge 2 (datamodell) er på plass siden Workbench uansett bygges om da.
-4. Resten (Cockpit, Spiller-detalj, Kalender, Drillbank, Plans, Hjem/WeekProgress) — token-rene, fungerer, kan vente til en generell komponent-migrering til golfdata-familien.
+1. **Stall sin SG→pyramide-databug** — coach ser feil tall i «Pyramide-balanse» fordi SG-akser blandes inn som om de var pyramide-akser. Dette er ikke et designspørsmål, det er feil informasjon til en betalende bruker. Høyest prioritet.
+2. **Fiks prisbuggen i Meg** (300→299 kr) — 5 minutter, ekte feil, bør rettes uansett.
+3. **Stall — resten** — fjern falskt 88%-tall (vis ærlig tomtilstand i stedet) + bytt rgba-hardkoding til tokens.
+4. **Innboks** — bytt `AdminHero` til samme `AgPageHead`-idiom som resten av AgencyOS, fjern hardkodet fontstreng.
+5. **Planlegge/Workbench** — den store jobben. Bør vente til Bølge 2 (datamodell) er på plass siden Workbench uansett bygges om da.
+6. Resten (Cockpit, Godkjenninger, Spiller-detalj, Kalender, Drillbank, Plans, Hjem/WeekProgress) — token-rene, fungerer, kan vente til en generell komponent-migrering til golfdata-familien.
 
 ## Metodenotat
 
