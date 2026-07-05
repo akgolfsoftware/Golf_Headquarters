@@ -8,6 +8,8 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import type { PyramidArea } from "@/generated/prisma/client";
+import { erOktGjennomfort } from "@/lib/workbench/compliance";
 import { StallClient, type StallSpiller } from "./stall-client";
 
 export const dynamic = "force-dynamic";
@@ -16,6 +18,9 @@ const MND = [
   "jan", "feb", "mar", "apr", "mai", "jun",
   "jul", "aug", "sep", "okt", "nov", "des",
 ];
+
+/** Pyramide-aksene i uendret visningsrekkefølge (matcher tidligere array). */
+const PYR_ORDER: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
 
 function initialsOf(name: string): string {
   const parts = name.trim().split(/\s+/).filter(Boolean);
@@ -108,7 +113,7 @@ export default async function StallPage() {
           select: {
             sessions: {
               where: { scheduledAt: { gte: ukeStart, lt: now } },
-              select: { status: true },
+              select: { status: true, pyramidArea: true, durationMin: true },
             },
           },
         },
@@ -144,22 +149,23 @@ export default async function StallPage() {
 
     const sgVal = sgSerie.length > 0 ? sgSerie[0] : null;
 
-    // Siste SG-input for komponentverdier
-    const latestSg = p.sgInputs[0] ?? null;
-
-    // Pyramide-balanse — avledet fra SG-komponenter (normalisert 0–100)
-    function normSg(v: number | null | undefined, min: number, max: number): number {
-      if (v == null) return 40;
-      return Math.round(Math.min(100, Math.max(0, ((v - min) / (max - min)) * 100)));
+    // Pyramide-balanse denne uka — ekte treningsvolum (minutter) per akse,
+    // IKKE avledet fra SG (SG er prestasjon, pyramide er treningsfordeling —
+    // to forskjellige akser som tidligere ble feilaktig blandet sammen).
+    const ukeSessions = p.trainingPlans.flatMap((tp) => tp.sessions);
+    const minByAxis = new Map<PyramidArea, number>();
+    let totalPlannedMin = 0;
+    let totalDoneMin = 0;
+    for (const s of ukeSessions) {
+      const dur = s.durationMin ?? 0;
+      minByAxis.set(s.pyramidArea, (minByAxis.get(s.pyramidArea) ?? 0) + dur);
+      totalPlannedMin += dur;
+      if (erOktGjennomfort(s.status)) totalDoneMin += dur;
     }
-
-    const pyr = [
-      { label: "FYS", pct: 60 },       // FYS finnes ikke i SG — plassholder
-      { label: "TEK", pct: normSg(latestSg?.sgOtt, -2, 2) },
-      { label: "SLAG", pct: normSg(latestSg?.sgApp, -2, 2) },
-      { label: "SPILL", pct: normSg(latestSg?.sgArg, -2, 2) },
-      { label: "TURN", pct: normSg(latestSg?.sgPutt, -2, 2) },
-    ];
+    const pyr = PYR_ORDER.map((axis) => ({
+      label: axis,
+      pct: totalPlannedMin > 0 ? Math.round(((minByAxis.get(axis) ?? 0) / totalPlannedMin) * 100) : 0,
+    }));
 
     const sisteBooking = sisteAv.get(p.id) ?? null;
     const kandidater = [p.lastLoginAt, sisteBooking].filter((d): d is Date => d != null);
@@ -168,9 +174,7 @@ export default async function StallPage() {
         ? kandidater.reduce((a, b) => (a.getTime() > b.getTime() ? a : b))
         : null;
 
-    const behind = p.trainingPlans
-      .flatMap((tp) => tp.sessions)
-      .filter((s) => s.status === "PLANNED").length;
+    const behind = ukeSessions.filter((s) => s.status === "PLANNED").length;
 
     const tone = toneOf(behind, sisteAktivitet, now);
 
@@ -185,7 +189,7 @@ export default async function StallPage() {
       last: sisteLabel(sisteAktivitet, now),
       tone,
       pyr,
-      adh: "88 %", // Adherence er ikke i schema ennå — plassholder
+      adh: totalPlannedMin > 0 ? `${Math.round((totalDoneMin / totalPlannedMin) * 100)} %` : "—",
     };
   });
 
