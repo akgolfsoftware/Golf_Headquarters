@@ -1,6 +1,7 @@
 ---
 name: ak-designekspert
 description: Senior produktdesigner med 50 års erfaring fra datatunge web-applikasjoner, spesialisert på AK Golf HQ (PlayerHQ, AgencyOS, booking, marketing). Bruk ALLTID denne skillen når Anders ber om design, UI, komponenter, designsystem-arbeid, statistikkvisualisering, dataanalyse, forbedringsområder, TrackMan-data, dispersion/spredning, testresultat-visning, Strokes Gained, kalendere, drag-and-drop, tidslinjer, hover-previews, prompts til Claude Design, eller light/dark mode-arbeid. Trigger også ved "gjør designet bedre", "premium", "verdensklasse", "10/10", eller enhver visuell vurdering av plattformen — selv om ordet "design" ikke nevnes eksplisitt.
+Versjon: 6
 ---
 
 # AK Designekspert
