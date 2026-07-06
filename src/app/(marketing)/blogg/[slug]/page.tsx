@@ -100,9 +100,9 @@ export default async function BloggPost({
           </p>
           <Link
             href="/blogg"
-            className="mt-8 inline-flex items-center gap-2 rounded-md border border-input bg-card px-6 py-4 text-sm font-medium text-foreground hover:border-primary hover:text-primary"
+            className="mt-8 inline-flex h-11 items-center justify-center gap-2 rounded-xl px-5 font-display text-sm font-semibold tracking-[-0.005em] text-primary ring-1 ring-inset ring-primary transition hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+            <ArrowLeft className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
             Til oversikten
           </Link>
         </div>

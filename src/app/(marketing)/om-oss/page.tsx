@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
-import Image from "next/image";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import { PulseDot } from "@/components/athletic/pulse-dot";
+import {
+  CtaLime,
+  CtaOutlineLys,
+  Em,
+  HeroEm,
+  MarketingHero,
+  SectionEyebrow,
+  SectionH2,
+} from "@/components/marketing/marketing-sections";
 
 export const metadata: Metadata = {
   title: "Om oss | AK Golf Academy",
@@ -32,91 +37,19 @@ const MANIFEST = [
 export default function OmOss() {
   return (
     <div className="bg-background text-foreground">
-      {/* Hero entry-animasjon (samme som forsiden) — stagger + reduced motion */}
-      <style>{`
-        @keyframes mktHeroIn { to { opacity: 1; transform: translateY(0); } }
-        @keyframes mktHeroEm { to { opacity: 1; } }
-        .mkt-hero-in { opacity: 0; transform: translateY(8px); animation: mktHeroIn 600ms cubic-bezier(0.2, 0.7, 0.3, 1) both; }
-        .mkt-hero-em { opacity: 0; animation: mktHeroEm 700ms cubic-bezier(0.2, 0.7, 0.3, 1) 480ms forwards; }
-        @media (prefers-reduced-motion: reduce) {
-          .mkt-hero-in, .mkt-hero-em { animation: none; opacity: 1; transform: none; }
-        }
-      `}</style>
-
       {/* ========== HERO · full-bleed foto + forest-scrim ========== */}
-      <section className="relative overflow-hidden bg-foreground">
-        <div aria-hidden className="absolute inset-0 z-0">
-          <Image
-            src="/images/akademy/coach-observerer.jpg"
-            alt=""
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover"
-          />
-          <div
-            className="absolute inset-0 hidden lg:block"
-            style={{
-              background:
-                "linear-gradient(90deg, hsl(var(--foreground) / 0.78) 0%, hsl(var(--foreground) / 0.55) 35%, hsl(var(--foreground) / 0.10) 70%, transparent 100%), linear-gradient(180deg, hsl(var(--foreground) / 0.30) 0%, transparent 30%, transparent 70%, hsl(var(--foreground) / 0.45) 100%)",
-            }}
-          />
-          <div
-            className="absolute inset-0 lg:hidden"
-            style={{
-              background:
-                "linear-gradient(180deg, hsl(var(--foreground) / 0.78) 0%, hsl(var(--foreground) / 0.55) 30%, hsl(var(--foreground) / 0.40) 70%, hsl(var(--foreground) / 0.55) 100%)",
-            }}
-          />
-        </div>
-
-        <div className="relative z-10 mx-auto w-full max-w-7xl px-6 md:px-8">
-          <div className="flex max-w-[720px] flex-col justify-center pb-16 pt-12 lg:min-h-[520px] lg:py-16">
-            <span className="mkt-hero-in inline-flex items-center gap-2.5 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">
-              <PulseDot size="md" />
-              Om oss · AK Golf Academy
-            </span>
-
-            <h1
-              className="mkt-hero-in mt-5 max-w-[16ch] text-balance font-display text-[clamp(44px,6vw,80px)] font-semibold leading-[0.98] tracking-[-0.03em] text-secondary"
-              style={{ animationDelay: "80ms" }}
-            >
-              Personlig coaching,{" "}
-              <em className="mkt-hero-em font-normal italic text-accent">
-                bygd på data.
-              </em>
-            </h1>
-
-            <p
-              className="mkt-hero-in mt-6 max-w-[48ch] text-[17px] leading-[1.55] text-secondary/85"
-              style={{ animationDelay: "200ms" }}
-            >
-              AK Golf Academy drives av Anders Kristiansen: golfcoach,
-              gründer og CEO i AK Golf Group AS. Tett personlig oppfølging,
-              målbar fremgang.
-            </p>
-
-            <div
-              className="mkt-hero-in mt-8 flex flex-wrap gap-3"
-              style={{ animationDelay: "320ms" }}
-            >
-              <Link
-                href="/booking"
-                className="inline-flex h-[52px] items-center justify-center gap-1.5 rounded-full bg-accent px-6 font-display text-[16px] font-bold tracking-[-0.005em] text-accent-foreground shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition hover:-translate-y-px hover:brightness-105 hover:shadow-[0_10px_28px_rgba(209,248,67,0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              >
-                Book første time
-                <ArrowRight className="h-[18px] w-[18px]" strokeWidth={1.5} />
-              </Link>
-              <Link
-                href="/coacher"
-                className="inline-flex h-[52px] items-center justify-center gap-1.5 rounded-xl px-6 font-display text-[16px] font-bold tracking-[-0.005em] text-secondary ring-1 ring-inset ring-secondary/45 transition hover:bg-secondary/10 hover:ring-secondary/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                Møt coachene
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
+      <MarketingHero
+        foto="/images/akademy/coach-observerer.jpg"
+        eyebrow="Om oss · AK Golf Academy"
+        tittel={
+          <>
+            Personlig coaching, <HeroEm>bygd på data.</HeroEm>
+          </>
+        }
+        ingress="AK Golf Academy drives av Anders Kristiansen: golfcoach, gründer og CEO i AK Golf Group AS. Tett personlig oppfølging, målbar fremgang."
+        primaer={{ href: "/booking", label: "Book første time" }}
+        sekundaer={{ href: "/coacher", label: "Møt coachene" }}
+      />
 
       {/* ========== MANIFEST · tre prinsipper ========== */}
       <section className="py-24">
@@ -216,19 +149,10 @@ export default function OmOss() {
             videre for spillet ditt.
           </p>
           <div className="relative z-10 mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link
-              href="/booking"
-              className="inline-flex h-[52px] items-center justify-center gap-1.5 rounded-full bg-accent px-6 font-display text-[16px] font-bold tracking-[-0.005em] text-accent-foreground shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition hover:-translate-y-px hover:brightness-105 hover:shadow-[0_10px_28px_rgba(209,248,67,0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            >
+            <CtaLime href="/booking" withArrow>
               Book første time
-              <ArrowRight className="h-[18px] w-[18px]" strokeWidth={1.5} />
-            </Link>
-            <Link
-              href="/kontakt"
-              className="inline-flex h-[52px] items-center justify-center gap-1.5 rounded-xl px-6 font-display text-[16px] font-bold tracking-[-0.005em] text-secondary ring-1 ring-inset ring-secondary/45 transition hover:bg-secondary/10 hover:ring-secondary/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              Ta kontakt
-            </Link>
+            </CtaLime>
+            <CtaOutlineLys href="/kontakt">Ta kontakt</CtaOutlineLys>
           </div>
         </div>
       </section>
@@ -236,47 +160,7 @@ export default function OmOss() {
   );
 }
 
-/* ---------- Seksjonsbyggesteiner (samme anatomi som forsiden) ---------- */
-
-function SectionEyebrow({
-  children,
-  className = "",
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <span
-      className={`font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground ${className}`}
-    >
-      {children}
-    </span>
-  );
-}
-
-function SectionH2({ children }: { children: React.ReactNode }) {
-  return (
-    <h2 className="mt-4 max-w-[22ch] text-balance font-display text-[clamp(36px,5vw,56px)] font-bold leading-[1.05] tracking-[-0.025em]">
-      {children}
-    </h2>
-  );
-}
-
-function Em({
-  children,
-  dark = false,
-}: {
-  children: React.ReactNode;
-  dark?: boolean;
-}) {
-  return (
-    <em
-      className={`font-display font-normal italic ${dark ? "text-accent" : "text-primary"}`}
-    >
-      {children}
-    </em>
-  );
-}
+/* ---------- Selskaps-rad (side-lokal) ---------- */
 
 function Rad({
   label,
