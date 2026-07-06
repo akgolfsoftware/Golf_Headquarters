@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Check } from "lucide-react";
-import { AthleticButton } from "@/components/athletic";
+import { AthleticBadge } from "@/components/athletic/badge";
 import { confirmGuardianConsent } from "./actions";
 
 type Props = {
@@ -33,7 +33,7 @@ export function GuardianConsentForm({
     setError(null);
 
     if (!guardianName.trim()) {
-      setError("Vennligst skriv inn ditt fulle navn.");
+      setError("Skriv inn fullt navn.");
       return;
     }
     if (!agreeTerms || !agreeDataProcessing) {
@@ -93,7 +93,7 @@ export function GuardianConsentForm({
           onChange={(e) => setGuardianName(e.target.value)}
           autoComplete="name"
           placeholder="F.eks. Anne Hansen"
-          className="mt-1.5 w-full rounded-md border border-border bg-card px-4 py-2.5 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="mt-1.5 w-full rounded-xl border border-border bg-secondary px-[14px] py-[11px] text-sm text-foreground outline-none placeholder:text-muted-foreground/60 transition-[border-color,box-shadow] focus:border-primary focus:shadow-[0_0_0_3px_rgba(0,88,64,0.10)]"
         />
         <p className="font-mono mt-1 text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
           REGISTRERT E-POST: {guardianEmail}
@@ -138,21 +138,25 @@ export function GuardianConsentForm({
 
       {/* Error */}
       {error ? (
-        <p className="font-mono mt-4 text-xs text-destructive">{error}</p>
+        <div
+          role="alert"
+          className="mt-4 flex items-start gap-2 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3"
+        >
+          <AthleticBadge variant="urgent">Feil</AthleticBadge>
+          <span className="text-sm text-destructive">{error}</span>
+        </div>
       ) : null}
 
-      {/* Submit */}
-      <div className="mt-6 flex flex-wrap items-center gap-2">
-        <AthleticButton
-          type="submit"
-          variant="lime"
-          size="lg"
-          disabled={isPending || !agreeTerms || !agreeDataProcessing}
-        >
-          <Check className="h-4 w-4" />
-          {isPending ? "Lagrer samtykke…" : "Bekreft samtykke"}
-        </AthleticButton>
-      </div>
+      {/* Submit — pill, mono caps (kanon-CTA) */}
+      <button
+        type="submit"
+        disabled={isPending || !agreeTerms || !agreeDataProcessing}
+        aria-busy={isPending || undefined}
+        className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-accent py-[13px] font-mono text-[12px] font-bold uppercase tracking-[0.10em] text-accent-foreground transition-opacity hover:opacity-90 disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      >
+        <Check className="h-4 w-4" strokeWidth={2} aria-hidden />
+        {isPending ? "Lagrer samtykke…" : "Bekreft samtykke"}
+      </button>
 
       <p className="mt-4 text-xs text-muted-foreground">
         Ved å bekrefte gir du juridisk samtykke iht. GDPR artikkel 8. Du kan

@@ -25,7 +25,7 @@ export function ResetForm() {
   async function lagre(e: React.FormEvent) {
     e.preventDefault();
     if (password.length < 8) {
-      setError("Passordet ma vaere minst 8 tegn.");
+      setError("Passordet må være minst 8 tegn.");
       return;
     }
     if (password !== confirm) {
@@ -37,7 +37,7 @@ export function ResetForm() {
     const { error: err } = await supabase.auth.updateUser({ password });
     setPending(false);
     if (err) {
-      setError(err.message);
+      setError(oversettPassordFeil(err.message));
       return;
     }
     router.push("/portal");
@@ -131,8 +131,16 @@ export function ResetForm() {
         disabled={pending}
         className="mt-1 w-full rounded-full bg-accent py-[13px] font-mono text-[12px] font-bold uppercase tracking-[0.10em] text-accent-foreground transition-opacity hover:opacity-90 disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       >
-        {pending ? "Lagrer..." : "Lagre nytt passord"}
+        {pending ? "Lagrer…" : "Lagre nytt passord"}
       </button>
     </form>
   );
+}
+
+function oversettPassordFeil(msg: string): string {
+  if (msg.includes("should be different from the old password"))
+    return "Velg et annet passord enn det du hadde fra før.";
+  if (msg.includes("Auth session missing"))
+    return "Lenken er brukt eller utløpt. Be om en ny tilbakestillingslenke fra «Glemt passordet?».";
+  return msg;
 }
