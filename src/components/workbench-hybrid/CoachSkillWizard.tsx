@@ -3,7 +3,7 @@
 import { useMemo, useReducer, useState, type CSSProperties, type ReactElement } from "react";
 import { Check, ChevronRight, Sparkles, Star, X } from "lucide-react";
 import { sendCoachSkillPlan } from "@/lib/workbench/coach-skill-actions";
-import { FONT, WB } from "./theme";
+import { CAT_COLORS, CAT_SOFT, CAT_TEXT, FONT, WB } from "./theme";
 import type { RosterPlayer } from "./Topbar";
 
 /**
@@ -58,9 +58,16 @@ const PYR_LABEL: Record<PyrKey, string> = { FYS: "Fysisk", TEK: "Teknikk", SLAG:
 const PYR_COLOR: Record<PyrKey, string> = {
   FYS: WB.ok, // pyr-fys / grønn
   TEK: WB.warn, // pyr-tek / oransje
-  SLAG: "#84A9FF", // pyr-slag / blå
+  SLAG: CAT_COLORS.SLAG, // pyr-slag / blå
   SPILL: WB.lime, // accent / lime
   TURN: WB.err, // pyr-turn / korall
+};
+const PYR_SOFT: Record<PyrKey, string> = {
+  FYS: WB.okSoft,
+  TEK: WB.warnSoft,
+  SLAG: CAT_SOFT.SLAG,
+  SPILL: WB.limeSoft,
+  TURN: WB.errSoft,
 };
 
 // Periodens regelbaserte pyramidefordeling (økter per akse) — fra fasit.
@@ -105,7 +112,7 @@ const TIER_LABEL: Record<Tier, string> = {
 
 const TIER_COLOR: Record<Tier, string> = {
   elite: WB.lime,
-  utvikling: "#84A9FF",
+  utvikling: CAT_COLORS.SLAG,
   bygging: WB.warn,
   grunnmur: WB.ok,
 };
@@ -319,7 +326,7 @@ export function CoachSkillWizard({
     const others = players.filter((p) => p.name !== currentPlayerName).slice(0, 4);
     const list: { v: string; name: string; meta: string; initials: string; color: string }[] = [
       { v: "__current__", name: currentPlayerName, meta: "Denne Workbench-spilleren", initials: currentInitials, color: WB.lime },
-      ...others.map((p) => ({ v: p.id, name: p.name, meta: "Spiller i stallen", initials: p.initials, color: "#84A9FF" })),
+      ...others.map((p) => ({ v: p.id, name: p.name, meta: "Spiller i stallen", initials: p.initials, color: CAT_COLORS.SLAG })),
       { v: "__group__", name: "Gruppe via AK Golf", meta: "Gruppe · individuell tidsblokk", initials: "GR", color: WB.ok },
     ];
     return list;
@@ -340,7 +347,7 @@ export function CoachSkillWizard({
         position: "fixed",
         inset: 0,
         zIndex: 80,
-        background: "rgba(7,16,12,0.62)",
+        background: WB.scrim,
         backdropFilter: "blur(2px)",
         display: "flex",
         alignItems: "center",
@@ -361,7 +368,7 @@ export function CoachSkillWizard({
           border: `1px solid ${WB.panelBorder}`,
           borderRadius: 16,
           overflow: "hidden",
-          boxShadow: "0 50px 110px -40px rgba(0,0,0,0.7)",
+          boxShadow: "0 50px 110px -40px rgba(0,0,0,0.35)",
           fontFamily: FONT.sans,
           color: WB.text,
         }}
@@ -389,12 +396,12 @@ export function CoachSkillWizard({
               justifyContent: "center",
             }}
           >
-            <Sparkles size={16} color={WB.limeDark} strokeWidth={2.2} />
+            <Sparkles size={16} style={{ color: WB.limeDark }} strokeWidth={2.2} />
           </span>
           <span style={{ fontFamily: FONT.mono, fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", color: WB.muted }}>
             AGENCYOS
           </span>
-          <ChevronRight size={13} color={WB.muted3} strokeWidth={2.4} />
+          <ChevronRight size={13} style={{ color: WB.muted3 }} strokeWidth={2.4} />
           <span style={{ fontFamily: FONT.mono, fontSize: 12, fontWeight: 700, letterSpacing: "0.14em", color: WB.lime }}>
             COACH-SKILL
           </span>
@@ -408,7 +415,7 @@ export function CoachSkillWizard({
                   fontWeight: 700,
                   letterSpacing: "0.06em",
                   color: WB.warn,
-                  background: "rgba(232,163,61,0.16)",
+                  background: CAT_SOFT.TEK,
                   borderRadius: 6,
                   padding: "5px 10px",
                 }}
@@ -623,7 +630,7 @@ function StepProfil({
                     cursor: "pointer",
                     textAlign: "left",
                     border: `1px solid ${on ? WB.lime : WB.panelBorder}`,
-                    background: on ? "rgba(209,248,67,0.08)" : WB.cardBgAlt,
+                    background: on ? WB.limeFaint : WB.cardBgAlt,
                   }}
                 >
                   <span
@@ -678,8 +685,8 @@ function StepProfil({
 
           {/* Spillernivå (for AI) — skjult til AI-varianten lanseres */}
           {SHOW_AI && (
-            <div style={{ ...card, border: `1px dashed rgba(132,169,255,0.3)` }}>
-              <div style={{ ...eyebrow, color: "#84A9FF", marginBottom: 8 }}>Spillernivå for AI · V2</div>
+            <div style={{ ...card, border: `1px dashed ${CAT_COLORS.SLAG}` }}>
+              <div style={{ ...eyebrow, color: CAT_TEXT.SLAG, marginBottom: 8 }}>Spillernivå for AI · V2</div>
               <div style={{ fontSize: 11, color: WB.muted3 }}>Skjult til AI-varianten lanseres.</div>
             </div>
           )}
@@ -704,9 +711,9 @@ function StepProfil({
                     padding: "7px 12px",
                     borderRadius: 9999,
                     cursor: "pointer",
-                    border: `1px solid ${on ? "#84A9FF" : WB.panelBorder}`,
+                    border: `1px solid ${on ? CAT_COLORS.SLAG : WB.panelBorder}`,
                     color: on ? WB.limeDark : WB.muted,
-                    background: on ? "#84A9FF" : WB.cardBgAlt,
+                    background: on ? CAT_COLORS.SLAG : WB.cardBgAlt,
                   }}
                 >
                   {o.label}
@@ -926,7 +933,7 @@ function StepGenerer({
               fontSize: 10,
               fontWeight: 700,
               color: tierColor,
-              background: "rgba(255,255,255,0.05)",
+              background: WB.mutedSoft,
               borderRadius: 6,
               padding: "3px 9px",
             }}
@@ -995,7 +1002,7 @@ function StepGenerer({
                           fontWeight: 700,
                           letterSpacing: "0.03em",
                           color: PYR_COLOR[sess.cat],
-                          background: `${PYR_COLOR[sess.cat]}1a`,
+                          background: PYR_SOFT[sess.cat],
                           borderRadius: 4,
                           padding: "2px 5px",
                         }}
@@ -1013,7 +1020,7 @@ function StepGenerer({
 
       {/* VALIDERINGSLINJE */}
       <div style={{ display: "flex", alignItems: "center", gap: 12, background: WB.cardBg, border: `1px solid ${WB.panelBorder}`, borderRadius: 11, padding: "13px 16px" }}>
-        <Check size={17} color={WB.ok} strokeWidth={2.2} />
+        <Check size={17} style={{ color: WB.ok }} strokeWidth={2.2} />
         <span style={{ fontSize: 12.5, color: WB.muted2 }}>
           Validert mot periodens invarianter: volum-tak, CS-tak, kun L_AUTO, min. 2 hviledager.{" "}
           <strong style={{ color: WB.ok }}>Alt innenfor.</strong>
@@ -1026,14 +1033,14 @@ function StepGenerer({
             display: "flex",
             alignItems: "flex-start",
             gap: 11,
-            background: "linear-gradient(150deg,rgba(209,248,67,0.06),#163027 55%)",
-            border: "1px dashed rgba(209,248,67,0.32)",
+            background: `linear-gradient(150deg, ${WB.limeFaint}, var(--surface-2) 55%)`,
+            border: `1px dashed ${WB.limeBorder}`,
             borderRadius: 11,
             padding: "12px 15px",
             marginTop: 10,
           }}
         >
-          <Star size={15} color={WB.lime} fill={WB.lime} style={{ flexShrink: 0, marginTop: 2 }} />
+          <Star size={15} style={{ color: WB.lime, fill: WB.lime, flexShrink: 0, marginTop: 2 }} />
           <div>
             <span
               style={{
@@ -1042,7 +1049,7 @@ function StepGenerer({
                 fontWeight: 700,
                 letterSpacing: "0.06em",
                 color: WB.warn,
-                background: "rgba(232,163,61,0.16)",
+                background: CAT_SOFT.TEK,
                 borderRadius: 5,
                 padding: "2px 7px",
               }}
@@ -1098,7 +1105,7 @@ function StepSend({
                     cursor: "pointer",
                     textAlign: "left",
                     border: `1px solid ${on ? WB.lime : WB.panelBorder}`,
-                    background: on ? "rgba(209,248,67,0.07)" : WB.cardBgAlt,
+                    background: on ? WB.limeFaint : WB.cardBgAlt,
                   }}
                 >
                   <span
@@ -1114,7 +1121,7 @@ function StepSend({
                       background: on ? WB.lime : "transparent",
                     }}
                   >
-                    {on && <Check size={11} color={WB.limeDark} strokeWidth={3} />}
+                    {on && <Check size={11} style={{ color: WB.limeDark }} strokeWidth={3} />}
                   </span>
                   <span
                     style={{
@@ -1169,7 +1176,7 @@ function StepSend({
             <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
               {["Driver-spredning under ±10 m", "4 FYS-økter fullført per uke"].map((g) => (
                 <div key={g} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: WB.muted2 }}>
-                  <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#84A9FF" }} />
+                  <span style={{ width: 7, height: 7, borderRadius: "50%", background: CAT_COLORS.SLAG }} />
                   {g}
                 </div>
               ))}

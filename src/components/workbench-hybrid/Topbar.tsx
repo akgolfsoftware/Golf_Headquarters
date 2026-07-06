@@ -18,13 +18,13 @@ const PLAN_STATUS_LABEL: Record<PlanStatus, string> = {
 };
 
 const PLAN_STATUS_COLOR: Record<PlanStatus, { bg: string; fg: string }> = {
-  DRAFT: { bg: `${WB.warn}22`, fg: WB.warn },
-  PENDING_PLAYER: { bg: `${WB.lime}22`, fg: WB.lime },
-  ACCEPTED: { bg: `${WB.ok}22`, fg: WB.ok },
-  REJECTED: { bg: "#F2908C22", fg: "#F2908C" },
-  ACTIVE: { bg: `${WB.ok}22`, fg: WB.ok },
-  PAUSED: { bg: `${WB.muted}22`, fg: WB.muted },
-  ARCHIVED: { bg: `${WB.muted}22`, fg: WB.muted },
+  DRAFT: { bg: WB.warnSoft, fg: WB.warn },
+  PENDING_PLAYER: { bg: WB.limeSoft, fg: WB.lime },
+  ACCEPTED: { bg: WB.okSoft, fg: WB.ok },
+  REJECTED: { bg: WB.errSoft, fg: WB.err },
+  ACTIVE: { bg: WB.okSoft, fg: WB.ok },
+  PAUSED: { bg: WB.mutedSoft, fg: WB.muted },
+  ARCHIVED: { bg: WB.mutedSoft, fg: WB.muted },
 };
 
 const LEVELS: { key: ZoomLevel; label: string }[] = [
@@ -115,13 +115,13 @@ export function Topbar({
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            boxShadow: "0 2px 12px -2px rgba(209,248,67,0.55)",
+            boxShadow: `0 2px 12px -2px ${WB.limeBorder}`,
           }}
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={WB.limeDark} strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round" style={{ stroke: WB.limeDark }}>
             <path d="M6 22V4" />
             <path d="M6 4l11 2.6a1 1 0 0 1 .1 1.9L6 11.5" />
-            <circle cx="6" cy="22" r="1.5" fill={WB.limeDark} />
+            <circle cx="6" cy="22" r="1.5" style={{ fill: WB.limeDark }} />
           </svg>
         </span>
       </div>
@@ -170,7 +170,7 @@ export function Topbar({
             {initials}
           </span>
           <span style={{ fontSize: 12.5, fontWeight: 600, color: WB.text }}>{playerName}</span>
-          <ChevronDown size={13} color={WB.muted} strokeWidth={2} />
+          <ChevronDown size={13} style={{ color: WB.muted }} strokeWidth={2} />
         </button>
       )}
 
@@ -224,7 +224,7 @@ export function Topbar({
             borderRadius: 9999,
             background: statusStyle.bg,
             color: statusStyle.fg,
-            border: `1px solid ${statusStyle.fg}44`,
+            border: `1px solid color-mix(in srgb, ${statusStyle.fg} 35%, transparent)`,
           }}
         >
           {PLAN_STATUS_LABEL[planStatus]}
@@ -240,9 +240,9 @@ export function Topbar({
               display: "flex",
               alignItems: "center",
               gap: 7,
-              background: `${WB.lime}18`,
+              background: WB.limeFaint,
               color: WB.lime,
-              border: `1px solid ${WB.lime}44`,
+              border: `1px solid ${WB.limeBorder}`,
               borderRadius: 9999,
               padding: "8px 14px",
               cursor: "pointer",
@@ -265,9 +265,9 @@ export function Topbar({
               display: "flex",
               alignItems: "center",
               gap: 7,
-              background: `${WB.lime}18`,
+              background: WB.limeFaint,
               color: WB.lime,
-              border: `1px solid ${WB.lime}44`,
+              border: `1px solid ${WB.limeBorder}`,
               borderRadius: 9999,
               padding: "8px 14px",
               cursor: "pointer",
@@ -303,7 +303,7 @@ export function Topbar({
               textTransform: "uppercase",
             }}
           >
-            <Sparkles size={15} strokeWidth={2.2} color={WB.lime} />
+            <Sparkles size={15} strokeWidth={2.2} style={{ color: WB.lime }} />
             Coach-Skill
           </button>
         )}
@@ -318,7 +318,7 @@ export function Topbar({
               gap: 7,
               background: WB.forest,
               color: WB.lime,
-              border: `1px solid ${WB.lime}55`,
+              border: `1px solid ${WB.limeBorder}`,
               borderRadius: 9999,
               padding: "8px 14px",
               cursor: publishPending ? "wait" : "pointer",
@@ -427,7 +427,7 @@ function PlayerSelector({ playerName, initials, players, currentPlayerId }: Play
           {initials}
         </span>
         <span style={{ fontSize: 12.5, fontWeight: 600, color: WB.text }}>{playerName}</span>
-        <ChevronDown size={13} color={WB.muted} strokeWidth={2} />
+        <ChevronDown size={13} style={{ color: WB.muted }} strokeWidth={2} />
       </button>
 
       {open && (
@@ -443,7 +443,7 @@ function PlayerSelector({ playerName, initials, players, currentPlayerId }: Play
             background: WB.panelBg,
             border: `1px solid ${WB.panelBorder}`,
             borderRadius: 12,
-            boxShadow: "0 24px 48px -18px rgba(0,0,0,0.6)",
+            boxShadow: "0 24px 48px -18px rgba(0,0,0,0.35)",
             padding: 6,
           }}
         >
@@ -476,7 +476,7 @@ function PlayerSelector({ playerName, initials, players, currentPlayerId }: Play
                   padding: "8px 10px",
                   borderRadius: 9,
                   textDecoration: "none",
-                  background: active ? "rgba(209,248,67,0.08)" : "transparent",
+                  background: active ? WB.limeFaint : "transparent",
                   border: `1px solid ${active ? WB.lime : "transparent"}`,
                 }}
               >

@@ -2,7 +2,7 @@
 
 import { useMemo, useState, type ReactElement } from "react";
 import type { PaletteItem } from "./types";
-import { CAT_COLORS, FONT, WB } from "./theme";
+import { CAT_COLORS, CAT_SOFT, CAT_TEXT, FONT, WB } from "./theme";
 import { durLabel, fysExercises, planBlocks } from "./helpers";
 
 type StdFilter = "alle" | "naerspill" | "putting" | "utslag" | "full";
@@ -121,7 +121,7 @@ export function StdTab({
                 padding: "6px 12px",
                 borderRadius: 999,
                 border: `1px solid ${active ? WB.lime : WB.panelBorder}`,
-                background: active ? `${WB.lime}22` : WB.cardBg,
+                background: active ? WB.limeSoft : WB.cardBg,
                 color: active ? WB.lime : WB.muted,
                 cursor: "pointer",
               }}
@@ -140,7 +140,6 @@ export function StdTab({
       >
         {visible.map((p) => {
           const active = selectedPaletteId === p.pid;
-          const catColor = CAT_COLORS[p.cat];
           return (
             <div
               key={p.pid}
@@ -164,8 +163,8 @@ export function StdTab({
                     textTransform: "uppercase",
                     padding: "4px 8px",
                     borderRadius: 6,
-                    background: `${catColor}22`,
-                    color: catColor,
+                    background: CAT_SOFT[p.cat],
+                    color: CAT_TEXT[p.cat],
                   }}
                 >
                   {p.cat}

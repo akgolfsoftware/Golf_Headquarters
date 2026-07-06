@@ -53,7 +53,7 @@ export function KpiStrip({ totals, grand, sessionCount, adherence, sg, fokus, on
       style={{ display: "flex", gap: 8, padding: "12px 18px 4px", overflowX: "auto", flexShrink: 0 }}
     >
       {/* Volum uke (stat) — ekte */}
-      <KpiCard label="Volum uke" dot="#D1F843" onClick={() => onOpen("volum")}>
+      <KpiCard label="Volum uke" dot="var(--signal)" onClick={() => onOpen("volum")}>
         <div style={{ display: "flex", alignItems: "baseline", gap: 5 }}>
           <span style={statValue(WB.text)}>{durLabel(grand)}</span>
           <span style={{ fontSize: 10.5, fontWeight: 600, color: WB.muted }}>/ 8t mål</span>
@@ -62,7 +62,7 @@ export function KpiStrip({ totals, grand, sessionCount, adherence, sg, fokus, on
       </KpiCard>
 
       {/* Pyramide-balanse (bar) — ekte */}
-      <KpiCard label="Pyramide-balanse" dot="#84A9FF" onClick={() => onOpen("pyramide")}>
+      <KpiCard label="Pyramide-balanse" dot="var(--axis-slag)" onClick={() => onOpen("pyramide")}>
         <div style={{ display: "flex", height: 9, borderRadius: 9999, overflow: "hidden", background: WB.railBg, marginBottom: 5 }}>
           {segs.map((sg2) => (
             <span key={sg2.cat} style={{ width: `${sg2.pct}%`, background: sg2.color }} />
@@ -96,7 +96,7 @@ export function KpiStrip({ totals, grand, sessionCount, adherence, sg, fokus, on
       </KpiCard>
 
       {/* Plan-adherence (stat) — % gjennomførte minutter av forfalte økter denne uka */}
-      <KpiCard label="Plan-adherence" dot="#56C59A" onClick={() => onOpen("adherence")}>
+      <KpiCard label="Plan-adherence" dot="var(--axis-fys)" onClick={() => onOpen("adherence")}>
         <div style={{ display: "flex", alignItems: "baseline", gap: 5 }}>
           <span style={statValue(adherence ? WB.ok : WB.muted3)}>{adherence ?? "—"}</span>
         </div>
@@ -104,7 +104,7 @@ export function KpiStrip({ totals, grand, sessionCount, adherence, sg, fokus, on
       </KpiCard>
 
       {/* Strokes Gained (stat) — ingen datamodell ennå → ærlig "—" */}
-      <KpiCard label="Strokes Gained" dot="#56C59A" onClick={() => onOpen("sg")}>
+      <KpiCard label="Strokes Gained" dot="var(--axis-fys)" onClick={() => onOpen("sg")}>
         <div style={{ display: "flex", alignItems: "baseline", gap: 5 }}>
           <span style={statValue(sg ? WB.ok : WB.muted3)}>{sg ?? "—"}</span>
           {sg && <span style={{ fontSize: 10.5, fontWeight: 600, color: WB.ok }}>▲ siste 5</span>}

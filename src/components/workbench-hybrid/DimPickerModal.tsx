@@ -24,7 +24,7 @@ export function DimPickerModal({ field, selected, multi, onPick, onClose }: DimP
         position: "fixed",
         inset: 0,
         zIndex: 70,
-        background: "rgba(7,16,12,0.74)",
+        background: WB.scrim,
         backdropFilter: "blur(5px)",
         display: "flex",
         alignItems: "center",
@@ -44,7 +44,7 @@ export function DimPickerModal({ field, selected, multi, onPick, onClose }: DimP
           border: `1px solid ${WB.panelBorder}`,
           borderRadius: 18,
           overflow: "hidden",
-          boxShadow: "0 40px 90px -30px rgba(0,0,0,0.65)",
+          boxShadow: "0 40px 90px -30px rgba(0,0,0,0.35)",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 18px", borderBottom: `1px solid ${WB.panelBorder}` }}>
@@ -80,13 +80,13 @@ export function DimPickerModal({ field, selected, multi, onPick, onClose }: DimP
                   cursor: "pointer",
                   marginBottom: 5,
                   border: `1px solid ${active ? WB.lime : WB.panelBorder}`,
-                  background: active ? "rgba(209,248,67,0.12)" : WB.cardBg,
+                  background: active ? WB.limeSoft : WB.cardBg,
                 }}
               >
                 <span style={{ fontSize: 13.5, fontWeight: active ? 700 : 500, color: active ? WB.lime : WB.text }}>
                   {dimLabel(field, val)}
                 </span>
-                {active && <Check size={17} color={WB.lime} strokeWidth={2.6} />}
+                {active && <Check size={17} style={{ color: WB.lime }} strokeWidth={2.6} />}
               </div>
             );
           })}

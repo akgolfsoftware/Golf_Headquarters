@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type ReactElement } from "react";
-import { FONT, WB } from "./theme";
+import { WB } from "./theme";
 
 export type WorkbenchHubTab = "tek" | "seson" | "maler" | "std" | "gantt" | "uke" | "okt";
 
@@ -41,16 +41,20 @@ export function HubTabRail({ tab, onTab, compact = false }: HubTabRailProps): Re
     activeRef.current?.scrollIntoView({ inline: "nearest", block: "nearest", behavior: "smooth" });
   }, [tab, compact]);
 
+  // Samme visuelle språk som VisningsVelger (.ak-visv i golfdata.css):
+  // flate tekst-tabs med aktiv understrek — ikke pille-tabs.
   return (
     <div
       ref={railRef}
+      role="tablist"
+      aria-label="Workbench-faner"
       style={{
         display: "flex",
         alignItems: "center",
-        gap: 4,
-        padding: "0 14px",
+        gap: 2,
+        padding: "0 10px",
         height: 44,
-        borderBottom: `1px solid ${WB.panelBorder}`,
+        borderBottom: `1px solid ${WB.hairline}`,
         flexShrink: 0,
         overflowX: "auto",
       }}
@@ -59,13 +63,13 @@ export function HubTabRail({ tab, onTab, compact = false }: HubTabRailProps): Re
       {HUB_TABS.map((t) => {
         const active = tab === t.key;
         return (
-          <span key={t.key} style={{ display: "flex", alignItems: "center", gap: 4 }}>
+          <span key={t.key} style={{ display: "flex", alignItems: "center", gap: 2, flexShrink: 0 }}>
             {t.sepBefore ? (
               <span
                 style={{
                   width: 1,
                   height: 20,
-                  background: WB.panelBorder,
+                  background: WB.hairline,
                   margin: "0 6px",
                   flexShrink: 0,
                 }}
@@ -74,22 +78,11 @@ export function HubTabRail({ tab, onTab, compact = false }: HubTabRailProps): Re
             <button
               ref={active ? activeRef : undefined}
               type="button"
+              role="tab"
+              aria-selected={active}
               onClick={() => onTab(t.key)}
-              style={{
-                fontFamily: FONT.mono,
-                fontSize: 10,
-                fontWeight: 700,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                padding: "6px 12px",
-                borderRadius: 999,
-                border: "none",
-                background: active ? WB.lime : "transparent",
-                color: active ? WB.limeDark : WB.muted,
-                cursor: "pointer",
-                whiteSpace: "nowrap",
-                flexShrink: 0,
-              }}
+              className={`ak-visv__tab${active ? " ak-visv__tab--aktiv" : ""}`}
+              style={{ whiteSpace: "nowrap", flexShrink: 0 }}
             >
               {compact ? HUB_TABS_COMPACT[t.key] : t.label}
             </button>

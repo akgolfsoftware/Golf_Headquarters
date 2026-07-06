@@ -5,11 +5,18 @@ import { FONT, WB } from "./theme";
 import type { SeasonPhase, SeasonPhaseType } from "./types";
 
 const PHASE_COLOR: Record<SeasonPhaseType, string> = {
-  GRUNN: "#56C59A",
-  SPESIALISERING: "#84A9FF",
-  TURNERING: "#D1F843",
-  EVALUERING: "#E8A33D",
-  FERIE: "#5f7d70",
+  GRUNN: "var(--axis-fys)",
+  SPESIALISERING: "var(--axis-slag)",
+  TURNERING: "var(--axis-spill)",
+  EVALUERING: "var(--axis-tek)",
+  FERIE: "var(--text-faint)",
+};
+const PHASE_TEXT: Record<SeasonPhaseType, string> = {
+  GRUNN: "var(--axis-fys-text)",
+  SPESIALISERING: "var(--axis-slag-text)",
+  TURNERING: "var(--axis-spill-text)",
+  EVALUERING: "var(--axis-tek-text)",
+  FERIE: "var(--text-muted)",
 };
 
 const PHASE_LABEL: Record<SeasonPhaseType, string> = {
@@ -53,6 +60,7 @@ export function ArView({ phases, onMonthClick }: ArViewProps): ReactElement {
         {MONTH_SHORT.map((nm, i) => {
           const ph = months[i];
           const pc = ph ? PHASE_COLOR[ph] : WB.panelBorder;
+          const pt = ph ? PHASE_TEXT[ph] : WB.muted3;
           return (
             <button
               key={nm}
@@ -73,7 +81,7 @@ export function ArView({ phases, onMonthClick }: ArViewProps): ReactElement {
               <div style={{ marginBottom: 12 }}>
                 <span style={{ fontFamily: FONT.display, fontWeight: 700, fontSize: 15, color: WB.text }}>{nm}</span>
               </div>
-              <span style={{ fontFamily: FONT.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: ph ? pc : WB.muted3 }}>
+              <span style={{ fontFamily: FONT.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: ph ? pt : WB.muted3 }}>
                 {ph ? PHASE_LABEL[ph] : "Ingen periode"}
               </span>
             </button>

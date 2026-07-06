@@ -74,7 +74,7 @@ export function KpiDetailModal({ kpiKey, totals, grand, onClose }: KpiDetailModa
         position: "fixed",
         inset: 0,
         zIndex: 60,
-        background: "rgba(7,16,12,0.74)",
+        background: WB.scrim,
         backdropFilter: "blur(5px)",
         display: "flex",
         alignItems: "center",
@@ -94,7 +94,7 @@ export function KpiDetailModal({ kpiKey, totals, grand, onClose }: KpiDetailModa
           border: `1px solid ${WB.panelBorder}`,
           borderRadius: 16,
           overflow: "hidden",
-          boxShadow: "0 40px 90px -30px rgba(0,0,0,0.6)",
+          boxShadow: "0 40px 90px -30px rgba(0,0,0,0.35)",
         }}
       >
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, padding: "18px 20px", borderBottom: `1px solid ${WB.innerBorderSoft}` }}>
@@ -125,7 +125,7 @@ export function KpiDetailModal({ kpiKey, totals, grand, onClose }: KpiDetailModa
               </div>
             ))}
           </div>
-          <p style={{ margin: "16px 0 0", fontSize: 12, lineHeight: 1.55, color: "#7c8a82", background: "#0d2218", border: `1px solid ${WB.hairlineSoft}`, borderRadius: 10, padding: "11px 13px" }}>
+          <p style={{ margin: "16px 0 0", fontSize: 12, lineHeight: 1.55, color: WB.muted3, background: WB.cardBgAlt, border: `1px solid ${WB.hairlineSoft}`, borderRadius: 10, padding: "11px 13px" }}>
             {detail.note}
           </p>
         </div>

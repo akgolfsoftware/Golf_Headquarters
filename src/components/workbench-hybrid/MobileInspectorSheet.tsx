@@ -40,7 +40,7 @@ export function MobileInspectorSheet(props: MobileInspectorSheetProps): ReactEle
         position: "fixed",
         inset: 0,
         zIndex: 72,
-        background: "rgba(7,16,12,0.74)",
+        background: WB.scrim,
         backdropFilter: "blur(5px)",
         display: "flex",
         alignItems: "flex-end",
@@ -59,7 +59,7 @@ export function MobileInspectorSheet(props: MobileInspectorSheetProps): ReactEle
           borderTopLeftRadius: 20,
           borderTopRightRadius: 20,
           overflow: "hidden",
-          boxShadow: "0 -24px 60px -20px rgba(0,0,0,0.6)",
+          boxShadow: "0 -24px 60px -20px rgba(0,0,0,0.35)",
         }}
       >
         {/* drag handle */}

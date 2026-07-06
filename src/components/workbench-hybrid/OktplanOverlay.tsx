@@ -54,7 +54,7 @@ export function OktplanOverlay({ session: s, dayKey, mode, onMode, onClose, onSt
         position: "fixed",
         inset: 0,
         zIndex: 64,
-        background: "rgba(7,16,12,0.74)",
+        background: WB.scrim,
         backdropFilter: "blur(5px)",
         display: "flex",
         alignItems: "flex-start",
@@ -73,31 +73,31 @@ export function OktplanOverlay({ session: s, dayKey, mode, onMode, onClose, onSt
           border: `1px solid ${WB.panelBorder}`,
           borderRadius: 22,
           overflow: "hidden",
-          boxShadow: "0 40px 90px -30px rgba(0,0,0,0.65)",
+          boxShadow: "0 40px 90px -30px rgba(0,0,0,0.35)",
         }}
       >
         {/* HEADER */}
-        <div style={{ padding: 24, background: `linear-gradient(155deg,#17362a,${WB.railBg})`, borderBottom: `3px solid ${catColor}` }}>
+        <div style={{ padding: 24, background: "linear-gradient(155deg, var(--forest-800), var(--forest-700))", borderBottom: `3px solid ${catColor}` }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
             <button
               type="button"
               onClick={onClose}
               title="Tilbake"
-              style={{ width: 38, height: 38, borderRadius: "50%", border: "none", background: "rgba(255,255,255,0.92)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}
+              style={{ width: 38, height: 38, borderRadius: "50%", border: "none", background: "var(--sand-0)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}
             >
-              <ChevronLeft size={18} color={WB.limeDark} strokeWidth={2.2} />
+              <ChevronLeft size={18} style={{ color: "var(--graphite-0)" }} strokeWidth={2.2} />
             </button>
             <span style={{ display: "inline-flex", alignItems: "center", gap: 7, fontFamily: FONT.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", color: WB.lime }}>
-              <Calendar size={14} color={WB.lime} strokeWidth={2} />
+              <Calendar size={14} style={{ color: WB.lime }} strokeWidth={2} />
               {dayLabel}
             </span>
           </div>
-          <h2 style={{ fontFamily: FONT.display, fontWeight: 800, fontSize: 30, lineHeight: 1.04, letterSpacing: "-0.02em", color: "#fff", margin: "0 0 6px" }}>
+          <h2 style={{ fontFamily: FONT.display, fontWeight: 800, fontSize: 30, lineHeight: 1.04, letterSpacing: "-0.02em", color: "var(--sand-0)", margin: "0 0 6px" }}>
             {s.title}
           </h2>
-          <div style={{ fontSize: 13.5, color: "rgba(255,255,255,0.78)", marginBottom: 16 }}>{subLabel}</div>
-          <div style={{ display: "flex", alignItems: "center", gap: 9, color: "#fff" }}>
-            <Clock size={18} color="#fff" strokeWidth={1.8} />
+          <div style={{ fontSize: 13.5, color: "color-mix(in srgb, var(--sand-0) 78%, transparent)", marginBottom: 16 }}>{subLabel}</div>
+          <div style={{ display: "flex", alignItems: "center", gap: 9, color: "var(--sand-0)" }}>
+            <Clock size={18} style={{ color: "var(--sand-0)" }} strokeWidth={1.8} />
             <span style={{ fontFamily: FONT.display, fontWeight: 700, fontSize: 18 }}>{dur}</span>
           </div>
         </div>
@@ -136,7 +136,7 @@ export function OktplanOverlay({ session: s, dayKey, mode, onMode, onClose, onSt
                     <span style={{ fontSize: 12.5, fontWeight: 700, whiteSpace: "nowrap", color: WB.limeDark }}>{b.label}</span>
                     {b.hasRepeat && (
                       <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: FONT.mono, fontSize: 10, fontWeight: 700, color: WB.limeDark }}>
-                        <ChevronRight size={12} color={WB.limeDark} strokeWidth={2.4} />
+                        <ChevronRight size={12} style={{ color: WB.limeDark }} strokeWidth={2.4} />
                         {b.repeatLabel}
                       </span>
                     )}
@@ -179,7 +179,7 @@ export function OktplanOverlay({ session: s, dayKey, mode, onMode, onClose, onSt
                       <div style={{ fontSize: 15, fontWeight: 600, color: WB.text }}>{ex.name}</div>
                       <div style={{ fontSize: 12, color: WB.muted, marginTop: 1 }}>{ex.meta}</div>
                     </div>
-                    <ChevronRight size={18} color={WB.muted3} strokeWidth={2} />
+                    <ChevronRight size={18} style={{ color: WB.muted3 }} strokeWidth={2} />
                   </div>
                 ))}
                 <div style={{ display: "flex", alignItems: "center", gap: 13, padding: "4px 0" }}>
@@ -193,8 +193,8 @@ export function OktplanOverlay({ session: s, dayKey, mode, onMode, onClose, onSt
           )}
 
           {/* FORMEL */}
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 8, background: "#0d241c", border: `1px solid ${WB.hairlineSoft}`, borderRadius: 10, padding: "11px 13px", marginTop: 16 }}>
-            <Flag size={13} color={WB.lime} strokeWidth={1.9} style={{ flexShrink: 0, marginTop: 1 }} />
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 8, background: WB.cardBgAlt, border: `1px solid ${WB.hairlineSoft}`, borderRadius: 10, padding: "11px 13px", marginTop: 16 }}>
+            <Flag size={13} strokeWidth={1.9} style={{ color: WB.lime, flexShrink: 0, marginTop: 1 }} />
             <div>
               <div style={{ fontFamily: FONT.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: WB.muted3, marginBottom: 3 }}>
                 Generert fra formel
@@ -208,7 +208,7 @@ export function OktplanOverlay({ session: s, dayKey, mode, onMode, onClose, onSt
             onClick={onStart}
             style={{ width: "100%", marginTop: 16, border: "none", background: WB.lime, color: WB.limeDark, borderRadius: 9999, padding: 15, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 9 }}
           >
-            <Play size={18} fill={WB.limeDark} stroke="none" />
+            <Play size={18} style={{ fill: WB.limeDark }} stroke="none" />
             <span style={{ fontFamily: FONT.mono, fontSize: 12, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase" }}>Start økt</span>
           </button>
         </div>

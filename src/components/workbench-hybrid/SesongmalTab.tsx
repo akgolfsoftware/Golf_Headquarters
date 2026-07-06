@@ -3,6 +3,7 @@
 import type { ReactElement } from "react";
 import type { WbGoal } from "./types";
 import { CAT_COLORS, FONT, WB } from "./theme";
+import { Card, Tag } from "@/components/athletic/golfdata";
 
 type SesongmalTabProps = {
   goals: WbGoal[];
@@ -56,19 +57,12 @@ export function SesongmalTab({ goals }: SesongmalTabProps): ReactElement {
           const pct = g.progressPct ?? null;
           const targetLabel = formatTarget(g);
           return (
-            <div
+            <Card
               key={`${g.gn}-${i}`}
-              style={{
-                background: WB.cardBg,
-                borderTop: `1px solid ${WB.innerBorder}`,
-                borderRight: `1px solid ${WB.innerBorder}`,
-                borderBottom: `1px solid ${WB.innerBorder}`,
-                borderLeft: `3px solid ${CAT_COLORS[g.ax]}`,
-                borderRadius: 10,
-                padding: "14px 16px",
-              }}
+              compact
+              style={{ borderLeft: `3px solid ${CAT_COLORS[g.ax]}` }}
             >
-              <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: WB.text }}>{g.gn}</div>
                 {pct != null && (
                   <span
@@ -84,18 +78,26 @@ export function SesongmalTab({ goals }: SesongmalTabProps): ReactElement {
                   </span>
                 )}
               </div>
-              <div
-                style={{
-                  fontFamily: FONT.mono,
-                  fontSize: 9,
-                  fontWeight: 700,
-                  letterSpacing: "0.06em",
-                  color: WB.muted3,
-                  marginTop: 6,
-                }}
-              >
-                {g.gm} · {g.ax}
-                {targetLabel ? ` · ${targetLabel}` : ""}
+              <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 8, flexWrap: "wrap" }}>
+                <Tag size="sm" variant="neutral">
+                  {g.gm}
+                </Tag>
+                <Tag size="sm" variant="outline">
+                  {g.ax}
+                </Tag>
+                {targetLabel && (
+                  <span
+                    style={{
+                      fontFamily: FONT.mono,
+                      fontSize: 9,
+                      fontWeight: 700,
+                      letterSpacing: "0.06em",
+                      color: WB.muted3,
+                    }}
+                  >
+                    {targetLabel}
+                  </span>
+                )}
               </div>
               {pct != null && (
                 <div
@@ -118,7 +120,7 @@ export function SesongmalTab({ goals }: SesongmalTabProps): ReactElement {
                   />
                 </div>
               )}
-            </div>
+            </Card>
           );
         })}
       </div>

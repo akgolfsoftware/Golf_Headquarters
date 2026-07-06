@@ -81,11 +81,25 @@ const LAC_LABEL: Record<string, string> = {
 };
 
 const PYR_COLOR: Record<string, string> = {
-  FYS: "#6366F1",
-  TEK: "#3B82F6",
-  SLAG: "#10B981",
-  SPILL: "#F59E0B",
-  TURN: "#EF4444",
+  FYS: "var(--axis-fys)",
+  TEK: "var(--axis-tek)",
+  SLAG: "var(--axis-slag)",
+  SPILL: "var(--axis-spill)",
+  TURN: "var(--axis-turn)",
+};
+const PYR_SOFT: Record<string, string> = {
+  FYS: "var(--axis-fys-soft)",
+  TEK: "var(--axis-tek-soft)",
+  SLAG: "var(--axis-slag-soft)",
+  SPILL: "var(--axis-spill-soft)",
+  TURN: "var(--axis-turn-soft)",
+};
+const PYR_TEXT: Record<string, string> = {
+  FYS: "var(--axis-fys-text)",
+  TEK: "var(--axis-tek-text)",
+  SLAG: "var(--axis-slag-text)",
+  SPILL: "var(--axis-spill-text)",
+  TURN: "var(--axis-turn-text)",
 };
 
 export function AiPlanPanel({ playerId, playerName, onClose }: AiPlanPanelProps): ReactElement {
@@ -137,7 +151,7 @@ export function AiPlanPanel({ playerId, playerName, onClose }: AiPlanPanelProps)
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    background: "rgba(0,0,0,0.6)",
+    background: WB.scrim,
     padding: 24,
   };
 
@@ -228,7 +242,7 @@ export function AiPlanPanel({ playerId, playerName, onClose }: AiPlanPanelProps)
       <div style={panel}>
         {/* Header */}
         <div style={header}>
-          <Bot size={18} strokeWidth={1.5} color={WB.lime} />
+          <Bot size={18} strokeWidth={1.5} style={{ color: WB.lime }} />
           <div style={{ flex: 1 }}>
             <div style={{ fontFamily: FONT.display, fontWeight: 700, fontSize: 15, color: WB.text }}>
               AI-plan for {playerName}
@@ -246,7 +260,7 @@ export function AiPlanPanel({ playerId, playerName, onClose }: AiPlanPanelProps)
         <div style={body}>
           {status === "loading" && (
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16, padding: "40px 0" }}>
-              <Loader2 size={32} strokeWidth={1.5} color={WB.lime} style={{ animation: "spin 1s linear infinite" }} />
+              <Loader2 size={32} strokeWidth={1.5} style={{ color: WB.lime, animation: "spin 1s linear infinite" }} />
               <div style={{ fontFamily: FONT.display, fontSize: 16, color: WB.muted }}>
                 Analyserer spillerdata og genererer plan…
               </div>
@@ -256,8 +270,8 @@ export function AiPlanPanel({ playerId, playerName, onClose }: AiPlanPanelProps)
           )}
 
           {status === "error" && (
-            <div style={{ ...card, borderColor: "#A32D2D", display: "flex", flexDirection: "column", gap: 10 }}>
-              <div style={{ fontFamily: FONT.display, fontWeight: 700, color: "#EF4444", fontSize: 14 }}>
+            <div style={{ ...card, borderColor: WB.err, display: "flex", flexDirection: "column", gap: 10 }}>
+              <div style={{ fontFamily: FONT.display, fontWeight: 700, color: WB.err, fontSize: 14 }}>
                 Generering feilet
               </div>
               <div style={{ fontSize: 13, color: WB.muted, lineHeight: 1.5 }}>{feilmelding}</div>
@@ -301,9 +315,9 @@ export function AiPlanPanel({ playerId, playerName, onClose }: AiPlanPanelProps)
                           fontWeight: 700,
                           padding: "4px 9px",
                           borderRadius: 6,
-                          background: `${WB.lime}22`,
+                          background: WB.limeSoft,
                           color: WB.lime,
-                          border: `1px solid ${WB.lime}44`,
+                          border: `1px solid ${WB.limeBorder}`,
                         }}
                       >
                         {o}
@@ -336,9 +350,9 @@ export function AiPlanPanel({ playerId, playerName, onClose }: AiPlanPanelProps)
                             fontWeight: 700,
                             padding: "3px 8px",
                             borderRadius: 6,
-                            background: `${PYR_COLOR[o.type] ?? "#888"}22`,
-                            color: PYR_COLOR[o.type] ?? WB.muted,
-                            border: `1px solid ${PYR_COLOR[o.type] ?? "#888"}44`,
+                            background: PYR_SOFT[o.type] ?? WB.mutedSoft,
+                            color: PYR_TEXT[o.type] ?? WB.muted,
+                            border: `1px solid ${PYR_COLOR[o.type] ?? WB.muted3}`,
                             flexShrink: 0,
                           }}
                         >
@@ -362,8 +376,8 @@ export function AiPlanPanel({ playerId, playerName, onClose }: AiPlanPanelProps)
               ))}
 
               {generationId && (
-                <div style={{ ...card, display: "flex", alignItems: "center", gap: 8, background: `${WB.lime}11`, borderColor: `${WB.lime}44` }}>
-                  <CheckCircle size={15} strokeWidth={1.5} color={WB.lime} />
+                <div style={{ ...card, display: "flex", alignItems: "center", gap: 8, background: WB.limeFaint, borderColor: WB.limeBorder }}>
+                  <CheckCircle size={15} strokeWidth={1.5} style={{ color: WB.lime }} />
                   <div style={{ fontSize: 12, color: WB.muted, flex: 1 }}>
                     Forslaget er lagret i godkjenningskøen og kan aktiveres derfra.
                   </div>

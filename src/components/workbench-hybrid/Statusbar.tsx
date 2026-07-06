@@ -46,10 +46,10 @@ export function Statusbar({ totals, grand, weekLabel, volMin, volMax, tekBrudd }
         gap: 18,
         padding: "0 20px",
         height: 74,
-        borderTop: "2px solid #D1F84326",
-        background: "#0a1d15",
+        borderTop: `2px solid ${WB.limeBorder}`,
+        background: WB.railBg,
         flexShrink: 0,
-        boxShadow: "inset 0 1px 0 rgba(209,248,67,0.08)",
+        boxShadow: `inset 0 1px 0 ${WB.limeFaint}`,
       }}
     >
       <div style={{ flexShrink: 0, display: "flex", flexDirection: "column", gap: 3 }}>
@@ -71,7 +71,7 @@ export function Statusbar({ totals, grand, weekLabel, volMin, volMax, tekBrudd }
                 display: "flex",
                 alignItems: "center",
                 gap: 9,
-                background: tekRod ? "#2a1414" : WB.cardBgAlt,
+                background: tekRod ? WB.errSoft : WB.cardBgAlt,
                 border: `1px solid ${tekRod ? WB.err : WB.innerBorderSoft}`,
                 borderRadius: 9999,
                 padding: "6px 13px 6px 9px",
@@ -82,7 +82,7 @@ export function Statusbar({ totals, grand, weekLabel, volMin, volMax, tekBrudd }
                 <div style={{ fontSize: 12.5, fontWeight: 700, color: tekRod ? WB.err : WB.text, fontFamily: FONT.display }}>
                   {m ? durLabel(m) : "0m"}
                 </div>
-                <div style={{ fontSize: 8.5, fontFamily: FONT.mono, letterSpacing: "0.06em", color: tekRod ? WB.err : "#7c8a82" }}>
+                <div style={{ fontSize: 8.5, fontFamily: FONT.mono, letterSpacing: "0.06em", color: tekRod ? WB.err : WB.muted3 }}>
                   {tekRod ? `TEK <${tekBrudd?.grense}%` : cat}
                 </div>
               </div>
@@ -100,7 +100,7 @@ export function Statusbar({ totals, grand, weekLabel, volMin, volMax, tekBrudd }
           <div style={{ flex: 1, position: "relative", height: 7, borderRadius: 9999, background: WB.railBg, overflow: "hidden" }}>
             <div style={{ position: "absolute", left: 0, top: 0, height: "100%", width: `${volPct}%`, borderRadius: 9999, background: gaugeColor }} />
           </div>
-          <span style={{ fontSize: 9.5, color: "#7c8a82", flexShrink: 0 }}>{volTakLabel}</span>
+          <span style={{ fontSize: 9.5, color: WB.muted3, flexShrink: 0 }}>{volTakLabel}</span>
         </div>
         <div style={{ fontSize: 9.5, color: WB.muted, marginTop: 6 }}>{volTakStatus} · plassholder-tak</div>
       </div>

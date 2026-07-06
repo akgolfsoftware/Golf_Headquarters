@@ -225,7 +225,7 @@ export function TekniskPlanTab({
                 fontWeight: 700,
                 padding: "4px 8px",
                 borderRadius: 999,
-                background: "rgba(209,248,67,0.12)",
+                background: WB.limeSoft,
                 color: WB.lime,
               }}
             >
@@ -327,7 +327,7 @@ export function TekniskPlanTab({
                       width: 22,
                       height: 22,
                       borderRadius: "50%",
-                      background: t.progressPct >= 100 ? "rgba(209,248,67,0.2)" : WB.railBg,
+                      background: t.progressPct >= 100 ? WB.limeSoft : WB.railBg,
                       color: t.progressPct >= 100 ? WB.lime : WB.muted,
                       fontFamily: FONT.mono,
                       fontSize: 9,

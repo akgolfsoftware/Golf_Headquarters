@@ -2,7 +2,7 @@
 
 import type { ReactElement } from "react";
 import { Clock, Play, List, Minus, Plus, Repeat, Trash2, X } from "lucide-react";
-import { CAT_COLORS, FONT, WB } from "./theme";
+import { CAT_COLORS, CAT_SOFT, CAT_TEXT, FONT, WB } from "./theme";
 import type { DimField } from "./taxonomy";
 import { buildDimensions, durLabel, recurSummary, type DimRow } from "./helpers";
 import type { PaletteItem, WbSession } from "./types";
@@ -77,7 +77,7 @@ function DimensionRows({
                     borderRadius: 9999,
                     padding: "5px 9px",
                     cursor: readOnly ? "default" : "pointer",
-                    color: CAT_COLORS.SLAG,
+                    color: CAT_TEXT.SLAG,
                   }}
                 >
                   {ch.label}
@@ -120,19 +120,20 @@ const formelHeader = (label: string, readOnly = false): ReactElement => (
     <span style={{ fontFamily: FONT.mono, fontSize: 9.5, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: WB.muted3 }}>
       {label}
     </span>
-    <span style={{ fontFamily: FONT.mono, fontSize: 9, color: "#3f6354" }}>{readOnly ? "lese-visning" : "klikk for å endre"}</span>
+    <span style={{ fontFamily: FONT.mono, fontSize: 9, color: WB.muted3 }}>{readOnly ? "lese-visning" : "klikk for å endre"}</span>
   </div>
 );
 
 const tag = (cat: string, label: string): ReactElement => {
-  const c = CAT_COLORS[cat as keyof typeof CAT_COLORS] ?? WB.lime;
+  const c = CAT_TEXT[cat as keyof typeof CAT_TEXT] ?? WB.lime;
+  const soft = CAT_SOFT[cat as keyof typeof CAT_SOFT] ?? WB.limeSoft;
   return (
     <span
       style={{
         display: "inline-flex",
         alignItems: "center",
         gap: 7,
-        background: `${c}29`,
+        background: soft,
         color: c,
         fontFamily: FONT.mono,
         fontSize: 10,
@@ -314,7 +315,7 @@ export function Inspector({
               fontSize: 11.5,
               lineHeight: 1.5,
               color: WB.muted3,
-              background: "#0d241c",
+              background: WB.cardBgAlt,
               border: `1px solid ${WB.hairlineSoft}`,
               borderRadius: 9,
               padding: "10px 12px",
@@ -342,7 +343,7 @@ export function Inspector({
             {mode.session.title}
           </h3>
           <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: WB.muted, marginBottom: 18 }}>
-            <Clock size={14} color={WB.muted} strokeWidth={1.8} />
+            <Clock size={14} style={{ color: WB.muted }} strokeWidth={1.8} />
             {mode.dayLabel} · {durLabel(mode.session.dur)}
           </div>
 
@@ -369,7 +370,7 @@ export function Inspector({
                   cursor: onOpenRecur ? "pointer" : "default",
                 }}
               >
-                <Repeat size={16} color={on ? WB.lime : WB.muted3} strokeWidth={1.9} />
+                <Repeat size={16} style={{ color: on ? WB.lime : WB.muted3 }} strokeWidth={1.9} />
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 12.5, fontWeight: 600, color: WB.text }}>Gjenta ukentlig</div>
                   <div style={{ fontSize: 10.5, color: WB.muted }}>{recurSummary(mode.session.recur)}</div>
@@ -415,7 +416,7 @@ export function Inspector({
               fontWeight: 600,
             }}
           >
-            <Plus size={15} color={WB.lime} strokeWidth={2} />
+            <Plus size={15} style={{ color: WB.lime }} strokeWidth={2} />
             {mode.session.cat === "FYS" ? "Legg til øvelse" : "Legg til drill"}
           </button>
 
@@ -439,7 +440,7 @@ export function Inspector({
                 gap: 8,
               }}
             >
-              <List size={16} color={WB.lime} strokeWidth={1.9} />
+              <List size={16} style={{ color: WB.lime }} strokeWidth={1.9} />
               <span style={{ fontFamily: FONT.mono, fontSize: 11, fontWeight: 700, letterSpacing: "0.03em", textTransform: "uppercase" }}>Øktplan</span>
             </button>
             <button
@@ -459,7 +460,7 @@ export function Inspector({
                 gap: 8,
               }}
             >
-              <Play size={16} fill={WB.limeDark} stroke="none" />
+              <Play size={16} style={{ fill: WB.limeDark }} stroke="none" />
               <span style={{ fontFamily: FONT.mono, fontSize: 11, fontWeight: 700, letterSpacing: "0.03em", textTransform: "uppercase" }}>Start</span>
             </button>
           </div>

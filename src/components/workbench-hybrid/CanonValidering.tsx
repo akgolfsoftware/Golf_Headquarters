@@ -129,7 +129,7 @@ export function BruddPanel({
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
-              <AlertTriangle size={13} color={farge} />
+              <AlertTriangle size={13} style={{ color: farge }} />
               <span style={{ fontSize: 11.5, color: WB.text, flex: 1 }}>
                 {isCoach ? b.melding : klarsprak(b.invariantId, b.melding)}
               </span>

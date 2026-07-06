@@ -2,7 +2,7 @@
 
 import { useState, type ReactElement } from "react";
 import { Check, ChevronLeft, ChevronRight, GripVertical, Minus, X } from "lucide-react";
-import { CAT_COLORS, COMPLIANCE_COLORS, FONT, WB } from "./theme";
+import { CAT_COLORS, CAT_TEXT, COMPLIANCE_COLORS, FONT, WB } from "./theme";
 import { durLabel } from "./helpers";
 import type { WbSession, WeekKey, WeekState } from "./types";
 
@@ -218,8 +218,8 @@ export function UkeView({
             display: "flex",
             alignItems: "center",
             gap: 10,
-            background: "rgba(242,144,140,0.12)",
-            border: "1px solid rgba(242,144,140,0.35)",
+            background: WB.errSoft,
+            border: `1px solid ${WB.errBorder}`,
             borderRadius: 10,
             padding: "9px 13px",
           }}
@@ -244,7 +244,7 @@ export function UkeView({
           }}
         >
           {/* hour axis */}
-          <div style={{ position: "relative", background: "#0a1d15", borderRight: `1px solid ${WB.hairline}` }}>
+          <div style={{ position: "relative", background: WB.railBg, borderRight: `1px solid ${WB.hairline}` }}>
             <div style={{ position: "sticky", top: 0, zIndex: 4, height: 48, background: WB.cardBgAlt, borderBottom: `1px solid ${WB.hairlineSoft}` }} />
             {hours.map((h) => (
               <div key={h} style={{ height: ROW_H, borderTop: `1px solid ${WB.hairline}`, boxSizing: "border-box", position: "relative" }}>
@@ -256,7 +256,7 @@ export function UkeView({
                     fontFamily: FONT.mono,
                     fontSize: 9.5,
                     color: WB.muted3,
-                    background: "#0a1d15",
+                    background: WB.railBg,
                     padding: "0 2px",
                   }}
                 >
@@ -273,8 +273,8 @@ export function UkeView({
             const isHover = hoverDay === d.key;
             const list = week[d.key] ?? [];
             const laneMap = computeDayLanes(list, startHour);
-            const colBg = isWeekend ? "#0a1c15" : isToday ? "rgba(209,248,67,0.05)" : "#0f261c";
-            const headBg = isToday ? "#15301f" : isWeekend ? "#0c2018" : WB.cardBgAlt;
+            const colBg = isWeekend ? WB.cardBgAlt : isToday ? WB.limeFaint : WB.cardBg;
+            const headBg = isToday ? WB.limeSoft : isWeekend ? WB.cardBgAlt : WB.cardBgAlt;
             return (
               <div
                 key={d.key}
@@ -292,7 +292,7 @@ export function UkeView({
                   position: "relative",
                   minHeight: gridH,
                   borderRight: `1px solid ${WB.hairline}`,
-                  background: isHover ? "rgba(209,248,67,0.1)" : colBg,
+                  background: isHover ? WB.limeSoft : colBg,
                   outline: isHover ? `2px dashed ${WB.lime}` : undefined,
                   outlineOffset: isHover ? -2 : undefined,
                 }}
@@ -319,7 +319,7 @@ export function UkeView({
                       fontWeight: 600,
                       letterSpacing: "0.06em",
                       textTransform: "uppercase",
-                      color: isToday ? WB.lime : isWeekend ? "#6b7a71" : WB.muted,
+                      color: isToday ? WB.lime : isWeekend ? WB.muted3 : WB.muted,
                     }}
                   >
                     {d.label}
@@ -329,7 +329,7 @@ export function UkeView({
                       fontFamily: FONT.display,
                       fontWeight: isToday ? 800 : 700,
                       fontSize: 15,
-                      color: isToday ? WB.lime : isWeekend ? "#b9c2bb" : WB.text,
+                      color: isToday ? WB.lime : isWeekend ? WB.muted2 : WB.text,
                     }}
                   >
                     {dayMeta[i].num}
@@ -369,7 +369,7 @@ export function UkeView({
                           top,
                           minHeight: height,
                           zIndex: dragging ? 50 : stackZ + lane,
-                          background: on ? "#1d3a2e" : WB.cardBg,
+                          background: on ? WB.cardBgActive : WB.cardBg,
                           borderTop: `1px solid ${on ? WB.lime : WB.panelBorder}`,
                           borderRight: `1px solid ${on ? WB.lime : WB.panelBorder}`,
                           borderBottom: `1px solid ${on ? WB.lime : WB.panelBorder}`,
@@ -382,9 +382,9 @@ export function UkeView({
                           flexDirection: "row",
                           gap: 4,
                           boxShadow: dragging
-                            ? "0 8px 24px rgba(0,0,0,0.35)"
+                            ? "0 8px 24px rgba(0,0,0,0.25)"
                             : on
-                              ? "0 0 0 3px rgba(209,248,67,0.12)"
+                              ? `0 0 0 3px ${WB.limeSoft}`
                               : undefined,
                           opacity: dragging ? 0.92 : comp === "ikke-gjennomfort" ? 0.72 : 1,
                         }}
@@ -413,11 +413,11 @@ export function UkeView({
                             }}
                           >
                             {comp === "pa-plan" ? (
-                              <Check size={9} color={WB.limeDark} strokeWidth={3} />
+                              <Check size={9} style={{ color: "var(--graphite-0)" }} strokeWidth={3} />
                             ) : comp === "avvik" ? (
-                              <X size={9} color={WB.limeDark} strokeWidth={3} />
+                              <X size={9} style={{ color: "var(--sand-0)" }} strokeWidth={3} />
                             ) : (
-                              <Minus size={9} color={WB.limeDark} strokeWidth={3} />
+                              <Minus size={9} style={{ color: "var(--sand-0)" }} strokeWidth={3} />
                             )}
                           </span>
                         )}
@@ -444,7 +444,7 @@ export function UkeView({
                             alignItems: "center",
                             justifyContent: "center",
                             width: 20,
-                            background: "rgba(255,255,255,0.04)",
+                            background: WB.mutedSoft,
                             borderRadius: 4,
                             color: WB.muted3,
                             cursor: "grab",
@@ -463,7 +463,7 @@ export function UkeView({
                             </span>
                           </div>
                           <div style={{ fontSize: 11.5, fontWeight: 600, color: WB.text, lineHeight: 1.25 }}>{s.title}</div>
-                          <div style={{ fontFamily: FONT.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.05em", color: c }}>
+                          <div style={{ fontFamily: FONT.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.05em", color: CAT_TEXT[s.cat] }}>
                             {AREA_LABEL[s.cat] ?? s.cat}
                           </div>
                         </div>
