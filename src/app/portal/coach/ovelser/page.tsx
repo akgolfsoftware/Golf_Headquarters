@@ -9,6 +9,7 @@ import Link from "next/link";
 import { Dumbbell, Plus } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { Eyebrow, Tag } from "@/components/athletic/golfdata";
 import { ExerciseCardActions } from "@/components/portal/exercise-card-actions";
 import { EmptyState } from "@/components/shared/empty-state";
 import { PyramidArea, type Prisma } from "@/generated/prisma/client";
@@ -62,12 +63,15 @@ export default async function CoachOvelserPage({
   });
 
   return (
-    <div className="mx-auto max-w-[430px] pb-24 pt-2 md:max-w-[1240px] md:pb-8">
+    <div className="golfdata-scope mx-auto w-full max-w-[460px] px-4 pb-8 pt-3 sm:px-5 md:max-w-[860px] md:px-8 md:pt-6">
 
       {/* Header */}
-      <div className="mb-4 flex items-start justify-between px-4 md:px-0">
+      <div className="mb-4 flex items-start justify-between">
         <div>
-          <h1 className="font-display text-[20px] font-bold leading-[1.06] tracking-[-0.02em] text-foreground">
+          <Eyebrow tone="default" className="mb-2.5 block">
+            Coach · Øvelser
+          </Eyebrow>
+          <h1 className="font-display text-[29px] font-bold leading-[1.05] tracking-[-0.035em] text-foreground">
             Øvelser fra
             <em className="font-medium italic text-primary"> Anders</em>
           </h1>
@@ -85,28 +89,19 @@ export default async function CoachOvelserPage({
       </div>
 
       {/* Filter-chips — horizontal scroll */}
-      <div className="mb-4 flex gap-1.5 overflow-x-auto px-4 pb-1 [-webkit-overflow-scrolling:touch] [scrollbar-width:none] md:px-0">
+      <div className="mb-4 flex gap-1.5 overflow-x-auto pb-1 [-webkit-overflow-scrolling:touch] [scrollbar-width:none]">
         {FILTER_CHIPS.map((chip) => {
           const aktiv = chip.value === valgtArea;
           return (
-            <Link
-              key={chip.value}
-              href={buildUrl(chip.value)}
-              className={
-                "inline-flex shrink-0 items-center rounded-full border px-3 py-[6px] font-mono text-[10.5px] font-semibold uppercase tracking-[0.04em] transition-colors " +
-                (aktiv
-                  ? "border-primary bg-primary/10 text-primary"
-                  : "border-border bg-card text-muted-foreground hover:border-primary/40")
-              }
-            >
-              {chip.label}
+            <Link key={chip.value} href={buildUrl(chip.value)} className="shrink-0">
+              <Tag variant={aktiv ? "signal" : "outline"}>{chip.label}</Tag>
             </Link>
           );
         })}
       </div>
 
       {/* Grid */}
-      <div className="px-3 md:px-0">
+      <div>
         {exercises.length === 0 ? (
           <EmptyState
             icon={Dumbbell}

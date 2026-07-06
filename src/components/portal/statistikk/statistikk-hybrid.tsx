@@ -368,7 +368,7 @@ function NivaaTomState() {
 
 export function StatistikkHub({ data }: { data: StatistikkHybridData }) {
   return (
-    <div className="golfdata-scope mx-auto w-full max-w-[460px] space-y-[14px] px-4 pb-6 pt-[10px] sm:px-0">
+    <div className="golfdata-scope mx-auto w-full max-w-[460px] space-y-[14px] px-4 pb-8 pt-3 sm:px-5 md:max-w-[860px] md:px-8 md:pt-6">
 
       {/* 1. Hero */}
       <div className="px-0 pb-[0px]">

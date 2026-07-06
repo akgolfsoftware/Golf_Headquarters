@@ -29,7 +29,7 @@ export default async function UtfordringerListe() {
   const tidligere = utfordringer.filter((u) => u.status === "ENDED");
 
   return (
-    <div className="golfdata-scope space-y-8 pb-20 md:pb-0">
+    <div className="golfdata-scope mx-auto w-full max-w-[460px] space-y-8 px-4 pb-8 pt-3 sm:px-5 md:max-w-[860px] md:px-8 md:pt-6">
       {/* Editorial header */}
       <header role="banner" className="px-0">
         <Eyebrow style={{ fontSize: "var(--text-11)", letterSpacing: "0.16em" }}>

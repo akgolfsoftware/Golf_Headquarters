@@ -8,6 +8,7 @@
 import Link from "next/link";
 import { ArrowUpRight, ClipboardList } from "lucide-react";
 import { EmptyState } from "@/components/shared/empty-state";
+import { Eyebrow } from "@/components/athletic/golfdata";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 
@@ -16,8 +17,11 @@ export default async function CoachPlans() {
 
   if (user.tier === "GRATIS") {
     return (
-      <div className="mx-auto max-w-[430px] pb-24 pt-2 px-4 md:max-w-[1240px] md:px-0 md:pb-8">
-        <h1 className="font-display text-[20px] font-bold leading-[1.06] tracking-[-0.02em] text-foreground">
+      <div className="golfdata-scope mx-auto w-full max-w-[460px] px-4 pb-8 pt-3 sm:px-5 md:max-w-[860px] md:px-8 md:pt-6">
+        <Eyebrow tone="default" className="mb-2.5 block">
+          Coach · Planer
+        </Eyebrow>
+        <h1 className="font-display text-[29px] font-bold leading-[1.05] tracking-[-0.035em] text-foreground">
           Mine<em className="font-medium italic text-primary"> planer</em>
         </h1>
         <p className="mt-2 text-[13px] text-muted-foreground">
@@ -49,12 +53,15 @@ export default async function CoachPlans() {
   ];
 
   return (
-    <div className="mx-auto max-w-[430px] pb-24 pt-2 md:max-w-[1240px] md:pb-8">
+    <div className="golfdata-scope mx-auto w-full max-w-[460px] px-4 pb-8 pt-3 sm:px-5 md:max-w-[860px] md:px-8 md:pt-6">
 
       {/* Header */}
-      <div className="mb-4 flex items-start justify-between px-4 md:px-0">
+      <div className="mb-4 flex items-start justify-between">
         <div>
-          <h1 className="font-display text-[20px] font-bold leading-[1.06] tracking-[-0.02em] text-foreground">
+          <Eyebrow tone="default" className="mb-2.5 block">
+            Coach · Planer
+          </Eyebrow>
+          <h1 className="font-display text-[29px] font-bold leading-[1.05] tracking-[-0.035em] text-foreground">
             Mine<em className="font-medium italic text-primary"> planer</em>
           </h1>
           <p className="mt-1 text-[13px] text-muted-foreground">
@@ -70,7 +77,7 @@ export default async function CoachPlans() {
       </div>
 
       {planer.length === 0 ? (
-        <div className="px-3 md:px-0">
+        <div>
           <EmptyState
             icon={ClipboardList}
             titleItalic="Ingen planer"
@@ -89,7 +96,7 @@ export default async function CoachPlans() {
         </div>
       ) : (
         /* Kanban — horisontalt scroll på mobil */
-        <div className="flex gap-2 overflow-x-auto px-4 pb-2 [-webkit-overflow-scrolling:touch] [scrollbar-width:none] md:px-0">
+        <div className="flex gap-2 overflow-x-auto pb-2 [-webkit-overflow-scrolling:touch] [scrollbar-width:none]">
           {cols.map((col) => (
             <KanbanCol key={col.title} title={col.title} headColor={col.headColor}>
               {col.plans.map((p) => {
