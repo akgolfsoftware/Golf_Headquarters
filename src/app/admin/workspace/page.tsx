@@ -1,22 +1,22 @@
 /**
  * /admin/workspace — Min uke (default tab)
  *
- * Pixel-perfekt fra Claude Design-bundle _SEBg4QyodvbW2k06JWiGw
- * (workspace/s1-workspace-min-uke.jsx).
+ * v13-kalibrert (design-bølge D2): AgPage + AgPageHead + KPI-kort (fasit
+ * /admin/okonomi) + lokale tabs med tokens (erstatter bespoke WorkspaceHero
+ * med hardkodet gradient/hex). Task-radene (TaskRow) beholdes — Notion-synket
+ * arbeidsverktøy, se .claude/rules/design-produktbeslutninger.md.
  *
- * 3-kol layout (I dag · Denne uka · Senere), brenner-strip sticky øverst,
- * KPI-strip i hero. Bruker sample-data inntil NotionConnection er på plass.
+ * 3-kol layout (I dag · Denne uka · Senere), brenner-strip øverst.
+ * Bruker sample-data inntil NotionConnection er på plass.
  */
 
 import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import {
-  WorkspaceHero,
-  WorkspaceTabs,
-  TaskRow,
-} from "@/components/workspace/primitives";
+import { AgPage, AgPageHead } from "@/components/admin/agencyos/ui";
+import { TaskRow } from "@/components/workspace/primitives";
 import { type SampleTask } from "@/components/workspace/sample-data";
 import { getTasksForUser } from "@/lib/notion/queries";
+import { cn } from "@/lib/utils";
 import {
   WorkspaceHeaderActions,
   LeggTilOppgaveButton,
@@ -52,24 +52,37 @@ export default async function WorkspaceMinUkePage() {
   const todaySub = `${ukedager[now.getDay()]} ${String(now.getDate()).padStart(2, "0")}.${String(now.getMonth() + 1).padStart(2, "0")}`;
 
   return (
-    <div className="space-y-6">
-      <WorkspaceHero
+    <AgPage>
+      <AgPageHead
         eyebrow="AgencyOS · Workspace"
         title="Min"
-        titleItalic="uke"
-        sub={`${åpneTotalt} OPPGAVER · ${forfallerIDag} FORFALLER I DAG · ${brenner.length} BRENNER`}
+        italic="uke"
+        lead={
+          <>
+            <b className="font-semibold text-foreground">{åpneTotalt}</b> åpne oppgaver ·{" "}
+            <b className="font-semibold text-foreground">{forfallerIDag}</b> forfaller i dag ·{" "}
+            <b className="font-semibold text-foreground">{brenner.length}</b> brenner.
+          </>
+        }
         actions={<WorkspaceHeaderActions />}
-        kpis={[
-          { label: "I DAG", value: today.length, delta: `${todayDone} fullført`, deltaTone: "success" },
-          { label: "DENNE UKA", value: denneUkaAntall, delta: `${doingAntall} doing · ${todoAntall} todo`, deltaTone: "muted" },
-          { label: "BLOKKERT", value: blokkertAntall, delta: blokkertAntall > 0 ? "venter" : "ingen", deltaTone: "warning" },
-          { label: "DELT", value: deltAntall, delta: "flere tildelt", deltaTone: "success" },
-        ]}
       />
 
-      <WorkspaceTabs active="uke" counts={{ tildelt: deltAntall }} />
+      {/* KPI-strip (fasit /admin/okonomi) */}
+      <div className="mb-4 grid grid-cols-2 gap-[10px] lg:grid-cols-4">
+        <KpiCard label="I dag" value={String(today.length)} delta={`${todayDone} fullført`} deltaTone="success" />
+        <KpiCard label="Denne uka" value={String(denneUkaAntall)} delta={`${doingAntall} doing · ${todoAntall} todo`} />
+        <KpiCard
+          label="Blokkert"
+          value={String(blokkertAntall)}
+          delta={blokkertAntall > 0 ? "venter" : "ingen"}
+          deltaTone={blokkertAntall > 0 ? "warning" : undefined}
+        />
+        <KpiCard label="Delt" value={String(deltAntall)} delta="flere tildelt" deltaTone="success" />
+      </div>
 
-      <div className="space-y-6 pb-12">
+      <WsTabs active="uke" counts={{ tildelt: deltAntall }} />
+
+      <div className="space-y-6 pb-12 pt-5">
         {/* Brenner-strip */}
         {brenner.length > 0 ? <BrennerStrip tasks={brenner} /> : null}
 
@@ -102,7 +115,7 @@ export default async function WorkspaceMinUkePage() {
             </div>
             <Link
               href="/admin/workspace/oppgaver"
-              className="font-mono mt-2.5 inline-block text-[11px] font-bold uppercase tracking-[0.04em] text-primary"
+              className="mt-2.5 inline-block font-mono text-[11px] font-bold uppercase tracking-[0.04em] text-primary"
             >
               VIS ALLE {tasks.length} →
             </Link>
@@ -111,11 +124,105 @@ export default async function WorkspaceMinUkePage() {
           </section>
         </div>
       </div>
-    </div>
+    </AgPage>
   );
 }
 
 // ──────────────────────────────────────────────────────────────── helpers ──
+
+/** KPI-kort — fasit /admin/okonomi (kompakt mono-KPI). */
+function KpiCard({
+  label,
+  value,
+  delta,
+  deltaTone,
+}: {
+  label: string;
+  value: string;
+  delta?: string;
+  deltaTone?: "success" | "warning";
+}) {
+  return (
+    <div className="rounded-[10px] border border-border bg-card p-[14px] pb-3">
+      <div className="font-mono text-[8.5px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
+        {label}
+      </div>
+      <div className="mt-[7px] font-mono text-[24px] font-semibold leading-none tabular-nums text-foreground">
+        {value}
+      </div>
+      {delta && (
+        <div
+          className={cn(
+            "mt-[6px] font-mono text-[10px]",
+            deltaTone === "success"
+              ? "text-success"
+              : deltaTone === "warning"
+                ? "text-warning"
+                : "text-muted-foreground",
+          )}
+        >
+          {delta}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** Workspace-tabs — lokal v13-komposisjon (tokens, ingen negative marger). */
+function WsTabs({
+  active,
+  counts,
+}: {
+  active: "uke" | "oppgaver" | "prosjekter" | "tildelt" | "notion";
+  counts?: Partial<Record<"uke" | "oppgaver" | "prosjekter" | "tildelt" | "notion", number>>;
+}) {
+  const tabs = [
+    { id: "uke", label: "Min uke", href: "/admin/workspace" },
+    { id: "oppgaver", label: "Oppgaver", href: "/admin/workspace/oppgaver" },
+    { id: "prosjekter", label: "Prosjekter", href: "/admin/workspace/prosjekter" },
+    { id: "tildelt", label: "Tildelt meg", href: "/admin/workspace/tildelt-meg" },
+    { id: "notion", label: "Notion", href: "/admin/workspace/notion" },
+  ] as const;
+
+  return (
+    <nav
+      role="tablist"
+      aria-label="Workspace seksjoner"
+      className="flex items-center gap-0 overflow-x-auto border-b border-border"
+    >
+      {tabs.map((t) => {
+        const isActive = active === t.id;
+        const count = counts?.[t.id];
+        return (
+          <Link
+            key={t.id}
+            href={t.href}
+            role="tab"
+            aria-selected={isActive}
+            className={cn(
+              "-mb-px inline-flex items-center gap-2 whitespace-nowrap border-b-2 px-4 py-3 font-display text-[13px] font-semibold transition-colors",
+              isActive
+                ? "border-primary text-foreground"
+                : "border-transparent text-muted-foreground hover:text-foreground",
+            )}
+          >
+            {t.label}
+            {typeof count === "number" ? (
+              <span
+                className={cn(
+                  "rounded px-1.5 py-px font-mono text-[10px] tabular-nums",
+                  isActive ? "bg-primary/10 text-primary" : "bg-secondary text-muted-foreground",
+                )}
+              >
+                {count}
+              </span>
+            ) : null}
+          </Link>
+        );
+      })}
+    </nav>
+  );
+}
 
 function ColumnHeader({
   title,
@@ -139,11 +246,10 @@ function ColumnHeader({
         ) : null}
       </div>
       <span
-        className={`font-mono rounded-full px-2 py-0.5 text-[10px] font-bold tabular-nums ${
-          accent
-            ? "bg-primary text-primary-foreground"
-            : "bg-muted/60 text-muted-foreground"
-        }`}
+        className={cn(
+          "rounded-full px-2 py-0.5 font-mono text-[10px] font-bold tabular-nums",
+          accent ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground",
+        )}
       >
         {count}
       </span>
@@ -165,7 +271,7 @@ function DenneUkaList({ tasks }: { tasks: SampleTask[] }) {
       {groups.map((g) =>
         g.tasks.length === 0 ? null : (
           <div key={g.day}>
-            <div className="font-mono mb-1.5 text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
+            <div className="mb-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
               {g.day}
             </div>
             <div className="space-y-1.5">
@@ -186,10 +292,7 @@ function EmptyStatePreview() {
       <div className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
         EMPTY-STATE · NY COACH
       </div>
-      <p
-        className="mt-2 text-[13.5px] leading-relaxed"
-        style={{ fontFamily: "'Inter Tight', sans-serif", fontStyle: "italic" }}
-      >
+      <p className="mt-2 font-display text-[13.5px] italic leading-relaxed text-foreground">
         «Du har ingen oppgaver tildelt deg ennå. Anders får varsel når du har ledig
         kapasitet.»
       </p>

@@ -3,11 +3,12 @@
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Calendar, Plus } from "lucide-react";
+import { agBtnClass } from "@/components/admin/agencyos/ui";
 
 export function IDagButton() {
   return (
     <button
-      className="hub-btn btn-outline"
+      className={agBtnClass("ghost")}
       type="button"
       onClick={() => toast.info("Klikk på dato i kalenderen")}
     >
@@ -20,7 +21,7 @@ export function NyBookingButton() {
   const router = useRouter();
   return (
     <button
-      className="hub-btn btn-forest"
+      className={agBtnClass("primary")}
       type="button"
       onClick={() => router.push("/admin/bookinger/ny")}
     >

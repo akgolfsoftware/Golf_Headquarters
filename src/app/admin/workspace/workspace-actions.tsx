@@ -2,33 +2,33 @@
 
 import { toast } from "sonner";
 import { Filter, ExternalLink, Plus, Check, Flame } from "lucide-react";
-import { AthleticButton } from "@/components/athletic";
+import { agBtnClass } from "@/components/admin/agencyos/ui";
 import { type SampleTask } from "@/components/workspace/sample-data";
 
 export function WorkspaceHeaderActions() {
   return (
     <>
-      <AthleticButton
-        variant="ghost-light"
-        size="sm"
+      <button
+        type="button"
+        className={agBtnClass("ghost")}
         onClick={() => toast.info("Filter kommer snart")}
       >
-        <Filter className="h-3.5 w-3.5" /> Filter
-      </AthleticButton>
-      <AthleticButton
-        variant="ghost-light"
-        size="sm"
+        <Filter className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden /> Filter
+      </button>
+      <button
+        type="button"
+        className={agBtnClass("ghost")}
         onClick={() => toast.info("Notion-integrasjon ikke koblet til ennå")}
       >
-        <ExternalLink className="h-3.5 w-3.5" /> Åpne Notion
-      </AthleticButton>
-      <AthleticButton
-        variant="lime"
-        size="sm"
+        <ExternalLink className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden /> Åpne Notion
+      </button>
+      <button
+        type="button"
+        className={agBtnClass("primary")}
         onClick={() => toast.info("Ny oppgave — bruk Notion for å opprette oppgaver")}
       >
-        <Plus className="h-3.5 w-3.5" /> Ny oppgave
-      </AthleticButton>
+        <Plus className="h-3.5 w-3.5" strokeWidth={2} aria-hidden /> Ny oppgave
+      </button>
     </>
   );
 }

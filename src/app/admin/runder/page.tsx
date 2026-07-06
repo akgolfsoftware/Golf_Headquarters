@@ -1,25 +1,37 @@
 /**
  * AgencyOS — Runder på tvers (/admin/runder)
  *
- * Coach-view over alle registrerte runder fra hele stallen. Data-tett tabell
- * med score, SG-total og baner, KPI-strip med athletic Sparkline for SG-trend.
+ * v13-kalibrert (design-bølge D2): AgPage + AgPageHead + KPI-kort (fasit
+ * /admin/analyse) + AgTable/AgPlayerCell for tabellen. Coach-view over alle
+ * registrerte runder fra hele stallen — score, SG-total og baner.
  * Server component — ekte Prisma (Round), ingen falske tall.
  */
 import Link from "next/link";
 import {
   ChevronRight,
   Flag,
+  Minus,
   Search,
+  Target,
   TrendingDown,
   TrendingUp,
-  Minus,
+  Trophy,
   type LucideIcon,
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { Sparkline } from "@/components/athletic";
+import {
+  AgPage,
+  AgPageHead,
+  AgSpark,
+  AgTable,
+  AgTableToolbar,
+  AgTd,
+  AgTh,
+  AgPlayerCell,
+  agTrClass,
+} from "@/components/admin/agencyos/ui";
 import { EmptyState } from "@/components/shared/empty-state";
-import { avatarBg } from "@/lib/avatar-colors";
 import { cn } from "@/lib/utils";
 import { RunderFilterChip } from "./runder-actions";
 
@@ -44,6 +56,59 @@ function formatNum(n: number | null, withSign = false): string {
   const s = n.toFixed(1).replace(".", ",");
   if (withSign && n > 0) return `+${s}`;
   return s;
+}
+
+// ── KPI-kort (fasit .kpi — samme anatomi som /admin/analyse) ────
+function KpiCard({
+  label,
+  icon: Icon,
+  value,
+  unit,
+  delta,
+  dir,
+  spark,
+}: {
+  label: string;
+  icon: LucideIcon;
+  value: string;
+  unit?: string;
+  delta?: string;
+  dir?: "up" | "down";
+  spark?: number[];
+}) {
+  const DeltaIcon = dir === "up" ? TrendingUp : dir === "down" ? TrendingDown : Minus;
+  return (
+    <div className="relative flex flex-col gap-2.5 overflow-hidden rounded-xl border border-border bg-card px-[18px] py-4">
+      <div className="flex items-center justify-between">
+        <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
+          {label}
+        </span>
+        <span className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-secondary text-muted-foreground">
+          <Icon className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden />
+        </span>
+      </div>
+      <div className="font-mono text-[32px] font-bold leading-none tracking-[-0.02em] tabular-nums text-foreground">
+        {value}
+        {unit && <span className="ml-[3px] text-[15px] font-bold text-muted-foreground">{unit}</span>}
+      </div>
+      {delta && (
+        <div
+          className={cn(
+            "inline-flex items-center gap-[5px] font-mono text-[11px] font-bold tracking-[0.04em]",
+            dir === "up" ? "text-success" : dir === "down" ? "text-destructive" : "text-muted-foreground",
+          )}
+        >
+          <DeltaIcon className="h-[11px] w-[11px]" strokeWidth={2} aria-hidden />
+          {delta}
+        </div>
+      )}
+      {spark && (
+        <div className="pointer-events-none absolute bottom-4 right-4 opacity-60">
+          <AgSpark points={spark} w={72} h={22} />
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default async function RunderPage() {
@@ -92,71 +157,58 @@ export default async function RunderPage() {
   const uniquePlayers = new Set(rounds.map((r) => r.userId)).size;
 
   return (
-    <div className="space-y-1">
-      {/* header */}
-      <div className="mb-3">
-        <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
-          AGENCYOS · RUNDER
-        </span>
-        <h1 className="mt-2 font-display text-[30px] font-bold leading-[1.05] tracking-[-0.025em] text-foreground">
-          Hele stallen, <em className="font-normal italic text-primary">én kolonne</em> for score.
-        </h1>
-        <p className="mt-1.5 max-w-[780px] text-sm leading-relaxed text-muted-foreground">
-          Registrerte runder fra alle spillere — score, avvik mot par og SG-total per runde.{" "}
-          <b className="font-semibold text-foreground">{rounds.length}</b> nyeste av{" "}
-          <b className="font-semibold text-foreground">{totalRounds}</b> totalt ·{" "}
-          {uniquePlayers} spillere.
-        </p>
-      </div>
+    <AgPage>
+      <AgPageHead
+        eyebrow="Analysere · Runder"
+        title={
+          <>
+            Hele stallen, <em className="font-normal italic text-primary">én kolonne</em> for
+            score.
+          </>
+        }
+        lead={
+          <>
+            Registrerte runder fra alle spillere — score, avvik mot par og SG-total per runde.{" "}
+            <b className="font-semibold text-foreground">{rounds.length}</b> nyeste av{" "}
+            <b className="font-semibold text-foreground">{totalRounds}</b> totalt ·{" "}
+            {uniquePlayers} spillere.
+          </>
+        }
+      />
 
-      {/* KPI-strip */}
-      <div className="grid grid-cols-2 gap-3 pt-3 lg:grid-cols-4">
-        <KpiDark
-          label="SNITT-SCORE"
+      {/* KPI-strip (fasit .kpis) */}
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <KpiCard
+          label="Snitt-score"
+          icon={Flag}
           value={snittScore === 0 ? "—" : snittScore.toFixed(1).replace(".", ",")}
-          foot={`Siste ${validScores.length} runder`}
+          delta={`Siste ${validScores.length} runder`}
         />
         <KpiCard
-          label="VS PAR · SNITT"
+          label="Vs par · snitt"
+          icon={Target}
           value={validScores.length === 0 ? "—" : formatNum(vsPar, true)}
-          foot="Aggregert avvik fra par"
-          delta={validScores.length === 0 ? "flat" : vsPar < 0 ? "up" : vsPar > 0 ? "down" : "flat"}
+          delta="Aggregert avvik fra par"
+          dir={validScores.length === 0 ? undefined : vsPar < 0 ? "up" : vsPar > 0 ? "down" : undefined}
         />
         <KpiCard
-          label="BESTE RUNDE"
+          label="Beste runde"
+          icon={Trophy}
           value={beste ? String(beste.score) : "—"}
           unit={beste ? `${beste.score - beste.course.par > 0 ? "+" : ""}${beste.score - beste.course.par}` : undefined}
-          foot={beste ? `${beste.user.name} · ${beste.course.name}` : "Ingen data"}
+          delta={beste ? `${beste.user.name} · ${beste.course.name}` : "Ingen data"}
         />
         <KpiCard
-          label="SG TOTAL · SNITT"
+          label="SG total · snitt"
+          icon={TrendingUp}
           value={sgSnitt == null ? "—" : formatNum(sgSnitt, true)}
-          foot={`${sgRunder.length} runder med SG-data`}
+          delta={`${sgRunder.length} runder med SG-data`}
           spark={sgTrend.length >= 2 ? sgTrend : undefined}
         />
       </div>
 
-      {/* Filter-rad */}
-      <div className="flex flex-wrap items-center gap-2 pt-5">
-        <div className="flex min-w-[260px] flex-1 items-center gap-2 rounded-md border border-border bg-card px-3.5 py-2 text-[13px]">
-          <Search className="h-3.5 w-3.5 text-muted-foreground" strokeWidth={1.75} aria-hidden />
-          <input
-            type="search"
-            placeholder="Søk spiller eller bane"
-            className="w-full bg-transparent outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground"
-            aria-label="Søk spiller eller bane"
-          />
-        </div>
-        <RunderFilterChip label="Spiller" />
-        <RunderFilterChip label="Bane" />
-        <RunderFilterChip label="Periode" />
-        <span className="ml-auto font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
-          Sortert · nyeste
-        </span>
-      </div>
-
       {rounds.length === 0 ? (
-        <div className="pt-5">
+        <div className="mt-4">
           <EmptyState
             icon={Flag}
             titleItalic="Ingen"
@@ -165,151 +217,101 @@ export default async function RunderPage() {
           />
         </div>
       ) : (
-        <div className="mt-5 overflow-hidden rounded-xl border border-border bg-card">
-          <div className="overflow-x-auto">
-            <div className="min-w-[720px]">
-              <div className="grid grid-cols-[2fr_1.5fr_1fr_0.8fr_0.8fr_1fr_auto] gap-2 border-b border-border bg-background px-4 py-2.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
-                <div>Spiller</div>
-                <div>Bane</div>
-                <div>Dato</div>
-                <div>Score</div>
-                <div>Vs par</div>
-                <div>SG total</div>
-                <div className="w-16" />
-              </div>
+        <div className="mt-4 overflow-hidden rounded-xl border border-border bg-card">
+          <AgTableToolbar>
+            <div className="flex min-w-[220px] flex-1 items-center gap-2 rounded-lg border border-border bg-card px-3 text-[13px]">
+              <Search className="h-3.5 w-3.5 shrink-0 text-muted-foreground" strokeWidth={1.75} aria-hidden />
+              <input
+                type="search"
+                placeholder="Søk spiller eller bane"
+                className="h-8 w-full bg-transparent outline-none placeholder:text-muted-foreground focus-visible:outline-none"
+                aria-label="Søk spiller eller bane"
+              />
+            </div>
+            <RunderFilterChip label="Spiller" />
+            <RunderFilterChip label="Bane" />
+            <RunderFilterChip label="Periode" />
+            <span className="ml-auto font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
+              Sortert · nyeste
+            </span>
+          </AgTableToolbar>
 
-              <ul className="divide-y divide-border">
+          <div className="overflow-x-auto">
+            <AgTable className="min-w-[720px]">
+              <thead>
+                <tr>
+                  <AgTh>Spiller</AgTh>
+                  <AgTh>Bane</AgTh>
+                  <AgTh>Dato</AgTh>
+                  <AgTh num>Score</AgTh>
+                  <AgTh num>Vs par</AgTh>
+                  <AgTh num>SG total</AgTh>
+                  <AgTh />
+                </tr>
+              </thead>
+              <tbody>
                 {rounds.map((r) => {
                   const diff = r.score - r.course.par;
                   return (
-                    <li
-                      key={r.id}
-                      className="grid grid-cols-[2fr_1.5fr_1fr_0.8fr_0.8fr_1fr_auto] items-center gap-2 px-4 py-2.5 transition-colors hover:bg-primary/[0.025]"
-                    >
-                      <div className="flex min-w-0 items-center gap-2.5">
-                        <div
-                          className="grid h-8 w-8 shrink-0 place-items-center rounded-full font-display text-[11px] font-bold text-white"
-                          style={{ background: avatarBg(r.user.name) }}
-                          aria-hidden="true"
-                        >
-                          {initials(r.user.name)}
-                        </div>
-                        <div className="min-w-0 leading-tight">
-                          <div className="truncate text-[13px] font-bold text-foreground">
-                            {r.user.name}
-                          </div>
-                          {r.user.hcp != null && (
-                            <div className="font-mono text-[10px] font-bold tracking-[0.04em] text-muted-foreground">
-                              HCP {r.user.hcp.toFixed(1).replace(".", ",")}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      <div className="min-w-0 leading-tight">
-                        <div className="truncate text-[13px] text-foreground">{r.course.name}</div>
-                        <div className="font-mono text-[10px] tracking-[0.04em] text-muted-foreground">
+                    <tr key={r.id} className={agTrClass}>
+                      <AgTd>
+                        <AgPlayerCell
+                          initials={initials(r.user.name)}
+                          name={r.user.name}
+                          sub={
+                            r.user.hcp != null
+                              ? `HCP ${r.user.hcp.toFixed(1).replace(".", ",")}`
+                              : undefined
+                          }
+                          tone="neu"
+                        />
+                      </AgTd>
+                      <AgTd>
+                        <span className="block truncate text-[13px] text-foreground">
+                          {r.course.name}
+                        </span>
+                        <span className="mt-px block font-mono text-[10px] leading-[1.2] text-muted-foreground">
                           Par {r.course.par}
-                        </div>
-                      </div>
-                      <div className="font-mono text-xs tabular-nums text-muted-foreground">
-                        {formatDate(r.playedAt)}
-                      </div>
-                      <div className="font-mono text-sm font-bold tabular-nums text-foreground">
-                        {r.score}
-                      </div>
-                      <div
-                        className={cn(
-                          "font-mono text-sm font-bold tabular-nums",
-                          diff < 0 ? "text-primary" : diff === 0 ? "text-foreground" : "text-muted-foreground",
-                        )}
-                      >
-                        {diff > 0 ? "+" : ""}
-                        {diff}
-                      </div>
-                      <div className="font-mono text-sm tabular-nums text-foreground">
-                        {formatNum(r.sgTotal, true)}
-                      </div>
-                      <Link
-                        href={`/admin/spillere/${r.user.id}`}
-                        aria-label={`Profil for ${r.user.name}`}
-                        className="inline-flex h-[26px] w-[26px] items-center justify-center justify-self-end rounded-md border border-border bg-card text-muted-foreground hover:bg-secondary hover:text-foreground"
-                      >
-                        <ChevronRight className="h-[13px] w-[13px]" strokeWidth={2} aria-hidden />
-                      </Link>
-                    </li>
+                        </span>
+                      </AgTd>
+                      <AgTd>
+                        <span className="font-mono text-xs tabular-nums text-muted-foreground">
+                          {formatDate(r.playedAt)}
+                        </span>
+                      </AgTd>
+                      <AgTd num>{r.score}</AgTd>
+                      <AgTd num>
+                        <span
+                          className={cn(
+                            diff < 0
+                              ? "text-primary"
+                              : diff === 0
+                                ? "text-foreground"
+                                : "text-muted-foreground",
+                          )}
+                        >
+                          {diff > 0 ? "+" : ""}
+                          {diff}
+                        </span>
+                      </AgTd>
+                      <AgTd num>{formatNum(r.sgTotal, true)}</AgTd>
+                      <AgTd className="w-12">
+                        <Link
+                          href={`/admin/spillere/${r.user.id}`}
+                          aria-label={`Profil for ${r.user.name}`}
+                          className="inline-flex h-[26px] w-[26px] items-center justify-center rounded-md border border-border bg-card text-muted-foreground hover:bg-secondary hover:text-foreground"
+                        >
+                          <ChevronRight className="h-[13px] w-[13px]" strokeWidth={2} aria-hidden />
+                        </Link>
+                      </AgTd>
+                    </tr>
                   );
                 })}
-              </ul>
-            </div>
+              </tbody>
+            </AgTable>
           </div>
         </div>
       )}
-    </div>
-  );
-}
-
-// ── byggeklosser ─────────────────────────────────────────────────
-function KpiDark({ label, value, foot }: { label: string; value: string; foot: string }) {
-  return (
-    <div className="flex flex-col gap-2 rounded-xl bg-primary px-[18px] py-4 text-primary-foreground">
-      <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-accent">
-        {label}
-      </span>
-      <span className="font-mono text-[32px] font-bold leading-none tracking-[-0.02em] tabular-nums">
-        {value}
-      </span>
-      <span className="font-mono text-[11px] font-bold tracking-[0.04em] text-primary-foreground/70">
-        {foot}
-      </span>
-    </div>
-  );
-}
-
-function KpiCard({
-  label,
-  value,
-  unit,
-  foot,
-  delta,
-  spark,
-}: {
-  label: string;
-  value: string;
-  unit?: string;
-  foot: string;
-  delta?: "up" | "down" | "flat";
-  spark?: number[];
-}) {
-  const deltaIcon: Record<"up" | "down" | "flat", LucideIcon> = {
-    up: TrendingUp,
-    down: TrendingDown,
-    flat: Minus,
-  };
-  const deltaClass = { up: "text-success", down: "text-destructive", flat: "text-muted-foreground" } as const;
-  const DeltaIcon = delta ? deltaIcon[delta] : null;
-  return (
-    <div className="relative flex flex-col gap-2 overflow-hidden rounded-xl border border-border bg-card px-[18px] py-4">
-      <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
-        {label}
-      </span>
-      <span className="font-mono text-[32px] font-bold leading-none tracking-[-0.02em] tabular-nums text-foreground">
-        {value}
-        {unit && <span className="ml-1.5 text-sm font-bold text-muted-foreground">{unit}</span>}
-      </span>
-      <span
-        className={cn(
-          "inline-flex items-center gap-1.5 font-mono text-[11px] font-bold tracking-[0.04em]",
-          delta ? deltaClass[delta] : "text-muted-foreground",
-        )}
-      >
-        {DeltaIcon && <DeltaIcon className="h-[11px] w-[11px]" strokeWidth={2} aria-hidden />}
-        {foot}
-      </span>
-      {spark && (
-        <div className="pointer-events-none absolute bottom-3.5 right-3.5 h-6 w-20 opacity-60">
-          <Sparkline values={spark} width={80} height={24} color="hsl(var(--primary))" className="h-6 w-20" />
-        </div>
-      )}
-    </div>
+    </AgPage>
   );
 }
