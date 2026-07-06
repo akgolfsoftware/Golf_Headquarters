@@ -7,7 +7,9 @@
 > 86 gamle ✓-merker (målt mot den døde design-porting-gaten) er nullstilt til –. Kun 7 skjermer
 > er bekreftet på v13 i dag: PlayerHQ Hjem/Planlegge/Gjennomføre/Analysere/Meg + AgencyOS
 > Spillere/Spiller-analyse. Resten settes ✓ etterhvert som design-bølgene D1–D5 fullfører dem
-> (se `plans/design-bolgeplan.md`).
+> (se `plans/design-bolgeplan.md`). Kanon per flate: PlayerHQ/AgencyOS = golfdata-kit +
+> templates · Auth = login/signup-kanonen · Marketing = marketing-sections-primitivene.
+> Flater som kun har fått anatomi-/token-løft (ikke full kit-komposisjon) står som ~.
 
 **Booking:** Acuity (`akgolfgroup.as.me`) er midlertidig booking frem til HQ-bookingen lanseres. Sett `BOOKING_ACTIVE=true` i Vercel for å aktivere den innebygde flyten.
 
@@ -143,9 +145,9 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Turneringer (mine) ★ | `/portal/tren/turneringer` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | · Turnering-detalj | `/portal/tren/turneringer/[id]` | – | ✓✓– | ~ | ~ | – | ~ |
 | · Ny turnering | `/portal/tren/turneringer/ny` | – | --- | ✓ | ~ | ~ | ~ |
-| Utfordringer | `/portal/utfordringer` | – | --- | ✓ | ~ | ~ | ~ |
+| Utfordringer | `/portal/utfordringer` | ~ | --- | ✓ | ~ | ~ | ~ |
 | · Ny utfordring (wizard) | `/portal/utfordringer/ny` | – | --- | ✓ | ~ | ~ | ~ |
-| · Utfordring-detalj | `/portal/utfordringer/[id]` | – | --- | ✓ | ~ | ~ | ~ |
+| · Utfordring-detalj | `/portal/utfordringer/[id]` | ~ | --- | ✓ | ~ | ~ | ~ |
 | AI: mål-bygger | `/portal/ai/mal-bygger` | – | --- | ✓ | ~ | ~ | ~ |
 | AI: foreslå drill | `/portal/ai/foresla-drill` | – | --- | ✓ | ~ | ~ | ~ |
 | AI: foreslå turnering | `/portal/ai/foresla-turnering` | – | --- | ✓ | ~ | ~ | ~ |
@@ -180,7 +182,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 |---|---|---|---|---|---|---|---|
 | Analysere = «Min golf» (6 faner: SG · Fokus · Runder · Baggen · Putting · Nivå — v13 golfdata, bølge 1 2026-07-04) ★ | `/portal/analysere` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Hull-analyse | `/portal/analysere/hull` | – | ✓✓– | ✓ | ~ | ✓ | ✓ |
-| Statistikk (oversikt) | `/portal/statistikk` | – | ✓✓– | ✓ | ✓ | ✓ | ✓ |
+| Statistikk (oversikt) | `/portal/statistikk` | ~ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
 | · Metrikk-detalj | `/portal/statistikk/[metric]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Sammenlign | `/portal/statistikk/sammenlign` | – | --- | ✓ | ~ | ~ | ~ |
 | · Del runde | `/portal/statistikk/runder/[runId]/del` | – | --- | ✓ | ~ | ~ | ~ |
@@ -219,23 +221,23 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Coach-hub | `/portal/coach` | – | --- | ✓ | ~ | ~ | ✓ |
+| Coach-hub | `/portal/coach` | ~ | --- | ✓ | ~ | ~ | ✓ |
 | · Coach-profil | `/portal/coach/[coachId]` | – | --- | ✓ | ~ | ~ | ~ |
-| Meldinger (innboks) | `/portal/coach/melding` | – | --- | ✓ | ~ | ~ | ✓ |
+| Meldinger (innboks) | `/portal/coach/melding` | ~ | --- | ✓ | ~ | ~ | ✓ |
 | · Ny melding | `/portal/coach/melding/ny` | – | --- | ✓ | ~ | ~ | ~ |
 | · Meldingstråd | `/portal/coach/melding/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Vedlegg | `/portal/coach/melding/[id]/vedlegg` | – | --- | ✓ | ~ | ~ | ~ |
-| Coach-planer | `/portal/coach/plans` | – | --- | ✓ | ~ | ~ | ~ |
+| Coach-planer | `/portal/coach/plans` | ~ | --- | ✓ | ~ | ~ | ~ |
 | · Plan-detalj | `/portal/coach/plans/[planId]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Ny økt i plan | `/portal/coach/plans/[planId]/ny-okt` | – | --- | ✓ | ~ | ~ | ~ |
 | · Perioder | `/portal/coach/plans/perioder` | – | --- | ✓ | ~ | ~ | ~ |
-| Coach-øvelser | `/portal/coach/ovelser` | – | --- | ✓ | ~ | ~ | ~ |
+| Coach-øvelser | `/portal/coach/ovelser` | ~ | --- | ✓ | ~ | ~ | ~ |
 | · Ny øvelse | `/portal/coach/ovelser/ny` | – | --- | ✓ | ~ | ~ | ~ |
 | · Rediger øvelse | `/portal/coach/ovelser/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
-| Coach-videoer | `/portal/coach/videoer` | – | --- | ✓ | ~ | ~ | ~ |
+| Coach-videoer | `/portal/coach/videoer` | ~ | --- | ✓ | ~ | ~ | ~ |
 | Coach-notater | `/portal/coach/notes` | – | --- | ✓ | ~ | ~ | ~ |
 | · Notat-detalj | `/portal/coach/notes/[noteId]` | – | --- | ✓ | ~ | ~ | ~ |
-| Spørsmål til coach | `/portal/coach/sporsmal/[id]` | – | --- | ✓ | ~ | ~ | ~ |
+| Spørsmål til coach (liste løftet D3; [id]-tråd ikke løftet) | `/portal/coach/sporsmal/[id]` | ~ | --- | ✓ | ~ | ~ | ~ |
 | Coach-AI | `/portal/coach/ai` | – | --- | ✓ | ~ | ~ | ~ |
 
 ### Meg (profil og innstillinger)
@@ -344,7 +346,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Workspace-hub | `/admin/workspace` | – | --- | ✓ | ~ | ~ | ~ |
+| Workspace-hub | `/admin/workspace` | ~ | --- | ✓ | ~ | ~ | ~ |
 | · Tildelt meg | `/admin/workspace/tildelt-meg` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Oppgaver | `/admin/workspace/oppgaver` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Oppgave-detalj | `/admin/workspace/oppgaver/[id]` | – | --- | ✓ | ~ | ~ | ~ |
@@ -414,7 +416,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Daglig drift (hub) | `/admin/gjennomfore` | – | --- | ✓ | ~ | ~ | ~ |
+| Daglig drift (hub) | `/admin/gjennomfore` | ~ | --- | ✓ | ~ | ~ | ~ |
 | · Økt-detalj | `/admin/gjennomfore/okter/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | Kalender | `/admin/kalender` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Uke (redirect) | `/admin/kalender/uke` → `/admin/kalender` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
@@ -441,7 +443,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Innsikt-hub | `/admin/analysere` | – | --- | ✓ | ~ | ~ | ~ |
+| Innsikt-hub | `/admin/analysere` | ~ | --- | ✓ | ~ | ~ | ~ |
 | · Compliance | `/admin/analysere/compliance` | – | ✓✓– | ✓ | ~ | ✓ | ✓ |
 | Stall-analyse | `/admin/analyse` | – | ~✓– | ✓ | ✓ | ✓ | ✓ |
 | Analytics | `/admin/analytics` | – | --- | ✓ | ~ | ~ | ~ |
@@ -457,7 +459,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Godkjenninger (alt. → redirect) | `/admin/approvals` | – | --- | ✓ | ✓ | – | ✓ |
 | · Approval-detalj (alt. → redirect) | `/admin/approvals/[id]` | – | --- | ✓ | ✓ | – | ✓ |
 | Rapporter | `/admin/reports` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
-| Runder (på tvers) | `/admin/runder` | – | --- | ✓ | ~ | ~ | ~ |
+| Runder (på tvers) | `/admin/runder` | ~ | --- | ✓ | ~ | ~ | ~ |
 | Skader/sykdom (tilstander) | `/admin/tilstander` | – | --- | ✓ | ~ | ~ | ~ |
 | Finans (alt. → redirect) | `/admin/finance` | – | --- | ✓ | ✓ | – | ✓ |
 | **Økonomi (MRR/betalinger)** | `/admin/okonomi` | – | –✓– | ✓ | ~ | ✓ | ~ |
@@ -504,14 +506,14 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 |---|---|---|---|---|---|---|---|
 | Logg inn ★ | `/auth/login` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | Registrer ★ | `/auth/signup` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
-| Glemt passord ★ | `/auth/forgot-password` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
-| Tilbakestill passord | `/auth/reset-password` | – | --- | ✓ | ~ | ~ | ~ |
-| Sjekk e-post | `/auth/check-email` | – | --- | ✓ | ~ | ~ | ~ |
+| Glemt passord ★ | `/auth/forgot-password` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| Tilbakestill passord | `/auth/reset-password` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| Sjekk e-post | `/auth/check-email` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | BankID ★ | `/auth/bankid` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | Onboarding (spiller, 8 steg) | `/auth/onboarding` | – | ✓✓– | ~ | ~ | – | ✓ |
 | Onboarding (forelder) | `/auth/onboarding/forelder` | – | --- | ✓ | ~ | ~ | ~ |
-| Foreldresamtykke (token) | `/auth/guardian-consent/[token]` | – | --- | ✓ | ~ | ~ | ~ |
-| Samtykke venter | `/auth/samtykke-venter` | – | --- | ✓ | ~ | ~ | ~ |
+| Foreldresamtykke (token) | `/auth/guardian-consent/[token]` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| Samtykke venter | `/auth/samtykke-venter` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | Logget ut | `/auth/logget-ut` | – | ✓✓– | ✓ | ~ | – | ✓ |
 
 ### Forelder (foreldreportal)
@@ -538,25 +540,25 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Forside | `/(marketing)` | – | ✓✓– | ~ | ~ | – | ✓† | 
 | Anlegg | `/(marketing)/anlegg` | – | --- | ✓ | ~ | ~ | ✓ |
 | · Anlegg-detalj | `/(marketing)/anlegg/[slug]` | – | --- | ✓ | ~ | ~ | ✓ |
-| Blogg | `/(marketing)/blogg` | – | --- | ✓ | ~ | ~ | ✓ |
-| · Blogg-innlegg | `/(marketing)/blogg/[slug]` | – | --- | ✓ | ~ | ~ | ✓ |
+| Blogg | `/(marketing)/blogg` | ✓ | --- | ✓ | ~ | ~ | ✓ |
+| · Blogg-innlegg | `/(marketing)/blogg/[slug]` | ✓ | --- | ✓ | ~ | ~ | ✓ |
 | Booking | `/(marketing)/booking` | – | --- | ✓ | ~ | ~ | ✓ |
 | · Booking-tjeneste | `/(marketing)/booking/[slug]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Booking bekreft | `/(marketing)/booking/[slug]/bekreft` | – | --- | ✓ | ~ | ~ | ~ |
 | · Booking kvittering | `/(marketing)/booking/kvittering/[bookingId]` | – | --- | ✓ | ~ | ~ | ~ |
-| Cases | `/(marketing)/cases` | – | --- | ✓ | ~ | ~ | ✓ |
-| Coacher | `/(marketing)/coacher` | – | --- | ✓ | ~ | ~ | ✓ |
+| Cases | `/(marketing)/cases` | ✓ | --- | ✓ | ~ | ~ | ✓ |
+| Coacher | `/(marketing)/coacher` | ✓ | --- | ✓ | ~ | ~ | ✓ |
 | · Coach-profil | `/(marketing)/coacher/[slug]` | – | --- | ✓ | ~ | ~ | ✓ |
 | Coaching | `/(marketing)/coaching` | – | --- | ✓ | ~ | ~ | ✓ |
 | Junior | `/(marketing)/junior` | – | --- | ✓ | ~ | ~ | ✓ |
 | Priser | `/(marketing)/priser` | – | --- | ✓ | ~ | ~ | ✓ |
 | PlayerHQ (salgsside) | `/(marketing)/playerhq` | – | --- | ✓ | ~ | ~ | ✓ |
-| Om oss | `/(marketing)/om-oss` | – | --- | ✓ | ~ | ~ | ✓ |
-| Kontakt | `/(marketing)/kontakt` | – | --- | ✓ | ~ | ~ | ✓ |
+| Om oss | `/(marketing)/om-oss` | ✓ | --- | ✓ | ~ | ~ | ✓ |
+| Kontakt | `/(marketing)/kontakt` | ✓ | --- | ✓ | ~ | ~ | ✓ |
 | Jobb | `/(marketing)/jobb` | – | --- | ✓ | ~ | ~ | ✓ |
 | FAQ | `/(marketing)/faq` | – | --- | ✓ | ~ | ~ | ✓ |
-| Suksess | `/(marketing)/suksess` | – | --- | ✓ | ~ | ~ | ✓ |
-| Treningsfilosofi | `/(marketing)/treningsfilosofi` | – | --- | ✓ | ~ | ~ | ✓ |
+| Suksess | `/(marketing)/suksess` | ✓ | --- | ✓ | ~ | ~ | ✓ |
+| Treningsfilosofi | `/(marketing)/treningsfilosofi` | ✓ | --- | ✓ | ~ | ~ | ✓ |
 | Turneringer | `/(marketing)/turneringer` | – | --- | ✓ | ~ | ~ | ✓ |
 | · Turnering-detalj | `/(marketing)/turneringer/[slug]` | – | --- | ✓ | ~ | ~ | ✓ |
 | Cookies | `/(marketing)/cookies` | – | --- | ✓ | ~ | ~ | ✓ |
@@ -724,6 +726,8 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 ## Endringslogg
 
+- 6. juli (design-bølge D3): **9 PlayerHQ-skjermer løftet til v13-referanseanatomien** (golfdata-scope-wrapper `max-w-[460px]→md:860`, Eyebrow-komponent + display-h1 med italic-em): `/portal/coach/sporsmal` re-komponert fra gammel CLI-stil til Card-rader med status-Tag (Besvart/Åpent) og avatar-initialer; `/portal/coach` + `melding` + `ovelser` (Tag-filterchips) + `videoer` + `plans` konsistens-pass; `/portal/statistikk`-hub wrapper; `/portal/utfordringer` + `[id]` (detalj: Eyebrow/h1-hero, golfdata Button/Card/KpiTile — kun token/anatomi-løft, score-registrering trenger ekte redesign, meldt som gap). Design-haker satt til ~ (golfdata-kit-komposisjon per prompt.md-kontraktene gjenstår). tsc + eslint grønt.
+- 6. juli (design-bølge D2): **4 AgencyOS-skjermer kalibrert til ui.tsx-fasitstandarden** (`/admin/analysere`, `/admin/runder`, `/admin/gjennomfore`, `/admin/workspace`): AgPage + AgPageHead-anatomi, hub-nav-kort re-komponert med Tailwind-tokens (gamle HubFrame/hubs.css med rå hex ute av disse rutene), runder-tabellen på AgTable/AgPlayerCell + KPI-kort fra `/admin/analyse`-fasiten, workspace-hero/tabs/KPI på tokens (AthleticButton ut). Design-haken satt til ~ (ikke ✓) fordi v13-kriteriet i rebaselinen måler mot golfdata-kit-komposisjon — samme nivå som søsterskjermene `/admin/analyse`/`/admin/okonomi` som selv står på –. tsc + eslint grønt.
 - 25. juni (Bølge 2, ★-verifisering): **SG-Hub ★ verifisert — Flyt ✓.** Playwright 430px: hovedhub rendrer med ekte data (SG-pipeline +0,6, 11 runder, 12 TrackMan-økter, ENKEL/AVANSERT-toggle). Render-sveip av 6 undersider (benchmark, best-vs-now, equipment, yardage, conditions, strategy) — alle rendrer uten console-/runtime-feil og er navigerbare fra hub-en (→ Flyt ✓ på hovedhub). Undersidenes egne Funker/Data/Design-haker står fortsatt på ~/– i påvente av per-side data- og design-gate (ikke ★, deprioritert).
 - 25. juni (Bølge 2, ★-verifisering): **Live-økt-løkka (brief → aktiv → oppsummering) e2e-verifisert — Funker-haken ✓.** Playwright 430px på ekte PLANNED V2-økt: brief rendrer (mål/fokus/drills), aktiv auto-starter (PLANNED→IN_PROGRESS), «Logg rep» → DrillLogV2 persistert, «Fullfør økt» → `completeSession` → oppsummering (reps/tid/drills KPI + CTA). Ingen runtime-feil (kun benign dev-eval-CSP-støy). Testøkt gjenopprettet til PLANNED etterpå (logg slettet, completedSummary = DbNull). Hakene Adresse/Flyt/Data/Funker → ✓ for alle tre. (iPad-bredde gjenstår — Mob/Desk/iPad fortsatt ✓✓–.)
 - 25. juni (Bølge 1, post-lansering): **Maler-kort viser ekte SG-effekt.** Øvre-høyre-plassholderen «—» på Maler-fanen leser nå `PlanTemplate.effectivenessAvg` (snitt SG-Total-delta fra `PlanEffectiveness`) — tone-farget +/− når data finnes, ærlig «—» når ingen fullført plan har brukt malen ennå. Ingen oppdiktede prosenter.
