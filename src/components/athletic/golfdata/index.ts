@@ -37,3 +37,19 @@ export { SlagLekkasjeKart, type SlagLekkasjeKartProps, type LekkasjeBaand } from
 export { SpillerTilstandKort, type SpillerTilstandKortProps } from "./SpillerTilstandKort";
 export { StrikeSmashKort, type StrikeSmashKortProps, type StrikeSone } from "./StrikeSmashKort";
 export { TigerFiveKort, type TigerFiveKortProps, type TigerFiveMetrikk } from "./TigerFiveKort";
+
+// Kalender-familien (portert D1, 2026-07-06)
+export { UkeKalender, type UkeKalenderProps, type UkeDag, type UkeSession, type Compliance, type UkeAkse } from "./UkeKalender";
+export { TidsGrid, type TidsGridProps, type TidsGridKolonneProps, type TidsGridBlokkProps, type TidsGridFlytt, type TidsGridAkse } from "./TidsGrid";
+export { Tidslinje, type TidslinjeProps, type TidslinjeBaneProps, type TidslinjeBarProps, type TidslinjePunktProps, type TidslinjeFlytt, type TidslinjeAkse } from "./Tidslinje";
+export { Periodeplan, type PeriodeplanProps, type Phase, type Tournament, type LFase } from "./Periodeplan";
+export { DayStrip, type DayStripProps, type DayStripDay } from "./DayStrip";
+export { AgendaRow, type AgendaRowProps, type AgendaAkFormel } from "./AgendaRow";
+export { VisningsVelger, type VisningsVelgerProps, type KalenderVisning } from "./VisningsVelger";
+
+// Domene-familien (portert D1, 2026-07-06)
+export { Tag, CountBadge, type TagProps, type TagVariant, type TagSize, type CountBadgeProps } from "./Tag";
+export { OektKort, type OektKortProps, type OektAxis, type OektState } from "./OektKort";
+export { AKFormelChip, type AKFormelChipProps } from "./AKFormelChip";
+export { LiveStatus, type LiveStatusProps } from "./LiveStatus";
+export { LFaseBadge, type LFaseBadgeProps, type LFase as LFaseBadgeFase } from "./LFaseBadge";
