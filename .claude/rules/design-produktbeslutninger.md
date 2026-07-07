@@ -1,5 +1,7 @@
 # Design-produktbeslutninger (Anders-beslutninger som overstyrer mockupen)
 
+> Designkanon: `.claude/rules/design-system-regel.md` (v13/golfdata).
+
 Trimmet 2026-07-03 (token-opprydding) — kuttet ~70 punkter som forsvarte mot en pixel-diff-
 gate-prosess som ikke lenger kjøres (design er under ny utvikling hos Claude Design, se
 CLAUDE.md). Full historikk ligger i git-loggen for denne filen. Behold kun stående

@@ -2,6 +2,7 @@
 
 Flyttet fra CLAUDE.md 2026-06-14. Les denne FØR du skriver kode. Når noe brekker, legg gotcha-en til her.
 (Eldre PRISMA-7- og Supabase-detaljer finnes også i git-historikken.)
+Designkanon: `.claude/rules/design-system-regel.md` (v13/golfdata).
 
 ### AI Caddie — modell-tilgang + AI SDK-feller (oppdaget 2026-06-23)
 - **Vercel AI Gateway free-tier gir IKKE modell-tilgang** («Free tier users do not have access to this model»). Caddie-chat bruker derfor `@ai-sdk/anthropic` direkte (`ANTHROPIC_API_KEY`), ikke `@ai-sdk/gateway`.

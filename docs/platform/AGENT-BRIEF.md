@@ -40,7 +40,8 @@ src/app/
 
 src/components/
   ui/              shadcn-primitiver (Button, Dialog, Input, Tabs, etc.)
-  athletic/        Branded AK Golf-komponenter — ALLTID gjenbruk herfra
+  athletic/        Branded AK Golf-komponenter. golfdata/ (v13) er gjeldende kilde;
+                   resten av athletic/ er vedlikeholdsmodus (design-system-regel.md)
   shared/          Utility-komponenter (cookie-banner, cmd-palette, mobile-nav)
   admin*/          AgencyOS-spesifikke komponenter
   portal*/         PlayerHQ-spesifikke komponenter

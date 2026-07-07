@@ -1,6 +1,7 @@
 # Arkitektur — AK Golf HQ
 
-Flyttet fra CLAUDE.md 2026-06-14. Innhold uendret.
+Flyttet fra CLAUDE.md 2026-06-14. Designkanon: `.claude/rules/design-system-regel.md`
+(v13/golfdata) — komponentanbefalingene under leses med den som fasit.
 
 ## Produkter (fire under samme tak)
 
@@ -12,7 +13,8 @@ Flyttet fra CLAUDE.md 2026-06-14. Innhold uendret.
 | **AgencyOS** (admin — het tidligere CoachHQ) | `/admin/*` | `src/app/admin/` |
 
 Alle fire deler: designsystem-tokens i `src/app/globals.css`, komponentbibliotek i
-`src/components/athletic/`, auth via Supabase, Prisma-schema mot felles Postgres.
+`src/components/athletic/golfdata/` (v13 — gamle athletic/ er vedlikeholdsmodus),
+auth via Supabase, Prisma-schema mot felles Postgres.
 Splitting til separate repos er ikke aktuell før etter lansering — du jobber i dette ene repoet med alt.
 
 ## Mappestruktur (gjeldende, ikke fremtidig)
@@ -35,16 +37,15 @@ akgolf-hq/
 │   │   ├── ui/               # UI-primitiver: Button, Dialog, Sheet, Popover,
 │   │   │                     # DropdownMenu, Toast, Input, Tabs, etc.
 │   │   │                     # ERROR-håndhevet av ESLint — drift blokker CI.
-│   │   ├── athletic/         # Branded bibliotek — eneste sannhet for AK-DNA:
-│   │   │                     # Hero, FeaturedCard, KpiStrip, PyramidProgress,
-│   │   │                     # PhotoHero, LiveBar, InsightCard, GoalsHubPattern,
-│   │   │                     # SectionHeader, ItineraryRow, calendars/, data/.
-│   │   │                     # Tidligere v2/ + ds/tab-bar konsolidert hit (M5).
+│   │   ├── athletic/         # Branded bibliotek. golfdata/ (v13) er gjeldende
+│   │   │                     # kilde; resten er vedlikeholdsmodus (Hero,
+│   │   │                     # FeaturedCard, KpiStrip, calendars/, data/ m.fl.)
+│   │   │                     # — fases ut per design-system-regel.md.
 │   │   ├── shared/           # Funksjonelle utility-komponenter (cookie-banner,
 │   │   │                     # cmd-palette, analytics-loader, mobile-bottom-nav).
 │   │   │                     # NB: Modal/PageHeader/OverviewShell er thin-wrappers
 │   │   │                     # for bakoverkompatibilitet — ny kode bruker
-│   │   │                     # ui/Dialog og athletic/-mønstre direkte.
+│   │   │                     # ui/Dialog og athletic/golfdata/-mønstre direkte.
 │   │   ├── admin*/           # AgencyOS-spesifikke
 │   │   ├── portal*/          # PlayerHQ-spesifikke
 │   │   └── booking/          # Booking-spesifikke

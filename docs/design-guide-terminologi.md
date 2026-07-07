@@ -73,7 +73,7 @@ koder (CS80, M2, PR3, P4.0). Ingen andre fonter.
 
 ## 4. Chips, badges og statusvisning
 
-- **Badge-varianter** (`athletic/badge.tsx`): `primary | lime | neutral | warn | urgent | ok`.
+- **Badge-varianter** (`athletic/badge.tsx` — vedlikeholdsmodus, ny UI bruker golfdata-motstykket): `primary | lime | neutral | warn | urgent | ok`.
   Bruk semantisk: ok = grønn bekreftelse, warn = advarsel, urgent = haster, lime = aktiv/NÅ.
 - **Økt-status** (fra ordbok B5): planlagt = grå/forest · av Anders = mono forest badge ·
   selvplanlagt = lime badge · ✓ fullført = grønn checkmark · hoppet over = grå ·
