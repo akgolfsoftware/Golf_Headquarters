@@ -97,3 +97,4 @@ ds-bundle/
 .design-sync/previews/
 .design-sync/overrides/
 tsconfig.sync.json
+tmp/
