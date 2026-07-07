@@ -1,3 +1,5 @@
+> STATUS: skrevet før designsystem-revisjonen juli 2026 — gjeldende kanon: `.claude/rules/design-system-regel.md`
+
 # AK-formel — komplett review (styrker/svakheter + kode-endringer + design-prompt)
 
 > Forankret i koden (verifisert 2026-06-28): TechnicalPlan/PositionTask, taxonomy.ts,

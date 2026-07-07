@@ -1,3 +1,5 @@
+> STATUS: skrevet før designsystem-revisjonen juli 2026 — gjeldende kanon: `.claude/rules/design-system-regel.md`
+
 # Fase-spesifikasjon — PlayerHQ 10/10 (V1, Fase 0–5)
 
 > **To lesere, ett dokument.** Hver fase har **Design-brief** (Claude Design) + **Bygg-brief** (koding).

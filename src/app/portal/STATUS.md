@@ -1,3 +1,5 @@
+> STATUS: skrevet før designsystem-revisjonen juli 2026 — gjeldende kanon: `.claude/rules/design-system-regel.md`
+
 # PlayerHQ Hjem — Status
 
 Sist verifisert: 2026-05-20

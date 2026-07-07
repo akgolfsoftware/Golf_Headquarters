@@ -1,3 +1,5 @@
+> STATUS: skrevet før designsystem-revisjonen juli 2026 — gjeldende kanon: `.claude/rules/design-system-regel.md`
+
 # AK Agency OS — plan (personlig kommandosenter)
 
 > Status: godkjent design 2026-06-25. Bygges i 4 etapper. Eier: Anders.
