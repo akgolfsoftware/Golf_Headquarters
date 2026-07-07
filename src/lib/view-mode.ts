@@ -28,12 +28,16 @@ export async function setViewMode(mode: ViewMode): Promise<void> {
 /**
  * COACH/ADMIN i PlayerHQ skal default være i spiller-modus (egen profil).
  * Kalles fra portal-shell og fullscreen-layouts.
+ *
+ * Skriver IKKE cookien — dette kalles fra layout-rendering (Server Component),
+ * og cookies().set() er kun lovlig i Server Actions/Route Handlers (Next.js
+ * kaster "Cookies can only be modified in a Server Action or Route Handler"
+ * ellers). Selve bytte-cookien settes av /api/view-mode og /api/view-as-player.
  */
 export async function ensurePortalPlayerViewMode(
   role: UserRole,
 ): Promise<ViewMode> {
   if (role === "COACH" || role === "ADMIN") {
-    await setViewMode("player");
     return "player";
   }
   return getViewMode();
