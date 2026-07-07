@@ -1,6 +1,5 @@
 /**
  * AgencyOS — Hjelp + support
- * Design migrert fra wireframe/design-files-v2/final/11-hjelp.html.
  *
  * Search-driven help-center med 5 kategorier, populære artikler og kontakt-CTA.
  * Statisk innhold — ingen database-spørringer.

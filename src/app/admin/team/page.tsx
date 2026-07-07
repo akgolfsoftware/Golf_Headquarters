@@ -1,6 +1,5 @@
 /**
  * AgencyOS — Team
- * Design migrert fra wireframe/design-files-v2/final/08-team.html.
  *
  * Card-grid med 2 kolonner (mobile 1), avatar i sirkel, rolle-tags,
  * 3-felts stats (Spillere/Tilgj./Sert.), handlinger nederst.

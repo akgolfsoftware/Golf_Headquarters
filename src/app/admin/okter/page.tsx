@@ -1,6 +1,5 @@
 /**
  * AgencyOS — Økter (uke-oversikt over treningsøkter)
- * Design migrert fra wireframe/design-files-v2/final/05-okter.html.
  *
  * Viser denne ukas TrainingPlanSession-instanser med pyramide-stripes per økt.
  * PageHeader, KPI-strip (Økter denne uka, Snitt-pyramide, Live nå, Forfalt),
