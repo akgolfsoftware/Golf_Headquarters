@@ -3,7 +3,7 @@
  * Coachens kontrolltårn: "Hvem trenger en samtale denne uka?"
  *
  * Restylet til athletic operations-tetthet (matcher daily-brief.tsx):
- *   - Mono-caps eyebrow + Inter Tight-hero
+ *   - Mono-caps eyebrow + font-display-hero
  *   - KPI-strip (Risiko · Watch · Sjekk inn · Løst) i DS-tokens
  *   - Kanban-kolonner med signal-pille, SG-stats og hurtig-aksjoner per spiller
  *
@@ -178,10 +178,7 @@ export default async function OppfolgingsKo() {
           <AthleticEyebrow>AGENCYOS · OPPFØLGINGSKØ</AthleticEyebrow>
           <h1 className="mt-1.5 font-display text-3xl font-bold leading-tight tracking-tight md:text-[34px]">
             Hvem trenger en{" "}
-            <em
-              className="font-normal italic text-primary"
-              style={{ fontFamily: "'Inter Tight', sans-serif" }}
-            >
+            <em className="font-display font-normal italic text-primary">
               samtale
             </em>{" "}
             denne uka.

@@ -26,6 +26,10 @@ const NB_DATE = new Intl.DateTimeFormat("nb-NO", {
   year: "numeric",
 });
 
+// Spiller-DNA — eget 5-akset konstrukt, IKKE pyramide-budsjettet. Nøklene speiler
+// TalentTracking (fysisk/teknikk/taktikk/mental/motivasjon), ikke pyramide-aksene.
+type DnaShape = { fysisk: number; teknikk: number; taktikk: number; mental: number; motivasjon: number };
+
 function calcAge(dob: Date | null): number | null {
   if (!dob) return null;
   return Math.floor((Date.now() - dob.getTime()) / (365.25 * 24 * 60 * 60 * 1000));
@@ -78,9 +82,8 @@ export default async function SpillerProfilSide({
   const coachNote = player.coachNotesAbout[0] ?? null;
 
   // Spiller-DNA fra preferences-JSON (sample dersom mangler)
-  type DnaShape = { fys: number; tek: number; slag: number; spill: number; turn: number };
   let dna: DnaShape | null = null;
-  const cohort: DnaShape = { fys: 70, tek: 68, slag: 72, spill: 65, turn: 70 };
+  const cohort: DnaShape = { fysisk: 70, teknikk: 68, taktikk: 72, mental: 65, motivasjon: 70 };
   try {
     const prefs = player.preferences as { spillerDna?: DnaShape } | null;
     if (prefs?.spillerDna) dna = prefs.spillerDna;
@@ -88,7 +91,7 @@ export default async function SpillerProfilSide({
     /* ignore */
   }
   if (!dna) {
-    dna = { fys: 78, tek: 82, slag: 74, spill: 60, turn: 65 };
+    dna = { fysisk: 78, teknikk: 82, taktikk: 74, mental: 60, motivasjon: 65 };
   }
 
   return (
@@ -223,11 +226,11 @@ export default async function SpillerProfilSide({
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-[280px_1fr]">
           <RadarChart dna={dna} cohort={cohort} />
           <div className="space-y-2">
-            <DnaAxisRow label="FYS" value={dna.fys} cohort={cohort.fys} axis="fys" />
-            <DnaAxisRow label="TEK" value={dna.tek} cohort={cohort.tek} axis="tek" />
-            <DnaAxisRow label="SLAG" value={dna.slag} cohort={cohort.slag} axis="slag" />
-            <DnaAxisRow label="SPILL" value={dna.spill} cohort={cohort.spill} axis="spill" />
-            <DnaAxisRow label="TURN" value={dna.turn} cohort={cohort.turn} axis="turn" />
+            <DnaAxisRow label="FYSISK" value={dna.fysisk} cohort={cohort.fysisk} axis="fysisk" />
+            <DnaAxisRow label="TEKNIKK" value={dna.teknikk} cohort={cohort.teknikk} axis="teknikk" />
+            <DnaAxisRow label="TAKTIKK" value={dna.taktikk} cohort={cohort.taktikk} axis="taktikk" />
+            <DnaAxisRow label="MENTAL" value={dna.mental} cohort={cohort.mental} axis="mental" />
+            <DnaAxisRow label="MOT." value={dna.motivasjon} cohort={cohort.motivasjon} axis="motivasjon" />
             <div className="mt-2 flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
               <span className="inline-flex items-center gap-1.5">
                 <span className="h-2 w-3 rounded-full bg-accent" />
@@ -399,7 +402,15 @@ function Fact({
   );
 }
 
-type PyramidAxis = "fys" | "tek" | "slag" | "spill" | "turn";
+type TalentAxis = "fysisk" | "teknikk" | "taktikk" | "mental" | "motivasjon";
+
+const TALENT_AXIS_COLOR: Record<TalentAxis, string> = {
+  fysisk: "var(--color-chart-1)",
+  teknikk: "var(--color-chart-2)",
+  taktikk: "var(--color-chart-3)",
+  mental: "var(--color-chart-4)",
+  motivasjon: "var(--color-chart-5)",
+};
 
 function DnaAxisRow({
   label,
@@ -410,7 +421,7 @@ function DnaAxisRow({
   label: string;
   value: number;
   cohort: number;
-  axis: PyramidAxis;
+  axis: TalentAxis;
 }) {
   return (
     <div>
@@ -423,7 +434,7 @@ function DnaAxisRow({
       <div className="relative h-2 overflow-hidden rounded-full bg-border">
         <div
           className="absolute inset-y-0 left-0 rounded-full"
-          style={{ width: `${value}%`, background: `var(--color-pyr-${axis})` }}
+          style={{ width: `${value}%`, background: TALENT_AXIS_COLOR[axis] }}
         />
         <div
           aria-hidden="true"
@@ -439,19 +450,19 @@ function RadarChart({
   dna,
   cohort,
 }: {
-  dna: { fys: number; tek: number; slag: number; spill: number; turn: number };
-  cohort: { fys: number; tek: number; slag: number; spill: number; turn: number };
+  dna: DnaShape;
+  cohort: DnaShape;
 }) {
   const size = 240;
   const cx = size / 2;
   const cy = size / 2;
   const r = 100;
   const axes = [
-    { key: "FYS", v: dna.fys, c: cohort.fys },
-    { key: "TEK", v: dna.tek, c: cohort.tek },
-    { key: "SLAG", v: dna.slag, c: cohort.slag },
-    { key: "SPILL", v: dna.spill, c: cohort.spill },
-    { key: "TURN", v: dna.turn, c: cohort.turn },
+    { key: "FYSISK", v: dna.fysisk, c: cohort.fysisk },
+    { key: "TEKNIKK", v: dna.teknikk, c: cohort.teknikk },
+    { key: "TAKTIKK", v: dna.taktikk, c: cohort.taktikk },
+    { key: "MENTAL", v: dna.mental, c: cohort.mental },
+    { key: "MOT.", v: dna.motivasjon, c: cohort.motivasjon },
   ];
   const N = axes.length;
   const angle = (i: number) => (Math.PI * 2 * i) / N - Math.PI / 2;

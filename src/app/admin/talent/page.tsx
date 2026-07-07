@@ -2,7 +2,7 @@
  * /admin/talent — Talent Coach (hybrid terminal design)
  *
  * Design: AgencyOS Talent Coach (hybrid).dc.html
- * Tre paneler: SkillRadar · PercentileGauge · PyramidProgress + H2H
+ * Tre paneler: SkillRadar · PercentileGauge · Talent-akser + H2H
  * Datakilde: TalentTracking (Prisma). Spiller-selector fra URL-param.
  * Roller: ADMIN, COACH.
  */
@@ -20,13 +20,14 @@ type PageProps = {
   searchParams: Promise<{ spiller?: string }>;
 };
 
-// Pyramide-akse-definisjon
+// Talent-akser (TalentTracking) — eget konstrukt, IKKE pyramide-budsjettet. Bruker
+// nøytrale chart-tokens, ikke --color-pyr-*, for å unngå å blande de to nøklene.
 const PYR_AKSER = [
-  { key: "fysisk" as const, label: "FYS", color: "hsl(var(--color-pyr-fys, #005840))", track: "rgba(0,88,64,.12)" },
-  { key: "teknikk" as const, label: "TEK", color: "hsl(var(--color-pyr-tek, #B8852A))", track: "rgba(184,133,42,.14)" },
-  { key: "taktikk" as const, label: "SLAG", color: "hsl(var(--color-pyr-slag, #2563EB))", track: "rgba(37,99,235,.12)" },
-  { key: "mental" as const, label: "SPILL", color: "hsl(var(--color-pyr-spill, #D1F843))", track: "rgba(209,248,67,.20)" },
-  { key: "motivasjon" as const, label: "TURN", color: "hsl(var(--color-pyr-turn, #A32D2D))", track: "rgba(163,45,45,.12)" },
+  { key: "fysisk" as const, label: "FYSISK", color: "var(--color-chart-1)", track: "color-mix(in srgb, var(--color-chart-1) 12%, transparent)" },
+  { key: "teknikk" as const, label: "TEKNIKK", color: "var(--color-chart-2)", track: "color-mix(in srgb, var(--color-chart-2) 14%, transparent)" },
+  { key: "taktikk" as const, label: "TAKTIKK", color: "var(--color-chart-3)", track: "color-mix(in srgb, var(--color-chart-3) 12%, transparent)" },
+  { key: "mental" as const, label: "MENTAL", color: "var(--color-chart-4)", track: "color-mix(in srgb, var(--color-chart-4) 20%, transparent)" },
+  { key: "motivasjon" as const, label: "MOT.", color: "var(--color-chart-5)", track: "color-mix(in srgb, var(--color-chart-5) 12%, transparent)" },
 ] as const;
 
 type PyrKey = typeof PYR_AKSER[number]["key"];
@@ -343,10 +344,10 @@ export default async function TalentCoachPage({ searchParams }: PageProps) {
           </div>
         </div>
 
-        {/* Pyramid + H2H */}
+        {/* Talent-akser + H2H */}
         <div className="rounded-[14px] border border-border bg-card p-5">
           <div className="mb-4 font-mono text-[9.5px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
-            Pyramide-balanse
+            Talent-akser
           </div>
           {/* Barer — bunn→topp (column-reverse) */}
           <div className="flex flex-col-reverse gap-2">
@@ -354,7 +355,7 @@ export default async function TalentCoachPage({ searchParams }: PageProps) {
               const pct = akseverdi(valgt, a.key);
               return (
                 <div key={a.key} className="flex items-center gap-2.5">
-                  <span className="w-10 flex-shrink-0 font-mono text-[9px] text-muted-foreground">
+                  <span className="w-14 flex-shrink-0 font-mono text-[9px] text-muted-foreground">
                     {a.label}
                   </span>
                   <div
