@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button";
 import { YearPlanGantt } from "@/components/athletic/calendars/year-plan-gantt";
 import { MonthGrid } from "@/components/athletic/calendars/month-grid";
 import { WeekGrid } from "@/components/athletic/calendars/week-grid";
-import { byggArsfaser, byggManedceller, byggUkehendelser } from "@/lib/wang-kalender/bygg-visninger";
-import type { GruppeKalenderData } from "@/lib/wang-kalender/types";
+import { byggArsfaser, byggManedceller, byggUkehendelser } from "@/lib/gruppe-kalender/bygg-visninger";
+import type { GruppeKalenderData } from "@/lib/gruppe-kalender/types";
 
 type Visning = "ar" | "maned" | "uke";
 
@@ -25,7 +25,7 @@ function mandagIUken(d: Date): Date {
   return dato;
 }
 
-export function WangKalenderWrapper({ data }: { data: GruppeKalenderData }) {
+export function GruppeKalenderWrapper({ data }: { data: GruppeKalenderData }) {
   const idag = useMemo(() => new Date(), []);
   const [visning, setVisning] = useState<Visning>("uke");
   const [year, setYear] = useState(idag.getFullYear());

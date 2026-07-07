@@ -1,7 +1,7 @@
 import { CalendarClock, MapPin } from "lucide-react";
 
-import { hentGruppeKalenderData } from "@/lib/wang-kalender/hent-data";
-import { WangKalenderWrapper } from "@/components/wang-kalender/wang-kalender-wrapper";
+import { hentGruppeKalenderData } from "@/lib/gruppe-kalender/hent-data";
+import { GruppeKalenderWrapper } from "@/components/gruppe-kalender/gruppe-kalender-wrapper";
 import { EmptyState } from "@/components/shared/empty-state";
 
 export const revalidate = 300; // 5 min — nok fersk for en foreldre-/spiller-oversikt
@@ -37,7 +37,7 @@ export default async function TeamWangPage() {
         </p>
       </header>
 
-      <WangKalenderWrapper data={data} />
+      <GruppeKalenderWrapper data={data} />
 
       <section className="grid gap-4 rounded-2xl border border-border bg-card p-6 sm:grid-cols-2">
         <div>
