@@ -167,7 +167,7 @@ function forventetSlag(category: SgCategory, distance: number): number {
  *  - distanceAfter ≤ 180 m → APP
  *  - distanceAfter > 180 m → OTT
  */
-function kategoriEtterSlag(outcome: SgOutcome, distanceAfter: number): SgCategory {
+export function kategoriEtterSlag(outcome: SgOutcome, distanceAfter: number): SgCategory {
   if (outcome === "GREEN") return "PUTT";
   if (distanceAfter <= 30) return "ARG";
   if (distanceAfter <= 180) return "APP";
@@ -175,9 +175,11 @@ function kategoriEtterSlag(outcome: SgOutcome, distanceAfter: number): SgCategor
 }
 
 /**
- * Beregner SG-verdien for ett enkelt slag.
+ * Beregner SG-verdien for ett enkelt slag (uavrundet).
+ * Eksportert for runde-logg (granulære SG-buckets trenger per-slag-verdier
+ * uten mellom-avrunding — beregnSg avrunder kun kategoritotalene).
  */
-function beregnSgPerSlag(shot: SgShot): number {
+export function beregnSgPerSlag(shot: SgShot): number {
   const startForventet = forventetSlag(shot.category, shot.distance);
 
   if (shot.outcome === "HOLED" || shot.distanceAfter == null || shot.distanceAfter <= 0) {
