@@ -69,11 +69,14 @@ function typeLabel(level: string | null): string {
 
 export default async function GruppeDetalj({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ trinn?: string }>;
 }) {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const { id } = await params;
+  const { trinn } = await searchParams;
 
   const gruppe = await prisma.group.findUnique({
     where: { id },
@@ -89,6 +92,7 @@ export default async function GruppeDetalj({
               avatarUrl: true,
               homeClub: true,
               tier: true,
+              schoolYear: true,
             },
           },
         },
@@ -151,6 +155,11 @@ export default async function GruppeDetalj({
     ? Math.round((gruppe.members.filter((m) => m.user.tier === "PRO").length / gruppe.members.length) * 100)
     : 0;
   const totalRunder = runderPerMedlem.reduce((s, r) => s + r._count._all, 0);
+
+  // KPI-tallene over gjelder ALLE medlemmer — VG-filteret snevrer kun rosteret under.
+  const visteMedlemmer = trinn
+    ? gruppe.members.filter((m) => m.user.schoolYear === trinn)
+    : gruppe.members;
 
   return (
     <DetailShell
@@ -301,11 +310,30 @@ export default async function GruppeDetalj({
             </span>
           </div>
           <span className="font-mono text-[10px] text-muted-foreground">
-            {gruppe.members.length} totalt
+            {visteMedlemmer.length} av {gruppe.members.length}
           </span>
         </div>
 
-        {gruppe.members.length === 0 ? (
+        {gruppe.members.some((m) => m.user.schoolYear) && (
+          <div className="mb-3 flex flex-wrap gap-1.5">
+            {(["", "VG1", "VG2", "VG3"] as const).map((t) => (
+              <Link
+                key={t || "alle"}
+                href={t ? `?trinn=${t}` : "?"}
+                scroll={false}
+                className={`rounded-full px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] transition ${
+                  (trinn ?? "") === t
+                    ? "bg-primary text-primary-foreground"
+                    : "border border-border bg-card text-muted-foreground hover:border-primary"
+                }`}
+              >
+                {t || "Alle"}
+              </Link>
+            ))}
+          </div>
+        )}
+
+        {visteMedlemmer.length === 0 ? (
           <EmptyState
             icon={Users}
             titleItalic="Ingen"
@@ -314,7 +342,7 @@ export default async function GruppeDetalj({
           />
         ) : (
           <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-            {gruppe.members.map((m) => {
+            {visteMedlemmer.map((m) => {
               const runder = runderMap.get(m.userId);
               const plan = planMap.get(m.userId);
               const planTotal = plan?.sessions.length ?? 0;
@@ -348,6 +376,7 @@ export default async function GruppeDetalj({
                       </div>
                       <div className="mt-0.5 truncate font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
                         {m.user.homeClub ?? "Klubb ukjent"} · {m.role === "ASSISTANT" ? "Hjelpetrener" : "Spiller"}
+                        {m.user.schoolYear && ` · ${m.user.schoolYear}`}
                       </div>
                     </div>
                     {m.user.tier === "PRO" && (

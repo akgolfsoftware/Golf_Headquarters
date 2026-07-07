@@ -130,6 +130,17 @@ export default async function RedigerSpiller({
               <Field label="E-post" name="email" type="email" defaultValue={player.email} required />
               <Field label="Hjemmeklubb" name="hjemmeklubb" defaultValue={player.homeClub ?? ""} />
               <Field label="Skole / VGS" name="skole" defaultValue={player.school ?? ""} />
+              <SelectField
+                label="Klassetrinn"
+                name="klassetrinn"
+                defaultValue={player.schoolYear ?? ""}
+                options={[
+                  { value: "", label: "Ikke satt" },
+                  { value: "VG1", label: "VG1" },
+                  { value: "VG2", label: "VG2" },
+                  { value: "VG3", label: "VG3" },
+                ]}
+              />
               <Field
                 label="HCP"
                 name="hcp"
@@ -269,6 +280,37 @@ export default async function RedigerSpiller({
 }
 
 // ---------- Helpers ----------
+
+function SelectField({
+  label,
+  name,
+  defaultValue,
+  options,
+}: {
+  label: string;
+  name: string;
+  defaultValue: string;
+  options: Array<{ value: string; label: string }>;
+}) {
+  return (
+    <label className="block">
+      <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+        {label}
+      </span>
+      <select
+        name={name}
+        defaultValue={defaultValue}
+        className="mt-1.5 block w-full rounded-md border border-input bg-card px-4 py-2 text-sm text-foreground focus:border-primary focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:ring-2 focus:ring-accent"
+      >
+        {options.map((o) => (
+          <option key={o.value} value={o.value}>
+            {o.label}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
 
 function Field({
   label,

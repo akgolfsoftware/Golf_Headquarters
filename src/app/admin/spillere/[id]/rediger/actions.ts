@@ -22,6 +22,7 @@ const Schema = z.object({
   email: z.string().email(),
   hjemmeklubb: z.string().max(80).optional(),
   skole: z.string().max(80).optional(),
+  klassetrinn: z.enum(["VG1", "VG2", "VG3", ""]).optional(),
   hcp: z
     .string()
     .optional()
@@ -43,6 +44,7 @@ export async function lagreSpiller(formData: FormData): Promise<void> {
     email: String(formData.get("email") ?? ""),
     hjemmeklubb: formData.get("hjemmeklubb")?.toString() || undefined,
     skole: formData.get("skole")?.toString() || undefined,
+    klassetrinn: formData.get("klassetrinn")?.toString() ?? "",
     hcp: formData.get("hcp")?.toString() || undefined,
     ambisjon: formData.get("ambisjon")?.toString() || undefined,
     notater: formData.get("notater")?.toString() || undefined,
@@ -68,6 +70,7 @@ export async function lagreSpiller(formData: FormData): Promise<void> {
         phone: data.telefon ?? null,
         homeClub: data.hjemmeklubb ?? null,
         school: data.skole ?? null,
+        schoolYear: data.klassetrinn ? data.klassetrinn : null,
         hcp: data.hcp ?? null,
         ambition: data.ambisjon ?? null,
         ...(dateOfBirth ? { dateOfBirth } : {}),
