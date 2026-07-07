@@ -9,6 +9,8 @@ import {
   Em,
   HeroEm,
   MarketingHero,
+  SectionEyebrow,
+  SectionH2,
 } from "@/components/marketing/marketing-sections";
 
 export const metadata: Metadata = {
@@ -128,12 +130,10 @@ export default async function CoacherSide() {
       {/* ========== ANLEGG & FASILITETER (fasit: 2-kol anlegg-kort) ========== */}
       <section className="bg-secondary/40 py-24">
         <div className="mx-auto max-w-7xl px-6 md:px-8">
-          <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-            Hvor vi trener
-          </span>
-          <h2 className="mt-4 max-w-[22ch] text-balance font-display text-[clamp(32px,4.5vw,48px)] font-bold leading-[1.05] tracking-[-0.025em]">
+          <SectionEyebrow>Hvor vi trener</SectionEyebrow>
+          <SectionH2>
             Anlegg &amp; <Em>fasiliteter</Em>.
-          </h2>
+          </SectionH2>
 
           <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-2">
             {FASILITETER.map((f) => (

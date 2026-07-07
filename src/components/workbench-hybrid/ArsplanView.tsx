@@ -8,11 +8,25 @@ const MONTH_SHORT = ["Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Se
 
 // Periode-bånd-farger + korte etiketter (fasit phaseColorMap / phaseShort).
 const PHASE_COLOR: Record<SeasonPhaseType, string> = {
-  GRUNN: "#56C59A",
-  SPESIALISERING: "#84A9FF",
-  TURNERING: "#D1F843",
-  EVALUERING: "#E8A33D",
-  FERIE: "#5f7d70",
+  GRUNN: "var(--axis-fys)",
+  SPESIALISERING: "var(--axis-slag)",
+  TURNERING: "var(--axis-spill)",
+  EVALUERING: "var(--axis-tek)",
+  FERIE: "var(--text-faint)",
+};
+const PHASE_SOFT: Record<SeasonPhaseType, string> = {
+  GRUNN: "var(--axis-fys-soft)",
+  SPESIALISERING: "var(--axis-slag-soft)",
+  TURNERING: "var(--axis-spill-soft)",
+  EVALUERING: "var(--axis-tek-soft)",
+  FERIE: "color-mix(in srgb, var(--text-faint) 18%, transparent)",
+};
+const PHASE_TEXT: Record<SeasonPhaseType, string> = {
+  GRUNN: "var(--axis-fys-text)",
+  SPESIALISERING: "var(--axis-slag-text)",
+  TURNERING: "var(--axis-spill-text)",
+  EVALUERING: "var(--axis-tek-text)",
+  FERIE: "var(--text-muted)",
 };
 const PHASE_SHORT: Record<SeasonPhaseType, string> = {
   GRUNN: "GRUNN",
@@ -80,7 +94,7 @@ export function ArsplanView({ phases, onPhaseClick }: ArsplanViewProps): ReactEl
               fontFamily: FONT.mono,
               fontSize: 10,
               fontWeight: 600,
-              color: i === currentMonthIdx ? WB.lime : "#5f7d70",
+              color: i === currentMonthIdx ? WB.lime : WB.muted3,
             }}
           >
             {m}
@@ -98,8 +112,9 @@ export function ArsplanView({ phases, onPhaseClick }: ArsplanViewProps): ReactEl
             style={{
               flex: ph.months,
               minWidth: 0,
-              background: PHASE_COLOR[ph.type],
+              background: PHASE_SOFT[ph.type],
               border: "none",
+              borderLeft: `3px solid ${PHASE_COLOR[ph.type]}`,
               borderRadius: 8,
               padding: "11px 12px",
               display: "flex",
@@ -109,10 +124,10 @@ export function ArsplanView({ phases, onPhaseClick }: ArsplanViewProps): ReactEl
               textAlign: "left",
             }}
           >
-            <span style={{ fontSize: 12, fontWeight: 700, color: WB.limeDark, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+            <span style={{ fontSize: 12, fontWeight: 700, color: PHASE_TEXT[ph.type], whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
               {PHASE_SHORT[ph.type]}
             </span>
-            <span style={{ fontSize: 10, color: WB.limeDark, opacity: 0.7 }}>{ph.span}</span>
+            <span style={{ fontSize: 10, color: WB.muted, marginTop: 1 }}>{ph.span}</span>
           </button>
         ))}
       </div>
@@ -142,8 +157,8 @@ export function ArsplanView({ phases, onPhaseClick }: ArsplanViewProps): ReactEl
                   style={{
                     minHeight: 22,
                     borderRadius: 5,
-                    background: `${PHASE_COLOR[type]}55`,
-                    border: `1px solid ${PHASE_COLOR[type]}88`,
+                    background: PHASE_SOFT[type],
+                    border: `1px solid ${PHASE_COLOR[type]}`,
                   }}
                 />
               ))}
@@ -169,7 +184,7 @@ export function ArsplanView({ phases, onPhaseClick }: ArsplanViewProps): ReactEl
               style={{
                 minHeight: 18,
                 borderRadius: 5,
-                background: type === "TURNERING" ? `${PHASE_COLOR.TURNERING}66` : "transparent",
+                background: type === "TURNERING" ? PHASE_SOFT.TURNERING : "transparent",
                 border: type === "TURNERING" ? `1px solid ${PHASE_COLOR.TURNERING}` : `1px dashed ${WB.panelBorder}`,
               }}
             />

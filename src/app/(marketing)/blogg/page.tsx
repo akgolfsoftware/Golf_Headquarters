@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
-import { Search, Sparkles } from "lucide-react";
+import { Search } from "lucide-react";
+import {
+  Em,
+  SectionEyebrow,
+} from "@/components/marketing/marketing-sections";
 import { POSTS } from "./posts";
 import { BloggListe, type PostWithMeta } from "./blogg-liste";
 
@@ -45,16 +49,9 @@ export default function BloggSide() {
       <section className="border-b border-border bg-card">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-20 md:py-24">
           <div className="flex flex-col items-start gap-6">
-            <span className="inline-flex items-center gap-2 rounded-full bg-secondary px-4 py-1 font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-              <Sparkles className="h-4 w-4" strokeWidth={1.5} />
-              AK Golf · Blogg
-            </span>
-            <h1 className="max-w-3xl font-display text-3xl sm:text-[44px] font-semibold leading-[1.05] tracking-tight md:text-[60px]">
-              Tanker, metoder og{" "}
-              <em className="font-display font-normal italic text-primary">
-                lærdom
-              </em>{" "}
-              fra coaching-hverdagen
+            <SectionEyebrow>Blogg · AK Golf Academy</SectionEyebrow>
+            <h1 className="max-w-[22ch] text-balance font-display text-[clamp(36px,5vw,64px)] font-semibold leading-[1.02] tracking-[-0.025em]">
+              Tanker, metoder og <Em>lærdom</Em> fra coaching-hverdagen
             </h1>
             <p className="max-w-2xl text-[17px] leading-[1.6] text-muted-foreground">
               Innsikt fra treningshverdagen, analyse av norsk og internasjonal

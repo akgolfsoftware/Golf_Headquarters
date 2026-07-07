@@ -61,7 +61,7 @@ export function MobilePaletteSheet({
         position: "fixed",
         inset: 0,
         zIndex: 75,
-        background: "rgba(7,16,12,0.74)",
+        background: WB.scrim,
         backdropFilter: "blur(5px)",
         display: "flex",
         alignItems: "flex-end",
@@ -81,7 +81,7 @@ export function MobilePaletteSheet({
           borderTopLeftRadius: 20,
           borderTopRightRadius: 20,
           overflow: "hidden",
-          boxShadow: "0 -24px 60px -20px rgba(0,0,0,0.6)",
+          boxShadow: "0 -24px 60px -20px rgba(0,0,0,0.35)",
         }}
       >
         {/* drag handle + header */}
@@ -172,7 +172,7 @@ export function MobilePaletteSheet({
                 padding: "10px 12px",
               }}
             >
-              <GripVertical size={15} color={WB.muted3} strokeWidth={2} />
+              <GripVertical size={15} style={{ color: WB.muted3 }} strokeWidth={2} />
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 13.5, fontWeight: 600, color: WB.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                   {p.title}
@@ -229,7 +229,7 @@ export function MobilePaletteSheet({
               fontWeight: 600,
             }}
           >
-            <Plus size={15} color={WB.lime} strokeWidth={2.2} />
+            <Plus size={15} style={{ color: WB.lime }} strokeWidth={2.2} />
             Ny standardøkt
           </button>
 
@@ -286,7 +286,7 @@ export function MobilePaletteSheet({
                       color: WB.text,
                     }}
                   >
-                    <Target size={13} color={CAT_COLORS.SLAG} strokeWidth={2} />
+                    <Target size={13} style={{ color: CAT_COLORS.SLAG }} strokeWidth={2} />
                     {t}
                   </span>
                 ))}

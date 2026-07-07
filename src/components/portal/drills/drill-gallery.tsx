@@ -16,6 +16,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Card, Eyebrow } from "@/components/athletic/golfdata";
 
@@ -133,6 +134,7 @@ function DrillCard({ drill }: { drill: DrillCard }) {
 
 export function DrillGallery({ drills }: { drills: DrillCard[] }) {
   const [activeFilter, setActiveFilter] = useState<AxisFilter>("alle");
+  const [query, setQuery] = useState("");
 
   // Hvilke akser finnes faktisk — skjul tomme filter-knapper.
   const presentAxes = useMemo(() => {
@@ -145,13 +147,12 @@ export function DrillGallery({ drills }: { drills: DrillCard[] }) {
     (f) => f.key === "alle" || presentAxes.has(f.key as DrillAxis),
   );
 
-  const visible = useMemo(
-    () =>
-      activeFilter === "alle"
-        ? drills
-        : drills.filter((d) => d.axis === activeFilter),
-    [drills, activeFilter],
-  );
+  const visible = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return drills
+      .filter((d) => activeFilter === "alle" || d.axis === activeFilter)
+      .filter((d) => !q || d.title.toLowerCase().includes(q));
+  }, [drills, activeFilter, query]);
 
   return (
     <div className="golfdata-scope px-0">
@@ -163,6 +164,18 @@ export function DrillGallery({ drills }: { drills: DrillCard[] }) {
         <h1 className="font-display mb-3.5 text-[28px] font-bold leading-[1.04] tracking-[-0.035em] text-foreground">
           Velg <em className="font-medium italic text-primary">drill</em>
         </h1>
+
+        {/* Søk */}
+        <label className="mb-3 flex h-10 items-center gap-2 rounded-full border border-input bg-card px-3.5">
+          <Search className="h-[14px] w-[14px] text-muted-foreground" strokeWidth={1.75} aria-hidden />
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Søk drill-navn"
+            className="min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
+          />
+        </label>
 
         {/* Filter-pills — horisontalt scrollbare */}
         <div

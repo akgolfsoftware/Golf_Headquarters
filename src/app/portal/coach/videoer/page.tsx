@@ -9,6 +9,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { Eyebrow } from "@/components/athletic/golfdata";
 import { PlayerVideoCard } from "./player-video-card";
 
 export const dynamic = "force-dynamic";
@@ -25,10 +26,10 @@ export default async function VideoerPage() {
   });
 
   return (
-    <div className="mx-auto max-w-[430px] pb-24 pt-2 md:max-w-[860px] md:pb-8">
+    <div className="golfdata-scope mx-auto w-full max-w-[460px] px-4 pb-8 pt-3 sm:px-5 md:max-w-[860px] md:px-8 md:pt-6">
 
       {/* Tilbake */}
-      <div className="mb-3 px-4 md:px-0">
+      <div className="mb-3">
         <Link
           href="/portal/coach"
           className="inline-flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground"
@@ -39,8 +40,11 @@ export default async function VideoerPage() {
       </div>
 
       {/* Header */}
-      <div className="mb-4 px-4 md:px-0">
-        <h1 className="font-display text-[20px] font-bold leading-[1.06] tracking-[-0.02em] text-foreground">
+      <div className="mb-4">
+        <Eyebrow tone="default" className="mb-2.5 block">
+          Coach · Videoer
+        </Eyebrow>
+        <h1 className="font-display text-[29px] font-bold leading-[1.05] tracking-[-0.035em] text-foreground">
           Videoer fra
           <em className="font-medium italic text-primary"> Anders</em>
         </h1>
@@ -48,7 +52,7 @@ export default async function VideoerPage() {
 
       {/* Liste */}
       {videos.length === 0 ? (
-        <div className="mx-3 rounded-xl border border-dashed border-border bg-card p-8 text-center md:mx-0">
+        <div className="rounded-xl border border-dashed border-border bg-card p-8 text-center">
           {/* Forest-gradient placeholder — tomt state */}
           <div
             className="relative mx-auto mb-4 flex h-[60px] w-[60px] items-center justify-center rounded-xl"

@@ -38,10 +38,10 @@ export function MobileStatusbar({ totals, grand, weekLabel, volMin, volMax, tekB
     <div
       style={{
         flexShrink: 0,
-        borderTop: "2px solid #D1F84326",
-        background: "#0a1d15",
+        borderTop: `2px solid ${WB.limeBorder}`,
+        background: WB.railBg,
         padding: "10px 14px 12px",
-        boxShadow: "inset 0 1px 0 rgba(209,248,67,0.08)",
+        boxShadow: `inset 0 1px 0 ${WB.limeFaint}`,
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
@@ -51,7 +51,7 @@ export function MobileStatusbar({ totals, grand, weekLabel, volMin, volMax, tekB
         <div style={{ flex: 1, position: "relative", height: 7, borderRadius: 9999, background: WB.railBg, overflow: "hidden" }}>
           <div style={{ position: "absolute", left: 0, top: 0, height: "100%", width: `${volPct}%`, borderRadius: 9999, background: gaugeColor }} />
         </div>
-        <span style={{ fontSize: 9.5, color: "#7c8a82", flexShrink: 0 }}>{weekLabel}</span>
+        <span style={{ fontSize: 9.5, color: WB.muted3, flexShrink: 0 }}>{weekLabel}</span>
       </div>
 
       <div className="wb-scroll" style={{ display: "flex", gap: 6, marginTop: 9, overflowX: "auto" }}>
@@ -66,7 +66,7 @@ export function MobileStatusbar({ totals, grand, weekLabel, volMin, volMax, tekB
                 display: "flex",
                 alignItems: "center",
                 gap: 8,
-                background: tekRod ? "#2a1414" : WB.cardBgAlt,
+                background: tekRod ? WB.errSoft : WB.cardBgAlt,
                 border: `1px solid ${tekRod ? WB.err : WB.innerBorderSoft}`,
                 borderRadius: 9999,
                 padding: "5px 12px 5px 8px",
@@ -75,7 +75,7 @@ export function MobileStatusbar({ totals, grand, weekLabel, volMin, volMax, tekB
               <span style={{ width: 9, height: 9, borderRadius: 3, background: CAT_COLORS[cat], opacity: m ? 1 : 0.35 }} />
               <div style={{ lineHeight: 1.05 }}>
                 <div style={{ fontSize: 12, fontWeight: 700, color: tekRod ? WB.err : WB.text, fontFamily: FONT.display }}>{m ? durLabel(m) : "0m"}</div>
-                <div style={{ fontSize: 8, fontFamily: FONT.mono, letterSpacing: "0.06em", color: tekRod ? WB.err : "#7c8a82" }}>
+                <div style={{ fontSize: 8, fontFamily: FONT.mono, letterSpacing: "0.06em", color: tekRod ? WB.err : WB.muted3 }}>
                   {tekRod ? `TEK <${tekBrudd?.grense}%` : cat}
                 </div>
               </div>

@@ -1,7 +1,12 @@
 import Image from "next/image";
-import Link from "next/link";
 import type { Metadata } from "next";
-import { ArrowRight } from "lucide-react";
+import {
+  CtaLime,
+  CtaOutlineLys,
+  Em,
+  SectionEyebrow,
+  SectionH2,
+} from "@/components/marketing/marketing-sections";
 
 export const metadata: Metadata = {
   title: "Slik trener vi · AK Golf Academy",
@@ -232,19 +237,10 @@ export default function Treningsfilosofi() {
             månedlig oppfølging.
           </p>
           <div className="relative z-10 mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link
-              href="/booking"
-              className="inline-flex h-[52px] items-center justify-center gap-1.5 rounded-full bg-accent px-6 font-display text-[16px] font-bold tracking-[-0.005em] text-accent-foreground shadow-[0_6px_14px_rgba(209,248,67,0.25)] transition hover:-translate-y-px hover:brightness-105 hover:shadow-[0_10px_28px_rgba(209,248,67,0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            >
+            <CtaLime href="/booking" withArrow>
               Book intro-time
-              <ArrowRight className="h-[18px] w-[18px]" strokeWidth={1.5} />
-            </Link>
-            <Link
-              href="/coaching"
-              className="inline-flex h-[52px] items-center justify-center gap-1.5 rounded-xl px-6 font-display text-[16px] font-bold tracking-[-0.005em] text-secondary ring-1 ring-inset ring-secondary/45 transition hover:bg-secondary/10 hover:ring-secondary/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              Se coaching-pakker
-            </Link>
+            </CtaLime>
+            <CtaOutlineLys href="/coaching">Se coaching-pakker</CtaOutlineLys>
           </div>
         </div>
       </section>
@@ -252,36 +248,3 @@ export default function Treningsfilosofi() {
   );
 }
 
-/* ---------- Seksjonsbyggesteiner (samme anatomi som forsiden) ---------- */
-
-function SectionEyebrow({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-      {children}
-    </span>
-  );
-}
-
-function SectionH2({ children }: { children: React.ReactNode }) {
-  return (
-    <h2 className="mt-4 max-w-[22ch] text-balance font-display text-[clamp(36px,5vw,56px)] font-bold leading-[1.05] tracking-[-0.025em]">
-      {children}
-    </h2>
-  );
-}
-
-function Em({
-  children,
-  dark = false,
-}: {
-  children: React.ReactNode;
-  dark?: boolean;
-}) {
-  return (
-    <em
-      className={`font-display font-normal italic ${dark ? "text-accent" : "text-primary"}`}
-    >
-      {children}
-    </em>
-  );
-}

@@ -283,7 +283,7 @@ export function DrillProgram({ sessionId, defaults, isCoach }: DrillProgramProps
                     border: `1px solid ${bulkVolum.repType ? WB.lime : WB.panelBorder}`,
                     borderRadius: 9999,
                     padding: "6px 14px",
-                    color: bulkVolum.repType ? "#0A0B0A" : WB.muted,
+                    color: bulkVolum.repType ? WB.limeDark : WB.muted,
                     cursor: bulkVolum.repType ? "pointer" : "default",
                   }}
                 >
@@ -504,7 +504,7 @@ function DrillFordeling({ drills }: { drills: WbDrill[] }) {
               fontFamily: FONT.mono,
               fontSize: 9,
               fontWeight: 700,
-              background: `${WB.lime}1a`,
+              background: WB.limeSoft,
               border: `1px solid ${WB.panelBorder}`,
               borderRadius: 9999,
               padding: "2px 7px",
@@ -657,7 +657,7 @@ function ChipBtn({
         fontFamily: FONT.mono,
         fontSize: 10,
         fontWeight: 700,
-        background: active ? `${WB.lime}1f` : WB.railBg,
+        background: active ? WB.limeSoft : WB.railBg,
         border: `1px solid ${active ? WB.lime : WB.panelBorder}`,
         borderRadius: 9999,
         padding: "4px 9px",
@@ -697,7 +697,7 @@ function ExercisePicker({
   return (
     <div
       onClick={onClose}
-      style={{ position: "fixed", inset: 0, zIndex: 80, background: "rgba(7,16,12,0.74)", backdropFilter: "blur(5px)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}
+      style={{ position: "fixed", inset: 0, zIndex: 80, background: WB.scrim, backdropFilter: "blur(5px)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}
     >
       <div
         onClick={(e) => e.stopPropagation()}
@@ -711,7 +711,7 @@ function ExercisePicker({
         </div>
         <div style={{ padding: "10px 16px", borderBottom: `1px solid ${WB.panelBorder}` }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, background: WB.cardBg, border: `1px solid ${WB.panelBorder}`, borderRadius: 9999, padding: "7px 12px" }}>
-            <Search size={14} color={WB.muted} />
+            <Search size={14} style={{ color: WB.muted }} />
             <input
               autoFocus
               value={q}

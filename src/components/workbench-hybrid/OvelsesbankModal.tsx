@@ -33,7 +33,7 @@ export function OvelsesbankModal({ isFys, onClose, onPick }: OvelsesbankModalPro
     <div
       onClick={onClose}
       style={{
-        position: "fixed", inset: 0, zIndex: 78, background: "rgba(7,16,12,0.74)",
+        position: "fixed", inset: 0, zIndex: 78, background: WB.scrim,
         backdropFilter: "blur(5px)", display: "flex", alignItems: "center", justifyContent: "center", padding: 32,
         fontFamily: FONT.sans,
       }}
@@ -43,11 +43,11 @@ export function OvelsesbankModal({ isFys, onClose, onPick }: OvelsesbankModalPro
         style={{
           width: 560, maxWidth: "100%", maxHeight: "82%", display: "flex", flexDirection: "column",
           background: WB.panelBg, border: `1px solid ${WB.panelBorder}`, borderRadius: 16, overflow: "hidden",
-          boxShadow: "0 40px 90px -30px rgba(0,0,0,0.6)",
+          boxShadow: "0 40px 90px -30px rgba(0,0,0,0.35)",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "18px 20px", borderBottom: `1px solid ${WB.innerBorderSoft}` }}>
-          <BookOpen size={18} color={WB.lime} strokeWidth={2} />
+          <BookOpen size={18} style={{ color: WB.lime }} strokeWidth={2} />
           <div style={{ fontFamily: FONT.display, fontWeight: 700, fontSize: 18, color: WB.text }}>{title}</div>
           <button
             type="button"
@@ -113,7 +113,7 @@ export function OvelsesbankModal({ isFys, onClose, onPick }: OvelsesbankModalPro
                   <div style={{ fontSize: 13.5, fontWeight: 600, color: WB.text }}>{it.title}</div>
                   <div style={{ fontSize: 11.5, color: WB.muted, marginTop: 2 }}>{it.meta}</div>
                 </div>
-                <span style={{ width: 30, height: 30, borderRadius: 8, background: "rgba(209,248,67,0.14)", color: WB.lime, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <span style={{ width: 30, height: 30, borderRadius: 8, background: WB.limeSoft, color: WB.lime, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   <Plus size={15} strokeWidth={2.4} />
                 </span>
               </button>

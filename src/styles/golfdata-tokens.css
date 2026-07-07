@@ -125,6 +125,25 @@
   --axis-turn: #A32D2D;
   --axis-turn-text: #A32D2D;
   --axis-turn-soft: rgba(163, 45, 45, 0.13);
+
+  /* ---- L-fase sekvensiell rampe (data-viz.css, tema-uavhengig) ---- */
+  --phase-base: oklch(0.44 0.07 165);
+  --phase-forberedelse: oklch(0.54 0.1 155);
+  --phase-spesialisering: oklch(0.66 0.14 142);
+  --phase-taper: oklch(0.8 0.16 128);
+  --phase-peak: oklch(0.9 0.19 122);
+
+  /* ---- Kalender-familien (colors/spacing/data-viz.css) — LYS ----
+     compliance-on/off arver kit-ens :root-formel (lime/down) —
+     .light i data-viz.css overstyrer kun -none. */
+  --bg: var(--sand-50);
+  --radius-input: 12px;
+  --warning-solid: #855100;
+  --warning-bg: oklch(0.58 0.15 83 / 0.12);
+  --warning-border: oklch(0.50 0.13 83 / 0.45);
+  --compliance-on: var(--lime-500);
+  --compliance-off: var(--down);
+  --compliance-none: var(--sand-500);
 }
 
 /* ============================================================
@@ -185,4 +204,11 @@
   --axis-turn: #F2908C;
   --axis-turn-text: #F5A8A4;
   --axis-turn-soft: rgba(242, 144, 140, 0.16);
+
+  /* ---- Kalender-familien (colors/data-viz.css) — MØRK ---- */
+  --bg: var(--graphite-0);
+  --warning-solid: #AF7C00;
+  --warning-bg: oklch(0.62 0.14 83 / 0.15);
+  --warning-border: oklch(0.62 0.14 83 / 0.42);
+  --compliance-none: var(--graphite-500);
 }

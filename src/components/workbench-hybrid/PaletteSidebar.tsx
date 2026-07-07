@@ -42,9 +42,8 @@ const groupHeader = (
   >
     <ChevronRight
       size={13}
-      color={WB.muted}
       strokeWidth={2.2}
-      style={{ transform: `rotate(${open ? 90 : 0}deg)`, transition: "transform .15s" }}
+      style={{ color: WB.muted, transform: `rotate(${open ? 90 : 0}deg)`, transition: "transform .15s" }}
     />
     <span
       style={{
@@ -110,7 +109,7 @@ export function PaletteSidebar({
                         display: "flex",
                         alignItems: "center",
                         gap: 10,
-                        background: active ? "#1d3a2e" : WB.cardBg,
+                        background: active ? WB.cardBgActive : WB.cardBg,
                         borderTop: `1px solid ${active ? WB.lime : WB.panelBorder}`,
                         borderRight: `1px solid ${active ? WB.lime : WB.panelBorder}`,
                         borderBottom: `1px solid ${active ? WB.lime : WB.panelBorder}`,
@@ -118,10 +117,10 @@ export function PaletteSidebar({
                         borderRadius: 10,
                         padding: "10px 11px",
                         cursor: "grab",
-                        boxShadow: active ? "0 0 0 3px rgba(209,248,67,0.1)" : undefined,
+                        boxShadow: active ? `0 0 0 3px ${WB.limeFaint}` : undefined,
                       }}
                     >
-                      <GripVertical size={13} color={WB.muted3} strokeWidth={2} />
+                      <GripVertical size={13} style={{ color: WB.muted3 }} strokeWidth={2} />
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div
                           style={{
@@ -161,7 +160,7 @@ export function PaletteSidebar({
                     fontWeight: 600,
                   }}
                 >
-                  <Plus size={14} color={WB.lime} strokeWidth={2.2} />
+                  <Plus size={14} style={{ color: WB.lime }} strokeWidth={2.2} />
                   Ny standardøkt
                 </button>
               </div>
@@ -220,7 +219,7 @@ export function PaletteSidebar({
                   fontWeight: 600,
                 }}
               >
-                <Plus size={14} color={WB.lime} strokeWidth={2.2} />
+                <Plus size={14} style={{ color: WB.lime }} strokeWidth={2.2} />
                 Opprett nytt mål
               </button>
             </div>
@@ -233,7 +232,7 @@ export function PaletteSidebar({
           {open.tests && (
             <div style={{ padding: "8px 2px 4px", display: "flex", flexDirection: "column", gap: 6 }}>
               {sideTests.length === 0 && (
-                <div style={{ fontSize: 11.5, lineHeight: 1.5, color: "#7c8a82", padding: "2px 4px" }}>
+                <div style={{ fontSize: 11.5, lineHeight: 1.5, color: WB.muted3, padding: "2px 4px" }}>
                   Ingen tester ennå.
                 </div>
               )}
@@ -252,7 +251,7 @@ export function PaletteSidebar({
                     cursor: "grab",
                   }}
                 >
-                  <CheckSquare size={13} color={CAT_COLORS.SLAG} strokeWidth={2} />
+                  <CheckSquare size={13} style={{ color: CAT_COLORS.SLAG }} strokeWidth={2} />
                   <span style={{ fontSize: 12, fontWeight: 600, color: WB.text }}>{t}</span>
                 </div>
               ))}
@@ -265,7 +264,7 @@ export function PaletteSidebar({
           {groupHeader("Teknisk plan", "", open.tech, () => onToggle("tech"))}
           {open.tech && (
             <div style={{ padding: "8px 2px 4px" }}>
-              <div style={{ fontSize: 11.5, lineHeight: 1.5, color: "#7c8a82", padding: "2px 4px" }}>
+              <div style={{ fontSize: 11.5, lineHeight: 1.5, color: WB.muted3, padding: "2px 4px" }}>
                 Driver, jern, wedge, putt — åpne teknisk plan for å redigere posisjoner og arbeidsoppgaver.
               </div>
             </div>

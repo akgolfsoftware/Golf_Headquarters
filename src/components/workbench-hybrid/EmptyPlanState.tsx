@@ -25,7 +25,7 @@ export function EmptyPlanState({ role }: Props): ReactElement {
         textAlign: "center",
       }}
     >
-      <CalendarPlus size={32} strokeWidth={1.5} color={WB.muted3} aria-hidden />
+      <CalendarPlus size={32} strokeWidth={1.5} style={{ color: WB.muted3 }} aria-hidden />
       <p
         style={{
           margin: 0,

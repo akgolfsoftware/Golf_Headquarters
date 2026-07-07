@@ -4,6 +4,9 @@
  * GDPR art. 8 (P17) — foreldresamtykke for mindreårig spiller.
  * Forelder mottar e-post med signing-link, klikker → kommer hit.
  * Bekrefter samtykke → spiller-konto aktiveres + ParentRelation opprettes.
+ *
+ * Chrome = auth-kanonen (login/signup): mørk terminal-flate + grid,
+ * «ak»-lettermerke, hero, kort. `.dark` flipper tokenene. Logikk uendret.
  */
 
 import Link from "next/link";
@@ -50,44 +53,67 @@ export default async function GuardianConsentPage({ params }: Props) {
   const playerAge = calculateAge(invitation.player.dateOfBirth);
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-12 md:py-20">
-      {/* Header */}
-      <header className="mb-8 text-center">
-        <span className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-accent">
-          <Shield className="h-7 w-7" strokeWidth={1.75} />
-        </span>
-        <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-          AK GOLF · FORELDRESAMTYKKE
-        </p>
-        <h1 className="font-display mt-2 text-3xl font-bold leading-tight tracking-tight md:text-4xl">
-          Bekreft{" "}
-          <em className="font-display italic font-normal text-primary">
-            samtykke
-          </em>
-        </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          For at <strong className="text-foreground">{invitation.player.name}</strong>{" "}
-          {playerAge !== null ? `(${playerAge} år)` : ""} skal kunne bruke AK Golf
-        </p>
-      </header>
+    <main
+      className="dark relative flex min-h-svh items-center justify-center overflow-hidden px-5 py-12"
+      style={{ background: "linear-gradient(160deg, #0A1410, #07100C)" }}
+    >
+      {/* Svakt terminal-grid */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-60"
+        style={{
+          backgroundImage:
+            "linear-gradient(var(--t-line-soft,rgba(180,225,195,.035)) 1px,transparent 1px),linear-gradient(90deg,var(--t-line-soft,rgba(180,225,195,.035)) 1px,transparent 1px)",
+          backgroundSize: "30px 30px",
+        }}
+      />
+      <div className="relative z-10 flex w-full max-w-[480px] flex-col items-center gap-7">
+        {/* «ak»-lettermerke */}
+        <div className="font-display text-[40px] font-bold leading-none tracking-[-0.045em] text-accent">
+          ak
+        </div>
 
-      {/* Status-håndtering */}
-      {expired ? (
-        <ExpiredCard email={invitation.email} />
-      ) : alreadyAccepted && alreadyConsented ? (
-        <SuccessCard playerName={invitation.player.name} />
-      ) : (
-        <GuardianConsentForm
-          token={token}
-          playerName={invitation.player.name}
-          playerEmail={invitation.player.email}
-          guardianEmail={invitation.email}
-          playerAge={playerAge}
-        />
-      )}
+        {/* Hero */}
+        <header className="text-center">
+          <span className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/15 text-accent">
+            <Shield className="h-7 w-7" strokeWidth={1.75} aria-hidden />
+          </span>
+          <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-[var(--t-fg-2,#9DB0A4)]">
+            AK GOLF · FORELDRESAMTYKKE
+          </p>
+          <h1 className="mt-2 font-display text-[26px] font-bold leading-tight tracking-[-0.02em] text-[var(--t-fg,#EAF2EC)]">
+            Bekreft{" "}
+            <em className="font-medium italic text-accent">samtykke</em>
+          </h1>
+          <p className="mt-2 text-[13.5px] text-[var(--t-fg-2,#9DB0A4)]">
+            For at{" "}
+            <strong className="font-semibold text-[var(--t-fg,#EAF2EC)]">
+              {invitation.player.name}
+            </strong>{" "}
+            {playerAge !== null ? `(${playerAge} år)` : ""} skal kunne bruke AK
+            Golf
+          </p>
+        </header>
 
-      {/* Info */}
-      <section className="mt-10 rounded-2xl border border-border bg-card p-6 text-sm text-muted-foreground">
+        {/* Status-håndtering */}
+        <div className="w-full">
+          {expired ? (
+            <ExpiredCard email={invitation.email} />
+          ) : alreadyAccepted && alreadyConsented ? (
+            <SuccessCard playerName={invitation.player.name} />
+          ) : (
+            <GuardianConsentForm
+              token={token}
+              playerName={invitation.player.name}
+              playerEmail={invitation.player.email}
+              guardianEmail={invitation.email}
+              playerAge={playerAge}
+            />
+          )}
+        </div>
+
+        {/* Info */}
+        <section className="w-full rounded-2xl border border-border bg-card p-6 text-sm text-muted-foreground">
         <h2 className="font-display mb-2 text-sm font-semibold text-foreground">
           Hva betyr dette samtykket?
         </h2>
@@ -132,19 +158,20 @@ export default async function GuardianConsentPage({ params }: Props) {
           .
         </p>
       </section>
-    </div>
+      </div>
+    </main>
   );
 }
 
 function ExpiredCard({ email }: { email: string }) {
   return (
-    <div className="rounded-2xl border border-warn/30 bg-warn/5 p-6 text-center">
+    <div className="rounded-2xl border border-warning/30 bg-warning/10 p-6 text-center">
       <AlertTriangle
-        className="mx-auto h-8 w-8 text-warn"
+        className="mx-auto h-8 w-8 text-warning"
         strokeWidth={1.75}
-        style={{ color: "hsl(var(--warning))" }}
+        aria-hidden
       />
-      <h2 className="font-display mt-2 text-lg font-semibold">
+      <h2 className="font-display mt-2 text-lg font-semibold text-foreground">
         Invitasjonen er utløpt
       </h2>
       <p className="mt-2 text-sm text-muted-foreground">
@@ -157,9 +184,13 @@ function ExpiredCard({ email }: { email: string }) {
 
 function SuccessCard({ playerName }: { playerName: string }) {
   return (
-    <div className="rounded-2xl border border-primary/30 bg-primary/5 p-6 text-center">
-      <Check className="mx-auto h-8 w-8 text-primary" strokeWidth={1.75} />
-      <h2 className="font-display mt-2 text-lg font-semibold">
+    <div className="rounded-2xl border border-success/30 bg-success/10 p-6 text-center">
+      <Check
+        className="mx-auto h-8 w-8 text-success"
+        strokeWidth={1.75}
+        aria-hidden
+      />
+      <h2 className="font-display mt-2 text-lg font-semibold text-foreground">
         Samtykke allerede gitt
       </h2>
       <p className="mt-2 text-sm text-muted-foreground">
@@ -168,7 +199,7 @@ function SuccessCard({ playerName }: { playerName: string }) {
       </p>
       <Link
         href="/forelder"
-        className="font-display mt-4 inline-flex h-11 items-center justify-center gap-2 rounded-full bg-primary px-6 text-sm font-bold text-primary-foreground hover:opacity-90"
+        className="mt-4 inline-flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-[13px] font-mono text-[12px] font-bold uppercase tracking-[0.10em] text-accent-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       >
         Gå til foreldreportal
       </Link>

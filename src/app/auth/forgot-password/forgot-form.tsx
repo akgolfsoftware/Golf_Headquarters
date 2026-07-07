@@ -30,7 +30,7 @@ export function ForgotForm() {
     });
     setPending(false);
     if (err) {
-      setError(err.message);
+      setError(oversettResetFeil(err.message));
       return;
     }
     setSent(true);
@@ -88,7 +88,7 @@ export function ForgotForm() {
         Glemt passordet?
       </h1>
       <p className="mb-6 text-center text-[13.5px] leading-relaxed text-muted-foreground">
-        Skriv inn e-postadressen din, sa sender vi deg en lenke for a opprette
+        Skriv inn e-postadressen din, så sender vi deg en lenke for å opprette
         nytt passord.
       </p>
 
@@ -124,7 +124,7 @@ export function ForgotForm() {
           disabled={pending}
           className="mb-3 w-full rounded-full bg-accent py-[13px] font-mono text-[12px] font-bold uppercase tracking-[0.10em] text-accent-foreground transition-opacity hover:opacity-90 disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
-          {pending ? "Sender..." : "Send tilbakestillingslenke"}
+          {pending ? "Sender…" : "Send tilbakestillingslenke"}
         </button>
 
         <Link
@@ -136,4 +136,12 @@ export function ForgotForm() {
       </form>
     </div>
   );
+}
+
+function oversettResetFeil(msg: string): string {
+  if (msg.includes("you can only request this after"))
+    return "Vent et lite øyeblikk før du ber om en ny lenke.";
+  if (msg.includes("Unable to validate email address"))
+    return "Sjekk at e-postadressen er riktig skrevet.";
+  return msg;
 }

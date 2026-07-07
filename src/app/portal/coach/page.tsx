@@ -84,21 +84,21 @@ export default async function CoachPage() {
   const timelineEvents = upcomingSessions.slice(0, 4);
 
   return (
-    <div className="golfdata-scope mx-auto max-w-[430px] space-y-0 px-0 pb-24 md:max-w-[860px] md:pb-0">
+    <div className="golfdata-scope mx-auto w-full max-w-[460px] px-4 pb-8 pt-3 sm:px-5 md:max-w-[860px] md:px-8 md:pt-6">
 
       {/* ── 1. Header ──────────────────────────────────────────── */}
-      <div className="px-4 pb-4 pt-2 md:px-6">
-        <Eyebrow className="mb-2.5 block" style={{ fontSize: "var(--text-11)", letterSpacing: "0.16em" }}>
+      <div className="pb-4">
+        <Eyebrow tone="default" className="mb-2.5 block">
           Coach · {coach?.name ?? "Din coach"}
         </Eyebrow>
-        <h1 className="font-display text-[28px] font-bold leading-[1.04] tracking-[-0.035em] text-foreground">
+        <h1 className="font-display text-[29px] font-bold leading-[1.05] tracking-[-0.035em] text-foreground">
           Din{" "}
           <em className="font-medium italic text-primary">coach</em>
         </h1>
       </div>
 
       {/* ── 2. Coach insight card ───────────────────────────────── */}
-      <div className="mx-3 mb-3.5 overflow-hidden rounded-xl border border-l-[3px] border-border border-l-accent bg-card shadow-sm md:mx-0">
+      <div className="mb-3.5 overflow-hidden rounded-xl border border-l-[3px] border-border border-l-accent bg-card shadow-sm">
         <div className="p-4">
           {coach ? (
             <>
@@ -171,7 +171,7 @@ export default async function CoachPage() {
       </div>
 
       {/* ── 3. Event timeline card ─────────────────────────────── */}
-      <div className="mx-3 mb-3.5 rounded-xl border border-border bg-card p-4 shadow-sm md:mx-0">
+      <div className="mb-3.5 rounded-xl border border-border bg-card p-4 shadow-sm">
         <div className="mb-3 font-mono text-[9.5px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
           Kommende med coach
         </div>
@@ -238,7 +238,7 @@ export default async function CoachPage() {
 
       {/* ── 4. Meldinger card ──────────────────────────────────── */}
       {coach ? (
-        <div className="mx-3 mb-3.5 overflow-hidden rounded-xl border border-border bg-card shadow-sm md:mx-0">
+        <div className="mb-3.5 overflow-hidden rounded-xl border border-border bg-card shadow-sm">
           {/* Header */}
           <div className="flex items-center justify-between border-b border-border/60 px-3.5 py-3">
             <span className="font-mono text-[9.5px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
@@ -322,7 +322,7 @@ export default async function CoachPage() {
 
       {/* ── 5. Full message thread (desktop / sekundær visning) ── */}
       {coach && messages.length > 0 && (
-        <div className="mx-3 mt-3.5 hidden md:mx-0 md:block">
+        <div className="mt-3.5 hidden md:block">
           <MessageThread
             coachName={coach.name}
             coachInitials={coach.initials}

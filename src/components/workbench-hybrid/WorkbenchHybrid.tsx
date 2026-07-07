@@ -1040,7 +1040,7 @@ export function WorkbenchHybrid({
         background: WB.pageBg,
         minHeight: "100vh",
         fontFamily: FONT.sans,
-        color: WB.limeDark,
+        color: WB.text,
         WebkitFontSmoothing: "antialiased",
       };
 
@@ -1049,7 +1049,7 @@ export function WorkbenchHybrid({
   const eyebrowText = isCoach
     ? `AK Golf HQ · Workbench · ${coachName} · Head Coach`
     : "AK Golf HQ · Workbench · All planlegging skjer her";
-  const titleColor = isCoach ? WB.text : WB.limeDark;
+  const titleColor = WB.text;
   const subColor = isCoach ? WB.muted : WB.subText;
 
   // Senter-zoom-visningen — én definisjon, gjenbrukt i desktop-panelet og i
@@ -1196,7 +1196,7 @@ export function WorkbenchHybrid({
   const mobileInspectorOpen = isMobile && inspectorMode !== null && hubTab !== "okt";
 
   return (
-    <div style={wrapperStyle} className={isCoach ? "wb-root" : "wb-root wb-player"}>
+    <div style={wrapperStyle} className={isCoach ? "golfdata-scope wb-root" : "golfdata-scope wb-root wb-player"}>
       <style>{`
         .wb-scroll::-webkit-scrollbar{width:0;height:0}
         /* Desktop-panelet (fast 820px/1340px) vises kun fra lg (1024px) og opp. */
@@ -1237,7 +1237,7 @@ export function WorkbenchHybrid({
             border: `1px solid ${WB.panelBorder}`,
             borderRadius: 18,
             overflow: "hidden",
-            boxShadow: "0 30px 60px -24px rgba(15,42,34,0.55)",
+            boxShadow: "0 30px 60px -24px rgba(0,0,0,0.18)",
             display: "flex",
             flexDirection: "column",
             height: 820,

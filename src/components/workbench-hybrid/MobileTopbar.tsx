@@ -120,7 +120,7 @@ export function MobileTopbar({
           <span style={{ fontSize: 12, fontWeight: 600, color: WB.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
             {playerName}
           </span>
-          <ChevronDown size={12} color={WB.muted} strokeWidth={2} style={{ flexShrink: 0 }} />
+          <ChevronDown size={12} strokeWidth={2} style={{ color: WB.muted, flexShrink: 0 }} />
         </button>
       )}
 
@@ -135,7 +135,7 @@ export function MobileTopbar({
             textTransform: "uppercase",
             padding: "4px 8px",
             borderRadius: 999,
-            background: `${WB.lime}18`,
+            background: WB.limeFaint,
             color: WB.lime,
             flexShrink: 0,
           }}
@@ -366,7 +366,7 @@ function MobilePlayerSelector({ playerName, initials, players, currentPlayerId }
         <span style={{ fontSize: 12, fontWeight: 600, color: WB.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
           {playerName}
         </span>
-        <ChevronDown size={12} color={WB.muted} strokeWidth={2} style={{ flexShrink: 0 }} />
+        <ChevronDown size={12} strokeWidth={2} style={{ color: WB.muted, flexShrink: 0 }} />
       </button>
 
       {open && (
@@ -383,7 +383,7 @@ function MobilePlayerSelector({ playerName, initials, players, currentPlayerId }
             background: WB.panelBg,
             border: `1px solid ${WB.panelBorder}`,
             borderRadius: 12,
-            boxShadow: "0 24px 48px -18px rgba(0,0,0,0.6)",
+            boxShadow: "0 24px 48px -18px rgba(0,0,0,0.35)",
             padding: 6,
           }}
         >
@@ -405,7 +405,7 @@ function MobilePlayerSelector({ playerName, initials, players, currentPlayerId }
                   padding: "8px 10px",
                   borderRadius: 9,
                   textDecoration: "none",
-                  background: active ? "rgba(209,248,67,0.08)" : "transparent",
+                  background: active ? WB.limeFaint : "transparent",
                   border: `1px solid ${active ? WB.lime : "transparent"}`,
                 }}
               >

@@ -6,6 +6,7 @@ import { Sprout, Target, Trophy } from "lucide-react";
 import type { LPhase } from "@/generated/prisma/client";
 import type { WorkbenchPlanTemplate } from "@/lib/workbench/load-workbench";
 import { FONT, WB } from "./theme";
+import { Card, Tag } from "@/components/athletic/golfdata";
 
 type MalFilter = "alle" | "naerspill" | "putting" | "utslag" | "turnering" | "full";
 
@@ -167,7 +168,7 @@ export function MalerTab({
                 padding: "6px 12px",
                 borderRadius: 999,
                 border: `1px solid ${active ? WB.lime : WB.panelBorder}`,
-                background: active ? `${WB.lime}22` : WB.cardBg,
+                background: active ? WB.limeSoft : WB.cardBg,
                 color: active ? WB.lime : WB.muted,
                 cursor: "pointer",
               }}
@@ -189,18 +190,11 @@ export function MalerTab({
           const editHref = isCoach ? `/admin/plan-templates/${t.id}/rediger` : undefined;
           const anbefalt = activePeriodLPhase != null && t.lPhase === activePeriodLPhase;
           return (
-            <div
+            <Card
               key={t.id}
-              style={{
-                background: WB.cardBg,
-                border: `1px solid ${anbefalt ? WB.lime : WB.innerBorder}`,
-                borderRadius: 12,
-                padding: "14px 16px",
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                gap: 10,
-              }}
+              compact
+              style={{ height: "100%", ...(anbefalt ? { border: `1px solid ${WB.lime}` } : {}) }}
+              bodyStyle={{ display: "flex", flexDirection: "column", gap: 10, height: "100%" }}
             >
               {anbefalt && (
                 <span
@@ -221,21 +215,9 @@ export function MalerTab({
                 </span>
               )}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
-                <span
-                  style={{
-                    fontFamily: FONT.mono,
-                    fontSize: 8,
-                    fontWeight: 700,
-                    letterSpacing: "0.06em",
-                    textTransform: "uppercase",
-                    padding: "4px 8px",
-                    borderRadius: 6,
-                    background: `${WB.lime}18`,
-                    color: WB.lime,
-                  }}
-                >
+                <Tag size="sm" variant="outline">
                   {categoryChip(t)}
-                </span>
+                </Tag>
                 <span
                   style={{
                     fontFamily: FONT.mono,
@@ -268,14 +250,14 @@ export function MalerTab({
                     width: 36,
                     height: 36,
                     borderRadius: 10,
-                    background: `${WB.lime}18`,
+                    background: WB.limeFaint,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     flexShrink: 0,
                   }}
                 >
-                  <Icon size={18} color={WB.lime} strokeWidth={1.6} />
+                  <Icon size={18} style={{ color: WB.lime }} strokeWidth={1.6} />
                 </span>
                 <div style={{ minWidth: 0, flex: 1 }}>
                   <div style={{ fontSize: 13, fontWeight: 600, color: WB.text }}>{t.name}</div>
@@ -333,7 +315,7 @@ export function MalerTab({
                   Bruk
                 </button>
               </div>
-            </div>
+            </Card>
           );
         })}
       </div>

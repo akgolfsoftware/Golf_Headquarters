@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { Trophy } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
+import { Button, Card, Eyebrow, KpiTile, Tag } from "@/components/athletic/golfdata";
 import { EmptyState } from "@/components/shared/empty-state";
 import { bliMed, avsluttUtfordring } from "../actions";
 import { ScoreForm } from "./score-form";
@@ -68,7 +68,7 @@ export default async function UtfordringDetalj({
   metaParts.push(`${utfordring.participants.length} deltakere`);
 
   return (
-    <div className="space-y-8">
+    <div className="golfdata-scope mx-auto w-full max-w-[460px] space-y-6 px-4 pb-8 pt-3 sm:px-5 md:max-w-[860px] md:px-8 md:pt-6">
       <Link
         href="/portal/utfordringer"
         className="inline-flex min-h-11 items-center gap-1 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground hover:text-foreground"
@@ -76,51 +76,54 @@ export default async function UtfordringDetalj({
         ← PlayerHQ · Utfordringer
       </Link>
 
-      <PageHeader
-        eyebrow={`PlayerHQ · ${erAktiv ? "Aktiv utfordring" : "Avsluttet utfordring"}`}
-        titleItalic={utfordring.name}
-        sub={metaParts.join(" · ")}
-        actions={
-          <>
-            {!erAktiv && (
-              <span className="rounded-full bg-secondary px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                Avsluttet
-              </span>
-            )}
+      {/* Hero */}
+      <header>
+        <Eyebrow tone="default" className="mb-2.5">
+          PlayerHQ · {erAktiv ? "Aktiv utfordring" : "Avsluttet utfordring"}
+        </Eyebrow>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h1 className="font-display text-[29px] font-bold leading-[1.05] tracking-[-0.035em] text-foreground">
+              <em className="font-medium italic text-primary">{utfordring.name}</em>
+            </h1>
+            <p className="mt-2 text-sm text-muted-foreground">{metaParts.join(" · ")}</p>
+          </div>
+          <div className="flex shrink-0 items-center gap-2">
+            {!erAktiv && <Tag variant="neutral">Avsluttet</Tag>}
             {erAktiv && !erDeltaker && (
               <form action={bliMedAction}>
-                <button
-                  type="submit"
-                  className="rounded-md bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                >
+                <Button type="submit" variant="signal">
                   Bli med
-                </button>
+                </Button>
               </form>
             )}
             {erAktiv && erEier && (
               <form action={avsluttAction}>
-                <button
-                  type="submit"
-                  className="inline-flex min-h-11 items-center rounded-md border border-destructive/30 bg-destructive/5 px-4 py-2 text-sm font-medium text-destructive hover:border-destructive/50"
-                >
+                <Button type="submit" variant="destructive">
                   Avslutt utfordring
-                </button>
+                </Button>
               </form>
             )}
-          </>
-        }
-      />
+          </div>
+        </div>
+      </header>
 
       {utfordring.description && (
-        <section className="rounded-lg border border-border bg-card p-6">
+        <Card compact>
           <p className="text-sm text-foreground">{utfordring.description}</p>
-        </section>
+        </Card>
       )}
 
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <Kpi label="Deltakere" value={String(utfordring.participants.length)} />
-        <Kpi label="Startet" value={startStr ?? "—"} valueSmall />
-        <Kpi label={erAktiv ? "Slutter" : "Avsluttet"} value={sluttStr ?? "—"} valueSmall />
+      <section className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <Card compact>
+          <KpiTile size="md" label="Deltakere" value={utfordring.participants.length} />
+        </Card>
+        <Card compact>
+          <KpiTile size="md" label="Startet" value={startStr ?? "—"} />
+        </Card>
+        <Card compact>
+          <KpiTile size="md" label={erAktiv ? "Slutter" : "Avsluttet"} value={sluttStr ?? "—"} />
+        </Card>
       </section>
 
       {erAktiv && erDeltaker && (
@@ -132,12 +135,9 @@ export default async function UtfordringDetalj({
       )}
 
       <section aria-labelledby="leaderboard-tittel" className="space-y-4">
-        <h2
-          id="leaderboard-tittel"
-          className="font-display text-lg font-semibold tracking-tight"
-        >
+        <Eyebrow as="h2" id="leaderboard-tittel">
           Resultatliste
-        </h2>
+        </Eyebrow>
 
         {utfordring.participants.length === 0 ? (
           <EmptyState
@@ -154,7 +154,7 @@ export default async function UtfordringDetalj({
               return (
                 <li
                   key={p.id}
-                  className={`flex flex-wrap items-center gap-4 rounded-md border bg-card p-4 ${
+                  className={`flex flex-wrap items-center gap-4 rounded-xl border bg-card p-4 ${
                     erMeg ? "border-primary/40" : "border-border"
                   }`}
                 >
@@ -186,31 +186,6 @@ export default async function UtfordringDetalj({
           </ul>
         )}
       </section>
-    </div>
-  );
-}
-
-function Kpi({
-  label,
-  value,
-  valueSmall = false,
-}: {
-  label: string;
-  value: string;
-  valueSmall?: boolean;
-}) {
-  return (
-    <div className="rounded-lg border border-border bg-card p-6">
-      <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-        {label}
-      </div>
-      <div
-        className={`mt-2 font-mono font-semibold leading-none tabular-nums ${
-          valueSmall ? "text-[18px]" : "text-[28px]"
-        }`}
-      >
-        {value}
-      </div>
     </div>
   );
 }

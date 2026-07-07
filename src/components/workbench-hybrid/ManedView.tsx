@@ -187,15 +187,15 @@ export function ManedView({
               <span key={c} style={{ width: `${Math.round((totals[c] / pyrTotal) * 100)}%`, background: CAT_COLORS[c] }} />
             ))}
           </div>
-          <div style={{ fontSize: 9, color: "#7c8a82", marginTop: 6 }}>FYS · TEK · SLAG · SPILL · TURN</div>
+          <div style={{ fontSize: 9, color: WB.muted3, marginTop: 6 }}>FYS · TEK · SLAG · SPILL · TURN</div>
         </div>
       </div>
 
       {/* turnerings-tidslinje */}
       {monthTours.length > 0 && (
-        <div style={{ margin: "0 18px 12px", background: "#0c2219", border: `1px solid ${WB.innerBorderSoft}`, borderRadius: 12, padding: "12px 14px 13px" }}>
+        <div style={{ margin: "0 18px 12px", background: WB.cardBgAlt, border: `1px solid ${WB.innerBorderSoft}`, borderRadius: 12, padding: "12px 14px 13px" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 11 }}>
-            <span style={{ fontFamily: FONT.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#5f7d70" }}>
+            <span style={{ fontFamily: FONT.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: WB.muted3 }}>
               Turneringer i {monthLower}
             </span>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -211,7 +211,7 @@ export function ManedView({
             {monthTours.map((t) => (
               <div key={`${t.title}-${t.day}`} style={{ flex: 1, minWidth: 0, background: WB.cardBgAlt, border: `1px solid ${WB.innerBorderSoft}`, borderTop: `2px solid ${t.color}`, borderRadius: 10, padding: "11px 12px" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 6 }}>
-                  <span style={{ width: 10, height: 10, borderRadius: "50%", background: t.color, boxShadow: `0 0 0 3px ${t.color}33` }} />
+                  <span style={{ width: 10, height: 10, borderRadius: "50%", background: t.color, boxShadow: `0 0 0 3px color-mix(in srgb, ${t.color} 22%, transparent)` }} />
                   <span style={{ fontFamily: FONT.mono, fontSize: 10, fontWeight: 700, color: WB.text }}>{t.dateLabel}</span>
                 </div>
                 <div style={{ fontSize: 12.5, fontWeight: 700, color: WB.text, lineHeight: 1.2, marginBottom: 7 }}>{t.title}</div>
@@ -220,8 +220,8 @@ export function ManedView({
                     display: "inline-flex",
                     alignItems: "center",
                     gap: 5,
-                    background: `${t.color}1f`,
-                    border: `1px solid ${t.color}55`,
+                    background: `color-mix(in srgb, ${t.color} 13%, transparent)`,
+                    border: `1px solid color-mix(in srgb, ${t.color} 35%, transparent)`,
                     color: t.color,
                     fontFamily: FONT.mono,
                     fontSize: 9,
@@ -243,7 +243,7 @@ export function ManedView({
       {/* ukedags-overskrifter */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 6, padding: "0 18px 6px" }}>
         {WEEKDAY_HEADS.map((w) => (
-          <div key={w} style={{ textAlign: "center", fontFamily: FONT.mono, fontSize: 10, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#5f7d70" }}>
+          <div key={w} style={{ textAlign: "center", fontFamily: FONT.mono, fontSize: 10, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: WB.muted3 }}>
             {w}
           </div>
         ))}
@@ -256,13 +256,13 @@ export function ManedView({
             return <div key={c.key} style={{ borderRadius: 10, background: "transparent" }} />;
           }
           const baseBg = c.isToday
-            ? "rgba(209,248,67,0.08)"
+            ? WB.limeFaint
             : c.isWeekend
-              ? "#081811"
+              ? WB.cardBgAlt
               : c.inActiveWeek
                 ? WB.cardBg
-                : "#10271d";
-          const borderColor = c.isToday ? WB.lime : c.samling ? "#84A9FF" : c.isWeekend ? WB.hairline : WB.panelBorder;
+                : WB.cardBg;
+          const borderColor = c.isToday ? WB.lime : c.samling ? "var(--axis-slag)" : c.isWeekend ? WB.hairline : WB.panelBorder;
           return (
             <button
               key={c.key}
@@ -285,7 +285,7 @@ export function ManedView({
                   fontFamily: FONT.display,
                   fontWeight: c.isToday ? 800 : 600,
                   fontSize: 13,
-                  color: c.isToday ? WB.lime : c.isWeekend ? "#8a978f" : WB.text,
+                  color: c.isToday ? WB.lime : c.isWeekend ? WB.muted2 : WB.text,
                 }}
               >
                 {c.date}
@@ -302,18 +302,18 @@ export function ManedView({
                     display: "flex",
                     alignItems: "center",
                     gap: 4,
-                    background: "rgba(132,169,255,0.16)",
+                    background: "var(--axis-slag-soft)",
                     borderRadius: 6,
                     padding: "3px 6px",
                     fontSize: 9,
                     fontWeight: 700,
-                    color: "#84A9FF",
+                    color: "var(--axis-slag-text)",
                     overflow: "hidden",
                     whiteSpace: "nowrap",
                     textOverflow: "ellipsis",
                   }}
                 >
-                  <Users size={9} color="#84A9FF" strokeWidth={2.4} />
+                  <Users size={9} style={{ color: "var(--axis-slag)" }} strokeWidth={2.4} />
                   {c.samling.title}
                 </div>
               )}

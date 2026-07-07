@@ -95,7 +95,7 @@ export function OktDetailTab({
         <div
           style={{
             padding: 20,
-            background: `linear-gradient(155deg,#17362a,${WB.railBg})`,
+            background: "linear-gradient(155deg, var(--forest-800), var(--forest-700))",
             borderBottom: `3px solid ${catColor}`,
           }}
         >
@@ -111,7 +111,7 @@ export function OktDetailTab({
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
                 color: WB.lime,
-                background: `${WB.lime}22`,
+                background: WB.limeSoft,
                 borderRadius: 999,
                 padding: "4px 10px",
               }}
@@ -130,14 +130,14 @@ export function OktDetailTab({
               fontSize: 24,
               lineHeight: 1.08,
               letterSpacing: "-0.02em",
-              color: "#fff",
+              color: "var(--sand-0)",
               margin: "0 0 6px",
             }}
           >
             {s.title}
           </h2>
-          <div style={{ fontSize: 13, color: "rgba(255,255,255,0.78)", marginBottom: 12 }}>{subLabel}</div>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, color: "#fff" }}>
+          <div style={{ fontSize: 13, color: "color-mix(in srgb, var(--sand-0) 78%, transparent)", marginBottom: 12 }}>{subLabel}</div>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, color: "var(--sand-0)" }}>
             <Clock size={16} strokeWidth={1.8} />
             <span style={{ fontFamily: FONT.display, fontWeight: 700, fontSize: 16 }}>{dur}</span>
           </div>
@@ -236,14 +236,14 @@ export function OktDetailTab({
               display: "flex",
               alignItems: "flex-start",
               gap: 8,
-              background: "#0d241c",
+              background: WB.cardBgAlt,
               border: `1px solid ${WB.hairlineSoft}`,
               borderRadius: 10,
               padding: "10px 12px",
               marginTop: 14,
             }}
           >
-            <Flag size={12} color={WB.lime} strokeWidth={1.9} style={{ flexShrink: 0, marginTop: 1 }} />
+            <Flag size={12} strokeWidth={1.9} style={{ color: WB.lime, flexShrink: 0, marginTop: 1 }} />
             <div>
               <div
                 style={{
@@ -282,7 +282,7 @@ export function OktDetailTab({
               gap: 8,
             }}
           >
-            <Play size={16} fill={WB.limeDark} stroke="none" />
+            <Play size={16} style={{ fill: WB.limeDark }} stroke="none" />
             <span
               style={{
                 fontFamily: FONT.mono,

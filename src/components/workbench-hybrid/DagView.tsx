@@ -1,7 +1,7 @@
 "use client";
 
 import type { DragEvent, ReactElement } from "react";
-import { CAT_COLORS, FONT, WB } from "./theme";
+import { CAT_COLORS, CAT_SOFT, CAT_TEXT, FONT, WB } from "./theme";
 import { durLabel, WEEK_KEYS } from "./helpers";
 import type { WbSession, WeekKey } from "./types";
 
@@ -108,6 +108,7 @@ export function DagView({
             const top = (hh - START_HOUR + mm / 60) * ROW_H;
             const height = Math.max(34, (s.dur / 60) * ROW_H - 4);
             const c = CAT_COLORS[s.cat];
+            const soft = CAT_SOFT[s.cat];
             const on = s.id === selectedId;
             return (
               <div
@@ -120,21 +121,22 @@ export function DagView({
                   right: 6,
                   top,
                   height,
-                  background: c,
+                  background: soft,
+                  borderLeft: `3px solid ${c}`,
                   borderRadius: 10,
                   padding: "8px 11px",
                   cursor: "pointer",
                   overflow: "hidden",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.25)",
-                  outline: on ? "2px solid #fff" : undefined,
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
+                  outline: on ? "2px solid var(--signal)" : undefined,
                   outlineOffset: on ? -2 : undefined,
                 }}
               >
-                <div style={{ fontFamily: FONT.mono, fontSize: 10, color: WB.limeDark, fontWeight: 600 }}>
+                <div style={{ fontFamily: FONT.mono, fontSize: 10, color: CAT_TEXT[s.cat], fontWeight: 600 }}>
                   {s.time && s.time !== "—" ? s.time : "—"}
                 </div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: WB.limeDark, marginTop: 2 }}>{s.title}</div>
-                <div style={{ fontSize: 10.5, color: WB.limeDark, opacity: 0.75, marginTop: 1 }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: WB.text, marginTop: 2 }}>{s.title}</div>
+                <div style={{ fontSize: 10.5, color: WB.muted, marginTop: 1 }}>
                   {s.cat} · {durLabel(s.dur)}
                 </div>
               </div>

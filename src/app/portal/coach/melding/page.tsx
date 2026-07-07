@@ -13,6 +13,7 @@ import Link from "next/link";
 import { ArrowLeft, Send } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { Eyebrow } from "@/components/athletic/golfdata";
 import { MeldingForm } from "./form";
 
 type ChatMelding = { role?: string; content?: string; ts?: string };
@@ -24,7 +25,7 @@ export default async function CoachMeldingPage() {
 
   if (user.tier === "GRATIS") {
     return (
-      <div className="mx-auto max-w-[430px] space-y-6 px-4 pb-24 pt-2">
+      <div className="golfdata-scope mx-auto w-full max-w-[460px] space-y-6 px-4 pb-8 pt-3 sm:px-5 md:max-w-[860px] md:px-8 md:pt-6">
         <Link
           href="/portal/coach"
           className="inline-flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground"
@@ -33,9 +34,9 @@ export default async function CoachMeldingPage() {
           Coach
         </Link>
         <div>
-          <span className="mb-2 block font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+          <Eyebrow tone="default" className="mb-2 block">
             PlayerHQ · Meldinger
-          </span>
+          </Eyebrow>
           <h1 className="font-display text-[24px] font-bold leading-[1.06] tracking-[-0.025em] text-foreground">
             Krever{" "}
             <em className="font-medium italic text-primary">Pro</em>
@@ -90,9 +91,9 @@ export default async function CoachMeldingPage() {
   const hovedcoach = coacher[0];
 
   return (
-    <div className="mx-auto max-w-[430px] pb-24 pt-2 md:max-w-[860px] md:pb-8">
-      {/* Tilbake + eyebrow */}
-      <div className="mb-3 px-4 md:px-0">
+    <div className="golfdata-scope mx-auto w-full max-w-[460px] px-4 pb-8 pt-3 sm:px-5 md:max-w-[860px] md:px-8 md:pt-6">
+      {/* Tilbake */}
+      <div className="mb-3">
         <Link
           href="/portal/coach"
           className="inline-flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground"
@@ -103,8 +104,11 @@ export default async function CoachMeldingPage() {
       </div>
 
       {/* Header */}
-      <div className="mb-4 px-4 md:px-0">
-        <h1 className="font-display text-[20px] font-bold leading-[1.06] tracking-[-0.02em] text-foreground">
+      <div className="mb-4">
+        <Eyebrow tone="default" className="mb-2.5 block">
+          Coach · Melding
+        </Eyebrow>
+        <h1 className="font-display text-[29px] font-bold leading-[1.05] tracking-[-0.035em] text-foreground">
           Ny{" "}
           <em className="font-medium italic text-primary">
             melding
@@ -114,7 +118,7 @@ export default async function CoachMeldingPage() {
 
       {/* Coach mottaker-kort */}
       {hovedcoach && (
-        <div className="mx-3 mb-3.5 rounded-xl border border-border bg-card p-3 shadow-sm md:mx-0">
+        <div className="mb-3.5 rounded-xl border border-border bg-card p-3 shadow-sm">
           <div className="mb-1.5 font-mono text-[9px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
             Til
           </div>
@@ -136,13 +140,13 @@ export default async function CoachMeldingPage() {
       )}
 
       {/* Compose-form */}
-      <div className="mx-3 mb-3.5 md:mx-0">
+      <div className="mb-3.5">
         <MeldingForm coacher={coacher} />
       </div>
 
       {/* Meldingshistorikk */}
       {historikk.length > 0 && (
-        <div className="mx-3 rounded-xl border border-border bg-card shadow-sm md:mx-0">
+        <div className="rounded-xl border border-border bg-card shadow-sm">
           <div className="border-b border-border/60 px-4 py-3">
             <span className="font-mono text-[9.5px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
               Historikk · {historikk.length} tråd{historikk.length !== 1 ? "er" : ""}
@@ -173,7 +177,7 @@ export default async function CoachMeldingPage() {
       )}
 
       {/* Q&A — lenker til spørsmål-seksjonen */}
-      <div className="mx-3 mt-3.5 rounded-xl border border-border bg-card shadow-sm md:mx-0">
+      <div className="mt-3.5 rounded-xl border border-border bg-card shadow-sm">
         <div className="flex items-center justify-between border-b border-border/60 px-4 py-3">
           <span className="font-mono text-[9.5px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
             Q&amp;A med {hovedcoach?.name.split(" ")[0] ?? "coach"}

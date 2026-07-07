@@ -245,7 +245,7 @@ export function planBlocks(s: Editable, catColor: string): PlanBlock[] {
   return [
     {
       label: "1 · Oppvarming",
-      color: "#56C59A",
+      color: "var(--axis-fys)",
       hasRepeat: false,
       repeatLabel: "",
       steps: [{ n: "1", title: "Mobilitet + dynamisk aktivering", detail: "10 min · puls opp", tag: "M2" }],
@@ -253,7 +253,7 @@ export function planBlocks(s: Editable, catColor: string): PlanBlock[] {
     { label: "2 · Hoveddel", color: catColor, hasRepeat: true, repeatLabel: "×3 runder", steps: main },
     {
       label: "3 · Avslutning",
-      color: "#84A9FF",
+      color: "var(--axis-slag)",
       hasRepeat: false,
       repeatLabel: "",
       steps: [{ n: String(2 + main.length), title: "Putt 1–3 m til 5 napp", detail: "Avslutt positivt", tag: "PUTT0_3" }],

@@ -10,11 +10,13 @@
 //   • Generer rapport — ingen rapport-generator finnes ennå, så den
 //     er tydelig disablet med «Kommer» (tittel-hint).
 //
-// .hub-btn-stilen er uendret fra server-versjonen så designet holder.
+// Knappestil: agBtnClass fra ui.tsx (v13-fasit).
 // ============================================================
 
 import { useCallback } from "react";
 import { Download, Plus } from "lucide-react";
+import { agBtnClass } from "@/components/admin/agencyos/ui";
+import { cn } from "@/lib/utils";
 
 export type HubExportStat = { label: string; value: string };
 
@@ -41,15 +43,14 @@ export function HubActions({ stats }: { stats: HubExportStat[] }) {
 
   return (
     <>
-      <button className="hub-btn btn-outline" type="button" onClick={exporter}>
+      <button className={agBtnClass("ghost")} type="button" onClick={exporter}>
         <Download size={13} strokeWidth={1.75} aria-hidden /> Eksporter
       </button>
       <button
-        className="hub-btn btn-forest"
+        className={cn(agBtnClass("primary"), "cursor-not-allowed opacity-60")}
         type="button"
         disabled
         title="Kommer"
-        style={{ opacity: 0.6, cursor: "not-allowed" }}
       >
         <Plus size={13} strokeWidth={2} aria-hidden /> Generer rapport
       </button>

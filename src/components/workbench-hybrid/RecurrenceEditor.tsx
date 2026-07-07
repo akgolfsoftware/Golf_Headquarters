@@ -57,7 +57,7 @@ export function RecurrenceEditor({ draft: d, onPatch, onSave, onClose }: Recurre
     <div
       onClick={onClose}
       style={{
-        position: "fixed", inset: 0, zIndex: 70, background: "rgba(7,16,12,0.74)",
+        position: "fixed", inset: 0, zIndex: 70, background: WB.scrim,
         backdropFilter: "blur(5px)", display: "flex", alignItems: "center", justifyContent: "center", padding: 24,
       }}
     >
@@ -66,7 +66,7 @@ export function RecurrenceEditor({ draft: d, onPatch, onSave, onClose }: Recurre
         style={{
           width: 420, maxWidth: "100%", maxHeight: "84%", display: "flex", flexDirection: "column",
           background: WB.panelBg, border: `1px solid ${WB.panelBorder}`, borderRadius: 18, overflow: "hidden",
-          boxShadow: "0 40px 90px -30px rgba(0,0,0,0.65)",
+          boxShadow: "0 40px 90px -30px rgba(0,0,0,0.35)",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 18px", borderBottom: `1px solid ${WB.panelBorder}` }}>
@@ -139,10 +139,10 @@ export function RecurrenceEditor({ draft: d, onPatch, onSave, onClose }: Recurre
                   onClick={() => onPatch({ endType: e.value })}
                   style={{
                     display: "flex", alignItems: "center", gap: 11, padding: "10px 12px", borderRadius: 10, cursor: "pointer",
-                    border: `1px solid ${active ? WB.lime : WB.panelBorder}`, background: active ? "rgba(209,248,67,0.1)" : WB.cardBg,
+                    border: `1px solid ${active ? WB.lime : WB.panelBorder}`, background: active ? WB.limeSoft : WB.cardBg,
                   }}
                 >
-                  <span style={{ width: 18, height: 18, borderRadius: "50%", flexShrink: 0, border: `2px solid ${active ? WB.lime : WB.muted3}`, background: active ? "radial-gradient(circle, #D1F843 0 5px, transparent 6px)" : "transparent" }} />
+                  <span style={{ width: 18, height: 18, borderRadius: "50%", flexShrink: 0, border: `2px solid ${active ? WB.lime : WB.muted3}`, background: active ? "radial-gradient(circle, var(--signal) 0 5px, transparent 6px)" : "transparent" }} />
                   <span style={{ fontSize: 13.5, color: WB.text, flex: 1 }}>{e.label}</span>
                   {e.value === "count" && active && (
                     <span style={{ display: "flex", alignItems: "center", gap: 2 }}>
