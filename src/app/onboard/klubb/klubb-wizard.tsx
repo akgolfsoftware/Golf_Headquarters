@@ -260,7 +260,7 @@ export function KlubbWizard({
               </div>
               <span
                 style={{
-                  fontFamily: "var(--font-inter-tight)",
+                  fontFamily: "var(--font-familjen-grotesk)",
                   fontSize: 18,
                   fontWeight: 800,
                 }}
@@ -472,7 +472,7 @@ export function KlubbWizard({
               <div>
                 <div
                   style={{
-                    fontFamily: "var(--font-inter-tight)",
+                    fontFamily: "var(--font-familjen-grotesk)",
                     fontWeight: 700,
                     fontSize: 14,
                   }}
@@ -498,7 +498,7 @@ export function KlubbWizard({
               <div>
                 <div
                   style={{
-                    fontFamily: "var(--font-inter-tight)",
+                    fontFamily: "var(--font-familjen-grotesk)",
                     fontWeight: 700,
                     fontSize: 14,
                   }}
@@ -524,7 +524,7 @@ export function KlubbWizard({
               <div>
                 <div
                   style={{
-                    fontFamily: "var(--font-inter-tight)",
+                    fontFamily: "var(--font-familjen-grotesk)",
                     fontWeight: 700,
                     fontSize: 14,
                   }}
@@ -547,7 +547,7 @@ export function KlubbWizard({
                 </div>
                 <span
                   style={{
-                    fontFamily: "var(--font-inter-tight)",
+                    fontFamily: "var(--font-familjen-grotesk)",
                     fontSize: 18,
                     fontWeight: 800,
                   }}
@@ -648,7 +648,7 @@ export function KlubbWizard({
               </div>
               <span
                 style={{
-                  fontFamily: "var(--font-inter-tight)",
+                  fontFamily: "var(--font-familjen-grotesk)",
                   fontSize: 22,
                   fontWeight: 800,
                   letterSpacing: "-0.02em",
@@ -741,7 +741,7 @@ export function KlubbWizard({
                     x={p.x}
                     y={88}
                     textAnchor="middle"
-                    fontFamily="Inter Tight, sans-serif"
+                    fontFamily="var(--font-familjen-grotesk), sans-serif"
                     fontSize="22"
                     fontWeight="800"
                     fill="#D1F843"
@@ -773,7 +773,7 @@ export function KlubbWizard({
             <div>
               <div
                 style={{
-                  fontFamily: "var(--font-inter-tight)",
+                  fontFamily: "var(--font-familjen-grotesk)",
                   fontSize: 14,
                   fontWeight: 700,
                 }}
@@ -797,7 +797,7 @@ export function KlubbWizard({
             <div>
               <div
                 style={{
-                  fontFamily: "var(--font-inter-tight)",
+                  fontFamily: "var(--font-familjen-grotesk)",
                   fontSize: 14,
                   fontWeight: 700,
                 }}

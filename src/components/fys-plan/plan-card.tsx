@@ -18,7 +18,7 @@ export type FysPlanCardProps = {
  *
  * Anatomi:
  * - Top: Dumbbell-ikon + status-badge
- * - Tittel: plan-navn (Inter Tight bold)
+ * - Tittel: plan-navn (Familjen Grotesk bold)
  * - Meta: periode (start → slutt)
  * - Bottom: uker/økter-tellinger + chevron
  *

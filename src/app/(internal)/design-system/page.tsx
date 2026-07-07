@@ -100,7 +100,7 @@ export default function DesignSystemPage() {
         <section className="space-y-6">
           <h2 className="font-display text-2xl font-bold">Typografi</h2>
           <div className="space-y-4 rounded-2xl border border-border bg-card p-6">
-            <h1 className="font-display text-5xl font-bold">Display · 48px Inter Tight</h1>
+            <h1 className="font-display text-5xl font-bold">Display · 48px Familjen Grotesk</h1>
             <h2 className="font-display text-3xl font-bold">Heading 2 · 30px</h2>
             <h3 className="font-display text-xl font-semibold">Heading 3 · 20px</h3>
             <p className="text-base">Body · 16px Inter — hovedfont for brødtekst og UI.</p>

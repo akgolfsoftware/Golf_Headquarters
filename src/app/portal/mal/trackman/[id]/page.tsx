@@ -1,7 +1,7 @@
 /**
  * PlayerHQ · Mål · TrackMan-økt-detalj
  *
- * Migrert til produksjonsdesign med PageHeader (italic Inter Tight),
+ * Migrert til produksjonsdesign med PageHeader (italic Familjen Grotesk),
  * semantiske tokens og 8pt-grid. EmptyState når per-kølle-stats mangler.
  */
 

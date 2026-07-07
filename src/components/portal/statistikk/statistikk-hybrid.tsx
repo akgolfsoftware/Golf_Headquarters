@@ -15,7 +15,7 @@
  *
  * Design-regler:
  * - PlayerHQ er alltid LYST tema (ingen .dark, ingen mørke gradienter)
- * - font-display = Inter Tight, font-mono = JetBrains Mono, font-sans = Inter
+ * - font-display = Familjen Grotesk, font-mono = JetBrains Mono, font-sans = Inter
  * - Inline styles kun for gradienter (Tailwind v4 støtter ikke arbitrary gradienter)
  * - Ingen hardkodet hex → CSS tokens (var(--color-primary) osv.) eller Tailwind-klasser
  * - Ingen emoji → Lucide-ikoner

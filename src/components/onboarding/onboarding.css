@@ -53,7 +53,7 @@
 }
 
 .ob-step-title {
-  font-family: var(--font-inter-tight, 'Inter Tight', sans-serif);
+  font-family: var(--font-familjen-grotesk, sans-serif);
   font-size: 28px;
   font-weight: 700;
   letter-spacing: -0.02em;
@@ -62,7 +62,7 @@
 }
 
 .ob-step-title em {
-  font-family: 'Inter Tight', sans-serif;
+  font-family: var(--font-familjen-grotesk), sans-serif;
   font-style: italic;
   font-weight: 400;
   color: #005840;
@@ -93,7 +93,7 @@
 }
 
 .ob-inspo blockquote {
-  font-family: 'Inter Tight', sans-serif;
+  font-family: var(--font-familjen-grotesk), sans-serif;
   font-style: italic;
   font-size: 17px;
   line-height: 1.45;
@@ -249,7 +249,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-inter-tight, 'Inter Tight', sans-serif);
+  font-family: var(--font-familjen-grotesk, sans-serif);
   font-size: 18px;
   font-weight: 800;
 }
@@ -310,7 +310,7 @@
 }
 
 .ob-summary-val {
-  font-family: var(--font-inter-tight, 'Inter Tight', sans-serif);
+  font-family: var(--font-familjen-grotesk, sans-serif);
   font-weight: 600;
   text-align: right;
 }

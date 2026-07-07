@@ -2,7 +2,7 @@
  * AgencyOS — Gruppe-detalj (PR9 · Skjerm 9.2)
  *
  * Pixel-perfekt detaljvisning for én treningsgruppe:
- * - Hero med gruppe-navn (Inter Tight italic) + spillere-count + coach
+ * - Hero med gruppe-navn (Familjen Grotesk italic) + spillere-count + coach
  * - Spiller-grid (mini-cards med avatar + navn + HCP)
  * - Gruppeplan + neste samling (fra GroupSchedule)
  * - Statistikk per spiller (sammenlign HCP, runder, plan-fremdrift)
@@ -172,7 +172,7 @@ export default async function GruppeDetalj({
         <em
           className="not-italic"
           style={{
-            fontFamily: "'Inter Tight', sans-serif",
+            fontFamily: "var(--font-familjen-grotesk), sans-serif",
             fontStyle: "italic",
             color: "hsl(var(--primary))",
           }}

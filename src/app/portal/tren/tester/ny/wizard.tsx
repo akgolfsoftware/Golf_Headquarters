@@ -8,7 +8,7 @@
  *   4. Bekreft (sammendrag + delta + del med coach-toggle)
  *
  * Auto-lagrer draft til localStorage hvert 10. sek. AK Golf-branding:
- * cream/forest/lime, Inter Tight + Mono.
+ * cream/forest/lime, Familjen Grotesk + Mono.
  */
 import { useCallback, useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";

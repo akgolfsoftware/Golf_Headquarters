@@ -1837,7 +1837,7 @@ const TDC_CSS = `
   --tdc-turn: #D1F843;
   --tdc-r-card: 16px;
   --tdc-r-pill: 999px;
-  --tdc-font-display: 'Inter Tight', sans-serif;
+  --tdc-font-display: var(--font-familjen-grotesk), sans-serif;
   --tdc-font-body: 'Inter', sans-serif;
   --tdc-font-mono: 'JetBrains Mono', monospace;
   background: var(--tdc-bg);

@@ -341,7 +341,7 @@ export default async function MetricDrillDownPage({
             <em
               className="font-normal not-italic text-primary"
               style={{
-                fontFamily: "'Inter Tight', sans-serif",
+                fontFamily: "var(--font-familjen-grotesk), sans-serif",
                 fontStyle: "italic",
               }}
             >

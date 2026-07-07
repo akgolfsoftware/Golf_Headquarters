@@ -3,7 +3,7 @@
  *
  * Viser:
  *  - Stor avatar (80px) med PRO-pill hvis tier === "PRO"
- *  - Spillernavn i Inter Tight italic
+ *  - Spillernavn i Familjen Grotesk italic
  *  - Sub-metadata: nivå, HCP med trend, dager til neste turnering
  *  - 3 action-CTAer (Send melding, Ny økt, Generer plan)
  *

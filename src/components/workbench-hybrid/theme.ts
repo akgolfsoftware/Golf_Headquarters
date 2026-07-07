@@ -63,6 +63,6 @@ export const COMPLIANCE_COLORS = {
 
 export const FONT = {
   sans: "'Inter', sans-serif",
-  display: "'Inter Tight', sans-serif",
+  display: "var(--font-familjen-grotesk), sans-serif",
   mono: "'JetBrains Mono', monospace",
 } as const;

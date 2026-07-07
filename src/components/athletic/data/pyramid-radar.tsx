@@ -61,7 +61,7 @@ export function PyramidRadar({
             <PolarGrid stroke="rgba(0,0,0,0.1)" />
             <PolarAngleAxis
               dataKey="area"
-              tick={{ fontSize: 11, fontFamily: "var(--font-inter-tight)", fontWeight: 600 }}
+              tick={{ fontSize: 11, fontFamily: "var(--font-familjen-grotesk)", fontWeight: 600 }}
             />
             <PolarRadiusAxis
               angle={90}

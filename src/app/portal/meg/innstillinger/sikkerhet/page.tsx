@@ -65,7 +65,7 @@ export default async function SikkerhetPage() {
           <em
             className="not-italic"
             style={{
-              fontFamily: "'Inter Tight', sans-serif",
+              fontFamily: "var(--font-familjen-grotesk), sans-serif",
               fontStyle: "italic",
               color: "hsl(var(--primary))",
             }}

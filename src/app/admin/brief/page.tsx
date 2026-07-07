@@ -3,7 +3,7 @@
  * Coachens morgenbrief: AI-oppsummering + dagens nøkkeltall + agentenes forslag.
  *
  * Restylet til athletic operations-tetthet (matcher daily-brief.tsx):
- *   - Mono-caps eyebrow + LIVE-indikator + Inter Tight-hero
+ *   - Mono-caps eyebrow + LIVE-indikator + Familjen Grotesk-hero
  *   - KPI-strip med ikoner og DS-tokens
  *   - AI-brief i forest-tonet kort + AgentStrip-hint
  *   - Seksjon 03 «Agentenes anbefalinger» nå koblet til ekte PlanAction-rader
@@ -169,7 +169,7 @@ export default async function DagligBrief() {
             .{" "}
             <em
               className="font-normal italic text-primary"
-              style={{ fontFamily: "'Inter Tight', sans-serif" }}
+              style={{ fontFamily: "var(--font-familjen-grotesk), sans-serif" }}
             >
               {data.dagensTimer.antall === 0
                 ? "Ingen økter i dag."

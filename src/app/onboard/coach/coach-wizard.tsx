@@ -251,7 +251,7 @@ export function CoachWizard({
             <div>
               <div
                 style={{
-                  fontFamily: "var(--font-inter-tight)",
+                  fontFamily: "var(--font-familjen-grotesk)",
                   fontSize: 14,
                   fontWeight: 700,
                 }}
@@ -508,7 +508,7 @@ export function CoachWizard({
               </div>
               <span
                 style={{
-                  fontFamily: "var(--font-inter-tight)",
+                  fontFamily: "var(--font-familjen-grotesk)",
                   fontSize: 22,
                   fontWeight: 800,
                   letterSpacing: "-0.02em",

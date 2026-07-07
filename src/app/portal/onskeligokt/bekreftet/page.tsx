@@ -190,7 +190,7 @@ export default async function OnskeligOktBekreftetPage() {
               value={
                 <span
                   className="block border-l-2 border-primary py-0.5 pl-3 text-[14px] italic leading-[1.45] text-foreground"
-                  style={{ fontFamily: "'Inter Tight', sans-serif", fontStyle: "italic" }}
+                  style={{ fontFamily: "var(--font-familjen-grotesk), sans-serif", fontStyle: "italic" }}
                 >
                   {note}
                 </span>

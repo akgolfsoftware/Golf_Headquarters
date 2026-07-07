@@ -188,7 +188,7 @@ function EmptyStatePreview() {
       </div>
       <p
         className="mt-2 text-[13.5px] leading-relaxed"
-        style={{ fontFamily: "'Inter Tight', sans-serif", fontStyle: "italic" }}
+        style={{ fontFamily: "var(--font-familjen-grotesk), sans-serif", fontStyle: "italic" }}
       >
         «Du har ingen oppgaver tildelt deg ennå. Anders får varsel når du har ledig
         kapasitet.»

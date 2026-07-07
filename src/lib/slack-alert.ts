@@ -66,7 +66,7 @@ export async function sendSlackAlert({
     <div style="font-family:monospace;font-size:11px;color:#A32D2D;text-transform:uppercase;letter-spacing:0.10em;font-weight:600;">
       🚨 SYSTEM ALERT · ${env.toUpperCase()}
     </div>
-    <h1 style="margin:8px 0 4px 0;font-family:'Inter Tight',sans-serif;font-size:22px;color:#0A1F18;line-height:1.2;">
+    <h1 style="margin:8px 0 4px 0;font-family:'Familjen Grotesk',sans-serif;font-size:22px;color:#0A1F18;line-height:1.2;">
       ${title}
     </h1>
     <p style="margin:12px 0;color:#0A1F18;font-size:14px;line-height:1.5;">

@@ -114,13 +114,13 @@ function Stat({
   );
 }
 
-/** Grønn italic-aksent (Inter Tight italic) — gjenbrukt i H1 og H2. */
+/** Grønn italic-aksent (Familjen Grotesk italic) — gjenbrukt i H1 og H2. */
 function Accent({ children }: { children: React.ReactNode }) {
   return (
     <em
       className="not-italic"
       style={{
-        fontFamily: "'Inter Tight', sans-serif",
+        fontFamily: "var(--font-familjen-grotesk), sans-serif",
         fontStyle: "italic",
         color: "hsl(var(--primary))",
       }}

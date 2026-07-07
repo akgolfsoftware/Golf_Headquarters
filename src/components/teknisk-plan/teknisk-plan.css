@@ -21,12 +21,12 @@
 }
 
 .tp-scope h1, .tp-scope h2, .tp-scope h3 {
-  font-family: var(--font-display, 'Inter Tight', sans-serif);
+  font-family: var(--font-display, var(--font-familjen-grotesk), sans-serif);
   letter-spacing: -0.02em;
   line-height: 1.1;
 }
 .tp-scope h1 em, .tp-scope h2 em, .tp-scope h3 em {
-  font-family: 'Inter Tight', sans-serif;
+  font-family: var(--font-familjen-grotesk), sans-serif;
   font-style: italic;
   font-weight: 400;
   color: hsl(var(--primary));
@@ -45,7 +45,7 @@
   z-index: 30;
 }
 .tp-topbar .module {
-  font-family: var(--font-display, 'Inter Tight', sans-serif);
+  font-family: var(--font-display, var(--font-familjen-grotesk), sans-serif);
   font-size: 13px;
   font-weight: 700;
   color: hsl(var(--primary));
@@ -306,7 +306,7 @@
   text-transform: uppercase;
 }
 .tp-plan-card .meta-v {
-  font-family: var(--font-display, 'Inter Tight', sans-serif);
+  font-family: var(--font-display, var(--font-familjen-grotesk), sans-serif);
   font-size: 18px;
   font-weight: 700;
   letter-spacing: -0.01em;
@@ -331,7 +331,7 @@
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  font-family: var(--font-display, 'Inter Tight', sans-serif);
+  font-family: var(--font-display, var(--font-familjen-grotesk), sans-serif);
   font-weight: 800;
   font-size: 10px;
   display: inline-flex;
@@ -506,14 +506,14 @@
 }
 .tp-p-grip svg { width: 12px; height: 12px; }
 .tp-p-num {
-  font-family: var(--font-display, 'Inter Tight', sans-serif);
+  font-family: var(--font-display, var(--font-familjen-grotesk), sans-serif);
   font-size: 18px;
   font-weight: 800;
   color: hsl(var(--primary));
   letter-spacing: -0.02em;
 }
 .tp-p-title {
-  font-family: var(--font-display, 'Inter Tight', sans-serif);
+  font-family: var(--font-display, var(--font-familjen-grotesk), sans-serif);
   font-size: 15px;
   font-weight: 700;
   letter-spacing: -0.01em;
@@ -602,7 +602,7 @@
 }
 .tp-task .grip svg { width: 12px; height: 12px; }
 .tp-task .prio-num {
-  font-family: var(--font-display, 'Inter Tight', sans-serif);
+  font-family: var(--font-display, var(--font-familjen-grotesk), sans-serif);
   font-size: 16px;
   font-weight: 800;
   color: hsl(var(--primary));
@@ -908,7 +908,7 @@
   color: hsl(var(--foreground));
 }
 .tp-activity-row .copy strong { font-weight: 700; }
-.tp-activity-row .copy em { font-family: 'Inter Tight', sans-serif; font-style: italic; color: hsl(var(--muted-foreground)); }
+.tp-activity-row .copy em { font-family: var(--font-familjen-grotesk), sans-serif; font-style: italic; color: hsl(var(--muted-foreground)); }
 .tp-activity-row .ts {
   display: block;
   font-family: var(--font-mono, 'JetBrains Mono', monospace);

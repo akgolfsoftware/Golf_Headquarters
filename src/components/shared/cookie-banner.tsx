@@ -104,7 +104,7 @@ export function CookieBanner() {
             <Cookie size={18} style={{ color: "hsl(var(--primary))" }} strokeWidth={1.75} />
             <span
               style={{
-                fontFamily: "var(--font-inter-tight)",
+                fontFamily: "var(--font-familjen-grotesk)",
                 fontSize: 15,
                 fontWeight: 700,
                 color: "hsl(var(--foreground))",
@@ -172,7 +172,7 @@ export function CookieBanner() {
               fontSize: 13,
               fontWeight: 700,
               cursor: "pointer",
-              fontFamily: "var(--font-inter-tight)",
+              fontFamily: "var(--font-familjen-grotesk)",
             }}
           >
             Godta alle

@@ -175,7 +175,7 @@
   --radius-sm: calc(var(--radius) - 8px);
 
   --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
-  --font-display: var(--font-inter-tight), system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-familjen-grotesk), system-ui, -apple-system, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
 
   /* Pyramide-utility-aliaser: bg-pyr-fys, text-pyr-tek, border-pyr-slag, ...
@@ -357,7 +357,7 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Display-utility for Inter Tight (brukes via klassen .font-display) */
+/* Display-utility for Familjen Grotesk (brukes via klassen .font-display) */
 .font-display {
   font-family: var(--font-display);
   letter-spacing: -0.02em;

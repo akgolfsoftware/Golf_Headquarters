@@ -121,7 +121,7 @@ export const motion = {
  */
 export const fonts = {
   sans: "var(--font-inter), system-ui, -apple-system, sans-serif",
-  display: "var(--font-inter-tight), system-ui, -apple-system, sans-serif",
+  display: "var(--font-familjen-grotesk), system-ui, -apple-system, sans-serif",
   mono: "var(--font-jetbrains-mono), ui-monospace, monospace",
 } as const;
 

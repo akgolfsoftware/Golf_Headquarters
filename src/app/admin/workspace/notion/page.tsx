@@ -64,7 +64,7 @@ export default async function WorkspaceNotionPage({
           <em
             className="font-normal not-italic"
             style={{
-              fontFamily: "'Inter Tight', sans-serif",
+              fontFamily: "var(--font-familjen-grotesk), sans-serif",
               fontStyle: "italic",
               color: "hsl(var(--primary))",
             }}
@@ -197,7 +197,7 @@ function EmptyState({
               <em
                 className="font-normal not-italic"
                 style={{
-                  fontFamily: "'Inter Tight', sans-serif",
+                  fontFamily: "var(--font-familjen-grotesk), sans-serif",
                   fontStyle: "italic",
                   color: "hsl(var(--primary))",
                 }}

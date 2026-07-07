@@ -209,7 +209,7 @@ export default async function SpillerPlanDetaljPage({
               <em
                 className="font-normal not-italic"
                 style={{
-                  fontFamily: "'Inter Tight', sans-serif",
+                  fontFamily: "var(--font-familjen-grotesk), sans-serif",
                   fontStyle: "italic",
                   color: "hsl(var(--primary))",
                 }}
@@ -268,7 +268,7 @@ export default async function SpillerPlanDetaljPage({
             </div>
             <p
               className="text-base leading-relaxed"
-              style={{ fontFamily: "'Inter Tight', sans-serif", fontStyle: "italic" }}
+              style={{ fontFamily: "var(--font-familjen-grotesk), sans-serif", fontStyle: "italic" }}
             >
               {plan.navn} for {spiller.name}. {drillsTotal} drills fordelt på{" "}
               {plan.positions.length} P-posisjoner.
