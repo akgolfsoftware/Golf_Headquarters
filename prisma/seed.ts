@@ -344,7 +344,6 @@ const COACH_AVAILABILITY: ReadonlyArray<{
 // Brukes til å vise faste tider i kalenderen + filtrere ut fra
 // coach-tilgjengelighet ved booking.
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const GROUP_SCHEDULE: ReadonlyArray<{
   groupName: string;
   weekday: number;
@@ -399,6 +398,97 @@ const GROUPS = [
     coachEmail: "anders@akgolf.no",
   },
 ] as const;
+
+// ---------- Sesongperioder (WANG Toppidrett 2026/2027) ----------
+// Uke-grenser fra docs/treningsplanlegger/wang-toppidrett/arshjul-2026-2027.md
+// (Anders' fasit). Dato-grenser er hele kalenderdager (UTC-midnatt) — periodene
+// er ukenivå-klassifisering, ikke klokkeslett-sensitive.
+const WANG_PERIODS: ReadonlyArray<{
+  schoolYear: string;
+  name: string;
+  startDate: string; // YYYY-MM-DD, inkludert
+  endDate: string; // YYYY-MM-DD, EKSKLUDERT (dagen etter periodens siste dag)
+  tone: string;
+  note: string;
+}> = [
+  {
+    schoolYear: "2026/2027",
+    name: "TURN-rest",
+    startDate: "2026-08-17",
+    endDate: "2026-10-19",
+    tone: "gold",
+    note: "Sluttspill av sommersesongen, uke 34–42",
+  },
+  {
+    schoolYear: "2026/2027",
+    name: "Testuke",
+    startDate: "2026-10-19",
+    endDate: "2026-10-26",
+    tone: "accent",
+    note: "Test-/evalueringsuke, IUP-baseline før GRUNN, uke 43",
+  },
+  {
+    schoolYear: "2026/2027",
+    name: "GRUNN",
+    startDate: "2026-10-26",
+    endDate: "2027-03-15",
+    tone: "primary",
+    note: "Bygg ny teknikk (BUILD), uke 44–10",
+  },
+  {
+    schoolYear: "2026/2027",
+    name: "SPES",
+    startDate: "2027-03-15",
+    endDate: "2027-04-26",
+    tone: "moss",
+    note: "Overføre teknikk til slag på bane, uke 11–16",
+  },
+  {
+    schoolYear: "2026/2027",
+    name: "TURN",
+    startDate: "2027-04-26",
+    endDate: "2027-06-21",
+    tone: "gold",
+    note: "Prestere og vedlikeholde i turnering, uke 17–24",
+  },
+];
+
+// ---------- Kompetansemål (Udir LK20, Toppidrett IDR05-02) ----------
+// Ordrett fra docs/treningsplanlegger/wang-toppidrett/kompetansemaal-toppidrett-vg.md
+// (hentet fra udir.no 2026-07-07). goalNumber = rekkefølge i læreplanen.
+const CURRICULUM_CODE = "IDR05-02";
+
+const COMPETENCE_GOALS: ReadonlyArray<{ classYear: string; text: string }> = [
+  // Toppidrett 1 (VG1) — kv283
+  { classYear: "VG1", text: "vise og utvikle ferdigheter i idretten og gjennomføre systematisk og målrettet trening" },
+  { classYear: "VG1", text: "dokumentere og evaluere en valgt treningsperiode" },
+  { classYear: "VG1", text: "kjenne til ulike treningsformer, metoder, tester og øvelser som er relevant for ferdighetsutvikling i idretten, og bruke disse til å utvikle egne ferdigheter" },
+  { classYear: "VG1", text: "gjennomføre basistrening og skadeforebyggende tiltak som gir grunnlag for økt treningsbelastning" },
+  { classYear: "VG1", text: "forstå forholdet mellom totalbelastning og restitusjon" },
+  { classYear: "VG1", text: "beskrive mentale forberedelser til trening og konkurranse" },
+  { classYear: "VG1", text: "bruke lyst- og lekbetonte oppvarmingsøvelser, aktiviteter, treningsformer og konkurranser for å stimulere til økt motivasjon" },
+  { classYear: "VG1", text: "vise god samhandling og respektfull treningsatferd" },
+  // Toppidrett 2 (VG2) — kv284
+  { classYear: "VG2", text: "vise og videreutvikle ferdigheter som er sentrale for å prestere i konkurranser i idretten" },
+  { classYear: "VG2", text: "gjennomføre systematisk og målrettet trening, og dokumentere og analysere resultatet av denne treningen" },
+  { classYear: "VG2", text: "gjøre rede for og gjennomføre relevante tester" },
+  { classYear: "VG2", text: "utvikle basisegenskaper og integrere skadeforebyggende tiltak i de daglige treningsrutinene" },
+  { classYear: "VG2", text: "gjøre rede for hvordan økt treningsmengde og totalbelastning stiller krav til organisering, planlegging, restitusjon og ernæring" },
+  { classYear: "VG2", text: "beskrive et utviklingsløp fra eget utgangspunkt og til ønsket nivå på kort og lang sikt" },
+  { classYear: "VG2", text: "reflektere over egne mentale behov og rutiner før, under og etter trening og i forbindelse med konkurranse" },
+  { classYear: "VG2", text: "gjøre rede for og bruke lyst- og lekbetonte aktiviteter, øvelser, treningsformer og konkurranser som kan stimulere til økt motivasjon" },
+  { classYear: "VG2", text: "utforske hvordan aktiviteter, øvelser, trening og konkurranse påvirker motivasjon og ferdighetsutvikling" },
+  { classYear: "VG2", text: "opptre på en måte som bidrar til et godt lærings- og utviklingsmiljø" },
+  // Toppidrett 3 (VG3) — kv285
+  { classYear: "VG3", text: "vise og utvikle ferdigheter som kan forbedre prestasjonen i konkurransesituasjoner" },
+  { classYear: "VG3", text: "dokumentere, analysere og reflektere over gjennomført trening i lys av egne mål og resultater" },
+  { classYear: "VG3", text: "utarbeide planer og gjennomføre langsiktig, systematisk og målrettet trening i idretten med utgangspunkt i idrettens krav og egen kapasitet" },
+  { classYear: "VG3", text: "videreutvikle basisegenskaper som er sentrale for ferdighetsutvikling" },
+  { classYear: "VG3", text: "anvende skadeforebyggende øvelser og vurdere hvordan disse kan integreres i trening og forberedelse til konkurranse" },
+  { classYear: "VG3", text: "gjennomføre mentale forberedelse og mental trening, og reflektere over hvordan dette kan påvirke ferdighetsutvikling" },
+  { classYear: "VG3", text: "utforske og reflektere over hvordan aktiviteter, øvelser, trening og konkurranse påvirker motivasjon og ferdighetsutvikling" },
+  { classYear: "VG3", text: "opptre på en måte som fremmer treningsarbeidet og samhandlingen, og som bidrar til et trygt, positivt og godt utviklingsmiljø" },
+];
 
 // ---------- Seed ----------
 
@@ -630,6 +720,124 @@ async function seedGroups() {
   }
 }
 
+// Anker-uke for faste ukentlige tider: uke 34 2026 (17.–21. aug, CEST +02:00).
+// GroupSchedule.recurring="WEEKLY" gjør at appen kun leser ukedag+klokkeslett
+// fra denne ene raden — datoen i seg selv brukes ikke til å regne fremtidige
+// forekomster andre steder enn her.
+const ANCHOR_WEEK_DATES: Record<number, string> = {
+  0: "2026-08-17", // Mandag
+  1: "2026-08-18", // Tirsdag
+  2: "2026-08-19", // Onsdag
+  3: "2026-08-20", // Torsdag
+  4: "2026-08-21", // Fredag
+};
+
+async function seedGroupSchedule() {
+  console.log("\n[seed] Gruppe-timeplan (faste ukentlige tider)");
+  for (const s of GROUP_SCHEDULE) {
+    const group = await prisma.group.findFirst({ where: { name: s.groupName } });
+    if (!group) {
+      console.warn(`  ! Gruppe ikke funnet: ${s.groupName} — hopper over`);
+      continue;
+    }
+    const dato = ANCHOR_WEEK_DATES[s.weekday];
+    const dagNavn = ["Man", "Tir", "Ons", "Tor", "Fre"][s.weekday];
+    const startAt = new Date(`${dato}T${s.startTime}:00+02:00`);
+    const endAt = new Date(`${dato}T${s.endTime}:00+02:00`);
+    // Ukedag MÅ inn i title — ellers kolliderer flere ukedager for samme
+    // gruppe på samme "finnes fra før"-nøkkel og overskriver hverandre.
+    const title = `${s.groupName} — fast trening (${dagNavn})`;
+
+    const existing = await prisma.groupSchedule.findFirst({
+      where: { groupId: group.id, title, recurring: "WEEKLY" },
+    });
+    if (existing) {
+      await prisma.groupSchedule.update({
+        where: { id: existing.id },
+        data: { startAt, endAt },
+      });
+      console.log(`  · ${s.groupName} ${dagNavn} ${s.startTime}-${s.endTime}`);
+    } else {
+      await prisma.groupSchedule.create({
+        data: {
+          groupId: group.id,
+          title,
+          startAt,
+          endAt,
+          recurring: "WEEKLY",
+        },
+      });
+      console.log(`  + ${s.groupName} ${dagNavn} ${s.startTime}-${s.endTime}`);
+    }
+  }
+}
+
+async function seedTrainingPeriods() {
+  console.log("\n[seed] Sesongperioder (WANG 2026/2027)");
+  const wang = await prisma.group.findFirst({ where: { name: "WANG Toppidrett Fredrikstad" } });
+  if (!wang) {
+    console.warn("  ! WANG-gruppe ikke funnet — hopper over perioder");
+    return;
+  }
+  for (const p of WANG_PERIODS) {
+    const startDate = new Date(`${p.startDate}T00:00:00Z`);
+    const endDate = new Date(`${p.endDate}T00:00:00Z`);
+    const existing = await prisma.trainingPeriod.findFirst({
+      where: { groupId: wang.id, schoolYear: p.schoolYear, name: p.name },
+    });
+    if (existing) {
+      await prisma.trainingPeriod.update({
+        where: { id: existing.id },
+        data: { startDate, endDate, tone: p.tone, note: p.note },
+      });
+      console.log(`  · ${p.name} (${p.startDate} – ${p.endDate})`);
+    } else {
+      await prisma.trainingPeriod.create({
+        data: {
+          groupId: wang.id,
+          schoolYear: p.schoolYear,
+          name: p.name,
+          startDate,
+          endDate,
+          tone: p.tone,
+          note: p.note,
+        },
+      });
+      console.log(`  + ${p.name} (${p.startDate} – ${p.endDate})`);
+    }
+  }
+}
+
+async function seedCompetenceGoals() {
+  console.log("\n[seed] Kompetansemål (Udir Toppidrett IDR05-02)");
+  const perClassYear = new Map<string, number>();
+
+  for (const g of COMPETENCE_GOALS) {
+    const goalNumber = (perClassYear.get(g.classYear) ?? 0) + 1;
+    perClassYear.set(g.classYear, goalNumber);
+
+    const existing = await prisma.competenceGoal.findFirst({
+      where: { classYear: g.classYear, curriculumCode: CURRICULUM_CODE, goalNumber },
+    });
+    if (existing) {
+      await prisma.competenceGoal.update({
+        where: { id: existing.id },
+        data: { text: g.text },
+      });
+    } else {
+      await prisma.competenceGoal.create({
+        data: {
+          classYear: g.classYear,
+          curriculumCode: CURRICULUM_CODE,
+          goalNumber,
+          text: g.text,
+        },
+      });
+    }
+  }
+  console.log(`  + ${COMPETENCE_GOALS.length} kompetansemål (VG1/VG2/VG3)`);
+}
+
 async function main() {
   console.log("AK Golf HQ seed");
   console.log("================");
@@ -641,11 +849,11 @@ async function main() {
   await seedCoaches();
   await seedGroups();
   await seedCoachAvailability();
+  await seedGroupSchedule();
+  await seedTrainingPeriods();
+  await seedCompetenceGoals();
 
   console.log("\n[seed] Ferdig.");
-  console.log("\nMerk: GROUP_SCHEDULE (faste treningstider) er definert i koden");
-  console.log("men ikke seeded til DB enda — krever ny GroupSchedule-modell.");
-  console.log("Brukes som referanse i kalender-UI-en inntil videre.");
 }
 
 main()
