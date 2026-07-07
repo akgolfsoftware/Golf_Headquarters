@@ -3,7 +3,7 @@
  * mot designfasit: "PlayerHQ Meg Abonnement (hybrid).dc.html".
  *
  * Ingen tier-nivåer: appen er gratis via aktiv coaching-pakke (Performance /
- * Performance Pro = credits), ellers 300 kr/mnd. ELITE vises ALDRI.
+ * Performance Pro = credits), ellers 299 kr/mnd. ELITE vises ALDRI.
  *
  * Hybrid-kart (øverst):
  *   - Gratis-bruker/kan-oppgradere: ProUpgradeCard (forest-gradient, PRO-pris,
@@ -99,7 +99,7 @@ function ProUpgradeCard() {
             href="/portal/meg/abonnement/oppgrader/flyt"
             className="flex h-[50px] w-full items-center justify-center rounded-full bg-accent font-mono text-[13px] font-bold uppercase tracking-[0.08em] text-accent-foreground transition-opacity hover:opacity-90"
           >
-            Start PRO · 300 kr/mnd
+            Start PRO · 299 kr/mnd
           </Link>
         </div>
       </div>
@@ -185,11 +185,11 @@ function GratisCard({ planNavn }: { planNavn: string | null }) {
 }
 
 /** «Planer»-liste (fasit: GRATIS / PRO / PRO årlig). Korrekt modell (Anders 2026-06-22):
- *  KUN to app-tilgangs-nivåer — gratis via coaching, ellers 300 kr/mnd. Ingen «PRO årlig». */
+ *  KUN to app-tilgangs-nivåer — gratis via coaching, ellers 299 kr/mnd. Ingen «PRO årlig». */
 function PlanerListe({ gratis }: { gratis: boolean }) {
   const planer = [
     { navn: "Gratis", sub: "Med coaching-pakke, prøveperiode el. gruppe", pris: "0 kr", current: gratis },
-    { navn: "Kun PlayerHQ", sub: "Uten coaching-pakke", pris: "300 kr", current: !gratis },
+    { navn: "Kun PlayerHQ", sub: "Uten coaching-pakke", pris: "299 kr", current: !gratis },
   ];
   return (
     <div className="mb-[22px]">
@@ -253,7 +253,7 @@ export default async function AbonnementPage({
       eyebrow="MEG · ABONNEMENT"
       title="Inkludert i"
       italic="coaching."
-      lead="PlayerHQ har ingen nivåer — appen er gratis så lenge du har en aktiv coaching-pakke, ellers 300 kr/mnd."
+      lead="PlayerHQ har ingen nivåer — appen er gratis så lenge du har en aktiv coaching-pakke, ellers 299 kr/mnd."
     >
       {/* Status-banners — searchParams fra checkout/avbestilling + PAST_DUE fra DB.
           NB: ok=1 betyr kun at Stripe sendte brukeren tilbake — webhook-synken kan
@@ -350,7 +350,7 @@ export default async function AbonnementPage({
               href="/portal/meg/abonnement/oppgrader/flyt"
               icon={Sparkles}
               title="Oppgrader til Pro"
-              meta="300 kr/mnd · Stripe Checkout"
+              meta="299 kr/mnd · Stripe Checkout"
             />
           )}
           {kanEndreKort && (

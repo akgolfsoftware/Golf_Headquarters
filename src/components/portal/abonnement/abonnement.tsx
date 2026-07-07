@@ -8,7 +8,7 @@
  *      spiller-meta, stats-grid (mnd-avgift · credits · forfall), footer med
  *      oppgrader-CTA + micro-tekst
  *   3. "Sammenlign planer" — seksjons-header (tittel · status-tekst · ENDRE PLAN-lenke)
- *      + sammenlignings-panel med Pro-kortet (ANBEFALT, 300 kr/mnd, 6 features)
+ *      + sammenlignings-panel med Pro-kortet (ANBEFALT, 299 kr/mnd, 6 features)
  *   4. Faktura-historikk — panel med tom-tilstand (kvittering-ikon + tekst)
  *
  * Presentasjonell og props-drevet. INGEN Prisma/DB/auth/Stripe-logikk her —

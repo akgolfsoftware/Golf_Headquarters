@@ -5,7 +5,7 @@
 //   (b) har aktiv coaching-pakke (Performance / Performance Pro → monthlyCredits > 0),
 //   (c) er medlem av en gruppe gjennom AK Golf (aktivt GroupMember), eller
 //   (d) er i prøveperiode (30 dager fra registrering).
-// Ellers koster PlayerHQ 300 kr/mnd (faktisk tier PRO = betaler).
+// Ellers koster PlayerHQ 299 kr/mnd (faktisk tier PRO = betaler).
 //
 // "Effektiv tier": PRO = HAR tilgang (gratis ELLER betalt) · GRATIS = MÅ betale.
 // Beregnes ETT sted (lib/auth/getCurrentUser) og overskriver user.tier, slik at
@@ -27,7 +27,7 @@ export function gratisForAlle(now: Date = new Date()): boolean {
  * effektiv tilgang. Trial utledes av createdAt (+ 30 dager), ikke et eget felt.
  */
 export type ResolveTierInput = {
-  /** Faktisk tier fra DB. PRO = betaler 300 kr/mnd for app-tilgang. */
+  /** Faktisk tier fra DB. PRO = betaler 299 kr/mnd for app-tilgang. */
   tier: Tier;
   /** Registreringsdato — grunnlag for prøveperiode (createdAt + 30 dager). */
   createdAt: Date;
@@ -41,7 +41,7 @@ export type ResolveTierInput = {
 
 /**
  * Eneste sannhetskilde for effektiv PlayerHQ-tilgang (de låste reglene, BUSINESS-RULES.md).
- * Returnerer PRO (har tilgang: gratis ELLER betalt) eller GRATIS (må betale 300 kr/mnd).
+ * Returnerer PRO (har tilgang: gratis ELLER betalt) eller GRATIS (må betale 299 kr/mnd).
  * Beregnes ETT sted (lib/auth/getCurrentUser) og overskriver user.tier, slik at alle
  * /portal/*-gater (som leser user.tier) automatisk reflekterer reell tilgang.
  */

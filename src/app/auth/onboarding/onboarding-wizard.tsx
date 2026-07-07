@@ -719,7 +719,7 @@ export function OnboardingWizard({
             />
             <PlanCard
               tier="Pro"
-              price="300 kr"
+              price="299 kr"
               per="/mnd"
               recommended
               features={[
@@ -764,7 +764,7 @@ export function OnboardingWizard({
                 label="Abonnement"
                 value={
                   <span className="font-mono">
-                    {selectedTier === "PRO" ? "PRO · 300 kr/mnd" : "GRATIS"}
+                    {selectedTier === "PRO" ? "PRO · 299 kr/mnd" : "GRATIS"}
                   </span>
                 }
               />

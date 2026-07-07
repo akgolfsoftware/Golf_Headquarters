@@ -181,7 +181,7 @@ export async function hentProfilOversikt(input: {
     }),
     badge:
       input.tier === "PRO"
-        ? { label: "Pro · 300 kr/mnd", variant: "lime" }
+        ? { label: "Pro · 299 kr/mnd", variant: "lime" }
         : { label: "Gratis", variant: "neutral" },
     abonnement: {
       // Coaching-pakke (credits) ⇒ app-tilgang inkludert (gratis). Ellers betalende.

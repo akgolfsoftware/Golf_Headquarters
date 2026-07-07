@@ -53,7 +53,7 @@ const KATEGORI_BESKRIVELSE: Record<SpillerKategori, string> = {
 const TIER_BESKRIVELSE: Record<SpillerTier, string> = {
   GRATIS:
     "Tilgang til PlayerHQ med runde-logg og enkel statistikk. Ingen abonnement.",
-  PRO: "300 kr/mnd. Full PlayerHQ + AI-coach, treningsplaner og prioritert support.",
+  PRO: "299 kr/mnd. Full PlayerHQ + AI-coach, treningsplaner og prioritert support.",
 };
 
 function isoIDag(): string {
@@ -707,7 +707,7 @@ function Steg4Velkomst({
           <Oppsummering label="Kategori" value={kategori} />
           <Oppsummering
             label="Tier"
-            value={tier === "GRATIS" ? "Gratis" : "Pro (300 kr/mnd)"}
+            value={tier === "GRATIS" ? "Gratis" : "Pro (299 kr/mnd)"}
           />
         </div>
       </div>

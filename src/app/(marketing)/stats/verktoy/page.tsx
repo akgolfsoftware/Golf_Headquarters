@@ -187,7 +187,7 @@ export default function VerktoyHubPage() {
               <li>AI-kalibrering av baner</li>
             </ul>
             <div className="stats-mersalg-price">
-              <strong>300 kr / mnd</strong> · avbryt når som helst
+              <strong>299 kr / mnd</strong> · avbryt når som helst
             </div>
           </div>
         </div>

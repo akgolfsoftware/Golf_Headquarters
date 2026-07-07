@@ -27,7 +27,7 @@ export default async function NyOktPage() {
         <EmptyState
           icon={Lock}
           titleItalic="Krever Pro"
-          sub="Egendefinerte økter er en del av Pro-abonnementet (300 kr/mnd). Oppgrader for å designe dine egne treningsøkter med valgfrie drills."
+          sub="Egendefinerte økter er en del av Pro-abonnementet (299 kr/mnd). Oppgrader for å designe dine egne treningsøkter med valgfrie drills."
           cta={
             <Link
               href="/portal/meg/abonnement"

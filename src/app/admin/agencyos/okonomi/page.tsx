@@ -8,7 +8,7 @@
  *   Faktura-tabell — siste 12 transaksjoner
  *   Sidekolonne — MRR-sammensetning (PRO-abonnement) + utestående-flagg
  *
- * MRR utledes ærlig fra aktive PRO-abonnement × 300 kr (kanonisk pris, ELITE
+ * MRR utledes ærlig fra aktive PRO-abonnement × 299 kr (kanonisk pris, ELITE
  * finnes ikke i UI). Ingen abonnement → MRR 0 + tomstate-tekst.
  */
 
@@ -25,7 +25,7 @@ export const dynamic = "force-dynamic";
 const MND_KORT = ["jan", "feb", "mar", "apr", "mai", "jun", "jul", "aug", "sep", "okt", "nov", "des"];
 
 // Kanonisk PRO-pris (kr/mnd). ELITE er dødt enum — ekskluderes fra MRR.
-const PRO_PRIS_KR = 300;
+const PRO_PRIS_KR = 299;
 
 function formatNok(ore: number): string {
   return new Intl.NumberFormat("nb-NO").format(Math.round(ore / 100));
@@ -144,7 +144,7 @@ export default async function OkonomiTabPage() {
           label="Aktive abonnement"
           value={String(proAktive)}
           icon={Users}
-          delta="PRO · 300 kr/mnd"
+          delta="PRO · 299 kr/mnd"
           tone="flat"
         />
       </div>

@@ -145,7 +145,7 @@ En skjerm er **ikke ferdig** før alle 6 hakene er grønne. Alt Claude Design ha
 2. Aktiv coaching-pakke (Performance eller Performance Pro)
 3. Deltaker i en gruppecoaching via AK Golf
 
-**300 kr/mnd** for alle andre som ønsker full PlayerHQ-tilgang etter prøveperioden.
+**299 kr/mnd** for alle andre som ønsker full PlayerHQ-tilgang etter prøveperioden.
 
 ### Coaching-pakker
 - **Performance:** 2 credits/mnd — individuelle coachingøkter
@@ -166,7 +166,7 @@ Coachingøkter, simulatortid og andre tjenester kan kjøpes enkeltvis via Bookin
 1. **Treningsetterlevelse:** 70 % av aktive spillere gjennomfører minst 3 av 5 planlagte ukesøkter, målt rullerende 4 uker.
 2. **SG-fremgang:** Gjennomsnittlig SG Total forbedres med +0,5 per spiller i løpet av en 12-ukers plan.
 3. **Booking-konvertering:** Minst 15 % av unike besøkende på bookingsidene fullfører en bestilling.
-4. **Abonnement-konvertering:** 25 % av prøveperiode-brukere uten coaching-pakke konverterer til 300 kr/mnd.
+4. **Abonnement-konvertering:** 25 % av prøveperiode-brukere uten coaching-pakke konverterer til 299 kr/mnd.
 5. **Coach-effektivitet:** Gjennomsnittlig tid brukt per spiller per uke på administrasjon under 20 minutter.
 
 ---

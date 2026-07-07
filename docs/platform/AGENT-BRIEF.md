@@ -83,7 +83,7 @@ wireframe/               ARKIV — ikke les eller importer herfra
 - **Analyse samlet:** Analysere + TrackMan + Runder + SG er én flate med faner.
 - **Demo-navn:** Spiller = **Øyvind Rohjan**, coach = **Anders Kristiansen**. Fulle navn alltid. Gamle navn (Markus Berg, Magnus, Andreas Kragerud) skal bort. NB: ekte coach «Markus Røinås Pedersen» på markedssider beholdes.
 - **ELITE vises aldri i UI** — dødt Prisma-enum.
-- **Abonnement:** Gratis (prøveperiode / coaching-pakke / gruppe) eller 300 kr/mnd. Performance / Performance Pro er coaching-pakker, ikke app-nivåer.
+- **Abonnement:** Gratis (prøveperiode / coaching-pakke / gruppe) eller 299 kr/mnd. Performance / Performance Pro er coaching-pakker, ikke app-nivåer.
 - **FYS-resultatformel:** avventer grønt lys fra Anders — vis plassholder-tall.
 - **Avatar-initialer:** avledes fra ekte navn i DB, aldri hardkodet.
 - **Design under aktiv utvikling (2026-07-03):** Ingen låst design-kilde akkurat nå — gjeldende design bygges hos Claude Design og leveres som ny zip-handover. Referanser til `wireframe/`, `design-package/`, `design-files-v2/` eller gamle arkiver er uansett forbudt i produksjonsfiler — fjernes eller oppdateres ved første touch av filen. Se `CLAUDE.md`.

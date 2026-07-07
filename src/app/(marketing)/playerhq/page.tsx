@@ -281,7 +281,7 @@ export default function PlayerHQ() {
         </div>
       </section>
 
-      {/* ========== 05 PRIS · gratis via coaching / 300 kr ========== */}
+      {/* ========== 05 PRIS · gratis via coaching / 299 kr ========== */}
       <section id="pris" className="scroll-mt-20 py-24">
         <div className="mx-auto max-w-7xl px-6 md:px-8">
           <SectionEyebrow>Pris</SectionEyebrow>

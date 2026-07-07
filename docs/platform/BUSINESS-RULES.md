@@ -7,7 +7,7 @@ Sist oppdatert: 2026-06-14.
 
 > ⚠ **Status per 2026-07-06** (fulgte opp 2026-06-22-opplåsingen, se `docs/REGLER-OPPLAST-2026-06-22.md`
 > for full historikk): 3 av 4 daværende «låst opp»-regler er nå **avklart og bygget** — tema-toggle
-> (AgencyOS lys/mørk-bryter), abonnement/pris-modell (300 kr/mnd, ingen årlig — se under) og cockpit
+> (AgencyOS lys/mørk-bryter), abonnement/pris-modell (299 kr/mnd, ingen årlig — se under) og cockpit
 > stall-SG/plan-etterlevelse. Kun **FYS-formel + A–K-nivåtall** har én gjenstående deltråd: onboarding
 > steg 6 og en beslutning om drill-retag mellom gammelt HCP-basert og nytt snittscore-basert A–K.
 > Seksjonene under i denne fila er oppdatert til å reflektere den faktiske, bygde tilstanden.
@@ -24,7 +24,10 @@ Sist oppdatert: 2026-06-14.
 
 ### Betalt tilgang
 
-- **300 kr/mnd** for alle som ikke faller inn under de tre gratis-tilfellene.
+- **299 kr/mnd** for alle som ikke faller inn under de tre gratis-tilfellene.
+  (Anders-beslutning 2026-07-07: prisen endret fra 300 til 299 kr/mnd — løser konflikten mot
+  design-prosjektets B09. Årsabonnement er fortsatt IKKE besluttet innført; designets
+  «2690 kr/år»-demoer er ikke kanon før Anders sier ja.)
 - Betaling via Stripe. Abonnement lagres i `Subscription`-tabellen.
 
 ### Coaching-pakker (IKKE app-nivåer)

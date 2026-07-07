@@ -50,7 +50,7 @@ export const getCurrentUser = cache(async (): Promise<User | null> => {
 });
 
 // Overskriver `tier` med EFFEKTIV tier etter de låste reglene (se lib/feature-flags.ts):
-// PRO = har PlayerHQ-tilgang (gratis ELLER betalt), GRATIS = må betale 300 kr/mnd.
+// PRO = har PlayerHQ-tilgang (gratis ELLER betalt), GRATIS = må betale 299 kr/mnd.
 // Laster coaching-pakke (Subscription) + gruppemedlemskap for å avgjøre gratis-tilgang.
 // /portal/meg/abonnement viser FAKTISK tier ved å lese prisma.user direkte.
 async function withEffektivTilgang(user: User): Promise<User> {

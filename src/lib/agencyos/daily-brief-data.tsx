@@ -7,7 +7,7 @@
  *   - Aktive spillere: User(PLAYER) m/ innlogging siste 30 d
  *   - Økter i dag: Booking (CONFIRMED/PENDING) i dag
  *   - Ventende godkjenninger: PlanAction PENDING (haster = ESCALATION)
- *   - MRR: aktive PRO-abonnement × 300 kr (kanonisk formel, jf. /admin/agencyos/okonomi)
+ *   - MRR: aktive PRO-abonnement × 299 kr (kanonisk formel, jf. /admin/agencyos/okonomi)
  */
 
 import { z } from "zod";
@@ -27,7 +27,7 @@ const DAGER_KORT = ["SØN", "MAN", "TIR", "ONS", "TOR", "FRE", "LØR"];
 const MND_KORT = ["jan", "feb", "mar", "apr", "mai", "jun", "jul", "aug", "sep", "okt", "nov", "des"];
 
 /** Kanonisk PRO-pris (kr/mnd) — samme som /admin/agencyos/okonomi. */
-const PRO_PRIS_KR = 300;
+const PRO_PRIS_KR = 299;
 
 /** PlanAction.suggestion er JSON-blob — valider med zod før bruk (CLAUDE.md-regel). */
 const suggestionSchema = z.object({ forklaring: z.string() });

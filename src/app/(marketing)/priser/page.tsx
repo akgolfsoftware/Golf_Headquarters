@@ -14,7 +14,7 @@ import {
 export const metadata: Metadata = {
   title: "Priser · AK Golf Academy",
   description:
-    "Flex drop-in 0 kr/mnd, Performance 1 200 kr/mnd, Performance Pro 2 220 kr/mnd. PlayerHQ-appen er gratis med coaching, ellers 300 kr/mnd. Ingen binding.",
+    "Flex drop-in 0 kr/mnd, Performance 1 200 kr/mnd, Performance Pro 2 220 kr/mnd. PlayerHQ-appen er gratis med coaching, ellers 299 kr/mnd. Ingen binding.",
 };
 
 /* Tjenester — samme priser og kort-anatomi som forsiden */
@@ -65,7 +65,7 @@ const TJENESTER = [
   },
 ] as const;
 
-/* App-tilgang — gratis via coaching, ellers 300 kr/mnd. Ingen nivåer. */
+/* App-tilgang — gratis via coaching, ellers 299 kr/mnd. Ingen nivåer. */
 const APP_GRATIS = [
   "Inkludert i Performance og Performance Pro",
   "Gratis i én måneds prøveperiode",
@@ -128,17 +128,17 @@ export default function PriserSide() {
         </div>
       </section>
 
-      {/* ========== PLAYERHQ-PRIS · gratis via coaching / 300 kr ========== */}
+      {/* ========== PLAYERHQ-PRIS · gratis via coaching / 299 kr ========== */}
       <section id="app" className="scroll-mt-20 py-24">
         <div className="mx-auto max-w-7xl px-6 md:px-8">
           <SectionEyebrow>PlayerHQ · App-tilgang</SectionEyebrow>
           <SectionH2>
-            Gratis med coaching. <Em>300 kr uten</Em>.
+            Gratis med coaching. <Em>299 kr uten</Em>.
           </SectionH2>
           <p className="mt-4 max-w-[56ch] text-[16px] leading-[1.6] text-muted-foreground">
             PlayerHQ er inkludert i alle coaching-pakker, i én måneds
             prøveperiode og for spillere i grupper gjennom AK Golf. Alle andre
-            betaler 300 kr i måneden, uten binding.
+            betaler 299 kr i måneden, uten binding.
           </p>
 
           <div className="mt-12 grid max-w-4xl grid-cols-1 gap-4 md:grid-cols-2">

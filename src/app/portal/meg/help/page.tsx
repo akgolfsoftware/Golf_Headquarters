@@ -27,7 +27,7 @@ const FAQ: FaqItem[] = [
   },
   {
     q: "Hva koster appen?",
-    a: "Appen er gratis så lenge du har en aktiv coaching-pakke. Uten pakke koster den 300 kr/mnd. Det finnes ingen nivåer.",
+    a: "Appen er gratis så lenge du har en aktiv coaching-pakke. Uten pakke koster den 299 kr/mnd. Det finnes ingen nivåer.",
   },
   {
     q: "Hvordan kontakter jeg coachen?",

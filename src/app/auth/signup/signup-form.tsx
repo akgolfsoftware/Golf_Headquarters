@@ -44,7 +44,7 @@ const PACKAGES: PackageOption[] = [
   {
     value: "PLAYERHQ_ONLY",
     name: "PlayerHQ",
-    price: "300 kr/mnd",
+    price: "299 kr/mnd",
     trialHint: "1. måned gratis",
     desc: "App-tilgang: tracking, AI-coach, treningsplaner",
     monthlyCredits: 0,

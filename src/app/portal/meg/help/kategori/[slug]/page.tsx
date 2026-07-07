@@ -199,7 +199,7 @@ const KATEGORIER: Record<string, KategoriDef> = {
       {
         slug: "oppgrader-til-pro",
         tittel: "Hvordan oppgrader til Pro?",
-        preview: "Forskjellen mellom Gratis og Pro, hva som er inkludert i 300 kr/mnd, og hvordan du oppgraderer.",
+        preview: "Forskjellen mellom Gratis og Pro, hva som er inkludert i 299 kr/mnd, og hvordan du oppgraderer.",
         lesetid: 2,
         publisert: "2026-04-08",
         visninger: 2103,

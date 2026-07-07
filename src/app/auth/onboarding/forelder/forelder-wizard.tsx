@@ -319,7 +319,7 @@ export function ForelderWizard() {
             title="Sett opp"
             emphasis="betaling"
             titleAfter="."
-            deck="Spilleren har valgt PRO-abonnement, 300 kr/mnd. Du faktureres månedlig fra dato spilleren er aktivert. Avsluttes når som helst."
+            deck="Spilleren har valgt PRO-abonnement, 299 kr/mnd. Du faktureres månedlig fra dato spilleren er aktivert. Avsluttes når som helst."
           />
 
           {/* Abonnement-oppsummering — mørkt forest-kort */}
@@ -331,7 +331,7 @@ export function ForelderWizard() {
               AK Golf Academy PRO
             </span>
             <span className="font-mono text-[28px] font-extrabold leading-none tracking-[-0.01em] text-primary-foreground">
-              300 kr/mnd
+              299 kr/mnd
             </span>
             <span className="mt-1 font-mono text-[10px] tracking-[0.04em] text-primary-foreground/70">
               Avsluttes når som helst · 30 dagers oppsigelse

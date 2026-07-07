@@ -73,7 +73,7 @@ const BAND = [
   { num: "2200", label: "TIMER COACHING", suffix: "+" },
 ] as const;
 
-/* Låst modell: PlayerHQ-appen er gratis (med coaching) eller 300 kr/mnd.
+/* Låst modell: PlayerHQ-appen er gratis (med coaching) eller 299 kr/mnd.
    «Performance»/«Performance Pro» er coaching-pakker, IKKE app-nivåer. */
 const PRISER = [
   {
@@ -81,7 +81,7 @@ const PRISER = [
     tier: "PlayerHQ",
     price: "0",
     sub: "kr · gratis med coaching",
-    desc: "Appen er gratis så lenge du har en coaching-pakke. Uten coaching: 300 kr/mnd, ingen binding.",
+    desc: "Appen er gratis så lenge du har en coaching-pakke. Uten coaching: 299 kr/mnd, ingen binding.",
     features: [
       "Spillerprofil & historikk",
       "SG-oversikt",
@@ -306,7 +306,7 @@ export default function NyLanding() {
         <div className="mx-auto max-w-[620px] text-center">
           <div className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Priser</div>
           <h2 className="mt-2 font-display text-[38px] font-semibold tracking-[-0.015em]">Start gratis. Oppgrader når du vil.</h2>
-          <p className="mt-3 text-muted-foreground">PlayerHQ er gratis med coaching, ellers 300 kr/mnd. Coaching-pakkene inkluderer appen. Ingen binding.</p>
+          <p className="mt-3 text-muted-foreground">PlayerHQ er gratis med coaching, ellers 299 kr/mnd. Coaching-pakkene inkluderer appen. Ingen binding.</p>
         </div>
 
         <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">

@@ -498,7 +498,7 @@ export default async function StatsLandingPage() {
                 ))}
               </ul>
               <div className="stats-mersalg-price">
-                <strong>300 kr/mnd</strong> · gratis under beta
+                <strong>299 kr/mnd</strong> · gratis under beta
               </div>
             </div>
           </div>

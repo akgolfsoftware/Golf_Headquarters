@@ -37,7 +37,7 @@ Disse kan en agent IKKE løse selv — de er produkt-/metodikkvalg.
 | # | Tidligere uklart | Avklaring |
 |---|---|---|
 | C1 | App-navn CoachHQ vs AgencyOS | **AgencyOS** (`/admin`). «CoachHQ» er dødt navn. |
-| C2 | Tier-modell (3-tier $12/$29 i gammel skill) | **2-tier:** GRATIS + PRO (300 kr/mnd). ELITE dødt. Se `BUSINESS-RULES.md`. |
+| C2 | Tier-modell (3-tier $12/$29 i gammel skill) | **2-tier:** GRATIS + PRO (299 kr/mnd). ELITE dødt. Se `BUSINESS-RULES.md`. |
 | C3 | Demo-navn (Markus Berg/Magnus) | Spiller = **Øyvind Rohjan**, coach = **Anders Kristiansen**. Avatar-initialer avledes fra DB-navn. |
 | C4 | Tema per produkt | PlayerHQ lyst, AgencyOS mørkt, ingen toggle. |
 | C5 | Junior «Knøtt»-nivå | Fjernet (mai 2026). 4 trinn: Mini/Basis/Utvikling/Elite. |

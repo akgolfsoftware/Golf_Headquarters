@@ -39,7 +39,11 @@ står; skjermer som er innholds-korrekte men visuelt ulike (f.eks. abonnement) s
 - **BESLUTTET (2026-06-22, oppdatert):** Anders presiserte: **AgencyOS skal kunne være BÅDE lys OG mørk.** → BYGD: lys/mørk-toggle i AgencyOS-topbaren (sol/måne-ikon), tema persistert i cookie `ak-admin-theme` (leses server-side i AdminShell → ingen flash), standard = mørk. PlayerHQ forblir lyst (ikke endret). Coach-chrome-variablene (sidebar/topbar) er faste forest i `@theme inline` → lys AgencyOS = mørk forest-sidebar + lyst arbeidsområde. Komponenter: src/components/admin/admin-theme-toggle.tsx + admin-shell.tsx + agencyos-topbar.tsx.
 - **LYS-MODUS-QA BESTÅTT ✅ (2026-06-22):** verifisert rent i lys på 9 AgencyOS-skjermer: cockpit, stall, handlingssenter, spiller-detalj, tester, runder, okonomi, kalender, grupper. Konsistent forest-sidebar + lyst innhold, lesbar tekst/aksenter. Eneste mindre polish-punkt: handlingssenter-header-bånd litt flatt grått i lys (ikke ødelagt — kan tokeniseres ved en senere lys-polish-runde).
 
-## 2. Abonnement & pris  ·  STATUS: låst opp, venter verdi
+## 2. Abonnement & pris  ·  STATUS: AVKLART på nytt 2026-07-07
+
+> **NY BESLUTNING (Anders, 2026-07-07):** månedspris = **299 kr/mnd** (endrer 2026-06-22-beslutningen
+> under; migrert i hele appen + BUSINESS-RULES samme dag). Årsabonnement fortsatt ikke besluttet.
+> Historikken under beholdes uendret som dokumentasjon.
 - **Var låst som:** kun «gratis eller 300 kr/mnd», ingen nivåer, «PRO årlig» finnes ikke, ingen Stripe-kort-visning, ELITE forbudt.
 - **Designkonsekvens av låsen:** Priser/Abonnement viser IKKE fasitens «299 kr + PRO årlig 2 690 + Visa ••• 4242».
 - **Trenger fra Anders:** (a) månedspris (299 eller 300?), (b) årspris + skal årlig finnes (2 690?), (c) skal app-planer (Gratis/PRO/PRO-årlig) vises som i fasiten, (d) Stripe-kort/last4-visning (krever live Stripe — bak hardt stopp).

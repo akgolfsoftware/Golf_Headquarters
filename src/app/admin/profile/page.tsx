@@ -104,7 +104,7 @@ export default async function AdminProfilePage() {
             Aktiv {user.role === "ADMIN" ? "admin" : "coach"}
           </div>
           <div className="flex flex-col gap-1 border-t border-border pt-4">
-            <StatRow l="Abonnement" v={user.tier === "PRO" ? "Pro (300 kr/mnd)" : "Gratis"} />
+            <StatRow l="Abonnement" v={user.tier === "PRO" ? "Pro (299 kr/mnd)" : "Gratis"} />
             <StatRow
               l="Opprettet"
               v={user.createdAt.toLocaleDateString("nb-NO", {

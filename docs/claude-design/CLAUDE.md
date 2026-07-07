@@ -69,7 +69,7 @@ heatmap. Nytenkende og interaktivt — aldri flate grafer.
 ## Låste beslutninger (følg — ikke endre)
 - App-navn: **AgencyOS** (aldri «CoachHQ»).
 - Demo-navn: spiller = **Øyvind Rohjan**, coach = **Anders Kristiansen** (fulle navn alltid).
-- Abonnement: **gratis ELLER 300 kr/mnd** — INGEN nivåer/tiers. **«ELITE» vises ALDRI.**
+- Abonnement: **gratis ELLER 299 kr/mnd** — INGEN nivåer/tiers. **«ELITE» vises ALDRI.**
 - Performance / Performance Pro = coaching-pakker, ikke app-nivåer.
 - Tema: PlayerHQ alltid lyst. AgencyOS mørkt standard (+ lys variant).
 

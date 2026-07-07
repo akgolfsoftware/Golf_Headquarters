@@ -3,11 +3,11 @@
 /**
  * OppgraderFlytWizard — mobil-først (430px) oppgraderings-flyt til PRO.
  *
- * Steg på én skjerm: verdi → bekreft. Én pris: 300 kr/mnd (ingen årlig — låst regel).
+ * Steg på én skjerm: verdi → bekreft. Én pris: 299 kr/mnd (ingen årlig — låst regel).
  * Bekreft åpner ekte Stripe Checkout via POST /api/stripe/checkout (samme
  * sti som UpgradeButton). Stripe styrer faktisk pris/plan — UI viser PRO.
  *
- * Kun DS-token-klasser. Ingen emoji (lucide). Pris: 300 kr/mnd.
+ * Kun DS-token-klasser. Ingen emoji (lucide). Pris: 299 kr/mnd.
  */
 
 import { useState } from "react";

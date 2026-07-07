@@ -99,7 +99,7 @@ export default async function NyttKortPage() {
           </span>
           <div className="mt-2 flex items-baseline justify-between">
             <span className="font-display text-2xl font-bold tracking-[-0.02em] text-foreground">
-              300 kr
+              299 kr
             </span>
             <span className="font-mono text-xs text-muted-foreground">
               {formatNesteBelastning(nesteBelastning)}

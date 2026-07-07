@@ -352,7 +352,7 @@ export function MegHybrid({
           icon={<CircleDollarSign className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden />}
           iconVariant="forest"
           label="Oppgrader til PRO"
-          sub="300 kr/mnd · Video + prioritet"
+          sub="299 kr/mnd · Video + prioritet"
         />
         <form action={onLogout} className="border-t border-border">
           <button

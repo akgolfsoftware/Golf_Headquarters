@@ -612,7 +612,7 @@ export default async function MinProgresjonPage() {
               <li>Eksport til PDF / Excel</li>
             </ul>
             <div className="stats-mersalg-price">
-              <strong>300 kr / mnd</strong> · avbryt når som helst
+              <strong>299 kr / mnd</strong> · avbryt når som helst
             </div>
           </div>
         </div>

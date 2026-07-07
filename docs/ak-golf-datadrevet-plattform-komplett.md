@@ -107,7 +107,7 @@ Signaturkomponenter (lyst AK-brand, interaktivt):
 **Benchmark:** kanonisk kategori-liste (finnes i masterbrain — koble den) · referansenivåer per kategori ·
 amatør-bro OK? · alders-/kjønnsjustert? · FYS-formel låst? · hvordan legger spilleren inn egne tall?
 **Design:** hvilke 2–3 signaturvisualiseringer først · mobil/desktop-først · referanse-estetikk.
-**Funnel:** gratis vs. bak mur · pris (150 vs 300 kr/mnd?) · CTA.
+**Funnel:** gratis vs. bak mur · pris (150 vs 299 kr/mnd?) · CTA.
 **Live-hub:** definere «norsk spiller» · hvilke turneringer i v1 · mandagslast: Actions/Vercel-cron/lokal.
 
 ---

@@ -3,12 +3,12 @@
  *
  * Mobil-først (430px) flyt mot athletic-designsystemet. Erstatter den tidligere
  * redirect-stubben med en ekte oppgraderings-flyt: PRO-verdi, fast pris
- * 300 kr/mnd og bekreftelse som åpner Stripe Checkout.
+ * 299 kr/mnd og bekreftelse som åpner Stripe Checkout.
  *
  * Auth-guard beholdt. Er brukeren allerede PRO, sendes hen til abonnement-siden.
  * PAST_DUE sendes også dit — ny checkout oppå feilet abonnement gir dobbelt-
  * abonnement i Stripe; hubben viser «Endre kort» som riktig vei.
- * Tier-modell: kun GRATIS + PRO (300 kr/mnd) — ELITE finnes ikke i UI.
+ * Tier-modell: kun GRATIS + PRO (299 kr/mnd) — ELITE finnes ikke i UI.
  */
 
 import { redirect } from "next/navigation";

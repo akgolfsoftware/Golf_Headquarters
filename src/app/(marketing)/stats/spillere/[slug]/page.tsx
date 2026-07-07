@@ -848,7 +848,7 @@ export default async function SpillerProfilPage({
                 <li>Se din profil og sammenlign med andre</li>
               </ul>
               <div className="stats-mersalg-price">
-                Fra <strong>300 kr/mnd</strong> · Gratis de første 30 dagene
+                Fra <strong>299 kr/mnd</strong> · Gratis de første 30 dagene
               </div>
             </div>
           </div>

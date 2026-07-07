@@ -109,7 +109,7 @@ C5. Finnes det **referanse-produkter/estetikk** du beundrer (golf eller andre fe
 
 ### D. akgolf.no funnel
 D1. Hvor bor landingssiden — **akgolf.no-rot** eller `/stats`-subpath (vi har `/stats/*` i HQ alt)?
-D2. Eksakt **konverteringsmål/CTA** — gratis prøveperiode eller 300 kr/mnd direkte?
+D2. Eksakt **konverteringsmål/CTA** — gratis prøveperiode eller 299 kr/mnd direkte?
 D3. Hva er **gratis vs. bak betalingsmur** (ukeresultater gratis; personlige benchmarks bak mur?)?
 D4. **Norsk-først** publikum, eller internasjonalt fra start?
 
@@ -122,6 +122,6 @@ E5. Mandagslast 07:00 — GitHub Actions er deaktivert (billing). Skal vi **fiks
 
 ### F. Produkt/forretning/prioritet
 F1. Primærbruker per flate (coach / spiller / besøkende)?
-F2. Bekreft abonnementsmodell (300 kr/mnd) + hva som er bak mur.
+F2. Bekreft abonnementsmodell (299 kr/mnd) + hva som er bak mur.
 F3. **Rekkefølge** — hvilket av de fire områdene bygger vi først?
 F4. Arkitektur-bekreftelse: precompute **benchmark-tabeller** (percentiler per kategori/nivå/tour) fra DataGolf → servert via `/api/v1` → konsumert av HQ. OK?

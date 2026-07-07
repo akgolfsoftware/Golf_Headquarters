@@ -84,7 +84,7 @@ Coach:            Anders Kristiansen
 ### Priser (bekreftes av Anders — rediger her hvis endring)
 ```
 PlayerHQ GRATIS:      0 kr (30 dager, ingen kort)
-PlayerHQ PRO:         300 kr/mnd
+PlayerHQ PRO:         299 kr/mnd
 Performance:          1 200 kr/mnd  (2 coaching-kreditter)
 Performance Pro:      2 220 kr/mnd  (4 coaching-kreditter)
 Drop-in 20 min:       300 kr
@@ -697,7 +697,7 @@ Seksjoner:
 
 Abonnement-kort (GRATIS):
   Tekst:    Du er på GRATIS-planen.
-  CTA:      Oppgrader til PRO — 300 kr/mnd →
+  CTA:      Oppgrader til PRO — 299 kr/mnd →
 
 Abonnement-kort (PRO via coaching):
   Tekst:    PRO er inkludert i din {Performance/Performance Pro}-pakke.
@@ -1016,7 +1016,7 @@ Universell liste. Kortform, verb-første, ingen tegnsetting.
 | Se alle | Se alle → |
 | Kontakt oss | Ta kontakt → |
 | Søk opptak (Performance Pro) | Søk opptak → |
-| Oppgrader til PRO | Oppgrader til PRO — 300 kr/mnd → |
+| Oppgrader til PRO | Oppgrader til PRO — 299 kr/mnd → |
 
 ---
 

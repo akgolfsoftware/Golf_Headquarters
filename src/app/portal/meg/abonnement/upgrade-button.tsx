@@ -32,7 +32,7 @@ export function UpgradeButton({ disabled = false }: { disabled?: boolean }) {
         disabled={loading || disabled}
         className="rounded-md bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
       >
-        {loading ? "Åpner Stripe…" : "Oppgrader til Pro · 300 kr/mnd"}
+        {loading ? "Åpner Stripe…" : "Oppgrader til Pro · 299 kr/mnd"}
       </button>
       {error && (
         <div

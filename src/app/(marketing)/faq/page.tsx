@@ -53,11 +53,11 @@ const FAQ: { kategori: string; punkter: Sporsmal[] }[] = [
     punkter: [
       {
         q: "Hva er PlayerHQ?",
-        a: "Din digitale spillerportal. Her finner du treningsplaner, runder, tester, AI-coach og fremdriftsdata. Appen er gratis med aktiv coaching-pakke (Performance eller Performance Pro), i prøvemåneden, eller om du trener i gruppe gjennom AK Golf. Ellers koster den 300 kr/mnd.",
+        a: "Din digitale spillerportal. Her finner du treningsplaner, runder, tester, AI-coach og fremdriftsdata. Appen er gratis med aktiv coaching-pakke (Performance eller Performance Pro), i prøvemåneden, eller om du trener i gruppe gjennom AK Golf. Ellers koster den 299 kr/mnd.",
       },
       {
         q: "Trenger jeg å være kunde for å bruke PlayerHQ?",
-        a: "Nei. Alle kan opprette konto og prøve PlayerHQ gratis i én måned uten å være Academy-kunde. Etter prøvemåneden er appen gratis så lenge du har en aktiv coaching-pakke eller trener i gruppe gjennom AK Golf. Ellers 300 kr/mnd.",
+        a: "Nei. Alle kan opprette konto og prøve PlayerHQ gratis i én måned uten å være Academy-kunde. Etter prøvemåneden er appen gratis så lenge du har en aktiv coaching-pakke eller trener i gruppe gjennom AK Golf. Ellers 299 kr/mnd.",
       },
     ],
   },

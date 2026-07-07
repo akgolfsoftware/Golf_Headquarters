@@ -632,7 +632,7 @@ export default async function PgaStatsHub() {
               <h4>Du vs Tour</h4>
               <DuVsTour />
               <div className="mersalg-price">
-                <strong>300 kr/mnd</strong> · gratis under beta
+                <strong>299 kr/mnd</strong> · gratis under beta
               </div>
             </div>
           </div>

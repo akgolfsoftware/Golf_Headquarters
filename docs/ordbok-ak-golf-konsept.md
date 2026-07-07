@@ -48,16 +48,20 @@ Hvor langt en bevegelse er innlært — fra kropp til automatisering. Fasit: can
 | L-Kølle | `L_KOLLE` | Med kølle, uten ball — kølle-følelse, path, face control. CS50–70 · M2–M3 · TEK 40–60 %. Kode-id uten ø. |
 | L-Ball | `L_BALL` | Ball + økende hastighet — konsistens og kontakt. CS60–80 · M3–M4 · TEK 30–50 %. SG relevant, fortsatt teknikk-fokus. |
 | L-Auto | `L_AUTO` | Automatikk + miljø + variasjon — overføring til bane/press/random. CS80–100 · M4–M5 · TEK 20–40 %. Eneste fase i TURNERING; 100 % i EVALUERING. |
-| Anbefalt CS per L-fase | `LFASE_ANBEFALT_CS` | Kart L-fase → anbefalte CS-nivåer. Kode-status: koden har gamle CS50–100-mapper — skal oppdateres til canon-intervallene over. |
+| Anbefalt CS per L-fase | `LFASE_ANBEFALT_CS` | Kart L-fase → anbefalte CS-nivåer. Kode-status: kodens CS50–100-mapper er nå FASIT (Anders 2026-07-07, CS50-gulv). CS-intervallene på L-radene over (CS20–40 m.fl.) er stale og venter rekalibrering mot CS50-gulvet — avklar nye bånd med Anders før de skrives om. |
 
 ## 3. CS — Club Speed
 
-Køllehodehastighet i % av spillerens maks — én av de fire AK-formel-aksene. Fasit: canon v3.5, **ni nivåer CS20–CS100**. CS betyr Club Speed — ikke «Capacity Stress», ikke «Confidence Score».
+Køllehodehastighet i % av spillerens maks — én av de fire AK-formel-aksene. Fasit (Anders-beslutning
+2026-07-07): **seks nivåer CS50–CS100**. CS20/30/40 er utgått — canon v3.5 hadde ni nivåer, men
+Prisma-enumen (CS50–CS100) er nå bekreftet som fasit; ingen migrering kommer. CS betyr Club Speed —
+ikke «Capacity Stress», ikke «Confidence Score». NB: canon-filene i MasterBrain + L-fase-CS-båndene
+i §2 er ikke rekalibrert ennå (åpen oppgave — se kode-status på radene).
 
 | Norsk term | Teknisk term | Definisjon & bruk |
 |---|---|---|
-| CS-nivå | `CSNivaa` / `CS_NIVAER` | Ni treningstempoer CS20–CS100. Begrenses av `csMax` per periode; klassifiserer rep-hastighet (LAV/FULL). Kode-status: Prisma-enum har kun CS50–CS100 — CS20/30/40 mangler. |
-| CS20 / CS30 / CS40 | `CS20` `CS30` `CS40` | 20 % bevegelsesdrill uten ball · 30 % langsom teknisk drill · 40 % halvfart teknisk drill. L_KROPP/L_ARM. (Venter kode.) |
+| CS-nivå | `CSNivaa` / `CS_NIVAER` | Seks treningstempoer CS50–CS100 (fasit 2026-07-07, matcher Prisma). Begrenses av `csMax` per periode; klassifiserer rep-hastighet (LAV/FULL). |
+| CS20 / CS30 / CS40 | `CS20` `CS30` `CS40` | UTGÅTT (Anders 2026-07-07) — finnes ikke i UI eller kode. Bevegelses-/saktedriller uttrykkes innenfor CS50. |
 | CS50 | `CS50` | 50 % — minimum for balltrening. LAV-klassifisering (CS50–CS70). |
 | CS60 | `CS60` | 60 % — moderat balltrening. |
 | CS70 | `CS70` | 70 % — kontrollert full swing. Grense LAV/FULL rep-hastighet. |
@@ -308,7 +312,7 @@ Sentrale modeller og ALLE status-enums fra `prisma/schema.prisma` (komplett per 
 | Øvelses-synlighet | `ExerciseVisibility` | PRIVATE, COACH_PLAYERS m.fl. — hvem ser en coach-/spiller-øvelse. |
 | Drill-fasilitet | `DrillFasilitet` | Utstyrs-/anleggskrav (14 verdier: RADAR, SIMULATOR, BUNKER, SHORT_GAME_AREA, DRIVING_RANGE, PUTTING_GREEN m.fl.). Matches mot `tilgjengeligeFasiliteter`. Tom = ingen krav. |
 | Spillerprogram | `PlayerProgram` | Coaching-/akademiprogram (WANG_TOPPIDRETT, GFGK_ELITE, GFGK_BREDDE, GFGK_JENTER, GFGK_MINI, AK_ACADEMY, AK_ACADEMY_JUNIOR m.fl.). `PLATFORM_ONLY` = selvbetjent uten coach (GDPR-skille i AgencyOS). |
-| Abonnementsnivå | `Tier` | GRATIS eller PRO (300 kr/mnd). **ELITE er dødt enum — aldri i UI** (låst juni 2026). |
+| Abonnementsnivå | `Tier` | GRATIS eller PRO (299 kr/mnd). **ELITE er dødt enum — aldri i UI** (låst juni 2026). |
 | Abonnementsstatus | `SubscriptionStatus` | ACTIVE, PAST_DUE, CANCELLED, TRIALING — livssyklus for PRO-abonnementet. |
 | Målkategori | `GoalCategory` | OUTCOME (resultatmål) vs PROCESS (prosessmål) — vises hver for seg i Workbench. |
 | Mål-CS per kategori | `csTargetByKategori` | JSON-kart NGF-kategori (A–L) → mål-CS i plan-maler. |
@@ -948,7 +952,7 @@ ALLTID uppercase og i rekkefølgen `FYS · TEK · SLAG · SPILL · TURN` (dot-se
 | Gratis / Pro | Gratis / Pro | aldri «Premium»/«Plus» |
 | Elite | — | **DØDT enum — vises ALDRI i UI** (låst beslutning juni 2026; jf. §15 Tier) |
 | Abonnement | abonnement | aldri «subscription» |
-| Pris / Faktura / Betaling | pris / faktura / betaling | «300 kr/mnd» |
+| Pris / Faktura / Betaling | pris / faktura / betaling | «299 kr/mnd» |
 | Forfalt / Betalt | forfalt / betalt | «800 kr forfalt» |
 | Avbestill / Pause-abonnement | Avbestill Pro / pause-abonnement | bindestrek |
 | Oppgrader / Nedgrader | oppgrader / nedgrader | «Oppgrader til Pro» |

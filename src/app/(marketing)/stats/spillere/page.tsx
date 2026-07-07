@@ -656,7 +656,7 @@ export default async function SpillerdatabasePage({
               </ul>
               <div className="stats-mersalg-price">
                 Fra{" "}
-                <strong>300 kr/mnd</strong> · Gratis de første 30 dagene
+                <strong>299 kr/mnd</strong> · Gratis de første 30 dagene
               </div>
             </div>
           </div>
