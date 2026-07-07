@@ -107,6 +107,8 @@ export type SeasonPhaseType = "GRUNN" | "SPESIALISERING" | "TURNERING" | "EVALUE
  * antall måneder periodens band spenner over; `weekly` er ukentlige økter per akse.
  */
 export type SeasonPhase = {
+  /** PeriodBlock.id — mangler for demo-/placeholder-faser uten ekte DB-rad. */
+  id?: string;
   type: SeasonPhaseType;
   months: number;
   /** "Jan–Feb" */

@@ -60,14 +60,17 @@ function v2ToWeekRow(v: V2WeekSessionInput): WeekSessionRow {
 
 /**
  * Slår sammen V1 (TrainingPlanSession) og V2 (TrainingSessionV2) for inneværende uke.
- * Alle V2-rader inkluderes; V1 deduper kun på id (V2 med samme id som eksisterende V1 hoppes over).
+ * V2 har alltid sin egen uavhengige id (cuid) — aldri lik V1-øktens id. Koblingen til en
+ * V1-økt den speiler går via `generertFraId`, så dedup MÅ sjekke det feltet, ikke `id`.
  */
 export function mergeWeekSessions(
   v1Sessions: WeekSessionRow[],
   v2Sessions: V2WeekSessionInput[],
 ): WeekSessionRow[] {
   const v1Ids = new Set(v1Sessions.map((s) => s.id));
-  const v2Rows = v2Sessions.map(v2ToWeekRow).filter((row) => !v1Ids.has(row.id));
+  const v2Rows = v2Sessions
+    .filter((v) => !(v.generertFraId && v1Ids.has(v.generertFraId)))
+    .map(v2ToWeekRow);
   return [...v1Sessions, ...v2Rows].sort(
     (a, b) => a.scheduledAt.getTime() - b.scheduledAt.getTime(),
   );

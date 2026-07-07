@@ -5,7 +5,7 @@ import { Plus, Trash2 } from "lucide-react";
 import type { LPhase } from "@/generated/prisma/client";
 import { PERIODE_TYPER } from "@/lib/taxonomy";
 import { PeriodeConstraintBadges } from "@/components/portal/periode-constraint-badges";
-import { opprettPeriodForSpiller, slettPeriodCoach } from "./actions";
+import { opprettPeriode, slettPeriode } from "@/app/portal/tren/aarsplan/periode/actions";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -143,7 +143,7 @@ function NyPeriodeSkjema({
     e.preventDefault();
     setFeil(null);
     startTransition(async () => {
-      const res = await opprettPeriodForSpiller({
+      const res = await opprettPeriode({
         seasonPlanId,
         lPhase,
         startDate,
@@ -153,7 +153,7 @@ function NyPeriodeSkjema({
         weeklyVolMax: volMax ? Number(volMax) : undefined,
       });
       if (res.ok) onDone();
-      else setFeil(res.feil ?? "Ukjent feil");
+      else setFeil(res.error ?? "Ukjent feil");
     });
   }
 
@@ -343,7 +343,7 @@ export function PeriodeEditor({ plan }: { plan: PlanData }) {
   function slett(id: string) {
     setDeletingId(id);
     startTransition(async () => {
-      await slettPeriodCoach(id);
+      await slettPeriode(id);
       setDeletingId(null);
     });
   }

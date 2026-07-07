@@ -3,6 +3,7 @@
 import { useMemo, useState, type ReactElement } from "react";
 import Link from "next/link";
 import { Sprout, Target, Trophy } from "lucide-react";
+import type { LPhase } from "@/generated/prisma/client";
 import type { WorkbenchPlanTemplate } from "@/lib/workbench/load-workbench";
 import { FONT, WB } from "./theme";
 
@@ -25,6 +26,8 @@ type MalerTabProps = {
   isCoach: boolean;
   /** Bruk mal i workbench — bytter til Gantt/uke (ikke bare admin-lenke). */
   onUseTemplate: (template: WorkbenchPlanTemplate) => void;
+  /** Spillerens aktive periode akkurat nå — matchende maler fremheves og sorteres øverst. Skjuler aldri andre. */
+  activePeriodLPhase?: LPhase | null;
 };
 
 const FILTERS: { key: MalFilter; label: string }[] = [
@@ -55,12 +58,21 @@ function matchesFilter(t: WorkbenchPlanTemplate, f: MalFilter): boolean {
   return true;
 }
 
-export function MalerTab({ templates, isCoach, onUseTemplate }: MalerTabProps): ReactElement {
+export function MalerTab({
+  templates,
+  isCoach,
+  onUseTemplate,
+  activePeriodLPhase,
+}: MalerTabProps): ReactElement {
   const [filter, setFilter] = useState<MalFilter>("alle");
-  const visible = useMemo(
-    () => templates.filter((t) => matchesFilter(t, filter)),
-    [templates, filter],
-  );
+  const visible = useMemo(() => {
+    const matching = templates.filter((t) => matchesFilter(t, filter));
+    if (!activePeriodLPhase) return matching;
+    // Anbefaling, ikke filter: maler for aktiv periode først, resten uendret bak — aldri skjult.
+    const anbefalt = matching.filter((t) => t.lPhase === activePeriodLPhase);
+    const resten = matching.filter((t) => t.lPhase !== activePeriodLPhase);
+    return [...anbefalt, ...resten];
+  }, [templates, filter, activePeriodLPhase]);
 
   if (templates.length === 0) {
     return (
@@ -175,12 +187,13 @@ export function MalerTab({ templates, isCoach, onUseTemplate }: MalerTabProps): 
         {visible.map((t) => {
           const Icon = FASE_IKON[t.lPhase];
           const editHref = isCoach ? `/admin/plan-templates/${t.id}/rediger` : undefined;
+          const anbefalt = activePeriodLPhase != null && t.lPhase === activePeriodLPhase;
           return (
             <div
               key={t.id}
               style={{
                 background: WB.cardBg,
-                border: `1px solid ${WB.innerBorder}`,
+                border: `1px solid ${anbefalt ? WB.lime : WB.innerBorder}`,
                 borderRadius: 12,
                 padding: "14px 16px",
                 height: "100%",
@@ -189,6 +202,24 @@ export function MalerTab({ templates, isCoach, onUseTemplate }: MalerTabProps): 
                 gap: 10,
               }}
             >
+              {anbefalt && (
+                <span
+                  style={{
+                    alignSelf: "flex-start",
+                    fontFamily: FONT.mono,
+                    fontSize: 8,
+                    fontWeight: 700,
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
+                    padding: "3px 8px",
+                    borderRadius: 999,
+                    background: WB.lime,
+                    color: WB.limeDark,
+                  }}
+                >
+                  Anbefalt for {FASE_LABEL[t.lPhase]}
+                </span>
+              )}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
                 <span
                   style={{

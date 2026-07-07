@@ -6,7 +6,7 @@ import type { TekniskPlanWorkbenchContext } from "@/lib/teknisk-plan/types";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
 import { FONT, WB, type Cat } from "./theme";
 import type { DimField } from "./taxonomy";
-import { omrArr, pposArr } from "./helpers";
+import { omrArr, pposArr, WEEK_KEYS, dayDateLabel, isDayToday } from "./helpers";
 import type {
   PaletteItem,
   Recur,
@@ -559,7 +559,7 @@ export function WorkbenchHybrid({
   const searchParams = useSearchParams();
   const hubTab = useMemo((): WorkbenchHubTab => {
     const raw = searchParams.get("tab");
-    const valid: WorkbenchHubTab[] = ["tek", "seson", "maler", "std", "gantt", "uke", "okt"];
+    const valid: WorkbenchHubTab[] = ["tek", "seson", "maler", "std", "gantt", "uke", "dag", "okt"];
     return valid.includes(raw as WorkbenchHubTab) ? (raw as WorkbenchHubTab) : "uke";
   }, [searchParams]);
 
@@ -577,6 +577,12 @@ export function WorkbenchHybrid({
   const [mobilePaletteOpen, setMobilePaletteOpen] = useState(false);
   const [mobileTargetDay, setMobileTargetDay] = useState<WeekKey>("ons");
 
+  // Dag-fanen: hvilken ukedag som vises. Default til dagens ukedag hvis den viste
+  // uka faktisk inneholder i dag, ellers mandag.
+  const [dagKey, setDagKey] = useState<WeekKey>(
+    () => WEEK_KEYS.find((k) => isDayToday(data?.weekStartISO, k)) ?? "man",
+  );
+
   const goals: WbGoal[] = useMemo(() => mapGoals(data) ?? [], [data]);
   const weekHead = useMemo(() => mapWeekHead(data) ?? EMPTY_WEEK_HEAD, [data]);
   const banner = useMemo(() => mapWarningBanner(data), [data]);
@@ -584,7 +590,7 @@ export function WorkbenchHybrid({
   const seasonPhases: SeasonPhase[] = useMemo(() => mapSeasonPhases(data) ?? [], [data]);
   const planTemplates = useMemo(() => data?.planTemplates ?? [], [data]);
   const groupInsight = useMemo(() => mapGroupInsightLine(data), [data]);
-  const combinedInsights = groupInsight ?? insightsLine ?? null;
+  const combinedInsights = groupInsight ?? data?.canonChip ?? insightsLine ?? null;
 
   const [state, dispatch] = useReducer(reducer, { data, planStatus }, initWorkbenchState);
 
@@ -811,11 +817,11 @@ export function WorkbenchHybrid({
     (time: string) => {
       const drag = dragRef.current;
       const expectedNewId = `s${state.nextId}`;
-      dispatch({ type: "drop", day: "ons", time, drag });
+      dispatch({ type: "drop", day: dagKey, time, drag });
       dragRef.current = null;
-      persistDrop(drag, "ons", time, expectedNewId);
+      persistDrop(drag, dagKey, time, expectedNewId);
     },
-    [state.nextId, persistDrop],
+    [state.nextId, persistDrop, dagKey],
   );
 
   // "+"-knappen: reduceren legger "Ny økt" (60m TEK) på onsdag. Persister samme.
@@ -1100,19 +1106,24 @@ export function WorkbenchHybrid({
           isCoach={isCoach}
         />
       )}
-      {effectiveLevel === "dag" && hubTab !== "okt" && (
+      {hubTab === "dag" && (
         <DagView
-          daySessions={state.week.ons}
+          daySessions={state.week[dagKey]}
           selectedId={state.editScope === "session" ? state.selectedId : null}
           onSessionClick={(id) => dispatch({ type: "selectSession", id })}
           onTimelineDrop={onTimelineDrop}
+          dagKey={dagKey}
+          onDagKeyChange={setDagKey}
+          dateLabel={dayDateLabel(data?.weekStartISO, dagKey)}
+          isToday={isDayToday(data?.weekStartISO, dagKey)}
         />
       )}
       {effectiveLevel === "arsplan" && (
         <ArsplanView
           phases={seasonPhases}
-          onPhaseClick={() => {
-            /* Periode-inspektør er en senere fase — no-op for nå. */
+          onPhaseClick={(index) => {
+            const id = seasonPhases[index]?.id;
+            if (id) router.push(`/portal/tren/aarsplan/periode/${id}/rediger`);
           }}
         />
       )}
@@ -1166,6 +1177,7 @@ export function WorkbenchHybrid({
           templates={planTemplates}
           isCoach={isCoach}
           onUseTemplate={handleUseTemplate}
+          activePeriodLPhase={data?.activePeriodLPhase}
         />
       )}
       {hubTab === "std" && (

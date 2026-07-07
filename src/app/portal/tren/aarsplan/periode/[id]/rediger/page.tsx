@@ -9,20 +9,24 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { EmptyState } from "@/components/shared/empty-state";
-import { PeriodeRedigerForm } from "./form";
+import { PeriodeForm } from "../../periode-form";
 
 export default async function PeriodeRedigerPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  await requirePortalUser();
+  const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
   const { id } = await params;
 
-  const periode = await prisma.periodBlock.findUnique({
+  const periodeRaw = await prisma.periodBlock.findUnique({
     where: { id },
     include: { seasonPlan: { select: { userId: true, name: true } } },
   });
+
+  const isCoach = user.role === "COACH" || user.role === "ADMIN";
+  const periode =
+    periodeRaw && (isCoach || periodeRaw.seasonPlan.userId === user.id) ? periodeRaw : null;
 
   if (!periode) {
     return (
@@ -54,7 +58,8 @@ export default async function PeriodeRedigerPage({
           </span>
         }
       />
-      <PeriodeRedigerForm
+      <PeriodeForm
+        mode="rediger"
         periodeId={id}
         initial={{
           focus: periode.focus,
@@ -62,6 +67,8 @@ export default async function PeriodeRedigerPage({
           startDate: periode.startDate.toISOString().slice(0, 10),
           endDate: periode.endDate.toISOString().slice(0, 10),
           lPhase: periode.lPhase,
+          weeklyVolMin: periode.weeklyVolMin,
+          weeklyVolMax: periode.weeklyVolMax,
         }}
       />
     </div>

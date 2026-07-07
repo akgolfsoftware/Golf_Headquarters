@@ -2,7 +2,7 @@
   "shape": "package",
   "pkg": "akgolf-hq",
   "globalName": "AKGolfHQ",
-  "srcDir": "src/components/athletic",
+  "srcDir": "src/components/athletic/golfdata",
   "tsconfig": "tsconfig.sync.json",
   "cssEntry": ".design-sync/compiled-tailwind.css",
   "libOverrides": {

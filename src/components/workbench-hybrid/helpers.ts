@@ -107,6 +107,43 @@ export function buildDimensions(s: Editable): DimRow[] {
   ];
 }
 
+// ───────── Ukedag-rekkefølge og ekte datoer (Dag-fanen) ─────────
+
+/** Ukedag-rekkefølge, mandag først — samme rekkefølge som DAY_INDEX i WorkbenchHybrid. */
+export const WEEK_KEYS: WeekKey[] = ["man", "tir", "ons", "tor", "fre", "lor", "son"];
+
+const WEEKDAY_SHORT: Record<WeekKey, string> = {
+  man: "Man", tir: "Tir", ons: "Ons", tor: "Tor", fre: "Fre", lor: "Lør", son: "Søn",
+};
+
+function dateOfWeekKey(weekStartISO: string | undefined, key: WeekKey): Date | null {
+  if (!weekStartISO) return null;
+  const d = new Date(weekStartISO);
+  if (Number.isNaN(d.getTime())) return null;
+  d.setDate(d.getDate() + WEEK_KEYS.indexOf(key));
+  return d;
+}
+
+/** Ekte dato-etikett ("Man 9. jun") for en ukedag, gitt mandagen i uka (ISO). Fallback: kun ukedagsnavn. */
+export function dayDateLabel(weekStartISO: string | undefined, key: WeekKey): string {
+  const d = dateOfWeekKey(weekStartISO, key);
+  if (!d) return WEEKDAY_SHORT[key];
+  const month = d.toLocaleDateString("nb-NO", { month: "short" }).replace(".", "");
+  return `${WEEKDAY_SHORT[key]} ${d.getDate()}. ${month}`;
+}
+
+/** Er denne ukedagen (i den viste uka) faktisk i dag? */
+export function isDayToday(weekStartISO: string | undefined, key: WeekKey): boolean {
+  const d = dateOfWeekKey(weekStartISO, key);
+  if (!d) return false;
+  const now = new Date();
+  return (
+    d.getFullYear() === now.getFullYear() &&
+    d.getMonth() === now.getMonth() &&
+    d.getDate() === now.getDate()
+  );
+}
+
 // ───────── Gjentakelse (fasit recurSummary) ─────────
 
 const RECUR_DAY_SHORT: Record<WeekKey, string> = {

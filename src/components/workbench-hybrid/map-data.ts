@@ -182,7 +182,7 @@ export function mapSeasonPhases(data: WorkbenchData | undefined): SeasonPhase[] 
       weekly.FYS = 3;
       weekly.TURN = 0;
     }
-    return { type, months, span, weekly, samlinger: [] };
+    return { id: b.id, type, months, span, weekly, samlinger: [] };
   });
 }
 

@@ -2,12 +2,16 @@
 
 import type { DragEvent, ReactElement } from "react";
 import { CAT_COLORS, FONT, WB } from "./theme";
-import { durLabel } from "./helpers";
-import type { WbSession } from "./types";
+import { durLabel, WEEK_KEYS } from "./helpers";
+import type { WbSession, WeekKey } from "./types";
 
 const ROW_H = 42;
 const START_HOUR = 5;
 const END_HOUR = 22;
+
+const DAY_SHORT: Record<WeekKey, string> = {
+  man: "Man", tir: "Tir", ons: "Ons", tor: "Tor", fre: "Fre", lor: "Lør", son: "Søn",
+};
 
 function parseHM(time: string): { hh: number; mm: number } {
   if (!time || time === "—") return { hh: 8, mm: 0 };
@@ -19,11 +23,26 @@ type DagViewProps = {
   daySessions: WbSession[];
   selectedId: string | null;
   onSessionClick: (id: string) => void;
-  /** dropp på tidslinjen → time-streng ("16:00") for "ons" */
+  /** dropp på tidslinjen → time-streng ("16:00") for valgt dag (dagKey) */
   onTimelineDrop: (time: string) => void;
+  /** Hvilken ukedag som vises. */
+  dagKey: WeekKey;
+  onDagKeyChange: (key: WeekKey) => void;
+  /** Ekte dato-etikett for dagKey, f.eks. "Ons 11. jun". */
+  dateLabel: string;
+  isToday: boolean;
 };
 
-export function DagView({ daySessions, selectedId, onSessionClick, onTimelineDrop }: DagViewProps): ReactElement {
+export function DagView({
+  daySessions,
+  selectedId,
+  onSessionClick,
+  onTimelineDrop,
+  dagKey,
+  onDagKeyChange,
+  dateLabel,
+  isToday,
+}: DagViewProps): ReactElement {
   const hours: string[] = [];
   for (let h = START_HOUR; h <= END_HOUR; h++) hours.push(`${h < 10 ? "0" : ""}${h}:00`);
 
@@ -38,10 +57,34 @@ export function DagView({ daySessions, selectedId, onSessionClick, onTimelineDro
 
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 18px 8px" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 18px 8px", flexWrap: "wrap", gap: 8 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <span style={{ fontFamily: FONT.display, fontWeight: 700, fontSize: 18, color: WB.text }}>Onsdag 11. juni</span>
-          <span style={{ fontSize: 12.5, color: WB.lime }}>I dag</span>
+          <span style={{ fontFamily: FONT.display, fontWeight: 700, fontSize: 18, color: WB.text }}>{dateLabel}</span>
+          {isToday && <span style={{ fontSize: 12.5, color: WB.lime }}>I dag</span>}
+        </div>
+        <div style={{ display: "flex", gap: 4 }}>
+          {WEEK_KEYS.map((k) => (
+            <button
+              key={k}
+              type="button"
+              onClick={() => onDagKeyChange(k)}
+              style={{
+                fontFamily: FONT.mono,
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: "0.06em",
+                textTransform: "uppercase",
+                padding: "5px 10px",
+                borderRadius: 999,
+                border: "none",
+                background: k === dagKey ? WB.lime : "transparent",
+                color: k === dagKey ? WB.limeDark : WB.muted,
+                cursor: "pointer",
+              }}
+            >
+              {DAY_SHORT[k]}
+            </button>
+          ))}
         </div>
         <span style={{ fontSize: 12, color: WB.muted }}>dra en økt inn på tidslinjen</span>
       </div>

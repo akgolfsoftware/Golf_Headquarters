@@ -22,11 +22,13 @@
  */
 
 import { prisma } from "@/lib/prisma";
-import type { PyramidArea, SkillArea } from "@/generated/prisma/client";
+import type { LPhase, PyramidArea, SkillArea } from "@/generated/prisma/client";
 import { PYR_REKKEFOLGE } from "@/lib/pyramide";
 import { adherencePct, oktCompliance } from "@/lib/workbench/compliance";
 import { kategoriFraFritekst, SG_FOKUS_LABEL, type WorkbenchFokus } from "@/lib/workbench/fokus";
 import { beregnSgGap } from "@/lib/workbench/sg-gap";
+import { findActivePeriod } from "@/lib/workbench/period-lookup";
+import { canonDeviationChip } from "@/lib/workbench/canon-period-adjustment";
 import {
   mergeWeekSessions,
   type V2WeekSessionInput,
@@ -108,8 +110,13 @@ export type WorkbenchData = {
   fokus?: WorkbenchFokus | null;
   /** Ukevolum-mål fra spillerens aktive PeriodBlock (min/max minutter). Null-felt = ikke satt. */
   volTarget?: { min: number | null; max: number | null };
+  /** Periodetype for spillerens aktive PeriodBlock akkurat nå — brukes til malanbefaling. */
+  activePeriodLPhase?: LPhase | null;
+  /** CANON-avvikstekst for aktiv periode (anbefaling, ikke sperre) — null når alt stemmer. */
+  canonChip?: string | null;
   /** Sesong-perioder fra SeasonPlan.periodBlocks (Gantt/Årsplan). */
   seasonBlocks?: {
+    id: string;
     lPhase: "GRUNN" | "SPESIAL" | "TURNERING";
     startDate: string;
     endDate: string;
@@ -235,7 +242,6 @@ export async function loadWorkbenchData(
     last30Sessions,
     goals,
     entries,
-    activePeriod,
     player,
     seasonPlan,
     yearTournaments,
@@ -279,11 +285,6 @@ export async function loadWorkbenchData(
         manualDate: true,
         tournament: { select: { name: true, startDate: true, location: true } },
       },
-    }),
-    // Aktiv periode-blokk (dagens dato innenfor start/slutt) → ukevolum-mål + coach-fokus.
-    prisma.periodBlock.findFirst({
-      where: { seasonPlan: { userId }, startDate: { lte: now }, endDate: { gte: now } },
-      select: { weeklyVolMin: true, weeklyVolMax: true, focus: true },
     }),
     prisma.user.findUnique({ where: { id: userId }, select: { hcp: true } }),
     prisma.seasonPlan.findFirst({
@@ -364,9 +365,13 @@ export async function loadWorkbenchData(
     }),
   ]);
 
+  // Aktiv periode-blokk (dagens dato innenfor start/slutt) → ukevolum-mål + coach-fokus.
+  // Gjenbruker seasonPlan.periodBlocks (allerede hentet til Gantt) — ingen egen spørring.
+  const activePeriodBlock = seasonPlan ? findActivePeriod(seasonPlan.periodBlocks, now) : null;
+
   const volTarget =
-    activePeriod && (activePeriod.weeklyVolMin != null || activePeriod.weeklyVolMax != null)
-      ? { min: activePeriod.weeklyVolMin, max: activePeriod.weeklyVolMax }
+    activePeriodBlock && (activePeriodBlock.weeklyVolMin != null || activePeriodBlock.weeklyVolMax != null)
+      ? { min: activePeriodBlock.weeklyVolMin, max: activePeriodBlock.weeklyVolMax }
       : undefined;
 
   const templateRowsEarly: WorkbenchPlanTemplate[] = planTemplates.map((t) => ({
@@ -506,6 +511,10 @@ export async function loadWorkbenchData(
     minByArea.set(s.pyramidArea, (minByArea.get(s.pyramidArea) ?? 0) + s.durationMin);
   }
   const total30 = last30Sessions.reduce((a, s) => a + s.durationMin, 0);
+  const pctOfTotal30 = (area: PyramidArea): number => {
+    const mins = minByArea.get(area) ?? 0;
+    return total30 > 0 ? Math.round((mins / total30) * 100) : 0;
+  };
   // Pyramide-konvensjon: TURN øverst → FYS nederst.
   const pyramid = [...PYR_REKKEFOLGE].reverse().map((area) => {
     const mins = minByArea.get(area) ?? 0;
@@ -513,9 +522,16 @@ export async function loadWorkbenchData(
       lbl: PYR_SHORT[area],
       ax: PYR_TONE[area],
       hours: Math.round((mins / 60) * 10) / 10,
-      pct: total30 > 0 ? Math.round((mins / total30) * 100) : 0,
+      pct: pctOfTotal30(area),
     };
   });
+  // CANON-avvik for aktiv periode (siste 30 d mot anbefalt retning) — anbefaling, aldri sperre.
+  const pyramidPctByArea: Partial<Record<PyramidArea, number>> = Object.fromEntries(
+    PYR_REKKEFOLGE.map((area) => [area, pctOfTotal30(area)]),
+  );
+  const canonChip = activePeriodBlock
+    ? canonDeviationChip(pyramidPctByArea, activePeriodBlock.lPhase)
+    : null;
 
   // ── Turneringer (sidebar) ───────────────────────────────────────
   const tournaments = entries
@@ -581,11 +597,11 @@ export async function loadWorkbenchData(
 
   // Fokus: coachens eksplisitte periode-fokus vinner; ellers beregnet SG-gap.
   let fokus: WorkbenchFokus | null = null;
-  if (activePeriod?.focus) {
+  if (activePeriodBlock?.focus) {
     fokus = {
       kilde: "coach",
-      label: activePeriod.focus,
-      kategori: kategoriFraFritekst(activePeriod.focus),
+      label: activePeriodBlock.focus,
+      kategori: kategoriFraFritekst(activePeriodBlock.focus),
     };
   } else {
     const gap = await beregnSgGap(userId);
@@ -618,6 +634,7 @@ export async function loadWorkbenchData(
   const seasonBlocks =
     seasonPlan && seasonPlan.periodBlocks.length > 0
       ? seasonPlan.periodBlocks.map((b) => ({
+          id: b.id,
           lPhase: b.lPhase,
           startDate: b.startDate.toISOString(),
           endDate: b.endDate.toISOString(),
@@ -656,6 +673,8 @@ export async function loadWorkbenchData(
     fokus,
     volTarget,
     seasonBlocks,
+    activePeriodLPhase: activePeriodBlock?.lPhase ?? null,
+    canonChip,
     tournamentCalendar: tournamentCalendar.length > 0 ? tournamentCalendar : undefined,
     planTemplates: templateRows.length > 0 ? templateRows : undefined,
     paletteItems: paletteItems.length > 0 ? paletteItems : undefined,

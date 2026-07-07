@@ -63,6 +63,25 @@ PlayerHQ **Min golf**: konsolidert flate med tabs — SG-status (SgTotalKort, Sg
 > migrering kjørt via `scripts/migrate-repdrill-2026-07-04.ts`, verifisert 7/7 + 5/5 kolonner i dev-DB.
 > **Ikke bygg parallelle Okt/OktDrill-tabeller — de finnes allerede under andre navn.**
 
+### Bølge 2.5 — Periode & Dag · FERDIG 2026-07-06 · ~1 økt
+Egen, smalere pakke (ikke å forveksle med Bølge 3s drill-composer over) som lukket det konkrete
+periode/dag-hullet i planleggingshierarkiet, bestilt direkte av Anders: (1) periode-CRUD
+konsolidert fra tre konkurrerende, delvis ødelagte versjoner til én skjerm
+(`/portal/tren/aarsplan/periode/[id]/rediger` + ny `/ny`-rute), med IDOR-fiks (coach kunne ikke
+redigere spillers periode) og blokkerende-validering-fiks (en bug nektet å lagre perioden ved
+avvik — brøt «anbefaling, aldri sperre»); (2) Gantt→periode-navigasjon koblet (periode-id
+bevares gjennom `mapSeasonPhases`, var tidligere no-op); (3) periode↔mal-anbefaling
+(`src/lib/workbench/period-lookup.ts`, aktiv periode fremhever matchende maler i Maler-fanen,
+skjuler aldri andre); (4) «Dag» løftet til 8. Workbench-fane med ekte data (var hardkodet
+mock-onsdag, «Onsdag 11. juni» uansett faktisk dato); (5) CANON v3.5-periode-anbefaling
+(`src/lib/workbench/canon-period-adjustment.ts`, speiler Masterbrain pr_6/pr_7/pr_8 — GRUNN
+FYS/TEK opp, SPESIAL SLAG opp, TURNERING SPILL/TURN opp) som avviks-chip i periode-form og
+uke-innsikt. Fant og fikset i samme slag: dedup-bug i `merge-week-sessions.ts` (V1-økter med et
+V2-speil ble talt dobbelt i uke-visningen — timer/adherence for høyt; dag-fanen ville arvet
+samme bug uten denne fiksen).
+**Ferdig når:** ✓ demonstrert — 326/326 tester, tsc/build grønt. Live nettleser-verifikasjon med
+innlogget testbruker gjenstår (ingen dev-innloggingsdata tilgjengelig denne økten).
+
 ### Bølge 3 — Workbench v2 · avhenger av bølge 2 · ~1–2 økter
 Composer på drill-nivå (velg fra drillbank → reps per drill → økt). Øktmaler og ukemaler med fase-tag (GRUNN/SPES/TURN), deling coach→spiller. «Dupliser forrige uke». FYS-programkobling når PYR=FYS. Pyramide-budsjett regnes fra drill-minutter. Anbefalings-chips (aldri sperrer) + coach-varsel-event.
 **Ferdig når:** spiller på mobil: velg ukemal → juster én økt → lagre, under 60 sek.

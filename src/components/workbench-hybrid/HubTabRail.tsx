@@ -3,7 +3,7 @@
 import { useEffect, useRef, type ReactElement } from "react";
 import { FONT, WB } from "./theme";
 
-export type WorkbenchHubTab = "tek" | "seson" | "maler" | "std" | "gantt" | "uke" | "okt";
+export type WorkbenchHubTab = "tek" | "seson" | "maler" | "std" | "gantt" | "uke" | "dag" | "okt";
 
 const HUB_TABS: { key: WorkbenchHubTab; label: string; sepBefore?: boolean }[] = [
   { key: "tek", label: "Teknisk plan" },
@@ -12,6 +12,7 @@ const HUB_TABS: { key: WorkbenchHubTab; label: string; sepBefore?: boolean }[] =
   { key: "std", label: "Standardøkter" },
   { key: "gantt", label: "Gantt (År)", sepBefore: true },
   { key: "uke", label: "Uke" },
+  { key: "dag", label: "Dag" },
   { key: "okt", label: "Økt" },
 ];
 
@@ -22,6 +23,7 @@ const HUB_TABS_COMPACT: Record<WorkbenchHubTab, string> = {
   std: "Std",
   gantt: "Gantt",
   uke: "Uke",
+  dag: "Dag",
   okt: "Økt",
 };
 
@@ -104,6 +106,7 @@ export function HubTabRail({ tab, onTab, compact = false }: HubTabRailProps): Re
 export function hubTabToZoom(tab: WorkbenchHubTab): "arsplan" | "uke" | "dag" | null {
   if (tab === "gantt") return "arsplan";
   if (tab === "uke") return "uke";
+  if (tab === "dag") return "dag";
   if (tab === "okt") return "dag";
   return null;
 }

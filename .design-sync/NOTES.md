@@ -2,6 +2,17 @@
 
 Repo-spesifikke gotchas for syncen. Les FØR re-sync.
 
+## SCOPE-BESLUTNING 2026-07-06 (Anders)
+- Sync KUN `src/components/athletic/golfdata/` (v13, 25 komponenter) — `cfg.srcDir` er oppdatert.
+- Det gamle athletic-biblioteket (rot + calendars/data/patterns/…) er i vedlikeholdsmodus og skal
+  IKKE til Claude Design (jf. `.claude/rules/design-system-regel.md`).
+- NB: golfdata-komponenter kan importere fra `../hooks` eller delte filer utenfor golfdata —
+  bygget vil vise om srcDir-scoping holder, ellers bruk componentSrcMap/exclusions.
+- Tokens for v13: `golfdata-tokens.css` (i tillegg til globals.css) — sjekk at cssEntry-kompileringen
+  tar med begge før konverter-bygg.
+- Ingen sync fullført ennå: intet projectId. 2026-07-06 stoppet på DesignSync-autorisasjon
+  (økten var startet før /design-login; kjør syncen fra en fersk, innlogget økt).
+
 ## Hva dette er
 - `akgolf-hq` er et **Next.js APP-repo**, ikke et publisert DS-bibliotek. Designsystemet vi syncer er
   `src/components/athletic/` (97 komponenter etter eksport-utvidelse). `cfg.srcDir = src/components/athletic`
