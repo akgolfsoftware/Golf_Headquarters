@@ -322,6 +322,8 @@ model User {
   homeClub           String?
   // VGS (videregående skole) — brukes for å koble spillere til toppidrettslinjer.
   school             String?
+  // VG1 | VG2 | VG3 — klassetrinn for toppidrettselever. Redigeres av coach/admin.
+  schoolYear         String?
   // Snittscore forrige sesong — brukes som baseline for fremgang.
   prevSeasonAvgScore Int?
   // Kanonisk kobling til turneringsidentitet (PublicPlayer) — settes automatisk
@@ -2294,6 +2296,28 @@ model GroupSchedule {
 
   @@index([groupId, startAt])
   @@map("group_schedules")
+}
+
+// Sesongperioder (Bonus). Fargelegger års-/måneds-/ukekalenderen med
+// AK-periodisering (TURN-rest/Testuke/GRUNN/SPES/TURN) per gruppe og skoleår.
+model TrainingPeriod {
+  id         String   @id @default(cuid())
+  // null = gjelder alle grupper. Ingen @relation — se gotchas.md (additiv isolasjon).
+  groupId    String?
+  // f.eks. "2026/2027"
+  schoolYear String
+  // TURN-rest | Testuke | GRUNN | SPES | TURN
+  name       String
+  startDate  DateTime
+  endDate    DateTime
+  // primary | accent | moss | gold | muted — matcher YearPlanGantt/MonthGrid tone-typer
+  tone       String?
+  note       String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([groupId, startDate])
+  @@map("training_periods")
 }
 
 model GroupMember {

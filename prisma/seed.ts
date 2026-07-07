@@ -344,7 +344,6 @@ const COACH_AVAILABILITY: ReadonlyArray<{
 // Brukes til å vise faste tider i kalenderen + filtrere ut fra
 // coach-tilgjengelighet ved booking.
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const GROUP_SCHEDULE: ReadonlyArray<{
   groupName: string;
   weekday: number;
@@ -399,6 +398,60 @@ const GROUPS = [
     coachEmail: "anders@akgolf.no",
   },
 ] as const;
+
+// ---------- Sesongperioder (WANG Toppidrett 2026/2027) ----------
+// Uke-grenser fra docs/treningsplanlegger/wang-toppidrett/arshjul-2026-2027.md
+// (Anders' fasit). Dato-grenser er hele kalenderdager (UTC-midnatt) — periodene
+// er ukenivå-klassifisering, ikke klokkeslett-sensitive.
+const WANG_PERIODS: ReadonlyArray<{
+  schoolYear: string;
+  name: string;
+  startDate: string; // YYYY-MM-DD, inkludert
+  endDate: string; // YYYY-MM-DD, EKSKLUDERT (dagen etter periodens siste dag)
+  tone: string;
+  note: string;
+}> = [
+  {
+    schoolYear: "2026/2027",
+    name: "TURN-rest",
+    startDate: "2026-08-17",
+    endDate: "2026-10-19",
+    tone: "gold",
+    note: "Sluttspill av sommersesongen, uke 34–42",
+  },
+  {
+    schoolYear: "2026/2027",
+    name: "Testuke",
+    startDate: "2026-10-19",
+    endDate: "2026-10-26",
+    tone: "accent",
+    note: "Test-/evalueringsuke, IUP-baseline før GRUNN, uke 43",
+  },
+  {
+    schoolYear: "2026/2027",
+    name: "GRUNN",
+    startDate: "2026-10-26",
+    endDate: "2027-03-15",
+    tone: "primary",
+    note: "Bygg ny teknikk (BUILD), uke 44–10",
+  },
+  {
+    schoolYear: "2026/2027",
+    name: "SPES",
+    startDate: "2027-03-15",
+    endDate: "2027-04-26",
+    tone: "moss",
+    note: "Overføre teknikk til slag på bane, uke 11–16",
+  },
+  {
+    schoolYear: "2026/2027",
+    name: "TURN",
+    startDate: "2027-04-26",
+    endDate: "2027-06-21",
+    tone: "gold",
+    note: "Prestere og vedlikeholde i turnering, uke 17–24",
+  },
+];
 
 // ---------- Seed ----------
 
@@ -630,6 +683,94 @@ async function seedGroups() {
   }
 }
 
+// Anker-uke for faste ukentlige tider: uke 34 2026 (17.–21. aug, CEST +02:00).
+// GroupSchedule.recurring="WEEKLY" gjør at appen kun leser ukedag+klokkeslett
+// fra denne ene raden — datoen i seg selv brukes ikke til å regne fremtidige
+// forekomster andre steder enn her.
+const ANCHOR_WEEK_DATES: Record<number, string> = {
+  0: "2026-08-17", // Mandag
+  1: "2026-08-18", // Tirsdag
+  2: "2026-08-19", // Onsdag
+  3: "2026-08-20", // Torsdag
+  4: "2026-08-21", // Fredag
+};
+
+async function seedGroupSchedule() {
+  console.log("\n[seed] Gruppe-timeplan (faste ukentlige tider)");
+  for (const s of GROUP_SCHEDULE) {
+    const group = await prisma.group.findFirst({ where: { name: s.groupName } });
+    if (!group) {
+      console.warn(`  ! Gruppe ikke funnet: ${s.groupName} — hopper over`);
+      continue;
+    }
+    const dato = ANCHOR_WEEK_DATES[s.weekday];
+    const dagNavn = ["Man", "Tir", "Ons", "Tor", "Fre"][s.weekday];
+    const startAt = new Date(`${dato}T${s.startTime}:00+02:00`);
+    const endAt = new Date(`${dato}T${s.endTime}:00+02:00`);
+    // Ukedag MÅ inn i title — ellers kolliderer flere ukedager for samme
+    // gruppe på samme "finnes fra før"-nøkkel og overskriver hverandre.
+    const title = `${s.groupName} — fast trening (${dagNavn})`;
+
+    const existing = await prisma.groupSchedule.findFirst({
+      where: { groupId: group.id, title, recurring: "WEEKLY" },
+    });
+    if (existing) {
+      await prisma.groupSchedule.update({
+        where: { id: existing.id },
+        data: { startAt, endAt },
+      });
+      console.log(`  · ${s.groupName} ${dagNavn} ${s.startTime}-${s.endTime}`);
+    } else {
+      await prisma.groupSchedule.create({
+        data: {
+          groupId: group.id,
+          title,
+          startAt,
+          endAt,
+          recurring: "WEEKLY",
+        },
+      });
+      console.log(`  + ${s.groupName} ${dagNavn} ${s.startTime}-${s.endTime}`);
+    }
+  }
+}
+
+async function seedTrainingPeriods() {
+  console.log("\n[seed] Sesongperioder (WANG 2026/2027)");
+  const wang = await prisma.group.findFirst({ where: { name: "WANG Toppidrett Fredrikstad" } });
+  if (!wang) {
+    console.warn("  ! WANG-gruppe ikke funnet — hopper over perioder");
+    return;
+  }
+  for (const p of WANG_PERIODS) {
+    const startDate = new Date(`${p.startDate}T00:00:00Z`);
+    const endDate = new Date(`${p.endDate}T00:00:00Z`);
+    const existing = await prisma.trainingPeriod.findFirst({
+      where: { groupId: wang.id, schoolYear: p.schoolYear, name: p.name },
+    });
+    if (existing) {
+      await prisma.trainingPeriod.update({
+        where: { id: existing.id },
+        data: { startDate, endDate, tone: p.tone, note: p.note },
+      });
+      console.log(`  · ${p.name} (${p.startDate} – ${p.endDate})`);
+    } else {
+      await prisma.trainingPeriod.create({
+        data: {
+          groupId: wang.id,
+          schoolYear: p.schoolYear,
+          name: p.name,
+          startDate,
+          endDate,
+          tone: p.tone,
+          note: p.note,
+        },
+      });
+      console.log(`  + ${p.name} (${p.startDate} – ${p.endDate})`);
+    }
+  }
+}
+
 async function main() {
   console.log("AK Golf HQ seed");
   console.log("================");
@@ -641,11 +782,10 @@ async function main() {
   await seedCoaches();
   await seedGroups();
   await seedCoachAvailability();
+  await seedGroupSchedule();
+  await seedTrainingPeriods();
 
   console.log("\n[seed] Ferdig.");
-  console.log("\nMerk: GROUP_SCHEDULE (faste treningstider) er definert i koden");
-  console.log("men ikke seeded til DB enda — krever ny GroupSchedule-modell.");
-  console.log("Brukes som referanse i kalender-UI-en inntil videre.");
 }
 
 main()
