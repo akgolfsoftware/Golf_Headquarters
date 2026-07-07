@@ -257,7 +257,9 @@ function KartView({
             </pattern>
           </defs>
           <rect width="100" height="100" fill="url(#grass)" />
-          {/* Fairway-band */}
+          {/* Fairway-band — bevisst fast hvit (dekorativ illustrasjon på mørk gradient som
+              selv skifter lime/hvit i mørk modus, se `bg-gradient-to-br` over); en token her
+              ville flippet uforutsigbart. Sjekk visuelt før evt. endring. */}
           <path
             d="M 10 60 Q 40 50 65 55 T 95 50"
             stroke="rgba(255,255,255,0.18)"
@@ -272,7 +274,7 @@ function KartView({
             width="12"
             height="20"
             rx="2"
-            fill="rgba(209,248,67,0.10)"
+            fill="hsl(var(--accent) / 0.10)"
           />
         </svg>
 

@@ -108,12 +108,8 @@ export default async function TalentProfil({
       title={
         <>
           <em
-            className="not-italic"
-            style={{
-              fontFamily: "'Inter Tight', sans-serif",
-              fontStyle: "italic",
-              color: "hsl(var(--primary))",
-            }}
+            className="font-display italic"
+            style={{ color: "hsl(var(--primary))" }}
           >
             {t.user.name?.split(" ")[0] ?? "Talent"}
           </em>
@@ -410,7 +406,7 @@ function RadarChart({ verdier }: { verdier: number[] }) {
               y={y}
               textAnchor="middle"
               dominantBaseline="middle"
-              fontFamily="var(--font-geist-mono)"
+              fontFamily="var(--font-jetbrains-mono)"
               fontSize="11"
               fontWeight={600}
               fill="var(--color-foreground)"

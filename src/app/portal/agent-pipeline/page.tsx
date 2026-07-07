@@ -5,6 +5,40 @@ import { prisma } from "@/lib/prisma";
 import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { EmptyState } from "@/components/shared/empty-state";
 
+// Norske labels for rå enum-verdier — speiler ACTION_LABEL i admin/agents/[agentId]/page.tsx.
+const SIGNAL_LABEL: Record<string, string> = {
+  SG_TOTAL: "SG-total",
+  SG_AREA: "SG-område",
+  HCP_TREND: "HCP-trend",
+  CLUB_AVG: "Kølle-snitt",
+  PYRAMID_AREA: "Pyramide-område",
+  STREAK: "Streak",
+};
+
+const ACTION_LABEL: Record<string, string> = {
+  PYRAMID_ADJUST: "Juster pyramide",
+  SESSION_ADD: "Legg til økt",
+  SESSION_REMOVE: "Fjern økt",
+  INTENSITY_ADJUST: "Juster intensitet",
+  TAPER_ENGAGE: "Start taper",
+  WITHDRAW: "Trekk fra",
+  DRILL_SUGGEST: "Drill-forslag",
+  TEST_SCHEDULE: "Planlegg test",
+  PEER_COMPARE: "Sammenlign",
+  RECOVERY_ADD: "Legg til hvile",
+};
+
+const PLAN_ACTION_STATUS_LABEL: Record<string, string> = {
+  PENDING: "Venter",
+  ACCEPTED: "Godkjent",
+  REJECTED: "Avvist",
+};
+
+const RUN_STATUS_LABEL: Record<string, string> = {
+  OK: "OK",
+  ERROR: "Feil",
+};
+
 export default async function AgentPipelinePage() {
   const user = await requirePortalUser();
 
@@ -74,7 +108,7 @@ export default async function AgentPipelinePage() {
                   <tr key={s.id} className="border-b border-border/60 last:border-0">
                     <Td>
                       <span className="rounded-sm bg-muted px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                        {s.kind}
+                        {SIGNAL_LABEL[s.kind] ?? s.kind}
                       </span>
                     </Td>
                     <Td className="text-right tabular-nums">
@@ -104,7 +138,7 @@ export default async function AgentPipelinePage() {
               >
                 <div className="flex items-center justify-between">
                   <span className="rounded-sm bg-muted px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                    {s.kind}
+                    {SIGNAL_LABEL[s.kind] ?? s.kind}
                   </span>
                   <span className="font-mono text-sm tabular-nums text-foreground">
                     {s.value != null ? s.value.toFixed(2).replace(".", ",") : "—"}
@@ -147,7 +181,7 @@ export default async function AgentPipelinePage() {
                 >
                   <div className="flex items-center gap-2">
                     <span className="rounded-full bg-primary/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] text-primary">
-                      {a.actionType}
+                      {ACTION_LABEL[a.actionType] ?? a.actionType}
                     </span>
                     <span
                       className={`rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.10em] ${
@@ -158,7 +192,7 @@ export default async function AgentPipelinePage() {
                           : "bg-muted text-muted-foreground"
                       }`}
                     >
-                      {a.status}
+                      {PLAN_ACTION_STATUS_LABEL[a.status] ?? a.status}
                     </span>
                     <span className="ml-auto font-mono text-[10px] text-muted-foreground">
                       {a.agentName}
@@ -201,7 +235,7 @@ export default async function AgentPipelinePage() {
                             : "bg-destructive/15 text-destructive"
                         }`}
                       >
-                        {r.status}
+                        {RUN_STATUS_LABEL[r.status] ?? r.status}
                       </span>
                     </Td>
                     <Td className="text-right font-mono text-[10px] text-muted-foreground">

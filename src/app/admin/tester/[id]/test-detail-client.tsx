@@ -226,7 +226,7 @@ function TrendChart({
             return (
               <g key={i}>
                 <line x1={padL} y1={y} x2={w - padR} y2={y} stroke="currentColor" strokeWidth="0.5" className="text-border" opacity="0.5" />
-                <text x={padL - 6} y={y + 3} textAnchor="end" className="fill-muted-foreground" fontFamily="JetBrains Mono" fontSize="9">
+                <text x={padL - 6} y={y + 3} textAnchor="end" className="fill-muted-foreground" fontFamily="var(--font-jetbrains-mono)" fontSize="9">
                   {t.toFixed(1).replace(".", ",").replace(/,0$/, "")}
                 </text>
               </g>
@@ -236,14 +236,14 @@ function TrendChart({
           {eliteY != null && (
             <>
               <line x1={padL} y1={eliteY} x2={w - padR} y2={eliteY} stroke="currentColor" strokeDasharray="4 4" strokeWidth="1.25" className="text-primary/40" />
-              <text x={w - padR} y={eliteY - 4} textAnchor="end" className="fill-primary" fontFamily="JetBrains Mono" fontSize="9" fontWeight="700" opacity="0.7">
+              <text x={w - padR} y={eliteY - 4} textAnchor="end" className="fill-primary" fontFamily="var(--font-jetbrains-mono)" fontSize="9" fontWeight="700" opacity="0.7">
                 REFERANSE
               </text>
             </>
           )}
 
           <line x1={padL} y1={snittY} x2={w - padR} y2={snittY} stroke="currentColor" strokeDasharray="3 5" strokeWidth="1" className="text-muted-foreground" opacity="0.5" />
-          <text x={w - padR} y={snittY - 4} textAnchor="end" className="fill-muted-foreground" fontFamily="JetBrains Mono" fontSize="9" fontWeight="700">
+          <text x={w - padR} y={snittY - 4} textAnchor="end" className="fill-muted-foreground" fontFamily="var(--font-jetbrains-mono)" fontSize="9" fontWeight="700">
             DIN SNITT
           </text>
 

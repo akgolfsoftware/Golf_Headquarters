@@ -213,7 +213,7 @@ export default async function TalentRegion({
                       x={pin.x}
                       y={pin.y + 3}
                       textAnchor="middle"
-                      fontFamily="var(--font-geist-mono)"
+                      fontFamily="var(--font-jetbrains-mono)"
                       fontSize="11"
                       fontWeight={600}
                       fill={active ? "var(--color-primary-foreground)" : "var(--color-muted-foreground)"}
@@ -224,7 +224,7 @@ export default async function TalentRegion({
                       x={pin.x}
                       y={pin.y + r + 14}
                       textAnchor="middle"
-                      fontFamily="var(--font-geist-mono)"
+                      fontFamily="var(--font-jetbrains-mono)"
                       fontSize="10"
                       fill="var(--color-foreground)"
                     >

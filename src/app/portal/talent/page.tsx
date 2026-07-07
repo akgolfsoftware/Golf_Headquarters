@@ -273,8 +273,8 @@ export default async function TalentPage() {
           <span className="font-mono text-[11px] font-bold uppercase tracking-[0.04em] text-accent">
             NIVÅ {niva}
           </span>
-          <span className="h-3 w-px bg-white/20" />
-          <span className="text-[11.5px] text-white/80">{nivaLabel(niva)}</span>
+          <span className="h-3 w-px bg-primary-foreground/20" />
+          <span className="text-[11.5px] text-primary-foreground/80">{nivaLabel(niva)}</span>
         </div>
       </header>
 
@@ -304,7 +304,7 @@ export default async function TalentPage() {
                     stage.state === "done" || stage.state === "passed"
                       ? "border-primary bg-primary text-accent"
                       : stage.state === "now"
-                        ? "border-accent bg-card text-primary shadow-[0_0_0_3px_rgba(209,248,67,0.25)]"
+                        ? "border-accent bg-card text-primary shadow-[0_0_0_3px_hsl(var(--accent)/0.25)]"
                         : "border-border bg-card text-muted-foreground",
                   ].join(" ")}
                 >
@@ -364,6 +364,8 @@ export default async function TalentPage() {
                       className="absolute inset-y-0 left-0 rounded-full"
                       style={{
                         width: `${pct}%`,
+                        // #8EBF00 (olje-lime) matcher ingen eksisterende token — trenger
+                        // en beslutning fra Anders før dette kan tokeniseres.
                         background:
                           "linear-gradient(90deg, var(--color-primary), #8EBF00)",
                       }}
@@ -552,8 +554,8 @@ export default async function TalentPage() {
       </div>
 
       {/* Pre-BETA banner */}
-      <div className="rounded-md border border-amber-500/40 bg-amber-500/10 px-4 py-2 text-center">
-        <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-amber-700">
+      <div className="rounded-md border border-warning/40 bg-warning/10 px-4 py-2 text-center">
+        <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-warning">
           PRE-BETA · Talent-modulen viser foreløpig demo-data — kobles til DB post-BETA
         </p>
       </div>

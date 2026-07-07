@@ -80,7 +80,7 @@ function DublettKort({ kandidat }: { kandidat: MergeKandidat }) {
 
       const { entries, results, participants } = result.flyttet;
       setFeedback(
-        `Merget inn i "${targetName}" — flyttet ${entries} påmeldinger, ${results} resultater, ${participants} deltakere.`,
+        `Slått sammen med "${targetName}" — flyttet ${entries} påmeldinger, ${results} resultater, ${participants} deltakere.`,
       );
       router.refresh();
     });
@@ -168,7 +168,7 @@ function DublettKort({ kandidat }: { kandidat: MergeKandidat }) {
                 ) : (
                   <Link2 className="h-3.5 w-3.5" />
                 )}
-                Merge
+                Slå sammen
               </button>
             </div>
           ))
@@ -183,7 +183,7 @@ function DublettKort({ kandidat }: { kandidat: MergeKandidat }) {
         </div>
       )}
       {feil && (
-        <div className="border-t border-destructive/20 bg-destructive/5 px-6 py-2 text-sm text-destructive-foreground">
+        <div className="border-t border-destructive/20 bg-destructive/5 px-6 py-2 text-sm text-destructive">
           {feil}
         </div>
       )}

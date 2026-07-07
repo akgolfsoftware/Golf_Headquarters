@@ -152,7 +152,7 @@ export function TildelModal({
                     fontFamily: "var(--font-mono)",
                     fontSize: 10,
                     color: "var(--muted)",
-                    background: "#fff",
+                    background: "var(--card)",
                     border: "1px solid var(--border)",
                     borderRadius: 5,
                     padding: "2px 6px",

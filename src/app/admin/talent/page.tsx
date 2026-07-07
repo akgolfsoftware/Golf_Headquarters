@@ -160,6 +160,9 @@ export default async function TalentCoachPage({ searchParams }: PageProps) {
   function gaugeSegColor(p: number): string {
     if (p < 0.5) return "hsl(var(--destructive))";
     if (p < 0.7) return "hsl(var(--warning))";
+    // Bevisst hardkodet (ikke en token-glipp): --primary og --chart-1 blir begge lime i
+    // mørk modus, som ville kollidert med lime-segmentet under. Trenger egen "alltid skog"-
+    // token før dette kan tokeniseres trygt — avklar med Anders før endring.
     if (p < 0.85) return "#005840";
     return "hsl(var(--primary))";
   }
