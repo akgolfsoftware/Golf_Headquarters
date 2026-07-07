@@ -1,50 +1,45 @@
 "use client";
 
 /**
- * HybridHomePage — PlayerHQ Hjem (/portal). Recomponert fra v13-designsystemet
- * (Bolk 1, 2026-07-04). Bygget av golfdata-komponentene: KpiTile (dataliv),
- * SgKategoriBar (kanonisk SG-dekomponering), Button (signal-CTA), Card, Eyebrow.
- * Den gamle terminal-lys-fasiten (juni) er obsolet — v13 er eneste gjeldende design.
+ * HybridHomePage — PlayerHQ Hjem (/portal). v13-REDESIGN (2026-07-06): ledet av
+ * dommen (NesteFokusKort) + økt-hero, ikke re-skinning. Bygget av golfdata-familien.
  *
- * Presentasjonslag: all data sendes inn som props fra page.tsx (server).
- * PortalShell (layout) eier topbar/sidebar/bunn-nav — denne rendrer <main>.
- * Alt v13-innhold rendres under .golfdata-scope (lys PlayerHQ-tema).
+ * Wireframe (retning A «Dommen» + økt-hero fra C):
+ *   1. Hilsen — tier-pill + dato-eyebrow + display-hero + status som peker på fokus.
+ *   2. NesteFokusKort — DOMMEN: største SG-lekkasje + anbefalt handling (helten).
+ *   3. Dagens økt — forest hero med START (når økt finnes), ellers plan-CTA.
+ *   4. SgTotalKort — SG total mot baseline: tall → trend → forklaring.
+ *   5. SG per kategori — SgKategoriBar (detalj under totalen).
+ *   6. Dagens plan — øvrige økter i dag.
+ *   7. Plan denne uka — WeekProgress.
+ *   8. Hva er nytt — siste aktivitet.
+ *   9. Coach-notat.
  *
- * Seksjoner (mobil-først):
- *   1. Hilsen (tier-pill + dato-eyebrow + display-hero + lead).
- *   2. Start dagens økt — lime signal-CTA (når dagens økt finnes).
- *   3. KPI-grid (3): SG TOTALT · RUNDER · SNITTSCORE — KpiTile m/ count-up.
- *   4. SG per kategori — SgKategoriBar (divergerende stolper mot baseline).
- *   5. Dagens plan — Card-rader per økt i dag.
- *   6. Plan denne uka — WeekProgress (ekte ukeframdrift).
- *   7. Hva er nytt — siste aktivitet (drill-logger).
- *   8. Coach-notat — beholdt app-funksjon, v13 Card.
+ * Tekst styrt av ordboken (docs/skjermtekst/): klarspråk for spiller, SG m/ fortegn +
+ * baseline, «Start økt», tomtilstander med «—». All data via props fra page.tsx.
  */
 
 import Link from "next/link";
-import { Play, ArrowRight, MessageSquare, ChevronRight, CalendarRange, Activity } from "lucide-react";
-import { Button, Card, Eyebrow, KpiTile, SgKategoriBar, type SgKategori } from "@/components/athletic/golfdata";
+import { useRouter } from "next/navigation";
+import { Play, ArrowRight, ChevronRight, CalendarRange, Activity, MapPin } from "lucide-react";
+import {
+  Card, Eyebrow, KpiTile, NesteFokusKort, SgTotalKort, SgKategoriBar,
+  type SgKategori,
+} from "@/components/athletic/golfdata";
 import { WeekProgress } from "./WeekProgress";
 import type { DashboardData, TodaySession } from "@/app/portal/actions";
 
 // ── helpers ───────────────────────────────────────────────────────
 
 function formatTime(d: Date): string {
-  return d.toLocaleTimeString("nb-NO", {
-    hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Europe/Oslo",
-  });
+  return d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Europe/Oslo" });
 }
-
 function formatWeekDay(d: Date): string {
-  return d.toLocaleDateString("nb-NO", {
-    weekday: "long", day: "numeric", month: "long", timeZone: "Europe/Oslo",
-  });
+  return d.toLocaleDateString("nb-NO", { weekday: "long", day: "numeric", month: "long", timeZone: "Europe/Oslo" });
 }
-
 function capitalise(s: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
-
 function timeAgo(d: Date): string {
   const diffMin = Math.round((Date.now() - d.getTime()) / 60_000);
   if (diffMin < 60) return `${Math.max(0, diffMin)} min siden`;
@@ -52,14 +47,69 @@ function timeAgo(d: Date): string {
   if (diffH < 24) return `${diffH} t siden`;
   return `${Math.floor(diffH / 24)} d siden`;
 }
-
 function fmtSg(v: number | null): string {
   if (v == null) return "–";
   const s = Math.abs(v).toLocaleString("nb-NO", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
   return (v >= 0 ? "+" : "−") + s;
 }
 
-// ── 5. Dagens plan-rad ────────────────────────────────────────────
+// ── SG-akse-metadata (klarspråk + fokus-tekst per ordbok) ──────────
+type AkseKey = "ott" | "app" | "arg" | "putt";
+const SG_META: Record<AkseKey, { akse: SgKategori["akse"]; klar: string; omrade: string; handling: string }> = {
+  ott: { akse: "OTT", klar: "Tee-slag", omrade: "Slag fra tee", handling: "Legg inn tee-økt" },
+  app: { akse: "APP", klar: "Innspill", omrade: "Innspill 50–100 m", handling: "Legg inn innspill-økt" },
+  arg: { akse: "ARG", klar: "Nærspill", omrade: "Nærspill rundt green", handling: "Legg inn nærspill-økt" },
+  putt: { akse: "PUTT", klar: "Putting", omrade: "Putting innenfor 6 ft", handling: "Legg inn putting-økt" },
+};
+
+// ── Dagens økt — forest hero med START ─────────────────────────────
+
+function DagensOktHero({ session }: { session: TodaySession }) {
+  const aktiv = session.status === "IN_PROGRESS";
+  return (
+    <section
+      aria-label="Dagens økt"
+      className="relative overflow-hidden rounded-[20px] p-5 text-white"
+      style={{ background: "linear-gradient(150deg,#005840,#00402F)" }}
+    >
+      <div aria-hidden className="pointer-events-none absolute -right-8 -top-10 h-44 w-44 rounded-full"
+        style={{ background: "radial-gradient(circle, rgba(209,248,67,.18), transparent 68%)" }} />
+      <div className="relative z-10">
+        <div className="flex items-center justify-between gap-3">
+          <span className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-accent">
+            {aktiv ? `Pågår · ${formatTime(session.startTime)}` : `Neste · ${formatTime(session.startTime)}`}
+          </span>
+          <span className="whitespace-nowrap rounded-full bg-accent px-2.5 py-1 font-mono text-[11px] font-bold text-accent-foreground">
+            {session.durationMin} min
+          </span>
+        </div>
+        <h2 className="mt-3 font-display text-[22px] font-bold leading-[1.08] -tracking-[0.02em]">
+          {session.title}
+        </h2>
+        <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[11px] text-white/70">
+          <span>{session.drills.length} drills</span>
+          {session.sted && (
+            <span className="inline-flex items-center gap-1">
+              <MapPin size={11} strokeWidth={2} aria-hidden />
+              {session.sted}
+            </span>
+          )}
+        </div>
+        <Link href={`/portal/live/${session.id}`} className="mt-4 block">
+          <button
+            type="button"
+            className="flex w-full items-center justify-center gap-2 rounded-full bg-accent py-3.5 font-mono text-[12px] font-bold uppercase tracking-[0.08em] text-accent-foreground active:scale-[0.98]"
+          >
+            {aktiv ? "Fortsett økt" : "Start økt"}
+            <Play size={15} fill="currentColor" strokeWidth={0} aria-hidden />
+          </button>
+        </Link>
+      </div>
+    </section>
+  );
+}
+
+// ── Dagens plan-rad ────────────────────────────────────────────────
 
 function PlanRow({ session }: { session: TodaySession }) {
   return (
@@ -82,7 +132,7 @@ function PlanRow({ session }: { session: TodaySession }) {
   );
 }
 
-// ── 7. Hva er nytt ────────────────────────────────────────────────
+// ── Hva er nytt ────────────────────────────────────────────────────
 
 function HvaErNytt({ items }: { items: DashboardData["recentActivity"] }) {
   if (items.length === 0) return null;
@@ -113,32 +163,13 @@ function HvaErNytt({ items }: { items: DashboardData["recentActivity"] }) {
   );
 }
 
-// ── 8. Coach-notat ────────────────────────────────────────────────
+// ── Coach-notat ────────────────────────────────────────────────────
 
 function CoachNoteCard({ message }: { message: DashboardData["coachMessage"] }) {
-  if (!message) {
-    return (
-      <div className="space-y-2.5">
-        <Eyebrow>Coach-notat</Eyebrow>
-        <Card>
-          <div className="flex items-center gap-4">
-            <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-muted">
-              <MessageSquare size={18} className="text-muted-foreground" strokeWidth={1.5} />
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-[15px] text-muted-foreground">Ingen notat fra coach ennå.</p>
-              <Link href="/portal/coach/melding/ny" className="mt-1 inline-block font-mono text-[10px] font-bold uppercase tracking-[0.1em] text-primary hover:opacity-80">
-                Send melding →
-              </Link>
-            </div>
-          </div>
-        </Card>
-      </div>
-    );
-  }
+  if (!message) return null;
   return (
     <div className="space-y-2.5">
-      <Eyebrow>Coach-notat</Eyebrow>
+      <Eyebrow>Coach</Eyebrow>
       <Link href={message.href} className="block">
         <Card interactive>
           <div className="mb-3.5 flex items-center gap-3">
@@ -172,18 +203,32 @@ function CoachNoteCard({ message }: { message: DashboardData["coachMessage"] }) 
 export type HybridHomePageProps = { data: DashboardData };
 
 export function HybridHomePage({ data }: HybridHomePageProps) {
+  const router = useRouter();
   const { user, greeting, today, todayAll, coachMessage, kpiStats, recentActivity, weekProgress, weekNumber } = data;
 
   const now = new Date();
   const dateEyebrow = `${capitalise(formatWeekDay(now))} · ${formatTime(now)}`;
 
-  const sgKategorier: SgKategori[] = [
-    { akse: "OTT", sg: kpiStats.sgBreakdown.ott ?? 0 },
-    { akse: "APP", sg: kpiStats.sgBreakdown.app ?? 0 },
-    { akse: "ARG", sg: kpiStats.sgBreakdown.arg ?? 0 },
-    { akse: "PUTT", sg: kpiStats.sgBreakdown.putt ?? 0 },
-  ];
-  const hasSgBreakdown = (["ott", "app", "arg", "putt"] as const).some((k) => kpiStats.sgBreakdown[k] != null);
+  const bd = kpiStats.sgBreakdown;
+  const hasSgBreakdown = (["ott", "app", "arg", "putt"] as const).some((k) => bd[k] != null);
+  const sgKategorier: SgKategori[] = (["ott", "app", "arg", "putt"] as const).map((k) => ({
+    akse: SG_META[k].akse, sg: bd[k] ?? 0,
+  }));
+
+  // Dommen: svakeste akse (mest negativ / minst positiv) blir fokus.
+  const svakest = (["ott", "app", "arg", "putt"] as const)
+    .filter((k) => bd[k] != null)
+    .reduce<AkseKey | null>((min, k) => (min === null || (bd[k] as number) < (bd[min] as number) ? k : min), null);
+  const fokus = svakest ? SG_META[svakest] : null;
+  const fokusSg = svakest ? (bd[svakest] as number) : null;
+
+  // Øvrige økter (utenom den som vises i hero).
+  const restOkter = today ? todayAll.filter((s) => s.id !== today.id) : todayAll;
+
+  const oktTekst = todayAll.length === 0 ? "Ingen økt i dag" : todayAll.length === 1 ? "Én økt i dag" : `${todayAll.length} økter i dag`;
+  const lead = fokus
+    ? `${oktTekst}. Største gevinst ligger i ${fokus.klar.toLowerCase()}.`
+    : `${oktTekst}. Logg en runde for å se hvor du henter mest.`;
 
   return (
     <div className="golfdata-scope mx-auto max-w-[460px] space-y-5 px-0">
@@ -198,60 +243,28 @@ export function HybridHomePage({ data }: HybridHomePageProps) {
         <h1 className="font-display text-[38px] font-bold leading-[1.04] tracking-[-0.035em] text-foreground">
           {greeting}, <em className="font-medium italic text-primary">{user.fornavn}.</em>
         </h1>
-        <p className="mt-2.5 text-[15px] leading-[1.5] text-muted-foreground">
-          {todayAll.length > 0
-            ? `${todayAll.length === 1 ? "Én økt" : `${todayAll.length} økter`} står på planen i dag.${
-                (kpiStats.sgTotal ?? 0) > 0 ? " Du er i god form på SG denne måneden." : ""
-              }`
-            : "Ingen økt planlagt i dag — klar for en fridag?"}
-        </p>
+        <p className="mt-2.5 text-[15px] leading-[1.5] text-muted-foreground">{lead}</p>
       </div>
 
-      {/* 2. Start dagens økt — til live-status-router */}
-      {today && (
-        <Link href={`/portal/live/${today.id}`} className="block">
-          <Button variant="signal" size="lg" block iconRight={<Play size={16} fill="currentColor" strokeWidth={0} aria-hidden />}>
-            {today.status === "IN_PROGRESS" ? "Fortsett dagens økt" : "Start dagens økt"}
-          </Button>
-        </Link>
-      )}
-
-      {/* 3. KPI-grid — dataliv count-up */}
-      <Card compact bodyStyle={{ padding: 0 }}>
-        <div className="grid grid-cols-3 divide-x divide-border">
-          <div className="px-4 py-4">
-            <KpiTile size="md" label="SG totalt" value={fmtSg(kpiStats.sgTotal)} />
-          </div>
-          <div className="px-4 py-4">
-            <KpiTile size="md" label="Runder" value={kpiStats.roundsCount} deltaSuffix="siste 90 d" />
-          </div>
-          <div className="px-4 py-4">
-            <KpiTile
-              size="md"
-              label="Snittscore"
-              value={kpiStats.avgScore != null ? kpiStats.avgScore.toLocaleString("nb-NO", { maximumFractionDigits: 1 }) : "–"}
-            />
-          </div>
-        </div>
-      </Card>
-
-      {/* 4. SG per kategori */}
-      {hasSgBreakdown ? (
-        <SgKategoriBar kategorier={sgKategorier} nivaa="ovet" baseline="Broadie scratch" />
+      {/* 2. Dommen — NesteFokusKort leder skjermen */}
+      {fokus && fokusSg != null ? (
+        <NesteFokusKort
+          akse={fokus.akse}
+          omrade={`${fokus.omrade} er største lekkasje`}
+          sgTap={fmtSg(fokusSg)}
+          baseline="Broadie scratch"
+          begrunnelse={`Du taper mest på ${fokus.klar.toLowerCase()}. Én ${fokus.klar.toLowerCase()}-økt i uka lukker mesteparten av gapet.`}
+          nivaa="ovet"
+          handlingTekst={fokus.handling}
+          onHandling={() => router.push("/portal/planlegge")}
+        />
       ) : (
-        <SgKategoriBar kategorier={[]} />
+        <NesteFokusKort tomt nivaa="ovet" handlingTekst="Loggfør runde" onHandling={() => router.push("/portal/mal/runder/ny")} />
       )}
 
-      {/* 5. Dagens plan */}
-      {todayAll.length > 0 ? (
-        <div className="space-y-2.5">
-          <Eyebrow>Dagens plan</Eyebrow>
-          <div className="space-y-2">
-            {todayAll.map((s) => (
-              <PlanRow key={s.id} session={s} />
-            ))}
-          </div>
-        </div>
+      {/* 3. Dagens økt — hero med START, eller plan-CTA */}
+      {today ? (
+        <DagensOktHero session={today} />
       ) : (
         <Card>
           <div className="flex items-center gap-3">
@@ -266,13 +279,44 @@ export function HybridHomePage({ data }: HybridHomePageProps) {
         </Card>
       )}
 
-      {/* 6. Plan denne uka */}
+      {/* 4. SG total — fortelling */}
+      <SgTotalKort
+        verdi={fmtSg(kpiStats.sgTotal)}
+        enhet="slag"
+        baseline="Broadie scratch"
+        runder={kpiStats.roundsCount}
+        nivaa="ovet"
+        tomt={kpiStats.sgTotal == null}
+      />
+
+      {/* 5. SG per kategori — detalj + to nøkkeltall */}
+      {hasSgBreakdown && <SgKategoriBar kategorier={sgKategorier} nivaa="ovet" baseline="Broadie scratch" />}
+      <Card compact bodyStyle={{ padding: 0 }}>
+        <div className="grid grid-cols-2 divide-x divide-border">
+          <div className="px-4 py-4"><KpiTile size="md" label="Runder" value={kpiStats.roundsCount} deltaSuffix="siste 90 d" /></div>
+          <div className="px-4 py-4">
+            <KpiTile size="md" label="Snittscore" value={kpiStats.avgScore != null ? kpiStats.avgScore.toLocaleString("nb-NO", { maximumFractionDigits: 1 }) : "–"} />
+          </div>
+        </div>
+      </Card>
+
+      {/* 6. Dagens plan — øvrige økter */}
+      {restOkter.length > 0 && (
+        <div className="space-y-2.5">
+          <Eyebrow>Dagens plan</Eyebrow>
+          <div className="space-y-2">
+            {restOkter.map((s) => <PlanRow key={s.id} session={s} />)}
+          </div>
+        </div>
+      )}
+
+      {/* 7. Plan denne uka */}
       <WeekProgress progress={weekProgress} weekNumber={weekNumber} />
 
-      {/* 7. Hva er nytt */}
+      {/* 8. Hva er nytt */}
       <HvaErNytt items={recentActivity} />
 
-      {/* 8. Coach-notat */}
+      {/* 9. Coach-notat */}
       <CoachNoteCard message={coachMessage} />
     </div>
   );
