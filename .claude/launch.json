@@ -4,56 +4,99 @@
     {
       "name": "next-dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "port": 3000,
       "autoPort": true
     },
     {
       "name": "next-prod",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "start"],
+      "runtimeArgs": [
+        "run",
+        "start"
+      ],
       "port": 3000,
       "autoPort": true
     },
     {
       "name": "playwright-e2e",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "e2e"],
+      "runtimeArgs": [
+        "run",
+        "e2e"
+      ],
       "port": 0
     },
     {
       "name": "meg-live-os-design",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8790", "--directory", "public/design-handover/meg-live-os/src"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8790",
+        "--directory",
+        "public/design-handover/meg-live-os/src"
+      ],
       "port": 8790,
       "autoPort": true
     },
     {
       "name": "design-handover",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8795", "--directory", "public/design-handover"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8795",
+        "--directory",
+        "public/design-handover"
+      ],
       "port": 8795,
       "autoPort": true
     },
     {
       "name": "wireframe",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8765", "--directory", "wireframe"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8765",
+        "--directory",
+        "wireframe"
+      ],
       "port": 8765,
       "autoPort": true
     },
     {
       "name": "booking-dev",
       "runtimeExecutable": "bash",
-      "runtimeArgs": ["-c", "cd /Users/anderskristiansen/Developer/akgolf-booking && PORT=3100 npm run dev"],
+      "runtimeArgs": [
+        "-c",
+        "cd /Users/anderskristiansen/Developer/akgolf-booking && PORT=3100 npm run dev"
+      ],
       "port": 3100,
       "autoPort": false
     },
     {
       "name": "website-dev",
       "runtimeExecutable": "bash",
-      "runtimeArgs": ["-c", "cd /Users/anderskristiansen/Developer/akgolf-website && PORT=3200 npm run dev"],
+      "runtimeArgs": [
+        "-c",
+        "cd /Users/anderskristiansen/Developer/akgolf-website && PORT=3200 npm run dev"
+      ],
       "port": 3200,
+      "autoPort": false
+    },
+    {
+      "name": "next-dev-3947",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "PORT=3947 npm run dev"
+      ],
+      "port": 3947,
       "autoPort": false
     }
   ]
