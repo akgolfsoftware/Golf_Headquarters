@@ -1,5 +1,7 @@
 # Baneguide — design-spec (fase 4)
 
+> STATUS: skrevet før designsystem-revisjonen juli 2026 — gjeldende kanon: `.claude/rules/design-system-regel.md` (v13/golfdata, Familjen Grotesk som display-font; Inter Tight og gamle athletic/-anbefalinger under er utdatert).
+
 **Opprettet:** 2026-06-28 · **Status:** Forslag, venter på godkjenning · Binder IA til ekte ruter + datamodell (fase 1–3) for å hindre IA-drift.
 
 > **Designsystem:** Følger ak-golf-hq-design. PlayerHQ **lyst**, AgencyOS **mørkt**. Inter / Inter Tight / JetBrains Mono. Lucide-ikoner. 8pt-grid. Lime kun som aksent. Gjenbruk athletic-komponenter (Hero, KpiStrip, Card, Eyebrow, Badge, ActionList). Kartfarger fra `course-map.tsx`-paletten (TODO: formaliser som tokens).

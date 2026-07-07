@@ -164,6 +164,7 @@ Parametre for fysisk trening (drillmodus FYS). Hver treningstype aktiverer sitt 
 | Komparativ/Konkurranse (K) | `KONKURRANSE` | Scorer mot krav under press. Øker mot turnering/evaluering. |
 | Simulator/Test (S) | `SPILL_TEST` | Test eller simulert spill mot standard. Kobles til test-/benchmark-flyt. |
 | Treningstype (drill) | `DrillPracticeType` | Drillnivå: BLOKK, VARIABEL, KONKURRANSE, SPILL_TEST. Settes på `ExerciseDefinition.treningstype`. |
+| Rep-type (volummåling) | `RepType` | Hvordan volum logges per drill: SVINGER_UTEN_BALL (antall svinger uten ball), BALLER_SLATT (antall baller slått), TID (minutter), SETT_REPS (sett × reps). Brukes i live-økt-logging. |
 
 ## 9. Periodisering
 

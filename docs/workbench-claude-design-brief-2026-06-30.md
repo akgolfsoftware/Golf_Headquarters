@@ -1,5 +1,7 @@
 # Claude Design-brief — AK Golf HQ Workbench (komplett)
 
+> STATUS: skrevet før designsystem-revisjonen juli 2026 — gjeldende kanon: `.claude/rules/design-system-regel.md` (v13/golfdata, Familjen Grotesk som display-font).
+
 > **Til Claude Design.** Dette er en komplett, kode-verifisert brief for å designe hele Workbench.
 > Workbench er planleggingskjernen i AK Golf HQ — **én motor, to flater**: coach i **AgencyOS (mørkt)**
 > og spiller i **PlayerHQ (lyst)**. Samme komponent, to skins. Mat coach-skjermene til AgencyOS-prosjektet
@@ -54,7 +56,7 @@ leser disse øktdataene.
 | Border | `#E5E3DD` | `border-border` |
 
 ### Felles, låst
-- **Fonter:** Inter (UI) · Inter Tight (`font-display`, titler/hero) · JetBrains Mono (`font-mono`, tall, eyebrows, AK-koder).
+- **Fonter:** Inter (UI) · Familjen Grotesk (`font-display`, titler/hero — Inter Tight er utgående) · JetBrains Mono (`font-mono`, tall, eyebrows, AK-koder).
 - **Ikoner:** kun Lucide, 24px, 1.5px stroke, `currentColor`. Ingen emoji.
 - **Spacing:** 8pt-grid. AgencyOS kan tettne til 12/14px på data-flater (`p-3`, `gap-3`). PlayerHQ luftigere, mobil-først (`max-w-[430px]`).
 - **Lime-disiplin:** lime = aktiv / NÅ / valgt / primær handling — aldri dekor, aldri stor flate. På lyst: aldri lime-på-lys; primær CTA = forest med lime tekst.
@@ -171,7 +173,7 @@ Spilleren skal **aldri** se redigeringsaffordances. Chips renderes likt, men ute
 
 ---
 
-## 6. Komponenter (gjenbruk athletic/, design disse Workbench-spesifikke)
+## 6. Komponenter (bruk `athletic/golfdata/` (v13) — gamle athletic/ er vedlikeholdsmodus; design disse Workbench-spesifikke)
 
 Gjenbruk: AthleticHero, AthleticEyebrow, AthleticAvatar, AthleticBadge, KpiStrip, kalendere.
 Workbench-spesifikke (design mørk + lys variant der relevant):

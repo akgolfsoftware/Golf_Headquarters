@@ -68,8 +68,9 @@ warning #B8852A · info #2563EB · border #E5E3DD`. Bruk alltid klassene (`bg-pr
 
 ## 3. Typografi per begrepsbruk
 
-Inter (`font-sans`) = UI/brødtekst · Inter Tight (`font-display`) = display/hero (editorial
-italic på nøkkelord) · JetBrains Mono (`font-mono`) = KPI-tall, tabulære tall, eyebrows,
+Inter (`font-sans`) = UI/brødtekst · Familjen Grotesk (`font-display`) = display/hero (editorial
+italic på nøkkelord) — Inter Tight er utgående (se `.claude/rules/design-system-regel.md`) ·
+JetBrains Mono (`font-mono`) = KPI-tall, tabulære tall, eyebrows,
 koder (CS80, M2, PR3, P4.0). Ingen andre fonter.
 
 ## 4. Chips, badges og statusvisning
@@ -119,7 +120,7 @@ Mono, small, uppercase, letter-spacing 0.08em: `MIN PLATFORM` · `MIN WORKBENCH`
 | «God morgen, [navn]» | God morgen, Øyvind |
 | «[Tall] [substantiv] [verb]» | 38 spillere venter |
 | «Min [italic]workbench[/italic]» | Min *workbench* |
-| «Lag *ny plan*» / «Mine *mål*» / «Din *innboks*» | italic (Inter Tight) på nøkkelordet |
+| «Lag *ny plan*» / «Mine *mål*» / «Din *innboks*» | italic (Familjen Grotesk) på nøkkelordet |
 
 ## 8. Personas — demo-data (flyttet fra ordbok B21)
 

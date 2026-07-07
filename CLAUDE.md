@@ -45,7 +45,7 @@ dashboard-tallene + endringsloggen når du fullfører/endrer skjermer.
 - Next.js 16 (App Router, TypeScript strict, Turbopack), React 19
 - Prisma 7 + Supabase (Postgres)
 - Tailwind CSS v4 (CSS-first via `@theme` i `globals.css` — INGEN `tailwind.config.ts`)
-- Inter + Inter Tight + JetBrains Mono via `next/font/google`. Lucide React — eneste ikon-bibliotek. npm.
+- Inter + Familjen Grotesk (display) + JetBrains Mono via `next/font/google`. Inter Tight er deprecated — lastes kun for legacy-flater. Kanon: `.claude/rules/design-system-regel.md`. Lucide React — eneste ikon-bibliotek. npm.
 
 ## Modell og effort
 Standardmodell for dette prosjektet: **Fable 5.** Effort er spaken, ikke modellbytte —

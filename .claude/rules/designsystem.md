@@ -1,10 +1,11 @@
 # Designsystem — ÉN kilde til sannhet
 
-Flyttet fra CLAUDE.md 2026-06-14 for å holde CLAUDE.md under 100 linjer. Innhold uendret.
+Flyttet fra CLAUDE.md 2026-06-14. **Gjeldende kanon: `.claude/rules/design-system-regel.md`
+(v13/golfdata)** — ved konflikt vinner den. Denne filen dekker app-basisen (tokens i globals.css).
 
 **Tokens:** `src/app/globals.css` — HSL-trippel uten `hsl()`-wrapper, shadcn-konvensjon.
 **TS-speil for charts:** `src/lib/design-tokens.ts` — kun les fra denne, ikke definer farger her.
-**Komponenter:** `src/components/athletic/` — gjenbruk alltid.
+**Komponenter:** bruk `src/components/athletic/golfdata/` (v13); gamle `athletic/` er vedlikeholdsmodus.
 
 **FORBUDT:**
 - Å lage nye `tokens.css`-filer noe sted
@@ -40,7 +41,8 @@ Hvis du trenger ny farge, legg den inn som token i `globals.css` først. Spør A
 
 ## Komponenter — bygg ALDRI på nytt det som finnes
 
-`src/components/athletic/`:
+Ny golf-UI komponeres fra `src/components/athletic/golfdata/` (v13). Lista under er det gamle
+`athletic/`-biblioteket — **vedlikeholdsmodus** (ikke utvid, fases ut per design-system-regel.md):
 - `hero.tsx` — sidehero
 - `card.tsx`, `featured-card.tsx` — cards
 - `kpi.tsx` — KPI-blokker
@@ -59,10 +61,11 @@ Hvis du trenger ny farge, legg den inn som token i `globals.css` først. Spør A
 | Font | Tailwind | Bruk |
 |---|---|---|
 | Inter | `font-sans` (default) | UI, brødtekst |
-| Inter Tight | `font-display` | Display, hero |
+| Familjen Grotesk | `font-display` | Display, hero (v13) — Inter Tight er utgående, lastes kun for legacy |
 | JetBrains Mono | `font-mono` | KPI-tall, tabulære tall, eyebrows |
 
-Editorial italic via Inter Tight italic. INGEN Instrument Serif eller andre fonter.
+Editorial italic via Familjen Grotesk italic. INGEN Instrument Serif eller andre fonter.
+Gjeldende kanon: `.claude/rules/design-system-regel.md` (v13/golfdata).
 
 ## Spacing
 

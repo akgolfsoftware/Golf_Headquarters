@@ -66,9 +66,9 @@ wireframe/               ARKIV — ikke les eller importer herfra
 
 - **Tokens:** `src/app/globals.css` — HSL-trippel uten `hsl()`-wrapper, shadcn-konvensjon.
 - **TS-speil for charts:** `src/lib/design-tokens.ts` — kun les herfra.
-- **Komponenter:** Se `src/components/athletic/index.ts` for komplett liste — ALLTID sjekk der FØR du lager noe nytt. Mappen har 30+ entries inkludert subkataloger (`calendars/`, `editorial/`, `itinerary/`, `shell/`, `cards/`, `data/`, `patterns/`, `modals/`, `hero/` m.fl.).
+- **Komponenter:** bruk `src/components/athletic/golfdata/` (v13) for ny golf-UI; gamle `athletic/` er vedlikeholdsmodus (se `.claude/rules/design-system-regel.md`). Sjekk ALLTID hva som finnes FØR du lager noe nytt.
 - **Spacing:** 8pt-grid. Kun `p-2/4/6/8/10/12/16`. Unntaket er data-tette flater (dashboards, tabeller) som bruker `p-3/gap-3/py-2.5` der design-handover-HTML gjør det.
-- **Fonter:** Inter (`font-sans`), Inter Tight (`font-display`), JetBrains Mono (`font-mono`). INGEN andre fonter.
+- **Fonter:** Inter (`font-sans`), Familjen Grotesk (`font-display`) — Inter Tight er utgående, JetBrains Mono (`font-mono`). INGEN andre fonter. Kanon: `.claude/rules/design-system-regel.md`.
 
 **FORBUDT:** hardkode hex-verdier, lage ny `tokens.css`, importere fra `wireframe/`, lage `tokens.ts` i komponent-mapper.
 

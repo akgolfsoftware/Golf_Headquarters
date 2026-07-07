@@ -42,7 +42,7 @@
 
 ## Typografi (3 fonter — ingen andre)
 - **Inter** — UI og brødtekst (default).
-- **Inter Tight** — display/overskrift. Editorial italic tillatt.
+- **Familjen Grotesk** — display/overskrift. Editorial italic tillatt. (Inter Tight er utgående — se `.claude/rules/design-system-regel.md`.)
 - **JetBrains Mono** — ALLE tall + eyebrows/små etiketter. **Store mono-tall er signaturen.**
 
 ## Ufravikelige regler

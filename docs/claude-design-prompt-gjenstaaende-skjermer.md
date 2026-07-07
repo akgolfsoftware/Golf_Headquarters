@@ -16,7 +16,7 @@ Du designer for **AK Golf HQ**, et norsk, data-tett prestasjonsgolf-system (AK G
 - **Mørk canvas = varm nær-svart `#0A0B0A`** (tile `#171817`, raised `#1E1F1D`, hairline `#262725`, tekst `#F0F0F0` / sekundær `#A6A8A3`). **Aldri forest-grønn canvas.** Dybde fra **hårlinjer, ikke skygger**.
 - **Lime `#D1F843` = eneste aksent**, brukt 5–10 % av skjermen (aktiv nav, primær-CTA, NÅ-markør, positiv delta, fokus). **Ett lime-glød per skjerm.** Aldri store flate lime-flater. Aldri lime brødtekst.
 - **Data-/pyramide-farger (mørk):** opp `#4FD08A` · ned `#F0683E` · warn `#E8B43C` · info `#5AA9F0`. Pyramide: Fysisk `#3DBE78` · Teknisk `#E8B43C` · Golfslag `#5AA9F0` · Spill `#D1F843` · Turnering `#F0683E`. Aldri nye toner; fler-serie = lime + grå.
-- **Fonter:** Inter (UI/brødtekst) · Inter Tight (display/hero, editorial *italic* = signaturen, aldri serif) · JetBrains Mono (alle tall, tabulære). **Tallet er helten.**
+- **Fonter:** Inter (UI/brødtekst) · Familjen Grotesk (display/hero, editorial *italic* = signaturen, aldri serif — Inter Tight er utgående, se `.claude/rules/design-system-regel.md`) · JetBrains Mono (alle tall, tabulære). **Tallet er helten.**
 - **Tall = norsk format:** desimal-komma, tynt mellomrom for tusen («72,4», «2 200»), fortegn +/− med ▲▼.
 - **Ikoner:** kun Lucide (1,5px stroke). **Ingen emoji.** **8pt-grid** (aldri p-3/5/7).
 - **Språk:** norsk bokmål, «du/deg», sentence case. Eyebrows/mono-labels UPPERCASE med vid tracking. Forbudt i UI: «ELITE», «CoachHQ», «elev», «session». Demo-navn: spiller = **Øyvind Rohjan**, coach = **Anders Kristiansen** (fulle navn).
@@ -24,7 +24,7 @@ Du designer for **AK Golf HQ**, et norsk, data-tett prestasjonsgolf-system (AK G
 - **Tetthet:** AgencyOS er Bloomberg/Linear-tett (py-2.5 tillatt). 44px touch-mål på mobil. AA-kontrast. `prefers-reduced-motion` respektert.
 
 ## IA-lås (bygg mot disse ekte rutene)
-Hver skjerm har en fast adresse i Next.js-appen. Bygg innholdet som hører til DEN ruten. Gjenbruk eksisterende komponenter fra `src/components/athletic/` og `src/components/admin/` — bygg ikke nye byggeklosser uten grunn. Komponenter som FINNES og skal brukes: `Sidebar`(dark), `KpiStrip`/`KpiCard`, `DataTablePro`, `QueueItem`, `Badge`, `StatusPill`, `RiskHeatmap`, `TestMatrix`, `SeasonGantt`/`PeriodTimeline`/`YearPlanGantt`, `DayScheduler`/`WeekGrid`, `SgBreakdown`, `TrendBand`, `PercentileGauge`, `Sparkline`, `LiveRepPulse`, `SkillRadarLive`, `TournamentCard`, `InboxList`, `MessageThread`, `InsightCard`, `Avatar`, `Chip`, `EmptyState`, `Skeleton`.
+Hver skjerm har en fast adresse i Next.js-appen. Bygg innholdet som hører til DEN ruten. Bruk `src/components/athletic/golfdata/` (v13) for ny golf-UI; gamle `athletic/` og `admin/` er vedlikeholdsmodus (se `.claude/rules/design-system-regel.md`) — bygg ikke nye byggeklosser uten grunn. Komponenter som FINNES og skal brukes: `Sidebar`(dark), `KpiStrip`/`KpiCard`, `DataTablePro`, `QueueItem`, `Badge`, `StatusPill`, `RiskHeatmap`, `TestMatrix`, `SeasonGantt`/`PeriodTimeline`/`YearPlanGantt`, `DayScheduler`/`WeekGrid`, `SgBreakdown`, `TrendBand`, `PercentileGauge`, `Sparkline`, `LiveRepPulse`, `SkillRadarLive`, `TournamentCard`, `InboxList`, `MessageThread`, `InsightCard`, `Avatar`, `Chip`, `EmptyState`, `Skeleton`.
 
 ## Skjermene som skal designes
 
@@ -80,7 +80,7 @@ Bygg mot de ekte komponentene i `src/components/workbench-hybrid/` (`HubTabRail`
 
 ## Felles hub-arkitektur (begge varianter)
 - **7 hub-faner i `HubTabRail`** (erstatter enkel zoom-topbar): **Teknisk plan · Sesongmål · Maler · Standardøkter · Gantt (År) · Uke · Økt**. Faner matcher datamodellen — ikke finn på nye.
-- **Above-panel hero (desktop):** eyebrow + display-tittel (Inter Tight) + lead over det mørke/lyse panelet (f.eks. «Uke 32 — dra økter inn»).
+- **Above-panel hero (desktop):** eyebrow + display-tittel (Familjen Grotesk) + lead over det mørke/lyse panelet (f.eks. «Uke 32 — dra økter inn»).
 - **Zoom-switcher i topbar (desktop) + mobil zoom-rail:** Årsplan / År / Måned / Uke / Dag — samme IA begge steder.
 - **Ukestatistikk-rad** under hub-railen: `{ukelabel} · N økter · X t` (ekte summary).
 - **KPI-strip + InsightsStripe** på Gantt/Uke/Økt-zoom (bevisst data-tetthet) — gruppe-/plan-innsikt.

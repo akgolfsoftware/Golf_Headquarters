@@ -419,6 +419,12 @@
       "PR4",
       "PR5"
     ],
+    "RepType": [
+      "SVINGER_UTEN_BALL",
+      "BALLER_SLATT",
+      "TID",
+      "SETT_REPS"
+    ],
     "PracticeType": [
       "BLOKK",
       "RANDOM",

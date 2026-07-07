@@ -50,7 +50,7 @@ Følelsen: **Spiller** = «jeg vet på 5 sekunder hva jeg skal gjøre i dag og h
 
 **Lime-regelen (kritisk):** lime er krydder, ikke tapet. **Aldri lime tekst alene på lys bakgrunn** (mørk tekst på lime, aldri lime på lime). På mørkt tema er lime tekst OK.
 
-**Typografi:** Inter (UI/brødtekst) · **Inter Tight** (display/hero, tett tracking, editorial italic-aksent) · **JetBrains Mono** (ALLE tall, eyebrows, KPI-labels, tabular-nums alltid). Norsk tallformat: komma-desimal, mellomrom som tusenskille, % etter mellomrom, 24t klokke. Signert delta: ▲▼ + farge.
+**Typografi:** Inter (UI/brødtekst) · **Familjen Grotesk** (display/hero, editorial italic-aksent — Inter Tight er utgående, se `.claude/rules/design-system-regel.md`) · **JetBrains Mono** (ALLE tall, eyebrows, KPI-labels, tabular-nums alltid). Norsk tallformat: komma-desimal, mellomrom som tusenskille, % etter mellomrom, 24t klokke. Signert delta: ▲▼ + farge.
 
 **Komponenter (gjenbruk disse — de finnes i designsystemet):** Avatar, Badge, Button (lime/forest/ghost), Eyebrow, KpiCard, KpiRing, PyramidProgress, SgBar, StatTable, EmptyState, Skeleton, StatusPill, MasteryRing, StreakTracker.
 
@@ -119,7 +119,7 @@ Hub `/stats` · PGA-metrikker `/stats/pga/*` · Spillere · Baner · Turneringer
 
 ### 4 · Hva som vises hvor (innholds-spec for kjerneflatene)
 
-- **PlayerHQ Hjem:** foto/forest-hero med «Hei, {fornavn}» (Inter Tight italic), HCP + neste turnering-teller, tier-pill «PlayerHQ · {tier}». KPI-stripe (SG totalt, snittscore, neste økt) med mono-tall + signert delta. «Dagens økt»-kort (→ start). Coach-notat. Diagnose-kort: nivå + 2–3 gap-punkter rangert.
+- **PlayerHQ Hjem:** foto/forest-hero med «Hei, {fornavn}» (Familjen Grotesk italic), HCP + neste turnering-teller, tier-pill «PlayerHQ · {tier}». KPI-stripe (SG totalt, snittscore, neste økt) med mono-tall + signert delta. «Dagens økt»-kort (→ start). Coach-notat. Diagnose-kort: nivå + 2–3 gap-punkter rangert.
 - **PlayerHQ Analyse:** diagnose først (nivå+gap), så SG-bar mot benchmark, faner (SG·Runder·TrackMan·Tester·Innsikt). Tallet er helten.
 - **PlayerHQ Plan/Workbench:** zoom År(Gantt)/Uke/Økt. AI foreslår → «Godkjenn» laster økter inn. Ett trykk fra Plan-fanen.
 - **PlayerHQ Gjør/Live:** dagens program → «Start» → fullskjerm live (brief→active→summary), trygg PAUSED/avbrudd, ≤1 trykk per logget resultat.
