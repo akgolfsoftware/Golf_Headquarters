@@ -86,7 +86,10 @@
   --text: var(--sand-900);
   --text-2: var(--sand-700);
   --text-muted: var(--sand-600);
-  --text-faint: var(--sand-500);
+  /* hotfix 2026-07 — synkes mot v14: KUN dekorativ tekst, aldri brødtekst. Brukes i dag
+     på små etiketter (eyebrows/hints/ticks) → justert fra sand-500 (2,85:1 på sand-100)
+     til 4,83:1 på sand-100 / 5,47:1 på hvit (WCAG AA, verifisert). */
+  --text-faint: #686A66;
   --up: #00753A;
   --down: #C0392F;
   --signal: var(--forest-700);
@@ -141,7 +144,10 @@
   --text: var(--graphite-900);
   --text-2: var(--graphite-700);
   --text-muted: var(--graphite-600);
-  --text-faint: var(--graphite-500);
+  /* hotfix 2026-07 — synkes mot v14: KUN dekorativ tekst, aldri brødtekst. Brukes i dag
+     på små etiketter → justert fra graphite-500 (3,12:1 på graphite-100) til 4,87:1 på
+     graphite-100 / 5,24:1 på graphite-50 (WCAG AA, verifisert). */
+  --text-faint: #8A8C86;
   --up: var(--lime-500);
   --down: #FF6B5A;
   --signal: var(--lime-500);
@@ -170,7 +176,11 @@
   --axis-slag-text: #9EBCFF;
   --axis-slag-soft: rgba(132, 169, 255, 0.15);
   --axis-spill: #D1F843;
-  --axis-spill-text: #D1F843;
+  /* hotfix 2026-07 — synkes mot v14: var identisk med --axis-spill (fill). Nå distinkt
+     lysere tint (mønster fra de andre aksene i mørk). Verifisert WCAG-kontrast:
+     15,27:1 mot graphite-50, 9,05:1 på -soft-chip (DiagnoseKort). NB: en mørk oliven
+     ville gitt 2,86:1 mot mørke flater — derfor lys tint. */
+  --axis-spill-text: #DFF982;
   --axis-spill-soft: rgba(209, 248, 67, 0.16);
   --axis-turn: #F2908C;
   --axis-turn-text: #F5A8A4;
