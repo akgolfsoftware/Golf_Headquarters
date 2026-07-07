@@ -453,6 +453,43 @@ const WANG_PERIODS: ReadonlyArray<{
   },
 ];
 
+// ---------- Kompetansemål (Udir LK20, Toppidrett IDR05-02) ----------
+// Ordrett fra docs/treningsplanlegger/wang-toppidrett/kompetansemaal-toppidrett-vg.md
+// (hentet fra udir.no 2026-07-07). goalNumber = rekkefølge i læreplanen.
+const CURRICULUM_CODE = "IDR05-02";
+
+const COMPETENCE_GOALS: ReadonlyArray<{ classYear: string; text: string }> = [
+  // Toppidrett 1 (VG1) — kv283
+  { classYear: "VG1", text: "vise og utvikle ferdigheter i idretten og gjennomføre systematisk og målrettet trening" },
+  { classYear: "VG1", text: "dokumentere og evaluere en valgt treningsperiode" },
+  { classYear: "VG1", text: "kjenne til ulike treningsformer, metoder, tester og øvelser som er relevant for ferdighetsutvikling i idretten, og bruke disse til å utvikle egne ferdigheter" },
+  { classYear: "VG1", text: "gjennomføre basistrening og skadeforebyggende tiltak som gir grunnlag for økt treningsbelastning" },
+  { classYear: "VG1", text: "forstå forholdet mellom totalbelastning og restitusjon" },
+  { classYear: "VG1", text: "beskrive mentale forberedelser til trening og konkurranse" },
+  { classYear: "VG1", text: "bruke lyst- og lekbetonte oppvarmingsøvelser, aktiviteter, treningsformer og konkurranser for å stimulere til økt motivasjon" },
+  { classYear: "VG1", text: "vise god samhandling og respektfull treningsatferd" },
+  // Toppidrett 2 (VG2) — kv284
+  { classYear: "VG2", text: "vise og videreutvikle ferdigheter som er sentrale for å prestere i konkurranser i idretten" },
+  { classYear: "VG2", text: "gjennomføre systematisk og målrettet trening, og dokumentere og analysere resultatet av denne treningen" },
+  { classYear: "VG2", text: "gjøre rede for og gjennomføre relevante tester" },
+  { classYear: "VG2", text: "utvikle basisegenskaper og integrere skadeforebyggende tiltak i de daglige treningsrutinene" },
+  { classYear: "VG2", text: "gjøre rede for hvordan økt treningsmengde og totalbelastning stiller krav til organisering, planlegging, restitusjon og ernæring" },
+  { classYear: "VG2", text: "beskrive et utviklingsløp fra eget utgangspunkt og til ønsket nivå på kort og lang sikt" },
+  { classYear: "VG2", text: "reflektere over egne mentale behov og rutiner før, under og etter trening og i forbindelse med konkurranse" },
+  { classYear: "VG2", text: "gjøre rede for og bruke lyst- og lekbetonte aktiviteter, øvelser, treningsformer og konkurranser som kan stimulere til økt motivasjon" },
+  { classYear: "VG2", text: "utforske hvordan aktiviteter, øvelser, trening og konkurranse påvirker motivasjon og ferdighetsutvikling" },
+  { classYear: "VG2", text: "opptre på en måte som bidrar til et godt lærings- og utviklingsmiljø" },
+  // Toppidrett 3 (VG3) — kv285
+  { classYear: "VG3", text: "vise og utvikle ferdigheter som kan forbedre prestasjonen i konkurransesituasjoner" },
+  { classYear: "VG3", text: "dokumentere, analysere og reflektere over gjennomført trening i lys av egne mål og resultater" },
+  { classYear: "VG3", text: "utarbeide planer og gjennomføre langsiktig, systematisk og målrettet trening i idretten med utgangspunkt i idrettens krav og egen kapasitet" },
+  { classYear: "VG3", text: "videreutvikle basisegenskaper som er sentrale for ferdighetsutvikling" },
+  { classYear: "VG3", text: "anvende skadeforebyggende øvelser og vurdere hvordan disse kan integreres i trening og forberedelse til konkurranse" },
+  { classYear: "VG3", text: "gjennomføre mentale forberedelse og mental trening, og reflektere over hvordan dette kan påvirke ferdighetsutvikling" },
+  { classYear: "VG3", text: "utforske og reflektere over hvordan aktiviteter, øvelser, trening og konkurranse påvirker motivasjon og ferdighetsutvikling" },
+  { classYear: "VG3", text: "opptre på en måte som fremmer treningsarbeidet og samhandlingen, og som bidrar til et trygt, positivt og godt utviklingsmiljø" },
+];
+
 // ---------- Seed ----------
 
 async function seedLocations() {
@@ -771,6 +808,36 @@ async function seedTrainingPeriods() {
   }
 }
 
+async function seedCompetenceGoals() {
+  console.log("\n[seed] Kompetansemål (Udir Toppidrett IDR05-02)");
+  const perClassYear = new Map<string, number>();
+
+  for (const g of COMPETENCE_GOALS) {
+    const goalNumber = (perClassYear.get(g.classYear) ?? 0) + 1;
+    perClassYear.set(g.classYear, goalNumber);
+
+    const existing = await prisma.competenceGoal.findFirst({
+      where: { classYear: g.classYear, curriculumCode: CURRICULUM_CODE, goalNumber },
+    });
+    if (existing) {
+      await prisma.competenceGoal.update({
+        where: { id: existing.id },
+        data: { text: g.text },
+      });
+    } else {
+      await prisma.competenceGoal.create({
+        data: {
+          classYear: g.classYear,
+          curriculumCode: CURRICULUM_CODE,
+          goalNumber,
+          text: g.text,
+        },
+      });
+    }
+  }
+  console.log(`  + ${COMPETENCE_GOALS.length} kompetansemål (VG1/VG2/VG3)`);
+}
+
 async function main() {
   console.log("AK Golf HQ seed");
   console.log("================");
@@ -784,6 +851,7 @@ async function main() {
   await seedCoachAvailability();
   await seedGroupSchedule();
   await seedTrainingPeriods();
+  await seedCompetenceGoals();
 
   console.log("\n[seed] Ferdig.");
 }

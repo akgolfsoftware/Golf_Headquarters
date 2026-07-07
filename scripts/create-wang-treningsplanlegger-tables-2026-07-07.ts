@@ -36,7 +36,20 @@ async function main() {
     `CREATE INDEX IF NOT EXISTS training_periods_group_start_idx ON training_periods ("groupId", "startDate");`,
   );
 
-  console.log("users.schoolYear + training_periods OK");
+  await prisma.$executeRawUnsafe(`
+    CREATE TABLE IF NOT EXISTS competence_goals (
+      id               text PRIMARY KEY,
+      "classYear"      text NOT NULL,
+      "curriculumCode" text NOT NULL,
+      "goalNumber"     integer NOT NULL,
+      text             text NOT NULL,
+      "createdAt"      timestamptz NOT NULL DEFAULT now(),
+      "updatedAt"      timestamptz NOT NULL DEFAULT now(),
+      CONSTRAINT competence_goals_unique UNIQUE ("classYear", "curriculumCode", "goalNumber")
+    );
+  `);
+
+  console.log("users.schoolYear + training_periods + competence_goals OK");
 }
 
 main()

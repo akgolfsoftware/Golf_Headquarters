@@ -2320,6 +2320,24 @@ model TrainingPeriod {
   @@map("training_periods")
 }
 
+// Offisielle kompetansemål fra Udir (LK20) for programfaget Toppidrett.
+// Referansetabell — økter i Workbench kan lenke til ett eller flere mål.
+model CompetenceGoal {
+  id             String   @id @default(cuid())
+  // VG1 | VG2 | VG3
+  classYear      String
+  // f.eks. "IDR05-02" (Udir læreplankode)
+  curriculumCode String
+  // 1-indeksert rekkefølge fra læreplanen
+  goalNumber     Int
+  text           String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([classYear, curriculumCode, goalNumber])
+  @@map("competence_goals")
+}
+
 model GroupMember {
   id       String   @id @default(cuid())
   groupId  String
