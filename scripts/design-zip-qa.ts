@@ -13,6 +13,16 @@
  * ADVARSEL (ikke exit-feil):
  *   - Hex-farger i HTML som ikke finnes i handoffens egen tokens/-mappe
  *     (allowlist parses fra tokens-css-filene — aldri hardkodet her).
+ *
+ * UNNTAK (presisert 2026-07-07 etter v14-testkjøring): term-sjekken jakter
+ * PRODUKT-innhold, ikke regellaget som må navngi forbudsordene for å forby dem:
+ *   - META-filer hoppes helt over i term-sjekken (regeldokumenter, terminologi-
+ *     skill/ordbok, lint-config, interne plan-/audit-ark).
+ *   - Backtick-spans i .md strippes før matching (`sessions` = API-feltnavn, ikke UI-tekst).
+ *   - Treff med negasjonsord i kontekstvinduet («aldri», «forbudt», «utfaset»,
+ *     «finnes ikke», «→») regnes som meta-omtale og frikjennes.
+ *   - Emoji-sjekken hopper over interne plan-ark (skjerm-plan/skjerm-inventar) —
+ *     de er prosjektstyring, ikke produkt-HTML.
  */
 
 import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
@@ -52,6 +62,23 @@ const FORBUDT: Array<{ navn: string; re: RegExp }> = [
   { navn: ">Error< (engelsk feiltekst)", re: />Error</u },
 ];
 
+// ── META-filer: regellag som MÅ navngi forbudsordene — term-sjekk hoppes ──
+const META_TERM_SKIP: RegExp[] = [
+  /(^|\/)(CLAUDE|PORTING|DEKNINGSKART|SKILL|VERDENSKLASSE-PLAN|WORKBENCH-SAMLING)\.md$/,
+  /(^|\/)readme\.md$/i,
+  /(^|\/)skills\//, // terminologi-skill + ordbok definerer ordene
+  /(^|\/)handover\//, // README + adherence-lint-config lister forbudsord
+  /(^|\/)guidelines\/beslutninger\.md$/,
+  /(^|\/)guidelines\/skjerm-(plan|batch)[^/]*\.md$/,
+  /(^|\/)guidelines\/component-research\.md$/,
+];
+// Interne plan-/statusark — prosjektstyring, ikke produkt-HTML (emoji-sjekk hoppes)
+const META_EMOJI_SKIP: RegExp[] = [/(^|\/)guidelines\/skjerm-(plan|inventar)\.html$/];
+
+// Negasjonsord i kontekstvindu rundt et treff = meta-omtale (regel som forbyr ordet)
+const NEGASJON = /aldri|forbudt|utfaset|finnes ikke|ikke besluttet|skal bort|→|erstattet|stale|gammelt navn|migrert/i;
+const VINDU = 120;
+
 // ── Emoji-områder ───────────────────────────────────────────────────
 const EMOJI = /[\u{1F300}-\u{1FAFF}\u{2700}-\u{27BF}]/u;
 
@@ -73,17 +100,26 @@ const rel = (f: string) => relative(process.cwd(), f);
 for (const fil of filer) {
   const erTekst = /\.(html|md|json)$/.test(fil);
   if (!erTekst) continue;
+  const relSti = relative(ROT, fil);
   const innhold = readFileSync(fil, "utf-8");
 
-  for (const { navn, re } of FORBUDT) {
-    const m = innhold.match(re);
-    if (m) {
-      const linje = innhold.slice(0, m.index).split("\n").length;
-      feil.push({ fil: rel(fil), melding: `forbudt term «${navn}» (linje ${linje})` });
+  const erMetaTerm = META_TERM_SKIP.some((re) => re.test(relSti));
+  if (!erMetaTerm) {
+    // Backtick-spans i .md er kode-identifikatorer (API-feltnavn), ikke UI-tekst.
+    const soekbar = fil.endsWith(".md") ? innhold.replace(/`[^`\n]*`/g, "``") : innhold;
+    for (const { navn, re } of FORBUDT) {
+      const m = soekbar.match(re);
+      if (m && m.index !== undefined) {
+        const start = Math.max(0, m.index - VINDU);
+        const kontekst = soekbar.slice(start, m.index + VINDU);
+        if (NEGASJON.test(kontekst)) continue; // meta-omtale («aldri ELITE» o.l.)
+        const linje = soekbar.slice(0, m.index).split("\n").length;
+        feil.push({ fil: rel(fil), melding: `forbudt term «${navn}» (linje ${linje})` });
+      }
     }
   }
 
-  if (fil.endsWith(".html")) {
+  if (fil.endsWith(".html") && !META_EMOJI_SKIP.some((re) => re.test(relSti))) {
     const m = innhold.match(EMOJI);
     if (m) {
       const linje = innhold.slice(0, m.index).split("\n").length;
