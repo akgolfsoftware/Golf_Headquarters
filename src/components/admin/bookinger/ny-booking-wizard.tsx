@@ -41,6 +41,8 @@ export type NyBookingWizardProps = {
   spillere: Spiller[];
   tjenester: Tjeneste[];
   lokasjoner: Lokasjon[];
+  groupId?: string;
+  group?: { id: string; name: string; maxParticipants: number | null } | null;
 };
 
 const STEG = [
@@ -61,7 +63,7 @@ function formatKr(ore: number): string {
   return new Intl.NumberFormat("nb-NO").format(Math.round(ore / 100));
 }
 
-export function NyBookingWizard({ spillere, tjenester, lokasjoner }: NyBookingWizardProps) {
+export function NyBookingWizard({ spillere, tjenester, lokasjoner, groupId, group }: NyBookingWizardProps) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
 
@@ -75,6 +77,8 @@ export function NyBookingWizard({ spillere, tjenester, lokasjoner }: NyBookingWi
   const [notat, setNotat] = useState("");
   const [sok, setSok] = useState("");
   const [feil, setFeil] = useState<string | null>(null);
+  const [antallDeltagere, setAntallDeltagere] = useState<number | null>(group?.maxParticipants || null);
+  const isGroup = !!groupId;
 
   const valgtSpiller = spillere.find((s) => s.id === spillerId) ?? null;
   const valgtTjeneste = tjenester.find((t) => t.id === tjenesteId) ?? null;
@@ -93,7 +97,7 @@ export function NyBookingWizard({ spillere, tjenester, lokasjoner }: NyBookingWi
   }, [spillere, sok]);
 
   const kanVidere =
-    (steg === 1 && !!spillerId) ||
+    (steg === 1 && (isGroup || !!spillerId)) ||
     (steg === 2 && !!tjenesteId) ||
     (steg === 3 && !!lokasjonId) ||
     (steg === 4 && !!dato && !!tid) ||
@@ -109,8 +113,12 @@ export function NyBookingWizard({ spillere, tjenester, lokasjoner }: NyBookingWi
   }
 
   function opprett() {
-    if (!spillerId || !tjenesteId || !lokasjonId || !valgtTjeneste || !dato || !tid) {
+    if (!tjenesteId || !lokasjonId || !valgtTjeneste || !dato || !tid) {
       setFeil("Fyll ut alle påkrevde felt.");
+      return;
+    }
+    if (!isGroup && !spillerId) {
+      setFeil("Velg spiller eller gruppe.");
       return;
     }
     const startAt = new Date(`${dato}T${tid}`);
@@ -121,19 +129,35 @@ export function NyBookingWizard({ spillere, tjenester, lokasjoner }: NyBookingWi
     setFeil(null);
     startTransition(async () => {
       try {
-        const res = await createSessionFromCalendar({
-          spillerId,
-          serviceTypeId: tjenesteId,
-          locationId: lokasjonId,
-          facilityId: fasilitetId ?? undefined,
-          startAt,
-          varighetMin: valgtTjeneste.durationMin,
-          notater: notat.trim() || undefined,
-        });
-        router.push(`/admin/bookinger/${res.bookingId}`);
+        if (isGroup && groupId) {
+          // For gruppe: opprett GroupSchedule med antall deltagere
+          const { opprettGruppeTrening } = await import("@/app/admin/grupper/[id]/actions");
+          const varighetMin = valgtTjeneste.durationMin;
+          const endAt = new Date(startAt.getTime() + varighetMin * 60000);
+          await opprettGruppeTrening(groupId, {
+            title: valgtTjeneste.name + (group ? ` · ${group.name}` : ""),
+            startAt,
+            endAt,
+            location: valgtLokasjon?.name,
+            recurring: "NONE",
+            maxParticipants: antallDeltagere || undefined,
+          });
+          router.push(`/admin/grupper/${groupId}/timeplan`);
+        } else if (spillerId) {
+          const res = await createSessionFromCalendar({
+            spillerId,
+            serviceTypeId: tjenesteId,
+            locationId: lokasjonId,
+            facilityId: fasilitetId ?? undefined,
+            startAt,
+            varighetMin: valgtTjeneste.durationMin,
+            notater: notat.trim() || undefined,
+          });
+          router.push(`/admin/bookinger/${res.bookingId}`);
+        }
         router.refresh();
       } catch (e) {
-        setFeil(e instanceof Error ? e.message : "Kunne ikke opprette booking.");
+        setFeil(e instanceof Error ? e.message : "Kunne ikke opprette.");
       }
     });
   }
@@ -188,11 +212,15 @@ export function NyBookingWizard({ spillere, tjenester, lokasjoner }: NyBookingWi
       </ol>
 
       <div className="mt-6 rounded-xl border border-border bg-card p-6">
-        {/* STEG 1 — Spiller */}
+        {/* STEG 1 — Spiller eller Gruppe */}
         {steg === 1 && (
-          <StegRamme tittel="Velg spiller" sub="Hvem er bookingen for?">
-            {spillere.length === 0 ? (
-              <Tom tekst="Ingen spillere registrert ennå." />
+          <StegRamme tittel={isGroup ? "Gruppe" : "Velg spiller"} sub={isGroup ? "Gruppe trening" : "Hvem er bookingen for?"}>
+            {isGroup && group ? (
+              <div className="p-4 border rounded bg-accent/10">
+                <div className="font-bold">{group.name}</div>
+                <div className="text-sm text-muted-foreground">Gruppe trening • max {group.maxParticipants || "ubegrenset"} deltagere</div>
+                <div className="text-xs mt-1">Antall deltagere: <input type="number" value={antallDeltagere || ""} onChange={e => setAntallDeltagere(e.target.value ? parseInt(e.target.value) : null)} className="border px-1 w-20" /></div>
+              </div>
             ) : (
               <>
                 <label className="flex h-10 items-center gap-2 rounded-lg border border-border bg-background px-3 text-sm text-muted-foreground">
@@ -409,6 +437,17 @@ export function NyBookingWizard({ spillere, tjenester, lokasjoner }: NyBookingWi
                 className={inputCls}
               />
             </Felt>
+            {isGroup && (
+              <Felt label="Antall deltagere (max)" className="mt-4">
+                <input
+                  type="number"
+                  value={antallDeltagere || ""}
+                  onChange={(e) => setAntallDeltagere(e.target.value ? parseInt(e.target.value) : null)}
+                  className={inputCls}
+                  placeholder="Antall deltagere"
+                />
+              </Felt>
+            )}
           </StegRamme>
         )}
 

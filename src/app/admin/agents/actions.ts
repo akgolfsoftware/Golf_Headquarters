@@ -6,6 +6,8 @@ import { runPlanWatcher } from "@/lib/agents/plan-watcher";
 import { runTrainingGap } from "@/lib/agents/training-gap";
 import { runDailyBrief } from "@/lib/agents/daily-brief-agent";
 import { runDrillForslag } from "@/lib/agents/drill-forslag-agent";
+import { runBookingOptimizer } from "@/lib/agents/booking-optimizer";
+import { runAvailabilityMonitor } from "@/lib/agents/availability-24-7-monitor";
 
 // Agenter som kan kjøres manuelt fra Mission Control (ADMIN-only).
 const MANUELT: Record<string, () => Promise<unknown>> = {
@@ -13,6 +15,8 @@ const MANUELT: Record<string, () => Promise<unknown>> = {
   "training-gap": runTrainingGap,
   "daily-brief": runDailyBrief,
   "drill-forslag": runDrillForslag,
+  "booking-optimizer": runBookingOptimizer,
+  "availability-24-7-monitor": runAvailabilityMonitor,
 };
 
 export const MANUELLE_AGENTER = Object.keys(MANUELT);

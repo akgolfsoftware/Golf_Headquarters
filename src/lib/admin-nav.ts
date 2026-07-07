@@ -267,6 +267,7 @@ export function buildAdminNav(
         { type: "item", key: "team", label: "Team", href: "/admin/team", icon: UserCog },
         { type: "item", key: "integrations", label: "Integrasjoner", href: "/admin/integrasjoner", icon: Plug },
         { type: "item", key: "agents", label: "AI-agenter", href: "/admin/agents", icon: Bot },
+        { type: "item", key: "ai-workspace", label: "AI Workspace (Kode)", href: "/admin/ai", icon: Bot },
         { type: "item", key: "email-templates", label: "E-postmaler", href: "/admin/email-templates", icon: Mail },
         { type: "item", key: "audit-log", label: "Audit-logg", href: "/admin/audit-log", icon: ScrollText },
         { type: "item", key: "settings", label: "Innstillinger", href: "/admin/settings", icon: Settings },

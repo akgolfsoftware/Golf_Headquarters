@@ -2261,13 +2261,14 @@ model TournamentEntry {
 }
 
 model Group {
-  id        String   @id @default(cuid())
-  name      String
+  id              String   @id @default(cuid())
+  name            String
   // A1 | A2 | A3 | A4 | A5
-  level     String?
-  coachId   String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  level           String?
+  coachId         String?
+  maxParticipants Int?     // max deltagere for gruppe-treninger
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   coach     User?           @relation("CoachOfGroup", fields: [coachId], references: [id], onDelete: SetNull)
   members   GroupMember[]
@@ -2280,17 +2281,18 @@ model Group {
 // Gruppe-treningstider (Bonus). Brukes for å planlegge faste eller
 // ad-hoc gruppe-økter — WANG Toppidrett, GFGK Junior osv.
 model GroupSchedule {
-  id          String   @id @default(cuid())
-  groupId     String
-  title       String
-  description String?
-  startAt     DateTime
-  endAt       DateTime
-  location    String?
+  id               String   @id @default(cuid())
+  groupId          String
+  title            String
+  description      String?
+  startAt          DateTime
+  endAt            DateTime
+  location         String?
   // WEEKLY | NONE — for repeterende økter
-  recurring   String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  recurring        String?
+  maxParticipants  Int?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
 

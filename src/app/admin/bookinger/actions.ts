@@ -35,3 +35,30 @@ export async function avvisBooking(id: string) {
   });
   revalidatePath("/admin/bookinger");
 }
+
+export async function bekreftAllePending() {
+  await krevCoach();
+  await prisma.booking.updateMany({
+    where: { status: "PENDING" },
+    data: { status: "CONFIRMED" },
+  });
+  revalidatePath("/admin/bookinger");
+}
+
+export async function avvisAllePending() {
+  await krevCoach();
+  await prisma.booking.updateMany({
+    where: { status: "PENDING" },
+    data: { status: "CANCELLED" },
+  });
+  revalidatePath("/admin/bookinger");
+}
+
+export async function markerAlleConfirmedSomCompleted() {
+  await krevCoach();
+  await prisma.booking.updateMany({
+    where: { status: "CONFIRMED" },
+    data: { status: "COMPLETED" },
+  });
+  revalidatePath("/admin/bookinger");
+}

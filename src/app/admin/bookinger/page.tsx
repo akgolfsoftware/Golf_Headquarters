@@ -100,20 +100,32 @@ function toHeatLevel(pct: number): HeatLevel {
   return 5;
 }
 
-export default async function BookingerPage() {
+export default async function BookingerPage({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+
+  const { tab = "oversikt" } = await searchParams;
 
   const ukeStart = mandagFor(new Date());
   const ukeSlutt = new Date(ukeStart);
   ukeSlutt.setDate(ukeSlutt.getDate() + 7);
   const ukeNr = isoUke(ukeStart);
 
-  const [bookinger, facilities, ventendeForesporsler] = await Promise.all([
+  const [bookinger, facilities, ventendeForesporsler, availabilities] = await Promise.all([
     prisma.booking.findMany({
       where: { startAt: { gte: ukeStart, lt: ukeSlutt } },
       orderBy: { startAt: "asc" },
       include: {
-        user: { select: { id: true, name: true } },
+        user: { 
+          select: { 
+            id: true, 
+            name: true,
+            technicalPlans: {
+              where: { status: "ACTIVE" },
+              select: { id: true },
+              take: 1
+            }
+          } 
+        },
         serviceType: { select: { name: true } },
         facility: { select: { name: true } },
         location: { select: { name: true } },
@@ -125,6 +137,11 @@ export default async function BookingerPage() {
       orderBy: [{ location: { name: "asc" } }, { name: "asc" }],
     }),
     prisma.sessionRequest.count({ where: { status: "PENDING" } }),
+    prisma.coachAvailability.findMany({
+      where: { active: true },
+      include: { location: { select: { name: true } } },
+      take: 50,
+    }),
   ]);
 
   // --- Kapasitet-heatmap: timer × dag (ekte bookinger) ---
@@ -183,9 +200,94 @@ export default async function BookingerPage() {
             <Link href="/admin/bookinger/ny" className={agBtnClass("primary")}>
               <Plus size={16} strokeWidth={1.5} /> Ny booking
             </Link>
+            <Link href="#bulk" className={agBtnClass("secondary")}>Bulk handlinger</Link>
           </>
         }
       />
+
+      {/* Tabs for admin hub */}
+      <div className="flex gap-2 mb-4 border-b border-border">
+        <Link href="/admin/bookinger" className="px-4 py-2 text-sm font-medium border-b-2 border-primary">Oversikt</Link>
+        <Link href="/admin/availability" className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground">Kapasitet</Link>
+        <Link href="/admin/bookinger?tab=kalender" className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground">Kalender (komme)</Link>
+      </div>
+
+      {tab === "kalender" && (
+        <div className="mb-4">
+          <div className="p-4 border border-border rounded bg-card">
+            <h3 className="font-semibold mb-2">Full Kalender — Bookinger denne uka</h3>
+            <p className="text-sm text-muted-foreground mb-4">Viser bookinger gruppert per dag (full komponent basert på week-grid stil). Bruk availability for slots.</p>
+            <div className="grid grid-cols-7 gap-2 text-xs">
+              {["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"].map((d, i) => {
+                const dayBookinger = bookinger.filter((b) => {
+                  const day = (b.startAt.getDay() + 6) % 7;
+                  return day === i;
+                });
+                const dayAvail = availabilities.filter(a => a.weekday === i);
+                return (
+                  <div key={i} className="border border-border p-2 rounded bg-secondary/30 min-h-[100px]">
+                    <div className="font-bold mb-1">{d} ({dayAvail.length} tilgjengelige vinduer)</div>
+                    {dayBookinger.length > 0 ? (
+                      dayBookinger.map((b) => (
+                        <div key={b.id} className="mb-1 p-1 bg-card rounded text-[10px] border-l-2 border-primary">
+                          {tidLabel(b.startAt)} {b.serviceType.name} - {b.user?.name ?? b.guestName ?? "Gjest"}
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-muted-foreground text-[10px]">Ingen bookinger</div>
+                    )}
+                    {dayAvail.length > 0 && (
+                      <div className="mt-1 text-[9px] text-green-600">Tilgjengelig: {dayAvail.map(a => `${a.startTime}-${a.endTime}`).join(', ')}</div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            <div className="mt-2 text-[10px] text-muted-foreground">Full kalender: heatmap + grids fra availability integrert. Se /admin/availability for drag-to-edit.</div>
+          </div>
+        </div>
+      )}
+
+      {/* Rapporter (step 6) */}
+      <div className="mb-4 p-4 border border-border rounded bg-card">
+        <h3 className="font-semibold mb-2">Rapporter</h3>
+        <p className="text-sm">Utnyttelse: {kapasitetBruktPct}% | Ledige luker: {ledigeLuker} | Forespørsler: {foresporsler}</p>
+        <div className="mt-1 text-xs text-muted-foreground">
+          Per anlegg: {facilities.slice(0,3).map(f => f.name).join(", ")}{facilities.length > 3 ? "..." : ""}. 
+          Coach-filter og mer granularitet i Kapasitet / spillere. Drag i availability for å justere kapasitet.
+        </div>
+      </div>
+
+      {/* Bulk actions */}
+      <div id="bulk" className="mb-4 flex gap-2 flex-wrap">
+        <form action={async () => {
+          "use server";
+          const { bekreftAllePending } = await import("./actions");
+          await bekreftAllePending();
+        }}>
+          <button type="submit" className={agBtnClass("secondary")}>
+            Bekreft alle PENDING (bulk)
+          </button>
+        </form>
+        <form action={async () => {
+          "use server";
+          const { avvisAllePending } = await import("./actions");
+          await avvisAllePending();
+        }}>
+          <button type="submit" className={agBtnClass("secondary")}>
+            Avvis alle PENDING (bulk)
+          </button>
+        </form>
+        <form action={async () => {
+          "use server";
+          const { markerAlleConfirmedSomCompleted } = await import("./actions");
+          await markerAlleConfirmedSomCompleted();
+        }}>
+          <button type="submit" className={agBtnClass("secondary")}>
+            Marker alle CONFIRMED som COMPLETED (bulk)
+          </button>
+        </form>
+      </div>
 
       {/* KPI-kort */}
       <div className="mb-5 grid grid-cols-2 overflow-hidden rounded-xl border border-border bg-card md:grid-cols-4">
@@ -237,9 +339,9 @@ export default async function BookingerPage() {
         <section className="overflow-hidden rounded-xl border border-border bg-card">
           <div
             className="grid gap-3 border-b border-border bg-secondary/40 px-4 py-[11px]"
-            style={{ gridTemplateColumns: "64px 1.6fr 1.2fr 1fr 0.9fr" }}
+            style={{ gridTemplateColumns: "64px 1.6fr 1.2fr 1fr 0.8fr 0.9fr" }}
           >
-            {["Tid", "Spiller", "Type", "Anlegg", "Status"].map((h) => (
+            {["Tid", "Spiller", "Type", "Anlegg", "Plan", "Status"].map((h) => (
               <span
                 key={h}
                 className="font-mono text-[9px] font-extrabold uppercase tracking-[0.1em] text-muted-foreground"
@@ -262,7 +364,7 @@ export default async function BookingerPage() {
                 <div
                   key={b.id}
                   className="grid items-center gap-3 border-b border-border px-4 py-[13px] transition-colors last:border-b-0 hover:bg-secondary"
-                  style={{ gridTemplateColumns: "64px 1.6fr 1.2fr 1fr 0.9fr" }}
+                  style={{ gridTemplateColumns: "64px 1.6fr 1.2fr 1fr 0.8fr 0.9fr" }}
                 >
                   <span className="font-mono text-xs font-semibold text-foreground">
                     {tidLabel(b.startAt)}
@@ -272,6 +374,13 @@ export default async function BookingerPage() {
                     {b.serviceType.name}
                   </span>
                   <span className="font-mono text-[11px] text-muted-foreground">{anlegg}</span>
+                  {b.user?.technicalPlans?.length ? (
+                    <Link href={`/admin/spillere/${b.user.id}/plan/${b.user.technicalPlans[0].id}`} className="text-xs text-primary underline">
+                      Se plan
+                    </Link>
+                  ) : (
+                    <span className="text-[10px] text-muted-foreground">—</span>
+                  )}
                   {b.status === "PENDING" ? (
                     <BekreftAvvis bookingId={b.id} />
                   ) : (

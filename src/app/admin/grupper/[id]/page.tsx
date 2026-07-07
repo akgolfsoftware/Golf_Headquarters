@@ -185,11 +185,11 @@ export default async function GruppeDetalj({
       actions={
         <>
           <Link
-            href={`/admin/bookinger/ny?groupId=${gruppe.id}`}
+            href={`/admin/grupper/${gruppe.id}/timeplan`}
             className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:border-primary"
           >
             <CalendarClock className="h-3.5 w-3.5" strokeWidth={1.75} />
-            Planlegg samling
+            Planlegg / dupliser gruppe trening
           </Link>
           <LeggTilSpillerButton groupId={gruppe.id} kandidater={kandidater} />
         </>
@@ -259,6 +259,12 @@ export default async function GruppeDetalj({
                         <Repeat className="h-3 w-3" strokeWidth={1.75} />
                         {nesteSamling.recurring}
                       </span>
+                    </>
+                  )}
+                  {nesteSamling.maxParticipants && (
+                    <>
+                      <span>·</span>
+                      <span>Max {nesteSamling.maxParticipants} deltagere</span>
                     </>
                   )}
                 </p>

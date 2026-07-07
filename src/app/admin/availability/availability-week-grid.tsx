@@ -48,22 +48,52 @@ export function AvailabilityWeekGrid({
   const [bekreft, setBekreft] = useState<{ dag: number; start: string; end: string } | null>(null);
   const [locationId, setLocationId] = useState(locations[0]?.id ?? "");
   const [feil, setFeil] = useState<string | null>(null);
+  const [livePreview, setLivePreview] = useState<string>("");
 
-  function ned(dag: number, rad: number) {
+  // Forbedret drag: bruk pointer events for touch + mus, bedre preview
+  function startDrag(dag: number, rad: number, e?: React.PointerEvent) {
     dragDag.current = dag;
     setDrag({ dag, a: rad, b: rad });
+    setLivePreview(radTilTid(rad));
+    if (e) (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
   }
-  function over(dag: number, rad: number) {
-    if (dragDag.current === dag) setDrag((d) => (d ? { ...d, b: rad } : null));
+
+  function moveDrag(dag: number, rad: number) {
+    if (dragDag.current === dag) {
+      setDrag((d) => {
+        if (!d) return null;
+        const newDrag = { ...d, b: rad };
+        setLivePreview(`${radTilTid(Math.min(newDrag.a, newDrag.b))}–${radTilTid(Math.max(newDrag.a, newDrag.b) + 1)}`);
+        return newDrag;
+      });
+    }
   }
-  function opp() {
+
+  function endDrag() {
     if (!drag) return;
     const lav = Math.min(drag.a, drag.b);
     const hoy = Math.max(drag.a, drag.b);
     dragDag.current = null;
     setDrag(null);
+    setLivePreview("");
     setFeil(null);
+    // Sjekk overlap med eksisterende (enkel)
+    const overlapping = windows.some(w => 
+      w.weekday === drag.dag && 
+      !(radTilTid(hoy + 1) <= w.startTime || radTilTid(lav) >= w.endTime)
+    );
+    if (overlapping) {
+      setFeil("Overlapper med eksisterende vindu. Juster først.");
+      return;
+    }
     setBekreft({ dag: lav === hoy ? lav : lav, start: radTilTid(lav), end: radTilTid(hoy + 1) });
+  }
+
+  // Forbedring: støtt klikk for enkelt slot + drag
+  function handleSlotClick(dag: number, rad: number) {
+    if (drag) return; // ikke hvis drar
+    const tid = radTilTid(rad);
+    setBekreft({ dag, start: tid, end: radTilTid(rad + 1) });
   }
 
   function lagre() {
@@ -89,7 +119,13 @@ export function AvailabilityWeekGrid({
   }
 
   return (
-    <div className="select-none">
+    <div className="select-none relative">
+      {/* Live drag preview bar */}
+      {livePreview && (
+        <div className="absolute top-0 left-0 right-0 bg-accent/90 text-accent-foreground text-center py-1 font-mono text-xs z-10 rounded-t">
+          Dragging: {livePreview} (slipp for å bekrefte)
+        </div>
+      )}
       <div className="grid grid-cols-[44px_repeat(7,1fr)] gap-px rounded-xl border border-border bg-border overflow-hidden">
         {/* Header */}
         <div className="bg-card" />
@@ -116,13 +152,14 @@ export function AvailabilityWeekGrid({
                   <button
                     key={dag}
                     type="button"
-                    onMouseDown={() => ned(dag, rad)}
-                    onMouseEnter={() => over(dag, rad)}
-                    onMouseUp={opp}
+                    onPointerDown={(e) => startDrag(dag, rad, e)}
+                    onPointerEnter={() => moveDrag(dag, rad)}
+                    onPointerUp={endDrag}
+                    onClick={() => handleSlotClick(dag, rad)}
                     className={
-                      "h-[18px] w-full bg-card transition-colors " +
-                      (iDrag ? "bg-accent/40" : erHel ? "" : "bg-background/40") +
-                      " hover:bg-secondary"
+                      "h-[18px] w-full bg-card transition-colors cursor-crosshair " +
+                      (iDrag ? "bg-accent/60 ring-1 ring-accent" : erHel ? "" : "bg-background/40") +
+                      " hover:bg-secondary active:bg-accent/30"
                     }
                     aria-label={`${DAGER[dag]} ${radTilTid(rad)}`}
                   />

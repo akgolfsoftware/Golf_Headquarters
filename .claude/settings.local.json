@@ -298,7 +298,9 @@
       "mcp__claude-in-chrome__tabs_context_mcp",
       "mcp__claude-in-chrome__navigate",
       "mcp__claude-in-chrome__computer",
-      "mcp__claude-in-chrome__get_page_text"
+      "mcp__claude-in-chrome__get_page_text",
+      "Skill(artifact-design)",
+      "Skill(artifact-design:*)"
     ]
   }
 }

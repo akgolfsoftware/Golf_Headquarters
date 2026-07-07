@@ -12,15 +12,15 @@
  * Tokens-only, 8pt-grid, Lucide stroke 1.75.
  */
 
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CalendarClock, Clock, MapPin, Repeat } from "lucide-react";
+import { CalendarClock, Clock, MapPin, Repeat, Plus } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { DetailShell } from "@/components/shared/detail-shell";
 import { AthleticBadge } from "@/components/athletic/badge";
 import { EmptyState } from "@/components/shared/empty-state";
+import { opprettGruppeTrening, dupliserGruppeTime } from "../actions";
 
 const NB_WEEKDAY = new Intl.DateTimeFormat("nb-NO", { weekday: "long" });
 const NB_DATE = new Intl.DateTimeFormat("nb-NO", {
@@ -106,21 +106,57 @@ export default async function GruppeTimeplan({
       }
       subtitle={`${gruppe.schedules.length} tider totalt · ${faste.length} faste · ${kommende.length} kommende`}
     >
+      {/* Opprett gruppe trening form - støtter tidspunkt, antall deltagere, dato, tid, varighet */}
+      <form action={async (formData: FormData) => {
+        "use server";
+        const title = formData.get("title") as string;
+        const description = formData.get("description") as string | null;
+        const dato = formData.get("dato") as string;
+        const tid = formData.get("tid") as string;
+        const varighetMin = parseInt(formData.get("varighetMin") as string);
+        const location = formData.get("location") as string | null;
+        const recurring = formData.get("recurring") as string;
+        const maxParticipants = formData.get("maxParticipants") ? parseInt(formData.get("maxParticipants") as string) : null;
+
+        const startAt = new Date(`${dato}T${tid}`);
+        const endAt = new Date(startAt.getTime() + varighetMin * 60000);
+
+        await opprettGruppeTrening(gruppe.id, {
+          title,
+          description: description || undefined,
+          startAt,
+          endAt,
+          location: location || undefined,
+          recurring,
+          maxParticipants: maxParticipants || undefined,
+        });
+      }} className="mb-6 p-4 border border-border rounded-xl bg-card space-y-3">
+        <div className="flex items-center gap-2">
+          <Plus className="h-4 w-4" />
+          <span className="font-semibold">Opprett gruppe trening</span>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+          <input name="title" placeholder="Tittel (f.eks. Gruppe trening)" required className="border p-2 rounded" />
+          <input name="description" placeholder="Beskrivelse" className="border p-2 rounded" />
+          <input type="date" name="dato" required className="border p-2 rounded" />
+          <input type="time" name="tid" required className="border p-2 rounded" />
+          <input type="number" name="varighetMin" placeholder="Varighet min" defaultValue="60" required className="border p-2 rounded" />
+          <input name="location" placeholder="Sted" className="border p-2 rounded" />
+          <select name="recurring" className="border p-2 rounded">
+            <option value="NONE">Engang (spesifikt tidspunkt)</option>
+            <option value="WEEKLY">Ukentlig</option>
+          </select>
+          <input type="number" name="maxParticipants" placeholder="Antall deltagere (max)" className="border p-2 rounded" />
+        </div>
+        <button type="submit" className="px-4 py-2 bg-primary text-primary-foreground rounded text-sm">Opprett</button>
+      </form>
+
       {gruppe.schedules.length === 0 ? (
         <EmptyState
           icon={CalendarClock}
           titleItalic="Ingen"
           titleTrail="faste tider satt"
-          sub="Denne gruppen har ingen treningstider i timeplanen ennå. Bruk «Planlegg samling» på gruppesiden for å legge inn første økt."
-          cta={
-            <Link
-              href={`/admin/bookinger/ny?groupId=${gruppe.id}`}
-              className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
-            >
-              <CalendarClock className="h-3.5 w-3.5" strokeWidth={1.75} />
-              Planlegg samling
-            </Link>
-          }
+          sub="Bruk skjemaet over for å legge inn første økt (støtter tidspunkt, antall deltagere, duplisering via knapp under)."
         />
       ) : (
         <div className="space-y-8">
@@ -130,6 +166,7 @@ export default async function GruppeTimeplan({
               rader={faste}
               focusId={focus}
               fast
+              groupId={gruppe.id}
             />
           )}
           {kommende.length > 0 && (
@@ -137,6 +174,7 @@ export default async function GruppeTimeplan({
               tittel="Kommende samlinger"
               rader={kommende}
               focusId={focus}
+              groupId={gruppe.id}
             />
           )}
           {tidligere.length > 0 && (
@@ -145,6 +183,7 @@ export default async function GruppeTimeplan({
               rader={tidligere}
               focusId={focus}
               dempet
+              groupId={gruppe.id}
             />
           )}
         </div>
@@ -161,6 +200,7 @@ type ScheduleRad = {
   endAt: Date;
   location: string | null;
   recurring: string | null;
+  maxParticipants: number | null;
 };
 
 function TimeplanSeksjon({
@@ -169,12 +209,14 @@ function TimeplanSeksjon({
   focusId,
   fast = false,
   dempet = false,
+  groupId,
 }: {
   tittel: string;
   rader: ScheduleRad[];
   focusId?: string;
   fast?: boolean;
   dempet?: boolean;
+  groupId: string;
 }) {
   return (
     <section>
@@ -237,6 +279,9 @@ function TimeplanSeksjon({
                         {s.recurring}
                       </span>
                     )}
+                    {s.maxParticipants && (
+                      <span>Max {s.maxParticipants} deltagere</span>
+                    )}
                   </p>
 
                   {s.description && (
@@ -245,6 +290,15 @@ function TimeplanSeksjon({
                     </p>
                   )}
                 </div>
+                {/* Dupliser knapp - støtter duplisere gruppe time med ny dato/tid */}
+                <form action={async (formData: FormData) => {
+                  "use server";
+                  const newStart = formData.get("newStart") as string;
+                  await dupliserGruppeTime(groupId, s.id, newStart);
+                }} className="flex gap-1 items-end text-xs">
+                  <input type="datetime-local" name="newStart" required className="border p-1 text-xs" defaultValue={new Date(s.startAt.getTime() + 7*24*60*60*1000).toISOString().slice(0,16)} />
+                  <button type="submit" className="px-2 py-1 bg-secondary rounded hover:bg-muted">Dupliser</button>
+                </form>
               </div>
             </li>
           );

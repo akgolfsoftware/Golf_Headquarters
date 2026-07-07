@@ -12,10 +12,12 @@ import { NyBookingWizard } from "@/components/admin/bookinger/ny-booking-wizard"
 
 export const dynamic = "force-dynamic";
 
-export default async function NyBookingPage() {
+export default async function NyBookingPage({ searchParams }: { searchParams: Promise<{ groupId?: string }> }) {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
-  const [spillere, tjenester, lokasjoner] = await Promise.all([
+  const { groupId } = await searchParams;
+
+  const [spillere, tjenester, lokasjoner, gruppe] = await Promise.all([
     prisma.user.findMany({
       where: { role: "PLAYER", deletedAt: null },
       select: { id: true, name: true, email: true, homeClub: true },
@@ -41,6 +43,7 @@ export default async function NyBookingPage() {
       },
       orderBy: { name: "asc" },
     }),
+    groupId ? prisma.group.findUnique({ where: { id: groupId }, select: { id: true, name: true, maxParticipants: true } }) : Promise.resolve(null),
   ]);
 
   return (
@@ -53,6 +56,8 @@ export default async function NyBookingPage() {
       }))}
       tjenester={tjenester}
       lokasjoner={lokasjoner}
+      groupId={groupId}
+      group={gruppe ? { id: gruppe.id, name: gruppe.name, maxParticipants: gruppe.maxParticipants } : null}
     />
   );
 }

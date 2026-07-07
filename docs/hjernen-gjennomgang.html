@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AK Golf HQ — Hjernen: Gjennomgang &amp; Godkjenning (2026-07-07)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Inter+Tight:wght@600&amp;display=swap');
+    
+    :root {
+      --forest: #005840;
+      --lime: #D1F843;
+    }
+    
+    body {
+      font-family: 'Inter', system_ui, sans-serif;
+    }
+    
+    .font-display {
+      font-family: 'Inter Tight', 'Inter', system_ui, sans-serif;
+      font-weight: 600;
+    }
+
+    .section {
+      scroll-margin-top: 80px;
+    }
+
+    .collapsible-header {
+      cursor: pointer;
+    }
+
+    .collapsible-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+    }
+
+    .collapsible-content.open {
+      max-height: 2000px;
+    }
+
+    .godkjent {
+      background-color: #D1F84320 !important;
+      border-color: #005840 !important;
+    }
+
+    .godkjent .godkjenn-btn {
+      background-color: #005840;
+      color: #D1F843;
+      pointer-events: none;
+    }
+
+    .toc-link {
+      transition: all 0.1s;
+    }
+    
+    .toc-link:hover {
+      color: #005840;
+      padding-left: 4px;
+    }
+
+    .ak-card {
+      background: white;
+      border: 1px solid #E5E3DD;
+    }
+
+    .data-table th {
+      background: #F1EEE5;
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .plan-box {
+      border-left: 4px solid #005840;
+    }
+
+    .highlight-lime {
+      background: #D1F84320;
+      padding: 1px 4px;
+      border-radius: 2px;
+    }
+
+    .nav-pill {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body class="bg-[#FAFAF7] text-[#0A1F17]">
+  <!-- Top bar -->
+  <div class="sticky top-0 z-50 bg-white border-b border-[#E5E3DD]">
+    <div class="max-w-screen-xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-x-3">
+        <div class="w-9 h-9 rounded-xl bg-[#005840] flex items-center justify-center text-[#D1F843]">
+          <i class="fa-solid fa-golf-ball text-xl"></i>
+        </div>
+        <div>
+          <div class="font-display text-2xl tracking-tighter font-semibold">AK Golf HQ</div>
+          <div class="text-[10px] text-[#5E5C57] -mt-1">HJERNEN • 2026-07-07</div>
+        </div>
+      </div>
+      
+      <div class="flex items-center gap-x-3">
+        <button onclick="godkjennAlt()" 
+                class="px-5 py-2 rounded-full bg-[#005840] text-[#D1F843] text-sm font-semibold flex items-center gap-x-2 hover:bg-[#004530] transition-colors">
+          <i class="fa-solid fa-check-double"></i>
+          <span>GODKJENN ALT</span>
+        </button>
+        
+        <button onclick="eksporterGodkjent()" 
+                class="px-4 py-2 rounded-full border border-[#E5E3DD] hover:bg-white text-sm font-semibold flex items-center gap-x-2">
+          <i class="fa-solid fa-download"></i>
+          <span>Eksporter</span>
+        </button>
+        
+        <div class="text-xs px-3 py-1 bg-[#F1EEE5] rounded-full text-[#5E5C57] mono">
+          <span id="godkjent-count">0</span>/12 godkjent
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-screen-xl mx-auto px-6 pt-8 pb-20">
+    <!-- Header -->
+    <div class="mb-10">
+      <div class="flex items-center gap-2 text-sm">
+        <span class="px-3 py-1 bg-[#D1F843] text-[#005840] rounded-full font-semibold text-xs tracking-widest">PLAN GODKJENT</span>
+        <span class="text-[#5E5C57]">•</span>
+        <span class="text-[#5E5C57]">Bruk contenteditable + Godkjenn-knapper</span>
+      </div>
+      <h1 class="font-display text-6xl tracking-[-2.5px] leading-none font-semibold mt-2">
+        AK Golf HQ<br>
+        <span class="text-[#005840]">Hjernen</span> — Gjennomgang
+      </h1>
+      <p class="mt-4 max-w-2xl text-xl text-[#5E5C57]">
+        Komplett master-dokument for treningsplanlegging, TrackMan-integrasjon, teknisk plan (P-system), 
+        PlayerHQ-faser, AgencyOS-funksjoner, navigasjon og booking-optimalisering. 
+        Rediger direkte, godkjenn seksjoner, eksporter.
+      </p>
+      
+      <div class="flex gap-2 mt-4 text-xs">
+        <div class="px-3 py-1 bg-white border border-[#E5E3DD] rounded">PlayerHQ: 4 faser</div>
+        <div class="px-3 py-1 bg-white border border-[#E5E3DD] rounded">AgencyOS: Side-meny</div>
+        <div class="px-3 py-1 bg-white border border-[#E5E3DD] rounded">TrackMan + P1.0–P10.0</div>
+        <div class="px-3 py-1 bg-white border border-[#E5E3DD] rounded">AI + Bank + Repetisjon</div>
+      </div>
+    </div>
+
+    <!-- TOC -->
+    <div class="grid grid-cols-12 gap-8">
+      <div class="col-span-12 lg:col-span-3">
+        <div class="sticky top-20">
+          <div class="font-semibold text-sm mb-3 px-1 flex items-center gap-2">
+            <i class="fa-solid fa-list text-[#005840]"></i>
+            <span>INNHOLD</span>
+          </div>
+          <nav class="text-sm space-y-1" id="toc">
+            <a href="#trackman" class="toc-link block py-1 px-3 rounded hover:bg-white text-[#0A1F17]">1. TrackMan + Teknisk plan</a>
+            <a href="#playerhq-flows" class="toc-link block py-1 px-3 rounded hover:bg-white text-[#0A1F17]">2. PlayerHQ user flows</a>
+            <a href="#agencyos-funksjoner" class="toc-link block py-1 px-3 rounded hover:bg-white text-[#0A1F17]">3. AgencyOS funksjoner (faktisk + potensiell)</a>
+            <a href="#booking" class="toc-link block py-1 px-3 rounded hover:bg-white text-[#0A1F17]">4. Booking optimalisering</a>
+            <a href="#navigasjon" class="toc-link block py-1 px-3 rounded hover:bg-white text-[#0A1F17]">5. Navigasjon &amp; menyer</a>
+            <a href="#ordbok" class="toc-link block py-1 px-3 rounded hover:bg-white text-[#0A1F17]">6. Nøkkelordbok (P + TM)</a>
+            <a href="#ai-agent" class="toc-link block py-1 px-3 rounded hover:bg-white text-[#0A1F17]">7. Optimal AI-agent</a>
+            <a href="#data-gaps" class="toc-link block py-1 px-3 rounded hover:bg-white text-[#0A1F17]">8. Data-behov &amp; gaps</a>
+            <a href="#godkjenning" class="toc-link block py-1 px-3 rounded hover:bg-white text-[#0A1F17]">9. Godkjenn &amp; kommentarer</a>
+          </nav>
+          
+          <div class="mt-8 text-xs px-3 py-3 bg-white border border-[#E5E3DD] rounded-xl">
+            <div class="font-semibold mb-1">Instruksjoner</div>
+            <ul class="text-[#5E5C57] space-y-1 text-[13px]">
+              <li>• Klikk overskrifter for å åpne/lukke</li>
+              <li>• Rediger tekst direkte (contenteditable)</li>
+              <li>• Trykk «Godkjenn seksjon»</li>
+              <li>• Bruk «GODKJENN ALT» øverst</li>
+              <li>• Eksporter godkjent status</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main content -->
+      <div class="col-span-12 lg:col-span-9 space-y-12">
+
+        <!-- 1. TRACKMAN -->
+        <section id="trackman" class="section">
+          <div onclick="toggleSection(this)" class="collapsible-header flex items-center justify-between mb-3">
+            <div class="flex items-center gap-x-3">
+              <span class="font-display text-3xl tracking-tight">1. TrackMan-opplasting &amp; integrasjon med teknisk plan</span>
+            </div>
+            <div class="flex items-center gap-x-2 text-xs">
+              <span class="px-2 py-0.5 bg-[#005840] text-[#D1F843] rounded">P1.0–P10.0 fullsving</span>
+              <i class="fa-solid fa-chevron-down transition-transform"></i>
+            </div>
+          </div>
+          
+          <div class="collapsible-content open">
+            <div class="ak-card rounded-2xl p-6 border">
+              <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                  <h4 class="font-semibold mb-2">Nåværende tilstand (verifisert)</h4>
+                  <ul class="text-sm space-y-1.5 text-[#5E5C57]">
+                    <li>• CSV: full loop (parse → match club → update goals)</li>
+                    <li>• HTML: kun raw session (manglende shots + match)</li>
+                    <li>• Match: kun club-normalisering (begrensede aliases)</li>
+                    <li>• Goals: kun 5 metrics (smash, carry, speed, side)</li>
+                    <li>• Ingen consecutive / streak / "10 godkjente i rad"</li>
+                    <li>• Ingen per-kølle bank</li>
+                    <li>• Ingen AI (PDF/bilde)</li>
+                    <li>• Begrenset filtrering</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 class="font-semibold mb-2">Måltilstand (anbefalt)</h4>
+                  <ul class="text-sm space-y-1.5">
+                    <li class="flex gap-2"><span class="text-[#005840]">✓</span> <span>AI-opplasting (PDF/CSV/bilde fra skjerm)</span></li>
+                    <li class="flex gap-2"><span class="text-[#005840]">✓</span> <span>Full parameter-støtte + filtrering</span></li>
+                    <li class="flex gap-2"><span class="text-[#005840]">✓</span> <span>Per-kølle TM-bank (godkjente referanser)</span></li>
+                    <li class="flex gap-2"><span class="text-[#005840]">✓</span> <span>Parameter-mål i teknisk plan (consecutive)</span></li>
+                    <li class="flex gap-2"><span class="text-[#005840]">✓</span> <span>Range/matte-repetisjon modus + live validering</span></li>
+                    <li class="flex gap-2"><span class="text-[#005840]">✓</span> <span>Toveis: Plan → Upload → Bank → Plan</span></li>
+                    <li class="flex gap-2"><span class="text-[#005840]">✓</span> <span>Workbench-redigering for spiller + coach</span></li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="mt-6 pt-6 border-t">
+                <div class="text-xs uppercase tracking-widest font-semibold mb-2 text-[#5E5C57]">Kritiske filer</div>
+                <div class="mono text-xs grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1 text-[#0A1F17]">
+                  <div>src/app/portal/mal/trackman/actions.ts</div>
+                  <div>src/lib/teknisk-plan/{match-shot,update-tm-goals}.ts</div>
+                  <div>src/lib/trackman/parse-*.ts</div>
+                  <div>src/app/portal/tren/teknisk-plan/[planId]/page.tsx</div>
+                  <div>src/components/workbench-hybrid/TekniskPlanTab.tsx</div>
+                  <div>components/teknisk-plan/* + TrackmanGoalsCard</div>
+                </div>
+              </div>
+
+              <div class="mt-5 p-4 bg-[#F1EEE5] rounded-xl text-sm">
+                <strong>Klarspråk-eksempel:</strong> «8 av 10 godkjente — face angle innenfor ±2° for 7-jern (P7). Lagt til i din 7-jern bank.»
+              </div>
+            </div>
+
+            <div class="mt-3 flex justify-end">
+              <button onclick="godkjennSeksjon(this, 'trackman')" 
+                      class="godkjenn-btn px-4 py-1.5 text-xs font-semibold rounded-full border border-[#005840] hover:bg-[#005840] hover:text-white transition-colors">
+                GODKJENN SEKSJON
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. PLAYERHQ FLOWS -->
+        <section id="playerhq-flows" class="section">
+          <div onclick="toggleSection(this)" class="collapsible-header flex items-center justify-between mb-3">
+            <span class="font-display text-3xl tracking-tight">2. PlayerHQ user flows — optimalisering</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+          <div class="collapsible-content">
+            <div class="ak-card rounded-2xl p-6">
+              <p class="text-sm mb-4">Hovedfaser (låst): <span class="highlight-lime font-medium">Min Profil — Planlegge — Gjennomføre — Analysere</span> (+ Meg).</p>
+              
+              <div class="grid md:grid-cols-4 gap-3 text-sm">
+                <div class="p-3 border rounded-xl">
+                  <div class="font-semibold">Min Profil</div>
+                  <div class="text-xs text-[#5E5C57] mt-1">Bank, profil, helse, innstillinger, abonnement</div>
+                </div>
+                <div class="p-3 border rounded-xl">
+                  <div class="font-semibold">Planlegge</div>
+                  <div class="text-xs text-[#5E5C57] mt-1">Workbench (sentral), teknisk plan, maler, Gantt</div>
+                </div>
+                <div class="p-3 border rounded-xl">
+                  <div class="font-semibold">Gjennomføre</div>
+                  <div class="text-xs text-[#5E5C57] mt-1">Range-matte logging, live, kalender, booking</div>
+                </div>
+                <div class="p-3 border rounded-xl">
+                  <div class="font-semibold">Analysere</div>
+                  <div class="text-xs text-[#5E5C57] mt-1">SG + TM (full filter) + runder + progresjon</div>
+                </div>
+              </div>
+
+              <div class="mt-5 text-xs">
+                <strong>Gap / forbedringer:</strong> Mange sub-skjermer mangler full flyt/data (MASTER ~ / –). Anbefalt: top-meny desktop, bunn-meny mobil, direkte «Logg repetisjon» fra teknisk plan task, prefill fra Neste Fokus.
+              </div>
+            </div>
+            <div class="mt-3 flex justify-end">
+              <button onclick="godkjennSeksjon(this, 'playerhq-flows')" class="godkjenn-btn px-4 py-1.5 text-xs font-semibold rounded-full border border-[#005840] hover:bg-[#005840] hover:text-white">GODKJENN SEKSJON</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. AGENCYOS FUNKSJONER -->
+        <section id="agencyos-funksjoner" class="section">
+          <div onclick="toggleSection(this)" class="collapsible-header flex items-center justify-between mb-3">
+            <span class="font-display text-3xl tracking-tight">3. AgencyOS — faktiske + potensielle funksjoner</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+          <div class="collapsible-content">
+            <div class="ak-card rounded-2xl p-6 text-sm">
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div>
+                  <div class="font-semibold mb-2">Faktiske operative (implementert)</div>
+                  <div class="text-xs leading-relaxed text-[#5E5C57]">
+                    Cockpit, Spillere (profil/workbench/tester), Planlegge (plans + templates + teknisk plan + drills + turneringer), 
+                    Gjennomføre (bookinger + kalender + live + anlegg), Analysere (compliance + stall + tester), 
+                    Workspace, Agents, Integrasjoner, Caddie, Innboks, Settings.
+                  </div>
+                </div>
+                <div>
+                  <div class="font-semibold mb-2">Potensielle (styrkes med PlayerHQ-data)</div>
+                  <div class="text-xs leading-relaxed">
+                    Full AI-Caddie (alle TM + SG + plan), TM-bank editor, parameter goal editor, live intervention, 
+                    predictive progression, plan→booking direkte, video AI-tagging, compliance alerts.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="mt-3 flex justify-end">
+              <button onclick="godkjennSeksjon(this, 'agencyos')" class="godkjenn-btn px-4 py-1.5 text-xs font-semibold rounded-full border border-[#005840] hover:bg-[#005840] hover:text-white">GODKJENN SEKSJON</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. BOOKING -->
+        <section id="booking" class="section">
+          <div onclick="toggleSection(this)" class="collapsible-header flex items-center justify-between mb-3">
+            <span class="font-display text-3xl tracking-tight">4. Booking-systemet — vei til optimalt</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+          <div class="collapsible-content">
+            <div class="ak-card p-6 rounded-2xl">
+              <p class="text-sm">Nå: Acuity midlertidig + intern (portal + admin + marketing). Mangler dyp kobling til teknisk plan og TM.</p>
+              <ul class="mt-4 text-sm space-y-1">
+                <li>• <strong>Fase 1:</strong> Task i teknisk plan → «Book anbefalt slot» (prefill service/facility/reps)</li>
+                <li>• <strong>Fase 2:</strong> TM-booking → auto-hint import + valider mot plan-mål</li>
+                <li>• <strong>Fase 3:</strong> Credit fra abonnement + compliance tracking</li>
+                <li>• <strong>Optimalt:</strong> Smart availability fra plan + coach load + recurring matte-pakker</li>
+              </ul>
+            </div>
+            <div class="mt-3 flex justify-end">
+              <button onclick="godkjennSeksjon(this, 'booking')" class="godkjenn-btn px-4 py-1.5 text-xs font-semibold rounded-full border border-[#005840] hover:bg-[#005840] hover:text-white">GODKJENN SEKSJON</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. NAV -->
+        <section id="navigasjon" class="section">
+          <div onclick="toggleSection(this)" class="collapsible-header flex items-center justify-between mb-3">
+            <span class="font-display text-3xl tracking-tight">5. Navigasjon — PlayerHQ + AgencyOS</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+          <div class="collapsible-content">
+            <div class="ak-card p-6 rounded-2xl text-sm">
+              <div><strong>PlayerHQ:</strong> Topp-meny desktop (Min Profil | Planlegge | Gjennomføre | Analysere). Bunn-meny mobil (4 ikoner). Workbench under Planlegge.</div>
+              <div class="mt-3"><strong>AgencyOS:</strong> Side-meny (Oversikt, Spillere, Planlegge, Gjennomføre, Analysere, Workspace, Innstillinger). Topbar + mobil-nav.</div>
+            </div>
+            <div class="mt-3 flex justify-end">
+              <button onclick="godkjennSeksjon(this, 'nav')" class="godkjenn-btn px-4 py-1.5 text-xs font-semibold rounded-full border border-[#005840] hover:bg-[#005840] hover:text-white">GODKJENN SEKSJON</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6. ORDBOK -->
+        <section id="ordbok" class="section">
+          <div onclick="toggleSection(this)" class="collapsible-header flex items-center justify-between mb-3">
+            <span class="font-display text-3xl tracking-tight">6. Nøkkelordbok (P-system + TrackMan)</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+          <div class="collapsible-content">
+            <div class="ak-card p-6 rounded-2xl">
+              <div class="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-3 text-sm">
+                <div><span class="font-medium">P1.0–P10.0</span> — MORAD fullsving posisjoner (kun fullsving)</div>
+                <div><span class="font-medium">TM-bank per kølle</span> — godkjente referanse-slag / profiler</div>
+                <div><span class="font-medium">Consecutive reps</span> — X godkjente slag etter hverandre</div>
+                <div><span class="font-medium">Parameter-mål</span> — face angle, club path, smash etc. + toleranse</div>
+                <div><span class="font-medium">Range/matte-repetisjon</span> — rask logging av mange like slag</div>
+                <div><span class="font-medium">Godkjent terskel</span> — corridor + CS-nivå</div>
+              </div>
+              <div class="text-xs mt-4 text-[#5E5C57]">Full ordbok finnes i docs/treningsplanlegging-hjernen.md (pyramide, L-faser, CS, M, PR, praksis, etc.).</div>
+            </div>
+            <div class="mt-3 flex justify-end">
+              <button onclick="godkjennSeksjon(this, 'ordbok')" class="godkjenn-btn px-4 py-1.5 text-xs font-semibold rounded-full border border-[#005840] hover:bg-[#005840] hover:text-white">GODKJENN SEKSJON</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 7. AI AGENT -->
+        <section id="ai-agent" class="section">
+          <div onclick="toggleSection(this)" class="collapsible-header flex items-center justify-between mb-3">
+            <span class="font-display text-3xl tracking-tight">7. Optimal AI-agent for planlegging</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+          <div class="collapsible-content">
+            <div class="ak-card p-6 rounded-2xl text-sm">
+              <div>Inputs: all SG + full TM (shots + bank) + teknisk plan (P + goals + compliance) + live + tester.</div>
+              <div class="mt-2">Outputs: plan-forslag, justeringer, ukessyntese, live-suggestions, klarspråk-forklaringer.</div>
+              <div class="mt-2">Autonomi: forslag → draft (godkjenn) → auto for enkle repetisjonsoppgaver.</div>
+            </div>
+            <div class="mt-3 flex justify-end">
+              <button onclick="godkjennSeksjon(this, 'ai')" class="godkjenn-btn px-4 py-1.5 text-xs font-semibold rounded-full border border-[#005840] hover:bg-[#005840] hover:text-white">GODKJENN SEKSJON</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 8. DATA GAPS -->
+        <section id="data-gaps" class="section">
+          <div onclick="toggleSection(this)" class="collapsible-header flex items-center justify-between mb-3">
+            <span class="font-display text-3xl tracking-tight">8. Data-behov &amp; gaps for komplett plattform</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+          <div class="collapsible-content">
+            <div class="ak-card p-6 rounded-2xl text-sm">
+              Per-slag koordinater, hull-for-hull, RPE + video-tagging i live, mental logs, equipment endringer, vær per økt, peer benchmarks, adherence-historikk.
+            </div>
+            <div class="mt-3 flex justify-end">
+              <button onclick="godkjennSeksjon(this, 'data')" class="godkjenn-btn px-4 py-1.5 text-xs font-semibold rounded-full border border-[#005840] hover:bg-[#005840] hover:text-white">GODKJENN SEKSJON</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 9. GODKJENNING -->
+        <section id="godkjenning" class="section">
+          <div class="mb-3 font-display text-3xl tracking-tight">9. Kommentarer &amp; godkjenning</div>
+          
+          <div class="ak-card rounded-2xl p-6">
+            <div class="mb-3 text-sm font-medium">Legg til generelle kommentarer for hele gjennomgangen:</div>
+            <textarea id="overall-comments" class="w-full border border-[#E5E3DD] rounded-xl p-4 text-sm h-28" placeholder="Skriv eventuelle kommentarer, endringsønsker eller godkjenningsnotater her..."></textarea>
+            
+            <div class="mt-4 flex gap-3">
+              <button onclick="godkjennAlt()" class="px-6 py-2.5 text-sm rounded-full bg-[#005840] text-[#D1F843] font-semibold">GODKJENN ALT + LAGRE KOMMENTARER</button>
+              <button onclick="eksporterGodkjent()" class="px-6 py-2.5 text-sm rounded-full border">Eksporter godkjent status (JSON)</button>
+            </div>
+            
+            <div id="godkjent-summary" class="mt-4 text-xs text-[#5E5C57] hidden"></div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Tailwind script
+    function initTailwind() {
+      // Already using CDN classes
+    }
+
+    function toggleSection(header) {
+      const content = header.nextElementSibling;
+      if (!content) return;
+      
+      const icon = header.querySelector('i.fa-chevron-down, i.fa-chevron-up');
+      
+      if (content.classList.contains('open')) {
+        content.classList.remove('open');
+        if (icon) icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
+      } else {
+        content.classList.add('open');
+        if (icon) icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
+      }
+    }
+
+    let godkjentState = {};
+
+    function godkjennSeksjon(btn, id) {
+      const section = btn.closest('section');
+      if (!section) return;
+
+      section.classList.add('godkjent');
+      btn.textContent = 'GODKJENT ✓';
+      btn.disabled = true;
+
+      godkjentState[id] = {
+        godkjent: true,
+        time: new Date().toISOString(),
+        comment: prompt('Eventuell kommentar til denne seksjonen (valgfritt):') || ''
+      };
+
+      updateGodkjentCount();
+    }
+
+    function godkjennAlt() {
+      const sections = document.querySelectorAll('.section');
+      let count = 0;
+
+      sections.forEach(section => {
+        const id = section.id;
+        if (!id) return;
+
+        section.classList.add('godkjent');
+        
+        const btn = section.querySelector('.godkjenn-btn');
+        if (btn) {
+          btn.textContent = 'GODKJENT ✓';
+          btn.disabled = true;
+        }
+
+        if (!godkjentState[id]) {
+          godkjentState[id] = {
+            godkjent: true,
+            time: new Date().toISOString(),
+            comment: ''
+          };
+          count++;
+        }
+      });
+
+      const overall = document.getElementById('overall-comments');
+      if (overall && overall.value.trim()) {
+        godkjentState['overall'] = {
+          godkjent: true,
+          time: new Date().toISOString(),
+          comment: overall.value.trim()
+        };
+      }
+
+      updateGodkjentCount();
+      alert('Alle synlige seksjoner godkjent! Du kan eksportere nå.');
+    }
+
+    function updateGodkjentCount() {
+      const countEl = document.getElementById('godkjent-count');
+      const total = Object.keys(godkjentState).filter(k => godkjentState[k].godkjent).length;
+      if (countEl) countEl.textContent = total;
+    }
+
+    function eksporterGodkjent() {
+      const overall = document.getElementById('overall-comments');
+      const payload = {
+        exportedAt: new Date().toISOString(),
+        godkjent: godkjentState,
+        overallComment: overall ? overall.value : '',
+        version: '2026-07-07-hjernen'
+      };
+
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `akgolf-hjernen-godkjent-${new Date().toISOString().slice(0,10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      // Also show summary
+      const summary = document.getElementById('godkjent-summary');
+      if (summary) {
+        summary.innerHTML = `<strong>Eksportert.</strong> ${Object.keys(godkjentState).length} seksjoner godkjent.`;
+        summary.classList.remove('hidden');
+      }
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+      if (e.metaKey && e.key === 'Enter') {
+        e.preventDefault();
+        godkjennAlt();
+      }
+      if (e.key === 'Escape') {
+        // Close any open modals or just do nothing
+      }
+    });
+
+    // Make key content areas editable
+    function makeEditable() {
+      const editables = document.querySelectorAll('.ak-card p, .ak-card li, .ak-card div.text-sm');
+      editables.forEach(el => {
+        el.setAttribute('contenteditable', 'true');
+        el.style.outline = 'none';
+        el.addEventListener('focus', () => {
+          el.style.background = '#fffbeb';
+        });
+        el.addEventListener('blur', () => {
+          el.style.background = '';
+        });
+      });
+    }
+
+    // Initialize
+    function init() {
+      initTailwind();
+      makeEditable();
+      
+      // Open first few sections by default
+      document.querySelectorAll('.collapsible-content').forEach((c, i) => {
+        if (i < 3) c.classList.add('open');
+      });
+
+      // Initial count
+      setTimeout(updateGodkjentCount, 300);
+
+      // Hint
+      console.log('%c[AK Golf] Hjernen klar. Bruk Godkjenn-knapper + Eksporter. Rediger tekst direkte.', 'color:#5E5C57');
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>

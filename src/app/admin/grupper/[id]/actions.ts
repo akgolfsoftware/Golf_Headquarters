@@ -93,3 +93,116 @@ export async function fjernGruppemedlem(
   revalidatePath(`/admin/grupper/${groupId}`);
   return { ok: true };
 }
+
+/**
+ * Opprett gruppe trening på tidspunkt.
+ * Støtter antall deltagere (maxParticipants), dato, tid, varighet.
+ * recurring = "NONE" for engang.
+ */
+export async function opprettGruppeTrening(
+  groupId: string,
+  data: {
+    title: string;
+    description?: string;
+    startAt: Date | string;
+    endAt: Date | string;
+    location?: string;
+    recurring?: string;
+    maxParticipants?: number;
+  },
+): Promise<ActionResult> {
+  const coach = await krevCoach();
+  if (!coach) return { ok: false, feil: "Ikke tilgang." };
+
+  const gruppe = await prisma.group.findUnique({ where: { id: groupId } });
+  if (!gruppe) return { ok: false, feil: "Fant ikke gruppen." };
+
+  const startAt = data.startAt instanceof Date ? data.startAt : new Date(data.startAt);
+  const endAt = data.endAt instanceof Date ? data.endAt : new Date(data.endAt);
+
+  if (Number.isNaN(startAt.getTime()) || Number.isNaN(endAt.getTime())) {
+    return { ok: false, feil: "Ugyldig dato/tid." };
+  }
+
+  try {
+    await prisma.groupSchedule.create({
+      data: {
+        groupId,
+        title: data.title,
+        description: data.description || null,
+        startAt,
+        endAt,
+        location: data.location || null,
+        recurring: data.recurring || "NONE",
+        maxParticipants: data.maxParticipants || null,
+      },
+    });
+  } catch (_e) {
+    return { ok: false, feil: "Kunne ikke opprette gruppe trening." };
+  }
+
+  await audit({
+    actorId: coach.id,
+    action: "group_schedule.created",
+    target: `Group:${groupId}`,
+  });
+
+  revalidatePath(`/admin/grupper/${groupId}`);
+  revalidatePath(`/admin/grupper/${groupId}/timeplan`);
+  return { ok: true };
+}
+
+/**
+ * Dupliser gruppe time.
+ * Kopier alle felter, sett ny startAt (dato, tid). Varighet beholdes.
+ * Inkluder antall deltagere.
+ */
+export async function dupliserGruppeTime(
+  groupId: string,
+  originalId: string,
+  newStartAt: Date | string,
+): Promise<ActionResult> {
+  const coach = await krevCoach();
+  if (!coach) return { ok: false, feil: "Ikke tilgang." };
+
+  const original = await prisma.groupSchedule.findUnique({
+    where: { id: originalId },
+    select: { title: true, description: true, startAt: true, endAt: true, location: true, recurring: true, maxParticipants: true },
+  });
+  if (!original) return { ok: false, feil: "Fant ikke original tid." };
+
+  const startAt = newStartAt instanceof Date ? newStartAt : new Date(newStartAt);
+  if (Number.isNaN(startAt.getTime())) {
+    return { ok: false, feil: "Ugyldig ny tidspunkt." };
+  }
+
+  const duration = original.endAt.getTime() - original.startAt.getTime();
+  const endAt = new Date(startAt.getTime() + duration);
+
+  try {
+    await prisma.groupSchedule.create({
+      data: {
+        groupId,
+        title: original.title,
+        description: original.description,
+        startAt,
+        endAt,
+        location: original.location,
+        recurring: original.recurring,
+        maxParticipants: original.maxParticipants,
+      },
+    });
+  } catch (_e) {
+    return { ok: false, feil: "Kunne ikke duplisere." };
+  }
+
+  await audit({
+    actorId: coach.id,
+    action: "group_schedule.duplicated",
+    target: `Group:${groupId}/Schedule:${originalId}`,
+  });
+
+  revalidatePath(`/admin/grupper/${groupId}`);
+  revalidatePath(`/admin/grupper/${groupId}/timeplan`);
+  return { ok: true };
+}
