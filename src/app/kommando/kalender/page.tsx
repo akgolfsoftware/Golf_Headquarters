@@ -5,8 +5,8 @@
 import { canAccessMissionControl } from "@/lib/auth/canAccessMissionControl";
 import { prisma } from "@/lib/prisma";
 import { CalendarViews } from "@/components/kommando/calendar-views";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import type { MonthDayCell, WeekEvent } from "@/components/athletic/calendars";
+import type { MaanedDag } from "@/components/athletic/golfdata";
+import type { UkeBlokk } from "@/components/kommando/calendar-views";
 
 export const dynamic = "force-dynamic";
 
@@ -51,47 +51,41 @@ export default async function KommandoKalenderPage() {
     }),
   ]);
 
-  // ── Måneds-celler (alle hendelser per dag) ──
-  const monthCells: MonthDayCell[] = Array.from({ length: daysInMonth }, (_, i) => {
+  // ── Måneds-dager (alle hendelser per dag, som MaanedKalender-piller) ──
+  const monthDays: MaanedDag[] = Array.from({ length: daysInMonth }, (_, i) => {
     const date = new Date(year, month, i + 1);
-    const events: NonNullable<MonthDayCell["events"]> = [];
+    const okter: NonNullable<MaanedDag["okter"]> = [];
 
     for (const b of bookings) {
       if (sammeDag(new Date(b.startAt), date)) {
         const tid = new Date(b.startAt).toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" });
-        events.push({ key: b.id, label: `${tid} ${b.serviceType.name}`, tone: "primary" });
+        okter.push({ id: b.id, tittel: b.serviceType.name, tid });
       }
     }
     for (const t of tasks) {
       if (t.dueAt && sammeDag(new Date(t.dueAt), date)) {
-        events.push({ key: t.id, label: t.title, tone: t.priority === "haster" ? "destructive" : "accent" });
+        okter.push({ id: t.id, tittel: t.title, akse: t.priority === "haster" ? "TURN" : undefined });
       }
     }
 
-    return {
-      date,
-      highlight: sammeDag(date, idag) ? "today" : undefined,
-      events,
-    };
+    return { date: i + 1, today: sammeDag(date, idag), okter };
   });
 
-  // ── Uke-hendelser (tidssatte bookinger i inneværende uke) ──
-  const weekEvents: WeekEvent[] = bookings
+  // ── Uke-blokker (tidssatte bookinger i inneværende uke, som TidsGrid-blokker) ──
+  const weekBlocks: UkeBlokk[] = bookings
     .filter((b) => new Date(b.startAt) >= mandag && new Date(b.startAt) < sondag)
     .map((b) => {
       const start = new Date(b.startAt);
       const end = new Date(b.endAt);
-      const dayIndex = (start.getDay() + 6) % 7;
-      const startHour = start.getHours() + start.getMinutes() / 60;
-      const endHour = Math.max(startHour + 0.25, end.getHours() + end.getMinutes() / 60);
+      const fra = start.getHours() + start.getMinutes() / 60;
       const navn = b.user?.name ?? b.guestName ?? "Gjest";
       return {
-        key: b.id,
-        dayIndex,
-        startHour,
-        endHour,
-        title: `${b.serviceType.name} — ${navn}`,
-        tone: "primary" as const,
+        id: b.id,
+        dag: (start.getDay() + 6) % 7,
+        fra,
+        til: Math.max(fra + 0.5, end.getHours() + end.getMinutes() / 60),
+        tittel: `${b.serviceType.name} — ${navn}`,
+        tid: start.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" }),
       };
     });
 
@@ -107,9 +101,9 @@ export default async function KommandoKalenderPage() {
         year={year}
         month={month + 1}
         monthName={monthName}
-        monthCells={monthCells}
+        monthDays={monthDays}
         weekStart={mandag}
-        weekEvents={weekEvents}
+        weekBlocks={weekBlocks}
         todayIndex={todayIndex}
       />
       <p className="mt-4 font-mono text-[11px] text-muted-foreground">

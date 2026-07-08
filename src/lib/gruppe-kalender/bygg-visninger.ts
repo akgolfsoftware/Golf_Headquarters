@@ -1,35 +1,30 @@
 // Rene funksjoner (ingen server-only imports) — kjører trygt i klient-komponenter.
-// Oversetter FastTid[]/Periode[] til props for YearPlanGantt/MonthGrid/WeekGrid.
+// Oversetter FastTid[]/Periode[] til props for golfdata MaanedKalender/TidsGrid
+// (+ YearPlanGantt for årsvisningen — golfdata mangler AK-periode-gantt, gap meldt).
 
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): golfdata mangler AK-periode-årsgantt (gap meldt) — YearPlanGantt beholdes til DS får en
 import type { YearPhase } from "@/components/athletic/calendars/year-plan-gantt";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import type { MonthDayCell } from "@/components/athletic/calendars/month-grid";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import type { WeekEvent } from "@/components/athletic/calendars/week-grid";
+import type { MaanedDag } from "@/components/athletic/golfdata";
 import type { FastTid, Periode } from "./types";
 
 type Tone = "primary" | "accent" | "moss" | "gold" | "muted";
-type MonthTone = "primary" | "accent" | "muted" | "destructive";
 
 function tilTone(tone: string | null, fallback: Tone): Tone {
   const gyldige: Tone[] = ["primary", "accent", "moss", "gold", "muted"];
   return gyldige.includes(tone as Tone) ? (tone as Tone) : fallback;
 }
 
-// MonthGrid har kun 4 toner (ikke moss/gold som YearPlanGantt) — map ned.
-function tilMonthTone(tone: string | null): MonthTone {
-  switch (tone) {
-    case "primary":
-    case "moss":
-      return "primary";
-    case "accent":
-    case "gold":
-      return "accent";
-    default:
-      return "muted";
-  }
-}
+/** Én fast treningstid plassert i TidsGrid (ukevisningen). */
+export type UkeBlokk = {
+  id: string;
+  /** 0=man .. 6=søn. */
+  dag: number;
+  /** Desimaltimer, f.eks. 8 og 10. */
+  fra: number;
+  til: number;
+  tittel: string;
+  tid: string;
+};
 
 function erSammeDag(a: Date, b: Date): boolean {
   return (
@@ -66,51 +61,42 @@ export function byggArsfaser(perioder: Periode[], year: number): YearPhase[] {
   return faser;
 }
 
-/** Alle dager i en måned med treningsdag-markering + periodefarge (for MonthGrid). */
-export function byggManedceller(
+/** Alle dager i en måned med treningsøkter som piller (for MaanedKalender, piller-modus). */
+export function byggManedsdager(
   faste: FastTid[],
-  perioder: Periode[],
   year: number,
-  month: number, // 1-indeksert (1=januar) — matcher MonthGrid sin konvensjon
-): MonthDayCell[] {
+  month: number, // 1-indeksert (1=januar)
+): MaanedDag[] {
   const maanedIndex = month - 1; // 0-indeksert for Date.UTC
   const antallDager = new Date(Date.UTC(year, maanedIndex + 1, 0)).getUTCDate();
   const idag = new Date();
 
-  const celler: MonthDayCell[] = [];
+  const dager: MaanedDag[] = [];
   for (let dag = 1; dag <= antallDager; dag++) {
     const dato = new Date(Date.UTC(year, maanedIndex, dag));
     const ukedag = (dato.getUTCDay() + 6) % 7; // søn(0)->6, man(1)->0
-
-    const periode = perioder.find((p) => {
-      const start = new Date(p.startDate);
-      const end = new Date(p.endDate);
-      return dato >= start && dato < end;
-    });
-
     const treningIDag = faste.filter((f) => f.weekday === ukedag);
-
-    celler.push({
-      date: dato,
-      highlight: erSammeDag(dato, idag) ? "today" : undefined,
-      events: treningIDag.map((f) => ({
-        key: f.id,
-        label: `${f.startTime}–${f.endTime}`,
-        tone: tilMonthTone(periode?.tone ?? null),
+    dager.push({
+      date: dag,
+      today: erSammeDag(dato, idag),
+      okter: treningIDag.map((f) => ({
+        id: f.id,
+        tittel: f.title,
+        tid: f.startTime,
       })),
     });
   }
-  return celler;
+  return dager;
 }
 
-/** Faste treningstider for én uke (for WeekGrid) — samme rader hver uke. */
-export function byggUkehendelser(faste: FastTid[]): WeekEvent[] {
+/** Faste treningstider som TidsGrid-blokker — samme rader hver uke. */
+export function byggUkeblokker(faste: FastTid[]): UkeBlokk[] {
   return faste.map((f) => ({
-    key: f.id,
-    dayIndex: f.weekday,
-    startHour: Number(f.startTime.split(":")[0]) + Number(f.startTime.split(":")[1]) / 60,
-    endHour: Number(f.endTime.split(":")[0]) + Number(f.endTime.split(":")[1]) / 60,
-    title: f.title,
-    tone: "primary",
+    id: f.id,
+    dag: f.weekday,
+    fra: Number(f.startTime.split(":")[0]) + Number(f.startTime.split(":")[1]) / 60,
+    til: Number(f.endTime.split(":")[0]) + Number(f.endTime.split(":")[1]) / 60,
+    tittel: f.title,
+    tid: `${f.startTime}–${f.endTime}`,
   }));
 }

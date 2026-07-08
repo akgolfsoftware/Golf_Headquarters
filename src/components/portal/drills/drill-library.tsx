@@ -18,8 +18,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Search, SlidersHorizontal, Zap } from "lucide-react";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { FilterPillBar, type FilterPill } from "@/components/athletic/filter-pill-bar";
+import { FilterPills, type FilterItem } from "@/components/athletic/golfdata";
 import { cn } from "@/lib/utils";
 import type {
   DrillAxis,
@@ -163,34 +162,34 @@ export function DrillLibrary({ drills }: { drills: DrillCard[] }) {
     });
   }, [drills, diff, fas, query]);
 
-  const axisPills: FilterPill[] = useMemo(() => {
-    const pills: FilterPill[] = [
-      { key: "alle", label: "Alle", count: axisCounted.length },
+  const axisPills: FilterItem<string>[] = useMemo(() => {
+    const pills: FilterItem<string>[] = [
+      { value: "alle", label: "Alle", count: axisCounted.length },
     ];
     for (const a of AXIS_ORDER) {
       if (!present.axes.has(a)) continue;
       pills.push({
-        key: a,
+        value: a,
         label: a.toUpperCase(),
         count: axisCounted.filter((d) => d.axis === a).length,
-        dotClass: AXIS_DOT[a],
+        axis: a,
       });
     }
     return pills;
   }, [axisCounted, present.axes]);
 
-  const diffPills: FilterPill[] = useMemo(() => {
-    const pills: FilterPill[] = [{ key: "alle", label: "Alle nivå" }];
+  const diffPills: FilterItem<string>[] = useMemo(() => {
+    const pills: FilterItem<string>[] = [{ value: "alle", label: "Alle nivå" }];
     for (const d of DIFF_ORDER) {
-      if (present.diffs.has(d)) pills.push({ key: d, label: DIFFICULTY_LABEL[d] });
+      if (present.diffs.has(d)) pills.push({ value: d, label: DIFFICULTY_LABEL[d] });
     }
     return pills;
   }, [present.diffs]);
 
-  const fasPills: FilterPill[] = useMemo(() => {
-    const pills: FilterPill[] = [{ key: "alle", label: "Alle anlegg" }];
+  const fasPills: FilterItem<string>[] = useMemo(() => {
+    const pills: FilterItem<string>[] = [{ value: "alle", label: "Alle anlegg" }];
     for (const f of present.facilities) {
-      pills.push({ key: f, label: FASILITET_LABEL[f] ?? f });
+      pills.push({ value: f, label: FASILITET_LABEL[f] ?? f });
     }
     return pills;
   }, [present.facilities]);
@@ -227,10 +226,10 @@ export function DrillLibrary({ drills }: { drills: DrillCard[] }) {
 
       {/* Akse-filter */}
       <div className="px-4 pt-3">
-        <FilterPillBar
-          pills={axisPills}
-          active={axis}
-          onSelect={(k) => setAxis(k as AxisFilter)}
+        <FilterPills
+          filters={axisPills}
+          value={axis}
+          onChange={(v) => setAxis((v ?? "alle") as AxisFilter)}
         />
       </div>
 
@@ -244,18 +243,18 @@ export function DrillLibrary({ drills }: { drills: DrillCard[] }) {
                 strokeWidth={2}
                 aria-hidden
               />
-              <FilterPillBar
-                pills={diffPills}
-                active={diff}
-                onSelect={(k) => setDiff(k as DiffFilter)}
+              <FilterPills
+                filters={diffPills}
+                value={diff}
+                onChange={(v) => setDiff((v ?? "alle") as DiffFilter)}
               />
             </div>
           )}
           {showFasRow && (
-            <FilterPillBar
-              pills={fasPills}
-              active={fas}
-              onSelect={(k) => setFas(k as FasFilter)}
+            <FilterPills
+              filters={fasPills}
+              value={fas}
+              onChange={(v) => setFas((v ?? "alle") as FasFilter)}
             />
           )}
         </div>

@@ -4,8 +4,38 @@ import { MoreHorizontal, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 // eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { PresenceDot, type PresenceState } from "@/components/athletic/presence-dot";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { RoleBadge, PeriodeTag, type CoachRole, type PeriodeKind } from "@/components/athletic/agency-tags";
+import { Tag } from "@/components/athletic/golfdata";
+
+/* CBAC-roller og AK-perioder som golfdata Tag-komposisjoner (aksefarger via tokens). */
+export type CoachRole = "EIER" | "HEAD_COACH" | "COACH" | "FYS" | "ASSISTENT" | "BILLING";
+export type PeriodeKind = "GRUNN" | "SPES" | "TURN" | "SKADE" | "TEST";
+
+const ROLLE_META: Record<CoachRole, { label: string; variant: "signal" | "neutral" | "outline" | "up"; stil?: React.CSSProperties }> = {
+  EIER: { label: "Eier", variant: "signal" },
+  HEAD_COACH: { label: "Head coach", variant: "outline" },
+  COACH: { label: "Coach", variant: "neutral" },
+  FYS: { label: "Fys", variant: "neutral", stil: { background: "var(--axis-fys-soft)", color: "var(--axis-fys-text)" } },
+  ASSISTENT: { label: "Assistent", variant: "neutral" },
+  BILLING: { label: "Billing", variant: "outline", stil: { color: "var(--warning)", borderColor: "var(--warning-border)" } },
+};
+
+function RolleTag({ role }: { role: CoachRole }) {
+  const m = ROLLE_META[role];
+  return <Tag size="sm" variant={m.variant} style={m.stil}>{m.label}</Tag>;
+}
+
+const PERIODE_META: Record<PeriodeKind, { label: string; stil: React.CSSProperties }> = {
+  GRUNN: { label: "Grunntrening", stil: { background: "var(--axis-fys-soft)", color: "var(--axis-fys-text)" } },
+  SPES: { label: "Spesiell", stil: { background: "var(--axis-tek-soft)", color: "var(--axis-tek-text)" } },
+  TURN: { label: "Turnering", stil: { background: "var(--axis-turn-soft)", color: "var(--axis-turn-text)" } },
+  SKADE: { label: "Skade", stil: { background: "color-mix(in srgb, var(--destructive) 12%, transparent)", color: "var(--destructive)" } },
+  TEST: { label: "Test", stil: { background: "var(--axis-slag-soft)", color: "var(--axis-slag-text)" } },
+};
+
+function PeriodePill({ kind }: { kind: PeriodeKind }) {
+  const m = PERIODE_META[kind];
+  return <Tag size="sm" variant="neutral" style={m.stil}>{m.label}</Tag>;
+}
 // eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { PyrDistBar, type PyrDist } from "@/components/athletic/data/pyr-dist-bar";
 
@@ -44,7 +74,7 @@ export function TeamRosterList({
             <div className="flex items-center gap-2">
               <span className="truncate text-sm font-bold text-foreground">{m.name}</span>
               {m.roles.map((r) => (
-                <RoleBadge key={r} role={r} />
+                <RolleTag key={r} role={r} />
               ))}
             </div>
             <div className="mt-0.5 flex items-center gap-2 font-mono text-[10px] text-muted-foreground">
@@ -90,7 +120,7 @@ export function PlanMalCard({ mal, onClick, className }: { mal: PlanMal; onClick
     >
       <div className="flex items-start justify-between gap-2">
         <span className="font-display text-sm font-bold leading-tight tracking-[-0.01em] text-foreground">{mal.name}</span>
-        <PeriodeTag kind={mal.periode} />
+        <PeriodePill kind={mal.periode} />
       </div>
       <PyrDistBar dist={mal.dist} />
       <span className="font-mono text-[10px] font-medium uppercase tracking-[0.06em] text-muted-foreground">{mal.stats}</span>
