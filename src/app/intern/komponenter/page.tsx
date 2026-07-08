@@ -7,8 +7,6 @@ import { ArrowUpRight } from "lucide-react";
 const demos: { slug: string; title: string; desc: string; bolk: string }[] = [
   { slug: "hull-analyse", title: "Hull-analyse", desc: "Top-down hull-kart med kategori-markører langs shot-pathen (Tee total → Innspill → Nærspill → Putt). Trykk for SG + treningsdata per sone.", bolk: "PlayerHQ" },
   { slug: "daglig-brief", title: "Daglig brief", desc: "3-kolonne AgencyOS-dashboard (timeline · innboks · fokus-spillere) + KPI-strip.", bolk: "Pulje D" },
-  { slug: "agency-kit", title: "Sidebar + Stallen", desc: "AgencySidebar (mørk, rail/utvidet) + DataTable med sortering, seleksjon og indicators.", bolk: "Bolk 1" },
-  { slug: "inbox-tester", title: "Innboks + tester", desc: "Inbox-kit (filter, batch-bar, inline-expand) + TestMatrix med fargekodede celler.", bolk: "Bolk 2a" },
   { slug: "team-bookinger", title: "Team + bookinger", desc: "TeamRosterList (CBAC-roller), PlanMalCard (pyr-dist) + InlineBookingForm.", bolk: "Bolk 2b" },
   { slug: "spiller-panel", title: "Spiller-detalj", desc: "400px slide-over: KPI, pyramide faktisk-vs-plan, uke-grid, neste booking, kommunikasjon.", bolk: "Bolk 2b" },
   { slug: "forelder", title: "Foreldreportal", desc: "MinorGate (GDPR), ApprovalCard, MessageComposer + ReadReceiptList.", bolk: "Bolk 3" },
