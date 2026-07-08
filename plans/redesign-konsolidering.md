@@ -22,23 +22,20 @@ skjermlista — det *tiltenkte* settet — og det er ~50 skjermer:
 **Konklusjon:** vi skal redesigne ~50 skjermer, ikke 295. Resten er dubletter, låst
 sammenslåing, eller legacy/interne ruter. Under er de fire konsoliderings-bøttene.
 
-## Bøtte 1 — Engelsk/norsk rute-dubletter (SLETT engelsk variant)
+## Bøtte 1 — Engelsk/norsk rute-dubletter → ALLEREDE GJORT (verifisert 8. juli)
 
-Appen har begge språk som separate ruter for samme skjerm. Norsk er kanon (CLAUDE.md).
-Slett/redirect engelsk → norsk:
+Sjekket i kode: **alle de ekte dublettene er allerede `permanentRedirect`-stubber** fra
+tidligere arbeid — ingen sletting trengs, og lenker/bokmerker bevares. Bekreftet:
+`calendar→kalender`, `approvals→godkjenninger`, `messages→innboks`, `kommunikasjon→innboks`,
+`finance→okonomi`, `caddie→agencyos/caddie`, `plans/templates→plan-templates`,
+`portal/analyse→analysere`, `portal/stats→statistikk`, `tren/ovelser→drills`.
 
-| Behold (norsk) | Slett/redirect (dublett) |
-|---|---|
-| `/admin/analysere` | `/admin/analyse` · `/admin/analytics` |
-| `/admin/kalender` | `/admin/calendar` |
-| `/admin/anlegg` | `/admin/locations` · `/admin/facilities` |
-| `/admin/godkjenninger` | `/admin/godkjenn-portal` · `/admin/approvals` |
-| `/admin/kommunikasjon` (el. innboks) | `/admin/messages` |
-| `/admin/lag-snitt` | `/admin/stats` (per-årgang) |
-| `/portal/analysere` | `/portal/analyse` |
-| `/portal/statistikk` | `/portal/stats` |
-
-Grovt anslag: **~12–15 ruter forsvinner** her alene, uten tap av funksjon.
+**Korreksjon:** `/admin/analyse` og `/admin/analysere` er IKKE dubletter — de er to ulike
+skjermer (`analyse` = Stall-analyse, nav-lenket; `analysere` = Innsikt-hub m/ `/compliance`,
+nådd fra søk + spiller-detalj). `/admin/lag-snitt` er kanon; `/admin/stats`/`analytics`/
+`locations`/`facilities`/`godkjenn-portal` finnes ikke som sider. Så Bøtte 1 er en no-op i
+kode. Eneste gjenstående: MASTER-SKJERMPLAN teller redirect-stubbene som «–»-skjermer — de
+skal merkes «redirect», ikke «å redesigne» (bokføring, ikke kode).
 
 ## Bøtte 2 — Låst «Analyse samlet» (fold inn i Analysere-faner)
 
@@ -80,11 +77,16 @@ Grovt: **~24 rader** kollapser til Workbench.
 | Auth | 6 | **~4** |
 | **Sum** | **~295** | **~50 skjermer å faktisk redesigne** |
 
-## Beslutninger jeg trenger fra deg (før redesign-bygging)
+## Status + beslutninger
 
-1. **Bøtte 1 (slett engelsk-dubletter):** grønt lys til å slette/redirecte de ~12–15 engelske rutene? (Anbefaling: ja — norsk er allerede kanon.)
-2. **Bøtte 2/3 er allerede LÅST** — jeg trenger bare bekreftelse på at SG-Hub + /portal/mal + /portal/tren skal *foldes*, ikke redesignes separat. (Anbefaling: følg de låste beslutningene.)
-3. **Rekkefølge:** når settet er ~50 — start redesign på PlayerHQ-kanon (analyse/mal-fanene) eller AgencyOS-kanon (workbench/stall)? (Anbefaling: fullfør PlayerHQ-fanene først — nærmest ferdig.)
+- **Bøtte 1: FERDIG** (allerede redirects, verifisert 8. juli — Anders ga grønt lys, viste seg å være gjort).
+- **Bøtte 2 (Analyse samlet): IKKE gjort** — `/portal/mal/*` = 24 ekte skjermer, 0 redirects. Disse skal foldes til Analysere-faner. Størst enkelt-gevinst.
+- **Bøtte 3 (Planlegge→Workbench): DELVIS** — `/portal/tren/*` = 21 sider, 4 alt redirects, 17 igjen å folde til Workbench.
+
+Beslutninger til deg (før byggingen av Bøtte 2/3):
+1. **Bøtte 2/3 er LÅST** — bekreft at `/portal/mal` (24) + `/portal/tren` (17) skal *foldes* (SG-Hub hører til Analysere-fanene), ikke redesignes separat. (Anbefaling: følg de låste beslutningene.)
+2. **Rekkefølge:** ta Bøtte 2 (mal→Analysere) eller Bøtte 3 (tren→Workbench) først? (Anbefaling: Bøtte 2 — størst kollaps, og Analysere-fanene finnes alt.)
+3. **Bokføring:** skal jeg oppdatere MASTER-SKJERMPLAN nå (merke redirect-stubber + foldings-kandidater) så «å redesigne»-tallet blir ærlig (~50, ikke 295)?
 
 Når du har svart, oppdaterer jeg MASTER-SKJERMPLAN (marker dubletter/foldinger), og
 redesign-planen får en presis ~50-skjermers liste i stedet for 295.
