@@ -43,6 +43,18 @@ Ingen NYE komponent-gap — `SegmentedTabs` portet fra DS (forms/). To observasj
 | 9 | `SegmentedTabs` har ikke count/badge-støtte (gamle TabBar viste antall per fane). Løst med antall i label-teksten («Drills (12)») — vurder om DS skal få en count-variant. | UTVID (valgfri) | ÅPEN |
 | 10 | Samme typekollisjon som #7 i SegmentedTabs-porten (`onChange` mot HTMLAttributes) — løst med Omit i porten her; #7 (Card.title) står fortsatt. | PORT-MØNSTER | LUKKET her |
 
+## Post-merge — parallell-øktens nav/CMD-arbeid (evaluert 8. juli, etter direkte spørsmål)
+
+De 9 UI-filene den parallelle økten endret (nav-optimalisering + CMD/søk) er
+**strukturelt rene**: 0 gamle athletic-importer, 0 rå hex (eslint- + hex-gaten holdt).
+MEN gatene fanger ikke KANON-etterlevelse (komponer fra golfdata) — og der er det ny gjeld:
+
+| # | Funn | Vurdering | Status |
+|---|---|---|---|
+| 12 | `HybridHomePage` «Hovedverktøy»-strip (4 nav-fliser) er håndrullet Tailwind (`rounded-lg border border-border bg-card` + ArrowRight), ikke golfdata. Mapper til DS `ListRow` (finnes i DS, ikke portet) eller golfdata `Button` som lenke. | KANON-GJELD (token-ren, men håndrullet) | ÅPEN |
+| 13 | `agency-cockpit` «Ett klikk»-rad (5 pill-knapper, `rounded-full border bg-card hover:bg-accent`) er håndrullet — er reelt golfdata `Button variant="secondary"`. | KANON-GJELD | ÅPEN |
+| — | **Blindsone avdekket:** ESLint- + hex-gaten håndhever «ingen gammel athletic, ingen ny hex», men IKKE «skjermer komponeres fra golfdata». Token-ren håndrulling slipper gjennom. Vurder en lint-regel eller review-sjekk mot inline `rounded-*/border/bg-card`-fliser i skjermer. | PROSESS | NOTERT |
+
 ## Bølge 4 — marketing + forelder
 
 Ingen NYE komponent-gap — `Pyramid` portet fra DS (data/). Én statusføring:
