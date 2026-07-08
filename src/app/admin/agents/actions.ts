@@ -8,6 +8,11 @@ import { runDailyBrief } from "@/lib/agents/daily-brief-agent";
 import { runDrillForslag } from "@/lib/agents/drill-forslag-agent";
 import { runBookingOptimizer } from "@/lib/agents/booking-optimizer";
 import { runAvailabilityMonitor } from "@/lib/agents/availability-24-7-monitor";
+import { runAvailabilityGapFiller } from "@/lib/agents/availability-gap-filler";
+import { runBookingConflictMonitor } from "@/lib/agents/booking-conflict-monitor";
+import { runAiCodeReviewer } from "@/lib/agents/ai-code-reviewer";
+import { runDemandPredictor } from "@/lib/agents/demand-predictor";
+import { runProactiveBookingAlerts } from "@/lib/agents/booking-alerts-proactive";
 
 // Agenter som kan kjøres manuelt fra Mission Control (ADMIN-only).
 const MANUELT: Record<string, () => Promise<unknown>> = {
@@ -17,6 +22,11 @@ const MANUELT: Record<string, () => Promise<unknown>> = {
   "drill-forslag": runDrillForslag,
   "booking-optimizer": runBookingOptimizer,
   "availability-24-7-monitor": runAvailabilityMonitor,
+  "availability-gap-filler": runAvailabilityGapFiller,
+  "booking-conflict-monitor": runBookingConflictMonitor,
+  "ai-code-reviewer": runAiCodeReviewer,
+  "demand-predictor": runDemandPredictor,
+  "24-7-booking-alerts": runProactiveBookingAlerts,
 };
 
 export const MANUELLE_AGENTER = Object.keys(MANUELT);

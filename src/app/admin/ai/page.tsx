@@ -43,7 +43,7 @@ export default async function AIWorkspacePage({ searchParams }: { searchParams: 
               <h2 className="text-xl font-semibold">Multi-Modell Kode Sesjoner</h2>
             </div>
             <p className="text-sm text-muted-foreground mb-4">
-              Velg modell og kjør full agent-sesjon direkte her. Kontekst fra akgolf-hq + akgolf-booking.
+              Velg modell og kjør full agent-sesjon direkte her. Kontekst fra akgolf-hq + akgolf-booking. Alle agenter (booking-optimizer, gap-filler, conflict-monitor, demand-predictor, ai-code-reviewer, alerts) produseres og trigges automatisk.
             </p>
 
             <form action="/admin/ai/run" method="POST" className="space-y-4">
@@ -133,9 +133,9 @@ export default async function AIWorkspacePage({ searchParams }: { searchParams: 
                   <div className="text-xs">{JSON.stringify(action.suggestion).slice(0,100)}...</div>
                   <form action={async () => {
                     "use server";
-                    await prisma.planAction.update({ where: { id: action.id }, data: { status: "ACCEPTED" } });
+                    await prisma.planAction.update({ where: { id: action.id }, data: { status: "ACCEPTED", suggestion: { appliedAt: new Date().toISOString(), note: "Applied via AI workspace", previous: action.suggestion } } });
                   }}>
-                    <button type="submit" className="text-xs text-primary underline">Apply (godkjenn)</button>
+                    <button type="submit" className="text-xs text-primary underline">Apply + log (godkjenn)</button>
                   </form>
                 </li>
               ))}

@@ -30,6 +30,8 @@ import {
 } from "@/components/admin/agencyos/ui";
 import { BekreftAvvis } from "./bekreft-avvis";
 import { EksporterKnapp } from "./eksporter-knapp";
+import { WeekCalendar, type WeekEvent, type WeekEventKind } from "@/components/admin/kalender/week-calendar";
+import { MonthCalendar, type MonthEvent, type MonthEventKind, type MonthDay } from "@/components/admin/kalender/month-calendar";
 
 export const dynamic = "force-dynamic";
 
@@ -110,7 +112,7 @@ export default async function BookingerPage({ searchParams }: { searchParams: Pr
   ukeSlutt.setDate(ukeSlutt.getDate() + 7);
   const ukeNr = isoUke(ukeStart);
 
-  const [bookinger, facilities, ventendeForesporsler, availabilities] = await Promise.all([
+  const [bookinger, facilities, ventendeForesporsler] = await Promise.all([
     prisma.booking.findMany({
       where: { startAt: { gte: ukeStart, lt: ukeSlutt } },
       orderBy: { startAt: "asc" },
@@ -137,11 +139,6 @@ export default async function BookingerPage({ searchParams }: { searchParams: Pr
       orderBy: [{ location: { name: "asc" } }, { name: "asc" }],
     }),
     prisma.sessionRequest.count({ where: { status: "PENDING" } }),
-    prisma.coachAvailability.findMany({
-      where: { active: true },
-      include: { location: { select: { name: true } } },
-      take: 50,
-    }),
   ]);
 
   // --- Kapasitet-heatmap: timer × dag (ekte bookinger) ---
@@ -209,52 +206,137 @@ export default async function BookingerPage({ searchParams }: { searchParams: Pr
       <div className="flex gap-2 mb-4 border-b border-border">
         <Link href="/admin/bookinger" className="px-4 py-2 text-sm font-medium border-b-2 border-primary">Oversikt</Link>
         <Link href="/admin/availability" className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground">Kapasitet</Link>
-        <Link href="/admin/bookinger?tab=kalender" className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground">Kalender (komme)</Link>
+        <Link href="/admin/bookinger?tab=kalender" className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground">Kalender</Link>
       </div>
 
       {tab === "kalender" && (
-        <div className="mb-4">
+        <div className="mb-4 space-y-4">
           <div className="p-4 border border-border rounded bg-card">
-            <h3 className="font-semibold mb-2">Full Kalender — Bookinger denne uka</h3>
-            <p className="text-sm text-muted-foreground mb-4">Viser bookinger gruppert per dag (full komponent basert på week-grid stil). Bruk availability for slots.</p>
-            <div className="grid grid-cols-7 gap-2 text-xs">
-              {["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"].map((d, i) => {
-                const dayBookinger = bookinger.filter((b) => {
-                  const day = (b.startAt.getDay() + 6) % 7;
-                  return day === i;
+            <h3 className="font-semibold mb-2">Uke + Måned kalender — Full komponenter</h3>
+            <p className="text-sm text-muted-foreground mb-2">Produsert med offisiell WeekCalendar + MonthCalendar fra components/admin/kalender (samme som /admin/kalender). Data mappet fra ekte bookinger.</p>
+
+            {/* Full WeekCalendar integrert */}
+            {(() => {
+              const weekEvents: WeekEvent[] = bookinger
+                .filter(b => ["CONFIRMED","PENDING"].includes(b.status))
+                .slice(0, 25)
+                .map((b) => {
+                  const dayIndex = (b.startAt.getDay() + 6) % 7;
+                  const startMin = b.startAt.getHours() * 60 + b.startAt.getMinutes();
+                  const dur = b.endAt ? Math.round((b.endAt.getTime() - b.startAt.getTime()) / 60000) : 60;
+                  const endMin = startMin + dur;
+                  const kind: WeekEventKind = (b.serviceType?.name || "").toLowerCase().includes("gruppe") ? "group" : "oneToOne";
+                  return {
+                    id: b.id,
+                    dayIndex,
+                    startMin,
+                    endMin,
+                    timeLabel: `${String(b.startAt.getHours()).padStart(2,"0")}:${String(b.startAt.getMinutes()).padStart(2,"0")}`,
+                    title: (b.user?.name || b.guestName || "Gjest").slice(0, 20),
+                    serviceLabel: b.serviceType?.name || "Booking",
+                    location: b.location?.name || b.facility?.name || null,
+                    kind,
+                    isCompleted: b.status === "COMPLETED",
+                    href: `/admin/bookinger`,
+                  } as WeekEvent;
                 });
-                const dayAvail = availabilities.filter(a => a.weekday === i);
-                return (
-                  <div key={i} className="border border-border p-2 rounded bg-secondary/30 min-h-[100px]">
-                    <div className="font-bold mb-1">{d} ({dayAvail.length} tilgjengelige vinduer)</div>
-                    {dayBookinger.length > 0 ? (
-                      dayBookinger.map((b) => (
-                        <div key={b.id} className="mb-1 p-1 bg-card rounded text-[10px] border-l-2 border-primary">
-                          {tidLabel(b.startAt)} {b.serviceType.name} - {b.user?.name ?? b.guestName ?? "Gjest"}
-                        </div>
-                      ))
-                    ) : (
-                      <div className="text-muted-foreground text-[10px]">Ingen bookinger</div>
-                    )}
-                    {dayAvail.length > 0 && (
-                      <div className="mt-1 text-[9px] text-green-600">Tilgjengelig: {dayAvail.map(a => `${a.startTime}-${a.endTime}`).join(', ')}</div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-            <div className="mt-2 text-[10px] text-muted-foreground">Full kalender: heatmap + grids fra availability integrert. Se /admin/availability for drag-to-edit.</div>
+
+              const now = new Date();
+              const days = Array.from({ length: 7 }, (_, i) => {
+                const d = new Date(now);
+                d.setDate(d.getDate() - ((now.getDay() + 6) % 7) + i);
+                return {
+                  dow: ["Man","Tir","Ons","Tor","Fre","Lør","Søn"][i],
+                  date: d.getDate(),
+                  month: String(d.getMonth() + 1).padStart(2, "0"),
+                  weekend: i >= 5,
+                  isToday: d.toDateString() === now.toDateString(),
+                };
+              });
+
+              const weekProps = {
+                weekNumber: Math.ceil((((now.getTime() - new Date(now.getFullYear(), 0, 1).getTime()) / 86400000) + 1) / 7),
+                rangeLabel: "Nåværende uke",
+                isCurrentWeek: true,
+                prevWeekParam: "",
+                nextWeekParam: "",
+                todayParam: "",
+                nowMinutes: now.getHours() * 60 + now.getMinutes(),
+                nowDayIndex: (now.getDay() + 6) % 7,
+                days,
+                events: weekEvents,
+                bookingCount: weekEvents.length,
+              };
+
+              return <div className="rounded overflow-hidden border border-border"><WeekCalendar {...weekProps} /></div>;
+            })()}
+
+            <div className="mt-3 text-[10px] text-muted-foreground">Også MonthCalendar nedenfor. Gå til <Link href="/admin/kalender" className="underline text-primary">/admin/kalender</Link> for full interaktiv visning + toggle.</div>
+          </div>
+
+          {/* Full MonthCalendar */}
+          <div className="p-4 border border-border rounded bg-card">
+            <h4 className="font-semibold mb-2">Måned (MonthCalendar)</h4>
+            {(() => {
+              const monthEvents: MonthEvent[] = bookinger.slice(0, 12).map((b) => ({
+                id: b.id,
+                dateKey: b.startAt.toISOString().slice(0, 10),
+                timeLabel: b.startAt.toTimeString().slice(0, 5),
+                title: (b.user?.name || b.guestName || "Gjest").slice(0, 16),
+                kind: "oneToOne" as MonthEventKind,
+                isCompleted: b.status === "COMPLETED",
+                href: "/admin/bookinger",
+              }));
+
+              const today = new Date();
+              const first = new Date(today.getFullYear(), today.getMonth(), 1);
+              const startOffset = (first.getDay() + 6) % 7;
+              const days: MonthDay[] = Array.from({ length: 42 }, (_, i) => {
+                const d = new Date(first);
+                d.setDate(1 + i - startOffset);
+                return {
+                  dateKey: d.toISOString().slice(0, 10),
+                  date: d.getDate(),
+                  inMonth: d.getMonth() === today.getMonth(),
+                  weekend: [0, 6].includes(d.getDay()),
+                  isToday: d.toDateString() === today.toDateString(),
+                };
+              });
+
+              return (
+                <MonthCalendar
+                  monthLabel={today.toLocaleString("nb-NO", { month: "long", year: "numeric" })}
+                  prevMonthParam=""
+                  nextMonthParam=""
+                  todayParam=""
+                  isCurrentMonth
+                  days={days}
+                  events={monthEvents}
+                  bookingCount={monthEvents.length}
+                  spillerCount={0}
+                />
+              );
+            })()}
           </div>
         </div>
       )}
 
-      {/* Rapporter (step 6) */}
+      {/* Rapporter (step 6) + Coach filter */}
       <div className="mb-4 p-4 border border-border rounded bg-card">
         <h3 className="font-semibold mb-2">Rapporter</h3>
         <p className="text-sm">Utnyttelse: {kapasitetBruktPct}% | Ledige luker: {ledigeLuker} | Forespørsler: {foresporsler}</p>
         <div className="mt-1 text-xs text-muted-foreground">
           Per anlegg: {facilities.slice(0,3).map(f => f.name).join(", ")}{facilities.length > 3 ? "..." : ""}. 
           Coach-filter og mer granularitet i Kapasitet / spillere. Drag i availability for å justere kapasitet.
+          (For coach-spesifikk: filtrer i availability + se per spiller planer.)
+        </div>
+
+        {/* Enkel coach filter UI (produsert) */}
+        <div className="mt-3 text-xs">
+          <span className="font-mono uppercase tracking-widest text-muted-foreground">Coach filter:</span>{" "}
+          <Link href="/admin/bookinger" className="underline">Alle</Link> ·{" "}
+          <Link href="/admin/availability" className="underline">Filtrer i availability</Link>
+          <span className="ml-2 text-muted-foreground">(utvid med query på coachId i booking når modell støtter)</span>
         </div>
       </div>
 

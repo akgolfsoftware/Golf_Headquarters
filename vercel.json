@@ -112,6 +112,26 @@
     {
       "path": "/api/cron/drill-forslag",
       "schedule": "0 8 * * 1"
+    },
+    {
+      "path": "/api/cron/availability-gap-filler",
+      "schedule": "0 7 * * *"
+    },
+    {
+      "path": "/api/cron/booking-conflict-monitor",
+      "schedule": "*/30 * * * *"
+    },
+    {
+      "path": "/api/cron/ai-code-reviewer",
+      "schedule": "0 3 * * 1"
+    },
+    {
+      "path": "/api/cron/demand-predictor",
+      "schedule": "0 5 * * *"
+    },
+    {
+      "path": "/api/cron/24-7-booking-alerts",
+      "schedule": "*/20 * * * *"
     }
   ]
 }

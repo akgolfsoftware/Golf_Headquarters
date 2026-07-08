@@ -34,16 +34,28 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  // Trigge ekte agenter basert på task (real agents 24/7)
+  // Trigge ekte agenter basert på task (real agents 24/7) - produserer alle
   try {
     await runCalendarSync();
     if (task.toLowerCase().includes('booking') || task.toLowerCase().includes('availability')) {
       const { runBookingOptimizer } = await import("@/lib/agents/booking-optimizer");
       await runBookingOptimizer();
+      const { runAvailabilityGapFiller } = await import("@/lib/agents/availability-gap-filler");
+      await runAvailabilityGapFiller();
+      const { runDemandPredictor } = await import("@/lib/agents/demand-predictor");
+      await runDemandPredictor();
     }
-    if (task.toLowerCase().includes('monitor') || task.toLowerCase().includes('24')) {
+    if (task.toLowerCase().includes('monitor') || task.toLowerCase().includes('24') || task.toLowerCase().includes('conflict')) {
       const { runAvailabilityMonitor } = await import("@/lib/agents/availability-24-7-monitor");
       await runAvailabilityMonitor();
+      const { runBookingConflictMonitor } = await import("@/lib/agents/booking-conflict-monitor");
+      await runBookingConflictMonitor();
+      const { runProactiveBookingAlerts } = await import("@/lib/agents/booking-alerts-proactive");
+      await runProactiveBookingAlerts();
+    }
+    if (task.toLowerCase().includes('code') || task.toLowerCase().includes('review')) {
+      const { runAiCodeReviewer } = await import("@/lib/agents/ai-code-reviewer");
+      await runAiCodeReviewer();
     }
   } catch (_e) {
     // ignore if fails
