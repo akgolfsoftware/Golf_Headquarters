@@ -163,7 +163,7 @@ export default async function HelsePage() {
             icon={Stethoscope}
             title="Aktiv skade"
             meta={`Siden ${formatDatoKort(aktivSkade.startAt)}`}
-            right={<Tag variant="outline" style={{ color: "var(--warning)", borderColor: "var(--warning-border)" }}>Aktiv</Tag>}
+            right={<Tag variant="warn">Aktiv</Tag>}
           />
         ) : (
           <SetRow

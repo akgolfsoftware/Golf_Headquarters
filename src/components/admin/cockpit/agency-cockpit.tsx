@@ -16,6 +16,7 @@
  */
 
 import Link from "next/link";
+import { Button } from "@/components/athletic/golfdata";
 import { ArrowDown, ArrowUp, Minus, Plus, Search, Calendar, Users, Play, Bot, ClipboardList } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -511,36 +512,11 @@ export function AgencyCockpit({ data }: { data: CockpitData }) {
         <div className="mb-4 mt-3">
           <div className="mb-1.5 text-[10px] font-mono uppercase tracking-[0.12em] text-foreground/50">Ett klikk</div>
           <div className="flex flex-wrap gap-2">
-            <Link
-              href="/admin/bookinger/ny"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
-            >
-              <Calendar size={16} /> Ny booking
-            </Link>
-            <Link
-              href="/admin/planlegge"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
-            >
-              <ClipboardList size={16} /> Planlegge
-            </Link>
-            <Link
-              href="/admin/spillere"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
-            >
-              <Users size={16} /> Spillere
-            </Link>
-            <Link
-              href="/admin/gjennomfore"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
-            >
-              <Play size={16} /> Gjennomføre
-            </Link>
-            <Link
-              href="/admin/agenter"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
-            >
-              <Bot size={16} /> Agenter
-            </Link>
+            <Button as={Link} href="/admin/bookinger/ny" variant="secondary" size="sm" iconLeft={<Calendar size={16} />}>Ny booking</Button>
+            <Button as={Link} href="/admin/planlegge" variant="secondary" size="sm" iconLeft={<ClipboardList size={16} />}>Planlegge</Button>
+            <Button as={Link} href="/admin/spillere" variant="secondary" size="sm" iconLeft={<Users size={16} />}>Spillere</Button>
+            <Button as={Link} href="/admin/gjennomfore" variant="secondary" size="sm" iconLeft={<Play size={16} />}>Gjennomføre</Button>
+            <Button as={Link} href="/admin/agenter" variant="secondary" size="sm" iconLeft={<Bot size={16} />}>Agenter</Button>
           </div>
         </div>
 

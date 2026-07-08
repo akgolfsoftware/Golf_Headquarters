@@ -1,5 +1,6 @@
 "use client";
 
+import { StatusDot } from "@/components/athletic/golfdata";
 import {
   CheckCircle2,
   HelpCircle,
@@ -15,8 +16,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { SeverityDot } from "@/components/athletic/agency-tags";
+
 
 export type InboxType = "appr" | "req" | "msg" | "adv";
 
@@ -40,6 +40,8 @@ export type InboxItem = {
   severity: "hi" | "md" | "lo";
   unread?: boolean;
 };
+
+const SEVERITY_TONE = { hi: "critical", md: "warning", lo: "idle" } as const;
 
 export function InboxRow({
   item,
@@ -99,7 +101,7 @@ export function InboxRow({
       <span className="flex justify-center text-muted-foreground">
         {item.hasAttachment && <Paperclip className="h-[11px] w-[11px]" strokeWidth={1.5} />}
       </span>
-      <SeverityDot level={item.severity} />
+      <StatusDot tone={SEVERITY_TONE[item.severity]} label={`Prioritet: ${item.severity}`} />
     </div>
   );
 }

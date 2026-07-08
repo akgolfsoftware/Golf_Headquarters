@@ -311,7 +311,7 @@ function UpcomingCard({
                       {b.serviceName}
                     </span>
                     {b.status === "PENDING" && (
-                      <Tag variant="outline" style={{ color: "var(--warning)", borderColor: "var(--warning-border)" }}>Avventer</Tag>
+                      <Tag variant="warn">Avventer</Tag>
                     )}
                     {b.fromCredits && b.status === "CONFIRMED" && (
                       <Tag variant="signal">Credit</Tag>
@@ -461,7 +461,7 @@ function PastBookingsCard({ past }: { past: HubBooking[] }) {
                       {b.serviceName}
                     </span>
                     {cancelled ? (
-                      <Tag variant="outline" style={{ color: "var(--warning)", borderColor: "var(--warning-border)" }}>Avbestilt</Tag>
+                      <Tag variant="warn">Avbestilt</Tag>
                     ) : (
                       <Tag variant="up">Gjennomført</Tag>
                     )}

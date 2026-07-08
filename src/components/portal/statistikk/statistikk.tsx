@@ -27,10 +27,10 @@
  * emoji (kun lucide-ikoner). All tekst norsk bokmål.
  */
 
+import { StatusDot } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { ArrowRight, ChevronRight, TrendingDown, TrendingUp } from "lucide-react";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { PulseDot } from "@/components/athletic/pulse-dot";
+
 import { cn } from "@/lib/utils";
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -235,7 +235,7 @@ export function Statistikk({ data }: { data: StatistikkData }) {
       {/* 1. Side-header */}
       <header className="space-y-2">
         <span className="inline-flex items-center gap-2 font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
-          <PulseDot size="sm" />
+          <StatusDot tone="signal" pulse />
           {data.eyebrow}
         </span>
         <h1 className="font-display text-[34px] font-bold leading-[1.05] tracking-[-0.03em] text-foreground sm:text-[40px]">

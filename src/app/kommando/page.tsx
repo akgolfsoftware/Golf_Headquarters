@@ -136,7 +136,7 @@ export default async function KommandoDashboard() {
                 <li key={t.id} className="flex items-center gap-3 text-sm">
                   <span className="w-10 flex-none font-mono text-[10px] text-muted-foreground">FRIST</span>
                   <span className="flex-1 truncate text-foreground">{t.title}</span>
-                  {t.priority === "haster" && <Tag variant="outline" style={{ color: "var(--warning)", borderColor: "var(--warning-border)" }}>Haster</Tag>}
+                  {t.priority === "haster" && <Tag variant="warn">Haster</Tag>}
                 </li>
               ))}
             </ul>
@@ -196,7 +196,7 @@ export default async function KommandoDashboard() {
                 <li key={t.id} className="flex items-center gap-3 text-sm text-foreground">
                   <span className="h-1.5 w-1.5 flex-none rounded-full bg-muted-foreground/40" />
                   <span className="flex-1">{t.title}</span>
-                  {t.priority === "haster" && <Tag variant="outline" style={{ color: "var(--warning)", borderColor: "var(--warning-border)" }}>Haster</Tag>}
+                  {t.priority === "haster" && <Tag variant="warn">Haster</Tag>}
                 </li>
               ))}
             </ul>

@@ -162,7 +162,7 @@ export function TaskList({
                     </div>
                   )}
                 </div>
-                {task.priority === "haster" && !done && <Tag variant="outline" style={{ color: "var(--warning)", borderColor: "var(--warning-border)" }}>Haster</Tag>}
+                {task.priority === "haster" && !done && <Tag variant="warn">Haster</Tag>}
                 <button
                   type="button"
                   aria-label="Slett"

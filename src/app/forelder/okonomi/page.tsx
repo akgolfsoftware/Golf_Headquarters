@@ -368,8 +368,7 @@ function AbonnementRad({
         </div>
         {st ? (
           <Tag
-            variant={st.variant === "ok" ? "up" : st.variant === "warn" ? "outline" : "neutral"}
-            style={st.variant === "warn" ? { color: "var(--warning)", borderColor: "var(--warning-border)" } : undefined}
+            variant={st.variant === "ok" ? "up" : st.variant === "warn" ? "warn" : "neutral"}
           >
             {st.tekst}
           </Tag>
