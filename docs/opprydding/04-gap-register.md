@@ -8,6 +8,10 @@ Design-runden» i kjøreboka: den flyttes fra før migreringen til ETTER, som ga
 
 Status: ÅPEN (venter) · I-DS (lagt i Claude Design) · LUKKET (portet + tatt i bruk).
 
+> **Samlet gap-fyll-prompt ferdig (8. juli):** [`05-gap-fyll-prompt.md`](05-gap-fyll-prompt.md)
+> — lim «PROMPT»-blokken inn i Claude Design-prosjektet. Dekker #1–5 (+ valgfri #9).
+> #6/#10 er lukket allerede; #7/#8 er kode-side (ikke DS-arbeid).
+
 ## Reframing av de 5 første (min designvurdering)
 
 Ikke fem nye komponenter — **to nye + tre utvidelser**. Speil før du finner opp.
