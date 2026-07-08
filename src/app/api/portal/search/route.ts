@@ -48,25 +48,34 @@ export type PortalSearchResponse = {
   plans: SearchPlan[];
   bookings: SearchBooking[];
   goals: SearchGoal[];
+  drills?: Array<{ id: string; title: string; href: string }>;
 };
 
 // Statisk rute-katalog for PlayerHQ. Match mot label + description.
 const ROUTES: Omit<SearchRoute, "id">[] = [
-  { label: "Hjem", description: "Dagens brief og fremgang", href: "/portal" },
-  { label: "Trening", description: "Treningsplaner og økter", href: "/portal/tren" },
+  { label: "Hjem", description: "Dagens oversikt, SG og plan", href: "/portal" },
+  { label: "Planlegge / Workbench", description: "Alt planlegging – ett sted", href: "/portal/planlegge/workbench" },
+  { label: "Gjennomføre", description: "Dagens økter, live og logg", href: "/portal/gjennomfore" },
+  { label: "Analyse", description: "Samlet: SG, Runder, TrackMan, Tester", href: "/portal/analysere" },
+  { label: "Strokes Gained Hub", description: "SG per kølle, benchmark, strategi", href: "/portal/mal/sg-hub" },
+  { label: "Runder", description: "Logg og se runder + shot-by-shot", href: "/portal/mal/runder" },
+  { label: "TrackMan", description: "Sesjoner og data", href: "/portal/mal/trackman" },
+  { label: "Tester", description: "Testkatalog og resultater", href: "/portal/tren/tester" },
   { label: "Kalender", description: "Min uke og bookinger", href: "/portal/kalender" },
-  { label: "Analyse", description: "Strokes Gained, runder, TrackMan", href: "/portal/analysere" },
-  { label: "Statistikk", description: "Tall over tid og benchmarks", href: "/portal/statistikk" },
-  { label: "Mine bookinger", description: "Pågående og tidligere", href: "/portal/booking" },
-  { label: "Coach", description: "Min coach og meldinger", href: "/portal/coach" },
-  { label: "Maler", description: "Mine økt-maler og favoritt-drills", href: "/portal/mal" },
-  { label: "Ny økt", description: "Logg en ny treningsøkt", href: "/portal/ny-okt" },
-  { label: "Ønskelig økt", description: "Be coachen om en ny tid", href: "/portal/onskeligokt" },
-  { label: "Utfordringer", description: "Drill-challenges og leaderboard", href: "/portal/utfordringer" },
-  { label: "Min profil", description: "Innstillinger, HCP, klubb og mål", href: "/portal/meg" },
-  { label: "Talent", description: "Talent-tracking og pyramide", href: "/portal/talent" },
-  { label: "Varsler", description: "Notifikasjoner og inbox", href: "/portal/varsler" },
-  { label: "Abonnement", description: "Tier og credits", href: "/portal/meg/abonnement" },
+  { label: "Ny økt", description: "Start eller planlegg økt", href: "/portal/ny-okt" },
+  { label: "Live økt", description: "Pågående trening", href: "/portal/gjennomfore" },
+  { label: "Statistikk", description: "Tall over tid", href: "/portal/statistikk" },
+  { label: "Mine bookinger", description: "Bookinger og endre", href: "/portal/meg/bookinger" },
+  { label: "Booking ny", description: "Book time med coach", href: "/portal/booking/ny" },
+  { label: "Coach", description: "Meldinger og planer med coach", href: "/portal/coach" },
+  { label: "Mål & Utfordringer", description: "Mål, milepæler og challenges", href: "/portal/mal" },
+  { label: "Drills", description: "Øvelsesbibliotek", href: "/portal/drills" },
+  { label: "Årsplan", description: "Langsiktig plan", href: "/portal/tren/aarsplan" },
+  { label: "Min profil", description: "Profil, innstillinger, helse", href: "/portal/meg" },
+  { label: "Abonnement", description: "Tier, kreditter, fakturaer", href: "/portal/meg/abonnement" },
+  { label: "Talent", description: "Utviklingsroadmap", href: "/portal/talent" },
+  { label: "Varsler", description: "Notifikasjoner", href: "/portal/varsler" },
+  { label: "Hjelp", description: "FAQ og support", href: "/portal/meg/help" },
 ];
 
 function matchRoutes(query: string): SearchRoute[] {
@@ -98,6 +107,7 @@ export async function GET(request: Request) {
       plans: [],
       bookings: [],
       goals: [],
+      drills: [],
     });
   }
 
@@ -164,10 +174,22 @@ export async function GET(request: Request) {
     href: `/portal/meg#mal-${g.id}`,
   }));
 
+  // Bredde: legg til drills som statiske + match (kan utvides til prisma)
+  const DRILLS_STATIC = [
+    { id: "d-tempo", title: "Tempo 3:1 driver", href: "/portal/drills" },
+    { id: "d-putt", title: "Putting gate 1m", href: "/portal/drills" },
+    { id: "d-wedge", title: "Wedge yardage 30-90m", href: "/portal/drills" },
+    { id: "d-chip", title: "Chip & run kontroll", href: "/portal/drills" },
+  ];
+  const drills = DRILLS_STATIC.filter(d =>
+    d.title.toLowerCase().includes(q.toLowerCase())
+  ).slice(0, 5);
+
   return NextResponse.json<PortalSearchResponse>({
     routes: matchRoutes(q),
     plans,
     bookings,
     goals,
+    drills,
   });
 }

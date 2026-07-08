@@ -32,26 +32,26 @@ type PaletteItem = {
 };
 
 const ITEMS: ReadonlyArray<PaletteItem> = [
-  // Sider
+  // Bred navigasjon – oppdatert for full plattformdekning
   { id: "p-1", kategori: "Sider", label: "Hjem", href: "/portal" },
-  { id: "p-2", kategori: "Sider", label: "Trening", href: "/portal/tren" },
-  { id: "p-4", kategori: "Sider", label: "Statistikk", href: "/portal/statistikk" },
-  { id: "p-4", kategori: "Sider", label: "Coach", href: "/portal/coach" },
-  { id: "p-6", kategori: "Sider", label: "Min profil", href: "/portal/meg" },
-  { id: "p-6", kategori: "Sider", label: "Varsler", href: "/portal/varsler" },
-  // Spillere (dummy)
-  { id: "sp-1", kategori: "Spillere", label: "Øyvind Rohjan", hint: "Hcp 4.2", href: "/portal/coach" },
-  { id: "sp-2", kategori: "Spillere", label: "Emma Lien", hint: "Hcp 8.7", href: "/portal/coach" },
-  // Drills (dummy)
-  { id: "d-1", kategori: "Drills", label: "Tempo-drill 3:1", hint: "Slag", href: "/portal/drills" },
-  { id: "d-2", kategori: "Drills", label: "Putting-gate 1m", hint: "Spill", href: "/portal/drills" },
-  { id: "d-3", kategori: "Drills", label: "Wedge-yardage 30-90m", hint: "Slag", href: "/portal/drills" },
-  // Mål
-  { id: "m-1", kategori: "Mål", label: "Hcp under 4 innen høst", href: "/portal/mal" },
-  { id: "m-2", kategori: "Mål", label: "SG-Putting +0.3", href: "/portal/mal" },
-  // Turneringer
-  { id: "t-1", kategori: "Turneringer", label: "Sørlandsåpent", hint: "Juni 2026", href: "/portal/tren/turneringer" },
-  { id: "t-2", kategori: "Turneringer", label: "NM Junior", hint: "August 2026", href: "/portal/tren/turneringer" },
+  { id: "p-wb", kategori: "Sider", label: "Planlegge (Workbench)", href: "/portal/planlegge/workbench" },
+  { id: "p-gj", kategori: "Sider", label: "Gjennomføre", href: "/portal/gjennomfore" },
+  { id: "p-an", kategori: "Sider", label: "Analyse", href: "/portal/analysere" },
+  { id: "p-sg", kategori: "Sider", label: "SG Hub", href: "/portal/mal/sg-hub" },
+  { id: "p-rd", kategori: "Sider", label: "Runder", href: "/portal/mal/runder" },
+  { id: "p-tm", kategori: "Sider", label: "TrackMan", href: "/portal/mal/trackman" },
+  { id: "p-ts", kategori: "Sider", label: "Tester", href: "/portal/tren/tester" },
+  { id: "p-kl", kategori: "Sider", label: "Kalender", href: "/portal/kalender" },
+  { id: "p-ny", kategori: "Sider", label: "Ny økt", href: "/portal/ny-okt" },
+  { id: "p-bk", kategori: "Sider", label: "Bookinger", href: "/portal/meg/bookinger" },
+  { id: "p-co", kategori: "Sider", label: "Coach", href: "/portal/coach" },
+  { id: "p-ma", kategori: "Sider", label: "Mål & Utfordringer", href: "/portal/mal" },
+  { id: "p-dr", kategori: "Sider", label: "Drills", href: "/portal/drills" },
+  { id: "p-me", kategori: "Sider", label: "Meg / Profil", href: "/portal/meg" },
+  // Data (kan utvides til ekte fetch)
+  { id: "d-1", kategori: "Drills", label: "Drill-bibliotek", href: "/portal/drills" },
+  { id: "m-1", kategori: "Mål", label: "Mål", href: "/portal/mal" },
+  { id: "t-1", kategori: "Turneringer", label: "Turneringer", href: "/portal/tren/turneringer" },
 ];
 
 const KATEGORI_IKON: Record<ItemKategori, typeof FileText> = {
