@@ -17,14 +17,13 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { AnalyticsWorkbenchData } from "@/app/portal/analysere/actions";
 import type { MinGolfData } from "@/lib/min-golf/load-min-golf";
-import type { TreningsanalyseData, AkseKey } from "@/lib/portal-analyse/treningsanalyse-data";
+import type { TreningsanalyseData } from "@/lib/portal-analyse/treningsanalyse-data";
 import { fmtSg } from "@/lib/min-golf/format";
+import { TreningsanalysePanel } from "./TreningsanalysePanel";
 import {
-  AkseFordelingsBar,
   DiagnoseKort,
   GappingChart,
   KategoriKravKort,
-  KpiTile,
   LaunchWindowKort,
   NesteFokusKort,
   PuttModellKort,
@@ -46,14 +45,6 @@ const TABS: { key: TabKey; label: string }[] = [
   { key: "trackman", label: "TrackMan" },
   { key: "tester", label: "Tester" },
 ];
-
-const AKSE_LABEL: Record<AkseKey, string> = {
-  fys: "FYS",
-  tek: "TEK",
-  slag: "SLAG",
-  spill: "SPILL",
-  turn: "TURN",
-};
 
 function fmtDato(d: Date): string {
   return d.toLocaleDateString("nb-NO", {
@@ -94,17 +85,6 @@ export function MinGolfPage({
       data.nesteFokus?.lekkasjeBaand.find((b) => b.id === valgtBaandId) ?? null,
     [data.nesteFokus, valgtBaandId],
   );
-
-  // Treningsanalyse: timer per akse (for AkseFordelingsBar) + totaler.
-  const treningAgg = useMemo(() => {
-    const dist = { fys: 0, tek: 0, slag: 0, spill: 0, turn: 0 };
-    let timer = 0;
-    for (const o of trening?.okter ?? []) {
-      dist[o.axis] += o.t;
-      timer += o.t;
-    }
-    return { dist, timer, antall: trening?.okter.length ?? 0 };
-  }, [trening]);
 
   return (
     <div className="golfdata-scope mx-auto w-full max-w-2xl px-4 pb-16 pt-6">
@@ -287,76 +267,29 @@ export function MinGolfPage({
         </div>
       )}
 
-      {/* ── Treningsanalyse: volum + fordeling fra økt-loggen ── */}
-      {tab === "trening" && (
-        <div className="flex flex-col gap-4">
-          {treningAgg.antall > 0 ? (
-            <>
-              <div className="grid grid-cols-3 gap-2.5">
-                <KpiTile label="Økter" value={treningAgg.antall} size="md" />
-                <KpiTile
-                  label="Timer"
-                  value={treningAgg.timer.toFixed(1)}
-                  unit="t"
-                  size="md"
-                />
-                <KpiTile
-                  label="SG netto"
-                  value={trening?.sgNetto != null ? fmtSg(trening.sgNetto) : "—"}
-                  size="md"
-                />
-              </div>
-              <div className="rounded-2xl border border-border bg-card p-4">
-                <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
-                  Tidsfordeling per akse
-                </p>
-                <AkseFordelingsBar dist={treningAgg.dist} showLegend />
-              </div>
-              <div className="rounded-2xl border border-border bg-card">
-                <p className="border-b border-border px-4 py-3 font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
-                  Siste økter · {treningAgg.antall}
-                </p>
-                <ul>
-                  {(trening?.okter ?? []).slice(0, 8).map((o, i) => (
-                    <li
-                      key={i}
-                      className="flex min-h-11 items-center justify-between gap-2 border-b border-border px-4 py-2.5 text-[13px] last:border-b-0"
-                    >
-                      <span className="font-mono text-[11px] uppercase tracking-[0.06em] text-muted-foreground">
-                        {AKSE_LABEL[o.axis]} · {o.type}
-                      </span>
-                      <span className="flex items-center gap-3 font-mono tabular-nums">
-                        <span>{o.t.toFixed(1)} t</span>
-                        <span className="text-muted-foreground">
-                          {o.d === 0 ? "i dag" : `${o.d} d`}
-                        </span>
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </>
-          ) : (
-            <div className="rounded-2xl border border-border bg-card px-4 py-6 text-center">
-              <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
-                Treningsanalyse
-              </p>
-              <p className="mt-2 text-[13px] text-muted-foreground">
-                Logg treningsøkter for å se volum og fordeling per akse her.
-              </p>
-              {visning === "spiller" && (
-                <button
-                  type="button"
-                  onClick={tilWorkbench}
-                  className="mt-4 inline-flex min-h-11 items-center justify-center rounded-full bg-primary px-6 font-mono text-[12px] font-bold uppercase tracking-wide text-primary-foreground"
-                >
-                  Planlegg trening
-                </button>
-              )}
-            </div>
-          )}
-        </div>
-      )}
+      {/* ── Treningsanalyse: pivot/kryss — filtrer alle parametere + sammenlign ── */}
+      {tab === "trening" &&
+        (trening && trening.okter.length > 0 ? (
+          <TreningsanalysePanel trening={trening} />
+        ) : (
+          <div className="rounded-2xl border border-border bg-card px-4 py-6 text-center">
+            <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
+              Treningsanalyse
+            </p>
+            <p className="mt-2 text-[13px] text-muted-foreground">
+              Logg treningsøkter for å filtrere og sammenligne volum per akse, miljø og type her.
+            </p>
+            {visning === "spiller" && (
+              <button
+                type="button"
+                onClick={tilWorkbench}
+                className="mt-4 inline-flex min-h-11 items-center justify-center rounded-full bg-primary px-6 font-mono text-[12px] font-bold uppercase tracking-wide text-primary-foreground"
+              >
+                Planlegg trening
+              </button>
+            )}
+          </div>
+        ))}
 
       {/* ── TrackMan: gapping + launch/strike (var «Baggen») ── */}
       {tab === "trackman" && (
