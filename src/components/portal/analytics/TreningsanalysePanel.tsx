@@ -3,9 +3,10 @@
 /**
  * TreningsanalysePanel — pivot/kryss-analyse av treningsloggen.
  * Filtrer på alle parametere (periode · akse · kategori · miljø · type) og
- * SAMMENLIGN segmenter mot hverandre (velg «sammenlign etter» → stolper per verdi,
- * f.eks. TEK på range vs bane). Alt klient-side over den innlastede økt-loggen.
- * Komponert fra golfdata (FilterPills · KpiTile · Progress) — ingen ad-hoc UI.
+ * SAMMENLIGN segmenter mot hverandre. Bygget mot analyse-fasiten
+ * (ui_kits/playerhq/phq-analyse via DesignSync): alt i Card m/ eyebrow+tittel,
+ * periode som SegmentedTabs, sammenligningsrader i «etikett · stolpe · verdi»-idiom.
+ * Komponert fra golfdata (Card · SegmentedTabs · FilterPills · KpiTile).
  */
 
 import { useMemo, useState } from "react";
@@ -16,7 +17,14 @@ import type {
   OmradeKey,
   TypeKey,
 } from "@/lib/portal-analyse/treningsanalyse-data";
-import { FilterPills, KpiTile, Progress, type FilterItem } from "@/components/athletic/golfdata";
+import {
+  Card,
+  SegmentedTabs,
+  FilterPills,
+  KpiTile,
+  Tag,
+  type FilterItem,
+} from "@/components/athletic/golfdata";
 
 type DimKey = "axis" | "kat" | "venue" | "type";
 
@@ -35,8 +43,8 @@ const VENUE: { v: OmradeKey; l: string }[] = [
 const TYPE: { v: TypeKey; l: string }[] = [
   { v: "egen", l: "Egen" }, { v: "coachet", l: "Coachet" }, { v: "test", l: "Test" }, { v: "turnering", l: "Turnering" },
 ];
-const PERIODE: { v: number; l: string }[] = [
-  { v: 7, l: "7 dager" }, { v: 30, l: "30 dager" }, { v: 999, l: "Sesong" },
+const PERIODE = [
+  { value: 7, label: "7 dager" }, { value: 30, label: "30 dager" }, { value: 999, label: "Sesong" },
 ];
 
 const DIM: { key: DimKey; label: string; verdier: { v: string; l: string }[] }[] = [
@@ -46,6 +54,22 @@ const DIM: { key: DimKey; label: string; verdier: { v: string; l: string }[] }[]
   { key: "type", label: "Type", verdier: TYPE },
 ];
 
+/** Sammenligningsrad — analyse-fasitens «etikett · stolpe · verdi»-idiom (SGRow). */
+function SammenlignRad({ label, timer, andel, antall }: { label: string; timer: number; andel: number; antall: number }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "9px 0" }}>
+      <span style={{ width: 118, flex: "none", fontSize: 13, color: "var(--text-2)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+        {label}
+      </span>
+      <div style={{ flex: 1, height: 6, borderRadius: 9999, background: "var(--track)", overflow: "hidden" }}>
+        <div style={{ width: `${Math.max(3, andel)}%`, height: "100%", background: "var(--signal)", borderRadius: 9999 }} />
+      </div>
+      <span style={{ width: 96, flex: "none", textAlign: "right", fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--text-muted)", fontVariantNumeric: "tabular-nums" }}>
+        {timer.toFixed(1)} t · {antall}
+      </span>
+    </div>
+  );
+}
 
 export function TreningsanalysePanel({ trening }: { trening: TreningsanalyseData }) {
   const [periode, setPeriode] = useState<number>(30);
@@ -55,90 +79,91 @@ export function TreningsanalysePanel({ trening }: { trening: TreningsanalyseData
   const [type, setType] = useState<TypeKey[]>([]);
   const [splitBy, setSplitBy] = useState<DimKey>("venue");
 
-  const filtrert = useMemo(() => {
-    return trening.okter.filter(
-      (o) =>
-        o.d <= periode &&
-        (akse.length === 0 || akse.includes(o.axis)) &&
-        (kat.length === 0 || kat.includes(o.kat)) &&
-        (venue.length === 0 || venue.includes(o.venue)) &&
-        (type.length === 0 || type.includes(o.type)),
-    );
-  }, [trening.okter, periode, akse, kat, venue, type]);
+  const filtrert = useMemo(
+    () =>
+      trening.okter.filter(
+        (o) =>
+          o.d <= periode &&
+          (akse.length === 0 || akse.includes(o.axis)) &&
+          (kat.length === 0 || kat.includes(o.kat)) &&
+          (venue.length === 0 || venue.includes(o.venue)) &&
+          (type.length === 0 || type.includes(o.type)),
+      ),
+    [trening.okter, periode, akse, kat, venue, type],
+  );
 
   const timer = filtrert.reduce((s, o) => s + o.t, 0);
   const antall = filtrert.length;
 
-  // Sammenlign: grupper det filtrerte utvalget på valgt dimensjon → timer per verdi.
-  // Stolpe = andel av total (av utvalget), så prosenten betyr «hvor stor del av treningen».
   const sammenlign = useMemo(() => {
     const dim = DIM.find((d) => d.key === splitBy)!;
-    const rows = dim.verdier.map((val) => {
-      const okter = filtrert.filter((o) => (o[splitBy] as string) === val.v);
-      return { label: val.l, timer: okter.reduce((s, o) => s + o.t, 0), antall: okter.length };
-    });
-    return rows.filter((r) => r.antall > 0);
-  }, [filtrert, splitBy]);
+    return dim.verdier
+      .map((val) => {
+        const okter = filtrert.filter((o) => (o[splitBy] as string) === val.v);
+        const t = okter.reduce((s, o) => s + o.t, 0);
+        return { label: val.l, timer: t, antall: okter.length, andel: timer > 0 ? (t / timer) * 100 : 0 };
+      })
+      .filter((r) => r.antall > 0)
+      .sort((a, b) => b.timer - a.timer);
+  }, [filtrert, splitBy, timer]);
 
   const items = <V extends string>(verdier: { v: V; l: string }[]): FilterItem<V>[] =>
     verdier.map((x) => ({ value: x.v, label: x.l }));
 
   return (
-    <div className="flex flex-col gap-4">
-      {/* Filtre */}
-      <div className="flex flex-col gap-2.5 rounded-2xl border border-border bg-card p-4">
-        <FilterRad label="Periode">
-          <FilterPills
-            filters={PERIODE.map((p) => ({ value: p.v, label: p.l }))}
-            value={periode}
-            onChange={(v) => setPeriode((v as number) ?? 30)}
-          />
-        </FilterRad>
-        <FilterRad label="Akse">
-          <FilterPills filters={items(AKSE)} value={akse} multi onChange={(v) => setAkse((v as AkseKey[]) ?? [])} />
-        </FilterRad>
-        <FilterRad label="Kategori">
-          <FilterPills filters={items(KAT)} value={kat} multi onChange={(v) => setKat((v as KatKey[]) ?? [])} />
-        </FilterRad>
-        <FilterRad label="Miljø">
-          <FilterPills filters={items(VENUE)} value={venue} multi onChange={(v) => setVenue((v as OmradeKey[]) ?? [])} />
-        </FilterRad>
-        <FilterRad label="Type">
-          <FilterPills filters={items(TYPE)} value={type} multi onChange={(v) => setType((v as TypeKey[]) ?? [])} />
-        </FilterRad>
-      </div>
+    <div className="flex flex-col gap-5">
+      {/* Periode — SegmentedTabs (fasit) */}
+      <SegmentedTabs
+        block
+        value={String(periode)}
+        onChange={(v) => setPeriode(Number(v))}
+        options={PERIODE.map((p) => ({ value: String(p.value), label: p.label }))}
+      />
 
-      {/* Nøkkeltall for utvalget */}
-      <div className="grid grid-cols-3 gap-2.5">
-        <KpiTile label="Økter" value={antall} size="md" />
-        <KpiTile label="Timer" value={timer.toFixed(1)} unit="t" size="md" />
-        <KpiTile label="Snitt/økt" value={antall > 0 ? (timer / antall).toFixed(1) : "—"} unit="t" size="md" />
-      </div>
-
-      {/* Sammenlign etter dimensjon */}
-      <div className="rounded-2xl border border-border bg-card p-4">
-        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-          <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
-            Sammenlign etter
-          </p>
-          <FilterPills
-            filters={DIM.map((d) => ({ value: d.key, label: d.label }))}
-            value={splitBy}
-            onChange={(v) => setSplitBy((v as DimKey) ?? "venue")}
-          />
+      {/* Filtre — i kort */}
+      <Card eyebrow="Filtre" title="Avgrens utvalget" compact>
+        <div className="flex flex-col gap-3">
+          <FilterRad label="Akse">
+            <FilterPills filters={items(AKSE)} value={akse} multi onChange={(v) => setAkse((v as AkseKey[]) ?? [])} />
+          </FilterRad>
+          <FilterRad label="Kategori">
+            <FilterPills filters={items(KAT)} value={kat} multi onChange={(v) => setKat((v as KatKey[]) ?? [])} />
+          </FilterRad>
+          <FilterRad label="Miljø">
+            <FilterPills filters={items(VENUE)} value={venue} multi onChange={(v) => setVenue((v as OmradeKey[]) ?? [])} />
+          </FilterRad>
+          <FilterRad label="Type">
+            <FilterPills filters={items(TYPE)} value={type} multi onChange={(v) => setType((v as TypeKey[]) ?? [])} />
+          </FilterRad>
         </div>
+      </Card>
+
+      {/* Nøkkeltall for utvalget — i kort */}
+      <Card eyebrow="Utvalget" title="Volum">
+        <div className="grid grid-cols-3 gap-3">
+          <KpiTile label="Økter" value={antall} size="lg" />
+          <KpiTile label="Timer" value={timer.toFixed(1)} unit="t" size="lg" />
+          <KpiTile label="Snitt/økt" value={antall > 0 ? (timer / antall).toFixed(1) : "—"} unit="t" size="lg" />
+        </div>
+      </Card>
+
+      {/* Sammenlign — i kort med dimensjonsvelger som action */}
+      <Card
+        eyebrow="Sammenlign"
+        title="Andel av treningen"
+        action={
+          <SegmentedTabs
+            size="sm"
+            value={splitBy}
+            onChange={(v) => setSplitBy(v)}
+            options={DIM.map((d) => ({ value: d.key, label: d.label }))}
+          />
+        }
+      >
         {sammenlign.length > 0 ? (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col">
             {sammenlign.map((r) => (
-              <div key={r.label} className="flex flex-col gap-1">
-                <div className="flex items-center justify-between text-[12px]">
-                  <span className="font-medium text-foreground">{r.label}</span>
-                  <span className="font-mono tabular-nums text-muted-foreground">
-                    {r.timer.toFixed(1)} t · {r.antall} økt{r.antall === 1 ? "" : "er"}
-                  </span>
-                </div>
-                <Progress variant="bar" value={r.timer} max={timer || 1} />
-              </div>
+              <SammenlignRad key={r.label} label={r.label} timer={r.timer} andel={r.andel} antall={r.antall} />
             ))}
           </div>
         ) : (
@@ -146,7 +171,17 @@ export function TreningsanalysePanel({ trening }: { trening: TreningsanalyseData
             Ingen økter i utvalget. Løsne på filtrene.
           </p>
         )}
-      </div>
+        {sammenlign.length > 0 && (
+          <div className="mt-2 flex items-center gap-2 pt-2">
+            <Tag variant="signal" size="sm">
+              {DIM.find((d) => d.key === splitBy)?.label}
+            </Tag>
+            <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
+              stolpe = andel av {timer.toFixed(1)} t
+            </span>
+          </div>
+        )}
+      </Card>
     </div>
   );
 }
