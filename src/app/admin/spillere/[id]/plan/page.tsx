@@ -18,6 +18,7 @@ import { ChevronRight, ClipboardList, Plus } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import type { TechPlanStatus } from "@/generated/prisma/client";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticEyebrow, AthleticButton } from "@/components/athletic";
 
 export const dynamic = "force-dynamic";

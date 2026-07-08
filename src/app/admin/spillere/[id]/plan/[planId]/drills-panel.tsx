@@ -19,6 +19,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Plus, Sparkles, GripVertical, Pencil, Trash2 } from "lucide-react";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticButton } from "@/components/athletic";
 import { useToast } from "@/components/shared/toast-provider";
 import {

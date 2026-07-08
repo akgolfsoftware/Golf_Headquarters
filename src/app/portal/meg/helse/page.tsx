@@ -23,7 +23,9 @@ import { prisma } from "@/lib/prisma";
 import { hentFysScore } from "@/lib/fys-data";
 import { hentBelastning } from "@/lib/health/belastning";
 import { MeSub, SetGroup, SetRow, SetVal } from "@/components/portal/meg/meg-sub";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticBadge } from "@/components/athletic/badge";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { KpiCard } from "@/components/athletic/kpi";
 import { HelseForm } from "./helse-form";
 

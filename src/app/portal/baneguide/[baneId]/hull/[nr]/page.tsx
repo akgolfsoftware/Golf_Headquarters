@@ -9,7 +9,9 @@ import { ChevronLeft, Lightbulb } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getHoleDetail } from "@/lib/baneguide/queries";
 import { CourseMap } from "@/components/baneguide/course-map";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticEyebrow } from "@/components/athletic/eyebrow";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { KpiCard } from "@/components/athletic/kpi";
 import type { ShotType } from "@/generated/prisma/client";
 

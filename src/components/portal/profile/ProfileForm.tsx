@@ -23,6 +23,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { uploadAvatar } from "@/lib/storage/avatar";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticAvatar } from "@/components/athletic/avatar";
 
 type ProfileUpdateInput = {

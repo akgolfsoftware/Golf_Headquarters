@@ -8,6 +8,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 import { EmptyState } from "@/components/shared/empty-state";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { Sparkline } from "@/components/athletic/sparkline";
 
 export const dynamic = "force-dynamic";

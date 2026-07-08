@@ -5,6 +5,7 @@
 
 import Link from "next/link";
 import { Camera } from "lucide-react";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticAvatar, AthleticEyebrow } from "@/components/athletic";
 import type { ReactNode } from "react";
 

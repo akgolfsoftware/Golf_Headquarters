@@ -3,6 +3,7 @@
  * Drop-in erstatning for PageHeader. Samme props.
  */
 
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticEyebrow } from "@/components/athletic";
 import type { ReactNode } from "react";
 

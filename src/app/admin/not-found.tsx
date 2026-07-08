@@ -1,5 +1,6 @@
 import { Compass } from "lucide-react";
 import Link from "next/link";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticHero } from "@/components/athletic/hero";
 
 export default function AdminNotFound() {

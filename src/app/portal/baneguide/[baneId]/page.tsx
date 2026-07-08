@@ -8,6 +8,7 @@ import { ChevronRight } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getBaneOverview } from "@/lib/baneguide/queries";
 import { CourseMap, type CourseMapHole } from "@/components/baneguide/course-map";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 
 export const dynamic = "force-dynamic";

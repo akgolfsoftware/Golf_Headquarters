@@ -8,6 +8,7 @@
 import Link from "next/link";
 import { ArrowUpRight, ClipboardList } from "lucide-react";
 import { EmptyState } from "@/components/shared/empty-state";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { Eyebrow } from "@/components/athletic/golfdata";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";

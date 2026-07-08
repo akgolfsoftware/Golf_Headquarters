@@ -37,6 +37,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Hex-gate (ingen nye rå hex-farger — opprydding Fase 2)
+        run: npm run check:hex
+
       - name: Unit tests (node:test + tsx)
         run: npm test
 

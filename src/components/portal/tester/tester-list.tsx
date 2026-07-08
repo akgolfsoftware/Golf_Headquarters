@@ -17,6 +17,7 @@ import {
   TrendingUp,
   type LucideIcon,
 } from "lucide-react";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { Sparkline } from "@/components/athletic";
 import { cn } from "@/lib/utils";
 import type { Axis, TestRow, Verdict } from "@/lib/portal-tester/tester-data";

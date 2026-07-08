@@ -14,6 +14,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { useToast } from "@/components/shared/toast-provider";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticButton } from "@/components/athletic/button";
 import { ReauthModal } from "@/components/auth/reauth-modal";
 import { createClient } from "@/lib/supabase/client";

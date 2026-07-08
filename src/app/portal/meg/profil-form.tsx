@@ -12,6 +12,7 @@ import {
 import type { Tier } from "@/generated/prisma/client";
 import type { UserPreferences } from "@/lib/preferences";
 import { oppdaterProfil, oppdaterPreferences } from "./actions";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticButton } from "@/components/athletic/button";
 
 type ProfilInitial = {

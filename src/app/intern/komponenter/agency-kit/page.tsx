@@ -2,10 +2,15 @@
 
 import { useMemo, useState } from "react";
 import { Sun, Users, Inbox, Calendar, Clock, ClipboardCheck, Settings } from "lucide-react";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AgencySidebar, type AgencyNavGroup } from "@/components/athletic/shell/agency-sidebar";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { DataTable, type Column, type SortState } from "@/components/athletic/data-table";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { Pagination } from "@/components/athletic/pagination";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { StatusPill, type StatusTone } from "@/components/athletic/status-pill";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { RoleBadge, PeriodeTag, SeverityDot } from "@/components/athletic/agency-tags";
 
 // Bolk 1-demo: AgencySidebar + DataTable + indicators med mock-data.

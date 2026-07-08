@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
 import { PlayerHQMockup } from "@/components/marketing/playerhq-mockup";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { PulseDot } from "@/components/athletic/pulse-dot";
 
 export const metadata: Metadata = {

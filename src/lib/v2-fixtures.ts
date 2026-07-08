@@ -4,6 +4,7 @@
  */
 
 // ── LegalPattern fixture ──────────────────────────────────────────
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import type { LegalSection } from "@/components/athletic/patterns/legal";
 
 export const DEMO_LEGAL_SECTIONS: LegalSection[] = [
@@ -31,6 +32,7 @@ export const DEMO_LEGAL_SECTIONS: LegalSection[] = [
 ];
 
 // ── EmailTemplateEditorPattern fixture ────────────────────────────
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import type { EmailTemplate } from "@/components/athletic/patterns/email-template-editor";
 
 export const DEMO_EMAIL_TEMPLATE: EmailTemplate = {
@@ -606,6 +608,7 @@ export const DEMO_GOALS: Goal[] = [
 // Import pattern fixtures
 // ──────────────────────────────────────────────────────────────
 
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import type { ImportColumn, ImportRow } from "@/components/athletic/patterns/import";
 
 export const DEMO_IMPORT_COLUMNS: ImportColumn[] = [
@@ -688,6 +691,7 @@ export const COACH_THREADS: CoachThread[] = [
 // Notification center fixtures (NotificationCenterPattern)
 // ──────────────────────────────────────────────────────────────
 
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import type { Notification } from "@/components/athletic/patterns/notification-center";
 
 export const DEMO_NOTIFICATIONS: Notification[] = [
@@ -747,6 +751,7 @@ export const DEMO_NOTIFICATIONS: Notification[] = [
 // Audit log fixtures (AuditLogPattern)
 // ──────────────────────────────────────────────────────────────
 
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import type { AuditEvent } from "@/components/athletic/patterns/audit-log";
 
 export const DEMO_AUDIT_EVENTS: AuditEvent[] = [
@@ -800,6 +805,7 @@ export const DEMO_AUDIT_EVENTS: AuditEvent[] = [
 ];
 
 // ── ConsentPattern fixture ────────────────────────────────────────
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import type { ConsentItem } from "@/components/athletic/patterns/consent";
 
 export const DEMO_CONSENT_ITEMS: ConsentItem[] = [

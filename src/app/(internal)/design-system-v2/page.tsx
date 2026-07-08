@@ -11,6 +11,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import {
   LiveBar,
   Topbar,
@@ -36,6 +37,7 @@ import {
   GhostNumber,
   StubModal,
 } from "@/components/athletic";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { useNowTime } from "@/components/athletic/hooks";
 import {
   ØYVIND_USER,

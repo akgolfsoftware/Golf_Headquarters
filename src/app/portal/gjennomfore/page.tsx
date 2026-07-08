@@ -5,6 +5,7 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getGjennomforeData } from "@/lib/portal-gjennomfore/gjennomfore-data";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { Eyebrow } from "@/components/athletic/golfdata";
 import { GjennomforeFaner } from "@/components/portal/gjennomfore/gjennomfore-faner";
 

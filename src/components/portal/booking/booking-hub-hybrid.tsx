@@ -24,6 +24,7 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { Button, Card } from "@/components/athletic/golfdata";
 import type { HubBooking, HubCredits, HubCoach } from "./booking-hub";
 

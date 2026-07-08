@@ -17,6 +17,7 @@
 
 import Link from "next/link";
 import { Activity, ArrowRight } from "lucide-react";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 
 // ── Datatyper ────────────────────────────────────────────────────────────

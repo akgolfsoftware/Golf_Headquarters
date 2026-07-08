@@ -28,6 +28,7 @@ import {
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getAbonnementData } from "@/lib/portal-abonnement/abonnement-data";
 import { MeSub, SetGroup, SetLinkRow, SetRow } from "@/components/portal/meg/meg-sub";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticBadge } from "@/components/athletic/badge";
 
 export const dynamic = "force-dynamic";

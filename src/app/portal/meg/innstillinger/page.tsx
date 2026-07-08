@@ -29,6 +29,7 @@ import { lesPreferences } from "@/lib/preferences";
 import { prisma } from "@/lib/prisma";
 import { MeSub, SetGroup, SetLinkRow, SetRow, SetVal } from "@/components/portal/meg/meg-sub";
 import { Toggle } from "@/components/portal/meg/toggle";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticBadge } from "@/components/athletic/badge";
 import { buttonClasses } from "@/components/ui/button";
 import { VarslerToggles } from "./varsler-toggles";

@@ -15,7 +15,9 @@ import { Pause, ChevronsRight, GripVertical, Star } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { calculateAge } from "@/lib/auth/minor";
 import { prisma } from "@/lib/prisma";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticButton } from "@/components/athletic";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticBadge } from "@/components/athletic/badge";
 import { buttonClasses } from "@/components/ui/button";
 import { DetailShell } from "@/components/shared/detail-shell";

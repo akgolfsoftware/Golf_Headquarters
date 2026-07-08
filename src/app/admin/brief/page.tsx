@@ -33,6 +33,7 @@ import { prisma } from "@/lib/prisma";
 import { PrintButton } from "@/components/shared/print-button";
 import { EksportTrigger } from "@/components/shared/eksport-trigger";
 import { AgentStrip } from "@/components/coachhq/agent-strip";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticEyebrow } from "@/components/athletic";
 import { cn } from "@/lib/utils";
 import {

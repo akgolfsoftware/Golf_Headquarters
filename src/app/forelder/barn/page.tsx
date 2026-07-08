@@ -25,6 +25,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnForForelder } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
 import { ForelderHero } from "@/components/forelder/forelder-hero";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { PyramidProgress, type PyramidRow } from "@/components/athletic";
 import type { PyramidArea } from "@/generated/prisma/client";
 

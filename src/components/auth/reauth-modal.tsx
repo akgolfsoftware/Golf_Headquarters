@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { KeyRound, Loader2, ShieldAlert } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Modal } from "@/components/shared/modal";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticButton } from "@/components/athletic/button";
 
 type ReauthModalProps = {

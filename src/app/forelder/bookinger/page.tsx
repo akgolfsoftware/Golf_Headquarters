@@ -13,6 +13,7 @@ import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnForForelder } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticEyebrow } from "@/components/athletic";
 import type { BookingStatus } from "@/generated/prisma/client";
 

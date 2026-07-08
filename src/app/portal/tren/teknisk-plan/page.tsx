@@ -18,6 +18,7 @@ import {
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PlayerHero } from "@/components/portal/player-hero";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { Card } from "@/components/athletic/golfdata";
 import { cn } from "@/lib/utils";
 import { PlanHandlinger } from "./plan-handlinger";

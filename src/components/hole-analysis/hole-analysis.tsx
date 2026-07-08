@@ -4,7 +4,9 @@ import { useState } from "react";
 import Image from "next/image";
 import { X, TrendingUp, Activity, Clock, Flag, ArrowLeft, ZoomIn } from "lucide-react";
 import { cn } from "@/lib/utils";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticEyebrow } from "@/components/athletic/eyebrow";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { Sparkline } from "@/components/athletic/sparkline";
 
 /* ─────────────────────────────────────────────────────────────────────────

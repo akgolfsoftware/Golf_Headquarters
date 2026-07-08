@@ -22,6 +22,7 @@
  */
 
 import Link from "next/link";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { Card, Eyebrow, KpiTile as DsKpiTile } from "@/components/athletic/golfdata";
 
 // ── Datamodell ────────────────────────────────────────────────────────────────

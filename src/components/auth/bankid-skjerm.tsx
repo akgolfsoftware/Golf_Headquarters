@@ -23,6 +23,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { AkGolfLogo } from "@/components/shared/ak-golf-logo";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 
 export type BankIdSkjermProps = {

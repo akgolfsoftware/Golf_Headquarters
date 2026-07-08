@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { MapPin, User, CalendarDays, CreditCard, UserCheck, ArrowRight } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 
 export const metadata: Metadata = {

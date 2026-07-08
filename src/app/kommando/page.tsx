@@ -8,6 +8,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { canAccessMissionControl } from "@/lib/auth/canAccessMissionControl";
 import { prisma } from "@/lib/prisma";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { KpiStrip, KpiCard, AthleticBadge } from "@/components/athletic";
 import { cn } from "@/lib/utils";
 import { KOMMANDO_MODELS } from "@/lib/kommando/models";

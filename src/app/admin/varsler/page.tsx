@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Bell } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticEyebrow } from "@/components/athletic";
 import { loadVarsler } from "@/lib/admin/load-varsler";
 import { VarslerClient } from "./varsler-client";

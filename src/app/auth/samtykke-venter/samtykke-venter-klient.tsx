@@ -24,6 +24,7 @@ import Link from "next/link";
 import { Check, Clock, Mail } from "lucide-react";
 import { resendGuardianInvitation } from "@/app/auth/onboarding/actions";
 import { logout } from "@/lib/auth/logout";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 
 type Props = {

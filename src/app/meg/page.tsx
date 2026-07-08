@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { adminSubject } from "@/lib/meg/access";
 import { hentBriefer, hentVentende, hentNylige } from "@/lib/meg/read";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticEyebrow, AthleticBadge } from "@/components/athletic";
 
 export const dynamic = "force-dynamic";

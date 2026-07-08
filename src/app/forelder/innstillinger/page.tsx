@@ -25,6 +25,7 @@ import {
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnForForelder } from "@/lib/forelder";
 import { ForelderHero } from "@/components/forelder/forelder-hero";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticBadge } from "@/components/athletic";
 
 export const dynamic = "force-dynamic";

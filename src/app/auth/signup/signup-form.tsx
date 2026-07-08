@@ -6,7 +6,9 @@ import Link from "next/link";
 import { ArrowRight, Check, Lock, Mail, User } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { UserRole, Tier } from "@/generated/prisma/client";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticButton } from "@/components/athletic/button";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticBadge } from "@/components/athletic/badge";
 
 type RoleOption = { value: UserRole; label: string };

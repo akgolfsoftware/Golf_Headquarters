@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Target, Plus } from "lucide-react";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticCard } from "@/components/athletic";
 import type { GoalItem } from "@/app/portal/actions";
 

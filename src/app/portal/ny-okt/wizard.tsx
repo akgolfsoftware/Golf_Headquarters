@@ -13,6 +13,7 @@
 import { useState } from "react";
 import { ArrowLeft, Plus, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 import Link from "next/link";
 

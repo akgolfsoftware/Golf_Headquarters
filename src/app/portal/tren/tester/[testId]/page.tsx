@@ -20,6 +20,7 @@ import type { PyramidArea } from "@/generated/prisma/client";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { testTilgangWhere } from "@/lib/portal-tester/test-tilgang";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 import { SetGroup, SetRow, SetVal } from "@/components/portal/meg/meg-sub";
 import { parseProtocol, type ScorekortForsok } from "@/lib/portal-tester/protocol";

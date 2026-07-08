@@ -44,6 +44,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import type { PlanStatus } from "@/generated/prisma/client";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticAvatar } from "@/components/athletic";
 import { cn } from "@/lib/utils";
 

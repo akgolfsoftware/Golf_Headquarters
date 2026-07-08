@@ -9,6 +9,7 @@ import Link from "next/link";
 import { ArrowLeft, ChevronRight, MessageSquare } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { Card, Eyebrow, Tag } from "@/components/athletic/golfdata";
 
 export const dynamic = "force-dynamic";

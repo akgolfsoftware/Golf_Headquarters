@@ -17,6 +17,7 @@ import {
 import { EmptyState } from "@/components/shared/empty-state";
 import { DetailShell } from "@/components/shared/detail-shell";
 import { KPICard } from "@/components/ui";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticBadge } from "@/components/athletic";
 import { PlanActions } from "./plan-actions";
 import { DraggableSessions, type DraggableSession } from "./draggable-sessions";

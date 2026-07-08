@@ -38,6 +38,7 @@ import {
   ZapOff,
   type LucideIcon,
 } from "lucide-react";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { Sparkline } from "@/components/athletic";
 import { cn } from "@/lib/utils";
 

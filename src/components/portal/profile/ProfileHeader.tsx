@@ -8,7 +8,9 @@
  */
 
 import type { User } from "@/generated/prisma/client";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticAvatar } from "@/components/athletic/avatar";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 
 export type ProfileHeaderProps = {

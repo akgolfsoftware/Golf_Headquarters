@@ -20,6 +20,7 @@ import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { DetailShell } from "@/components/shared/detail-shell";
 import { KPICard } from "@/components/ui/kpi-card";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticBadge } from "@/components/athletic/badge";
 import { AnleggDetailView } from "./anlegg-detail-view";
 

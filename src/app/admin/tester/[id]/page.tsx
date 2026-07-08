@@ -12,6 +12,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { DetailShell } from "@/components/shared/detail-shell";
 import { KPICard } from "@/components/ui";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticBadge } from "@/components/athletic";
 import { TestDetailClient, type TestPoint, type BenchmarkView } from "./test-detail-client";
 import { parseBenchmarks, achievedLevel, ladderText, DISPLAY_UNIT } from "@/lib/admin/test-benchmarks";

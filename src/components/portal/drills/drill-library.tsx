@@ -18,6 +18,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Search, SlidersHorizontal, Zap } from "lucide-react";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { FilterPillBar, type FilterPill } from "@/components/athletic/filter-pill-bar";
 import { cn } from "@/lib/utils";
 import type {

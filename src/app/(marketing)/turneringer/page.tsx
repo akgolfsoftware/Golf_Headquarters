@@ -16,6 +16,7 @@ import { CalendarRange, MapPin, Trophy, Flag } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { NorskeDenneUkaWidget } from "@/components/turneringer/norske-denne-uka-widget";
 import { MersalgBanner } from "@/components/turneringer/mersalg-banner";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 
 export const revalidate = 1800; // 30 min

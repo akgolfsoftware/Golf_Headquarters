@@ -7,6 +7,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticButton } from "@/components/athletic";
 import { startOkt } from "./actions";
 

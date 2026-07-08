@@ -5,6 +5,7 @@
 import { canAccessMissionControl } from "@/lib/auth/canAccessMissionControl";
 import { prisma } from "@/lib/prisma";
 import { CalendarViews } from "@/components/kommando/calendar-views";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import type { MonthDayCell, WeekEvent } from "@/components/athletic/calendars";
 
 export const dynamic = "force-dynamic";

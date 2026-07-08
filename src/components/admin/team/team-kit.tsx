@@ -2,8 +2,11 @@
 
 import { MoreHorizontal, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { PresenceDot, type PresenceState } from "@/components/athletic/presence-dot";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { RoleBadge, PeriodeTag, type CoachRole, type PeriodeKind } from "@/components/athletic/agency-tags";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { PyrDistBar, type PyrDist } from "@/components/athletic/data/pyr-dist-bar";
 
 /* ── Team-roster ───────────────────────────────────────────────────────── */

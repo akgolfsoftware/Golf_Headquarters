@@ -13,6 +13,7 @@
 import Link from "next/link";
 import { Calendar, Send, User } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { Eyebrow } from "@/components/athletic/golfdata";
 import { MessageThread } from "@/components/portal/coach/MessageThread";
 import {

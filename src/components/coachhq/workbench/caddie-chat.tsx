@@ -18,6 +18,7 @@ import {
   Send,
   Sparkles,
 } from "lucide-react";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticButton } from "@/components/athletic/button";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";

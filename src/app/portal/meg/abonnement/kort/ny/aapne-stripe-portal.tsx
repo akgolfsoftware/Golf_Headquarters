@@ -10,6 +10,7 @@
 
 import { useState } from "react";
 import { Loader2, ExternalLink, AlertTriangle } from "lucide-react";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticButton } from "@/components/athletic";
 
 export function AapneStripePortal() {

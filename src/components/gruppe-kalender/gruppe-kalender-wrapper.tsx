@@ -4,8 +4,11 @@ import { useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { YearPlanGantt } from "@/components/athletic/calendars/year-plan-gantt";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { MonthGrid } from "@/components/athletic/calendars/month-grid";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { WeekGrid } from "@/components/athletic/calendars/week-grid";
 import { byggArsfaser, byggManedceller, byggUkehendelser } from "@/lib/gruppe-kalender/bygg-visninger";
 import type { GruppeKalenderData } from "@/lib/gruppe-kalender/types";

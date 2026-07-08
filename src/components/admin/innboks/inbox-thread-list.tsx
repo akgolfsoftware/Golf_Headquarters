@@ -13,6 +13,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticAvatar } from "@/components/athletic";
 import type { InboxThread, ThreadDot } from "./inbox-screen";
 

@@ -2,7 +2,9 @@
 
 import { useState, useTransition } from "react";
 import { CheckCheck } from "lucide-react";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticCard } from "@/components/athletic/card";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticAvatar } from "@/components/athletic/avatar";
 import { MessageInput } from "./MessageInput";
 import type { CoachMessageItem } from "@/app/portal/coach/actions";

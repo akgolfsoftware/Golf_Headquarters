@@ -1,6 +1,7 @@
 "use client";
 
 import { Clock, Dumbbell, CalendarCheck, Flag } from "lucide-react";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticCard } from "@/components/athletic";
 import type { StatsSnapshot } from "@/app/portal/actions";
 

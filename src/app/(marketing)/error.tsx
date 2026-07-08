@@ -3,6 +3,7 @@
 import { AlertTriangle } from "lucide-react";
 import Link from "next/link";
 import { useEffect } from "react";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticHero } from "@/components/athletic/hero";
 
 type Props = {

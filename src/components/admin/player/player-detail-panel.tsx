@@ -11,7 +11,9 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { PresenceDot, type PresenceState } from "@/components/athletic/presence-dot";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { StatusPill, type StatusTone } from "@/components/athletic/status-pill";
 
 const AXES = [

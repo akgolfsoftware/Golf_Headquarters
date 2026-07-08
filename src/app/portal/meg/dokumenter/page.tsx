@@ -24,6 +24,7 @@ import {
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { MeSub } from "@/components/portal/meg/meg-sub";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticBadge } from "@/components/athletic/badge";
 
 // Document.kind er fri streng (CONTRACT | GUIDE | RECEIPT | OTHER i bruk i dag;

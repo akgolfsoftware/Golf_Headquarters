@@ -13,6 +13,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ChevronRight, Search } from "lucide-react";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 
 export type KatalogRad = {

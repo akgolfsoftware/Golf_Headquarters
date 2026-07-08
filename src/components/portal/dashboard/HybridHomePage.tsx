@@ -28,6 +28,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Play, ArrowRight, ChevronRight, CalendarRange, Activity } from "lucide-react";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import {
   Card, Eyebrow, KpiTile, NesteFokusKort, SgTotalKort, SgKategoriBar, DayStrip, RingGauge, Progress, Heatmap, AgendaRow,
   type SgKategori, type DayStripDay,

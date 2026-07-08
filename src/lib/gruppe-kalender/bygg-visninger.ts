@@ -1,8 +1,11 @@
 // Rene funksjoner (ingen server-only imports) — kjører trygt i klient-komponenter.
 // Oversetter FastTid[]/Periode[] til props for YearPlanGantt/MonthGrid/WeekGrid.
 
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import type { YearPhase } from "@/components/athletic/calendars/year-plan-gantt";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import type { MonthDayCell } from "@/components/athletic/calendars/month-grid";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import type { WeekEvent } from "@/components/athletic/calendars/week-grid";
 import type { FastTid, Periode } from "./types";
 
