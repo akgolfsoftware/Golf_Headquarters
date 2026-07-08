@@ -19,8 +19,7 @@ import { Sparkles } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { TabBar } from "@/components/athletic/tab-bar";
+import { PlanTabs } from "./plan-tabs";
 import { SG_BUCKETS, type PyramidArea } from "@/components/teknisk-plan/constants";
 import type { OppgaveDraft } from "@/components/teknisk-plan/oppgave-modal";
 import { PlanToolbar } from "./plan-toolbar";
@@ -249,11 +248,11 @@ export default async function SpillerPlanDetaljPage({
       </header>
 
       {/* Tab-bar */}
-      <TabBar
+      <PlanTabs
         tabs={[
           { id: "oversikt", label: "Oversikt" },
           { id: "periodisering", label: "Periodisering" },
-          { id: "drills", label: "Drills", count: drillsTotal },
+          { id: "drills", label: `Drills (${drillsTotal})` },
           { id: "hit-rate", label: "Hit-rate" },
           { id: "effekt", label: "Effekt" },
         ]}

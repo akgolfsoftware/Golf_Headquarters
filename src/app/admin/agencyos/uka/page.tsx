@@ -6,8 +6,7 @@ import { Calendar, Plus, GripVertical } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { KpiRing } from "@/components/athletic";
+import { RingGauge } from "@/components/athletic/golfdata";
 
 export const dynamic = "force-dynamic";
 
@@ -98,7 +97,7 @@ export default async function UkaPage() {
             Kapasitet
           </div>
           <div className="mt-2 flex items-center gap-4">
-            <KpiRing value={kapasitetPct} size={64} />
+            <RingGauge value={kapasitetPct} min={0} max={100} size={64} unit="%" decimals={0} />
             <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
               {kapasitetPct < 70 ? "Rom til mer" : "Full"}
             </div>

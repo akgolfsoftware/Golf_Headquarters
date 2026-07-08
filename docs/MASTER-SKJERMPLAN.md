@@ -739,6 +739,16 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 Full kronologisk byggehistorikk flyttet til [`docs/arkiv/master-skjermplan-endringslogg.md`](arkiv/master-skjermplan-endringslogg.md)
 2026-07-06 — denne fila var 822 linjer og loggen drukna den faktiske statustabellen. Siste hendelser:
 
+- 8. juli (opprydding Fase 4, bølge 3 — /admin, branch `opprydding/token-konvergens`):
+  **/admin er tom for gammel-athletic-importer.** `SegmentedTabs` portet fra DS (forms/) →
+  golfdata/. Migrert: plan-detalj-fanene (`/admin/spillere/[id]/plan/[planId]`) TabBar →
+  SegmentedTabs m/ tynn URL-synk-wrapper (plan-tabs.tsx); Uka-skjermen KpiRing → RingGauge
+  (verifisert visuelt, kapasitetsring); varsler-loading gammel Skeleton → ui/skeleton;
+  404/500-sidene AthleticHero → Eyebrow + display-h1 + golfdata Button. Gap-register bølge 3:
+  ingen nye komponent-gap, 2 observasjoner (#9 SegmentedTabs mangler count-variant, #10
+  onChange-typekollisjon løst med Omit i porten). tsc + eslint + hex-gate + build grønt,
+  342/342 tester, Playwright-diff mot baseline uendret.
+
 - 8. juli (opprydding Fase 4, bølge 2 — /portal, branch `opprydding/token-konvergens`):
   **/portal er tom for gammel-athletic-importer.** Nye porter fra Claude Design-prosjektet
   (DesignSync): `PercentileBar`, `NivaStige`, `Stepper` → golfdata/. Talent-hub rekomponert

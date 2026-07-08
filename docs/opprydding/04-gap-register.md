@@ -31,7 +31,13 @@ NivaStige og Stepper er nå portet til golfdata/). Tre observasjoner til protoko
 | 8 | `src/lib/portal-hjem/hjem-data.ts` er død kode (null konsumenter) med gammel-athletic-typeimport — kandidat for sletting i Fase 5, blokkerer ellers slettingen av gamle `pyramid-progress`. | DØD KODE | ÅPEN |
 
 ## Bølge 3 — /admin
-(Claude Code appender nye gap her)
+
+Ingen NYE komponent-gap — `SegmentedTabs` portet fra DS (forms/). To observasjoner:
+
+| # | Observasjon | Vurdering | Status |
+|---|---|---|---|
+| 9 | `SegmentedTabs` har ikke count/badge-støtte (gamle TabBar viste antall per fane). Løst med antall i label-teksten («Drills (12)») — vurder om DS skal få en count-variant. | UTVID (valgfri) | ÅPEN |
+| 10 | Samme typekollisjon som #7 i SegmentedTabs-porten (`onChange` mot HTMLAttributes) — løst med Omit i porten her; #7 (Card.title) står fortsatt. | PORT-MØNSTER | LUKKET her |
 
 ## Bølge 4 — marketing + forelder
 (Claude Code appender nye gap her)

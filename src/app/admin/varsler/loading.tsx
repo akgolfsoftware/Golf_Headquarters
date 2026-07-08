@@ -1,5 +1,4 @@
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { Skeleton } from "@/components/athletic";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function VarslerLoading() {
   return (

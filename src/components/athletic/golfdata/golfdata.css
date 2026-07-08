@@ -1061,3 +1061,21 @@ button.ak-akchip:focus-visible{outline:none;box-shadow:var(--glow-signal);}
 }
 .ak-step--active .ak-step__lbl{color:var(--text);}
 .ak-step--done .ak-step__lbl{color:var(--text-2);}
+
+/* ---- SegmentedTabs (forms/SegmentedTabs.jsx, DesignSync 2026-07-08) ---- */
+.ak-seg{display:inline-flex;align-items:center;gap:2px;background:var(--surface-2);
+  border:1px solid var(--border);border-radius:var(--radius-pill);padding:3px;}
+.ak-seg--block{display:flex;width:100%;}
+.ak-seg__item{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  font-family:var(--font-mono);font-weight:500;color:var(--text-2);cursor:pointer;
+  border:none;background:transparent;border-radius:var(--radius-pill);white-space:nowrap;
+  letter-spacing:.01em;transition:color var(--dur-fast) var(--ease-standard),
+  background var(--dur-fast) var(--ease-standard);}
+.ak-seg__item:hover{color:var(--text);}
+.ak-seg__item[aria-selected="true"]{background:var(--primary-fill);color:var(--primary-text);
+  font-weight:600;}
+.ak-seg--md .ak-seg__item{height:34px;padding:0 16px;font-size:var(--text-13);}
+.ak-seg--sm .ak-seg__item{height:28px;padding:0 12px;font-size:var(--text-12);}
+.ak-seg__item:focus-visible{outline:none;box-shadow:var(--glow-signal);}
+.ak-seg__item[disabled]{opacity:.38;cursor:not-allowed;pointer-events:none;}
+.ak-seg--disabled{opacity:.5;pointer-events:none;}
