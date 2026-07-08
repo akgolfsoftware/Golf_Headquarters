@@ -40,4 +40,9 @@ Ingen NYE komponent-gap — `SegmentedTabs` portet fra DS (forms/). To observasj
 | 10 | Samme typekollisjon som #7 i SegmentedTabs-porten (`onChange` mot HTMLAttributes) — løst med Omit i porten her; #7 (Card.title) står fortsatt. | PORT-MØNSTER | LUKKET her |
 
 ## Bølge 4 — marketing + forelder
-(Claude Code appender nye gap her)
+
+Ingen NYE komponent-gap — `Pyramid` portet fra DS (data/). Én statusføring:
+
+| # | Observasjon | Vurdering | Status |
+|---|---|---|---|
+| 11 | De 3 siste gamle importene i hele appen er `PulseDot` på marketing (anlegg/junior/playerhq) — venter på gap #1 (StatusDot). Når StatusDot er i DS og portet, lukkes disse og gamle athletic kan slettes (Fase 5). | VENTER PÅ #1 | ÅPEN |

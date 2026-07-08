@@ -60,6 +60,7 @@ export { PercentileBar, type PercentileBarProps } from "./PercentileBar";
 export { NivaStige, type NivaStigeProps } from "./NivaStige";
 export { Stepper, type StepperProps, type StepItem } from "./Stepper";
 export { SegmentedTabs, type SegmentedTabsProps, type SegmentedTabOption } from "./SegmentedTabs";
+export { Pyramid, type PyramidProps, type PyramidAxis } from "./Pyramid";
 export { OektKort, type OektKortProps, type OektAxis, type OektState } from "./OektKort";
 export { AKFormelChip, type AKFormelChipProps } from "./AKFormelChip";
 export { LiveStatus, type LiveStatusProps } from "./LiveStatus";

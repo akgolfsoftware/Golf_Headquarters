@@ -25,8 +25,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnForForelder } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
 import { ForelderHero } from "@/components/forelder/forelder-hero";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { KpiCard, KpiStrip } from "@/components/athletic";
+import { KpiTile } from "@/components/athletic/golfdata";
 import type {
   PaymentStatus,
   SubscriptionStatus,
@@ -188,8 +187,8 @@ export default async function ForelderOkonomi() {
       )}
 
       {/* KPI */}
-      <KpiStrip cols={3} className="gap-3">
-        <KpiCard
+      <div className="grid gap-3 sm:grid-cols-3">
+        <KpiTile
           label="Utestående"
           value={
             utestaaendeOre > 0
@@ -201,7 +200,7 @@ export default async function ForelderOkonomi() {
           unit="kr"
           size="md"
         />
-        <KpiCard
+        <KpiTile
           label="Betalt totalt"
           value={new Intl.NumberFormat("nb-NO").format(
             Math.round(betaltOre / 100),
@@ -209,8 +208,8 @@ export default async function ForelderOkonomi() {
           unit="kr"
           size="md"
         />
-        <KpiCard label="Pakker" value={aktivePakker} unit="aktive" size="md" />
-      </KpiStrip>
+        <KpiTile label="Pakker" value={aktivePakker} unit="aktive" size="md" />
+      </div>
 
       {/* Abonnement per barn */}
       <section className="overflow-hidden rounded-xl border border-border bg-card">

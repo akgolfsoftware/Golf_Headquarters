@@ -25,8 +25,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnForForelder } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
 import { ForelderHero } from "@/components/forelder/forelder-hero";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { PyramidProgress, type PyramidRow } from "@/components/athletic";
+import { Pyramid, type PyramidAxis } from "@/components/athletic/golfdata";
 import type { PyramidArea } from "@/generated/prisma/client";
 
 const NB_DATO = new Intl.DateTimeFormat("nb-NO", {
@@ -36,12 +35,12 @@ const NB_DATO = new Intl.DateTimeFormat("nb-NO", {
 });
 
 // Pyramide-akse → label + DS-token-tone (matcher daily-brief sin akse-fargelogikk).
-const AKSE: { key: PyramidArea; label: string; tone: PyramidRow["tone"] }[] = [
-  { key: "FYS", label: "Fys", tone: "pyr-fys" },
-  { key: "TEK", label: "Tek", tone: "pyr-tek" },
-  { key: "SLAG", label: "Slag", tone: "pyr-slag" },
-  { key: "SPILL", label: "Spill", tone: "pyr-spill" },
-  { key: "TURN", label: "Turn", tone: "pyr-turn" },
+const AKSE: { key: PyramidArea; label: string }[] = [
+  { key: "FYS", label: "Fys" },
+  { key: "TEK", label: "Tek" },
+  { key: "SLAG", label: "Slag" },
+  { key: "SPILL", label: "Spill" },
+  { key: "TURN", label: "Turn" },
 ];
 
 function ore(n: number): string {
@@ -201,16 +200,10 @@ export default async function MineBarn() {
           const etternavn = b.child.name.split(" ").slice(1).join(" ");
 
           // Pyramide-rader: prosent av totale økter per akse (fra ekte logger).
-          const pyramidRows: PyramidRow[] = AKSE.map((a) => {
-            const antall = fordeling[a.key];
-            const pct = okter > 0 ? Math.round((antall / okter) * 100) : 0;
-            return {
-              label: a.label,
-              fillPercent: pct,
-              value: String(antall),
-              tone: a.tone,
-            };
-          });
+          // Apex→base (TURN øverst, FYS fundament) — kanon; verdier = antall økter per akse.
+          const pyramidData: PyramidAxis[] = [...AKSE]
+            .reverse()
+            .map((a) => ({ axis: a.key, value: fordeling[a.key] }));
 
           return (
             <li key={id}>
@@ -251,7 +244,7 @@ export default async function MineBarn() {
                     Pyramide · siste 30 dager
                   </SectionLabel>
                   {okter > 0 ? (
-                    <PyramidProgress rows={pyramidRows} />
+                    <Pyramid data={pyramidData} max={Math.max(1, okter)} compact />
                   ) : (
                     <p className="font-sans text-[12.5px] text-muted-foreground">
                       Ingen fullførte økter ennå.

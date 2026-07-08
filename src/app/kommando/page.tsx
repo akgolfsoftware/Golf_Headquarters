@@ -9,8 +9,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { canAccessMissionControl } from "@/lib/auth/canAccessMissionControl";
 import { prisma } from "@/lib/prisma";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { KpiStrip, KpiCard } from "@/components/athletic";
+import { KpiTile } from "@/components/athletic/golfdata";
 import { cn } from "@/lib/utils";
 import { KOMMANDO_MODELS } from "@/lib/kommando/models";
 import { kommandoModelReady } from "@/lib/kommando/providers";
@@ -61,12 +60,12 @@ export default async function KommandoDashboard() {
 
   return (
     <div className="space-y-5">
-      <KpiStrip cols={4}>
-        <KpiCard label="Modeller" value={KOMMANDO_MODELS.length} />
-        <KpiCard label="Åpne oppgaver" value={openCount} />
-        <KpiCard label="AI-kjøringer" value={aiRuns} />
-        <KpiCard label="Prosjekter" value={projectsCount} />
-      </KpiStrip>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <KpiTile label="Modeller" value={KOMMANDO_MODELS.length} size="md" />
+        <KpiTile label="Åpne oppgaver" value={openCount} size="md" />
+        <KpiTile label="AI-kjøringer" value={aiRuns} size="md" />
+        <KpiTile label="Prosjekter" value={projectsCount} size="md" />
+      </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
         {/* AI-agenter */}
