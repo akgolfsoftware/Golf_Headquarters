@@ -398,6 +398,42 @@ export function HybridHomePage({ data }: HybridHomePageProps) {
         </div>
       )}
 
+      {/* 8. Ett klikk til hovedverktøy (optimalisert flyt) */}
+      <div className="pt-2">
+        <Eyebrow className="mb-2">Hovedverktøy</Eyebrow>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <Link
+            href="/portal/planlegge/workbench"
+            className="flex items-center justify-between rounded-lg border border-border bg-card px-4 py-3 text-sm font-medium transition hover:border-primary/60 hover:bg-card/80"
+          >
+            <span>Planlegg</span>
+            <ArrowRight size={16} className="text-muted-foreground" />
+          </Link>
+          <Link
+            href="/portal/gjennomfore"
+            className="flex items-center justify-between rounded-lg border border-border bg-card px-4 py-3 text-sm font-medium transition hover:border-primary/60 hover:bg-card/80"
+          >
+            <span>Gjør / logg økt</span>
+            <ArrowRight size={16} className="text-muted-foreground" />
+          </Link>
+          <Link
+            href="/portal/analysere"
+            className="flex items-center justify-between rounded-lg border border-border bg-card px-4 py-3 text-sm font-medium transition hover:border-primary/60 hover:bg-card/80"
+          >
+            <span>Analyser</span>
+            <ArrowRight size={16} className="text-muted-foreground" />
+          </Link>
+          <Link
+            href="/portal/meg/bookinger"
+            className="flex items-center justify-between rounded-lg border border-border bg-card px-4 py-3 text-sm font-medium transition hover:border-primary/60 hover:bg-card/80"
+          >
+            <span>Bookinger &amp; Meg</span>
+            <ArrowRight size={16} className="text-muted-foreground" />
+          </Link>
+        </div>
+        <p className="mt-1.5 text-[11px] text-muted-foreground">Alltid 1 klikk fra hjem til det du trenger mest.</p>
+      </div>
+
       {/* 8. Treningshistorikk — ekte 12-ukers heatmap */}
       <div>
         <Eyebrow className="mb-3 block">Historikk · 12 uker</Eyebrow>

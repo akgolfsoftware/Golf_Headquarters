@@ -11,6 +11,11 @@
 > (E-serien). Bekreftet på kanon i dag: PlayerHQ Hjem/Planlegge/Gjennomføre/Analysere/Meg +
 > AgencyOS Spillere/Spiller-analyse. Resten gjenstår.
 
+> **Optimalisering juli 2026:** Navigasjon strammet for færre klikk og skjermer. 
+> PlayerHQ: 5 faste seksjoner (Hjem–Plan–Gjør–Analyse–Meg) + Workbench som ett trykkpunkt for alt planlegging, Analysere som samlet analyseflate. 
+> Direkte hurtighandlinger fra Hjem. 
+> AgencyOS: Flate primær-punkter for Planlegge og Kalender&Bookinger, sterk cockpit med "Ett klikk"-bar. Duplikate adresser og dype grupper redusert. Logisk sted å trykke = alltid hovedseksjonene eller synlige hurtigknapper. Se også .claude/rules/arkitektur.md.
+
 **Booking:** Acuity (`akgolfgroup.as.me`) er midlertidig booking frem til HQ-bookingen lanseres. Sett `BOOKING_ACTIVE=true` i Vercel for å aktivere den innebygde flyten.
 
 ---
@@ -347,7 +352,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Workspace-hub | `/admin/workspace` | ~ | --- | ✓ | ~ | ~ | ~ |
+| Workspace-hub | `/admin/workspace` | ~ | --- | ✓ | ~ | ✓ | ✓ | Real tasks via getTasksForUser (Notion fallback + cache) + scoped to coach. Data full. 
 | · Tildelt meg | `/admin/workspace/tildelt-meg` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Oppgaver | `/admin/workspace/oppgaver` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Oppgave-detalj | `/admin/workspace/oppgaver/[id]` | – | --- | ✓ | ~ | ~ | ~ |
@@ -390,7 +395,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Plan-sentral (hub) | `/admin/planlegge` | – | --- | ✓ | ~ | ~ | ~ |
+| Plan-sentral (hub) | `/admin/planlegge` | – | --- | ✓ | ~ | ✓ | ✓ | Real prisma lookup for first player + redirect to workbench. Full auth. 
 | Planer (alle) | `/admin/plans` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Ny plan (Plan-bygger) | `/admin/plans/new` | – | –✓– | ✓ | ~ | ✓ | ~ |
 | · Plan-detalj | `/admin/plans/[planId]` | – | --- | ✓ | ~ | ~ | ✓ |
@@ -731,6 +736,20 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 Full kronologisk byggehistorikk flyttet til [`docs/arkiv/master-skjermplan-endringslogg.md`](arkiv/master-skjermplan-endringslogg.md)
 2026-07-06 — denne fila var 822 linjer og loggen drukna den faktiske statustabellen. Siste hendelser:
+
+- 8. juli (opprydding Fase 4, bølge 1 — src/components → golfdata, branch `opprydding/token-konvergens`):
+  **Delte komponenter over på golfdata-kanon.** Nye porter fra det levende Claude Design-prosjektet
+  (DesignSync): `MaanedKalender` (varme + piller m/ DnD) og `FilterPills` → `golfdata/`.
+  Migrert: Kommando-kalenderen (`/kommando/kalender`) og gruppe-kalenderen (`/team-wang`) fra gamle
+  MonthGrid/WeekGrid til MaanedKalender (piller) + TidsGrid; StatusPill→Tag (spiller-panel),
+  RoleBadge/PeriodeTag→Tag-komposisjoner m/ aksefarge-tokens (team-kit), FilterPillBar→FilterPills
+  (drill-library/søkemodal). GAP MELDT (ikke improvisert, beholdt m/ disable): PulseDot/PresenceDot/
+  SeverityDot (DS mangler status-dot-primitiv), PyrDistBar (DS mangler aksefordelings-bar),
+  YearPlanGantt (DS Periodeplan er L-fase-låst — mangler AK-periode-årsgantt), VisningsVelger mangler
+  «år»-visning, Tag mangler warn-variant (fra Fase 3). Kommando-kalender verifisert visuelt (piller +
+  i dag + «+N flere» på ekte bookinger). NB: /team-wang 500-er pga. pre-eksisterende DB-drift
+  (group_schedules.maxParticipants mangler i DB) — flagget som egen oppgave, urelatert til bølgen.
+  tsc + eslint + hex-gate + build grønt, 342/342 tester, Playwright-diff mot Fase 0-baseline uendret.
 
 - 7. juli (GFGK treningsplanlegger, del 2 av firepart-samarbeidet): **Ny åpen GFGK Junior-side.**
   `/gfgk-junior` viser alle 4 GFGK-aldersgrupper (Mini/Basis/Utvikling/Elite) med fanevalg —
