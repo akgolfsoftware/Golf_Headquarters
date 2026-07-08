@@ -24,8 +24,7 @@ import { prisma } from "@/lib/prisma";
 import { hentFysScore } from "@/lib/fys-data";
 import { hentBelastning } from "@/lib/health/belastning";
 import { MeSub, SetGroup, SetRow, SetVal } from "@/components/portal/meg/meg-sub";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { KpiCard } from "@/components/athletic/kpi";
+import { KpiTile } from "@/components/athletic/golfdata";
 import { HelseForm } from "./helse-form";
 
 function formatDatoKort(d: Date): string {
@@ -103,23 +102,23 @@ export default async function HelsePage() {
     >
       <div className="mb-[22px] grid grid-cols-3 gap-3">
         {/* FYS-score: testbatteri → stall-relativ samlet form (Anders' formel 2026-06-22). */}
-        <KpiCard
+        <KpiTile
           label="FYS-score"
           value={fys.harTester && fys.score != null ? String(fys.score) : "—"}
-          trend={{
-            value: fys.harTester ? `${fys.antallTester}/5 tester` : "Ingen FYS-tester",
-            tone: "neutral",
-          }}
+          deltaSuffix={fys.harTester ? `${fys.antallTester}/5 tester` : "Ingen FYS-tester"}
+          size="md"
         />
-        <KpiCard
+        <KpiTile
           label="Hvilepuls"
           value={siste?.restingHr != null ? String(siste.restingHr) : "—"}
           unit={siste?.restingHr != null ? "bpm" : undefined}
+          size="md"
         />
-        <KpiCard
+        <KpiTile
           label="Søvn"
           value={siste?.sleepHours != null ? formatTimer(siste.sleepHours) : "—"}
           unit={siste?.sleepHours != null ? "t" : undefined}
+          size="md"
         />
       </div>
 

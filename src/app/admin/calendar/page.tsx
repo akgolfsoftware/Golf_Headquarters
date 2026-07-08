@@ -1,5 +1,5 @@
 import { permanentRedirect } from "next/navigation";
 
-export default function Page() {
+export default function CalendarRedirect() {
   permanentRedirect("/admin/kalender");
 }

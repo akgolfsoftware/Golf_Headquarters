@@ -10,8 +10,7 @@ import { ChevronLeft, Lightbulb } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getHoleDetail } from "@/lib/baneguide/queries";
 import { CourseMap } from "@/components/baneguide/course-map";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { KpiCard } from "@/components/athletic/kpi";
+import { KpiTile } from "@/components/athletic/golfdata";
 import type { ShotType } from "@/generated/prisma/client";
 
 export const dynamic = "force-dynamic";
@@ -101,10 +100,10 @@ export default async function HoleDetailPage({
       {stats ? (
         <>
           <div className="mt-4 grid grid-cols-2 gap-3">
-            <KpiCard label="σ side" value={fmt(stats.std.lateral)} unit="m" />
-            <KpiCard label="σ lengde" value={fmt(stats.std.distance)} unit="m" />
-            <KpiCard label="Bias" value={`${signed(stats.bias.lateral)}`} unit={`m ${stats.bias.side === "høyre" ? "H" : stats.bias.side === "venstre" ? "V" : ""}`.trim()} />
-            <KpiCard label="N slag" value={stats.n} />
+            <KpiTile label="σ side" value={fmt(stats.std.lateral)} unit="m" size="md" />
+            <KpiTile label="σ lengde" value={fmt(stats.std.distance)} unit="m" size="md" />
+            <KpiTile label="Bias" value={`${signed(stats.bias.lateral)}`} unit={`m ${stats.bias.side === "høyre" ? "H" : stats.bias.side === "venstre" ? "V" : ""}`.trim()} size="md" />
+            <KpiTile label="N slag" value={stats.n} size="md" />
           </div>
 
           {stats.bias.side !== "rett" && (
