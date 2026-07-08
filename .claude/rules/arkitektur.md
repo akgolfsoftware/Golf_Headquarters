@@ -1,7 +1,9 @@
 # Arkitektur — AK Golf HQ
 
 Flyttet fra CLAUDE.md 2026-06-14. Designkanon: `.claude/rules/design-system-regel.md`
-(v13/golfdata) — komponentanbefalingene under leses med den som fasit.
+— **v2-redesign pågår (9. juli 2026)**: golfdata/v13-referansene under beskriver
+OVERGANGS-LAGET, ikke målbildet. Komponentanbefalingene gjelder vedlikehold av
+eksisterende skjermer inntil v2-bølgene rekomponerer dem.
 
 ## Produkter (fire under samme tak)
 

@@ -30,13 +30,13 @@ dashboard-tallene + endringsloggen når du fullfører/endrer skjermer.
   plan/regel vises i klarspråk til brukeren; sterkt avvik varsler coach. Aldri skriv «kan ikke
   brytes»-kode eller -tekst — se `plans/skjermplan-master.md` prinsipp 3 for fasit.
 - **App-navn:** Coach-appen heter **AgencyOS** (`/admin`). «CoachHQ» er gammelt — ikke bruk i ny UI-tekst.
-- **Tema (oppdatert 2026-06-22):** PlayerHQ alltid **lyst**. AgencyOS har **lys/mørk-toggle** (sol/måne i topbar, cookie `ak-admin-theme`, standard mørk) — Anders vil ha AgencyOS i begge moduser. (Var: «AgencyOS alltid mørkt, ingen toggle» — opphevet.)
+- **Tema (OPPHEVET 2026-07-09, v2-redesign):** «PlayerHQ alltid lyst»-regelen er opphevet — tema-strategi per app avgjøres av Anders i v2-retningsvalget (fase 3, `~/.claude/plans/breezy-forging-brook.md`). Anders' referansebilder er overveiende mørke. Inntil valget: ikke håndhev lys/mørk som regel; eksisterende skjermer beholder dagens oppførsel.
 - **Navne-kanon (demo):** spiller = **Øyvind Rohjan**, coach = **Anders Kristiansen** — alltid fulle navn, gamle demo-navn skal bort. Unntak: ekte coach **«Markus Røinås Pedersen»** på markedssidene, ikke bytt ham ut.
 - **Planlegge → Workbench:** All planlegging går gjennom Workbench. Planlegge er **ett trykkpunkt** dit, ikke en meny av 6 kort. Samme i coachens spiller-Workbench.
 - **Analyse samlet:** Analysere + TrackMan + Runder + SG er én flate med faner — ikke separate moduler. Mål bor i Oversikt, redigeres i Workbench.
 - **Abonnement (ingen tier-nivåer):** PlayerHQ-tilgang er gratis eller 299 kr/mnd. **Gratis** hvis: 1 mnd prøveperiode, ELLER coaching-pakke (Performance / Performance Pro), ELLER gruppe via AK Golf. **299 kr/mnd** for alle andre. «Performance / Performance Pro» er **coaching-pakker** (antall økter), IKKE app-nivåer. **ELITE finnes ikke** (dødt Prisma-enum — vis aldri i UI).
 - **FYS-resultatformel avventer:** Bygg testskjermer med plassholder-tall. Ikke hardkod referanseverdier før Anders gir grønt lys.
-- **Design-kilde (LÅST, oppdatert 8. juli 2026):** det LEVENDE Claude Design-prosjektet («AK Golf HQ Design System», `claude.ai/design/p/bb9b2b1d-ce2b-4757-be37-ee2096ba9d0d`), hentet direkte via DesignSync — IKKE en frossen mappe i repoet. `public/design-handover/` er en STALE v13-snapshot fra tidlig juli og skal IKKE brukes som kilde lenger (venter på fersk v14-eksport-dump eller sletting). Skjermer KOMPONERES fra `src/components/athletic/golfdata/` per prosjektets `prompt.md`-kontrakter — se `.claude/rules/design-system-regel.md`. **Designdommer:** `.claude/skills/ak-designekspert` dømmer alt komponert mot verdensklasse (gap meldes, ikke improviseres).
+- **Design-kilde (oppdatert 9. juli 2026 — v2-REDESIGN PÅGÅR):** kanon-kilden er fortsatt det LEVENDE Claude Design-prosjektet («AK Golf HQ Design System», `claude.ai/design/p/bb9b2b1d-ce2b-4757-be37-ee2096ba9d0d`) via DesignSync — men målbildet er nå **v2-generasjonen** (`ui_kits/v2/` + `tokens/v2/`) som designes per `~/.claude/plans/breezy-forging-brook.md`. v13/golfdata (`src/components/athletic/golfdata/`) er OVERGANGS-LAG: vedlikehold OK, nye store flater venter på v2-retningsvalget. `public/design-handover/` er stale og skal ikke brukes. Full regel: `.claude/rules/design-system-regel.md`. **Designdommer:** `.claude/skills/ak-designekspert` (gap meldes, ikke improviseres).
 - **Skjermtekst (copy-kilde):** `docs/skjermtekst/` — ekte norsk UI-tekst per hovedskjerm + design-brief. Kopier derfra, ikke dikt opp ny tekst.
 - Aldri referer til `wireframe/`, gamle `design-package/` eller `design-files-v2/` i produksjonsfiler — disse er slettet fra prosjektet.
 
@@ -59,7 +59,7 @@ All UI-tekst på norsk bokmål med æ, ø, å. Kommentarer kan være engelsk ell
 2. **Implementer aldri uten godkjent plan.**
 3. **Pek på eksisterende mønstre** (AthleticCard, lib-helpere) — bygg ikke på nytt det som finnes.
 4. **Stopp og spør ved usikkerhet.** Aldri gjett.
-5. **Aldri lag nye token-filer eller wireframe-mapper.**
+5. **Aldri lag nye token-filer eller wireframe-mapper.** Unntak (2026-07-09): v2-redesignets tokens — `tokens/v2/` i designprosjektet og porten derfra til `src/styles/` — er godkjent av Anders.
 6. **Feil → `.claude/rules/gotchas.md`.**
 
 ## Git-arbeidsflyt — Claude Code håndterer dette
