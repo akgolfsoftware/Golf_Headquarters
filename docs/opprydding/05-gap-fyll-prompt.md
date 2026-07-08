@@ -79,7 +79,17 @@ ikke L-fase-enumen. Gantt-visualen er allerede riktig — bare navnemodellen lå
 - Dette lukker de midlertidige `outline`+inline-warning-style-workaroundene i appen
   (plan-status «venter», okt-status «om 2 timer», team-billing-rolle).
 
-### 6 — VALGFRI: `SegmentedTabs` — count-badge per fane
+### 6 — FIKS: `.d.ts`-kontrakter som kolliderer med native HTML-attributter
+
+`Card.d.ts` (og `SegmentedTabs.d.ts`) gjør `interface Props extends React.HTMLAttributes<…>`
+og redefinerer samtidig et native attributt med uforenlig type — `Card.title` som
+`React.ReactNode` (native `title` er `string`), `SegmentedTabs.onChange` med egen signatur.
+Det gir TS-feil så snart en konsument sender en ReactNode-tittel til `Card`. Fiks:
+`interface CardProps extends Omit<React.HTMLAttributes<HTMLElement>, "title">` (og
+tilsvarende `Omit<…, "onChange">` for SegmentedTabs). Gjelder ethvert DS-.d.ts med samme
+mønster — gjør en rask sveip. (Var registrert som lokal port-bug #7; bekreftet i DS-kilden.)
+
+### 7 — VALGFRI: `SegmentedTabs` — count-badge per fane
 
 Gamle TabBar viste antall per fane («Drills · 12»). Nå løst med antall i tekst
 («Drills (12)»). Hvis du vil ha det renere: la `options`-objektet godta `count?: number`

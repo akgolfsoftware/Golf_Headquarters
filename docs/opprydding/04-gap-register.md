@@ -31,7 +31,7 @@ NivaStige og Stepper er nå portet til golfdata/). Tre observasjoner til protoko
 | # | Observasjon | Vurdering | Status |
 |---|---|---|---|
 | 6 | Plan-mappingen «JourneyMap→KategoriStige» passer ikke semantisk: JourneyMap er en 5-stegs reise-strip (Klubb→Tour), KategoriStige er A–K-tabellen med TidsPyramide-avhengighet og full kategoridata siden ikke har. Brukte DS `Stepper` (semantisk riktig, portet). KategoriStige hører til når ekte A–K-data kobles post-BETA. | AVVIK FRA PLAN, dokumentert | LUKKET |
-| 7 | `Card.title`-typen i lokal port kolliderer med HTML-attributtet `title` (string) — ReactNode-titler avvises av TS. Bør fikses i porten (Omit<"title"> fra HTMLAttributes). | PORT-BUG (lokal, ikke DS) | ÅPEN |
+| 7 | `Card.title`-typen kolliderer med HTML-attributtet `title` (string) — ReactNode-titler avvises av TS. **Bekreftet i DS-kilden** (`Card.d.ts` arver HTMLAttributes + redefinerer title), ikke bare lokal port. Løftet til DS-gap #6 i gap-fyll-prompten (Omit<"title">-sveip). | DS-KONTRAKT-BUG | I-DS-PROMPT |
 | 8 | `src/lib/portal-hjem/hjem-data.ts` er død kode (null konsumenter) med gammel-athletic-typeimport — kandidat for sletting i Fase 5, blokkerer ellers slettingen av gamle `pyramid-progress`. | DØD KODE | ÅPEN |
 
 ## Bølge 3 — /admin
