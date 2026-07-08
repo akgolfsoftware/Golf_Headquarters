@@ -89,9 +89,8 @@ const nextConfig: NextConfig = {
       { source: "/portal/tren/kalender", destination: "/portal/gjennomfore?tab=kalender", permanent: true },
       { source: "/portal/tren/kalender/:path*", destination: "/portal/gjennomfore?tab=kalender", permanent: true },
       { source: "/portal/tren", destination: "/portal/planlegge/workbench?tab=uke", permanent: true },
-      // /portal/talent er nå egen hub (Del 32 — Manglende hubs hand-off 2026-05-24)
-      // Underruter beholdes for talent-detalj-flow
-      { source: "/portal/talent/:path*", destination: "/portal/talent/:path*", permanent: false },
+      // /portal/talent: egen hub med ekte side (src/app/portal/talent/page.tsx) —
+      // self-redirect fjernet 2026-07-08 (ga ERR_TOO_MANY_REDIRECTS).
       { source: "/portal/trackman", destination: "/portal/analysere?tab=trackman", permanent: true },
       { source: "/portal/trackman/:path*", destination: "/portal/analysere?tab=trackman", permanent: true },
       // /portal/booking: dedikert booking-hub m/ credits (redesign 2026-06-01) — loop-redirect fjernet.
