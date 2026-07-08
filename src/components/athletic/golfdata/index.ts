@@ -56,6 +56,9 @@ export { Tag, CountBadge, type TagProps, type TagVariant, type TagSize, type Cou
 export { Avatar, AvatarGroup, type AvatarProps, type AvatarGroupProps, type AvatarSize } from "./Avatar";
 export { FilterPills, type FilterPillsProps, type FilterItem } from "./FilterPills";
 export { MaanedKalender, type MaanedKalenderProps, type MaanedDag, type MaanedOkt, type MaanedAkse, type MaanedFlytt } from "./MaanedKalender";
+export { PercentileBar, type PercentileBarProps } from "./PercentileBar";
+export { NivaStige, type NivaStigeProps } from "./NivaStige";
+export { Stepper, type StepperProps, type StepItem } from "./Stepper";
 export { OektKort, type OektKortProps, type OektAxis, type OektState } from "./OektKort";
 export { AKFormelChip, type AKFormelChipProps } from "./AKFormelChip";
 export { LiveStatus, type LiveStatusProps } from "./LiveStatus";

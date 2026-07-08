@@ -4,11 +4,10 @@
  * Fasit: [historisk fasit, fjernet 2026-07-03] prosjektgjennomgang-2026-06-17/.../PlayerHQ Talent (hybrid).dc.html
  */
 
-import type { ReactElement } from "react";
-import { Check, Lock, Star } from "lucide-react";
+import { Star } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { Eyebrow } from "@/components/athletic/golfdata";
+import { Card, Eyebrow, Heatmap, NivaStige, PercentileBar, Progress, RingGauge, Stepper, Tag } from "@/components/athletic/golfdata";
 import { computeStreak, aktivStreak } from "@/lib/streak";
 
 export const dynamic = "force-dynamic";
@@ -33,8 +32,6 @@ const LEVEL_LADDER = [
   { code: "E", label: "74–77 · Regional", state: "passed" as const },
 ] as const;
 
-type LadderState = "future" | "next" | "here" | "passed";
-
 // Map niva field to a badge label
 function nivaLabel(niva: string): string {
   const map: Record<string, string> = {
@@ -51,89 +48,9 @@ function nivaLabel(niva: string): string {
 // ---------------------------------------------------------------------------
 // SVG Mastery Ring
 // ---------------------------------------------------------------------------
-function MasteryRing({
-  label,
-  pct,
-  level,
-}: {
-  label: string;
-  pct: number;
-  level: number;
-}) {
-  const C = 188; // circumference ≈ 2π×30
-  const offset = C * (1 - pct / 100);
-  return (
-    <div className="flex flex-col items-center gap-2 rounded-xl border border-border bg-card p-3 text-center">
-      <svg viewBox="0 0 72 72" className="block h-[72px] w-[72px]">
-        {/* track */}
-        <circle
-          cx="36"
-          cy="36"
-          r="30"
-          fill="none"
-          stroke="var(--color-secondary)"
-          strokeWidth="10"
-        />
-        {/* fill */}
-        <circle
-          cx="36"
-          cy="36"
-          r="30"
-          fill="none"
-          stroke="var(--color-primary)"
-          strokeWidth="10"
-          strokeLinecap="round"
-          strokeDasharray={C}
-          strokeDashoffset={offset}
-          style={{
-            transformOrigin: "center",
-            transform: "rotate(-90deg)",
-          }}
-        />
-        <text
-          x="36"
-          y="32"
-          textAnchor="middle"
-          fontFamily="var(--font-jetbrains-mono, monospace)"
-          fontSize="7"
-          fill="var(--color-muted-foreground)"
-        >
-          NV {level}
-        </text>
-        <text
-          x="36"
-          y="44"
-          textAnchor="middle"
-          fontFamily="var(--font-jetbrains-mono, monospace)"
-          fontSize="14"
-          fontWeight="600"
-          fill="var(--color-foreground)"
-        >
-          {pct}%
-        </text>
-      </svg>
-      <span className="text-[11px] font-semibold text-foreground">{label}</span>
-    </div>
-  );
-}
-
 // ---------------------------------------------------------------------------
 // Journey dot icon
 // ---------------------------------------------------------------------------
-function JourneyIcon({ state }: { state: StageState }) {
-  if (state === "done" || state === "passed") {
-    return <Check size={14} strokeWidth={2.5} />;
-  }
-  if (state === "now") {
-    return (
-      <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden>
-        <circle cx="12" cy="12" r="4" fill="currentColor" />
-      </svg>
-    );
-  }
-  return <Lock size={12} strokeWidth={2} />;
-}
-
 // ---------------------------------------------------------------------------
 // Page
 // ---------------------------------------------------------------------------
@@ -244,15 +161,7 @@ export default async function TalentPage() {
             : "locked",
     }));
 
-  // Journey progress bar width
-  const journeyPct =
-    JOURNEY_STAGES.length > 1
-      ? (currentJourneyIdx / (JOURNEY_STAGES.length - 1)) * 100
-      : 0;
 
-  // Gauge needle angle: -90 (left) to +90 (right) = 0% to 100%
-  const gaugeAngle =
-    sgPercentile != null ? -90 + (sgPercentile / 100) * 180 : -90;
 
   // ---------------------------------------------------------------------------
   // Render
@@ -269,64 +178,28 @@ export default async function TalentPage() {
           <em className="italic font-medium text-primary">utviklingsvei</em>
         </h1>
         {/* Level badge */}
-        <div className="mt-2.5 inline-flex items-center gap-2 rounded-full bg-primary px-3.5 py-1.5">
-          <span className="font-mono text-[11px] font-bold uppercase tracking-[0.04em] text-accent">
-            NIVÅ {niva}
-          </span>
-          <span className="h-3 w-px bg-primary-foreground/20" />
-          <span className="text-[11.5px] text-primary-foreground/80">{nivaLabel(niva)}</span>
+        <div className="mt-2.5 flex items-center gap-2">
+          <Tag variant="signal">NIVÅ {niva}</Tag>
+          <span className="text-[11.5px] text-muted-foreground">{nivaLabel(niva)}</span>
         </div>
       </header>
 
-      {/* JourneyMap */}
-      <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
-        <h2 className="font-display text-[15px] font-bold tracking-[-0.02em] text-foreground">
-          Journey<em className="italic font-medium text-primary">Map</em>
-        </h2>
-        <div className="mt-3 overflow-x-auto pb-1">
-          <div className="relative flex min-w-[280px] items-center">
-            {/* connector line */}
-            <div className="absolute inset-x-[5%] top-[17px] z-0 h-0.5 bg-border">
-              <div
-                className="absolute inset-y-0 left-0 rounded-sm bg-primary transition-all duration-1000"
-                style={{ width: `${journeyPct}%` }}
-              />
-            </div>
-            {journeyStages.map((stage) => (
-              <div
-                key={stage.key}
-                className="relative z-10 flex flex-1 flex-col items-center gap-1.5"
-              >
-                {/* dot */}
-                <div
-                  className={[
-                    "flex h-[34px] w-[34px] items-center justify-center rounded-full border-2",
-                    stage.state === "done" || stage.state === "passed"
-                      ? "border-primary bg-primary text-accent"
-                      : stage.state === "now"
-                        ? "border-accent bg-card text-primary shadow-[0_0_0_3px_hsl(var(--accent)/0.25)]"
-                        : "border-border bg-card text-muted-foreground",
-                  ].join(" ")}
-                >
-                  <JourneyIcon state={stage.state} />
-                </div>
-                <span className="font-mono text-[8px] uppercase tracking-[0.03em] text-muted-foreground">
-                  {stage.label}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      {/* JourneyMap — golfdata Stepper (klubb → tour) */}
+      <Card eyebrow="Reisen" title="JourneyMap" compact>
+        <Stepper steps={journeyStages.map((st) => st.label)} current={currentJourneyIdx} />
+      </Card>
 
-      {/* MasteryRings */}
+      {/* MasteryRings — golfdata RingGauge */}
       <div>
         <h2 className="mb-3 font-display text-[15px] font-bold tracking-[-0.02em] text-foreground">
           Mastery<em className="italic font-medium text-primary">Rings</em>
         </h2>
         <div className="grid grid-cols-3 gap-2.5">
           {rings.map((r) => (
-            <MasteryRing key={r.label} {...r} />
+            <Card key={r.label} compact bodyStyle={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+              <RingGauge value={r.pct} min={0} max={100} size={72} label={`NV ${r.level}`} unit="%" decimals={0} />
+              <span className="text-[11px] font-semibold text-foreground">{r.label}</span>
+            </Card>
           ))}
         </div>
       </div>
@@ -359,18 +232,7 @@ export default async function TalentPage() {
                         : `${pct}%`}
                     </span>
                   </div>
-                  <div className="relative h-2 overflow-hidden rounded-full bg-secondary">
-                    <div
-                      className="absolute inset-y-0 left-0 rounded-full"
-                      style={{
-                        width: `${pct}%`,
-                        // #8EBF00 (olje-lime) matcher ingen eksisterende token — trenger
-                        // en beslutning fra Anders før dette kan tokeniseres.
-                        background:
-                          "linear-gradient(90deg, var(--color-primary), #8EBF00)",
-                      }}
-                    />
-                  </div>
+                  <Progress variant="bar" value={pct} max={100} />
                 </div>
               );
             })}
@@ -391,167 +253,36 @@ export default async function TalentPage() {
           <div className="mb-2.5 text-[11px] text-muted-foreground">
             dager på rad
           </div>
-          {/* 14-day streak cells */}
-          <div className="flex flex-wrap gap-[3px]">
-            {streak14.map((on, i) => {
-              const isToday = i === streak14.length - 1;
-              const dayLabels = ["M", "T", "O", "T", "F", "L", "S"];
-              const dayLabel = dayLabels[i % 7];
-              return (
-                <div
-                  key={i}
-                  className={[
-                    "flex h-[28px] w-[28px] items-center justify-center rounded-[5px] font-mono text-[8px]",
-                    on
-                      ? "border-primary bg-primary font-bold text-accent"
-                      : "border border-border text-muted-foreground",
-                    isToday ? "ring-2 ring-accent ring-offset-1" : "",
-                  ].join(" ")}
-                >
-                  {dayLabel}
-                </div>
-              );
-            })}
-          </div>
+          {/* 14-dagers streak som golfdata Heatmap (2 uker × 7 dager) */}
+          <Heatmap
+            rows={["Uke 1", "Uke 2"]}
+            cols={["M", "T", "O", "T", "F", "L", "S"]}
+            values={[streak14.slice(0, 7).map((on) => (on ? 1 : 0)), streak14.slice(7).map((on) => (on ? 1 : 0))]}
+            cell={22}
+          />
         </div>
 
-        {/* Percentile Gauge */}
+        {/* Percentile — golfdata PercentileBar */}
         <div className="rounded-xl border border-border bg-card p-3.5 shadow-sm">
-          <h2 className="font-display text-[13px] font-bold tracking-[-0.02em] text-foreground">
-            Percentile
-            <em className="italic font-medium text-primary">Gauge</em>
+          <h2 className="mb-3 font-display text-[13px] font-bold tracking-[-0.02em] text-foreground">
+            Percentile<em className="italic font-medium text-primary">Bar</em>
           </h2>
-          {/* Half-donut SVG gauge */}
-          <svg viewBox="0 0 200 120" className="mt-1 block w-full">
-            {/* Colored arc segments */}
-            {(() => {
-              const cx = 100;
-              const cy = 95;
-              const R = 72;
-              const segments: ReactElement[] = [];
-              for (let i = 0; i < 40; i++) {
-                const p0 = i / 40;
-                const p1 = (i + 1) / 40;
-                const a0 = Math.PI - p0 * Math.PI;
-                const a1 = Math.PI - p1 * Math.PI;
-                const x0 = (cx + Math.cos(a0) * R).toFixed(1);
-                const y0 = (cy - Math.sin(a0) * R).toFixed(1);
-                const x1 = (cx + Math.cos(a1) * R).toFixed(1);
-                const y1 = (cy - Math.sin(a1) * R).toFixed(1);
-                const color =
-                  p0 < 0.5
-                    ? "var(--color-destructive)"
-                    : p0 < 0.7
-                      ? "var(--color-warning)"
-                      : p0 < 0.85
-                        ? "var(--color-primary)"
-                        : "var(--color-accent)";
-                segments.push(
-                  <path
-                    key={i}
-                    d={`M${x0} ${y0} A${R} ${R} 0 0 1 ${x1} ${y1}`}
-                    stroke={color}
-                    strokeWidth="11"
-                    fill="none"
-                    opacity="0.9"
-                  />
-                );
-              }
-              return segments;
-            })()}
-            {/* Needle */}
-            <g
-              style={{
-                transform: `rotate(${gaugeAngle}deg)`,
-                transformOrigin: "100px 95px",
-              }}
-            >
-              <line
-                x1="100"
-                y1="95"
-                x2="100"
-                y2="33"
-                stroke="var(--color-foreground)"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-              />
-              <circle
-                cx="100"
-                cy="95"
-                r="5"
-                fill="var(--color-foreground)"
-              />
-              <circle cx="100" cy="95" r="2" fill="var(--color-accent)" />
-            </g>
-          </svg>
-          <div className="mt-[-4px] text-center">
-            <div className="font-mono text-[18px] font-bold text-primary">
-              {sgPercentile != null ? `topp ${100 - sgPercentile}%` : "—"}
-            </div>
-            <div className="font-mono text-[8.5px] uppercase tracking-[0.06em] text-muted-foreground">
-              SG total
-            </div>
-          </div>
+          <PercentileBar
+            percentile={sgPercentile ?? 50}
+            label="SG total"
+            valueLabel={sgPercentile != null ? `topp ${100 - sgPercentile} %` : "—"}
+          />
         </div>
       </div>
 
-      {/* LevelLadder */}
-      <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
-        <h2 className="mb-3 font-display text-[15px] font-bold tracking-[-0.02em] text-foreground">
-          Level<em className="italic font-medium text-primary">Ladder</em>
-        </h2>
-        <div className="flex flex-col-reverse gap-[3px]">
-          {LEVEL_LADDER.map((step) => {
-            const s = step.state as LadderState;
-            return (
-              <div
-                key={step.code}
-                className={[
-                  "grid items-center gap-2 rounded-sm px-2.5 py-[7px]",
-                  s === "here"
-                    ? "bg-primary"
-                    : s === "next"
-                      ? "border border-dashed border-accent/60"
-                      : "border border-transparent",
-                ].join(" ")}
-                style={{ gridTemplateColumns: "28px 1fr auto" }}
-              >
-                <span
-                  className={[
-                    "text-center font-mono text-[14px] font-bold",
-                    s === "here"
-                      ? "text-accent"
-                      : s === "passed"
-                        ? "text-primary"
-                        : "text-muted-foreground",
-                  ].join(" ")}
-                >
-                  {step.code}
-                </span>
-                <span
-                  className={[
-                    "text-[11.5px]",
-                    s === "here" ? "text-accent" : "text-muted-foreground",
-                  ].join(" ")}
-                >
-                  {step.label}
-                </span>
-                {s === "here" ? (
-                  <span className="rounded-[3px] bg-accent px-1.5 py-0.5 font-mono text-[8px] font-bold text-primary">
-                    Du er her
-                  </span>
-                ) : s === "next" ? (
-                  <span className="font-mono text-[8px] text-primary">
-                    Neste
-                  </span>
-                ) : (
-                  <span />
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </div>
+      {/* LevelLadder — golfdata NivaStige */}
+      <NivaStige
+        nivaa={LEVEL_LADDER.find((l) => l.state === "here")?.code ?? "—"}
+        etikett={LEVEL_LADDER.find((l) => l.state === "here")?.label}
+        steg={LEVEL_LADDER.length}
+        fylte={LEVEL_LADDER.filter((l) => l.state === "passed").length + 1}
+        nesteEtikett={(() => { const n = LEVEL_LADDER.find((l) => l.state === "next"); return n ? `${n.code} · ${n.label}` : undefined; })()}
+      />
 
       {/* Pre-BETA banner */}
       <div className="rounded-md border border-warning/40 bg-warning/10 px-4 py-2 text-center">

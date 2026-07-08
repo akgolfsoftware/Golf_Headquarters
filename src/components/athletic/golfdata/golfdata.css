@@ -986,3 +986,78 @@ button.ak-akchip:focus-visible{outline:none;box-shadow:var(--glow-signal);}
   border-radius:6px;background:var(--surface-2);border:1px solid var(--border-strong);
   box-shadow:0 10px 28px rgba(0,0,0,0.35);
 }
+
+/* ---- PercentileBar (data/PercentileBar.jsx, DesignSync 2026-07-08) ---- */
+.ak-pctbar{display:flex;flex-direction:column;gap:8px;width:100%;}
+.ak-pctbar__head{display:flex;align-items:baseline;justify-content:space-between;}
+.ak-pctbar__label{font-family:var(--font-mono);font-size:11px;font-weight:600;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);}
+.ak-pctbar__value{font-family:var(--font-mono);font-weight:700;font-size:var(--text-16);
+  color:var(--text);font-variant-numeric:tabular-nums;}
+.ak-pctbar__track{position:relative;height:8px;border-radius:9999px;overflow:visible;
+  background:linear-gradient(90deg,
+    color-mix(in srgb, var(--signal) 12%, var(--track)) 0%,
+    color-mix(in srgb, var(--signal) 12%, var(--track)) 25%,
+    var(--track) 25%, var(--track) 75%,
+    color-mix(in srgb, var(--signal) 12%, var(--track)) 75%,
+    color-mix(in srgb, var(--signal) 12%, var(--track)) 100%);
+}
+.ak-pctbar__marker{
+  position:absolute;top:50%;width:16px;height:16px;border-radius:9999px;
+  background:var(--signal);border:2px solid var(--bg);
+  transform:translate(-50%,-50%);
+  transition:left 900ms var(--ease-standard);
+  box-shadow:0 0 0 1px color-mix(in srgb, var(--signal) 40%, transparent);
+}
+.ak-pctbar__bench{
+  position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--text-muted);
+  border-radius:1px;transition:left 900ms var(--ease-standard);
+}
+.ak-pctbar__foot{display:flex;justify-content:space-between;
+  font-family:var(--font-mono);font-size:9px;color:var(--text-faint);}
+
+/* ---- NivaStige (domain/NivaStige.jsx, DesignSync 2026-07-08) ---- */
+.ak-stige{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-card);padding:16px 18px;display:flex;flex-direction:column;gap:12px;}
+.ak-stige__head{display:flex;align-items:center;gap:12px;}
+.ak-stige__badge{width:40px;height:40px;flex:none;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-weight:700;font-size:17px;color:var(--on-signal);background:var(--signal);}
+.ak-stige__dots{display:flex;gap:6px;align-items:center;}
+.ak-stige__dot{width:10px;height:10px;border-radius:9999px;flex:none;background:var(--surface-2);border:1px solid var(--border);}
+.ak-stige__dot--on{background:var(--signal);border-color:var(--signal);}
+.ak-stige__dot--half{background:linear-gradient(90deg,var(--signal) 50%,var(--surface-2) 50%);border-color:var(--signal);}
+.ak-stige__meta{font-family:var(--font-mono);font-size:var(--text-11);color:var(--text-muted);}
+
+/* ---- Stepper (structure/Stepper.jsx, DesignSync 2026-07-08) ---- */
+.ak-stepper{display:flex;align-items:flex-start;}
+.ak-step{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;gap:6px;position:relative;
+}
+.ak-step:not(:last-child)::after{
+  content:'';position:absolute;
+  top:14px;left:calc(50% + 16px);
+  right:calc(-50% + 16px);
+  height:1px;background:var(--border);
+  transition:background var(--dur-base) var(--ease-standard);
+}
+.ak-step--done:not(:last-child)::after{background:var(--signal);}
+.ak-step__circle{
+  width:28px;height:28px;border-radius:9999px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;z-index:1;
+  border:1.5px solid var(--border-strong);background:var(--bg);
+  font-family:var(--font-mono);font-size:11px;font-weight:700;
+  color:var(--text-muted);
+  transition:border-color var(--dur-fast) var(--ease-standard),background var(--dur-fast) var(--ease-standard),color var(--dur-fast) var(--ease-standard);
+}
+.ak-step--active .ak-step__circle{
+  border-color:var(--signal);color:var(--text);background:var(--surface-2);
+}
+.ak-step--done .ak-step__circle{
+  border-color:var(--signal);background:var(--signal);color:var(--on-signal);
+}
+.ak-step__lbl{
+  font-size:var(--text-12);font-weight:500;color:var(--text-muted);
+  text-align:center;line-height:1.3;
+}
+.ak-step--active .ak-step__lbl{color:var(--text);}
+.ak-step--done .ak-step__lbl{color:var(--text-2);}

@@ -300,7 +300,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Talent-hub | `/portal/talent` | – | --- | ✓ | ~ | ~ | ~ |
+| Talent-hub | `/portal/talent` | ~ | --- | ✓ | ~ | ~ | ~ |
 | · Min plan | `/portal/talent/min-plan` | – | --- | ✓ | ~ | ~ | ~ |
 | · Mitt nivå | `/portal/talent/mitt-niva` | – | --- | ✓ | ~ | ~ | ~ |
 | · Roadmap | `/portal/talent/roadmap` | – | --- | ✓ | ~ | ~ | ~ |
@@ -738,6 +738,18 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 Full kronologisk byggehistorikk flyttet til [`docs/arkiv/master-skjermplan-endringslogg.md`](arkiv/master-skjermplan-endringslogg.md)
 2026-07-06 — denne fila var 822 linjer og loggen drukna den faktiske statustabellen. Siste hendelser:
+
+- 8. juli (opprydding Fase 4, bølge 2 — /portal, branch `opprydding/token-konvergens`):
+  **/portal er tom for gammel-athletic-importer.** Nye porter fra Claude Design-prosjektet
+  (DesignSync): `PercentileBar`, `NivaStige`, `Stepper` → golfdata/. Talent-hub rekomponert
+  fra håndrullet SVG til golfdata: MasteryRing→RingGauge, PercentileGauge→PercentileBar,
+  StreakTracker→Heatmap, LevelLadder→NivaStige, JourneyMap→Stepper (plan sa KategoriStige —
+  semantisk feil mapping, dokumentert i gap-registeret #6), GoalProgress-gradient (utokenisert
+  #8EBF00) → golfdata Progress. 404/500-sidene rekomponert fra AthleticHero til Eyebrow +
+  display-h1 + golfdata Button. KpiCard→KpiTile (baneguide hull-detalj + meg/helse).
+  Design-hake /portal/talent – → ~. Gap-register bølge 2: ingen nye komponent-gap, 3
+  observasjoner (#6–8). Visuelt verifisert med TALENT-flagg + seedet testdata (screentest).
+  tsc + eslint + hex-gate (2 filer forbedret, baseline låst) + build grønt, 342/342 tester.
 
 - 8. juli (opprydding Fase 4, bølge 1 — src/components → golfdata, branch `opprydding/token-konvergens`):
   **Delte komponenter over på golfdata-kanon.** Nye porter fra det levende Claude Design-prosjektet
