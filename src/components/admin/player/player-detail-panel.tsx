@@ -11,9 +11,8 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { PresenceDot, type PresenceState } from "@/components/athletic/presence-dot";
-import { Tag, type TagVariant } from "@/components/athletic/golfdata";
+
+import { Tag, type TagVariant, StatusDot } from "@/components/athletic/golfdata";
 
 /** Panelets status-vokabular (uendret for kallere) — oversettes til Tag-varianter. */
 export type StatusTone = "active" | "behind" | "inactive" | "guide" | "alert" | "warn";
@@ -40,6 +39,11 @@ const AXES = [
 ] as const;
 
 type AxisKey = (typeof AXES)[number]["key"];
+
+type PresenceState = "online" | "away" | "busy" | "offline";
+const PRESENCE_TONE: Record<PresenceState, "online" | "warning" | "busy" | "idle"> = {
+  online: "online", away: "warning", busy: "busy", offline: "idle",
+};
 
 export type PlayerDetail = {
   initials: string;
@@ -82,7 +86,7 @@ export function PlayerDetailPanel({
         <div className="flex items-start gap-3 px-5 py-4">
           <span className={cn("relative inline-flex h-12 w-12 items-center justify-center rounded-full font-display text-base font-bold", player.avatarClass ?? "bg-secondary text-foreground")}>
             {player.initials}
-            <PresenceDot state={player.presence} overlay ringClassName="ring-card" />
+            <StatusDot tone={PRESENCE_TONE[player.presence]} overlay label={`Status: ${player.presence}`} />
           </span>
           <div className="min-w-0 flex-1">
             <div className="font-display text-lg font-bold leading-tight tracking-[-0.015em] text-foreground">{player.name}</div>

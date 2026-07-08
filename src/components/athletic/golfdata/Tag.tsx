@@ -5,11 +5,11 @@ import type React from "react";
  * Mono-caps status pill (AKTIV / FERDIG / PÅ VEI), category mark (A–K),
  * lime signal tag, neutral and outline. CountBadge is the small counter.
  * Radius 8 (var(--radius-tag)).
- * Portet 1:1 fra public/design-handover/components/core/Tag.jsx.
+ * Portet 1:1 fra Claude Design components/core/Tag.jsx (warn-variant lagt til via DesignSync 2026-07-08).
  * CSS: ./golfdata.css (.ak-tag, .ak-badge).
  */
 
-export type TagVariant = "neutral" | "outline" | "signal" | "up" | "down" | "live";
+export type TagVariant = "neutral" | "outline" | "signal" | "up" | "down" | "warn" | "live";
 export type TagSize = "sm" | "md";
 
 const VARIANTS: Record<TagVariant, React.CSSProperties> = {
@@ -18,6 +18,7 @@ const VARIANTS: Record<TagVariant, React.CSSProperties> = {
   signal: { background: "var(--signal)", color: "var(--on-signal)", borderColor: "transparent" },
   up: { background: "color-mix(in srgb, var(--up) 15%, transparent)", color: "var(--up)", borderColor: "transparent" },
   down: { background: "color-mix(in srgb, var(--down) 16%, transparent)", color: "var(--down)", borderColor: "transparent" },
+  warn: { background: "color-mix(in srgb, var(--warning) 16%, transparent)", color: "var(--warning)", borderColor: "transparent" },
   live: { background: "color-mix(in srgb, var(--up) 14%, transparent)", color: "var(--up)", borderColor: "transparent" },
 };
 

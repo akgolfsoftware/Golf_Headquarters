@@ -105,12 +105,8 @@ export default async function OktDetaljPage({
     .join("");
 
   // Tag mangler warn-variant (DS-gap meldt) — outline + warning-tokens til DS får en.
-  const statusBadgeVariant: "outline" | "live" | "neutral" =
-    status === "OM 2 TIMER" ? "outline" : status === "AKTIV NÅ" ? "live" : "neutral";
-  const statusBadgeStyle =
-    status === "OM 2 TIMER"
-      ? { color: "var(--warning)", borderColor: "var(--warning-border)" }
-      : undefined;
+  const statusBadgeVariant: "warn" | "live" | "neutral" =
+    status === "OM 2 TIMER" ? "warn" : status === "AKTIV NÅ" ? "live" : "neutral";
 
   // Spiller-meta fra ekte kilder (dateOfBirth + WagrSnapshot). «—» når mangler.
   const alder = calculateAge(spiller.dateOfBirth);
@@ -152,7 +148,7 @@ export default async function OktDetaljPage({
         title={heroTitle}
         subtitle={`${dateLabel} · ${startTime}–${endTime} · ${facility?.name ?? "Studio"} · ${durationMin} min · TrackMan Bridge`}
         statusPill={
-          <Tag variant={statusBadgeVariant} style={statusBadgeStyle}>{status}</Tag>
+          <Tag variant={statusBadgeVariant}>{status}</Tag>
         }
         actions={
           <div className="hidden flex-wrap gap-2 md:flex">

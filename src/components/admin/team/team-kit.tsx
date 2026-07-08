@@ -2,21 +2,25 @@
 
 import { MoreHorizontal, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { PresenceDot, type PresenceState } from "@/components/athletic/presence-dot";
-import { Tag } from "@/components/athletic/golfdata";
+
+import { Tag, StatusDot, AkseFordelingsBar, type AkseFordeling } from "@/components/athletic/golfdata";
 
 /* CBAC-roller og AK-perioder som golfdata Tag-komposisjoner (aksefarger via tokens). */
 export type CoachRole = "EIER" | "HEAD_COACH" | "COACH" | "FYS" | "ASSISTENT" | "BILLING";
 export type PeriodeKind = "GRUNN" | "SPES" | "TURN" | "SKADE" | "TEST";
 
-const ROLLE_META: Record<CoachRole, { label: string; variant: "signal" | "neutral" | "outline" | "up"; stil?: React.CSSProperties }> = {
+type PresenceState = "online" | "away" | "busy" | "offline";
+const PRESENCE_TONE: Record<PresenceState, "online" | "warning" | "busy" | "idle"> = {
+  online: "online", away: "warning", busy: "busy", offline: "idle",
+};
+
+const ROLLE_META: Record<CoachRole, { label: string; variant: "signal" | "neutral" | "outline" | "up" | "warn"; stil?: React.CSSProperties }> = {
   EIER: { label: "Eier", variant: "signal" },
   HEAD_COACH: { label: "Head coach", variant: "outline" },
   COACH: { label: "Coach", variant: "neutral" },
   FYS: { label: "Fys", variant: "neutral", stil: { background: "var(--axis-fys-soft)", color: "var(--axis-fys-text)" } },
   ASSISTENT: { label: "Assistent", variant: "neutral" },
-  BILLING: { label: "Billing", variant: "outline", stil: { color: "var(--warning)", borderColor: "var(--warning-border)" } },
+  BILLING: { label: "Billing", variant: "warn" },
 };
 
 function RolleTag({ role }: { role: CoachRole }) {
@@ -36,8 +40,7 @@ function PeriodePill({ kind }: { kind: PeriodeKind }) {
   const m = PERIODE_META[kind];
   return <Tag size="sm" variant="neutral" style={m.stil}>{m.label}</Tag>;
 }
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { PyrDistBar, type PyrDist } from "@/components/athletic/data/pyr-dist-bar";
+
 
 /* ── Team-roster ───────────────────────────────────────────────────────── */
 
@@ -68,7 +71,7 @@ export function TeamRosterList({
         <div key={m.id} className="grid grid-cols-[40px_1fr_auto_auto] items-center gap-4 px-4 py-3">
           <span className={cn("relative inline-flex h-10 w-10 items-center justify-center rounded-full font-display text-xs font-bold", m.avatarClass ?? "bg-secondary text-foreground")}>
             {m.initials}
-            <PresenceDot state={m.presence} overlay ringClassName="ring-card" />
+            <StatusDot tone={PRESENCE_TONE[m.presence]} overlay label={`Status: ${m.presence}`} />
           </span>
           <div className="min-w-0">
             <div className="flex items-center gap-2">
@@ -104,7 +107,7 @@ export type PlanMal = {
   id: string;
   name: string;
   periode: PeriodeKind;
-  dist: PyrDist;
+  dist: AkseFordeling;
   stats: string;
 };
 
@@ -122,7 +125,7 @@ export function PlanMalCard({ mal, onClick, className }: { mal: PlanMal; onClick
         <span className="font-display text-sm font-bold leading-tight tracking-[-0.01em] text-foreground">{mal.name}</span>
         <PeriodePill kind={mal.periode} />
       </div>
-      <PyrDistBar dist={mal.dist} />
+      <AkseFordelingsBar dist={mal.dist} />
       <span className="font-mono text-[10px] font-medium uppercase tracking-[0.06em] text-muted-foreground">{mal.stats}</span>
     </button>
   );

@@ -156,7 +156,7 @@ export default async function AnleggDetailPage({
       subtitle={location.address ?? undefined}
       statusPill={
         opptattNaa > 0 ? (
-          <Tag variant="outline" style={{ color: "var(--warning)", borderColor: "var(--warning-border)" }}>
+          <Tag variant="warn">
             {opptattNaa} OPPTATT
           </Tag>
         ) : (

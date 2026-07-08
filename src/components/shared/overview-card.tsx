@@ -41,7 +41,7 @@ const BADGE_TIL_TAG = {
   primary: "signal",
   lime: "signal",
   neutral: "neutral",
-  warn: "outline",
+  warn: "warn",
   urgent: "down",
   ok: "up",
 } as const;
@@ -78,7 +78,6 @@ export function OverviewCard({
           {badge && (
             <Tag
               variant={BADGE_TIL_TAG[badge.variant ?? "primary"]}
-              style={badge.variant === "warn" ? { color: "var(--warning)", borderColor: "var(--warning-border)" } : undefined}
             >
               {badge.label}
             </Tag>

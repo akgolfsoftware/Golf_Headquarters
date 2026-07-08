@@ -62,3 +62,18 @@ Ingen NYE komponent-gap — `Pyramid` portet fra DS (data/). Én statusføring:
 | # | Observasjon | Vurdering | Status |
 |---|---|---|---|
 | 11 | De 3 siste gamle importene i hele appen er `PulseDot` på marketing (anlegg/junior/playerhq) — venter på gap #1 (StatusDot). Når StatusDot er i DS og portet, lukkes disse og gamle athletic kan slettes (Fase 5). | VENTER PÅ #1 | ÅPEN |
+
+## Port-pass (gap-fyll landet, 8. juli) — status
+
+DS-komponentene bygget og portet: **StatusDot, AkseFordelingsBar, ListRow** → golfdata/.
+Utført: Tag warn ×14 (0 workarounds igjen), PyrDistBar→AkseFordelingsBar (team-kit),
+presence/severity/statistikk-dots → StatusDot, nav-gjeld #12 (hjem-fliser → Link>Card) +
+#13 (cockpit-pills → Button secondary).
+
+| # | Funn | Status |
+|---|---|---|
+| 14 | **StatusDot mangler lime-/accent-tone.** De 4 siste PulseDot-importene (marketing anlegg/junior/playerhq + marketing-sections) er en dekorativ lime pulsprikk på MØRK helt (`bg-foreground`, lime eyebrow). StatusDot `signal` = forest på lys tema → nær usynlig på mørk helt. Trenger en tema-invariant `accent`/lime-tone i StatusDot (eller marketing beholder egen lime-pulsprikk). Blokkerer full sletting av gml athletic i Fase 5. | ÅPEN — meldt Anders |
+
+Gjenstår ellers før Fase 5 kan slette gml athletic helt: interne komponent-gallerier
+(`/intern/komponenter/*`, design-system-v2, v2-fixtures) demoer det gamle biblioteket;
+YearPlanGantt (Periodeplan-port — frie navn nå mulig); `hjem-data.ts` død kode (#8).

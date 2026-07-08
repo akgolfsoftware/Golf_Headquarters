@@ -129,7 +129,7 @@ export default function DesignSystemPage() {
             <Tag variant="signal">Lime</Tag>
             <Tag variant="neutral">Neutral</Tag>
             <Tag variant="up">OK</Tag>
-            <Tag variant="outline" style={{ color: "var(--warning)", borderColor: "var(--warning-border)" }}>Warn</Tag>
+            <Tag variant="warn">Warn</Tag>
             <Tag variant="down">Urgent</Tag>
           </div>
         </section>

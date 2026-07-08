@@ -402,33 +402,29 @@ export function HybridHomePage({ data }: HybridHomePageProps) {
       <div className="pt-2">
         <Eyebrow className="mb-2">Hovedverktøy</Eyebrow>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <Link
-            href="/portal/planlegge/workbench"
-            className="flex items-center justify-between rounded-lg border border-border bg-card px-4 py-3 text-sm font-medium transition hover:border-primary/60 hover:bg-card/80"
-          >
-            <span>Planlegg</span>
-            <ArrowRight size={16} className="text-muted-foreground" />
+          <Link href="/portal/planlegge/workbench" className="block">
+            <Card interactive compact bodyStyle={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <span className="text-sm font-medium text-foreground">Planlegg</span>
+              <ArrowRight size={16} className="text-muted-foreground" />
+            </Card>
           </Link>
-          <Link
-            href="/portal/gjennomfore"
-            className="flex items-center justify-between rounded-lg border border-border bg-card px-4 py-3 text-sm font-medium transition hover:border-primary/60 hover:bg-card/80"
-          >
-            <span>Gjør / logg økt</span>
-            <ArrowRight size={16} className="text-muted-foreground" />
+          <Link href="/portal/gjennomfore" className="block">
+            <Card interactive compact bodyStyle={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <span className="text-sm font-medium text-foreground">Gjør / logg økt</span>
+              <ArrowRight size={16} className="text-muted-foreground" />
+            </Card>
           </Link>
-          <Link
-            href="/portal/analysere"
-            className="flex items-center justify-between rounded-lg border border-border bg-card px-4 py-3 text-sm font-medium transition hover:border-primary/60 hover:bg-card/80"
-          >
-            <span>Analyser</span>
-            <ArrowRight size={16} className="text-muted-foreground" />
+          <Link href="/portal/analysere" className="block">
+            <Card interactive compact bodyStyle={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <span className="text-sm font-medium text-foreground">Analyser</span>
+              <ArrowRight size={16} className="text-muted-foreground" />
+            </Card>
           </Link>
-          <Link
-            href="/portal/meg/bookinger"
-            className="flex items-center justify-between rounded-lg border border-border bg-card px-4 py-3 text-sm font-medium transition hover:border-primary/60 hover:bg-card/80"
-          >
-            <span>Bookinger &amp; Meg</span>
-            <ArrowRight size={16} className="text-muted-foreground" />
+          <Link href="/portal/meg/bookinger" className="block">
+            <Card interactive compact bodyStyle={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <span className="text-sm font-medium text-foreground">Bookinger &amp; Meg</span>
+              <ArrowRight size={16} className="text-muted-foreground" />
+            </Card>
           </Link>
         </div>
         <p className="mt-1.5 text-[11px] text-muted-foreground">Alltid 1 klikk fra hjem til det du trenger mest.</p>
