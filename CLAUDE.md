@@ -9,8 +9,7 @@ Hele plattformen for AK Golf Group. Ett monorepo, ett Next.js-prosjekt, fire pro
 
 ## Detaljerte regler (`.claude/rules/`)
 - `arkitektur.md` — produkter, ruter, mappestruktur.
-- `designsystem.md` — tokens, komponenter, typografi, spacing, ikoner (ÉN kilde til sannhet).
-- `design-produktbeslutninger.md` — stående Anders-beslutninger som overstyrer mockupen (knappestil, avatar-initialer, Workbench-unntak m.m.) — uavhengig av hvilken designleveranse som er gjeldende.
+- `design-system-regel.md` — ÉN designkanon (8. juli 2026): det levende Claude Design-prosjektet, hentet via DesignSync. Ingen unntak, ingen "andre lag" for driftsskjermer.
 - `gotchas.md` — kjente feller (Prisma 7, Next.js 16 proxy, Supabase pooler, zod). Les FØR koding.
 
 ## FØR DU RØRER EN SKJERM — `docs/MASTER-SKJERMPLAN.md` (LÅST regel)
@@ -37,7 +36,7 @@ dashboard-tallene + endringsloggen når du fullfører/endrer skjermer.
 - **Analyse samlet:** Analysere + TrackMan + Runder + SG er én flate med faner — ikke separate moduler. Mål bor i Oversikt, redigeres i Workbench.
 - **Abonnement (ingen tier-nivåer):** PlayerHQ-tilgang er gratis eller 299 kr/mnd. **Gratis** hvis: 1 mnd prøveperiode, ELLER coaching-pakke (Performance / Performance Pro), ELLER gruppe via AK Golf. **299 kr/mnd** for alle andre. «Performance / Performance Pro» er **coaching-pakker** (antall økter), IKKE app-nivåer. **ELITE finnes ikke** (dødt Prisma-enum — vis aldri i UI).
 - **FYS-resultatformel avventer:** Bygg testskjermer med plassholder-tall. Ikke hardkod referanseverdier før Anders gir grønt lys.
-- **Design-kilde (LÅST, v13 — 2026-07-04):** `public/design-handover/` (design-handover v13, git-sporet) er ENESTE designkilde: 113 komponenter (jsx + d.ts + prompt.md, manifest-verifisert), tokens/, guidelines/, DEKNINGSKART.md, PORTING.md. Skjermer KOMPONERES fra `components/` per prompt.md-kontraktene og PORTING.md. **Designdommer:** `.claude/skills/ak-designekspert` dømmer alt komponert mot verdensklasse (skjermkomposisjons-kontrakten i `references/skjermkomposisjon.md`: gap meldes, ikke improviseres).
+- **Design-kilde (LÅST, oppdatert 8. juli 2026):** det LEVENDE Claude Design-prosjektet («AK Golf HQ Design System», `claude.ai/design/p/bb9b2b1d-ce2b-4757-be37-ee2096ba9d0d`), hentet direkte via DesignSync — IKKE en frossen mappe i repoet. `public/design-handover/` er en STALE v13-snapshot fra tidlig juli og skal IKKE brukes som kilde lenger (venter på fersk v14-eksport-dump eller sletting). Skjermer KOMPONERES fra `src/components/athletic/golfdata/` per prosjektets `prompt.md`-kontrakter — se `.claude/rules/design-system-regel.md`. **Designdommer:** `.claude/skills/ak-designekspert` dømmer alt komponert mot verdensklasse (gap meldes, ikke improviseres).
 - **Skjermtekst (copy-kilde):** `docs/skjermtekst/` — ekte norsk UI-tekst per hovedskjerm + design-brief. Kopier derfra, ikke dikt opp ny tekst.
 - Aldri referer til `wireframe/`, gamle `design-package/` eller `design-files-v2/` i produksjonsfiler — disse er slettet fra prosjektet.
 

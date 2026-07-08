@@ -54,7 +54,7 @@ export function AgendaRow({
   const akRows: DataPreviewRow[] = [];
   if (akFormel) {
     if (akFormel.axis) akRows.push({ label: akFormel.axis, value: akFormel.cs || "—" });
-    if (akFormel.arena != null) akRows.push({ label: "Arena", value: akFormel.arena });
+    if (akFormel.arena != null) akRows.push({ label: "Situasjon", value: akFormel.arena });
     if (akFormel.trinn != null) akRows.push({ label: "Trinn", value: akFormel.trinn });
   }
   const cls = [

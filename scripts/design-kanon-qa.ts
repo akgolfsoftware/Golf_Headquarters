@@ -23,7 +23,6 @@ const STYRINGSFILER: string[] = [
     .filter((f) => f.endsWith(".md"))
     .map((f) => join(".claude/rules", f)),
   "docs/platform/AGENT-BRIEF.md",
-  "docs/claude-design/CLAUDE.md",
   "README.md",
   "CLAUDE.md",
   "docs/design-guide-terminologi.md",

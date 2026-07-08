@@ -758,11 +758,11 @@ button.ak-akchip:focus-visible{outline:none;box-shadow:var(--glow-signal);}
   color:var(--text);line-height:1;font-variant-numeric:tabular-nums;}
 .ak-day__mark{width:5px;height:5px;border-radius:9999px;background:transparent;}
 .ak-day--done .ak-day__mark{background:var(--text-muted);}
-.ak-day--today .ak-day__mark{background:var(--signal);}
-.ak-day--active{background:var(--primary-fill);}
-.ak-day--active:hover{background:var(--primary-press);}
-.ak-day--active .ak-day__dow{color:color-mix(in srgb,var(--primary-text) 60%,transparent);}
-.ak-day--active .ak-day__num{color:var(--primary-text);}
+.ak-day--today .ak-day__mark{background:var(--signal-fill);box-shadow:0 0 0 1px var(--signal-fill-edge);}
+.ak-day--active{background:var(--daystrip-active-bg, var(--primary-fill));}
+.ak-day--active:hover{background:var(--daystrip-active-bg-hover, var(--primary-press));}
+.ak-day--active .ak-day__dow{color:var(--daystrip-active-text, color-mix(in srgb,var(--primary-text) 60%,transparent));}
+.ak-day--active .ak-day__num{color:var(--daystrip-active-text, var(--primary-text));}
 .ak-day--active .ak-day__mark{background:transparent;}
 
 /* ---- AgendaRow ---- */
@@ -790,7 +790,8 @@ button.ak-akchip:focus-visible{outline:none;box-shadow:var(--glow-signal);}
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .ak-agenda__dur{flex:none;font-family:var(--font-mono);font-size:var(--text-12);
   color:var(--text-2);font-variant-numeric:tabular-nums;}
-.ak-agenda__live{width:7px;height:7px;border-radius:9999px;background:var(--signal);
+.ak-agenda__live{width:7px;height:7px;border-radius:9999px;background:var(--signal-fill);
+  box-shadow:inset 0 0 0 1px var(--signal-fill-edge);
   animation:ak-agenda-pulse 1.6s var(--ease-standard) infinite;flex:none;}
 
 /* ---- VisningsVelger ---- */

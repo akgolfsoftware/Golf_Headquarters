@@ -2,14 +2,14 @@
 
 > Autoritativ oversikt over alle skjermer i plattformen. Én plass å se alt. **Sist oppdatert: 6. juli 2026.**
 
-> **REBASELINET mot v13 (2026-07-06, design-bølgeplan D0):** «Design=✓» måler nå mot v13-kriteriet:
-> skjermen er komponert fra `public/design-handover/`-kit-et (golfdata-komponenter + templates).
-> 86 gamle ✓-merker (målt mot den døde design-porting-gaten) er nullstilt til –. Kun 7 skjermer
-> er bekreftet på v13 i dag: PlayerHQ Hjem/Planlegge/Gjennomføre/Analysere/Meg + AgencyOS
-> Spillere/Spiller-analyse. Resten settes ✓ etterhvert som design-bølgene D1–D5 fullfører dem
-> (se `plans/design-bolgeplan.md`). Kanon per flate: PlayerHQ/AgencyOS = golfdata-kit +
-> templates · Auth = login/signup-kanonen · Marketing = marketing-sections-primitivene.
-> Flater som kun har fått anatomi-/token-løft (ikke full kit-komposisjon) står som ~.
+> **OPPDATERT KANON (2026-07-08):** Design-kanon er nå UTELUKKENDE det levende Claude Design-
+> prosjektet (`claude.ai/design/p/bb9b2b1d-ce2b-4757-be37-ee2096ba9d0d`), hentet direkte via
+> DesignSync — se `.claude/rules/design-system-regel.md`. Ingen "andre lag"-unntak for
+> driftsskjermer lenger; alt bygges mot dette til slutt. «Design=✓» måler mot faktisk 1:1-
+> komposisjon fra `src/components/athletic/golfdata/` (portet fra prosjektets `components/`).
+> `plans/design-bolgeplan.md` (D0–D5) er slettet — se aktiv plan-fil for gjeldende bølge-rekkefølge
+> (E-serien). Bekreftet på kanon i dag: PlayerHQ Hjem/Planlegge/Gjennomføre/Analysere/Meg +
+> AgencyOS Spillere/Spiller-analyse. Resten gjenstår.
 
 **Booking:** Acuity (`akgolfgroup.as.me`) er midlertidig booking frem til HQ-bookingen lanseres. Sett `BOOKING_ACTIVE=true` i Vercel for å aktivere den innebygde flyten.
 
@@ -56,9 +56,8 @@ Bekreftet komponert fra v13-kit (Design=✓):
 - **PlayerHQ:** Hjem (`/portal`) · Planlegge · Gjennomføre · Analysere · Meg
 - **AgencyOS:** Spillere (`/admin/spillere`) · Spiller-analyse (`/admin/spillere/[id]/analyse`)
 
-Alt annet er funksjonelt bygget (se FULL-tellingen over), men ikke re-komponert på v13 ennå.
-Rekkefølge og fremdrift styres av `plans/design-bolgeplan.md` (D1 kjerneloop → D2 AgencyOS →
-D3 PlayerHQ-undersider → D4 Booking/Forelder/Auth → D5 Marketing).
+Alt annet er funksjonelt bygget (se FULL-tellingen over), men ikke re-komponert mot dagens
+golfdata-kanon ennå. Rekkefølge og fremdrift styres av den aktive E-serie-planen (se plan-fil).
 
 **Mangler design (–):** de fleste sub-sider og sekundærskjermer — se tabellene nedenfor.
 

@@ -9,7 +9,7 @@
  *       scrim, KpiTile xl (ekte SG-total) + sparkline (ekte siste 10 runder)
  *       + streak (ekte fullførte dager denne uka).
  *   (b) Medium handlingskort, forest-aksent — NesteFokusKort (dommen: største
- *       ekte SG-lekkasje) + DagensOktHero (dagens ekte planlagte økt, Start-CTA).
+ *       ekte SG-lekkasje) + NesteOktCard (dagens ekte planlagte økt, Start-CTA).
  *   (c) Stille rader — resten av dagens plan, ingen kort-ramme.
  *
  * Pluss: ekte DayStrip (uke-data), Mål-rad m/ RingGauge (ekte mål-fremdrift),
@@ -27,9 +27,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Play, ArrowRight, ChevronRight, CalendarRange, Activity, MapPin } from "lucide-react";
+import { Play, ArrowRight, ChevronRight, CalendarRange, Activity } from "lucide-react";
 import {
-  Card, Eyebrow, KpiTile, NesteFokusKort, SgTotalKort, SgKategoriBar, DayStrip, RingGauge, Progress, Heatmap,
+  Card, Eyebrow, KpiTile, NesteFokusKort, SgTotalKort, SgKategoriBar, DayStrip, RingGauge, Progress, Heatmap, AgendaRow,
   type SgKategori, type DayStripDay,
 } from "@/components/athletic/golfdata";
 import { WeekProgress } from "./WeekProgress";
@@ -69,6 +69,8 @@ const SG_META: Record<AkseKey, { akse: SgKategori["akse"]; klar: string; omrade:
 };
 
 const DOW_BOKSTAV = ["M", "T", "O", "T", "F", "L", "S"]; // mandag først, matcher getWeekOverview
+
+const AKSE_IKON: Record<string, string> = { FYS: "dumbbell", TEK: "target", SLAG: "flag", SPILL: "flag", TURN: "flag" };
 
 // ── (a) DET signaturmomentet — SG-hero ─────────────────────────────
 
@@ -119,50 +121,40 @@ function SgHero({ kpiStats, streakActive }: { kpiStats: DashboardData["kpiStats"
   );
 }
 
-// ── (b) Dagens økt — forest hero med START ─────────────────────────
+// ── (b) Medium handlingskort — «Neste økt». Portet 1:1 fra designprosjektets
+// NesteOktCard (phq-home.jsx, 8. jul): samme diskré kortstil som resten av
+// skjermen (var(--surface), 1px border, forest venstrekant), ikke en egen
+// stor hero-blokk. Erstatter den tidligere hardkodede forest-gradient-heroen.
 
-function DagensOktHero({ session }: { session: TodaySession }) {
+function NesteOktCard({ session }: { session: TodaySession }) {
   const aktiv = session.status === "IN_PROGRESS";
   return (
-    <section
-      aria-label="Dagens økt"
-      className="relative overflow-hidden rounded-[20px] p-5 text-white"
-      style={{ background: "linear-gradient(150deg,#005840,#00402F)" }}
+    <Link
+      href={`/portal/live/${session.id}`}
+      className="flex flex-col gap-3 rounded-[var(--radius-card,16px)] border border-border bg-card p-4"
+      style={{ borderLeft: "3px solid var(--brand, hsl(var(--primary)))" }}
     >
-      <div aria-hidden className="pointer-events-none absolute -right-8 -top-10 h-44 w-44 rounded-full"
-        style={{ background: "radial-gradient(circle, rgba(209,248,67,.18), transparent 68%)" }} />
-      <div className="relative z-10">
-        <div className="flex items-center justify-between gap-3">
-          <span className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-accent">
-            {aktiv ? `Pågår · ${formatTime(session.startTime)}` : `Neste · ${formatTime(session.startTime)}`}
-          </span>
-          <span className="whitespace-nowrap rounded-full bg-accent px-2.5 py-1 font-mono text-[11px] font-bold text-accent-foreground">
-            {session.durationMin} min
-          </span>
-        </div>
-        <h2 className="mt-3 font-display text-[22px] font-bold leading-[1.08] -tracking-[0.02em]">
-          {session.title}
-        </h2>
-        <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[11px] text-white/70">
-          <span>{session.drills.length} drills</span>
-          {session.sted && (
-            <span className="inline-flex items-center gap-1">
-              <MapPin size={11} strokeWidth={2} aria-hidden />
-              {session.sted}
-            </span>
-          )}
-        </div>
-        <Link href={`/portal/live/${session.id}`} className="mt-4 block">
-          <button
-            type="button"
-            className="flex w-full items-center justify-center gap-2 rounded-full bg-accent py-3.5 font-mono text-[12px] font-bold uppercase tracking-[0.08em] text-accent-foreground active:scale-[0.98]"
-          >
-            {aktiv ? "Fortsett økt" : "Start økt"}
-            <Play size={15} fill="currentColor" strokeWidth={0} aria-hidden />
-          </button>
-        </Link>
+      <div className="flex items-center gap-2">
+        <Activity size={13} className="flex-none text-primary" aria-hidden />
+        <span className="text-[13px] leading-snug text-foreground/80">
+          <strong className="font-semibold text-foreground">Dagens økt:</strong> {session.drills.length} drills
+          {session.sted ? ` · ${session.sted}` : ""}
+        </span>
       </div>
-    </section>
+      <div className="flex items-center gap-3">
+        <div className="min-w-0 flex-1">
+          <span className="font-mono text-[11px] font-bold text-primary">
+            {aktiv ? "PÅGÅR" : "NÅ"} · {formatTime(session.startTime)}
+          </span>
+          <p className="mt-0.5 truncate text-[16px] font-semibold text-foreground">{session.title}</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">{session.durationMin} min</p>
+        </div>
+        <span className="flex flex-none items-center gap-1.5 rounded-full bg-primary px-4 py-2.5 font-mono text-[11.5px] font-bold uppercase tracking-[0.05em] text-primary-foreground">
+          {aktiv ? "Fortsett" : "Start økt"}
+          <Play size={14} fill="currentColor" strokeWidth={0} aria-hidden />
+        </span>
+      </div>
+    </Link>
   );
 }
 
@@ -177,32 +169,13 @@ function MalRow({ goals, onOpen }: { goals: DashboardData["goals"]; onOpen: () =
     >
       <RingGauge value={gjennomsnitt} min={0} max={100} size={46} thickness={5} decimals={0} unit="%" color="var(--signal, hsl(var(--primary)))" />
       <div className="min-w-0 flex-1">
-        <p className="text-[14.5px] font-semibold text-foreground">Mine mål</p>
+        <p className="text-[14.5px] font-semibold text-foreground">Mine mål &amp; SG-Hub</p>
         <p className="mt-0.5 text-xs text-muted-foreground">
           {goals.length === 0 ? "Ingen aktive mål" : goals.length === 1 ? "1 aktivt mål" : `${goals.length} aktive mål`}
         </p>
       </div>
       <ChevronRight size={17} className="flex-none text-muted-foreground" aria-hidden />
     </button>
-  );
-}
-
-// ── Dagens plan-rad (stille — ingen kort-ramme, hairline-separert) ─
-
-function PlanRow({ session }: { session: TodaySession }) {
-  return (
-    <Link href={session.href} className="flex items-center gap-3 border-b border-border py-3 last:border-b-0">
-      <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-[12px] bg-primary/10 text-primary">
-        <Activity size={18} strokeWidth={1.6} aria-hidden />
-      </span>
-      <div className="min-w-0 flex-1">
-        <p className="truncate text-[15px] font-bold text-foreground">{session.title}</p>
-        <p className="mt-0.5 font-mono text-[11px] text-muted-foreground">
-          {formatTime(session.startTime)} · {session.drills.length} drills · {session.durationMin} min
-        </p>
-      </div>
-      <ChevronRight size={16} className="flex-none text-muted-foreground" aria-hidden />
-    </Link>
   );
 }
 
@@ -333,8 +306,19 @@ export function HybridHomePage({ data }: HybridHomePageProps) {
         <p className="mt-2.5 text-[15px] leading-[1.5] text-muted-foreground">{lead}</p>
       </div>
 
-      {/* 2. Ukas dager — ekte data (fullført/i dag) */}
-      <DayStrip days={dagStripDager} value={valgtDato} onChange={setValgtDato} />
+      {/* 2. Ukas dager — ekte data (fullført/i dag). Aktiv dag i forest, per
+          designprosjektets --daystrip-active-bg-override (phq-home.jsx). */}
+      <div
+        style={
+          {
+            "--daystrip-active-bg": "var(--brand, hsl(var(--primary)))",
+            "--daystrip-active-bg-hover": "var(--brand-hover, hsl(var(--primary)))",
+            "--daystrip-active-text": "var(--on-brand, hsl(var(--primary-foreground)))",
+          } as React.CSSProperties
+        }
+      >
+        <DayStrip days={dagStripDager} value={valgtDato} onChange={setValgtDato} />
+      </div>
 
       {/* 3. (a) Signaturmomentet — SG-hero */}
       <SgHero kpiStats={kpiStats} streakActive={streakActive} />
@@ -356,7 +340,7 @@ export function HybridHomePage({ data }: HybridHomePageProps) {
       )}
 
       {today ? (
-        <DagensOktHero session={today} />
+        <NesteOktCard session={today} />
       ) : (
         <Card>
           <div className="flex items-center gap-3">
@@ -397,8 +381,19 @@ export function HybridHomePage({ data }: HybridHomePageProps) {
       {restOkter.length > 0 && (
         <div className="space-y-2.5">
           <Eyebrow>Dagens plan</Eyebrow>
-          <div>
-            {restOkter.map((s) => <PlanRow key={s.id} session={s} />)}
+          <div className="flex flex-col gap-2.5">
+            {restOkter.map((s) => (
+              <AgendaRow
+                key={s.id}
+                time={formatTime(s.startTime)}
+                icon={AKSE_IKON[s.pyramidArea] ?? "dumbbell"}
+                title={s.title}
+                subtitle={`${s.drills.length} drills`}
+                duration={`${s.durationMin} min`}
+                state={s.status === "IN_PROGRESS" ? "live" : s.status === "COMPLETED" ? "done" : "upcoming"}
+                onClick={() => router.push(s.href)}
+              />
+            ))}
           </div>
         </div>
       )}
