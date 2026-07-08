@@ -832,3 +832,24 @@ button.ak-akchip:focus-visible{outline:none;box-shadow:var(--glow-signal);}
 }
 .ak-visv__idag:hover{background:var(--surface-hover);color:var(--text);}
 .ak-visv__idag:focus-visible{outline:none;box-shadow:var(--glow-signal);}
+
+/* ---- Heatmap (v14-port) — intensitet-grid, ramper --track → farge ---- */
+.ak-heatmap{display:grid;}
+.ak-heatmap__collabel,.ak-heatmap__rowlabel{
+  font-family:var(--font-mono);font-size:9px;font-weight:600;color:var(--text-muted);
+  display:flex;align-items:center;justify-content:center;
+  transition:color var(--dur-fast) var(--ease-standard);
+}
+.ak-heatmap__rowlabel{justify-content:flex-end;padding-right:8px;text-transform:uppercase;letter-spacing:.04em;}
+.ak-heatmap__collabel{text-transform:uppercase;letter-spacing:.04em;}
+.ak-heatmap__cell{
+  border-radius:4px;position:relative;cursor:default;
+  transition:transform 120ms var(--ease-standard),filter 120ms var(--ease-standard);
+}
+.ak-heatmap__cell[data-hot]{filter:brightness(1.15);transform:scale(1.08);z-index:1;}
+.ak-heatmap__tip{
+  position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);
+  background:var(--surface-2);border:1px solid var(--border-strong);border-radius:6px;
+  padding:4px 8px;font-family:var(--font-mono);font-size:9px;color:var(--text);
+  white-space:nowrap;pointer-events:none;box-shadow:var(--sheen-top-lg);z-index:2;
+}

@@ -22,9 +22,11 @@
   --lime-600: #BCE234;
   --forest-700: #005840;
   --forest-800: #073A2A;
-  --graphite-0: #0A0B0A;
-  --graphite-50: #171817;
-  --graphite-100: #1E1F1D;
+  /* v14-synk (2026-07-08): bakgrunn variant B "løftet" — LÅST etter Anders' fysiske
+     sollys-test («ikke for mørkt»). Historie: #0A0B0A → #060706 → #141513 (låst). */
+  --graphite-0: #141513;
+  --graphite-50: #202120;
+  --graphite-100: #282923;
   --graphite-200: #2A2B27;
   --graphite-500: #6B6C64;
   --graphite-600: #A6A8A3;
@@ -108,6 +110,12 @@
   --success-border: oklch(0.5 0.13 158 / 0.45);
   --warning: #865A00;
   --warn: var(--warning);
+  --track: rgba(0, 0, 0, 0.08);
+  /* Lime-utvidelsen (design-B15): lime-FYLL m/ mørk blekk er lov på lys som data-bundet
+     markør (gjennomføring, nå-markør, ett hero-tall-chip) — aldri lime-TEKST/-ikon/-outline. */
+  --signal-fill: var(--lime-500);
+  --on-signal-fill: var(--graphite-0);
+  --signal-fill-edge: var(--border-strong);
 
   /* ---- Pyramide-akser — LYS (data-viz.css .light-blokken) ---- */
   --axis-fys: #005840;
@@ -184,6 +192,10 @@
   --success-border: oklch(0.62 0.14 158 / 0.42);
   --warning: #DDB870;
   --warn: var(--warning);
+  --track: rgba(255, 255, 255, 0.10);
+  --signal-fill: var(--lime-500);
+  --on-signal-fill: var(--graphite-0);
+  --signal-fill-edge: transparent;
 
   --axis-fys: #56C59A;
   --axis-fys-text: #74D0AC;
@@ -195,11 +207,11 @@
   --axis-slag-text: #9EBCFF;
   --axis-slag-soft: rgba(132, 169, 255, 0.15);
   --axis-spill: #D1F843;
-  /* hotfix 2026-07 — synkes mot v14: var identisk med --axis-spill (fill). Nå distinkt
-     lysere tint (mønster fra de andre aksene i mørk). Verifisert WCAG-kontrast:
-     15,27:1 mot graphite-50, 9,05:1 på -soft-chip (DiagnoseKort). NB: en mørk oliven
-     ville gitt 2,86:1 mot mørke flater — derfor lys tint. */
-  --axis-spill-text: #DFF982;
+  /* v14-synk (2026-07-08): adoptert fra design-prosjektet — #F0E6A8, en avmettet varm
+     gull-tone (hue dreid bort fra markørens grønn-gule mot ~55°). Erstatter forrige
+     hotfix #DFF982 (samme problem løst, men denne er umulig å forveksle med -fill
+     ved siden av). Verifisert: 14,07:1 mot --surface, 15,57:1 mot --bg. */
+  --axis-spill-text: #F0E6A8;
   --axis-spill-soft: rgba(209, 248, 67, 0.16);
   --axis-turn: #F2908C;
   --axis-turn-text: #F5A8A4;

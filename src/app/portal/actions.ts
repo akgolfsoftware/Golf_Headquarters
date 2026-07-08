@@ -563,6 +563,8 @@ export type KpiStats = {
     arg: number | null;
     putt: number | null;
   };
+  /** SG total per runde, eldst→nyest (siste 10 runder) — for hero-sparkline. Ekte tall, ikke interpolert. */
+  sgTrend: number[];
 };
 
 export async function getKpiStats(userId: string): Promise<KpiStats> {
@@ -596,13 +598,58 @@ export async function getKpiStats(userId: string): Promise<KpiStats> {
       : null;
   };
 
+  const sgTrend = rounds
+    .filter((r) => r.sgTotal != null)
+    .map((r) => r.sgTotal as number)
+    .reverse(); // rounds er nyest→eldst; sparkline leses venstre (eldst) → høyre (nyest)
+
   return {
     avgScore,
     sgTotal: avg("sgTotal"),
     sessionsThisWeek: weekSessions,
     roundsCount,
     sgBreakdown: { ott: avg("sgOtt"), app: avg("sgApp"), arg: avg("sgArg"), putt: avg("sgPutt") },
+    sgTrend,
   };
+}
+
+// ── Treningshistorikk-heatmap (12 uker × ukedag, for Hjem-hero) ────
+
+export type TrainingHeatmap = {
+  rows: string[]; // ukedag-forkortelser, mandag først
+  cols: string[]; // dato (dag i måned) for hver ukes mandag, eldst→nyest
+  values: number[][]; // [ukedag][uke] — 0..1, normalisert på maks 2 økter/dag
+  totalSessions: number;
+};
+
+export async function getTrainingHeatmap(userId: string): Promise<TrainingHeatmap> {
+  const now = new Date();
+  const weeksBack = 12;
+  const rangeStart = startOfWeek(new Date(now.getTime() - (weeksBack - 1) * 7 * 86_400_000));
+
+  const sessions = await prisma.trainingSessionV2.findMany({
+    where: { studentId: userId, startTime: { gte: rangeStart, lte: endOfDay(now) } },
+    select: { startTime: true },
+  });
+
+  const rows = ["M", "T", "O", "T", "F", "L", "S"];
+  const weekStarts = Array.from({ length: weeksBack }, (_, w) => {
+    const d = new Date(rangeStart);
+    d.setDate(d.getDate() + w * 7);
+    return d;
+  });
+  const cols = weekStarts.map((d) => String(d.getDate()));
+  const counts: number[][] = Array.from({ length: 7 }, () => Array.from({ length: weeksBack }, () => 0));
+
+  for (const s of sessions) {
+    const dayIdx = (s.startTime.getDay() + 6) % 7; // mandag = 0
+    const weekIdx = Math.floor((startOfDay(s.startTime).getTime() - rangeStart.getTime()) / (7 * 86_400_000));
+    if (weekIdx >= 0 && weekIdx < weeksBack) counts[dayIdx][weekIdx] += 1;
+  }
+
+  const values = counts.map((row) => row.map((n) => Math.max(0, Math.min(1, n / 2))));
+
+  return { rows, cols, values, totalSessions: sessions.length };
 }
 
 // ── All today's sessions (for second-session compact row) ─────────
@@ -657,6 +704,7 @@ export type DashboardData = {
   kpiStats: KpiStats;
   nextTournament: NextTournament | null;
   weekProgress: WeekPlanProgress;
+  trainingHeatmap: TrainingHeatmap;
 };
 
 export async function getDashboardData(userId: string): Promise<DashboardData> {
@@ -665,7 +713,7 @@ export async function getDashboardData(userId: string): Promise<DashboardData> {
     select: { id: true, name: true, avatarUrl: true, hcp: true, tier: true },
   });
 
-  const [todayAll, week, recentActivity, goals, { count: unreadCount, notifications }, coachMessage, stats, kpiStats, nextTournament, weekProgress] =
+  const [todayAll, week, recentActivity, goals, { count: unreadCount, notifications }, coachMessage, stats, kpiStats, nextTournament, weekProgress, trainingHeatmap] =
     await Promise.all([
       getAllTodaysSessions(userId),
       getWeekOverview(userId),
@@ -677,6 +725,7 @@ export async function getDashboardData(userId: string): Promise<DashboardData> {
       getKpiStats(userId),
       getNextTournament(userId),
       getWeekPlanProgress(userId),
+      getTrainingHeatmap(userId),
     ]);
 
   return {
@@ -695,5 +744,6 @@ export async function getDashboardData(userId: string): Promise<DashboardData> {
     kpiStats,
     nextTournament,
     weekProgress,
+    trainingHeatmap,
   };
 }

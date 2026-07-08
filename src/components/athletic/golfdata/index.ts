@@ -21,6 +21,10 @@ export { DataPreview, nearestIndex, type DataPreviewProps, type DataPreviewRow }
 export { Sparkline, type SparklineProps } from "./Sparkline";
 export { KpiTile, type KpiTileProps } from "./KpiTile";
 export { DataTable, type TableColumn, type DataTableProps } from "./DataTable";
+export { RingGauge, type RingGaugeProps, type RingGaugeZone } from "./RingGauge";
+export { Progress, type ProgressProps, type ProgressVariant } from "./Progress";
+export { AiTipCard, TipMetric, type AiTipCardProps } from "./AiTipCard";
+export { Heatmap, type HeatmapProps } from "./Heatmap";
 
 // Golfdata-komponentene (14)
 export { DiagnoseKort, type DiagnoseKortProps, type DiagnoseBevis, type DiagnoseResept } from "./DiagnoseKort";
