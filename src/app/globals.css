@@ -9,91 +9,96 @@
  * Lyst tema er default. Mørkt aktiveres via .dark-klasse på html-element.
  */
 
+/* Fase 1 token-konvergens (2026-07-08, docs/opprydding/03-opprydding-plan.md):
+ * Trippel-VERDIENE under er konvergert 1:1 mot DS-tokenene i
+ * src/styles/golfdata-tokens.css (v14). Navnene og HSL-trippel-formatet beholdes
+ * fordi ~1300 steder konsumerer dem direkte via hsl(var(--x)) — de migreres i
+ * Fase 3/4. Endre ALDRI en verdi her uten å endre DS-kilden først. */
 :root {
   /* Surfaces */
-  --background: 45 18% 97%;        /* #FAFAF7 */
-  --foreground: 157 53% 8%;        /* #0A1F17 */
-  --card: 0 0% 100%;
-  --card-foreground: 157 53% 8%;
+  --background: 60 15.8% 96.3%;    /* #F7F7F4 = DS --bg (sand-50) */
+  --foreground: 150 15.8% 7.5%;    /* #101613 = DS --text (sand-900) */
+  --card: 0 0% 100%;               /* #FFFFFF = DS --surface (sand-0) */
+  --card-foreground: 150 15.8% 7.5%;
   --popover: 0 0% 100%;
-  --popover-foreground: 157 53% 8%;
+  --popover-foreground: 150 15.8% 7.5%;
 
   /* Brand */
-  --primary: 164 100% 17.3%;       /* #005840 (rettet 2026-06-10 — var 159 → #005738) */
-  --primary-foreground: 72 92% 62%;/* #D1F843 — lime som tekst på primary */
-  --accent: 72 92% 62%;            /* #D1F843 */
-  --accent-foreground: 164 100% 17.3%;
+  --primary: 163.6 100% 17.3%;     /* #005840 = DS --signal (forest-700) */
+  --primary-foreground: 0 0% 100%; /* #FFFFFF = DS --on-signal (var lime — DS sier hvit på signal i lys) */
+  --accent: 72.9 92.8% 61.8%;      /* #D1F843 = DS --signal-fill (lime-500) */
+  --accent-foreground: 90 5% 7.8%; /* #141513 = DS --on-signal-fill (graphite-0, var forest) */
 
   /* Neutrals */
-  --secondary: 45 30% 92%;         /* #F1EEE5 varm sand (rettet — var 45 18% 94% → #F2F1ED) */
-  --secondary-foreground: 157 53% 8%;
-  --muted: 45 30% 92%;             /* #F1EEE5 */
-  --muted-foreground: 60 4% 37%;
+  --secondary: 60 6.7% 94.1%;      /* #F1F1EF = DS --surface-2 (sand-100) */
+  --secondary-foreground: 150 15.8% 7.5%;
+  --muted: 60 6.7% 94.1%;          /* #F1F1EF */
+  --muted-foreground: 90 1.8% 43.1%; /* #6E706C = DS --text-muted (sand-600) */
 
   /* Feedback */
-  --destructive: 0 56% 41%;
-  --destructive-foreground: 0 0% 98%;
-  --success: 154 64% 30%;          /* #1A7D56 */
+  --destructive: 4.1 60.7% 46.9%;  /* #C0392F = DS --destructive */
+  --destructive-foreground: 0 0% 100%; /* DS --on-destructive */
+  --success: 154.5 100% 23.5%;     /* #007845 = DS --success */
   --success-foreground: 0 0% 100%;
-  --warning: 34 64% 44%;           /* #B8852A */
+  --warning: 40.3 100% 26.3%;      /* #865A00 = DS --warning */
   --warning-foreground: 0 0% 100%;
-  --info: 221 83% 53%;             /* #2563EB */
+  --info: 221 83% 53%;             /* #2563EB — DS har ikke info-token; = --axis-slag (lys) */
   --info-foreground: 0 0% 100%;
 
-  /* Chart-tokens (data-viz) */
-  --chart-1: 164 100% 17%;         /* #005840 — FYS/primary */
-  --chart-2: 38 63% 44%;           /* #B8852A — TEK/warning */
-  --chart-3: 221 83% 53%;          /* #2563EB — SLAG/info */
-  --chart-4: 73 93% 62%;           /* #D1F843 — SPILL/accent */
-  --chart-5: 0 57% 41%;            /* #A32D2D — TURN/destructive */
-  --chart-6: 43 4% 35%;            /* #5E5C57 — benchmark/neutral */
+  /* Chart-tokens (data-viz) — speiler DS --axis-* (lys) */
+  --chart-1: 163.6 100% 17.3%;     /* #005840 — FYS = --axis-fys */
+  --chart-2: 38.5 62.8% 44.3%;     /* #B8852A — TEK = --axis-tek */
+  --chart-3: 221 83% 53%;          /* #2563EB — SLAG = --axis-slag */
+  --chart-4: 72.9 92.8% 61.8%;     /* #D1F843 — SPILL = --axis-spill */
+  --chart-5: 0 57% 41%;            /* #A32D2D — TURN = --axis-turn */
+  --chart-6: 43 4% 35%;            /* #5E5C57 — benchmark/neutral (utenfor DS) */
 
-  /* Form og fokus */
-  --border: 45 13% 88%;            /* #E5E3DD (rettet — var 60 8% 90% → #E8E8E3) */
-  --input: 45 13% 86%;
-  --ring: 164 100% 17.3%;
+  /* Form og fokus — DS --border er rgba(0,0,0,.08); trippel m/ alfa gir samme farge */
+  --border: 0 0% 0% / 0.08;
+  --input: 0 0% 0% / 0.08;
+  --ring: 163.6 100% 17.3%;        /* = DS --signal */
 
-  /* Radius (16px = card, 20px = pill håndteres via rounded-full) */
-  --radius: 1rem;
+  /* Radius — peker på DS --radius-card (16px); pill håndteres via rounded-full */
+  --radius: 16px;
 }
 
 .dark {
-  --background: 120 5% 4%;         /* #0A0B0A — varm nær-svart (handover 2026-06-26) */
-  --foreground: 0 0% 94%;          /* #F0F0F0 — handover */
-  --card: 120 2.1% 9.2%;           /* #171817 — tile (handover) */
-  --card-foreground: 0 0% 94%;
-  --popover: 120 2.1% 9.2%;        /* #171817 — tile (handover) */
-  --popover-foreground: 0 0% 94%;
+  --background: 90 5% 7.8%;        /* #141513 = DS --bg (graphite-0, v14 variant B «løftet») */
+  --foreground: 0 0% 94.1%;        /* #F0F0F0 = DS --text (graphite-900) */
+  --card: 120 1.5% 12.7%;          /* #202120 = DS --surface (graphite-50) */
+  --card-foreground: 0 0% 94.1%;
+  --popover: 120 1.5% 12.7%;
+  --popover-foreground: 0 0% 94.1%;
 
-  --primary: 72 92% 62%;           /* I dark mode er lime primary — uendret */
-  --primary-foreground: 132 33% 6%; /* #0A140C — on-lime (handover) */
-  --accent: 72 92% 62%;
-  --accent-foreground: 132 33% 6%;  /* #0A140C — on-lime (handover) */
+  --primary: 72.9 92.8% 61.8%;     /* #D1F843 = DS --signal (mørk = lime) */
+  --primary-foreground: 90 5% 7.8%; /* #141513 = DS --on-signal (graphite-0) */
+  --accent: 72.9 92.8% 61.8%;
+  --accent-foreground: 90 5% 7.8%;
 
-  --secondary: 90 3.3% 11.8%;      /* #1E1F1D — tile-raised (handover) */
-  --secondary-foreground: 0 0% 94%;
-  --muted: 90 5% 8%;               /* #141513 — panel (handover) */
-  --muted-foreground: 84 3% 65%;   /* #A6A8A3 — fg-2 (handover) */
+  --secondary: 70 7.9% 14.9%;      /* #282923 = DS --surface-2 (graphite-100) */
+  --secondary-foreground: 0 0% 94.1%;
+  --muted: 70 7.9% 14.9%;          /* #282923 */
+  --muted-foreground: 84 3% 65%;   /* #A6A8A3 = DS --text-muted (graphite-600) */
 
-  --destructive: 14 86% 59%;       /* #F0683E — terminal-paletten */
-  --destructive-foreground: 157 53% 8%;
-  --success: 147 58% 56%;          /* #4FD08A — terminal-paletten */
+  --destructive: 358.1 75.1% 59%;  /* #E5484D = DS --destructive (mørk) */
+  --destructive-foreground: 0 0% 100%; /* DS --on-destructive */
+  --success: 145.4 46.4% 67.1%;    /* #84D2A5 = DS --success (mørk) */
   --success-foreground: 157 53% 8%;
-  --warning: 42 79% 57%;           /* #E8B43C — terminal-paletten */
+  --warning: 39.6 61.6% 65.3%;     /* #DDB870 = DS --warning (mørk) */
   --warning-foreground: 157 53% 8%;
-  --info: 208 83% 65%;             /* #5AA9F0 — terminal-paletten */
+  --info: 208 83% 65%;             /* #5AA9F0 — DS har ikke info-token */
   --info-foreground: 157 53% 8%;
 
-  --chart-1: 72 92% 62%;
-  --chart-2: 154 50% 50%;
-  --chart-3: 72 92% 75%;
-  --chart-4: 34 80% 60%;
-  --chart-5: 207 85% 65%;
-  --chart-6: 280 60% 65%;
+  --chart-1: 156.8 48.9% 55.5%;    /* #56C59A = --axis-fys (mørk) */
+  --chart-2: 35.8 78.8% 57.5%;     /* #E8A33D = --axis-tek (mørk) */
+  --chart-3: 222 100% 75.9%;       /* #84A9FF = --axis-slag (mørk) */
+  --chart-4: 72.9 92.8% 61.8%;     /* #D1F843 = --axis-spill (mørk) */
+  --chart-5: 2.4 79.7% 74.9%;      /* #F2908C = --axis-turn (mørk) */
+  --chart-6: 280 60% 65%;          /* utenfor DS */
 
-  --border: 90 3% 15%;             /* #262725 — hairline (handover) */
-  --input: 90 3% 15%;              /* #262725 — hairline (handover) */
-  --ring: 72 92% 62%;
+  --border: 0 0% 100% / 0.08;      /* DS --border (mørk) = rgba(255,255,255,.08) */
+  --input: 0 0% 100% / 0.08;
+  --ring: 72.9 92.8% 61.8%;
 
   /* ---- Terminal mørk stack — AgencyOS (.dark på html)
    * Retunet til handoverens varme nær-svarte rampe (2026-06-26):
@@ -127,25 +132,204 @@
   --lime:        #D1F843;
 }
 
+/* ---------- DS-tokens (v14) løftet til globalt nivå — Fase 1 token-konvergens ----------
+ * Verdier 1:1 fra src/styles/golfdata-tokens.css (som igjen er 1:1 fra design-
+ * prosjektets tokens/*.css) — ALDRI oppfunnet her. golfdata-komponenter arver nå
+ * riktige verdier i enhver skjerm, uten .golfdata-scope-wrapper.
+ *
+ * IKKE løftet (navnekollisjon med shadcn-tripler/hsl(var())-konsumenter eller
+ * @theme-emitterte aliaser): --border, --destructive, --success, --warning,
+ * --up, --down, --warn, --radius-pill, --font-display/--font-mono.
+ * De lever videre i .golfdata-scope til konsumentene er migrert (Fase 3/4);
+ * verdiene deres er konvergert i trippel-blokkene over.
+ */
+:root {
+  /* Råskalaer (tema-uavhengige) */
+  --lime-500: #D1F843;
+  --lime-600: #BCE234;
+  --forest-700: #005840;
+  --forest-800: #073A2A;
+  --graphite-0: #141513;
+  --graphite-50: #202120;
+  --graphite-100: #282923;
+  --graphite-200: #2A2B27;
+  --graphite-500: #6B6C64;
+  --graphite-600: #A6A8A3;
+  --graphite-700: #BFC1BC;
+  --graphite-900: #F0F0F0;
+  --sand-0: #FFFFFF;
+  --sand-50: #F7F7F4;
+  --sand-100: #F1F1EF;
+  --sand-200: #E7E8E5;
+  --sand-500: #8E908C;
+  --sand-600: #6E706C;
+  --sand-700: #565854;
+  --sand-900: #101613;
+
+  /* Typografi */
+  --font-ui: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --text-11: 0.6875rem;
+  --text-12: 0.75rem;
+  --text-13: 0.8125rem;
+  --text-14: 0.875rem;
+  --text-16: 1rem;
+  --text-18: 1.125rem;
+  --text-20: 1.25rem;
+  --text-24: 1.5rem;
+  --text-30: 1.875rem;
+  --text-36: 2.25rem;
+  --text-48: 3rem;
+  --text-60: 3.75rem;
+  --leading-none: 1;
+  --leading-snug: 1.3;
+  --tracking-display: -0.01em;
+  --tracking-tight: -0.01em;
+  --tracking-mono: 0.02em;
+  --tracking-eyebrow: 0.12em;
+  --weight-semibold: 600;
+
+  /* Spacing / radius / motion */
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --radius-tag: 8px;
+  --radius-input: 12px;
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+  --dur-slow: 320ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Semantiske aliaser — LYS */
+  --bg: var(--sand-50);
+  --surface: var(--sand-0);
+  --surface-2: var(--sand-100);
+  --surface-hover: var(--sand-200);
+  --border-strong: rgba(0, 0, 0, 0.14);
+  --text: var(--sand-900);
+  --text-2: var(--sand-700);
+  --text-muted: var(--sand-600);
+  --text-faint: #686A66;
+  --signal: var(--forest-700);
+  --signal-press: var(--forest-800);
+  --on-signal: #FFFFFF;
+  --glow-signal: 0 0 0 1px rgba(0, 88, 64, 0.35);
+  --primary-fill: var(--sand-900);
+  --primary-text: var(--sand-0);
+  --primary-press: #2A2C30;
+  --on-destructive: #FFFFFF;
+  --sheen-top: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  --sheen-top-lg: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --success-bg: oklch(0.58 0.15 158 / 0.12);
+  --success-border: oklch(0.5 0.13 158 / 0.45);
+  --track: rgba(0, 0, 0, 0.08);
+  --signal-fill: var(--lime-500);
+  --on-signal-fill: var(--graphite-0);
+  --signal-fill-edge: var(--border-strong);
+  --warning-solid: #855100;
+  --warning-bg: oklch(0.58 0.15 83 / 0.12);
+  --warning-border: oklch(0.50 0.13 83 / 0.45);
+  --compliance-on: var(--lime-500);
+  --compliance-off: #C0392F;
+  --compliance-none: var(--sand-500);
+
+  /* Pyramide-akser — LYS */
+  --axis-fys: #005840;
+  --axis-fys-text: #005840;
+  --axis-fys-soft: rgba(0, 88, 64, 0.13);
+  --axis-tek: #B8852A;
+  --axis-tek-text: #8A6316;
+  --axis-tek-soft: rgba(184, 133, 42, 0.13);
+  --axis-slag: #2563EB;
+  --axis-slag-text: #1D4FD0;
+  --axis-slag-soft: rgba(37, 99, 235, 0.13);
+  --axis-spill: #D1F843;
+  --axis-spill-text: #55680A;
+  --axis-spill-soft: rgba(209, 248, 67, 0.22);
+  --axis-turn: #A32D2D;
+  --axis-turn-text: #A32D2D;
+  --axis-turn-soft: rgba(163, 45, 45, 0.13);
+
+  /* L-fase sekvensiell rampe (tema-uavhengig) */
+  --phase-base: oklch(0.44 0.07 165);
+  --phase-forberedelse: oklch(0.54 0.1 155);
+  --phase-spesialisering: oklch(0.66 0.14 142);
+  --phase-taper: oklch(0.8 0.16 128);
+  --phase-peak: oklch(0.9 0.19 122);
+}
+
+.dark,
+[data-theme="dark"] {
+  /* Semantiske aliaser — MØRK */
+  --bg: var(--graphite-0);
+  --surface: var(--graphite-50);
+  --surface-2: var(--graphite-100);
+  --surface-hover: var(--graphite-200);
+  --border-strong: rgba(255, 255, 255, 0.14);
+  --text: var(--graphite-900);
+  --text-2: var(--graphite-700);
+  --text-muted: var(--graphite-600);
+  --text-faint: #8A8C86;
+  --signal: var(--lime-500);
+  --signal-press: var(--lime-600);
+  --on-signal: var(--graphite-0);
+  --glow-signal: 0 0 0 1px rgba(209, 248, 67, 0.4);
+  --primary-fill: var(--graphite-900);
+  --primary-text: var(--graphite-0);
+  --primary-press: #E2E4E6;
+  --sheen-top: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  --sheen-top-lg: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  --success-bg: oklch(0.62 0.14 158 / 0.15);
+  --success-border: oklch(0.62 0.14 158 / 0.42);
+  --track: rgba(255, 255, 255, 0.10);
+  --signal-fill: var(--lime-500);
+  --on-signal-fill: var(--graphite-0);
+  --signal-fill-edge: transparent;
+  --warning-solid: #AF7C00;
+  --warning-bg: oklch(0.62 0.14 83 / 0.15);
+  --warning-border: oklch(0.62 0.14 83 / 0.42);
+  --compliance-off: #FF6B5A;
+  --compliance-none: var(--graphite-500);
+
+  /* Pyramide-akser — MØRK */
+  --axis-fys: #56C59A;
+  --axis-fys-text: #74D0AC;
+  --axis-fys-soft: rgba(86, 197, 154, 0.15);
+  --axis-tek: #E8A33D;
+  --axis-tek-text: #EEB965;
+  --axis-tek-soft: rgba(232, 163, 61, 0.16);
+  --axis-slag: #84A9FF;
+  --axis-slag-text: #9EBCFF;
+  --axis-slag-soft: rgba(132, 169, 255, 0.15);
+  --axis-spill: #D1F843;
+  --axis-spill-text: #F0E6A8;
+  --axis-spill-soft: rgba(209, 248, 67, 0.16);
+  --axis-turn: #F2908C;
+  --axis-turn-text: #F5A8A4;
+  --axis-turn-soft: rgba(242, 144, 140, 0.16);
+}
+
 /* ---------- Tailwind v4 token-mapping ----------
  * @theme inline gjør at CSS-variablene over blir til Tailwind-utilities:
  * bg-primary, text-foreground, border-border, ring-ring, etc.
  */
 @theme inline {
-  --color-background: hsl(var(--background));
-  --color-foreground: hsl(var(--foreground));
-  --color-card: hsl(var(--card));
-  --color-card-foreground: hsl(var(--card-foreground));
-  --color-popover: hsl(var(--popover));
-  --color-popover-foreground: hsl(var(--popover-foreground));
-  --color-primary: hsl(var(--primary));
-  --color-primary-foreground: hsl(var(--primary-foreground));
-  --color-secondary: hsl(var(--secondary));
-  --color-secondary-foreground: hsl(var(--secondary-foreground));
-  --color-muted: hsl(var(--muted));
-  --color-muted-foreground: hsl(var(--muted-foreground));
-  --color-accent: hsl(var(--accent));
-  --color-accent-foreground: hsl(var(--accent-foreground));
+  /* Fase 1 token-konvergens: aliasene peker nå på DS-tokenene (var(--bg) osv.)
+   * der navnene er løftet globalt. border/input/destructive/success/warning
+   * peker fortsatt på trippel-variablene (kolliderende navn, verdier konvergert). */
+  --color-background: var(--bg);
+  --color-foreground: var(--text);
+  --color-card: var(--surface);
+  --color-card-foreground: var(--text);
+  --color-popover: var(--surface);
+  --color-popover-foreground: var(--text);
+  --color-primary: var(--signal);
+  --color-primary-foreground: var(--on-signal);
+  --color-secondary: var(--surface-2);
+  --color-secondary-foreground: var(--text);
+  --color-muted: var(--surface-2);
+  --color-muted-foreground: var(--text-muted);
+  --color-accent: var(--signal-fill);
+  --color-accent-foreground: var(--on-signal-fill);
   /* Faste brand-farger (flipper IKKE mellom lys/mørk) — for AgencyOS/admin der
    * primary/accent-tokenene bytter verdi i mørkt tema. bg-forest/text-lime osv. */
   --color-forest: var(--forest);
@@ -160,15 +344,15 @@
   --color-warning-foreground: hsl(var(--warning-foreground));
   --color-info: hsl(var(--info));
   --color-info-foreground: hsl(var(--info-foreground));
-  --color-chart-1: hsl(var(--chart-1));
-  --color-chart-2: hsl(var(--chart-2));
-  --color-chart-3: hsl(var(--chart-3));
-  --color-chart-4: hsl(var(--chart-4));
-  --color-chart-5: hsl(var(--chart-5));
+  --color-chart-1: var(--axis-fys);
+  --color-chart-2: var(--axis-tek);
+  --color-chart-3: var(--axis-slag);
+  --color-chart-4: var(--axis-spill);
+  --color-chart-5: var(--axis-turn);
   --color-chart-6: hsl(var(--chart-6));
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
-  --color-ring: hsl(var(--ring));
+  --color-ring: var(--signal);
 
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 4px);
@@ -186,15 +370,14 @@
   --color-pyr-spill: var(--pyr-spill);
   --color-pyr-turn: var(--pyr-turn);
 
-  /* Pyramide-farger — KANONISK spec (mode-invariant rå hex).
-   * FYS=forest, TEK=ochre, SLAG=blå, SPILL=lime, TURN=rød.
-   * Endres ALDRI. Kilden er .claude/skills/ak-golf-hq-design/colors_and_type.css.
-   * --color-pyr-* utility-aliasene mappes nedenfor i @theme inline. */
-  --pyr-fys: #005840;
-  --pyr-tek: #B8852A;
-  --pyr-slag: #2563EB;
-  --pyr-spill: #D1F843;
-  --pyr-turn: #A32D2D;
+  /* Pyramide-farger — Fase 1 token-konvergens (2026-07-08): peker nå på DS
+   * --axis-* og er dermed TEMA-BEVISSTE (mørk modus får DS-ens mørke akser).
+   * Var mode-invariant rå hex — opphevet av docs/opprydding/03-opprydding-plan.md. */
+  --pyr-fys: var(--axis-fys);
+  --pyr-tek: var(--axis-tek);
+  --pyr-slag: var(--axis-slag);
+  --pyr-spill: var(--axis-spill);
+  --pyr-turn: var(--axis-turn);
 
   /* Pyramide-track (lette versjoner for bg, matchet til nye farger) */
   --color-pyr-fys-track: rgba(0, 88, 64, 0.10);

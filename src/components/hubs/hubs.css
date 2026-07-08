@@ -7,7 +7,9 @@
   --hub-card: hsl(var(--card));
   --hub-bg: hsl(var(--background));
   --hub-border: hsl(var(--border));
-  --hub-border-soft: hsl(var(--border) / 0.5);
+  /* --border-trippelen bærer nå egen alfa (Fase 1 token-konvergens) —
+     hsl(var(--border) / 0.5) ville vært ugyldig; color-mix halverer i stedet. */
+  --hub-border-soft: color-mix(in srgb, hsl(var(--border)) 50%, transparent);
   --hub-line-strong: hsl(var(--primary) / 0.4);
   --hub-fg: hsl(var(--foreground));
   --hub-muted: hsl(var(--muted-foreground));

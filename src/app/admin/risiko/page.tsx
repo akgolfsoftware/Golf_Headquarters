@@ -225,7 +225,7 @@ export default async function RisikoPage() {
           className="relative overflow-hidden rounded-xl border border-border bg-card p-5"
           style={{
             backgroundImage:
-              "linear-gradient(hsl(var(--border)/0.4) 1px,transparent 1px),linear-gradient(90deg,hsl(var(--border)/0.4) 1px,transparent 1px)",
+              "linear-gradient(color-mix(in srgb, hsl(var(--border)) 40%, transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb, hsl(var(--border)) 40%, transparent) 1px,transparent 1px)",
             backgroundSize: "26px 26px",
           }}
         >
