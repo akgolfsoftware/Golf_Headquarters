@@ -1,15 +1,13 @@
 "use client";
 
 /**
- * MinGolfPage — «Min golf», PlayerHQ-analyseflaten (bølge 1, masterplan).
+ * MinGolfPage — «Analysere», PlayerHQ samlet analyseflate.
  *
- * KOMPONERT fra golfdata-familien i design-handover v13 — ingen ad-hoc UI.
- * Fortellermønster per flate: score → trend → forklaring → handling;
- * NesteFokusKort er hierarkiets topp. Progressiv dybde via `nivaa`-prop
- * (avledet av A–K i src/lib/min-golf/dybde.ts; coach-flater sender "elite").
- *
- * Faner (masterplan bølge 1): SG-status · Neste fokus · Runder · Baggen ·
- * Putting · Progresjon. Rute + bunn-nav-plass uendret (låst «Analyse samlet»).
+ * KOMPONERT fra golfdata-familien — ingen ad-hoc UI. Fem faner (Anders 2026-07-08):
+ * SG · Statistikk · Treningsanalyse · TrackMan · Tester. Alt om analyse på én skjerm
+ * (låst «Analyse samlet»). SG-fanen folder inn Neste fokus; Statistikk folder Runder +
+ * Putting; TrackMan var «Baggen»; Tester var «Nivå». Treningsanalyse komponeres fra
+ * treningsanalyse-datalaget (økt-logg → timer/akse, SG-netto). Progressiv dybde via `nivaa`.
  */
 
 import { useMemo, useState } from "react";
@@ -19,12 +17,14 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { AnalyticsWorkbenchData } from "@/app/portal/analysere/actions";
 import type { MinGolfData } from "@/lib/min-golf/load-min-golf";
+import type { TreningsanalyseData, AkseKey } from "@/lib/portal-analyse/treningsanalyse-data";
 import { fmtSg } from "@/lib/min-golf/format";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import {
+  AkseFordelingsBar,
   DiagnoseKort,
   GappingChart,
   KategoriKravKort,
+  KpiTile,
   LaunchWindowKort,
   NesteFokusKort,
   PuttModellKort,
@@ -37,16 +37,23 @@ import {
   TigerFiveKort,
 } from "@/components/athletic/golfdata";
 
-type TabKey = "sg" | "fokus" | "runder" | "baggen" | "putting" | "progresjon";
+type TabKey = "sg" | "statistikk" | "trening" | "trackman" | "tester";
 
 const TABS: { key: TabKey; label: string }[] = [
   { key: "sg", label: "SG" },
-  { key: "fokus", label: "Fokus" },
-  { key: "runder", label: "Runder" },
-  { key: "baggen", label: "Baggen" },
-  { key: "putting", label: "Putting" },
-  { key: "progresjon", label: "Nivå" },
+  { key: "statistikk", label: "Statistikk" },
+  { key: "trening", label: "Trening" },
+  { key: "trackman", label: "TrackMan" },
+  { key: "tester", label: "Tester" },
 ];
+
+const AKSE_LABEL: Record<AkseKey, string> = {
+  fys: "FYS",
+  tek: "TEK",
+  slag: "SLAG",
+  spill: "SPILL",
+  turn: "TURN",
+};
 
 function fmtDato(d: Date): string {
   return d.toLocaleDateString("nb-NO", {
@@ -59,11 +66,14 @@ function fmtDato(d: Date): string {
 export function MinGolfPage({
   data,
   workbench,
+  trening,
   visning = "spiller",
 }: {
   data: MinGolfData;
   /** Eksisterende analyse-data — gjenbrukes for runde-liste + tester. */
   workbench: Pick<AnalyticsWorkbenchData, "rounds" | "tests">;
+  /** Treningsanalyse-data (økt-logg, SG-netto) — Trening-fanen. */
+  trening?: TreningsanalyseData;
   /** "coach" rendres uten portal-chrome (brukes på /admin/spillere/[id]). */
   visning?: "spiller" | "coach";
 }) {
@@ -85,6 +95,17 @@ export function MinGolfPage({
     [data.nesteFokus, valgtBaandId],
   );
 
+  // Treningsanalyse: timer per akse (for AkseFordelingsBar) + totaler.
+  const treningAgg = useMemo(() => {
+    const dist = { fys: 0, tek: 0, slag: 0, spill: 0, turn: 0 };
+    let timer = 0;
+    for (const o of trening?.okter ?? []) {
+      dist[o.axis] += o.t;
+      timer += o.t;
+    }
+    return { dist, timer, antall: trening?.okter.length ?? 0 };
+  }, [trening]);
+
   return (
     <div className="golfdata-scope mx-auto w-full max-w-2xl px-4 pb-16 pt-6">
       {visning === "spiller" && (
@@ -97,7 +118,7 @@ export function MinGolfPage({
             Hjem
           </Link>
           <h1 className="font-display text-lg font-bold tracking-tight">
-            Min golf
+            Analysere
           </h1>
           <span className="w-12" aria-hidden />
         </div>
@@ -106,7 +127,7 @@ export function MinGolfPage({
       {/* Fane-rad — appens etablerte segmentkontroll-idiom */}
       <div
         role="tablist"
-        aria-label="Min golf-visninger"
+        aria-label="Analyse-visninger"
         className="mb-6 inline-flex w-full rounded-full border border-border bg-card p-1"
       >
         {TABS.map((t) => {
@@ -131,7 +152,7 @@ export function MinGolfPage({
         })}
       </div>
 
-      {/* ── SG-status: score → trend → forklaring ── */}
+      {/* ── SG: score → trend → neste fokus (foldet inn) ── */}
       {tab === "sg" && (
         <div className="flex flex-col gap-4">
           <SgTotalKort
@@ -152,59 +173,66 @@ export function MinGolfPage({
             punkter={data.sgStatus.trendPunkter}
             baseline={data.sgStatus.baseline}
           />
+
+          {/* Neste fokus — foldet inn under SG (var egen fane) */}
+          <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
+            Neste fokus
+          </p>
+          {data.nesteFokus ? (
+            <>
+              <NesteFokusKort
+                akse={data.nesteFokus.akse}
+                omrade={data.nesteFokus.omrade}
+                sgTap={data.nesteFokus.sgTap}
+                baseline={data.nesteFokus.baseline}
+                begrunnelse={data.nesteFokus.begrunnelse ?? undefined}
+                formelAkse={data.nesteFokus.formelAkse}
+                nivaa={nivaa}
+                handlingTekst="Planlegg dette"
+                onHandling={tilWorkbench}
+              />
+              <SlagLekkasjeKart
+                baand={data.nesteFokus.lekkasjeBaand}
+                baseline={data.nesteFokus.baseline}
+                grunnlag={data.nesteFokus.grunnlag}
+                valgtId={valgtBaandId}
+                onVelgBaand={(b) => setValgtBaandId(b.id)}
+                nivaa={nivaa}
+                tomt={data.nesteFokus.lekkasjeBaand.length === 0}
+              />
+              {data.nesteFokus.diagnose && (
+                <DiagnoseKort
+                  symptom={
+                    valgtBaand
+                      ? `${fmtSg(valgtBaand.sg)} slag på ${valgtBaand.label.toLowerCase()} per runde`
+                      : data.nesteFokus.diagnose.symptom
+                  }
+                  grunnlag={data.nesteFokus.diagnose.grunnlag}
+                  resept={data.nesteFokus.diagnose.resept}
+                  nivaa={nivaa}
+                  onPlanlegg={tilWorkbench}
+                />
+              )}
+            </>
+          ) : (
+            <NesteFokusKort nivaa={nivaa} tomt onHandling={tilWorkbench} />
+          )}
         </div>
       )}
 
-      {/* ── Neste fokus: dommen → lekkasjekartet → analytikerkjeden ── */}
-      {tab === "fokus" &&
-        (data.nesteFokus ? (
-          <div className="flex flex-col gap-4">
-            <NesteFokusKort
-              akse={data.nesteFokus.akse}
-              omrade={data.nesteFokus.omrade}
-              sgTap={data.nesteFokus.sgTap}
-              baseline={data.nesteFokus.baseline}
-              begrunnelse={data.nesteFokus.begrunnelse ?? undefined}
-              formelAkse={data.nesteFokus.formelAkse}
-              nivaa={nivaa}
-              handlingTekst="Planlegg dette"
-              onHandling={tilWorkbench}
-            />
-            <SlagLekkasjeKart
-              baand={data.nesteFokus.lekkasjeBaand}
-              baseline={data.nesteFokus.baseline}
-              grunnlag={data.nesteFokus.grunnlag}
-              valgtId={valgtBaandId}
-              onVelgBaand={(b) => setValgtBaandId(b.id)}
-              nivaa={nivaa}
-              tomt={data.nesteFokus.lekkasjeBaand.length === 0}
-            />
-            {data.nesteFokus.diagnose && (
-              <DiagnoseKort
-                symptom={
-                  valgtBaand
-                    ? `${fmtSg(valgtBaand.sg)} slag på ${valgtBaand.label.toLowerCase()} per runde`
-                    : data.nesteFokus.diagnose.symptom
-                }
-                grunnlag={data.nesteFokus.diagnose.grunnlag}
-                resept={data.nesteFokus.diagnose.resept}
-                nivaa={nivaa}
-                onPlanlegg={tilWorkbench}
-              />
-            )}
-          </div>
-        ) : (
-          <NesteFokusKort nivaa={nivaa} tomt onHandling={tilWorkbench} />
-        ))}
-
-      {/* ── Runder: siste scorekort + Tiger Five + historikk ── */}
-      {tab === "runder" && (
+      {/* ── Statistikk: runder (scorekort + historikk) + putting ── */}
+      {tab === "statistikk" && (
         <div className="flex flex-col gap-4">
           <Scorekort
             hull={data.runder.hull}
             sammendrag={data.runder.sammendrag ?? undefined}
           />
           <TigerFiveKort metrikker={data.runder.tigerFive} />
+          <PuttModellKort
+            band={data.putting.band}
+            baseline={data.putting.baseline}
+            nivaa={nivaa}
+          />
           {workbench.rounds.rounds.length > 0 && (
             <div className="rounded-2xl border border-border bg-card">
               <p className="border-b border-border px-4 py-3 font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
@@ -259,8 +287,79 @@ export function MinGolfPage({
         </div>
       )}
 
-      {/* ── Baggen: gapping + launch/strike (ærlig tomt til datakilde finnes) ── */}
-      {tab === "baggen" && (
+      {/* ── Treningsanalyse: volum + fordeling fra økt-loggen ── */}
+      {tab === "trening" && (
+        <div className="flex flex-col gap-4">
+          {treningAgg.antall > 0 ? (
+            <>
+              <div className="grid grid-cols-3 gap-2.5">
+                <KpiTile label="Økter" value={treningAgg.antall} size="md" />
+                <KpiTile
+                  label="Timer"
+                  value={treningAgg.timer.toFixed(1)}
+                  unit="t"
+                  size="md"
+                />
+                <KpiTile
+                  label="SG netto"
+                  value={trening?.sgNetto != null ? fmtSg(trening.sgNetto) : "—"}
+                  size="md"
+                />
+              </div>
+              <div className="rounded-2xl border border-border bg-card p-4">
+                <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
+                  Tidsfordeling per akse
+                </p>
+                <AkseFordelingsBar dist={treningAgg.dist} showLegend />
+              </div>
+              <div className="rounded-2xl border border-border bg-card">
+                <p className="border-b border-border px-4 py-3 font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
+                  Siste økter · {treningAgg.antall}
+                </p>
+                <ul>
+                  {(trening?.okter ?? []).slice(0, 8).map((o, i) => (
+                    <li
+                      key={i}
+                      className="flex min-h-11 items-center justify-between gap-2 border-b border-border px-4 py-2.5 text-[13px] last:border-b-0"
+                    >
+                      <span className="font-mono text-[11px] uppercase tracking-[0.06em] text-muted-foreground">
+                        {AKSE_LABEL[o.axis]} · {o.type}
+                      </span>
+                      <span className="flex items-center gap-3 font-mono tabular-nums">
+                        <span>{o.t.toFixed(1)} t</span>
+                        <span className="text-muted-foreground">
+                          {o.d === 0 ? "i dag" : `${o.d} d`}
+                        </span>
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </>
+          ) : (
+            <div className="rounded-2xl border border-border bg-card px-4 py-6 text-center">
+              <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
+                Treningsanalyse
+              </p>
+              <p className="mt-2 text-[13px] text-muted-foreground">
+                Logg treningsøkter for å se volum og fordeling per akse her.
+              </p>
+              {visning === "spiller" && (
+                <button
+                  type="button"
+                  onClick={tilWorkbench}
+                  className="mt-4 inline-flex min-h-11 items-center justify-center rounded-full bg-primary px-6 font-mono text-[12px] font-bold uppercase tracking-wide text-primary-foreground"
+                >
+                  Planlegg trening
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── TrackMan: gapping + launch/strike (var «Baggen») ── */}
+      {tab === "trackman" && (
         <div className="flex flex-col gap-4">
           <GappingChart koller={data.baggen.koller} varsler={data.baggen.varsler} />
           <LaunchWindowKort tomt nivaa={nivaa} />
@@ -268,17 +367,8 @@ export function MinGolfPage({
         </div>
       )}
 
-      {/* ── Putting: innslag-% per fot-bånd mot Team Norway IUP ── */}
-      {tab === "putting" && (
-        <PuttModellKort
-          band={data.putting.band}
-          baseline={data.putting.baseline}
-          nivaa={nivaa}
-        />
-      )}
-
-      {/* ── Progresjon: A–K-nivå + tester ── */}
-      {tab === "progresjon" && (
+      {/* ── Tester: A–K-nivå + testresultater (var «Nivå») ── */}
+      {tab === "tester" && (
         <div className="flex flex-col gap-4">
           {data.progresjon ? (
             <KategoriKravKort
