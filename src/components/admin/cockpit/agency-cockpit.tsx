@@ -16,7 +16,7 @@
  */
 
 import Link from "next/link";
-import { ArrowDown, ArrowUp, Minus, Plus, Search } from "lucide-react";
+import { ArrowDown, ArrowUp, Minus, Plus, Search, Calendar, Users, Play, Bot, ClipboardList } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   COCKPIT_ICONS,
@@ -506,6 +506,43 @@ export function AgencyCockpit({ data }: { data: CockpitData }) {
       <div className="px-6 pb-14 pt-5">
         {/* KPI-strip 5 kolonner */}
         <KpiStrip data={data} />
+
+        {/* Hurtighandlinger – alltid synlig, 1 klikk til det viktigste */}
+        <div className="mb-4 mt-3">
+          <div className="mb-1.5 text-[10px] font-mono uppercase tracking-[0.12em] text-foreground/50">Ett klikk</div>
+          <div className="flex flex-wrap gap-2">
+            <Link
+              href="/admin/bookinger/ny"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+            >
+              <Calendar size={16} /> Ny booking
+            </Link>
+            <Link
+              href="/admin/planlegge"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+            >
+              <ClipboardList size={16} /> Planlegge
+            </Link>
+            <Link
+              href="/admin/spillere"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+            >
+              <Users size={16} /> Spillere
+            </Link>
+            <Link
+              href="/admin/gjennomfore"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+            >
+              <Play size={16} /> Gjennomføre
+            </Link>
+            <Link
+              href="/admin/agenter"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+            >
+              <Bot size={16} /> Agenter
+            </Link>
+          </div>
+        </div>
 
         {/* 2-kolonne hovednett */}
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1.15fr_1fr]">
