@@ -102,10 +102,19 @@ Ikke-blokkerende — appen funker uten.
 
 1. Hent på nytt via DesignSync (`get_file` per ny/endret komponent).
 2. Port til `src/components/athletic/golfdata/` (samme mønster som Fase 4-portene:
-   `.jsx`→`.tsx`, CSS→`golfdata.css`, eksport i `index.ts`).
+   `.jsx`→`.tsx`, CSS→`golfdata.css`, eksport i `index.ts`). **Port også `ListRow`**
+   (`components/feedback/ListRow.*` — finnes allerede i DS, ikke tegnet på nytt) — trengs
+   til nav-gjelden under.
 3. Lukk de 3 siste `PulseDot`-importene (marketing anlegg/junior/playerhq) → `StatusDot`.
 4. Bytt `PyrDistBar` (team-kit) → `AkseFordelingsBar`, og fjern `outline`+warning-style-
-   workaroundene → `Tag variant="warn"`.
-5. Verifiser (`npm run verify` + Playwright-diff), oppdater gap-registeret til LUKKET.
-6. Da er appen 100 % på golfdata → **Fase 5** (slett `src/components/athletic/*.tsx`
+   workaroundene (14 steder) → `Tag variant="warn"`.
+5. **Rydd kanon-gjelden fra parallell-økten** (register #12/#13): `HybridHomePage`
+   «Hovedverktøy»-flisene → `ListRow` (eller golfdata `Button` som lenke); `agency-cockpit`
+   «Ett klikk»-pill-raden → golfdata `Button variant="secondary"`.
+6. Verifiser (`npm run verify` + Playwright-diff), oppdater gap-registeret til LUKKET.
+7. Da er appen 100 % på golfdata → **Fase 5** (slett `src/components/athletic/*.tsx`
    + rydd `globals.css`) kan kjøre.
+
+> Vurder samtidig blindsonen (register-notatet): en lint-/review-sjekk som fanger
+> håndrullet flis-/kort-UI (`rounded-* + border + bg-card` i skjermer) så token-ren
+> håndrulling ikke vokser usett forbi golfdata-kanon igjen.
