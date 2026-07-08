@@ -196,7 +196,9 @@ export async function AdminShell({ children }: { children: React.ReactNode }) {
           tabIndex={-1}
           className="flex-1 pb-24 focus:outline-none focus-visible:outline-none md:pb-0"
         >
-          {children}
+          <div className="golfdata-scope">
+            {children}
+          </div>
         </main>
       </div>
       <AgencyosMobileNav inboxPending={requestCount + approvalCount} />

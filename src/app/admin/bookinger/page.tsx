@@ -21,13 +21,7 @@ import { Plus } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import {
-  AgChip,
-  AgPage,
-  AgPageHead,
-  AgPlayerCell,
-  agBtnClass,
-} from "@/components/admin/agencyos/ui";
+import { AgPage, AgPageHead, agBtnClass, AgPlayerCell, AgChip } from "@/components/admin/agencyos/ui"; // transitional - will phase to pure golfdata
 import { BekreftAvvis } from "./bekreft-avvis";
 import { EksporterKnapp } from "./eksporter-knapp";
 import { WeekCalendar, type WeekEvent, type WeekEventKind } from "@/components/admin/kalender/week-calendar";
