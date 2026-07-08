@@ -104,7 +104,9 @@ export async function PortalShell({
           tabIndex={-1}
           className="flex-1 px-4 py-4 pb-24 focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 sm:px-8 sm:py-6 md:pb-6"
         >
-          {children}
+          <div className="golfdata-scope">
+            {children}
+          </div>
         </main>
       </div>
       <BottomNav />
