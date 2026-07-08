@@ -5,8 +5,14 @@ med smart, sømløs flyt mellom delene.
 
 ## Slik blir det (målbilde)
 
-**Én skjerm — Analysere — med seks faner (finnes allerede):**
-`SG · Fokus · Runder · Baggen · Putting · Nivå`
+**Én skjerm — Analysere — med fem faner (Anders' beslutning 2026-07-08):**
+`SG · Statistikk · Treningsanalyse · TrackMan · Tester`
+
+Alle fem har eksisterende fundament (ingen helt ny fra bunn): SG (SG-tab + sg-hub),
+Statistikk (`/portal/statistikk`, + dagens Runder/Putting-faner folder hit), Treningsanalyse
+(datalaget `lib/portal-analyse/treningsanalyse-data.ts` finnes — trenger skjerm), TrackMan
+(trackman-komponent + mal/trackman), Tester (`/portal/tren/tester` + Nivå-tab).
+Gamle faner Fokus/Runder/Baggen/Putting/Nivå re-mappes inn i de fem.
 
 Hver fane viser **sammendraget**. Vil du dypere (en bestemt runde, en kølles SG-detalj, en
 TrackMan-økt), åpnes det **på stedet** med tydelig «tilbake» — du mister aldri plassen din.
