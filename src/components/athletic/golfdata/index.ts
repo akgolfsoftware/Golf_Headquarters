@@ -48,6 +48,10 @@ export { TidsGrid, type TidsGridProps, type TidsGridKolonneProps, type TidsGridB
 export { Tidslinje, type TidslinjeProps, type TidslinjeBaneProps, type TidslinjeBarProps, type TidslinjePunktProps, type TidslinjeFlytt, type TidslinjeAkse } from "./Tidslinje";
 export { Periodeplan, type PeriodeplanProps, type Phase, type Tournament, type LFase } from "./Periodeplan";
 export { DayStrip, type DayStripProps, type DayStripDay } from "./DayStrip";
+
+// Structure (ported as needed for domain components)
+export { Avatar, AvatarGroup, type AvatarProps, type AvatarGroupProps } from "./Avatar";
+export { SpillerKort, type SpillerKortProps } from "./SpillerKort";
 export { AgendaRow, type AgendaRowProps, type AgendaAkFormel } from "./AgendaRow";
 export { VisningsVelger, type VisningsVelgerProps, type KalenderVisning } from "./VisningsVelger";
 

@@ -90,13 +90,13 @@ function SgHero({ kpiStats, streakActive }: { kpiStats: DashboardData["kpiStats"
         src="/design-handover/assets/imagery/peak-misty.png"
         alt=""
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-55"
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-40"
         style={{ objectPosition: "center 35%" }}
       />
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
-        style={{ background: "linear-gradient(155deg, rgba(10,11,10,0.55) 0%, rgba(10,11,10,0.88) 72%, rgba(10,11,10,0.96) 100%)" }}
+        style={{ background: "linear-gradient(155deg, rgba(10,11,10,0.40) 0%, rgba(10,11,10,0.75) 72%, rgba(10,11,10,0.92) 100%)" }}
       />
       <div className="relative z-10 flex flex-col gap-3.5">
         <Eyebrow tone="signal">Strokes Gained · siste 10 runder</Eyebrow>
